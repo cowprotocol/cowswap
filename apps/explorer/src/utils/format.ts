@@ -14,14 +14,14 @@ import {
 } from '../explorer/const'
 
 export {
-  formatSmart,
-  formatAmountFull,
-  adjustPrecision,
-  parseAmount,
   abbreviateString,
-  safeTokenName,
-  safeFilledToken,
+  adjustPrecision,
+  formatAmountFull,
   formatPrice,
+  formatSmart,
+  parseAmount,
+  safeFilledToken,
+  safeTokenName,
 } from '@gnosis.pm/dex-js'
 
 // TODO: Move utils to dex-utils
@@ -88,13 +88,13 @@ export function formatPartialNumber(value: string): string {
 export const formatTimeInHours = (
   validTime: string | number,
   matchedConstraintText: string,
-  errorText = 'Invalid time - time cannot be negative'
+  errorText = 'Invalid time - time cannot be negative',
 ): string =>
   +validTime === 0
     ? matchedConstraintText
     : +validTime < 0
-    ? errorText
-    : `in ~
+      ? errorText
+      : `in ~
 ${(+validTime / 60).toFixed(2).replace(leadingAndTrailingZeros, '').replace(trailingZerosAfterDot, '$1')}
 hours`
 
@@ -233,9 +233,9 @@ export function formatCalculatedPriceToDisplay(
   calculatedPrice: BigNumber,
   buyToken: TokenErc20,
   sellToken: TokenErc20,
-  isPriceInverted?: boolean
+  isPriceInverted?: boolean,
 ): string {
-  const displayPrice = calculatedPrice.toString(10)
+  const displayPrice = calculatedPrice.isFinite() ? calculatedPrice.toString(10) : '0'
   const formattedPrice = formatSmart({
     amount: displayPrice,
     precision: NO_ADJUSTMENT_NEEDED_PRECISION,
@@ -254,9 +254,9 @@ export function formatExecutedPriceToDisplay(
   calculatedPrice: BigNumber,
   buyToken: TokenErc20,
   sellToken: TokenErc20,
-  isPriceInverted?: boolean
+  isPriceInverted?: boolean,
 ): string {
-  const displayPrice = calculatedPrice.toString(10)
+  const displayPrice = calculatedPrice.isFinite() ? calculatedPrice.toString(10) : '0'
   const formattedPrice = formatSmart({
     amount: displayPrice,
     precision: NO_ADJUSTMENT_NEEDED_PRECISION,
@@ -277,7 +277,7 @@ export function formatExecutedPriceToDisplay(
 export function formattingAmountPrecision(
   amount: BigNumber,
   token: TokenErc20 | null,
-  typePrecision: FormatAmountPrecision
+  typePrecision: FormatAmountPrecision,
 ): string {
   const typeFormatPrecision = {
     [FormatAmountPrecision.highPrecision]: HIGH_PRECISION_DECIMALS,
@@ -298,6 +298,6 @@ export function parseStringOrBytes32(value: string | undefined, defaultValue: st
   return value && BYTES32_REGEX.test(value) && arrayify(value)[31] === 0
     ? parseBytes32String(value)
     : value && value.length > 0
-    ? value
-    : defaultValue
+      ? value
+      : defaultValue
 }
