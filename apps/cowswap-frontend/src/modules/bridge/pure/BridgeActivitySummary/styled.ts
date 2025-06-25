@@ -1,3 +1,5 @@
+import { Media } from '@cowprotocol/ui'
+
 import styled from 'styled-components/macro'
 
 import { SummaryRow } from 'common/pure/OrderSummaryRow'
@@ -19,6 +21,10 @@ export const StepContent = styled.i`
   font-weight: var(--cow-font-weight-medium);
   font-style: normal;
   cursor: pointer;
+
+  ${Media.upToSmall()} {
+    padding: 8px;
+  }
 `
 
 export const SwapSummaryRow = styled(SummaryRow)`

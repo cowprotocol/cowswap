@@ -46,6 +46,7 @@ export const Summary = styled.div`
     display: flex;
     grid-template-columns: initial;
     grid-template-rows: initial;
+    padding: 8px;
   }
 
   > span {
