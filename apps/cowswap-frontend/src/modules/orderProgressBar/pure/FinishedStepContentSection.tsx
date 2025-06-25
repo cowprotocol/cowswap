@@ -20,21 +20,13 @@ export const FinishedStepContentSection = styled.div`
   flex-flow: column wrap;
   align-items: center;
   border-radius: 21px;
-  background: var(${UI.COLOR_PAPER_DARKER});
+  background: transparent;
   height: var(--progress-top-section-height, 246px);
   min-height: var(--progress-top-section-height, 246px);
   contain: layout style paint;
   overflow: hidden;
 
   ${Media.upToSmall()} {
-    /* 
-     * MOBILE LAYOUT: Allow flexible height for tips/surplus content
-     * The finished step shows complex bottom content that stacks on mobile:
-     * - Large cow illustration
-     * - Tips text or surplus information  
-     * - CoW Swap logo
-     * Fixed height (200px) would cut off this stacked content
-     */
     height: auto;
     min-height: auto;
     max-height: none;
