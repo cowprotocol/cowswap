@@ -15,15 +15,9 @@ interface BridgeOrderLoadingProps {
   order: Order
   children: ReactNode
   fulfillmentTime?: string
-  isCustomRecipient?: boolean
 }
 
-export function BridgeOrderLoading({
-  order,
-  fulfillmentTime,
-  isCustomRecipient,
-  children,
-}: BridgeOrderLoadingProps): ReactNode {
+export function BridgeOrderLoading({ order, fulfillmentTime, children }: BridgeOrderLoadingProps): ReactNode {
   const { data: bridgeSupportedNetworks } = useBridgeSupportedNetworks()
   const inputAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount)
   const feeAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.feeAmount)
@@ -62,18 +56,16 @@ export function BridgeOrderLoading({
       </SummaryRow>
       {fulfillmentTime && (
         <SummaryRow>
-          <b>Filled on</b>
+          <b>Swap filled on</b>
           <i>{fulfillmentTime}</i>
         </SummaryRow>
       )}
-      {isCustomRecipient && (
-        <SummaryRow>
-          <b>Recipient</b>
-          <i>
-            <ShimmerWrapper />
-          </i>
-        </SummaryRow>
-      )}
+      <SummaryRow>
+        <b>Recipient</b>
+        <i>
+          <ShimmerWrapper />
+        </i>
+      </SummaryRow>
       {children}
     </>
   )

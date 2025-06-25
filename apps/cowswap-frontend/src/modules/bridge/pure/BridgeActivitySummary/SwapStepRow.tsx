@@ -11,7 +11,7 @@ interface SwapStepRowProps {
   context: SwapAndBridgeContext
 }
 
-// TODO: check a case when swap order is in progress
+// In that case swap is always already happened
 const swapStatus = SwapAndBridgeStatus.DONE
 
 export function SwapStepRow({ context }: SwapStepRowProps): ReactNode {

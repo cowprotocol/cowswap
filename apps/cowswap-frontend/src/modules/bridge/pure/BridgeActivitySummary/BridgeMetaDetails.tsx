@@ -39,7 +39,7 @@ export function BridgeMetaDetails({ context }: BridgeMetaDetailsProps): ReactNod
         </SummaryRow>
       )}
 
-      {/*TODO: add briding execution time, we don't such a value for now*/}
+      {/*TODO: add bridging execution time, we don't such a value for now*/}
 
       <SummaryRow>
         <b>Recipient</b>
