@@ -1,4 +1,4 @@
-import { UI } from '@cowprotocol/ui'
+import { UI, ButtonSecondary } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -17,4 +17,8 @@ export const NoFunds = styled.span`
   background: var(${UI.COLOR_ALERT_BG});
   padding: 10px;
   border-radius: 16px;
+`
+
+export const ConnectWalletButton = styled(ButtonSecondary)`
+  padding: 8px 16px;
 `

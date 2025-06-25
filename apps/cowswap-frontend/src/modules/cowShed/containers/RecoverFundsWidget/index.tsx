@@ -4,9 +4,11 @@ import { ReactNode, useCallback } from 'react'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { getCurrencyAddress, getIsNativeToken } from '@cowprotocol/common-utils'
 import { ButtonPrimary, Loader } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
 
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
+import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
 import {
   SelectTokenWidget,
@@ -17,7 +19,7 @@ import {
 
 import { CurrencySelectButton } from 'common/pure/CurrencySelectButton'
 
-import { NoFunds, Wrapper } from './styled'
+import { ConnectWalletButton, NoFunds, Wrapper } from './styled'
 
 import { useFetchTokenBalance } from '../../hooks/useFetchTokenBalance'
 import { useRecoverFundsCallback } from '../../hooks/useRecoverFundsCallback'
@@ -31,9 +33,11 @@ interface RecoverFundsWidgetProps {
 }
 
 export function RecoverFundsWidget({ defaultToken: defaultTokenToRefund }: RecoverFundsWidgetProps): ReactNode {
+  const { account } = useWalletInfo()
   const [_selectedCurrency, setSelectedCurrency] = useAtom(selectedCurrencyAtom)
   const selectedCurrency = _selectedCurrency ?? defaultTokenToRefund
 
+  const toggleWalletModal = useToggleWalletModal()
   const { ErrorModal } = useErrorModal()
   const { open: isSelectTokenWidgetOpen } = useSelectTokenWidgetState()
 
@@ -61,21 +65,29 @@ export function RecoverFundsWidget({ defaultToken: defaultTokenToRefund }: Recov
       <ErrorModal />
       <SelectTokenWidget standalone />
 
-      {!isSelectTokenWidgetOpen && (
+      {!account ? (
         <div>
-          <CurrencySelectButton currency={selectedCurrency} loading={false} onClick={onCurrencySelectClick} />
+          <ConnectWalletButton onClick={toggleWalletModal}>Connect wallet</ConnectWalletButton>
         </div>
-      )}
-
-      {selectedTokenAddress && (
+      ) : (
         <>
-          <BalanceToRecover tokenBalance={tokenBalance} isBalanceLoading={isBalanceLoading} />
-          {isTxSigningInProgress || hasBalance ? (
-            <ButtonPrimary onClick={recoverFunds} disabled={!hasBalance || isTxSigningInProgress}>
-              {isTxSigningInProgress ? <Loader /> : 'Recover funds'}
-            </ButtonPrimary>
-          ) : (
-            <NoFunds>No funds to recover</NoFunds>
+          {!isSelectTokenWidgetOpen && (
+            <div>
+              <CurrencySelectButton currency={selectedCurrency} loading={false} onClick={onCurrencySelectClick} />
+            </div>
+          )}
+
+          {selectedTokenAddress && (
+            <>
+              <BalanceToRecover tokenBalance={tokenBalance} isBalanceLoading={isBalanceLoading} />
+              {isTxSigningInProgress || hasBalance ? (
+                <ButtonPrimary onClick={recoverFunds} disabled={!hasBalance || isTxSigningInProgress}>
+                  {isTxSigningInProgress ? <Loader /> : 'Recover funds'}
+                </ButtonPrimary>
+              ) : (
+                <NoFunds>No funds to recover</NoFunds>
+              )}
+            </>
           )}
         </>
       )}
