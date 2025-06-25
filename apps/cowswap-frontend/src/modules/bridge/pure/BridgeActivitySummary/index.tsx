@@ -1,6 +1,5 @@
 import { ReactNode, memo } from 'react'
 
-import { TokenLogo } from '@cowprotocol/tokens'
 import { TokenAmount, FiatAmount } from '@cowprotocol/ui'
 import type { Currency } from '@uniswap/sdk-core'
 
@@ -8,6 +7,7 @@ import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
 import { ShimmerWrapper, SummaryRow } from 'common/pure/OrderSummaryRow'
 
+import { BridgeSummaryHeader } from './BridgeSummaryHeader'
 import { StepContent, SwapSummaryRow, BridgeSummaryRow, FiatWrapper } from './styled'
 
 import { SwapAndBridgeContext, SwapAndBridgeStatus } from '../../types'
@@ -233,50 +233,6 @@ const BridgeMetaDetails = memo(function BridgeMetaDetails({
   )
 })
 
-const BridgeSummaryHeader = memo(function BridgeSummaryHeader({
-  sourceToken,
-  targetToken,
-  sourceAmounts,
-  targetAmounts,
-  sourceChainName,
-  targetChainName,
-}: {
-  sourceToken: Currency
-  targetToken: Currency
-  sourceAmounts: SwapAndBridgeContext['overview']['sourceAmounts']
-  targetAmounts: SwapAndBridgeContext['overview']['targetAmounts']
-  sourceChainName: string
-  targetChainName: string
-}): ReactNode {
-  return (
-    <>
-      {/* From Section */}
-      <SummaryRow>
-        <b>From</b>
-        <i>
-          <TokenLogo token={sourceToken} size={20} />
-          <TokenAmount amount={sourceAmounts.sellAmount} tokenSymbol={sourceToken} />
-          {` on ${sourceChainName}`}
-        </i>
-      </SummaryRow>
-
-      {/* To Section */}
-      <SummaryRow>
-        <b>To at least</b>
-        <i>
-          <TokenLogo token={targetToken} size={20} />
-          {targetAmounts ? (
-            <TokenAmount amount={targetAmounts.buyAmount} tokenSymbol={targetToken} />
-          ) : (
-            <ShimmerWrapper />
-          )}
-          {` on ${targetChainName}`}
-        </i>
-      </SummaryRow>
-    </>
-  )
-})
-
 export function BridgeActivitySummary(props: BridgeActivitySummaryProps): ReactNode {
   const { context, order, fulfillmentTime, isCustomRecipient, receiverEnsName, children } = props
 
@@ -296,8 +252,6 @@ export function BridgeActivitySummary(props: BridgeActivitySummaryProps): ReactN
   return (
     <>
       <BridgeSummaryHeader
-        sourceToken={sourceToken}
-        targetToken={targetToken}
         sourceAmounts={sourceAmounts}
         targetAmounts={targetAmounts}
         sourceChainName={sourceChainName}
