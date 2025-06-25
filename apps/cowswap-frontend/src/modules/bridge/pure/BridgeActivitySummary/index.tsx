@@ -1,6 +1,5 @@
 import { ReactNode } from 'react'
 
-import { BridgeMetaDetails } from './BridgeMetaDetails'
 import { BridgeStepRow } from './BridgeStepRow'
 import { BridgeSummaryHeader } from './BridgeSummaryHeader'
 import { SwapStepRow } from './SwapStepRow'
@@ -22,8 +21,6 @@ export function BridgeActivitySummary(props: BridgeActivitySummaryProps): ReactN
       <SwapStepRow context={context} />
 
       <BridgeStepRow context={context} />
-
-      <BridgeMetaDetails context={context} />
 
       {children}
     </>
