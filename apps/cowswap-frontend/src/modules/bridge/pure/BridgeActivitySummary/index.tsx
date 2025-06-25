@@ -12,9 +12,8 @@ import styled from 'styled-components/macro'
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
 import { OrderHooksDetails } from 'common/containers/OrderHooksDetails'
-import { SummaryRow } from 'common/pure/SummaryRow'
 
-import { ShimmerWrapper, StepContent, SwapSummaryRow, BridgeSummaryRow } from './styled'
+import { ShimmerWrapper, StepContent, SwapSummaryRow, BridgeSummaryRow, SummaryRow } from './styled'
 
 import { SwapAndBridgeContext, SwapAndBridgeStatus } from '../../types'
 import { BridgeDetailsContainer } from '../BridgeDetailsContainer'
@@ -388,7 +387,7 @@ export function BridgeActivitySummary(props: BridgeActivitySummaryProps): ReactN
     if (!order) {
       return null
     }
-    
+
     return (
       <BridgeLoadingState
         order={order}
@@ -414,13 +413,7 @@ export function BridgeActivitySummary(props: BridgeActivitySummaryProps): ReactN
     )
   }
 
-  const {
-    bridgeProvider,
-    bridgingProgressContext,
-    quoteBridgeContext,
-    statusResult,
-    bridgingStatus,
-  } = context
+  const { bridgeProvider, bridgingProgressContext, quoteBridgeContext, statusResult, bridgingStatus } = context
 
   const { targetAmounts, sourceChainName, targetChainName } = overview
   const { surplusAmount, surplusAmountUsd } = swapResultContext
@@ -469,3 +462,4 @@ export function BridgeActivitySummary(props: BridgeActivitySummaryProps): ReactN
     </>
   )
 }
+export { SummaryRow } from './styled'
