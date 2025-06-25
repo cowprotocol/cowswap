@@ -2,28 +2,20 @@ import { ReactNode } from 'react'
 
 import { TokenLogo } from '@cowprotocol/tokens'
 import { TokenAmount } from '@cowprotocol/ui'
-import type { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { ShimmerWrapper, SummaryRow } from 'common/pure/OrderSummaryRow'
 
-interface BridgeSummaryHeaderProps<
-  Amounts = {
-    sellAmount: CurrencyAmount<Currency>
-    buyAmount: CurrencyAmount<Currency>
-  },
-> {
-  sourceAmounts: Amounts
-  targetAmounts: Amounts | undefined
-  sourceChainName: string
-  targetChainName: string
+import { SwapAndBridgeContext } from '../../types'
+
+interface BridgeSummaryHeaderProps {
+  context: SwapAndBridgeContext
 }
 
-export function BridgeSummaryHeader({
-  sourceAmounts,
-  targetAmounts,
-  sourceChainName,
-  targetChainName,
-}: BridgeSummaryHeaderProps): ReactNode {
+export function BridgeSummaryHeader({ context }: BridgeSummaryHeaderProps): ReactNode {
+  const {
+    overview: { sourceAmounts, targetAmounts, sourceChainName, targetChainName },
+  } = context
+
   return (
     <>
       <SummaryRow>
