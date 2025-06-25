@@ -31,9 +31,9 @@ export function CowShedInfo({ className, onClick }: CowShedInfoProps): ReactNode
   const provider = useWalletProvider()
   const proxyAndAccount = useCurrentAccountProxyAddress()
 
-  const { proxyAddress, isProxyDeployed } = proxyAndAccount || {}
+  const { proxyAddress } = proxyAndAccount || {}
 
-  if (!provider || !proxyAddress || !isProxyDeployed) return null
+  if (!provider || !proxyAddress) return null
 
   const cowShedLink = getShedRouteLink(chainId)
 
