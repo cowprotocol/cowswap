@@ -358,14 +358,7 @@ export function ActivityDetails(props: {
             <>
               {order && isBridgeOrder ? (
                 swapAndBridgeContext ? (
-                  <BridgeActivitySummary
-                    context={swapAndBridgeContext}
-                    fulfillmentTime={fulfillmentTime}
-                    isCustomRecipient={isCustomRecipient}
-                    receiverEnsName={receiverEnsName}
-                  >
-                    {hooksDetails}
-                  </BridgeActivitySummary>
+                  <BridgeActivitySummary context={swapAndBridgeContext}>{hooksDetails}</BridgeActivitySummary>
                 ) : (
                   <BridgeOrderLoading
                     order={order}
