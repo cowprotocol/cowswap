@@ -99,14 +99,25 @@ export const CurrencySelectWrapper = styled.button<{
     ${({ readonlyMode, $noCurrencySelected }) =>
       readonlyMode
         ? ''
-        : `background: ${$noCurrencySelected ? `var(${UI.COLOR_PRIMARY_LIGHTER})` : `var(${UI.COLOR_PRIMARY})`};`}
+        : `background: ${$noCurrencySelected ? `var(${UI.COLOR_PRIMARY_LIGHTER})` : `var(${UI.COLOR_PRIMARY})`};
+        `}
 
-    ${TokenSubText}, ${StyledTokenSymbol}, ${CurrencySymbol} {
-      color: var(${UI.COLOR_BUTTON_TEXT});
+    ${StyledTokenSymbol} {
+      color: ${({ readonlyMode, $noCurrencySelected }) =>
+        readonlyMode
+          ? `var(${UI.COLOR_TEXT_PAPER})`
+          : $noCurrencySelected
+            ? `var(${UI.COLOR_BUTTON_TEXT})`
+            : `var(${UI.COLOR_BUTTON_TEXT})`};
     }
 
     ${ArrowDown} > path {
-      stroke: var(${UI.COLOR_BUTTON_TEXT});
+      stroke: ${({ readonlyMode, $noCurrencySelected }) =>
+        readonlyMode
+          ? `var(${UI.COLOR_TEXT_PAPER})`
+          : $noCurrencySelected
+            ? `var(${UI.COLOR_BUTTON_TEXT})`
+            : `var(${UI.COLOR_BUTTON_TEXT})`};
     }
   }
 `
