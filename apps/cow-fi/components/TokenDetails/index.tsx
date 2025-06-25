@@ -1,5 +1,16 @@
-import React from 'react'
+import React, { JSX } from 'react'
+
+import Image from 'next/image'
+
 import { Breadcrumbs } from '@/components/Breadcrumbs'
+import { ChartSection } from '@/components/ChartSection'
+import { NetworkItem } from '@/components/NetworkItem'
+import { NetworkHeaderItem } from '@/components/NetworkItem/styles'
+import { SwapLinkCard } from '@/components/SwapLinkCard'
+import { SwapWidget } from '@/components/SwapWidget'
+import { NETWORK_MAP } from '@/const/networkMap'
+import { formatUSDPrice } from 'util/formatUSDPrice'
+
 import {
   Wrapper,
   MainContent,
@@ -16,36 +27,125 @@ import {
   StatTitle,
   StatValue,
 } from './index.styles'
-import { SwapWidget } from '@/components/SwapWidget'
-import { SwapLinkCard } from '@/components/SwapLinkCard'
-import { NetworkHeaderItem } from '@/components/NetworkItem/styles'
-import { NetworkItem } from '@/components/NetworkItem'
 
-import { ChartSection } from '@/components/ChartSection'
-import { formatUSDPrice } from 'util/formatUSDPrice'
 import type { TokenDetails as TokenDetailsType } from 'types'
+
+function TokenDetailsHeading(props: { token: TokenDetailsType }): JSX.Element {
+  const { token } = props
+  const { name, symbol, image } = token
+  return (
+    <DetailHeading>
+      <TokenTitle>
+        <Image src={image.large!} alt={`${name} (${symbol})`} width={100} height={100} />
+        <h1>{name}</h1>
+        <span>{symbol}</span>
+      </TokenTitle>
+    </DetailHeading>
+  )
+}
+
+function NetworkTableComponent(props: { token: TokenDetailsType }): JSX.Element {
+  const { token } = props
+  const { platforms, name, symbol } = token
+
+  return (
+    <NetworkTable>
+      <NetworkHeaderItem>
+        <div>Network</div>
+        <div>Contract Address</div>
+        <div></div>
+      </NetworkHeaderItem>
+
+      {Object.entries(platforms).map(
+        ([network, platformData]) =>
+          platformData.contractAddress && (
+            <NetworkItem
+              key={`${network}-${platformData.contractAddress}`} // TODO: check if this is correct
+              network={network as keyof typeof NETWORK_MAP}
+              platformData={{
+                address: platformData.contractAddress,
+                decimals: platformData.decimalPlace,
+                symbol,
+                name,
+              }}
+            />
+          ),
+      )}
+    </NetworkTable>
+  )
+}
+
+function SwapCardsComponent(props: { token: TokenDetailsType }): JSX.Element {
+  const {
+    token: { platforms, symbol },
+  } = props
+  const { ethereum, xdai, base, 'arbitrum-one': arbitrum, avalanche, 'polygon-pos': polygon } = platforms
+
+  return (
+    <>
+      <SwapCardsWrapper>
+        {ethereum?.contractAddress && (
+          <SwapLinkCard
+            contractAddress={ethereum.contractAddress}
+            networkId={1}
+            network="ethereum"
+            tokenSymbol={symbol}
+          />
+        )}
+
+        {xdai?.contractAddress && (
+          <SwapLinkCard contractAddress={xdai.contractAddress} networkId={100} network="xdai" tokenSymbol={symbol} />
+        )}
+
+        {base?.contractAddress && (
+          <SwapLinkCard contractAddress={base.contractAddress} networkId={8453} network="base" tokenSymbol={symbol} />
+        )}
+
+        {arbitrum?.contractAddress && (
+          <SwapLinkCard
+            contractAddress={arbitrum.contractAddress}
+            networkId={42161}
+            network="arbitrum-one"
+            tokenSymbol={symbol}
+          />
+        )}
+
+        {avalanche?.contractAddress && (
+          <SwapLinkCard
+            contractAddress={avalanche.contractAddress}
+            networkId={43114}
+            network="avalanche"
+            tokenSymbol={symbol}
+          />
+        )}
+
+        {polygon?.contractAddress && (
+          <SwapLinkCard
+            contractAddress={polygon.contractAddress}
+            networkId={137}
+            network="polygon-pos"
+            tokenSymbol={symbol}
+          />
+        )}
+      </SwapCardsWrapper>
+    </>
+  )
+}
 
 export interface TokenDetailProps {
   token: TokenDetailsType
 }
 
-export function TokenDetails({ token }: TokenDetailProps) {
+export function TokenDetails({ token }: TokenDetailProps): JSX.Element {
   const { id, name, symbol, image, marketCap, allTimeHigh, allTimeLow, volume, description, platforms } = token
-  const contractAddressEthereum = platforms?.ethereum?.contractAddress
-  const contractAddressGnosis = platforms?.xdai?.contractAddress
 
   return (
     <Wrapper>
       <MainContent>
         <Breadcrumbs crumbs={[{ text: 'Tokens', href: '/tokens' }, { text: `${name} Price` }]} />
 
-        <DetailHeading>
-          <TokenTitle>
-            <img src={image.large!} alt={`${name} (${symbol})`} />
-            <h1>{name}</h1>
-            <span>{symbol}</span>
-          </TokenTitle>
-        </DetailHeading>
+        <TokenDetailsHeading token={token} />
+
         <TokenChart>
           <ChartSection platforms={platforms} />
         </TokenChart>
@@ -83,52 +183,12 @@ export function TokenDetails({ token }: TokenDetailProps) {
           <br />
           <br />
 
-          <SwapCardsWrapper>
-            {contractAddressEthereum && (
-              <SwapLinkCard
-                contractAddress={contractAddressEthereum}
-                networkId={1}
-                networkName="Ethereum"
-                tokenSymbol={symbol}
-              />
-            )}
-
-            {contractAddressGnosis && (
-              <SwapLinkCard
-                contractAddress={contractAddressGnosis}
-                networkId={100}
-                networkName="Gnosis Chain"
-                tokenSymbol={symbol}
-              />
-            )}
-          </SwapCardsWrapper>
+          <SwapCardsComponent token={token} />
         </Section>
         <Section>
           <h4>Explorers</h4>
 
-          <NetworkTable>
-            <NetworkHeaderItem>
-              <div>Network</div>
-              <div>Contract Address</div>
-              <div></div>
-            </NetworkHeaderItem>
-
-            {Object.entries(platforms).map(
-              ([network, platformData]) =>
-                platformData.contractAddress && (
-                  <NetworkItem
-                    key={`${network}-${platformData.contractAddress}`}
-                    network={network}
-                    platformData={{
-                      address: platformData.contractAddress,
-                      decimals: platformData.decimalPlace,
-                      symbol,
-                      name,
-                    }}
-                  />
-                )
-            )}
-          </NetworkTable>
+          <NetworkTableComponent token={token} />
         </Section>
       </MainContent>
 

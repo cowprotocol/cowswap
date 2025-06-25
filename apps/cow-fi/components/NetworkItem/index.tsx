@@ -1,4 +1,10 @@
+import { JSX, useMemo } from 'react'
+
+import Image from 'next/image'
+
 import { CopyToClipboard } from '@/components/CopyToClipboard'
+import { NETWORK_IMAGE_MAP, NETWORK_MAP, NETWORK_URL_MAP } from '@/const/networkMap'
+
 import { ItemWrapper } from './styles'
 
 type PlatformData = {
@@ -9,41 +15,28 @@ type PlatformData = {
 }
 
 type Props = {
-  network: string
+  network: keyof typeof NETWORK_MAP
   platformData: PlatformData
 }
 
-export function NetworkItem(props: Props) {
+export function NetworkItem(props: Props): JSX.Element {
   const { network, platformData } = props
   const { address, symbol, name } = platformData
 
+  const networkUrl = useMemo(() => `${NETWORK_URL_MAP[network]}/${address}`, [network, address])
+  const networkImage = useMemo(() => NETWORK_IMAGE_MAP[network], [network])
+  const networkName = useMemo(() => NETWORK_MAP[network], [network])
+
   return (
     <ItemWrapper>
-      <a
-        href={
-          network === 'xdai' ? `https://gnosisscan.io/address/${address}` : `https://etherscan.io/address/${address}`
-        }
-        title={`${name} (${symbol}) on ${network === 'xdai' ? 'Gnosis Chain' : 'Ethereum'}`}
-        target="_blank"
-        rel="noreferrer nofollow"
-      >
-        <img
-          src={`/images/${network === 'xdai' ? 'gnosis-chain' : network}.svg`}
-          alt={network === 'xdai' ? 'Gnosis Chain' : 'Ethereum'}
-        />
-        {network === 'xdai' ? 'Gnosis Chain' : network.charAt(0).toUpperCase() + network.slice(1)}
+      <a href={networkUrl} title={`${name} (${symbol}) on ${networkName}`} target="_blank" rel="noreferrer nofollow">
+        <Image src={networkImage} alt={networkName} width={16} height={16} />
+        {networkName}
       </a>
-      <a
-        href={
-          network === 'xdai' ? `https://gnosisscan.io/address/${address}` : `https://etherscan.io/address/${address}`
-        }
-        title={`${name} (${symbol}) on ${network === 'xdai' ? 'Gnosis Chain' : 'Ethereum'}`}
-        target="_blank"
-        rel="noreferrer nofollow"
-      >
+      <a href={networkUrl} title={`${name} (${symbol}) on ${networkName}`} target="_blank" rel="noreferrer nofollow">
         <div>
           <i>{address}</i>
-          <img src="/images/external-arrow.svg" alt="Go to explorer" />
+          <Image src="/images/external-arrow.svg" alt="Go to explorer" width={16} height={16} />
         </div>
       </a>
       <span>

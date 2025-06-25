@@ -1,12 +1,15 @@
 'use server'
 
+import { backOff } from 'exponential-backoff'
+
 import fs from 'fs'
 import path from 'path'
-import { PlatformData, Platforms, TokenDetails, TokenInfo } from 'types'
-import { backOff } from 'exponential-backoff'
-import { DATA_CACHE_TIME_SECONDS } from '@/const/meta'
 
-const NETWORKS = ['ethereum', 'xdai']
+import { DATA_CACHE_TIME_SECONDS } from '@/const/meta'
+import { NETWORK_MAP } from '@/const/networkMap'
+import { PlatformData, Platforms, TokenDetails, TokenInfo } from 'types'
+
+const NETWORKS: (keyof typeof NETWORK_MAP)[] = ['ethereum', 'base', 'arbitrum-one', 'avalanche', 'polygon-pos', 'xdai']
 const COW_TOKEN_ID = 'cow-protocol'
 
 const TOKEN_LISTS_URL = 'https://files.cow.fi/tokens/cowFi-tokens.json'
@@ -29,7 +32,7 @@ export async function getTokensInfo(): Promise<TokenInfo[]> {
   const tokensRaw = await _getAllTokensData()
   const tokens = tokensRaw.map(_toTokenInfo)
 
-  let sortedTokens = tokens.sort(_sortTokensInfoByMarketCap)
+  const sortedTokens = tokens.sort(_sortTokensInfoByMarketCap)
 
   // Move COW at the top
   sortedTokens.unshift(
@@ -90,6 +93,7 @@ async function _getAllTokensData(): Promise<TokenDetails[]> {
   // Enhance description and transform to token details
   const tokens = tokenRawData
     .map((tokenRaw: TokenDetails) => {
+      // if the token does not have a description file, skip it
       if (!descriptionFiles.includes(tokenRaw.id)) {
         return undefined
       }
