@@ -13,6 +13,8 @@ import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
 
+const EMPTY_TOKEN_SET = new Set<string>();
+
 export function usePriorityTokenAddresses(): Set<string> {
   const { chainId } = useWalletInfo()
   const state = useDerivedTradeState()
@@ -31,7 +33,7 @@ export function usePriorityTokenAddresses(): Set<string> {
   const outputCurrencyAddress = getAddress(outputCurrency)
 
   const newSetOfTokens = useMemo(() => {
-    if (!pending) return new Set<string>()
+    if (!pending) return EMPTY_TOKEN_SET;
 
     const setOfTokens = new Set(Object.values(pending)
       .filter(isTruthy)
