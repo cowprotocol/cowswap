@@ -44,7 +44,9 @@ export function OrderPriceDisplay(props: Readonly<OrderPriceDisplayProps>): Reac
     denominator: { amount: buyAmount, decimals: buyToken.decimals },
     numerator: { amount: sellAmount, decimals: sellToken.decimals },
   })
-  const displayPrice = (isPriceInverted ? invertPrice(calculatedPrice) : calculatedPrice).toString(10)
+  const displayPrice = calculatedPrice.isFinite()
+    ? (isPriceInverted ? invertPrice(calculatedPrice) : calculatedPrice).toString(10)
+    : '0'
   const formattedPrice = formatSmart({
     amount: displayPrice,
     precision: NO_ADJUSTMENT_NEEDED_PRECISION,
