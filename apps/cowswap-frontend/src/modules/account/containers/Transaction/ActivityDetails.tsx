@@ -50,6 +50,8 @@ import {
   TransactionState as ActivityLink,
 } from './styled'
 
+import { BridgeOrderLoading } from '../../pure/BridgeOrderLoading'
+
 const DEFAULT_ORDER_SUMMARY = {
   from: '',
   to: '',
@@ -355,15 +357,25 @@ export function ActivityDetails(props: {
           {isOrder ? (
             <>
               {order && isBridgeOrder ? (
-                <BridgeActivitySummary
-                  context={swapAndBridgeContext || null}
-                  order={order}
-                  fulfillmentTime={fulfillmentTime}
-                  isCustomRecipient={isCustomRecipient}
-                  receiverEnsName={receiverEnsName}
-                >
-                  {hooksDetails}
-                </BridgeActivitySummary>
+                swapAndBridgeContext ? (
+                  <BridgeActivitySummary
+                    context={swapAndBridgeContext}
+                    order={order}
+                    fulfillmentTime={fulfillmentTime}
+                    isCustomRecipient={isCustomRecipient}
+                    receiverEnsName={receiverEnsName}
+                  >
+                    {hooksDetails}
+                  </BridgeActivitySummary>
+                ) : (
+                  <BridgeOrderLoading
+                    order={order}
+                    fulfillmentTime={fulfillmentTime}
+                    isCustomRecipient={isCustomRecipient}
+                  >
+                    {hooksDetails}
+                  </BridgeOrderLoading>
+                )
               ) : (
                 // Regular order layout
                 <>
