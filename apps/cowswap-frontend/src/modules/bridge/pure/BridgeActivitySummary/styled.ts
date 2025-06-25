@@ -11,6 +11,12 @@ const shimmerAnimation = keyframes`
   }
 `
 
+export const FiatWrapper = styled.span`
+  margin-left: 5px;
+  align-items: center;
+  display: flex;
+`
+
 export const ShimmerWrapper = styled.span`
   position: relative;
   display: inline-block;

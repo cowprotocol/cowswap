@@ -7,13 +7,12 @@ import type { Currency } from '@uniswap/sdk-core'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useBridgeSupportedNetworks } from 'entities/bridgeProvider'
-import styled from 'styled-components/macro'
 
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
 import { OrderHooksDetails } from 'common/containers/OrderHooksDetails'
 
-import { ShimmerWrapper, StepContent, SwapSummaryRow, BridgeSummaryRow, SummaryRow } from './styled'
+import { ShimmerWrapper, StepContent, SwapSummaryRow, BridgeSummaryRow, SummaryRow, FiatWrapper } from './styled'
 
 import { SwapAndBridgeContext, SwapAndBridgeStatus } from '../../types'
 import { BridgeDetailsContainer } from '../BridgeDetailsContainer'
@@ -22,12 +21,6 @@ import { PreparingBridgingContent } from '../contents/BridgingProgressContent/Pr
 import { SwapResultContent } from '../contents/SwapResultContent'
 import { RecipientDisplay } from '../RecipientDisplay'
 import { BridgeStatusIcons, SwapStatusIcons } from '../StopStatus'
-
-const FiatWrapper = styled.span`
-  margin-left: 5px;
-  align-items: center;
-  display: flex;
-`
 
 interface BridgeActivitySummaryProps {
   context: SwapAndBridgeContext | null
