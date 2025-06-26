@@ -18,6 +18,7 @@ export const TooltipContainer = styled.div`
 `
 
 export interface HoverTooltipProps extends Omit<PopoverProps, 'content' | 'show'> {
+  isClosed?: boolean
   /**
    * The content of the tooltip
    */
@@ -65,6 +66,7 @@ export function HoverTooltip(props: HoverTooltipProps) {
     disableHover,
     wrapInContainer = false,
     tooltipCloseDelay = TOOLTIP_CLOSE_DELAY,
+    isClosed,
     ...rest
   } = props
 
@@ -137,6 +139,12 @@ export function HoverTooltip(props: HoverTooltipProps) {
     },
     [close, open, show],
   )
+
+  useEffect(() => {
+    if (isClosed) {
+      setShow(false)
+    }
+  }, [isClosed])
 
   // Hide tooltip when scrolling
   useEffect(() => {

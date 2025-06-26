@@ -1,38 +1,23 @@
 import { ReactNode } from 'react'
 
-import { ExplorerDataType, getExplorerLink, isAddress, shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { NetworkLogo } from '@cowprotocol/ui'
 
-import { Link, RecipientWrapper } from '../../styles'
+import { AddressLink } from 'common/pure/AddressLink'
+
+import { RecipientWrapper } from '../../styles'
 
 interface RecipientDisplayProps {
   recipient: string
   chainId: SupportedChainId
   logoSize?: number
-  linkRelAttribute?: string
 }
 
-export function RecipientDisplay({
-  recipient,
-  chainId,
-  logoSize = 16,
-  linkRelAttribute = 'noreferrer',
-}: RecipientDisplayProps): ReactNode {
+export function RecipientDisplay({ recipient, chainId, logoSize = 16 }: RecipientDisplayProps): ReactNode {
   return (
     <RecipientWrapper>
       <NetworkLogo chainId={chainId} size={logoSize} />
-      {isAddress(recipient) ? (
-        <Link
-          href={getExplorerLink(chainId, recipient, ExplorerDataType.ADDRESS)}
-          target="_blank"
-          rel={linkRelAttribute}
-        >
-          {shortenAddress(recipient)} ↗
-        </Link>
-      ) : (
-        recipient
-      )}
+      <AddressLink address={recipient} chainId={chainId} />
     </RecipientWrapper>
   )
 }

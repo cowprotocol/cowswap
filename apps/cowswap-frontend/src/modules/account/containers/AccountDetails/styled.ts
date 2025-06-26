@@ -490,3 +490,4 @@ export const WalletSelector = styled.div<WalletSelectorProps>`
     }
   `}
 `
+

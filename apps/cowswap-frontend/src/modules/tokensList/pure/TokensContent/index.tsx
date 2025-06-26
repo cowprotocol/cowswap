@@ -24,6 +24,7 @@ export interface TokensContentProps {
   allTokens: TokenWithLogo[]
   account: string | undefined
   searchInput: string
+  standalone?: boolean
 
   onSelectToken(token: TokenWithLogo): void
   onOpenManageWidget(): void
@@ -41,6 +42,7 @@ export function TokensContent({
   account,
   displayLpTokenLists,
   searchInput,
+  standalone,
 }: TokensContentProps): ReactNode {
   return (
     <>
@@ -75,12 +77,16 @@ export function TokensContent({
           )}
         </>
       )}
-      <styledEl.Separator />
-      <div>
-        <styledEl.ActionButton id="list-token-manage-button" onClick={onOpenManageWidget}>
-          <Edit /> <span>Manage Token Lists</span>
-        </styledEl.ActionButton>
-      </div>
+      {!standalone && (
+        <>
+          <styledEl.Separator />
+          <div>
+            <styledEl.ActionButton id="list-token-manage-button" onClick={onOpenManageWidget}>
+              <Edit /> <span>Manage Token Lists</span>
+            </styledEl.ActionButton>
+          </div>
+        </>
+      )}
     </>
   )
 }
