@@ -18,41 +18,41 @@ export function CollapsibleInlineBanner({
 }: CollapsibleInlineBannerProps): ReactNode {
   const [isExpanded, setIsExpanded] = useState(defaultExpanded)
 
-  const handleToggle = (): void => {
+  const toggle = (): void => {
     if (!isCollapsible) return
-
-    const newExpanded = !isExpanded
-    setIsExpanded(newExpanded)
-    onToggle?.(newExpanded)
+    setIsExpanded(state => {
+      onToggle?.(!state)
+      return !state
+    })
   }
 
   const handleKeyDown = (event: React.KeyboardEvent): void => {
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault()
-      handleToggle()
+      toggle()
     }
   }
 
-  if (!isCollapsible) {
-    return <StyledCollapsibleBanner {...bannerProps} $isExpanded={true}>{expandedContent}</StyledCollapsibleBanner>
-  }
-
   return (
-    <StyledCollapsibleBanner {...bannerProps} $isExpanded={isExpanded}>
-      <ClickableWrapper>
-        {isExpanded ? expandedContent : collapsedContent}
-        <ToggleIconContainer
-          onClick={handleToggle}
-          onKeyDown={handleKeyDown}
-          tabIndex={0}
-          role="button"
-          aria-label={isExpanded ? 'Collapse' : 'Expand'}
-        >
-          <StyledToggleArrow isOpen={isExpanded}>
-            <SVG src={CarretIcon} />
-          </StyledToggleArrow>
-        </ToggleIconContainer>
-      </ClickableWrapper>
+    <StyledCollapsibleBanner {...bannerProps} $isExpanded={isCollapsible ? isExpanded : true}>
+      {isCollapsible ? (
+        <ClickableWrapper>
+          {isExpanded ? expandedContent : collapsedContent}
+          <ToggleIconContainer
+            onClick={toggle}
+            onKeyDown={handleKeyDown}
+            tabIndex={0}
+            role="button"
+            aria-label={isExpanded ? 'Collapse' : 'Expand'}
+          >
+            <StyledToggleArrow isOpen={isExpanded}>
+              <SVG src={CarretIcon} />
+            </StyledToggleArrow>
+          </ToggleIconContainer>
+        </ClickableWrapper>
+      ) : (
+        expandedContent
+      )}
     </StyledCollapsibleBanner>
   )
 }
