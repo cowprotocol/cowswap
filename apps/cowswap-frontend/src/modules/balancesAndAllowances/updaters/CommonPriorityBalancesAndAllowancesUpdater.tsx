@@ -3,10 +3,11 @@ import { ReactNode } from 'react'
 import { BalancesAndAllowancesUpdater } from '@cowprotocol/balances-and-allowances'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { useBalancesContext } from 'entities/balancesContext/useBalancesContext'
+
 import { useSourceChainId } from 'modules/tokensList'
 import { usePriorityTokenAddresses } from 'modules/trade'
 
-import { useBalancesContext } from '../../../entities/balancesContext/useBalancesContext'
 
 export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
   const sourceChainId = useSourceChainId()
