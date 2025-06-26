@@ -1,6 +1,5 @@
 import { useCallback } from 'react'
 
-import { getRpcProvider } from '@cowprotocol/common-const'
 import { useInterval } from '@cowprotocol/common-hooks'
 import { CrossChainOrder, SupportedChainId } from '@cowprotocol/cow-sdk'
 
@@ -11,23 +10,18 @@ import type { Order } from 'legacy/state/orders/actions'
 
 const BRIDGE_TRANSACTION_POLLING_INTERVAL = ms`3s`
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useUpdateBridgeOrderData(
   chainId: SupportedChainId,
   order: Order | undefined,
   setCrossChainOrder: (order: CrossChainOrder | null) => void,
   pollingInterval = BRIDGE_TRANSACTION_POLLING_INTERVAL,
-) {
+): void {
   const updateBridgeOrderData = useCallback(async () => {
-    const rpcProvider = getRpcProvider(chainId)
-
-    if (!order || !rpcProvider) return
+    if (!order) return
 
     const crossChainOrder = await bridgingSdk.getOrder({
       chainId,
       orderId: order.id,
-      rpcProvider,
     })
 
     setCrossChainOrder(crossChainOrder)

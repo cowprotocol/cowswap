@@ -50,9 +50,7 @@ export interface InfoTooltipProps {
   preText?: string
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function InfoTooltip({ content, children, className, size = 16, preText }: InfoTooltipProps) {
+export function InfoTooltip({ content, children, className, size = 16, preText }: InfoTooltipProps): ReactNode {
   const tooltipContent = <StyledTooltipContainer>{children || content}</StyledTooltipContainer>
 
   return (

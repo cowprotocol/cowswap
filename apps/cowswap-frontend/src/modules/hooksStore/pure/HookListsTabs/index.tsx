@@ -1,6 +1,6 @@
-import { Dispatch, SetStateAction } from 'react'
+import { Dispatch, ReactNode, SetStateAction } from 'react'
 
-import * as styledEl from './styled'
+import * as styledEl from 'common/pure/Tabs'
 
 interface HookListsTabsProps {
   isAllHooksTab: boolean
@@ -10,22 +10,20 @@ interface HookListsTabsProps {
   onAddCustomHook: () => void
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function HookListsTabs({
   isAllHooksTab,
   setIsAllHooksTab,
   allHooksCount,
   customHooksCount,
-}: HookListsTabsProps) {
+}: HookListsTabsProps): ReactNode {
   return (
-    <styledEl.TabsContainer>
-      <styledEl.Tab active$={isAllHooksTab} onClick={() => setIsAllHooksTab(true)}>
+    <styledEl.Tabs>
+      <styledEl.Tab $active={isAllHooksTab} onClick={() => setIsAllHooksTab(true)}>
         All Hooks ({allHooksCount})
       </styledEl.Tab>
-      <styledEl.Tab active$={!isAllHooksTab} onClick={() => setIsAllHooksTab(false)}>
+      <styledEl.Tab $active={!isAllHooksTab} onClick={() => setIsAllHooksTab(false)}>
         My Custom Hooks ({customHooksCount})
       </styledEl.Tab>
-    </styledEl.TabsContainer>
+    </styledEl.Tabs>
   )
 }

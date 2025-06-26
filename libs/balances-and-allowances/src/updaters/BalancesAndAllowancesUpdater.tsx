@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai'
-import { useEffect, useMemo } from 'react'
+import { ReactNode, useEffect, useMemo } from 'react'
 
 import { LpToken, NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -30,9 +30,8 @@ export interface BalancesAndAllowancesUpdaterProps {
   account: string | undefined
   chainId: SupportedChainId
 }
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function BalancesAndAllowancesUpdater({ account, chainId }: BalancesAndAllowancesUpdaterProps) {
+
+export function BalancesAndAllowancesUpdater({ account, chainId }: BalancesAndAllowancesUpdaterProps): ReactNode {
   const setBalances = useSetAtom(balancesAtom)
 
   const allTokens = useAllActiveTokens()
@@ -43,8 +42,8 @@ export function BalancesAndAllowancesUpdater({ account, chainId }: BalancesAndAl
 
     return allTokens.tokens.filter((token) => !(token instanceof LpToken)).map((token) => token.address)
   }, [allTokens, chainId])
-  const balancesSwrConfig = useSwrConfigWithPauseForNetwork(chainId, BALANCES_SWR_CONFIG)
-  const allowancesSwrConfig = useSwrConfigWithPauseForNetwork(chainId, ALLOWANCES_SWR_CONFIG)
+  const balancesSwrConfig = useSwrConfigWithPauseForNetwork(chainId, account, BALANCES_SWR_CONFIG)
+  const allowancesSwrConfig = useSwrConfigWithPauseForNetwork(chainId, account, ALLOWANCES_SWR_CONFIG)
 
   usePersistBalancesAndAllowances({
     account,

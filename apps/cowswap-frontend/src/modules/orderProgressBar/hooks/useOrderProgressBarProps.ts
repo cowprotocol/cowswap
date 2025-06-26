@@ -14,19 +14,20 @@ import { useActivityDerivedState } from 'legacy/hooks/useActivityDerivedState'
 import { useMultipleActivityDescriptors } from 'legacy/hooks/useRecentActivity'
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
+import { BridgeQuoteAmounts, type SwapAndBridgeContext, SwapAndBridgeStatus } from 'modules/bridge'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
 import { getOrderCompetitionStatus } from 'api/cowProtocol/api'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { useSolversInfo } from 'common/hooks/useSolversInfo'
+import { useSwapAndBridgeContext } from 'common/hooks/useSwapAndBridgeContext'
 import { featureFlagsAtom } from 'common/state/featureFlagsState'
 import { ActivityDerivedState } from 'common/types/activity'
+import { ApiSolverCompetition, SolverCompetition } from 'common/types/soverCompetition'
 import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
 
-import { BridgeQuoteAmounts, type SwapAndBridgeContext, SwapAndBridgeStatus } from '../../bridge'
-import { useSwapAndBridgeContext } from '../../bridge/hooks/useSwapAndBridgeContext'
-import { DEFAULT_STEP_NAME, OrderProgressBarStepName } from '../constants'
+import { OrderProgressBarStepName, DEFAULT_STEP_NAME } from '../constants'
 import {
   ordersProgressBarStateAtom,
   setOrderProgressBarCancellationTriggered,
@@ -34,7 +35,7 @@ import {
   updateOrderProgressBarCountdown,
   updateOrderProgressBarStepName,
 } from '../state/atoms'
-import { ApiSolverCompetition, OrderProgressBarProps, OrderProgressBarState, SolverCompetition } from '../types'
+import { OrderProgressBarProps, OrderProgressBarState } from '../types'
 
 type UseOrderProgressBarPropsParams = {
   activityDerivedState: ActivityDerivedState | null

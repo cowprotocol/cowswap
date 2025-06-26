@@ -5,9 +5,9 @@ import { BalancesState, useTokensBalances } from '@cowprotocol/balances-and-allo
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { useHooks } from 'entities/orderHooks/useHooks'
 import { BigNumber } from 'ethers'
 
-import { useHooks } from 'modules/hooksStore'
 import { usePreHookBalanceDiff } from 'modules/hooksStore/hooks/useBalancesDiff'
 import { useIsHooksTradeType } from 'modules/trade'
 

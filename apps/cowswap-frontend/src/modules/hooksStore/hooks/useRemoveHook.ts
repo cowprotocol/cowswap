@@ -1,7 +1,8 @@
 import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
-import { setHooksAtom } from '../state/hookDetailsAtom'
+import { setHooksAtom } from 'entities/orderHooks/hookDetailsAtom'
+
 import { RemoveHook } from '../types/hooks'
 
 export function useRemoveHook(isPreHook: boolean): RemoveHook {
