@@ -8,7 +8,7 @@ import { NetworkItem } from '@/components/NetworkItem'
 import { NetworkHeaderItem } from '@/components/NetworkItem/styles'
 import { SwapLinkCard } from '@/components/SwapLinkCard'
 import { SwapWidget } from '@/components/SwapWidget'
-import { NETWORK_MAP } from '@/const/networkMap'
+import { Network, NETWORK_MAP } from '@/const/networkMap'
 import { formatUSDPrice } from 'util/formatUSDPrice'
 
 import {
@@ -36,7 +36,7 @@ function TokenDetailsHeading(props: { token: TokenDetailsType }): JSX.Element {
   return (
     <DetailHeading>
       <TokenTitle>
-        <Image src={image.large!} alt={`${name} (${symbol})`} width={100} height={100} />
+        <Image src={image?.large ?? ''} alt={`${name} (${symbol})`} width={100} height={100} />
         <h1>{name}</h1>
         <span>{symbol}</span>
       </TokenTitle>
@@ -58,10 +58,11 @@ function NetworkTableComponent(props: { token: TokenDetailsType }): JSX.Element 
 
       {Object.entries(platforms).map(
         ([network, platformData]) =>
-          platformData.contractAddress && (
+          platformData.contractAddress &&
+          network in NETWORK_MAP && (
             <NetworkItem
-              key={`${network}-${platformData.contractAddress}`} // TODO: check if this is correct
-              network={network as keyof typeof NETWORK_MAP}
+              key={`${network}-${platformData.contractAddress}`}
+              network={network as Network}
               platformData={{
                 address: platformData.contractAddress,
                 decimals: platformData.decimalPlace,
@@ -93,10 +94,6 @@ function SwapCardsComponent(props: { token: TokenDetailsType }): JSX.Element {
           />
         )}
 
-        {xdai?.contractAddress && (
-          <SwapLinkCard contractAddress={xdai.contractAddress} networkId={100} network="xdai" tokenSymbol={symbol} />
-        )}
-
         {base?.contractAddress && (
           <SwapLinkCard contractAddress={base.contractAddress} networkId={8453} network="base" tokenSymbol={symbol} />
         )}
@@ -110,6 +107,15 @@ function SwapCardsComponent(props: { token: TokenDetailsType }): JSX.Element {
           />
         )}
 
+        {polygon?.contractAddress && (
+          <SwapLinkCard
+            contractAddress={polygon.contractAddress}
+            networkId={137}
+            network="polygon-pos"
+            tokenSymbol={symbol}
+          />
+        )}
+
         {avalanche?.contractAddress && (
           <SwapLinkCard
             contractAddress={avalanche.contractAddress}
@@ -119,13 +125,8 @@ function SwapCardsComponent(props: { token: TokenDetailsType }): JSX.Element {
           />
         )}
 
-        {polygon?.contractAddress && (
-          <SwapLinkCard
-            contractAddress={polygon.contractAddress}
-            networkId={137}
-            network="polygon-pos"
-            tokenSymbol={symbol}
-          />
+        {xdai?.contractAddress && (
+          <SwapLinkCard contractAddress={xdai.contractAddress} networkId={100} network="xdai" tokenSymbol={symbol} />
         )}
       </SwapCardsWrapper>
     </>
@@ -194,7 +195,7 @@ export function TokenDetails({ token }: TokenDetailProps): JSX.Element {
 
       <StickyContent>
         <SwapWidgetWrapper>
-          <SwapWidget tokenSymbol={symbol} tokenImage={image.large!} platforms={platforms} tokenId={id} />
+          <SwapWidget tokenSymbol={symbol} tokenImage={image?.large ?? ''} platforms={platforms} tokenId={id} />
         </SwapWidgetWrapper>
       </StickyContent>
     </Wrapper>

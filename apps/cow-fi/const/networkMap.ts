@@ -24,3 +24,5 @@ export const NETWORK_URL_MAP: Record<keyof typeof NETWORK_MAP, string> = {
   'polygon-pos': 'https://polygonscan.com/address/',
   xdai: 'https://gnosisscan.io/address/',
 }
+
+export type Network = keyof typeof NETWORK_MAP

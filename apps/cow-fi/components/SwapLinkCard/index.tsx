@@ -3,12 +3,12 @@ import { JSX } from 'react'
 import Image from 'next/image'
 
 import { SwapCard } from '@/components/TokenDetails/index.styles'
-import { NETWORK_IMAGE_MAP, NETWORK_MAP } from '@/const/networkMap'
+import { Network, NETWORK_IMAGE_MAP, NETWORK_MAP } from '@/const/networkMap'
 
 type SwapLinkCardProps = {
   contractAddress: string
   networkId: number
-  network: keyof typeof NETWORK_MAP
+  network: Network
   tokenSymbol: string
 }
 
