@@ -6,7 +6,7 @@ import { mapSupportedNetworks } from '@cowprotocol/cow-sdk'
 import { PersistentStateByChain } from '@cowprotocol/types'
 import { walletInfoAtom } from '@cowprotocol/wallet'
 
-import { setHooksAtom } from './hookDetailsAtom'
+import { setHooksAtom } from 'entities/orderHooks/hookDetailsAtom'
 
 import { HookDappIframe } from '../types/hooks'
 

@@ -11,14 +11,8 @@ import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 
 import type { Order } from 'legacy/state/orders/actions'
 
-import type { SolverCompetition } from 'modules/orderProgressBar'
-import { useUsdAmount } from 'modules/usdAmount'
-
-import { getExecutedSummaryData } from 'utils/getExecutedSummaryData'
-
-import { BridgeQuoteAmounts } from './useBridgeQuoteAmounts'
-import { useUpdateBridgeOrderData } from './useUpdateBridgeOrderData'
-
+import { BridgeQuoteAmounts } from 'modules/bridge/hooks/useBridgeQuoteAmounts'
+import { useUpdateBridgeOrderData } from 'modules/bridge/hooks/useUpdateBridgeOrderData'
 import {
   BridgingProgressContext,
   QuoteBridgeContext,
@@ -26,7 +20,11 @@ import {
   SwapAndBridgeOverview,
   SwapAndBridgeStatus,
   SwapResultContext,
-} from '../types'
+} from 'modules/bridge/types'
+import { useUsdAmount } from 'modules/usdAmount'
+
+import type { SolverCompetition } from 'common/types/soverCompetition'
+import { getExecutedSummaryData } from 'utils/getExecutedSummaryData'
 
 const bridgeStatusMap: Record<BridgeStatus, SwapAndBridgeStatus> = {
   [BridgeStatus.IN_PROGRESS]: SwapAndBridgeStatus.PENDING,
@@ -87,15 +85,7 @@ export function useSwapAndBridgeContext(
   // TODO: Reduce function complexity by extracting logic
   // eslint-disable-next-line max-lines-per-function, complexity
   return useMemo(() => {
-    if (
-      !account ||
-      !bridgeProvider ||
-      !winningSolver ||
-      !receivedAmount ||
-      receivedAmount.equalTo(0) ||
-      !surplusAmount ||
-      !order
-    ) {
+    if (!account || !bridgeProvider || !receivedAmount || receivedAmount.equalTo(0) || !surplusAmount || !order) {
       return undefined
     }
 

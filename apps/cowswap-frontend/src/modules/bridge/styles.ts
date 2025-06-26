@@ -65,7 +65,7 @@ const StopStatusStyles: Record<SwapAndBridgeStatus, FlattenSimpleInterpolation> 
   [SwapAndBridgeStatus.DONE]: css`
     background-color: var(${UI.COLOR_SUCCESS_BG});
     color: var(${UI.COLOR_SUCCESS});
-    padding: 6px;
+    padding: 5px;
     &::before {
       content: none;
     }
@@ -102,8 +102,15 @@ const StopStatusStyles: Record<SwapAndBridgeStatus, FlattenSimpleInterpolation> 
 export const StopNumberCircle = styled.div<{
   status?: SwapAndBridgeStatus
   stopNumber?: number
+  size?: number
 }>`
   ${stopCircleBase}
+
+  ${({ size }) =>
+    size &&
+    css`
+      --size: ${size}px;
+    `}
 
   ${({ status = SwapAndBridgeStatus.DEFAULT }) => StopStatusStyles[status]}
 
