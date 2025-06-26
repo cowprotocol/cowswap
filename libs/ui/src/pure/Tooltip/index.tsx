@@ -18,6 +18,7 @@ export const TooltipContainer = styled.div`
 `
 
 export interface HoverTooltipProps extends Omit<PopoverProps, 'content' | 'show'> {
+  isClosed?: boolean
   /**
    * The content of the tooltip
    */
@@ -54,6 +55,9 @@ export interface HoverTooltipProps extends Omit<PopoverProps, 'content' | 'show'
  * @param props
  * @returns
  */
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function HoverTooltip(props: HoverTooltipProps) {
   const {
     content,
@@ -62,6 +66,7 @@ export function HoverTooltip(props: HoverTooltipProps) {
     disableHover,
     wrapInContainer = false,
     tooltipCloseDelay = TOOLTIP_CLOSE_DELAY,
+    isClosed,
     ...rest
   } = props
 
@@ -90,6 +95,8 @@ export function HoverTooltip(props: HoverTooltipProps) {
         cancelCloseRef.current()
       }
 
+      // TODO: Add proper return type annotation
+      // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
       const closeNow = () => {
         cancelCloseRef.current = null
         setShow(false)
@@ -133,8 +140,16 @@ export function HoverTooltip(props: HoverTooltipProps) {
     [close, open, show],
   )
 
+  useEffect(() => {
+    if (isClosed) {
+      setShow(false)
+    }
+  }, [isClosed])
+
   // Hide tooltip when scrolling
   useEffect(() => {
+    // TODO: Add proper return type annotation
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     const handleScroll = () => {
       if (show) {
         close(null, true)
@@ -186,6 +201,8 @@ export interface TooltipProps extends Omit<PopoverProps, 'content'> {
  * IMPORTANT: Don't use it if you need to show the tooltip when you hover on one element. For that use `HoverTooltip`
  * @see HoverTooltip as an alternative if you need to show the tooltip on hover
  */
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function Tooltip({ content, className, wrapInContainer, show, containerRef, ...rest }: TooltipProps) {
   const tooltipRef = useRef<HTMLDivElement>(null)
 
@@ -209,6 +226,8 @@ export function Tooltip({ content, className, wrapInContainer, show, containerRe
   )
 }
 
+// TODO: Replace any with proper type definitions
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function renderTooltip(tooltip: ReactNode | ((params?: any) => ReactNode), params?: any): ReactNode {
   if (typeof tooltip === 'function') {
     return tooltip(params)

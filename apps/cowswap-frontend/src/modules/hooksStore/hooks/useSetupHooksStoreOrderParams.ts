@@ -2,10 +2,12 @@ import { useEffect } from 'react'
 
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 
+import { useSetOrderParams } from 'entities/orderHooks/useSetOrderParams'
+
 import { useSwapFlowContext } from 'modules/swap'
 
-import { useSetOrderParams } from './useSetOrderParams'
-
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useSetupHooksStoreOrderParams() {
   const tradeFlowContext = useSwapFlowContext()
   const setOrderParams = useSetOrderParams()

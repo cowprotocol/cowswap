@@ -12,6 +12,8 @@ interface AccountIconProps {
   account?: string
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const AccountIcon = ({ size = 16, account }: AccountIconProps) => {
   const walletDetails = useWalletDetails()
   const connectionType = useConnectionType()

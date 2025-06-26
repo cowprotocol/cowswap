@@ -3,7 +3,7 @@ import { useCallback } from 'react'
 
 import { useIsSafeWallet, useIsWalletConnect } from '@cowprotocol/wallet'
 import SafeApiKit from '@safe-global/api-kit'
-import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
+import type { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useApproveCallback } from 'common/hooks/useApproveCallback'
@@ -35,6 +35,8 @@ async function waitForSafeTransactionExecution({
   )
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useZeroApprove(currency: Currency | undefined) {
   const setZeroApprovalState = useSetAtom(zeroApprovalState)
   const spender = useTradeSpenderAddress()

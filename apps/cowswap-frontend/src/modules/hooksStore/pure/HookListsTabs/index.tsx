@@ -1,6 +1,6 @@
-import { Dispatch, SetStateAction } from 'react'
+import { Dispatch, ReactNode, SetStateAction } from 'react'
 
-import * as styledEl from './styled'
+import * as styledEl from 'common/pure/Tabs'
 
 interface HookListsTabsProps {
   isAllHooksTab: boolean
@@ -15,15 +15,15 @@ export function HookListsTabs({
   setIsAllHooksTab,
   allHooksCount,
   customHooksCount,
-}: HookListsTabsProps) {
+}: HookListsTabsProps): ReactNode {
   return (
-    <styledEl.TabsContainer>
-      <styledEl.Tab active$={isAllHooksTab} onClick={() => setIsAllHooksTab(true)}>
+    <styledEl.Tabs>
+      <styledEl.Tab $active={isAllHooksTab} onClick={() => setIsAllHooksTab(true)}>
         All Hooks ({allHooksCount})
       </styledEl.Tab>
-      <styledEl.Tab active$={!isAllHooksTab} onClick={() => setIsAllHooksTab(false)}>
+      <styledEl.Tab $active={!isAllHooksTab} onClick={() => setIsAllHooksTab(false)}>
         My Custom Hooks ({customHooksCount})
       </styledEl.Tab>
-    </styledEl.TabsContainer>
+    </styledEl.Tabs>
   )
 }

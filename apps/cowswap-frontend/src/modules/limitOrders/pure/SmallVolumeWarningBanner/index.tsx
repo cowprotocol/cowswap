@@ -1,4 +1,5 @@
-import { InlineBanner, Nullish, TokenAmount } from '@cowprotocol/ui'
+import { Nullish } from '@cowprotocol/types'
+import { InlineBanner, TokenAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 export type SmallVolumeWarningBannerProps = {
@@ -6,6 +7,8 @@ export type SmallVolumeWarningBannerProps = {
   feeAmount: Nullish<CurrencyAmount<Currency>>
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function SmallVolumeWarningBanner({ feePercentage, feeAmount }: SmallVolumeWarningBannerProps) {
   return (
     <InlineBanner iconSize={32}>

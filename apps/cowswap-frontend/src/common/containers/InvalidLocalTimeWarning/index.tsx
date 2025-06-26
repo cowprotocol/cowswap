@@ -7,6 +7,8 @@ const TIME_OFFSET_THRESHOLD = 60 // 60 seconds
 /**
  * When the local device time is not valid ()
  */
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function InvalidLocalTimeWarning() {
   const localTimeOffset = useLocalTimeOffset()
 

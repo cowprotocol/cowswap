@@ -7,7 +7,7 @@ import { Trans } from '@lingui/macro'
 
 import * as styledEl from './styled'
 
-const NEW_NETWORK_ID = 8453
+const NEW_NETWORK_IDS = [137, 43114] // Avalanche, Polygon
 
 export interface NetworksListProps {
   currentChainId: SupportedChainId | null
@@ -16,18 +16,23 @@ export interface NetworksListProps {
   onSelectChain(targetChainId: SupportedChainId): void
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function NetworksList(props: NetworksListProps) {
   const { currentChainId, isDarkMode, availableChains, onSelectChain } = props
 
   return (
     <>
+      {/* TODO: Break down this large function into smaller functions */}
+      {/* eslint-disable-next-line max-lines-per-function */}
       {availableChains.map((targetChainId: SupportedChainId) => {
         const info = getChainInfo(targetChainId)
         const { label, logo, bridge, explorer, explorerTitle, helpCenterUrl } = info
 
         const isActive = targetChainId === currentChainId
         const logoUrl = getLogo(isDarkMode, isActive, logo.dark, logo.light)
-        const isNewNetwork = targetChainId === NEW_NETWORK_ID
+        const isNewNetwork = NEW_NETWORK_IDS.includes(targetChainId)
 
         const rowContent = (
           <styledEl.FlyoutRow key={targetChainId} onClick={() => onSelectChain(targetChainId)} active={isActive}>

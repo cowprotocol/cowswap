@@ -21,6 +21,8 @@ function _getExplorerUrlByEnvironment(): Record<ChainId, string> {
     [ChainId.ARBITRUM_ONE]: `${baseUrl}/arb1`,
     [ChainId.BASE]: `${baseUrl}/base`,
     [ChainId.SEPOLIA]: `${baseUrl}/sepolia`,
+    [ChainId.POLYGON]: `${baseUrl}/pol`,
+    [ChainId.AVALANCHE]: `${baseUrl}/avax`,
   }
 }
 
@@ -57,6 +59,8 @@ enum Explorers {
 }
 
 // Used for GA ExternalLink detection
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function detectExplorer(href: string) {
   if (href.includes('explorer.cow.fi')) {
     return Explorers.Explorer

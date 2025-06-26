@@ -50,7 +50,7 @@ export interface InfoTooltipProps {
   preText?: string
 }
 
-export function InfoTooltip({ content, children, className, size = 16, preText }: InfoTooltipProps) {
+export function InfoTooltip({ content, children, className, size = 16, preText }: InfoTooltipProps): ReactNode {
   const tooltipContent = <StyledTooltipContainer>{children || content}</StyledTooltipContainer>
 
   return (

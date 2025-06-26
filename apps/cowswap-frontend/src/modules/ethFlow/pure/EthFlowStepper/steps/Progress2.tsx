@@ -2,6 +2,8 @@ import { useMemo } from 'react'
 
 import { EthFlowStepperProps, Progress, ProgressProps, SmartOrderStatus } from '../index'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function Progress2({ order, creation, refund, cancellation }: EthFlowStepperProps) {
   const { state } = order
   const { failed: creationFailed } = creation

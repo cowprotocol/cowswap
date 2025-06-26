@@ -1,4 +1,4 @@
-import { useSetAtom } from 'jotai/index'
+import { useSetAtom } from 'jotai'
 import { useCallback, useEffect } from 'react'
 
 import { GAS_PRICE_UPDATE_THRESHOLD } from '@cowprotocol/common-const'
@@ -15,10 +15,14 @@ import { gasFeeApi } from 'api/gasPrices'
 
 import { useBlockNumber } from '../hooks/useBlockNumber'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function needsGasUpdate(now: number, lastUpdated: number, threshold: number) {
   return now - lastUpdated > threshold
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function useUpdateGasPrices() {
   const dispatch = useDispatch<AppDispatch>()
   const setGasPrice = useSetAtom(gasPriceAtom)
@@ -28,7 +32,7 @@ function useUpdateGasPrices() {
       dispatch(updateGasPrices(gasParams))
       setGasPrice(gasParams)
     },
-    [dispatch, setGasPrice]
+    [dispatch, setGasPrice],
   )
 }
 

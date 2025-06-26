@@ -5,6 +5,8 @@ import { Percent } from '@uniswap/sdk-core'
 
 import { useConfirmationRequest } from 'common/hooks/useConfirmationRequest'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function getDescription(priceImpactWithoutFee: Percent) {
   if (!priceImpactWithoutFee.lessThan(PRICE_IMPACT_WITHOUT_FEE_CONFIRM_MIN)) {
     return `This swap has a price impact of at least ${priceImpactWithoutFee.toFixed(0)}%.`
@@ -17,6 +19,8 @@ function getDescription(priceImpactWithoutFee: Percent) {
   return undefined
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function shouldSkipInput(priceImpactWithoutFee: Percent) {
   return (
     priceImpactWithoutFee.lessThan(PRICE_IMPACT_WITHOUT_FEE_CONFIRM_MIN) &&
@@ -24,6 +28,8 @@ function shouldSkipInput(priceImpactWithoutFee: Percent) {
   )
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useConfirmPriceImpactWithoutFee() {
   const [isConfirmed, setIsConfirmed] = useState(false)
   const onEnable = useCallback(() => setIsConfirmed(true), [])

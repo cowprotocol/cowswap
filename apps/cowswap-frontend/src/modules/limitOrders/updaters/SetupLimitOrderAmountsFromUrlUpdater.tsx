@@ -1,4 +1,4 @@
-import { useSetAtom } from 'jotai/index'
+import { useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
 import { usePrevious } from '@cowprotocol/common-hooks'
@@ -12,6 +12,8 @@ import { useLimitOrdersRawState } from '../hooks/useLimitOrdersRawState'
 import { useUpdateActiveRate } from '../hooks/useUpdateActiveRate'
 import { updateLimitRateAtom } from '../state/limitRateAtom'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function SetupLimitOrderAmountsFromUrlUpdater() {
   const updateRate = useUpdateActiveRate()
   const updateRateState = useSetAtom(updateLimitRateAtom)

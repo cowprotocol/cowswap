@@ -8,6 +8,9 @@ import { ApprovalState } from 'common/hooks/useApproveState'
 
 import { TradeFormValidation, TradeFormValidationContext } from '../types'
 
+// TODO: Break down this large function into smaller functions
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line max-lines-per-function, complexity
 export function validateTradeForm(context: TradeFormValidationContext): TradeFormValidation | null {
   const {
     derivedTradeState,
@@ -39,7 +42,16 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
   const inputAmountIsNotSet = !inputCurrencyAmount || isFractionFalsy(inputCurrencyAmount)
   const isFastQuote = tradeQuote.fetchParams?.priceQuality === PriceQuality.FAST
 
+  // Always check if the browser is online before checking any other conditions
+  if (!isOnline) {
+    return TradeFormValidation.BrowserOffline
+  }
+
   if (!isWrapUnwrap && tradeQuote.error) {
+    if (inputAmountIsNotSet) {
+      return TradeFormValidation.InputAmountNotSet
+    }
+
     return TradeFormValidation.QuoteErrors
   }
 
@@ -65,10 +77,6 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
 
   if (inputAmountIsNotSet) {
     return TradeFormValidation.InputAmountNotSet
-  }
-
-  if (!isOnline) {
-    return TradeFormValidation.BrowserOffline
   }
 
   if (!isWrapUnwrap) {

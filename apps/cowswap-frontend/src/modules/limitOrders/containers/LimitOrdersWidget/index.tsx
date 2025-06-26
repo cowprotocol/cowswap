@@ -59,6 +59,9 @@ const UNLOCK_SCREEN = {
   buttonLink: 'https://cow.fi/learn/cow-swap-improves-the-limit-order-experience-with-partially-fillable-limit-orders',
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function LimitOrdersWidget() {
   const {
     inputCurrency,
@@ -131,6 +134,8 @@ export function LimitOrdersWidget() {
   return <LimitOrders {...props} />
 }
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 const LimitOrders = React.memo((props: LimitOrdersProps) => {
   const {
     inputCurrencyInfo,
@@ -201,6 +206,8 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
       ) : undefined,
     topContent: props.settingsState.limitPricePosition === 'top' ? rateInput : undefined,
     middleContent: props.settingsState.limitPricePosition === 'between' ? rateInput : undefined,
+    // TODO: Extract nested component outside render function
+    // eslint-disable-next-line react/no-unstable-nested-components
     bottomContent(warnings) {
       return (
         <>
@@ -231,6 +238,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     disablePriceImpact: localFormValidation === LimitOrdersFormState.FeeExceedsFrom,
     disableQuotePolling: isConfirmOpen,
     hideTradeWarnings: !!localFormValidation,
+    isPriceStatic: true,
   }
 
   return (

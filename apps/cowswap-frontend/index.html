@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <title>CoW Swap | The smartest way to trade cryptocurrencies</title>
@@ -21,6 +21,15 @@
     <meta name="msapplication-TileColor" content="#000000" />
     <meta name="theme-color" content="#ffffff" />
 
+    <!-- Preload critical fonts -->
+    <link rel="preload" href="/static/Inter-roman.var.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/static/Inter-italic.var.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/static/StudioFeixenSans-Regular.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/static/StudioFeixenSans-Medium.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/static/StudioFeixenSans-Semibold.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/static/StudioFeixenSans-Bold.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/static/StudioFeixenMono-Regular.woff2" as="font" type="font/woff2" crossorigin />
+
     <!-- Social media tags -->
     <meta property="og:type" content="website" />
     <meta property="og:title" content="CoW Swap | The smartest way to trade cryptocurrencies" />
@@ -28,7 +37,6 @@
       property="og:description"
       content="CoW Swap finds the lowest prices from all decentralized exchanges and DEX aggregators & saves you more with p2p trading and protection from MEV"
     />
-
     <meta property="og:image" content="https://swap.cow.fi/images/og-meta-cowswap.png?v=4" />
     <meta property="og:url" content="https://swap.cow.fi" />
 
@@ -81,8 +89,6 @@
         </ul>
       </main>
     </noscript>
-
-
 
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>

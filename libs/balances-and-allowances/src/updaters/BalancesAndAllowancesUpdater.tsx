@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai'
-import { useEffect, useMemo } from 'react'
+import { ReactNode, useEffect, useMemo } from 'react'
 
 import { LpToken, NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -30,7 +30,8 @@ export interface BalancesAndAllowancesUpdaterProps {
   account: string | undefined
   chainId: SupportedChainId
 }
-export function BalancesAndAllowancesUpdater({ account, chainId }: BalancesAndAllowancesUpdaterProps) {
+
+export function BalancesAndAllowancesUpdater({ account, chainId }: BalancesAndAllowancesUpdaterProps): ReactNode {
   const setBalances = useSetAtom(balancesAtom)
 
   const allTokens = useAllActiveTokens()
@@ -41,8 +42,8 @@ export function BalancesAndAllowancesUpdater({ account, chainId }: BalancesAndAl
 
     return allTokens.tokens.filter((token) => !(token instanceof LpToken)).map((token) => token.address)
   }, [allTokens, chainId])
-  const balancesSwrConfig = useSwrConfigWithPauseForNetwork(chainId, BALANCES_SWR_CONFIG)
-  const allowancesSwrConfig = useSwrConfigWithPauseForNetwork(chainId, ALLOWANCES_SWR_CONFIG)
+  const balancesSwrConfig = useSwrConfigWithPauseForNetwork(chainId, account, BALANCES_SWR_CONFIG)
+  const allowancesSwrConfig = useSwrConfigWithPauseForNetwork(chainId, account, ALLOWANCES_SWR_CONFIG)
 
   usePersistBalancesAndAllowances({
     account,
@@ -56,7 +57,8 @@ export function BalancesAndAllowancesUpdater({ account, chainId }: BalancesAndAl
   // Add native token balance to the store as well
   useEffect(() => {
     const nativeToken = NATIVE_CURRENCIES[chainId]
-    const nativeBalanceState = nativeTokenBalance ? { [nativeToken.address.toLowerCase()]: nativeTokenBalance } : {}
+    const nativeBalanceState =
+      nativeToken && nativeTokenBalance ? { [nativeToken.address.toLowerCase()]: nativeTokenBalance } : {}
 
     setBalances((state) => ({ ...state, values: { ...state.values, ...nativeBalanceState } }))
   }, [nativeTokenBalance, chainId, setBalances])

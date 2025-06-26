@@ -30,9 +30,8 @@ const confirmationState: TradeConfirmationProps = {
   outputCurrencyInfo: outputCurrencyInfoMock,
   priceImpact: priceImpactMock,
   isConfirmDisabled: false,
-  refreshInterval: 10_000,
   recipient: null,
-  onConfirm() {
+  async onConfirm() {
     console.log('onConfirm')
   },
   onDismiss() {
@@ -40,6 +39,8 @@ const confirmationState: TradeConfirmationProps = {
   },
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function Custom({ stateValue }: { stateValue: string }) {
   const updateWalletInfo = useSetAtom(walletInfoAtom)
   const actions = useTradeConfirmActions()

@@ -3,9 +3,8 @@ import { useEffect, useState } from 'react'
 import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { ProviderMetaInfoPayload, WidgetEthereumProvider } from '@cowprotocol/iframe-transport'
 import { InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
-import { METAMASK_RDNS, useIsMetamaskBrowserExtensionWallet } from '@cowprotocol/wallet'
+import { METAMASK_RDNS, useIsMetamaskBrowserExtensionWallet, useWidgetProviderMetaInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { ExternalProvider } from '@ethersproject/providers'
 import { Currency } from '@uniswap/sdk-core'
@@ -31,6 +30,8 @@ const NetworkInfo = styled.div`
 
 const VERSION_WHERE_BUG_WAS_FIXED = '12.10.4' // Anything smaller than this version is potentially affected by the bug
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function MetamaskTransactionWarning({ sellToken }: { sellToken: Currency }) {
   const isNativeSellToken = getIsNativeToken(sellToken)
 
@@ -56,23 +57,6 @@ export function MetamaskTransactionWarning({ sellToken }: { sellToken: Currency 
       </NetworkInfo>
     </Banner>
   )
-}
-
-function useWidgetProviderMetaInfo() {
-  const provider = useWalletProvider()
-  const [widgetProviderMetaInfo, setWidgetProviderMetaInfo] = useState<ProviderMetaInfoPayload | null>(null)
-
-  const rawProvider = provider?.provider as unknown
-
-  useEffect(() => {
-    const isWidgetEthereumProvider = rawProvider instanceof WidgetEthereumProvider
-
-    if (!isWidgetEthereumProvider) return
-
-    rawProvider.onProviderMetaInfo(setWidgetProviderMetaInfo)
-  }, [rawProvider])
-
-  return widgetProviderMetaInfo
 }
 
 /**
@@ -131,7 +115,7 @@ function useShouldDisplayMetamaskWarning(): { shouldDisplayMetamaskWarning: bool
 
   const widgetProviderMetaInfo = useWidgetProviderMetaInfo()
 
-  const isWidgetMetamaskBrowserExtension = widgetProviderMetaInfo?.providerEip6963Info?.rdns === METAMASK_RDNS
+  const isWidgetMetamaskBrowserExtension = widgetProviderMetaInfo.data?.providerEip6963Info?.rdns === METAMASK_RDNS
 
   const isMetamask = isMetamaskBrowserExtension || isWidgetMetamaskBrowserExtension
 

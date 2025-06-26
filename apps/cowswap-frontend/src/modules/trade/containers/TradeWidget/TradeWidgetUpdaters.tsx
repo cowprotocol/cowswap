@@ -1,11 +1,10 @@
-import { ReactNode } from 'react'
+import { JSX, ReactNode } from 'react'
 
 import { PriorityTokensUpdater } from '@cowprotocol/balances-and-allowances'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { TradeFormValidationUpdater } from 'modules/tradeFormValidation'
 import { TradeQuoteUpdater } from 'modules/tradeQuote'
-import { SmartSlippageUpdater } from 'modules/tradeSlippage'
 
 import { usePriorityTokenAddresses } from '../../hooks/usePriorityTokenAddresses'
 import { useResetRecipient } from '../../hooks/useResetRecipient'
@@ -26,10 +25,9 @@ interface TradeWidgetUpdatersProps {
 export function TradeWidgetUpdaters({
   disableQuotePolling,
   disableNativeSelling,
-  enableSmartSlippage,
   onChangeRecipient,
   children,
-}: TradeWidgetUpdatersProps) {
+}: TradeWidgetUpdatersProps): JSX.Element {
   const { chainId, account } = useWalletInfo()
   const priorityTokenAddresses = usePriorityTokenAddresses()
   const { isOpen: isConfirmOpen } = useTradeConfirmState()
@@ -41,11 +39,12 @@ export function TradeWidgetUpdaters({
       <PriorityTokensUpdater account={account} chainId={chainId} tokenAddresses={priorityTokenAddresses} />
       <RecipientAddressUpdater />
 
-      {!disableQuotePolling && <TradeQuoteUpdater isConfirmOpen={isConfirmOpen} />}
+      {!disableQuotePolling && (
+        <TradeQuoteUpdater isConfirmOpen={isConfirmOpen}/>
+      )}
       <PriceImpactUpdater />
       <TradeFormValidationUpdater />
       <CommonTradeUpdater />
-      {enableSmartSlippage && <SmartSlippageUpdater />}
       {disableNativeSelling && <DisableNativeTokenSellingUpdater />}
       {children}
     </>

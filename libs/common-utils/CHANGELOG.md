@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.17.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.16.0...common-utils-v1.17.0) (2025-06-20)
+
+
+### Features
+
+* **auto-slippage:** apply auto slippage for ETH flow ([#5836](https://github.com/cowprotocol/cowswap/issues/5836)) ([5bd3807](https://github.com/cowprotocol/cowswap/commit/5bd38079e73380ee489727bcaff0614b89e24439))
+* **new-newtworks:** fixed sort order for chains ([#5856](https://github.com/cowprotocol/cowswap/issues/5856)) ([65c1b36](https://github.com/cowprotocol/cowswap/commit/65c1b36b84b3a1d3570ce574e8d105da048b8c20))
+
+## [1.16.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.15.0...common-utils-v1.16.0) (2025-06-18)
+
+
+### Features
+
+* **analytics:** enhance UTM handling and analytics readiness checks ([#5779](https://github.com/cowprotocol/cowswap/issues/5779)) ([3fb616c](https://github.com/cowprotocol/cowswap/commit/3fb616cf8f5b5ad7c1736bd095912d692bbf1fd5))
+
+## [1.15.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.14.0...common-utils-v1.15.0) (2025-05-28)
+
+
+### Features
+
+* **appzi:** disable appzi for Coinbase Wallet ([#5671](https://github.com/cowprotocol/cowswap/issues/5671)) ([381e4b1](https://github.com/cowprotocol/cowswap/commit/381e4b1e8a7b1eec9b99d9d21841c647d66a7420))
+
 ## [1.14.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.13.2...common-utils-v1.14.0) (2025-05-19)
 
 

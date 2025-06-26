@@ -1,6 +1,6 @@
 import { PropsWithChildren } from 'react'
 
-import { COW, NATIVE_CURRENCIES } from '@cowprotocol/common-const'
+import { COW_TOKEN_TO_CHAIN, NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { BigNumber } from '@ethersproject/bignumber'
 
@@ -36,6 +36,18 @@ jest.mock('common/hooks/useContract', () => {
     useGP2SettlementContract: jest.fn(),
   }
 })
+jest.mock('modules/twap/hooks/useSetPartOrderCancelling', () => {
+  return {
+    ...jest.requireActual('modules/twap/hooks/useSetPartOrderCancelling'),
+    useSetPartOrderCancelling: jest.fn().mockReturnValue(jest.fn()),
+  }
+})
+jest.mock('modules/twap/hooks/useCancelTwapOrder', () => {
+  return {
+    ...jest.requireActual('modules/twap/hooks/useCancelTwapOrder'),
+    useCancelTwapOrder: jest.fn(),
+  }
+})
 jest.mock('legacy/state/enhancedTransactions/hooks')
 
 const orderMock = {
@@ -67,10 +79,14 @@ const mockUseGP2SettlementContract = useGP2SettlementContract as jest.MockedFunc
 const ethFlowInvalidationMock = jest.fn()
 const settlementInvalidationMock = jest.fn()
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const WithProviders = ({ children }: PropsWithChildren) => {
   return <WithMockedWeb3>{children}</WithMockedWeb3>
 }
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 describe('useSendOnChainCancellation() + useGetOnChainCancellation()', () => {
   beforeEach(() => {
     jest.clearAllMocks()
@@ -89,6 +105,8 @@ describe('useSendOnChainCancellation() + useGetOnChainCancellation()', () => {
             invalidateOrder: () => Promise.resolve(BigNumber.from(100)),
           },
           invalidateOrder: ethFlowInvalidationMock,
+          // TODO: Replace any with proper type definitions
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } as any,
         chainId,
         error: null,
@@ -104,6 +122,8 @@ describe('useSendOnChainCancellation() + useGetOnChainCancellation()', () => {
           invalidateOrder: () => Promise.resolve(BigNumber.from(200)),
         },
         invalidateOrder: settlementInvalidationMock,
+        // TODO: Replace any with proper type definitions
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } as any,
       chainId,
       error: null,
@@ -117,7 +137,12 @@ describe('useSendOnChainCancellation() + useGetOnChainCancellation()', () => {
   })
 
   it('When is ETH-flow order, then should call eth-flow contract', async () => {
-    const { result } = renderHook(() => useSendOnChainCancellation(), { wrapper: WithProviders })
+    const { result } = renderHook(
+      () => {
+        return useSendOnChainCancellation()
+      },
+      { wrapper: WithProviders },
+    )
 
     await result.current({ ...orderMock, inputToken: NATIVE_CURRENCIES[chainId] })
 
@@ -129,7 +154,7 @@ describe('useSendOnChainCancellation() + useGetOnChainCancellation()', () => {
   it('When is NOT ETH-flow order, then should call settlement contract', async () => {
     const { result } = renderHook(() => useSendOnChainCancellation(), { wrapper: WithProviders })
 
-    await result.current({ ...orderMock, inputToken: COW[chainId] })
+    await result.current({ ...orderMock, inputToken: COW_TOKEN_TO_CHAIN[chainId]! })
 
     expect(settlementInvalidationMock).toHaveBeenCalledTimes(1)
     expect(settlementInvalidationMock.mock.calls[0]).toMatchSnapshot()
@@ -140,7 +165,7 @@ describe('useSendOnChainCancellation() + useGetOnChainCancellation()', () => {
     it('Then should change an order status, set a tx hash to order and add the transaction to store', async () => {
       const { result } = renderHook(() => useSendOnChainCancellation(), { wrapper: WithProviders })
 
-      await result.current({ ...orderMock, inputToken: COW[chainId] })
+      await result.current({ ...orderMock, inputToken: COW_TOKEN_TO_CHAIN[chainId]! })
 
       expect(transactionAdder).toHaveBeenCalledTimes(1)
       expect(transactionAdder.mock.calls[0]).toMatchSnapshot()

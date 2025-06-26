@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { ReactNode, useState } from 'react'
 
 import { useNativeCurrencyAmount } from '@cowprotocol/balances-and-allowances'
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
@@ -32,7 +32,7 @@ interface AccountElementProps {
   className?: string
 }
 
-export function AccountElement({ className, standaloneMode, pendingActivities }: AccountElementProps) {
+export function AccountElement({ className, standaloneMode, pendingActivities }: AccountElementProps): ReactNode {
   const { account, chainId } = useWalletInfo()
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
   const userEthBalance = useNativeCurrencyAmount(chainId, account)

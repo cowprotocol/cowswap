@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { useTheme } from '@cowprotocol/common-hooks'
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { ChainInfo } from '@cowprotocol/cow-sdk'
@@ -10,7 +12,7 @@ import { Check, ChevronDown, ChevronUp } from 'react-feather'
 import * as styledEl from './styled'
 
 // Number of skeleton shimmers to show during loading state
-const LOADING_ITEMS_COUNT = 5
+const LOADING_ITEMS_COUNT = 7
 
 const LoadingShimmerElements = (
   <styledEl.Wrapper>
@@ -33,9 +35,8 @@ export function ChainsSelector({
   onSelectChain,
   defaultChainId,
   isLoading,
-  // TODO: change the value to 7 after tests
-  visibleNetworkIcons = 3,
-}: ChainsSelectorProps) {
+  visibleNetworkIcons = LOADING_ITEMS_COUNT,
+}: ChainsSelectorProps): ReactNode {
   const isMobile = useMediaQuery(Media.upToSmall(false))
 
   const theme = useTheme()

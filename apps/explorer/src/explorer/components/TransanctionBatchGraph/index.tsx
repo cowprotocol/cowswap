@@ -27,7 +27,7 @@ import { LayoutNames, ViewType } from './types'
 import { removePopper } from './utils'
 
 import { Order } from '../../../api/operator'
-import CowLoading from '../../../components/common/CowLoading'
+import { LoadingWrapper } from '../../../components/common/LoadingWrapper'
 import { usePrevious } from '../../../hooks/usePrevious'
 import { Network } from '../../../types'
 import { DropdownOption, DropdownPosition } from '../common/Dropdown'
@@ -83,6 +83,8 @@ interface GraphBatchTxParams {
   networkId: Network | undefined
 }
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 export function TransactionBatchGraph(params: GraphBatchTxParams): React.ReactNode {
   const { orders, networkId, txHash } = params
   const { visualization, onChangeVisualization } = useVisualization()
@@ -119,7 +121,7 @@ export function TransactionBatchGraph(params: GraphBatchTxParams): React.ReactNo
   }, [tokensStylesheets])
 
   if (isLoading) {
-    return <CowLoading />
+    return <LoadingWrapper message="Loading transaction graph" />
   }
 
   if (failedToLoadGraph) {

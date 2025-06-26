@@ -21,11 +21,16 @@ export interface TokenListItemProps {
   removeList(list: ListState): void
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function ListItem(props: TokenListItemProps) {
   const { list, removeList, toggleList, enabled } = props
   const [isActive, setIsActive] = useState(enabled)
   const cowAnalytics = useCowAnalytics()
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const toggle = () => {
     toggleList(list, enabled)
     setIsActive((state) => !state)
@@ -38,6 +43,8 @@ export function ListItem(props: TokenListItemProps) {
     })
   }
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleRemove = () => {
     removeList(list)
   }

@@ -1,6 +1,6 @@
 import { useSetAtom } from 'jotai'
 import { useResetAtom } from 'jotai/utils'
-import { useEffect, useMemo } from 'react'
+import { useEffect, useLayoutEffect, useMemo } from 'react'
 
 import { ERC_20_INTERFACE } from '@cowprotocol/abis'
 import { usePrevious } from '@cowprotocol/common-hooks'
@@ -27,7 +27,9 @@ export interface PersistBalancesAndAllowancesParams {
   onBalancesLoaded?(loaded: boolean): void
 }
 
-export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowancesParams) {
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
+export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowancesParams): void {
   const {
     account,
     chainId,
@@ -61,6 +63,7 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
     balanceOfParams,
     multicallOptions,
     balancesSwrConfig,
+    account,
   )
 
   const { isLoading: isAllowancesLoading, data: allowances } = useMultipleContractSingleData<[BigNumber]>(
@@ -70,6 +73,7 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
     allowanceParams,
     multicallOptions,
     allowancesSwrConfig,
+    account,
   )
 
   // Set balances loading state
@@ -88,7 +92,7 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
 
   // Set balances to the store
   useEffect(() => {
-    if (!balances || !balances.length) return
+    if (!account || !balances?.length) return
 
     const balancesState = tokenAddresses.reduce<BalancesState['values']>((acc, address, index) => {
       if (getIsNativeToken(chainId, address)) return acc
@@ -111,10 +115,13 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
     if (setLoadingState) {
       setBalancesUpdate((state) => ({
         ...state,
-        [chainId]: Date.now(),
+        [chainId]: {
+          ...state[chainId],
+          [account.toLowerCase()]: Date.now(),
+        },
       }))
     }
-  }, [balances, tokenAddresses, setBalances, chainId, setLoadingState, onBalancesLoaded, setBalancesUpdate])
+  }, [chainId, account, balances, tokenAddresses, setBalances, setLoadingState, onBalancesLoaded, setBalancesUpdate])
 
   // Set allowances to the store
   useEffect(() => {
@@ -135,14 +142,14 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
   }, [allowances, tokenAddresses, setAllowances, setLoadingState])
 
   // Reset states when wallet is not connected
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (prevAccount && prevAccount !== account) {
       resetBalances()
       resetAllowances()
       setBalancesCache(mapSupportedNetworks({}))
       onBalancesLoaded?.(false)
     }
-  }, [account, prevAccount, resetAllowances, resetBalances, setBalancesCache, onBalancesLoaded])
+  }, [chainId, account, prevAccount, resetAllowances, resetBalances, setBalancesCache, onBalancesLoaded])
 
   /**
    * Reset balances and allowances when chainId is changed.
@@ -151,7 +158,7 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
    * because it takes awhile to load balances for the new chain.
    * p.s. there is BalancesCacheUpdater which fills cached values in.
    */
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!setLoadingState) return
     if (prevChainId && chainId === prevChainId) return
 

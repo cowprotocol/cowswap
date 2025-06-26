@@ -1,5 +1,5 @@
 import { MaxUint256 } from '@ethersproject/constants'
-import { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
+import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 
 import { TwapOrderCreationContext } from '../hooks/useTwapOrderCreationContext'
 import { ConditionalOrderParams, TWAPOrder } from '../types'
@@ -7,7 +7,7 @@ import { ConditionalOrderParams, TWAPOrder } from '../types'
 export function createTwapOrderTxs(
   order: TWAPOrder,
   paramsStruct: ConditionalOrderParams,
-  context: TwapOrderCreationContext
+  context: TwapOrderCreationContext,
 ): MetaTransactionData[] {
   const {
     composableCowContract,

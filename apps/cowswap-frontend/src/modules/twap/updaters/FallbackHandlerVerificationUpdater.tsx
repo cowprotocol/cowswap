@@ -14,6 +14,8 @@ import { updateFallbackHandlerVerificationAtom } from '../state/fallbackHandlerV
 const FB_CACHE_TIME = ms`10m`
 const FB_UPDATE_TIME_KEY = 'fallbackHandlerUpdateTime'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function FallbackHandlerVerificationUpdater() {
   const { account } = useWalletInfo()
   const update = useSetAtom(updateFallbackHandlerVerificationAtom)

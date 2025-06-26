@@ -14,7 +14,6 @@ import {
 import { useTradeQuote } from 'modules/tradeQuote'
 import { useIsSlippageModified, useTradeSlippage } from 'modules/tradeSlippage'
 import { useUsdAmount } from 'modules/usdAmount'
-import { useVolumeFeeTooltip } from 'modules/volumeFee'
 
 import { QuoteApiError } from 'api/cowProtocol/errors/QuoteError'
 import { NetworkCostsSuffix } from 'common/pure/NetworkCostsSuffix'
@@ -32,6 +31,10 @@ interface TradeRateDetailsProps {
   feeWrapper?: (feeElement: ReactNode) => React.ReactNode
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
 export function TradeRateDetails({
   rateInfoParams,
   deadline,
@@ -57,7 +60,6 @@ export function TradeRateDetails({
     return CurrencyAmount.fromRawAmount(inputCurrency, costsExceedFeeRaw)
   }, [costsExceedFeeRaw, inputCurrency])
 
-  const volumeFeeTooltip = useVolumeFeeTooltip()
   const networkFeeAmountUsd = useUsdAmount(networkFeeAmount).value
 
   const toggleAccordion = useCallback(() => {
@@ -90,7 +92,6 @@ export function TradeRateDetails({
         withTimelineDot={false}
         networkCostsSuffix={shouldPayGas ? <NetworkCostsSuffix /> : null}
         networkCostsTooltipSuffix={<NetworkCostsTooltipSuffix />}
-        volumeFeeTooltip={volumeFeeTooltip}
       />
       {slippage && (
         <RowSlippage

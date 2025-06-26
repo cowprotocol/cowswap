@@ -22,18 +22,22 @@ import { InfoCard } from './styled'
 const DEFAULT_START_DATE = 'March 2023'
 const ARBITRUM_ONE_START_DATE = 'May 2024'
 const BASE_START_DATE = 'December 2024'
-
-
+const POLYGON_START_DATE = 'June 2025'
+const AVALANCHE_START_DATE = 'June 2025'
 
 const START_DATE: Record<SupportedChainId, string> = {
   [SupportedChainId.MAINNET]: DEFAULT_START_DATE,
   [SupportedChainId.GNOSIS_CHAIN]: DEFAULT_START_DATE,
   [SupportedChainId.ARBITRUM_ONE]: ARBITRUM_ONE_START_DATE,
   [SupportedChainId.BASE]: BASE_START_DATE,
-  [SupportedChainId.SEPOLIA]: DEFAULT_START_DATE
+  [SupportedChainId.SEPOLIA]: DEFAULT_START_DATE,
+  [SupportedChainId.POLYGON]: POLYGON_START_DATE,
+  [SupportedChainId.AVALANCHE]: AVALANCHE_START_DATE,
 }
 
-
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function SurplusCard() {
   const { surplusAmount, isLoading } = useTotalSurplus()
 

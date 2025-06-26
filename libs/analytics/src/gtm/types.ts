@@ -13,6 +13,8 @@ export interface GtmClickEvent extends GtmEvent<Category> {
 }
 
 // Type guard to validate GTM event data
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line complexity
 export function isValidGtmClickEvent(data: unknown): data is GtmClickEvent {
   if (typeof data !== 'object' || data === null) return false
 

@@ -17,8 +17,14 @@
         "outputPath": "build/cowswap"
       },
       "configurations": {
-        "development": {
-          "mode": "development"
+        "dev": {
+          "mode": "dev"
+        },
+        "staging": {
+          "mode": "staging"
+        },
+        "barn": {
+          "mode": "barn"
         },
         "production": {
           "mode": "production"
@@ -32,8 +38,8 @@
         "buildTarget": "cowswap-frontend:build"
       },
       "configurations": {
-        "development": {
-          "buildTarget": "cowswap-frontend:build:development",
+        "dev": {
+          "buildTarget": "cowswap-frontend:build:dev",
           "hmr": true
         },
         "production": {
@@ -49,8 +55,8 @@
         "buildTarget": "cowswap-frontend:build"
       },
       "configurations": {
-        "development": {
-          "buildTarget": "cowswap-frontend:build:development"
+        "dev": {
+          "buildTarget": "cowswap-frontend:build:dev"
         },
         "production": {
           "buildTarget": "cowswap-frontend:build:production"

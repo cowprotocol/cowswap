@@ -14,7 +14,7 @@ export interface TokenInfoProps {
   tags?: ReactNode
 }
 
-export function TokenInfo(props: TokenInfoProps) {
+export function TokenInfo(props: TokenInfoProps): ReactNode {
   const { token, className, tags } = props
 
   return (

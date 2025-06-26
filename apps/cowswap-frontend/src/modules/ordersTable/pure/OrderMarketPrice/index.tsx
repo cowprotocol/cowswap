@@ -18,6 +18,9 @@ export interface OrderMarketPriceProps {
   childOrders?: ParsedOrder[]
 }
 
+// TODO: Add proper return type annotation
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, complexity
 export function OrderMarketPrice({
   withWarning,
   order,

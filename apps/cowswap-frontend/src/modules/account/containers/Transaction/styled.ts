@@ -1,7 +1,5 @@
 import { TokenLogoWrapper } from '@cowprotocol/tokens'
-import { FiatAmount, Media, RowFixed } from '@cowprotocol/ui'
-import { ExternalLink, StyledLink } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { ExternalLink, FiatAmount, Media, RowFixed, StyledLink, UI } from '@cowprotocol/ui'
 
 import { transparentize } from 'color2k'
 import styled, { css, keyframes } from 'styled-components/macro'
@@ -48,6 +46,7 @@ export const Summary = styled.div`
     display: flex;
     grid-template-columns: initial;
     grid-template-rows: initial;
+    padding: 8px;
   }
 
   > span {
@@ -157,10 +156,6 @@ export const SummaryInnerRow = styled.div<{ isExpired?: boolean; isCancelled?: b
       font-weight: 600;
       margin: 6px 0 0;
     }
-
-    &.cancelled {
-      text-decoration: line-through;
-    }
   }
 
   + ${StyledLink} {
@@ -240,10 +235,10 @@ export const StatusLabel = styled.div<{
     isPending || isPresignaturePending || isCreating
       ? `var(${UI.COLOR_TEXT})`
       : color === 'success'
-      ? `var(${UI.COLOR_SUCCESS})`
-      : color === 'danger'
-      ? `var(${UI.COLOR_DANGER})`
-      : `var(${UI.COLOR_ALERT})`};
+        ? `var(${UI.COLOR_SUCCESS})`
+        : color === 'danger'
+          ? `var(${UI.COLOR_DANGER})`
+          : `var(${UI.COLOR_ALERT})`};
   height: 28px;
   width: 100px;
   ${({ isPending, isPresignaturePending, isCancelling, isCreating, theme }) =>
@@ -331,7 +326,7 @@ export const OldTransactionState = styled(ExternalLink)<{ pending: boolean; succ
 // override the href, pending and success props
 // override mouse actions via CSS when we dont want a clickable row
 export const TransactionState = styled(OldTransactionState).attrs(
-  (props): { href?: string; disableMouseActions?: boolean; pending?: boolean; success?: boolean } => props
+  (props): { href?: string; disableMouseActions?: boolean; pending?: boolean; success?: boolean } => props,
 )`
   ${(props): string | false => !!props.disableMouseActions && `pointer-events: none; cursor: none;`}
   width: 100%;
@@ -351,35 +346,6 @@ export const TransactionState = styled(OldTransactionState).attrs(
 
   ${RowFixed} {
     width: 100%;
-  }
-`
-
-export const TransactionInnerDetail = styled.div`
-  display: flex;
-  flex-flow: column wrap;
-  align-items: center;
-  text-align: center;
-  border-radius: 12px;
-  padding: 20px 16px 16px;
-  color: inherit;
-  margin: 24px auto 0 0;
-  border: 1px solid ${({ theme }) => `${theme.darkMode ? 'rgb(197 218 239 / 10%)' : 'rgb(16 42 72 / 20%)'}`};
-  gap: 10px;
-
-  ${Media.upToSmall()} {
-    margin: 24px auto 12px;
-    width: 100%;
-    max-width: 100%;
-    grid-column: 1 / -1;
-  }
-
-  > span {
-    flex: 1 1 auto;
-    margin: 0;
-  }
-
-  > span:last-of-type {
-    margin: 3px 0 12px;
   }
 `
 

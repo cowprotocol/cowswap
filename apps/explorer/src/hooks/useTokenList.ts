@@ -11,6 +11,8 @@ type TokenListPerNetwork = Record<SupportedChainId, TokenListByAddress>
 
 const INITIAL_TOKEN_LIST_PER_NETWORK: TokenListPerNetwork = mapSupportedNetworks({})
 
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line complexity
 export function useTokenList(chainId: SupportedChainId | undefined): { data: TokenListByAddress; isLoading: boolean } {
   const { data: cowSwapList, isLoading: isCowListLoading } = useTokenListByUrl(
     chainId !== SupportedChainId.SEPOLIA
@@ -47,6 +49,8 @@ export function useTokenList(chainId: SupportedChainId | undefined): { data: Tok
   }, [chainId, coingeckoList, honeyswapList, cowSwapList, arbitrumOneList, isLoading, baseList])
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function useTokenListByUrl(tokenListUrl: string) {
   return useSWR(tokenListUrl, fetcher, {
     fallbackData: INITIAL_TOKEN_LIST_PER_NETWORK,

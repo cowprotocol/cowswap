@@ -1,21 +1,23 @@
 import { ReactNode } from 'react'
 
-import { ProtocolIcons } from 'common/pure/ProtocolIcons'
+import { BridgeProviderInfo } from '@cowprotocol/cow-sdk'
 
 import { StopNumberCircle } from '../../styles'
-import { BridgeProtocolConfig } from '../../types'
-import { StopStatusEnum } from '../../utils'
+import { SwapAndBridgeStatus } from '../../types'
+import { ProtocolIcons } from '../ProtocolIcons'
 
 interface BridgeRouteTitleProps {
-  status: StopStatusEnum
+  status: SwapAndBridgeStatus
   icon: ReactNode
   titlePrefix: ReactNode
   protocolName: string
-  bridgeProvider: BridgeProtocolConfig
+  bridgeProvider: BridgeProviderInfo
   protocolIconShowOnly?: 'first' | 'second'
   protocolIconSize?: number
-  stopNumber: number
+  circleSize?: number
+  stopNumber?: number
 }
+
 export function BridgeRouteTitle({
   status,
   icon,
@@ -24,15 +26,16 @@ export function BridgeRouteTitle({
   bridgeProvider,
   protocolIconShowOnly,
   protocolIconSize = 21,
+  circleSize,
   stopNumber,
-}: BridgeRouteTitleProps) {
+}: BridgeRouteTitleProps): ReactNode {
   return (
     <>
-      <StopNumberCircle status={status} stopNumber={stopNumber}>
+      <StopNumberCircle status={status} stopNumber={stopNumber} size={circleSize}>
         {icon}
       </StopNumberCircle>
       <b>
-        <span>{titlePrefix} </span>
+        {titlePrefix && <span>{titlePrefix} </span>}
         <ProtocolIcons
           size={protocolIconSize}
           showOnlyFirst={protocolIconShowOnly === 'first'}

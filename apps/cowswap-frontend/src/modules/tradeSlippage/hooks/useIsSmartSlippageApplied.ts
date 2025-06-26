@@ -1,7 +1,5 @@
-import { useAtomValue } from 'jotai/index'
+import { useTradeSlippageValueAndType } from './useTradeSlippage'
 
-import { slippageValueAndTypeAtom } from '../state/slippageValueAndTypeAtom'
-
-export function useIsSmartSlippageApplied() {
-  return useAtomValue(slippageValueAndTypeAtom).type === 'smart'
+export function useIsSmartSlippageApplied(): boolean {
+  return useTradeSlippageValueAndType().type === 'smart'
 }

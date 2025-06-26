@@ -1,5 +1,33 @@
 # Changelog
 
+## [1.23.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.22.7...cow-fi-v1.23.0) (2025-06-18)
+
+
+### Features
+
+* **analytics:** enhance UTM handling and analytics readiness checks ([#5779](https://github.com/cowprotocol/cowswap/issues/5779)) ([3fb616c](https://github.com/cowprotocol/cowswap/commit/3fb616cf8f5b5ad7c1736bd095912d692bbf1fd5))
+
+
+### Bug Fixes
+
+* punctuation on the careers page disclaimer ([#5796](https://github.com/cowprotocol/cowswap/issues/5796)) ([e378e84](https://github.com/cowprotocol/cowswap/commit/e378e8422ad296f59717cdfa6363d091d5408a1b))
+* reduce rerenders count and theme recalculation ([#5831](https://github.com/cowprotocol/cowswap/issues/5831)) ([96a7a35](https://github.com/cowprotocol/cowswap/commit/96a7a350f366615a1e5149097541b5e2ccf880f1))
+
+## [1.22.7](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.22.6...cow-fi-v1.22.7) (2025-05-29)
+
+
+### Bug Fixes
+
+* **cowfi:** link featured articles with href ([#5765](https://github.com/cowprotocol/cowswap/issues/5765)) ([12794dc](https://github.com/cowprotocol/cowswap/commit/12794dcbe0df0e7f25d5da25fc446e2eee6f95bd))
+
+## [1.22.6](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.22.5...cow-fi-v1.22.6) (2025-05-28)
+
+
+### Bug Fixes
+
+* **cowfi:** simplify revalidation paths in route.ts ([#5736](https://github.com/cowprotocol/cowswap/issues/5736)) ([fc7e4b5](https://github.com/cowprotocol/cowswap/commit/fc7e4b5c5e8822612e579f11b8ee3af78dc2904c))
+* **cowfi:** update comment and simplify revalidation logic in route.ts ([#5753](https://github.com/cowprotocol/cowswap/issues/5753)) ([68a0fe8](https://github.com/cowprotocol/cowswap/commit/68a0fe85ae5c25286541cfda9ae83d9eaeb81500))
+
 ## [1.22.5](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.22.4...cow-fi-v1.22.5) (2025-05-20)
 
 

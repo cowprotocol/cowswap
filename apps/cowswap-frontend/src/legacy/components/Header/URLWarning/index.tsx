@@ -29,6 +29,8 @@ function useGetCmsAnnouncement(chainId: number): string | undefined {
   return
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function URLWarning() {
   const { chainId = ChainId.MAINNET } = useWalletInfo()
 

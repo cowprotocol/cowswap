@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import {
   INPUT_OUTPUT_EXPLANATION,
   MINIMUM_ETH_FLOW_DEADLINE_SECONDS,
@@ -8,7 +10,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { Trans } from '@lingui/macro'
 
-export function getNativeOrderDeadlineTooltip(symbols: (string | undefined)[] | undefined) {
+export function getNativeOrderDeadlineTooltip(symbols: (string | undefined)[] | undefined): ReactNode {
   return (
     <Trans>
       {symbols?.[0] || 'Native currency (e.g ETH)'} orders require a minimum transaction expiration time threshold of{' '}
@@ -20,7 +22,7 @@ export function getNativeOrderDeadlineTooltip(symbols: (string | undefined)[] | 
   )
 }
 
-export function getNonNativeOrderDeadlineTooltip() {
+export function getNonNativeOrderDeadlineTooltip(): ReactNode {
   return (
     <Trans>
       Your swap expires and will not execute if it is pending for longer than the selected duration.
@@ -31,10 +33,10 @@ export function getNonNativeOrderDeadlineTooltip() {
   )
 }
 
-export const getNativeSlippageTooltip = (chainId: SupportedChainId, symbols: (string | undefined)[] | undefined) => (
+export const getNativeSlippageTooltip = (chainId: SupportedChainId, symbols: (string | undefined)[] | undefined): ReactNode => (
   <Trans>
     When selling {symbols?.[0] || 'a native currency'}, the minimum slippage tolerance is set to{' '}
-    {MINIMUM_ETH_FLOW_SLIPPAGE[chainId].toSignificant(PERCENTAGE_PRECISION)}% to ensure a high likelihood of order
+    {MINIMUM_ETH_FLOW_SLIPPAGE[chainId].toSignificant(PERCENTAGE_PRECISION)}% or higher to ensure a high likelihood of order
     matching, even in volatile market conditions.
     <br />
     <br />
@@ -43,7 +45,8 @@ export const getNativeSlippageTooltip = (chainId: SupportedChainId, symbols: (st
   </Trans>
 )
 
-export const getNonNativeSlippageTooltip = (params?: { isDynamic?: boolean; isSettingsModal?: boolean }) => (
+
+export const getNonNativeSlippageTooltip = (params?: { isDynamic?: boolean; isSettingsModal?: boolean }): ReactNode => (
   <Trans>
     {params?.isDynamic ? (
       <>

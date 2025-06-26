@@ -1,6 +1,6 @@
 import { SetStateAction } from 'jotai'
 
-import { COW, GNO_MAINNET } from '@cowprotocol/common-const'
+import { COW_TOKEN_TO_CHAIN, GNO_MAINNET } from '@cowprotocol/common-const'
 import { OrderClass, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -13,8 +13,12 @@ import { TradeFlowContext } from '../../services/types'
 
 import { LimitOrdersDetails } from './index'
 
-const inputCurrency = COW[SupportedChainId.MAINNET]
+const inputCurrency = COW_TOKEN_TO_CHAIN[SupportedChainId.MAINNET]
 const outputCurrency = GNO_MAINNET
+
+if (!inputCurrency) {
+  throw new Error(`Input currency not found for chain ${SupportedChainId.MAINNET}`)
+}
 
 const rateInfoParams = {
   chainId: 5,
@@ -48,9 +52,15 @@ const tradeContext: TradeFlowContext = {
     isSafeWallet: false,
   },
   rateImpact: 0,
+  // TODO: Replace any with proper type definitions
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   signer: {} as any,
+  // TODO: Replace any with proper type definitions
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   settlementContract: {} as any,
   chainId: 1,
+  // TODO: Replace any with proper type definitions
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   dispatch: (() => void 0) as any,
   allowsOffchainSigning: true,
   quoteState: DEFAULT_TRADE_QUOTE_STATE,

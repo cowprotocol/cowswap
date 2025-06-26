@@ -1,14 +1,13 @@
-import React, { useState } from 'react'
+import React, { ReactNode, useState } from 'react'
 
 import { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { ChainInfo } from '@cowprotocol/cow-sdk'
 import { TokenListCategory, TokenListTags, UnsupportedTokensState } from '@cowprotocol/tokens'
-import { Loader, SearchInput } from '@cowprotocol/ui'
+import { SearchInput } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
-import { Edit, X } from 'react-feather'
+import { X } from 'react-feather'
 import { Nullish } from 'types'
 
 import { PermitCompatibleTokens } from 'modules/permit'
@@ -16,12 +15,10 @@ import { PermitCompatibleTokens } from 'modules/permit'
 import * as styledEl from './styled'
 
 import { LpTokenListsWidget } from '../../containers/LpTokenListsWidget'
-import { TokenSearchResults } from '../../containers/TokenSearchResults'
 import { ChainsToSelectState, SelectTokenContext } from '../../types'
 import { ChainsSelector } from '../ChainsSelector'
 import { IconButton } from '../commonElements'
-import { FavoriteTokensList } from '../FavoriteTokensList'
-import { TokensVirtualList } from '../TokensVirtualList'
+import { TokensContent } from '../TokensContent'
 
 export interface SelectTokenModalProps<T = TokenListCategory[] | null> {
   allTokens: TokenWithLogo[]
@@ -39,33 +36,25 @@ export interface SelectTokenModalProps<T = TokenListCategory[] | null> {
   defaultInputValue?: string
   areTokensLoading: boolean
   tokenListTags: TokenListTags
+  standalone?: boolean
 
   onSelectToken(token: TokenWithLogo): void
-
   openPoolPage(poolAddress: string): void
-
   onInputPressEnter?(): void
-
   onOpenManageWidget(): void
-
   onDismiss(): void
-
   onSelectChain(chain: ChainInfo): void
 }
 
-export function SelectTokenModal(props: SelectTokenModalProps) {
+export function SelectTokenModal(props: SelectTokenModalProps): ReactNode {
   const {
     defaultInputValue = '',
-    favoriteTokens,
-    allTokens,
     selectedToken,
     balancesState,
     unsupportedTokens,
     permitCompatibleTokens,
-    hideFavoriteTokensTooltip,
     onSelectToken,
     onDismiss,
-    onOpenManageWidget,
     onInputPressEnter,
     account,
     displayLpTokenLists,
@@ -74,10 +63,8 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
     disableErc20,
     chainsToSelect,
     onSelectChain,
-    areTokensLoading,
     tokenListTags,
   } = props
-
   const [inputValue, setInputValue] = useState<string>(defaultInputValue)
 
   const selectTokenContext: SelectTokenContext = {
@@ -92,41 +79,7 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
   const trimmedInputValue = inputValue.trim()
 
   const allListsContent = (
-    <>
-      <styledEl.Row>
-        <FavoriteTokensList
-          onSelectToken={onSelectToken}
-          selectedToken={(selectedToken && getCurrencyAddress(selectedToken)) || undefined}
-          tokens={favoriteTokens}
-          hideTooltip={hideFavoriteTokensTooltip}
-        />
-      </styledEl.Row>
-      <styledEl.Separator />
-      {areTokensLoading ? (
-        <styledEl.TokensLoader>
-          <Loader />
-        </styledEl.TokensLoader>
-      ) : (
-        <>
-          {trimmedInputValue ? (
-            <TokenSearchResults searchInput={trimmedInputValue} {...selectTokenContext} />
-          ) : (
-            <TokensVirtualList
-              allTokens={allTokens}
-              {...selectTokenContext}
-              account={account}
-              displayLpTokenLists={displayLpTokenLists}
-            />
-          )}
-        </>
-      )}
-      <styledEl.Separator />
-      <div>
-        <styledEl.ActionButton id="list-token-manage-button" onClick={onOpenManageWidget}>
-          <Edit /> <span>Manage Token Lists</span>
-        </styledEl.ActionButton>
-      </div>
-    </>
+    <TokensContent {...props} selectTokenContext={selectTokenContext} searchInput={trimmedInputValue} />
   )
 
   return (
@@ -156,7 +109,7 @@ export function SelectTokenModal(props: SelectTokenModalProps) {
         </LpTokenListsWidget>
       ) : (
         <>
-          {chainsToSelect?.chains && (
+          {!!chainsToSelect?.chains?.length && (
             <>
               <styledEl.ChainsSelectorWrapper>
                 <ChainsSelector

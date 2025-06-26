@@ -17,6 +17,7 @@ export function useMultipleContractSingleData<T = Result>(
   params: unknown[] | undefined,
   multicallOptions: MultiCallOptions = {},
   swrConfig?: SWRConfiguration,
+  cacheKey?: string,
 ): SWRResponse<(T | undefined)[] | null> {
   const provider = useMultiCallRpcProvider()
 
@@ -50,6 +51,7 @@ export function useMultipleContractSingleData<T = Result>(
           contractInterface,
           chainId,
           calls.length,
+          cacheKey,
           'useMultipleContractSingleData',
         ],
     async ([provider, calls, multicallOptions, methodName, contractInterface]: [

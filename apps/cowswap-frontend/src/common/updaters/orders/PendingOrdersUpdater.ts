@@ -7,6 +7,7 @@ import { Command, UiOrderType } from '@cowprotocol/types'
 import { GnosisSafeInfo, useGnosisSafeInfo, useWalletInfo } from '@cowprotocol/wallet'
 
 import { isOrderInPendingTooLong, triggerAppziSurvey } from 'appzi'
+import { useAddOrderToSurplusQueue } from 'entities/surplusModal'
 
 import { GetSafeTxInfo, useGetSafeTxInfo } from 'legacy/hooks/useGetSafeTxInfo'
 import { useAllTransactions } from 'legacy/state/enhancedTransactions/hooks'
@@ -43,7 +44,6 @@ import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { fetchAndClassifyOrder } from './utils'
 
-import { useAddOrderToSurplusQueue } from '../../containers/SurplusModalSetup/surplusModal'
 import { removeOrdersToCancelAtom } from '../../hooks/useMultipleOrdersCancellation/state'
 import { useTriggerTotalSurplusUpdateCallback } from '../../state/totalSurplusState'
 
@@ -51,6 +51,8 @@ import { useTriggerTotalSurplusUpdateCallback } from '../../state/totalSurplusSt
  *
  * Update the presign Gnosis Safe Tx information (if applies)
  */
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 async function _updatePresignGnosisSafeTx(
   chainId: ChainId,
   allPendingOrders: Order[],
@@ -173,6 +175,8 @@ interface UpdateOrdersParams {
   allTransactions: ReturnType<typeof useAllTransactions>
 }
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 async function _updateOrders({
   account,
   chainId,
@@ -340,6 +344,8 @@ function getReplacedOrCancelledEthFlowOrders(
 
 // Check if there is any order pending for a long time
 // If so, trigger appzi
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function _triggerNps(pending: Order[], chainId: ChainId, account: string) {
   for (const order of pending) {
     const { openSince, id: orderId } = order
@@ -362,6 +368,8 @@ function _triggerNps(pending: Order[], chainId: ChainId, account: string) {
   }
 }
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 export function PendingOrdersUpdater(): null {
   const safeInfo = useGnosisSafeInfo()
   const isSafeWallet = !!safeInfo

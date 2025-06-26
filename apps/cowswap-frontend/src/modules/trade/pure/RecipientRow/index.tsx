@@ -1,9 +1,12 @@
-import { ExplorerDataType, getExplorerLink, isAddress, shortenAddress } from '@cowprotocol/common-utils'
+import { ReactNode } from 'react'
+
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { InfoTooltip } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 import { Nullish } from 'types'
+
+import { AddressLink } from 'common/pure/AddressLink'
 
 const Row = styled.div`
   display: flex;
@@ -15,21 +18,13 @@ const Row = styled.div`
   gap: 3px;
 `
 
-const Link = styled.a`
-  text-decoration: none;
-
-  &:hover {
-    text-decoration: underline;
-  }
-`
-
 interface RecipientRowProps {
   chainId: SupportedChainId
   recipient: Nullish<string>
   account: Nullish<string>
 }
 
-export function RecipientRow(props: RecipientRowProps) {
+export function RecipientRow(props: RecipientRowProps): ReactNode {
   const { chainId, recipient, account } = props
   return (
     <>
@@ -44,13 +39,7 @@ export function RecipientRow(props: RecipientRowProps) {
             />
           </div>
           <div>
-            <Link
-              title={recipient}
-              href={getExplorerLink(chainId, recipient, ExplorerDataType.ADDRESS)}
-              target="_blank"
-            >
-              {isAddress(recipient) ? shortenAddress(recipient) : recipient} ↗
-            </Link>
+            <AddressLink address={recipient} chainId={chainId} />
           </div>
         </Row>
       )}

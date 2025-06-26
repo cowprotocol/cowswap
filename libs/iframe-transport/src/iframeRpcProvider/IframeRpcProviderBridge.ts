@@ -44,6 +44,8 @@ export class IframeRpcProviderBridge {
   /**
    * Disconnects the JSON-RPC bridge from the Ethereum provider.
    */
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   disconnect() {
     // Disconnect provider
     this.ethereumProvider = null
@@ -64,6 +66,8 @@ export class IframeRpcProviderBridge {
    * Handles the 'connect' event and sets up event listeners for Ethereum provider events.
    * @param newProvider - The Ethereum provider to connect.
    */
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   onConnect(newProvider: EthereumProvider) {
     // Disconnect the previous provider
     if (this.ethereumProvider) {
@@ -96,6 +100,8 @@ export class IframeRpcProviderBridge {
     )
   }
 
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   private processPendingRequests() {
     // Process pending requests
     Object.keys(this.requestWaitingForConnection).forEach((key) => {
@@ -110,13 +116,18 @@ export class IframeRpcProviderBridge {
    * Processes a JSON-RPC request and sends appropriate response or error via the content window.
    * @param request - The JSON-RPC request to be processed.
    */
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   processRpcRequest(request: JsonRpcRequestMessage) {
     const { id, jsonrpc, method } = request
     if (!this.ethereumProvider || !id) {
       return
     }
     const requestPromise =
-      method === 'enable' ? this.ethereumProvider.enable() : this.ethereumProvider.request({ ...request, id })
+      // Keep the legacy "enable" method for backward compatibility
+      method === 'enable'
+        ? this.ethereumProvider.request({ method: 'eth_requestAccounts', id })
+        : this.ethereumProvider.request({ ...request, id })
 
     // Do request, and forward the result or error to the iFrame window
     requestPromise
@@ -167,6 +178,8 @@ export class IframeRpcProviderBridge {
   /**
    * Forward a JSON-RPC message to the content window.
    */
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   private forwardRpcResponseToIframe(params: ProviderRpcResponsePayload) {
     iframeRpcProviderTransport.postMessageToWindow(
       this.iframeWidow,

@@ -14,6 +14,8 @@ import { areLpBalancesLoadedAtom } from 'common/updaters/LpBalancesAndAllowances
 import { vampireAttackAtom } from '../state/vampireAttackAtom'
 import { TokenWithAlternative, TokenWithSuperiorAlternative } from '../types'
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 export function VampireAttackUpdater(): null {
   const { account } = useWalletInfo()
   const { tokens: lpTokensWithBalances, count: lpTokensWithBalancesCount } = useLpTokensWithBalances()
@@ -26,6 +28,8 @@ export function VampireAttackUpdater(): null {
     if (lpTokensWithBalancesCount === 0) return null
 
     const result = Object.keys(lpTokensWithBalances).reduce(
+      // TODO: Reduce function complexity by extracting logic
+      // eslint-disable-next-line complexity
       (acc, tokenAddress) => {
         const { token: lpToken, balance: tokenBalance } = lpTokensWithBalances[tokenAddress]
         const alternative = cowAmmLpTokens.find((cowAmmLpToken) => {

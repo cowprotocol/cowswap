@@ -55,6 +55,9 @@ interface LpTokenListsProps {
   openPoolPage(poolAddress: string): void
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function LpTokenLists({
   account,
   onSelectToken,
@@ -68,6 +71,9 @@ export function LpTokenLists({
   const isMobile = useMediaQuery(Media.upToSmall(false))
 
   const getItemView = useCallback(
+    // TODO: Break down this large function into smaller functions
+    // TODO: Reduce function complexity by extracting logic
+    // eslint-disable-next-line max-lines-per-function, complexity
     (lpTokens: LpToken[], item: VirtualItem) => {
       const token = lpTokens[item.index]
 

@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 
 import { MEDIA_WIDTHS } from '@cowprotocol/ui'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const useMediaQuery = (query: string) => {
   const [matches, setMatches] = useState(false)
 
@@ -9,6 +11,8 @@ export const useMediaQuery = (query: string) => {
     const media = window.matchMedia(query)
     setMatches(media.matches)
 
+    // TODO: Add proper return type annotation
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     const listener = () => {
       setMatches(window.matchMedia(query).matches)
     }

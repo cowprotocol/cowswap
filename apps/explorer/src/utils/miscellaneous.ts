@@ -16,8 +16,12 @@ export function assertNonNull<T>(val: T, message: string): asserts val is NonNul
   }
 }
 
+// TODO: Replace any with proper type definitions
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function noop(..._args: any[]): void {}
 
+// TODO: Replace any with proper type definitions
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const logInfo = process.env.NODE_ENV === 'test' ? noop : (...args: any[]): void => console.log(...args)
 
 let debugEnabled = process.env.NODE_ENV === 'development'
@@ -33,12 +37,16 @@ window.toggleDebug = (): boolean => {
   return debugEnabled
 }
 
+// TODO: Replace any with proper type definitions
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const logDebug = (...args: any[]): void => {
   if (debugEnabled) {
     console.log(...args)
   }
 }
 
+// TODO: Replace any with proper type definitions
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const debug = process.env.NODE_ENV === 'development' ? noop : (...args: any[]): void => console.log(...args)
 
 export const delay = <T = void>(ms = 100, result?: T): Promise<T> =>
@@ -61,13 +69,23 @@ export function isNativeToken(address: string): boolean {
   return address.toLowerCase() === NATIVE_TOKEN_ADDRESS.toLowerCase()
 }
 
+const NetworkImageAddressMap: Record<Network, string> = {
+  [Network.MAINNET]: 'eth',
+  [Network.BASE]: 'eth',
+  [Network.ARBITRUM_ONE]: 'eth',
+  [Network.GNOSIS_CHAIN]: 'xdai',
+  [Network.POLYGON]: 'pol',
+  [Network.AVALANCHE]: 'avax',
+  [Network.SEPOLIA]: 'eth',
+}
+
 export function getImageAddress(address: string, network: Network): string {
   if (isNativeToken(address)) {
     // What is going on here?
     // Well, this address here is the path on `src/assets/tokens/`
     // So these special values will use the local images,
     // because they are native tokens and don't really have an address
-    return network === Network.GNOSIS_CHAIN ? 'xdai' : 'eth'
+    return NetworkImageAddressMap[network]
   }
   return address
 }
@@ -104,6 +122,8 @@ interface RetryOptions {
  * @param exponentialBackOff Whether to use exponential back off, doubling wait interval. Defaults to true
  */
 
+// TODO: Replace any with proper type definitions
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function retry<T extends () => any>(fn: T, options?: RetryOptions): Promise<Unpromise<ReturnType<T>>> {
   const { retriesLeft = 3, interval = 1000, exponentialBackOff = true } = options || {}
 

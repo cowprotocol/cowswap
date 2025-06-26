@@ -1,4 +1,5 @@
 import { useSetAtom } from 'jotai'
+import { ReactNode } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
@@ -45,11 +46,13 @@ export interface RowSlippageContentProps {
   isSlippageModified: boolean
   setAutoSlippage?: Command // todo: make them optional
   smartSlippage?: string
+  isDefaultSlippageApplied: boolean;
   isSmartSlippageApplied: boolean
   isSmartSlippageLoading: boolean
 }
 
-export function RowSlippageContent(props: RowSlippageContentProps) {
+
+export function RowSlippageContent(props: RowSlippageContentProps): ReactNode {
   const {
     chainId,
     displaySlippage,
@@ -63,11 +66,12 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
     smartSlippage,
     isSmartSlippageApplied,
     isSmartSlippageLoading,
+    isDefaultSlippageApplied,
   } = props
 
   const setSettingTabState = useSetAtom(settingsTabStateAtom)
 
-  const openSettings = () => setSettingTabState({ open: true })
+  const openSettings: () => void = () => setSettingTabState({ open: true })
 
   const tooltipContent =
     slippageTooltip ||
@@ -111,8 +115,9 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
       <RowFixed>
         <TextWrapper onClick={openSettings}>
           <SlippageTextContents
-            isEoaEthFlow={isEoaEthFlow}
+            isDefaultSlippageApplied={isDefaultSlippageApplied}
             slippageLabel={slippageLabel}
+            isEoaEthFlow={isEoaEthFlow}
             isDynamicSlippageSet={isSmartSlippageApplied}
           />
         </TextWrapper>
@@ -129,16 +134,17 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
 
 type SlippageTextContentsProps = {
   isEoaEthFlow: boolean
+  isDefaultSlippageApplied: boolean
   slippageLabel?: React.ReactNode
   isDynamicSlippageSet: boolean
 }
 
-function SlippageTextContents({ isEoaEthFlow, slippageLabel, isDynamicSlippageSet }: SlippageTextContentsProps) {
+function SlippageTextContents({ slippageLabel, isDynamicSlippageSet, isEoaEthFlow, isDefaultSlippageApplied }: SlippageTextContentsProps): ReactNode {
   return (
     <TransactionText>
       <Trans>{slippageLabel || 'Slippage tolerance'}</Trans>
-      {isEoaEthFlow && <i>(modified)</i>}
-      {isDynamicSlippageSet && <i>(dynamic)</i>}
+      {isDynamicSlippageSet && !isDefaultSlippageApplied && <i>(dynamic)</i>}
+      {isEoaEthFlow && isDefaultSlippageApplied && <i>(modified)</i>}
     </TransactionText>
   )
 }

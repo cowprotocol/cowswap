@@ -7,7 +7,7 @@ import { TransactionsTableWithData } from './TransactionsTableWithData'
 
 import { Order } from '../../../api/operator'
 import { BlockExplorerLink } from '../../../components/common/BlockExplorerLink'
-import CowLoading from '../../../components/common/CowLoading'
+import { LoadingWrapper } from '../../../components/common/LoadingWrapper'
 import { TabIcon, TabItemInterface } from '../../../components/common/Tabs/Tabs'
 import { ConnectionStatus } from '../../../components/ConnectionStatus'
 import { Notification } from '../../../components/Notification'
@@ -53,6 +53,8 @@ const tabItems = (orders: Order[] | undefined, networkId: BlockchainNetwork, txH
   ]
 }
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 export const TransactionsTableWidget: React.FC<Props> = ({ txHash }) => {
   const { orders, isLoading: isTxLoading, errorTxPresentInNetworkId, error } = useGetTxOrders(txHash)
   const networkId = useNetworkId() || undefined
@@ -96,7 +98,7 @@ export const TransactionsTableWidget: React.FC<Props> = ({ txHash }) => {
   }
 
   if (!orders?.length) {
-    return <CowLoading />
+    return <LoadingWrapper message="Loading transaction details" />
   }
 
   return (

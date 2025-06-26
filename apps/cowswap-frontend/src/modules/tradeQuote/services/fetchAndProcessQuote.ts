@@ -1,19 +1,19 @@
 import { onlyResolvesLast } from '@cowprotocol/common-utils'
 import {
-  PriceQuality,
-  CrossChainQuoteAndPost,
-  SupportedChainId,
-  QuoteBridgeRequest,
-  SwapAdvancedSettings,
-  isBridgeQuoteAndPost,
   BridgeProviderQuoteError,
+  CrossChainQuoteAndPost,
+  isBridgeQuoteAndPost,
+  PriceQuality,
+  QuoteBridgeRequest,
+  SupportedChainId,
+  SwapAdvancedSettings,
 } from '@cowprotocol/cow-sdk'
 
 import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 
 import { AppDataInfo } from 'modules/appData'
 
-import { QuoteApiError, mapOperatorErrorToQuoteError } from 'api/cowProtocol/errors/QuoteError'
+import { mapOperatorErrorToQuoteError, QuoteApiError } from 'api/cowProtocol/errors/QuoteError'
 import { getIsOrderBookTypedError } from 'api/cowProtocol/getIsOrderBookTypedError'
 
 import { TradeQuoteManager } from '../hooks/useTradeQuoteManager'
@@ -30,7 +30,7 @@ export async function fetchAndProcessQuote(
   quoteParams: QuoteBridgeRequest,
   appData: AppDataInfo['doc'] | undefined,
   tradeQuoteManager: TradeQuoteManager,
-) {
+): Promise<void> {
   const { hasParamsChanged, priceQuality } = fetchParams
   const isOptimalQuote = priceQuality === PriceQuality.OPTIMAL
 
@@ -40,7 +40,7 @@ export async function fetchAndProcessQuote(
     quoteRequest: {
       priceQuality,
     },
-    appData: appData,
+    appData,
     quoteSigner: isBridge ? getBridgeQuoteSigner(chainId) : undefined,
   }
 

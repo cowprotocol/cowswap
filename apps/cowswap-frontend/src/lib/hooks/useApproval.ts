@@ -65,6 +65,8 @@ export function useApprovalStateForSpender(
   }, [amountToApprove, currentAllowance, pendingApproval, spender])
 }
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 export function useApproval(
   amountToApprove: CurrencyAmount<Currency> | undefined,
   spender: string | undefined,

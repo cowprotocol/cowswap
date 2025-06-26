@@ -1,7 +1,11 @@
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function openTokenSelector() {
   cy.get('.open-currency-select-button').first({ timeout: 20_000 }).should('be.enabled').click()
 }
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 describe('Search', () => {
   beforeEach(() => {
     cy.visit('/#/11155111/swap/')

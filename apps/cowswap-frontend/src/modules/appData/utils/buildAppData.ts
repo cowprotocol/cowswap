@@ -1,10 +1,9 @@
 import { stringifyDeterministic } from '@cowprotocol/app-data'
+import { UtmParams } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { metadataApiSDK } from 'cowSdk'
 import { keccak256, toUtf8Bytes } from 'ethers/lib/utils'
-
-import { UtmParams } from 'modules/utm'
 
 import { filterHooks, HooksFilter } from './appDataFilter'
 import { removePermitHookFromHooks, typedAppDataHooksToAppDataHooks } from './typedHooks'
@@ -86,6 +85,8 @@ export async function buildAppData({
   return { doc, fullAppData, appDataKeccak256 }
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function toKeccak256(fullAppData: string) {
   return keccak256(toUtf8Bytes(fullAppData))
 }

@@ -3,7 +3,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { JsonRpcFetchFunc, Web3Provider } from '@ethersproject/providers'
 import SafeApiKit, { SafeInfoResponse } from '@safe-global/api-kit'
 import Safe, { EthersAdapter } from '@safe-global/protocol-kit'
-import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
+import type { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
 
 // eslint-disable-next-line no-restricted-imports
 import { ethers } from 'ethers'
@@ -14,6 +14,8 @@ const SAFE_TRANSACTION_SERVICE_URL: Record<SupportedChainId, string> = {
   [SupportedChainId.ARBITRUM_ONE]: 'https://safe-transaction-arbitrum.safe.global',
   [SupportedChainId.BASE]: 'https://safe-transaction-base.safe.global',
   [SupportedChainId.SEPOLIA]: 'https://safe-transaction-sepolia.safe.global',
+  [SupportedChainId.POLYGON]: 'https://safe-transaction-polygon.safe.global',
+  [SupportedChainId.AVALANCHE]: 'https://safe-transaction-avalanche.safe.global',
 }
 
 const SAFE_BASE_URL = 'https://app.safe.global'

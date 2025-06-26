@@ -12,6 +12,8 @@ import * as styledEl from 'modules/trade/pure/TradePageLayout'
 
 const LIMIT_ORDERS_MAX_WIDTH = '1800px'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function RegularLimitOrders() {
   const isUnlocked = useIsWidgetUnlocked()
   const { chainId, account } = useWalletInfo()

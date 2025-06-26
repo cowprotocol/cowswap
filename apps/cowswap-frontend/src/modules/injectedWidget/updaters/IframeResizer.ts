@@ -1,17 +1,24 @@
 import { useAtomValue } from 'jotai'
 import { useLayoutEffect, useRef } from 'react'
 
+import { isIframe, isInjectedWidget } from '@cowprotocol/common-utils'
 import { MEDIA_WIDTHS } from '@cowprotocol/ui'
 import { WidgetMethodsEmit, widgetIframeTransport } from '@cowprotocol/widget-lib'
 
 import { openModalState } from 'common/state/openModalState'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function IframeResizer() {
   const isModalOpen = useAtomValue(openModalState)
   const previousHeightRef = useRef(0)
 
   useLayoutEffect(() => {
+    if (!isIframe() || !isInjectedWidget()) return
+
     // Initial height calculation and message
+    // TODO: Add proper return type annotation
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     const sendHeightUpdate = () => {
       const contentHeight = document.body.scrollHeight
 

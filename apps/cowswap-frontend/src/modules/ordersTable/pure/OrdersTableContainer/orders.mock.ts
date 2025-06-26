@@ -1,4 +1,4 @@
-import { COW, DAI, GNO_GNOSIS_CHAIN, USDC, WETH_GNOSIS_CHAIN } from '@cowprotocol/common-const'
+import { COW_TOKEN_TO_CHAIN, DAI, GNO_GNOSIS_CHAIN, USDC, WETH_GNOSIS_CHAIN } from '@cowprotocol/common-const'
 import { OrderClass, OrderKind, SigningScheme } from '@cowprotocol/cow-sdk'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
@@ -7,6 +7,10 @@ import { ParsedOrder, parseOrder } from 'utils/orderUtils/parseOrder'
 
 const chainId = 100
 const owner = '0x4cc6e4f6014cc998fc5ef14c3f5d1184f76ae25b'
+
+if (!COW_TOKEN_TO_CHAIN[chainId]) {
+  throw new Error(`COW token not found for chain ${chainId}`)
+}
 
 export const ordersMock: ParsedOrder[] = [
   {
@@ -38,10 +42,10 @@ export const ordersMock: ParsedOrder[] = [
     summary: '',
     status: OrderStatus.PENDING,
     creationTime: '2022-10-03T09:15:13.551Z',
-    inputToken: COW[chainId],
+    inputToken: COW_TOKEN_TO_CHAIN[chainId],
     outputToken: GNO_GNOSIS_CHAIN,
     receiver: '',
-    sellToken: COW[chainId].address,
+    sellToken: COW_TOKEN_TO_CHAIN[chainId].address,
     buyToken: GNO_GNOSIS_CHAIN.address,
     sellAmount: '1230000000000000',
     buyAmount: '55000000000000',

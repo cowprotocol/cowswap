@@ -21,6 +21,7 @@ import { cowSwapStore } from 'legacy/state'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
 
 import { BlockNumberProvider } from './common/hooks/useBlockNumber'
+import { ThemeConfigUpdater } from './theme/ThemeConfigUpdater'
 
 const DarkModeToggleButton = styled.button`
   display: flex;
@@ -33,6 +34,8 @@ const DarkModeToggleButton = styled.button`
   padding: 6px 10px;
 `
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const DarkModeToggle = ({ children }: { children?: ReactNode }) => {
   const theme = useContext(ThemeContext)
   const [darkMode, toggleDarkModeAux] = useDarkModeManager()
@@ -92,6 +95,8 @@ connector.activate(chainId)
 // Initialize analytics for cosmos
 const cowAnalytics = initGtm()
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const Fixture = ({ children }: { children: ReactNode }) => {
   return (
     <StrictMode>
@@ -103,6 +108,7 @@ const Fixture = ({ children }: { children: ReactNode }) => {
               <Web3ReactProvider connectors={[[connector, hooks]]} network={chainId}>
                 <BlockNumberProvider>
                   <WalletUpdater />
+                  <ThemeConfigUpdater />
                   <Wrapper>
                     <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
                       <DarkModeToggle>

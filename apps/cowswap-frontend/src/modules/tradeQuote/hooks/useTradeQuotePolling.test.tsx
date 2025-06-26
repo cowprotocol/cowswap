@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { COW, WETH_SEPOLIA } from '@cowprotocol/common-const'
+import { COW_TOKEN_TO_CHAIN, WETH_SEPOLIA } from '@cowprotocol/common-const'
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { WalletInfo, walletInfoAtom } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
@@ -39,7 +39,12 @@ const useEnoughBalanceAndAllowanceMock = jest.spyOn(tokensModule, 'useEnoughBala
 const bridgingSdkMock = bridgingSdk as unknown as { getQuote: jest.Mock }
 
 const inputCurrencyAmount = CurrencyAmount.fromRawAmount(WETH_SEPOLIA, 10_000_000)
-const outputCurrencyAmount = CurrencyAmount.fromRawAmount(COW[SupportedChainId.SEPOLIA], 2_000_000)
+
+if (!COW_TOKEN_TO_CHAIN[SupportedChainId.SEPOLIA]) {
+  throw new Error(`COW token not found for chain ${SupportedChainId.SEPOLIA}`)
+}
+
+const outputCurrencyAmount = CurrencyAmount.fromRawAmount(COW_TOKEN_TO_CHAIN[SupportedChainId.SEPOLIA], 2_000_000)
 
 const walletInfoMock: WalletInfo = {
   chainId: 1,
@@ -63,12 +68,14 @@ const jotaiMock = [
 ]
 
 const Wrapper =
+  // TODO: Replace any with proper type definitions
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (mocks: any) =>
-  ({ children }: { children: ReactNode }) => (
-    <WithMockedWeb3 location={{ pathname: '/5/limit' }}>
-      <JotaiTestProvider initialValues={mocks}>{children}</JotaiTestProvider>
-    </WithMockedWeb3>
-  )
+    ({ children }: { children: ReactNode }) => (
+      <WithMockedWeb3 location={{ pathname: '/5/limit' }}>
+        <JotaiTestProvider initialValues={mocks}>{children}</JotaiTestProvider>
+      </WithMockedWeb3>
+    )
 
 describe('useTradeQuotePolling()', () => {
   beforeEach(() => {

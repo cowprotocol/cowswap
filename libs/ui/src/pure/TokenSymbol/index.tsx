@@ -1,7 +1,6 @@
 import { formatSymbol } from '@cowprotocol/common-utils'
+import { Nullish } from '@cowprotocol/types'
 import { Currency } from '@uniswap/sdk-core'
-
-import { Nullish } from '../../types'
 
 export type TokenNameAndSymbol = Pick<Currency, 'symbol' | 'name'>
 
@@ -11,6 +10,8 @@ export type TokenSymbolProps = {
   className?: string
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function getAbbreviatedSymbol(props: Omit<TokenSymbolProps, 'className'>) {
   const { token, length } = props
   const { symbol, name } = token || {}
@@ -27,6 +28,8 @@ function getAbbreviatedSymbol(props: Omit<TokenSymbolProps, 'className'>) {
   }
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function TokenSymbol(props: TokenSymbolProps) {
   const abbreviatedSymbol = getAbbreviatedSymbol(props)
   if (!abbreviatedSymbol) return null

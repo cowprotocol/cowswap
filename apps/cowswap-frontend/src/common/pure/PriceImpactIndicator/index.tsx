@@ -33,6 +33,8 @@ const PriceImpactWrapper = styled.span<{ priceImpact$: Percent }>`
   color: ${({ theme, priceImpact$ }) => getPriceImpactColor(theme, priceImpact$)};
 `
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function PriceImpactIndicator(props: PriceImpactIndicatorProps) {
   const { priceImpact, loading: priceImpactLoading } = props.priceImpactParams || {}
 

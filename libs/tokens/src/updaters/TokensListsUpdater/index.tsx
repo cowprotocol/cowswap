@@ -17,6 +17,7 @@ import { environmentAtom, updateEnvironmentAtom } from '../../state/environmentA
 import { upsertListsAtom } from '../../state/tokenLists/tokenListsActionsAtom'
 import { allListsSourcesAtom, tokenListsUpdatingAtom } from '../../state/tokenLists/tokenListsStateAtom'
 import { ListState } from '../../types'
+import { UserAddedTokensUpdater } from '../UserAddedTokensUpdater'
 
 const LAST_UPDATE_TIME_DEFAULT = 0
 
@@ -51,6 +52,9 @@ interface TokensListsUpdaterProps {
  */
 const GEOBLOCK_ERRORS_TO_IGNORE = /(failed to fetch)|(load failed)/i
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function TokensListsUpdater({
   chainId: currentChainId,
   isGeoBlockEnabled,
@@ -128,5 +132,5 @@ export function TokensListsUpdater({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId, isGeoBlockEnabled])
 
-  return null
+  return <UserAddedTokensUpdater />
 }

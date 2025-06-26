@@ -1,12 +1,12 @@
 import PLUS_ICON from '@cowprotocol/assets/cow-swap/plus.svg'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { useHooks } from 'entities/orderHooks/useHooks'
 import SVG from 'react-inlinesvg'
 
 import * as styledEl from './styled'
 
 import { useAllHookDapps } from '../../hooks/useAllHookDapps'
-import { useHooks } from '../../hooks/useHooks'
 import { useRemoveHook } from '../../hooks/useRemoveHook'
 import { useReorderHooks } from '../../hooks/useReorderHooks'
 import { AppliedHookList } from '../../pure/AppliedHookList'
@@ -20,6 +20,8 @@ export interface PreHookButtonProps {
 
 const isPreHook = true
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function PreHookButton({ onOpen, onEditHook, hideTooltip }: PreHookButtonProps) {
   const { account } = useWalletInfo()
   const { preHooks } = useHooks()

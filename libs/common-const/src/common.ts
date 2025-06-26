@@ -64,14 +64,19 @@ export const V_COW_CONTRACT_ADDRESS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.ARBITRUM_ONE]: null, // doesn't exist!
   [SupportedChainId.BASE]: null, // doesn't exist!
   [SupportedChainId.SEPOLIA]: '0x21d06a222bbb94ec1406a0a8ba86b4d761bc9864',
+  [SupportedChainId.POLYGON]: null, //doesn't exist!
+  [SupportedChainId.AVALANCHE]: null, // doesn't exist!
 }
 
-export const COW_CONTRACT_ADDRESS: Record<SupportedChainId, string> = {
+export const COW_CONTRACT_ADDRESS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.MAINNET]: '0xDEf1CA1fb7FBcDC777520aa7f396b4E015F497aB',
   [SupportedChainId.GNOSIS_CHAIN]: '0x177127622c4A00F3d409B75571e12cB3c8973d3c',
   [SupportedChainId.ARBITRUM_ONE]: '0xcb8b5cd20bdcaea9a010ac1f8d835824f5c87a04',
   [SupportedChainId.BASE]: '0xc694a91e6b071bF030A18BD3053A7fE09B6DaE69',
   [SupportedChainId.SEPOLIA]: '0x0625aFB445C3B6B7B929342a04A22599fd5dBB59',
+  // https://polygonscan.com/token/0x2f4efd3aa42e15a1ec6114547151b63ee5d39958
+  [SupportedChainId.POLYGON]: '0x2f4efd3aa42e15a1ec6114547151b63ee5d39958',
+  [SupportedChainId.AVALANCHE]: null,
 }
 
 export const INPUT_OUTPUT_EXPLANATION = 'Only executed swaps incur fees.'
@@ -89,6 +94,19 @@ export const MINIMUM_ETH_FLOW_SLIPPAGE_BPS: Record<SupportedChainId, number> = {
   [SupportedChainId.ARBITRUM_ONE]: DEFAULT_SLIPPAGE_BPS,
   [SupportedChainId.BASE]: DEFAULT_SLIPPAGE_BPS,
   [SupportedChainId.SEPOLIA]: DEFAULT_SLIPPAGE_BPS,
+  [SupportedChainId.POLYGON]: DEFAULT_SLIPPAGE_BPS,
+  [SupportedChainId.AVALANCHE]: DEFAULT_SLIPPAGE_BPS,
+}
+
+const DEFAULT_ETH_FLOW_SLIPPAGE_WARNING_THRESHOLD = 200 // 2%
+export const ETH_FLOW_SLIPPAGE_WARNING_THRESHOLD: Record<SupportedChainId, number> = {
+  [SupportedChainId.MAINNET]: 500, // 5%
+  [SupportedChainId.GNOSIS_CHAIN]: DEFAULT_ETH_FLOW_SLIPPAGE_WARNING_THRESHOLD,
+  [SupportedChainId.ARBITRUM_ONE]: DEFAULT_ETH_FLOW_SLIPPAGE_WARNING_THRESHOLD,
+  [SupportedChainId.BASE]: DEFAULT_ETH_FLOW_SLIPPAGE_WARNING_THRESHOLD,
+  [SupportedChainId.SEPOLIA]: DEFAULT_ETH_FLOW_SLIPPAGE_WARNING_THRESHOLD,
+  [SupportedChainId.POLYGON]: DEFAULT_ETH_FLOW_SLIPPAGE_WARNING_THRESHOLD,
+  [SupportedChainId.AVALANCHE]: DEFAULT_ETH_FLOW_SLIPPAGE_WARNING_THRESHOLD,
 }
 
 export const MINIMUM_ETH_FLOW_SLIPPAGE: Record<SupportedChainId, Percent> = mapSupportedNetworks(
@@ -127,6 +145,8 @@ export const GAS_FEE_ENDPOINTS: Record<SupportedChainId, string> = {
   [SupportedChainId.ARBITRUM_ONE]: 'https://arbitrum.blockscout.com/api/v1/gas-price-oracle',
   [SupportedChainId.BASE]: 'https://base.blockscout.com/api/v1/gas-price-oracle',
   [SupportedChainId.SEPOLIA]: '',
+  [SupportedChainId.POLYGON]: 'https://polygon.blockscout.com/api/v1/gas-price-oracle',
+  [SupportedChainId.AVALANCHE]: 'https://api.blocknative.com/gasprices/blockprices?chainid=43114',
 }
 export const GAS_API_KEYS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.MAINNET]: process.env.REACT_APP_BLOCKNATIVE_API_KEY || null,
@@ -134,6 +154,8 @@ export const GAS_API_KEYS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.ARBITRUM_ONE]: null,
   [SupportedChainId.BASE]: null,
   [SupportedChainId.SEPOLIA]: null,
+  [SupportedChainId.POLYGON]: null,
+  [SupportedChainId.AVALANCHE]: process.env.REACT_APP_BLOCKNATIVE_API_KEY || null,
 }
 
 export const UNSUPPORTED_TOKENS_FAQ_URL = 'https://docs.cow.fi/cow-protocol/reference/core/tokens'

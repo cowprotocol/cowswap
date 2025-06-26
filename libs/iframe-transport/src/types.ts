@@ -1,6 +1,8 @@
 export interface JsonRpcRequest {
   id?: number
   method: string
+  // TODO: Replace any with proper type definitions
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   params?: any[]
 }
 
@@ -49,12 +51,6 @@ export interface EthereumProvider {
    * @returns A promise that resolves with the response.
    */
   request<T>(params: JsonRpcRequest): Promise<T>
-
-  /**
-   * Requests permission to connect to the Ethereum provider.
-   * @returns A promise that resolves once permission is granted.
-   */
-  enable(): Promise<void>
 }
 
 export type WindowListener = (event: MessageEvent<unknown>) => void

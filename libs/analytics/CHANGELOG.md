@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.0](https://github.com/cowprotocol/cowswap/compare/analytics-v1.11.2...analytics-v1.12.0) (2025-06-18)
+
+
+### Features
+
+* **analytics:** enhance UTM handling and analytics readiness checks ([#5779](https://github.com/cowprotocol/cowswap/issues/5779)) ([3fb616c](https://github.com/cowprotocol/cowswap/commit/3fb616cf8f5b5ad7c1736bd095912d692bbf1fd5))
+
 ## [1.11.2](https://github.com/cowprotocol/cowswap/compare/analytics-v1.11.1...analytics-v1.11.2) (2025-05-19)
 
 

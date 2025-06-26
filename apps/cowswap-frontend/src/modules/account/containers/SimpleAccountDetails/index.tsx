@@ -7,8 +7,8 @@ import styled from 'styled-components/macro'
 
 import { useMultipleActivityDescriptors, groupActivitiesByDay } from 'legacy/hooks/useRecentActivity'
 
-import { renderActivities } from '../AccountDetails'
 import { AccountDetailsProps } from '../AccountDetails'
+import { ActivitiesList } from '../AccountDetails/ActivitiesList'
 import { LowerSectionSimple, Wrapper } from '../AccountDetails/styled'
 
 type StyledWrapperProps = { $margin?: string }
@@ -22,6 +22,8 @@ const SimpleWrapper = styled(Wrapper)<StyledWrapperProps>`
   }
 `
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function SimpleAccountDetails({
   pendingTransactions = [],
   confirmedTransactions = [],
@@ -39,7 +41,9 @@ export function SimpleAccountDetails({
       <LowerSectionSimple>
         <div>
           {activitiesGroupedByDate.map(({ date, activities }) => (
-            <Fragment key={date.getTime()}>{renderActivities(activities)}</Fragment>
+            <Fragment key={date.getTime()}>
+              <ActivitiesList activities={activities} />
+            </Fragment>
           ))}
         </div>
       </LowerSectionSimple>

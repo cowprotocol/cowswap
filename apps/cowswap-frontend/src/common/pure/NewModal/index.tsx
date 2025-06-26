@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { ReactNode, useCallback } from 'react'
 
 import { Command } from '@cowprotocol/types'
 import { BackButton, Media, UI } from '@cowprotocol/ui'
@@ -169,7 +169,7 @@ export function NewModal({
   title,
   children,
   onDismiss,
-}: NewModalProps) {
+}: NewModalProps): ReactNode {
   const onDismissCallback = useCallback(() => onDismiss?.(), [onDismiss])
 
   return (

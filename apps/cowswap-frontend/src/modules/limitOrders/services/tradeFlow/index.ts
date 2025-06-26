@@ -18,11 +18,13 @@ import { emitPostedOrderEvent } from 'modules/orders'
 import { callDataContainsPermitSigner, handlePermit } from 'modules/permit'
 import { addPendingOrderStep } from 'modules/trade/utils/addPendingOrderStep'
 import { logTradeFlow } from 'modules/trade/utils/logger'
-import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 import type { TradeFlowAnalyticsContext } from 'modules/trade/utils/tradeFlowAnalytics'
+import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 
 import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 export async function tradeFlow(
   params: TradeFlowContext,
   priceImpact: PriceImpact,
@@ -182,6 +184,8 @@ export async function tradeFlow(
     analytics.sign(swapFlowAnalyticsContext)
 
     return orderId
+  // TODO: Replace any with proper type definitions
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 9: ERROR: ', error)
     const swapErrorMessage = getSwapErrorMessage(error)

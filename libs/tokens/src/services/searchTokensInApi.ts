@@ -11,6 +11,7 @@ type Chain =
   | 'ETHEREUM_SEPOLIA'
   | 'OPTIMISM'
   | 'POLYGON'
+  | 'AVALANCHE'
   | 'CELO'
   | 'BNB'
   | 'BASE'
@@ -127,6 +128,8 @@ const CHAIN_NAMES: Record<SupportedChainId, Chain | null> = {
   [SupportedChainId.BASE]: 'BASE',
   [SupportedChainId.SEPOLIA]: 'ETHEREUM_SEPOLIA',
   [SupportedChainId.GNOSIS_CHAIN]: null,
+  [SupportedChainId.POLYGON]: 'POLYGON',
+  [SupportedChainId.AVALANCHE]: 'AVALANCHE',
 }
 
 const CHAIN_IDS = Object.entries(CHAIN_NAMES).reduce(

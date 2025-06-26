@@ -39,10 +39,13 @@ import { useIsWrapOrUnwrap } from '../../hooks/useIsWrapOrUnwrap'
 import { useLimitOrdersPromoBanner } from '../../hooks/useLimitOrdersPromoBanner'
 import { SetRecipient } from '../../pure/SetRecipient'
 import { LimitOrdersPromoBannerWrapper } from '../LimitOrdersPromoBannerWrapper'
+import { QuotePolingProgress } from '../QuotePolingProgress'
 import { TradeWarnings } from '../TradeWarnings'
 import { TradeWidgetLinks } from '../TradeWidgetLinks'
 import { WrapFlowActionButton } from '../WrapFlowActionButton'
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const scrollToMyOrders = () => {
   const element = document.getElementById(MY_ORDERS_ID)
   if (element) {
@@ -51,6 +54,10 @@ const scrollToMyOrders = () => {
   }
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
 export function TradeWidgetForm(props: TradeWidgetProps) {
   const isInjectedWidgetMode = isInjectedWidget()
   const { standaloneMode, hideOrdersTable } = useInjectedWidgetParams()
@@ -78,6 +85,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
     displayChainName = isBridgingEnabled && isCurrentTradeBridging,
     isMarketOrderWidget = false,
     isSellingEthSupported = false,
+    isPriceStatic = false,
   } = params
 
   const inputCurrencyInfo = useMemo(
@@ -189,7 +197,14 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
             </ButtonOutlined>
           )}
 
-          {!lockScreen && settingsWidget}
+          <styledEl.HeaderRight>
+            {!lockScreen && (
+              <>
+                {!isPriceStatic && !showDropdown && <QuotePolingProgress />}
+                {settingsWidget}
+              </>
+            )}
+          </styledEl.HeaderRight>
         </styledEl.Header>
 
         <LimitOrdersPromoBannerWrapper>

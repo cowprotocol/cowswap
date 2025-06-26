@@ -2,13 +2,12 @@ import { useMemo } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { useHooks } from 'entities/orderHooks/useHooks'
+import { useOrderParams } from 'entities/orderHooks/useOrderParams'
 import { BigNumber } from 'ethers'
 
 import { useTenderlyBundleSimulation } from 'modules/tenderly/hooks/useTenderlyBundleSimulation'
 import { BalancesDiff } from 'modules/tenderly/types'
-
-import { useHooks } from './useHooks'
-import { useOrderParams } from './useOrderParams'
 
 const EMPTY_BALANCE_DIFF: BalancesDiff = {}
 
@@ -60,6 +59,8 @@ export function useHookBalancesDiff(isPreHook: boolean, hookToEditUid?: string):
     return data[lastPostHook?.uuid]?.cumulativeBalancesDiff || firstPostHookBalanceDiff
   }, [data, firstPostHookBalanceDiff, postHooks])
 
+  // TODO: Reduce function complexity by extracting logic
+  // eslint-disable-next-line complexity
   const hookToEditBalanceDiff = useMemo(() => {
     if (!data || !hookToEditUid) return EMPTY_BALANCE_DIFF
 

@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import savingsIcon from '@cowprotocol/assets/cow-swap/savings.svg'
 import { MINIMUM_ETH_FLOW_SLIPPAGE, PERCENTAGE_PRECISION } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -21,7 +23,7 @@ export interface EthFlowBannerContentProps extends EthFlowBannerCallbacks {
   showBannerCallback: Command
 }
 
-export function EthFlowBannerContent(props: EthFlowBannerContentProps) {
+export function EthFlowBannerContent(props: EthFlowBannerContentProps): ReactNode {
   const {
     native,
     wrapped,
@@ -66,7 +68,7 @@ export function EthFlowBannerContent(props: EthFlowBannerContentProps) {
             <ul>
               <li>Lower overall network costs</li>
               <li>
-                Lower default slippage (instead of {minEthFlowSlippage.toSignificant(PERCENTAGE_PRECISION)}% minimum)
+                Lower minimal slippage (instead of {minEthFlowSlippage.toSignificant(PERCENTAGE_PRECISION)}% minimum)
               </li>
               <li>No fees for failed transactions</li>
             </ul>

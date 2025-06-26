@@ -1,5 +1,4 @@
 import '@reach/dialog/styles.css'
-import 'inter-ui'
 import { Provider as AtomProvider } from 'jotai'
 import { ReactNode, StrictMode } from 'react'
 import './sentry'
@@ -12,11 +11,12 @@ import { Web3Provider } from '@cowprotocol/wallet'
 
 import { LanguageProvider } from 'i18n'
 import { createRoot } from 'react-dom/client'
+import { HelmetProvider } from 'react-helmet-async'
 import SvgCacheProvider from 'react-inlinesvg/provider'
 import { Provider } from 'react-redux'
 import { HashRouter } from 'react-router'
 import * as serviceWorkerRegistration from 'serviceWorkerRegistration'
-import { ThemedGlobalStyle, ThemeProvider } from 'theme'
+import { ThemeProvider } from 'theme'
 
 import { cowSwapStore } from 'legacy/state'
 import { useAppSelector } from 'legacy/state/hooks'
@@ -31,6 +31,7 @@ import { WalletUnsupportedNetworkBanner } from '../common/containers/WalletUnsup
 import { BlockNumberProvider } from '../common/hooks/useBlockNumber'
 
 const cowAnalytics = initGtm()
+const helmetContext = {}
 
 // Node removeChild hackaround
 // based on: https://github.com/facebook/react/issues/11538#issuecomment-417504600
@@ -40,39 +41,40 @@ if (window.ethereum) {
   window.ethereum.autoRefreshOnNetworkChange = false
 }
 
-function Main() {
+function Main(): ReactNode {
   return (
     <StrictMode>
       <SvgCacheProvider>
-        <Provider store={cowSwapStore}>
-          <AtomProvider store={jotaiStore}>
-            <HashRouter>
-              <LanguageProvider>
-                <Web3ProviderInstance>
-                  <ThemeProvider>
-                    <ThemedGlobalStyle />
-                    <BlockNumberProvider>
-                      <WithLDProvider>
-                        <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
-                          <WalletUnsupportedNetworkBanner />
-                          <Updaters />
-                          <Toasts />
-                          <App />
-                        </CowAnalyticsProvider>
-                      </WithLDProvider>
-                    </BlockNumberProvider>
-                  </ThemeProvider>
-                </Web3ProviderInstance>
-              </LanguageProvider>
-            </HashRouter>
-          </AtomProvider>
-        </Provider>
+        <HelmetProvider context={helmetContext}>
+          <Provider store={cowSwapStore}>
+            <AtomProvider store={jotaiStore}>
+              <ThemeProvider>
+                <HashRouter>
+                  <LanguageProvider>
+                    <Web3ProviderInstance>
+                      <BlockNumberProvider>
+                        <WithLDProvider>
+                          <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
+                            <WalletUnsupportedNetworkBanner />
+                            <Updaters />
+                            <Toasts />
+                            <App />
+                          </CowAnalyticsProvider>
+                        </WithLDProvider>
+                      </BlockNumberProvider>
+                    </Web3ProviderInstance>
+                  </LanguageProvider>
+                </HashRouter>
+              </ThemeProvider>
+            </AtomProvider>
+          </Provider>
+        </HelmetProvider>
       </SvgCacheProvider>
     </StrictMode>
   )
 }
 
-function Web3ProviderInstance({ children }: { children: ReactNode }) {
+function Web3ProviderInstance({ children }: { children: ReactNode }): ReactNode {
   const selectedWallet = useAppSelector((state) => state.user.selectedWallet)
   const { standaloneMode } = useInjectedWidgetParams()
 
@@ -83,7 +85,7 @@ function Web3ProviderInstance({ children }: { children: ReactNode }) {
   )
 }
 
-function Toasts() {
+function Toasts(): ReactNode {
   const { disableToastMessages = false } = useInjectedWidgetParams()
 
   return <SnackbarsWidget hidden={disableToastMessages} anchorElementId={APP_HEADER_ELEMENT_ID} />

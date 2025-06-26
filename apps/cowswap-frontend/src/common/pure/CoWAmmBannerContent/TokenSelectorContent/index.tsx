@@ -11,6 +11,8 @@ interface TokenSelectorContentProps {
   context: CoWAmmBannerContext
   children: ReactNode
 }
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function TokenSelectorContent({ isDarkMode, context, children }: TokenSelectorContentProps) {
   const { title, ctaText, onClose, onCtaClick, handleCTAMouseEnter, handleCTAMouseLeave } = context
 

@@ -1,12 +1,16 @@
-import { COW } from '@cowprotocol/common-const'
+import { COW_TOKEN_TO_CHAIN } from '@cowprotocol/common-const'
 import { currencyAmountToTokenAmount } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { RowFeeContent, RowFeeContentProps } from './index'
 
-const currency = COW[SupportedChainId.MAINNET]
+const currency = COW_TOKEN_TO_CHAIN[SupportedChainId.MAINNET]
 const fee = 10
+
+if (!currency) {
+  throw new Error(`Currency not found for chain ${SupportedChainId.MAINNET}`)
+}
 
 const defaultProps: RowFeeContentProps = {
   label: 'Est. Fee',

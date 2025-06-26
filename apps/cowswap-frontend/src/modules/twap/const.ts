@@ -39,10 +39,12 @@ export const TWAP_FINAL_STATUSES = [TwapOrderStatus.Fulfilled, TwapOrderStatus.E
 
 export const MINIMUM_PART_SELL_AMOUNT_FIAT: Record<SupportedChainId, CurrencyAmount<Currency>> = {
   [SupportedChainId.MAINNET]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.MAINNET], 1_000e6), // 1k
-  [SupportedChainId.GNOSIS_CHAIN]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.GNOSIS_CHAIN], 5e6), // 5
-  [SupportedChainId.ARBITRUM_ONE]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.ARBITRUM_ONE], 5e6), // 5
-  [SupportedChainId.BASE]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.BASE], 5e6), // 5
+  [SupportedChainId.GNOSIS_CHAIN]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.GNOSIS_CHAIN], 1e6), // 1
+  [SupportedChainId.ARBITRUM_ONE]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.ARBITRUM_ONE], 1e6), // 1
+  [SupportedChainId.BASE]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.BASE], 1e6), // 1
   [SupportedChainId.SEPOLIA]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.SEPOLIA], 100e18), // 100
+  [SupportedChainId.POLYGON]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.POLYGON], 1e6), // 1
+  [SupportedChainId.AVALANCHE]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.AVALANCHE], 1e6), // 1
 }
 
 export const MINIMUM_PART_TIME = ms`5min` / 1000 // in seconds
@@ -56,6 +58,5 @@ export const DEFAULT_TWAP_EXECUTION_INFO: TwapOrderExecutionInfo = {
 
 export const UNSUPPORTED_SAFE_LINK =
   'https://cow.fi/learn/all-you-need-to-know-about-cow-swap-new-safe-fallback-handler'
-export const UNSUPPORTED_WALLET_LINK =
-  'https://cow.fi/learn/how-to-use-cow-swap-twap-orders-via-safe-wallet'
+export const UNSUPPORTED_WALLET_LINK = 'https://cow.fi/learn/how-to-use-cow-swap-twap-orders-via-safe-wallet'
 export const TWAP_LEARN_MORE_LINK = 'https://cow.fi/learn/cow-swap-launches-twap-orders'

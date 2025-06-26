@@ -5,7 +5,7 @@ import styled, { css } from 'styled-components/macro'
 
 import { CopyIcon as ClickToCopy } from 'legacy/components/Copy'
 
-import { WatchAssetInWallet } from 'modules/wallet/containers/WatchAssetInWallet'
+import { WatchAssetInWallet } from 'modules/wallet'
 
 export const Container = styled.div`
   max-width: 100%;
@@ -166,11 +166,11 @@ export const BannerCard = styled.div<{ rowOnMobile?: boolean }>`
   }
 `
 
-export const BannerCardContent = styled.span<{ fontSize?: string }>`
+export const BannerCardContent = styled.span<{ fontSize?: string; justifyContent?: string; alignItems?: string }>`
   z-index: 2;
   display: flex;
   flex-flow: column;
-  justify-content: space-between;
+  justify-content: ${({ justifyContent }) => justifyContent ?? 'space-between'};
   gap: 24px;
   height: 100%;
   width: 100%;

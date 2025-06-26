@@ -67,6 +67,8 @@ const SHOW_TOKENS_TABLE: Record<SupportedChainId, boolean> = {
   [SupportedChainId.ARBITRUM_ONE]: false, // No data for Arbitrum one
   [SupportedChainId.BASE]: false, // No data for Base
   [SupportedChainId.SEPOLIA]: false, // No data for Sepolia
+  [SupportedChainId.POLYGON]: false, // No data for Polygon
+  [SupportedChainId.AVALANCHE]: false, // No data for Avalanche
 }
 
 export const Home: React.FC = () => {

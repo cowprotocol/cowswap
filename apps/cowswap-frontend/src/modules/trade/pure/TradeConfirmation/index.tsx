@@ -22,7 +22,7 @@ import { useTradeConfirmState } from '../../hooks/useTradeConfirmState'
 import { PriceUpdatedBanner } from '../PriceUpdatedBanner'
 
 export interface TradeConfirmationProps {
-  onConfirm(): void
+  onConfirm(): Promise<void | false>
 
   onDismiss(): void
 
@@ -34,13 +34,16 @@ export interface TradeConfirmationProps {
   isConfirmDisabled: boolean
   priceImpact: PriceImpact
   title: ReactElement | string
-  refreshInterval?: number
   isPriceStatic?: boolean
   recipient?: string | null
   buttonText?: React.ReactNode
   children?: (restContent: ReactElement) => ReactElement
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
 export function TradeConfirmation(props: TradeConfirmationProps) {
   const { pendingTrade, forcePriceConfirmation } = useTradeConfirmState()
 
@@ -60,7 +63,6 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
     isConfirmDisabled,
     priceImpact,
     title,
-    refreshInterval,
     buttonText = 'Confirm',
     children,
     recipient,
@@ -68,11 +70,17 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
     appData,
   } = frozenProps || props
 
+  const [isConfirmClicked, setIsConfirmClicked] = useState(false)
+
   /**
    * Once user sends a transaction, we keep the confirmation content frozen
    */
   useEffect(() => {
     setFrozenProps(hasPendingTrade ? propsRef.current : null)
+
+    if (!hasPendingTrade) {
+      setIsConfirmClicked(false)
+    }
   }, [hasPendingTrade])
 
   const showRecipientWarning =
@@ -85,7 +93,8 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
 
   const { isPriceChanged, resetPriceChanged } = useIsPriceChanged(inputAmount, outputAmount, forcePriceConfirmation)
 
-  const isButtonDisabled = isConfirmDisabled || (isPriceChanged && !isPriceStatic) || hasPendingTrade
+  const isButtonDisabled =
+    isConfirmDisabled || (isPriceChanged && !isPriceStatic) || hasPendingTrade || isConfirmClicked
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -94,12 +103,19 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
   const isUpToMedium = useMediaQuery(upToMedium)
 
   // Combine local onClick logic with incoming onClick
-  const handleConfirmClick = () => {
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  const handleConfirmClick = async () => {
     if (isUpToMedium) {
       window.scrollTo({ top: 0, left: 0 })
     }
 
-    onConfirm()
+    setIsConfirmClicked(true)
+    const isConfirmed = await onConfirm()
+
+    if (!isConfirmed) {
+      setIsConfirmClicked(false)
+    }
   }
 
   const hookDetailsElement = (
@@ -119,7 +135,7 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
         <styledEl.ConfirmHeaderTitle>{title}</styledEl.ConfirmHeaderTitle>
 
         <styledEl.HeaderRightContent>
-          {hasPendingTrade ? null : <QuoteCountdown refreshInterval={refreshInterval} />}
+          {hasPendingTrade || isPriceStatic ? null : <QuoteCountdown />}
         </styledEl.HeaderRightContent>
       </styledEl.Header>
       <styledEl.ContentWrapper id="trade-confirmation">
@@ -144,7 +160,7 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
         {showRecipientWarning && <CustomRecipientWarningBanner orientation={BannerOrientation.Horizontal} />}
         {isPriceChanged && !isPriceStatic && <PriceUpdatedBanner onClick={resetPriceChanged} />}
         <ButtonPrimary onClick={handleConfirmClick} disabled={isButtonDisabled} buttonSize={ButtonSize.BIG}>
-          {hasPendingTrade ? (
+          {hasPendingTrade || isConfirmClicked ? (
             <LongLoadText fontSize={15} fontWeight={500}>
               Confirm with your wallet <CenteredDots smaller />
             </LongLoadText>

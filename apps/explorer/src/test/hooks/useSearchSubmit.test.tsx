@@ -12,6 +12,8 @@ function wrapperMemoryRouter(props: Props): React.ReactNode {
   return <MemoryRouter initialEntries={props.location ? [props.location] : undefined}>{props.children}</MemoryRouter>
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function runHook(query: string) {
   const { result } = renderHook(
     () => {

@@ -12,7 +12,7 @@ import { useIsDarkMode } from 'legacy/state/user/hooks'
 
 import { useTradeNavigate } from 'modules/trade'
 import { getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'
-import { useYieldRawState } from 'modules/yield'
+import { useYieldRawState } from 'modules/yield/hooks/useYieldRawState'
 import { useVampireAttack, useVampireAttackFirstTarget } from 'modules/yield/shared'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
@@ -25,6 +25,9 @@ interface BannerProps {
   isTokenSelectorView?: boolean
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function CoWAmmBanner({ isTokenSelectorView }: BannerProps) {
   const isDarkMode = useIsDarkMode()
   const isInjectedWidgetMode = isInjectedWidget()

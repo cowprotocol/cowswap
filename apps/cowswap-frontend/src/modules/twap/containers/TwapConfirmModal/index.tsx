@@ -7,7 +7,6 @@ import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { TradeConfirmation, TradeConfirmModal, useTradeConfirmActions, useTradePriceImpact } from 'modules/trade'
 import { TradeBasicConfirmDetails } from 'modules/trade/containers/TradeBasicConfirmDetails'
 import { DividerHorizontal } from 'modules/trade/pure/Row/styled'
-import { PRICE_UPDATE_INTERVAL } from 'modules/tradeQuote/hooks/useTradeQuotePolling'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { NetworkCostsSuffix } from 'common/pure/NetworkCostsSuffix'
@@ -51,6 +50,9 @@ const CONFIRM_MODAL_CONFIG = {
     'This is the minimum amount that you will receive across your entire TWAP order, assuming all parts of the order execute.',
 }
 
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function TwapConfirmModal() {
   const { account } = useWalletInfo()
   const { ensName, allowsOffchainSigning } = useWalletDetails()
@@ -110,7 +112,6 @@ export function TwapConfirmModal() {
         isConfirmDisabled={isConfirmDisabled}
         priceImpact={priceImpact}
         buttonText={'Place TWAP order'}
-        refreshInterval={PRICE_UPDATE_INTERVAL}
         recipient={recipient}
       >
         {(warnings) => (

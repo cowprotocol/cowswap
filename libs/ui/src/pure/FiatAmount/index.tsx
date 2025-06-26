@@ -1,12 +1,12 @@
 import { LONG_PRECISION } from '@cowprotocol/common-const'
 import { formatFiatAmount, FractionUtils } from '@cowprotocol/common-utils'
+import { Nullish } from '@cowprotocol/types'
+import { Fraction } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
 
-import { FractionLike, Nullish } from '../../types'
-
 export interface FiatAmountProps {
-  amount: Nullish<FractionLike>
+  amount: Nullish<Fraction>
   accurate?: boolean
   defaultValue?: string
   className?: string
@@ -17,6 +17,8 @@ const Wrapper = styled.span`
   word-break: break-all;
 `
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function FiatAmount({ amount, defaultValue, className, accurate = false }: FiatAmountProps) {
   const formattedAmount = formatFiatAmount(amount)
   const title = FractionUtils.fractionLikeToExactString(amount, LONG_PRECISION)

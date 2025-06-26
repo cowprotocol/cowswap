@@ -97,5 +97,40 @@
       "priority": 5,
       "source": "https://static.optimism.io/optimism.tokenlist.json"
     }
+  ],
+  "137": [
+    {
+      "priority": 1,
+      "enabledByDefault": true,
+      "source": "https://files.cow.fi/tokens/CowSwap.json"
+    },
+    {
+      "priority": 2,
+      "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/CoinGecko.137.json",
+      "enabledByDefault": true
+    },
+    {
+      "priority": 3,
+      "enabledByDefault": true,
+      "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/Uniswap.137.json"
+    }
+  ],
+  "43114": [
+    {
+      "priority": 1,
+      "enabledByDefault": true,
+      "source": "https://files.cow.fi/tokens/CowSwap.json"
+    },
+    {
+      "priority": 2,
+      "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/CoinGecko.43114.json",
+      "enabledByDefault": true
+    },
+    {
+      "priority": 3,
+      "enabledByDefault": true,
+      "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/Uniswap.43114.json"
+    }
   ]
 }
+
