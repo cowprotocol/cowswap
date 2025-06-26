@@ -7,7 +7,7 @@ export const NETWORK_MAP = {
   xdai: 'Gnosis Chain',
 }
 
-export const NETWORK_IMAGE_MAP: Record<keyof typeof NETWORK_MAP, string> = {
+export const NETWORK_IMAGE_MAP: Record<Network, string> = {
   ethereum: '/images/ethereum.svg',
   base: '/images/base-chain.svg',
   'arbitrum-one': '/images/arbitrum-chain.svg',
@@ -16,7 +16,7 @@ export const NETWORK_IMAGE_MAP: Record<keyof typeof NETWORK_MAP, string> = {
   xdai: '/images/gnosis-chain.svg',
 }
 
-export const NETWORK_URL_MAP: Record<keyof typeof NETWORK_MAP, string> = {
+export const NETWORK_URL_MAP: Record<Network, string> = {
   ethereum: 'https://etherscan.io/address/',
   base: 'https://basescan.org/address/',
   'arbitrum-one': 'https://arbiscan.io/address/',
