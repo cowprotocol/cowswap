@@ -12,6 +12,13 @@ export interface TokenListItem {
   enabled: boolean
 }
 
+export interface SlippageConfig {
+  min: number
+  max: number
+  default: number
+}
+
+
 export interface ConfiguratorState {
   chainId?: SupportedChainId
   theme: PaletteMode
@@ -35,4 +42,7 @@ export interface ConfiguratorState {
   disableProgressBar: boolean
   hideBridgeInfo: boolean | undefined
   hideOrdersTable: boolean | undefined
+  // todo think to make it required
+  erc20Slippage?: SlippageConfig
+  ethFlowSlippage?: SlippageConfig
 }

@@ -1,12 +1,19 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
-import { DEFAULT_SLIPPAGE_BPS, MINIMUM_ETH_FLOW_SLIPPAGE_BPS } from '@cowprotocol/common-const'
+import {
+  DEFAULT_SLIPPAGE_BPS,
+  MAX_SLIPPAGE_BPS,
+  MIN_SLIPPAGE_BPS,
+  MINIMUM_ETH_FLOW_SLIPPAGE_BPS
+} from '@cowprotocol/common-const'
 import { mapSupportedNetworks } from '@cowprotocol/cow-sdk'
 import { PersistentStateByChain } from '@cowprotocol/types'
 import { walletInfoAtom } from '@cowprotocol/wallet'
 
+import { injectedWidgetParamsAtom } from 'modules/injectedWidget/state/injectedWidgetParamsAtom'
 import { isEoaEthFlowAtom } from 'modules/trade'
+
 
 type SlippageBpsPerNetwork = PersistentStateByChain<number>
 
@@ -28,13 +35,37 @@ export const setShouldUseAutoSlippageAtom = atom(null, (_, set, isEnabled: boole
   set(shouldUseAutoSlippageAtom, isEnabled)
 })
 
-export const defaultSlippageAtom = atom((get) => {
-  const { chainId } = get(walletInfoAtom)
-  const isEoaEthFlow = get(isEoaEthFlowAtom)
+export const slippageConfigAtom = atom((get) => {
+  const { ethFlowSlippage, erc20Slippage } = get(injectedWidgetParamsAtom).params
 
-  return isEoaEthFlow ? MINIMUM_ETH_FLOW_SLIPPAGE_BPS[chainId] : DEFAULT_SLIPPAGE_BPS
+  const isEoaEthFlow = get(isEoaEthFlowAtom)
+  const { chainId } = get(walletInfoAtom)
+
+  const currentFlowSlippage = isEoaEthFlow ? ethFlowSlippage : erc20Slippage;
+
+  const minSlippage = currentFlowSlippage?.min
+    ? currentFlowSlippage.min
+    : isEoaEthFlow ? MINIMUM_ETH_FLOW_SLIPPAGE_BPS[chainId] : MIN_SLIPPAGE_BPS
+
+  const maxSlippage = currentFlowSlippage?.max
+    ? currentFlowSlippage.max
+    : MAX_SLIPPAGE_BPS
+
+  const defaultSlippage = currentFlowSlippage?.default
+    ? currentFlowSlippage.default
+    : isEoaEthFlow ? MINIMUM_ETH_FLOW_SLIPPAGE_BPS[chainId] : DEFAULT_SLIPPAGE_BPS
+
+  // todo need to validate default slippage here
+  // need to handle autoSlippage settings also here
+
+  return {
+    min: minSlippage,
+    max: maxSlippage,
+    default: defaultSlippage,
+  }
 })
 
+// todo - think how to protect slippage if the settings were changed (f.e. user slippage is higher than max slippage)
 export const currentUserSlippageAtom = atom<number | null>((get) => {
   const { chainId } = get(walletInfoAtom)
   const isEoaEthFlow = get(isEoaEthFlowAtom)

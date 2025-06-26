@@ -168,6 +168,12 @@ export interface CowSwapWidgetContent {
   feeTooltipMarkdown?: string
 }
 
+export interface SlippageConfig {
+  min: number
+  max: number
+  default: number
+}
+
 export interface CowSwapWidgetParams {
   /**
    * The unique identifier of the widget consumer.
@@ -324,6 +330,9 @@ export interface CowSwapWidgetParams {
    * Customizable labels and content for the widget.
    */
   content?: CowSwapWidgetContent
+
+  erc20Slippage?: SlippageConfig
+  ethFlowSlippage?: SlippageConfig
 }
 
 // Define types for event payloads

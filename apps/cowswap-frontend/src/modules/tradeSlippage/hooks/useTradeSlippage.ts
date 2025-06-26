@@ -7,16 +7,15 @@ import { Percent } from '@uniswap/sdk-core'
 import { useSmartSlippageFromQuote } from 'modules/tradeQuote'
 
 import {
-  defaultSlippageAtom,
   SlippageType,
   currentUserSlippageAtom,
-  shouldUseAutoSlippageAtom,
+  shouldUseAutoSlippageAtom, slippageConfigAtom
 } from '../state/slippageValueAndTypeAtom'
 
 
 export function useTradeSlippageValueAndType(): { type: SlippageType; value: number } {
   const currentUserSlippage = useAtomValue(currentUserSlippageAtom)
-  const defaultSlippage = useAtomValue(defaultSlippageAtom)
+  const defaultSlippage = useAtomValue(slippageConfigAtom).default
   const smartSlippage = useSmartSlippageFromQuote()
   const isSmartSlippageEnabledByWidget = useAtomValue(shouldUseAutoSlippageAtom)
 
@@ -40,5 +39,5 @@ export function useTradeSlippage(): Percent {
 }
 
 export function useDefaultTradeSlippage(): Percent {
-  return bpsToPercent(useAtomValue(defaultSlippageAtom))
+  return bpsToPercent(useAtomValue(slippageConfigAtom).default)
 }
