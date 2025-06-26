@@ -11,17 +11,19 @@ import { featureFlagsAtom } from 'common/state/featureFlagsState'
 
 import { VolumeFee } from '../types'
 
+const DEFAULT_PARTNER_FEE_RECIPIENT = '0x22af3D38E50ddedeb7C47f36faB321eC3Bb72A76'
+
 const COWSWAP_VOLUME_FEES: Record<SupportedChainId, VolumeFee | null> = {
   [SupportedChainId.MAINNET]: null,
   [SupportedChainId.SEPOLIA]: null,
   [SupportedChainId.ARBITRUM_ONE]: {
     volumeBps: 10, // 0.1%
-    recipient: '0x451100Ffc88884bde4ce87adC8bB6c7Df7fACccd', // Arb1 Protocol fee safe
+    recipient: DEFAULT_PARTNER_FEE_RECIPIENT,
   },
   [SupportedChainId.BASE]: null,
   [SupportedChainId.GNOSIS_CHAIN]: {
     volumeBps: 10, // 0.1%
-    recipient: '0x6b3214fD11dc91De14718DeE98Ef59bCbFcfB432', // Gnosis Chain Protocol fee safe
+    recipient: DEFAULT_PARTNER_FEE_RECIPIENT,
   },
   [SupportedChainId.POLYGON]: null, // TODO: check if we should apply fee on Polygon
   [SupportedChainId.AVALANCHE]: null, // TODO: check if we should apply fee on Avalanche
