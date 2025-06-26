@@ -13,11 +13,10 @@ export interface TokenListItem {
 }
 
 export interface SlippageConfig {
-  min: number
-  max: number
-  default: number
+  min?: number
+  max?: number
+  defaultValue?: number
 }
-
 
 export interface ConfiguratorState {
   chainId?: SupportedChainId
