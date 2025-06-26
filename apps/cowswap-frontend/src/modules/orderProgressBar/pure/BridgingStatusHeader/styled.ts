@@ -5,6 +5,13 @@ import styled, { DefaultTheme } from 'styled-components/macro'
 
 import { BridgingFlowStep } from '../../types'
 
+const STEP_ICON_PADDING: Record<BridgingFlowStep, string> = {
+  bridgingInProgress: '10%',
+  bridgingFailed: '18%',
+  bridgingFinished: '18%',
+  refundCompleted: '18%',
+}
+
 export const getStepColors = (
   theme: DefaultTheme,
 ): Record<BridgingFlowStep, { background: string; title: string; icon: string; iconBackground: string }> => ({
@@ -67,11 +74,13 @@ const MARGIN_MULTIPLIER = 1.5
 const CONNECTOR_OFFSET_MULTIPLIER = -1.25
 
 export const TokenLogo = styled(TokenLogoOriginal)<{ $step: BridgingFlowStep; $tokenSize: number }>`
+  /* CSS custom properties for dynamic token sizing and spacing calculations */
   --size: ${({ $tokenSize }) => $tokenSize}px;
   --margin: calc(var(--size) * ${MARGIN_MULTIPLIER});
   --connector-offset: calc(var(--size) * ${CONNECTOR_OFFSET_MULTIPLIER});
   position: relative;
 
+  /* Connector line between tokens using pseudo-element */
   &:before {
     content: '';
     display: block;
@@ -112,7 +121,7 @@ export const StatusIcon = styled.div<{ $step: BridgingFlowStep }>`
   > svg {
     width: 100%;
     height: 100%;
-    padding: ${({ $step }) => ($step === 'bridgingInProgress' ? '10%' : '18%')};
+    padding: ${({ $step }) => STEP_ICON_PADDING[$step]};
     color: currentColor;
   }
 
