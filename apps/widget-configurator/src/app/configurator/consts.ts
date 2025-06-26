@@ -1,5 +1,5 @@
 import { DEFAULT_PARTNER_FEE_RECIPIENT } from '@cowprotocol/common-const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { mapAddressToSupportedNetworks } from '@cowprotocol/cow-sdk'
 import { CowWidgetEventListeners, CowWidgetEvents, ToastMessageType } from '@cowprotocol/events'
 import { CowSwapWidgetPaletteParams, TokenInfo, TradeType } from '@cowprotocol/widget-lib'
 
@@ -7,15 +7,7 @@ import { TokenListItem } from './types'
 
 // CoW DAO addresses
 
-export const DEFAULT_PARTNER_FEE_RECIPIENT_PER_NETWORK: Record<SupportedChainId, string> = {
-  [SupportedChainId.MAINNET]: DEFAULT_PARTNER_FEE_RECIPIENT,
-  [SupportedChainId.GNOSIS_CHAIN]: DEFAULT_PARTNER_FEE_RECIPIENT,
-  [SupportedChainId.ARBITRUM_ONE]: DEFAULT_PARTNER_FEE_RECIPIENT,
-  [SupportedChainId.BASE]: DEFAULT_PARTNER_FEE_RECIPIENT,
-  [SupportedChainId.SEPOLIA]: DEFAULT_PARTNER_FEE_RECIPIENT,
-  [SupportedChainId.POLYGON]: DEFAULT_PARTNER_FEE_RECIPIENT,
-  [SupportedChainId.AVALANCHE]: DEFAULT_PARTNER_FEE_RECIPIENT,
-}
+export const DEFAULT_PARTNER_FEE_RECIPIENT_PER_NETWORK = mapAddressToSupportedNetworks(DEFAULT_PARTNER_FEE_RECIPIENT)
 
 export const TRADE_MODES = [TradeType.SWAP, TradeType.LIMIT, TradeType.ADVANCED, TradeType.YIELD]
 
