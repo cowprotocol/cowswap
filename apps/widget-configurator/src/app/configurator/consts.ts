@@ -1,3 +1,4 @@
+import { DEFAULT_PARTNER_FEE_RECIPIENT } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CowWidgetEventListeners, CowWidgetEvents, ToastMessageType } from '@cowprotocol/events'
 import { CowSwapWidgetPaletteParams, TokenInfo, TradeType } from '@cowprotocol/widget-lib'
@@ -5,7 +6,7 @@ import { CowSwapWidgetPaletteParams, TokenInfo, TradeType } from '@cowprotocol/w
 import { TokenListItem } from './types'
 
 // CoW DAO addresses
-const DEFAULT_PARTNER_FEE_RECIPIENT = '0x22af3D38E50ddedeb7C47f36faB321eC3Bb72A76'
+
 export const DEFAULT_PARTNER_FEE_RECIPIENT_PER_NETWORK: Record<SupportedChainId, string> = {
   [SupportedChainId.MAINNET]: DEFAULT_PARTNER_FEE_RECIPIENT,
   [SupportedChainId.GNOSIS_CHAIN]: DEFAULT_PARTNER_FEE_RECIPIENT,

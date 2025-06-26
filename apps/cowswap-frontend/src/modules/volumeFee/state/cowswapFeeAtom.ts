@@ -1,6 +1,6 @@
 import { atom } from 'jotai'
 
-import { LpToken, STABLECOINS } from '@cowprotocol/common-const'
+import { DEFAULT_PARTNER_FEE_RECIPIENT, LpToken, STABLECOINS } from '@cowprotocol/common-const'
 import { getCurrencyAddress, isInjectedWidget } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { walletInfoAtom } from '@cowprotocol/wallet'
@@ -10,8 +10,6 @@ import { derivedTradeStateAtom, TradeType, tradeTypeAtom } from 'modules/trade'
 import { featureFlagsAtom } from 'common/state/featureFlagsState'
 
 import { VolumeFee } from '../types'
-
-const DEFAULT_PARTNER_FEE_RECIPIENT = '0x22af3D38E50ddedeb7C47f36faB321eC3Bb72A76'
 
 const COWSWAP_VOLUME_FEES: Record<SupportedChainId, VolumeFee | null> = {
   [SupportedChainId.MAINNET]: null,
