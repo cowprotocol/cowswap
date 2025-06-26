@@ -61,14 +61,23 @@ function useToggleExpanded(
   return { isExpanded, toggleExpanded, onKeyDown }
 }
 
-function renderSectionContent(
-  sellAmount: CurrencyAmount<Currency> | undefined,
-  buyAmount: CurrencyAmount<Currency> | undefined,
-  buyAmountUsd: CurrencyAmount<Token> | null | undefined,
-  chainName: string,
-  isExpanded: boolean,
-  children: ReactNode,
-): ReactNode {
+interface SectionContentComponentProps {
+  sellAmount: CurrencyAmount<Currency> | undefined
+  buyAmount: CurrencyAmount<Currency> | undefined
+  buyAmountUsd: CurrencyAmount<Token> | null | undefined
+  chainName: string
+  isExpanded: boolean
+  children: ReactNode
+}
+
+function SectionContentComponent({
+  sellAmount,
+  buyAmount,
+  buyAmountUsd,
+  chainName,
+  isExpanded,
+  children,
+}: SectionContentComponentProps): ReactNode {
   if (!sellAmount || !buyAmount) {
     return children
   }
@@ -81,7 +90,17 @@ function renderSectionContent(
   )
 }
 
-function renderTitleActions(explorerUrl?: string, isCollapsible = false, isExpanded = false): ReactNode {
+interface TitleActionsComponentProps {
+  explorerUrl?: string
+  isCollapsible?: boolean
+  isExpanded?: boolean
+}
+
+function TitleActionsComponent({
+  explorerUrl,
+  isCollapsible = false,
+  isExpanded = false,
+}: TitleActionsComponentProps): ReactNode {
   return (
     <>
       {explorerUrl && (
@@ -150,9 +169,17 @@ export function BridgeDetailsContainer({
         aria-expanded={isCollapsible ? isExpanded : undefined}
       >
         {titleContent}
-        {renderTitleActions(explorerUrl, isCollapsible, isExpanded)}
+        <TitleActionsComponent explorerUrl={explorerUrl} isCollapsible={isCollapsible} isExpanded={isExpanded} />
       </StopTitleComponent>
-      {renderSectionContent(sellAmount, buyAmount, buyAmountUsd, chainName, isExpanded, children)}
+      <SectionContentComponent
+        sellAmount={sellAmount}
+        buyAmount={buyAmount}
+        buyAmountUsd={buyAmountUsd}
+        chainName={chainName}
+        isExpanded={isExpanded}
+      >
+        {children}
+      </SectionContentComponent>
     </>
   )
 }

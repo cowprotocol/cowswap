@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import { ReactNode } from 'react'
 
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { Currency, Token } from '@uniswap/sdk-core'
@@ -37,7 +37,7 @@ function createTokenWithChain(token: Currency, chainId?: number): Currency {
 /**
  * Creates a TokenLogo element with consistent styling
  */
-function createTokenLogo(token: Currency, stepName: BridgingFlowStep): React.JSX.Element {
+function createTokenLogo(token: Currency, stepName: BridgingFlowStep): ReactNode {
   return <styledEl.TokenLogo token={token} size={TOKEN_LOGO_SIZE} $step={stepName} $tokenSize={TOKEN_LOGO_SIZE} />
 }
 

@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
+import React, { Dispatch, ReactNode, SetStateAction, useEffect, useMemo, useState } from 'react'
 
 import { getAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -134,9 +134,7 @@ export const FiatRate = styled.span`
   white-space: nowrap;
 `
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function InvertRateControl({ onClick, className }: { onClick(): void; className?: string }) {
+export function InvertRateControl({ onClick, className }: { onClick(): void; className?: string }): ReactNode {
   return (
     <InvertIcon className={className} onClick={onClick}>
       <Repeat size={11} />
@@ -145,9 +143,8 @@ export function InvertRateControl({ onClick, className }: { onClick(): void; cla
 }
 
 // TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
+// eslint-disable-next-line max-lines-per-function, complexity
 export function RateInfo({
   rateInfoParams,
   className,
@@ -162,7 +159,7 @@ export function RateInfo({
   opacitySymbol = false,
   noFiat = false,
   rightAlign = false,
-}: RateInfoProps): React.JSX.Element | null {
+}: RateInfoProps): ReactNode | null {
   const { chainId, inputCurrencyAmount, outputCurrencyAmount, activeRateFiatAmount, invertedActiveRateFiatAmount } =
     rateInfoParams
 
@@ -226,9 +223,7 @@ export function RateInfo({
 
   if (!rateInputCurrency || !rateOutputCurrency || !currentActiveRate) return null
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const toggleInverted = () => setCurrentIsInverted((state) => !state)
+  const toggleInverted = (): void => setCurrentIsInverted((state) => !state)
 
   return (
     <Wrapper stylized={stylized} className={className}>
