@@ -1,4 +1,4 @@
-import React from 'react'
+import { ReactNode } from 'react'
 
 import { UI, FiatAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
@@ -17,8 +17,6 @@ const FiatValueWrapper = styled.div<{ hasValue$: boolean }>`
   transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 `
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function FiatValue({
   fiatValue,
   priceImpactParams,
@@ -27,7 +25,7 @@ export function FiatValue({
   fiatValue?: Nullish<CurrencyAmount<Currency>>
   priceImpactParams?: PriceImpact
   className?: string
-}): React.JSX.Element {
+}): ReactNode {
   return (
     <FiatValueWrapper className={className} hasValue$={!!fiatValue}>
       {fiatValue ? <FiatAmount amount={fiatValue} /> : ''}
