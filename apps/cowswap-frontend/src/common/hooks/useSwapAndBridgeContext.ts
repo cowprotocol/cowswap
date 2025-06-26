@@ -185,26 +185,6 @@ function createPendingContext(
   }
 }
 
-function createCompleteContext(
-  bridgingStatus: SwapAndBridgeStatus,
-  overview: SwapAndBridgeOverview,
-  bridgeProvider: BridgeProviderInfo,
-  quoteBridgeContext: QuoteBridgeContext,
-  bridgingProgressContext: BridgingProgressContext,
-  swapResultContext: SwapResultContext,
-  statusResult: CrossChainOrder['statusResult'],
-): SwapAndBridgeContext {
-  return {
-    bridgingStatus,
-    overview,
-    bridgeProvider,
-    quoteBridgeContext,
-    bridgingProgressContext,
-    swapResultContext,
-    statusResult,
-  }
-}
-
 function validateChainData(
   sourceChainData: ReturnType<typeof getChainInfo> | undefined,
   destChainData: { label: string } | undefined,
@@ -262,15 +242,15 @@ function processCompleteContext(
 
   const quoteBridgeContext = createQuoteBridgeContext(destChainData, crossChainOrder, overview.targetAmounts)
 
-  return createCompleteContext(
+  return {
     bridgingStatus,
     overview,
     bridgeProvider,
     quoteBridgeContext,
     bridgingProgressContext,
     swapResultContext,
-    crossChainOrder.statusResult,
-  )
+    statusResult: crossChainOrder.statusResult,
+  }
 }
 
 function createContextData(
@@ -436,12 +416,14 @@ function createContextFromData(
   )
 }
 
-function useSwapAndBridgeContextMemo(
-  hookData: ReturnType<typeof useSwapAndBridgeHookData>,
+export function useSwapAndBridgeContext(
+  chainId: SupportedChainId,
   order: Order | undefined,
   winningSolver: SolverCompetition | undefined,
   bridgeQuoteAmounts?: BridgeQuoteAmounts,
 ): SwapAndBridgeContext | undefined {
+  const hookData = useSwapAndBridgeHookData(chainId, order)
+
   const {
     account,
     bridgeSupportedNetworks,
@@ -485,15 +467,4 @@ function useSwapAndBridgeContextMemo(
       bridgeQuoteAmounts,
     ],
   )
-}
-
-export function useSwapAndBridgeContext(
-  chainId: SupportedChainId,
-  order: Order | undefined,
-  winningSolver: SolverCompetition | undefined,
-  bridgeQuoteAmounts?: BridgeQuoteAmounts,
-): SwapAndBridgeContext | undefined {
-  const hookData = useSwapAndBridgeHookData(chainId, order)
-
-  return useSwapAndBridgeContextMemo(hookData, order, winningSolver, bridgeQuoteAmounts)
 }
