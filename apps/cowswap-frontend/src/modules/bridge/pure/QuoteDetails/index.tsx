@@ -1,6 +1,9 @@
 import { ReactNode } from 'react'
 
 import { BridgeProviderInfo } from '@cowprotocol/cow-sdk'
+import { BannerOrientation, CollapsibleInlineBanner, StatusColorVariant } from '@cowprotocol/ui'
+
+import { AddressLink } from 'common/pure/AddressLink'
 
 import { DividerHorizontal } from '../../styles'
 import { QuoteBridgeContext, QuoteSwapContext, SwapAndBridgeStatus } from '../../types'
@@ -53,6 +56,28 @@ export function QuoteDetails({
       >
         <QuoteSwapContent context={swapContext} />
       </BridgeDetailsContainer>
+
+      <CollapsibleInlineBanner
+        bannerType={StatusColorVariant.Info}
+        orientation={BannerOrientation.Horizontal}
+        fontSize={13}
+        collapsedContent={
+          <div>
+            Swap bridged via your proxy account:{' '}
+            <AddressLink address={swapContext.recipient} chainId={swapContext.sellAmount.currency.chainId} />
+          </div>
+        }
+        expandedContent={
+          <div>
+            CoW Swap uses a dedicated proxy account, controlled only by you, to ensure smooooth bridging. Confirm the
+            recipient address above is{' '}
+            <b>
+              <AddressLink address={swapContext.recipient} chainId={swapContext.sellAmount.currency.chainId} />
+            </b>{' '}
+            - that’s your personal, private proxy account!
+          </div>
+        }
+      />
 
       <DividerHorizontal margin="8px 0 4px" />
 
