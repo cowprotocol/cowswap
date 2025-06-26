@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 
 import ReceiptIcon from '@cowprotocol/assets/cow-swap/icon-receipt.svg'
+import { getChainInfo } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { BridgeStatusResult, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ExternalLink } from '@cowprotocol/ui'
@@ -22,9 +23,12 @@ interface ReceivedBridgingContentProps {
 interface TransactionLinkProps {
   link: string
   label: string
+  chainId: SupportedChainId
 }
 
-function TransactionLink({ link, label }: TransactionLinkProps): ReactNode {
+function TransactionLink({ link, label, chainId }: TransactionLinkProps): ReactNode {
+  const explorerTitle = getChainInfo(chainId).explorerTitle
+
   return (
     <ConfirmDetailsItem
       label={
@@ -36,7 +40,7 @@ function TransactionLink({ link, label }: TransactionLinkProps): ReactNode {
         </>
       }
     >
-      <ExternalLink href={link}>View on bridge explorer ↗</ExternalLink>
+      <ExternalLink href={link}>View on {explorerTitle} ↗</ExternalLink>
     </ConfirmDetailsItem>
   )
 }
@@ -70,8 +74,8 @@ export function ReceivedBridgingContent({
         </b>
       </ConfirmDetailsItem>
 
-      {depositLink && <TransactionLink link={depositLink} label="Source transaction" />}
-      {fillTxLink && <TransactionLink link={fillTxLink} label="Destination transaction" />}
+      {depositLink && <TransactionLink link={depositLink} label="Source transaction" chainId={sourceChainId} />}
+      {fillTxLink && <TransactionLink link={fillTxLink} label="Destination transaction" chainId={destinationChainId as SupportedChainId} />}
     </>
   )
 }
