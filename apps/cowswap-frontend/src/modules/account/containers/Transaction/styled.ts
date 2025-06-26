@@ -46,6 +46,7 @@ export const Summary = styled.div`
     display: flex;
     grid-template-columns: initial;
     grid-template-rows: initial;
+    padding: 8px;
   }
 
   > span {
@@ -154,10 +155,6 @@ export const SummaryInnerRow = styled.div<{ isExpired?: boolean; isCancelled?: b
     ${Media.upToSmall()} {
       font-weight: 600;
       margin: 6px 0 0;
-    }
-
-    &.cancelled {
-      text-decoration: line-through;
     }
   }
 
