@@ -17,10 +17,13 @@ interface TradeDetailsAccordionProps {
   feeWrapper?: (feeElement: ReactNode, isOpen: boolean) => ReactNode
 }
 
-function createDefaultFeeContent(
-  feeUsdTotalAmount: CurrencyAmount<Currency> | null,
-  feeTotalAmount: CurrencyAmount<Currency> | null,
-): ReactNode {
+function DefaultFeeContent({
+  feeUsdTotalAmount,
+  feeTotalAmount,
+}: {
+  feeUsdTotalAmount: CurrencyAmount<Currency> | null
+  feeTotalAmount: CurrencyAmount<Currency> | null
+}): ReactNode {
   if (feeUsdTotalAmount?.greaterThan(0)) {
     return <FiatAmount amount={feeUsdTotalAmount} />
   }
@@ -65,7 +68,7 @@ export function TradeDetailsAccordion({
     [handleToggle],
   )
 
-  const defaultFeeContent = createDefaultFeeContent(feeUsdTotalAmount, feeTotalAmount)
+  const defaultFeeContent = <DefaultFeeContent feeUsdTotalAmount={feeUsdTotalAmount} feeTotalAmount={feeTotalAmount} />
 
   return (
     <Wrapper isOpen={open}>
