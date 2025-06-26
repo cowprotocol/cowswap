@@ -6,7 +6,7 @@ import SVG from 'react-inlinesvg'
 
 import { ClickableWrapper, StyledCollapsibleBanner, StyledToggleArrow, ToggleIconContainer } from './styled'
 
-import { CollapsibleInlineBannerProps } from '../shared/types'
+import { CollapsibleInlineBannerProps } from '../InlineBanner/shared/types'
 
 export function CollapsibleInlineBanner({
   collapsedContent,
@@ -57,4 +57,4 @@ export function CollapsibleInlineBanner({
   )
 }
 
-export * from '../shared/types'
+export * from '../InlineBanner/shared/types'

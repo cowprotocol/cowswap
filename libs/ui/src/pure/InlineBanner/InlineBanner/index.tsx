@@ -3,8 +3,8 @@ import { ReactNode } from 'react'
 import { CloseIcon, Wrapper } from './styled'
 
 import { StatusColorVariant, getStatusColorEnums } from '../../../theme/statusColors'
+import { BannerIcon } from '../shared/BannerIcon'
 import { InlineBannerProps } from '../shared/types'
-import { renderIcon } from '../shared/utils'
 
 export function InlineBanner({
   children,
@@ -40,7 +40,14 @@ export function InlineBanner({
       fontSize={fontSize}
     >
       <span>
-        {renderIcon(hideIcon, customIcon, iconSize, colorEnums, bannerType, iconPadding)}
+        <BannerIcon
+          hideIcon={hideIcon}
+          customIcon={customIcon}
+          iconSize={iconSize}
+          colorEnums={colorEnums}
+          bannerType={bannerType}
+          iconPadding={iconPadding}
+        />
         {noWrapContent ? children : <span>{children}</span>}
       </span>
 

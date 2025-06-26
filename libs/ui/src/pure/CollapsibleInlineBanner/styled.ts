@@ -1,6 +1,6 @@
 import styled from 'styled-components/macro'
 
-import { UI } from '../../../enum'
+import { UI } from '../../enum'
 import { InlineBanner } from '../InlineBanner'
 
 export const ToggleIconContainer = styled.div`
