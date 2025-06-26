@@ -36,6 +36,7 @@ export interface SelectTokenModalProps<T = TokenListCategory[] | null> {
   defaultInputValue?: string
   areTokensLoading: boolean
   tokenListTags: TokenListTags
+  standalone?: boolean
 
   onSelectToken(token: TokenWithLogo): void
   openPoolPage(poolAddress: string): void

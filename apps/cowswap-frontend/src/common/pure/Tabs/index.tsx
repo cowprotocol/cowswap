@@ -2,7 +2,7 @@ import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-export const TabsContainer = styled.div`
+export const Tabs = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -10,17 +10,19 @@ export const TabsContainer = styled.div`
   border-bottom: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
 `
 
-export const Tab = styled.button<{ active$: boolean }>`
+export const Tab = styled.button<{ $active: boolean }>`
   background: none;
   margin: 0;
   outline: none;
   border: 0;
   cursor: pointer;
-  color: ${({ active$ }) => (active$ ? 'var(' + UI.COLOR_INFO + ')' : 'var(' + UI.COLOR_TEXT + ')')};
-  opacity: ${({ active$ }) => (active$ ? 1 : 0.5)};
+  color: ${({ $active }) => ($active ? 'var(' + UI.COLOR_INFO + ')' : 'var(' + UI.COLOR_TEXT + ')')};
+  opacity: ${({ $active }) => ($active ? 1 : 0.5)};
   padding: 14px 16px;
   font-size: 15px;
   font-weight: 600;
+  text-decoration: none;
+  text-align: center;
   position: relative;
   transition: all 0.2s ease-in-out;
   border-radius: 5px;
@@ -34,7 +36,7 @@ export const Tab = styled.button<{ active$: boolean }>`
     width: 100%;
     height: 2px;
     background-color: var(${UI.COLOR_INFO});
-    opacity: ${({ active$ }) => (active$ ? 1 : 0)};
+    opacity: ${({ $active }) => ($active ? 1 : 0)};
     transition: all 0.2s ease-in-out;
   }
 

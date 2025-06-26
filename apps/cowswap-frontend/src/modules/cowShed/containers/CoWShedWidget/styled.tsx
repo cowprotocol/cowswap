@@ -1,9 +1,29 @@
 import { UI } from '@cowprotocol/ui'
 
+import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 import { WIDGET_MAX_WIDTH } from 'theme'
 
-export const Wrapper = styled.div`
+import { AddressLink } from 'common/pure/AddressLink'
+
+export const EmptyWrapper = styled.div<{ $modalMode: boolean }>`
+  width: 100%;
+`
+
+export const ModalWrapper = styled.div<{ $modalMode: boolean }>`
+  position: ${({ $modalMode }) => ($modalMode ? 'fixed' : 'static')};
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  left: 0;
+  top: 0;
+  overflow-y: scroll;
+  padding: 50px 0;
+  background: ${({ theme }) => (theme.isInjectedWidgetMode ? 'transparent' : transparentize(theme.black, 0.1))};
+  backdrop-filter: blur(3px);
+`
+
+export const WidgetWrapper = styled.div`
   width: 100%;
   max-width: ${WIDGET_MAX_WIDTH.swap};
   margin: 0 auto;
@@ -16,46 +36,20 @@ export const Wrapper = styled.div`
   li {
     padding: 0.3rem;
   }
-
-  .noFunds {
-    color: var(${UI.COLOR_ALERT_TEXT});
-    background: var(${UI.COLOR_ALERT_BG});
-    padding: 10px;
-    border-radius: 16px;
-  }
 `
 
-export const ProxyInfo = styled.div`
+export const AddressLinkStyled = styled(AddressLink)`
+  color: inherit;
+  width: 100%;
+  font-size: 14px;
+  background: var(${UI.COLOR_PAPER});
+  border-radius: 16px;
+  padding: 10px;
   display: flex;
-  flex-flow: column wrap;
-  gap: 10px;
-  margin: 0;
-  text-align: center;
-  font-size: 15px;
-
-  > h4 {
-    font-size: 16px;
-    font-weight: 600;
-    margin: 0 auto;
-  }
-
-  > a {
-    color: inherit;
-    width: 100%;
-  }
-
-  > a > span {
-    font-size: 100%;
-    background: var(${UI.COLOR_PAPER});
-    border-radius: 16px;
-    padding: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    margin: 0 auto;
-    word-break: break-all;
-  }
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  word-break: break-all;
 `
 
 export const Content = styled.div`
@@ -76,7 +70,7 @@ export const Content = styled.div`
 export const Title = styled.div`
   font-size: 24px;
   font-weight: 600;
-  margin: 10px 0;
+  margin: 5px 0;
 `
 
 export const FAQWrapper = styled.div`

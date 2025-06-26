@@ -46,8 +46,8 @@ export function BalancesAndAllowancesUpdater({ account, chainId, excludedTokens 
     }).map((token) => token.address)
   }, [excludedTokens, allTokens, chainId])
 
-  const balancesSwrConfig = useSwrConfigWithPauseForNetwork(chainId, BALANCES_SWR_CONFIG)
-  const allowancesSwrConfig = useSwrConfigWithPauseForNetwork(chainId, ALLOWANCES_SWR_CONFIG)
+  const balancesSwrConfig = useSwrConfigWithPauseForNetwork(chainId, account, BALANCES_SWR_CONFIG)
+  const allowancesSwrConfig = useSwrConfigWithPauseForNetwork(chainId, account, ALLOWANCES_SWR_CONFIG)
 
   usePersistBalancesAndAllowances({
     account,
