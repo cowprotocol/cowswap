@@ -24,7 +24,9 @@ interface SwapResultContentProps {
   context: SwapResultContext
 }
 
-function createWinningSolverContent(winningSolver: SwapResultContext['winningSolver']): ContentItem {
+function createWinningSolverContent(winningSolver: SwapResultContext['winningSolver']): ContentItem | null {
+  if (!winningSolver) return null
+
   return {
     withTimelineDot: true,
     label: 'Winning solver',
@@ -80,13 +82,14 @@ function createSurplusContent(
     ),
     content: (
       <SuccessTextBold>
-        +{' '}
         <TokenAmountDisplay
           currencyAmount={surplusAmount}
           displaySymbol
           usdValue={surplusAmountUsd}
           hideTokenIcon={true}
-        />
+        >
+          +
+        </TokenAmountDisplay>
       </SuccessTextBold>
     ),
   }

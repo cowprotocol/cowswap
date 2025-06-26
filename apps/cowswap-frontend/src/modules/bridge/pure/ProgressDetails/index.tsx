@@ -11,7 +11,6 @@ import { BridgeStatusIcons, BridgeStatusTitlePrefixes, SwapStatusIcons, SwapStat
 
 interface QuoteDetailsProps {
   className?: string
-
   context: SwapAndBridgeContext
 }
 

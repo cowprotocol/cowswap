@@ -54,9 +54,11 @@ export function doQuotePolling({
     }
   }
 
+  const isBridging = !!quoteParams && quoteParams.sellTokenChainId !== quoteParams.buyTokenChainId
   const fetchStartTimestamp = Date.now()
-  // Don't fetch fast quote in confirm screen
-  if (fastQuote && !isConfirmOpen) {
+
+  // Don't fetch fast quote in confirm screen and in bridging mode
+  if (fastQuote && !isConfirmOpen && !isBridging) {
     fetchQuote({ hasParamsChanged, priceQuality: PriceQuality.FAST, fetchStartTimestamp })
   }
   fetchQuote({ hasParamsChanged, priceQuality: PriceQuality.OPTIMAL, fetchStartTimestamp })

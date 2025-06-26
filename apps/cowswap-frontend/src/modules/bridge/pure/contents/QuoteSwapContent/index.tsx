@@ -2,10 +2,10 @@ import { ReactNode } from 'react'
 
 import { InfoTooltip, PercentDisplay } from '@cowprotocol/ui'
 
+import { ProxyRecipient } from 'modules/cowShed'
 import { ReceiveAmountTitle, TradeFeesAndCosts, ConfirmDetailsItem } from 'modules/trade'
 
 import { QuoteSwapContext } from '../../../types'
-import { RecipientDisplay } from '../../RecipientDisplay'
 import { TokenAmountDisplay } from '../../TokenAmountDisplay'
 
 interface QuoteDetailsContentProps {
@@ -67,7 +67,7 @@ function createRecipientContent(recipient: QuoteSwapContext['recipient'], chainI
         Recipient <InfoTooltip content="The address that will receive the tokens." size={14} />
       </>
     ),
-    content: <RecipientDisplay recipient={recipient} chainId={chainId} />,
+    content: <ProxyRecipient recipient={recipient} chainId={chainId} />,
   }
 }
 

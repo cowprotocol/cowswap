@@ -2,9 +2,9 @@ import { useEffect } from 'react'
 
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 
-import { useSwapFlowContext } from 'modules/swap'
+import { useSetOrderParams } from 'entities/orderHooks/useSetOrderParams'
 
-import { useSetOrderParams } from './useSetOrderParams'
+import { useSwapFlowContext } from 'modules/swap'
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type

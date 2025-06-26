@@ -49,14 +49,17 @@ const Wrapper = styled.div`
   }
 `
 
+const EMPTY_FAV_TOKENS: TokenWithLogo[] = []
+
 interface SelectTokenWidgetProps {
   displayLpTokenLists?: boolean
+  standalone?: boolean
 }
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
 // eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
-export function SelectTokenWidget({ displayLpTokenLists }: SelectTokenWidgetProps) {
+export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTokenWidgetProps) {
   const {
     open,
     onSelectToken,
@@ -152,7 +155,7 @@ export function SelectTokenWidget({ displayLpTokenLists }: SelectTokenWidgetProp
   return (
     <Wrapper>
       {(() => {
-        if (tokenToImport) {
+        if (tokenToImport && !standalone) {
           return (
             <ImportTokenModal
               tokens={[tokenToImport]}
@@ -163,7 +166,7 @@ export function SelectTokenWidget({ displayLpTokenLists }: SelectTokenWidgetProp
           )
         }
 
-        if (listToImport) {
+        if (listToImport && !standalone) {
           return (
             <ImportListModal
               list={listToImport}
@@ -174,7 +177,7 @@ export function SelectTokenWidget({ displayLpTokenLists }: SelectTokenWidgetProp
           )
         }
 
-        if (isManageWidgetOpen) {
+        if (isManageWidgetOpen && !standalone) {
           return (
             <ManageListsAndTokens
               lists={allTokenLists}
@@ -198,11 +201,12 @@ export function SelectTokenWidget({ displayLpTokenLists }: SelectTokenWidgetProp
 
         return (
           <SelectTokenModal
+            standalone={standalone}
             displayLpTokenLists={displayLpTokenLists}
             unsupportedTokens={unsupportedTokens}
             selectedToken={selectedToken}
             allTokens={allTokens}
-            favoriteTokens={favoriteTokens}
+            favoriteTokens={standalone ? EMPTY_FAV_TOKENS : favoriteTokens}
             balancesState={balancesState}
             permitCompatibleTokens={permitCompatibleTokens}
             onSelectToken={onSelectToken}

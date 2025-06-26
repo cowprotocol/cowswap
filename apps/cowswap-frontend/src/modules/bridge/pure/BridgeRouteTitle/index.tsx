@@ -14,6 +14,7 @@ interface BridgeRouteTitleProps {
   bridgeProvider: BridgeProviderInfo
   protocolIconShowOnly?: 'first' | 'second'
   protocolIconSize?: number
+  circleSize?: number
   stopNumber?: number
 }
 
@@ -25,15 +26,16 @@ export function BridgeRouteTitle({
   bridgeProvider,
   protocolIconShowOnly,
   protocolIconSize = 21,
+  circleSize,
   stopNumber,
 }: BridgeRouteTitleProps): ReactNode {
   return (
     <>
-      <StopNumberCircle status={status} stopNumber={stopNumber}>
+      <StopNumberCircle status={status} stopNumber={stopNumber} size={circleSize}>
         {icon}
       </StopNumberCircle>
       <b>
-        <span>{titlePrefix} </span>
+        {titlePrefix && <span>{titlePrefix} </span>}
         <ProtocolIcons
           size={protocolIconSize}
           showOnlyFirst={protocolIconShowOnly === 'first'}

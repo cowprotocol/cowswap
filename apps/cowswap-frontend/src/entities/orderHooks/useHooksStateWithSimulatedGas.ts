@@ -4,9 +4,8 @@ import { CowHookDetails } from '@cowprotocol/hook-dapp-lib'
 
 import { useTenderlyBundleSimulation } from 'modules/tenderly/hooks/useTenderlyBundleSimulation'
 
+import { HooksStoreState } from './hookDetailsAtom'
 import { useHooks } from './useHooks'
-
-import { HooksStoreState } from '../state/hookDetailsAtom'
 
 export function useHooksStateWithSimulatedGas(): HooksStoreState {
   const hooksRaw = useHooks()

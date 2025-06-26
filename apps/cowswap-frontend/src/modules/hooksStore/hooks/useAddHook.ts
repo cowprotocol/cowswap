@@ -3,9 +3,9 @@ import { useCallback } from 'react'
 
 import { CowHookDetails } from '@cowprotocol/hook-dapp-lib'
 
+import { setHooksAtom } from 'entities/orderHooks/hookDetailsAtom'
 import { v4 as uuidv4 } from 'uuid'
 
-import { setHooksAtom } from '../state/hookDetailsAtom'
 import { AddHook, HookDapp } from '../types/hooks'
 
 export function useAddHook(dapp: HookDapp, isPreHook: boolean): AddHook {
