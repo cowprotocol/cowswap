@@ -57,7 +57,7 @@ function createRecipientContent(recipient: QuoteBridgeContext['recipient'], chai
 
 function createReceiveAmountContent(buyAmountEl: ReactNode, hasChildren: boolean): ContentItem {
   return {
-    withTimelineDot: false,
+    withTimelineDot: true,
     label: hasChildren ? (
       'Min. to receive'
     ) : (
