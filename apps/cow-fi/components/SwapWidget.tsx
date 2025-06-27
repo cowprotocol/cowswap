@@ -1,7 +1,8 @@
-import React, { useState, useEffect, ChangeEvent } from 'react'
+import { useState, useEffect, ChangeEvent, JSX } from 'react'
 
 import { Color } from '@cowprotocol/ui'
 
+import Image from 'next/image'
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
 
@@ -9,6 +10,14 @@ import { LinkWithUtmComponent } from 'modules/utm/components'
 
 import { Button } from '@/components/Button'
 import { CONFIG } from '@/const/meta'
+import {
+  Network,
+  NETWORK_DEFAULT_BUY_TOKEN_MAP,
+  NETWORK_DEFAULT_SELL_TOKEN_MAP,
+  NETWORK_ID_MAP,
+  NETWORK_IMAGE_MAP,
+  NETWORK_MAP,
+} from '@/const/networkMap'
 
 type TabProps = {
   active: boolean
@@ -193,37 +202,122 @@ type SwapWidgetProps = {
   platforms: Platforms
 }
 
-enum Networks {
-  ETHEREUM = 'ethereum',
-  XDAI = 'xdai',
+type Tab = 'Buy' | 'Sell'
+const DEFAULT_TAB: Tab = 'Buy'
+const DEFAULT_NETWORK: Network = 'ethereum'
+
+const getBuyAndSellTokens = (
+  activeTab: Tab,
+  network: Network,
+  contractAddress: string,
+): { sellToken: string; buyToken: string } => {
+  let sellToken, buyToken
+  if (activeTab === 'Buy') {
+    buyToken = contractAddress
+    sellToken = NETWORK_DEFAULT_SELL_TOKEN_MAP[network]
+  } else {
+    sellToken = contractAddress
+    buyToken = NETWORK_DEFAULT_BUY_TOKEN_MAP[network]
+  }
+
+  return { sellToken, buyToken }
 }
 
-const NETWORK_MAP: { [key: string]: string } = {
-  [Networks.ETHEREUM]: 'Ethereum',
-  [Networks.XDAI]: 'Gnosis Chain',
+const Tabs = ({ activeTab, setActiveTab }: { activeTab: Tab; setActiveTab: (tab: Tab) => void }): JSX.Element => {
+  return (
+    <TabContainer>
+      <Tab onClick={() => setActiveTab('Buy')} active={activeTab === 'Buy'}>
+        Buy
+      </Tab>
+      <Tab onClick={() => setActiveTab('Sell')} active={activeTab === 'Sell'}>
+        Sell
+      </Tab>
+    </TabContainer>
+  )
 }
 
-const WXDAI = '0xe91d153e0b41518a2ce8dd3d7944fa863463a97d'
-const WETH = ['0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2', '0x6a023ccd1ff6f2045c3309768ead9e68f978f6e1']
+const getDropdownBody = (platforms: Platforms, handleSelect: (network: string) => void): JSX.Element => {
+  const { ethereum, xdai, base, 'arbitrum-one': arbitrum, avalanche, 'polygon-pos': polygon } = platforms
+  const width = 20
+  const height = 20
 
-export const SwapWidget = ({ tokenId, tokenSymbol, tokenImage, platforms }: SwapWidgetProps) => {
-  const [activeTab, setActiveTab] = useState('Buy')
-  const [network, setNetwork] = useState<string | null>(null)
+  return (
+    <DropdownBody>
+      {ethereum?.contractAddress && (
+        <DropdownOption onClick={() => handleSelect('ethereum')}>
+          <Image src={NETWORK_IMAGE_MAP.ethereum} alt={NETWORK_MAP.ethereum} width={width} height={height} />
+          {NETWORK_MAP.ethereum}
+        </DropdownOption>
+      )}
+      {base?.contractAddress && (
+        <DropdownOption onClick={() => handleSelect('base')}>
+          <Image src={NETWORK_IMAGE_MAP.base} alt={NETWORK_MAP.base} width={width} height={height} />
+          {NETWORK_MAP.base}
+        </DropdownOption>
+      )}
+      {arbitrum?.contractAddress && (
+        <DropdownOption onClick={() => handleSelect('arbitrum-one')}>
+          <Image
+            src={NETWORK_IMAGE_MAP['arbitrum-one']}
+            alt={NETWORK_MAP['arbitrum-one']}
+            width={width}
+            height={height}
+          />
+          {NETWORK_MAP['arbitrum-one']}
+        </DropdownOption>
+      )}
+      {polygon?.contractAddress && (
+        <DropdownOption onClick={() => handleSelect('polygon-pos')}>
+          <Image
+            src={NETWORK_IMAGE_MAP['polygon-pos']}
+            alt={NETWORK_MAP['polygon-pos']}
+            width={width}
+            height={height}
+          />
+          {NETWORK_MAP['polygon-pos']}
+        </DropdownOption>
+      )}
+      {avalanche?.contractAddress && (
+        <DropdownOption onClick={() => handleSelect('avalanche')}>
+          <Image src={NETWORK_IMAGE_MAP.avalanche} alt={NETWORK_MAP.avalanche} width={width} height={height} />
+          {NETWORK_MAP.avalanche}
+        </DropdownOption>
+      )}
+      {xdai?.contractAddress && (
+        <DropdownOption onClick={() => handleSelect('xdai')}>
+          <Image src={NETWORK_IMAGE_MAP.xdai} alt={NETWORK_MAP.xdai} width={width} height={height} />
+          {NETWORK_MAP.xdai}
+        </DropdownOption>
+      )}
+    </DropdownBody>
+  )
+}
+
+export const SwapWidget = ({ tokenId, tokenSymbol, tokenImage, platforms }: SwapWidgetProps): JSX.Element => {
+  const [activeTab, setActiveTab] = useState<Tab>(DEFAULT_TAB)
+  const [network, setNetwork] = useState<string>(DEFAULT_NETWORK)
   const [amount, setAmount] = useState(0)
 
   const [isOpen, setIsOpen] = useState(false)
-  const handleSelect = (network: string | null) => {
+
+  const handleSelect = (network: string): void => {
     setNetwork(network)
     setIsOpen(false)
   }
 
+  // set initial network based on the available platforms
   useEffect(() => {
-    // set initial network based on the available platforms
-    if (platforms.ethereum.contractAddress) setNetwork(Networks.ETHEREUM)
-    else if (platforms.xdai.contractAddress) setNetwork(Networks.XDAI)
+    const { ethereum, xdai, base, 'arbitrum-one': arbitrum, avalanche, 'polygon-pos': polygon } = platforms
+
+    if (ethereum?.contractAddress) setNetwork('ethereum')
+    else if (base?.contractAddress) setNetwork('base')
+    else if (arbitrum?.contractAddress) setNetwork('arbitrum-one')
+    else if (polygon?.contractAddress) setNetwork('polygon-pos')
+    else if (avalanche?.contractAddress) setNetwork('avalanche')
+    else if (xdai?.contractAddress) setNetwork('xdai')
   }, [platforms])
 
-  const handleInputChange = (event: ChangeEvent<any>) => {
+  const handleInputChange = (event: ChangeEvent<HTMLInputElement>): void => {
     let value = event.target.value
 
     // Remove leading minus sign if present
@@ -231,40 +325,17 @@ export const SwapWidget = ({ tokenId, tokenSymbol, tokenImage, platforms }: Swap
       value = value.slice(1)
     }
 
-    if (value === '' || (parseFloat(value) >= 0 && !isNaN(value))) {
-      setAmount(value)
+    if (value === '' || (parseFloat(value) >= 0 && !isNaN(parseFloat(value)))) {
+      setAmount(parseFloat(value))
     }
   }
 
-  const onSwap = () => {
+  const getSwapUrl = (): string => {
     if (network && platforms[network]) {
-      const networkId = network === 'xdai' ? 100 : 1
+      const networkId = NETWORK_ID_MAP[network as Network]
       const contractAddress = platforms[network].contractAddress
 
-      let sellToken, buyToken
-      if (activeTab === 'Buy') {
-        sellToken = networkId === 100 ? 'WXDAI' : 'WETH'
-        buyToken = contractAddress
-
-        if (contractAddress === WXDAI) {
-          sellToken = 'XDAI'
-        }
-
-        if (WETH.includes(contractAddress)) {
-          sellToken = networkId === 100 ? 'WXDAI' : 'ETH'
-        }
-      } else {
-        sellToken = contractAddress
-        buyToken = networkId === 100 ? 'WXDAI' : 'WETH'
-
-        if (contractAddress === WXDAI) {
-          buyToken = 'XDAI'
-        }
-
-        if (WETH.includes(contractAddress)) {
-          buyToken = networkId === 100 ? 'WXDAI' : 'ETH'
-        }
-      }
+      const { sellToken, buyToken } = getBuyAndSellTokens(activeTab, network as Network, contractAddress)
 
       return `https://swap.cow.fi/#/${networkId}/swap/${sellToken}/${buyToken}?${activeTab.toLowerCase()}Amount=${amount}`
     } else {
@@ -272,41 +343,19 @@ export const SwapWidget = ({ tokenId, tokenSymbol, tokenImage, platforms }: Swap
     }
   }
 
+  const networkImage = NETWORK_IMAGE_MAP[network as Network]
+  const networkName = NETWORK_MAP[network as Network]
+
   return (
     <Wrapper>
-      <TabContainer>
-        <Tab onClick={() => setActiveTab('Buy')} active={activeTab === 'Buy'}>
-          Buy
-        </Tab>
-        <Tab onClick={() => setActiveTab('Sell')} active={activeTab === 'Sell'}>
-          Sell
-        </Tab>
-      </TabContainer>
+      <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
 
       <DropdownContainer>
         <DropdownHeader onClick={() => setIsOpen(!isOpen)}>
-          <img
-            src={`/images/${network === Networks.ETHEREUM ? 'ethereum' : 'gnosis-chain'}.svg`}
-            alt={network ? NETWORK_MAP[network] : ''}
-          />
-          <b>{network ? NETWORK_MAP[network] : ''}</b>
+          <Image src={networkImage} alt={networkName} width={16} height={16} />
+          <b>{networkName}</b>
         </DropdownHeader>
-        {isOpen && (
-          <DropdownBody>
-            {platforms?.ethereum?.contractAddress && (
-              <DropdownOption onClick={() => handleSelect('ethereum')}>
-                <img src="/images/ethereum.svg" alt="Ethereum" />
-                Ethereum
-              </DropdownOption>
-            )}
-            {platforms?.xdai?.contractAddress && (
-              <DropdownOption onClick={() => handleSelect('xdai')}>
-                <img src="/images/gnosis-chain.svg" alt="Gnosis Chain" />
-                Gnosis Chain
-              </DropdownOption>
-            )}
-          </DropdownBody>
-        )}
+        {isOpen && getDropdownBody(platforms, handleSelect)}
       </DropdownContainer>
 
       <InputLabel>
@@ -314,7 +363,7 @@ export const SwapWidget = ({ tokenId, tokenSymbol, tokenImage, platforms }: Swap
 
         <div>
           <TokenLabel>
-            <img src={tokenImage} alt={tokenSymbol} />
+            <Image src={tokenImage} alt={tokenSymbol} width={20} height={20} />
             <span>{tokenSymbol}</span>
           </TokenLabel>
           <Input min={0} value={amount} type="text" onChange={handleInputChange} placeholder="0" />
@@ -326,7 +375,7 @@ export const SwapWidget = ({ tokenId, tokenSymbol, tokenImage, platforms }: Swap
           ...CONFIG.utm,
           utmContent: 'utm_content=swap-widget-token__' + encodeURI(tokenId),
         }}
-        href={onSwap()}
+        href={getSwapUrl()}
         passHref
       >
         <Button label={`Swap ${tokenSymbol}`} fontSize={1.6} minHeight={4.2} />
