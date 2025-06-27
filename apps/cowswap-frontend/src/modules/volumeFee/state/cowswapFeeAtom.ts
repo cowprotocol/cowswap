@@ -1,6 +1,6 @@
 import { atom } from 'jotai'
 
-import { LpToken, STABLECOINS } from '@cowprotocol/common-const'
+import { DEFAULT_PARTNER_FEE_RECIPIENT, LpToken, STABLECOINS } from '@cowprotocol/common-const'
 import { getCurrencyAddress, isInjectedWidget } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { walletInfoAtom } from '@cowprotocol/wallet'
@@ -16,12 +16,12 @@ const COWSWAP_VOLUME_FEES: Record<SupportedChainId, VolumeFee | null> = {
   [SupportedChainId.SEPOLIA]: null,
   [SupportedChainId.ARBITRUM_ONE]: {
     volumeBps: 10, // 0.1%
-    recipient: '0x451100Ffc88884bde4ce87adC8bB6c7Df7fACccd', // Arb1 Protocol fee safe
+    recipient: DEFAULT_PARTNER_FEE_RECIPIENT,
   },
   [SupportedChainId.BASE]: null,
   [SupportedChainId.GNOSIS_CHAIN]: {
     volumeBps: 10, // 0.1%
-    recipient: '0x6b3214fD11dc91De14718DeE98Ef59bCbFcfB432', // Gnosis Chain Protocol fee safe
+    recipient: DEFAULT_PARTNER_FEE_RECIPIENT,
   },
   [SupportedChainId.POLYGON]: null, // TODO: check if we should apply fee on Polygon
   [SupportedChainId.AVALANCHE]: null, // TODO: check if we should apply fee on Avalanche
