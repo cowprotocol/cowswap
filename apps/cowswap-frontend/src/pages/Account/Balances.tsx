@@ -300,7 +300,7 @@ export default function Profile() {
                   }
                 />
 
-                <Link to={`/swap/${nativeWrappedToken.address}/${cowToken?.address}`}>Buy COW</Link>
+                <Link to={`/swap/${nativeWrappedToken.address}/${COW_CONTRACT_ADDRESS[chainId]}`}>Buy COW</Link>
               </CardActions>
             </Card>
           )}
