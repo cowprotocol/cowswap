@@ -14,7 +14,7 @@ export const IconWrapper = styled(FontAwesomeIcon)`
 `
 
 export const Percentage = styled.span`
-  color: ${Color.explorer_green};
+  color: ${Color.successDark};
 `
 
 export const Amount = styled.span`
