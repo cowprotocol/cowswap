@@ -44,7 +44,7 @@ import {
 } from 'pages/Account/styled'
 
 import LockedGnoVesting from './LockedGnoVesting'
-
+import { WRAPPED_NATIVE_CURRENCIES as WETH } from '@cowprotocol/common-const'
 // Number of blocks to wait before we re-enable the swap COW -> vCOW button after confirmation
 const BLOCKS_TO_WAIT = 2
 
@@ -58,7 +58,7 @@ export default function Profile() {
   const previousAccount = usePrevious(account)
 
   const cowContractAddress = COW_CONTRACT_ADDRESS[chainId]
-
+  const nativeWrappedToken = WETH[chainId]
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const blockNumber = useBlockNumber()
   const [confirmationBlock, setConfirmationBlock] = useState<undefined | number>(undefined)
@@ -300,7 +300,7 @@ export default function Profile() {
                   }
                 />
 
-                <Link to={`/swap?outputCurrency=${COW_CONTRACT_ADDRESS[chainId]}`}>Buy COW</Link>
+                <Link to={`/swap/${nativeWrappedToken.address}/${cowToken?.address}`}>Buy COW</Link>
               </CardActions>
             </Card>
           )}
