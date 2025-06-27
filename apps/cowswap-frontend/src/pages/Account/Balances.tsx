@@ -5,6 +5,7 @@ import CowImage from '@cowprotocol/assets/cow-swap/cow_token.svg'
 import vCOWImage from '@cowprotocol/assets/images/vCOW.svg'
 import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { COW_TOKEN_TO_CHAIN, COW_CONTRACT_ADDRESS, V_COW } from '@cowprotocol/common-const'
+import { WRAPPED_NATIVE_CURRENCIES as WETH } from '@cowprotocol/common-const'
 import { usePrevious } from '@cowprotocol/common-hooks'
 import { getBlockExplorerUrl, getProviderErrorMessage } from '@cowprotocol/common-utils'
 import { ButtonPrimary, HoverTooltip, TokenAmount } from '@cowprotocol/ui'
@@ -44,7 +45,7 @@ import {
 } from 'pages/Account/styled'
 
 import LockedGnoVesting from './LockedGnoVesting'
-import { WRAPPED_NATIVE_CURRENCIES as WETH } from '@cowprotocol/common-const'
+
 // Number of blocks to wait before we re-enable the swap COW -> vCOW button after confirmation
 const BLOCKS_TO_WAIT = 2
 
