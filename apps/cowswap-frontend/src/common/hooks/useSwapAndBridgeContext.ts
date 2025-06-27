@@ -139,7 +139,7 @@ export function useSwapAndBridgeContext(
           : undefined
 
     const overview: SwapAndBridgeOverview = {
-      sourceChainName: sourceChainData.name,
+      sourceChainName: sourceChainData.label,
       targetChainName: destChainData.label,
       targetCurrency: order.outputToken,
       sourceAmounts: {

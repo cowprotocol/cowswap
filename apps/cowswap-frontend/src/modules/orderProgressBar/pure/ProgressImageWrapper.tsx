@@ -15,7 +15,7 @@ type BgColorMap = Record<NonNullable<StepName>, string | undefined>
 type PaddingMap = Record<NonNullable<StepName>, string | undefined>
 type GapMap = Record<NonNullable<StepName>, string | undefined>
 
-const PROCESS_IMAGE_WRAPPER_BG_COLOR: BgColorMap = {
+export const PROCESS_IMAGE_WRAPPER_BG_COLOR: BgColorMap = {
   initial: `var(${UI.COLOR_BLUE_300_PRIMARY})`,
   unfillable: '#FFDB9C',
   delayed: `var(${UI.COLOR_BLUE_300_PRIMARY})`,

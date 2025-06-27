@@ -15,7 +15,7 @@ export interface TradeRatesProps {
   isFeeDetailsOpen: boolean
   toggleAccordion: () => void
   children?: ReactNode
-  feeWrapper?: (defaultFeeContent: React.ReactNode) => React.ReactNode
+  feeWrapper?: (defaultFeeContent: React.ReactNode, isOpen: boolean) => React.ReactNode
 }
 
 // TODO: Add proper return type annotation

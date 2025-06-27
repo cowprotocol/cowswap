@@ -1,11 +1,17 @@
+import { ReactNode } from 'react'
+
+import ReceiptIcon from '@cowprotocol/assets/cow-swap/icon-receipt.svg'
+import { CHAIN_INFO, getChainInfo } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { BridgeStatusResult, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ExternalLink } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
+import { useBridgeSupportedNetworks } from 'entities/bridgeProvider'
+
 import { ConfirmDetailsItem, ReceiveAmountTitle } from 'modules/trade'
 
-import { SuccessTextBold } from '../../../../styles'
+import { StyledTimelineReceiptIcon, SuccessTextBold, TimelineIconCircleWrapper } from '../../../../styles'
 import { TokenAmountDisplay } from '../../../TokenAmountDisplay'
 
 interface ReceivedBridgingContentProps {
@@ -16,22 +22,64 @@ interface ReceivedBridgingContentProps {
   receivedAmountUsd: CurrencyAmount<Token> | null | undefined
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+interface TransactionLinkProps {
+  link: string
+  label: string
+  chainId: number
+}
+
+
+function TransactionLink({ link, label, chainId }: TransactionLinkProps): ReactNode {
+  const { data: bridgeSupportedNetworks } = useBridgeSupportedNetworks()
+  const bridgeNetwork = bridgeSupportedNetworks?.find((network) => network.id === chainId)
+
+  const explorerTitle =
+    bridgeNetwork?.blockExplorer.name ||
+    (() => {
+      try {
+        return getChainInfo(chainId).explorerTitle
+      } catch {
+        return 'Explorer'
+      }
+    })()
+
+  return (
+    <ConfirmDetailsItem
+      label={
+        <>
+          <TimelineIconCircleWrapper padding="0" bgColor={'transparent'}>
+            <StyledTimelineReceiptIcon src={ReceiptIcon} />
+          </TimelineIconCircleWrapper>{' '}
+          {label}
+        </>
+      }
+    >
+      <ExternalLink href={link}>View on {explorerTitle} ↗</ExternalLink>
+    </ConfirmDetailsItem>
+  )
+}
+
 export function ReceivedBridgingContent({
   statusResult,
   receivedAmountUsd,
   receivedAmount,
   sourceChainId,
   destinationChainId,
-}: ReceivedBridgingContentProps) {
+}: ReceivedBridgingContentProps): ReactNode {
   const { depositTxHash, fillTxHash } = statusResult || {}
+  const { data: bridgeSupportedNetworks } = useBridgeSupportedNetworks()
+  const destinationBridgeNetwork = bridgeSupportedNetworks?.find((network) => network.id === destinationChainId)
 
   const depositLink = depositTxHash && getExplorerLink(sourceChainId, depositTxHash, ExplorerDataType.TRANSACTION)
   const fillTxLink =
     fillTxHash &&
-    destinationChainId in SupportedChainId &&
-    getExplorerLink(destinationChainId, fillTxHash, ExplorerDataType.TRANSACTION)
+    (destinationBridgeNetwork?.blockExplorer?.url || (destinationChainId in CHAIN_INFO && CHAIN_INFO[destinationChainId as keyof typeof CHAIN_INFO]?.explorer)) &&
+    getExplorerLink(
+      destinationChainId,
+      fillTxHash,
+      ExplorerDataType.TRANSACTION,
+      destinationBridgeNetwork?.blockExplorer?.url,
+    )
 
   return (
     <>
@@ -46,8 +94,9 @@ export function ReceivedBridgingContent({
           <TokenAmountDisplay displaySymbol currencyAmount={receivedAmount} usdValue={receivedAmountUsd} />
         </b>
       </ConfirmDetailsItem>
-      {depositLink && <ExternalLink href={depositLink}>Deposit transaction ↗</ExternalLink>}
-      {fillTxLink && <ExternalLink href={fillTxLink}>Settlement transaction ↗</ExternalLink>}
+
+      {depositLink && <TransactionLink link={depositLink} label="Source transaction" chainId={sourceChainId} />}
+      {fillTxLink && <TransactionLink link={fillTxLink} label="Destination transaction" chainId={destinationChainId} />}
     </>
   )
 }

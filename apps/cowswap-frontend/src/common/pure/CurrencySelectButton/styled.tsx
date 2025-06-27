@@ -67,7 +67,7 @@ export const CurrencySelectWrapper = styled.button<{
   display: flex;
   justify-content: space-between;
   align-items: center;
-  cursor: ${({ readonlyMode }) => (readonlyMode ? '' : 'pointer')};
+  cursor: ${({ readonlyMode }) => (readonlyMode ? 'default' : 'pointer')};
   gap: 6px;
   border: 0;
   outline: none;
@@ -90,17 +90,34 @@ export const CurrencySelectWrapper = styled.button<{
       $noCurrencySelected ? `var(${UI.COLOR_BUTTON_TEXT})` : `var(${UI.COLOR_TEXT_PAPER})`};
   }
 
-  &:hover {
-    background: ${({ readonlyMode, $noCurrencySelected }) =>
-      readonlyMode ? '' : $noCurrencySelected ? `var(${UI.COLOR_PRIMARY_LIGHTER});` : `var(${UI.COLOR_PRIMARY});`};
+  ${ArrowDown} > path {
+    stroke: ${({ $noCurrencySelected }) =>
+      $noCurrencySelected ? `var(${UI.COLOR_BUTTON_TEXT})` : `var(${UI.COLOR_TEXT_OPACITY_50})`};
+  }
 
-    ${TokenSubText}, ${StyledTokenSymbol}, ${CurrencySymbol} {
-      color: var(${UI.COLOR_BUTTON_TEXT});
+  &:hover {
+    ${({ readonlyMode, $noCurrencySelected }) =>
+      readonlyMode
+        ? ''
+        : `background: ${$noCurrencySelected ? `var(${UI.COLOR_PRIMARY_LIGHTER})` : `var(${UI.COLOR_PRIMARY})`};
+        `}
+
+    ${StyledTokenSymbol} {
+      color: ${({ readonlyMode, $noCurrencySelected }) =>
+        readonlyMode
+          ? `var(${UI.COLOR_TEXT_PAPER})`
+          : $noCurrencySelected
+            ? `var(${UI.COLOR_BUTTON_TEXT})`
+            : `var(${UI.COLOR_BUTTON_TEXT})`};
     }
 
     ${ArrowDown} > path {
-      stroke: ${({ $noCurrencySelected }) =>
-        $noCurrencySelected ? `var(${UI.COLOR_TEXT_OPACITY_50})` : `var(${UI.COLOR_BUTTON_TEXT})`};
+      stroke: ${({ readonlyMode, $noCurrencySelected }) =>
+        readonlyMode
+          ? `var(${UI.COLOR_TEXT_PAPER})`
+          : $noCurrencySelected
+            ? `var(${UI.COLOR_BUTTON_TEXT})`
+            : `var(${UI.COLOR_BUTTON_TEXT})`};
     }
   }
 `

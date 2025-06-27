@@ -1,4 +1,4 @@
-import { Color, Media } from '@cowprotocol/ui'
+import { Color, Media, UI } from '@cowprotocol/ui'
 
 import { transparentize } from 'polished'
 import styled from 'styled-components/macro'
@@ -306,7 +306,7 @@ export const Wrapper = styled(WrapperTemplate)`
 
     :hover {
       opacity: 0.8;
-      color: ${Color.neutral100};
+      color: var(${UI.COLOR_NEUTRAL_100});
       text-decoration: none;
     }
   }

@@ -47,11 +47,11 @@ const DarkColors = css`
   --color-border: ${Color.explorer_border};
 
   /* Text */
-  --color-text-primary: ${Color.explorer_textPrimary};
+  --color-text-primary: ${Color.neutral100};
   --color-text-secondary1: ${Color.explorer_textSecondary1};
   --color-text-secondary2: ${Color.explorer_textSecondary2};
   --color-text-hover: ${Color.explorer_textActive};
-  --color-text-strong: ${Color.explorer_textPrimary};
+  --color-text-strong: ${Color.neutral100};
   --color-text-weak: ${Color.explorer_textSecondary};
 
   /* Buttons */

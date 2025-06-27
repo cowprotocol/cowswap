@@ -1,5 +1,5 @@
 import { isInjectedWidget } from '@cowprotocol/common-utils'
-import { ProductLogo, ProductVariant } from '@cowprotocol/ui'
+import { Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
 
 import { transparentize } from 'color2k'
 import styled, { keyframes, css } from 'styled-components/macro'
@@ -69,7 +69,9 @@ const LoadingWrapper = styled.div`
   justify-content: center;
   position: fixed;
   background: ${({ theme }) =>
-    theme.isInjectedWidgetMode ? 'transparent' : transparentize(theme.darkMode ? '#0E0F2D' : '#65D9FF', 0.1)};
+    theme.isInjectedWidgetMode
+      ? 'transparent'
+      : transparentize(theme.darkMode ? '#0E0F2D' : Color.blue300Primary, 0.1)};
   z-index: 99;
   top: 0;
   left: 0;

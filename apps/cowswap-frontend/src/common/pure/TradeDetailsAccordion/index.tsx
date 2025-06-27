@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { ReactNode, useCallback } from 'react'
 
 import { FiatAmount, TokenAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
@@ -14,7 +14,29 @@ interface TradeDetailsAccordionProps {
   children?: ReactNode
   open: boolean
   onToggle: () => void
-  feeWrapper?: (feeElement: ReactNode) => ReactNode
+  feeWrapper?: (feeElement: ReactNode, isOpen: boolean) => ReactNode
+}
+
+function DefaultFeeContent({
+  feeUsdTotalAmount,
+  feeTotalAmount,
+}: {
+  feeUsdTotalAmount: CurrencyAmount<Currency> | null
+  feeTotalAmount: CurrencyAmount<Currency> | null
+}): ReactNode {
+  if (feeUsdTotalAmount?.greaterThan(0)) {
+    return <FiatAmount amount={feeUsdTotalAmount} />
+  }
+
+  if (feeTotalAmount?.greaterThan(0)) {
+    return (
+      <>
+        Fee <TokenAmount amount={feeTotalAmount} tokenSymbol={feeTotalAmount?.currency} />
+      </>
+    )
+  }
+
+  return 'Free'
 }
 
 /**
@@ -23,7 +45,7 @@ interface TradeDetailsAccordionProps {
  * This component displays rate information, fee amounts, and can expand to show
  * more detailed information about a trade.
  */
-export const TradeDetailsAccordion = ({
+export function TradeDetailsAccordion({
   rateInfo,
   feeTotalAmount,
   feeUsdTotalAmount,
@@ -31,37 +53,22 @@ export const TradeDetailsAccordion = ({
   open,
   onToggle,
   feeWrapper,
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-}: TradeDetailsAccordionProps) => {
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const handleToggle = () => {
+}: TradeDetailsAccordionProps): ReactNode {
+  const handleToggle = useCallback((): void => {
     onToggle?.()
-  }
+  }, [onToggle])
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const handleKeyDown = (e: { key: string; preventDefault: () => void }) => {
-    if (['Enter', ' ', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
-      e.preventDefault()
-      handleToggle()
-    }
-  }
-
-  const defaultFeeContent = feeUsdTotalAmount?.greaterThan(0) ? (
-    <FiatAmount amount={feeUsdTotalAmount} />
-  ) : (
-    <>
-      {feeTotalAmount?.greaterThan(0) ? (
-        <>
-          Fee <TokenAmount amount={feeTotalAmount} tokenSymbol={feeTotalAmount?.currency} />
-        </>
-      ) : (
-        'Free'
-      )}
-    </>
+  const handleKeyDown = useCallback(
+    (e: { key: string; preventDefault: () => void }): void => {
+      if (['Enter', ' ', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
+        e.preventDefault()
+        handleToggle()
+      }
+    },
+    [handleToggle],
   )
+
+  const defaultFeeContent = <DefaultFeeContent feeUsdTotalAmount={feeUsdTotalAmount} feeTotalAmount={feeTotalAmount} />
 
   return (
     <Wrapper isOpen={open}>
@@ -74,7 +81,7 @@ export const TradeDetailsAccordion = ({
           tabIndex={0}
           isOpen={open}
         >
-          {feeWrapper ? feeWrapper(defaultFeeContent) : defaultFeeContent}
+          {feeWrapper ? feeWrapper(defaultFeeContent, open) : defaultFeeContent}
 
           <ToggleArrow isOpen={open} />
         </SummaryClickable>

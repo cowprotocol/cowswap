@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import { ReactNode } from 'react'
 
 import { Command } from '@cowprotocol/types'
 import { PercentDisplay } from '@cowprotocol/ui/pure/PercentDisplay'
