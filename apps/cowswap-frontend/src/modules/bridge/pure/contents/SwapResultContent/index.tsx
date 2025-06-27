@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import PlusIcon from '@cowprotocol/assets/cow-swap/plus.svg'
 import { isTruthy } from '@cowprotocol/common-utils'
 
@@ -21,28 +23,27 @@ interface SwapResultContentProps {
   context: SwapResultContext
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
-export function SwapResultContentContent({
+export function SwapResultContent({
   context: { winningSolver, receivedAmount, receivedAmountUsd, surplusAmount, surplusAmountUsd },
-}: SwapResultContentProps) {
+}: SwapResultContentProps): ReactNode {
   const contents = [
-    {
-      withTimelineDot: true,
-      label: 'Winning solver',
-      content: (
-        <WinningSolverContainer>
-          <b>{winningSolver.displayName || winningSolver.solver}</b>
-          <img
-            src={winningSolver.image || AMM_LOGOS[winningSolver.solver]?.src || AMM_LOGOS.default.src}
-            alt={`${winningSolver.solver} logo`}
-            width="16"
-            height="16"
-          />
-        </WinningSolverContainer>
-      ),
-    },
+    winningSolver
+      ? {
+          withTimelineDot: true,
+          label: 'Winning solver',
+          content: (
+            <WinningSolverContainer>
+              <b>{winningSolver.displayName || winningSolver.solver}</b>
+              <img
+                src={winningSolver.image || AMM_LOGOS[winningSolver.solver]?.src || AMM_LOGOS.default.src}
+                alt={`${winningSolver.solver} logo`}
+                width="16"
+                height="16"
+              />
+            </WinningSolverContainer>
+          ),
+        }
+      : null,
     {
       label: (
         <ReceiveAmountTitle>
@@ -70,13 +71,14 @@ export function SwapResultContentContent({
           ),
           content: (
             <SuccessTextBold>
-              +{' '}
               <TokenAmountDisplay
                 currencyAmount={surplusAmount}
                 displaySymbol
                 usdValue={surplusAmountUsd}
                 hideTokenIcon={true}
-              />
+              >
+                +
+              </TokenAmountDisplay>
             </SuccessTextBold>
           ),
         }

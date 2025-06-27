@@ -4,9 +4,9 @@ import { latest } from '@cowprotocol/app-data'
 import { PermitHookData } from '@cowprotocol/permit-utils'
 import { useIsSmartContractWallet } from '@cowprotocol/wallet'
 
+import { useHooksStateWithSimulatedGas } from 'entities/orderHooks/useHooksStateWithSimulatedGas'
 import { Nullish } from 'types'
 
-import { useHooksStateWithSimulatedGas } from 'modules/hooksStore'
 import { useAccountAgnosticPermitHookData } from 'modules/permit'
 import { useDerivedTradeState, useHasTradeEnoughAllowance, useIsHooksTradeType, useIsSellNative } from 'modules/trade'
 
@@ -31,7 +31,7 @@ function useAgnosticPermitDataIfUserHasNoAllowance(): Nullish<PermitHookData> {
 }
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+
 export function AppDataHooksUpdater(): null {
   const tradeState = useDerivedTradeState()
   const isHooksTradeType = useIsHooksTradeType()

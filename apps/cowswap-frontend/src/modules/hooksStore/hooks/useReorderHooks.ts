@@ -1,9 +1,8 @@
 import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
-import { useHooks } from './useHooks'
-
-import { HooksStoreState, setHooksAtom } from '../state/hookDetailsAtom'
+import { HooksStoreState, setHooksAtom } from 'entities/orderHooks/hookDetailsAtom'
+import { useHooks } from 'entities/orderHooks/useHooks'
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type

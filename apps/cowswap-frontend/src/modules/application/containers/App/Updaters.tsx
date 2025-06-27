@@ -1,17 +1,12 @@
 import { ReactNode } from 'react'
 
-import { useCowAnalytics } from '@cowprotocol/analytics'
 import { BalancesAndAllowancesUpdater } from '@cowprotocol/balances-and-allowances'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { MultiCallUpdater } from '@cowprotocol/multicall'
-import {
-  TokensListsTagsUpdater,
-  TokensListsUpdater,
-  UnsupportedTokensUpdater,
-  WidgetTokensListsUpdater,
-} from '@cowprotocol/tokens'
+import { TokensListsTagsUpdater, TokensListsUpdater, UnsupportedTokensUpdater } from '@cowprotocol/tokens'
 import { HwAccountIndexUpdater, useWalletInfo, WalletUpdater } from '@cowprotocol/wallet'
 
+import { useBalancesContext } from 'entities/balancesContext/useBalancesContext'
 import { useBridgeSupportedNetworks } from 'entities/bridgeProvider'
 import { ThemeConfigUpdater } from 'theme/ThemeConfigUpdater'
 import { TradingSdkUpdater } from 'tradingSdk/TradingSdkUpdater'
@@ -23,13 +18,12 @@ import { CowEventsUpdater, InjectedWidgetUpdater, useInjectedWidgetParams } from
 import { FinalizeTxUpdater } from 'modules/onchainTransactions'
 import { ProgressBarExecutingOrdersUpdater } from 'modules/orderProgressBar'
 import { OrdersNotificationsUpdater } from 'modules/orders'
-import { useOnTokenListAddingError, useSourceChainId } from 'modules/tokensList'
+import { useSourceChainId } from 'modules/tokensList'
 import { TradeType, useTradeTypeInfo } from 'modules/trade'
 import { UsdPricesUpdater } from 'modules/usdAmount'
 import { CorrelatedTokensUpdater } from 'modules/volumeFee'
 import { LpTokensWithBalancesUpdater, PoolsInfoUpdater, VampireAttackUpdater } from 'modules/yield/shared'
 
-import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 import { TotalSurplusUpdater } from 'common/state/totalSurplusState'
 import { AnnouncementsUpdater } from 'common/updaters/AnnouncementsUpdater'
 import { BridgingEnabledUpdater } from 'common/updaters/BridgingEnabledUpdater'
@@ -49,17 +43,18 @@ import { SentryUpdater } from 'common/updaters/SentryUpdater'
 import { SolversInfoUpdater } from 'common/updaters/SolversInfoUpdater'
 import { ThemeFromUrlUpdater } from 'common/updaters/ThemeFromUrlUpdater'
 import { UserUpdater } from 'common/updaters/UserUpdater'
+import { WidgetTokensUpdater } from 'common/updaters/WidgetTokensUpdater'
 
 export function Updaters(): ReactNode {
   const { account } = useWalletInfo()
-  const { tokenLists, appCode, customTokens, standaloneMode } = useInjectedWidgetParams()
-  const onTokenListAddingError = useOnTokenListAddingError()
+  const { standaloneMode } = useInjectedWidgetParams()
   const { isGeoBlockEnabled, isYieldEnabled } = useFeatureFlags()
   const tradeTypeInfo = useTradeTypeInfo()
   const isYieldWidget = tradeTypeInfo?.tradeType === TradeType.YIELD
-  const cowAnalytics = useCowAnalytics()
   const sourceChainId = useSourceChainId()
   const bridgeNetworkInfo = useBridgeSupportedNetworks()
+  const balancesContext = useBalancesContext()
+  const balancesAccount = balancesContext.account || account
 
   return (
     <>
@@ -102,30 +97,11 @@ export function Updaters(): ReactNode {
       />
       <TokensListsTagsUpdater />
 
-      <WidgetTokensListsUpdater
-        tokenLists={tokenLists}
-        customTokens={customTokens}
-        appCode={appCode}
-        onTokenListAddingError={onTokenListAddingError}
-        onAddList={(source) => {
-          cowAnalytics.sendEvent({
-            category: CowSwapAnalyticsCategory.LIST,
-            action: 'Add List Success',
-            label: source,
-          })
-        }}
-        onRemoveList={(source) => {
-          cowAnalytics.sendEvent({
-            category: CowSwapAnalyticsCategory.LIST,
-            action: 'Remove List',
-            label: source,
-          })
-        }}
-      />
+      <WidgetTokensUpdater />
 
       <UnsupportedTokensUpdater />
-      <BalancesAndAllowancesUpdater chainId={sourceChainId} account={account} />
-      <LpBalancesAndAllowancesUpdater chainId={sourceChainId} account={account} enablePolling={isYieldWidget} />
+      <BalancesAndAllowancesUpdater chainId={sourceChainId} account={balancesAccount} />
+      <LpBalancesAndAllowancesUpdater chainId={sourceChainId} account={balancesAccount} enablePolling={isYieldWidget} />
       <PoolsInfoUpdater />
       <LpTokensWithBalancesUpdater />
       <VampireAttackUpdater />

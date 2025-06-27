@@ -25,6 +25,7 @@ export interface BridgeDetailsContainerProps {
   bridgeProvider: BridgeProviderInfo
   protocolIconShowOnly?: 'first' | 'second'
   protocolIconSize?: number
+  circleSize?: number
 
   sellAmount: CurrencyAmount<Currency> | undefined
   buyAmount: CurrencyAmount<Currency> | undefined
@@ -50,6 +51,7 @@ export function BridgeDetailsContainer({
   bridgeProvider,
   protocolIconShowOnly,
   protocolIconSize,
+  circleSize,
   children,
   isCollapsible = false,
   defaultExpanded = true,
@@ -85,6 +87,7 @@ export function BridgeDetailsContainer({
       bridgeProvider={bridgeProvider}
       protocolIconShowOnly={protocolIconShowOnly}
       protocolIconSize={protocolIconSize}
+      circleSize={circleSize}
     />
   )
 

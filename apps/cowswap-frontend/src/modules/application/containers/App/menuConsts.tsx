@@ -17,6 +17,10 @@ export const NAV_ITEMS: MenuItem[] = [
         href: '/account/tokens',
         label: 'Tokens',
       },
+      {
+        href: '/account-proxy',
+        label: 'Account Proxy',
+      },
     ],
   },
   {
