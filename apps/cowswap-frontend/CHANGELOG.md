@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.110.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.110.0...cowswap-v1.110.1) (2025-06-27)
+
+
+### Bug Fixes
+
+* **partner-fee:** update fee address ([#5896](https://github.com/cowprotocol/cowswap/issues/5896)) ([fc40661](https://github.com/cowprotocol/cowswap/commit/fc406616261ed1c77c6ee663ab9cc5e2f671232f))
+
 ## [1.110.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.109.0...cowswap-v1.110.0) (2025-06-20)
 
 
