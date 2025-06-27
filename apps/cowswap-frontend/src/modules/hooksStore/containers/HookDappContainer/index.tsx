@@ -14,6 +14,7 @@ import { useAddHook } from '../../hooks/useAddHook'
 import { useHookBalancesDiff } from '../../hooks/useBalancesDiff'
 import { useEditHook } from '../../hooks/useEditHook'
 import { useHookById } from '../../hooks/useHookById'
+import { useHookStateDiff } from '../../hooks/useStateDiff'
 import { HookDapp, HookDappContext as HookDappContextType } from '../../types/hooks'
 import { isHookDappIframe } from '../../utils'
 import { IframeDappContainer } from '../IframeDappContainer'
@@ -41,6 +42,7 @@ export function HookDappContainer({ dapp, isPreHook, onDismiss, hookToEdit }: Ho
   const tradeNavigate = useTradeNavigate()
   const isDarkMode = useIsDarkMode()
   const balancesDiff = useHookBalancesDiff(isPreHook, hookToEditDetails?.uuid)
+  const stateDiff = useHookStateDiff(isPreHook, hookToEditDetails?.uuid)
 
   const { inputCurrencyId = null, outputCurrencyId = null } = tradeState.state || {}
   const signer = useMemo(() => provider?.getSigner(), [provider])
@@ -56,6 +58,7 @@ export function HookDappContainer({ dapp, isPreHook, onDismiss, hookToEdit }: Ho
       isPreHook,
       isDarkMode,
       balancesDiff,
+      stateDiff,
       editHook(...args) {
         editHook(...args)
         onDismiss()
@@ -87,6 +90,7 @@ export function HookDappContainer({ dapp, isPreHook, onDismiss, hookToEdit }: Ho
     isDarkMode,
     orderParams,
     balancesDiff,
+    stateDiff,
   ])
 
   const dappProps = useMemo(() => ({ context, dapp, isPreHook }), [context, dapp, isPreHook])
