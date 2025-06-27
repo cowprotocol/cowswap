@@ -1,6 +1,5 @@
 import { ReactNode } from 'react'
 
-import { BalancesAndAllowancesUpdater } from '@cowprotocol/balances-and-allowances'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { MultiCallUpdater } from '@cowprotocol/multicall'
 import { TokensListsTagsUpdater, TokensListsUpdater, UnsupportedTokensUpdater } from '@cowprotocol/tokens'
@@ -12,6 +11,7 @@ import { ThemeConfigUpdater } from 'theme/ThemeConfigUpdater'
 import { TradingSdkUpdater } from 'tradingSdk/TradingSdkUpdater'
 
 import { UploadToIpfsUpdater } from 'modules/appData/updater/UploadToIpfsUpdater'
+import { CommonPriorityBalancesAndAllowancesUpdater } from 'modules/balancesAndAllowances'
 import { BalancesCombinedUpdater } from 'modules/combinedBalances/updater/BalancesCombinedUpdater'
 import { InFlightOrderFinalizeUpdater } from 'modules/ethFlow'
 import { CowEventsUpdater, InjectedWidgetUpdater, useInjectedWidgetParams } from 'modules/injectedWidget'
@@ -100,7 +100,7 @@ export function Updaters(): ReactNode {
       <WidgetTokensUpdater />
 
       <UnsupportedTokensUpdater />
-      <BalancesAndAllowancesUpdater chainId={sourceChainId} account={balancesAccount} />
+      <CommonPriorityBalancesAndAllowancesUpdater/>
       <LpBalancesAndAllowancesUpdater chainId={sourceChainId} account={balancesAccount} enablePolling={isYieldWidget} />
       <PoolsInfoUpdater />
       <LpTokensWithBalancesUpdater />
