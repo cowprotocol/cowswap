@@ -36,7 +36,7 @@ export function TokensInProxyBanner({ tokensToRefund }: TokensInProxyBannerProps
   return (
     <InlineBanner bannerType={StatusColorVariant.Warning} orientation={BannerOrientation.Horizontal}>
       <div>
-        Your proxy account contains following tokens:
+        Your proxy account contains the following tokens:
         <TokensList>
           {tokensToRefund.map(({ token, balance }) => {
             const amount = CurrencyAmount.fromRawAmount(token, balance.toString())
@@ -48,7 +48,7 @@ export function TokensInProxyBanner({ tokensToRefund }: TokensInProxyBannerProps
             )
           })}
         </TokensList>
-        Something could go wrong and you can withdraw your funds at <strong>Recover funds</strong> tab
+        If something goes wrong, you can withdraw your funds using the <strong>Recover funds</strong> tab.
       </div>
     </InlineBanner>
   )

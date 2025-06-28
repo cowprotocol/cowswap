@@ -40,7 +40,8 @@ export * from './pure/NetworkLogo'
 export * from './pure/CircleProgress'
 
 export * from './containers/CowSwapSafeAppLink'
-export * from './containers/InlineBanner'
+export * from './pure/InlineBanner'
+export * from './pure/CollapsibleInlineBanner'
 export * from './containers/Footer'
 export * from './containers/ExternalLink'
 
