@@ -28,7 +28,7 @@ interface CoWShedWidgetProps {
 }
 
 export function CoWShedWidget({ onDismiss, modalMode }: CoWShedWidgetProps): ReactNode {
-  const { chainId } = useWalletInfo()
+  const { chainId, account } = useWalletInfo()
   const updateSelectTokenWidget = useUpdateSelectTokenWidgetState()
   const { proxyAddress, isProxyDeployed } = useCurrentAccountProxyAddress() || {}
   const params = useParams()
@@ -51,9 +51,10 @@ export function CoWShedWidget({ onDismiss, modalMode }: CoWShedWidgetProps): Rea
     }
 
     return () => {
-      setBalancesContext({ account: null })
+      // Restore wallet account instead of null to maintain balance data
+      setBalancesContext({ account: account || null })
     }
-  }, [proxyAddress, isProxyDeployed, setBalancesContext])
+  }, [proxyAddress, isProxyDeployed, setBalancesContext, account])
 
   useOnClickOutside([widgetRef], modalMode ? onDismissCallback : undefined)
 

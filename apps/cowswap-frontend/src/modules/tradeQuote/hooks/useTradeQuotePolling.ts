@@ -56,10 +56,13 @@ export function useTradeQuotePolling(isConfirmOpen = false): null {
    * Fetch the quote instantly once the quote params are changed
    */
   useLayoutEffect(() => {
+    // Do not fetch a new quote if the user is currently reviewing one in the confirm modal
+    if (isConfirmOpen) return
+
     if (pollQuote(true)) {
       resetQuoteCounter()
     }
-  }, [pollQuote, quoteParams, resetQuoteCounter])
+  }, [pollQuote, quoteParams, resetQuoteCounter, isConfirmOpen])
 
   /**
    * Update quote once a QUOTE_POLLING_INTERVAL
