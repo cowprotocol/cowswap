@@ -185,6 +185,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
             priceImpact={priceImpact}
             inputCurrencyInfo={inputCurrencyPreviewInfo}
             outputCurrencyInfo={outputCurrencyPreviewInfo}
+            isTradeLoading={isRateLoading}
           />
         }
         genericModal={showNativeWrapModal && <EthFlowModal {...ethFlowProps} />}
