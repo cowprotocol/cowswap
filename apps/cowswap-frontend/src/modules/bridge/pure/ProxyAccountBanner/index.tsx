@@ -1,6 +1,9 @@
+import { useAtom } from 'jotai'
 import { ReactNode } from 'react'
 
 import { BannerOrientation, CollapsibleInlineBanner, StatusColorVariant } from '@cowprotocol/ui'
+
+import { cowShedModalAtom } from 'modules/cowShed/state/cowShedModalAtom'
 
 import { AddressLink } from 'common/pure/AddressLink'
 
@@ -10,6 +13,14 @@ interface ProxyAccountBannerProps {
 }
 
 export function ProxyAccountBanner({ recipient, chainId }: ProxyAccountBannerProps): ReactNode {
+  const [, setCowShedModal] = useAtom(cowShedModalAtom)
+
+  const handleReadMore = (): void => {
+    setCowShedModal((state) => ({
+      ...state,
+      isOpen: true,
+    }))
+  }
   return (
     <CollapsibleInlineBanner
       bannerType={StatusColorVariant.Info}
@@ -23,8 +34,12 @@ export function ProxyAccountBanner({ recipient, chainId }: ProxyAccountBannerPro
       expandedContent={
         <div>
           CoW Swap uses a dedicated proxy account, controlled only by you, to ensure smooooth bridging. Confirm the
-          recipient address above is <b><AddressLink address={recipient} chainId={chainId} /></b> - that's your
-          personal, private proxy account!
+          recipient address above is <AddressLink address={recipient} chainId={chainId} />
+          <br />
+          <br />
+          <b onClick={handleReadMore} style={{ cursor: 'pointer', textDecoration: 'underline' }}>
+            View your private proxy account +{' '}
+          </b>
         </div>
       }
     />
