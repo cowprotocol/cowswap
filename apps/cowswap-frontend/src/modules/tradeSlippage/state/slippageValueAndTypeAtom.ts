@@ -1,12 +1,6 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
-import {
-  DEFAULT_SLIPPAGE_BPS,
-  MAX_SLIPPAGE_BPS,
-  MIN_SLIPPAGE_BPS,
-  MINIMUM_ETH_FLOW_SLIPPAGE_BPS
-} from '@cowprotocol/common-const'
 import { mapSupportedNetworks } from '@cowprotocol/cow-sdk'
 import { PersistentStateByChain } from '@cowprotocol/types'
 import { walletInfoAtom } from '@cowprotocol/wallet'
@@ -14,6 +8,7 @@ import { walletInfoAtom } from '@cowprotocol/wallet'
 import { injectedWidgetParamsAtom } from 'modules/injectedWidget/state/injectedWidgetParamsAtom'
 import { isEoaEthFlowAtom } from 'modules/trade'
 
+import { getDefaultSlippage, getMaxSlippage, getMinSlippage } from '../utils/slippage'
 
 type SlippageBpsPerNetwork = PersistentStateByChain<number>
 
@@ -36,27 +31,16 @@ export const setShouldUseAutoSlippageAtom = atom(null, (_, set, isEnabled: boole
 })
 
 export const slippageConfigAtom = atom((get) => {
-  const { ethFlowSlippage, erc20Slippage } = get(injectedWidgetParamsAtom).params
-
+  const injectedParams = get(injectedWidgetParamsAtom)
   const isEoaEthFlow = get(isEoaEthFlowAtom)
   const { chainId } = get(walletInfoAtom)
 
-  const currentFlowSlippage = isEoaEthFlow ? ethFlowSlippage : erc20Slippage;
+  const { ethFlowSlippage, erc20Slippage } = injectedParams.params
+  const currentFlowSlippage = isEoaEthFlow ? ethFlowSlippage : erc20Slippage
 
-  const minSlippage = currentFlowSlippage?.min
-    ? currentFlowSlippage.min
-    : isEoaEthFlow ? MINIMUM_ETH_FLOW_SLIPPAGE_BPS[chainId] : MIN_SLIPPAGE_BPS
-
-  const maxSlippage = currentFlowSlippage?.max
-    ? currentFlowSlippage.max
-    : MAX_SLIPPAGE_BPS
-
-  const defaultSlippage = currentFlowSlippage?.default
-    ? currentFlowSlippage.default
-    : isEoaEthFlow ? MINIMUM_ETH_FLOW_SLIPPAGE_BPS[chainId] : DEFAULT_SLIPPAGE_BPS
-
-  // todo need to validate default slippage here
-  // need to handle autoSlippage settings also here
+  const minSlippage = getMinSlippage(currentFlowSlippage, chainId, isEoaEthFlow)
+  const maxSlippage = getMaxSlippage(currentFlowSlippage, chainId)
+  const defaultSlippage = getDefaultSlippage(currentFlowSlippage, chainId, isEoaEthFlow)
 
   return {
     min: minSlippage,

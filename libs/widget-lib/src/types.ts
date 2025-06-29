@@ -169,9 +169,9 @@ export interface CowSwapWidgetContent {
 }
 
 export interface SlippageConfig {
-  min: number
-  max: number
-  default: number
+  min: PerNetworkConfig<number>
+  max: PerNetworkConfig<number>
+  defaultValue: PerNetworkConfig<number>
 }
 
 export interface CowSwapWidgetParams {
