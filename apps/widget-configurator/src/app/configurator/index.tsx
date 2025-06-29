@@ -41,7 +41,6 @@ import { DeadlineControl } from './controls/DeadlineControl'
 import { NetworkControl, NetworkOption, NetworkOptions } from './controls/NetworkControl'
 import { PaletteControl } from './controls/PaletteControl'
 import { PartnerFeeControl } from './controls/PartnerFeeControl'
-import { SlippageSettingsControl } from './controls/SlippageSettingsControl'
 import { ThemeControl } from './controls/ThemeControl'
 import { TokenListControl } from './controls/TokenListControl'
 import { TradeModesControl } from './controls/TradeModesControl'
@@ -52,7 +51,7 @@ import { useSyncWidgetNetwork } from './hooks/useSyncWidgetNetwork'
 import { useToastsManager } from './hooks/useToastsManager'
 import { useWidgetParams } from './hooks/useWidgetParamsAndSettings'
 import { ContentStyled, DrawerStyled, WalletConnectionWrapper, WrapperStyled } from './styled'
-import { ConfiguratorState, SlippageConfig, TokenListItem } from './types'
+import { ConfiguratorState, TokenListItem } from './types'
 
 import { AnalyticsCategory } from '../../common/analytics/types'
 import { ColorModeContext } from '../../theme/ColorModeContext'
@@ -126,9 +125,6 @@ export function Configurator({ title }: { title: string }) {
   const [limitDeadline] = limitDeadlineState
   const advancedDeadlineState = useState<number | undefined>()
   const [advancedDeadline] = advancedDeadlineState
-
-  const erc20SlippageState = useState<SlippageConfig | undefined>()
-  const ethFlowSlippageState = useState<SlippageConfig | undefined>()
 
   const tokenListUrlsState = useState<TokenListItem[]>(DEFAULT_TOKEN_LISTS)
   const customTokensState = useState<TokenInfo[]>([])
@@ -328,8 +324,6 @@ export function Configurator({ title }: { title: string }) {
         <DeadlineControl label={'Swap'} deadlineState={swapDeadlineState} />
         <DeadlineControl label={'Limit'} deadlineState={limitDeadlineState} />
         <DeadlineControl label={'Advanced'} deadlineState={advancedDeadlineState} />
-
-        <SlippageSettingsControl erc20Slippage={erc20SlippageState[0]} ethFlowSlippage={ethFlowSlippageState[0]}/>
 
         <Divider variant="middle">Integrations</Divider>
 
