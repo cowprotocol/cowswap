@@ -270,6 +270,19 @@ const getDropdownBody = (platforms: Platforms, handleSelect: (network: Network) 
   )
 }
 
+function getNetworkFromPlatforms(platforms: Platforms): Network {
+  const { ethereum, xdai, base, 'arbitrum-one': arbitrum, avalanche, 'polygon-pos': polygon } = platforms
+
+  if (ethereum?.contractAddress) return 'ethereum'
+  if (base?.contractAddress) return 'base'
+  if (arbitrum?.contractAddress) return 'arbitrum-one'
+  if (polygon?.contractAddress) return 'polygon-pos'
+  if (avalanche?.contractAddress) return 'avalanche'
+  if (xdai?.contractAddress) return 'xdai'
+
+  return 'ethereum'
+}
+
 export const SwapWidget = ({ tokenId, tokenSymbol, tokenImage, platforms }: SwapWidgetProps): JSX.Element => {
   const [activeTab, setActiveTab] = useState<Tab>(DEFAULT_TAB)
   const [network, setNetwork] = useState<Network>(DEFAULT_NETWORK)
@@ -280,19 +293,6 @@ export const SwapWidget = ({ tokenId, tokenSymbol, tokenImage, platforms }: Swap
   const handleSelect = (network: Network): void => {
     setNetwork(network)
     setIsOpen(false)
-  }
-
-  function getNetworkFromPlatforms(platforms: Platforms): Network {
-    const { ethereum, xdai, base, 'arbitrum-one': arbitrum, avalanche, 'polygon-pos': polygon } = platforms
-
-    if (ethereum?.contractAddress) return 'ethereum'
-    if (base?.contractAddress) return 'base'
-    if (arbitrum?.contractAddress) return 'arbitrum-one'
-    if (polygon?.contractAddress) return 'polygon-pos'
-    if (avalanche?.contractAddress) return 'avalanche'
-    if (xdai?.contractAddress) return 'xdai'
-
-    return 'ethereum'
   }
 
   // set initial network based on the available platforms
