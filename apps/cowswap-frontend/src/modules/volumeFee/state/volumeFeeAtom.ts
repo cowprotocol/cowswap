@@ -2,11 +2,11 @@ import { atom } from 'jotai'
 
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { walletInfoAtom } from '@cowprotocol/wallet'
-import { resolveFlexibleConfig, TradeType as WidgetTradeType } from '@cowprotocol/widget-lib'
+import { resolveFlexibleConfig } from '@cowprotocol/widget-lib'
 
 import { injectedWidgetPartnerFeeAtom } from 'modules/injectedWidget'
+import { TradeTypeMap } from 'modules/injectedWidget/consts'
 import { derivedTradeStateAtom, tradeTypeAtom } from 'modules/trade'
-import { TradeType } from 'modules/trade/types/TradeType'
 
 import { correlatedTokensAtom } from './correlatedTokensAtom'
 import { cowSwapFeeAtom } from './cowswapFeeAtom'
@@ -78,9 +78,3 @@ const widgetPartnerFeeAtom = atom<VolumeFee | undefined>((get) => {
   }
 })
 
-const TradeTypeMap: Record<TradeType, WidgetTradeType> = {
-  [TradeType.SWAP]: WidgetTradeType.SWAP,
-  [TradeType.LIMIT_ORDER]: WidgetTradeType.LIMIT,
-  [TradeType.ADVANCED_ORDERS]: WidgetTradeType.ADVANCED,
-  [TradeType.YIELD]: WidgetTradeType.YIELD,
-}

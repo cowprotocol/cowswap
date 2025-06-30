@@ -7,8 +7,9 @@ import { PersistentStateByChain } from '@cowprotocol/types'
 import { walletInfoAtom } from '@cowprotocol/wallet'
 
 import { injectedWidgetParamsAtom } from 'modules/injectedWidget/state/injectedWidgetParamsAtom'
-import { isEoaEthFlowAtom } from 'modules/trade'
+import { isEoaEthFlowAtom, tradeTypeAtom } from 'modules/trade'
 
+import { TradeTypeMap } from '../../injectedWidget/consts'
 import { getDefaultSlippage, getMaxSlippage, getMinSlippage } from '../utils/slippage'
 
 type SlippageBpsPerNetwork = PersistentStateByChain<number>
@@ -35,13 +36,16 @@ export const slippageConfigAtom = atom((get) => {
   const injectedParams = get(injectedWidgetParamsAtom)
   const isEoaEthFlow = get(isEoaEthFlowAtom)
   const { chainId } = get(walletInfoAtom)
+  const trade = get(tradeTypeAtom)?.tradeType
+  const tradeType = trade ? TradeTypeMap[trade] : undefined
 
   const { ethFlowSlippage, erc20Slippage } = injectedParams.params
   const currentFlowSlippage = isEoaEthFlow ? ethFlowSlippage : erc20Slippage
 
-  const minSlippage = getMinSlippage(currentFlowSlippage, chainId, isEoaEthFlow)
-  const maxSlippage = getMaxSlippage(currentFlowSlippage, chainId)
-  const defaultSlippage = getDefaultSlippage(currentFlowSlippage, chainId, isEoaEthFlow)
+
+  const minSlippage = getMinSlippage(currentFlowSlippage, chainId, isEoaEthFlow, tradeType)
+  const maxSlippage = getMaxSlippage(currentFlowSlippage, chainId, tradeType)
+  const defaultSlippage = getDefaultSlippage(currentFlowSlippage, chainId, tradeType, isEoaEthFlow)
 
   return {
     min: minSlippage,
