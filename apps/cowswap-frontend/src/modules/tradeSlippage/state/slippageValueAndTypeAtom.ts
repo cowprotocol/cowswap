@@ -1,6 +1,7 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
+import { clampValue } from '@cowprotocol/common-utils'
 import { mapSupportedNetworks } from '@cowprotocol/cow-sdk'
 import { PersistentStateByChain } from '@cowprotocol/types'
 import { walletInfoAtom } from '@cowprotocol/wallet'
@@ -45,7 +46,7 @@ export const slippageConfigAtom = atom((get) => {
   return {
     min: minSlippage,
     max: maxSlippage,
-    defaultValue: defaultSlippage,
+    defaultValue: clampValue(defaultSlippage, minSlippage, maxSlippage),
   }
 })
 
