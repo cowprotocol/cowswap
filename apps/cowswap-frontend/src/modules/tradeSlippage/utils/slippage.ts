@@ -9,7 +9,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { FlexibleSlippageConfig, resolveFlexibleConfig, SlippageConfig } from '@cowprotocol/widget-lib'
 import { TradeType } from '@cowprotocol/widget-lib'
 
-export function resolveFlexibleSlippageConfig(
+export function resolveSlippageConfig(
   config: FlexibleSlippageConfig | undefined,
   chainId: SupportedChainId,
   tradeType: TradeType | undefined,
