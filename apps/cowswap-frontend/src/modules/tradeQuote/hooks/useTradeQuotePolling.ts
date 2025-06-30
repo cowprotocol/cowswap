@@ -37,6 +37,8 @@ export function useTradeQuotePolling(isConfirmOpen = false): null {
   isOnlineRef.current = isOnline
 
   const pollQuote = usePollQuoteCallback(isConfirmOpen, quoteParamsState)
+  const pollQuoteRef = useRef(pollQuote)
+  pollQuoteRef.current = pollQuote
 
   /**
    * Reset quote when window is not visible or sell amount has been cleared
@@ -56,10 +58,16 @@ export function useTradeQuotePolling(isConfirmOpen = false): null {
    * Fetch the quote instantly once the quote params are changed
    */
   useLayoutEffect(() => {
-    if (pollQuote(true)) {
+    /**
+     * Quote params are not supposed to be changed once confirm screen is open
+     * So, we should not refetch quote
+     */
+    if (isConfirmOpen) return
+
+    if (pollQuoteRef.current(true)) {
       resetQuoteCounter()
     }
-  }, [pollQuote, quoteParams, resetQuoteCounter])
+  }, [isConfirmOpen, quoteParams, resetQuoteCounter])
 
   /**
    * Update quote once a QUOTE_POLLING_INTERVAL
@@ -67,8 +75,8 @@ export function useTradeQuotePolling(isConfirmOpen = false): null {
   useLayoutEffect(() => {
     if (tradeQuotePolling !== 0) return
 
-    pollQuote(false, true)
-  }, [pollQuote, tradeQuotePolling])
+    pollQuoteRef.current(false, true)
+  }, [tradeQuotePolling])
 
   /**
    * Reset counter and update quote each time when confirmation modal is closed
