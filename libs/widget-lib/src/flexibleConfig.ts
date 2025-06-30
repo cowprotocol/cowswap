@@ -4,7 +4,7 @@ import { FlexibleConfig, PerNetworkConfig, PerTradeTypeConfig, TradeType } from 
 
 const TradeTypes = Object.values(TradeType)
 
-export function resolveFlexibleConfig<T extends string | number>(
+export function resolveFlexibleConfig<T extends string | number | boolean>(
   config: FlexibleConfig<T>,
   chainId: SupportedChainId,
   tradeType: TradeType

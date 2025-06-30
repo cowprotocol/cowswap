@@ -48,3 +48,13 @@ export function getDefaultSlippage(
     ? valueFromConfig
     : defaultSlippagePerFlow
 }
+
+export function getIsAutoSlippageDisabled(
+  config: SlippageConfig | undefined,
+  chainId: SupportedChainId,
+  tradeType: TradeType | undefined
+): boolean {
+  if (!config || !tradeType) return false
+
+  return resolveFlexibleConfig(config.disableAutoSlippage, chainId, tradeType) ?? false
+}

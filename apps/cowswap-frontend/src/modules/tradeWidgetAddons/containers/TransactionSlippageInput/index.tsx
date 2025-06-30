@@ -13,6 +13,7 @@ import { ThemeContext } from 'styled-components/macro'
 import { useIsEoaEthFlow } from 'modules/trade'
 import { useSmartSlippageFromQuote } from 'modules/tradeQuote'
 import {
+  slippageBpsToPercent,
   useIsSlippageModified,
   useIsSmartSlippageApplied, useSlippageConfig,
   useTradeSlippage
@@ -94,8 +95,8 @@ export function TransactionSlippageInput(): JSX.Element {
                                 theme={theme}
                                 tooLow={tooLow}
                                 tooHigh={tooHigh}
-                                max={max / 100}
-                                min={min / 100}/>
+                                max={slippageBpsToPercent(max)}
+                                min={slippageBpsToPercent(min)}/>
       )}
       {isSmartSlippageApplied && (
         <RowBetween>

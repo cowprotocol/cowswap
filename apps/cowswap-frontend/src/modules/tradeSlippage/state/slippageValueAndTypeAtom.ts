@@ -7,10 +7,9 @@ import { PersistentStateByChain } from '@cowprotocol/types'
 import { walletInfoAtom } from '@cowprotocol/wallet'
 
 import { injectedWidgetParamsAtom } from 'modules/injectedWidget/state/injectedWidgetParamsAtom'
-import { isEoaEthFlowAtom, tradeTypeAtom } from 'modules/trade'
+import { isEoaEthFlowAtom, tradeTypeAtom, TradeTypeMap } from 'modules/trade'
 
-import { TradeTypeMap } from '../../injectedWidget/consts'
-import { getDefaultSlippage, getMaxSlippage, getMinSlippage } from '../utils/slippage'
+import { getDefaultSlippage, getIsAutoSlippageDisabled, getMaxSlippage, getMinSlippage } from '../utils/slippage'
 
 type SlippageBpsPerNetwork = PersistentStateByChain<number>
 
@@ -46,10 +45,12 @@ export const slippageConfigAtom = atom((get) => {
   const minSlippage = getMinSlippage(currentFlowSlippage, chainId, isEoaEthFlow, tradeType)
   const maxSlippage = getMaxSlippage(currentFlowSlippage, chainId, tradeType)
   const defaultSlippage = getDefaultSlippage(currentFlowSlippage, chainId, tradeType, isEoaEthFlow)
+  const isSmartSlippageDisabled = getIsAutoSlippageDisabled(currentFlowSlippage, chainId, tradeType)
 
   return {
     min: minSlippage,
     max: maxSlippage,
+    isSmartSlippageDisabled,
     defaultValue: clampValue(defaultSlippage, minSlippage, maxSlippage),
   }
 })

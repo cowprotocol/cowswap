@@ -1,4 +1,5 @@
 export * from './TradeDerivedState'
 export * from './ReceiveAmountInfo'
-export * from './TradeType'
+export * from './TradeTypeInfo'
 export * from './TradeRawState'
+export { TradeType, TradeTypeMap } from './TradeType'
