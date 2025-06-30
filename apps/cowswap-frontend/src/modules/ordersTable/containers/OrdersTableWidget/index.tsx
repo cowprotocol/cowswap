@@ -28,7 +28,7 @@ import { OrdersTableList, useOrdersTableList } from './hooks/useOrdersTableList'
 import { useOrdersTableTokenApprove } from './hooks/useOrdersTableTokenApprove'
 import { useValidatePageUrlParams } from './hooks/useValidatePageUrlParams'
 
-import { ALL_ORDERS_TAB, OPEN_TAB, ORDERS_TABLE_TABS } from '../../const/tabs'
+import { ALL_ORDERS_TAB, OPEN_TAB, ORDERS_TABLE_TABS, UNFILLABLE_TAB } from '../../const/tabs'
 import { OrdersTableContainer } from '../../pure/OrdersTableContainer'
 import { OrderActions } from '../../pure/OrdersTableContainer/types'
 import { TabOrderTypes } from '../../types'
@@ -372,7 +372,7 @@ export function OrdersTableWidget({
         searchTerm={searchTerm}
         isTwapTable={isTwapTable}
       >
-        {(currentTabId === OPEN_TAB.id || currentTabId === 'all' || currentTabId === 'unfillable') &&
+        {(currentTabId === OPEN_TAB.id || currentTabId === ALL_ORDERS_TAB.id || currentTabId === UNFILLABLE_TAB.id) &&
           orders.length > 0 && <MultipleCancellationMenu pendingOrders={tableItemsToOrders(orders)} />}
 
         {/* If account is not connected, don't show the search input */}
