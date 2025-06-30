@@ -33,7 +33,7 @@ function TransactionLink({ link, label, chainId }: TransactionLinkProps): ReactN
   const { data: bridgeSupportedNetworks } = useBridgeSupportedNetworks()
   const bridgeNetwork = bridgeSupportedNetworks?.find((network) => network.id === chainId)
 
-  const explorerTitle =
+  const explorerTitle = bridgeNetwork?.blockExplorer.name || getChainInfo(chainId)?.explorerTitle || 'Explorer'
     bridgeNetwork?.blockExplorer.name ||
     (() => {
       try {
