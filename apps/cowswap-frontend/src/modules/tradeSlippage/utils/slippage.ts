@@ -12,15 +12,15 @@ export function getMinSlippage(
   chainId: SupportedChainId,
   isEoaEthFlow: boolean
 ): number {
-  if (currentFlowSlippage?.min?.[chainId]) {
-    return currentFlowSlippage.min[chainId]
+  if (currentFlowSlippage?.[chainId]?.min) {
+    return currentFlowSlippage[chainId].min
   }
 
   return isEoaEthFlow ? MINIMUM_ETH_FLOW_SLIPPAGE_BPS[chainId] : MIN_SLIPPAGE_BPS
 }
 
 export function getMaxSlippage(currentFlowSlippage: SlippageConfig | undefined, chainId: SupportedChainId): number {
-  return currentFlowSlippage?.max?.[chainId] ?? MAX_SLIPPAGE_BPS
+  return currentFlowSlippage?.[chainId]?.max ?? MAX_SLIPPAGE_BPS
 }
 
 export function getDefaultSlippage(
@@ -28,8 +28,8 @@ export function getDefaultSlippage(
   chainId: SupportedChainId,
   isEoaEthFlow: boolean
 ): number {
-  if (currentFlowSlippage?.defaultValue?.[chainId]) {
-    return currentFlowSlippage.defaultValue[chainId]
+  if (currentFlowSlippage?.[chainId]?.defaultValue) {
+    return currentFlowSlippage[chainId].defaultValue
   }
 
   return isEoaEthFlow ? MINIMUM_ETH_FLOW_SLIPPAGE_BPS[chainId] : DEFAULT_SLIPPAGE_BPS

@@ -45,7 +45,7 @@ export const slippageConfigAtom = atom((get) => {
   return {
     min: minSlippage,
     max: maxSlippage,
-    default: defaultSlippage,
+    defaultValue: defaultSlippage,
   }
 })
 

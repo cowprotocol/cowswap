@@ -15,7 +15,7 @@ import {
 
 export function useTradeSlippageValueAndType(): { type: SlippageType; value: number } {
   const currentUserSlippage = useAtomValue(currentUserSlippageAtom)
-  const defaultSlippage = useAtomValue(slippageConfigAtom).default
+  const defaultSlippage = useAtomValue(slippageConfigAtom).defaultValue
   const smartSlippage = useSmartSlippageFromQuote()
   const isSmartSlippageEnabledByWidget = useAtomValue(shouldUseAutoSlippageAtom)
 
@@ -39,5 +39,5 @@ export function useTradeSlippage(): Percent {
 }
 
 export function useDefaultTradeSlippage(): Percent {
-  return bpsToPercent(useAtomValue(slippageConfigAtom).default)
+  return bpsToPercent(useAtomValue(slippageConfigAtom).defaultValue)
 }

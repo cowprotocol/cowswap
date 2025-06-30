@@ -2,9 +2,7 @@ import { JSX, useContext } from 'react'
 
 import {
   HIGH_ETH_FLOW_SLIPPAGE_BPS, HIGH_SLIPPAGE_BPS,
-  LOW_SLIPPAGE_BPS,
-  MAX_SLIPPAGE_BPS,
-  MIN_SLIPPAGE_BPS
+  LOW_SLIPPAGE_BPS
 } from '@cowprotocol/common-const'
 import { HelpTooltip, RowBetween, RowFixed } from '@cowprotocol/ui'
 import { Percent } from '@uniswap/sdk-core'
@@ -16,8 +14,8 @@ import { useIsEoaEthFlow } from 'modules/trade'
 import { useSmartSlippageFromQuote } from 'modules/tradeQuote'
 import {
   useIsSlippageModified,
-  useIsSmartSlippageApplied,
-  useTradeSlippage,
+  useIsSmartSlippageApplied, useSlippageConfig,
+  useTradeSlippage
 } from 'modules/tradeSlippage'
 import { SlippageWarningMessage } from 'modules/tradeWidgetAddons/pure/SlippageWarning'
 
@@ -38,15 +36,18 @@ export function TransactionSlippageInput(): JSX.Element {
 
   const chosenSlippageMatchesSmartSlippage = smartSlippage !== null && new Percent(smartSlippage, 10_000).equalTo(swapSlippage)
 
-  const { minEthFlowSlippageBps, minEthFlowSlippage } = useMinEthFlowSlippage()
+  const { minEthFlowSlippageBps } = useMinEthFlowSlippage()
 
   const isSlippageModified = useIsSlippageModified()
 
+  // todo use lowSlippageFromConfig
   const tooLow = swapSlippage.lessThan(new Percent(isEoaEthFlow ? minEthFlowSlippageBps : LOW_SLIPPAGE_BPS, 10_000))
 
   const tooHigh = swapSlippage.greaterThan(
     new Percent(isEoaEthFlow ? smartSlippage || HIGH_ETH_FLOW_SLIPPAGE_BPS : smartSlippage || HIGH_SLIPPAGE_BPS, 10_000),
   )
+
+  const { min, max } = useSlippageConfig()
 
   const {
     slippageError,
@@ -93,8 +94,8 @@ export function TransactionSlippageInput(): JSX.Element {
                                 theme={theme}
                                 tooLow={tooLow}
                                 tooHigh={tooHigh}
-                                max={MAX_SLIPPAGE_BPS / 100}
-                                min={isEoaEthFlow ? +minEthFlowSlippage.toFixed(1) : MIN_SLIPPAGE_BPS / 100}/>
+                                max={max / 100}
+                                min={min / 100}/>
       )}
       {isSmartSlippageApplied && (
         <RowBetween>

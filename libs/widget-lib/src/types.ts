@@ -168,11 +168,13 @@ export interface CowSwapWidgetContent {
   feeTooltipMarkdown?: string
 }
 
-export interface SlippageConfig {
-  min: PerNetworkConfig<number>
-  max: PerNetworkConfig<number>
-  defaultValue: PerNetworkConfig<number>
+export interface SlippageNetworkSettings {
+  min?: number
+  max?: number
+  defaultValue?: number
 }
+
+export type SlippageConfig = PerNetworkConfig<SlippageNetworkSettings>
 
 export interface CowSwapWidgetParams {
   /**
