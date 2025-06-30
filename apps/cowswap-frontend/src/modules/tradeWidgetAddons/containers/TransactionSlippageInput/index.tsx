@@ -1,27 +1,23 @@
 import { JSX, useContext } from 'react'
 
-import {
-  HIGH_ETH_FLOW_SLIPPAGE_BPS, HIGH_SLIPPAGE_BPS,
-  LOW_SLIPPAGE_BPS
-} from '@cowprotocol/common-const'
+
 import { HelpTooltip, RowBetween, RowFixed } from '@cowprotocol/ui'
 import { Percent } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
 import { ThemeContext } from 'styled-components/macro'
 
-import { useIsEoaEthFlow } from 'modules/trade'
 import { useSmartSlippageFromQuote } from 'modules/tradeQuote'
 import {
   slippageBpsToPercent,
   useIsSlippageModified,
-  useIsSmartSlippageApplied, useSlippageConfig,
+  useIsSmartSlippageApplied,
   useTradeSlippage
 } from 'modules/tradeSlippage'
 import { SlippageWarningMessage } from 'modules/tradeWidgetAddons/pure/SlippageWarning'
 
-import { useMinEthFlowSlippage } from './hooks/useMinEthFlowSlippage'
 import { useSlippageInput } from './hooks/useSlippageInput'
+import { useSlippageWarningParams } from './hooks/useSlippageWarningParams'
 import * as styledEl from './styled'
 
 import { SlippageTooltip } from '../SlippageTooltip'
@@ -29,26 +25,19 @@ import { SlippageTooltip } from '../SlippageTooltip'
 export function TransactionSlippageInput(): JSX.Element {
   const theme = useContext(ThemeContext)
 
-  const isEoaEthFlow = useIsEoaEthFlow()
-
   const swapSlippage = useTradeSlippage()
   const isSmartSlippageApplied = useIsSmartSlippageApplied()
   const smartSlippage = useSmartSlippageFromQuote()
 
   const chosenSlippageMatchesSmartSlippage = smartSlippage !== null && new Percent(smartSlippage, 10_000).equalTo(swapSlippage)
-
-  const { minEthFlowSlippageBps } = useMinEthFlowSlippage()
-
   const isSlippageModified = useIsSlippageModified()
 
-  // todo use lowSlippageFromConfig
-  const tooLow = swapSlippage.lessThan(new Percent(isEoaEthFlow ? minEthFlowSlippageBps : LOW_SLIPPAGE_BPS, 10_000))
-
-  const tooHigh = swapSlippage.greaterThan(
-    new Percent(isEoaEthFlow ? smartSlippage || HIGH_ETH_FLOW_SLIPPAGE_BPS : smartSlippage || HIGH_SLIPPAGE_BPS, 10_000),
-  )
-
-  const { min, max } = useSlippageConfig()
+  const {
+    tooLow,
+    tooHigh,
+    min,
+    max
+  } = useSlippageWarningParams(swapSlippage, smartSlippage, isSlippageModified)
 
   const {
     slippageError,
