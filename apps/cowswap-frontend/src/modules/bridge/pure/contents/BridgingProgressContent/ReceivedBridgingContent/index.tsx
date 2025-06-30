@@ -71,7 +71,14 @@ export function ReceivedBridgingContent({
   const destinationBridgeNetwork = bridgeSupportedNetworks?.find((network) => network.id === destinationChainId)
 
   const depositLink = depositTxHash && getExplorerLink(sourceChainId, depositTxHash, ExplorerDataType.TRANSACTION)
-  const fillTxLink =
+  const blockExplorerUrl = destinationBridgeNetwork?.blockExplorer?.url || getChainInfo(destinationChainId)?.explorer
+
+  const fillTxLink = fillTxHash && blockExplorerUrl && getExplorerLink(
+    destinationChainId,
+    fillTxHash,
+    ExplorerDataType.TRANSACTION,
+    blockExplorerUrl,
+  )
     fillTxHash &&
     (destinationBridgeNetwork?.blockExplorer?.url || (destinationChainId in CHAIN_INFO && CHAIN_INFO[destinationChainId as keyof typeof CHAIN_INFO]?.explorer)) &&
     getExplorerLink(
