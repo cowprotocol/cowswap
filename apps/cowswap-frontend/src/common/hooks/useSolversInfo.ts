@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
-import { isProdLike } from '@cowprotocol/common-utils'
+import { isBarnBackendEnv } from '@cowprotocol/common-utils'
 import { SolverInfo, solversInfoAtom } from '@cowprotocol/core'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
@@ -10,7 +10,7 @@ export function useSolversInfo(chainId: SupportedChainId): Record<string, Solver
 
   return useMemo(() => {
     // Filters by 'staging' for non-prod (dev/local/"barn") environments because the `solversInfoAtom` data (via CMS mapping) uses 'staging' for these cases.
-    const envToFilter = isProdLike ? 'prod' : 'staging'
+    const envToFilter = isBarnBackendEnv ? 'staging' : 'prod'
 
     return allSolversInfo.reduce<Record<string, SolverInfo>>((acc, info) => {
       if (
