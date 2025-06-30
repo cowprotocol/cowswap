@@ -15,7 +15,7 @@ export function validateSlippage(input: SlippageConfig | undefined): string[] | 
     : undefined
 
   const max = resolveFlexibleConfigValues(input.max)
-  const slippageToHighError = max.some((value) => value >= MAX_SLIPPAGE_BPS)
+  const slippageToHighError = max.some((value) => value > MAX_SLIPPAGE_BPS)
     ? `Max slippage can't be more than ${MAX_SLIPPAGE_BPS}`
     : undefined
 

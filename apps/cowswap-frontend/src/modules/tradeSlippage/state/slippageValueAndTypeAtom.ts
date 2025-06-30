@@ -41,7 +41,6 @@ export const slippageConfigAtom = atom((get) => {
   const { ethFlowSlippage, erc20Slippage } = injectedParams.params
   const currentFlowSlippage = isEoaEthFlow ? ethFlowSlippage : erc20Slippage
 
-
   const minSlippage = getMinSlippage(currentFlowSlippage, chainId, isEoaEthFlow, tradeType)
   const maxSlippage = getMaxSlippage(currentFlowSlippage, chainId, tradeType)
   const defaultSlippage = getDefaultSlippage(currentFlowSlippage, chainId, tradeType, isEoaEthFlow)

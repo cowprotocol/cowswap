@@ -55,6 +55,5 @@ export function getIsAutoSlippageDisabled(
   tradeType: TradeType | undefined
 ): boolean {
   if (!config || !tradeType) return false
-
-  return resolveFlexibleConfig(config.disableAutoSlippage, chainId, tradeType) ?? false
+  return !!resolveFlexibleConfig(config.disableAutoSlippage, chainId, tradeType)
 }
