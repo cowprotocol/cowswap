@@ -5,6 +5,7 @@ import CowImage from '@cowprotocol/assets/cow-swap/cow_token.svg'
 import vCOWImage from '@cowprotocol/assets/images/vCOW.svg'
 import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { COW_TOKEN_TO_CHAIN, COW_CONTRACT_ADDRESS, V_COW } from '@cowprotocol/common-const'
+import { WRAPPED_NATIVE_CURRENCIES as WETH } from '@cowprotocol/common-const'
 import { usePrevious } from '@cowprotocol/common-hooks'
 import { getBlockExplorerUrl, getProviderErrorMessage } from '@cowprotocol/common-utils'
 import { ButtonPrimary, HoverTooltip, TokenAmount } from '@cowprotocol/ui'
@@ -58,7 +59,7 @@ export default function Profile() {
   const previousAccount = usePrevious(account)
 
   const cowContractAddress = COW_CONTRACT_ADDRESS[chainId]
-
+  const nativeWrappedToken = WETH[chainId]
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const blockNumber = useBlockNumber()
   const [confirmationBlock, setConfirmationBlock] = useState<undefined | number>(undefined)
@@ -300,7 +301,7 @@ export default function Profile() {
                   }
                 />
 
-                <Link to={`/swap?outputCurrency=${COW_CONTRACT_ADDRESS[chainId]}`}>Buy COW</Link>
+                <Link to={`/${chainId}/swap/${nativeWrappedToken.address}/${COW_CONTRACT_ADDRESS[chainId]}`}>Buy COW</Link>
               </CardActions>
             </Card>
           )}
