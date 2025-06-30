@@ -36,5 +36,6 @@ export interface ConfiguratorState {
   hideBridgeInfo: boolean | undefined
   hideOrdersTable: boolean | undefined
   // todo think to make it required
-  slippage?: SlippageConfig
+  erc20Slippage?: SlippageConfig
+  ethFlowSlippage?: SlippageConfig
 }

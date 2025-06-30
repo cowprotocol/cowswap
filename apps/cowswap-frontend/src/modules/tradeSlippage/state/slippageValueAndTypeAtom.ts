@@ -37,12 +37,14 @@ export const slippageConfigAtom = atom((get) => {
   const { chainId } = get(walletInfoAtom)
   const trade = get(tradeTypeAtom)?.tradeType
   const tradeType = trade ? TradeTypeMap[trade] : undefined
-  const { slippage } = injectedParams.params
 
-  const minSlippage = getMinSlippage(slippage, chainId, isEoaEthFlow, tradeType)
-  const maxSlippage = getMaxSlippage(slippage, chainId, tradeType)
-  const defaultSlippage = getDefaultSlippage(slippage, chainId, tradeType, isEoaEthFlow)
-  const isSmartSlippageDisabled = getIsAutoSlippageDisabled(slippage, chainId, tradeType)
+  const { ethFlowSlippage, erc20Slippage } = injectedParams.params
+  const currentFlowSlippage = isEoaEthFlow ? ethFlowSlippage : erc20Slippage
+
+  const minSlippage = getMinSlippage(currentFlowSlippage, chainId, isEoaEthFlow, tradeType)
+  const maxSlippage = getMaxSlippage(currentFlowSlippage, chainId, tradeType)
+  const defaultSlippage = getDefaultSlippage(currentFlowSlippage, chainId, tradeType, isEoaEthFlow)
+  const isSmartSlippageDisabled = getIsAutoSlippageDisabled(currentFlowSlippage, chainId, tradeType)
 
   return {
     min: minSlippage,
