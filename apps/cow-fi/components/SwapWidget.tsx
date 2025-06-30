@@ -211,16 +211,17 @@ const getBuyAndSellTokens = (
   network: Network,
   contractAddress: string,
 ): { sellToken: string; buyToken: string } => {
-  let sellToken, buyToken
   if (activeTab === 'Buy') {
-    buyToken = contractAddress
-    sellToken = NETWORK_DEFAULT_SELL_TOKEN_MAP[network]
-  } else {
-    sellToken = contractAddress
-    buyToken = NETWORK_DEFAULT_BUY_TOKEN_MAP[network]
+    return {
+      sellToken: NETWORK_DEFAULT_SELL_TOKEN_MAP[network],
+      buyToken: contractAddress,
+    }
   }
 
-  return { sellToken, buyToken }
+  return {
+    sellToken: contractAddress,
+    buyToken: NETWORK_DEFAULT_BUY_TOKEN_MAP[network],
+  }
 }
 
 const Tabs = ({ activeTab, setActiveTab }: { activeTab: Tab; setActiveTab: (tab: Tab) => void }): JSX.Element => {
@@ -236,85 +237,67 @@ const Tabs = ({ activeTab, setActiveTab }: { activeTab: Tab; setActiveTab: (tab:
   )
 }
 
-const getDropdownBody = (platforms: Platforms, handleSelect: (network: string) => void): JSX.Element => {
-  const { ethereum, xdai, base, 'arbitrum-one': arbitrum, avalanche, 'polygon-pos': polygon } = platforms
+function DropdownNetworkOption({
+  network,
+  handleSelect,
+}: {
+  network: Network
+  handleSelect: (network: Network) => void
+}): JSX.Element {
   const width = 20
   const height = 20
 
   return (
+    <DropdownOption onClick={() => handleSelect(network)}>
+      <Image src={NETWORK_IMAGE_MAP[network]} alt={NETWORK_MAP[network]} width={width} height={height} />
+      {NETWORK_MAP[network]}
+    </DropdownOption>
+  )
+}
+
+const getDropdownBody = (platforms: Platforms, handleSelect: (network: Network) => void): JSX.Element => {
+  const { ethereum, xdai, base, 'arbitrum-one': arbitrum, avalanche, 'polygon-pos': polygon } = platforms
+
+  return (
     <DropdownBody>
-      {ethereum?.contractAddress && (
-        <DropdownOption onClick={() => handleSelect('ethereum')}>
-          <Image src={NETWORK_IMAGE_MAP.ethereum} alt={NETWORK_MAP.ethereum} width={width} height={height} />
-          {NETWORK_MAP.ethereum}
-        </DropdownOption>
-      )}
-      {base?.contractAddress && (
-        <DropdownOption onClick={() => handleSelect('base')}>
-          <Image src={NETWORK_IMAGE_MAP.base} alt={NETWORK_MAP.base} width={width} height={height} />
-          {NETWORK_MAP.base}
-        </DropdownOption>
-      )}
-      {arbitrum?.contractAddress && (
-        <DropdownOption onClick={() => handleSelect('arbitrum-one')}>
-          <Image
-            src={NETWORK_IMAGE_MAP['arbitrum-one']}
-            alt={NETWORK_MAP['arbitrum-one']}
-            width={width}
-            height={height}
-          />
-          {NETWORK_MAP['arbitrum-one']}
-        </DropdownOption>
-      )}
-      {polygon?.contractAddress && (
-        <DropdownOption onClick={() => handleSelect('polygon-pos')}>
-          <Image
-            src={NETWORK_IMAGE_MAP['polygon-pos']}
-            alt={NETWORK_MAP['polygon-pos']}
-            width={width}
-            height={height}
-          />
-          {NETWORK_MAP['polygon-pos']}
-        </DropdownOption>
-      )}
-      {avalanche?.contractAddress && (
-        <DropdownOption onClick={() => handleSelect('avalanche')}>
-          <Image src={NETWORK_IMAGE_MAP.avalanche} alt={NETWORK_MAP.avalanche} width={width} height={height} />
-          {NETWORK_MAP.avalanche}
-        </DropdownOption>
-      )}
-      {xdai?.contractAddress && (
-        <DropdownOption onClick={() => handleSelect('xdai')}>
-          <Image src={NETWORK_IMAGE_MAP.xdai} alt={NETWORK_MAP.xdai} width={width} height={height} />
-          {NETWORK_MAP.xdai}
-        </DropdownOption>
-      )}
+      {ethereum?.contractAddress && <DropdownNetworkOption network="ethereum" handleSelect={handleSelect} />}
+      {base?.contractAddress && <DropdownNetworkOption network="base" handleSelect={handleSelect} />}
+      {arbitrum?.contractAddress && <DropdownNetworkOption network="arbitrum-one" handleSelect={handleSelect} />}
+      {polygon?.contractAddress && <DropdownNetworkOption network="polygon-pos" handleSelect={handleSelect} />}
+      {avalanche?.contractAddress && <DropdownNetworkOption network="avalanche" handleSelect={handleSelect} />}
+      {xdai?.contractAddress && <DropdownNetworkOption network="xdai" handleSelect={handleSelect} />}
     </DropdownBody>
   )
 }
 
 export const SwapWidget = ({ tokenId, tokenSymbol, tokenImage, platforms }: SwapWidgetProps): JSX.Element => {
   const [activeTab, setActiveTab] = useState<Tab>(DEFAULT_TAB)
-  const [network, setNetwork] = useState<string>(DEFAULT_NETWORK)
+  const [network, setNetwork] = useState<Network>(DEFAULT_NETWORK)
   const [amount, setAmount] = useState(0)
 
   const [isOpen, setIsOpen] = useState(false)
 
-  const handleSelect = (network: string): void => {
+  const handleSelect = (network: Network): void => {
     setNetwork(network)
     setIsOpen(false)
   }
 
-  // set initial network based on the available platforms
-  useEffect(() => {
+  function getNetworkFromPlatforms(platforms: Platforms): Network {
     const { ethereum, xdai, base, 'arbitrum-one': arbitrum, avalanche, 'polygon-pos': polygon } = platforms
 
-    if (ethereum?.contractAddress) setNetwork('ethereum')
-    else if (base?.contractAddress) setNetwork('base')
-    else if (arbitrum?.contractAddress) setNetwork('arbitrum-one')
-    else if (polygon?.contractAddress) setNetwork('polygon-pos')
-    else if (avalanche?.contractAddress) setNetwork('avalanche')
-    else if (xdai?.contractAddress) setNetwork('xdai')
+    if (ethereum?.contractAddress) return 'ethereum'
+    if (base?.contractAddress) return 'base'
+    if (arbitrum?.contractAddress) return 'arbitrum-one'
+    if (polygon?.contractAddress) return 'polygon-pos'
+    if (avalanche?.contractAddress) return 'avalanche'
+    if (xdai?.contractAddress) return 'xdai'
+
+    return 'ethereum'
+  }
+
+  // set initial network based on the available platforms
+  useEffect(() => {
+    setNetwork(getNetworkFromPlatforms(platforms))
   }, [platforms])
 
   const handleInputChange = (event: ChangeEvent<HTMLInputElement>): void => {
