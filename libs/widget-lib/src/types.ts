@@ -332,8 +332,7 @@ export interface CowSwapWidgetParams {
    */
   content?: CowSwapWidgetContent
 
-  erc20Slippage?: SlippageConfig
-  ethFlowSlippage?: SlippageConfig
+  slippage?: SlippageConfig
 }
 
 // Define types for event payloads
