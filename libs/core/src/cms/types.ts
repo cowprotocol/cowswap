@@ -16,7 +16,6 @@ export type SolverInfo = {
 export type SolverNetwork = {
   chainId: SupportedChainId
   env: CowEnv
-  active: boolean
 }
 
 export type CmsAnnouncements = components['schemas']['AnnouncementListResponseDataItem'][]
