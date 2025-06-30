@@ -4,56 +4,41 @@ import {
   MIN_SLIPPAGE_BPS,
   MINIMUM_ETH_FLOW_SLIPPAGE_BPS
 } from '@cowprotocol/common-const'
+import { clampValue } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { resolveFlexibleConfig, SlippageConfig } from '@cowprotocol/widget-lib'
+import { FlexibleSlippageConfig, resolveFlexibleConfig, SlippageConfig } from '@cowprotocol/widget-lib'
 import { TradeType } from '@cowprotocol/widget-lib'
 
-export function getMinSlippage(
-  config: SlippageConfig | undefined,
-  chainId: SupportedChainId,
-  isEoaEthFlow: boolean,
-  tradeType: TradeType | undefined,
-): number {
-  const defaultMinSlippagePerFlow = isEoaEthFlow ? MINIMUM_ETH_FLOW_SLIPPAGE_BPS[chainId] : MIN_SLIPPAGE_BPS
-  if (!config || !tradeType) return defaultMinSlippagePerFlow
-
-  const valueFromConfig = resolveFlexibleConfig(config.min, chainId, tradeType)
-  if (typeof valueFromConfig === 'number') return valueFromConfig
-
-  return defaultMinSlippagePerFlow
-}
-
-export function getMaxSlippage(
-  config: SlippageConfig | undefined,
+export function resolveFlexibleSlippageConfig(
+  config: FlexibleSlippageConfig | undefined,
   chainId: SupportedChainId,
   tradeType: TradeType | undefined,
-): number {
-  if (!config || !tradeType) return MAX_DEFAULT_SLIPPAGE_BPS
+  isEthFlow: boolean
+): Required<SlippageConfig> {
+  const minEthSlippageBps = MINIMUM_ETH_FLOW_SLIPPAGE_BPS[chainId]
 
-  return resolveFlexibleConfig(config.max, chainId, tradeType) || MAX_DEFAULT_SLIPPAGE_BPS
-}
+  const defaultConfig = {
+    min: isEthFlow ? minEthSlippageBps : MIN_SLIPPAGE_BPS,
+    max: MAX_DEFAULT_SLIPPAGE_BPS,
+    defaultValue: isEthFlow ? minEthSlippageBps : DEFAULT_SLIPPAGE_BPS,
+    disableAutoSlippage: false,
+  }
 
-export function getDefaultSlippage(
-  config: SlippageConfig | undefined,
-  chainId: SupportedChainId,
-  tradeType: TradeType | undefined,
-  isEoaEthFlow: boolean
-): number {
-  const defaultSlippagePerFlow = isEoaEthFlow ? MINIMUM_ETH_FLOW_SLIPPAGE_BPS[chainId] : DEFAULT_SLIPPAGE_BPS
-  if (!config || !tradeType) return defaultSlippagePerFlow
+  if (!config || !tradeType) {
+    return defaultConfig
+  }
 
-  const valueFromConfig = resolveFlexibleConfig(config.defaultValue, chainId, tradeType)
+  const resolvedConfig = resolveFlexibleConfig(config, chainId, tradeType)
+  if (!resolvedConfig) return defaultConfig
 
-  return typeof valueFromConfig === 'number'
-    ? valueFromConfig
-    : defaultSlippagePerFlow
-}
+  const min = resolvedConfig.min ?? defaultConfig.min
+  const max = resolvedConfig.max ?? defaultConfig.max
+  const defaultValue = resolvedConfig.defaultValue ?? defaultConfig.defaultValue
 
-export function getIsAutoSlippageDisabled(
-  config: SlippageConfig | undefined,
-  chainId: SupportedChainId,
-  tradeType: TradeType | undefined
-): boolean {
-  if (!config || !tradeType) return false
-  return !!resolveFlexibleConfig(config.disableAutoSlippage, chainId, tradeType)
+  return {
+    min,
+    max,
+    defaultValue: clampValue(defaultValue, min, max),
+    disableAutoSlippage: resolvedConfig.disableAutoSlippage ?? defaultConfig.disableAutoSlippage,
+  }
 }

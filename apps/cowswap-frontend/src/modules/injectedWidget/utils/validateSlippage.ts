@@ -1,31 +1,41 @@
 import { MAX_SLIPPAGE_BPS } from '@cowprotocol/common-const'
 import { isTruthy } from '@cowprotocol/common-utils'
-import { SlippageConfig } from '@cowprotocol/widget-lib'
+import { FlexibleSlippageConfig } from '@cowprotocol/widget-lib'
 
 import { resolveFlexibleConfigValues } from './resolveFlexibleConfigValues'
 
+function validateDefaultValue(defaultValue: number | undefined, min?: number, max?: number): string | undefined {
+  if (typeof defaultValue !== 'number') return undefined
 
-export function validateSlippage(input: SlippageConfig | undefined): string[] | undefined {
+  if (defaultValue < (min ?? 0)) {
+    return `Default slippage must be higher than or equal to min slippage of ${min ?? 0} BPS!`
+  }
+
+  if (defaultValue > (max ?? MAX_SLIPPAGE_BPS)) {
+    return `Default slippage must be lower than or equal to max slippage of ${max ?? MAX_SLIPPAGE_BPS} BPS!`
+  }
+
+  return undefined
+}
+
+export function validateSlippage(input: FlexibleSlippageConfig | undefined): string[] | undefined {
   if (!input) return undefined
 
-  const min = resolveFlexibleConfigValues(input.min)
+  const configs = resolveFlexibleConfigValues(input)
 
-  const negativeSlippageError = min.some((value) => value < 0)
-    ? `Min slippage can't be less than 0 BPS!`
-    : undefined
+  const errors = configs.flatMap(({ min, max, defaultValue }) => {
+    const minSlippageError = min && min < 0
+      ? `Min slippage can't be less than 0 BPS!`
+      : undefined
 
-  const max = resolveFlexibleConfigValues(input.max)
-  const slippageToHighError = max.some((value) => value > MAX_SLIPPAGE_BPS)
-    ? `Max slippage can't be more than ${MAX_SLIPPAGE_BPS}`
-    : undefined
+    const maxSlippageError = max && max > MAX_SLIPPAGE_BPS
+      ? `Max slippage can't be more than ${MAX_SLIPPAGE_BPS} BPS!`
+      : undefined
 
-  const defaultSlippages = resolveFlexibleConfigValues(input.defaultValue)
-  // todo need to compare with min/max from input
-  const defaultSlippageError = defaultSlippages.some((value) => value < 0 && value >= MAX_SLIPPAGE_BPS)
-    ? `Default slippage must be between 0 and ${MAX_SLIPPAGE_BPS} BPS!`
-    : undefined
+    const defaultSlippageError = validateDefaultValue(defaultValue)
 
-  const errors = [negativeSlippageError, slippageToHighError, defaultSlippageError].filter(isTruthy)
+    return [minSlippageError, maxSlippageError, defaultSlippageError].filter(isTruthy)
+  })
 
   return errors.length > 0 ? errors : undefined
 }

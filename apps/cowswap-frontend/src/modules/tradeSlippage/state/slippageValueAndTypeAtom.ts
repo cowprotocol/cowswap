@@ -1,7 +1,6 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
-import { clampValue } from '@cowprotocol/common-utils'
 import { mapSupportedNetworks } from '@cowprotocol/cow-sdk'
 import { PersistentStateByChain } from '@cowprotocol/types'
 import { walletInfoAtom } from '@cowprotocol/wallet'
@@ -9,7 +8,9 @@ import { walletInfoAtom } from '@cowprotocol/wallet'
 import { injectedWidgetParamsAtom } from 'modules/injectedWidget/state/injectedWidgetParamsAtom'
 import { isEoaEthFlowAtom, tradeTypeAtom, TradeTypeMap } from 'modules/trade'
 
-import { getDefaultSlippage, getIsAutoSlippageDisabled, getMaxSlippage, getMinSlippage } from '../utils/slippage'
+import {
+  resolveFlexibleSlippageConfig
+} from '../utils/slippage'
 
 type SlippageBpsPerNetwork = PersistentStateByChain<number>
 
@@ -41,17 +42,7 @@ export const slippageConfigAtom = atom((get) => {
   const { ethFlowSlippage, erc20Slippage } = injectedParams.params
   const currentFlowSlippage = isEoaEthFlow ? ethFlowSlippage : erc20Slippage
 
-  const minSlippage = getMinSlippage(currentFlowSlippage, chainId, isEoaEthFlow, tradeType)
-  const maxSlippage = getMaxSlippage(currentFlowSlippage, chainId, tradeType)
-  const defaultSlippage = getDefaultSlippage(currentFlowSlippage, chainId, tradeType, isEoaEthFlow)
-  const isSmartSlippageDisabled = getIsAutoSlippageDisabled(currentFlowSlippage, chainId, tradeType)
-
-  return {
-    min: minSlippage,
-    max: maxSlippage,
-    isSmartSlippageDisabled,
-    defaultValue: clampValue(defaultSlippage, minSlippage, maxSlippage),
-  }
+  return resolveFlexibleSlippageConfig(currentFlowSlippage, chainId, tradeType, isEoaEthFlow)
 })
 
 // todo - think how to protect slippage if the settings were changed (f.e. user slippage is higher than max slippage)

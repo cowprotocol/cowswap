@@ -15,11 +15,11 @@ import {
 
 export function useTradeSlippageValueAndType(): { type: SlippageType; value: number } {
   const currentUserSlippage = useAtomValue(currentUserSlippageAtom)
-  const { defaultValue, isSmartSlippageDisabled } = useAtomValue(slippageConfigAtom)
+  const { defaultValue, disableAutoSlippage } = useAtomValue(slippageConfigAtom)
   const smartSlippage = useSmartSlippageFromQuote()
 
   const isSmartSlippageEnabledByWidget = useAtomValue(shouldUseAutoSlippageAtom)
-  const isSmartSlippageEnabled = isSmartSlippageEnabledByWidget && !isSmartSlippageDisabled
+  const isSmartSlippageEnabled = isSmartSlippageEnabledByWidget && !disableAutoSlippage
 
   return useMemo(() => {
     if (typeof currentUserSlippage === 'number') {

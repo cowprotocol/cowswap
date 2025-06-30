@@ -169,11 +169,13 @@ export interface CowSwapWidgetContent {
 }
 
 export interface SlippageConfig {
-  min: FlexibleConfig<number>
-  max: FlexibleConfig<number>
-  defaultValue: FlexibleConfig<number>
-  disableAutoSlippage: FlexibleConfig<boolean>
+  min?: number
+  max?: number
+  defaultValue?: number
+  disableAutoSlippage?: boolean
 }
+
+export type FlexibleSlippageConfig = FlexibleConfig<SlippageConfig>;
 
 export interface CowSwapWidgetParams {
   /**
@@ -332,8 +334,8 @@ export interface CowSwapWidgetParams {
    */
   content?: CowSwapWidgetContent
 
-  erc20Slippage?: SlippageConfig
-  ethFlowSlippage?: SlippageConfig
+  erc20Slippage?: FlexibleSlippageConfig
+  ethFlowSlippage?: FlexibleSlippageConfig
 }
 
 // Define types for event payloads
