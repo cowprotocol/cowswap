@@ -6,6 +6,7 @@ import { ProxyRecipient } from 'modules/cowShed'
 import { ReceiveAmountTitle, TradeFeesAndCosts, ConfirmDetailsItem } from 'modules/trade'
 
 import { QuoteSwapContext } from '../../../types'
+import { ProxyAccountBanner } from '../../ProxyAccountBanner'
 import { TokenAmountDisplay } from '../../TokenAmountDisplay'
 
 interface QuoteDetailsContentProps {
@@ -118,6 +119,7 @@ export function QuoteSwapContent({
           {content}
         </ConfirmDetailsItem>
       ))}
+      <ProxyAccountBanner recipient={recipient} chainId={sellAmount.currency.chainId} />
     </>
   )
 }
