@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
 import ReceiptIcon from '@cowprotocol/assets/cow-swap/icon-receipt.svg'
-import { CHAIN_INFO, getChainInfo } from '@cowprotocol/common-const'
+import { getChainInfo } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { BridgeStatusResult, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ExternalLink } from '@cowprotocol/ui'
@@ -28,20 +28,11 @@ interface TransactionLinkProps {
   chainId: number
 }
 
-
 function TransactionLink({ link, label, chainId }: TransactionLinkProps): ReactNode {
   const { data: bridgeSupportedNetworks } = useBridgeSupportedNetworks()
   const bridgeNetwork = bridgeSupportedNetworks?.find((network) => network.id === chainId)
 
   const explorerTitle = bridgeNetwork?.blockExplorer.name || getChainInfo(chainId)?.explorerTitle || 'Explorer'
-    bridgeNetwork?.blockExplorer.name ||
-    (() => {
-      try {
-        return getChainInfo(chainId).explorerTitle
-      } catch {
-        return 'Explorer'
-      }
-    })()
 
   return (
     <ConfirmDetailsItem
@@ -73,20 +64,10 @@ export function ReceivedBridgingContent({
   const depositLink = depositTxHash && getExplorerLink(sourceChainId, depositTxHash, ExplorerDataType.TRANSACTION)
   const blockExplorerUrl = destinationBridgeNetwork?.blockExplorer?.url || getChainInfo(destinationChainId)?.explorer
 
-  const fillTxLink = fillTxHash && blockExplorerUrl && getExplorerLink(
-    destinationChainId,
-    fillTxHash,
-    ExplorerDataType.TRANSACTION,
-    blockExplorerUrl,
-  )
+  const fillTxLink =
     fillTxHash &&
-    (destinationBridgeNetwork?.blockExplorer?.url || (destinationChainId in CHAIN_INFO && CHAIN_INFO[destinationChainId as keyof typeof CHAIN_INFO]?.explorer)) &&
-    getExplorerLink(
-      destinationChainId,
-      fillTxHash,
-      ExplorerDataType.TRANSACTION,
-      destinationBridgeNetwork?.blockExplorer?.url,
-    )
+    blockExplorerUrl &&
+    getExplorerLink(destinationChainId, fillTxHash, ExplorerDataType.TRANSACTION, blockExplorerUrl)
 
   return (
     <>
