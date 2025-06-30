@@ -1,16 +1,14 @@
 import { FlexibleConfig, isPerNetworkConfig, isPerTradeTypeConfig } from '@cowprotocol/widget-lib'
 
-export function resolveFlexibleConfigValues<T extends string | number>(config: FlexibleConfig<T>): T[] {
+export function resolveFlexibleConfigValues<T>(config: FlexibleConfig<T>): T[] {
   if (isPerTradeTypeConfig(config)) {
     return Object.values(config)
-      .map((value) => (isPerNetworkConfig(value) ? Object.values(value) : value))
-      .flat()
+      .flatMap((value) => (isPerNetworkConfig(value) ? Object.values(value) : [value]))
   }
 
   if (isPerNetworkConfig(config)) {
     return Object.values(config)
-      .map((value) => (isPerTradeTypeConfig(value) ? Object.values(value) : value))
-      .flat()
+      .flatMap((value) => (isPerTradeTypeConfig(value) ? Object.values(value) : [value]))
   }
 
   return [config] as T[]
