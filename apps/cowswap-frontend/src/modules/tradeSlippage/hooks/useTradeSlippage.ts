@@ -26,7 +26,10 @@ export function useTradeSlippageValueAndType(): { type: SlippageType; value: num
       return { type: 'user', value: currentUserSlippage }
     }
 
-    if (isSmartSlippageEnabled && smartSlippage && smartSlippage !== defaultValue) {
+    // default slippage is always equal to min slippage value by default
+    // in case if integrator wants to set up the default value higher than min slippage value
+    // we should use the default value from the config
+    if (isSmartSlippageEnabled && smartSlippage && smartSlippage > defaultValue) {
       return { type: 'smart', value: smartSlippage }
     }
 
