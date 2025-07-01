@@ -21,8 +21,12 @@ export function useSlippageWarningParams(
     ? isEoaEthFlow ? minEthFlowSlippageBps : LOW_SLIPPAGE_BPS
     : defaultValue
 
+  const highModifiedSlippage = isEoaEthFlow
+    ? smartSlippage || HIGH_ETH_FLOW_SLIPPAGE_BPS
+    : smartSlippage || HIGH_SLIPPAGE_BPS;
+
   const highSlippageBound = isSlippageModified
-    ? isEoaEthFlow ? smartSlippage || HIGH_ETH_FLOW_SLIPPAGE_BPS : smartSlippage || HIGH_SLIPPAGE_BPS
+    ? highModifiedSlippage < defaultValue ? defaultValue : highModifiedSlippage
     : defaultValue
 
   return useMemo(() => {
