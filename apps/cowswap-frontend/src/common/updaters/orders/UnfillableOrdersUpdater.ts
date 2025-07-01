@@ -3,14 +3,14 @@ import { useCallback, useEffect, useRef } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
-import { NATIVE_CURRENCY_ADDRESS, WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { useIsWindowVisible } from '@cowprotocol/common-hooks'
 import { isSellOrder } from '@cowprotocol/common-utils'
-import { PriceQuality, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId, AccountAddress, QuoteResults } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 
+import { tradingSdk } from 'tradingSdk/tradingSdk'
 import { FeeInformation } from 'types'
 
 import { Order } from 'legacy/state/orders/actions'
@@ -25,13 +25,10 @@ import {
 
 import { updatePendingOrderPricesAtom } from 'modules/orders/state/pendingOrdersPricesAtom'
 
-import { getQuote } from 'api/cowProtocol'
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
-import { PRICE_QUOTE_VALID_TO_TIME } from '../../constants/quote'
 import { useIsProviderNetworkUnsupported } from '../../hooks/useIsProviderNetworkUnsupported'
-import { FeeQuoteParams } from '../../types'
 
 /**
  * Updater that checks whether pending orders are still "fillable"
@@ -90,7 +87,7 @@ export function UnfillableOrdersUpdater(): null {
   )
 
   const updateIsUnfillableFlag = useCallback(
-    (chainId: ChainId, order: Order, priceAmount: string, fee: FeeInformation | null) => {
+    (chainId: SupportedChainId, order: Order, priceAmount: string, fee: FeeInformation | null) => {
       if (!fee?.amount) return
 
       const orderPrice = new Price(
@@ -124,6 +121,7 @@ export function UnfillableOrdersUpdater(): null {
 
   const balancesRef = useRef(balances)
   balancesRef.current = balances
+
   const updatePending = useCallback(() => {
     if (!chainId || !account || isUpdating.current || !isWindowVisible) {
       return
@@ -141,16 +139,20 @@ export function UnfillableOrdersUpdater(): null {
       }
 
       pending.forEach((order) => {
-        _getOrderPrice(chainId, order)
-          .then((quote) => {
-            if (quote) {
-              const amount = isSellOrder(quote.quote.kind) ? quote.quote.buyAmount : quote.quote.sellAmount
+        getOrderPrice(chainId, order)
+          .then((results) => {
+            if (!results) return
 
-              updateIsUnfillableFlag(chainId, order, amount, {
-                expirationDate: quote.expiration,
-                amount: quote.quote.feeAmount,
-              })
-            }
+            const {
+              quoteResponse: { quote, expiration },
+            } = results
+
+            const amount = isSellOrder(quote.kind) ? quote.buyAmount : quote.sellAmount
+
+            updateIsUnfillableFlag(chainId, order, amount, {
+              expirationDate: expiration,
+              amount: quote.feeAmount,
+            })
           })
           .catch((e) => {
             updatePendingOrderPrices({
@@ -185,60 +187,24 @@ export function UnfillableOrdersUpdater(): null {
   return null
 }
 
-/**
- * Thin wrapper around `getBestPrice` that builds the params and returns null on failure
- */
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-async function _getOrderPrice(chainId: ChainId, order: Order) {
-  let baseToken, quoteToken
-
-  // TODO: consider a fixed amount in case of partial fills
+async function getOrderPrice(chainId: SupportedChainId, order: Order): Promise<QuoteResults | null> {
   const amount = getRemainderAmount(order.kind, order)
 
-  // Don't quote if there's nothing left to match in this order
-  if (amount === '0') return null
-
-  if (isSellOrder(order.kind)) {
-    // this order sell amount is sellAmountAfterFees
-    // this is an issue as it will be adjusted again in the backend
-    // e.g order submitted w/sellAmount adjusted for fee: 995, we re-query 995
-    // e.g backend adjusts for fee again, 990 is used. We need to avoid double fee adjusting
-    // e.g so here we need to pass the sellAmountBeforeFees
-    baseToken = order.sellToken
-    quoteToken = order.buyToken
-  } else {
-    baseToken = order.buyToken
-    quoteToken = order.sellToken
-  }
-
-  const isEthFlow = order.sellToken === NATIVE_CURRENCY_ADDRESS
-
-  const quoteParams = {
-    chainId,
-    amount,
-    kind: order.kind,
-    // we need to get wrapped token quotes (native quotes will fail)
-    sellToken: isEthFlow ? WRAPPED_NATIVE_CURRENCIES[chainId].address : order.sellToken,
-    buyToken: order.buyToken,
-    baseToken,
-    quoteToken,
-    fromDecimals: order.inputToken.decimals,
-    toDecimals: order.outputToken.decimals,
-    userAddress: order.owner,
-    receiver: order.receiver,
-    isEthFlow,
-    priceQuality: PriceQuality.OPTIMAL,
-    appData: order.appData ?? undefined,
-    appDataHash: order.appDataHash ?? undefined,
-  }
-
-  const legacyFeeQuoteParams = quoteParams as FeeQuoteParams
-
-  legacyFeeQuoteParams.validFor = Math.round(PRICE_QUOTE_VALID_TO_TIME / 1000)
-
   try {
-    return getQuote(quoteParams)
+    return tradingSdk
+      .getQuote({
+        chainId,
+        kind: order.kind,
+        owner: order.owner as AccountAddress,
+        sellToken: order.sellToken,
+        sellTokenDecimals: order.inputToken.decimals,
+        buyToken: order.buyToken,
+        buyTokenDecimals: order.outputToken.decimals,
+        amount,
+        receiver: order.receiver,
+        partiallyFillable: order.partiallyFillable,
+      })
+      .then((res) => res.quoteResults)
   } catch {
     return null
   }
