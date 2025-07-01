@@ -35,8 +35,11 @@ export interface CowHookToEdit extends CowHookCreation {
 
 export interface CoWHookDappActions {
   addHook(payload: CowHookCreation): void
+
   editHook(payload: CowHookToEdit): void
+
   setSellToken(token: TokenData): void
+
   setBuyToken(token: TokenData): void
 }
 
@@ -108,8 +111,8 @@ interface RawElement {
 export interface StateDiff {
   address: string
   soltype: SoltypeElement | null
-  original: string | Record<string, any>
-  dirty: string | Record<string, any>
+  original: string | Record<string, unknown>
+  dirty: string | Record<string, unknown>
   raw: RawElement[]
 }
 
