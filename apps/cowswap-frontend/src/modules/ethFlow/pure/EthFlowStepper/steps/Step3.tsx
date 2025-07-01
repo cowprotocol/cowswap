@@ -1,4 +1,4 @@
-import { ReactElement, useMemo } from 'react'
+import { ReactElement, ReactNode, useMemo } from 'react'
 
 import Checkmark from '@cowprotocol/assets/cow-swap/checkmark.svg'
 import Exclamation from '@cowprotocol/assets/cow-swap/exclamation.svg'
@@ -20,11 +20,15 @@ const ExpiredMessage = styled.span`
   color: var(${UI.COLOR_WARNING});
 `
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
-export function Step3({ nativeTokenSymbol, tokenLabel, order, creation, refund, cancellation }: EthFlowStepperProps) {
+// eslint-disable-next-line complexity,max-lines-per-function
+export function Step3({
+  nativeTokenSymbol,
+  tokenLabel,
+  order,
+  creation,
+  refund,
+  cancellation,
+}: EthFlowStepperProps): ReactNode {
   const { state, isExpired, rejectedReason } = order
   const { failed: creationFailed, cancelled: creationCancelled, replaced: creationReplaced } = creation
   const { hash: refundHash, failed: refundFailed } = refund
@@ -34,7 +38,7 @@ export function Step3({ nativeTokenSymbol, tokenLabel, order, creation, refund, 
   const isIndexed = state === SmartOrderStatus.INDEXED
   const isCreating = state === SmartOrderStatus.CREATING
   const isFilled = state === SmartOrderStatus.FILLED
-  const expiredBeforeCreate = isExpired && (isCreating || isIndexing)
+  const expiredBeforeCreate = isExpired && (isCreating || isIndexing) && !isFilled
   const isRefunded = refundFailed === false || cancellationFailed === false
 
   const orderIsNotCreated = !!(creationFailed || creationCancelled || creationReplaced) && !isFilled
