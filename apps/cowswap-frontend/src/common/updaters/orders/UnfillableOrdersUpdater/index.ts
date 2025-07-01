@@ -36,7 +36,7 @@ export function UnfillableOrdersUpdater(): null {
 
   useSWR(
     account && !isProviderNetworkUnsupported && pendingOrders.length
-      ? [account, chainId, 'UnfillableOrdersUpdater']
+      ? [account, chainId, pendingOrders.length, 'UnfillableOrdersUpdater']
       : null,
     () => {
       return updatePendingRef.current(pendingOrdersRef.current)
