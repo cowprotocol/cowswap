@@ -41,7 +41,7 @@ export function UnfillableOrdersUpdater(): null {
   const cowAnalytics = useCowAnalytics()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
 
-  const pending = useOnlyPendingOrders(chainId)
+  const pending = useOnlyPendingOrders(chainId, account)
 
   const setIsOrderUnfillable = useSetIsOrderUnfillable()
 

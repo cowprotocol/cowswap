@@ -259,16 +259,24 @@ export const useCombinedPendingOrders = ({
  * The difference is that this hook returns only orders that have the status PENDING
  * while usePendingOrders aggregates all pending states
  */
-export const useOnlyPendingOrders = (chainId: SupportedChainId): Order[] => {
-  const state = useSelector<AppState, PartialOrdersMap | undefined>(
-    (state) => chainId && state.orders?.[chainId]?.pending,
-  )
+export const useOnlyPendingOrders = (chainId: SupportedChainId, account: string | undefined): Order[] => {
+  const state = useSelector<AppState, PartialOrdersMap | undefined>((state) => state.orders?.[chainId]?.pending)
 
   return useMemo(() => {
     if (!state) return EMPTY_ORDERS_ARRAY
 
-    return Object.values(state).map(deserializeOrder).filter(isTruthy)
-  }, [state])
+    const accountLower = account?.toLowerCase()
+
+    return Object.values(state).reduce((acc, val) => {
+      if (val && (accountLower ? val.order.owner.toLowerCase() === accountLower : true)) {
+        const deserialized = deserializeOrder(val)
+
+        if (deserialized) acc.push(deserialized)
+      }
+
+      return acc
+    }, [] as Order[])
+  }, [state, account])
 }
 
 export const useCancelledOrders = ({ chainId }: GetOrdersParams): Order[] => {
