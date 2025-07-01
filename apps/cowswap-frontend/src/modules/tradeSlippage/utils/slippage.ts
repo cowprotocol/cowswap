@@ -30,8 +30,8 @@ export function resolveSlippageConfig(
   const resolvedConfig = resolveFlexibleConfig(config, chainId, tradeType)
   if (!resolvedConfig) return applicationConfig
 
-  const min = Math.max(resolvedConfig.min ?? applicationConfig.min)
-  const max = Math.min(resolvedConfig.max ?? applicationConfig.max)
+  const min = Math.max(resolvedConfig.min ?? applicationConfig.min, applicationConfig.min)
+  const max = Math.min(resolvedConfig.max ?? applicationConfig.max,  applicationConfig.max)
   const defaultValue = resolvedConfig.defaultValue ?? applicationConfig.defaultValue
 
   return {
