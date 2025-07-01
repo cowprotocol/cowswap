@@ -1,11 +1,10 @@
 import { useAtomValue, useSetAtom } from 'jotai/index'
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import type { Order } from 'legacy/state/orders/actions'
 
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
-import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
 import { CancellableOrder } from 'common/utils/isOrderCancellable'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
@@ -58,12 +57,22 @@ export function useOrderActions(allOrders: Order[]): OrderActions {
 
   const approveOrderToken = useOrdersTableTokenApprove()
 
-  return useSafeMemoObject({
-    getShowCancellationModal,
-    getAlternativeOrderModalContext,
-    selectReceiptOrder,
-    toggleOrderForCancellation,
-    toggleOrdersForCancellation,
-    approveOrderToken,
-  })
+  return useMemo(
+    () => ({
+      getShowCancellationModal,
+      getAlternativeOrderModalContext,
+      selectReceiptOrder,
+      toggleOrderForCancellation,
+      toggleOrdersForCancellation,
+      approveOrderToken,
+    }),
+    [
+      getShowCancellationModal,
+      getAlternativeOrderModalContext,
+      selectReceiptOrder,
+      toggleOrderForCancellation,
+      toggleOrdersForCancellation,
+      approveOrderToken,
+    ],
+  )
 }
