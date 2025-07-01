@@ -39,10 +39,8 @@ export const slippageConfigAtom = atom((get) => {
   const trade = get(tradeTypeAtom)?.tradeType
   const tradeType = trade ? TradeTypeMap[trade] : undefined
 
-  const { ethFlowSlippage, erc20Slippage } = injectedParams.params
-  const currentFlowSlippage = isEoaEthFlow ? ethFlowSlippage : erc20Slippage
-
-  return resolveSlippageConfig(currentFlowSlippage, chainId, tradeType, isEoaEthFlow)
+  const { slippage } = injectedParams.params
+  return resolveSlippageConfig(slippage, chainId, tradeType, isEoaEthFlow)
 })
 
 export const currentUserSlippageAtom = atom<number | null>((get) => {

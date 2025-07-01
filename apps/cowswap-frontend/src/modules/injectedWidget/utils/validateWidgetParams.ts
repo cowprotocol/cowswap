@@ -9,8 +9,7 @@ type Keys = keyof CowSwapWidgetAppParams
 
 const VALIDATIONS: Partial<{ [key in Keys]: (param: CowSwapWidgetAppParams[key]) => string[] | undefined }> = {
   partnerFee: validatePartnerFee,
-  ethFlowSlippage: validateSlippage,
-  erc20Slippage: validateSlippage,
+  slippage: validateSlippage,
 }
 
 export function validateWidgetParams(params: CowSwapWidgetAppParams): WidgetParamsErrors {

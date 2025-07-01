@@ -1,4 +1,4 @@
-import { MAX_SLIPPAGE_BPS } from '@cowprotocol/common-const'
+import { MAX_SLIPPAGE_BPS, MIN_SLIPPAGE_BPS } from '@cowprotocol/common-const'
 import { isTruthy } from '@cowprotocol/common-utils'
 import { FlexibleSlippageConfig } from '@cowprotocol/widget-lib'
 
@@ -24,7 +24,7 @@ export function validateSlippage(input: FlexibleSlippageConfig | undefined): str
   const configs = resolveFlexibleConfigValues(input)
 
   const errors = configs.flatMap(({ min, max, defaultValue }) => {
-    const minSlippageError = min && min < 0
+    const minSlippageError = min && min < MIN_SLIPPAGE_BPS
       ? `Min slippage can't be less than 0 BPS!`
       : undefined
 
