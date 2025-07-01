@@ -1,7 +1,6 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
-import { isValidIntegerFactory } from '@cowprotocol/common-utils'
 import { mapSupportedNetworks } from '@cowprotocol/cow-sdk'
 import { PersistentStateByChain } from '@cowprotocol/types'
 import { walletInfoAtom } from '@cowprotocol/wallet'
@@ -52,14 +51,7 @@ export const currentUserSlippageAtom = atom<number | null>((get) => {
   const normalSlippage = get(normalTradeSlippageAtom)
   const ethFlowSlippage = get(ethFlowSlippageAtom)
 
-  const { min, max } = get(slippageConfigAtom)
-  const isValidSlippage = isValidIntegerFactory(min, max)
-  const userSlippage = (isEoaEthFlow ? ethFlowSlippage : normalSlippage)?.[chainId] ?? null
-
-  return userSlippage
-    // if slippage settings were changed via config and userSlippage is out of bounds -> ignore it
-    ? isValidSlippage(userSlippage) ? userSlippage : null
-    : null
+  return (isEoaEthFlow ? ethFlowSlippage : normalSlippage)?.[chainId] ?? null
 })
 
 export const setUserSlippageAtom = atom(null, (get, set, slippageBps: number | null) => {

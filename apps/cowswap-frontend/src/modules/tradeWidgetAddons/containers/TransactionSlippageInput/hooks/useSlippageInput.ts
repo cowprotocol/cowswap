@@ -47,7 +47,7 @@ export function useSlippageInput(): ReturnType {
   const [slippageInput, setSlippageInput] = useState('')
   const [slippageError, setSlippageError] = useState<SlippageError | false>(false)
 
-  const slippageConfig = useSlippageConfig()
+  const { min, max } = useSlippageConfig()
 
   const setSwapSlippage = useSetSlippage()
   const analytics = useCowAnalytics()
@@ -74,10 +74,10 @@ export function useSlippageInput(): ReturnType {
 
   const isValidInput = useMemo(() => {
     return isValidIntegerFactory(
-      slippageConfig.min,
-      slippageConfig.max,
+      min,
+      max,
     )
-  }, [slippageConfig.min, slippageConfig.max])
+  }, [min, max])
 
   const parseSlippageInput = useCallback(
     (value: string) => {

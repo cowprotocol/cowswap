@@ -4,7 +4,7 @@ import { HIGH_ETH_FLOW_SLIPPAGE_BPS, HIGH_SLIPPAGE_BPS, LOW_SLIPPAGE_BPS } from 
 import { Percent } from '@uniswap/sdk-core'
 
 import { useIsEoaEthFlow } from 'modules/trade'
-import { useSlippageConfig } from 'modules/tradeSlippage'
+import { slippageBpsToPercent, useSlippageConfig } from 'modules/tradeSlippage'
 
 import { useMinEthFlowSlippage } from './useMinEthFlowSlippage'
 
@@ -35,8 +35,8 @@ export function useSlippageWarningParams(
     return {
       tooHigh,
       tooLow,
-      min,
-      max
+      min: slippageBpsToPercent(min),
+      max: slippageBpsToPercent(max)
     }
   }, [
     swapSlippage,

@@ -9,7 +9,6 @@ import { ThemeContext } from 'styled-components/macro'
 
 import { useSmartSlippageFromQuote } from 'modules/tradeQuote'
 import {
-  slippageBpsToPercent,
   useIsSlippageModified,
   useIsSmartSlippageApplied,
   useTradeSlippage
@@ -31,6 +30,8 @@ export function TransactionSlippageInput(): JSX.Element {
 
   const chosenSlippageMatchesSmartSlippage = smartSlippage !== null && new Percent(smartSlippage, 10_000).equalTo(swapSlippage)
   const isSlippageModified = useIsSlippageModified()
+
+  const showSlippageWarning = !isSmartSlippageApplied && !chosenSlippageMatchesSmartSlippage
 
   const {
     tooLow,
@@ -62,7 +63,7 @@ export function TransactionSlippageInput(): JSX.Element {
         </styledEl.Option>
         <styledEl.OptionCustom active={isSlippageModified} warning={!!slippageError} tabIndex={-1}>
           <RowBetween>
-            {!isSmartSlippageApplied && !chosenSlippageMatchesSmartSlippage && (tooLow || tooHigh) ? (
+            {showSlippageWarning && (tooLow || tooHigh) ? (
               <styledEl.SlippageEmojiContainer>
                     <span role="img" aria-label="warning">
                       ⚠️
@@ -79,13 +80,13 @@ export function TransactionSlippageInput(): JSX.Element {
           </RowBetween>
         </styledEl.OptionCustom>
       </RowBetween>
-      { !isSmartSlippageApplied && !chosenSlippageMatchesSmartSlippage && (
+      { showSlippageWarning && (
         <SlippageWarningMessage error={!!slippageError}
                                 theme={theme}
                                 tooLow={tooLow}
                                 tooHigh={tooHigh}
-                                max={slippageBpsToPercent(max)}
-                                min={slippageBpsToPercent(min)}/>
+                                max={max}
+                                min={min}/>
       )}
       {isSmartSlippageApplied && (
         <RowBetween>
