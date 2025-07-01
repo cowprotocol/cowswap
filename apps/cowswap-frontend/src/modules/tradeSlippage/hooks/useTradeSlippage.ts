@@ -15,11 +15,10 @@ import {
 
 export function useTradeSlippageValueAndType(): { type: SlippageType; value: number } {
   const currentUserSlippage = useAtomValue(currentUserSlippageAtom)
-  const { defaultValue, disableAutoSlippage } = useAtomValue(slippageConfigAtom)
+  const { defaultValue } = useAtomValue(slippageConfigAtom)
   const smartSlippage = useSmartSlippageFromQuote()
 
-  const isSmartSlippageEnabledByWidget = useAtomValue(shouldUseAutoSlippageAtom)
-  const isSmartSlippageEnabled = isSmartSlippageEnabledByWidget && !disableAutoSlippage
+  const shouldUseAutoSlippage = useAtomValue(shouldUseAutoSlippageAtom)
 
   return useMemo(() => {
     if (typeof currentUserSlippage === 'number') {
@@ -27,14 +26,14 @@ export function useTradeSlippageValueAndType(): { type: SlippageType; value: num
     }
 
     // default slippage is always equal to min slippage value by default
-    // in case if integrator wants to set up the default value higher than min slippage value
+    // in case if an integrator wants to set up the default value higher than min slippage value
     // we should use the default value from the config
-    if (isSmartSlippageEnabled && smartSlippage && smartSlippage > defaultValue) {
+    if (shouldUseAutoSlippage && smartSlippage && smartSlippage > defaultValue) {
       return { type: 'smart', value: smartSlippage }
     }
 
     return { type: 'default', value: defaultValue }
-  }, [currentUserSlippage, defaultValue, smartSlippage, isSmartSlippageEnabled])
+  }, [currentUserSlippage, defaultValue, smartSlippage, shouldUseAutoSlippage])
 }
 
 export function useTradeSlippage(): Percent {

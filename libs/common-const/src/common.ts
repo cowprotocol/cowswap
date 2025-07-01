@@ -10,8 +10,7 @@ export const ZERO_BIG_NUMBER = new BigNumber(0)
 export const ZERO_FRACTION = new Fraction(0)
 
 export const DEFAULT_SLIPPAGE_BPS = 50 // 0.5%
-export const MAX_DEFAULT_SLIPPAGE_BPS = 5000 // 50%
-export const MAX_SLIPPAGE_BPS = 10000 // 100%
+export const MAX_SLIPPAGE_BPS = 5000 // 50%
 export const MIN_SLIPPAGE_BPS = 0 // 0%
 export const HIGH_SLIPPAGE_BPS = 100 // 1%
 export const LOW_SLIPPAGE_BPS = 5 // 0.05%

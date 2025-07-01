@@ -1,6 +1,6 @@
 import {
   DEFAULT_SLIPPAGE_BPS,
-  MAX_DEFAULT_SLIPPAGE_BPS,
+  MAX_SLIPPAGE_BPS,
   MIN_SLIPPAGE_BPS,
   MINIMUM_ETH_FLOW_SLIPPAGE_BPS
 } from '@cowprotocol/common-const'
@@ -17,28 +17,26 @@ export function resolveSlippageConfig(
 ): Required<SlippageConfig> {
   const minEthSlippageBps = MINIMUM_ETH_FLOW_SLIPPAGE_BPS[chainId]
 
-  const defaultConfig = {
+  const applicationConfig = {
     min: isEthFlow ? minEthSlippageBps : MIN_SLIPPAGE_BPS,
-    max: MAX_DEFAULT_SLIPPAGE_BPS,
+    max: MAX_SLIPPAGE_BPS,
     defaultValue: isEthFlow ? minEthSlippageBps : DEFAULT_SLIPPAGE_BPS,
-    disableAutoSlippage: false,
   }
 
   if (!config || !tradeType) {
-    return defaultConfig
+    return applicationConfig
   }
 
   const resolvedConfig = resolveFlexibleConfig(config, chainId, tradeType)
-  if (!resolvedConfig) return defaultConfig
+  if (!resolvedConfig) return applicationConfig
 
-  const min = resolvedConfig.min ?? defaultConfig.min
-  const max = resolvedConfig.max ?? defaultConfig.max
-  const defaultValue = resolvedConfig.defaultValue ?? defaultConfig.defaultValue
+  const min = Math.max(resolvedConfig.min ?? applicationConfig.min)
+  const max = Math.min(resolvedConfig.max ?? applicationConfig.max)
+  const defaultValue = resolvedConfig.defaultValue ?? applicationConfig.defaultValue
 
   return {
     min,
     max,
     defaultValue: clampValue(defaultValue, min, max),
-    disableAutoSlippage: resolvedConfig.disableAutoSlippage ?? defaultConfig.disableAutoSlippage,
   }
 }

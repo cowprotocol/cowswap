@@ -172,7 +172,6 @@ export interface SlippageConfig {
   min?: number
   max?: number
   defaultValue?: number
-  disableAutoSlippage?: boolean
 }
 
 export type FlexibleSlippageConfig = FlexibleConfig<SlippageConfig>;
