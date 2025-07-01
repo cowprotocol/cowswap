@@ -169,8 +169,11 @@ export interface CowSwapWidgetContent {
 }
 
 export interface SlippageConfig {
+  /** Minimum slippage in basis points (e.g., 10 = 0.1%) */
   min?: number
+  /** Maximum slippage in basis points (e.g., 5000 = 50%) - 5000 is max value for dApp */
   max?: number
+  /** Default slippage value in basis points (e.g., 50 = 0.5%) - min <= defaultValue <= max */
   defaultValue?: number
 }
 
@@ -333,6 +336,9 @@ export interface CowSwapWidgetParams {
    */
   content?: CowSwapWidgetContent
 
+  /**
+   * Customizable slippage settings for the widget.
+   */
   slippage?: FlexibleSlippageConfig
 }
 
