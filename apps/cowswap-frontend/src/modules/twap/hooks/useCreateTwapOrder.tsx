@@ -12,7 +12,7 @@ import { Nullish } from 'types'
 import { useAdvancedOrdersDerivedState, useUpdateAdvancedOrdersRawState } from 'modules/advancedOrders'
 import { useAppData, useUploadAppData } from 'modules/appData'
 import { emitPostedOrderEvent } from 'modules/orders'
-import { useNavigateToAllOrdersTable } from 'modules/ordersTable/hooks/useNavigateToAllOrdersTable'
+import { useNavigateToOpenOrdersTable } from 'modules/ordersTable'
 import { getCowSoundSend } from 'modules/sounds'
 import { useTradeConfirmActions, useTradePriceImpact } from 'modules/trade'
 import { TradeFlowAnalyticsContext, useTradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
@@ -57,7 +57,7 @@ export function useCreateTwapOrder() {
   const { chainId, account } = useWalletInfo()
   const twapOrder = useAtomValue(twapOrderAtom)
   const addTwapOrderToList = useSetAtom(addTwapOrderToListAtom)
-  const navigateToAllOrdersTable = useNavigateToAllOrdersTable()
+  const navigateToOpenOrdersTable = useNavigateToOpenOrdersTable()
 
   const { inputCurrencyAmount, outputCurrencyAmount } = useAdvancedOrdersDerivedState()
 
@@ -104,7 +104,7 @@ export function useCreateTwapOrder() {
   return useCallback(
     // TODO: Break down this large function into smaller functions
     // TODO: Reduce function complexity by extracting logic
-    // eslint-disable-next-line max-lines-per-function, complexity
+
     async (fallbackHandlerIsNotSet: boolean) => {
       if (!chainId || !account || chainId !== twapOrderCreationContext?.chainId) return
       if (
@@ -188,7 +188,7 @@ export function useCreateTwapOrder() {
         sendTwapConversionAnalytics('signed', fallbackHandlerIsNotSet)
 
         // Navigate to all orders after successful placement
-        navigateToAllOrdersTable()
+        navigateToOpenOrdersTable()
       } catch (error) {
         console.error('[useCreateTwapOrder] error', error)
         const errorMessage = getErrorMessage(error)
@@ -216,7 +216,7 @@ export function useCreateTwapOrder() {
       sendOrderAnalytics,
       sendTwapConversionAnalytics,
       tradeFlowAnalytics,
-      navigateToAllOrdersTable,
+      navigateToOpenOrdersTable,
     ],
   )
 }
