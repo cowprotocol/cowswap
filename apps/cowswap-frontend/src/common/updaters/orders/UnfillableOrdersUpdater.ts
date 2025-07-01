@@ -11,7 +11,6 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 
 import { tradingSdk } from 'tradingSdk/tradingSdk'
-import { FeeInformation } from 'types'
 
 import { Order } from 'legacy/state/orders/actions'
 import { PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL } from 'legacy/state/orders/consts'
@@ -67,11 +66,11 @@ export function UnfillableOrdersUpdater(): null {
   const updateOrderMarketPriceCallback = useCallback(
     (
       order: Order,
-      fee: FeeInformation | null,
+      fee: string | null,
       marketPrice: Price<Currency, Currency>,
       estimatedExecutionPrice: Price<Currency, Currency> | null,
     ) => {
-      if (!fee?.amount) return
+      if (!fee) return
 
       updatePendingOrderPrices({
         orderId: order.id,
@@ -79,7 +78,7 @@ export function UnfillableOrdersUpdater(): null {
           lastUpdateTimestamp: Date.now(),
           marketPrice,
           estimatedExecutionPrice,
-          feeAmount: CurrencyAmount.fromRawAmount(marketPrice.baseCurrency, fee.amount),
+          feeAmount: CurrencyAmount.fromRawAmount(marketPrice.baseCurrency, fee),
         },
       })
     },
@@ -87,8 +86,8 @@ export function UnfillableOrdersUpdater(): null {
   )
 
   const updateIsUnfillableFlag = useCallback(
-    (chainId: SupportedChainId, order: Order, priceAmount: string, fee: FeeInformation | null) => {
-      if (!fee?.amount) return
+    (chainId: SupportedChainId, order: Order, priceAmount: string, fee: string | null) => {
+      if (!fee) return
 
       const orderPrice = new Price(
         order.inputToken,
@@ -97,8 +96,8 @@ export function UnfillableOrdersUpdater(): null {
         order.buyAmount.toString(),
       )
 
-      const marketPrice = getOrderMarketPrice(order, priceAmount, fee.amount)
-      const estimatedExecutionPrice = getEstimatedExecutionPrice(order, marketPrice, fee.amount)
+      const marketPrice = getOrderMarketPrice(order, priceAmount, fee)
+      const estimatedExecutionPrice = getEstimatedExecutionPrice(order, marketPrice, fee)
 
       const isSwap = getUiOrderType(order) === UiOrderType.SWAP
       const isUnfillable = isSwap && isOrderUnfillable(order, orderPrice, marketPrice)
@@ -144,15 +143,12 @@ export function UnfillableOrdersUpdater(): null {
             if (!results) return
 
             const {
-              quoteResponse: { quote, expiration },
+              quoteResponse: { quote },
             } = results
 
             const amount = isSellOrder(quote.kind) ? quote.buyAmount : quote.sellAmount
 
-            updateIsUnfillableFlag(chainId, order, amount, {
-              expirationDate: expiration,
-              amount: quote.feeAmount,
-            })
+            updateIsUnfillableFlag(chainId, order, amount, quote.feeAmount)
           })
           .catch((e) => {
             updatePendingOrderPrices({
