@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
-import { BannerOrientation, InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -28,7 +27,6 @@ import { useTradeQuote } from 'modules/tradeQuote'
 import { HighFeeWarning, RowDeadline } from 'modules/tradeWidgetAddons'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
-import { AddressLink } from 'common/pure/AddressLink'
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
 import { RateInfo } from 'common/pure/RateInfo'
 
@@ -136,13 +134,6 @@ export function SwapConfirmModal(props: SwapConfirmModalProps) {
                   bridgeContext={bridgeContext}
                 />
                 {restContent}
-                <InlineBanner bannerType={StatusColorVariant.Success} orientation={BannerOrientation.Horizontal}>
-                  <div>
-                    CoW Swap uses a special proxy account - deployed just for you - to facilitate smoooooth bridging.
-                    Make sure the receive address is <AddressLink address={swapContext.recipient} chainId={chainId} /> -
-                    that's your individual proxy account!
-                  </div>
-                </InlineBanner>
               </>
             )
           : (restContent) => (
