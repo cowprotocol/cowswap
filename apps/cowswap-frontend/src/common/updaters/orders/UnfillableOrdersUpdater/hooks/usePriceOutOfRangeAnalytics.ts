@@ -2,7 +2,7 @@ import { useCallback } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 
-import { CowSwapAnalyticsCategory } from '../../../../analytics/types'
+import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 
 export function usePriceOutOfRangeAnalytics(): (label: string) => void {
   const cowAnalytics = useCowAnalytics()

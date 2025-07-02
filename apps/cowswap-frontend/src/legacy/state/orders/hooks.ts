@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from 'react'
 
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
-import { isTruthy } from '@cowprotocol/common-utils'
+import { areAddressesEqual, isTruthy } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 
@@ -263,12 +263,10 @@ export const useOnlyPendingOrders = (chainId: SupportedChainId, account: string 
   const state = useSelector<AppState, PartialOrdersMap | undefined>((state) => state.orders?.[chainId]?.pending)
 
   return useMemo(() => {
-    if (!state) return EMPTY_ORDERS_ARRAY
-
-    const accountLower = account?.toLowerCase()
+    if (!state || !account) return EMPTY_ORDERS_ARRAY
 
     return Object.values(state).reduce((acc, val) => {
-      if (val && (accountLower ? val.order.owner.toLowerCase() === accountLower : true)) {
+      if (val && areAddressesEqual(account, val.order.owner)) {
         const deserialized = deserializeOrder(val)
 
         if (deserialized) acc.push(deserialized)

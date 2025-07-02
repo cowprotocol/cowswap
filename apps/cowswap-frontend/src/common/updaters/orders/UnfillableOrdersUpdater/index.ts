@@ -7,9 +7,9 @@ import useSWR, { SWRConfiguration } from 'swr'
 import { PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL } from 'legacy/state/orders/consts'
 import { useOnlyPendingOrders } from 'legacy/state/orders/hooks'
 
-import { useUpdatePendingOrders } from './hooks/useUpdatePendingOrders'
+import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
-import { useIsProviderNetworkUnsupported } from '../../../hooks/useIsProviderNetworkUnsupported'
+import { useUpdatePendingOrders } from './hooks/useUpdatePendingOrders'
 
 const SWR_CONFIG: SWRConfiguration = {
   refreshInterval: PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL,
