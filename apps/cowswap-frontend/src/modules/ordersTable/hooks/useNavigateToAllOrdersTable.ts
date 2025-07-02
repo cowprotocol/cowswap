@@ -4,7 +4,7 @@ import { useNavigate } from 'common/hooks/useNavigate'
 
 import { useGetBuildOrdersTableUrl } from './useGetBuildOrdersTableUrl'
 
-import { ALL_ORDERS_TAB } from '../const/tabs'
+import { OrderTabId } from '../const/tabs'
 
 /**
  * Hook to navigate to the ALL ORDERS tab in the orders table
@@ -17,6 +17,6 @@ export function useNavigateToAllOrdersTable() {
   const buildOrdersTableUrl = useGetBuildOrdersTableUrl()
 
   return useCallback(() => {
-    navigate(buildOrdersTableUrl({ tabId: ALL_ORDERS_TAB.id, pageNumber: 1 }))
+    navigate(buildOrdersTableUrl({ tabId: OrderTabId.all, pageNumber: 1 }))
   }, [buildOrdersTableUrl, navigate])
 }
