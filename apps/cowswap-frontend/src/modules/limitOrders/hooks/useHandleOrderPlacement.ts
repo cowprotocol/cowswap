@@ -13,7 +13,7 @@ import { tradeFlow } from 'modules/limitOrders/services/tradeFlow'
 import { PriceImpactDeclineError, TradeFlowContext } from 'modules/limitOrders/services/types'
 import { LimitOrdersSettingsState } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
-import { useNavigateToOpenOrdersTable } from 'modules/ordersTable'
+import { OrderTabId, useNavigateToOrdersTableTab } from 'modules/ordersTable'
 import { useCloseReceiptModal } from 'modules/ordersTable/containers/OrdersReceiptModal/hooks'
 import { useTradeFlowAnalytics } from 'modules/trade'
 import { TradeConfirmActions } from 'modules/trade/hooks/useTradeConfirmActions'
@@ -54,7 +54,7 @@ export function useHandleOrderPlacement(
   const hideAlternativeOrderModal = useHideAlternativeOrderModal()
   const { isEdit: isAlternativeOrderEdit } = useAlternativeOrder() || {}
   const closeReceiptModal = useCloseReceiptModal()
-  const navigateToOpenOrdersTable = useNavigateToOpenOrdersTable()
+  const navigateToOrdersTableTab = useNavigateToOrdersTableTab()
   const [partiallyFillableOverride, setPartiallyFillableOverride] = useAtom(partiallyFillableOverrideAtom)
   // tx bundling stuff
   const safeBundleFlowContext = useSafeBundleFlowContext(tradeContext)
@@ -136,8 +136,8 @@ export function useHandleOrderPlacement(
         setPartiallyFillableOverride(undefined)
         // Reset alternative mode if any
         hideAlternativeOrderModal()
-        // Navigate to open orders
-        navigateToOpenOrdersTable()
+        // Navigate to all orders
+        navigateToOrdersTableTab(OrderTabId.all)
         // Close receipt modal
         closeReceiptModal()
 
@@ -161,7 +161,7 @@ export function useHandleOrderPlacement(
     updateLimitOrdersState,
     setPartiallyFillableOverride,
     isAlternativeOrderEdit,
-    navigateToOpenOrdersTable,
+    navigateToOrdersTableTab,
     closeReceiptModal,
     hideAlternativeOrderModal,
     alternativeModalAnalytics,

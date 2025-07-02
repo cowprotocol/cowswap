@@ -1,6 +1,6 @@
 export * from './const/tabs'
 export * from './containers/OrdersTableWidget'
 export * from './hooks/useGetBuildOrdersTableUrl'
-export * from './hooks/useNavigateToOpenOrdersTable'
+export * from './hooks/useNavigateToOrdersTableTab'
 export * from './types'
 export * from './utils/buildOrdersTableUrl'

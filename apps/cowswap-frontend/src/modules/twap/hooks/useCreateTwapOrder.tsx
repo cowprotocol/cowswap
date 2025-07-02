@@ -12,7 +12,7 @@ import { Nullish } from 'types'
 import { useAdvancedOrdersDerivedState, useUpdateAdvancedOrdersRawState } from 'modules/advancedOrders'
 import { useAppData, useUploadAppData } from 'modules/appData'
 import { emitPostedOrderEvent } from 'modules/orders'
-import { useNavigateToOpenOrdersTable } from 'modules/ordersTable'
+import { OrderTabId, useNavigateToOrdersTableTab } from 'modules/ordersTable'
 import { getCowSoundSend } from 'modules/sounds'
 import { useTradeConfirmActions, useTradePriceImpact } from 'modules/trade'
 import { TradeFlowAnalyticsContext, useTradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
@@ -57,7 +57,7 @@ export function useCreateTwapOrder() {
   const { chainId, account } = useWalletInfo()
   const twapOrder = useAtomValue(twapOrderAtom)
   const addTwapOrderToList = useSetAtom(addTwapOrderToListAtom)
-  const navigateToOpenOrdersTable = useNavigateToOpenOrdersTable()
+  const navigateToOrdersTableTab = useNavigateToOrdersTableTab()
 
   const { inputCurrencyAmount, outputCurrencyAmount } = useAdvancedOrdersDerivedState()
 
@@ -188,7 +188,7 @@ export function useCreateTwapOrder() {
         sendTwapConversionAnalytics('signed', fallbackHandlerIsNotSet)
 
         // Navigate to all orders after successful placement
-        navigateToOpenOrdersTable()
+        navigateToOrdersTableTab(OrderTabId.all)
       } catch (error) {
         console.error('[useCreateTwapOrder] error', error)
         const errorMessage = getErrorMessage(error)
@@ -216,7 +216,7 @@ export function useCreateTwapOrder() {
       sendOrderAnalytics,
       sendTwapConversionAnalytics,
       tradeFlowAnalytics,
-      navigateToOpenOrdersTable,
+      navigateToOrdersTableTab,
     ],
   )
 }
