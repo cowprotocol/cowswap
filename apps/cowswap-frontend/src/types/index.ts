@@ -31,8 +31,3 @@ declare global {
     uetq: any // Microsoft Ads
   }
 }
-
-export interface FeeInformation {
-  expirationDate: string
-  amount: string
-}
