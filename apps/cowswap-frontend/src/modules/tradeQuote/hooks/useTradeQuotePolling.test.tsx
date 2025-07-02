@@ -94,7 +94,7 @@ describe('useTradeQuotePolling()', () => {
       // Act
       renderHook(
         () => {
-          return useTradeQuotePolling()
+          return useTradeQuotePolling(false, true)
         },
         { wrapper: Wrapper(mocks) },
       )
@@ -114,7 +114,7 @@ describe('useTradeQuotePolling()', () => {
       const mocks = [...jotaiMock, [walletInfoAtom, { ...walletInfoMock, account: undefined }]]
 
       // Act
-      renderHook(() => useTradeQuotePolling(), { wrapper: Wrapper(mocks) })
+      renderHook(() => useTradeQuotePolling(false, true), { wrapper: Wrapper(mocks) })
 
       // Assert
       const callParams = bridgingSdkMock.getQuote.mock.calls[0]

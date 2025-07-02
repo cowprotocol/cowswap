@@ -17,6 +17,7 @@ import { TradeQuoteFetchParams } from '../types'
 
 export function usePollQuoteCallback(
   isConfirmOpen: boolean,
+  isQuoteUpdatePossible: boolean,
   quoteParamsState: QuoteParams | undefined,
 ): (hasParamsChanged: boolean, forceUpdate?: boolean) => boolean {
   const { fastQuote } = useAtomValue(tradeQuoteInputAtom)
@@ -37,7 +38,7 @@ export function usePollQuoteCallback(
 
   return useCallback(
     (hasParamsChanged: boolean, forceUpdate = false): boolean => {
-      if (!tradeQuoteManager || !quoteParams || getIsUnsupportedTokens(quoteParams)) {
+      if (!isQuoteUpdatePossible || !tradeQuoteManager || !quoteParams || getIsUnsupportedTokens(quoteParams)) {
         return false
       }
 
@@ -75,6 +76,7 @@ export function usePollQuoteCallback(
       fastQuote,
       getIsUnsupportedTokens,
       isConfirmOpen,
+      isQuoteUpdatePossible,
     ],
   )
 }
