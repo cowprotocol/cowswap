@@ -35,6 +35,7 @@ import { TradeWidgetProps } from './types'
 import { useTradeStateFromUrl } from '../../hooks/setupTradeState/useTradeStateFromUrl'
 import { useIsCurrentTradeBridging } from '../../hooks/useIsCurrentTradeBridging'
 import { useIsEoaEthFlow } from '../../hooks/useIsEoaEthFlow'
+import { useIsQuoteUpdatePossible } from '../../hooks/useIsQuoteUpdatePossible'
 import { useIsWrapOrUnwrap } from '../../hooks/useIsWrapOrUnwrap'
 import { useLimitOrdersPromoBanner } from '../../hooks/useLimitOrdersPromoBanner'
 import { SetRecipient } from '../../pure/SetRecipient'
@@ -111,6 +112,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
   const primaryFormValidation = useGetTradeFormValidation()
   const { shouldBeVisible: isLimitOrdersPromoBannerVisible } = useLimitOrdersPromoBanner()
   const isEoaEthFlow = useIsEoaEthFlow()
+  const isQuoteUpdatePossible = useIsQuoteUpdatePossible()
 
   const sellToken = inputCurrencyInfo.currency
   const buyToken = outputCurrencyInfo.currency
@@ -200,7 +202,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
           <styledEl.HeaderRight>
             {!lockScreen && (
               <>
-                {!isPriceStatic && !showDropdown && <QuotePolingProgress />}
+                {!isPriceStatic && !showDropdown && isQuoteUpdatePossible && <QuotePolingProgress />}
                 {settingsWidget}
               </>
             )}

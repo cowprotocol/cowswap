@@ -1,5 +1,5 @@
 import { useAtom, useAtomValue } from 'jotai'
-import { useEffect, useLayoutEffect, useRef } from 'react'
+import { useLayoutEffect, useRef } from 'react'
 
 import { useIsOnline, useIsWindowVisible, usePrevious } from '@cowprotocol/common-hooks'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
@@ -20,7 +20,7 @@ import { isQuoteExpired } from '../utils/quoteDeadline'
 const ONE_SEC = 1000
 const QUOTE_VALIDATION_INTERVAL = ms`2s`
 
-export function useTradeQuotePolling(isConfirmOpen = false): null {
+export function useTradeQuotePolling(isConfirmOpen = false, isQuoteUpdatePossible: boolean): null {
   const { amount, partiallyFillable } = useAtomValue(tradeQuoteInputAtom)
   const [tradeQuotePolling, setTradeQuotePolling] = useAtom(tradeQuoteCounterAtom)
   const resetQuoteCounter = useResetQuoteCounter()
@@ -40,14 +40,14 @@ export function useTradeQuotePolling(isConfirmOpen = false): null {
   const isOnlineRef = useRef(isOnline)
   isOnlineRef.current = isOnline
 
-  const pollQuote = usePollQuoteCallback(isConfirmOpen, quoteParamsState)
+  const pollQuote = usePollQuoteCallback(isConfirmOpen, isQuoteUpdatePossible, quoteParamsState)
   const pollQuoteRef = useRef(pollQuote)
   pollQuoteRef.current = pollQuote
 
   /**
    * Reset quote when window is not visible or sell amount has been cleared
    */
-  useEffect(() => {
+  useLayoutEffect(() => {
     // Do not reset the quote if the confirm modal is open
     // Because we already have a quote and don't want to reset it
     if (isConfirmOpen) return
@@ -96,7 +96,7 @@ export function useTradeQuotePolling(isConfirmOpen = false): null {
   /**
    * Tick quote polling counter
    */
-  useEffect(() => {
+  useLayoutEffect(() => {
     const interval = setInterval(() => {
       setTradeQuotePolling((state) => {
         const newState = state - ONE_SEC
@@ -117,7 +117,7 @@ export function useTradeQuotePolling(isConfirmOpen = false): null {
   /**
    * Once quote is expired - update quote
    */
-  useEffect(() => {
+  useLayoutEffect(() => {
     function revalidateQuoteIfExpired(): void {
       if (isQuoteExpired(tradeQuote)) {
         setTradeQuotePolling(0)

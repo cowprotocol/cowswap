@@ -6,12 +6,13 @@ import { getQuoteTimeOffset } from '../../utils/quoteDeadline'
 
 export interface TradeQuoteUpdaterProps {
   isConfirmOpen: boolean
+  isQuoteUpdatePossible: boolean
 }
 
-export function TradeQuoteUpdater({ isConfirmOpen }: TradeQuoteUpdaterProps): null {
+export function TradeQuoteUpdater({ isConfirmOpen, isQuoteUpdatePossible }: TradeQuoteUpdaterProps): null {
   const quoteState = useTradeQuote()
 
-  useTradeQuotePolling(isConfirmOpen)
+  useTradeQuotePolling(isConfirmOpen, isQuoteUpdatePossible)
 
   useSetLocalTimeOffset(getQuoteTimeOffset(quoteState))
 
