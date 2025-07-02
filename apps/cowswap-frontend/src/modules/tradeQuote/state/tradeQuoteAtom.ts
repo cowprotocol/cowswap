@@ -15,7 +15,6 @@ export interface TradeQuoteState {
   error: QuoteApiError | BridgeProviderQuoteError | null
   hasParamsChanged: boolean
   isLoading: boolean
-  isOptimalQuote: boolean
   localQuoteTimestamp: number | null
 }
 
@@ -26,7 +25,6 @@ export const DEFAULT_TRADE_QUOTE_STATE: TradeQuoteState = {
   error: null,
   hasParamsChanged: false,
   isLoading: false,
-  isOptimalQuote: false,
   localQuoteTimestamp: null,
 }
 

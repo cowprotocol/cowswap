@@ -64,7 +64,6 @@ export function useTradeQuoteManager(sellTokenAddress: SellTokenAddress | undefi
               update(sellTokenAddress, {
                 quote,
                 bridgeQuote,
-                isOptimalQuote,
                 ...(isOptimalQuote ? { isLoading: false } : null),
                 error: null,
                 hasParamsChanged: false,
