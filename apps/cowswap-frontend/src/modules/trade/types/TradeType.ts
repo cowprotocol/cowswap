@@ -7,7 +7,7 @@ export enum TradeType {
   YIELD = 'YIELD',
 }
 
-export const TradeTypeMap: Record<TradeType, WidgetTradeType> = {
+export const TradeTypeToWidgetTradeTypeMap: Record<TradeType, WidgetTradeType> = {
   [TradeType.SWAP]: WidgetTradeType.SWAP,
   [TradeType.LIMIT_ORDER]: WidgetTradeType.LIMIT,
   [TradeType.ADVANCED_ORDERS]: WidgetTradeType.ADVANCED,

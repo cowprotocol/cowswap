@@ -6,7 +6,7 @@ import { PersistentStateByChain } from '@cowprotocol/types'
 import { walletInfoAtom } from '@cowprotocol/wallet'
 
 import { injectedWidgetParamsAtom } from 'modules/injectedWidget/state/injectedWidgetParamsAtom'
-import { isEoaEthFlowAtom, tradeTypeAtom, TradeTypeMap } from 'modules/trade'
+import { isEoaEthFlowAtom, tradeTypeAtom, TradeTypeToWidgetTradeTypeMap } from 'modules/trade'
 
 import {
   resolveSlippageConfig
@@ -37,7 +37,7 @@ export const slippageConfigAtom = atom((get) => {
   const isEoaEthFlow = get(isEoaEthFlowAtom)
   const { chainId } = get(walletInfoAtom)
   const trade = get(tradeTypeAtom)?.tradeType
-  const tradeType = trade ? TradeTypeMap[trade] : undefined
+  const tradeType = trade ? TradeTypeToWidgetTradeTypeMap[trade] : undefined
 
   const { slippage } = injectedParams.params
   return resolveSlippageConfig(slippage, chainId, tradeType, isEoaEthFlow)

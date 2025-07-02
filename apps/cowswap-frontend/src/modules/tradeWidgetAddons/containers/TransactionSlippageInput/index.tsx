@@ -26,9 +26,9 @@ export function TransactionSlippageInput(): JSX.Element {
 
   const swapSlippage = useTradeSlippage()
   const isSmartSlippageApplied = useIsSmartSlippageApplied()
-  const smartSlippage = useSmartSlippageFromQuote()
+  const smartSlippageFromQuote = useSmartSlippageFromQuote()
 
-  const chosenSlippageMatchesSmartSlippage = smartSlippage !== null && new Percent(smartSlippage, 10_000).equalTo(swapSlippage)
+  const chosenSlippageMatchesSmartSlippage = smartSlippageFromQuote !== null && new Percent(smartSlippageFromQuote, 10_000).equalTo(swapSlippage)
   const isSlippageModified = useIsSlippageModified()
 
   const showSlippageWarning = !isSmartSlippageApplied && !chosenSlippageMatchesSmartSlippage
@@ -38,7 +38,7 @@ export function TransactionSlippageInput(): JSX.Element {
     tooHigh,
     min,
     max
-  } = useSlippageWarningParams(swapSlippage, smartSlippage, isSlippageModified)
+  } = useSlippageWarningParams(swapSlippage, smartSlippageFromQuote, isSlippageModified)
 
   const {
     slippageError,

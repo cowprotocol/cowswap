@@ -15,8 +15,8 @@ import {
 
 export function useTradeSlippageValueAndType(): { type: SlippageType; value: number } {
   const currentUserSlippage = useAtomValue(currentUserSlippageAtom)
-  const { defaultValue } = useAtomValue(slippageConfigAtom)
-  const smartSlippage = useSmartSlippageFromQuote()
+  const { defaultValue, max } = useAtomValue(slippageConfigAtom)
+  const smartSlippageFromQuote = useSmartSlippageFromQuote()
 
   const shouldUseAutoSlippage = useAtomValue(shouldUseAutoSlippageAtom)
 
@@ -28,12 +28,12 @@ export function useTradeSlippageValueAndType(): { type: SlippageType; value: num
     // default slippage is always equal to min slippage value by default
     // in case if an integrator wants to set up the default value higher than smart slippage value
     // we should use the default value from the config
-    if (shouldUseAutoSlippage && smartSlippage && smartSlippage > defaultValue) {
-      return { type: 'smart', value: smartSlippage }
+    if (shouldUseAutoSlippage && smartSlippageFromQuote && smartSlippageFromQuote > defaultValue) {
+      return { type: 'smart', value: Math.min(smartSlippageFromQuote, max) }
     }
 
     return { type: 'default', value: defaultValue }
-  }, [currentUserSlippage, defaultValue, smartSlippage, shouldUseAutoSlippage])
+  }, [currentUserSlippage, defaultValue, smartSlippageFromQuote, shouldUseAutoSlippage, max])
 }
 
 export function useTradeSlippage(): Percent {

@@ -5,7 +5,7 @@ import { walletInfoAtom } from '@cowprotocol/wallet'
 import { resolveFlexibleConfig } from '@cowprotocol/widget-lib'
 
 import { injectedWidgetPartnerFeeAtom } from 'modules/injectedWidget'
-import { derivedTradeStateAtom, tradeTypeAtom, TradeTypeMap } from 'modules/trade'
+import { derivedTradeStateAtom, tradeTypeAtom, TradeTypeToWidgetTradeTypeMap } from 'modules/trade'
 
 import { correlatedTokensAtom } from './correlatedTokensAtom'
 import { cowSwapFeeAtom } from './cowswapFeeAtom'
@@ -66,8 +66,8 @@ const widgetPartnerFeeAtom = atom<VolumeFee | undefined>((get) => {
     return undefined
   }
 
-  const bps = resolveFlexibleConfig(partnerFee.bps, chainId, TradeTypeMap[tradeType])
-  const recipient = resolveFlexibleConfig(partnerFee.recipient, chainId, TradeTypeMap[tradeType])
+  const bps = resolveFlexibleConfig(partnerFee.bps, chainId, TradeTypeToWidgetTradeTypeMap[tradeType])
+  const recipient = resolveFlexibleConfig(partnerFee.recipient, chainId, TradeTypeToWidgetTradeTypeMap[tradeType])
 
   if (!bps || !recipient) return undefined
 
