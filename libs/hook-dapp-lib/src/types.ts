@@ -35,8 +35,11 @@ export interface CowHookToEdit extends CowHookCreation {
 
 export interface CoWHookDappActions {
   addHook(payload: CowHookCreation): void
+
   editHook(payload: CowHookToEdit): void
+
   setSellToken(token: TokenData): void
+
   setBuyToken(token: TokenData): void
 }
 
