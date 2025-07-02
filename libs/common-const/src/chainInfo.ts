@@ -59,7 +59,7 @@ function mapChainInfoToBaseChainInfo(
 export const CHAIN_INFO: ChainInfoMap = {
   [SupportedChainId.MAINNET]: {
     ...mapChainInfoToBaseChainInfo(mainnet),
-    name: 'mainnet',
+    name: 'ethereum',
     urlAlias: '',
     nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.MAINNET],
   },
