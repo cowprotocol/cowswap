@@ -1,22 +1,16 @@
-import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
-
-import { useIsWrapOrUnwrap } from './useIsWrapOrUnwrap'
+import { TradeFormValidation, useGetTradeFormValidations } from 'modules/tradeFormValidation'
 
 const NO_UPDATE_STATES = [
   TradeFormValidation.CurrencyNotSupported,
+  TradeFormValidation.NetworkNotSupported,
+  TradeFormValidation.BrowserOffline,
   TradeFormValidation.CurrencyNotSet,
   TradeFormValidation.InputAmountNotSet,
+  TradeFormValidation.WrapUnwrapFlow,
 ]
 
 export function useIsQuoteUpdatePossible(): boolean {
-  const isWrapOrUnwrap = useIsWrapOrUnwrap()
-  const validation = useGetTradeFormValidation()
+  const validations = useGetTradeFormValidations()
 
-  /**
-   * We have to check that instead of TradeFormValidation.WrapUnwrapFlow
-   * Because if it's WrapOrUnwrap and there is not enough balance, then validation will be BalanceInsufficient
-   */
-  if (isWrapOrUnwrap) return false
-
-  return validation ? !NO_UPDATE_STATES.includes(validation) : true
+  return validations ? !NO_UPDATE_STATES.some((state) => validations.includes(state)) : true
 }
