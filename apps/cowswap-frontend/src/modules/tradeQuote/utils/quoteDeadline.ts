@@ -13,7 +13,7 @@ const MAX_EXPIRATION_TIME = ms`1min`
  * deadlineParams the deadline parameters for the quote
  */
 export function isQuoteExpired(state: TradeQuoteState): boolean | undefined {
-  if (!state.quote || !state.localQuoteTimestamp) return undefined
+  if (!state.quote || !state.localQuoteTimestamp || !state.isOptimalQuote) return undefined
 
   const { expiration } = state.quote.quoteResults.quoteResponse
 

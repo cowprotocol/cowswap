@@ -4,6 +4,8 @@ import { useEffect, useLayoutEffect, useRef } from 'react'
 import { useIsOnline, useIsWindowVisible, usePrevious } from '@cowprotocol/common-hooks'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 
+import ms from 'ms.macro'
+
 import { usePollQuoteCallback } from './usePollQuoteCallback'
 import { useQuoteParams } from './useQuoteParams'
 import { useTradeQuote } from './useTradeQuote'
@@ -13,8 +15,10 @@ import { useTradeQuoteManager } from './useTradeQuoteManager'
 import { QUOTE_POLLING_INTERVAL } from '../consts'
 import { tradeQuoteCounterAtom } from '../state/tradeQuoteCounterAtom'
 import { tradeQuoteInputAtom } from '../state/tradeQuoteInputAtom'
+import { isQuoteExpired } from '../utils/quoteDeadline'
 
 const ONE_SEC = 1000
+const QUOTE_VALIDATION_INTERVAL = ms`2s`
 
 export function useTradeQuotePolling(isConfirmOpen = false): null {
   const { amount, partiallyFillable } = useAtomValue(tradeQuoteInputAtom)
@@ -109,6 +113,25 @@ export function useTradeQuotePolling(isConfirmOpen = false): null {
       clearInterval(interval)
     }
   }, [setTradeQuotePolling])
+
+  /**
+   * Once quote is expired - update quote
+   */
+  useEffect(() => {
+    function revalidateQuoteIfExpired(): void {
+      if (isQuoteExpired(tradeQuote)) {
+        setTradeQuotePolling(0)
+      }
+    }
+
+    revalidateQuoteIfExpired()
+
+    const interval = setInterval(revalidateQuoteIfExpired, QUOTE_VALIDATION_INTERVAL)
+
+    return () => {
+      clearInterval(interval)
+    }
+  }, [tradeQuote, setTradeQuotePolling])
 
   return null
 }
