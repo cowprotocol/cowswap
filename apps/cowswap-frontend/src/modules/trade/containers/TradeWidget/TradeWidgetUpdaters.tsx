@@ -46,9 +46,10 @@ export function TradeWidgetUpdaters({
       <PriorityTokensUpdater account={account} chainId={chainId} tokenAddresses={priorityTokenAddressesAsArray} />
       <RecipientAddressUpdater />
 
-      {!disableQuotePolling && (
-        <TradeQuoteUpdater isConfirmOpen={isConfirmOpen} isQuoteUpdatePossible={isQuoteUpdatePossible} />
-      )}
+      <TradeQuoteUpdater
+        isConfirmOpen={isConfirmOpen}
+        isQuoteUpdatePossible={isQuoteUpdatePossible && !disableQuotePolling}
+      />
       <PriceImpactUpdater />
       <TradeFormValidationUpdater />
       <CommonTradeUpdater />
