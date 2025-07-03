@@ -30,9 +30,14 @@ export function validateSlippage(input: FlexibleSlippageConfig | undefined): str
       ? `Max slippage can't be more than ${MAX_SLIPPAGE_BPS} BPS!`
       : undefined
 
+    const isMaxSlippageLessOrEqualToMin = typeof min === 'number' && typeof max === 'number' && max <= min
+    const maxSlippageEqualsOrLessToMinError = isMaxSlippageLessOrEqualToMin
+      ? `Max slippage can't be less than or equal to min slippage!`
+      : undefined
+
     const defaultSlippageError = validateDefaultValue(defaultValue, min, max)
 
-    return [minSlippageError, maxSlippageError, defaultSlippageError].filter(isTruthy)
+    return [minSlippageError, maxSlippageError, maxSlippageEqualsOrLessToMinError, defaultSlippageError].filter(isTruthy)
   })
 
   return errors.length > 0 ? errors : undefined
