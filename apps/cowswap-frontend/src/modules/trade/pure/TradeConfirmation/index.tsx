@@ -34,7 +34,6 @@ export interface TradeConfirmationProps {
   isConfirmDisabled: boolean
   priceImpact: PriceImpact
   title: ReactElement | string
-  refreshInterval?: number
   isPriceStatic?: boolean
   recipient?: string | null
   buttonText?: React.ReactNode
@@ -64,7 +63,6 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
     isConfirmDisabled,
     priceImpact,
     title,
-    refreshInterval,
     buttonText = 'Confirm',
     children,
     recipient,
@@ -137,7 +135,7 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
         <styledEl.ConfirmHeaderTitle>{title}</styledEl.ConfirmHeaderTitle>
 
         <styledEl.HeaderRightContent>
-          {hasPendingTrade ? null : <QuoteCountdown refreshInterval={refreshInterval} />}
+          {hasPendingTrade || isPriceStatic ? null : <QuoteCountdown />}
         </styledEl.HeaderRightContent>
       </styledEl.Header>
       <styledEl.ContentWrapper id="trade-confirmation">

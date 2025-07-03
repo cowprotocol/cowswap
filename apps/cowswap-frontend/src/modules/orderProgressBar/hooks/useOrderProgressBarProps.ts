@@ -1,5 +1,5 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { SolverInfo } from '@cowprotocol/core'
@@ -14,19 +14,20 @@ import { useActivityDerivedState } from 'legacy/hooks/useActivityDerivedState'
 import { useMultipleActivityDescriptors } from 'legacy/hooks/useRecentActivity'
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
+import { BridgeQuoteAmounts, type SwapAndBridgeContext, SwapAndBridgeStatus } from 'modules/bridge'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
 import { getOrderCompetitionStatus } from 'api/cowProtocol/api'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { useSolversInfo } from 'common/hooks/useSolversInfo'
+import { useSwapAndBridgeContext } from 'common/hooks/useSwapAndBridgeContext'
 import { featureFlagsAtom } from 'common/state/featureFlagsState'
 import { ActivityDerivedState } from 'common/types/activity'
+import { ApiSolverCompetition, SolverCompetition } from 'common/types/soverCompetition'
 import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
 
-import { BridgeQuoteAmounts, type SwapAndBridgeContext, SwapAndBridgeStatus } from '../../bridge'
-import { useSwapAndBridgeContext } from '../../bridge/hooks/useSwapAndBridgeContext'
-import { OrderProgressBarStepName, DEFAULT_STEP_NAME } from '../constants'
+import { DEFAULT_STEP_NAME, OrderProgressBarStepName } from '../constants'
 import {
   ordersProgressBarStateAtom,
   setOrderProgressBarCancellationTriggered,
@@ -34,7 +35,7 @@ import {
   updateOrderProgressBarCountdown,
   updateOrderProgressBarStepName,
 } from '../state/atoms'
-import { ApiSolverCompetition, OrderProgressBarProps, OrderProgressBarState, SolverCompetition } from '../types'
+import { OrderProgressBarProps, OrderProgressBarState } from '../types'
 
 type UseOrderProgressBarPropsParams = {
   activityDerivedState: ActivityDerivedState | null
@@ -187,14 +188,26 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
   useCancellingOrderUpdater(orderId, isCancelling)
   useCountdownStartUpdater(orderId, countdown, backendApiStatus)
 
-  const solverCompetition = useMemo(
-    () =>
-      apiSolverCompetition
-        ?.map((entry) => mergeSolverData(entry, solversInfo))
+  const solverCompetition = useMemo(() => {
+    const solversMap = apiSolverCompetition?.reduce(
+      (acc, entry) => {
+        // If the entry is not a valid or has no executedAmounts, the solution doesn't consider this order, skip it
+        if (!entry || !entry.solver || !entry.executedAmounts) {
+          return acc
+        }
+        // Merge the solver competition data with the info fetched from CMS under the same key, to avoid duplicates
+        acc[entry.solver] = mergeSolverData(entry, solversInfo)
+        return acc
+      },
+      {} as Record<string, SolverCompetition>,
+    )
+
+    return (
+      Object.values(solversMap || {})
         // Reverse it since backend returns the solutions ranked ascending. Winner is the last one.
-        .reverse(),
-    [apiSolverCompetition, solversInfo],
-  )
+        .reverse()
+    )
+  }, [apiSolverCompetition, solversInfo])
 
   return useMemo(() => {
     if (disableProgressBar) {
@@ -227,13 +240,11 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
  * @param apiSolverCompetition
  * @param disableProgressBar
  */
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function getDoNotQueryStatusEndpoint(
   order: Order | undefined,
   apiSolverCompetition: CompetitionOrderStatus['value'] | undefined,
   disableProgressBar: boolean,
-) {
+): boolean {
   return (
     !!(
       (
@@ -255,17 +266,13 @@ function useGetExecutingOrderState(orderId: string): OrderProgressBarState {
   return useMemo(() => singleState || DEFAULT_STATE, [singleState])
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function useSetExecutingOrderCountdownCallback() {
+function useSetExecutingOrderCountdownCallback(): (orderId: string, value: number | null) => void {
   const setAtom = useSetAtom(updateOrderProgressBarCountdown)
 
   return useCallback((orderId: string, value: number | null) => setAtom({ orderId, value }), [setAtom])
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function useSetExecutingOrderProgressBarStepNameCallback() {
+function useSetExecutingOrderProgressBarStepNameCallback(): (orderId: string, value: OrderProgressBarStepName) => void {
   const setValue = useSetAtom(updateOrderProgressBarStepName)
 
   return useCallback(
@@ -278,13 +285,11 @@ function useSetExecutingOrderProgressBarStepNameCallback() {
 
 // local updaters
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function useCountdownStartUpdater(
   orderId: string,
   countdown: OrderProgressBarState['countdown'],
   backendApiStatus: OrderProgressBarState['backendApiStatus'],
-) {
+): void {
   const setCountdown = useSetExecutingOrderCountdownCallback()
 
   useEffect(() => {
@@ -299,9 +304,7 @@ function useCountdownStartUpdater(
   }, [backendApiStatus, setCountdown, countdown, orderId])
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function useCancellingOrderUpdater(orderId: string, isCancelling: boolean) {
+function useCancellingOrderUpdater(orderId: string, isCancelling: boolean): void {
   const setCancellationTriggered = useSetAtom(setOrderProgressBarCancellationTriggered)
 
   useEffect(() => {
@@ -310,8 +313,6 @@ function useCancellingOrderUpdater(orderId: string, isCancelling: boolean) {
 }
 
 // TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function useProgressBarStepNameUpdater(
   orderId: string,
   isUnfillable: boolean,
@@ -327,7 +328,7 @@ function useProgressBarStepNameUpdater(
   previousStepName: OrderProgressBarState['previousStepName'],
   bridgingStatus: SwapAndBridgeStatus | undefined,
   isBridgingTrade: boolean,
-) {
+): void {
   const setProgressBarStepName = useSetExecutingOrderProgressBarStepNameCallback()
 
   const stepName = getProgressBarStepName(
@@ -347,9 +348,7 @@ function useProgressBarStepNameUpdater(
 
   // Update state with new step name
   useEffect(() => {
-    // TODO: Add proper return type annotation
-    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-    function updateStepName(name: OrderProgressBarStepName) {
+    function updateStepName(name: OrderProgressBarStepName): void {
       setProgressBarStepName(orderId, name || DEFAULT_STEP_NAME)
     }
 
@@ -472,26 +471,47 @@ const BACKEND_TYPE_TO_PROGRESS_BAR_STEP_NAME: Record<CompetitionOrderStatus.type
   cancelled: OrderProgressBarStepName.INITIAL, // TODO: maybe add another state for finished with error?
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function useBackendApiStatusUpdater(chainId: SupportedChainId, orderId: string, doNotQuery: boolean) {
+function useBackendApiStatusUpdater(chainId: SupportedChainId, orderId: string, doNotQuery: boolean): void {
   const setAtom = useSetAtom(updateOrderProgressBarBackendInfo)
-  const { type: backendApiStatus, value: solverCompetition } = usePendingOrderStatus(chainId, orderId, doNotQuery) || {}
+  const [stopQuerying, setStopQuerying] = useState(false)
+  const { type: backendApiStatus, value } = usePendingOrderStatus(chainId, orderId, stopQuerying) || {}
+
+  // Once doNotQuery is set to true, keep querying for another 3 seconds to ensure we get the final status and then stop
+  useEffect(() => {
+    if (doNotQuery) {
+      const timer = setTimeout(() => setStopQuerying(true), ms`3s`)
+
+      return () => {
+        clearTimeout(timer)
+      }
+    } else {
+      setStopQuerying(false) // Reset the stop querying state when doNotQuery is false
+
+      return
+    }
+  }, [doNotQuery, orderId])
 
   useEffect(() => {
-    if (orderId && (backendApiStatus || solverCompetition)) {
+    if (orderId && (backendApiStatus || value)) {
+      // Lowercase solver names as CMS might return them in different cases
+      const solverCompetition = value?.map(({ solver, ...rest }) => ({
+        ...rest,
+        solver: solver.toLowerCase(),
+      }))
       setAtom({ orderId, value: { backendApiStatus, solverCompetition } })
     }
-  }, [orderId, setAtom, backendApiStatus, solverCompetition])
+  }, [orderId, setAtom, backendApiStatus, value])
 }
 
 const POOLING_SWR_OPTIONS = {
   refreshInterval: ms`1s`,
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function usePendingOrderStatus(chainId: SupportedChainId, orderId: string, doNotQuery?: boolean) {
+function usePendingOrderStatus(
+  chainId: SupportedChainId,
+  orderId: string,
+  doNotQuery?: boolean,
+): CompetitionOrderStatus | undefined {
   return useSWR(
     chainId && orderId && !doNotQuery ? ['getOrderCompetitionStatus', chainId, orderId] : null,
     async ([, _chainId, _orderId]) => getOrderCompetitionStatus(_chainId, _orderId),
@@ -513,7 +533,7 @@ function mergeSolverData(
   // Backend has the prefix `-solve` on some solvers. We should discard that for now.
   // In the future this prefix will be removed.
   const solverId = solverCompetition.solver.replace(/-solve$/, '')
-  const solverInfo = solversInfo[solverId]
+  const solverInfo = solversInfo[solverId.toLowerCase()]
 
   return { ...solverCompetition, ...solverInfo, solverId, solver: solverId }
 }

@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { formatSymbol, getIsNativeToken } from '@cowprotocol/common-utils'
 
 import { useAllTransactions } from 'legacy/state/enhancedTransactions/hooks'
@@ -7,41 +9,47 @@ import { isOrderExpired } from 'legacy/state/orders/utils'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
-import { EthFlowStepper as Pure, EthFlowStepperProps as PureProps, SmartOrderStatus } from '../../pure/EthFlowStepper'
+import {
+  EthFlowStepper as Pure,
+  EthFlowStepperProps as PureProps,
+  SmartOrderStatus,
+  TxState,
+} from '../../pure/EthFlowStepper'
+
+interface CreationState {
+  state: TxState
+  creationTx: EnhancedTransactionDetails | undefined
+  creationTxFailed: boolean | undefined
+}
 
 type EthFlowStepperProps = {
   order: Order | undefined
   showProgressBar?: boolean
 }
 
-// TODO: Add proper return type annotation
-// TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, complexity
-export function EthFlowStepper(props: EthFlowStepperProps) {
+export function EthFlowStepper(props: EthFlowStepperProps): ReactNode {
   const { order, showProgressBar } = props
   const native = useNativeCurrency()
 
   const allTxs = useAllTransactions()
 
-  const creationHash = order?.orderCreationHash
   const cancellationHash = order?.cancellationHash
-  // TODO: add refund hash when available from API
-
-  const creationTx = creationHash ? allTxs[creationHash] : undefined
-  const creationLinkedTx = creationTx?.linkedTransactionHash ? allTxs[creationTx.linkedTransactionHash] : undefined
   const cancellationTx = cancellationHash ? allTxs[cancellationHash] : undefined
-
-  const state = mapOrderToEthFlowStepperState(order, creationTx, cancellationTx)
 
   const isEthFlowOrder = !!order?.inputToken && getIsNativeToken(order.inputToken)
 
-  if (!order || !state || !isEthFlowOrder) {
+  if (!order || !isEthFlowOrder) {
     return null
   }
 
-  const creationTxFailed = didTxFail(creationTx)
+  const { state: creation, creationTxFailed, creationTx } = getCreationTxState(order, allTxs)
+  const state = mapOrderToEthFlowStepperState(order, creationTx, cancellationTx)
+
+  if (!state) return null
 
   const rejectedReason = creationTxFailed ? 'Transaction failed' : undefined
+
+  const refundHash = order.refundHash || order.apiAdditionalInfo?.ethflowData?.refundTxHash || undefined
 
   const stepperProps: PureProps = {
     nativeTokenSymbol: native.symbol as string,
@@ -54,16 +62,10 @@ export function EthFlowStepper(props: EthFlowStepperProps) {
       rejectedReason,
     },
     showProgressBar,
-    creation: {
-      hash: creationHash,
-      failed: creationTxFailed,
-      cancelled: creationLinkedTx?.replacementType === 'cancel',
-      spedUp: creationLinkedTx?.replacementType === 'speedup',
-      replaced: creationLinkedTx?.replacementType === 'replaced',
-    },
+    creation,
     refund: {
-      hash: order.refundHash,
-      failed: didRefundFail(order),
+      hash: refundHash,
+      failed: !refundHash,
     },
     cancellation: {
       hash: cancellationHash,
@@ -81,19 +83,42 @@ function mapOrderToEthFlowStepperState(
   creationTx: EnhancedTransactionDetails | undefined,
   cancellationTx: EnhancedTransactionDetails | undefined,
 ): SmartOrderStatus | undefined {
-  if (order) {
-    const { status } = order
+  if (!order) return
 
-    if (status === 'fulfilled') {
-      return SmartOrderStatus.FILLED
-    } else if (ORDER_INDEXED_STATUSES.includes(status) || cancellationTx?.receipt) {
-      return SmartOrderStatus.INDEXED
-    } else if (status === 'creating' && creationTx?.receipt) {
-      return SmartOrderStatus.CREATION_MINED
-    }
-    return SmartOrderStatus.CREATING
+  const { status } = order
+
+  if (status === 'fulfilled') {
+    return SmartOrderStatus.FILLED
   }
-  return undefined
+
+  if (ORDER_INDEXED_STATUSES.includes(status) || cancellationTx?.receipt) {
+    return SmartOrderStatus.INDEXED
+  }
+
+  if (status === 'creating' && creationTx?.receipt) {
+    return SmartOrderStatus.CREATION_MINED
+  }
+
+  return SmartOrderStatus.CREATING
+}
+
+function getCreationTxState(order: Order, allTxs: { [txHash: string]: EnhancedTransactionDetails }): CreationState {
+  const { orderCreationHash: creationHash } = order
+  const creationTx = creationHash ? allTxs[creationHash] : undefined
+  const creationLinkedTx = creationTx?.linkedTransactionHash ? allTxs[creationTx.linkedTransactionHash] : undefined
+  const creationTxFailed = didTxFail(creationTx)
+
+  return {
+    creationTx,
+    creationTxFailed,
+    state: {
+      hash: creationHash,
+      failed: creationTxFailed,
+      cancelled: creationLinkedTx?.replacementType === 'cancel',
+      spedUp: creationLinkedTx?.replacementType === 'speedup',
+      replaced: creationLinkedTx?.replacementType === 'replaced',
+    },
+  }
 }
 
 function isEthFlowOrderExpired(order: Order | undefined): boolean {
@@ -112,11 +137,4 @@ function didCancellationFail(order: Order, tx: EnhancedTransactionDetails | unde
     return false
   }
   return didTxFail(tx)
-}
-
-function didRefundFail(order: Order): boolean | undefined {
-  if (order.isRefunded === undefined) {
-    return undefined
-  }
-  return !order.refundHash
 }

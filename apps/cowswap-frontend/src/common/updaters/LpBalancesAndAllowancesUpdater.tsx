@@ -45,12 +45,14 @@ export function LpBalancesAndAllowancesUpdater({ account, chainId, enablePolling
   })
 
   useEffect(() => {
+    if (!enablePolling) return
+
     const timeout = setTimeout(() => {
       setIsUpdaterPaused(false)
     }, LP_UPDATER_START_DELAY)
 
     return () => clearTimeout(timeout)
-  }, [])
+  }, [enablePolling])
 
   useEffect(() => {
     setAreLpBalancesLoaded(false)

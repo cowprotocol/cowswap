@@ -7,14 +7,17 @@ import { PersistentStateByChain } from '@cowprotocol/types'
 
 import { Erc20MulticallState } from '../types'
 
-type BalancesCache = PersistentStateByChain<Record<string, string>>
+type Account = string
+type TokenAddress = string
+
+type BalancesCache = PersistentStateByChain<Record<Account, Record<TokenAddress, string>>>
 
 export interface BalancesState extends Erc20MulticallState {
   chainId: SupportedChainId | null
 }
 
 export const balancesCacheAtom = atomWithStorage<BalancesCache>(
-  'balancesCacheAtom:v0',
+  'balancesCacheAtom:v1',
   mapSupportedNetworks({}),
   getJotaiMergerStorage(),
 )
@@ -25,4 +28,6 @@ export const balancesAtom = atomWithReset<BalancesState>({
   chainId: null,
 })
 
-export const balancesUpdateAtom = atom<PersistentStateByChain<number>>(mapSupportedNetworks(0))
+export const balancesUpdateAtom = atom<PersistentStateByChain<Record<string, number | undefined>>>(
+  mapSupportedNetworks({}),
+)

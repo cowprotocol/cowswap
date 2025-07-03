@@ -1,52 +1,39 @@
-import { useEffect, useState } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 
 import ms from 'ms.macro'
+
+import { useTradeQuoteCounter } from 'modules/tradeQuote'
 
 import { QuoteCountdownWrapper } from './styled'
 
 const ONE_SEC = ms`1s`
 
-interface CountdownComponentProps {
-  refreshInterval: number | undefined
-}
-
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export const QuoteCountdown = ({ refreshInterval }: CountdownComponentProps) => {
+export const QuoteCountdown = (): ReactNode => {
   const [blink, setBlink] = useState<boolean>(false)
 
-  const [nextUpdateAt, setNextUpdateAt] = useState(refreshInterval)
+  const counter = useTradeQuoteCounter()
 
   useEffect(() => {
-    if (refreshInterval === undefined || nextUpdateAt === undefined) return
-
-    const interval = setInterval(() => {
-      const newValue = nextUpdateAt - ONE_SEC
-
-      setNextUpdateAt(newValue <= 0 ? refreshInterval : newValue)
-    }, ONE_SEC)
-
-    return () => clearInterval(interval)
-  }, [nextUpdateAt, refreshInterval])
-
-  useEffect(() => {
-    if (nextUpdateAt === undefined) return
-
-    if (Math.ceil(nextUpdateAt / 1000) <= 1) {
+    if (counter === 0) {
       setBlink(true)
-      const timer = setTimeout(() => setBlink(false), 1000)
 
-      return () => clearTimeout(timer)
+      setTimeout(() => setBlink(false), ONE_SEC)
     }
 
     return
-  }, [nextUpdateAt])
+  }, [counter])
 
-  if (nextUpdateAt === undefined) return null
+  const value = counter / ONE_SEC
 
   return (
     <QuoteCountdownWrapper blink={blink}>
-      Quote refresh in <b>{Math.ceil(nextUpdateAt / 1000)} sec</b>
+      {value === 0 ? (
+        'Refreshing quote...'
+      ) : (
+        <>
+          Quote refresh in <b>{counter / ONE_SEC} sec</b>
+        </>
+      )}
     </QuoteCountdownWrapper>
   )
 }

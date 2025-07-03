@@ -1,4 +1,3 @@
-import { SolverInfo } from '@cowprotocol/core'
 import { CompetitionOrderStatus, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 
@@ -7,6 +6,7 @@ import type { Order } from 'legacy/state/orders/actions'
 import type { SwapAndBridgeContext } from 'modules/bridge'
 
 import type { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
+import { SolverCompetition } from 'common/types/soverCompetition'
 
 import { OrderProgressBarStepName } from './constants'
 
@@ -32,10 +32,6 @@ export type BridgingFlowStep =
   | OrderProgressBarStepName.BRIDGING_FAILED
   | OrderProgressBarStepName.REFUND_COMPLETED
   | OrderProgressBarStepName.BRIDGING_FINISHED
-
-type Unpacked<T> = T extends (infer U)[] ? U : never
-export type ApiSolverCompetition = Unpacked<CompetitionOrderStatus['value']>
-export type SolverCompetition = ApiSolverCompetition & Partial<SolverInfo>
 
 export type OrderProgressBarProps = {
   stepName?: OrderProgressBarStepName

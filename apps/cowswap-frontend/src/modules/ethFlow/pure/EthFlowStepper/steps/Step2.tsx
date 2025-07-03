@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { ReactNode, useMemo } from 'react'
 
 import Checkmark from '@cowprotocol/assets/cow-swap/checkmark.svg'
 import Exclamation from '@cowprotocol/assets/cow-swap/exclamation.svg'
@@ -10,10 +10,7 @@ import { ExplorerLinkStyled, Step, StepProps } from '../Step'
 
 type Step2Config = StepProps & { error?: string }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
-export function Step2({ order, cancellation, creation }: EthFlowStepperProps) {
+export function Step2({ order, cancellation, creation }: EthFlowStepperProps): ReactNode {
   const { state, isExpired, orderId, rejectedReason } = order
   const isCreating = state === SmartOrderStatus.CREATING
   const isIndexing = state === SmartOrderStatus.CREATION_MINED
@@ -30,8 +27,7 @@ export function Step2({ order, cancellation, creation }: EthFlowStepperProps) {
     state: stepState,
     icon,
     error,
-  // TODO: Reduce function complexity by extracting logic
-  // eslint-disable-next-line complexity
+    // TODO: Reduce function complexity by extracting logic
   } = useMemo<Step2Config>(() => {
     if ((rejectedReason || creationCancelled || (creationReplaced && isCreating)) && !isFilled) {
       return {
@@ -41,7 +37,7 @@ export function Step2({ order, cancellation, creation }: EthFlowStepperProps) {
         icon: X,
       }
     }
-    if (expiredBeforeCreate) {
+    if (expiredBeforeCreate && !isFilled) {
       return {
         label: 'Order Creation Failed',
         error: 'Expired before creation',

@@ -1,6 +1,6 @@
 import { useSetAtom } from 'jotai'
 import { useAtomValue } from 'jotai/index'
-import { useEffect, useMemo } from 'react'
+import { ReactNode, useEffect, useMemo } from 'react'
 
 import { TokenInfo } from '@cowprotocol/types'
 
@@ -30,10 +30,7 @@ export interface CustomTokensListsUpdaterProps {
  * Then the updater will handle the value and add provided token lists to the App
  * Important! Added token lists would be shown only for this widget, they are distinguished by `appCode`
  */
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
-export function WidgetTokensListsUpdater(props: CustomTokensListsUpdaterProps) {
+export function WidgetTokensListsUpdater(props: CustomTokensListsUpdaterProps): ReactNode {
   const { tokenLists, appCode, customTokens, onTokenListAddingError, onRemoveList, onAddList } = props
   const addList = useAddList(onAddList)
   const removeList = useRemoveList(onRemoveList)
@@ -72,10 +69,10 @@ export function WidgetTokensListsUpdater(props: CustomTokensListsUpdaterProps) {
 
             return Promise.reject(error)
           })
-        })
+        }),
       ).then(getFulfilledResults)
     },
-    {}
+    {},
   )
 
   /**
