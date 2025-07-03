@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.13.0](https://github.com/cowprotocol/cowswap/compare/wallet-v1.12.4...wallet-v1.13.0) (2025-07-03)
+
+
+### Features
+
+* use `eip155` chain names adding chain parameter to walllet ([#5916](https://github.com/cowprotocol/cowswap/issues/5916)) ([318c1bc](https://github.com/cowprotocol/cowswap/commit/318c1bcbb7528fdd3abf233068cebfff371dbea9))
+
 ## [1.12.4](https://github.com/cowprotocol/cowswap/compare/wallet-v1.12.3...wallet-v1.12.4) (2025-06-18)
 
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.22.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.21.0...tokens-v1.22.0) (2025-07-03)
+
+
+### Features
+
+* **bridge:** display account proxy ([#5881](https://github.com/cowprotocol/cowswap/issues/5881)) ([0692597](https://github.com/cowprotocol/cowswap/commit/0692597adf45b469b5a547057b64e79296714ee2))
+
 ## [1.21.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.20.0...tokens-v1.21.0) (2025-06-20)
 
 

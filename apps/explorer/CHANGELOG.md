@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.48.2](https://github.com/cowprotocol/cowswap/compare/explorer-v2.48.1...explorer-v2.48.2) (2025-07-03)
+
+
+### Bug Fixes
+
+* **bridge:** do not estimate gas for hook ([#5887](https://github.com/cowprotocol/cowswap/issues/5887)) ([028840b](https://github.com/cowprotocol/cowswap/commit/028840b7c4cab605a17462d98e1a13fb68e16cbc))
+* **explorer:** handle limit price is infinite ([#5886](https://github.com/cowprotocol/cowswap/issues/5886)) ([9c333cc](https://github.com/cowprotocol/cowswap/commit/9c333ccb0856b06a19d16f1e6a148655d89d8ba8))
+
 ## [2.48.1](https://github.com/cowprotocol/cowswap/compare/explorer-v2.48.0...explorer-v2.48.1) (2025-06-20)
 
 
