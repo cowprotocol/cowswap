@@ -8,15 +8,13 @@ import styled from 'styled-components/macro'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 
-import type { PendingOrderPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
+import type { PendingOrderPrices } from 'modules/orders'
 import type { BalancesAndAllowances } from 'modules/tokens'
-
-import { OrderActions } from './types'
 
 import { ORDERS_TABLE_PAGE_SIZE } from '../../const/tabs'
 import { OrderRow } from '../../containers/OrderRow'
+import { OrderActions, OrderTableGroup } from '../../types'
 import { getOrderParams } from '../../utils/getOrderParams'
-import { OrderTableGroup } from '../../utils/orderTableGroupUtils'
 import { OrdersTablePagination } from '../OrdersTablePagination'
 import { TwapStatusAndToggle } from '../TwapStatusAndToggle'
 

@@ -37,7 +37,7 @@ import { StatusField } from './StatusField'
 import * as styledEl from './styled'
 import { SurplusField } from './SurplusField'
 
-import { AlternativeOrderModalContext } from '../../containers/OrdersReceiptModal/hooks'
+import { AlternativeOrderModalContext } from '../../types'
 
 interface ReceiptProps {
   isOpen: boolean

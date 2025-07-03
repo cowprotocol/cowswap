@@ -12,7 +12,7 @@ import { Currency, Price } from '@uniswap/sdk-core'
 import { OrderStatus } from 'legacy/state/orders/actions'
 import { getEstimatedExecutionPrice } from 'legacy/state/orders/utils'
 
-import { PendingOrderPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
+import { PendingOrderPrices } from 'modules/orders'
 import { BalancesAndAllowances } from 'modules/tokens'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
@@ -39,9 +39,9 @@ import {
   TableRowCheckbox,
   TableRowCheckboxWrapper,
 } from '../../pure/OrdersTableContainer/styled'
-import { OrderActions } from '../../pure/OrdersTableContainer/types'
 import { OrderStatusBox } from '../../pure/OrderStatusBox'
 import { WarningEstimatedPrice } from '../../pure/WarningEstimatedPrice'
+import { OrderActions } from '../../types'
 import { OrderParams } from '../../utils/getOrderParams'
 
 // Constants

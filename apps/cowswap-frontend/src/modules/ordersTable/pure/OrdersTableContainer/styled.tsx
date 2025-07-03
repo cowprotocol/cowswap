@@ -2,14 +2,11 @@ import { Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-export const SettingsContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-right: 16px;
-`
-
-export const TableHeader = styled.div<{ isHistoryTab: boolean; isRowSelectable: boolean; isTwapTable?: boolean }>`
+export const TableHeaderWrapper = styled.div<{
+  isHistoryTab: boolean
+  isRowSelectable: boolean
+  isTwapTable?: boolean
+}>`
   --header-height: 26px;
   --row-height: 41px;
   --checkboxSize: 16px;
@@ -62,7 +59,7 @@ export const TableHeader = styled.div<{ isHistoryTab: boolean; isRowSelectable: 
   }
 `
 
-export const TableRow = styled(TableHeader)<{
+export const TableRow = styled(TableHeaderWrapper)<{
   isChildOrder?: boolean
   isHistoryTab: boolean
   isRowSelectable: boolean
