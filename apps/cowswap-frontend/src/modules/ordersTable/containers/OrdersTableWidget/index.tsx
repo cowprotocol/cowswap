@@ -325,7 +325,7 @@ export function OrdersTableWidget({
       // If not a symbol match, check for address matches
       // Clean up the search term but preserve '0x' prefix if present
       const hasPrefix = searchTermLower.startsWith('0x')
-      const cleanedSearch = searchTermLower.replace(/[^0-9a-fx]/g, '')
+      const cleanedSearch = searchTermLower.trim()
 
       // For exact address matches (40 or 42 chars), do strict comparison
       if (cleanedSearch.length === 40 || cleanedSearch.length === 42) {
