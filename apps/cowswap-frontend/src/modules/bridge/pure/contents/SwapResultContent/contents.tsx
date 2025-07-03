@@ -1,8 +1,6 @@
 import { ReactNode } from 'react'
 
 import PlusIcon from '@cowprotocol/assets/cow-swap/plus.svg'
-import { buildPriceFromCurrencyAmounts } from '@cowprotocol/common-utils'
-import { TokenAmount, TokenSymbol } from '@cowprotocol/ui'
 import type { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
@@ -11,6 +9,7 @@ import { AMM_LOGOS } from 'legacy/components/AMMsLogo'
 
 import { ReceiveAmountTitle } from 'modules/trade'
 
+import { RateInfo, RateInfoParams } from 'common/pure/RateInfo'
 import type { SolverCompetition } from 'common/types/soverCompetition'
 
 import { StyledTimelinePlusIcon, SuccessTextBold, TimelineIconCircleWrapper } from '../../../styles'
@@ -46,20 +45,14 @@ export function getReceivedContent(
   }
 }
 
-export function getExecPriceContent(
-  sellAmount: CurrencyAmount<Currency>,
-  receivedAmount: CurrencyAmount<Currency>,
-): ContentConfig {
-  const price = buildPriceFromCurrencyAmounts(sellAmount, receivedAmount)
-
+export function getExecPriceContent(rateInfoParams: RateInfoParams): ContentConfig {
   return {
     withTimelineDot: true,
     label: <span>Exec. price</span>,
     content: (
-      <>
-        1 {<TokenSymbol token={sellAmount.currency} />} ={' '}
-        <TokenAmount amount={price} tokenSymbol={receivedAmount.currency} />
-      </>
+      <span>
+        <RateInfo noLabel rateInfoParams={rateInfoParams} />
+      </span>
     ),
   }
 }
