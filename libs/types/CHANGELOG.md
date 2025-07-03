@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.0](https://github.com/cowprotocol/cowswap/compare/types-v1.7.1...types-v1.8.0) (2025-07-03)
+
+
+### Features
+
+* **explorer:** display bridging data in order page ([#5787](https://github.com/cowprotocol/cowswap/issues/5787)) ([cd398f0](https://github.com/cowprotocol/cowswap/commit/cd398f0987064311d80c1628550a83df5ad31386))
+
 ## [1.7.1](https://github.com/cowprotocol/cowswap/compare/types-v1.7.0...types-v1.7.1) (2025-06-18)
 
 

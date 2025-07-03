@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.17.1](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.17.0...common-utils-v1.17.1) (2025-07-03)
+
+
+### Bug Fixes
+
+* **trade:** updating priority balances ([#5884](https://github.com/cowprotocol/cowswap/issues/5884)) ([272cebc](https://github.com/cowprotocol/cowswap/commit/272cebcdf68a07dcc0066402dbd9d729a98d10e7))
+
 ## [1.17.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.16.0...common-utils-v1.17.0) (2025-06-20)
 
 
