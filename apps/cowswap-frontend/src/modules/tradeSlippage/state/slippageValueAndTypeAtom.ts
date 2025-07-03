@@ -10,7 +10,7 @@ import { isEoaEthFlowAtom } from 'modules/trade'
 
 type SlippageBpsPerNetwork = PersistentStateByChain<number>
 
-type SlippageType = 'smart' | 'default' | 'user'
+export type SlippageType = 'smart' | 'default' | 'user'
 
 const normalTradeSlippageAtom = atomWithStorage<SlippageBpsPerNetwork>(
   'swapSlippageAtom:v0',
@@ -22,7 +22,11 @@ const ethFlowSlippageAtom = atomWithStorage<SlippageBpsPerNetwork>(
   mapSupportedNetworks(undefined),
 )
 
-export const smartTradeSlippageAtom = atom<number | null>(null)
+export const shouldUseAutoSlippageAtom = atom<boolean>(false)
+
+export const setShouldUseAutoSlippageAtom = atom(null, (_, set, isEnabled: boolean) => {
+  set(shouldUseAutoSlippageAtom, isEnabled)
+})
 
 export const defaultSlippageAtom = atom((get) => {
   const { chainId } = get(walletInfoAtom)
@@ -31,7 +35,7 @@ export const defaultSlippageAtom = atom((get) => {
   return isEoaEthFlow ? MINIMUM_ETH_FLOW_SLIPPAGE_BPS[chainId] : DEFAULT_SLIPPAGE_BPS
 })
 
-const currentSlippageAtom = atom<number | null>((get) => {
+export const currentUserSlippageAtom = atom<number | null>((get) => {
   const { chainId } = get(walletInfoAtom)
   const isEoaEthFlow = get(isEoaEthFlowAtom)
   const normalSlippage = get(normalTradeSlippageAtom)
@@ -40,24 +44,7 @@ const currentSlippageAtom = atom<number | null>((get) => {
   return (isEoaEthFlow ? ethFlowSlippage : normalSlippage)?.[chainId] ?? null
 })
 
-export const slippageValueAndTypeAtom = atom<{ type: SlippageType; value: number }>((get) => {
-  const currentSlippage = get(currentSlippageAtom)
-  const defaultSlippage = get(defaultSlippageAtom)
-  const smartSlippage = get(smartTradeSlippageAtom)
-  const isEoaEthFlow = get(isEoaEthFlowAtom)
-
-  if (typeof currentSlippage === 'number') {
-    return { type: 'user', value: currentSlippage }
-  }
-
-  if (!isEoaEthFlow && smartSlippage && smartSlippage !== defaultSlippage) {
-    return { type: 'smart', value: smartSlippage }
-  }
-
-  return { type: 'default', value: defaultSlippage }
-})
-
-export const setTradeSlippageAtom = atom(null, (get, set, slippageBps: number | null) => {
+export const setUserSlippageAtom = atom(null, (get, set, slippageBps: number | null) => {
   const { chainId } = get(walletInfoAtom)
   const isEoaEthFlow = get(isEoaEthFlowAtom)
 

@@ -1,7 +1,11 @@
-import { useFeatureFlags } from './useFeatureFlags'
+import { atom, useAtomValue, useSetAtom } from 'jotai'
 
-export function useIsBridgingEnabled(isSmartContractWallet: boolean | undefined): boolean {
-  const { isBridgingEnabled } = useFeatureFlags()
-  // Currently, no support for bridging from smart contract wallets
-  return isBridgingEnabled && !isSmartContractWallet
+const isBridgingEnabledAtom = atom(false)
+
+export function useIsBridgingEnabled(): boolean {
+  return useAtomValue(isBridgingEnabledAtom)
+}
+
+export function useSetIsBridgingEnabled(): (value: boolean) => void {
+  return useSetAtom(isBridgingEnabledAtom)
 }

@@ -1841,10 +1841,10 @@
   resolved "https://registry.yarnpkg.com/@cowprotocol/cow-runner-game/-/cow-runner-game-0.2.9.tgz#3f94b3f370bd114f77db8b1d238cba3ef4e9d644"
   integrity sha512-rX7HnoV+HYEEkBaqVUsAkGGo0oBrExi+d6Io+8nQZYwZk+IYLmS9jdcIObsLviM2h4YX8+iin6NuKl35AaiHmg==
 
-"@cowprotocol/cow-sdk@6.0.0-RC.58":
-  version "6.0.0-RC.58"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-6.0.0-RC.58.tgz#a7582ac3de2d5ea6e85bc98bee665c33c73a7441"
-  integrity sha512-AhxVVPGKuHrL2/U5hOc4fLRpv8GjQINWcaCr8NySAptjRaEO/4yjDByT53dSrP9dex2/PKy+lAHMb279zIVLWg==
+"@cowprotocol/cow-sdk@6.0.0-RC.69":
+  version "6.0.0-RC.69"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-6.0.0-RC.69.tgz#bfd210ad006429f2d16dd62b61c3c39d5be155cc"
+  integrity sha512-PMG/ZDozuVUe93cRFawp5TwztdMuB+GDkhmYRhsDi7faj1cFqy6wbt3OBAT3dt3MSrsTKwAttEg+dcpOWn/naQ==
   dependencies:
     "@cowprotocol/app-data" "^3.1.0"
     "@cowprotocol/contracts" "^1.8.0"
@@ -1853,7 +1853,6 @@
     "@weiroll/weiroll.js" "^0.3.0"
     cross-fetch "^3.2.0"
     deepmerge "^4.3.1"
-    ethers "^5.8.0"
     exponential-backoff "^3.1.2"
     graphql "^16.11.0"
     graphql-request "^4.3.0"
@@ -12118,16 +12117,6 @@ bn.js@^5.0.0, bn.js@^5.1.1, bn.js@^5.1.2, bn.js@^5.1.3, bn.js@^5.2.0, bn.js@^5.2
   resolved "https://registry.yarnpkg.com/bn.js/-/bn.js-5.2.1.tgz#0bc527a6a0d18d0aa8d5b0538ce4a77dccfa7b70"
   integrity sha512-eXRvHzWyYPBuB4NBy0cmYQjGitUrtqwbvlzP3G6VFnNRbsZQIxQ10PbKKHt8gZ/HW/D/747aDl+QkDqg3KQLMQ==
 
-bnc-sdk@^4.6.0:
-  version "4.6.7"
-  resolved "https://registry.yarnpkg.com/bnc-sdk/-/bnc-sdk-4.6.7.tgz#138a22e04c95c2c697fb836092358d21957e2114"
-  integrity sha512-jIQ6cmeRBgvH/YDLuYRr2+kxDGcAAi0SOvjlO5nQ5cWdbslw+ASWftd1HmxiVLNCiwEH5bSc/t8a0agZ5njTUQ==
-  dependencies:
-    crypto-es "^1.2.2"
-    nanoid "^3.3.1"
-    rxjs "^6.6.3"
-    sturdy-websocket "^0.1.12"
-
 body-parser@1.20.3:
   version "1.20.3"
   resolved "https://registry.yarnpkg.com/body-parser/-/body-parser-1.20.3.tgz#1953431221c6fb5cd63c4b36d53fab0928e548c6"
@@ -13902,11 +13891,6 @@ crypto-browserify@^3.12.1:
     public-encrypt "^4.0.3"
     randombytes "^2.1.0"
     randomfill "^1.0.4"
-
-crypto-es@^1.2.2:
-  version "1.2.7"
-  resolved "https://registry.yarnpkg.com/crypto-es/-/crypto-es-1.2.7.tgz#754a6d52319a94fb4eb1f119297f17196b360f88"
-  integrity sha512-UUqiVJ2gUuZFmbFsKmud3uuLcNP2+Opt+5ysmljycFCyhA0+T16XJmo1ev/t5kMChMqWh7IEvURNCqsg+SjZGQ==
 
 crypto-random-string@^2.0.0:
   version "2.0.0"
@@ -23780,7 +23764,7 @@ nano-json-stream-parser@^0.1.2:
   resolved "https://registry.yarnpkg.com/nano-json-stream-parser/-/nano-json-stream-parser-0.1.2.tgz#0cc8f6d0e2b622b479c40d499c46d64b755c6f5f"
   integrity sha512-9MqxMH/BSJC7dnLsEMPyfN5Dvoo49IsPFYMcHw3Bcfc2kN0lpHRBSzlMSVx4HGyJ7s9B31CyBTVehWJoQ8Ctew==
 
-nanoid@^3.0.2, nanoid@^3.1.23, nanoid@^3.1.3, nanoid@^3.3.1, nanoid@^3.3.6:
+nanoid@^3.0.2, nanoid@^3.1.23, nanoid@^3.1.3, nanoid@^3.3.6:
   version "3.3.7"
   resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.3.7.tgz#d0c301a691bc8d54efa0a2226ccf3fe2fd656bd8"
   integrity sha512-eSRppjcPIatRIMC1U6UngP8XFcz8MQWGQdt1MTBQ7NaAmvXDfvNxbvWV3x2y6CdEUciCSsDHDQZbhYaB8QEo2g==
@@ -26669,6 +26653,15 @@ react-from-dom@^0.7.5:
   resolved "https://registry.yarnpkg.com/react-from-dom/-/react-from-dom-0.7.5.tgz#2d2d2bf6d80149c053bcf71bb6615e5e7f6d23db"
   integrity sha512-CO92PmMKo/23uYPm6OFvh5CtZbMgHs/Xn+o095Lz/TZj9t8DSDhGdSOMLxBxwWI4sr0MF17KUn9yJWc5Q00R/w==
 
+react-helmet-async@^2.0.5:
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/react-helmet-async/-/react-helmet-async-2.0.5.tgz#cfc70cd7bb32df7883a8ed55502a1513747223ec"
+  integrity sha512-rYUYHeus+i27MvFE+Jaa4WsyBKGkL6qVgbJvSBoX8mbsWoABJXdEO0bZyi0F6i+4f0NuIb8AvqPMj3iXFHkMwg==
+  dependencies:
+    invariant "^2.2.4"
+    react-fast-compare "^3.2.2"
+    shallowequal "^1.1.0"
+
 react-helmet@^6.1.0:
   version "6.1.0"
   resolved "https://registry.yarnpkg.com/react-helmet/-/react-helmet-6.1.0.tgz#a750d5165cb13cf213e44747502652e794468726"
@@ -27715,7 +27708,7 @@ rw@1:
   resolved "https://registry.yarnpkg.com/rw/-/rw-1.3.3.tgz#3f862dfa91ab766b14885ef4d01124bfda074fb4"
   integrity sha512-PdhdWy89SiZogBLaw42zdeqtRJ//zFd2PgQavcICDUgJT5oW10QCRKbJ6bg4r0/UY2M6BWd5tkxuGFRvCkgfHQ==
 
-rxjs@^6.6.0, rxjs@^6.6.3:
+rxjs@^6.6.0:
   version "6.6.7"
   resolved "https://registry.yarnpkg.com/rxjs/-/rxjs-6.6.7.tgz#90ac018acabf491bf65044235d5863c4dab804c9"
   integrity sha512-hTdwr+7yYNIT5n4AMYp85KA6yw2Va0FLa3Rguvbpa4W3I5xynaBZo41cM3XM+4Q6fRMj3sBYIR1VAmZMXYJvRQ==
@@ -29238,13 +29231,6 @@ strtok3@^9.0.1:
   dependencies:
     "@tokenizer/token" "^0.3.0"
     peek-readable "^5.3.1"
-
-sturdy-websocket@^0.1.12:
-  version "0.1.12"
-  resolved "https://registry.yarnpkg.com/sturdy-websocket/-/sturdy-websocket-0.1.12.tgz#84bb779f948b585a695f76961dc7d1c4a5e87629"
-  integrity sha512-PA7h8LdjaMoIlC5HAwLVzae4raGWgyroscV4oUpEiTtEFINcNa47/CKYT3e98o+FfsJgrclI2pYpaJrz0aaoew==
-  dependencies:
-    lodash.defaults "^4.2.0"
 
 style-loader@^3.3.0:
   version "3.3.4"

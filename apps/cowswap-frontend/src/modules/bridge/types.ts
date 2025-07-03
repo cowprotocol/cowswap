@@ -1,9 +1,9 @@
-import { BridgeProviderInfo, BridgeStatusResult, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { Currency, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
+import type { BridgeProviderInfo, BridgeStatusResult, SupportedChainId } from '@cowprotocol/cow-sdk'
+import type { Currency, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
 
-import { ReceiveAmountInfo } from '../trade'
+import type { ReceiveAmountInfo } from 'modules/trade'
 
-import type { SolverCompetition } from '../orderProgressBar'
+import type { SolverCompetition } from 'common/types/soverCompetition'
 
 /**
  * Possible statuses for bridge/swap stops
@@ -72,7 +72,7 @@ export interface BridgingProgressContext {
 }
 
 export interface SwapResultContext {
-  winningSolver: SolverCompetition
+  winningSolver?: SolverCompetition
   receivedAmount: CurrencyAmount<Currency>
   receivedAmountUsd: CurrencyAmount<Token> | null
   surplusAmount: CurrencyAmount<Currency>

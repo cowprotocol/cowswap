@@ -16,7 +16,7 @@ export enum SmartOrderStatus {
   FILLED = 'FILLED',
 }
 
-type TxState = {
+export type TxState = {
   /**
    * undefined: there's no tx to track
    * string: tx was created and can be tracked

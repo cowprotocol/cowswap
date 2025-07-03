@@ -9,18 +9,16 @@ export function mapCmsSolversInfoToSolversInfo(cmsSolversInfo: CmsSolversInfo): 
       // eslint-disable-next-line complexity
       const solverNetworks = solver_networks?.data?.reduce<SolverNetwork[]>((acc, entry) => {
         if (entry.attributes) {
-          const { active, network, environment } = entry.attributes
+          const { network, environment } = entry.attributes
           const chainId = network?.data?.attributes?.chainId
           const cmsEnv = environment?.data?.attributes?.name
 
-          // Ignore the ones that are not active
-          if (chainId && cmsEnv && active) {
+          if (chainId && cmsEnv) {
             // Map to CowEnv
             const env = cmsEnv === 'barn' ? 'staging' : 'prod'
             acc.push({
               chainId,
               env,
-              active,
             })
           }
         }

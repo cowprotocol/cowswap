@@ -67,7 +67,7 @@ export function ExpiredOrdersUpdater(): null {
         isUpdating.current = false
       }
     },
-    [setIsOrderRefundedBatch]
+    [setIsOrderRefundedBatch],
   )
 
   useEffect(() => {

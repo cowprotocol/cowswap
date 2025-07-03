@@ -21,6 +21,7 @@ import { cowSwapStore } from 'legacy/state'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
 
 import { BlockNumberProvider } from './common/hooks/useBlockNumber'
+import { ThemeConfigUpdater } from './theme/ThemeConfigUpdater'
 
 const DarkModeToggleButton = styled.button`
   display: flex;
@@ -107,6 +108,7 @@ const Fixture = ({ children }: { children: ReactNode }) => {
               <Web3ReactProvider connectors={[[connector, hooks]]} network={chainId}>
                 <BlockNumberProvider>
                   <WalletUpdater />
+                  <ThemeConfigUpdater />
                   <Wrapper>
                     <CowAnalyticsProvider cowAnalytics={cowAnalytics}>
                       <DarkModeToggle>

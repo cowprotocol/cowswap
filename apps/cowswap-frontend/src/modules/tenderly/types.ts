@@ -1,4 +1,5 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { StateDiff } from '@cowprotocol/hook-dapp-lib'
 
 export interface SimulationInput {
   input: string
@@ -18,6 +19,7 @@ export interface SimulationData {
   status: boolean
   id: string
   cumulativeBalancesDiff: BalancesDiff
+  stateDiff: StateDiff[]
   gasUsed: string
 }
 

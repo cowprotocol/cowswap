@@ -4,8 +4,6 @@ import { useMemo } from 'react'
 import { BridgeQuoteResults, PriceQuality, QuoteBridgeRequest, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { QuoteAndPost } from '@cowprotocol/cow-sdk'
 
-import { useSetSmartSlippage } from 'modules/tradeSlippage'
-
 import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
 
 import { useProcessUnsupportedTokenError } from './useProcessUnsupportedTokenError'
@@ -37,39 +35,35 @@ function validateQuoteResponse(quote: QuoteAndPost): QuoteApiError | null {
   const buyAmount = quoteData?.buyAmount
   const sellAmount = quoteData?.sellAmount
   const feeAmount = quoteData?.feeAmount
-  
+
   // Check if quote represents an impossible trade (zero output)
   const isZeroBuyAmount = buyAmount === '0' || buyAmount === '0n'
-  
+
   if (isZeroBuyAmount && sellAmount && feeAmount) {
     if (process.env.NODE_ENV === 'development') {
       console.log('Quote validation: Converting zero-output quote to FeeExceedsFrom error', {
         buyAmount,
         sellAmount,
         feeAmount,
-        reason: 'Fees exceed sellAmount, resulting in zero buyAmount'
+        reason: 'Fees exceed sellAmount, resulting in zero buyAmount',
       })
     }
-    
+
     return new QuoteApiError({
       errorType: QuoteApiErrorCodes.FeeExceedsFrom,
       description: 'Sell amount is too small',
-      data: { 
+      data: {
         fee_amount: feeAmount,
-        sell_amount: sellAmount 
-      }
+        sell_amount: sellAmount,
+      },
     })
   }
 
   return null
 }
 
-export function useTradeQuoteManager(
-  sellTokenAddress: SellTokenAddress | undefined,
-  enableSmartSlippage: boolean,
-): TradeQuoteManager | null {
+export function useTradeQuoteManager(sellTokenAddress: SellTokenAddress | undefined): TradeQuoteManager | null {
   const update = useSetAtom(updateTradeQuoteAtom)
-  const setSmartSlippage = useSetSmartSlippage()
   const processUnsupportedTokenError = useProcessUnsupportedTokenError()
 
   return useMemo(
@@ -125,15 +119,9 @@ export function useTradeQuoteManager(
                 hasParamsChanged: false,
                 fetchParams,
               })
-
-              const { suggestedSlippageBps } = quote.quoteResults
-
-              if (enableSmartSlippage && suggestedSlippageBps) {
-                setSmartSlippage(suggestedSlippageBps)
-              }
             },
           }
         : null,
-    [update, setSmartSlippage, processUnsupportedTokenError, enableSmartSlippage, sellTokenAddress],
+    [update, processUnsupportedTokenError, sellTokenAddress],
   )
 }

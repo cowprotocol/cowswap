@@ -7,3 +7,5 @@ export { MetamaskTransactionWarning } from './containers/MetamaskTransactionWarn
 export { SellNativeWarningBanner } from './containers/SellNativeWarningBanner'
 export { useHighFeeWarning } from './containers/HighFeeWarning/hooks/useHighFeeWarning'
 export { NetworkCostsTooltipSuffix } from './pure/NetworkCostsTooltipSuffix'
+export { DeadlineTransactionSettings } from './containers/DeadlineTransactionSettings'
+export { TransactionSlippageInput } from './containers/TransactionSlippageInput'

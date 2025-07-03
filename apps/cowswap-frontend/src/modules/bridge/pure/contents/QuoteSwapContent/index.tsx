@@ -1,18 +1,18 @@
+import { ReactNode } from 'react'
+
 import { InfoTooltip, PercentDisplay } from '@cowprotocol/ui'
 
+import { ProxyRecipient } from 'modules/cowShed'
 import { ReceiveAmountTitle, TradeFeesAndCosts, ConfirmDetailsItem } from 'modules/trade'
 
 import { QuoteSwapContext } from '../../../types'
-import { RecipientDisplay } from '../../RecipientDisplay'
+import { ProxyAccountBanner } from '../../ProxyAccountBanner'
 import { TokenAmountDisplay } from '../../TokenAmountDisplay'
 
 interface QuoteDetailsContentProps {
   context: QuoteSwapContext
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function QuoteSwapContent({
   context: {
     receiveAmountInfo,
@@ -24,7 +24,7 @@ export function QuoteSwapContent({
     minReceiveUsdValue,
     expectedReceiveUsdValue,
   },
-}: QuoteDetailsContentProps) {
+}: QuoteDetailsContentProps): ReactNode {
   const slippagePercentDisplay = <PercentDisplay percent={slippage.toFixed(2)} />
 
   const contents = [
@@ -36,7 +36,7 @@ export function QuoteSwapContent({
           <InfoTooltip
             content={
               <>
-                The estimated amount you\'ll receive after estimated network costs and the max slippage setting (
+                The estimated amount you will receive after estimated network costs and the max slippage setting (
                 {slippagePercentDisplay}).
               </>
             }
@@ -78,7 +78,7 @@ export function QuoteSwapContent({
           Recipient <InfoTooltip content="The address that will receive the tokens." size={14} />
         </>
       ),
-      content: <RecipientDisplay recipient={recipient} chainId={sellAmount.currency.chainId} />,
+      content: <ProxyRecipient recipient={recipient} chainId={sellAmount.currency.chainId} />,
     },
   ]
 
@@ -90,6 +90,7 @@ export function QuoteSwapContent({
           {content}
         </ConfirmDetailsItem>
       ))}
+      <ProxyAccountBanner recipient={recipient} chainId={sellAmount.currency.chainId} />
     </>
   )
 }

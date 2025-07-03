@@ -7,8 +7,8 @@ import styled from 'styled-components/macro'
 
 import { useMultipleActivityDescriptors, groupActivitiesByDay } from 'legacy/hooks/useRecentActivity'
 
-import { renderActivities } from '../AccountDetails'
 import { AccountDetailsProps } from '../AccountDetails'
+import { ActivitiesList } from '../AccountDetails/ActivitiesList'
 import { LowerSectionSimple, Wrapper } from '../AccountDetails/styled'
 
 type StyledWrapperProps = { $margin?: string }
@@ -41,7 +41,9 @@ export function SimpleAccountDetails({
       <LowerSectionSimple>
         <div>
           {activitiesGroupedByDate.map(({ date, activities }) => (
-            <Fragment key={date.getTime()}>{renderActivities(activities)}</Fragment>
+            <Fragment key={date.getTime()}>
+              <ActivitiesList activities={activities} />
+            </Fragment>
           ))}
         </div>
       </LowerSectionSimple>

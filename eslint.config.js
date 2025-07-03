@@ -223,6 +223,14 @@ module.exports = [
       ],
     },
   },
+  // Tests
+  {
+    files: ['**/*.test.{ts,tsx,js,jsx}'],
+    rules: {
+      complexity: ['error', 100],
+      'max-lines-per-function': ['error', { max: 300, skipBlankLines: true, skipComments: true }],
+    },
+  },
 
   ...compat.config({ extends: ['plugin:@nx/typescript'] }).map((config) => ({
     ...config,

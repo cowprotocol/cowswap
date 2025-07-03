@@ -1,7 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useMemo } from 'react'
 
-import { Command, UiOrderType } from '@cowprotocol/types'
+import { UiOrderType } from '@cowprotocol/types'
 
 import { IS_EDIT_ORDER_ENABLED, useSetAlternativeOrder } from 'modules/trade/state/alternativeOrder'
 
@@ -10,6 +10,7 @@ import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 import { isOffchainOrder, ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { receiptAtom, updateReceiptAtom } from '../../state/orderReceiptAtom'
+import { AlternativeOrderModalContext } from '../../types'
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -29,8 +30,6 @@ export function useSelectedOrder(): ParsedOrder | null {
   return order
 }
 
-export type AlternativeOrderModalContext = { showAlternativeOrderModal: Command; isEdit: boolean } | null
-
 export function useGetAlternativeOrderModalContext(order: ParsedOrder | null): AlternativeOrderModalContext {
   const callback = useGetAlternativeOrderModalContextCallback()
 
@@ -38,19 +37,19 @@ export function useGetAlternativeOrderModalContext(order: ParsedOrder | null): A
 }
 
 export function useGetAlternativeOrderModalContextCallback(): (
-  order: ParsedOrder | null
+  order: ParsedOrder | null,
 ) => AlternativeOrderModalContext {
   const setAlternativeOrder = useSetAlternativeOrder()
 
   return useCallback(
     (order: ParsedOrder | null) => getAlternativeOrderModalContext(order, setAlternativeOrder),
-    [setAlternativeOrder]
+    [setAlternativeOrder],
   )
 }
 
 function getAlternativeOrderModalContext(
   order: ParsedOrder | null,
-  setAlternativeOrder: ReturnType<typeof useSetAlternativeOrder>
+  setAlternativeOrder: ReturnType<typeof useSetAlternativeOrder>,
 ): AlternativeOrderModalContext {
   const isEdit = order && isPending(order)
 

@@ -2,10 +2,9 @@ import { OrderClass, OrderKind, OrderStatus, SigningScheme } from '@cowprotocol/
 
 import BigNumber from 'bignumber.js'
 
-import { Order, RawOrder, RawTrade } from 'api/operator'
-
 import { USDT, WETH } from './erc20s'
 
+import { Order, RawOrder, RawTrade, OrderStatus as OrderStatusInner } from '../../api/operator'
 import { ZERO_BIG_NUMBER } from '../../const'
 
 export const RAW_ORDER = {
@@ -52,7 +51,7 @@ export const RICH_ORDER: Order = {
   executedFee: ZERO_BIG_NUMBER,
   totalFee: ZERO_BIG_NUMBER,
   cancelled: RAW_ORDER.invalidated,
-  status: 'open',
+  status: OrderStatusInner.Open,
   partiallyFilled: false,
   fullyFilled: false,
   filledAmount: ZERO_BIG_NUMBER,

@@ -141,6 +141,10 @@ export const Wrapper = styled.div`
     margin: 0 16px;
   }
 
+  ${Media.upToSmall()} {
+    margin: 0 8px;
+  }
+
   ${WalletName},
   ${AddressLink},
   ${CopyIcon},
@@ -486,3 +490,4 @@ export const WalletSelector = styled.div<WalletSelectorProps>`
     }
   `}
 `
+

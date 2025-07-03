@@ -1,69 +1,37 @@
 import React, { useCallback, useEffect, useState } from 'react'
 
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId, CrossChainOrder } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
-import { Color, Media } from '@cowprotocol/ui'
 import { TruncatedText } from '@cowprotocol/ui/pure/TruncatedText'
 
-import CowLoading from 'components/common/CowLoading'
-import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import { TabItemInterface } from 'components/common/Tabs/Tabs'
 import { ConnectionStatus } from 'components/ConnectionStatus'
 import { Notification } from 'components/Notification'
-import { DetailsTable } from 'components/orders/DetailsTable'
+import { FullDetailsTable } from 'components/orders/DetailsTable/FullDetailsTable'
 import RedirectToSearch from 'components/RedirectToSearch'
-import ExplorerTabs from 'explorer/components/common/ExplorerTabs/ExplorerTabs'
 import TablePagination from 'explorer/components/common/TablePagination'
 import { useTable } from 'explorer/components/TokensTableWidget/useTable'
 import { TAB_QUERY_PARAM_KEY } from 'explorer/const'
 import { useQuery, useUpdateQueryString } from 'hooks/useQuery'
 import { useLocation } from 'react-router'
 import { useNetworkId } from 'state/network'
-import styled from 'styled-components/macro'
+import { SWRResponse } from 'swr'
 import { Errors } from 'types'
 import { formatPercentage } from 'utils'
 
-import { Order, Trade } from 'api/operator'
+import { useCrossChainOrder } from 'modules/bridge'
+
+import { Order, ORDER_FINAL_FAILED_STATUSES, Trade } from 'api/operator'
 
 import { FillsTableContext } from './context/FillsTableContext'
-import { FillsTableWithData } from './FillsTableWithData'
+import { TitleUid, WrapperExtraComponents, StyledExplorerTabs, TabContent } from './styled'
+import { getBridgeTab, getFillsTab, getOverviewTab, TabView } from './tabs'
 
 import { FlexContainerVar } from '../../../explorer/pages/styled'
+import { VerboseDetails } from '../DetailsTable/VerboseDetails'
+import { StatusLabel } from '../StatusLabel'
 
-const TitleUid = styled(RowWithCopyButton)`
-  color: ${Color.explorer_grey};
-  font-size: var(--font-size-default);
-  font-weight: var(--font-weight-normal);
-  margin: 0 0 0 1rem;
-  display: flex;
-  align-items: center;
-`
-
-const WrapperExtraComponents = styled.div`
-  align-items: center;
-  display: flex;
-  justify-content: flex-end;
-  height: 100%;
-  gap: 1rem;
-
-  ${Media.upToSmall()} {
-    width: 100%;
-  }
-`
-
-const StyledExplorerTabs = styled(ExplorerTabs)`
-  margin-top: 2rem;
-
-  &.orderDetails-tab {
-    &--overview {
-      .tab-content {
-        padding: 0;
-      }
-    }
-  }
-`
-
-export type Props = {
+type Props = {
   order: Order | null
   trades: Trade[]
   isOrderLoading: boolean
@@ -71,24 +39,27 @@ export type Props = {
   errors: Errors
 }
 
-export enum TabView {
-  OVERVIEW = 1,
-  FILLS = 2,
-}
-
 const DEFAULT_TAB = TabView[1]
 
 function useQueryViewParams(): string {
   const query = useQuery()
-  return query.get(TAB_QUERY_PARAM_KEY)?.toUpperCase() || DEFAULT_TAB // if URL param empty will be used DEFAULT
+  const param = query.get(TAB_QUERY_PARAM_KEY)?.toUpperCase()
+
+  // Map unknown values to OVERVIEW
+  if (!param || !TabView[param as keyof typeof TabView]) {
+    return DEFAULT_TAB
+  }
+
+  return param
 }
 
 // TODO: Break down this large function into smaller functions
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, complexity
+// eslint-disable-next-line complexity
 const tabItems = (
   chainId: SupportedChainId,
   _order: Order | null,
+  crossChainOrderResponse: SWRResponse<CrossChainOrder | null | undefined>,
   trades: Trade[],
   areTradesLoading: boolean,
   isOrderLoading: boolean,
@@ -97,51 +68,53 @@ const tabItems = (
   invertPrice: Command,
 ): TabItemInterface[] => {
   const order = getOrderWithTxHash(_order, trades)
-  const areTokensLoaded = order?.buyToken && order?.sellToken
+  const areTokensLoaded = Boolean(order?.buyToken && order?.sellToken)
   const isLoadingForTheFirstTime = isOrderLoading && !areTokensLoaded
   const filledPercentage = order?.filledPercentage && formatPercentage(order.filledPercentage)
   const showFills = order?.partiallyFillable && !order.txHash && trades.length > 1
 
-  const detailsTab = {
-    id: TabView.OVERVIEW,
-    tab: <span>Overview</span>,
-    content: (
-      <>
-        {order && areTokensLoaded && (
-          <DetailsTable
-            chainId={chainId}
-            order={order}
-            showFillsButton={showFills}
-            viewFills={(): void => onChangeTab(TabView.FILLS)}
-            areTradesLoading={areTradesLoading}
-            isPriceInverted={isPriceInverted}
-            invertPrice={invertPrice}
-          />
-        )}
-        {!isOrderLoading && order && !areTokensLoaded && <p>Not able to load tokens</p>}
-        {isLoadingForTheFirstTime && <CowLoading />}
-      </>
-    ),
+  const { data: crossChainOrder, isLoading: crossChainOrderLoading } = crossChainOrderResponse
+
+  const noTokens = Boolean(!isOrderLoading && order && !areTokensLoaded)
+
+  const defaultDetails =
+    order && areTokensLoaded ? (
+      <FullDetailsTable chainId={chainId} order={order} showFillsButton={showFills} areTradesLoading={areTradesLoading}>
+        <VerboseDetails
+          order={order}
+          showFillsButton={showFills}
+          viewFills={() => onChangeTab(TabView.FILLS)}
+          isPriceInverted={isPriceInverted}
+          invertPrice={invertPrice}
+        />
+      </FullDetailsTable>
+    ) : null
+
+  const isBridging = !!order?.bridgeProviderId
+  const isOrderInFinalStatus = !!order && ORDER_FINAL_FAILED_STATUSES.includes(order?.status)
+
+  const overviewTabTitle =
+    isBridging && !isOrderInFinalStatus ? (
+      <TabContent>
+        1. Swap <StatusLabel status={order.status} />
+      </TabContent>
+    ) : (
+      <span>Overview</span>
+    )
+  const overviewTab = getOverviewTab(overviewTabTitle, defaultDetails, noTokens, isLoadingForTheFirstTime)
+
+  // Swap & Bridge
+  if (isBridging && !isOrderInFinalStatus) {
+    return [overviewTab, getBridgeTab(order, crossChainOrder, crossChainOrderLoading)]
   }
 
   if (!showFills) {
-    return [detailsTab]
+    return [overviewTab]
   }
 
-  const fillsTab = {
-    id: TabView.FILLS,
-    tab: filledPercentage ? <span>Fills ({filledPercentage})</span> : <span>Fills</span>,
-    content: (
-      <FillsTableWithData
-        order={order}
-        areTokensLoaded={!!areTokensLoaded}
-        isPriceInverted={isPriceInverted}
-        invertPrice={invertPrice}
-      />
-    ),
-  }
+  const fillsTab = getFillsTab(filledPercentage, { order, areTokensLoaded, isPriceInverted, invertPrice })
 
-  return [detailsTab, fillsTab]
+  return [overviewTab, fillsTab]
 }
 
 /**
@@ -177,6 +150,7 @@ export const OrderDetails: React.FC<Props> = (props) => {
 
   const [redirectTo, setRedirectTo] = useState(false)
   const updateQueryString = useUpdateQueryString()
+  const crossChainOrderResponse = useCrossChainOrder(order?.uid)
 
   tableState['hasNextPage'] = tableState.pageOffset + tableState.pageSize < trades.length
   tableState['totalResults'] = trades.length
@@ -195,7 +169,7 @@ export const OrderDetails: React.FC<Props> = (props) => {
       setRedirectTo(true)
     }, 500)
 
-    return (): void => clearTimeout(timer)
+    return () => clearTimeout(timer)
   })
 
   const onChangeTab = useCallback(
@@ -249,6 +223,7 @@ export const OrderDetails: React.FC<Props> = (props) => {
           tabItems={tabItems(
             chainId,
             order,
+            crossChainOrderResponse,
             trades,
             areTradesLoading,
             isOrderLoading,

@@ -14,9 +14,7 @@ export interface TokenInfoProps {
   tags?: ReactNode
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function TokenInfo(props: TokenInfoProps) {
+export function TokenInfo(props: TokenInfoProps): ReactNode {
   const { token, className, tags } = props
 
   return (

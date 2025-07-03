@@ -1,6 +1,7 @@
-import { Fragment } from 'react'
+import { Fragment, ReactNode } from 'react'
 
 import { CHAIN_INFO } from '@cowprotocol/common-const'
+import { styled } from '@cowprotocol/common-hooks'
 import { getEtherscanLink, getExplorerLabel, shortenAddress, getExplorerAddressLink } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
 import { ExternalLink } from '@cowprotocol/ui'
@@ -18,21 +19,17 @@ import {
 import { Trans } from '@lingui/macro'
 
 import Copy from 'legacy/components/Copy'
-import {
-  ActivityDescriptors,
-  groupActivitiesByDay,
-  useMultipleActivityDescriptors,
-} from 'legacy/hooks/useRecentActivity'
+import { groupActivitiesByDay, useMultipleActivityDescriptors } from 'legacy/hooks/useRecentActivity'
 import { useAppDispatch } from 'legacy/state/hooks'
 import { updateSelectedWallet } from 'legacy/state/user/reducer'
 
-import Activity from 'modules/account/containers/Transaction'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useUnsupportedNetworksText } from 'common/hooks/useUnsupportedNetworksText'
 
 import { AccountIcon } from './AccountIcon'
+import { ActivitiesList } from './ActivitiesList'
 import {
   AccountControl,
   AccountGroupingRow,
@@ -41,7 +38,6 @@ import {
   LowerSection,
   NetworkCard,
   NoActivityMessage,
-  TransactionListWrapper,
   UnsupportedWalletBox,
   WalletAction,
   WalletActions,
@@ -54,22 +50,16 @@ import {
 } from './styled'
 import { SurplusCard } from './SurplusCard'
 
+import { useCloseAccountModal } from '../../hooks/useToggleAccountModal'
+import { CowShedInfo } from '../CowShedInfo'
 import { CreationDateText } from '../Transaction/styled'
+
+const CowShedInfoStyled = styled(CowShedInfo)`
+  margin-top: 10px;
+`
 
 export const DATE_FORMAT_OPTION: Intl.DateTimeFormatOptions = {
   dateStyle: 'long',
-}
-
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function renderActivities(activities: ActivityDescriptors[]) {
-  return (
-    <TransactionListWrapper>
-      {activities.map((activity) => {
-        return <Activity key={activity.id} activity={activity} />
-      })}
-    </TransactionListWrapper>
-  )
 }
 
 export interface AccountDetailsProps {
@@ -84,7 +74,7 @@ export interface AccountDetailsProps {
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
+// eslint-disable-next-line max-lines-per-function, complexity
 export function AccountDetails({
   pendingTransactions = [],
   confirmedTransactions = [],
@@ -92,13 +82,14 @@ export function AccountDetails({
   toggleAccountSelectorModal,
   handleCloseOrdersPanel,
   forceHardwareWallet,
-}: AccountDetailsProps) {
+}: AccountDetailsProps): ReactNode {
   const { account, chainId } = useWalletInfo()
   const connectionType = useConnectionType()
   const walletDetails = useWalletDetails()
   const dispatch = useAppDispatch()
   const disconnectWallet = useDisconnectWallet()
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
+  const closeAccountModal = useCloseAccountModal()
   const { standaloneMode } = useInjectedWidgetParams()
 
   const explorerOrdersLink = account && getExplorerAddressLink(chainId, account)
@@ -113,26 +104,12 @@ export function AccountDetails({
 
   const unsupportedNetworksText = useUnsupportedNetworksText()
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  function formatConnectorName() {
-    const name = walletDetails?.walletName
-    // In case the wallet is connected via WalletConnect and has wallet name set, add the suffix to be clear
-    // This to avoid confusion for instance when using Metamask mobile
-    // When name is not set, it defaults to WalletConnect already
+  // In case the wallet is connected via WalletConnect and has wallet name set, add the suffix to be clear
+  // This to avoid confusion for instance when using Metamask mobile
+  // When name is not set, it defaults to WalletConnect already
+  const walletConnectSuffix = isWalletConnect && walletDetails?.walletName ? ' (via WalletConnect)' : ''
 
-    const walletConnectSuffix = isWalletConnect && walletDetails?.walletName ? ' (via WalletConnect)' : ''
-
-    return (
-      <WalletName>
-        <Trans>Connected with</Trans> {name} {walletConnectSuffix}
-      </WalletName>
-    )
-  }
-
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const handleDisconnectClick = () => {
+  const handleDisconnectClick = (): void => {
     disconnectWallet()
     handleCloseOrdersPanel()
     dispatch(updateSelectedWallet({ wallet: undefined }))
@@ -168,8 +145,12 @@ export function AccountDetails({
             <WalletActions>
               {' '}
               {!isChainIdUnsupported && <NetworkCard title={networkLabel}>{networkLabel}</NetworkCard>}{' '}
-              {formatConnectorName()}
+              <WalletName>
+                <Trans>Connected with</Trans> {walletDetails?.walletName} {walletConnectSuffix}
+              </WalletName>
             </WalletActions>
+
+            <CowShedInfoStyled onClick={closeAccountModal} />
           </AccountControl>
         </AccountGroupingRow>
         <AccountGroupingRow>
@@ -220,7 +201,7 @@ export function AccountDetails({
                   <Fragment key={date.getTime()}>
                     {/* TODO: style me! */}
                     <CreationDateText>{date.toLocaleString(undefined, DATE_FORMAT_OPTION)}</CreationDateText>
-                    {renderActivities(activities)}
+                    <ActivitiesList activities={activities} />
                   </Fragment>
                 ))}
                 {explorerOrdersLink && <ExternalLink href={explorerOrdersLink}>View all orders ↗</ExternalLink>}

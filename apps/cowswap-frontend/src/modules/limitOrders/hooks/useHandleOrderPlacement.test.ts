@@ -8,7 +8,7 @@ import { useSafeBundleFlowContext } from 'modules/limitOrders/hooks/useSafeBundl
 import { safeBundleFlow } from 'modules/limitOrders/services/safeBundleFlow'
 import { tradeFlow } from 'modules/limitOrders/services/tradeFlow'
 import { TradeFlowContext } from 'modules/limitOrders/services/types'
-import { useNavigateToOpenOrdersTable } from 'modules/ordersTable'
+import { useNavigateToOrdersTableTab } from 'modules/ordersTable'
 
 import { useNeedsApproval } from 'common/hooks/useNeedsApproval'
 import { TradeAmounts } from 'common/types'
@@ -45,8 +45,8 @@ jest.mock('@cowprotocol/wallet', () => {
 
 const mockTradeFlow = tradeFlow as jest.MockedFunction<typeof tradeFlow>
 const mockSafeBundleFlow = safeBundleFlow as jest.MockedFunction<typeof safeBundleFlow>
-const mockUseNavigateToOpenOrdersTable = useNavigateToOpenOrdersTable as jest.MockedFunction<
-  typeof useNavigateToOpenOrdersTable
+const mockUseNavigateToOpenOrdersTable = useNavigateToOrdersTableTab as jest.MockedFunction<
+  typeof useNavigateToOrdersTableTab
 >
 
 const mockUseSafeBundleFlowContext = useSafeBundleFlowContext as jest.MockedFunction<typeof useSafeBundleFlowContext>
