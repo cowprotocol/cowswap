@@ -1,8 +1,6 @@
 import { MAX_SLIPPAGE_BPS, MIN_SLIPPAGE_BPS } from '@cowprotocol/common-const'
 import { isTruthy } from '@cowprotocol/common-utils'
-import { FlexibleSlippageConfig } from '@cowprotocol/widget-lib'
-
-import { resolveFlexibleConfigValues } from './resolveFlexibleConfigValues'
+import { FlexibleSlippageConfig, resolveFlexibleConfigValues } from '@cowprotocol/widget-lib'
 
 function validateDefaultValue(defaultValue: number | undefined, min?: number, max?: number): string | undefined {
   if (typeof defaultValue !== 'number') return undefined
