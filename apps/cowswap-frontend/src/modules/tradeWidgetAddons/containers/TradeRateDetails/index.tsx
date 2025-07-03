@@ -15,7 +15,7 @@ import { useTradeQuote } from 'modules/tradeQuote'
 import { useIsSlippageModified, useTradeSlippage } from 'modules/tradeSlippage'
 import { useUsdAmount } from 'modules/usdAmount'
 
-import { QuoteApiError } from 'api/cowProtocol/errors/QuoteError'
+import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
 import { NetworkCostsSuffix } from 'common/pure/NetworkCostsSuffix'
 import { RateInfoParams } from 'common/pure/RateInfo'
 
@@ -65,6 +65,11 @@ export function TradeRateDetails({
   const toggleAccordion = useCallback(() => {
     setFeeDetailsOpen((prev) => !prev)
   }, [])
+
+  // Hide fee accordion for quote errors, except FeeExceedsFrom where fee info helps user understand the issue
+  if (tradeQuote.error && !(tradeQuote.error instanceof QuoteApiError && tradeQuote.error.type === QuoteApiErrorCodes.FeeExceedsFrom)) {
+    return null
+  }
 
   if (!receiveAmountInfo) {
     if (!networkFeeAmount) return null
