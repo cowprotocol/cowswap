@@ -49,7 +49,7 @@ export function ProgressDetails({
         sellAmount={sourceAmounts.sellAmount}
         buyAmount={sourceAmounts.buyAmount}
       >
-        <SwapResultContent context={swapResultContext} />
+        <SwapResultContent context={swapResultContext} sellAmount={sourceAmounts.sellAmount} />
       </BridgeDetailsContainer>
       <DividerHorizontal margin="8px 0 4px" />
       <BridgeDetailsContainer
