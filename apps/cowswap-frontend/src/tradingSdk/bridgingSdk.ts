@@ -6,11 +6,13 @@ import { orderBookApi } from 'cowSdk'
 
 import { tradingSdk } from './tradingSdk'
 
+const bungeeApiBase = getBungeeApiBase()
+
 export const bungeeBridgeProvider = new BungeeBridgeProvider({
   apiOptions: {
     includeBridges: ['across', 'cctp'],
-    apiBaseUrl: `${getBungeeApiBase()}/api/v1/bungee`,
-    manualApiBaseUrl: `${getBungeeApiBase()}/api/v1/bungee-manual`,
+    apiBaseUrl: bungeeApiBase ? `${bungeeApiBase}/api/v1/bungee` : undefined,
+    manualApiBaseUrl: bungeeApiBase ? `${bungeeApiBase}/api/v1/bungee-manual` : undefined,
   },
   getRpcProvider,
 })
