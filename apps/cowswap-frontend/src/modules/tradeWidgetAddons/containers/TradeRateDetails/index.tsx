@@ -2,6 +2,7 @@ import { useMemo, useState, useCallback, ReactNode } from 'react'
 
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
+import { useBridgeQuoteAmounts } from 'modules/bridge'
 import {
   getTotalCosts,
   TradeFeesAndCosts,
@@ -46,6 +47,7 @@ export function TradeRateDetails({
   const derivedTradeState = useDerivedTradeState()
   const tradeQuote = useTradeQuote()
   const shouldPayGas = useShouldPayGas()
+  const bridgeQuoteAmounts = useBridgeQuoteAmounts(receiveAmountInfo, tradeQuote.bridgeQuote)
 
   const inputCurrency = derivedTradeState?.inputCurrency
 
@@ -78,7 +80,7 @@ export function TradeRateDetails({
     )
   }
 
-  const totalCosts = getTotalCosts(receiveAmountInfo)
+  const totalCosts = getTotalCosts(receiveAmountInfo, bridgeQuoteAmounts?.bridgeFee)
 
   // Default expanded content if accordionContent prop is not supplied
   const defaultExpandedContent = (

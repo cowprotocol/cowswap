@@ -4,6 +4,7 @@ import { displayTime, isTruthy } from '@cowprotocol/common-utils'
 import { InfoTooltip } from '@cowprotocol/ui'
 
 import { ConfirmDetailsItem, ReceiveAmountTitle } from 'modules/trade'
+import { useUsdAmount } from 'modules/usdAmount'
 
 import { QuoteBridgeContext } from '../../../types'
 import { RecipientDisplay } from '../../RecipientDisplay'
@@ -18,6 +19,8 @@ export function QuoteBridgeContent({
   quoteContext: { recipient, bridgeFee, estimatedTime, buyAmount, buyAmountUsd },
   children,
 }: QuoteBridgeContentProps): ReactNode {
+  const bridgeFeeUsd = useUsdAmount(bridgeFee).value
+
   const buyAmountEl = <TokenAmountDisplay displaySymbol usdValue={buyAmountUsd} currencyAmount={buyAmount} />
 
   const contents = [
@@ -29,7 +32,11 @@ export function QuoteBridgeContent({
               Bridge fee <InfoTooltip content="The fee for the bridge transaction." size={14} />
             </>
           ),
-          content: bridgeFee.equalTo(0) ? 'FREE' : <TokenAmountDisplay currencyAmount={bridgeFee} />,
+          content: bridgeFee.equalTo(0) ? (
+            'FREE'
+          ) : (
+            <TokenAmountDisplay currencyAmount={bridgeFee} usdValue={bridgeFeeUsd} />
+          ),
         }
       : null,
     estimatedTime
