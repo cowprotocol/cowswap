@@ -28,20 +28,16 @@ interface TradeRateDetailsProps {
   rateInfoParams: RateInfoParams
   isTradePriceUpdating: boolean
   accordionContent?: ReactNode
-  feeWrapper?: (feeElement: ReactNode) => React.ReactNode
+  feeWrapper?: (feeElement: ReactNode) => ReactNode
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
 export function TradeRateDetails({
   rateInfoParams,
   deadline,
   isTradePriceUpdating,
   accordionContent,
   feeWrapper,
-}: TradeRateDetailsProps) {
+}: TradeRateDetailsProps): ReactNode {
   const [isFeeDetailsOpen, setFeeDetailsOpen] = useState(false)
 
   const slippage = useTradeSlippage()
