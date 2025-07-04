@@ -1,7 +1,9 @@
 import React from 'react'
-import styled from 'styled-components/macro'
-import { Color } from '@cowprotocol/ui'
+
+import { UI } from '@cowprotocol/ui'
+
 import Link from 'next/link'
+import styled from 'styled-components/macro'
 
 export const StyledBreadcrumbs = styled.div`
   display: flex;
@@ -9,10 +11,10 @@ export const StyledBreadcrumbs = styled.div`
   font-size: 1.4rem;
   margin: 0 0 1.6rem;
   font-weight: 400;
-  color: ${Color.neutral10};
+  color: var(${UI.COLOR_NEUTRAL_10});
 
   > a {
-    color: ${Color.neutral10};
+    color: var(${UI.COLOR_NEUTRAL_10});
     transition: color 0.2s ease-in-out;
     text-decoration: none;
     line-height: 1.2;
@@ -20,8 +22,8 @@ export const StyledBreadcrumbs = styled.div`
   }
 
   > a:hover {
-    color: ${Color.neutral10};
-    border-bottom: 0.1rem solid ${Color.neutral10};
+    color: var(${UI.COLOR_NEUTRAL_10});
+    border-bottom: 0.1rem solid var(${UI.COLOR_NEUTRAL_10});
   }
 
   .breadcrumbs-arrow {

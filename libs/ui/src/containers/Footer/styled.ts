@@ -1,12 +1,12 @@
 import styled from 'styled-components/macro'
 
-import { Color } from '../../colors'
 import { Media } from '../../consts'
+import { UI } from '../../enum'
 
 export const FooterContainer = styled.footer<{ expanded: boolean; hasTouchFooter: boolean }>`
-  --bgColor: ${({ theme }) => (theme.darkMode ? Color.neutral0 : Color.neutral10)};
-  --color: ${({ theme }) => (theme.darkMode ? Color.neutral50 : Color.neutral50)};
-  --colorTitle: ${({ theme }) => (theme.darkMode ? Color.neutral90 : Color.neutral98)};
+  --bgColor: ${({ theme }) => (theme.darkMode ? `var(${UI.COLOR_NEUTRAL_0})` : `var(${UI.COLOR_NEUTRAL_10})`)};
+  --color: ${({ theme }) => (theme.darkMode ? `var(${UI.COLOR_NEUTRAL_50})` : `var(${UI.COLOR_NEUTRAL_50})`)};
+  --colorTitle: ${({ theme }) => (theme.darkMode ? `var(${UI.COLOR_NEUTRAL_90})` : `var(${UI.COLOR_NEUTRAL_98})`)};
   background: var(--bgColor);
   color: var(--color);
   padding: ${({ expanded, hasTouchFooter }) =>

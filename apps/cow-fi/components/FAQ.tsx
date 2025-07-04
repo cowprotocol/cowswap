@@ -1,13 +1,15 @@
 import React, { useState } from 'react'
-import styled from 'styled-components/macro'
-import { Font, Color, Media } from '@cowprotocol/ui'
+
 import IMG_ICON_MINUS from '@cowprotocol/assets/images/icon-minus.svg'
 import IMG_ICON_PLUS from '@cowprotocol/assets/images/icon-plus.svg'
+import { Font, Media, UI } from '@cowprotocol/ui'
+
 import SVG from 'react-inlinesvg'
+import styled from 'styled-components/macro'
 
 const Wrapper = styled.div`
   --titleSize: 26px;
-  --color: ${Color.neutral10};
+  --color: var(${UI.COLOR_NEUTRAL_10});
   display: flex;
   flex-flow: column wrap;
   align-items: flex-start;
@@ -38,7 +40,7 @@ const Wrapper = styled.div`
     font-size: inherit;
     font-weight: inherit;
     position: relative;
-    background: ${Color.neutral95};
+    background: var(${UI.COLOR_NEUTRAL_95});
     border-radius: var(--borderRadius);
 
     ${Media.upToMedium()} {
@@ -82,7 +84,7 @@ const Wrapper = styled.div`
       justify-content: center;
 
       &:hover {
-        background: ${Color.neutral100};
+        background: var(${UI.COLOR_NEUTRAL_100});
       }
     }
 
@@ -98,7 +100,7 @@ const Wrapper = styled.div`
     --padding: 21px;
     font-size: inherit;
     line-height: 1.8;
-    color: ${Color.neutral40};
+    color: var(${UI.COLOR_NEUTRAL_40});
     font-weight: ${Font.weight.regular};
     margin: 0;
     padding: 0 33% var(--padding) var(--padding);

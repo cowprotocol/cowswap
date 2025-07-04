@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Color } from '@cowprotocol/ui'
+import { Color, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -19,7 +19,7 @@ const Wrapper = styled.div<{ checked: boolean }>`
   padding: 0 0.8rem;
   font-size: ${({ theme }): string => theme.fontSizeDefault};
   cursor: pointer;
-  color: ${({ checked }): string => (checked ? Color.explorer_textActive : Color.neutral100)};
+  color: ${({ checked }): string => (checked ? Color.explorer_textActive : `var(${UI.COLOR_NEUTRAL_100})`)};
   height: 3rem;
   border: 0.1rem solid ${Color.explorer_border};
   border-radius: 0.5rem;

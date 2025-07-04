@@ -1,6 +1,5 @@
 import { createGlobalStyle, css } from 'styled-components/macro'
 
-import { Color } from '../colors'
 import { Font } from '../consts'
 import { UI } from '../enum'
 import { CoWDAOFonts } from '../fonts'
@@ -207,7 +206,7 @@ export const GlobalCoWDAOStyles = () => {
           font-family: ${Font.family};
           margin: 0;
           padding: 0;
-          background: ${Color.neutral98};
+          background: ${UI.COLOR_NEUTRAL_98};
           color: ${UI.COLOR_TEXT};
           scroll-behavior: smooth;
           font-variant: none;

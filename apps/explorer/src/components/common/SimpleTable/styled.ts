@@ -31,7 +31,7 @@ export const Table = styled.table<{ $numColumns?: number; columnViewMobile?: boo
   font-weight: 400;
   line-height: 1;
   background: transparent;
-  color: ${Color.explorer_textPrimary};
+  color: ${Color.neutral100};
   position: relative;
   padding: 0 0 2rem;
 

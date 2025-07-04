@@ -32,7 +32,7 @@ The theming system currently has different implementations across our applicatio
    import { Color } from '@cowprotocol/ui'
 
    const StyledComponent = styled.div`
-     color: ${Color.neutral100};
+     color: var(${UI.COLOR_NEUTRAL_100});
      background: ${Color.cowfi_orange};
    `
    ```

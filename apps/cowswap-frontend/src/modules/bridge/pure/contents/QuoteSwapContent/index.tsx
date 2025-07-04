@@ -13,6 +13,83 @@ interface QuoteDetailsContentProps {
   context: QuoteSwapContext
 }
 
+interface ContentItem {
+  withTimelineDot?: boolean
+  label: ReactNode
+  content: ReactNode
+}
+
+function createExpectedReceiveContent(
+  buyAmount: QuoteSwapContext['buyAmount'],
+  expectedReceiveUsdValue: QuoteSwapContext['expectedReceiveUsdValue'],
+  slippagePercentDisplay: ReactNode,
+): ContentItem {
+  return {
+    withTimelineDot: true,
+    label: (
+      <>
+        Expected to receive{' '}
+        <InfoTooltip
+          content={
+            <>
+              The estimated amount you\'ll receive after estimated network costs and the max slippage setting (
+              {slippagePercentDisplay}).
+            </>
+          }
+          size={14}
+        />
+      </>
+    ),
+    content: <TokenAmountDisplay displaySymbol currencyAmount={buyAmount} usdValue={expectedReceiveUsdValue} />,
+  }
+}
+
+function createSlippageContent(slippagePercentDisplay: ReactNode): ContentItem {
+  return {
+    withTimelineDot: true,
+    label: (
+      <>
+        Max. swap slippage{' '}
+        <InfoTooltip
+          content="CoW Swap dynamically adjusts your slippage tolerance to ensure your trade executes quickly while still getting the best price. Trades are protected from MEV, so your slippage can't be exploited!"
+          size={14}
+        />
+      </>
+    ),
+    content: slippagePercentDisplay,
+  }
+}
+
+function createRecipientContent(recipient: QuoteSwapContext['recipient'], chainId: number): ContentItem {
+  return {
+    withTimelineDot: true,
+    label: (
+      <>
+        Recipient <InfoTooltip content="The address that will receive the tokens." size={14} />
+      </>
+    ),
+    content: <ProxyRecipient recipient={recipient} chainId={chainId} />,
+  }
+}
+
+function createMinReceiveContent(
+  minReceiveAmount: QuoteSwapContext['minReceiveAmount'],
+  minReceiveUsdValue: QuoteSwapContext['minReceiveUsdValue'],
+): ContentItem {
+  return {
+    label: (
+      <ReceiveAmountTitle>
+        <b>Min. to receive</b>
+      </ReceiveAmountTitle>
+    ),
+    content: (
+      <b>
+        <TokenAmountDisplay displaySymbol currencyAmount={minReceiveAmount} usdValue={minReceiveUsdValue} />
+      </b>
+    ),
+  }
+}
+
 export function QuoteSwapContent({
   context: {
     receiveAmountInfo,
@@ -28,58 +105,10 @@ export function QuoteSwapContent({
   const slippagePercentDisplay = <PercentDisplay percent={slippage.toFixed(2)} />
 
   const contents = [
-    {
-      withTimelineDot: true,
-      label: (
-        <>
-          Expected to receive{' '}
-          <InfoTooltip
-            content={
-              <>
-                The estimated amount you will receive after estimated network costs and the max slippage setting (
-                {slippagePercentDisplay}).
-              </>
-            }
-            size={14}
-          />
-        </>
-      ),
-      content: <TokenAmountDisplay displaySymbol currencyAmount={buyAmount} usdValue={expectedReceiveUsdValue} />,
-    },
-    {
-      withTimelineDot: true,
-      label: (
-        <>
-          Max. swap slippage{' '}
-          <InfoTooltip
-            content="CoW Swap dynamically adjusts your slippage tolerance to ensure your trade executes quickly while still getting the best price. Trades are protected from MEV, so your slippage can't be exploited!"
-            size={14}
-          />
-        </>
-      ),
-      content: slippagePercentDisplay,
-    },
-    {
-      label: (
-        <ReceiveAmountTitle>
-          <b>Min. to receive</b>
-        </ReceiveAmountTitle>
-      ),
-      content: (
-        <b>
-          <TokenAmountDisplay displaySymbol currencyAmount={minReceiveAmount} usdValue={minReceiveUsdValue} />
-        </b>
-      ),
-    },
-    {
-      withTimelineDot: true,
-      label: (
-        <>
-          Recipient <InfoTooltip content="The address that will receive the tokens." size={14} />
-        </>
-      ),
-      content: <ProxyRecipient recipient={recipient} chainId={sellAmount.currency.chainId} />,
-    },
+    createExpectedReceiveContent(buyAmount, expectedReceiveUsdValue, slippagePercentDisplay),
+    createSlippageContent(slippagePercentDisplay),
+    createRecipientContent(recipient, sellAmount.currency.chainId),
+    createMinReceiveContent(minReceiveAmount, minReceiveUsdValue),
   ]
 
   return (
