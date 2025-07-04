@@ -28,10 +28,10 @@ export function usePriorityTokenAddresses(): Set<string> {
   const outputCurrencyAddress = getAddress(outputCurrency)
 
   const newSetOfTokens = useMemo(() => {
-    if (!pending) return EMPTY_TOKEN_SET
+    if (!pending.length) return EMPTY_TOKEN_SET
 
     const setOfTokens = new Set(
-      Object.values(pending).reduce((acc, order) => {
+      pending.reduce((acc, order) => {
         if (order && getUiOrderType(order) === UiOrderType.SWAP) {
           acc.push(order.inputToken.address.toLowerCase())
           acc.push(order.outputToken.address.toLowerCase())
