@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.111.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.111.0...cowswap-v1.111.1) (2025-07-04)
+
+
+### Bug Fixes
+
+* fix input amount validation for buy order ([#5929](https://github.com/cowprotocol/cowswap/issues/5929)) ([34391c2](https://github.com/cowprotocol/cowswap/commit/34391c25cefd040039c79308999556fa76d0e3f2))
+
 ## [1.111.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.110.1...cowswap-v1.111.0) (2025-07-03)
 
 
