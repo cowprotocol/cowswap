@@ -1,30 +1,25 @@
 import { useEffect, useMemo, useRef } from 'react'
 
-import { areSetsEqual, getAddress, isTruthy } from '@cowprotocol/common-utils'
+import { areSetsEqual, getAddress } from '@cowprotocol/common-utils'
 import { UiOrderType } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { useSelector } from 'react-redux'
-
-import { AppState } from 'legacy/state'
-import { PartialOrdersMap } from 'legacy/state/orders/reducer'
+import { useOnlyPendingOrders } from 'legacy/state/orders/hooks'
 
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
 
-const EMPTY_TOKEN_SET = new Set<string>();
+const EMPTY_TOKEN_SET = new Set<string>()
 
 export function usePriorityTokenAddresses(): Set<string> {
-  const { chainId } = useWalletInfo()
+  const { chainId, account } = useWalletInfo()
   const state = useDerivedTradeState()
 
   const setOfTokensRef = useRef(new Set<string>())
   const pendingRef = useRef(0)
 
-  const pending = useSelector<AppState, PartialOrdersMap | undefined>((state) => {
-    return state.orders?.[chainId]?.pending
-  })
+  const pending = useOnlyPendingOrders(chainId, account)
 
   const inputCurrency = state?.inputCurrency
   const outputCurrency = state?.outputCurrency
@@ -33,15 +28,17 @@ export function usePriorityTokenAddresses(): Set<string> {
   const outputCurrencyAddress = getAddress(outputCurrency)
 
   const newSetOfTokens = useMemo(() => {
-    if (!pending) return EMPTY_TOKEN_SET;
+    if (!pending) return EMPTY_TOKEN_SET
 
-    const setOfTokens = new Set(Object.values(pending)
-      .filter(isTruthy)
-      .filter(({ order }) => getUiOrderType(order) === UiOrderType.SWAP)
-      .map(({ order }) => {
-        return [order.inputToken.address, order.outputToken.address]
-      })
-      .flat());
+    const setOfTokens = new Set(
+      Object.values(pending).reduce((acc, order) => {
+        if (order && getUiOrderType(order) === UiOrderType.SWAP) {
+          acc.push(order.inputToken.address.toLowerCase())
+          acc.push(order.outputToken.address.toLowerCase())
+        }
+        return acc
+      }, [] as string[]),
+    )
 
     if (inputCurrencyAddress) {
       setOfTokens.add(inputCurrencyAddress)

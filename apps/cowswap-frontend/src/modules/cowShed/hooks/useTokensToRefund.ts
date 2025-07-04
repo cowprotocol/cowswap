@@ -11,7 +11,7 @@ export interface TokenToRefund {
   balance: bigint
 }
 
-export function useTokensToRefund(isProxyDeployed: boolean): TokenToRefund[] | undefined {
+export function useTokensToRefund(): TokenToRefund[] | undefined {
   const params = useParams()
   const tokensByAddress = useTokensByAddressMap()
   const balances = useTokensBalances()
@@ -19,8 +19,6 @@ export function useTokensToRefund(isProxyDeployed: boolean): TokenToRefund[] | u
   const tokenAddressFromUrl = params.token
 
   return useMemo(() => {
-    if (!isProxyDeployed) return undefined
-
     const tokenFromUrl = !!tokenAddressFromUrl && tokensByAddress[tokenAddressFromUrl.toLowerCase()]
 
     /**
@@ -54,5 +52,5 @@ export function useTokensToRefund(isProxyDeployed: boolean): TokenToRefund[] | u
 
         return b.balance > a.balance ? 1 : -1
       })
-  }, [isProxyDeployed, tokenAddressFromUrl, balances.values, tokensByAddress])
+  }, [tokenAddressFromUrl, balances.values, tokensByAddress])
 }
