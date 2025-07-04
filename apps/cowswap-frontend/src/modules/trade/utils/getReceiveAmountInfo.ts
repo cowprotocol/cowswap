@@ -21,10 +21,15 @@ export function getOrderTypeReceiveAmounts(info: ReceiveAmountInfo): OrderTypeRe
   }
 }
 
-export function getTotalCosts(info: ReceiveAmountInfo): CurrencyAmount<Currency> {
+export function getTotalCosts(
+  info: ReceiveAmountInfo,
+  additionalCosts?: CurrencyAmount<Currency>,
+): CurrencyAmount<Currency> {
   const { networkFeeAmount } = getOrderTypeReceiveAmounts(info)
 
-  return networkFeeAmount.add(info.costs.partnerFee.amount)
+  const fee = networkFeeAmount.add(info.costs.partnerFee.amount)
+
+  return additionalCosts ? fee.add(additionalCosts) : fee
 }
 
 type AmountsAndCosts = Omit<QuoteAmountsAndCosts<CurrencyAmount<Currency>>, 'quotePrice'>
