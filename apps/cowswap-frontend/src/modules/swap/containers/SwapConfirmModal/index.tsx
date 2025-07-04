@@ -15,7 +15,7 @@ import {
   useBridgeQuoteAmounts,
 } from 'modules/bridge'
 import { useTokensBalancesCombined } from 'modules/combinedBalances/hooks/useTokensBalancesCombined'
-import { useOrderSubmittedContent } from 'modules/orderProgressBar'
+import { OrderSubmittedContent } from 'modules/orderProgressBar'
 import {
   TradeBasicConfirmDetails,
   TradeConfirmation,
@@ -69,13 +69,17 @@ export function SwapConfirmModal(props: SwapConfirmModalProps) {
   const bridgeContext = useQuoteBridgeContext()
 
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
-  const submittedContent = useOrderSubmittedContent(chainId, bridgeQuoteAmounts || undefined)
+  const submittedContent = (
+    <OrderSubmittedContent
+      bridgeQuoteAmounts={bridgeQuoteAmounts || undefined}
+      onDismiss={tradeConfirmActions.onDismiss}
+    />
+  )
   const labelsAndTooltips = useLabelsAndTooltips()
 
   const { values: balances } = useTokensBalancesCombined()
 
   // TODO: Reduce function complexity by extracting logic
-
   const disableConfirm = useMemo(() => {
     const current = inputCurrencyInfo?.amount?.currency
 
