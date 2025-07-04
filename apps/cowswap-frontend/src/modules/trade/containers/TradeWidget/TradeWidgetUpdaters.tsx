@@ -6,6 +6,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { TradeFormValidationUpdater } from 'modules/tradeFormValidation'
 import { TradeQuoteUpdater } from 'modules/tradeQuote'
 
+import { useIsQuoteUpdatePossible } from '../../hooks/useIsQuoteUpdatePossible'
 import { usePriorityTokenAddresses } from '../../hooks/usePriorityTokenAddresses'
 import { useResetRecipient } from '../../hooks/useResetRecipient'
 import { useTradeConfirmState } from '../../hooks/useTradeConfirmState'
@@ -31,6 +32,8 @@ export function TradeWidgetUpdaters({
   const { chainId, account } = useWalletInfo()
   const { isOpen: isConfirmOpen } = useTradeConfirmState()
 
+  const isQuoteUpdatePossible = useIsQuoteUpdatePossible()
+
   const priorityTokenAddresses = usePriorityTokenAddresses()
   const priorityTokenAddressesAsArray = useMemo(() => {
     return Array.from(priorityTokenAddresses.values())
@@ -43,9 +46,10 @@ export function TradeWidgetUpdaters({
       <PriorityTokensUpdater account={account} chainId={chainId} tokenAddresses={priorityTokenAddressesAsArray} />
       <RecipientAddressUpdater />
 
-      {!disableQuotePolling && (
-        <TradeQuoteUpdater isConfirmOpen={isConfirmOpen}/>
-      )}
+      <TradeQuoteUpdater
+        isConfirmOpen={isConfirmOpen}
+        isQuoteUpdatePossible={isQuoteUpdatePossible && !disableQuotePolling}
+      />
       <PriceImpactUpdater />
       <TradeFormValidationUpdater />
       <CommonTradeUpdater />
