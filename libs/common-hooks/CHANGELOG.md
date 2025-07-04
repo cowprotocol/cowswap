@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.1](https://github.com/cowprotocol/cowswap/compare/common-hooks-v1.9.0...common-hooks-v1.9.1) (2025-07-03)
+
+
+### Bug Fixes
+
+* **bridge:** enable bridging only in Swap ([#5837](https://github.com/cowprotocol/cowswap/issues/5837)) ([6d77019](https://github.com/cowprotocol/cowswap/commit/6d77019043d43a0a3dbde8b4baddfd9b7b5a8a39))
+
 ## [1.9.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v1.8.2...common-hooks-v1.9.0) (2025-06-18)
 
 

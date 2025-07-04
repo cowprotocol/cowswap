@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.25.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.24.0...ui-v1.25.0) (2025-07-03)
+
+
+### Features
+
+* **bridge:** add collapsible banner for proxy account information  ([#5895](https://github.com/cowprotocol/cowswap/issues/5895)) ([0825186](https://github.com/cowprotocol/cowswap/commit/0825186e2870abf4c3251dd819a07802c69456dc))
+* **bridge:** display account proxy ([#5881](https://github.com/cowprotocol/cowswap/issues/5881)) ([0692597](https://github.com/cowprotocol/cowswap/commit/0692597adf45b469b5a547057b64e79296714ee2))
+* **explorer:** display bridging data in order page ([#5787](https://github.com/cowprotocol/cowswap/issues/5787)) ([cd398f0](https://github.com/cowprotocol/cowswap/commit/cd398f0987064311d80c1628550a83df5ad31386))
+* **trade:** display quote refetch indicator ([#5859](https://github.com/cowprotocol/cowswap/issues/5859)) ([c4f163f](https://github.com/cowprotocol/cowswap/commit/c4f163f8f7d56fc79057ed6d64e6fee4c8758824))
+
 ## [1.24.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.23.2...ui-v1.24.0) (2025-06-18)
 
 

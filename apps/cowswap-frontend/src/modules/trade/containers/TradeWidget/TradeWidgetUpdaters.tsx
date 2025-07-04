@@ -3,6 +3,7 @@ import { JSX, ReactNode } from 'react'
 import { TradeFormValidationUpdater } from 'modules/tradeFormValidation'
 import { TradeQuoteUpdater } from 'modules/tradeQuote'
 
+import { useIsQuoteUpdatePossible } from '../../hooks/useIsQuoteUpdatePossible'
 import { useResetRecipient } from '../../hooks/useResetRecipient'
 import { useTradeConfirmState } from '../../hooks/useTradeConfirmState'
 import { CommonTradeUpdater } from '../../updaters/CommonTradeUpdater'
@@ -26,13 +27,18 @@ export function TradeWidgetUpdaters({
 }: TradeWidgetUpdatersProps): JSX.Element {
   const { isOpen: isConfirmOpen } = useTradeConfirmState()
 
+  const isQuoteUpdatePossible = useIsQuoteUpdatePossible()
+
   useResetRecipient(onChangeRecipient)
 
   return (
     <>
       <RecipientAddressUpdater />
 
-      {!disableQuotePolling && <TradeQuoteUpdater isConfirmOpen={isConfirmOpen} />}
+      <TradeQuoteUpdater
+        isConfirmOpen={isConfirmOpen}
+        isQuoteUpdatePossible={isQuoteUpdatePossible && !disableQuotePolling}
+      />
       <PriceImpactUpdater />
       <TradeFormValidationUpdater />
       <CommonTradeUpdater />

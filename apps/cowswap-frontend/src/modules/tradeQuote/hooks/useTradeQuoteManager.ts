@@ -12,7 +12,6 @@ import { TradeQuoteState, updateTradeQuoteAtom } from '../state/tradeQuoteAtom'
 import { SellTokenAddress } from '../state/tradeQuoteInputAtom'
 import { TradeQuoteFetchParams } from '../types'
 
-
 export interface TradeQuoteManager {
   setLoading(hasParamsChanged: boolean): void
   reset(): void
@@ -25,9 +24,7 @@ export interface TradeQuoteManager {
   onResponse(data: QuoteAndPost, bridgeQuote: BridgeQuoteResults | null, fetchParams: TradeQuoteFetchParams): void
 }
 
-export function useTradeQuoteManager(
-  sellTokenAddress: SellTokenAddress | undefined,
-): TradeQuoteManager | null {
+export function useTradeQuoteManager(sellTokenAddress: SellTokenAddress | undefined): TradeQuoteManager | null {
   const update = useSetAtom(updateTradeQuoteAtom)
   const processUnsupportedTokenError = useProcessUnsupportedTokenError()
 
