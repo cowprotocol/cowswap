@@ -7,30 +7,33 @@ import { Percent } from '@uniswap/sdk-core'
 import { useSmartSlippageFromQuote } from 'modules/tradeQuote'
 
 import {
-  defaultSlippageAtom,
   SlippageType,
   currentUserSlippageAtom,
   shouldUseAutoSlippageAtom,
+  slippageConfigAtom,
 } from '../state/slippageValueAndTypeAtom'
-
 
 export function useTradeSlippageValueAndType(): { type: SlippageType; value: number } {
   const currentUserSlippage = useAtomValue(currentUserSlippageAtom)
-  const defaultSlippage = useAtomValue(defaultSlippageAtom)
-  const smartSlippage = useSmartSlippageFromQuote()
-  const isSmartSlippageEnabledByWidget = useAtomValue(shouldUseAutoSlippageAtom)
+  const { defaultValue, max } = useAtomValue(slippageConfigAtom)
+  const smartSlippageFromQuote = useSmartSlippageFromQuote()
+
+  const shouldUseAutoSlippage = useAtomValue(shouldUseAutoSlippageAtom)
 
   return useMemo(() => {
     if (typeof currentUserSlippage === 'number') {
       return { type: 'user', value: currentUserSlippage }
     }
 
-    if (isSmartSlippageEnabledByWidget && smartSlippage && smartSlippage !== defaultSlippage) {
-      return { type: 'smart', value: smartSlippage }
+    // default slippage is always equal to min slippage value by default
+    // in case if an integrator wants to set up the default value higher than smart slippage value
+    // we should use the default value from the config
+    if (shouldUseAutoSlippage && smartSlippageFromQuote && smartSlippageFromQuote > defaultValue) {
+      return { type: 'smart', value: Math.min(smartSlippageFromQuote, max) }
     }
 
-    return { type: 'default', value: defaultSlippage }
-  }, [currentUserSlippage, defaultSlippage, smartSlippage, isSmartSlippageEnabledByWidget])
+    return { type: 'default', value: defaultValue }
+  }, [currentUserSlippage, defaultValue, smartSlippageFromQuote, shouldUseAutoSlippage, max])
 }
 
 export function useTradeSlippage(): Percent {
@@ -40,5 +43,5 @@ export function useTradeSlippage(): Percent {
 }
 
 export function useDefaultTradeSlippage(): Percent {
-  return bpsToPercent(useAtomValue(defaultSlippageAtom))
+  return bpsToPercent(useAtomValue(slippageConfigAtom).defaultValue)
 }

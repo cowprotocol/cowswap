@@ -1,5 +1,5 @@
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { CowSwapWidgetPaletteColors, PartnerFee, TradeType } from '@cowprotocol/widget-lib'
+import { CowSwapWidgetPaletteColors, PartnerFee, SlippageConfig, TradeType } from '@cowprotocol/widget-lib'
 
 import { PaletteMode } from '@mui/material'
 
@@ -35,4 +35,5 @@ export interface ConfiguratorState {
   disableProgressBar: boolean
   hideBridgeInfo: boolean | undefined
   hideOrdersTable: boolean | undefined
+  slippage?: SlippageConfig
 }
