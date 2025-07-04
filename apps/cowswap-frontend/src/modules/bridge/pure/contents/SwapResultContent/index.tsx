@@ -1,7 +1,8 @@
-import { ReactNode, useMemo } from 'react'
+import { ReactNode } from 'react'
 
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { RateInfoParams } from 'common/pure/RateInfo'
 
 import { ExecPriceContent, ReceivedContent, SolverContent, SurplusConfig } from './contents'
@@ -17,7 +18,7 @@ export function SwapResultContent({
   sellAmount,
   context: { winningSolver, receivedAmount, receivedAmountUsd, surplusAmount, surplusAmountUsd },
 }: SwapResultContentProps): ReactNode {
-  const rateInfoParams: RateInfoParams = useMemo(() => {
+  const rateInfoParams: RateInfoParams = useSafeMemo(() => {
     return {
       chainId: sellAmount.currency.chainId,
       inputCurrencyAmount: sellAmount,
