@@ -1,4 +1,4 @@
-import { getIsNativeToken, isAddress, isFractionFalsy } from '@cowprotocol/common-utils'
+import { getIsNativeToken, isAddress, isFractionFalsy, isSellOrder } from '@cowprotocol/common-utils'
 import { PriceQuality } from '@cowprotocol/cow-sdk'
 
 import { TradeType } from 'modules/trade'
@@ -27,7 +27,15 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     isOnline,
   } = context
 
-  const { inputCurrency, outputCurrency, inputCurrencyAmount, inputCurrencyBalance, recipient } = derivedTradeState
+  const {
+    inputCurrency,
+    outputCurrency,
+    inputCurrencyAmount,
+    outputCurrencyAmount,
+    inputCurrencyBalance,
+    recipient,
+    orderKind,
+  } = derivedTradeState
   const isBalanceGreaterThan1Atom = inputCurrencyBalance
     ? BigInt(inputCurrencyBalance.quotient.toString()) > BigInt(0)
     : false
@@ -37,7 +45,10 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
   const approvalRequired =
     !isPermitSupported && (approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING)
 
-  const inputAmountIsNotSet = !inputCurrencyAmount || isFractionFalsy(inputCurrencyAmount)
+  const inputAmountIsNotSet = isSellOrder(orderKind)
+    ? !inputCurrencyAmount || isFractionFalsy(inputCurrencyAmount)
+    : !outputCurrencyAmount || isFractionFalsy(outputCurrencyAmount)
+
   const isFastQuote = tradeQuote.fetchParams?.priceQuality === PriceQuality.FAST
 
   const validations: TradeFormValidation[] = []
