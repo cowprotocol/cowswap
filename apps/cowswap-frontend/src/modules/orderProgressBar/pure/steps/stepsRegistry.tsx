@@ -1,4 +1,4 @@
-import { ComponentType, ReactNode } from 'react'
+import { ReactNode } from 'react'
 
 import { BridgingStep } from './BridgingStep'
 import { CancelledStep } from './CancelledStep'
@@ -99,21 +99,28 @@ function BridgingStepWrapper(props: OrderProgressBarProps): ReactNode {
   return <BridgingStep context={props.swapAndBridgeContext} surplusData={props.surplusData}></BridgingStep>
 }
 
-export const STEP_NAME_TO_STEP_COMPONENT: Record<OrderProgressBarStepName, ComponentType<OrderProgressBarProps>> = {
-  [OrderProgressBarStepName.INITIAL]: InitialStepWrapper,
-  [OrderProgressBarStepName.SOLVING]: SolvingStepWrapper,
-  [OrderProgressBarStepName.EXECUTING]: ExecutingStepWrapper,
-  [OrderProgressBarStepName.FINISHED]: FinishedStepWrapper,
-  [OrderProgressBarStepName.SOLVED]: SolvingStepWrapper, // Use SolvingStep for 'solved' state
-  [OrderProgressBarStepName.DELAYED]: SolvingStepWrapper,
-  [OrderProgressBarStepName.UNFILLABLE]: SolvingStepWrapper,
-  [OrderProgressBarStepName.SUBMISSION_FAILED]: SolvingStepWrapper,
-  [OrderProgressBarStepName.CANCELLING]: CancellingStepWrapper,
-  [OrderProgressBarStepName.CANCELLED]: CancelledStepWrapper,
-  [OrderProgressBarStepName.EXPIRED]: ExpiredStepWrapper,
-  [OrderProgressBarStepName.CANCELLATION_FAILED]: FinishedStepWrapper,
-  [OrderProgressBarStepName.BRIDGING_IN_PROGRESS]: BridgingStepWrapper,
-  [OrderProgressBarStepName.BRIDGING_FAILED]: BridgingStepWrapper,
-  [OrderProgressBarStepName.BRIDGING_FINISHED]: BridgingStepWrapper,
-  [OrderProgressBarStepName.REFUND_COMPLETED]: BridgingStepWrapper,
+interface OrderProgressStepFactoryProps {
+  step: OrderProgressBarStepName
+  props: OrderProgressBarProps
+}
+
+// eslint-disable-next-line complexity
+export function OrderProgressStepFactory({ step, props }: OrderProgressStepFactoryProps): ReactNode {
+  if (step === OrderProgressBarStepName.INITIAL) return <InitialStepWrapper {...props} />
+  if (step === OrderProgressBarStepName.SOLVING) return <SolvingStepWrapper {...props} />
+  if (step === OrderProgressBarStepName.EXECUTING) return <ExecutingStepWrapper {...props} />
+  if (step === OrderProgressBarStepName.FINISHED) return <FinishedStepWrapper {...props} />
+  if (step === OrderProgressBarStepName.SOLVED) return <SolvingStepWrapper {...props} /> // Use SolvingStep for 'solved' state
+  if (step === OrderProgressBarStepName.DELAYED) return <SolvingStepWrapper {...props} />
+  if (step === OrderProgressBarStepName.UNFILLABLE) return <SolvingStepWrapper {...props} />
+  if (step === OrderProgressBarStepName.SUBMISSION_FAILED) return <SolvingStepWrapper {...props} />
+  if (step === OrderProgressBarStepName.CANCELLING) return <CancellingStepWrapper {...props} />
+  if (step === OrderProgressBarStepName.CANCELLED) return <CancelledStepWrapper {...props} />
+  if (step === OrderProgressBarStepName.EXPIRED) return <ExpiredStepWrapper {...props} />
+  if (step === OrderProgressBarStepName.CANCELLATION_FAILED) return <FinishedStepWrapper {...props} />
+  if (step === OrderProgressBarStepName.BRIDGING_IN_PROGRESS) return <BridgingStepWrapper {...props} />
+  if (step === OrderProgressBarStepName.BRIDGING_FAILED) return <BridgingStepWrapper {...props} />
+  if (step === OrderProgressBarStepName.BRIDGING_FINISHED) return <BridgingStepWrapper {...props} />
+  if (step === OrderProgressBarStepName.REFUND_COMPLETED) return <BridgingStepWrapper {...props} />
+  return null
 }

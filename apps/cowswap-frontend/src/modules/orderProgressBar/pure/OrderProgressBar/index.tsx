@@ -7,7 +7,7 @@ import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 import { FINAL_STATES } from '../../constants'
 import { OrderProgressBarProps, OrderProgressBarStepName } from '../../types'
 import { DebugPanel } from '../DebugPanel'
-import { STEP_NAME_TO_STEP_COMPONENT } from '../steps/stepsRegistry'
+import { OrderProgressStepFactory } from '../steps/stepsRegistry'
 
 const IS_DEBUG_MODE = false
 
@@ -68,20 +68,10 @@ export function OrderProgressBar(props: OrderProgressBarProps): ReactNode {
     }
   }, [currentStep, getDuration, analytics])
 
-  // Ensure StepComponent will be a valid React component or null
-  const StepComponent = STEP_NAME_TO_STEP_COMPONENT[currentStep] || null
-
-  // Always return a value from the function
-  return StepComponent ? (
+  return (
     <>
-      <StepComponent {...props} stepName={currentStep} />
-      {debugMode && (
-        <DebugPanel
-          stepNameToStepComponent={STEP_NAME_TO_STEP_COMPONENT}
-          stepName={currentStep}
-          setDebugStep={setDebugStep}
-        />
-      )}
+      <OrderProgressStepFactory step={stepName} props={props} />
+      {debugMode && <DebugPanel stepName={currentStep} setDebugStep={setDebugStep} />}
     </>
-  ) : null // Fallback return value if StepComponent is not found
+  )
 }

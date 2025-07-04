@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { ReactNode, useMemo } from 'react'
 
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
@@ -15,7 +15,7 @@ import {
   useBridgeQuoteAmounts,
 } from 'modules/bridge'
 import { useTokensBalancesCombined } from 'modules/combinedBalances/hooks/useTokensBalancesCombined'
-import { useOrderSubmittedContent } from 'modules/orderProgressBar'
+import { OrderSubmittedContent } from 'modules/orderProgressBar'
 import {
   TradeBasicConfirmDetails,
   TradeConfirmation,
@@ -48,11 +48,11 @@ export interface SwapConfirmModalProps {
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
-export function SwapConfirmModal(props: SwapConfirmModalProps) {
+// eslint-disable-next-line max-lines-per-function
+export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
   const { inputCurrencyInfo, outputCurrencyInfo, priceImpact, recipient, doTrade } = props
 
-  const { account, chainId } = useWalletInfo()
+  const { account } = useWalletInfo()
   const { ensName } = useWalletDetails()
   const appData = useAppData()
   const receiveAmountInfo = useReceiveAmountInfo()
@@ -69,13 +69,17 @@ export function SwapConfirmModal(props: SwapConfirmModalProps) {
   const bridgeContext = useQuoteBridgeContext()
 
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
-  const submittedContent = useOrderSubmittedContent(chainId, bridgeQuoteAmounts || undefined)
+  const submittedContent = (
+    <OrderSubmittedContent
+      bridgeQuoteAmounts={bridgeQuoteAmounts || undefined}
+      onDismiss={tradeConfirmActions.onDismiss}
+    />
+  )
   const labelsAndTooltips = useLabelsAndTooltips()
 
   const { values: balances } = useTokensBalancesCombined()
 
   // TODO: Reduce function complexity by extracting logic
-
   const disableConfirm = useMemo(() => {
     const current = inputCurrencyInfo?.amount?.currency
 

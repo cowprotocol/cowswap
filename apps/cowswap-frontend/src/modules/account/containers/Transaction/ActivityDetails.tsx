@@ -379,7 +379,7 @@ export function ActivityDetails(props: {
                   <SummaryInnerRow>
                     <b>{isOrderFulfilled ? 'Exec. price' : 'Limit price'}</b>
                     <i>
-                      <RateInfo noLabel={true} rateInfoParams={rateInfoParams} />
+                      <RateInfo noLabel rateInfoParams={rateInfoParams} />
                     </i>
                   </SummaryInnerRow>
                   <SummaryInnerRow isCancelled={isCancelled} isExpired={isExpired}>

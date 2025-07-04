@@ -1,6 +1,8 @@
+import { ReactNode } from 'react'
+
 import styled from 'styled-components/macro'
 
-import { OrderProgressBarProps, OrderProgressBarStepName } from '../../types'
+import { OrderProgressBarStepName } from '../../types'
 
 const Wrapper = styled.div`
   position: fixed;
@@ -14,14 +16,11 @@ const Wrapper = styled.div`
 `
 
 interface DebugPanelProps {
-  stepNameToStepComponent: Record<OrderProgressBarStepName, React.ComponentType<OrderProgressBarProps>>
   stepName: OrderProgressBarStepName
   setDebugStep: (stepName: OrderProgressBarStepName) => void
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function DebugPanel({ stepNameToStepComponent, stepName, setDebugStep }: DebugPanelProps) {
+export function DebugPanel({ stepName, setDebugStep }: DebugPanelProps): ReactNode {
   return (
     <Wrapper>
       <label htmlFor="debug-step-select">Debug Step:</label>
@@ -31,7 +30,7 @@ export function DebugPanel({ stepNameToStepComponent, stepName, setDebugStep }: 
         aria-label="Select debug step"
         onChange={(e) => setDebugStep(e.target.value as OrderProgressBarStepName)}
       >
-        {Object.keys(stepNameToStepComponent).map((step) => (
+        {Object.values(OrderProgressBarStepName).map((step) => (
           <option key={step} value={step}>
             {step}
           </option>
