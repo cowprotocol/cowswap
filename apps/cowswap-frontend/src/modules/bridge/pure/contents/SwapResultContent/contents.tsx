@@ -7,7 +7,7 @@ import styled from 'styled-components/macro'
 
 import { AMM_LOGOS } from 'legacy/components/AMMsLogo'
 
-import { ReceiveAmountTitle } from 'modules/trade'
+import { ConfirmDetailsItem, ReceiveAmountTitle } from 'modules/trade'
 
 import { RateInfo, RateInfoParams } from 'common/pure/RateInfo'
 import type { SolverCompetition } from 'common/types/soverCompetition'
@@ -15,53 +15,47 @@ import type { SolverCompetition } from 'common/types/soverCompetition'
 import { StyledTimelinePlusIcon, SuccessTextBold, TimelineIconCircleWrapper } from '../../../styles'
 import { TokenAmountDisplay } from '../../TokenAmountDisplay'
 
-interface ContentConfig {
-  withTimelineDot?: boolean
-  label: ReactNode
-  content: ReactNode
-}
-
 const WinningSolverContainer = styled.div`
   display: flex;
   align-items: center;
   gap: 4px;
 `
 
-export function getReceivedContent(
-  receivedAmount: CurrencyAmount<Currency>,
-  receivedAmountUsd: CurrencyAmount<Token> | null,
-): ContentConfig {
-  return {
-    label: (
-      <ReceiveAmountTitle>
-        <b>Received</b>
-      </ReceiveAmountTitle>
-    ),
-    content: (
+export function ReceivedContent({
+  receivedAmount,
+  receivedAmountUsd,
+}: {
+  receivedAmount: CurrencyAmount<Currency>
+  receivedAmountUsd: CurrencyAmount<Token> | null
+}): ReactNode {
+  return (
+    <ConfirmDetailsItem
+      label={
+        <ReceiveAmountTitle>
+          <b>Received</b>
+        </ReceiveAmountTitle>
+      }
+    >
       <b>
         <TokenAmountDisplay currencyAmount={receivedAmount} displaySymbol usdValue={receivedAmountUsd} />
       </b>
-    ),
-  }
+    </ConfirmDetailsItem>
+  )
 }
 
-export function getExecPriceContent(rateInfoParams: RateInfoParams): ContentConfig {
-  return {
-    withTimelineDot: true,
-    label: <span>Exec. price</span>,
-    content: (
+export function ExecPriceContent({ rateInfoParams }: { rateInfoParams: RateInfoParams }): ReactNode {
+  return (
+    <ConfirmDetailsItem withTimelineDot label={<span>Exec. price</span>}>
       <span>
         <RateInfo noLabel rateInfoParams={rateInfoParams} />
       </span>
-    ),
-  }
+    </ConfirmDetailsItem>
+  )
 }
 
-export function getSolverContent(winningSolver: SolverCompetition): ContentConfig {
-  return {
-    withTimelineDot: true,
-    label: 'Winning solver',
-    content: (
+export function SolverContent({ winningSolver }: { winningSolver: SolverCompetition }): ReactNode {
+  return (
+    <ConfirmDetailsItem withTimelineDot label="Winning solver">
       <WinningSolverContainer>
         <b>{winningSolver.displayName || winningSolver.solver}</b>
         <img
@@ -71,27 +65,31 @@ export function getSolverContent(winningSolver: SolverCompetition): ContentConfi
           height="16"
         />
       </WinningSolverContainer>
-    ),
-  }
+    </ConfirmDetailsItem>
+  )
 }
 
-export function getSurplusConfig(
-  surplusAmount: CurrencyAmount<Currency>,
-  surplusAmountUsd: CurrencyAmount<Token> | null,
-): ContentConfig {
-  return {
-    label: (
-      <ReceiveAmountTitle
-        icon={
-          <TimelineIconCircleWrapper>
-            <StyledTimelinePlusIcon src={PlusIcon} />
-          </TimelineIconCircleWrapper>
-        }
-      >
-        <SuccessTextBold>Surplus received</SuccessTextBold>
-      </ReceiveAmountTitle>
-    ),
-    content: (
+export function SurplusConfig({
+  surplusAmount,
+  surplusAmountUsd,
+}: {
+  surplusAmount: CurrencyAmount<Currency>
+  surplusAmountUsd: CurrencyAmount<Token> | null
+}): ReactNode {
+  return (
+    <ConfirmDetailsItem
+      label={
+        <ReceiveAmountTitle
+          icon={
+            <TimelineIconCircleWrapper>
+              <StyledTimelinePlusIcon src={PlusIcon} />
+            </TimelineIconCircleWrapper>
+          }
+        >
+          <SuccessTextBold>Surplus received</SuccessTextBold>
+        </ReceiveAmountTitle>
+      }
+    >
       <SuccessTextBold>
         <TokenAmountDisplay
           currencyAmount={surplusAmount}
@@ -102,6 +100,6 @@ export function getSurplusConfig(
           +
         </TokenAmountDisplay>
       </SuccessTextBold>
-    ),
-  }
+    </ConfirmDetailsItem>
+  )
 }

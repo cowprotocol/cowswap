@@ -1,13 +1,10 @@
 import { ReactNode, useMemo } from 'react'
 
-import { isTruthy } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
-
-import { ConfirmDetailsItem } from 'modules/trade'
 
 import { RateInfoParams } from 'common/pure/RateInfo'
 
-import { getExecPriceContent, getReceivedContent, getSolverContent, getSurplusConfig } from './contents'
+import { ExecPriceContent, ReceivedContent, SolverContent, SurplusConfig } from './contents'
 
 import { SwapResultContext } from '../../../types'
 
@@ -30,20 +27,14 @@ export function SwapResultContent({
     }
   }, [sellAmount, receivedAmount])
 
-  const contents = [
-    winningSolver ? getSolverContent(winningSolver) : null,
-    getReceivedContent(receivedAmount, receivedAmountUsd),
-    getExecPriceContent(rateInfoParams),
-    surplusAmount.greaterThan(0) ? getSurplusConfig(surplusAmount, surplusAmountUsd) : null,
-  ]
-
   return (
     <>
-      {contents.filter(isTruthy).map(({ withTimelineDot, label, content }, index) => (
-        <ConfirmDetailsItem key={index} withTimelineDot={withTimelineDot} label={label}>
-          {content}
-        </ConfirmDetailsItem>
-      ))}
+      {winningSolver && <SolverContent winningSolver={winningSolver} />}
+      <ReceivedContent receivedAmount={receivedAmount} receivedAmountUsd={receivedAmountUsd} />
+      <ExecPriceContent rateInfoParams={rateInfoParams} />
+      {surplusAmount.greaterThan(0) && (
+        <SurplusConfig surplusAmount={surplusAmount} surplusAmountUsd={surplusAmountUsd} />
+      )}
     </>
   )
 }
