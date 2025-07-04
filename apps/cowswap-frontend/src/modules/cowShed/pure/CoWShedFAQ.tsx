@@ -14,14 +14,16 @@ const FAQ_DATA = [
     question: 'What is Account Proxy?',
     answer: (
       <>
-        <ExternalLink href="https://github.com/cowdao-grants/cow-shed">Account Proxy (also known as CoW Shed)</ExternalLink> is a
-        helper contract that improves the user experience within CoW Swap for features like{' '}
+        <ExternalLink href="https://github.com/cowdao-grants/cow-shed">
+          Account Proxy (also known as CoW Shed)
+        </ExternalLink>{' '}
+        is a helper contract that improves the user experience within CoW Swap for features like{' '}
         <ExternalLink href="https://docs.cow.fi/cow-protocol/reference/core/intents/hooks">CoW Hooks</ExternalLink>
         .
         <br />
         <br />
-        This contract is deployed only once per account, with that account becoming the single owner. CoW Shed acts as an
-        intermediary account that handles trading on your behalf.
+        This contract is deployed only once per account, with that account becoming the single owner. CoW Shed acts as
+        an intermediary account that handles trading on your behalf.
       </>
     ),
   },
@@ -30,8 +32,8 @@ const FAQ_DATA = [
     answer(recoverRouteLink: string) {
       return (
         <>
-          Since this contract temporarily holds funds, there's a possibility that funds could get stuck in certain edge cases. This
-          tool helps you recover your funds.
+          Since this contract temporarily holds funds, there's a possibility that funds could get stuck in certain edge
+          cases. This tool helps you recover your funds.
           <ol>
             <li>
               <Link to={recoverRouteLink}>Select the token</Link> you want to recover from CoW Shed
@@ -46,10 +48,9 @@ const FAQ_DATA = [
 
 interface CoWShedFAQProps {
   recoverRouteLink: string
-  isProxyDeployed: boolean | undefined
 }
 
-export function CoWShedFAQ({ recoverRouteLink, isProxyDeployed }: CoWShedFAQProps): ReactNode {
+export function CoWShedFAQ({ recoverRouteLink }: CoWShedFAQProps): ReactNode {
   const [openItems, setOpenItems] = useState<Record<number, boolean>>({ 0: true })
 
   const handleToggle = (index: number) => (e: React.MouseEvent) => {
@@ -57,11 +58,9 @@ export function CoWShedFAQ({ recoverRouteLink, isProxyDeployed }: CoWShedFAQProp
     setOpenItems((prev) => ({ ...prev, [index]: !prev[index] }))
   }
 
-  const data = isProxyDeployed ? FAQ_DATA : [FAQ_DATA[0]]
-
   return (
     <FAQWrapper>
-      {data.map((faq, index) => (
+      {FAQ_DATA.map((faq, index) => (
         <FAQItem key={index} open={openItems[index]}>
           <summary onClick={handleToggle(index)}>
             {faq.question}

@@ -1,13 +1,9 @@
-import { JSX, ReactNode, useMemo } from 'react'
-
-import { PriorityTokensUpdater } from '@cowprotocol/balances-and-allowances'
-import { useWalletInfo } from '@cowprotocol/wallet'
+import { JSX, ReactNode } from 'react'
 
 import { TradeFormValidationUpdater } from 'modules/tradeFormValidation'
 import { TradeQuoteUpdater } from 'modules/tradeQuote'
 
 import { useIsQuoteUpdatePossible } from '../../hooks/useIsQuoteUpdatePossible'
-import { usePriorityTokenAddresses } from '../../hooks/usePriorityTokenAddresses'
 import { useResetRecipient } from '../../hooks/useResetRecipient'
 import { useTradeConfirmState } from '../../hooks/useTradeConfirmState'
 import { CommonTradeUpdater } from '../../updaters/CommonTradeUpdater'
@@ -29,21 +25,14 @@ export function TradeWidgetUpdaters({
   onChangeRecipient,
   children,
 }: TradeWidgetUpdatersProps): JSX.Element {
-  const { chainId, account } = useWalletInfo()
   const { isOpen: isConfirmOpen } = useTradeConfirmState()
 
   const isQuoteUpdatePossible = useIsQuoteUpdatePossible()
-
-  const priorityTokenAddresses = usePriorityTokenAddresses()
-  const priorityTokenAddressesAsArray = useMemo(() => {
-    return Array.from(priorityTokenAddresses.values())
-  }, [priorityTokenAddresses])
 
   useResetRecipient(onChangeRecipient)
 
   return (
     <>
-      <PriorityTokensUpdater account={account} chainId={chainId} tokenAddresses={priorityTokenAddressesAsArray} />
       <RecipientAddressUpdater />
 
       <TradeQuoteUpdater

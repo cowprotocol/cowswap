@@ -30,12 +30,12 @@ interface CoWShedWidgetProps {
 export function CoWShedWidget({ onDismiss, modalMode }: CoWShedWidgetProps): ReactNode {
   const { chainId } = useWalletInfo()
   const updateSelectTokenWidget = useUpdateSelectTokenWidgetState()
-  const { proxyAddress, isProxyDeployed } = useCurrentAccountProxyAddress() || {}
+  const { proxyAddress } = useCurrentAccountProxyAddress() || {}
   const params = useParams()
   const setBalancesContext = useSetBalancesContext()
   const widgetRef = useRef(null)
 
-  const tokensToRefund = useTokensToRefund(!!isProxyDeployed)
+  const tokensToRefund = useTokensToRefund()
   const defaultTokenToRefund = tokensToRefund?.[0]
 
   const onDismissCallback = useCallback(() => {
@@ -44,8 +44,6 @@ export function CoWShedWidget({ onDismiss, modalMode }: CoWShedWidgetProps): Rea
   }, [updateSelectTokenWidget, onDismiss])
 
   useEffect(() => {
-    if (!isProxyDeployed) return
-
     if (proxyAddress) {
       setBalancesContext({ account: proxyAddress })
     }
@@ -53,7 +51,7 @@ export function CoWShedWidget({ onDismiss, modalMode }: CoWShedWidgetProps): Rea
     return () => {
       setBalancesContext({ account: null })
     }
-  }, [proxyAddress, isProxyDeployed, setBalancesContext])
+  }, [proxyAddress, setBalancesContext])
 
   useOnClickOutside([widgetRef], modalMode ? onDismissCallback : undefined)
 
@@ -68,16 +66,13 @@ export function CoWShedWidget({ onDismiss, modalMode }: CoWShedWidgetProps): Rea
 
         {proxyAddress && <AddressLinkStyled address={proxyAddress} chainId={chainId} noShorten />}
       </Content>
-      {isProxyDeployed && !!tokensToRefund?.length && (
+      {!!tokensToRefund?.length && (
         <>
           <br />
           <TokensInProxyBanner tokensToRefund={tokensToRefund} />
         </>
       )}
-      <CoWShedFAQ
-        isProxyDeployed={isProxyDeployed}
-        recoverRouteLink={getShedRouteLink(chainId, CoWShedWidgetTabs.RECOVER_FUNDS)}
-      />
+      <CoWShedFAQ recoverRouteLink={getShedRouteLink(chainId, CoWShedWidgetTabs.RECOVER_FUNDS)} />
     </>
   )
 
@@ -91,19 +86,13 @@ export function CoWShedWidget({ onDismiss, modalMode }: CoWShedWidgetProps): Rea
           contentPadding="10px"
           justifyContent="flex-start"
         >
-          {isProxyDeployed ? (
-            <CoWShedTabs
-              chainId={chainId}
-              modalMode={modalMode}
-              tab={modalMode ? undefined : (params.tab as CoWShedWidgetTabs)}
-              aboutContent={AboutContent}
-              recoverFundsContent={
-                <RecoverFundsWidget defaultToken={isProxyDeployed ? defaultTokenToRefund?.token : undefined} />
-              }
-            />
-          ) : (
-            AboutContent
-          )}
+          <CoWShedTabs
+            chainId={chainId}
+            modalMode={modalMode}
+            tab={modalMode ? undefined : (params.tab as CoWShedWidgetTabs)}
+            aboutContent={AboutContent}
+            recoverFundsContent={<RecoverFundsWidget defaultToken={defaultTokenToRefund?.token} />}
+          />
         </NewModal>
       </WidgetWrapper>
     </Wrapper>

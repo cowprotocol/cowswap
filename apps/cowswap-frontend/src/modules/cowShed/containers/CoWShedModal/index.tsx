@@ -1,13 +1,13 @@
-import { useAtom } from 'jotai/index'
 import { ReactNode } from 'react'
 
+import { useCowShedModal, useSetShedModal } from 'entities/cowShed/useCowShedModal'
 import ReactDOM from 'react-dom'
 
-import { cowShedModalAtom } from '../../state/cowShedModalAtom'
 import { CoWShedWidget } from '../CoWShedWidget'
 
 export function CoWShedModal(): ReactNode {
-  const [cowShedModal, setCowShedModal] = useAtom(cowShedModalAtom)
+  const cowShedModal = useCowShedModal()
+  const setCowShedModal = useSetShedModal()
 
   const toggleModal = (): void => {
     setCowShedModal((state) => ({
