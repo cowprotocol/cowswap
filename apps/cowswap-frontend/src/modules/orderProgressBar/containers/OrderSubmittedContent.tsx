@@ -1,20 +1,26 @@
-import { useCallback, useEffect, useState } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useOrder } from 'legacy/state/orders/hooks'
 
 import { BridgeQuoteAmounts } from 'modules/bridge'
 import { useNavigateToNewOrderCallback, useTradeConfirmState } from 'modules/trade'
 
-import { useOrderProgressBarProps } from './useOrderProgressBarProps'
-
+import { useOrderProgressBarProps } from '../hooks/useOrderProgressBarProps'
 import { TransactionSubmittedContent } from '../pure/TransactionSubmittedContent'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useOrderSubmittedContent(chainId: SupportedChainId, _bridgeQuoteAmounts?: BridgeQuoteAmounts) {
+interface OrderSubmittedContentProps {
+  onDismiss: Command
+  bridgeQuoteAmounts?: BridgeQuoteAmounts
+}
+
+export function OrderSubmittedContent({
+  onDismiss,
+  bridgeQuoteAmounts: _bridgeQuoteAmounts,
+}: OrderSubmittedContentProps): ReactNode {
+  const { chainId } = useWalletInfo()
   const { transactionHash, pendingTrade } = useTradeConfirmState()
   const hasPendingTrade = !!pendingTrade
   const order = useOrder({ chainId, id: transactionHash || undefined })
@@ -39,17 +45,14 @@ export function useOrderSubmittedContent(chainId: SupportedChainId, _bridgeQuote
 
   const navigateToNewOrderCallback = useNavigateToNewOrderCallback()
 
-  return useCallback(
-    (onDismiss: Command) => (
-      <TransactionSubmittedContent
-        chainId={chainId}
-        hash={transactionHash || undefined}
-        onDismiss={onDismiss}
-        activityDerivedState={activityDerivedState}
-        orderProgressBarProps={orderProgressBarProps}
-        navigateToNewOrderCallback={navigateToNewOrderCallback}
-      />
-    ),
-    [chainId, transactionHash, orderProgressBarProps, activityDerivedState, navigateToNewOrderCallback],
+  return (
+    <TransactionSubmittedContent
+      chainId={chainId}
+      hash={transactionHash || undefined}
+      onDismiss={onDismiss}
+      activityDerivedState={activityDerivedState}
+      orderProgressBarProps={orderProgressBarProps}
+      navigateToNewOrderCallback={navigateToNewOrderCallback}
+    />
   )
 }

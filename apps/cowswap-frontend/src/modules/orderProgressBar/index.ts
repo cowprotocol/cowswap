@@ -6,6 +6,6 @@ export { ProgressBarExecutingOrdersUpdater } from './updaters/ProgressBarExecuti
 export { SurplusModalSetup } from './containers/SurplusModalSetup'
 
 // Hooks
-export { useOrderSubmittedContent } from './hooks/useOrderSubmittedContent'
+export { OrderSubmittedContent } from './containers/OrderSubmittedContent'
 
 export * from './types'
