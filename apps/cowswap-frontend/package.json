@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/cowswap",
-  "version": "1.110.1",
+  "version": "1.111.2",
   "description": "CoW Swap",
   "main": "index.js",
   "author": "",

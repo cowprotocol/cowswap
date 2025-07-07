@@ -1,5 +1,39 @@
 # Changelog
 
+## [1.111.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.111.1...cowswap-v1.111.2) (2025-07-04)
+
+
+### Bug Fixes
+
+* **rpc:** add Polygon and Avalanche env vars to Vercel ([#5931](https://github.com/cowprotocol/cowswap/issues/5931)) ([0ad0c66](https://github.com/cowprotocol/cowswap/commit/0ad0c660b64bf689d56324b24aec7a168c7038cf))
+
+## [1.111.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.111.0...cowswap-v1.111.1) (2025-07-04)
+
+
+### Bug Fixes
+
+* fix input amount validation for buy order ([#5929](https://github.com/cowprotocol/cowswap/issues/5929)) ([34391c2](https://github.com/cowprotocol/cowswap/commit/34391c25cefd040039c79308999556fa76d0e3f2))
+
+## [1.111.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.110.1...cowswap-v1.111.0) (2025-07-03)
+
+
+### Features
+
+* **bridge:** add collapsible banner for proxy account information  ([#5895](https://github.com/cowprotocol/cowswap/issues/5895)) ([0825186](https://github.com/cowprotocol/cowswap/commit/0825186e2870abf4c3251dd819a07802c69456dc))
+* **hooks:** add Morpho Lending hook to registry ([#5646](https://github.com/cowprotocol/cowswap/issues/5646)) ([198db52](https://github.com/cowprotocol/cowswap/commit/198db528011ebaf4c2787be1d3413e2e105d2125))
+* use `eip155` chain names adding chain parameter to walllet ([#5916](https://github.com/cowprotocol/cowswap/issues/5916)) ([318c1bc](https://github.com/cowprotocol/cowswap/commit/318c1bcbb7528fdd3abf233068cebfff371dbea9))
+
+
+### Bug Fixes
+
+* **eth-flow:** fix refund tx detection ([#5904](https://github.com/cowprotocol/cowswap/issues/5904)) ([76285e2](https://github.com/cowprotocol/cowswap/commit/76285e2e4e126f040791a31d8d34efe9a8b8dfa1))
+* **limit-orders:** udpate quote when back from confirm ([#5922](https://github.com/cowprotocol/cowswap/issues/5922)) ([f3d721e](https://github.com/cowprotocol/cowswap/commit/f3d721eda45506f77ae3564f447994e87d9cd445))
+* **progress-bar:** ignore active solvers flag from CMS ([#5905](https://github.com/cowprotocol/cowswap/issues/5905)) ([0af9abb](https://github.com/cowprotocol/cowswap/commit/0af9abb54abba01f0a19e3389c812d0210bde3ca))
+* **trade-quote:** do not update quote when trade is not ready ([#5914](https://github.com/cowprotocol/cowswap/issues/5914)) ([e948ae8](https://github.com/cowprotocol/cowswap/commit/e948ae8d708767eaec600a3cf341abd7ebf7928e))
+* **trade:** fix quote refetching triggers ([#5903](https://github.com/cowprotocol/cowswap/issues/5903)) ([bfd968c](https://github.com/cowprotocol/cowswap/commit/bfd968cc8d5cd6d7311ce5a31cda5db0a123fc8b))
+* **trade:** updating priority balances ([#5884](https://github.com/cowprotocol/cowswap/issues/5884)) ([272cebc](https://github.com/cowprotocol/cowswap/commit/272cebcdf68a07dcc0066402dbd9d729a98d10e7))
+* update buy COW link ([#5899](https://github.com/cowprotocol/cowswap/issues/5899)) ([52f917e](https://github.com/cowprotocol/cowswap/commit/52f917e17e7cc2431b42e66489fd2964ddfa57e4))
+
 ## [1.110.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.110.0...cowswap-v1.110.1) (2025-06-27)
 
 
