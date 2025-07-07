@@ -31,21 +31,11 @@ export const TradeDetailsAccordion = ({
   open,
   onToggle,
   feeWrapper,
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-}: TradeDetailsAccordionProps) => {
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const handleToggle = () => {
-    onToggle?.()
-  }
-
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const handleKeyDown = (e: { key: string; preventDefault: () => void }) => {
+}: TradeDetailsAccordionProps): ReactNode => {
+  const handleKeyDown = (e: { key: string; preventDefault: () => void }): void => {
     if (['Enter', ' ', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
       e.preventDefault()
-      handleToggle()
+      onToggle?.()
     }
   }
 
@@ -67,13 +57,7 @@ export const TradeDetailsAccordion = ({
     <Wrapper isOpen={open}>
       <Summary>
         {rateInfo}
-        <SummaryClickable
-          onClick={handleToggle}
-          onKeyDown={handleKeyDown}
-          aria-expanded={open}
-          tabIndex={0}
-          isOpen={open}
-        >
+        <SummaryClickable onClick={onToggle} onKeyDown={handleKeyDown} aria-expanded={open} tabIndex={0} isOpen={open}>
           {feeWrapper ? feeWrapper(defaultFeeContent) : defaultFeeContent}
 
           <ToggleArrow isOpen={open} />
