@@ -23,6 +23,7 @@ import { getOrderValidTo, useTradeQuote } from 'modules/tradeQuote'
 
 import { useGP2SettlementContract } from 'common/hooks/useContract'
 
+import { useBridgeQuoteAmounts } from '../../bridge'
 import { TradeTypeToUiOrderType } from '../../trade/const/common'
 import { TradeFlowContext } from '../types/TradeFlowContext'
 
@@ -45,9 +46,15 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
   const uiOrderType = tradeType ? TradeTypeToUiOrderType[tradeType] : null
   const isHooksTradeType = useIsHooksTradeType()
 
+  const tradeQuote = useTradeQuote()
+  const bridgeContext = useBridgeQuoteAmounts(receiveAmountInfo, tradeQuote.bridgeQuote)
+
   const sellCurrency = derivedTradeState?.inputCurrency
   const inputAmount = receiveAmountInfo?.afterSlippage.sellAmount
-  const outputAmount = receiveAmountInfo?.afterSlippage.buyAmount
+  const outputAmount = bridgeContext
+    ? bridgeContext.bridgeMinReceiveAmount
+    : receiveAmountInfo?.afterSlippage.buyAmount
+
   const sellAmountBeforeFee = receiveAmountInfo?.afterNetworkCosts.sellAmount
   const networkFee = receiveAmountInfo?.costs.networkFee.amountInSellCurrency
 
@@ -60,7 +67,6 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
   const { contract: settlementContract, chainId: settlementChainId } = useGP2SettlementContract()
   const appData = useAppData()
   const typedHooks = useAppDataHooks()
-  const tradeQuote = useTradeQuote()
 
   const checkAllowanceAddress = COW_PROTOCOL_VAULT_RELAYER_ADDRESS[settlementChainId || SupportedChainId.MAINNET]
   const { enoughAllowance } = useEnoughBalanceAndAllowance({
@@ -125,7 +131,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
           ]
         : null,
       // TODO: Break down this large function into smaller functions
-      // eslint-disable-next-line max-lines-per-function
+
       ([
         account,
         allowsOffchainSigning,

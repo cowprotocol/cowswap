@@ -166,11 +166,15 @@ export function mapUnsignedOrderToOrder({ unsignedOrder, additionalParams }: Map
     orderCreationHash,
     quoteId,
     appData: { fullAppData },
+    outputAmount,
   } = additionalParams
   const status = _getOrderStatus(allowsOffchainSigning, isOnChain)
 
   return {
     ...unsignedOrder,
+    // for bridge orders, we need to use the output amount from additionalParams
+    // because the original order has only intermediate token amount
+    buyAmount: outputAmount.quotient.toString(RADIX_DECIMAL),
 
     // Basic order params
     id: orderId,
