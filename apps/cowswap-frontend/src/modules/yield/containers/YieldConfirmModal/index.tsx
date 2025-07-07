@@ -5,7 +5,7 @@ import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import type { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { useAppData } from 'modules/appData'
-import { useOrderSubmittedContent } from 'modules/orderProgressBar'
+import { OrderSubmittedContent } from 'modules/orderProgressBar'
 import {
   TradeBasicConfirmDetails,
   TradeConfirmation,
@@ -50,7 +50,7 @@ export function YieldConfirmModal(props: YieldConfirmModalProps) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const doTrade = useMemo(() => _doTrade, [])
 
-  const { account, chainId } = useWalletInfo()
+  const { account } = useWalletInfo()
   const { ensName } = useWalletDetails()
   const appData = useAppData()
   const receiveAmountInfo = useReceiveAmountInfo()
@@ -58,7 +58,7 @@ export function YieldConfirmModal(props: YieldConfirmModalProps) {
   const { slippage } = useYieldDerivedState()
 
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
-  const submittedContent = useOrderSubmittedContent(chainId)
+  const submittedContent = <OrderSubmittedContent onDismiss={tradeConfirmActions.onDismiss} />
 
   return (
     <TradeConfirmModal title={CONFIRM_TITLE} submittedContent={submittedContent}>
