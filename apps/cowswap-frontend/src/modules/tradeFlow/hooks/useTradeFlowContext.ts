@@ -10,6 +10,7 @@ import { AppDispatch } from 'legacy/state'
 import { useCloseModals } from 'legacy/state/application/hooks'
 
 import { useAppData, useAppDataHooks } from 'modules/appData'
+import { useBridgeQuoteAmounts } from 'modules/bridge'
 import { useGeneratePermitHook, useGetCachedPermit, usePermitInfo } from 'modules/permit'
 import { useEnoughBalanceAndAllowance } from 'modules/tokens'
 import {
@@ -19,12 +20,11 @@ import {
   useTradeConfirmActions,
   useTradeTypeInfo,
 } from 'modules/trade'
+import { TradeTypeToUiOrderType } from 'modules/trade/const/common'
 import { getOrderValidTo, useTradeQuote } from 'modules/tradeQuote'
 
 import { useGP2SettlementContract } from 'common/hooks/useContract'
 
-import { useBridgeQuoteAmounts } from '../../bridge'
-import { TradeTypeToUiOrderType } from '../../trade/const/common'
 import { TradeFlowContext } from '../types/TradeFlowContext'
 
 export interface TradeFlowParams {
