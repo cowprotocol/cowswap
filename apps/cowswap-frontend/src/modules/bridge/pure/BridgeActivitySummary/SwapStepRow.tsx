@@ -40,7 +40,7 @@ export function SwapStepRow({ context }: SwapStepRowProps): ReactNode {
           sellAmount={sourceAmounts.sellAmount}
           buyAmount={sourceAmounts.buyAmount}
         >
-          <SwapResultContent context={swapResultContext} />
+          <SwapResultContent context={swapResultContext} sellAmount={sourceAmounts.sellAmount} />
         </BridgeDetailsContainer>
       </StepContent>
     </SwapSummaryRow>

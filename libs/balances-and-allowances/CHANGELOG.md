@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.5.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.4.0...balances-and-allowances-v1.5.0) (2025-07-03)
+
+
+### Features
+
+* **bridge:** display account proxy ([#5881](https://github.com/cowprotocol/cowswap/issues/5881)) ([0692597](https://github.com/cowprotocol/cowswap/commit/0692597adf45b469b5a547057b64e79296714ee2))
+
+
+### Bug Fixes
+
+* **trade:** updating priority balances ([#5884](https://github.com/cowprotocol/cowswap/issues/5884)) ([272cebc](https://github.com/cowprotocol/cowswap/commit/272cebcdf68a07dcc0066402dbd9d729a98d10e7))
+
 ## [1.4.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.3.4...balances-and-allowances-v1.4.0) (2025-06-18)
 
 

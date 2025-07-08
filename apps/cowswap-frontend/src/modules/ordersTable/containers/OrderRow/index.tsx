@@ -4,7 +4,6 @@ import { ZERO_FRACTION } from '@cowprotocol/common-const'
 import { useTimeAgo } from '@cowprotocol/common-hooks'
 import { formatDateWithTimezone, getAddress, getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { TokenLogo } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
 import { PercentDisplay, percentIsAlmostHundred, TokenAmount } from '@cowprotocol/ui'
 import { useIsSafeWallet } from '@cowprotocol/wallet'
@@ -13,7 +12,7 @@ import { Currency, Price } from '@uniswap/sdk-core'
 import { OrderStatus } from 'legacy/state/orders/actions'
 import { getEstimatedExecutionPrice } from 'legacy/state/orders/utils'
 
-import { PendingOrderPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
+import { PendingOrderPrices } from 'modules/orders'
 import { BalancesAndAllowances } from 'modules/tokens'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
@@ -23,6 +22,7 @@ import { isOrderCancellable } from 'common/utils/isOrderCancellable'
 import { getSellAmountWithFee } from 'utils/orderUtils/getSellAmountWithFee'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
+import { CurrencyLogoPairWithBridging } from './CurrencyLogoPairWithBridging'
 import { OrderContextMenu } from './OrderContextMenu'
 import { WarningTooltip } from './OrderWarning'
 import * as styledEl from './styled'
@@ -39,9 +39,9 @@ import {
   TableRowCheckbox,
   TableRowCheckboxWrapper,
 } from '../../pure/OrdersTableContainer/styled'
-import { OrderActions } from '../../pure/OrdersTableContainer/types'
 import { OrderStatusBox } from '../../pure/OrderStatusBox'
 import { WarningEstimatedPrice } from '../../pure/WarningEstimatedPrice'
+import { OrderActions } from '../../types'
 import { OrderParams } from '../../utils/getOrderParams'
 
 // Constants
@@ -216,10 +216,12 @@ export function OrderRow({
 
       {/* Order sell/buy tokens */}
       <styledEl.CurrencyCell>
-        <styledEl.CurrencyLogoPair clickable onClick={onClick}>
-          <TokenLogo token={order.inputToken} size={28} />
-          <TokenLogo token={buyAmount.currency} size={28} />
-        </styledEl.CurrencyLogoPair>
+        <CurrencyLogoPairWithBridging
+          sellToken={order.inputToken}
+          buyToken={buyAmount.currency}
+          clickable
+          onClick={onClick}
+        />
         <styledEl.CurrencyAmountWrapper clickable onClick={onClick}>
           <CurrencyAmountItem amount={getSellAmountWithFee(order)} />
           <CurrencyAmountItem amount={buyAmount} />

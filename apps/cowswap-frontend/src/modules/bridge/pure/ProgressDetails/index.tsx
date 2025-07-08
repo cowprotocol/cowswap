@@ -14,68 +14,80 @@ interface QuoteDetailsProps {
   context: SwapAndBridgeContext
 }
 
-export function ProgressDetails({
-  className,
-  context: {
-    overview,
-    swapResultContext,
-    bridgeProvider,
-    bridgingProgressContext,
-    quoteBridgeContext,
-    bridgingStatus,
-    statusResult,
-  },
-}: QuoteDetailsProps): ReactNode {
-  const { sourceAmounts, targetAmounts, sourceChainName, targetChainName } = overview
+interface SwapStepProps {
+  context: SwapAndBridgeContext
+}
 
-  // Swap is complete by the time this context exists (context requires execution data)
-  // If context exists, swap must be DONE - otherwise component wouldn't render
+interface BridgeStepProps {
+  context: SwapAndBridgeContext
+  bridgeStatus: SwapAndBridgeStatus
+}
+
+function SwapStep({ context }: SwapStepProps): ReactNode {
+  const { bridgeProvider, overview, swapResultContext } = context
+  const { sourceAmounts, sourceChainName } = overview
   const swapStatus = SwapAndBridgeStatus.DONE
+
+  return (
+    <BridgeDetailsContainer
+      isCollapsible
+      defaultExpanded
+      status={swapStatus}
+      statusIcon={SwapStatusIcons[swapStatus]}
+      protocolIconShowOnly="first"
+      protocolIconSize={21}
+      titlePrefix={SwapStatusTitlePrefixes[swapStatus]}
+      protocolName="CoW Protocol"
+      bridgeProvider={bridgeProvider}
+      chainName={sourceChainName}
+      sellAmount={sourceAmounts.sellAmount}
+      buyAmount={sourceAmounts.buyAmount}
+    >
+      <SwapResultContent context={swapResultContext} sellAmount={sourceAmounts.sellAmount} />
+    </BridgeDetailsContainer>
+  )
+}
+
+function BridgeStep({ context, bridgeStatus }: BridgeStepProps): ReactNode {
+  const { bridgeProvider, overview, quoteBridgeContext, bridgingProgressContext, statusResult } = context
+  const { targetAmounts, targetChainName } = overview
+
+  return (
+    <BridgeDetailsContainer
+      isCollapsible
+      defaultExpanded
+      status={bridgeStatus}
+      statusIcon={BridgeStatusIcons[bridgeStatus]}
+      protocolIconShowOnly="second"
+      titlePrefix={BridgeStatusTitlePrefixes[bridgeStatus]}
+      protocolName={bridgeProvider.name}
+      bridgeProvider={bridgeProvider}
+      chainName={targetChainName}
+      sellAmount={targetAmounts?.sellAmount}
+      buyAmount={targetAmounts?.buyAmount}
+    >
+      {bridgingProgressContext && quoteBridgeContext ? (
+        <BridgingProgressContent
+          statusResult={statusResult}
+          progressContext={bridgingProgressContext}
+          quoteContext={quoteBridgeContext}
+        />
+      ) : (
+        <PreparingBridgingContent />
+      )}
+    </BridgeDetailsContainer>
+  )
+}
+
+export function ProgressDetails({ className, context }: QuoteDetailsProps): ReactNode {
+  const { bridgeProvider, bridgingStatus } = context
   const bridgeStatus = bridgingStatus === SwapAndBridgeStatus.DEFAULT ? SwapAndBridgeStatus.PENDING : bridgingStatus
 
   return (
-    <CollapsibleBridgeRoute className={className} isCollapsible={false} isExpanded={true} providerInfo={bridgeProvider}>
-      <BridgeDetailsContainer
-        isCollapsible={true}
-        defaultExpanded={true}
-        status={swapStatus}
-        statusIcon={SwapStatusIcons[swapStatus]}
-        protocolIconShowOnly="first"
-        protocolIconSize={21}
-        titlePrefix={SwapStatusTitlePrefixes[swapStatus]}
-        protocolName="CoW Protocol"
-        bridgeProvider={bridgeProvider}
-        chainName={sourceChainName}
-        sellAmount={sourceAmounts.sellAmount}
-        buyAmount={sourceAmounts.buyAmount}
-      >
-        <SwapResultContent context={swapResultContext} />
-      </BridgeDetailsContainer>
+    <CollapsibleBridgeRoute className={className} isCollapsible={false} isExpanded providerInfo={bridgeProvider}>
+      <SwapStep context={context} />
       <DividerHorizontal margin="8px 0 4px" />
-      <BridgeDetailsContainer
-        isCollapsible={true}
-        defaultExpanded={true}
-        status={bridgeStatus}
-        statusIcon={BridgeStatusIcons[bridgeStatus]}
-        protocolIconShowOnly="second"
-        protocolIconSize={21}
-        titlePrefix={BridgeStatusTitlePrefixes[bridgeStatus] || ''}
-        protocolName={bridgeProvider.name}
-        bridgeProvider={bridgeProvider}
-        chainName={targetChainName}
-        sellAmount={targetAmounts?.sellAmount}
-        buyAmount={targetAmounts?.buyAmount}
-      >
-        {bridgingProgressContext && quoteBridgeContext ? (
-          <BridgingProgressContent
-            statusResult={statusResult}
-            progressContext={bridgingProgressContext}
-            quoteContext={quoteBridgeContext}
-          />
-        ) : (
-          <PreparingBridgingContent />
-        )}
-      </BridgeDetailsContainer>
+      <BridgeStep context={context} bridgeStatus={bridgeStatus} />
     </CollapsibleBridgeRoute>
   )
 }

@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/cowprotocol/cowswap/compare/multicall-v1.1.2...multicall-v1.2.0) (2025-07-03)
+
+
+### Features
+
+* **bridge:** display account proxy ([#5881](https://github.com/cowprotocol/cowswap/issues/5881)) ([0692597](https://github.com/cowprotocol/cowswap/commit/0692597adf45b469b5a547057b64e79296714ee2))
+
 ## [1.1.2](https://github.com/cowprotocol/cowswap/compare/multicall-v1.1.1...multicall-v1.1.2) (2025-05-19)
 
 

@@ -5,13 +5,15 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { useAppSelector } from '../../hooks'
 import { EnhancedTransactionDetails } from '../reducer'
 
+const EMPTY_TX_STATE = {}
+
 // returns all the transactions for the current chain
 export function useAllTransactions(): { [txHash: string]: EnhancedTransactionDetails } {
   const { chainId } = useWalletInfo()
 
   const state = useAppSelector((state) => state.transactions)
 
-  return chainId ? state[chainId] ?? {} : {}
+  return chainId ? (state[chainId] ?? EMPTY_TX_STATE) : EMPTY_TX_STATE
 }
 
 // returns whether a token has a pending approval transaction
@@ -34,6 +36,6 @@ export function useHasPendingApproval(tokenAddress: string | undefined, spender:
           approval.tokenAddress.toLowerCase() === tokenAddress
         )
       }),
-    [allTransactions, spender, tokenAddress]
+    [allTransactions, spender, tokenAddress],
   )
 }

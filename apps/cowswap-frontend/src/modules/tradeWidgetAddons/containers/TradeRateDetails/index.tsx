@@ -2,6 +2,7 @@ import { useMemo, useState, useCallback, ReactNode } from 'react'
 
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
+import { useBridgeQuoteAmounts } from 'modules/bridge'
 import {
   getTotalCosts,
   TradeFeesAndCosts,
@@ -28,20 +29,16 @@ interface TradeRateDetailsProps {
   rateInfoParams: RateInfoParams
   isTradePriceUpdating: boolean
   accordionContent?: ReactNode
-  feeWrapper?: (feeElement: ReactNode) => React.ReactNode
+  feeWrapper?: (feeElement: ReactNode, isOpen: boolean) => ReactNode
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
 export function TradeRateDetails({
   rateInfoParams,
   deadline,
   isTradePriceUpdating,
   accordionContent,
   feeWrapper,
-}: TradeRateDetailsProps) {
+}: TradeRateDetailsProps): ReactNode {
   const [isFeeDetailsOpen, setFeeDetailsOpen] = useState(false)
 
   const slippage = useTradeSlippage()
@@ -50,6 +47,7 @@ export function TradeRateDetails({
   const derivedTradeState = useDerivedTradeState()
   const tradeQuote = useTradeQuote()
   const shouldPayGas = useShouldPayGas()
+  const bridgeQuoteAmounts = useBridgeQuoteAmounts(receiveAmountInfo, tradeQuote.bridgeQuote)
 
   const inputCurrency = derivedTradeState?.inputCurrency
 
@@ -82,7 +80,7 @@ export function TradeRateDetails({
     )
   }
 
-  const totalCosts = getTotalCosts(receiveAmountInfo)
+  const totalCosts = getTotalCosts(receiveAmountInfo, bridgeQuoteAmounts?.bridgeFee)
 
   // Default expanded content if accordionContent prop is not supplied
   const defaultExpandedContent = (

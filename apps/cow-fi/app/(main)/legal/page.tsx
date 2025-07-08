@@ -1,11 +1,13 @@
 'use client'
 
-import { Color } from '@cowprotocol/ui'
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { CowFiCategory } from 'src/common/analytics/types'
+import { UI } from '@cowprotocol/ui'
+
 import styled from 'styled-components/macro'
+
 import { Link } from '@/components/Link'
 import { ArticleContent, ArticleMainTitle, BodyContent, Breadcrumbs, ContainerCard } from '@/styles/styled'
+import { CowFiCategory } from 'src/common/analytics/types'
 
 const LEGAL_LINKS = [
   {
@@ -42,7 +44,14 @@ export default function Page() {
 
   return (
     <Wrapper>
-      <ContainerCard bgColor={Color.neutral100} minHeight="70vh" gap={62} gapMobile={42} centerContent touchFooter>
+      <ContainerCard
+        bgColor={`var(${UI.COLOR_NEUTRAL_100})`}
+        minHeight="70vh"
+        gap={62}
+        gapMobile={42}
+        centerContent
+        touchFooter
+      >
         <ArticleContent maxWidth="100%">
           <Breadcrumbs>
             <Link
