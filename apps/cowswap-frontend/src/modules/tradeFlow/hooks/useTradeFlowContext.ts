@@ -51,9 +51,8 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
 
   const sellCurrency = derivedTradeState?.inputCurrency
   const inputAmount = receiveAmountInfo?.afterSlippage.sellAmount
-  const outputAmount = bridgeContext
-    ? bridgeContext.bridgeMinReceiveAmount
-    : receiveAmountInfo?.afterSlippage.buyAmount
+  const bridgeOutputAmount = bridgeContext?.bridgeMinReceiveAmount
+  const outputAmount = receiveAmountInfo?.afterSlippage.buyAmount
 
   const sellAmountBeforeFee = receiveAmountInfo?.afterNetworkCosts.sellAmount
   const networkFee = receiveAmountInfo?.costs.networkFee.amountInSellCurrency
@@ -196,6 +195,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             kind: orderKind,
             inputAmount,
             outputAmount,
+            bridgeOutputAmount,
             sellAmountBeforeFee,
             feeAmount: networkFee,
             sellToken: sellToken as TokenWithLogo,

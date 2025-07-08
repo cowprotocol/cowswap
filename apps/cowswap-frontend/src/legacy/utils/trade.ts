@@ -35,6 +35,7 @@ export type PostOrderParams = {
   kind: OrderKind
   inputAmount: CurrencyAmount<Currency>
   outputAmount: CurrencyAmount<Currency>
+  bridgeOutputAmount?: CurrencyAmount<Currency>
   sellAmountBeforeFee: CurrencyAmount<Currency>
   feeAmount: CurrencyAmount<Currency> | undefined
   sellToken: Token
@@ -166,15 +167,12 @@ export function mapUnsignedOrderToOrder({ unsignedOrder, additionalParams }: Map
     orderCreationHash,
     quoteId,
     appData: { fullAppData },
-    outputAmount,
+    bridgeOutputAmount,
   } = additionalParams
   const status = _getOrderStatus(allowsOffchainSigning, isOnChain)
 
   return {
     ...unsignedOrder,
-    // for bridge orders, we need to use the output amount from additionalParams
-    // because the original order has only intermediate token amount
-    buyAmount: outputAmount.quotient.toString(RADIX_DECIMAL),
 
     // Basic order params
     id: orderId,
@@ -185,6 +183,7 @@ export function mapUnsignedOrderToOrder({ unsignedOrder, additionalParams }: Map
     quoteId,
     class: additionalParams.class,
     fullAppData,
+    bridgeOutputAmount,
 
     // Status
     status,
