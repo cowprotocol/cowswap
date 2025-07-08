@@ -43,7 +43,7 @@ function SwapStep({ context }: SwapStepProps): ReactNode {
       sellAmount={sourceAmounts.sellAmount}
       buyAmount={sourceAmounts.buyAmount}
     >
-      <SwapResultContent context={swapResultContext} />
+      <SwapResultContent context={swapResultContext} sellAmount={sourceAmounts.sellAmount} />
     </BridgeDetailsContainer>
   )
 }
