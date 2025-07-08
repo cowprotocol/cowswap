@@ -5,7 +5,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { ToggleArrow } from 'common/pure/ToggleArrow'
 
-import { Wrapper, Summary, SummaryClickable, Details } from './styled'
+import { Details, Summary, SummaryClickable, Wrapper } from './styled'
 
 interface TradeDetailsAccordionProps {
   rateInfo: ReactNode
@@ -70,13 +70,7 @@ export function TradeDetailsAccordion({
     <Wrapper isOpen={open}>
       <Summary>
         {rateInfo}
-        <SummaryClickable
-          onClick={onToggle}
-          onKeyDown={handleKeyDown}
-          aria-expanded={open}
-          tabIndex={0}
-          isOpen={open}
-        >
+        <SummaryClickable onClick={onToggle} onKeyDown={handleKeyDown} aria-expanded={open} tabIndex={0} isOpen={open}>
           {feeWrapper ? feeWrapper(defaultFeeContent, open) : defaultFeeContent}
 
           <ToggleArrow isOpen={open} />
