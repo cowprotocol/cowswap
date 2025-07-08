@@ -1,13 +1,13 @@
 'use client'
 
-import { Color } from '@cowprotocol/ui'
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { CowFiCategory } from 'src/common/analytics/types'
+import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
-import { Link } from '@/components/Link'
 
+import { Link } from '@/components/Link'
 import { ArticleContent, ArticleMainTitle, BodyContent, Breadcrumbs, ContainerCard } from '@/styles/styled'
+import { CowFiCategory } from 'src/common/analytics/types'
 
 const Wrapper = styled.div`
   display: flex;
@@ -26,7 +26,14 @@ export default function Page() {
 
   return (
     <Wrapper>
-      <ContainerCard bgColor={Color.neutral100} minHeight="70vh" gap={62} gapMobile={42} centerContent touchFooter>
+      <ContainerCard
+        bgColor={`var(${UI.COLOR_NEUTRAL_100})`}
+        minHeight="70vh"
+        gap={62}
+        gapMobile={42}
+        centerContent
+        touchFooter
+      >
         <ArticleContent maxWidth="100%">
           <Breadcrumbs>
             <Link
@@ -97,8 +104,8 @@ export default function Page() {
               significant risks of loss. You could lose all or more of your capital.
             </p>
             <p>
-              The tokens' value is highly volatile causing price fluctuations, as auctions typically run for some time
-              and trades are not executed instantly.
+              The tokens&apos; value is highly volatile causing price fluctuations, as auctions typically run for some
+              time and trades are not executed instantly.
             </p>
             <p>
               Please carefully consider your investment objectives, risk tolerance, and experience before engaging in
@@ -198,8 +205,8 @@ export default function Page() {
               for more information on our Interface.
             </p>
             <p>
-              The features of the Interface can also be accessed through third parties' websites integrating our widget
-              (the &quot;Widget&quot;).
+              The features of the Interface can also be accessed through third parties&apos; websites integrating our
+              widget (the &quot;Widget&quot;).
             </p>
             <p>
               Please consult our{' '}
@@ -244,9 +251,9 @@ export default function Page() {
             <p>
               To use the Interface, you must employ a non-custodial wallet application, enabling interaction with EVM
               compatible public blockchains. Your connection with the non-custodial wallet provider is governed by the
-              applicable service terms of such a third-party wallet provider. We do not hold custody of your wallet's
-              contents and are unable to recover or transfer such content. By connecting your wallet to our Interface,
-              you agree to be bound by these Terms and all of the terms incorporated herein by reference.
+              applicable service terms of such a third-party wallet provider. We do not hold custody of your
+              wallet&apos;s contents and are unable to recover or transfer such content. By connecting your wallet to
+              our Interface, you agree to be bound by these Terms and all of the terms incorporated herein by reference.
             </p>
             <p>
               For more details on how to use the Interface please refer to our{' '}
@@ -262,7 +269,7 @@ export default function Page() {
               Interface when the user places their trade intent. Such a fee is designed in accordance with the specific
               features of the protocol.
             </p>
-            <h4 id="widget-integrator-s-fee">Widget Integrator's Fee</h4>
+            <h4 id="widget-integrator-s-fee">Widget Integrator&apos;s Fee</h4>
             <p>
               Third-party integrators can embed the Interface on their own website using the Widget may charge an
               additional service fee to the user of the Widget on their website. The user acknowledges that such a
@@ -319,7 +326,7 @@ export default function Page() {
             </h3>
             <p>
               https://forum.cow.fi (the &quot;Forum&quot;) is a moderated online forum for discussing CoW Protocol and
-              partially exercising COW Protocol's governance process.
+              partially exercising COW Protocol&apos;s governance process.
             </p>
             <p>You may access and use the Forum only for lawful purposes and in compliance with these Terms of Use.</p>
             <h3 id="registration-and-account-security">Registration and Account Security</h3>
@@ -331,7 +338,7 @@ export default function Page() {
             <h3 id="acceptable-use">Acceptable Use</h3>
             <p>
               You agree not to post any content that is unlawful, harmful, threatening, abusive, harassing, defamatory,
-              vulgar, obscene, invasive of another's privacy, or otherwise promoting illegal or harmful activities.
+              vulgar, obscene, invasive of another&apos;s privacy, or otherwise promoting illegal or harmful activities.
             </p>
             <p>
               You will not impersonate any person or entity or falsely state or otherwise misrepresent your affiliation
@@ -395,7 +402,7 @@ export default function Page() {
               limited to software, text, images, trademarks, service marks, copyrights, patents, and designs. This means
               we own all the legal rights to them. You are not allowed to copy, modify, adapt, rent, license, sell,
               publish, distribute, or share access to the Interface or its contents with anyone else, unless we
-              explicitly give you permission in writing. Simply using the Interface doesn't give you any ownership
+              explicitly give you permission in writing. Simply using the Interface doesn&apos;t give you any ownership
               rights to it or its contents.
             </p>
             <p>
@@ -767,7 +774,7 @@ export default function Page() {
               </li>
               <li>
                 Participation in trading on CoW Swap and potentially receiving this reward is subject to applicable laws
-                and regulations. It is the user's responsibility to ensure their participation is legal in their
+                and regulations. It is the user&apos;s responsibility to ensure their participation is legal in their
                 jurisdiction;
               </li>
               <li>
@@ -776,8 +783,8 @@ export default function Page() {
                 recipient;
               </li>
               <li>
-                The Organizer's decisions regarding winner selection, reward distribution, and all other aspects of this
-                reward program are final and binding.
+                The Organizer&apos;s decisions regarding winner selection, reward distribution, and all other aspects of
+                this reward program are final and binding.
               </li>
             </ul>
             <h3 id="base-token-reward-limitation">9. Limitation of Liability</h3>

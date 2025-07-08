@@ -3,8 +3,6 @@ import { FEATURED_ARTICLES_PAGE_SIZE } from '@/const/pagination'
 
 import { getArticles, getCategories } from '../../../services/cms'
 
-export const revalidate = 3600 // Revalidate at most once per hour
-
 export default async function LearnPage() {
   // Fetch featured articles
   const featuredArticlesResponse = await getArticles({
@@ -28,7 +26,7 @@ export default async function LearnPage() {
   })
 
   const categoriesResponse = await getCategories()
-  // Format categories for the component
+  // Pass raw categories data to client component for styling
   const categories =
     categoriesResponse?.map((category: any) => {
       const imageUrl = category?.attributes?.image?.data?.attributes?.url || ''
@@ -37,10 +35,9 @@ export default async function LearnPage() {
         name: category?.attributes?.name || '',
         slug: category?.attributes?.slug || '',
         description: category?.attributes?.description || '',
-        bgColor: category?.attributes?.backgroundColor || '#FFFFFF',
-        textColor: category?.attributes?.textColor || '#000000',
+        bgColor: category?.attributes?.backgroundColor || '',
+        textColor: category?.attributes?.textColor || '',
         link: `/learn/topic/${category?.attributes?.slug}`,
-        iconColor: '#FFFFFF',
         imageUrl,
       }
     }) || []

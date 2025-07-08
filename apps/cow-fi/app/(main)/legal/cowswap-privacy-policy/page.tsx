@@ -1,13 +1,13 @@
 'use client'
 
-import { Color } from '@cowprotocol/ui'
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { CowFiCategory } from 'src/common/analytics/types'
+import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
-import { Link } from '@/components/Link'
 
+import { Link } from '@/components/Link'
 import { ArticleContent, ArticleMainTitle, BodyContent, Breadcrumbs, ContainerCard } from '@/styles/styled'
+import { CowFiCategory } from 'src/common/analytics/types'
 
 const Wrapper = styled.div`
   display: flex;
@@ -26,7 +26,14 @@ export default function Page() {
 
   return (
     <Wrapper>
-      <ContainerCard bgColor={Color.neutral100} minHeight="70vh" gap={62} gapMobile={42} centerContent touchFooter>
+      <ContainerCard
+        bgColor={`var(${UI.COLOR_NEUTRAL_100})`}
+        minHeight="70vh"
+        gap={62}
+        gapMobile={42}
+        centerContent
+        touchFooter
+      >
         <ArticleContent maxWidth="100%">
           <Breadcrumbs>
             <Link
@@ -65,44 +72,45 @@ export default function Page() {
             <p>
               This Policy sets out what Personal Data we collect, how we process it and how long we retain it. This
               Policy applies to all of our processing activities where we act as a data controller or where we act as
-              data controller on behalf of clients. In this policy, "we", "us" and "our" refers to Nomev Labs, Lda and
-              affiliates. For more information about us, see the "Our Details" section at the end of this policy.
+              data controller on behalf of clients. In this policy, &quot;we&quot;, &quot;us&quot; and &quot;our&quot;
+              refers to Nomev Labs, Lda and affiliates. For more information about us, see the &quot;Our Details&quot;
+              section at the end of this policy.
             </p>
             <p>
-              In this Policy, "personal data" means any information relating to you as an identified or identifiable
-              natural person ("Data Subject"); an identifiable natural person is one who can be identified, directly or
-              indirectly, in particular by reference to an identifier such as a name, an online identifier or to one or
-              more factors specific to your physical, physiological, genetic, mental, economic, cultural or social
-              identity.
+              In this Policy, &quot;personal data&quot; means any information relating to you as an identified or
+              identifiable natural person (&quot;Data Subject&quot;); an identifiable natural person is one who can be
+              identified, directly or indirectly, in particular by reference to an identifier such as a name, an online
+              identifier or to one or more factors specific to your physical, physiological, genetic, mental, economic,
+              cultural or social identity.
             </p>
             <p>
-              In this Policy, "processing" means any operation or set of operations which is performed on personal data
-              (as defined in this Privacy Policy) or on sets of personal data, whether or not by automated means, such
-              as collection, recording, organisation, structuring, storage, adaptation or alteration, retrieval,
-              consultation, use, disclosure by transmission, dissemination or otherwise making available, alignment or
-              combination, restriction, erasure or destruction.
+              In this Policy, &quot;processing&quot; means any operation or set of operations which is performed on
+              personal data (as defined in this Privacy Policy) or on sets of personal data, whether or not by automated
+              means, such as collection, recording, organisation, structuring, storage, adaptation or alteration,
+              retrieval, consultation, use, disclosure by transmission, dissemination or otherwise making available,
+              alignment or combination, restriction, erasure or destruction.
             </p>
             <h2 id="1-your-information-and-the-blockchain">1. Your information and the Blockchain</h2>
             <p>
-              Blockchain technology, also known as distributed ledger technology (or simply 'DLT'), is at the core of
-              the business of our clients. Blockchains are decentralised and made up of digitally recorded data in a
-              chain of packages called 'blocks'. The manner in which these blocks are linked is chronological, meaning
-              that the data is very difficult to alter once recorded. Since the ledger may be distributed all over the
-              world (across several 'nodes' which usually replicate the ledger), this means there is no single person
-              making decisions or otherwise administering the system (such as an operator of a cloud computing system),
-              and that there is no centralised place where it is located either.
+              Blockchain technology, also known as distributed ledger technology (or simply &quot;DLT&quot;), is at the
+              core of the business of our clients. Blockchains are decentralised and made up of digitally recorded data
+              in a chain of packages called &quot;blocks&quot;. The manner in which these blocks are linked is
+              chronological, meaning that the data is very difficult to alter once recorded. Since the ledger may be
+              distributed all over the world (across several &quot;nodes&quot; which usually replicate the ledger), this
+              means there is no single person making decisions or otherwise administering the system (such as an
+              operator of a cloud computing system), and that there is no centralised place where it is located either.
             </p>
             <p>
-              Accordingly, by design, a blockchains records cannot be changed or deleted and is said to be 'immutable'.
-              This may affect your ability to exercise your rights such as your right to erasure ('right to be
-              forgotten'), or your rights to object or restrict processing of your personal data. Data on the blockchain
-              cannot be erased and cannot be changed. Although smart contracts may be used to revoke certain access
-              rights, and some content may be made invisible to others, it is not deleted.
+              Accordingly, by design, a blockchains records cannot be changed or deleted and is said to be
+              &quot;immutable&quot;. This may affect your ability to exercise your rights such as your right to erasure
+              (&quot;right to be forgotten&quot;), or your rights to object or restrict processing of your personal
+              data. Data on the blockchain cannot be erased and cannot be changed. Although smart contracts may be used
+              to revoke certain access rights, and some content may be made invisible to others, it is not deleted.
             </p>
             <p>
               In certain circumstances, it will be necessary to write certain personal data, such as your wallet
               address, onto the blockchain; this is done through a smart contract and requires you to execute such
-              transactions using your wallet's private key.
+              transactions using your wallet&apos;s private key.
             </p>
             <p>
               In most cases ultimate decisions to (i) transact on the blockchain using your wallet address, as well as
@@ -127,7 +135,9 @@ export default function Page() {
               <li>The operating system used by the accessing system;</li>
               <li>The website from which an accessing system reaches the website (so-called referrers);</li>
               <li>Behaviour: subpage, duration, and revisit;</li>
-              <li>The date and time of access to the website, The Internet protocol address ("IP address");</li>
+              <li>
+                The date and time of access to the website, The Internet protocol address (&quot;IP address&quot;);
+              </li>
               <li>The Internet service provider of the accessing system;</li>
               <li>Connected wallet type and wallet address;</li>
               <li>Session by device; and</li>
@@ -162,7 +172,7 @@ export default function Page() {
                   <li>Submission time and expiration time.</li>
                   <li>Type of your order (sell order of Fill &amp; Kill)</li>
                   <li>Tokens part of the swap and their amounts</li>
-                  <li>Slippage tolerance, set transaction deadline and recipient's wallet address;</li>
+                  <li>Slippage tolerance, set transaction deadline and recipient&apos;s wallet address;</li>
                   <li>Fee and applicable fee discount.</li>
                   <li>
                     AppData including:
@@ -185,7 +195,7 @@ export default function Page() {
                 a transaction:
                 <ul>
                   <li>Your wallet address;</li>
-                  <li>Recipient's wallet address;</li>
+                  <li>Recipient&apos;s wallet address;</li>
                   <li>Both sides of the swapped tokens;</li>
                   <li>Prices;</li>
                   <li>
@@ -205,7 +215,7 @@ export default function Page() {
                 Log Data
                 <ul>
                   <li>Your wallet address;</li>
-                  <li>The Internet protocol address ("IP address"); and</li>
+                  <li>The Internet protocol address (&quot;IP address&quot;); and</li>
                   <li>Transaction id/ Hash.</li>
                 </ul>
               </li>
@@ -301,9 +311,9 @@ export default function Page() {
               <strong>Blockchain</strong>
             </p>
             <p>
-              Refer to the Section "Your information and the Blockchain" above. Intents to trade submitted - if
-              successful - will be stored on the blockchain and will be displayed permanently and public, this is part
-              of the nature of the blockchain. If you are new to this field, we highly recommend informing yourself
+              Refer to the Section &quot;Your information and the Blockchain&quot; above. Intents to trade submitted -
+              if successful - will be stored on the blockchain and will be displayed permanently and public, this is
+              part of the nature of the blockchain. If you are new to this field, we highly recommend informing yourself
               about blockchain technology before using the website.
             </p>
             <p>
@@ -418,7 +428,7 @@ export default function Page() {
               <a href="https://admin.typeform.com/to/dwk6gt" target="_blank" rel="nofollow noopener">
                 https://admin.typeform.com/to/dwk6gt
               </a>
-              . Typeform's purpose and function is further explained under the following link{' '}
+              . Typeform&apos;s purpose and function is further explained under the following link{' '}
               <a href="https://www.typeform.com/product/" target="_blank" rel="nofollow noopener">
                 https://www.typeform.com/product/
               </a>
@@ -476,8 +486,8 @@ export default function Page() {
             <h2 id="6-your-rights-as-a-data-subject">6. Your Rights as a Data Subject</h2>
             <p>
               You have certain rights under applicable legislation, and in particular under Regulation EU 2016/679
-              (General Data Protection Regulation or 'GDPR'). We explain these below. You can find out more about the
-              GDPR and your rights by accessing the European Commission's website.
+              (General Data Protection Regulation or &quot;GDPR&quot;). We explain these below. You can find out more
+              about the GDPR and your rights by accessing the European Commission&apos;s website.
             </p>
             <ul>
               <li>
@@ -500,7 +510,9 @@ export default function Page() {
                 </p>
               </li>
               <li>
-                <h3 id="right-to-erasure-right-to-be-forgotten-">Right to erasure (right to be 'forgotten')</h3>
+                <h3 id="right-to-erasure-right-to-be-forgotten-">
+                  Right to erasure (right to be &apos;forgotten&apos;)
+                </h3>
                 <p>
                   You have the general right to request the erasure of your personal information in the following
                   circumstances:
@@ -583,7 +595,7 @@ export default function Page() {
               </li>
               <li>
                 <h3 id="right-to-object-to-direct-marketing-opting-out-">
-                  Right to object to direct marketing ('opting out')
+                  Right to object to direct marketing (&apos;opting out&apos;)
                 </h3>
                 <p>
                   You have a choice about whether or not you wish to receive information from us. We will not contact
@@ -597,16 +609,16 @@ export default function Page() {
                 <p>
                   You can change your marketing preferences at any time by contacting us. On each and every marketing
                   communication, we will always provide the option for you to exercise your right to object to the
-                  processing of your personal data for marketing purposes (known as 'opting-out') by clicking on the
-                  'unsubscribe' button on our marketing emails or choosing a similar opt-out option on any forms we use
-                  to collect your data. You may also opt-out at any time by contacting us on the below details. Please
-                  note that any administrative or service-related communications (to offer our services, or notify you
-                  of an update to this Privacy Policy or applicable terms of business, etc.) will solely be directed at
-                  our clients or business partners, and such communications generally do not offer an option to
-                  unsubscribe as they are necessary to provide the services requested. Therefore, please be aware that
-                  your ability to opt-out from receiving marketing and promotional materials does not change our right
-                  to contact you regarding your use of our website or websites we host on behalf of clients or as part
-                  of a contractual relationship we may have with you.
+                  processing of your personal data for marketing purposes (known as &apos;opting-out&apos;) by clicking
+                  on the &apos;unsubscribe&apos; button on our marketing emails or choosing a similar opt-out option on
+                  any forms we use to collect your data. You may also opt-out at any time by contacting us on the below
+                  details. Please note that any administrative or service-related communications (to offer our services,
+                  or notify you of an update to this Privacy Policy or applicable terms of business, etc.) will solely
+                  be directed at our clients or business partners, and such communications generally do not offer an
+                  option to unsubscribe as they are necessary to provide the services requested. Therefore, please be
+                  aware that your ability to opt-out from receiving marketing and promotional materials does not change
+                  our right to contact you regarding your use of our website or websites we host on behalf of clients or
+                  as part of a contractual relationship we may have with you.
                 </p>
               </li>
               <li>
@@ -679,10 +691,10 @@ export default function Page() {
             <p>
               We may make changes to this Policy from time to time. Where we do so, we will notify those who have a
               business relationship with us or who are subscribed to our emailing lists directly of the changes, and
-              change the 'Last updated' date above. We encourage you to review the Policy whenever you access or use our
-              website or websites we host on behalf of clients to stay informed about information practices and the
-              choices available to you. If you do not agree to the revised Policy, you should discontinue your use of
-              this website.
+              change the &apos;Last updated&apos; date above. We encourage you to review the Policy whenever you access
+              or use our website or websites we host on behalf of clients to stay informed about information practices
+              and the choices available to you. If you do not agree to the revised Policy, you should discontinue your
+              use of this website.
             </p>
             <h2 id="9-our-details">9. Our Details</h2>
             <p>

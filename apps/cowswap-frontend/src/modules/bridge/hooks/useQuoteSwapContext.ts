@@ -36,7 +36,7 @@ export function useQuoteSwapContext(): QuoteSwapContext | null {
     const sourceChainData = getChainInfo(sourceChainId)
 
     return {
-      chainName: sourceChainData.name,
+      chainName: sourceChainData.label,
       receiveAmountInfo,
       sellAmount: quoteAmounts.swapSellAmount,
       buyAmount: quoteAmounts.swapBuyAmount,

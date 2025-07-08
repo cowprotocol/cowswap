@@ -22,7 +22,7 @@ export type SurplusComponentProps = {
 }
 
 export const SurplusComponent: React.FC<SurplusComponentProps> = (props) => {
-  const { surplus, token, className, icon, iconColor = Color.explorer_green } = props
+  const { surplus, token, className, icon, iconColor = Color.successDark } = props
 
   if (!surplus || !token) {
     return null

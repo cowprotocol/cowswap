@@ -1,4 +1,4 @@
-import { Media, Color } from '@cowprotocol/ui'
+import { Media, Color, UI } from '@cowprotocol/ui'
 
 import Grid, { GridSize } from '@material-ui/core/Grid'
 import styled from 'styled-components/macro'
@@ -26,7 +26,7 @@ const CardComponent = styled(DefaultCard)`
   border-top-right-radius: 6px;
   border-top-left-radius: 6px;
   background: ${Color.explorer_bgInput};
-  color: ${Color.neutral100};
+  color: var(${UI.COLOR_NEUTRAL_100});
 `
 
 // CARD CONTENT STYLES

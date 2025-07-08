@@ -8,7 +8,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import styled from 'styled-components/macro'
 
 import { useDerivedTradeState, useIsEoaEthFlow } from 'modules/trade'
-import { useIsSmartSlippageApplied, useTradeSlippage } from 'modules/tradeSlippage'
+import { useIsSmartSlippageApplied, useSlippageConfig, useTradeSlippage } from 'modules/tradeSlippage'
 
 const MINIMAL_ERC20_FLOW_SLIPPAGE_BPS = 200
 
@@ -32,7 +32,10 @@ export function HighSuggestedSlippageWarning(props: HighSuggestedSlippageWarning
   const amountsAreSet = !isFractionFalsy(state?.inputCurrencyAmount) && !isFractionFalsy(state?.outputCurrencyAmount)
 
   const isEoaEthFlow = useIsEoaEthFlow()
-  const minimalSlippageBps = isEoaEthFlow ? ETH_FLOW_SLIPPAGE_WARNING_THRESHOLD[chainId] : MINIMAL_ERC20_FLOW_SLIPPAGE_BPS
+  const { defaultValue } = useSlippageConfig()
+
+  const minimalSlippageAppBps = isEoaEthFlow ? ETH_FLOW_SLIPPAGE_WARNING_THRESHOLD[chainId] : MINIMAL_ERC20_FLOW_SLIPPAGE_BPS
+  const minimalSlippageBps = Math.max(defaultValue, minimalSlippageAppBps)
 
   if (!isSuggestedSlippage || !slippageBps || slippageBps <= minimalSlippageBps || !amountsAreSet) {
     return null

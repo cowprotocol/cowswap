@@ -41,11 +41,7 @@ export function TokenAmountDisplay({
         hideTokenSymbol={false}
         {...libTokenAmountProps}
       />
-      {usdValue && (
-        <i>
-          (<FiatAmount amount={usdValue} />)
-        </i>
-      )}
+      {usdValue && <FiatAmount amount={usdValue} withParentheses />}
     </AmountWithTokenIcon>
   )
 }

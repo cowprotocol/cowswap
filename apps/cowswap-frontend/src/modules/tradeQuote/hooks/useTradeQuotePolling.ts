@@ -55,8 +55,9 @@ export function useTradeQuotePolling(isConfirmOpen = false, isQuoteUpdatePossibl
 
     if (!isWindowVisible || !amountStr) {
       tradeQuoteManager.reset()
+      setTradeQuotePolling(0)
     }
-  }, [isWindowVisible, tradeQuoteManager, isConfirmOpen, amountStr])
+  }, [isWindowVisible, tradeQuoteManager, isConfirmOpen, amountStr, setTradeQuotePolling])
 
   /**
    * Fetch the quote instantly once the quote params are changed
