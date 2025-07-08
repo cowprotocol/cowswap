@@ -35,8 +35,7 @@ export function TokenDisplay(props: Readonly<TokenDisplayProps>): ReactNode {
   const bridgeBlockExplorer = bridgeNetwork?.blockExplorer
 
   const effectiveChainId = erc20.chainId ?? network
-  const isChainIdSupported = effectiveChainId in SupportedChainId
-  const networkNameSuffix = showNetworkName && isChainIdSupported && getNetworkSuffix(effectiveChainId)
+  const networkNameSuffix = showNetworkName ? getNetworkSuffix(effectiveChainId) || bridgeNetwork?.label : undefined
   const imageAddress = getImageAddress(erc20.address, network)
 
   const nativeTokenDisplay = (
