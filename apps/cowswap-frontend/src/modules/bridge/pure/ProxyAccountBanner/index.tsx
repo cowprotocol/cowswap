@@ -1,9 +1,8 @@
-import { useAtom } from 'jotai'
 import { ReactNode } from 'react'
 
 import { BannerOrientation, CollapsibleInlineBanner, StatusColorVariant } from '@cowprotocol/ui'
 
-import { cowShedModalAtom } from 'modules/cowShed/state/cowShedModalAtom'
+import { useSetShedModal } from 'entities/cowShed/useCowShedModal'
 
 import { AddressLink } from 'common/pure/AddressLink'
 
@@ -13,7 +12,7 @@ interface ProxyAccountBannerProps {
 }
 
 export function ProxyAccountBanner({ recipient, chainId }: ProxyAccountBannerProps): ReactNode {
-  const [, setCowShedModal] = useAtom(cowShedModalAtom)
+  const setCowShedModal = useSetShedModal()
 
   const handleReadMore = (): void => {
     setCowShedModal((state) => ({

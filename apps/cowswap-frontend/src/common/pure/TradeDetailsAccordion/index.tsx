@@ -54,18 +54,14 @@ export function TradeDetailsAccordion({
   onToggle,
   feeWrapper,
 }: TradeDetailsAccordionProps): ReactNode {
-  const handleToggle = useCallback((): void => {
-    onToggle?.()
-  }, [onToggle])
-
   const handleKeyDown = useCallback(
     (e: { key: string; preventDefault: () => void }): void => {
       if (['Enter', ' ', 'ArrowUp', 'ArrowDown'].includes(e.key)) {
         e.preventDefault()
-        handleToggle()
+        onToggle()
       }
     },
-    [handleToggle],
+    [onToggle],
   )
 
   const defaultFeeContent = <DefaultFeeContent feeUsdTotalAmount={feeUsdTotalAmount} feeTotalAmount={feeTotalAmount} />
@@ -75,7 +71,7 @@ export function TradeDetailsAccordion({
       <Summary>
         {rateInfo}
         <SummaryClickable
-          onClick={handleToggle}
+          onClick={onToggle}
           onKeyDown={handleKeyDown}
           aria-expanded={open}
           tabIndex={0}

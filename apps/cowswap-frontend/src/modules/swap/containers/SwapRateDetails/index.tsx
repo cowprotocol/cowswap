@@ -17,7 +17,6 @@ export interface SwapRateDetailsProps {
   deadline: number
 }
 
-
 export function SwapRateDetails({ rateInfoParams, deadline }: SwapRateDetailsProps): ReactNode {
   const { isLoading: isRateLoading, bridgeQuote } = useTradeQuote()
 
@@ -32,7 +31,7 @@ export function SwapRateDetails({ rateInfoParams, deadline }: SwapRateDetailsPro
   const feeWrapper = useCallback(
     (feeElement: ReactNode, isOpen: boolean) => {
       if (!providerDetails) return feeElement
-      
+
       return (
         <BridgeAccordionSummary
           bridgeEstimatedTime={bridgeEstimatedTime}

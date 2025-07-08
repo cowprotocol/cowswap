@@ -4,79 +4,74 @@ import { displayTime, isTruthy } from '@cowprotocol/common-utils'
 import { InfoTooltip } from '@cowprotocol/ui'
 
 import { ConfirmDetailsItem, ReceiveAmountTitle } from 'modules/trade'
+import { useUsdAmount } from 'modules/usdAmount'
 
 import { QuoteBridgeContext } from '../../../types'
 import { RecipientDisplay } from '../../RecipientDisplay'
 import { TokenAmountDisplay } from '../../TokenAmountDisplay'
-import { ContentItem } from '../types'
 
 export interface QuoteBridgeContentProps {
   quoteContext: QuoteBridgeContext
   children?: ReactNode
 }
 
-function createBridgeFeeContent(bridgeFee: QuoteBridgeContext['bridgeFee']): ContentItem | null {
-  if (!bridgeFee) return null
-
-  return {
-    withTimelineDot: true,
-    label: (
-      <>
-        Bridge fee <InfoTooltip content="The fee for the bridge transaction." size={14} />
-      </>
-    ),
-    content: bridgeFee.equalTo(0) ? 'FREE' : <TokenAmountDisplay currencyAmount={bridgeFee} />,
-  }
-}
-
-function createEstimatedTimeContent(estimatedTime: QuoteBridgeContext['estimatedTime']): ContentItem | null {
-  if (!estimatedTime) return null
-
-  return {
-    withTimelineDot: true,
-    label: (
-      <>
-        Est. bridge time <InfoTooltip content="The estimated time for the bridge transaction to complete." size={14} />
-      </>
-    ),
-    content: <>~ {displayTime(estimatedTime * 1000, true)}</>,
-  }
-}
-
-function createRecipientContent(recipient: QuoteBridgeContext['recipient'], chainId: number): ContentItem {
-  return {
-    withTimelineDot: true,
-    label: (
-      <>
-        Recipient <InfoTooltip content="The address that will receive the tokens on the destination chain." size={14} />
-      </>
-    ),
-    content: <RecipientDisplay recipient={recipient} chainId={chainId} logoSize={16} />,
-  }
-}
-
-function createReceiveAmountContent(buyAmountEl: ReactNode, hasChildren: boolean): ContentItem {
-  return {
-    label: (
-      <ReceiveAmountTitle>
-        <b>Min. to receive</b>
-      </ReceiveAmountTitle>
-    ),
-    content: hasChildren ? buyAmountEl : <b>{buyAmountEl}</b>,
-  }
-}
-
 export function QuoteBridgeContent({
   quoteContext: { recipient, bridgeFee, estimatedTime, buyAmount, buyAmountUsd },
   children,
 }: QuoteBridgeContentProps): ReactNode {
+  const bridgeFeeUsd = useUsdAmount(bridgeFee).value
+
   const buyAmountEl = <TokenAmountDisplay displaySymbol usdValue={buyAmountUsd} currencyAmount={buyAmount} />
 
   const contents = [
-    createBridgeFeeContent(bridgeFee),
-    createEstimatedTimeContent(estimatedTime),
-    createRecipientContent(recipient, buyAmount.currency.chainId),
-    createReceiveAmountContent(buyAmountEl, !!children),
+    bridgeFee
+      ? {
+          withTimelineDot: true,
+          label: (
+            <>
+              Bridge fee <InfoTooltip content="The fee for the bridge transaction." size={14} />
+            </>
+          ),
+          content: bridgeFee.equalTo(0) ? (
+            'FREE'
+          ) : (
+            <TokenAmountDisplay currencyAmount={bridgeFee} usdValue={bridgeFeeUsd} />
+          ),
+        }
+      : null,
+    estimatedTime
+      ? {
+          withTimelineDot: true,
+          label: (
+            <>
+              Est. bridge time{' '}
+              <InfoTooltip content="The estimated time for the bridge transaction to complete." size={14} />
+            </>
+          ),
+          content: <>~ {displayTime(estimatedTime * 1000, true)}</>,
+        }
+      : null,
+    {
+      withTimelineDot: true,
+      label: (
+        <>
+          Recipient{' '}
+          <InfoTooltip content="The address that will receive the tokens on the destination chain." size={14} />
+        </>
+      ),
+      content: <RecipientDisplay recipient={recipient} chainId={buyAmount.currency.chainId} logoSize={16} />,
+    },
+    {
+      withTimelineDot: true,
+      label: children ? (
+        'Min. to receive'
+      ) : (
+        <ReceiveAmountTitle>
+          <b>Min. to receive</b>
+        </ReceiveAmountTitle>
+      ),
+      content: children ? buyAmountEl : <b>{buyAmountEl}</b>,
+    },
   ]
 
   return (

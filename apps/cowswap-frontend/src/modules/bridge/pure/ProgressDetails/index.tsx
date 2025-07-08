@@ -30,8 +30,8 @@ function SwapStep({ context }: SwapStepProps): ReactNode {
 
   return (
     <BridgeDetailsContainer
-      isCollapsible={true}
-      defaultExpanded={true}
+      isCollapsible
+      defaultExpanded
       status={swapStatus}
       statusIcon={SwapStatusIcons[swapStatus]}
       protocolIconShowOnly="first"
@@ -54,8 +54,8 @@ function BridgeStep({ context, bridgeStatus }: BridgeStepProps): ReactNode {
 
   return (
     <BridgeDetailsContainer
-      isCollapsible={true}
-      defaultExpanded={true}
+      isCollapsible
+      defaultExpanded
       status={bridgeStatus}
       statusIcon={BridgeStatusIcons[bridgeStatus]}
       protocolIconShowOnly="second"
@@ -84,7 +84,7 @@ export function ProgressDetails({ className, context }: QuoteDetailsProps): Reac
   const bridgeStatus = bridgingStatus === SwapAndBridgeStatus.DEFAULT ? SwapAndBridgeStatus.PENDING : bridgingStatus
 
   return (
-    <CollapsibleBridgeRoute className={className} isCollapsible={false} isExpanded={true} providerInfo={bridgeProvider}>
+    <CollapsibleBridgeRoute className={className} isCollapsible={false} isExpanded providerInfo={bridgeProvider}>
       <SwapStep context={context} />
       <DividerHorizontal margin="8px 0 4px" />
       <BridgeStep context={context} bridgeStatus={bridgeStatus} />
