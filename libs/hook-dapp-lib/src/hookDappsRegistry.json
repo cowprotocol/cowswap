@@ -138,7 +138,7 @@
       "supportedNetworks": [1, 42161, 11155111, 8453]
     }
   },
-  "MORPHO_LENDING": {
+  "MORPHO_BORROW": {
     "name": "Morpho Borrow",
     "type": "IFRAME",
     "descriptionShort": "Supply collateral, borrow, repay and withdraw collateral on Morpho Protocol.",
