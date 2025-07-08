@@ -130,7 +130,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
           ]
         : null,
       // TODO: Break down this large function into smaller functions
-
+      // eslint-disable-next-line max-lines-per-function
       ([
         account,
         allowsOffchainSigning,
