@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Color } from '@cowprotocol/ui'
+import { Color, UI } from '@cowprotocol/ui'
 
 import styled, { css } from 'styled-components/macro'
 import { BASE_STYLES } from 'styles'
@@ -28,7 +28,7 @@ export type ButtonSizeVariations = 'default' | 'small' | 'big'
 // Pre-computed button variant styles
 const BUTTON_VARIANT_STYLES = {
   default: css`
-    color: ${Color.neutral100};
+    color: var(${UI.COLOR_NEUTRAL_100});
     background: ${Color.explorer_textActive};
 
     &:hover {
@@ -36,7 +36,7 @@ const BUTTON_VARIANT_STYLES = {
     }
   `,
   primary: css`
-    color: ${Color.neutral100};
+    color: var(${UI.COLOR_NEUTRAL_100});
     background: ${Color.explorer_textActive};
 
     &:hover {
@@ -44,7 +44,7 @@ const BUTTON_VARIANT_STYLES = {
     }
   `,
   theme: css`
-    color: ${Color.neutral100};
+    color: var(${UI.COLOR_NEUTRAL_100});
     background: ${Color.explorer_textActive};
 
     &:hover {
@@ -52,17 +52,17 @@ const BUTTON_VARIANT_STYLES = {
     }
   `,
   secondary: css`
-    color: ${Color.neutral100};
+    color: var(${UI.COLOR_NEUTRAL_100});
     background: ${Color.explorer_bgInput};
     border-color: ${Color.explorer_textActive};
 
     &:hover {
-      color: ${Color.neutral100};
+      color: var(${UI.COLOR_NEUTRAL_100});
       background: ${Color.explorer_bgButtonHover};
     }
   `,
   success: css`
-    color: ${Color.neutral100};
+    color: var(${UI.COLOR_NEUTRAL_100});
     background: ${Color.explorer_buttonSuccess};
 
     &:hover {
@@ -71,7 +71,7 @@ const BUTTON_VARIANT_STYLES = {
     }
   `,
   danger: css`
-    color: ${Color.neutral100};
+    color: var(${UI.COLOR_NEUTRAL_100});
     background: ${Color.explorer_buttonDanger};
 
     &:hover {
@@ -80,7 +80,7 @@ const BUTTON_VARIANT_STYLES = {
     }
   `,
   warning: css`
-    color: ${Color.neutral100};
+    color: var(${UI.COLOR_NEUTRAL_100});
     background: ${Color.explorer_buttonWarning};
 
     &:hover {
@@ -89,7 +89,7 @@ const BUTTON_VARIANT_STYLES = {
     }
   `,
   cancel: css`
-    color: ${Color.neutral100};
+    color: var(${UI.COLOR_NEUTRAL_100});
     background: transparent;
 
     &:hover {
@@ -98,7 +98,7 @@ const BUTTON_VARIANT_STYLES = {
     }
   `,
   disabled: css`
-    color: ${Color.neutral70};
+    color: var(${UI.COLOR_NEUTRAL_70});
     background: ${Color.explorer_buttonDisabled};
   `,
 } as const

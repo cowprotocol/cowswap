@@ -49,7 +49,6 @@ export const Content = styled.div<{ highlighted?: boolean; contentTextColor?: st
 
   i {
     font-style: normal;
-    opacity: 0.7;
     word-break: break-all;
     text-align: right;
   }

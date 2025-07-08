@@ -29,7 +29,7 @@ export const ProgressContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  padding: 0 0 24px;
+  padding: 0;
 `
 
 export const Link = styled.a<{ underline?: boolean }>`
@@ -177,7 +177,7 @@ export const TokenWrapper = styled.div<{
   }
 `
 
-export const CountdownWrapper = styled.div`
+export const CountdownWrapper = styled.div<{ bgColor?: string }>`
   --size: 160px;
   height: var(--size);
   width: var(--size);
@@ -185,7 +185,7 @@ export const CountdownWrapper = styled.div`
   bottom: 0;
   margin: auto;
   left: 40px;
-  background: #66d9ff;
+  background: ${({ bgColor }) => bgColor || `var(${UI.COLOR_PAPER_DARKER})`};
   border-radius: var(--size);
   position: absolute;
   display: flex;
@@ -208,7 +208,7 @@ export const CountdownText = styled.div<{ $shouldPulse?: boolean }>`
   font-family: ${Font.familyMono};
   font-size: 68px;
   font-weight: bold;
-  color: var(${UI.COLOR_BLUE});
+  color: var(${UI.COLOR_TEXT_PAPER});
   z-index: 1;
   font-variant-numeric: slashed-zero;
   letter-spacing: -3px;

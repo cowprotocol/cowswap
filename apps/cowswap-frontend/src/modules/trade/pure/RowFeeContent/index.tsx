@@ -73,7 +73,7 @@ export function RowFeeContent(props: RowFeeContentProps) {
         )}{' '}
         {!isFree && feeInFiat && (
           <FiatRate>
-            (<FiatAmount amount={feeInFiat} />)
+            <FiatAmount amount={feeInFiat} withParentheses />
           </FiatRate>
         )}
       </div>

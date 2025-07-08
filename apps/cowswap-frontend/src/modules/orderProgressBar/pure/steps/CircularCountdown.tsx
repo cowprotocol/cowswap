@@ -7,16 +7,17 @@ import { PROGRESS_BAR_TIMER_DURATION } from '../../hooks/useOrderProgressBarProp
 interface CircularCountdownProps {
   countdown: number
   isDelayed?: boolean
+  bgColor?: string
 }
 
-export function CircularCountdown({ countdown, isDelayed }: CircularCountdownProps): ReactElement {
+export function CircularCountdown({ countdown, isDelayed, bgColor }: CircularCountdownProps): ReactElement {
   const radius = 45
   const circumference = 2 * Math.PI * radius
   const displayValue = Math.max(countdown, 1)
   const shouldPulse = countdown <= 0 || !!isDelayed
 
   return (
-    <styledEl.CountdownWrapper>
+    <styledEl.CountdownWrapper bgColor={bgColor}>
       <styledEl.CircularProgress viewBox="0 0 100 100">
         <styledEl.CircleProgress
           cx="50"

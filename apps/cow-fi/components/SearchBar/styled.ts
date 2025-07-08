@@ -1,4 +1,5 @@
-import { Font, Color, Media } from '@cowprotocol/ui'
+import { Font, Media, UI } from '@cowprotocol/ui'
+
 import styled from 'styled-components/macro'
 
 export const SearchBarContainer = styled.div`
@@ -23,7 +24,7 @@ export const SearchIcon = styled.div`
   left: 24px;
   width: 24px;
   height: 24px;
-  color: ${Color.neutral70};
+  color: var(${UI.COLOR_NEUTRAL_70});
 
   ${Media.upToMedium()} {
     left: 16px;
@@ -35,9 +36,9 @@ export const Input = styled.input`
   min-height: 56px;
   border: 2px solid transparent;
   font-size: 21px;
-  color: ${Color.neutral40};
+  color: var(${UI.COLOR_NEUTRAL_40});
   width: 100%;
-  background: ${Color.neutral90};
+  background: var(${UI.COLOR_NEUTRAL_90});
   border-radius: 56px;
   appearance: none;
   font-weight: ${Font.weight.medium};
@@ -50,7 +51,7 @@ export const Input = styled.input`
 
   &:focus {
     outline: none;
-    border: 2px solid ${Color.neutral50};
+    border: 2px solid var(${UI.COLOR_NEUTRAL_50});
   }
 
   &::placeholder {
@@ -70,10 +71,10 @@ export const SearchResults = styled.div`
   max-width: 970px;
   max-height: 300px;
   overflow: hidden;
-  background: ${Color.neutral98};
+  background: var(${UI.COLOR_NEUTRAL_98});
   border-radius: 24px;
   padding: 10px 0 10px 10px;
-  border: 1px solid ${Color.neutral80};
+  border: 1px solid var(${UI.COLOR_NEUTRAL_80});
   font-size: 15px;
   z-index: 10;
 
@@ -91,7 +92,7 @@ export const SearchResultsInner = styled.div`
   /* Firefox scrollbar styling */
   @supports (scrollbar-width: thin) {
     scrollbar-width: thin;
-    scrollbar-color: ${Color.neutral70} ${Color.neutral90};
+    scrollbar-color: var(${UI.COLOR_NEUTRAL_70}) var(${UI.COLOR_NEUTRAL_90});
   }
 
   @supports (-webkit-appearance: none) {
@@ -100,17 +101,17 @@ export const SearchResultsInner = styled.div`
     }
 
     &::-webkit-scrollbar-track {
-      background-color: ${Color.neutral90};
+      background-color: var(${UI.COLOR_NEUTRAL_90});
       border-radius: 10px;
     }
 
     &::-webkit-scrollbar-thumb {
-      background-color: ${Color.neutral70};
+      background-color: var(${UI.COLOR_NEUTRAL_70});
       border-radius: 10px;
     }
 
     &::-webkit-scrollbar-thumb:hover {
-      background-color: ${Color.neutral50};
+      background-color: var(${UI.COLOR_NEUTRAL_50});
     }
 
     &::-webkit-scrollbar-button {
@@ -132,7 +133,7 @@ export const SearchResultsInner = styled.div`
 
     &::-webkit-scrollbar-thumb {
       border-radius: 4px;
-      background-color: ${Color.neutral70};
+      background-color: var(${UI.COLOR_NEUTRAL_70});
       -webkit-box-shadow: 0 0 1px rgba(255, 255, 255, 0.5);
     }
   }
@@ -144,19 +145,19 @@ export const ResultItem = styled.a<{ isSelected: boolean }>`
   align-items: flex-start;
   justify-content: flex-start;
   text-decoration: none;
-  color: ${Color.neutral0};
+  color: var(${UI.COLOR_NEUTRAL_0});
   line-height: 1.2;
   padding: 10px;
-  background: ${({ isSelected }) => (isSelected ? Color.neutral80 : 'transparent')};
+  background: ${({ isSelected }) => (isSelected ? `var(${UI.COLOR_NEUTRAL_80})` : 'transparent')};
   border-radius: ${({ isSelected }) => (isSelected ? '24px' : '0')};
 
   &:hover {
-    background: ${Color.neutral80};
+    background: var(${UI.COLOR_NEUTRAL_80});
     border-radius: 24px;
   }
 
   &:active {
-    color: ${Color.neutral0};
+    color: var(${UI.COLOR_NEUTRAL_0});
   }
 `
 
@@ -168,7 +169,7 @@ export const ResultTitle = styled.div`
 
 export const ResultDescription = styled.div`
   font-size: 12px;
-  color: ${Color.neutral40};
+  color: var(${UI.COLOR_NEUTRAL_40});
   white-space: pre-wrap;
   overflow: hidden;
   line-height: 1.5;
@@ -188,7 +189,7 @@ export const SearchResultsInfo = styled.div`
   justify-content: flex-start;
   align-items: center;
   font-size: 12px;
-  color: ${Color.neutral50};
+  color: var(${UI.COLOR_NEUTRAL_50});
   padding: 10px;
 `
 
@@ -197,7 +198,7 @@ export const LoadingIndicator = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${Color.neutral50};
+  color: var(${UI.COLOR_NEUTRAL_50});
   padding: 10px;
 
   &::after {
@@ -205,8 +206,8 @@ export const LoadingIndicator = styled.div`
     width: 16px;
     height: 16px;
     margin-left: 8px;
-    border: 2px solid ${Color.neutral80};
-    border-top-color: ${Color.neutral50};
+    border: 2px solid var(${UI.COLOR_NEUTRAL_80});
+    border-top-color: var(${UI.COLOR_NEUTRAL_50});
     border-radius: 50%;
     animation: spin 1s linear infinite;
   }
@@ -230,8 +231,8 @@ export const CloseIcon = styled.div`
   right: 24px;
   transform: translateY(-50%);
   cursor: pointer;
-  background: ${Color.neutral90};
-  color: ${Color.neutral60};
+  background: var(${UI.COLOR_NEUTRAL_90});
+  color: var(${UI.COLOR_NEUTRAL_60});
   padding: 6px;
   display: flex;
   align-items: center;
@@ -246,7 +247,7 @@ export const CloseIcon = styled.div`
   }
 
   &:hover {
-    background: ${Color.neutral80};
+    background: var(${UI.COLOR_NEUTRAL_80});
   }
 
   > svg {

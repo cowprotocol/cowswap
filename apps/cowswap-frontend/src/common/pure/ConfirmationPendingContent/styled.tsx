@@ -128,7 +128,9 @@ export const StepsIconWrapper = styled.div`
     z-index: -1;
     border-radius: calc(var(--border-radius) - var(--border-size));
     background: linear-gradient(145deg, var(${UI.COLOR_PAPER}), var(${UI.COLOR_PAPER_DARKER}));
-    box-shadow: inset 0 1px 1px 0 hsl(0deg 0% 100% / 10%), 0 10px 40px -20px #000000;
+    box-shadow:
+      inset 0 1px 1px 0 hsl(0deg 0% 100% / 10%),
+      0 10px 40px -20px var(${UI.COLOR_NEUTRAL_0});
   }
 
   > svg {
