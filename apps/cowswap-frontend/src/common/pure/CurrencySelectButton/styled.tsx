@@ -1,7 +1,7 @@
 import DropDown from '@cowprotocol/assets/images/dropdown.svg?react'
 import { Media, TokenSymbol, UI } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 
 export const TokenSubText = styled.div`
   font-size: 12px;
@@ -55,6 +55,18 @@ export const StyledTokenSymbol = styled(TokenSymbol)<{ displayTokenName: boolean
   transition: color var(${UI.ANIMATION_DURATION}) ease-in-out;
 `
 
+const getButtonColors = ($noCurrencySelected: boolean): ReturnType<typeof css> => css`
+  --button-bg: ${$noCurrencySelected ? `var(${UI.COLOR_PRIMARY})` : `var(${UI.COLOR_PAPER})`};
+  --button-text: ${$noCurrencySelected ? `var(${UI.COLOR_BUTTON_TEXT})` : `var(${UI.COLOR_TEXT_PAPER})`};
+  --button-bg-hover: ${$noCurrencySelected ? `var(${UI.COLOR_PRIMARY_LIGHTER})` : `var(${UI.COLOR_PRIMARY})`};
+  --button-text-hover: var(${UI.COLOR_BUTTON_TEXT});
+`
+
+const getHoverColor = (readonlyMode: boolean): string => {
+  if (readonlyMode) return `var(${UI.COLOR_TEXT_PAPER})`
+  return `var(${UI.COLOR_BUTTON_TEXT})`
+}
+
 export const CurrencySelectWrapper = styled.button<{
   isLoading: boolean
   $noCurrencySelected: boolean
@@ -62,45 +74,50 @@ export const CurrencySelectWrapper = styled.button<{
   displayTokenName: boolean
   displayChainName: boolean
 }>`
+  ${({ $noCurrencySelected }) => getButtonColors($noCurrencySelected)}
+
   --min-height: 35px;
   --min-width: 190px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  cursor: ${({ readonlyMode }) => (readonlyMode ? '' : 'pointer')};
+  cursor: ${({ readonlyMode }) => (readonlyMode ? 'default' : 'pointer')};
   gap: 6px;
   border: 0;
   outline: none;
-  background: ${({ $noCurrencySelected }) =>
-    $noCurrencySelected ? `var(${UI.COLOR_PRIMARY})` : `var(${UI.COLOR_PAPER})`};
-  color: ${({ $noCurrencySelected }) =>
-    $noCurrencySelected ? `var(${UI.COLOR_BUTTON_TEXT})` : `var(${UI.COLOR_TEXT_PAPER})`};
+  background: var(--button-bg);
+  color: var(--button-text);
   box-shadow: var(${UI.BOX_SHADOW_2});
   opacity: ${({ isLoading }) => (isLoading ? 0.6 : 1)};
   border-radius: var(${UI.BORDER_RADIUS_NORMAL});
-  ${({ readonlyMode }) => (readonlyMode ? 'padding-right: 10px;' : '')}
   transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
   max-width: var(--max-width);
   min-height: var(--min-height);
-  padding: ${({ displayTokenName, displayChainName }) =>
-    displayTokenName || displayChainName ? '5px 10px 5px 5px' : '5px'};
+  padding: ${({ displayTokenName, displayChainName, readonlyMode }) => {
+    const hasExtraContent = displayTokenName || displayChainName
+    const paddingRight = readonlyMode || hasExtraContent ? '10px' : '5px'
+    return hasExtraContent ? `5px ${paddingRight} 5px 5px` : '5px'
+  }};
 
   ${StyledTokenSymbol} {
-    color: ${({ $noCurrencySelected }) =>
-      $noCurrencySelected ? `var(${UI.COLOR_BUTTON_TEXT})` : `var(${UI.COLOR_TEXT_PAPER})`};
+    color: var(--button-text);
+  }
+
+  ${ArrowDown} > path {
+    stroke: ${({ $noCurrencySelected }) =>
+      $noCurrencySelected ? 'var(--button-text)' : `var(${UI.COLOR_TEXT_OPACITY_50})`};
   }
 
   &:hover {
-    background: ${({ readonlyMode, $noCurrencySelected }) =>
-      readonlyMode ? '' : $noCurrencySelected ? `var(${UI.COLOR_PRIMARY_LIGHTER});` : `var(${UI.COLOR_PRIMARY});`};
+    ${({ readonlyMode }) => !readonlyMode && 'background: var(--button-bg-hover);'}
 
-    ${TokenSubText}, ${StyledTokenSymbol}, ${CurrencySymbol} {
-      color: var(${UI.COLOR_BUTTON_TEXT});
+    ${StyledTokenSymbol},
+    ${TokenSubText} {
+      color: ${({ readonlyMode }) => getHoverColor(readonlyMode)};
     }
 
     ${ArrowDown} > path {
-      stroke: ${({ $noCurrencySelected }) =>
-        $noCurrencySelected ? `var(${UI.COLOR_TEXT_OPACITY_50})` : `var(${UI.COLOR_BUTTON_TEXT})`};
+      stroke: ${({ readonlyMode }) => getHoverColor(readonlyMode)};
     }
   }
 `

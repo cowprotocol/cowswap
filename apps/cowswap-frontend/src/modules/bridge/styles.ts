@@ -71,23 +71,23 @@ const StopStatusStyles: Record<SwapAndBridgeStatus, FlattenSimpleInterpolation> 
     }
   `,
   [SwapAndBridgeStatus.PENDING]: css`
-    background-color: ${`var(${UI.COLOR_INFO_BG})`};
-    color: ${`var(${UI.COLOR_INFO_TEXT})`};
+    background-color: ${`var(${UI.COLOR_BLUE_200_PRIMARY})`};
+    color: ${`var(${UI.COLOR_BLUE_500_PRIMARY})`};
     &::before {
       content: none;
     }
   `,
   [SwapAndBridgeStatus.FAILED]: css`
-    background-color: var(${UI.COLOR_ALERT_BG});
-    color: var(${UI.COLOR_ALERT_TEXT});
+    background-color: var(${UI.COLOR_DANGER_BG});
+    color: var(${UI.COLOR_DANGER_TEXT});
     padding: 6.5px;
     &::before {
       content: none;
     }
   `,
   [SwapAndBridgeStatus.REFUND_COMPLETE]: css`
-    background-color: var(${UI.COLOR_ALERT_BG});
-    color: var(${UI.COLOR_ALERT_TEXT});
+    background-color: var(${UI.COLOR_DANGER_BG});
+    color: var(${UI.COLOR_DANGER_TEXT});
     padding: 6.5px;
     &::before {
       content: none;
@@ -130,7 +130,7 @@ export const StopTitle = styled.div`
   width: 100%;
   align-items: center;
   gap: 6px;
-  margin: 0 0 0 -4px;
+  margin: 4px 0 0 -4px;
   font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
   font-size: 14px;
   position: relative;
@@ -143,7 +143,7 @@ export const StopTitle = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 3px;
+    gap: 5px;
     letter-spacing: -0.1px;
 
     ${Media.upToSmall()} {
@@ -237,7 +237,8 @@ export const DividerHorizontal = styled.div<{ margin?: string; overrideColor?: s
   width: 100%;
   height: 1px;
   margin: ${({ margin }) => margin || '0'};
-  background-color: ${({ overrideColor }) => overrideColor || `var(${UI.COLOR_PAPER_DARKER})`};
+  background-color: ${({ overrideColor, theme }) =>
+    overrideColor || (theme.darkMode ? `var(${UI.COLOR_TEXT_OPACITY_15})` : `var(${UI.COLOR_PAPER_DARKEST})`)};
 `
 
 const refundCompleteAnimation = keyframes`
@@ -273,7 +274,7 @@ export const RecipientWrapper = styled.div`
   gap: 4px;
 `
 
-export const TimelineIconCircleWrapper = styled.span`
+export const TimelineIconCircleWrapper = styled.span<{ padding?: string; bgColor?: string }>`
   --size: 14px;
   display: inline-flex;
   align-items: center;
@@ -281,8 +282,8 @@ export const TimelineIconCircleWrapper = styled.span`
   width: var(--size);
   height: var(--size);
   border-radius: var(--size);
-  padding: 3px;
-  background-color: var(${UI.COLOR_SUCCESS_BG});
+  padding: ${({ padding }) => padding || '3px'};
+  background-color: ${({ bgColor }) => bgColor || `var(${UI.COLOR_SUCCESS_BG})`};
 `
 
 export const StyledTimelinePlusIcon = styled(SVG)`
@@ -290,6 +291,28 @@ export const StyledTimelinePlusIcon = styled(SVG)`
   width: var(--size);
   height: var(--size);
   color: var(${UI.COLOR_SUCCESS});
+
+  > path {
+    fill: currentColor;
+  }
+`
+
+export const StyledTimelineInfoIcon = styled(SVG)`
+  --size: 100%;
+  width: var(--size);
+  height: var(--size);
+  color: var(${UI.COLOR_TEXT_OPACITY_50});
+
+  > path {
+    fill: currentColor;
+  }
+`
+
+export const StyledTimelineReceiptIcon = styled(SVG)`
+  --size: 100%;
+  width: var(--size);
+  height: var(--size);
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
 
   > path {
     fill: currentColor;

@@ -29,16 +29,20 @@ export function SwapRateDetails({ rateInfoParams, deadline }: SwapRateDetailsPro
   const bridgeContext = useQuoteBridgeContext()
 
   const feeWrapper = useCallback(
-    (feeElement: ReactNode) => {
-      if (!providerDetails) return null
+    (feeElement: ReactNode, isOpen: boolean) => {
+      if (!providerDetails) return feeElement
 
       return (
-        <BridgeAccordionSummary bridgeEstimatedTime={bridgeEstimatedTime} bridgeProtocol={providerDetails}>
+        <BridgeAccordionSummary
+          bridgeEstimatedTime={bridgeEstimatedTime}
+          bridgeProtocol={providerDetails}
+          isOpen={isOpen}
+        >
           {feeElement}
         </BridgeAccordionSummary>
       )
     },
-    [providerDetails, bridgeEstimatedTime],
+    [bridgeEstimatedTime, providerDetails],
   )
 
   return (

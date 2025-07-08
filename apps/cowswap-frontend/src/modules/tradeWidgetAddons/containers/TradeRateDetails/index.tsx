@@ -29,7 +29,7 @@ interface TradeRateDetailsProps {
   rateInfoParams: RateInfoParams
   isTradePriceUpdating: boolean
   accordionContent?: ReactNode
-  feeWrapper?: (feeElement: ReactNode) => ReactNode
+  feeWrapper?: (feeElement: ReactNode, isOpen: boolean) => ReactNode
 }
 
 export function TradeRateDetails({

@@ -26,8 +26,10 @@ const getBaseUrl = (): string => {
 const DEFAULT_BASE_URL = getBaseUrl()
 
 // TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWidgetParams {
   // TODO: Break down this large function into smaller functions
+
   return useMemo(() => {
     const {
       chainId,
@@ -52,6 +54,7 @@ export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWi
       disableProgressBar,
       hideBridgeInfo,
       hideOrdersTable,
+      slippage,
     } = configuratorState
 
     const themeColors = {
@@ -107,6 +110,7 @@ export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWi
           : undefined,
       hideBridgeInfo,
       hideOrdersTable,
+      slippage
     }
 
     return params
