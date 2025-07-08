@@ -1,17 +1,19 @@
 'use client'
 
-import { Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
-import IMG_ICON_CROWN_COW from '@cowprotocol/assets/images/icon-crown-cow.svg'
-import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
-import IMG_COWAMM_HERO from '@cowprotocol/assets/images/image-cowamm-hero.svg'
-import IMG_COWAMM_RAISING from '@cowprotocol/assets/images/image-cowamm-raising.svg'
-import IMG_COWAMM_PASSIVE from '@cowprotocol/assets/images/image-cowamm-passive.svg'
-import IMG_COWAMM_REKT from '@cowprotocol/assets/images/image-cowamm-rekt.svg'
-import FAQ from '@/components/FAQ'
-import { Link, LinkType } from '@/components/Link'
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { CowFiCategory } from 'src/common/analytics/types'
+import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
+import IMG_ICON_CROWN_COW from '@cowprotocol/assets/images/icon-crown-cow.svg'
+import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
+import IMG_COWAMM_HERO from '@cowprotocol/assets/images/image-cowamm-hero.svg'
+import IMG_COWAMM_PASSIVE from '@cowprotocol/assets/images/image-cowamm-passive.svg'
+import IMG_COWAMM_RAISING from '@cowprotocol/assets/images/image-cowamm-raising.svg'
+import IMG_COWAMM_REKT from '@cowprotocol/assets/images/image-cowamm-rekt.svg'
+import { Color, ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 
+import FAQ from '@/components/FAQ'
+import LazySVG from '@/components/LazySVG'
+import { Link, LinkType } from '@/components/Link'
+import { COW_AMM_CONTENT, FAQ_DATA, LVR_CONTENT, QUOTES } from '@/data/cow-amm/const'
 import {
   ContainerCard,
   ContainerCardSection,
@@ -35,11 +37,7 @@ import {
   TopicList,
   TopicTitle,
 } from '@/styles/styled'
-
-import LazySVG from '@/components/LazySVG'
-import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
-
-import { COW_AMM_CONTENT, FAQ_DATA, LVR_CONTENT, QUOTES } from '@/data/cow-amm/const'
+import { CowFiCategory } from 'src/common/analytics/types'
 
 export default function Page() {
   const analytics = useCowAnalytics()
@@ -76,7 +74,7 @@ export default function Page() {
         </HeroImage>
       </HeroContainer>
 
-      <MetricsCard bgColor={Color.neutral100} color={Color.cowamm_dark_green} columns={3} touchFooter>
+      <MetricsCard bgColor={`var(${UI.COLOR_NEUTRAL_100})`} color={Color.cowamm_dark_green} columns={3} touchFooter>
         <MetricsItem dividerColor={Color.cowamm_green_light}>
           <h2>4.75%</h2>
           <p>more TVL achieved than reference pool (beta phase)</p>
@@ -111,9 +109,9 @@ export default function Page() {
         </Link>
       </MetricsCard>
 
-      <ContainerCard bgColor={Color.neutral10}>
+      <ContainerCard bgColor={`var(${UI.COLOR_NEUTRAL_10})`}>
         <ContainerCardSection>
-          <SectionTitleWrapper color={Color.neutral100} maxWidth={1100} gap={56}>
+          <SectionTitleWrapper color={`var(${UI.COLOR_NEUTRAL_100})`} maxWidth={1100} gap={56}>
             <SectionTitleIcon $size={98}>
               <LazySVG src={IMG_ICON_CROWN_COW} />
             </SectionTitleIcon>
@@ -133,10 +131,10 @@ export default function Page() {
                 paddingMobile="0"
               >
                 <TopicCardInner contentAlign="left">
-                  <TopicDescription fontSize={28} color={Color.neutral95}>
+                  <TopicDescription fontSize={28} color={`var(${UI.COLOR_NEUTRAL_95})`}>
                     {content.description1}
                   </TopicDescription>
-                  <TopicDescription fontSize={21} color={Color.neutral50}>
+                  <TopicDescription fontSize={21} color={`var(${UI.COLOR_NEUTRAL_50})`}>
                     <sup>1</sup> {content.description2}
                   </TopicDescription>
                 </TopicCardInner>
@@ -159,7 +157,12 @@ export default function Page() {
 
       <ContainerCard bgColor={'transparent'}>
         <ContainerCardSection>
-          <SectionTitleWrapper padding="150px 0 0" marginMobile="0 auto" maxWidth={1170} color={Color.neutral10}>
+          <SectionTitleWrapper
+            padding="150px 0 0"
+            marginMobile="0 auto"
+            maxWidth={1170}
+            color={`var(${UI.COLOR_NEUTRAL_10})`}
+          >
             <SectionTitleIcon $size={128}>
               <LazySVG src={IMG_ICON_BULB_COW} />
             </SectionTitleIcon>
@@ -202,9 +205,9 @@ export default function Page() {
         </ContainerCardSection>
       </ContainerCard>
 
-      <ContainerCard bgColor={Color.neutral100}>
+      <ContainerCard bgColor={`var(${UI.COLOR_NEUTRAL_100})`}>
         <ContainerCardSection>
-          <SectionTitleWrapper color={Color.neutral10} maxWidth={1100} gap={56}>
+          <SectionTitleWrapper color={`var(${UI.COLOR_NEUTRAL_10})`} maxWidth={1100} gap={56}>
             <SectionTitleIcon $size={98}>
               <LazySVG src={IMG_ICON_CROWN_COW} />
             </SectionTitleIcon>
@@ -225,7 +228,8 @@ export default function Page() {
             >
               <TopicCardInner contentAlign="left">
                 <TopicDescription fontSize={28}>
-                  CoW AMM LPs don't have to worry about LVR, which costs CF-AMM LPs 5-7% of their liquidity, on average.
+                  CoW AMM LPs don&apos;t have to worry about LVR, which costs CF-AMM LPs 5-7% of their liquidity, on
+                  average.
                   <br />
                   <br />
                   Backtesting research conducted over 6 months in 2023 shows that CoW AMM returns would have equalled or
@@ -250,7 +254,7 @@ export default function Page() {
 
       <ContainerCard bgColor={'transparent'}>
         <ContainerCardSection>
-          <SectionTitleWrapper color={Color.neutral10} maxWidth={1100} gap={56}>
+          <SectionTitleWrapper color={`var(${UI.COLOR_NEUTRAL_10})`} maxWidth={1100} gap={56}>
             <SectionTitleIcon $size={128}>
               <LazySVG src={IMG_ICON_BULB_COW} />
             </SectionTitleIcon>
@@ -280,7 +284,7 @@ export default function Page() {
               </TopicImage>
               <TopicCardInner contentAlign="left">
                 <TopicTitle fontSize={52}>Provide liquidity for your token without getting rekt</TopicTitle>
-                <TopicDescription fontSize={24} color={Color.neutral50}>
+                <TopicDescription fontSize={24} color={`var(${UI.COLOR_NEUTRAL_50})`}>
                   Healthy liquidity for DAO tokens reduces price impact, encourages investment and discourages
                   volatility. But DAOs can be reluctant to provide liquidity with treasury funds when their pools can be
                   exploited by arbitrageurs. CoW AMM makes providing liquidity more attractive to DAOs of all sizes
@@ -299,7 +303,7 @@ export default function Page() {
             >
               <TopicCardInner contentAlign="left">
                 <TopicTitle fontSize={52}>Unlock the power of passive income while reducing risk</TopicTitle>
-                <TopicDescription fontSize={24} color={Color.neutral50}>
+                <TopicDescription fontSize={24} color={`var(${UI.COLOR_NEUTRAL_50})`}>
                   With LVR in the rear view mirror, providing liquidity becomes identical to running a passive
                   investment strategy: solvers rebalance the pool at the correct market price to keep the value of its
                   reserves equal, thereby keeping portfolios balanced and reducing risk. On top of that, liquidity
@@ -322,7 +326,7 @@ export default function Page() {
         </ContainerCardSection>
       </ContainerCard>
 
-      <ContainerCard bgColor={Color.neutral10} color={Color.neutral98}>
+      <ContainerCard bgColor={`var(${UI.COLOR_NEUTRAL_10})`} color={`var(${UI.COLOR_NEUTRAL_98})`}>
         <ContainerCardSection>
           <SectionTitleWrapper padding="150px 0 56px">
             <SectionTitleIcon $size={82}>
@@ -353,7 +357,7 @@ export default function Page() {
         </ContainerCardSection>
       </ContainerCard>
 
-      <ContainerCard bgColor={Color.neutral90} color={Color.neutral10} touchFooter>
+      <ContainerCard bgColor={`var(${UI.COLOR_NEUTRAL_90})`} color={`var(${UI.COLOR_NEUTRAL_10})`} touchFooter>
         <ContainerCardSection padding={'0 0 100px'}>
           <SectionTitleWrapper>
             <SectionTitleIcon $size={62}>

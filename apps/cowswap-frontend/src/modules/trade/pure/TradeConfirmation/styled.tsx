@@ -56,7 +56,6 @@ export const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
-  font-size: 14px;
   padding: 0 10px 10px;
 `
 
