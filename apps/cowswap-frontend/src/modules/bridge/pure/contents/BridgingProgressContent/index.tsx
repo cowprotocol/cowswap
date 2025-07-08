@@ -45,7 +45,7 @@ export function BridgingProgressContent(props: BridgingContentProps): ReactNode 
       ) : isFailed ? (
         <FailedBridgingContent />
       ) : (
-        <PendingBridgingContent />
+        <PendingBridgingContent sourceChainId={sourceChainId} statusResult={statusResult} />
       )}
     </QuoteBridgeContent>
   )
