@@ -40,7 +40,7 @@ export function getContract(
   address: string,
   ABI: ContractInterface,
   provider: JsonRpcProvider,
-  account?: string
+  account?: string,
 ): Contract {
   if (!isAddress(address) || address === AddressZero) {
     throw Error(`Invalid 'address' parameter '${address}'.`)
@@ -65,8 +65,11 @@ export type BlockExplorerLinkType =
   | 'event'
   | 'contract'
 
-function getEtherscanUrl(chainId: SupportedChainId, data: string, type: BlockExplorerLinkType): string {
-  const basePath = CHAIN_INFO[chainId].explorer
+// eslint-disable-next-line complexity
+function getEtherscanUrl(chainId: SupportedChainId, data: string, type: BlockExplorerLinkType, base?: string): string {
+  const basePath = base || CHAIN_INFO[chainId]?.explorer
+
+  if (!basePath) return ''
 
   switch (type) {
     case 'transaction':
@@ -88,8 +91,13 @@ function getEtherscanUrl(chainId: SupportedChainId, data: string, type: BlockExp
 }
 
 // Get the right block explorer URL by chainId
-export function getBlockExplorerUrl(chainId: SupportedChainId, type: BlockExplorerLinkType, data: string): string {
-  return getEtherscanUrl(chainId, data, type)
+export function getBlockExplorerUrl(
+  chainId: SupportedChainId,
+  type: BlockExplorerLinkType,
+  data: string,
+  base?: string,
+): string {
+  return getEtherscanUrl(chainId, data, type, base)
 }
 
 // TODO: Add proper return type annotation

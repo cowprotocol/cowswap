@@ -66,13 +66,18 @@ export function BridgeDetailsContent({ crossChainOrder }: BridgeDetailsContentPr
             labelPrefix="To at least:"
             bridgeToken={destinationToken}
             amount={outputAmount?.toString() || '0'}
+            bridgeProvider={crossChainOrder.provider}
           />
         </AmountSectionWrapper>
       </DetailRow>
 
       <DetailRow label="You received" tooltipText={BridgeDetailsTooltips.youReceived}>
         {outputAmount && destinationToken && bridgeStatus === BridgeStatus.EXECUTED && (
-          <BridgeReceiveAmount amount={outputAmount} destinationToken={destinationToken} />
+          <BridgeReceiveAmount
+            amount={outputAmount}
+            destinationToken={destinationToken}
+            bridgeProvider={crossChainOrder.provider}
+          />
         )}
       </DetailRow>
 
