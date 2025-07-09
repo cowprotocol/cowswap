@@ -1,26 +1,29 @@
 import { ReactNode } from 'react'
 
+import type { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+
 import { StepContent, SwapSummaryRow } from './styled'
 
-import { SwapAndBridgeContext, SwapAndBridgeStatus } from '../../types'
+import { SwapAndBridgeStatus, SwapResultContext } from '../../types'
 import { BridgeDetailsContainer } from '../BridgeDetailsContainer'
 import { SwapResultContent } from '../contents/SwapResultContent'
 import { SwapStatusIcons } from '../StopStatus'
 
 interface SwapStepRowProps {
-  context: SwapAndBridgeContext
+  swapResultContext: SwapResultContext
+
+  sourceChainName: string
+
+  sourceAmounts: {
+    sellAmount: CurrencyAmount<Currency>
+    buyAmount: CurrencyAmount<Currency>
+  }
 }
 
 // In that case swap is always already happened
 const swapStatus = SwapAndBridgeStatus.DONE
 
-export function SwapStepRow({ context }: SwapStepRowProps): ReactNode {
-  const {
-    bridgeProvider,
-    overview: { sourceAmounts, sourceChainName },
-    swapResultContext,
-  } = context
-
+export function SwapStepRow({ swapResultContext, sourceAmounts, sourceChainName }: SwapStepRowProps): ReactNode {
   return (
     <SwapSummaryRow>
       <b>Swap</b>
@@ -35,7 +38,6 @@ export function SwapStepRow({ context }: SwapStepRowProps): ReactNode {
           circleSize={21}
           titlePrefix=""
           protocolName="Swapped on CoW Protocol"
-          bridgeProvider={bridgeProvider}
           chainName={sourceChainName}
           sellAmount={sourceAmounts.sellAmount}
           buyAmount={sourceAmounts.buyAmount}

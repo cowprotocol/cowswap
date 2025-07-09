@@ -18,7 +18,11 @@ export function BridgeActivitySummary(props: BridgeActivitySummaryProps): ReactN
     <>
       <BridgeSummaryHeader context={context} />
 
-      <SwapStepRow context={context} />
+      <SwapStepRow
+        swapResultContext={context.swapResultContext}
+        sourceAmounts={context.overview.sourceAmounts}
+        sourceChainName={context.overview.sourceChainName}
+      />
 
       <BridgeStepRow context={context} />
 
