@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { useTokensByAddressMap } from '@cowprotocol/tokens'
+import { TokenWithLogo } from '@cowprotocol/common-const'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import type { Order } from 'legacy/state/orders/actions'
@@ -17,11 +17,8 @@ import type { SolverCompetition } from '../types/soverCompetition'
 export function useSwapResultsContext(
   order: Order | undefined,
   winningSolver: SolverCompetition | undefined,
+  intermediateToken: TokenWithLogo | undefined,
 ): SwapResultContext | undefined {
-  const tokensByAddress = useTokensByAddressMap()
-
-  const intermediateToken = order && tokensByAddress[order.buyToken.toLowerCase()]
-
   const executedSummary = useMemo(() => {
     return order ? getExecutedSummaryData(order) : undefined
   }, [order])

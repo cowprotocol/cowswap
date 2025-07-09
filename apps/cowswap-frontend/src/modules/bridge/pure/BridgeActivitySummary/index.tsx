@@ -10,13 +10,14 @@ import { SwapAndBridgeContext, SwapAndBridgeOverview, SwapResultContext } from '
 
 interface BridgeActivitySummaryProps {
   swapAndBridgeContext: SwapAndBridgeContext | undefined
-  swapResultContext: SwapResultContext
+  swapResultContext: SwapResultContext | undefined
   swapAndBridgeOverview: SwapAndBridgeOverview
   children: ReactNode
+  orderBasicDetails: ReactNode
 }
 
 export function BridgeActivitySummary(props: BridgeActivitySummaryProps): ReactNode {
-  const { swapAndBridgeContext, swapResultContext, swapAndBridgeOverview, children } = props
+  const { swapAndBridgeContext, swapResultContext, swapAndBridgeOverview, orderBasicDetails, children } = props
 
   return (
     <>
@@ -26,7 +27,9 @@ export function BridgeActivitySummary(props: BridgeActivitySummaryProps): ReactN
         swapResultContext={swapResultContext}
         sourceAmounts={swapAndBridgeOverview.sourceAmounts}
         sourceChainName={swapAndBridgeOverview.sourceChainName}
-      />
+      >
+        {orderBasicDetails}
+      </SwapStepRow>
 
       {swapAndBridgeContext ? (
         <BridgeStepRow context={swapAndBridgeContext} />

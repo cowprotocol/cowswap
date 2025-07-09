@@ -1,17 +1,17 @@
 import { useMemo } from 'react'
 
-import { getChainInfo } from '@cowprotocol/common-const'
+import { getChainInfo, TokenWithLogo } from '@cowprotocol/common-const'
 import { type Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useBridgeSupportedNetworks } from 'entities/bridgeProvider'
 
 import type { Order } from 'legacy/state/orders/actions'
 
-import type { SwapAndBridgeOverview, SwapResultContext } from 'modules/bridge/types'
+import type { SwapAndBridgeOverview } from 'modules/bridge/types'
 
 export function useSwapAndBridgeOverview(
   order: Order | undefined,
-  swapResultContext: SwapResultContext | undefined,
+  intermediateToken: TokenWithLogo | undefined,
   targetAmounts?: {
     sellAmount: CurrencyAmount<Currency>
     buyAmount: CurrencyAmount<Currency>
@@ -20,7 +20,7 @@ export function useSwapAndBridgeOverview(
   const { data: bridgeSupportedNetworks } = useBridgeSupportedNetworks()
 
   return useMemo(() => {
-    if (!order || !swapResultContext) return undefined
+    if (!order || !intermediateToken) return undefined
 
     const sourceChainId = order.inputToken.chainId
     const destinationChainId = order.outputToken.chainId
@@ -35,9 +35,10 @@ export function useSwapAndBridgeOverview(
       targetCurrency: order.outputToken,
       sourceAmounts: {
         sellAmount: CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount),
-        buyAmount: CurrencyAmount.fromRawAmount(swapResultContext.intermediateToken, order.buyAmount),
+        buyAmount: CurrencyAmount.fromRawAmount(intermediateToken, order.buyAmount),
+        bridgingApproximateAmount: CurrencyAmount.fromRawAmount(order.outputToken, order.buyAmount),
       },
       targetAmounts,
     }
-  }, [order, swapResultContext, targetAmounts, bridgeSupportedNetworks])
+  }, [order, intermediateToken, targetAmounts, bridgeSupportedNetworks])
 }

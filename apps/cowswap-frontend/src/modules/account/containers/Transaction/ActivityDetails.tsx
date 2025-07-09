@@ -19,6 +19,7 @@ import { useToggleAccountModal } from 'modules/account'
 import { BridgeActivitySummary } from 'modules/bridge'
 import { EthFlowStepper } from 'modules/ethFlow'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
+import { ConfirmDetailsItem } from 'modules/trade'
 
 import { OrderHooksDetails } from 'common/containers/OrderHooksDetails'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
@@ -218,7 +219,8 @@ export function ActivityDetails(props: {
   const skipBridgingDisplay = isExpired || isCancelled || isFailed || isCancelling
   const fullAppData = order?.apiAdditionalInfo?.fullAppData
   const orderBridgeProvider = fullAppData ? bridgingSdk.getProviderFromAppData(fullAppData) : undefined
-  const isBridgeOrder = !!orderBridgeProvider && !skipBridgingDisplay
+  const isBridgeOrder =
+    (!!orderBridgeProvider || order?.inputToken.chainId !== order?.outputToken.chainId) && !skipBridgingDisplay
 
   const { swapAndBridgeContext, swapResultContext, swapAndBridgeOverview } = useSwapAndBridgeContext(
     chainId,
@@ -326,10 +328,23 @@ export function ActivityDetails(props: {
     </OrderHooksDetails>
   ) : null
 
+  const orderBasicDetails = (
+    <>
+      <ConfirmDetailsItem withTimelineDot label="Limit price">
+        <span>
+          <RateInfo noLabel rateInfoParams={rateInfoParams} />
+        </span>
+      </ConfirmDetailsItem>
+      <ConfirmDetailsItem withTimelineDot label="Valid to">
+        <span>{validTo}</span>
+      </ConfirmDetailsItem>
+    </>
+  )
+
   return (
     <>
       {/* Warning banner if custom recipient */}
-      {isCustomRecipient && isCustomRecipientWarningBannerVisible && (
+      {isCustomRecipient && isCustomRecipientWarningBannerVisible && !isBridgeOrder && (
         <CustomRecipientWarningBanner
           borderRadius={'12px 12px 0 0'}
           orientation={BannerOrientation.Horizontal}
@@ -362,11 +377,12 @@ export function ActivityDetails(props: {
           {isOrder ? (
             <>
               {order && isBridgeOrder ? (
-                swapResultContext && swapAndBridgeOverview ? (
+                swapAndBridgeOverview ? (
                   <BridgeActivitySummary
                     swapAndBridgeContext={swapAndBridgeContext}
                     swapResultContext={swapResultContext}
                     swapAndBridgeOverview={swapAndBridgeOverview}
+                    orderBasicDetails={orderBasicDetails}
                   >
                     {hooksDetails}
                   </BridgeActivitySummary>
