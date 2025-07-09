@@ -48,6 +48,10 @@ const swapAndBridgeContextMock: SwapAndBridgeContext = {
     sourceAmounts: {
       sellAmount: receiveAmountInfo.beforeNetworkCosts.sellAmount,
       buyAmount: receiveAmountInfo.afterNetworkCosts.buyAmount,
+      bridgingApproximateAmount: CurrencyAmount.fromRawAmount(
+        receiveAmountInfo.beforeNetworkCosts.sellAmount.currency,
+        receiveAmountInfo.afterNetworkCosts.buyAmount.quotient.toString(),
+      ),
     },
     targetAmounts: {
       sellAmount: receiveAmountInfo.afterSlippage.buyAmount,
@@ -79,6 +83,7 @@ const swapAndBridgeContextMock: SwapAndBridgeContext = {
       '120000000000000000',
     ),
     surplusAmountUsd: CurrencyAmount.fromRawAmount(USDC_BASE, '1300'),
+    intermediateToken: USDC_MAINNET,
   },
   bridgingStatus: SwapAndBridgeStatus.PENDING,
 }

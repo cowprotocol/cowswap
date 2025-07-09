@@ -1,4 +1,4 @@
-import { ReactElement, useCallback, useMemo } from 'react'
+import { ReactElement, ReactNode, useCallback, useMemo } from 'react'
 
 import { shortenOrderId } from '@cowprotocol/common-utils'
 import { EnrichedOrder, SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -32,9 +32,7 @@ export interface BaseOrderNotificationProps {
   children?: ReactElement
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function OrderNotification(props: BaseOrderNotificationProps) {
+export function OrderNotification(props: BaseOrderNotificationProps): ReactNode {
   const { title, orderUid, orderType, transactionHash, chainId, messageType, children, orderInfo, isEthFlow } = props
 
   const allTokens = useTokensByAddressMap()
