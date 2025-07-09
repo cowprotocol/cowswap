@@ -1,4 +1,4 @@
-import { memo, ReactNode } from 'react'
+import { ReactNode } from 'react'
 
 import { BridgeProviderInfo } from '@cowprotocol/cow-sdk'
 import { ProductVariant, UI, ProductLogo } from '@cowprotocol/ui'
@@ -25,7 +25,7 @@ interface SingleProtocolIconProps {
   currentLogoHeight: number
 }
 
-const SingleProtocolIcon = memo(function SingleProtocolIcon({
+function SingleProtocolIcon({
   showOnlyFirst,
   secondProtocol,
   currentDisplaySize,
@@ -44,10 +44,9 @@ const SingleProtocolIcon = memo(function SingleProtocolIcon({
       {iconChild}
     </ProtocolIcon>
   )
-})
+}
 
-// Main component
-export const ProtocolIcons = memo(function ProtocolIcons({
+export function ProtocolIcons({
   secondProtocol,
   showOnlyFirst,
   showOnlySecond,
@@ -75,4 +74,4 @@ export const ProtocolIcons = memo(function ProtocolIcons({
       currentLogoHeight={currentLogoHeight}
     />
   )
-})
+}
