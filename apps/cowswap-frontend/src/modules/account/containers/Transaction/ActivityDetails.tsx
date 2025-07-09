@@ -220,7 +220,11 @@ export function ActivityDetails(props: {
   const orderBridgeProvider = fullAppData ? bridgingSdk.getProviderFromAppData(fullAppData) : undefined
   const isBridgeOrder = !!orderBridgeProvider && !skipBridgingDisplay
 
-  const { swapAndBridgeContext } = useSwapAndBridgeContext(chainId, isBridgeOrder ? order : undefined, undefined)
+  const { swapAndBridgeContext, swapResultContext, swapAndBridgeOverview } = useSwapAndBridgeContext(
+    chainId,
+    isBridgeOrder ? order : undefined,
+    undefined,
+  )
 
   const showProgressBarCallback = useMemo(() => {
     if (!showProgressBar) {
@@ -358,8 +362,14 @@ export function ActivityDetails(props: {
           {isOrder ? (
             <>
               {order && isBridgeOrder ? (
-                swapAndBridgeContext ? (
-                  <BridgeActivitySummary context={swapAndBridgeContext}>{hooksDetails}</BridgeActivitySummary>
+                swapResultContext && swapAndBridgeOverview ? (
+                  <BridgeActivitySummary
+                    swapAndBridgeContext={swapAndBridgeContext}
+                    swapResultContext={swapResultContext}
+                    swapAndBridgeOverview={swapAndBridgeOverview}
+                  >
+                    {hooksDetails}
+                  </BridgeActivitySummary>
                 ) : (
                   <BridgeOrderLoading order={order} fulfillmentTime={fulfillmentTime}>
                     {hooksDetails}

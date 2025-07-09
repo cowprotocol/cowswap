@@ -34,7 +34,7 @@ const bridgeStatusMap: Record<BridgeStatus, SwapAndBridgeStatus> = {
   [BridgeStatus.UNKNOWN]: SwapAndBridgeStatus.DEFAULT,
 }
 
-interface SwapAndBridgeContexts {
+export interface SwapAndBridgeContexts {
   swapAndBridgeContext: SwapAndBridgeContext | undefined
   swapResultContext: SwapResultContext | undefined
   swapAndBridgeOverview: SwapAndBridgeOverview | undefined
