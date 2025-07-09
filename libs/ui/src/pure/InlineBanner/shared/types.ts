@@ -24,6 +24,8 @@ export interface InlineBannerProps {
   onClose?: () => void
   backDropBlur?: boolean
   fontSize?: number
+  noBackground?: boolean
+  breakWord?: boolean
 }
 
 export interface CollapsibleInlineBannerProps extends Omit<InlineBannerProps, 'children'> {
