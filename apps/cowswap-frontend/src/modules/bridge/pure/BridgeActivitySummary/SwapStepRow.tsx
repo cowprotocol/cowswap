@@ -26,7 +26,7 @@ export function SwapStepRow({ context }: SwapStepRowProps): ReactNode {
       <b>Swap</b>
       <StepContent>
         <BridgeDetailsContainer
-          isCollapsible={true}
+          isCollapsible
           defaultExpanded={false}
           status={swapStatus}
           statusIcon={SwapStatusIcons[swapStatus]}
