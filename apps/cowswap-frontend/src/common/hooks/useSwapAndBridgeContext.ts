@@ -23,6 +23,7 @@ import {
 
 import type { SolverCompetition } from 'common/types/soverCompetition'
 
+import { useSwapAndBridgeOverview } from './useSwapAndBridgeOverview'
 import { useSwapResultsContext } from './useSwapResultsContext'
 
 const bridgeStatusMap: Record<BridgeStatus, SwapAndBridgeStatus> = {
@@ -33,6 +34,12 @@ const bridgeStatusMap: Record<BridgeStatus, SwapAndBridgeStatus> = {
   [BridgeStatus.UNKNOWN]: SwapAndBridgeStatus.DEFAULT,
 }
 
+interface SwapAndBridgeContexts {
+  swapAndBridgeContext: SwapAndBridgeContext | undefined
+  swapResultContext: SwapResultContext | undefined
+  swapAndBridgeOverview: SwapAndBridgeOverview | undefined
+}
+
 // TODO: Break down this large function into smaller functions
 // eslint-disable-next-line max-lines-per-function
 export function useSwapAndBridgeContext(
@@ -40,7 +47,7 @@ export function useSwapAndBridgeContext(
   order: Order | undefined,
   winningSolver: SolverCompetition | undefined,
   bridgeQuoteAmounts?: BridgeQuoteAmounts,
-): { swapAndBridgeContext: SwapAndBridgeContext | undefined; swapResultContext: SwapResultContext | undefined } {
+): SwapAndBridgeContexts {
   const { account } = useWalletInfo()
   const { data: bridgeSupportedNetworks } = useBridgeSupportedNetworks()
 
@@ -53,6 +60,49 @@ export function useSwapAndBridgeContext(
   }, [fullAppData])
 
   const swapResultContext = useSwapResultsContext(order, winningSolver)
+  const intermediateToken = swapResultContext?.intermediateToken
+
+  const bridgeOutputAmount = crossChainOrder?.bridgingParams.outputAmount
+
+  /**
+   * Get receive amount from crossChainOrder if possible
+   * Otherwise, fallback to bridgeQuoteAmounts
+   */
+  const bridgeReceiveAmount = useMemo(() => {
+    if (!order) return undefined
+
+    return (
+      (!!crossChainOrder &&
+        !!bridgeOutputAmount &&
+        CurrencyAmount.fromRawAmount(order.outputToken, bridgeOutputAmount.toString())) ||
+      bridgeQuoteAmounts?.bridgeMinReceiveAmount
+    )
+  }, [order, bridgeQuoteAmounts, crossChainOrder, bridgeOutputAmount])
+
+  /**
+   * Bridge provider might not be able to derive `bridgingParams.outputAmount` before destination chain transaction is mined
+   * In that case we will display values we got from a quote before
+   */
+  const targetAmounts = useMemo(() => {
+    if (!intermediateToken) return undefined
+
+    return bridgeQuoteAmounts && !bridgeOutputAmount
+      ? {
+          sellAmount: bridgeQuoteAmounts.swapMinReceiveAmount,
+          buyAmount: bridgeQuoteAmounts.bridgeMinReceiveAmount,
+        }
+      : crossChainOrder && bridgeReceiveAmount
+        ? {
+            sellAmount: CurrencyAmount.fromRawAmount(
+              intermediateToken,
+              crossChainOrder.bridgingParams.inputAmount.toString(),
+            ),
+            buyAmount: bridgeReceiveAmount,
+          }
+        : undefined
+  }, [bridgeQuoteAmounts, crossChainOrder, bridgeOutputAmount, bridgeReceiveAmount, intermediateToken])
+
+  const swapAndBridgeOverview = useSwapAndBridgeOverview(order, swapResultContext, targetAmounts)
 
   const isBridgingExecuted = crossChainOrder?.statusResult.status === BridgeStatus.EXECUTED
 
@@ -65,7 +115,7 @@ export function useSwapAndBridgeContext(
   // TODO: Reduce function complexity by extracting logic
   // eslint-disable-next-line complexity
   const swapAndBridgeContext: SwapAndBridgeContext | undefined = useMemo(() => {
-    if (!account || !bridgeProvider || !swapResultContext || !order) {
+    if (!account || !bridgeProvider || !swapResultContext || !order || !swapAndBridgeOverview) {
       return undefined
     }
 
@@ -78,56 +128,13 @@ export function useSwapAndBridgeContext(
       return undefined
     }
 
-    const bridgeOutputAmount = crossChainOrder?.bridgingParams.outputAmount
-
-    /**
-     * Get receive amount from crossChainOrder if possible
-     * Otherwise, fallback to bridgeQuoteAmounts
-     */
-    const bridgeReceiveAmount =
-      (!!crossChainOrder &&
-        !!bridgeOutputAmount &&
-        CurrencyAmount.fromRawAmount(order.outputToken, bridgeOutputAmount.toString())) ||
-      bridgeQuoteAmounts?.bridgeMinReceiveAmount
-
-    /**
-     * Bridge provider might not be able to derive `bridgingParams.outputAmount` before destination chain transaction is mined
-     * In that case we will display values we got from a quote before
-     */
-    const targetAmounts =
-      bridgeQuoteAmounts && !bridgeOutputAmount
-        ? {
-            sellAmount: bridgeQuoteAmounts.swapMinReceiveAmount,
-            buyAmount: bridgeQuoteAmounts.bridgeMinReceiveAmount,
-          }
-        : crossChainOrder && bridgeReceiveAmount
-          ? {
-              sellAmount: CurrencyAmount.fromRawAmount(
-                swapResultContext.intermediateToken,
-                crossChainOrder.bridgingParams.inputAmount.toString(),
-              ),
-              buyAmount: bridgeReceiveAmount,
-            }
-          : undefined
-
-    const overview: SwapAndBridgeOverview = {
-      sourceChainName: sourceChainData.label,
-      targetChainName: destChainData.label,
-      targetCurrency: order.outputToken,
-      sourceAmounts: {
-        sellAmount: CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount),
-        buyAmount: CurrencyAmount.fromRawAmount(swapResultContext.intermediateToken, order.buyAmount),
-      },
-      targetAmounts,
-    }
-
     /**
      * Swap is finished, but bridging status is not loaded yet
      */
-    if (!crossChainOrder || !bridgeReceiveAmount || !overview.targetAmounts) {
+    if (!crossChainOrder || !bridgeReceiveAmount || !swapAndBridgeOverview.targetAmounts) {
       return {
         bridgingStatus: SwapAndBridgeStatus.DEFAULT,
-        overview,
+        overview: swapAndBridgeOverview,
         bridgeProvider,
         swapResultContext,
       }
@@ -151,21 +158,33 @@ export function useSwapAndBridgeContext(
       bridgeFee: null,
       estimatedTime: null,
       recipient: crossChainOrder.bridgingParams.recipient,
-      sellAmount: overview.targetAmounts.sellAmount,
-      buyAmount: overview.targetAmounts.buyAmount,
+      sellAmount: swapAndBridgeOverview.targetAmounts.sellAmount,
+      buyAmount: swapAndBridgeOverview.targetAmounts.buyAmount,
       buyAmountUsd: null,
     }
 
     return {
       bridgingStatus,
-      overview,
+      overview: swapAndBridgeOverview,
       bridgeProvider,
       quoteBridgeContext,
       bridgingProgressContext,
       swapResultContext,
       statusResult: crossChainOrder.statusResult,
     }
-  }, [order, swapResultContext, account, bridgeProvider, crossChainOrder, bridgeSupportedNetworks, bridgeQuoteAmounts])
+  }, [
+    order,
+    swapResultContext,
+    account,
+    bridgeProvider,
+    crossChainOrder,
+    bridgeSupportedNetworks,
+    bridgeReceiveAmount,
+    swapAndBridgeOverview,
+  ])
 
-  return useMemo(() => ({ swapAndBridgeContext, swapResultContext }), [swapAndBridgeContext, swapResultContext])
+  return useMemo(
+    () => ({ swapAndBridgeContext, swapResultContext, swapAndBridgeOverview }),
+    [swapAndBridgeContext, swapResultContext, swapAndBridgeOverview],
+  )
 }
