@@ -1,3 +1,4 @@
+import { TokenWithLogo } from '@cowprotocol/common-const'
 import type { BridgeProviderInfo, BridgeStatusResult, SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { Currency, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
 
@@ -77,6 +78,7 @@ export interface SwapResultContext {
   receivedAmountUsd: CurrencyAmount<Token> | null
   surplusAmount: CurrencyAmount<Currency>
   surplusAmountUsd: CurrencyAmount<Token> | null
+  intermediateToken: TokenWithLogo
 }
 
 export interface SwapAndBridgeContext {

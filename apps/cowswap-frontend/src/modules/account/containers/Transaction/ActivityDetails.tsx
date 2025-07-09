@@ -220,7 +220,7 @@ export function ActivityDetails(props: {
   const orderBridgeProvider = fullAppData ? bridgingSdk.getProviderFromAppData(fullAppData) : undefined
   const isBridgeOrder = !!orderBridgeProvider && !skipBridgingDisplay
 
-  const swapAndBridgeContext = useSwapAndBridgeContext(chainId, isBridgeOrder ? order : undefined, undefined)
+  const { swapAndBridgeContext } = useSwapAndBridgeContext(chainId, isBridgeOrder ? order : undefined, undefined)
 
   const showProgressBarCallback = useMemo(() => {
     if (!showProgressBar) {
