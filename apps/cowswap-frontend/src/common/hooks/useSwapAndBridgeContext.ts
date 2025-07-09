@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
-import { SupportedChainId, BridgeStatus, CrossChainOrder } from '@cowprotocol/cow-sdk'
+import { BridgeStatus, CrossChainOrder, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useTokensByAddressMap } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
@@ -25,6 +25,8 @@ import { useUsdAmount } from 'modules/usdAmount'
 
 import type { SolverCompetition } from 'common/types/soverCompetition'
 import { getExecutedSummaryData } from 'utils/getExecutedSummaryData'
+
+import { calculateTargetAmountsForNotMinedTx } from '../utils/calculateTargetAmountsForNotMinedTx'
 
 const bridgeStatusMap: Record<BridgeStatus, SwapAndBridgeStatus> = {
   [BridgeStatus.IN_PROGRESS]: SwapAndBridgeStatus.PENDING,
@@ -123,16 +125,8 @@ export function useSwapAndBridgeContext(
      * In that case we will display values we got from a quote before
      */
     const targetAmounts =
-      // when tx from bridge hasn't been mined yet
       bridgeQuoteAmounts && !bridgeOutputAmount
-        ? receivedAmount ? { // bridge already received money
-            sellAmount: receivedAmount,
-          // todo need to approximate it
-            buyAmount: bridgeQuoteAmounts.bridgeMinReceiveAmount,
-          } : {
-          sellAmount: bridgeQuoteAmounts.swapMinReceiveAmount,
-          buyAmount: bridgeQuoteAmounts.bridgeMinReceiveAmount,
-        }
+        ? calculateTargetAmountsForNotMinedTx(bridgeQuoteAmounts, receivedAmount)
         : crossChainOrder && bridgeReceiveAmount
           ? {
               sellAmount: CurrencyAmount.fromRawAmount(
