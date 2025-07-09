@@ -100,6 +100,7 @@ export function TradeBasicConfirmDetails(props: Props) {
         stylized={true}
         rateInfoParams={rateInfoParams}
         isInvertedState={isInvertedState}
+        fontBold
       />
 
       <TradeFeesAndCosts
