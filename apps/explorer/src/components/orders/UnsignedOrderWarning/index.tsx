@@ -2,7 +2,7 @@ import { BannerOrientation, InlineBanner, StatusColorVariant } from '@cowprotoco
 
 export const UnsignedOrderWarning: React.FC = () => {
   return (
-    <InlineBanner orientation={BannerOrientation.Horizontal} bannerType={StatusColorVariant.Alert} padding="0">
+    <InlineBanner orientation={BannerOrientation.Horizontal} bannerType={StatusColorVariant.Alert} width="fit-content">
       An unsigned order is not necessarily placed by the owner's account. Please be cautious.
     </InlineBanner>
   )
