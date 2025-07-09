@@ -37,6 +37,7 @@ export interface RateInfoProps {
   opacitySymbol?: boolean
   noFiat?: boolean
   rightAlign?: boolean
+  fontBold?: boolean
 }
 
 const Wrapper = styled.div<{ stylized: boolean }>`
@@ -44,8 +45,8 @@ const Wrapper = styled.div<{ stylized: boolean }>`
   justify-content: space-between;
   width: 100%;
   align-items: center;
-  font-size: 13px;
-  font-weight: 500;
+  font-size: inherit;
+  font-weight: inherit;
   gap: 10px;
   flex: 1 1 min-content;
 `
@@ -111,7 +112,7 @@ const InvertIcon = styled.div`
   }
 `
 
-export const RateWrapper = styled.button<{ rightAlign?: boolean }>`
+export const RateWrapper = styled.button<{ rightAlign?: boolean; fontBold?: boolean }>`
   display: inline;
   background: none;
   border: 0;
@@ -120,10 +121,11 @@ export const RateWrapper = styled.button<{ rightAlign?: boolean }>`
   padding: 0;
   cursor: pointer;
   color: inherit;
-  font-size: 13px;
+  font-size: inherit;
+  font-family: var(${UI.FONT_FAMILY_PRIMARY});
   letter-spacing: -0.1px;
   text-align: ${({ rightAlign }) => (rightAlign ? 'right' : 'left')};
-  font-weight: 500;
+  font-weight: ${({ fontBold }) => (fontBold ? 500 : 'inherit')};
   width: 100%;
 `
 
@@ -159,6 +161,7 @@ export function RateInfo({
   opacitySymbol = false,
   noFiat = false,
   rightAlign = false,
+  fontBold = false,
 }: RateInfoProps): ReactNode | null {
   const { chainId, inputCurrencyAmount, outputCurrencyAmount, activeRateFiatAmount, invertedActiveRateFiatAmount } =
     rateInfoParams
@@ -234,7 +237,7 @@ export function RateInfo({
         </RateLabel>
       )}
       <div>
-        <RateWrapper onClick={toggleInverted} rightAlign={rightAlign}>
+        <RateWrapper onClick={toggleInverted} rightAlign={rightAlign} fontBold={fontBold}>
           <span
             title={
               currentActiveRate.toFixed(rateOutputCurrency.decimals || DEFAULT_DECIMALS) +
