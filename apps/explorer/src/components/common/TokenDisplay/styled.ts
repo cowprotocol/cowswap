@@ -1,6 +1,6 @@
 import { Color } from '@cowprotocol/ui'
 
-import TokenImg from 'components/common/TokenImg'
+import { TokenImg } from 'components/common/TokenImg'
 import styled from 'styled-components/macro'
 
 export const Wrapper = styled.div`
