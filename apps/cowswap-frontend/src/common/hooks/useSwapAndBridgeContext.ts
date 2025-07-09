@@ -123,11 +123,16 @@ export function useSwapAndBridgeContext(
      * In that case we will display values we got from a quote before
      */
     const targetAmounts =
+      // when tx from bridge hasn't been mined yet
       bridgeQuoteAmounts && !bridgeOutputAmount
-        ? {
-            sellAmount: bridgeQuoteAmounts.swapMinReceiveAmount,
+        ? receivedAmount ? { // bridge already received money
+            sellAmount: receivedAmount,
+          // todo need to approximate it
             buyAmount: bridgeQuoteAmounts.bridgeMinReceiveAmount,
-          }
+          } : {
+          sellAmount: bridgeQuoteAmounts.swapMinReceiveAmount,
+          buyAmount: bridgeQuoteAmounts.bridgeMinReceiveAmount,
+        }
         : crossChainOrder && bridgeReceiveAmount
           ? {
               sellAmount: CurrencyAmount.fromRawAmount(
