@@ -1,33 +1,23 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`useTradeQuotePolling() When wallet is NOT connected Then the "receiver" field in the quote request should be undefined 1`] = `
-[
-  {
-    "account": "0x0000000000000000000000000000000000000000",
-    "amount": 10000000n,
-    "appCode": "CoW Swap",
-    "buyTokenAddress": "0x0625aFB445C3B6B7B929342a04A22599fd5dBB59",
-    "buyTokenChainId": 11155111,
-    "buyTokenDecimals": 18,
-    "kind": "sell",
-    "owner": "0x0000000000000000000000000000000000000000",
-    "partiallyFillable": false,
-    "receiver": undefined,
-    "sellTokenAddress": "0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14",
-    "sellTokenChainId": 11155111,
-    "sellTokenDecimals": 18,
-    "signer": {},
-    "slippageBps": undefined,
-    "validFor": 1800,
-  },
-  {
-    "appData": undefined,
-    "quoteRequest": {
-      "priceQuality": "optimal",
-    },
-    "quoteSigner": undefined,
-  },
-]
+{
+  "account": "0xD711bD26Bf5B153001a7C0ACcb289782b6f775e9",
+  "amount": 10000000n,
+  "appCode": "CoW Swap",
+  "buyTokenAddress": "0x0625aFB445C3B6B7B929342a04A22599fd5dBB59",
+  "buyTokenChainId": 11155111,
+  "buyTokenDecimals": 18,
+  "kind": "sell",
+  "owner": "0xD711bD26Bf5B153001a7C0ACcb289782b6f775e9",
+  "partiallyFillable": false,
+  "receiver": undefined,
+  "sellTokenAddress": "0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14",
+  "sellTokenChainId": 11155111,
+  "sellTokenDecimals": 18,
+  "slippageBps": undefined,
+  "validFor": 1800,
+}
 `;
 
 exports[`useTradeQuotePolling() When wallet is connected Then should put account address into "receiver" field in the quote request 1`] = `
