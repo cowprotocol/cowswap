@@ -1,3 +1,5 @@
 export { BridgeOrdersCleanUpdater } from './BridgeOrdersCleanUpdater'
 export { useAddBridgeOrderQuote } from './useAddBridgeOrderQuote'
 export { useBridgeOrderQuote } from './useBridgeOrderQuote'
+export { usePendingBridgeOrders } from './usePendingBridgeOrders'
+export { useCrossChainOrder } from './useCrossChainOrder'

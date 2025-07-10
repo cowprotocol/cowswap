@@ -1,18 +1,17 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
-import { SupportedChainId, BridgeStatus, CrossChainOrder } from '@cowprotocol/cow-sdk'
+import { SupportedChainId, BridgeStatus } from '@cowprotocol/cow-sdk'
 import { useTokensByAddressMap } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import { useBridgeOrderQuote } from 'entities/bridgeOrders'
+import { useBridgeOrderQuote, useCrossChainOrder } from 'entities/bridgeOrders'
 import { useBridgeSupportedNetworks } from 'entities/bridgeProvider'
 import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 
 import type { Order } from 'legacy/state/orders/actions'
 
-import { useUpdateBridgeOrderData } from 'modules/bridge/hooks/useUpdateBridgeOrderData'
 import {
   BridgingProgressContext,
   QuoteBridgeContext,
@@ -52,7 +51,7 @@ export function useSwapAndBridgeContext(
   const { data: bridgeSupportedNetworks } = useBridgeSupportedNetworks()
   const tokensByAddress = useTokensByAddressMap()
 
-  const [crossChainOrder, setCrossChainOrder] = useState<CrossChainOrder | null>(null)
+  const { data: crossChainOrder } = useCrossChainOrder(chainId, order?.id)
 
   const intermediateToken = order && tokensByAddress[order.buyToken.toLowerCase()]
 
@@ -110,13 +109,6 @@ export function useSwapAndBridgeContext(
   }, [bridgeQuoteAmounts, crossChainOrder, bridgeOutputAmount, bridgeReceiveAmount, intermediateToken])
 
   const swapAndBridgeOverview = useSwapAndBridgeOverview(order, intermediateToken, targetAmounts)
-
-  const isBridgingExecuted = crossChainOrder?.statusResult.status === BridgeStatus.EXECUTED
-
-  /**
-   * Poll bridge provider to get current bridging status
-   */
-  useUpdateBridgeOrderData(chainId, isBridgingExecuted ? undefined : order, setCrossChainOrder)
 
   // TODO: Break down this large function into smaller functions
   // TODO: Reduce function complexity by extracting logic

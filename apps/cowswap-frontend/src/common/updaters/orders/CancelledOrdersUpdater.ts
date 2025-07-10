@@ -5,6 +5,7 @@ import { EnrichedOrder, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk
 import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useAddOrderToSurplusQueue } from 'entities/surplusModal'
+import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 
 import { MARKET_OPERATOR_API_POLL_INTERVAL } from 'legacy/state/orders/consts'
 import { useCancelledOrders, useFulfillOrdersBatch } from 'legacy/state/orders/hooks'
@@ -45,8 +46,6 @@ export function CancelledOrdersUpdater(): null {
   const fulfillOrdersBatch = useFulfillOrdersBatch()
 
   const updateOrders = useCallback(
-    // TODO: Break down this large function into smaller functions
-    // eslint-disable-next-line max-lines-per-function
     async (chainId: ChainId, account: string, isSafeWallet: boolean) => {
       const lowerCaseAccount = account.toLowerCase()
       const now = Date.now()
@@ -114,7 +113,12 @@ export function CancelledOrdersUpdater(): null {
           })
 
           fulfilled.forEach((order) => {
-            addOrderToSurplusQueue(order.uid)
+            const orderBridgeProvider = order.fullAppData && bridgingSdk.getProviderFromAppData(order.fullAppData)
+            const isBridgingOrder = !!orderBridgeProvider
+
+            if (!isBridgingOrder) {
+              addOrderToSurplusQueue(order.uid)
+            }
 
             emitFulfilledOrderEvent(chainId, order)
           })

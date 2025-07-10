@@ -1,23 +1,15 @@
-import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
-
-import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { BridgeQuoteAmounts } from 'common/types/bridge'
 
-import { bridgeOrderQuoteAtom } from './bridgeOrderQuoteAtom'
+import { usePendingBridgeOrders } from './usePendingBridgeOrders'
 
 export function useBridgeOrderQuote(orderUid: string | undefined): BridgeQuoteAmounts | undefined {
-  const { chainId, account } = useWalletInfo()
-  const bridgeOrderQuote = useAtomValue(bridgeOrderQuoteAtom)
+  const pendingBridgeOrders = usePendingBridgeOrders()
 
   return useMemo(() => {
-    if (!account || !orderUid) return undefined
+    if (!pendingBridgeOrders) return undefined
 
-    const orders = bridgeOrderQuote[chainId]?.[account]
-
-    if (!orders) return undefined
-
-    return orders.find((order) => order.orderUid === orderUid)?.amounts
-  }, [bridgeOrderQuote, orderUid, chainId, account])
+    return pendingBridgeOrders.find((order) => order.orderUid === orderUid)?.amounts
+  }, [pendingBridgeOrders, orderUid])
 }
