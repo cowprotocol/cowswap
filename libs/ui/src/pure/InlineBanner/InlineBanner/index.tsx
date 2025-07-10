@@ -23,6 +23,8 @@ export function InlineBanner({
   noWrapContent,
   backDropBlur,
   fontSize,
+  noBackground,
+  breakWord,
 }: InlineBannerProps): ReactNode {
   const colorEnums = getStatusColorEnums(bannerType)
 
@@ -38,6 +40,8 @@ export function InlineBanner({
       dismissable={!!onClose}
       backDropBlur={backDropBlur}
       fontSize={fontSize}
+      noBackground={noBackground}
+      breakWord={breakWord}
     >
       <span>
         <BannerIcon

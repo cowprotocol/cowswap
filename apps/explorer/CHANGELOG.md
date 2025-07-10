@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.48.3](https://github.com/cowprotocol/cowswap/compare/explorer-v2.48.2...explorer-v2.48.3) (2025-07-10)
+
+
+### Bug Fixes
+
+* **explorer:** remove selection styles ([#5941](https://github.com/cowprotocol/cowswap/issues/5941)) ([ad727f6](https://github.com/cowprotocol/cowswap/commit/ad727f6a6d70fa36300875ff4be4a4a51069ddfc))
+* update InlineBanner width for UnsignedOrderWarning component ([#5948](https://github.com/cowprotocol/cowswap/issues/5948)) ([bca7971](https://github.com/cowprotocol/cowswap/commit/bca79715be6e43c405be432eacd4a6ef5d8f978f))
+
 ## [2.48.2](https://github.com/cowprotocol/cowswap/compare/explorer-v2.48.1...explorer-v2.48.2) (2025-07-03)
 
 
