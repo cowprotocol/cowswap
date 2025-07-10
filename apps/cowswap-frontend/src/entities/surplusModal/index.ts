@@ -11,14 +11,14 @@ const initialState: OrdersToDisplayModal = {
 
 const surplusModalAtom = atom<OrdersToDisplayModal>(initialState)
 
-export const addSurplusOrderAtom = atom(null, (get, set, orderId: string) =>
+const addSurplusOrderAtom = atom(null, (get, set, orderId: string) =>
   set(surplusModalAtom, () => {
     const state = get(surplusModalAtom)
 
     state.orderIds.push(orderId)
 
     return { ...state }
-  })
+  }),
 )
 
 export const removeSurplusOrderAtom = atom(null, (get, set, orderId: string) =>
@@ -28,7 +28,7 @@ export const removeSurplusOrderAtom = atom(null, (get, set, orderId: string) =>
     state.orderIds = state.orderIds.filter((id) => id !== orderId)
 
     return { ...state }
-  })
+  }),
 )
 
 const orderIdForSurplusModalAtom = atom<string | undefined>((get) => {
@@ -41,20 +41,14 @@ const orderIdForSurplusModalAtom = atom<string | undefined>((get) => {
   return state.orderIds[0]
 })
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useAddOrderToSurplusQueue() {
+export function useAddOrderToSurplusQueue(): (orderId: string) => void {
   return useSetAtom(addSurplusOrderAtom)
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useOrderIdForSurplusModal() {
+export function useOrderIdForSurplusModal(): string | undefined {
   return useAtomValue(orderIdForSurplusModalAtom)
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useRemoveOrderFromSurplusQueue() {
+export function useRemoveOrderFromSurplusQueue(): (orderId: string) => void {
   return useSetAtom(removeSurplusOrderAtom)
 }
