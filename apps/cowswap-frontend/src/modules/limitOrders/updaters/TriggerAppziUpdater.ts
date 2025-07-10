@@ -17,7 +17,7 @@ import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
  */
 export function TriggerAppziLimitOrdersSurveyUpdater(): null {
   const { account, chainId } = useWalletInfo()
-  const orders = useOnlyPendingOrders(chainId)
+  const orders = useOnlyPendingOrders(chainId, account)
 
   const pendingOrderIds = useMemo(() => {
     return orders

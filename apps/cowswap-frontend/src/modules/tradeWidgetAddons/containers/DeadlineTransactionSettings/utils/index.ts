@@ -23,12 +23,3 @@ export function deadlineToView(deadlineInput: string, deadline: number): string 
       ? ''
       : (deadline / 60).toString()
 }
-
-export function clampDeadline(
-  value: number,
-  min: number,
-  max: number,
-): number {
-  return Math.min(Math.max(value, min), max)
-}
-

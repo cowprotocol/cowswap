@@ -15,12 +15,10 @@ export interface TradeRatesProps {
   isFeeDetailsOpen: boolean
   toggleAccordion: () => void
   children?: ReactNode
-  feeWrapper?: (defaultFeeContent: React.ReactNode) => React.ReactNode
+  feeWrapper?: (defaultFeeContent: React.ReactNode, isOpen: boolean) => ReactNode
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function TradeTotalCostsDetails(props: TradeRatesProps) {
+export function TradeTotalCostsDetails(props: TradeRatesProps): ReactNode {
   const { rateInfoParams, totalCosts, isFeeDetailsOpen, toggleAccordion, children, feeWrapper } = props
   const totalCostsUsd = useUsdAmount(totalCosts).value
 

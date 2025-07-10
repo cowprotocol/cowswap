@@ -1,4 +1,4 @@
-import { ReactElement } from 'react'
+import { ReactElement, ReactNode } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
@@ -24,17 +24,14 @@ const Container = styled.div`
     box-shadow: none;
   }
 `
-type CustomSubmittedContent = (onDismiss: Command) => ReactElement
 
 export interface TradeConfirmModalProps {
   children: ReactElement
   title: string
-  submittedContent?: CustomSubmittedContent
+  submittedContent?: ReactNode
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function TradeConfirmModal(props: TradeConfirmModalProps) {
+export function TradeConfirmModal(props: TradeConfirmModalProps): ReactNode {
   const { children, submittedContent, title } = props
 
   const { chainId, account } = useWalletInfo()
@@ -75,12 +72,10 @@ type InnerComponentProps = {
   onDismiss: Command
   permitSignatureState: string | undefined
   isSafeWallet: boolean
-  submittedContent?: CustomSubmittedContent
+  submittedContent?: ReactNode
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function InnerComponent(props: InnerComponentProps) {
+function InnerComponent(props: InnerComponentProps): ReactNode {
   const {
     account,
     chainId,
@@ -113,16 +108,16 @@ function InnerComponent(props: InnerComponentProps) {
   }
 
   if (transactionHash) {
-    return submittedContent ? (
-      submittedContent(onDismiss)
-    ) : (
-      <OrderSubmittedContent
-        chainId={chainId}
-        account={account}
-        isSafeWallet={isSafeWallet}
-        onDismiss={onDismiss}
-        hash={transactionHash}
-      />
+    return (
+      submittedContent || (
+        <OrderSubmittedContent
+          chainId={chainId}
+          account={account}
+          isSafeWallet={isSafeWallet}
+          onDismiss={onDismiss}
+          hash={transactionHash}
+        />
+      )
     )
   }
 

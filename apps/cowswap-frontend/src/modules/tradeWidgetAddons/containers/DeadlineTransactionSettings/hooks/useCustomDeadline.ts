@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { DEFAULT_DEADLINE_FROM_NOW } from '@cowprotocol/common-const'
-import { isValidIntegerFactory } from '@cowprotocol/common-utils'
+import { clampValue, isValidIntegerFactory } from '@cowprotocol/common-utils'
 import { StatefulValue } from '@cowprotocol/types'
 import { useIsSmartContractWallet } from '@cowprotocol/wallet'
 import { TradeType } from '@cowprotocol/widget-lib'
@@ -12,7 +12,7 @@ import { useIsEoaEthFlow } from 'modules/trade'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 
-import { clampDeadline, deadlineToView, getDeadlineRange } from '../utils'
+import { deadlineToView, getDeadlineRange } from '../utils'
 
 
 type TxSettingAction = 'Default' | 'Custom'
@@ -67,7 +67,7 @@ export function useCustomDeadline(deadlineState: StatefulValue<number>): {
     if (widgetDeadline) {
       // Deadline is stored in seconds
       const value = Math.floor(widgetDeadline) * 60
-      setDeadline(clampDeadline(value, minDeadline, maxDeadline))
+      setDeadline(clampValue(value, minDeadline, maxDeadline))
     }
   }, [widgetDeadline, minDeadline, maxDeadline, setDeadline])
 

@@ -13,7 +13,7 @@ import SVG from 'react-inlinesvg'
 
 import { NoSurplus, ShowSurplus } from './BenefitComponents'
 import { FullSizeLottie } from './LottieContainer'
-import { ProgressImageWrapper } from './ProgressImageWrapper'
+import { ProgressImageWrapper, PROCESS_IMAGE_WRAPPER_BG_COLOR } from './ProgressImageWrapper'
 import { AnimatedTokens } from './steps/AnimatedToken'
 import { CircularCountdown } from './steps/CircularCountdown'
 import * as styledEl from './styled'
@@ -72,7 +72,11 @@ export function SolvingTopSection({ countdown }: SolvingTopSectionProps): ReactN
         src={STEP_IMAGE_SOLVING}
         style={{ width: '100%', height: '100%', maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
       />
-      <CircularCountdown countdown={countdown || 0} isDelayed={countdown === 0} />
+      <CircularCountdown 
+        countdown={countdown || 0} 
+        isDelayed={countdown === 0} 
+        bgColor={PROCESS_IMAGE_WRAPPER_BG_COLOR.solving}
+      />
     </div>
   )
 }

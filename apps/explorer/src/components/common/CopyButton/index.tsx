@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react'
 
-import { Media, Color } from '@cowprotocol/ui'
+import { Media, Color, UI } from '@cowprotocol/ui'
 
 import { faCopy } from '@fortawesome/free-regular-svg-icons'
 import { faCheck } from '@fortawesome/free-solid-svg-icons'
@@ -32,7 +32,7 @@ const Icon = styled(FontAwesomeIcon)<{ copied?: string; height?: number }>`
     `}
 
   &:hover {
-    color: ${({ copied }): string => (copied ? Color.explorer_green1 : Color.neutral100)};
+    color: ${({ copied }): string => (copied ? Color.explorer_green1 : `var(${UI.COLOR_NEUTRAL_100})`)};
   }
 `
 

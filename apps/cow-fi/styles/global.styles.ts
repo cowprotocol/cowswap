@@ -1,7 +1,8 @@
 'use client'
 
-import { createGlobalStyle } from 'styled-components/macro'
 import { Color, Media, ThemeColorVars, UI } from '@cowprotocol/ui'
+
+import { createGlobalStyle } from 'styled-components/macro'
 
 const GlobalStyles = createGlobalStyle`
 ${ThemeColorVars}
@@ -25,16 +26,16 @@ ${ThemeColorVars}
   }
 
   *::selection {
-    background: ${Color.neutral100};
-    color: ${Color.neutral0};
+    background: var(${UI.COLOR_NEUTRAL_100});
+    color: var(${UI.COLOR_NEUTRAL_0});
   }
 
   *::-moz-selection {
-    background: ${Color.neutral100};
+    background: var(${UI.COLOR_NEUTRAL_100});
   }
 
   *::-webkit-selection {
-    background: ${Color.neutral100};
+    background: var(${UI.COLOR_NEUTRAL_100});
   }
 
   *::-moz-placeholder {
@@ -97,7 +98,7 @@ ${ThemeColorVars}
     }
 
     &:focus {
-      border-color: ${Color.neutral0};
+      border-color: var(${UI.COLOR_NEUTRAL_0});
     }
 
     &:disabled {
