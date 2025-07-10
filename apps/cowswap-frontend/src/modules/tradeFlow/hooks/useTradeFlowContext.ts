@@ -10,6 +10,7 @@ import { AppDispatch } from 'legacy/state'
 import { useCloseModals } from 'legacy/state/application/hooks'
 
 import { useAppData, useAppDataHooks } from 'modules/appData'
+import { useBridgeQuoteAmounts } from 'modules/bridge'
 import { useGeneratePermitHook, useGetCachedPermit, usePermitInfo } from 'modules/permit'
 import { useEnoughBalanceAndAllowance } from 'modules/tokens'
 import {
@@ -19,11 +20,11 @@ import {
   useTradeConfirmActions,
   useTradeTypeInfo,
 } from 'modules/trade'
+import { TradeTypeToUiOrderType } from 'modules/trade/const/common'
 import { getOrderValidTo, useTradeQuote } from 'modules/tradeQuote'
 
 import { useGP2SettlementContract } from 'common/hooks/useContract'
 
-import { TradeTypeToUiOrderType } from '../../trade/const/common'
 import { TradeFlowContext } from '../types/TradeFlowContext'
 
 export interface TradeFlowParams {
@@ -45,9 +46,14 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
   const uiOrderType = tradeType ? TradeTypeToUiOrderType[tradeType] : null
   const isHooksTradeType = useIsHooksTradeType()
 
+  const tradeQuote = useTradeQuote()
+  const bridgeContext = useBridgeQuoteAmounts(receiveAmountInfo, tradeQuote.bridgeQuote)
+
   const sellCurrency = derivedTradeState?.inputCurrency
   const inputAmount = receiveAmountInfo?.afterSlippage.sellAmount
+  const bridgeOutputAmount = bridgeContext?.bridgeMinReceiveAmount
   const outputAmount = receiveAmountInfo?.afterSlippage.buyAmount
+
   const sellAmountBeforeFee = receiveAmountInfo?.afterNetworkCosts.sellAmount
   const networkFee = receiveAmountInfo?.costs.networkFee.amountInSellCurrency
 
@@ -60,7 +66,6 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
   const { contract: settlementContract, chainId: settlementChainId } = useGP2SettlementContract()
   const appData = useAppData()
   const typedHooks = useAppDataHooks()
-  const tradeQuote = useTradeQuote()
 
   const checkAllowanceAddress = COW_PROTOCOL_VAULT_RELAYER_ADDRESS[settlementChainId || SupportedChainId.MAINNET]
   const { enoughAllowance } = useEnoughBalanceAndAllowance({
@@ -190,6 +195,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             kind: orderKind,
             inputAmount,
             outputAmount,
+            bridgeOutputAmount,
             sellAmountBeforeFee,
             feeAmount: networkFee,
             sellToken: sellToken as TokenWithLogo,

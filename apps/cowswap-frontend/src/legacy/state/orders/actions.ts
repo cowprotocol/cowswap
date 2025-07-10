@@ -1,7 +1,7 @@
 import { EnrichedOrder, OrderClass, OrderCreation, SupportedChainId as ChainId, UID } from '@cowprotocol/cow-sdk'
 import { BigNumberish } from '@ethersproject/bignumber'
 import type { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
-import { Token } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { createAction } from '@reduxjs/toolkit'
 
@@ -124,6 +124,8 @@ export type OrderInfoApi = Pick<
 export interface Order extends BaseOrder {
   inputToken: Token // for dapp use only, readable by user
   outputToken: Token // for dapp use only, readable by user
+  // show to user the destination min receive value
+  bridgeOutputAmount?: CurrencyAmount<Currency>
 }
 
 /**
