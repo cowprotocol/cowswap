@@ -36,7 +36,6 @@ export function useSwapAndBridgeOverview(
       sourceAmounts: {
         sellAmount: CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount),
         buyAmount: CurrencyAmount.fromRawAmount(intermediateToken, order.buyAmount),
-        bridgingApproximateAmount: CurrencyAmount.fromRawAmount(order.outputToken, order.buyAmount),
       },
       targetAmounts,
     }

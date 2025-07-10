@@ -6,6 +6,7 @@ import { useTokensByAddressMap } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
+import { useBridgeOrderQuote } from 'entities/bridgeOrders'
 import { useBridgeSupportedNetworks } from 'entities/bridgeProvider'
 import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 
@@ -25,8 +26,6 @@ import type { SolverCompetition } from 'common/types/soverCompetition'
 
 import { useSwapAndBridgeOverview } from './useSwapAndBridgeOverview'
 import { useSwapResultsContext } from './useSwapResultsContext'
-
-import { BridgeQuoteAmounts } from '../types/bridge'
 
 const bridgeStatusMap: Record<BridgeStatus, SwapAndBridgeStatus> = {
   [BridgeStatus.IN_PROGRESS]: SwapAndBridgeStatus.PENDING,
@@ -48,7 +47,6 @@ export function useSwapAndBridgeContext(
   chainId: SupportedChainId,
   order: Order | undefined,
   winningSolver: SolverCompetition | undefined,
-  bridgeQuoteAmounts?: BridgeQuoteAmounts,
 ): SwapAndBridgeContexts {
   const { account } = useWalletInfo()
   const { data: bridgeSupportedNetworks } = useBridgeSupportedNetworks()
@@ -65,6 +63,7 @@ export function useSwapAndBridgeContext(
   }, [fullAppData])
 
   const swapResultContext = useSwapResultsContext(order, winningSolver, intermediateToken)
+  const bridgeQuoteAmounts = useBridgeOrderQuote(order?.id)
 
   const bridgeOutputAmount = crossChainOrder?.bridgingParams.outputAmount
 
