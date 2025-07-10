@@ -14,6 +14,14 @@ type BalancesCache = PersistentStateByChain<Record<Account, Record<TokenAddress,
 
 export interface BalancesState extends Erc20MulticallState {
   chainId: SupportedChainId | null
+  fromCache: boolean
+}
+
+export const DEFAULT_BALANCES_STATE: BalancesState = {
+  isLoading: false,
+  values: {},
+  chainId: null,
+  fromCache: false,
 }
 
 export const balancesCacheAtom = atomWithStorage<BalancesCache>(
@@ -22,11 +30,7 @@ export const balancesCacheAtom = atomWithStorage<BalancesCache>(
   getJotaiMergerStorage(),
 )
 
-export const balancesAtom = atomWithReset<BalancesState>({
-  isLoading: false,
-  values: {},
-  chainId: null,
-})
+export const balancesAtom = atomWithReset<BalancesState>(DEFAULT_BALANCES_STATE)
 
 export const balancesUpdateAtom = atom<PersistentStateByChain<Record<string, number | undefined>>>(
   mapSupportedNetworks({}),
