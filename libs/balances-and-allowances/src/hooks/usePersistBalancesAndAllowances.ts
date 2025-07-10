@@ -72,15 +72,15 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
   useEffect(() => {
     if (!setLoadingState) return
 
-    setBalances((state) => ({ ...state, isLoading: isBalancesLoading }))
-  }, [setBalances, isBalancesLoading, setLoadingState])
+    setBalances((state) => ({ ...state, isLoading: isBalancesLoading, chainId }))
+  }, [setBalances, isBalancesLoading, setLoadingState, chainId])
 
   // Set allowances loading state
   useEffect(() => {
     if (!setLoadingState) return
 
-    setAllowances((state) => ({ ...state, isLoading: isAllowancesLoading }))
-  }, [setAllowances, isAllowancesLoading, setLoadingState])
+    setAllowances((state) => ({ ...state, isLoading: isAllowancesLoading, chainId }))
+  }, [setAllowances, isAllowancesLoading, setLoadingState, chainId])
 
   // Set balances to the store
   useEffect(() => {
