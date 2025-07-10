@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.112.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.111.3...cowswap-v1.112.0) (2025-07-10)
+
+
+### Features
+
+* **bridge:** display combined fee in collapsed accordion ([#5921](https://github.com/cowprotocol/cowswap/issues/5921)) ([0dbaa56](https://github.com/cowprotocol/cowswap/commit/0dbaa5662012967079c3d6f1bbb7797126639a01))
+* **bridge:** display execution price in swap details ([#5920](https://github.com/cowprotocol/cowswap/issues/5920)) ([81d7f7a](https://github.com/cowprotocol/cowswap/commit/81d7f7a72f953d6e9423ada0c2732fd73ad6b092))
+* **trade:** slippage config for integrators ([#5906](https://github.com/cowprotocol/cowswap/issues/5906)) ([cbfa3b1](https://github.com/cowprotocol/cowswap/commit/cbfa3b142571df7bdf55919b8ae6df986017aeab))
+
+
+### Bug Fixes
+
+* **account-proxy:** fetch prio balances for proxy ([#5928](https://github.com/cowprotocol/cowswap/issues/5928)) ([40d71c9](https://github.com/cowprotocol/cowswap/commit/40d71c9e2ebaa2722fcadd082f08bfec33f66325))
+* add fontBold prop for customizable font weight ([#5949](https://github.com/cowprotocol/cowswap/issues/5949)) ([f212bf5](https://github.com/cowprotocol/cowswap/commit/f212bf56feec9ec1e3b39be9e75a670f8690bbfe))
+* fix quote updating when window visibility changes ([#5938](https://github.com/cowprotocol/cowswap/issues/5938)) ([948ee77](https://github.com/cowprotocol/cowswap/commit/948ee775c9fdce02363c919a880756bee32b2fb0))
+
 ## [1.111.3](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.111.2...cowswap-v1.111.3) (2025-07-07)
 
 

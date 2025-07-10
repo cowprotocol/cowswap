@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.15.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.14.1...widget-configurator-v1.15.0) (2025-07-10)
+
+
+### Features
+
+* **trade:** slippage config for integrators ([#5906](https://github.com/cowprotocol/cowswap/issues/5906)) ([cbfa3b1](https://github.com/cowprotocol/cowswap/commit/cbfa3b142571df7bdf55919b8ae6df986017aeab))
+
 ## [1.14.1](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.14.0...widget-configurator-v1.14.1) (2025-06-27)
 
 

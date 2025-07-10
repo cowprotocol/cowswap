@@ -163,6 +163,7 @@ export const ThemeColorVars = css`
     ${UI.FONT_SIZE_LARGE}: 18px;
     ${UI.FONT_SIZE_LARGER}: 20px;
     ${UI.FONT_SIZE_LARGEST}: 24px;
+    ${UI.FONT_FAMILY_PRIMARY}: 'studiofeixen', Arial, sans-serif;
 
     // Animation
     ${UI.ANIMATION_DURATION}: 0.1s;
