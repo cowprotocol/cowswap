@@ -28,20 +28,27 @@ export interface NetworkLogoProps {
   size?: number
   margin?: string
   forceLightMode?: boolean
+  logoUrl?: string
 }
 
-export function NetworkLogo({ chainId, size = 16, margin, forceLightMode }: NetworkLogoProps): ReactNode {
+export function NetworkLogo({
+  chainId,
+  size = 16,
+  margin,
+  forceLightMode,
+  logoUrl: defaultLogoUrl,
+}: NetworkLogoProps): ReactNode {
   const theme = useTheme()
   const chainInfo = getChainInfo(chainId)
 
-  if (!chainInfo) return null
+  if (!chainInfo && !defaultLogoUrl) return null
 
-  let logoUrl: string
+  let logoUrl: string | undefined = defaultLogoUrl
 
   // Special handling for Arbitrum to ensure visibility (same logic as useNetworkLogo)
-  if (chainId === SupportedChainId.ARBITRUM_ONE) {
+  if (chainId === SupportedChainId.ARBITRUM_ONE && chainInfo) {
     logoUrl = chainInfo.logo.light
-  } else {
+  } else if (!logoUrl && chainInfo) {
     // Use light mode if forced, or based on theme preference
     const shouldUseLightLogo = forceLightMode || !theme.darkMode
     logoUrl = shouldUseLightLogo ? chainInfo.logo.light : chainInfo.logo.dark
@@ -49,7 +56,7 @@ export function NetworkLogo({ chainId, size = 16, margin, forceLightMode }: Netw
 
   return (
     <NetworkLogoWrapper size={size} margin={margin}>
-      <img src={logoUrl} alt={`${chainInfo.label} network logo`} />
+      <img src={logoUrl} alt={`${chainInfo?.label} network logo`} />
     </NetworkLogoWrapper>
   )
 }
