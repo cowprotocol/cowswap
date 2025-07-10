@@ -1,9 +1,11 @@
 import { ReactNode } from 'react'
 
+import { isTruthy } from '@cowprotocol/common-utils'
 import { InfoTooltip, PercentDisplay } from '@cowprotocol/ui'
 
 import { ProxyRecipient } from 'modules/cowShed'
 import { ReceiveAmountTitle, TradeFeesAndCosts, ConfirmDetailsItem } from 'modules/trade'
+import { BRIDGE_QUOTE_ACCOUNT } from 'modules/tradeQuote'
 
 import { QuoteSwapContext } from '../../../types'
 import { ProxyAccountBanner } from '../../ProxyAccountBanner'
@@ -104,22 +106,23 @@ export function QuoteSwapContent({
 }: QuoteDetailsContentProps): ReactNode {
   const slippagePercentDisplay = <PercentDisplay percent={slippage.toFixed(2)} />
 
+  const isBridgeQuoteRecipient = recipient === BRIDGE_QUOTE_ACCOUNT
   const contents = [
     createExpectedReceiveContent(buyAmount, expectedReceiveUsdValue, slippagePercentDisplay),
     createSlippageContent(slippagePercentDisplay),
-    createRecipientContent(recipient, sellAmount.currency.chainId),
+    !isBridgeQuoteRecipient && createRecipientContent(recipient, sellAmount.currency.chainId),
     createMinReceiveContent(minReceiveAmount, minReceiveUsdValue),
   ]
 
   return (
     <>
       <TradeFeesAndCosts receiveAmountInfo={receiveAmountInfo} />
-      {contents.map(({ withTimelineDot, label, content }, index) => (
+      {contents.filter(isTruthy).map(({ withTimelineDot, label, content }, index) => (
         <ConfirmDetailsItem key={index} withTimelineDot={withTimelineDot} label={label}>
           {content}
         </ConfirmDetailsItem>
       ))}
-      <ProxyAccountBanner recipient={recipient} chainId={sellAmount.currency.chainId} />
+      {!isBridgeQuoteRecipient && <ProxyAccountBanner recipient={recipient} chainId={sellAmount.currency.chainId} />}
     </>
   )
 }

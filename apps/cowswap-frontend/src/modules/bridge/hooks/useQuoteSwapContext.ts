@@ -5,7 +5,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { useCurrentAccountProxyAddress } from 'modules/cowShed'
 import { useReceiveAmountInfo } from 'modules/trade'
-import { useTradeQuote } from 'modules/tradeQuote'
+import { BRIDGE_QUOTE_ACCOUNT, useTradeQuote } from 'modules/tradeQuote'
 import { useTradeSlippage } from 'modules/tradeSlippage'
 import { useUsdAmount } from 'modules/usdAmount'
 
@@ -24,7 +24,7 @@ export function useQuoteSwapContext(): QuoteSwapContext | null {
 
   const slippage = useTradeSlippage()
 
-  const cowShedAddress = useCurrentAccountProxyAddress()?.proxyAddress
+  const cowShedAddress = useCurrentAccountProxyAddress()?.proxyAddress || BRIDGE_QUOTE_ACCOUNT
 
   return useMemo(() => {
     if (!receiveAmountInfo || !quoteAmounts || !cowShedAddress) return null
