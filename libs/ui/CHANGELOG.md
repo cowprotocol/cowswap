@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.25.1](https://github.com/cowprotocol/cowswap/compare/ui-v1.25.0...ui-v1.25.1) (2025-07-10)
+
+
+### Bug Fixes
+
+* add fontBold prop for customizable font weight ([#5949](https://github.com/cowprotocol/cowswap/issues/5949)) ([f212bf5](https://github.com/cowprotocol/cowswap/commit/f212bf56feec9ec1e3b39be9e75a670f8690bbfe))
+* update InlineBanner width for UnsignedOrderWarning component ([#5948](https://github.com/cowprotocol/cowswap/issues/5948)) ([bca7971](https://github.com/cowprotocol/cowswap/commit/bca79715be6e43c405be432eacd4a6ef5d8f978f))
+
 ## [1.25.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.24.0...ui-v1.25.0) (2025-07-03)
 
 

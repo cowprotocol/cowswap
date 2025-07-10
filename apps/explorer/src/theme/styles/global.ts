@@ -1,22 +1,11 @@
 import { Color, ThemeColorVars, UI } from '@cowprotocol/ui'
 
 import variables from 'components/layout/GenericLayout/variablesCss'
-import { createGlobalStyle, css } from 'styled-components/macro'
-
-// TODO: remove for constants from colour palette later
-
-const selection = css`
-  *::selection {
-    background-color: ${Color.explorer_gradient2};
-  }
-`
+import { createGlobalStyle } from 'styled-components/macro'
 
 export const StaticGlobalStyle = createGlobalStyle`
   /* TEMPORARY: import variables */
   ${variables}
-
-  /* Selection CSS */
-  ${selection}
 
   .noScroll {
     overflow: hidden;

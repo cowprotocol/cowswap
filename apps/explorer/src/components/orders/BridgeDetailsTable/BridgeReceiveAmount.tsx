@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react'
 
+import type { CrossChainOrder } from '@cowprotocol/cow-sdk'
 import type { TokenInfo } from '@uniswap/token-lists'
 
 import BigNumber from 'bignumber.js'
@@ -12,13 +13,19 @@ import { TokenAmount } from '../../token/TokenAmount'
 interface BridgeReceiveAmountProps {
   destinationToken: TokenInfo
   amount: bigint
+  bridgeProvider: CrossChainOrder['provider']
 }
 
-export function BridgeReceiveAmount({ destinationToken, amount }: BridgeReceiveAmountProps): ReactNode {
+export function BridgeReceiveAmount({ destinationToken, amount, bridgeProvider }: BridgeReceiveAmountProps): ReactNode {
   const isNative = isNativeToken(destinationToken.address)
 
   const tokenDisplayElement = (
-    <CommonTokenDisplay erc20={destinationToken} network={destinationToken.chainId} showNetworkName={true} />
+    <CommonTokenDisplay
+      erc20={destinationToken}
+      network={destinationToken.chainId}
+      bridgeProvider={bridgeProvider}
+      showNetworkName
+    />
   )
 
   return (
