@@ -1,5 +1,5 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 
 import { BridgeQuoteAmounts } from 'modules/bridge'
 
@@ -24,6 +24,6 @@ function estimateWalletMinReceived(
   receivedAmount: CurrencyAmount<TokenWithLogo>,
   bridgeMinReceiveAmount: CurrencyAmount<Currency>
 ): CurrencyAmount<Currency> {
-  const koeff = receivedAmount.divide(bridgeMinReceiveAmount)
+  const koeff = new Price(receivedAmount.currency, bridgeMinReceiveAmount.currency, receivedAmount.quotient, bridgeMinReceiveAmount.quotient)
   return bridgeMinReceiveAmount.multiply(koeff)
 }
