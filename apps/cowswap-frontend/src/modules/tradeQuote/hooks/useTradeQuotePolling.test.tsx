@@ -117,9 +117,9 @@ describe('useTradeQuotePolling()', () => {
       renderHook(() => useTradeQuotePolling(false, true), { wrapper: Wrapper(mocks) })
 
       // Assert
-      const callParams = bridgingSdkMock.getQuote.mock.calls[0]
+      const { signer: _, ...callParams } = bridgingSdkMock.getQuote.mock.calls[0][0]
 
-      expect(callParams[0].receiver).toBe(undefined) // useAddress field value
+      expect(callParams.receiver).toBe(undefined) // useAddress field value
       expect(bridgingSdkMock.getQuote).toHaveBeenCalledTimes(1)
       expect(callParams).toMatchSnapshot()
     })

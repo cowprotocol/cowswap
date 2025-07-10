@@ -100,7 +100,7 @@ export const ThemedGlobalStyle = createGlobalStyle`
   }
 
   body {
-    font-family: 'studiofeixen', Arial, sans-serif;
+    font-family: var(${UI.FONT_FAMILY_PRIMARY}), Arial, sans-serif;
     margin: 0;
     padding: 0;
     background: transparent;

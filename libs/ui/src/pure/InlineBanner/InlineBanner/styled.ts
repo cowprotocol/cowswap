@@ -16,12 +16,14 @@ export const Wrapper = styled.span<{
   dismissable?: boolean
   backDropBlur?: boolean
   fontSize?: number
+  noBackground?: boolean
+  breakWord?: boolean
 }>`
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  background: ${({ colorEnums }) => `var(${colorEnums.bg})`};
+  background: ${({ colorEnums, noBackground }) => noBackground ? 'transparent' : `var(${colorEnums.bg})`};
   color: ${({ colorEnums }) => `var(${colorEnums.text})`};
   gap: 24px 10px;
   border-radius: ${({ borderRadius = '16px' }) => borderRadius};
@@ -77,6 +79,7 @@ export const Wrapper = styled.span<{
       width: 100%;
       text-align: ${({ orientation = BannerOrientation.Vertical }) =>
         orientation === BannerOrientation.Horizontal ? 'left' : 'center'};
+      ${({ breakWord }) => breakWord ? 'word-break: break-word;' : ''}
     }
 
     > i {

@@ -4,6 +4,7 @@ import { displayTime, isTruthy } from '@cowprotocol/common-utils'
 import { InfoTooltip } from '@cowprotocol/ui'
 
 import { ConfirmDetailsItem, ReceiveAmountTitle } from 'modules/trade'
+import { BRIDGE_QUOTE_ACCOUNT } from 'modules/tradeQuote'
 import { useUsdAmount } from 'modules/usdAmount'
 
 import { QuoteBridgeContext } from '../../../types'
@@ -51,7 +52,7 @@ export function QuoteBridgeContent({
           content: <>~ {displayTime(estimatedTime * 1000, true)}</>,
         }
       : null,
-    {
+    recipient !== BRIDGE_QUOTE_ACCOUNT && {
       withTimelineDot: true,
       label: (
         <>
