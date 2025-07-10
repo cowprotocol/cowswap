@@ -7,6 +7,7 @@ import { CompetitionOrderStatus, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENS } from '@cowprotocol/ens'
 import { Command } from '@cowprotocol/types'
 
+import { useBridgeOrderQuote } from 'entities/bridgeOrders'
 import ms from 'ms.macro'
 import useSWR from 'swr'
 
@@ -14,7 +15,7 @@ import { useActivityDerivedState } from 'legacy/hooks/useActivityDerivedState'
 import { useMultipleActivityDescriptors } from 'legacy/hooks/useRecentActivity'
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
-import { BridgeQuoteAmounts, type SwapAndBridgeContext, SwapAndBridgeStatus } from 'modules/bridge'
+import { type SwapAndBridgeContext, SwapAndBridgeStatus } from 'modules/bridge'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
 import { getOrderCompetitionStatus } from 'api/cowProtocol/api'
@@ -24,6 +25,7 @@ import { useSolversInfo } from 'common/hooks/useSolversInfo'
 import { useSwapAndBridgeContext } from 'common/hooks/useSwapAndBridgeContext'
 import { featureFlagsAtom } from 'common/state/featureFlagsState'
 import { ActivityDerivedState } from 'common/types/activity'
+import { BridgeQuoteAmounts } from 'common/types/bridge'
 import { ApiSolverCompetition, SolverCompetition } from 'common/types/soverCompetition'
 import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
 
@@ -62,13 +64,14 @@ export const PROGRESS_BAR_TIMER_DURATION = 15 // in seconds
 export function useOrderProgressBarProps(
   chainId: SupportedChainId,
   order: Order | undefined,
-  bridgeQuoteAmounts?: BridgeQuoteAmounts,
 ): {
   props: OrderProgressBarProps
   activityDerivedState: ActivityDerivedState | null
 } {
   const orderId = order?.id
   const isBridgingTrade = !!order && order.inputToken.chainId !== order.outputToken.chainId
+
+  const bridgeQuoteAmounts = useBridgeOrderQuote(orderId)
 
   const [activity] = useMultipleActivityDescriptors({ chainId, ids: orderId ? [orderId] : [] })
   const activityDerivedState = useActivityDerivedState({ chainId, activity })

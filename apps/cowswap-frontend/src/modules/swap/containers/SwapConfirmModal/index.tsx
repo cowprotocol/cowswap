@@ -69,12 +69,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
   const bridgeContext = useQuoteBridgeContext()
 
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
-  const submittedContent = (
-    <OrderSubmittedContent
-      bridgeQuoteAmounts={bridgeQuoteAmounts || undefined}
-      onDismiss={tradeConfirmActions.onDismiss}
-    />
-  )
+  const submittedContent = <OrderSubmittedContent onDismiss={tradeConfirmActions.onDismiss} />
   const labelsAndTooltips = useLabelsAndTooltips()
 
   const { values: balances } = useTokensBalancesCombined()
