@@ -138,18 +138,18 @@
       "supportedNetworks": [1, 42161, 11155111, 8453]
     }
   },
-  "MORPHO_LENDING": {
-    "name": "Morpho Lending",
+  "MORPHO_BORROW": {
+    "name": "Morpho Borrow",
     "type": "IFRAME",
-    "descriptionShort": "Supply, borrow, repay and withdraw on Morpho Protocol.",
-    "description": "Seamlessly add and remove liquidity on the Morpho Lending Protocol. Whether you're optimizing your yield or efficiently deploying assets, this hook streamlines the process, ensuring your liquidity transactions happen in a smooth, efficient flow.",
+    "descriptionShort": "Supply collateral, borrow, repay and withdraw collateral on Morpho Protocol.",
+    "description": "The Morpho Borrow hook enables users to seamlessly combine swaps with borrow-related actions. Users can enter new positions, leave existing ones, or move between different markets through a unified, streamlined process.",
     "version": "0.0.1",
     "website": "https://app.morpho.org/",
     "image": "https://cow-hooks-dapps-morpho-lending.vercel.app/icon.png",
     "url": "https://cow-hooks-dapps-morpho-lending.vercel.app/",
     "conditions": {
       "walletCompatibility": ["EOA"],
-      "supportedNetworks": [1, 8453],
+      "supportedNetworks": [1, 137, 8453],
       "smartContractWalletSupported": false
     }
   }
