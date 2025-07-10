@@ -21,7 +21,7 @@ export function Progress1({ order, creation }: EthFlowStepperProps) {
       return { value: 50, status: 'pending' }
     }
 
-    return { value: 100, status: 'pending' }
+    return { value: 100, status: 'success' }
   }, [failed, isCreating, isExpired])
 
   return <Progress status={progressStatus} value={progress} />
