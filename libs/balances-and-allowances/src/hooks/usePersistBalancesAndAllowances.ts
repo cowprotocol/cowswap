@@ -1,18 +1,16 @@
 import { useSetAtom } from 'jotai'
-import { useResetAtom } from 'jotai/utils'
-import { useEffect, useLayoutEffect, useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 
 import { ERC_20_INTERFACE } from '@cowprotocol/abis'
-import { usePrevious } from '@cowprotocol/common-hooks'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
-import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { MultiCallOptions, useMultipleContractSingleData } from '@cowprotocol/multicall'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import { SWRConfiguration } from 'swr'
 
 import { AllowancesState, allowancesFullState } from '../state/allowancesAtom'
-import { balancesAtom, balancesCacheAtom, BalancesState, balancesUpdateAtom } from '../state/balancesAtom'
+import { balancesAtom, BalancesState, balancesUpdateAtom } from '../state/balancesAtom'
 
 const MULTICALL_OPTIONS = {}
 
@@ -41,15 +39,9 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
     onBalancesLoaded,
   } = params
 
-  const prevChainId = usePrevious(chainId)
-  const prevAccount = usePrevious(account)
   const setBalances = useSetAtom(balancesAtom)
   const setAllowances = useSetAtom(allowancesFullState)
-  const setBalancesCache = useSetAtom(balancesCacheAtom)
   const setBalancesUpdate = useSetAtom(balancesUpdateAtom)
-
-  const resetBalances = useResetAtom(balancesAtom)
-  const resetAllowances = useResetAtom(allowancesFullState)
 
   const spender = COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId]
 
@@ -107,6 +99,7 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
       return {
         ...state,
         chainId,
+        fromCache: false,
         values: { ...state.values, ...balancesState },
         ...(setLoadingState ? { isLoading: false } : {}),
       }
@@ -140,30 +133,4 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
       }
     })
   }, [allowances, tokenAddresses, setAllowances, setLoadingState])
-
-  // Reset states when wallet is not connected
-  useLayoutEffect(() => {
-    if (prevAccount && prevAccount !== account) {
-      resetBalances()
-      resetAllowances()
-      setBalancesCache(mapSupportedNetworks({}))
-      onBalancesLoaded?.(false)
-    }
-  }, [chainId, account, prevAccount, resetAllowances, resetBalances, setBalancesCache, onBalancesLoaded])
-
-  /**
-   * Reset balances and allowances when chainId is changed.
-   *
-   * If we don't reset the values, you might see balances from the previous network after switching,
-   * because it takes awhile to load balances for the new chain.
-   * p.s. there is BalancesCacheUpdater which fills cached values in.
-   */
-  useLayoutEffect(() => {
-    if (!setLoadingState) return
-    if (prevChainId && chainId === prevChainId) return
-
-    resetBalances()
-    resetAllowances()
-    onBalancesLoaded?.(false)
-  }, [chainId, prevChainId, setLoadingState, resetBalances, resetAllowances, onBalancesLoaded])
 }

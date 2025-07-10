@@ -27,7 +27,7 @@ export function useSwrConfigWithPauseForNetwork(
 
   const lastUpdateTimestampRef = useRef(lastUpdateTimestamp)
 
-  if (!(balancesChainId && balancesChainId !== chainId)) {
+  if (balancesChainId && balancesChainId !== chainId) {
     lastUpdateTimestampRef.current = lastUpdateTimestamp
   }
 
