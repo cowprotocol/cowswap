@@ -26,7 +26,7 @@ import { useUsdAmount } from 'modules/usdAmount'
 import type { SolverCompetition } from 'common/types/soverCompetition'
 import { getExecutedSummaryData } from 'utils/getExecutedSummaryData'
 
-import { calculateTargetAmountsForNotMinedTx } from '../utils/calculateTargetAmountsForNotMinedTx'
+import { calculateTargetAmountsBeforeBridging } from '../utils/calculateTargetAmountsBeforeBridging'
 
 const bridgeStatusMap: Record<BridgeStatus, SwapAndBridgeStatus> = {
   [BridgeStatus.IN_PROGRESS]: SwapAndBridgeStatus.PENDING,
@@ -126,7 +126,7 @@ export function useSwapAndBridgeContext(
      */
     const targetAmounts =
       bridgeQuoteAmounts && !bridgeOutputAmount
-        ? calculateTargetAmountsForNotMinedTx(bridgeQuoteAmounts, receivedAmount)
+        ? calculateTargetAmountsBeforeBridging(bridgeQuoteAmounts, receivedAmount)
         : crossChainOrder && bridgeReceiveAmount
           ? {
               sellAmount: CurrencyAmount.fromRawAmount(

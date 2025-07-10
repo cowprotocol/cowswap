@@ -3,7 +3,7 @@ import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 
 import { BridgeQuoteAmounts } from 'modules/bridge'
 
-export function calculateTargetAmountsForNotMinedTx(
+export function calculateTargetAmountsBeforeBridging(
   quoteAmounts: BridgeQuoteAmounts,
   receivedAmount?: CurrencyAmount<TokenWithLogo>
 ): { sellAmount: CurrencyAmount<Currency>; buyAmount: CurrencyAmount<Currency> } {
