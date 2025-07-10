@@ -16,3 +16,6 @@ export { usePersistBalancesAndAllowances } from './hooks/usePersistBalancesAndAl
 // Types
 export type { BalancesState } from './state/balancesAtom'
 export type { AllowancesState } from './state/allowancesAtom'
+
+// Consts
+export { DEFAULT_BALANCES_STATE } from './state/balancesAtom'

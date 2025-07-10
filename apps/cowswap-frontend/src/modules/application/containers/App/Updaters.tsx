@@ -100,7 +100,7 @@ export function Updaters(): ReactNode {
       <WidgetTokensUpdater />
 
       <UnsupportedTokensUpdater />
-      <CommonPriorityBalancesAndAllowancesUpdater/>
+      <CommonPriorityBalancesAndAllowancesUpdater />
       <LpBalancesAndAllowancesUpdater chainId={sourceChainId} account={balancesAccount} enablePolling={isYieldWidget} />
       <PoolsInfoUpdater />
       <LpTokensWithBalancesUpdater />
