@@ -6,7 +6,8 @@ import useSWR, { SWRConfiguration, SWRResponse } from 'swr'
 import { bridgingSdk } from '../../tradingSdk/bridgingSdk'
 
 const UPDATE_INTERVAL = ms`5s`
-const FINAL_STATUSES = [BridgeStatus.EXECUTED, BridgeStatus.EXPIRED, BridgeStatus.REFUND]
+
+export const BRIDGING_FINAL_STATUSES = [BridgeStatus.EXECUTED, BridgeStatus.EXPIRED, BridgeStatus.REFUND]
 
 const swrOptions: SWRConfiguration<CrossChainOrder | null> = {
   revalidateOnFocus: false,
@@ -15,7 +16,7 @@ const swrOptions: SWRConfiguration<CrossChainOrder | null> = {
   refreshWhenHidden: false,
   refreshInterval(data) {
     if (data) {
-      const isBridgingFinished = FINAL_STATUSES.includes(data.statusResult.status)
+      const isBridgingFinished = BRIDGING_FINAL_STATUSES.includes(data.statusResult.status)
 
       if (isBridgingFinished) {
         return 0

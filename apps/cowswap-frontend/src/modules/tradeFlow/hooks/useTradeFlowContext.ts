@@ -3,7 +3,7 @@ import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, OrderClass, PriceQuality, Supported
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
-import { useAddBridgeOrderQuote } from 'entities/bridgeOrders'
+import { useAddBridgeOrder } from 'entities/bridgeOrders'
 import { useDispatch } from 'react-redux'
 import useSWR from 'swr'
 
@@ -63,7 +63,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
   const appData = useAppData()
   const typedHooks = useAppDataHooks()
   const tradeQuote = useTradeQuote()
-  const addBridgeOrder = useAddBridgeOrderQuote()
+  const addBridgeOrder = useAddBridgeOrder()
   const bridgeQuoteAmounts = useBridgeQuoteAmounts()
 
   const checkAllowanceAddress = COW_PROTOCOL_VAULT_RELAYER_ADDRESS[settlementChainId || SupportedChainId.MAINNET]

@@ -3,14 +3,14 @@ import { useMemo } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { BridgeOrderQuoteData } from 'common/types/bridge'
+import { BridgeOrderData } from 'common/types/bridge'
 
-import { bridgeOrderQuoteAtom } from './bridgeOrderQuoteAtom'
+import { bridgeOrdersAtom } from './bridgeOrdersAtom'
 
-export function usePendingBridgeOrders(): BridgeOrderQuoteData[] | undefined {
+export function useBridgeOrders(): BridgeOrderData[] | undefined {
   const { chainId, account } = useWalletInfo()
 
-  const bridgeOrderQuote = useAtomValue(bridgeOrderQuoteAtom)
+  const bridgeOrderQuote = useAtomValue(bridgeOrdersAtom)
 
   return useMemo(() => {
     if (!account) return undefined

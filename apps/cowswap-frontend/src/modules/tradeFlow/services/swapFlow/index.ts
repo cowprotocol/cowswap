@@ -136,7 +136,7 @@ export async function swapFlow(
     if (bridgeQuoteAmounts) {
       addBridgeOrder({
         orderUid: orderId,
-        amounts: bridgeQuoteAmounts,
+        quoteAmounts: bridgeQuoteAmounts,
         creationTimestamp: Date.now(),
       })
     }

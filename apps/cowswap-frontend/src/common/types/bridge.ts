@@ -1,3 +1,4 @@
+import { BridgeStatusResult } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 export interface BridgeQuoteAmounts<Amount = CurrencyAmount<Currency>> {
@@ -8,8 +9,9 @@ export interface BridgeQuoteAmounts<Amount = CurrencyAmount<Currency>> {
   bridgeFee: Amount
 }
 
-export interface BridgeOrderQuoteData {
+export interface BridgeOrderData {
   orderUid: string
-  amounts: BridgeQuoteAmounts
+  quoteAmounts: BridgeQuoteAmounts
   creationTimestamp: number
+  statusResult?: BridgeStatusResult
 }
