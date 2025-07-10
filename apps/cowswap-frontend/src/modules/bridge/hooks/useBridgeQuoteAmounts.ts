@@ -1,23 +1,16 @@
 import { useMemo } from 'react'
 
-import { BridgeQuoteResults } from '@cowprotocol/cow-sdk'
 import { useTokensByAddressMap } from '@cowprotocol/tokens'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import { ReceiveAmountInfo } from 'modules/trade'
+import { useReceiveAmountInfo } from 'modules/trade'
+import { useTradeQuote } from 'modules/tradeQuote'
 
-export interface BridgeQuoteAmounts<Amount = CurrencyAmount<Currency>> {
-  swapSellAmount: Amount
-  swapBuyAmount: Amount
-  swapMinReceiveAmount: Amount
-  bridgeMinReceiveAmount: Amount
-  bridgeFee: Amount
-}
+import { BridgeQuoteAmounts } from 'common/types/bridge'
 
-export function useBridgeQuoteAmounts(
-  receiveAmountInfo: ReceiveAmountInfo | null,
-  bridgeQuote: BridgeQuoteResults | null,
-): BridgeQuoteAmounts | null {
+export function useBridgeQuoteAmounts(): BridgeQuoteAmounts | null {
+  const receiveAmountInfo = useReceiveAmountInfo()
+  const { bridgeQuote } = useTradeQuote()
   const tokensByAddress = useTokensByAddressMap()
 
   return useMemo(() => {

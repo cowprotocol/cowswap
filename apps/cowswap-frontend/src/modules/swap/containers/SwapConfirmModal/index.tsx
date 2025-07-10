@@ -64,7 +64,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
   const { bridgeQuote } = useTradeQuote()
 
   const bridgeProvider = bridgeQuote?.providerInfo
-  const bridgeQuoteAmounts = useBridgeQuoteAmounts(receiveAmountInfo, bridgeQuote)
+  const bridgeQuoteAmounts = useBridgeQuoteAmounts()
   const swapContext = useQuoteSwapContext()
   const bridgeContext = useQuoteBridgeContext()
 

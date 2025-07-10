@@ -3,6 +3,7 @@ import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, OrderClass, PriceQuality, Supported
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
+import { useAddBridgeOrderQuote } from 'entities/bridgeOrders'
 import { useDispatch } from 'react-redux'
 import useSWR from 'swr'
 
@@ -10,6 +11,7 @@ import { AppDispatch } from 'legacy/state'
 import { useCloseModals } from 'legacy/state/application/hooks'
 
 import { useAppData, useAppDataHooks } from 'modules/appData'
+import { useBridgeQuoteAmounts } from 'modules/bridge'
 import { useGeneratePermitHook, useGetCachedPermit, usePermitInfo } from 'modules/permit'
 import { useEnoughBalanceAndAllowance } from 'modules/tokens'
 import {
@@ -18,12 +20,12 @@ import {
   useReceiveAmountInfo,
   useTradeConfirmActions,
   useTradeTypeInfo,
+  TradeTypeToUiOrderType,
 } from 'modules/trade'
 import { getOrderValidTo, useTradeQuote } from 'modules/tradeQuote'
 
 import { useGP2SettlementContract } from 'common/hooks/useContract'
 
-import { TradeTypeToUiOrderType } from '../../trade/const/common'
 import { TradeFlowContext } from '../types/TradeFlowContext'
 
 export interface TradeFlowParams {
@@ -61,6 +63,8 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
   const appData = useAppData()
   const typedHooks = useAppDataHooks()
   const tradeQuote = useTradeQuote()
+  const addBridgeOrder = useAddBridgeOrderQuote()
+  const bridgeQuoteAmounts = useBridgeQuoteAmounts()
 
   const checkAllowanceAddress = COW_PROTOCOL_VAULT_RELAYER_ADDRESS[settlementChainId || SupportedChainId.MAINNET]
   const { enoughAllowance } = useEnoughBalanceAndAllowance({
@@ -122,6 +126,8 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             validTo,
             orderKind,
             uiOrderType,
+            bridgeQuoteAmounts,
+            addBridgeOrder,
           ]
         : null,
       // TODO: Break down this large function into smaller functions
@@ -153,10 +159,13 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
         validTo,
         orderKind,
         uiOrderType,
+        bridgeQuoteAmounts,
+        addBridgeOrder,
       ]) => {
         return {
           tradeQuoteState,
           tradeQuote,
+          bridgeQuoteAmounts,
           context: {
             chainId,
             inputAmount,
@@ -170,6 +179,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             closeModals,
             getCachedPermit,
             dispatch,
+            addBridgeOrder,
           },
           tradeConfirmActions,
           swapFlowAnalyticsContext: {

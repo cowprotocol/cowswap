@@ -6,6 +6,7 @@ import { TokensListsTagsUpdater, TokensListsUpdater, UnsupportedTokensUpdater } 
 import { HwAccountIndexUpdater, useWalletInfo, WalletUpdater } from '@cowprotocol/wallet'
 
 import { useBalancesContext } from 'entities/balancesContext/useBalancesContext'
+import { BridgeOrdersCleanUpdater } from 'entities/bridgeOrders'
 import { useBridgeSupportedNetworks } from 'entities/bridgeProvider'
 import { ThemeConfigUpdater } from 'theme/ThemeConfigUpdater'
 import { TradingSdkUpdater } from 'tradingSdk/TradingSdkUpdater'
@@ -100,13 +101,14 @@ export function Updaters(): ReactNode {
       <WidgetTokensUpdater />
 
       <UnsupportedTokensUpdater />
-      <CommonPriorityBalancesAndAllowancesUpdater/>
+      <CommonPriorityBalancesAndAllowancesUpdater />
       <LpBalancesAndAllowancesUpdater chainId={sourceChainId} account={balancesAccount} enablePolling={isYieldWidget} />
       <PoolsInfoUpdater />
       <LpTokensWithBalancesUpdater />
       <VampireAttackUpdater />
       <BalancesCombinedUpdater />
       <CorrelatedTokensUpdater />
+      <BridgeOrdersCleanUpdater />
     </>
   )
 }
