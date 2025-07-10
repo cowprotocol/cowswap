@@ -9,6 +9,7 @@ import ms from 'ms.macro'
 import { SWRConfiguration } from 'swr'
 
 import { BalancesCacheUpdater } from './BalancesCacheUpdater'
+import { BalancesResetUpdater } from './BalancesResetUpdater'
 
 import { useNativeTokenBalance } from '../hooks/useNativeTokenBalance'
 import { usePersistBalancesAndAllowances } from '../hooks/usePersistBalancesAndAllowances'
@@ -28,11 +29,15 @@ const ALLOWANCES_SWR_CONFIG: SWRConfiguration = { ...BASIC_SWR_CONFIG, refreshIn
 
 export interface BalancesAndAllowancesUpdaterProps {
   account: string | undefined
-  chainId: SupportedChainId,
+  chainId: SupportedChainId
   excludedTokens: Set<string>
 }
 
-export function BalancesAndAllowancesUpdater({ account, chainId, excludedTokens }: BalancesAndAllowancesUpdaterProps): ReactNode {
+export function BalancesAndAllowancesUpdater({
+  account,
+  chainId,
+  excludedTokens,
+}: BalancesAndAllowancesUpdaterProps): ReactNode {
   const setBalances = useSetAtom(balancesAtom)
 
   const allTokens = useAllActiveTokens()
@@ -41,9 +46,11 @@ export function BalancesAndAllowancesUpdater({ account, chainId, excludedTokens 
   const tokenAddresses = useMemo(() => {
     if (allTokens.chainId !== chainId) return EMPTY_TOKENS
 
-    return allTokens.tokens.filter((token) => {
-      return !(token instanceof LpToken) && !excludedTokens.has(token.address)
-    }).map((token) => token.address)
+    return allTokens.tokens
+      .filter((token) => {
+        return !(token instanceof LpToken) && !excludedTokens.has(token.address)
+      })
+      .map((token) => token.address)
   }, [excludedTokens, allTokens, chainId])
 
   const balancesSwrConfig = useSwrConfigWithPauseForNetwork(chainId, account, BALANCES_SWR_CONFIG)
@@ -67,5 +74,10 @@ export function BalancesAndAllowancesUpdater({ account, chainId, excludedTokens 
     setBalances((state) => ({ ...state, values: { ...state.values, ...nativeBalanceState } }))
   }, [nativeTokenBalance, chainId, setBalances])
 
-  return <BalancesCacheUpdater chainId={chainId} account={account} />
+  return (
+    <>
+      <BalancesResetUpdater chainId={chainId} account={account} />
+      <BalancesCacheUpdater chainId={chainId} account={account} />
+    </>
+  )
 }
