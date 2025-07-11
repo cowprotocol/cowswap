@@ -66,12 +66,19 @@ async function getIsProxySetupValid(
   provider: Web3Provider,
   cowShedHooks: CowShedHooks,
 ): Promise<boolean> {
-  const shedContract = getContract(proxyAddress, COW_SHED_ABI, provider) as CoWShedContract
+  try {
+    const shedContract = getContract(proxyAddress, COW_SHED_ABI, provider) as CoWShedContract
 
-  const implementation = await implementationAddress(provider, proxyAddress)
-  const trustedExecutor = await shedContract.callStatic.trustedExecutor()
+    const implementation = await implementationAddress(provider, proxyAddress)
 
-  return (
-    implementation === cowShedHooks.getImplementationAddress() && trustedExecutor === cowShedHooks.getFactoryAddress()
-  )
+    if (implementation !== cowShedHooks.getImplementationAddress()) return false
+
+    const trustedExecutor = await shedContract.callStatic.trustedExecutor()
+
+    return trustedExecutor === cowShedHooks.getFactoryAddress()
+  } catch (e) {
+    console.error('getIsProxySetupValid()', e)
+
+    return true
+  }
 }
