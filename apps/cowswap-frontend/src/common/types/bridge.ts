@@ -1,7 +1,8 @@
+import { TokenWithLogo } from '@cowprotocol/common-const'
 import { BridgeStatusResult } from '@cowprotocol/cow-sdk'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { CurrencyAmount } from '@uniswap/sdk-core'
 
-export interface BridgeQuoteAmounts<Amount = CurrencyAmount<Currency>> {
+export interface BridgeQuoteAmounts<Amount = CurrencyAmount<TokenWithLogo>> {
   swapSellAmount: Amount
   swapBuyAmount: Amount
   swapMinReceiveAmount: Amount
@@ -9,9 +10,9 @@ export interface BridgeQuoteAmounts<Amount = CurrencyAmount<Currency>> {
   bridgeFee: Amount
 }
 
-export interface BridgeOrderData {
+export interface BridgeOrderData<T = BridgeQuoteAmounts> {
   orderUid: string
-  quoteAmounts: BridgeQuoteAmounts
+  quoteAmounts: T
   creationTimestamp: number
   statusResult?: BridgeStatusResult
 }
