@@ -1,3 +1,4 @@
+import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { getContract } from '@cowprotocol/common-utils'
 import { implementationAddress } from '@cowprotocol/contracts'
 import type { CowShedHooks } from '@cowprotocol/cow-sdk'
@@ -58,6 +59,7 @@ export function useCurrentAccountProxyAddress(): ProxyAndAccount | undefined {
         isProxySetupValid,
       }
     },
+    SWR_NO_REFRESH_OPTIONS,
   ).data
 }
 
