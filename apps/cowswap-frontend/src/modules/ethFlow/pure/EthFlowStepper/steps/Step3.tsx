@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode, useMemo } from 'react'
+import { ReactNode, useMemo } from 'react'
 
 import Checkmark from '@cowprotocol/assets/cow-swap/checkmark.svg'
 import Exclamation from '@cowprotocol/assets/cow-swap/exclamation.svg'
@@ -40,8 +40,12 @@ export function Step3({
   const isFilled = state === SmartOrderStatus.FILLED
   const expiredBeforeCreate = isExpired && (isCreating || isIndexing) && !isFilled
   const isRefunded = refundFailed === false || cancellationFailed === false
-
   const orderIsNotCreated = !!(creationFailed || creationCancelled || creationReplaced) && !isFilled
+
+  const isRefunding = !!refundHash && refundFailed === undefined
+  const isCanceling = !!cancellationHash && cancellationFailed === undefined
+  const isOrderRejected = !!rejectedReason
+
   // Get the label, state and icon
   const {
     label,
@@ -50,49 +54,49 @@ export function Step3({
   } = useMemo<StepProps>(() => {
     if (orderIsNotCreated) {
       return {
-        label: 'Receive ' + tokenLabel,
+        label: `Receive ${tokenLabel}`,
         state: 'not-started',
         icon: Exclamation,
       }
     }
     if (expiredBeforeCreate) {
       return {
-        label: 'Receive ' + tokenLabel,
+        label: `Receive ${tokenLabel}`,
         state: 'pending',
         icon: Finish,
       }
     }
     if (isIndexing) {
       return {
-        label: 'Receive ' + tokenLabel,
+        label: `Receive ${tokenLabel}`,
         state: 'not-started',
         icon: Finish,
       }
     }
     if (isFilled) {
       return {
-        label: 'Received ' + tokenLabel,
+        label: `Received ${tokenLabel}`,
         state: 'success',
         icon: Checkmark,
       }
     }
     if (isRefunded) {
       return {
-        label: nativeTokenSymbol + ' Refunded',
+        label: `${nativeTokenSymbol} Refunded`,
         state: 'success',
         icon: Refund,
       }
     }
     if (isIndexed) {
       return {
-        label: 'Receive ' + tokenLabel,
+        label: `Receive ${tokenLabel}`,
         state: 'pending',
         icon: Finish,
       }
     }
 
     return {
-      label: 'Receive ' + tokenLabel,
+      label: `Receive ${tokenLabel}`,
       state: 'not-started',
       icon: Finish,
     }
@@ -107,13 +111,10 @@ export function Step3({
     nativeTokenSymbol,
   ])
 
-  const isRefunding = !!refundHash && refundFailed === undefined
-  const isCanceling = !!cancellationHash && cancellationFailed === undefined
-  const isOrderRejected = !!rejectedReason
   const wontReceiveToken = !isFilled && (isExpired || isOrderRejected || isRefunding || isCanceling || isRefunded)
   const isSuccess = stepState === 'success'
 
-  let refundLink: ReactElement | undefined
+  let refundLink: ReactNode | undefined
 
   if (cancellationHash && refundFailed !== false && !isFilled) {
     refundLink = (
