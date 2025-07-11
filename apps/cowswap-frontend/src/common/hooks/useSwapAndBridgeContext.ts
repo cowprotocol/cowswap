@@ -11,7 +11,6 @@ import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 
 import type { Order } from 'legacy/state/orders/actions'
 
-import { BridgeQuoteAmounts } from 'modules/bridge/hooks/useBridgeQuoteAmounts'
 import { useUpdateBridgeOrderData } from 'modules/bridge/hooks/useUpdateBridgeOrderData'
 import {
   BridgingProgressContext,
@@ -27,6 +26,7 @@ import type { SolverCompetition } from 'common/types/soverCompetition'
 import { useSwapAndBridgeOverview } from './useSwapAndBridgeOverview'
 import { useSwapResultsContext } from './useSwapResultsContext'
 
+import { BridgeQuoteAmounts } from '../types/bridge'
 import { calculateTargetAmountsBeforeBridging } from '../utils/calculateTargetAmountsBeforeBridging'
 
 const bridgeStatusMap: Record<BridgeStatus, SwapAndBridgeStatus> = {
