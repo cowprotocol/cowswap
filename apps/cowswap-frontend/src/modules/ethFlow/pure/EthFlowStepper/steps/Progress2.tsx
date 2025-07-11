@@ -14,13 +14,18 @@ export function Progress2({ order, creation, refund, cancellation }: EthFlowStep
     const isIndexing = state === SmartOrderStatus.CREATION_MINED
     const isFilled = state === SmartOrderStatus.FILLED
     const isCreating = state === SmartOrderStatus.CREATING
-    const isTerminalState = refundFailed !== undefined || cancellationFailed !== undefined || isFilled
+    const isTerminalState = (refundHash && refundFailed) || (cancellationHash && cancellationFailed) || isFilled
 
     if (creationFailed) {
       return { status: 'error', value: 0 }
     }
 
     if (isTerminalState) {
+      return { status: 'success', value: 100 }
+    }
+
+    // ETH refund successful: either via dedicated refund tx or successful cancellation (which includes refund)
+    if ((refundHash && !refundFailed) || (cancellationHash && !cancellationFailed)) {
       return { status: 'success', value: 100 }
     }
 
