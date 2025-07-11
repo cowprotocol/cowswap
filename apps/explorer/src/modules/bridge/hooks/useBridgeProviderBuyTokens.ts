@@ -9,7 +9,7 @@ export function useBridgeProviderBuyTokens(
   buyChainId: number,
 ): SWRResponse<Record<string, TokenInfo> | undefined> {
   return useSWR(
-    [provider, buyChainId, provider?.info.dappId],
+    [provider, buyChainId, provider?.info.dappId, 'useBridgeProviderBuyTokens'],
     async ([provider, buyChainId]) => {
       if (!provider) return undefined
 
