@@ -1,7 +1,8 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { PersistentStateByChainAccount } from '@cowprotocol/types'
-import { CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import type { BridgeQuoteAmounts } from 'common/types/bridge'
 
@@ -53,13 +54,13 @@ export function deserializeQuoteAmounts(amounts: BridgeQuoteAmounts<SerializedAm
   }
 }
 
-function serializeAmount(amount: CurrencyAmount<TokenWithLogo>): SerializedAmount {
+function serializeAmount(amount: CurrencyAmount<Currency | TokenWithLogo>): SerializedAmount {
   return {
     amount: amount.quotient.toString(),
     token: {
-      logoURI: amount.currency.logoURI,
+      logoURI: (amount.currency as TokenWithLogo).logoURI,
       chainId: amount.currency.chainId,
-      address: amount.currency.address,
+      address: getCurrencyAddress(amount.currency),
       decimals: amount.currency.decimals,
       symbol: amount.currency.symbol || '',
       name: amount.currency.name || '',
@@ -67,7 +68,7 @@ function serializeAmount(amount: CurrencyAmount<TokenWithLogo>): SerializedAmoun
   }
 }
 
-function deserializeAmount(amount: SerializedAmount): CurrencyAmount<TokenWithLogo> {
+function deserializeAmount(amount: SerializedAmount): CurrencyAmount<Currency | TokenWithLogo> {
   const token = TokenWithLogo.fromToken(amount.token, amount.token.logoURI)
 
   return CurrencyAmount.fromRawAmount(token, amount.amount)
