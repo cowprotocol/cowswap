@@ -34,34 +34,40 @@ function getStepConfig({ order, creation, nativeTokenSymbol }: EthFlowStepperPro
 
   const isFilled = order.state === SmartOrderStatus.FILLED
   const isCreating = order.state === SmartOrderStatus.CREATING
+  const isExpired = order.isExpired
+  const hasTransactionError = (failed || cancelled || (replaced && isCreating)) && !isFilled
 
-  if ((failed || cancelled || (replaced && isCreating)) && !isFilled) {
+  // Error states
+  if (hasTransactionError) {
+    const errorType = failed ? 'failed' : cancelled ? 'cancelled' : 'replaced'
     return {
       icon: X,
       state: 'error',
-      label: 'Transaction ' + (failed ? 'failed' : cancelled ? 'cancelled' : 'replaced'),
+      label: `Transaction ${errorType}`,
     }
   }
 
-  if (isCreating) {
-    if (order.isExpired) {
-      return {
-        icon: Exclamation,
-        state: 'error',
-        label: 'Order Expired',
-      }
+  if (isCreating && isExpired) {
+    return {
+      icon: Exclamation,
+      state: 'error',
+      label: 'Order Expired',
     }
+  }
 
+  // In-progress state
+  if (isCreating) {
     return {
       icon: Send,
       state: 'pending',
-      label: 'Sending ' + nativeTokenSymbol,
+      label: `Sending ${nativeTokenSymbol}`,
     }
   }
 
+  // Success state
   return {
     icon: Checkmark,
     state: 'success',
-    label: 'Sent ' + nativeTokenSymbol,
+    label: `Sent ${nativeTokenSymbol}`,
   }
 }
