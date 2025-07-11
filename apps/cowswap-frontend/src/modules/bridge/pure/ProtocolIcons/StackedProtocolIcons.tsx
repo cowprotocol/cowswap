@@ -1,4 +1,4 @@
-import { useState, memo, useMemo, ReactNode } from 'react'
+import { useState, useMemo, ReactNode } from 'react'
 
 import { BridgeProviderInfo } from '@cowprotocol/cow-sdk'
 import { ProductVariant, UI, ProductLogo } from '@cowprotocol/ui'
@@ -105,7 +105,7 @@ export interface StackedProtocolIconsProps {
   currentLogoHeight: number
 }
 
-export const StackedProtocolIcons = memo(function StackedProtocolIcons({
+export function StackedProtocolIcons({
   secondProtocol,
   currentDisplaySize,
   currentLogoHeight,
@@ -128,7 +128,7 @@ export const StackedProtocolIcons = memo(function StackedProtocolIcons({
 
   const commonStackedIconProps = {
     size: currentDisplaySize,
-    isStacked: true as const,
+    isStacked: true,
     onMouseLeave: handleMouseLeave,
   }
 
@@ -158,4 +158,4 @@ export const StackedProtocolIcons = memo(function StackedProtocolIcons({
       </ProtocolIcon>
     </ProtocolIconsContainer>
   )
-})
+}

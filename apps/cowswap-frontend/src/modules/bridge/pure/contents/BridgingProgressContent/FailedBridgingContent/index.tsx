@@ -10,7 +10,7 @@ import { StyledAnimatedTimelineRefundIcon } from '../../styled'
 export function FailedBridgingContent(): ReactNode {
   return (
     <>
-      <ConfirmDetailsItem label="You received" withTimelineDot={true}>
+      <ConfirmDetailsItem label="You received" withTimelineDot>
         <DangerText>Bridging failed</DangerText>
       </ConfirmDetailsItem>
       <ConfirmDetailsItem

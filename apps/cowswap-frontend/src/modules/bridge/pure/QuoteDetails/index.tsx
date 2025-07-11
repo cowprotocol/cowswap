@@ -39,7 +39,7 @@ function SwapStep({ stepsCollapsible, bridgeProvider, swapContext }: SwapStepPro
   return (
     <BridgeDetailsContainer
       isCollapsible={stepsCollapsible}
-      defaultExpanded={true}
+      defaultExpanded
       status={status}
       stopNumber={1}
       statusIcon={null}
@@ -63,7 +63,7 @@ function BridgeStep({ stepsCollapsible, bridgeProvider, bridgeContext }: BridgeS
   return (
     <BridgeDetailsContainer
       isCollapsible={stepsCollapsible}
-      defaultExpanded={true}
+      defaultExpanded
       status={status}
       stopNumber={2}
       statusIcon={null}

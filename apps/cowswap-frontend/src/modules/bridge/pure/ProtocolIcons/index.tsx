@@ -1,4 +1,4 @@
-import { memo, ReactNode } from 'react'
+import { ReactNode } from 'react'
 
 import { BridgeProviderInfo } from '@cowprotocol/cow-sdk'
 import { ProductVariant, UI, ProductLogo } from '@cowprotocol/ui'
@@ -7,7 +7,7 @@ import { StackedProtocolIcons } from './StackedProtocolIcons'
 import { ProtocolIcon } from './styled'
 
 export interface ProtocolIconsProps {
-  secondProtocol: BridgeProviderInfo
+  secondProtocol?: BridgeProviderInfo
   showOnlyFirst?: boolean
   showOnlySecond?: boolean
   size?: number
@@ -20,23 +20,28 @@ const LOGO_HEIGHT_RATIO = 0.5 // The ratio of the icon size to the logo height
 // Single Protocol Icon Component
 interface SingleProtocolIconProps {
   showOnlyFirst?: boolean
-  secondProtocol: BridgeProviderInfo
+  secondProtocol?: BridgeProviderInfo
   currentDisplaySize: number
   currentLogoHeight: number
 }
 
-const SingleProtocolIcon = memo(function SingleProtocolIcon({
+function SingleProtocolIcon({
   showOnlyFirst,
   secondProtocol,
   currentDisplaySize,
   currentLogoHeight,
 }: SingleProtocolIconProps): ReactNode {
-  const protocolName = showOnlyFirst ? 'CoW Swap' : secondProtocol.name
+  const protocolName = showOnlyFirst ? 'CoW Swap' : secondProtocol?.name
   const protocolBgColor = showOnlyFirst ? UI.COLOR_BLUE_300_PRIMARY : undefined
   const iconChild = showOnlyFirst ? (
     <ProductLogo variant={ProductVariant.CowSwap} height={currentLogoHeight} logoIconOnly />
   ) : (
-    <img src={secondProtocol.logoUrl} width={currentLogoHeight} height={currentLogoHeight} alt={secondProtocol.name} />
+    <img
+      src={secondProtocol?.logoUrl}
+      width={currentLogoHeight}
+      height={currentLogoHeight}
+      alt={secondProtocol?.name}
+    />
   )
 
   return (
@@ -44,10 +49,9 @@ const SingleProtocolIcon = memo(function SingleProtocolIcon({
       {iconChild}
     </ProtocolIcon>
   )
-})
+}
 
-// Main component
-export const ProtocolIcons = memo(function ProtocolIcons({
+export function ProtocolIcons({
   secondProtocol,
   showOnlyFirst,
   showOnlySecond,
@@ -68,11 +72,15 @@ export const ProtocolIcons = memo(function ProtocolIcons({
     )
   }
 
-  return (
-    <StackedProtocolIcons
-      secondProtocol={secondProtocol}
-      currentDisplaySize={currentDisplaySize}
-      currentLogoHeight={currentLogoHeight}
-    />
-  )
-})
+  if (secondProtocol) {
+    return (
+      <StackedProtocolIcons
+        secondProtocol={secondProtocol}
+        currentDisplaySize={currentDisplaySize}
+        currentLogoHeight={currentLogoHeight}
+      />
+    )
+  }
+
+  return null
+}
