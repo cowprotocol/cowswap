@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
-import { SupportedChainId, BridgeStatus } from '@cowprotocol/cow-sdk'
+import { BridgeStatus, CrossChainOrder, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useTokensByAddressMap } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
@@ -25,6 +25,8 @@ import type { SolverCompetition } from 'common/types/soverCompetition'
 
 import { useSwapAndBridgeOverview } from './useSwapAndBridgeOverview'
 import { useSwapResultsContext } from './useSwapResultsContext'
+
+import { calculateTargetAmountsBeforeBridging } from '../utils/calculateTargetAmountsBeforeBridging'
 
 const bridgeStatusMap: Record<BridgeStatus, SwapAndBridgeStatus> = {
   [BridgeStatus.IN_PROGRESS]: SwapAndBridgeStatus.PENDING,
@@ -64,6 +66,7 @@ export function useSwapAndBridgeContext(
   const swapResultContext = useSwapResultsContext(order, winningSolver, intermediateToken)
   const bridgeQuoteAmounts = useBridgeOrderQuoteAmounts(order?.id)
 
+  const receivedAmount = swapResultContext?.receivedAmount
   const bridgeOutputAmount = crossChainOrder?.bridgingParams.outputAmount
 
   /**
@@ -99,14 +102,11 @@ export function useSwapAndBridgeContext(
     }
 
     if (bridgeQuoteAmounts && !bridgeOutputAmount) {
-      return {
-        sellAmount: bridgeQuoteAmounts.swapMinReceiveAmount,
-        buyAmount: bridgeQuoteAmounts.bridgeMinReceiveAmount,
-      }
+      return calculateTargetAmountsBeforeBridging(bridgeQuoteAmounts, receivedAmount)
     }
 
     return undefined
-  }, [bridgeQuoteAmounts, crossChainOrder, bridgeOutputAmount, bridgeReceiveAmount, intermediateToken])
+  }, [bridgeQuoteAmounts, crossChainOrder, bridgeOutputAmount, bridgeReceiveAmount, intermediateToken, receivedAmount])
 
   const swapAndBridgeOverview = useSwapAndBridgeOverview(order, intermediateToken, targetAmounts)
 

@@ -5,8 +5,8 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 export interface BridgeQuoteAmounts<Amount = CurrencyAmount<TokenWithLogo>> {
   swapSellAmount: Amount
   swapBuyAmount: Amount
-  swapMinReceiveAmount: Amount
-  bridgeMinReceiveAmount: Amount
+  swapMinReceiveAmount: Amount // that should be moved on bridge (before sending to user)
+  bridgeMinReceiveAmount: Amount // that should be moved to user
   bridgeFee: Amount
 }
 
