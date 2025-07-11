@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import Checkmark from '@cowprotocol/assets/cow-swap/checkmark.svg'
 import Exclamation from '@cowprotocol/assets/cow-swap/exclamation.svg'
 import Send from '@cowprotocol/assets/cow-swap/send.svg'
@@ -13,9 +15,7 @@ interface Step1Config {
   label: string
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function Step1(props: EthFlowStepperProps) {
+export function Step1(props: EthFlowStepperProps): ReactNode {
   const {
     creation: { hash, replaced },
   } = props
