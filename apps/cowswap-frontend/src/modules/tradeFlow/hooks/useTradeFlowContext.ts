@@ -48,7 +48,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
   const isHooksTradeType = useIsHooksTradeType()
 
   const tradeQuote = useTradeQuote()
-  const bridgeContext = useBridgeQuoteAmounts(receiveAmountInfo, tradeQuote.bridgeQuote)
+  const bridgeContext = useBridgeQuoteAmounts()
 
   const sellCurrency = derivedTradeState?.inputCurrency
   const inputAmount = receiveAmountInfo?.afterSlippage.sellAmount
