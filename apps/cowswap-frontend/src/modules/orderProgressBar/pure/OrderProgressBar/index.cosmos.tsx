@@ -7,6 +7,7 @@ import {
   USDC_ARBITRUM_ONE,
   USDC_SEPOLIA,
   USDC_AVALANCHE,
+  TokenWithLogo,
 } from '@cowprotocol/common-const'
 import { SupportedChainId, BridgeStatus } from '@cowprotocol/cow-sdk'
 import { UI } from '@cowprotocol/ui'
@@ -76,7 +77,7 @@ const swapAndBridgeContextMock: SwapAndBridgeContext = {
     winningSolver: {
       solver: 'The Best Solver',
     },
-    receivedAmount: receiveAmountInfo.afterNetworkCosts.buyAmount,
+    receivedAmount: receiveAmountInfo.afterNetworkCosts.buyAmount as unknown as CurrencyAmount<TokenWithLogo>,
     receivedAmountUsd: CurrencyAmount.fromRawAmount(USDC_BASE, '29800000'),
     surplusAmount: CurrencyAmount.fromRawAmount(
       receiveAmountInfo.afterNetworkCosts.buyAmount.currency,
