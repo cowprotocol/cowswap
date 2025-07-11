@@ -1,21 +1,32 @@
-import { TokenWithLogo } from '@cowprotocol/common-const'
+import { SWR_NO_REFRESH_OPTIONS, TokenWithLogo } from '@cowprotocol/common-const'
 import { useIsBridgingEnabled } from '@cowprotocol/common-hooks'
+import { BuyTokensParams } from '@cowprotocol/cow-sdk'
 
 import useSWR, { SWRResponse } from 'swr'
 
 import { useBridgeProvider } from './useBridgeProvider'
 
-export function useBridgeSupportedTokens(chainId: number | undefined): SWRResponse<TokenWithLogo[] | null> {
+export function useBridgeSupportedTokens(params: BuyTokensParams | undefined): SWRResponse<TokenWithLogo[] | null> {
   const isBridgingEnabled = useIsBridgingEnabled()
   const bridgeProvider = useBridgeProvider()
 
   return useSWR(
-    isBridgingEnabled ? [bridgeProvider, chainId, bridgeProvider.info.dappId, 'useBridgeSupportedTokens'] : null,
-    ([bridgeProvider, chainId]) => {
-      if (typeof chainId === 'undefined') return null
+    isBridgingEnabled
+      ? [
+          bridgeProvider,
+          params,
+          params?.sellChainId,
+          params?.buyChainId,
+          params?.sellTokenAddress,
+          bridgeProvider.info.dappId,
+          'useBridgeSupportedTokens',
+        ]
+      : null,
+    ([bridgeProvider, params]) => {
+      if (typeof params === 'undefined') return null
 
       return bridgeProvider
-        .getBuyTokens(chainId)
+        .getBuyTokens(params)
         .then((tokens) => {
           return (
             tokens &&
@@ -36,5 +47,6 @@ export function useBridgeSupportedTokens(chainId: number | undefined): SWRRespon
           return Promise.reject(error)
         })
     },
+    SWR_NO_REFRESH_OPTIONS,
   )
 }
