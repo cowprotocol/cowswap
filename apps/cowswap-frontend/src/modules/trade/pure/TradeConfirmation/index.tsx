@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useRef, useState } from 'react'
+import { ReactElement, useCallback, useEffect, useRef, useState } from 'react'
 
 import { BackButton, BannerOrientation, ButtonPrimary, ButtonSize, CenteredDots, LongLoadText } from '@cowprotocol/ui'
 
@@ -13,6 +13,8 @@ import { OrderHooksDetails } from 'common/containers/OrderHooksDetails'
 import { CurrencyAmountPreview, CurrencyPreviewInfo } from 'common/pure/CurrencyInputPanel'
 import { CustomRecipientWarningBanner } from 'common/pure/CustomRecipientWarningBanner'
 
+import { AddIntermediateToken } from './addIntermediateToken'
+import { AddIntermediateTokenModal } from './addIntermediateTokenModal'
 import { QuoteCountdown } from './CountDown'
 import { useIsPriceChanged } from './hooks/useIsPriceChanged'
 import * as styledEl from './styled'
@@ -37,6 +39,7 @@ export interface TradeConfirmationProps {
   isPriceStatic?: boolean
   recipient?: string | null
   buttonText?: React.ReactNode
+  intermediateBuyTokenAddress?: string | null
   children?: (restContent: ReactElement) => ReactElement
 }
 
@@ -64,6 +67,7 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
     priceImpact,
     title,
     buttonText = 'Confirm',
+    intermediateBuyTokenAddress,
     children,
     recipient,
     isPriceStatic,
@@ -71,6 +75,8 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
   } = frozenProps || props
 
   const [isConfirmClicked, setIsConfirmClicked] = useState(false)
+
+  const [showAddIntermediateTokenModal, setShowAddIntermediateTokenModal] = useState(false)
 
   /**
    * Once user sends a transaction, we keep the confirmation content frozen
@@ -92,6 +98,18 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
   const outputAmount = outputCurrencyInfo.amount?.toExact()
 
   const { isPriceChanged, resetPriceChanged } = useIsPriceChanged(inputAmount, outputAmount, forcePriceConfirmation)
+
+  const [tokenImported, setTokenImported] = useState(false)
+  const showAddIntermediateToken = !tokenImported && intermediateBuyTokenAddress
+
+  const handleCloseImportModal = useCallback(() => {
+    setShowAddIntermediateTokenModal(false)
+  }, [])
+
+  const handleImport = useCallback(() => {
+    setShowAddIntermediateTokenModal(false)
+    setTokenImported(true)
+  }, [])
 
   const isButtonDisabled =
     isConfirmDisabled || (isPriceChanged && !isPriceStatic) || hasPendingTrade || isConfirmClicked
@@ -128,7 +146,13 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
     </>
   )
 
-  return (
+  return showAddIntermediateTokenModal ? (
+    <AddIntermediateTokenModal
+      onDismiss={handleCloseImportModal}
+      onBack={handleCloseImportModal}
+      onImport={handleImport}
+    />
+  ) : (
     <styledEl.WidgetWrapper onKeyDown={(e) => e.key === 'Escape' && onDismiss()}>
       <styledEl.Header>
         <BackButton onClick={onDismiss} />
@@ -168,6 +192,13 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
             <Trans>{buttonText}</Trans>
           )}
         </ButtonPrimary>
+
+        {showAddIntermediateToken && (
+          <AddIntermediateToken
+            intermediateBuyTokenAddress={intermediateBuyTokenAddress}
+            onImport={() => setShowAddIntermediateTokenModal(true)}
+          />
+        )}
       </styledEl.ContentWrapper>
     </styledEl.WidgetWrapper>
   )
