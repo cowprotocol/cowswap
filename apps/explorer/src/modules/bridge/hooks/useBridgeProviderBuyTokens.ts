@@ -6,14 +6,14 @@ import useSWR, { SWRResponse } from 'swr'
 
 export function useBridgeProviderBuyTokens(
   provider: CrossChainOrder['provider'] | undefined,
-  chainId: number,
+  buyChainId: number,
 ): SWRResponse<Record<string, TokenInfo> | undefined> {
   return useSWR(
-    [provider, chainId, provider?.info.dappId],
-    async ([provider, chainId]) => {
+    [provider, buyChainId, provider?.info.dappId],
+    async ([provider, buyChainId]) => {
       if (!provider) return undefined
 
-      const tokens = await provider.getBuyTokens(chainId)
+      const tokens = await provider.getBuyTokens({ buyChainId })
 
       return tokens.reduce<Record<string, TokenInfo>>((acc, val) => {
         acc[val.address.toLowerCase()] = {
