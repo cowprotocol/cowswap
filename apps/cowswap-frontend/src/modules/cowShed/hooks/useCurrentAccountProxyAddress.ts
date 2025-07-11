@@ -71,11 +71,11 @@ async function getIsProxySetupValid(
 
     const implementation = await implementationAddress(provider, proxyAddress)
 
-    if (implementation !== cowShedHooks.getImplementationAddress()) return false
+    if (implementation.toLowerCase() !== cowShedHooks.getImplementationAddress().toLowerCase()) return false
 
     const trustedExecutor = await shedContract.callStatic.trustedExecutor()
 
-    return trustedExecutor === cowShedHooks.getFactoryAddress()
+    return trustedExecutor.toLowerCase() === cowShedHooks.getFactoryAddress().toLowerCase()
   } catch (e) {
     console.error('getIsProxySetupValid()', e)
 
