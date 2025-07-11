@@ -1,5 +1,5 @@
 {
-  "apps/cowswap-frontend": "1.112.0",
+  "apps/cowswap-frontend": "1.112.1",
   "apps/explorer": "2.48.3",
   "libs/permit-utils": "0.6.2",
   "libs/widget-lib": "0.20.0",
@@ -22,7 +22,7 @@
   "libs/wallet-provider": "1.0.1",
   "libs/ui-utils": "1.1.1",
   "libs/abis": "1.2.2",
-  "libs/balances-and-allowances": "1.5.0",
+  "libs/balances-and-allowances": "1.5.1",
   "libs/iframe-transport": "1.0.3",
   "libs/hook-dapp-lib": "1.8.0",
   "libs/multicall": "1.2.0"

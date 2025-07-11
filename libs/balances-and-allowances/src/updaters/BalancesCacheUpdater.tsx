@@ -14,11 +14,7 @@ interface BalancesCacheUpdaterProps {
 export function BalancesCacheUpdater({ chainId, account }: BalancesCacheUpdaterProps): null {
   const [balances, setBalances] = useAtom(balancesAtom)
   const [balancesCache, setBalancesCache] = useAtom(balancesCacheAtom)
-  const areBalancesRestoredFromCacheRef = useRef(false)
-
-  useEffect(() => {
-    areBalancesRestoredFromCacheRef.current = false
-  }, [chainId])
+  const lastChainCacheUpdateRef = useRef<SupportedChainId | null>(null)
 
   // Persist into localStorage only non-zero balances
   useEffect(() => {
@@ -69,7 +65,7 @@ export function BalancesCacheUpdater({ chainId, account }: BalancesCacheUpdaterP
   // Restore balances from cache once
   useLayoutEffect(() => {
     if (!account) return
-    if (areBalancesRestoredFromCacheRef.current) return
+    if (lastChainCacheUpdateRef.current === chainId) return
 
     const cache = balancesCache[chainId]?.[account.toLowerCase()]
 
@@ -79,10 +75,11 @@ export function BalancesCacheUpdater({ chainId, account }: BalancesCacheUpdaterP
 
     if (cacheKeys.length === 0) return
 
-    areBalancesRestoredFromCacheRef.current = true
+    lastChainCacheUpdateRef.current = chainId
 
     setBalances((state) => {
       return {
+        fromCache: true,
         chainId,
         isLoading: state.isLoading,
         values: {
