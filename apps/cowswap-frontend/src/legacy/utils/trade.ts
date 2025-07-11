@@ -35,6 +35,7 @@ export type PostOrderParams = {
   kind: OrderKind
   inputAmount: CurrencyAmount<Currency>
   outputAmount: CurrencyAmount<Currency>
+  bridgeOutputAmount?: CurrencyAmount<Currency>
   sellAmountBeforeFee: CurrencyAmount<Currency>
   feeAmount: CurrencyAmount<Currency> | undefined
   sellToken: Token
@@ -166,6 +167,7 @@ export function mapUnsignedOrderToOrder({ unsignedOrder, additionalParams }: Map
     orderCreationHash,
     quoteId,
     appData: { fullAppData },
+    bridgeOutputAmount,
   } = additionalParams
   const status = _getOrderStatus(allowsOffchainSigning, isOnChain)
 
@@ -181,6 +183,7 @@ export function mapUnsignedOrderToOrder({ unsignedOrder, additionalParams }: Map
     quoteId,
     class: additionalParams.class,
     fullAppData,
+    bridgeOutputAmount,
 
     // Status
     status,

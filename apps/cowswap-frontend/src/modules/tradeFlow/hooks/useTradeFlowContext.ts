@@ -47,9 +47,14 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
   const uiOrderType = tradeType ? TradeTypeToUiOrderType[tradeType] : null
   const isHooksTradeType = useIsHooksTradeType()
 
+  const tradeQuote = useTradeQuote()
+  const bridgeContext = useBridgeQuoteAmounts(receiveAmountInfo, tradeQuote.bridgeQuote)
+
   const sellCurrency = derivedTradeState?.inputCurrency
   const inputAmount = receiveAmountInfo?.afterSlippage.sellAmount
+  const bridgeOutputAmount = bridgeContext?.bridgeMinReceiveAmount
   const outputAmount = receiveAmountInfo?.afterSlippage.buyAmount
+
   const sellAmountBeforeFee = receiveAmountInfo?.afterNetworkCosts.sellAmount
   const networkFee = receiveAmountInfo?.costs.networkFee.amountInSellCurrency
 
@@ -62,7 +67,6 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
   const { contract: settlementContract, chainId: settlementChainId } = useGP2SettlementContract()
   const appData = useAppData()
   const typedHooks = useAppDataHooks()
-  const tradeQuote = useTradeQuote()
   const addBridgeOrder = useAddBridgeOrderQuote()
   const bridgeQuoteAmounts = useBridgeQuoteAmounts()
 
@@ -200,6 +204,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             kind: orderKind,
             inputAmount,
             outputAmount,
+            bridgeOutputAmount,
             sellAmountBeforeFee,
             feeAmount: networkFee,
             sellToken: sellToken as TokenWithLogo,
