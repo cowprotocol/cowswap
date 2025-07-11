@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { isSellOrder } from '@cowprotocol/common-utils'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { TokenAmount } from '@cowprotocol/ui'
@@ -9,12 +11,10 @@ import * as styledEl from './styled'
 
 const TOKEN_SIZE = 20
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function OrderIntent({ order }: { order?: Order }) {
+export function OrderIntent({ order }: { order?: Order }): ReactNode {
   if (!order) return null
 
-  const { inputToken, outputToken, kind, sellAmount, buyAmount } = order
+  const { inputToken, outputToken, kind, sellAmount, buyAmount, bridgeOutputAmount } = order
 
   if (!inputToken || !outputToken || !sellAmount || !buyAmount) {
     return null
@@ -23,7 +23,9 @@ export function OrderIntent({ order }: { order?: Order }) {
   const isSell = isSellOrder(kind)
 
   const sellCurrencyAmount = CurrencyAmount.fromRawAmount(inputToken, sellAmount)
-  const buyCurrencyAmount = CurrencyAmount.fromRawAmount(outputToken, buyAmount)
+  const buyCurrencyAmount = bridgeOutputAmount
+    ? bridgeOutputAmount
+    : CurrencyAmount.fromRawAmount(outputToken, buyAmount)
 
   const sellTokenPart = (
     <>

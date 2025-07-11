@@ -60,5 +60,6 @@ function applyBalanceDiffs(
     isLoading: currentBalances.isLoading,
     values: normalizedValues,
     chainId,
+    fromCache: false,
   }
 }

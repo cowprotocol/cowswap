@@ -1,5 +1,5 @@
 import { atomWithReset } from 'jotai/utils'
 
-import { BalancesState } from '@cowprotocol/balances-and-allowances'
+import { BalancesState, DEFAULT_BALANCES_STATE } from '@cowprotocol/balances-and-allowances'
 
-export const balancesCombinedAtom = atomWithReset<BalancesState>({ isLoading: false, values: {}, chainId: null })
+export const balancesCombinedAtom = atomWithReset<BalancesState>(DEFAULT_BALANCES_STATE)
