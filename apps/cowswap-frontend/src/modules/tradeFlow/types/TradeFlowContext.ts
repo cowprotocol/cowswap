@@ -13,7 +13,7 @@ import type { TradeConfirmActions } from 'modules/trade'
 import type { TradeFlowAnalyticsContext } from 'modules/trade/utils/tradeFlowAnalytics'
 import type { TradeQuoteState } from 'modules/tradeQuote'
 
-import { BridgeOrderQuoteData, BridgeQuoteAmounts } from 'common/types/bridge'
+import { BridgeOrderData, BridgeQuoteAmounts } from 'common/types/bridge'
 
 export enum FlowType {
   REGULAR = 'REGULAR',
@@ -38,7 +38,7 @@ export interface TradeFlowContext {
     closeModals: Command
     getCachedPermit: ReturnType<typeof useGetCachedPermit>
     dispatch: AppDispatch
-    addBridgeOrder: (order: BridgeOrderQuoteData) => void
+    addBridgeOrder: (order: BridgeOrderData) => void
   }
   tradeConfirmActions: TradeConfirmActions
   swapFlowAnalyticsContext: TradeFlowAnalyticsContext

@@ -46,6 +46,8 @@ import { ThemeFromUrlUpdater } from 'common/updaters/ThemeFromUrlUpdater'
 import { UserUpdater } from 'common/updaters/UserUpdater'
 import { WidgetTokensUpdater } from 'common/updaters/WidgetTokensUpdater'
 
+import { PendingBridgeOrdersUpdater } from '../../../bridge/updaters/PendingBridgeOrdersUpdater'
+
 export function Updaters(): ReactNode {
   const { account } = useWalletInfo()
   const { standaloneMode } = useInjectedWidgetParams()
@@ -109,6 +111,7 @@ export function Updaters(): ReactNode {
       <BalancesCombinedUpdater />
       <CorrelatedTokensUpdater />
       <BridgeOrdersCleanUpdater />
+      <PendingBridgeOrdersUpdater />
     </>
   )
 }

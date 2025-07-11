@@ -1,7 +1,7 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 
-import { BridgeQuoteAmounts } from '../types/bridge'
+import { BridgeQuoteAmounts } from 'common/types/bridge'
 
 export function calculateTargetAmountsBeforeBridging(
   quoteAmounts: BridgeQuoteAmounts,

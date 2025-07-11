@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
 import { BridgeStatus, CrossChainOrder, SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -6,12 +6,12 @@ import { useTokensByAddressMap } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
+import { useBridgeOrderQuoteAmounts, useCrossChainOrder } from 'entities/bridgeOrders'
 import { useBridgeSupportedNetworks } from 'entities/bridgeProvider'
 import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 
 import type { Order } from 'legacy/state/orders/actions'
 
-import { useUpdateBridgeOrderData } from 'modules/bridge/hooks/useUpdateBridgeOrderData'
 import {
   BridgingProgressContext,
   QuoteBridgeContext,
@@ -26,7 +26,6 @@ import type { SolverCompetition } from 'common/types/soverCompetition'
 import { useSwapAndBridgeOverview } from './useSwapAndBridgeOverview'
 import { useSwapResultsContext } from './useSwapResultsContext'
 
-import { BridgeQuoteAmounts } from '../types/bridge'
 import { calculateTargetAmountsBeforeBridging } from '../utils/calculateTargetAmountsBeforeBridging'
 
 const bridgeStatusMap: Record<BridgeStatus, SwapAndBridgeStatus> = {
@@ -49,13 +48,12 @@ export function useSwapAndBridgeContext(
   chainId: SupportedChainId,
   order: Order | undefined,
   winningSolver: SolverCompetition | undefined,
-  bridgeQuoteAmounts?: BridgeQuoteAmounts,
 ): SwapAndBridgeContexts {
   const { account } = useWalletInfo()
   const { data: bridgeSupportedNetworks } = useBridgeSupportedNetworks()
   const tokensByAddress = useTokensByAddressMap()
 
-  const [crossChainOrder, setCrossChainOrder] = useState<CrossChainOrder | null>(null)
+  const { data: crossChainOrder } = useCrossChainOrder(chainId, order?.id)
 
   const intermediateToken = order && tokensByAddress[order.buyToken.toLowerCase()]
 
@@ -66,6 +64,7 @@ export function useSwapAndBridgeContext(
   }, [fullAppData])
 
   const swapResultContext = useSwapResultsContext(order, winningSolver, intermediateToken)
+  const bridgeQuoteAmounts = useBridgeOrderQuoteAmounts(order?.id)
 
   const receivedAmount = swapResultContext?.receivedAmount
   const bridgeOutputAmount = crossChainOrder?.bridgingParams.outputAmount
@@ -110,13 +109,6 @@ export function useSwapAndBridgeContext(
   }, [bridgeQuoteAmounts, crossChainOrder, bridgeOutputAmount, bridgeReceiveAmount, intermediateToken, receivedAmount])
 
   const swapAndBridgeOverview = useSwapAndBridgeOverview(order, intermediateToken, targetAmounts)
-
-  const isBridgingExecuted = crossChainOrder?.statusResult.status === BridgeStatus.EXECUTED
-
-  /**
-   * Poll bridge provider to get current bridging status
-   */
-  useUpdateBridgeOrderData(chainId, isBridgingExecuted ? undefined : order, setCrossChainOrder)
 
   // TODO: Break down this large function into smaller functions
   // TODO: Reduce function complexity by extracting logic

@@ -8,6 +8,7 @@ import { GnosisSafeInfo, useGnosisSafeInfo, useWalletInfo } from '@cowprotocol/w
 
 import { isOrderInPendingTooLong, triggerAppziSurvey } from 'appzi'
 import { useAddOrderToSurplusQueue } from 'entities/surplusModal'
+import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 
 import { GetSafeTxInfo, useGetSafeTxInfo } from 'legacy/hooks/useGetSafeTxInfo'
 import { useAllTransactions } from 'legacy/state/enhancedTransactions/hooks'
@@ -290,7 +291,12 @@ async function _updateOrders({
     // add to surplus queue
     fulfilled.forEach(({ uid, fullAppData, class: orderClass }) => {
       if (getUiOrderType({ fullAppData, class: orderClass }) === UiOrderType.SWAP) {
-        addOrderToSurplusQueue(uid)
+        const orderBridgeProvider = fullAppData && bridgingSdk.getProviderFromAppData(fullAppData)
+        const isBridgingOrder = !!orderBridgeProvider
+
+        if (!isBridgingOrder) {
+          addOrderToSurplusQueue(uid)
+        }
       }
     })
     // trigger total surplus update

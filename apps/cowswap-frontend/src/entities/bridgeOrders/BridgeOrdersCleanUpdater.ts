@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react'
 
 import ms from 'ms.macro'
 
-import { bridgeOrderQuoteAtom } from './bridgeOrderQuoteAtom'
+import { bridgeOrdersAtom } from './bridgeOrdersAtom'
 
 const BRIDGE_ORDERS_TTL = ms`3d`
 
@@ -13,7 +13,7 @@ const BRIDGE_ORDERS_TTL = ms`3d`
  */
 export function BridgeOrdersCleanUpdater(): null {
   const isUpdaterDoneRef = useRef(false)
-  const [bridgeOrders, setBridgeOrders] = useAtom(bridgeOrderQuoteAtom)
+  const [bridgeOrders, setBridgeOrders] = useAtom(bridgeOrdersAtom)
 
   useEffect(() => {
     if (isUpdaterDoneRef.current) return
