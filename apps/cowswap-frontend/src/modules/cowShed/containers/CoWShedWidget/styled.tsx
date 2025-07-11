@@ -1,4 +1,4 @@
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
@@ -19,8 +19,12 @@ export const ModalWrapper = styled.div<{ $modalMode: boolean }>`
   top: 0;
   overflow-y: scroll;
   padding: 50px 0;
-  background: ${({ theme }) => (theme.isInjectedWidgetMode ? 'transparent' : transparentize(theme.black, 0.1))};
+  background: ${({ theme }) => (theme.isWidget ? 'transparent' : transparentize(theme.black, 0.5))};
   backdrop-filter: blur(3px);
+
+  ${Media.upToSmall()} {
+    padding: 0;
+  }
 `
 
 export const WidgetWrapper = styled.div`
