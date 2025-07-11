@@ -75,7 +75,7 @@ export interface BridgingProgressContext {
 
 export interface SwapResultContext {
   winningSolver?: SolverCompetition
-  receivedAmount: CurrencyAmount<Currency>
+  receivedAmount: CurrencyAmount<TokenWithLogo>
   receivedAmountUsd: CurrencyAmount<Token> | null
   surplusAmount: CurrencyAmount<Currency>
   surplusAmountUsd: CurrencyAmount<Token> | null
