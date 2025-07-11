@@ -12,14 +12,15 @@ type Step2Config = StepProps & { error?: string }
 
 export function Step2({ order, cancellation, creation }: EthFlowStepperProps): ReactNode {
   const { state, isExpired, orderId, rejectedReason } = order
-  const isCreating = state === SmartOrderStatus.CREATING
-  const isIndexing = state === SmartOrderStatus.CREATION_MINED
-  const isCancelled = cancellation.failed === false // if undefined: not cancelled, if true: cancellation failed
-  const isOrderCreated = order.isCreated
-  const isFilled = state === SmartOrderStatus.FILLED
   const { cancelled: creationCancelled, replaced: creationReplaced } = creation
 
+  const isCreating = state === SmartOrderStatus.CREATING
+  const isIndexing = state === SmartOrderStatus.CREATION_MINED
+  const isFilled = state === SmartOrderStatus.FILLED
+  const isCancelled = cancellation.failed === false
+  const isOrderCreated = order.isCreated
   const expiredBeforeCreate = isExpired && (isCreating || isIndexing)
+  const hasCreationError = (rejectedReason || creationCancelled || (creationReplaced && isCreating)) && !isFilled
 
   // Get config for Step 2
   const {
@@ -29,7 +30,8 @@ export function Step2({ order, cancellation, creation }: EthFlowStepperProps): R
     error,
     // TODO: Reduce function complexity by extracting logic
   } = useMemo<Step2Config>(() => {
-    if ((rejectedReason || creationCancelled || (creationReplaced && isCreating)) && !isFilled) {
+    // Error states
+    if (hasCreationError) {
       return {
         label: 'Order Creation Failed',
         error: rejectedReason,
@@ -37,6 +39,7 @@ export function Step2({ order, cancellation, creation }: EthFlowStepperProps): R
         icon: X,
       }
     }
+
     if (expiredBeforeCreate && !isFilled) {
       return {
         label: 'Order Creation Failed',
@@ -75,16 +78,7 @@ export function Step2({ order, cancellation, creation }: EthFlowStepperProps): R
       state: 'success',
       icon: Checkmark,
     }
-  }, [
-    expiredBeforeCreate,
-    isCancelled,
-    isCreating,
-    isFilled,
-    isIndexing,
-    rejectedReason,
-    creationReplaced,
-    creationCancelled,
-  ])
+  }, [hasCreationError, expiredBeforeCreate, isCancelled, isCreating, isFilled, isIndexing, rejectedReason])
 
   return (
     <Step state={stepState} icon={icon} label={label} errorMessage={error}>
