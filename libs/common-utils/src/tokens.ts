@@ -5,9 +5,10 @@ import {
 } from '@cowprotocol/common-const'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function isNativeAddress(tokenAddress: string, chainId: ChainId) {
+import { areAddressesEqual } from './areAddressesEqual'
+
+
+export function isNativeAddress(tokenAddress: string, chainId: ChainId): boolean {
   if (!tokenAddress || !chainId) return false
 
   const tokenAddressLower = tokenAddress.toLowerCase()
@@ -17,7 +18,7 @@ export function isNativeAddress(tokenAddress: string, chainId: ChainId) {
   const native = NATIVE_CURRENCIES[chainId]
 
   return (
-    native && (tokenAddressLower === native.address.toLowerCase() || tokenAddressLower === native.symbol?.toLowerCase())
+    native && (areAddressesEqual(tokenAddressLower, native.address) || tokenAddressLower === native.symbol?.toLowerCase())
   )
 }
 
