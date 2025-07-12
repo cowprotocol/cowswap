@@ -24,7 +24,8 @@ import {
 import { useUsdAmount } from 'modules/usdAmount'
 
 import type { SolverCompetition } from 'common/types/soverCompetition'
-import { getExecutedSummaryData } from 'utils/getExecutedSummaryData'
+
+import { useGetExecutedBridgeSummary } from './useGetExecutedBridgeSummary'
 
 const bridgeStatusMap: Record<BridgeStatus, SwapAndBridgeStatus> = {
   [BridgeStatus.IN_PROGRESS]: SwapAndBridgeStatus.PENDING,
@@ -55,10 +56,7 @@ export function useSwapAndBridgeContext(
     return fullAppData ? bridgingSdk.getProviderFromAppData(fullAppData)?.info : undefined
   }, [fullAppData])
 
-  const executedSummary = useMemo(() => {
-    return order ? getExecutedSummaryData(order) : undefined
-  }, [order])
-
+  const executedSummary = useGetExecutedBridgeSummary(order)
   const { swappedAmountWithFee, surplusAmount } = executedSummary || {}
 
   /**
