@@ -12,13 +12,13 @@ import {
 } from 'utils/getExecutedSummaryData'
 
 export function useGetExecutedBridgeSummary(order: Order | undefined): ExecutedSummaryData | undefined {
-  const useTokensByAddress = useTokensByAddressMap()
+  const tokensByAddress = useTokensByAddressMap()
 
   return useMemo(() => {
     if (!order) return undefined
 
     const intermediateTokenAddress = isSellOrder(order.kind) ? order.buyToken : order.sellToken
-    const tokenInMap = useTokensByAddress[intermediateTokenAddress.toLowerCase()]
+    const tokenInMap = tokensByAddress[intermediateTokenAddress.toLowerCase()]
     if (!tokenInMap) return getExecutedSummaryData(order) // fallback to the original function if token is not found
     const intermediateToken = tokenInMap.isNative
       ? getWrappedToken(tokenInMap)
@@ -26,5 +26,5 @@ export function useGetExecutedBridgeSummary(order: Order | undefined): ExecutedS
 
 
     return getExecutedSummaryDataWithSurplusToken(order, intermediateToken)
-  }, [order, useTokensByAddress])
+  }, [order, tokensByAddress])
 }
