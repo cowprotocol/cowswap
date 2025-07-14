@@ -68,6 +68,7 @@ export function useSwapAndBridgeContext(
 
   const bridgeQuoteAmounts = bridgeOrderData?.quoteAmounts
   const targetRecipient = bridgeOrderData?.recipient || crossChainOrder?.bridgingParams.recipient
+  const bridgeFee = bridgeQuoteAmounts?.bridgeFee || null
 
   const receivedAmount = swapResultContext?.receivedAmount
   const bridgeOutputAmount = crossChainOrder?.bridgingParams.outputAmount
@@ -157,7 +158,7 @@ export function useSwapAndBridgeContext(
 
     const quoteBridgeContext: QuoteBridgeContext = {
       chainName: destChainData.label,
-      bridgeFee: null,
+      bridgeFee,
       estimatedTime: null,
       recipient: crossChainOrder.bridgingParams.recipient,
       sellAmount: swapAndBridgeOverview.targetAmounts.sellAmount,
@@ -183,6 +184,7 @@ export function useSwapAndBridgeContext(
     bridgeSupportedNetworks,
     bridgeReceiveAmount,
     swapAndBridgeOverview,
+    bridgeFee,
   ])
 
   return useMemo(
