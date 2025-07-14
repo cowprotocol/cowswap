@@ -1,7 +1,9 @@
 import { Atom, useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
+import { TokenWithLogo } from '@cowprotocol/common-const'
 import { tryParseFractionalAmount } from '@cowprotocol/common-utils'
+import { BuyTokensParams } from '@cowprotocol/cow-sdk'
 import { useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -27,10 +29,20 @@ export function useBuildTradeDerivedState(
   const recipient = rawState.recipient
   const recipientAddress = rawState.recipientAddress
   const orderKind = rawState.orderKind
+  const sellChainId = rawState.chainId
 
   const inputCurrency = useTokenBySymbolOrAddress(inputCurrencyId)
 
-  const outputCurrencyFromBridge = useTokenForTargetChain(targetChainId, outputCurrencyId)
+  const buyTokensParams: BuyTokensParams | undefined = useMemo(() => {
+    if (!targetChainId) return undefined
+
+    return {
+      buyChainId: targetChainId,
+      sellChainId: sellChainId || undefined,
+    }
+  }, [sellChainId, targetChainId])
+
+  const outputCurrencyFromBridge = useTokenForTargetChain(buyTokensParams, outputCurrencyId)
   const outputCurrencyFromTokenLists = useTokenBySymbolOrAddress(targetChainId ? null : outputCurrencyId)
 
   const outputCurrency = outputCurrencyFromBridge || outputCurrencyFromTokenLists
@@ -67,10 +79,8 @@ export function useBuildTradeDerivedState(
   })
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function useTokenForTargetChain(targetChainId: number | undefined, currencyId: string | null) {
-  const bridgeSupportedTokens = useBridgeSupportedTokens(targetChainId).data
+function useTokenForTargetChain(params: BuyTokensParams | undefined, currencyId: string | null): TokenWithLogo | null {
+  const bridgeSupportedTokens = useBridgeSupportedTokens(params).data
 
   return useMemo(() => {
     if (!bridgeSupportedTokens || !currencyId) return null
