@@ -1,4 +1,4 @@
-import { ReactNode, useCallback } from 'react'
+import { ReactNode, useCallback, useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useSearchToken } from '@cowprotocol/tokens'
@@ -28,14 +28,16 @@ export function AddIntermediateToken({ intermediateBuyTokenAddress, onImport }: 
     [onImport, addTokenImportCallback],
   )
 
-  const allTokensMap = new Map()
+  const allTokens = useMemo(() => {
+    const allTokensMap = new Map()
 
-  ;[...inactiveListsResult, ...blockchainResult, ...activeListsResult, ...externalApiResult].forEach((token) => {
-    if (!allTokensMap.has(token.address.toLowerCase())) {
-      allTokensMap.set(token.address.toLowerCase(), token)
-    }
-  })
-  const allTokens = Array.from(allTokensMap.values())
+    ;[...inactiveListsResult, ...blockchainResult, ...activeListsResult, ...externalApiResult].forEach((token) => {
+      if (!allTokensMap.has(token.address.toLowerCase())) {
+        allTokensMap.set(token.address.toLowerCase(), token)
+      }
+    })
+    return Array.from(allTokensMap.values())
+  }, [inactiveListsResult, blockchainResult, activeListsResult, externalApiResult])
 
   return (
     <styledEl.AddIntermediateTokenWrapper>
@@ -44,6 +46,7 @@ export function AddIntermediateToken({ intermediateBuyTokenAddress, onImport }: 
           <Loader />
         </styledEl.LoaderWrapper>
       )}
+      {!isLoading && allTokens.length === 0 && <div>No tokens found for the given address</div>}
       {allTokens.map((token) => {
         return <ImportTokenItem key={token.address} token={token} importToken={handleImport} />
       })}
