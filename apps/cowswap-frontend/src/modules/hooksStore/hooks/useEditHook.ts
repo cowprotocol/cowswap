@@ -3,7 +3,8 @@ import { useCallback } from 'react'
 
 import { CowHookToEdit } from '@cowprotocol/hook-dapp-lib'
 
-import { setHooksAtom } from '../state/hookDetailsAtom'
+import { setHooksAtom } from 'entities/orderHooks/hookDetailsAtom'
+
 import { EditHook } from '../types/hooks'
 
 export function useEditHook(isPreHook: boolean): EditHook {

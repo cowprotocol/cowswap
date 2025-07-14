@@ -1,14 +1,16 @@
 import React, { useState } from 'react'
 
-import { Media, Color } from '@cowprotocol/ui'
+import { Color } from '@cowprotocol/ui'
 
 import TabContent from 'components/common/Tabs/TabContent'
 import TabItem from 'components/common/Tabs/TabItem'
 import { DefaultTheme } from 'styled-components/macro'
-import styled from 'styled-components/macro'
+
+import { Wrapper, TabList } from './styled'
 
 // Components
 export { default as TabIcon } from 'components/common/Tabs/TabIcon'
+export { TabList } from './styled'
 
 type TabId = number
 export enum IndicatorTabSize {
@@ -47,43 +49,13 @@ export interface Props {
   readonly updateSelectedTab?: (activeId: TabId) => void
 }
 
-const Wrapper = styled.div`
-  width: 100%;
-  max-width: 100%;
-`
-
-export const TabList = styled.div`
-  position: sticky;
-  top: 0;
-  background: ${Color.explorer_bg};
-  z-index: 2;
-  max-width: 100%;
-  display: flex;
-  justify-content: flex-start;
-  border-bottom: 1px solid ${Color.explorer_border};
-  box-sizing: border-box;
-  flex-flow: row wrap;
-
-  > button {
-    flex: 0 0 auto;
-    min-width: 12rem;
-    padding: 1rem;
-    line-height: 2;
-    height: auto;
-
-    ${Media.upToSmall()} {
-      flex: 1 1 auto;
-    }
-  }
-`
-
 export const DEFAULT_TAB_THEME: TabTheme = {
   activeBg: 'transparent',
   activeBgAlt: undefined,
   inactiveBg: 'transparent',
-  activeText: Color.explorer_textPrimary,
+  activeText: Color.neutral100,
   inactiveText: Color.explorer_textSecondary2,
-  activeBorder: Color.explorer_textPrimary,
+  activeBorder: Color.neutral100,
   inactiveBorder: 'transparent',
   indicatorTabSize: 0.2,
   fontSize: '1.4rem',

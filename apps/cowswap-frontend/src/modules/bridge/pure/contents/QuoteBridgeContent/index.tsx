@@ -4,6 +4,8 @@ import { displayTime, isTruthy } from '@cowprotocol/common-utils'
 import { InfoTooltip } from '@cowprotocol/ui'
 
 import { ConfirmDetailsItem, ReceiveAmountTitle } from 'modules/trade'
+import { BRIDGE_QUOTE_ACCOUNT } from 'modules/tradeQuote'
+import { useUsdAmount } from 'modules/usdAmount'
 
 import { QuoteBridgeContext } from '../../../types'
 import { RecipientDisplay } from '../../RecipientDisplay'
@@ -14,13 +16,12 @@ export interface QuoteBridgeContentProps {
   children?: ReactNode
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function QuoteBridgeContent({
   quoteContext: { recipient, bridgeFee, estimatedTime, buyAmount, buyAmountUsd },
   children,
-}: QuoteBridgeContentProps) {
+}: QuoteBridgeContentProps): ReactNode {
+  const bridgeFeeUsd = useUsdAmount(bridgeFee).value
+
   const buyAmountEl = <TokenAmountDisplay displaySymbol usdValue={buyAmountUsd} currencyAmount={buyAmount} />
 
   const contents = [
@@ -32,7 +33,11 @@ export function QuoteBridgeContent({
               Bridge fee <InfoTooltip content="The fee for the bridge transaction." size={14} />
             </>
           ),
-          content: bridgeFee.equalTo(0) ? 'FREE' : <TokenAmountDisplay currencyAmount={bridgeFee} />,
+          content: bridgeFee.equalTo(0) ? (
+            'FREE'
+          ) : (
+            <TokenAmountDisplay currencyAmount={bridgeFee} usdValue={bridgeFeeUsd} />
+          ),
         }
       : null,
     estimatedTime
@@ -47,7 +52,7 @@ export function QuoteBridgeContent({
           content: <>~ {displayTime(estimatedTime * 1000, true)}</>,
         }
       : null,
-    {
+    recipient !== BRIDGE_QUOTE_ACCOUNT && {
       withTimelineDot: true,
       label: (
         <>

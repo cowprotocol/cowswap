@@ -1,5 +1,12 @@
 'use client'
 
+import { useCowAnalytics } from '@cowprotocol/analytics'
+import { Font, Media, UI } from '@cowprotocol/ui'
+
+import Link from 'next/link'
+import styled from 'styled-components/macro'
+
+import { ArticlesList } from '@/components/ArticlesList'
 import { CategoryLinks } from '@/components/CategoryLinks'
 import { SearchBar } from '@/components/SearchBar'
 import {
@@ -12,14 +19,10 @@ import {
   LinkSection,
   Pagination,
 } from '@/styles/styled'
-import { CowFiCategory } from 'src/common/analytics/types'
-import { ArticlesList } from '@/components/ArticlesList'
-import { Article } from '../services/cms'
-import styled from 'styled-components/macro'
-import { Color, Font, Media } from '@cowprotocol/ui'
-import Link from 'next/link'
-import { useCowAnalytics } from '@cowprotocol/analytics'
 import { calculateTotalPages, calculatePageRange, createPaginationArray } from '@/util/paginationUtils'
+import { CowFiCategory } from 'src/common/analytics/types'
+
+import { Article } from '../services/cms'
 
 const LEARN_PATH = '/learn'
 const ARTICLES_PATH = `${LEARN_PATH}/articles`
@@ -37,7 +40,7 @@ const Wrapper = styled.div`
   > h1 {
     font-size: 28px;
     font-weight: ${Font.weight.medium};
-    color: ${Color.neutral50};
+    color: var(${UI.COLOR_NEUTRAL_50});
     text-align: center;
 
     ${Media.upToMedium()} {
@@ -63,13 +66,7 @@ interface ArticlesPageProps {
   allArticles: Article[]
 }
 
-export function ArticlesPageComponents({
-  articles,
-  totalArticles,
-  currentPage,
-  allCategories,
-  allArticles,
-}: ArticlesPageProps) {
+export function ArticlesPageComponents({ articles, totalArticles, currentPage, allCategories }: ArticlesPageProps) {
   const analytics = useCowAnalytics()
   const totalPages = calculateTotalPages(totalArticles)
   const { start, end } = calculatePageRange(currentPage, totalArticles)

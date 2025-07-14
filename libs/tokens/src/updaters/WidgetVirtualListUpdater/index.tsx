@@ -6,7 +6,6 @@ import { TokenInfo } from '@cowprotocol/types'
 import { virtualListsStateAtom } from '../../state/tokenLists/tokenListsStateAtom'
 import { ListState } from '../../types'
 
-
 const VIRTUAL_LIST_SOURCE = 'widgetCustomTokens'
 const VIRTUAL_LIST_NAME = 'Widget custom tokens'
 
@@ -19,9 +18,7 @@ export interface WidgetVirtualListUpdaterProps {
  * The updater converts custom tokens provided by widget integrator to a virtual list
  * This list will be used by CoW Swap as a regular list, but it will not be displayed in the token lists settings
  */
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function WidgetVirtualListUpdater({ customTokens, appCode }: WidgetVirtualListUpdaterProps) {
+export function WidgetVirtualListUpdater({ customTokens, appCode }: WidgetVirtualListUpdaterProps): null {
   const setVirtualListsState = useSetAtom(virtualListsStateAtom)
 
   useEffect(() => {

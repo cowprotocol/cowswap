@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.9.1](https://github.com/cowprotocol/cowswap/compare/common-hooks-v1.9.0...common-hooks-v1.9.1) (2025-07-03)
+
+
+### Bug Fixes
+
+* **bridge:** enable bridging only in Swap ([#5837](https://github.com/cowprotocol/cowswap/issues/5837)) ([6d77019](https://github.com/cowprotocol/cowswap/commit/6d77019043d43a0a3dbde8b4baddfd9b7b5a8a39))
+
+## [1.9.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v1.8.2...common-hooks-v1.9.0) (2025-06-18)
+
+
+### Features
+
+* **new-networks:** add support to `Avalanche` and `Polygon` networks ([#5715](https://github.com/cowprotocol/cowswap/issues/5715)) ([e3e8a8d](https://github.com/cowprotocol/cowswap/commit/e3e8a8d6b94569a5dda7a425d1a79f0b4f6d5200))
+
 ## [1.8.2](https://github.com/cowprotocol/cowswap/compare/common-hooks-v1.8.1...common-hooks-v1.8.2) (2025-05-19)
 
 

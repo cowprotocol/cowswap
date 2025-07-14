@@ -1,5 +1,28 @@
 # Changelog
 
+## [1.24.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.23.0...cow-fi-v1.24.0) (2025-07-03)
+
+
+### Features
+
+* **cow-fi-tokens:** refactor and add more networks to the token details page swap w… ([#5900](https://github.com/cowprotocol/cowswap/issues/5900)) ([14952b3](https://github.com/cowprotocol/cowswap/commit/14952b3f852cf61698ecad20061af6f244a43517))
+* **explorer:** display bridging data in order page ([#5787](https://github.com/cowprotocol/cowswap/issues/5787)) ([cd398f0](https://github.com/cowprotocol/cowswap/commit/cd398f0987064311d80c1628550a83df5ad31386))
+* update `cow.fi` `/tokens` page ([#5889](https://github.com/cowprotocol/cowswap/issues/5889)) ([c3d969d](https://github.com/cowprotocol/cowswap/commit/c3d969d74de12b6cefcd1140f99ad3aeadbc0b3e))
+* update FAQs list of supported networks ([#5901](https://github.com/cowprotocol/cowswap/issues/5901)) ([d0de55a](https://github.com/cowprotocol/cowswap/commit/d0de55a8d7868ef239e7264d0310aff53f81b6dd))
+
+## [1.23.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.22.7...cow-fi-v1.23.0) (2025-06-18)
+
+
+### Features
+
+* **analytics:** enhance UTM handling and analytics readiness checks ([#5779](https://github.com/cowprotocol/cowswap/issues/5779)) ([3fb616c](https://github.com/cowprotocol/cowswap/commit/3fb616cf8f5b5ad7c1736bd095912d692bbf1fd5))
+
+
+### Bug Fixes
+
+* punctuation on the careers page disclaimer ([#5796](https://github.com/cowprotocol/cowswap/issues/5796)) ([e378e84](https://github.com/cowprotocol/cowswap/commit/e378e8422ad296f59717cdfa6363d091d5408a1b))
+* reduce rerenders count and theme recalculation ([#5831](https://github.com/cowprotocol/cowswap/issues/5831)) ([96a7a35](https://github.com/cowprotocol/cowswap/commit/96a7a350f366615a1e5149097541b5e2ccf880f1))
+
 ## [1.22.7](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.22.6...cow-fi-v1.22.7) (2025-05-29)
 
 

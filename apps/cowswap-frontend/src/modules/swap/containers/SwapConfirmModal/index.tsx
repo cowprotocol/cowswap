@@ -1,10 +1,8 @@
-import { useMemo } from 'react'
+import { ReactNode, useMemo } from 'react'
 
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
-
-import ms from 'ms.macro'
 
 import type { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
@@ -17,7 +15,7 @@ import {
   useBridgeQuoteAmounts,
 } from 'modules/bridge'
 import { useTokensBalancesCombined } from 'modules/combinedBalances/hooks/useTokensBalancesCombined'
-import { useOrderSubmittedContent } from 'modules/orderProgressBar'
+import { OrderSubmittedContent } from 'modules/orderProgressBar'
 import {
   TradeBasicConfirmDetails,
   TradeConfirmation,
@@ -38,7 +36,6 @@ import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
 import { useSwapDeadlineState } from '../../hooks/useSwapSettings'
 
 const CONFIRM_TITLE = 'Swap'
-const PRICE_UPDATE_INTERVAL = ms`30s`
 
 export interface SwapConfirmModalProps {
   doTrade(): Promise<false | void>
@@ -51,11 +48,11 @@ export interface SwapConfirmModalProps {
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
-export function SwapConfirmModal(props: SwapConfirmModalProps) {
+// eslint-disable-next-line max-lines-per-function
+export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
   const { inputCurrencyInfo, outputCurrencyInfo, priceImpact, recipient, doTrade } = props
 
-  const { account, chainId } = useWalletInfo()
+  const { account } = useWalletInfo()
   const { ensName } = useWalletDetails()
   const appData = useAppData()
   const receiveAmountInfo = useReceiveAmountInfo()
@@ -72,13 +69,17 @@ export function SwapConfirmModal(props: SwapConfirmModalProps) {
   const bridgeContext = useQuoteBridgeContext()
 
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
-  const submittedContent = useOrderSubmittedContent(chainId, bridgeQuoteAmounts || undefined)
+  const submittedContent = (
+    <OrderSubmittedContent
+      bridgeQuoteAmounts={bridgeQuoteAmounts || undefined}
+      onDismiss={tradeConfirmActions.onDismiss}
+    />
+  )
   const labelsAndTooltips = useLabelsAndTooltips()
 
   const { values: balances } = useTokensBalancesCombined()
 
   // TODO: Reduce function complexity by extracting logic
-  // eslint-disable-next-line complexity
   const disableConfirm = useMemo(() => {
     const current = inputCurrencyInfo?.amount?.currency
 
@@ -125,7 +126,6 @@ export function SwapConfirmModal(props: SwapConfirmModalProps) {
         buttonText={buttonText}
         recipient={recipient}
         appData={appData || undefined}
-        refreshInterval={PRICE_UPDATE_INTERVAL}
       >
         {shouldDisplayBridgeDetails && bridgeProvider && swapContext && bridgeContext
           ? (restContent) => (

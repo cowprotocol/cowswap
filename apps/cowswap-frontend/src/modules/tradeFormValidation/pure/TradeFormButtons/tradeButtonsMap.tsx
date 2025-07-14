@@ -1,8 +1,8 @@
 import { ReactElement } from 'react'
 
 import { getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
-import { BridgeProviderQuoteError } from '@cowprotocol/cow-sdk'
-import { HelpTooltip, InfoTooltip, TokenSymbol } from '@cowprotocol/ui'
+import { BridgeProviderQuoteError, BridgeQuoteErrors } from '@cowprotocol/cow-sdk'
+import { HelpTooltip, TokenSymbol } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
@@ -29,14 +29,10 @@ const CompatibilityIssuesWarningWrapper = styled.div`
   margin-top: -10px;
 `
 
-const JsonDisplay = styled.pre`
-  word-break: break-word;
-  white-space: pre-wrap;
-  width: 100%;
-`
+const DEFAULT_QUOTE_ERROR = 'Error loading price. Try again later.'
 
 const quoteErrorTexts: Record<QuoteApiErrorCodes, string> = {
-  [QuoteApiErrorCodes.UNHANDLED_ERROR]: 'Error loading price. Try again later.',
+  [QuoteApiErrorCodes.UNHANDLED_ERROR]: DEFAULT_QUOTE_ERROR,
   [QuoteApiErrorCodes.TransferEthToContract]:
     'Buying native currency with smart contract wallets is not currently supported',
   [QuoteApiErrorCodes.UnsupportedToken]: 'Unsupported token',
@@ -44,6 +40,17 @@ const quoteErrorTexts: Record<QuoteApiErrorCodes, string> = {
   [QuoteApiErrorCodes.FeeExceedsFrom]: 'Sell amount is too small',
   [QuoteApiErrorCodes.ZeroPrice]: 'Invalid price. Try increasing input/output amount.',
   [QuoteApiErrorCodes.SameBuyAndSellToken]: 'Tokens must be different',
+}
+
+const bridgeQuoteErrorTexts: Record<BridgeQuoteErrors, string> = {
+  [BridgeQuoteErrors.API_ERROR]: DEFAULT_QUOTE_ERROR,
+  [BridgeQuoteErrors.INVALID_BRIDGE]: DEFAULT_QUOTE_ERROR,
+  [BridgeQuoteErrors.TX_BUILD_ERROR]: DEFAULT_QUOTE_ERROR,
+  [BridgeQuoteErrors.QUOTE_ERROR]: DEFAULT_QUOTE_ERROR,
+  [BridgeQuoteErrors.INVALID_API_JSON_RESPONSE]: DEFAULT_QUOTE_ERROR,
+  [BridgeQuoteErrors.NO_INTERMEDIATE_TOKENS]: 'No routes found',
+  [BridgeQuoteErrors.NO_ROUTES]: 'No routes found',
+  [BridgeQuoteErrors.ONLY_SELL_ORDER_SUPPORTED]: 'Only "sell" orders are supported',
 }
 
 // TODO: Add proper return type annotation
@@ -96,29 +103,29 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   },
   [TradeFormValidation.QuoteErrors]: (context) => {
     const { quote } = context
-    const defaultError = quoteErrorTexts[QuoteApiErrorCodes.UNHANDLED_ERROR]
 
     if (quote.error instanceof QuoteApiError) {
       if (quote.error.type === QuoteApiErrorCodes.UnsupportedToken) {
         return unsupportedTokenButton(context)
       }
 
+      const errorText = quoteErrorTexts[quote.error.type] || DEFAULT_QUOTE_ERROR
+
       return (
         <TradeFormBlankButton disabled={true}>
-          <Trans>{quoteErrorTexts[quote.error.type] || defaultError}</Trans>
+          <Trans>{errorText}</Trans>
         </TradeFormBlankButton>
       )
     }
 
     if (quote.error instanceof BridgeProviderQuoteError) {
+      const errorMessage = quote.error.message as BridgeQuoteErrors
+      const errorText = bridgeQuoteErrorTexts[errorMessage] || DEFAULT_QUOTE_ERROR
+
       return (
         <TradeFormBlankButton disabled={true}>
           <>
-            <Trans>Bridge quote error</Trans>
-            {'  '}
-            <InfoTooltip>
-              <JsonDisplay>{JSON.stringify(quote.error.context, null, 2)}</JsonDisplay>
-            </InfoTooltip>
+            <Trans>{errorText}</Trans>
           </>
         </TradeFormBlankButton>
       )

@@ -1,6 +1,6 @@
 import { ReactElement, ReactNode, useMemo } from 'react'
 
-import { COW, V_COW, V_COW_CONTRACT_ADDRESS } from '@cowprotocol/common-const'
+import { COW_TOKEN_TO_CHAIN, V_COW, V_COW_CONTRACT_ADDRESS } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink, shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENS } from '@cowprotocol/ens'
@@ -10,11 +10,13 @@ import { BannerOrientation, ExternalLink, Icon, IconType, TokenAmount, UI } from
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useAddOrderToSurplusQueue } from 'entities/surplusModal'
+import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 
 import { getActivityState } from 'legacy/hooks/useActivityDerivedState'
 import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { useToggleAccountModal } from 'modules/account'
+import { BridgeActivitySummary } from 'modules/bridge'
 import { EthFlowStepper } from 'modules/ethFlow'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
@@ -22,6 +24,7 @@ import { OrderHooksDetails } from 'common/containers/OrderHooksDetails'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
+import { useSwapAndBridgeContext } from 'common/hooks/useSwapAndBridgeContext'
 import { CustomRecipientWarningBanner } from 'common/pure/CustomRecipientWarningBanner'
 import { RateInfo, RateInfoParams } from 'common/pure/RateInfo'
 import { SafeWalletLink } from 'common/pure/SafeWalletLink'
@@ -46,6 +49,8 @@ import {
   TextAlert,
   TransactionState as ActivityLink,
 } from './styled'
+
+import { BridgeOrderLoading } from '../../pure/BridgeOrderLoading'
 
 const DEFAULT_ORDER_SUMMARY = {
   from: '',
@@ -183,7 +188,8 @@ export function ActivityDetails(props: {
   creationTime?: string | undefined
 }) {
   const { activityDerivedState, chainId, activityLinkUrl, disableMouseActions, creationTime } = props
-  const { id, isOrder, summary, order, enhancedTransaction, isCancelled, isExpired } = activityDerivedState
+  const { id, isOrder, summary, order, enhancedTransaction, isExpired, isCancelled, isFailed, isCancelling } =
+    activityDerivedState
   const activityState = getActivityState(activityDerivedState)
   const tokenAddress =
     enhancedTransaction?.approval?.tokenAddress ||
@@ -193,7 +199,6 @@ export function ActivityDetails(props: {
   const getShowCancellationModal = useCancelOrder()
 
   const isSwap = order && getUiOrderType(order) === UiOrderType.SWAP
-  const appData = !!order && order.fullAppData
 
   const { disableProgressBar } = useInjectedWidgetParams()
 
@@ -209,6 +214,13 @@ export function ActivityDetails(props: {
   const hideCustomRecipientWarning = useHideReceiverWalletBanner()
   const setShowProgressBar = useAddOrderToSurplusQueue() // TODO: not exactly the proper tool, rethink this
   const toggleAccountModal = useToggleAccountModal()
+
+  const skipBridgingDisplay = isExpired || isCancelled || isFailed || isCancelling
+  const fullAppData = order?.apiAdditionalInfo?.fullAppData
+  const orderBridgeProvider = fullAppData ? bridgingSdk.getProviderFromAppData(fullAppData) : undefined
+  const isBridgeOrder = !!orderBridgeProvider && !skipBridgingDisplay
+
+  const swapAndBridgeContext = useSwapAndBridgeContext(chainId, isBridgeOrder ? order : undefined, undefined)
 
   const showProgressBarCallback = useMemo(() => {
     if (!showProgressBar) {
@@ -294,10 +306,21 @@ export function ActivityDetails(props: {
 
   if (enhancedTransaction?.swapVCow || enhancedTransaction?.swapLockedGNOvCow) {
     inputToken = V_COW[chainId as SupportedChainId]
-    outputToken = COW[chainId as SupportedChainId]
+    outputToken = COW_TOKEN_TO_CHAIN[chainId as SupportedChainId]
   }
 
   const isCustomRecipient = !!order && getIsCustomRecipient(order)
+
+  const hooksDetails = fullAppData ? (
+    <OrderHooksDetails appData={fullAppData} margin="10px 0 0">
+      {(children) => (
+        <SummaryInnerRow>
+          <b>Hooks</b>
+          <i>{children}</i>
+        </SummaryInnerRow>
+      )}
+    </OrderHooksDetails>
+  ) : null
 
   return (
     <>
@@ -334,73 +357,74 @@ export function ActivityDetails(props: {
           <b>{activityName}</b>
           {isOrder ? (
             <>
-              <SummaryInnerRow>
-                <b>From{kind === 'buy' && ' at most'}</b>
-                <i>{from}</i>
-              </SummaryInnerRow>
-              <SummaryInnerRow>
-                <b>To{kind === 'sell' && ' at least'}</b>
-                <i>{to}</i>
-              </SummaryInnerRow>
-              <SummaryInnerRow>
-                <b>{isOrderFulfilled ? 'Exec. price' : 'Limit price'}</b>
-                <i>
-                  <RateInfo noLabel={true} rateInfoParams={rateInfoParams} />
-                </i>
-              </SummaryInnerRow>
-              <SummaryInnerRow isCancelled={isCancelled} isExpired={isExpired}>
-                {fulfillmentTime ? (
-                  <>
-                    <b>Filled on</b>
-                    <i>{fulfillmentTime}</i>
-                  </>
+              {order && isBridgeOrder ? (
+                swapAndBridgeContext ? (
+                  <BridgeActivitySummary context={swapAndBridgeContext}>{hooksDetails}</BridgeActivitySummary>
                 ) : (
-                  <>
-                    <b>Valid to</b>
-                    <i>{validTo}</i>
-                  </>
-                )}
-              </SummaryInnerRow>
-
-              {order && isCustomRecipient && (
-                <SummaryInnerRow>
-                  <b>Recipient:</b>
-                  <i>
-                    {isCustomRecipientWarningBannerVisible && (
-                      <Icon image={IconType.ALERT} color={UI.COLOR_ALERT} description="Alert" size={18} />
+                  <BridgeOrderLoading order={order} fulfillmentTime={fulfillmentTime}>
+                    {hooksDetails}
+                  </BridgeOrderLoading>
+                )
+              ) : (
+                // Regular order layout
+                <>
+                  <SummaryInnerRow>
+                    <b>From{kind === 'buy' && ' at most'}</b>
+                    <i>{from}</i>
+                  </SummaryInnerRow>
+                  <SummaryInnerRow>
+                    <b>To{kind === 'sell' && ' at least'}</b>
+                    <i>{to}</i>
+                  </SummaryInnerRow>
+                  <SummaryInnerRow>
+                    <b>{isOrderFulfilled ? 'Exec. price' : 'Limit price'}</b>
+                    <i>
+                      <RateInfo noLabel rateInfoParams={rateInfoParams} />
+                    </i>
+                  </SummaryInnerRow>
+                  <SummaryInnerRow isCancelled={isCancelled} isExpired={isExpired}>
+                    {fulfillmentTime ? (
+                      <>
+                        <b>Filled on</b>
+                        <i>{fulfillmentTime}</i>
+                      </>
+                    ) : (
+                      <>
+                        <b>Valid to</b>
+                        <i>{validTo}</i>
+                      </>
                     )}
-                    <ExternalLink
-                      href={getExplorerLink(chainId, order.receiver || order.owner, ExplorerDataType.ADDRESS)}
-                    >
-                      {receiverEnsName || shortenAddress(order.receiver || order.owner)} ↗
-                    </ExternalLink>
-                  </i>
-                </SummaryInnerRow>
-              )}
-
-              {surplusAmount?.greaterThan(0) && (
-                <SummaryInnerRow>
-                  <b>Surplus</b>
-                  <i>
-                    <TokenAmount amount={surplusAmount} tokenSymbol={surplusToken} />
-                    {showFiatValue && (
-                      <FiatWrapper>
-                        (<StyledFiatAmount amount={surplusFiatValue} />)
-                      </FiatWrapper>
-                    )}
-                  </i>
-                </SummaryInnerRow>
-              )}
-
-              {appData && (
-                <OrderHooksDetails appData={appData} margin="10px 0 0">
-                  {(children) => (
+                  </SummaryInnerRow>
+                  {order && isCustomRecipient && (
                     <SummaryInnerRow>
-                      <b>Hooks</b>
-                      <i>{children}</i>
+                      <b>Recipient:</b>
+                      <i>
+                        {isCustomRecipientWarningBannerVisible && (
+                          <Icon image={IconType.ALERT} color={UI.COLOR_ALERT} description="Alert" size={18} />
+                        )}
+                        <ExternalLink
+                          href={getExplorerLink(chainId, order.receiver || order.owner, ExplorerDataType.ADDRESS)}
+                        >
+                          {receiverEnsName || shortenAddress(order.receiver || order.owner)} ↗
+                        </ExternalLink>
+                      </i>
                     </SummaryInnerRow>
                   )}
-                </OrderHooksDetails>
+                  {surplusAmount?.greaterThan(0) && (
+                    <SummaryInnerRow>
+                      <b>Surplus</b>
+                      <i>
+                        <TokenAmount amount={surplusAmount} tokenSymbol={surplusToken} />
+                        {showFiatValue && (
+                          <FiatWrapper>
+                            (<StyledFiatAmount amount={surplusFiatValue} />)
+                          </FiatWrapper>
+                        )}
+                      </i>
+                    </SummaryInnerRow>
+                  )}
+                  {hooksDetails}
+                </>
               )}
             </>
           ) : (

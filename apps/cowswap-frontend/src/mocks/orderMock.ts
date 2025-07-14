@@ -1,10 +1,15 @@
-import { COW, USDC } from '@cowprotocol/common-const'
+import { COW_TOKEN_TO_CHAIN, USDC } from '@cowprotocol/common-const'
 import { OrderClass, OrderKind, SigningScheme, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
 export const getOrderMock = (chainId: SupportedChainId): Order => {
-  const inputToken = COW[chainId]
+  const inputToken = COW_TOKEN_TO_CHAIN[chainId]
+
+  if (!inputToken) {
+    throw new Error('Input token not found')
+  }
+
   const outputToken = USDC[chainId]
   const creationTime = '2023-05-29T15:27:32.319Z'
 

@@ -12,7 +12,7 @@ import { Nullish } from 'types'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 
-import type { PendingOrderPrices } from 'modules/orders/state/pendingOrdersPricesAtom'
+import type { PendingOrderPrices } from 'modules/orders'
 
 import { PENDING_EXECUTION_THRESHOLD_PERCENTAGE } from 'common/constants/common'
 import type { RateInfoParams } from 'common/pure/RateInfo'

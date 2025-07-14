@@ -1,12 +1,12 @@
 import PLUS_ICON from '@cowprotocol/assets/cow-swap/plus.svg'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { useHooks } from 'entities/orderHooks/useHooks'
 import SVG from 'react-inlinesvg'
 
 import * as styledEl from './styled'
 
 import { useAllHookDapps } from '../../hooks/useAllHookDapps'
-import { useHooks } from '../../hooks/useHooks'
 import { useRemoveHook } from '../../hooks/useRemoveHook'
 import { useReorderHooks } from '../../hooks/useReorderHooks'
 import { AppliedHookList } from '../../pure/AppliedHookList'

@@ -1,6 +1,6 @@
 import { useCallback } from 'react'
 
-import { COW } from '@cowprotocol/common-const'
+import { COW_TOKEN_TO_CHAIN } from '@cowprotocol/common-const'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useGasLimit } from '@cowprotocol/common-hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -13,16 +13,18 @@ import { AIRDROP_PREVIEW_ERRORS, useClaimData } from './hooks/useClaimData'
 import { Amount, ContentWrapper, Label, Wrapper } from './styled'
 import { IAirdrop, IClaimData } from './types'
 
-const cowSepolia = COW[SupportedChainId.SEPOLIA]
+const cowSepolia = COW_TOKEN_TO_CHAIN[SupportedChainId.SEPOLIA]
 const COW_AIRDROP = {
   name: 'COW',
   dataBaseUrl: 'https://raw.githubusercontent.com/bleu/cow-airdrop-contract-deployer/example/mock-airdrop-data/',
   chainId: SupportedChainId.SEPOLIA,
   address: '0x06Ca512F7d35A35Dfa49aa69F12cFB2a9166a95b',
-  token: TokenWithLogo.fromToken(
-    new Token(cowSepolia.chainId, cowSepolia.address, cowSepolia.decimals, cowSepolia.symbol, cowSepolia.name),
-    cowSepolia.logoURI,
-  ),
+  token: cowSepolia
+    ? TokenWithLogo.fromToken(
+        new Token(cowSepolia.chainId, cowSepolia.address, cowSepolia.decimals, cowSepolia.symbol, cowSepolia.name),
+        cowSepolia.logoURI,
+      )
+    : undefined,
 } as IAirdrop
 
 // TODO: Add proper return type annotation

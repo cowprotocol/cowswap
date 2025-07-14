@@ -15,6 +15,7 @@ const BALANCE_VALIDITY_PERIOD = ms`20s`
  */
 export function useSwrConfigWithPauseForNetwork(
   chainId: SupportedChainId,
+  account: string | undefined,
   config: SWRConfiguration,
   validityPeriod = BALANCE_VALIDITY_PERIOD,
 ): SWRConfiguration {
@@ -22,11 +23,12 @@ export function useSwrConfigWithPauseForNetwork(
   const balancesUpdate = useAtomValue(balancesUpdateAtom)
 
   const balancesChainId = balances.chainId
-  const lastUpdateTimestamp = balancesUpdate[chainId]
+  const lastUpdateTimestamp = account ? balancesUpdate[chainId]?.[account.toLowerCase()] : undefined
 
   const lastUpdateTimestampRef = useRef(lastUpdateTimestamp)
 
-  if (!(balancesChainId && balancesChainId !== chainId)) {
+  // Update lastUpdateTimestampRef only when balances state chainId in sync with current chainId
+  if (!balancesChainId || balancesChainId === chainId) {
     lastUpdateTimestampRef.current = lastUpdateTimestamp
   }
 

@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/tokens",
-  "version": "1.19.1",
+  "version": "1.22.0",
   "main": "./index.js",
   "types": "./index.d.ts",
   "exports": {

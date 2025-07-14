@@ -1,14 +1,13 @@
 import { NATIVE_CURRENCIES, WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-
+import { Nullish } from '@cowprotocol/types'
 
 import { doesTokenMatchSymbolOrAddress } from './doesTokenMatchSymbolOrAddress'
-import { Nullish } from './types'
 
 export function getIsWrapOrUnwrap(
   chainId: SupportedChainId,
   inputCurrencyId: Nullish<string>,
-  outputCurrencyId: Nullish<string>
+  outputCurrencyId: Nullish<string>,
 ): boolean {
   if (!inputCurrencyId || !outputCurrencyId) return false
 

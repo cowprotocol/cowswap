@@ -1,13 +1,13 @@
 import {
-  SupportedChainId,
-  ChainInfo,
   arbitrumOne,
   avalanche,
   base,
+  ChainInfo,
   gnosisChain,
   mainnet,
   polygon,
   sepolia,
+  SupportedChainId,
 } from '@cowprotocol/cow-sdk'
 
 import { NATIVE_CURRENCIES } from './nativeAndWrappedTokens'
@@ -22,6 +22,7 @@ export interface BaseChainInfo {
   readonly name: string
   readonly addressPrefix: string
   readonly label: string
+  readonly eip155Label: string
   readonly urlAlias: string
   readonly helpCenterUrl?: string
   readonly explorerTitle: string
@@ -35,7 +36,16 @@ function mapChainInfoToBaseChainInfo(
   chainInfo: ChainInfo,
 ): Pick<
   BaseChainInfo,
-  'docs' | 'bridge' | 'explorer' | 'infoLink' | 'logo' | 'addressPrefix' | 'label' | 'explorerTitle' | 'color'
+  | 'docs'
+  | 'bridge'
+  | 'explorer'
+  | 'infoLink'
+  | 'logo'
+  | 'addressPrefix'
+  | 'label'
+  | 'explorerTitle'
+  | 'color'
+  | 'eip155Label'
 > {
   return {
     docs: chainInfo.docs.url,
@@ -47,21 +57,22 @@ function mapChainInfoToBaseChainInfo(
     label: chainInfo.label,
     explorerTitle: chainInfo.blockExplorer.name,
     color: chainInfo.color,
+    eip155Label: chainInfo.eip155Label,
   }
 }
 
+/**
+ * Map with chain information for supported networks.
+ * Ordered by relevance, first is most relevant.
+ * Keep in mind when iterating over this map that the order of keys is guaranteed to be numerically sorted.
+ * So this order is mostly for reference and not for iteration.
+ */
 export const CHAIN_INFO: ChainInfoMap = {
   [SupportedChainId.MAINNET]: {
     ...mapChainInfoToBaseChainInfo(mainnet),
-    name: 'mainnet',
+    name: 'ethereum',
     urlAlias: '',
     nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.MAINNET],
-  },
-  [SupportedChainId.ARBITRUM_ONE]: {
-    ...mapChainInfoToBaseChainInfo(arbitrumOne),
-    name: 'arbitrum_one',
-    urlAlias: 'arb1',
-    nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.ARBITRUM_ONE],
   },
   [SupportedChainId.BASE]: {
     ...mapChainInfoToBaseChainInfo(base),
@@ -70,17 +81,11 @@ export const CHAIN_INFO: ChainInfoMap = {
     urlAlias: 'base',
     nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.BASE],
   },
-  [SupportedChainId.GNOSIS_CHAIN]: {
-    ...mapChainInfoToBaseChainInfo(gnosisChain),
-    name: 'gnosis_chain',
-    urlAlias: 'gc',
-    nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.GNOSIS_CHAIN],
-  },
-  [SupportedChainId.SEPOLIA]: {
-    ...mapChainInfoToBaseChainInfo(sepolia),
-    name: 'sepolia',
-    urlAlias: 'sepolia',
-    nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.SEPOLIA],
+  [SupportedChainId.ARBITRUM_ONE]: {
+    ...mapChainInfoToBaseChainInfo(arbitrumOne),
+    name: 'arbitrum_one',
+    urlAlias: 'arb1',
+    nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.ARBITRUM_ONE],
   },
   [SupportedChainId.POLYGON]: {
     ...mapChainInfoToBaseChainInfo(polygon),
@@ -94,9 +99,34 @@ export const CHAIN_INFO: ChainInfoMap = {
     urlAlias: 'avax',
     nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.AVALANCHE],
   },
+  [SupportedChainId.GNOSIS_CHAIN]: {
+    ...mapChainInfoToBaseChainInfo(gnosisChain),
+    name: 'gnosis_chain',
+    urlAlias: 'gc',
+    nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.GNOSIS_CHAIN],
+  },
+  [SupportedChainId.SEPOLIA]: {
+    ...mapChainInfoToBaseChainInfo(sepolia),
+    name: 'sepolia',
+    urlAlias: 'sepolia',
+    nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.SEPOLIA],
+  },
 }
 
-export const CHAIN_INFO_ARRAY: BaseChainInfo[] = Object.values(CHAIN_INFO)
+/**
+ * Sorted array of chain IDs in order of relevance.
+ */
+export const SORTED_CHAIN_IDS: SupportedChainId[] = [
+  SupportedChainId.MAINNET,
+  SupportedChainId.BASE,
+  SupportedChainId.ARBITRUM_ONE,
+  SupportedChainId.POLYGON,
+  SupportedChainId.AVALANCHE,
+  SupportedChainId.GNOSIS_CHAIN,
+  SupportedChainId.SEPOLIA,
+]
+
+export const CHAIN_INFO_ARRAY: BaseChainInfo[] = SORTED_CHAIN_IDS.map((id) => CHAIN_INFO[id])
 
 export function getChainInfo(chainId: SupportedChainId): BaseChainInfo {
   return CHAIN_INFO[chainId]

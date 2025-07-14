@@ -1,8 +1,7 @@
 import { FC, ReactNode } from 'react'
 
-import { Font, Color, Media } from '@cowprotocol/ui'
+import { Font, Media, UI } from '@cowprotocol/ui'
 
-import { transparentize } from 'color2k'
 import NextLink from 'next/link'
 import styled, { css } from 'styled-components/macro'
 
@@ -44,9 +43,14 @@ const topicButtonStyles = css<LinkProps>`
   margin: ${({ margin }) => margin || 'initial'};
   font-size: ${({ fontSize }) => fontSize || 21}px;
   font-weight: ${Font.weight.bold};
-  color: ${({ color, disabled }) => (disabled ? transparentize(Color.neutral10, 0.5) : color || Color.neutral98)};
+  color: ${({ color, disabled }) =>
+    disabled
+      ? `color-mix(in srgb, var(${UI.COLOR_NEUTRAL_10}) 50%, transparent)`
+      : color || `var(${UI.COLOR_NEUTRAL_98})`};
   background-color: ${({ bgColor, disabled }) =>
-    disabled ? transparentize(Color.neutral10, 0.5) : bgColor || Color.neutral10};
+    disabled
+      ? `color-mix(in srgb, var(${UI.COLOR_NEUTRAL_10}) 50%, transparent)`
+      : bgColor || `var(${UI.COLOR_NEUTRAL_10})`};
   border-radius: 32px;
   line-height: 1.2;
   text-align: center;
@@ -75,8 +79,8 @@ const heroButtonStyles = css<LinkProps>`
   padding: 16px 24px;
   font-size: 27px;
   font-weight: ${Font.weight.bold};
-  color: ${({ color }) => color || Color.neutral98};
-  background: ${({ bgColor }) => bgColor || Color.neutral10};
+  color: ${({ color }) => color || `var(${UI.COLOR_NEUTRAL_98})`};
+  background: ${({ bgColor }) => bgColor || `var(${UI.COLOR_NEUTRAL_10})`};
   text-decoration: none;
   border-radius: 32px;
   line-height: 1.2;
@@ -95,8 +99,8 @@ const sectionTitleButtonStyles = css<LinkProps>`
   padding: 16px 24px;
   font-size: ${({ fontSize }) => (fontSize && `${fontSize}px`) || '24px'};
   font-weight: ${Font.weight.bold};
-  color: ${({ color }) => color || Color.neutral98};
-  background: ${({ bgColor }) => bgColor || Color.neutral10};
+  color: ${({ color }) => color || `var(${UI.COLOR_NEUTRAL_98})`};
+  background: ${({ bgColor }) => bgColor || `var(${UI.COLOR_NEUTRAL_10})`};
   text-decoration: none;
   border-radius: 32px;
   line-height: 1.2;

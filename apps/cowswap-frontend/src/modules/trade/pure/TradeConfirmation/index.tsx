@@ -22,7 +22,7 @@ import { useTradeConfirmState } from '../../hooks/useTradeConfirmState'
 import { PriceUpdatedBanner } from '../PriceUpdatedBanner'
 
 export interface TradeConfirmationProps {
-  onConfirm(): void
+  onConfirm(): Promise<void | false>
 
   onDismiss(): void
 
@@ -34,7 +34,6 @@ export interface TradeConfirmationProps {
   isConfirmDisabled: boolean
   priceImpact: PriceImpact
   title: ReactElement | string
-  refreshInterval?: number
   isPriceStatic?: boolean
   recipient?: string | null
   buttonText?: React.ReactNode
@@ -64,7 +63,6 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
     isConfirmDisabled,
     priceImpact,
     title,
-    refreshInterval,
     buttonText = 'Confirm',
     children,
     recipient,
@@ -107,13 +105,17 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
   // Combine local onClick logic with incoming onClick
   // TODO: Add proper return type annotation
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const handleConfirmClick = () => {
+  const handleConfirmClick = async () => {
     if (isUpToMedium) {
       window.scrollTo({ top: 0, left: 0 })
     }
 
     setIsConfirmClicked(true)
-    onConfirm()
+    const isConfirmed = await onConfirm()
+
+    if (!isConfirmed) {
+      setIsConfirmClicked(false)
+    }
   }
 
   const hookDetailsElement = (
@@ -133,7 +135,7 @@ export function TradeConfirmation(props: TradeConfirmationProps) {
         <styledEl.ConfirmHeaderTitle>{title}</styledEl.ConfirmHeaderTitle>
 
         <styledEl.HeaderRightContent>
-          {hasPendingTrade ? null : <QuoteCountdown refreshInterval={refreshInterval} />}
+          {hasPendingTrade || isPriceStatic ? null : <QuoteCountdown />}
         </styledEl.HeaderRightContent>
       </styledEl.Header>
       <styledEl.ContentWrapper id="trade-confirmation">

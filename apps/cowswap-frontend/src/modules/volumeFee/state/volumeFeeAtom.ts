@@ -2,11 +2,10 @@ import { atom } from 'jotai'
 
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { walletInfoAtom } from '@cowprotocol/wallet'
-import { resolveFlexibleConfig, TradeType as WidgetTradeType } from '@cowprotocol/widget-lib'
+import { resolveFlexibleConfig } from '@cowprotocol/widget-lib'
 
 import { injectedWidgetPartnerFeeAtom } from 'modules/injectedWidget'
-import { derivedTradeStateAtom, tradeTypeAtom } from 'modules/trade'
-import { TradeType } from 'modules/trade/types/TradeType'
+import { derivedTradeStateAtom, tradeTypeAtom, TradeTypeToWidgetTradeTypeMap } from 'modules/trade'
 
 import { correlatedTokensAtom } from './correlatedTokensAtom'
 import { cowSwapFeeAtom } from './cowswapFeeAtom'
@@ -67,8 +66,8 @@ const widgetPartnerFeeAtom = atom<VolumeFee | undefined>((get) => {
     return undefined
   }
 
-  const bps = resolveFlexibleConfig(partnerFee.bps, chainId, TradeTypeMap[tradeType])
-  const recipient = resolveFlexibleConfig(partnerFee.recipient, chainId, TradeTypeMap[tradeType])
+  const bps = resolveFlexibleConfig(partnerFee.bps, chainId, TradeTypeToWidgetTradeTypeMap[tradeType])
+  const recipient = resolveFlexibleConfig(partnerFee.recipient, chainId, TradeTypeToWidgetTradeTypeMap[tradeType])
 
   if (!bps || !recipient) return undefined
 
@@ -78,9 +77,3 @@ const widgetPartnerFeeAtom = atom<VolumeFee | undefined>((get) => {
   }
 })
 
-const TradeTypeMap: Record<TradeType, WidgetTradeType> = {
-  [TradeType.SWAP]: WidgetTradeType.SWAP,
-  [TradeType.LIMIT_ORDER]: WidgetTradeType.LIMIT,
-  [TradeType.ADVANCED_ORDERS]: WidgetTradeType.ADVANCED,
-  [TradeType.YIELD]: WidgetTradeType.YIELD,
-}

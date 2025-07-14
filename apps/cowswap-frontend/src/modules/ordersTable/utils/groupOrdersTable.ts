@@ -2,7 +2,7 @@ import { Order } from 'legacy/state/orders/actions'
 
 import { ParsedOrder, parseOrder } from 'utils/orderUtils/parseOrder'
 
-import { OrderTableGroup, OrderTableItem } from './orderTableGroupUtils'
+import { OrderTableGroup, OrderTableItem } from '../types'
 
 interface OrderTableGroupMapItem {
   parent: ParsedOrder | null

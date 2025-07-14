@@ -42,10 +42,10 @@ export function ReviewOrderModalAmountRow({
       <TokenAmount amount={amount} defaultValue="-" tokenSymbol={amount?.currency} />
       {amountSuffix}
       {fiatAmount && (
-        <i>
-          &nbsp;(
-          <FiatAmount amount={fiatAmount} />)
-        </i>
+        <>
+          &nbsp;
+          <FiatAmount amount={fiatAmount} withParentheses />
+        </>
       )}
     </Content>
   )

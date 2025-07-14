@@ -4,7 +4,7 @@ import { getMinimumReceivedTooltip, isSellOrder } from '@cowprotocol/common-util
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useIsEoaEthFlow, useShouldPayGas } from 'modules/trade'
-import { useIsSmartSlippageApplied, useSmartTradeSlippage } from 'modules/tradeSlippage'
+import { useIsSmartSlippageApplied } from 'modules/tradeSlippage'
 import { NetworkCostsTooltipSuffix } from 'modules/tradeWidgetAddons'
 
 import { NetworkCostsSuffix } from 'common/pure/NetworkCostsSuffix'
@@ -23,18 +23,17 @@ export function useLabelsAndTooltips() {
   const nativeCurrency = useNativeCurrency()
 
   const isSmartSlippageApplied = useIsSmartSlippageApplied()
-  const smartSlippage = useSmartTradeSlippage()
   const isSell = isSellOrder(orderKind)
 
   return useMemo(
     () => ({
       slippageLabel:
-        isEoaEthFlow || isSmartSlippageApplied
-          ? `Slippage tolerance (${isEoaEthFlow ? 'modified' : 'dynamic'})`
+        isSmartSlippageApplied
+          ? `Slippage tolerance (${isSmartSlippageApplied ? 'dynamic' : 'modified'})`
           : undefined,
       slippageTooltip: isEoaEthFlow
         ? getNativeSlippageTooltip(chainId, [nativeCurrency.symbol])
-        : getNonNativeSlippageTooltip({ isDynamic: !!smartSlippage }),
+        : getNonNativeSlippageTooltip({ isDynamic: isSmartSlippageApplied }),
       expectReceiveLabel: isSell ? 'Expected to receive' : 'Expected to sell',
       minReceivedLabel: isSell ? 'Minimum receive' : 'Maximum sent',
       minReceivedTooltip: slippage ? getMinimumReceivedTooltip(slippage, isSell) : '',
@@ -49,7 +48,6 @@ export function useLabelsAndTooltips() {
       isSell,
       shouldPayGas,
       isSmartSlippageApplied,
-      smartSlippage,
     ],
   )
 }

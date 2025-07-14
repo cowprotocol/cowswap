@@ -1,7 +1,11 @@
 'use client'
 
+import { JSX } from 'react'
+
 import styled from 'styled-components/macro'
+
 import { TokenDetails as TokenDetailsPure } from '@/components/TokenDetails'
+
 import { type TokenDetails } from '../types'
 
 const Wrapper = styled.div`
@@ -20,7 +24,7 @@ interface TokenPageComponentProps {
   token: TokenDetails
 }
 
-export function TokenPageComponent({ token }: TokenPageComponentProps) {
+export function TokenPageComponent({ token }: TokenPageComponentProps): JSX.Element {
   return (
     <Wrapper>
       <TokenDetailsPure token={token} />

@@ -19,6 +19,7 @@ import { useIsDarkMode } from 'legacy/state/user/hooks'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 import { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
+import { SolverCompetition } from 'common/types/soverCompetition'
 import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
 
 import * as styledEl from './styled'
@@ -26,7 +27,7 @@ import * as styledEl from './styled'
 import { CHAIN_SPECIFIC_BENEFITS, SURPLUS_IMAGES } from '../../constants'
 import { getSurplusText, getTwitterShareUrl, getTwitterShareUrlForBenefit } from '../../helpers'
 import { useWithConfetti } from '../../hooks/useWithConfetti'
-import { OrderProgressBarStepName, SolverCompetition } from '../../types'
+import { OrderProgressBarStepName } from '../../types'
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type

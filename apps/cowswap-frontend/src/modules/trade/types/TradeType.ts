@@ -1,4 +1,4 @@
-import { RoutesValues } from 'common/constants/routes'
+import { TradeType as WidgetTradeType } from '@cowprotocol/widget-lib'
 
 export enum TradeType {
   SWAP = 'SWAP',
@@ -7,7 +7,9 @@ export enum TradeType {
   YIELD = 'YIELD',
 }
 
-export interface TradeTypeInfo {
-  tradeType: TradeType
-  route: RoutesValues
+export const TradeTypeToWidgetTradeTypeMap: Record<TradeType, WidgetTradeType> = {
+  [TradeType.SWAP]: WidgetTradeType.SWAP,
+  [TradeType.LIMIT_ORDER]: WidgetTradeType.LIMIT,
+  [TradeType.ADVANCED_ORDERS]: WidgetTradeType.ADVANCED,
+  [TradeType.YIELD]: WidgetTradeType.YIELD
 }

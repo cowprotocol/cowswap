@@ -1,9 +1,12 @@
 import {
   ARB_ARBITRUM_ONE,
   CBBTC_BASE,
-  COW,
   COW_TOKEN_ARBITRUM,
   COW_TOKEN_BASE,
+  COW_TOKEN_MAINNET,
+  COW_TOKEN_POLYGON,
+  COW_TOKEN_SEPOLIA,
+  COW_TOKEN_XDAI,
   DAI,
   DAI_ARBITRUM_ONE,
   DAI_BASE,
@@ -35,8 +38,11 @@ import { TokensMap } from '../types'
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const tokensListToMap = (list: TokenWithLogo[]) =>
+const tokensListToMap = (list: (TokenWithLogo | null)[]) =>
   list.reduce<TokensMap>((acc, token) => {
+    if (!token) {
+      return acc
+    }
     acc[token.address.toLowerCase()] = {
       chainId: token.chainId,
       address: token.address,
@@ -51,7 +57,7 @@ const tokensListToMap = (list: TokenWithLogo[]) =>
 export const DEFAULT_FAVORITE_TOKENS: Record<SupportedChainId, TokensMap> = {
   [SupportedChainId.MAINNET]: tokensListToMap([
     DAI,
-    COW[SupportedChainId.MAINNET],
+    COW_TOKEN_MAINNET,
     USDC_MAINNET,
     USDT,
     WBTC,
@@ -59,7 +65,7 @@ export const DEFAULT_FAVORITE_TOKENS: Record<SupportedChainId, TokensMap> = {
   ]),
   [SupportedChainId.GNOSIS_CHAIN]: tokensListToMap([
     USDCe_GNOSIS_CHAIN,
-    COW[SupportedChainId.GNOSIS_CHAIN],
+    COW_TOKEN_XDAI,
     EURE_GNOSIS_CHAIN,
     WRAPPED_NATIVE_CURRENCIES[SupportedChainId.GNOSIS_CHAIN],
     GNO_GNOSIS_CHAIN,
@@ -85,13 +91,14 @@ export const DEFAULT_FAVORITE_TOKENS: Record<SupportedChainId, TokensMap> = {
   ]),
   [SupportedChainId.SEPOLIA]: tokensListToMap([
     WRAPPED_NATIVE_CURRENCIES[SupportedChainId.SEPOLIA],
-    COW[SupportedChainId.SEPOLIA],
+    COW_TOKEN_SEPOLIA,
     USDC_SEPOLIA,
   ]),
   [SupportedChainId.POLYGON]: tokensListToMap([
     USDC_POLYGON,
     USDT_POLYGON,
     DAI_POLYGON,
+    COW_TOKEN_POLYGON,
     WRAPPED_NATIVE_CURRENCIES[SupportedChainId.POLYGON],
   ]),
   [SupportedChainId.AVALANCHE]: tokensListToMap([

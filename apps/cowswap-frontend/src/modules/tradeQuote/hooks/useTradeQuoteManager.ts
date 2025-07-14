@@ -4,8 +4,6 @@ import { useMemo } from 'react'
 import { BridgeQuoteResults, PriceQuality, QuoteBridgeRequest, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { QuoteAndPost } from '@cowprotocol/cow-sdk'
 
-import { useSetSmartSlippage } from 'modules/tradeSlippage'
-
 import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
 
 import { useProcessUnsupportedTokenError } from './useProcessUnsupportedTokenError'
@@ -26,12 +24,8 @@ export interface TradeQuoteManager {
   onResponse(data: QuoteAndPost, bridgeQuote: BridgeQuoteResults | null, fetchParams: TradeQuoteFetchParams): void
 }
 
-export function useTradeQuoteManager(
-  sellTokenAddress: SellTokenAddress | undefined,
-  enableSmartSlippage: boolean,
-): TradeQuoteManager | null {
+export function useTradeQuoteManager(sellTokenAddress: SellTokenAddress | undefined): TradeQuoteManager | null {
   const update = useSetAtom(updateTradeQuoteAtom)
-  const setSmartSlippage = useSetSmartSlippage()
   const processUnsupportedTokenError = useProcessUnsupportedTokenError()
 
   return useMemo(
@@ -75,15 +69,9 @@ export function useTradeQuoteManager(
                 hasParamsChanged: false,
                 fetchParams,
               })
-
-              const { suggestedSlippageBps } = quote.quoteResults
-
-              if (enableSmartSlippage && suggestedSlippageBps) {
-                setSmartSlippage(suggestedSlippageBps)
-              }
             },
           }
         : null,
-    [update, setSmartSlippage, processUnsupportedTokenError, enableSmartSlippage, sellTokenAddress],
+    [update, processUnsupportedTokenError, sellTokenAddress],
   )
 }
