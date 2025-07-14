@@ -231,7 +231,7 @@ export function ActivityDetails(props: {
   const isOrderPending = isBridgeOrder
     ? bridgingStatus
       ? !BRIDGING_FINAL_STATUSES.includes(bridgingStatus)
-      : true
+      : false
     : order && isPending(order)
 
   const isCustomRecipientWarningBannerVisible = !useIsReceiverWalletBannerHidden(id) && order && isOrderPending
