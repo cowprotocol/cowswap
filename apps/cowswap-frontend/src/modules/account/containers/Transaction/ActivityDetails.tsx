@@ -1,7 +1,7 @@
 import { ReactElement, ReactNode, useMemo } from 'react'
 
 import { COW_TOKEN_TO_CHAIN, V_COW, V_COW_CONTRACT_ADDRESS } from '@cowprotocol/common-const'
-import { ExplorerDataType, getExplorerLink, shortenAddress } from '@cowprotocol/common-utils'
+import { areAddressesEqual, ExplorerDataType, getExplorerLink, shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENS } from '@cowprotocol/ens'
 import { TokenLogo, useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
@@ -51,6 +51,7 @@ import {
   TransactionState as ActivityLink,
 } from './styled'
 
+import { BRIDGING_FINAL_STATUSES } from '../../../../entities/bridgeOrders/useCrossChainOrder'
 import { BridgeOrderLoading } from '../../pure/BridgeOrderLoading'
 
 const DEFAULT_ORDER_SUMMARY = {
@@ -210,8 +211,6 @@ export function ActivityDetails(props: {
 
   const { name: receiverEnsName } = useENS(order?.receiver)
 
-  // Check if Custom Recipient Warning Banner should be visible
-  const isCustomRecipientWarningBannerVisible = !useIsReceiverWalletBannerHidden(id) && order && isPending(order)
   const hideCustomRecipientWarning = useHideReceiverWalletBanner()
   const setShowProgressBar = useAddOrderToSurplusQueue() // TODO: not exactly the proper tool, rethink this
   const toggleAccountModal = useToggleAccountModal()
@@ -227,6 +226,15 @@ export function ActivityDetails(props: {
     isBridgeOrder ? order : undefined,
     undefined,
   )
+
+  const bridgingStatus = swapAndBridgeContext?.statusResult?.status
+  const isOrderPending = isBridgeOrder
+    ? bridgingStatus
+      ? !BRIDGING_FINAL_STATUSES.includes(bridgingStatus)
+      : true
+    : order && isPending(order)
+
+  const isCustomRecipientWarningBannerVisible = !useIsReceiverWalletBannerHidden(id) && order && isOrderPending
 
   const showProgressBarCallback = useMemo(() => {
     if (!showProgressBar) {
@@ -315,7 +323,9 @@ export function ActivityDetails(props: {
     outputToken = COW_TOKEN_TO_CHAIN[chainId as SupportedChainId]
   }
 
-  const isCustomRecipient = !!order && getIsCustomRecipient(order)
+  const recipient = isBridgeOrder ? swapAndBridgeContext?.overview?.targetRecipient : order?.receiver
+  const isCustomRecipient =
+    !!order && (isBridgeOrder ? !areAddressesEqual(order.owner, recipient) : getIsCustomRecipient(order))
 
   const hooksDetails = fullAppData ? (
     <OrderHooksDetails appData={fullAppData} margin="10px 0 0">
@@ -344,7 +354,7 @@ export function ActivityDetails(props: {
   return (
     <>
       {/* Warning banner if custom recipient */}
-      {isCustomRecipient && isCustomRecipientWarningBannerVisible && !isBridgeOrder && (
+      {isCustomRecipient && isCustomRecipientWarningBannerVisible && (
         <CustomRecipientWarningBanner
           borderRadius={'12px 12px 0 0'}
           orientation={BannerOrientation.Horizontal}

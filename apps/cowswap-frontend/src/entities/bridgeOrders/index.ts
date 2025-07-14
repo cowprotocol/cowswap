@@ -1,6 +1,6 @@
 export { BridgeOrdersCleanUpdater } from './BridgeOrdersCleanUpdater'
 export { useAddBridgeOrder } from './useAddBridgeOrder'
 export { useUpdateBridgeOrderQuote } from './useUpdateBridgeOrderQuote'
-export { useBridgeOrderQuoteAmounts } from './useBridgeOrderQuoteAmounts'
+export { useBridgeOrderData } from './useBridgeOrderData'
 export { useBridgeOrders } from './useBridgeOrders'
 export { useCrossChainOrder } from './useCrossChainOrder'

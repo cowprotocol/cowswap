@@ -52,7 +52,7 @@ export function BridgeStepRow({ context }: BridgeStepRowProps): ReactNode {
               quoteContext={quoteBridgeContext}
             />
           ) : (
-            <PreparingBridgingContent />
+            <PreparingBridgingContent overview={context.overview} />
           )}
         </BridgeDetailsContainer>
       </StepContent>

@@ -1,12 +1,12 @@
 import { useMemo } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
-import { BridgeStatus, CrossChainOrder, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { BridgeStatus, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useTokensByAddressMap } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import { useBridgeOrderQuoteAmounts, useCrossChainOrder } from 'entities/bridgeOrders'
+import { useBridgeOrderData, useCrossChainOrder } from 'entities/bridgeOrders'
 import { useBridgeSupportedNetworks } from 'entities/bridgeProvider'
 import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 
@@ -43,7 +43,7 @@ export interface SwapAndBridgeContexts {
 }
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+// eslint-disable-next-line max-lines-per-function,complexity
 export function useSwapAndBridgeContext(
   chainId: SupportedChainId,
   order: Order | undefined,
@@ -64,7 +64,10 @@ export function useSwapAndBridgeContext(
   }, [fullAppData])
 
   const swapResultContext = useSwapResultsContext(order, winningSolver, intermediateToken)
-  const bridgeQuoteAmounts = useBridgeOrderQuoteAmounts(order?.id)
+  const bridgeOrderData = useBridgeOrderData(order?.id)
+
+  const bridgeQuoteAmounts = bridgeOrderData?.quoteAmounts
+  const targetRecipient = bridgeOrderData?.recipient || crossChainOrder?.bridgingParams.recipient
 
   const receivedAmount = swapResultContext?.receivedAmount
   const bridgeOutputAmount = crossChainOrder?.bridgingParams.outputAmount
@@ -108,7 +111,7 @@ export function useSwapAndBridgeContext(
     return undefined
   }, [bridgeQuoteAmounts, crossChainOrder, bridgeOutputAmount, bridgeReceiveAmount, intermediateToken, receivedAmount])
 
-  const swapAndBridgeOverview = useSwapAndBridgeOverview(order, intermediateToken, targetAmounts)
+  const swapAndBridgeOverview = useSwapAndBridgeOverview(order, intermediateToken, targetAmounts, targetRecipient)
 
   // TODO: Break down this large function into smaller functions
   // TODO: Reduce function complexity by extracting logic

@@ -16,6 +16,7 @@ export function useSwapAndBridgeOverview(
     sellAmount: CurrencyAmount<Currency>
     buyAmount: CurrencyAmount<Currency>
   },
+  targetRecipient?: string,
 ): SwapAndBridgeOverview | undefined {
   const { data: bridgeSupportedNetworks } = useBridgeSupportedNetworks()
 
@@ -38,6 +39,7 @@ export function useSwapAndBridgeOverview(
         buyAmount: CurrencyAmount.fromRawAmount(intermediateToken, order.buyAmount),
       },
       targetAmounts,
+      targetRecipient,
     }
-  }, [order, intermediateToken, targetAmounts, bridgeSupportedNetworks])
+  }, [order, intermediateToken, targetAmounts, targetRecipient, bridgeSupportedNetworks])
 }

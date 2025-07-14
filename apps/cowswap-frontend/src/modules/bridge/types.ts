@@ -48,6 +48,7 @@ export interface SwapAndBridgeOverview<Amount = CurrencyAmount<Currency>> {
   sourceChainName: string
   targetChainName: string
   targetCurrency: Token
+  targetRecipient?: string
 
   sourceAmounts: {
     sellAmount: Amount

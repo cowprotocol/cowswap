@@ -14,4 +14,5 @@ export interface BridgeOrderData<T = BridgeQuoteAmounts> {
   quoteAmounts: T
   creationTimestamp: number
   statusResult?: BridgeStatusResult
+  recipient: string
 }

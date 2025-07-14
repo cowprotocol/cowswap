@@ -138,6 +138,7 @@ export async function swapFlow(
         orderUid: orderId,
         quoteAmounts: bridgeQuoteAmounts,
         creationTimestamp: Date.now(),
+        recipient: orderParams.recipient,
       })
     }
 
