@@ -41,6 +41,9 @@ export enum TradeFormValidation {
 
   // Native
   SellNativeToken,
+
+  // Intermediate token
+  ImportingIntermediateToken,
 }
 
 export interface TradeFormValidationCommonContext {
@@ -58,6 +61,7 @@ export interface TradeFormValidationCommonContext {
   isInsufficientBalanceOrderAllowed: boolean
   isProviderNetworkUnsupported: boolean
   isOnline: boolean
+  importingIntermediateToken: string | null
 }
 
 export interface TradeFormValidationContext extends TradeFormValidationCommonContext {}

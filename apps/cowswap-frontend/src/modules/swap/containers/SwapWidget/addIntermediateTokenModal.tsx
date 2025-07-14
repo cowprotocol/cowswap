@@ -9,6 +9,8 @@ import { ImportTokenModal, useSelectTokenWidgetState } from 'modules/tokensList'
 
 const Wrapper = styled.div`
   width: 100%;
+  max-width: 470px;
+  margin: 0 auto;
 
   > div {
     height: calc(100vh - 200px);

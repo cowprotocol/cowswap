@@ -13,7 +13,6 @@ import {
   useQuoteSwapContext,
   useShouldDisplayBridgeDetails,
   useBridgeQuoteAmounts,
-  useGetMaybeIntermediateToken,
 } from 'modules/bridge'
 import { useTokensBalancesCombined } from 'modules/combinedBalances/hooks/useTokensBalancesCombined'
 import { OrderSubmittedContent } from 'modules/orderProgressBar'
@@ -66,7 +65,6 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
 
   const bridgeProvider = bridgeQuote?.providerInfo
   const bridgeQuoteAmounts = useBridgeQuoteAmounts(receiveAmountInfo, bridgeQuote)
-  const { intermediateBuyToken, intermediateBuyTokenAddress } = useGetMaybeIntermediateToken({ bridgeQuote })
   const swapContext = useQuoteSwapContext()
   const bridgeContext = useQuoteBridgeContext()
 
@@ -106,15 +104,12 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
   }, [balances, inputCurrencyInfo, shouldDisplayBridgeDetails, bridgeQuoteAmounts])
 
   const buttonText = useMemo(() => {
-    if (!intermediateBuyToken) {
-      return 'Intermediate token not authorized' // TODO: is this text correct?
-    }
     if (disableConfirm) {
       const { amount } = inputCurrencyInfo
       return `Insufficient ${amount?.currency?.symbol || 'token'} balance`
     }
     return 'Confirm Swap'
-  }, [disableConfirm, inputCurrencyInfo, intermediateBuyToken])
+  }, [disableConfirm, inputCurrencyInfo])
 
   return (
     <TradeConfirmModal title={CONFIRM_TITLE} submittedContent={submittedContent}>
@@ -129,7 +124,6 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
         isConfirmDisabled={disableConfirm}
         priceImpact={priceImpact}
         buttonText={buttonText}
-        intermediateBuyTokenAddress={intermediateBuyToken ? null : intermediateBuyTokenAddress}
         recipient={recipient}
         appData={appData || undefined}
       >

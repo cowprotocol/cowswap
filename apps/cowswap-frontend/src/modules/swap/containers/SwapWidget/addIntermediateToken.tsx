@@ -28,6 +28,15 @@ export function AddIntermediateToken({ intermediateBuyTokenAddress, onImport }: 
     [onImport, addTokenImportCallback],
   )
 
+  const allTokensMap = new Map()
+
+  ;[...inactiveListsResult, ...blockchainResult, ...activeListsResult, ...externalApiResult].forEach((token) => {
+    if (!allTokensMap.has(token.address.toLowerCase())) {
+      allTokensMap.set(token.address.toLowerCase(), token)
+    }
+  })
+  const allTokens = Array.from(allTokensMap.values())
+
   return (
     <styledEl.AddIntermediateTokenWrapper>
       {isLoading && (
@@ -35,16 +44,7 @@ export function AddIntermediateToken({ intermediateBuyTokenAddress, onImport }: 
           <Loader />
         </styledEl.LoaderWrapper>
       )}
-      {inactiveListsResult.map((token) => {
-        return <ImportTokenItem key={token.address} token={token} importToken={handleImport} />
-      })}
-      {blockchainResult.map((token) => {
-        return <ImportTokenItem key={token.address} token={token} importToken={handleImport} />
-      })}
-      {activeListsResult.map((token) => {
-        return <ImportTokenItem key={token.address} token={token} importToken={handleImport} />
-      })}
-      {externalApiResult.map((token) => {
+      {allTokens.map((token) => {
         return <ImportTokenItem key={token.address} token={token} importToken={handleImport} />
       })}
     </styledEl.AddIntermediateTokenWrapper>

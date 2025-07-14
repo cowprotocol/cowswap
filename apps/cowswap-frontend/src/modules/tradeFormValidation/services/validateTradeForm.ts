@@ -25,6 +25,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     isInsufficientBalanceOrderAllowed,
     isProviderNetworkUnsupported,
     isOnline,
+    importingIntermediateToken,
   } = context
 
   const {
@@ -140,6 +141,10 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
 
   if (isNativeIn) {
     validations.push(TradeFormValidation.SellNativeToken)
+  }
+
+  if (importingIntermediateToken) {
+    validations.push(TradeFormValidation.ImportingIntermediateToken)
   }
 
   return validations.length > 0 ? validations : null
