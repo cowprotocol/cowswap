@@ -57,6 +57,7 @@ export function TradeButtons({
     inputCurrency,
     hasEnoughWrappedBalanceForSwap,
     onCurrencySelection,
+    confirmText,
   })
 
   // Selling ETH is allowed in Swap
