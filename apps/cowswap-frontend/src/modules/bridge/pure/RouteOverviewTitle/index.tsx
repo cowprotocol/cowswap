@@ -7,6 +7,7 @@ import { ToggleArrow } from 'common/pure/ToggleArrow'
 
 import { ClickableRouteHeader, CollapsibleStopsInfo, RouteHeader, RouteTitle, StopsInfo } from './styled'
 
+import { BRIDGE_DISCLAIMER_TOOLTIP_CONTENT } from '../../constants'
 import { ProtocolIcons } from '../ProtocolIcons'
 
 interface RouteOverviewTitleProps {
@@ -35,7 +36,7 @@ export function RouteOverviewTitle({
               via <b>{providerInfo.name} (Stop 2)</b>.
               <br />
               <br />
-              Bridging features are exclusively operated by third parties. Please review their terms.
+              {BRIDGE_DISCLAIMER_TOOLTIP_CONTENT}
             </>
           }
           size={14}
