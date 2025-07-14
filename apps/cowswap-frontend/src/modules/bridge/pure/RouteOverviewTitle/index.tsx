@@ -7,7 +7,7 @@ import { ToggleArrow } from 'common/pure/ToggleArrow'
 
 import { ClickableRouteHeader, CollapsibleStopsInfo, RouteHeader, RouteTitle, StopsInfo } from './styled'
 
-import { BRIDGE_DISCLAIMER_TOOLTIP_CONTENT } from '../../constants'
+import { BRIDGE_DISCLAIMER_TOOLTIP_CONTENT, COW_PROTOCOL_NAME } from '../../constants'
 import { ProtocolIcons } from '../ProtocolIcons'
 
 interface RouteOverviewTitleProps {
@@ -32,7 +32,7 @@ export function RouteOverviewTitle({
         <InfoTooltip
           content={
             <>
-              Your trade will be executed in 2 stops. First, you swap on <b>CoW Protocol (Stop 1)</b>, then you bridge
+              Your trade will be executed in 2 stops. First, you swap on <b>{COW_PROTOCOL_NAME} (Stop 1)</b>, then you bridge
               via <b>{providerInfo.name} (Stop 2)</b>.
               <br />
               <br />
