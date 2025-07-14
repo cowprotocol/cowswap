@@ -63,6 +63,7 @@ const swapAndBridgeContextMock: SwapAndBridgeContext = {
     sellAmount: receiveAmountInfo.afterSlippage.buyAmount,
     buyAmount: CurrencyAmount.fromRawAmount(USDC_BASE, '28700000'),
     buyAmountUsd: CurrencyAmount.fromRawAmount(USDC_BASE, '28700004'),
+    bridgeMinReceiveAmount: null,
   },
   bridgingProgressContext: {
     account,
