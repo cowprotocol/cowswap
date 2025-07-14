@@ -51,6 +51,7 @@ import {
   TransactionState as ActivityLink,
 } from './styled'
 
+import { useBridgeOrderData } from '../../../../entities/bridgeOrders'
 import { BRIDGING_FINAL_STATUSES } from '../../../../entities/bridgeOrders/useCrossChainOrder'
 import { BridgeOrderLoading } from '../../pure/BridgeOrderLoading'
 
@@ -227,11 +228,11 @@ export function ActivityDetails(props: {
     undefined,
   )
 
+  const bridgeOrderData = useBridgeOrderData(order?.id)
+
   const bridgingStatus = swapAndBridgeContext?.statusResult?.status
   const isOrderPending = isBridgeOrder
-    ? bridgingStatus
-      ? !BRIDGING_FINAL_STATUSES.includes(bridgingStatus)
-      : false
+    ? !!bridgeOrderData || (bridgingStatus && !BRIDGING_FINAL_STATUSES.includes(bridgingStatus))
     : order && isPending(order)
 
   const isCustomRecipientWarningBannerVisible = !useIsReceiverWalletBannerHidden(id) && order && isOrderPending
