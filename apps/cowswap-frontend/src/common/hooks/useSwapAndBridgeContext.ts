@@ -26,8 +26,6 @@ import type { SolverCompetition } from 'common/types/soverCompetition'
 import { useSwapAndBridgeOverview } from './useSwapAndBridgeOverview'
 import { useSwapResultsContext } from './useSwapResultsContext'
 
-import { calculateTargetAmountsBeforeBridging } from '../utils/calculateTargetAmountsBeforeBridging'
-
 const bridgeStatusMap: Record<BridgeStatus, SwapAndBridgeStatus> = {
   [BridgeStatus.IN_PROGRESS]: SwapAndBridgeStatus.PENDING,
   [BridgeStatus.EXECUTED]: SwapAndBridgeStatus.DONE,
@@ -70,7 +68,6 @@ export function useSwapAndBridgeContext(
   const targetRecipient = bridgeOrderData?.recipient || crossChainOrder?.bridgingParams.recipient
   const bridgeFee = bridgeQuoteAmounts?.bridgeFee || null
 
-  const receivedAmount = swapResultContext?.receivedAmount
   const bridgeOutputAmount = crossChainOrder?.bridgingParams.outputAmount
 
   /**
@@ -95,6 +92,13 @@ export function useSwapAndBridgeContext(
   const targetAmounts = useMemo(() => {
     if (!intermediateToken) return undefined
 
+    if (bridgeQuoteAmounts) {
+      return {
+        sellAmount: bridgeQuoteAmounts.swapMinReceiveAmount,
+        buyAmount: bridgeQuoteAmounts.bridgeMinReceiveAmount,
+      }
+    }
+
     if (crossChainOrder && bridgeReceiveAmount) {
       return {
         sellAmount: CurrencyAmount.fromRawAmount(
@@ -105,12 +109,8 @@ export function useSwapAndBridgeContext(
       }
     }
 
-    if (bridgeQuoteAmounts && !bridgeOutputAmount) {
-      return calculateTargetAmountsBeforeBridging(bridgeQuoteAmounts, receivedAmount)
-    }
-
     return undefined
-  }, [bridgeQuoteAmounts, crossChainOrder, bridgeOutputAmount, bridgeReceiveAmount, intermediateToken, receivedAmount])
+  }, [bridgeQuoteAmounts, crossChainOrder, bridgeReceiveAmount, intermediateToken])
 
   const swapAndBridgeOverview = useSwapAndBridgeOverview(order, intermediateToken, targetAmounts, targetRecipient)
 
