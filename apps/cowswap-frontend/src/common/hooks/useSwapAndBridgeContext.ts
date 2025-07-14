@@ -67,7 +67,7 @@ export function useSwapAndBridgeContext(
   const bridgeQuoteAmounts = bridgeOrderData?.quoteAmounts
   const targetRecipient = bridgeOrderData?.recipient || crossChainOrder?.bridgingParams.recipient
   const bridgeFee = bridgeQuoteAmounts?.bridgeFee || null
-
+  const bridgeMinReceiveAmount = bridgeQuoteAmounts?.bridgeMinReceiveAmount || null
   const bridgeOutputAmount = crossChainOrder?.bridgingParams.outputAmount
 
   /**
@@ -81,9 +81,9 @@ export function useSwapAndBridgeContext(
       (!!crossChainOrder &&
         !!bridgeOutputAmount &&
         CurrencyAmount.fromRawAmount(order.outputToken, bridgeOutputAmount.toString())) ||
-      bridgeQuoteAmounts?.bridgeMinReceiveAmount
+      bridgeMinReceiveAmount
     )
-  }, [order, bridgeQuoteAmounts, crossChainOrder, bridgeOutputAmount])
+  }, [order, bridgeMinReceiveAmount, crossChainOrder, bridgeOutputAmount])
 
   /**
    * Bridge provider might not be able to derive `bridgingParams.outputAmount` before destination chain transaction is mined
@@ -164,6 +164,7 @@ export function useSwapAndBridgeContext(
       sellAmount: swapAndBridgeOverview.targetAmounts.sellAmount,
       buyAmount: swapAndBridgeOverview.targetAmounts.buyAmount,
       buyAmountUsd: null,
+      bridgeMinReceiveAmount,
     }
 
     return {
@@ -185,6 +186,7 @@ export function useSwapAndBridgeContext(
     bridgeReceiveAmount,
     swapAndBridgeOverview,
     bridgeFee,
+    bridgeMinReceiveAmount,
   ])
 
   return useMemo(
