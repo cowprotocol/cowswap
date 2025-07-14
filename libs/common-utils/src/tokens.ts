@@ -5,7 +5,7 @@ import {
 } from '@cowprotocol/common-const'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 
-import { areAddressesEqual } from './areAddressesEqual'
+import { doesTokenMatchSymbolOrAddress } from './doesTokenMatchSymbolOrAddress'
 
 
 export function isNativeAddress(tokenAddress: string, chainId: ChainId): boolean {
@@ -17,9 +17,7 @@ export function isNativeAddress(tokenAddress: string, chainId: ChainId): boolean
 
   const native = NATIVE_CURRENCIES[chainId]
 
-  return (
-    native && (areAddressesEqual(tokenAddressLower, native.address) || tokenAddressLower === native.symbol?.toLowerCase())
-  )
+  return native && doesTokenMatchSymbolOrAddress(native, tokenAddressLower)
 }
 
 export function toErc20Address(tokenAddress: string, chainId: ChainId): string {
