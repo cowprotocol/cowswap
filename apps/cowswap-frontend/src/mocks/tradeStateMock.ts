@@ -1,4 +1,4 @@
-import { COW, GNO_MAINNET } from '@cowprotocol/common-const'
+import { COW_TOKEN_TO_CHAIN, GNO_MAINNET } from '@cowprotocol/common-const'
 import { tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, Percent, Price } from '@uniswap/sdk-core'
@@ -10,8 +10,12 @@ import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 
 const chainId = SupportedChainId.MAINNET
 
-const inputCurrency = COW[chainId]
+const inputCurrency = COW_TOKEN_TO_CHAIN[chainId]
 const outputCurrency = GNO_MAINNET
+
+if (!inputCurrency) {
+  throw new Error('Input currency not found')
+}
 
 export const inputCurrencyInfoMock: CurrencyInfo = {
   field: Field.INPUT,

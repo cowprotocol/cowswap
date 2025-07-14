@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { COW, WETH_SEPOLIA } from '@cowprotocol/common-const'
+import { COW_TOKEN_TO_CHAIN, WETH_SEPOLIA } from '@cowprotocol/common-const'
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { WalletInfo, walletInfoAtom } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
@@ -39,7 +39,12 @@ const useEnoughBalanceAndAllowanceMock = jest.spyOn(tokensModule, 'useEnoughBala
 const bridgingSdkMock = bridgingSdk as unknown as { getQuote: jest.Mock }
 
 const inputCurrencyAmount = CurrencyAmount.fromRawAmount(WETH_SEPOLIA, 10_000_000)
-const outputCurrencyAmount = CurrencyAmount.fromRawAmount(COW[SupportedChainId.SEPOLIA], 2_000_000)
+
+if (!COW_TOKEN_TO_CHAIN[SupportedChainId.SEPOLIA]) {
+  throw new Error(`COW token not found for chain ${SupportedChainId.SEPOLIA}`)
+}
+
+const outputCurrencyAmount = CurrencyAmount.fromRawAmount(COW_TOKEN_TO_CHAIN[SupportedChainId.SEPOLIA], 2_000_000)
 
 const walletInfoMock: WalletInfo = {
   chainId: 1,
@@ -66,11 +71,11 @@ const Wrapper =
   // TODO: Replace any with proper type definitions
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (mocks: any) =>
-  ({ children }: { children: ReactNode }) => (
-    <WithMockedWeb3 location={{ pathname: '/5/limit' }}>
-      <JotaiTestProvider initialValues={mocks}>{children}</JotaiTestProvider>
-    </WithMockedWeb3>
-  )
+    ({ children }: { children: ReactNode }) => (
+      <WithMockedWeb3 location={{ pathname: '/5/limit' }}>
+        <JotaiTestProvider initialValues={mocks}>{children}</JotaiTestProvider>
+      </WithMockedWeb3>
+    )
 
 describe('useTradeQuotePolling()', () => {
   beforeEach(() => {
@@ -89,7 +94,7 @@ describe('useTradeQuotePolling()', () => {
       // Act
       renderHook(
         () => {
-          return useTradeQuotePolling()
+          return useTradeQuotePolling(false, true)
         },
         { wrapper: Wrapper(mocks) },
       )
@@ -109,12 +114,12 @@ describe('useTradeQuotePolling()', () => {
       const mocks = [...jotaiMock, [walletInfoAtom, { ...walletInfoMock, account: undefined }]]
 
       // Act
-      renderHook(() => useTradeQuotePolling(), { wrapper: Wrapper(mocks) })
+      renderHook(() => useTradeQuotePolling(false, true), { wrapper: Wrapper(mocks) })
 
       // Assert
-      const callParams = bridgingSdkMock.getQuote.mock.calls[0]
+      const { signer: _, ...callParams } = bridgingSdkMock.getQuote.mock.calls[0][0]
 
-      expect(callParams[0].receiver).toBe(undefined) // useAddress field value
+      expect(callParams.receiver).toBe(undefined) // useAddress field value
       expect(bridgingSdkMock.getQuote).toHaveBeenCalledTimes(1)
       expect(callParams).toMatchSnapshot()
     })

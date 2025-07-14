@@ -1,3 +1,5 @@
+import { ReactNode, ChangeEvent } from 'react'
+
 import alertCircle from '@cowprotocol/assets/cow-swap/alert-circle.svg'
 import orderPresignaturePending from '@cowprotocol/assets/cow-swap/order-presignature-pending.svg'
 import { Media, UI } from '@cowprotocol/ui'
@@ -9,7 +11,7 @@ import styled from 'styled-components/macro'
 
 import { useNavigate } from 'common/hooks/useNavigate'
 
-import { OrderTab } from '../../const/tabs'
+import { OrderTab, OrderTabId } from '../../const/tabs'
 import { useGetBuildOrdersTableUrl } from '../../hooks/useGetBuildOrdersTableUrl'
 
 const Tabs = styled.div`
@@ -148,10 +150,7 @@ export interface OrdersTabsProps {
   isWalletConnected: boolean
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
-export function OrdersTabs({ tabs, isWalletConnected = true }: OrdersTabsProps) {
+export function OrdersTabs({ tabs, isWalletConnected = true }: OrdersTabsProps): ReactNode {
   const buildOrdersTableUrl = useGetBuildOrdersTableUrl()
   const navigate = useNavigate()
   const activeTabIndex = Math.max(
@@ -159,10 +158,8 @@ export function OrdersTabs({ tabs, isWalletConnected = true }: OrdersTabsProps) 
     0,
   )
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const tabId = event.target.value
+  const handleSelectChange = (event: ChangeEvent<HTMLSelectElement>): void => {
+    const tabId = event.target.value as OrderTabId
     navigate(buildOrdersTableUrl({ tabId, pageNumber: 1 }))
   }
 

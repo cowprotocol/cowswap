@@ -1,14 +1,16 @@
-import { useMemo } from 'react'
+import { JSX, useMemo } from 'react'
 
 import { formatPercent } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Percent } from '@uniswap/sdk-core'
 
 import { useIsEoaEthFlow } from 'modules/trade'
-import { useIsSmartSlippageApplied, useSetSlippage, useSmartTradeSlippage } from 'modules/tradeSlippage'
+import { useSmartSlippageFromQuote } from 'modules/tradeQuote'
+import { useIsSmartSlippageApplied, useSetSlippage, useTradeSlippage } from 'modules/tradeSlippage'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
+import { useIsDefaultSlippageApplied } from '../../../tradeSlippage/hooks/useIsDefaultSlippageApplied'
 import { RowSlippageContent } from '../../pure/Row/RowSlippageContent'
 
 export interface RowSlippageProps {
@@ -19,21 +21,21 @@ export interface RowSlippageProps {
   isTradePriceUpdating: boolean
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function RowSlippage({
   allowedSlippage,
   slippageTooltip,
   slippageLabel,
   isTradePriceUpdating,
   isSlippageModified,
-}: RowSlippageProps) {
+}: RowSlippageProps): JSX.Element {
   const { chainId } = useWalletInfo()
 
   const isEoaEthFlow = useIsEoaEthFlow()
   const nativeCurrency = useNativeCurrency()
-  const smartSlippage = useSmartTradeSlippage()
+  const smartSlippageFromQuote = useSmartSlippageFromQuote()
+  const swapSlippage = useTradeSlippage()
   const isSmartSlippageApplied = useIsSmartSlippageApplied()
+  const isDefaultSlippageApplied = useIsDefaultSlippageApplied()
   const setSlippage = useSetSlippage()
 
   const props = useMemo(
@@ -46,10 +48,11 @@ export function RowSlippage({
       slippageTooltip,
       displaySlippage: `${formatPercent(allowedSlippage)}%`,
       isSmartSlippageApplied,
+      isDefaultSlippageApplied,
       isSmartSlippageLoading: isTradePriceUpdating,
       smartSlippage:
-        smartSlippage && !isEoaEthFlow ? `${formatPercent(new Percent(smartSlippage, 10_000))}%` : undefined,
-      setAutoSlippage: smartSlippage && !isEoaEthFlow ? () => setSlippage(null) : undefined,
+        isSmartSlippageApplied && swapSlippage ? `${formatPercent(swapSlippage)}%` : undefined,
+      setAutoSlippage: smartSlippageFromQuote ? () => setSlippage(null) : undefined,
     }),
     [
       chainId,
@@ -58,10 +61,12 @@ export function RowSlippage({
       allowedSlippage,
       slippageLabel,
       slippageTooltip,
-      smartSlippage,
+      smartSlippageFromQuote,
+      isDefaultSlippageApplied,
       isSmartSlippageApplied,
       isTradePriceUpdating,
       setSlippage,
+      swapSlippage,
     ],
   )
 

@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.20.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.19.2...widget-lib-v0.20.0) (2025-07-10)
+
+
+### Features
+
+* **trade:** slippage config for integrators ([#5906](https://github.com/cowprotocol/cowswap/issues/5906)) ([cbfa3b1](https://github.com/cowprotocol/cowswap/commit/cbfa3b142571df7bdf55919b8ae6df986017aeab))
+
+## [0.19.2](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.19.1...widget-lib-v0.19.2) (2025-06-18)
+
+
+### Bug Fixes
+
+* make order progress bar UI more stable ([#5834](https://github.com/cowprotocol/cowswap/issues/5834)) ([80cebd1](https://github.com/cowprotocol/cowswap/commit/80cebd1104a0a2e30e12ce8a4b3d62c212559cec))
+
 ## [0.19.1](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.19.0...widget-lib-v0.19.1) (2025-05-19)
 
 

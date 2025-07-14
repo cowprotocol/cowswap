@@ -126,9 +126,9 @@ const DETAIL_COLUMNS: TableHeaderConfig[] = [
   },
 ]
 
-export const createTableHeaders = (): TableHeaderConfig[] => {
-  // Combine all columns and sort by order
-  return [CORE_COLUMNS.CHECKBOX, CORE_COLUMNS.TRADE, ...PRICE_COLUMNS, ...DETAIL_COLUMNS].sort(
-    (a, b) => a.order - b.order,
-  )
-}
+export const TABLE_HEADERS: TableHeaderConfig[] = [
+  CORE_COLUMNS.CHECKBOX,
+  CORE_COLUMNS.TRADE,
+  ...PRICE_COLUMNS,
+  ...DETAIL_COLUMNS,
+].sort((a, b) => a.order - b.order)

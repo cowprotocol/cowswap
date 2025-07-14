@@ -3,8 +3,9 @@ import { useMemo } from 'react'
 import { getChainInfo } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
+import { useCurrentAccountProxyAddress } from 'modules/cowShed'
 import { useReceiveAmountInfo } from 'modules/trade'
-import { useTradeQuote } from 'modules/tradeQuote'
+import { BRIDGE_QUOTE_ACCOUNT, useTradeQuote } from 'modules/tradeQuote'
 import { useTradeSlippage } from 'modules/tradeSlippage'
 import { useUsdAmount } from 'modules/usdAmount'
 
@@ -23,7 +24,7 @@ export function useQuoteSwapContext(): QuoteSwapContext | null {
 
   const slippage = useTradeSlippage()
 
-  const cowShedAddress = bridgeQuote?.bridgeCallDetails.preAuthorizedBridgingHook.recipient
+  const cowShedAddress = useCurrentAccountProxyAddress()?.proxyAddress || BRIDGE_QUOTE_ACCOUNT
 
   return useMemo(() => {
     if (!receiveAmountInfo || !quoteAmounts || !cowShedAddress) return null
@@ -35,7 +36,7 @@ export function useQuoteSwapContext(): QuoteSwapContext | null {
     const sourceChainData = getChainInfo(sourceChainId)
 
     return {
-      chainName: sourceChainData.name,
+      chainName: sourceChainData.label,
       receiveAmountInfo,
       sellAmount: quoteAmounts.swapSellAmount,
       buyAmount: quoteAmounts.swapBuyAmount,

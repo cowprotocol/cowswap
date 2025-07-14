@@ -135,13 +135,8 @@ export const FiatAmountText = styled.span`
   > div {
     font-weight: 500;
     font-size: 13px;
-    opacity: 0.7;
     color: inherit;
     transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
-
-    &:hover {
-      opacity: 1;
-    }
   }
 `
 

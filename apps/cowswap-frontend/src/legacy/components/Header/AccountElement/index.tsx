@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { ReactNode, useState } from 'react'
 
 import { useNativeCurrencyAmount } from '@cowprotocol/balances-and-allowances'
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
@@ -32,9 +32,7 @@ interface AccountElementProps {
   className?: string
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function AccountElement({ className, standaloneMode, pendingActivities }: AccountElementProps) {
+export function AccountElement({ className, standaloneMode, pendingActivities }: AccountElementProps): ReactNode {
   const { account, chainId } = useWalletInfo()
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
   const userEthBalance = useNativeCurrencyAmount(chainId, account)

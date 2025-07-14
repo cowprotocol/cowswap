@@ -1,13 +1,13 @@
-import useSWR from 'swr'
+import type { ChainInfo } from '@cowprotocol/cow-sdk'
+
+import useSWR, { SWRResponse } from 'swr'
 
 import { useBridgeProvider } from './useBridgeProvider'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useBridgeSupportedNetworks() {
+export function useBridgeSupportedNetworks(): SWRResponse<ChainInfo[]> {
   const bridgeProvider = useBridgeProvider()
 
-  return useSWR([bridgeProvider, 'useBridgeSupportedNetworks'], ([bridgeProvider]) => {
+  return useSWR([bridgeProvider, bridgeProvider.info.dappId, 'useBridgeSupportedNetworks'], ([bridgeProvider]) => {
     return bridgeProvider.getNetworks()
   })
 }

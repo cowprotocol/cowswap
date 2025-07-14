@@ -3,6 +3,7 @@ import { useAtomValue } from 'jotai'
 import { useModalIsOpen, useToggleModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 
+import { CoWShedModal } from 'modules/cowShed'
 import { SurplusModalSetup } from 'modules/orderProgressBar'
 
 import { CancellationModal } from 'common/containers/CancellationModal'
@@ -34,6 +35,7 @@ export function TopLevelModals() {
       <CancellationModal isOpen={cancelModalOpen} onDismiss={onDismissCancellationModal || cancelModalToggle} />
       <MultipleOrdersCancellationModal isOpen={multipleCancelModalOpen} onDismiss={multipleCancelModalToggle} />
       <SurplusModalSetup />
+      <CoWShedModal />
     </>
   )
 }

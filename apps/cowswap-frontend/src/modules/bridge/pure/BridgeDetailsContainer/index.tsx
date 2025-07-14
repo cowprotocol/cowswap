@@ -25,6 +25,7 @@ export interface BridgeDetailsContainerProps {
   bridgeProvider: BridgeProviderInfo
   protocolIconShowOnly?: 'first' | 'second'
   protocolIconSize?: number
+  circleSize?: number
 
   sellAmount: CurrencyAmount<Currency> | undefined
   buyAmount: CurrencyAmount<Currency> | undefined
@@ -37,10 +38,90 @@ export interface BridgeDetailsContainerProps {
   explorerUrl?: string
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
+function useToggleExpanded(
+  defaultExpanded: boolean,
+  isCollapsible: boolean,
+): {
+  isExpanded: boolean
+  toggleExpanded: () => void
+  onKeyDown: (e: KeyboardEvent) => void
+} {
+  const [isExpanded, setIsExpanded] = useState(defaultExpanded)
+
+  const toggleExpanded = (): void => {
+    setIsExpanded((state) => !state)
+  }
+
+  const onKeyDown = (e: KeyboardEvent): void => {
+    if (!isCollapsible) return
+    if (!['Enter', ' '].includes(e.key)) return
+    toggleExpanded()
+  }
+
+  return { isExpanded, toggleExpanded, onKeyDown }
+}
+
+interface SectionContentComponentProps {
+  sellAmount: CurrencyAmount<Currency> | undefined
+  buyAmount: CurrencyAmount<Currency> | undefined
+  buyAmountUsd: CurrencyAmount<Token> | null | undefined
+  chainName: string
+  isExpanded: boolean
+  children: ReactNode
+}
+
+function SectionContentComponent({
+  sellAmount,
+  buyAmount,
+  buyAmountUsd,
+  chainName,
+  isExpanded,
+  children,
+}: SectionContentComponentProps): ReactNode {
+  if (!sellAmount || !buyAmount) {
+    return children
+  }
+
+  return (
+    <SectionContent isExpanded={isExpanded}>
+      <RouteTitle chainName={chainName} sellAmount={sellAmount} buyAmount={buyAmount} buyAmountUsd={buyAmountUsd} />
+      {children}
+    </SectionContent>
+  )
+}
+
+interface TitleActionsComponentProps {
+  explorerUrl?: string
+  isCollapsible?: boolean
+  isExpanded?: boolean
+}
+
+function TitleActionsComponent({
+  explorerUrl,
+  isCollapsible = false,
+  isExpanded = false,
+}: TitleActionsComponentProps): ReactNode {
+  return (
+    <>
+      {explorerUrl && (
+        <ExplorerLink
+          href={explorerUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="View transaction details on explorer (opens in new tab)"
+        >
+          View details <span aria-hidden="true">↗</span>
+        </ExplorerLink>
+      )}
+      {isCollapsible && (
+        <ToggleIconContainer>
+          <ToggleArrow isOpen={isExpanded} />
+        </ToggleIconContainer>
+      )}
+    </>
+  )
+}
+
 export function BridgeDetailsContainer({
   status,
   stopNumber,
@@ -50,6 +131,7 @@ export function BridgeDetailsContainer({
   bridgeProvider,
   protocolIconShowOnly,
   protocolIconSize,
+  circleSize,
   children,
   isCollapsible = false,
   defaultExpanded = true,
@@ -58,22 +140,8 @@ export function BridgeDetailsContainer({
   buyAmount,
   buyAmountUsd,
   chainName,
-}: BridgeDetailsContainerProps) {
-  const [isExpanded, setIsExpanded] = useState(defaultExpanded)
-
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const toggleExpanded = () => {
-    setIsExpanded((state) => !state)
-  }
-
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const onKeyDown = (e: KeyboardEvent) => {
-    if (!isCollapsible) return
-    if (!['Enter', ' '].includes(e.key)) return
-    toggleExpanded()
-  }
+}: BridgeDetailsContainerProps): ReactNode {
+  const { isExpanded, toggleExpanded, onKeyDown } = useToggleExpanded(defaultExpanded, isCollapsible)
 
   const titleContent = (
     <BridgeRouteTitle
@@ -85,6 +153,7 @@ export function BridgeDetailsContainer({
       bridgeProvider={bridgeProvider}
       protocolIconShowOnly={protocolIconShowOnly}
       protocolIconSize={protocolIconSize}
+      circleSize={circleSize}
     />
   )
 
@@ -100,31 +169,17 @@ export function BridgeDetailsContainer({
         aria-expanded={isCollapsible ? isExpanded : undefined}
       >
         {titleContent}
-        {explorerUrl && (
-          <ExplorerLink
-            href={explorerUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="View transaction details on explorer (opens in new tab)"
-          >
-            View details <span aria-hidden="true">↗</span>
-          </ExplorerLink>
-        )}
-        {isCollapsible && (
-          <ToggleIconContainer>
-            <ToggleArrow isOpen={isExpanded} />
-          </ToggleIconContainer>
-        )}
+        <TitleActionsComponent explorerUrl={explorerUrl} isCollapsible={isCollapsible} isExpanded={isExpanded} />
       </StopTitleComponent>
-      {sellAmount && buyAmount ? (
-        <SectionContent isExpanded={isExpanded}>
-          <RouteTitle chainName={chainName} sellAmount={sellAmount} buyAmount={buyAmount} buyAmountUsd={buyAmountUsd} />
-
-          {children}
-        </SectionContent>
-      ) : (
-        children
-      )}
+      <SectionContentComponent
+        sellAmount={sellAmount}
+        buyAmount={buyAmount}
+        buyAmountUsd={buyAmountUsd}
+        chainName={chainName}
+        isExpanded={isExpanded}
+      >
+        {children}
+      </SectionContentComponent>
     </>
   )
 }

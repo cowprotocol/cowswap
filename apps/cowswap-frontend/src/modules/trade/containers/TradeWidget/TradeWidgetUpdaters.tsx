@@ -1,12 +1,9 @@
-import { ReactNode } from 'react'
-
-import { PriorityTokensUpdater } from '@cowprotocol/balances-and-allowances'
-import { useWalletInfo } from '@cowprotocol/wallet'
+import { JSX, ReactNode } from 'react'
 
 import { TradeFormValidationUpdater } from 'modules/tradeFormValidation'
 import { TradeQuoteUpdater } from 'modules/tradeQuote'
 
-import { usePriorityTokenAddresses } from '../../hooks/usePriorityTokenAddresses'
+import { useIsQuoteUpdatePossible } from '../../hooks/useIsQuoteUpdatePossible'
 import { useResetRecipient } from '../../hooks/useResetRecipient'
 import { useTradeConfirmState } from '../../hooks/useTradeConfirmState'
 import { CommonTradeUpdater } from '../../updaters/CommonTradeUpdater'
@@ -22,29 +19,26 @@ interface TradeWidgetUpdatersProps {
   onChangeRecipient: (recipient: string | null) => void
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function TradeWidgetUpdaters({
   disableQuotePolling,
   disableNativeSelling,
-  enableSmartSlippage,
   onChangeRecipient,
   children,
-}: TradeWidgetUpdatersProps) {
-  const { chainId, account } = useWalletInfo()
-  const priorityTokenAddresses = usePriorityTokenAddresses()
+}: TradeWidgetUpdatersProps): JSX.Element {
   const { isOpen: isConfirmOpen } = useTradeConfirmState()
+
+  const isQuoteUpdatePossible = useIsQuoteUpdatePossible()
 
   useResetRecipient(onChangeRecipient)
 
   return (
     <>
-      <PriorityTokensUpdater account={account} chainId={chainId} tokenAddresses={priorityTokenAddresses} />
       <RecipientAddressUpdater />
 
-      {!disableQuotePolling && (
-        <TradeQuoteUpdater isConfirmOpen={isConfirmOpen} enableSmartSlippage={enableSmartSlippage} />
-      )}
+      <TradeQuoteUpdater
+        isConfirmOpen={isConfirmOpen}
+        isQuoteUpdatePossible={isQuoteUpdatePossible && !disableQuotePolling}
+      />
       <PriceImpactUpdater />
       <TradeFormValidationUpdater />
       <CommonTradeUpdater />

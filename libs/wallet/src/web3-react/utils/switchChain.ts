@@ -1,5 +1,14 @@
 import { getChainInfo, RPC_URLS } from '@cowprotocol/common-const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import {
+  SupportedChainId,
+  avalanche,
+  mainnet,
+  arbitrumOne,
+  base,
+  polygon,
+  gnosisChain,
+  sepolia,
+} from '@cowprotocol/cow-sdk'
 import { Connector } from '@web3-react/types'
 
 import { getWeb3ReactConnection } from './getWeb3ReactConnection'
@@ -15,13 +24,13 @@ function getRpcUrls(chainId: SupportedChainId): [string] {
 }
 
 const WALLET_RPC_SUGGESTION: Record<SupportedChainId, string | null> = {
-  [SupportedChainId.MAINNET]: null,
-  [SupportedChainId.GNOSIS_CHAIN]: 'https://rpc.gnosischain.com/',
-  [SupportedChainId.ARBITRUM_ONE]: 'https://arb1.arbitrum.io/rpc',
-  [SupportedChainId.BASE]: 'https://mainnet.base.org',
-  [SupportedChainId.SEPOLIA]: null,
-  [SupportedChainId.POLYGON]: 'https://polygon-rpc.com/',
-  [SupportedChainId.AVALANCHE]: 'https://avalanche-c-chain.public.blastapi.io/',
+  [SupportedChainId.MAINNET]: mainnet.rpcUrls.default.http[0],
+  [SupportedChainId.GNOSIS_CHAIN]: gnosisChain.rpcUrls.default.http[0],
+  [SupportedChainId.ARBITRUM_ONE]: arbitrumOne.rpcUrls.default.http[0],
+  [SupportedChainId.BASE]: base.rpcUrls.default.http[0],
+  [SupportedChainId.SEPOLIA]: sepolia.rpcUrls.default.http[0],
+  [SupportedChainId.POLYGON]: polygon.rpcUrls.default.http[0],
+  [SupportedChainId.AVALANCHE]: avalanche.rpcUrls.default.http[0],
 }
 
 // TODO: Add proper return type annotation
@@ -41,7 +50,7 @@ export const switchChain = async (connector: Connector, chainId: SupportedChainI
     const info = getChainInfo(chainId)
     const addChainParameter = {
       chainId,
-      chainName: info.label,
+      chainName: info.eip155Label,
       rpcUrls: getRpcUrls(chainId),
       nativeCurrency: info.nativeCurrency,
       blockExplorerUrls: [info.explorer],

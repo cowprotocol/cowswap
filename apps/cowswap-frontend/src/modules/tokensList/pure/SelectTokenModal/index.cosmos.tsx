@@ -43,6 +43,7 @@ const defaultProps: SelectTokenModalProps = {
     values: balances,
     isLoading: false,
     chainId: SupportedChainId.SEPOLIA,
+    fromCache: false,
   },
   selectedToken,
   onSelectToken() {

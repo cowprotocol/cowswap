@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.3](https://github.com/cowprotocol/cowswap/compare/iframe-transport-v1.0.2...iframe-transport-v1.0.3) (2025-06-18)
+
+
+### Bug Fixes
+
+* make order progress bar UI more stable ([#5834](https://github.com/cowprotocol/cowswap/issues/5834)) ([80cebd1](https://github.com/cowprotocol/cowswap/commit/80cebd1104a0a2e30e12ce8a4b3d62c212559cec))
+
 ## [1.0.2](https://github.com/cowprotocol/cowswap/compare/iframe-transport-v1.0.1...iframe-transport-v1.0.2) (2025-05-19)
 
 

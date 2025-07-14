@@ -3,7 +3,7 @@ import React, { useContext, useState, useEffect } from 'react'
 import { OrdersTableContext } from './context/OrdersTableContext'
 import { useSearchInAnotherNetwork, EmptyOrdersMessage } from './useSearchInAnotherNetwork'
 
-import CowLoading from '../../../components/common/CowLoading'
+import { LoadingWrapper } from '../../../components/common/LoadingWrapper'
 import OrdersTable from '../../../components/orders/OrdersUserDetailsTable'
 import { DEFAULT_TIMEOUT } from '../../../const'
 import useFirstRender from '../../../hooks/useFirstRender'
@@ -44,7 +44,7 @@ export const OrdersTableWithData: React.FC = () => {
   }, [orders, orders?.length])
 
   return isFirstRender || isFirstLoading ? (
-    <CowLoading />
+    <LoadingWrapper message="Loading orders" />
   ) : (
     <OrdersTable
       orders={orders}

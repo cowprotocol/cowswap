@@ -1,9 +1,6 @@
+import { Nullish } from '@cowprotocol/types'
+
 export type Address = string
-export type AddressTo<T> = Record<Address, T>
-export type Mutable<T> = { -readonly [P in keyof T]: T[P] }
-export type Nullable<T> = T | null
-export type Nullish<T> = Nullable<T> | undefined
-export type Primitive = number | string | boolean | bigint | symbol | null | undefined
 
 const FIVE_DECIMALS_MAX_TWO_DECIMALS_MIN = new Intl.NumberFormat('en-US', {
   notation: 'standard',
@@ -306,7 +303,7 @@ function getFormatterRule(input: number, type: NumberType): Format {
 export function formatNumber(
   input: Nullish<number>,
   type: NumberType = NumberType.TokenNonTx,
-  placeholder = '-'
+  placeholder = '-',
 ): string {
   if (input === null || input === undefined) {
     return placeholder
@@ -316,7 +313,6 @@ export function formatNumber(
   if (typeof formatter === 'string') return formatter
   return formatter.format(input)
 }
-
 
 export function formatNumberOrString(price: Nullish<number | string>, type: NumberType): string {
   if (price === null || price === undefined) return '-'
