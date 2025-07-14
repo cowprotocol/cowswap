@@ -1,12 +1,12 @@
 import { useMemo } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
-import { BridgeStatus, CrossChainOrder, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { BridgeStatus, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useTokensByAddressMap } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import { useBridgeOrderQuoteAmounts, useCrossChainOrder } from 'entities/bridgeOrders'
+import { useBridgeOrderQuote, useCrossChainOrder } from 'entities/bridgeOrders'
 import { useBridgeSupportedNetworks } from 'entities/bridgeProvider'
 import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 
@@ -43,7 +43,7 @@ export interface SwapAndBridgeContexts {
 }
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+// eslint-disable-next-line max-lines-per-function,complexity
 export function useSwapAndBridgeContext(
   chainId: SupportedChainId,
   order: Order | undefined,
@@ -52,6 +52,7 @@ export function useSwapAndBridgeContext(
   const { account } = useWalletInfo()
   const { data: bridgeSupportedNetworks } = useBridgeSupportedNetworks()
   const tokensByAddress = useTokensByAddressMap()
+  const bridgeOrderQuote = useBridgeOrderQuote(order?.id)
 
   const { data: crossChainOrder } = useCrossChainOrder(chainId, order?.id)
 
@@ -64,10 +65,11 @@ export function useSwapAndBridgeContext(
   }, [fullAppData])
 
   const swapResultContext = useSwapResultsContext(order, winningSolver, intermediateToken)
-  const bridgeQuoteAmounts = useBridgeOrderQuoteAmounts(order?.id)
+  const bridgeQuoteAmounts = bridgeOrderQuote?.quoteAmounts
 
   const receivedAmount = swapResultContext?.receivedAmount
   const bridgeOutputAmount = crossChainOrder?.bridgingParams.outputAmount
+  const bridgeFee = bridgeQuoteAmounts?.bridgeFee || null
 
   /**
    * Get receive amount from crossChainOrder if possible
@@ -154,7 +156,7 @@ export function useSwapAndBridgeContext(
 
     const quoteBridgeContext: QuoteBridgeContext = {
       chainName: destChainData.label,
-      bridgeFee: null,
+      bridgeFee,
       estimatedTime: null,
       recipient: crossChainOrder.bridgingParams.recipient,
       sellAmount: swapAndBridgeOverview.targetAmounts.sellAmount,
@@ -180,6 +182,7 @@ export function useSwapAndBridgeContext(
     bridgeSupportedNetworks,
     bridgeReceiveAmount,
     swapAndBridgeOverview,
+    bridgeFee,
   ])
 
   return useMemo(
