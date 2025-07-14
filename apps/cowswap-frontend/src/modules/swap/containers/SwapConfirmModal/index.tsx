@@ -47,7 +47,6 @@ export interface SwapConfirmModalProps {
 }
 
 // TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
 // eslint-disable-next-line max-lines-per-function
 export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
   const { inputCurrencyInfo, outputCurrencyInfo, priceImpact, recipient, doTrade } = props
@@ -98,13 +97,15 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
     return true
   }, [balances, inputCurrencyInfo, shouldDisplayBridgeDetails, bridgeQuoteAmounts])
 
+  const confirmText = shouldDisplayBridgeDetails ? 'Confirm Swap and Bridge' : 'Confirm Swap'
+
   const buttonText = useMemo(() => {
     if (disableConfirm) {
       const { amount } = inputCurrencyInfo
       return `Insufficient ${amount?.currency?.symbol || 'token'} balance`
     }
-    return 'Confirm Swap'
-  }, [disableConfirm, inputCurrencyInfo])
+    return confirmText
+  }, [confirmText, disableConfirm, inputCurrencyInfo])
 
   return (
     <TradeConfirmModal title={CONFIRM_TITLE} submittedContent={submittedContent}>
