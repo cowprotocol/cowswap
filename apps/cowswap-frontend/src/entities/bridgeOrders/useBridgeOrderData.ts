@@ -5,11 +5,11 @@ import { BridgeOrderData } from 'common/types/bridge'
 import { useBridgeOrders } from './useBridgeOrders'
 
 export function useBridgeOrderData(orderUid: string | undefined): BridgeOrderData | undefined {
-  const pendingBridgeOrders = useBridgeOrders()
+  const bridgeOrders = useBridgeOrders()
 
   return useMemo(() => {
-    if (!pendingBridgeOrders) return undefined
+    if (!bridgeOrders) return undefined
 
-    return pendingBridgeOrders.find((order) => order.orderUid === orderUid)
-  }, [pendingBridgeOrders, orderUid])
+    return bridgeOrders.find((order) => order.orderUid === orderUid)
+  }, [bridgeOrders, orderUid])
 }
