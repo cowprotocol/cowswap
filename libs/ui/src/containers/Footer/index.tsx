@@ -32,7 +32,7 @@ import {
   ToggleFooterButton,
 } from './styled'
 
-import { Color } from '../../colors'
+import { UI } from '../../enum'
 import { MenuItem } from '../../pure/MenuBar'
 import { ProductLogo, ProductVariant } from '../../pure/ProductLogo'
 
@@ -327,8 +327,8 @@ export const Footer = ({
                 <ProductLogo
                   variant={ProductVariant.CowDao}
                   height={32}
-                  overrideColor={!theme.darkMode ? Color.neutral100 : Color.neutral90}
-                  overrideHoverColor={!theme.darkMode ? Color.neutral98 : Color.neutral95}
+                  overrideColor={!theme.darkMode ? `var(${UI.COLOR_NEUTRAL_100})` : `var(${UI.COLOR_NEUTRAL_90})`}
+                  overrideHoverColor={!theme.darkMode ? `var(${UI.COLOR_NEUTRAL_98})` : `var(${UI.COLOR_NEUTRAL_95})`}
                 />
               </FooterLogo>
               {description && <Description>{description}</Description>}
@@ -375,8 +375,8 @@ export const Footer = ({
               key={index}
               variant={product.productVariant}
               logoIconOnly={false}
-              overrideColor={!theme.darkMode ? Color.neutral40 : Color.neutral40}
-              overrideHoverColor={Color.neutral98}
+              overrideColor={!theme.darkMode ? `var(${UI.COLOR_NEUTRAL_40})` : `var(${UI.COLOR_NEUTRAL_40})`}
+              overrideHoverColor={`var(${UI.COLOR_NEUTRAL_98})`}
               height={24}
               href={product.href}
               external={true}

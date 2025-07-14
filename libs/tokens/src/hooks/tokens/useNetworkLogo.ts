@@ -4,17 +4,13 @@ import { useMemo } from 'react'
 import { getChainInfo } from '@cowprotocol/common-const'
 import { useIsBridgingEnabled, useTheme } from '@cowprotocol/common-hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { useIsSmartContractWallet } from '@cowprotocol/wallet'
 
 import { environmentAtom } from '../../state/environmentAtom'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useNetworkLogo(chainId?: number) {
+export function useNetworkLogo(chainId?: number): string | undefined {
   const { bridgeNetworkInfo } = useAtomValue(environmentAtom)
   const theme = useTheme()
-  const isSmartContractWallet = useIsSmartContractWallet()
-  const isBridgingEnabled = useIsBridgingEnabled(isSmartContractWallet)
+  const isBridgingEnabled = useIsBridgingEnabled()
 
   const baseNetworkInfo: string | undefined = useMemo(() => {
     if (!chainId) {

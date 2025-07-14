@@ -6,6 +6,7 @@ import { useBridgeSupportedNetworks } from 'entities/bridgeProvider'
 
 import { useDerivedTradeState, useReceiveAmountInfo } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
+import { BRIDGE_QUOTE_ACCOUNT } from 'modules/tradeQuote'
 import { useUsdAmount } from 'modules/usdAmount'
 
 import { useBridgeQuoteAmounts } from './useBridgeQuoteAmounts'
@@ -24,12 +25,12 @@ export function useQuoteBridgeContext(): QuoteBridgeContext | null {
   const { account } = useWalletInfo()
   const tradeState = useDerivedTradeState()
 
-  const recipient = tradeState?.recipient || account
+  const recipient = tradeState?.recipient || account || BRIDGE_QUOTE_ACCOUNT
 
   return useMemo(() => {
     if (!quoteAmounts || !bridgeQuote || !recipient) return null
 
-    const targetChainId = quoteAmounts.swapMinReceiveAmount.currency.chainId
+    const targetChainId = quoteAmounts.bridgeMinReceiveAmount.currency.chainId
     const destChainData = bridgeSupportedNetworks?.find((chain) => chain.id === targetChainId)
 
     if (!destChainData) return null

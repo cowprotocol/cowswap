@@ -1,5 +1,109 @@
 # Changelog
 
+## [1.112.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.112.0...cowswap-v1.112.1) (2025-07-10)
+
+
+### Bug Fixes
+
+* **balances:** update balances after network switching ([#5955](https://github.com/cowprotocol/cowswap/issues/5955)) ([9714e60](https://github.com/cowprotocol/cowswap/commit/9714e60d8ca4c1e287e749107d23e3185aa5377e))
+
+## [1.112.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.111.3...cowswap-v1.112.0) (2025-07-10)
+
+
+### Features
+
+* **bridge:** display combined fee in collapsed accordion ([#5921](https://github.com/cowprotocol/cowswap/issues/5921)) ([0dbaa56](https://github.com/cowprotocol/cowswap/commit/0dbaa5662012967079c3d6f1bbb7797126639a01))
+* **bridge:** display execution price in swap details ([#5920](https://github.com/cowprotocol/cowswap/issues/5920)) ([81d7f7a](https://github.com/cowprotocol/cowswap/commit/81d7f7a72f953d6e9423ada0c2732fd73ad6b092))
+* **trade:** slippage config for integrators ([#5906](https://github.com/cowprotocol/cowswap/issues/5906)) ([cbfa3b1](https://github.com/cowprotocol/cowswap/commit/cbfa3b142571df7bdf55919b8ae6df986017aeab))
+
+
+### Bug Fixes
+
+* **account-proxy:** fetch prio balances for proxy ([#5928](https://github.com/cowprotocol/cowswap/issues/5928)) ([40d71c9](https://github.com/cowprotocol/cowswap/commit/40d71c9e2ebaa2722fcadd082f08bfec33f66325))
+* add fontBold prop for customizable font weight ([#5949](https://github.com/cowprotocol/cowswap/issues/5949)) ([f212bf5](https://github.com/cowprotocol/cowswap/commit/f212bf56feec9ec1e3b39be9e75a670f8690bbfe))
+* fix quote updating when window visibility changes ([#5938](https://github.com/cowprotocol/cowswap/issues/5938)) ([948ee77](https://github.com/cowprotocol/cowswap/commit/948ee775c9fdce02363c919a880756bee32b2fb0))
+
+## [1.111.3](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.111.2...cowswap-v1.111.3) (2025-07-07)
+
+
+### Bug Fixes
+
+* empty change to trigger a deployment ([#5933](https://github.com/cowprotocol/cowswap/issues/5933)) ([c8a78a5](https://github.com/cowprotocol/cowswap/commit/c8a78a5519a0c7429b1ebadb7eecb22b39778bd6))
+
+## [1.111.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.111.1...cowswap-v1.111.2) (2025-07-04)
+
+
+### Bug Fixes
+
+* **rpc:** add Polygon and Avalanche env vars to Vercel ([#5931](https://github.com/cowprotocol/cowswap/issues/5931)) ([0ad0c66](https://github.com/cowprotocol/cowswap/commit/0ad0c660b64bf689d56324b24aec7a168c7038cf))
+
+## [1.111.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.111.0...cowswap-v1.111.1) (2025-07-04)
+
+
+### Bug Fixes
+
+* fix input amount validation for buy order ([#5929](https://github.com/cowprotocol/cowswap/issues/5929)) ([34391c2](https://github.com/cowprotocol/cowswap/commit/34391c25cefd040039c79308999556fa76d0e3f2))
+
+## [1.111.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.110.1...cowswap-v1.111.0) (2025-07-03)
+
+
+### Features
+
+* **bridge:** add collapsible banner for proxy account information  ([#5895](https://github.com/cowprotocol/cowswap/issues/5895)) ([0825186](https://github.com/cowprotocol/cowswap/commit/0825186e2870abf4c3251dd819a07802c69456dc))
+* **hooks:** add Morpho Lending hook to registry ([#5646](https://github.com/cowprotocol/cowswap/issues/5646)) ([198db52](https://github.com/cowprotocol/cowswap/commit/198db528011ebaf4c2787be1d3413e2e105d2125))
+* use `eip155` chain names adding chain parameter to walllet ([#5916](https://github.com/cowprotocol/cowswap/issues/5916)) ([318c1bc](https://github.com/cowprotocol/cowswap/commit/318c1bcbb7528fdd3abf233068cebfff371dbea9))
+
+
+### Bug Fixes
+
+* **eth-flow:** fix refund tx detection ([#5904](https://github.com/cowprotocol/cowswap/issues/5904)) ([76285e2](https://github.com/cowprotocol/cowswap/commit/76285e2e4e126f040791a31d8d34efe9a8b8dfa1))
+* **limit-orders:** udpate quote when back from confirm ([#5922](https://github.com/cowprotocol/cowswap/issues/5922)) ([f3d721e](https://github.com/cowprotocol/cowswap/commit/f3d721eda45506f77ae3564f447994e87d9cd445))
+* **progress-bar:** ignore active solvers flag from CMS ([#5905](https://github.com/cowprotocol/cowswap/issues/5905)) ([0af9abb](https://github.com/cowprotocol/cowswap/commit/0af9abb54abba01f0a19e3389c812d0210bde3ca))
+* **trade-quote:** do not update quote when trade is not ready ([#5914](https://github.com/cowprotocol/cowswap/issues/5914)) ([e948ae8](https://github.com/cowprotocol/cowswap/commit/e948ae8d708767eaec600a3cf341abd7ebf7928e))
+* **trade:** fix quote refetching triggers ([#5903](https://github.com/cowprotocol/cowswap/issues/5903)) ([bfd968c](https://github.com/cowprotocol/cowswap/commit/bfd968cc8d5cd6d7311ce5a31cda5db0a123fc8b))
+* **trade:** updating priority balances ([#5884](https://github.com/cowprotocol/cowswap/issues/5884)) ([272cebc](https://github.com/cowprotocol/cowswap/commit/272cebcdf68a07dcc0066402dbd9d729a98d10e7))
+* update buy COW link ([#5899](https://github.com/cowprotocol/cowswap/issues/5899)) ([52f917e](https://github.com/cowprotocol/cowswap/commit/52f917e17e7cc2431b42e66489fd2964ddfa57e4))
+
+## [1.110.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.110.0...cowswap-v1.110.1) (2025-06-27)
+
+
+### Bug Fixes
+
+* **partner-fee:** update fee address ([#5896](https://github.com/cowprotocol/cowswap/issues/5896)) ([fc40661](https://github.com/cowprotocol/cowswap/commit/fc406616261ed1c77c6ee663ab9cc5e2f671232f))
+
+## [1.110.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.109.0...cowswap-v1.110.0) (2025-06-20)
+
+
+### Features
+
+* account shows banner is COW token is unavaillable ([#5833](https://github.com/cowprotocol/cowswap/issues/5833)) ([b553228](https://github.com/cowprotocol/cowswap/commit/b55322899161785076f95ee420a1b796661a1e52))
+* **auto-slippage:** apply auto slippage for ETH flow ([#5836](https://github.com/cowprotocol/cowswap/issues/5836)) ([5bd3807](https://github.com/cowprotocol/cowswap/commit/5bd38079e73380ee489727bcaff0614b89e24439))
+
+## [1.109.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.108.2...cowswap-v1.109.0) (2025-06-18)
+
+
+### Features
+
+* **analytics:** enhance UTM handling and analytics readiness checks ([#5779](https://github.com/cowprotocol/cowswap/issues/5779)) ([3fb616c](https://github.com/cowprotocol/cowswap/commit/3fb616cf8f5b5ad7c1736bd095912d692bbf1fd5))
+* hide non-prod envs from search engines ([#5800](https://github.com/cowprotocol/cowswap/issues/5800)) ([5ed181d](https://github.com/cowprotocol/cowswap/commit/5ed181d2a9f1f61f3bed3c971ea4eac4007277ea))
+
+
+### Bug Fixes
+
+* **limit-orders:** display prices in orders table ([#5808](https://github.com/cowprotocol/cowswap/issues/5808)) ([6393e2c](https://github.com/cowprotocol/cowswap/commit/6393e2c7a5ce0b537dcd10a4564f56106c374beb))
+* make order progress bar UI more stable ([#5834](https://github.com/cowprotocol/cowswap/issues/5834)) ([80cebd1](https://github.com/cowprotocol/cowswap/commit/80cebd1104a0a2e30e12ce8a4b3d62c212559cec))
+* reduce rerenders count and theme recalculation ([#5831](https://github.com/cowprotocol/cowswap/issues/5831)) ([96a7a35](https://github.com/cowprotocol/cowswap/commit/96a7a350f366615a1e5149097541b5e2ccf880f1))
+* refetch quote when slippage changed ([#5824](https://github.com/cowprotocol/cowswap/issues/5824)) ([00238b9](https://github.com/cowprotocol/cowswap/commit/00238b9b526d6f71c16a46704dc22290234d10a1))
+* **service-worker:** disable verbose workbox logging in production ([#5815](https://github.com/cowprotocol/cowswap/issues/5815)) ([cb53ccb](https://github.com/cowprotocol/cowswap/commit/cb53ccb5a39a8857dfc030f0fb13869060211c8a))
+* **slippage:** cap auto-slippage with 50% ([#5807](https://github.com/cowprotocol/cowswap/issues/5807)) ([1bea824](https://github.com/cowprotocol/cowswap/commit/1bea824717d5e74c5389b7da7d99ac5ca4940925))
+* **token-logo:** fix network logo size in mobile ([#5809](https://github.com/cowprotocol/cowswap/issues/5809)) ([6c4d2f4](https://github.com/cowprotocol/cowswap/commit/6c4d2f47771f3868a3fe530bc9ac1779175b2db5))
+* **trade:** fix sellToken comparing for quote fetch skip ([#5802](https://github.com/cowprotocol/cowswap/issues/5802)) ([7786c99](https://github.com/cowprotocol/cowswap/commit/7786c99257b75b68c0d7436cd0676c50dd309d1e))
+* **trade:** hide auto-slippage warning when amounts are not set ([#5811](https://github.com/cowprotocol/cowswap/issues/5811)) ([a1898bf](https://github.com/cowprotocol/cowswap/commit/a1898bf987156440bfad7e86a1350bf758e8ffc8))
+* **trade:** reset loading state when confirm wasn't happen ([#5818](https://github.com/cowprotocol/cowswap/issues/5818)) ([38883ad](https://github.com/cowprotocol/cowswap/commit/38883ad6b137659a11b1ef766231a989b0b16d14))
+* update to latest app-data ([#5762](https://github.com/cowprotocol/cowswap/issues/5762)) ([54e6882](https://github.com/cowprotocol/cowswap/commit/54e68826ea00c93834cf8f7cf1c17c7b6c4831e6))
+* **widget:** do not request wallet capabilities for wallet-connect ([#5823](https://github.com/cowprotocol/cowswap/issues/5823)) ([49f22ad](https://github.com/cowprotocol/cowswap/commit/49f22ade0da4ffe95aaa11a6265cd4eeaf339e08))
+* **widget:** get slippage value directly from active quote ([#5830](https://github.com/cowprotocol/cowswap/issues/5830)) ([154e374](https://github.com/cowprotocol/cowswap/commit/154e37490b7d558a3b182269bee6936751d3eba4))
+
 ## [1.108.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.108.1...cowswap-v1.108.2) (2025-06-06)
 
 

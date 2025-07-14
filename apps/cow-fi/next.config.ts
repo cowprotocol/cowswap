@@ -93,6 +93,12 @@ const nextConfig: WithNxOptions = {
   },
   images: {
     domains: ['celebrated-gift-f83e5c9419.media.strapiapp.com'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'coin-images.coingecko.com',
+      },
+    ],
   },
   async headers() {
     return [

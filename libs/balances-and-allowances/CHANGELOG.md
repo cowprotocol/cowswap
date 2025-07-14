@@ -1,5 +1,31 @@
 # Changelog
 
+## [1.5.1](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.5.0...balances-and-allowances-v1.5.1) (2025-07-10)
+
+
+### Bug Fixes
+
+* **balances:** update balances after network switching ([#5955](https://github.com/cowprotocol/cowswap/issues/5955)) ([9714e60](https://github.com/cowprotocol/cowswap/commit/9714e60d8ca4c1e287e749107d23e3185aa5377e))
+
+## [1.5.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.4.0...balances-and-allowances-v1.5.0) (2025-07-03)
+
+
+### Features
+
+* **bridge:** display account proxy ([#5881](https://github.com/cowprotocol/cowswap/issues/5881)) ([0692597](https://github.com/cowprotocol/cowswap/commit/0692597adf45b469b5a547057b64e79296714ee2))
+
+
+### Bug Fixes
+
+* **trade:** updating priority balances ([#5884](https://github.com/cowprotocol/cowswap/issues/5884)) ([272cebc](https://github.com/cowprotocol/cowswap/commit/272cebcdf68a07dcc0066402dbd9d729a98d10e7))
+
+## [1.4.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.3.4...balances-and-allowances-v1.4.0) (2025-06-18)
+
+
+### Features
+
+* **bridge:** swap and bridge refactoring + progress UI ([#5755](https://github.com/cowprotocol/cowswap/issues/5755)) ([8a4cb5c](https://github.com/cowprotocol/cowswap/commit/8a4cb5c497cdd006df860a9240611e12cff3e60c))
+
 ## [1.3.4](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.3.3...balances-and-allowances-v1.3.4) (2025-05-19)
 
 

@@ -26,12 +26,12 @@ export const COW_IS_DIFFERENT = [
   {
     bgColor: `var(${UI.COLOR_BLUE_900_PRIMARY})`,
     fontSize: 28,
-    color: Color.cowfi_lightBlue1,
+    color: `var(${UI.COLOR_BLUE_100_PRIMARY})`,
     description: 'MEV is a $1.4+ billion problem that you never have to worry about on CoW Swap',
     imgSrc: IMG_COWSWAP_MEV,
   },
   {
-    bgColor: Color.cowfi_lightBlue1,
+    bgColor: `var(${UI.COLOR_BLUE_100_PRIMARY})`,
     fontSize: 28,
     color: `var(${UI.COLOR_BLUE_900_PRIMARY})`,
     description: "CoW Swap's unique architecture enables advanced order types and seamless UX",
@@ -42,14 +42,14 @@ export const COW_IS_DIFFERENT = [
 export const ADVANCED_ORDER_TYPES = [
   {
     bgColor: `var(${UI.COLOR_BLUE_900_PRIMARY})`,
-    textColor: Color.cowfi_lightBlue1,
-    titleColor: Color.cowfi_white2,
+    textColor: `var(${UI.COLOR_BLUE_100_PRIMARY})`,
+    titleColor: Color.neutral98,
     title: 'Market orders (aka swaps)',
     description: 'CoW Swap market orders maximize surplus and minimize MEV',
     imgSrc: IMG_COWSWAP_SWAPS,
   },
   {
-    bgColor: Color.cowfi_lightBlue1,
+    bgColor: `var(${UI.COLOR_BLUE_100_PRIMARY})`,
     textColor: Color.cowfi_darkBlue,
     titleColor: `var(${UI.COLOR_BLUE_900_PRIMARY})`,
     title: 'Limit orders',
@@ -79,14 +79,14 @@ export const BETTER_UX = [
   },
   {
     bgColor: `var(${UI.COLOR_BLUE_900_PRIMARY})`,
-    textColor: Color.cowfi_lightBlue1,
-    titleColor: Color.cowfi_white2,
+    textColor: `var(${UI.COLOR_BLUE_100_PRIMARY})`,
+    titleColor: Color.neutral98,
     title: 'No fees for failed transactions',
     description: "You shouldn't pay for what didn't work, so failed transactions are always free",
     imgSrc: IMG_COWSWAP_NOFEES,
   },
   {
-    bgColor: Color.cowfi_lightBlue1,
+    bgColor: `var(${UI.COLOR_BLUE_100_PRIMARY})`,
     textColor: Color.cowfi_darkBlue5,
     titleColor: `var(${UI.COLOR_BLUE_900_PRIMARY})`,
     title: 'Execute multiple trades at once',
@@ -173,7 +173,7 @@ export const FAQ_DATA = [
           Coincidences of Wants
         </Link>{' '}
         (CoWs) to settle the order. CoW Swap is the leader among intent-based trading protocols by transaction volume
-        and currently operates on Ethereum, Arbitrum One, and Gnosis Chain.
+        and currently operates on Ethereum, Base, Arbitrum One, Avalanche, Gnosis Chain, and Polygon.
       </>
     ),
   },

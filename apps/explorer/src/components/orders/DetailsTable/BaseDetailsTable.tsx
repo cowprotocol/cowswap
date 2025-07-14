@@ -13,7 +13,6 @@ import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import { SimpleTable } from 'components/common/SimpleTable'
 import Spinner from 'components/common/Spinner'
 import { AmountsDisplay } from 'components/orders/AmountsDisplay'
-import { GasFeeDisplay } from 'components/orders/GasFeeDisplay'
 import { StatusLabel } from 'components/orders/StatusLabel'
 import { HelpTooltip } from 'components/Tooltip'
 import { TAB_QUERY_PARAM_KEY } from 'explorer/const'
@@ -24,8 +23,8 @@ import { Order } from 'api/operator'
 import { ExplorerCategory } from 'common/analytics/types'
 import { getUiOrderType } from 'utils/getUiOrderType'
 
+import { DetailsTableTooltips } from './detailsTableTooltips'
 import { LinkButton, Wrapper, WarningRow } from './styled'
-import { tooltip } from './tooltips'
 
 import { UnsignedOrderWarning } from '../UnsignedOrderWarning'
 
@@ -40,7 +39,7 @@ export interface BaseDetailsTableProps {
 // Foundation component with core order information that every order detail view needs
 // TODO: Break down this large function into smaller functions
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, complexity
+// eslint-disable-next-line max-lines-per-function
 export function BaseDetailsTable({
   chainId,
   order,
@@ -58,6 +57,7 @@ export function BaseDetailsTable({
     partiallyFillable,
     creationDate,
     executionDate,
+    expirationDate,
     status,
     partiallyFilled,
     buyToken,
@@ -92,7 +92,7 @@ export function BaseDetailsTable({
           <tr>
             <td>
               <span>
-                <HelpTooltip tooltip={tooltip.orderID} /> Order Id
+                <HelpTooltip tooltip={DetailsTableTooltips.orderID} /> Order Id
               </span>
             </td>
             <td>
@@ -106,7 +106,7 @@ export function BaseDetailsTable({
           <tr>
             <td>
               <span>
-                <HelpTooltip tooltip={tooltip.from} /> From
+                <HelpTooltip tooltip={DetailsTableTooltips.from} /> From
               </span>
             </td>
             <td>
@@ -136,7 +136,7 @@ export function BaseDetailsTable({
           <tr>
             <td>
               <span>
-                <HelpTooltip tooltip={tooltip.to} /> To
+                <HelpTooltip tooltip={DetailsTableTooltips.to} /> To
               </span>
             </td>
             <td>
@@ -161,7 +161,7 @@ export function BaseDetailsTable({
             <tr>
               <td>
                 <span>
-                  <HelpTooltip tooltip={tooltip.hash} /> Transaction hash
+                  <HelpTooltip tooltip={DetailsTableTooltips.hash} /> Transaction hash
                 </span>
               </td>
               <td>
@@ -200,7 +200,7 @@ export function BaseDetailsTable({
           <tr>
             <td>
               <span>
-                <HelpTooltip tooltip={tooltip.status} /> Status
+                <HelpTooltip tooltip={DetailsTableTooltips.status} /> Status
               </span>
             </td>
             <td>
@@ -210,7 +210,7 @@ export function BaseDetailsTable({
           <tr>
             <td>
               <span>
-                <HelpTooltip tooltip={tooltip.submission} /> Submission Time
+                <HelpTooltip tooltip={DetailsTableTooltips.submission} /> Submission Time
               </span>
             </td>
             <td>
@@ -221,7 +221,7 @@ export function BaseDetailsTable({
             <tr>
               <td>
                 <span>
-                  <HelpTooltip tooltip={tooltip.execution} /> Execution Time
+                  <HelpTooltip tooltip={DetailsTableTooltips.execution} /> Execution Time
                 </span>
               </td>
               <td>
@@ -232,7 +232,17 @@ export function BaseDetailsTable({
           <tr>
             <td>
               <span>
-                <HelpTooltip tooltip={tooltip.type} /> Type
+                <HelpTooltip tooltip={DetailsTableTooltips.expiration} /> Expiration Time
+              </span>
+            </td>
+            <td>
+              <DateDisplay date={expirationDate} showIcon={true} />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <span>
+                <HelpTooltip tooltip={DetailsTableTooltips.type} /> Type
               </span>
             </td>
             <td>
@@ -243,7 +253,7 @@ export function BaseDetailsTable({
           <tr>
             <td>
               <span>
-                <HelpTooltip tooltip={tooltip.amount} /> Amount
+                <HelpTooltip tooltip={DetailsTableTooltips.amount} /> Amount
               </span>
             </td>
             <td>
@@ -251,16 +261,6 @@ export function BaseDetailsTable({
             </td>
           </tr>
           {children}
-          <tr>
-            <td>
-              <span>
-                <HelpTooltip tooltip={tooltip.fees} /> Costs &amp; Fees
-              </span>
-            </td>
-            <td>
-              <GasFeeDisplay order={order} />
-            </td>
-          </tr>
         </>
       }
     />

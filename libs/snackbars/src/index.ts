@@ -1,5 +1,6 @@
 export * from './containers/SnackbarsWidget'
 export * from './state/snackbarsAtom'
 export * from './hooks/useAddSnackbar'
+export * from './hooks/useRemoveSnackbar'
 export { addSnackbarAtom } from './state/snackbarsAtom'
 export { SnackbarPopup } from './pure/SnackbarPopup'

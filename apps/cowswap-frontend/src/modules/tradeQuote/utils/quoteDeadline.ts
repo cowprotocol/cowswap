@@ -1,8 +1,11 @@
 import { MAX_VALID_TO_EPOCH } from '@cowprotocol/common-utils'
+import { PriceQuality } from '@cowprotocol/cow-sdk'
+
+import ms from 'ms.macro'
 
 import { TradeQuoteState } from '../state/tradeQuoteAtom'
 
-const EXPIRATION_TIME_THRESHOLD = 5 // 5 seconds
+const MAX_EXPIRATION_TIME = ms`1min`
 
 /**
  * Because local time can be different from the server time, we need to calculate time offset and take it into account
@@ -11,7 +14,8 @@ const EXPIRATION_TIME_THRESHOLD = 5 // 5 seconds
  * deadlineParams the deadline parameters for the quote
  */
 export function isQuoteExpired(state: TradeQuoteState): boolean | undefined {
-  if (!state.quote) return undefined
+  if (!state.quote || !state.localQuoteTimestamp || state.fetchParams?.priceQuality === PriceQuality.FAST)
+    return undefined
 
   const { expiration } = state.quote.quoteResults.quoteResponse
 
@@ -21,13 +25,17 @@ export function isQuoteExpired(state: TradeQuoteState): boolean | undefined {
     return undefined
   }
 
-  const expirationTime = new Date(expiration).getTime()
-  const delta = (expirationTime - Date.now()) / 1000
+  const quoteExpirationTime = new Date(expiration).getTime()
+  const maxExpirationTime = new Date(state.localQuoteTimestamp * 1000).getTime() + MAX_EXPIRATION_TIME
+  const expirationTime = Math.min(quoteExpirationTime, maxExpirationTime)
+
+  const now = Date.now()
+  const delta = (expirationTime - now) / 1000
 
   /**
    * The difference between the expiration time and the current time (including 5 sec threshold)
    */
-  return delta + timeOffset - EXPIRATION_TIME_THRESHOLD < 0
+  return delta + timeOffset < 0
 }
 
 /**

@@ -7,10 +7,8 @@ export const RouteHeader = styled.div`
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  padding: 3px 0;
-  color: var(${UI.COLOR_TEXT_OPACITY_70});
+  color: inherit;
   border-radius: var(${UI.BORDER_RADIUS_NORMAL});
-  margin-bottom: 4px;
 `
 
 export const ClickableRouteHeader = styled(RouteHeader)`

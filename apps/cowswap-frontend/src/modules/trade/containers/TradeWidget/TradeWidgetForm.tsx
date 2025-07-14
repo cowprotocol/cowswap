@@ -35,10 +35,12 @@ import { TradeWidgetProps } from './types'
 import { useTradeStateFromUrl } from '../../hooks/setupTradeState/useTradeStateFromUrl'
 import { useIsCurrentTradeBridging } from '../../hooks/useIsCurrentTradeBridging'
 import { useIsEoaEthFlow } from '../../hooks/useIsEoaEthFlow'
+import { useIsQuoteUpdatePossible } from '../../hooks/useIsQuoteUpdatePossible'
 import { useIsWrapOrUnwrap } from '../../hooks/useIsWrapOrUnwrap'
 import { useLimitOrdersPromoBanner } from '../../hooks/useLimitOrdersPromoBanner'
 import { SetRecipient } from '../../pure/SetRecipient'
 import { LimitOrdersPromoBannerWrapper } from '../LimitOrdersPromoBannerWrapper'
+import { QuotePolingProgress } from '../QuotePolingProgress'
 import { TradeWarnings } from '../TradeWarnings'
 import { TradeWidgetLinks } from '../TradeWidgetLinks'
 import { WrapFlowActionButton } from '../WrapFlowActionButton'
@@ -84,6 +86,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
     displayChainName = isBridgingEnabled && isCurrentTradeBridging,
     isMarketOrderWidget = false,
     isSellingEthSupported = false,
+    isPriceStatic = false,
   } = params
 
   const inputCurrencyInfo = useMemo(
@@ -109,6 +112,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
   const primaryFormValidation = useGetTradeFormValidation()
   const { shouldBeVisible: isLimitOrdersPromoBannerVisible } = useLimitOrdersPromoBanner()
   const isEoaEthFlow = useIsEoaEthFlow()
+  const isQuoteUpdatePossible = useIsQuoteUpdatePossible()
 
   const sellToken = inputCurrencyInfo.currency
   const buyToken = outputCurrencyInfo.currency
@@ -195,7 +199,14 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
             </ButtonOutlined>
           )}
 
-          {!lockScreen && settingsWidget}
+          <styledEl.HeaderRight>
+            {!lockScreen && (
+              <>
+                {!isPriceStatic && !showDropdown && isQuoteUpdatePossible && <QuotePolingProgress />}
+                {settingsWidget}
+              </>
+            )}
+          </styledEl.HeaderRight>
         </styledEl.Header>
 
         <LimitOrdersPromoBannerWrapper>

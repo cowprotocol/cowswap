@@ -1,5 +1,5 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { useCallback, useEffect } from 'react'
+import { ReactNode, useCallback, useEffect } from 'react'
 
 import { Media, UI } from '@cowprotocol/ui'
 import { useWalletDetails } from '@cowprotocol/wallet'
@@ -86,9 +86,7 @@ const CancelAllButton = styled(TextButton)`
   }
 `
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function MultipleCancellationMenu({ pendingOrders }: Props) {
+export function MultipleCancellationMenu({ pendingOrders }: Props): ReactNode {
   const { allowsOffchainSigning } = useWalletDetails()
   const ordersToCancel = useAtomValue(ordersToCancelAtom)
   const updateOrdersToCancel = useSetAtom(updateOrdersToCancelAtom)

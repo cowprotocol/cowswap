@@ -1,4 +1,4 @@
-import { DEFAULT_APP_CODE, ZERO_ADDRESS } from '@cowprotocol/common-const'
+import { DEFAULT_APP_CODE } from '@cowprotocol/common-const'
 import { useDebounce } from '@cowprotocol/common-hooks'
 import { getCurrencyAddress, isAddress } from '@cowprotocol/common-utils'
 import { QuoteBridgeRequest } from '@cowprotocol/cow-sdk'
@@ -18,6 +18,8 @@ import { useVolumeFee } from 'modules/volumeFee'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
+import { BRIDGE_QUOTE_ACCOUNT, getBridgeQuoteSigner } from '../utils/getBridgeQuoteSigner'
+
 const DEFAULT_QUOTE_TTL = ms`30m` / 1000
 const AMOUNT_CHANGE_DEBOUNCE_TIME = ms`350ms`
 
@@ -27,8 +29,6 @@ export interface QuoteParams {
   appData: AppDataInfo['doc'] | undefined
 }
 
-// TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
 export function useQuoteParams(amount: Nullish<string>, partiallyFillable = false): QuoteParams | undefined {
   const { account } = useWalletInfo()
   const provider = useWalletProvider()
@@ -45,7 +45,6 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
 
   const receiver = recipientAddress && isAddress(recipientAddress) ? recipientAddress : account
 
-  // TODO: Reduce function complexity by extracting logic
   // eslint-disable-next-line complexity
   const params = useSafeMemo(() => {
     if (isWrapOrUnwrap || isProviderNetworkUnsupported) return
@@ -67,7 +66,14 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
       }
     }
 
-    const owner = (account || ZERO_ADDRESS) as `0x${string}`
+    /**
+     * BridgingSDK validates route, and they need a wallet for that, so we should provide a hardcoded wallet
+     * Whe real one is not connected
+     * See `SocketVerifier.callStatic.validateRotueId` in BridgingSDK
+     */
+    const signer = account ? provider.provider || provider.getSigner() : getBridgeQuoteSigner(inputCurrency.chainId)
+    const owner = (account || BRIDGE_QUOTE_ACCOUNT) as `0x${string}`
+
     const quoteParams: QuoteBridgeRequest = {
       kind: orderKind,
       amount: BigInt(amount),
@@ -83,7 +89,7 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
 
       account: owner,
       appCode,
-      signer: provider.provider || provider.getSigner(),
+      signer,
 
       receiver,
       validFor: DEFAULT_QUOTE_TTL,

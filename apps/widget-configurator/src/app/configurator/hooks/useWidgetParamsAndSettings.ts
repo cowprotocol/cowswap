@@ -5,15 +5,19 @@ import { CowSwapWidgetParams, TradeType } from '@cowprotocol/widget-lib'
 import { isDev, isLocalHost, isVercel } from '../../../env'
 import { ConfiguratorState } from '../types'
 
+const vercelSuffix = '-cowswap-dev.vercel.app'
+
 const getBaseUrl = (): string => {
   if (typeof window === 'undefined' || !window) return ''
 
   if (isLocalHost) return 'http://localhost:3000'
-  if (isDev) return 'https://dev.swap.cow.fi'
-  if (isVercel) {
-    const prKey = window.location.hostname.replace('widget-configurator-git-', '').replace('-cowswap.vercel.app', '')
 
-    return `https://swap-dev-git-${prKey}-cowswap-dev.vercel.app`
+  if (isDev) return 'https://dev.swap.cow.fi'
+
+  if (isVercel) {
+    const prKey = window.location.hostname.replace('widget-configurator-git-', '').replace(vercelSuffix, '')
+
+    return `https://swap-dev-git-${prKey}${vercelSuffix}`
   }
 
   return 'https://swap.cow.fi'
@@ -25,7 +29,7 @@ const DEFAULT_BASE_URL = getBaseUrl()
 // eslint-disable-next-line max-lines-per-function
 export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWidgetParams {
   // TODO: Break down this large function into smaller functions
-  // eslint-disable-next-line max-lines-per-function
+
   return useMemo(() => {
     const {
       chainId,
@@ -50,6 +54,7 @@ export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWi
       disableProgressBar,
       hideBridgeInfo,
       hideOrdersTable,
+      slippage,
     } = configuratorState
 
     const themeColors = {
@@ -105,6 +110,7 @@ export function useWidgetParams(configuratorState: ConfiguratorState): CowSwapWi
           : undefined,
       hideBridgeInfo,
       hideOrdersTable,
+      slippage
     }
 
     return params

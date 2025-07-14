@@ -137,5 +137,20 @@
       "walletCompatibility": ["EOA"],
       "supportedNetworks": [1, 42161, 11155111, 8453]
     }
+  },
+  "MORPHO_BORROW": {
+    "name": "Morpho Borrow",
+    "type": "IFRAME",
+    "descriptionShort": "Supply collateral, borrow, repay and withdraw collateral on Morpho Protocol.",
+    "description": "The Morpho Borrow hook enables users to seamlessly combine swaps with borrow-related actions. Users can enter new positions, leave existing ones, or move between different markets through a unified, streamlined process.",
+    "version": "0.0.1",
+    "website": "https://app.morpho.org/",
+    "image": "https://cow-hooks-dapps-morpho-lending.vercel.app/icon.png",
+    "url": "https://cow-hooks-dapps-morpho-lending.vercel.app/",
+    "conditions": {
+      "walletCompatibility": ["EOA"],
+      "supportedNetworks": [1, 137, 8453],
+      "smartContractWalletSupported": false
+    }
   }
 }

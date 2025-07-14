@@ -7,7 +7,7 @@ import { TransactionsTableWithData } from './TransactionsTableWithData'
 
 import { Order } from '../../../api/operator'
 import { BlockExplorerLink } from '../../../components/common/BlockExplorerLink'
-import CowLoading from '../../../components/common/CowLoading'
+import { LoadingWrapper } from '../../../components/common/LoadingWrapper'
 import { TabIcon, TabItemInterface } from '../../../components/common/Tabs/Tabs'
 import { ConnectionStatus } from '../../../components/ConnectionStatus'
 import { Notification } from '../../../components/Notification'
@@ -98,7 +98,7 @@ export const TransactionsTableWidget: React.FC<Props> = ({ txHash }) => {
   }
 
   if (!orders?.length) {
-    return <CowLoading />
+    return <LoadingWrapper message="Loading transaction details" />
   }
 
   return (

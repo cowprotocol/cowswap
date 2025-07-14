@@ -1,5 +1,32 @@
 # Changelog
 
+## [1.15.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.14.1...widget-configurator-v1.15.0) (2025-07-10)
+
+
+### Features
+
+* **trade:** slippage config for integrators ([#5906](https://github.com/cowprotocol/cowswap/issues/5906)) ([cbfa3b1](https://github.com/cowprotocol/cowswap/commit/cbfa3b142571df7bdf55919b8ae6df986017aeab))
+
+## [1.14.1](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.14.0...widget-configurator-v1.14.1) (2025-06-27)
+
+
+### Bug Fixes
+
+* **partner-fee:** update fee address ([#5896](https://github.com/cowprotocol/cowswap/issues/5896)) ([fc40661](https://github.com/cowprotocol/cowswap/commit/fc406616261ed1c77c6ee663ab9cc5e2f671232f))
+
+## [1.14.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.13.2...widget-configurator-v1.14.0) (2025-06-18)
+
+
+### Features
+
+* **new-networks:** add support to `Avalanche` and `Polygon` networks ([#5715](https://github.com/cowprotocol/cowswap/issues/5715)) ([e3e8a8d](https://github.com/cowprotocol/cowswap/commit/e3e8a8d6b94569a5dda7a425d1a79f0b4f6d5200))
+
+
+### Bug Fixes
+
+* make order progress bar UI more stable ([#5834](https://github.com/cowprotocol/cowswap/issues/5834)) ([80cebd1](https://github.com/cowprotocol/cowswap/commit/80cebd1104a0a2e30e12ce8a4b3d62c212559cec))
+* **widget:** do not request wallet capabilities for wallet-connect ([#5823](https://github.com/cowprotocol/cowswap/issues/5823)) ([49f22ad](https://github.com/cowprotocol/cowswap/commit/49f22ade0da4ffe95aaa11a6265cd4eeaf339e08))
+
 ## [1.13.2](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.13.1...widget-configurator-v1.13.2) (2025-05-19)
 
 

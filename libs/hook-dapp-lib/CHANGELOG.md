@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.0](https://github.com/cowprotocol/cowswap/compare/hook-dapp-lib-v1.7.1...hook-dapp-lib-v1.8.0) (2025-07-03)
+
+
+### Features
+
+* **hooks:** add Morpho Lending hook to registry ([#5646](https://github.com/cowprotocol/cowswap/issues/5646)) ([198db52](https://github.com/cowprotocol/cowswap/commit/198db528011ebaf4c2787be1d3413e2e105d2125))
+
 ## [1.7.1](https://github.com/cowprotocol/cowswap/compare/hook-dapp-lib-v1.7.0...hook-dapp-lib-v1.7.1) (2025-05-16)
 
 

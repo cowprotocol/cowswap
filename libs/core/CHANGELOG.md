@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.7.4](https://github.com/cowprotocol/cowswap/compare/core-v1.7.3...core-v1.7.4) (2025-07-03)
+
+
+### Bug Fixes
+
+* **progress-bar:** ignore active solvers flag from CMS ([#5905](https://github.com/cowprotocol/cowswap/issues/5905)) ([0af9abb](https://github.com/cowprotocol/cowswap/commit/0af9abb54abba01f0a19e3389c812d0210bde3ca))
+
+## [1.7.3](https://github.com/cowprotocol/cowswap/compare/core-v1.7.2...core-v1.7.3) (2025-06-18)
+
+
+### Bug Fixes
+
+* reduce rerenders count and theme recalculation ([#5831](https://github.com/cowprotocol/cowswap/issues/5831)) ([96a7a35](https://github.com/cowprotocol/cowswap/commit/96a7a350f366615a1e5149097541b5e2ccf880f1))
+
 ## [1.7.2](https://github.com/cowprotocol/cowswap/compare/core-v1.7.1...core-v1.7.2) (2025-05-29)
 
 
