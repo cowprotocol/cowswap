@@ -33,6 +33,9 @@ export function RouteOverviewTitle({
             <>
               Your trade will be executed in 2 stops. First, you swap on <b>CoW Protocol (Stop 1)</b>, then you bridge
               via <b>{providerInfo.name} (Stop 2)</b>.
+              <br />
+              <br />
+              Bridging features are exclusively operated by third parties. Please review their terms.
             </>
           }
           size={14}
