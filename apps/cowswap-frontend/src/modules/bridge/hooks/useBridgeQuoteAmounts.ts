@@ -10,8 +10,8 @@ import { useGetMaybeIntermediateToken } from './useGetMaybeIntermediateToken'
 export interface BridgeQuoteAmounts<Amount = CurrencyAmount<Currency>> {
   swapSellAmount: Amount
   swapBuyAmount: Amount
-  swapMinReceiveAmount: Amount
-  bridgeMinReceiveAmount: Amount
+  swapMinReceiveAmount: Amount // that should be moved on bridge (before sending to user)
+  bridgeMinReceiveAmount: Amount // that should be moved to user
   bridgeFee: Amount
 }
 
