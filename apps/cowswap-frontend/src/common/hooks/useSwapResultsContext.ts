@@ -8,8 +8,7 @@ import type { Order } from 'legacy/state/orders/actions'
 import type { SwapResultContext } from 'modules/bridge/types'
 import { useUsdAmount } from 'modules/usdAmount'
 
-import { getExecutedSummaryData } from 'utils/getExecutedSummaryData'
-
+import { useGetExecutedBridgeSummary } from './useGetExecutedBridgeSummary'
 import { useSafeMemo } from './useSafeMemo'
 
 import type { SolverCompetition } from '../types/soverCompetition'
@@ -19,9 +18,7 @@ export function useSwapResultsContext(
   winningSolver: SolverCompetition | undefined,
   intermediateToken: TokenWithLogo | undefined,
 ): SwapResultContext | undefined {
-  const executedSummary = useMemo(() => {
-    return order ? getExecutedSummaryData(order) : undefined
-  }, [order])
+  const executedSummary = useGetExecutedBridgeSummary(order)
 
   const { swappedAmountWithFee, surplusAmount } = executedSummary || {}
 

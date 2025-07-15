@@ -1,30 +1,36 @@
 import { useSetAtom } from 'jotai/index'
 import { useCallback } from 'react'
 
+import { BridgeStatusResult } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { BridgeOrderData } from 'common/types/bridge'
+import { bridgeOrdersAtom } from '../state/bridgeOrdersAtom'
 
-import { bridgeOrdersAtom } from './bridgeOrdersAtom'
-
-export function useAddBridgeOrder(): (order: BridgeOrderData) => void {
+export function useUpdateBridgeOrderQuote(): (orderUid: string, statusResult: BridgeStatusResult) => void {
   const { chainId, account } = useWalletInfo()
   const setBridgeOrders = useSetAtom(bridgeOrdersAtom)
 
   return useCallback(
-    (order: BridgeOrderData) => {
+    (orderUid: string, statusResult: BridgeStatusResult) => {
       if (!account) return
 
       setBridgeOrders((state) => {
         const orders = state[chainId]?.[account] || []
 
-        orders.push(order)
-
         return {
           ...state,
           [chainId]: {
             ...state[chainId],
-            [account]: orders,
+            [account]: orders.map((order) => {
+              if (order.orderUid === orderUid) {
+                return {
+                  ...order,
+                  statusResult,
+                }
+              }
+
+              return order
+            }),
           },
         }
       })

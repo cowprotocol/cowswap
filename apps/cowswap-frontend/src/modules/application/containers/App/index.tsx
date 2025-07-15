@@ -3,6 +3,8 @@ import { ReactNode, Suspense } from 'react'
 import ErrorBoundary from 'legacy/components/ErrorBoundary'
 import { TopLevelModals } from 'legacy/components/TopLevelModals'
 
+import { InvalidCoWShedSetup } from 'modules/cowShed'
+
 import { LoadingApp } from 'common/pure/LoadingApp'
 import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
 
@@ -15,6 +17,7 @@ export function App(): ReactNode {
     <ErrorBoundary>
       <Suspense fallback={<LoadingApp />}>
         <RedirectAnySwapAffectedUsers />
+        <InvalidCoWShedSetup />
 
         <AppContainer>
           <TopLevelModals />
