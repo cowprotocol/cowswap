@@ -9,6 +9,7 @@ import { UiOrderType } from '@cowprotocol/types'
 import { BannerOrientation, ExternalLink, Icon, IconType, TokenAmount, UI } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
+import { useBridgeOrderData, BRIDGING_FINAL_STATUSES } from 'entities/bridgeOrders'
 import { useAddOrderToSurplusQueue } from 'entities/surplusModal'
 
 import { getActivityState } from 'legacy/hooks/useActivityDerivedState'
@@ -51,8 +52,6 @@ import {
   TransactionState as ActivityLink,
 } from './styled'
 
-import { useBridgeOrderData } from '../../../../entities/bridgeOrders'
-import { BRIDGING_FINAL_STATUSES } from '../../../../entities/bridgeOrders/useCrossChainOrder'
 import { BridgeOrderLoading } from '../../pure/BridgeOrderLoading'
 
 const DEFAULT_ORDER_SUMMARY = {
