@@ -4,9 +4,9 @@ import { getJotaiIsolatedStorage } from '@cowprotocol/core'
 import { mapSupportedNetworks } from '@cowprotocol/cow-sdk'
 import type { PersistentStateByChainAccount } from '@cowprotocol/types'
 
-import { BridgeOrderQuoteData } from 'common/types/bridge'
+import { BridgeOrderData } from 'common/types/bridge'
 
-export type BridgeOrdersState = PersistentStateByChainAccount<BridgeOrderQuoteData[]>
+export type BridgeOrdersState = PersistentStateByChainAccount<BridgeOrderData[]>
 
 export const bridgeOrderQuoteAtom = atomWithStorage<BridgeOrdersState>(
   'bridgeOrdersAtom:v0',

@@ -13,6 +13,7 @@ import { TradingSdkUpdater } from 'tradingSdk/TradingSdkUpdater'
 
 import { UploadToIpfsUpdater } from 'modules/appData/updater/UploadToIpfsUpdater'
 import { CommonPriorityBalancesAndAllowancesUpdater } from 'modules/balancesAndAllowances'
+import { PendingBridgeOrdersUpdater } from 'modules/bridge'
 import { BalancesCombinedUpdater } from 'modules/combinedBalances/updater/BalancesCombinedUpdater'
 import { InFlightOrderFinalizeUpdater } from 'modules/ethFlow'
 import { CowEventsUpdater, InjectedWidgetUpdater, useInjectedWidgetParams } from 'modules/injectedWidget'
@@ -45,8 +46,6 @@ import { SolversInfoUpdater } from 'common/updaters/SolversInfoUpdater'
 import { ThemeFromUrlUpdater } from 'common/updaters/ThemeFromUrlUpdater'
 import { UserUpdater } from 'common/updaters/UserUpdater'
 import { WidgetTokensUpdater } from 'common/updaters/WidgetTokensUpdater'
-
-import { PendingBridgeOrdersUpdater } from '../../../bridge/updaters/PendingBridgeOrdersUpdater'
 
 export function Updaters(): ReactNode {
   const { account } = useWalletInfo()

@@ -3,16 +3,16 @@ import { useCallback } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { BridgeOrderQuoteData } from 'common/types/bridge'
+import { BridgeOrderData } from 'common/types/bridge'
 
 import { bridgeOrderQuoteAtom } from './bridgeOrderQuoteAtom'
 
-export function useAddBridgeOrderQuote(): (order: BridgeOrderQuoteData) => void {
+export function useAddBridgeOrderQuote(): (order: BridgeOrderData) => void {
   const { chainId, account } = useWalletInfo()
   const setBridgeOrders = useSetAtom(bridgeOrderQuoteAtom)
 
   return useCallback(
-    (order: BridgeOrderQuoteData) => {
+    (order: BridgeOrderData) => {
       if (!account) return
 
       setBridgeOrders((state) => {
