@@ -1,7 +1,5 @@
 import { useMemo } from 'react'
 
-import { BridgeQuoteAmounts } from 'common/types/bridge'
-
 import { useBridgeOrders } from './useBridgeOrders'
 
 export function useBridgeOrderQuoteAmounts(orderUid: string | undefined): BridgeQuoteAmounts | undefined {

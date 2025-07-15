@@ -1,9 +1,8 @@
 import { useSetAtom } from 'jotai/index'
 import { useCallback } from 'react'
 
+import { BridgeOrderData } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
-
-import { BridgeOrderData } from 'common/types/bridge'
 
 import { bridgeOrderQuoteAtom } from './bridgeOrderQuoteAtom'
 

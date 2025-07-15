@@ -1,5 +1,5 @@
-import { BridgeStatusResult } from '@cowprotocol/cow-sdk'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import type { BridgeStatusResult } from '@cowprotocol/cow-sdk'
+import type { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 export interface BridgeQuoteAmounts<Amount = CurrencyAmount<Currency>> {
   swapSellAmount: Amount
