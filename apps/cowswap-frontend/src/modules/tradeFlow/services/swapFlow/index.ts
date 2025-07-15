@@ -31,8 +31,9 @@ export async function swapFlow(
 ): Promise<void | boolean> {
   const {
     tradeConfirmActions,
-    callbacks: { getCachedPermit },
+    callbacks: { getCachedPermit, addBridgeOrder },
     tradeQuote,
+    bridgeQuoteAmounts,
   } = input
 
   const {
@@ -132,6 +133,14 @@ export async function swapFlow(
       },
     })
 
+    if (bridgeQuoteAmounts) {
+      addBridgeOrder({
+        orderUid: orderId,
+        amounts: bridgeQuoteAmounts,
+        creationTimestamp: Date.now(),
+      })
+    }
+
     addPendingOrderStep(
       {
         id: orderId,
@@ -177,8 +186,8 @@ export async function swapFlow(
     analytics.sign(swapFlowAnalyticsContext)
 
     return true
-  // TODO: Replace any with proper type definitions
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // TODO: Replace any with proper type definitions
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     logTradeFlow('SWAP FLOW', 'STEP 8: ERROR: ', error)
     const swapErrorMessage = getSwapErrorMessage(error)
