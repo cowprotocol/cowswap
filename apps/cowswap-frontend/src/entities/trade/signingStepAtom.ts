@@ -3,7 +3,7 @@ import { atom } from 'jotai'
 export enum SigningSteps {
   PermitSigning = 'PermitSigning',
   BridgingSigning = 'BridgingSigning',
-  OrderSigning = 'BridgingSign',
+  OrderSigning = 'OrderSigning',
 }
 
 export interface SigningStepState {

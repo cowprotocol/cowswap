@@ -30,10 +30,15 @@ export function ConfirmButton(props: ConfirmButtonProps): ReactNode {
     }
 
     setIsConfirmClicked(true)
-    const isConfirmed = await onConfirm()
+    try {
+      const isConfirmed = await onConfirm()
 
-    if (!isConfirmed) {
+      if (!isConfirmed) {
+        setIsConfirmClicked(false)
+      }
+    } catch (error) {
       setIsConfirmClicked(false)
+      throw error
     }
   }
 
