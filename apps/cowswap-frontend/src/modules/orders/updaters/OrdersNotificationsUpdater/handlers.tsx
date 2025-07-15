@@ -45,7 +45,7 @@ export const ORDERS_NOTIFICATION_HANDLERS: Record<CowWidgetEvents, OrdersNotific
   [CowWidgetEvents.ON_FULFILLED_ORDER]: {
     icon: 'success',
     handler: (payload: OnFulfilledOrderPayload) => {
-      const { chainId, order } = payload
+      const { chainId, order, bridgeOrder } = payload
 
       return (
         <OrderNotification
@@ -53,6 +53,7 @@ export const ORDERS_NOTIFICATION_HANDLERS: Record<CowWidgetEvents, OrdersNotific
           chainId={chainId}
           orderType={getUiOrderType(order)}
           orderUid={order.uid}
+          bridgeOrder={bridgeOrder}
           messageType={ToastMessageType.ORDER_FULFILLED}
         >
           <FulfilledOrderInfo chainId={chainId} orderUid={order.uid} />

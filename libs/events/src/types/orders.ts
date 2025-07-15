@@ -1,5 +1,5 @@
 import type { EnrichedOrder, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
-import type { TokenInfo, UiOrderType } from '@cowprotocol/types'
+import { BridgeOrderDataSerialized, TokenInfo, UiOrderType } from '@cowprotocol/types'
 
 export type BaseOrderPayload = {
   chainId: SupportedChainId
@@ -21,7 +21,9 @@ export type OnPostedOrderPayload = {
   isEthFlow?: boolean
 }
 
-export type OnFulfilledOrderPayload = BaseOrderPayload
+export type OnFulfilledOrderPayload = BaseOrderPayload & {
+  bridgeOrder?: BridgeOrderDataSerialized
+}
 
 export type OnCancelledOrderPayload = BaseOrderPayload & {
   transactionHash?: string

@@ -4,7 +4,7 @@ import { shortenOrderId } from '@cowprotocol/common-utils'
 import { EnrichedOrder, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ToastMessageType } from '@cowprotocol/events'
 import { useTokensByAddressMap } from '@cowprotocol/tokens'
-import { TokenInfo, UiOrderType } from '@cowprotocol/types'
+import { BridgeOrderDataSerialized, TokenInfo, UiOrderType } from '@cowprotocol/types'
 
 import { useOrder } from 'legacy/state/orders/hooks'
 
@@ -26,6 +26,7 @@ export interface BaseOrderNotificationProps {
   chainId: SupportedChainId
   orderUid: string
   orderType: UiOrderType
+  bridgeOrder?: BridgeOrderDataSerialized
   orderInfo?: OrderInfo | EnrichedOrder
   transactionHash?: string
   isEthFlow?: boolean
@@ -33,7 +34,18 @@ export interface BaseOrderNotificationProps {
 }
 
 export function OrderNotification(props: BaseOrderNotificationProps): ReactNode {
-  const { title, orderUid, orderType, transactionHash, chainId, messageType, children, orderInfo, isEthFlow } = props
+  const {
+    title,
+    orderUid,
+    orderType,
+    transactionHash,
+    chainId,
+    messageType,
+    children,
+    orderInfo,
+    bridgeOrder,
+    isEthFlow,
+  } = props
 
   const allTokens = useTokensByAddressMap()
 
@@ -83,7 +95,7 @@ export function OrderNotification(props: BaseOrderNotificationProps): ReactNode 
               buyAmount={order.outputAmount.toString()}
             />
           ) : null)}
-        <ReceiverInfo receiver={order.receiver} owner={order.owner} />
+        <ReceiverInfo receiver={bridgeOrder?.recipient || order.receiver} owner={order.owner} />
       </div>
     </TransactionContentWithLink>
   )

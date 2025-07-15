@@ -14,6 +14,6 @@ export function useBridgeOrders(): BridgeOrderData[] | undefined {
   return useMemo(() => {
     if (!account) return undefined
 
-    return bridgeOrderQuote[chainId]?.[account]
+    return bridgeOrderQuote[chainId]?.[account.toLowerCase()]
   }, [bridgeOrderQuote, chainId, account])
 }

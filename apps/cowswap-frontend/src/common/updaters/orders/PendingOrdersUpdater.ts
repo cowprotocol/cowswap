@@ -7,6 +7,7 @@ import { Command, UiOrderType } from '@cowprotocol/types'
 import { GnosisSafeInfo, useGnosisSafeInfo, useWalletInfo } from '@cowprotocol/wallet'
 
 import { isOrderInPendingTooLong, triggerAppziSurvey } from 'appzi'
+import { useBridgeOrdersSerializedMap } from 'entities/bridgeOrders'
 import { useAddOrderToSurplusQueue } from 'entities/surplusModal'
 
 import { GetSafeTxInfo, useGetSafeTxInfo } from 'legacy/hooks/useGetSafeTxInfo'
@@ -414,19 +415,24 @@ export function PendingOrdersUpdater(): null {
   const updatePresignGnosisSafeTx = useUpdatePresignGnosisSafeTx()
   const allTransactions = useAllTransactions()
   const getSafeTxInfo = useGetSafeTxInfo()
+  const bridgeOrdersMap = useBridgeOrdersSerializedMap()
 
   const fulfillOrdersBatch = useCallback(
     (fulfillOrdersBatchParams: FulfillOrdersBatchParams) => {
+      if (!account) return
+
       _fulfillOrdersBatch(fulfillOrdersBatchParams)
 
       fulfillOrdersBatchParams.orders.forEach((order) => {
-        emitFulfilledOrderEvent(chainId, order)
+        const bridgeOrders = bridgeOrdersMap[chainId]?.[account.toLowerCase()]
+        const bridgeOrder = bridgeOrders?.find((i) => i.orderUid === order.uid)
+        emitFulfilledOrderEvent(chainId, order, bridgeOrder)
       })
 
       // Remove orders from the cancelling queue (marked by checkbox in the orders table)
       removeOrdersToCancel(fulfillOrdersBatchParams.orders.map(({ uid }) => uid))
     },
-    [chainId, _fulfillOrdersBatch, removeOrdersToCancel],
+    [chainId, account, _fulfillOrdersBatch, removeOrdersToCancel, bridgeOrdersMap],
   )
 
   const updateOrders = useCallback(
