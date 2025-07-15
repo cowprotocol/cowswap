@@ -7,8 +7,9 @@ import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import type { AppDataInfo } from 'modules/appData'
 
 import { OrderHooksDetails } from 'common/containers/OrderHooksDetails'
-import { CurrencyAmountPreview, CurrencyPreviewInfo } from 'common/pure/CurrencyInputPanel'
+import { CurrencyPreviewInfo } from 'common/pure/CurrencyInputPanel'
 
+import { ConfirmAmounts } from './ConfirmAmounts'
 import { ConfirmButton } from './ConfirmButton'
 import { ConfirmWarnings } from './ConfirmWarnings'
 import { QuoteCountdown } from './CountDown'
@@ -37,31 +38,29 @@ export interface TradeConfirmationProps {
   children?: (restContent: ReactElement) => ReactElement
 }
 
-export function TradeConfirmation(props: TradeConfirmationProps): ReactNode {
+export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
   const { pendingTrade, forcePriceConfirmation } = useTradeConfirmState()
 
-  const propsRef = useRef(props)
-  propsRef.current = props
+  const propsRef = useRef(_props)
+  propsRef.current = _props
 
   const [frozenProps, setFrozenProps] = useState<TradeConfirmationProps | null>(null)
   const hasPendingTrade = !!pendingTrade
 
+  const props = frozenProps || _props
   const {
     onConfirm,
     onDismiss,
     account,
     ensName,
-    inputCurrencyInfo,
-    outputCurrencyInfo,
     isConfirmDisabled,
-    priceImpact,
     title,
     buttonText = 'Confirm',
     children,
     recipient,
     isPriceStatic,
     appData,
-  } = frozenProps || props
+  } = props
 
   /**
    * Once user sends a transaction, we keep the confirmation content frozen
@@ -71,8 +70,8 @@ export function TradeConfirmation(props: TradeConfirmationProps): ReactNode {
   }, [hasPendingTrade])
 
   const { isPriceChanged, resetPriceChanged } = useIsPriceChanged(
-    inputCurrencyInfo.amount?.toExact(),
-    outputCurrencyInfo.amount?.toExact(),
+    props.inputCurrencyInfo.amount?.toExact(),
+    props.outputCurrencyInfo.amount?.toExact(),
     forcePriceConfirmation,
   )
 
@@ -103,17 +102,11 @@ export function TradeConfirmation(props: TradeConfirmationProps): ReactNode {
         </styledEl.HeaderRightContent>
       </styledEl.Header>
       <styledEl.ContentWrapper id="trade-confirmation">
-        <styledEl.AmountsPreviewContainer>
-          <CurrencyAmountPreview id="input-currency-preview" currencyInfo={inputCurrencyInfo} />
-          <styledEl.SeparatorWrapper>
-            <styledEl.AmountsSeparator />
-          </styledEl.SeparatorWrapper>
-          <CurrencyAmountPreview
-            id="output-currency-preview"
-            currencyInfo={outputCurrencyInfo}
-            priceImpactParams={priceImpact}
-          />
-        </styledEl.AmountsPreviewContainer>
+        <ConfirmAmounts
+          inputCurrencyInfo={props.inputCurrencyInfo}
+          outputCurrencyInfo={props.outputCurrencyInfo}
+          priceImpact={props.priceImpact}
+        />
         {children?.(
           <>
             {hookDetailsElement}
