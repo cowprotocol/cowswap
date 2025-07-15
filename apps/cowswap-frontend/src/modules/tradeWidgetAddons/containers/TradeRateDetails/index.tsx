@@ -42,6 +42,7 @@ export function TradeRateDetails({
 
   const slippage = useTradeSlippage()
   const isSlippageModified = useIsSlippageModified()
+  // todo replace by useGetReceiveAmountInfo when we decide what to show as bridge total fee
   const receiveAmountInfo = useReceiveAmountInfo()
   const derivedTradeState = useDerivedTradeState()
   const tradeQuote = useTradeQuote()
