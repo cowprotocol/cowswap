@@ -14,8 +14,10 @@ export function useAddBridgeOrder(): (order: BridgeOrderData) => void {
     (order: BridgeOrderData) => {
       if (!account) return
 
+      const accountLower = account.toLowerCase()
+
       setBridgeOrders((state) => {
-        const orders = state[chainId]?.[account.toLowerCase()] || []
+        const orders = state[chainId]?.[accountLower] || []
 
         orders.push(order)
 
@@ -23,7 +25,7 @@ export function useAddBridgeOrder(): (order: BridgeOrderData) => void {
           ...state,
           [chainId]: {
             ...state[chainId],
-            [account]: orders,
+            [accountLower]: orders,
           },
         }
       })

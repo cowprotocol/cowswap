@@ -3,6 +3,7 @@ import { ReactElement } from 'react'
 import {
   CowEventPayloads,
   CowWidgetEvents,
+  OnBridgingSuccessPayload,
   OnCancelledOrderPayload,
   OnExpiredOrderPayload,
   OnFulfilledOrderPayload,
@@ -14,6 +15,7 @@ import { IconType } from '@cowprotocol/snackbars'
 
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
+import { BridgingSuccessNotification } from '../../containers/BridgingSuccessNotification'
 import { FulfilledOrderInfo } from '../../containers/FulfilledOrderInfo'
 import { OrderNotification } from '../../containers/OrderNotification'
 
@@ -53,7 +55,7 @@ export const ORDERS_NOTIFICATION_HANDLERS: Record<CowWidgetEvents, OrdersNotific
           chainId={chainId}
           orderType={getUiOrderType(order)}
           orderUid={order.uid}
-          bridgeOrder={bridgeOrder}
+          receiver={bridgeOrder?.recipient}
           messageType={ToastMessageType.ORDER_FULFILLED}
         >
           <FulfilledOrderInfo chainId={chainId} orderUid={order.uid} />
@@ -109,6 +111,12 @@ export const ORDERS_NOTIFICATION_HANDLERS: Record<CowWidgetEvents, OrdersNotific
           messageType={ToastMessageType.ORDER_PRESIGNED}
         />
       )
+    },
+  },
+  [CowWidgetEvents.ON_BRIDGING_SUCCESS]: {
+    icon: 'success',
+    handler: (payload: OnBridgingSuccessPayload) => {
+      return <BridgingSuccessNotification payload={payload} />
     },
   },
   [CowWidgetEvents.ON_TOAST_MESSAGE]: {

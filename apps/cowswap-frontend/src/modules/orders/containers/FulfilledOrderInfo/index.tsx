@@ -6,7 +6,7 @@ import { TokenInfo } from '@cowprotocol/types'
 import { useOrder } from 'legacy/state/orders/hooks'
 
 import { useGetExecutedBridgeSummary } from 'common/hooks/useGetExecutedBridgeSummary'
-import { getExecutedSummaryData } from 'utils/getExecutedSummaryData'
+import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 
 import * as styledEl from './styled'
 
@@ -28,17 +28,17 @@ interface ExecutedSummaryProps {
 
 export function FulfilledOrderInfo({ chainId, orderUid }: ExecutedSummaryProps): ReactNode {
   const order = useOrder({ chainId, id: orderUid })
-  const surplusData = useGetExecutedBridgeSummary(order)
+  const surplusData = useGetSurplusData(order)
 
   const { surplusFiatValue, showFiatValue, surplusToken, surplusAmount } = surplusData
 
-  if (!order) return null
+  const { formattedFilledAmount, formattedSwappedAmount } = useGetExecutedBridgeSummary(order) || {}
 
-  const { formattedFilledAmount, formattedSwappedAmount } = getExecutedSummaryData(order)
+  if (!order) return null
 
   return (
     <>
-      {formattedFilledAmount.currency && formattedSwappedAmount.currency && (
+      {formattedFilledAmount?.currency && formattedSwappedAmount?.currency && (
         <OrderSummary
           kind={order.kind}
           inputToken={formattedFilledAmount.currency as TokenInfo}

@@ -426,6 +426,7 @@ export function PendingOrdersUpdater(): null {
       fulfillOrdersBatchParams.orders.forEach((order) => {
         const bridgeOrders = bridgeOrdersMap[chainId]?.[account.toLowerCase()]
         const bridgeOrder = bridgeOrders?.find((i) => i.orderUid === order.uid)
+
         emitFulfilledOrderEvent(chainId, order, bridgeOrder)
       })
 

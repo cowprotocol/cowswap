@@ -1,10 +1,10 @@
-import { ReactElement, ReactNode, useCallback, useMemo } from 'react'
+import { ReactNode, useCallback, useMemo } from 'react'
 
 import { shortenOrderId } from '@cowprotocol/common-utils'
 import { EnrichedOrder, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ToastMessageType } from '@cowprotocol/events'
 import { useTokensByAddressMap } from '@cowprotocol/tokens'
-import { BridgeOrderDataSerialized, TokenInfo, UiOrderType } from '@cowprotocol/types'
+import { TokenInfo, UiOrderType } from '@cowprotocol/types'
 
 import { useOrder } from 'legacy/state/orders/hooks'
 
@@ -21,16 +21,19 @@ import { ReceiverInfo } from '../../pure/ReceiverInfo'
 import { TransactionContentWithLink } from '../TransactionContentWithLink'
 
 export interface BaseOrderNotificationProps {
-  title: ReactElement | string
+  title: ReactNode
   messageType: ToastMessageType
   chainId: SupportedChainId
   orderUid: string
   orderType: UiOrderType
-  bridgeOrder?: BridgeOrderDataSerialized
   orderInfo?: OrderInfo | EnrichedOrder
   transactionHash?: string
+  skipExplorerLink?: boolean
   isEthFlow?: boolean
-  children?: ReactElement
+  children?: ReactNode
+  topContent?: ReactNode
+  bottomContent?: ReactNode
+  receiver?: string
 }
 
 export function OrderNotification(props: BaseOrderNotificationProps): ReactNode {
@@ -43,8 +46,8 @@ export function OrderNotification(props: BaseOrderNotificationProps): ReactNode 
     messageType,
     children,
     orderInfo,
-    bridgeOrder,
     isEthFlow,
+    skipExplorerLink,
   } = props
 
   const allTokens = useTokensByAddressMap()
@@ -77,26 +80,36 @@ export function OrderNotification(props: BaseOrderNotificationProps): ReactNode 
 
   if (!order) return
 
+  const content = (
+    <div ref={ref}>
+      <strong>{title}</strong>
+      <br />
+      <p>
+        Order <strong>{shortenOrderId(orderUid)}</strong>:
+      </p>
+      {props.topContent}
+      {children ||
+        (order.inputToken && order.outputToken ? (
+          <OrderSummary
+            kind={order.kind}
+            inputToken={order.inputToken as TokenInfo}
+            outputToken={order.outputToken as TokenInfo}
+            sellAmount={order.inputAmount.toString()}
+            buyAmount={order.outputAmount.toString()}
+          />
+        ) : null)}
+      <ReceiverInfo receiver={props.receiver || order.receiver} owner={order.owner} />
+      {props.bottomContent}
+    </div>
+  )
+
+  if (skipExplorerLink) {
+    return content
+  }
+
   return (
     <TransactionContentWithLink isEthFlow={isEthFlow} transactionHash={transactionHash} orderUid={orderUid}>
-      <div ref={ref}>
-        <strong>{title}</strong>
-        <br />
-        <p>
-          Order <strong>{shortenOrderId(orderUid)}</strong>:
-        </p>
-        {children ||
-          (order.inputToken && order.outputToken ? (
-            <OrderSummary
-              kind={order.kind}
-              inputToken={order.inputToken as TokenInfo}
-              outputToken={order.outputToken as TokenInfo}
-              sellAmount={order.inputAmount.toString()}
-              buyAmount={order.outputAmount.toString()}
-            />
-          ) : null)}
-        <ReceiverInfo receiver={bridgeOrder?.recipient || order.receiver} owner={order.owner} />
-      </div>
+      {content}
     </TransactionContentWithLink>
   )
 }
