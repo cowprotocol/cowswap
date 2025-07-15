@@ -2,7 +2,6 @@ import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-import { RateInfo, RateWrapper } from 'common/pure/RateInfo'
 
 export const Box = styled.div<{ noMargin: boolean }>`
   display: flex;
@@ -44,15 +43,3 @@ export const Row = styled.div`
   }
 `
 
-export const StyledRateInfo = styled(RateInfo)<{ rightAlign?: boolean }>`
-  font-size: 13px;
-  font-weight: 500;
-
-  ${({ rightAlign }) =>
-    rightAlign &&
-    `
-    ${RateWrapper} {
-      text-align: right;
-    }
-  `}
-`

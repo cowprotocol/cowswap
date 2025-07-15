@@ -64,7 +64,7 @@ function Wrapper(): null {
 
   useEffect(() => {
     setOrdersTableState({
-      pendingActivities: [],
+      pendingActivitiesCount: 0,
       displayOrdersOnlyForSafeApp: false,
       pendingOrdersPrices: {},
       chainId: SupportedChainId.MAINNET,

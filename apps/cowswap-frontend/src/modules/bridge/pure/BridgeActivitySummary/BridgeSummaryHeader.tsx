@@ -6,16 +6,14 @@ import { TokenAmount } from '@cowprotocol/ui'
 
 import { ShimmerWrapper, SummaryRow } from 'common/pure/OrderSummaryRow'
 
-import { SwapAndBridgeContext } from '../../types'
+import { SwapAndBridgeOverview } from '../../types'
 
 interface BridgeSummaryHeaderProps {
-  context: SwapAndBridgeContext
+  swapAndBridgeOverview: SwapAndBridgeOverview
 }
 
-export function BridgeSummaryHeader({ context }: BridgeSummaryHeaderProps): ReactNode {
-  const {
-    overview: { sourceAmounts, targetAmounts, sourceChainName, targetChainName },
-  } = context
+export function BridgeSummaryHeader({ swapAndBridgeOverview }: BridgeSummaryHeaderProps): ReactNode {
+  const { sourceAmounts, targetAmounts, sourceChainName, targetChainName } = swapAndBridgeOverview
 
   return (
     <>
@@ -30,6 +28,7 @@ export function BridgeSummaryHeader({ context }: BridgeSummaryHeaderProps): Reac
 
       <SummaryRow>
         <b>To at least</b>
+
         <i>
           {targetAmounts ? (
             <>

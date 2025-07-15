@@ -4,7 +4,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useUsdAmount } from 'modules/usdAmount'
 
-import { RateInfoParams } from 'common/pure/RateInfo'
+import { RateInfoParams, RateInfo } from 'common/pure/RateInfo'
 import { TradeDetailsAccordion } from 'common/pure/TradeDetailsAccordion'
 
 import * as styledEl from './styled'
@@ -28,7 +28,7 @@ export function TradeTotalCostsDetails(props: TradeRatesProps): ReactNode {
 
   return (
     <TradeDetailsAccordion
-      rateInfo={<styledEl.StyledRateInfo noLabel={true} stylized={true} rateInfoParams={rateInfoParams} />}
+      rateInfo={<RateInfo noLabel={true} stylized={true} rateInfoParams={rateInfoParams} fontSize={13} fontBold />}
       feeUsdTotalAmount={totalCostsUsd}
       feeTotalAmount={totalCosts}
       open={isFeeDetailsOpen}

@@ -1,4 +1,4 @@
-import React, { ReactNode, useMemo, useState } from 'react'
+import { ReactNode, useMemo, useState } from 'react'
 
 import ArrowDownImage from '@cowprotocol/assets/cow-swap/arrowDownRight.svg'
 import { DEFAULT_DATE_FORMAT } from '@cowprotocol/common-const'
@@ -21,6 +21,7 @@ import { DividerHorizontal, RecipientRow } from 'modules/trade'
 import { ordersTableFeatures } from 'common/constants/featureFlags'
 import { ExecutionPrice } from 'common/pure/ExecutionPrice'
 import { RateInfoParams } from 'common/pure/RateInfo'
+import { RateInfo } from 'common/pure/RateInfo'
 
 import * as styledEl from './styled'
 
@@ -50,10 +51,7 @@ export interface LimitOrdersDetailsProps {
   children?: ReactNode
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
-export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
+export function LimitOrdersDetails(props: LimitOrdersDetailsProps): ReactNode {
   const {
     executionPrice,
     tradeContext,
@@ -81,7 +79,7 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps) {
   return (
     <Wrapper>
       <styledEl.DetailsRow>
-        <styledEl.StyledRateInfo isInvertedState={isInvertedState} rateInfoParams={rateInfoParams} />
+        <RateInfo isInvertedState={isInvertedState} rateInfoParams={rateInfoParams} fontSize={13} rightAlign />
       </styledEl.DetailsRow>
 
       {children}

@@ -77,7 +77,7 @@ export interface OrdersTableState {
   currentPageNumber: number
   pendingOrdersPrices: PendingOrdersPrices
   getSpotPrice: (params: SpotPricesKeyParams) => Price<Currency, Currency> | null
-  pendingActivities: string[]
+  pendingActivitiesCount: number
   isTwapTable: boolean
   selectedOrders: CancellableOrder[]
 }

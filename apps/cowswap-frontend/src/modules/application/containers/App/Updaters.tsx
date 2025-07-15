@@ -6,12 +6,14 @@ import { TokensListsTagsUpdater, TokensListsUpdater, UnsupportedTokensUpdater } 
 import { HwAccountIndexUpdater, useWalletInfo, WalletUpdater } from '@cowprotocol/wallet'
 
 import { useBalancesContext } from 'entities/balancesContext/useBalancesContext'
+import { BridgeOrdersCleanUpdater } from 'entities/bridgeOrders'
 import { useBridgeSupportedNetworks } from 'entities/bridgeProvider'
 import { ThemeConfigUpdater } from 'theme/ThemeConfigUpdater'
 import { TradingSdkUpdater } from 'tradingSdk/TradingSdkUpdater'
 
 import { UploadToIpfsUpdater } from 'modules/appData/updater/UploadToIpfsUpdater'
 import { CommonPriorityBalancesAndAllowancesUpdater } from 'modules/balancesAndAllowances'
+import { PendingBridgeOrdersUpdater } from 'modules/bridge'
 import { BalancesCombinedUpdater } from 'modules/combinedBalances/updater/BalancesCombinedUpdater'
 import { InFlightOrderFinalizeUpdater } from 'modules/ethFlow'
 import { CowEventsUpdater, InjectedWidgetUpdater, useInjectedWidgetParams } from 'modules/injectedWidget'
@@ -107,6 +109,8 @@ export function Updaters(): ReactNode {
       <VampireAttackUpdater />
       <BalancesCombinedUpdater />
       <CorrelatedTokensUpdater />
+      <BridgeOrdersCleanUpdater />
+      <PendingBridgeOrdersUpdater />
     </>
   )
 }
