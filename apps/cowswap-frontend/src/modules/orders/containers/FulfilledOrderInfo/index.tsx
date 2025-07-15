@@ -1,9 +1,11 @@
+import { ReactNode } from 'react'
+
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenInfo } from '@cowprotocol/types'
 
 import { useOrder } from 'legacy/state/orders/hooks'
 
-import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
+import { useGetExecutedBridgeSummary } from 'common/hooks/useGetExecutedBridgeSummary'
 import { getExecutedSummaryData } from 'utils/getExecutedSummaryData'
 
 import * as styledEl from './styled'
@@ -11,9 +13,7 @@ import * as styledEl from './styled'
 import { OrderSummary } from '../../pure/OrderSummary'
 import { OrderSummaryTemplateProps } from '../../pure/OrderSummary/summaryTemplates'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function FulfilledSummaryTemplate({ inputAmount, outputAmount }: OrderSummaryTemplateProps) {
+function FulfilledSummaryTemplate({ inputAmount, outputAmount }: OrderSummaryTemplateProps): ReactNode {
   return (
     <>
       Traded {inputAmount} for a total of {outputAmount}
@@ -26,11 +26,9 @@ interface ExecutedSummaryProps {
   orderUid: string
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function FulfilledOrderInfo({ chainId, orderUid }: ExecutedSummaryProps) {
+export function FulfilledOrderInfo({ chainId, orderUid }: ExecutedSummaryProps): ReactNode {
   const order = useOrder({ chainId, id: orderUid })
-  const surplusData = useGetSurplusData(order)
+  const surplusData = useGetExecutedBridgeSummary(order)
 
   const { surplusFiatValue, showFiatValue, surplusToken, surplusAmount } = surplusData
 
