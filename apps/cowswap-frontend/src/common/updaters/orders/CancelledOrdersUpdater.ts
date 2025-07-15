@@ -5,13 +5,14 @@ import { EnrichedOrder, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk
 import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useAddOrderToSurplusQueue } from 'entities/surplusModal'
-import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 
 import { MARKET_OPERATOR_API_POLL_INTERVAL } from 'legacy/state/orders/consts'
 import { useCancelledOrders, useFulfillOrdersBatch } from 'legacy/state/orders/hooks'
 import { OrderTransitionStatus } from 'legacy/state/orders/utils'
 
 import { emitFulfilledOrderEvent } from 'modules/orders'
+
+import { getIsBridgeOrder } from 'common/utils/getIsBridgeOrder'
 
 import { fetchAndClassifyOrder } from './utils'
 
@@ -29,8 +30,6 @@ import { fetchAndClassifyOrder } from './utils'
  * Due to the network's nature, we can't tell whether an order has been really cancelled, so we prefer to wait a short
  * period and say it's cancelled even though in some cases it might actually be filled.
  */
-// TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
 export function CancelledOrdersUpdater(): null {
   const isSafeWallet = useIsSafeWallet()
   const { chainId, account } = useWalletInfo()
@@ -113,10 +112,7 @@ export function CancelledOrdersUpdater(): null {
           })
 
           fulfilled.forEach((order) => {
-            const orderBridgeProvider = order.fullAppData && bridgingSdk.getProviderFromAppData(order.fullAppData)
-            const isBridgingOrder = !!orderBridgeProvider
-
-            if (!isBridgingOrder) {
+            if (!getIsBridgeOrder(order)) {
               addOrderToSurplusQueue(order.uid)
             }
 
