@@ -7,7 +7,7 @@ export enum SigningSteps {
 }
 
 export interface SigningStepState {
-  stepNumber: number
+  stepNumber: string
   step: SigningSteps
 }
 

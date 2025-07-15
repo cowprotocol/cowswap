@@ -4,6 +4,7 @@ import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { UiOrderType } from '@cowprotocol/types'
 import { Percent } from '@uniswap/sdk-core'
 
+import { SigningSteps } from 'entities/trade'
 import { tradingSdk } from 'tradingSdk/tradingSdk'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
@@ -18,7 +19,6 @@ import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 
 import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
 
-import { SigningSteps } from '../../state/SigningStepManagerAtom'
 import { TradeFlowContext } from '../../types/TradeFlowContext'
 
 // TODO: Break down this large function into smaller functions
@@ -53,12 +53,13 @@ export async function swapFlow(
   const cachedPermit = await getCachedPermit(getAddress(inputCurrency))
 
   const shouldSignPermit = isSupportedPermitInfo(permitInfo) && !cachedPermit
+  const isBridgingOrder = inputAmount.currency.chainId !== outputAmount.currency.chainId
 
   try {
     logTradeFlow('SWAP FLOW', 'STEP 2: handle permit')
     if (shouldSignPermit) {
+      setSigningStep(isBridgingOrder ? '1/3' : '1/2', SigningSteps.PermitSigning)
       tradeConfirmActions.requestPermitSignature(tradeAmounts)
-      setSigningStep(1, SigningSteps.PermitSigning)
     }
 
     const { appData, account, isSafeWallet, recipientAddressOrName, inputAmount, outputAmount, kind } = orderParams
@@ -85,10 +86,16 @@ export async function swapFlow(
 
     const signingStepManager: SigningStepManager = {
       beforeBridgingSign() {
-        setSigningStep(shouldSignPermit ? 2 : 1, SigningSteps.BridgingSigning)
+        setSigningStep(shouldSignPermit ? '2/3' : '1/2', SigningSteps.BridgingSigning)
       },
       beforeOrderSign() {
-        setSigningStep(shouldSignPermit ? 3 : 2, SigningSteps.OrderSigning)
+        if (isBridgingOrder) {
+          setSigningStep(shouldSignPermit ? '3/3' : '2/2', SigningSteps.OrderSigning)
+        } else {
+          if (shouldSignPermit) {
+            setSigningStep('2/2', SigningSteps.OrderSigning)
+          }
+        }
       },
     }
 

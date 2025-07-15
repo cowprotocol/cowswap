@@ -2,6 +2,8 @@ import { ReactElement, ReactNode, useEffect, useRef, useState } from 'react'
 
 import { BackButton } from '@cowprotocol/ui'
 
+import { useSigningStep } from 'entities/trade'
+
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import type { AppDataInfo } from 'modules/appData'
@@ -40,6 +42,7 @@ export interface TradeConfirmationProps {
 
 export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
   const { pendingTrade, forcePriceConfirmation } = useTradeConfirmState()
+  const signingStep = useSigningStep()
 
   const propsRef = useRef(_props)
   propsRef.current = _props
@@ -51,8 +54,6 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
   const {
     onConfirm,
     onDismiss,
-    account,
-    ensName,
     isConfirmDisabled,
     title,
     buttonText = 'Confirm',
@@ -115,8 +116,8 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
         )}
 
         <ConfirmWarnings
-          account={account}
-          ensName={ensName}
+          account={props.account}
+          ensName={props.ensName}
           recipient={recipient}
           isPriceChanged={isPriceChanged}
           isPriceStatic={isPriceStatic}
@@ -128,6 +129,7 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
           buttonText={buttonText}
           isButtonDisabled={isButtonDisabled}
           hasPendingTrade={hasPendingTrade}
+          signingStep={signingStep}
         />
       </styledEl.ContentWrapper>
     </styledEl.WidgetWrapper>

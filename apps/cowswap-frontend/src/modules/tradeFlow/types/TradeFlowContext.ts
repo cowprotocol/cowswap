@@ -4,6 +4,8 @@ import type { Command } from '@cowprotocol/types'
 import type { SendBatchTxCallback } from '@cowprotocol/wallet'
 import type { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { SigningSteps } from 'entities/trade'
+
 import type { AppDispatch } from 'legacy/state'
 import type { PostOrderParams } from 'legacy/utils/trade'
 
@@ -12,8 +14,6 @@ import type { GeneratePermitHook, IsTokenPermittableResult, useGetCachedPermit }
 import type { TradeConfirmActions } from 'modules/trade'
 import type { TradeFlowAnalyticsContext } from 'modules/trade/utils/tradeFlowAnalytics'
 import type { TradeQuoteState } from 'modules/tradeQuote'
-
-import { SigningSteps } from '../state/SigningStepManagerAtom'
 
 export enum FlowType {
   REGULAR = 'REGULAR',
@@ -37,7 +37,7 @@ export interface TradeFlowContext {
     closeModals: Command
     getCachedPermit: ReturnType<typeof useGetCachedPermit>
     dispatch: AppDispatch
-    setSigningStep(stepNumber: number, step: SigningSteps): void
+    setSigningStep(stepNumber: string, step: SigningSteps): void
   }
   tradeConfirmActions: TradeConfirmActions
   swapFlowAnalyticsContext: TradeFlowAnalyticsContext
