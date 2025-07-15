@@ -1,3 +1,6 @@
 export { BridgeOrdersCleanUpdater } from './BridgeOrdersCleanUpdater'
-export { useAddBridgeOrderQuote } from './useAddBridgeOrderQuote'
-export { useBridgeOrderQuote } from './useBridgeOrderQuote'
+export { useAddBridgeOrder } from './hooks/useAddBridgeOrder'
+export { useUpdateBridgeOrderQuote } from './hooks/useUpdateBridgeOrderQuote'
+export { useBridgeOrderQuoteAmounts } from './hooks/useBridgeOrderQuoteAmounts'
+export { useBridgeOrders } from './hooks/useBridgeOrders'
+export { useCrossChainOrder, BRIDGING_FINAL_STATUSES } from './hooks/useCrossChainOrder'

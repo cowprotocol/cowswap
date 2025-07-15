@@ -13,6 +13,7 @@ import { TradingSdkUpdater } from 'tradingSdk/TradingSdkUpdater'
 
 import { UploadToIpfsUpdater } from 'modules/appData/updater/UploadToIpfsUpdater'
 import { CommonPriorityBalancesAndAllowancesUpdater } from 'modules/balancesAndAllowances'
+import { PendingBridgeOrdersUpdater } from 'modules/bridge'
 import { BalancesCombinedUpdater } from 'modules/combinedBalances/updater/BalancesCombinedUpdater'
 import { InFlightOrderFinalizeUpdater } from 'modules/ethFlow'
 import { CowEventsUpdater, InjectedWidgetUpdater, useInjectedWidgetParams } from 'modules/injectedWidget'
@@ -109,6 +110,7 @@ export function Updaters(): ReactNode {
       <BalancesCombinedUpdater />
       <CorrelatedTokensUpdater />
       <BridgeOrdersCleanUpdater />
+      <PendingBridgeOrdersUpdater />
     </>
   )
 }

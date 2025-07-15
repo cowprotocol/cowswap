@@ -52,7 +52,6 @@ export interface SwapAndBridgeOverview<Amount = CurrencyAmount<Currency>> {
   sourceAmounts: {
     sellAmount: Amount
     buyAmount: Amount
-    bridgingApproximateAmount: Amount
   }
 
   targetAmounts?: {

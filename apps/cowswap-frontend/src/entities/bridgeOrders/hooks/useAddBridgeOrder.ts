@@ -5,11 +5,11 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { BridgeOrderData } from 'common/types/bridge'
 
-import { bridgeOrderQuoteAtom } from './bridgeOrderQuoteAtom'
+import { bridgeOrdersAtom } from '../state/bridgeOrdersAtom'
 
-export function useAddBridgeOrderQuote(): (order: BridgeOrderData) => void {
+export function useAddBridgeOrder(): (order: BridgeOrderData) => void {
   const { chainId, account } = useWalletInfo()
-  const setBridgeOrders = useSetAtom(bridgeOrderQuoteAtom)
+  const setBridgeOrders = useSetAtom(bridgeOrdersAtom)
 
   return useCallback(
     (order: BridgeOrderData) => {

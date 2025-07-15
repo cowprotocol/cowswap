@@ -10,7 +10,6 @@ import { BannerOrientation, ExternalLink, Icon, IconType, TokenAmount, UI } from
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useAddOrderToSurplusQueue } from 'entities/surplusModal'
-import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 
 import { getActivityState } from 'legacy/hooks/useActivityDerivedState'
 import { OrderStatus } from 'legacy/state/orders/actions'
@@ -35,6 +34,7 @@ import {
   useIsReceiverWalletBannerHidden,
 } from 'common/state/receiverWalletBannerVisibility'
 import { ActivityDerivedState, ActivityStatus } from 'common/types/activity'
+import { getIsBridgeOrder } from 'common/utils/getIsBridgeOrder'
 import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
@@ -217,10 +217,8 @@ export function ActivityDetails(props: {
   const toggleAccountModal = useToggleAccountModal()
 
   const skipBridgingDisplay = isExpired || isCancelled || isFailed || isCancelling
-  const fullAppData = order?.apiAdditionalInfo?.fullAppData
-  const orderBridgeProvider = fullAppData ? bridgingSdk.getProviderFromAppData(fullAppData) : undefined
-  const isBridgeOrder =
-    (!!orderBridgeProvider || order?.inputToken.chainId !== order?.outputToken.chainId) && !skipBridgingDisplay
+  const fullAppData = order?.apiAdditionalInfo?.fullAppData || order?.fullAppData
+  const isBridgeOrder = getIsBridgeOrder(order) && !skipBridgingDisplay
 
   const { swapAndBridgeContext, swapResultContext, swapAndBridgeOverview } = useSwapAndBridgeContext(
     chainId,
