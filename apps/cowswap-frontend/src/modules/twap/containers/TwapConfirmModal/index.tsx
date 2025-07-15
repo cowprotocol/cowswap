@@ -15,9 +15,9 @@ import { TwapConfirmDetails } from './TwapConfirmDetails'
 
 import { useCreateTwapOrder } from '../../hooks/useCreateTwapOrder'
 import { useIsFallbackHandlerRequired } from '../../hooks/useFallbackHandlerVerification'
+import { useScaledReceiveAmountInfo } from '../../hooks/useScaledReceiveAmountInfo'
 import { useTwapFormState } from '../../hooks/useTwapFormState'
 import { useTwapSlippage } from '../../hooks/useTwapSlippage'
-import { scaledReceiveAmountInfoAtom } from '../../state/scaledReceiveAmountInfoAtom'
 import { twapOrderAtom } from '../../state/twapOrderAtom'
 import { TwapFormWarnings } from '../TwapFormWarnings'
 
@@ -67,7 +67,7 @@ export function TwapConfirmModal() {
   } = useAdvancedOrdersDerivedState()
   // TODO: there's some overlap with what's in each atom
   const twapOrder = useAtomValue(twapOrderAtom)
-  const receiveAmountInfo = useAtomValue(scaledReceiveAmountInfoAtom)
+  const receiveAmountInfo = useScaledReceiveAmountInfo()
   const slippage = useTwapSlippage()
   const localFormValidation = useTwapFormState()
   const tradeConfirmActions = useTradeConfirmActions()
