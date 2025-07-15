@@ -1,13 +1,11 @@
-import { ReactElement } from 'react'
+import { ReactElement, ReactNode } from 'react'
 
 export interface OrderSummaryTemplateProps {
   inputAmount: ReactElement
   outputAmount: ReactElement
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function SellForAtLeastTemplate({ inputAmount, outputAmount }: OrderSummaryTemplateProps) {
+export function SellForAtLeastTemplate({ inputAmount, outputAmount }: OrderSummaryTemplateProps): ReactNode {
   return (
     <>
       Sell {inputAmount} for at least {outputAmount}
@@ -15,9 +13,7 @@ export function SellForAtLeastTemplate({ inputAmount, outputAmount }: OrderSumma
   )
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function BuyForAtMostTemplate({ inputAmount, outputAmount }: OrderSummaryTemplateProps) {
+export function BuyForAtMostTemplate({ inputAmount, outputAmount }: OrderSummaryTemplateProps): ReactNode {
   return (
     <>
       Buy {outputAmount} for at most {inputAmount}

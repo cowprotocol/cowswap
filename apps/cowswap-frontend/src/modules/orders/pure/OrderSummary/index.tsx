@@ -1,4 +1,4 @@
-import { ReactElement, useMemo } from 'react'
+import { ReactElement, ReactNode, useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { isSellOrder } from '@cowprotocol/common-utils'
@@ -19,9 +19,7 @@ interface OrderSummaryProps {
   customTemplate?: typeof SellForAtLeastTemplate
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function OrderSummary(props: OrderSummaryProps) {
+export function OrderSummary(props: OrderSummaryProps): ReactNode {
   const { kind, sellAmount, buyAmount, outputToken, inputToken, children, customTemplate } = props
   const isSell = isSellOrder(kind)
 
