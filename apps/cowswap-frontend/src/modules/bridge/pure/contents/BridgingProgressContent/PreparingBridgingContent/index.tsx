@@ -21,6 +21,7 @@ export function PreparingBridgingContent({
 }: PreparingBridgingContentProps): ReactNode {
   return (
     <>
+      {targetRecipient && <RecipientDetailsItem recipient={targetRecipient} chainId={targetCurrency.chainId} />}
       <ConfirmDetailsItem
         withTimelineDot
         label={
@@ -31,7 +32,6 @@ export function PreparingBridgingContent({
       >
         <span></span>
       </ConfirmDetailsItem>
-      {targetRecipient && <RecipientDetailsItem recipient={targetRecipient} chainId={targetCurrency.chainId} />}
     </>
   )
 }
