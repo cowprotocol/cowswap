@@ -1,6 +1,6 @@
 import { ReactElement, ReactNode, useEffect, useRef, useState } from 'react'
 
-import { BackButton, BannerOrientation } from '@cowprotocol/ui'
+import { BackButton } from '@cowprotocol/ui'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
@@ -8,16 +8,15 @@ import type { AppDataInfo } from 'modules/appData'
 
 import { OrderHooksDetails } from 'common/containers/OrderHooksDetails'
 import { CurrencyAmountPreview, CurrencyPreviewInfo } from 'common/pure/CurrencyInputPanel'
-import { CustomRecipientWarningBanner } from 'common/pure/CustomRecipientWarningBanner'
 
 import { ConfirmButton } from './ConfirmButton'
+import { ConfirmWarnings } from './ConfirmWarnings'
 import { QuoteCountdown } from './CountDown'
 import { useIsPriceChanged } from './hooks/useIsPriceChanged'
 import * as styledEl from './styled'
 
 import { NoImpactWarning } from '../../containers/NoImpactWarning'
 import { useTradeConfirmState } from '../../hooks/useTradeConfirmState'
-import { PriceUpdatedBanner } from '../PriceUpdatedBanner'
 
 export interface TradeConfirmationProps {
   onConfirm(): Promise<void | false>
@@ -38,9 +37,6 @@ export interface TradeConfirmationProps {
   children?: (restContent: ReactElement) => ReactElement
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, complexity
 export function TradeConfirmation(props: TradeConfirmationProps): ReactNode {
   const { pendingTrade, forcePriceConfirmation } = useTradeConfirmState()
 
@@ -74,15 +70,11 @@ export function TradeConfirmation(props: TradeConfirmationProps): ReactNode {
     setFrozenProps(hasPendingTrade ? propsRef.current : null)
   }, [hasPendingTrade])
 
-  const showRecipientWarning =
-    recipient &&
-    (account || ensName) &&
-    ![account?.toLowerCase(), ensName?.toLowerCase()].includes(recipient.toLowerCase())
-
-  const inputAmount = inputCurrencyInfo.amount?.toExact()
-  const outputAmount = outputCurrencyInfo.amount?.toExact()
-
-  const { isPriceChanged, resetPriceChanged } = useIsPriceChanged(inputAmount, outputAmount, forcePriceConfirmation)
+  const { isPriceChanged, resetPriceChanged } = useIsPriceChanged(
+    inputCurrencyInfo.amount?.toExact(),
+    outputCurrencyInfo.amount?.toExact(),
+    forcePriceConfirmation,
+  )
 
   const isButtonDisabled = isConfirmDisabled || (isPriceChanged && !isPriceStatic) || hasPendingTrade
 
@@ -129,8 +121,15 @@ export function TradeConfirmation(props: TradeConfirmationProps): ReactNode {
           </>,
         )}
 
-        {showRecipientWarning && <CustomRecipientWarningBanner orientation={BannerOrientation.Horizontal} />}
-        {isPriceChanged && !isPriceStatic && <PriceUpdatedBanner onClick={resetPriceChanged} />}
+        <ConfirmWarnings
+          account={account}
+          ensName={ensName}
+          recipient={recipient}
+          isPriceChanged={isPriceChanged}
+          isPriceStatic={isPriceStatic}
+          resetPriceChanged={resetPriceChanged}
+        />
+
         <ConfirmButton
           onConfirm={onConfirm}
           buttonText={buttonText}
