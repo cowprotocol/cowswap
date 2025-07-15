@@ -43,6 +43,7 @@ export function getReceiveAmountInfo(
   outputCurrency: Currency,
   slippagePercent: Percent,
   _partnerFeeBps: number | undefined,
+  intermediateCurrency?: Currency
 ): AmountsAndCosts & { quotePrice: Price<Currency, Currency> } {
   const partnerFeeBps = _partnerFeeBps ?? 0
   const currencies = { inputCurrency, outputCurrency }
@@ -56,7 +57,6 @@ export function getReceiveAmountInfo(
     slippagePercentBps: Number(slippagePercent.numerator),
     partnerFeeBps,
   })
-
   const beforeNetworkCosts = mapBigIntAmounts(result.beforeNetworkCosts, currencies)
   const afterNetworkCosts = mapBigIntAmounts(result.afterNetworkCosts, currencies)
 
@@ -73,7 +73,7 @@ export function getReceiveAmountInfo(
           result.costs.networkFee.amountInSellCurrency.toString(),
         ),
         amountInBuyCurrency: CurrencyAmount.fromRawAmount(
-          outputCurrency,
+          intermediateCurrency ?? outputCurrency,
           result.costs.networkFee.amountInBuyCurrency.toString(),
         ),
       },
