@@ -7,6 +7,7 @@ import {
   USDC_ARBITRUM_ONE,
   USDC_SEPOLIA,
   USDC_AVALANCHE,
+  TokenWithLogo,
 } from '@cowprotocol/common-const'
 import { SupportedChainId, BridgeStatus } from '@cowprotocol/cow-sdk'
 import { UI } from '@cowprotocol/ui'
@@ -48,6 +49,10 @@ const swapAndBridgeContextMock: SwapAndBridgeContext = {
     sourceAmounts: {
       sellAmount: receiveAmountInfo.beforeNetworkCosts.sellAmount,
       buyAmount: receiveAmountInfo.afterNetworkCosts.buyAmount,
+      bridgingApproximateAmount: CurrencyAmount.fromRawAmount(
+        receiveAmountInfo.beforeNetworkCosts.sellAmount.currency,
+        receiveAmountInfo.afterNetworkCosts.buyAmount.quotient.toString(),
+      ),
     },
     targetAmounts: {
       sellAmount: receiveAmountInfo.afterSlippage.buyAmount,
@@ -72,13 +77,14 @@ const swapAndBridgeContextMock: SwapAndBridgeContext = {
     winningSolver: {
       solver: 'The Best Solver',
     },
-    receivedAmount: receiveAmountInfo.afterNetworkCosts.buyAmount,
+    receivedAmount: receiveAmountInfo.afterNetworkCosts.buyAmount as unknown as CurrencyAmount<TokenWithLogo>,
     receivedAmountUsd: CurrencyAmount.fromRawAmount(USDC_BASE, '29800000'),
     surplusAmount: CurrencyAmount.fromRawAmount(
       receiveAmountInfo.afterNetworkCosts.buyAmount.currency,
       '120000000000000000',
     ),
     surplusAmountUsd: CurrencyAmount.fromRawAmount(USDC_BASE, '1300'),
+    intermediateToken: USDC_MAINNET,
   },
   bridgingStatus: SwapAndBridgeStatus.PENDING,
 }
