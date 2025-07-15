@@ -4,6 +4,7 @@ import type { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { StepContent, SwapSummaryRow } from './styled'
 
+import { COW_PROTOCOL_NAME } from '../../constants'
 import { SwapAndBridgeStatus, SwapResultContext } from '../../types'
 import { BridgeDetailsContainer } from '../BridgeDetailsContainer'
 import { SwapResultContent } from '../contents/SwapResultContent'
@@ -42,7 +43,7 @@ export function SwapStepRow({
           protocolIconSize={21}
           circleSize={21}
           titlePrefix=""
-          protocolName={`${titlePrefix} CoW Protocol`}
+          protocolName={`${titlePrefix} ${COW_PROTOCOL_NAME}`}
           chainName={sourceChainName}
           sellAmount={sourceAmounts.sellAmount}
           buyAmount={sourceAmounts.buyAmount}

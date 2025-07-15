@@ -43,7 +43,7 @@ export interface SwapAndBridgeContexts {
 }
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+// eslint-disable-next-line max-lines-per-function,complexity
 export function useSwapAndBridgeContext(
   chainId: SupportedChainId,
   order: Order | undefined,

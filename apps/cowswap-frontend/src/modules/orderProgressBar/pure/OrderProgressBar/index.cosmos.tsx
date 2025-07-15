@@ -49,6 +49,10 @@ const swapAndBridgeContextMock: SwapAndBridgeContext = {
     sourceAmounts: {
       sellAmount: receiveAmountInfo.beforeNetworkCosts.sellAmount,
       buyAmount: receiveAmountInfo.afterNetworkCosts.buyAmount,
+      bridgingApproximateAmount: CurrencyAmount.fromRawAmount(
+        receiveAmountInfo.beforeNetworkCosts.sellAmount.currency,
+        receiveAmountInfo.afterNetworkCosts.buyAmount.quotient.toString(),
+      ),
     },
     targetAmounts: {
       sellAmount: receiveAmountInfo.afterSlippage.buyAmount,
