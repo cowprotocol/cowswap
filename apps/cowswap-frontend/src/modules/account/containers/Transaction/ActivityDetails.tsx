@@ -2,7 +2,7 @@ import { ReactElement, ReactNode, useMemo } from 'react'
 
 import { COW_TOKEN_TO_CHAIN, V_COW, V_COW_CONTRACT_ADDRESS } from '@cowprotocol/common-const'
 import { areAddressesEqual, ExplorerDataType, getExplorerLink, shortenAddress } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { BridgeStatus, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENS } from '@cowprotocol/ens'
 import { TokenLogo, useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
 import { UiOrderType } from '@cowprotocol/types'
@@ -229,7 +229,9 @@ export function ActivityDetails(props: {
 
   const bridgingStatus = swapAndBridgeContext?.statusResult?.status
   const isOrderPending = isBridgeOrder
-    ? !!bridgeOrderData || (bridgingStatus && !BRIDGING_FINAL_STATUSES.includes(bridgingStatus))
+    ? bridgingStatus && bridgingStatus !== BridgeStatus.UNKNOWN
+      ? !BRIDGING_FINAL_STATUSES.includes(bridgingStatus)
+      : !!bridgeOrderData
     : order && isPending(order)
 
   const isCustomRecipientWarningBannerVisible = !useIsReceiverWalletBannerHidden(id) && order && isOrderPending
@@ -321,9 +323,10 @@ export function ActivityDetails(props: {
     outputToken = COW_TOKEN_TO_CHAIN[chainId as SupportedChainId]
   }
 
-  const recipient = isBridgeOrder ? swapAndBridgeContext?.overview?.targetRecipient : order?.receiver
+  const recipient = isBridgeOrder ? swapAndBridgeOverview?.targetRecipient : order?.receiver
   const isCustomRecipient =
-    !!order && (isBridgeOrder ? !areAddressesEqual(order.owner, recipient) : getIsCustomRecipient(order))
+    !!order &&
+    (isBridgeOrder ? (recipient ? !areAddressesEqual(order.owner, recipient) : false) : getIsCustomRecipient(order))
 
   const hooksDetails = fullAppData ? (
     <OrderHooksDetails appData={fullAppData} margin="10px 0 0">

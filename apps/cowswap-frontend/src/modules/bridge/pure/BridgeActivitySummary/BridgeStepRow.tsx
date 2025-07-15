@@ -6,7 +6,7 @@ import { SwapAndBridgeContext, SwapAndBridgeStatus } from '../../types'
 import { BridgeDetailsContainer } from '../BridgeDetailsContainer'
 import { BridgingProgressContent } from '../contents/BridgingProgressContent'
 import { PreparingBridgingContent } from '../contents/BridgingProgressContent/PreparingBridgingContent'
-import { BridgeStatusIcons } from '../StopStatus'
+import { BridgeStatusIcons, BridgeStatusTitlePrefixes } from '../StopStatus'
 
 interface BridgeStepRowProps {
   context: SwapAndBridgeContext
@@ -39,7 +39,7 @@ export function BridgeStepRow({ context }: BridgeStepRowProps): ReactNode {
           protocolIconSize={21}
           circleSize={21}
           titlePrefix=""
-          protocolName={`Bridged via ${bridgeProvider.name}`}
+          protocolName={`${BridgeStatusTitlePrefixes[bridgeStatus]} ${bridgeProvider.name}`}
           bridgeProvider={bridgeProvider}
           chainName={targetChainName}
           sellAmount={targetAmounts?.sellAmount}
