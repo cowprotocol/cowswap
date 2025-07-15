@@ -13,6 +13,8 @@ import type { TradeConfirmActions } from 'modules/trade'
 import type { TradeFlowAnalyticsContext } from 'modules/trade/utils/tradeFlowAnalytics'
 import type { TradeQuoteState } from 'modules/tradeQuote'
 
+import { SigningSteps } from '../state/SigningStepManagerAtom'
+
 export enum FlowType {
   REGULAR = 'REGULAR',
   EOA_ETH_FLOW = 'EOA_ETH_FLOW',
@@ -35,6 +37,7 @@ export interface TradeFlowContext {
     closeModals: Command
     getCachedPermit: ReturnType<typeof useGetCachedPermit>
     dispatch: AppDispatch
+    setSigningStep(stepNumber: number, step: SigningSteps): void
   }
   tradeConfirmActions: TradeConfirmActions
   swapFlowAnalyticsContext: TradeFlowAnalyticsContext
