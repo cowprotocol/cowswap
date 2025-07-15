@@ -2,6 +2,7 @@ import { ReactNode } from 'react'
 
 import { StepContent, SwapSummaryRow } from './styled'
 
+import { COW_PROTOCOL_NAME } from '../../constants'
 import { SwapAndBridgeContext, SwapAndBridgeStatus } from '../../types'
 import { BridgeDetailsContainer } from '../BridgeDetailsContainer'
 import { SwapResultContent } from '../contents/SwapResultContent'
@@ -34,7 +35,7 @@ export function SwapStepRow({ context }: SwapStepRowProps): ReactNode {
           protocolIconSize={21}
           circleSize={21}
           titlePrefix=""
-          protocolName="Swapped on CoW Protocol"
+          protocolName={`Swapped on ${COW_PROTOCOL_NAME}`}
           bridgeProvider={bridgeProvider}
           chainName={sourceChainName}
           sellAmount={sourceAmounts.sellAmount}
