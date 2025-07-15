@@ -9,8 +9,7 @@ import {
   TradeTotalCostsDetails,
   useDerivedTradeState,
   NetworkCostsRow,
-  useReceiveAmountInfo,
-  useShouldPayGas,
+  useShouldPayGas, useGetReceiveAmountInfo
 } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { useIsSlippageModified, useTradeSlippage } from 'modules/tradeSlippage'
@@ -43,7 +42,7 @@ export function TradeRateDetails({
 
   const slippage = useTradeSlippage()
   const isSlippageModified = useIsSlippageModified()
-  const receiveAmountInfo = useReceiveAmountInfo()
+  const receiveAmountInfo = useGetReceiveAmountInfo()
   const derivedTradeState = useDerivedTradeState()
   const tradeQuote = useTradeQuote()
   const shouldPayGas = useShouldPayGas()

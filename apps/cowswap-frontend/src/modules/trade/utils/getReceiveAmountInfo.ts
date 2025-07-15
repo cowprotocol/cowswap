@@ -32,7 +32,7 @@ export function getTotalCosts(
   return additionalCosts ? fee.add(additionalCosts) : fee
 }
 
-type AmountsAndCosts = Omit<QuoteAmountsAndCosts<CurrencyAmount<Currency>>, 'quotePrice'>
+export type AmountsAndCosts = Omit<QuoteAmountsAndCosts<CurrencyAmount<Currency>>, 'quotePrice'>
 
 /**
  * Map native bigint amounts to CurrencyAmounts

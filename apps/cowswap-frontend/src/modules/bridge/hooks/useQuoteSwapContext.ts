@@ -11,14 +11,12 @@ import { useUsdAmount } from 'modules/usdAmount'
 import { useBridgeQuoteAmounts } from './useBridgeQuoteAmounts'
 
 // todo
-import { useGetIntermediateTokenIfExists } from '../../trade/hooks/useGetIntermediateTokenIfExists'
 import { useGetReceiveAmountInfo } from '../../trade/hooks/useGetReceiveAmountInfo'
 import { QuoteSwapContext } from '../types'
 
 export function useQuoteSwapContext(): QuoteSwapContext | null {
   const { bridgeQuote } = useTradeQuote()
-  const intermediateToken = useGetIntermediateTokenIfExists()
-  const receiveAmountInfo = useGetReceiveAmountInfo(intermediateToken)
+  const receiveAmountInfo = useGetReceiveAmountInfo()
 
   const quoteAmounts = useBridgeQuoteAmounts(receiveAmountInfo, bridgeQuote)
   const { value: swapMinReceiveAmountUsd } = useUsdAmount(quoteAmounts?.swapMinReceiveAmount)

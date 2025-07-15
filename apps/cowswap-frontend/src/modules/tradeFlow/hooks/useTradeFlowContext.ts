@@ -14,11 +14,10 @@ import { useBridgeQuoteAmounts } from 'modules/bridge'
 import { useGeneratePermitHook, useGetCachedPermit, usePermitInfo } from 'modules/permit'
 import { useEnoughBalanceAndAllowance } from 'modules/tokens'
 import {
-  useDerivedTradeState,
+  useDerivedTradeState, useGetReceiveAmountInfo,
   useIsHooksTradeType,
-  useReceiveAmountInfo,
   useTradeConfirmActions,
-  useTradeTypeInfo,
+  useTradeTypeInfo
 } from 'modules/trade'
 import { TradeTypeToUiOrderType } from 'modules/trade/const/common'
 import { getOrderValidTo, useTradeQuote } from 'modules/tradeQuote'
@@ -40,7 +39,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
   const { allowsOffchainSigning } = useWalletDetails()
   const isSafeWallet = useIsSafeWallet()
   const derivedTradeState = useDerivedTradeState()
-  const receiveAmountInfo = useReceiveAmountInfo()
+  const receiveAmountInfo = useGetReceiveAmountInfo()
   const tradeTypeInfo = useTradeTypeInfo()
   const tradeType = tradeTypeInfo?.tradeType
   const uiOrderType = tradeType ? TradeTypeToUiOrderType[tradeType] : null

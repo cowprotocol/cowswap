@@ -3,12 +3,12 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useEnoughBalanceAndAllowance } from 'modules/tokens'
 
-import { useReceiveAmountInfo } from './useReceiveAmountInfo'
+import { useGetReceiveAmountInfo } from './useGetReceiveAmountInfo'
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useHasTradeEnoughAllowance() {
-  const receiveAmountInfo = useReceiveAmountInfo()
+  const receiveAmountInfo = useGetReceiveAmountInfo()
   const { chainId, account } = useWalletInfo()
 
   const amount = receiveAmountInfo?.afterSlippage.sellAmount

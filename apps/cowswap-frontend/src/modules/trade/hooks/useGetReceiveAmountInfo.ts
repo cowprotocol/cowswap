@@ -1,28 +1,34 @@
-import { TokenWithLogo } from '@cowprotocol/common-const'
+import { useMemo } from 'react'
+
 import { isFractionFalsy } from '@cowprotocol/common-utils'
+import { Currency, Price } from '@uniswap/sdk-core'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
+import { useGetIntermediateTokenIfExists } from './useGetIntermediateTokenIfExists'
 
 import { useTradeQuote } from '../../tradeQuote'
 import { useVolumeFee } from '../../volumeFee'
-import { getReceiveAmountInfo } from '../utils/getReceiveAmountInfo'
+import { AmountsAndCosts, getReceiveAmountInfo } from '../utils/getReceiveAmountInfo'
 
-export function useGetReceiveAmountInfo(intermediateCurrency?: TokenWithLogo) {
+export function useGetReceiveAmountInfo(): (AmountsAndCosts & { quotePrice: Price<Currency, Currency> }) | null {
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount, slippage, orderKind } =
     useDerivedTradeState() ?? {}
   const tradeQuote = useTradeQuote()
-  const volumeFee = useVolumeFee()
+  const volumeFeeBps = useVolumeFee()?.volumeBps
   const quoteResponse = tradeQuote.quote?.quoteResults.quoteResponse
   const orderParams = quoteResponse?.quote
+  const intermediateCurrency = useGetIntermediateTokenIfExists(orderParams)
 
-  if (isFractionFalsy(inputCurrencyAmount) && isFractionFalsy(outputCurrencyAmount)) return null
-  // Avoid states mismatch
-  if (orderKind !== orderParams?.kind) return null
+  return useMemo(() => {
+    if (isFractionFalsy(inputCurrencyAmount) && isFractionFalsy(outputCurrencyAmount)) return null
+    // Avoid states mismatch
+    if (orderKind !== orderParams?.kind) return null
 
-  if (orderParams && inputCurrency && outputCurrency && slippage) {
-    return getReceiveAmountInfo(orderParams, inputCurrency, outputCurrency, slippage, volumeFee?.volumeBps, intermediateCurrency)
-  }
+    if (orderParams && inputCurrency && outputCurrency && slippage) {
+      return getReceiveAmountInfo(orderParams, inputCurrency, outputCurrency, slippage, volumeFeeBps, intermediateCurrency)
+    }
 
-  return null
+    return null
+  }, [orderParams, intermediateCurrency, volumeFeeBps, inputCurrencyAmount, outputCurrency, orderKind, inputCurrency, outputCurrencyAmount, slippage])
 }
 
