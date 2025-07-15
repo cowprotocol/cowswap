@@ -3,12 +3,7 @@ import { ReactNode, useEffect } from 'react'
 import { BridgeStatus, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import {
-  useCrossChainOrder,
-  usePendingBridgeOrders,
-  useUpdateBridgeOrderQuote,
-  BRIDGING_FINAL_STATUSES,
-} from 'entities/bridgeOrders'
+import { useCrossChainOrder, usePendingBridgeOrders, useUpdateBridgeOrderQuote } from 'entities/bridgeOrders'
 import { useAddOrderToSurplusQueue } from 'entities/surplusModal'
 
 interface PendingOrderUpdaterProps {
