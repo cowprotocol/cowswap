@@ -159,7 +159,7 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
   const doNotQuery = getDoNotQueryStatusEndpoint(order, apiSolverCompetition, !!disableProgressBar)
 
   const winnerSolver = apiSolverCompetition?.[0]
-  const swapAndBridgeContext = useSwapAndBridgeContext(
+  const { swapAndBridgeContext } = useSwapAndBridgeContext(
     chainId,
     isBridgingTrade ? order : undefined,
     winnerSolver,
