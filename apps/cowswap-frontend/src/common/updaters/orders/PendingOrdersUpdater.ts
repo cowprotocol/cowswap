@@ -40,6 +40,7 @@ import {
 } from 'modules/orders'
 
 import { getOrder } from 'api/cowProtocol'
+import { getIsBridgeOrder } from 'common/utils/getIsBridgeOrder'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { fetchAndClassifyOrder } from './utils'
@@ -288,9 +289,12 @@ async function _updateOrders({
       isSafeWallet,
     })
     // add to surplus queue
-    fulfilled.forEach(({ uid, fullAppData, class: orderClass }) => {
+    fulfilled.forEach((order) => {
+      const { uid, fullAppData, class: orderClass } = order
       if (getUiOrderType({ fullAppData, class: orderClass }) === UiOrderType.SWAP) {
-        addOrderToSurplusQueue(uid)
+        if (!getIsBridgeOrder(order)) {
+          addOrderToSurplusQueue(uid)
+        }
       }
     })
     // trigger total surplus update

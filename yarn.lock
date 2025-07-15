@@ -1808,10 +1808,10 @@
   resolved "https://registry.yarnpkg.com/@corex/deepmerge/-/deepmerge-4.0.43.tgz#9bd42559ebb41cc5a7fb7cfeea5f231c20977dca"
   integrity sha512-N8uEMrMPL0cu/bdboEWpQYb/0i2K5Qn8eCsxzOmxSggJbbQte7ljMRoXm917AbntqTGOzdTu+vP3KOOzoC70HQ==
 
-"@cowprotocol/app-data@^3.1.0":
-  version "3.1.0"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/app-data/-/app-data-3.1.0.tgz#2ba5ec7d958b2510f17b08c7e18e05157032c4da"
-  integrity sha512-hdIWp6fGz/vx3gdoJgwd8Dx8rYAblpZEBiXss5mNzgF/LBb21VVhF075sDl9oxyesKuJayKjgiAgaFiZYVgblA==
+"@cowprotocol/app-data@^3.2.0":
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/app-data/-/app-data-3.2.0.tgz#c6c0830aadcbbad99d063beb5a0361db4c69c7c0"
+  integrity sha512-KCLYUF8Jyzrv3EyT0TTzD1Pu0UQcPpka2hD8PW226ezdeD3JQUyZul08uKk9/wPm3a3b2PHOJwsNAvuYkT07qQ==
   dependencies:
     ajv "^8.11.0"
     cross-fetch "^3.1.5"
@@ -1841,12 +1841,12 @@
   resolved "https://registry.yarnpkg.com/@cowprotocol/cow-runner-game/-/cow-runner-game-0.2.9.tgz#3f94b3f370bd114f77db8b1d238cba3ef4e9d644"
   integrity sha512-rX7HnoV+HYEEkBaqVUsAkGGo0oBrExi+d6Io+8nQZYwZk+IYLmS9jdcIObsLviM2h4YX8+iin6NuKl35AaiHmg==
 
-"@cowprotocol/cow-sdk@6.0.0-RC.73":
-  version "6.0.0-RC.73"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-6.0.0-RC.73.tgz#17082f0fc313f7b58452b8bfb62ed9d3c0f0548c"
-  integrity sha512-ZrkQwHs8EBG5nzTdwleeYXkVUSvJLZ/NGtYMCU/lB4WPj4FnBJ+Ao5YJaphd8i8CCZpTyb5LC8hnxr4y4WgwTw==
+"@cowprotocol/cow-sdk@6.0.0-RC.74":
+  version "6.0.0-RC.74"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-6.0.0-RC.74.tgz#1bd3dc033057932b4ba12f63efbddb1a1eca61e3"
+  integrity sha512-hU969C1d33xr1dKr32wIFVzGIah8usSYpNFO/y430LWYce9pTl9V1NHPW4rQAii/QYKQ1xzPk2GTLu92i1QpAQ==
   dependencies:
-    "@cowprotocol/app-data" "^3.1.0"
+    "@cowprotocol/app-data" "^3.2.0"
     "@cowprotocol/contracts" "^1.8.0"
     "@ethersproject/abstract-signer" "^5.8.0"
     "@openzeppelin/merkle-tree" "^1.0.8"

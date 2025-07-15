@@ -32,8 +32,9 @@ export async function swapFlow(
 ): Promise<void | boolean> {
   const {
     tradeConfirmActions,
-    callbacks: { getCachedPermit, setSigningStep },
+    callbacks: { getCachedPermit, addBridgeOrder, setSigningStep },
     tradeQuote,
+    bridgeQuoteAmounts,
   } = input
 
   const {
@@ -155,6 +156,15 @@ export async function swapFlow(
         signature,
       },
     })
+
+    if (bridgeQuoteAmounts) {
+      addBridgeOrder({
+        orderUid: orderId,
+        quoteAmounts: bridgeQuoteAmounts,
+        creationTimestamp: Date.now(),
+        recipient: orderParams.recipient,
+      })
+    }
 
     addPendingOrderStep(
       {

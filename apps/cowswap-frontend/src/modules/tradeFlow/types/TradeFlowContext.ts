@@ -15,6 +15,8 @@ import type { TradeConfirmActions } from 'modules/trade'
 import type { TradeFlowAnalyticsContext } from 'modules/trade/utils/tradeFlowAnalytics'
 import type { TradeQuoteState } from 'modules/tradeQuote'
 
+import { BridgeOrderData, BridgeQuoteAmounts } from 'common/types/bridge'
+
 export enum FlowType {
   REGULAR = 'REGULAR',
   EOA_ETH_FLOW = 'EOA_ETH_FLOW',
@@ -25,6 +27,7 @@ export enum FlowType {
 export interface TradeFlowContext {
   tradeQuote: QuoteAndPost
   tradeQuoteState: TradeQuoteState
+  bridgeQuoteAmounts: BridgeQuoteAmounts | null
   context: {
     chainId: number
     inputAmount: CurrencyAmount<Currency>
@@ -37,6 +40,7 @@ export interface TradeFlowContext {
     closeModals: Command
     getCachedPermit: ReturnType<typeof useGetCachedPermit>
     dispatch: AppDispatch
+    addBridgeOrder: (order: BridgeOrderData) => void
     setSigningStep(stepNumber: string, step: SigningSteps): void
   }
   tradeConfirmActions: TradeConfirmActions

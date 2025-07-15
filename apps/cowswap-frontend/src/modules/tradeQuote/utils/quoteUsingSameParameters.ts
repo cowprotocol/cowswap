@@ -83,7 +83,7 @@ function compareAppDataWithoutQuoteData(a: AppDataInfo['doc'] | undefined, b: Ap
  */
 function removeQuoteMetadata(appData: AppDataInfo['doc']): string {
   const { metadata: fullMetadata, ...rest } = appData
-  const { quote: _, utm: __, ...metadata } = fullMetadata
+  const { quote: _, utm: __, bridging: ___, ...metadata } = fullMetadata
 
   const obj = { ...rest, metadata }
   return jsonStringify(obj)

@@ -47,7 +47,7 @@ export function TradeRateDetails({
   const derivedTradeState = useDerivedTradeState()
   const tradeQuote = useTradeQuote()
   const shouldPayGas = useShouldPayGas()
-  const bridgeQuoteAmounts = useBridgeQuoteAmounts(receiveAmountInfo, tradeQuote.bridgeQuote)
+  const bridgeQuoteAmounts = useBridgeQuoteAmounts()
 
   const inputCurrency = derivedTradeState?.inputCurrency
 

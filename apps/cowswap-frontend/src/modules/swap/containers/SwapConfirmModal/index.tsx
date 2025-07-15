@@ -63,17 +63,12 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
   const { bridgeQuote } = useTradeQuote()
 
   const bridgeProvider = bridgeQuote?.providerInfo
-  const bridgeQuoteAmounts = useBridgeQuoteAmounts(receiveAmountInfo, bridgeQuote)
+  const bridgeQuoteAmounts = useBridgeQuoteAmounts()
   const swapContext = useQuoteSwapContext()
   const bridgeContext = useQuoteBridgeContext()
 
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
-  const submittedContent = (
-    <OrderSubmittedContent
-      bridgeQuoteAmounts={bridgeQuoteAmounts || undefined}
-      onDismiss={tradeConfirmActions.onDismiss}
-    />
-  )
+  const submittedContent = <OrderSubmittedContent onDismiss={tradeConfirmActions.onDismiss} />
   const labelsAndTooltips = useLabelsAndTooltips()
 
   const { values: balances } = useTokensBalancesCombined()
@@ -131,7 +126,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
         {shouldDisplayBridgeDetails && bridgeProvider && swapContext && bridgeContext
           ? (restContent) => (
               <>
-                <RateInfo label="Price" rateInfoParams={rateInfoParams} />
+                <RateInfo label="Price" rateInfoParams={rateInfoParams} fontSize={13} fontBold labelBold />
                 <QuoteDetails
                   isCollapsible
                   bridgeProvider={bridgeProvider}

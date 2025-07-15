@@ -14,7 +14,7 @@ import { useActivityDerivedState } from 'legacy/hooks/useActivityDerivedState'
 import { useMultipleActivityDescriptors } from 'legacy/hooks/useRecentActivity'
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
-import { BridgeQuoteAmounts, type SwapAndBridgeContext, SwapAndBridgeStatus } from 'modules/bridge'
+import { type SwapAndBridgeContext, SwapAndBridgeStatus } from 'modules/bridge'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
 import { getOrderCompetitionStatus } from 'api/cowProtocol/api'
@@ -41,7 +41,6 @@ type UseOrderProgressBarPropsParams = {
   activityDerivedState: ActivityDerivedState | null
   chainId: SupportedChainId
   isBridgingTrade: boolean
-  bridgeQuoteAmounts?: BridgeQuoteAmounts
 }
 
 export type UseOrderProgressBarResult = Pick<OrderProgressBarState, 'countdown'> & {
@@ -62,7 +61,6 @@ export const PROGRESS_BAR_TIMER_DURATION = 15 // in seconds
 export function useOrderProgressBarProps(
   chainId: SupportedChainId,
   order: Order | undefined,
-  bridgeQuoteAmounts?: BridgeQuoteAmounts,
 ): {
   props: OrderProgressBarProps
   activityDerivedState: ActivityDerivedState | null
@@ -77,7 +75,6 @@ export function useOrderProgressBarProps(
     chainId,
     activityDerivedState,
     isBridgingTrade,
-    bridgeQuoteAmounts,
   })
 
   const getCancellation = useCancelOrder()
@@ -116,7 +113,7 @@ export function useOrderProgressBarProps(
 // TODO: Reduce function complexity by extracting logic
 // eslint-disable-next-line max-lines-per-function, complexity
 function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): UseOrderProgressBarResult | undefined {
-  const { activityDerivedState, chainId, isBridgingTrade, bridgeQuoteAmounts } = params
+  const { activityDerivedState, chainId, isBridgingTrade } = params
 
   const {
     order,
@@ -159,12 +156,7 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
   const doNotQuery = getDoNotQueryStatusEndpoint(order, apiSolverCompetition, !!disableProgressBar)
 
   const winnerSolver = apiSolverCompetition?.[0]
-  const swapAndBridgeContext = useSwapAndBridgeContext(
-    chainId,
-    isBridgingTrade ? order : undefined,
-    winnerSolver,
-    bridgeQuoteAmounts,
-  )
+  const { swapAndBridgeContext } = useSwapAndBridgeContext(chainId, isBridgingTrade ? order : undefined, winnerSolver)
   const bridgingStatus = swapAndBridgeContext?.bridgingStatus
 
   // Local updaters of the respective atom

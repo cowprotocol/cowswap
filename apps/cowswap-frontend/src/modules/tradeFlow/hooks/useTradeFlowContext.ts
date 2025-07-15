@@ -3,6 +3,7 @@ import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, OrderClass, PriceQuality, Supported
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
+import { useAddBridgeOrder } from 'entities/bridgeOrders'
 import { useDispatch } from 'react-redux'
 import useSWR from 'swr'
 
@@ -19,8 +20,8 @@ import {
   useReceiveAmountInfo,
   useTradeConfirmActions,
   useTradeTypeInfo,
+  TradeTypeToUiOrderType,
 } from 'modules/trade'
-import { TradeTypeToUiOrderType } from 'modules/trade/const/common'
 import { getOrderValidTo, useTradeQuote } from 'modules/tradeQuote'
 
 import { useGP2SettlementContract } from 'common/hooks/useContract'
@@ -50,7 +51,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
   const setSigningStep = useSetSigningStep()
 
   const tradeQuote = useTradeQuote()
-  const bridgeContext = useBridgeQuoteAmounts(receiveAmountInfo, tradeQuote.bridgeQuote)
+  const bridgeContext = useBridgeQuoteAmounts()
 
   const sellCurrency = derivedTradeState?.inputCurrency
   const inputAmount = receiveAmountInfo?.afterSlippage.sellAmount
@@ -69,6 +70,8 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
   const { contract: settlementContract, chainId: settlementChainId } = useGP2SettlementContract()
   const appData = useAppData()
   const typedHooks = useAppDataHooks()
+  const addBridgeOrder = useAddBridgeOrder()
+  const bridgeQuoteAmounts = useBridgeQuoteAmounts()
 
   const checkAllowanceAddress = COW_PROTOCOL_VAULT_RELAYER_ADDRESS[settlementChainId || SupportedChainId.MAINNET]
   const { enoughAllowance } = useEnoughBalanceAndAllowance({
@@ -130,6 +133,8 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             validTo,
             orderKind,
             uiOrderType,
+            bridgeQuoteAmounts,
+            addBridgeOrder,
             setSigningStep,
           ]
         : null,
@@ -162,11 +167,14 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
         validTo,
         orderKind,
         uiOrderType,
-        setSigningStep,
+        bridgeQuoteAmounts,
+        addBridgeOrder,
+         setSigningStep,
       ]) => {
         return {
           tradeQuoteState,
           tradeQuote,
+          bridgeQuoteAmounts,
           context: {
             chainId,
             inputAmount,
@@ -180,6 +188,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             closeModals,
             getCachedPermit,
             dispatch,
+            addBridgeOrder,
             setSigningStep,
           },
           tradeConfirmActions,

@@ -185,7 +185,7 @@ export const useOrders = (
   }, [state, accountLowerCase, uiOrderType])
 }
 
-const useAllOrdersMap = ({ chainId }: GetOrdersParams): PartialOrdersMap => {
+export const useAllOrdersMap = ({ chainId }: GetOrdersParams): PartialOrdersMap => {
   const state = useOrdersStateNetwork(chainId)
 
   return useMemo(() => {
