@@ -2,8 +2,7 @@ import { SupportedChainId, CrossChainOrder, BridgeStatus } from '@cowprotocol/co
 
 import ms from 'ms.macro'
 import useSWR, { SWRConfiguration, SWRResponse } from 'swr'
-
-import { bridgingSdk } from '../../tradingSdk/bridgingSdk'
+import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 
 const UPDATE_INTERVAL = ms`5s`
 

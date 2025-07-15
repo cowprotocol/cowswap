@@ -12,7 +12,8 @@ import {
   deserializeQuoteAmounts,
   serializeQuoteAmounts,
 } from './bridgeOrdersStateSerializer'
-import { SerializedAmount } from './types'
+
+import { SerializedAmount } from '../types'
 
 type SerializedBridgeAmounts = BridgeQuoteAmounts<SerializedAmount>
 type BridgeOrderDataSerialized = BridgeOrderData<SerializedBridgeAmounts>

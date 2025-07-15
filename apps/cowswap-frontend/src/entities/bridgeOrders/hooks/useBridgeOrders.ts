@@ -5,7 +5,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { BridgeOrderData } from 'common/types/bridge'
 
-import { bridgeOrdersAtom } from './bridgeOrdersAtom'
+import { bridgeOrdersAtom } from '../state/bridgeOrdersAtom'
 
 export function useBridgeOrders(): BridgeOrderData[] | undefined {
   const { chainId, account } = useWalletInfo()

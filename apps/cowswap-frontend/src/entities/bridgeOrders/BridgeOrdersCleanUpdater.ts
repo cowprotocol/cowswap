@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react'
 
 import ms from 'ms.macro'
 
-import { bridgeOrdersAtom } from './bridgeOrdersAtom'
+import { bridgeOrdersAtom } from './state/bridgeOrdersAtom'
 
 const BRIDGE_ORDERS_TTL = ms`3d`
 
