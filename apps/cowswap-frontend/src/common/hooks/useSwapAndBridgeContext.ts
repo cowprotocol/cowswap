@@ -92,13 +92,6 @@ export function useSwapAndBridgeContext(
   const targetAmounts = useMemo(() => {
     if (!intermediateToken) return undefined
 
-    if (bridgeQuoteAmounts) {
-      return {
-        sellAmount: bridgeQuoteAmounts.swapMinReceiveAmount,
-        buyAmount: bridgeQuoteAmounts.bridgeMinReceiveAmount,
-      }
-    }
-
     if (crossChainOrder && bridgeReceiveAmount) {
       return {
         sellAmount: CurrencyAmount.fromRawAmount(
@@ -106,6 +99,13 @@ export function useSwapAndBridgeContext(
           crossChainOrder.bridgingParams.inputAmount.toString(),
         ),
         buyAmount: bridgeReceiveAmount,
+      }
+    }
+
+    if (bridgeQuoteAmounts) {
+      return {
+        sellAmount: bridgeQuoteAmounts.swapMinReceiveAmount,
+        buyAmount: bridgeQuoteAmounts.bridgeMinReceiveAmount,
       }
     }
 
