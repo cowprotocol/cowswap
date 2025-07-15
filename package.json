@@ -85,7 +85,7 @@
     "@fortawesome/free-regular-svg-icons": "^6.7.1",
     "@fortawesome/free-solid-svg-icons": "^6.7.1",
     "@fortawesome/react-fontawesome": "^0.2.2",
-    "@gnosis.pm/dex-js": "^0.10.0",
+    "@gnosis.pm/dex-js": "^0.14.0",
     "@lingui/cli": "^4.10.0",
     "@lingui/core": "^4.10.0",
     "@lingui/macro": "^4.10.0",
