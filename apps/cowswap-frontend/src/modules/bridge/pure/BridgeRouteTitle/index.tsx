@@ -13,7 +13,7 @@ interface BridgeRouteTitleProps {
   icon: ReactNode
   titlePrefix: ReactNode
   protocolName: string
-  bridgeProvider: BridgeProviderInfo
+  bridgeProvider?: BridgeProviderInfo
   protocolIconShowOnly?: 'first' | 'second'
   protocolIconSize?: number
   circleSize?: number
