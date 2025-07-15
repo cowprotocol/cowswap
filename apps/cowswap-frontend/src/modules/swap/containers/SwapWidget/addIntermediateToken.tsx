@@ -29,13 +29,18 @@ export function AddIntermediateToken({ intermediateBuyTokenAddress, onImport }: 
   )
 
   const allTokens = useMemo(() => {
-    const allTokensMap = new Map()
-
-    ;[...inactiveListsResult, ...blockchainResult, ...activeListsResult, ...externalApiResult].forEach((token) => {
-      if (!allTokensMap.has(token.address.toLowerCase())) {
-        allTokensMap.set(token.address.toLowerCase(), token)
+    const allTokensMap = [
+      ...inactiveListsResult,
+      ...blockchainResult,
+      ...activeListsResult,
+      ...externalApiResult,
+    ].reduce((map, token) => {
+      const addressLower = token.address.toLowerCase()
+      if (!map.has(addressLower)) {
+        map.set(addressLower, token)
       }
-    })
+      return map
+    }, new Map<string, TokenWithLogo>())
     return Array.from(allTokensMap.values())
   }, [inactiveListsResult, blockchainResult, activeListsResult, externalApiResult])
 
