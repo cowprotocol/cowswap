@@ -3,12 +3,7 @@ import { ReactNode, useEffect } from 'react'
 import { BridgeStatus, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import {
-  useCrossChainOrder,
-  useBridgeOrders,
-  useUpdateBridgeOrderQuote,
-  BRIDGING_FINAL_STATUSES,
-} from 'entities/bridgeOrders'
+import { useCrossChainOrder, usePendingBridgeOrders, useUpdateBridgeOrderQuote } from 'entities/bridgeOrders'
 import { useAddOrderToSurplusQueue } from 'entities/surplusModal'
 
 interface PendingOrderUpdaterProps {
@@ -39,13 +34,10 @@ function PendingOrderUpdater({ chainId, orderUid }: PendingOrderUpdaterProps): R
 
 export function PendingBridgeOrdersUpdater(): ReactNode {
   const { chainId } = useWalletInfo()
-  const bridgeOrders = useBridgeOrders()
 
-  if (!bridgeOrders) return null
+  const pendingBridgeOrders = usePendingBridgeOrders()
 
-  const pendingBridgeOrders = bridgeOrders.filter((order) =>
-    order.statusResult ? !BRIDGING_FINAL_STATUSES.includes(order.statusResult.status) : true,
-  )
+  if (!pendingBridgeOrders) return null
 
   return (
     <>

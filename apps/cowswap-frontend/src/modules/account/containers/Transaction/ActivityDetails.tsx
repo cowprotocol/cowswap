@@ -1,14 +1,15 @@
 import { ReactElement, ReactNode, useMemo } from 'react'
 
 import { COW_TOKEN_TO_CHAIN, V_COW, V_COW_CONTRACT_ADDRESS } from '@cowprotocol/common-const'
-import { ExplorerDataType, getExplorerLink, shortenAddress } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { areAddressesEqual, ExplorerDataType, getExplorerLink, shortenAddress } from '@cowprotocol/common-utils'
+import { BridgeStatus, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENS } from '@cowprotocol/ens'
 import { TokenLogo, useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
 import { UiOrderType } from '@cowprotocol/types'
 import { BannerOrientation, ExternalLink, Icon, IconType, TokenAmount, UI } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
+import { useBridgeOrderData, BRIDGING_FINAL_STATUSES } from 'entities/bridgeOrders'
 import { useAddOrderToSurplusQueue } from 'entities/surplusModal'
 
 import { getActivityState } from 'legacy/hooks/useActivityDerivedState'
@@ -210,8 +211,6 @@ export function ActivityDetails(props: {
 
   const { name: receiverEnsName } = useENS(order?.receiver)
 
-  // Check if Custom Recipient Warning Banner should be visible
-  const isCustomRecipientWarningBannerVisible = !useIsReceiverWalletBannerHidden(id) && order && isPending(order)
   const hideCustomRecipientWarning = useHideReceiverWalletBanner()
   const setShowProgressBar = useAddOrderToSurplusQueue() // TODO: not exactly the proper tool, rethink this
   const toggleAccountModal = useToggleAccountModal()
@@ -225,6 +224,17 @@ export function ActivityDetails(props: {
     isBridgeOrder ? order : undefined,
     undefined,
   )
+
+  const bridgeOrderData = useBridgeOrderData(order?.id)
+
+  const bridgingStatus = swapAndBridgeContext?.statusResult?.status
+  const isOrderPending = isBridgeOrder
+    ? bridgingStatus && bridgingStatus !== BridgeStatus.UNKNOWN
+      ? !BRIDGING_FINAL_STATUSES.includes(bridgingStatus)
+      : !!bridgeOrderData
+    : order && isPending(order)
+
+  const isCustomRecipientWarningBannerVisible = !useIsReceiverWalletBannerHidden(id) && order && isOrderPending
 
   const showProgressBarCallback = useMemo(() => {
     if (!showProgressBar) {
@@ -313,7 +323,10 @@ export function ActivityDetails(props: {
     outputToken = COW_TOKEN_TO_CHAIN[chainId as SupportedChainId]
   }
 
-  const isCustomRecipient = !!order && getIsCustomRecipient(order)
+  const recipient = isBridgeOrder ? swapAndBridgeOverview?.targetRecipient : order?.receiver
+  const isCustomRecipient =
+    !!order &&
+    (isBridgeOrder ? (recipient ? !areAddressesEqual(order.owner, recipient) : false) : getIsCustomRecipient(order))
 
   const hooksDetails = fullAppData ? (
     <OrderHooksDetails appData={fullAppData} margin="10px 0 0">
@@ -342,7 +355,7 @@ export function ActivityDetails(props: {
   return (
     <>
       {/* Warning banner if custom recipient */}
-      {isCustomRecipient && isCustomRecipientWarningBannerVisible && !isBridgeOrder && (
+      {isCustomRecipient && isCustomRecipientWarningBannerVisible && (
         <CustomRecipientWarningBanner
           borderRadius={'12px 12px 0 0'}
           orientation={BannerOrientation.Horizontal}

@@ -9,9 +9,9 @@ import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { usePendingOrdersPrices, useGetSpotPrice } from 'modules/orders'
 import { useBalancesAndAllowances } from 'modules/tokens'
 
-import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
 import { useNavigate } from 'common/hooks/useNavigate'
+import { usePendingActivitiesCount } from 'common/hooks/usePendingActivitiesCount'
 
 import { useOrdersTableList } from '../containers/OrdersTableWidget/hooks/useOrdersTableList'
 import { useValidatePageUrlParams } from '../containers/OrdersTableWidget/hooks/useValidatePageUrlParams'
@@ -46,7 +46,7 @@ export function OrdersTableStateUpdater({
   const isSafeViaWc = useIsSafeViaWc()
   const injectedWidgetParams = useInjectedWidgetParams()
   const balancesAndAllowances = useBalancesAndAllowances()
-  const { pendingActivity } = useCategorizeRecentActivity()
+  const pendingActivitiesCount = usePendingActivitiesCount()
 
   const ordersList = useOrdersTableList(allOrders, orderType, chainId, balancesAndAllowances)
 
@@ -78,7 +78,7 @@ export function OrdersTableStateUpdater({
       orderType,
       injectedWidgetParams,
       isTwapTable,
-      pendingActivities: pendingActivity,
+      pendingActivitiesCount,
       selectedOrders,
     })
   }, [
@@ -100,7 +100,7 @@ export function OrdersTableStateUpdater({
     orderType,
     injectedWidgetParams,
     isTwapTable,
-    pendingActivity,
+    pendingActivitiesCount,
     selectedOrders,
   ])
 

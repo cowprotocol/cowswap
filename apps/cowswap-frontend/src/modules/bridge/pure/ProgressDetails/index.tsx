@@ -74,7 +74,7 @@ function BridgeStep({ context, bridgeStatus }: BridgeStepProps): ReactNode {
           quoteContext={quoteBridgeContext}
         />
       ) : (
-        <PreparingBridgingContent />
+        <PreparingBridgingContent overview={overview} />
       )}
     </BridgeDetailsContainer>
   )

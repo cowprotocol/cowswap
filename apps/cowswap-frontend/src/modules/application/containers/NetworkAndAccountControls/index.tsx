@@ -6,17 +6,14 @@ import { HeaderControls, HeaderElement } from 'legacy/components/Header/styled'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
-import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
-
 export function NetworkAndAccountControls(): ReactNode {
   const { hideNetworkSelector } = useInjectedWidgetParams()
-  const { pendingActivity } = useCategorizeRecentActivity()
 
   return (
     <HeaderControls>
       {!hideNetworkSelector && <NetworkSelector />}
       <HeaderElement>
-        <AccountElement pendingActivities={pendingActivity} />
+        <AccountElement />
       </HeaderElement>
     </HeaderControls>
   )

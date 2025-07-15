@@ -6,7 +6,7 @@ import { useTokensByAddressMap } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import { useBridgeOrderQuoteAmounts, useCrossChainOrder } from 'entities/bridgeOrders'
+import { useBridgeOrderData, useCrossChainOrder } from 'entities/bridgeOrders'
 import { useBridgeSupportedNetworks } from 'entities/bridgeProvider'
 import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 
@@ -64,11 +64,14 @@ export function useSwapAndBridgeContext(
   }, [fullAppData])
 
   const swapResultContext = useSwapResultsContext(order, winningSolver, intermediateToken)
-  const bridgeQuoteAmounts = useBridgeOrderQuoteAmounts(order?.id)
+  const bridgeOrderData = useBridgeOrderData(order?.id)
 
-  const receivedAmount = swapResultContext?.receivedAmount
-  const bridgeOutputAmount = crossChainOrder?.bridgingParams.outputAmount
+  const bridgeQuoteAmounts = bridgeOrderData?.quoteAmounts
+  const targetRecipient = bridgeOrderData?.recipient || crossChainOrder?.bridgingParams.recipient
   const bridgeFee = bridgeQuoteAmounts?.bridgeFee || null
+  const bridgeMinReceiveAmount = bridgeQuoteAmounts?.bridgeMinReceiveAmount || null
+  const bridgeOutputAmount = crossChainOrder?.bridgingParams.outputAmount
+  const receivedAmount = swapResultContext?.receivedAmount
 
   /**
    * Get receive amount from crossChainOrder if possible
@@ -81,9 +84,9 @@ export function useSwapAndBridgeContext(
       (!!crossChainOrder &&
         !!bridgeOutputAmount &&
         CurrencyAmount.fromRawAmount(order.outputToken, bridgeOutputAmount.toString())) ||
-      bridgeQuoteAmounts?.bridgeMinReceiveAmount
+      bridgeMinReceiveAmount
     )
-  }, [order, bridgeQuoteAmounts, crossChainOrder, bridgeOutputAmount])
+  }, [order, bridgeMinReceiveAmount, crossChainOrder, bridgeOutputAmount])
 
   /**
    * Bridge provider might not be able to derive `bridgingParams.outputAmount` before destination chain transaction is mined
@@ -107,9 +110,9 @@ export function useSwapAndBridgeContext(
     }
 
     return undefined
-  }, [bridgeQuoteAmounts, crossChainOrder, bridgeOutputAmount, bridgeReceiveAmount, intermediateToken, receivedAmount])
+  }, [bridgeQuoteAmounts, crossChainOrder, bridgeReceiveAmount, intermediateToken, receivedAmount, bridgeOutputAmount])
 
-  const swapAndBridgeOverview = useSwapAndBridgeOverview(order, intermediateToken, targetAmounts)
+  const swapAndBridgeOverview = useSwapAndBridgeOverview(order, intermediateToken, targetAmounts, targetRecipient)
 
   // TODO: Break down this large function into smaller functions
   // TODO: Reduce function complexity by extracting logic
@@ -161,6 +164,7 @@ export function useSwapAndBridgeContext(
       sellAmount: swapAndBridgeOverview.targetAmounts.sellAmount,
       buyAmount: swapAndBridgeOverview.targetAmounts.buyAmount,
       buyAmountUsd: null,
+      bridgeMinReceiveAmount,
     }
 
     return {
@@ -182,6 +186,7 @@ export function useSwapAndBridgeContext(
     bridgeReceiveAmount,
     swapAndBridgeOverview,
     bridgeFee,
+    bridgeMinReceiveAmount,
   ])
 
   return useMemo(

@@ -41,6 +41,8 @@ export function useQuoteBridgeContext(): QuoteBridgeContext | null {
       recipient,
       sellAmount: quoteAmounts.swapMinReceiveAmount,
       buyAmount: quoteAmounts.bridgeMinReceiveAmount,
+      // Since this is a quote content, we use buyAmount by default
+      bridgeMinReceiveAmount: null,
       buyAmountUsd: bridgeReceiveAmountUsd,
     }
   }, [quoteAmounts, bridgeQuote, recipient, bridgeSupportedNetworks, bridgeReceiveAmountUsd])
