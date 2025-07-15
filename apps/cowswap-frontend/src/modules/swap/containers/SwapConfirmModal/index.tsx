@@ -23,12 +23,12 @@ import {
   useReceiveAmountInfo,
   useTradeConfirmActions,
 } from 'modules/trade'
+import { StyledRateInfo } from 'modules/trade/containers/TradeTotalCostsDetails/styled'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { HighFeeWarning, RowDeadline } from 'modules/tradeWidgetAddons'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
-import { RateInfo } from 'common/pure/RateInfo'
 
 import { useLabelsAndTooltips } from './useLabelsAndTooltips'
 
@@ -131,7 +131,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
         {shouldDisplayBridgeDetails && bridgeProvider && swapContext && bridgeContext
           ? (restContent) => (
               <>
-                <RateInfo label="Price" rateInfoParams={rateInfoParams} />
+                <StyledRateInfo label="Price" rateInfoParams={rateInfoParams} />
                 <QuoteDetails
                   isCollapsible
                   bridgeProvider={bridgeProvider}
