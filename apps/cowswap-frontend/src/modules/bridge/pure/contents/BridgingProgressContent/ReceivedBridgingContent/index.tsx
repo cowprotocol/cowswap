@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
-import { BridgeStatusResult, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { BridgeStatusResult, SupportedChainId, BridgeProviderInfo } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { useBridgeSupportedNetworks } from 'entities/bridgeProvider'
@@ -20,6 +20,8 @@ interface ReceivedBridgingContentProps {
   destinationChainId: number
   receivedAmount: CurrencyAmount<Currency>
   receivedAmountUsd: CurrencyAmount<Token> | null | undefined
+  explorerUrl?: string
+  bridgeProvider?: BridgeProviderInfo
 }
 
 export function ReceivedBridgingContent({
@@ -28,6 +30,8 @@ export function ReceivedBridgingContent({
   receivedAmount,
   sourceChainId,
   destinationChainId,
+  explorerUrl,
+  bridgeProvider,
 }: ReceivedBridgingContentProps): ReactNode {
   const { depositTxHash, fillTxHash } = statusResult || {}
   const { data: bridgeSupportedNetworks } = useBridgeSupportedNetworks()
@@ -54,9 +58,20 @@ export function ReceivedBridgingContent({
         </b>
       </ConfirmDetailsItem>
 
-      <DepositTxLink depositTxHash={depositTxHash} sourceChainId={sourceChainId} />
-      {fillTxLink && (
-        <TransactionLinkItem link={fillTxLink} label="Destination transaction" chainId={destinationChainId} />
+      {explorerUrl ? (
+        <TransactionLinkItem
+          link={explorerUrl}
+          label="Bridge transaction"
+          chainId={0}
+          bridgeProvider={bridgeProvider}
+        />
+      ) : (
+        <>
+          <DepositTxLink depositTxHash={depositTxHash} sourceChainId={sourceChainId} />
+          {fillTxLink && (
+            <TransactionLinkItem link={fillTxLink} label="Destination transaction" chainId={destinationChainId} />
+          )}
+        </>
       )}
     </>
   )
