@@ -25,7 +25,6 @@ const BASIC_SWR_CONFIG: SWRConfiguration = {
 }
 // A small gap between balances and allowances refresh intervals is needed to avoid high load to the node at the same time
 const BALANCES_SWR_CONFIG: SWRConfiguration = { ...BASIC_SWR_CONFIG, refreshInterval: ms`31s` }
-const ALLOWANCES_SWR_CONFIG: SWRConfiguration = { ...BASIC_SWR_CONFIG, refreshInterval: ms`33s` }
 
 export interface BalancesAndAllowancesUpdaterProps {
   account: string | undefined
@@ -54,8 +53,6 @@ export function BalancesAndAllowancesUpdater({
   }, [excludedTokens, allTokens, chainId])
 
   const balancesSwrConfig = useSwrConfigWithPauseForNetwork(chainId, account, BALANCES_SWR_CONFIG)
-  // TODO: this hook relies on balances cache, but is used for allowances, must be fixed
-  const allowancesSwrConfig = useSwrConfigWithPauseForNetwork(chainId, account, ALLOWANCES_SWR_CONFIG)
 
   usePersistBalancesAndAllowances({
     account,
@@ -63,7 +60,6 @@ export function BalancesAndAllowancesUpdater({
     tokenAddresses,
     setLoadingState: true,
     balancesSwrConfig,
-    allowancesSwrConfig,
   })
 
   // Add native token balance to the store as well

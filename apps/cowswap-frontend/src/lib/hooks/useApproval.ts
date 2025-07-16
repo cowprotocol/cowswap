@@ -8,20 +8,19 @@ import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
-import { useTokenAllowance } from 'legacy/hooks/useTokenAllowance'
-
 import { ApprovalState } from 'common/hooks/useApproveState'
 import { useTokenContract } from 'common/hooks/useContract'
+import { useTokenAllowance } from 'common/hooks/useTokenAllowance'
 
 export interface ApprovalStateForSpenderResult {
   approvalState: ApprovalState
-  currentAllowance?: CurrencyAmount<Token>
+  currentAllowance?: bigint
 }
 
 function toApprovalState(
   amountToApprove: Nullish<CurrencyAmount<Currency>>,
   spender: string | undefined,
-  currentAllowance?: CurrencyAmount<Token>,
+  currentAllowance?: bigint,
   pendingApproval?: boolean,
 ): ApprovalState {
   // Unknown amount or spender
@@ -39,8 +38,9 @@ function toApprovalState(
     return ApprovalState.UNKNOWN
   }
 
+  const amountToApproveBigInt = BigInt(amountToApprove.quotient.toString())
   // Enough allowance
-  if (!currentAllowance.lessThan(amountToApprove)) {
+  if (!(currentAllowance < amountToApproveBigInt)) {
     return ApprovalState.APPROVED
   }
 
@@ -56,7 +56,7 @@ export function useApprovalStateForSpender(
   const currency = amountToApprove?.currency
   const token = currency && !getIsNativeToken(currency) ? currency : undefined
 
-  const currentAllowance = useTokenAllowance(token, account ?? undefined, spender)
+  const currentAllowance = useTokenAllowance(token, account ?? undefined, spender).data
   const pendingApproval = useIsPendingApproval(token, spender)
 
   return useMemo(() => {
@@ -66,7 +66,7 @@ export function useApprovalStateForSpender(
 }
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+
 export function useApproval(
   amountToApprove: CurrencyAmount<Currency> | undefined,
   spender: string | undefined,

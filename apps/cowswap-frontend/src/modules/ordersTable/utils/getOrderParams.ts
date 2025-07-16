@@ -38,9 +38,11 @@ export function getOrderParams(
     invertedActiveRateFiatAmount: null,
   }
 
-  const { balances, allowances } = balancesAndAllowances
+  const { balances } = balancesAndAllowances
   const balance = balances[order.inputToken.address.toLowerCase()]
-  const allowance = allowances[order.inputToken.address.toLowerCase()]
+  // TODO: add allowances
+  const allowance = undefined
+  // const allowance = allowances[order.inputToken.address.toLowerCase()]
 
   const { hasEnoughBalance, hasEnoughAllowance } = _hasEnoughBalanceAndAllowance({
     partiallyFillable: order.partiallyFillable,

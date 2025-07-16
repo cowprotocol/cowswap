@@ -1,4 +1,3 @@
-import { useAddPriorityAllowance } from '@cowprotocol/balances-and-allowances'
 import { useGnosisSafeInfo, useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
@@ -17,7 +16,7 @@ import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 import { CheckEthereumTransactions } from '../types'
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+
 export function usePendingTransactionsContext(): CheckEthereumTransactions | null {
   const provider = useWalletProvider()
   const { chainId, account } = useWalletInfo()
@@ -29,7 +28,6 @@ export function usePendingTransactionsContext(): CheckEthereumTransactions | nul
   const cancelOrdersBatch = useCancelOrdersBatch()
   const getReceipt = useGetReceipt(chainId)
   const getTxSafeInfo = useGetSafeTxInfo()
-  const addPriorityAllowance = useAddPriorityAllowance()
   const getTwapOrderById = useGetTwapOrderById()
   const nativeCurrencySymbol = useNativeCurrency().symbol || 'ETH'
 
@@ -48,7 +46,6 @@ export function usePendingTransactionsContext(): CheckEthereumTransactions | nul
         dispatch,
         nativeCurrencySymbol,
         cancelOrdersBatch,
-        addPriorityAllowance,
         account,
         getTwapOrderById,
         transactionsCount,
@@ -68,7 +65,6 @@ export function usePendingTransactionsContext(): CheckEthereumTransactions | nul
       getTxSafeInfo,
       nativeCurrencySymbol,
       cancelOrdersBatch,
-      addPriorityAllowance,
       getTwapOrderById,
       safeInfo,
     ],
