@@ -25,7 +25,7 @@ export function useNeedsApproval(amount: Nullish<CurrencyAmount<Currency>>): boo
   const token = amount ? getWrappedToken(amount.currency) : undefined
   const allowance = useTokenAllowance(token).data
 
-  if (!allowance) {
+  if (typeof allowance === 'undefined') {
     return true
   }
 

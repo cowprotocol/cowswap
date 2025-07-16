@@ -54,10 +54,9 @@ export function useApproveState(amountToApprove: Nullish<CurrencyAmount<Currency
  */
 function useAuxApprovalState(approvalStateBase: ApprovalState, currentAllowance?: bigint): ApprovalState {
   const previousApprovalState = usePrevious(approvalStateBase)
-  const currentAllowanceString = currentAllowance
-  const previousAllowanceString = usePrevious(currentAllowanceString)
+  const previousAllowance = usePrevious(currentAllowance)
   // Has allowance actually updated?
-  const allowanceHasNotChanged = previousAllowanceString === currentAllowanceString
+  const allowanceHasNotChanged = previousAllowance === currentAllowance
 
   return useMemo(() => {
     return previousApprovalState === ApprovalState.PENDING && allowanceHasNotChanged

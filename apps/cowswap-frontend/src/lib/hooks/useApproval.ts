@@ -34,7 +34,7 @@ function toApprovalState(
   }
 
   // Unknown allowance
-  if (!currentAllowance) {
+  if (typeof currentAllowance === 'undefined') {
     return ApprovalState.UNKNOWN
   }
 
