@@ -28,9 +28,9 @@ function PendingOrderUpdater({ chainId, orderUid }: PendingOrderUpdaterProps): R
     if (isOrderExecuted) {
       updateBridgeOrderQuote(orderUid, crossChainOrder.statusResult)
       addOrderToSurplusQueue(orderUid)
-      fulfillOrdersBatch(crossChainOrder as any)
+      fulfillOrdersBatch({ chainId: chainId, order: crossChainOrder })
     }
-  }, [crossChainOrder, updateBridgeOrderQuote, addOrderToSurplusQueue, fulfillOrdersBatch])
+  }, [crossChainOrder, updateBridgeOrderQuote, addOrderToSurplusQueue, fulfillOrdersBatch, chainId])
 
   return null
 }

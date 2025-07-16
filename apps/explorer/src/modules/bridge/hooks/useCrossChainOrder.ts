@@ -21,9 +21,6 @@ export function useCrossChainOrder(orderId: string | undefined): SWRResponse<Cro
           env,
           providers: knownBridgeProviders,
           orderBookApi,
-        }).then((data) => {
-          console.log('useCrossChainOrder', data)
-          return data
         })
       }
 

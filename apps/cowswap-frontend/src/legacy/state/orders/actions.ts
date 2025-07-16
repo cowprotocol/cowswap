@@ -1,4 +1,5 @@
 import {
+  CrossChainOrder,
   EnrichedOrder,
   OrderClass,
   OrderCreation,
@@ -183,7 +184,7 @@ export interface FulfillOrdersBatchParams {
 
 export interface FulfillBridgeOrderParams {
   chainId: ChainId
-  order: Partial<Omit<SerializedOrder, 'id'>> & Pick<SerializedOrder, 'id'>
+  order: CrossChainOrder
 }
 
 export interface BatchOrdersUpdateParams {
