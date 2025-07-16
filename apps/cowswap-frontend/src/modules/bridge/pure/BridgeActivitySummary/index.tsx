@@ -1,5 +1,7 @@
 import { ReactNode } from 'react'
 
+import type { Order } from 'legacy/state/orders/actions'
+
 import { ShimmerWrapper, SummaryRow } from 'common/pure/OrderSummaryRow'
 
 import { BridgeStepRow } from './BridgeStepRow'
@@ -9,6 +11,8 @@ import { SwapStepRow } from './SwapStepRow'
 import { SwapAndBridgeContext, SwapAndBridgeOverview, SwapResultContext } from '../../types'
 
 interface BridgeActivitySummaryProps {
+  order: Order
+  isCustomRecipientWarning: boolean
   swapAndBridgeContext: SwapAndBridgeContext | undefined
   swapResultContext: SwapResultContext | undefined
   swapAndBridgeOverview: SwapAndBridgeOverview
@@ -17,11 +21,23 @@ interface BridgeActivitySummaryProps {
 }
 
 export function BridgeActivitySummary(props: BridgeActivitySummaryProps): ReactNode {
-  const { swapAndBridgeContext, swapResultContext, swapAndBridgeOverview, orderBasicDetails, children } = props
+  const {
+    order,
+    swapAndBridgeContext,
+    swapResultContext,
+    swapAndBridgeOverview,
+    orderBasicDetails,
+    children,
+    isCustomRecipientWarning,
+  } = props
 
   return (
     <>
-      <BridgeSummaryHeader swapAndBridgeOverview={swapAndBridgeOverview} />
+      <BridgeSummaryHeader
+        order={order}
+        isCustomRecipientWarning={isCustomRecipientWarning}
+        swapAndBridgeOverview={swapAndBridgeOverview}
+      />
 
       <SwapStepRow
         swapResultContext={swapResultContext}

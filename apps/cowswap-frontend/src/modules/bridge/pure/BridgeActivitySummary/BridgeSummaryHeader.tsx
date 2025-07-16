@@ -1,19 +1,35 @@
 import { ReactNode } from 'react'
 
-import { capitalizeFirstLetter } from '@cowprotocol/common-utils'
+import {
+  areAddressesEqual,
+  capitalizeFirstLetter,
+  ExplorerDataType,
+  getExplorerLink,
+  shortenAddress,
+} from '@cowprotocol/common-utils'
 import { TokenLogo } from '@cowprotocol/tokens'
-import { TokenAmount } from '@cowprotocol/ui'
+import { ExternalLink, Icon, IconType, TokenAmount, UI } from '@cowprotocol/ui'
+
+import type { Order } from 'legacy/state/orders/actions'
 
 import { ShimmerWrapper, SummaryRow } from 'common/pure/OrderSummaryRow'
 
 import { SwapAndBridgeOverview } from '../../types'
 
 interface BridgeSummaryHeaderProps {
+  order: Order
   swapAndBridgeOverview: SwapAndBridgeOverview
+  isCustomRecipientWarning: boolean
 }
 
-export function BridgeSummaryHeader({ swapAndBridgeOverview }: BridgeSummaryHeaderProps): ReactNode {
-  const { sourceAmounts, targetAmounts, sourceChainName, targetChainName } = swapAndBridgeOverview
+export function BridgeSummaryHeader({
+  order,
+  swapAndBridgeOverview,
+  isCustomRecipientWarning,
+}: BridgeSummaryHeaderProps): ReactNode {
+  const { sourceAmounts, targetAmounts, sourceChainName, targetChainName, targetRecipient } = swapAndBridgeOverview
+  const isCustomRecipient = !!targetRecipient && !areAddressesEqual(order.owner, targetRecipient)
+  const targetAmount = targetAmounts?.buyAmount
 
   return (
     <>
@@ -30,10 +46,10 @@ export function BridgeSummaryHeader({ swapAndBridgeOverview }: BridgeSummaryHead
         <b>To at least</b>
 
         <i>
-          {targetAmounts ? (
+          {targetAmount ? (
             <>
-              <TokenLogo token={targetAmounts.buyAmount.currency} size={20} />
-              <TokenAmount amount={targetAmounts.buyAmount} tokenSymbol={targetAmounts.buyAmount.currency} />
+              <TokenLogo token={targetAmount.currency} size={20} />
+              <TokenAmount amount={targetAmount} tokenSymbol={targetAmount.currency} />
             </>
           ) : (
             <ShimmerWrapper />
@@ -41,6 +57,22 @@ export function BridgeSummaryHeader({ swapAndBridgeOverview }: BridgeSummaryHead
           {` on ${capitalizeFirstLetter(targetChainName)}`}
         </i>
       </SummaryRow>
+
+      {isCustomRecipient && targetRecipient && targetAmount && (
+        <SummaryRow>
+          <b>Recipient:</b>
+          <i>
+            {isCustomRecipientWarning && (
+              <Icon image={IconType.ALERT} color={UI.COLOR_ALERT} description="Alert" size={18} />
+            )}
+            <ExternalLink
+              href={getExplorerLink(targetAmount.currency.chainId, targetRecipient, ExplorerDataType.ADDRESS)}
+            >
+              {shortenAddress(targetRecipient)} ↗
+            </ExternalLink>
+          </i>
+        </SummaryRow>
+      )}
     </>
   )
 }
