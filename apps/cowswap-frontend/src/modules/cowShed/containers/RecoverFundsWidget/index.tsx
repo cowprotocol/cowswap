@@ -3,9 +3,11 @@ import { ReactNode, useCallback } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { getCurrencyAddress, getIsNativeToken } from '@cowprotocol/common-utils'
-import { ButtonPrimary, Loader } from '@cowprotocol/ui'
+import { ButtonPrimary, CenteredDots } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
+
+import styled from 'styled-components/macro'
 
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
@@ -23,8 +25,14 @@ import { ConnectWalletButton, NoFunds, Wrapper } from './styled'
 
 import { useFetchTokenBalance } from '../../hooks/useFetchTokenBalance'
 import { useRecoverFundsCallback } from '../../hooks/useRecoverFundsCallback'
-import { useRecoverFundsFromProxy } from '../../hooks/useRecoverFundsFromProxy'
+import { RecoverSigningStep, useRecoverFundsFromProxy } from '../../hooks/useRecoverFundsFromProxy'
 import { BalanceToRecover } from '../../pure/BalanceToRecover'
+
+const ButtonPrimaryStyled = styled(ButtonPrimary)`
+  &:disabled {
+    font-size: 14px;
+  }
+`
 
 const selectedCurrencyAtom = atom<Currency | undefined>(undefined)
 
@@ -50,7 +58,7 @@ export function RecoverFundsWidget({ defaultToken: defaultTokenToRefund }: Recov
 
   const { isLoading: isBalanceLoading, tokenBalance } = useFetchTokenBalance(selectedCurrency, sourceChainId)
   const recoverFundsContext = useRecoverFundsFromProxy(selectedTokenAddress, tokenBalance, isNativeToken)
-  const { isTxSigningInProgress } = recoverFundsContext
+  const { txSigningStep } = recoverFundsContext
 
   const recoverFunds = useRecoverFundsCallback(recoverFundsContext)
 
@@ -80,10 +88,17 @@ export function RecoverFundsWidget({ defaultToken: defaultTokenToRefund }: Recov
           {selectedTokenAddress && (
             <>
               <BalanceToRecover tokenBalance={tokenBalance} isBalanceLoading={isBalanceLoading} />
-              {isTxSigningInProgress || hasBalance ? (
-                <ButtonPrimary onClick={recoverFunds} disabled={!hasBalance || isTxSigningInProgress}>
-                  {isTxSigningInProgress ? <Loader /> : 'Recover funds'}
-                </ButtonPrimary>
+              {txSigningStep || hasBalance ? (
+                <ButtonPrimaryStyled onClick={recoverFunds} disabled={!hasBalance || !!txSigningStep}>
+                  {txSigningStep && (
+                    <>
+                      {txSigningStep === RecoverSigningStep.SIGN_RECOVER_FUNDS && '1/2 Confirm funds recovering'}
+                      {txSigningStep === RecoverSigningStep.SIGN_TRANSACTION && '2/2 Sign transaction'}
+                      <CenteredDots smaller />
+                    </>
+                  )}
+                  {!txSigningStep && 'Recover funds'}
+                </ButtonPrimaryStyled>
               ) : (
                 <NoFunds>No funds to recover</NoFunds>
               )}
