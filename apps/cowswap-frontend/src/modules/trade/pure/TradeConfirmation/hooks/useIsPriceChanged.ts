@@ -1,12 +1,15 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+interface PriceChangedResult {
+  isPriceChanged: boolean
+  resetPriceChanged(): void
+}
+
 export function useIsPriceChanged(
   inputAmount: string | undefined,
   outputAmount: string | undefined,
   defaultState: boolean = false,
-) {
+): PriceChangedResult {
   const initialAmounts = useRef<{ inputAmount?: string; outputAmount?: string }>({})
 
   const [isPriceChanged, setIsPriceChanged] = useState(defaultState)

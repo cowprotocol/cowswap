@@ -1,8 +1,10 @@
 import { getEthFlowContractAddresses } from '@cowprotocol/common-const'
 import { reportPlaceOrderWithExpiredQuote } from '@cowprotocol/common-utils'
-import { OrderClass, SigningScheme } from '@cowprotocol/cow-sdk'
+import { OrderClass, SigningScheme, SigningStepManager } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 import { Percent } from '@uniswap/sdk-core'
+
+import { SigningSteps } from 'entities/trade'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { getOrderSubmitSummary, mapUnsignedOrderToOrder, wrapErrorInOperatorError } from 'legacy/utils/trade'
@@ -46,6 +48,7 @@ export async function ethFlow({
     typedHooks,
     tradeQuote,
     tradeQuoteState,
+    bridgeQuoteAmounts,
   } = tradeContext
   const { contract, appData, uploadAppData, addTransaction, checkEthFlowOrderExists, addInFlightOrderId } =
     ethFlowContext
@@ -53,6 +56,9 @@ export async function ethFlow({
   const { chainId, inputAmount, outputAmount } = context
   const tradeAmounts = { inputAmount, outputAmount }
   const { account, recipientAddressOrName, kind } = orderParams
+  const { addBridgeOrder, setSigningStep, closeModals, dispatch } = callbacks
+
+  const isBridgingOrder = inputAmount.currency.chainId !== outputAmount.currency.chainId
 
   logTradeFlow('ETH FLOW', 'STEP 1: confirm price impact')
   if (priceImpactParams?.priceImpact && !(await confirmPriceImpactWithoutFee(priceImpactParams.priceImpact))) {
@@ -86,6 +92,15 @@ export async function ethFlow({
 
     logTradeFlow('ETH FLOW', 'STEP 3: sign order')
 
+    const signingStepManager: SigningStepManager = {
+      beforeBridgingSign() {
+        setSigningStep('1/2', SigningSteps.BridgingSigning)
+      },
+      beforeOrderSign() {
+        setSigningStep('2/2', SigningSteps.OrderSigning)
+      },
+    }
+
     const {
       orderId,
       txHash,
@@ -94,20 +109,21 @@ export async function ethFlow({
       orderToSign: unsignedOrder,
     } = await wrapErrorInOperatorError(() =>
       tradeQuote
-        .postSwapOrderFromQuote({
-          appData: orderParams.appData.doc,
-          additionalParams: {
-            checkEthFlowOrderExists,
+        .postSwapOrderFromQuote(
+          {
+            appData: orderParams.appData.doc,
+            additionalParams: {
+              checkEthFlowOrderExists,
+            },
+            quoteRequest: {
+              signingScheme: SigningScheme.EIP1271,
+              validTo: orderParams.validTo,
+              receiver: orderParams.recipient,
+            },
           },
-          quoteRequest: {
-            signingScheme: SigningScheme.EIP1271,
-            validTo: orderParams.validTo,
-            receiver: orderParams.recipient,
-          },
-        })
-        .finally(() => {
-          callbacks.closeModals()
-        }),
+          isBridgingOrder ? signingStepManager : undefined,
+        )
+        .finally(closeModals),
     )
 
     const quoteId = tradeQuote.quoteResults.quoteResponse.id
@@ -144,6 +160,16 @@ export async function ethFlow({
     })
 
     logTradeFlow('ETH FLOW', 'STEP 5: add pending order step')
+
+    if (bridgeQuoteAmounts) {
+      addBridgeOrder({
+        orderUid: orderId,
+        quoteAmounts: bridgeQuoteAmounts,
+        creationTimestamp: Date.now(),
+        recipient: orderParams.recipient,
+      })
+    }
+
     addPendingOrderStep(
       {
         id: orderId,
@@ -151,7 +177,7 @@ export async function ethFlow({
         order,
         isSafeWallet: orderParams.isSafeWallet,
       },
-      callbacks.dispatch,
+      dispatch,
     )
     // TODO: maybe move this into addPendingOrderStep?
     addTransaction({ hash: txHash!, ethFlow: { orderId: order.id, subType: 'creation' } })
@@ -164,9 +190,7 @@ export async function ethFlow({
     analytics.sign(swapFlowAnalyticsContext)
 
     return true
-  // TODO: Replace any with proper type definitions
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
+  } catch (error) {
     logTradeFlow('ETH FLOW', 'STEP 8: ERROR: ', error)
     const swapErrorMessage = getSwapErrorMessage(error)
 
