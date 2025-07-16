@@ -93,7 +93,7 @@ export function RecoverFundsWidget({ defaultToken: defaultTokenToRefund }: Recov
                   {txSigningStep && (
                     <>
                       {txSigningStep === RecoverSigningStep.SIGN_RECOVER_FUNDS && '1/2 Confirm funds recovering'}
-                      {txSigningStep === RecoverSigningStep.SING_TRANSACTION && '2/2 Sign transaction'}
+                      {txSigningStep === RecoverSigningStep.SIGN_TRANSACTION && '2/2 Sign transaction'}
                       <CenteredDots smaller />
                     </>
                   )}

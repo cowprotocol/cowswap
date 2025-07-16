@@ -20,7 +20,7 @@ const DEFAULT_GAS_LIMIT = 600_000
 
 export enum RecoverSigningStep {
   SIGN_RECOVER_FUNDS = 'SIGN_RECOVER_FUNDS',
-  SING_TRANSACTION = 'SING_TRANSACTION',
+  SIGN_TRANSACTION = 'SIGN_TRANSACTION',
 }
 
 export interface RecoverFundsContext {
@@ -78,7 +78,7 @@ export function useRecoverFundsFromProxy(
         SigningScheme.EIP712, // TODO: support other signing types
       )
 
-      setTxSigningStep(RecoverSigningStep.SING_TRANSACTION)
+      setTxSigningStep(RecoverSigningStep.SIGN_TRANSACTION)
 
       const transaction = await cowShedContract.executeHooks(calls, nonce, BigInt(validTo), account, encodedSignature, {
         gasLimit: DEFAULT_GAS_LIMIT,
