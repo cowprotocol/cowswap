@@ -4,7 +4,7 @@ import { TokenWithLogo } from '@cowprotocol/common-const'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { useTokensByAddressMap } from '@cowprotocol/tokens'
 
-export function useGetIntermediateTokenIfExists(
+export function useGetIntermediateSellTokenIfExists(
   orderParams?: { kind: OrderKind; buyToken: string },
 ): TokenWithLogo | undefined {
   const tokensByAddress = useTokensByAddressMap()

@@ -5,13 +5,13 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { useBridgeSupportedNetworks } from 'entities/bridgeProvider'
 
 import { useDerivedTradeState } from 'modules/trade'
+import { useGetReceiveAmountInfo } from 'modules/trade/hooks/useGetReceiveAmountInfo'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { BRIDGE_QUOTE_ACCOUNT } from 'modules/tradeQuote'
 import { useUsdAmount } from 'modules/usdAmount'
 
 import { useBridgeQuoteAmounts } from './useBridgeQuoteAmounts'
 
-import { useGetReceiveAmountInfo } from '../../trade/hooks/useGetReceiveAmountInfo'
 import { QuoteBridgeContext } from '../types'
 
 export function useQuoteBridgeContext(): QuoteBridgeContext | null {

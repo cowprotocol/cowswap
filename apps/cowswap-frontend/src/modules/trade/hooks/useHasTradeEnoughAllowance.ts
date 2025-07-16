@@ -5,9 +5,7 @@ import { useEnoughBalanceAndAllowance } from 'modules/tokens'
 
 import { useGetReceiveAmountInfo } from './useGetReceiveAmountInfo'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useHasTradeEnoughAllowance() {
+export function useHasTradeEnoughAllowance(): boolean | undefined {
   const receiveAmountInfo = useGetReceiveAmountInfo()
   const { chainId, account } = useWalletInfo()
 

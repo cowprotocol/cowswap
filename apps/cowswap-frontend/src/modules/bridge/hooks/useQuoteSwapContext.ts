@@ -4,6 +4,7 @@ import { getChainInfo } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { useCurrentAccountProxyAddress } from 'modules/cowShed'
+import { useGetReceiveAmountInfo } from 'modules/trade/hooks/useGetReceiveAmountInfo'
 import { BRIDGE_QUOTE_ACCOUNT, useTradeQuote } from 'modules/tradeQuote'
 import { useTradeSlippage } from 'modules/tradeSlippage'
 import { useUsdAmount } from 'modules/usdAmount'
@@ -11,7 +12,6 @@ import { useUsdAmount } from 'modules/usdAmount'
 import { useBridgeQuoteAmounts } from './useBridgeQuoteAmounts'
 
 // todo
-import { useGetReceiveAmountInfo } from '../../trade/hooks/useGetReceiveAmountInfo'
 import { QuoteSwapContext } from '../types'
 
 export function useQuoteSwapContext(): QuoteSwapContext | null {

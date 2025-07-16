@@ -2,16 +2,18 @@ import { useMemo } from 'react'
 
 import { Order } from 'legacy/state/orders/actions'
 
+import { useGetIntermediateSellTokenIfExists } from 'modules/trade/hooks/useGetIntermediateSellTokenIfExists'
+
 import {
   ExecutedSummaryData, getExecutedSummaryData,
   getExecutedSummaryDataWithSurplusToken
 } from 'utils/getExecutedSummaryData'
 
-// todo
-import { useGetIntermediateTokenIfExists } from '../../modules/trade/hooks/useGetIntermediateTokenIfExists'
+
+
 
 export function useGetExecutedBridgeSummary(order: Order | undefined): ExecutedSummaryData | undefined {
-  const intermediateToken = useGetIntermediateTokenIfExists(order)
+  const intermediateToken = useGetIntermediateSellTokenIfExists(order)
 
   return useMemo(() => {
     if (!order) return undefined

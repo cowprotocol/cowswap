@@ -26,7 +26,6 @@ export function useBridgeQuoteAmounts(
     const { sellAmount: swapSellAmount, buyAmount } = receiveAmountInfo.afterSlippage
     const buyToken = buyAmount.currency
 
-    // todo move from here
     const intermediateBuyTokenAddress = bridgeQuote.tradeParameters.sellTokenAddress
     const intermediateBuyToken = tokensByAddress[intermediateBuyTokenAddress.toLowerCase()]
 
