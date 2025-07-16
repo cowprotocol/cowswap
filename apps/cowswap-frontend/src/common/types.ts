@@ -1,5 +1,5 @@
-import { BalancesState } from '@cowprotocol/balances-and-allowances'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import type { BigNumber } from '@ethersproject/bignumber'
+import type { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 /**
  * https://github.com/rndlabs/composable-cow/blob/main/src/ComposableCoW.sol
@@ -31,6 +31,7 @@ export interface TradeAmounts {
 }
 
 export interface BalancesAndAllowances {
-  balances: BalancesState['values']
+  balances: Record<string, BigNumber | undefined>
+  allowances?: Record<string, BigNumber | undefined>
   isLoading: boolean
 }

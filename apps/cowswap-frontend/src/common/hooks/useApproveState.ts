@@ -11,7 +11,8 @@ import { useHasPendingApproval } from 'legacy/state/enhancedTransactions/hooks'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
 import { useTokenAllowance } from './useTokenAllowance'
-import { useTradeSpenderAddress } from './useTradeSpenderAddress'
+
+import { getApprovalState } from '../utils/getApprovalState'
 
 export enum ApprovalState {
   UNKNOWN = 'UNKNOWN',
@@ -30,32 +31,13 @@ export function useApproveState(amountToApprove: Nullish<CurrencyAmount<Currency
   state: ApprovalState
   currentAllowance: Nullish<bigint>
 } {
-  const spender = useTradeSpenderAddress()
   const token = getCurrencyToApprove(amountToApprove)
   const tokenAddress = token?.address?.toLowerCase()
   const currentAllowance = useTokenAllowance(token).data
-  const pendingApproval = useHasPendingApproval(tokenAddress, spender)
+  const pendingApproval = useHasPendingApproval(tokenAddress)
 
   const approvalStateBase = useSafeMemo(() => {
-    if (!amountToApprove || !currentAllowance) {
-      return ApprovalState.UNKNOWN
-    }
-
-    const amountToApproveBigInt = BigInt(amountToApprove.quotient.toString())
-
-    if (currentAllowance >= amountToApproveBigInt) {
-      return ApprovalState.APPROVED
-    }
-
-    if (pendingApproval) {
-      return ApprovalState.PENDING
-    }
-
-    if (currentAllowance < amountToApproveBigInt) {
-      return ApprovalState.NOT_APPROVED
-    }
-
-    return ApprovalState.APPROVED
+    return getApprovalState(amountToApprove, currentAllowance, pendingApproval)
   }, [amountToApprove, currentAllowance, pendingApproval])
 
   const state = useAuxApprovalState(approvalStateBase, currentAllowance)

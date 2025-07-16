@@ -15,12 +15,16 @@ import SVG from 'react-inlinesvg'
 import { Link } from 'react-router'
 
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
+import { useHasPendingApproval } from 'legacy/state/enhancedTransactions/hooks'
 
+import { useTokenAllowances } from 'modules/ordersTable/hooks/useTokenAllowances'
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
 
 import { Routes } from 'common/constants/routes'
 import { useApproveCallback } from 'common/hooks/useApproveCallback'
-import { ApprovalState, useApproveState } from 'common/hooks/useApproveState'
+import { ApprovalState } from 'common/hooks/useApproveState'
+import { useSafeMemo } from 'common/hooks/useSafeMemo'
+import { getApprovalState } from 'common/utils/getApprovalState'
 import { CardsSpinner, ExtLink } from 'pages/Account/styled'
 
 import BalanceCell from './BalanceCell'
@@ -86,9 +90,22 @@ export const TokensTableRow = ({
 
   const amountToApprove = useMemo(() => CurrencyAmount.fromRawAmount(tokenData, MaxUint256), [tokenData])
 
-  const { state: approvalState, currentAllowance } = useApproveState(isNativeToken ? null : amountToApprove)
+  const tokenAddress = tokenData.address.toLowerCase()
+
+  const { state: allowances } = useTokenAllowances()
+  const currentAllowance = allowances?.[tokenAddress]
+
+  const pendingApproval = useHasPendingApproval(tokenAddress)
+
+  const approvalState = useSafeMemo(() => {
+    if (isNativeToken) return ApprovalState.APPROVED
+    if (!currentAllowance) return ApprovalState.UNKNOWN
+
+    return getApprovalState(amountToApprove, BigInt(currentAllowance.toBigInt()), pendingApproval)
+  }, [amountToApprove, currentAllowance, isNativeToken, pendingApproval])
+
   const currentAllowanceAmount = useMemo(() => {
-    if (typeof currentAllowance !== 'bigint') return
+    if (!currentAllowance) return
 
     return CurrencyAmount.fromRawAmount(amountToApprove.currency, currentAllowance.toString())
   }, [amountToApprove.currency, currentAllowance])
