@@ -5,6 +5,8 @@ import { BridgeOrderData, BridgeQuoteAmounts } from '@cowprotocol/types'
 import type { SendBatchTxCallback } from '@cowprotocol/wallet'
 import type { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { SigningSteps } from 'entities/trade'
+
 import type { AppDispatch } from 'legacy/state'
 import type { PostOrderParams } from 'legacy/utils/trade'
 
@@ -38,6 +40,7 @@ export interface TradeFlowContext {
     getCachedPermit: ReturnType<typeof useGetCachedPermit>
     dispatch: AppDispatch
     addBridgeOrder: (order: BridgeOrderData) => void
+    setSigningStep(stepNumber: string, step: SigningSteps): void
   }
   tradeConfirmActions: TradeConfirmActions
   swapFlowAnalyticsContext: TradeFlowAnalyticsContext

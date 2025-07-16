@@ -50,7 +50,7 @@ function SwapStep({ context }: SwapStepProps): ReactNode {
 }
 
 function BridgeStep({ context, bridgeStatus }: BridgeStepProps): ReactNode {
-  const { bridgeProvider, overview, quoteBridgeContext, bridgingProgressContext, statusResult } = context
+  const { bridgeProvider, overview, quoteBridgeContext, bridgingProgressContext, statusResult, explorerUrl } = context
   const { targetAmounts, targetChainName } = overview
 
   return (
@@ -66,12 +66,14 @@ function BridgeStep({ context, bridgeStatus }: BridgeStepProps): ReactNode {
       chainName={targetChainName}
       sellAmount={targetAmounts?.sellAmount}
       buyAmount={targetAmounts?.buyAmount}
+      explorerUrl={explorerUrl}
     >
       {bridgingProgressContext && quoteBridgeContext ? (
         <BridgingProgressContent
           statusResult={statusResult}
           progressContext={bridgingProgressContext}
           quoteContext={quoteBridgeContext}
+          explorerUrl={explorerUrl}
         />
       ) : (
         <PreparingBridgingContent overview={overview} />
