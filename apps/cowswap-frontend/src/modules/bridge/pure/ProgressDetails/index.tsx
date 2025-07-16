@@ -74,7 +74,6 @@ function BridgeStep({ context, bridgeStatus }: BridgeStepProps): ReactNode {
           progressContext={bridgingProgressContext}
           quoteContext={quoteBridgeContext}
           explorerUrl={explorerUrl}
-          bridgeProvider={bridgeProvider}
         />
       ) : (
         <PreparingBridgingContent overview={overview} />

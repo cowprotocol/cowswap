@@ -51,7 +51,6 @@ export function BridgeStepRow({ context }: BridgeStepRowProps): ReactNode {
               progressContext={bridgingProgressContext}
               quoteContext={quoteBridgeContext}
               explorerUrl={explorerUrl}
-              bridgeProvider={bridgeProvider}
             />
           ) : (
             <PreparingBridgingContent overview={context.overview} />

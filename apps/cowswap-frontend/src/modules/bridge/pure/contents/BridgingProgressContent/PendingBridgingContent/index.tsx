@@ -1,26 +1,24 @@
 import { ReactNode } from 'react'
 
-import { BridgeStatusResult, SupportedChainId, BridgeProviderInfo } from '@cowprotocol/cow-sdk'
+import { BridgeStatusResult, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { ConfirmDetailsItem, ReceiveAmountTitle } from 'modules/trade'
 
 import { AnimatedEllipsis, StatusAwareText } from '../../../../styles'
 import { SwapAndBridgeStatus } from '../../../../types'
+import { BridgeTransactionLink } from '../../../BridgeTransactionLink'
 import { DepositTxLink } from '../../../DepositTxLink'
-import { TransactionLinkItem } from '../../../TransactionLink'
 
 interface PendingBridgingContentProps {
   sourceChainId: SupportedChainId
   statusResult?: BridgeStatusResult
   explorerUrl?: string
-  bridgeProvider?: BridgeProviderInfo
 }
 
 export function PendingBridgingContent({
   sourceChainId,
   statusResult,
   explorerUrl,
-  bridgeProvider,
 }: PendingBridgingContentProps): ReactNode {
   const { depositTxHash } = statusResult || {}
 
@@ -42,7 +40,7 @@ export function PendingBridgingContent({
       </ConfirmDetailsItem>
       
       {explorerUrl ? (
-        <TransactionLinkItem link={explorerUrl} label="Bridge transaction" chainId={0} bridgeProvider={bridgeProvider} isBridgeTransaction />
+        <BridgeTransactionLink link={explorerUrl} label="Bridge transaction" />
       ) : (
         <DepositTxLink depositTxHash={depositTxHash} sourceChainId={sourceChainId} />
       )}
