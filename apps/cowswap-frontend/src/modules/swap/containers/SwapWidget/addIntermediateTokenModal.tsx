@@ -6,6 +6,7 @@ import { useAddUserToken } from '@cowprotocol/tokens'
 import styled from 'styled-components/macro'
 
 import { ImportTokenModal, useSelectTokenWidgetState } from 'modules/tokensList'
+import { useCloseTokenSelectWidget } from 'modules/tokensList/hooks/useCloseTokenSelectWidget'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -26,14 +27,18 @@ interface AddIntermediateTokenModalProps {
 
 export function AddIntermediateTokenModal({ onDismiss, onBack, onImport }: AddIntermediateTokenModalProps): ReactNode {
   const { tokenToImport } = useSelectTokenWidgetState()
+  const closeTokenSelectWidget = useCloseTokenSelectWidget()
+
   const importTokenCallback = useAddUserToken()
 
   const handleImport = useCallback(() => {
     if (tokenToImport) {
       importTokenCallback([tokenToImport])
       onImport(tokenToImport)
+      // when we import the token from here, we don't need to import it again in the SelectTokenWidget
+      closeTokenSelectWidget()
     }
-  }, [onImport, importTokenCallback, tokenToImport])
+  }, [onImport, importTokenCallback, closeTokenSelectWidget, tokenToImport])
 
   if (!tokenToImport) {
     return null
