@@ -24,7 +24,7 @@ const isBatchOrderAction = isAnyOf(
 )
 const isBatchFulfillOrderAction = isAnyOf(OrderActions.fulfillOrdersBatch)
 const isBatchExpireOrderAction = isAnyOf(OrderActions.expireOrdersBatch)
-const isBatchCancelOrderAction = isAnyOf(OrderActions.cancelOrdersBatch)
+const isBatchCancelOrderAction = isAnyOf(OrderActions.cancelOrdersBatch, OrderActions.refundBridgeOrder)
 // const isBatchPresignOrders = isAnyOf(OrderActions.preSignOrders)
 const isFulfillOrderAction = isAnyOf(OrderActions.addPendingOrder, OrderActions.fulfillOrdersBatch)
 const isFulFillBridgeOrderAction = isAnyOf(OrderActions.bridgeOrderFulfill)
