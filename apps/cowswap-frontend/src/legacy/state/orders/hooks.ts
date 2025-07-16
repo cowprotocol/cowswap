@@ -14,10 +14,12 @@ import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import {
   addOrUpdateOrders,
-  AddOrUpdateOrdersParams, bridgeOrderFulfill,
+  AddOrUpdateOrdersParams,
+  bridgeOrderFulfill,
   cancelOrdersBatch,
   clearOrdersStorage,
-  expireOrdersBatch, FulfillBridgeOrderParams,
+  expireOrdersBatch,
+  FulfillBridgeOrderParams,
   fulfillOrdersBatch,
   FulfillOrdersBatchParams,
   invalidateOrdersBatch,

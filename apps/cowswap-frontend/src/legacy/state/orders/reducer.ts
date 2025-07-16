@@ -9,7 +9,8 @@ import { getIsNotComposableCowOrder } from 'utils/orderUtils/getIsNotComposableC
 
 import {
   addOrUpdateOrders,
-  addPendingOrder, bridgeOrderFulfill,
+  addPendingOrder,
+  bridgeOrderFulfill,
   cancelOrdersBatch,
   clearOrders,
   clearOrdersStorage,
