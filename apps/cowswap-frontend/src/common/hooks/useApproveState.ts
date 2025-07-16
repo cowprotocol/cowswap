@@ -26,10 +26,7 @@ function getCurrencyToApprove(amountToApprove: Nullish<CurrencyAmount<Currency>>
   return getWrappedToken(amountToApprove.currency)
 }
 
-export function useApproveState(
-  amountToApprove: Nullish<CurrencyAmount<Currency>>,
-  amountToCheckAgainstAllowance?: Nullish<CurrencyAmount<Currency>>
-): {
+export function useApproveState(amountToApprove: Nullish<CurrencyAmount<Currency>>): {
   state: ApprovalState
   currentAllowance: Nullish<CurrencyAmount<Currency>>
 } {
@@ -47,7 +44,7 @@ export function useApproveState(
     return CurrencyAmount.fromRawAmount(token, tokenRawAllowance.toHexString())
   }, [allowances, token, tokenAddress])
 
-  const currentAllowance = amountToCheckAgainstAllowance || tokenAllowance
+  const currentAllowance = tokenAllowance
 
   const approvalStateBase = useSafeMemo(() => {
     if (!amountToApprove || !currentAllowance) {
@@ -85,7 +82,7 @@ export function useApproveState(
  */
 function useAuxApprovalState(
   approvalStateBase: ApprovalState,
-  currentAllowance?: CurrencyAmount<Currency>
+  currentAllowance?: CurrencyAmount<Currency>,
 ): ApprovalState {
   const previousApprovalState = usePrevious(approvalStateBase)
   const currentAllowanceString = currentAllowance?.quotient.toString(16)

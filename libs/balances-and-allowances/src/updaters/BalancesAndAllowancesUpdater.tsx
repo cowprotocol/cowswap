@@ -54,6 +54,7 @@ export function BalancesAndAllowancesUpdater({
   }, [excludedTokens, allTokens, chainId])
 
   const balancesSwrConfig = useSwrConfigWithPauseForNetwork(chainId, account, BALANCES_SWR_CONFIG)
+  // TODO: this hook relies on balances cache, but is used for allowances, must be fixed
   const allowancesSwrConfig = useSwrConfigWithPauseForNetwork(chainId, account, ALLOWANCES_SWR_CONFIG)
 
   usePersistBalancesAndAllowances({
