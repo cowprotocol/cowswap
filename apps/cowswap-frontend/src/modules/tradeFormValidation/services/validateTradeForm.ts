@@ -63,7 +63,9 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
       validations.push(TradeFormValidation.InputAmountNotSet)
     }
 
-    validations.push(TradeFormValidation.QuoteErrors)
+    if (!tradeQuote.isLoading) {
+      validations.push(TradeFormValidation.QuoteErrors)
+    }
   }
 
   if (!isSwapUnsupported && !account) {
