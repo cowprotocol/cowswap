@@ -91,4 +91,5 @@ export interface SwapAndBridgeContext {
   quoteBridgeContext?: QuoteBridgeContext
   bridgingProgressContext?: BridgingProgressContext
   statusResult?: BridgeStatusResult
+  explorerUrl?: string
 }

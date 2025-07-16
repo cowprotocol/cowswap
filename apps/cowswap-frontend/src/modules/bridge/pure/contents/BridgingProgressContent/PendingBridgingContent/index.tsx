@@ -6,14 +6,20 @@ import { ConfirmDetailsItem, ReceiveAmountTitle } from 'modules/trade'
 
 import { AnimatedEllipsis, StatusAwareText } from '../../../../styles'
 import { SwapAndBridgeStatus } from '../../../../types'
+import { BridgeTransactionLink } from '../../../BridgeTransactionLink'
 import { DepositTxLink } from '../../../DepositTxLink'
 
 interface PendingBridgingContentProps {
   sourceChainId: SupportedChainId
   statusResult?: BridgeStatusResult
+  explorerUrl?: string
 }
 
-export function PendingBridgingContent({ sourceChainId, statusResult }: PendingBridgingContentProps): ReactNode {
+export function PendingBridgingContent({
+  sourceChainId,
+  statusResult,
+  explorerUrl,
+}: PendingBridgingContentProps): ReactNode {
   const { depositTxHash } = statusResult || {}
 
   return (
@@ -32,8 +38,12 @@ export function PendingBridgingContent({ sourceChainId, statusResult }: PendingB
           </StatusAwareText>
         </b>
       </ConfirmDetailsItem>
-
-      <DepositTxLink depositTxHash={depositTxHash} sourceChainId={sourceChainId} />
+      
+      {explorerUrl ? (
+        <BridgeTransactionLink link={explorerUrl} label="Bridge transaction" />
+      ) : (
+        <DepositTxLink depositTxHash={depositTxHash} sourceChainId={sourceChainId} />
+      )}
     </>
   )
 }
