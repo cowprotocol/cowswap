@@ -46,7 +46,7 @@ export function getReceiveAmountInfo(
   intermediateCurrency?: Currency
 ): AmountsAndCosts & { quotePrice: Price<Currency, Currency> } {
   const partnerFeeBps = _partnerFeeBps ?? 0
-  const currencies = { inputCurrency, outputCurrency }
+  const currenciesExcludingIntermediate = { inputCurrency, outputCurrency }
 
   const isSell = isSellOrder(orderParams.kind)
 
@@ -57,8 +57,13 @@ export function getReceiveAmountInfo(
     slippagePercentBps: Number(slippagePercent.numerator),
     partnerFeeBps,
   })
-  const beforeNetworkCosts = mapBigIntAmounts(result.beforeNetworkCosts, currencies)
-  const afterNetworkCosts = mapBigIntAmounts(result.afterNetworkCosts, currencies)
+
+  const currenciesWithIntermediate = {
+    inputCurrency,
+    outputCurrency: intermediateCurrency ?? outputCurrency,
+  }
+  const beforeNetworkCosts = mapBigIntAmounts(result.beforeNetworkCosts, currenciesWithIntermediate)
+  const afterNetworkCosts = mapBigIntAmounts(result.afterNetworkCosts, currenciesWithIntermediate)
 
   return {
     ...result,
@@ -69,17 +74,17 @@ export function getReceiveAmountInfo(
     costs: {
       networkFee: {
         amountInSellCurrency: CurrencyAmount.fromRawAmount(
-          inputCurrency,
+          currenciesWithIntermediate.inputCurrency,
           result.costs.networkFee.amountInSellCurrency.toString(),
         ),
         amountInBuyCurrency: CurrencyAmount.fromRawAmount(
-          intermediateCurrency ?? outputCurrency,
+          currenciesWithIntermediate.outputCurrency,
           result.costs.networkFee.amountInBuyCurrency.toString(),
         ),
       },
       partnerFee: {
         amount: CurrencyAmount.fromRawAmount(
-          isSell ? outputCurrency : inputCurrency,
+          isSell ? currenciesWithIntermediate.outputCurrency : inputCurrency,
           result.costs.partnerFee.amount.toString(),
         ),
         bps: result.costs.partnerFee.bps,
@@ -87,8 +92,8 @@ export function getReceiveAmountInfo(
     },
     beforeNetworkCosts,
     afterNetworkCosts,
-    afterPartnerFees: mapBigIntAmounts(result.afterPartnerFees, currencies),
-    afterSlippage: mapBigIntAmounts(result.afterSlippage, currencies),
+    afterPartnerFees: mapBigIntAmounts(result.afterPartnerFees, currenciesWithIntermediate),
+    afterSlippage: mapBigIntAmounts(result.afterSlippage, currenciesExcludingIntermediate),
   }
 }
 
