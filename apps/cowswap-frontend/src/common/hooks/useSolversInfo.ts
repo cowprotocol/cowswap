@@ -18,7 +18,7 @@ export function useSolversInfo(chainId: SupportedChainId): Record<string, Solver
           ({ env: solverEnv, chainId: solverChainId }) => solverEnv === envToFilter && solverChainId === chainId,
         )
       ) {
-        acc[info.solverId] = info
+        acc[info.solverId.toLowerCase()] = info
       }
 
       return acc
