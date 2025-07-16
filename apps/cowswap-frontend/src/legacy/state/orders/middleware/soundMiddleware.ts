@@ -24,10 +24,10 @@ const isBatchOrderAction = isAnyOf(
 )
 const isBatchFulfillOrderAction = isAnyOf(OrderActions.fulfillOrdersBatch)
 const isBatchExpireOrderAction = isAnyOf(OrderActions.expireOrdersBatch)
-const isBatchCancelOrderAction = isAnyOf(OrderActions.cancelOrdersBatch, OrderActions.refundBridgeOrder)
+const isBatchCancelOrderAction = isAnyOf(OrderActions.cancelOrdersBatch)
+const isBridgeOrderRefundedAction = isAnyOf(OrderActions.refundBridgeOrder)
 // const isBatchPresignOrders = isAnyOf(OrderActions.preSignOrders)
 const isFulfillOrderAction = isAnyOf(OrderActions.addPendingOrder, OrderActions.fulfillOrdersBatch)
-const isFulFillBridgeOrderAction = isAnyOf(OrderActions.bridgeOrderFulfill)
 
 // TODO: Reduce function complexity by extracting logic
 // eslint-disable-next-line complexity
@@ -59,12 +59,12 @@ export const soundMiddleware: Middleware<Record<string, unknown>, AppState> = (s
     }
   } else if (isFulfillOrderAction(action)) {
     cowSound = getCowSoundSuccess()
-  } else if (isFulFillBridgeOrderAction(action)) {
-    cowSound = getCowSoundSuccess()
   } else if (isBatchExpireOrderAction(action)) {
     if (_shouldPlayExpiredOrderSound(action.payload, store)) {
       cowSound = getCowSoundError()
     }
+  } else if (isBridgeOrderRefundedAction(action)) {
+    cowSound = getCowSoundError()
   } else if (isBatchCancelOrderAction(action)) {
     cowSound = getCowSoundError()
   } else if (isUpdateOrderAction(action)) {
