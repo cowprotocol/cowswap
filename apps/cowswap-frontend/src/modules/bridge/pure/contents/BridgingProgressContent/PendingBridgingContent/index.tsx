@@ -42,7 +42,7 @@ export function PendingBridgingContent({
       </ConfirmDetailsItem>
       
       {explorerUrl ? (
-        <TransactionLinkItem link={explorerUrl} label="Bridge transaction" chainId={0} bridgeProvider={bridgeProvider} />
+        <TransactionLinkItem link={explorerUrl} label="Bridge transaction" chainId={0} bridgeProvider={bridgeProvider} isBridgeTransaction />
       ) : (
         <DepositTxLink depositTxHash={depositTxHash} sourceChainId={sourceChainId} />
       )}

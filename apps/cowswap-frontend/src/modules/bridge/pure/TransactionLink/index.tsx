@@ -14,12 +14,10 @@ import { StyledTimelineReceiptIcon, TimelineIconCircleWrapper } from '../../styl
 
 function getTransactionLinkText(
   bridgeProvider: BridgeProviderInfo | undefined,
-  label: string,
+  isBridgeTransaction: boolean,
   explorerTitle: string,
   isMobile: boolean,
 ): string {
-  const isBridgeTransaction = label === 'Bridge transaction'
-
   return bridgeProvider || isBridgeTransaction
     ? isMobile
       ? 'Bridge explorer ↗'
@@ -34,15 +32,16 @@ interface TransactionLinkItemProps {
   label: string
   chainId: number
   bridgeProvider?: BridgeProviderInfo
+  isBridgeTransaction?: boolean
 }
 
-export function TransactionLinkItem({ link, label, chainId, bridgeProvider }: TransactionLinkItemProps): ReactNode {
+export function TransactionLinkItem({ link, label, chainId, bridgeProvider, isBridgeTransaction = false }: TransactionLinkItemProps): ReactNode {
   const { data: bridgeSupportedNetworks } = useBridgeSupportedNetworks()
   const bridgeNetwork = bridgeSupportedNetworks?.find((network) => network.id === chainId)
   const isMobile = useMediaQuery(Media.upToSmall(false))
 
   const explorerTitle = bridgeNetwork?.blockExplorer.name || getChainInfo(chainId)?.explorerTitle || 'Explorer'
-  const linkText = getTransactionLinkText(bridgeProvider, label, explorerTitle, isMobile)
+  const linkText = getTransactionLinkText(bridgeProvider, isBridgeTransaction, explorerTitle, isMobile)
 
   return (
     <ConfirmDetailsItem

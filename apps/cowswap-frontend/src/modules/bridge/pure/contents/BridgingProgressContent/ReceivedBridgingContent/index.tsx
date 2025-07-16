@@ -64,6 +64,7 @@ export function ReceivedBridgingContent({
           label="Bridge transaction"
           chainId={0}
           bridgeProvider={bridgeProvider}
+          isBridgeTransaction
         />
       ) : (
         <>
