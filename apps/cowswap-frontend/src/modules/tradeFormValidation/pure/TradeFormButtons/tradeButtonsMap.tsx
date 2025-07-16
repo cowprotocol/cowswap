@@ -223,6 +223,6 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     )
   },
   [TradeFormValidation.ImportingIntermediateToken]: {
-    text: 'Missing intermediate token',
+    text: 'Import intermediate token',
   },
 }

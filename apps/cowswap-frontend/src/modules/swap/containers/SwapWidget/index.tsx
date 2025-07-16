@@ -53,7 +53,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   const widgetActions = useSwapWidgetActions()
   const receiveAmountInfo = useReceiveAmountInfo()
   const { bridgeQuote } = useTradeQuote()
-  const { intermediateBuyToken, intermediateBuyTokenAddress } = useGetMaybeIntermediateToken({ bridgeQuote })
+  const { intermediateBuyToken, toBeImported } = useGetMaybeIntermediateToken({ bridgeQuote })
   const [showNativeWrapModal, setOpenNativeWrapModal] = useState(false)
   const [tokenImported, setTokenImported] = useState(false)
   const [showAddIntermediateTokenModal, setShowAddIntermediateTokenModal] = useState(false)
@@ -137,7 +137,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
     setShowAddIntermediateTokenModal(false)
   }, [])
 
-  const showAddIntermediateToken = !tokenImported && !Boolean(intermediateBuyToken)
+  const showAddIntermediateToken = !tokenImported && toBeImported && intermediateBuyToken
 
   const slots: TradeWidgetSlots = {
     topContent,
@@ -161,9 +161,9 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
               openNativeWrapModal={openNativeWrapModal}
               hasEnoughWrappedBalanceForSwap={hasEnoughWrappedBalanceForSwap}
             />
-            {showAddIntermediateToken && intermediateBuyTokenAddress && (
+            {showAddIntermediateToken && (
               <AddIntermediateToken
-                intermediateBuyTokenAddress={intermediateBuyTokenAddress}
+                intermediateBuyToken={intermediateBuyToken}
                 onImport={() => setShowAddIntermediateTokenModal(true)}
               />
             )}
@@ -179,7 +179,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
         openNativeWrapModal,
         hasEnoughWrappedBalanceForSwap,
         showAddIntermediateToken,
-        intermediateBuyTokenAddress,
+        intermediateBuyToken,
       ],
     ),
   }

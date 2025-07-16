@@ -41,12 +41,9 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
 
   const isInsufficientBalanceOrderAllowed = tradeType === TradeType.LIMIT_ORDER
 
-  const { intermediateBuyToken, intermediateBuyTokenAddress } = useGetMaybeIntermediateToken({
+  const { intermediateBuyToken, toBeImported } = useGetMaybeIntermediateToken({
     bridgeQuote: tradeQuote.bridgeQuote,
   })
-
-  // If the intermediate buy token is not found, but we have an address, we need to import it
-  const importingIntermediateToken = intermediateBuyToken === null ? intermediateBuyTokenAddress : null
 
   const commonContext = {
     account,
@@ -63,7 +60,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     isProviderNetworkUnsupported,
     isOnline,
     derivedTradeState,
-    importingIntermediateToken,
+    intermediateTokenToBeImported: !!intermediateBuyToken && toBeImported,
   }
 
   return useMemo(() => {

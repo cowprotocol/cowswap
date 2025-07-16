@@ -61,7 +61,7 @@ export interface TradeFormValidationCommonContext {
   isInsufficientBalanceOrderAllowed: boolean
   isProviderNetworkUnsupported: boolean
   isOnline: boolean
-  importingIntermediateToken: string | null
+  intermediateTokenToBeImported: boolean
 }
 
 export interface TradeFormValidationContext extends TradeFormValidationCommonContext {}
