@@ -27,7 +27,7 @@ const isBatchExpireOrderAction = isAnyOf(OrderActions.expireOrdersBatch)
 const isBatchCancelOrderAction = isAnyOf(OrderActions.cancelOrdersBatch)
 const isBridgeOrderRefundedAction = isAnyOf(OrderActions.refundBridgeOrder)
 // const isBatchPresignOrders = isAnyOf(OrderActions.preSignOrders)
-const isFulfillOrderAction = isAnyOf(OrderActions.addPendingOrder, OrderActions.fulfillOrdersBatch)
+const isFulfillOrderAction = isAnyOf(OrderActions.addPendingOrder, OrderActions.fulfillOrdersBatch, OrderActions.bridgeOrderFulfill)
 
 // TODO: Reduce function complexity by extracting logic
 // eslint-disable-next-line complexity
