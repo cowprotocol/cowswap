@@ -7,7 +7,6 @@ import { useLocation } from 'react-router'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { usePendingOrdersPrices, useGetSpotPrice } from 'modules/orders'
-import { useBalancesAndAllowances } from 'modules/tokens'
 
 import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
 import { useNavigate } from 'common/hooks/useNavigate'
@@ -15,6 +14,7 @@ import { usePendingActivitiesCount } from 'common/hooks/usePendingActivitiesCoun
 
 import { useOrdersTableList } from '../containers/OrdersTableWidget/hooks/useOrdersTableList'
 import { useValidatePageUrlParams } from '../containers/OrdersTableWidget/hooks/useValidatePageUrlParams'
+import { useBalancesAndAllowances } from '../hooks/useBalancesAndAllowances'
 import { useCurrentTab } from '../hooks/useCurrentTab'
 import { useFilteredOrders } from '../hooks/useFilteredOrders'
 import { useOrderActions } from '../hooks/useOrderActions'

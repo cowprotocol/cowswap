@@ -3,8 +3,7 @@ import { useMemo } from 'react'
 import { Order, OrderStatus, PENDING_STATES } from 'legacy/state/orders/actions'
 import { useSetIsOrderUnfillable } from 'legacy/state/orders/hooks'
 
-import type { BalancesAndAllowances } from 'modules/tokens'
-
+import { BalancesAndAllowances } from 'common/types'
 import { getIsComposableCowOrder } from 'utils/orderUtils/getIsComposableCowOrder'
 import { getIsNotComposableCowOrder } from 'utils/orderUtils/getIsNotComposableCowOrder'
 
@@ -21,8 +20,6 @@ const ordersSorter = (a: OrderTableItem, b: OrderTableItem): number => {
 }
 
 const ORDERS_LIMIT = 100
-
-// TODO: Break down this large function into smaller functions
 
 export function useOrdersTableList(
   allOrders: Order[],

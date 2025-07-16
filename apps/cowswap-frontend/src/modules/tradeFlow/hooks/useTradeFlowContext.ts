@@ -13,7 +13,6 @@ import { useCloseModals } from 'legacy/state/application/hooks'
 import { useAppData, useAppDataHooks } from 'modules/appData'
 import { useBridgeQuoteAmounts } from 'modules/bridge'
 import { useGeneratePermitHook, useGetCachedPermit, usePermitInfo } from 'modules/permit'
-import { useEnoughBalanceAndAllowance } from 'modules/tokens'
 import {
   useDerivedTradeState,
   useIsHooksTradeType,
@@ -25,6 +24,7 @@ import {
 import { getOrderValidTo, useTradeQuote } from 'modules/tradeQuote'
 
 import { useGP2SettlementContract } from 'common/hooks/useContract'
+import { useEnoughAllowance } from 'common/hooks/useEnoughBalance'
 
 import { TradeFlowContext } from '../types/TradeFlowContext'
 
@@ -70,9 +70,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
   const addBridgeOrder = useAddBridgeOrder()
   const bridgeQuoteAmounts = useBridgeQuoteAmounts()
 
-  const { enoughAllowance } = useEnoughBalanceAndAllowance({
-    amount: inputAmount,
-  })
+  const enoughAllowance = useEnoughAllowance(inputAmount)
 
   const {
     inputCurrency: sellToken,

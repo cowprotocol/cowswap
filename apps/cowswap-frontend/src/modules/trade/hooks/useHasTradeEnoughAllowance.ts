@@ -1,4 +1,4 @@
-import { useEnoughBalanceAndAllowance } from 'modules/tokens'
+import { useEnoughAllowance } from 'common/hooks/useEnoughBalance'
 
 import { useReceiveAmountInfo } from './useReceiveAmountInfo'
 
@@ -7,9 +7,5 @@ export function useHasTradeEnoughAllowance(): boolean | undefined {
 
   const amount = receiveAmountInfo?.afterSlippage.sellAmount
 
-  const { enoughAllowance } = useEnoughBalanceAndAllowance({
-    amount,
-  })
-
-  return enoughAllowance
+  return useEnoughAllowance(amount)
 }

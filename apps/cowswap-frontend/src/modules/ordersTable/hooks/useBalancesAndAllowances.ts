@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 
 import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
 
-import type { BalancesAndAllowances } from '../types'
+import { BalancesAndAllowances } from '../../../common/types'
 
 export function useBalancesAndAllowances(): BalancesAndAllowances {
   const balancesState = useTokensBalances()
