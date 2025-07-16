@@ -1,5 +1,6 @@
 // On each Pending, Expired, Fulfilled order action a corresponding sound is dispatched
 
+
 import { isAnyOf } from '@reduxjs/toolkit'
 import { AnyAction, Dispatch, Middleware, MiddlewareAPI } from 'redux'
 
@@ -26,6 +27,7 @@ const isBatchExpireOrderAction = isAnyOf(OrderActions.expireOrdersBatch)
 const isBatchCancelOrderAction = isAnyOf(OrderActions.cancelOrdersBatch)
 // const isBatchPresignOrders = isAnyOf(OrderActions.preSignOrders)
 const isFulfillOrderAction = isAnyOf(OrderActions.addPendingOrder, OrderActions.fulfillOrdersBatch)
+const isFulFillBridgeOrderAction = isAnyOf(OrderActions.bridgeOrderFulfill)
 
 // TODO: Reduce function complexity by extracting logic
 // eslint-disable-next-line complexity
@@ -56,6 +58,8 @@ export const soundMiddleware: Middleware<Record<string, unknown>, AppState> = (s
       cowSound = getCowSoundSend()
     }
   } else if (isFulfillOrderAction(action)) {
+    cowSound = getCowSoundSuccess()
+  } else if (isFulFillBridgeOrderAction(action)) {
     cowSound = getCowSoundSuccess()
   } else if (isBatchExpireOrderAction(action)) {
     if (_shouldPlayExpiredOrderSound(action.payload, store)) {

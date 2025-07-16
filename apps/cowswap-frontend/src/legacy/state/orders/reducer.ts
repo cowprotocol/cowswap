@@ -9,7 +9,7 @@ import { getIsNotComposableCowOrder } from 'utils/orderUtils/getIsNotComposableC
 
 import {
   addOrUpdateOrders,
-  addPendingOrder,
+  addPendingOrder, bridgeOrderFulfill,
   cancelOrdersBatch,
   clearOrders,
   clearOrdersStorage,
@@ -28,7 +28,7 @@ import {
   setOrderCancellationHash,
   updateLastCheckedBlock,
   updateOrder,
-  updatePresignGnosisSafeTx,
+  updatePresignGnosisSafeTx
 } from './actions'
 import { ContractDeploymentBlocks, MAX_ITEMS_PER_STATUS } from './consts'
 import { flatOrdersStateNetwork } from './flatOrdersStateNetwork'
@@ -559,7 +559,11 @@ export default createReducer(initialState, (builder) =>
           orderListByChain[status] = ordersCleaned
         })
       })
-    }),
+    })
+    .addCase(bridgeOrderFulfill, (state, action) => {
+      console.log('bridgeOrderFulfill', action.payload)
+      return
+    })
 )
 
 function reClassifyOrder(

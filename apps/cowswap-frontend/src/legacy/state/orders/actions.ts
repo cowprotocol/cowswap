@@ -1,4 +1,10 @@
-import { EnrichedOrder, OrderClass, OrderCreation, SupportedChainId as ChainId, UID } from '@cowprotocol/cow-sdk'
+import {
+  EnrichedOrder,
+  OrderClass,
+  OrderCreation,
+  SupportedChainId as ChainId,
+  UID
+} from '@cowprotocol/cow-sdk'
 import { BigNumberish } from '@ethersproject/bignumber'
 import type { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
@@ -175,6 +181,11 @@ export interface FulfillOrdersBatchParams {
   isSafeWallet: boolean
 }
 
+export interface FulfillBridgeOrderParams {
+  chainId: ChainId
+  order: Partial<Omit<SerializedOrder, 'id'>> & Pick<SerializedOrder, 'id'>
+}
+
 export interface BatchOrdersUpdateParams {
   ids: UID[]
   chainId: ChainId
@@ -225,6 +236,8 @@ export const updateLastCheckedBlock = createAction<{ chainId: ChainId; lastCheck
 )
 
 export const clearOrdersStorage = createAction('order/clearOrdersStorage')
+
+export const bridgeOrderFulfill = createAction<FulfillBridgeOrderParams>('order/bridgeOrderFulfill')
 
 export type SetIsOrderUnfillableParams = {
   id: UID

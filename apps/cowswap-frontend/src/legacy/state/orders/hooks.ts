@@ -14,10 +14,10 @@ import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import {
   addOrUpdateOrders,
-  AddOrUpdateOrdersParams,
+  AddOrUpdateOrdersParams, bridgeOrderFulfill,
   cancelOrdersBatch,
   clearOrdersStorage,
-  expireOrdersBatch,
+  expireOrdersBatch, FulfillBridgeOrderParams,
   fulfillOrdersBatch,
   FulfillOrdersBatchParams,
   invalidateOrdersBatch,
@@ -31,7 +31,7 @@ import {
   SetIsOrderUnfillableParams,
   setOrderCancellationHash,
   updatePresignGnosisSafeTx,
-  UpdatePresignGnosisSafeTxParams,
+  UpdatePresignGnosisSafeTxParams
 } from './actions'
 import { flatOrdersStateNetwork } from './flatOrdersStateNetwork'
 import {
@@ -88,6 +88,7 @@ type PresignOrdersParams = UpdateOrdersBatchParams
 export type AddOrUpdateOrdersCallback = (params: AddOrUpdateUnserialisedOrdersParams) => void
 export type AddOrderCallback = (addOrderParams: AddUnserialisedPendingOrderParams) => void
 export type FulfillOrdersBatchCallback = (fulfillOrdersBatchParams: FulfillOrdersBatchParams) => void
+export type FulfillBridgeOrderCallback = (fulfillBridgeOrderParams: FulfillBridgeOrderParams) => void
 export type ExpireOrdersBatchCallback = (expireOrdersBatchParams: ExpireOrdersBatchParams) => void
 export type CancelOrderCallback = (cancelOrderParams: CancelOrderParams) => void
 export type SetOrderCancellationHashCallback = (setOrderCancellationHashParams: SetOrderCancellationHashParams) => void
@@ -336,6 +337,14 @@ export const useFulfillOrdersBatch = (): FulfillOrdersBatchCallback => {
   const dispatch = useDispatch<AppDispatch>()
   return useCallback(
     (fulfillOrdersBatchParams: FulfillOrdersBatchParams) => dispatch(fulfillOrdersBatch(fulfillOrdersBatchParams)),
+    [dispatch],
+  )
+}
+
+export const useFulfillBridgeOrder = (): FulfillBridgeOrderCallback => {
+  const dispatch = useDispatch<AppDispatch>()
+  return useCallback(
+    (bridgeOrderFulfillParams: FulfillBridgeOrderParams) => dispatch(bridgeOrderFulfill(bridgeOrderFulfillParams)),
     [dispatch],
   )
 }
