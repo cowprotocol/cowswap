@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { ReactNode, useCallback, useMemo } from 'react'
 
 import EtherscanImage from '@cowprotocol/assets/cow-swap/etherscan-icon.svg'
 import { TokenWithLogo } from '@cowprotocol/common-const'
@@ -55,9 +55,7 @@ export const TokensTableRow = ({
   closeApproveModal,
   openApproveModal,
   toggleWalletModal,
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-}: DataRowParams) => {
+}: DataRowParams): ReactNode => {
   const { account, chainId } = useWalletInfo()
   const areThereTokensWithSameSymbol = useAreThereTokensWithSameSymbol()
 
@@ -89,6 +87,11 @@ export const TokensTableRow = ({
   const amountToApprove = useMemo(() => CurrencyAmount.fromRawAmount(tokenData, MaxUint256), [tokenData])
 
   const { state: approvalState, currentAllowance } = useApproveState(isNativeToken ? null : amountToApprove)
+  const currentAllowanceAmount = useMemo(() => {
+    if (typeof currentAllowance !== 'bigint') return
+
+    return CurrencyAmount.fromRawAmount(amountToApprove.currency, currentAllowance.toString())
+  }, [amountToApprove.currency, currentAllowance])
   const approveCallback = useApproveCallback(amountToApprove, vaultRelayer)
 
   const handleApprove = useCallback(async () => {
@@ -103,8 +106,8 @@ export const TokensTableRow = ({
     try {
       openApproveModal(tokenData?.symbol)
       await approveCallback(`Approve ${tokenData?.symbol || 'token'}`)
-    // TODO: Replace any with proper type definitions
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // TODO: Replace any with proper type definitions
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error(`[TokensTableRow]: Issue approving.`, error)
       handleSetError(error?.message)
@@ -124,7 +127,7 @@ export const TokensTableRow = ({
 
   const hasZeroBalance = !balance || balance?.equalTo(0)
 
-  const balanceLessThanAllowance = balance && currentAllowance ? balance.lessThan(currentAllowance.quotient) : false
+  const balanceLessThanAllowance = balance && currentAllowance ? balance.lessThan(currentAllowance.toString()) : false
 
   // This is so we only create fiat value request if there is a balance
   const fiatValue = useMemo(() => {
@@ -147,7 +150,7 @@ export const TokensTableRow = ({
     }
 
     if (!account || approvalState === ApprovalState.NOT_APPROVED) {
-      if (!currentAllowance || currentAllowance.equalTo(0)) {
+      if (!currentAllowanceAmount) {
         return <TableButton onClick={handleApprove}>Approve</TableButton>
       }
 
@@ -157,7 +160,7 @@ export const TokensTableRow = ({
           <ApproveLabel>
             Approved:{' '}
             <strong>
-              <TokenAmount amount={currentAllowance} />
+              <TokenAmount amount={currentAllowanceAmount} />
             </strong>
           </ApproveLabel>
         </CustomLimit>
@@ -165,7 +168,7 @@ export const TokensTableRow = ({
     }
 
     return <CardsSpinner />
-  }, [account, isNativeToken, currentAllowance, handleApprove, approvalState, balanceLessThanAllowance])
+  }, [account, isNativeToken, currentAllowanceAmount, handleApprove, approvalState, balanceLessThanAllowance])
 
   return (
     <>
