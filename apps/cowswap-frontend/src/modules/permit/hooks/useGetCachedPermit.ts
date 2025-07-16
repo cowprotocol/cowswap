@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
-import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS } from '@cowprotocol/cow-sdk'
+import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS } from '@cowprotocol/cow-sdk'
 import { getPermitUtilsInstance, PermitHookData } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
@@ -23,7 +23,7 @@ export function useGetCachedPermit(): (
       if (!provider || !account || !tokenAddress) {
         return
       }
-      const spender = customSpender || COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS[chainId]
+      const spender = customSpender || COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId]
 
       try {
         const eip2612Utils = getPermitUtilsInstance(chainId, provider, account)

@@ -18,9 +18,14 @@ import { getRecoverFundsCalls } from '../services/getRecoverFundsCalls'
 const INFINITE_DEADLINE = 99999999999
 const DEFAULT_GAS_LIMIT = 600_000
 
+export enum RecoverSigningStep {
+  SIGN_RECOVER_FUNDS = 'SIGN_RECOVER_FUNDS',
+  SIGN_TRANSACTION = 'SIGN_TRANSACTION',
+}
+
 export interface RecoverFundsContext {
   callback: () => Promise<string | undefined>
-  isTxSigningInProgress: boolean
+  txSigningStep: RecoverSigningStep | null
   proxyAddress: string | undefined
 }
 
@@ -29,7 +34,7 @@ export function useRecoverFundsFromProxy(
   tokenBalance: CurrencyAmount<Currency> | null,
   isNativeToken: boolean,
 ): RecoverFundsContext {
-  const [isTxSigningInProgress, setTxSigningInProgress] = useState<boolean>(false)
+  const [txSigningStep, setTxSigningStep] = useState<RecoverSigningStep | null>(null)
 
   const provider = useWalletProvider()
   const { account } = useWalletInfo()
@@ -50,7 +55,7 @@ export function useRecoverFundsFromProxy(
     )
       return
 
-    setTxSigningInProgress(true)
+    setTxSigningStep(RecoverSigningStep.SIGN_RECOVER_FUNDS)
 
     try {
       const calls = getRecoverFundsCalls({
@@ -73,13 +78,15 @@ export function useRecoverFundsFromProxy(
         SigningScheme.EIP712, // TODO: support other signing types
       )
 
+      setTxSigningStep(RecoverSigningStep.SIGN_TRANSACTION)
+
       const transaction = await cowShedContract.executeHooks(calls, nonce, BigInt(validTo), account, encodedSignature, {
         gasLimit: DEFAULT_GAS_LIMIT,
       })
 
       return transaction.hash
     } finally {
-      setTxSigningInProgress(false)
+      setTxSigningStep(null)
     }
   }, [
     provider,
@@ -92,5 +99,5 @@ export function useRecoverFundsFromProxy(
     isNativeToken,
   ])
 
-  return { callback, isTxSigningInProgress, proxyAddress }
+  return { callback, txSigningStep, proxyAddress }
 }
