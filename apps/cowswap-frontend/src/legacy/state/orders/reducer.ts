@@ -20,7 +20,7 @@ import {
   fulfillOrdersBatch,
   invalidateOrdersBatch,
   OrderStatus,
-  preSignOrders,
+  preSignOrders, refundBridgeOrder,
   requestOrderCancellation,
   SerializedOrder,
   setIsOrderRefundedBatch,
@@ -117,6 +117,8 @@ export function getDefaultNetworkState(chainId: ChainId): OrdersStateNetwork {
     lastCheckedBlock: getDefaultLastCheckedBlock(chainId),
   }
 }
+
+function NOOP(): void {}
 
 // makes sure there's always an object at state[chainId], state[chainId].pending | .fulfilled
 function prefillState(
@@ -560,10 +562,8 @@ export default createReducer(initialState, (builder) =>
         })
       })
     })
-    .addCase(bridgeOrderFulfill, (state, action) => {
-      console.log('bridgeOrderFulfill', action.payload)
-      return
-    })
+    .addCase(bridgeOrderFulfill, NOOP)
+    .addCase(refundBridgeOrder, NOOP)
 )
 
 function reClassifyOrder(

@@ -6,7 +6,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { useCrossChainOrder, usePendingBridgeOrders, useUpdateBridgeOrderQuote } from 'entities/bridgeOrders'
 import { useAddOrderToSurplusQueue } from 'entities/surplusModal'
 
-import { useFulfillBridgeOrder } from 'legacy/state/orders/hooks'
+import { useFulfillBridgeOrder, useRefundBridgeOrder } from 'legacy/state/orders/hooks'
 
 interface PendingOrderUpdaterProps {
   chainId: SupportedChainId
@@ -17,20 +17,24 @@ function PendingOrderUpdater({ chainId, orderUid }: PendingOrderUpdaterProps): R
   const { data: crossChainOrder } = useCrossChainOrder(chainId, orderUid)
   const updateBridgeOrderQuote = useUpdateBridgeOrderQuote()
   const addOrderToSurplusQueue = useAddOrderToSurplusQueue()
-  const fulfillOrdersBatch = useFulfillBridgeOrder()
+  const fulfillBridgeOrder = useFulfillBridgeOrder()
+  const refundBridgeOrder = useRefundBridgeOrder()
 
   useEffect(() => {
     if (!crossChainOrder) return
 
     const orderUid = crossChainOrder.order.uid
     const isOrderExecuted = crossChainOrder.statusResult.status === BridgeStatus.EXECUTED
+    const isOrderRefund = crossChainOrder.statusResult.status === BridgeStatus.REFUND
 
     if (isOrderExecuted) {
       updateBridgeOrderQuote(orderUid, crossChainOrder.statusResult)
       addOrderToSurplusQueue(orderUid)
-      fulfillOrdersBatch({ chainId: chainId, order: crossChainOrder })
+      fulfillBridgeOrder({ chainId, order: crossChainOrder })
+    } else if (isOrderRefund) {
+      refundBridgeOrder({ chainId, order: crossChainOrder })
     }
-  }, [crossChainOrder, updateBridgeOrderQuote, addOrderToSurplusQueue, fulfillOrdersBatch, chainId])
+  }, [crossChainOrder, updateBridgeOrderQuote, addOrderToSurplusQueue, fulfillBridgeOrder, refundBridgeOrder, chainId])
 
   return null
 }

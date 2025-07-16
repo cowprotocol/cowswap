@@ -24,6 +24,8 @@ import {
   InvalidateOrdersBatchParams,
   Order,
   preSignOrders,
+  refundBridgeOrder,
+  RefundBridgeOrderParams,
   requestOrderCancellation,
   SetIsOrderRefundedBatch,
   setIsOrderRefundedBatch,
@@ -89,6 +91,7 @@ export type AddOrUpdateOrdersCallback = (params: AddOrUpdateUnserialisedOrdersPa
 export type AddOrderCallback = (addOrderParams: AddUnserialisedPendingOrderParams) => void
 export type FulfillOrdersBatchCallback = (fulfillOrdersBatchParams: FulfillOrdersBatchParams) => void
 export type FulfillBridgeOrderCallback = (fulfillBridgeOrderParams: FulfillBridgeOrderParams) => void
+export type RefundBridgeOrderCallback = (refundBridgeOrderParams: RefundBridgeOrderParams) => void
 export type ExpireOrdersBatchCallback = (expireOrdersBatchParams: ExpireOrdersBatchParams) => void
 export type CancelOrderCallback = (cancelOrderParams: CancelOrderParams) => void
 export type SetOrderCancellationHashCallback = (setOrderCancellationHashParams: SetOrderCancellationHashParams) => void
@@ -345,6 +348,14 @@ export const useFulfillBridgeOrder = (): FulfillBridgeOrderCallback => {
   const dispatch = useDispatch<AppDispatch>()
   return useCallback(
     (bridgeOrderFulfillParams: FulfillBridgeOrderParams) => dispatch(bridgeOrderFulfill(bridgeOrderFulfillParams)),
+    [dispatch],
+  )
+}
+
+export const useRefundBridgeOrder = (): RefundBridgeOrderCallback => {
+  const dispatch = useDispatch<AppDispatch>()
+  return useCallback(
+    (refundBridgeOrderParams: RefundBridgeOrderParams) => dispatch(refundBridgeOrder(refundBridgeOrderParams)),
     [dispatch],
   )
 }

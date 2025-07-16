@@ -187,6 +187,11 @@ export interface FulfillBridgeOrderParams {
   order: CrossChainOrder
 }
 
+export interface RefundBridgeOrderParams {
+  chainId: ChainId
+  order: CrossChainOrder
+}
+
 export interface BatchOrdersUpdateParams {
   ids: UID[]
   chainId: ChainId
@@ -211,6 +216,8 @@ export const addOrUpdateOrders = createAction<AddOrUpdateOrdersParams>('order/ad
 export const updateOrder = createAction<UpdateOrderParams>('order/updateOrder')
 
 export const fulfillOrdersBatch = createAction<FulfillOrdersBatchParams>('order/fullfillOrdersBatch')
+
+export const refundBridgeOrder = createAction<RefundBridgeOrderParams>('order/refundBridgeOrder')
 
 export const preSignOrders = createAction<PresignedOrdersParams>('order/presignOrders')
 
