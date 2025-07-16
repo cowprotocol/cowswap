@@ -20,6 +20,7 @@ export function BridgeStepRow({ context }: BridgeStepRowProps): ReactNode {
     bridgingProgressContext,
     quoteBridgeContext,
     statusResult,
+    explorerUrl,
   } = context
 
   const bridgeStatus = bridgingStatus === SwapAndBridgeStatus.DEFAULT ? SwapAndBridgeStatus.PENDING : bridgingStatus
@@ -42,12 +43,14 @@ export function BridgeStepRow({ context }: BridgeStepRowProps): ReactNode {
           chainName={targetChainName}
           sellAmount={targetAmounts?.sellAmount}
           buyAmount={targetAmounts?.buyAmount}
+          explorerUrl={explorerUrl}
         >
           {bridgingProgressContext && quoteBridgeContext ? (
             <BridgingProgressContent
               statusResult={statusResult}
               progressContext={bridgingProgressContext}
               quoteContext={quoteBridgeContext}
+              explorerUrl={explorerUrl}
             />
           ) : (
             <PreparingBridgingContent overview={context.overview} />
