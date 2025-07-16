@@ -101,7 +101,7 @@ export const TokensTableRow = ({
     if (isNativeToken) return ApprovalState.APPROVED
     if (!currentAllowance) return ApprovalState.UNKNOWN
 
-    return getApprovalState(amountToApprove, BigInt(currentAllowance.toBigInt()), pendingApproval)
+    return getApprovalState(amountToApprove, currentAllowance.toBigInt(), pendingApproval)
   }, [amountToApprove, currentAllowance, isNativeToken, pendingApproval])
 
   const currentAllowanceAmount = useMemo(() => {
