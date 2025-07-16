@@ -4,7 +4,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useBridgeSupportedNetworks } from 'entities/bridgeProvider'
 
-import { useDerivedTradeState, useReceiveAmountInfo } from 'modules/trade'
+import { useDerivedTradeState } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { BRIDGE_QUOTE_ACCOUNT } from 'modules/tradeQuote'
 import { useUsdAmount } from 'modules/usdAmount'
@@ -16,10 +16,9 @@ import { QuoteBridgeContext } from '../types'
 export function useQuoteBridgeContext(): QuoteBridgeContext | null {
   const { bridgeQuote } = useTradeQuote()
 
-  const receiveAmountInfo = useReceiveAmountInfo()
   const { data: bridgeSupportedNetworks } = useBridgeSupportedNetworks()
 
-  const quoteAmounts = useBridgeQuoteAmounts(receiveAmountInfo, bridgeQuote)
+  const quoteAmounts = useBridgeQuoteAmounts()
   const { value: bridgeReceiveAmountUsd } = useUsdAmount(quoteAmounts?.bridgeMinReceiveAmount)
 
   const { account } = useWalletInfo()
@@ -42,6 +41,8 @@ export function useQuoteBridgeContext(): QuoteBridgeContext | null {
       recipient,
       sellAmount: quoteAmounts.swapMinReceiveAmount,
       buyAmount: quoteAmounts.bridgeMinReceiveAmount,
+      // Since this is a quote content, we use buyAmount by default
+      bridgeMinReceiveAmount: null,
       buyAmountUsd: bridgeReceiveAmountUsd,
     }
   }, [quoteAmounts, bridgeQuote, recipient, bridgeSupportedNetworks, bridgeReceiveAmountUsd])

@@ -8,6 +8,7 @@ export {
   BridgeStatusTitlePrefixes,
 } from './pure/StopStatus'
 
+export { PendingBridgeOrdersUpdater } from './updaters/PendingBridgeOrdersUpdater'
 export { QuoteDetails } from './pure/QuoteDetails'
 export { ProgressDetails } from './pure/ProgressDetails'
 export { BridgeAccordionSummary } from './pure/BridgeAccordionSummary'

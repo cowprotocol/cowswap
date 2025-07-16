@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
 
+import { COW_PROTOCOL_NAME } from '../../constants'
 import { DividerHorizontal } from '../../styles'
 import { SwapAndBridgeStatus, SwapAndBridgeContext } from '../../types'
 import { BridgeDetailsContainer } from '../BridgeDetailsContainer'
@@ -37,7 +38,7 @@ function SwapStep({ context }: SwapStepProps): ReactNode {
       protocolIconShowOnly="first"
       protocolIconSize={21}
       titlePrefix={SwapStatusTitlePrefixes[swapStatus]}
-      protocolName="CoW Protocol"
+      protocolName={COW_PROTOCOL_NAME}
       bridgeProvider={bridgeProvider}
       chainName={sourceChainName}
       sellAmount={sourceAmounts.sellAmount}
@@ -73,7 +74,7 @@ function BridgeStep({ context, bridgeStatus }: BridgeStepProps): ReactNode {
           quoteContext={quoteBridgeContext}
         />
       ) : (
-        <PreparingBridgingContent />
+        <PreparingBridgingContent overview={overview} />
       )}
     </BridgeDetailsContainer>
   )

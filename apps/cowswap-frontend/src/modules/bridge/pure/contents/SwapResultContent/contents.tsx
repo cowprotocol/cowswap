@@ -91,12 +91,7 @@ export function SurplusConfig({
       }
     >
       <SuccessTextBold>
-        <TokenAmountDisplay
-          currencyAmount={surplusAmount}
-          displaySymbol
-          usdValue={surplusAmountUsd}
-          hideTokenIcon={true}
-        >
+        <TokenAmountDisplay currencyAmount={surplusAmount} displaySymbol usdValue={surplusAmountUsd} hideTokenIcon>
           +
         </TokenAmountDisplay>
       </SuccessTextBold>

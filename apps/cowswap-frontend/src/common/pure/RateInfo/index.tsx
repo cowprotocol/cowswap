@@ -38,20 +38,22 @@ export interface RateInfoProps {
   noFiat?: boolean
   rightAlign?: boolean
   fontBold?: boolean
+  fontSize?: number
+  labelBold?: boolean
 }
 
-const Wrapper = styled.div<{ stylized: boolean }>`
+const Wrapper = styled.div<{ stylized: boolean; fontSize?: number }>`
   display: flex;
   justify-content: space-between;
   width: 100%;
   align-items: center;
-  font-size: inherit;
+  font-size: ${({ fontSize }) => (fontSize ? `${fontSize}px` : 'inherit')};
   font-weight: inherit;
   gap: 10px;
   flex: 1 1 min-content;
 `
 
-const RateLabel = styled.div`
+const RateLabel = styled.div<{ labelBold?: boolean }>`
   display: flex;
   align-items: center;
   gap: 5px;
@@ -59,6 +61,7 @@ const RateLabel = styled.div`
   transition: color var(${UI.ANIMATION_DURATION}) ease-in-out;
   color: inherit;
   white-space: nowrap;
+  font-weight: ${({ labelBold }) => (labelBold ? 500 : 'inherit')};
 `
 
 const InvertIcon = styled.div`
@@ -162,6 +165,8 @@ export function RateInfo({
   noFiat = false,
   rightAlign = false,
   fontBold = false,
+  fontSize,
+  labelBold = false,
 }: RateInfoProps): ReactNode | null {
   const { chainId, inputCurrencyAmount, outputCurrencyAmount, activeRateFiatAmount, invertedActiveRateFiatAmount } =
     rateInfoParams
@@ -229,9 +234,9 @@ export function RateInfo({
   const toggleInverted = (): void => setCurrentIsInverted((state) => !state)
 
   return (
-    <Wrapper stylized={stylized} className={className}>
+    <Wrapper stylized={stylized} className={className} fontSize={fontSize}>
       {!noLabel && (
-        <RateLabel>
+        <RateLabel labelBold={labelBold}>
           <Trans>{label}</Trans>
           <InvertRateControl onClick={toggleInverted} />
         </RateLabel>

@@ -1,24 +1,17 @@
 import { useMemo } from 'react'
 
-import { BridgeQuoteResults } from '@cowprotocol/cow-sdk'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import { ReceiveAmountInfo } from 'modules/trade'
+import { useReceiveAmountInfo } from 'modules/trade'
+import { useTradeQuote } from 'modules/tradeQuote'
+
+import { BridgeQuoteAmounts } from 'common/types/bridge'
 
 import { useGetMaybeIntermediateToken } from './useGetMaybeIntermediateToken'
 
-export interface BridgeQuoteAmounts<Amount = CurrencyAmount<Currency>> {
-  swapSellAmount: Amount
-  swapBuyAmount: Amount
-  swapMinReceiveAmount: Amount // that should be moved on bridge (before sending to user)
-  bridgeMinReceiveAmount: Amount // that should be moved to user
-  bridgeFee: Amount
-}
-
-export function useBridgeQuoteAmounts(
-  receiveAmountInfo: ReceiveAmountInfo | null,
-  bridgeQuote: BridgeQuoteResults | null,
-): BridgeQuoteAmounts | null {
+export function useBridgeQuoteAmounts(): BridgeQuoteAmounts | null {
+  const receiveAmountInfo = useReceiveAmountInfo()
+  const { bridgeQuote } = useTradeQuote()
   const { intermediateBuyToken } = useGetMaybeIntermediateToken({ bridgeQuote })
 
   return useMemo(() => {

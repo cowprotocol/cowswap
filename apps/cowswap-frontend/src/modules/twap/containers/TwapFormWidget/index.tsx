@@ -20,6 +20,7 @@ import { TwapFormState } from 'modules/twap/pure/PrimaryActionButton/getTwapForm
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 import { usePrice } from 'common/hooks/usePrice'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
+import { RateInfo } from 'common/pure/RateInfo'
 
 import * as styledEl from './styled'
 import { LABELS_TOOLTIPS } from './tooltips'
@@ -172,11 +173,15 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget) {
     <>
       {!isWrapOrUnwrap && (
         <styledEl.Row>
-          <styledEl.StyledRateInfo
-            label={LABELS_TOOLTIPS.price.label}
-            rateInfoParams={rateInfoParams}
-            isInvertedState={isInvertedState}
-          />
+          <styledEl.RateInfoWrapper>
+            <RateInfo
+              label={LABELS_TOOLTIPS.price.label}
+              rateInfoParams={rateInfoParams}
+              isInvertedState={isInvertedState}
+              fontSize={13}
+              rightAlign
+            />
+          </styledEl.RateInfoWrapper>
         </styledEl.Row>
       )}
       <TradeNumberInput
