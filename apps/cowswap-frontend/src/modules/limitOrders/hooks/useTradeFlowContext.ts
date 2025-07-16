@@ -1,6 +1,6 @@
 import { useAtomValue } from 'jotai'
 
-import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, OrderClass } from '@cowprotocol/cow-sdk'
+import { OrderClass } from '@cowprotocol/cow-sdk'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
@@ -40,11 +40,8 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   const permitInfo = usePermitInfo(state.inputCurrency, TradeType.LIMIT_ORDER)
   const { maximumSendSellAmount } = useAmountsToSign() || {}
 
-  const checkAllowanceAddress = COW_PROTOCOL_VAULT_RELAYER_ADDRESS[settlementChainId]
   const { enoughAllowance } = useEnoughBalanceAndAllowance({
-    account,
     amount: maximumSendSellAmount || undefined,
-    checkAllowanceAddress,
   })
   const generatePermitHook = useGeneratePermitHook()
   const getCachedPermit = useGetCachedPermit()
