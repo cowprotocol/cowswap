@@ -35,8 +35,6 @@ const order: TWAPOrder = {
 const CREATE_COW_TX_DATA = '0xCREATE_COW_TX_DATA'
 const APPROVE_TX_DATA = '0xAPPROVE_TX_DATA'
 
-// TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
 describe('Create TWAP order', () => {
   let context: TwapOrderCreationContext
   let createCowFn: jest.Mock

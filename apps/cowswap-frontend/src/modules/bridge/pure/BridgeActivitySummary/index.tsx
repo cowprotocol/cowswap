@@ -1,26 +1,46 @@
 import { ReactNode } from 'react'
 
+import { ShimmerWrapper, SummaryRow } from 'common/pure/OrderSummaryRow'
+
 import { BridgeStepRow } from './BridgeStepRow'
 import { BridgeSummaryHeader } from './BridgeSummaryHeader'
 import { SwapStepRow } from './SwapStepRow'
 
-import { SwapAndBridgeContext } from '../../types'
+import { SwapAndBridgeContext, SwapAndBridgeOverview, SwapResultContext } from '../../types'
 
 interface BridgeActivitySummaryProps {
-  context: SwapAndBridgeContext
+  swapAndBridgeContext: SwapAndBridgeContext | undefined
+  swapResultContext: SwapResultContext | undefined
+  swapAndBridgeOverview: SwapAndBridgeOverview
   children: ReactNode
+  orderBasicDetails: ReactNode
 }
 
 export function BridgeActivitySummary(props: BridgeActivitySummaryProps): ReactNode {
-  const { context, children } = props
+  const { swapAndBridgeContext, swapResultContext, swapAndBridgeOverview, orderBasicDetails, children } = props
 
   return (
     <>
-      <BridgeSummaryHeader context={context} />
+      <BridgeSummaryHeader swapAndBridgeOverview={swapAndBridgeOverview} />
 
-      <SwapStepRow context={context} />
+      <SwapStepRow
+        swapResultContext={swapResultContext}
+        sourceAmounts={swapAndBridgeOverview.sourceAmounts}
+        sourceChainName={swapAndBridgeOverview.sourceChainName}
+      >
+        {orderBasicDetails}
+      </SwapStepRow>
 
-      <BridgeStepRow context={context} />
+      {swapAndBridgeContext ? (
+        <BridgeStepRow context={swapAndBridgeContext} />
+      ) : (
+        <SummaryRow>
+          <b>Bridge</b>
+          <i>
+            <ShimmerWrapper />
+          </i>
+        </SummaryRow>
+      )}
 
       {children}
     </>

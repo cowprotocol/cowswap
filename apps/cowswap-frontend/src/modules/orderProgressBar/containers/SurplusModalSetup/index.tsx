@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react'
+import { ReactNode, useCallback, useEffect } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -13,9 +13,7 @@ import { CowModal } from 'common/pure/Modal'
 import { useOrderProgressBarProps } from '../../hooks/useOrderProgressBarProps'
 import { TransactionSubmittedContent } from '../../pure/TransactionSubmittedContent'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function SurplusModalSetup() {
+export function SurplusModalSetup(): ReactNode {
   const orderId = useOrderIdForSurplusModal()
   const removeOrderId = useRemoveOrderFromSurplusQueue()
 

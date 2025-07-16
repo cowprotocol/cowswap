@@ -2,6 +2,7 @@ import { ReactNode } from 'react'
 
 import { BridgeProviderInfo } from '@cowprotocol/cow-sdk'
 
+import { COW_PROTOCOL_NAME } from '../../constants'
 import { DividerHorizontal } from '../../styles'
 import { QuoteBridgeContext, QuoteSwapContext, SwapAndBridgeStatus } from '../../types'
 import { BridgeDetailsContainer } from '../BridgeDetailsContainer'
@@ -39,14 +40,14 @@ function SwapStep({ stepsCollapsible, bridgeProvider, swapContext }: SwapStepPro
   return (
     <BridgeDetailsContainer
       isCollapsible={stepsCollapsible}
-      defaultExpanded={true}
+      defaultExpanded
       status={status}
       stopNumber={1}
       statusIcon={null}
       protocolIconShowOnly="first"
       protocolIconSize={21}
       titlePrefix={SwapStatusTitlePrefixes[status]}
-      protocolName="CoW Protocol"
+      protocolName={COW_PROTOCOL_NAME}
       bridgeProvider={bridgeProvider}
       chainName={swapContext.chainName}
       sellAmount={swapContext.sellAmount}
@@ -63,7 +64,7 @@ function BridgeStep({ stepsCollapsible, bridgeProvider, bridgeContext }: BridgeS
   return (
     <BridgeDetailsContainer
       isCollapsible={stepsCollapsible}
-      defaultExpanded={true}
+      defaultExpanded
       status={status}
       stopNumber={2}
       statusIcon={null}

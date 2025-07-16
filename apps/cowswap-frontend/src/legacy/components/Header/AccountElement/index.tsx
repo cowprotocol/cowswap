@@ -27,12 +27,11 @@ function createNotificationClickEventData(event: string): string {
 }
 
 interface AccountElementProps {
-  pendingActivities: string[]
   standaloneMode?: boolean
   className?: string
 }
 
-export function AccountElement({ className, standaloneMode, pendingActivities }: AccountElementProps): ReactNode {
+export function AccountElement({ className, standaloneMode }: AccountElementProps): ReactNode {
   const { account, chainId } = useWalletInfo()
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
   const userEthBalance = useNativeCurrencyAmount(chainId, account)
@@ -53,7 +52,7 @@ export function AccountElement({ className, standaloneMode, pendingActivities }:
             <TokenAmount amount={userEthBalance} tokenSymbol={{ symbol: nativeTokenSymbol }} />
           </BalanceText>
         )}
-        <Web3Status pendingActivities={pendingActivities} onClick={() => account && toggleAccountModal()} />
+        <Web3Status onClick={() => account && toggleAccountModal()} />
         {account && (
           <NotificationBell
             unreadCount={unreadNotificationsCount}

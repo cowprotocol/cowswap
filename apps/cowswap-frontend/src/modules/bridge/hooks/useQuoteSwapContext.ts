@@ -5,20 +5,18 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { useCurrentAccountProxyAddress } from 'modules/cowShed'
 import { useGetReceiveAmountInfo } from 'modules/trade/hooks/useGetReceiveAmountInfo'
-import { BRIDGE_QUOTE_ACCOUNT, useTradeQuote } from 'modules/tradeQuote'
+import { BRIDGE_QUOTE_ACCOUNT } from 'modules/tradeQuote'
 import { useTradeSlippage } from 'modules/tradeSlippage'
 import { useUsdAmount } from 'modules/usdAmount'
 
 import { useBridgeQuoteAmounts } from './useBridgeQuoteAmounts'
 
-// todo
 import { QuoteSwapContext } from '../types'
 
 export function useQuoteSwapContext(): QuoteSwapContext | null {
-  const { bridgeQuote } = useTradeQuote()
   const receiveAmountInfo = useGetReceiveAmountInfo()
 
-  const quoteAmounts = useBridgeQuoteAmounts(receiveAmountInfo, bridgeQuote)
+  const quoteAmounts = useBridgeQuoteAmounts()
   const { value: swapMinReceiveAmountUsd } = useUsdAmount(quoteAmounts?.swapMinReceiveAmount)
   const { value: swapExpectedReceiveUsd } = useUsdAmount(quoteAmounts?.swapBuyAmount)
 
