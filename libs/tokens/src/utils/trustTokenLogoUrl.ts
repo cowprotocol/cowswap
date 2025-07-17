@@ -8,6 +8,8 @@ const chainIdToName: Record<SupportedChainId, string | null> = {
   [SupportedChainId.SEPOLIA]: 'ethereum',
   [SupportedChainId.POLYGON]: 'polygon',
   [SupportedChainId.AVALANCHE]: 'avalanche',
+  [SupportedChainId.LENS]: null, // As of now (2025/07/16), Lens is not on Trust Wallet assets repo
+  [SupportedChainId.BNB]: 'smartchain',
 }
 
 export function trustTokenLogoUrl(address: string, chainId: SupportedChainId): string | null {
