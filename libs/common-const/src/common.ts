@@ -50,10 +50,12 @@ export function getEthFlowContractAddresses(env: CowEnv): string {
   return env === 'prod' ? ETH_FLOW_ADDRESS : BARN_ETH_FLOW_ADDRESS
 }
 
-export const V_COW_CONTRACT_ADDRESS: Record<SupportedChainId, string | null> = mapSupportedNetworks(null)
-V_COW_CONTRACT_ADDRESS[SupportedChainId.MAINNET] = '0xd057b63f5e69cf1b929b356b579cba08d7688048'
-V_COW_CONTRACT_ADDRESS[SupportedChainId.GNOSIS_CHAIN] = '0xc20C9C13E853fc64d054b73fF21d3636B2d97eaB'
-V_COW_CONTRACT_ADDRESS[SupportedChainId.SEPOLIA] = '0x21d06a222bbb94ec1406a0a8ba86b4d761bc9864'
+export const V_COW_CONTRACT_ADDRESS: Record<SupportedChainId, string | null> = {
+  ...mapSupportedNetworks(null),
+  [SupportedChainId.MAINNET]: '0xd057b63f5e69cf1b929b356b579cba08d7688048',
+  [SupportedChainId.GNOSIS_CHAIN]: '0xc20C9C13E853fc64d054b73fF21d3636B2d97eaB',
+  [SupportedChainId.SEPOLIA]: '0x21d06a222bbb94ec1406a0a8ba86b4d761bc9864',
+}
 
 export const COW_CONTRACT_ADDRESS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.MAINNET]: '0xDEf1CA1fb7FBcDC777520aa7f396b4E015F497aB',
@@ -79,19 +81,21 @@ export const MINIMUM_ORDER_VALID_TO_TIME_SECONDS = 120
 // Minimum deadline for EthFlow orders. Like the default deadline, anything smaller will be replaced by this
 export const MINIMUM_ETH_FLOW_DEADLINE_SECONDS = 600 // 10 minutes in SECONDS
 
-export const MINIMUM_ETH_FLOW_SLIPPAGE_BPS: Record<SupportedChainId, number> =
-  mapSupportedNetworks(DEFAULT_SLIPPAGE_BPS)
-MINIMUM_ETH_FLOW_SLIPPAGE_BPS[SupportedChainId.MAINNET] = 200 // 2% only for mainnet
+export const MINIMUM_ETH_FLOW_SLIPPAGE_BPS: Record<SupportedChainId, number> = {
+  ...mapSupportedNetworks(DEFAULT_SLIPPAGE_BPS),
+  [SupportedChainId.MAINNET]: 200, // 2% only for mainnet
+}
 
 const DEFAULT_ETH_FLOW_SLIPPAGE_WARNING_THRESHOLD = 200 // 2%
-export const ETH_FLOW_SLIPPAGE_WARNING_THRESHOLD: Record<SupportedChainId, number> = mapSupportedNetworks(
-  DEFAULT_ETH_FLOW_SLIPPAGE_WARNING_THRESHOLD,
-)
-ETH_FLOW_SLIPPAGE_WARNING_THRESHOLD[SupportedChainId.MAINNET] = 500 // 5% only for mainnet
+export const ETH_FLOW_SLIPPAGE_WARNING_THRESHOLD: Record<SupportedChainId, number> = {
+  ...mapSupportedNetworks(DEFAULT_ETH_FLOW_SLIPPAGE_WARNING_THRESHOLD),
+  [SupportedChainId.MAINNET]: 500, // 5% only for mainnet
+}
 
 export const MINIMUM_ETH_FLOW_SLIPPAGE: Record<SupportedChainId, Percent> = mapSupportedNetworks(
   (chainId) => new Percent(MINIMUM_ETH_FLOW_SLIPPAGE_BPS[chainId], 10_000),
 )
+
 export const HIGH_ETH_FLOW_SLIPPAGE_BPS = 1_000 // 10%
 
 const GITHUB_REPOSITORY = 'cowprotocol/cowswap'
