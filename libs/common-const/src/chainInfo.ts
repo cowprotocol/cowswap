@@ -49,6 +49,9 @@ function mapChainInfoToBaseChainInfo(
   | 'color'
   | 'eip155Label'
 > {
+  if (!chainInfo) {
+    throw new Error('Chain info is not defined')
+  }
   return {
     docs: chainInfo.docs.url,
     bridge: chainInfo.bridges?.[0]?.url,
@@ -75,6 +78,12 @@ export const CHAIN_INFO: ChainInfoMap = {
     name: 'ethereum',
     urlAlias: '',
     nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.MAINNET],
+  },
+  [SupportedChainId.BNB]: {
+    ...mapChainInfoToBaseChainInfo(bnb),
+    name: 'bnb',
+    urlAlias: 'bnb',
+    nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.BNB],
   },
   [SupportedChainId.BASE]: {
     ...mapChainInfoToBaseChainInfo(base),
@@ -113,12 +122,6 @@ export const CHAIN_INFO: ChainInfoMap = {
     urlAlias: 'lens',
     nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.LENS],
   },
-  [SupportedChainId.BNB]: {
-    ...mapChainInfoToBaseChainInfo(bnb),
-    name: 'bnb',
-    urlAlias: 'bnb',
-    nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.BNB],
-  },
   [SupportedChainId.SEPOLIA]: {
     ...mapChainInfoToBaseChainInfo(sepolia),
     name: 'sepolia',
@@ -132,11 +135,13 @@ export const CHAIN_INFO: ChainInfoMap = {
  */
 export const SORTED_CHAIN_IDS: SupportedChainId[] = [
   SupportedChainId.MAINNET,
+  SupportedChainId.BNB,
   SupportedChainId.BASE,
   SupportedChainId.ARBITRUM_ONE,
   SupportedChainId.POLYGON,
   SupportedChainId.AVALANCHE,
   SupportedChainId.GNOSIS_CHAIN,
+  SupportedChainId.LENS,
   SupportedChainId.SEPOLIA,
 ]
 
