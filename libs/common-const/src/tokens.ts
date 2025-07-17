@@ -1,4 +1,4 @@
-import { SupportedChainId, AdditionalTargetChainId } from '@cowprotocol/cow-sdk'
+import { AdditionalTargetChainId, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { COW_CONTRACT_ADDRESS, V_COW_CONTRACT_ADDRESS } from './common'
 import { cowprotocolTokenLogoUrl } from './cowprotocolTokenLogoUrl'
@@ -413,6 +413,26 @@ export const USDC_AVALANCHE = new TokenWithLogo(
   'USD Coin',
 )
 
+export const USDC_BNB = new TokenWithLogo(
+  USDC_MAINNET.logoURI,
+  SupportedChainId.BNB,
+  // https://bscscan.com/address/0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d
+  '0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d',
+  18, // BNB USDC has 18 decimals!!!
+  'USDC',
+  'USD Coin',
+)
+
+export const USDC_LENS = new TokenWithLogo(
+  USDC_MAINNET.logoURI,
+  SupportedChainId.LENS,
+  // https://explorer.lens.xyz/address/0x88F08E304EC4f90D644Cec3Fb69b8aD414acf884
+  '0x88F08E304EC4f90D644Cec3Fb69b8aD414acf884',
+  6,
+  'USDC',
+  'USD Coin',
+)
+
 export const USDC_OPTIMISM = new TokenWithLogo(
   USDC_MAINNET.logoURI,
   AdditionalTargetChainId.OPTIMISM,
@@ -442,6 +462,8 @@ export const USDC: Record<SupportedChainId | AdditionalTargetChainId, TokenWithL
   [SupportedChainId.POLYGON]: USDC_POLYGON,
   [SupportedChainId.AVALANCHE]: USDC_AVALANCHE,
   [AdditionalTargetChainId.OPTIMISM]: USDC_OPTIMISM,
+  [SupportedChainId.LENS]: USDC_LENS,
+  [SupportedChainId.BNB]: USDC_BNB,
 }
 
 /**
