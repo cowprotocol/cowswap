@@ -41,6 +41,7 @@ const SWR_OPTIONS: SWRConfiguration<ProxyAndAccount> = {
   revalidateOnFocus: false,
   refreshWhenHidden: false,
   refreshWhenOffline: false,
+  revalidateIfStale: false,
   refreshInterval(data): number {
     // Update proxy data only when Proxy setup is unknown
     // It can happen when there were connection issues while data loading
@@ -58,10 +59,10 @@ export function useCurrentAccountProxy(): SWRResponse<ProxyAndAccount> {
   const provider = useWalletProvider()
 
   return useSWR(
-    account && provider && cowShedHooks
-      ? [account, provider, cowShedHooks, chainId, 'useCurrentAccountProxyAddress']
-      : null,
-    async ([account, provider, cowShedHooks]) => {
+    account && provider && cowShedHooks ? [account, chainId, 'useCurrentAccountProxyAddress'] : null,
+    async ([account]) => {
+      if (!provider || !cowShedHooks) return
+
       const proxyAddress = cowShedHooks.proxyOf(account)
       const proxyCode = await provider.getCode(proxyAddress)
       const isProxyDeployed = !!proxyCode && proxyCode !== '0x'
