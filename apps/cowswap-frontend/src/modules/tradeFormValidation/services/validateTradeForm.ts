@@ -128,10 +128,6 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     validations.push(TradeFormValidation.WrapUnwrapFlow)
   }
 
-  if (isNativeIn) {
-    validations.push(TradeFormValidation.SellNativeToken)
-  }
-
   if (approvalRequired) {
     if (isBundlingSupported) {
       validations.push(TradeFormValidation.ApproveAndSwap)
@@ -139,12 +135,12 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     validations.push(TradeFormValidation.ApproveRequired)
   }
 
-  if (isNativeIn) {
-    validations.push(TradeFormValidation.SellNativeToken)
-  }
-
   if (intermediateTokenToBeImported) {
     validations.push(TradeFormValidation.ImportingIntermediateToken)
+  }
+
+  if (isNativeIn) {
+    validations.push(TradeFormValidation.SellNativeToken)
   }
 
   return validations.length > 0 ? validations : null

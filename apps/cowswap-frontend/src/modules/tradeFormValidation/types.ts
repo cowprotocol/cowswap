@@ -39,11 +39,11 @@ export enum TradeFormValidation {
   ApproveAndSwap,
   ApproveRequired,
 
-  // Native
-  SellNativeToken,
-
   // Intermediate token
   ImportingIntermediateToken,
+
+  // Native - this should be the last validation, as it overrides all other validations
+  SellNativeToken,
 }
 
 export interface TradeFormValidationCommonContext {
