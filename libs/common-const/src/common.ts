@@ -50,15 +50,10 @@ export function getEthFlowContractAddresses(env: CowEnv): string {
   return env === 'prod' ? ETH_FLOW_ADDRESS : BARN_ETH_FLOW_ADDRESS
 }
 
-export const V_COW_CONTRACT_ADDRESS: Record<SupportedChainId, string | null> = {
-  [SupportedChainId.MAINNET]: '0xd057b63f5e69cf1b929b356b579cba08d7688048',
-  [SupportedChainId.GNOSIS_CHAIN]: '0xc20C9C13E853fc64d054b73fF21d3636B2d97eaB',
-  [SupportedChainId.ARBITRUM_ONE]: null, // doesn't exist!
-  [SupportedChainId.BASE]: null, // doesn't exist!
-  [SupportedChainId.SEPOLIA]: '0x21d06a222bbb94ec1406a0a8ba86b4d761bc9864',
-  [SupportedChainId.POLYGON]: null, //doesn't exist!
-  [SupportedChainId.AVALANCHE]: null, // doesn't exist!
-}
+export const V_COW_CONTRACT_ADDRESS: Record<SupportedChainId, string | null> = mapSupportedNetworks(null)
+V_COW_CONTRACT_ADDRESS[SupportedChainId.MAINNET] = '0xd057b63f5e69cf1b929b356b579cba08d7688048'
+V_COW_CONTRACT_ADDRESS[SupportedChainId.GNOSIS_CHAIN] = '0xc20C9C13E853fc64d054b73fF21d3636B2d97eaB'
+V_COW_CONTRACT_ADDRESS[SupportedChainId.SEPOLIA] = '0x21d06a222bbb94ec1406a0a8ba86b4d761bc9864'
 
 export const COW_CONTRACT_ADDRESS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.MAINNET]: '0xDEf1CA1fb7FBcDC777520aa7f396b4E015F497aB',
