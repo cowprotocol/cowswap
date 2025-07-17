@@ -9,7 +9,7 @@ import { LP_TOKEN_LIST_CATEGORIES, useAllLpTokens } from '@cowprotocol/tokens'
 import ms from 'ms.macro'
 
 // A small gap between balances and allowances refresh intervals is needed to avoid high load to the node at the same time
-const LP_BALANCES_SWR_CONFIG = { refreshInterval: ms`32s` }
+const LP_BALANCES_SWR_CONFIG = { refreshInterval: ms`32s`, revalidateIfStale: false }
 const LP_MULTICALL_OPTIONS = { consequentExecution: true }
 
 // To avoid high load to the node at the same time

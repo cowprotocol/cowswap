@@ -22,6 +22,7 @@ const BASIC_SWR_CONFIG: SWRConfiguration = {
   refreshWhenHidden: false,
   refreshWhenOffline: false,
   revalidateOnFocus: false,
+  revalidateIfStale: false,
 }
 // A small gap between balances and allowances refresh intervals is needed to avoid high load to the node at the same time
 const BALANCES_SWR_CONFIG: SWRConfiguration = { ...BASIC_SWR_CONFIG, refreshInterval: ms`31s` }

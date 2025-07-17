@@ -8,13 +8,15 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import ms from 'ms.macro'
+import { SWRConfiguration } from 'swr'
 
 import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
 
 const MULTICALL_OPTIONS = {}
 
-const SWR_CONFIG = {
+const SWR_CONFIG: SWRConfiguration = {
   ...SWR_NO_REFRESH_OPTIONS,
+  revalidateIfStale: false,
   refreshInterval: ms`32s`,
 }
 

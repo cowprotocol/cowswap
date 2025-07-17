@@ -5,7 +5,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { Token } from '@uniswap/sdk-core'
 
 import ms from 'ms.macro'
-import useSWR, { SWRResponse } from 'swr'
+import useSWR, { SWRConfiguration, SWRResponse } from 'swr'
 
 import { useTokenContract } from 'common/hooks/useContract'
 
@@ -13,8 +13,9 @@ import { useTradeSpenderAddress } from './useTradeSpenderAddress'
 
 const lastApproveTxBlockNumberAtom = atom(0)
 
-const SWR_OPTIONS = {
+const SWR_OPTIONS: SWRConfiguration = {
   ...SWR_NO_REFRESH_OPTIONS,
+  revalidateIfStale: false,
   refreshInterval: ms`10s`,
 }
 
