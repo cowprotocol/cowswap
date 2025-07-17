@@ -94,9 +94,17 @@ async function getIsProxySetupValid(
 
   console.debug('[CoWShed validation] Loading...')
 
+  // TODO: remove after tests
+  if (localStorage.getItem('SHED_VALIDATION_TIMEOUT')) {
+    await new Promise((resolve) => {
+      setTimeout(resolve, 10_000)
+    })
+  }
+
   try {
     const implementation = await implementationAddress(provider, proxyAddress)
 
+    // TODO: remove after tests
     if (localStorage.getItem('BREAK_IMPLEMENTATION_LOADING')) {
       throw new Error('implementation loading error')
     }
@@ -111,6 +119,7 @@ async function getIsProxySetupValid(
   try {
     const trustedExecutor = await shedContract.callStatic.trustedExecutor()
 
+    // TODO: remove after tests
     if (localStorage.getItem('BREAK_EXECUTOR_LOADING')) {
       throw new Error('trustedExecutor loading error')
     }
