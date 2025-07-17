@@ -99,6 +99,9 @@ export function useTradeQuotePolling(isConfirmOpen = false, isQuoteUpdatePossibl
    */
   useLayoutEffect(() => {
     const interval = setInterval(() => {
+      // Do not tick while quote is loading
+      if (tradeQuoteRef.current.isLoading) return
+
       setTradeQuotePolling((state) => {
         const newState = state - ONE_SEC
 
