@@ -88,6 +88,11 @@ export const COW_LISTENERS: CowWidgetEventListeners = [
     event: CowWidgetEvents.ON_CHANGE_TRADE_PARAMS,
     handler: (event) => console.log(`[configurator:ON_TRADE_PARAMS] ✅ Trade params:`, event),
   },
+
+  {
+    event: CowWidgetEvents.ON_BRIDGING_SUCCESS,
+    handler: (event) => console.log(`[configurator:ON_BRIDGING_SUCCESS] ✅ Bridging params:`, event),
+  },
 ]
 
 export const DEFAULT_CUSTOM_TOKENS: TokenInfo[] = [

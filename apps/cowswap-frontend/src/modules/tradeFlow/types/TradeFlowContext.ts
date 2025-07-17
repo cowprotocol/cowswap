@@ -1,6 +1,7 @@
 import type { Erc20, GPv2Settlement, Weth } from '@cowprotocol/abis'
 import { QuoteAndPost } from '@cowprotocol/cow-sdk'
 import type { Command } from '@cowprotocol/types'
+import { BridgeOrderData, BridgeQuoteAmounts } from '@cowprotocol/types'
 import type { SendBatchTxCallback } from '@cowprotocol/wallet'
 import type { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -14,8 +15,6 @@ import type { GeneratePermitHook, IsTokenPermittableResult, useGetCachedPermit }
 import type { TradeConfirmActions } from 'modules/trade'
 import type { TradeFlowAnalyticsContext } from 'modules/trade/utils/tradeFlowAnalytics'
 import type { TradeQuoteState } from 'modules/tradeQuote'
-
-import { BridgeOrderData, BridgeQuoteAmounts } from 'common/types/bridge'
 
 export enum FlowType {
   REGULAR = 'REGULAR',

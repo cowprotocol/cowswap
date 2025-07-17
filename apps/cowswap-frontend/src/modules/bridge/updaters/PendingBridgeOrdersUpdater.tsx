@@ -6,6 +6,8 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { useCrossChainOrder, usePendingBridgeOrders, useUpdateBridgeOrderQuote } from 'entities/bridgeOrders'
 import { useAddOrderToSurplusQueue } from 'entities/surplusModal'
 
+import { emitBridgingSuccessEvent } from 'modules/orders'
+
 interface PendingOrderUpdaterProps {
   chainId: SupportedChainId
   orderUid: string
@@ -19,12 +21,14 @@ function PendingOrderUpdater({ chainId, orderUid }: PendingOrderUpdaterProps): R
   useEffect(() => {
     if (!crossChainOrder) return
 
+    const { provider: _, ...eventPayload } = crossChainOrder
     const orderUid = crossChainOrder.order.uid
     const isOrderExecuted = crossChainOrder.statusResult.status === BridgeStatus.EXECUTED
 
     if (isOrderExecuted) {
       updateBridgeOrderQuote(orderUid, crossChainOrder.statusResult)
       addOrderToSurplusQueue(orderUid)
+      emitBridgingSuccessEvent(eventPayload)
       // TODO: play MOOO sound
     }
   }, [crossChainOrder, updateBridgeOrderQuote, addOrderToSurplusQueue])

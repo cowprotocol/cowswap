@@ -3,9 +3,8 @@ import { atomWithStorage } from 'jotai/utils'
 
 import { getJotaiIsolatedStorage } from '@cowprotocol/core'
 import { mapSupportedNetworks } from '@cowprotocol/cow-sdk'
-import type { PersistentStateByChainAccount } from '@cowprotocol/types'
-
-import { BridgeOrderData, BridgeQuoteAmounts } from 'common/types/bridge'
+import type { BridgeOrderDataSerialized, PersistentStateByChainAccount } from '@cowprotocol/types'
+import { BridgeOrderData } from '@cowprotocol/types'
 
 import {
   bridgeOrdersStateSerializer,
@@ -13,15 +12,10 @@ import {
   serializeQuoteAmounts,
 } from './bridgeOrdersStateSerializer'
 
-import { SerializedAmount } from '../types'
+export type BridgeOrdersStateSerialized<T = BridgeOrderDataSerialized[]> = PersistentStateByChainAccount<T>
+export type BridgeOrdersState = BridgeOrdersStateSerialized<BridgeOrderData[]>
 
-type SerializedBridgeAmounts = BridgeQuoteAmounts<SerializedAmount>
-type BridgeOrderDataSerialized = BridgeOrderData<SerializedBridgeAmounts>
-
-type BridgeOrdersStateSerialized<T = BridgeOrderDataSerialized[]> = PersistentStateByChainAccount<T>
-type BridgeOrdersState = BridgeOrdersStateSerialized<BridgeOrderData[]>
-
-const _bridgeOrdersAtom = atomWithStorage<BridgeOrdersStateSerialized>(
+export const bridgeOrdersStoreAtom = atomWithStorage<BridgeOrdersStateSerialized>(
   'bridgeOrdersAtom:v1',
   mapSupportedNetworks({}),
   getJotaiIsolatedStorage(),
@@ -46,10 +40,10 @@ export const bridgeOrdersAtom = atom<
   BridgeOrdersStateSerialized
 >(
   (get) => {
-    return deserializeState(get(_bridgeOrdersAtom))
+    return deserializeState(get(bridgeOrdersStoreAtom))
   },
   (get, set, updater) => {
-    const update = typeof updater === 'function' ? updater(deserializeState(get(_bridgeOrdersAtom))) : updater
+    const update = typeof updater === 'function' ? updater(deserializeState(get(bridgeOrdersStoreAtom))) : updater
 
     const newState = bridgeOrdersStateSerializer(update, (order) => {
       return {
@@ -58,7 +52,7 @@ export const bridgeOrdersAtom = atom<
       }
     })
 
-    set(_bridgeOrdersAtom, newState)
+    set(bridgeOrdersStoreAtom, newState)
 
     return newState
   },
