@@ -1,4 +1,4 @@
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import gnosisChainIndex from './gnosisChain.json'
 import mainnetIndex from './mainnet.json'
@@ -10,27 +10,15 @@ interface Claim {
 }
 
 const indexFiles: Record<SupportedChainId, string[]> = {
+  ...mapSupportedNetworks(() => []), // no index for these chains
   [SupportedChainId.MAINNET]: mainnetIndex,
   [SupportedChainId.GNOSIS_CHAIN]: gnosisChainIndex,
-  [SupportedChainId.ARBITRUM_ONE]: [],
-  [SupportedChainId.BASE]: [],
-  [SupportedChainId.SEPOLIA]: [],
-  [SupportedChainId.AVALANCHE]: [],
-  [SupportedChainId.POLYGON]: [],
-  [SupportedChainId.LENS]: [],
-  [SupportedChainId.BNB]: [],
 }
 
 const chainNames: Record<SupportedChainId, string | null> = {
+  ...mapSupportedNetworks(() => null), // no claim for these chains
   [SupportedChainId.MAINNET]: 'mainnet',
   [SupportedChainId.GNOSIS_CHAIN]: 'gnosisChain',
-  [SupportedChainId.ARBITRUM_ONE]: null,
-  [SupportedChainId.BASE]: null,
-  [SupportedChainId.SEPOLIA]: null,
-  [SupportedChainId.AVALANCHE]: null,
-  [SupportedChainId.POLYGON]: null,
-  [SupportedChainId.LENS]: null,
-  [SupportedChainId.BNB]: null,
 }
 
 const DISTRO_REPO_BRANCH_NAME = 'main'
