@@ -61,8 +61,10 @@ const SummaryWrapper = styled.section`
   }
 `
 
-const SHOW_TOKENS_TABLE: Record<SupportedChainId, boolean> = mapSupportedNetworks(false) // Default to false for all networks
-SHOW_TOKENS_TABLE[SupportedChainId.MAINNET] = true // Only show tokens table for mainnet
+const SHOW_TOKENS_TABLE: Record<SupportedChainId, boolean> = {
+  ...mapSupportedNetworks(false), // Default to false for all networks
+  [SupportedChainId.MAINNET]: true, // Only show tokens table for mainnet
+}
 
 export const Home: React.FC = () => {
   const networkId = useNetworkId() ?? undefined
