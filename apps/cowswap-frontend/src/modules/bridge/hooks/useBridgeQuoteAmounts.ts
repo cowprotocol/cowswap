@@ -1,12 +1,11 @@
 import { useMemo } from 'react'
 
 import { useTokensByAddressMap } from '@cowprotocol/tokens'
+import { BridgeQuoteAmounts } from '@cowprotocol/types'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useGetReceiveAmountInfo } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
-
-import { BridgeQuoteAmounts } from 'common/types/bridge'
 
 export function useBridgeQuoteAmounts(): BridgeQuoteAmounts | null {
   const receiveAmountInfo = useGetReceiveAmountInfo()

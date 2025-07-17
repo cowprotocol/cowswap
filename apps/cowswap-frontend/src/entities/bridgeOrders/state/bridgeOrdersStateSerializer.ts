@@ -1,12 +1,9 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import type { PersistentStateByChainAccount } from '@cowprotocol/types'
+import type { PersistentStateByChainAccount, SerializedAmount } from '@cowprotocol/types'
+import type { BridgeQuoteAmounts } from '@cowprotocol/types'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
-
-import type { BridgeQuoteAmounts } from 'common/types/bridge'
-
-import { SerializedAmount } from '../types'
 
 export function bridgeOrdersStateSerializer<T, Q, R extends PersistentStateByChainAccount<Q[]>>(
   state: PersistentStateByChainAccount<T[]>,
