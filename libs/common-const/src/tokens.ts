@@ -614,6 +614,12 @@ const POLYGON_STABLECOINS = [USDC_POLYGON.address, USDT_POLYGON.address, DAI_POL
 
 const AVALANCHE_STABLECOINS = [USDC_AVALANCHE.address, USDT_AVALANCHE.address].map((t) => t.toLowerCase())
 
+// TODO: add more stablecoins for Lens
+const LENS_STABLECOINS = [USDC_LENS.address].map((t) => t.toLowerCase())
+
+// TODO: add more stablecoins for BNB
+const BNB_STABLECOINS = [USDC_BNB.address].map((t) => t.toLowerCase())
+
 const SEPOLIA_STABLECOINS = [USDC_SEPOLIA.address, USDT_SEPOLIA.address].map((t) => t.toLowerCase())
 
 export const STABLECOINS: Record<SupportedChainId, Set<string>> = {
@@ -624,6 +630,8 @@ export const STABLECOINS: Record<SupportedChainId, Set<string>> = {
   [SupportedChainId.BASE]: new Set(BASE_STABLECOINS),
   [SupportedChainId.POLYGON]: new Set(POLYGON_STABLECOINS),
   [SupportedChainId.AVALANCHE]: new Set(AVALANCHE_STABLECOINS),
+  [SupportedChainId.LENS]: new Set(LENS_STABLECOINS),
+  [SupportedChainId.BNB]: new Set(BNB_STABLECOINS),
 }
 
 /**
