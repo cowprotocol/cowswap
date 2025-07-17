@@ -28,7 +28,7 @@ export function BridgingSuccessNotification({ payload }: BridgingSuccessNotifica
 
   return (
     <OrderNotification
-      title="Bridging succeed"
+      title="Bridging succeeded"
       skipExplorerLink
       chainId={chainId}
       orderInfo={orderInfo}
