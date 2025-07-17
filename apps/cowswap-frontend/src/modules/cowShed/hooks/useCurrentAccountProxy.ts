@@ -36,7 +36,7 @@ interface ProxyAndAccount {
 
 const UNKNOW_COWSHED_REFRESH_INTERVAL = ms`3s`
 
-const SWR_OPTIONS: SWRConfiguration<ProxyAndAccount> = {
+const SWR_OPTIONS: SWRConfiguration<ProxyAndAccount | undefined> = {
   revalidateOnReconnect: true,
   revalidateOnFocus: false,
   refreshWhenHidden: false,
@@ -53,7 +53,7 @@ const SWR_OPTIONS: SWRConfiguration<ProxyAndAccount> = {
   },
 }
 
-export function useCurrentAccountProxy(): SWRResponse<ProxyAndAccount> {
+export function useCurrentAccountProxy(): SWRResponse<ProxyAndAccount | undefined, unknown, typeof SWR_OPTIONS> {
   const { account, chainId } = useWalletInfo()
   const cowShedHooks = useCowShedHooks()
   const provider = useWalletProvider()
