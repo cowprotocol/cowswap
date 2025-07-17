@@ -34,6 +34,7 @@ export interface BaseOrderNotificationProps {
   topContent?: ReactNode
   bottomContent?: ReactNode
   receiver?: string
+  hideReceiver?: boolean
 }
 
 export function OrderNotification(props: BaseOrderNotificationProps): ReactNode {
@@ -48,6 +49,7 @@ export function OrderNotification(props: BaseOrderNotificationProps): ReactNode 
     orderInfo,
     isEthFlow,
     skipExplorerLink,
+    hideReceiver,
   } = props
 
   const allTokens = useTokensByAddressMap()
@@ -98,7 +100,7 @@ export function OrderNotification(props: BaseOrderNotificationProps): ReactNode 
             buyAmount={order.outputAmount.toString()}
           />
         ) : null)}
-      <ReceiverInfo receiver={props.receiver || order.receiver} owner={order.owner} />
+      {!hideReceiver && <ReceiverInfo receiver={order.receiver} owner={order.owner} />}
       {props.bottomContent}
     </div>
   )
