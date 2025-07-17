@@ -10,6 +10,8 @@ import { useTradeQuote } from '../../tradeQuote'
 import { useVolumeFee } from '../../volumeFee'
 import { AmountsAndCosts, getReceiveAmountInfo } from '../utils/getReceiveAmountInfo'
 
+// todo should be transformed to an atom to avoid recomputations
+// but for this purpose we need to share tokenList atom (move it to entities)
 export function useGetReceiveAmountInfo(): (AmountsAndCosts & { quotePrice: Price<Currency, Currency> }) | null {
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount, slippage, orderKind } =
     useDerivedTradeState() ?? {}
