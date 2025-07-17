@@ -1,4 +1,4 @@
-import { AdditionalTargetChainId, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { AdditionalTargetChainId, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { COW_CONTRACT_ADDRESS, V_COW_CONTRACT_ADDRESS } from './common'
 import { cowprotocolTokenLogoUrl } from './cowprotocolTokenLogoUrl'
@@ -506,15 +506,14 @@ const V_COW_TOKEN_SEPOLIA = new TokenWithLogo(
   'CoW Protocol Virtual Token',
 )
 
-export const V_COW: Record<SupportedChainId, TokenWithLogo | null> = {
-  [SupportedChainId.MAINNET]: V_COW_TOKEN_MAINNET,
-  [SupportedChainId.GNOSIS_CHAIN]: V_COW_TOKEN_XDAI,
-  [SupportedChainId.ARBITRUM_ONE]: null,
-  [SupportedChainId.BASE]: null,
-  [SupportedChainId.SEPOLIA]: V_COW_TOKEN_SEPOLIA,
-  [SupportedChainId.POLYGON]: null,
-  [SupportedChainId.AVALANCHE]: null,
-}
+/**
+ * VCOW token deployed during the airdrop in 2022.
+ * Not available for new chains after that date.
+ */
+export const V_COW: Record<SupportedChainId, TokenWithLogo | null> = mapSupportedNetworks(null)
+V_COW[SupportedChainId.MAINNET] = V_COW_TOKEN_MAINNET
+V_COW[SupportedChainId.GNOSIS_CHAIN] = V_COW_TOKEN_XDAI
+V_COW[SupportedChainId.SEPOLIA] = V_COW_TOKEN_SEPOLIA
 
 /**
  * Cow token
@@ -530,6 +529,7 @@ function getMaybeCowTokenForChain(chain: SupportedChainId, logoURI?: string): To
 
   return new TokenWithLogo(logoURI, chain, address, COW_TOKEN_DECIMALS, COW_TOKEN_SYMBOL, COW_TOKEN_NAME)
 }
+
 export const COW_TOKEN_MAINNET = getMaybeCowTokenForChain(SupportedChainId.MAINNET)
 export const COW_TOKEN_XDAI = getMaybeCowTokenForChain(SupportedChainId.GNOSIS_CHAIN, COW_TOKEN_MAINNET?.logoURI)
 export const COW_TOKEN_ARBITRUM = getMaybeCowTokenForChain(SupportedChainId.ARBITRUM_ONE, COW_TOKEN_MAINNET?.logoURI)
@@ -548,15 +548,11 @@ export const COW_TOKEN_TO_CHAIN: Record<SupportedChainId, TokenWithLogo | null> 
   [SupportedChainId.AVALANCHE]: COW_TOKEN_AVALANCHE,
 }
 
-export const GNO: Record<SupportedChainId, TokenWithLogo | null> = {
-  [SupportedChainId.MAINNET]: GNO_MAINNET,
-  [SupportedChainId.GNOSIS_CHAIN]: GNO_GNOSIS_CHAIN,
-  [SupportedChainId.ARBITRUM_ONE]: GNO_ARBITRUM_ONE,
-  [SupportedChainId.BASE]: null,
-  [SupportedChainId.SEPOLIA]: GNO_SEPOLIA,
-  [SupportedChainId.POLYGON]: null,
-  [SupportedChainId.AVALANCHE]: null,
-}
+export const GNO: Record<SupportedChainId, TokenWithLogo | null> = mapSupportedNetworks(null)
+GNO[SupportedChainId.MAINNET] = GNO_MAINNET
+GNO[SupportedChainId.GNOSIS_CHAIN] = GNO_GNOSIS_CHAIN
+GNO[SupportedChainId.ARBITRUM_ONE] = GNO_ARBITRUM_ONE
+GNO[SupportedChainId.SEPOLIA] = GNO_SEPOLIA
 
 const SDAI_GNOSIS_CHAIN_ADDRESS = '0xaf204776c7245bf4147c2612bf6e5972ee483701'
 const GBPE_GNOSIS_CHAIN_ADDRESS = '0x5cb9073902f2035222b9749f8fb0c9bfe5527108'
@@ -632,23 +628,12 @@ export const STABLECOINS: Record<SupportedChainId, Set<string>> = {
 /**
  * Addresses related to COW vesting for Locked GNO
  * These are used in src/custom/pages/Account/LockedGnoVesting hooks and index files
+ * Doesn't exist for new chains after the airdrop in 2022.
  */
-export const MERKLE_DROP_CONTRACT_ADDRESSES: Record<SupportedChainId, string> = {
-  [SupportedChainId.MAINNET]: '0x64646f112FfD6F1B7533359CFaAF7998F23C8c40',
-  [SupportedChainId.GNOSIS_CHAIN]: '0x48D8566887F8c7d99757CE29c2cD39962bfd9547',
-  [SupportedChainId.ARBITRUM_ONE]: '', // doesn't exist
-  [SupportedChainId.BASE]: '', // doesn't exist
-  [SupportedChainId.SEPOLIA]: '', // TODO SEPOLIA: check it
-  [SupportedChainId.POLYGON]: '', // TODO POLYGON: doesn't exist
-  [SupportedChainId.AVALANCHE]: '', // TODO AVALANCHE: doesn't exist
-}
+export const MERKLE_DROP_CONTRACT_ADDRESSES: Record<SupportedChainId, string> = mapSupportedNetworks('')
+MERKLE_DROP_CONTRACT_ADDRESSES[SupportedChainId.MAINNET] = '0x64646f112FfD6F1B7533359CFaAF7998F23C8c40'
+MERKLE_DROP_CONTRACT_ADDRESSES[SupportedChainId.GNOSIS_CHAIN] = '0x48D8566887F8c7d99757CE29c2cD39962bfd9547'
 
-export const TOKEN_DISTRO_CONTRACT_ADDRESSES: Record<SupportedChainId, string> = {
-  [SupportedChainId.MAINNET]: '0x68FFAaC7A431f276fe73604C127Bd78E49070c92',
-  [SupportedChainId.GNOSIS_CHAIN]: '0x3d610e917130f9D036e85A030596807f57e11093',
-  [SupportedChainId.ARBITRUM_ONE]: '', // doesn't exist
-  [SupportedChainId.BASE]: '', // doesn't exist
-  [SupportedChainId.SEPOLIA]: '', // TODO SEPOLIA: check it
-  [SupportedChainId.POLYGON]: '', // doesn't exist
-  [SupportedChainId.AVALANCHE]: '', //doesn't exist
-}
+export const TOKEN_DISTRO_CONTRACT_ADDRESSES: Record<SupportedChainId, string> = mapSupportedNetworks('')
+TOKEN_DISTRO_CONTRACT_ADDRESSES[SupportedChainId.MAINNET] = '0x68FFAaC7A431f276fe73604C127Bd78E49070c92'
+TOKEN_DISTRO_CONTRACT_ADDRESSES[SupportedChainId.GNOSIS_CHAIN] = '0x3d610e917130f9D036e85A030596807f57e11093'
