@@ -43,13 +43,13 @@ export function RecoverFundsButtons({ selectedCurrency, sourceChainId }: Recover
   if (accountProxyLoading) {
     return (
       <ButtonPrimaryStyled disabled>
-        Loading <CenteredDots smaller />
+        Loading account proxy <CenteredDots smaller />
       </ButtonPrimaryStyled>
     )
   }
 
   if (accountProxy?.isProxySetupValid === null) {
-    return <ButtonPrimaryStyled disabled>Couldn't load account proxy, try later</ButtonPrimaryStyled>
+    return <ButtonPrimaryStyled disabled>Couldn't verify account proxy, please try later</ButtonPrimaryStyled>
   }
 
   if (selectedTokenAddress) {
