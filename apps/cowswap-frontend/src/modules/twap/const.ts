@@ -37,17 +37,12 @@ export const TWAP_PENDING_STATUSES = [TwapOrderStatus.WaitSigning, TwapOrderStat
 
 export const TWAP_FINAL_STATUSES = [TwapOrderStatus.Fulfilled, TwapOrderStatus.Expired, TwapOrderStatus.Cancelled]
 
-export const MINIMUM_PART_SELL_AMOUNT_FIAT: Record<SupportedChainId, CurrencyAmount<Currency>> = mapSupportedNetworks(
-  (chainId: SupportedChainId) => CurrencyAmount.fromRawAmount(USDC[chainId], 1e6),
-) // 1$ for most chains
-MINIMUM_PART_SELL_AMOUNT_FIAT[SupportedChainId.MAINNET] = CurrencyAmount.fromRawAmount(
-  USDC[SupportedChainId.MAINNET],
-  1_000e6,
-) // 1k for mainnet
-MINIMUM_PART_SELL_AMOUNT_FIAT[SupportedChainId.SEPOLIA] = CurrencyAmount.fromRawAmount(
-  USDC[SupportedChainId.SEPOLIA],
-  100e18,
-) // 100 for sepolia
+export const MINIMUM_PART_SELL_AMOUNT_FIAT: Record<SupportedChainId, CurrencyAmount<Currency>> = {
+  ...mapSupportedNetworks((chainId: SupportedChainId) => CurrencyAmount.fromRawAmount(USDC[chainId], 1e6)), // 1$ for most chains
+  [SupportedChainId.MAINNET]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.MAINNET], 1_000e6), // 1k for mainnet
+  [SupportedChainId.SEPOLIA]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.SEPOLIA], 100e18), // 100 for sepolia
+  [SupportedChainId.BNB]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.BNB], 1e18), // 1 for BNB, but it has 18 decimals!
+}
 
 export const MINIMUM_PART_TIME = ms`5min` / 1000 // in seconds
 export const MAX_PART_TIME = MAX_ORDER_DEADLINE / 1000 // in seconds
