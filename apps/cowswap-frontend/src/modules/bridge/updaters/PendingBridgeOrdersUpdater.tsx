@@ -7,7 +7,6 @@ import { useCrossChainOrder, usePendingBridgeOrders, useUpdateBridgeOrderQuote }
 import { useAddOrderToSurplusQueue } from 'entities/surplusModal'
 
 import { emitBridgingSuccessEvent } from 'modules/orders'
-
 import { getCowSoundError, getCowSoundSuccess } from 'modules/sounds'
 
 interface PendingOrderUpdaterProps {
