@@ -23,8 +23,8 @@ const DEFAULT_RPC_URL: Record<SupportedChainId, { url: string; usesInfura: boole
   [SupportedChainId.SEPOLIA]: { url: `https://sepolia.infura.io/v3/${INFURA_KEY}`, usesInfura: true },
   [SupportedChainId.POLYGON]: { url: `https://polygon-mainnet.infura.io/v3/${INFURA_KEY}`, usesInfura: true },
   [SupportedChainId.AVALANCHE]: { url: `https://avalanche-mainnet.infura.io/v3/${INFURA_KEY}`, usesInfura: true },
-  [SupportedChainId.LENS]: { url: `https://lens.infura.io/v3/${INFURA_KEY}`, usesInfura: true },
-  [SupportedChainId.BNB]: { url: `https://rpc.lens.xyz`, usesInfura: false },
+  [SupportedChainId.BNB]: { url: `https://bsc-mainnet.infura.io/v3/${INFURA_KEY}`, usesInfura: true },
+  [SupportedChainId.LENS]: { url: `https://rpc.lens.xyz`, usesInfura: false },
 }
 
 /**
