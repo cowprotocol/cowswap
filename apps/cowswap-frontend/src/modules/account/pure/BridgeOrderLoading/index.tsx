@@ -21,8 +21,12 @@ export function BridgeOrderLoading({ order, fulfillmentTime, children }: BridgeO
   const { data: bridgeSupportedNetworks } = useBridgeSupportedNetworks()
   const inputAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount)
   const feeAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.feeAmount)
+
+  const isCachedOrder = order.inputToken.chainId !== order.outputToken.chainId
   const sourceChainData = getChainInfo(order.inputToken.chainId)
-  const targetChainData = bridgeSupportedNetworks?.find((chain) => chain.id === order.outputToken.chainId)
+  const targetChainData = isCachedOrder
+    ? bridgeSupportedNetworks?.find((chain) => chain.id === order.outputToken.chainId)
+    : undefined
 
   return (
     <>
@@ -37,7 +41,7 @@ export function BridgeOrderLoading({ order, fulfillmentTime, children }: BridgeO
       <SummaryRow>
         <b>To at least</b>
         <i>
-          <TokenLogo token={order.outputToken} size={20} />
+          {isCachedOrder && <TokenLogo token={order.outputToken} size={20} />}
           <ShimmerWrapper />
           {targetChainData && ` on ${targetChainData.label}`}
         </i>
