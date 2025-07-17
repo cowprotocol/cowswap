@@ -4,7 +4,9 @@ import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 
 import type { Order } from 'legacy/state/orders/actions'
 
-export function getIsBridgeOrder(order: Order | EnrichedOrder | undefined): boolean {
+import { ParsedOrder } from 'utils/orderUtils/parseOrder'
+
+export function getIsBridgeOrder(order: Order | ParsedOrder | EnrichedOrder | undefined): boolean {
   if (!order) return false
 
   const appData = orderIsAppOrder(order) ? order.apiAdditionalInfo?.fullAppData || order.fullAppData : order.fullAppData
@@ -24,6 +26,6 @@ export function getIsBridgeOrder(order: Order | EnrichedOrder | undefined): bool
   return false
 }
 
-function orderIsAppOrder(order: Order | EnrichedOrder): order is Order {
+function orderIsAppOrder(order: Order | ParsedOrder | EnrichedOrder): order is Order {
   return !!(order as Order).inputToken
 }
