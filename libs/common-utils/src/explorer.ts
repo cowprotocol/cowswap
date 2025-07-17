@@ -23,6 +23,8 @@ function _getExplorerUrlByEnvironment(): Record<ChainId, string> {
     [ChainId.SEPOLIA]: `${baseUrl}/sepolia`,
     [ChainId.POLYGON]: `${baseUrl}/pol`,
     [ChainId.AVALANCHE]: `${baseUrl}/avax`,
+    [ChainId.LENS]: `${baseUrl}/lens`,
+    [ChainId.BNB]: `${baseUrl}/bnb`,
   }
 }
 
