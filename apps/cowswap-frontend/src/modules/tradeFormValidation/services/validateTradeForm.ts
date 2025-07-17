@@ -49,6 +49,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     ? !inputCurrencyAmount || isFractionFalsy(inputCurrencyAmount)
     : !outputCurrencyAmount || isFractionFalsy(outputCurrencyAmount)
 
+  const isBridging = Boolean(inputCurrency && outputCurrency && inputCurrency.chainId !== outputCurrency.chainId)
   const isFastQuote = tradeQuote.fetchParams?.priceQuality === PriceQuality.FAST
 
   const validations: TradeFormValidation[] = []
@@ -101,7 +102,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
       validations.push(TradeFormValidation.CurrencyNotSupported)
     }
 
-    if (isFastQuote || !tradeQuote.quote) {
+    if (isFastQuote || !tradeQuote.quote || (isBridging && tradeQuote.isLoading)) {
       validations.push(TradeFormValidation.QuoteLoading)
     }
 
@@ -138,10 +139,6 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
       validations.push(TradeFormValidation.ApproveAndSwap)
     }
     validations.push(TradeFormValidation.ApproveRequired)
-  }
-
-  if (isNativeIn) {
-    validations.push(TradeFormValidation.SellNativeToken)
   }
 
   return validations.length > 0 ? validations : null
