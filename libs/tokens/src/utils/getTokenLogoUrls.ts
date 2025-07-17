@@ -21,9 +21,16 @@ export function getTokenLogoUrls(token: TokenWithLogo | undefined): string[] {
 }
 
 function getTokenLogoFallbacks(address: string, chainId: SupportedChainId): string[] {
-  return [
+  const logos = [
     cowprotocolTokenLogoUrl(address.toLowerCase(), chainId),
     cowprotocolTokenLogoUrl(address.toLowerCase(), SupportedChainId.MAINNET),
-    trustTokenLogoUrl(address, chainId),
   ]
+
+  const trustLogo = trustTokenLogoUrl(address, chainId)
+
+  if (trustLogo) {
+    logos.push(trustLogo)
+  }
+
+  return logos
 }
