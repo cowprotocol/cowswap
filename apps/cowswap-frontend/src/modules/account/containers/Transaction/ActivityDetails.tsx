@@ -205,7 +205,18 @@ export function ActivityDetails(props: {
 
   const { disableProgressBar } = useInjectedWidgetParams()
 
-  const showProgressBar = activityState === 'open' && isSwap && order && !disableProgressBar
+  const skipBridgingDisplay = isExpired || isCancelled || isFailed || isCancelling
+  const isBridgeOrder = getIsBridgeOrder(order) && !skipBridgingDisplay
+
+  // Enhanced activity derived state that incorporates bridge status for bridge orders
+  const enhancedActivityDerivedState = useEnhancedActivityDerivedState(
+    activityDerivedState,
+    chainId,
+  )
+
+  // Use enhanced state to determine when to show progress bar for bridge orders
+  const enhancedActivityState = getActivityState(enhancedActivityDerivedState)
+  const showProgressBar = (enhancedActivityState === 'open' || enhancedActivityState === 'loading') && (isSwap || isBridgeOrder) && order && !disableProgressBar
   const showCancellationModal = order ? getShowCancellationModal(order) : null
 
   const { surplusFiatValue, showFiatValue, surplusToken, surplusAmount } = useGetSurplusData(order)
@@ -216,20 +227,12 @@ export function ActivityDetails(props: {
   const setShowProgressBar = useAddOrderToSurplusQueue() // TODO: not exactly the proper tool, rethink this
   const toggleAccountModal = useToggleAccountModal()
 
-  const skipBridgingDisplay = isExpired || isCancelled || isFailed || isCancelling
   const fullAppData = order?.apiAdditionalInfo?.fullAppData || order?.fullAppData
-  const isBridgeOrder = getIsBridgeOrder(order) && !skipBridgingDisplay
 
   const { swapAndBridgeContext, swapResultContext, swapAndBridgeOverview } = useSwapAndBridgeContext(
     chainId,
     isBridgeOrder ? order : undefined,
     undefined,
-  )
-
-  // Enhanced activity derived state that incorporates bridge status for bridge orders
-  const enhancedActivityDerivedState = useEnhancedActivityDerivedState(
-    activityDerivedState,
-    chainId,
   )
 
   const bridgeOrderData = useBridgeOrderData(order?.id)
