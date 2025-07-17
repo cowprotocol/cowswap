@@ -3,20 +3,29 @@ import { ReactElement, ReactNode } from 'react'
 export interface OrderSummaryTemplateProps {
   inputAmount: ReactElement
   outputAmount: ReactElement
+  actionTitle?: string
 }
 
-export function SellForAtLeastTemplate({ inputAmount, outputAmount }: OrderSummaryTemplateProps): ReactNode {
+export function SellForAtLeastTemplate({
+  inputAmount,
+  outputAmount,
+  actionTitle = 'Sell',
+}: OrderSummaryTemplateProps): ReactNode {
   return (
     <>
-      Sell {inputAmount} for at least {outputAmount}
+      {actionTitle} {inputAmount} for at least {outputAmount}
     </>
   )
 }
 
-export function BuyForAtMostTemplate({ inputAmount, outputAmount }: OrderSummaryTemplateProps): ReactNode {
+export function BuyForAtMostTemplate({
+  inputAmount,
+  outputAmount,
+  actionTitle = 'Buy',
+}: OrderSummaryTemplateProps): ReactNode {
   return (
     <>
-      Buy {outputAmount} for at most {inputAmount}
+      {actionTitle} {outputAmount} for at most {inputAmount}
     </>
   )
 }

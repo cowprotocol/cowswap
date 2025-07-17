@@ -26,6 +26,7 @@ export interface BaseOrderNotificationProps {
   chainId: SupportedChainId
   orderUid: string
   orderType: UiOrderType
+  actionTitle?: string
   orderInfo?: OrderInfo | EnrichedOrder
   transactionHash?: string
   skipExplorerLink?: boolean
@@ -40,6 +41,7 @@ export interface BaseOrderNotificationProps {
 export function OrderNotification(props: BaseOrderNotificationProps): ReactNode {
   const {
     title,
+    actionTitle,
     orderUid,
     orderType,
     transactionHash,
@@ -93,6 +95,7 @@ export function OrderNotification(props: BaseOrderNotificationProps): ReactNode 
       {children ||
         (order.inputToken && order.outputToken ? (
           <OrderSummary
+            actionTitle={actionTitle}
             kind={order.kind}
             inputToken={order.inputToken as TokenInfo}
             outputToken={order.outputToken as TokenInfo}

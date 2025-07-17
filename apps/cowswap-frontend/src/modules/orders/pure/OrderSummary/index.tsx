@@ -10,6 +10,7 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 import { BuyForAtMostTemplate, SellForAtLeastTemplate } from './summaryTemplates'
 
 interface OrderSummaryProps {
+  actionTitle?: string
   inputToken: TokenInfo
   outputToken: TokenInfo
   sellAmount: string
@@ -20,7 +21,7 @@ interface OrderSummaryProps {
 }
 
 export function OrderSummary(props: OrderSummaryProps): ReactNode {
-  const { kind, sellAmount, buyAmount, outputToken, inputToken, children, customTemplate } = props
+  const { kind, sellAmount, buyAmount, outputToken, inputToken, children, customTemplate, actionTitle } = props
   const isSell = isSellOrder(kind)
 
   const inputAmount = useMemo(() => {
@@ -37,6 +38,7 @@ export function OrderSummary(props: OrderSummaryProps): ReactNode {
   const templateProps = {
     inputAmount: inputAmountElement,
     outputAmount: outputAmountElement,
+    actionTitle,
   }
 
   const summary = customTemplate
