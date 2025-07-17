@@ -26,6 +26,8 @@ import { getOrderValidTo, useTradeQuote } from 'modules/tradeQuote'
 import { useGP2SettlementContract } from 'common/hooks/useContract'
 import { useEnoughAllowance } from 'common/hooks/useEnoughBalance'
 
+import { useSetSigningStep } from './useSetSigningStep'
+
 import { TradeFlowContext } from '../types/TradeFlowContext'
 
 export interface TradeFlowParams {
@@ -46,6 +48,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
   const tradeType = tradeTypeInfo?.tradeType
   const uiOrderType = tradeType ? TradeTypeToUiOrderType[tradeType] : null
   const isHooksTradeType = useIsHooksTradeType()
+  const setSigningStep = useSetSigningStep()
 
   const tradeQuote = useTradeQuote()
   const bridgeContext = useBridgeQuoteAmounts()
@@ -127,6 +130,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             uiOrderType,
             bridgeQuoteAmounts,
             addBridgeOrder,
+            setSigningStep,
           ]
         : null,
       // TODO: Break down this large function into smaller functions
@@ -160,6 +164,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
         uiOrderType,
         bridgeQuoteAmounts,
         addBridgeOrder,
+         setSigningStep,
       ]) => {
         return {
           tradeQuoteState,
@@ -179,6 +184,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             getCachedPermit,
             dispatch,
             addBridgeOrder,
+            setSigningStep,
           },
           tradeConfirmActions,
           swapFlowAnalyticsContext: {
