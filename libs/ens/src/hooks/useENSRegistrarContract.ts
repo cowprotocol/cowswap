@@ -14,6 +14,8 @@ const ENS_REGISTRAR_ADDRESSES: Record<SupportedChainId, string | null> = {
   [SupportedChainId.BASE]: null,
   [SupportedChainId.POLYGON]: null,
   [SupportedChainId.AVALANCHE]: null,
+  [SupportedChainId.LENS]: null,
+  [SupportedChainId.BNB]: null,
   // TODO: use mainnet registrar for all chains https://docs.ens.domains/learn/deployments, which means being connected to mainnet additionally to the other chain
 }
 
