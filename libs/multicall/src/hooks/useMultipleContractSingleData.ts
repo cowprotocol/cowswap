@@ -41,7 +41,15 @@ export function useMultipleContractSingleData<T = Result>(
   return useSWR<(T | undefined)[] | null>(
     !calls?.length || !provider
       ? null
-      : [multicallOptions, methodName, chainId, calls.length, cacheKey, 'useMultipleContractSingleData'],
+      : [
+          multicallOptions,
+          methodName,
+          contractInterface.functions,
+          chainId,
+          calls.length,
+          cacheKey,
+          'useMultipleContractSingleData',
+        ],
     async ([multicallOptions, methodName]: [MultiCallOptions, string]) => {
       if (!provider || !calls?.length) return null
 
