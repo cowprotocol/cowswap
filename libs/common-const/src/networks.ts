@@ -11,6 +11,8 @@ const RPC_URL_ENVS: Record<SupportedChainId, string | undefined> = {
   [SupportedChainId.SEPOLIA]: process.env.REACT_APP_NETWORK_URL_11155111 || undefined,
   [SupportedChainId.POLYGON]: process.env.REACT_APP_NETWORK_URL_137 || undefined,
   [SupportedChainId.AVALANCHE]: process.env.REACT_APP_NETWORK_URL_43114 || undefined,
+  [SupportedChainId.LENS]: process.env.REACT_APP_NETWORK_URL_232 || undefined,
+  [SupportedChainId.BNB]: process.env.REACT_APP_NETWORK_URL_56 || undefined,
 }
 
 const DEFAULT_RPC_URL: Record<SupportedChainId, { url: string; usesInfura: boolean }> = {
@@ -21,6 +23,8 @@ const DEFAULT_RPC_URL: Record<SupportedChainId, { url: string; usesInfura: boole
   [SupportedChainId.SEPOLIA]: { url: `https://sepolia.infura.io/v3/${INFURA_KEY}`, usesInfura: true },
   [SupportedChainId.POLYGON]: { url: `https://polygon-mainnet.infura.io/v3/${INFURA_KEY}`, usesInfura: true },
   [SupportedChainId.AVALANCHE]: { url: `https://avalanche-mainnet.infura.io/v3/${INFURA_KEY}`, usesInfura: true },
+  [SupportedChainId.LENS]: { url: `https://lens.infura.io/v3/${INFURA_KEY}`, usesInfura: true },
+  [SupportedChainId.BNB]: { url: `https://rpc.lens.xyz`, usesInfura: false },
 }
 
 /**
