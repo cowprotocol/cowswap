@@ -537,6 +537,8 @@ export const COW_TOKEN_BASE = getMaybeCowTokenForChain(SupportedChainId.BASE, CO
 export const COW_TOKEN_SEPOLIA = getMaybeCowTokenForChain(SupportedChainId.SEPOLIA, COW_TOKEN_MAINNET?.logoURI)
 export const COW_TOKEN_POLYGON = getMaybeCowTokenForChain(SupportedChainId.POLYGON, COW_TOKEN_MAINNET?.logoURI)
 export const COW_TOKEN_AVALANCHE = getMaybeCowTokenForChain(SupportedChainId.AVALANCHE, COW_TOKEN_MAINNET?.logoURI)
+export const COW_TOKEN_LENS = getMaybeCowTokenForChain(SupportedChainId.LENS, COW_TOKEN_MAINNET?.logoURI)
+export const COW_TOKEN_BNB = getMaybeCowTokenForChain(SupportedChainId.BNB, COW_TOKEN_MAINNET?.logoURI)
 
 export const COW_TOKEN_TO_CHAIN: Record<SupportedChainId, TokenWithLogo | null> = {
   [SupportedChainId.MAINNET]: COW_TOKEN_MAINNET,
@@ -546,6 +548,8 @@ export const COW_TOKEN_TO_CHAIN: Record<SupportedChainId, TokenWithLogo | null> 
   [SupportedChainId.SEPOLIA]: COW_TOKEN_SEPOLIA,
   [SupportedChainId.POLYGON]: COW_TOKEN_POLYGON,
   [SupportedChainId.AVALANCHE]: COW_TOKEN_AVALANCHE,
+  [SupportedChainId.LENS]: COW_TOKEN_LENS,
+  [SupportedChainId.BNB]: COW_TOKEN_BNB,
 }
 
 export const GNO: Record<SupportedChainId, TokenWithLogo | null> = mapSupportedNetworks(null)
