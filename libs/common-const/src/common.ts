@@ -64,6 +64,8 @@ export const COW_CONTRACT_ADDRESS: Record<SupportedChainId, string | null> = {
   // https://polygonscan.com/token/0x2f4efd3aa42e15a1ec6114547151b63ee5d39958
   [SupportedChainId.POLYGON]: '0x2f4efd3aa42e15a1ec6114547151b63ee5d39958',
   [SupportedChainId.AVALANCHE]: null,
+  [SupportedChainId.LENS]: null,
+  [SupportedChainId.BNB]: null, // TODO: add BNB COW token address when available
 }
 
 export const RECEIVED_LABEL = 'Received'
