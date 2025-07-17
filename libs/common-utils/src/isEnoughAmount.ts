@@ -5,7 +5,7 @@ export function isEnoughAmount(
   sellAmount: CurrencyAmount<Currency>,
   _targetAmount: CurrencyAmount<Currency> | BigNumber | bigint | undefined,
 ): boolean | undefined {
-  if (!_targetAmount) return undefined
+  if (typeof _targetAmount === 'undefined' || _targetAmount === null) return undefined
 
   const targetAmount =
     _targetAmount instanceof BigNumber
