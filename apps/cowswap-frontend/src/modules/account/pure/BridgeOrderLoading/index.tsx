@@ -31,7 +31,7 @@ export function BridgeOrderLoading({ order, fulfillmentTime, children }: BridgeO
         <i>
           <TokenLogo token={order.inputToken} size={20} />
           <TokenAmount amount={inputAmount.add(feeAmount)} tokenSymbol={order.inputToken} />
-          {sourceChainData && ` on ${sourceChainData.name}`}
+          {sourceChainData && ` on ${sourceChainData.label}`}
         </i>
       </SummaryRow>
       <SummaryRow>
