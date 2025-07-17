@@ -225,7 +225,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   [TradeFormValidation.ProxyAccountLoading]: {
     text: (
       <>
-        <span>Loading proxy account</span>
+        <span>Loading account proxy</span>
         <CenteredDots smaller />
       </>
     ),
