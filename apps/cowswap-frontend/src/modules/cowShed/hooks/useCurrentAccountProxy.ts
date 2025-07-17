@@ -1,4 +1,3 @@
-import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { getContract } from '@cowprotocol/common-utils'
 import { implementationAddress } from '@cowprotocol/contracts'
 import type { CowShedHooks } from '@cowprotocol/cow-sdk'
@@ -38,7 +37,10 @@ interface ProxyAndAccount {
 const UNKNOW_COWSHED_REFRESH_INTERVAL = ms`3s`
 
 const SWR_OPTIONS: SWRConfiguration<ProxyAndAccount> = {
-  ...SWR_NO_REFRESH_OPTIONS,
+  revalidateOnReconnect: true,
+  revalidateOnFocus: false,
+  refreshWhenHidden: false,
+  refreshWhenOffline: false,
   refreshInterval(data): number {
     // Update proxy data only when Proxy setup is unknown
     // It can happen when there were connection issues while data loading
