@@ -7,7 +7,8 @@ import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import type { BaseContract } from '@ethersproject/contracts'
 import type { Web3Provider } from '@ethersproject/providers'
 
-import useSWR from 'swr'
+import ms from 'ms.macro'
+import useSWR, { SWRResponse, SWRConfiguration } from 'swr'
 
 import { useCowShedHooks } from './useCowShedHooks'
 
@@ -31,10 +32,25 @@ interface ProxyAndAccount {
   proxyAddress: string
   account: string
   isProxyDeployed: boolean
-  isProxySetupValid: boolean
+  isProxySetupValid: boolean | null
 }
 
-export function useCurrentAccountProxyAddress(): ProxyAndAccount | undefined {
+const UNKNOW_COWSHED_REFRESH_INTERVAL = ms`3s`
+
+const SWR_OPTIONS: SWRConfiguration<ProxyAndAccount> = {
+  ...SWR_NO_REFRESH_OPTIONS,
+  refreshInterval(data): number {
+    // Update proxy data only when Proxy setup is unknown
+    // It can happen when there were connection issues while data loading
+    if (data?.isProxySetupValid === null) {
+      return UNKNOW_COWSHED_REFRESH_INTERVAL
+    }
+
+    return 0
+  },
+}
+
+export function useCurrentAccountProxy(): SWRResponse<ProxyAndAccount> {
   const { account, chainId } = useWalletInfo()
   const cowShedHooks = useCowShedHooks()
   const provider = useWalletProvider()
@@ -59,28 +75,50 @@ export function useCurrentAccountProxyAddress(): ProxyAndAccount | undefined {
         isProxySetupValid,
       }
     },
-    SWR_NO_REFRESH_OPTIONS,
-  ).data
+    SWR_OPTIONS,
+  )
+}
+
+export function useCurrentAccountProxyAddress(): string | undefined {
+  return useCurrentAccountProxy().data?.proxyAddress
 }
 
 async function getIsProxySetupValid(
   proxyAddress: string,
   provider: Web3Provider,
   cowShedHooks: CowShedHooks,
-): Promise<boolean> {
-  try {
-    const shedContract = getContract(proxyAddress, COW_SHED_ABI, provider) as CoWShedContract
+): Promise<boolean | null> {
+  const shedContract = getContract(proxyAddress, COW_SHED_ABI, provider) as CoWShedContract
+  const expectedImplementation = cowShedHooks.getImplementationAddress().toLowerCase()
+  const expectedFactoryAddress = cowShedHooks.getFactoryAddress().toLowerCase()
 
+  console.debug('[CoWShed validation] Loading...')
+
+  try {
     const implementation = await implementationAddress(provider, proxyAddress)
 
-    if (implementation.toLowerCase() !== cowShedHooks.getImplementationAddress().toLowerCase()) return false
+    if (localStorage.getItem('BREAK_IMPLEMENTATION_LOADING')) {
+      throw new Error('implementation loading error')
+    }
 
+    if (implementation.toLowerCase() !== expectedImplementation) return false
+  } catch (e) {
+    console.error('[CoWShed validation] Could not get implementationAddress', e)
+
+    return null
+  }
+
+  try {
     const trustedExecutor = await shedContract.callStatic.trustedExecutor()
 
-    return trustedExecutor.toLowerCase() === cowShedHooks.getFactoryAddress().toLowerCase()
-  } catch (e) {
-    console.error('getIsProxySetupValid()', e)
+    if (localStorage.getItem('BREAK_EXECUTOR_LOADING')) {
+      throw new Error('trustedExecutor loading error')
+    }
 
-    return true
+    return trustedExecutor.toLowerCase() === expectedFactoryAddress
+  } catch (e) {
+    console.error('[CoWShed validation] Could not get trustedExecutor', e)
+
+    return null
   }
 }
