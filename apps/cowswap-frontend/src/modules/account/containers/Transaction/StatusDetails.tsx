@@ -81,6 +81,7 @@ export function StatusDetails(props: StatusDetailsProps) {
     isCancelled,
     isCreating,
     isReplaced,
+    isLoading,
     order,
     enhancedTransaction,
   } = activityDerivedState
@@ -109,6 +110,7 @@ export function StatusDetails(props: StatusDetailsProps) {
         isCancelling={isCancelling}
         isPresignaturePending={isPresignaturePending}
         isCreating={isCreating}
+        isLoading={isLoading || false}
         title={isReplaced ? 'Transaction was cancelled or sped up' : ''}
       >
         {isReplaced ? (

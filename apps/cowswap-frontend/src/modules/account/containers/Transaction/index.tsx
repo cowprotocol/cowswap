@@ -15,7 +15,7 @@ const PILL_COLOUR_MAP = {
   PRESIGNATURE_PENDING: 'pending',
   CREATING: 'pending',
   PENDING_TX: 'pending',
-  LOADING: 'pending',
+  LOADING: 'open',
   EXPIRED_ORDER: 'alert',
   CANCELLED_ORDER: 'danger',
   CANCELLING_ORDER: 'danger',

@@ -229,6 +229,7 @@ export const StatusLabel = styled.div<{
   isCancelling: boolean
   isPresignaturePending: boolean
   isCreating: boolean
+  isLoading: boolean
   color: string
 }>`
   --statusColor: ${({ isPending, isPresignaturePending, isCreating, color }) =>
@@ -238,7 +239,9 @@ export const StatusLabel = styled.div<{
         ? `var(${UI.COLOR_SUCCESS})`
         : color === 'danger'
           ? `var(${UI.COLOR_DANGER})`
-          : `var(${UI.COLOR_ALERT})`};
+          : color === 'open'
+            ? `var(${UI.COLOR_TEXT})`
+            : `var(${UI.COLOR_ALERT})`};
   height: 28px;
   width: 100px;
   ${({ isPending, isPresignaturePending, isCancelling, isCreating, theme }) =>
@@ -274,8 +277,8 @@ export const StatusLabel = styled.div<{
     opacity: 0.15;
   }
 
-  ${({ theme, isCancelling, isPresignaturePending, isTransaction, isPending }) =>
-    (isCancelling || isPresignaturePending || (isPending && isTransaction)) &&
+  ${({ theme, isCancelling, isPresignaturePending, isTransaction, isPending, isLoading }) =>
+    (isCancelling || isPresignaturePending || (isPending && isTransaction) || isLoading) &&
     css`
       &::after {
         position: absolute;
