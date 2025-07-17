@@ -55,7 +55,7 @@ import {
 
 import { BridgeOrderLoading } from '../../pure/BridgeOrderLoading'
 
-const progressBarVisibleStates = [ActivityState.OPEN, ActivityState.LOADING]
+const progressBarVisibleStates = [ActivityState.OPEN]
 
 const DEFAULT_ORDER_SUMMARY = {
   from: '',
