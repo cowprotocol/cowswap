@@ -117,19 +117,9 @@ export const COWDAO_KNOWLEDGE_BASE_LINK = 'https://cow.fi/learn'
 export const COWDAO_LEGAL_LINK = 'https://cow.fi/legal'
 export const COWDAO_COWSWAP_ABOUT_LINK = 'https://cow.fi/cow-swap'
 export const DOCS_LINK = 'https://docs.cow.fi'
-export const CONTRACTS_CODE_LINK = 'https://github.com/cowprotocol/contracts'
 export const DISCORD_LINK = 'https://discord.com/invite/cowprotocol'
 export const DUNE_DASHBOARD_LINK = 'https://dune.com/cowprotocol/cowswap'
 export const TWITTER_LINK = 'https://twitter.com/CoWSwap'
-export const GPAUDIT_LINK = 'https://github.com/cowprotocol/contracts/blob/main/audits/GnosisProtocolV2May2021.pdf'
-export const FLASHBOYS_LINK = 'https://arxiv.org/abs/1904.05234'
-export const COWWIKI_LINK = 'https://en.wikipedia.org/wiki/Coincidence_of_wants'
-export const WIDGET_LANDING_LINK = 'https://cow.fi/widget'
-export const GNOSIS_FORUM_ROADTODECENT_LINK = 'https://forum.gnosis.io/t/gpv2-road-to-decentralization/1245'
-
-// MEV Metrics from https://explore.flashbots.net/
-export const MEV_TOTAL = '606 Million'
-export const FLASHBOTS_LINK = 'https://explore.flashbots.net/'
 
 // TODO: test gas prices for all networks
 export const GAS_PRICE_UPDATE_THRESHOLD = ms`5s`
@@ -157,16 +147,8 @@ export const UNSUPPORTED_TOKENS_FAQ_URL = 'https://docs.cow.fi/cow-protocol/refe
 // fee threshold - should be greater than percentage, show warning
 export const FEE_SIZE_THRESHOLD = 10 // 10%
 
-// default value provided as userAddress to Paraswap API if the user wallet is not connected
-export const SOLVER_ADDRESS = '0xa6ddbd0de6b310819b49f680f65871bee85f517e'
-
 export const MAXIMUM_ORDERS_TO_DISPLAY = 10
 export const AMOUNT_OF_ORDERS_TO_FETCH = 100
-
-// Default price strategy to use for getting app prices
-// COWSWAP = new quote endpoint
-// LEGACY = price racing logic (checking 0x, gp, paraswap, etc)
-export const DEFAULT_PRICE_STRATEGY = 'COWSWAP'
 
 // Start date of COW vesting for locked GNO
 export const LOCKED_GNO_VESTING_START_DATE = new Date('02-11-2022 13:05:15 GMT')
