@@ -6,6 +6,7 @@ import { InfoTooltip } from '@cowprotocol/ui'
 import { ConfirmDetailsItem, ReceiveAmountTitle } from 'modules/trade'
 import { useUsdAmount } from 'modules/usdAmount'
 
+import { SuccessTextBold } from '../../../styles'
 import { QuoteBridgeContext } from '../../../types'
 import { RecipientDetailsItem } from '../../RecipientDetailsItem'
 import { TokenAmountDisplay } from '../../TokenAmountDisplay'
@@ -42,7 +43,11 @@ export function QuoteBridgeContent({
             </>
           }
         >
-          {bridgeFee.equalTo(0) ? 'FREE' : <TokenAmountDisplay currencyAmount={bridgeFee} usdValue={bridgeFeeUsd} />}
+          {bridgeFee.equalTo(0) ? (
+            <SuccessTextBold>FREE</SuccessTextBold>
+          ) : (
+            <TokenAmountDisplay currencyAmount={bridgeFee} usdValue={bridgeFeeUsd} />
+          )}
         </ConfirmDetailsItem>
       )}
 
