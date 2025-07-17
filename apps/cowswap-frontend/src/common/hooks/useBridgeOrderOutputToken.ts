@@ -38,6 +38,11 @@ export function useBridgeOrderOutputToken(
     if (!tokens?.length || !outputTokenAddress) return
 
     const tokenAddressLower = outputTokenAddress.toLowerCase()
-    return tokens.find((token) => token.address.toLowerCase() === tokenAddressLower)
+    const token = tokens.find((token) => token.address.toLowerCase() === tokenAddressLower)
+
+    // This is actually a hack
+    // For some reason Bungee replaces ETH with WETH, so we cannot find WETH in tokens
+    // Here we fallback to localOrderOutputToken to show at least something
+    return token ?? (localOrderOutputToken as TokenWithLogo)
   }, [isLocalOrderCached, localOrderOutputToken, tokens, outputTokenAddress])
 }
