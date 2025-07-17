@@ -22,8 +22,10 @@ function PendingOrderUpdater({ chainId, orderUid }: PendingOrderUpdaterProps): R
     const orderUid = crossChainOrder.order.uid
     const isOrderExecuted = crossChainOrder.statusResult.status === BridgeStatus.EXECUTED
 
+    // Update bridge order status for ALL status changes, not just EXECUTED
+    updateBridgeOrderQuote(orderUid, crossChainOrder.statusResult)
+
     if (isOrderExecuted) {
-      updateBridgeOrderQuote(orderUid, crossChainOrder.statusResult)
       addOrderToSurplusQueue(orderUid)
       // TODO: play MOOO sound
     }

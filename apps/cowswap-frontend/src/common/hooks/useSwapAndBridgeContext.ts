@@ -40,6 +40,7 @@ export interface SwapAndBridgeContexts {
   swapAndBridgeContext: SwapAndBridgeContext | undefined
   swapResultContext: SwapResultContext | undefined
   swapAndBridgeOverview: SwapAndBridgeOverview | undefined
+  isLoading: boolean
 }
 
 // TODO: Break down this large function into smaller functions
@@ -53,7 +54,7 @@ export function useSwapAndBridgeContext(
   const { data: bridgeSupportedNetworks } = useBridgeSupportedNetworks()
   const tokensByAddress = useTokensByAddressMap()
 
-  const { data: crossChainOrder } = useCrossChainOrder(chainId, order?.id)
+  const { data: crossChainOrder, isLoading } = useCrossChainOrder(chainId, order?.id)
 
   const intermediateToken = order && tokensByAddress[order.buyToken.toLowerCase()]
 
@@ -192,7 +193,7 @@ export function useSwapAndBridgeContext(
   ])
 
   return useMemo(
-    () => ({ swapAndBridgeContext, swapResultContext, swapAndBridgeOverview }),
-    [swapAndBridgeContext, swapResultContext, swapAndBridgeOverview],
+    () => ({ swapAndBridgeContext, swapResultContext, swapAndBridgeOverview, isLoading }),
+    [swapAndBridgeContext, swapResultContext, swapAndBridgeOverview, isLoading],
   )
 }

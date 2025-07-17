@@ -168,6 +168,7 @@ type ActivityState =
   | 'signing'
   | 'cancelling'
   | 'creating'
+  | 'loading'
 
 // TODO: Reduce function complexity by extracting logic
 // eslint-disable-next-line complexity
@@ -181,8 +182,13 @@ export function getActivityState({
   isCancelled,
   isCreating,
   isFailed,
+  isLoading,
   enhancedTransaction,
 }: ActivityDerivedState): ActivityState {
+  if (isLoading) {
+    return 'loading'
+  }
+  
   if (isPending) {
     if (enhancedTransaction) {
       const { safeTransaction, transactionHash } = enhancedTransaction

@@ -15,6 +15,7 @@ const PILL_COLOUR_MAP = {
   PRESIGNATURE_PENDING: 'pending',
   CREATING: 'pending',
   PENDING_TX: 'pending',
+  LOADING: 'pending',
   EXPIRED_ORDER: 'alert',
   CANCELLED_ORDER: 'danger',
   CANCELLING_ORDER: 'danger',
@@ -43,12 +44,14 @@ export function determinePillColour(status: ActivityStatus, type: ActivityType) 
       return PILL_COLOUR_MAP.CREATING
     case ActivityStatus.FAILED:
       return PILL_COLOUR_MAP.FAILED
+    case ActivityStatus.LOADING:
+      return PILL_COLOUR_MAP.LOADING
   }
 }
 
 // TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, complexity
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default function Activity({ activity }: { activity: ActivityDescriptors }) {
   const { chainId } = useWalletInfo()
 

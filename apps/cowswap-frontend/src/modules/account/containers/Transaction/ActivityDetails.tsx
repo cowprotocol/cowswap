@@ -24,6 +24,7 @@ import { ConfirmDetailsItem } from 'modules/trade'
 import { OrderHooksDetails } from 'common/containers/OrderHooksDetails'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { isPending } from 'common/hooks/useCategorizeRecentActivity'
+import { useEnhancedActivityDerivedState } from 'common/hooks/useEnhancedActivityDerivedState'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { useSwapAndBridgeContext } from 'common/hooks/useSwapAndBridgeContext'
 import { CustomRecipientWarningBanner } from 'common/pure/CustomRecipientWarningBanner'
@@ -223,6 +224,12 @@ export function ActivityDetails(props: {
     chainId,
     isBridgeOrder ? order : undefined,
     undefined,
+  )
+
+  // Enhanced activity derived state that incorporates bridge status for bridge orders
+  const enhancedActivityDerivedState = useEnhancedActivityDerivedState(
+    activityDerivedState,
+    chainId,
   )
 
   const bridgeOrderData = useBridgeOrderData(order?.id)
@@ -482,7 +489,7 @@ export function ActivityDetails(props: {
         <StatusDetails
           chainId={chainId}
           showCancellationModal={showCancellationModal}
-          activityDerivedState={activityDerivedState}
+          activityDerivedState={enhancedActivityDerivedState}
           showProgressBar={showProgressBarCallback}
         />
       </Summary>
