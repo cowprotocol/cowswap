@@ -1,5 +1,5 @@
 import { getIsNativeToken } from '@cowprotocol/common-utils'
-import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { mapSupportedNetworks, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
@@ -29,19 +29,13 @@ export interface TwapSuggestionBannerProps {
 }
 
 const PRICE_IMPACT_LIMIT = 1 // 1%
-const AMOUNT_LIMIT: Record<SupportedChainId, number> = {
-  [SupportedChainId.MAINNET]: 50_000, // $50,000
-  [SupportedChainId.GNOSIS_CHAIN]: 500, // $500
-  [SupportedChainId.ARBITRUM_ONE]: 500, // $500
-  [SupportedChainId.BASE]: 500, // $500
-  [SupportedChainId.SEPOLIA]: 100, // $100
-  [SupportedChainId.POLYGON]: 500, // $500
-  [SupportedChainId.AVALANCHE]: 500, // $500
-}
+
+const AMOUNT_LIMIT: Record<SupportedChainId, number> = mapSupportedNetworks(500) // $500 for most chains
+AMOUNT_LIMIT[SupportedChainId.MAINNET] = 50_000 // $50,000 for mainnet
 
 // TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, complexity
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function TwapSuggestionBanner({
   priceImpact,
   buyingFiatAmount,
