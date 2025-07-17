@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { BridgeOrderData } from 'common/types/bridge'
+import { BridgeOrderData } from '@cowprotocol/types'
 
 import { useBridgeOrders } from './useBridgeOrders'
 

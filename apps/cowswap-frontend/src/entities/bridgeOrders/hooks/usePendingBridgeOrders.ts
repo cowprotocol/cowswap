@@ -1,11 +1,10 @@
 import { useMemo } from 'react'
 
+import { BridgeOrderData } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 import { useAllOrdersMap } from 'legacy/state/orders/hooks'
-
-import { BridgeOrderData } from 'common/types/bridge'
 
 import { useBridgeOrders } from './useBridgeOrders'
 import { BRIDGING_FINAL_STATUSES } from './useCrossChainOrder'
