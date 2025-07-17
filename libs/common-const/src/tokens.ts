@@ -358,7 +358,6 @@ export const GNO_SEPOLIA = new TokenWithLogo(
   'GNO (test)',
 )
 
-// Sepolia
 export const USDC_SEPOLIA = new TokenWithLogo(
   USDC_MAINNET.logoURI,
   SupportedChainId.SEPOLIA,
@@ -375,6 +374,9 @@ export const USDT_SEPOLIA = new TokenWithLogo(
   'USDT',
   'Tether USD',
 )
+
+// Polygon
+
 export const USDC_POLYGON = new TokenWithLogo(
   USDC_MAINNET.logoURI,
   SupportedChainId.POLYGON,
@@ -403,41 +405,13 @@ export const DAI_POLYGON = new TokenWithLogo(
   'Dai',
 )
 
+// Avalanche
+
 export const USDC_AVALANCHE = new TokenWithLogo(
   USDC_MAINNET.logoURI,
   SupportedChainId.AVALANCHE,
   // https://snowscan.xyz/token/0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e
   '0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e',
-  6,
-  'USDC',
-  'USD Coin',
-)
-
-export const USDC_BNB = new TokenWithLogo(
-  USDC_MAINNET.logoURI,
-  SupportedChainId.BNB,
-  // https://bscscan.com/address/0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d
-  '0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d',
-  18, // BNB USDC has 18 decimals!!!
-  'USDC',
-  'USD Coin',
-)
-
-export const USDC_LENS = new TokenWithLogo(
-  USDC_MAINNET.logoURI,
-  SupportedChainId.LENS,
-  // https://explorer.lens.xyz/address/0x88F08E304EC4f90D644Cec3Fb69b8aD414acf884
-  '0x88F08E304EC4f90D644Cec3Fb69b8aD414acf884',
-  6,
-  'USDC',
-  'USD Coin',
-)
-
-export const USDC_OPTIMISM = new TokenWithLogo(
-  USDC_MAINNET.logoURI,
-  AdditionalTargetChainId.OPTIMISM,
-  // https://optimistic.etherscan.io/address/0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85
-  '0x0b2c639c533813f4aa9d7837caf62653d097ff85',
   6,
   'USDC',
   'USD Coin',
@@ -451,6 +425,42 @@ export const USDT_AVALANCHE = new TokenWithLogo(
   6,
   'USDT',
   'Tether USD',
+)
+
+// Lens
+
+export const USDC_LENS = new TokenWithLogo(
+  USDC_MAINNET.logoURI,
+  SupportedChainId.LENS,
+  // https://explorer.lens.xyz/address/0x88F08E304EC4f90D644Cec3Fb69b8aD414acf884
+  '0x88F08E304EC4f90D644Cec3Fb69b8aD414acf884',
+  6,
+  'USDC',
+  'USD Coin',
+)
+
+// BNB
+
+export const USDC_BNB = new TokenWithLogo(
+  USDC_MAINNET.logoURI,
+  SupportedChainId.BNB,
+  // https://bscscan.com/address/0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d
+  '0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d',
+  18, // BNB USDC has 18 decimals!!!
+  'USDC',
+  'USD Coin',
+)
+
+// Optimism
+
+export const USDC_OPTIMISM = new TokenWithLogo(
+  USDC_MAINNET.logoURI,
+  AdditionalTargetChainId.OPTIMISM,
+  // https://optimistic.etherscan.io/address/0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85
+  '0x0b2c639c533813f4aa9d7837caf62653d097ff85',
+  6,
+  'USDC',
+  'USD Coin',
 )
 
 export const USDC: Record<SupportedChainId | AdditionalTargetChainId, TokenWithLogo> = {
