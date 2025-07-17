@@ -561,7 +561,6 @@ GNO[SupportedChainId.SEPOLIA] = GNO_SEPOLIA
 const SDAI_GNOSIS_CHAIN_ADDRESS = '0xaf204776c7245bf4147c2612bf6e5972ee483701'
 const GBPE_GNOSIS_CHAIN_ADDRESS = '0x5cb9073902f2035222b9749f8fb0c9bfe5527108'
 
-// Not used for fees
 const MAINNET_STABLECOINS = [
   USDC_MAINNET.address,
   USDT.address,
@@ -597,7 +596,6 @@ const ARBITRUM_ONE_STABLECOINS = [
   MIM_ARBITRUM_ONE.address,
 ].map((t) => t.toLowerCase())
 
-// Not used for fees
 const BASE_STABLECOINS = [
   USDC_BASE.address,
   DAI_BASE.address,
@@ -616,7 +614,6 @@ const POLYGON_STABLECOINS = [USDC_POLYGON.address, USDT_POLYGON.address, DAI_POL
 
 const AVALANCHE_STABLECOINS = [USDC_AVALANCHE.address, USDT_AVALANCHE.address].map((t) => t.toLowerCase())
 
-// Not used for fees
 const SEPOLIA_STABLECOINS = [USDC_SEPOLIA.address, USDT_SEPOLIA.address].map((t) => t.toLowerCase())
 
 export const STABLECOINS: Record<SupportedChainId, Set<string>> = {
