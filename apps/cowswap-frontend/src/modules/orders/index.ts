@@ -11,9 +11,9 @@ export { OrdersNotificationsUpdater } from './updaters/OrdersNotificationsUpdate
 export { useGetSpotPrice } from './state/spotPricesAtom'
 export { usePendingOrdersPrices } from './hooks/usePendingOrdersPrices'
 
-export { emitPostedOrderEvent } from './utils/emitPostedOrderEvent'
-export { emitFulfilledOrderEvent } from './utils/emitFulfilledOrderEvent'
+export { emitBridgingSuccessEvent } from './utils/emitBridgingSuccessEvent'
 export { emitCancelledOrderEvent } from './utils/emitCancelledOrderEvent'
 export { emitExpiredOrderEvent } from './utils/emitExpiredOrderEvent'
+export { emitFulfilledOrderEvent } from './utils/emitFulfilledOrderEvent'
+export { emitPostedOrderEvent } from './utils/emitPostedOrderEvent'
 export { emitPresignedOrderEvent } from './utils/emitPresignedOrderEvent'
-export { emitBridgingSuccessEvent } from './utils/emitBridgingSuccessEvent'
