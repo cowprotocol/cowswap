@@ -10,6 +10,7 @@ import { useBridgeSupportedNetworks } from 'entities/bridgeProvider'
 import { ConfirmDetailsItem, ReceiveAmountTitle } from 'modules/trade'
 
 import { SuccessTextBold } from '../../../../styles'
+import { BridgeTransactionLink } from '../../../BridgeTransactionLink'
 import { DepositTxLink } from '../../../DepositTxLink'
 import { TokenAmountDisplay } from '../../../TokenAmountDisplay'
 import { TransactionLinkItem } from '../../../TransactionLink'
@@ -20,6 +21,7 @@ interface ReceivedBridgingContentProps {
   destinationChainId: number
   receivedAmount: CurrencyAmount<Currency>
   receivedAmountUsd: CurrencyAmount<Token> | null | undefined
+  explorerUrl?: string
 }
 
 export function ReceivedBridgingContent({
@@ -28,6 +30,7 @@ export function ReceivedBridgingContent({
   receivedAmount,
   sourceChainId,
   destinationChainId,
+  explorerUrl,
 }: ReceivedBridgingContentProps): ReactNode {
   const { depositTxHash, fillTxHash } = statusResult || {}
   const { data: bridgeSupportedNetworks } = useBridgeSupportedNetworks()
@@ -54,9 +57,18 @@ export function ReceivedBridgingContent({
         </b>
       </ConfirmDetailsItem>
 
-      <DepositTxLink depositTxHash={depositTxHash} sourceChainId={sourceChainId} />
-      {fillTxLink && (
-        <TransactionLinkItem link={fillTxLink} label="Destination transaction" chainId={destinationChainId} />
+      {explorerUrl ? (
+        <BridgeTransactionLink
+          link={explorerUrl}
+          label="Bridge transaction"
+        />
+      ) : (
+        <>
+          <DepositTxLink depositTxHash={depositTxHash} sourceChainId={sourceChainId} />
+          {fillTxLink && (
+            <TransactionLinkItem link={fillTxLink} label="Destination transaction" chainId={destinationChainId} />
+          )}
+        </>
       )}
     </>
   )

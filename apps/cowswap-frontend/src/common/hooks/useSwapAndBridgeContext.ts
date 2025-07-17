@@ -140,6 +140,7 @@ export function useSwapAndBridgeContext(
         overview: swapAndBridgeOverview,
         bridgeProvider,
         swapResultContext,
+        explorerUrl: crossChainOrder?.explorerUrl,
       }
     }
 
@@ -175,6 +176,7 @@ export function useSwapAndBridgeContext(
       bridgingProgressContext,
       swapResultContext,
       statusResult: crossChainOrder.statusResult,
+      explorerUrl: crossChainOrder.explorerUrl,
     }
   }, [
     order,

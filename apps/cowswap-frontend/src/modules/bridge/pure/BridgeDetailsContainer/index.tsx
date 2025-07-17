@@ -5,13 +5,7 @@ import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { ToggleArrow } from 'common/pure/ToggleArrow'
 
-import {
-  ClickableStopTitle,
-  SectionContent,
-  StopTitle as BaseStopTitle,
-  ExplorerLink,
-  ToggleIconContainer,
-} from '../../styles'
+import { ClickableStopTitle, SectionContent, StopTitle as BaseStopTitle, ToggleIconContainer } from '../../styles'
 import { SwapAndBridgeStatus } from '../../types'
 import { BridgeRouteTitle } from '../BridgeRouteTitle'
 import { RouteTitle } from '../RouteTitle'
@@ -96,23 +90,9 @@ interface TitleActionsComponentProps {
   isExpanded?: boolean
 }
 
-function TitleActionsComponent({
-  explorerUrl,
-  isCollapsible = false,
-  isExpanded = false,
-}: TitleActionsComponentProps): ReactNode {
+function TitleActionsComponent({ isCollapsible = false, isExpanded = false }: TitleActionsComponentProps): ReactNode {
   return (
     <>
-      {explorerUrl && (
-        <ExplorerLink
-          href={explorerUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="View transaction details on explorer (opens in new tab)"
-        >
-          View details <span aria-hidden="true">↗</span>
-        </ExplorerLink>
-      )}
       {isCollapsible && (
         <ToggleIconContainer>
           <ToggleArrow isOpen={isExpanded} />

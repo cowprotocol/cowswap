@@ -390,6 +390,8 @@ export function ActivityDetails(props: {
               {order && isBridgeOrder ? (
                 swapAndBridgeOverview ? (
                   <BridgeActivitySummary
+                    isCustomRecipientWarning={!!isCustomRecipientWarningBannerVisible}
+                    order={order}
                     swapAndBridgeContext={swapAndBridgeContext}
                     swapResultContext={swapResultContext}
                     swapAndBridgeOverview={swapAndBridgeOverview}
