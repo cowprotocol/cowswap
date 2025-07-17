@@ -17,6 +17,8 @@ const indexFiles: Record<SupportedChainId, string[]> = {
   [SupportedChainId.SEPOLIA]: [],
   [SupportedChainId.AVALANCHE]: [],
   [SupportedChainId.POLYGON]: [],
+  [SupportedChainId.LENS]: [],
+  [SupportedChainId.BNB]: [],
 }
 
 const chainNames: Record<SupportedChainId, string | null> = {
@@ -27,6 +29,8 @@ const chainNames: Record<SupportedChainId, string | null> = {
   [SupportedChainId.SEPOLIA]: null,
   [SupportedChainId.AVALANCHE]: null,
   [SupportedChainId.POLYGON]: null,
+  [SupportedChainId.LENS]: null,
+  [SupportedChainId.BNB]: null,
 }
 
 const DISTRO_REPO_BRANCH_NAME = 'main'
