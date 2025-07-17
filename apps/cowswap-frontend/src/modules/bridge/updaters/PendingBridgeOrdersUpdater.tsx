@@ -29,9 +29,9 @@ function PendingOrderUpdater({ chainId, orderUid }: PendingOrderUpdaterProps): R
     if (isOrderExecuted) {
       updateBridgeOrderQuote(orderUid, crossChainOrder.statusResult)
       addOrderToSurplusQueue(orderUid)
-      getCowSoundSuccess().play().then()
+      getCowSoundSuccess().play()
     } else if (isOrderFailed) {
-      getCowSoundError().play().then()
+      getCowSoundError().play()
     }
   }, [crossChainOrder, updateBridgeOrderQuote, addOrderToSurplusQueue])
 
