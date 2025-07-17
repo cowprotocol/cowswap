@@ -3,7 +3,7 @@ import { ReactNode, useCallback, useMemo } from 'react'
 import EtherscanImage from '@cowprotocol/assets/cow-swap/etherscan-icon.svg'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useTheme } from '@cowprotocol/common-hooks'
-import { getBlockExplorerUrl, getIsNativeToken } from '@cowprotocol/common-utils'
+import { getBlockExplorerUrl, getIsNativeToken, isFractionFalsy } from '@cowprotocol/common-utils'
 import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS } from '@cowprotocol/cow-sdk'
 import { useAreThereTokensWithSameSymbol } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
@@ -160,7 +160,7 @@ export const TokensTableRow = ({
     }
 
     if (!account || approvalState === ApprovalState.NOT_APPROVED) {
-      if (!allowance) {
+      if (isFractionFalsy(allowance)) {
         return <TableButton onClick={handleApprove}>Approve</TableButton>
       }
 
