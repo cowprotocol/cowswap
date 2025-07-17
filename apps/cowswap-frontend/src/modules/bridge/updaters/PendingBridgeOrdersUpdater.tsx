@@ -6,7 +6,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { useCrossChainOrder, usePendingBridgeOrders, useUpdateBridgeOrderQuote } from 'entities/bridgeOrders'
 import { useAddOrderToSurplusQueue } from 'entities/surplusModal'
 
-import { getCowSoundError, getCowSoundSuccess } from '../../sounds'
+import { getCowSoundError, getCowSoundSuccess } from 'modules/sounds'
 
 interface PendingOrderUpdaterProps {
   chainId: SupportedChainId
