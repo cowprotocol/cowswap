@@ -1,9 +1,8 @@
 import { useMemo } from 'react'
 
 import { ERC_20_INTERFACE } from '@cowprotocol/abis'
-import { LpToken, SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
+import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { useMultipleContractSingleData } from '@cowprotocol/multicall'
-import { useAllActiveTokens } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { BigNumber } from '@ethersproject/bignumber'
 
@@ -22,13 +21,11 @@ const SWR_CONFIG: SWRConfiguration = {
 
 export type AllowancesState = Record<string, BigNumber | undefined>
 
-export function useTokenAllowances(): { state: AllowancesState | undefined; isLoading: boolean } {
+export function useTokenAllowances(tokenAddresses: string[]): {
+  state: AllowancesState | undefined
+  isLoading: boolean
+} {
   const { account } = useWalletInfo()
-  const allTokens = useAllActiveTokens()
-
-  const tokenAddresses = useMemo(() => {
-    return allTokens.tokens.filter((token) => !(token instanceof LpToken)).map((token) => token.address)
-  }, [allTokens])
 
   const spender = useTradeSpenderAddress()
   const allowanceParams = useMemo(() => (account && spender ? [account, spender] : undefined), [account, spender])

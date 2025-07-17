@@ -1,9 +1,11 @@
 import { useAtomValue, useSetAtom } from 'jotai/index'
-import { ReactNode, useEffect } from 'react'
+import { ReactNode, useEffect, useMemo } from 'react'
 
 import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useLocation } from 'react-router'
+
+import { Order } from 'legacy/state/orders/actions'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { usePendingOrdersPrices, useGetSpotPrice } from 'modules/orders'
@@ -22,6 +24,16 @@ import { useTabs } from '../hooks/useTabs'
 import { ordersTableStateAtom } from '../state/ordersTableStateAtom'
 import { OrdersTableParams } from '../types'
 import { buildOrdersTableUrl } from '../utils/buildOrdersTableUrl'
+
+function getOrdersInputTokens(allOrders: Order[]): string[] {
+  const setOfTokens = allOrders.reduce((acc, order) => {
+    acc.add(order.inputToken.address.toLowerCase())
+
+    return acc
+  }, new Set<string>())
+
+  return Array.from(setOfTokens)
+}
 
 interface OrdersTableStateUpdaterProps extends OrdersTableParams {
   searchTerm?: string
@@ -45,9 +57,11 @@ export function OrdersTableStateUpdater({
   const getSpotPrice = useGetSpotPrice()
   const isSafeViaWc = useIsSafeViaWc()
   const injectedWidgetParams = useInjectedWidgetParams()
-  const balancesAndAllowances = useBalancesAndAllowances()
   const pendingActivitiesCount = usePendingActivitiesCount()
 
+  const ordersTokens = useMemo(() => getOrdersInputTokens(allOrders), [allOrders])
+
+  const balancesAndAllowances = useBalancesAndAllowances(ordersTokens)
   const ordersList = useOrdersTableList(allOrders, orderType, chainId, balancesAndAllowances)
 
   const { currentTabId, currentPageNumber } = useCurrentTab(ordersList)

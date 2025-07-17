@@ -17,7 +17,6 @@ import { Link } from 'react-router'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 import { useHasPendingApproval } from 'legacy/state/enhancedTransactions/hooks'
 
-import { useTokenAllowances } from 'modules/ordersTable/hooks/useTokenAllowances'
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
 
 import { Routes } from 'common/constants/routes'
@@ -44,7 +43,8 @@ import {
 type DataRowParams = {
   tokenData: TokenWithLogo
   index: number
-  balance?: CurrencyAmount<Token> | undefined
+  balance: CurrencyAmount<Token> | undefined
+  allowance: CurrencyAmount<Token> | undefined
   openApproveModal: (tokenSymbol?: string) => void
   closeApproveModal: Command
   toggleWalletModal: Command
@@ -56,6 +56,7 @@ export const TokensTableRow = ({
   tokenData,
   index,
   balance,
+  allowance,
   closeApproveModal,
   openApproveModal,
   toggleWalletModal,
@@ -92,23 +93,15 @@ export const TokensTableRow = ({
 
   const tokenAddress = tokenData.address.toLowerCase()
 
-  const { state: allowances } = useTokenAllowances()
-  const currentAllowance = allowances?.[tokenAddress]
-
   const pendingApproval = useHasPendingApproval(tokenAddress)
 
   const approvalState = useSafeMemo(() => {
     if (isNativeToken) return ApprovalState.APPROVED
-    if (!currentAllowance) return ApprovalState.UNKNOWN
+    if (!allowance) return ApprovalState.UNKNOWN
 
-    return getApprovalState(amountToApprove, currentAllowance.toBigInt(), pendingApproval)
-  }, [amountToApprove, currentAllowance, isNativeToken, pendingApproval])
+    return getApprovalState(amountToApprove, BigInt(allowance.quotient.toString()), pendingApproval)
+  }, [amountToApprove, allowance, isNativeToken, pendingApproval])
 
-  const currentAllowanceAmount = useMemo(() => {
-    if (!currentAllowance) return
-
-    return CurrencyAmount.fromRawAmount(amountToApprove.currency, currentAllowance.toString())
-  }, [amountToApprove.currency, currentAllowance])
   const approveCallback = useApproveCallback(amountToApprove, vaultRelayer)
 
   const handleApprove = useCallback(async () => {
@@ -144,7 +137,7 @@ export const TokensTableRow = ({
 
   const hasZeroBalance = !balance || balance?.equalTo(0)
 
-  const balanceLessThanAllowance = balance && currentAllowance ? balance.lessThan(currentAllowance.toString()) : false
+  const balanceLessThanAllowance = balance && allowance ? balance.lessThan(allowance) : false
 
   // This is so we only create fiat value request if there is a balance
   const fiatValue = useMemo(() => {
@@ -167,7 +160,7 @@ export const TokensTableRow = ({
     }
 
     if (!account || approvalState === ApprovalState.NOT_APPROVED) {
-      if (!currentAllowanceAmount) {
+      if (!allowance) {
         return <TableButton onClick={handleApprove}>Approve</TableButton>
       }
 
@@ -177,7 +170,7 @@ export const TokensTableRow = ({
           <ApproveLabel>
             Approved:{' '}
             <strong>
-              <TokenAmount amount={currentAllowanceAmount} />
+              <TokenAmount amount={allowance} />
             </strong>
           </ApproveLabel>
         </CustomLimit>
@@ -185,7 +178,7 @@ export const TokensTableRow = ({
     }
 
     return <CardsSpinner />
-  }, [account, isNativeToken, currentAllowanceAmount, handleApprove, approvalState, balanceLessThanAllowance])
+  }, [account, isNativeToken, allowance, handleApprove, approvalState, balanceLessThanAllowance])
 
   return (
     <>

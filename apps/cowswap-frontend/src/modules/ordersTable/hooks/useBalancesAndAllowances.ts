@@ -6,9 +6,9 @@ import { BalancesAndAllowances } from 'common/types'
 
 import { useTokenAllowances } from './useTokenAllowances'
 
-export function useBalancesAndAllowances(): BalancesAndAllowances {
+export function useBalancesAndAllowances(tokens: string[]): BalancesAndAllowances {
   const balancesState = useTokensBalances()
-  const allowancesState = useTokenAllowances()
+  const allowancesState = useTokenAllowances(tokens)
 
   return useMemo(() => {
     const { isLoading: balancesLoading, values: balances } = balancesState
