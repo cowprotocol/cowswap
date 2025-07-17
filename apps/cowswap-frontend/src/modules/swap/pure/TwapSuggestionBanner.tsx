@@ -30,8 +30,10 @@ export interface TwapSuggestionBannerProps {
 
 const PRICE_IMPACT_LIMIT = 1 // 1%
 
-const AMOUNT_LIMIT: Record<SupportedChainId, number> = mapSupportedNetworks(500) // $500 for most chains
-AMOUNT_LIMIT[SupportedChainId.MAINNET] = 50_000 // $50,000 for mainnet
+const AMOUNT_LIMIT: Record<SupportedChainId, number> = {
+  ...mapSupportedNetworks(500), // $500 for most chains
+  [SupportedChainId.MAINNET]: 50_000, // $50,000 for mainnet
+}
 
 // TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
