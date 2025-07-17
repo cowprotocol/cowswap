@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import OrderCancelledImage from '@cowprotocol/assets/cow-swap/order-cancelled.svg'
 import OrderCheckImage from '@cowprotocol/assets/cow-swap/order-check.svg'
 import OrderExpiredImage from '@cowprotocol/assets/cow-swap/order-expired.svg'
@@ -20,38 +22,23 @@ import { CancelTxLink, StatusLabel, StatusLabelBelow, StatusLabelWrapper } from 
 
 import { determinePillColour } from './index'
 
-// TODO: Add proper return type annotation
-// TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function _getStateLabel(activityDerivedState: ActivityDerivedState) {
-  const activityState = getActivityState(activityDerivedState)
+const activityStatusText: Record<ActivityState, string> = {
+  [ActivityState.LOADING]: 'Loading...',
+  [ActivityState.PENDING]: 'Pending...',
+  [ActivityState.OPEN]: 'Open',
+  [ActivityState.SIGNING]: 'Signing...',
+  [ActivityState.FILLED]: 'Filled',
+  [ActivityState.EXECUTED]: 'Executed',
+  [ActivityState.EXPIRED]: 'Expired',
+  [ActivityState.FAILED]: 'Failed',
+  [ActivityState.CANCELLING]: 'Cancelling...',
+  [ActivityState.CANCELLED]: 'Cancelled',
+  [ActivityState.CREATING]: 'Creating...',
+}
 
-  switch (activityState) {
-    case ActivityState.LOADING:
-      return 'Loading...'
-    case ActivityState.PENDING:
-      return 'Pending...'
-    case ActivityState.OPEN:
-      return 'Open'
-    case ActivityState.SIGNING:
-      return 'Signing...'
-    case ActivityState.FILLED:
-      return 'Filled'
-    case ActivityState.EXECUTED:
-      return 'Executed'
-    case ActivityState.EXPIRED:
-      return 'Expired'
-    case ActivityState.FAILED:
-      return 'Failed'
-    case ActivityState.CANCELLING:
-      return 'Cancelling...'
-    case ActivityState.CANCELLED:
-      return 'Cancelled'
-    case ActivityState.CREATING:
-      return 'Creating...'
-    default:
-      return 'Open'
-  }
+function _getStateLabel(activityDerivedState: ActivityDerivedState): string {
+  const activityState = getActivityState(activityDerivedState)
+  return activityStatusText[activityState] || 'Open'
 }
 
 export type StatusDetailsProps = {
@@ -62,10 +49,9 @@ export type StatusDetailsProps = {
 }
 
 // TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, complexity
-export function StatusDetails(props: StatusDetailsProps) {
+// eslint-disable-next-line complexity
+export function StatusDetails(props: StatusDetailsProps): ReactNode | null {
   const { chainId, activityDerivedState, showCancellationModal, showProgressBar } = props
 
   const {

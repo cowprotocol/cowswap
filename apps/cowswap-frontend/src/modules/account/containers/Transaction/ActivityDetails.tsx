@@ -55,6 +55,8 @@ import {
 
 import { BridgeOrderLoading } from '../../pure/BridgeOrderLoading'
 
+const progressBarVisibleStates = [ActivityState.OPEN, ActivityState.LOADING]
+
 const DEFAULT_ORDER_SUMMARY = {
   from: '',
   to: '',
@@ -180,16 +182,15 @@ interface OrderSummaryType {
 }
 
 // TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
+// eslint-disable-next-line max-lines-per-function, complexity
 export function ActivityDetails(props: {
   chainId: number
   activityDerivedState: ActivityDerivedState
   activityLinkUrl: string | undefined
   disableMouseActions: boolean | undefined
   creationTime?: string | undefined
-}) {
+}): ReactNode | null {
   const { activityDerivedState, chainId, activityLinkUrl, disableMouseActions, creationTime } = props
   const { id, isOrder, summary, order, enhancedTransaction, isExpired, isCancelled, isFailed, isCancelling } =
     activityDerivedState
@@ -208,14 +209,15 @@ export function ActivityDetails(props: {
   const isBridgeOrder = getIsBridgeOrder(order) && !skipBridgingDisplay
 
   // Enhanced activity derived state that incorporates bridge status for bridge orders
-  const enhancedActivityDerivedState = useEnhancedActivityDerivedState(
-    activityDerivedState,
-    chainId,
-  )
+  const enhancedActivityDerivedState = useEnhancedActivityDerivedState(activityDerivedState, chainId)
 
   // Use enhanced state to determine when to show progress bar for bridge orders
   const enhancedActivityState = getActivityState(enhancedActivityDerivedState)
-  const showProgressBar = (enhancedActivityState === ActivityState.OPEN || enhancedActivityState === ActivityState.LOADING) && (isSwap || isBridgeOrder) && order && !disableProgressBar
+  const showProgressBar =
+    progressBarVisibleStates.includes(enhancedActivityState) &&
+    (isSwap || isBridgeOrder) &&
+    order &&
+    !disableProgressBar
   const showCancellationModal = order ? getShowCancellationModal(order) : null
 
   const { surplusFiatValue, showFiatValue, surplusToken, surplusAmount } = useGetSurplusData(order)
