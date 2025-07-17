@@ -1,11 +1,10 @@
 import { useMemo } from 'react'
 
+import { BridgeQuoteAmounts } from '@cowprotocol/types'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useReceiveAmountInfo } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
-
-import { BridgeQuoteAmounts } from 'common/types/bridge'
 
 import { useGetMaybeIntermediateToken } from './useGetMaybeIntermediateToken'
 
