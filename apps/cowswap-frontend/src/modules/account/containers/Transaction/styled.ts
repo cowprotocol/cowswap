@@ -4,6 +4,8 @@ import { ExternalLink, FiatAmount, Media, RowFixed, StyledLink, UI } from '@cowp
 import { transparentize } from 'color2k'
 import styled, { css, keyframes } from 'styled-components/macro'
 
+import { ActivityState } from 'legacy/hooks/useActivityDerivedState'
+
 import { RateWrapper } from 'common/pure/RateInfo'
 
 export const TransactionWrapper = styled.div`
@@ -239,7 +241,7 @@ export const StatusLabel = styled.div<{
         ? `var(${UI.COLOR_SUCCESS})`
         : color === 'danger'
           ? `var(${UI.COLOR_DANGER})`
-          : color === 'open'
+          : color === ActivityState.OPEN
             ? `var(${UI.COLOR_TEXT})`
             : `var(${UI.COLOR_ALERT})`};
   height: 28px;

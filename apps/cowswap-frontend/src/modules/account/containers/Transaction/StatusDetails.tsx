@@ -10,7 +10,7 @@ import { Command } from '@cowprotocol/types'
 import { Info, ExternalLink as LinkIconFeather } from 'react-feather'
 import SVG from 'react-inlinesvg'
 
-import { getActivityState } from 'legacy/hooks/useActivityDerivedState'
+import { getActivityState, ActivityState } from 'legacy/hooks/useActivityDerivedState'
 
 import { CancelButton } from 'common/pure/CancelButton'
 import { ActivityDerivedState } from 'common/types/activity'
@@ -27,27 +27,27 @@ function _getStateLabel(activityDerivedState: ActivityDerivedState) {
   const activityState = getActivityState(activityDerivedState)
 
   switch (activityState) {
-    case 'loading':
+    case ActivityState.LOADING:
       return 'Loading...'
-    case 'pending':
+    case ActivityState.PENDING:
       return 'Pending...'
-    case 'open':
+    case ActivityState.OPEN:
       return 'Open'
-    case 'signing':
+    case ActivityState.SIGNING:
       return 'Signing...'
-    case 'filled':
+    case ActivityState.FILLED:
       return 'Filled'
-    case 'executed':
+    case ActivityState.EXECUTED:
       return 'Executed'
-    case 'expired':
+    case ActivityState.EXPIRED:
       return 'Expired'
-    case 'failed':
+    case ActivityState.FAILED:
       return 'Failed'
-    case 'cancelling':
+    case ActivityState.CANCELLING:
       return 'Cancelling...'
-    case 'cancelled':
+    case ActivityState.CANCELLED:
       return 'Cancelled'
-    case 'creating':
+    case ActivityState.CREATING:
       return 'Creating...'
     default:
       return 'Open'
