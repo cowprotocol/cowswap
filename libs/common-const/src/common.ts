@@ -182,14 +182,6 @@ export const LOCKED_GNO_VESTING_START_DATE = new Date('02-11-2022 13:05:15 GMT')
 export const LOCKED_GNO_VESTING_START_TIME = 1644584715000
 export const LOCKED_GNO_VESTING_DURATION = 126144000000 // 4 years
 
-export const SWR_OPTIONS = {
-  refreshInterval: ms`30s`,
-  dedupingInterval: ms`10s`,
-  // don't revalidate data on focus, can cause too many re-renders
-  // see https://koba04.medium.com/revalidating-options-of-swr-4d9f08bee813
-  revalidateOnFocus: false,
-}
-
 export const SWR_NO_REFRESH_OPTIONS = {
   // Cache indefinitely
   revalidateOnFocus: false,

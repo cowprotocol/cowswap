@@ -41,6 +41,10 @@ export enum TradeFormValidation {
 
   // Native
   SellNativeToken,
+
+  // Bridging
+  ProxyAccountLoading,
+  ProxyAccountUnknown,
 }
 
 export interface TradeFormValidationCommonContext {
@@ -58,6 +62,8 @@ export interface TradeFormValidationCommonContext {
   isInsufficientBalanceOrderAllowed: boolean
   isProviderNetworkUnsupported: boolean
   isOnline: boolean
+  isAccountProxyLoading: boolean
+  isProxySetupValid: boolean | null | undefined
 }
 
 export interface TradeFormValidationContext extends TradeFormValidationCommonContext {}
