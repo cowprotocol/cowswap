@@ -22,6 +22,22 @@ function constructRgba(r: number, g: number, b: number, a: number): string {
 }
 
 /**
+ * Development-only logging for token contrast analysis
+ * Disabled in production to avoid log noise
+ */
+function logTokenContrastError(message: string, context: Record<string, unknown>): void {
+  if (process.env.NODE_ENV === 'development') {
+    console.error(message, context)
+  }
+}
+
+function logTokenContrastWarning(message: string, context: Record<string, unknown>): void {
+  if (process.env.NODE_ENV === 'development') {
+    console.warn(message, context)
+  }
+}
+
+/**
  * Hook to detect if a token image has low contrast against the current theme.paper background.
  * Uses canvas to sample a small version of the token image and calculate W3C WCAG compliant contrast ratio.
  *
@@ -128,8 +144,8 @@ export function useTokenContrast(src: string | undefined, minContrastRatio = 1.5
           setNeedsContrast(needsEnhancement)
         }
       } catch (error) {
-        // Log the error for debugging purposes
-        console.error('Error processing canvas for token contrast:', {
+        // Log the error for debugging purposes (development only)
+        logTokenContrastError('Error processing canvas for token contrast:', {
           src: src?.substring(src.lastIndexOf('/') + 1),
           error: error instanceof Error ? error.message : error
         })
@@ -139,7 +155,7 @@ export function useTokenContrast(src: string | undefined, minContrastRatio = 1.5
     }
 
     const handleError = (): void => {
-      console.warn('Failed to load token image for contrast analysis:', {
+      logTokenContrastWarning('Failed to load token image for contrast analysis:', {
         src: src?.substring(src.lastIndexOf('/') + 1)
       })
       setNeedsContrast(false)
