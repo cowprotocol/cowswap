@@ -10,7 +10,7 @@ import useSWR from 'swr'
 
 import { useTokenContract } from 'common/hooks/useContract'
 
-import { useCurrentAccountProxyAddress } from './useCurrentAccountProxyAddress'
+import { useCurrentAccountProxyAddress } from './useCurrentAccountProxy'
 
 const BALANCE_UPDATE_INTERVAL = ms`5s`
 const BALANCE_SWR_CFG = { refreshInterval: BALANCE_UPDATE_INTERVAL, revalidateOnFocus: true }
@@ -22,7 +22,7 @@ export function useFetchTokenBalance(
   const selectedTokenAddress = selectedCurrency ? getCurrencyAddress(selectedCurrency) : undefined
 
   const { contract: erc20Contract } = useTokenContract(selectedTokenAddress)
-  const { proxyAddress } = useCurrentAccountProxyAddress() || {}
+  const proxyAddress = useCurrentAccountProxyAddress()
 
   const [tokenBalance, setTokenBalance] = useState<CurrencyAmount<Currency> | null>(null)
 

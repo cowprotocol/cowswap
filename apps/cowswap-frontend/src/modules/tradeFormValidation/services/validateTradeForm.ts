@@ -26,6 +26,8 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     isProviderNetworkUnsupported,
     isOnline,
     intermediateTokenToBeImported,
+    isAccountProxyLoading,
+    isProxySetupValid,
   } = context
 
   const {
@@ -50,7 +52,10 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     ? !inputCurrencyAmount || isFractionFalsy(inputCurrencyAmount)
     : !outputCurrencyAmount || isFractionFalsy(outputCurrencyAmount)
 
-  const isFastQuote = tradeQuote.fetchParams?.priceQuality === PriceQuality.FAST
+  const isBridging = Boolean(inputCurrency && outputCurrency && inputCurrency.chainId !== outputCurrency.chainId)
+
+  const { isLoading: isQuoteLoading, fetchParams } = tradeQuote
+  const isFastQuote = fetchParams?.priceQuality === PriceQuality.FAST
 
   const validations: TradeFormValidation[] = []
 
@@ -64,7 +69,9 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
       validations.push(TradeFormValidation.InputAmountNotSet)
     }
 
-    validations.push(TradeFormValidation.QuoteErrors)
+    if (!tradeQuote.isLoading) {
+      validations.push(TradeFormValidation.QuoteErrors)
+    }
   }
 
   if (!isSwapUnsupported && !account) {
@@ -100,17 +107,27 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
       validations.push(TradeFormValidation.CurrencyNotSupported)
     }
 
-    if (isFastQuote || !tradeQuote.quote) {
+    if (isFastQuote || !tradeQuote.quote || (isBridging && tradeQuote.isLoading)) {
       validations.push(TradeFormValidation.QuoteLoading)
     }
 
     if (
       derivedTradeState.tradeType !== TradeType.LIMIT_ORDER &&
-      !tradeQuote.isLoading &&
+      !isQuoteLoading &&
       !isFastQuote &&
       isQuoteExpired(tradeQuote)
     ) {
       validations.push(TradeFormValidation.QuoteExpired)
+    }
+
+    if (isBridging && !isQuoteLoading) {
+      if (isAccountProxyLoading || typeof isProxySetupValid === 'undefined') {
+        validations.push(TradeFormValidation.ProxyAccountLoading)
+      }
+
+      if (isProxySetupValid === null) {
+        validations.push(TradeFormValidation.ProxyAccountUnknown)
+      }
     }
   }
 

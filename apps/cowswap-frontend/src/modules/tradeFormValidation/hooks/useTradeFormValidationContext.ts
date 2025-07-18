@@ -6,6 +6,7 @@ import { useIsTradeUnsupported } from '@cowprotocol/tokens'
 import { useGnosisSafeInfo, useIsTxBundlingSupported, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useGetMaybeIntermediateToken } from 'modules/bridge'
+import { useCurrentAccountProxy } from 'modules/cowShed'
 import { useTokenSupportsPermit } from 'modules/permit'
 import { TradeType, useAmountsToSign, useDerivedTradeState, useIsWrapOrUnwrap } from 'modules/trade'
 import { TradeQuoteState, useTradeQuote } from 'modules/tradeQuote'
@@ -34,6 +35,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const isWrapUnwrap = useIsWrapOrUnwrap()
   const { isSupportedWallet } = useWalletDetails()
   const gnosisSafeInfo = useGnosisSafeInfo()
+  const { isLoading, data: proxyAccount } = useCurrentAccountProxy()
 
   const isSafeReadonlyUser = gnosisSafeInfo?.isReadOnly === true
 
@@ -61,6 +63,8 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     isOnline,
     derivedTradeState,
     intermediateTokenToBeImported: !!intermediateBuyToken && toBeImported,
+    isAccountProxyLoading: isLoading,
+    isProxySetupValid: proxyAccount?.isProxySetupValid,
   }
 
   return useMemo(() => {
