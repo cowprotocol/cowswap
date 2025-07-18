@@ -23,8 +23,7 @@ export function useSwapResultsContext(
   const { swappedAmountWithFee, surplusAmount } = executedSummary || {}
 
   /**
-   * By default, order.outputToken has target chain currency
-   * We should use source chain currency instead (intermediateToken)
+   * We should use source chain currency as intermediateToken
    */
   const receivedAmount = useMemo(() => {
     if (!intermediateToken || !swappedAmountWithFee) return undefined

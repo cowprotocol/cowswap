@@ -12,6 +12,7 @@ import type { SwapAndBridgeOverview } from 'modules/bridge/types'
 export function useSwapAndBridgeOverview(
   order: Order | undefined,
   intermediateToken: TokenWithLogo | undefined,
+  outputToken: TokenWithLogo | undefined,
   targetAmounts?: {
     sellAmount: CurrencyAmount<Currency>
     buyAmount: CurrencyAmount<Currency>
@@ -21,10 +22,10 @@ export function useSwapAndBridgeOverview(
   const { data: bridgeSupportedNetworks } = useBridgeSupportedNetworks()
 
   return useMemo(() => {
-    if (!order || !intermediateToken) return undefined
+    if (!order || !outputToken || !intermediateToken) return undefined
 
     const sourceChainId = order.inputToken.chainId
-    const destinationChainId = order.outputToken.chainId
+    const destinationChainId = outputToken.chainId
     const sourceChainData = getChainInfo(sourceChainId)
     const destChainData = bridgeSupportedNetworks?.find((chain) => chain.id === destinationChainId)
 
@@ -33,7 +34,7 @@ export function useSwapAndBridgeOverview(
     return {
       sourceChainName: sourceChainData.label,
       targetChainName: destChainData.label,
-      targetCurrency: order.outputToken,
+      targetCurrency: outputToken,
       sourceAmounts: {
         sellAmount: CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount),
         buyAmount: CurrencyAmount.fromRawAmount(intermediateToken, order.buyAmount),
@@ -41,5 +42,5 @@ export function useSwapAndBridgeOverview(
       targetAmounts,
       targetRecipient,
     }
-  }, [order, intermediateToken, targetAmounts, targetRecipient, bridgeSupportedNetworks])
+  }, [order, outputToken, intermediateToken, targetAmounts, targetRecipient, bridgeSupportedNetworks])
 }
