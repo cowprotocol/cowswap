@@ -14,7 +14,7 @@ import { NewModal } from 'common/pure/NewModal'
 import { AddressLinkStyled, Content, EmptyWrapper, ModalWrapper, Title, WidgetWrapper } from './styled'
 
 import { CoWShedWidgetTabs } from '../../const'
-import { useCurrentAccountProxyAddress } from '../../hooks/useCurrentAccountProxyAddress'
+import { useCurrentAccountProxyAddress } from '../../hooks/useCurrentAccountProxy'
 import { useTokensToRefund } from '../../hooks/useTokensToRefund'
 import { CoWShedFAQ } from '../../pure/CoWShedFAQ'
 import { TokensInProxyBanner } from '../../pure/TokensInProxyBanner'
@@ -30,7 +30,7 @@ interface CoWShedWidgetProps {
 export function CoWShedWidget({ onDismiss, modalMode }: CoWShedWidgetProps): ReactNode {
   const { chainId } = useWalletInfo()
   const updateSelectTokenWidget = useUpdateSelectTokenWidgetState()
-  const { proxyAddress } = useCurrentAccountProxyAddress() || {}
+  const proxyAddress = useCurrentAccountProxyAddress()
   const params = useParams()
   const setBalancesContext = useSetBalancesContext()
   const widgetRef = useRef(null)
