@@ -7,6 +7,7 @@ import { useCrossChainOrder, usePendingBridgeOrders, useUpdateBridgeOrderQuote }
 import { useAddOrderToSurplusQueue } from 'entities/surplusModal'
 
 import { emitBridgingSuccessEvent } from 'modules/orders'
+import { getCowSoundError, getCowSoundSuccess } from 'modules/sounds'
 
 interface PendingOrderUpdaterProps {
   chainId: SupportedChainId
@@ -23,13 +24,17 @@ function PendingOrderUpdater({ chainId, orderUid }: PendingOrderUpdaterProps): R
 
     const { provider: _, ...eventPayload } = crossChainOrder
     const orderUid = crossChainOrder.order.uid
-    const isOrderExecuted = crossChainOrder.statusResult.status === BridgeStatus.EXECUTED
+    const orderStatus = crossChainOrder.statusResult.status
+    const isOrderExecuted = orderStatus === BridgeStatus.EXECUTED
+    const isOrderFailed = orderStatus === BridgeStatus.REFUND || orderStatus === BridgeStatus.EXPIRED
 
     if (isOrderExecuted) {
       updateBridgeOrderQuote(orderUid, crossChainOrder.statusResult)
       addOrderToSurplusQueue(orderUid)
       emitBridgingSuccessEvent(eventPayload)
-      // TODO: play MOOO sound
+      getCowSoundSuccess().play()
+    } else if (isOrderFailed) {
+      getCowSoundError().play()
     }
   }, [crossChainOrder, updateBridgeOrderQuote, addOrderToSurplusQueue])
 

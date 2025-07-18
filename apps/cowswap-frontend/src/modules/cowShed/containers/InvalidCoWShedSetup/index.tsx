@@ -5,7 +5,7 @@ import { ExternalLink, InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-import { useCurrentAccountProxyAddress } from '../../hooks/useCurrentAccountProxyAddress'
+import { useCurrentAccountProxy } from '../../hooks/useCurrentAccountProxy'
 
 const Wrapper = styled.div`
   position: fixed;
@@ -22,7 +22,7 @@ const Wrapper = styled.div`
 `
 
 export function InvalidCoWShedSetup(): ReactNode {
-  const proxyInfo = useCurrentAccountProxyAddress()
+  const proxyInfo = useCurrentAccountProxy()?.data
   const isProxySetupValid = proxyInfo?.isProxySetupValid
 
   if (isProxySetupValid !== false) return null
