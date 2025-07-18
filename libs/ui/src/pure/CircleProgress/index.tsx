@@ -2,16 +2,31 @@ import { ReactNode } from 'react'
 
 import styled from 'styled-components/macro'
 
-const Loader = styled.svg`
+const Loader = styled.svg<{ $blink: boolean }>`
   transform: rotate(-90deg);
 
   circle:nth-child(2) {
     stroke-dasharray: 100;
     transition: stroke-dashoffset 1s;
   }
+
+  animation: ${({ $blink }) => ($blink ? `blink 0.75s infinite` : 'none')};
+
+  @keyframes blink {
+    0% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
 `
 
 interface CircleProgressProps {
+  isLoading: boolean
   percent: number
   size: number
   borderWidth: number
@@ -21,6 +36,7 @@ interface CircleProgressProps {
 }
 
 export function CircleProgress({
+  isLoading,
   size,
   percent,
   borderWidth,
@@ -32,7 +48,7 @@ export function CircleProgress({
   const radius = halfSize - borderWidth
 
   return (
-    <Loader className={className} width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+    <Loader $blink={isLoading} className={className} width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
       <circle cx={halfSize} cy={halfSize} r={radius} fill="none" stroke={backgroundColor} stroke-width={borderWidth} />
       <circle
         cx={halfSize}
