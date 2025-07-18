@@ -389,7 +389,7 @@ export function ActivityDetails(props: {
           {inputToken && outputToken && (
             <ActivityVisual>
               <TokenLogo token={inputToken} size={32} />
-              <TokenLogo token={outputToken} size={32} />
+              <TokenLogo token={isBridgeOrder ? swapAndBridgeOverview?.targetCurrency : outputToken} size={32} />
             </ActivityVisual>
           )}
         </span>

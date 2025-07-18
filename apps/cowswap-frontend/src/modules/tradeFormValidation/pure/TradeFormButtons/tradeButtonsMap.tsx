@@ -1,8 +1,8 @@
-import { ReactElement } from 'react'
+import { ReactElement, ReactNode } from 'react'
 
 import { getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
 import { BridgeProviderQuoteError, BridgeQuoteErrors } from '@cowprotocol/cow-sdk'
-import { HelpTooltip, TokenSymbol } from '@cowprotocol/ui'
+import { CenteredDots, HelpTooltip, TokenSymbol } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
@@ -17,7 +17,7 @@ import { TradeFormButtonContext, TradeFormValidation } from '../../types'
 import { TradeFormBlankButton } from '../TradeFormBlankButton'
 
 interface ButtonErrorConfig {
-  text: ReactElement | string
+  text: ReactNode
   id?: string
 }
 
@@ -221,5 +221,19 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
         <Trans>Selling {inputCurrency.symbol} is not supported</Trans>
       </TradeFormBlankButton>
     )
+  },
+  [TradeFormValidation.ImportingIntermediateToken]: {
+    text: 'Import intermediate token',
+  },
+  [TradeFormValidation.ProxyAccountLoading]: {
+    text: (
+      <>
+        <span>Loading account proxy</span>
+        <CenteredDots smaller />
+      </>
+    ),
+  },
+  [TradeFormValidation.ProxyAccountUnknown]: {
+    text: "Couldn't verify account proxy, please try later",
   },
 }
