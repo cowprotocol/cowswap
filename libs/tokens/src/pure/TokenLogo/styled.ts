@@ -5,7 +5,7 @@ import styled, { css } from 'styled-components/macro'
 const DEFAULT_SIZE = 42
 const DEFAULT_CHAIN_LOGO_SIZE = 16
 
-export const TokenLogoWrapper = styled.div<{ size?: number; sizeMobile?: number }>`
+export const TokenLogoWrapper = styled.div<{ size?: number; sizeMobile?: number; needsContrast?: boolean }>`
   --size: ${({ size = DEFAULT_SIZE }) => size}px;
   position: relative;
   display: flex;
@@ -27,6 +27,12 @@ export const TokenLogoWrapper = styled.div<{ size?: number; sizeMobile?: number 
     border-radius: var(--size);
     object-fit: contain;
   }
+
+  ${({ needsContrast }) =>
+    needsContrast &&
+    css`
+      border: 1px solid var(${UI.COLOR_TEXT_OPACITY_15});
+    `}
 
   ${Media.upToSmall()} {
     ${({ sizeMobile }) =>
