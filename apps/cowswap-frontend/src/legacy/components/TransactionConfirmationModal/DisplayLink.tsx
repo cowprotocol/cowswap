@@ -1,7 +1,6 @@
 import { ReactNode } from 'react'
 
 import { getBlockExplorerUrl, getEtherscanLink, getExplorerLabel } from '@cowprotocol/common-utils'
-import { Command } from '@cowprotocol/types'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 import { useOrder } from 'legacy/state/orders/hooks'
@@ -12,7 +11,6 @@ type DisplayLinkProps = {
   id: string | undefined
   chainId: number
   leadToBridgeTab: boolean
-  onClick?: Command
 }
 
 export function DisplayLink({ id, chainId, leadToBridgeTab }: DisplayLinkProps): ReactNode {
