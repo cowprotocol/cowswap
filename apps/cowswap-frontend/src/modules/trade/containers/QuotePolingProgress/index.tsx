@@ -3,11 +3,12 @@ import { ReactNode } from 'react'
 import { displayTime } from '@cowprotocol/common-utils'
 import { CircleProgress, HoverTooltip, UI } from '@cowprotocol/ui'
 
-import { useTradeQuoteCounter, QUOTE_POLLING_INTERVAL } from 'modules/tradeQuote'
+import { useTradeQuoteCounter, QUOTE_POLLING_INTERVAL, useTradeQuote } from 'modules/tradeQuote'
 
 const size = 18
 
 export function QuotePolingProgress(): ReactNode {
+  const { isLoading } = useTradeQuote()
   const counter = useTradeQuoteCounter()
   const percent = Math.ceil((counter * 100) / QUOTE_POLLING_INTERVAL)
 
@@ -18,6 +19,7 @@ export function QuotePolingProgress(): ReactNode {
   return (
     <HoverTooltip wrapInContainer placement="top" content={content}>
       <CircleProgress
+        isLoading={isLoading}
         size={size}
         percent={percent}
         backgroundColor={`var(${UI.COLOR_PAPER_DARKER})`}
