@@ -222,6 +222,9 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
       </TradeFormBlankButton>
     )
   },
+  [TradeFormValidation.ImportingIntermediateToken]: {
+    text: 'Import intermediate token',
+  },
   [TradeFormValidation.ProxyAccountLoading]: {
     text: (
       <>
