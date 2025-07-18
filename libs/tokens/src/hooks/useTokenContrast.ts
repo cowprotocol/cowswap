@@ -111,10 +111,11 @@ function processCanvasForContrast(
 }
 
 /**
- * Manage cache operations for contrast results
+ * Manage cache operations for contrast results with proper LRU eviction
  */
 function manageContrastCache(cacheKey: string, result: boolean): void {
-  // Implement LRU-like behavior by clearing oldest entries when cache is full
+  // Implement proper LRU behavior by clearing oldest entries when cache is full
+  // Map insertion order is guaranteed in ES2015+, but we need to handle re-insertion for LRU
   if (contrastCache.size >= MAX_CACHE_SIZE) {
     const firstKey = contrastCache.keys().next().value
     if (firstKey) {
@@ -122,6 +123,19 @@ function manageContrastCache(cacheKey: string, result: boolean): void {
     }
   }
   contrastCache.set(cacheKey, result)
+}
+
+/**
+ * Get cache value and update LRU order by re-inserting the accessed item
+ */
+function getFromContrastCache(cacheKey: string): boolean | undefined {
+  const value = contrastCache.get(cacheKey)
+  if (value !== undefined) {
+    // Move to end (most recently used) by deleting and re-inserting
+    contrastCache.delete(cacheKey)
+    contrastCache.set(cacheKey, value)
+  }
+  return value
 }
 
 /**
@@ -174,8 +188,9 @@ export function useTokenContrast(src: string | undefined, minContrastRatio = 1.5
     const cacheKey = `${src}:${theme.paper}`
     
     // Check if result is already cached (before creating Image object)
-    if (contrastCache.has(cacheKey)) {
-      setNeedsContrast(contrastCache.get(cacheKey) ?? false)
+    const cachedResult = getFromContrastCache(cacheKey)
+    if (cachedResult !== undefined) {
+      setNeedsContrast(cachedResult)
       return
     }
 
