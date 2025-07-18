@@ -4,6 +4,7 @@ import { CANCELLED_ORDERS_PENDING_TIME } from '@cowprotocol/common-const'
 import { EnrichedOrder, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
+import { useBridgeOrdersSerializedMap } from 'entities/bridgeOrders'
 import { useAddOrderToSurplusQueue } from 'entities/surplusModal'
 
 import { MARKET_OPERATOR_API_POLL_INTERVAL } from 'legacy/state/orders/consts'
@@ -15,6 +16,16 @@ import { emitFulfilledOrderEvent } from 'modules/orders'
 import { getIsBridgeOrder } from 'common/utils/getIsBridgeOrder'
 
 import { fetchAndClassifyOrder } from './utils'
+
+const DEFAULT_ORDERS_STATE: Record<OrderTransitionStatus, EnrichedOrder[]> = {
+  fulfilled: [],
+  presigned: [],
+  expired: [],
+  cancelled: [],
+  unknown: [],
+  presignaturePending: [],
+  pending: [],
+}
 
 /**
  * Updater for cancelled orders.
@@ -36,6 +47,7 @@ export function CancelledOrdersUpdater(): null {
 
   const cancelled = useCancelledOrders({ chainId })
   const addOrderToSurplusQueue = useAddOrderToSurplusQueue()
+  const bridgeOrdersMap = useBridgeOrdersSerializedMap()
 
   // Ref, so we don't rerun useEffect
   const cancelledRef = useRef(cancelled)
@@ -92,15 +104,7 @@ export function CancelledOrdersUpdater(): null {
             }
             return acc
           },
-          {
-            fulfilled: [],
-            presigned: [],
-            expired: [],
-            cancelled: [],
-            unknown: [],
-            presignaturePending: [],
-            pending: [],
-          },
+          { ...DEFAULT_ORDERS_STATE },
         )
 
         // Bach state update fulfilled orders, if any
@@ -116,14 +120,16 @@ export function CancelledOrdersUpdater(): null {
               addOrderToSurplusQueue(order.uid)
             }
 
-            emitFulfilledOrderEvent(chainId, order)
+            const bridgeOrders = bridgeOrdersMap[chainId]?.[lowerCaseAccount]
+            const bridgeOrder = bridgeOrders?.find((i) => i.orderUid === order.uid)
+            emitFulfilledOrderEvent(chainId, order, bridgeOrder)
           })
         }
       } finally {
         isUpdating.current = false
       }
     },
-    [addOrderToSurplusQueue, fulfillOrdersBatch],
+    [addOrderToSurplusQueue, fulfillOrdersBatch, bridgeOrdersMap],
   )
 
   useEffect(() => {
