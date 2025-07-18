@@ -29,7 +29,7 @@ interface TradeButtonsProps {
   isTradeContextReady: boolean
   openNativeWrapModal(): void
   hasEnoughWrappedBalanceForSwap: boolean
-  tokenNotImportedYet: boolean
+  tokenToBeImported: boolean
   intermediateBuyToken: TokenWithLogo | null
   setShowAddIntermediateTokenModal: (show: boolean) => void
 }
@@ -38,7 +38,7 @@ export function TradeButtons({
   isTradeContextReady,
   openNativeWrapModal,
   hasEnoughWrappedBalanceForSwap,
-  tokenNotImportedYet,
+  tokenToBeImported,
   intermediateBuyToken,
   setShowAddIntermediateTokenModal,
 }: TradeButtonsProps): ReactNode {
@@ -70,7 +70,7 @@ export function TradeButtons({
   })
 
   const shouldShowAddIntermediateToken =
-    tokenNotImportedYet &&
+    tokenToBeImported &&
     !!intermediateBuyToken &&
     primaryFormValidation === TradeFormValidation.ImportingIntermediateToken
 
