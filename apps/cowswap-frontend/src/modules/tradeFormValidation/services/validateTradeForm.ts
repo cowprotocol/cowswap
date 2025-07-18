@@ -25,6 +25,8 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     isInsufficientBalanceOrderAllowed,
     isProviderNetworkUnsupported,
     isOnline,
+    isAccountProxyLoading,
+    isProxySetupValid,
   } = context
 
   const {
@@ -50,7 +52,9 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     : !outputCurrencyAmount || isFractionFalsy(outputCurrencyAmount)
 
   const isBridging = Boolean(inputCurrency && outputCurrency && inputCurrency.chainId !== outputCurrency.chainId)
-  const isFastQuote = tradeQuote.fetchParams?.priceQuality === PriceQuality.FAST
+
+  const { isLoading: isQuoteLoading, fetchParams } = tradeQuote
+  const isFastQuote = fetchParams?.priceQuality === PriceQuality.FAST
 
   const validations: TradeFormValidation[] = []
 
@@ -108,11 +112,21 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
 
     if (
       derivedTradeState.tradeType !== TradeType.LIMIT_ORDER &&
-      !tradeQuote.isLoading &&
+      !isQuoteLoading &&
       !isFastQuote &&
       isQuoteExpired(tradeQuote)
     ) {
       validations.push(TradeFormValidation.QuoteExpired)
+    }
+
+    if (isBridging && !isQuoteLoading) {
+      if (isAccountProxyLoading || typeof isProxySetupValid === 'undefined') {
+        validations.push(TradeFormValidation.ProxyAccountLoading)
+      }
+
+      if (isProxySetupValid === null) {
+        validations.push(TradeFormValidation.ProxyAccountUnknown)
+      }
     }
   }
 
