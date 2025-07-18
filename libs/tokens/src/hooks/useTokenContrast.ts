@@ -16,6 +16,10 @@ const ALPHA_THRESHOLD = 128
 // Full opacity alpha value for constructing RGBA colors
 const FULL_OPACITY = 1
 
+// Default minimum contrast ratio threshold for token visibility
+// Values below this trigger contrast enhancement (border)
+const DEFAULT_CONTRAST_RATIO = 1.5
+
 // Cache for token contrast analysis results
 // Key: image URL + theme paper color, Value: boolean indicating if contrast enhancement is needed
 const contrastCache = new Map<string, boolean>()
@@ -174,7 +178,7 @@ function getFromContrastCache(cacheKey: string): boolean | undefined {
  * - Cached per URL: Results persist until URL changes
  * - Theme reactive: Recalculates when theme.paper changes
  */
-export function useTokenContrast(src: string | undefined, minContrastRatio = 1.5): boolean {
+export function useTokenContrast(src: string | undefined, minContrastRatio = DEFAULT_CONTRAST_RATIO): boolean {
   const [needsContrast, setNeedsContrast] = useState(false)
   const theme = useTheme()
 
