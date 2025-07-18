@@ -1,12 +1,12 @@
 import { JSX, useMemo } from 'react'
 
-import { formatPercent } from '@cowprotocol/common-utils'
+import { bpsToPercent, formatPercent } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Percent } from '@uniswap/sdk-core'
 
 import { useIsEoaEthFlow } from 'modules/trade'
 import { useSmartSlippageFromQuote } from 'modules/tradeQuote'
-import { useIsSmartSlippageApplied, useSetSlippage, useTradeSlippage } from 'modules/tradeSlippage'
+import { useIsSmartSlippageApplied, useSetSlippage } from 'modules/tradeSlippage'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
@@ -33,10 +33,13 @@ export function RowSlippage({
   const isEoaEthFlow = useIsEoaEthFlow()
   const nativeCurrency = useNativeCurrency()
   const smartSlippageFromQuote = useSmartSlippageFromQuote()
-  const swapSlippage = useTradeSlippage()
   const isSmartSlippageApplied = useIsSmartSlippageApplied()
   const isDefaultSlippageApplied = useIsDefaultSlippageApplied()
   const setSlippage = useSetSlippage()
+
+  const formattedSmartSlippage = smartSlippageFromQuote
+    ? `${formatPercent(bpsToPercent(smartSlippageFromQuote))}%`
+    : undefined
 
   const props = useMemo(
     () => ({
@@ -50,8 +53,7 @@ export function RowSlippage({
       isSmartSlippageApplied,
       isDefaultSlippageApplied,
       isSmartSlippageLoading: isTradePriceUpdating,
-      smartSlippage:
-        isSmartSlippageApplied && swapSlippage ? `${formatPercent(swapSlippage)}%` : undefined,
+      smartSlippage: formattedSmartSlippage,
       setAutoSlippage: smartSlippageFromQuote ? () => setSlippage(null) : undefined,
     }),
     [
@@ -62,11 +64,11 @@ export function RowSlippage({
       slippageLabel,
       slippageTooltip,
       smartSlippageFromQuote,
+      formattedSmartSlippage,
       isDefaultSlippageApplied,
       isSmartSlippageApplied,
       isTradePriceUpdating,
       setSlippage,
-      swapSlippage,
     ],
   )
 
