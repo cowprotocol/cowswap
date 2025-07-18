@@ -13,18 +13,14 @@ const SAMPLE_HEIGHT = 10
 // Only pixels with alpha > 128 (50% opacity) are considered for contrast calculation
 const ALPHA_THRESHOLD = 128
 
+// Full opacity alpha value for constructing RGBA colors
+const FULL_OPACITY = 1
+
 // Cache for token contrast analysis results
 // Key: image URL + theme paper color, Value: boolean indicating if contrast enhancement is needed
 const contrastCache = new Map<string, boolean>()
 const MAX_CACHE_SIZE = 100 // Prevent memory leaks by limiting cache size
 
-/**
- * Efficiently construct RGBA color string
- * More performant than template literals for repeated color construction
- */
-function constructRgba(r: number, g: number, b: number, a: number): string {
-  return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')'
-}
 
 /**
  * Development-only logging for token contrast analysis
@@ -105,7 +101,7 @@ function processCanvasForContrast(
   const { avgR, avgG, avgB } = pixelAnalysis
 
   // Construct average token color
-  const avgTokenColor = constructRgba(avgR, avgG, avgB, 1)
+  const avgTokenColor = `rgba(${avgR}, ${avgG}, ${avgB}, ${FULL_OPACITY})`
 
   // Calculate contrast ratio using color2k (W3C WCAG compliant)
   const contrastRatio = getContrast(avgTokenColor, paperColor)
@@ -179,7 +175,7 @@ export function useTokenContrast(src: string | undefined, minContrastRatio = 1.5
     
     // Check if result is already cached (before creating Image object)
     if (contrastCache.has(cacheKey)) {
-      setNeedsContrast(contrastCache.get(cacheKey)!)
+      setNeedsContrast(contrastCache.get(cacheKey) ?? false)
       return
     }
 
@@ -201,9 +197,12 @@ export function useTokenContrast(src: string | undefined, minContrastRatio = 1.5
         setNeedsContrast(needsEnhancement)
       } catch (error) {
         // Log the error for debugging purposes (development only)
+        const errorMessage = error instanceof Error
+          ? error.message
+          : 'An unknown error occurred during canvas processing'
         logTokenContrastError('Error processing canvas for token contrast:', {
           src: src ? src.substring(src.lastIndexOf('/') + 1) : 'unknown',
-          error: error instanceof Error ? error.message : error
+          error: errorMessage
         })
         // Fallback to false if canvas fails (e.g., CORS issues, canvas creation failures)
         setNeedsContrast(false)
