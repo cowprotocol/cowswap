@@ -49,9 +49,6 @@ function mapChainInfoToBaseChainInfo(
   | 'color'
   | 'eip155Label'
 > {
-  if (!chainInfo) {
-    throw new Error('Chain info is not defined')
-  }
   return {
     docs: chainInfo.docs.url,
     bridge: chainInfo.bridges?.[0]?.url,
@@ -84,10 +81,14 @@ export const CHAIN_INFO: ChainInfoMap = {
     name: 'bnb',
     urlAlias: 'bnb',
     nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.BNB],
+    // TODO: temporary hack while `lens-bsc` sdk branch is not merged
+    logo: {
+      light: bnb.logo.light.replace(/main/, 'lens-bsc'),
+      dark: bnb.logo.dark.replace(/main/, 'lens-bsc'),
+    },
   },
   [SupportedChainId.BASE]: {
     ...mapChainInfoToBaseChainInfo(base),
-
     name: 'base',
     urlAlias: 'base',
     nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.BASE],
@@ -121,6 +122,11 @@ export const CHAIN_INFO: ChainInfoMap = {
     name: 'lens',
     urlAlias: 'lens',
     nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.LENS],
+    // TODO: temporary hack while `lens-bsc` sdk branch is not merged
+    logo: {
+      light: lens.logo.light.replace(/main/, 'lens-bsc'),
+      dark: lens.logo.dark.replace(/main/, 'lens-bsc'),
+    },
   },
   [SupportedChainId.SEPOLIA]: {
     ...mapChainInfoToBaseChainInfo(sepolia),
