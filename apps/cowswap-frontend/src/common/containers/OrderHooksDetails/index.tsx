@@ -1,6 +1,6 @@
 import { ReactElement, useEffect, useMemo, useState } from 'react'
 
-import { latest } from '@cowprotocol/app-data'
+import { latest } from '@cowprotocol/cow-sdk'
 import { CowHookDetails, HookToDappMatch, matchHooksToDappsRegistry } from '@cowprotocol/hook-dapp-lib'
 import { InfoTooltip } from '@cowprotocol/ui'
 

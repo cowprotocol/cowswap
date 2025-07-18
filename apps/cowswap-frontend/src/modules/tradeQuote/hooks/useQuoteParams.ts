@@ -71,7 +71,7 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
      * Whe real one is not connected
      * See `SocketVerifier.callStatic.validateRotueId` in BridgingSDK
      */
-    const signer = account ? provider.provider || provider.getSigner() : getBridgeQuoteSigner(inputCurrency.chainId)
+    const signer = account ? provider.getSigner() : getBridgeQuoteSigner(inputCurrency.chainId)
     const owner = (account || BRIDGE_QUOTE_ACCOUNT) as `0x${string}`
 
     const quoteParams: QuoteBridgeRequest = {
