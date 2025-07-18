@@ -14,6 +14,14 @@ const SAMPLE_HEIGHT = 10
 const ALPHA_THRESHOLD = 128
 
 /**
+ * Efficiently construct RGBA color string
+ * More performant than template literals for repeated color construction
+ */
+function constructRgba(r: number, g: number, b: number, a: number): string {
+  return 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')'
+}
+
+/**
  * Hook to detect if a token image has low contrast against the current theme.paper background.
  * Uses canvas to sample a small version of the token image and calculate W3C WCAG compliant contrast ratio.
  *
@@ -106,7 +114,7 @@ export function useTokenContrast(src: string | undefined, minContrastRatio = 1.5
           const avgB = Math.round(totalB / pixelCount)
 
           // Construct average token color
-          const avgTokenColor = `rgba(${avgR}, ${avgG}, ${avgB}, 1)`
+          const avgTokenColor = constructRgba(avgR, avgG, avgB, 1)
 
           // Get the actual paper background color from theme
           const paperColor = theme.paper
