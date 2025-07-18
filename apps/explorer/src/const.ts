@@ -1,6 +1,11 @@
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import {
+  ALL_SUPPORTED_CHAINS_MAP,
+  mapSupportedNetworks,
+  SupportedChainId,
+  WRAPPED_NATIVE_CURRENCIES,
+} from '@cowprotocol/cow-sdk'
 
-import { TokenErc20, UNLIMITED_ORDER_AMOUNT } from '@gnosis.pm/dex-js'
+import { TokenErc20 } from '@gnosis.pm/dex-js'
 import BigNumber from 'bignumber.js'
 
 export {
@@ -29,14 +34,6 @@ export const ONE_HUNDRED_BIG_NUMBER = new BigNumber(100)
 export const MINIMUM_ATOM_VALUE = '1'
 
 export const APP_NAME = 'CoW Protocol'
-
-export const ETHER_PNG =
-  'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/assets/0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2/logo.png'
-
-export const UNLIMITED_ORDER_AMOUNT_BIGNUMBER = new BigNumber(UNLIMITED_ORDER_AMOUNT.toString())
-
-// UI constants
-export const HIGHLIGHT_TIME = 5000
 
 export const DEFAULT_DECIMALS = 5
 // The prices on the contract will update at max once every batch, which is 5min long
@@ -93,63 +90,16 @@ export const MEDIA = {
   },
 }
 
-export const WETH_ADDRESS_MAINNET = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2'
-export const WXDAI_ADDRESS_XDAI = '0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d'
-export const WETH_ADDRESS_ARBITRUM_ONE = '0x82af49447d8a07e3bd95bd0d56f35241523fbab1'
-export const WETH_ADDRESS_BASE = '0x4200000000000000000000000000000000000006'
-export const WETH_ADDRESS_SEPOLIA = '0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14'
-export const WPOL_ADDRESS_POLYGON = '0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270'
-export const WAVAX_ADDRESS_AVALANCHE = '0xb31f66aa3c1e785363f0875a1b74e27b85fd66c7'
 export const NATIVE_TOKEN_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 export const NATIVE_TOKEN_ADDRESS_LOWERCASE = NATIVE_TOKEN_ADDRESS.toLowerCase()
 
-export const WRAPPED_NATIVE_ADDRESS: Record<SupportedChainId, string> = {
-  [SupportedChainId.MAINNET]: WETH_ADDRESS_MAINNET,
-  [SupportedChainId.GNOSIS_CHAIN]: WXDAI_ADDRESS_XDAI,
-  [SupportedChainId.ARBITRUM_ONE]: WETH_ADDRESS_ARBITRUM_ONE,
-  [SupportedChainId.BASE]: WETH_ADDRESS_BASE,
-  [SupportedChainId.SEPOLIA]: WETH_ADDRESS_SEPOLIA,
-  [SupportedChainId.POLYGON]: WPOL_ADDRESS_POLYGON,
-  [SupportedChainId.AVALANCHE]: WAVAX_ADDRESS_AVALANCHE,
-}
+export const WRAPPED_NATIVE_ADDRESS: Record<SupportedChainId, string> = mapSupportedNetworks(
+  (chainId) => WRAPPED_NATIVE_CURRENCIES[chainId].address,
+)
 
-export const ETH: TokenErc20 = {
-  name: 'ETH',
-  symbol: 'ETH',
-  decimals: 18,
-  address: NATIVE_TOKEN_ADDRESS,
-}
-
-export const XDAI: TokenErc20 = {
-  name: 'xDai',
-  symbol: 'xDai',
-  decimals: 18,
-  address: NATIVE_TOKEN_ADDRESS,
-}
-
-export const POL: TokenErc20 = {
-  name: 'POL',
-  symbol: 'POL',
-  decimals: 18,
-  address: NATIVE_TOKEN_ADDRESS,
-}
-
-export const AVAX: TokenErc20 = {
-  name: 'AVAX',
-  symbol: 'AVAX',
-  decimals: 18,
-  address: NATIVE_TOKEN_ADDRESS,
-}
-
-export const NATIVE_TOKEN_PER_NETWORK: Record<SupportedChainId, TokenErc20> = {
-  [SupportedChainId.MAINNET]: ETH,
-  [SupportedChainId.GNOSIS_CHAIN]: XDAI,
-  [SupportedChainId.ARBITRUM_ONE]: ETH,
-  [SupportedChainId.BASE]: ETH,
-  [SupportedChainId.SEPOLIA]: ETH,
-  [SupportedChainId.POLYGON]: POL,
-  [SupportedChainId.AVALANCHE]: AVAX,
-}
+export const NATIVE_TOKEN_PER_NETWORK: Record<SupportedChainId, TokenErc20> = mapSupportedNetworks(
+  (chainId) => ALL_SUPPORTED_CHAINS_MAP[chainId].nativeCurrency,
+)
 
 export const TENDERLY_API_URL = 'https://api.tenderly.co/api/v1/public-contract'
 export const DEFAULT_IPFS_READ_URI = process.env.REACT_APP_IPFS_READ_URI || 'https://ipfs.io/ipfs'

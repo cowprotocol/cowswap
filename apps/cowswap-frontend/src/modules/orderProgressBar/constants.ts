@@ -39,7 +39,7 @@ type BridgeStepConfig = (isBridgingTrade: boolean) => StepConfig
  * - Opacity levels (active=1, next=0.6, done=0.3, etc.)
  * - Background colors (active=blue, cancelling=red, etc.)
  * - Animations (spinner for active, lottie for cancelling)
- * 
+ *
  * Different from STEP_NAMES/OrderProgressBarStepName which represents actual order states
  * mapped from backend CompetitionOrderStatus.type values (e.g., 'initial', 'solving', 'executing').
  */
@@ -89,7 +89,7 @@ export const COW_SWAP_BENEFITS = [
 ]
 
 export const TRADE_ON_NEW_CHAINS_BENEFIT =
-  'CoW Swap is now live on Arbitrum and Base. Switch the network toggle in the nav bar for quick, cheap transactions.'
+  'CoW Swap is now live on Arbitrum, Base, Polygon and Avalanche. Switch the network toggle in the nav bar for quick, cheap transactions.'
 
 export const CHAIN_SPECIFIC_BENEFITS: Record<SupportedChainId, string[]> = {
   [SupportedChainId.MAINNET]: [TRADE_ON_NEW_CHAINS_BENEFIT, ...COW_SWAP_BENEFITS],
@@ -99,6 +99,8 @@ export const CHAIN_SPECIFIC_BENEFITS: Record<SupportedChainId, string[]> = {
   [SupportedChainId.SEPOLIA]: [TRADE_ON_NEW_CHAINS_BENEFIT, ...COW_SWAP_BENEFITS],
   [SupportedChainId.POLYGON]: COW_SWAP_BENEFITS,
   [SupportedChainId.AVALANCHE]: COW_SWAP_BENEFITS,
+  [SupportedChainId.LENS]: COW_SWAP_BENEFITS,
+  [SupportedChainId.BNB]: COW_SWAP_BENEFITS,
 }
 
 export const SURPLUS_IMAGES = [
