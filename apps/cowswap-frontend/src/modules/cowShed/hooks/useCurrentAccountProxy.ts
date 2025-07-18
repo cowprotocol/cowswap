@@ -1,4 +1,4 @@
-import { getContract } from '@cowprotocol/common-utils'
+import { areAddressesEqual, getContract } from '@cowprotocol/common-utils'
 import { implementationAddress } from '@cowprotocol/contracts'
 import type { CowShedHooks } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -92,13 +92,13 @@ async function getIsProxySetupValid(
   cowShedHooks: CowShedHooks,
 ): Promise<boolean | null> {
   const shedContract = getContract(proxyAddress, COW_SHED_ABI, provider) as CoWShedContract
-  const expectedImplementation = cowShedHooks.getImplementationAddress().toLowerCase()
-  const expectedFactoryAddress = cowShedHooks.getFactoryAddress().toLowerCase()
+  const expectedImplementation = cowShedHooks.getImplementationAddress()
+  const expectedFactoryAddress = cowShedHooks.getFactoryAddress()
 
   try {
     const implementation = await implementationAddress(provider, proxyAddress)
 
-    if (implementation.toLowerCase() !== expectedImplementation) return false
+    if (!areAddressesEqual(implementation, expectedImplementation)) return false
   } catch (e) {
     console.error('[CoWShed validation] Could not get implementationAddress', e)
 
@@ -108,7 +108,7 @@ async function getIsProxySetupValid(
   try {
     const trustedExecutor = await shedContract.callStatic.trustedExecutor()
 
-    return trustedExecutor.toLowerCase() === expectedFactoryAddress
+    return areAddressesEqual(trustedExecutor, expectedFactoryAddress)
   } catch (e) {
     console.error('[CoWShed validation] Could not get trustedExecutor', e)
 
