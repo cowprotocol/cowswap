@@ -1,4 +1,5 @@
-import { atom, useAtomValue, useSetAtom } from 'jotai'
+import { atom, useAtom, useSetAtom } from 'jotai'
+import { useCallback, useEffect } from 'react'
 
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -11,7 +12,12 @@ import { useTokenContract } from 'common/hooks/useContract'
 
 import { useTradeSpenderAddress } from './useTradeSpenderAddress'
 
-const lastApproveTxBlockNumberAtom = atom(0)
+interface LastApproveParams {
+  blockNumber: number
+  tokenAddress: string
+}
+
+const lastApproveTxBlockNumberAtom = atom<Record<string, number>>({})
 
 const SWR_OPTIONS: SWRConfiguration = {
   ...SWR_NO_REFRESH_OPTIONS,
@@ -29,14 +35,20 @@ export function useTokenAllowance(
   const { chainId, account } = useWalletInfo()
   const { contract: erc20Contract } = useTokenContract(tokenAddress)
   const tradeSpender = useTradeSpenderAddress()
-  const lastApproveTxBlockNumber = useAtomValue(lastApproveTxBlockNumberAtom)
+  const [lastApproveTx, setLastApproveTx] = useAtom(lastApproveTxBlockNumberAtom)
 
   const targetOwner = owner ?? account
   const targetSpender = spender ?? tradeSpender
+  const lastApproveBlockNumber = tokenAddress ? lastApproveTx[tokenAddress.toLowerCase()] : undefined
+
+  // Reset lastApproveTxBlockNumberAtom on network changes
+  useEffect(() => {
+    setLastApproveTx({})
+  }, [chainId, setLastApproveTx])
 
   return useSWR(
     erc20Contract && targetOwner && targetSpender
-      ? [erc20Contract, targetOwner, targetSpender, chainId, lastApproveTxBlockNumber, 'useTokenAllowance']
+      ? [erc20Contract, targetOwner, targetSpender, chainId, lastApproveBlockNumber, 'useTokenAllowance']
       : null,
     ([erc20Contract, targetOwner, targetSpender]) => {
       return erc20Contract.allowance(targetOwner, targetSpender).then((result) => result.toBigInt())
@@ -45,6 +57,16 @@ export function useTokenAllowance(
   )
 }
 
-export function useUpdateLastApproveTxBlockNumber(): (value: number) => void {
-  return useSetAtom(lastApproveTxBlockNumberAtom)
+export function useUpdateLastApproveTxBlockNumber(): (params: LastApproveParams) => void {
+  const setState = useSetAtom(lastApproveTxBlockNumberAtom)
+
+  return useCallback(
+    (params: LastApproveParams) => {
+      setState((state) => ({
+        ...state,
+        [params.tokenAddress.toLowerCase()]: params.blockNumber,
+      }))
+    },
+    [setState],
+  )
 }

@@ -16,8 +16,6 @@ import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import { CheckEthereumTransactions } from '../types'
 
-// TODO: Break down this large function into smaller functions
-
 export function usePendingTransactionsContext(): CheckEthereumTransactions | null {
   const provider = useWalletProvider()
   const { chainId, account } = useWalletInfo()

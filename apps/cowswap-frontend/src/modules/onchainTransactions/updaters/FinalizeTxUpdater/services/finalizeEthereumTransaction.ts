@@ -25,7 +25,10 @@ export function finalizeEthereumTransaction(
 
   // Once approval tx is mined, we add the priority allowance to immediately allow the user to place orders
   if (transaction.approval) {
-    updateLastApproveTxBlockNumber(receipt.blockNumber)
+    updateLastApproveTxBlockNumber({
+      blockNumber: receipt.blockNumber,
+      tokenAddress: transaction.approval.tokenAddress,
+    })
   }
 
   dispatch(
