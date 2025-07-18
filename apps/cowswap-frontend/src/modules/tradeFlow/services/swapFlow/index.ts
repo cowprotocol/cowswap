@@ -185,7 +185,7 @@ export async function swapFlow(
       kind,
       receiver: recipientAddressOrName,
       inputAmount,
-      outputAmount,
+      outputAmount: bridgeQuoteAmounts?.bridgeMinReceiveAmount || outputAmount,
       owner: account,
       uiOrderType: UiOrderType.SWAP,
     })
