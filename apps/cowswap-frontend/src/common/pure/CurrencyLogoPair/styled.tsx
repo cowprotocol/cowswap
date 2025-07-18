@@ -12,25 +12,18 @@ export const CurrencyLogoPairWrapper = styled.div<{ clickable?: boolean; tokenSi
     --cutout-center-x: calc(var(--token-size) - var(--overlap) + var(--token-size) / 2);
     --inner-radius: calc(var(--token-size) / 2);
     --outer-radius: calc(var(--inner-radius) + var(--border-width));
+    --radial-gradient-mask: radial-gradient(
+      circle at var(--cutout-center-x) 50%,
+      white 0%,
+      white var(--inner-radius),
+      transparent var(--inner-radius),
+      transparent var(--outer-radius),
+      white var(--outer-radius),
+      white 100%
+    );
 
-    mask-image: radial-gradient(
-      circle at var(--cutout-center-x) 50%,
-      white 0%,
-      white var(--inner-radius),
-      transparent var(--inner-radius),
-      transparent var(--outer-radius),
-      white var(--outer-radius),
-      white 100%
-    );
-    -webkit-mask-image: radial-gradient(
-      circle at var(--cutout-center-x) 50%,
-      white 0%,
-      white var(--inner-radius),
-      transparent var(--inner-radius),
-      transparent var(--outer-radius),
-      white var(--outer-radius),
-      white 100%
-    );
+    mask-image: var(--radial-gradient-mask);
+    -webkit-mask-image: var(--radial-gradient-mask);
   }
 
   > div:last-child,
