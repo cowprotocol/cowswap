@@ -119,13 +119,21 @@ export function useTokenContrast(src: string | undefined, minContrastRatio = 1.5
 
           setNeedsContrast(needsEnhancement)
         }
-      } catch {
-        // Fallback to false if canvas fails (e.g., CORS issues)
+      } catch (error) {
+        // Log the error for debugging purposes
+        console.error('Error processing canvas for token contrast:', {
+          src: src?.substring(src.lastIndexOf('/') + 1),
+          error: error instanceof Error ? error.message : error
+        })
+        // Fallback to false if canvas fails (e.g., CORS issues, canvas creation failures)
         setNeedsContrast(false)
       }
     }
 
     const handleError = (): void => {
+      console.warn('Failed to load token image for contrast analysis:', {
+        src: src?.substring(src.lastIndexOf('/') + 1)
+      })
       setNeedsContrast(false)
     }
 
