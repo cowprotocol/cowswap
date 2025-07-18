@@ -174,20 +174,25 @@ export function useTokenContrast(src: string | undefined, minContrastRatio = 1.5
       return
     }
 
+    // Create cache key including theme to handle light/dark mode switches
+    const cacheKey = `${src}:${theme.paper}`
+    
+    // Check if result is already cached (before creating Image object)
+    if (contrastCache.has(cacheKey)) {
+      setNeedsContrast(contrastCache.get(cacheKey)!)
+      return
+    }
+
+    // Track if this effect has been cancelled to prevent race conditions
+    let isCancelled = false
     const img = new Image()
     img.crossOrigin = 'anonymous'
 
     const handleLoad = (): void => {
-      try {
-        // Create cache key including theme to handle light/dark mode switches
-        const cacheKey = `${src}:${theme.paper}`
-        
-        // Check if result is already cached
-        if (contrastCache.has(cacheKey)) {
-          setNeedsContrast(contrastCache.get(cacheKey)!)
-          return
-        }
+      // Prevent processing if effect was cancelled (component unmounted or deps changed)
+      if (isCancelled) return
 
+      try {
         // Process canvas and calculate contrast
         const needsEnhancement = processCanvasForContrast(img, theme.paper, minContrastRatio)
 
@@ -206,6 +211,9 @@ export function useTokenContrast(src: string | undefined, minContrastRatio = 1.5
     }
 
     const handleError = (): void => {
+      // Prevent processing if effect was cancelled
+      if (isCancelled) return
+
       logTokenContrastWarning('Failed to load token image for contrast analysis:', {
         src: src?.substring(src.lastIndexOf('/') + 1)
       })
@@ -217,8 +225,12 @@ export function useTokenContrast(src: string | undefined, minContrastRatio = 1.5
     img.src = src
 
     return () => {
+      // Cancel this effect to prevent race conditions
+      isCancelled = true
+      // Clean up event listeners
       img.onload = null
       img.onerror = null
+      // Note: We cannot abort image loading, but we prevent processing stale results
     }
   }, [src, minContrastRatio, theme.paper])
 
