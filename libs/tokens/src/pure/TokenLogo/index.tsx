@@ -121,7 +121,17 @@ export function TokenLogo({
     <Slash />
   )
 
-  if (noWrap) return actualTokenContent
+  if (noWrap) {
+    // Even with noWrap, we need to apply contrast styling for images
+    if (currentUrl && needsContrast) {
+      return (
+        <Styled.TokenLogoWrapper size={size} sizeMobile={sizeMobile} needsContrast={needsContrast}>
+          {actualTokenContent}
+        </Styled.TokenLogoWrapper>
+      )
+    }
+    return actualTokenContent
+  }
 
   const chainInfo: BaseChainInfo | undefined = getChainInfo(token?.chainId as SupportedChainId)
   const chainName = chainInfo?.label || ''

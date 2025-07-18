@@ -2,23 +2,35 @@ import { useState, useEffect } from 'react'
 
 import { useTheme } from '@cowprotocol/common-hooks'
 
-import { getContrast } from 'color2k'
+import { parseToRgba, getLuminance } from 'color2k'
 
-// Canvas sampling dimensions for token contrast analysis
-// Small sample size for performance while maintaining accuracy
-const SAMPLE_WIDTH = 10
-const SAMPLE_HEIGHT = 10
+// Canvas sampling dimensions - mirror actual token size
+const SAMPLE_WIDTH = 40
+const SAMPLE_HEIGHT = 40
+const BORDER_RADIUS = 20 // 40px / 2 = 20px radius
 
 // Alpha threshold for opacity filtering (0-255 range)
-// Only pixels with alpha > 128 (50% opacity) are considered for contrast calculation
-const ALPHA_THRESHOLD = 128
-
-// Full opacity alpha value for constructing RGBA colors
-const FULL_OPACITY = 1
+const ALPHA_THRESHOLD = 200
 
 // Default minimum contrast ratio threshold for token visibility
-// Values below this trigger contrast enhancement (border)
 const DEFAULT_CONTRAST_RATIO = 1.5
+
+// Circular sampling configuration - sample 3px from outer edge inward
+const OUTER_SAMPLE_BAND = 3 // Sample 3px band from outer edge
+
+// Luminance threshold for light/dark detection (0-1.0 scale)
+// Calibrated for token contrast detection - luminance > 0.4 considered light
+const LIGHT_LUMINANCE_THRESHOLD = 0.4
+
+// Radial sampling configuration for full-bleed tokens
+const RADIAL_SAMPLE_COUNT = 24 // Number of points to sample around circle edge
+const RADIAL_INNER_OFFSET = 2 // Distance from mask edge (R-1)
+const RADIAL_OUTER_OFFSET = 3 // Secondary radius for dual-radius check (R-2)
+
+// Threshold configuration for contrast detection
+const GAP_LIGHT_THRESHOLD = 0.08 // 10% light pixels in gap triggers border
+const GAP_LIGHT_THRESHOLD_FULLBLEED = 0.12 // for full-bleed tokens
+const RADIAL_LIGHT_THRESHOLD = 0.1 // light pixels in radial scan triggers border
 
 // Cache for token contrast analysis results
 // Key: image URL + theme paper color, Value: boolean indicating if contrast enhancement is needed
@@ -30,42 +42,182 @@ const MAX_CACHE_SIZE = 100 // Prevent memory leaks by limiting cache size
 const canvasPool = new Map<string, HTMLCanvasElement>()
 const MAX_CANVAS_POOL_SIZE = 5 // Limit pool size to prevent memory bloat
 
-
-
+/**
+ * Helper to turn a hex paper color into {r,g,b}
+ */
+function hexToRgb(hex: string): { r: number; g: number; b: number } {
+  try {
+    const [r, g, b] = parseToRgba(hex)
+    return { r, g, b }
+  } catch {
+    // Fallback to white if color parsing fails
+    return { r: 255, g: 255, b: 255 }
+  }
+}
 
 /**
- * Analyze image pixel data to calculate average RGB values from opaque pixels
+ * Sample a single pixel with proper alpha blending against paper background
  */
-function analyzeImagePixels(imageData: ImageData): { avgR: number; avgG: number; avgB: number } | null {
-  const data = imageData.data
-  let totalR = 0
-  let totalG = 0
-  let totalB = 0
-  let pixelCount = 0
+function samplePixelWithPaper(
+  data: Uint8ClampedArray,
+  index: number,
+  paperColor: { r: number; g: number; b: number },
+): { r: number; g: number; b: number; luminance: number } {
+  const alpha = data[index + 3] / 255
+  const rr = alpha > ALPHA_THRESHOLD / 255 ? data[index] : paperColor.r
+  const gg = alpha > ALPHA_THRESHOLD / 255 ? data[index + 1] : paperColor.g
+  const bb = alpha > ALPHA_THRESHOLD / 255 ? data[index + 2] : paperColor.b
 
-  // Calculate average RGB values from opaque pixels
-  for (let i = 0; i < data.length; i += 4) {
-    const r = data[i]
-    const g = data[i + 1]
-    const b = data[i + 2]
-    const alpha = data[i + 3]
+  // Use color2k getLuminance for perceptually accurate light/dark detection
+  const rgbColor = `rgb(${rr}, ${gg}, ${bb})`
+  const luminance = getLuminance(rgbColor)
 
-    // Only count opaque pixels (above 50% opacity)
-    if (alpha > ALPHA_THRESHOLD) {
-      totalR += r
-      totalG += g
-      totalB += b
-      pixelCount++
+  return { r: rr, g: gg, b: bb, luminance }
+}
+
+/**
+ * Sample pixels at a specific radius and count light pixels
+ */
+function sampleRadiusForLightPixels(
+  imageData: ImageData,
+  paperColor: { r: number; g: number; b: number },
+  radius: number,
+): number {
+  const { data, width, height } = imageData
+  const cx = width / 2
+  const cy = height / 2
+  let badCount = 0
+
+  for (let i = 0; i < RADIAL_SAMPLE_COUNT; i++) {
+    const θ = (i / RADIAL_SAMPLE_COUNT) * Math.PI * 2
+    const x = Math.round(cx + Math.cos(θ) * radius)
+    const y = Math.round(cy + Math.sin(θ) * radius)
+    const idx = (y * width + x) * 4
+    const sample = samplePixelWithPaper(data, idx, paperColor)
+
+    if (sample.luminance > LIGHT_LUMINANCE_THRESHOLD) {
+      badCount++
     }
   }
 
-  if (pixelCount === 0) return null
+  return badCount
+}
 
-  return {
-    avgR: Math.round(totalR / pixelCount),
-    avgG: Math.round(totalG / pixelCount),
-    avgB: Math.round(totalB / pixelCount)
+/**
+ * Radial sampling fallback for full-bleed tokens
+ * Samples around the circular mask edge to catch transparent cutouts or light pixels
+ * Uses dual-radius sampling to catch both thin and wider padding gaps
+ */
+function analyzeRadial(imageData: ImageData, paperColor: string): boolean {
+  const paperRgb = hexToRgb(paperColor)
+
+  // Sample at two radii to catch different gap widths
+  const R1 = BORDER_RADIUS - RADIAL_INNER_OFFSET
+  const R2 = BORDER_RADIUS - RADIAL_OUTER_OFFSET
+
+  const bad1 = sampleRadiusForLightPixels(imageData, paperRgb, R1)
+  const bad2 = sampleRadiusForLightPixels(imageData, paperRgb, R2)
+
+  const ratio1 = bad1 / RADIAL_SAMPLE_COUNT
+  const ratio2 = bad2 / RADIAL_SAMPLE_COUNT
+
+  // OR the results - trigger border if either radius has too many light pixels
+  return ratio1 > RADIAL_LIGHT_THRESHOLD || ratio2 > RADIAL_LIGHT_THRESHOLD
+}
+
+/**
+ * Find the maximum content radius by scanning all opaque pixels
+ */
+function findMaxContentRadius(imageData: ImageData): number {
+  const { data, width, height } = imageData
+  const cx = width / 2
+  const cy = height / 2
+  let maxContentRadius = 0
+
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      const i = (y * width + x) * 4
+      const a = data[i + 3]
+      if (a > ALPHA_THRESHOLD) {
+        const distance = Math.hypot(x - cx, y - cy)
+        maxContentRadius = Math.max(maxContentRadius, distance)
+      }
+    }
   }
+
+  return maxContentRadius
+}
+
+/**
+ * Sample the gap ring between content edge and mask edge
+ */
+function sampleGapRing(
+  imageData: ImageData,
+  paperColor: string,
+  maxContentRadius: number,
+): { badCount: number; total: number } {
+  const { data, width, height } = imageData
+  const paperRgb = hexToRgb(paperColor)
+  const cx = width / 2
+  const cy = height / 2
+  const maskR = BORDER_RADIUS
+
+  let badCount = 0
+  let total = 0
+
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      const d = Math.hypot(x - cx, y - cy)
+
+      // Only sample pixels in the gap between content edge and mask edge
+      if (d <= maxContentRadius || d > maskR) continue
+
+      total++
+      const i = (y * width + x) * 4
+      const sample = samplePixelWithPaper(data, i, paperRgb)
+
+      if (sample.luminance > LIGHT_LUMINANCE_THRESHOLD) {
+        badCount++
+      }
+    }
+  }
+
+  return { badCount, total }
+}
+
+/**
+ * Dynamic analysis that finds actual content edge and samples the gap between content and mask
+ * Guaranteed to catch small tokens with large transparent rings
+ */
+function analyzeTokenOuterBand(
+  imageData: ImageData,
+  paperColor: string,
+  ignoreTransparentBand: boolean = false,
+): boolean {
+  const maxContentRadius = findMaxContentRadius(imageData)
+  const maskR = BORDER_RADIUS
+
+  // If content never even reaches the scan band, force a border (entire ring is padding)
+  if (maxContentRadius < maskR - OUTER_SAMPLE_BAND) {
+    return true
+  }
+
+  // Sample only the gap ring between actual content and mask edge
+  const { badCount, total } = sampleGapRing(imageData, paperColor, maxContentRadius)
+
+  if (total === 0) {
+    return analyzeRadial(imageData, paperColor)
+  }
+
+  const badRatio = badCount / total
+
+  // If this is a full-bleed image, be more conservative
+  if (ignoreTransparentBand) {
+    return badRatio > GAP_LIGHT_THRESHOLD_FULLBLEED
+  }
+
+  // For small tokens, use lower threshold
+  return badRatio > GAP_LIGHT_THRESHOLD
 }
 
 /**
@@ -74,15 +226,15 @@ function analyzeImagePixels(imageData: ImageData): { avgR: number; avgG: number;
  */
 function getCanvasFromPool(width: number, height: number): HTMLCanvasElement {
   const poolKey = `${width}x${height}`
-  
+
   // Try to get existing canvas from pool
   let canvas = canvasPool.get(poolKey)
-  
+
   if (!canvas) {
     canvas = document.createElement('canvas')
     canvas.width = width
     canvas.height = height
-    
+
     // Implement LRU eviction for canvas pool
     if (canvasPool.size >= MAX_CANVAS_POOL_SIZE) {
       const firstKey = canvasPool.keys().next().value
@@ -90,53 +242,51 @@ function getCanvasFromPool(width: number, height: number): HTMLCanvasElement {
         canvasPool.delete(firstKey)
       }
     }
-    
+
     canvasPool.set(poolKey, canvas)
   } else {
     // Ensure canvas dimensions are correct (in case of reuse)
     canvas.width = width
     canvas.height = height
   }
-  
+
   return canvas
 }
 
 /**
- * Process canvas to extract image color information and calculate contrast
+ * Process canvas with simple, direct 40x40 circular token approach
+ * Simulates CSS object-fit: contain with paper background
  */
-function processCanvasForContrast(
-  img: HTMLImageElement,
-  paperColor: string,
-  minContrastRatio: number
-): boolean {
+function processCanvasForContrast(img: HTMLImageElement, paperColor: string, _minContrastRatio: number): boolean {
   const canvas = getCanvasFromPool(SAMPLE_WIDTH, SAMPLE_HEIGHT)
-  
   const ctx = canvas.getContext('2d')
   if (!ctx) return false
 
-  // Clear canvas before drawing (important for reused canvases)
+  // 1) Clear then fill with paperColor (simulates CSS background)
   ctx.clearRect(0, 0, SAMPLE_WIDTH, SAMPLE_HEIGHT)
-  
-  // Draw a small version of the image
-  ctx.drawImage(img, 0, 0, SAMPLE_WIDTH, SAMPLE_HEIGHT)
+  ctx.fillStyle = paperColor
+  ctx.fillRect(0, 0, SAMPLE_WIDTH, SAMPLE_HEIGHT)
 
-  // Get pixel data
+  // 2) Compute "contain" sizing (preserve aspect ratio, center it)
+  const iw = img.naturalWidth
+  const ih = img.naturalHeight
+  const scale = Math.min(SAMPLE_WIDTH / iw, SAMPLE_HEIGHT / ih)
+  const dw = iw * scale
+  const dh = ih * scale
+  const dx = (SAMPLE_WIDTH - dw) / 2
+  const dy = (SAMPLE_HEIGHT - dh) / 2
+
+  // 3) Draw image into center, preserving aspect ratio
+  ctx.drawImage(img, 0, 0, iw, ih, dx, dy, dw, dh)
+
+  // 4) Detect if this is a "full-bleed" token that basically fills the circle
+  const fillsHorizontally = dw >= SAMPLE_WIDTH - OUTER_SAMPLE_BAND
+  const fillsVertically = dh >= SAMPLE_HEIGHT - OUTER_SAMPLE_BAND
+  const ignoreTransparentBand = fillsHorizontally || fillsVertically
+
+  // 5) Sample with full-bleed detection
   const imageData = ctx.getImageData(0, 0, SAMPLE_WIDTH, SAMPLE_HEIGHT)
-  
-  // Analyze pixel data
-  const pixelAnalysis = analyzeImagePixels(imageData)
-  if (!pixelAnalysis) return false
-
-  const { avgR, avgG, avgB } = pixelAnalysis
-
-  // Construct average token color
-  const avgTokenColor = `rgba(${avgR}, ${avgG}, ${avgB}, ${FULL_OPACITY})`
-
-  // Calculate contrast ratio using color2k (W3C WCAG compliant)
-  const contrastRatio = getContrast(avgTokenColor, paperColor)
-
-  // Need contrast enhancement if contrast ratio is too low
-  return contrastRatio < minContrastRatio
+  return analyzeTokenOuterBand(imageData, paperColor, ignoreTransparentBand)
 }
 
 /**
@@ -169,15 +319,12 @@ function getFromContrastCache(cacheKey: string): boolean | undefined {
 
 /**
  * Hook to detect if a token image has low contrast against the current theme.paper background.
- * Uses canvas to sample a small version of the token image and calculate W3C WCAG compliant contrast ratio.
+ * Uses a simple, direct approach: renders token at 40x40px with 20px border-radius (circular),
+ * then samples the outer 3px band to detect light pixels that would blend with white backgrounds.
  *
  * @param src - The URL of the token image to analyze. If undefined, returns false.
- * @param minContrastRatio - Minimum contrast ratio threshold (default: 1.5).
- *                          Values below this trigger contrast enhancement.
- *                          - 1.0 = identical colors (no contrast)
- *                          - 1.5 = low contrast (default threshold)
- *                          - 3.0 = AA accessibility standard
- *                          - 4.5 = AA accessibility standard for text
+ * @param minContrastRatio - Minimum contrast ratio threshold (default: 1.5, currently unused).
+ *                          The current implementation uses direct RGB sampling instead.
  *
  * @returns Boolean indicating if the token needs contrast enhancement (border).
  *
@@ -189,22 +336,20 @@ function getFromContrastCache(cacheKey: string): boolean | undefined {
  * </TokenWrapper>
  *
  * @example
- * // With custom contrast threshold
- * const needsBorder = useTokenContrast(tokenImageUrl, 2.0) // More strict
- *
- * @example
- * // Typical contrast ratios:
- * // - White token (xDAI) on white background: ~1.06 (needs border)
- * // - Blue token (ETH) on white background: ~5.1 (no border needed)
- * // - White token on dark background: ~8.96 (no border needed)
+ * // Detection logic:
+ * // 1. Render token at 40x40px (actual size)
+ * // 2. Sample outer 3px circular band (17px-20px radius)
+ * // 3. Check if >30% of outer band pixels have RGB > 200
+ * // 4. Apply border if true
  *
  * @performance
- * - Canvas operations: 10x10 pixels sampled per image (negligible CPU impact)
+ * - Canvas operations: 40x40 pixels with circular outer band sampling
  * - Canvas pooling: Reuses canvas instances to reduce DOM manipulation overhead
  * - LRU caching: Results persist until URL changes, with automatic eviction
  * - Theme reactive: Recalculates when theme.paper changes
- * - Time complexity: O(1) for cache hits, O(n) for 100-pixel analysis
+ * - Time complexity: O(1) for cache hits, O(n) for ~180 outer band pixels analysis
  * - Memory complexity: O(1) bounded by MAX_CACHE_SIZE and MAX_CANVAS_POOL_SIZE
+ * - Simple RGB threshold: No complex luminance calculations, direct pixel comparison
  */
 export function useTokenContrast(src: string | undefined, minContrastRatio = DEFAULT_CONTRAST_RATIO): boolean {
   const [needsContrast, setNeedsContrast] = useState(false)
@@ -218,7 +363,7 @@ export function useTokenContrast(src: string | undefined, minContrastRatio = DEF
 
     // Create cache key including theme to handle light/dark mode switches
     const cacheKey = `${src}:${theme.paper}`
-    
+
     // Check if result is already cached (before creating Image object)
     const cachedResult = getFromContrastCache(cacheKey)
     if (cachedResult !== undefined) {
