@@ -4,11 +4,11 @@ import { useTokensByAddressMap } from '@cowprotocol/tokens'
 import { BridgeQuoteAmounts } from '@cowprotocol/types'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import { useReceiveAmountInfo } from 'modules/trade'
+import { useGetReceiveAmountInfo } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 
 export function useBridgeQuoteAmounts(): BridgeQuoteAmounts | null {
-  const receiveAmountInfo = useReceiveAmountInfo()
+  const receiveAmountInfo = useGetReceiveAmountInfo()
   const { bridgeQuote } = useTradeQuote()
   const tokensByAddress = useTokensByAddressMap()
 

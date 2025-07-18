@@ -6,10 +6,10 @@ import styled from 'styled-components/macro'
 
 import { TradeUrlParams } from 'modules/trade/types/TradeRawState'
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
+import { SwapAmountDifference } from 'modules/twap/hooks/useSwapAmountDifference'
 
 import { Routes } from 'common/constants/routes'
 
-import { SwapAmountDifference } from '../../../state/swapAmountDifferenceAtom'
 
 export type SwapPriceDifferenceWarningProps = {
   swapAmountDifference: SwapAmountDifference

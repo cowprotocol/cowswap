@@ -8,7 +8,12 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { Field } from 'legacy/state/types'
 
 import { SelectTokenWidget } from 'modules/tokensList'
-import { TradeWidget, TradeWidgetSlots, useReceiveAmountInfo, useTradePriceImpact } from 'modules/trade'
+import {
+  TradeWidget,
+  TradeWidgetSlots,
+  useGetReceiveAmountInfo,
+  useTradePriceImpact
+} from 'modules/trade'
 import { BulletListItem, UnlockWidgetScreen } from 'modules/trade/pure/UnlockWidgetScreen'
 import { useHandleSwap } from 'modules/tradeFlow'
 import { useTradeQuote } from 'modules/tradeQuote'
@@ -64,7 +69,7 @@ export function YieldWidget() {
   const { isLoading: isRateLoading } = useTradeQuote()
   const priceImpact = useTradePriceImpact()
   const widgetActions = useYieldWidgetActions()
-  const receiveAmountInfo = useReceiveAmountInfo()
+  const receiveAmountInfo = useGetReceiveAmountInfo()
   const poolsInfo = usePoolsInfo()
   const vampireAttackContext = useVampireAttack()
   const vampireAttackTarget = useVampireAttackFirstTarget()

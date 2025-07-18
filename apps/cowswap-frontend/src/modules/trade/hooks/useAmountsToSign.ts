@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
-import { useReceiveAmountInfo } from './useReceiveAmountInfo'
+import { useGetReceiveAmountInfo } from './useGetReceiveAmountInfo'
 
 export interface AmountsToSign {
   maximumSendSellAmount: CurrencyAmount<Currency>
@@ -16,7 +16,7 @@ export interface AmountsToSign {
  */
 export function useAmountsToSign(): AmountsToSign | null {
   const { isQuoteBasedOrder, inputCurrencyAmount, outputCurrencyAmount } = useDerivedTradeState() || {}
-  const { afterSlippage } = useReceiveAmountInfo() || {}
+  const { afterSlippage } = useGetReceiveAmountInfo() || {}
 
   return useMemo(() => {
     const maximumSendSellAmount = isQuoteBasedOrder ? afterSlippage?.sellAmount : inputCurrencyAmount

@@ -9,9 +9,9 @@ import { EthFlowModal, EthFlowProps } from 'modules/ethFlow'
 import {
   TradeWidget,
   TradeWidgetSlots,
-  useReceiveAmountInfo,
+  useGetReceiveAmountInfo,
   useTradePriceImpact,
-  useWrapNativeFlow,
+  useWrapNativeFlow
 } from 'modules/trade'
 import { useHandleSwap } from 'modules/tradeFlow'
 import { useTradeQuote } from 'modules/tradeQuote'
@@ -49,7 +49,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   const { isLoading: isRateLoading } = useTradeQuote()
   const priceImpact = useTradePriceImpact()
   const widgetActions = useSwapWidgetActions()
-  const receiveAmountInfo = useReceiveAmountInfo()
+  const receiveAmountInfo = useGetReceiveAmountInfo()
   const [showNativeWrapModal, setOpenNativeWrapModal] = useState(false)
 
   const openNativeWrapModal = useCallback(() => setOpenNativeWrapModal(true), [])

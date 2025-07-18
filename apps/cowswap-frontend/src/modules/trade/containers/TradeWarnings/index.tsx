@@ -6,7 +6,7 @@ import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFor
 import { HighSuggestedSlippageWarning } from 'modules/tradeSlippage'
 import { useShouldZeroApprove } from 'modules/zeroApproval'
 
-import { useReceiveAmountInfo } from '../../hooks/useReceiveAmountInfo'
+import { useGetReceiveAmountInfo } from '../../hooks/useGetReceiveAmountInfo'
 import { ZeroApprovalWarning } from '../../pure/ZeroApprovalWarning'
 import { NoImpactWarning } from '../NoImpactWarning'
 
@@ -17,7 +17,7 @@ interface TradeWarningsProps {
 
 export function TradeWarnings({ isTradePriceUpdating, enableSmartSlippage }: TradeWarningsProps): ReactNode {
   const primaryFormValidation = useGetTradeFormValidation()
-  const receiveAmountInfo = useReceiveAmountInfo()
+  const receiveAmountInfo = useGetReceiveAmountInfo()
   const inputAmountWithSlippage = receiveAmountInfo?.afterSlippage.sellAmount
   const shouldZeroApprove = useShouldZeroApprove(inputAmountWithSlippage)
 

@@ -1,10 +1,14 @@
-import { useReceiveAmountInfo } from './useReceiveAmountInfo'
 
+import { useMemo } from 'react'
+
+import { useGetReceiveAmountInfo } from './useGetReceiveAmountInfo'
+
+import { OrderTypeReceiveAmounts } from '../types'
 import { getOrderTypeReceiveAmounts } from '../utils/getReceiveAmountInfo'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useReceiveAmounts() {
-  const info = useReceiveAmountInfo()
-  return info ? getOrderTypeReceiveAmounts(info) : null
+export function useReceiveAmounts(): OrderTypeReceiveAmounts | null {
+  const info = useGetReceiveAmountInfo()
+  return useMemo(() => {
+    return info ? getOrderTypeReceiveAmounts(info) : null
+  }, [info])
 }
