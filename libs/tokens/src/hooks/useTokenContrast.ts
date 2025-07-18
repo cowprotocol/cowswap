@@ -202,7 +202,7 @@ export function useTokenContrast(src: string | undefined, minContrastRatio = 1.5
       } catch (error) {
         // Log the error for debugging purposes (development only)
         logTokenContrastError('Error processing canvas for token contrast:', {
-          src: src?.substring(src.lastIndexOf('/') + 1),
+          src: src ? src.substring(src.lastIndexOf('/') + 1) : 'unknown',
           error: error instanceof Error ? error.message : error
         })
         // Fallback to false if canvas fails (e.g., CORS issues, canvas creation failures)
@@ -215,7 +215,7 @@ export function useTokenContrast(src: string | undefined, minContrastRatio = 1.5
       if (isCancelled) return
 
       logTokenContrastWarning('Failed to load token image for contrast analysis:', {
-        src: src?.substring(src.lastIndexOf('/') + 1)
+        src: src ? src.substring(src.lastIndexOf('/') + 1) : 'unknown'
       })
       setNeedsContrast(false)
     }
