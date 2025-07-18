@@ -28,8 +28,10 @@ function PendingOrderUpdater({ chainId, orderUid }: PendingOrderUpdaterProps): R
     const isOrderExecuted = orderStatus === BridgeStatus.EXECUTED
     const isOrderFailed = orderStatus === BridgeStatus.REFUND || orderStatus === BridgeStatus.EXPIRED
 
+    // Update bridge order status for ALL status changes, not just EXECUTED
+    updateBridgeOrderQuote(orderUid, crossChainOrder.statusResult)
+
     if (isOrderExecuted) {
-      updateBridgeOrderQuote(orderUid, crossChainOrder.statusResult)
       addOrderToSurplusQueue(orderUid)
       emitBridgingSuccessEvent(eventPayload)
       getCowSoundSuccess().play()
