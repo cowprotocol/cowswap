@@ -13,6 +13,11 @@ const SAMPLE_HEIGHT = 10
 // Only pixels with alpha > 128 (50% opacity) are considered for contrast calculation
 const ALPHA_THRESHOLD = 128
 
+// Cache for token contrast analysis results
+// Key: image URL + theme paper color, Value: boolean indicating if contrast enhancement is needed
+const contrastCache = new Map<string, boolean>()
+const MAX_CACHE_SIZE = 100 // Prevent memory leaks by limiting cache size
+
 /**
  * Efficiently construct RGBA color string
  * More performant than template literals for repeated color construction
@@ -35,6 +40,92 @@ function logTokenContrastWarning(message: string, context: Record<string, unknow
   if (process.env.NODE_ENV === 'development') {
     console.warn(message, context)
   }
+}
+
+/**
+ * Analyze image pixel data to calculate average RGB values from opaque pixels
+ */
+function analyzeImagePixels(imageData: ImageData): { avgR: number; avgG: number; avgB: number } | null {
+  const data = imageData.data
+  let totalR = 0
+  let totalG = 0
+  let totalB = 0
+  let pixelCount = 0
+
+  // Calculate average RGB values from opaque pixels
+  for (let i = 0; i < data.length; i += 4) {
+    const r = data[i]
+    const g = data[i + 1]
+    const b = data[i + 2]
+    const alpha = data[i + 3]
+
+    // Only count opaque pixels (above 50% opacity)
+    if (alpha > ALPHA_THRESHOLD) {
+      totalR += r
+      totalG += g
+      totalB += b
+      pixelCount++
+    }
+  }
+
+  if (pixelCount === 0) return null
+
+  return {
+    avgR: Math.round(totalR / pixelCount),
+    avgG: Math.round(totalG / pixelCount),
+    avgB: Math.round(totalB / pixelCount)
+  }
+}
+
+/**
+ * Process canvas to extract image color information and calculate contrast
+ */
+function processCanvasForContrast(
+  img: HTMLImageElement,
+  paperColor: string,
+  minContrastRatio: number
+): boolean {
+  const canvas = document.createElement('canvas')
+  canvas.width = SAMPLE_WIDTH
+  canvas.height = SAMPLE_HEIGHT
+
+  const ctx = canvas.getContext('2d')
+  if (!ctx) return false
+
+  // Draw a small version of the image
+  ctx.drawImage(img, 0, 0, SAMPLE_WIDTH, SAMPLE_HEIGHT)
+
+  // Get pixel data
+  const imageData = ctx.getImageData(0, 0, SAMPLE_WIDTH, SAMPLE_HEIGHT)
+  
+  // Analyze pixel data
+  const pixelAnalysis = analyzeImagePixels(imageData)
+  if (!pixelAnalysis) return false
+
+  const { avgR, avgG, avgB } = pixelAnalysis
+
+  // Construct average token color
+  const avgTokenColor = constructRgba(avgR, avgG, avgB, 1)
+
+  // Calculate contrast ratio using color2k (W3C WCAG compliant)
+  const contrastRatio = getContrast(avgTokenColor, paperColor)
+
+  // Need contrast enhancement if contrast ratio is too low
+  return contrastRatio < minContrastRatio
+}
+
+/**
+ * Manage cache operations for contrast results
+ */
+function manageContrastCache(cacheKey: string, result: boolean): void {
+  // Implement LRU-like behavior by clearing oldest entries when cache is full
+  if (contrastCache.size >= MAX_CACHE_SIZE) {
+    const firstKey = contrastCache.keys().next().value
+    if (firstKey) {
+      contrastCache.delete(firstKey)
+    }
+  }
+  contrastCache.set(cacheKey, result)
 }
 
 /**
@@ -88,61 +179,21 @@ export function useTokenContrast(src: string | undefined, minContrastRatio = 1.5
 
     const handleLoad = (): void => {
       try {
-        const canvas = document.createElement('canvas')
-        canvas.width = SAMPLE_WIDTH
-        canvas.height = SAMPLE_HEIGHT
-
-        const ctx = canvas.getContext('2d')
-        if (!ctx) return
-
-        // Draw a small version of the image
-        ctx.drawImage(img, 0, 0, SAMPLE_WIDTH, SAMPLE_HEIGHT)
-
-        // Get pixel data
-        const imageData = ctx.getImageData(0, 0, SAMPLE_WIDTH, SAMPLE_HEIGHT)
-        const data = imageData.data
-
-        let totalR = 0
-        let totalG = 0
-        let totalB = 0
-        let pixelCount = 0
-
-        // Calculate average RGB values from opaque pixels
-        for (let i = 0; i < data.length; i += 4) {
-          const r = data[i]
-          const g = data[i + 1]
-          const b = data[i + 2]
-          const alpha = data[i + 3]
-
-          // Only count opaque pixels (above 50% opacity)
-          if (alpha > ALPHA_THRESHOLD) {
-            totalR += r
-            totalG += g
-            totalB += b
-            pixelCount++
-          }
+        // Create cache key including theme to handle light/dark mode switches
+        const cacheKey = `${src}:${theme.paper}`
+        
+        // Check if result is already cached
+        if (contrastCache.has(cacheKey)) {
+          setNeedsContrast(contrastCache.get(cacheKey)!)
+          return
         }
 
-        if (pixelCount > 0) {
-          // Calculate average RGB values
-          const avgR = Math.round(totalR / pixelCount)
-          const avgG = Math.round(totalG / pixelCount)
-          const avgB = Math.round(totalB / pixelCount)
+        // Process canvas and calculate contrast
+        const needsEnhancement = processCanvasForContrast(img, theme.paper, minContrastRatio)
 
-          // Construct average token color
-          const avgTokenColor = constructRgba(avgR, avgG, avgB, 1)
-
-          // Get the actual paper background color from theme
-          const paperColor = theme.paper
-
-          // Calculate contrast ratio using color2k (W3C WCAG compliant)
-          const contrastRatio = getContrast(avgTokenColor, paperColor)
-
-          // Need contrast enhancement if contrast ratio is too low
-          const needsEnhancement = contrastRatio < minContrastRatio
-
-          setNeedsContrast(needsEnhancement)
-        }
+        // Cache the result for future use
+        manageContrastCache(cacheKey, needsEnhancement)
+        setNeedsContrast(needsEnhancement)
       } catch (error) {
         // Log the error for debugging purposes (development only)
         logTokenContrastError('Error processing canvas for token contrast:', {
