@@ -15,7 +15,6 @@ const MULTICALL_OPTIONS = {}
 
 const SWR_CONFIG: SWRConfiguration = {
   ...SWR_NO_REFRESH_OPTIONS,
-  revalidateIfStale: false,
   refreshInterval: ms`32s`,
 }
 
