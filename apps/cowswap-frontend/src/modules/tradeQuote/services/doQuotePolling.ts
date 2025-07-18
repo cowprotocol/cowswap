@@ -40,7 +40,7 @@ export function doQuotePolling({
   if (!forceUpdate) {
     // Don't fetch quote if the parameters are the same
     // Also avoid quote refresh when only appData.quote (contains slippage) is changed
-    // Important! We should skip quote updateing only if there is no quote response
+    // Important! We should skip quote updating only if there is no quote response
     if (
       isQuoteCached(currentQuote) &&
       quoteUsingSameParameters(currentQuote, quoteParams, currentQuoteAppDataDoc, appData)

@@ -29,9 +29,7 @@ interface CowShedInfoProps {
 export function CowShedInfo({ className, onClick }: CowShedInfoProps): ReactNode {
   const { chainId } = useWalletInfo()
   const provider = useWalletProvider()
-  const proxyAndAccount = useCurrentAccountProxyAddress()
-
-  const { proxyAddress } = proxyAndAccount || {}
+  const proxyAddress = useCurrentAccountProxyAddress()
 
   if (!provider || !proxyAddress) return null
 
