@@ -15,13 +15,13 @@ export function useUpdateBridgeOrderQuote(): (orderUid: string, statusResult: Br
       if (!account) return
 
       setBridgeOrders((state) => {
-        const orders = state[chainId]?.[account] || []
+        const orders = state[chainId]?.[account.toLowerCase()] || []
 
         return {
           ...state,
           [chainId]: {
             ...state[chainId],
-            [account]: orders.map((order) => {
+            [account.toLowerCase()]: orders.map((order) => {
               if (order.orderUid === orderUid) {
                 return {
                   ...order,

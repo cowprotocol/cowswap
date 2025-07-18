@@ -6,6 +6,6 @@ export { InvalidCoWShedSetup } from './containers/InvalidCoWShedSetup'
 
 export { ProxyRecipient } from './containers/ProxyRecipient'
 
-export { useCurrentAccountProxyAddress } from './hooks/useCurrentAccountProxyAddress'
+export { useCurrentAccountProxy, useCurrentAccountProxyAddress } from './hooks/useCurrentAccountProxy'
 
 export { getShedRouteLink } from './utils/getShedRouteLink'
