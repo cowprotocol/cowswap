@@ -194,9 +194,8 @@ export const StatusLabelWrapper = styled.div<{ withCancellationHash$: boolean }>
   justify-content: center;
   align-items: center;
   margin: 0 0 auto auto;
-
   gap: 4px;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
   > span,
   > button {
@@ -309,12 +308,18 @@ export const StatusLabel = styled.div<{
 export const StatusLabelBelow = styled.div<{ isCancelling?: boolean }>`
   width: 100%;
   display: flex;
+  flex-flow: column wrap;
+  gap: 6px;
   justify-content: center;
   align-items: center;
-  font-size: 12px;
+  font-size: inherit;
   line-height: 1.1;
   margin: 7px auto 0;
   color: ${({ isCancelling }) => (isCancelling ? `var(${UI.COLOR_TEXT})` : 'inherit')};
+
+  > button {
+    font-size: inherit;
+  }
 `
 
 export const OldTransactionState = styled(ExternalLink)<{ pending: boolean; success?: boolean }>`
@@ -408,6 +413,18 @@ export const ActivityVisual = styled.div`
 
 export const CancelTxLink = styled(ExternalLink)`
   margin-left: 10px;
+`
+
+export const ProgressLink = styled.span`
+  color: inherit;
+  font-size: inherit;
+  text-decoration: none;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+    cursor: pointer;
+  }
 `
 
 export const StyledFiatAmount = styled(FiatAmount)`
