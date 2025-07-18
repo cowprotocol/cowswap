@@ -18,7 +18,7 @@ import { TradeType, useAmountsToSign } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 
 import { useGP2SettlementContract } from 'common/hooks/useContract'
-import { useEnoughAllowance } from 'common/hooks/useEnoughBalance'
+import { useEnoughAllowance } from 'common/hooks/useEnoughAllowance'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
 import { useLimitOrdersDerivedState } from './useLimitOrdersDerivedState'

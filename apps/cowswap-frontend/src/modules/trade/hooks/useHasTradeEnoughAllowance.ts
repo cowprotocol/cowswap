@@ -1,4 +1,4 @@
-import { useEnoughAllowance } from 'common/hooks/useEnoughBalance'
+import { useEnoughAllowance } from 'common/hooks/useEnoughAllowance'
 
 import { useReceiveAmountInfo } from './useReceiveAmountInfo'
 

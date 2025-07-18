@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { isEnoughAmount, getWrappedToken } from '@cowprotocol/common-utils'
+import { isEnoughAmount, getWrappedToken, getIsNativeToken } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useTokenAllowance } from './useTokenAllowance'
@@ -11,6 +11,10 @@ export function useEnoughAllowance(amount: CurrencyAmount<Currency> | undefined)
   const allowance = useTokenAllowance(token).data
 
   return useMemo(() => {
+    if (amount && getIsNativeToken(amount.currency)) {
+      return true
+    }
+
     return amount && isEnoughAmount(amount, allowance)
   }, [amount, allowance])
 }

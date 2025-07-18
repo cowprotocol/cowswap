@@ -24,7 +24,7 @@ import {
 import { getOrderValidTo, useTradeQuote } from 'modules/tradeQuote'
 
 import { useGP2SettlementContract } from 'common/hooks/useContract'
-import { useEnoughAllowance } from 'common/hooks/useEnoughBalance'
+import { useEnoughAllowance } from 'common/hooks/useEnoughAllowance'
 
 import { useSetSigningStep } from './useSetSigningStep'
 
@@ -164,7 +164,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
         uiOrderType,
         bridgeQuoteAmounts,
         addBridgeOrder,
-         setSigningStep,
+        setSigningStep,
       ]) => {
         return {
           tradeQuoteState,

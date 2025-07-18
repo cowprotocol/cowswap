@@ -12,7 +12,7 @@ import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 import { LimitOrdersDerivedState, limitOrdersDerivedStateAtom } from 'modules/limitOrders/state/limitOrdersRawStateAtom'
 import { DEFAULT_TRADE_DERIVED_STATE, TradeType } from 'modules/trade'
 
-import { useEnoughAllowance } from 'common/hooks/useEnoughBalance'
+import { useEnoughAllowance } from 'common/hooks/useEnoughAllowance'
 
 import { useTradeQuotePolling } from './useTradeQuotePolling'
 
@@ -21,8 +21,8 @@ import { tradeQuoteInputAtom } from '../state/tradeQuoteInputAtom'
 
 jest.mock('modules/zeroApproval/hooks/useZeroApprovalState')
 jest.mock('common/hooks/useGetMarketDimension')
-jest.mock('common/hooks/useEnoughBalance', () => ({
-  ...jest.requireActual('common/hooks/useEnoughBalance'),
+jest.mock('common/hooks/useEnoughAllowance', () => ({
+  ...jest.requireActual('common/hooks/useEnoughAllowance'),
   useEnoughAllowance: jest.fn().mockReturnValue(undefined),
 }))
 jest.mock('@cowprotocol/common-hooks', () => ({
