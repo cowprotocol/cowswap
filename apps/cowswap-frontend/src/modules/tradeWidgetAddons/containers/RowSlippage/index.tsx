@@ -1,6 +1,6 @@
 import { JSX, useMemo } from 'react'
 
-import { formatPercent } from '@cowprotocol/common-utils'
+import { bpsToPercent, formatPercent } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Percent } from '@uniswap/sdk-core'
 
@@ -38,6 +38,10 @@ export function RowSlippage({
   const isDefaultSlippageApplied = useIsDefaultSlippageApplied()
   const setSlippage = useSetSlippage()
 
+  const formattedSmartSlippage = smartSlippageFromQuote
+    ? `${formatPercent(bpsToPercent(smartSlippageFromQuote))}%`
+    : undefined
+
   const props = useMemo(
     () => ({
       chainId,
@@ -50,8 +54,7 @@ export function RowSlippage({
       isSmartSlippageApplied,
       isDefaultSlippageApplied,
       isSmartSlippageLoading: isTradePriceUpdating,
-      smartSlippage:
-        isSmartSlippageApplied && swapSlippage ? `${formatPercent(swapSlippage)}%` : undefined,
+      smartSlippage: formattedSmartSlippage,
       setAutoSlippage: smartSlippageFromQuote ? () => setSlippage(null) : undefined,
     }),
     [
