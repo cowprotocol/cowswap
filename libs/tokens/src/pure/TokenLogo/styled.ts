@@ -73,9 +73,11 @@ export const ClippedTokenContentWrapper = styled.div<ClippedTokenContentWrapperP
   position: absolute;
   top: 0;
   left: 0;
-  background: ${({ hasImage, needsContrast }) => {
-    if (!hasImage) return `var(${UI.COLOR_DARK_IMAGE_PAPER})` // fallback content needs background
-    if (needsContrast) return `var(${UI.COLOR_DARK_IMAGE_PAPER})` // transparent/light images need background
+  background: ${({ hasImage, needsContrast, theme }) => {
+    if (!hasImage) return `var(${UI.COLOR_PAPER})` // fallback content needs background
+    if (needsContrast) {
+      return theme.darkMode ? `var(${UI.COLOR_DARK_IMAGE_PAPER})` : `var(${UI.COLOR_PAPER})`
+    }
     return 'transparent' // opaque/dark images don't need background
   }};
   color: ${({ hasImage }) => (hasImage ? 'inherit' : `var(${UI.COLOR_DARK_IMAGE_PAPER_TEXT})`)};
@@ -89,9 +91,11 @@ export const ClippedTokenContentWrapper = styled.div<ClippedTokenContentWrapperP
     height: 100%;
     border-radius: var(--parent-size);
     object-fit: contain;
-    background: ${({ hasImage, needsContrast }) => {
-      if (!hasImage) return `var(${UI.COLOR_DARK_IMAGE_PAPER})` // fallback content needs background
-      if (needsContrast) return `var(${UI.COLOR_DARK_IMAGE_PAPER})` // transparent/light images need background
+    background: ${({ hasImage, needsContrast, theme }) => {
+      if (!hasImage) return `var(${UI.COLOR_PAPER})` // fallback content needs background
+      if (needsContrast) {
+        return theme.darkMode ? `var(${UI.COLOR_DARK_IMAGE_PAPER})` : `var(${UI.COLOR_PAPER})`
+      }
       return 'transparent' // opaque/dark images don't need background
     }};
   }
@@ -147,7 +151,7 @@ export const ChainLogoWrapper = styled.div<{ size?: number }>`
     height: 100%;
     border-radius: var(--size);
     object-fit: contain;
-    background: var(${UI.COLOR_DARK_IMAGE_PAPER});
+    background: var(${UI.COLOR_PAPER});
   }
 `
 
@@ -180,6 +184,6 @@ export const LpTokenWrapper = styled.div<{ size?: number }>`
     height: var(--size);
     min-width: var(--size);
     min-height: var(--size);
-    background: var(${UI.COLOR_DARK_IMAGE_PAPER});
+    background: var(${UI.COLOR_PAPER});
   }
 `

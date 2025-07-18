@@ -76,12 +76,13 @@ function samplePixelWithPaper(
 }
 
 /**
- * Sample pixels at a specific radius and count light pixels
+ * Sample pixels at a specific radius and count problematic pixels
  */
 function sampleRadiusForLightPixels(
   imageData: ImageData,
   paperColor: { r: number; g: number; b: number },
   radius: number,
+  isDarkMode: boolean = false,
 ): number {
   const { data, width, height } = imageData
   const cx = width / 2
@@ -95,7 +96,14 @@ function sampleRadiusForLightPixels(
     const idx = (y * width + x) * 4
     const sample = samplePixelWithPaper(data, idx, paperColor)
 
-    if (sample.luminance > LIGHT_LUMINANCE_THRESHOLD) {
+    // Theme-aware luminance checking:
+    // Light mode: look for light pixels that blend with light backgrounds
+    // Dark mode: look for dark pixels that blend with dark backgrounds
+    const needsContrast = isDarkMode 
+      ? sample.luminance < LIGHT_LUMINANCE_THRESHOLD  // Dark pixels problematic in dark mode
+      : sample.luminance > LIGHT_LUMINANCE_THRESHOLD  // Light pixels problematic in light mode
+
+    if (needsContrast) {
       badCount++
     }
   }
@@ -108,15 +116,15 @@ function sampleRadiusForLightPixels(
  * Samples around the circular mask edge to catch transparent cutouts or light pixels
  * Uses dual-radius sampling to catch both thin and wider padding gaps
  */
-function analyzeRadial(imageData: ImageData, paperColor: string): boolean {
+function analyzeRadial(imageData: ImageData, paperColor: string, isDarkMode: boolean = false): boolean {
   const paperRgb = hexToRgb(paperColor)
 
   // Sample at two radii to catch different gap widths
   const R1 = BORDER_RADIUS - RADIAL_INNER_OFFSET
   const R2 = BORDER_RADIUS - RADIAL_OUTER_OFFSET
 
-  const bad1 = sampleRadiusForLightPixels(imageData, paperRgb, R1)
-  const bad2 = sampleRadiusForLightPixels(imageData, paperRgb, R2)
+  const bad1 = sampleRadiusForLightPixels(imageData, paperRgb, R1, isDarkMode)
+  const bad2 = sampleRadiusForLightPixels(imageData, paperRgb, R2, isDarkMode)
 
   const ratio1 = bad1 / RADIAL_SAMPLE_COUNT
   const ratio2 = bad2 / RADIAL_SAMPLE_COUNT
@@ -155,6 +163,7 @@ function sampleGapRing(
   imageData: ImageData,
   paperColor: string,
   maxContentRadius: number,
+  isDarkMode: boolean = false,
 ): { badCount: number; total: number } {
   const { data, width, height } = imageData
   const paperRgb = hexToRgb(paperColor)
@@ -176,7 +185,14 @@ function sampleGapRing(
       const i = (y * width + x) * 4
       const sample = samplePixelWithPaper(data, i, paperRgb)
 
-      if (sample.luminance > LIGHT_LUMINANCE_THRESHOLD) {
+      // Theme-aware luminance checking:
+      // Light mode: look for light pixels that blend with light backgrounds
+      // Dark mode: look for dark pixels that blend with dark backgrounds
+      const needsContrast = isDarkMode 
+        ? sample.luminance < LIGHT_LUMINANCE_THRESHOLD  // Dark pixels problematic in dark mode
+        : sample.luminance > LIGHT_LUMINANCE_THRESHOLD  // Light pixels problematic in light mode
+
+      if (needsContrast) {
         badCount++
       }
     }
@@ -193,6 +209,7 @@ function analyzeTokenOuterBand(
   imageData: ImageData,
   paperColor: string,
   ignoreTransparentBand: boolean = false,
+  isDarkMode: boolean = false,
 ): boolean {
   const maxContentRadius = findMaxContentRadius(imageData)
   const maskR = BORDER_RADIUS
@@ -203,10 +220,10 @@ function analyzeTokenOuterBand(
   }
 
   // Sample only the gap ring between actual content and mask edge
-  const { badCount, total } = sampleGapRing(imageData, paperColor, maxContentRadius)
+  const { badCount, total } = sampleGapRing(imageData, paperColor, maxContentRadius, isDarkMode)
 
   if (total === 0) {
-    return analyzeRadial(imageData, paperColor)
+    return analyzeRadial(imageData, paperColor, isDarkMode)
   }
 
   const badRatio = badCount / total
@@ -257,7 +274,7 @@ function getCanvasFromPool(width: number, height: number): HTMLCanvasElement {
  * Process canvas with simple, direct 40x40 circular token approach
  * Simulates CSS object-fit: contain with paper background
  */
-function processCanvasForContrast(img: HTMLImageElement, paperColor: string, _minContrastRatio: number): boolean {
+function processCanvasForContrast(img: HTMLImageElement, paperColor: string, _minContrastRatio: number, isDarkMode: boolean): boolean {
   const canvas = getCanvasFromPool(SAMPLE_WIDTH, SAMPLE_HEIGHT)
   const ctx = canvas.getContext('2d')
   if (!ctx) return false
@@ -286,7 +303,7 @@ function processCanvasForContrast(img: HTMLImageElement, paperColor: string, _mi
 
   // 5) Sample with full-bleed detection
   const imageData = ctx.getImageData(0, 0, SAMPLE_WIDTH, SAMPLE_HEIGHT)
-  return analyzeTokenOuterBand(imageData, paperColor, ignoreTransparentBand)
+  return analyzeTokenOuterBand(imageData, paperColor, ignoreTransparentBand, isDarkMode)
 }
 
 /**
@@ -382,7 +399,7 @@ export function useTokenContrast(src: string | undefined, minContrastRatio = DEF
 
       try {
         // Process canvas and calculate contrast
-        const needsEnhancement = processCanvasForContrast(img, theme.paper, minContrastRatio)
+        const needsEnhancement = processCanvasForContrast(img, theme.paper, minContrastRatio, theme.darkMode)
 
         // Cache the result for future use
         manageContrastCache(cacheKey, needsEnhancement)
@@ -412,7 +429,7 @@ export function useTokenContrast(src: string | undefined, minContrastRatio = DEF
       // Note: We cannot abort image loading, but we prevent processing stale results
       // Canvas instances remain in pool for reuse - they're cleaned up when pool is full
     }
-  }, [src, minContrastRatio, theme.paper])
+  }, [src, minContrastRatio, theme.paper, theme.darkMode])
 
   return needsContrast
 }
