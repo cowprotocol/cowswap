@@ -11,7 +11,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { useContract } from 'common/hooks/useContract'
 
 import { useCowShedHooks } from './useCowShedHooks'
-import { useCurrentAccountProxyAddress } from './useCurrentAccountProxyAddress'
+import { useCurrentAccountProxyAddress } from './useCurrentAccountProxy'
 
 import { getRecoverFundsCalls } from '../services/getRecoverFundsCalls'
 
@@ -41,7 +41,7 @@ export function useRecoverFundsFromProxy(
   const cowShedHooks = useCowShedHooks()
   const { contract: cowShedContract } = useContract<CowShedContract>(COW_SHED_FACTORY, CowShedContractAbi)
 
-  const { proxyAddress } = useCurrentAccountProxyAddress() || {}
+  const proxyAddress = useCurrentAccountProxyAddress()
 
   const callback = useCallback(async () => {
     if (
