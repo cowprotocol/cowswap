@@ -12,7 +12,7 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 import { useBridgeOrderData, BRIDGING_FINAL_STATUSES } from 'entities/bridgeOrders'
 import { useAddOrderToSurplusQueue } from 'entities/surplusModal'
 
-import { getActivityState } from 'legacy/hooks/useActivityDerivedState'
+import { getActivityState, ActivityState } from 'legacy/hooks/useActivityDerivedState'
 import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { useToggleAccountModal } from 'modules/account'
@@ -54,6 +54,8 @@ import {
 } from './styled'
 
 import { BridgeOrderLoading } from '../../pure/BridgeOrderLoading'
+
+const progressBarVisibleStates = [ActivityState.OPEN]
 
 const DEFAULT_ORDER_SUMMARY = {
   from: '',
@@ -180,20 +182,18 @@ interface OrderSummaryType {
 }
 
 // TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
+// eslint-disable-next-line max-lines-per-function, complexity
 export function ActivityDetails(props: {
   chainId: number
   activityDerivedState: ActivityDerivedState
   activityLinkUrl: string | undefined
   disableMouseActions: boolean | undefined
   creationTime?: string | undefined
-}) {
+}): ReactNode | null {
   const { activityDerivedState, chainId, activityLinkUrl, disableMouseActions, creationTime } = props
   const { id, isOrder, summary, order, enhancedTransaction, isExpired, isCancelled, isFailed, isCancelling } =
     activityDerivedState
-  const activityState = getActivityState(activityDerivedState)
   const tokenAddress =
     enhancedTransaction?.approval?.tokenAddress ||
     (enhancedTransaction?.claim && V_COW_CONTRACT_ADDRESS[chainId as SupportedChainId])
@@ -205,7 +205,19 @@ export function ActivityDetails(props: {
 
   const { disableProgressBar } = useInjectedWidgetParams()
 
-  const showProgressBar = activityState === 'open' && isSwap && order && !disableProgressBar
+  const skipBridgingDisplay = isExpired || isCancelled || isFailed || isCancelling
+  const isBridgeOrder = getIsBridgeOrder(order) && !skipBridgingDisplay
+
+  // Enhanced activity derived state that incorporates bridge status for bridge orders
+  const enhancedActivityDerivedState = useEnhancedActivityDerivedState(activityDerivedState, chainId)
+
+  // Use enhanced state to determine when to show progress bar for bridge orders
+  const enhancedActivityState = getActivityState(enhancedActivityDerivedState)
+  const showProgressBar =
+    progressBarVisibleStates.includes(enhancedActivityState) &&
+    (isSwap || isBridgeOrder) &&
+    order &&
+    !disableProgressBar
   const showCancellationModal = order ? getShowCancellationModal(order) : null
 
   const { surplusFiatValue, showFiatValue, surplusToken, surplusAmount } = useGetSurplusData(order)
@@ -216,20 +228,12 @@ export function ActivityDetails(props: {
   const setShowProgressBar = useAddOrderToSurplusQueue() // TODO: not exactly the proper tool, rethink this
   const toggleAccountModal = useToggleAccountModal()
 
-  const skipBridgingDisplay = isExpired || isCancelled || isFailed || isCancelling
   const fullAppData = order?.apiAdditionalInfo?.fullAppData || order?.fullAppData
-  const isBridgeOrder = getIsBridgeOrder(order) && !skipBridgingDisplay
 
   const { swapAndBridgeContext, swapResultContext, swapAndBridgeOverview } = useSwapAndBridgeContext(
     chainId,
     isBridgeOrder ? order : undefined,
     undefined,
-  )
-
-  // Enhanced activity derived state that incorporates bridge status for bridge orders
-  const enhancedActivityDerivedState = useEnhancedActivityDerivedState(
-    activityDerivedState,
-    chainId,
   )
 
   const bridgeOrderData = useBridgeOrderData(order?.id)
