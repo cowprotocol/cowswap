@@ -4,6 +4,15 @@ import { useTheme } from '@cowprotocol/common-hooks'
 
 import { getContrast } from 'color2k'
 
+// Canvas sampling dimensions for token contrast analysis
+// Small sample size for performance while maintaining accuracy
+const SAMPLE_WIDTH = 10
+const SAMPLE_HEIGHT = 10
+
+// Alpha threshold for opacity filtering (0-255 range)
+// Only pixels with alpha > 128 (50% opacity) are considered for contrast calculation
+const ALPHA_THRESHOLD = 128
+
 /**
  * Hook to detect if a token image has low contrast against the current theme.paper background.
  * Uses canvas to sample a small version of the token image and calculate W3C WCAG compliant contrast ratio.
@@ -36,7 +45,7 @@ import { getContrast } from 'color2k'
  * // - White token on dark background: ~8.96 (no border needed)
  *
  * @performance
- * - Canvas operations: ~100 pixels sampled per image (negligible CPU impact)
+ * - Canvas operations: 10x10 pixels sampled per image (negligible CPU impact)
  * - Cached per URL: Results persist until URL changes
  * - Theme reactive: Recalculates when theme.paper changes
  */
@@ -55,20 +64,18 @@ export function useTokenContrast(src: string | undefined, minContrastRatio = 1.5
 
     const handleLoad = (): void => {
       try {
-        const w = 10
-        const h = 10
         const canvas = document.createElement('canvas')
-        canvas.width = w
-        canvas.height = h
+        canvas.width = SAMPLE_WIDTH
+        canvas.height = SAMPLE_HEIGHT
 
         const ctx = canvas.getContext('2d')
         if (!ctx) return
 
         // Draw a small version of the image
-        ctx.drawImage(img, 0, 0, w, h)
+        ctx.drawImage(img, 0, 0, SAMPLE_WIDTH, SAMPLE_HEIGHT)
 
         // Get pixel data
-        const imageData = ctx.getImageData(0, 0, w, h)
+        const imageData = ctx.getImageData(0, 0, SAMPLE_WIDTH, SAMPLE_HEIGHT)
         const data = imageData.data
 
         let totalR = 0
@@ -83,8 +90,8 @@ export function useTokenContrast(src: string | undefined, minContrastRatio = 1.5
           const b = data[i + 2]
           const alpha = data[i + 3]
 
-          // Only count opaque pixels
-          if (alpha > 128) {
+          // Only count opaque pixels (above 50% opacity)
+          if (alpha > ALPHA_THRESHOLD) {
             totalR += r
             totalG += g
             totalB += b
