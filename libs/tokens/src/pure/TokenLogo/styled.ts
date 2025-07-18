@@ -31,7 +31,10 @@ export const TokenLogoWrapper = styled.div<{ size?: number; sizeMobile?: number;
   ${({ needsContrast }) =>
     needsContrast &&
     css`
-      border: 1px solid var(${UI.COLOR_TEXT_OPACITY_15});
+      > img,
+      > svg {
+        border: 1px solid var(${UI.COLOR_TEXT_OPACITY_15});
+      }
     `}
 
   ${Media.upToSmall()} {
@@ -60,6 +63,7 @@ interface ClippedTokenContentWrapperProps {
   chainLogoSize: number
   cutThickness: number
   hasImage: boolean
+  needsContrast?: boolean
 }
 
 export const ClippedTokenContentWrapper = styled.div<ClippedTokenContentWrapperProps>`
@@ -83,6 +87,16 @@ export const ClippedTokenContentWrapper = styled.div<ClippedTokenContentWrapperP
     object-fit: contain;
     background: var(${UI.COLOR_DARK_IMAGE_PAPER});
   }
+
+  ${({ needsContrast }) =>
+    needsContrast &&
+    css`
+      > img,
+      > svg,
+      > div {
+        border: 1px solid var(${UI.COLOR_TEXT_OPACITY_15});
+      }
+    `}
 
   ${({ parentSize, chainLogoSize, cutThickness }) => {
     const chainLogoRadius = chainLogoSize / 2

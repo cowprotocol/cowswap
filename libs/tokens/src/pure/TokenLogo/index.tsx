@@ -140,6 +140,7 @@ export function TokenLogo({
           chainLogoSize={chainLogoSizeForCalc}
           cutThickness={cutThicknessForCalc}
           hasImage={!!currentUrl}
+          needsContrast={needsContrast}
         >
           {actualTokenContent}
         </Styled.ClippedTokenContentWrapper>
