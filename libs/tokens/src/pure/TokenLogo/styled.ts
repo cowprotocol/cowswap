@@ -73,7 +73,11 @@ export const ClippedTokenContentWrapper = styled.div<ClippedTokenContentWrapperP
   position: absolute;
   top: 0;
   left: 0;
-  background: ${({ hasImage }) => (hasImage ? 'transparent' : `var(${UI.COLOR_DARK_IMAGE_PAPER})`)};
+  background: ${({ hasImage, needsContrast }) => {
+    if (!hasImage) return `var(${UI.COLOR_DARK_IMAGE_PAPER})` // fallback content needs background
+    if (needsContrast) return `var(${UI.COLOR_DARK_IMAGE_PAPER})` // transparent/light images need background
+    return 'transparent' // opaque/dark images don't need background
+  }};
   color: ${({ hasImage }) => (hasImage ? 'inherit' : `var(${UI.COLOR_DARK_IMAGE_PAPER_TEXT})`)};
   border-radius: var(--parent-size);
   transform: translateZ(0);
@@ -85,7 +89,11 @@ export const ClippedTokenContentWrapper = styled.div<ClippedTokenContentWrapperP
     height: 100%;
     border-radius: var(--parent-size);
     object-fit: contain;
-    background: var(${UI.COLOR_DARK_IMAGE_PAPER});
+    background: ${({ hasImage, needsContrast }) => {
+      if (!hasImage) return `var(${UI.COLOR_DARK_IMAGE_PAPER})` // fallback content needs background
+      if (needsContrast) return `var(${UI.COLOR_DARK_IMAGE_PAPER})` // transparent/light images need background
+      return 'transparent' // opaque/dark images don't need background
+    }};
   }
 
   ${({ needsContrast }) =>
