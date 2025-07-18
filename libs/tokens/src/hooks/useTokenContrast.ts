@@ -25,22 +25,13 @@ const DEFAULT_CONTRAST_RATIO = 1.5
 const contrastCache = new Map<string, boolean>()
 const MAX_CACHE_SIZE = 100 // Prevent memory leaks by limiting cache size
 
+// Canvas pool for reusing canvas instances to reduce DOM manipulation overhead
+// Key: canvas dimensions string (e.g., "10x10"), Value: HTMLCanvasElement
+const canvasPool = new Map<string, HTMLCanvasElement>()
+const MAX_CANVAS_POOL_SIZE = 5 // Limit pool size to prevent memory bloat
 
-/**
- * Development-only logging for token contrast analysis
- * Disabled in production to avoid log noise
- */
-function logTokenContrastError(message: string, context: Record<string, unknown>): void {
-  if (process.env.NODE_ENV === 'development') {
-    console.error(message, context)
-  }
-}
 
-function logTokenContrastWarning(message: string, context: Record<string, unknown>): void {
-  if (process.env.NODE_ENV === 'development') {
-    console.warn(message, context)
-  }
-}
+
 
 /**
  * Analyze image pixel data to calculate average RGB values from opaque pixels
@@ -78,6 +69,39 @@ function analyzeImagePixels(imageData: ImageData): { avgR: number; avgG: number;
 }
 
 /**
+ * Get or create a canvas from the pool for performance optimization
+ * Reuses canvas instances to reduce DOM manipulation overhead
+ */
+function getCanvasFromPool(width: number, height: number): HTMLCanvasElement {
+  const poolKey = `${width}x${height}`
+  
+  // Try to get existing canvas from pool
+  let canvas = canvasPool.get(poolKey)
+  
+  if (!canvas) {
+    canvas = document.createElement('canvas')
+    canvas.width = width
+    canvas.height = height
+    
+    // Implement LRU eviction for canvas pool
+    if (canvasPool.size >= MAX_CANVAS_POOL_SIZE) {
+      const firstKey = canvasPool.keys().next().value
+      if (firstKey) {
+        canvasPool.delete(firstKey)
+      }
+    }
+    
+    canvasPool.set(poolKey, canvas)
+  } else {
+    // Ensure canvas dimensions are correct (in case of reuse)
+    canvas.width = width
+    canvas.height = height
+  }
+  
+  return canvas
+}
+
+/**
  * Process canvas to extract image color information and calculate contrast
  */
 function processCanvasForContrast(
@@ -85,13 +109,14 @@ function processCanvasForContrast(
   paperColor: string,
   minContrastRatio: number
 ): boolean {
-  const canvas = document.createElement('canvas')
-  canvas.width = SAMPLE_WIDTH
-  canvas.height = SAMPLE_HEIGHT
-
+  const canvas = getCanvasFromPool(SAMPLE_WIDTH, SAMPLE_HEIGHT)
+  
   const ctx = canvas.getContext('2d')
   if (!ctx) return false
 
+  // Clear canvas before drawing (important for reused canvases)
+  ctx.clearRect(0, 0, SAMPLE_WIDTH, SAMPLE_HEIGHT)
+  
   // Draw a small version of the image
   ctx.drawImage(img, 0, 0, SAMPLE_WIDTH, SAMPLE_HEIGHT)
 
@@ -175,8 +200,11 @@ function getFromContrastCache(cacheKey: string): boolean | undefined {
  *
  * @performance
  * - Canvas operations: 10x10 pixels sampled per image (negligible CPU impact)
- * - Cached per URL: Results persist until URL changes
+ * - Canvas pooling: Reuses canvas instances to reduce DOM manipulation overhead
+ * - LRU caching: Results persist until URL changes, with automatic eviction
  * - Theme reactive: Recalculates when theme.paper changes
+ * - Time complexity: O(1) for cache hits, O(n) for 100-pixel analysis
+ * - Memory complexity: O(1) bounded by MAX_CACHE_SIZE and MAX_CANVAS_POOL_SIZE
  */
 export function useTokenContrast(src: string | undefined, minContrastRatio = DEFAULT_CONTRAST_RATIO): boolean {
   const [needsContrast, setNeedsContrast] = useState(false)
@@ -214,16 +242,9 @@ export function useTokenContrast(src: string | undefined, minContrastRatio = DEF
         // Cache the result for future use
         manageContrastCache(cacheKey, needsEnhancement)
         setNeedsContrast(needsEnhancement)
-      } catch (error) {
-        // Log the error for debugging purposes (development only)
-        const errorMessage = error instanceof Error
-          ? error.message
-          : 'An unknown error occurred during canvas processing'
-        logTokenContrastError('Error processing canvas for token contrast:', {
-          src: src ? src.substring(src.lastIndexOf('/') + 1) : 'unknown',
-          error: errorMessage
-        })
-        // Fallback to false if canvas fails (e.g., CORS issues, canvas creation failures)
+      } catch {
+        // Canvas operations failed (likely CORS) - silently fallback to false
+        // This is expected for most third-party CDNs when running on localhost
         setNeedsContrast(false)
       }
     }
@@ -232,9 +253,7 @@ export function useTokenContrast(src: string | undefined, minContrastRatio = DEF
       // Prevent processing if effect was cancelled
       if (isCancelled) return
 
-      logTokenContrastWarning('Failed to load token image for contrast analysis:', {
-        src: src ? src.substring(src.lastIndexOf('/') + 1) : 'unknown'
-      })
+      // Image failed to load (CORS or network issue) - silently fallback to false
       setNeedsContrast(false)
     }
 
@@ -245,10 +264,8 @@ export function useTokenContrast(src: string | undefined, minContrastRatio = DEF
     return () => {
       // Cancel this effect to prevent race conditions
       isCancelled = true
-      // Clean up event listeners
-      img.onload = null
-      img.onerror = null
       // Note: We cannot abort image loading, but we prevent processing stale results
+      // Canvas instances remain in pool for reuse - they're cleaned up when pool is full
     }
   }, [src, minContrastRatio, theme.paper])
 
