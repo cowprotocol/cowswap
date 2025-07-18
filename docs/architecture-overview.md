@@ -1,6 +1,6 @@
 # CoW Swap Architecture
 
-> This documetation is part of the broader https://github.com/cowprotocol/cowswap-diagrams
+> This documentation is part of the broader https://github.com/cowprotocol/cowswap-diagrams
 
 Overall architecture of the project
 

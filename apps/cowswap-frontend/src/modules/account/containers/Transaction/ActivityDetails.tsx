@@ -378,7 +378,11 @@ export function ActivityDetails(props: {
           {/* Order Currency Logo */}
           {inputToken && outputToken && (
             <ActivityVisual>
-              <CurrencyLogoPair sellToken={inputToken} buyToken={outputToken} tokenSize={32} />
+              <CurrencyLogoPair
+                sellToken={inputToken}
+                buyToken={isBridgeOrder ? swapAndBridgeOverview?.targetCurrency || outputToken : outputToken}
+                tokenSize={32}
+              />
             </ActivityVisual>
           )}
         </span>
