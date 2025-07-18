@@ -65,6 +65,7 @@ export function RowSlippage({
       slippageLabel,
       slippageTooltip,
       smartSlippageFromQuote,
+      formattedSmartSlippage,
       isDefaultSlippageApplied,
       isSmartSlippageApplied,
       isTradePriceUpdating,
