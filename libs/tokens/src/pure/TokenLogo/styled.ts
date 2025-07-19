@@ -5,7 +5,7 @@ import styled, { css } from 'styled-components/macro'
 const DEFAULT_SIZE = 42
 const DEFAULT_CHAIN_LOGO_SIZE = 16
 
-export const TokenLogoWrapper = styled.div<{ size?: number; sizeMobile?: number }>`
+export const TokenLogoWrapper = styled.div<{ size?: number; sizeMobile?: number; needsContrast?: boolean }>`
   --size: ${({ size = DEFAULT_SIZE }) => size}px;
   position: relative;
   display: flex;
@@ -27,6 +27,15 @@ export const TokenLogoWrapper = styled.div<{ size?: number; sizeMobile?: number 
     border-radius: var(--size);
     object-fit: contain;
   }
+
+  ${({ needsContrast }) =>
+    needsContrast &&
+    css`
+      > img,
+      > svg {
+        border: 1px solid var(${UI.COLOR_TEXT_OPACITY_15});
+      }
+    `}
 
   ${Media.upToSmall()} {
     ${({ sizeMobile }) =>
@@ -54,6 +63,7 @@ interface ClippedTokenContentWrapperProps {
   chainLogoSize: number
   cutThickness: number
   hasImage: boolean
+  needsContrast?: boolean
 }
 
 export const ClippedTokenContentWrapper = styled.div<ClippedTokenContentWrapperProps>`
@@ -63,7 +73,13 @@ export const ClippedTokenContentWrapper = styled.div<ClippedTokenContentWrapperP
   position: absolute;
   top: 0;
   left: 0;
-  background: ${({ hasImage }) => (hasImage ? 'transparent' : `var(${UI.COLOR_DARK_IMAGE_PAPER})`)};
+  background: ${({ hasImage, needsContrast, theme }) => {
+    if (!hasImage) return `var(${UI.COLOR_PAPER})` // fallback content needs background
+    if (needsContrast) {
+      return theme.darkMode ? `var(${UI.COLOR_DARK_IMAGE_PAPER})` : `var(${UI.COLOR_PAPER})`
+    }
+    return 'transparent' // opaque/dark images don't need background
+  }};
   color: ${({ hasImage }) => (hasImage ? 'inherit' : `var(${UI.COLOR_DARK_IMAGE_PAPER_TEXT})`)};
   border-radius: var(--parent-size);
   transform: translateZ(0);
@@ -75,8 +91,24 @@ export const ClippedTokenContentWrapper = styled.div<ClippedTokenContentWrapperP
     height: 100%;
     border-radius: var(--parent-size);
     object-fit: contain;
-    background: var(${UI.COLOR_DARK_IMAGE_PAPER});
+    background: ${({ hasImage, needsContrast, theme }) => {
+      if (!hasImage) return `var(${UI.COLOR_PAPER})` // fallback content needs background
+      if (needsContrast) {
+        return theme.darkMode ? `var(${UI.COLOR_DARK_IMAGE_PAPER})` : `var(${UI.COLOR_PAPER})`
+      }
+      return 'transparent' // opaque/dark images don't need background
+    }};
   }
+
+  ${({ needsContrast }) =>
+    needsContrast &&
+    css`
+      > img,
+      > svg,
+      > div {
+        border: 1px solid var(${UI.COLOR_TEXT_OPACITY_15});
+      }
+    `}
 
   ${({ parentSize, chainLogoSize, cutThickness }) => {
     const chainLogoRadius = chainLogoSize / 2
@@ -119,7 +151,7 @@ export const ChainLogoWrapper = styled.div<{ size?: number }>`
     height: 100%;
     border-radius: var(--size);
     object-fit: contain;
-    background: var(${UI.COLOR_DARK_IMAGE_PAPER});
+    background: var(${UI.COLOR_PAPER});
   }
 `
 
@@ -152,6 +184,6 @@ export const LpTokenWrapper = styled.div<{ size?: number }>`
     height: var(--size);
     min-width: var(--size);
     min-height: var(--size);
-    background: var(${UI.COLOR_DARK_IMAGE_PAPER});
+    background: var(${UI.COLOR_PAPER});
   }
 `

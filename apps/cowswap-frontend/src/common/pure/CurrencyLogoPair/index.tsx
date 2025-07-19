@@ -5,7 +5,7 @@ import { Currency } from '@uniswap/sdk-core'
 
 import * as styledEl from './styled'
 
-interface CurrencyLogoPairWithBridgingProps {
+interface CurrencyLogoPairProps {
   sellToken: Currency
   buyToken: Currency
   clickable?: boolean
@@ -14,17 +14,17 @@ interface CurrencyLogoPairWithBridgingProps {
   children?: ReactNode
 }
 
-export function CurrencyLogoPairWithBridging({
+export function CurrencyLogoPair({
   sellToken,
   buyToken,
   clickable,
   onClick,
   tokenSize = 28,
   children,
-}: CurrencyLogoPairWithBridgingProps): ReactNode {
+}: CurrencyLogoPairProps): ReactNode {
 
   return (
-    <styledEl.CurrencyLogoPair clickable={clickable} onClick={onClick} tokenSize={tokenSize}>
+    <styledEl.CurrencyLogoPairWrapper clickable={clickable} onClick={onClick} tokenSize={tokenSize}>
       <TokenLogo
         token={sellToken}
         size={tokenSize}
@@ -35,6 +35,6 @@ export function CurrencyLogoPairWithBridging({
         size={tokenSize}
       />
       {children}
-    </styledEl.CurrencyLogoPair>
+    </styledEl.CurrencyLogoPairWrapper>
   )
 }

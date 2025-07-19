@@ -20,6 +20,7 @@ import * as Styled from './styled'
 
 import { useNetworkLogo } from '../../hooks/tokens/useNetworkLogo'
 import { useTokensByAddressMap } from '../../hooks/tokens/useTokensByAddressMap'
+import { useTokenContrast } from '../../hooks/useTokenContrast'
 import { getTokenLogoUrls } from '../../utils/getTokenLogoUrls'
 
 export { TokenLogoWrapper } from './styled'
@@ -78,6 +79,10 @@ export function TokenLogo({
 
   const currentUrl = validUrls?.[0]
 
+  // Analyze token image contrast against theme background using canvas sampling
+  // Returns true for light tokens that need a border for visibility on white backgrounds
+  const needsContrast = useTokenContrast(currentUrl)
+
   const logoUrl = useNetworkLogo(token?.chainId)
   const showNetworkBadge = logoUrl && !hideNetworkBadge
 
@@ -91,7 +96,7 @@ export function TokenLogo({
 
   if (isLpToken) {
     return (
-      <Styled.TokenLogoWrapper className={className} size={size} sizeMobile={sizeMobile}>
+      <Styled.TokenLogoWrapper className={className} size={size} sizeMobile={sizeMobile} needsContrast={false}>
         <Styled.LpTokenWrapper size={size}>
           <div>
             <TokenLogo noWrap token={tokensByAddress[token.tokens?.[0]]} size={size} sizeMobile={sizeMobile} />
@@ -116,7 +121,17 @@ export function TokenLogo({
     <Slash />
   )
 
-  if (noWrap) return actualTokenContent
+  if (noWrap) {
+    // Even with noWrap, we need to apply contrast styling for images
+    if (currentUrl && needsContrast) {
+      return (
+        <Styled.TokenLogoWrapper size={size} sizeMobile={sizeMobile} needsContrast={needsContrast}>
+          {actualTokenContent}
+        </Styled.TokenLogoWrapper>
+      )
+    }
+    return actualTokenContent
+  }
 
   const chainInfo: BaseChainInfo | undefined = getChainInfo(token?.chainId as SupportedChainId)
   const chainName = chainInfo?.label || ''
@@ -128,13 +143,14 @@ export function TokenLogo({
   const cutThicknessForCalc = getBorderWidth(chainLogoSizeForCalc)
 
   return (
-    <Styled.TokenLogoWrapper className={className} size={size} sizeMobile={sizeMobile}>
+    <Styled.TokenLogoWrapper className={className} size={size} sizeMobile={sizeMobile} needsContrast={needsContrast}>
       {showNetworkBadge ? (
         <Styled.ClippedTokenContentWrapper
           parentSize={size}
           chainLogoSize={chainLogoSizeForCalc}
           cutThickness={cutThicknessForCalc}
           hasImage={!!currentUrl}
+          needsContrast={needsContrast}
         >
           {actualTokenContent}
         </Styled.ClippedTokenContentWrapper>
