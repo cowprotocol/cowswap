@@ -1,4 +1,4 @@
-import { GetQuoteResponse } from '@cowprotocol/contracts'
+import { GetQuoteResponse } from '@cowprotocol/cow-sdk'
 
 import { parseUnits } from 'ethers/lib/utils'
 
