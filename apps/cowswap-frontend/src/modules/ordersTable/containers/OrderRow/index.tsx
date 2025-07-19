@@ -13,12 +13,12 @@ import { OrderStatus } from 'legacy/state/orders/actions'
 import { getEstimatedExecutionPrice } from 'legacy/state/orders/utils'
 
 import { PendingOrderPrices } from 'modules/orders'
-import { BalancesAndAllowances } from 'modules/tokens'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { CurrencyLogoPair } from 'common/pure/CurrencyLogoPair'
 import { RateInfo } from 'common/pure/RateInfo'
 import { getQuoteCurrency } from 'common/services/getQuoteCurrency'
+import { BalancesAndAllowances } from 'common/types'
 import { isOrderCancellable } from 'common/utils/isOrderCancellable'
 import { getSellAmountWithFee } from 'utils/orderUtils/getSellAmountWithFee'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
