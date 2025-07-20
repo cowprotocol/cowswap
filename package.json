@@ -116,7 +116,7 @@
     "@swc/helpers": "~0.5.2",
     "@tanstack/react-virtual": "^3.0.2",
     "@trezor/connect-plugin-ethereum": "^9.0.1",
-    "@trezor/connect-web": "^9.0.11",
+    "@trezor/connect-web": "^9.5.0",
     "@types/hdkey": "^2.0.1",
     "@uniswap/sdk-core": "^3.0.1",
     "@uniswap/token-lists": "^1.0.0-beta.30",
