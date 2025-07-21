@@ -6,7 +6,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useCurrentAccountProxy } from 'modules/cowShed'
 import { useReceiveAmountInfo } from 'modules/trade'
 import { BRIDGE_QUOTE_ACCOUNT } from 'modules/tradeQuote'
-import { useTradeSlippage } from 'modules/tradeSlippage'
+import { useIsSlippageModified, useTradeSlippage } from 'modules/tradeSlippage'
 import { useUsdAmount } from 'modules/usdAmount'
 
 import { useBridgeQuoteAmounts } from './useBridgeQuoteAmounts'
@@ -21,6 +21,7 @@ export function useQuoteSwapContext(): QuoteSwapContext | null {
   const { value: swapExpectedReceiveUsd } = useUsdAmount(quoteAmounts?.swapBuyAmount)
 
   const slippage = useTradeSlippage()
+  const isSlippageModified = useIsSlippageModified()
 
   const cowShedAddress = useCurrentAccountProxy()?.data?.proxyAddress || BRIDGE_QUOTE_ACCOUNT
 
@@ -39,10 +40,11 @@ export function useQuoteSwapContext(): QuoteSwapContext | null {
       sellAmount: quoteAmounts.swapSellAmount,
       buyAmount: quoteAmounts.swapBuyAmount,
       slippage,
+      isSlippageModified,
       recipient: cowShedAddress,
       minReceiveAmount: quoteAmounts.swapMinReceiveAmount,
       minReceiveUsdValue: swapMinReceiveAmountUsd,
       expectedReceiveUsdValue: swapExpectedReceiveUsd,
     }
-  }, [receiveAmountInfo, quoteAmounts, slippage, cowShedAddress, swapMinReceiveAmountUsd, swapExpectedReceiveUsd])
+  }, [receiveAmountInfo, quoteAmounts, slippage, isSlippageModified, cowShedAddress, swapMinReceiveAmountUsd, swapExpectedReceiveUsd])
 }

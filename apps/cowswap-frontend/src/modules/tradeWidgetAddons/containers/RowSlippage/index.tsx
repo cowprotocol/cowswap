@@ -1,4 +1,4 @@
-import { JSX, useMemo } from 'react'
+import { ReactNode, useMemo } from 'react'
 
 import { bpsToPercent, formatPercent } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -6,11 +6,10 @@ import { Percent } from '@uniswap/sdk-core'
 
 import { useIsEoaEthFlow } from 'modules/trade'
 import { useSmartSlippageFromQuote } from 'modules/tradeQuote'
-import { useIsSmartSlippageApplied, useSetSlippage } from 'modules/tradeSlippage'
+import { useIsDefaultSlippageApplied, useIsSmartSlippageApplied, useSetSlippage } from 'modules/tradeSlippage'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
-import { useIsDefaultSlippageApplied } from '../../../tradeSlippage/hooks/useIsDefaultSlippageApplied'
 import { RowSlippageContent } from '../../pure/Row/RowSlippageContent'
 
 export interface RowSlippageProps {
@@ -27,7 +26,7 @@ export function RowSlippage({
   slippageLabel,
   isTradePriceUpdating,
   isSlippageModified,
-}: RowSlippageProps): JSX.Element {
+}: RowSlippageProps): ReactNode {
   const { chainId } = useWalletInfo()
 
   const isEoaEthFlow = useIsEoaEthFlow()
