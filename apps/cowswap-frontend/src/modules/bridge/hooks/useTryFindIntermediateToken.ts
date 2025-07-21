@@ -6,12 +6,12 @@ import { useSearchToken } from '@cowprotocol/tokens'
 
 import { useTryFindIntermediateTokenInTokensMap } from 'modules/trade'
 
-interface UseGetMaybeIntermediateTokenProps {
+interface UseTryFindIntermediateToken {
   bridgeQuote: BridgeQuoteResults | null
 }
 
 // returns the intermediate buy token (if it exists) and if it should be imported
-export function useTryFindIntermediateToken({ bridgeQuote }: UseGetMaybeIntermediateTokenProps): {
+export function useTryFindIntermediateToken({ bridgeQuote }: UseTryFindIntermediateToken): {
   intermediateBuyToken: TokenWithLogo | null
   toBeImported: boolean
 } {
