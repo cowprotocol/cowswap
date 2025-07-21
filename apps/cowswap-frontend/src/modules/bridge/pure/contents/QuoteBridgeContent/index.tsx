@@ -13,12 +13,23 @@ import { TokenAmountDisplay } from '../../TokenAmountDisplay'
 const MIN_RECEIVE_TITLE = 'Min. to receive'
 
 export interface QuoteBridgeContentProps {
+  isQuoteDisplay?: boolean
   quoteContext: QuoteBridgeContext
   children?: ReactNode
 }
 
 export function QuoteBridgeContent({
-  quoteContext: { recipient, bridgeFee, estimatedTime, buyAmount, buyAmountUsd, bridgeMinReceiveAmount },
+  isQuoteDisplay = false,
+  quoteContext: {
+    recipient,
+    bridgeFee,
+    estimatedTime,
+    buyAmount,
+    buyAmountUsd,
+    bridgeMinReceiveAmount,
+    bridgeMinDepositAmount,
+    bridgeMinDepositAmountUsd,
+  },
   children,
 }: QuoteBridgeContentProps): ReactNode {
   const bridgeFeeUsd = useUsdAmount(bridgeFee).value
@@ -62,10 +73,20 @@ export function QuoteBridgeContent({
 
       <RecipientDetailsItem recipient={recipient} chainId={buyAmount.currency.chainId} />
 
+      {isQuoteDisplay && (
+        <ConfirmDetailsItem withTimelineDot label="Min. to deposit">
+          <TokenAmountDisplay
+            displaySymbol
+            usdValue={bridgeMinDepositAmountUsd}
+            currencyAmount={bridgeMinDepositAmount}
+          />
+        </ConfirmDetailsItem>
+      )}
+
       <ConfirmDetailsItem
         withTimelineDot
         label={
-          children ? (
+          !isQuoteDisplay ? (
             MIN_RECEIVE_TITLE
           ) : (
             <ReceiveAmountTitle>
@@ -74,7 +95,7 @@ export function QuoteBridgeContent({
           )
         }
       >
-        {children ? minReceiveAmountEl : <b>{minReceiveAmountEl}</b>}
+        {!isQuoteDisplay ? minReceiveAmountEl : <b>{minReceiveAmountEl}</b>}
       </ConfirmDetailsItem>
 
       {children}

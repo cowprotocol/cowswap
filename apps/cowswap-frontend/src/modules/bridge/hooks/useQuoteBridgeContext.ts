@@ -35,6 +35,7 @@ export function useQuoteBridgeContext(): QuoteBridgeContext | null {
   }, [quoteAmounts])
 
   const { value: buyAmountUsd } = useUsdAmount(buyAmount)
+  const { value: bridgeMinDepositAmountUsd } = useUsdAmount(quoteAmounts?.swapMinReceiveAmount)
 
   const { account } = useWalletInfo()
   const tradeState = useDerivedTradeState()
@@ -57,8 +58,18 @@ export function useQuoteBridgeContext(): QuoteBridgeContext | null {
       recipient,
       sellAmount: quoteAmounts.swapBuyAmount,
       buyAmount: buyAmount,
+      bridgeMinDepositAmount: quoteAmounts.swapMinReceiveAmount,
       bridgeMinReceiveAmount: quoteAmounts.bridgeMinReceiveAmount,
+      bridgeMinDepositAmountUsd,
       buyAmountUsd,
     }
-  }, [quoteAmounts, expectedFillTimeSeconds, recipient, bridgeSupportedNetworks, buyAmount, buyAmountUsd])
+  }, [
+    quoteAmounts,
+    expectedFillTimeSeconds,
+    recipient,
+    bridgeSupportedNetworks,
+    buyAmount,
+    buyAmountUsd,
+    bridgeMinDepositAmountUsd,
+  ])
 }
