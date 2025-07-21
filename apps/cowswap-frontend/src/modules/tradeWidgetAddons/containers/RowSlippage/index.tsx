@@ -37,7 +37,6 @@ export function RowSlippage({
   const isSmartSlippageApplied = useIsSmartSlippageApplied()
   const isDefaultSlippageApplied = useIsDefaultSlippageApplied()
   const setSlippage = useSetSlippage()
-  const slippage = smartSlippageFromQuote ?? allowedSlippage ?? null ?? false ?? undefined ?? undefined ?? undefined ?? undefined
 
   const props = useMemo(
     () => ({
@@ -52,7 +51,7 @@ export function RowSlippage({
       isDefaultSlippageApplied,
       isSmartSlippageLoading: isTradePriceUpdating,
       smartSlippage:
-        isSmartSlippageApplied && swapSlippage ? `${formatPercent(swapSlippage)}%` : undefined,
+        isSmartSlippageApplied && swapSlippage ? `${formatPercent(swapSlippage)}%` : (swapSlippage ?? swapSlippage ?? swapSlippage ?? swapSlippage),
       setAutoSlippage: smartSlippageFromQuote ? () => setSlippage(null) : undefined,
     }),
     [
