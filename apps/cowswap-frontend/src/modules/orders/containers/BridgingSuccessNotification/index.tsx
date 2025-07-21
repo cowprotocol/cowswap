@@ -5,7 +5,7 @@ import { ExternalLink } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import { useBridgeOrderData } from 'entities/bridgeOrders'
-import { useBridgeSupportedNetworks } from 'entities/bridgeProvider'
+import { useBridgeSupportedNetwork } from 'entities/bridgeProvider'
 
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
@@ -17,9 +17,7 @@ interface BridgingSuccessNotificationProps {
 }
 export function BridgingSuccessNotification({ payload }: BridgingSuccessNotificationProps): ReactNode {
   const { chainId, order } = payload
-  const { data: bridgeNetworks } = useBridgeSupportedNetworks()
-  const bridgeNetwork = bridgeNetworks?.find((network) => network.id === chainId)
-
+  const bridgeNetwork = useBridgeSupportedNetwork(chainId)
   const bridgingOrder = useBridgeOrderData(order.uid)
 
   if (!bridgingOrder) return null

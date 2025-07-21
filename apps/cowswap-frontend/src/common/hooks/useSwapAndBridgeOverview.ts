@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { getChainInfo, TokenWithLogo } from '@cowprotocol/common-const'
 import { type Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { useBridgeSupportedNetworks } from 'entities/bridgeProvider'
+import { useBridgeSupportedNetwork } from 'entities/bridgeProvider'
 
 import type { Order } from 'legacy/state/orders/actions'
 
@@ -19,15 +19,14 @@ export function useSwapAndBridgeOverview(
   },
   targetRecipient?: string,
 ): SwapAndBridgeOverview | undefined {
-  const { data: bridgeSupportedNetworks } = useBridgeSupportedNetworks()
+  const destinationChainId = outputToken?.chainId
+  const destChainData = useBridgeSupportedNetwork(destinationChainId)
 
   return useMemo(() => {
     if (!order || !outputToken || !intermediateToken) return undefined
 
     const sourceChainId = order.inputToken.chainId
-    const destinationChainId = outputToken.chainId
     const sourceChainData = getChainInfo(sourceChainId)
-    const destChainData = bridgeSupportedNetworks?.find((chain) => chain.id === destinationChainId)
 
     if (!destChainData) return undefined
 
@@ -42,5 +41,5 @@ export function useSwapAndBridgeOverview(
       targetAmounts,
       targetRecipient,
     }
-  }, [order, outputToken, intermediateToken, targetAmounts, targetRecipient, bridgeSupportedNetworks])
+  }, [order, outputToken, intermediateToken, targetAmounts, targetRecipient, destChainData])
 }

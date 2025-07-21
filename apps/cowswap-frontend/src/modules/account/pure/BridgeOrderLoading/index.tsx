@@ -5,7 +5,7 @@ import { TokenLogo } from '@cowprotocol/tokens'
 import { TokenAmount } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import { useBridgeSupportedNetworks } from 'entities/bridgeProvider'
+import { useBridgeSupportedNetwork } from 'entities/bridgeProvider'
 
 import { Order } from 'legacy/state/orders/actions'
 
@@ -18,15 +18,12 @@ interface BridgeOrderLoadingProps {
 }
 
 export function BridgeOrderLoading({ order, fulfillmentTime, children }: BridgeOrderLoadingProps): ReactNode {
-  const { data: bridgeSupportedNetworks } = useBridgeSupportedNetworks()
   const inputAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount)
   const feeAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.feeAmount)
 
   const isCachedOrder = order.inputToken.chainId !== order.outputToken.chainId
   const sourceChainData = getChainInfo(order.inputToken.chainId)
-  const targetChainData = isCachedOrder
-    ? bridgeSupportedNetworks?.find((chain) => chain.id === order.outputToken.chainId)
-    : undefined
+  const targetChainData = useBridgeSupportedNetwork(isCachedOrder ? order.outputToken.chainId : undefined)
 
   return (
     <>
