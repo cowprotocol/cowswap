@@ -7,7 +7,7 @@ import { useBridgeProvider } from './useBridgeProvider'
 export function useBridgeSupportedNetworks(): SWRResponse<ChainInfo[]> {
   const bridgeProvider = useBridgeProvider()
 
-  return useSWR([bridgeProvider, bridgeProvider.info.dappId, 'useBridgeSupportedNetworks'], ([bridgeProvider]) => {
+  return useSWR([bridgeProvider.info.dappId, 'useBridgeSupportedNetworks'], () => {
     return bridgeProvider.getNetworks()
   })
 }

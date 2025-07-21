@@ -23,6 +23,7 @@ import {
 
 import type { SolverCompetition } from 'common/types/soverCompetition'
 
+import { useBridgeOrderOutputToken } from './useBridgeOrderOutputToken'
 import { useSwapAndBridgeOverview } from './useSwapAndBridgeOverview'
 import { useSwapResultsContext } from './useSwapResultsContext'
 
@@ -65,7 +66,9 @@ export function useSwapAndBridgeContext(
 
   const swapResultContext = useSwapResultsContext(order, winningSolver, intermediateToken)
   const bridgeOrderData = useBridgeOrderData(order?.id)
+  const outputToken = useBridgeOrderOutputToken(order, crossChainOrder)
 
+  const sourceChainId = order?.inputToken.chainId
   const bridgeQuoteAmounts = bridgeOrderData?.quoteAmounts
   const targetRecipient = bridgeOrderData?.recipient || crossChainOrder?.bridgingParams.recipient
   const bridgeFee = bridgeQuoteAmounts?.bridgeFee || null
@@ -78,15 +81,15 @@ export function useSwapAndBridgeContext(
    * Otherwise, fallback to bridgeQuoteAmounts
    */
   const bridgeReceiveAmount = useMemo(() => {
-    if (!order) return undefined
+    if (!outputToken) return undefined
 
     return (
       (!!crossChainOrder &&
         !!bridgeOutputAmount &&
-        CurrencyAmount.fromRawAmount(order.outputToken, bridgeOutputAmount.toString())) ||
+        CurrencyAmount.fromRawAmount(outputToken, bridgeOutputAmount.toString())) ||
       bridgeMinReceiveAmount
     )
-  }, [order, bridgeMinReceiveAmount, crossChainOrder, bridgeOutputAmount])
+  }, [outputToken, bridgeMinReceiveAmount, crossChainOrder, bridgeOutputAmount])
 
   /**
    * Bridge provider might not be able to derive `bridgingParams.outputAmount` before destination chain transaction is mined
@@ -112,18 +115,23 @@ export function useSwapAndBridgeContext(
     return undefined
   }, [bridgeQuoteAmounts, crossChainOrder, bridgeReceiveAmount, intermediateToken, receivedAmount, bridgeOutputAmount])
 
-  const swapAndBridgeOverview = useSwapAndBridgeOverview(order, intermediateToken, targetAmounts, targetRecipient)
+  const swapAndBridgeOverview = useSwapAndBridgeOverview(
+    order,
+    intermediateToken,
+    outputToken,
+    targetAmounts,
+    targetRecipient,
+  )
 
   // TODO: Break down this large function into smaller functions
   // TODO: Reduce function complexity by extracting logic
   // eslint-disable-next-line complexity
   const swapAndBridgeContext: SwapAndBridgeContext | undefined = useMemo(() => {
-    if (!account || !bridgeProvider || !swapResultContext || !order || !swapAndBridgeOverview) {
+    if (!account || !bridgeProvider || !swapResultContext || !sourceChainId || !outputToken || !swapAndBridgeOverview) {
       return undefined
     }
 
-    const sourceChainId = order.inputToken.chainId
-    const destinationChainId = order.outputToken.chainId
+    const destinationChainId = outputToken.chainId
     const sourceChainData = getChainInfo(sourceChainId)
     const destChainData = bridgeSupportedNetworks?.find((chain) => chain.id === destinationChainId)
 
@@ -179,7 +187,8 @@ export function useSwapAndBridgeContext(
       explorerUrl: crossChainOrder.explorerUrl,
     }
   }, [
-    order,
+    sourceChainId,
+    outputToken,
     swapResultContext,
     account,
     bridgeProvider,

@@ -15,6 +15,6 @@ export function useAddTokenImportCallback() {
         tokenToImport,
       })
     },
-    [updateSelectTokenWidget]
+    [updateSelectTokenWidget],
   )
 }

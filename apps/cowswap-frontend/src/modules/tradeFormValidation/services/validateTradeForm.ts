@@ -25,6 +25,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     isInsufficientBalanceOrderAllowed,
     isProviderNetworkUnsupported,
     isOnline,
+    intermediateTokenToBeImported,
     isAccountProxyLoading,
     isProxySetupValid,
   } = context
@@ -144,15 +145,19 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     validations.push(TradeFormValidation.WrapUnwrapFlow)
   }
 
-  if (isNativeIn) {
-    validations.push(TradeFormValidation.SellNativeToken)
-  }
-
   if (approvalRequired) {
     if (isBundlingSupported) {
       validations.push(TradeFormValidation.ApproveAndSwap)
     }
     validations.push(TradeFormValidation.ApproveRequired)
+  }
+
+  if (intermediateTokenToBeImported) {
+    validations.push(TradeFormValidation.ImportingIntermediateToken)
+  }
+
+  if (isNativeIn) {
+    validations.push(TradeFormValidation.SellNativeToken)
   }
 
   return validations.length > 0 ? validations : null
