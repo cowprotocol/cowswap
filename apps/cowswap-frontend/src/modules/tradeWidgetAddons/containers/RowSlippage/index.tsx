@@ -51,7 +51,7 @@ export function RowSlippage({
       isDefaultSlippageApplied,
       isSmartSlippageLoading: isTradePriceUpdating,
       smartSlippage:
-        isSmartSlippageApplied && swapSlippage ? `${formatPercent(swapSlippage)}%` : (swapSlippage ?? swapSlippage ?? swapSlippage ?? swapSlippage),
+        isSmartSlippageApplied && swapSlippage ? `${formatPercent(swapSlippage)}%` : undefined,
       setAutoSlippage: smartSlippageFromQuote ? () => setSlippage(null) : undefined,
     }),
     [

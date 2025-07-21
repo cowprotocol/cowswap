@@ -10,7 +10,7 @@ interface ValidationResult {
 }
 
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line complexity
+ 
 export function validateHookDappUrl(url: string): ValidationResult {
   if (!url) {
     return { isValid: false, error: null }
