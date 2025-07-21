@@ -39,6 +39,7 @@ export function quoteUsingSameParameters(
       currentParams.sellToken.toLowerCase() === nextParams.sellTokenAddress.toLowerCase(),
       bridgeTradeParams.sellTokenChainId === nextParams.sellTokenChainId,
       bridgeTradeParams.buyTokenAddress.toLowerCase() === nextParams.buyTokenAddress.toLowerCase(),
+      bridgeTradeParams.buyTokenChainId === nextParams.buyTokenChainId,
     ]
 
     return cases.every(Boolean)
