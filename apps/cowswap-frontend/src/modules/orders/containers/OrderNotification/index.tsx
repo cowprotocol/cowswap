@@ -1,10 +1,12 @@
 import { ReactNode, useCallback, useMemo } from 'react'
 
 import { shortenOrderId } from '@cowprotocol/common-utils'
-import { EnrichedOrder, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { EnrichedOrder, SupportedChainId, getChainInfo } from '@cowprotocol/cow-sdk'
 import { ToastMessageType } from '@cowprotocol/events'
 import { useTokensByAddressMap } from '@cowprotocol/tokens'
 import { TokenInfo, UiOrderType } from '@cowprotocol/types'
+
+import { useBridgeSupportedNetwork } from 'entities/bridgeProvider'
 
 import { useOrder } from 'legacy/state/orders/hooks'
 
@@ -66,6 +68,9 @@ export function OrderNotification(props: BaseOrderNotificationProps): ReactNode 
     return orderFromStore ? mapStoreOrderToInfo(orderFromStore) : undefined
   }, [orderFromStore, orderInfo, allTokens])
 
+  const srcChainData = getChainInfo(order?.inputToken.chainId)
+  const dstChainData = useBridgeSupportedNetwork(order?.outputToken.chainId)
+
   const onToastMessage = useMemo(
     () =>
       getToastMessageCallback(messageType, {
@@ -101,6 +106,8 @@ export function OrderNotification(props: BaseOrderNotificationProps): ReactNode 
             outputToken={order.outputToken as TokenInfo}
             sellAmount={order.inputAmount.toString()}
             buyAmount={order.outputAmount.toString()}
+            srcChainData={srcChainData}
+            dstChainData={dstChainData}
           />
         ) : null)}
       {!hideReceiver && <ReceiverInfo receiver={order.receiver} owner={order.owner} />}
