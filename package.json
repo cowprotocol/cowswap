@@ -36,6 +36,7 @@
     "test:all": "nx run-many -t test",
     "e2e": "nx run-many -t e2e",
     "lint": "nx run-many -t lint",
+    "affected:lint": "nx affected --target=lint --parallel=4 --base=origin/develop --head=HEAD",
     "prebuild:cowswap": "yarn i18n",
     "prepare": "husky",
     "postinstall": "yarn run patch-package",
