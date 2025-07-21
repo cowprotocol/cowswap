@@ -4,14 +4,16 @@ import { useMemo } from 'react'
 import { walletInfoAtom } from '@cowprotocol/wallet'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
+import { advancedOrdersDerivedStateAtom } from 'modules/advancedOrders'
+import { getAppData } from 'modules/appData'
+import { appDataInfoAtom } from 'modules/appData/state/atoms'
+
 import { useScaledReceiveAmountInfo } from './useScaledReceiveAmountInfo'
 
-import { advancedOrdersDerivedStateAtom } from '../../advancedOrders'
-import { getAppData } from '../../appData'
-import { appDataInfoAtom } from '../../appData/state/atoms'
 import { twapTimeIntervalAtom } from '../state/twapOrderAtom'
 import { twapOrdersSettingsAtom } from '../state/twapOrdersSettingsAtom'
 import { TWAPOrder } from '../types'
+
 
 export function useTwapOrder(): TWAPOrder | null {
   const appDataInfo = useAtomValue(appDataInfoAtom)
