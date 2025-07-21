@@ -13,7 +13,6 @@ export function useBridgeSupportedTokens(params: BuyTokensParams | undefined): S
   return useSWR(
     isBridgingEnabled
       ? [
-          bridgeProvider,
           params,
           params?.sellChainId,
           params?.buyChainId,
@@ -22,7 +21,7 @@ export function useBridgeSupportedTokens(params: BuyTokensParams | undefined): S
           'useBridgeSupportedTokens',
         ]
       : null,
-    ([bridgeProvider, params]) => {
+    ([params]) => {
       if (typeof params === 'undefined') return null
 
       return bridgeProvider

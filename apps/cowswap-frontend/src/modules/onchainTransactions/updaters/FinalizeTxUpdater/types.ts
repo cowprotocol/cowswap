@@ -1,4 +1,3 @@
-import { useAddPriorityAllowance } from '@cowprotocol/balances-and-allowances'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { GnosisSafeInfo } from '@cowprotocol/wallet'
 
@@ -20,8 +19,8 @@ export interface CheckEthereumTransactions {
   getReceipt: GetReceipt
   getTxSafeInfo: GetSafeTxInfo
   dispatch: AppDispatch
-  addPriorityAllowance: ReturnType<typeof useAddPriorityAllowance>
   nativeCurrencySymbol: string
   cancelOrdersBatch: CancelOrdersBatchCallback
   safeInfo: GnosisSafeInfo | undefined
+  updateLastApproveTxBlockNumber: (params: { blockNumber: number; tokenAddress: string }) => void
 }

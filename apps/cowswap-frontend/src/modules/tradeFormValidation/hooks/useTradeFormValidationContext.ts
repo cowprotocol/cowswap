@@ -5,6 +5,8 @@ import { useENSAddress } from '@cowprotocol/ens'
 import { useIsTradeUnsupported } from '@cowprotocol/tokens'
 import { useGnosisSafeInfo, useIsTxBundlingSupported, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
+import { useTryFindIntermediateToken } from 'modules/bridge'
+import { useCurrentAccountProxy } from 'modules/cowShed'
 import { useTokenSupportsPermit } from 'modules/permit'
 import { TradeType, useAmountsToSign, useDerivedTradeState, useIsWrapOrUnwrap } from 'modules/trade'
 import { TradeQuoteState, useTradeQuote } from 'modules/tradeQuote'
@@ -33,12 +35,17 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const isWrapUnwrap = useIsWrapOrUnwrap()
   const { isSupportedWallet } = useWalletDetails()
   const gnosisSafeInfo = useGnosisSafeInfo()
+  const { isLoading, data: proxyAccount } = useCurrentAccountProxy()
 
   const isSafeReadonlyUser = gnosisSafeInfo?.isReadOnly === true
 
   const isPermitSupported = useTokenSupportsPermit(inputCurrency, tradeType)
 
   const isInsufficientBalanceOrderAllowed = tradeType === TradeType.LIMIT_ORDER
+
+  const { intermediateBuyToken, toBeImported } = useTryFindIntermediateToken({
+    bridgeQuote: tradeQuote.bridgeQuote,
+  })
 
   const commonContext = {
     account,
@@ -55,6 +62,9 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     isProviderNetworkUnsupported,
     isOnline,
     derivedTradeState,
+    intermediateTokenToBeImported: !!intermediateBuyToken && toBeImported,
+    isAccountProxyLoading: isLoading,
+    isProxySetupValid: proxyAccount?.isProxySetupValid,
   }
 
   return useMemo(() => {

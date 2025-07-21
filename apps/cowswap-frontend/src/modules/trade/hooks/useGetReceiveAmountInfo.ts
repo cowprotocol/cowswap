@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { isFractionFalsy } from '@cowprotocol/common-utils'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
-import { useGetIntermediateSellTokenIfExists } from './useGetIntermediateSellTokenIfExists'
+import { useTryFindIntermediateTokenInTokensMap } from './useTryFindIntermediateTokenInTokensMap'
 
 import { useTradeQuote } from '../../tradeQuote'
 import { useVolumeFee } from '../../volumeFee'
@@ -21,7 +21,7 @@ export function useGetReceiveAmountInfo(): ReceiveAmountInfo | null {
   const orderParams = quoteResponse?.quote
   const bridgeFeeRaw = bridgeQuote?.amountsAndCosts.costs.bridgingFee.amountInSellCurrency
 
-  const intermediateCurrency = useGetIntermediateSellTokenIfExists(orderParams)
+  const intermediateCurrency = useTryFindIntermediateTokenInTokensMap(orderParams)
 
   return useMemo(() => {
     if (isFractionFalsy(inputCurrencyAmount) && isFractionFalsy(outputCurrencyAmount)) return null

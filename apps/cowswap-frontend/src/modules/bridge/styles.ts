@@ -337,9 +337,10 @@ export const StatusAwareText = styled.span<{ status?: SwapAndBridgeStatus }>`
  */
 export const AnimatedEllipsis = styled.span<{ isVisible?: boolean }>`
   display: inline-block;
-  width: 0.8em;
+  min-width: 1em;
   text-align: left;
   vertical-align: bottom;
+  white-space: nowrap;
 
   &::after {
     content: '.';
@@ -350,6 +351,7 @@ export const AnimatedEllipsis = styled.span<{ isVisible?: boolean }>`
           `
         : 'none'};
     display: inline-block;
+    width: 1em;
   }
 `
 

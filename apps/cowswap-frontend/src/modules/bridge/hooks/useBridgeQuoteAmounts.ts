@@ -1,26 +1,23 @@
 import { useMemo } from 'react'
 
-import { useTokensByAddressMap } from '@cowprotocol/tokens'
+import { BridgeQuoteAmounts } from '@cowprotocol/types'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useGetReceiveAmountInfo } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 
-import { BridgeQuoteAmounts } from 'common/types/bridge'
+import { useTryFindIntermediateToken } from './useTryFindIntermediateToken'
 
 export function useBridgeQuoteAmounts(): BridgeQuoteAmounts | null {
   const receiveAmountInfo = useGetReceiveAmountInfo()
   const { bridgeQuote } = useTradeQuote()
-  const tokensByAddress = useTokensByAddressMap()
+  const { intermediateBuyToken } = useTryFindIntermediateToken({ bridgeQuote })
 
   return useMemo(() => {
     if (!receiveAmountInfo?.costs.bridgeFee || !bridgeQuote) return null
 
     const { sellAmount: swapSellAmount, buyAmount } = receiveAmountInfo.afterSlippage
     const buyToken = buyAmount.currency
-
-    const intermediateBuyTokenAddress = bridgeQuote.tradeParameters.sellTokenAddress
-    const intermediateBuyToken = tokensByAddress[intermediateBuyTokenAddress.toLowerCase()]
 
     if (!intermediateBuyToken) return null
 
@@ -46,5 +43,5 @@ export function useBridgeQuoteAmounts(): BridgeQuoteAmounts | null {
       bridgeMinReceiveAmount,
       bridgeFee: receiveAmountInfo.costs.bridgeFee.amountInDestinationCurrency,
     }
-  }, [receiveAmountInfo, bridgeQuote, tokensByAddress])
+  }, [receiveAmountInfo, bridgeQuote, intermediateBuyToken])
 }
