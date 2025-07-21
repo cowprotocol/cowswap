@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react'
 
+import { isFractionFalsy } from '@cowprotocol/common-utils'
 import { TokenAmount } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
@@ -27,14 +28,15 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps): 
     isSell,
     costs: {
       partnerFee: { amount: partnerFeeAmount },
+      bridgeFee,
     },
   } = receiveAmountInfo
   const { amountAfterFees, amountBeforeFees, networkFeeAmount } = getOrderTypeReceiveAmounts(receiveAmountInfo)
   const { subsidy } = subsidyAndBalance
   const { discount } = subsidy
 
-  const hasPartnerFee = !!partnerFeeAmount && partnerFeeAmount.greaterThan(0)
-  const hasNetworkFee = !!networkFeeAmount && networkFeeAmount.greaterThan(0)
+  const hasPartnerFee = !isFractionFalsy(partnerFeeAmount)
+  const hasNetworkFee = !isFractionFalsy(networkFeeAmount)
   const hasFee = hasNetworkFee || hasPartnerFee
 
   const isEoaNotEthFlow = allowsOffchainSigning && !isEoaEthFlow
@@ -52,9 +54,13 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps): 
 
       <NetworkFeeItem discount={discount} networkFeeAmount={networkFeeAmount} isSell={isSell} hasFee={hasFee} />
 
-      {(isEoaNotEthFlow || hasPartnerFee) && <FeeItem isSell={isSell} partnerFeeAmount={partnerFeeAmount} />}
+      {(isEoaNotEthFlow || hasPartnerFee) && <FeeItem title="Fee" isSell={isSell} feeAmount={partnerFeeAmount} />}
 
-      {amountAfterFees.greaterThan(0) && (
+      {bridgeFee && (
+        <FeeItem title="Bridge costs" isSell={isSell} feeAmount={bridgeFee?.amountInIntermediateCurrency} />
+      )}
+
+      {!isFractionFalsy(amountAfterFees) && (
         <styledEl.TotalAmount>
           <span>
             <Trans>{!isSell ? 'From' : 'To'}</Trans>

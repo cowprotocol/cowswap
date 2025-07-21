@@ -44,7 +44,7 @@ export function useBridgeQuoteAmounts(): BridgeQuoteAmounts | null {
       swapBuyAmount,
       swapMinReceiveAmount,
       bridgeMinReceiveAmount,
-      bridgeFee: receiveAmountInfo.costs.bridgeFee,
+      bridgeFee: receiveAmountInfo.costs.bridgeFee.amountInDestinationCurrency,
     }
   }, [receiveAmountInfo, bridgeQuote, tokensByAddress])
 }

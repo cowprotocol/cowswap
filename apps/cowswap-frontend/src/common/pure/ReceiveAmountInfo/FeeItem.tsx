@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react'
 
+import { isFractionFalsy } from '@cowprotocol/common-utils'
 import { TokenAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -8,23 +9,23 @@ import { Trans } from '@lingui/macro'
 import * as styledEl from './styled'
 
 interface FeeItemProps {
+  title: string
   isSell: boolean
-  partnerFeeAmount: CurrencyAmount<Currency> | undefined
+  feeAmount: CurrencyAmount<Currency> | undefined
 }
 
-export function FeeItem({ isSell, partnerFeeAmount }: FeeItemProps): ReactNode {
+export function FeeItem({ title, isSell, feeAmount: feeAmount }: FeeItemProps): ReactNode {
   const typeString = !isSell ? '+' : '-'
-  const hasPartnerFee = !!partnerFeeAmount && partnerFeeAmount.greaterThan(0)
 
   return (
     <div>
       <span>
-        <Trans>Fee</Trans>
+        <Trans>{title}</Trans>
       </span>
-      {hasPartnerFee ? (
+      {!isFractionFalsy(feeAmount) ? (
         <span>
           {typeString}
-          <TokenAmount amount={partnerFeeAmount} tokenSymbol={partnerFeeAmount?.currency} defaultValue="0" />
+          <TokenAmount amount={feeAmount} tokenSymbol={feeAmount?.currency} defaultValue="0" />
         </span>
       ) : (
         <styledEl.GreenText>
