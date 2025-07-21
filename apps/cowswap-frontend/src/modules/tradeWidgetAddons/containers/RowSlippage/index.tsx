@@ -1,4 +1,4 @@
-import { ReactNode, useMemo } from 'react'
+import { useMemo } from 'react'
 
 import { formatPercent } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -27,7 +27,7 @@ export function RowSlippage({
   slippageLabel,
   isTradePriceUpdating,
   isSlippageModified,
-}: RowSlippageProps): ReactNode{
+}: RowSlippageProps): JSX.Element {
   const { chainId } = useWalletInfo()
 
   const isEoaEthFlow = useIsEoaEthFlow()
