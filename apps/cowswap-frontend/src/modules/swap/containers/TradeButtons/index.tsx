@@ -1,5 +1,8 @@
 import React, { ReactNode } from 'react'
 
+import { TokenWithLogo } from '@cowprotocol/common-const'
+
+import { AddIntermediateToken } from 'modules/tokensList'
 import {
   useIsCurrentTradeBridging,
   useIsNoImpactWarningAccepted,
@@ -26,12 +29,18 @@ interface TradeButtonsProps {
   isTradeContextReady: boolean
   openNativeWrapModal(): void
   hasEnoughWrappedBalanceForSwap: boolean
+  tokenToBeImported: boolean
+  intermediateBuyToken: TokenWithLogo | null
+  setShowAddIntermediateTokenModal: (show: boolean) => void
 }
 
 export function TradeButtons({
   isTradeContextReady,
   openNativeWrapModal,
   hasEnoughWrappedBalanceForSwap,
+  tokenToBeImported,
+  intermediateBuyToken,
+  setShowAddIntermediateTokenModal,
 }: TradeButtonsProps): ReactNode {
   const { inputCurrency } = useSwapDerivedState()
 
@@ -60,6 +69,11 @@ export function TradeButtons({
     confirmText,
   })
 
+  const shouldShowAddIntermediateToken =
+    tokenToBeImported &&
+    !!intermediateBuyToken &&
+    primaryFormValidation === TradeFormValidation.ImportingIntermediateToken
+
   // Selling ETH is allowed in Swap
   const isPrimaryValidationPassed =
     !primaryFormValidation || primaryFormValidation === TradeFormValidation.SellNativeToken
@@ -72,11 +86,19 @@ export function TradeButtons({
   }
 
   return (
-    <TradeFormButtons
-      confirmText={confirmText}
-      validation={primaryFormValidation}
-      context={tradeFormButtonContext}
-      isDisabled={isDisabled}
-    />
+    <>
+      <TradeFormButtons
+        confirmText={confirmText}
+        validation={primaryFormValidation}
+        context={tradeFormButtonContext}
+        isDisabled={isDisabled}
+      />
+      {shouldShowAddIntermediateToken && (
+        <AddIntermediateToken
+          intermediateBuyToken={intermediateBuyToken!}
+          onImport={() => setShowAddIntermediateTokenModal(true)}
+        />
+      )}
+    </>
   )
 }

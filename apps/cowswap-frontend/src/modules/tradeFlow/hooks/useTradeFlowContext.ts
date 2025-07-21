@@ -1,5 +1,5 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, OrderClass, PriceQuality, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { OrderClass, PriceQuality } from '@cowprotocol/cow-sdk'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
@@ -13,7 +13,6 @@ import { useCloseModals } from 'legacy/state/application/hooks'
 import { useAppData, useAppDataHooks } from 'modules/appData'
 import { useBridgeQuoteAmounts } from 'modules/bridge'
 import { useGeneratePermitHook, useGetCachedPermit, usePermitInfo } from 'modules/permit'
-import { useEnoughBalanceAndAllowance } from 'modules/tokens'
 import {
   useDerivedTradeState,
   useGetReceiveAmountInfo,
@@ -25,6 +24,7 @@ import {
 import { getOrderValidTo, useTradeQuote } from 'modules/tradeQuote'
 
 import { useGP2SettlementContract } from 'common/hooks/useContract'
+import { useEnoughAllowance } from 'common/hooks/useEnoughAllowance'
 
 import { useSetSigningStep } from './useSetSigningStep'
 
@@ -73,12 +73,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
   const addBridgeOrder = useAddBridgeOrder()
   const bridgeQuoteAmounts = useBridgeQuoteAmounts()
 
-  const checkAllowanceAddress = COW_PROTOCOL_VAULT_RELAYER_ADDRESS[settlementChainId || SupportedChainId.MAINNET]
-  const { enoughAllowance } = useEnoughBalanceAndAllowance({
-    account,
-    amount: inputAmount,
-    checkAllowanceAddress,
-  })
+  const enoughAllowance = useEnoughAllowance(inputAmount)
 
   const {
     inputCurrency: sellToken,
@@ -169,7 +164,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
         uiOrderType,
         bridgeQuoteAmounts,
         addBridgeOrder,
-         setSigningStep,
+        setSigningStep,
       ]) => {
         return {
           tradeQuoteState,

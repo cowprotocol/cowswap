@@ -18,7 +18,7 @@ const requestTimeout = ms`10s`
 
 /**
  * Walletconnect in mobile browsers initiates a request with confirmation to the wallet
- * to get the capabilities. It breaks the flow with perpetual reuqests.
+ * to get the capabilities. It breaks the flow with perpetual requests.
  */
 function shouldCheckCapabilities(
   isWalletConnect: boolean,

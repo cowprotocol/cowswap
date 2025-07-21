@@ -1,5 +1,7 @@
 export { SelectTokenWidget } from './containers/SelectTokenWidget'
 export { ImportTokenModal } from './pure/ImportTokenModal'
+export { AddIntermediateToken } from './pure/AddIntermediateToken'
+export { AddIntermediateTokenModal } from './pure/AddIntermediateTokenModal'
 export { useOpenTokenSelectWidget } from './hooks/useOpenTokenSelectWidget'
 export { useSelectTokenWidgetState } from './hooks/useSelectTokenWidgetState'
 export { useUpdateSelectTokenWidgetState } from './hooks/useUpdateSelectTokenWidgetState'

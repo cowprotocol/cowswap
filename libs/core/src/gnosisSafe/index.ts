@@ -31,7 +31,7 @@ function _getClient(chainId: number, library: Web3Provider): SafeApiKit | null {
 
   const client = createSafeApiKitInstance(chainId, library)
 
-  // Add client to cache (or null if unknonw network)
+  // Add client to cache (or null if unknown network)
   SAFE_TRANSACTION_SERVICE_CACHE[chainId] = client
 
   return client

@@ -2,6 +2,8 @@ import { useMemo } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
+
 import { useAppSelector } from '../../hooks'
 import { EnhancedTransactionDetails } from '../reducer'
 
@@ -17,8 +19,9 @@ export function useAllTransactions(): { [txHash: string]: EnhancedTransactionDet
 }
 
 // returns whether a token has a pending approval transaction
-export function useHasPendingApproval(tokenAddress: string | undefined, spender: string | undefined): boolean {
+export function useHasPendingApproval(tokenAddress: string | undefined): boolean {
   const allTransactions = useAllTransactions()
+  const spender = useTradeSpenderAddress()
 
   return useMemo(
     () =>

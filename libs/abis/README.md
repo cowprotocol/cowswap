@@ -14,7 +14,7 @@ nx build abis
 
 The types are automatically created from the Json ABIs.
 
-These generated types are commited into the project, and are not generated automatically (assumption is, we don't need to often add new ABIs and generation takes time).
+These generated types are committed into the project, and are not generated automatically (assumption is, we don't need to often add new ABIs and generation takes time).
 
 Geterate types:
 
