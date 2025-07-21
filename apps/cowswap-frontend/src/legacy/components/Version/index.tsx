@@ -10,7 +10,7 @@ import {
   COW_PROTOCOL_VAULT_RELAYER_ADDRESS,
   SupportedChainId as ChainId,
 } from '@cowprotocol/cow-sdk'
-import { contractsTsVersion } from '@cowprotocol/cow-sdk'
+import { CONTRACTS_PKG_VERSION } from '@cowprotocol/cow-sdk'
 import { UI, ExternalLink, Media } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -35,11 +35,11 @@ const VERSIONS: Record<string, VersionInfo> = {
     href: () => CODE_LINK,
   },
   'Vault Relayer': {
-    version: 'v' + contractsTsVersion,
+    version: 'v' + CONTRACTS_PKG_VERSION,
     href: (chainId: ChainId) => _getContractsUrls(chainId, COW_PROTOCOL_VAULT_RELAYER_ADDRESS),
   },
   'Settlement Contract': {
-    version: 'v' + contractsTsVersion,
+    version: 'v' + CONTRACTS_PKG_VERSION,
     href: (chainId: ChainId) => _getContractsUrls(chainId, COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS),
   },
 }
