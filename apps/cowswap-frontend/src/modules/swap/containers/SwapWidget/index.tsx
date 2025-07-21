@@ -5,7 +5,7 @@ import { isSellOrder } from '@cowprotocol/common-utils'
 import { Field } from 'legacy/state/types'
 import { useHooksEnabledManager } from 'legacy/state/user/hooks'
 
-import { useGetMaybeIntermediateToken } from 'modules/bridge'
+import { useTryFindIntermediateToken } from 'modules/bridge'
 import { EthFlowModal, EthFlowProps } from 'modules/ethFlow'
 import { AddIntermediateTokenModal } from 'modules/tokensList'
 import {
@@ -51,7 +51,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   const priceImpact = useTradePriceImpact()
   const widgetActions = useSwapWidgetActions()
   const receiveAmountInfo = useGetReceiveAmountInfo()
-  const { intermediateBuyToken, toBeImported } = useGetMaybeIntermediateToken({ bridgeQuote })
+  const { intermediateBuyToken, toBeImported } = useTryFindIntermediateToken({ bridgeQuote })
   const [showNativeWrapModal, setOpenNativeWrapModal] = useState(false)
   const [showAddIntermediateTokenModal, setShowAddIntermediateTokenModal] = useState(false)
 

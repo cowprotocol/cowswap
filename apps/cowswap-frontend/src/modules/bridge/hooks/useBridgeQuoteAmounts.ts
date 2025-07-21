@@ -6,12 +6,12 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 import { useGetReceiveAmountInfo } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 
-import { useGetMaybeIntermediateToken } from './useGetMaybeIntermediateToken'
+import { useTryFindIntermediateToken } from './useTryFindIntermediateToken'
 
 export function useBridgeQuoteAmounts(): BridgeQuoteAmounts | null {
   const receiveAmountInfo = useGetReceiveAmountInfo()
   const { bridgeQuote } = useTradeQuote()
-  const { intermediateBuyToken } = useGetMaybeIntermediateToken({ bridgeQuote })
+  const { intermediateBuyToken } = useTryFindIntermediateToken({ bridgeQuote })
 
   return useMemo(() => {
     if (!receiveAmountInfo || !bridgeQuote) return null

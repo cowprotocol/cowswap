@@ -4,21 +4,21 @@ import { TokenWithLogo } from '@cowprotocol/common-const'
 import { BridgeQuoteResults, OrderKind } from '@cowprotocol/cow-sdk'
 import { useSearchToken } from '@cowprotocol/tokens'
 
-import { useGetIntermediateSellTokenIfExists } from '../../trade/hooks/useGetIntermediateSellTokenIfExists'
+import { useGetIntermediateSellTokenFromOrder } from '../../trade/hooks/useGetIntermediateSellTokenFromOrder'
 
 interface UseGetMaybeIntermediateTokenProps {
   bridgeQuote: BridgeQuoteResults | null
 }
 
 // returns the intermediate buy token (if it exists) and if it should be imported
-export function useGetMaybeIntermediateToken({ bridgeQuote }: UseGetMaybeIntermediateTokenProps): {
+export function useTryFindIntermediateToken({ bridgeQuote }: UseGetMaybeIntermediateTokenProps): {
   intermediateBuyToken: TokenWithLogo | null
   toBeImported: boolean
 } {
   const { sellTokenAddress: intermediateBuyTokenAddress } = bridgeQuote?.tradeParameters || {}
   const orderParams = getOrderParamsFromQuote(bridgeQuote)
 
-  const intermediateBuyToken = useGetIntermediateSellTokenIfExists(orderParams) ?? null
+  const intermediateBuyToken = useGetIntermediateSellTokenFromOrder(orderParams) ?? null
   const { inactiveListsResult, blockchainResult, externalApiResult, isLoading } = useSearchToken(
     intermediateBuyToken ? null : intermediateBuyTokenAddress || null,
   )

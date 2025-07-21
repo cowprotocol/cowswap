@@ -4,7 +4,7 @@ import { isFractionFalsy } from '@cowprotocol/common-utils'
 import { Currency, Price } from '@uniswap/sdk-core'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
-import { useGetIntermediateSellTokenIfExists } from './useGetIntermediateSellTokenIfExists'
+import { useGetIntermediateSellTokenFromOrder } from './useGetIntermediateSellTokenFromOrder'
 
 import { useTradeQuote } from '../../tradeQuote'
 import { useVolumeFee } from '../../volumeFee'
@@ -19,7 +19,7 @@ export function useGetReceiveAmountInfo(): (AmountsAndCosts & { quotePrice: Pric
   const volumeFeeBps = useVolumeFee()?.volumeBps
   const quoteResponse = tradeQuote.quote?.quoteResults.quoteResponse
   const orderParams = quoteResponse?.quote
-  const intermediateCurrency = useGetIntermediateSellTokenIfExists(orderParams)
+  const intermediateCurrency = useGetIntermediateSellTokenFromOrder(orderParams)
 
   return useMemo(() => {
     if (isFractionFalsy(inputCurrencyAmount) && isFractionFalsy(outputCurrencyAmount)) return null
