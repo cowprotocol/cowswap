@@ -4,7 +4,7 @@ import { TokenWithLogo } from '@cowprotocol/common-const'
 import { BridgeQuoteResults, OrderKind } from '@cowprotocol/cow-sdk'
 import { useSearchToken } from '@cowprotocol/tokens'
 
-import { useGetIntermediateSellTokenFromOrder } from '../../trade/hooks/useGetIntermediateSellTokenFromOrder'
+import { useGetIntermediateSellTokenFromOrder } from 'modules/trade/hooks/useGetIntermediateSellTokenFromOrder'
 
 interface UseGetMaybeIntermediateTokenProps {
   bridgeQuote: BridgeQuoteResults | null
