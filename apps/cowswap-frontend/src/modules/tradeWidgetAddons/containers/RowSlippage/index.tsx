@@ -29,7 +29,6 @@ export function RowSlippage({
   isSlippageModified,
 }: RowSlippageProps): ReactNode{
   const { chainId } = useWalletInfo()
-  // test 1
 
   const isEoaEthFlow = useIsEoaEthFlow()
   const nativeCurrency = useNativeCurrency()
