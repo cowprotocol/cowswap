@@ -1,5 +1,5 @@
 import { isSellOrder } from '@cowprotocol/common-utils'
-import { type OrderParameters, getQuoteAmountsAndCosts, QuoteAmountsAndCosts } from '@cowprotocol/cow-sdk'
+import { type OrderParameters, getQuoteAmountsAndCosts } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 
 import { OrderTypeReceiveAmounts, ReceiveAmountInfo } from '../types'
@@ -32,8 +32,6 @@ export function getTotalCosts(
   return additionalCosts ? fee.add(additionalCosts) : fee
 }
 
-export type AmountsAndCosts = Omit<QuoteAmountsAndCosts<CurrencyAmount<Currency>>, 'quotePrice'>
-
 /**
  * Map native bigint amounts to CurrencyAmounts
  */
@@ -43,8 +41,8 @@ export function getReceiveAmountInfo(
   outputCurrency: Currency,
   slippagePercent: Percent,
   _partnerFeeBps: number | undefined,
-  intermediateCurrency?: Currency
-): AmountsAndCosts & { quotePrice: Price<Currency, Currency> } {
+  intermediateCurrency?: Currency,
+): ReceiveAmountInfo {
   const partnerFeeBps = _partnerFeeBps ?? 0
   const currenciesExcludingIntermediate = { inputCurrency, outputCurrency }
 

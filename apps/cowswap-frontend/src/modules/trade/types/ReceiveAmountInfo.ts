@@ -21,6 +21,7 @@ export interface ReceiveAmountInfo {
       amount: CurrencyAmount<Currency>
       bps: number
     }
+    bridgeFee?: CurrencyAmount<Currency>
   }
 
   beforeNetworkCosts: {
