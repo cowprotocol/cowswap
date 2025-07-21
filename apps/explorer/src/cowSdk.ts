@@ -3,9 +3,13 @@ import { OrderBookApi, SubgraphApi } from '@cowprotocol/cow-sdk'
 
 import { SUBGRAPH_URLS } from './consts/subgraphUrls'
 
-const prodBaseUrls = process.env.REACT_APP_ORDER_BOOK_URLS
-  ? JSON.parse(process.env.REACT_APP_ORDER_BOOK_URLS)
-  : undefined
+// TODO: why is this duplicated? Can this be shared with the instance from CoW Swap?
+
+const envBaseUrls = process.env.REACT_APP_ORDER_BOOK_URLS && JSON.parse(process.env.REACT_APP_ORDER_BOOK_URLS)
+const localStorageBaseUrls =
+  localStorage.getItem('orderBookUrls') && JSON.parse(localStorage.getItem('orderBookUrls') || '{}')
+
+const prodBaseUrls = envBaseUrls || localStorageBaseUrls || undefined
 
 export const orderBookSDK = new OrderBookApi({
   env: 'prod',
