@@ -1,8 +1,9 @@
 module.exports = {
-  '*.{ts,tsx,js,jsx}': (filesArray) => {
-    const files = filesArray.join();
+  '*.{ts,tsx,js,jsx}': files => {
+    const list = files.map(f => `"${f}"`).join(' ');
     return [
-      `nx affected:lint --fix --uncommitted`,
+      `eslint --fix --max-warnings=0 ${list}`,
+      `git add ${list}`
     ];
-  },
+  }
 };
