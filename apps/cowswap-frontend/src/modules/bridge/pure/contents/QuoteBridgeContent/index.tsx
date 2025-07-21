@@ -49,7 +49,7 @@ export function QuoteBridgeContent({
           withTimelineDot
           label={
             <>
-              Bridge fee <InfoTooltip content="The fee for the bridge transaction." size={14} />
+              Bridge costs <InfoTooltip content="Bridge transaction costs." size={14} />
             </>
           }
         >
