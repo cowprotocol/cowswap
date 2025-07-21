@@ -15,6 +15,7 @@ import { TokenAmountDisplay } from '../../TokenAmountDisplay'
 
 interface QuoteDetailsContentProps {
   context: QuoteSwapContext
+  showRecommendedSlippage?: boolean
 }
 
 interface ContentItem {
@@ -48,7 +49,23 @@ function createExpectedReceiveContent(
   }
 }
 
-function createSlippageContent(slippage: Percent, isSlippageModified: boolean): ContentItem {
+function createSlippageContent(slippage: Percent, showRecommendedSlippage: boolean, isSlippageModified: boolean): ContentItem {
+  if (!showRecommendedSlippage) {
+    return {
+      withTimelineDot: true,
+      label: (
+        <>
+          Max. swap slippage{' '}
+          <InfoTooltip
+            content="CoW Swap dynamically adjusts your slippage tolerance to ensure your trade executes quickly while still getting the best price. Trades are protected from MEV, so your slippage can't be exploited!"
+            size={14}
+          />
+        </>
+      ),
+      content: <PercentDisplay percent={slippage.toFixed(2)} />,
+    }
+  }
+
   const slippageLabel = <>Max. swap slippage{' '}</>
   const slippagePercentDisplay = <RowSlippage
     slippageLabel={slippageLabel}
@@ -104,11 +121,12 @@ export function QuoteSwapContent({
     expectedReceiveUsdValue,
     isSlippageModified
   },
+  showRecommendedSlippage
 }: QuoteDetailsContentProps): ReactNode {
   const isBridgeQuoteRecipient = recipient === BRIDGE_QUOTE_ACCOUNT
   const contents = [
     createExpectedReceiveContent(buyAmount, expectedReceiveUsdValue, slippage),
-    createSlippageContent(slippage, isSlippageModified),
+    createSlippageContent(slippage, !!showRecommendedSlippage, isSlippageModified),
     !isBridgeQuoteRecipient && createRecipientContent(recipient, sellAmount.currency.chainId),
     createMinReceiveContent(minReceiveAmount, minReceiveUsdValue),
   ]
