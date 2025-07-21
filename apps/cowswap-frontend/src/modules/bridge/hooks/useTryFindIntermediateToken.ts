@@ -52,7 +52,8 @@ export function useTryFindIntermediateToken({ bridgeQuote }: UseGetMaybeIntermed
   return { intermediateBuyToken, toBeImported: false }
 }
 
-function getOrderParamsFromQuote(buyToken?: string, kind?: OrderKind): { kind: OrderKind; buyToken: string } | undefined {
+function getOrderParamsFromQuote(buyToken?: string, kind?: OrderKind):
+  { kind: OrderKind; buyToken: string } | undefined {
   if (!buyToken || !kind) return undefined
 
   return { kind, buyToken }

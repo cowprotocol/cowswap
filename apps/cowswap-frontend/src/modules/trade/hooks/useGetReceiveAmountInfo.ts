@@ -19,7 +19,9 @@ export function useGetReceiveAmountInfo(): (AmountsAndCosts & { quotePrice: Pric
   const volumeFeeBps = useVolumeFee()?.volumeBps
   const quoteResponse = tradeQuote.quote?.quoteResults.quoteResponse
   const orderParams = quoteResponse?.quote
-  const intermediateCurrency = useTryFindIntermediateToken({ bridgeQuote: tradeQuote.bridgeQuote })?.intermediateBuyToken ?? undefined
+  const intermediateCurrency = useTryFindIntermediateToken({
+    bridgeQuote: tradeQuote.bridgeQuote
+  })?.intermediateBuyToken ?? undefined
 
   return useMemo(() => {
     if (isFractionFalsy(inputCurrencyAmount) && isFractionFalsy(outputCurrencyAmount)) return null
