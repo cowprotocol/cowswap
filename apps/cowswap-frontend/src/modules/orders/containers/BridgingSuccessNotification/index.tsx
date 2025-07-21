@@ -16,9 +16,9 @@ interface BridgingSuccessNotificationProps {
   payload: OnBridgingSuccessPayload
 }
 export function BridgingSuccessNotification({ payload }: BridgingSuccessNotificationProps): ReactNode {
-  const { chainId, order } = payload
-  const bridgeNetwork = useBridgeSupportedNetwork(chainId)
+  const { chainId, order, bridgingParams } = payload
   const bridgingOrder = useBridgeOrderData(order.uid)
+  const bridgeNetwork = useBridgeSupportedNetwork(bridgingParams.destinationChainId)
 
   if (!bridgingOrder) return null
 
