@@ -13,6 +13,12 @@ import { TokenAmountDisplay } from '../../TokenAmountDisplay'
 
 const MIN_RECEIVE_TITLE = 'Min. to receive'
 
+const estBridgeTimeTooltip = (
+  <>
+    Est. bridge time <InfoTooltip content="The estimated time for the bridge transaction to complete." size={14} />
+  </>
+)
+
 export interface QuoteBridgeContentProps {
   isQuoteDisplay?: boolean
   quoteContext: QuoteBridgeContext
@@ -63,15 +69,7 @@ export function QuoteBridgeContent({
       )}
 
       {estimatedTime && (
-        <ConfirmDetailsItem
-          withTimelineDot
-          label={
-            <>
-              Est. bridge time{' '}
-              <InfoTooltip content="The estimated time for the bridge transaction to complete." size={14} />
-            </>
-          }
-        >
+        <ConfirmDetailsItem withTimelineDot label={estBridgeTimeTooltip}>
           ~ {displayTime(estimatedTime * 1000, true)}
         </ConfirmDetailsItem>
       )}
