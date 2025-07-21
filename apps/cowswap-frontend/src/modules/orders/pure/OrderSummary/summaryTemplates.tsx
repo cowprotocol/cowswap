@@ -37,7 +37,7 @@ export function BuyForAtMostTemplate({
     <>
       {actionTitle} {outputAmount}
       {dstChainData && ` (${dstChainData.label})`} for at most {inputAmount}
-      {srcChainData && ` (${srcChainData.label})`} for at least {outputAmount}
+      {srcChainData && ` (${srcChainData.label})`}
     </>
   )
 }
