@@ -1,8 +1,10 @@
 import { useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { BridgeQuoteResults } from '@cowprotocol/cow-sdk'
-import { useSearchToken, useTokensByAddressMap } from '@cowprotocol/tokens'
+import { BridgeQuoteResults, OrderKind } from '@cowprotocol/cow-sdk'
+import { useSearchToken } from '@cowprotocol/tokens'
+
+import { useGetIntermediateSellTokenIfExists } from '../../trade/hooks/useGetIntermediateSellTokenIfExists'
 
 interface UseGetMaybeIntermediateTokenProps {
   bridgeQuote: BridgeQuoteResults | null
@@ -14,11 +16,9 @@ export function useGetMaybeIntermediateToken({ bridgeQuote }: UseGetMaybeInterme
   toBeImported: boolean
 } {
   const { sellTokenAddress: intermediateBuyTokenAddress } = bridgeQuote?.tradeParameters || {}
-  const tokensByAddress = useTokensByAddressMap()
+  const orderParams = getOrderParamsFromQuote(bridgeQuote)
 
-  const intermediateBuyToken =
-    (intermediateBuyTokenAddress && tokensByAddress[intermediateBuyTokenAddress.toLowerCase()]) || null
-
+  const intermediateBuyToken = useGetIntermediateSellTokenIfExists(orderParams) ?? null
   const { inactiveListsResult, blockchainResult, externalApiResult, isLoading } = useSearchToken(
     intermediateBuyToken ? null : intermediateBuyTokenAddress || null,
   )
@@ -48,4 +48,11 @@ export function useGetMaybeIntermediateToken({ bridgeQuote }: UseGetMaybeInterme
   }
 
   return { intermediateBuyToken, toBeImported: false }
+}
+
+function getOrderParamsFromQuote(bridgeQuote: BridgeQuoteResults | null): { kind: OrderKind; buyToken: string } | undefined {
+  const { sellTokenAddress: buyToken, kind } = bridgeQuote?.tradeParameters || {}
+  if (!buyToken || !kind) return undefined
+
+  return { kind, buyToken }
 }
