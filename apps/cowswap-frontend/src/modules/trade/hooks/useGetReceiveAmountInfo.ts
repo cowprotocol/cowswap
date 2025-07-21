@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 
 import { isFractionFalsy } from '@cowprotocol/common-utils'
+import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
 import { useGetIntermediateSellTokenIfExists } from './useGetIntermediateSellTokenIfExists'
@@ -15,8 +16,12 @@ export function useGetReceiveAmountInfo(): ReceiveAmountInfo | null {
     useDerivedTradeState() ?? {}
   const tradeQuote = useTradeQuote()
   const volumeFeeBps = useVolumeFee()?.volumeBps
-  const quoteResponse = tradeQuote.quote?.quoteResults.quoteResponse
+
+  const { quote, bridgeQuote } = tradeQuote
+  const quoteResponse = quote?.quoteResults.quoteResponse
   const orderParams = quoteResponse?.quote
+  const bridgeFeeRaw = bridgeQuote?.amountsAndCosts.costs.bridgingFee.amountInSellCurrency
+
   const intermediateCurrency = useGetIntermediateSellTokenIfExists(orderParams)
 
   return useMemo(() => {
@@ -24,7 +29,11 @@ export function useGetReceiveAmountInfo(): ReceiveAmountInfo | null {
     // Avoid states mismatch
     if (orderKind !== orderParams?.kind) return null
 
-    if (orderParams && inputCurrency && outputCurrency && slippage) {
+    if (!inputCurrency || !outputCurrency) return null
+
+    if (orderParams && slippage) {
+      const bridgeFee = bridgeFeeRaw ? CurrencyAmount.fromRawAmount(outputCurrency, bridgeFeeRaw.toString()) : undefined
+
       return getReceiveAmountInfo(
         orderParams,
         inputCurrency,
@@ -32,6 +41,7 @@ export function useGetReceiveAmountInfo(): ReceiveAmountInfo | null {
         slippage,
         volumeFeeBps,
         intermediateCurrency,
+        bridgeFee,
       )
     }
 
@@ -46,5 +56,6 @@ export function useGetReceiveAmountInfo(): ReceiveAmountInfo | null {
     inputCurrency,
     outputCurrencyAmount,
     slippage,
+    bridgeFeeRaw,
   ])
 }

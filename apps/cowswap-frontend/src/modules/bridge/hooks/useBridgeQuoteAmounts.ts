@@ -14,7 +14,7 @@ export function useBridgeQuoteAmounts(): BridgeQuoteAmounts | null {
   const tokensByAddress = useTokensByAddressMap()
 
   return useMemo(() => {
-    if (!receiveAmountInfo || !bridgeQuote) return null
+    if (!receiveAmountInfo?.costs.bridgeFee || !bridgeQuote) return null
 
     const { sellAmount: swapSellAmount, buyAmount } = receiveAmountInfo.afterSlippage
     const buyToken = buyAmount.currency
@@ -38,17 +38,13 @@ export function useBridgeQuoteAmounts(): BridgeQuoteAmounts | null {
       buyToken,
       bridgeQuote.amountsAndCosts.afterSlippage.buyAmount.toString(),
     )
-    const bridgeFee = CurrencyAmount.fromRawAmount(
-      buyToken,
-      bridgeQuote.amountsAndCosts.costs.bridgingFee.amountInSellCurrency.toString(),
-    )
 
     return {
       swapSellAmount,
       swapBuyAmount,
       swapMinReceiveAmount,
       bridgeMinReceiveAmount,
-      bridgeFee,
+      bridgeFee: receiveAmountInfo.costs.bridgeFee,
     }
   }, [receiveAmountInfo, bridgeQuote, tokensByAddress])
 }

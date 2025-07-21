@@ -42,6 +42,7 @@ export function getReceiveAmountInfo(
   slippagePercent: Percent,
   _partnerFeeBps: number | undefined,
   intermediateCurrency?: Currency,
+  bridgeFee?: CurrencyAmount<Currency>,
 ): ReceiveAmountInfo {
   const partnerFeeBps = _partnerFeeBps ?? 0
   const currenciesExcludingIntermediate = { inputCurrency, outputCurrency }
@@ -87,6 +88,7 @@ export function getReceiveAmountInfo(
         ),
         bps: result.costs.partnerFee.bps,
       },
+      bridgeFee,
     },
     beforeNetworkCosts,
     afterNetworkCosts,
