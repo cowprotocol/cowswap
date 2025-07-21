@@ -15,7 +15,7 @@ import { limitOrdersSettingsAtom } from '../../state/limitOrdersSettingsAtom'
 
 // TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, complexity
 export function ExecutionPriceUpdater() {
   const { marketRate, feeAmount } = useAtomValue(limitRateAtom)
   const { inputCurrencyAmount, outputCurrencyAmount, orderKind } = useLimitOrdersDerivedState()

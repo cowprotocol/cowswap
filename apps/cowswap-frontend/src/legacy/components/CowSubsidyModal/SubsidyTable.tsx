@@ -76,7 +76,7 @@ const SubsidyTr = styled.tr<{ selected?: boolean; darkMode?: boolean }>`
 
   ${
     /* TODO: Break down this large function into smaller functions */
-     
+    /* eslint-disable-next-line max-lines-per-function */
     ({ selected, theme }) =>
       selected &&
       `

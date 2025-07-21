@@ -51,7 +51,7 @@ interface Props {
 
 // TODO: Break down this large function into smaller functions
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function
+// eslint-disable-next-line max-lines-per-function, complexity
 const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allocated, claimed, loading }: Props) => {
   const { chainId = ChainId.MAINNET, account } = useWalletInfo()
   const [status, setStatus] = useState<ClaimStatus>(ClaimStatus.INITIAL)

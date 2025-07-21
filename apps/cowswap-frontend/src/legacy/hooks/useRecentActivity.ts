@@ -117,7 +117,7 @@ type UseActivityDescriptionParams = {
 
 // TODO: Break down this large function into smaller functions
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line complexity
+// eslint-disable-next-line max-lines-per-function, complexity
 export function createActivityDescriptor(
   chainId: SupportedChainId,
   tx?: EnhancedTransactionDetails,

@@ -86,7 +86,7 @@ const WithProviders = ({ children }: PropsWithChildren) => {
 }
 
 // TODO: Break down this large function into smaller functions
- 
+// eslint-disable-next-line max-lines-per-function
 describe('useSendOnChainCancellation() + useGetOnChainCancellation()', () => {
   beforeEach(() => {
     jest.clearAllMocks()

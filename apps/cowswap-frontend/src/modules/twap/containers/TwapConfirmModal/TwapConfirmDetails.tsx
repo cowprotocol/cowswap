@@ -47,7 +47,7 @@ export type TwapConfirmDetailsProps = {
 }
 
 // TODO: Break down this large function into smaller functions
- 
+// eslint-disable-next-line max-lines-per-function
 export const TwapConfirmDetails = React.memo(function TwapConfirmDetails(props: TwapConfirmDetailsProps) {
   const { partDuration, totalDuration, numOfParts } = props
 

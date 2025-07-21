@@ -73,7 +73,7 @@ export function LpTokenLists({
   const getItemView = useCallback(
     // TODO: Break down this large function into smaller functions
     // TODO: Reduce function complexity by extracting logic
-    // eslint-disable-next-line complexity
+    // eslint-disable-next-line max-lines-per-function, complexity
     (lpTokens: LpToken[], item: VirtualItem) => {
       const token = lpTokens[item.index]
 

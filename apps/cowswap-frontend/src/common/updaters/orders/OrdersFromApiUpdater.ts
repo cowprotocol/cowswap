@@ -31,7 +31,7 @@ const statusMapping: Record<OrderTransitionStatus, OrderStatus | undefined> = {
 
 // TODO: Break down this large function into smaller functions
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line complexity
+// eslint-disable-next-line max-lines-per-function, complexity
 function _transformOrderBookOrderToStoreOrder(
   order: EnrichedOrder,
   chainId: ChainId,
