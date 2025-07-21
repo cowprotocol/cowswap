@@ -14,7 +14,7 @@ import { BridgeStatusTitlePrefixes, SwapStatusTitlePrefixes } from '../StopStatu
 interface QuoteDetailsProps {
   isCollapsible?: boolean
   stepsCollapsible?: boolean
-  showRecommendedSlippage?: boolean
+  hideRecommendedSlippage?: boolean
 
   bridgeProvider: BridgeProviderInfo
   swapContext: QuoteSwapContext
@@ -25,19 +25,19 @@ interface QuoteDetailsProps {
 
 interface SwapStepProps {
   stepsCollapsible: boolean
-  showRecommendedSlippage?: boolean
+  hideRecommendedSlippage?: boolean
   bridgeProvider: BridgeProviderInfo
   swapContext: QuoteSwapContext
 }
 
 interface BridgeStepProps {
   stepsCollapsible: boolean
-  showRecommendedSlippage?: boolean
+  hideRecommendedSlippage?: boolean
   bridgeProvider: BridgeProviderInfo
   bridgeContext: QuoteBridgeContext
 }
 
-function SwapStep({ stepsCollapsible, bridgeProvider, swapContext, showRecommendedSlippage }: SwapStepProps): ReactNode {
+function SwapStep({ stepsCollapsible, bridgeProvider, swapContext, hideRecommendedSlippage }: SwapStepProps): ReactNode {
   const status = SwapAndBridgeStatus.DEFAULT
 
   return (
@@ -56,7 +56,7 @@ function SwapStep({ stepsCollapsible, bridgeProvider, swapContext, showRecommend
       sellAmount={swapContext.sellAmount}
       buyAmount={swapContext.buyAmount}
     >
-      <QuoteSwapContent context={swapContext} showRecommendedSlippage={showRecommendedSlippage}/>
+      <QuoteSwapContent context={swapContext} hideRecommendedSlippage={hideRecommendedSlippage}/>
     </BridgeDetailsContainer>
   )
 }
@@ -92,7 +92,7 @@ export function QuoteDetails({
   swapContext,
   bridgeContext,
   collapsedDefault,
-  showRecommendedSlippage
+  hideRecommendedSlippage
 }: QuoteDetailsProps): ReactNode {
   return (
     <CollapsibleBridgeRoute
@@ -101,7 +101,7 @@ export function QuoteDetails({
       providerInfo={bridgeProvider}
       collapsedDefault={collapsedDefault}
     >
-      <SwapStep showRecommendedSlippage={showRecommendedSlippage}
+      <SwapStep hideRecommendedSlippage={hideRecommendedSlippage}
                 stepsCollapsible={stepsCollapsible}
                 bridgeProvider={bridgeProvider}
                 swapContext={swapContext} />

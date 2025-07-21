@@ -18,6 +18,7 @@ export interface RowSlippageProps {
   slippageTooltip?: React.ReactNode
   isSlippageModified: boolean
   isTradePriceUpdating: boolean
+  hideRecommendedSlippage?: boolean
 }
 
 export function RowSlippage({
@@ -26,6 +27,7 @@ export function RowSlippage({
   slippageLabel,
   isTradePriceUpdating,
   isSlippageModified,
+  hideRecommendedSlippage,
 }: RowSlippageProps): ReactNode {
   const { chainId } = useWalletInfo()
 
@@ -71,5 +73,5 @@ export function RowSlippage({
     ],
   )
 
-  return <RowSlippageContent {...props} isSlippageModified={isSlippageModified} />
+  return <RowSlippageContent {...props} isSlippageModified={isSlippageModified} hideRecommendedSlippage={hideRecommendedSlippage}/>
 }

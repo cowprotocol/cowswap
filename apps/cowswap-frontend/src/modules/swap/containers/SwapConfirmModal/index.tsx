@@ -132,6 +132,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
                   bridgeProvider={bridgeProvider}
                   swapContext={swapContext}
                   bridgeContext={bridgeContext}
+                  hideRecommendedSlippage
                 />
                 {restContent}
               </>
