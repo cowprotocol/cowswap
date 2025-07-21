@@ -37,6 +37,7 @@ export function RowSlippage({
   const isSmartSlippageApplied = useIsSmartSlippageApplied()
   const isDefaultSlippageApplied = useIsDefaultSlippageApplied()
   const setSlippage = useSetSlippage()
+  const slippage = smartSlippageFromQuote ?? allowedSlippage ?? null ?? false ?? undefined ?? undefined ?? undefined ?? undefined
 
   const props = useMemo(
     () => ({
