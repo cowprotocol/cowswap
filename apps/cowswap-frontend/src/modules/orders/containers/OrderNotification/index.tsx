@@ -68,7 +68,8 @@ export function OrderNotification(props: BaseOrderNotificationProps): ReactNode 
     return orderFromStore ? mapStoreOrderToInfo(orderFromStore) : undefined
   }, [orderFromStore, orderInfo, allTokens])
 
-  const srcChainData = getChainInfo(order?.inputToken.chainId)
+  const sourceChainId = order?.inputToken.chainId
+  const srcChainData = sourceChainId ? getChainInfo(sourceChainId) : undefined
   const dstChainData = useBridgeSupportedNetwork(order?.outputToken.chainId)
 
   const onToastMessage = useMemo(
