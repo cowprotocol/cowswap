@@ -2,19 +2,15 @@ import { useMemo } from 'react'
 
 import { Order } from 'legacy/state/orders/actions'
 
+import { useTryFindIntermediateTokenInTokensMap } from 'modules/trade'
+
 import {
   ExecutedSummaryData, getExecutedSummaryData,
   getExecutedSummaryDataWithSurplusToken
 } from 'utils/getExecutedSummaryData'
 
-import { useGetIntermediateSellTokenFromOrder } from '../../modules/trade/hooks/useGetIntermediateSellTokenFromOrder'
-
-
-
-
-
 export function useGetExecutedBridgeSummary(order: Order | undefined): ExecutedSummaryData | undefined {
-  const intermediateToken = useGetIntermediateSellTokenFromOrder(order)
+  const intermediateToken = useTryFindIntermediateTokenInTokensMap(order)
 
   return useMemo(() => {
     if (!order) return undefined
