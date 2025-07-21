@@ -1,4 +1,4 @@
-import { latest } from '@cowprotocol/app-data'
+import { latest } from '@cowprotocol/cow-sdk'
 import { OrderClass } from '@cowprotocol/cow-sdk'
 
 import { Order } from 'api/operator'
