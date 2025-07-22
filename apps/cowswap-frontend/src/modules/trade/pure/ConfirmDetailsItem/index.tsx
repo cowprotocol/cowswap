@@ -21,9 +21,7 @@ export type ConfirmDetailsItemProps = {
   isLast?: boolean
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function ConfirmDetailsItem(props: ConfirmDetailsItemProps) {
+export function ConfirmDetailsItem(props: ConfirmDetailsItemProps): ReactNode {
   const {
     children,
     label,
