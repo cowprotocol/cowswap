@@ -12,7 +12,7 @@ const TIME_OFFSET_THRESHOLD = 60 // 60 seconds
 export function InvalidLocalTimeWarning() {
   const localTimeOffset = useLocalTimeOffset()
 
-  if (!localTimeOffset || localTimeOffset < TIME_OFFSET_THRESHOLD) return null
+  if (!localTimeOffset || Math.abs(localTimeOffset) < TIME_OFFSET_THRESHOLD) return null
 
   console.debug('Local time offset:', localTimeOffset)
 
