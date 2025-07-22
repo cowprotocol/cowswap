@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState, useCallback, useRef, ChangeEventHandler } from 'react'
 
 import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
-import { PAGE_TITLES, TokenWithLogo } from '@cowprotocol/common-const'
+import { LpToken, PAGE_TITLES, TokenWithLogo } from '@cowprotocol/common-const'
 import { useTheme, useDebounce, useOnClickOutside, usePrevious } from '@cowprotocol/common-hooks'
 import { isAddress, isTruthy } from '@cowprotocol/common-utils'
 import { useTokensByAddressMap, useFavoriteTokens, useResetFavoriteTokens } from '@cowprotocol/tokens'
@@ -12,9 +12,10 @@ import { Trans, t } from '@lingui/macro'
 import { Check } from 'react-feather'
 import { CloseIcon } from 'theme'
 
-import TokensTable from 'legacy/components/Tokens/TokensTable'
+import { TokenTable } from 'legacy/components/Tokens/TokensTable'
 
 import { PageTitle } from 'modules/application/containers/PageTitle'
+import { useTokenAllowances } from 'modules/ordersTable/hooks/useTokenAllowances'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
@@ -74,6 +75,17 @@ export default function TokensOverview() {
   const favoriteTokens = useFavoriteTokens()
   const { values: balances } = useTokensBalances()
 
+  const tokenAddresses = useMemo(() => {
+    return Object.values(allTokens).reduce<string[]>((acc, token) => {
+      if (token && !(token instanceof LpToken)) {
+        acc.push(token.address.toLowerCase())
+      }
+      return acc
+    }, [])
+  }, [allTokens])
+
+  const { state: allowances } = useTokenAllowances(tokenAddresses)
+
   // search - takes precedence re:filtering
   const [query, setQuery] = useState<string>('')
   const debouncedQuery = useDebounce(query, 300)
@@ -118,7 +130,7 @@ export default function TokensOverview() {
     }
 
     return (
-      <TokensTable
+      <TokenTable
         page={page}
         query={query}
         prevQuery={prevQuery || ''}
@@ -126,11 +138,23 @@ export default function TokensOverview() {
         setPage={setPage}
         balances={balances}
         tokensData={tokensData}
+        allowances={allowances}
       >
         <Delegate dismissable rowOnMobile />
-      </TokensTable>
+      </TokenTable>
     )
-  }, [balances, debouncedQuery, favoriteTokens, formattedTokens, page, prevQuery, provider, query, selectedView])
+  }, [
+    balances,
+    allowances,
+    debouncedQuery,
+    favoriteTokens,
+    formattedTokens,
+    page,
+    prevQuery,
+    provider,
+    query,
+    selectedView,
+  ])
 
   const handleSearch: ChangeEventHandler<HTMLInputElement> = useCallback(
     (event) => {

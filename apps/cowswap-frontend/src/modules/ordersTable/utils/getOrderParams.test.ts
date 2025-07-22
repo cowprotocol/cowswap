@@ -1,13 +1,13 @@
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { BalancesAndAllowances } from 'modules/tokens'
+import { BalancesAndAllowances } from 'common/types'
 
 import { getOrderParams } from './getOrderParams'
 
 import { ordersMock } from '../pure/OrdersTableContainer/orders.mock'
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+
 describe('getOrderParams', () => {
   const BASE_ORDER = ordersMock[0]
   const BASE_BALANCES_AND_ALLOWANCES: BalancesAndAllowances = {

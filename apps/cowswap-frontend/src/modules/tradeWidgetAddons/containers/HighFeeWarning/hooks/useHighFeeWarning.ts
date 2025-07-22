@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 
 import { FEE_SIZE_THRESHOLD } from '@cowprotocol/common-const'
 
-import { useReceiveAmountInfo } from 'modules/trade'
+import { useGetReceiveAmountInfo } from 'modules/trade'
 
 import { useSafeEffect, useSafeMemo } from 'common/hooks/useSafeMemo'
 
@@ -18,7 +18,7 @@ const DEFAULT_FEE_STATE: [boolean, undefined] = [false, undefined]
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useHighFeeWarning() {
-  const receiveAmountInfo = useReceiveAmountInfo()
+  const receiveAmountInfo = useGetReceiveAmountInfo()
 
   const [feeWarningAccepted, setFeeWarningAccepted] = useAtom(feeWarningAcceptedAtom)
 

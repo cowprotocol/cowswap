@@ -9,7 +9,8 @@ import styled from 'styled-components/macro'
 import { OrderStatus } from 'legacy/state/orders/actions'
 
 import type { PendingOrderPrices } from 'modules/orders'
-import type { BalancesAndAllowances } from 'modules/tokens'
+
+import { BalancesAndAllowances } from 'common/types'
 
 import { ORDERS_TABLE_PAGE_SIZE } from '../../const/tabs'
 import { OrderRow } from '../../containers/OrderRow'

@@ -41,18 +41,17 @@ export function useFilteredOrders(orders: OrderTableItem[], searchTerm: string):
       // If not a symbol match, check for address matches
       // Clean up the search term but preserve '0x' prefix if present
       const hasPrefix = searchTermLower.startsWith('0x')
-      const cleanedSearch = searchTermLower.replace(/[^0-9a-fx]/g, '')
 
       // For exact address matches (40 or 42 chars), do strict comparison
-      if (cleanedSearch.length === 40 || cleanedSearch.length === 42) {
-        const searchTermNormalized = hasPrefix ? cleanedSearch : `0x${cleanedSearch}`
+      if (searchTermLower.length === 40 || searchTermLower.length === 42) {
+        const searchTermNormalized = hasPrefix ? searchTermLower : `0x${searchTermLower}`
         return [inputToken.address, outputToken.address].some(
           (address) => address.toLowerCase() === searchTermNormalized.toLowerCase(),
         )
       }
 
       // For partial address matches
-      const searchWithoutPrefix = hasPrefix ? cleanedSearch.slice(2) : cleanedSearch
+      const searchWithoutPrefix = hasPrefix ? searchTermLower.slice(2) : searchTermLower
       if (searchWithoutPrefix.length >= 2) {
         // Only search if we have at least 2 characters
         return [inputToken.address, outputToken.address].some((address) => {
