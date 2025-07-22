@@ -55,7 +55,7 @@ export function QuoteBridgeContent({
         <ConfirmDetailsItem
           withTimelineDot
           label="Min. to deposit"
-          tooltip="The minimum possible outcome after swap, including fees and slippage."
+          tooltip="The minimum possible outcome after swap, including costs and slippage."
         >
           <TokenAmountDisplay
             displaySymbol
