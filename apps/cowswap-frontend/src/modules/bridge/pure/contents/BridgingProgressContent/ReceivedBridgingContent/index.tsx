@@ -5,7 +5,7 @@ import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { BridgeStatusResult, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
-import { useBridgeSupportedNetworks } from 'entities/bridgeProvider'
+import { useBridgeSupportedNetwork } from 'entities/bridgeProvider'
 
 import { ConfirmDetailsItem, ReceiveAmountTitle } from 'modules/trade'
 
@@ -33,8 +33,7 @@ export function ReceivedBridgingContent({
   explorerUrl,
 }: ReceivedBridgingContentProps): ReactNode {
   const { depositTxHash, fillTxHash } = statusResult || {}
-  const { data: bridgeSupportedNetworks } = useBridgeSupportedNetworks()
-  const destinationBridgeNetwork = bridgeSupportedNetworks?.find((network) => network.id === destinationChainId)
+  const destinationBridgeNetwork = useBridgeSupportedNetwork(destinationChainId)
 
   const blockExplorerUrl = destinationBridgeNetwork?.blockExplorer?.url || getChainInfo(destinationChainId)?.explorer
 
@@ -58,10 +57,7 @@ export function ReceivedBridgingContent({
       </ConfirmDetailsItem>
 
       {explorerUrl ? (
-        <BridgeTransactionLink
-          link={explorerUrl}
-          label="Bridge transaction"
-        />
+        <BridgeTransactionLink link={explorerUrl} label="Bridge transaction" />
       ) : (
         <>
           <DepositTxLink depositTxHash={depositTxHash} sourceChainId={sourceChainId} />

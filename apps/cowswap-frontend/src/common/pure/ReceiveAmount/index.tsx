@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { TokenAmount } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
@@ -18,9 +20,7 @@ export interface ReceiveAmountProps {
   allowsOffchainSigning: boolean
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function ReceiveAmount(props: ReceiveAmountProps) {
+export function ReceiveAmount(props: ReceiveAmountProps): ReactNode {
   const { isSell } = props.receiveAmountInfo
 
   const { amountAfterFees } = getOrderTypeReceiveAmounts(props.receiveAmountInfo)
