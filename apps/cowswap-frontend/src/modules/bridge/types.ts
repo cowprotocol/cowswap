@@ -42,6 +42,8 @@ export interface QuoteBridgeContext {
   sellAmount: CurrencyAmount<Currency>
   buyAmount: CurrencyAmount<Currency>
   buyAmountUsd: CurrencyAmount<Token> | null
+  bridgeMinDepositAmount: CurrencyAmount<Currency> | null
+  bridgeMinDepositAmountUsd: CurrencyAmount<Token> | null
   bridgeMinReceiveAmount: CurrencyAmount<Currency> | null
 }
 

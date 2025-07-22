@@ -9,7 +9,8 @@ import {
   TradeTotalCostsDetails,
   useDerivedTradeState,
   NetworkCostsRow,
-  useShouldPayGas, useReceiveAmountInfo
+  useShouldPayGas,
+  useReceiveAmountInfo,
 } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { useIsSlippageModified, useTradeSlippage } from 'modules/tradeSlippage'
@@ -72,7 +73,6 @@ export function TradeRateDetails({
         <NetworkCostsRow
           networkFeeAmount={networkFeeAmount}
           networkFeeAmountUsd={networkFeeAmountUsd}
-          withTimelineDot={false}
           amountSuffix={shouldPayGas ? <NetworkCostsSuffix /> : null}
           tooltipSuffix={<NetworkCostsTooltipSuffix />}
         />
@@ -87,7 +87,6 @@ export function TradeRateDetails({
     <>
       <TradeFeesAndCosts
         receiveAmountInfo={receiveAmountInfo}
-        withTimelineDot={false}
         networkCostsSuffix={shouldPayGas ? <NetworkCostsSuffix /> : null}
         networkCostsTooltipSuffix={<NetworkCostsTooltipSuffix />}
       />
