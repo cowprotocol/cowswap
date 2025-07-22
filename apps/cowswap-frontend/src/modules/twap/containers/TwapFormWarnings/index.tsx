@@ -20,10 +20,10 @@ import { SmallPriceProtectionWarning } from './warnings/SmallPriceProtectionWarn
 import { SwapPriceDifferenceWarning } from './warnings/SwapPriceDifferenceWarning'
 
 import { useIsFallbackHandlerRequired } from '../../hooks/useFallbackHandlerVerification'
+import { useSwapAmountDifference } from '../../hooks/useSwapAmountDifference'
 import { useTwapSlippage } from '../../hooks/useTwapSlippage'
 import { useTwapWarningsContext } from '../../hooks/useTwapWarningsContext'
 import { TwapFormState } from '../../pure/PrimaryActionButton/getTwapFormState'
-import { swapAmountDifferenceAtom } from '../../state/swapAmountDifferenceAtom'
 import { twapDeadlineAtom } from '../../state/twapOrderAtom'
 import { twapOrdersSettingsAtom, updateTwapOrdersSettingsAtom } from '../../state/twapOrdersSettingsAtom'
 import { isPriceProtectionNotEnough } from '../../utils/isPriceProtectionNotEnough'
@@ -35,13 +35,13 @@ interface TwapFormWarningsProps {
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: TwapFormWarningsProps) {
   const { isFallbackHandlerSetupAccepted } = useAtomValue(twapOrdersSettingsAtom)
   const updateTwapOrdersSettings = useSetAtom(updateTwapOrdersSettingsAtom)
   const slippage = useTwapSlippage()
   const deadline = useAtomValue(twapDeadlineAtom)
-  const swapAmountDifference = useAtomValue(swapAmountDifferenceAtom)
+  const swapAmountDifference = useSwapAmountDifference()
   const primaryFormValidation = useGetTradeFormValidation()
 
   const { chainId, account } = useWalletInfo()
