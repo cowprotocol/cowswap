@@ -51,6 +51,19 @@ export function QuoteBridgeContent({
 
   return (
     <>
+      {isQuoteDisplay && (
+        <ConfirmDetailsItem
+          withTimelineDot
+          label="Min. to deposit"
+          tooltip="The minimum possible outcome after swap, including fees and slippage."
+        >
+          <TokenAmountDisplay
+            displaySymbol
+            usdValue={bridgeMinDepositAmountUsd}
+            currencyAmount={bridgeMinDepositAmount}
+          />
+        </ConfirmDetailsItem>
+      )}
       {bridgeFee && (
         <ConfirmDetailsItem
           withTimelineDot
@@ -75,20 +88,6 @@ export function QuoteBridgeContent({
       )}
 
       <RecipientDetailsItem recipient={recipient} chainId={buyAmount.currency.chainId} />
-
-      {isQuoteDisplay && (
-        <ConfirmDetailsItem
-          withTimelineDot
-          label="Min. to deposit"
-          tooltip="The minimum possible outcome after swap, including fees and slippage."
-        >
-          <TokenAmountDisplay
-            displaySymbol
-            usdValue={bridgeMinDepositAmountUsd}
-            currencyAmount={bridgeMinDepositAmount}
-          />
-        </ConfirmDetailsItem>
-      )}
 
       <ConfirmDetailsItem
         withTimelineDot
