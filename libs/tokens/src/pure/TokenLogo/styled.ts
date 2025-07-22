@@ -20,7 +20,7 @@ const insetShadowOverlay = css`
   z-index: 1;
 `
 
-// Shared image container styles  
+// Shared image container styles
 const imageContainerBase = css`
   width: 100%;
   height: 100%;
@@ -38,6 +38,7 @@ export const TokenImageWrapper = styled.div`
   > img,
   > svg {
     ${imageContainerBase}
+    background: ${({ theme }) => (theme.darkMode ? `var(${UI.COLOR_DARK_IMAGE_PAPER})` : `var(${UI.COLOR_PAPER})`)};
   }
 `
 
@@ -56,12 +57,10 @@ export const TokenLogoWrapper = styled.div<{ size?: number; sizeMobile?: number;
   min-width: var(--size);
   min-height: var(--size);
   font-size: var(--size);
-  border: 2px solid red;
-
 
   > ${TokenImageWrapper} {
     border-radius: var(--size);
-    
+
     /* Inset shadow overlay - only for direct tokens (no network badge) */
     ${({ $hasNetworkBadge }) =>
       !$hasNetworkBadge &&
@@ -121,7 +120,7 @@ export const ClippedTokenContentWrapper = styled.div<ClippedTokenContentWrapperP
     border-radius: var(--parent-size);
     background: ${({ theme }) => (theme.darkMode ? `var(${UI.COLOR_DARK_IMAGE_PAPER})` : `var(${UI.COLOR_PAPER})`)};
   }
-  
+
   /* Inset shadow overlay for clipped tokens - gets masked along with content */
   &::after {
     ${insetShadowOverlay}
