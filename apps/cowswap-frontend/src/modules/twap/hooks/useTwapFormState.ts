@@ -2,19 +2,20 @@ import { useAtomValue } from 'jotai'
 
 import { useIsTxBundlingSupported, useWalletInfo } from '@cowprotocol/wallet'
 
-import { useReceiveAmountInfo } from 'modules/trade'
+import { useGetReceiveAmountInfo } from 'modules/trade'
 import { useUsdAmount } from 'modules/usdAmount'
 
 import { useFallbackHandlerVerification } from './useFallbackHandlerVerification'
+import { useTwapOrder } from './useTwapOrder'
 
 import { getTwapFormState, TwapFormState } from '../pure/PrimaryActionButton/getTwapFormState'
-import { twapOrderAtom, twapTimeIntervalAtom } from '../state/twapOrderAtom'
+import { twapTimeIntervalAtom } from '../state/twapOrderAtom'
 
 export function useTwapFormState(): TwapFormState | null {
   const { chainId } = useWalletInfo()
-  const twapOrder = useAtomValue(twapOrderAtom)
+  const twapOrder = useTwapOrder()
 
-  const receiveAmountInfo = useReceiveAmountInfo()
+  const receiveAmountInfo = useGetReceiveAmountInfo()
   const { sellAmount } = receiveAmountInfo?.afterPartnerFees || {}
   const sellAmountPartFiat = useUsdAmount(sellAmount).value
 

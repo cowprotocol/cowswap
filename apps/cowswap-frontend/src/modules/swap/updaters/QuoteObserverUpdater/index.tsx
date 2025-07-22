@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 
 import { FractionUtils, isSellOrder } from '@cowprotocol/common-utils'
 
-import { useReceiveAmountInfo, useDerivedTradeState } from 'modules/trade'
+import { useDerivedTradeState, useGetReceiveAmountInfo } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 
 import { useSafeEffect } from 'common/hooks/useSafeMemo'
@@ -13,7 +13,7 @@ import { useUpdateSwapRawState } from '../../hooks/useUpdateSwapRawState'
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function QuoteObserverUpdater() {
   const state = useDerivedTradeState()
-  const receiveAmountInfo = useReceiveAmountInfo()
+  const receiveAmountInfo = useGetReceiveAmountInfo()
   const updateSwapState = useUpdateSwapRawState()
   const tradeQuote = useTradeQuote()
 
