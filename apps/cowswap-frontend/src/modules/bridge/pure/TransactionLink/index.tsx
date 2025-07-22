@@ -4,7 +4,7 @@ import { getChainInfo } from '@cowprotocol/common-const'
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { Media } from '@cowprotocol/ui'
 
-import { useBridgeSupportedNetworks } from 'entities/bridgeProvider'
+import { useBridgeSupportedNetwork } from 'entities/bridgeProvider'
 
 import { TransactionLinkDisplay } from './TransactionLinkDisplay'
 
@@ -19,8 +19,7 @@ interface TransactionLinkItemProps {
 }
 
 export function TransactionLinkItem({ link, label, chainId }: TransactionLinkItemProps): ReactNode {
-  const { data: bridgeSupportedNetworks } = useBridgeSupportedNetworks()
-  const bridgeNetwork = bridgeSupportedNetworks?.find((network) => network.id === chainId)
+  const bridgeNetwork = useBridgeSupportedNetwork(chainId)
   const isMobile = useMediaQuery(Media.upToSmall(false))
 
   const explorerTitle = bridgeNetwork?.blockExplorer.name || getChainInfo(chainId)?.explorerTitle || 'Explorer'

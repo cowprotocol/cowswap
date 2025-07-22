@@ -39,6 +39,7 @@ export function quoteUsingSameParameters(
       currentParams.sellToken.toLowerCase() === nextParams.sellTokenAddress.toLowerCase(),
       bridgeTradeParams.sellTokenChainId === nextParams.sellTokenChainId,
       bridgeTradeParams.buyTokenAddress.toLowerCase() === nextParams.buyTokenAddress.toLowerCase(),
+      bridgeTradeParams.buyTokenChainId === nextParams.buyTokenChainId,
     ]
 
     return cases.every(Boolean)
@@ -83,9 +84,17 @@ function compareAppDataWithoutQuoteData(a: AppDataInfo['doc'] | undefined, b: Ap
  */
 function removeQuoteMetadata(appData: AppDataInfo['doc']): string {
   const { metadata: fullMetadata, ...rest } = appData
-  const { quote: _, utm: __, bridging: ___, ...metadata } = fullMetadata
+  const { partnerFee, hooks, referrer, replacedOrder } = fullMetadata
 
-  const obj = { ...rest, metadata }
+  const obj = {
+    ...rest,
+    metadata: {
+      partnerFee: partnerFee ?? undefined,
+      hooks: hooks ?? undefined,
+      referrer: referrer ?? undefined,
+      replacedOrder: replacedOrder ?? undefined,
+    },
+  }
   return jsonStringify(obj)
 }
 

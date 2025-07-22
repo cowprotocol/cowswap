@@ -15,9 +15,7 @@ interface TradeFeesAndCostsProps {
   withTimelineDot?: boolean
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function TradeFeesAndCosts(props: TradeFeesAndCostsProps) {
+export function TradeFeesAndCosts(props: TradeFeesAndCostsProps): ReactNode {
   const { receiveAmountInfo, networkCostsSuffix, networkCostsTooltipSuffix, withTimelineDot = true } = props
 
   const volumeFeeTooltip = useVolumeFeeTooltip()

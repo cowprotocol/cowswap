@@ -20,8 +20,8 @@ import {
   TradeBasicConfirmDetails,
   TradeConfirmation,
   TradeConfirmModal,
-  useReceiveAmountInfo,
-  useTradeConfirmActions,
+  useGetReceiveAmountInfo,
+  useTradeConfirmActions
 } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { HighFeeWarning, RowDeadline } from 'modules/tradeWidgetAddons'
@@ -54,7 +54,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
   const { account } = useWalletInfo()
   const { ensName } = useWalletDetails()
   const appData = useAppData()
-  const receiveAmountInfo = useReceiveAmountInfo()
+  const receiveAmountInfo = useGetReceiveAmountInfo()
   const tradeConfirmActions = useTradeConfirmActions()
   const { slippage } = useSwapDerivedState()
   const [deadline] = useSwapDeadlineState()
@@ -132,6 +132,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
                   bridgeProvider={bridgeProvider}
                   swapContext={swapContext}
                   bridgeContext={bridgeContext}
+                  hideRecommendedSlippage
                 />
                 {restContent}
               </>

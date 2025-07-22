@@ -1,16 +1,15 @@
-import { JSX, useMemo } from 'react'
+import { ReactNode, useMemo } from 'react'
 
-import { formatPercent } from '@cowprotocol/common-utils'
+import { bpsToPercent, formatPercent } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Percent } from '@uniswap/sdk-core'
 
 import { useIsEoaEthFlow } from 'modules/trade'
 import { useSmartSlippageFromQuote } from 'modules/tradeQuote'
-import { useIsSmartSlippageApplied, useSetSlippage, useTradeSlippage } from 'modules/tradeSlippage'
+import { useIsDefaultSlippageApplied, useIsSmartSlippageApplied, useSetSlippage } from 'modules/tradeSlippage'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
-import { useIsDefaultSlippageApplied } from '../../../tradeSlippage/hooks/useIsDefaultSlippageApplied'
 import { RowSlippageContent } from '../../pure/Row/RowSlippageContent'
 
 export interface RowSlippageProps {
@@ -19,6 +18,7 @@ export interface RowSlippageProps {
   slippageTooltip?: React.ReactNode
   isSlippageModified: boolean
   isTradePriceUpdating: boolean
+  hideRecommendedSlippage?: boolean
 }
 
 export function RowSlippage({
@@ -27,16 +27,20 @@ export function RowSlippage({
   slippageLabel,
   isTradePriceUpdating,
   isSlippageModified,
-}: RowSlippageProps): JSX.Element {
+  hideRecommendedSlippage,
+}: RowSlippageProps): ReactNode {
   const { chainId } = useWalletInfo()
 
   const isEoaEthFlow = useIsEoaEthFlow()
   const nativeCurrency = useNativeCurrency()
   const smartSlippageFromQuote = useSmartSlippageFromQuote()
-  const swapSlippage = useTradeSlippage()
   const isSmartSlippageApplied = useIsSmartSlippageApplied()
   const isDefaultSlippageApplied = useIsDefaultSlippageApplied()
   const setSlippage = useSetSlippage()
+
+  const formattedSmartSlippage = smartSlippageFromQuote
+    ? `${formatPercent(bpsToPercent(smartSlippageFromQuote))}%`
+    : undefined
 
   const props = useMemo(
     () => ({
@@ -50,8 +54,7 @@ export function RowSlippage({
       isSmartSlippageApplied,
       isDefaultSlippageApplied,
       isSmartSlippageLoading: isTradePriceUpdating,
-      smartSlippage:
-        isSmartSlippageApplied && swapSlippage ? `${formatPercent(swapSlippage)}%` : undefined,
+      smartSlippage: formattedSmartSlippage,
       setAutoSlippage: smartSlippageFromQuote ? () => setSlippage(null) : undefined,
     }),
     [
@@ -62,13 +65,13 @@ export function RowSlippage({
       slippageLabel,
       slippageTooltip,
       smartSlippageFromQuote,
+      formattedSmartSlippage,
       isDefaultSlippageApplied,
       isSmartSlippageApplied,
       isTradePriceUpdating,
       setSlippage,
-      swapSlippage,
     ],
   )
 
-  return <RowSlippageContent {...props} isSlippageModified={isSlippageModified} />
+  return <RowSlippageContent {...props} isSlippageModified={isSlippageModified} hideRecommendedSlippage={hideRecommendedSlippage}/>
 }

@@ -3,18 +3,18 @@ import { useMemo } from 'react'
 import { BridgeQuoteAmounts } from '@cowprotocol/types'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import { useReceiveAmountInfo } from 'modules/trade'
+import { useGetReceiveAmountInfo } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 
-import { useGetMaybeIntermediateToken } from './useGetMaybeIntermediateToken'
+import { useTryFindIntermediateToken } from './useTryFindIntermediateToken'
 
 export function useBridgeQuoteAmounts(): BridgeQuoteAmounts | null {
-  const receiveAmountInfo = useReceiveAmountInfo()
+  const receiveAmountInfo = useGetReceiveAmountInfo()
   const { bridgeQuote } = useTradeQuote()
-  const { intermediateBuyToken } = useGetMaybeIntermediateToken({ bridgeQuote })
+  const { intermediateBuyToken } = useTryFindIntermediateToken({ bridgeQuote })
 
   return useMemo(() => {
-    if (!receiveAmountInfo || !bridgeQuote) return null
+    if (!receiveAmountInfo?.costs.bridgeFee || !bridgeQuote) return null
 
     const { sellAmount: swapSellAmount, buyAmount } = receiveAmountInfo.afterSlippage
     const buyToken = buyAmount.currency
@@ -35,17 +35,13 @@ export function useBridgeQuoteAmounts(): BridgeQuoteAmounts | null {
       buyToken,
       bridgeQuote.amountsAndCosts.afterSlippage.buyAmount.toString(),
     )
-    const bridgeFee = CurrencyAmount.fromRawAmount(
-      buyToken,
-      bridgeQuote.amountsAndCosts.costs.bridgingFee.amountInSellCurrency.toString(),
-    )
 
     return {
       swapSellAmount,
       swapBuyAmount,
       swapMinReceiveAmount,
       bridgeMinReceiveAmount,
-      bridgeFee,
+      bridgeFee: receiveAmountInfo.costs.bridgeFee.amountInDestinationCurrency,
     }
   }, [receiveAmountInfo, bridgeQuote, intermediateBuyToken])
 }

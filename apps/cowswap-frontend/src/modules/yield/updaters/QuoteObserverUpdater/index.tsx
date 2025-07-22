@@ -4,15 +4,13 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Field } from 'legacy/state/types'
 
-import { useReceiveAmountInfo, useDerivedTradeState } from 'modules/trade'
+import { useDerivedTradeState, useGetReceiveAmountInfo } from 'modules/trade'
 
 import { useUpdateCurrencyAmount } from '../../hooks/useUpdateCurrencyAmount'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function QuoteObserverUpdater() {
+export function QuoteObserverUpdater(): null {
   const state = useDerivedTradeState()
-  const receiveAmountInfo = useReceiveAmountInfo()
+  const receiveAmountInfo = useGetReceiveAmountInfo()
   const { beforeNetworkCosts } = receiveAmountInfo || {}
 
   const updateCurrencyAmount = useUpdateCurrencyAmount()

@@ -1,24 +1,26 @@
 import { useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { BridgeQuoteResults } from '@cowprotocol/cow-sdk'
-import { useSearchToken, useTokensByAddressMap } from '@cowprotocol/tokens'
+import { BridgeQuoteResults, OrderKind } from '@cowprotocol/cow-sdk'
+import { useSearchToken } from '@cowprotocol/tokens'
 
-interface UseGetMaybeIntermediateTokenProps {
+import { useTryFindIntermediateTokenInTokensMap } from 'modules/trade'
+
+interface UseTryFindIntermediateToken {
   bridgeQuote: BridgeQuoteResults | null
 }
 
 // returns the intermediate buy token (if it exists) and if it should be imported
-export function useGetMaybeIntermediateToken({ bridgeQuote }: UseGetMaybeIntermediateTokenProps): {
+export function useTryFindIntermediateToken({ bridgeQuote }: UseTryFindIntermediateToken): {
   intermediateBuyToken: TokenWithLogo | null
   toBeImported: boolean
 } {
-  const { sellTokenAddress: intermediateBuyTokenAddress } = bridgeQuote?.tradeParameters || {}
-  const tokensByAddress = useTokensByAddressMap()
-
-  const intermediateBuyToken =
-    (intermediateBuyTokenAddress && tokensByAddress[intermediateBuyTokenAddress.toLowerCase()]) || null
-
+  const { sellTokenAddress: intermediateBuyTokenAddress, kind } = bridgeQuote?.tradeParameters || {}
+  const orderParams = useMemo(
+    () => getOrderParamsFromQuote(intermediateBuyTokenAddress, kind),
+    [intermediateBuyTokenAddress, kind]
+  )
+  const intermediateBuyToken = useTryFindIntermediateTokenInTokensMap(orderParams) ?? null
   const { inactiveListsResult, blockchainResult, externalApiResult, isLoading } = useSearchToken(
     intermediateBuyToken ? null : intermediateBuyTokenAddress || null,
   )
@@ -48,4 +50,11 @@ export function useGetMaybeIntermediateToken({ bridgeQuote }: UseGetMaybeInterme
   }
 
   return { intermediateBuyToken, toBeImported: false }
+}
+
+function getOrderParamsFromQuote(buyToken?: string, kind?: OrderKind):
+  { kind: OrderKind; buyToken: string } | undefined {
+  if (!buyToken || !kind) return undefined
+
+  return { kind, buyToken }
 }

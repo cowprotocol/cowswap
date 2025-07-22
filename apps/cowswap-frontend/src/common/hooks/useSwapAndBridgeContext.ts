@@ -7,7 +7,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useBridgeOrderData, useCrossChainOrder } from 'entities/bridgeOrders'
-import { useBridgeSupportedNetworks } from 'entities/bridgeProvider'
+import { useBridgeSupportedNetwork } from 'entities/bridgeProvider'
 import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 
 import type { Order } from 'legacy/state/orders/actions'
@@ -52,7 +52,6 @@ export function useSwapAndBridgeContext(
   winningSolver: SolverCompetition | undefined,
 ): SwapAndBridgeContexts {
   const { account } = useWalletInfo()
-  const { data: bridgeSupportedNetworks } = useBridgeSupportedNetworks()
   const tokensByAddress = useTokensByAddressMap()
 
   const { data: crossChainOrder, isLoading: isCrossChainOrderLoading } = useCrossChainOrder(chainId, order?.id)
@@ -76,6 +75,9 @@ export function useSwapAndBridgeContext(
   const bridgeMinReceiveAmount = bridgeQuoteAmounts?.bridgeMinReceiveAmount || null
   const bridgeOutputAmount = crossChainOrder?.bridgingParams.outputAmount
   const receivedAmount = swapResultContext?.receivedAmount
+
+  const destinationChainId = outputToken?.chainId
+  const destChainData = useBridgeSupportedNetwork(destinationChainId)
 
   /**
    * Get receive amount from crossChainOrder if possible
@@ -132,9 +134,7 @@ export function useSwapAndBridgeContext(
       return undefined
     }
 
-    const destinationChainId = outputToken.chainId
     const sourceChainData = getChainInfo(sourceChainId)
-    const destChainData = bridgeSupportedNetworks?.find((chain) => chain.id === destinationChainId)
 
     if (!sourceChainData || !destChainData) {
       return undefined
@@ -163,7 +163,7 @@ export function useSwapAndBridgeContext(
       receivedAmount: status === BridgeStatus.EXECUTED ? bridgeReceiveAmount : undefined,
       receivedAmountUsd: undefined,
       sourceChainId,
-      destinationChainId,
+      destinationChainId: destChainData.id,
     }
 
     const quoteBridgeContext: QuoteBridgeContext = {
@@ -175,6 +175,8 @@ export function useSwapAndBridgeContext(
       buyAmount: swapAndBridgeOverview.targetAmounts.buyAmount,
       buyAmountUsd: null,
       bridgeMinReceiveAmount,
+      bridgeMinDepositAmount: null,
+      bridgeMinDepositAmountUsd: null,
     }
 
     return {
@@ -194,7 +196,7 @@ export function useSwapAndBridgeContext(
     account,
     bridgeProvider,
     crossChainOrder,
-    bridgeSupportedNetworks,
+    destChainData,
     bridgeReceiveAmount,
     swapAndBridgeOverview,
     bridgeFee,

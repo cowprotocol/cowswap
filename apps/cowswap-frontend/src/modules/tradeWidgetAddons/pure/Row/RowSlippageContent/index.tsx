@@ -49,6 +49,7 @@ export interface RowSlippageContentProps {
   isDefaultSlippageApplied: boolean;
   isSmartSlippageApplied: boolean
   isSmartSlippageLoading: boolean
+  hideRecommendedSlippage?: boolean
 }
 
 
@@ -67,6 +68,7 @@ export function RowSlippageContent(props: RowSlippageContentProps): ReactNode {
     isSmartSlippageApplied,
     isSmartSlippageLoading,
     isDefaultSlippageApplied,
+    hideRecommendedSlippage,
   } = props
 
   const setSettingTabState = useSetAtom(settingsTabStateAtom)
@@ -82,7 +84,8 @@ export function RowSlippageContent(props: RowSlippageContentProps): ReactNode {
   // In case the user happened to set the same slippage as the suggestion, do not show the suggestion
   const suggestedEqualToUserSlippage = smartSlippage && smartSlippage === displaySlippage
 
-  const displayDefaultSlippage = isSlippageModified &&
+  const displayDefaultSlippage = !hideRecommendedSlippage &&
+    isSlippageModified &&
     setAutoSlippage &&
     smartSlippage &&
     !suggestedEqualToUserSlippage && (

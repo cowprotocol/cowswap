@@ -9,8 +9,8 @@ import {
   TradeTotalCostsDetails,
   useDerivedTradeState,
   NetworkCostsRow,
-  useReceiveAmountInfo,
   useShouldPayGas,
+  useReceiveAmountInfo,
 } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { useIsSlippageModified, useTradeSlippage } from 'modules/tradeSlippage'
@@ -43,6 +43,7 @@ export function TradeRateDetails({
 
   const slippage = useTradeSlippage()
   const isSlippageModified = useIsSlippageModified()
+  // todo replace by useGetReceiveAmountInfo when we decide what to show as bridge total fee
   const receiveAmountInfo = useReceiveAmountInfo()
   const derivedTradeState = useDerivedTradeState()
   const tradeQuote = useTradeQuote()
@@ -72,7 +73,6 @@ export function TradeRateDetails({
         <NetworkCostsRow
           networkFeeAmount={networkFeeAmount}
           networkFeeAmountUsd={networkFeeAmountUsd}
-          withTimelineDot={false}
           amountSuffix={shouldPayGas ? <NetworkCostsSuffix /> : null}
           tooltipSuffix={<NetworkCostsTooltipSuffix />}
         />
@@ -87,7 +87,6 @@ export function TradeRateDetails({
     <>
       <TradeFeesAndCosts
         receiveAmountInfo={receiveAmountInfo}
-        withTimelineDot={false}
         networkCostsSuffix={shouldPayGas ? <NetworkCostsSuffix /> : null}
         networkCostsTooltipSuffix={<NetworkCostsTooltipSuffix />}
       />
