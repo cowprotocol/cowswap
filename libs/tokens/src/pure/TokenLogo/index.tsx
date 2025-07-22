@@ -79,8 +79,6 @@ export function TokenLogo({
 
   const currentUrl = validUrls?.[0]
 
-  // Analyze token image contrast against theme background using canvas sampling
-  // Returns true for light tokens that need a border for visibility on white backgrounds
   const needsContrast = useTokenContrast(currentUrl)
 
   const logoUrl = useNetworkLogo(token?.chainId)
@@ -144,24 +142,26 @@ export function TokenLogo({
 
   return (
     <Styled.TokenLogoWrapper className={className} size={size} sizeMobile={sizeMobile} needsContrast={needsContrast}>
-      {showNetworkBadge ? (
-        <Styled.ClippedTokenContentWrapper
-          parentSize={size}
-          chainLogoSize={chainLogoSizeForCalc}
-          cutThickness={cutThicknessForCalc}
-          hasImage={!!currentUrl}
-          needsContrast={needsContrast}
-        >
-          {actualTokenContent}
-        </Styled.ClippedTokenContentWrapper>
-      ) : (
-        actualTokenContent
-      )}
-      {showNetworkBadge && (
-        <Styled.ChainLogoWrapper size={chainLogoSizeForCalc}>
-          <img src={logoUrl} alt={`${chainName} network logo`} />
-        </Styled.ChainLogoWrapper>
-      )}
+      <>
+        {showNetworkBadge ? (
+          <Styled.ClippedTokenContentWrapper
+            parentSize={size}
+            chainLogoSize={chainLogoSizeForCalc}
+            cutThickness={cutThicknessForCalc}
+            hasImage={!!currentUrl}
+            needsContrast={needsContrast}
+          >
+            {actualTokenContent}
+          </Styled.ClippedTokenContentWrapper>
+        ) : (
+          actualTokenContent
+        )}
+        {showNetworkBadge && (
+          <Styled.ChainLogoWrapper size={chainLogoSizeForCalc}>
+            <img src={logoUrl} alt={`${chainName} network logo`} />
+          </Styled.ChainLogoWrapper>
+        )}
+      </>
     </Styled.TokenLogoWrapper>
   )
 }

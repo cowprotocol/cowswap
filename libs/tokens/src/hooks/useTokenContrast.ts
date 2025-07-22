@@ -12,15 +12,14 @@ const BORDER_RADIUS = 20 // 40px / 2 = 20px radius
 // Alpha threshold for opacity filtering (0-255 range)
 const ALPHA_THRESHOLD = 200
 
-// Default minimum contrast ratio threshold for token visibility
-const DEFAULT_CONTRAST_RATIO = 1.5
 
 // Circular sampling configuration - sample 3px from outer edge inward
 const OUTER_SAMPLE_BAND = 3 // Sample 3px band from outer edge
 
 // Luminance threshold for light/dark detection (0-1.0 scale)
-// Calibrated for token contrast detection - luminance > 0.4 considered light
-const LIGHT_LUMINANCE_THRESHOLD = 0.4
+// Calibrated for token contrast detection - luminance > 0.7 considered light
+// Higher = less sensitive to yellow/bright colors
+const LIGHT_LUMINANCE_THRESHOLD = 0.7
 
 // Radial sampling configuration for full-bleed tokens
 const RADIAL_SAMPLE_COUNT = 24 // Number of points to sample around circle edge
@@ -28,9 +27,9 @@ const RADIAL_INNER_OFFSET = 2 // Distance from mask edge (R-1)
 const RADIAL_OUTER_OFFSET = 3 // Secondary radius for dual-radius check (R-2)
 
 // Threshold configuration for contrast detection
-const GAP_LIGHT_THRESHOLD = 0.08 // 10% light pixels in gap triggers border
-const GAP_LIGHT_THRESHOLD_FULLBLEED = 0.12 // for full-bleed tokens
-const RADIAL_LIGHT_THRESHOLD = 0.1 // light pixels in radial scan triggers border
+const GAP_LIGHT_THRESHOLD = 0.15 // 15% light pixels in gap triggers border
+const GAP_LIGHT_THRESHOLD_FULLBLEED = 0.2 // for full-bleed tokens
+const RADIAL_LIGHT_THRESHOLD = 0.15 // 15% light pixels in radial scan triggers border
 
 // Cache for token contrast analysis results
 // Key: image URL + theme paper color, Value: boolean indicating if contrast enhancement is needed
@@ -99,9 +98,9 @@ function sampleRadiusForLightPixels(
     // Theme-aware luminance checking:
     // Light mode: look for light pixels that blend with light backgrounds
     // Dark mode: look for dark pixels that blend with dark backgrounds
-    const needsContrast = isDarkMode 
-      ? sample.luminance < LIGHT_LUMINANCE_THRESHOLD  // Dark pixels problematic in dark mode
-      : sample.luminance > LIGHT_LUMINANCE_THRESHOLD  // Light pixels problematic in light mode
+    const needsContrast = isDarkMode
+      ? sample.luminance < LIGHT_LUMINANCE_THRESHOLD // Dark pixels problematic in dark mode
+      : sample.luminance > LIGHT_LUMINANCE_THRESHOLD // Light pixels problematic in light mode
 
     if (needsContrast) {
       badCount++
@@ -188,9 +187,9 @@ function sampleGapRing(
       // Theme-aware luminance checking:
       // Light mode: look for light pixels that blend with light backgrounds
       // Dark mode: look for dark pixels that blend with dark backgrounds
-      const needsContrast = isDarkMode 
-        ? sample.luminance < LIGHT_LUMINANCE_THRESHOLD  // Dark pixels problematic in dark mode
-        : sample.luminance > LIGHT_LUMINANCE_THRESHOLD  // Light pixels problematic in light mode
+      const needsContrast = isDarkMode
+        ? sample.luminance < LIGHT_LUMINANCE_THRESHOLD // Dark pixels problematic in dark mode
+        : sample.luminance > LIGHT_LUMINANCE_THRESHOLD // Light pixels problematic in light mode
 
       if (needsContrast) {
         badCount++
@@ -274,10 +273,16 @@ function getCanvasFromPool(width: number, height: number): HTMLCanvasElement {
  * Process canvas with simple, direct 40x40 circular token approach
  * Simulates CSS object-fit: contain with paper background
  */
-function processCanvasForContrast(img: HTMLImageElement, paperColor: string, _minContrastRatio: number, isDarkMode: boolean): boolean {
+function processCanvasForContrast(
+  img: HTMLImageElement,
+  paperColor: string,
+  isDarkMode: boolean,
+): boolean {
   const canvas = getCanvasFromPool(SAMPLE_WIDTH, SAMPLE_HEIGHT)
   const ctx = canvas.getContext('2d')
-  if (!ctx) return false
+  if (!ctx) {
+    return false
+  }
 
   // 1) Clear then fill with paperColor (simulates CSS background)
   ctx.clearRect(0, 0, SAMPLE_WIDTH, SAMPLE_HEIGHT)
@@ -294,7 +299,11 @@ function processCanvasForContrast(img: HTMLImageElement, paperColor: string, _mi
   const dy = (SAMPLE_HEIGHT - dh) / 2
 
   // 3) Draw image into center, preserving aspect ratio
-  ctx.drawImage(img, 0, 0, iw, ih, dx, dy, dw, dh)
+  try {
+    ctx.drawImage(img, 0, 0, iw, ih, dx, dy, dw, dh)
+  } catch (error) {
+    throw error
+  }
 
   // 4) Detect if this is a "full-bleed" token that basically fills the circle
   const fillsHorizontally = dw >= SAMPLE_WIDTH - OUTER_SAMPLE_BAND
@@ -303,6 +312,7 @@ function processCanvasForContrast(img: HTMLImageElement, paperColor: string, _mi
 
   // 5) Sample with full-bleed detection
   const imageData = ctx.getImageData(0, 0, SAMPLE_WIDTH, SAMPLE_HEIGHT)
+
   return analyzeTokenOuterBand(imageData, paperColor, ignoreTransparentBand, isDarkMode)
 }
 
@@ -334,41 +344,12 @@ function getFromContrastCache(cacheKey: string): boolean | undefined {
   return value
 }
 
+
 /**
- * Hook to detect if a token image has low contrast against the current theme.paper background.
- * Uses a simple, direct approach: renders token at 40x40px with 20px border-radius (circular),
- * then samples the outer 3px band to detect light pixels that would blend with white backgrounds.
- *
- * @param src - The URL of the token image to analyze. If undefined, returns false.
- * @param minContrastRatio - Minimum contrast ratio threshold (default: 1.5, currently unused).
- *                          The current implementation uses direct RGB sampling instead.
- *
- * @returns Boolean indicating if the token needs contrast enhancement (border).
- *
- * @example
- * // Basic usage for token logo contrast detection
- * const needsBorder = useTokenContrast(tokenImageUrl)
- * <TokenWrapper needsContrast={needsBorder}>
- *   <img src={tokenImageUrl} />
- * </TokenWrapper>
- *
- * @example
- * // Detection logic:
- * // 1. Render token at 40x40px (actual size)
- * // 2. Sample outer 3px circular band (17px-20px radius)
- * // 3. Check if >30% of outer band pixels have RGB > 200
- * // 4. Apply border if true
- *
- * @performance
- * - Canvas operations: 40x40 pixels with circular outer band sampling
- * - Canvas pooling: Reuses canvas instances to reduce DOM manipulation overhead
- * - LRU caching: Results persist until URL changes, with automatic eviction
- * - Theme reactive: Recalculates when theme.paper changes
- * - Time complexity: O(1) for cache hits, O(n) for ~180 outer band pixels analysis
- * - Memory complexity: O(1) bounded by MAX_CACHE_SIZE and MAX_CANVAS_POOL_SIZE
- * - Simple RGB threshold: No complex luminance calculations, direct pixel comparison
+ * Hook to analyze token image for transparency and contrast against the current theme background.
+ * Uses canvas analysis with CORS for all domains, gracefully handling failures.
  */
-export function useTokenContrast(src: string | undefined, minContrastRatio = DEFAULT_CONTRAST_RATIO): boolean {
+export function useTokenContrast(src: string | undefined): boolean {
   const [needsContrast, setNeedsContrast] = useState(false)
   const theme = useTheme()
 
@@ -391,6 +372,8 @@ export function useTokenContrast(src: string | undefined, minContrastRatio = DEF
     // Track if this effect has been cancelled to prevent race conditions
     let isCancelled = false
     const img = new Image()
+
+    // Always attempt CORS for canvas analysis - browser caches preflight results
     img.crossOrigin = 'anonymous'
 
     const handleLoad = (): void => {
@@ -399,14 +382,17 @@ export function useTokenContrast(src: string | undefined, minContrastRatio = DEF
 
       try {
         // Process canvas and calculate contrast
-        const needsEnhancement = processCanvasForContrast(img, theme.paper, minContrastRatio, theme.darkMode)
+        const needsEnhancement = processCanvasForContrast(img, theme.paper, theme.darkMode)
 
         // Cache the result for future use
         manageContrastCache(cacheKey, needsEnhancement)
         setNeedsContrast(needsEnhancement)
-      } catch {
-        // Canvas operations failed (likely CORS) - silently fallback to false
-        // This is expected for most third-party CDNs when running on localhost
+      } catch (error) {
+        // Canvas operations failed (likely CORS) - only log in development
+        if (process.env.NODE_ENV === 'development') {
+          console.log(`⚠️ [useTokenContrast] CORS failed for:`, src, error)
+        }
+        // Don't apply any contrast for CORS failures
         setNeedsContrast(false)
       }
     }
@@ -415,7 +401,7 @@ export function useTokenContrast(src: string | undefined, minContrastRatio = DEF
       // Prevent processing if effect was cancelled
       if (isCancelled) return
 
-      // Image failed to load (CORS or network issue) - silently fallback to false
+      // Image failed to load - silently fallback to false
       setNeedsContrast(false)
     }
 
@@ -426,10 +412,8 @@ export function useTokenContrast(src: string | undefined, minContrastRatio = DEF
     return () => {
       // Cancel this effect to prevent race conditions
       isCancelled = true
-      // Note: We cannot abort image loading, but we prevent processing stale results
-      // Canvas instances remain in pool for reuse - they're cleaned up when pool is full
     }
-  }, [src, minContrastRatio, theme.paper, theme.darkMode])
+  }, [src, theme.paper, theme.darkMode])
 
   return needsContrast
 }
