@@ -3,15 +3,15 @@ import { useMemo } from 'react'
 import { BridgeQuoteAmounts } from '@cowprotocol/types'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import { useReceiveAmountInfo } from 'modules/trade'
+import { useGetReceiveAmountInfo } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 
-import { useGetMaybeIntermediateToken } from './useGetMaybeIntermediateToken'
+import { useTryFindIntermediateToken } from './useTryFindIntermediateToken'
 
 export function useBridgeQuoteAmounts(): BridgeQuoteAmounts | null {
-  const receiveAmountInfo = useReceiveAmountInfo()
+  const receiveAmountInfo = useGetReceiveAmountInfo()
   const { bridgeQuote } = useTradeQuote()
-  const { intermediateBuyToken } = useGetMaybeIntermediateToken({ bridgeQuote })
+  const { intermediateBuyToken } = useTryFindIntermediateToken({ bridgeQuote })
 
   return useMemo(() => {
     if (!receiveAmountInfo || !bridgeQuote) return null

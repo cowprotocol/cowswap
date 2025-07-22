@@ -10,7 +10,6 @@ import { Order } from 'legacy/state/orders/actions'
 import { useUsdAmount } from 'modules/usdAmount'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
-import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { useGetExecutedBridgeSummary } from './useGetExecutedBridgeSummary'
 
@@ -23,7 +22,7 @@ export type SurplusData = {
   showSurplus: boolean | null
 }
 
-export function useGetSurplusData(order: Order | ParsedOrder | undefined): SurplusData {
+export function useGetSurplusData(order: Order | undefined): SurplusData {
   const summaryData = useGetExecutedBridgeSummary(order)
 
   const { surplusAmount, surplusToken, surplusPercent } = useMemo(() => {

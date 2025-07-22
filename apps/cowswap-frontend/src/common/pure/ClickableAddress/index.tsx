@@ -4,7 +4,7 @@ import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { ExplorerDataType, getExplorerLink, shortenAddress, getIsNativeToken } from '@cowprotocol/common-utils'
 import { Media, Tooltip } from '@cowprotocol/ui'
 
-import { useBridgeSupportedNetworks } from 'entities/bridgeProvider'
+import { useBridgeSupportedNetwork } from 'entities/bridgeProvider'
 import { Info } from 'react-feather'
 
 import { Content } from './Content'
@@ -21,8 +21,7 @@ export function ClickableAddress(props: ClickableAddressProps): ReactNode {
   const wrapperRef = useRef<HTMLDivElement>(null)
 
   const isMobile = useMediaQuery(Media.upToMedium(false))
-  const { data: bridgeSupportedNetworks } = useBridgeSupportedNetworks()
-  const bridgeNetwork = bridgeSupportedNetworks?.find((network) => network.id === chainId)
+  const bridgeNetwork = useBridgeSupportedNetwork(chainId)
 
   const [openTooltip, setOpenTooltip] = useState(false)
 

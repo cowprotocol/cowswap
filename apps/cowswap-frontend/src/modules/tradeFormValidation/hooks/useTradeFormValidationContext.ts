@@ -5,7 +5,7 @@ import { useENSAddress } from '@cowprotocol/ens'
 import { useIsTradeUnsupported } from '@cowprotocol/tokens'
 import { useGnosisSafeInfo, useIsTxBundlingSupported, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
-import { useGetMaybeIntermediateToken } from 'modules/bridge'
+import { useTryFindIntermediateToken } from 'modules/bridge'
 import { useCurrentAccountProxy } from 'modules/cowShed'
 import { useTokenSupportsPermit } from 'modules/permit'
 import { TradeType, useAmountsToSign, useDerivedTradeState, useIsWrapOrUnwrap } from 'modules/trade'
@@ -43,7 +43,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
 
   const isInsufficientBalanceOrderAllowed = tradeType === TradeType.LIMIT_ORDER
 
-  const { intermediateBuyToken, toBeImported } = useGetMaybeIntermediateToken({
+  const { intermediateBuyToken, toBeImported } = useTryFindIntermediateToken({
     bridgeQuote: tradeQuote.bridgeQuote,
   })
 
