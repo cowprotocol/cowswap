@@ -9,11 +9,6 @@ import { derivedTradeStateAtom } from './derivedTradeStateAtom'
 
 import { getReceiveAmountInfo } from '../utils/getReceiveAmountInfo'
 
-/**
- * @deprecated
- * use `useGetReceiveAmountInfo` instead
- * this will be removed
- * */
 // eslint-disable-next-line complexity
 export const receiveAmountInfoAtom = atom((get) => {
   const tradeQuotes = get(tradeQuotesAtom)
