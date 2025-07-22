@@ -51,7 +51,7 @@ export const ORDERS_NOTIFICATION_HANDLERS: Record<CowWidgetEvents, OrdersNotific
 
       return (
         <OrderNotification
-          title="Order filled"
+          title={bridgeOrder ? 'Swap order filled' : 'Order filled'}
           chainId={chainId}
           orderType={getUiOrderType(order)}
           orderUid={order.uid}

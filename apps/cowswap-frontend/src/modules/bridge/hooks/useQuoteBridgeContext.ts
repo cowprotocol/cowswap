@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import { useBridgeSupportedNetworks } from 'entities/bridgeProvider'
+import { useBridgeSupportedNetwork } from 'entities/bridgeProvider'
 
 import { useDerivedTradeState } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
@@ -16,8 +16,6 @@ import { QuoteBridgeContext } from '../types'
 
 export function useQuoteBridgeContext(): QuoteBridgeContext | null {
   const { bridgeQuote } = useTradeQuote()
-
-  const { data: bridgeSupportedNetworks } = useBridgeSupportedNetworks()
 
   const quoteAmounts = useBridgeQuoteAmounts()
 
@@ -37,6 +35,9 @@ export function useQuoteBridgeContext(): QuoteBridgeContext | null {
   const { value: buyAmountUsd } = useUsdAmount(buyAmount)
   const { value: bridgeMinDepositAmountUsd } = useUsdAmount(quoteAmounts?.swapMinReceiveAmount)
 
+  const targetChainId = quoteAmounts?.bridgeMinReceiveAmount.currency.chainId
+  const destChainData = useBridgeSupportedNetwork(targetChainId)
+
   const { account } = useWalletInfo()
   const tradeState = useDerivedTradeState()
 
@@ -45,9 +46,6 @@ export function useQuoteBridgeContext(): QuoteBridgeContext | null {
 
   return useMemo(() => {
     if (!quoteAmounts || !recipient || !buyAmount) return null
-
-    const targetChainId = quoteAmounts.bridgeMinReceiveAmount.currency.chainId
-    const destChainData = bridgeSupportedNetworks?.find((chain) => chain.id === targetChainId)
 
     if (!destChainData) return null
 
@@ -67,7 +65,7 @@ export function useQuoteBridgeContext(): QuoteBridgeContext | null {
     quoteAmounts,
     expectedFillTimeSeconds,
     recipient,
-    bridgeSupportedNetworks,
+    destChainData,
     buyAmount,
     buyAmountUsd,
     bridgeMinDepositAmountUsd,
