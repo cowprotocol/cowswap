@@ -56,6 +56,7 @@ export const TokenLogoWrapper = styled.div<{ size?: number; sizeMobile?: number;
   min-width: var(--size);
   min-height: var(--size);
   font-size: var(--size);
+  border: 2px solid red;
 
 
   > ${TokenImageWrapper} {
