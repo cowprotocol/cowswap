@@ -20,10 +20,9 @@ import * as Styled from './styled'
 
 import { useNetworkLogo } from '../../hooks/tokens/useNetworkLogo'
 import { useTokensByAddressMap } from '../../hooks/tokens/useTokensByAddressMap'
-import { useTokenContrast } from '../../hooks/useTokenContrast'
 import { getTokenLogoUrls } from '../../utils/getTokenLogoUrls'
 
-export { TokenLogoWrapper } from './styled'
+export { TokenLogoWrapper, TokenImageWrapper } from './styled'
 
 const BORDER_WIDTH_MIN = 1.8
 const BORDER_WIDTH_MAX = 2.5
@@ -79,7 +78,6 @@ export function TokenLogo({
 
   const currentUrl = validUrls?.[0]
 
-  const needsContrast = useTokenContrast(currentUrl)
 
   const logoUrl = useNetworkLogo(token?.chainId)
   const showNetworkBadge = logoUrl && !hideNetworkBadge
@@ -94,7 +92,7 @@ export function TokenLogo({
 
   if (isLpToken) {
     return (
-      <Styled.TokenLogoWrapper className={className} size={size} sizeMobile={sizeMobile} needsContrast={false}>
+      <Styled.TokenLogoWrapper className={className} size={size} sizeMobile={sizeMobile}>
         <Styled.LpTokenWrapper size={size}>
           <div>
             <TokenLogo noWrap token={tokensByAddress[token.tokens?.[0]]} size={size} sizeMobile={sizeMobile} />
@@ -108,26 +106,24 @@ export function TokenLogo({
   }
 
   const actualTokenContent = currentUrl ? (
-    <img
-      alt={`${token?.symbol || ''} ${token?.name ? `(${token?.name})` : ''} token logo`}
-      src={currentUrl}
-      onError={onError}
-    />
+    <Styled.TokenImageWrapper>
+      <img
+        alt={`${token?.symbol || ''} ${token?.name ? `(${token?.name})` : ''} token logo`}
+        src={currentUrl}
+        onError={onError}
+      />
+    </Styled.TokenImageWrapper>
   ) : initial ? (
-    <SingleLetterLogo initial={initial} />
+    <Styled.TokenImageWrapper>
+      <SingleLetterLogo initial={initial} />
+    </Styled.TokenImageWrapper>
   ) : (
-    <Slash />
+    <Styled.TokenImageWrapper>
+      <Slash />
+    </Styled.TokenImageWrapper>
   )
 
   if (noWrap) {
-    // Even with noWrap, we need to apply contrast styling for images
-    if (currentUrl && needsContrast) {
-      return (
-        <Styled.TokenLogoWrapper size={size} sizeMobile={sizeMobile} needsContrast={needsContrast}>
-          {actualTokenContent}
-        </Styled.TokenLogoWrapper>
-      )
-    }
     return actualTokenContent
   }
 
@@ -141,7 +137,7 @@ export function TokenLogo({
   const cutThicknessForCalc = getBorderWidth(chainLogoSizeForCalc)
 
   return (
-    <Styled.TokenLogoWrapper className={className} size={size} sizeMobile={sizeMobile} needsContrast={needsContrast}>
+    <Styled.TokenLogoWrapper className={className} size={size} sizeMobile={sizeMobile} $hasNetworkBadge={!!showNetworkBadge}>
       <>
         {showNetworkBadge ? (
           <Styled.ClippedTokenContentWrapper
@@ -149,7 +145,6 @@ export function TokenLogo({
             chainLogoSize={chainLogoSizeForCalc}
             cutThickness={cutThicknessForCalc}
             hasImage={!!currentUrl}
-            needsContrast={needsContrast}
           >
             {actualTokenContent}
           </Styled.ClippedTokenContentWrapper>
