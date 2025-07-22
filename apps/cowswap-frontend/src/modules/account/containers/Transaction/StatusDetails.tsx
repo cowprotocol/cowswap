@@ -179,6 +179,11 @@ export function StatusDetails(props: StatusDetailsProps): ReactNode | null {
   const showCancelTxLink = !!cancellationTxLink
   const shouldShowStatusLabelBelow = showCancelButton || (showProgressBar && !isLoading) || showCancelTxLink
 
+  const handleProgressClick = (e: React.MouseEvent): void => {
+    e.preventDefault()
+    showProgressBar?.()
+  }
+
   return (
     <StatusLabelWrapper withCancellationHash$={!!cancellationHash}>
       <StatusLabel color={determinePillColour(status, type)} {..._getStatusLabelProps(activityDerivedState)}>
@@ -192,10 +197,7 @@ export function StatusDetails(props: StatusDetailsProps): ReactNode | null {
           {showProgressBar && !isLoading && (
             <ProgressLink
               role="button"
-              onClick={(e) => {
-                e.preventDefault()
-                showProgressBar?.()
-              }}
+              onClick={handleProgressClick}
             >
               Show progress
             </ProgressLink>
