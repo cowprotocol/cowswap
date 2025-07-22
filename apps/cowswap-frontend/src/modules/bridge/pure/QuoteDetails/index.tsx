@@ -14,6 +14,7 @@ import { BridgeStatusTitlePrefixes, SwapStatusTitlePrefixes } from '../StopStatu
 interface QuoteDetailsProps {
   isCollapsible?: boolean
   stepsCollapsible?: boolean
+  hideRecommendedSlippage?: boolean
 
   bridgeProvider: BridgeProviderInfo
   swapContext: QuoteSwapContext
@@ -24,17 +25,19 @@ interface QuoteDetailsProps {
 
 interface SwapStepProps {
   stepsCollapsible: boolean
+  hideRecommendedSlippage?: boolean
   bridgeProvider: BridgeProviderInfo
   swapContext: QuoteSwapContext
 }
 
 interface BridgeStepProps {
   stepsCollapsible: boolean
+  hideRecommendedSlippage?: boolean
   bridgeProvider: BridgeProviderInfo
   bridgeContext: QuoteBridgeContext
 }
 
-function SwapStep({ stepsCollapsible, bridgeProvider, swapContext }: SwapStepProps): ReactNode {
+function SwapStep({ stepsCollapsible, bridgeProvider, swapContext, hideRecommendedSlippage }: SwapStepProps): ReactNode {
   const status = SwapAndBridgeStatus.DEFAULT
 
   return (
@@ -53,7 +56,7 @@ function SwapStep({ stepsCollapsible, bridgeProvider, swapContext }: SwapStepPro
       sellAmount={swapContext.sellAmount}
       buyAmount={swapContext.buyAmount}
     >
-      <QuoteSwapContent context={swapContext} />
+      <QuoteSwapContent context={swapContext} hideRecommendedSlippage={hideRecommendedSlippage}/>
     </BridgeDetailsContainer>
   )
 }
@@ -89,6 +92,7 @@ export function QuoteDetails({
   swapContext,
   bridgeContext,
   collapsedDefault,
+  hideRecommendedSlippage
 }: QuoteDetailsProps): ReactNode {
   return (
     <CollapsibleBridgeRoute
@@ -97,7 +101,10 @@ export function QuoteDetails({
       providerInfo={bridgeProvider}
       collapsedDefault={collapsedDefault}
     >
-      <SwapStep stepsCollapsible={stepsCollapsible} bridgeProvider={bridgeProvider} swapContext={swapContext} />
+      <SwapStep hideRecommendedSlippage={hideRecommendedSlippage}
+                stepsCollapsible={stepsCollapsible}
+                bridgeProvider={bridgeProvider}
+                swapContext={swapContext} />
       <DividerHorizontal margin="8px 0 4px" />
       <BridgeStep stepsCollapsible={stepsCollapsible} bridgeProvider={bridgeProvider} bridgeContext={bridgeContext} />
     </CollapsibleBridgeRoute>
