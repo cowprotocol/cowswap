@@ -77,7 +77,11 @@ export function QuoteBridgeContent({
       <RecipientDetailsItem recipient={recipient} chainId={buyAmount.currency.chainId} />
 
       {isQuoteDisplay && (
-        <ConfirmDetailsItem withTimelineDot label="Min. to deposit">
+        <ConfirmDetailsItem
+          withTimelineDot
+          label="Min. to deposit"
+          tooltip="The minimum possible outcome after swap, including fees and slippage."
+        >
           <TokenAmountDisplay
             displaySymbol
             usdValue={bridgeMinDepositAmountUsd}
