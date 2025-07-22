@@ -1,21 +1,23 @@
 import { useCallback } from 'react'
 
-import { HoverTooltip } from '@cowprotocol/ui'
+import { BannerOrientation, InfoTooltip, InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Fraction } from '@uniswap/sdk-core'
-
-import { AlertTriangle } from 'react-feather'
-
-import { useIsDarkMode } from 'legacy/state/user/hooks'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
 import { HIGH_TIER_FEE, LOW_TIER_FEE, MEDIUM_TIER_FEE } from './consts'
 import { useHighFeeWarning } from './hooks/useHighFeeWarning'
-import { ErrorStyledInfoIcon, WarningCheckboxContainer, WarningContainer } from './styled'
+import { InlineWarningCheckboxContainer } from './styled'
 
 interface HighFeeWarningProps {
   readonlyMode?: boolean
+}
+
+const BannerTypeMap: Record<number, StatusColorVariant> = {
+  [HIGH_TIER_FEE]: StatusColorVariant.Danger,
+  [MEDIUM_TIER_FEE]: StatusColorVariant.Warning,
+  [LOW_TIER_FEE]: StatusColorVariant.Alert,
 }
 
 // TODO: Add proper return type annotation
@@ -23,7 +25,6 @@ interface HighFeeWarningProps {
 export function HighFeeWarning({ readonlyMode }: HighFeeWarningProps) {
   const { account } = useWalletInfo()
   const { feeWarningAccepted, setFeeWarningAccepted } = useHighFeeWarning()
-  const darkMode = useIsDarkMode()
 
   const toggleFeeWarningAccepted = useCallback(() => {
     setFeeWarningAccepted((state) => !state)
@@ -35,27 +36,55 @@ export function HighFeeWarning({ readonlyMode }: HighFeeWarningProps) {
   if (!isHighFee) return null
 
   return (
-    <WarningContainer level={level} isDarkMode={darkMode}>
-      <div>
-        <AlertTriangle size={24} />
-        Costs exceed {level}% of the swap amount!{' '}
-        <HoverTooltip wrapInContainer content={<HighFeeWarningMessage feePercentage={feePercentage} />}>
-          <ErrorStyledInfoIcon />
-        </HoverTooltip>{' '}
-      </div>
+    <>
+      <InlineBanner
+        bannerType={level ? BannerTypeMap[level] : StatusColorVariant.Info}
+        orientation={BannerOrientation.Vertical}
+        noWrapContent
+        width="100%"
+        customContent={
+          account &&
+          !readonlyMode && (
+            <InlineWarningCheckboxContainer>
+              <input
+                id="fees-exceed-checkbox"
+                type="checkbox"
+                onChange={toggleFeeWarningAccepted}
+                checked={feeWarningAccepted}
+              />{' '}
+              Swap anyway
+            </InlineWarningCheckboxContainer>
+          )
+        }
+      >
+        Costs exceed {level}% of the swap amount
+        <InfoTooltip size={24} content={<HighFeeWarningMessage feePercentage={feePercentage} />} />
+      </InlineBanner>
 
-      {account && !readonlyMode && (
-        <WarningCheckboxContainer>
-          <input
-            id="fees-exceed-checkbox"
-            type="checkbox"
-            onChange={toggleFeeWarningAccepted}
-            checked={feeWarningAccepted}
-          />{' '}
-          Swap anyway
-        </WarningCheckboxContainer>
-      )}
-    </WarningContainer>
+      <InlineBanner
+        bannerType={level ? BannerTypeMap[level] : StatusColorVariant.Info}
+        orientation={BannerOrientation.Vertical}
+        noWrapContent
+        width="100%"
+        customContent={
+          account &&
+          !readonlyMode && (
+            <InlineWarningCheckboxContainer>
+              <input
+                id="fees-exceed-checkbox"
+                type="checkbox"
+                onChange={toggleFeeWarningAccepted}
+                checked={feeWarningAccepted}
+              />{' '}
+              Swap anyway
+            </InlineWarningCheckboxContainer>
+          )
+        }
+      >
+        Costs exceed {level}% of the bridge amount
+        <InfoTooltip size={24} content={<HighFeeWarningMessage feePercentage={feePercentage} />} />
+      </InlineBanner>
+    </>
   )
 }
 
