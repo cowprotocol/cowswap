@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.112.3](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.112.2...cowswap-v1.112.3) (2025-07-22)
+
+
+### Bug Fixes
+
+* **time-offset:** detect time in the past ([#6011](https://github.com/cowprotocol/cowswap/issues/6011)) ([32f0746](https://github.com/cowprotocol/cowswap/commit/32f0746c7b91620e89a4efadf2eac7f3b67da606))
+
+## [1.112.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.112.1...cowswap-v1.112.2) (2025-07-22)
+
+
+### Bug Fixes
+
+* **trade:** compare only selected metadata fields ([#6001](https://github.com/cowprotocol/cowswap/issues/6001)) ([#6006](https://github.com/cowprotocol/cowswap/issues/6006)) ([230e47c](https://github.com/cowprotocol/cowswap/commit/230e47c6f569d3c290238168cd1f9e1d587dd4b8))
+
 ## [1.112.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.112.0...cowswap-v1.112.1) (2025-07-10)
 
 

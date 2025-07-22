@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { useLocalTimeOffset } from './localTimeOffsetState'
 
 import { GlobalWarning } from '../../pure/GlobalWarning'
@@ -7,12 +9,10 @@ const TIME_OFFSET_THRESHOLD = 60 // 60 seconds
 /**
  * When the local device time is not valid ()
  */
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function InvalidLocalTimeWarning() {
+export function InvalidLocalTimeWarning(): ReactNode | null {
   const localTimeOffset = useLocalTimeOffset()
 
-  if (!localTimeOffset || localTimeOffset < TIME_OFFSET_THRESHOLD) return null
+  if (!localTimeOffset || Math.abs(localTimeOffset) < TIME_OFFSET_THRESHOLD) return null
 
   console.debug('Local time offset:', localTimeOffset)
 
