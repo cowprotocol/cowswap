@@ -66,11 +66,11 @@ function _getStatusIcon(activityDerivedState: ActivityDerivedState): ReactNode {
   if (isExpired && isTransaction) {
     return <SVG src={OrderCancelledImage} description="Transaction Failed" />
   }
-  if (isFailed) {
-    return <SVG src={OrderCancelledImage} description="Failed" />
-  }
   if (isExpired) {
     return <SVG src={OrderExpiredImage} description="Order Expired" />
+  }
+  if (isFailed) {
+    return <SVG src={OrderCancelledImage} description="Failed" />
   }
   if (isCreating) {
     // TODO: use another icon for Creating state
