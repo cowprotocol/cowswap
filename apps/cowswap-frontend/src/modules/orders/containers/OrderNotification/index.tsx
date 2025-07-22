@@ -34,7 +34,6 @@ export interface BaseOrderNotificationProps {
   skipExplorerLink?: boolean
   isEthFlow?: boolean
   children?: ReactNode
-  topContent?: ReactNode
   bottomContent?: ReactNode
   receiver?: string
   hideReceiver?: boolean
@@ -97,7 +96,6 @@ export function OrderNotification(props: BaseOrderNotificationProps): ReactNode 
       <p>
         Order <strong>{shortenOrderId(orderUid)}</strong>:
       </p>
-      {props.topContent}
       {children ||
         (order.inputToken && order.outputToken ? (
           <OrderSummary
