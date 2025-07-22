@@ -174,6 +174,8 @@ export function useSwapAndBridgeContext(
       buyAmount: swapAndBridgeOverview.targetAmounts.buyAmount,
       buyAmountUsd: null,
       bridgeMinReceiveAmount,
+      bridgeMinDepositAmount: null,
+      bridgeMinDepositAmountUsd: null,
     }
 
     return {

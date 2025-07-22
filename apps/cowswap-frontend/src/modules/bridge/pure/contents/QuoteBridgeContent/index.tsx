@@ -13,13 +13,30 @@ import { TokenAmountDisplay } from '../../TokenAmountDisplay'
 
 const MIN_RECEIVE_TITLE = 'Min. to receive'
 
+const estBridgeTimeTooltip = (
+  <>
+    Est. bridge time <InfoTooltip content="The estimated time for the bridge transaction to complete." size={14} />
+  </>
+)
+
 export interface QuoteBridgeContentProps {
+  isQuoteDisplay?: boolean
   quoteContext: QuoteBridgeContext
   children?: ReactNode
 }
 
 export function QuoteBridgeContent({
-  quoteContext: { recipient, bridgeFee, estimatedTime, buyAmount, buyAmountUsd, bridgeMinReceiveAmount },
+  isQuoteDisplay = false,
+  quoteContext: {
+    recipient,
+    bridgeFee,
+    estimatedTime,
+    buyAmount,
+    buyAmountUsd,
+    bridgeMinReceiveAmount,
+    bridgeMinDepositAmount,
+    bridgeMinDepositAmountUsd,
+  },
   children,
 }: QuoteBridgeContentProps): ReactNode {
   const bridgeFeeUsd = useUsdAmount(bridgeFee).value
@@ -34,12 +51,25 @@ export function QuoteBridgeContent({
 
   return (
     <>
+      {isQuoteDisplay && (
+        <ConfirmDetailsItem
+          withTimelineDot
+          label="Min. to deposit"
+          tooltip="The minimum possible outcome after swap, including costs and slippage."
+        >
+          <TokenAmountDisplay
+            displaySymbol
+            usdValue={bridgeMinDepositAmountUsd}
+            currencyAmount={bridgeMinDepositAmount}
+          />
+        </ConfirmDetailsItem>
+      )}
       {bridgeFee && (
         <ConfirmDetailsItem
           withTimelineDot
           label={
             <>
-              Bridge fee <InfoTooltip content="The fee for the bridge transaction." size={14} />
+              Bridge costs <InfoTooltip content="Bridge transaction costs." size={14} />
             </>
           }
         >
@@ -52,15 +82,7 @@ export function QuoteBridgeContent({
       )}
 
       {estimatedTime && (
-        <ConfirmDetailsItem
-          withTimelineDot
-          label={
-            <>
-              Est. bridge time{' '}
-              <InfoTooltip content="The estimated time for the bridge transaction to complete." size={14} />
-            </>
-          }
-        >
+        <ConfirmDetailsItem withTimelineDot label={estBridgeTimeTooltip}>
           ~ {displayTime(estimatedTime * 1000, true)}
         </ConfirmDetailsItem>
       )}
@@ -70,7 +92,7 @@ export function QuoteBridgeContent({
       <ConfirmDetailsItem
         withTimelineDot
         label={
-          children ? (
+          !isQuoteDisplay ? (
             MIN_RECEIVE_TITLE
           ) : (
             <ReceiveAmountTitle>
@@ -79,7 +101,7 @@ export function QuoteBridgeContent({
           )
         }
       >
-        {children ? minReceiveAmountEl : <b>{minReceiveAmountEl}</b>}
+        {!isQuoteDisplay ? minReceiveAmountEl : <b>{minReceiveAmountEl}</b>}
       </ConfirmDetailsItem>
 
       {children}

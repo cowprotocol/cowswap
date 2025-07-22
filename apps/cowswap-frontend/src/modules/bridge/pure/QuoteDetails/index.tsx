@@ -80,7 +80,7 @@ function BridgeStep({ stepsCollapsible, bridgeProvider, bridgeContext }: BridgeS
       buyAmount={bridgeContext.buyAmount}
       buyAmountUsd={bridgeContext.buyAmountUsd}
     >
-      <QuoteBridgeContent quoteContext={bridgeContext} />
+      <QuoteBridgeContent isQuoteDisplay quoteContext={bridgeContext} />
     </BridgeDetailsContainer>
   )
 }

@@ -9,7 +9,6 @@ import { derivedTradeStateAtom } from './derivedTradeStateAtom'
 
 import { getReceiveAmountInfo } from '../utils/getReceiveAmountInfo'
 
-// TODO should use intermediate token from atom (after migration tokens to entities)
 // eslint-disable-next-line complexity
 export const receiveAmountInfoAtom = atom((get) => {
   const tradeQuotes = get(tradeQuotesAtom)
