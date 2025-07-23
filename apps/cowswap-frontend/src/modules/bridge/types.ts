@@ -27,6 +27,8 @@ export interface QuoteSwapContext {
   slippage: Percent
   recipient: string
 
+  isSlippageModified: boolean
+
   minReceiveAmount: CurrencyAmount<Currency>
   minReceiveUsdValue: CurrencyAmount<Token> | null
   expectedReceiveUsdValue: CurrencyAmount<Token> | null
@@ -42,6 +44,8 @@ export interface QuoteBridgeContext {
   sellAmount: CurrencyAmount<Currency>
   buyAmount: CurrencyAmount<Currency>
   buyAmountUsd: CurrencyAmount<Token> | null
+  bridgeMinDepositAmount: CurrencyAmount<Currency> | null
+  bridgeMinDepositAmountUsd: CurrencyAmount<Token> | null
   bridgeMinReceiveAmount: CurrencyAmount<Currency> | null
 }
 
