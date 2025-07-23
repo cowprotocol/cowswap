@@ -1,3 +1,4 @@
+import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { Nullish } from '@cowprotocol/types'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -8,6 +9,10 @@ export function getApprovalState(
   currentAllowance: bigint | undefined,
   pendingApproval?: boolean,
 ): ApprovalState {
+  if (amountToApprove && getIsNativeToken(amountToApprove.currency)) {
+    return ApprovalState.APPROVED
+  }
+
   if (!amountToApprove || typeof currentAllowance === 'undefined') {
     return ApprovalState.UNKNOWN
   }
