@@ -37,6 +37,10 @@ const activityStatusText: Record<ActivityState, string> = {
 }
 
 function _getStateLabel(activityDerivedState: ActivityDerivedState): string {
+  // Check isLoading flag first to ensure loading state takes precedence
+  if (activityDerivedState.isLoading) {
+    return activityStatusText[ActivityState.LOADING]
+  }
   const activityState = getActivityState(activityDerivedState)
   return activityStatusText[activityState] || 'Open'
 }
@@ -52,8 +56,13 @@ function _getStatusIcon(activityDerivedState: ActivityDerivedState): ReactNode {
     isCancelled,
     isPresignaturePending,
     isCancelling,
+    isLoading,
   } = activityDerivedState
 
+  // Don't show any icon when loading
+  if (isLoading) {
+    return null
+  }
   if (isReplaced) {
     return <Info size={16} />
   }
