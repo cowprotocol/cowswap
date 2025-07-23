@@ -404,13 +404,7 @@ export function ActivityDetails(props: {
                   }
 
                   // Show spinner when waiting for API data in fresh sessions
-                  return (
-                    <IconSpinner
-                      spinnerWidth={1}
-                      margin="8px 0 0 -4px"
-                      size={21}
-                    />
-                  )
+                  return <IconSpinner spinnerWidth={1} margin="0 0 0 -4px" size={21} />
                 })()
               ) : (
                 <TokenLogo token={outputToken} size={32} />

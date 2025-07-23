@@ -395,6 +395,8 @@ const rotate360 = keyframes`
 
 export const ActivityVisual = styled.div`
   display: flex;
+  align-items: center;
+  justify-content: center;
   margin: 0 0 6px;
 
   ${TokenLogoWrapper} {
