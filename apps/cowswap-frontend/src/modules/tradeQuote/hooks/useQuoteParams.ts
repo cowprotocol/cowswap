@@ -96,6 +96,7 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
       ...(volumeFee ? { partnerFee: volumeFee } : undefined),
       partiallyFillable,
       slippageBps,
+      env: 'prod',
     }
 
     return { quoteParams, inputCurrency, appData: appData?.doc }
