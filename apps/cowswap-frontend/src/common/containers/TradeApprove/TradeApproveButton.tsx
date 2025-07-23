@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -13,9 +13,7 @@ export interface TradeApproveButtonProps {
   isDisabled?: boolean
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function TradeApproveButton(props: TradeApproveButtonProps) {
+export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
   const { amountToApprove, children, isDisabled } = props
 
   const currency = amountToApprove.currency

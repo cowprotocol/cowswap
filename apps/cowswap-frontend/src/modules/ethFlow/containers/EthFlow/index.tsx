@@ -2,7 +2,7 @@ import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
-import { currencyAmountToTokenAmount } from '@cowprotocol/common-utils'
+import { currencyAmountToTokenAmount, getWrappedToken } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
@@ -35,7 +35,7 @@ export interface EthFlowProps {
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function EthFlowModal({
   nativeInput,
   onDismiss,
@@ -46,7 +46,13 @@ export function EthFlowModal({
   const { chainId } = useWalletInfo()
   const native = useNativeCurrency()
   const wrapped = useWrappedToken()
-  const { state: approvalState } = useApproveState(nativeInput || null)
+
+  const wrappedAmount = useMemo(() => {
+    if (!nativeInput) return null
+
+    return CurrencyAmount.fromRawAmount(getWrappedToken(nativeInput.currency), nativeInput.quotient)
+  }, [nativeInput])
+  const { state: approvalState } = useApproveState(wrappedAmount)
 
   const ethFlowContext = useAtomValue(ethFlowContextAtom)
   const approveCallback = useTradeApproveCallback(
