@@ -51,7 +51,6 @@ export const TokenImg: React.FC<Props> = (props) => {
   if (!iconFile && addressMainnet) {
     iconFile = tokensIconsFilesByAddress[addressMainnet.toLowerCase()]
   }
-
   const iconFileUrl: string | undefined =
     tokenLogo ||
     (iconFile
