@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import { BannerOrientation, InfoTooltip, InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -20,78 +20,77 @@ const BannerTypeMap: Record<number, StatusColorVariant> = {
   [LOW_TIER_FEE]: StatusColorVariant.Alert,
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function HighFeeWarning({ readonlyMode }: HighFeeWarningProps) {
+export function HighFeeWarning({ readonlyMode }: HighFeeWarningProps): React.ReactNode | null {
   const { account } = useWalletInfo()
-  const { feeWarningAccepted, setFeeWarningAccepted } = useHighFeeWarning()
+  const { isHighFee, feePercentage, feeWarningAccepted, setFeeWarningAccepted, isHighBridgeFee, bridgeFeePercentage } =
+    useHighFeeWarning()
 
-  const toggleFeeWarningAccepted = useCallback(() => {
-    setFeeWarningAccepted((state) => !state)
+  const toggleSwapFeeWarningAccepted = useCallback(() => {
+    setFeeWarningAccepted((state: boolean) => !state)
   }, [setFeeWarningAccepted])
 
-  const { isHighFee, feePercentage } = useHighFeeWarning()
-  const level = useSafeMemo(() => _getWarningInfo(feePercentage), [feePercentage])
+  const swapLevel = useSafeMemo(() => {
+    const swapLevel = _getWarningInfo(feePercentage)
+    const bridgeLevel = _getWarningInfo(bridgeFeePercentage)
+    if (swapLevel && bridgeLevel) {
+      return Math.max(swapLevel, bridgeLevel)
+    }
 
-  if (!isHighFee) return null
+    if (swapLevel) {
+      return swapLevel
+    }
+    return bridgeLevel
+  }, [feePercentage, bridgeFeePercentage])
 
-  return (
-    <>
-      <InlineBanner
-        bannerType={level ? BannerTypeMap[level] : StatusColorVariant.Info}
-        orientation={BannerOrientation.Vertical}
-        noWrapContent
-        width="100%"
-        customContent={
-          account &&
-          !readonlyMode && (
-            <InlineWarningCheckboxContainer>
-              <input
-                id="fees-exceed-checkbox"
-                type="checkbox"
-                onChange={toggleFeeWarningAccepted}
-                checked={feeWarningAccepted}
-              />{' '}
-              Swap anyway
-            </InlineWarningCheckboxContainer>
-          )
-        }
-      >
-        Costs exceed {level}% of the swap amount
-        <InfoTooltip size={24} content={<HighFeeWarningMessage feePercentage={feePercentage} />} />
-      </InlineBanner>
+  const textContent = useMemo(() => {
+    if (!isHighFee && !isHighBridgeFee) return null
 
-      <InlineBanner
-        bannerType={level ? BannerTypeMap[level] : StatusColorVariant.Info}
-        orientation={BannerOrientation.Vertical}
-        noWrapContent
-        width="100%"
-        customContent={
-          account &&
-          !readonlyMode && (
-            <InlineWarningCheckboxContainer>
-              <input
-                id="fees-exceed-checkbox"
-                type="checkbox"
-                onChange={toggleFeeWarningAccepted}
-                checked={feeWarningAccepted}
-              />{' '}
-              Swap anyway
-            </InlineWarningCheckboxContainer>
-          )
-        }
-      >
-        Costs exceed {level}% of the bridge amount
-        <InfoTooltip size={24} content={<HighFeeWarningMessage feePercentage={feePercentage} />} />
-      </InlineBanner>
-    </>
-  )
+    if (isHighFee && isHighBridgeFee) {
+      return feePercentage === bridgeFeePercentage
+        ? `The costs are ${feePercentage?.toSignificant(2)}% of the swap and bridge amount`
+        : `The costs are ${feePercentage?.toSignificant(2)}% of the swap amount and ${bridgeFeePercentage?.toSignificant(2)}% of the bridge amount`
+    }
+
+    if (isHighFee) {
+      return `The costs are ${feePercentage?.toSignificant(2)}% of the swap amount`
+    }
+
+    if (isHighBridgeFee) {
+      return `The costs are ${bridgeFeePercentage?.toSignificant(2)}% of the bridge amount`
+    }
+
+    return null
+  }, [isHighFee, isHighBridgeFee, feePercentage, bridgeFeePercentage])
+
+  return textContent ? (
+    <InlineBanner
+      bannerType={swapLevel ? BannerTypeMap[swapLevel] : StatusColorVariant.Info}
+      orientation={BannerOrientation.Vertical}
+      noWrapContent
+      width="100%"
+      customContent={
+        account &&
+        !readonlyMode && (
+          <InlineWarningCheckboxContainer>
+            <input
+              id="fees-exceed-checkbox"
+              type="checkbox"
+              onChange={toggleSwapFeeWarningAccepted}
+              checked={feeWarningAccepted}
+            />{' '}
+            Swap anyway
+          </InlineWarningCheckboxContainer>
+        )
+      }
+    >
+      {textContent}
+      <InfoTooltip size={24} content={<HighFeeWarningMessage feePercentage={feePercentage} />} />
+    </InlineBanner>
+  ) : null
 }
 
 // checks fee as percentage (30% not a decimal)
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function _getWarningInfo(feePercentage?: Fraction) {
+function _getWarningInfo(feePercentage?: Fraction): 30 | 20 | 10 | undefined {
   if (!feePercentage || feePercentage.lessThan(LOW_TIER_FEE)) {
     return undefined
   } else if (feePercentage.lessThan(MEDIUM_TIER_FEE)) {
