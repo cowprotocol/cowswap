@@ -28,6 +28,7 @@ import { useEnhancedActivityDerivedState } from 'common/hooks/useEnhancedActivit
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { useSwapAndBridgeContext } from 'common/hooks/useSwapAndBridgeContext'
 import { CustomRecipientWarningBanner } from 'common/pure/CustomRecipientWarningBanner'
+import { IconSpinner } from 'common/pure/IconSpinner'
 import { RateInfo, RateInfoParams } from 'common/pure/RateInfo'
 import { SafeWalletLink } from 'common/pure/SafeWalletLink'
 import { TransactionInnerDetail } from 'common/pure/TransactionInnerDetail'
@@ -52,8 +53,6 @@ import {
   TextAlert,
   TransactionState as ActivityLink,
 } from './styled'
-
-import { BridgeOrderLoading } from '../../pure/BridgeOrderLoading'
 
 const progressBarVisibleStates = [ActivityState.OPEN]
 
@@ -389,7 +388,33 @@ export function ActivityDetails(props: {
           {inputToken && outputToken && (
             <ActivityVisual>
               <TokenLogo token={inputToken} size={32} />
-              <TokenLogo token={isBridgeOrder ? swapAndBridgeOverview?.targetCurrency : outputToken} size={32} />
+              {isBridgeOrder && order ? (
+                (() => {
+                  const isLocalOrderCached = order.inputToken.chainId !== order.outputToken.chainId
+                  const hasConfirmedBridgeData = swapAndBridgeContext?.statusResult
+
+                  // For localStorage orders: use order.outputToken immediately (no API wait, no flash)
+                  if (isLocalOrderCached) {
+                    return <TokenLogo token={order.outputToken} size={32} />
+                  }
+
+                  // For fresh sessions: only show when we have confirmed bridge data (prevents flash)
+                  if (hasConfirmedBridgeData && swapAndBridgeOverview?.targetCurrency) {
+                    return <TokenLogo token={swapAndBridgeOverview.targetCurrency} size={32} />
+                  }
+
+                  // Show spinner when waiting for API data in fresh sessions
+                  return (
+                    <IconSpinner
+                      spinnerWidth={1}
+                      margin="8px 0 0 -4px"
+                      size={21}
+                    />
+                  )
+                })()
+              ) : (
+                <TokenLogo token={outputToken} size={32} />
+              )}
             </ActivityVisual>
           )}
         </span>
@@ -399,22 +424,16 @@ export function ActivityDetails(props: {
           {isOrder ? (
             <>
               {order && isBridgeOrder ? (
-                swapAndBridgeOverview ? (
-                  <BridgeActivitySummary
-                    isCustomRecipientWarning={!!isCustomRecipientWarningBannerVisible}
-                    order={order}
-                    swapAndBridgeContext={swapAndBridgeContext}
-                    swapResultContext={swapResultContext}
-                    swapAndBridgeOverview={swapAndBridgeOverview}
-                    orderBasicDetails={orderBasicDetails}
-                  >
-                    {hooksDetails}
-                  </BridgeActivitySummary>
-                ) : (
-                  <BridgeOrderLoading order={order} fulfillmentTime={fulfillmentTime}>
-                    {hooksDetails}
-                  </BridgeOrderLoading>
-                )
+                <BridgeActivitySummary
+                  isCustomRecipientWarning={!!isCustomRecipientWarningBannerVisible}
+                  order={order}
+                  swapAndBridgeContext={swapAndBridgeContext}
+                  swapResultContext={swapResultContext}
+                  swapAndBridgeOverview={swapAndBridgeOverview}
+                  orderBasicDetails={orderBasicDetails}
+                >
+                  {hooksDetails}
+                </BridgeActivitySummary>
               ) : (
                 // Regular order layout
                 <>

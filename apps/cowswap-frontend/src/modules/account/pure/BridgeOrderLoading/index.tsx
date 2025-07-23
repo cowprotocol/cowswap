@@ -46,7 +46,11 @@ export function BridgeOrderLoading({ order, fulfillmentTime, children }: BridgeO
       <SummaryRow>
         <b>Swap</b>
         <i>
-          <ShimmerWrapper />
+          {fulfillmentTime ? (
+            <>✓ Filled</>
+          ) : (
+            <ShimmerWrapper />
+          )}
         </i>
       </SummaryRow>
       <SummaryRow>

@@ -45,8 +45,22 @@ export function useEnhancedActivityDerivedState(
       }
     }
 
-    // For bridge orders without bridge context, return original state
+    // For bridge orders without bridge context, we need to be more careful:
+    // If the swap is confirmed but we don't have bridge data yet, show loading status
+    // BUT preserve original flags to allow individual step rendering
     if (!swapAndBridgeContext?.bridgingStatus) {
+      // If swap is confirmed but we don't have bridge context, the overall status should be loading
+      // but we preserve the original state flags so individual steps can still be rendered
+      if (activityDerivedState.isConfirmed) {
+        return {
+          ...activityDerivedState,
+          status: ActivityStatus.LOADING,
+          // Keep original isConfirmed so swap step can show as completed
+          // but add isLoading flag for overall status display
+          isLoading: true,
+        }
+      }
+      // For non-confirmed swaps (pending, failed, etc.), use original state
       return activityDerivedState
     }
 

@@ -35,7 +35,11 @@ export function useBridgeOrderOutputToken(
   return useMemo(() => {
     if (isLocalOrderCached) return localOrderOutputToken as TokenWithLogo
 
-    if (!tokens?.length || !outputTokenAddress) return
+    if (!tokens?.length || !outputTokenAddress) {
+      // Fallback to localOrderOutputToken when crossChainOrder data is still loading
+      // This prevents swapAndBridgeOverview from being undefined in fresh sessions
+      return localOrderOutputToken as TokenWithLogo
+    }
 
     const tokenAddressLower = outputTokenAddress.toLowerCase()
     const token = tokens.find((token) => token.address.toLowerCase() === tokenAddressLower)

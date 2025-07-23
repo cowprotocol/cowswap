@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { TokenLogo } from '@cowprotocol/tokens'
 import { UI } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
@@ -11,9 +13,10 @@ interface IconSpinnerProps {
   children?: React.ReactNode
   bgColor?: UI
   spinnerWidth?: number
+  margin?: string
 }
 
-const Wrapper = styled.div<{ size: number; spinnerWidth: number; bgColor: UI }>`
+const Wrapper = styled.div<{ size: number; spinnerWidth: number; bgColor: UI; margin?: string }>`
   --bgColor: ${({ bgColor }) => `var(${bgColor})`};
   display: flex;
   position: relative;
@@ -24,6 +27,7 @@ const Wrapper = styled.div<{ size: number; spinnerWidth: number; bgColor: UI }>`
   min-width: ${({ size }) => size}px;
   min-height: ${({ size }) => size}px;
   border-radius: ${({ size }) => size}px;
+  margin: ${({ margin }) => margin || '0'};
 
   &:before {
     content: '';
@@ -64,8 +68,6 @@ const Wrapper = styled.div<{ size: number; spinnerWidth: number; bgColor: UI }>`
   }
 `
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function IconSpinner({
   currency,
   image,
@@ -73,9 +75,10 @@ export function IconSpinner({
   children,
   bgColor = UI.COLOR_PAPER,
   spinnerWidth = 2,
-}: IconSpinnerProps) {
+  margin,
+}: IconSpinnerProps): ReactNode {
   return (
-    <Wrapper size={size} spinnerWidth={spinnerWidth} bgColor={bgColor}>
+    <Wrapper size={size} spinnerWidth={spinnerWidth} bgColor={bgColor} margin={margin}>
       {(() => {
         if (currency) {
           return <TokenLogo token={currency} size={size} />
