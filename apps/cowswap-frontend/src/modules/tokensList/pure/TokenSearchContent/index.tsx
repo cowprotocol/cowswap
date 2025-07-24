@@ -35,11 +35,7 @@ export function TokenSearchContent({
     externalApiResult.length,
   ].reduce<number>((acc, cur) => acc + (cur ?? 0), 0)
 
-  const isTokenNotFound = useMemo(() => {
-    if (isLoading) return false
-
-    return searchCount === 0
-  }, [isLoading, searchCount])
+  const isTokenNotFound = isLoading ? false : searchCount === 0
 
   const [matchedTokens, activeList] = useMemo(() => {
     const matched: TokenWithLogo[] = []
