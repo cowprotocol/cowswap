@@ -22,7 +22,6 @@ export interface TokensContentProps {
   hideFavoriteTokensTooltip?: boolean
   areTokensLoading: boolean
   allTokens: TokenWithLogo[]
-  account: string | undefined
   searchInput: string
   standalone?: boolean
 
@@ -39,7 +38,6 @@ export function TokensContent({
   hideFavoriteTokensTooltip,
   areTokensLoading,
   allTokens,
-  account,
   displayLpTokenLists,
   searchInput,
   standalone,
@@ -66,12 +64,11 @@ export function TokensContent({
       ) : (
         <>
           {searchInput ? (
-            <TokenSearchResults searchInput={searchInput} {...selectTokenContext} />
+            <TokenSearchResults searchInput={searchInput} selectTokenContext={selectTokenContext} />
           ) : (
             <TokensVirtualList
+              selectTokenContext={selectTokenContext}
               allTokens={allTokens}
-              {...selectTokenContext}
-              account={account}
               displayLpTokenLists={displayLpTokenLists}
             />
           )}

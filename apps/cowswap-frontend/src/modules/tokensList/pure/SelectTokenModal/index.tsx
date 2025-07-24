@@ -74,6 +74,7 @@ export function SelectTokenModal(props: SelectTokenModalProps): ReactNode {
     unsupportedTokens,
     permitCompatibleTokens,
     tokenListTags,
+    isWalletConnected: !!account,
   }
 
   const trimmedInputValue = inputValue.trim()

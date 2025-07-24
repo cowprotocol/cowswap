@@ -1,0 +1,115 @@
+import { ReactNode, useMemo } from 'react'
+
+import { TokenWithLogo } from '@cowprotocol/common-const'
+import { doesTokenMatchSymbolOrAddress } from '@cowprotocol/common-utils'
+import { TokenSearchResponse } from '@cowprotocol/tokens'
+import { Loader } from '@cowprotocol/ui'
+
+import * as styledEl from '../../containers/TokenSearchResults/styled'
+import { SelectTokenContext } from '../../types'
+import { ImportTokenItem } from '../ImportTokenItem'
+import { TokenListItemContainer } from '../TokenListItemContainer'
+import { TokenSourceTitle } from '../TokenSourceTitle'
+
+const SEARCH_RESULTS_LIMIT = 10
+
+interface TokenSearchContentProps {
+  searchInput: string
+  searchResults: TokenSearchResponse
+  selectTokenContext: SelectTokenContext
+  importToken: (tokenToImport: TokenWithLogo) => void
+}
+
+export function TokenSearchContent({
+  searchInput,
+  searchResults,
+  importToken,
+  selectTokenContext,
+}: TokenSearchContentProps): ReactNode {
+  const { inactiveListsResult, blockchainResult, activeListsResult, externalApiResult, isLoading } = searchResults
+
+  const searchCount = [
+    activeListsResult.length,
+    inactiveListsResult.length,
+    blockchainResult.length,
+    externalApiResult.length,
+  ].reduce<number>((acc, cur) => acc + (cur ?? 0), 0)
+
+  const isTokenNotFound = useMemo(() => {
+    if (isLoading) return false
+
+    return searchCount === 0
+  }, [isLoading, searchCount])
+
+  const [matchedTokens, activeList] = useMemo(() => {
+    const matched: TokenWithLogo[] = []
+    const remaining: TokenWithLogo[] = []
+
+    for (const t of activeListsResult) {
+      if (doesTokenMatchSymbolOrAddress(t, searchInput)) {
+        // There should ever be only 1 token with a given address
+        // There can be multiple with the same symbol
+        matched.push(t)
+      } else {
+        remaining.push(t)
+      }
+    }
+
+    return [matched, remaining]
+  }, [activeListsResult, searchInput])
+
+  if (isLoading)
+    return (
+      <styledEl.LoaderWrapper>
+        <Loader />
+      </styledEl.LoaderWrapper>
+    )
+
+  if (isTokenNotFound) return <styledEl.TokenNotFound>No tokens found</styledEl.TokenNotFound>
+
+  return (
+    <>
+      {/*Matched tokens first, followed by tokens from active lists*/}
+      {matchedTokens.concat(activeList).map((token) => {
+        return <TokenListItemContainer key={token.address} token={token} context={selectTokenContext} />
+      })}
+
+      {/*Tokens from blockchain*/}
+      {blockchainResult?.length ? (
+        <styledEl.ImportTokenWrapper id="currency-import">
+          {blockchainResult.slice(0, SEARCH_RESULTS_LIMIT).map((token) => {
+            return <ImportTokenItem key={token.address} token={token} importToken={importToken} />
+          })}
+        </styledEl.ImportTokenWrapper>
+      ) : null}
+
+      {/*Tokens from inactive lists*/}
+      {inactiveListsResult?.length ? (
+        <div>
+          <TokenSourceTitle tooltip="Tokens from inactive lists. Import specific tokens below or click Manage to activate more lists.">
+            Expanded results from inactive Token Lists
+          </TokenSourceTitle>
+          <div>
+            {inactiveListsResult.slice(0, SEARCH_RESULTS_LIMIT).map((token) => {
+              return <ImportTokenItem key={token.address} token={token} importToken={importToken} shadowed />
+            })}
+          </div>
+        </div>
+      ) : null}
+
+      {/*Tokens from external sources*/}
+      {externalApiResult?.length ? (
+        <div>
+          <TokenSourceTitle tooltip="Tokens from external sources.">
+            Additional Results from External Sources
+          </TokenSourceTitle>
+          <div>
+            {externalApiResult.map((token) => {
+              return <ImportTokenItem key={token.address} token={token} importToken={importToken} shadowed />
+            })}
+          </div>
+        </div>
+      ) : null}
+    </>
+  )
+}
