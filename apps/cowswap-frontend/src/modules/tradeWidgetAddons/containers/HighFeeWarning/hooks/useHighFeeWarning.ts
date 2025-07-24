@@ -85,7 +85,7 @@ export function useHighFeeWarning(): UseHighFeeWarningReturn {
       feeWarningAccepted: _computeFeeWarningAcceptedState({ feeWarningAccepted, isHighFee }),
       setFeeWarningAccepted,
     }),
-    [isHighFee, feePercentage, feeWarningAccepted, setFeeWarningAccepted],
+    [isHighFee, feePercentage, isHighBridgeFee, bridgeFeePercentage, feeWarningAccepted, setFeeWarningAccepted],
   )
 }
 
