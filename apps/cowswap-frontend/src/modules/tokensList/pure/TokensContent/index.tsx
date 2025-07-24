@@ -22,9 +22,9 @@ export interface TokensContentProps {
   hideFavoriteTokensTooltip?: boolean
   areTokensLoading: boolean
   allTokens: TokenWithLogo[]
-  account: string | undefined
   searchInput: string
   standalone?: boolean
+  areTokensFromBridge: boolean
 
   onSelectToken(token: TokenWithLogo): void
   onOpenManageWidget(): void
@@ -39,10 +39,10 @@ export function TokensContent({
   hideFavoriteTokensTooltip,
   areTokensLoading,
   allTokens,
-  account,
   displayLpTokenLists,
   searchInput,
   standalone,
+  areTokensFromBridge,
 }: TokensContentProps): ReactNode {
   return (
     <>
@@ -66,12 +66,16 @@ export function TokensContent({
       ) : (
         <>
           {searchInput ? (
-            <TokenSearchResults searchInput={searchInput} {...selectTokenContext} />
+            <TokenSearchResults
+              searchInput={searchInput}
+              selectTokenContext={selectTokenContext}
+              areTokensFromBridge={areTokensFromBridge}
+              allTokens={allTokens}
+            />
           ) : (
             <TokensVirtualList
+              selectTokenContext={selectTokenContext}
               allTokens={allTokens}
-              {...selectTokenContext}
-              account={account}
               displayLpTokenLists={displayLpTokenLists}
             />
           )}
