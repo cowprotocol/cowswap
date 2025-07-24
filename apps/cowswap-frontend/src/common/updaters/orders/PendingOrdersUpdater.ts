@@ -349,9 +349,7 @@ function getReplacedOrCancelledEthFlowOrders(
 
 // Check if there is any order pending for a long time
 // If so, trigger appzi
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function _triggerNps(pending: Order[], chainId: ChainId, account: string) {
+function _triggerNps(pending: Order[], chainId: ChainId, account: string): void {
   for (const order of pending) {
     const { openSince, id: orderId } = order
     const orderType = getUiOrderType(order)
