@@ -15,6 +15,7 @@ import { getEstimatedExecutionPrice } from 'legacy/state/orders/utils'
 import { PendingOrderPrices } from 'modules/orders'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
+import { CurrencyLogoPair } from 'common/pure/CurrencyLogoPair'
 import { RateInfo } from 'common/pure/RateInfo'
 import { getQuoteCurrency } from 'common/services/getQuoteCurrency'
 import { BalancesAndAllowances } from 'common/types'
@@ -22,7 +23,6 @@ import { isOrderCancellable } from 'common/utils/isOrderCancellable'
 import { getSellAmountWithFee } from 'utils/orderUtils/getSellAmountWithFee'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
-import { CurrencyLogoPairWithBridging } from './CurrencyLogoPairWithBridging'
 import { OrderContextMenu } from './OrderContextMenu'
 import { WarningTooltip } from './OrderWarning'
 import * as styledEl from './styled'
@@ -216,12 +216,7 @@ export function OrderRow({
 
       {/* Order sell/buy tokens */}
       <styledEl.CurrencyCell>
-        <CurrencyLogoPairWithBridging
-          sellToken={order.inputToken}
-          buyToken={buyAmount.currency}
-          clickable
-          onClick={onClick}
-        />
+        <CurrencyLogoPair sellToken={order.inputToken} buyToken={buyAmount.currency} clickable onClick={onClick} />
         <styledEl.CurrencyAmountWrapper clickable onClick={onClick}>
           <CurrencyAmountItem amount={getSellAmountWithFee(order)} />
           <CurrencyAmountItem amount={buyAmount} />
