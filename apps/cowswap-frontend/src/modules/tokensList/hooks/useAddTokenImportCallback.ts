@@ -4,9 +4,7 @@ import { TokenWithLogo } from '@cowprotocol/common-const'
 
 import { useUpdateSelectTokenWidgetState } from './useUpdateSelectTokenWidgetState'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useAddTokenImportCallback() {
+export function useAddTokenImportCallback(): (tokenToImport: TokenWithLogo) => void {
   const updateSelectTokenWidget = useUpdateSelectTokenWidgetState()
 
   return useCallback(

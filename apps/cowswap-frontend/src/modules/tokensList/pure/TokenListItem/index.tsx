@@ -1,4 +1,4 @@
-import { MouseEventHandler } from 'react'
+import { MouseEventHandler, ReactNode } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
@@ -34,10 +34,7 @@ export interface TokenListItemProps {
   tokenListTags: TokenListTags
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
-export function TokenListItem(props: TokenListItemProps) {
+export function TokenListItem(props: TokenListItemProps): ReactNode {
   const {
     token,
     selectedToken,
