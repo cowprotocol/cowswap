@@ -19,6 +19,7 @@ import { SelectTokenContext } from '../../types'
 export interface TokenSearchResultsProps {
   searchInput: string
   selectTokenContext: SelectTokenContext
+  areTokensFromBridge: boolean
 }
 
 export function TokenSearchResults({ searchInput, selectTokenContext }: TokenSearchResultsProps): ReactNode {

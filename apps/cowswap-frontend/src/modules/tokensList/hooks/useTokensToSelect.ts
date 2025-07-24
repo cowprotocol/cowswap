@@ -17,6 +17,7 @@ export interface TokensToSelectContext {
   isLoading: boolean
   tokens: TokenWithLogo[]
   favoriteTokens: TokenWithLogo[]
+  areTokensFromBridge: boolean
 }
 
 export function useTokensToSelect(): TokensToSelectContext {
@@ -51,6 +52,7 @@ export function useTokensToSelect(): TokensToSelectContext {
       isLoading: areTokensFromBridge ? isLoading : false,
       tokens: (areTokensFromBridge ? bridgeSupportedTokens : allTokens) || EMPTY_TOKENS,
       favoriteTokens: favoriteTokensToSelect,
+      areTokensFromBridge,
     }
   }, [allTokens, bridgeSupportedTokens, bridgeSupportedTokensMap, isLoading, areTokensFromBridge, favoriteTokens])
 }

@@ -95,7 +95,7 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
   })
   const importTokenCallback = useAddUserToken()
 
-  const { tokens: allTokens, isLoading: areTokensLoading, favoriteTokens } = useTokensToSelect()
+  const { tokens: allTokens, isLoading: areTokensLoading, favoriteTokens, areTokensFromBridge } = useTokensToSelect()
   const userAddedTokens = useUserAddedTokens()
   const allTokenLists = useAllListsList()
   const balancesState = useTokensBalancesCombined()
@@ -130,17 +130,13 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
     closeTokenSelectWidget()
   }, [closeTokenSelectWidget])
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const importTokenAndClose = (tokens: TokenWithLogo[]) => {
+  const importTokenAndClose = (tokens: TokenWithLogo[]): void => {
     importTokenCallback(tokens)
     onSelectToken?.(tokens[0])
     onDismiss()
   }
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const importListAndBack = (list: ListState) => {
+  const importListAndBack = (list: ListState): void => {
     try {
       addCustomTokenLists(list)
     } catch (error) {
@@ -222,6 +218,7 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
             onSelectChain={onSelectChain}
             areTokensLoading={areTokensLoading}
             tokenListTags={tokenListTags}
+            areTokensFromBridge={areTokensFromBridge}
           />
         )
       })()}

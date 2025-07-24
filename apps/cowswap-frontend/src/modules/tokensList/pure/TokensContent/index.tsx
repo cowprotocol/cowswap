@@ -24,6 +24,7 @@ export interface TokensContentProps {
   allTokens: TokenWithLogo[]
   searchInput: string
   standalone?: boolean
+  areTokensFromBridge: boolean
 
   onSelectToken(token: TokenWithLogo): void
   onOpenManageWidget(): void
@@ -41,6 +42,7 @@ export function TokensContent({
   displayLpTokenLists,
   searchInput,
   standalone,
+  areTokensFromBridge,
 }: TokensContentProps): ReactNode {
   return (
     <>
@@ -64,7 +66,11 @@ export function TokensContent({
       ) : (
         <>
           {searchInput ? (
-            <TokenSearchResults searchInput={searchInput} selectTokenContext={selectTokenContext} />
+            <TokenSearchResults
+              searchInput={searchInput}
+              selectTokenContext={selectTokenContext}
+              areTokensFromBridge={areTokensFromBridge}
+            />
           ) : (
             <TokensVirtualList
               selectTokenContext={selectTokenContext}
