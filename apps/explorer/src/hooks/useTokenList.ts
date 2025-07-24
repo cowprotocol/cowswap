@@ -11,6 +11,16 @@ type TokenListPerNetwork = Record<SupportedChainId, TokenListByAddress>
 
 const INITIAL_TOKEN_LIST_PER_NETWORK: TokenListPerNetwork = mapSupportedNetworks({})
 
+const COINGECKO_CHAINS: Record<SupportedChainId, string | null> = {
+  [SupportedChainId.MAINNET]: 'ethereum',
+  [SupportedChainId.GNOSIS_CHAIN]: 'xdai',
+  [SupportedChainId.BASE]: 'base',
+  [SupportedChainId.ARBITRUM_ONE]: 'arbitrum-one',
+  [SupportedChainId.SEPOLIA]: null,
+  [SupportedChainId.POLYGON]: 'polygon-pos',
+  [SupportedChainId.AVALANCHE]: 'avalanche',
+}
+
 // TODO: Reduce function complexity by extracting logic
 // eslint-disable-next-line complexity
 export function useTokenList(chainId: SupportedChainId | undefined): { data: TokenListByAddress; isLoading: boolean } {
@@ -19,34 +29,31 @@ export function useTokenList(chainId: SupportedChainId | undefined): { data: Tok
       ? 'https://files.cow.fi/tokens/CowSwap.json'
       : 'https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/CowSwapSepolia.json',
   )
-  const { data: coingeckoList, isLoading: isCoingeckoListLoading } = useTokenListByUrl(
+  const { data: coingeckoUniswapList, isLoading: isCoingeckoUniswapLoading } = useTokenListByUrl(
     chainId === SupportedChainId.MAINNET ? 'https://tokens.coingecko.com/uniswap/all.json' : '',
   )
   const { data: honeyswapList, isLoading: isHoneyswapListLoading } = useTokenListByUrl(
     chainId === SupportedChainId.GNOSIS_CHAIN ? 'https://tokens.honeyswap.org' : '',
   )
-  const { data: arbitrumOneList, isLoading: isArbitrumOneListLoading } = useTokenListByUrl(
-    chainId === SupportedChainId.ARBITRUM_ONE ? 'https://tokens.coingecko.com/arbitrum-one/all.json' : '',
+  const coingeckoUrlKey = chainId && COINGECKO_CHAINS[chainId]
+  const { data: coingeckoList, isLoading: isCoingeckoLoading } = useTokenListByUrl(
+    coingeckoUrlKey ? `https://tokens.coingecko.com/${coingeckoUrlKey}/all.json` : '',
   )
   const { data: baseList, isLoading: isBaseListLoading } = useTokenListByUrl(
     chainId === SupportedChainId.BASE ? 'https://tokens.coingecko.com/base/all.json' : '',
   )
 
   const isLoading = chainId
-    ? isCowListLoading ||
-      isHoneyswapListLoading ||
-      isCoingeckoListLoading ||
-      isArbitrumOneListLoading ||
-      isBaseListLoading
+    ? isCowListLoading || isHoneyswapListLoading || isCoingeckoUniswapLoading || isCoingeckoLoading || isBaseListLoading
     : false
 
   return useMemo(() => {
     const data = chainId
-      ? { ...coingeckoList, ...honeyswapList, ...cowSwapList, ...arbitrumOneList, ...baseList }[chainId]
+      ? { ...coingeckoUniswapList, ...honeyswapList, ...cowSwapList, ...coingeckoList, ...baseList }[chainId]
       : {}
 
     return { data, isLoading }
-  }, [chainId, coingeckoList, honeyswapList, cowSwapList, arbitrumOneList, isLoading, baseList])
+  }, [chainId, coingeckoUniswapList, honeyswapList, cowSwapList, coingeckoList, isLoading, baseList])
 }
 
 // TODO: Add proper return type annotation
