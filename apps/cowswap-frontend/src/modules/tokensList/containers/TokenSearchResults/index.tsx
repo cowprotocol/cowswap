@@ -1,7 +1,8 @@
 import { ReactNode, useCallback, useEffect, useMemo } from 'react'
 
+import { TokenWithLogo } from '@cowprotocol/common-const'
 import { doesTokenMatchSymbolOrAddress } from '@cowprotocol/common-utils'
-import { useSearchToken } from '@cowprotocol/tokens'
+import { getTokenSearchFilter, TokenSearchResponse, useSearchToken } from '@cowprotocol/tokens'
 import {
   BannerOrientation,
   ExternalLink,
@@ -20,12 +21,32 @@ export interface TokenSearchResultsProps {
   searchInput: string
   selectTokenContext: SelectTokenContext
   areTokensFromBridge: boolean
+  allTokens: TokenWithLogo[]
 }
 
-export function TokenSearchResults({ searchInput, selectTokenContext }: TokenSearchResultsProps): ReactNode {
+export function TokenSearchResults({
+  searchInput,
+  selectTokenContext,
+  areTokensFromBridge,
+  allTokens,
+}: TokenSearchResultsProps): ReactNode {
   const { onSelectToken } = selectTokenContext
 
-  const searchResults = useSearchToken(searchInput)
+  // Do not make search when tokens are from bridge
+  const defaultSearchResults = useSearchToken(areTokensFromBridge ? null : searchInput)
+
+  // For bridge output tokens just filter them instead of making search
+  const searchResults: TokenSearchResponse = useMemo(() => {
+    if (!areTokensFromBridge) return defaultSearchResults
+
+    const filter = getTokenSearchFilter(searchInput)
+    const filteredTokens = allTokens.filter(filter)
+
+    return {
+      ...defaultSearchResults,
+      activeListsResult: filteredTokens,
+    }
+  }, [searchInput, areTokensFromBridge, allTokens, defaultSearchResults])
 
   const { activeListsResult } = searchResults
 

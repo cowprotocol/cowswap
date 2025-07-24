@@ -70,6 +70,7 @@ export function TokensContent({
               searchInput={searchInput}
               selectTokenContext={selectTokenContext}
               areTokensFromBridge={areTokensFromBridge}
+              allTokens={allTokens}
             />
           ) : (
             <TokensVirtualList
