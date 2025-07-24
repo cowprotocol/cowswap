@@ -55,8 +55,6 @@ function PendingOrderUpdater({ chainId, orderUid }: PendingOrderUpdaterProps): R
     updateBridgeOrderQuote(orderUid, crossChainOrder.statusResult)
 
     if (isOrderExecuted) {
-      updateBridgeOrderQuote(orderUid, crossChainOrder.statusResult)
-
       // Display surplus modal
       addOrderToSurplusQueue(orderUid)
 
