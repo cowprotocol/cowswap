@@ -144,6 +144,7 @@ export function useSwapAndBridgeContext(
     outputToken,
     targetAmounts,
     targetRecipient,
+    crossChainOrder?.bridgingParams.destinationChainId, // Override: prevents wrong chain flash (fallback token has source chainId)
   )
 
   // TODO: Break down this large function into smaller functions

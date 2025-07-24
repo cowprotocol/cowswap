@@ -18,8 +18,10 @@ export function useSwapAndBridgeOverview(
     buyAmount: CurrencyAmount<Currency>
   },
   targetRecipient?: string,
+  destinationChainIdOverride?: number,
 ): SwapAndBridgeOverview | undefined {
-  const destinationChainId = outputToken?.chainId
+  // Use override if provided (from crossChainOrder), otherwise fall back to outputToken chainId
+  const destinationChainId = destinationChainIdOverride ?? outputToken?.chainId
   const destChainData = useBridgeSupportedNetwork(destinationChainId)
 
   return useMemo(() => {

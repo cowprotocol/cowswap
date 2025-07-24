@@ -51,15 +51,15 @@ export function BridgeSummaryHeader({
         <b>To at least</b>
 
         <i>
-          {targetAmount ? (
+          {targetAmount && showDestinationChain ? (
             <>
               <TokenLogo token={targetAmount.currency} size={20} />
               <TokenAmount amount={targetAmount} tokenSymbol={targetAmount.currency} />
+              {` on ${capitalizeFirstLetter(targetChainName)}`}
             </>
           ) : (
             <ShimmerWrapper />
           )}
-          {showDestinationChain && ` on ${capitalizeFirstLetter(targetChainName)}`}
         </i>
       </SummaryRow>
 
