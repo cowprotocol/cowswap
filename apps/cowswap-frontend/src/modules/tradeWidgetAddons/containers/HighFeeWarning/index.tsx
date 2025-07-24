@@ -62,15 +62,16 @@ export function HighFeeWarning({ readonlyMode }: HighFeeWarningProps): React.Rea
     return null
   }, [isHighFee, isHighBridgeFee, feePercentage, bridgeFeePercentage])
 
+  const hasExtraContent = account && !readonlyMode
+
   return textContent ? (
     <InlineBanner
       bannerType={swapLevel ? BannerTypeMap[swapLevel] : StatusColorVariant.Info}
-      orientation={BannerOrientation.Vertical}
+      orientation={hasExtraContent ? BannerOrientation.Vertical : BannerOrientation.Horizontal}
       noWrapContent
       width="100%"
       customContent={
-        account &&
-        !readonlyMode && (
+        hasExtraContent && (
           <InlineWarningCheckboxContainer>
             <input
               id="fees-exceed-checkbox"
