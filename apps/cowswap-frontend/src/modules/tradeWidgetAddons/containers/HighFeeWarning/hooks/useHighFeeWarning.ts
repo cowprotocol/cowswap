@@ -82,7 +82,7 @@ export function useHighFeeWarning(): UseHighFeeWarningReturn {
       isHighBridgeFee,
       bridgeFeePercentage,
       // we only care/check about feeWarning being accepted if the fee is actually high..
-      feeWarningAccepted: _computeFeeWarningAcceptedState({ feeWarningAccepted, isHighFee }),
+      feeWarningAccepted: _computeFeeWarningAcceptedState({ feeWarningAccepted, isHighFee, isHighBridgeFee }),
       setFeeWarningAccepted,
     }),
     [isHighFee, feePercentage, isHighBridgeFee, bridgeFeePercentage, feeWarningAccepted, setFeeWarningAccepted],
@@ -92,14 +92,16 @@ export function useHighFeeWarning(): UseHighFeeWarningReturn {
 function _computeFeeWarningAcceptedState({
   feeWarningAccepted,
   isHighFee,
+  isHighBridgeFee,
 }: {
   feeWarningAccepted: boolean
   isHighFee: boolean
+  isHighBridgeFee: boolean | undefined
 }): boolean {
   if (feeWarningAccepted) return true
   else {
     // is the fee high? that's only when we care
-    if (isHighFee) {
+    if (isHighFee || isHighBridgeFee) {
       return feeWarningAccepted
     } else {
       return true

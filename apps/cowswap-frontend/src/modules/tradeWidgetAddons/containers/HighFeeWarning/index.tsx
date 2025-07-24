@@ -2,7 +2,7 @@ import { useCallback, useMemo } from 'react'
 
 import { BannerOrientation, InfoTooltip, InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { Fraction } from '@uniswap/sdk-core'
+import { Fraction, Rounding } from '@uniswap/sdk-core'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
@@ -42,25 +42,10 @@ export function HighFeeWarning({ readonlyMode }: HighFeeWarningProps): React.Rea
     return bridgeLevel
   }, [feePercentage, bridgeFeePercentage])
 
-  const textContent = useMemo(() => {
-    if (!isHighFee && !isHighBridgeFee) return null
-
-    if (isHighFee && isHighBridgeFee) {
-      return feePercentage === bridgeFeePercentage
-        ? `The costs are ${feePercentage?.toSignificant(2)}% of the swap and bridge amount`
-        : `The costs are ${feePercentage?.toSignificant(2)}% of the swap amount and ${bridgeFeePercentage?.toSignificant(2)}% of the bridge amount`
-    }
-
-    if (isHighFee) {
-      return `The costs are ${feePercentage?.toSignificant(2)}% of the swap amount`
-    }
-
-    if (isHighBridgeFee) {
-      return `The costs are ${bridgeFeePercentage?.toSignificant(2)}% of the bridge amount`
-    }
-
-    return null
-  }, [isHighFee, isHighBridgeFee, feePercentage, bridgeFeePercentage])
+  const textContent = useMemo(
+    () => getHighFeeWarningMessageContent({ isHighFee, isHighBridgeFee, feePercentage, bridgeFeePercentage }),
+    [isHighFee, isHighBridgeFee, feePercentage, bridgeFeePercentage],
+  )
 
   const hasExtraContent = account && !readonlyMode
 
@@ -85,7 +70,10 @@ export function HighFeeWarning({ readonlyMode }: HighFeeWarningProps): React.Rea
       }
     >
       {textContent}
-      <InfoTooltip size={24} content={<HighFeeWarningMessage feePercentage={feePercentage} />} />
+      <InfoTooltip
+        size={24}
+        content={<HighFeeWarningMessage feePercentage={feePercentage} bridgeFeePercentage={bridgeFeePercentage} />}
+      />
     </InlineBanner>
   ) : null
 }
@@ -103,22 +91,71 @@ function _getWarningInfo(feePercentage?: Fraction): 30 | 20 | 10 | undefined {
   }
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const HighFeeWarningMessage = ({ feePercentage }: { feePercentage?: Fraction }) => (
-  <div>
-    <small>
-      Current network costs make up{' '}
-      <u>
-        <strong>{feePercentage?.toFixed(2)}%</strong>
-      </u>{' '}
-      of your swap amount.
-      <br />
-      <br />
-      Consider waiting for lower network costs.
-      <br />
-      <br />
-      You may still move forward with this swap but a high percentage of it will be consumed by network costs.
-    </small>
-  </div>
-)
+const formatFeePercentage = (feePercentage: Fraction | undefined): string => {
+  return feePercentage?.toSignificant(2, undefined, Rounding.ROUND_DOWN) ?? '0'
+}
+
+const getHighFeeWarningMessageContent = ({
+  isHighFee,
+  isHighBridgeFee,
+  feePercentage,
+  bridgeFeePercentage,
+}: {
+  isHighFee: boolean
+  isHighBridgeFee?: boolean
+  feePercentage?: Fraction
+  bridgeFeePercentage?: Fraction
+}): string | null => {
+  if (isHighFee && isHighBridgeFee) {
+    return feePercentage === bridgeFeePercentage
+      ? `The costs are at least ${formatFeePercentage(feePercentage)}% of the swap and bridge amount`
+      : `The costs are at least ${formatFeePercentage(feePercentage)}% of the swap amount and ${formatFeePercentage(bridgeFeePercentage)}% of the bridge amount`
+  }
+
+  if (isHighFee) {
+    return `The costs are at least ${formatFeePercentage(feePercentage)}% of the swap amount`
+  }
+
+  if (isHighBridgeFee) {
+    return `The costs are at least ${formatFeePercentage(bridgeFeePercentage)}% of the bridge amount`
+  }
+
+  return null
+}
+
+const HighFeeWarningMessage = ({
+  feePercentage,
+  bridgeFeePercentage,
+}: {
+  feePercentage?: Fraction
+  bridgeFeePercentage?: Fraction
+}): React.ReactNode => {
+  return (
+    <div>
+      <small>
+        Current network costs make up{' '}
+        <u>
+          <strong>{feePercentage?.toFixed(2)}%</strong>
+        </u>{' '}
+        of your swap amount.
+        <br />
+        {bridgeFeePercentage && (
+          <>
+            <br />
+            Current bridge costs make up{' '}
+            <u>
+              <strong>{bridgeFeePercentage?.toFixed(2)}%</strong>
+            </u>{' '}
+            of your bridge amount.
+            <br />
+          </>
+        )}
+        <br />
+        Consider waiting for lower network costs.
+        <br />
+        <br />
+        You may still move forward with this swap but a high percentage of it will be consumed by network costs.
+      </small>
+    </div>
+  )
+}

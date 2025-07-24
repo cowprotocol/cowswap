@@ -29,6 +29,24 @@ export function InlineBanner({
 }: InlineBannerProps): ReactNode {
   const colorEnums = getStatusColorEnums(bannerType)
 
+  const bannerIcon = (
+    <BannerIcon
+      hideIcon={hideIcon}
+      customIcon={customIcon}
+      iconSize={iconSize}
+      colorEnums={colorEnums}
+      bannerType={bannerType}
+      iconPadding={iconPadding}
+    />
+  )
+
+  const content = (
+    <>
+      {bannerIcon}
+      {noWrapContent ? children : <span>{children}</span>}
+    </>
+  )
+
   return (
     <Wrapper
       className={className}
@@ -46,31 +64,11 @@ export function InlineBanner({
     >
       {customContent ? (
         <CustomContentContainer>
-          <CustomContentTop>
-            <BannerIcon
-              hideIcon={hideIcon}
-              customIcon={customIcon}
-              iconSize={iconSize}
-              colorEnums={colorEnums}
-              bannerType={bannerType}
-              iconPadding={iconPadding}
-            />
-            {noWrapContent ? children : <span>{children}</span>}
-          </CustomContentTop>
+          <CustomContentTop>{content}</CustomContentTop>
           <CustomContentBottom>{customContent}</CustomContentBottom>
         </CustomContentContainer>
       ) : (
-        <span>
-          <BannerIcon
-            hideIcon={hideIcon}
-            customIcon={customIcon}
-            iconSize={iconSize}
-            colorEnums={colorEnums}
-            bannerType={bannerType}
-            iconPadding={iconPadding}
-          />
-          {noWrapContent ? children : <span>{children}</span>}
-        </span>
+        <span>{content}</span>
       )}
 
       {onClose && <CloseIcon onClick={onClose} />}
