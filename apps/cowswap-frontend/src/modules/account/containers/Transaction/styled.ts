@@ -1,8 +1,7 @@
-import { TokenLogoWrapper } from '@cowprotocol/tokens'
 import { ExternalLink, FiatAmount, Media, RowFixed, StyledLink, UI } from '@cowprotocol/ui'
 
 import { transparentize } from 'color2k'
-import styled, { css, keyframes } from 'styled-components/macro'
+import styled, { css } from 'styled-components/macro'
 
 import { ActivityState } from 'legacy/hooks/useActivityDerivedState'
 
@@ -384,33 +383,11 @@ export const CreationTimeText = styled.div`
   padding: 0 0 12px;
 `
 
-const rotate360 = keyframes`
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-`
-
 export const ActivityVisual = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 0 6px;
-
-  ${TokenLogoWrapper} {
-    border: 3px solid var(${UI.COLOR_PAPER});
-  }
-
-  ${TokenLogoWrapper}:not(:first-child):last-child {
-    margin: 0 0 0 -9px;
-  }
-
-  &:hover ${TokenLogoWrapper} {
-    animation: ${rotate360} 1s cubic-bezier(0.83, 0, 0.17, 1) infinite;
-    transform: translateZ(0);
-  }
 `
 
 export const CancelTxLink = styled(ExternalLink)`

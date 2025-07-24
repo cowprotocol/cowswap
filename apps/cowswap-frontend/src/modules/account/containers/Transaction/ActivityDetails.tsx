@@ -27,6 +27,7 @@ import { isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { useEnhancedActivityDerivedState } from 'common/hooks/useEnhancedActivityDerivedState'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { useSwapAndBridgeContext } from 'common/hooks/useSwapAndBridgeContext'
+import { CurrencyLogoPair } from 'common/pure/CurrencyLogoPair'
 import { CustomRecipientWarningBanner } from 'common/pure/CustomRecipientWarningBanner'
 import { IconSpinner } from 'common/pure/IconSpinner'
 import { RateInfo, RateInfoParams } from 'common/pure/RateInfo'
@@ -387,7 +388,6 @@ export function ActivityDetails(props: {
           {/* Order Currency Logo */}
           {inputToken && outputToken && (
             <ActivityVisual>
-              <TokenLogo token={inputToken} size={32} />
               {isBridgeOrder && order ? (
                 (() => {
                   const isLocalOrderCached = order.inputToken.chainId !== order.outputToken.chainId
@@ -395,19 +395,30 @@ export function ActivityDetails(props: {
 
                   // For localStorage orders: use order.outputToken immediately (no API wait, no flash)
                   if (isLocalOrderCached) {
-                    return <TokenLogo token={order.outputToken} size={32} />
+                    return <CurrencyLogoPair sellToken={inputToken} buyToken={order.outputToken} tokenSize={32} />
                   }
 
-                  // For fresh sessions: only show when we have confirmed bridge data (prevents flash)
+                  // For fresh sessions: only show CurrencyLogoPair when we have confirmed bridge data
                   if (hasConfirmedBridgeData && swapAndBridgeOverview?.targetCurrency) {
-                    return <TokenLogo token={swapAndBridgeOverview.targetCurrency} size={32} />
+                    return (
+                      <CurrencyLogoPair
+                        sellToken={inputToken}
+                        buyToken={swapAndBridgeOverview.targetCurrency}
+                        tokenSize={32}
+                      />
+                    )
                   }
 
-                  // Show spinner when waiting for API data in fresh sessions
-                  return <IconSpinner spinnerWidth={1} margin="0 0 0 -4px" size={21} />
+                  // Show spinner when waiting for API data in fresh sessions (don't use CurrencyLogoPair)
+                  return (
+                    <>
+                      <TokenLogo token={inputToken} size={32} />
+                      <IconSpinner spinnerWidth={1} margin="0 0 0 -4px" size={30} />
+                    </>
+                  )
                 })()
               ) : (
-                <TokenLogo token={outputToken} size={32} />
+                <CurrencyLogoPair sellToken={inputToken} buyToken={outputToken} tokenSize={32} />
               )}
             </ActivityVisual>
           )}
