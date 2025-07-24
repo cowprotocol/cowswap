@@ -6,6 +6,7 @@ import { isAnyOf } from '@reduxjs/toolkit'
 import { getSurveyType, isOrderInPendingTooLong, triggerAppziSurvey } from 'appzi'
 import { AnyAction, Dispatch, Middleware, MiddlewareAPI } from 'redux'
 
+import { getIsBridgeOrder } from 'common/utils/getIsBridgeOrder'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { AppState } from '../../index'
@@ -21,12 +22,14 @@ const isBatchCancelOrderAction = isAnyOf(OrderActions.cancelOrdersBatch)
 export const appziMiddleware: Middleware<Record<string, unknown>, AppState> = (store) => (next) => (action) => {
   if (isBatchFulfillOrderAction(action)) {
     // Shows NPS feedback (or attempts to) when there's a successful trade
-    const {
-      chainId,
-      orders: [{ uid }],
-    } = action.payload
+    const { chainId } = action.payload
+    const firstOrder = action.payload.orders[0]
 
-    _triggerAppzi(store, chainId, uid, { traded: true })
+    // Do not trigger Appzi for bridge orders
+    // They are handled in PendingBridgeOrdersUpdater
+    if (!getIsBridgeOrder(firstOrder)) {
+      _triggerAppzi(store, chainId, firstOrder.uid, { traded: true })
+    }
   } else if (isBatchExpireOrderAction(action)) {
     // Shows NPS feedback (or attempts to) when the order expired
     const {
@@ -84,7 +87,7 @@ function _triggerAppzi(
   chainId: ChainId,
   orderId: string,
   npsParams: Parameters<typeof triggerAppziSurvey>[0],
-  _order?: OrderActions.SerializedOrder | undefined
+  _order?: OrderActions.SerializedOrder | undefined,
 ) {
   const order = _order || getOrderByIdFromState(store.getState().orders[chainId], orderId)?.order
   const openSince = order?.openSince
@@ -114,7 +117,7 @@ function _triggerAppzi(
       account: order?.owner,
       pendingOrderIds: getPendingOrderIds(store, chainId).join(','),
     },
-    getSurveyType(uiOrderType)
+    getSurveyType(uiOrderType),
   )
 }
 
