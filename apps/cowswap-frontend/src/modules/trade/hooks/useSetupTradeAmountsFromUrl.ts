@@ -19,12 +19,13 @@ import { TradeAmounts } from 'common/types'
 import { useDerivedTradeState } from './useDerivedTradeState'
 import { useTradeState } from './useTradeState'
 
-import { ExtendedTradeRawState } from '../types/TradeRawState'
+import { ExtendedTradeRawState } from '../types'
 
 interface SetupTradeAmountsParams {
   onlySell?: boolean
   onAmountsUpdate?: (amounts: TradeAmounts) => void
 }
+
 /**
  * Parse sell/buy amount from URL and apply to Limit orders widget
  * Example:
@@ -33,9 +34,7 @@ interface SetupTradeAmountsParams {
  * In case when both sellAmount and buyAmount specified, the price will be automatically calculated
  */
 // TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
-export function useSetupTradeAmountsFromUrl({ onAmountsUpdate, onlySell }: SetupTradeAmountsParams) {
+export function useSetupTradeAmountsFromUrl({ onAmountsUpdate, onlySell }: SetupTradeAmountsParams): void {
   const navigate = useNavigate()
   const { search, pathname } = useLocation()
   const params = useMemo(() => new URLSearchParams(search), [search])
@@ -75,8 +74,8 @@ export function useSetupTradeAmountsFromUrl({ onAmountsUpdate, onlySell }: Setup
     const buyAmount = getIntOrFloat(params.get(TRADE_URL_BUY_AMOUNT_KEY))
     const update: Partial<Writeable<ExtendedTradeRawState>> = {}
 
-    const isSellAmountValid = inputCurrency && sellAmount && +sellAmount >= 0
-    const isBuyAmountValid = outputCurrency && buyAmount && +buyAmount >= 0
+    const isSellAmountValid = inputCurrency && sellAmount && +sellAmount > 0
+    const isBuyAmountValid = outputCurrency && buyAmount && +buyAmount > 0
 
     const sellCurrencyAmount = isSellAmountValid ? tryParseCurrencyAmount(sellAmount, inputCurrency) : null
     const buyCurrencyAmount = isBuyAmountValid ? tryParseCurrencyAmount(buyAmount, outputCurrency) : null
