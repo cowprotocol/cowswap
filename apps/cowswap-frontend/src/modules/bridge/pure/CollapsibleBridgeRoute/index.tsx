@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react'
+import { ReactNode, useState, useEffect } from 'react'
 
 import { BridgeProviderInfo } from '@cowprotocol/cow-sdk'
 import { Media } from '@cowprotocol/ui'
@@ -24,6 +24,7 @@ const Wrapper = styled.div`
 interface CollapsibleBridgeRouteProps {
   isCollapsible?: boolean
   isExpanded?: boolean
+  forceExpandOnWarnings?: { showRecipientWarning: boolean; showPriceUpdated: boolean }
   children: ReactNode
   providerInfo: BridgeProviderInfo
   collapsedDefault?: ReactNode
@@ -31,9 +32,31 @@ interface CollapsibleBridgeRouteProps {
 }
 
 export function CollapsibleBridgeRoute(props: CollapsibleBridgeRouteProps): ReactNode {
-  const { isCollapsible = false, children, providerInfo, collapsedDefault, className } = props
+  const {
+    isCollapsible = false,
+    children,
+    providerInfo,
+    collapsedDefault,
+    className,
+    isExpanded: propIsExpanded,
+    forceExpandOnWarnings,
+  } = props
 
-  const [isExpanded, setIsExpanded] = useState(props.isExpanded || false)
+  const [isExpanded, setIsExpanded] = useState(propIsExpanded ?? false)
+
+  // Force expansion when individual warnings appear
+  useEffect(() => {
+    if (forceExpandOnWarnings?.showPriceUpdated || forceExpandOnWarnings?.showRecipientWarning) {
+      setIsExpanded(true)
+    }
+  }, [forceExpandOnWarnings?.showPriceUpdated, forceExpandOnWarnings?.showRecipientWarning])
+
+  // Regular support for direct isExpanded prop
+  useEffect(() => {
+    if (propIsExpanded === true) {
+      setIsExpanded(true)
+    }
+  }, [propIsExpanded])
 
   // TODO: Add proper return type annotation
   const toggleExpanded = (): void => setIsExpanded((state) => !state)
