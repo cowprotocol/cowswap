@@ -64,9 +64,106 @@ const DEFAULT_ORDER_SUMMARY = {
   validTo: '',
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, complexity
+// Helper function for GnosisSafeTxDetails signature message generation
+
+interface SignatureMessageParams {
+  isExecutedActivity: boolean
+  isCancelled: boolean
+  isExpired: boolean
+  isFailed: boolean
+  alreadySigned: boolean
+  numConfirmations: number
+  gnosisSafeThreshold: number
+  isExecuted: boolean
+  isPendingSignatures: boolean
+  pendingSignaturesCount: number
+  isReplaced: boolean
+}
+
+function generateSignatureMessage({
+  isExecutedActivity,
+  isCancelled,
+  isExpired,
+  isFailed,
+  alreadySigned,
+  numConfirmations,
+  gnosisSafeThreshold,
+  isExecuted,
+  isPendingSignatures,
+  pendingSignaturesCount,
+  isReplaced,
+}: SignatureMessageParams): ReactElement {
+  const areIsMessage = pendingSignaturesCount > 1 ? 's are' : ' is'
+
+  if (isExecutedActivity) {
+    return <span>Executed</span>
+  }
+
+  if (isCancelled) {
+    return <span>Cancelled order</span>
+  }
+
+  if (isExpired) {
+    return <span>Expired order</span>
+  }
+
+  if (isFailed) {
+    return <span>Invalid order</span>
+  }
+
+  if (alreadySigned) {
+    return <span>Enough signatures</span>
+  }
+
+  if (numConfirmations === 0) {
+    return (
+      <>
+        <span>
+          <b>No signatures yet</b>
+        </span>
+        <TextAlert isPending={isPendingSignatures} isCancelled={isCancelled} isExpired={isExpired}>
+          {gnosisSafeThreshold} signature{areIsMessage} required
+        </TextAlert>
+      </>
+    )
+  }
+
+  if (numConfirmations >= gnosisSafeThreshold) {
+    return isExecuted ? (
+      <span>
+        <b>Enough signatures</b>
+      </span>
+    ) : (
+      <>
+        {!isReplaced && (
+          <>
+            <span>
+              Enough signatures, <b>but not executed</b>
+            </span>
+            <TextAlert isPending={isPendingSignatures} isCancelled={isCancelled} isExpired={isExpired}>
+              Execute Safe transaction
+            </TextAlert>
+          </>
+        )}
+      </>
+    )
+  }
+
+  return (
+    <>
+      <span>
+        Signed:{' '}
+        <b>
+          {numConfirmations} out of {gnosisSafeThreshold} signers
+        </b>
+      </span>
+      <TextAlert isPending={isPendingSignatures} isCancelled={isCancelled} isExpired={isExpired}>
+        {pendingSignaturesCount} more signature{areIsMessage} required
+      </TextAlert>
+    </>
+  )
+}
+
 export function GnosisSafeTxDetails(props: {
   chainId: number
   activityDerivedState: ActivityDerivedState
@@ -98,65 +195,19 @@ export function GnosisSafeTxDetails(props: {
   const pendingSignaturesCount = gnosisSafeThreshold - numConfirmations
   const isPendingSignatures = pendingSignaturesCount > 0
 
-  let signaturesMessage: ReactElement
-
-  const areIsMessage = pendingSignaturesCount > 1 ? 's are' : ' is'
-
-  if (isExecutedActivity) {
-    signaturesMessage = <span>Executed</span>
-  } else if (isCancelled) {
-    signaturesMessage = <span>Cancelled order</span>
-  } else if (isExpired) {
-    signaturesMessage = <span>Expired order</span>
-  } else if (isFailed) {
-    signaturesMessage = <span>Invalid order</span>
-  } else if (alreadySigned) {
-    signaturesMessage = <span>Enough signatures</span>
-  } else if (numConfirmations === 0) {
-    signaturesMessage = (
-      <>
-        <span>
-          <b>No signatures yet</b>
-        </span>
-        <TextAlert isPending={isPendingSignatures} isCancelled={isCancelled} isExpired={isExpired}>
-          {gnosisSafeThreshold} signature{areIsMessage} required
-        </TextAlert>
-      </>
-    )
-  } else if (numConfirmations >= gnosisSafeThreshold) {
-    signaturesMessage = isExecuted ? (
-      <span>
-        <b>Enough signatures</b>
-      </span>
-    ) : (
-      <>
-        {!isReplaced && (
-          <>
-            <span>
-              Enough signatures, <b>but not executed</b>
-            </span>
-            <TextAlert isPending={isPendingSignatures} isCancelled={isCancelled} isExpired={isExpired}>
-              Execute Safe transaction
-            </TextAlert>
-          </>
-        )}
-      </>
-    )
-  } else {
-    signaturesMessage = (
-      <>
-        <span>
-          Signed:{' '}
-          <b>
-            {numConfirmations} out of {gnosisSafeThreshold} signers
-          </b>
-        </span>
-        <TextAlert isPending={isPendingSignatures} isCancelled={isCancelled} isExpired={isExpired}>
-          {pendingSignaturesCount} more signature{areIsMessage} required
-        </TextAlert>
-      </>
-    )
-  }
+  const signaturesMessage = generateSignatureMessage({
+    isExecutedActivity,
+    isCancelled,
+    isExpired,
+    isFailed,
+    alreadySigned,
+    numConfirmations,
+    gnosisSafeThreshold,
+    isExecuted,
+    isPendingSignatures,
+    pendingSignaturesCount,
+    isReplaced,
+  })
 
   return (
     <TransactionInnerDetail>
