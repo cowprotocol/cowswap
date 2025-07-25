@@ -26,7 +26,7 @@ export function PreparingBridgingContent({
         withTimelineDot
         label={
           <Wrapper>
-            Preparing <AnimatedEllipsis isVisible />
+            Loading bridge data <AnimatedEllipsis isVisible />
           </Wrapper>
         }
       >

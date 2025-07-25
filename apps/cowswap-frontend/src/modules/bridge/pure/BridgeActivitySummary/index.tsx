@@ -15,7 +15,7 @@ interface BridgeActivitySummaryProps {
   isCustomRecipientWarning: boolean
   swapAndBridgeContext: SwapAndBridgeContext | undefined
   swapResultContext: SwapResultContext | undefined
-  swapAndBridgeOverview: SwapAndBridgeOverview
+  swapAndBridgeOverview: SwapAndBridgeOverview | undefined
   children: ReactNode
   orderBasicDetails: ReactNode
 }
@@ -31,12 +31,19 @@ export function BridgeActivitySummary(props: BridgeActivitySummaryProps): ReactN
     isCustomRecipientWarning,
   } = props
 
+  // If swapAndBridgeOverview is undefined, the data is still loading
+  // Return null to let the parent component handle the loading state appropriately
+  if (!swapAndBridgeOverview) {
+    return null
+  }
+
   return (
     <>
       <BridgeSummaryHeader
         order={order}
         isCustomRecipientWarning={isCustomRecipientWarning}
         swapAndBridgeOverview={swapAndBridgeOverview}
+        swapAndBridgeContext={swapAndBridgeContext}
       />
 
       <SwapStepRow
