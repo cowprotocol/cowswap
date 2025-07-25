@@ -12,7 +12,7 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 import { useBridgeOrderData, BRIDGING_FINAL_STATUSES } from 'entities/bridgeOrders'
 import { useAddOrderToSurplusQueue } from 'entities/surplusModal'
 
-import { getActivityState } from 'legacy/hooks/useActivityDerivedState'
+import { getActivityState, ActivityState } from 'legacy/hooks/useActivityDerivedState'
 import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { useToggleAccountModal } from 'modules/account'
@@ -24,10 +24,12 @@ import { ConfirmDetailsItem } from 'modules/trade'
 import { OrderHooksDetails } from 'common/containers/OrderHooksDetails'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { isPending } from 'common/hooks/useCategorizeRecentActivity'
+import { useEnhancedActivityDerivedState } from 'common/hooks/useEnhancedActivityDerivedState'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { useSwapAndBridgeContext } from 'common/hooks/useSwapAndBridgeContext'
 import { CurrencyLogoPair } from 'common/pure/CurrencyLogoPair'
 import { CustomRecipientWarningBanner } from 'common/pure/CustomRecipientWarningBanner'
+import { IconSpinner } from 'common/pure/IconSpinner'
 import { RateInfo, RateInfoParams } from 'common/pure/RateInfo'
 import { SafeWalletLink } from 'common/pure/SafeWalletLink'
 import { TransactionInnerDetail } from 'common/pure/TransactionInnerDetail'
@@ -53,7 +55,7 @@ import {
   TransactionState as ActivityLink,
 } from './styled'
 
-import { BridgeOrderLoading } from '../../pure/BridgeOrderLoading'
+const progressBarVisibleStates = [ActivityState.OPEN]
 
 const DEFAULT_ORDER_SUMMARY = {
   from: '',
@@ -180,20 +182,18 @@ interface OrderSummaryType {
 }
 
 // TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
+// eslint-disable-next-line max-lines-per-function, complexity
 export function ActivityDetails(props: {
   chainId: number
   activityDerivedState: ActivityDerivedState
   activityLinkUrl: string | undefined
   disableMouseActions: boolean | undefined
   creationTime?: string | undefined
-}) {
+}): ReactNode | null {
   const { activityDerivedState, chainId, activityLinkUrl, disableMouseActions, creationTime } = props
   const { id, isOrder, summary, order, enhancedTransaction, isExpired, isCancelled, isFailed, isCancelling } =
     activityDerivedState
-  const activityState = getActivityState(activityDerivedState)
   const tokenAddress =
     enhancedTransaction?.approval?.tokenAddress ||
     (enhancedTransaction?.claim && V_COW_CONTRACT_ADDRESS[chainId as SupportedChainId])
@@ -205,7 +205,19 @@ export function ActivityDetails(props: {
 
   const { disableProgressBar } = useInjectedWidgetParams()
 
-  const showProgressBar = activityState === 'open' && isSwap && order && !disableProgressBar
+  const skipBridgingDisplay = isExpired || isCancelled || isFailed || isCancelling
+  const isBridgeOrder = getIsBridgeOrder(order) && !skipBridgingDisplay
+
+  // Enhanced activity derived state that incorporates bridge status for bridge orders
+  const enhancedActivityDerivedState = useEnhancedActivityDerivedState(activityDerivedState, chainId)
+
+  // Use enhanced state to determine when to show progress bar for bridge orders
+  const enhancedActivityState = getActivityState(enhancedActivityDerivedState)
+  const showProgressBar =
+    progressBarVisibleStates.includes(enhancedActivityState) &&
+    (isSwap || isBridgeOrder) &&
+    order &&
+    !disableProgressBar
   const showCancellationModal = order ? getShowCancellationModal(order) : null
 
   const { surplusFiatValue, showFiatValue, surplusToken, surplusAmount } = useGetSurplusData(order)
@@ -216,9 +228,7 @@ export function ActivityDetails(props: {
   const setShowProgressBar = useAddOrderToSurplusQueue() // TODO: not exactly the proper tool, rethink this
   const toggleAccountModal = useToggleAccountModal()
 
-  const skipBridgingDisplay = isExpired || isCancelled || isFailed || isCancelling
   const fullAppData = order?.apiAdditionalInfo?.fullAppData || order?.fullAppData
-  const isBridgeOrder = getIsBridgeOrder(order) && !skipBridgingDisplay
 
   const { swapAndBridgeContext, swapResultContext, swapAndBridgeOverview } = useSwapAndBridgeContext(
     chainId,
@@ -378,11 +388,38 @@ export function ActivityDetails(props: {
           {/* Order Currency Logo */}
           {inputToken && outputToken && (
             <ActivityVisual>
-              <CurrencyLogoPair
-                sellToken={inputToken}
-                buyToken={isBridgeOrder ? swapAndBridgeOverview?.targetCurrency || outputToken : outputToken}
-                tokenSize={32}
-              />
+              {isBridgeOrder && order ? (
+                (() => {
+                  const isLocalOrderCached = order.inputToken.chainId !== order.outputToken.chainId
+                  const hasConfirmedBridgeData = swapAndBridgeContext?.statusResult
+
+                  // For localStorage orders: use order.outputToken immediately (no API wait, no flash)
+                  if (isLocalOrderCached) {
+                    return <CurrencyLogoPair sellToken={inputToken} buyToken={order.outputToken} tokenSize={32} />
+                  }
+
+                  // For fresh sessions: only show CurrencyLogoPair when we have confirmed bridge data
+                  if (hasConfirmedBridgeData && swapAndBridgeOverview?.targetCurrency) {
+                    return (
+                      <CurrencyLogoPair
+                        sellToken={inputToken}
+                        buyToken={swapAndBridgeOverview.targetCurrency}
+                        tokenSize={32}
+                      />
+                    )
+                  }
+
+                  // Show spinner when waiting for API data in fresh sessions (don't use CurrencyLogoPair)
+                  return (
+                    <>
+                      <TokenLogo token={inputToken} size={32} />
+                      <IconSpinner spinnerWidth={1} margin="0 0 0 -4px" size={30} />
+                    </>
+                  )
+                })()
+              ) : (
+                <CurrencyLogoPair sellToken={inputToken} buyToken={outputToken} tokenSize={32} />
+              )}
             </ActivityVisual>
           )}
         </span>
@@ -392,22 +429,16 @@ export function ActivityDetails(props: {
           {isOrder ? (
             <>
               {order && isBridgeOrder ? (
-                swapAndBridgeOverview ? (
-                  <BridgeActivitySummary
-                    isCustomRecipientWarning={!!isCustomRecipientWarningBannerVisible}
-                    order={order}
-                    swapAndBridgeContext={swapAndBridgeContext}
-                    swapResultContext={swapResultContext}
-                    swapAndBridgeOverview={swapAndBridgeOverview}
-                    orderBasicDetails={orderBasicDetails}
-                  >
-                    {hooksDetails}
-                  </BridgeActivitySummary>
-                ) : (
-                  <BridgeOrderLoading order={order} fulfillmentTime={fulfillmentTime}>
-                    {hooksDetails}
-                  </BridgeOrderLoading>
-                )
+                <BridgeActivitySummary
+                  isCustomRecipientWarning={!!isCustomRecipientWarningBannerVisible}
+                  order={order}
+                  swapAndBridgeContext={swapAndBridgeContext}
+                  swapResultContext={swapResultContext}
+                  swapAndBridgeOverview={swapAndBridgeOverview}
+                  orderBasicDetails={orderBasicDetails}
+                >
+                  {hooksDetails}
+                </BridgeActivitySummary>
               ) : (
                 // Regular order layout
                 <>
@@ -486,7 +517,7 @@ export function ActivityDetails(props: {
         <StatusDetails
           chainId={chainId}
           showCancellationModal={showCancellationModal}
-          activityDerivedState={activityDerivedState}
+          activityDerivedState={enhancedActivityDerivedState}
           showProgressBar={showProgressBarCallback}
         />
       </Summary>
