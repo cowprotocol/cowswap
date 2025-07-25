@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.112.4](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.112.3...cowswap-v1.112.4) (2025-07-25)
+
+
+### Bug Fixes
+
+* **url-trade-amounts:** don't store url state when amount is 0 ([#6024](https://github.com/cowprotocol/cowswap/issues/6024)) ([6cf148d](https://github.com/cowprotocol/cowswap/commit/6cf148d0b3a61f55376a5930e62bb7e423aa6c07))
+
 ## [1.112.3](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.112.2...cowswap-v1.112.3) (2025-07-22)
 
 
