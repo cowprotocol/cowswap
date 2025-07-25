@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { getChainInfo } from '@cowprotocol/common-const'
+import { getChainInfo, TokenWithLogo } from '@cowprotocol/common-const'
 import { BridgeStatus, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useTokensByAddressMap } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -41,6 +41,7 @@ export interface SwapAndBridgeContexts {
   swapAndBridgeContext: SwapAndBridgeContext | undefined
   swapResultContext: SwapResultContext | undefined
   swapAndBridgeOverview: SwapAndBridgeOverview | undefined
+  isLoading: boolean
 }
 
 // TODO: Break down this large function into smaller functions
@@ -53,9 +54,29 @@ export function useSwapAndBridgeContext(
   const { account } = useWalletInfo()
   const tokensByAddress = useTokensByAddressMap()
 
-  const { data: crossChainOrder } = useCrossChainOrder(chainId, order?.id)
+  const { data: crossChainOrder, isLoading: isCrossChainOrderLoading } = useCrossChainOrder(chainId, order?.id)
 
-  const intermediateToken = order && tokensByAddress[order.buyToken.toLowerCase()]
+  // Try to get the intermediate token from the tokensByAddress map first
+  // If not available (common in fresh sessions), create a fallback token from order data
+  const intermediateToken = useMemo(() => {
+    if (!order) return undefined
+    
+    // Primary: Try to get from tokensByAddress map (enriched with logos, etc.)
+    const enrichedToken = tokensByAddress[order.buyToken.toLowerCase()]
+    if (enrichedToken) {
+      return enrichedToken
+    }
+    
+    // Fallback: Create basic TokenWithLogo from order data when tokensByAddress isn't populated yet
+    // This allows bridge functionality to work in fresh sessions while token lists are loading
+    return TokenWithLogo.fromToken({
+      chainId: order.inputToken.chainId, // Intermediate token is on same chain as input
+      address: order.buyToken,
+      decimals: order.outputToken.decimals, // Use output token decimals as approximation
+      symbol: 'Loading...', // Placeholder until tokens are loaded
+      name: 'Loading...', // Placeholder until tokens are loaded
+    })
+  }, [order, tokensByAddress])
 
   const fullAppData = order?.apiAdditionalInfo?.fullAppData
 
@@ -123,6 +144,7 @@ export function useSwapAndBridgeContext(
     outputToken,
     targetAmounts,
     targetRecipient,
+    crossChainOrder?.bridgingParams.destinationChainId, // Override: prevents wrong chain flash (fallback token has source chainId)
   )
 
   // TODO: Break down this large function into smaller functions
@@ -202,8 +224,10 @@ export function useSwapAndBridgeContext(
     bridgeMinReceiveAmount,
   ])
 
+  const isLoading = isCrossChainOrderLoading
+
   return useMemo(
-    () => ({ swapAndBridgeContext, swapResultContext, swapAndBridgeOverview }),
-    [swapAndBridgeContext, swapResultContext, swapAndBridgeOverview],
+    () => ({ swapAndBridgeContext, swapResultContext, swapAndBridgeOverview, isLoading }),
+    [swapAndBridgeContext, swapResultContext, swapAndBridgeOverview, isLoading],
   )
 }

@@ -22,7 +22,7 @@ import { useNetworkLogo } from '../../hooks/tokens/useNetworkLogo'
 import { useTokensByAddressMap } from '../../hooks/tokens/useTokensByAddressMap'
 import { getTokenLogoUrls } from '../../utils/getTokenLogoUrls'
 
-export { TokenLogoWrapper } from './styled'
+export { TokenLogoWrapper, TokenImageWrapper } from './styled'
 
 const BORDER_WIDTH_MIN = 1.8
 const BORDER_WIDTH_MAX = 2.5
@@ -78,6 +78,7 @@ export function TokenLogo({
 
   const currentUrl = validUrls?.[0]
 
+
   const logoUrl = useNetworkLogo(token?.chainId)
   const showNetworkBadge = logoUrl && !hideNetworkBadge
 
@@ -105,18 +106,26 @@ export function TokenLogo({
   }
 
   const actualTokenContent = currentUrl ? (
-    <img
-      alt={`${token?.symbol || ''} ${token?.name ? `(${token?.name})` : ''} token logo`}
-      src={currentUrl}
-      onError={onError}
-    />
+    <Styled.TokenImageWrapper>
+      <img
+        alt={`${token?.symbol || ''} ${token?.name ? `(${token?.name})` : ''} token logo`}
+        src={currentUrl}
+        onError={onError}
+      />
+    </Styled.TokenImageWrapper>
   ) : initial ? (
-    <SingleLetterLogo initial={initial} />
+    <Styled.TokenImageWrapper>
+      <SingleLetterLogo initial={initial} />
+    </Styled.TokenImageWrapper>
   ) : (
-    <Slash />
+    <Styled.TokenImageWrapper>
+      <Slash />
+    </Styled.TokenImageWrapper>
   )
 
-  if (noWrap) return actualTokenContent
+  if (noWrap) {
+    return actualTokenContent
+  }
 
   const chainInfo: BaseChainInfo | undefined = getChainInfo(token?.chainId as SupportedChainId)
   const chainName = chainInfo?.label || ''
@@ -128,24 +137,26 @@ export function TokenLogo({
   const cutThicknessForCalc = getBorderWidth(chainLogoSizeForCalc)
 
   return (
-    <Styled.TokenLogoWrapper className={className} size={size} sizeMobile={sizeMobile}>
-      {showNetworkBadge ? (
-        <Styled.ClippedTokenContentWrapper
-          parentSize={size}
-          chainLogoSize={chainLogoSizeForCalc}
-          cutThickness={cutThicknessForCalc}
-          hasImage={!!currentUrl}
-        >
-          {actualTokenContent}
-        </Styled.ClippedTokenContentWrapper>
-      ) : (
-        actualTokenContent
-      )}
-      {showNetworkBadge && (
-        <Styled.ChainLogoWrapper size={chainLogoSizeForCalc}>
-          <img src={logoUrl} alt={`${chainName} network logo`} />
-        </Styled.ChainLogoWrapper>
-      )}
+    <Styled.TokenLogoWrapper className={className} size={size} sizeMobile={sizeMobile} $hasNetworkBadge={!!showNetworkBadge}>
+      <>
+        {showNetworkBadge ? (
+          <Styled.ClippedTokenContentWrapper
+            parentSize={size}
+            chainLogoSize={chainLogoSizeForCalc}
+            cutThickness={cutThicknessForCalc}
+            hasImage={!!currentUrl}
+          >
+            {actualTokenContent}
+          </Styled.ClippedTokenContentWrapper>
+        ) : (
+          actualTokenContent
+        )}
+        {showNetworkBadge && (
+          <Styled.ChainLogoWrapper size={chainLogoSizeForCalc}>
+            <img src={logoUrl} alt={`${chainName} network logo`} />
+          </Styled.ChainLogoWrapper>
+        )}
+      </>
     </Styled.TokenLogoWrapper>
   )
 }

@@ -1,13 +1,37 @@
 import { ReactNode, useEffect } from 'react'
 
-import { BridgeStatus, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { BridgeStatus, CrossChainOrder, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { UiOrderType } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { triggerAppziSurvey } from 'appzi'
 import { useCrossChainOrder, usePendingBridgeOrders, useUpdateBridgeOrderQuote } from 'entities/bridgeOrders'
 import { useAddOrderToSurplusQueue } from 'entities/surplusModal'
 
 import { emitBridgingSuccessEvent } from 'modules/orders'
 import { getCowSoundError, getCowSoundSuccess } from 'modules/sounds'
+
+function processExecutedBridging(crossChainOrder: CrossChainOrder): void {
+  const { provider: _, ...eventPayload } = crossChainOrder
+
+  // Display snackbar
+  emitBridgingSuccessEvent(eventPayload)
+
+  // Play sound
+  getCowSoundSuccess().play()
+
+  // Trigger Appzi survey
+  triggerAppziSurvey(
+    {
+      bridged: true,
+      explorerUrl: crossChainOrder.explorerUrl,
+      chainId: crossChainOrder.chainId,
+      orderType: UiOrderType.SWAP,
+      account: crossChainOrder.order.owner,
+    },
+    'nps',
+  )
+}
 
 interface PendingOrderUpdaterProps {
   chainId: SupportedChainId
@@ -22,17 +46,19 @@ function PendingOrderUpdater({ chainId, orderUid }: PendingOrderUpdaterProps): R
   useEffect(() => {
     if (!crossChainOrder) return
 
-    const { provider: _, ...eventPayload } = crossChainOrder
     const orderUid = crossChainOrder.order.uid
     const orderStatus = crossChainOrder.statusResult.status
     const isOrderExecuted = orderStatus === BridgeStatus.EXECUTED
     const isOrderFailed = orderStatus === BridgeStatus.REFUND || orderStatus === BridgeStatus.EXPIRED
 
+    // Update bridge order status for ALL status changes, not just EXECUTED
+    updateBridgeOrderQuote(orderUid, crossChainOrder.statusResult)
+
     if (isOrderExecuted) {
-      updateBridgeOrderQuote(orderUid, crossChainOrder.statusResult)
+      // Display surplus modal
       addOrderToSurplusQueue(orderUid)
-      emitBridgingSuccessEvent(eventPayload)
-      getCowSoundSuccess().play()
+
+      processExecutedBridging(crossChainOrder)
     } else if (isOrderFailed) {
       getCowSoundError().play()
     }

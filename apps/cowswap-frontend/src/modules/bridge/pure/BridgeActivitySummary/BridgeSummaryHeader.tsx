@@ -14,22 +14,27 @@ import type { Order } from 'legacy/state/orders/actions'
 
 import { ShimmerWrapper, SummaryRow } from 'common/pure/OrderSummaryRow'
 
-import { SwapAndBridgeOverview } from '../../types'
+import { SwapAndBridgeContext, SwapAndBridgeOverview } from '../../types'
 
 interface BridgeSummaryHeaderProps {
   order: Order
   swapAndBridgeOverview: SwapAndBridgeOverview
   isCustomRecipientWarning: boolean
+  swapAndBridgeContext: SwapAndBridgeContext | undefined
 }
 
 export function BridgeSummaryHeader({
   order,
   swapAndBridgeOverview,
   isCustomRecipientWarning,
+  swapAndBridgeContext,
 }: BridgeSummaryHeaderProps): ReactNode {
   const { sourceAmounts, targetAmounts, sourceChainName, targetChainName, targetRecipient } = swapAndBridgeOverview
   const isCustomRecipient = !!targetRecipient && !areAddressesEqual(order.owner, targetRecipient)
   const targetAmount = targetAmounts?.buyAmount
+  
+  // Only show destination chain when we have confirmed bridge data (crossChainOrder loaded)
+  const showDestinationChain = !!swapAndBridgeContext?.statusResult
 
   return (
     <>
@@ -46,15 +51,15 @@ export function BridgeSummaryHeader({
         <b>To at least</b>
 
         <i>
-          {targetAmount ? (
+          {targetAmount && showDestinationChain ? (
             <>
               <TokenLogo token={targetAmount.currency} size={20} />
               <TokenAmount amount={targetAmount} tokenSymbol={targetAmount.currency} />
+              {` on ${capitalizeFirstLetter(targetChainName)}`}
             </>
           ) : (
             <ShimmerWrapper />
           )}
-          {` on ${capitalizeFirstLetter(targetChainName)}`}
         </i>
       </SummaryRow>
 
