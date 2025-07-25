@@ -7,6 +7,14 @@ interface HighFeeWarningTooltipContentProps {
   bridgeFeePercentage?: Fraction
 }
 
+const Wrapper = ({ children }: { children: React.ReactNode }): React.ReactNode => {
+  return (
+    <div>
+      <small>{children}</small>
+    </div>
+  )
+}
+
 const CommonContent = (): React.ReactNode => {
   return (
     <>
@@ -44,37 +52,6 @@ const BridgeCostsContent = ({ bridgeFeePercentage }: { bridgeFeePercentage: Frac
   )
 }
 
-const HighSwapAndBridgeFeeContent = ({
-  feePercentage,
-  bridgeFeePercentage,
-}: {
-  feePercentage: Fraction
-  bridgeFeePercentage: Fraction
-}): React.ReactNode => {
-  return (
-    <div>
-      <small>
-        <NetworkCostsContent feePercentage={feePercentage} />
-        <br />
-        <br />
-        <BridgeCostsContent bridgeFeePercentage={bridgeFeePercentage} />
-        {<CommonContent />}
-      </small>
-    </div>
-  )
-}
-
-const HighSwapFeeContent = ({ feePercentage }: { feePercentage: Fraction }): React.ReactNode => {
-  return (
-    <div>
-      <small>
-        <NetworkCostsContent feePercentage={feePercentage} />
-        {<CommonContent />}
-      </small>
-    </div>
-  )
-}
-
 export function HighFeeWarningTooltipContent({
   isHighFee,
   feePercentage,
@@ -86,14 +63,16 @@ export function HighFeeWarningTooltipContent({
   const shouldShowBridgeFee = !isHighFee && isHighBridgeFee && bridgeFeePercentage
 
   return (
-    <div>
-      <small>
-        {shouldShowSwapAndBridgeFee && (
-          <HighSwapAndBridgeFeeContent feePercentage={feePercentage} bridgeFeePercentage={bridgeFeePercentage} />
-        )}
-        {shouldShowSwapFee && <HighSwapFeeContent feePercentage={feePercentage} />}
-        {shouldShowBridgeFee && <BridgeCostsContent bridgeFeePercentage={bridgeFeePercentage} />}
-      </small>
-    </div>
+    <Wrapper>
+      {shouldShowSwapFee && <NetworkCostsContent feePercentage={feePercentage} />}
+      {shouldShowSwapAndBridgeFee && (
+        <>
+          <br />
+          <br />
+        </>
+      )}
+      {shouldShowBridgeFee && <BridgeCostsContent bridgeFeePercentage={bridgeFeePercentage} />}
+      {<CommonContent />}
+    </Wrapper>
   )
 }
