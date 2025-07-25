@@ -42,7 +42,9 @@ export function CollapsibleBridgeRoute(props: CollapsibleBridgeRouteProps): Reac
     forceExpandOnWarnings,
   } = props
 
-  const [isExpanded, setIsExpanded] = useState(propIsExpanded ?? false)
+  const [isExpanded, setIsExpanded] = useState(
+    propIsExpanded ?? (forceExpandOnWarnings?.showPriceUpdated || forceExpandOnWarnings?.showRecipientWarning) ?? false
+  )
 
   // Force expansion when individual warnings appear
   useEffect(() => {
