@@ -157,17 +157,19 @@ export function getActivityLinkUrl(params: {
   return undefined
 }
 
-type ActivityState =
-  | 'open'
-  | 'filled'
-  | 'executed'
-  | 'expired'
-  | 'failed'
-  | 'cancelled'
-  | 'pending'
-  | 'signing'
-  | 'cancelling'
-  | 'creating'
+export enum ActivityState {
+  OPEN = 'open',
+  FILLED = 'filled',
+  EXECUTED = 'executed',
+  EXPIRED = 'expired',
+  FAILED = 'failed',
+  CANCELLED = 'cancelled',
+  PENDING = 'pending',
+  SIGNING = 'signing',
+  CANCELLING = 'cancelling',
+  CREATING = 'creating',
+  LOADING = 'loading',
+}
 
 // TODO: Reduce function complexity by extracting logic
 // eslint-disable-next-line complexity
@@ -181,46 +183,51 @@ export function getActivityState({
   isCancelled,
   isCreating,
   isFailed,
+  isLoading,
   enhancedTransaction,
 }: ActivityDerivedState): ActivityState {
+  if (isLoading) {
+    return ActivityState.LOADING
+  }
+  
   if (isPending) {
     if (enhancedTransaction) {
       const { safeTransaction, transactionHash } = enhancedTransaction
       if (safeTransaction && !transactionHash) {
-        return 'signing'
+        return ActivityState.SIGNING
       }
     }
 
-    return isOrder ? 'open' : 'pending'
+    return isOrder ? ActivityState.OPEN : ActivityState.PENDING
   }
 
   if (isConfirmed) {
-    return isOrder ? 'filled' : 'executed'
+    return isOrder ? ActivityState.FILLED : ActivityState.EXECUTED
   }
 
   if (isExpired) {
-    return isOrder ? 'expired' : 'failed'
+    return isOrder ? ActivityState.EXPIRED : ActivityState.FAILED
   }
 
   if (isCancelling) {
-    return 'cancelling'
+    return ActivityState.CANCELLING
   }
 
   if (isPresignaturePending) {
-    return 'signing'
+    return ActivityState.SIGNING
   }
 
   if (isCancelled) {
-    return 'cancelled'
+    return ActivityState.CANCELLED
   }
 
   if (isCreating) {
-    return 'creating'
+    return ActivityState.CREATING
   }
 
   if (isFailed) {
-    return 'failed'
+    return ActivityState.FAILED
   }
 
-  return 'open'
+  return ActivityState.OPEN
 }

@@ -1,7 +1,9 @@
+import { ReactNode } from 'react'
+
 import { RowFixed } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { useActivityDerivedState } from 'legacy/hooks/useActivityDerivedState'
+import { useActivityDerivedState, ActivityState } from 'legacy/hooks/useActivityDerivedState'
 import { ActivityDescriptors } from 'legacy/hooks/useRecentActivity'
 
 import { ActivityStatus, ActivityType } from 'common/types/activity'
@@ -11,19 +13,18 @@ import { TransactionStatusText as ActivityDetailsText, TransactionWrapper, Wrapp
 
 const PILL_COLOUR_MAP = {
   CONFIRMED: 'success',
-  PENDING_ORDER: 'pending',
-  PRESIGNATURE_PENDING: 'pending',
-  CREATING: 'pending',
-  PENDING_TX: 'pending',
+  PENDING_ORDER: ActivityState.PENDING,
+  PRESIGNATURE_PENDING: ActivityState.PENDING,
+  CREATING: ActivityState.PENDING,
+  PENDING_TX: ActivityState.PENDING,
+  LOADING: ActivityState.OPEN,
   EXPIRED_ORDER: 'alert',
   CANCELLED_ORDER: 'danger',
   CANCELLING_ORDER: 'danger',
   FAILED: 'danger',
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function determinePillColour(status: ActivityStatus, type: ActivityType) {
+export function determinePillColour(status: ActivityStatus, type: ActivityType): string {
   const isOrder = type === ActivityType.ORDER
 
   switch (status) {
@@ -43,13 +44,12 @@ export function determinePillColour(status: ActivityStatus, type: ActivityType) 
       return PILL_COLOUR_MAP.CREATING
     case ActivityStatus.FAILED:
       return PILL_COLOUR_MAP.FAILED
+    case ActivityStatus.LOADING:
+      return PILL_COLOUR_MAP.LOADING
   }
 }
 
-// TODO: Add proper return type annotation
-// TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, complexity
-export default function Activity({ activity }: { activity: ActivityDescriptors }) {
+export default function Activity({ activity }: { activity: ActivityDescriptors }): ReactNode | null {
   const { chainId } = useWalletInfo()
 
   // Get some derived information about the activity. It helps to simplify the rendering of the subcomponents
