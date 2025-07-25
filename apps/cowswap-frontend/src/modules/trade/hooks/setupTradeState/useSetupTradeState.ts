@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { usePrevious } from '@cowprotocol/common-hooks'
-import { debounce, getRawCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
+import { getRawCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useSwitchNetwork, useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
@@ -58,10 +58,6 @@ export function useSetupTradeState(): void {
     },
     [switchNetwork],
   )
-
-  const debouncedSwitchNetworkInWallet = debounce(([targetChainId]: [SupportedChainId]) => {
-    switchNetworkInWallet(targetChainId)
-  }, 800)
 
   const onProviderNetworkChanges = useCallback(() => {
     const rememberedUrlState = rememberedUrlStateRef.current
@@ -207,7 +203,8 @@ export function useSetupTradeState(): void {
 
     // Debouncing switching multiple time in a quick span of time to avoid running into infinity loop of updating provider and url state.
     // issue GH : https://github.com/cowprotocol/cowswap/issues/4734
-    debouncedSwitchNetworkInWallet(targetChainId)
+    // todo handle case with wc (for wc we have a loop)
+    switchNetworkInWallet(targetChainId)
 
     console.debug('[TRADE STATE]', 'Set chainId to provider', { provider, urlChainId })
     // Triggering only when chainId in URL is changes, provider is changed or rememberedUrlState is changed

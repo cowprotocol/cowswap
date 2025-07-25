@@ -2,6 +2,7 @@ import { useCallback } from 'react'
 
 import { LpToken, TokenWithLogo } from '@cowprotocol/common-const'
 import { useIsBridgingEnabled } from '@cowprotocol/common-hooks'
+import { useWalletChainId } from '@cowprotocol/wallet-provider'
 import { Currency } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
@@ -20,6 +21,7 @@ export function useOpenTokenSelectWidget(): (
   const updateSelectTokenWidget = useUpdateSelectTokenWidgetState()
   const closeTokenSelectWidget = useCloseTokenSelectWidget()
   const isBridgingEnabled = useIsBridgingEnabled()
+  const walletChainId = useWalletChainId()
 
   return useCallback(
     (selectedToken, field, oppositeToken, onSelectToken) => {
@@ -33,11 +35,14 @@ export function useOpenTokenSelectWidget(): (
         open: true,
         selectedTargetChainId,
         onSelectToken: (currency) => {
-          closeTokenSelectWidget()
+          if (selectedTargetChainId || walletChainId === currency.chainId) {
+            // todo need to think how handle it properly
+            closeTokenSelectWidget()
+          }
           onSelectToken(currency)
         },
       })
     },
-    [closeTokenSelectWidget, updateSelectTokenWidget, isBridgingEnabled],
+    [closeTokenSelectWidget, updateSelectTokenWidget, isBridgingEnabled, walletChainId],
   )
 }
