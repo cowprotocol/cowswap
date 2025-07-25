@@ -23,7 +23,7 @@ export const Wrapper = styled.span<{
   align-items: center;
   justify-content: center;
   position: relative;
-  background: ${({ colorEnums, noBackground }) => noBackground ? 'transparent' : `var(${colorEnums.bg})`};
+  background: ${({ colorEnums, noBackground }) => (noBackground ? 'transparent' : `var(${colorEnums.bg})`)};
   color: ${({ colorEnums }) => `var(${colorEnums.text})`};
   gap: 24px 10px;
   border-radius: ${({ borderRadius = '16px' }) => borderRadius};
@@ -79,7 +79,7 @@ export const Wrapper = styled.span<{
       width: 100%;
       text-align: ${({ orientation = BannerOrientation.Vertical }) =>
         orientation === BannerOrientation.Horizontal ? 'left' : 'center'};
-      ${({ breakWord }) => breakWord ? 'word-break: break-word;' : ''}
+      ${({ breakWord }) => (breakWord ? 'word-break: break-word;' : '')}
     }
 
     > i {
@@ -92,6 +92,31 @@ export const Wrapper = styled.span<{
       padding-left: 20px;
     }
   }
+`
+
+export const CustomContentContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+`
+
+export const CustomContentTop = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+`
+
+export const CustomContentBottom = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 4px;
+  width: 100%;
 `
 
 export const CloseIcon = styled(X)`

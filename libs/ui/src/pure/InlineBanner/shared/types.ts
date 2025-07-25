@@ -26,6 +26,7 @@ export interface InlineBannerProps {
   fontSize?: number
   noBackground?: boolean
   breakWord?: boolean
+  customContent?: ReactNode
 }
 
 export interface CollapsibleInlineBannerProps extends Omit<InlineBannerProps, 'children'> {
