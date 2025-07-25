@@ -16,10 +16,23 @@ import { ConfirmButton } from './ConfirmButton'
 import { ConfirmWarnings } from './ConfirmWarnings'
 import { QuoteCountdown } from './CountDown'
 import { useIsPriceChanged } from './hooks/useIsPriceChanged'
+import { useWarningStates } from './hooks/useWarningStates'
 import * as styledEl from './styled'
 
 import { NoImpactWarning } from '../../containers/NoImpactWarning'
 import { useTradeConfirmState } from '../../hooks/useTradeConfirmState'
+
+function createHookDetailsElement(appData: string | AppDataInfo | undefined): ReactNode {
+  return (
+    <>
+      {appData && (
+        <OrderHooksDetails appData={appData} isTradeConfirmation>
+          {(hookChildren) => hookChildren}
+        </OrderHooksDetails>
+      )}
+    </>
+  )
+}
 
 export interface TradeConfirmationProps {
   onConfirm(): Promise<void | false>
@@ -37,7 +50,10 @@ export interface TradeConfirmationProps {
   isPriceStatic?: boolean
   recipient?: string | null
   buttonText?: ReactNode
-  children?: (restContent: ReactElement) => ReactElement
+  children?: (
+    restContent: ReactElement,
+    warningStates: { showRecipientWarning: boolean; showPriceUpdated: boolean },
+  ) => ReactElement
 }
 
 export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
@@ -61,6 +77,8 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
     recipient,
     isPriceStatic,
     appData,
+    account,
+    ensName,
   } = props
 
   /**
@@ -78,19 +96,13 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
 
   const isButtonDisabled = isConfirmDisabled || (isPriceChanged && !isPriceStatic) || hasPendingTrade
 
+  const warningStates = useWarningStates(recipient, account, ensName, isPriceChanged, isPriceStatic)
+
   useEffect(() => {
     window.scrollTo(0, 0)
   }, [])
 
-  const hookDetailsElement = (
-    <>
-      {appData && (
-        <OrderHooksDetails appData={appData} isTradeConfirmation>
-          {(hookChildren) => hookChildren}
-        </OrderHooksDetails>
-      )}
-    </>
-  )
+  const hookDetailsElement = createHookDetailsElement(appData)
 
   return (
     <styledEl.WidgetWrapper onKeyDown={(e) => e.key === 'Escape' && onDismiss()}>
@@ -113,6 +125,7 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
             {hookDetailsElement}
             <NoImpactWarning withoutAccepting />
           </>,
+          warningStates,
         )}
 
         <ConfirmWarnings
