@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 
 import { TokenLogo } from '@cowprotocol/tokens'
+import { Currency } from '@uniswap/sdk-core'
 
 import { CurrencyLogoPair } from 'common/pure/CurrencyLogoPair'
 import { ActivityDerivedState } from 'common/types/activity'
@@ -20,13 +21,13 @@ export function ActivityVisualContent({
   swapAndBridgeOverview,
 }: {
   isOrder: boolean
-  singleToken: unknown
-  inputToken: unknown
-  outputToken: unknown
+  singleToken: Currency | null
+  inputToken: Currency | null
+  outputToken: Currency | null
   isBridgeOrder: boolean
   order: ActivityDerivedState['order']
   swapAndBridgeContext: { statusResult?: unknown } | undefined
-  swapAndBridgeOverview: { targetCurrency?: unknown } | undefined
+  swapAndBridgeOverview: { targetCurrency?: Currency } | undefined
 }): ReactNode {
   if (!isOrder && singleToken) {
     return (

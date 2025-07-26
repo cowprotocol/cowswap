@@ -3,7 +3,7 @@ import { ReactNode } from 'react'
 import { SummaryInnerRow } from '../styled'
 
 interface FromToSectionProps {
-  kind: string
+  kind?: string
   from: ReactNode
   to: ReactNode
 }

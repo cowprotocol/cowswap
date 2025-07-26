@@ -1,15 +1,17 @@
 import { ReactNode } from 'react'
 
 import { TokenAmount } from '@cowprotocol/ui'
-import { CurrencyAmount } from '@uniswap/sdk-core'
+import { CurrencyAmount, Currency } from '@uniswap/sdk-core'
+
+import { Nullish } from 'types'
 
 import { FiatWrapper, StyledFiatAmount, SummaryInnerRow } from '../styled'
 
 interface SurplusRowProps {
-  surplusAmount: CurrencyAmount<unknown> | undefined
-  surplusToken: unknown
+  surplusAmount: Nullish<CurrencyAmount<Currency>>
+  surplusToken: Nullish<Currency>
   showFiatValue: boolean
-  surplusFiatValue: unknown
+  surplusFiatValue: Nullish<CurrencyAmount<Currency>>
 }
 
 export function SurplusRow({

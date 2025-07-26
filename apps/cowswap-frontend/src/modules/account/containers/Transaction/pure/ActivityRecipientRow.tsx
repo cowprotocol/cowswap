@@ -11,7 +11,7 @@ interface ActivityRecipientRowProps {
   order: ActivityDerivedState['order']
   isCustomRecipient: boolean
   isCustomRecipientWarningVisible: boolean
-  receiverEnsName: string | undefined
+  receiverEnsName: string | null | undefined
   chainId: number
 }
 

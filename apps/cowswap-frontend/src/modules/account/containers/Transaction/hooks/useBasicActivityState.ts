@@ -2,6 +2,7 @@ import { V_COW_CONTRACT_ADDRESS } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
 import { UiOrderType } from '@cowprotocol/types'
+import { Currency } from '@uniswap/sdk-core'
 
 import { ActivityDerivedState } from 'common/types/activity'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
@@ -15,7 +16,7 @@ export function useBasicActivityState(
   isOrder: boolean
   order: ActivityDerivedState['order']
   enhancedTransaction: ActivityDerivedState['enhancedTransaction']
-  singleToken: unknown
+  singleToken: Currency | null
   isSwap: boolean
   isExpired: boolean
   isCancelled: boolean
@@ -29,7 +30,7 @@ export function useBasicActivityState(
     enhancedTransaction?.approval?.tokenAddress ||
     (enhancedTransaction?.claim && V_COW_CONTRACT_ADDRESS[chainId as SupportedChainId])
   const singleToken = useTokenBySymbolOrAddress(tokenAddress) || null
-  const isSwap = order && getUiOrderType(order) === UiOrderType.SWAP
+  const isSwap = Boolean(order && getUiOrderType(order) === UiOrderType.SWAP)
 
   return {
     id,

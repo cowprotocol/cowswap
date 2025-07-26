@@ -1,5 +1,10 @@
 import { ReactNode } from 'react'
 
+import { BridgeOrderData } from '@cowprotocol/types'
+import { Currency } from '@uniswap/sdk-core'
+
+import { SwapAndBridgeContexts } from 'common/hooks/useSwapAndBridgeContext'
+import { RateInfoParams } from 'common/pure/RateInfo'
 import { ActivityDerivedState } from 'common/types/activity'
 
 import { computeOrderPendingState } from '../utils/bridgeStateHelpers'
@@ -15,16 +20,16 @@ export function useComputedStates(
   chainId: number,
   isOrder: boolean,
   isBridgeOrder: boolean,
-  swapAndBridgeContext: unknown,
-  swapAndBridgeOverview: unknown,
-  bridgeOrderData: unknown,
+  swapAndBridgeContext: SwapAndBridgeContexts['swapAndBridgeContext'],
+  swapAndBridgeOverview: SwapAndBridgeContexts['swapAndBridgeOverview'],
+  bridgeOrderData: BridgeOrderData | undefined,
 ): {
   isOrderPending: boolean
   orderSummary: OrderSummaryType
-  rateInfoParams: unknown
+  rateInfoParams: RateInfoParams
   isOrderFulfilled: boolean
-  inputToken: unknown
-  outputToken: unknown
+  inputToken: Currency | null
+  outputToken: Currency | null
   activityName: string
   isCustomRecipient: boolean
   hooksDetails: ReactNode

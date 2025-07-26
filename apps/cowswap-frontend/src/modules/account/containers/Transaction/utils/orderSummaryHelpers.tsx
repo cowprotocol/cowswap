@@ -3,7 +3,7 @@ import { ReactNode } from 'react'
 import { COW_TOKEN_TO_CHAIN, V_COW } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenAmount } from '@cowprotocol/ui'
-import { CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 
@@ -101,7 +101,7 @@ export function computeTokens(
   activityDerivedState: ActivityDerivedState,
   enhancedTransaction: ActivityDerivedState['enhancedTransaction'],
   chainId: number
-): { inputToken: unknown; outputToken: unknown } {
+): { inputToken: Currency | null; outputToken: Currency | null } {
   let inputToken = activityDerivedState?.order?.inputToken || null
   let outputToken = activityDerivedState?.order?.outputToken || null
 

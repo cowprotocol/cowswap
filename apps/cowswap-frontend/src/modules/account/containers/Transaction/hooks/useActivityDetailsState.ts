@@ -1,8 +1,13 @@
 import { ReactNode } from 'react'
 
+import { Currency } from '@uniswap/sdk-core'
+
 import { getActivityState } from 'legacy/hooks/useActivityDerivedState'
 
 import { useEnhancedActivityDerivedState } from 'common/hooks/useEnhancedActivityDerivedState'
+import { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
+import { SwapAndBridgeContexts } from 'common/hooks/useSwapAndBridgeContext'
+import { RateInfoParams } from 'common/pure/RateInfo'
 import { ActivityDerivedState } from 'common/types/activity'
 
 import { useBasicActivityState } from './useBasicActivityState'
@@ -41,27 +46,27 @@ export function useActivityDetailsState(props: {
   isOrder: boolean
   order: ActivityDerivedState['order']
   enhancedTransaction: ActivityDerivedState['enhancedTransaction']
-  singleToken: unknown
+  singleToken: Currency | null
   isSwap: boolean
   enhancedActivityDerivedState: ActivityDerivedState
   isBridgeOrder: boolean
-  swapAndBridgeContext: unknown
-  swapResultContext: unknown
-  swapAndBridgeOverview: unknown
-  surplusFiatValue: unknown
+  swapAndBridgeContext: SwapAndBridgeContexts['swapAndBridgeContext']
+  swapResultContext: SwapAndBridgeContexts['swapResultContext']
+  swapAndBridgeOverview: SwapAndBridgeContexts['swapAndBridgeOverview']
+  surplusFiatValue: SurplusData['surplusFiatValue']
   showFiatValue: boolean
-  surplusToken: unknown
-  surplusAmount: unknown
-  receiverEnsName: string | undefined
+  surplusToken: SurplusData['surplusToken']
+  surplusAmount: SurplusData['surplusAmount']
+  receiverEnsName: string | null | undefined
   hideCustomRecipientWarning: (id: string) => void
   showCancellationModal: (() => void) | null
   showProgressBarCallback: (() => void) | null
   isOrderPending: boolean
   orderSummary: OrderSummaryType
-  rateInfoParams: unknown
+  rateInfoParams: RateInfoParams
   isOrderFulfilled: boolean
-  inputToken: unknown
-  outputToken: unknown
+  inputToken: Currency | null
+  outputToken: Currency | null
   activityName: string
   isCustomRecipient: boolean
   isCustomRecipientWarningVisible: boolean
@@ -95,7 +100,7 @@ export function useActivityDetailsState(props: {
   )
   const { isOrderPending } = computedStates
 
-  const isCustomRecipientWarningVisible = isCustomRecipientWarningBannerVisible && order && isOrderPending
+  const isCustomRecipientWarningVisible = Boolean(isCustomRecipientWarningBannerVisible && order && isOrderPending)
 
   return assembleActivityDetailsReturn(
     basicState,

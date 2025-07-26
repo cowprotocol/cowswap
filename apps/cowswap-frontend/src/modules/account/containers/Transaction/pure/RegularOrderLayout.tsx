@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
 
+import { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { RateInfo, RateInfoParams } from 'common/pure/RateInfo'
 import { ActivityDerivedState } from 'common/types/activity'
 
@@ -31,7 +32,7 @@ export function RegularOrderLayout({
   surplusFiatValue,
   hooksDetails,
 }: {
-  kind: string
+  kind?: string
   from: ReactNode
   to: ReactNode
   isOrderFulfilled: boolean
@@ -43,12 +44,12 @@ export function RegularOrderLayout({
   order: ActivityDerivedState['order']
   isCustomRecipient: boolean
   isCustomRecipientWarningVisible: boolean
-  receiverEnsName: string | undefined
+  receiverEnsName: string | null | undefined
   chainId: number
-  surplusAmount: unknown
-  surplusToken: unknown
+  surplusAmount: SurplusData['surplusAmount']
+  surplusToken: SurplusData['surplusToken']
   showFiatValue: boolean
-  surplusFiatValue: unknown
+  surplusFiatValue: SurplusData['surplusFiatValue']
   hooksDetails: ReactNode
 }): ReactNode {
   return (

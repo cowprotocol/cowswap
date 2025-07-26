@@ -1,7 +1,9 @@
+import { BridgeOrderData } from '@cowprotocol/types'
+
 import { useBridgeOrderData } from 'entities/bridgeOrders'
 
-import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
-import { useSwapAndBridgeContext } from 'common/hooks/useSwapAndBridgeContext'
+import { SurplusData, useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
+import { SwapAndBridgeContexts, useSwapAndBridgeContext } from 'common/hooks/useSwapAndBridgeContext'
 import { ActivityDerivedState } from 'common/types/activity'
 
 import { computeBridgeState } from '../utils/bridgeStateHelpers'
@@ -16,14 +18,14 @@ export function useBridgeAndSurplusData(
   isCancelling: boolean,
 ): {
   isBridgeOrder: boolean
-  swapAndBridgeContext: unknown
-  swapResultContext: unknown
-  swapAndBridgeOverview: unknown
-  bridgeOrderData: unknown
-  surplusFiatValue: unknown
+  swapAndBridgeContext: SwapAndBridgeContexts['swapAndBridgeContext']
+  swapResultContext: SwapAndBridgeContexts['swapResultContext']
+  swapAndBridgeOverview: SwapAndBridgeContexts['swapAndBridgeOverview']
+  bridgeOrderData: BridgeOrderData | undefined
+  surplusFiatValue: SurplusData['surplusFiatValue']
   showFiatValue: boolean
-  surplusToken: unknown
-  surplusAmount: unknown
+  surplusToken: SurplusData['surplusToken']
+  surplusAmount: SurplusData['surplusAmount']
 } {
   const isBridgeOrder = computeBridgeState(order, isExpired, isCancelled, isFailed, isCancelling)
   const { swapAndBridgeContext, swapResultContext, swapAndBridgeOverview } = useSwapAndBridgeContext(

@@ -21,12 +21,12 @@ const progressBarVisibleStates = [ActivityState.OPEN]
 export function useUIStateAndCallbacks(
   id: string,
   order: ActivityDerivedState['order'],
-  enhancedActivityState: string,
+  enhancedActivityState: ActivityState,
   isSwap: boolean,
   isBridgeOrder: boolean,
   disableProgressBar: boolean | undefined,
 ): {
-  receiverEnsName: string | undefined
+  receiverEnsName: string | null | undefined
   hideCustomRecipientWarning: (id: string) => void
   showProgressBarCallback: (() => void) | null
   showCancellationModal: (() => void) | null

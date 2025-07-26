@@ -7,7 +7,7 @@ export function computeCustomRecipientState(
   order: ActivityDerivedState['order'],
   isBridgeOrder: boolean,
   swapAndBridgeOverview: { targetRecipient?: string } | undefined
-): { recipient: string | undefined; isCustomRecipient: boolean } {
+): { recipient: string | null | undefined; isCustomRecipient: boolean } {
   const recipient = isBridgeOrder 
     ? swapAndBridgeOverview?.targetRecipient 
     : order?.receiver

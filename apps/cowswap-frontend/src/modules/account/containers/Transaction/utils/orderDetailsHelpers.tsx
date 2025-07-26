@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
 
+import { AppDataInfo } from 'modules/appData'
 import { ConfirmDetailsItem } from 'modules/trade'
 
 import { OrderHooksDetails } from 'common/containers/OrderHooksDetails'
@@ -7,7 +8,7 @@ import { RateInfo, RateInfoParams } from 'common/pure/RateInfo'
 
 import { SummaryInnerRow } from '../styled'
 
-export function createHooksDetails(fullAppData: unknown): ReactNode | null {
+export function createHooksDetails(fullAppData: string | AppDataInfo | null | undefined): ReactNode | null {
   return fullAppData ? (
     <OrderHooksDetails appData={fullAppData} margin="10px 0 0">
       {(children) => (

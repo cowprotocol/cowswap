@@ -2,6 +2,9 @@ import { ReactNode } from 'react'
 
 import { BridgeActivitySummary } from 'modules/bridge'
 
+import { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
+import { SwapAndBridgeContexts } from 'common/hooks/useSwapAndBridgeContext'
+import { RateInfoParams } from 'common/pure/RateInfo'
 import { ActivityDerivedState } from 'common/types/activity'
 
 interface OrderSummaryType {
@@ -23,23 +26,43 @@ interface ActivityDetailsContentProps {
   hooksDetails: ReactNode
   orderSummary: OrderSummaryType
   isOrderFulfilled: boolean
-  rateInfoParams: unknown
+  rateInfoParams: RateInfoParams
   isCancelled: boolean
   isExpired: boolean
   isCustomRecipient: boolean
   isCustomRecipientWarningVisible: boolean
-  receiverEnsName: string | undefined
+  receiverEnsName: string | null | undefined
   chainId: number
-  surplusAmount: unknown
-  surplusToken: unknown
+  surplusAmount: SurplusData['surplusAmount']
+  surplusToken: SurplusData['surplusToken']
   showFiatValue: boolean
-  surplusFiatValue: unknown
-  swapAndBridgeContext: unknown
-  swapResultContext: unknown
-  swapAndBridgeOverview: unknown
+  surplusFiatValue: SurplusData['surplusFiatValue']
+  swapAndBridgeContext: SwapAndBridgeContexts['swapAndBridgeContext']
+  swapResultContext: SwapAndBridgeContexts['swapResultContext']
+  swapAndBridgeOverview: SwapAndBridgeContexts['swapAndBridgeOverview']
   summary: string | undefined
   id: string
-  RegularOrderLayout: React.ComponentType<unknown>
+  RegularOrderLayout: React.ComponentType<{
+    kind: string | undefined
+    from: ReactNode
+    to: ReactNode
+    isOrderFulfilled: boolean
+    rateInfoParams: RateInfoParams
+    fulfillmentTime: string | undefined
+    validTo: string | undefined
+    isCancelled: boolean
+    isExpired: boolean
+    order: ActivityDerivedState['order']
+    isCustomRecipient: boolean
+    isCustomRecipientWarningVisible: boolean
+    receiverEnsName: string | null | undefined
+    chainId: number
+    surplusAmount: SurplusData['surplusAmount']
+    surplusToken: SurplusData['surplusToken']
+    showFiatValue: boolean
+    surplusFiatValue: SurplusData['surplusFiatValue']
+    hooksDetails: ReactNode
+  }>
 }
 
 function OrderContent({
