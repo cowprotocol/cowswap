@@ -21,6 +21,8 @@ export function useFillSwapDerivedState() {
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const updateDerivedState = useSetAtom(swapDerivedStateAtom)
   const derivedState = useBuildTradeDerivedState(swapRawStateAtom, true)
+
+  console.log('[update] useFillSwapDerivedState after update', derivedState)
   const slippage = useTradeSlippage()
 
   useEffect(() => {
