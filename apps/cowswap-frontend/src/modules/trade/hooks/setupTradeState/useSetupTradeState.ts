@@ -86,7 +86,6 @@ export function useSetupTradeState(): void {
         }
       }
 
-      // tradeNavigate(providerChainId, getDefaultTradeRawState(providerChainId))
       navigateAndSwitchNetwork(providerChainId, getDefaultTradeRawState(providerChainId))
     }
     // Triggering only when chainId was changed in the provider
@@ -156,8 +155,6 @@ export function useSetupTradeState(): void {
     if (isWalletConnected && providerAndUrlChainIdMismatch && prevTradeStateFromUrl) {
       rememberedUrlStateRef.current = tradeStateFromUrl
       updateState?.(tradeStateFromUrl)
-      // todo here
-      // navigateAndSwitchNetwork()
       console.debug(
         '[TRADE STATE]',
         'Remembering a new state from URL while changing chainId in provider',
@@ -168,7 +165,6 @@ export function useSetupTradeState(): void {
     }
 
     if (sameTokens || tokensAreEmpty || onlyChainIdIsChanged) {
-      // tradeNavigate(currentChainId, defaultState)
       navigateAndSwitchNetwork(currentChainId, defaultState)
 
       if (sameTokens) {
