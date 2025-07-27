@@ -73,7 +73,6 @@ export function useSetupTradeState(): void {
     if (rememberedUrlState) {
       rememberedUrlStateRef.current = null
 
-      // tradeNavigate(rememberedUrlState.chainId, rememberedUrlState)
       navigateAndSwitchNetwork(rememberedUrlState.chainId, rememberedUrlState)
     } else {
       // When app loaded with connected wallet

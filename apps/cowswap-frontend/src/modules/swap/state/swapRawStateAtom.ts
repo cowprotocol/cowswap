@@ -25,7 +25,6 @@ export const { atom: swapRawStateAtom, updateAtom: updateSwapRawStateAtom } = at
   atomWithStorage<SwapRawState>('swapStateAtom:v1', getDefaultSwapState(null), getJotaiIsolatedStorage()),
 )
 
-// todo state with incorrect network chainId
 export const swapDerivedStateAtom = atom<SwapDerivedState>({
   ...DEFAULT_TRADE_DERIVED_STATE,
 })
