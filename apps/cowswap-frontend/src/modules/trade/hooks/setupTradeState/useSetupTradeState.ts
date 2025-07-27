@@ -50,7 +50,6 @@ export function useSetupTradeState(): void {
     async (targetChainId: SupportedChainId) => {
       try {
         await switchNetwork(targetChainId)
-        console.log('[update] switch network', targetChainId)
       } catch (error) {
         // We are ignoring Gnosis safe context error
         // Because it's a normal situation when we are not in Gnosis safe App
@@ -63,10 +62,10 @@ export function useSetupTradeState(): void {
   )
 
 
-  const navigateAndSwitchNetwork = async (chainId: number | null, tradeState: TradeRawState): Promise<void> => {
-    await tradeNavigate(chainId, tradeState)
-    await switchNetworkInWallet(chainId || SupportedChainId.MAINNET)
-  }
+  const navigateAndSwitchNetwork = useCallback(async (chainId: number | null, tradeState: TradeRawState): Promise<void> => {
+      await tradeNavigate(chainId, tradeState)
+      await switchNetworkInWallet(chainId || SupportedChainId.MAINNET)
+    }, [tradeNavigate, switchNetworkInWallet])
 
   const onProviderNetworkChanges = useCallback(() => {
     const rememberedUrlState = rememberedUrlStateRef.current
@@ -177,7 +176,6 @@ export function useSetupTradeState(): void {
       } else if (tokensAreEmpty) {
         console.debug('[TRADE STATE]', 'Url does not contain both tokens, resetting')
       } else if (onlyChainIdIsChanged) {
-        // In this case we should update only chainId in the trade state
         updateState?.({ ...state, chainId: currentChainId })
         console.debug('[TRADE STATE]', 'Only chainId was changed in URL, resetting')
       }

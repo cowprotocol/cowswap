@@ -25,7 +25,6 @@ export function useBuildTradeDerivedState(
   const rawState = useAtomValue(stateAtom)
   const { inputCurrencyId, outputCurrencyId } = rawState
 
-  console.log('[update] useBuildTradeDerivedState before update', rawState)
   const targetChainId = rawState.targetChainId || undefined
   const recipient = rawState.recipient
   const recipientAddress = rawState.recipientAddress

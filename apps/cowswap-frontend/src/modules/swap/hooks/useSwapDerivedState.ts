@@ -7,22 +7,17 @@ import { useTradeSlippage } from 'modules/tradeSlippage'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
-import { swapDerivedStateAtom, swapRawStateAtom } from '../state/swapRawStateAtom'
+import { SwapDerivedState, swapDerivedStateAtom, swapRawStateAtom } from '../state/swapRawStateAtom'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useSwapDerivedState() {
+export function useSwapDerivedState(): SwapDerivedState {
   return useAtomValue(swapDerivedStateAtom)
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useFillSwapDerivedState() {
+export function useFillSwapDerivedState(): void {
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const updateDerivedState = useSetAtom(swapDerivedStateAtom)
   const derivedState = useBuildTradeDerivedState(swapRawStateAtom, true)
 
-  console.log('[update] useFillSwapDerivedState after update', derivedState)
   const slippage = useTradeSlippage()
 
   useEffect(() => {
