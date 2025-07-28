@@ -1,10 +1,18 @@
 import { useSetAtom } from 'jotai'
 import { useMemo } from 'react'
 
+import { useSearchToken } from '@cowprotocol/tokens'
+
 import { useLocation, useParams } from 'react-router'
 
 import { tradeStateFromUrlAtom } from '../../state/tradeStateFromUrlAtom'
 import { TradeRawState } from '../../types/TradeRawState'
+
+const getMaybeChainId = (chainId: string | undefined | null): number | null => {
+  if (!chainId) return null
+  if (/^\d+$/.test(chainId)) return Number(chainId)
+  return null
+}
 
 /**
  * Updater to fetch trade state from URL params and query, and store it on jotai state
@@ -15,8 +23,38 @@ import { TradeRawState } from '../../types/TradeRawState'
 export function useSetupTradeStateFromUrl(): null {
   const params = useParams()
   const location = useLocation()
-  const stringifiedParams = JSON.stringify(params)
   const setState = useSetAtom(tradeStateFromUrlAtom)
+
+  const { chainId, inputCurrencyId, outputCurrencyId, recipient, recipientAddress, targetChainId } = useMemo(() => {
+    const stringifiedParams = JSON.stringify(params)
+    const searchParams = new URLSearchParams(location.search)
+    const targetChainId = searchParams.get('targetChainId')
+    const recipient = searchParams.get('recipient')
+    const recipientAddress = searchParams.get('recipientAddress')
+    const { chainId, inputCurrencyId, outputCurrencyId } = JSON.parse(stringifiedParams)
+
+    console.log('inputCurrencyId ==>', inputCurrencyId)
+
+    return {
+      chainId: getMaybeChainId(chainId),
+      inputCurrencyId: inputCurrencyId ?? null,
+      outputCurrencyId: outputCurrencyId ?? null,
+      recipient,
+      recipientAddress,
+      targetChainId: getMaybeChainId(targetChainId),
+    }
+  }, [location.search, params])
+
+  const { activeListsResult, inactiveListsResult } = useSearchToken(inputCurrencyId || '')
+
+  const inputToken = useMemo(() => {
+    if (!inputCurrencyId) return null
+
+    return (
+      activeListsResult.find((token) => token.symbol === inputCurrencyId) ||
+      inactiveListsResult.find((token) => token.symbol === inputCurrencyId)
+    )
+  }, [activeListsResult, inactiveListsResult, inputCurrencyId])
 
   /**
    * useEffect() runs after the render completes and useMemo() runs during rendering.
@@ -24,24 +62,24 @@ export function useSetupTradeStateFromUrl(): null {
    * We need this, because useSetupTradeState() depends on the atom value and needs it to be udpated ASAP.
    */
   useMemo(() => {
-    const searchParams = new URLSearchParams(location.search)
-    const targetChainId = searchParams.get('targetChainId')
-    const recipient = searchParams.get('recipient')
-    const recipientAddress = searchParams.get('recipientAddress')
-    const { chainId, inputCurrencyId, outputCurrencyId } = JSON.parse(stringifiedParams)
-    const chainIdAsNumber = chainId && /^\d+$/.test(chainId) ? parseInt(chainId) : null
+    const isSameChain = targetChainId ? chainId === targetChainId : true
+
+    const derivedInputCurrencyId = isSameChain ? inputToken?.address.toLowerCase() : inputCurrencyId?.toLowerCase()
+
+    console.log('isSameChain ==>', isSameChain, chainId, targetChainId)
+    console.log('derivedInputCurrencyId ==>', derivedInputCurrencyId, inputToken?.address, inputCurrencyId)
 
     const state: TradeRawState = {
-      chainId: chainIdAsNumber,
-      targetChainId: targetChainId ? +targetChainId : null,
-      inputCurrencyId: inputCurrencyId || searchParams.get('inputCurrency') || null,
-      outputCurrencyId: outputCurrencyId || searchParams.get('outputCurrency') || null,
+      chainId,
+      targetChainId,
+      inputCurrencyId: derivedInputCurrencyId,
+      outputCurrencyId,
       ...(recipient ? { recipient } : undefined),
       ...(recipientAddress ? { recipientAddress } : undefined),
     }
 
     setState(state)
-  }, [location.search, stringifiedParams, setState])
+  }, [chainId, inputToken, inputCurrencyId, outputCurrencyId, recipient, recipientAddress, setState, targetChainId])
 
   return null
 }

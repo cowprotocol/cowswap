@@ -31,6 +31,10 @@ const CompatibilityIssuesWarningWrapper = styled.div`
 
 const DEFAULT_QUOTE_ERROR = 'Error loading price. Try again later.'
 
+const errorTooltipContent: Partial<Record<QuoteApiErrorCodes, string>> = {
+  [QuoteApiErrorCodes.SameBuyAndSellToken]: 'Right now, SWAP is required for any bridging. Just Swap will come soon.',
+}
+
 const quoteErrorTexts: Record<QuoteApiErrorCodes, string> = {
   [QuoteApiErrorCodes.UNHANDLED_ERROR]: DEFAULT_QUOTE_ERROR,
   [QuoteApiErrorCodes.TransferEthToContract]:
@@ -39,7 +43,7 @@ const quoteErrorTexts: Record<QuoteApiErrorCodes, string> = {
   [QuoteApiErrorCodes.InsufficientLiquidity]: 'Insufficient liquidity for this trade.',
   [QuoteApiErrorCodes.FeeExceedsFrom]: 'Sell amount is too small',
   [QuoteApiErrorCodes.ZeroPrice]: 'Invalid price. Try increasing input/output amount.',
-  [QuoteApiErrorCodes.SameBuyAndSellToken]: 'Tokens must be different',
+  [QuoteApiErrorCodes.SameBuyAndSellToken]: 'Not yet supported',
 }
 
 const bridgeQuoteErrorTexts: Record<BridgeQuoteErrors, string> = {
@@ -111,9 +115,14 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
 
       const errorText = quoteErrorTexts[quote.error.type] || DEFAULT_QUOTE_ERROR
 
+      const errorTooltip = errorTooltipContent[quote.error.type] || <></>
+
       return (
         <TradeFormBlankButton disabled={true}>
-          <Trans>{errorText}</Trans>
+          <>
+            <Trans>{errorText}</Trans>
+            {errorTooltip && <HelpTooltip text={errorTooltip} />}
+          </>
         </TradeFormBlankButton>
       )
     }
