@@ -55,10 +55,12 @@ function PendingOrderUpdater({ chainId, orderUid }: PendingOrderUpdaterProps): R
     const isOrderExecuted = orderStatus === BridgeStatus.EXECUTED
     const isOrderFailed = orderStatus === BridgeStatus.REFUND || orderStatus === BridgeStatus.EXPIRED
 
+    const { sourceChainId, destinationChainId } = crossChainOrder.bridgingParams
+
     // Update bridge order status for ALL status changes, not just EXECUTED
     updateBridgeOrderQuote(orderUid, crossChainOrder.statusResult)
 
-    const analyticsSummary = `From: ${crossChainOrder.bridgingParams.sourceChainId}, to: ${crossChainOrder.bridgingParams.destinationChainId}`
+    const analyticsSummary = `From: ${sourceChainId}, to: ${destinationChainId}`
 
     if (isOrderExecuted) {
       // Display surplus modal
@@ -71,7 +73,7 @@ function PendingOrderUpdater({ chainId, orderUid }: PendingOrderUpdaterProps): R
         action: 'Bridging succeeded',
         label: analyticsSummary,
         orderId: orderUid,
-        chainId: crossChainOrder.bridgingParams.sourceChainId,
+        chainId: sourceChainId,
       } as GtmEvent<CowSwapAnalyticsCategory.Bridge>)
     } else if (isOrderFailed) {
       getCowSoundError().play()
@@ -81,7 +83,7 @@ function PendingOrderUpdater({ chainId, orderUid }: PendingOrderUpdaterProps): R
         action: 'Bridging failed',
         label: analyticsSummary,
         orderId: orderUid,
-        chainId: crossChainOrder.bridgingParams.sourceChainId,
+        chainId: sourceChainId,
       } as GtmEvent<CowSwapAnalyticsCategory.Bridge>)
     }
   }, [crossChainOrder, updateBridgeOrderQuote, addOrderToSurplusQueue, analytics])
