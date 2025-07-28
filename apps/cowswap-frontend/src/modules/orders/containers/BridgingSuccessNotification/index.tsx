@@ -22,7 +22,7 @@ function summaryTemplate({
   return (
     <>
       Sell {inputAmount}
-      {srcChainData && ` (${srcChainData.label})`} for {outputAmount}
+      {srcChainData && ` (${srcChainData.label})`} for a total of {outputAmount}
       {dstChainData && ` (${dstChainData.label})`}
     </>
   )
