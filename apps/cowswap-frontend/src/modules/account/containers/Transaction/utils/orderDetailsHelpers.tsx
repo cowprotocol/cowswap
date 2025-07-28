@@ -8,7 +8,11 @@ import { RateInfo, RateInfoParams } from 'common/pure/RateInfo'
 
 import { SummaryInnerRow } from '../styled'
 
-export function createHooksDetails(fullAppData: string | AppDataInfo | null | undefined): ReactNode | null {
+interface HooksDetailsProps {
+  fullAppData: string | AppDataInfo | null | undefined
+}
+
+export function HooksDetails({ fullAppData }: HooksDetailsProps): ReactNode | null {
   return fullAppData ? (
     <OrderHooksDetails appData={fullAppData} margin="10px 0 0">
       {(children) => (
@@ -21,7 +25,12 @@ export function createHooksDetails(fullAppData: string | AppDataInfo | null | un
   ) : null
 }
 
-export function createOrderBasicDetails(rateInfoParams: RateInfoParams, validTo: string | undefined): ReactNode {
+interface OrderBasicDetailsProps {
+  rateInfoParams: RateInfoParams
+  validTo: string | undefined
+}
+
+export function OrderBasicDetails({ rateInfoParams, validTo }: OrderBasicDetailsProps): ReactNode {
   return (
     <>
       <ConfirmDetailsItem withTimelineDot label="Limit price">

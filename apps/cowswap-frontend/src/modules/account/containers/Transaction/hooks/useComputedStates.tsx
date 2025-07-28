@@ -8,7 +8,7 @@ import { RateInfoParams } from 'common/pure/RateInfo'
 import { ActivityDerivedState } from 'common/types/activity'
 
 import { computeOrderPendingState } from '../utils/bridgeStateHelpers'
-import { createHooksDetails, createOrderBasicDetails } from '../utils/orderDetailsHelpers'
+import { HooksDetails, OrderBasicDetails } from '../utils/orderDetailsHelpers'
 import { computeOrderSummary, computeTokens, OrderSummaryType } from '../utils/orderSummaryHelpers'
 import { computeCustomRecipientState } from '../utils/recipientHelpers'
 
@@ -43,8 +43,8 @@ export function useComputedStates(
   const fullAppData = order?.apiAdditionalInfo?.fullAppData || order?.fullAppData
   const { isCustomRecipient } = computeCustomRecipientState(order, isBridgeOrder, swapAndBridgeOverview)
 
-  const hooksDetails = createHooksDetails(fullAppData)
-  const orderBasicDetails = createOrderBasicDetails(rateInfoParams, orderSummary.validTo)
+  const hooksDetails = <HooksDetails fullAppData={fullAppData} />
+  const orderBasicDetails = <OrderBasicDetails rateInfoParams={rateInfoParams} validTo={orderSummary.validTo} />
 
   return {
     isOrderPending,
