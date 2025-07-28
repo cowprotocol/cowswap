@@ -33,8 +33,6 @@ export function useSetupTradeStateFromUrl(): null {
     const recipientAddress = searchParams.get('recipientAddress')
     const { chainId, inputCurrencyId, outputCurrencyId } = JSON.parse(stringifiedParams)
 
-    console.log('inputCurrencyId ==>', inputCurrencyId)
-
     return {
       chainId: getMaybeChainId(chainId),
       inputCurrencyId: inputCurrencyId ?? null,
@@ -51,10 +49,22 @@ export function useSetupTradeStateFromUrl(): null {
     if (!inputCurrencyId) return null
 
     return (
-      activeListsResult.find((token) => token.symbol === inputCurrencyId) ||
-      inactiveListsResult.find((token) => token.symbol === inputCurrencyId)
+      activeListsResult.find((token) => token.symbol === inputCurrencyId || token.address === inputCurrencyId) ||
+      inactiveListsResult.find((token) => token.symbol === inputCurrencyId || token.address === inputCurrencyId)
     )
   }, [activeListsResult, inactiveListsResult, inputCurrencyId])
+
+  const derivedInputCurrencyId = useMemo(() => {
+    if (!inputToken && !inputCurrencyId) return null
+
+    const isSameChain = targetChainId ? chainId === targetChainId : true
+
+    if (isSameChain) {
+      return inputToken?.address.toLowerCase() ?? inputCurrencyId?.toLowerCase()
+    }
+
+    return inputCurrencyId?.toLowerCase()
+  }, [chainId, inputToken, inputCurrencyId, targetChainId])
 
   /**
    * useEffect() runs after the render completes and useMemo() runs during rendering.
@@ -62,13 +72,6 @@ export function useSetupTradeStateFromUrl(): null {
    * We need this, because useSetupTradeState() depends on the atom value and needs it to be udpated ASAP.
    */
   useMemo(() => {
-    const isSameChain = targetChainId ? chainId === targetChainId : true
-
-    const derivedInputCurrencyId = isSameChain ? inputToken?.address.toLowerCase() : inputCurrencyId?.toLowerCase()
-
-    console.log('isSameChain ==>', isSameChain, chainId, targetChainId)
-    console.log('derivedInputCurrencyId ==>', derivedInputCurrencyId, inputToken?.address, inputCurrencyId)
-
     const state: TradeRawState = {
       chainId,
       targetChainId,
@@ -79,7 +82,7 @@ export function useSetupTradeStateFromUrl(): null {
     }
 
     setState(state)
-  }, [chainId, inputToken, inputCurrencyId, outputCurrencyId, recipient, recipientAddress, setState, targetChainId])
+  }, [chainId, outputCurrencyId, recipient, recipientAddress, setState, targetChainId, derivedInputCurrencyId])
 
   return null
 }
