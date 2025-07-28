@@ -11,9 +11,27 @@ import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 import { OrderNotification } from '../OrderNotification'
 import { mapBridgingResultToOrderInfo } from '../OrderNotification/utils'
 
+import type { OrderSummaryTemplateProps } from '../../pure/OrderSummary/summaryTemplates'
+
+function summaryTemplate({
+  inputAmount,
+  outputAmount,
+  srcChainData,
+  dstChainData,
+}: OrderSummaryTemplateProps): ReactNode {
+  return (
+    <>
+      Sell {inputAmount}
+      {srcChainData && ` (${srcChainData.label})`} for {outputAmount}
+      {dstChainData && ` (${dstChainData.label})`}
+    </>
+  )
+}
+
 interface BridgingSuccessNotificationProps {
   payload: OnBridgingSuccessPayload
 }
+
 export function BridgingSuccessNotification({ payload }: BridgingSuccessNotificationProps): ReactNode {
   const { chainId, order } = payload
   const bridgingOrder = useBridgeOrderData(order.uid)
@@ -29,6 +47,7 @@ export function BridgingSuccessNotification({ payload }: BridgingSuccessNotifica
       skipExplorerLink
       chainId={chainId}
       orderInfo={orderInfo}
+      customTemplate={summaryTemplate}
       orderType={getUiOrderType(order)}
       orderUid={order.uid}
       receiver={bridgingOrder.recipient}
