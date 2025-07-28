@@ -32,7 +32,8 @@ const CompatibilityIssuesWarningWrapper = styled.div`
 const DEFAULT_QUOTE_ERROR = 'Error loading price. Try again later.'
 
 const errorTooltipContent: Partial<Record<QuoteApiErrorCodes, string>> = {
-  [QuoteApiErrorCodes.SameBuyAndSellToken]: 'Right now, SWAP is required for any bridging. Just Swap will come soon.',
+  [QuoteApiErrorCodes.SameBuyAndSellToken]:
+    'Bridging without swapping is not yet supported. Let us know if you want this feature!',
 }
 
 const quoteErrorTexts: Record<QuoteApiErrorCodes, string> = {
