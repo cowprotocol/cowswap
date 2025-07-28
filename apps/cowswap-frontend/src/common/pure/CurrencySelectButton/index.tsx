@@ -7,6 +7,7 @@ import { TokenName } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
+import { useBridgeSupportedNetwork } from 'entities/bridgeProvider'
 import { Nullish } from 'types'
 
 import * as styledEl from './styled'
@@ -29,11 +30,9 @@ export interface CurrencySelectButtonProps {
   customSelectTokenButton?: ReactNode
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
-export function CurrencySelectButton(props: CurrencySelectButtonProps) {
+// eslint-disable-next-line complexity
+export function CurrencySelectButton(props: CurrencySelectButtonProps): ReactNode {
   const {
     currency,
     onClick,
@@ -46,6 +45,10 @@ export function CurrencySelectButton(props: CurrencySelectButtonProps) {
 
   const $noCurrencySelected = !currency
   const showDetailedDisplay = displayTokenName || displayChainName
+
+  const chainId = currency?.chainId
+  const bridgeChain = useBridgeSupportedNetwork(chainId)
+  const chainInfo = chainId ? (CHAIN_INFO[chainId as SupportedChainId] ?? bridgeChain) : undefined
 
   if (!currency && customSelectTokenButton) {
     return (
@@ -90,9 +93,7 @@ export function CurrencySelectButton(props: CurrencySelectButtonProps) {
               </TokenSubText>
             )}
             {displayChainName && currency.chainId && (
-              <TokenSubText>
-                {CHAIN_INFO[currency.chainId as SupportedChainId]?.label || `ChainID: ${currency.chainId}`}
-              </TokenSubText>
+              <TokenSubText>{chainInfo?.label || `ChainID: ${currency.chainId}`}</TokenSubText>
             )}
           </>
         ) : (
