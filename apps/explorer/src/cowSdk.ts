@@ -12,6 +12,6 @@ export const orderBookSDK = new OrderBookApi({
   ...(prodBaseUrls ? { baseUrls: prodBaseUrls } : undefined),
 })
 
-export const subgraphApiSDK = new SubgraphApi(apiKey )
+export const subgraphApiSDK = new SubgraphApi(apiKey)
 
 export const metadataApiSDK = new MetadataApi()
