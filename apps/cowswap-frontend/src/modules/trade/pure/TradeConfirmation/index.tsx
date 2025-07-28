@@ -22,15 +22,13 @@ import * as styledEl from './styled'
 import { NoImpactWarning } from '../../containers/NoImpactWarning'
 import { useTradeConfirmState } from '../../hooks/useTradeConfirmState'
 
-function createHookDetailsElement(appData: string | AppDataInfo | undefined): ReactNode {
+function HookDetailsElement({ appData }: { appData: string | AppDataInfo | undefined }): ReactNode {
+  if (!appData) return null
+
   return (
-    <>
-      {appData && (
-        <OrderHooksDetails appData={appData} isTradeConfirmation>
-          {(hookChildren) => hookChildren}
-        </OrderHooksDetails>
-      )}
-    </>
+    <OrderHooksDetails appData={appData} isTradeConfirmation>
+      {(hookChildren) => hookChildren}
+    </OrderHooksDetails>
   )
 }
 
@@ -102,7 +100,6 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
     window.scrollTo(0, 0)
   }, [])
 
-  const hookDetailsElement = createHookDetailsElement(appData)
 
   return (
     <styledEl.WidgetWrapper onKeyDown={(e) => e.key === 'Escape' && onDismiss()}>
@@ -122,7 +119,7 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
         />
         {children?.(
           <>
-            {hookDetailsElement}
+            <HookDetailsElement appData={appData} />
             <NoImpactWarning withoutAccepting />
           </>,
           warningStates,
