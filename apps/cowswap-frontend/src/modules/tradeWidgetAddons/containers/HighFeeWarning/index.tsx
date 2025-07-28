@@ -1,95 +1,87 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 
-import { HoverTooltip } from '@cowprotocol/ui'
+import { BannerOrientation, InfoTooltip, InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { Fraction } from '@uniswap/sdk-core'
-
-import { AlertTriangle } from 'react-feather'
-
-import { useIsDarkMode } from 'legacy/state/user/hooks'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
 import { HIGH_TIER_FEE, LOW_TIER_FEE, MEDIUM_TIER_FEE } from './consts'
+import { _getWarningInfo, getHighFeeWarningMessageContent } from './highFeeWarningHelpers'
+import { HighFeeWarningTooltipContent } from './HighFeeWarningTooltipContent'
 import { useHighFeeWarning } from './hooks/useHighFeeWarning'
-import { ErrorStyledInfoIcon, WarningCheckboxContainer, WarningContainer } from './styled'
+import { InlineWarningCheckboxContainer, InlineWarningTextContainer } from './styled'
 
 interface HighFeeWarningProps {
   readonlyMode?: boolean
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function HighFeeWarning({ readonlyMode }: HighFeeWarningProps) {
-  const { account } = useWalletInfo()
-  const { feeWarningAccepted, setFeeWarningAccepted } = useHighFeeWarning()
-  const darkMode = useIsDarkMode()
+const BannerTypeMap: Record<number, StatusColorVariant> = {
+  [HIGH_TIER_FEE]: StatusColorVariant.Danger,
+  [MEDIUM_TIER_FEE]: StatusColorVariant.Warning,
+  [LOW_TIER_FEE]: StatusColorVariant.Alert,
+}
 
-  const toggleFeeWarningAccepted = useCallback(() => {
-    setFeeWarningAccepted((state) => !state)
+export function HighFeeWarning({ readonlyMode }: HighFeeWarningProps): React.ReactNode | null {
+  const { account } = useWalletInfo()
+  const { isHighFee, feePercentage, feeWarningAccepted, setFeeWarningAccepted, isHighBridgeFee, bridgeFeePercentage } =
+    useHighFeeWarning()
+
+  const toggleSwapFeeWarningAccepted = useCallback(() => {
+    setFeeWarningAccepted((state: boolean) => !state)
   }, [setFeeWarningAccepted])
 
-  const { isHighFee, feePercentage } = useHighFeeWarning()
-  const level = useSafeMemo(() => _getWarningInfo(feePercentage), [feePercentage])
+  const swapLevel = useSafeMemo(() => {
+    const swapLevel = _getWarningInfo(feePercentage)
+    const bridgeLevel = _getWarningInfo(bridgeFeePercentage)
+    if (swapLevel && bridgeLevel) {
+      return Math.max(swapLevel, bridgeLevel)
+    }
 
-  if (!isHighFee) return null
+    if (swapLevel) {
+      return swapLevel
+    }
+    return bridgeLevel
+  }, [feePercentage, bridgeFeePercentage])
 
-  return (
-    <WarningContainer level={level} isDarkMode={darkMode}>
-      <div>
-        <AlertTriangle size={24} />
-        Costs exceed {level}% of the swap amount!{' '}
-        <HoverTooltip wrapInContainer content={<HighFeeWarningMessage feePercentage={feePercentage} />}>
-          <ErrorStyledInfoIcon />
-        </HoverTooltip>{' '}
-      </div>
-
-      {account && !readonlyMode && (
-        <WarningCheckboxContainer>
-          <input
-            id="fees-exceed-checkbox"
-            type="checkbox"
-            onChange={toggleFeeWarningAccepted}
-            checked={feeWarningAccepted}
-          />{' '}
-          Swap anyway
-        </WarningCheckboxContainer>
-      )}
-    </WarningContainer>
+  const textContent = useMemo(
+    () => getHighFeeWarningMessageContent({ isHighFee, isHighBridgeFee, feePercentage, bridgeFeePercentage }),
+    [isHighFee, isHighBridgeFee, feePercentage, bridgeFeePercentage],
   )
-}
 
-// checks fee as percentage (30% not a decimal)
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function _getWarningInfo(feePercentage?: Fraction) {
-  if (!feePercentage || feePercentage.lessThan(LOW_TIER_FEE)) {
-    return undefined
-  } else if (feePercentage.lessThan(MEDIUM_TIER_FEE)) {
-    return LOW_TIER_FEE
-  } else if (feePercentage.lessThan(HIGH_TIER_FEE)) {
-    return MEDIUM_TIER_FEE
-  } else {
-    return HIGH_TIER_FEE
-  }
-}
+  const hasExtraContent = account && !readonlyMode
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const HighFeeWarningMessage = ({ feePercentage }: { feePercentage?: Fraction }) => (
-  <div>
-    <small>
-      Current network costs make up{' '}
-      <u>
-        <strong>{feePercentage?.toFixed(2)}%</strong>
-      </u>{' '}
-      of your swap amount.
-      <br />
-      <br />
-      Consider waiting for lower network costs.
-      <br />
-      <br />
-      You may still move forward with this swap but a high percentage of it will be consumed by network costs.
-    </small>
-  </div>
-)
+  return textContent ? (
+    <InlineBanner
+      bannerType={swapLevel ? BannerTypeMap[swapLevel] : StatusColorVariant.Info}
+      orientation={hasExtraContent ? BannerOrientation.Vertical : BannerOrientation.Horizontal}
+      noWrapContent
+      width="100%"
+      customContent={
+        hasExtraContent && (
+          <InlineWarningCheckboxContainer>
+            <input
+              id="fees-exceed-checkbox"
+              type="checkbox"
+              onChange={toggleSwapFeeWarningAccepted}
+              checked={feeWarningAccepted}
+            />{' '}
+            Swap anyway
+          </InlineWarningCheckboxContainer>
+        )
+      }
+    >
+      <InlineWarningTextContainer>{textContent}</InlineWarningTextContainer>
+      <InfoTooltip
+        size={24}
+        content={
+          <HighFeeWarningTooltipContent
+            feePercentage={feePercentage}
+            isHighFee={isHighFee}
+            isHighBridgeFee={isHighBridgeFee}
+            bridgeFeePercentage={bridgeFeePercentage}
+          />
+        }
+      />
+    </InlineBanner>
+  ) : null
+}
