@@ -21,7 +21,7 @@ import {
   TradeConfirmation,
   TradeConfirmModal,
   useGetReceiveAmountInfo,
-  useTradeConfirmActions
+  useTradeConfirmActions,
 } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { HighFeeWarning, RowDeadline } from 'modules/tradeWidgetAddons'
@@ -135,6 +135,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
                   hideRecommendedSlippage
                 />
                 {restContent}
+                <HighFeeWarning readonlyMode />
               </>
             )
           : (restContent) => (
