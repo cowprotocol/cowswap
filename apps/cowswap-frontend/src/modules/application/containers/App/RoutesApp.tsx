@@ -38,9 +38,7 @@ const LegalExternal = <ExternalRedirect url={COWDAO_LEGAL_LINK} />
 const AccountTokensOverview = lazy(() => import(/* webpackChunkName: "tokens_overview" */ 'pages/Account/Tokens'))
 const AccountNotFound = lazy(() => import(/* webpackChunkName: "affiliate" */ 'pages/error/NotFound'))
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function ExternalRedirect({ url }: { url: string }) {
+function ExternalRedirect({ url }: { url: string }): null {
   useEffect(() => {
     window.location.replace(url)
   }, [url])
@@ -50,9 +48,7 @@ function ExternalRedirect({ url }: { url: string }) {
 
 type LazyRouteProps = { route: RoutesValues; element: ReactNode; key?: number }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function LazyRoute({ route, element, key }: LazyRouteProps) {
+function LazyRoute({ route, element, key }: LazyRouteProps): ReactNode {
   return <Route key={key} path={route} element={<Suspense fallback={<Loading />}>{element}</Suspense>} />
 }
 
@@ -76,9 +72,7 @@ const lazyRoutes: LazyRouteProps[] = [
   { route: RoutesEnum.TERMS_CONDITIONS, element: LegalExternal },
 ]
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function RoutesApp() {
+export function RoutesApp(): ReactNode {
   return (
     <Suspense fallback={<Loader />}>
       <Routes>
