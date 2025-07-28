@@ -207,9 +207,6 @@ export function useSetupTradeState(): void {
     if (!providerChainId || providerChainId === currentChainId) return
 
     const targetChainId = rememberedUrlStateRef.current?.chainId || currentChainId
-
-    // Debouncing switching multiple time in a quick span of time to avoid running into infinity loop of updating provider and url state.
-    // issue GH : https://github.com/cowprotocol/cowswap/issues/4734
     switchNetworkInWallet(targetChainId)
 
     console.debug('[TRADE STATE]', 'Set chainId to provider', { provider, urlChainId })
