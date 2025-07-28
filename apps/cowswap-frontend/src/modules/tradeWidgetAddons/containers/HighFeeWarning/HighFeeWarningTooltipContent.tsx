@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { Fraction } from '@uniswap/sdk-core'
 
 interface HighFeeWarningTooltipContentProps {
@@ -7,7 +9,7 @@ interface HighFeeWarningTooltipContentProps {
   bridgeFeePercentage?: Fraction
 }
 
-const Wrapper = ({ children }: { children: React.ReactNode }): React.ReactNode => {
+const Wrapper = ({ children }: { children: ReactNode }): ReactNode => {
   return (
     <div>
       <small>{children}</small>
@@ -15,7 +17,7 @@ const Wrapper = ({ children }: { children: React.ReactNode }): React.ReactNode =
   )
 }
 
-const CommonContent = (): React.ReactNode => {
+const CommonContent = (): ReactNode => {
   return (
     <>
       <br />
@@ -28,7 +30,7 @@ const CommonContent = (): React.ReactNode => {
   )
 }
 
-const NetworkCostsContent = ({ feePercentage }: { feePercentage: Fraction }): React.ReactNode => {
+const NetworkCostsContent = ({ feePercentage }: { feePercentage: Fraction }): ReactNode => {
   return (
     <>
       Current network costs make up{' '}
@@ -40,7 +42,7 @@ const NetworkCostsContent = ({ feePercentage }: { feePercentage: Fraction }): Re
   )
 }
 
-const BridgeCostsContent = ({ bridgeFeePercentage }: { bridgeFeePercentage: Fraction }): React.ReactNode => {
+const BridgeCostsContent = ({ bridgeFeePercentage }: { bridgeFeePercentage: Fraction }): ReactNode => {
   return (
     <>
       Current bridge costs make up{' '}
@@ -57,7 +59,7 @@ export function HighFeeWarningTooltipContent({
   feePercentage,
   isHighBridgeFee,
   bridgeFeePercentage,
-}: HighFeeWarningTooltipContentProps): React.ReactNode {
+}: HighFeeWarningTooltipContentProps): ReactNode {
   const shouldShowSwapAndBridgeFee = isHighFee && isHighBridgeFee && feePercentage && bridgeFeePercentage
   const shouldShowSwapFee = isHighFee && !isHighBridgeFee && feePercentage
   const shouldShowBridgeFee = !isHighFee && isHighBridgeFee && bridgeFeePercentage

@@ -2,8 +2,10 @@ import { Fraction, Rounding } from '@uniswap/sdk-core'
 
 import { HIGH_TIER_FEE, LOW_TIER_FEE, MEDIUM_TIER_FEE } from './consts'
 
+type FeePercentage = typeof HIGH_TIER_FEE | typeof MEDIUM_TIER_FEE | typeof LOW_TIER_FEE | undefined
+
 // checks fee as percentage (30% not a decimal)
-export function _getWarningInfo(feePercentage?: Fraction): 30 | 20 | 10 | undefined {
+export function _getWarningInfo(feePercentage?: Fraction): FeePercentage {
   if (!feePercentage || feePercentage.lessThan(LOW_TIER_FEE)) {
     return undefined
   } else if (feePercentage.lessThan(MEDIUM_TIER_FEE)) {
