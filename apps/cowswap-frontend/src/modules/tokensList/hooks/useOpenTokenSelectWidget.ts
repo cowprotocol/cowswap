@@ -25,8 +25,9 @@ export function useOpenTokenSelectWidget(): (
 
   return useCallback(
     (selectedToken, field, oppositeToken, onSelectToken) => {
+      const isOutputField = field === Field.OUTPUT
       const selectedTargetChainId =
-        field === Field.OUTPUT && selectedToken && isBridgingEnabled ? selectedToken.chainId : undefined
+        isOutputField && selectedToken && isBridgingEnabled ? selectedToken.chainId : undefined
 
       updateSelectTokenWidget({
         selectedToken,
@@ -35,7 +36,8 @@ export function useOpenTokenSelectWidget(): (
         open: true,
         selectedTargetChainId,
         onSelectToken: (currency) => {
-          if (selectedTargetChainId || walletChainId === currency.chainId) {
+          const withoutNetworkSwitch = selectedTargetChainId || walletChainId === currency.chainId || isOutputField
+          if (withoutNetworkSwitch) {
             closeTokenSelectWidget()
           }
           onSelectToken(currency)
