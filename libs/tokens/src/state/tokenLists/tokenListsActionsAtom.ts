@@ -12,8 +12,8 @@ import {
 import { ListState } from '../../types'
 import { environmentAtom } from '../environmentAtom'
 
-export const upsertListsAtom = atom(null, (get, set, chainId: SupportedChainId, listsStates: ListState[]) => {
-  const globalState = get(listsStatesByChainAtom)
+export const upsertListsAtom = atom(null, async (get, set, chainId: SupportedChainId, listsStates: ListState[]) => {
+  const globalState = await get(listsStatesByChainAtom)
   const chainState = globalState[chainId]
 
   const update = listsStates.reduce<{ [listId: string]: ListState }>((acc, list) => {
@@ -56,7 +56,7 @@ export const addListAtom = atom(null, (get, set, state: ListState) => {
   set(upsertListsAtom, chainId, [state])
 })
 
-export const removeListAtom = atom(null, (get, set, source: string) => {
+export const removeListAtom = atom(null, async (get, set, source: string) => {
   const { chainId } = get(environmentAtom)
   const userAddedTokenLists = get(userAddedListsSourcesAtom)
   const userAddedTokenListsForChain = userAddedTokenLists[chainId] || []
@@ -66,7 +66,7 @@ export const removeListAtom = atom(null, (get, set, source: string) => {
     [chainId]: userAddedTokenListsForChain.filter((item) => item.source !== source),
   })
 
-  const stateCopy = { ...get(listsStatesByChainAtom) }
+  const stateCopy = { ...(await get(listsStatesByChainAtom)) }
 
   const networkState = stateCopy[chainId]
 
@@ -77,10 +77,10 @@ export const removeListAtom = atom(null, (get, set, source: string) => {
   set(listsStatesByChainAtom, stateCopy)
 })
 
-export const toggleListAtom = atom(null, (get, set, source: string) => {
+export const toggleListAtom = atom(null, async (get, set, source: string) => {
   const { chainId } = get(environmentAtom)
-  const listsEnabledState = get(listsEnabledStateAtom)
-  const states = get(listsStatesMapAtom)
+  const listsEnabledState = await get(listsEnabledStateAtom)
+  const states = await get(listsStatesMapAtom)
 
   if (!states[source]) return
 

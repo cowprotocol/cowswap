@@ -1,13 +1,12 @@
 import { atom } from 'jotai'
 
 import { NATIVE_CURRENCIES, TokenWithLogo } from '@cowprotocol/common-const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenInfo } from '@cowprotocol/types'
 
 import { favoriteTokensAtom } from './favoriteTokensAtom'
 import { userAddedTokensAtom } from './userAddedTokensAtom'
 
-import { ActiveTokensState, TokensBySymbolState, TokensMap } from '../../types'
+import { TokensBySymbolState, TokensMap } from '../../types'
 import { lowerCaseTokensMap } from '../../utils/lowerCaseTokensMap'
 import { parseTokenInfo } from '../../utils/parseTokenInfo'
 import { tokenMapToListWithLogo } from '../../utils/tokenMapToListWithLogo'
@@ -27,10 +26,10 @@ interface TokensState {
   inactiveTokens: TokensMap
 }
 
-const tokensStateAtom = atom<TokensState>((get) => {
+const tokensStateAtom = atom(async (get) => {
   const { chainId } = get(environmentAtom)
-  const listsStatesList = get(listsStatesListAtom)
-  const listsEnabledState = get(listsEnabledStateAtom)
+  const listsStatesList = await get(listsStatesListAtom)
+  const listsEnabledState = await get(listsEnabledStateAtom)
 
   return listsStatesList.reduce<TokensState>(
     (acc, list) => {
@@ -63,8 +62,8 @@ const tokensStateAtom = atom<TokensState>((get) => {
   )
 })
 
-export const activeTokensMapAtom = atom<TokensMap>((get) => {
-  return get(tokensStateAtom).activeTokens
+export const activeTokensMapAtom = atom(async (get) => {
+  return (await get(tokensStateAtom)).activeTokens
 })
 
 /**
@@ -72,12 +71,12 @@ export const activeTokensMapAtom = atom<TokensMap>((get) => {
  * The list includes: native token, user added tokens, favorite tokens and tokens from active lists
  * Native token is always the first element in the list
  */
-export const allActiveTokensAtom = atom<ActiveTokensState>((get) => {
+export const allActiveTokensAtom = atom(async (get) => {
   const { chainId, enableLpTokensByDefault } = get(environmentAtom)
   const userAddedTokens = get(userAddedTokensAtom)
   const favoriteTokensState = get(favoriteTokensAtom)
 
-  const tokensMap = get(tokensStateAtom)
+  const tokensMap = await get(tokensStateAtom)
   const nativeToken = NATIVE_CURRENCIES[chainId]
 
   const lpTokens = enableLpTokensByDefault
@@ -111,15 +110,15 @@ export const allActiveTokensAtom = atom<ActiveTokensState>((get) => {
   return { tokens, chainId }
 })
 
-export const inactiveTokensAtom = atom<TokenWithLogo[]>((get) => {
+export const inactiveTokensAtom = atom(async (get) => {
   const { chainId } = get(environmentAtom)
-  const tokensMap = get(tokensStateAtom)
+  const tokensMap = await get(tokensStateAtom)
 
   return tokenMapToListWithLogo([tokensMap.inactiveTokens], chainId)
 })
 
-export const tokensByAddressAtom = atom<{ tokens: TokensByAddress; chainId: SupportedChainId }>((get) => {
-  const activeTokens = get(allActiveTokensAtom)
+export const tokensByAddressAtom = atom(async (get) => {
+  const activeTokens = await get(allActiveTokensAtom)
 
   const tokens = activeTokens.tokens.reduce<TokensByAddress>((acc, token) => {
     acc[token.address.toLowerCase()] = token
@@ -132,8 +131,8 @@ export const tokensByAddressAtom = atom<{ tokens: TokensByAddress; chainId: Supp
   }
 })
 
-export const tokensBySymbolAtom = atom<TokensBySymbolState>((get) => {
-  const { tokens, chainId } = get(allActiveTokensAtom)
+export const tokensBySymbolAtom = atom(async (get) => {
+  const { tokens, chainId } = await get(allActiveTokensAtom)
   const tokensBySymbol = tokens.reduce<TokensBySymbol>((acc, token) => {
     if (!token.symbol) return acc
 
@@ -146,5 +145,5 @@ export const tokensBySymbolAtom = atom<TokensBySymbolState>((get) => {
     return acc
   }, {})
 
-  return { tokens: tokensBySymbol, chainId }
+  return { tokens: tokensBySymbol, chainId } as TokensBySymbolState
 })

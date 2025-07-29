@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { PAGE_TITLES, WRAPPED_NATIVE_CURRENCIES as WETH } from '@cowprotocol/common-const'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -10,9 +12,7 @@ import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRou
 
 import { Routes } from 'common/constants/routes'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function SwapPage() {
+export function SwapPage(): ReactNode {
   const params = useParams()
 
   if (!params.chainId) {
@@ -28,9 +28,7 @@ export function SwapPage() {
   )
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function SwapPageRedirect() {
+function SwapPageRedirect(): ReactNode {
   const { chainId } = useWalletInfo()
   const location = useLocation()
 

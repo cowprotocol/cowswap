@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { ReactNode, useCallback, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { TokenWithLogo } from '@cowprotocol/common-const'
@@ -57,9 +57,8 @@ interface SelectTokenWidgetProps {
 }
 
 // TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
-export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTokenWidgetProps) {
+// eslint-disable-next-line max-lines-per-function
+export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTokenWidgetProps): ReactNode {
   const {
     open,
     onSelectToken,

@@ -14,7 +14,7 @@ import type { Order } from 'legacy/state/orders/actions'
 
 import { ShimmerWrapper, SummaryRow } from 'common/pure/OrderSummaryRow'
 
-import { SwapAndBridgeContext, SwapAndBridgeOverview } from '../../types'
+import { SwapAndBridgeContext, SwapAndBridgeOverview, SwapAndBridgeStatus } from '../../types'
 
 interface BridgeSummaryHeaderProps {
   order: Order
@@ -32,9 +32,10 @@ export function BridgeSummaryHeader({
   const { sourceAmounts, targetAmounts, sourceChainName, targetChainName, targetRecipient } = swapAndBridgeOverview
   const isCustomRecipient = !!targetRecipient && !areAddressesEqual(order.owner, targetRecipient)
   const targetAmount = targetAmounts?.buyAmount
-  
+
   // Only show destination chain when we have confirmed bridge data (crossChainOrder loaded)
   const showDestinationChain = !!swapAndBridgeContext?.statusResult
+  const isFinished = swapAndBridgeContext?.bridgingStatus === SwapAndBridgeStatus.DONE
 
   return (
     <>
@@ -48,7 +49,7 @@ export function BridgeSummaryHeader({
       </SummaryRow>
 
       <SummaryRow>
-        <b>To at least</b>
+        <b>{isFinished ? 'To' : 'To at least'}</b>
 
         <i>
           {targetAmount && showDestinationChain ? (
