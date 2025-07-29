@@ -80,7 +80,6 @@ function useCustomValidation(
 
 // Error state calculation hook
 function useErrorState(
-  value: string, // Keep for potential future use
   debouncedValue: string,
   loading: boolean,
   address: string | null,
@@ -203,7 +202,6 @@ export function AddressInputPanel({
 
   const validationError = useCustomValidation(customValidation, debouncedValue, name, effectiveChainId)
   const error = useErrorState(
-    value,
     debouncedValue,
     loading,
     address,

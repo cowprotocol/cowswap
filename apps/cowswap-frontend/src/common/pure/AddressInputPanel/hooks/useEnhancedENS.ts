@@ -24,10 +24,10 @@ export function useEnhancedENS(value: string, disableENS: boolean, effectiveChai
     : ensChainValidationErrorFromHook
 
   // For bridge transactions (disableENS=true), if the input is already a valid address, use it directly
-  // For regular swaps (disableENS=false), use the ENS-resolved address
+  // For regular swaps (disableENS=false), use direct address if valid, otherwise use ENS-resolved address
   const address = disableENS 
     ? (isAddress(debouncedValue) ? debouncedValue : null)
-    : ensAddress
+    : (isAddress(debouncedValue) ? debouncedValue : ensAddress)
 
   return {
     address,

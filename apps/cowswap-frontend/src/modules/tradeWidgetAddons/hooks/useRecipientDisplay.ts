@@ -90,13 +90,17 @@ export function useRecipientDisplay({
       return null
     }
     
+    // After shouldShowRecipient check, we know recipient and account are non-null strings
+    const validatedRecipient = recipient as string
+    const validatedAccount = account as string
+    
     const isBridgeTransaction = recipientChainId && recipientChainId !== chainId
     
-    if (!isValidRecipient(recipient!, recipientEnsName, Boolean(isBridgeTransaction))) {
+    if (!isValidRecipient(validatedRecipient, recipientEnsName, Boolean(isBridgeTransaction))) {
       return null
     }
     
-    if (!isDifferentFromAccount(recipient!, recipientEnsName, account!)) {
+    if (!isDifferentFromAccount(validatedRecipient, recipientEnsName, validatedAccount)) {
       return null
     }
     
@@ -104,8 +108,8 @@ export function useRecipientDisplay({
     
     return createElement(RecipientRow, {
       chainId: displayChainId,
-      recipient: recipient,
-      account: account,
+      recipient: validatedRecipient,
+      account: validatedAccount,
       recipientEnsName: recipientEnsName,
       recipientChainId: recipientChainId,
       showNetworkLogo: Boolean(recipientChainId && recipientChainId !== chainId),
