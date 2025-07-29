@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { useCowAnalytics } from '@cowprotocol/analytics'
+import { GtmEvent, useCowAnalytics } from '@cowprotocol/analytics'
 import { UiOrderType } from '@cowprotocol/types'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
@@ -11,6 +11,7 @@ export interface TradeFlowAnalyticsContext {
   recipient?: string | null
   recipientAddress?: string | null
   marketLabel?: string
+  isBridgeOrder?: boolean
   orderType: UiOrderType
 }
 
@@ -27,18 +28,25 @@ export function useTradeFlowAnalytics(): TradeFlowAnalytics {
   const analytics = useCowAnalytics()
 
   return useMemo(() => {
-    const sendTradeAnalytics = (action: string, orderType: UiOrderType, marketLabel?: string, value?: number): void => {
+    const sendTradeAnalytics = (
+      action: string,
+      orderType: UiOrderType,
+      marketLabel?: string,
+      value?: number,
+      isBridgeOrder?: boolean,
+    ): void => {
       analytics.sendEvent({
         category: CowSwapAnalyticsCategory.TRADE,
         action,
         label: `${orderType}|${marketLabel}`,
         ...(value !== undefined && { value }),
-      })
+        isBridgeOrder,
+      } as GtmEvent<CowSwapAnalyticsCategory.TRADE>)
     }
 
     return {
       trade(context: TradeFlowAnalyticsContext) {
-        sendTradeAnalytics('Send', context.orderType, context.marketLabel)
+        sendTradeAnalytics('Send', context.orderType, context.marketLabel, undefined, context.isBridgeOrder)
       },
       sign(context: TradeFlowAnalyticsContext) {
         const { marketLabel, orderType } = context
@@ -54,7 +62,7 @@ export function useTradeFlowAnalytics(): TradeFlowAnalytics {
       },
       wrapApproveAndPresign(context: TradeFlowAnalyticsContext) {
         const { marketLabel, orderType } = context
-        sendTradeAnalytics('Bundled Eth Flow', orderType, marketLabel)
+        sendTradeAnalytics('Bundled Eth Flow', orderType, marketLabel, undefined, context.isBridgeOrder)
       },
       error(error: Error & { code?: number }, errorMessage: string, context: TradeFlowAnalyticsContext) {
         const { marketLabel, orderType } = context
