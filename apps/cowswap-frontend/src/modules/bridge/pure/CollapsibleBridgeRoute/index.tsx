@@ -33,12 +33,10 @@ const RecipientWrapper = styled.div`
 interface CollapsibleBridgeRouteProps {
   isCollapsible?: boolean
   isExpanded?: boolean
-  forceExpandOnWarnings?: { showRecipientWarning: boolean; showPriceUpdated: boolean }
   children: ReactNode
   providerInfo: BridgeProviderInfo
   collapsedDefault?: ReactNode
   className?: string
-  // Optional recipient props for showing recipient row when collapsed
   recipient?: string | null
   recipientEnsName?: string | null
   account?: string | null
@@ -53,23 +51,13 @@ export function CollapsibleBridgeRoute(props: CollapsibleBridgeRouteProps): Reac
     collapsedDefault,
     className,
     isExpanded: propIsExpanded,
-    forceExpandOnWarnings,
     recipient,
     recipientEnsName,
     account,
     recipientChainId,
   } = props
 
-  const [isExpanded, setIsExpanded] = useState(
-    propIsExpanded ?? (forceExpandOnWarnings?.showPriceUpdated || forceExpandOnWarnings?.showRecipientWarning) ?? false,
-  )
-
-  // Force expansion when individual warnings appear
-  useEffect(() => {
-    if (forceExpandOnWarnings?.showPriceUpdated || forceExpandOnWarnings?.showRecipientWarning) {
-      setIsExpanded(true)
-    }
-  }, [forceExpandOnWarnings?.showPriceUpdated, forceExpandOnWarnings?.showRecipientWarning])
+  const [isExpanded, setIsExpanded] = useState(propIsExpanded ?? false)
 
   // Regular support for direct isExpanded prop
   useEffect(() => {

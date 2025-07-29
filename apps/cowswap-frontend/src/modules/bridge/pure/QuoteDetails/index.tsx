@@ -13,7 +13,6 @@ import { BridgeStatusTitlePrefixes, SwapStatusTitlePrefixes } from '../StopStatu
 
 interface QuoteDetailsProps {
   isCollapsible?: boolean
-  forceExpandOnWarnings?: { showRecipientWarning: boolean; showPriceUpdated: boolean }
   stepsCollapsible?: boolean
   hideRecommendedSlippage?: boolean
 
@@ -92,7 +91,6 @@ function BridgeStep({ stepsCollapsible, bridgeProvider, bridgeContext }: BridgeS
 
 export function QuoteDetails({
   isCollapsible,
-  forceExpandOnWarnings,
   stepsCollapsible = false,
   bridgeProvider,
   swapContext,
@@ -108,7 +106,6 @@ export function QuoteDetails({
     <CollapsibleBridgeRoute
       isCollapsible={isCollapsible}
       isExpanded
-      forceExpandOnWarnings={forceExpandOnWarnings}
       providerInfo={bridgeProvider}
       collapsedDefault={collapsedDefault}
       recipient={recipient}

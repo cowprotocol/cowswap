@@ -124,12 +124,11 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
         appData={appData || undefined}
       >
         {shouldDisplayBridgeDetails && bridgeProvider && swapContext && bridgeContext
-          ? (restContent, warningStates) => (
+          ? (restContent) => (
               <>
                 <RateInfo label="Price" rateInfoParams={rateInfoParams} fontSize={13} fontBold labelBold />
                 <QuoteDetails
                   isCollapsible
-                  forceExpandOnWarnings={warningStates}
                   bridgeProvider={bridgeProvider}
                   swapContext={swapContext}
                   bridgeContext={bridgeContext}
