@@ -55,7 +55,6 @@ const scrollToMyOrders = () => {
 }
 
 // TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
 // eslint-disable-next-line max-lines-per-function, complexity
 export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {

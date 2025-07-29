@@ -19,6 +19,7 @@ import {
 } from './utils'
 
 import { OrderSummary } from '../../pure/OrderSummary'
+import { SellForAtLeastTemplate } from '../../pure/OrderSummary/summaryTemplates'
 import { ReceiverInfo } from '../../pure/ReceiverInfo'
 import { TransactionContentWithLink } from '../TransactionContentWithLink'
 
@@ -37,6 +38,7 @@ export interface BaseOrderNotificationProps {
   bottomContent?: ReactNode
   receiver?: string
   hideReceiver?: boolean
+  customTemplate?: typeof SellForAtLeastTemplate
 }
 
 export function OrderNotification(props: BaseOrderNotificationProps): ReactNode {
@@ -107,6 +109,7 @@ export function OrderNotification(props: BaseOrderNotificationProps): ReactNode 
             buyAmount={order.outputAmount.toString()}
             srcChainData={srcChainData}
             dstChainData={dstChainData}
+            customTemplate={props.customTemplate}
           />
         ) : null)}
       {!hideReceiver && <ReceiverInfo receiver={order.receiver} owner={order.owner} />}

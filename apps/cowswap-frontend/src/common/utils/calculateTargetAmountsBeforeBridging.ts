@@ -29,5 +29,5 @@ function estimateWalletMinReceived(
     receivedAmount.quotient,
     bridgeMinReceiveAmount.quotient,
   )
-  return bridgeMinReceiveAmount.multiply(koeff)
+  return receivedAmount.multiply(koeff)
 }

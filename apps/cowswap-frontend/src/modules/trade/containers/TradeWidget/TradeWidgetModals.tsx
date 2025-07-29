@@ -30,15 +30,11 @@ interface TradeWidgetModalsProps {
   selectTokenWidget: ReactNode | undefined
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
 export function TradeWidgetModals({
   confirmModal,
   genericModal,
   selectTokenWidget = <SelectTokenWidget />,
-}: TradeWidgetModalsProps) {
+}: TradeWidgetModalsProps): ReactNode {
   const { chainId, account } = useWalletInfo()
   const { state: rawState } = useTradeState()
   const importTokenCallback = useAddUserToken()
