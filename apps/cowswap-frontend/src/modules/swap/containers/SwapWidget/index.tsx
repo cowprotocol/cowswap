@@ -154,7 +154,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
               rateInfoParams={rateInfoParams} 
               deadline={deadlineState[0]}
               recipient={recipientAddress || recipient}
-              recipientEnsName={recipient?.endsWith('.eth') ? recipient : null}
+              recipientEnsName={recipient?.endsWith('.eth') && recipientAddress ? recipient : null}
               account={account}
             />
             <Warnings buyingFiatAmount={buyingFiatAmount} />

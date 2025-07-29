@@ -7,8 +7,6 @@ import { InfoTooltip, NetworkLogo } from '@cowprotocol/ui'
 import styled from 'styled-components/macro'
 import { Nullish } from 'types'
 
-import { AddressLink } from 'common/pure/AddressLink'
-
 const Row = styled.div`
   display: flex;
   width: 100%;
@@ -32,6 +30,14 @@ const Row = styled.div`
   > div:last-child {
     justify-content: flex-end;
   }
+
+  a {
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 `
 
 interface RecipientRowProps {
@@ -48,24 +54,29 @@ function shouldShowRecipient(recipient: Nullish<string>, account: Nullish<string
   return !(!recipient || recipient.toLowerCase() === account?.toLowerCase())
 }
 
-function isValidRecipientAddress(recipient: string, recipientEnsName: string | null | undefined, recipientChainId: number | undefined, chainId: SupportedChainId): boolean {
+function isValidRecipientAddress(
+  recipient: string,
+  recipientEnsName: string | null | undefined,
+  recipientChainId: number | undefined,
+  chainId: SupportedChainId,
+): boolean {
   const isBridgeTransaction = recipientChainId && recipientChainId !== chainId
   const effectiveChainId = (recipientChainId || chainId) as SupportedChainId
-  
+
   if (isBridgeTransaction) {
     return !!isAddress(recipient)
   }
-  
+
   // Allow valid addresses on any chain
   if (isAddress(recipient)) {
     return true
   }
-  
-  // Allow ENS names only if resolved AND on Ethereum mainnet 
+
+  // Allow ENS names only if resolved AND on Ethereum mainnet
   if (recipientEnsName && effectiveChainId === SupportedChainId.MAINNET) {
     return true
   }
-  
+
   return false
 }
 
@@ -81,7 +92,10 @@ export function RecipientRow(props: RecipientRowProps): ReactNode {
   }
 
   const displayChainId = (recipientChainId || chainId) as SupportedChainId
-  const displayAddress = recipientEnsName || (isAddress(recipient) ? shortenAddress(recipient) : recipient)
+
+  // If we have an ENS name, show it; otherwise show shortened address
+  const displayText = recipientEnsName || (isAddress(recipient) ? shortenAddress(recipient) : recipient)
+  const linkAddress = recipientEnsName || recipient
 
   return (
     <Row>
@@ -91,17 +105,13 @@ export function RecipientRow(props: RecipientRowProps): ReactNode {
       </div>
       <div>
         {showNetworkLogo && recipientChainId && <NetworkLogo chainId={displayChainId} size={16} />}
-        {recipientEnsName ? (
-          <a
-            href={getExplorerLink(displayChainId, recipientEnsName, ExplorerDataType.ADDRESS)}
-            target="_blank"
-            rel="noreferrer"
-          >
-            {displayAddress} ↗
-          </a>
-        ) : (
-          <AddressLink address={recipient} chainId={displayChainId} />
-        )}
+        <a
+          href={getExplorerLink(displayChainId, linkAddress, ExplorerDataType.ADDRESS)}
+          target="_blank"
+          rel="noreferrer"
+        >
+          {displayText} ↗
+        </a>
       </div>
     </Row>
   )
