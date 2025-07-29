@@ -9,7 +9,6 @@ import {
   DUNE_DASHBOARD_LINK,
   TWITTER_LINK,
 } from '@cowprotocol/common-const'
-import { Loader } from '@cowprotocol/ui'
 
 import { Navigate, Route, Routes } from 'react-router'
 
@@ -74,41 +73,39 @@ const lazyRoutes: LazyRouteProps[] = [
 
 export function RoutesApp(): ReactNode {
   return (
-    <Suspense fallback={<Loader />}>
-      <Routes>
-        {/*Account*/}
-        <Route path={RoutesEnum.ACCOUNT} element={<Account />}>
-          <Route path={RoutesEnum.ACCOUNT} element={<AccountOverview />} />
-          <Route path={RoutesEnum.ACCOUNT_TOKENS} element={<AccountTokensOverview />} />
-          <Route path="*" element={<AccountNotFound />} />
-        </Route>
-        <Route path="claim" element={<Navigate to={RoutesEnum.ACCOUNT} />} />
-        <Route path="profile" element={<Navigate to={RoutesEnum.ACCOUNT} />} />
+    <Routes>
+      {/*Account*/}
+      <Route path={RoutesEnum.ACCOUNT} element={<Account />}>
+        <Route path={RoutesEnum.ACCOUNT} element={<AccountOverview />} />
+        <Route path={RoutesEnum.ACCOUNT_TOKENS} element={<AccountTokensOverview />} />
+        <Route path="*" element={<AccountNotFound />} />
+      </Route>
+      <Route path="claim" element={<Navigate to={RoutesEnum.ACCOUNT} />} />
+      <Route path="profile" element={<Navigate to={RoutesEnum.ACCOUNT} />} />
 
-        {/*Swap*/}
-        <Route path={RoutesEnum.SWAP} element={<SwapPage />} />
-        <Route path={RoutesEnum.HOOKS} element={<HooksPage />} />
-        <Route path={RoutesEnum.COW_SHED} element={<CowShed />} />
-        <Route path={RoutesEnum.SEND} element={<RedirectPathToSwapOnly />} />
+      {/*Swap*/}
+      <Route path={RoutesEnum.SWAP} element={<SwapPage />} />
+      <Route path={RoutesEnum.HOOKS} element={<HooksPage />} />
+      <Route path={RoutesEnum.COW_SHED} element={<CowShed />} />
+      <Route path={RoutesEnum.SEND} element={<RedirectPathToSwapOnly />} />
 
-        {lazyRoutes.map((item, key) => LazyRoute({ ...item, key }))}
+      {lazyRoutes.map((item, key) => LazyRoute({ ...item, key }))}
 
-        <Route path={RoutesEnum.ANYSWAP_AFFECTED} element={<AnySwapAffectedUsers />} />
-        <Route path={RoutesEnum.CHAT} element={<ExternalRedirect url={DISCORD_LINK} />} />
-        <Route path={RoutesEnum.DOCS} element={<ExternalRedirect url={DOCS_LINK} />} />
-        <Route path={RoutesEnum.STATS} element={<ExternalRedirect url={DUNE_DASHBOARD_LINK} />} />
-        <Route path={RoutesEnum.TWITTER} element={<ExternalRedirect url={TWITTER_LINK} />} />
+      <Route path={RoutesEnum.ANYSWAP_AFFECTED} element={<AnySwapAffectedUsers />} />
+      <Route path={RoutesEnum.CHAT} element={<ExternalRedirect url={DISCORD_LINK} />} />
+      <Route path={RoutesEnum.DOCS} element={<ExternalRedirect url={DOCS_LINK} />} />
+      <Route path={RoutesEnum.STATS} element={<ExternalRedirect url={DUNE_DASHBOARD_LINK} />} />
+      <Route path={RoutesEnum.TWITTER} element={<ExternalRedirect url={TWITTER_LINK} />} />
 
-        <Route path={RoutesEnum.HOME} element={<RedirectPathToSwapOnly />} />
-        <Route
-          path="*"
-          element={
-            <Suspense fallback={<Loading />}>
-              <NotFound />
-            </Suspense>
-          }
-        />
-      </Routes>
-    </Suspense>
+      <Route path={RoutesEnum.HOME} element={<RedirectPathToSwapOnly />} />
+      <Route
+        path="*"
+        element={
+          <Suspense fallback={<Loading />}>
+            <NotFound />
+          </Suspense>
+        }
+      />
+    </Routes>
   )
 }
