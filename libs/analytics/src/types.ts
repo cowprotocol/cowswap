@@ -39,6 +39,7 @@ export interface BaseGtmEvent<T extends string = Category> {
   orderId?: string
   orderType?: string
   tokenSymbol?: string
+  isBridgeOrder?: boolean
   chainId?: number
   // TODO: Replace any with proper type definitions
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
