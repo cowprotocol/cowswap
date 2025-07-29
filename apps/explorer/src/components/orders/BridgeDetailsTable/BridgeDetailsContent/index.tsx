@@ -20,11 +20,14 @@ interface BridgeDetailsContentProps {
   crossChainOrder: CrossChainOrder
 }
 
+// TODO: Break down this large function into smaller functions
+//eslint-disable-next-line max-lines-per-function
 export function BridgeDetailsContent({ crossChainOrder }: BridgeDetailsContentProps): ReactNode {
   const {
     statusResult: { status: bridgeStatus, fillTxHash, depositTxHash, fillTimeInSeconds },
     bridgingParams: { inputAmount, outputAmount, owner, sourceChainId, destinationChainId, recipient },
     provider: { info: providerInfo },
+    order: { receiver },
   } = crossChainOrder
   const bridgeProvider = crossChainOrder.provider
   const { sourceToken, destinationToken } = useCrossChainTokens(crossChainOrder)
@@ -41,7 +44,16 @@ export function BridgeDetailsContent({ crossChainOrder }: BridgeDetailsContentPr
         </ProviderDisplayWrapper>
       </DetailRow>
 
-      <DetailRow label="From" tooltipText={BridgeDetailsTooltips.ownerAddress}>
+      {receiver && (
+        <DetailRow label="From" tooltipText={BridgeDetailsTooltips.accountProxy}>
+          <RowWithCopyButton
+            textToCopy={receiver}
+            contentsToDisplay={<AddressLink address={receiver} chainId={sourceChainId} showNetworkName />}
+          />
+        </DetailRow>
+      )}
+
+      <DetailRow label="Sender" tooltipText={BridgeDetailsTooltips.senderAddress}>
         <RowWithCopyButton
           textToCopy={owner}
           contentsToDisplay={<AddressLink address={owner} chainId={sourceChainId} showNetworkName />}

@@ -77,6 +77,7 @@ export function BaseDetailsTable({
     })
   }
   const isSigning = status === 'signing'
+  const isBridging = !!order?.bridgeProviderId
 
   return (
     <SimpleTable
@@ -133,7 +134,11 @@ export function BaseDetailsTable({
           <tr>
             <td>
               <span>
-                <HelpTooltip tooltip={DetailsTableTooltips.to} /> To
+                <HelpTooltip
+                  placement="bottom"
+                  tooltip={isBridging ? DetailsTableTooltips.toBridge : DetailsTableTooltips.to}
+                />{' '}
+                To
               </span>
             </td>
             <td>
