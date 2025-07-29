@@ -15,6 +15,7 @@ interface TradeDetailsAccordionProps {
   open: boolean
   onToggle: () => void
   feeWrapper?: (feeElement: ReactNode, isOpen: boolean) => ReactNode
+  bottomContent?: ReactNode
 }
 
 function DefaultFeeContent({
@@ -53,6 +54,7 @@ export function TradeDetailsAccordion({
   open,
   onToggle,
   feeWrapper,
+  bottomContent,
 }: TradeDetailsAccordionProps): ReactNode {
   const handleKeyDown = useCallback(
     (e: { key: string; preventDefault: () => void }): void => {
@@ -77,6 +79,7 @@ export function TradeDetailsAccordion({
         </SummaryClickable>
       </Summary>
       <Details isVisible={open}>{children}</Details>
+      {bottomContent}
     </Wrapper>
   )
 }

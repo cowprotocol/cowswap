@@ -21,7 +21,7 @@ import {
   TradeConfirmation,
   TradeConfirmModal,
   useGetReceiveAmountInfo,
-  useTradeConfirmActions
+  useTradeConfirmActions,
 } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { HighFeeWarning, RowDeadline } from 'modules/tradeWidgetAddons'
@@ -134,6 +134,10 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
                   swapContext={swapContext}
                   bridgeContext={bridgeContext}
                   hideRecommendedSlippage
+                  recipient={bridgeContext.recipient}
+                  recipientEnsName={recipient?.endsWith('.eth') ? recipient : null}
+                  account={account}
+                  recipientChainId={bridgeContext?.buyAmount?.currency?.chainId}
                 />
                 {restContent}
               </>
@@ -146,6 +150,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
                     slippage={slippage}
                     receiveAmountInfo={receiveAmountInfo}
                     recipient={recipient}
+                    recipientEnsName={recipient?.endsWith('.eth') ? recipient : null}
                     account={account}
                     labelsAndTooltips={labelsAndTooltips}
                     hideLimitPrice

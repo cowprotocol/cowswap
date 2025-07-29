@@ -27,6 +27,7 @@ type Props = {
   labelsAndTooltips?: LabelsAndTooltips
   children?: ReactNode
   recipient?: Nullish<string>
+  recipientEnsName?: string | null
   account: Nullish<string>
   hideLimitPrice?: boolean
   hideUsdValues?: boolean
@@ -61,6 +62,7 @@ export function TradeBasicConfirmDetails(props: Props) {
     withTimelineDot = true,
     children,
     recipient,
+    recipientEnsName,
     account,
   } = props
   const isInvertedState = useState(false)
@@ -149,7 +151,9 @@ export function TradeBasicConfirmDetails(props: Props) {
       )}
 
       {/*Recipient*/}
-      <RecipientRow chainId={rateInfoParams.chainId} recipient={recipient} account={account} />
+      <styledEl.RecipientWrapper>
+        <RecipientRow chainId={rateInfoParams.chainId} recipient={recipient} recipientEnsName={recipientEnsName} account={account} />
+      </styledEl.RecipientWrapper>
       {children}
     </styledEl.Wrapper>
   )

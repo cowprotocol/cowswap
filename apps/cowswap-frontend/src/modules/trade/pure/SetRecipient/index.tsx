@@ -1,4 +1,8 @@
+import { ReactNode } from 'react'
+
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { AutoRow } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { ArrowDown } from 'react-feather'
 
@@ -8,19 +12,29 @@ export interface SetRecipientProps {
   recipient: string
   onChangeRecipient(recipient: string | null): void
   className?: string
+  destinationChainId?: SupportedChainId
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function SetRecipient(props: SetRecipientProps) {
-  const { recipient, onChangeRecipient, className } = props
+export function SetRecipient(props: SetRecipientProps): ReactNode {
+  const { recipient, onChangeRecipient, className, destinationChainId } = props
+  const { chainId: currentChainId } = useWalletInfo()
+
+  // For bridge transactions (different chains), disable ENS support
+  const isBridgeTransaction = destinationChainId && destinationChainId !== currentChainId
 
   return (
     <>
       <AutoRow className={className} justify="center">
         <ArrowDown size="16" />
       </AutoRow>
-      <AddressInputPanel id="recipient" value={recipient} onChange={onChangeRecipient} />
+      <AddressInputPanel
+        id="recipient"
+        value={recipient}
+        onChange={onChangeRecipient}
+        destinationChainId={destinationChainId}
+        showDestinationChain={Boolean(destinationChainId)}
+        disableENS={isBridgeTransaction}
+      />
     </>
   )
 }

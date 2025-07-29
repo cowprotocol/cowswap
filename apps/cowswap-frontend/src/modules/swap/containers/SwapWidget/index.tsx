@@ -1,6 +1,7 @@
 import { ReactNode, useCallback, useMemo, useState } from 'react'
 
 import { isSellOrder } from '@cowprotocol/common-utils'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Field } from 'legacy/state/types'
 import { useHooksEnabledManager } from 'legacy/state/user/hooks'
@@ -43,6 +44,7 @@ export interface SwapWidgetProps {
 // TODO: Add proper return type annotation
 // eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
+  const { account } = useWalletInfo()
   const { showRecipient } = useSwapSettings()
   const deadlineState = useSwapDeadlineState()
   const recipientToggleState = useSwapRecipientToggleState()
@@ -70,6 +72,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
     inputCurrencyFiatAmount,
     outputCurrencyFiatAmount,
     recipient,
+    recipientAddress,
     orderKind,
   } = useSwapDerivedState()
   const doTrade = useHandleSwap(useSafeMemoObject({ deadline: deadlineState[0] }), widgetActions)
@@ -147,7 +150,13 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
         return (
           <>
             {bottomContent}
-            <SwapRateDetails rateInfoParams={rateInfoParams} deadline={deadlineState[0]} />
+            <SwapRateDetails 
+              rateInfoParams={rateInfoParams} 
+              deadline={deadlineState[0]}
+              recipient={recipientAddress || recipient}
+              recipientEnsName={recipient?.endsWith('.eth') ? recipient : null}
+              account={account}
+            />
             <Warnings buyingFiatAmount={buyingFiatAmount} />
             {tradeWarnings}
             <TradeButtons
@@ -171,6 +180,9 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
         hasEnoughWrappedBalanceForSwap,
         toBeImported,
         intermediateBuyToken,
+        recipient,
+        recipientAddress,
+        account,
       ],
     ),
   }

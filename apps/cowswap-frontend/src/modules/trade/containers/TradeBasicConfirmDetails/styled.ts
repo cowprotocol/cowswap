@@ -19,3 +19,7 @@ export const RateInfoWrapper = styled.div`
 export const GreenText = styled.span`
   color: var(${UI.COLOR_GREEN});
 `
+
+export const RecipientWrapper = styled.div`
+  width: 100%;
+`
