@@ -1,13 +1,15 @@
 import { getChainInfo, RPC_URLS } from '@cowprotocol/common-const'
 import {
-  SupportedChainId,
-  avalanche,
-  mainnet,
   arbitrumOne,
+  avalanche,
   base,
-  polygon,
+  bnb,
   gnosisChain,
+  lens,
+  mainnet,
+  polygon,
   sepolia,
+  SupportedChainId,
 } from '@cowprotocol/cow-sdk'
 import { Connector } from '@web3-react/types'
 
@@ -31,6 +33,8 @@ const WALLET_RPC_SUGGESTION: Record<SupportedChainId, string | null> = {
   [SupportedChainId.SEPOLIA]: sepolia.rpcUrls.default.http[0],
   [SupportedChainId.POLYGON]: polygon.rpcUrls.default.http[0],
   [SupportedChainId.AVALANCHE]: avalanche.rpcUrls.default.http[0],
+  [SupportedChainId.LENS]: lens.rpcUrls.default.http[0],
+  [SupportedChainId.BNB]: bnb.rpcUrls.default.http[0],
 }
 
 // TODO: Add proper return type annotation
