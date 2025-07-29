@@ -21,12 +21,14 @@ const estBridgeTimeTooltip = (
 
 export interface QuoteBridgeContentProps {
   isQuoteDisplay?: boolean
+  isFinished?: boolean
   quoteContext: QuoteBridgeContext
   children?: ReactNode
 }
 
 export function QuoteBridgeContent({
   isQuoteDisplay = false,
+  isFinished = false,
   quoteContext: {
     recipient,
     bridgeFee,
@@ -89,20 +91,22 @@ export function QuoteBridgeContent({
 
       <RecipientDetailsItem recipient={recipient} chainId={buyAmount.currency.chainId} />
 
-      <ConfirmDetailsItem
-        withTimelineDot
-        label={
-          !isQuoteDisplay ? (
-            MIN_RECEIVE_TITLE
-          ) : (
-            <ReceiveAmountTitle>
-              <b>{MIN_RECEIVE_TITLE}</b>
-            </ReceiveAmountTitle>
-          )
-        }
-      >
-        {!isQuoteDisplay ? minReceiveAmountEl : <b>{minReceiveAmountEl}</b>}
-      </ConfirmDetailsItem>
+      {!isFinished && (
+        <ConfirmDetailsItem
+          withTimelineDot
+          label={
+            !isQuoteDisplay ? (
+              MIN_RECEIVE_TITLE
+            ) : (
+              <ReceiveAmountTitle>
+                <b>{MIN_RECEIVE_TITLE}</b>
+              </ReceiveAmountTitle>
+            )
+          }
+        >
+          {!isQuoteDisplay ? minReceiveAmountEl : <b>{minReceiveAmountEl}</b>}
+        </ConfirmDetailsItem>
+      )}
 
       {children}
     </>
