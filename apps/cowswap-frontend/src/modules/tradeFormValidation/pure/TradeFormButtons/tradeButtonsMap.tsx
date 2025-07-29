@@ -116,13 +116,13 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
 
       const errorText = quoteErrorTexts[quote.error.type] || DEFAULT_QUOTE_ERROR
 
-      const errorTooltip = errorTooltipContent[quote.error.type] || <></>
+      const errorTooltipText = errorTooltipContent[quote.error.type]
 
       return (
         <TradeFormBlankButton disabled={true}>
           <>
             <Trans>{errorText}</Trans>
-            {errorTooltip && <HelpTooltip text={errorTooltip} />}
+            {errorTooltipText && <HelpTooltip text={errorTooltipText} />}
           </>
         </TradeFormBlankButton>
       )

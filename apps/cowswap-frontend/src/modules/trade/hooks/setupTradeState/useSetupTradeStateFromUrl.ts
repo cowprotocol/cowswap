@@ -1,6 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useMemo } from 'react'
 
+import { doesTokenMatchSymbolOrAddress } from '@cowprotocol/common-utils'
 import { useSearchToken } from '@cowprotocol/tokens'
 
 import { useLocation, useParams } from 'react-router'
@@ -8,7 +9,7 @@ import { useLocation, useParams } from 'react-router'
 import { tradeStateFromUrlAtom } from '../../state/tradeStateFromUrlAtom'
 import { TradeRawState } from '../../types/TradeRawState'
 
-const getMaybeChainId = (chainId: string | undefined | null): number | null => {
+const getChainId = (chainId: string | undefined | null): number | null => {
   if (!chainId) return null
   if (/^\d+$/.test(chainId)) return Number(chainId)
   return null
@@ -25,8 +26,9 @@ export function useSetupTradeStateFromUrl(): null {
   const location = useLocation()
   const setState = useSetAtom(tradeStateFromUrlAtom)
 
+  const stringifiedParams = JSON.stringify(params)
+
   const { chainId, inputCurrencyId, outputCurrencyId, recipient, recipientAddress, targetChainId } = useMemo(() => {
-    const stringifiedParams = JSON.stringify(params)
     const searchParams = new URLSearchParams(location.search)
     const targetChainId = searchParams.get('targetChainId')
     const recipient = searchParams.get('recipient')
@@ -34,14 +36,14 @@ export function useSetupTradeStateFromUrl(): null {
     const { chainId, inputCurrencyId, outputCurrencyId } = JSON.parse(stringifiedParams)
 
     return {
-      chainId: getMaybeChainId(chainId),
+      chainId: getChainId(chainId),
       inputCurrencyId: inputCurrencyId ?? null,
       outputCurrencyId: outputCurrencyId ?? null,
       recipient,
       recipientAddress,
-      targetChainId: getMaybeChainId(targetChainId),
+      targetChainId: getChainId(targetChainId),
     }
-  }, [location.search, params])
+  }, [location.search, stringifiedParams])
 
   const { activeListsResult, inactiveListsResult } = useSearchToken(inputCurrencyId || '')
 
@@ -49,8 +51,8 @@ export function useSetupTradeStateFromUrl(): null {
     if (!inputCurrencyId) return null
 
     return (
-      activeListsResult.find((token) => token.symbol === inputCurrencyId || token.address === inputCurrencyId) ||
-      inactiveListsResult.find((token) => token.symbol === inputCurrencyId || token.address === inputCurrencyId)
+      activeListsResult.find((token) => doesTokenMatchSymbolOrAddress(token, inputCurrencyId)) ||
+      inactiveListsResult.find((token) => doesTokenMatchSymbolOrAddress(token, inputCurrencyId))
     )
   }, [activeListsResult, inactiveListsResult, inputCurrencyId])
 
