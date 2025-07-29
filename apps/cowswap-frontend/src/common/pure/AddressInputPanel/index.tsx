@@ -6,111 +6,35 @@ import {
   isPrefixedAddress,
   parsePrefixedAddress,
 } from '@cowprotocol/common-utils'
-import { useENS } from '@cowprotocol/ens'
-import { ExternalLink, RowBetween, UI } from '@cowprotocol/ui'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { RowBetween, NetworkLogo } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { t, Trans } from '@lingui/macro'
-import styled from 'styled-components/macro'
 
 import { AutoColumn } from 'legacy/components/Column'
 import { useIsDarkMode } from 'legacy/state/user/hooks'
 
+import { useEnhancedENS } from './hooks/useEnhancedENS'
+import {
+  InputPanel,
+  ContainerRow,
+  InputContainer,
+  Input,
+  DestinationChainInfo,
+  ValidationError,
+  StyledExplorerLink,
+} from './styled'
+
 import { autofocus } from '../../utils/autofocus'
 import ChainPrefixWarning from '../ChainPrefixWarning'
 
-const InputPanel = styled.div`
-  ${({ theme }) => theme.flexColumnNoWrap}
-  position: relative;
-  border-radius: 16px;
-  background-color: var(${UI.COLOR_PAPER_DARKER});
-  color: inherit;
-  z-index: 1;
-  width: 100%;
-`
-
-const ContainerRow = styled.div<{ error: boolean }>`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 16px;
-  border: 0;
-  color: inherit;
-  background-color: var(${UI.COLOR_PAPER_DARKER});
-`
-
-export const InputContainer = styled.div`
-  flex: 1;
-  padding: 1rem;
-`
-
-const Input = styled.input<{ error?: boolean }>`
-  font-size: 1.25rem;
-  outline: none;
-  border: none;
-  flex: 1 1 auto;
-  background: none;
-  transition: color 0.2s ${({ error }) => (error ? 'step-end' : 'step-start')};
-  color: ${({ error }) => (error ? `var(${UI.COLOR_DANGER})` : 'inherit')};
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-weight: 500;
-  width: 100%;
-
-  &&::placeholder {
-    color: inherit;
-    opacity: 0.5;
-  }
-
-  &:focus::placeholder {
-    color: transparent;
-  }
-
-  padding: 0px;
-  appearance: textfield;
-  -webkit-appearance: textfield;
-
-  ::-webkit-search-decoration {
-    -webkit-appearance: none;
-  }
-
-  ::-webkit-outer-spin-button,
-  ::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-  }
-
-  ::placeholder {
-    color: ${({ theme }) => theme.text4};
-  }
-`
-
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
-export function AddressInputPanel({
-  id,
-  className = 'recipient-address-input',
-  label,
-  placeholder,
-  value,
-  onChange,
-}: {
-  id?: string
-  className?: string
-  label?: ReactNode
-  placeholder?: string
-  value: string
-  onChange: (value: string) => void
-}) {
-  const { chainId } = useWalletInfo()
-  const chainInfo = getChainInfo(chainId)
-  const addressPrefix = chainInfo?.addressPrefix
-  const { address, loading, name } = useENS(value)
-  const [chainPrefixWarning, setChainPrefixWarning] = useState('')
-  const isDarkMode = useIsDarkMode()
-
-  const handleInput = useCallback(
+function useInputHandler(
+  onChange: (value: string) => void,
+  addressPrefix: string | undefined,
+  setChainPrefixWarning: (warning: string) => void,
+): (event: ChangeEvent<HTMLInputElement>) => void {
+  return useCallback(
     (event: ChangeEvent<HTMLInputElement>) => {
       const input = event.target.value
       setChainPrefixWarning('')
@@ -130,17 +54,170 @@ export function AddressInputPanel({
 
       onChange(value)
     },
-    [onChange, addressPrefix],
+    [onChange, addressPrefix, setChainPrefixWarning],
+  )
+}
+
+function useCustomValidation(
+  customValidation: ((address: string, ensName: string | null, chainId: number) => string | null) | undefined,
+  debouncedValue: string,
+  name: string | null,
+  effectiveChainId: SupportedChainId,
+): string | null {
+  const [validationError, setValidationError] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (customValidation && debouncedValue) {
+      const error = customValidation(debouncedValue, name, effectiveChainId)
+      setValidationError(error)
+    } else {
+      setValidationError(null)
+    }
+  }, [customValidation, debouncedValue, name, effectiveChainId])
+
+  return validationError
+}
+
+// Error state calculation hook
+function useErrorState(
+  value: string, // Keep for potential future use
+  debouncedValue: string,
+  loading: boolean,
+  address: string | null,
+  disableENS: boolean,
+  ensChainValidationError: string | null,
+  validationError: string | null,
+): boolean {
+  // For bridge transactions (disableENS=true), show error for debounced invalid addresses
+  if (disableENS && debouncedValue.length > 0 && !loading && !address) {
+    return true
+  }
+
+  // For regular transactions (disableENS=false), show error for debounced input that doesn't resolve
+  if (!disableENS && debouncedValue.length > 0 && !loading && !address) {
+    return true
+  }
+
+  // Also show ENS-specific validation errors
+  return Boolean(ensChainValidationError) || Boolean(validationError)
+}
+
+// Explorer Link component
+interface ExplorerLinkProps {
+  address: string | null
+  name: string | null
+  effectiveChainId: SupportedChainId
+  disableENS: boolean
+}
+
+function ExplorerLink({
+  address,
+  name,
+  effectiveChainId,
+  inputValue,
+}: ExplorerLinkProps & { inputValue: string }): ReactNode {
+  if (!address || !effectiveChainId) return null
+
+  // Use what the user actually typed - if they typed an ENS name, use that; if they typed an address, use that
+  const linkTarget = inputValue.endsWith('.eth') ? name || inputValue : address
+
+  return (
+    <StyledExplorerLink
+      href={getExplorerLink(effectiveChainId, 'address', linkTarget)}
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <Trans>View on Explorer ↗</Trans>
+    </StyledExplorerLink>
+  )
+}
+
+// Validation section component
+interface ValidationSectionProps {
+  showDestinationChain?: boolean
+  destinationChainId?: SupportedChainId
+  ensChainValidationError: string | null
+  validationError: string | null
+}
+
+function ValidationSection({
+  showDestinationChain,
+  destinationChainId,
+  ensChainValidationError,
+  validationError,
+}: ValidationSectionProps): ReactNode {
+  return (
+    <>
+      {showDestinationChain && destinationChainId && (
+        <DestinationChainInfo>
+          <NetworkLogo chainId={destinationChainId} size={16} />
+          <span>On {getChainInfo(destinationChainId)?.label}</span>
+        </DestinationChainInfo>
+      )}
+      {ensChainValidationError && <ValidationError>{ensChainValidationError}</ValidationError>}
+      {validationError && !ensChainValidationError && <ValidationError>{validationError}</ValidationError>}
+    </>
+  )
+}
+
+interface AddressInputPanelProps {
+  id?: string
+  className?: string
+  label?: ReactNode
+  placeholder?: string
+  value: string
+  onChange: (value: string) => void
+  destinationChainId?: SupportedChainId
+  showDestinationChain?: boolean
+  customValidation?: (address: string, ensName: string | null, chainId: number) => string | null
+  disableENS?: boolean // NEW: Disable ENS resolution for bridge transactions
+}
+
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
+export function AddressInputPanel({
+  id,
+  className = 'recipient-address-input',
+  label,
+  placeholder,
+  value,
+  onChange,
+  destinationChainId,
+  showDestinationChain = false,
+  customValidation,
+  disableENS = false,
+}: AddressInputPanelProps): ReactNode {
+  const { chainId } = useWalletInfo()
+  const effectiveChainId = destinationChainId || chainId
+  const chainInfo = getChainInfo(effectiveChainId)
+  const addressPrefix = chainInfo?.addressPrefix
+  const isDarkMode = useIsDarkMode()
+
+  const [chainPrefixWarning, setChainPrefixWarning] = useState('')
+
+  const { address, loading, name, ensChainValidationError, debouncedValue } = useEnhancedENS(
+    value,
+    disableENS,
+    effectiveChainId,
   )
 
-  // clear warning if chainId changes and we are now on the right network
+  const validationError = useCustomValidation(customValidation, debouncedValue, name, effectiveChainId)
+  const error = useErrorState(
+    value,
+    debouncedValue,
+    loading,
+    address,
+    disableENS,
+    ensChainValidationError,
+    validationError,
+  )
+  const handleInput = useInputHandler(onChange, addressPrefix, setChainPrefixWarning)
+
   useEffect(() => {
     if (chainPrefixWarning && chainPrefixWarning === addressPrefix) {
       setChainPrefixWarning('')
     }
   }, [chainId, chainPrefixWarning, addressPrefix])
-
-  const error = Boolean(value.length > 0 && !loading && !address)
 
   return (
     <InputPanel id={id}>
@@ -152,11 +229,13 @@ export function AddressInputPanel({
           <AutoColumn gap="md">
             <RowBetween>
               <span>{label ?? <Trans>Recipient</Trans>}</span>
-              {address && chainId && (
-                <ExternalLink href={getExplorerLink(chainId, 'address', name ?? address)} style={{ fontSize: '14px' }}>
-                  <Trans>(View on Explorer)</Trans>
-                </ExternalLink>
-              )}
+              <ExplorerLink
+                address={address}
+                name={name}
+                effectiveChainId={effectiveChainId}
+                disableENS={disableENS}
+                inputValue={value}
+              />
             </RowBetween>
             <Input
               className={className}
@@ -165,12 +244,18 @@ export function AddressInputPanel({
               autoCorrect="off"
               autoCapitalize="off"
               spellCheck="false"
-              placeholder={placeholder ?? t`Wallet Address or ENS name`}
+              placeholder={disableENS ? t`Recipient address` : (placeholder ?? t`Recipient address or ENS name`)}
               error={error}
               pattern="^(0x[a-fA-F0-9]{40})$"
               onChange={handleInput}
               value={value}
               onFocus={autofocus}
+            />
+            <ValidationSection
+              showDestinationChain={showDestinationChain}
+              destinationChainId={destinationChainId}
+              ensChainValidationError={ensChainValidationError}
+              validationError={validationError}
             />
           </AutoColumn>
         </InputContainer>
