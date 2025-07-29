@@ -28,11 +28,9 @@ export function useOnCurrencySelection(): (field: Field, currency: Currency | nu
        * Before changing the input currency we must adjust the inputCurrencyAmount for the new currency decimals
        * 6000000 must be converted to 6000000000000000000
        */
+      const amountField = field === Field.INPUT ? 'inputCurrencyAmount' : 'outputCurrencyAmount'
 
-      const isInputField = field === Field.INPUT
-      const amountField = isInputField ? 'inputCurrencyAmount' : 'outputCurrencyAmount'
-
-      const amount = isInputField ? inputCurrencyAmount : outputCurrencyAmount
+      const amount = field === Field.INPUT ? inputCurrencyAmount : outputCurrencyAmount
 
       if (amount) {
         const converted = convertAmountToCurrency(amount, currency)
@@ -40,7 +38,6 @@ export function useOnCurrencySelection(): (field: Field, currency: Currency | nu
         return navigateOnCurrencySelection(field, currency, () => {
           updateState?.({
             [amountField]: FractionUtils.serializeFractionToJSON(converted),
-            ...(isInputField ? { chainId: currency.chainId } : {})
           })
           callback?.()
         })
