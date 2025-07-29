@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 
+import { isAddress } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -42,7 +43,18 @@ export function useQuoteBridgeContext(): QuoteBridgeContext | null {
   const tradeState = useDerivedTradeState()
 
   const expectedFillTimeSeconds = bridgeQuote?.expectedFillTimeSeconds
-  const recipient = tradeState?.recipient || account || BRIDGE_QUOTE_ACCOUNT
+
+  // Validate recipient to ensure proper fallback behavior
+  // If custom recipient is invalid, fallback to account
+  const recipient = useMemo(() => {
+    const customRecipient = tradeState?.recipient
+    // Only use custom recipient if it's a valid address
+    if (isAddress(customRecipient)) {
+      return customRecipient
+    }
+    // Fallback to wallet address or bridge quote account
+    return account || BRIDGE_QUOTE_ACCOUNT
+  }, [tradeState?.recipient, account])
 
   return useMemo(() => {
     if (!quoteAmounts || !recipient || !buyAmount) return null
