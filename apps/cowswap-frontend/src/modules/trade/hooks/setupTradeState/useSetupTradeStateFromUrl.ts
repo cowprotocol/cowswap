@@ -1,6 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useMemo } from 'react'
 
+import { TokenWithLogo } from '@cowprotocol/common-const'
 import { doesTokenMatchSymbolOrAddress } from '@cowprotocol/common-utils'
 import { useSearchToken } from '@cowprotocol/tokens'
 
@@ -13,6 +14,19 @@ const getChainId = (chainId: string | undefined | null): number | null => {
   if (!chainId) return null
   if (/^\d+$/.test(chainId)) return Number(chainId)
   return null
+}
+
+const getToken = (
+  currencyId: string | null,
+  activeListsResult: TokenWithLogo[],
+  inactiveListsResult: TokenWithLogo[],
+): TokenWithLogo | undefined => {
+  if (!currencyId) return undefined
+
+  return (
+    activeListsResult.find((token: TokenWithLogo) => doesTokenMatchSymbolOrAddress(token, currencyId)) ||
+    inactiveListsResult.find((token: TokenWithLogo) => doesTokenMatchSymbolOrAddress(token, currencyId))
+  )
 }
 
 /**
@@ -45,28 +59,42 @@ export function useSetupTradeStateFromUrl(): null {
     }
   }, [location.search, stringifiedParams])
 
+  const isSameChain = targetChainId ? chainId === targetChainId : true
   const { activeListsResult, inactiveListsResult } = useSearchToken(inputCurrencyId || '')
 
-  const inputToken = useMemo(() => {
-    if (!inputCurrencyId) return null
+  const inputToken = useMemo(
+    () => getToken(inputCurrencyId, activeListsResult, inactiveListsResult),
+    [activeListsResult, inactiveListsResult, inputCurrencyId],
+  )
 
-    return (
-      activeListsResult.find((token) => doesTokenMatchSymbolOrAddress(token, inputCurrencyId)) ||
-      inactiveListsResult.find((token) => doesTokenMatchSymbolOrAddress(token, inputCurrencyId))
-    )
-  }, [activeListsResult, inactiveListsResult, inputCurrencyId])
+  const outputToken = useMemo(
+    () => getToken(outputCurrencyId, activeListsResult, inactiveListsResult),
+    [activeListsResult, inactiveListsResult, outputCurrencyId],
+  )
 
   const derivedInputCurrencyId = useMemo(() => {
     if (!inputToken && !inputCurrencyId) return null
 
-    const isSameChain = targetChainId ? chainId === targetChainId : true
-
     if (isSameChain) {
-      return inputToken?.address.toLowerCase() ?? inputCurrencyId?.toLowerCase()
+      if (inputToken && outputToken) {
+        return inputToken.address
+      }
     }
 
-    return inputCurrencyId?.toLowerCase()
-  }, [chainId, inputToken, inputCurrencyId, targetChainId])
+    return inputCurrencyId
+  }, [inputToken, outputToken, inputCurrencyId, isSameChain])
+
+  const derivedOutputCurrencyId = useMemo(() => {
+    if (!outputToken && !outputCurrencyId) return null
+
+    if (isSameChain) {
+      if (outputToken && inputToken) {
+        return outputToken.address
+      }
+    }
+
+    return outputCurrencyId
+  }, [outputToken, inputToken, outputCurrencyId, isSameChain])
 
   /**
    * useEffect() runs after the render completes and useMemo() runs during rendering.
@@ -78,13 +106,13 @@ export function useSetupTradeStateFromUrl(): null {
       chainId,
       targetChainId,
       inputCurrencyId: derivedInputCurrencyId,
-      outputCurrencyId,
+      outputCurrencyId: derivedOutputCurrencyId,
       ...(recipient ? { recipient } : undefined),
       ...(recipientAddress ? { recipientAddress } : undefined),
     }
 
     setState(state)
-  }, [chainId, outputCurrencyId, recipient, recipientAddress, setState, targetChainId, derivedInputCurrencyId])
+  }, [chainId, recipient, recipientAddress, setState, targetChainId, derivedInputCurrencyId, derivedOutputCurrencyId])
 
   return null
 }
