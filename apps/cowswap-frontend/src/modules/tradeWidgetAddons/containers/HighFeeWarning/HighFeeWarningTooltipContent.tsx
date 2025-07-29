@@ -61,8 +61,8 @@ export function HighFeeWarningTooltipContent({
   bridgeFeePercentage,
 }: HighFeeWarningTooltipContentProps): ReactNode {
   const shouldShowSwapAndBridgeFee = isHighFee && isHighBridgeFee && feePercentage && bridgeFeePercentage
-  const shouldShowSwapFee = isHighFee && !isHighBridgeFee && feePercentage
-  const shouldShowBridgeFee = !isHighFee && isHighBridgeFee && bridgeFeePercentage
+  const shouldShowSwapFee = isHighFee && feePercentage
+  const shouldShowBridgeFee = isHighBridgeFee && bridgeFeePercentage
 
   return (
     <Wrapper>
