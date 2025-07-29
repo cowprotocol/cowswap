@@ -101,17 +101,19 @@ export function useRecipientDisplay({
       return null
     }
     
-    // After shouldShowRecipient check, we know recipient and account are non-null strings
-    const validatedRecipient = recipient as string
-    const validatedAccount = account as string
-    
-    const isBridgeTransaction = recipientChainId && recipientChainId !== chainId
-    
-    if (!isValidRecipient(validatedRecipient, recipientEnsName, Boolean(isBridgeTransaction), chainId)) {
+    // After shouldShowRecipient check, we've already validated that recipient and account are non-null
+    // But TypeScript doesn't know this, so we need to check again to satisfy the type system
+    if (!recipient || !account) {
       return null
     }
     
-    if (!isDifferentFromAccount(validatedRecipient, recipientEnsName, validatedAccount)) {
+    const isBridgeTransaction = recipientChainId && recipientChainId !== chainId
+    
+    if (!isValidRecipient(recipient, recipientEnsName, Boolean(isBridgeTransaction), chainId)) {
+      return null
+    }
+    
+    if (!isDifferentFromAccount(recipient, recipientEnsName, account)) {
       return null
     }
     
@@ -119,8 +121,8 @@ export function useRecipientDisplay({
     
     return createElement(RecipientRow, {
       chainId: displayChainId,
-      recipient: validatedRecipient,
-      account: validatedAccount,
+      recipient: recipient,
+      account: account,
       recipientEnsName: recipientEnsName,
       recipientChainId: recipientChainId,
       showNetworkLogo: Boolean(recipientChainId && recipientChainId !== chainId),
