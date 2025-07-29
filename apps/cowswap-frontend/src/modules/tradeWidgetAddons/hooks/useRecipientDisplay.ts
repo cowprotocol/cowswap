@@ -25,10 +25,20 @@ function isValidBridgeRecipient(recipient: string): boolean {
 
 /**
  * Validates recipient for regular swap transactions
- * Regular swaps allow valid addresses OR ENS names (.eth domains)
+ * Regular swaps allow valid addresses OR resolved ENS names (only on Ethereum mainnet)
  */
-function isValidSwapRecipient(recipient: string, recipientEnsName?: string | null): boolean {
-  return Boolean(recipientEnsName || isAddress(recipient) || recipient.endsWith('.eth'))
+function isValidSwapRecipient(recipient: string, recipientEnsName?: string | null, chainId?: SupportedChainId): boolean {
+  // Allow valid addresses on any chain
+  if (isAddress(recipient)) {
+    return true
+  }
+  
+  // Allow ENS names only if resolved AND on Ethereum mainnet
+  if (recipientEnsName && chainId === SupportedChainId.MAINNET) {
+    return true
+  }
+  
+  return false
 }
 
 /**
@@ -51,12 +61,13 @@ function shouldShowRecipient(
 function isValidRecipient(
   recipient: string,
   recipientEnsName: string | null | undefined,
-  isBridgeTransaction: boolean
+  isBridgeTransaction: boolean,
+  chainId: SupportedChainId
 ): boolean {
   if (isBridgeTransaction) {
     return isValidBridgeRecipient(recipient)
   }
-  return isValidSwapRecipient(recipient, recipientEnsName)
+  return isValidSwapRecipient(recipient, recipientEnsName, chainId)
 }
 
 /**
@@ -96,7 +107,7 @@ export function useRecipientDisplay({
     
     const isBridgeTransaction = recipientChainId && recipientChainId !== chainId
     
-    if (!isValidRecipient(validatedRecipient, recipientEnsName, Boolean(isBridgeTransaction))) {
+    if (!isValidRecipient(validatedRecipient, recipientEnsName, Boolean(isBridgeTransaction), chainId)) {
       return null
     }
     

@@ -50,12 +50,23 @@ function shouldShowRecipient(recipient: Nullish<string>, account: Nullish<string
 
 function isValidRecipientAddress(recipient: string, recipientEnsName: string | null | undefined, recipientChainId: number | undefined, chainId: SupportedChainId): boolean {
   const isBridgeTransaction = recipientChainId && recipientChainId !== chainId
+  const effectiveChainId = (recipientChainId || chainId) as SupportedChainId
   
   if (isBridgeTransaction) {
     return !!isAddress(recipient)
   }
   
-  return !!(recipientEnsName || isAddress(recipient) || recipient.endsWith('.eth'))
+  // Allow valid addresses on any chain
+  if (isAddress(recipient)) {
+    return true
+  }
+  
+  // Allow ENS names only if resolved AND on Ethereum mainnet 
+  if (recipientEnsName && effectiveChainId === SupportedChainId.MAINNET) {
+    return true
+  }
+  
+  return false
 }
 
 export function RecipientRow(props: RecipientRowProps): ReactNode {

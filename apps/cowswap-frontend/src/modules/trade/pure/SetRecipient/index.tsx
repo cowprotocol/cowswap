@@ -21,6 +21,10 @@ export function SetRecipient(props: SetRecipientProps): ReactNode {
 
   // For bridge transactions (different chains), disable ENS support
   const isBridgeTransaction = destinationChainId && destinationChainId !== currentChainId
+  
+  // ENS is only supported on Ethereum mainnet
+  const effectiveChainId = destinationChainId || currentChainId
+  const shouldDisableENS = isBridgeTransaction || effectiveChainId !== SupportedChainId.MAINNET
 
   return (
     <>
@@ -33,7 +37,7 @@ export function SetRecipient(props: SetRecipientProps): ReactNode {
         onChange={onChangeRecipient}
         destinationChainId={destinationChainId}
         showDestinationChain={Boolean(destinationChainId)}
-        disableENS={isBridgeTransaction}
+        disableENS={shouldDisableENS}
       />
     </>
   )
