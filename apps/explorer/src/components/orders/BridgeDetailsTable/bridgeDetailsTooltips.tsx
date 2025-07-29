@@ -1,3 +1,5 @@
+import { ExternalLink } from '@cowprotocol/ui'
+
 export const BridgeDetailsTooltips = {
   transactionHash: 'The transaction hash or provider-specific explorer link for the bridge operation.',
   status: 'The current status of the bridge operation.',
@@ -7,6 +9,15 @@ export const BridgeDetailsTooltips = {
   bridgingTime: 'Expected time for the bridge operation to complete.',
   maxSlippage: 'The maximum allowed slippage for the bridge in percentage.',
   provider: 'The bridging solution provider.',
-  ownerAddress: 'The account address from which the tokens are bridged.',
+  senderAddress: 'The account address from which the tokens are bridged.',
+  accountProxy: (
+    <span>
+      The{' '}
+      <ExternalLink href="https://swap.cow.fi/#/account-proxy" target="_blank" rel="noopener noreferrer">
+        Account Proxy
+      </ExternalLink>{' '}
+      address which will/did receive bought amount of the Swap before the bridge is initiated.
+    </span>
+  ),
   receiverAddress: 'The account address to which the tokens are bridged on the destination chain.',
 }
