@@ -1,11 +1,13 @@
 import { ReactNode } from 'react'
 
-import { ExplorerDataType, getExplorerLink, isAddress, shortenAddress } from '@cowprotocol/common-utils'
+import { isAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { InfoTooltip, NetworkLogo } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 import { Nullish } from 'types'
+
+import { AddressLink } from 'common/pure/AddressLink'
 
 const Row = styled.div`
   display: flex;
@@ -30,14 +32,6 @@ const Row = styled.div`
   > div:last-child {
     justify-content: flex-end;
   }
-
-  a {
-    text-decoration: none;
-
-    &:hover {
-      text-decoration: underline;
-    }
-  }
 `
 
 interface RecipientRowProps {
@@ -61,19 +55,20 @@ function isValidRecipientAddress(
   chainId: SupportedChainId,
 ): boolean {
   const isBridgeTransaction = recipientChainId && recipientChainId !== chainId
-  const effectiveChainId = (recipientChainId || chainId) as SupportedChainId
 
   if (isBridgeTransaction) {
+    // For bridge transactions, ONLY valid addresses are allowed
+    // ENS names should never be valid, even if passed in recipientEnsName
     return !!isAddress(recipient)
   }
 
-  // Allow valid addresses on any chain
+  // For regular swaps, allow valid addresses on any chain
   if (isAddress(recipient)) {
     return true
   }
 
-  // Allow ENS names only if resolved AND on Ethereum mainnet
-  if (recipientEnsName && effectiveChainId === SupportedChainId.MAINNET) {
+  // For regular swaps, allow ENS names only if resolved AND on Ethereum mainnet
+  if (recipientEnsName && chainId === SupportedChainId.MAINNET) {
     return true
   }
 
@@ -93,10 +88,6 @@ export function RecipientRow(props: RecipientRowProps): ReactNode {
 
   const displayChainId = (recipientChainId || chainId) as SupportedChainId
 
-  // If we have an ENS name, show it; otherwise show shortened address
-  const displayText = recipientEnsName || (isAddress(recipient) ? shortenAddress(recipient) : recipient)
-  const linkAddress = recipientEnsName || recipient
-
   return (
     <Row>
       <div>
@@ -105,13 +96,11 @@ export function RecipientRow(props: RecipientRowProps): ReactNode {
       </div>
       <div>
         {showNetworkLogo && recipientChainId && <NetworkLogo chainId={displayChainId} size={16} />}
-        <a
-          href={getExplorerLink(displayChainId, linkAddress, ExplorerDataType.ADDRESS)}
-          target="_blank"
-          rel="noreferrer"
-        >
-          {displayText} ↗
-        </a>
+        <AddressLink 
+          address={recipient} 
+          chainId={displayChainId} 
+          ensName={recipientEnsName}
+        />
       </div>
     </Row>
   )

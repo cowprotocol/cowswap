@@ -19,7 +19,14 @@ interface UseRecipientDisplayParams {
  * Validates recipient for bridge transactions
  * Bridge transactions only allow valid addresses, no ENS names
  */
-function isValidBridgeRecipient(recipient: string): boolean {
+function isValidBridgeRecipient(recipient: string, recipientEnsName?: string | null): boolean {
+  // For bridge transactions, if recipientEnsName exists, it means user typed an ENS name
+  // This should ALWAYS be rejected for bridge transactions, even if it resolved
+  if (recipientEnsName) {
+    return false
+  }
+  
+  // Only allow direct valid addresses (not resolved from ENS)
   return Boolean(isAddress(recipient))
 }
 
@@ -65,7 +72,7 @@ function isValidRecipient(
   chainId: SupportedChainId
 ): boolean {
   if (isBridgeTransaction) {
-    return isValidBridgeRecipient(recipient)
+    return isValidBridgeRecipient(recipient, recipientEnsName)
   }
   return isValidSwapRecipient(recipient, recipientEnsName, chainId)
 }
