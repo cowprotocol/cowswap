@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.26.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.25.1...ui-v1.26.0) (2025-07-30)
+
+
+### Features
+
+* add warning banner if bridge fees are over limit ([#6009](https://github.com/cowprotocol/cowswap/issues/6009)) ([a11bd0a](https://github.com/cowprotocol/cowswap/commit/a11bd0a6d5c6145cb52bdd09d1286b35e565b80d))
+
+
+### Bug Fixes
+
+* **trade:** do not display quote error when loading ([#5979](https://github.com/cowprotocol/cowswap/issues/5979)) ([d7cc313](https://github.com/cowprotocol/cowswap/commit/d7cc3133872d3fb950f3d89c967c4325b9ab3a01))
+
 ## [1.25.1](https://github.com/cowprotocol/cowswap/compare/ui-v1.25.0...ui-v1.25.1) (2025-07-10)
 
 

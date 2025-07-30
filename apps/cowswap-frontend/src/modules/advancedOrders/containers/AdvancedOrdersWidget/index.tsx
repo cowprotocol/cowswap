@@ -29,7 +29,7 @@ const UNLOCK_SCREEN = {
   title: 'Unlock the Power of TWAP Orders',
   subtitle: 'Begin with TWAP Today!',
   orderType: 'TWAP',
-  buttonText: 'Unlock TWAP orders (BETA)',
+  buttonText: 'Unlock TWAP orders',
   // TODO: add actual link before deploy to PROD
   buttonLink: TWAP_LEARN_MORE_LINK,
 }

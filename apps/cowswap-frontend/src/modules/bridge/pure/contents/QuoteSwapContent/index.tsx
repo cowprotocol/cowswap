@@ -37,7 +37,7 @@ function createExpectedReceiveContent(
         <InfoTooltip
           content={
             <>
-              The estimated amount you\'ll receive after estimated network costs and the max slippage setting (
+              The estimated amount you'll receive after estimated network costs and the max slippage setting (
               <PercentDisplay percent={slippagePercentDisplay.toFixed(2)}/>).
             </>
           }

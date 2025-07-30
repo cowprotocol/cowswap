@@ -1,5 +1,31 @@
 # Changelog
 
+## [1.113.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.112.4...cowswap-v1.113.0) (2025-07-30)
+
+
+### Features
+
+* add warning banner if bridge fees are over limit ([#6009](https://github.com/cowprotocol/cowswap/issues/6009)) ([a11bd0a](https://github.com/cowprotocol/cowswap/commit/a11bd0a6d5c6145cb52bdd09d1286b35e565b80d))
+* **bridge:** add bridging analytics ([#6029](https://github.com/cowprotocol/cowswap/issues/6029)) ([8940b85](https://github.com/cowprotocol/cowswap/commit/8940b857f2acc6cf0819b5b024d11a2080db3ab5))
+
+
+### Bug Fixes
+
+* **bridge:** adjust displayed amounts ([#6036](https://github.com/cowprotocol/cowswap/issues/6036)) ([1e44e2c](https://github.com/cowprotocol/cowswap/commit/1e44e2c57a27ecdab9b03f4522ec4eadb3bcd907))
+* **bridge:** adjust success bridging message ([#6032](https://github.com/cowprotocol/cowswap/issues/6032)) ([8503a3c](https://github.com/cowprotocol/cowswap/commit/8503a3c57ad571a285750a3b6b90418f183035d1))
+* **bridge:** close widget if dst token has another chainId ([9e4464d](https://github.com/cowprotocol/cowswap/commit/9e4464dca5652f07d6fa151f4256956e04defc1b))
+* **bridge:** display chain name in token selector ([#6019](https://github.com/cowprotocol/cowswap/issues/6019)) ([090289c](https://github.com/cowprotocol/cowswap/commit/090289ccac53381871f078dde13aa7373ab3d198))
+* **bridge:** slow network selection issue ([#6027](https://github.com/cowprotocol/cowswap/issues/6027)) ([6aed0f1](https://github.com/cowprotocol/cowswap/commit/6aed0f1c85faf2a96070bda2886415de0eaff53e))
+* high fee warning banner style and logic ([#6044](https://github.com/cowprotocol/cowswap/issues/6044)) ([bb4aadb](https://github.com/cowprotocol/cowswap/commit/bb4aadbf1cba2bd8434e26a6b8f18c1f2838de0d))
+* migrate tokens store from localStorage to indexedDB ([#6037](https://github.com/cowprotocol/cowswap/issues/6037)) ([99f67eb](https://github.com/cowprotocol/cowswap/commit/99f67eb97d2cb111f00292427ac4c8d40e353464))
+
+## [1.112.4](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.112.3...cowswap-v1.112.4) (2025-07-25)
+
+
+### Bug Fixes
+
+* **url-trade-amounts:** don't store url state when amount is 0 ([#6024](https://github.com/cowprotocol/cowswap/issues/6024)) ([6cf148d](https://github.com/cowprotocol/cowswap/commit/6cf148d0b3a61f55376a5930e62bb7e423aa6c07))
+
 ## [1.112.3](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.112.2...cowswap-v1.112.3) (2025-07-22)
 
 

@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.23.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.22.0...tokens-v1.23.0) (2025-07-30)
+
+
+### Features
+
+* **bridge:** do not search output tokens in selector ([#6017](https://github.com/cowprotocol/cowswap/issues/6017)) ([c6be067](https://github.com/cowprotocol/cowswap/commit/c6be06716820a7257d94639fecb4f6e382858eb3))
+* **bridge:** implement CurrencyLogoPair and styling ([#5995](https://github.com/cowprotocol/cowswap/issues/5995)) ([ced0884](https://github.com/cowprotocol/cowswap/commit/ced0884599b7cf6a62a1a3b3aa983ebca8924763))
+
+
+### Bug Fixes
+
+* migrate tokens store from localStorage to indexedDB ([#6037](https://github.com/cowprotocol/cowswap/issues/6037)) ([99f67eb](https://github.com/cowprotocol/cowswap/commit/99f67eb97d2cb111f00292427ac4c8d40e353464))
+
 ## [1.22.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.21.0...tokens-v1.22.0) (2025-07-03)
 
 
