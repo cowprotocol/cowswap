@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.9.0](https://github.com/cowprotocol/cowswap/compare/types-v1.8.0...types-v1.9.0) (2025-07-30)
+
+
+### Features
+
+* **bridge:** adjust snackbars for bridge orders ([#5977](https://github.com/cowprotocol/cowswap/issues/5977)) ([4d41d5b](https://github.com/cowprotocol/cowswap/commit/4d41d5baac8fd02481173e533110dc309adee8c3))
+* **bridge:** use stored bridge quotes in order progress bar ([#5961](https://github.com/cowprotocol/cowswap/issues/5961)) ([93825f0](https://github.com/cowprotocol/cowswap/commit/93825f087f501c3d86364c845b23812612b49e34))
+
 ## [1.8.0](https://github.com/cowprotocol/cowswap/compare/types-v1.7.1...types-v1.8.0) (2025-07-03)
 
 

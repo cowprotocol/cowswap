@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.18.1](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.18.0...common-utils-v1.18.1) (2025-07-30)
+
+
+### Bug Fixes
+
+* **bridge:** show correct intermedeate token for surplus ([9182f33](https://github.com/cowprotocol/cowswap/commit/9182f331e0cf74a8045eba53111732b2e0c30aa4))
+* **bridge:** show correct intermediate token for surplus ([0a20c43](https://github.com/cowprotocol/cowswap/commit/0a20c43cc8ec63138c8f7b5c1aec74feba227c1b))
+* do not multicall allowances globally ([#5984](https://github.com/cowprotocol/cowswap/issues/5984)) ([b142199](https://github.com/cowprotocol/cowswap/commit/b14219963baeb2d2fa4a24ded50c6dd74bc58afe))
+
 ## [1.18.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.17.1...common-utils-v1.18.0) (2025-07-10)
 
 

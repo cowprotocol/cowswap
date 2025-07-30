@@ -1,5 +1,21 @@
 # Changelog
 
+## [2.49.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.48.3...explorer-v2.49.0) (2025-07-30)
+
+
+### Features
+
+* **bridge:** adjust addresses displaying in Explorer ([#6021](https://github.com/cowprotocol/cowswap/issues/6021)) ([37cdaf0](https://github.com/cowprotocol/cowswap/commit/37cdaf07a74c1b9b4357a4e942cc7ddc139f1873))
+
+
+### Bug Fixes
+
+* **bridge:** better destination tokens filtering ([#5965](https://github.com/cowprotocol/cowswap/issues/5965)) ([1e738e3](https://github.com/cowprotocol/cowswap/commit/1e738e3b547584158f8083500926819b1bb2de93))
+* **explorer:** display unknown network token logo ([#6013](https://github.com/cowprotocol/cowswap/issues/6013)) ([095ad7b](https://github.com/cowprotocol/cowswap/commit/095ad7bce0741fe0a45adc3f65b26cdf88e5dd6f))
+* **explorer:** load coingecko tokens for all chains ([#6015](https://github.com/cowprotocol/cowswap/issues/6015)) ([4d57a5c](https://github.com/cowprotocol/cowswap/commit/4d57a5c2caf7b26952a3661c1e6ae76ac5bffb16))
+* **explorer:** update bridge status ([#6041](https://github.com/cowprotocol/cowswap/issues/6041)) ([a548008](https://github.com/cowprotocol/cowswap/commit/a548008ba68355a00a7a1a69b32d1b6434a133af))
+* improve bridge details on cow explorer ([#6042](https://github.com/cowprotocol/cowswap/issues/6042)) ([77b17ca](https://github.com/cowprotocol/cowswap/commit/77b17ca2f5129aa874ba001b436b7299ade82e4a))
+
 ## [2.48.3](https://github.com/cowprotocol/cowswap/compare/explorer-v2.48.2...explorer-v2.48.3) (2025-07-10)
 
 

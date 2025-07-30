@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.9.0](https://github.com/cowprotocol/cowswap/compare/hook-dapp-lib-v1.8.0...hook-dapp-lib-v1.9.0) (2025-07-30)
+
+
+### Features
+
+* **bridge:** add bungee to hook dapps registry ([#5974](https://github.com/cowprotocol/cowswap/issues/5974)) ([5cc9ee4](https://github.com/cowprotocol/cowswap/commit/5cc9ee4b293c7e662a6723ad37729cbc08296d23))
+* **hooks:** add polygon to morpho and update info ([#5945](https://github.com/cowprotocol/cowswap/issues/5945)) ([6c47e0e](https://github.com/cowprotocol/cowswap/commit/6c47e0eb481ed4ce5af2b2e3c7cf4c61f4ba79e1))
+
 ## [1.8.0](https://github.com/cowprotocol/cowswap/compare/hook-dapp-lib-v1.7.1...hook-dapp-lib-v1.8.0) (2025-07-03)
 
 
