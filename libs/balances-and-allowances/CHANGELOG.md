@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.2](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.5.1...balances-and-allowances-v1.5.2) (2025-07-30)
+
+
+### Bug Fixes
+
+* do not multicall allowances globally ([#5984](https://github.com/cowprotocol/cowswap/issues/5984)) ([b142199](https://github.com/cowprotocol/cowswap/commit/b14219963baeb2d2fa4a24ded50c6dd74bc58afe))
+
 ## [1.5.1](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.5.0...balances-and-allowances-v1.5.1) (2025-07-10)
 
 
