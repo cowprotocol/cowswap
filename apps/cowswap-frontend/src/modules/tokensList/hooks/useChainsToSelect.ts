@@ -63,7 +63,7 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
       }
     }
 
-    const destinationChains = getDestinationChains(bridgeSupportedNetworks, areUnsupportedChainsEnabled)
+    const destinationChains = filterDestinationChains(bridgeSupportedNetworks, areUnsupportedChainsEnabled)
 
     return {
       defaultChainId: selectedTargetChainId,
@@ -82,7 +82,7 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
   ])
 }
 
-function getDestinationChains(
+function filterDestinationChains(
   bridgeSupportedNetworks: ChainInfo[] | undefined,
   areUnsupportedChainsEnabled: boolean | undefined,
 ): ChainInfo[] | undefined {
