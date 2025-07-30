@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useState } from 'react'
+import { ReactNode, useCallback, useMemo, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { TokenWithLogo } from '@cowprotocol/common-const'
@@ -51,6 +51,12 @@ const Wrapper = styled.div`
 
 const EMPTY_FAV_TOKENS: TokenWithLogo[] = []
 
+const getFilteredTokens = (tokens: TokenWithLogo[], oppositeToken: TokenWithLogo): TokenWithLogo[] => {
+  return tokens.filter((token) => {
+    return token.address.toLowerCase() !== oppositeToken?.address?.toLowerCase()
+  })
+}
+
 interface SelectTokenWidgetProps {
   displayLpTokenLists?: boolean
   standalone?: boolean
@@ -95,6 +101,17 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
   const importTokenCallback = useAddUserToken()
 
   const { tokens: allTokens, isLoading: areTokensLoading, favoriteTokens, areTokensFromBridge } = useTokensToSelect()
+
+  const filteredTokens = useMemo(
+    () => getFilteredTokens(allTokens, oppositeToken as TokenWithLogo),
+    [allTokens, oppositeToken],
+  )
+
+  const filteredFavoriteTokens = useMemo(
+    () => getFilteredTokens(favoriteTokens, oppositeToken as TokenWithLogo),
+    [favoriteTokens, oppositeToken],
+  )
+
   const userAddedTokens = useUserAddedTokens()
   const allTokenLists = useAllListsList()
   const balancesState = useTokensBalancesCombined()
@@ -200,8 +217,8 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
             displayLpTokenLists={displayLpTokenLists}
             unsupportedTokens={unsupportedTokens}
             selectedToken={selectedToken}
-            allTokens={allTokens}
-            favoriteTokens={standalone ? EMPTY_FAV_TOKENS : favoriteTokens}
+            allTokens={filteredTokens}
+            favoriteTokens={standalone ? EMPTY_FAV_TOKENS : filteredFavoriteTokens}
             balancesState={balancesState}
             permitCompatibleTokens={permitCompatibleTokens}
             onSelectToken={onSelectToken}

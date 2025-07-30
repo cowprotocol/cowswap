@@ -1,10 +1,6 @@
 import { useSetAtom } from 'jotai'
 import { useMemo } from 'react'
 
-import { TokenWithLogo } from '@cowprotocol/common-const'
-import { doesTokenMatchSymbolOrAddress } from '@cowprotocol/common-utils'
-import { useSearchToken } from '@cowprotocol/tokens'
-
 import { useLocation, useParams } from 'react-router'
 
 import { tradeStateFromUrlAtom } from '../../state/tradeStateFromUrlAtom'
@@ -16,19 +12,6 @@ const getChainId = (chainId: string | undefined | null): number | null => {
   return null
 }
 
-const getToken = (
-  currencyId: string | null,
-  activeListsResult: TokenWithLogo[],
-  inactiveListsResult: TokenWithLogo[],
-): TokenWithLogo | undefined => {
-  if (!currencyId) return undefined
-
-  return (
-    activeListsResult.find((token: TokenWithLogo) => doesTokenMatchSymbolOrAddress(token, currencyId)) ||
-    inactiveListsResult.find((token: TokenWithLogo) => doesTokenMatchSymbolOrAddress(token, currencyId))
-  )
-}
-
 /**
  * Updater to fetch trade state from URL params and query, and store it on jotai state
  * /1/swap/WETH/DAI?recipient=0x -> { chainId: 1, inputCurrencyId: 'WETH', outputCurrencyId: 'DAI', recipient: '0x' }
@@ -38,11 +21,10 @@ const getToken = (
 export function useSetupTradeStateFromUrl(): null {
   const params = useParams()
   const location = useLocation()
+  const stringifiedParams = JSON.stringify(params)
   const setState = useSetAtom(tradeStateFromUrlAtom)
 
-  const stringifiedParams = JSON.stringify(params)
-
-  const { chainId, inputCurrencyId, outputCurrencyId, recipient, recipientAddress, targetChainId } = useMemo(() => {
+  const { chainId, recipient, recipientAddress, targetChainId, inputCurrencyId, outputCurrencyId } = useMemo(() => {
     const searchParams = new URLSearchParams(location.search)
     const targetChainId = searchParams.get('targetChainId')
     const recipient = searchParams.get('recipient')
@@ -59,43 +41,6 @@ export function useSetupTradeStateFromUrl(): null {
     }
   }, [location.search, stringifiedParams])
 
-  const isSameChain = targetChainId ? chainId === targetChainId : true
-  const { activeListsResult, inactiveListsResult } = useSearchToken(inputCurrencyId || '')
-
-  const inputToken = useMemo(
-    () => getToken(inputCurrencyId, activeListsResult, inactiveListsResult),
-    [activeListsResult, inactiveListsResult, inputCurrencyId],
-  )
-
-  const outputToken = useMemo(
-    () => getToken(outputCurrencyId, activeListsResult, inactiveListsResult),
-    [activeListsResult, inactiveListsResult, outputCurrencyId],
-  )
-
-  const derivedInputCurrencyId = useMemo(() => {
-    if (!inputToken && !inputCurrencyId) return null
-
-    if (isSameChain) {
-      if (inputToken && outputToken) {
-        return inputToken.address
-      }
-    }
-
-    return inputCurrencyId
-  }, [inputToken, outputToken, inputCurrencyId, isSameChain])
-
-  const derivedOutputCurrencyId = useMemo(() => {
-    if (!outputToken && !outputCurrencyId) return null
-
-    if (isSameChain) {
-      if (outputToken && inputToken) {
-        return outputToken.address
-      }
-    }
-
-    return outputCurrencyId
-  }, [outputToken, inputToken, outputCurrencyId, isSameChain])
-
   /**
    * useEffect() runs after the render completes and useMemo() runs during rendering.
    * In order to update tradeStateFromUrlAtom faster we use useMemo() here.
@@ -105,14 +50,14 @@ export function useSetupTradeStateFromUrl(): null {
     const state: TradeRawState = {
       chainId,
       targetChainId,
-      inputCurrencyId: derivedInputCurrencyId,
-      outputCurrencyId: derivedOutputCurrencyId,
+      inputCurrencyId,
+      outputCurrencyId,
       ...(recipient ? { recipient } : undefined),
       ...(recipientAddress ? { recipientAddress } : undefined),
     }
 
     setState(state)
-  }, [chainId, recipient, recipientAddress, setState, targetChainId, derivedInputCurrencyId, derivedOutputCurrencyId])
+  }, [chainId, recipient, recipientAddress, setState, targetChainId, inputCurrencyId, outputCurrencyId])
 
   return null
 }
