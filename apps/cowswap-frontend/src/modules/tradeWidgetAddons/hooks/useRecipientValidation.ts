@@ -42,11 +42,11 @@ function isValidRecipientContext(params: {
 }
 
 function isValidForBridge(recipient: string, recipientEnsName?: string | null): boolean {
-  return isAddress(recipient) && !recipientEnsName
+  return Boolean(isAddress(recipient)) && !recipientEnsName
 }
 
-function isValidForSwap(recipient: string, recipientEnsName?: string | null, chainId: SupportedChainId): boolean {
-  return isAddress(recipient) || (Boolean(recipientEnsName) && chainId === SupportedChainId.MAINNET)
+function isValidForSwap(recipient: string, chainId: SupportedChainId, recipientEnsName?: string | null): boolean {
+  return Boolean(isAddress(recipient)) || (Boolean(recipientEnsName) && chainId === SupportedChainId.MAINNET)
 }
 
 function isDifferentFromAccount(
@@ -99,7 +99,7 @@ export function useRecipientValidation({
     const isBridgeTransaction = recipientChainId && recipientChainId !== chainId
     const isValid = isBridgeTransaction
       ? isValidForBridge(context.recipient, recipientEnsName)
-      : isValidForSwap(context.recipient, recipientEnsName, chainId)
+      : isValidForSwap(context.recipient, chainId, recipientEnsName)
 
     if (!isValid) {
       if (isBridgeTransaction && recipientEnsName) {

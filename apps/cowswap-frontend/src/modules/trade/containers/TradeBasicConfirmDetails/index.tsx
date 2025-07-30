@@ -6,6 +6,7 @@ import { Percent, Price } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
+import { useRecipientValidation } from 'modules/tradeWidgetAddons'
 import { useUsdAmount } from 'modules/usdAmount'
 
 import { RateInfoParams, RateInfo } from 'common/pure/RateInfo'
@@ -28,7 +29,7 @@ type Props = {
   children?: ReactNode
   recipient?: Nullish<string>
   recipientEnsName?: string | null
-  account: Nullish<string>
+  account?: Nullish<string>
   hideLimitPrice?: boolean
   hideUsdValues?: boolean
   withTimelineDot?: boolean
@@ -94,6 +95,12 @@ export function TradeBasicConfirmDetails(props: Props) {
     })
   }, [receiveAmountInfo])
 
+  const recipientValidation = useRecipientValidation({
+    recipient,
+    recipientEnsName,
+    account,
+  })
+
   return (
     <styledEl.Wrapper>
       {/* Price */}
@@ -151,9 +158,11 @@ export function TradeBasicConfirmDetails(props: Props) {
       )}
 
       {/*Recipient*/}
-      <styledEl.RecipientWrapper>
-        <RecipientRow chainId={rateInfoParams.chainId} recipient={recipient} recipientEnsName={recipientEnsName} account={account} />
-      </styledEl.RecipientWrapper>
+      {recipientValidation.isValid && (
+        <styledEl.RecipientWrapper>
+          <RecipientRow {...recipientValidation.props} />
+        </styledEl.RecipientWrapper>
+      )}
       {children}
     </styledEl.Wrapper>
   )

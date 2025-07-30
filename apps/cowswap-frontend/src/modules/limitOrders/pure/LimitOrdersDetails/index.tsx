@@ -17,6 +17,7 @@ import { LimitRateState } from 'modules/limitOrders/state/limitRateAtom'
 import { PartiallyFillableOverrideDispatcherType } from 'modules/limitOrders/state/partiallyFillableOverride'
 import { calculateLimitOrdersDeadline } from 'modules/limitOrders/utils/calculateLimitOrdersDeadline'
 import { DividerHorizontal, RecipientRow } from 'modules/trade'
+import { useRecipientValidation } from 'modules/tradeWidgetAddons'
 
 import { ordersTableFeatures } from 'common/constants/featureFlags'
 import { ExecutionPrice } from 'common/pure/ExecutionPrice'
@@ -76,6 +77,11 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps): ReactNode {
     return formatInputAmount(rate)
   }, [isInverted, activeRate])
 
+  const recipientValidation = useRecipientValidation({
+    recipient: recipientAddressOrName || recipient,
+    account,
+  })
+
   return (
     <Wrapper>
       <styledEl.DetailsRow>
@@ -127,7 +133,7 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps): ReactNode {
         <span>{expiryDate.toLocaleString(undefined, DEFAULT_DATE_FORMAT)}</span>
       </styledEl.DetailsRow>
       <OrderType isPartiallyFillable={partiallyFillable} partiallyFillableOverride={partiallyFillableOverride} />
-      <RecipientRow chainId={tradeContext.chainId} recipient={recipientAddressOrName || recipient} account={account} />
+      {recipientValidation.isValid && <RecipientRow {...recipientValidation.props} />}
     </Wrapper>
   )
 }
