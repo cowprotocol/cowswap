@@ -1,7 +1,7 @@
 import { useState, useMemo, ReactNode } from 'react'
 
 import { BridgeProviderInfo } from '@cowprotocol/cow-sdk'
-import { ProductVariant, ProductLogo, Color, UI } from '@cowprotocol/ui'
+import { ProductVariant, ProductLogo, UI } from '@cowprotocol/ui'
 
 import { ProtocolIcon, ProtocolIconsContainer, getBorderWidth } from './styled'
 
@@ -126,7 +126,7 @@ export function StackedProtocolIcons({
       variant={ProductVariant.CowProtocol} 
       height={currentLogoHeight} 
       logoIconOnly 
-      overrideColor={Color.cowfi_purple_dark}
+      overrideColor={`var(${UI.COLOR_PURPLE_800_PRIMARY})`}
     />
   )
   const secondIconChildContent = (
