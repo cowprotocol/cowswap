@@ -106,7 +106,6 @@ interface ExplorerLinkProps {
   address: string | null
   name: string | null
   effectiveChainId: SupportedChainId
-  disableENS: boolean
 }
 
 function ExplorerLink({
@@ -231,7 +230,6 @@ export function AddressInputPanel({
                 address={address}
                 name={name}
                 effectiveChainId={effectiveChainId}
-                disableENS={disableENS}
                 inputValue={value}
               />
             </RowBetween>
