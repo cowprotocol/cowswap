@@ -9,8 +9,7 @@ export const BridgeDetailsTooltips = {
   bridgingTime: 'Expected time for the bridge operation to complete.',
   maxSlippage: 'The maximum allowed slippage for the bridge in percentage.',
   provider: 'The bridging solution provider.',
-  senderAddress: 'The account address from which the tokens are bridged.',
-  accountProxy: (
+  accountFromProxy: (
     <span>
       The{' '}
       <ExternalLink href="https://swap.cow.fi/#/account-proxy" target="_blank" rel="noopener noreferrer">
