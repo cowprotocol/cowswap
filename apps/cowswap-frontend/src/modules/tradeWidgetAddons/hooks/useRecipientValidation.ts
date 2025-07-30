@@ -22,7 +22,7 @@ export interface RecipientRowProps {
 }
 
 export type RecipientValidationResult = 
-  | { isValid: false }
+  | { isValid: false; reason: 'fee-details-open' | 'same-as-account' | 'invalid-address' | 'ens-not-supported' | 'missing-data' }
   | { isValid: true; props: RecipientRowProps }
 
 function isValidRecipientContext(params: {
@@ -65,6 +65,20 @@ function resolveDisplayChainId(
   return fallbackChainId || currentChainId
 }
 
+function validateContextAndReturnError(
+  recipient: string | null | undefined,
+  account: string | null | undefined,
+  isFeeDetailsOpen: boolean,
+): { isValid: false; reason: 'missing-data' | 'fee-details-open' } | null {
+  if (!recipient || !account) {
+    return { isValid: false, reason: 'missing-data' }
+  }
+  if (isFeeDetailsOpen) {
+    return { isValid: false, reason: 'fee-details-open' }
+  }
+  return null
+}
+
 export function useRecipientValidation({
   recipient,
   recipientEnsName,
@@ -78,11 +92,12 @@ export function useRecipientValidation({
   return useMemo(() => {
     const context = { recipient, account, isFeeDetailsOpen }
     if (!isValidRecipientContext(context)) {
-      return { isValid: false }
+      const error = validateContextAndReturnError(recipient, account, isFeeDetailsOpen)
+      return error || { isValid: false, reason: 'missing-data' }
     }
 
     if (!isDifferentFromAccount(context.recipient, recipientEnsName, context.account)) {
-      return { isValid: false }
+      return { isValid: false, reason: 'same-as-account' }
     }
 
     const isBridgeTransaction = recipientChainId && recipientChainId !== chainId
@@ -91,7 +106,10 @@ export function useRecipientValidation({
       : isValidForSwap(context.recipient, recipientEnsName, chainId)
 
     if (!isValid) {
-      return { isValid: false }
+      if (isBridgeTransaction && recipientEnsName) {
+        return { isValid: false, reason: 'ens-not-supported' }
+      }
+      return { isValid: false, reason: 'invalid-address' }
     }
 
     const displayChainId = resolveDisplayChainId(recipientChainId, fallbackChainId, chainId)
