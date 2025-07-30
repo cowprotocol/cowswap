@@ -58,7 +58,7 @@ export function RecipientRow(props: RecipientRowProps): ReactNode {
         <InfoTooltip content="The tokens received from this order will automatically be sent to this address. No need to do a second transaction!" />
       </div>
       <div>
-        {showNetworkLogo && recipientChainId && <NetworkLogo chainId={displayChainId} size={16} />}
+        {showNetworkLogo && recipientChainId !== undefined && <NetworkLogo chainId={displayChainId} size={16} />}
         <AddressLink address={recipient} chainId={displayChainId} ensName={recipientEnsName} />
       </div>
     </Row>

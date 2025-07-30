@@ -96,7 +96,7 @@ export function useRecipientValidation({
       return { isValid: false, reason: RecipientValidationError.SAME_AS_ACCOUNT }
     }
 
-    const isBridgeTransaction = recipientChainId && recipientChainId !== chainId
+    const isBridgeTransaction = recipientChainId !== undefined && recipientChainId !== chainId
     const isValid = isBridgeTransaction
       ? isValidForBridge(context.recipient, recipientEnsName)
       : isValidForSwap(context.recipient, chainId, recipientEnsName)
@@ -117,7 +117,7 @@ export function useRecipientValidation({
         recipient: context.recipient,
         recipientEnsName,
         recipientChainId,
-        showNetworkLogo: Boolean(recipientChainId && recipientChainId !== chainId),
+        showNetworkLogo: Boolean(recipientChainId !== undefined && recipientChainId !== chainId),
       },
     }
   }, [recipient, recipientEnsName, recipientChainId, account, isFeeDetailsOpen, fallbackChainId, chainId])

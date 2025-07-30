@@ -339,5 +339,23 @@ describe('useRecipientValidation', () => {
 
       expect(result.current.isValid).toBe(true) // Should be valid
     })
+
+    it('should handle recipientChainId 0 correctly (edge case)', () => {
+      const { result } = renderHook(() =>
+        useRecipientValidation({
+          recipient: validAddress,
+          recipientEnsName: null,
+          recipientChainId: 0, // Chain ID 0 - should not be treated as falsy
+          account,
+          isFeeDetailsOpen: false,
+        }),
+      )
+
+      expect(result.current.isValid).toBe(true) // Should be valid
+      if (result.current.isValid) {
+        expect(result.current.props.showNetworkLogo).toBe(true) // Should show network logo for chain ID 0
+        expect(result.current.props.recipientChainId).toBe(0)
+      }
+    })
   })
 })
