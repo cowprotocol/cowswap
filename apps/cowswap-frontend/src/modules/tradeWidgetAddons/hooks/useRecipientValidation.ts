@@ -4,6 +4,8 @@ import { isAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { RecipientRowProps } from 'modules/trade'
+
 export interface UseRecipientValidationParams {
   recipient?: string | null
   recipientEnsName?: string | null
@@ -13,13 +15,6 @@ export interface UseRecipientValidationParams {
   fallbackChainId?: SupportedChainId
 }
 
-export interface RecipientRowProps {
-  chainId: SupportedChainId
-  recipient: string
-  recipientEnsName?: string | null
-  recipientChainId?: number
-  showNetworkLogo: boolean
-}
 
 export enum RecipientValidationError {
   FEE_DETAILS_OPEN = 'fee-details-open',

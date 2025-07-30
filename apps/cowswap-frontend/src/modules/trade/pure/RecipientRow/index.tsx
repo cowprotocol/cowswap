@@ -33,7 +33,7 @@ const Row = styled.div`
   }
 `
 
-interface RecipientRowProps {
+export interface RecipientRowProps {
   chainId: SupportedChainId
   recipient: Nullish<string>
   recipientEnsName?: string | null
