@@ -13,7 +13,7 @@ export function resolveDisplayChainId(
   currentChainId: SupportedChainId,
   fallbackChainId?: SupportedChainId,
 ): SupportedChainId {
-  if (recipientChainId && Object.values(SupportedChainId).includes(recipientChainId as SupportedChainId)) {
+  if (recipientChainId !== undefined && Object.values(SupportedChainId).includes(recipientChainId as SupportedChainId)) {
     return recipientChainId as SupportedChainId
   }
   return fallbackChainId || currentChainId
