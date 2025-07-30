@@ -21,8 +21,16 @@ export interface RecipientRowProps {
   showNetworkLogo: boolean
 }
 
+export enum RecipientValidationError {
+  FEE_DETAILS_OPEN = 'fee-details-open',
+  SAME_AS_ACCOUNT = 'same-as-account', 
+  INVALID_ADDRESS = 'invalid-address',
+  ENS_NOT_SUPPORTED = 'ens-not-supported',
+  MISSING_DATA = 'missing-data',
+}
+
 export type RecipientValidationResult = 
-  | { isValid: false; reason: 'fee-details-open' | 'same-as-account' | 'invalid-address' | 'ens-not-supported' | 'missing-data' }
+  | { isValid: false; reason: RecipientValidationError }
   | { isValid: true; props: RecipientRowProps }
 
 function isValidRecipientContext(params: {
@@ -69,12 +77,12 @@ function validateContextAndReturnError(
   recipient: string | null | undefined,
   account: string | null | undefined,
   isFeeDetailsOpen: boolean,
-): { isValid: false; reason: 'missing-data' | 'fee-details-open' } | null {
+): { isValid: false; reason: RecipientValidationError.MISSING_DATA | RecipientValidationError.FEE_DETAILS_OPEN } | null {
   if (!recipient || !account) {
-    return { isValid: false, reason: 'missing-data' }
+    return { isValid: false, reason: RecipientValidationError.MISSING_DATA }
   }
   if (isFeeDetailsOpen) {
-    return { isValid: false, reason: 'fee-details-open' }
+    return { isValid: false, reason: RecipientValidationError.FEE_DETAILS_OPEN }
   }
   return null
 }
@@ -93,11 +101,11 @@ export function useRecipientValidation({
     const context = { recipient, account, isFeeDetailsOpen }
     if (!isValidRecipientContext(context)) {
       const error = validateContextAndReturnError(recipient, account, isFeeDetailsOpen)
-      return error || { isValid: false, reason: 'missing-data' }
+      return error || { isValid: false, reason: RecipientValidationError.MISSING_DATA }
     }
 
     if (!isDifferentFromAccount(context.recipient, recipientEnsName, context.account)) {
-      return { isValid: false, reason: 'same-as-account' }
+      return { isValid: false, reason: RecipientValidationError.SAME_AS_ACCOUNT }
     }
 
     const isBridgeTransaction = recipientChainId && recipientChainId !== chainId
@@ -107,9 +115,9 @@ export function useRecipientValidation({
 
     if (!isValid) {
       if (isBridgeTransaction && recipientEnsName) {
-        return { isValid: false, reason: 'ens-not-supported' }
+        return { isValid: false, reason: RecipientValidationError.ENS_NOT_SUPPORTED }
       }
-      return { isValid: false, reason: 'invalid-address' }
+      return { isValid: false, reason: RecipientValidationError.INVALID_ADDRESS }
     }
 
     const displayChainId = resolveDisplayChainId(recipientChainId, fallbackChainId, chainId)
