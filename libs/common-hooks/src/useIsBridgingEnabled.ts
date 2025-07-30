@@ -1,9 +1,11 @@
-import { atom, useAtomValue, useSetAtom } from 'jotai'
+import { atom, /* useAtomValue, */ useSetAtom } from 'jotai'
 
 const isBridgingEnabledAtom = atom(false)
 
 export function useIsBridgingEnabled(): boolean {
-  return useAtomValue(isBridgingEnabledAtom)
+  // Force bridging to be enabled for testing
+  return true
+  // return useAtomValue(isBridgingEnabledAtom)
 }
 
 export function useSetIsBridgingEnabled(): (value: boolean) => void {
