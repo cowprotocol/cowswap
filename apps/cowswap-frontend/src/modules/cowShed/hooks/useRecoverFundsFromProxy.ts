@@ -2,7 +2,6 @@ import { useCallback, useState } from 'react'
 
 import { CowShedContract, CowShedContractAbi } from '@cowprotocol/abis'
 import { SigningScheme } from '@cowprotocol/contracts'
-import { COW_SHED_FACTORY } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { formatBytes32String } from '@ethersproject/strings'
@@ -39,7 +38,10 @@ export function useRecoverFundsFromProxy(
   const provider = useWalletProvider()
   const { account } = useWalletInfo()
   const cowShedHooks = useCowShedHooks()
-  const { contract: cowShedContract } = useContract<CowShedContract>(COW_SHED_FACTORY, CowShedContractAbi)
+
+  const factoryAddress = cowShedHooks?.getFactoryAddress()
+
+  const { contract: cowShedContract } = useContract<CowShedContract>(factoryAddress, CowShedContractAbi)
 
   const proxyAddress = useCurrentAccountProxyAddress()
 
@@ -52,8 +54,10 @@ export function useRecoverFundsFromProxy(
       !selectedTokenAddress ||
       !account ||
       !tokenBalance
-    )
+    ) {
+      console.error('Context is not ready for proxy funds recovering!')
       return
+    }
 
     setTxSigningStep(RecoverSigningStep.SIGN_RECOVER_FUNDS)
 
