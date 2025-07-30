@@ -6,6 +6,8 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { RecipientRowProps } from 'modules/trade'
 
+import { resolveDisplayChainId } from 'common/utils/resolveDisplayChainId'
+
 export interface UseRecipientValidationParams {
   recipient?: string | null
   recipientEnsName?: string | null
@@ -15,16 +17,15 @@ export interface UseRecipientValidationParams {
   fallbackChainId?: SupportedChainId
 }
 
-
 export enum RecipientValidationError {
   FEE_DETAILS_OPEN = 'fee-details-open',
-  SAME_AS_ACCOUNT = 'same-as-account', 
+  SAME_AS_ACCOUNT = 'same-as-account',
   INVALID_ADDRESS = 'invalid-address',
   ENS_NOT_SUPPORTED = 'ens-not-supported',
   MISSING_DATA = 'missing-data',
 }
 
-export type RecipientValidationResult = 
+export type RecipientValidationResult =
   | { isValid: false; reason: RecipientValidationError }
   | { isValid: true; props: RecipientRowProps }
 
@@ -57,22 +58,14 @@ function isDifferentFromAccount(
   return resolvedAddress?.toLowerCase() !== account.toLowerCase()
 }
 
-function resolveDisplayChainId(
-  recipientChainId: number | undefined,
-  fallbackChainId: SupportedChainId | undefined,
-  currentChainId: SupportedChainId,
-): SupportedChainId {
-  if (recipientChainId && Object.values(SupportedChainId).includes(recipientChainId as SupportedChainId)) {
-    return recipientChainId as SupportedChainId
-  }
-  return fallbackChainId || currentChainId
-}
-
 function validateContextAndReturnError(
   recipient: string | null | undefined,
   account: string | null | undefined,
   isFeeDetailsOpen: boolean,
-): { isValid: false; reason: RecipientValidationError.MISSING_DATA | RecipientValidationError.FEE_DETAILS_OPEN } | null {
+): {
+  isValid: false
+  reason: RecipientValidationError.MISSING_DATA | RecipientValidationError.FEE_DETAILS_OPEN
+} | null {
   if (!recipient || !account) {
     return { isValid: false, reason: RecipientValidationError.MISSING_DATA }
   }
@@ -115,7 +108,7 @@ export function useRecipientValidation({
       return { isValid: false, reason: RecipientValidationError.INVALID_ADDRESS }
     }
 
-    const displayChainId = resolveDisplayChainId(recipientChainId, fallbackChainId, chainId)
+    const displayChainId = resolveDisplayChainId(recipientChainId, chainId, fallbackChainId)
 
     return {
       isValid: true,

@@ -7,6 +7,7 @@ import styled from 'styled-components/macro'
 import { Nullish } from 'types'
 
 import { AddressLink } from 'common/pure/AddressLink'
+import { resolveDisplayChainId } from 'common/utils/resolveDisplayChainId'
 
 const Row = styled.div`
   display: flex;
@@ -39,16 +40,6 @@ export interface RecipientRowProps {
   recipientEnsName?: string | null
   recipientChainId?: number
   showNetworkLogo?: boolean
-}
-
-function resolveDisplayChainId(
-  recipientChainId: number | undefined,
-  currentChainId: SupportedChainId,
-): SupportedChainId {
-  if (recipientChainId && Object.values(SupportedChainId).includes(recipientChainId as SupportedChainId)) {
-    return recipientChainId as SupportedChainId
-  }
-  return currentChainId
 }
 
 export function RecipientRow(props: RecipientRowProps): ReactNode {
