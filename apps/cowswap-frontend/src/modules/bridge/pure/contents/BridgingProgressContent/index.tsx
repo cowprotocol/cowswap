@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
 
+import { isFractionFalsy } from '@cowprotocol/common-utils'
 import { BridgeStatusResult } from '@cowprotocol/cow-sdk'
 
 import { FailedBridgingContent } from './FailedBridgingContent'
@@ -32,9 +33,8 @@ export function BridgingProgressContent(props: BridgingContentProps): ReactNode 
     explorerUrl,
   } = props
 
-
   return (
-    <QuoteBridgeContent {...props}>
+    <QuoteBridgeContent {...props} isFinished={!isFractionFalsy(receivedAmount)}>
       {receivedAmount ? (
         <ReceivedBridgingContent
           statusResult={statusResult}

@@ -19,7 +19,7 @@ import {
   useIsHooksTradeType,
   useTradeConfirmActions,
   useTradeTypeInfo,
-  TradeTypeToUiOrderType
+  TradeTypeToUiOrderType,
 } from 'modules/trade'
 import { getOrderValidTo, useTradeQuote } from 'modules/tradeQuote'
 
@@ -193,6 +193,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             recipientAddress,
             marketLabel: [inputAmount?.currency.symbol, outputAmount?.currency.symbol].join(','),
             orderType: uiOrderType,
+            isBridgeOrder: inputAmount.currency.chainId !== outputAmount.currency.chainId,
           },
           contract: settlementContract,
           permitInfo: !enoughAllowance ? permitInfo : undefined,

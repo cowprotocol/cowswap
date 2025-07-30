@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.0](https://github.com/cowprotocol/cowswap/compare/events-v1.6.1...events-v1.7.0) (2025-07-30)
+
+
+### Features
+
+* **bridge:** adjust snackbars for bridge orders ([#5977](https://github.com/cowprotocol/cowswap/issues/5977)) ([4d41d5b](https://github.com/cowprotocol/cowswap/commit/4d41d5baac8fd02481173e533110dc309adee8c3))
+
 ## [1.6.1](https://github.com/cowprotocol/cowswap/compare/events-v1.6.0...events-v1.6.1) (2025-05-19)
 
 

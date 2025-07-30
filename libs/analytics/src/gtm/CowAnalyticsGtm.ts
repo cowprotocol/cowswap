@@ -200,6 +200,8 @@ export class CowAnalyticsGtm implements CowAnalytics {
   }
 
   sendEvent(event: string | EventOptions, params?: unknown): void {
+    const gtmEvent = event as GtmEvent<Category>
+
     const eventData: DataLayerEvent =
       typeof event === 'string'
         ? { event, ...(params as Record<string, unknown>) }
@@ -211,12 +213,13 @@ export class CowAnalyticsGtm implements CowAnalytics {
             value: event.value,
             non_interaction: event.nonInteraction,
             ...this.getDimensions(),
-            ...((event as GtmEvent<Category>).orderId && { order_id: (event as GtmEvent<Category>).orderId }),
-            ...((event as GtmEvent<Category>).orderType && { order_type: (event as GtmEvent<Category>).orderType }),
-            ...((event as GtmEvent<Category>).tokenSymbol && {
-              token_symbol: (event as GtmEvent<Category>).tokenSymbol,
+            ...(gtmEvent.isBridgeOrder && { isBridgeOrder: gtmEvent.isBridgeOrder }),
+            ...(gtmEvent.orderId && { order_id: gtmEvent.orderId }),
+            ...(gtmEvent.orderType && { order_type: gtmEvent.orderType }),
+            ...(gtmEvent.tokenSymbol && {
+              token_symbol: gtmEvent.tokenSymbol,
             }),
-            ...((event as GtmEvent<Category>).chainId && { chain_id: (event as GtmEvent<Category>).chainId }),
+            ...(gtmEvent.chainId && { chain_id: gtmEvent.chainId }),
           }
 
     this.pushToDataLayer(eventData)

@@ -139,6 +139,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
                   recipientChainId={bridgeContext?.buyAmount?.currency?.chainId}
                 />
                 {restContent}
+                <HighFeeWarning readonlyMode />
               </>
             )
           : (restContent) => (

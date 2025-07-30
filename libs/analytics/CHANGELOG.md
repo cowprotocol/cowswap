@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.13.0](https://github.com/cowprotocol/cowswap/compare/analytics-v1.12.0...analytics-v1.13.0) (2025-07-30)
+
+
+### Features
+
+* **bridge:** add bridging analytics ([#6029](https://github.com/cowprotocol/cowswap/issues/6029)) ([8940b85](https://github.com/cowprotocol/cowswap/commit/8940b857f2acc6cf0819b5b024d11a2080db3ab5))
+
 ## [1.12.0](https://github.com/cowprotocol/cowswap/compare/analytics-v1.11.2...analytics-v1.12.0) (2025-06-18)
 
 

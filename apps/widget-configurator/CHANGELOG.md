@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.16.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.15.0...widget-configurator-v1.16.0) (2025-07-30)
+
+
+### Features
+
+* **bridge:** adjust snackbars for bridge orders ([#5977](https://github.com/cowprotocol/cowswap/issues/5977)) ([4d41d5b](https://github.com/cowprotocol/cowswap/commit/4d41d5baac8fd02481173e533110dc309adee8c3))
+
 ## [1.15.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.14.1...widget-configurator-v1.15.0) (2025-07-10)
 
 
