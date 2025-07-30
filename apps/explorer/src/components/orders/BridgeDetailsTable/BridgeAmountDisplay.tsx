@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react'
 
+import type { CrossChainOrder } from '@cowprotocol/cow-sdk'
 import type { TokenInfo } from '@uniswap/token-lists'
 
 import BigNumber from 'bignumber.js'
@@ -17,6 +18,7 @@ interface BridgeAmountDisplayProps {
   bridgeToken?: TokenInfo
   amount?: string | null
   isLoading?: boolean
+  bridgeProvider?: CrossChainOrder['provider']
 }
 
 export function BridgeAmountDisplay({
@@ -24,14 +26,22 @@ export function BridgeAmountDisplay({
   bridgeToken,
   amount,
   isLoading,
+  bridgeProvider,
 }: BridgeAmountDisplayProps): React.ReactNode {
   const isNative = !!bridgeToken && isNativeToken(bridgeToken.address)
 
   const tokenDisplayElement = useMemo(() => {
     if (!bridgeToken?.chainId) return null
 
-    return <CommonTokenDisplay erc20={bridgeToken} network={bridgeToken.chainId} showNetworkName />
-  }, [bridgeToken])
+    return (
+      <CommonTokenDisplay
+        erc20={bridgeToken}
+        network={bridgeToken.chainId}
+        bridgeProvider={bridgeProvider}
+        showNetworkName
+      />
+    )
+  }, [bridgeToken, bridgeProvider])
 
   if (isLoading) {
     return (

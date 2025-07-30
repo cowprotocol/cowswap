@@ -9,9 +9,8 @@ import { OrderSubmittedContent } from 'modules/orderProgressBar'
 import {
   TradeBasicConfirmDetails,
   TradeConfirmation,
-  TradeConfirmModal,
-  useReceiveAmountInfo,
-  useTradeConfirmActions,
+  TradeConfirmModal, useGetReceiveAmountInfo,
+  useTradeConfirmActions
 } from 'modules/trade'
 import { HighFeeWarning } from 'modules/tradeWidgetAddons'
 
@@ -53,7 +52,7 @@ export function YieldConfirmModal(props: YieldConfirmModalProps) {
   const { account } = useWalletInfo()
   const { ensName } = useWalletDetails()
   const appData = useAppData()
-  const receiveAmountInfo = useReceiveAmountInfo()
+  const receiveAmountInfo = useGetReceiveAmountInfo()
   const tradeConfirmActions = useTradeConfirmActions()
   const { slippage } = useYieldDerivedState()
 

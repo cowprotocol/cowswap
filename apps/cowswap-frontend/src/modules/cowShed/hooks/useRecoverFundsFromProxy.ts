@@ -2,7 +2,6 @@ import { useCallback, useState } from 'react'
 
 import { CowShedContract, CowShedContractAbi } from '@cowprotocol/abis'
 import { SigningScheme } from '@cowprotocol/contracts'
-import { COW_SHED_FACTORY } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { formatBytes32String } from '@ethersproject/strings'
@@ -11,16 +10,21 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { useContract } from 'common/hooks/useContract'
 
 import { useCowShedHooks } from './useCowShedHooks'
-import { useCurrentAccountProxyAddress } from './useCurrentAccountProxyAddress'
+import { useCurrentAccountProxyAddress } from './useCurrentAccountProxy'
 
 import { getRecoverFundsCalls } from '../services/getRecoverFundsCalls'
 
 const INFINITE_DEADLINE = 99999999999
 const DEFAULT_GAS_LIMIT = 600_000
 
+export enum RecoverSigningStep {
+  SIGN_RECOVER_FUNDS = 'SIGN_RECOVER_FUNDS',
+  SIGN_TRANSACTION = 'SIGN_TRANSACTION',
+}
+
 export interface RecoverFundsContext {
   callback: () => Promise<string | undefined>
-  isTxSigningInProgress: boolean
+  txSigningStep: RecoverSigningStep | null
   proxyAddress: string | undefined
 }
 
@@ -29,14 +33,17 @@ export function useRecoverFundsFromProxy(
   tokenBalance: CurrencyAmount<Currency> | null,
   isNativeToken: boolean,
 ): RecoverFundsContext {
-  const [isTxSigningInProgress, setTxSigningInProgress] = useState<boolean>(false)
+  const [txSigningStep, setTxSigningStep] = useState<RecoverSigningStep | null>(null)
 
   const provider = useWalletProvider()
   const { account } = useWalletInfo()
   const cowShedHooks = useCowShedHooks()
-  const { contract: cowShedContract } = useContract<CowShedContract>(COW_SHED_FACTORY, CowShedContractAbi)
 
-  const { proxyAddress } = useCurrentAccountProxyAddress() || {}
+  const factoryAddress = cowShedHooks?.getFactoryAddress()
+
+  const { contract: cowShedContract } = useContract<CowShedContract>(factoryAddress, CowShedContractAbi)
+
+  const proxyAddress = useCurrentAccountProxyAddress()
 
   const callback = useCallback(async () => {
     if (
@@ -47,10 +54,12 @@ export function useRecoverFundsFromProxy(
       !selectedTokenAddress ||
       !account ||
       !tokenBalance
-    )
+    ) {
+      console.error('Context is not ready for proxy funds recovering!')
       return
+    }
 
-    setTxSigningInProgress(true)
+    setTxSigningStep(RecoverSigningStep.SIGN_RECOVER_FUNDS)
 
     try {
       const calls = getRecoverFundsCalls({
@@ -73,13 +82,15 @@ export function useRecoverFundsFromProxy(
         SigningScheme.EIP712, // TODO: support other signing types
       )
 
+      setTxSigningStep(RecoverSigningStep.SIGN_TRANSACTION)
+
       const transaction = await cowShedContract.executeHooks(calls, nonce, BigInt(validTo), account, encodedSignature, {
         gasLimit: DEFAULT_GAS_LIMIT,
       })
 
       return transaction.hash
     } finally {
-      setTxSigningInProgress(false)
+      setTxSigningStep(null)
     }
   }, [
     provider,
@@ -92,5 +103,5 @@ export function useRecoverFundsFromProxy(
     isNativeToken,
   ])
 
-  return { callback, isTxSigningInProgress, proxyAddress }
+  return { callback, txSigningStep, proxyAddress }
 }

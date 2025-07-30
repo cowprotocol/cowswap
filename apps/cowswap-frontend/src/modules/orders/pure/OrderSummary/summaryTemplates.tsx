@@ -1,26 +1,43 @@
-import { ReactElement } from 'react'
+import { ReactElement, ReactNode } from 'react'
+
+import { ChainInfo } from '@cowprotocol/cow-sdk'
 
 export interface OrderSummaryTemplateProps {
   inputAmount: ReactElement
   outputAmount: ReactElement
+  srcChainData?: ChainInfo
+  dstChainData?: ChainInfo
+  actionTitle?: string
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function SellForAtLeastTemplate({ inputAmount, outputAmount }: OrderSummaryTemplateProps) {
+export function SellForAtLeastTemplate({
+  inputAmount,
+  outputAmount,
+  srcChainData,
+  dstChainData,
+  actionTitle = 'Sell',
+}: OrderSummaryTemplateProps): ReactNode {
   return (
     <>
-      Sell {inputAmount} for at least {outputAmount}
+      {actionTitle} {inputAmount}
+      {srcChainData && ` (${srcChainData.label})`} for at least {outputAmount}
+      {dstChainData && ` (${dstChainData.label})`}
     </>
   )
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function BuyForAtMostTemplate({ inputAmount, outputAmount }: OrderSummaryTemplateProps) {
+export function BuyForAtMostTemplate({
+  inputAmount,
+  outputAmount,
+  srcChainData,
+  dstChainData,
+  actionTitle = 'Buy',
+}: OrderSummaryTemplateProps): ReactNode {
   return (
     <>
-      Buy {outputAmount} for at most {inputAmount}
+      {actionTitle} {outputAmount}
+      {dstChainData && ` (${dstChainData.label})`} for at most {inputAmount}
+      {srcChainData && ` (${srcChainData.label})`}
     </>
   )
 }

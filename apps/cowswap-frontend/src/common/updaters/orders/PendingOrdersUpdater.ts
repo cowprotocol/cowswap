@@ -7,6 +7,7 @@ import { Command, UiOrderType } from '@cowprotocol/types'
 import { GnosisSafeInfo, useGnosisSafeInfo, useWalletInfo } from '@cowprotocol/wallet'
 
 import { isOrderInPendingTooLong, triggerAppziSurvey } from 'appzi'
+import { useBridgeOrdersSerializedMap } from 'entities/bridgeOrders'
 import { useAddOrderToSurplusQueue } from 'entities/surplusModal'
 
 import { GetSafeTxInfo, useGetSafeTxInfo } from 'legacy/hooks/useGetSafeTxInfo'
@@ -40,6 +41,7 @@ import {
 } from 'modules/orders'
 
 import { getOrder } from 'api/cowProtocol'
+import { getIsBridgeOrder } from 'common/utils/getIsBridgeOrder'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { fetchAndClassifyOrder } from './utils'
@@ -288,9 +290,12 @@ async function _updateOrders({
       isSafeWallet,
     })
     // add to surplus queue
-    fulfilled.forEach(({ uid, fullAppData, class: orderClass }) => {
+    fulfilled.forEach((order) => {
+      const { uid, fullAppData, class: orderClass } = order
       if (getUiOrderType({ fullAppData, class: orderClass }) === UiOrderType.SWAP) {
-        addOrderToSurplusQueue(uid)
+        if (!getIsBridgeOrder(order)) {
+          addOrderToSurplusQueue(uid)
+        }
       }
     })
     // trigger total surplus update
@@ -344,9 +349,7 @@ function getReplacedOrCancelledEthFlowOrders(
 
 // Check if there is any order pending for a long time
 // If so, trigger appzi
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function _triggerNps(pending: Order[], chainId: ChainId, account: string) {
+function _triggerNps(pending: Order[], chainId: ChainId, account: string): void {
   for (const order of pending) {
     const { openSince, id: orderId } = order
     const orderType = getUiOrderType(order)
@@ -410,19 +413,25 @@ export function PendingOrdersUpdater(): null {
   const updatePresignGnosisSafeTx = useUpdatePresignGnosisSafeTx()
   const allTransactions = useAllTransactions()
   const getSafeTxInfo = useGetSafeTxInfo()
+  const bridgeOrdersMap = useBridgeOrdersSerializedMap()
 
   const fulfillOrdersBatch = useCallback(
     (fulfillOrdersBatchParams: FulfillOrdersBatchParams) => {
+      if (!account) return
+
       _fulfillOrdersBatch(fulfillOrdersBatchParams)
 
       fulfillOrdersBatchParams.orders.forEach((order) => {
-        emitFulfilledOrderEvent(chainId, order)
+        const bridgeOrders = bridgeOrdersMap[chainId]?.[account.toLowerCase()]
+        const bridgeOrder = bridgeOrders?.find((i) => i.orderUid === order.uid)
+
+        emitFulfilledOrderEvent(chainId, order, bridgeOrder)
       })
 
       // Remove orders from the cancelling queue (marked by checkbox in the orders table)
       removeOrdersToCancel(fulfillOrdersBatchParams.orders.map(({ uid }) => uid))
     },
-    [chainId, _fulfillOrdersBatch, removeOrdersToCancel],
+    [chainId, account, _fulfillOrdersBatch, removeOrdersToCancel, bridgeOrdersMap],
   )
 
   const updateOrders = useCallback(

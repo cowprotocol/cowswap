@@ -6,9 +6,9 @@ import type { Currency, Price, Token } from '@uniswap/sdk-core'
 import type { Order } from 'legacy/state/orders/actions'
 
 import type { PendingOrdersPrices, SpotPricesKeyParams } from 'modules/orders'
-import type { BalancesAndAllowances } from 'modules/tokens'
 
 import type { UseCancelOrderReturn } from 'common/hooks/useCancelOrder'
+import { BalancesAndAllowances } from 'common/types'
 import type { CancellableOrder } from 'common/utils/isOrderCancellable'
 import type { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
@@ -77,7 +77,7 @@ export interface OrdersTableState {
   currentPageNumber: number
   pendingOrdersPrices: PendingOrdersPrices
   getSpotPrice: (params: SpotPricesKeyParams) => Price<Currency, Currency> | null
-  pendingActivities: string[]
+  pendingActivitiesCount: number
   isTwapTable: boolean
   selectedOrders: CancellableOrder[]
 }

@@ -72,7 +72,7 @@ export function useTradeQuotePolling(isConfirmOpen = false, isQuoteUpdatePossibl
     if (pollQuoteRef.current(true)) {
       resetQuoteCounter()
     }
-  }, [isConfirmOpen, quoteParams, resetQuoteCounter])
+  }, [isConfirmOpen, isQuoteUpdatePossible, quoteParams, resetQuoteCounter])
 
   /**
    * Update quote once a QUOTE_POLLING_INTERVAL
@@ -99,6 +99,9 @@ export function useTradeQuotePolling(isConfirmOpen = false, isQuoteUpdatePossibl
    */
   useLayoutEffect(() => {
     const interval = setInterval(() => {
+      // Do not tick while quote is loading
+      if (tradeQuoteRef.current.isLoading) return
+
       setTradeQuotePolling((state) => {
         const newState = state - ONE_SEC
 

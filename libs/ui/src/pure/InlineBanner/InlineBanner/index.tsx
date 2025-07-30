@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { CloseIcon, Wrapper } from './styled'
+import { CloseIcon, CustomContentBottom, CustomContentContainer, CustomContentTop, Wrapper } from './styled'
 
 import { StatusColorVariant, getStatusColorEnums } from '../../../theme/statusColors'
 import { BannerIcon } from '../shared/BannerIcon'
@@ -25,8 +25,27 @@ export function InlineBanner({
   fontSize,
   noBackground,
   breakWord,
+  customContent,
 }: InlineBannerProps): ReactNode {
   const colorEnums = getStatusColorEnums(bannerType)
+
+  const bannerIcon = (
+    <BannerIcon
+      hideIcon={hideIcon}
+      customIcon={customIcon}
+      iconSize={iconSize}
+      colorEnums={colorEnums}
+      bannerType={bannerType}
+      iconPadding={iconPadding}
+    />
+  )
+
+  const content = (
+    <>
+      {bannerIcon}
+      {noWrapContent ? children : <span>{children}</span>}
+    </>
+  )
 
   return (
     <Wrapper
@@ -43,17 +62,14 @@ export function InlineBanner({
       noBackground={noBackground}
       breakWord={breakWord}
     >
-      <span>
-        <BannerIcon
-          hideIcon={hideIcon}
-          customIcon={customIcon}
-          iconSize={iconSize}
-          colorEnums={colorEnums}
-          bannerType={bannerType}
-          iconPadding={iconPadding}
-        />
-        {noWrapContent ? children : <span>{children}</span>}
-      </span>
+      {customContent ? (
+        <CustomContentContainer>
+          <CustomContentTop>{content}</CustomContentTop>
+          <CustomContentBottom>{customContent}</CustomContentBottom>
+        </CustomContentContainer>
+      ) : (
+        <span>{content}</span>
+      )}
 
       {onClose && <CloseIcon onClick={onClose} />}
     </Wrapper>

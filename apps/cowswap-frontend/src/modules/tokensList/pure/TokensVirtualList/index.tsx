@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from 'react'
+import { ReactNode, useCallback, useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
@@ -10,63 +10,32 @@ import { VirtualList } from 'common/pure/VirtualList'
 
 import { SelectTokenContext } from '../../types'
 import { tokensListSorter } from '../../utils/tokensListSorter'
-import { TokenListItem } from '../TokenListItem'
+import { TokenListItemContainer } from '../TokenListItemContainer'
 
-export interface TokensVirtualListProps extends SelectTokenContext {
+export interface TokensVirtualListProps {
   allTokens: TokenWithLogo[]
-  account: string | undefined
   displayLpTokenLists?: boolean
+  selectTokenContext: SelectTokenContext
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function TokensVirtualList(props: TokensVirtualListProps) {
-  const {
-    allTokens,
-    selectedToken,
-    balancesState,
-    onSelectToken,
-    unsupportedTokens,
-    permitCompatibleTokens,
-    tokenListTags,
-    account,
-    displayLpTokenLists,
-  } = props
-  const { values: balances } = balancesState
+export function TokensVirtualList(props: TokensVirtualListProps): ReactNode {
+  const { allTokens, selectTokenContext, displayLpTokenLists } = props
+  const { values: balances } = selectTokenContext.balancesState
 
-  const isWalletConnected = !!account
   const { isYieldEnabled } = useFeatureFlags()
 
-  const sortedTokens = useMemo(() => balances ? allTokens.sort(tokensListSorter(balances)) : allTokens, [allTokens, balances])
+  const sortedTokens = useMemo(
+    () => (balances ? allTokens.sort(tokensListSorter(balances)) : allTokens),
+    [allTokens, balances],
+  )
 
   const getItemView = useCallback(
     (sortedTokens: TokenWithLogo[], virtualRow: VirtualItem) => {
       const token = sortedTokens[virtualRow.index]
-      const addressLowerCase = token.address.toLowerCase()
-      const balance = balances ? balances[token.address.toLowerCase()] : undefined
 
-      return (
-        <TokenListItem
-          token={token}
-          isUnsupported={!!unsupportedTokens[addressLowerCase]}
-          isPermitCompatible={permitCompatibleTokens[addressLowerCase]}
-          selectedToken={selectedToken}
-          balance={balance}
-          onSelectToken={onSelectToken}
-          isWalletConnected={isWalletConnected}
-          tokenListTags={tokenListTags}
-        />
-      )
+      return <TokenListItemContainer key={token.address} token={token} context={selectTokenContext} />
     },
-    [
-      balances,
-      unsupportedTokens,
-      permitCompatibleTokens,
-      selectedToken,
-      onSelectToken,
-      isWalletConnected,
-      tokenListTags,
-    ],
+    [selectTokenContext],
   )
 
   return (

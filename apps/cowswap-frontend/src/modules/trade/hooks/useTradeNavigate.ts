@@ -19,7 +19,7 @@ interface UseTradeNavigateCallback {
     { inputCurrencyId, outputCurrencyId }: TradeCurrenciesIds,
     searchParams?: TradeSearchParams,
     customRoute?: RoutesValues,
-  ): void
+  ): void | Promise<void>
 }
 
 export function useTradeNavigate(): UseTradeNavigateCallback {
@@ -55,7 +55,7 @@ export function useTradeNavigate(): UseTradeNavigateCallback {
       // Don't navigate if we're already on this route
       if (location.pathname === route && location.search.slice(1) === search) return
 
-      navigate({ pathname: route, search })
+      return navigate({ pathname: route, search })
     },
     [tradeRoute, navigate, location.pathname, location.search],
   )

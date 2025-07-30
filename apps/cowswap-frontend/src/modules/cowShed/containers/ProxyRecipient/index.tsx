@@ -5,7 +5,7 @@ import styled from 'styled-components/macro'
 
 import { AddressLink } from 'common/pure/AddressLink'
 
-import { useCurrentAccountProxyAddress } from '../../hooks/useCurrentAccountProxyAddress'
+import { useCurrentAccountProxyAddress } from '../../hooks/useCurrentAccountProxy'
 
 const Wrapper = styled.div`
   display: flex;
@@ -25,11 +25,9 @@ interface ProxyRecipientProps {
 }
 
 export function ProxyRecipient({ recipient, chainId, size = 14 }: ProxyRecipientProps): ReactNode {
-  const proxyAndAccount = useCurrentAccountProxyAddress()
+  const proxyAddress = useCurrentAccountProxyAddress()
 
-  if (!recipient || !proxyAndAccount) return null
-
-  const { proxyAddress } = proxyAndAccount
+  if (!recipient || !proxyAddress) return null
 
   if (recipient.toLowerCase() !== proxyAddress.toLowerCase()) {
     throw new Error(

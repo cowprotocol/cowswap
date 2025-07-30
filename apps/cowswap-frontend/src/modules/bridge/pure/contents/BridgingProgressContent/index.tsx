@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
 
+import { isFractionFalsy } from '@cowprotocol/common-utils'
 import { BridgeStatusResult } from '@cowprotocol/cow-sdk'
 
 import { FailedBridgingContent } from './FailedBridgingContent'
@@ -13,6 +14,7 @@ import { QuoteBridgeContent, QuoteBridgeContentProps } from '../QuoteBridgeConte
 interface BridgingContentProps extends QuoteBridgeContentProps {
   progressContext: BridgingProgressContext
   statusResult?: BridgeStatusResult
+  explorerUrl?: string
 }
 
 export function BridgingProgressContent(props: BridgingContentProps): ReactNode {
@@ -28,10 +30,11 @@ export function BridgingProgressContent(props: BridgingContentProps): ReactNode 
     },
     quoteContext,
     statusResult,
+    explorerUrl,
   } = props
 
   return (
-    <QuoteBridgeContent {...props}>
+    <QuoteBridgeContent {...props} isFinished={!isFractionFalsy(receivedAmount)}>
       {receivedAmount ? (
         <ReceivedBridgingContent
           statusResult={statusResult}
@@ -39,13 +42,14 @@ export function BridgingProgressContent(props: BridgingContentProps): ReactNode 
           destinationChainId={destinationChainId}
           receivedAmount={receivedAmount}
           receivedAmountUsd={receivedAmountUsd}
+          explorerUrl={explorerUrl}
         />
       ) : isRefunded ? (
         <RefundedBridgingContent account={account} bridgeSendCurrencyAmount={quoteContext.sellAmount} />
       ) : isFailed ? (
         <FailedBridgingContent />
       ) : (
-        <PendingBridgingContent />
+        <PendingBridgingContent sourceChainId={sourceChainId} statusResult={statusResult} explorerUrl={explorerUrl} />
       )}
     </QuoteBridgeContent>
   )

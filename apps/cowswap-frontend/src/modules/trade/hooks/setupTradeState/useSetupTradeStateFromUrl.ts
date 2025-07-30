@@ -1,11 +1,10 @@
 import { useSetAtom } from 'jotai'
-import { useMemo, useRef } from 'react'
+import { useMemo } from 'react'
 
 import { useLocation, useParams } from 'react-router'
 
 import { tradeStateFromUrlAtom } from '../../state/tradeStateFromUrlAtom'
 import { TradeRawState } from '../../types/TradeRawState'
-import { useTradeState } from '../useTradeState'
 
 /**
  * Updater to fetch trade state from URL params and query, and store it on jotai state
@@ -18,9 +17,6 @@ export function useSetupTradeStateFromUrl(): null {
   const location = useLocation()
   const stringifiedParams = JSON.stringify(params)
   const setState = useSetAtom(tradeStateFromUrlAtom)
-  const { state } = useTradeState()
-  const tradeStateRef = useRef(state)
-  tradeStateRef.current = state
 
   /**
    * useEffect() runs after the render completes and useMemo() runs during rendering.

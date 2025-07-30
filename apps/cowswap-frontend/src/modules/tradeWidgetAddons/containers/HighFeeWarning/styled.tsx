@@ -71,6 +71,16 @@ export const WarningCheckboxContainer = styled.label`
   }
 `
 
+export const InlineWarningCheckboxContainer = styled(WarningCheckboxContainer)`
+  margin: 4px auto;
+`
+
+export const InlineWarningTextContainer = styled.span`
+  padding-left: 8px;
+  padding-right: 8px;
+  text-align: center;
+`
+
 export const WarningContainer = styled(AuxInformationContainer).attrs((props) => ({
   ...props,
   hideInput: true,

@@ -25,6 +25,7 @@ interface SwapTradeButtonsContext {
   openSwapConfirm: Command
   hasEnoughWrappedBalanceForSwap: boolean
   onCurrencySelection: (field: Field, currency: Currency) => void
+  confirmText: string
 }
 
 type SwapTradeButton = (props: SwapTradeButtonsContext, isDisabled: boolean) => ReactNode | string
@@ -48,7 +49,7 @@ export const swapTradeButtonsMap: Record<SwapFormState, SwapTradeButton> = {
     <Wrapper>
       <ButtonError buttonSize={ButtonSize.BIG} onClick={props.openSwapConfirm} disabled={isDisabled}>
         <div>
-          <Trans>Swap</Trans>
+          <Trans>{props.confirmText}</Trans>
         </div>
       </ButtonError>
       <EthFlowBanner

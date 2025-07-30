@@ -1,4 +1,3 @@
-import { useAtomValue } from 'jotai'
 import React from 'react'
 
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
@@ -15,10 +14,10 @@ import { TwapConfirmDetails } from './TwapConfirmDetails'
 
 import { useCreateTwapOrder } from '../../hooks/useCreateTwapOrder'
 import { useIsFallbackHandlerRequired } from '../../hooks/useFallbackHandlerVerification'
+import { useScaledReceiveAmountInfo } from '../../hooks/useScaledReceiveAmountInfo'
 import { useTwapFormState } from '../../hooks/useTwapFormState'
+import { useTwapOrder } from '../../hooks/useTwapOrder'
 import { useTwapSlippage } from '../../hooks/useTwapSlippage'
-import { scaledReceiveAmountInfoAtom } from '../../state/scaledReceiveAmountInfoAtom'
-import { twapOrderAtom } from '../../state/twapOrderAtom'
 import { TwapFormWarnings } from '../TwapFormWarnings'
 
 const CONFIRM_TITLE = 'TWAP'
@@ -65,9 +64,9 @@ export function TwapConfirmModal() {
     outputCurrencyBalance,
     recipient,
   } = useAdvancedOrdersDerivedState()
-  // TODO: there's some overlap with what's in each atom
-  const twapOrder = useAtomValue(twapOrderAtom)
-  const receiveAmountInfo = useAtomValue(scaledReceiveAmountInfoAtom)
+  // TODO: there's some overlap with what's in each hook (useTwapOrder | useScaledReceiveAmountInfo)
+  const twapOrder = useTwapOrder()
+  const receiveAmountInfo = useScaledReceiveAmountInfo()
   const slippage = useTwapSlippage()
   const localFormValidation = useTwapFormState()
   const tradeConfirmActions = useTradeConfirmActions()

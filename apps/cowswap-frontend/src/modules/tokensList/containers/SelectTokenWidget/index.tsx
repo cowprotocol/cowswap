@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { ReactNode, useCallback, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { TokenWithLogo } from '@cowprotocol/common-const'
@@ -57,9 +57,8 @@ interface SelectTokenWidgetProps {
 }
 
 // TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
-export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTokenWidgetProps) {
+// eslint-disable-next-line max-lines-per-function
+export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTokenWidgetProps): ReactNode {
   const {
     open,
     onSelectToken,
@@ -95,7 +94,7 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
   })
   const importTokenCallback = useAddUserToken()
 
-  const { tokens: allTokens, isLoading: areTokensLoading, favoriteTokens } = useTokensToSelect()
+  const { tokens: allTokens, isLoading: areTokensLoading, favoriteTokens, areTokensFromBridge } = useTokensToSelect()
   const userAddedTokens = useUserAddedTokens()
   const allTokenLists = useAllListsList()
   const balancesState = useTokensBalancesCombined()
@@ -130,17 +129,13 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
     closeTokenSelectWidget()
   }, [closeTokenSelectWidget])
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const importTokenAndClose = (tokens: TokenWithLogo[]) => {
+  const importTokenAndClose = (tokens: TokenWithLogo[]): void => {
     importTokenCallback(tokens)
     onSelectToken?.(tokens[0])
     onDismiss()
   }
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const importListAndBack = (list: ListState) => {
+  const importListAndBack = (list: ListState): void => {
     try {
       addCustomTokenLists(list)
     } catch (error) {
@@ -222,6 +217,7 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
             onSelectChain={onSelectChain}
             areTokensLoading={areTokensLoading}
             tokenListTags={tokenListTags}
+            areTokensFromBridge={areTokensFromBridge}
           />
         )
       })()}

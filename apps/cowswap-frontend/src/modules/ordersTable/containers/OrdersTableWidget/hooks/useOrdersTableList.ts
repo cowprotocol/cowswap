@@ -3,6 +3,7 @@ import { useMemo } from 'react'
 import { Order, OrderStatus, PENDING_STATES } from 'legacy/state/orders/actions'
 import { useSetIsOrderUnfillable } from 'legacy/state/orders/hooks'
 
+import { BalancesAndAllowances } from 'common/types'
 import { getIsComposableCowOrder } from 'utils/orderUtils/getIsComposableCowOrder'
 import { getIsNotComposableCowOrder } from 'utils/orderUtils/getIsNotComposableCowOrder'
 
@@ -11,9 +12,7 @@ import { getOrderParams } from '../../../utils/getOrderParams'
 import { groupOrdersTable } from '../../../utils/groupOrdersTable'
 import { getParsedOrderFromTableItem, isParsedOrder } from '../../../utils/orderTableGroupUtils'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const ordersSorter = (a: OrderTableItem, b: OrderTableItem) => {
+const ordersSorter = (a: OrderTableItem, b: OrderTableItem): number => {
   const aCreationTime = getParsedOrderFromTableItem(a).creationTime
   const bCreationTime = getParsedOrderFromTableItem(b).creationTime
 
@@ -22,15 +21,11 @@ const ordersSorter = (a: OrderTableItem, b: OrderTableItem) => {
 
 const ORDERS_LIMIT = 100
 
-// TODO: Break down this large function into smaller functions
-
 export function useOrdersTableList(
   allOrders: Order[],
   orderType: TabOrderTypes,
   chainId: number,
-  // TODO: Replace any with proper type definitions
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  balancesAndAllowances: any,
+  balancesAndAllowances: BalancesAndAllowances,
 ): OrdersTableList {
   const setIsOrderUnfillable = useSetIsOrderUnfillable()
 

@@ -20,14 +20,21 @@ interface BridgeDetailsContentProps {
   crossChainOrder: CrossChainOrder
 }
 
+// TODO: Break down this large function into smaller functions
+//eslint-disable-next-line max-lines-per-function
 export function BridgeDetailsContent({ crossChainOrder }: BridgeDetailsContentProps): ReactNode {
   const {
     statusResult: { status: bridgeStatus, fillTxHash, depositTxHash, fillTimeInSeconds },
     bridgingParams: { inputAmount, outputAmount, owner, sourceChainId, destinationChainId, recipient },
     provider: { info: providerInfo },
+    order: { receiver },
   } = crossChainOrder
+  const bridgeProvider = crossChainOrder.provider
   const { sourceToken, destinationToken } = useCrossChainTokens(crossChainOrder)
 
+  const RecipientAddress = (
+    <AddressLink address={recipient} chainId={destinationChainId} bridgeProvider={bridgeProvider} showNetworkName />
+  )
   return (
     <>
       <DetailRow label="Provider" tooltipText={BridgeDetailsTooltips.provider}>
@@ -37,7 +44,16 @@ export function BridgeDetailsContent({ crossChainOrder }: BridgeDetailsContentPr
         </ProviderDisplayWrapper>
       </DetailRow>
 
-      <DetailRow label="From" tooltipText={BridgeDetailsTooltips.ownerAddress}>
+      {receiver && (
+        <DetailRow label="From" tooltipText={BridgeDetailsTooltips.accountProxy}>
+          <RowWithCopyButton
+            textToCopy={receiver}
+            contentsToDisplay={<AddressLink address={receiver} chainId={sourceChainId} showNetworkName />}
+          />
+        </DetailRow>
+      )}
+
+      <DetailRow label="Sender" tooltipText={BridgeDetailsTooltips.senderAddress}>
         <RowWithCopyButton
           textToCopy={owner}
           contentsToDisplay={<AddressLink address={owner} chainId={sourceChainId} showNetworkName />}
@@ -45,10 +61,7 @@ export function BridgeDetailsContent({ crossChainOrder }: BridgeDetailsContentPr
       </DetailRow>
 
       <DetailRow label="To" tooltipText={BridgeDetailsTooltips.receiverAddress}>
-        <RowWithCopyButton
-          textToCopy={recipient}
-          contentsToDisplay={<AddressLink address={recipient} chainId={destinationChainId} showNetworkName />}
-        />
+        <RowWithCopyButton textToCopy={recipient} contentsToDisplay={RecipientAddress} />
       </DetailRow>
 
       <DetailRow label="Status" tooltipText={BridgeDetailsTooltips.status}>
@@ -66,13 +79,18 @@ export function BridgeDetailsContent({ crossChainOrder }: BridgeDetailsContentPr
             labelPrefix="To at least:"
             bridgeToken={destinationToken}
             amount={outputAmount?.toString() || '0'}
+            bridgeProvider={bridgeProvider}
           />
         </AmountSectionWrapper>
       </DetailRow>
 
       <DetailRow label="You received" tooltipText={BridgeDetailsTooltips.youReceived}>
         {outputAmount && destinationToken && bridgeStatus === BridgeStatus.EXECUTED && (
-          <BridgeReceiveAmount amount={outputAmount} destinationToken={destinationToken} />
+          <BridgeReceiveAmount
+            amount={outputAmount}
+            destinationToken={destinationToken}
+            bridgeProvider={bridgeProvider}
+          />
         )}
       </DetailRow>
 

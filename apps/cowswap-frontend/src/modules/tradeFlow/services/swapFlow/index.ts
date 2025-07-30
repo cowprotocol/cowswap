@@ -1,9 +1,10 @@
 import { getAddress, reportPermitWithDefaultSigner } from '@cowprotocol/common-utils'
-import { SigningScheme } from '@cowprotocol/cow-sdk'
+import { SigningScheme, SigningStepManager } from '@cowprotocol/cow-sdk'
 import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { UiOrderType } from '@cowprotocol/types'
 import { Percent } from '@uniswap/sdk-core'
 
+import { SigningSteps } from 'entities/trade'
 import { tradingSdk } from 'tradingSdk/tradingSdk'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
@@ -31,8 +32,9 @@ export async function swapFlow(
 ): Promise<void | boolean> {
   const {
     tradeConfirmActions,
-    callbacks: { getCachedPermit },
+    callbacks: { getCachedPermit, addBridgeOrder, setSigningStep },
     tradeQuote,
+    bridgeQuoteAmounts,
   } = input
 
   const {
@@ -51,9 +53,13 @@ export async function swapFlow(
   const inputCurrency = inputAmount.currency
   const cachedPermit = await getCachedPermit(getAddress(inputCurrency))
 
+  const shouldSignPermit = isSupportedPermitInfo(permitInfo) && !cachedPermit
+  const isBridgingOrder = inputAmount.currency.chainId !== outputAmount.currency.chainId
+
   try {
     logTradeFlow('SWAP FLOW', 'STEP 2: handle permit')
-    if (isSupportedPermitInfo(permitInfo) && !cachedPermit) {
+    if (shouldSignPermit) {
+      setSigningStep(isBridgingOrder ? '1/3' : '1/2', SigningSteps.PermitSigning)
       tradeConfirmActions.requestPermitSignature(tradeAmounts)
     }
 
@@ -78,6 +84,22 @@ export async function swapFlow(
     tradeConfirmActions.onSign(tradeAmounts)
 
     logTradeFlow('SWAP FLOW', 'STEP 4: sign and post order')
+
+    const signingStepManager: SigningStepManager = {
+      beforeBridgingSign() {
+        setSigningStep(shouldSignPermit ? '2/3' : '1/2', SigningSteps.BridgingSigning)
+      },
+      beforeOrderSign() {
+        if (isBridgingOrder) {
+          setSigningStep(shouldSignPermit ? '3/3' : '2/2', SigningSteps.OrderSigning)
+        } else {
+          if (shouldSignPermit) {
+            setSigningStep('2/2', SigningSteps.OrderSigning)
+          }
+        }
+      },
+    }
+
     const {
       orderId,
       signature,
@@ -85,16 +107,19 @@ export async function swapFlow(
       orderToSign: unsignedOrder,
     } = await wrapErrorInOperatorError(() =>
       tradeQuote
-        .postSwapOrderFromQuote({
-          appData: orderParams.appData.doc,
-          additionalParams: {
-            signingScheme: orderParams.allowsOffchainSigning ? SigningScheme.EIP712 : SigningScheme.PRESIGN,
+        .postSwapOrderFromQuote(
+          {
+            appData: orderParams.appData.doc,
+            additionalParams: {
+              signingScheme: orderParams.allowsOffchainSigning ? SigningScheme.EIP712 : SigningScheme.PRESIGN,
+            },
+            quoteRequest: {
+              validTo: orderParams.validTo,
+              receiver: orderParams.recipient,
+            },
           },
-          quoteRequest: {
-            validTo: orderParams.validTo,
-            receiver: orderParams.recipient,
-          },
-        })
+          signingStepManager,
+        )
         .finally(() => {
           callbacks.closeModals()
         }),
@@ -132,6 +157,15 @@ export async function swapFlow(
       },
     })
 
+    if (bridgeQuoteAmounts) {
+      addBridgeOrder({
+        orderUid: orderId,
+        quoteAmounts: bridgeQuoteAmounts,
+        creationTimestamp: Date.now(),
+        recipient: orderParams.recipient,
+      })
+    }
+
     addPendingOrderStep(
       {
         id: orderId,
@@ -151,7 +185,7 @@ export async function swapFlow(
       kind,
       receiver: recipientAddressOrName,
       inputAmount,
-      outputAmount,
+      outputAmount: bridgeQuoteAmounts?.bridgeMinReceiveAmount || outputAmount,
       owner: account,
       uiOrderType: UiOrderType.SWAP,
     })
@@ -177,8 +211,8 @@ export async function swapFlow(
     analytics.sign(swapFlowAnalyticsContext)
 
     return true
-  // TODO: Replace any with proper type definitions
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // TODO: Replace any with proper type definitions
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     logTradeFlow('SWAP FLOW', 'STEP 8: ERROR: ', error)
     const swapErrorMessage = getSwapErrorMessage(error)

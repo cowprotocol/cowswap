@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { usePrevious } from '@cowprotocol/common-hooks'
-import { debounce, getRawCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
+import { getRawCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useSwitchNetwork, useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
@@ -47,21 +47,25 @@ export function useSetupTradeState(): void {
   const isAlternativeModalVisible = useIsAlternativeOrderModalVisible()
 
   const switchNetworkInWallet = useCallback(
-    (targetChainId: SupportedChainId) => {
-      switchNetwork(targetChainId).catch((error: Error) => {
+    async (targetChainId: SupportedChainId) => {
+      try {
+        await switchNetwork(targetChainId)
+      } catch (error) {
         // We are ignoring Gnosis safe context error
         // Because it's a normal situation when we are not in Gnosis safe App
         if (error.name === 'NoSafeContext') return
 
         console.error('Network switching error: ', error)
-      })
+      }
     },
     [switchNetwork],
   )
 
-  const debouncedSwitchNetworkInWallet = debounce(([targetChainId]: [SupportedChainId]) => {
-    switchNetworkInWallet(targetChainId)
-  }, 800)
+
+  const navigateAndSwitchNetwork = useCallback(async (chainId: number | null, tradeState: TradeRawState): Promise<void> => {
+      await tradeNavigate(chainId, tradeState)
+      await switchNetworkInWallet(chainId || SupportedChainId.MAINNET)
+    }, [tradeNavigate, switchNetworkInWallet])
 
   const onProviderNetworkChanges = useCallback(() => {
     const rememberedUrlState = rememberedUrlStateRef.current
@@ -69,7 +73,7 @@ export function useSetupTradeState(): void {
     if (rememberedUrlState) {
       rememberedUrlStateRef.current = null
 
-      tradeNavigate(rememberedUrlState.chainId, rememberedUrlState)
+      navigateAndSwitchNetwork(rememberedUrlState.chainId, rememberedUrlState)
     } else {
       // When app loaded with connected wallet
       if (isFirstLoad && isWalletConnected) {
@@ -81,7 +85,7 @@ export function useSetupTradeState(): void {
         }
       }
 
-      tradeNavigate(providerChainId, getDefaultTradeRawState(providerChainId))
+      navigateAndSwitchNetwork(providerChainId, getDefaultTradeRawState(providerChainId))
     }
     // Triggering only when chainId was changed in the provider
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -149,7 +153,7 @@ export function useSetupTradeState(): void {
     // Applying of the remembered state after network successfully changed
     if (isWalletConnected && providerAndUrlChainIdMismatch && prevTradeStateFromUrl) {
       rememberedUrlStateRef.current = tradeStateFromUrl
-      tradeNavigate(prevTradeStateFromUrl.chainId, prevTradeStateFromUrl)
+      updateState?.(tradeStateFromUrl)
       console.debug(
         '[TRADE STATE]',
         'Remembering a new state from URL while changing chainId in provider',
@@ -160,14 +164,13 @@ export function useSetupTradeState(): void {
     }
 
     if (sameTokens || tokensAreEmpty || onlyChainIdIsChanged) {
-      tradeNavigate(currentChainId, defaultState)
+      navigateAndSwitchNetwork(currentChainId, defaultState)
 
       if (sameTokens) {
         console.debug('[TRADE STATE]', 'Url contains invalid tokens, resetting')
       } else if (tokensAreEmpty) {
         console.debug('[TRADE STATE]', 'Url does not contain both tokens, resetting')
       } else if (onlyChainIdIsChanged) {
-        // In this case we should update only chainId in the trade state
         updateState?.({ ...state, chainId: currentChainId })
         console.debug('[TRADE STATE]', 'Only chainId was changed in URL, resetting')
       }
@@ -204,10 +207,7 @@ export function useSetupTradeState(): void {
     if (!providerChainId || providerChainId === currentChainId) return
 
     const targetChainId = rememberedUrlStateRef.current?.chainId || currentChainId
-
-    // Debouncing switching multiple time in a quick span of time to avoid running into infinity loop of updating provider and url state.
-    // issue GH : https://github.com/cowprotocol/cowswap/issues/4734
-    debouncedSwitchNetworkInWallet(targetChainId)
+    switchNetworkInWallet(targetChainId)
 
     console.debug('[TRADE STATE]', 'Set chainId to provider', { provider, urlChainId })
     // Triggering only when chainId in URL is changes, provider is changed or rememberedUrlState is changed
