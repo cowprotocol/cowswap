@@ -10,4 +10,4 @@ export { useHighFeeWarning } from './containers/HighFeeWarning/hooks/useHighFeeW
 export { NetworkCostsTooltipSuffix } from './pure/NetworkCostsTooltipSuffix'
 export { DeadlineTransactionSettings } from './containers/DeadlineTransactionSettings'
 export { TransactionSlippageInput } from './containers/TransactionSlippageInput'
-export { useRecipientDisplay } from './hooks/useRecipientDisplay'
+export { useRecipientValidation } from './hooks/useRecipientValidation'

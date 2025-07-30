@@ -7,8 +7,9 @@ import {
   useShouldDisplayBridgeDetails,
   QuoteDetails,
 } from 'modules/bridge'
+import { RecipientRow } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
-import { TradeRateDetails, useRecipientDisplay } from 'modules/tradeWidgetAddons'
+import { TradeRateDetails, useRecipientValidation } from 'modules/tradeWidgetAddons'
 
 import { RateInfoParams } from 'common/pure/RateInfo'
 
@@ -72,7 +73,7 @@ export function SwapRateDetails({
   )
 
   // Show recipient row when accordion is closed for bridge orders, always show for regular swaps
-  const recipientRowWhenClosed = useRecipientDisplay({
+  const recipientValidation = useRecipientValidation({
     recipient,
     recipientEnsName,
     recipientChainId: bridgeContext?.buyAmount?.currency?.chainId, // Use bridge chain if available
@@ -82,6 +83,8 @@ export function SwapRateDetails({
     // For regular swaps, always show the recipient row
     isFeeDetailsOpen: shouldDisplayBridgeDetails ? isAccordionOpen : false,
   })
+
+  const recipientRowWhenClosed = recipientValidation.isValid ? <RecipientRow {...recipientValidation.props} /> : null
 
   return (
     <TradeRateDetails

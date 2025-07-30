@@ -5,7 +5,8 @@ import { Media } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-import { useRecipientDisplay } from 'modules/tradeWidgetAddons'
+import { RecipientRow } from 'modules/trade'
+import { useRecipientValidation } from 'modules/tradeWidgetAddons'
 
 import { RouteOverviewTitle } from '../RouteOverviewTitle'
 
@@ -70,13 +71,15 @@ export function CollapsibleBridgeRoute(props: CollapsibleBridgeRouteProps): Reac
   const toggleExpanded = (): void => setIsExpanded((state) => !state)
 
   // Show recipient row when collapsed
-  const recipientRow = useRecipientDisplay({
+  const recipientValidation = useRecipientValidation({
     recipient,
     recipientEnsName,
     recipientChainId,
     account,
     isFeeDetailsOpen: isExpanded, // Hide when expanded, show when collapsed
   })
+
+  const recipientRow = recipientValidation.isValid ? <RecipientRow {...recipientValidation.props} /> : null
 
   return (
     <Wrapper className={className}>

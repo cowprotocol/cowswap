@@ -1,12 +1,10 @@
-import { useMemo, ReactNode, createElement } from 'react'
+import { useMemo } from 'react'
 
 import { isAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { RecipientRow } from 'modules/trade'
-
-export interface UseRecipientDisplayParams {
+export interface UseRecipientValidationParams {
   recipient?: string | null
   recipientEnsName?: string | null
   recipientChainId?: number
@@ -14,6 +12,18 @@ export interface UseRecipientDisplayParams {
   isFeeDetailsOpen?: boolean
   fallbackChainId?: SupportedChainId
 }
+
+export interface RecipientRowProps {
+  chainId: SupportedChainId
+  recipient: string
+  recipientEnsName?: string | null
+  recipientChainId?: number
+  showNetworkLogo: boolean
+}
+
+export type RecipientValidationResult = 
+  | { isValid: false }
+  | { isValid: true; props: RecipientRowProps }
 
 function isValidRecipientContext(params: {
   recipient?: string | null
@@ -55,24 +65,24 @@ function resolveDisplayChainId(
   return fallbackChainId || currentChainId
 }
 
-export function useRecipientDisplay({
+export function useRecipientValidation({
   recipient,
   recipientEnsName,
   recipientChainId,
   account,
   isFeeDetailsOpen = false,
   fallbackChainId,
-}: UseRecipientDisplayParams): ReactNode {
+}: UseRecipientValidationParams): RecipientValidationResult {
   const { chainId } = useWalletInfo()
 
   return useMemo(() => {
     const context = { recipient, account, isFeeDetailsOpen }
     if (!isValidRecipientContext(context)) {
-      return null
+      return { isValid: false }
     }
 
     if (!isDifferentFromAccount(context.recipient, recipientEnsName, context.account)) {
-      return null
+      return { isValid: false }
     }
 
     const isBridgeTransaction = recipientChainId && recipientChainId !== chainId
@@ -81,18 +91,20 @@ export function useRecipientDisplay({
       : isValidForSwap(context.recipient, recipientEnsName, chainId)
 
     if (!isValid) {
-      return null
+      return { isValid: false }
     }
 
     const displayChainId = resolveDisplayChainId(recipientChainId, fallbackChainId, chainId)
 
-    return createElement(RecipientRow, {
-      chainId: displayChainId,
-      recipient: context.recipient,
-      account: context.account,
-      recipientEnsName,
-      recipientChainId,
-      showNetworkLogo: Boolean(recipientChainId && recipientChainId !== chainId),
-    })
+    return {
+      isValid: true,
+      props: {
+        chainId: displayChainId,
+        recipient: context.recipient,
+        recipientEnsName,
+        recipientChainId,
+        showNetworkLogo: Boolean(recipientChainId && recipientChainId !== chainId),
+      },
+    }
   }, [recipient, recipientEnsName, recipientChainId, account, isFeeDetailsOpen, fallbackChainId, chainId])
 }

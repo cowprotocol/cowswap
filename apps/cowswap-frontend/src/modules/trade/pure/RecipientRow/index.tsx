@@ -1,6 +1,5 @@
 import { ReactNode } from 'react'
 
-import { isAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { InfoTooltip, NetworkLogo } from '@cowprotocol/ui'
 
@@ -37,56 +36,29 @@ const Row = styled.div`
 interface RecipientRowProps {
   chainId: SupportedChainId
   recipient: Nullish<string>
-  account: Nullish<string>
-  // Enhanced props for ENS and cross-chain support
   recipientEnsName?: string | null
   recipientChainId?: number
   showNetworkLogo?: boolean
 }
 
-function shouldShowRecipient(recipient: Nullish<string>, account: Nullish<string>): boolean {
-  return !(!recipient || recipient.toLowerCase() === account?.toLowerCase())
-}
-
-function isValidRecipientAddress(
-  recipient: string,
-  recipientEnsName: string | null | undefined,
+function resolveDisplayChainId(
   recipientChainId: number | undefined,
-  chainId: SupportedChainId,
-): boolean {
-  const isBridgeTransaction = recipientChainId && recipientChainId !== chainId
-
-  if (isBridgeTransaction) {
-    // For bridge transactions, ONLY valid addresses are allowed
-    // ENS names should never be valid, even if passed in recipientEnsName
-    return !!isAddress(recipient)
+  currentChainId: SupportedChainId,
+): SupportedChainId {
+  if (recipientChainId && Object.values(SupportedChainId).includes(recipientChainId as SupportedChainId)) {
+    return recipientChainId as SupportedChainId
   }
-
-  // For regular swaps, allow valid addresses on any chain
-  if (isAddress(recipient)) {
-    return true
-  }
-
-  // For regular swaps, allow ENS names only if resolved AND on Ethereum mainnet
-  if (recipientEnsName && chainId === SupportedChainId.MAINNET) {
-    return true
-  }
-
-  return false
+  return currentChainId
 }
 
 export function RecipientRow(props: RecipientRowProps): ReactNode {
-  const { chainId, recipient, account, recipientEnsName, recipientChainId, showNetworkLogo = false } = props
+  const { chainId, recipient, recipientEnsName, recipientChainId, showNetworkLogo = false } = props
 
-  if (!shouldShowRecipient(recipient, account)) {
+  if (!recipient) {
     return null
   }
 
-  if (!recipient || !isValidRecipientAddress(recipient, recipientEnsName, recipientChainId, chainId)) {
-    return null
-  }
-
-  const displayChainId = (recipientChainId || chainId) as SupportedChainId
+  const displayChainId = resolveDisplayChainId(recipientChainId, chainId)
 
   return (
     <Row>
@@ -96,11 +68,7 @@ export function RecipientRow(props: RecipientRowProps): ReactNode {
       </div>
       <div>
         {showNetworkLogo && recipientChainId && <NetworkLogo chainId={displayChainId} size={16} />}
-        <AddressLink 
-          address={recipient} 
-          chainId={displayChainId} 
-          ensName={recipientEnsName}
-        />
+        <AddressLink address={recipient} chainId={displayChainId} ensName={recipientEnsName} />
       </div>
     </Row>
   )
