@@ -21,7 +21,7 @@ interface BridgeDetailsContentProps {
 }
 
 // TODO: Break down this large function into smaller functions
- 
+
 export function BridgeDetailsContent({ crossChainOrder }: BridgeDetailsContentProps): ReactNode {
   const {
     statusResult: { status: bridgeStatus, fillTxHash, depositTxHash, fillTimeInSeconds },
@@ -43,7 +43,7 @@ export function BridgeDetailsContent({ crossChainOrder }: BridgeDetailsContentPr
         </ProviderDisplayWrapper>
       </DetailRow>
 
-      <DetailRow label="From" tooltipText={BridgeDetailsTooltips.senderAddress}>
+      <DetailRow label="From" tooltipText={BridgeDetailsTooltips.accountFromProxy}>
         <RowWithCopyButton
           textToCopy={owner}
           contentsToDisplay={<AddressLink address={owner} chainId={sourceChainId} showNetworkName />}
