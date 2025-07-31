@@ -1,8 +1,11 @@
-import { ArticlesPageComponents } from '@/components/ArticlesPageComponents'
 import { redirect } from 'next/navigation'
-import { Article, getArticles, getCategories } from '../../../../../services/cms'
+
+import { Article, Category, getArticles, getCategories, CMS_CACHE_TIME } from '../../../../../services/cms'
+
+import { ArticlesPageComponents } from '@/components/ArticlesPageComponents'
 import { ARTICLES_PER_PAGE } from '@/const/pagination'
 import { calculateTotalPages } from '@/util/paginationUtils'
+
 
 type Props = {
   params: Promise<{ pageIndex?: string[] }>
@@ -17,6 +20,8 @@ export type ArticlesResponse = {
   }
 }
 
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export async function generateStaticParams() {
   const articlesResponse = await getArticles({ page: 0, pageSize: ARTICLES_PER_PAGE })
   const totalArticles = articlesResponse.meta?.pagination?.total || 0
@@ -25,6 +30,11 @@ export async function generateStaticParams() {
   return Array.from({ length: totalPages }, (_, i) => ({ pageIndex: [(i + 1).toString()] }))
 }
 
+export const revalidate = CMS_CACHE_TIME // 1 hour - aligns with CMS service cache timing
+
+// TODO: Reduce function complexity by extracting logic
+// TODO: Add proper return type annotation
+// eslint-disable-next-line complexity, @typescript-eslint/explicit-function-return-type
 export default async function Page({ params }: Props) {
   const pageParam = (await params)?.pageIndex?.[0]
   const paramsAreSet = Boolean(pageParam)
@@ -52,6 +62,8 @@ export default async function Page({ params }: Props) {
   const allArticles = allArticlesResponse.data
 
   const articles =
+    // TODO: Reduce function complexity by extracting logic
+    // eslint-disable-next-line complexity
     articlesResponse.data?.map((article: Article) => ({
       ...article,
       id: article.id || 0,
@@ -69,7 +81,7 @@ export default async function Page({ params }: Props) {
 
   const categoriesResponse = await getCategories()
   const allCategories =
-    categoriesResponse?.map((category: any) => ({
+    categoriesResponse?.map((category: Category) => ({
       name: category?.attributes?.name || '',
       slug: category?.attributes?.slug || '',
     })) || []
