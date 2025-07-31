@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.50.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.49.0...explorer-v2.50.0) (2025-07-31)
+
+
+### Features
+
+* remove from Explorer bridge order `Sender` row ([#6051](https://github.com/cowprotocol/cowswap/issues/6051)) ([bf54034](https://github.com/cowprotocol/cowswap/commit/bf540347234906129496253f0c2c1d51f2fde6f7))
+
 ## [2.49.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.48.3...explorer-v2.49.0) (2025-07-30)
 
 
