@@ -117,7 +117,7 @@ export function StackedProtocolIcons({
     hoveredIcon,
   )
 
-  const cowProtocolBgColor = UI.COLOR_PURPLE_200_PRIMARY
+  const cowProtocolBgColor = UI.COLOR_PURPLE_800_PRIMARY
   const firstIconZIndex = isFirstOnTop ? 3 : 1
   const secondIconZIndex = isSecondOnTop ? 3 : isFirstOnTop ? 1 : 2
 
@@ -126,7 +126,7 @@ export function StackedProtocolIcons({
       variant={ProductVariant.CowProtocol} 
       height={currentLogoHeight} 
       logoIconOnly 
-      overrideColor={`var(${UI.COLOR_PURPLE_800_PRIMARY})`}
+      overrideColor={`var(${UI.COLOR_PURPLE_200_PRIMARY})`}
     />
   )
   const secondIconChildContent = (

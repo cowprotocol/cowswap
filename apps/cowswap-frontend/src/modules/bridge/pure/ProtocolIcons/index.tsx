@@ -34,13 +34,13 @@ function SingleProtocolIcon({
   currentLogoHeight,
 }: SingleProtocolIconProps): ReactNode {
   const protocolName = showOnlyFirst ? COW_PROTOCOL_NAME : secondProtocol?.name
-  const protocolBgColor = showOnlyFirst ? UI.COLOR_PURPLE_200_PRIMARY : undefined
+  const protocolBgColor = showOnlyFirst ? UI.COLOR_PURPLE_800_PRIMARY : undefined
   const iconChild = showOnlyFirst ? (
     <ProductLogo
       variant={ProductVariant.CowProtocol}
       height={currentLogoHeight}
       logoIconOnly
-      overrideColor={`var(${UI.COLOR_PURPLE_800_PRIMARY})`}
+      overrideColor={`var(${UI.COLOR_PURPLE_200_PRIMARY})`}
     />
   ) : (
     <img
@@ -57,7 +57,7 @@ function SingleProtocolIcon({
       size={currentDisplaySize}
       isStacked={false}
       bgColor={protocolBgColor}
-      color={showOnlyFirst ? `var(${UI.COLOR_PURPLE_800_PRIMARY})` : undefined}
+      color={showOnlyFirst ? `var(${UI.COLOR_PURPLE_200_PRIMARY})` : undefined}
     >
       {iconChild}
     </ProtocolIcon>
