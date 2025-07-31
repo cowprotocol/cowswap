@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.114.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.113.0...cowswap-v1.114.0) (2025-07-31)
+
+
+### Features
+
+* **bridge:** add feature flag areUnsupportedChainsEnabled ([#6054](https://github.com/cowprotocol/cowswap/issues/6054)) ([89b8f08](https://github.com/cowprotocol/cowswap/commit/89b8f08896ff729e862b188a4e74ccca5f73df99))
+
+
+### Bug Fixes
+
+* **bridge:** remove bridge disclaimer from swap stop ([#6047](https://github.com/cowprotocol/cowswap/issues/6047)) ([2b21db8](https://github.com/cowprotocol/cowswap/commit/2b21db8433460c22144903a34eba2208cad100ac))
+* **bridge:** remove timeline dot from ConfirmDetailsItem ([#6053](https://github.com/cowprotocol/cowswap/issues/6053)) ([4a910d0](https://github.com/cowprotocol/cowswap/commit/4a910d063cbded0063a1d53e87b1a448f0367f3b))
+* **bridge:** show at least when swap hasn't being completed yet ([#6052](https://github.com/cowprotocol/cowswap/issues/6052)) ([f6acd37](https://github.com/cowprotocol/cowswap/commit/f6acd370df192c0e95ae7faade336c821d3007bd))
+* **bridge:** swap protocol icon colors for better contrast ([#6059](https://github.com/cowprotocol/cowswap/issues/6059)) ([52bbb97](https://github.com/cowprotocol/cowswap/commit/52bbb970383947f5ca56eb2abdad5d25d4ed27ed))
+* **bridge:** update protocol icons to use correct color scheme ([#6056](https://github.com/cowprotocol/cowswap/issues/6056)) ([2530852](https://github.com/cowprotocol/cowswap/commit/2530852b801eb11c3246c1b8107d68f709a26d18))
+* **bridge:** wait 0.5s between hook and order signing ([#6050](https://github.com/cowprotocol/cowswap/issues/6050)) ([e0479e7](https://github.com/cowprotocol/cowswap/commit/e0479e724d0bbc9bd8dbd960275015e6e44c4b19))
+
 ## [1.113.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.112.4...cowswap-v1.113.0) (2025-07-30)
 
 
