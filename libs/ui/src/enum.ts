@@ -88,8 +88,6 @@ export enum UI {
   COLOR_BLUE_400_PRIMARY = '--cow-color-blue-400-primary',
   COLOR_BLUE_500_PRIMARY = '--cow-color-blue-500-primary',
   COLOR_BLUE_900_PRIMARY = '--cow-color-blue-900-primary',
-  COLOR_PURPLE_200_PRIMARY = '--cow-color-purple-200-primary',
-  COLOR_PURPLE_800_PRIMARY = '--cow-color-purple-800-primary',
   COLOR_LIGHT_BLUE_OPACITY_90 = '--cow-color-lightBlue-opacity-90',
   COLOR_LIGHT_BLUE_OPACITY_80 = '--cow-color-lightBlue-opacity-80',
   COLOR_YELLOW_LIGHT = '--cow-color-yellow-light',

@@ -33,6 +33,8 @@ export function BridgeSummaryHeader({
   const isCustomRecipient = !!targetRecipient && !areAddressesEqual(order.owner, targetRecipient)
   const targetAmount = targetAmounts?.buyAmount
 
+  // Only show destination chain when we have confirmed bridge data (crossChainOrder loaded)
+  const showDestinationChain = !!swapAndBridgeContext?.statusResult
   const isFinished = swapAndBridgeContext?.bridgingStatus === SwapAndBridgeStatus.DONE
 
   return (
@@ -50,7 +52,7 @@ export function BridgeSummaryHeader({
         <b>{isFinished ? 'To' : 'To at least'}</b>
 
         <i>
-          {targetAmount ? (
+          {targetAmount && showDestinationChain ? (
             <>
               <TokenLogo token={targetAmount.currency} size={20} />
               <TokenAmount amount={targetAmount} tokenSymbol={targetAmount.currency} />

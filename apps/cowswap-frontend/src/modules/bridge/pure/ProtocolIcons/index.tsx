@@ -1,12 +1,10 @@
 import { ReactNode } from 'react'
 
 import { BridgeProviderInfo } from '@cowprotocol/cow-sdk'
-import { ProductVariant, ProductLogo, UI } from '@cowprotocol/ui'
+import { ProductVariant, UI, ProductLogo } from '@cowprotocol/ui'
 
 import { StackedProtocolIcons } from './StackedProtocolIcons'
 import { ProtocolIcon } from './styled'
-
-import { COW_PROTOCOL_NAME } from '../../constants'
 
 export interface ProtocolIconsProps {
   secondProtocol?: BridgeProviderInfo
@@ -33,15 +31,10 @@ function SingleProtocolIcon({
   currentDisplaySize,
   currentLogoHeight,
 }: SingleProtocolIconProps): ReactNode {
-  const protocolName = showOnlyFirst ? COW_PROTOCOL_NAME : secondProtocol?.name
-  const protocolBgColor = showOnlyFirst ? UI.COLOR_PURPLE_800_PRIMARY : undefined
+  const protocolName = showOnlyFirst ? 'CoW Swap' : secondProtocol?.name
+  const protocolBgColor = showOnlyFirst ? UI.COLOR_BLUE_300_PRIMARY : undefined
   const iconChild = showOnlyFirst ? (
-    <ProductLogo
-      variant={ProductVariant.CowProtocol}
-      height={currentLogoHeight}
-      logoIconOnly
-      overrideColor={`var(${UI.COLOR_PURPLE_200_PRIMARY})`}
-    />
+    <ProductLogo variant={ProductVariant.CowSwap} height={currentLogoHeight} logoIconOnly />
   ) : (
     <img
       src={secondProtocol?.logoUrl}
@@ -52,13 +45,7 @@ function SingleProtocolIcon({
   )
 
   return (
-    <ProtocolIcon
-      title={protocolName}
-      size={currentDisplaySize}
-      isStacked={false}
-      bgColor={protocolBgColor}
-      color={showOnlyFirst ? `var(${UI.COLOR_PURPLE_200_PRIMARY})` : undefined}
-    >
+    <ProtocolIcon title={protocolName} size={currentDisplaySize} isStacked={false} bgColor={protocolBgColor}>
       {iconChild}
     </ProtocolIcon>
   )
