@@ -1,11 +1,14 @@
 import { useCallback, useState } from 'react'
 
 import { CowShedContract, CowShedContractAbi } from '@cowprotocol/abis'
+import { delay } from '@cowprotocol/common-utils'
 import { SigningScheme } from '@cowprotocol/contracts'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { formatBytes32String } from '@ethersproject/strings'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+
+import ms from 'ms.macro'
 
 import { useContract } from 'common/hooks/useContract'
 
@@ -16,6 +19,7 @@ import { getRecoverFundsCalls } from '../services/getRecoverFundsCalls'
 
 const INFINITE_DEADLINE = 99999999999
 const DEFAULT_GAS_LIMIT = 600_000
+const DELAY_BETWEEN_SIGNATURES = ms`500ms`
 
 export enum RecoverSigningStep {
   SIGN_RECOVER_FUNDS = 'SIGN_RECOVER_FUNDS',
@@ -83,6 +87,8 @@ export function useRecoverFundsFromProxy(
       )
 
       setTxSigningStep(RecoverSigningStep.SIGN_TRANSACTION)
+
+      await delay(DELAY_BETWEEN_SIGNATURES)
 
       const transaction = await cowShedContract.executeHooks(calls, nonce, BigInt(validTo), account, encodedSignature, {
         gasLimit: DEFAULT_GAS_LIMIT,

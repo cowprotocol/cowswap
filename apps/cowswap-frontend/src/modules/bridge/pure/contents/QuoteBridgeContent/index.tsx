@@ -93,7 +93,6 @@ export function QuoteBridgeContent({
 
       {!isFinished && (
         <ConfirmDetailsItem
-          withTimelineDot
           label={
             !isQuoteDisplay ? (
               MIN_RECEIVE_TITLE
