@@ -77,6 +77,7 @@ export const ALL_ENVIRONMENTS: EnvironmentName[] = [
 export type EnvironmentName = 'local' | 'development' | 'pr' | 'staging' | 'production' | 'barn' | 'ens'
 
 export const environmentName: EnvironmentName | undefined = (function () {
+  console.log('getting environmentName ==>', isProd, isBarn, isEns, isStaging, isPr, isDev, isLocal)
   if (isProd) {
     return 'production'
   } else if (isBarn) {
