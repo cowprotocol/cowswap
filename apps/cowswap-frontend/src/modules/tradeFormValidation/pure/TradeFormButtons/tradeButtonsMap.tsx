@@ -1,5 +1,6 @@
 import { ReactElement, ReactNode } from 'react'
 
+import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
 import { getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
 import { BridgeProviderQuoteError, BridgeQuoteErrors } from '@cowprotocol/cow-sdk'
 import { CenteredDots, HelpTooltip, TokenSymbol } from '@cowprotocol/ui'
@@ -228,12 +229,12 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   [TradeFormValidation.ProxyAccountLoading]: {
     text: (
       <>
-        <span>Loading account proxy</span>
+        <span>Loading {ACCOUNT_PROXY_LABEL}</span>
         <CenteredDots smaller />
       </>
     ),
   },
   [TradeFormValidation.ProxyAccountUnknown]: {
-    text: "Couldn't verify account proxy, please try later",
+    text: `Couldn't verify ${ACCOUNT_PROXY_LABEL}, please try later`,
   },
 }
