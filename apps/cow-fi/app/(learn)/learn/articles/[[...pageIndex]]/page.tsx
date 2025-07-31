@@ -1,11 +1,10 @@
 import { redirect } from 'next/navigation'
 
-import { Article, Category, getArticles, getCategories, CMS_CACHE_TIME } from '../../../../../services/cms'
+import { Article, Category, getArticles, getCategories } from '../../../../../services/cms'
 
 import { ArticlesPageComponents } from '@/components/ArticlesPageComponents'
 import { ARTICLES_PER_PAGE } from '@/const/pagination'
 import { calculateTotalPages } from '@/util/paginationUtils'
-
 
 type Props = {
   params: Promise<{ pageIndex?: string[] }>
@@ -30,7 +29,9 @@ export async function generateStaticParams() {
   return Array.from({ length: totalPages }, (_, i) => ({ pageIndex: [(i + 1).toString()] }))
 }
 
-export const revalidate = CMS_CACHE_TIME // 1 hour - aligns with CMS service cache timing
+// Next.js requires revalidate to be a literal number for static analysis
+// This value (3600 seconds = 1 hour) should match CMS_CACHE_TIME in services/cms/index.ts
+export const revalidate = 3600
 
 // TODO: Reduce function complexity by extracting logic
 // TODO: Add proper return type annotation
