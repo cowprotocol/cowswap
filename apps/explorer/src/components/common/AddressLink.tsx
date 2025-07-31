@@ -64,7 +64,7 @@ export function AddressLink({
           {(showIcon || showNetworkName) && (
             <NetworkLogo chainId={chainId} size={16} logoUrl={bridgeNetwork?.logo.light} forceLightMode />
           )}
-          {address.toLowerCase()} ↗
+          {address} ↗
         </LinkWithNetworkWrapper>
       </LinkWithPrefixNetwork>
       {showNetworkName && <NetworkName>on {chainLabel}</NetworkName>}

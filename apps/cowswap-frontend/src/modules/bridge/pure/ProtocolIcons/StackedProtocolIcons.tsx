@@ -1,7 +1,7 @@
 import { useState, useMemo, ReactNode } from 'react'
 
 import { BridgeProviderInfo } from '@cowprotocol/cow-sdk'
-import { ProductVariant, ProductLogo, UI } from '@cowprotocol/ui'
+import { ProductVariant, UI, ProductLogo } from '@cowprotocol/ui'
 
 import { ProtocolIcon, ProtocolIconsContainer, getBorderWidth } from './styled'
 
@@ -117,18 +117,11 @@ export function StackedProtocolIcons({
     hoveredIcon,
   )
 
-  const cowProtocolBgColor = UI.COLOR_PURPLE_800_PRIMARY
+  const cowSwapBgColor = UI.COLOR_BLUE_300_PRIMARY
   const firstIconZIndex = isFirstOnTop ? 3 : 1
   const secondIconZIndex = isSecondOnTop ? 3 : isFirstOnTop ? 1 : 2
 
-  const firstIconChildContent = (
-    <ProductLogo 
-      variant={ProductVariant.CowProtocol} 
-      height={currentLogoHeight} 
-      logoIconOnly 
-      overrideColor={`var(${UI.COLOR_PURPLE_200_PRIMARY})`}
-    />
-  )
+  const firstIconChildContent = <ProductLogo variant={ProductVariant.CowSwap} height={currentLogoHeight} logoIconOnly />
   const secondIconChildContent = (
     <img src={secondProtocol.logoUrl} width={currentLogoHeight} height={currentLogoHeight} alt={secondProtocol.name} />
   )
@@ -143,8 +136,8 @@ export function StackedProtocolIcons({
     <ProtocolIconsContainer iconSize={currentDisplaySize} overlapRatio={STACKED_ICON_OVERLAP_RATIO}>
       <ProtocolIcon
         key="first"
-        title="CoW Protocol"
-        bgColor={cowProtocolBgColor}
+        title="CoW Swap"
+        bgColor={cowSwapBgColor}
         style={{ zIndex: firstIconZIndex }}
         maskConfig={firstMaskConfig}
         onMouseEnter={handleFirstIconMouseEnter}

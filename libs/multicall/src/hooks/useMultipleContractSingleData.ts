@@ -61,20 +61,15 @@ export function useMultipleContractSingleData<T = Result>(
       string,
       Interface,
     ]) => {
-      return multiCall(provider, calls, multicallOptions)
-        .then((results) => {
-          return results.map((result) => {
-            try {
-              return contractInterface.decodeFunctionResult(methodName, result.returnData) as T
-            } catch {
-              return undefined
-            }
-          })
+      return multiCall(provider, calls, multicallOptions).then((results) => {
+        return results.map((result) => {
+          try {
+            return contractInterface.decodeFunctionResult(methodName, result.returnData) as T
+          } catch {
+            return undefined
+          }
         })
-        .catch((error) => {
-          console.error('Could not make a multicall (SingleData)', error)
-          return Promise.reject(error)
-        })
+      })
     },
     swrConfig,
   )

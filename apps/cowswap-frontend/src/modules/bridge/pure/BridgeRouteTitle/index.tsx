@@ -45,7 +45,7 @@ export function BridgeRouteTitle({
           secondProtocol={bridgeProvider}
         />
         <span> {protocolName}</span>
-        {!protocolName.includes(COW_PROTOCOL_NAME) && <InfoTooltip content={BRIDGE_DISCLAIMER_TOOLTIP_CONTENT} size={14} />}
+        {protocolName !== COW_PROTOCOL_NAME && <InfoTooltip content={BRIDGE_DISCLAIMER_TOOLTIP_CONTENT} size={14} />}
       </b>
     </>
   )
