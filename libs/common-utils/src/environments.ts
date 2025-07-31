@@ -2,7 +2,7 @@ import { registerOnWindow } from './misc'
 
 const DEFAULT_ENVIRONMENTS_REGEX: Record<EnvironmentName, string> = {
   local: '^(:?localhost:\\d{2,5}|(?:127|192)(?:\\.[0-9]{1,3}){3})',
-  pr: '^(swap-dev-git-[\\w\\d-]+|swap-\\w{9}-)cowswap-dev\\.vercel\\.app',
+  pr: '^(explorer-[\\w\\d]+-cowswap-dev\\.vercel\\.app|swap-dev-git-[\\w\\d-]+|swap-\\w{9}-)cowswap-dev\\.vercel\\.app',
   development: '^(dev.swap.cow.fi|swap-develop.vercel.app)',
   staging: '^(staging.swap.cow.fi|swap-staging.vercel.app)',
   production: '^(swap.cow.fi|swap-prod.vercel.app)$',
