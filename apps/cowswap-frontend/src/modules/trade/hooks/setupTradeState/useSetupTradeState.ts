@@ -6,9 +6,10 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useSwitchNetwork, useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
+import { useCloseTokenSelectWidget } from 'modules/tokensList/hooks/useCloseTokenSelectWidget'
 import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
 import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternativeOrder'
-import { getDefaultTradeRawState, TradeRawState } from 'modules/trade/types/TradeRawState'
+import { ExtendedTradeRawState, getDefaultTradeRawState, TradeRawState } from 'modules/trade/types/TradeRawState'
 
 import { useResetStateWithSymbolDuplication } from './useResetStateWithSymbolDuplication'
 import { useSetupTradeStateFromUrl } from './useSetupTradeStateFromUrl'
@@ -31,6 +32,7 @@ export function useSetupTradeState(): void {
   const switchNetwork = useSwitchNetwork()
   const tradeStateFromUrl = useTradeStateFromUrl()
   const { state, updateState } = useTradeState()
+  const closeTokenSelectWidget = useCloseTokenSelectWidget()
 
   // When wallet is connected, and user navigates to the URL with a new chainId
   // We must change chainId in provider, and only then change the trade state
@@ -90,6 +92,11 @@ export function useSetupTradeState(): void {
     // Triggering only when chainId was changed in the provider
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [providerChainId, prevProviderChainId])
+
+  const updateStateAndCloseSelectTokenWidget = (state: Partial<ExtendedTradeRawState>): void => {
+    updateState?.({ ...state, chainId: currentChainId })
+    closeTokenSelectWidget()
+  }
 
   /**
    * On URL parameter changes
@@ -153,7 +160,7 @@ export function useSetupTradeState(): void {
     // Applying of the remembered state after network successfully changed
     if (isWalletConnected && providerAndUrlChainIdMismatch && prevTradeStateFromUrl) {
       rememberedUrlStateRef.current = tradeStateFromUrl
-      updateState?.(tradeStateFromUrl)
+      updateStateAndCloseSelectTokenWidget(tradeStateFromUrl)
       console.debug(
         '[TRADE STATE]',
         'Remembering a new state from URL while changing chainId in provider',
@@ -171,14 +178,14 @@ export function useSetupTradeState(): void {
       } else if (tokensAreEmpty) {
         console.debug('[TRADE STATE]', 'Url does not contain both tokens, resetting')
       } else if (onlyChainIdIsChanged) {
-        updateState?.({ ...state, chainId: currentChainId })
+        updateStateAndCloseSelectTokenWidget(tradeStateFromUrl)
         console.debug('[TRADE STATE]', 'Only chainId was changed in URL, resetting')
       }
 
       return
     }
 
-    updateState?.(tradeStateFromUrl)
+    updateStateAndCloseSelectTokenWidget(tradeStateFromUrl)
     console.debug('[TRADE STATE]', 'Applying a new state from URL', tradeStateFromUrl)
 
     // Triggering only on changes from URL
