@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.26.1](https://github.com/cowprotocol/cowswap/compare/ui-v1.26.0...ui-v1.26.1) (2025-07-31)
+
+
+### Bug Fixes
+
+* **bridge:** update protocol icons to use correct color scheme ([#6056](https://github.com/cowprotocol/cowswap/issues/6056)) ([2530852](https://github.com/cowprotocol/cowswap/commit/2530852b801eb11c3246c1b8107d68f709a26d18))
+
 ## [1.26.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.25.1...ui-v1.26.0) (2025-07-30)
 
 
