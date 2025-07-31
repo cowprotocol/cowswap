@@ -186,9 +186,9 @@ export const TransactionStatusText = styled.div`
   }
 `
 
-export const StatusLabelWrapper = styled.div<{ withCancellationHash$: boolean }>`
+export const StatusLabelWrapper = styled.div`
   display: flex;
-  flex-flow: ${({ withCancellationHash$ }) => (withCancellationHash$ ? 'row' : 'column wrap')};
+  flex-flow: column wrap;
   flex: 0 1 auto;
   justify-content: center;
   align-items: center;
