@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.13.1](https://github.com/cowprotocol/cowswap/compare/wallet-v1.13.0...wallet-v1.13.1) (2025-07-31)
+
+
+### Bug Fixes
+
+* **safe:** check provider chainId for multicall provider ([#6057](https://github.com/cowprotocol/cowswap/issues/6057)) ([490436a](https://github.com/cowprotocol/cowswap/commit/490436a6b482f75876e471ba45ff1f7e02017ca0))
+
 ## [1.13.0](https://github.com/cowprotocol/cowswap/compare/wallet-v1.12.4...wallet-v1.13.0) (2025-07-03)
 
 
