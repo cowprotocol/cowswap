@@ -1,5 +1,7 @@
 import { EnvironmentName, environmentName } from './environments'
 
+const DEFAULT_SWAP_URL = 'https://swap.cow.fi'
+
 function _getSwapUrlByEnvironment(): Record<EnvironmentName, string> {
   return {
     production: process.env.REACT_APP_DOMAIN_REGEX_PROD || 'https://swap.cow.fi',
@@ -14,8 +16,9 @@ function _getSwapUrlByEnvironment(): Record<EnvironmentName, string> {
 
 export function getSwapBaseUrl(): string {
   if (!environmentName) {
-    throw new Error('Missing environment name!')
-  } else {
-    return _getSwapUrlByEnvironment()[environmentName]
+    console.error('Missing environment name!')
+    return DEFAULT_SWAP_URL
   }
+
+  return _getSwapUrlByEnvironment()[environmentName]
 }
