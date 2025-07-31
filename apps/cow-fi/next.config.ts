@@ -98,7 +98,6 @@ const nextConfig: WithNxOptions = {
   },
   async headers() {
     return [
-      // Cache learn pages for 1 hour to align with ISR strategy (270K requests/day fix)
       {
         source: '/learn/:path*',
         headers: [
