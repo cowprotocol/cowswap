@@ -50,8 +50,10 @@ export function useSetupTradeState(): void {
 
   const switchNetworkInWallet = useCallback(
     async (targetChainId: SupportedChainId) => {
+      console.log('[TRADE STATE]', 'Switching network in wallet to ', targetChainId)
       try {
         await switchNetwork(targetChainId)
+        console.log('[TRADE STATE]', 'Network switched successfully', targetChainId)
       } catch (error) {
         // We are ignoring Gnosis safe context error
         // Because it's a normal situation when we are not in Gnosis safe App
@@ -94,7 +96,7 @@ export function useSetupTradeState(): void {
   }, [providerChainId, prevProviderChainId])
 
   const updateStateAndCloseSelectTokenWidget = (state: Partial<ExtendedTradeRawState>): void => {
-    updateState?.({ ...state, chainId: currentChainId })
+    updateState?.({ ...state })
     closeTokenSelectWidget()
   }
 
@@ -178,7 +180,7 @@ export function useSetupTradeState(): void {
       } else if (tokensAreEmpty) {
         console.debug('[TRADE STATE]', 'Url does not contain both tokens, resetting')
       } else if (onlyChainIdIsChanged) {
-        updateStateAndCloseSelectTokenWidget(tradeStateFromUrl)
+        updateStateAndCloseSelectTokenWidget({ ...state, chainId: currentChainId })
         console.debug('[TRADE STATE]', 'Only chainId was changed in URL, resetting')
       }
 
@@ -213,7 +215,7 @@ export function useSetupTradeState(): void {
 
     if (!providerChainId || providerChainId === currentChainId) return
 
-    const targetChainId = rememberedUrlStateRef.current?.chainId || currentChainId
+    const targetChainId = urlChainId ?? rememberedUrlStateRef.current?.chainId ?? currentChainId
     switchNetworkInWallet(targetChainId)
 
     console.debug('[TRADE STATE]', 'Set chainId to provider', { provider, urlChainId })
