@@ -31,11 +31,6 @@ const CompatibilityIssuesWarningWrapper = styled.div`
 
 const DEFAULT_QUOTE_ERROR = 'Error loading price. Try again later.'
 
-const errorTooltipContent: Partial<Record<QuoteApiErrorCodes, string>> = {
-  [QuoteApiErrorCodes.SameBuyAndSellToken]:
-    'Bridging without swapping is not yet supported. Let us know if you want this feature!',
-}
-
 const quoteErrorTexts: Record<QuoteApiErrorCodes, string> = {
   [QuoteApiErrorCodes.UNHANDLED_ERROR]: DEFAULT_QUOTE_ERROR,
   [QuoteApiErrorCodes.TransferEthToContract]:
@@ -44,6 +39,10 @@ const quoteErrorTexts: Record<QuoteApiErrorCodes, string> = {
   [QuoteApiErrorCodes.InsufficientLiquidity]: 'Insufficient liquidity for this trade.',
   [QuoteApiErrorCodes.FeeExceedsFrom]: 'Sell amount is too small',
   [QuoteApiErrorCodes.ZeroPrice]: 'Invalid price. Try increasing input/output amount.',
+  [QuoteApiErrorCodes.SameBuyAndSellToken]: 'Tokens must be different',
+}
+
+const quoteErrorTextsForBridges: Partial<Record<QuoteApiErrorCodes, string>> = {
   [QuoteApiErrorCodes.SameBuyAndSellToken]: 'Not yet supported',
 }
 
@@ -56,6 +55,11 @@ const bridgeQuoteErrorTexts: Record<BridgeQuoteErrors, string> = {
   [BridgeQuoteErrors.NO_INTERMEDIATE_TOKENS]: 'No routes found',
   [BridgeQuoteErrors.NO_ROUTES]: 'No routes found',
   [BridgeQuoteErrors.ONLY_SELL_ORDER_SUPPORTED]: 'Only "sell" orders are supported',
+}
+
+const errorTooltipContentForBridges: Partial<Record<QuoteApiErrorCodes, string>> = {
+  [QuoteApiErrorCodes.SameBuyAndSellToken]:
+    'Bridging without swapping is not yet supported. Let us know if you want this feature!',
 }
 
 // TODO: Add proper return type annotation
@@ -110,13 +114,17 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     const { quote } = context
 
     if (quote.error instanceof QuoteApiError) {
-      if (quote.error.type === QuoteApiErrorCodes.UnsupportedToken) {
+      const errorType = quote.error.type
+
+      if (errorType === QuoteApiErrorCodes.UnsupportedToken) {
         return unsupportedTokenButton(context)
       }
 
-      const errorText = quoteErrorTexts[quote.error.type] || DEFAULT_QUOTE_ERROR
+      const isBridge = !!quote.bridgeQuote
+      const errorText =
+        (isBridge && quoteErrorTextsForBridges[errorType]) || quoteErrorTexts[errorType] || DEFAULT_QUOTE_ERROR
 
-      const errorTooltipText = errorTooltipContent[quote.error.type]
+      const errorTooltipText = isBridge && errorTooltipContentForBridges[errorType]
 
       return (
         <TradeFormBlankButton disabled={true}>
