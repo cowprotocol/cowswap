@@ -1,3 +1,4 @@
+import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
 import { ExternalLink } from '@cowprotocol/ui'
 
 export const BridgeDetailsTooltips = {
@@ -13,7 +14,7 @@ export const BridgeDetailsTooltips = {
     <span>
       The{' '}
       <ExternalLink href="https://swap.cow.fi/#/account-proxy" target="_blank" rel="noopener noreferrer">
-        Account Proxy
+{ACCOUNT_PROXY_LABEL}
       </ExternalLink>{' '}
       address which will/did receive bought amount of the Swap before the bridge is initiated.
     </span>

@@ -80,6 +80,7 @@ export const COW_CONTRACT_ADDRESS: Record<SupportedChainId, string | null> = {
 }
 
 export const RECEIVED_LABEL = 'Received'
+export const ACCOUNT_PROXY_LABEL = 'Account Proxy'
 export const INPUT_OUTPUT_EXPLANATION = 'Only executed swaps incur fees.'
 export const PENDING_ORDERS_BUFFER = ms`60s` // 60s
 export const CANCELLED_ORDERS_PENDING_TIME = ms`5min` // 5min
