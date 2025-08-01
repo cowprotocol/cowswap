@@ -46,11 +46,11 @@ export default function ChainPrefixWarning({ chainPrefixWarning, chainInfo, isDa
   return (
     <Wrapper>
       <p>
-        The recipient address you inputted had the chain prefix <strong>{chainPrefixWarning}</strong>, which is not the
-        expected for the network you are in.
+        The recipient address you inputted had the chain prefix <strong>{chainPrefixWarning}</strong>, which 
+        does not match the network in the Buy field.
       </p>
       <p>
-        You are connected to
+        The network in the Buy field is
         <Label color={color}>
           <NetworkImg src={logoUrl} /> {label}
         </Label>
