@@ -10,7 +10,7 @@ import { LinkButton, Wrapper } from './styled'
 
 import { Order } from '../../../api/operator'
 import { TAB_QUERY_PARAM_KEY } from '../../../explorer/const'
-import DecodeAppData from '../../AppData/DecodeAppData'
+import { DecodeAppData } from '../../AppData/DecodeAppData'
 import { DetailRow } from '../../common/DetailRow'
 import { FilledProgress } from '../FilledProgress'
 import { GasFeeDisplay } from '../GasFeeDisplay'
