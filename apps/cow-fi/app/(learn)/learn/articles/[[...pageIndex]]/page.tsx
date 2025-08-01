@@ -19,6 +19,9 @@ export type ArticlesResponse = {
   }
 }
 
+// Static limit for reasonable page range to prevent dynamic ISR invalidation
+const MAX_PAGE_LIMIT = 1000
+
 // Generate static params for first 10 pages only to avoid dynamic content issues
 // Additional pages will be generated on-demand with dynamicParams = true
 export async function generateStaticParams(): Promise<{ pageIndex: string[] }[]> {
@@ -57,7 +60,7 @@ export default async function Page({ params }: Props) {
 
   // Static bounds checking to avoid dynamic ISR invalidation
   // Allow reasonable page range - let CMS handle actual bounds
-  if (page < 1 || page > 1000) {
+  if (page < 1 || page > MAX_PAGE_LIMIT) {
     // Conservative upper limit
     return redirect('/learn/articles')
   }
