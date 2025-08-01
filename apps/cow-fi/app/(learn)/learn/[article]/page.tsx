@@ -17,7 +17,9 @@ import {
 
 import type { Metadata } from 'next'
 
-export const revalidate = 3600 // Revalidate at most once per hour
+// Next.js requires revalidate to be a literal number for static analysis
+// This value (3600 seconds = 1 hour) should match CMS_CACHE_TIME in services/cms/index.ts
+export const revalidate = 3600
 
 // Maximum length for metadata descriptions. When content exceeds MAX_LENGTH,
 // we truncate to TRUNCATE_LENGTH (MAX_LENGTH - 3) to make room for "..." ellipsis
