@@ -31,7 +31,12 @@ const METADATA_DESCRIPTION_MAX_LENGTH = 150
 const METADATA_DESCRIPTION_TRUNCATE_LENGTH = METADATA_DESCRIPTION_MAX_LENGTH - 3
 
 function isRichTextComponent(block: unknown): block is SharedRichTextComponent {
-  return typeof block === 'object' && block !== null && 'body' in block
+  return (
+    typeof block === 'object' &&
+    block !== null &&
+    'body' in block &&
+    typeof (block as { body?: unknown }).body === 'string'
+  )
 }
 
 type Props = {
