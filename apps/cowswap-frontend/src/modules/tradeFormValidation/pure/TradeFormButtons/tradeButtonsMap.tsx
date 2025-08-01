@@ -120,7 +120,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
         return unsupportedTokenButton(context)
       }
 
-      const isBridge = !!quote.bridgeQuote
+      const isBridge = quote.isBridgeQuote
       const errorText =
         (isBridge && quoteErrorTextsForBridges[errorType]) || quoteErrorTexts[errorType] || DEFAULT_QUOTE_ERROR
 
