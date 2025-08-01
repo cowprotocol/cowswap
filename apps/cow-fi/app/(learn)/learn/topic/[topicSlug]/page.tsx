@@ -2,7 +2,13 @@ import type { ReactNode } from 'react'
 
 import { notFound } from 'next/navigation'
 
-import { Category, getAllCategorySlugs, getArticles, getCategories, getCategoryBySlug } from '../../../../../services/cms'
+import {
+  Category,
+  getAllCategorySlugs,
+  getArticles,
+  getCategories,
+  getCategoryBySlug,
+} from '../../../../../services/cms'
 
 import type { Metadata } from 'next'
 
@@ -14,23 +20,6 @@ import { getPageMetadata } from '@/util/getPageMetadata'
 type Props = {
   params: Promise<{ topicSlug: string }>
   searchParams?: Promise<{ [key: string]: string | string[] | undefined }>
-}
-
-interface CategoryWithAttributes {
-  attributes?: {
-    name?: string
-    slug?: string
-    description?: string
-    backgroundColor?: string
-    textColor?: string
-    image?: {
-      data?: {
-        attributes?: {
-          url?: string
-        }
-      }
-    }
-  }
 }
 
 // Next.js requires revalidate to be a literal number for static analysis
@@ -98,7 +87,7 @@ export default async function TopicPage({ params }: { params: Promise<{ topicSlu
   )
 }
 
-function formatCategoryForTopicPage(category: CategoryWithAttributes): {
+function formatCategoryForTopicPage(category: Category): {
   name: string
   slug: string
   description: string
