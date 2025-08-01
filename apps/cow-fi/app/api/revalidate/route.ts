@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server'
 // Secret key for protecting the revalidation endpoint
 const REVALIDATE_SECRET = process.env.REVALIDATE_SECRET
 
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest): Promise<NextResponse> {
   const secret = request.nextUrl.searchParams.get('secret')
   const tag = request.nextUrl.searchParams.get('tag') || 'cms-content'
   const path = request.nextUrl.searchParams.get('path')
@@ -26,6 +26,10 @@ export async function GET(request: NextRequest) {
 
     // Always revalidate the main learn page to ensure it's fresh
     revalidatePath('/learn')
+
+    // Revalidate learn sub-pages for comprehensive cache refresh
+    revalidatePath('/learn/articles')
+    revalidatePath('/learn/topics')
 
     // Revalidate the dynamic article route (this updates the manifest)
     revalidatePath('/learn/[article]')

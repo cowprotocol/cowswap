@@ -7,8 +7,8 @@ import { FEATURED_ARTICLES_PAGE_SIZE } from '@/const/pagination'
 
 
 // Next.js requires revalidate to be a literal number for static analysis
-// This value (3600 seconds = 1 hour) should match CMS_CACHE_TIME in services/cms/index.ts
-export const revalidate = 3600
+// 12 hours (43200 seconds) - balanced between freshness and cache efficiency
+export const revalidate = 43200
 
 export default async function LearnPage(): Promise<ReactNode> {
   // Fetch featured articles
