@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useMemo, useState } from 'react'
+import { ReactNode, useCallback, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { TokenWithLogo } from '@cowprotocol/common-const'
@@ -14,7 +14,6 @@ import {
   useUserAddedTokens,
 } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { NativeCurrency } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
 
@@ -51,22 +50,6 @@ const Wrapper = styled.div`
 `
 
 const EMPTY_FAV_TOKENS: TokenWithLogo[] = []
-
-const getFilteredTokens = (
-  tokens: TokenWithLogo[],
-  oppositeToken:
-    | {
-        address: string
-      }
-    | NativeCurrency
-    | undefined,
-): TokenWithLogo[] => {
-  if (!oppositeToken || !('address' in oppositeToken)) return tokens
-
-  return tokens.filter((token) => {
-    return token.address.toLowerCase() !== oppositeToken.address.toLowerCase()
-  })
-}
 
 interface SelectTokenWidgetProps {
   displayLpTokenLists?: boolean
@@ -112,13 +95,6 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
   const importTokenCallback = useAddUserToken()
 
   const { tokens: allTokens, isLoading: areTokensLoading, favoriteTokens, areTokensFromBridge } = useTokensToSelect()
-
-  const filteredTokens = useMemo(() => getFilteredTokens(allTokens, oppositeToken), [allTokens, oppositeToken])
-
-  const filteredFavoriteTokens = useMemo(
-    () => getFilteredTokens(favoriteTokens, oppositeToken),
-    [favoriteTokens, oppositeToken],
-  )
 
   const userAddedTokens = useUserAddedTokens()
   const allTokenLists = useAllListsList()
@@ -225,8 +201,8 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
             displayLpTokenLists={displayLpTokenLists}
             unsupportedTokens={unsupportedTokens}
             selectedToken={selectedToken}
-            allTokens={filteredTokens}
-            favoriteTokens={standalone ? EMPTY_FAV_TOKENS : filteredFavoriteTokens}
+            allTokens={allTokens}
+            favoriteTokens={standalone ? EMPTY_FAV_TOKENS : favoriteTokens}
             balancesState={balancesState}
             permitCompatibleTokens={permitCompatibleTokens}
             onSelectToken={onSelectToken}
