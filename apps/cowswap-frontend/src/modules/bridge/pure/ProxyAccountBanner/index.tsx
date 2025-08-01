@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
 
+import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
 import { BannerOrientation, CollapsibleInlineBanner, StatusColorVariant } from '@cowprotocol/ui'
 
 import { useSetShedModal } from 'entities/cowShed/useCowShedModal'
@@ -27,17 +28,17 @@ export function ProxyAccountBanner({ recipient, chainId }: ProxyAccountBannerPro
       fontSize={13}
       collapsedContent={
         <div>
-          Swap bridged via your proxy account: <AddressLink address={recipient} chainId={chainId} />
+          Swap bridged via your {ACCOUNT_PROXY_LABEL}: <AddressLink address={recipient} chainId={chainId} />
         </div>
       }
       expandedContent={
         <div>
-          CoW Swap uses a dedicated proxy account, controlled only by you, to ensure smooooth bridging. Confirm the
+          CoW Swap uses a dedicated {ACCOUNT_PROXY_LABEL}, controlled only by you, to ensure smooooth bridging. Confirm the
           recipient address above is <AddressLink address={recipient} chainId={chainId} />
           <br />
           <br />
           <b onClick={handleReadMore} style={{ cursor: 'pointer', textDecoration: 'underline' }}>
-            View your private proxy account +{' '}
+            View your private {ACCOUNT_PROXY_LABEL} +{' '}
           </b>
         </div>
       }

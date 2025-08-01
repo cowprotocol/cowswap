@@ -41,6 +41,7 @@ function SingleProtocolIcon({
       height={currentLogoHeight}
       logoIconOnly
       overrideColor={`var(${UI.COLOR_PURPLE_200_PRIMARY})`}
+      overrideHoverColor={`var(${UI.COLOR_PURPLE_200_PRIMARY})`}
     />
   ) : (
     <img
