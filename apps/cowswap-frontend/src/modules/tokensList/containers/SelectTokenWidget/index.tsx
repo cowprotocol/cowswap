@@ -14,6 +14,7 @@ import {
   useUserAddedTokens,
 } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
+import { NativeCurrency } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
 
@@ -51,9 +52,19 @@ const Wrapper = styled.div`
 
 const EMPTY_FAV_TOKENS: TokenWithLogo[] = []
 
-const getFilteredTokens = (tokens: TokenWithLogo[], oppositeToken: TokenWithLogo): TokenWithLogo[] => {
+const getFilteredTokens = (
+  tokens: TokenWithLogo[],
+  oppositeToken:
+    | {
+        address: string
+      }
+    | NativeCurrency
+    | undefined,
+): TokenWithLogo[] => {
+  if (!oppositeToken || !('address' in oppositeToken)) return tokens
+
   return tokens.filter((token) => {
-    return token.address.toLowerCase() !== oppositeToken?.address?.toLowerCase()
+    return token.address.toLowerCase() !== oppositeToken.address.toLowerCase()
   })
 }
 
@@ -102,13 +113,10 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
 
   const { tokens: allTokens, isLoading: areTokensLoading, favoriteTokens, areTokensFromBridge } = useTokensToSelect()
 
-  const filteredTokens = useMemo(
-    () => getFilteredTokens(allTokens, oppositeToken as TokenWithLogo),
-    [allTokens, oppositeToken],
-  )
+  const filteredTokens = useMemo(() => getFilteredTokens(allTokens, oppositeToken), [allTokens, oppositeToken])
 
   const filteredFavoriteTokens = useMemo(
-    () => getFilteredTokens(favoriteTokens, oppositeToken as TokenWithLogo),
+    () => getFilteredTokens(favoriteTokens, oppositeToken),
     [favoriteTokens, oppositeToken],
   )
 
