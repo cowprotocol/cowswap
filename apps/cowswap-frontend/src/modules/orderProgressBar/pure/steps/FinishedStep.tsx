@@ -3,6 +3,7 @@ import React, { useCallback, useMemo, useState } from 'react'
 import ICON_SOCIAL_X from '@cowprotocol/assets/images/icon-social-x.svg'
 import LOTTIE_GREEN_CHECKMARK_DARK from '@cowprotocol/assets/lottie/green-checkmark-dark.json'
 import LOTTIE_GREEN_CHECKMARK from '@cowprotocol/assets/lottie/green-checkmark.json'
+import { RECEIVED_LABEL } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink, getRandomInt, isSellOrder, shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
@@ -72,7 +73,7 @@ function getReceivedAmount(
 ) {
   return (
     <styledEl.ReceivedAmount>
-      {!isCustomRecipient && 'You received '}
+      {!isCustomRecipient && `${RECEIVED_LABEL} `}
       <TokenLogo token={order.outputToken} size={20} />
       <b>
         <TokenAmount
