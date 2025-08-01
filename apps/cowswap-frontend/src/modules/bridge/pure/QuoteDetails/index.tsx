@@ -21,6 +21,10 @@ interface QuoteDetailsProps {
   bridgeContext: QuoteBridgeContext
 
   collapsedDefault?: ReactNode
+  recipient?: string | null
+  recipientEnsName?: string | null
+  account?: string | null
+  recipientChainId?: number
 }
 
 interface SwapStepProps {
@@ -92,7 +96,11 @@ export function QuoteDetails({
   swapContext,
   bridgeContext,
   collapsedDefault,
-  hideRecommendedSlippage
+  hideRecommendedSlippage,
+  recipient,
+  recipientEnsName,
+  account,
+  recipientChainId
 }: QuoteDetailsProps): ReactNode {
   return (
     <CollapsibleBridgeRoute
@@ -100,6 +108,10 @@ export function QuoteDetails({
       isExpanded
       providerInfo={bridgeProvider}
       collapsedDefault={collapsedDefault}
+      recipient={recipient}
+      recipientEnsName={recipientEnsName}
+      account={account}
+      recipientChainId={recipientChainId}
     >
       <SwapStep hideRecommendedSlippage={hideRecommendedSlippage}
                 stepsCollapsible={stepsCollapsible}

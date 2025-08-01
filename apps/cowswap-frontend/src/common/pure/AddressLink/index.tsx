@@ -17,9 +17,25 @@ interface AddressLinkProps {
   chainId: number
   className?: string
   noShorten?: boolean
+  ensName?: string | null  // NEW: Optional ENS name to display instead of address
 }
 
-export function AddressLink({ address, chainId, className, noShorten }: AddressLinkProps): ReactNode {
+export function AddressLink({ address, chainId, className, noShorten, ensName }: AddressLinkProps): ReactNode {
+  // If ENS name is provided, always show it and link to it
+  if (ensName) {
+    return (
+      <Link
+        className={className}
+        href={getExplorerLink(chainId, ensName, ExplorerDataType.ADDRESS)}
+        target="_blank"
+        rel="noreferrer"
+      >
+        {ensName} ↗
+      </Link>
+    )
+  }
+  
+  // Otherwise, fall back to original address logic
   return isAddress(address) ? (
     <Link
       className={className}

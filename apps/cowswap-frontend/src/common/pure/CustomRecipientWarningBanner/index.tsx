@@ -2,6 +2,7 @@ import { ReactNode } from 'react'
 
 import { Command } from '@cowprotocol/types'
 import { ButtonSecondaryAlt, InlineBanner, InlineBannerProps } from '@cowprotocol/ui'
+import { StatusColorVariant } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -11,6 +12,7 @@ const RecipientBannerContent = styled.div`
   display: flex;
   gap: 10px;
   align-items: center;
+  font-size: 13px;
 
   > p {
     margin: 0;
@@ -18,12 +20,12 @@ const RecipientBannerContent = styled.div`
 `
 
 export function CustomRecipientWarningBanner({
-  bannerType,
+  bannerType = StatusColorVariant.Alert,
   borderRadius,
   orientation,
-  iconSize = 21,
+  iconSize = 24,
   iconPadding = '0',
-  padding = '10px 16px',
+  padding = '6px',
   onDismiss,
 }: CustomRecipientBannerProps): ReactNode {
   return (

@@ -56,7 +56,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
   const appData = useAppData()
   const receiveAmountInfo = useGetReceiveAmountInfo()
   const tradeConfirmActions = useTradeConfirmActions()
-  const { slippage } = useSwapDerivedState()
+  const { slippage, recipientAddress: derivedRecipientAddress } = useSwapDerivedState()
   const [deadline] = useSwapDeadlineState()
 
   const shouldDisplayBridgeDetails = useShouldDisplayBridgeDetails()
@@ -133,6 +133,10 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
                   swapContext={swapContext}
                   bridgeContext={bridgeContext}
                   hideRecommendedSlippage
+                  recipient={bridgeContext.recipient}
+                  recipientEnsName={recipient?.endsWith('.eth') && derivedRecipientAddress ? recipient : null}
+                  account={account}
+                  recipientChainId={bridgeContext?.buyAmount?.currency?.chainId}
                 />
                 {restContent}
                 <HighFeeWarning readonlyMode />
@@ -146,6 +150,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
                     slippage={slippage}
                     receiveAmountInfo={receiveAmountInfo}
                     recipient={recipient}
+                    recipientEnsName={recipient?.endsWith('.eth') && derivedRecipientAddress ? recipient : null}
                     account={account}
                     labelsAndTooltips={labelsAndTooltips}
                     hideLimitPrice
