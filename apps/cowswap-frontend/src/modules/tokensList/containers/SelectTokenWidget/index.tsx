@@ -95,6 +95,7 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
   const importTokenCallback = useAddUserToken()
 
   const { tokens: allTokens, isLoading: areTokensLoading, favoriteTokens, areTokensFromBridge } = useTokensToSelect()
+
   const userAddedTokens = useUserAddedTokens()
   const allTokenLists = useAllListsList()
   const balancesState = useTokensBalancesCombined()
