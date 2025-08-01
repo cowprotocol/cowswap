@@ -47,10 +47,10 @@ export default function ChainPrefixWarning({ chainPrefixWarning, chainInfo, isDa
     <Wrapper>
       <p>
         The recipient address you inputted had the chain prefix <strong>{chainPrefixWarning}</strong>, which 
-        does not match the network in the Buy field.
+        does not match the network of the token to buy.
       </p>
       <p>
-        The network in the Buy field is
+        The network of the token to buy is
         <Label color={color}>
           <NetworkImg src={logoUrl} /> {label}
         </Label>
