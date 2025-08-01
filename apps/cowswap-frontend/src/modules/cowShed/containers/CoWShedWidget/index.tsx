@@ -1,5 +1,6 @@
 import { ReactNode, useCallback, useEffect, useRef } from 'react'
 
+import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
 import { useOnClickOutside } from '@cowprotocol/common-hooks'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -61,7 +62,7 @@ export function CoWShedWidget({ onDismiss, modalMode }: CoWShedWidgetProps): Rea
     <>
       <Content>
         <Title>
-          <Pocket size={20} /> Account Proxy
+          <Pocket size={20} /> {ACCOUNT_PROXY_LABEL}
         </Title>
 
         {proxyAddress && <AddressLinkStyled address={proxyAddress} chainId={chainId} noShorten />}
@@ -81,7 +82,7 @@ export function CoWShedWidget({ onDismiss, modalMode }: CoWShedWidgetProps): Rea
       <WidgetWrapper ref={widgetRef}>
         <NewModal
           modalMode={modalMode}
-          title="Account Proxy"
+          title={ACCOUNT_PROXY_LABEL}
           onDismiss={onDismissCallback}
           contentPadding="10px"
           justifyContent="flex-start"

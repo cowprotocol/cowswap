@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
 
+import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { BannerOrientation, InlineBanner, StatusColorVariant, TokenAmount } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
@@ -36,7 +37,7 @@ export function TokensInProxyBanner({ tokensToRefund }: TokensInProxyBannerProps
   return (
     <InlineBanner bannerType={StatusColorVariant.Warning} orientation={BannerOrientation.Horizontal}>
       <div>
-        Your proxy account contains the following tokens:
+        Your {ACCOUNT_PROXY_LABEL} contains the following tokens:
         <TokensList>
           {tokensToRefund.map(({ token, balance }) => {
             const amount = CurrencyAmount.fromRawAmount(token, balance.toString())
