@@ -67,7 +67,7 @@ export function BridgeDetailsContent({ crossChainOrder }: BridgeDetailsContentPr
         <AmountSectionWrapper>
           <BridgeAmountDisplay labelPrefix="From:" bridgeToken={sourceToken} amount={inputAmount.toString()} />
           <BridgeAmountDisplay
-            labelPrefix="To at least:"
+            labelPrefix="To:"
             bridgeToken={destinationToken}
             amount={outputAmount?.toString() || '0'}
             bridgeProvider={bridgeProvider}
