@@ -15,6 +15,8 @@ import { t, Trans } from '@lingui/macro'
 import { AutoColumn } from 'legacy/components/Column'
 import { useIsDarkMode } from 'legacy/state/user/hooks'
 
+import { hasEnsEnding } from 'common/utils/ensUtils'
+
 import { useEnhancedENS } from './hooks/useEnhancedENS'
 import {
   InputPanel,
@@ -117,7 +119,7 @@ function ExplorerLink({
   if (!address || !effectiveChainId) return null
 
   // Use what the user actually typed - if they typed an ENS name, use that; if they typed an address, use that
-  const linkTarget = inputValue.endsWith('.eth') ? name || inputValue : address
+  const linkTarget = hasEnsEnding(inputValue) ? name || inputValue : address
 
   return (
     <StyledExplorerLink
@@ -172,7 +174,6 @@ interface AddressInputPanelProps {
 }
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
 export function AddressInputPanel({
   id,
   className = 'recipient-address-input',
@@ -200,14 +201,7 @@ export function AddressInputPanel({
   )
 
   const validationError = useCustomValidation(customValidation, debouncedValue, name, effectiveChainId)
-  const error = useErrorState(
-    debouncedValue,
-    loading,
-    address,
-    disableENS,
-    ensChainValidationError,
-    validationError,
-  )
+  const error = useErrorState(debouncedValue, loading, address, disableENS, ensChainValidationError, validationError)
   const handleInput = useInputHandler(onChange, addressPrefix, setChainPrefixWarning)
 
   useEffect(() => {
@@ -226,12 +220,7 @@ export function AddressInputPanel({
           <AutoColumn gap="md">
             <RowBetween>
               <span>{label ?? <Trans>Recipient</Trans>}</span>
-              <ExplorerLink
-                address={address}
-                name={name}
-                effectiveChainId={effectiveChainId}
-                inputValue={value}
-              />
+              <ExplorerLink address={address} name={name} effectiveChainId={effectiveChainId} inputValue={value} />
             </RowBetween>
             <Input
               className={className}

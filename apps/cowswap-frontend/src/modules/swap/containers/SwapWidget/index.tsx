@@ -23,6 +23,7 @@ import { SettingsTab } from 'modules/tradeWidgetAddons'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
+import { hasEnsEnding } from 'common/utils/ensUtils'
 
 import { Container } from './styled'
 
@@ -154,7 +155,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
               rateInfoParams={rateInfoParams} 
               deadline={deadlineState[0]}
               recipient={recipientAddress || recipient}
-              recipientEnsName={recipient?.endsWith('.eth') && recipientAddress ? recipient : null}
+              recipientEnsName={hasEnsEnding(recipient) && recipientAddress ? recipient : null}
               account={account}
             />
             <Warnings buyingFiatAmount={buyingFiatAmount} />

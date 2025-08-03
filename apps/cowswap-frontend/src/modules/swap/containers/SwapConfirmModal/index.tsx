@@ -29,6 +29,7 @@ import { HighFeeWarning, RowDeadline } from 'modules/tradeWidgetAddons'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
 import { RateInfo } from 'common/pure/RateInfo'
+import { hasEnsEnding } from 'common/utils/ensUtils'
 
 import { useLabelsAndTooltips } from './useLabelsAndTooltips'
 
@@ -134,7 +135,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
                   bridgeContext={bridgeContext}
                   hideRecommendedSlippage
                   recipient={bridgeContext.recipient}
-                  recipientEnsName={recipient?.endsWith('.eth') && derivedRecipientAddress ? recipient : null}
+                  recipientEnsName={hasEnsEnding(recipient) && derivedRecipientAddress ? recipient : null}
                   account={account}
                   recipientChainId={bridgeContext?.buyAmount?.currency?.chainId}
                 />
@@ -150,7 +151,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
                     slippage={slippage}
                     receiveAmountInfo={receiveAmountInfo}
                     recipient={recipient}
-                    recipientEnsName={recipient?.endsWith('.eth') && derivedRecipientAddress ? recipient : null}
+                    recipientEnsName={hasEnsEnding(recipient) && derivedRecipientAddress ? recipient : null}
                     account={account}
                     labelsAndTooltips={labelsAndTooltips}
                     hideLimitPrice
