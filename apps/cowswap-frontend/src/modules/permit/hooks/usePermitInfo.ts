@@ -73,11 +73,11 @@ export function usePermitInfo(
       !isPermitEnabled ||
       !lowerCaseAddress ||
       !provider ||
-      isNative
+      isNative ||
       // Do not try to load when pre-generated info is loading
-      // preGeneratedIsLoading ||
+      preGeneratedIsLoading ||
       // Do not try to load when pre-generated exists
-      // preGeneratedInfo !== undefined
+      preGeneratedInfo !== undefined
     ) {
       console.log('useIsTokenPermittable: early return')
       return
