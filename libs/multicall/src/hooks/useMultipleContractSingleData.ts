@@ -54,13 +54,20 @@ export function useMultipleContractSingleData<T = Result>(
           cacheKey,
           'useMultipleContractSingleData',
         ],
-    async ([provider, calls, multicallOptions, methodName, contractInterface]: [
+    async ([provider, calls, multicallOptions, methodName, contractInterface, chainId]: [
       Web3Provider,
       Multicall3.CallStruct[],
       MultiCallOptions,
       string,
       Interface,
+      number,
     ]) => {
+      console.debug('[Multicall] MultipleContractSingleData', {
+        chainId,
+        methodName,
+        calls: calls.length,
+        provider,
+      })
       return multiCall(provider, calls, multicallOptions)
         .then((results) => {
           return results.map((result) => {
