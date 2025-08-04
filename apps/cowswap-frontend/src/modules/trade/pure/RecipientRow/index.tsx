@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { InfoTooltip, NetworkLogo } from '@cowprotocol/ui'
+import { InfoTooltip } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 import { Nullish } from 'types'
@@ -18,35 +18,31 @@ const Row = styled.div`
   gap: 3px;
 `
 
-const AddressWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 6px;
-`
-
 interface RecipientRowProps {
   chainId: SupportedChainId
   recipient: Nullish<string>
+  account: Nullish<string>
 }
 
 export function RecipientRow(props: RecipientRowProps): ReactNode {
-  const { chainId, recipient } = props
-
-  // Always show recipient if provided (even if same as account)
-  if (!recipient) {
-    return null
-  }
-
+  const { chainId, recipient, account } = props
   return (
-    <Row>
-      <div>
-        <span>Recipient</span>{' '}
-        <InfoTooltip content="The tokens received from this order will automatically be sent to this address. No need to do a second transaction!" />
-      </div>
-      <AddressWrapper>
-        <NetworkLogo chainId={chainId} size={16} />
-        <AddressLink address={recipient} chainId={chainId} />
-      </AddressWrapper>
-    </Row>
+    <>
+      {recipient && recipient.toLowerCase() !== account?.toLowerCase() && (
+        <Row>
+          <div>
+            <span>Recipient</span>{' '}
+            <InfoTooltip
+              content={
+                'The tokens received from this order will automatically be sent to this address. No need to do a second transaction!'
+              }
+            />
+          </div>
+          <div>
+            <AddressLink address={recipient} chainId={chainId} />
+          </div>
+        </Row>
+      )}
+    </>
   )
 }

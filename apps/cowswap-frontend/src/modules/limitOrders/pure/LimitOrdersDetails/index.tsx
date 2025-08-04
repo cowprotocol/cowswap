@@ -61,7 +61,7 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps): ReactNode {
     partiallyFillableOverride,
     children,
   } = props
-  const { recipient, recipientAddressOrName, partiallyFillable } = tradeContext.postOrderParams
+  const { account, recipient, recipientAddressOrName, partiallyFillable } = tradeContext.postOrderParams
   const { feeAmount, activeRate, marketRate } = limitRateState
 
   const validTo = calculateLimitOrdersDeadline(settingsState, tradeContext.quoteState)
@@ -127,7 +127,7 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps): ReactNode {
         <span>{expiryDate.toLocaleString(undefined, DEFAULT_DATE_FORMAT)}</span>
       </styledEl.DetailsRow>
       <OrderType isPartiallyFillable={partiallyFillable} partiallyFillableOverride={partiallyFillableOverride} />
-      <RecipientRow chainId={tradeContext.chainId} recipient={recipientAddressOrName || recipient} />
+      <RecipientRow chainId={tradeContext.chainId} recipient={recipientAddressOrName || recipient} account={account} />
     </Wrapper>
   )
 }
