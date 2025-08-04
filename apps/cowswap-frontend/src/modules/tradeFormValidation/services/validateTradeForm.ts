@@ -99,7 +99,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
   }
 
   if (!isWrapUnwrap) {
-    if (recipient && !recipientEnsAddress && !isAddress(recipient)) {
+    if (recipient && !isAddress(recipient) && (!recipientEnsAddress || isBridging)) {
       validations.push(TradeFormValidation.RecipientInvalid)
     }
 
