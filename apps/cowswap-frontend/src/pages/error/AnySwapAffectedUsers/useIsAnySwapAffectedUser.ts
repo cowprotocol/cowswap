@@ -36,7 +36,7 @@ export default function useIsAnySwapAffectedUser() {
     AFFECTED_TOKENS,
     ERC20_INTERFACE,
     'allowance',
-    [account || ZERO_ADDRESS, ANYSWAP_V4_CONTRACT],
+    account ? [account || ZERO_ADDRESS, ANYSWAP_V4_CONTRACT] : undefined,
     MULTICALL_OPTIONS,
     SWR_CONFIG,
   )
