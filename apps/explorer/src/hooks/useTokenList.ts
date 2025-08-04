@@ -49,8 +49,9 @@ export function useTokenList(chainId: SupportedChainId | undefined): { data: Tok
   return useMemo(() => {
     if (!chainId) return { data: EMPTY_TOKENS, isLoading: false }
 
-    const data =
-      { ...coingeckoUniswapList, ...honeyswapList, ...cowSwapList, ...coingeckoList }[chainId] || EMPTY_TOKENS
+    const data = {
+      ...({ ...coingeckoUniswapList, ...honeyswapList, ...cowSwapList, ...coingeckoList }[chainId] || EMPTY_TOKENS),
+    }
 
     const nativeToken = NATIVE_TOKEN_PER_NETWORK[chainId]
 
