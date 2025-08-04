@@ -1,3 +1,4 @@
+import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
 import { ExternalLink } from '@cowprotocol/ui'
 
 export const BridgeDetailsTooltips = {
@@ -9,12 +10,11 @@ export const BridgeDetailsTooltips = {
   bridgingTime: 'Expected time for the bridge operation to complete.',
   maxSlippage: 'The maximum allowed slippage for the bridge in percentage.',
   provider: 'The bridging solution provider.',
-  senderAddress: 'The account address from which the tokens are bridged.',
-  accountProxy: (
+  accountFromProxy: (
     <span>
       The{' '}
       <ExternalLink href="https://swap.cow.fi/#/account-proxy" target="_blank" rel="noopener noreferrer">
-        Account Proxy
+{ACCOUNT_PROXY_LABEL}
       </ExternalLink>{' '}
       address which will/did receive bought amount of the Swap before the bridge is initiated.
     </span>

@@ -1,13 +1,30 @@
+import type { ReactNode } from 'react'
+
+import { notFound } from 'next/navigation'
+
+import {
+  Category,
+  getAllCategorySlugs,
+  getArticles,
+  getCategories,
+  getCategoryBySlug,
+} from '../../../../../services/cms'
+
+import type { Metadata } from 'next'
+
 import { TopicPageComponent } from '@/components/TopicPageComponent'
 import { getPageMetadata } from '@/util/getPageMetadata'
-import type { Metadata } from 'next'
-import { notFound } from 'next/navigation'
-import { getAllCategorySlugs, getArticles, getCategories, getCategoryBySlug } from '../../../../../services/cms'
+
+
 
 type Props = {
   params: Promise<{ topicSlug: string }>
   searchParams?: Promise<{ [key: string]: string | string[] | undefined }>
 }
+
+// Next.js requires revalidate to be a literal number for static analysis
+// 12 hours (43200 seconds) - balanced between freshness and cache efficiency
+export const revalidate = 43200
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   'use server'
@@ -25,7 +42,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   })
 }
 
-export async function generateStaticParams() {
+export async function generateStaticParams(): Promise<{ topicSlug: string }[]> {
   'use server'
 
   const categoriesResponse = await getAllCategorySlugs()
@@ -33,8 +50,7 @@ export async function generateStaticParams() {
   return categoriesResponse.map((topicSlug) => ({ topicSlug }))
 }
 
-export default async function TopicPage({ params }: { params: Promise<{ topicSlug: string }> }) {
-  // Get the category
+export default async function TopicPage({ params }: { params: Promise<{ topicSlug: string }> }): Promise<ReactNode> {
   const { topicSlug } = await params
   const category = await getCategoryBySlug(topicSlug)
 
@@ -42,41 +58,24 @@ export default async function TopicPage({ params }: { params: Promise<{ topicSlu
     notFound()
   }
 
-  // Format the category for the component
-  const formattedCategory = {
-    name: category.attributes?.name || '',
-    slug: category.attributes?.slug || '',
-    description: category.attributes?.description || '',
-    bgColor: category.attributes?.backgroundColor || '#FFFFFF',
-    textColor: category.attributes?.textColor || '#000000',
-    imageUrl: category.attributes?.image?.data?.attributes?.url || '',
-  }
-
-  // Get articles for this topic
-  const topicArticlesResponse = await getArticles({
-    filters: {
-      categories: {
-        slug: {
-          $eq: topicSlug,
+  const formattedCategory = formatCategoryForTopicPage(category)
+  const [topicArticlesResponse, allArticlesResponse, categoriesResponse] = await Promise.all([
+    getArticles({
+      filters: {
+        categories: {
+          slug: {
+            $eq: topicSlug,
+          },
         },
       },
-    },
-  })
-
-  // Get articles for search functionality
-  const allArticlesResponse = await getArticles()
+    }),
+    getArticles(),
+    getCategories(),
+  ])
 
   const topicArticles = topicArticlesResponse.data
   const allArticles = allArticlesResponse.data
-
-  const categoriesResponse = await getCategories()
-  const allCategories =
-    categoriesResponse?.map((category: any) => {
-      return {
-        name: category.attributes?.name || '',
-        slug: category.attributes?.slug || '',
-      }
-    }) || []
+  const allCategories = categoriesResponse?.map(formatCategoryForList) || []
 
   return (
     <TopicPageComponent
@@ -86,4 +85,44 @@ export default async function TopicPage({ params }: { params: Promise<{ topicSlu
       allArticles={allArticles}
     />
   )
+}
+
+function formatCategoryForTopicPage(category: Category): {
+  name: string
+  slug: string
+  description: string
+  bgColor: string
+  textColor: string
+  imageUrl: string
+} {
+  const attrs = category.attributes
+  if (!attrs) {
+    return {
+      name: '',
+      slug: '',
+      description: '',
+      bgColor: '#FFFFFF',
+      textColor: '#000000',
+      imageUrl: '',
+    }
+  }
+
+  return {
+    name: attrs.name ?? '',
+    slug: attrs.slug ?? '',
+    description: attrs.description ?? '',
+    bgColor: attrs.backgroundColor ?? '#FFFFFF',
+    textColor: attrs.textColor ?? '#000000',
+    imageUrl: attrs.image?.data?.attributes?.url ?? '',
+  }
+}
+
+function formatCategoryForList(category: Category): {
+  name: string
+  slug: string
+} {
+  return {
+    name: category.attributes?.name ?? '',
+    slug: category.attributes?.slug ?? '',
+  }
 }

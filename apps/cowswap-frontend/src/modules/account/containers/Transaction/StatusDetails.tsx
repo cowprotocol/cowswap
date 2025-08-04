@@ -9,7 +9,7 @@ import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { getSafeWebUrl } from '@cowprotocol/core'
 import { Command } from '@cowprotocol/types'
 
-import { Info, ExternalLink as LinkIconFeather } from 'react-feather'
+import { Info } from 'react-feather'
 import SVG from 'react-inlinesvg'
 
 import { getActivityState, ActivityState } from 'legacy/hooks/useActivityDerivedState'
@@ -159,16 +159,7 @@ export type StatusDetailsProps = {
 export function StatusDetails(props: StatusDetailsProps): ReactNode | null {
   const { chainId, activityDerivedState, showCancellationModal, showProgressBar } = props
 
-  const {
-    status,
-    type,
-    isCancelling,
-    isConfirmed,
-    isCancelled,
-    isReplaced,
-    isLoading,
-    order,
-  } = activityDerivedState
+  const { status, type, isCancelling, isConfirmed, isCancelled, isReplaced, isLoading, order } = activityDerivedState
 
   const cancellationHash = activityDerivedState.order?.cancellationHash
   const isCancellable = order ? isOrderCancellable(order) : true
@@ -194,7 +185,7 @@ export function StatusDetails(props: StatusDetailsProps): ReactNode | null {
   }
 
   return (
-    <StatusLabelWrapper withCancellationHash$={!!cancellationHash}>
+    <StatusLabelWrapper>
       <StatusLabel color={determinePillColour(status, type)} {..._getStatusLabelProps(activityDerivedState)}>
         {_getStatusIcon(activityDerivedState)}
         {isReplaced ? 'Replaced' : _getStateLabel(activityDerivedState)}
@@ -204,16 +195,13 @@ export function StatusDetails(props: StatusDetailsProps): ReactNode | null {
         <StatusLabelBelow>
           {showCancelButton && <CancelButton onClick={showCancellationModal} />}
           {showProgressBar && !isLoading && (
-            <ProgressLink
-              role="button"
-              onClick={handleProgressClick}
-            >
+            <ProgressLink role="button" onClick={handleProgressClick}>
               Show progress
             </ProgressLink>
           )}
           {showCancelTxLink && (
             <CancelTxLink href={cancellationTxLink} target="_blank" title="Cancellation transaction">
-              <LinkIconFeather size={16} />
+              View cancellation ↗
             </CancelTxLink>
           )}
         </StatusLabelBelow>

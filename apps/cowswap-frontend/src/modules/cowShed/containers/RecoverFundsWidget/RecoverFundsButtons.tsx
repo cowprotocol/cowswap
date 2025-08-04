@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
 
+import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
 import { getCurrencyAddress, getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ButtonPrimary, CenteredDots } from '@cowprotocol/ui'
@@ -43,13 +44,13 @@ export function RecoverFundsButtons({ selectedCurrency, sourceChainId }: Recover
   if (accountProxyLoading) {
     return (
       <ButtonPrimaryStyled disabled>
-        Loading account proxy <CenteredDots smaller />
+        Loading {ACCOUNT_PROXY_LABEL} <CenteredDots smaller />
       </ButtonPrimaryStyled>
     )
   }
 
   if (accountProxy?.isProxySetupValid === null) {
-    return <ButtonPrimaryStyled disabled>Couldn't verify account proxy, please try later</ButtonPrimaryStyled>
+    return <ButtonPrimaryStyled disabled>Couldn't verify {ACCOUNT_PROXY_LABEL}, please try later</ButtonPrimaryStyled>
   }
 
   if (selectedTokenAddress) {

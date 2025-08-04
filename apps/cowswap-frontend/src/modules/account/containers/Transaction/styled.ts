@@ -186,9 +186,9 @@ export const TransactionStatusText = styled.div`
   }
 `
 
-export const StatusLabelWrapper = styled.div<{ withCancellationHash$: boolean }>`
+export const StatusLabelWrapper = styled.div`
   display: flex;
-  flex-flow: ${({ withCancellationHash$ }) => (withCancellationHash$ ? 'row' : 'column wrap')};
+  flex-flow: column wrap;
   flex: 0 1 auto;
   justify-content: center;
   align-items: center;
@@ -196,18 +196,21 @@ export const StatusLabelWrapper = styled.div<{ withCancellationHash$: boolean }>
   gap: 4px;
   font-size: 13px;
   font-weight: 500;
+
   > span,
   > button {
     cursor: pointer;
     font-size: inherit;
     padding: 0;
   }
+
   > span {
     color: inherit;
     &:hover {
       text-decoration: underline;
     }
   }
+
   > button {
     appearance: none;
     border: none;
@@ -391,7 +394,7 @@ export const ActivityVisual = styled.div`
 `
 
 export const CancelTxLink = styled(ExternalLink)`
-  margin-left: 10px;
+  margin: 0 auto;
 `
 
 export const ProgressLink = styled.span`

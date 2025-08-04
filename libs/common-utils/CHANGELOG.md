@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.19.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.18.1...common-utils-v1.19.0) (2025-08-04)
+
+
+### Features
+
+* update same tokens warning message, address wrapped tokens bug ([#6028](https://github.com/cowprotocol/cowswap/issues/6028)) ([95b9089](https://github.com/cowprotocol/cowswap/commit/95b9089744cd6fd9445e1c2ebd021a86cf3da29a))
+
 ## [1.18.1](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.18.0...common-utils-v1.18.1) (2025-07-30)
 
 

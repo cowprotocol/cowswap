@@ -28,7 +28,7 @@ export function useSwapResultsContext(
   const receivedAmount = useMemo(() => {
     if (!intermediateToken || !swappedAmountWithFee) return undefined
 
-    return CurrencyAmount.fromRawAmount(intermediateToken, swappedAmountWithFee.toString())
+    return CurrencyAmount.fromRawAmount(intermediateToken, swappedAmountWithFee.toFixed(0))
   }, [swappedAmountWithFee, intermediateToken])
 
   const receivedAmountUsd = useUsdAmount(receivedAmount).value

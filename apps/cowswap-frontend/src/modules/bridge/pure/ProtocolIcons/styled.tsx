@@ -18,6 +18,7 @@ export const getBorderWidth = (size: number): number =>
 
 interface ProtocolIconProps {
   bgColor?: string
+  color?: string
   size?: number
   isStacked?: boolean
   maskConfig?: {
@@ -37,6 +38,7 @@ export const ProtocolIcon = styled.div<ProtocolIconProps>`
   border-radius: ${({ size }) => (size ? `${size}px` : 'var(--size)')};
   overflow: hidden; // Important if children are slightly larger or for clean rounded corners
   background: ${({ bgColor }) => (bgColor ? `var(${bgColor})` : 'transparent')};
+  color: ${({ color }) => color || 'currentColor'};
   position: relative;
   transition: transform 0.3s ease-in-out;
 
