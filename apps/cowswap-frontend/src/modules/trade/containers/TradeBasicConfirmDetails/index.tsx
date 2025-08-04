@@ -61,7 +61,6 @@ export function TradeBasicConfirmDetails(props: Props) {
     withTimelineDot = true,
     children,
     recipient,
-    account,
   } = props
   const isInvertedState = useState(false)
   const { amountAfterFees, amountAfterSlippage } = getOrderTypeReceiveAmounts(receiveAmountInfo)
@@ -149,7 +148,7 @@ export function TradeBasicConfirmDetails(props: Props) {
       )}
 
       {/*Recipient*/}
-      <RecipientRow chainId={rateInfoParams.chainId} recipient={recipient} account={account} />
+      <RecipientRow chainId={rateInfoParams.chainId} recipient={recipient} />
       {children}
     </styledEl.Wrapper>
   )

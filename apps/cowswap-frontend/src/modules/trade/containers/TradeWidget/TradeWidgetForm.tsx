@@ -115,6 +115,10 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
   const buyToken = outputCurrencyInfo.currency
   const areCurrenciesLoading = !sellToken && !buyToken
   const bothCurrenciesSet = !!sellToken && !!buyToken
+  const isOutputTokenUnsupported = !!buyToken && !(buyToken.chainId in SupportedChainId)
+  const supportedDestinationChainId = buyToken?.chainId && buyToken.chainId in SupportedChainId 
+    ? (buyToken.chainId as SupportedChainId) 
+    : undefined
 
   const hasRecipientInUrl = !!tradeStateFromUrl?.recipient
   const withRecipient = !isWrapOrUnwrap && (showRecipient || hasRecipientInUrl)
@@ -178,8 +182,6 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
       scrollToMyOrders()
     }
   }, [isMarketOrderWidget, toggleAccountModal])
-
-  const isOutputTokenUnsupported = !!buyToken && !(buyToken.chainId in SupportedChainId)
 
   return (
     <>
@@ -258,7 +260,15 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
                     {...currencyInputCommonProps}
                   />
                 </div>
-                {withRecipient && <SetRecipient recipient={recipient || ''} onChangeRecipient={onChangeRecipient} />}
+                {withRecipient && (
+                  <SetRecipient 
+                    recipient={recipient || ''} 
+                    onChangeRecipient={onChangeRecipient}
+                    sellTokenAddress={sellToken?.isToken ? sellToken.address : undefined}
+                    buyTokenAddress={buyToken?.isToken ? buyToken.address : undefined}
+                    destinationChainId={supportedDestinationChainId}
+                  />
+                )}
 
                 {isWrapOrUnwrap ? (
                   sellToken ? (

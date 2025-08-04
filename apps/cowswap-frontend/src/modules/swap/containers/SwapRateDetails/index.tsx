@@ -1,4 +1,7 @@
-import { ReactNode, useCallback } from 'react'
+import { ReactNode, useCallback, useMemo } from 'react'
+
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import {
   BridgeAccordionSummary,
@@ -7,10 +10,21 @@ import {
   useShouldDisplayBridgeDetails,
   QuoteDetails,
 } from 'modules/bridge'
+import { useTradeState } from 'modules/trade'
+import { RecipientRow } from 'modules/trade/pure/RecipientRow'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { TradeRateDetails } from 'modules/tradeWidgetAddons'
 
 import { RateInfoParams } from 'common/pure/RateInfo'
+
+// Helper to resolve recipient chain ID safely
+function getRecipientChainId(
+  bridgeContext: ReturnType<typeof useQuoteBridgeContext>,
+  fallbackChainId: SupportedChainId,
+): SupportedChainId {
+  const bridgeChainId = bridgeContext?.buyAmount?.currency?.chainId
+  return bridgeChainId && bridgeChainId in SupportedChainId ? (bridgeChainId as SupportedChainId) : fallbackChainId
+}
 
 export interface SwapRateDetailsProps {
   rateInfoParams: RateInfoParams
@@ -19,14 +33,22 @@ export interface SwapRateDetailsProps {
 
 export function SwapRateDetails({ rateInfoParams, deadline }: SwapRateDetailsProps): ReactNode {
   const { isLoading: isRateLoading, bridgeQuote } = useTradeQuote()
+  const { chainId } = useWalletInfo()
+  const { state } = useTradeState()
 
   const shouldDisplayBridgeDetails = useShouldDisplayBridgeDetails()
-
   const providerDetails = bridgeQuote?.providerInfo
   const bridgeEstimatedTime = bridgeQuote?.expectedFillTimeSeconds
 
   const swapContext = useQuoteSwapContext()
   const bridgeContext = useQuoteBridgeContext()
+
+  const recipientChainId = getRecipientChainId(bridgeContext, chainId)
+  const recipientRow = useMemo(() => {
+    if (!state?.recipient) return null
+
+    return <RecipientRow chainId={recipientChainId} recipient={state.recipientAddress || state.recipient} />
+  }, [recipientChainId, state?.recipient, state?.recipientAddress])
 
   const feeWrapper = useCallback(
     (feeElement: ReactNode, isOpen: boolean) => {
@@ -56,9 +78,8 @@ export function SwapRateDetails({ rateInfoParams, deadline }: SwapRateDetailsPro
         swapContext &&
         bridgeContext && (
           <>
-            <QuoteDetails bridgeProvider={providerDetails}
-                          swapContext={swapContext}
-                          bridgeContext={bridgeContext}/>
+            <QuoteDetails bridgeProvider={providerDetails} swapContext={swapContext} bridgeContext={bridgeContext} />
+            {recipientRow}
           </>
         )
       }
