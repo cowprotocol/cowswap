@@ -9,7 +9,7 @@ import { useSourceChainId } from 'modules/tokensList'
 import { usePriorityTokenAddresses } from 'modules/trade'
 
 export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
-  const sourceChainId = useSourceChainId()
+  const sourceChainId = useSourceChainId().chainId
   const { account } = useWalletInfo()
   const balancesContext = useBalancesContext()
   const balancesAccount = balancesContext.account || account
