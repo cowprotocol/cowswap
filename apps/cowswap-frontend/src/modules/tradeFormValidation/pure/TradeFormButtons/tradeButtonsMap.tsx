@@ -96,8 +96,14 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   [TradeFormValidation.BrowserOffline]: {
     text: 'Error loading price. You are currently offline.',
   },
-  [TradeFormValidation.RecipientInvalid]: {
-    text: 'Recipient address can only be a blockchain address. ENS names and other are not supported.',
+  [TradeFormValidation.RecipientInvalid]: (context) => {
+    const message = context.recipientValidation?.validationMessage || 'Enter a valid blockchain address or ENS name.'
+
+    return (
+      <TradeFormBlankButton disabled={true}>
+        <Trans>{message}</Trans>
+      </TradeFormBlankButton>
+    )
   },
   [TradeFormValidation.CurrencyNotSupported]: (context) => {
     return unsupportedTokenButton(context)
