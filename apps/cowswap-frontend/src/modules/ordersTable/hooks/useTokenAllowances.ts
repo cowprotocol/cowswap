@@ -24,7 +24,7 @@ export function useTokenAllowances(tokenAddresses: string[]): {
   state: AllowancesState | undefined
   isLoading: boolean
 } {
-  const { account } = useWalletInfo()
+  const { chainId, account } = useWalletInfo()
 
   const spender = useTradeSpenderAddress()
   const allowanceParams = useMemo(() => (account && spender ? [account, spender] : undefined), [account, spender])
@@ -36,7 +36,7 @@ export function useTokenAllowances(tokenAddresses: string[]): {
     allowanceParams,
     MULTICALL_OPTIONS,
     SWR_CONFIG,
-    account,
+    `${chainId}${account}`,
   )
 
   const state = useMemo(() => {

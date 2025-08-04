@@ -46,7 +46,7 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
     balanceOfParams,
     multicallOptions,
     balancesSwrConfig,
-    account,
+    `${chainId}${account}`,
   )
 
   // Set balances loading state
