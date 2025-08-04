@@ -22,8 +22,8 @@ import { stripHtmlTags } from '@/util/stripHTMLTags'
 
 
 // Next.js requires revalidate to be a literal number for static analysis
-// This value (3600 seconds = 1 hour) should match CMS_CACHE_TIME in services/cms/index.ts
-export const revalidate = 3600
+// 12 hours (43200 seconds) - balanced between freshness and cache efficiency
+export const revalidate = 43200
 
 // Maximum length for metadata descriptions. When content exceeds MAX_LENGTH,
 // we truncate to TRUNCATE_LENGTH (MAX_LENGTH - 3) to make room for "..." ellipsis
@@ -95,6 +95,7 @@ export async function generateStaticParams(): Promise<{ article: string }[]> {
 
 export default async function ArticlePage({ params }: Props): Promise<ReactNode> {
   const articleSlug = (await params).article
+
 
   try {
     const article = await fetchArticleWithRetry(articleSlug)
