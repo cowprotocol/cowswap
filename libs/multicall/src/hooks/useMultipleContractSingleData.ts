@@ -38,8 +38,6 @@ export function useMultipleContractSingleData<T = Result>(
     })
   }, [addresses, callData])
 
-  const chainId = provider?.network?.chainId
-
   return useSWR<(T | undefined)[] | null>(
     !calls?.length || !provider
       ? null
@@ -49,21 +47,19 @@ export function useMultipleContractSingleData<T = Result>(
           multicallOptions,
           methodName,
           contractInterface,
-          chainId,
           calls.length,
           cacheKey,
           'useMultipleContractSingleData',
         ],
-    async ([provider, calls, multicallOptions, methodName, contractInterface, chainId]: [
+    async ([provider, calls, multicallOptions, methodName, contractInterface]: [
       Web3Provider,
       Multicall3.CallStruct[],
       MultiCallOptions,
       string,
       Interface,
-      number,
     ]) => {
       console.debug('[Multicall] MultipleContractSingleData', {
-        chainId,
+        chainId: provider?.network?.chainId,
         methodName,
         calls: calls.length,
         provider,
