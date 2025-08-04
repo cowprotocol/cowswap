@@ -12,7 +12,7 @@ import { useAsyncMemo } from 'use-async-memo'
 
 import { multiCallContextAtom } from '../state/multiCallContextAtom'
 
-const PROVIDER_DEBOUNCE = ms`500ms`
+const PROVIDER_DEBOUNCE = ms`2s`
 
 export function useMultiCallRpcProvider(): Nullish<JsonRpcProvider> {
   const provider = useWalletProvider()
