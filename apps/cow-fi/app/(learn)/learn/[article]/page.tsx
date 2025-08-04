@@ -96,6 +96,7 @@ export async function generateStaticParams(): Promise<{ article: string }[]> {
 export default async function ArticlePage({ params }: Props): Promise<ReactNode> {
   const articleSlug = (await params).article
 
+
   try {
     const article = await fetchArticleWithRetry(articleSlug)
 

@@ -206,7 +206,7 @@ export function useSetupTradeState(): void {
 
     if (!providerChainId || providerChainId === currentChainId) return
 
-    const targetChainId = rememberedUrlStateRef.current?.chainId || currentChainId
+    const targetChainId = urlChainId ?? rememberedUrlStateRef.current?.chainId ?? currentChainId
     switchNetworkInWallet(targetChainId)
 
     console.debug('[TRADE STATE]', 'Set chainId to provider', { provider, urlChainId })
