@@ -36,7 +36,8 @@ export function ConnectWalletOptions({ tryActivation, children }: ConnectWalletO
 
   const connectionProps = { darkMode, selectedWallet, tryActivation }
 
-  const metaMaskSdkOption = <MetaMaskSdkOption key="MetaMaskSdkOption" {...connectionProps} />
+  // due to a lot of bugs - disable metaMask SDK on mobile devices
+  const metaMaskSdkOption = !isMobile ? <MetaMaskSdkOption key="MetaMaskSdkOption" {...connectionProps} /> : null
 
   const coinbaseWalletOption =
     (!hasCoinbaseEip6963 && !(isMobile && isWidget) && (
@@ -82,15 +83,13 @@ interface InjectedOptionsProps {
   }
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function InjectedOptions({ connectionProps, multiInjectedProviders }: InjectedOptionsProps) {
+function InjectedOptions({ connectionProps, multiInjectedProviders }: InjectedOptionsProps): ReactNode {
   if (multiInjectedProviders.length) {
     return (
       <>
         {multiInjectedProviders
-          // Even if we detect the MetaMask Extension, we prefer to use the MetaMask SDK
-          .filter((providerInfo) => !providerInfo.info.rdns.startsWith('io.metamask'))
+          // Even if we detect the MetaMask Extension(and it's not mobile), we prefer to use the MetaMask SDK
+          .filter((providerInfo) => isMobile ? true : !providerInfo.info.rdns.startsWith('io.metamask'))
           .map((providerInfo) => {
             return (
               <Eip6963Option
