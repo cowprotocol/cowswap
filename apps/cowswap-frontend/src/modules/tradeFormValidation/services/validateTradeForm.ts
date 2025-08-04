@@ -1,5 +1,5 @@
 import { getIsNativeToken, isAddress, isFractionFalsy, isSellOrder } from '@cowprotocol/common-utils'
-import { PriceQuality } from '@cowprotocol/cow-sdk'
+import { PriceQuality, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { TradeType } from 'modules/trade'
 import { isQuoteExpired } from 'modules/tradeQuote'
@@ -7,6 +7,8 @@ import { isQuoteExpired } from 'modules/tradeQuote'
 import { ApprovalState } from 'common/hooks/useApproveState'
 
 import { TradeFormValidation, TradeFormValidationContext } from '../types'
+
+export const SUPPORTED_ENS_CHAINS = [SupportedChainId.MAINNET, SupportedChainId.SEPOLIA]
 
 // eslint-disable-next-line max-lines-per-function, complexity
 export function validateTradeForm(context: TradeFormValidationContext): TradeFormValidation[] | null {
@@ -52,7 +54,13 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     ? !inputCurrencyAmount || isFractionFalsy(inputCurrencyAmount)
     : !outputCurrencyAmount || isFractionFalsy(outputCurrencyAmount)
 
-  const isBridging = Boolean(inputCurrency && outputCurrency && inputCurrency.chainId !== outputCurrency.chainId)
+  const isBridging = inputCurrency && outputCurrency && inputCurrency.chainId !== outputCurrency.chainId
+  const chainSupportsENS = inputCurrency && SUPPORTED_ENS_CHAINS.includes(inputCurrency.chainId)
+  const isRecipientInvalid = recipient && !isAddress(recipient) && (
+    isBridging || 
+    !recipientEnsAddress || 
+    !chainSupportsENS
+  )
 
   const { isLoading: isQuoteLoading, fetchParams } = tradeQuote
   const isFastQuote = fetchParams?.priceQuality === PriceQuality.FAST
@@ -99,7 +107,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
   }
 
   if (!isWrapUnwrap) {
-    if (recipient && !isAddress(recipient) && (!recipientEnsAddress || isBridging)) {
+    if (isRecipientInvalid) {
       validations.push(TradeFormValidation.RecipientInvalid)
     }
 
