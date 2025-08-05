@@ -210,10 +210,7 @@ export async function searchArticles({
  * @returns Article with the given slug
  */
 export async function getArticleBySlug(slug: string): Promise<Article | null> {
-  if (!slug) {
-    console.error('getArticleBySlug called with empty slug')
-    return null
-  }
+  if (!slug) throw new Error('Article slug is required') // Fail fast - no silent failures per CMS architecture
 
   try {
     const result = await getBySlugAux(slug, '/articles')
@@ -259,7 +256,7 @@ async function getBySlugAux(slug: string, endpoint: '/categories'): Promise<Cate
 async function getBySlugAux(slug: string, endpoint: '/pages'): Promise<Page | null>
 
 async function getBySlugAux(slug: string, endpoint: '/categories' | '/articles' | '/pages'): Promise<unknown | null> {
-  if (!slug) throw new Error('Slug is required')
+  if (!slug) throw new Error('Slug is required') // Fail fast - no silent failures per CMS architecture
 
   const entity = endpoint.slice(1, -1)
   const populate = getPopulateConfig(endpoint)
