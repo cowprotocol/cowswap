@@ -260,7 +260,7 @@ async function getBySlugAux(slug: string, endpoint: '/pages'): Promise<Page | nu
 
 async function getBySlugAux(slug: string, endpoint: '/categories' | '/articles' | '/pages'): Promise<unknown | null> {
   if (!slug) throw new Error('Slug is required')
-  
+
   const entity = endpoint.slice(1, -1)
   const populate = getPopulateConfig(endpoint)
 
@@ -272,16 +272,15 @@ async function getBySlugAux(slug: string, endpoint: '/categories' | '/articles' 
   }
 
   // Make API call
-  const queryString = endpoint === '/pages' 
-    ? qs.stringify(queryParams, { encodeValuesOnly: true })
-    : null
+  const queryString = endpoint === '/pages' ? qs.stringify(queryParams, { encodeValuesOnly: true }) : null
 
-  const { data, error } = endpoint === '/pages'
-    ? await client.GET(`${endpoint}?${queryString}`, clientAddons)
-    : await client.GET(endpoint, {
-        params: { query: toQueryParams(queryParams) },
-        ...clientAddons,
-      })
+  const { data, error } =
+    endpoint === '/pages'
+      ? await client.GET(`${endpoint}?${queryString}`, clientAddons)
+      : await client.GET(endpoint, {
+          params: { query: toQueryParams(queryParams) },
+          ...clientAddons,
+        })
 
   if (error) {
     console.error(`Error getting slug ${slug} for ${entity}`, error)
@@ -292,6 +291,6 @@ async function getBySlugAux(slug: string, endpoint: '/categories' | '/articles' 
   const { total } = data.meta.pagination
   if (total === 0) return null
   if (total > 1) throw new Error(`Multiple ${entity} found with slug ${slug}`)
-  
+
   return data.data[0]
 }
