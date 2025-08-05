@@ -1,0 +1,73 @@
+import type { ReactNode, HTMLAttributes, OlHTMLAttributes, LiHTMLAttributes } from 'react'
+
+import { UI } from '@cowprotocol/ui'
+
+import styled from 'styled-components/macro'
+
+// Styled list components for consistent CMS content formatting
+const StyledUl = styled.ul`
+  margin: 1.6rem 0 2.4rem;
+  padding-left: 2.4rem;
+
+  li {
+    margin-bottom: 0.8rem;
+    font-size: 1.8rem;
+    line-height: 1.6;
+    color: var(${UI.COLOR_NEUTRAL_0});
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    &::marker {
+      color: var(${UI.COLOR_PRIMARY_100});
+    }
+  }
+
+  // Nested lists
+  ul,
+  ol {
+    margin: 0.8rem 0 0;
+    padding-left: 1.6rem;
+  }
+`
+
+const StyledOl = styled.ol`
+  margin: 1.6rem 0 2.4rem;
+  padding-left: 2.4rem;
+
+  li {
+    margin-bottom: 0.8rem;
+    font-size: 1.8rem;
+    line-height: 1.6;
+    color: var(${UI.COLOR_NEUTRAL_0});
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    &::marker {
+      color: var(${UI.COLOR_PRIMARY_100});
+      font-weight: 600;
+    }
+  }
+
+  // Nested lists
+  ul,
+  ol {
+    margin: 0.8rem 0 0;
+    padding-left: 1.6rem;
+  }
+`
+
+export const CustomUl = ({ children, ...props }: HTMLAttributes<HTMLUListElement>): ReactNode => (
+  <StyledUl {...props}>{children}</StyledUl>
+)
+
+export const CustomOl = ({ children, ...props }: OlHTMLAttributes<HTMLOListElement>): ReactNode => (
+  <StyledOl {...props}>{children}</StyledOl>
+)
+
+export const CustomLi = ({ children, ...props }: LiHTMLAttributes<HTMLLIElement>): ReactNode => (
+  <li {...props}>{children}</li>
+)
