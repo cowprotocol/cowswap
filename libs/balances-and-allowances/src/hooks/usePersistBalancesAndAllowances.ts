@@ -40,6 +40,7 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
   const balanceOfParams = useMemo(() => (account ? [account] : undefined), [account])
 
   const { isLoading: isBalancesLoading, data: balances } = useMultipleContractSingleData<{ balance: BigNumber }>(
+    chainId,
     tokenAddresses,
     ERC_20_INTERFACE,
     'balanceOf',

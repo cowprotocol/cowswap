@@ -9,9 +9,10 @@ import { balancesAtom, balancesCacheAtom } from '../state/balancesAtom'
 interface BalancesCacheUpdaterProps {
   chainId: SupportedChainId
   account: string | undefined
+  excludedTokens: Set<string>
 }
 
-export function BalancesCacheUpdater({ chainId, account }: BalancesCacheUpdaterProps): null {
+export function BalancesCacheUpdater({ chainId, account, excludedTokens }: BalancesCacheUpdaterProps): null {
   const [balances, setBalances] = useAtom(balancesAtom)
   const [balancesCache, setBalancesCache] = useAtom(balancesCacheAtom)
   const lastChainCacheUpdateRef = useRef<SupportedChainId | null>(null)
@@ -86,7 +87,10 @@ export function BalancesCacheUpdater({ chainId, account }: BalancesCacheUpdaterP
           ...state.values,
           ...cacheKeys.reduce(
             (acc, tokenAddress) => {
-              acc[tokenAddress] = BigNumber.from(cache[tokenAddress])
+              // Do not override excludedTokens with cache
+              if (!excludedTokens.has(tokenAddress)) {
+                acc[tokenAddress] = BigNumber.from(cache[tokenAddress])
+              }
 
               return acc
             },
@@ -97,7 +101,7 @@ export function BalancesCacheUpdater({ chainId, account }: BalancesCacheUpdaterP
     })
 
     return
-  }, [balancesCache, chainId, account, setBalances])
+  }, [balancesCache, chainId, account, excludedTokens, setBalances])
 
   return null
 }

@@ -37,7 +37,7 @@ export function RecoverFundsWidget({ defaultToken: defaultTokenToRefund }: Recov
 
   const onSelectToken = useOpenTokenSelectWidget()
 
-  const sourceChainId = useSourceChainId()
+  const sourceChainId = useSourceChainId().chainId
 
   const onCurrencySelectClick = useCallback(() => {
     onSelectToken(selectedCurrency, undefined, undefined, setSelectedCurrency)
