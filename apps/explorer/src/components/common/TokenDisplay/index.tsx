@@ -41,7 +41,7 @@ export function TokenDisplay(props: Readonly<TokenDisplayProps>): ReactNode {
   const nativeTokenDisplay = (
     <NativeWrapper>
       {tokenLabelBaseNode}
-      {networkNameSuffix && <span>{networkNameSuffix}</span>}
+      {networkNameSuffix" " && <span>{networkNameSuffix}</span>}
     </NativeWrapper>
   )
 
