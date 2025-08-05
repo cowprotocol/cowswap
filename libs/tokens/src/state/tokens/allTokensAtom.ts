@@ -79,6 +79,15 @@ export const allActiveTokensAtom = atom(async (get) => {
   const tokensMap = await get(tokensStateAtom)
   const nativeToken = NATIVE_CURRENCIES[chainId]
 
+  const activeTokensCount = Object.keys(tokensMap.activeTokens).length
+
+  /**
+   * Wait till active tokens are loaded
+   */
+  if (activeTokensCount === 0) {
+    return { tokens: [], chainId }
+  }
+
   const lpTokens = enableLpTokensByDefault
     ? Object.keys(tokensMap.inactiveTokens).reduce<TokensMap>((acc, key) => {
         const token = tokensMap.inactiveTokens[key]
