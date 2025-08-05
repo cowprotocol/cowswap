@@ -20,6 +20,7 @@ import {
   AccountProxyHelpPage,
   AccountProxyPage,
   AccountProxyRecoverPage,
+  AccountProxiesPage,
 } from 'modules/account-proxy'
 
 import { Routes as RoutesEnum, RoutesValues } from 'common/constants/routes'
@@ -92,6 +93,7 @@ export function RoutesApp(): ReactNode {
         <Route path={RoutesEnum.ACCOUNT_PROXY} element={<AccountProxyPage />} />
         <Route path={RoutesEnum.ACCOUNT_PROXY_RECOVER} element={<AccountProxyRecoverPage />} />
         <Route path={RoutesEnum.ACCOUNT_PROXY_HELP} element={<AccountProxyHelpPage />} />
+        <Route index element={<AccountProxiesPage />} />
       </Route>
       <Route path="claim" element={<Navigate to={RoutesEnum.ACCOUNT} />} />
       <Route path="profile" element={<Navigate to={RoutesEnum.ACCOUNT} />} />
