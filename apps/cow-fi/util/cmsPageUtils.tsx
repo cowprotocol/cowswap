@@ -35,9 +35,6 @@ export async function generateCmsPageMetadata(slug: string): Promise<Metadata> {
 
   const { heading, description } = page.attributes
 
-  // Debug: Log the actual page structure
-  console.log('CMS Page Debug:', { slug, heading, description })
-
   if (!heading && !description) {
     throw new Error(`No title found for page with slug "${slug}" in CMS`)
   }
