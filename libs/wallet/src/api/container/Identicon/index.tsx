@@ -1,20 +1,10 @@
-import { useRef, useState, useEffect, useCallback, useMemo } from 'react'
+import { useState, useEffect } from 'react'
 
 import { useENSAvatar } from '@cowprotocol/ens'
 
-import jazzicon from '@metamask/jazzicon'
-import styled from 'styled-components/macro'
-
 import { useWalletInfo } from '../../hooks'
 import { Identicon as IdenticonPure } from '../../pure/Identicon'
-
-const JazzIconWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-`
+import { JazzIcon } from '../../pure/JazzIcon'
 
 export interface IdenticonProps {
   size?: number
@@ -29,38 +19,23 @@ export function Identicon({ account: customAccount, size = 16 }: IdenticonProps)
   const { account: chainAccount } = useWalletInfo()
   const account = customAccount || chainAccount
   const { avatar } = useENSAvatar(account, false)
-  const ref = useRef<HTMLDivElement>(null)
 
-  // Pre-generate a random seed for Jazzicon in case the account is not available
-  const defaultSeed = useRef(Math.floor(Math.random() * 1000000))
-
-  const handleError = useCallback(() => {
+  const handleError = (): void => {
     setFetchable(false)
     setAvatarError(true)
-  }, [])
+  }
 
-  const shouldShowJazzicon = useMemo(() => {
-    return !avatar || !fetchable || avatarError
-  }, [avatar, fetchable, avatarError])
+  const shouldShowJazzicon = !avatar || !fetchable || avatarError
 
   useEffect(() => {
-    if (shouldShowJazzicon && ref.current) {
-      // Clear the current contents of the div
-      ref.current.innerHTML = ''
-      // Generate a Jazzicon for the given account address
-      const seed = account ? parseInt(account.slice(2, 10), 16) : defaultSeed.current
-      const icon = jazzicon(size, seed)
-      ref.current.appendChild(icon)
-    }
-
     // When avatar is updated, reset the error state
     return () => {
       setAvatarError(false)
     }
-  }, [shouldShowJazzicon, account, size, handleError])
+  }, [shouldShowJazzicon, account, size])
 
   return shouldShowJazzicon ? (
-    <JazzIconWrapper ref={ref} />
+    <JazzIcon account={account} size={size} />
   ) : (
     <IdenticonPure avatar={avatar} size={size} showAvatar={fetchable} onErrorFetchAvatar={handleError} />
   )
