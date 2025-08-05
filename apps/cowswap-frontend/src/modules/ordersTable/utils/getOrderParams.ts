@@ -3,9 +3,8 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { BigNumber } from '@ethersproject/bignumber'
 import { Currency, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
 
-import { BalancesAndAllowances } from 'modules/tokens'
-
 import { RateInfoParams } from 'common/pure/RateInfo'
+import { BalancesAndAllowances } from 'common/types'
 import { getOrderPermitAmount } from 'utils/orderUtils/getOrderPermitAmount'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
@@ -40,7 +39,7 @@ export function getOrderParams(
 
   const { balances, allowances } = balancesAndAllowances
   const balance = balances[order.inputToken.address.toLowerCase()]
-  const allowance = allowances[order.inputToken.address.toLowerCase()]
+  const allowance = allowances?.[order.inputToken.address.toLowerCase()]
 
   const { hasEnoughBalance, hasEnoughAllowance } = _hasEnoughBalanceAndAllowance({
     partiallyFillable: order.partiallyFillable,

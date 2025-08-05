@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 
+import { isFractionFalsy } from '@cowprotocol/common-utils'
 import { TokenAmount } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
@@ -9,6 +10,8 @@ import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'
 import { getOrderTypeReceiveAmounts, useIsEoaEthFlow } from 'modules/trade'
 import { ReceiveAmountInfo } from 'modules/trade/types'
 
+import { FeeItem } from './FeeItem'
+import { NetworkFeeItem } from './NetworkFeeItem'
 import * as styledEl from './styled'
 
 export interface ReceiveAmountInfoTooltipProps {
@@ -17,11 +20,7 @@ export interface ReceiveAmountInfoTooltipProps {
   allowsOffchainSigning: boolean
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
-export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
+export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps): ReactNode {
   const isEoaEthFlow = useIsEoaEthFlow()
 
   const { receiveAmountInfo, subsidyAndBalance, allowsOffchainSigning } = props
@@ -29,25 +28,18 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
     isSell,
     costs: {
       partnerFee: { amount: partnerFeeAmount },
+      bridgeFee,
     },
   } = receiveAmountInfo
   const { amountAfterFees, amountBeforeFees, networkFeeAmount } = getOrderTypeReceiveAmounts(receiveAmountInfo)
   const { subsidy } = subsidyAndBalance
   const { discount } = subsidy
 
-  const typeString = !isSell ? '+' : '-'
-  const hasPartnerFee = !!partnerFeeAmount && partnerFeeAmount.greaterThan(0)
-  const hasNetworkFee = !!networkFeeAmount && networkFeeAmount.greaterThan(0)
+  const hasPartnerFee = !isFractionFalsy(partnerFeeAmount)
+  const hasNetworkFee = !isFractionFalsy(networkFeeAmount)
   const hasFee = hasNetworkFee || hasPartnerFee
 
   const isEoaNotEthFlow = allowsOffchainSigning && !isEoaEthFlow
-
-  const FeePercent = (
-    <span>
-      <Trans>Network costs</Trans>
-      {hasNetworkFee && discount ? ` [-${discount}%]` : ''}
-    </span>
-  )
 
   return (
     <styledEl.Box>
@@ -59,43 +51,16 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps) {
           <TokenAmount amount={amountBeforeFees} tokenSymbol={amountBeforeFees?.currency} defaultValue="0" />
         </span>
       </div>
-      {networkFeeAmount && (
-        <div>
-          {discount ? <styledEl.GreenText>{FeePercent}</styledEl.GreenText> : FeePercent}
-          {hasFee ? (
-            <span>
-              {typeString}
-              <TokenAmount amount={networkFeeAmount} tokenSymbol={networkFeeAmount?.currency} defaultValue="0" />
-            </span>
-          ) : (
-            <styledEl.GreenText>
-              <strong>
-                <Trans>Free</Trans>
-              </strong>
-            </styledEl.GreenText>
-          )}
-        </div>
+
+      <NetworkFeeItem discount={discount} networkFeeAmount={networkFeeAmount} isSell={isSell} hasFee={hasFee} />
+
+      {(isEoaNotEthFlow || hasPartnerFee) && <FeeItem title="Fee" isSell={isSell} feeAmount={partnerFeeAmount} />}
+
+      {bridgeFee && (
+        <FeeItem title="Bridge costs" isSell={isSell} feeAmount={bridgeFee?.amountInIntermediateCurrency} />
       )}
-      {(isEoaNotEthFlow || hasPartnerFee) && (
-        <div>
-          <span>
-            <Trans>Fee</Trans>
-          </span>
-          {hasPartnerFee ? (
-            <span>
-              {typeString}
-              <TokenAmount amount={partnerFeeAmount} tokenSymbol={partnerFeeAmount?.currency} defaultValue="0" />
-            </span>
-          ) : (
-            <styledEl.GreenText>
-              <strong>
-                <Trans>Free</Trans>
-              </strong>
-            </styledEl.GreenText>
-          )}
-        </div>
-      )}
-      {amountAfterFees.greaterThan(0) && (
+
+      {!isFractionFalsy(amountAfterFees) && (
         <styledEl.TotalAmount>
           <span>
             <Trans>{!isSell ? 'From' : 'To'}</Trans>

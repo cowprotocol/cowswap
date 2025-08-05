@@ -1,5 +1,82 @@
 # Changelog
 
+## [1.115.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.115.0...cowswap-v1.115.1) (2025-08-05)
+
+
+### Bug Fixes
+
+* get relevant provider network for multicall ([#6093](https://github.com/cowprotocol/cowswap/issues/6093)) ([47f4cfb](https://github.com/cowprotocol/cowswap/commit/47f4cfbea5f2a394a0fc10c9b90d313a46613373))
+
+## [1.115.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.114.0...cowswap-v1.115.0) (2025-08-04)
+
+
+### Features
+
+* update same tokens warning message, address wrapped tokens bug ([#6028](https://github.com/cowprotocol/cowswap/issues/6028)) ([95b9089](https://github.com/cowprotocol/cowswap/commit/95b9089744cd6fd9445e1c2ebd021a86cf3da29a))
+
+
+### Bug Fixes
+
+* **bridge:** broken network switching when try to select the same network as dst in token select ([#6067](https://github.com/cowprotocol/cowswap/issues/6067)) ([ed00fe4](https://github.com/cowprotocol/cowswap/commit/ed00fe4f19f00e80e6850f8098c761f09d576bdc))
+* **bridge:** fix received amount parsing from executed info ([#6088](https://github.com/cowprotocol/cowswap/issues/6088)) ([071a361](https://github.com/cowprotocol/cowswap/commit/071a361d7bf26a4260b91cd72f8af051cc733d1e))
+
+## [1.114.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.113.0...cowswap-v1.114.0) (2025-07-31)
+
+
+### Features
+
+* **bridge:** add feature flag areUnsupportedChainsEnabled ([#6054](https://github.com/cowprotocol/cowswap/issues/6054)) ([89b8f08](https://github.com/cowprotocol/cowswap/commit/89b8f08896ff729e862b188a4e74ccca5f73df99))
+
+
+### Bug Fixes
+
+* **bridge:** remove bridge disclaimer from swap stop ([#6047](https://github.com/cowprotocol/cowswap/issues/6047)) ([2b21db8](https://github.com/cowprotocol/cowswap/commit/2b21db8433460c22144903a34eba2208cad100ac))
+* **bridge:** remove timeline dot from ConfirmDetailsItem ([#6053](https://github.com/cowprotocol/cowswap/issues/6053)) ([4a910d0](https://github.com/cowprotocol/cowswap/commit/4a910d063cbded0063a1d53e87b1a448f0367f3b))
+* **bridge:** show at least when swap hasn't being completed yet ([#6052](https://github.com/cowprotocol/cowswap/issues/6052)) ([f6acd37](https://github.com/cowprotocol/cowswap/commit/f6acd370df192c0e95ae7faade336c821d3007bd))
+* **bridge:** swap protocol icon colors for better contrast ([#6059](https://github.com/cowprotocol/cowswap/issues/6059)) ([52bbb97](https://github.com/cowprotocol/cowswap/commit/52bbb970383947f5ca56eb2abdad5d25d4ed27ed))
+* **bridge:** update protocol icons to use correct color scheme ([#6056](https://github.com/cowprotocol/cowswap/issues/6056)) ([2530852](https://github.com/cowprotocol/cowswap/commit/2530852b801eb11c3246c1b8107d68f709a26d18))
+* **bridge:** wait 0.5s between hook and order signing ([#6050](https://github.com/cowprotocol/cowswap/issues/6050)) ([e0479e7](https://github.com/cowprotocol/cowswap/commit/e0479e724d0bbc9bd8dbd960275015e6e44c4b19))
+
+## [1.113.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.112.4...cowswap-v1.113.0) (2025-07-30)
+
+
+### Features
+
+* add warning banner if bridge fees are over limit ([#6009](https://github.com/cowprotocol/cowswap/issues/6009)) ([a11bd0a](https://github.com/cowprotocol/cowswap/commit/a11bd0a6d5c6145cb52bdd09d1286b35e565b80d))
+* **bridge:** add bridging analytics ([#6029](https://github.com/cowprotocol/cowswap/issues/6029)) ([8940b85](https://github.com/cowprotocol/cowswap/commit/8940b857f2acc6cf0819b5b024d11a2080db3ab5))
+
+
+### Bug Fixes
+
+* **bridge:** adjust displayed amounts ([#6036](https://github.com/cowprotocol/cowswap/issues/6036)) ([1e44e2c](https://github.com/cowprotocol/cowswap/commit/1e44e2c57a27ecdab9b03f4522ec4eadb3bcd907))
+* **bridge:** adjust success bridging message ([#6032](https://github.com/cowprotocol/cowswap/issues/6032)) ([8503a3c](https://github.com/cowprotocol/cowswap/commit/8503a3c57ad571a285750a3b6b90418f183035d1))
+* **bridge:** close widget if dst token has another chainId ([9e4464d](https://github.com/cowprotocol/cowswap/commit/9e4464dca5652f07d6fa151f4256956e04defc1b))
+* **bridge:** display chain name in token selector ([#6019](https://github.com/cowprotocol/cowswap/issues/6019)) ([090289c](https://github.com/cowprotocol/cowswap/commit/090289ccac53381871f078dde13aa7373ab3d198))
+* **bridge:** slow network selection issue ([#6027](https://github.com/cowprotocol/cowswap/issues/6027)) ([6aed0f1](https://github.com/cowprotocol/cowswap/commit/6aed0f1c85faf2a96070bda2886415de0eaff53e))
+* high fee warning banner style and logic ([#6044](https://github.com/cowprotocol/cowswap/issues/6044)) ([bb4aadb](https://github.com/cowprotocol/cowswap/commit/bb4aadbf1cba2bd8434e26a6b8f18c1f2838de0d))
+* migrate tokens store from localStorage to indexedDB ([#6037](https://github.com/cowprotocol/cowswap/issues/6037)) ([99f67eb](https://github.com/cowprotocol/cowswap/commit/99f67eb97d2cb111f00292427ac4c8d40e353464))
+
+## [1.112.4](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.112.3...cowswap-v1.112.4) (2025-07-25)
+
+
+### Bug Fixes
+
+* **url-trade-amounts:** don't store url state when amount is 0 ([#6024](https://github.com/cowprotocol/cowswap/issues/6024)) ([6cf148d](https://github.com/cowprotocol/cowswap/commit/6cf148d0b3a61f55376a5930e62bb7e423aa6c07))
+
+## [1.112.3](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.112.2...cowswap-v1.112.3) (2025-07-22)
+
+
+### Bug Fixes
+
+* **time-offset:** detect time in the past ([#6011](https://github.com/cowprotocol/cowswap/issues/6011)) ([32f0746](https://github.com/cowprotocol/cowswap/commit/32f0746c7b91620e89a4efadf2eac7f3b67da606))
+
+## [1.112.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.112.1...cowswap-v1.112.2) (2025-07-22)
+
+
+### Bug Fixes
+
+* **trade:** compare only selected metadata fields ([#6001](https://github.com/cowprotocol/cowswap/issues/6001)) ([#6006](https://github.com/cowprotocol/cowswap/issues/6006)) ([230e47c](https://github.com/cowprotocol/cowswap/commit/230e47c6f569d3c290238168cd1f9e1d587dd4b8))
+
 ## [1.112.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.112.0...cowswap-v1.112.1) (2025-07-10)
 
 

@@ -6,12 +6,14 @@ import { TokensListsTagsUpdater, TokensListsUpdater, UnsupportedTokensUpdater } 
 import { HwAccountIndexUpdater, useWalletInfo, WalletUpdater } from '@cowprotocol/wallet'
 
 import { useBalancesContext } from 'entities/balancesContext/useBalancesContext'
+import { BridgeOrdersCleanUpdater } from 'entities/bridgeOrders'
 import { useBridgeSupportedNetworks } from 'entities/bridgeProvider'
 import { ThemeConfigUpdater } from 'theme/ThemeConfigUpdater'
 import { TradingSdkUpdater } from 'tradingSdk/TradingSdkUpdater'
 
 import { UploadToIpfsUpdater } from 'modules/appData/updater/UploadToIpfsUpdater'
 import { CommonPriorityBalancesAndAllowancesUpdater } from 'modules/balancesAndAllowances'
+import { PendingBridgeOrdersUpdater } from 'modules/bridge'
 import { BalancesCombinedUpdater } from 'modules/combinedBalances/updater/BalancesCombinedUpdater'
 import { InFlightOrderFinalizeUpdater } from 'modules/ethFlow'
 import { CowEventsUpdater, InjectedWidgetUpdater, useInjectedWidgetParams } from 'modules/injectedWidget'
@@ -51,7 +53,7 @@ export function Updaters(): ReactNode {
   const { isGeoBlockEnabled, isYieldEnabled } = useFeatureFlags()
   const tradeTypeInfo = useTradeTypeInfo()
   const isYieldWidget = tradeTypeInfo?.tradeType === TradeType.YIELD
-  const sourceChainId = useSourceChainId()
+  const { chainId: sourceChainId, source: sourceChainSource } = useSourceChainId()
   const bridgeNetworkInfo = useBridgeSupportedNetworks()
   const balancesContext = useBalancesContext()
   const balancesAccount = balancesContext.account || account
@@ -62,7 +64,9 @@ export function Updaters(): ReactNode {
       <ThemeFromUrlUpdater />
       <ConnectionStatusUpdater />
       <TradingSdkUpdater />
-      <MultiCallUpdater chainId={sourceChainId} />
+      {/*Set custom chainId only when it differs from the wallet chainId*/}
+      {/*MultiCallUpdater will use wallet network by default if custom chainId is not provided*/}
+      <MultiCallUpdater chainId={sourceChainSource === 'wallet' ? undefined : sourceChainId} />
       <FeatureFlagsUpdater />
       <WalletUpdater standaloneMode={standaloneMode} />
       <HwAccountIndexUpdater />
@@ -107,6 +111,8 @@ export function Updaters(): ReactNode {
       <VampireAttackUpdater />
       <BalancesCombinedUpdater />
       <CorrelatedTokensUpdater />
+      <BridgeOrdersCleanUpdater />
+      <PendingBridgeOrdersUpdater />
     </>
   )
 }

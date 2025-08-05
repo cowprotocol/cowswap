@@ -13,7 +13,7 @@ import * as styledEl from './OrdersTableContainer.styled'
 import { useOrdersTableState } from '../../hooks/useOrdersTableState'
 
 export function ConnectWalletContent(): ReactNode {
-  const { orderType, pendingActivities } = useOrdersTableState() || {}
+  const { orderType, pendingActivitiesCount } = useOrdersTableState() || {}
 
   return (
     <styledEl.Content>
@@ -32,7 +32,7 @@ export function ConnectWalletContent(): ReactNode {
             </Trans>
           </p>
 
-          {pendingActivities && <Web3Status pendingActivities={pendingActivities} />}
+          {pendingActivitiesCount && <Web3Status />}
         </>
       )}
     </styledEl.Content>

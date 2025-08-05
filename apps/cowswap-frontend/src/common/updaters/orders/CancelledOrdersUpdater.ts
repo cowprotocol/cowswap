@@ -4,6 +4,7 @@ import { CANCELLED_ORDERS_PENDING_TIME } from '@cowprotocol/common-const'
 import { EnrichedOrder, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
+import { useBridgeOrdersSerializedMap } from 'entities/bridgeOrders'
 import { useAddOrderToSurplusQueue } from 'entities/surplusModal'
 
 import { MARKET_OPERATOR_API_POLL_INTERVAL } from 'legacy/state/orders/consts'
@@ -12,7 +13,19 @@ import { OrderTransitionStatus } from 'legacy/state/orders/utils'
 
 import { emitFulfilledOrderEvent } from 'modules/orders'
 
+import { getIsBridgeOrder } from 'common/utils/getIsBridgeOrder'
+
 import { fetchAndClassifyOrder } from './utils'
+
+const DEFAULT_ORDERS_STATE: Record<OrderTransitionStatus, EnrichedOrder[]> = {
+  fulfilled: [],
+  presigned: [],
+  expired: [],
+  cancelled: [],
+  unknown: [],
+  presignaturePending: [],
+  pending: [],
+}
 
 /**
  * Updater for cancelled orders.
@@ -28,14 +41,13 @@ import { fetchAndClassifyOrder } from './utils'
  * Due to the network's nature, we can't tell whether an order has been really cancelled, so we prefer to wait a short
  * period and say it's cancelled even though in some cases it might actually be filled.
  */
-// TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
 export function CancelledOrdersUpdater(): null {
   const isSafeWallet = useIsSafeWallet()
   const { chainId, account } = useWalletInfo()
 
   const cancelled = useCancelledOrders({ chainId })
   const addOrderToSurplusQueue = useAddOrderToSurplusQueue()
+  const bridgeOrdersMap = useBridgeOrdersSerializedMap()
 
   // Ref, so we don't rerun useEffect
   const cancelledRef = useRef(cancelled)
@@ -45,8 +57,6 @@ export function CancelledOrdersUpdater(): null {
   const fulfillOrdersBatch = useFulfillOrdersBatch()
 
   const updateOrders = useCallback(
-    // TODO: Break down this large function into smaller functions
-    // eslint-disable-next-line max-lines-per-function
     async (chainId: ChainId, account: string, isSafeWallet: boolean) => {
       const lowerCaseAccount = account.toLowerCase()
       const now = Date.now()
@@ -94,15 +104,7 @@ export function CancelledOrdersUpdater(): null {
             }
             return acc
           },
-          {
-            fulfilled: [],
-            presigned: [],
-            expired: [],
-            cancelled: [],
-            unknown: [],
-            presignaturePending: [],
-            pending: [],
-          },
+          { ...DEFAULT_ORDERS_STATE },
         )
 
         // Bach state update fulfilled orders, if any
@@ -114,16 +116,20 @@ export function CancelledOrdersUpdater(): null {
           })
 
           fulfilled.forEach((order) => {
-            addOrderToSurplusQueue(order.uid)
+            if (!getIsBridgeOrder(order)) {
+              addOrderToSurplusQueue(order.uid)
+            }
 
-            emitFulfilledOrderEvent(chainId, order)
+            const bridgeOrders = bridgeOrdersMap[chainId]?.[lowerCaseAccount]
+            const bridgeOrder = bridgeOrders?.find((i) => i.orderUid === order.uid)
+            emitFulfilledOrderEvent(chainId, order, bridgeOrder)
           })
         }
       } finally {
         isUpdating.current = false
       }
     },
-    [addOrderToSurplusQueue, fulfillOrdersBatch],
+    [addOrderToSurplusQueue, fulfillOrdersBatch, bridgeOrdersMap],
   )
 
   useEffect(() => {

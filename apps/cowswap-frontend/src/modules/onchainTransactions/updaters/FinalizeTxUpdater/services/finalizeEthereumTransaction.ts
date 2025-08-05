@@ -10,16 +10,13 @@ import { ONCHAIN_TRANSACTIONS_EVENTS, OnchainTxEvents } from '../../../onchainTr
 import { emitOnchainTransactionEvent } from '../../../utils/emitOnchainTransactionEvent'
 import { CheckEthereumTransactions } from '../types'
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function finalizeEthereumTransaction(
   receipt: TransactionReceipt,
   transaction: EnhancedTransactionDetails,
   params: CheckEthereumTransactions,
   safeTransactionHash?: string,
-) {
-  const { chainId, account, dispatch, addPriorityAllowance } = params
+): void {
+  const { chainId, dispatch, updateLastApproveTxBlockNumber } = params
   const { hash } = transaction
 
   console.log(`[FinalizeTxUpdater] Transaction ${receipt.transactionHash} has been mined`, receipt, transaction)
@@ -28,9 +25,7 @@ export function finalizeEthereumTransaction(
 
   // Once approval tx is mined, we add the priority allowance to immediately allow the user to place orders
   if (transaction.approval) {
-    addPriorityAllowance({
-      chainId,
-      account,
+    updateLastApproveTxBlockNumber({
       blockNumber: receipt.blockNumber,
       tokenAddress: transaction.approval.tokenAddress,
     })

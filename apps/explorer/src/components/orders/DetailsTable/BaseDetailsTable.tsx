@@ -8,6 +8,7 @@ import { TruncatedText } from '@cowprotocol/ui/pure/TruncatedText'
 
 import { faGroupArrowsRotate, faHistory, faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { AddressLink } from 'components/common/AddressLink'
 import { DateDisplay } from 'components/common/DateDisplay'
 import { RowWithCopyButton } from 'components/common/RowWithCopyButton'
 import { SimpleTable } from 'components/common/SimpleTable'
@@ -76,6 +77,7 @@ export function BaseDetailsTable({
     })
   }
   const isSigning = status === 'signing'
+  const isBridging = !!order?.bridgeProviderId
 
   return (
     <SimpleTable
@@ -120,11 +122,7 @@ export function BaseDetailsTable({
                 <RowWithCopyButton
                   textToCopy={owner}
                   onCopy={(): void => onCopy('ownerAddress')}
-                  contentsToDisplay={
-                    <Link to={getExplorerLink(chainId, owner, ExplorerDataType.ADDRESS)} target="_blank">
-                      {owner}↗
-                    </Link>
-                  }
+                  contentsToDisplay={<AddressLink address={owner} chainId={chainId} showNetworkName />}
                 />
                 <LinkButton to={`/address/${owner}`}>
                   <FontAwesomeIcon icon={faHistory} />
@@ -136,7 +134,11 @@ export function BaseDetailsTable({
           <tr>
             <td>
               <span>
-                <HelpTooltip tooltip={DetailsTableTooltips.to} /> To
+                <HelpTooltip
+                  placement="bottom"
+                  tooltip={isBridging ? DetailsTableTooltips.toBridge : DetailsTableTooltips.to}
+                />{' '}
+                To
               </span>
             </td>
             <td>
@@ -144,11 +146,7 @@ export function BaseDetailsTable({
                 <RowWithCopyButton
                   textToCopy={receiver}
                   onCopy={(): void => onCopy('receiverAddress')}
-                  contentsToDisplay={
-                    <Link to={getExplorerLink(chainId, receiver, ExplorerDataType.ADDRESS)} target="_blank">
-                      {receiver}↗
-                    </Link>
-                  }
+                  contentsToDisplay={<AddressLink address={receiver} chainId={chainId} showNetworkName />}
                 />
                 <LinkButton to={`/address/${receiver}`}>
                   <FontAwesomeIcon icon={faHistory} />

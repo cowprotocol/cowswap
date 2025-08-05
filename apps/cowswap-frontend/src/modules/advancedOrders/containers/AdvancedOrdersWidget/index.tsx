@@ -8,7 +8,7 @@ import { Field } from 'legacy/state/types'
 import { useAdvancedOrdersActions } from 'modules/advancedOrders/hooks/useAdvancedOrdersActions'
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders/hooks/useAdvancedOrdersDerivedState'
 import { advancedOrdersSettingsAtom } from 'modules/advancedOrders/state/advancedOrdersSettingsAtom'
-import { TradeWidget, TradeWidgetSlots, useReceiveAmountInfo, useTradePriceImpact } from 'modules/trade'
+import { TradeWidget, TradeWidgetSlots, useTradePriceImpact, useGetReceiveAmountInfo } from 'modules/trade'
 import { BulletListItem, UnlockWidgetScreen } from 'modules/trade/pure/UnlockWidgetScreen'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { TWAP_LEARN_MORE_LINK } from 'modules/twap/const'
@@ -29,7 +29,7 @@ const UNLOCK_SCREEN = {
   title: 'Unlock the Power of TWAP Orders',
   subtitle: 'Begin with TWAP Today!',
   orderType: 'TWAP',
-  buttonText: 'Unlock TWAP orders (BETA)',
+  buttonText: 'Unlock TWAP orders',
   // TODO: add actual link before deploy to PROD
   buttonLink: TWAP_LEARN_MORE_LINK,
 }
@@ -75,7 +75,7 @@ export function AdvancedOrdersWidget({
   const { isLoading: isTradePriceUpdating } = useTradeQuote()
   const { showRecipient } = useAtomValue(advancedOrdersSettingsAtom)
   const priceImpact = useTradePriceImpact()
-  const receiveAmountInfo = useReceiveAmountInfo()
+  const receiveAmountInfo = useGetReceiveAmountInfo()
 
   const updateAdvancedOrdersState = useUpdateAdvancedOrdersRawState()
 

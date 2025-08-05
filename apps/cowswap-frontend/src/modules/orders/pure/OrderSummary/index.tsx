@@ -1,8 +1,8 @@
-import { ReactElement, useMemo } from 'react'
+import { ReactElement, ReactNode, useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { isSellOrder } from '@cowprotocol/common-utils'
-import { OrderKind } from '@cowprotocol/cow-sdk'
+import { ChainInfo, OrderKind } from '@cowprotocol/cow-sdk'
 import { TokenInfo } from '@cowprotocol/types'
 import { TokenAmount } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
@@ -10,20 +10,33 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 import { BuyForAtMostTemplate, SellForAtLeastTemplate } from './summaryTemplates'
 
 interface OrderSummaryProps {
+  actionTitle?: string
   inputToken: TokenInfo
   outputToken: TokenInfo
   sellAmount: string
   buyAmount: string
   kind: OrderKind
+  srcChainData?: ChainInfo
+  dstChainData?: ChainInfo
   children?: ReactElement | string
   customTemplate?: typeof SellForAtLeastTemplate
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function OrderSummary(props: OrderSummaryProps) {
-  const { kind, sellAmount, buyAmount, outputToken, inputToken, children, customTemplate } = props
+export function OrderSummary(props: OrderSummaryProps): ReactNode {
+  const {
+    kind,
+    sellAmount,
+    buyAmount,
+    outputToken,
+    inputToken,
+    children,
+    customTemplate,
+    actionTitle,
+    srcChainData,
+    dstChainData,
+  } = props
   const isSell = isSellOrder(kind)
+  const isBridgeOrder = srcChainData && dstChainData && srcChainData.id !== dstChainData.id
 
   const inputAmount = useMemo(() => {
     return CurrencyAmount.fromRawAmount(TokenWithLogo.fromToken(inputToken), sellAmount)
@@ -39,6 +52,11 @@ export function OrderSummary(props: OrderSummaryProps) {
   const templateProps = {
     inputAmount: inputAmountElement,
     outputAmount: outputAmountElement,
+    actionTitle,
+    ...(isBridgeOrder && {
+      srcChainData,
+      dstChainData,
+    }),
   }
 
   const summary = customTemplate

@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
 
 import { CHAIN_INFO } from '@cowprotocol/common-const'
-import { useIsBridgingEnabled } from '@cowprotocol/common-hooks'
-import { SupportedChainId, ChainInfo } from '@cowprotocol/cow-sdk'
+import { useFeatureFlags, useIsBridgingEnabled } from '@cowprotocol/common-hooks'
+import { ChainInfo, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useBridgeSupportedNetworks } from 'entities/bridgeProvider'
@@ -31,6 +31,7 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
   const { chainId } = useWalletInfo()
   const { field, selectedTargetChainId = chainId } = useSelectTokenWidgetState()
   const { data: bridgeSupportedNetworks, isLoading } = useBridgeSupportedNetworks()
+  const { areUnsupportedChainsEnabled } = useFeatureFlags()
   const isBridgingEnabled = useIsBridgingEnabled()
 
   return useMemo(() => {
@@ -62,11 +63,34 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
       }
     }
 
+    const destinationChains = filterDestinationChains(bridgeSupportedNetworks, areUnsupportedChainsEnabled)
+
     return {
       defaultChainId: selectedTargetChainId,
       // Add the source network to the list if it's not supported by bridge provider
-      chains: [...(isSourceChainSupportedByBridge ? [] : [currentChainInfo]), ...(bridgeSupportedNetworks || [])],
+      chains: [...(isSourceChainSupportedByBridge ? [] : [currentChainInfo]), ...(destinationChains || [])],
       isLoading,
     }
-  }, [field, selectedTargetChainId, chainId, bridgeSupportedNetworks, isLoading, isBridgingEnabled])
+  }, [
+    field,
+    selectedTargetChainId,
+    chainId,
+    bridgeSupportedNetworks,
+    isLoading,
+    isBridgingEnabled,
+    areUnsupportedChainsEnabled,
+  ])
+}
+
+function filterDestinationChains(
+  bridgeSupportedNetworks: ChainInfo[] | undefined,
+  areUnsupportedChainsEnabled: boolean | undefined,
+): ChainInfo[] | undefined {
+  if (areUnsupportedChainsEnabled) {
+    // Nothing to filter, we return all bridge supported networks
+    return bridgeSupportedNetworks
+  } else {
+    // If unsupported chains are not enabled, we only return the supported networks
+    return bridgeSupportedNetworks?.filter((chain) => chain.id in SupportedChainId)
+  }
 }

@@ -22,7 +22,7 @@ import { isEns, isProd, isStaging } from '@cowprotocol/common-utils'
 import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
-import { Contract } from '@ethersproject/contracts'
+import { Contract, ContractInterface } from '@ethersproject/contracts'
 import { Web3Provider } from '@ethersproject/providers'
 
 const WETH_CONTRACT_ADDRESS_MAP = Object.fromEntries(
@@ -41,9 +41,7 @@ export type UseContractResult<T extends Contract = Contract> = {
 // returns null on errors
 export function useContract<T extends Contract = Contract>(
   addressOrAddressMap: string | { [chainId: number]: string | undefined | null } | undefined,
-  // TODO: Replace any with proper type definitions
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  ABI: any,
+  ABI: ContractInterface,
   withSignerIfPossible = true,
   customProvider?: Web3Provider,
 ): UseContractResult<T> {
@@ -77,17 +75,17 @@ export function useContract<T extends Contract = Contract>(
     try {
       // Load and return the contract
       const contract = getContract(address, ABI, provider, withSignerIfPossible && account ? account : undefined)
+
       return {
         contract,
         error: null,
         chainId,
         loading: false,
       }
-    // TODO: Replace any with proper type definitions
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
+    } catch (error) {
       // Error getting the contract instance
       console.error('Failed to get contract', error)
+
       return {
         contract: null,
         error: error,
@@ -98,15 +96,11 @@ export function useContract<T extends Contract = Contract>(
   }, [addressOrAddressMap, ABI, provider, chainId, withSignerIfPossible, account]) as UseContractResult<T>
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useTokenContract(tokenAddress?: string, withSignerIfPossible?: boolean) {
+export function useTokenContract(tokenAddress?: string, withSignerIfPossible?: boolean): UseContractResult<Erc20> {
   return useContract<Erc20>(tokenAddress, Erc20Abi, withSignerIfPossible)
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useWethContract(withSignerIfPossible?: boolean) {
+export function useWethContract(withSignerIfPossible?: boolean): UseContractResult<Weth> {
   return useContract<Weth>(WETH_CONTRACT_ADDRESS_MAP, WethAbi, withSignerIfPossible)
 }
 

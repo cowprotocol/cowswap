@@ -3,8 +3,7 @@ import { useEffect } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { BalancesAndAllowances } from 'modules/tokens'
-
+import { BalancesAndAllowances } from 'common/types'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { ordersMock } from './orders.mock'
@@ -64,7 +63,7 @@ function Wrapper(): null {
 
   useEffect(() => {
     setOrdersTableState({
-      pendingActivities: [],
+      pendingActivitiesCount: 0,
       displayOrdersOnlyForSafeApp: false,
       pendingOrdersPrices: {},
       chainId: SupportedChainId.MAINNET,

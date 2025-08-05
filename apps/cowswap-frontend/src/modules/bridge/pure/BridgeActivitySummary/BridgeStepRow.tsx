@@ -6,7 +6,7 @@ import { SwapAndBridgeContext, SwapAndBridgeStatus } from '../../types'
 import { BridgeDetailsContainer } from '../BridgeDetailsContainer'
 import { BridgingProgressContent } from '../contents/BridgingProgressContent'
 import { PreparingBridgingContent } from '../contents/BridgingProgressContent/PreparingBridgingContent'
-import { BridgeStatusIcons } from '../StopStatus'
+import { BridgeStatusIcons, BridgeStatusTitlePrefixes } from '../StopStatus'
 
 interface BridgeStepRowProps {
   context: SwapAndBridgeContext
@@ -20,18 +20,17 @@ export function BridgeStepRow({ context }: BridgeStepRowProps): ReactNode {
     bridgingProgressContext,
     quoteBridgeContext,
     statusResult,
+    explorerUrl,
   } = context
 
   const bridgeStatus = bridgingStatus === SwapAndBridgeStatus.DEFAULT ? SwapAndBridgeStatus.PENDING : bridgingStatus
-
-  const isCollapsible = Boolean(bridgingProgressContext && quoteBridgeContext)
 
   return (
     <BridgeSummaryRow>
       <b>Bridge</b>
       <StepContent>
         <BridgeDetailsContainer
-          isCollapsible={isCollapsible}
+          isCollapsible
           defaultExpanded={false}
           status={bridgeStatus}
           statusIcon={BridgeStatusIcons[bridgeStatus]}
@@ -39,20 +38,22 @@ export function BridgeStepRow({ context }: BridgeStepRowProps): ReactNode {
           protocolIconSize={21}
           circleSize={21}
           titlePrefix=""
-          protocolName={`Bridged via ${bridgeProvider.name}`}
+          protocolName={`${BridgeStatusTitlePrefixes[bridgeStatus]} ${bridgeProvider.name}`}
           bridgeProvider={bridgeProvider}
           chainName={targetChainName}
           sellAmount={targetAmounts?.sellAmount}
           buyAmount={targetAmounts?.buyAmount}
+          explorerUrl={explorerUrl}
         >
           {bridgingProgressContext && quoteBridgeContext ? (
             <BridgingProgressContent
               statusResult={statusResult}
               progressContext={bridgingProgressContext}
               quoteContext={quoteBridgeContext}
+              explorerUrl={explorerUrl}
             />
           ) : (
-            <PreparingBridgingContent />
+            <PreparingBridgingContent overview={context.overview} />
           )}
         </BridgeDetailsContainer>
       </StepContent>

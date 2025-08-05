@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
 
+import { COW_PROTOCOL_NAME } from '../../constants'
 import { DividerHorizontal } from '../../styles'
 import { SwapAndBridgeStatus, SwapAndBridgeContext } from '../../types'
 import { BridgeDetailsContainer } from '../BridgeDetailsContainer'
@@ -37,7 +38,7 @@ function SwapStep({ context }: SwapStepProps): ReactNode {
       protocolIconShowOnly="first"
       protocolIconSize={21}
       titlePrefix={SwapStatusTitlePrefixes[swapStatus]}
-      protocolName="CoW Protocol"
+      protocolName={COW_PROTOCOL_NAME}
       bridgeProvider={bridgeProvider}
       chainName={sourceChainName}
       sellAmount={sourceAmounts.sellAmount}
@@ -49,7 +50,7 @@ function SwapStep({ context }: SwapStepProps): ReactNode {
 }
 
 function BridgeStep({ context, bridgeStatus }: BridgeStepProps): ReactNode {
-  const { bridgeProvider, overview, quoteBridgeContext, bridgingProgressContext, statusResult } = context
+  const { bridgeProvider, overview, quoteBridgeContext, bridgingProgressContext, statusResult, explorerUrl } = context
   const { targetAmounts, targetChainName } = overview
 
   return (
@@ -65,15 +66,17 @@ function BridgeStep({ context, bridgeStatus }: BridgeStepProps): ReactNode {
       chainName={targetChainName}
       sellAmount={targetAmounts?.sellAmount}
       buyAmount={targetAmounts?.buyAmount}
+      explorerUrl={explorerUrl}
     >
       {bridgingProgressContext && quoteBridgeContext ? (
         <BridgingProgressContent
           statusResult={statusResult}
           progressContext={bridgingProgressContext}
           quoteContext={quoteBridgeContext}
+          explorerUrl={explorerUrl}
         />
       ) : (
-        <PreparingBridgingContent />
+        <PreparingBridgingContent overview={overview} />
       )}
     </BridgeDetailsContainer>
   )

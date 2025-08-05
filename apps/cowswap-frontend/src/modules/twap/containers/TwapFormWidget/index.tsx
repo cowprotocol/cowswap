@@ -8,7 +8,7 @@ import { TradeType } from '@cowprotocol/widget-lib'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { useInjectedWidgetDeadline } from 'modules/injectedWidget'
-import { useReceiveAmountInfo } from 'modules/trade'
+import { useGetReceiveAmountInfo } from 'modules/trade'
 import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 import { useTradeState } from 'modules/trade/hooks/useTradeState'
 import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
@@ -20,6 +20,7 @@ import { TwapFormState } from 'modules/twap/pure/PrimaryActionButton/getTwapForm
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 import { usePrice } from 'common/hooks/usePrice'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
+import { RateInfo } from 'common/pure/RateInfo'
 
 import * as styledEl from './styled'
 import { LABELS_TOOLTIPS } from './tooltips'
@@ -78,7 +79,7 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget) {
 
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
 
-  const receiveAmountInfo = useReceiveAmountInfo()
+  const receiveAmountInfo = useGetReceiveAmountInfo()
 
   const limitPriceAfterSlippage = usePrice(
     receiveAmountInfo?.afterSlippage.sellAmount,
@@ -172,11 +173,15 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget) {
     <>
       {!isWrapOrUnwrap && (
         <styledEl.Row>
-          <styledEl.StyledRateInfo
-            label={LABELS_TOOLTIPS.price.label}
-            rateInfoParams={rateInfoParams}
-            isInvertedState={isInvertedState}
-          />
+          <styledEl.RateInfoWrapper>
+            <RateInfo
+              label={LABELS_TOOLTIPS.price.label}
+              rateInfoParams={rateInfoParams}
+              isInvertedState={isInvertedState}
+              fontSize={13}
+              rightAlign
+            />
+          </styledEl.RateInfoWrapper>
         </styledEl.Row>
       )}
       <TradeNumberInput

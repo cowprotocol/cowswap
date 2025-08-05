@@ -7,7 +7,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { Trans } from '@lingui/macro'
 import { Nullish } from 'types'
 
-import { useReceiveAmountInfo } from 'modules/trade'
+import { useGetReceiveAmountInfo } from 'modules/trade'
 import { useUsdAmount } from 'modules/usdAmount'
 
 import * as styledEl from './styled'
@@ -52,7 +52,7 @@ export function AmountParts() {
 
   const { numberOfPartsValue } = useAtomValue(twapOrdersSettingsAtom)
 
-  const receiveAmountInfo = useReceiveAmountInfo()
+  const receiveAmountInfo = useGetReceiveAmountInfo()
 
   const { sellAmount: inputPartAmount, buyAmount: outputPartAmount } = receiveAmountInfo?.afterPartnerFees || {}
 

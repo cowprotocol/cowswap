@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.5.3](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.5.2...balances-and-allowances-v1.5.3) (2025-08-05)
+
+
+### Bug Fixes
+
+* get relevant provider network for multicall ([#6093](https://github.com/cowprotocol/cowswap/issues/6093)) ([47f4cfb](https://github.com/cowprotocol/cowswap/commit/47f4cfbea5f2a394a0fc10c9b90d313a46613373))
+
+## [1.5.2](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.5.1...balances-and-allowances-v1.5.2) (2025-07-30)
+
+
+### Bug Fixes
+
+* do not multicall allowances globally ([#5984](https://github.com/cowprotocol/cowswap/issues/5984)) ([b142199](https://github.com/cowprotocol/cowswap/commit/b14219963baeb2d2fa4a24ded50c6dd74bc58afe))
+
 ## [1.5.1](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.5.0...balances-and-allowances-v1.5.1) (2025-07-10)
 
 

@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.24.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.24.0...cow-fi-v1.24.1) (2025-08-04)
+
+
+### Bug Fixes
+
+* **cow-fi:** enhance caching strategy and middleware for /learn routes to improve performance ([#6084](https://github.com/cowprotocol/cowswap/issues/6084)) ([f51652a](https://github.com/cowprotocol/cowswap/commit/f51652ac1c979aa8f3fde5a3af1003f9595d7722))
+* **cow-fi:** ISR optimization to prevent cache-busting in learn pages ([#6079](https://github.com/cowprotocol/cowswap/issues/6079)) ([6ace758](https://github.com/cowprotocol/cowswap/commit/6ace75842a7a5b686e3649f002b323309c47874d))
+* **cow-fi:** update articles page with caching strategy and type annotations … ([#6066](https://github.com/cowprotocol/cowswap/issues/6066)) ([a117209](https://github.com/cowprotocol/cowswap/commit/a117209a5dfdfd83aea83c606114211d9d5383c7))
+
 ## [1.24.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.23.0...cow-fi-v1.24.0) (2025-07-03)
 
 

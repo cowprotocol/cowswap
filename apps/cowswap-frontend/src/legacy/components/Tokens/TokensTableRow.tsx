@@ -1,9 +1,9 @@
-import { useCallback, useMemo } from 'react'
+import { ReactNode, useCallback, useMemo } from 'react'
 
 import EtherscanImage from '@cowprotocol/assets/cow-swap/etherscan-icon.svg'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useTheme } from '@cowprotocol/common-hooks'
-import { getBlockExplorerUrl, getIsNativeToken } from '@cowprotocol/common-utils'
+import { getBlockExplorerUrl, getIsNativeToken, isFractionFalsy } from '@cowprotocol/common-utils'
 import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS } from '@cowprotocol/cow-sdk'
 import { useAreThereTokensWithSameSymbol } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
@@ -15,12 +15,15 @@ import SVG from 'react-inlinesvg'
 import { Link } from 'react-router'
 
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
+import { useHasPendingApproval } from 'legacy/state/enhancedTransactions/hooks'
 
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
 
 import { Routes } from 'common/constants/routes'
 import { useApproveCallback } from 'common/hooks/useApproveCallback'
-import { ApprovalState, useApproveState } from 'common/hooks/useApproveState'
+import { ApprovalState } from 'common/hooks/useApproveState'
+import { useSafeMemo } from 'common/hooks/useSafeMemo'
+import { getApprovalState } from 'common/utils/getApprovalState'
 import { CardsSpinner, ExtLink } from 'pages/Account/styled'
 
 import BalanceCell from './BalanceCell'
@@ -40,7 +43,8 @@ import {
 type DataRowParams = {
   tokenData: TokenWithLogo
   index: number
-  balance?: CurrencyAmount<Token> | undefined
+  balance: CurrencyAmount<Token> | undefined
+  allowance: CurrencyAmount<Token> | undefined
   openApproveModal: (tokenSymbol?: string) => void
   closeApproveModal: Command
   toggleWalletModal: Command
@@ -52,12 +56,11 @@ export const TokensTableRow = ({
   tokenData,
   index,
   balance,
+  allowance,
   closeApproveModal,
   openApproveModal,
   toggleWalletModal,
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-}: DataRowParams) => {
+}: DataRowParams): ReactNode => {
   const { account, chainId } = useWalletInfo()
   const areThereTokensWithSameSymbol = useAreThereTokensWithSameSymbol()
 
@@ -88,7 +91,17 @@ export const TokensTableRow = ({
 
   const amountToApprove = useMemo(() => CurrencyAmount.fromRawAmount(tokenData, MaxUint256), [tokenData])
 
-  const { state: approvalState, currentAllowance } = useApproveState(isNativeToken ? null : amountToApprove)
+  const tokenAddress = tokenData.address.toLowerCase()
+
+  const pendingApproval = useHasPendingApproval(tokenAddress)
+
+  const approvalState = useSafeMemo(() => {
+    if (isNativeToken) return ApprovalState.APPROVED
+    if (!allowance) return ApprovalState.UNKNOWN
+
+    return getApprovalState(amountToApprove, BigInt(allowance.quotient.toString()), pendingApproval)
+  }, [amountToApprove, allowance, isNativeToken, pendingApproval])
+
   const approveCallback = useApproveCallback(amountToApprove, vaultRelayer)
 
   const handleApprove = useCallback(async () => {
@@ -103,8 +116,8 @@ export const TokensTableRow = ({
     try {
       openApproveModal(tokenData?.symbol)
       await approveCallback(`Approve ${tokenData?.symbol || 'token'}`)
-    // TODO: Replace any with proper type definitions
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // TODO: Replace any with proper type definitions
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error(`[TokensTableRow]: Issue approving.`, error)
       handleSetError(error?.message)
@@ -124,7 +137,7 @@ export const TokensTableRow = ({
 
   const hasZeroBalance = !balance || balance?.equalTo(0)
 
-  const balanceLessThanAllowance = balance && currentAllowance ? balance.lessThan(currentAllowance.quotient) : false
+  const balanceLessThanAllowance = balance && allowance ? balance.lessThan(allowance) : false
 
   // This is so we only create fiat value request if there is a balance
   const fiatValue = useMemo(() => {
@@ -147,7 +160,7 @@ export const TokensTableRow = ({
     }
 
     if (!account || approvalState === ApprovalState.NOT_APPROVED) {
-      if (!currentAllowance || currentAllowance.equalTo(0)) {
+      if (isFractionFalsy(allowance)) {
         return <TableButton onClick={handleApprove}>Approve</TableButton>
       }
 
@@ -157,7 +170,7 @@ export const TokensTableRow = ({
           <ApproveLabel>
             Approved:{' '}
             <strong>
-              <TokenAmount amount={currentAllowance} />
+              <TokenAmount amount={allowance} />
             </strong>
           </ApproveLabel>
         </CustomLimit>
@@ -165,7 +178,7 @@ export const TokensTableRow = ({
     }
 
     return <CardsSpinner />
-  }, [account, isNativeToken, currentAllowance, handleApprove, approvalState, balanceLessThanAllowance])
+  }, [account, isNativeToken, allowance, handleApprove, approvalState, balanceLessThanAllowance])
 
   return (
     <>

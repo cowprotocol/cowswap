@@ -17,6 +17,7 @@ export enum ActivityStatus {
   CANCELLED,
   CREATING,
   FAILED,
+  LOADING,
 }
 
 export interface OrderCreationTxInfo {
@@ -48,6 +49,8 @@ export interface ActivityDerivedState {
   // EthFlow flags
   isCreating: boolean
   isFailed: boolean
+  // Bridge loading flag
+  isLoading?: boolean
   // TODO: refactor these convenience flags
 
   // Possible activity types

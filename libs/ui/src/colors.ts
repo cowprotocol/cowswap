@@ -235,9 +235,9 @@ const COLOR_MAPPINGS = {
   blue500Primary: { light: 'blue500Primary', dark: 'blue300Primary' },
   blue900Primary: { light: 'blue900Primary', dark: 'blueLight1' },
 
-  // Example: Easy to extend for other color families
-  // success: { light: 'successLight', dark: 'successDark' },
-  // warning: { light: 'warningLight', dark: 'warningDark' },
+  // Purple primary color mappings
+  purple200Primary: { light: 'cowfi_purple_bright', dark: 'cowfi_purple_bright' },
+  purple800Primary: { light: 'cowfi_purple_dark', dark: 'cowfi_purple_dark' },
 } as const
 
 /**
@@ -472,6 +472,9 @@ export type ThemeColors = {
   blue400Primary: string
   blue500Primary: string
   blue900Primary: string
+  // Purple primary colors  
+  purple200Primary: string
+  purple800Primary: string
   // Gradients
   gradient1: string
   gradient2: string

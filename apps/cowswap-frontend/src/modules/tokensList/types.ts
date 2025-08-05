@@ -17,6 +17,7 @@ export interface SelectTokenContext {
   unsupportedTokens: { [tokenAddress: string]: { dateAdded: number } }
   permitCompatibleTokens: PermitCompatibleTokens
   tokenListTags: TokenListTags
+  isWalletConnected: boolean
 }
 
 export interface ChainsToSelectState {

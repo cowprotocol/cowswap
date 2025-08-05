@@ -1,4 +1,4 @@
-import * as hookDappsRegistry from './hookDappsRegistry.json'
+import { hookDappsRegistry } from './hookDappsRegistry'
 import { CowHook, HookDappBase } from './types'
 
 const hookDapps = Object.keys(hookDappsRegistry).reduce((acc, id) => {

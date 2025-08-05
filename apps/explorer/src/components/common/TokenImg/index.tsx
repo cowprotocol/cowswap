@@ -47,20 +47,19 @@ export const TokenImg: React.FC<Props> = (props) => {
   const { address, addressMainnet, symbol, name, network, tokenLogo } = props
   const { data: tokenListTokens } = useTokenList(network)
 
-  let iconFile = tokensIconsFilesByAddress[address.toLowerCase()]
+  let iconFile = address && tokensIconsFilesByAddress[address.toLowerCase()]
   if (!iconFile && addressMainnet) {
     iconFile = tokensIconsFilesByAddress[addressMainnet.toLowerCase()]
   }
-
   const iconFileUrl: string | undefined =
     tokenLogo ||
     (iconFile
       ? tokensIconsRequire[iconFile].default
-      : tokenListTokens?.[address.toLowerCase()]?.logoURI || getImageUrl(addressMainnet || address))
+      : tokenListTokens?.[address?.toLowerCase()]?.logoURI || getImageUrl(addressMainnet || address))
 
   // TODO: Simplify safeTokenName signature, it doesn't need the addressMainnet or id!
   // https://github.com/gnosis/gp-v1-ui/issues/1442
-  const safeName = safeTokenName({ address, symbol, name })
+  const safeName = address && safeTokenName({ address, symbol, name })
 
   return <Wrapper alt={safeName} src={iconFileUrl} onError={_loadFallbackTokenImage} {...props} />
 }

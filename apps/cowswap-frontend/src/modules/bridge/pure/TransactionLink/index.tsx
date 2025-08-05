@@ -1,15 +1,16 @@
 import { ReactNode } from 'react'
 
-import ReceiptIcon from '@cowprotocol/assets/cow-swap/icon-receipt.svg'
 import { getChainInfo } from '@cowprotocol/common-const'
 import { useMediaQuery } from '@cowprotocol/common-hooks'
-import { ExternalLink, Media } from '@cowprotocol/ui'
+import { Media } from '@cowprotocol/ui'
 
-import { useBridgeSupportedNetworks } from 'entities/bridgeProvider'
+import { useBridgeSupportedNetwork } from 'entities/bridgeProvider'
 
-import { ConfirmDetailsItem } from 'modules/trade'
+import { TransactionLinkDisplay } from './TransactionLinkDisplay'
 
-import { StyledTimelineReceiptIcon, TimelineIconCircleWrapper } from '../../styles'
+function getChainTransactionLinkText(explorerTitle: string, isMobile: boolean): string {
+  return isMobile ? `${explorerTitle} ↗` : `View on ${explorerTitle} ↗`
+}
 
 interface TransactionLinkItemProps {
   link: string
@@ -18,24 +19,11 @@ interface TransactionLinkItemProps {
 }
 
 export function TransactionLinkItem({ link, label, chainId }: TransactionLinkItemProps): ReactNode {
-  const { data: bridgeSupportedNetworks } = useBridgeSupportedNetworks()
-  const bridgeNetwork = bridgeSupportedNetworks?.find((network) => network.id === chainId)
+  const bridgeNetwork = useBridgeSupportedNetwork(chainId)
   const isMobile = useMediaQuery(Media.upToSmall(false))
 
   const explorerTitle = bridgeNetwork?.blockExplorer.name || getChainInfo(chainId)?.explorerTitle || 'Explorer'
+  const linkText = getChainTransactionLinkText(explorerTitle, isMobile)
 
-  return (
-    <ConfirmDetailsItem
-      label={
-        <>
-          <TimelineIconCircleWrapper padding="0" bgColor={'transparent'}>
-            <StyledTimelineReceiptIcon src={ReceiptIcon} />
-          </TimelineIconCircleWrapper>{' '}
-          {label}
-        </>
-      }
-    >
-      <ExternalLink href={link}>{isMobile ? `${explorerTitle} ↗` : `View on ${explorerTitle} ↗`}</ExternalLink>
-    </ConfirmDetailsItem>
-  )
+  return <TransactionLinkDisplay link={link} label={label} linkText={linkText} />
 }

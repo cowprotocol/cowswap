@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { Command } from '@cowprotocol/types'
 import { ButtonSecondaryAlt, InlineBanner, InlineBannerProps } from '@cowprotocol/ui'
 
@@ -15,8 +17,6 @@ const RecipientBannerContent = styled.div`
   }
 `
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function CustomRecipientWarningBanner({
   bannerType,
   borderRadius,
@@ -25,11 +25,7 @@ export function CustomRecipientWarningBanner({
   iconPadding = '0',
   padding = '10px 16px',
   onDismiss,
-}: CustomRecipientBannerProps) {
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const handleDismiss = () => onDismiss?.()
-
+}: CustomRecipientBannerProps): ReactNode {
   return (
     <InlineBanner
       borderRadius={borderRadius}
@@ -44,7 +40,7 @@ export function CustomRecipientWarningBanner({
           <strong>Caution:</strong> Order recipient address differs from order owner!
         </p>
         {onDismiss && (
-          <ButtonSecondaryAlt minHeight={'28px'} onClick={handleDismiss}>
+          <ButtonSecondaryAlt minHeight={'28px'} onClick={onDismiss}>
             Dismiss
           </ButtonSecondaryAlt>
         )}
