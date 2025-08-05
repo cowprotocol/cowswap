@@ -1831,37 +1831,159 @@
   resolved "https://registry.yarnpkg.com/@cowprotocol/contracts/-/contracts-1.7.0.tgz#a3b93bebfe768b4911de54841b9d7b39b8bd0b99"
   integrity sha512-tog/0igLaWZv6kK30+aFJ267+yNyMINx6qDHaJQFKZs051XUXnzNFlZgCEfICwDz/821XYjZxOnNbe449tgD5w==
 
-"@cowprotocol/contracts@^1.8.0":
-  version "1.8.0"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/contracts/-/contracts-1.8.0.tgz#daffbd9846231c11a74b15a186bb754627e420b0"
-  integrity sha512-rMEHo1UBB6k4kRoWejHZNGggg6IBVt7vAd8x0FhEvjxhbq3zlAex61f9HpAcDExJNuvfwwDjsOc/7UGztCzhSw==
-
 "@cowprotocol/cow-runner-game@^0.2.9":
   version "0.2.9"
   resolved "https://registry.yarnpkg.com/@cowprotocol/cow-runner-game/-/cow-runner-game-0.2.9.tgz#3f94b3f370bd114f77db8b1d238cba3ef4e9d644"
   integrity sha512-rX7HnoV+HYEEkBaqVUsAkGGo0oBrExi+d6Io+8nQZYwZk+IYLmS9jdcIObsLviM2h4YX8+iin6NuKl35AaiHmg==
 
-"@cowprotocol/cow-sdk@6.0.0-RC.44":
-  version "6.0.0-RC.44"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-6.0.0-RC.44.tgz#9c3af93d8a7f30fe54346a39911a449c6957ac46"
-  integrity sha512-oFKw5iKGgZ2+dF4Q9GL+OYpB+ODM/N8QTCMdk8O7avZ4p2eH1o0+8a3xGST1WKK2dw/fifDBqMyi1N8KC4eOVA==
+"@cowprotocol/cow-sdk@7.0.0-monorepo.0":
+  version "7.0.0-monorepo.0"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-7.0.0-monorepo.0.tgz#cc4dcef95d28817dda5300a64f81386ff8558336"
+  integrity sha512-zrsoXFFyFoYGgysMCqYpHaBh8J0Jq84IGEapFjIKvvQdx2Rvs2QqKZqjE4d4UoRx4/CyEfZ964mFxmeXBArr1w==
   dependencies:
-    "@cowprotocol/app-data" "^3.1.0"
-    "@cowprotocol/contracts" "^1.8.0"
-    "@ethersproject/abstract-signer" "^5.8.0"
-    "@openzeppelin/merkle-tree" "^1.0.8"
-    "@weiroll/weiroll.js" "^0.3.0"
-    cross-fetch "^3.2.0"
-    deepmerge "^4.3.1"
-    ethers "^5.8.0"
-    exponential-backoff "^3.1.2"
-    graphql "^16.11.0"
-    graphql-request "^4.3.0"
-    limiter "^3.0.0"
+    "@cowprotocol/sdk-app-data" "workspace:*"
+    "@cowprotocol/sdk-bridging" "workspace:*"
+    "@cowprotocol/sdk-common" "workspace:*"
+    "@cowprotocol/sdk-composable" "workspace:*"
+    "@cowprotocol/sdk-config" "workspace:*"
+    "@cowprotocol/sdk-contracts-ts" "workspace:*"
+    "@cowprotocol/sdk-cow-shed" "workspace:*"
+    "@cowprotocol/sdk-order-book" "workspace:*"
+    "@cowprotocol/sdk-order-signing" "workspace:*"
+    "@cowprotocol/sdk-subgraph" "workspace:*"
+    "@cowprotocol/sdk-trading" "workspace:*"
+    "@cowprotocol/sdk-weiroll" "workspace:*"
 
 "@cowprotocol/ethflowcontract@cowprotocol/ethflowcontract.git#main-artifacts":
   version "1.3.0"
   resolved "https://codeload.github.com/cowprotocol/ethflowcontract/tar.gz/9797105dfa25330a2e88cc4180df0fc34cf8fbbd"
+
+"@cowprotocol/sdk-app-data@workspace:*":
+  version "4.0.0-monorepo.0"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/sdk-app-data/-/sdk-app-data-4.0.0-monorepo.0.tgz#35b2a8de8dfb6ddac8baf621506c5c1be30d7e88"
+  integrity sha512-IFb01I3jh3CZoLEtLGQxhq3iqcQGXIaCsaTac06lUCzUWuxEHUR0XdvSu2xbtM6FvoXLCYxFvejE5SLiz+tgiw==
+  dependencies:
+    "@cowprotocol/sdk-common" "workspace:*"
+    ajv "^8.11.0"
+    cross-fetch "^3.1.5"
+    ipfs-only-hash "^4.0.0"
+    json-stringify-deterministic "^1.0.8"
+    multiformats "^9.6.4"
+
+"@cowprotocol/sdk-bridging@workspace:*":
+  version "0.1.0-monorepo.0"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/sdk-bridging/-/sdk-bridging-0.1.0-monorepo.0.tgz#d87f3f4a953c926ec7eb1fe0e9c5dc777136e196"
+  integrity sha512-luEsoGhhoHCbzyGlcb72OM5iRNTbQe0xzSLYYpHecI+1Sz7JEi8O9oAebz/C8x2PtvdMKYb6GNzpudH3+lsmFA==
+  dependencies:
+    "@cowprotocol/sdk-app-data" "workspace:*"
+    "@cowprotocol/sdk-common" "workspace:*"
+    "@cowprotocol/sdk-config" "workspace:*"
+    "@cowprotocol/sdk-contracts-ts" "workspace:*"
+    "@cowprotocol/sdk-cow-shed" "workspace:*"
+    "@cowprotocol/sdk-order-book" "workspace:*"
+    "@cowprotocol/sdk-trading" "workspace:*"
+    "@cowprotocol/sdk-weiroll" "workspace:*"
+
+"@cowprotocol/sdk-common@workspace:*":
+  version "0.1.0-monorepo.0"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/sdk-common/-/sdk-common-0.1.0-monorepo.0.tgz#05068fcf68ac64b29827fe44e23347b48687f14a"
+  integrity sha512-jgVAgim6W0gXEXTR5++Q9oZAW59dXmtQfBmcWSwAZWHDeViE4hpXS+4KW6QqO3f39A+ekA5ZQwSbrMtfi/iSFQ==
+
+"@cowprotocol/sdk-composable@workspace:*":
+  version "0.1.0-monorepo.0"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/sdk-composable/-/sdk-composable-0.1.0-monorepo.0.tgz#e26d1577d36c2abf411014a49b5d49282fefdfce"
+  integrity sha512-WGbmPop8PUXuevz+Og+abgYzMM8aAq7u1jSql2QKFKLin1W4Z8V1PxPQYjiXhoTWFRkc9jvhONH5yYmzx1xPVQ==
+  dependencies:
+    "@cowprotocol/sdk-common" "workspace:*"
+    "@cowprotocol/sdk-config" "workspace:*"
+    "@cowprotocol/sdk-contracts-ts" "workspace:*"
+    "@cowprotocol/sdk-order-book" "workspace:*"
+    "@cowprotocol/sdk-order-signing" "workspace:*"
+    "@openzeppelin/merkle-tree" "^1.0.8"
+
+"@cowprotocol/sdk-config@workspace:*":
+  version "0.1.0-monorepo.0"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/sdk-config/-/sdk-config-0.1.0-monorepo.0.tgz#5ce662ba4517bcc2bee981e65bec8ed528328d32"
+  integrity sha512-ePxEV7c1Jw1XB+lqpNRU0pGS98SfPvOeV4I+EeOYDzs5gKEpGWCk1StOlJlbnF3+DjFnXbF7GgWtNenpf7wYzw==
+  dependencies:
+    exponential-backoff "^3.1.1"
+    limiter "^2.1.0"
+
+"@cowprotocol/sdk-contracts-ts@workspace:*":
+  version "2.0.0-monorepo.0"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/sdk-contracts-ts/-/sdk-contracts-ts-2.0.0-monorepo.0.tgz#15d0307ea25098fdd885a6af392988e025fe9485"
+  integrity sha512-DqfljTwXrV/2nnjeA/QcfCh7tltsgTvmwnJSu7GhodmIquz2tjZQbkJvrhgNnm3oT1Zx8GA/vQs/DV+WLP9Y/Q==
+  dependencies:
+    "@cowprotocol/sdk-common" "workspace:*"
+    "@cowprotocol/sdk-config" "workspace:*"
+
+"@cowprotocol/sdk-cow-shed@workspace:*":
+  version "0.1.0-monorepo.0"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/sdk-cow-shed/-/sdk-cow-shed-0.1.0-monorepo.0.tgz#9527e2de1183a42113aa48ee9112d404a5106bf2"
+  integrity sha512-VwtOBil+D/Wj5RZhqrlI//X6BL7S4Z1bQzkeV259PNBL+QV1ncshbRx8ghHW/sfcnGKf7vynO2ySZKSwwiq5Hg==
+  dependencies:
+    "@cowprotocol/sdk-common" "workspace:*"
+    "@cowprotocol/sdk-config" "workspace:*"
+    "@cowprotocol/sdk-contracts-ts" "workspace:*"
+
+"@cowprotocol/sdk-ethers-v5-adapter@^0.1.0-monorepo.0":
+  version "0.1.0-monorepo.0"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/sdk-ethers-v5-adapter/-/sdk-ethers-v5-adapter-0.1.0-monorepo.0.tgz#6610162038a979268143b4dd25f56769d3cf2c4e"
+  integrity sha512-cIWpwHrFEPBVMO0S9XxBn2kWpQAzT0SKd1zcox5hOCcB/Vbm3CYpueLvuC3WAEfjBrN1pYnzsrGwPrlev5sb5w==
+  dependencies:
+    "@cowprotocol/sdk-common" "workspace:*"
+
+"@cowprotocol/sdk-order-book@workspace:*":
+  version "0.1.0-monorepo.0"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/sdk-order-book/-/sdk-order-book-0.1.0-monorepo.0.tgz#c2fcb09e1704dd70ed4bfb2065822f62c08bf5a0"
+  integrity sha512-upqglg6d0Ay7jmkIbLAOAsdkjfQVzEaMIJ7bPyQzPurldEcxd6jD//2VOH2/AI4urdTWjc1HweWrpVbQHl6tSA==
+  dependencies:
+    "@cowprotocol/sdk-common" "workspace:*"
+    "@cowprotocol/sdk-config" "workspace:*"
+    cross-fetch "^3.2.0"
+    exponential-backoff "^3.1.2"
+    limiter "^3.0.0"
+
+"@cowprotocol/sdk-order-signing@workspace:*":
+  version "0.1.0-monorepo.0"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/sdk-order-signing/-/sdk-order-signing-0.1.0-monorepo.0.tgz#dddef7f5cff0d63a739e493c1135840e668fdb09"
+  integrity sha512-HrsiUIHcSFvtQowtxuGHqeUO8+/MPNHS5qUHFsuFoeIaLMenB7DW5EPP8zhRk12q8xCiMTc1pkUo31dyBg+b2w==
+  dependencies:
+    "@cowprotocol/sdk-common" "workspace:*"
+    "@cowprotocol/sdk-config" "workspace:*"
+    "@cowprotocol/sdk-contracts-ts" "workspace:*"
+    "@cowprotocol/sdk-order-book" "workspace:*"
+
+"@cowprotocol/sdk-subgraph@workspace:*":
+  version "0.1.0-monorepo.0"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/sdk-subgraph/-/sdk-subgraph-0.1.0-monorepo.0.tgz#3af78a149fc1198a1e2da24279bd80ce34a65dbc"
+  integrity sha512-hdEtMQlh0UPkXWWFr/FzHOUc9gMe/jY5JitplIRokr21GH+NkIGwxUthGXO/NFhglvNjXK8eDOCZH/R3uGQYiw==
+  dependencies:
+    "@cowprotocol/sdk-common" "workspace:*"
+    "@cowprotocol/sdk-config" "workspace:*"
+    graphql "^16.11.0"
+    graphql-request "^4.3.0"
+
+"@cowprotocol/sdk-trading@workspace:*":
+  version "0.1.0-monorepo.0"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/sdk-trading/-/sdk-trading-0.1.0-monorepo.0.tgz#bd10ac8aee6e15a722c333530f4417997b16781a"
+  integrity sha512-qa6OIJyphXeKf38sLg8D/K1xgbDdTFGoFBYZb8PwvOwI5SbWM8MncNnLvvUawdL7OulyApelKjXHsYelcF5IYA==
+  dependencies:
+    "@cowprotocol/sdk-app-data" "workspace:*"
+    "@cowprotocol/sdk-common" "workspace:*"
+    "@cowprotocol/sdk-config" "workspace:*"
+    "@cowprotocol/sdk-contracts-ts" "workspace:*"
+    "@cowprotocol/sdk-order-book" "workspace:*"
+    "@cowprotocol/sdk-order-signing" "workspace:*"
+    deepmerge "^4.3.1"
+
+"@cowprotocol/sdk-weiroll@workspace:*":
+  version "0.1.0-monorepo.0"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/sdk-weiroll/-/sdk-weiroll-0.1.0-monorepo.0.tgz#b688c8322b6d22450e227a36c66cfff3d23ebe2b"
+  integrity sha512-4Tkive3aDfw5ojOhuzspW6Hp3jQ5zXxiaiO1iR5Ccg0qp48uKK21OITnw/pXviax9CY+E1LKMrgDK1avOoPzog==
+  dependencies:
+    "@cowprotocol/sdk-common" "workspace:*"
+    "@cowprotocol/sdk-config" "workspace:*"
 
 "@cspotcode/source-map-support@^0.8.0":
   version "0.8.1"
@@ -10791,13 +10913,6 @@
     "@webassemblyjs/ast" "1.14.1"
     "@xtuc/long" "4.2.2"
 
-"@weiroll/weiroll.js@^0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@weiroll/weiroll.js/-/weiroll.js-0.3.0.tgz#75a7b6c7016c0c0c2be13e6be408a4ead1c68815"
-  integrity sha512-RV+iKtY/V/Oc0zoPFPaNGAkOOOV89uGdiocxWd4HT5XNdGob0/XI+07GtP0Dv3B7QLwLTs8QMNKPvsH846svrw==
-  dependencies:
-    ethers "^5.3.1"
-
 "@wry/caches@^1.0.0":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@wry/caches/-/caches-1.0.1.tgz#8641fd3b6e09230b86ce8b93558d44cf1ece7e52"
@@ -16689,7 +16804,7 @@ ethers@5.7.2:
     "@ethersproject/web" "5.7.1"
     "@ethersproject/wordlists" "5.7.0"
 
-ethers@^5.3.1, ethers@^5.8.0:
+ethers@^5.8.0:
   version "5.8.0"
   resolved "https://registry.yarnpkg.com/ethers/-/ethers-5.8.0.tgz#97858dc4d4c74afce83ea7562fe9493cedb4d377"
   integrity sha512-DUq+7fHrCg1aPDFCHx6UIPb3nmt2XMpM7Y/g2gLhsl3lIBqeAfOJIl1qEvRf2uq3BiKxmh6Fh5pfp2ieyek7Kg==

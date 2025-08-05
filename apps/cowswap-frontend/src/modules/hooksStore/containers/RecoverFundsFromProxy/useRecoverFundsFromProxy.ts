@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from 'react'
 
 import { CowShedContract, CowShedContractAbi } from '@cowprotocol/abis'
-import { SigningScheme } from '@cowprotocol/contracts'
+import { ContractsSigningScheme  as SigningScheme} from '@cowprotocol/cow-sdk'
 import { COW_SHED_FACTORY, ICoWShedCall } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
@@ -98,8 +98,8 @@ export function useRecoverFundsFromProxy(
         calls,
         nonce,
         BigInt(validTo),
-        provider.getSigner(),
         SigningScheme.EIP712,
+        provider.getSigner(),
       )
 
       const transaction = await cowShedContract.executeHooks(calls, nonce, BigInt(validTo), account, encodedSignature, {

@@ -1,4 +1,4 @@
-import { latest } from '@cowprotocol/app-data'
+import { latest } from '@cowprotocol/cow-sdk'
 import { JsonRpcProvider } from '@ethersproject/providers'
 
 import { Eip2612PermitUtils } from '@1inch/permit-signed-approvals-utils'

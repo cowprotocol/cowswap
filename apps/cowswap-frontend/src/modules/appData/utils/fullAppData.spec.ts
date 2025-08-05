@@ -1,7 +1,7 @@
-import { LATEST_APP_DATA_VERSION } from '@cowprotocol/app-data'
-import { MetadataApi } from '@cowprotocol/app-data'
 import { DEFAULT_APP_CODE } from '@cowprotocol/common-const'
 import { ALL_ENVIRONMENTS, EnvironmentName } from '@cowprotocol/common-utils'
+import { LATEST_APP_DATA_VERSION } from '@cowprotocol/cow-sdk'
+import { MetadataApi } from '@cowprotocol/cow-sdk'
 
 import { getFullAppDataByEnv } from './fullAppData'
 
