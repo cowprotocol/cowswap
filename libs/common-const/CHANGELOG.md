@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.21.1](https://github.com/cowprotocol/cowswap/compare/common-const-v1.21.0...common-const-v1.21.1) (2025-07-30)
+
+
+### Bug Fixes
+
+* **bridge:** use proper naming for eth mainnet ([#5915](https://github.com/cowprotocol/cowswap/issues/5915)) ([b83c32a](https://github.com/cowprotocol/cowswap/commit/b83c32a46dd82267741878e465ac24a612339726))
+* **bridging:** enhance account proxy validation ([#5985](https://github.com/cowprotocol/cowswap/issues/5985)) ([4366070](https://github.com/cowprotocol/cowswap/commit/436607005c5c743a4fd96c17b6d1f0b165d5baac))
+
 ## [1.21.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.20.1...common-const-v1.21.0) (2025-07-03)
 
 

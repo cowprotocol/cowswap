@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react'
 
+import { RECEIVED_LABEL } from '@cowprotocol/common-const'
 import { BridgeStatus, CrossChainOrder } from '@cowprotocol/cow-sdk'
 
 import { AddressLink } from 'components/common/AddressLink'
@@ -19,6 +20,8 @@ import { AmountSectionWrapper, ProviderDisplayWrapper, ProviderLogo } from '../s
 interface BridgeDetailsContentProps {
   crossChainOrder: CrossChainOrder
 }
+
+// TODO: Break down this large function into smaller functions
 
 export function BridgeDetailsContent({ crossChainOrder }: BridgeDetailsContentProps): ReactNode {
   const {
@@ -41,7 +44,7 @@ export function BridgeDetailsContent({ crossChainOrder }: BridgeDetailsContentPr
         </ProviderDisplayWrapper>
       </DetailRow>
 
-      <DetailRow label="From" tooltipText={BridgeDetailsTooltips.ownerAddress}>
+      <DetailRow label="From" tooltipText={BridgeDetailsTooltips.accountFromProxy}>
         <RowWithCopyButton
           textToCopy={owner}
           contentsToDisplay={<AddressLink address={owner} chainId={sourceChainId} showNetworkName />}
@@ -64,7 +67,7 @@ export function BridgeDetailsContent({ crossChainOrder }: BridgeDetailsContentPr
         <AmountSectionWrapper>
           <BridgeAmountDisplay labelPrefix="From:" bridgeToken={sourceToken} amount={inputAmount.toString()} />
           <BridgeAmountDisplay
-            labelPrefix="To at least:"
+            labelPrefix="To:"
             bridgeToken={destinationToken}
             amount={outputAmount?.toString() || '0'}
             bridgeProvider={bridgeProvider}
@@ -72,7 +75,7 @@ export function BridgeDetailsContent({ crossChainOrder }: BridgeDetailsContentPr
         </AmountSectionWrapper>
       </DetailRow>
 
-      <DetailRow label="You received" tooltipText={BridgeDetailsTooltips.youReceived}>
+      <DetailRow label={RECEIVED_LABEL} tooltipText={BridgeDetailsTooltips.youReceived}>
         {outputAmount && destinationToken && bridgeStatus === BridgeStatus.EXECUTED && (
           <BridgeReceiveAmount
             amount={outputAmount}

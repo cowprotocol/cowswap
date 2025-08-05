@@ -1,5 +1,6 @@
 import { ReactNode, useCallback, useEffect, useRef } from 'react'
 
+import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
 import { useOnClickOutside } from '@cowprotocol/common-hooks'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -14,7 +15,7 @@ import { NewModal } from 'common/pure/NewModal'
 import { AddressLinkStyled, Content, EmptyWrapper, ModalWrapper, Title, WidgetWrapper } from './styled'
 
 import { CoWShedWidgetTabs } from '../../const'
-import { useCurrentAccountProxyAddress } from '../../hooks/useCurrentAccountProxyAddress'
+import { useCurrentAccountProxyAddress } from '../../hooks/useCurrentAccountProxy'
 import { useTokensToRefund } from '../../hooks/useTokensToRefund'
 import { CoWShedFAQ } from '../../pure/CoWShedFAQ'
 import { TokensInProxyBanner } from '../../pure/TokensInProxyBanner'
@@ -30,7 +31,7 @@ interface CoWShedWidgetProps {
 export function CoWShedWidget({ onDismiss, modalMode }: CoWShedWidgetProps): ReactNode {
   const { chainId } = useWalletInfo()
   const updateSelectTokenWidget = useUpdateSelectTokenWidgetState()
-  const { proxyAddress } = useCurrentAccountProxyAddress() || {}
+  const proxyAddress = useCurrentAccountProxyAddress()
   const params = useParams()
   const setBalancesContext = useSetBalancesContext()
   const widgetRef = useRef(null)
@@ -61,7 +62,7 @@ export function CoWShedWidget({ onDismiss, modalMode }: CoWShedWidgetProps): Rea
     <>
       <Content>
         <Title>
-          <Pocket size={20} /> Account Proxy
+          <Pocket size={20} /> {ACCOUNT_PROXY_LABEL}
         </Title>
 
         {proxyAddress && <AddressLinkStyled address={proxyAddress} chainId={chainId} noShorten />}
@@ -81,7 +82,7 @@ export function CoWShedWidget({ onDismiss, modalMode }: CoWShedWidgetProps): Rea
       <WidgetWrapper ref={widgetRef}>
         <NewModal
           modalMode={modalMode}
-          title="Account Proxy"
+          title={ACCOUNT_PROXY_LABEL}
           onDismiss={onDismissCallback}
           contentPadding="10px"
           justifyContent="flex-start"

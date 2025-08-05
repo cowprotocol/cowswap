@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 import { BackButton } from '@cowprotocol/ui'
@@ -6,7 +8,7 @@ import { Currency } from '@uniswap/sdk-core'
 import { Nullish } from 'types'
 
 import { DisplayLink } from 'legacy/components/TransactionConfirmationModal/DisplayLink'
-import type { Order } from 'legacy/state/orders/actions'
+import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
 import { GnosisSafeTxDetails } from 'modules/account'
 import { EthFlowStepper } from 'modules/ethFlow'
@@ -15,6 +17,7 @@ import { WatchAssetInWallet } from 'modules/wallet'
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 import { CancelButton } from 'common/pure/CancelButton'
 import { ActivityDerivedState, ActivityStatus } from 'common/types/activity'
+import { getIsBridgeOrder } from 'common/utils/getIsBridgeOrder'
 
 import * as styledEl from './styled'
 
@@ -51,9 +54,8 @@ export interface TransactionSubmittedContentProps {
 }
 
 // TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
+// eslint-disable-next-line max-lines-per-function, complexity
 export function TransactionSubmittedContent({
   onDismiss,
   chainId,
@@ -62,11 +64,13 @@ export function TransactionSubmittedContent({
   activityDerivedState,
   orderProgressBarProps,
   navigateToNewOrderCallback,
-}: TransactionSubmittedContentProps) {
+}: TransactionSubmittedContentProps): ReactNode {
   const { order, isOrder, isCreating, isPending } = activityDerivedState || {}
   const { isProgressBarSetup, showCancellationModal, stepName } = orderProgressBarProps
   const showCancellationButton = isOrder && (isCreating || isPending) && showCancellationModal
 
+  const isBridgeOrder = !!order && getIsBridgeOrder(order)
+  const isSwapFilled = order?.status === OrderStatus.FULFILLED
   const isPresignaturePending = activityDerivedState?.isPresignaturePending
   const showSafeSigningInfo = isPresignaturePending && activityDerivedState && !!activityDerivedState.gnosisSafeInfo
   const showProgressBar = !showSafeSigningInfo && !isPresignaturePending && activityDerivedState && isProgressBarSetup
@@ -102,6 +106,7 @@ export function TransactionSubmittedContent({
             <DisplayLink
               id={hash}
               chainId={chainId}
+              leadToBridgeTab={isBridgeOrder && isSwapFilled}
               data-click-event={toCowSwapGtmEvent({
                 category: CowSwapAnalyticsCategory.PROGRESS_BAR,
                 action: 'Click Transaction Link',

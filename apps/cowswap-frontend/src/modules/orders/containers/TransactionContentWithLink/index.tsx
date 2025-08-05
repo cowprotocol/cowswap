@@ -1,4 +1,4 @@
-import { ReactElement } from 'react'
+import { ReactElement, ReactNode } from 'react'
 
 import { isCowOrder } from '@cowprotocol/common-utils'
 import { useGnosisSafeInfo, useWalletInfo } from '@cowprotocol/wallet'
@@ -25,10 +25,7 @@ interface TransactionContentWithLinkProps {
   isEthFlow?: boolean
 }
 
-// TODO: Add proper return type annotation
-// TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, complexity
-export function TransactionContentWithLink(props: TransactionContentWithLinkProps) {
+export function TransactionContentWithLink(props: TransactionContentWithLinkProps): ReactNode {
   const { chainId } = useWalletInfo()
   const safeInfo = useGnosisSafeInfo()
   const isSafeWallet = !!safeInfo

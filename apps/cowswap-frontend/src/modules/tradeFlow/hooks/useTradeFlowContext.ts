@@ -1,8 +1,9 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, OrderClass, PriceQuality, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { OrderClass, PriceQuality } from '@cowprotocol/cow-sdk'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
+import { useAddBridgeOrder } from 'entities/bridgeOrders'
 import { useDispatch } from 'react-redux'
 import useSWR from 'swr'
 
@@ -12,18 +13,20 @@ import { useCloseModals } from 'legacy/state/application/hooks'
 import { useAppData, useAppDataHooks } from 'modules/appData'
 import { useBridgeQuoteAmounts } from 'modules/bridge'
 import { useGeneratePermitHook, useGetCachedPermit, usePermitInfo } from 'modules/permit'
-import { useEnoughBalanceAndAllowance } from 'modules/tokens'
 import {
   useDerivedTradeState,
+  useGetReceiveAmountInfo,
   useIsHooksTradeType,
-  useReceiveAmountInfo,
   useTradeConfirmActions,
   useTradeTypeInfo,
+  TradeTypeToUiOrderType,
 } from 'modules/trade'
-import { TradeTypeToUiOrderType } from 'modules/trade/const/common'
 import { getOrderValidTo, useTradeQuote } from 'modules/tradeQuote'
 
 import { useGP2SettlementContract } from 'common/hooks/useContract'
+import { useEnoughAllowance } from 'common/hooks/useEnoughAllowance'
+
+import { useSetSigningStep } from './useSetSigningStep'
 
 import { TradeFlowContext } from '../types/TradeFlowContext'
 
@@ -40,14 +43,15 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
   const { allowsOffchainSigning } = useWalletDetails()
   const isSafeWallet = useIsSafeWallet()
   const derivedTradeState = useDerivedTradeState()
-  const receiveAmountInfo = useReceiveAmountInfo()
+  const receiveAmountInfo = useGetReceiveAmountInfo()
   const tradeTypeInfo = useTradeTypeInfo()
   const tradeType = tradeTypeInfo?.tradeType
   const uiOrderType = tradeType ? TradeTypeToUiOrderType[tradeType] : null
   const isHooksTradeType = useIsHooksTradeType()
+  const setSigningStep = useSetSigningStep()
 
   const tradeQuote = useTradeQuote()
-  const bridgeContext = useBridgeQuoteAmounts(receiveAmountInfo, tradeQuote.bridgeQuote)
+  const bridgeContext = useBridgeQuoteAmounts()
 
   const sellCurrency = derivedTradeState?.inputCurrency
   const inputAmount = receiveAmountInfo?.afterSlippage.sellAmount
@@ -66,13 +70,10 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
   const { contract: settlementContract, chainId: settlementChainId } = useGP2SettlementContract()
   const appData = useAppData()
   const typedHooks = useAppDataHooks()
+  const addBridgeOrder = useAddBridgeOrder()
+  const bridgeQuoteAmounts = useBridgeQuoteAmounts()
 
-  const checkAllowanceAddress = COW_PROTOCOL_VAULT_RELAYER_ADDRESS[settlementChainId || SupportedChainId.MAINNET]
-  const { enoughAllowance } = useEnoughBalanceAndAllowance({
-    account,
-    amount: inputAmount,
-    checkAllowanceAddress,
-  })
+  const enoughAllowance = useEnoughAllowance(inputAmount)
 
   const {
     inputCurrency: sellToken,
@@ -127,6 +128,9 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             validTo,
             orderKind,
             uiOrderType,
+            bridgeQuoteAmounts,
+            addBridgeOrder,
+            setSigningStep,
           ]
         : null,
       // TODO: Break down this large function into smaller functions
@@ -158,10 +162,14 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
         validTo,
         orderKind,
         uiOrderType,
+        bridgeQuoteAmounts,
+        addBridgeOrder,
+        setSigningStep,
       ]) => {
         return {
           tradeQuoteState,
           tradeQuote,
+          bridgeQuoteAmounts,
           context: {
             chainId,
             inputAmount,
@@ -175,6 +183,8 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             closeModals,
             getCachedPermit,
             dispatch,
+            addBridgeOrder,
+            setSigningStep,
           },
           tradeConfirmActions,
           swapFlowAnalyticsContext: {
@@ -183,6 +193,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             recipientAddress,
             marketLabel: [inputAmount?.currency.symbol, outputAmount?.currency.symbol].join(','),
             orderType: uiOrderType,
+            isBridgeOrder: inputAmount.currency.chainId !== outputAmount.currency.chainId,
           },
           contract: settlementContract,
           permitInfo: !enoughAllowance ? permitInfo : undefined,

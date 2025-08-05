@@ -2,8 +2,6 @@ import { atom, useAtom } from 'jotai/index'
 import { ReactNode, useCallback } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { getCurrencyAddress, getIsNativeToken } from '@cowprotocol/common-utils'
-import { ButtonPrimary, Loader } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
 
@@ -19,12 +17,8 @@ import {
 
 import { CurrencySelectButton } from 'common/pure/CurrencySelectButton'
 
-import { ConnectWalletButton, NoFunds, Wrapper } from './styled'
-
-import { useFetchTokenBalance } from '../../hooks/useFetchTokenBalance'
-import { useRecoverFundsCallback } from '../../hooks/useRecoverFundsCallback'
-import { useRecoverFundsFromProxy } from '../../hooks/useRecoverFundsFromProxy'
-import { BalanceToRecover } from '../../pure/BalanceToRecover'
+import { RecoverFundsButtons } from './RecoverFundsButtons'
+import { ConnectWalletButton, Wrapper } from './styled'
 
 const selectedCurrencyAtom = atom<Currency | undefined>(undefined)
 
@@ -41,24 +35,13 @@ export function RecoverFundsWidget({ defaultToken: defaultTokenToRefund }: Recov
   const { ErrorModal } = useErrorModal()
   const { open: isSelectTokenWidgetOpen } = useSelectTokenWidgetState()
 
-  const selectedTokenAddress = selectedCurrency ? getCurrencyAddress(selectedCurrency) : undefined
-  const isNativeToken = !!selectedCurrency && getIsNativeToken(selectedCurrency)
-
   const onSelectToken = useOpenTokenSelectWidget()
 
   const sourceChainId = useSourceChainId()
 
-  const { isLoading: isBalanceLoading, tokenBalance } = useFetchTokenBalance(selectedCurrency, sourceChainId)
-  const recoverFundsContext = useRecoverFundsFromProxy(selectedTokenAddress, tokenBalance, isNativeToken)
-  const { isTxSigningInProgress } = recoverFundsContext
-
-  const recoverFunds = useRecoverFundsCallback(recoverFundsContext)
-
   const onCurrencySelectClick = useCallback(() => {
     onSelectToken(selectedCurrency, undefined, undefined, setSelectedCurrency)
   }, [onSelectToken, selectedCurrency, setSelectedCurrency])
-
-  const hasBalance = !!tokenBalance?.greaterThan(0)
 
   return (
     <Wrapper>
@@ -77,18 +60,7 @@ export function RecoverFundsWidget({ defaultToken: defaultTokenToRefund }: Recov
             </div>
           )}
 
-          {selectedTokenAddress && (
-            <>
-              <BalanceToRecover tokenBalance={tokenBalance} isBalanceLoading={isBalanceLoading} />
-              {isTxSigningInProgress || hasBalance ? (
-                <ButtonPrimary onClick={recoverFunds} disabled={!hasBalance || isTxSigningInProgress}>
-                  {isTxSigningInProgress ? <Loader /> : 'Recover funds'}
-                </ButtonPrimary>
-              ) : (
-                <NoFunds>No funds to recover</NoFunds>
-              )}
-            </>
-          )}
+          <RecoverFundsButtons selectedCurrency={selectedCurrency} sourceChainId={sourceChainId} />
         </>
       )}
     </Wrapper>

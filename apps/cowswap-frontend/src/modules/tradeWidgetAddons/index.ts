@@ -1,4 +1,5 @@
 export { RowDeadline } from './containers/RowDeadline'
+export { RowSlippage } from './containers/RowSlippage'
 export { TradeRateDetails } from './containers/TradeRateDetails'
 export { SettingsTab } from './containers/SettingsTab'
 export { HighFeeWarning } from './containers/HighFeeWarning'

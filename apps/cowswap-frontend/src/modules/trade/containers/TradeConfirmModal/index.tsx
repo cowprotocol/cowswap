@@ -5,6 +5,7 @@ import { Command } from '@cowprotocol/types'
 import { UI } from '@cowprotocol/ui'
 import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
+import { useSigningStep } from 'entities/trade'
 import styled from 'styled-components/macro'
 
 import { PermitModal } from 'common/containers/PermitModal'
@@ -38,6 +39,7 @@ export function TradeConfirmModal(props: TradeConfirmModalProps): ReactNode {
   const isSafeWallet = useIsSafeWallet()
   const { permitSignatureState, pendingTrade, transactionHash, error } = useTradeConfirmState()
   const { onDismiss } = useTradeConfirmActions()
+  const signingStep = useSigningStep()
 
   if (!account) return null
 
@@ -51,7 +53,8 @@ export function TradeConfirmModal(props: TradeConfirmModalProps): ReactNode {
         pendingTrade={pendingTrade}
         transactionHash={transactionHash}
         onDismiss={onDismiss}
-        permitSignatureState={permitSignatureState}
+        // Disable default permit flow when signingStep is set
+        permitSignatureState={signingStep ? undefined : permitSignatureState}
         isSafeWallet={isSafeWallet}
         submittedContent={submittedContent}
       >

@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 
 import CheckmarkIcon from '@cowprotocol/assets/cow-swap/checkmark.svg'
+import { RECEIVED_LABEL } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink, shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { NetworkLogo } from '@cowprotocol/ui'
@@ -22,7 +23,7 @@ export function RefundedBridgingContent({ account, bridgeSendCurrencyAmount }: R
 
   return (
     <>
-      <ConfirmDetailsItem label="You received" withTimelineDot>
+      <ConfirmDetailsItem label={RECEIVED_LABEL} withTimelineDot>
         <DangerText>Bridging failed</DangerText>
       </ConfirmDetailsItem>
       <ConfirmDetailsItem

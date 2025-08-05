@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import OrderCancelledImage from '@cowprotocol/assets/cow-swap/order-cancelled.svg'
 import OrderCheckImage from '@cowprotocol/assets/cow-swap/order-check.svg'
 import OrderExpiredImage from '@cowprotocol/assets/cow-swap/order-expired.svg'
@@ -7,48 +9,143 @@ import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { getSafeWebUrl } from '@cowprotocol/core'
 import { Command } from '@cowprotocol/types'
 
-import { Info, ExternalLink as LinkIconFeather } from 'react-feather'
+import { Info } from 'react-feather'
 import SVG from 'react-inlinesvg'
 
-import { getActivityState } from 'legacy/hooks/useActivityDerivedState'
+import { getActivityState, ActivityState } from 'legacy/hooks/useActivityDerivedState'
 
 import { CancelButton } from 'common/pure/CancelButton'
 import { ActivityDerivedState } from 'common/types/activity'
 import { isOrderCancellable } from 'common/utils/isOrderCancellable'
 
-import { CancelTxLink, StatusLabel, StatusLabelBelow, StatusLabelWrapper } from './styled'
+import { CancelTxLink, ProgressLink, StatusLabel, StatusLabelBelow, StatusLabelWrapper } from './styled'
 
 import { determinePillColour } from './index'
 
-// TODO: Add proper return type annotation
-// TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, complexity
-function _getStateLabel(activityDerivedState: ActivityDerivedState) {
-  const activityState = getActivityState(activityDerivedState)
+const activityStatusText: Record<ActivityState, string> = {
+  [ActivityState.LOADING]: 'Loading...',
+  [ActivityState.PENDING]: 'Pending...',
+  [ActivityState.OPEN]: 'Open',
+  [ActivityState.SIGNING]: 'Signing...',
+  [ActivityState.FILLED]: 'Filled',
+  [ActivityState.EXECUTED]: 'Executed',
+  [ActivityState.EXPIRED]: 'Expired',
+  [ActivityState.FAILED]: 'Failed',
+  [ActivityState.CANCELLING]: 'Cancelling...',
+  [ActivityState.CANCELLED]: 'Cancelled',
+  [ActivityState.CREATING]: 'Creating...',
+}
 
-  switch (activityState) {
-    case 'pending':
-      return 'Pending...'
-    case 'open':
-      return 'Open'
-    case 'signing':
-      return 'Signing...'
-    case 'filled':
-      return 'Filled'
-    case 'executed':
-      return 'Executed'
-    case 'expired':
-      return 'Expired'
-    case 'failed':
-      return 'Failed'
-    case 'cancelling':
-      return 'Cancelling...'
-    case 'cancelled':
-      return 'Cancelled'
-    case 'creating':
-      return 'Creating...'
-    default:
-      return 'Open'
+function _getStateLabel(activityDerivedState: ActivityDerivedState): string {
+  // Check isLoading flag first to ensure loading state takes precedence
+  if (activityDerivedState.isLoading) {
+    return activityStatusText[ActivityState.LOADING]
+  }
+  const activityState = getActivityState(activityDerivedState)
+  return activityStatusText[activityState] || 'Open'
+}
+
+function _getStatusIcon(activityDerivedState: ActivityDerivedState): ReactNode {
+  const {
+    isReplaced,
+    isConfirmed,
+    isTransaction,
+    isExpired,
+    isFailed,
+    isCreating,
+    isCancelled,
+    isPresignaturePending,
+    isCancelling,
+    isLoading,
+  } = activityDerivedState
+
+  // Don't show any icon when loading
+  if (isLoading) {
+    return null
+  }
+  if (isReplaced) {
+    return <Info size={16} />
+  }
+  if (isConfirmed && isTransaction) {
+    return <SVG src={OrderCheckImage} description="Transaction Confirmed" />
+  }
+  if (isConfirmed) {
+    return <SVG src={OrderCheckImage} description="Order Filled" />
+  }
+  if (isExpired && isTransaction) {
+    return <SVG src={OrderCancelledImage} description="Transaction Failed" />
+  }
+  if (isExpired) {
+    return <SVG src={OrderExpiredImage} description="Order Expired" />
+  }
+  if (isFailed) {
+    return <SVG src={OrderCancelledImage} description="Failed" />
+  }
+  if (isCreating) {
+    // TODO: use another icon for Creating state
+    return <SVG src={OrderExpiredImage} description="Creating Order" />
+  }
+  if (isCancelled) {
+    return <SVG src={OrderCancelledImage} description="Order Cancelled" />
+  }
+  if (isPresignaturePending) {
+    return <SVG src={PresignaturePendingImage} description="Pending pre-signature" />
+  }
+  if (isCancelling) {
+    return null
+  }
+  return <SVG src={OrderOpenImage} description="Order Open" />
+}
+
+function _getSafeAddress(activityDerivedState: ActivityDerivedState): string | undefined {
+  const { enhancedTransaction, order } = activityDerivedState
+
+  return (
+    enhancedTransaction?.safeTransaction?.safe ||
+    order?.presignGnosisSafeTx?.safe ||
+    activityDerivedState.gnosisSafeInfo?.address
+  )
+}
+
+function _getCancellationTxLink(
+  chainId: number,
+  cancellationHash: string | undefined,
+  isCancelling: boolean,
+  isConfirmed: boolean,
+  isCancelled: boolean,
+  safeAddress: string | undefined,
+): string | null {
+  const hasCancellationHash = !!cancellationHash && !isCancelling && !isConfirmed && isCancelled
+
+  if (!hasCancellationHash) {
+    return null
+  }
+
+  return safeAddress
+    ? getSafeWebUrl(chainId, safeAddress, cancellationHash)
+    : getExplorerLink(chainId, cancellationHash, ExplorerDataType.TRANSACTION)
+}
+
+function _getStatusLabelProps(activityDerivedState: ActivityDerivedState): {
+  isTransaction: boolean
+  isPending: boolean
+  isCancelling: boolean
+  isPresignaturePending: boolean
+  isCreating: boolean
+  isLoading: boolean
+  title: string
+} {
+  const { isTransaction, isPending, isCancelling, isPresignaturePending, isCreating, isLoading, isReplaced } =
+    activityDerivedState
+
+  return {
+    isTransaction,
+    isPending,
+    isCancelling,
+    isPresignaturePending,
+    isCreating,
+    isLoading: isLoading || false,
+    title: isReplaced ? 'Transaction was cancelled or sped up' : '',
   }
 }
 
@@ -59,91 +156,55 @@ export type StatusDetailsProps = {
   showProgressBar: Command | null
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
-export function StatusDetails(props: StatusDetailsProps) {
+export function StatusDetails(props: StatusDetailsProps): ReactNode | null {
   const { chainId, activityDerivedState, showCancellationModal, showProgressBar } = props
 
-  const {
-    status,
-    type,
-    isPending,
-    isCancelling,
-    isPresignaturePending,
-    isConfirmed,
-    isExpired,
-    isFailed,
-    isTransaction,
-    isCancelled,
-    isCreating,
-    isReplaced,
-    order,
-    enhancedTransaction,
-  } = activityDerivedState
+  const { status, type, isCancelling, isConfirmed, isCancelled, isReplaced, isLoading, order } = activityDerivedState
 
   const cancellationHash = activityDerivedState.order?.cancellationHash
   const isCancellable = order ? isOrderCancellable(order) : true
 
-  const safeAddress =
-    enhancedTransaction?.safeTransaction?.safe ||
-    order?.presignGnosisSafeTx?.safe ||
-    activityDerivedState.gnosisSafeInfo?.address
+  const safeAddress = _getSafeAddress(activityDerivedState)
 
-  const hasCancellationHash = !!cancellationHash && !isCancelling && !isConfirmed && isCancelled
-  const cancellationTxLink = hasCancellationHash
-    ? safeAddress
-      ? getSafeWebUrl(chainId, safeAddress, cancellationHash)
-      : getExplorerLink(chainId, cancellationHash, ExplorerDataType.TRANSACTION)
-    : null
+  const cancellationTxLink = _getCancellationTxLink(
+    chainId,
+    cancellationHash,
+    isCancelling,
+    isConfirmed,
+    isCancelled,
+    safeAddress,
+  )
+
+  const showCancelButton = showCancellationModal && isCancellable && !isCancelled
+  const showCancelTxLink = !!cancellationTxLink
+  const shouldShowStatusLabelBelow = showCancelButton || (showProgressBar && !isLoading) || showCancelTxLink
+
+  const handleProgressClick = (e: React.MouseEvent): void => {
+    e.preventDefault()
+    showProgressBar?.()
+  }
 
   return (
-    <StatusLabelWrapper withCancellationHash$={!!cancellationHash}>
-      <StatusLabel
-        color={determinePillColour(status, type)}
-        isTransaction={isTransaction}
-        isPending={isPending}
-        isCancelling={isCancelling}
-        isPresignaturePending={isPresignaturePending}
-        isCreating={isCreating}
-        title={isReplaced ? 'Transaction was cancelled or sped up' : ''}
-      >
-        {isReplaced ? (
-          <Info size={16} />
-        ) : isConfirmed && isTransaction ? (
-          <SVG src={OrderCheckImage} description="Transaction Confirmed" />
-        ) : isConfirmed ? (
-          <SVG src={OrderCheckImage} description="Order Filled" />
-        ) : isExpired && isTransaction ? (
-          <SVG src={OrderCancelledImage} description="Transaction Failed" />
-        ) : isFailed ? (
-          <SVG src={OrderCancelledImage} description="Failed" />
-        ) : isExpired ? (
-          <SVG src={OrderExpiredImage} description="Order Expired" />
-        ) : isCreating ? (
-          // TODO: use another icon for Creating state
-          <SVG src={OrderExpiredImage} description="Creating Order" />
-        ) : isCancelled ? (
-          <SVG src={OrderCancelledImage} description="Order Cancelled" />
-        ) : isPresignaturePending ? (
-          <SVG src={PresignaturePendingImage} description="Pending pre-signature" />
-        ) : isCancelling ? null : (
-          <SVG src={OrderOpenImage} description="Order Open" />
-        )}
+    <StatusLabelWrapper>
+      <StatusLabel color={determinePillColour(status, type)} {..._getStatusLabelProps(activityDerivedState)}>
+        {_getStatusIcon(activityDerivedState)}
         {isReplaced ? 'Replaced' : _getStateLabel(activityDerivedState)}
       </StatusLabel>
 
-      {showCancellationModal && isCancellable && !isCancelled && (
+      {shouldShowStatusLabelBelow && (
         <StatusLabelBelow>
-          <CancelButton onClick={showCancellationModal} />
+          {showCancelButton && <CancelButton onClick={showCancellationModal} />}
+          {showProgressBar && !isLoading && (
+            <ProgressLink role="button" onClick={handleProgressClick}>
+              Show progress
+            </ProgressLink>
+          )}
+          {showCancelTxLink && (
+            <CancelTxLink href={cancellationTxLink} target="_blank" title="Cancellation transaction">
+              View cancellation ↗
+            </CancelTxLink>
+          )}
         </StatusLabelBelow>
-      )}
-      {showProgressBar && <span onClick={showProgressBar}>Show progress</span>}
-      {hasCancellationHash && cancellationTxLink && (
-        <CancelTxLink href={cancellationTxLink} target="_blank" title="Cancellation transaction">
-          <LinkIconFeather size={16} />
-        </CancelTxLink>
       )}
     </StatusLabelWrapper>
   )

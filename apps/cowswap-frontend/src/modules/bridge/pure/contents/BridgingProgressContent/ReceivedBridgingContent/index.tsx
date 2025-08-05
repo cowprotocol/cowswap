@@ -1,15 +1,16 @@
 import { ReactNode } from 'react'
 
-import { getChainInfo } from '@cowprotocol/common-const'
+import { getChainInfo, RECEIVED_LABEL } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { BridgeStatusResult, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
-import { useBridgeSupportedNetworks } from 'entities/bridgeProvider'
+import { useBridgeSupportedNetwork } from 'entities/bridgeProvider'
 
 import { ConfirmDetailsItem, ReceiveAmountTitle } from 'modules/trade'
 
 import { SuccessTextBold } from '../../../../styles'
+import { BridgeTransactionLink } from '../../../BridgeTransactionLink'
 import { DepositTxLink } from '../../../DepositTxLink'
 import { TokenAmountDisplay } from '../../../TokenAmountDisplay'
 import { TransactionLinkItem } from '../../../TransactionLink'
@@ -20,6 +21,7 @@ interface ReceivedBridgingContentProps {
   destinationChainId: number
   receivedAmount: CurrencyAmount<Currency>
   receivedAmountUsd: CurrencyAmount<Token> | null | undefined
+  explorerUrl?: string
 }
 
 export function ReceivedBridgingContent({
@@ -28,10 +30,10 @@ export function ReceivedBridgingContent({
   receivedAmount,
   sourceChainId,
   destinationChainId,
+  explorerUrl,
 }: ReceivedBridgingContentProps): ReactNode {
   const { depositTxHash, fillTxHash } = statusResult || {}
-  const { data: bridgeSupportedNetworks } = useBridgeSupportedNetworks()
-  const destinationBridgeNetwork = bridgeSupportedNetworks?.find((network) => network.id === destinationChainId)
+  const destinationBridgeNetwork = useBridgeSupportedNetwork(destinationChainId)
 
   const blockExplorerUrl = destinationBridgeNetwork?.blockExplorer?.url || getChainInfo(destinationChainId)?.explorer
 
@@ -45,7 +47,7 @@ export function ReceivedBridgingContent({
       <ConfirmDetailsItem
         label={
           <ReceiveAmountTitle variant="success">
-            <SuccessTextBold>You received</SuccessTextBold>
+            <SuccessTextBold>{RECEIVED_LABEL}</SuccessTextBold>
           </ReceiveAmountTitle>
         }
       >
@@ -54,9 +56,15 @@ export function ReceivedBridgingContent({
         </b>
       </ConfirmDetailsItem>
 
-      <DepositTxLink depositTxHash={depositTxHash} sourceChainId={sourceChainId} />
-      {fillTxLink && (
-        <TransactionLinkItem link={fillTxLink} label="Destination transaction" chainId={destinationChainId} />
+      {explorerUrl ? (
+        <BridgeTransactionLink link={explorerUrl} label="Bridge transaction" />
+      ) : (
+        <>
+          <DepositTxLink depositTxHash={depositTxHash} sourceChainId={sourceChainId} />
+          {fillTxLink && (
+            <TransactionLinkItem link={fillTxLink} label="Destination transaction" chainId={destinationChainId} />
+          )}
+        </>
       )}
     </>
   )
