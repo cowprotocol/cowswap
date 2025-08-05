@@ -101,13 +101,30 @@ function getTextFromChildren(children: ReactNode): string {
   return ''
 }
 
+// Track used slugs to prevent collisions
+const usedSlugs = new Set<string>()
+
 /**
- * Create a slug from text for anchor links
+ * Create a unique slug from text for anchor links
  */
 function slugify(text: string): string {
-  return text
+  const baseSlug = text
     .toLowerCase()
     .replace(/[^\w\s-]/g, '') // Remove special characters
     .replace(/[\s_-]+/g, '-') // Replace spaces and underscores with hyphens
     .replace(/^-+|-+$/g, '') // Remove leading/trailing hyphens
+
+  if (!baseSlug) return 'heading' // Fallback for empty slugs
+
+  let uniqueSlug = baseSlug
+  let counter = 1
+
+  // Handle collisions by appending numbers
+  while (usedSlugs.has(uniqueSlug)) {
+    uniqueSlug = `${baseSlug}-${counter}`
+    counter++
+  }
+
+  usedSlugs.add(uniqueSlug)
+  return uniqueSlug
 }
