@@ -1,8 +1,10 @@
 import type { ReactNode } from 'react'
-import type { HTMLAttributes, AnchorHTMLAttributes, TableHTMLAttributes, TdHTMLAttributes, ThHTMLAttributes } from 'react'
+import type { HTMLAttributes, AnchorHTMLAttributes } from 'react'
 
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+
+import { CustomTable, CustomTHead, CustomTBody, CustomTr, CustomTh, CustomTd } from './TableComponents'
 
 interface CmsContentProps {
   content: string
@@ -38,30 +40,6 @@ const CustomA = ({ children, ...props }: AnchorHTMLAttributes<HTMLAnchorElement>
   </a>
 )
 
-// Table components
-const CustomTable = ({ children, ...props }: TableHTMLAttributes<HTMLTableElement>): ReactNode => (
-  <table {...props}>{children}</table>
-)
-
-const CustomTHead = ({ children, ...props }: HTMLAttributes<HTMLTableSectionElement>): ReactNode => (
-  <thead {...props}>{children}</thead>
-)
-
-const CustomTBody = ({ children, ...props }: HTMLAttributes<HTMLTableSectionElement>): ReactNode => (
-  <tbody {...props}>{children}</tbody>
-)
-
-const CustomTr = ({ children, ...props }: HTMLAttributes<HTMLTableRowElement>): ReactNode => (
-  <tr {...props}>{children}</tr>
-)
-
-const CustomTh = ({ children, ...props }: ThHTMLAttributes<HTMLTableCellElement>): ReactNode => (
-  <th {...props}>{children}</th>
-)
-
-const CustomTd = ({ children, ...props }: TdHTMLAttributes<HTMLTableCellElement>): ReactNode => (
-  <td {...props}>{children}</td>
-)
 
 /**
  * Component to render CMS markdown content with proper styling
