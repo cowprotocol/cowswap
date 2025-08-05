@@ -1,7 +1,9 @@
 import { ReactNode } from 'react'
 
 import { BridgeProviderInfo } from '@cowprotocol/cow-sdk'
+import { InfoTooltip } from '@cowprotocol/ui'
 
+import { BRIDGE_DISCLAIMER_TOOLTIP_CONTENT, COW_PROTOCOL_NAME } from '../../constants'
 import { StopNumberCircle } from '../../styles'
 import { SwapAndBridgeStatus } from '../../types'
 import { ProtocolIcons } from '../ProtocolIcons'
@@ -11,13 +13,13 @@ interface BridgeRouteTitleProps {
   icon: ReactNode
   titlePrefix: ReactNode
   protocolName: string
-  bridgeProvider: BridgeProviderInfo
+  bridgeProvider?: BridgeProviderInfo
   protocolIconShowOnly?: 'first' | 'second'
   protocolIconSize?: number
+  circleSize?: number
   stopNumber?: number
 }
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+
 export function BridgeRouteTitle({
   status,
   icon,
@@ -26,15 +28,16 @@ export function BridgeRouteTitle({
   bridgeProvider,
   protocolIconShowOnly,
   protocolIconSize = 21,
+  circleSize,
   stopNumber,
-}: BridgeRouteTitleProps) {
+}: BridgeRouteTitleProps): ReactNode {
   return (
     <>
-      <StopNumberCircle status={status} stopNumber={stopNumber}>
+      <StopNumberCircle status={status} stopNumber={stopNumber} size={circleSize}>
         {icon}
       </StopNumberCircle>
       <b>
-        <span>{titlePrefix} </span>
+        {titlePrefix && <span>{titlePrefix} </span>}
         <ProtocolIcons
           size={protocolIconSize}
           showOnlyFirst={protocolIconShowOnly === 'first'}
@@ -42,6 +45,7 @@ export function BridgeRouteTitle({
           secondProtocol={bridgeProvider}
         />
         <span> {protocolName}</span>
+        {!protocolName.includes(COW_PROTOCOL_NAME) && <InfoTooltip content={BRIDGE_DISCLAIMER_TOOLTIP_CONTENT} size={14} />}
       </b>
     </>
   )

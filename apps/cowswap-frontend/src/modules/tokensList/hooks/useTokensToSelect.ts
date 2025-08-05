@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { BuyTokensParams } from '@cowprotocol/cow-sdk'
 import { useAllActiveTokens, useFavoriteTokens } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -16,6 +17,7 @@ export interface TokensToSelectContext {
   isLoading: boolean
   tokens: TokenWithLogo[]
   favoriteTokens: TokenWithLogo[]
+  areTokensFromBridge: boolean
 }
 
 export function useTokensToSelect(): TokensToSelectContext {
@@ -26,9 +28,13 @@ export function useTokensToSelect(): TokensToSelectContext {
 
   const areTokensFromBridge = field === Field.OUTPUT && selectedTargetChainId !== chainId
 
-  const { data: bridgeSupportedTokens, isLoading } = useBridgeSupportedTokens(
-    areTokensFromBridge ? selectedTargetChainId : undefined,
-  )
+  const params: BuyTokensParams | undefined = useMemo(() => {
+    if (!areTokensFromBridge) return undefined
+
+    return { buyChainId: selectedTargetChainId, sellChainId: chainId }
+  }, [areTokensFromBridge, chainId, selectedTargetChainId])
+
+  const { data: bridgeSupportedTokens, isLoading } = useBridgeSupportedTokens(params)
 
   const bridgeSupportedTokensMap = useMemo(() => {
     return bridgeSupportedTokens?.reduce<Record<string, boolean>>((acc, val) => {
@@ -46,6 +52,7 @@ export function useTokensToSelect(): TokensToSelectContext {
       isLoading: areTokensFromBridge ? isLoading : false,
       tokens: (areTokensFromBridge ? bridgeSupportedTokens : allTokens) || EMPTY_TOKENS,
       favoriteTokens: favoriteTokensToSelect,
+      areTokensFromBridge,
     }
   }, [allTokens, bridgeSupportedTokens, bridgeSupportedTokensMap, isLoading, areTokensFromBridge, favoriteTokens])
 }

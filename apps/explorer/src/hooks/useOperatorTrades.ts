@@ -46,7 +46,7 @@ async function fetchTradesTimestamps(rawTrades: RawTrade[]): Promise<TradesTimes
  * Fetches trades for given order
  */
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+
 export function useOrderTrades(order: Order | null): Result {
   const [error, setError] = useState<UiError>()
   const [trades, setTrades] = useState<Trade[]>([])
@@ -78,7 +78,7 @@ export function useOrderTrades(order: Order | null): Result {
         setError({ message: msg, type: 'error' })
       }
     },
-    [order]
+    [order],
   )
 
   // Fetch blocks timestamps for trades
@@ -106,8 +106,14 @@ export function useOrderTrades(order: Order | null): Result {
       return { ...transformTrade(trade, order, timestamp), buyToken, sellToken }
     })
 
-    // Reverse trades, to show the newest on top
-    setTrades(trades.reverse())
+    // sort trades by execution time, newest first
+    trades.sort((a, b) => {
+      if (a.executionTime && b.executionTime) {
+        return b.executionTime > a.executionTime ? 1 : -1
+      }
+      return 0
+    })
+    setTrades(trades)
   }, [order, rawTrades, tradesTimestamps])
 
   const executedSellAmount = order?.executedSellAmount.toString()

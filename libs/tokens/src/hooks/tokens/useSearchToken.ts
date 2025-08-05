@@ -7,7 +7,7 @@ import { isAddress } from '@cowprotocol/common-utils'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import ms from 'ms.macro'
-import useSWR from 'swr'
+import useSWR, { SWRResponse } from 'swr'
 
 import { searchTokensInApi } from '../../services/searchTokensInApi'
 import { environmentAtom } from '../../state/environmentAtom'
@@ -46,11 +46,10 @@ const emptyFromListsResult: FromListsResult = { tokensFromActiveLists: [], token
  * The hook is searching into 4 sources: active lists, inactive lists, external API, and blockchain
  * useSWR is widely used inside to cache the search results
  */
-// TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
 export function useSearchToken(input: string | null): TokenSearchResponse {
   const inputLowerCase = input?.toLowerCase()
   const [isLoading, setIsLoading] = useState(false)
+
   const debouncedInputInList = useDebounce(inputLowerCase, IN_LISTS_DEBOUNCE_TIME)
   const debouncedInputInExternals = useDebounce(inputLowerCase, IN_EXTERNALS_DEBOUNCE_TIME)
 
@@ -153,9 +152,10 @@ function useSearchTokensInLists(input: string | undefined): FromListsResult {
   return inListsResult || emptyFromListsResult
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function useSearchTokensInApi(input: string | undefined, isTokenAlreadyFoundByAddress: boolean) {
+function useSearchTokensInApi(
+  input: string | undefined,
+  isTokenAlreadyFoundByAddress: boolean,
+): SWRResponse<TokenWithLogo[] | null> {
   const { chainId } = useAtomValue(environmentAtom)
 
   return useSWR<TokenWithLogo[] | null>(['searchTokensInApi', input], () => {
@@ -167,9 +167,10 @@ function useSearchTokensInApi(input: string | undefined, isTokenAlreadyFoundByAd
   })
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function useFetchTokenFromBlockchain(input: string | undefined, isTokenAlreadyFoundByAddress: boolean) {
+function useFetchTokenFromBlockchain(
+  input: string | undefined,
+  isTokenAlreadyFoundByAddress: boolean,
+): SWRResponse<TokenWithLogo | null> {
   const { chainId } = useAtomValue(environmentAtom)
   const provider = useWalletProvider()
 

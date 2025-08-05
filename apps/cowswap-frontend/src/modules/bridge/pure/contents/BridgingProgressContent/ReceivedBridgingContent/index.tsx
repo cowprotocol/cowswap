@@ -1,12 +1,19 @@
+import { ReactNode } from 'react'
+
+import { getChainInfo, RECEIVED_LABEL } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { BridgeStatusResult, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { ExternalLink } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
+
+import { useBridgeSupportedNetwork } from 'entities/bridgeProvider'
 
 import { ConfirmDetailsItem, ReceiveAmountTitle } from 'modules/trade'
 
 import { SuccessTextBold } from '../../../../styles'
+import { BridgeTransactionLink } from '../../../BridgeTransactionLink'
+import { DepositTxLink } from '../../../DepositTxLink'
 import { TokenAmountDisplay } from '../../../TokenAmountDisplay'
+import { TransactionLinkItem } from '../../../TransactionLink'
 
 interface ReceivedBridgingContentProps {
   statusResult?: BridgeStatusResult
@@ -14,31 +21,33 @@ interface ReceivedBridgingContentProps {
   destinationChainId: number
   receivedAmount: CurrencyAmount<Currency>
   receivedAmountUsd: CurrencyAmount<Token> | null | undefined
+  explorerUrl?: string
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function ReceivedBridgingContent({
   statusResult,
   receivedAmountUsd,
   receivedAmount,
   sourceChainId,
   destinationChainId,
-}: ReceivedBridgingContentProps) {
+  explorerUrl,
+}: ReceivedBridgingContentProps): ReactNode {
   const { depositTxHash, fillTxHash } = statusResult || {}
+  const destinationBridgeNetwork = useBridgeSupportedNetwork(destinationChainId)
 
-  const depositLink = depositTxHash && getExplorerLink(sourceChainId, depositTxHash, ExplorerDataType.TRANSACTION)
+  const blockExplorerUrl = destinationBridgeNetwork?.blockExplorer?.url || getChainInfo(destinationChainId)?.explorer
+
   const fillTxLink =
     fillTxHash &&
-    destinationChainId in SupportedChainId &&
-    getExplorerLink(destinationChainId, fillTxHash, ExplorerDataType.TRANSACTION)
+    blockExplorerUrl &&
+    getExplorerLink(destinationChainId, fillTxHash, ExplorerDataType.TRANSACTION, blockExplorerUrl)
 
   return (
     <>
       <ConfirmDetailsItem
         label={
           <ReceiveAmountTitle variant="success">
-            <SuccessTextBold>You received</SuccessTextBold>
+            <SuccessTextBold>{RECEIVED_LABEL}</SuccessTextBold>
           </ReceiveAmountTitle>
         }
       >
@@ -46,8 +55,17 @@ export function ReceivedBridgingContent({
           <TokenAmountDisplay displaySymbol currencyAmount={receivedAmount} usdValue={receivedAmountUsd} />
         </b>
       </ConfirmDetailsItem>
-      {depositLink && <ExternalLink href={depositLink}>Deposit transaction ↗</ExternalLink>}
-      {fillTxLink && <ExternalLink href={fillTxLink}>Settlement transaction ↗</ExternalLink>}
+
+      {explorerUrl ? (
+        <BridgeTransactionLink link={explorerUrl} label="Bridge transaction" />
+      ) : (
+        <>
+          <DepositTxLink depositTxHash={depositTxHash} sourceChainId={sourceChainId} />
+          {fillTxLink && (
+            <TransactionLinkItem link={fillTxLink} label="Destination transaction" chainId={destinationChainId} />
+          )}
+        </>
+      )}
     </>
   )
 }

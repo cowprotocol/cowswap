@@ -15,8 +15,6 @@ export interface Colors {
   warning: ColorValue
   info: ColorValue
   success: ColorValue
-  white: ColorValue
-  black: ColorValue
   text1: ColorValue
   text4: ColorValue
   bg2: ColorValue
@@ -48,22 +46,35 @@ export interface Colors {
   boxShadow2: ColorValue
   shadow1: ColorValue
   blue100Primary: ColorValue
+  blue200Primary: ColorValue
   blue300Primary: ColorValue
   blue400Primary: ColorValue
+  blue500Primary: ColorValue
   blue900Primary: ColorValue
+  purple200Primary: ColorValue
+  purple800Primary: ColorValue
+  white: ColorValue
+  neutral100: ColorValue
+  neutral98: ColorValue
+  neutral95: ColorValue
+  neutral90: ColorValue
+  neutral80: ColorValue
+  neutral70: ColorValue
+  neutral60: ColorValue
+  neutral50: ColorValue
+  neutral40: ColorValue
+  neutral30: ColorValue
+  neutral20: ColorValue
+  neutral10: ColorValue
+  neutral0: ColorValue
+  black: ColorValue
   // TODO: Colors migrated from cow-fi
   // TODO: Remove these once we've migrated all the colors
   cowfi_orange: ColorValue
   cowfi_darkBlue: ColorValue
-  cowfi_darkBlue2: ColorValue
-  cowfi_darkBlue3: ColorValue
-  cowfi_darkBlue4: ColorValue
   cowfi_darkBlue5: ColorValue
-  cowfi_lightBlue1: ColorValue
-  cowfi_lightBlue2: ColorValue
   cowfi_lightBlue3: ColorValue
   cowfi_lightBlue4: ColorValue
-  cowfi_white2: ColorValue
   cowfi_grey: ColorValue
   cowfi_grey2: ColorValue
   cowfi_grey3: ColorValue
@@ -73,7 +84,6 @@ export interface Colors {
   cowfi_borderGradient: ColorValue
   cowfi_gradient: ColorValue
   cowfi_gradient2: ColorValue
-  cowfi_gradientMesh: StyledFlattenSimpleInterpolation
   cowfi_purple1: ColorValue
   cowfi_purple2: ColorValue
   cowfi_purple3: ColorValue

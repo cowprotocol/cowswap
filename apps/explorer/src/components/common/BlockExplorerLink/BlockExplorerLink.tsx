@@ -38,6 +38,9 @@ export interface Props {
    * to show explorer logo
    */
   showLogo?: boolean
+
+  explorerUrl?: string
+  explorerTitle?: string
 }
 
 /**
@@ -53,13 +56,16 @@ export const BlockExplorerLink: React.FC<Props> = (props: Props) => {
     return null
   }
 
-  const url = getBlockExplorerUrl(networkId, type, identifier)
+  const url = getBlockExplorerUrl(networkId, type, identifier, props.explorerUrl)
   const label = labelProp || (useUrlAsLabel && url) || abbreviateString(identifier, 6, 4)
+  const explorerTitle = props.explorerTitle || CHAIN_INFO[networkId]?.explorerTitle
+
+  if (!url) return null
 
   return (
     <ExternalLink href={url} target="_blank" rel="noopener noreferrer" className={className}>
       <span>{label}</span>
-      {showLogo && <LogoWrapper title={`Open it on ${CHAIN_INFO[networkId].explorerTitle}`} src={LOGO_MAP.etherscan} />}
+      {showLogo && <LogoWrapper title={`Open it on ${explorerTitle}`} src={LOGO_MAP.etherscan} />}
     </ExternalLink>
   )
 }

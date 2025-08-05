@@ -21,6 +21,7 @@ export function mapChainInfo(chainId: SupportedChainId, info: BaseChainInfo): Ch
     },
     id: chainId,
     label: info.label,
+    eip155Label: info.eip155Label,
     nativeCurrency: {
       ...info.nativeCurrency,
       name: info.nativeCurrency.name || '',

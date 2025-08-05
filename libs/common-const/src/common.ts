@@ -79,6 +79,8 @@ export const COW_CONTRACT_ADDRESS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.AVALANCHE]: null,
 }
 
+export const RECEIVED_LABEL = 'Received'
+export const ACCOUNT_PROXY_LABEL = 'Account Proxy'
 export const INPUT_OUTPUT_EXPLANATION = 'Only executed swaps incur fees.'
 export const PENDING_ORDERS_BUFFER = ms`60s` // 60s
 export const CANCELLED_ORDERS_PENDING_TIME = ms`5min` // 5min
@@ -181,14 +183,6 @@ export const LOCKED_GNO_VESTING_START_DATE = new Date('02-11-2022 13:05:15 GMT')
 // They are fixed and will never change.
 export const LOCKED_GNO_VESTING_START_TIME = 1644584715000
 export const LOCKED_GNO_VESTING_DURATION = 126144000000 // 4 years
-
-export const SWR_OPTIONS = {
-  refreshInterval: ms`30s`,
-  dedupingInterval: ms`10s`,
-  // don't revalidate data on focus, can cause too many re-renders
-  // see https://koba04.medium.com/revalidating-options-of-swr-4d9f08bee813
-  revalidateOnFocus: false,
-}
 
 export const SWR_NO_REFRESH_OPTIONS = {
   // Cache indefinitely

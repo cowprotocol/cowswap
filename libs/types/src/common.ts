@@ -51,3 +51,5 @@ export enum LpTokenProvider {
  * The type won't be correct, and typescript will make us assume that the value is always defined leading to hard to debug runtime errors.
  */
 export type PersistentStateByChain<T> = Record<SupportedChainId, T | undefined>
+
+export type PersistentStateByChainAccount<T> = PersistentStateByChain<Record<string, T | undefined>>

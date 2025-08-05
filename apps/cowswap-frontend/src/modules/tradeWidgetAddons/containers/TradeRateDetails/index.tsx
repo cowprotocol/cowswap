@@ -2,14 +2,15 @@ import { useMemo, useState, useCallback, ReactNode } from 'react'
 
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
+import { useBridgeQuoteAmounts } from 'modules/bridge'
 import {
   getTotalCosts,
   TradeFeesAndCosts,
   TradeTotalCostsDetails,
   useDerivedTradeState,
   NetworkCostsRow,
-  useReceiveAmountInfo,
   useShouldPayGas,
+  useReceiveAmountInfo,
 } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { useIsSlippageModified, useTradeSlippage } from 'modules/tradeSlippage'
@@ -28,28 +29,26 @@ interface TradeRateDetailsProps {
   rateInfoParams: RateInfoParams
   isTradePriceUpdating: boolean
   accordionContent?: ReactNode
-  feeWrapper?: (feeElement: ReactNode) => React.ReactNode
+  feeWrapper?: (feeElement: ReactNode, isOpen: boolean) => ReactNode
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
 export function TradeRateDetails({
   rateInfoParams,
   deadline,
   isTradePriceUpdating,
   accordionContent,
   feeWrapper,
-}: TradeRateDetailsProps) {
+}: TradeRateDetailsProps): ReactNode {
   const [isFeeDetailsOpen, setFeeDetailsOpen] = useState(false)
 
   const slippage = useTradeSlippage()
   const isSlippageModified = useIsSlippageModified()
+  // todo replace by useGetReceiveAmountInfo when we decide what to show as bridge total fee
   const receiveAmountInfo = useReceiveAmountInfo()
   const derivedTradeState = useDerivedTradeState()
   const tradeQuote = useTradeQuote()
   const shouldPayGas = useShouldPayGas()
+  const bridgeQuoteAmounts = useBridgeQuoteAmounts()
 
   const inputCurrency = derivedTradeState?.inputCurrency
 
@@ -74,7 +73,6 @@ export function TradeRateDetails({
         <NetworkCostsRow
           networkFeeAmount={networkFeeAmount}
           networkFeeAmountUsd={networkFeeAmountUsd}
-          withTimelineDot={false}
           amountSuffix={shouldPayGas ? <NetworkCostsSuffix /> : null}
           tooltipSuffix={<NetworkCostsTooltipSuffix />}
         />
@@ -82,14 +80,13 @@ export function TradeRateDetails({
     )
   }
 
-  const totalCosts = getTotalCosts(receiveAmountInfo)
+  const totalCosts = getTotalCosts(receiveAmountInfo, bridgeQuoteAmounts?.bridgeFee)
 
   // Default expanded content if accordionContent prop is not supplied
   const defaultExpandedContent = (
     <>
       <TradeFeesAndCosts
         receiveAmountInfo={receiveAmountInfo}
-        withTimelineDot={false}
         networkCostsSuffix={shouldPayGas ? <NetworkCostsSuffix /> : null}
         networkCostsTooltipSuffix={<NetworkCostsTooltipSuffix />}
       />

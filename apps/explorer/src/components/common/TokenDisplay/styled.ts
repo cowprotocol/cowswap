@@ -1,6 +1,6 @@
 import { Color } from '@cowprotocol/ui'
 
-import TokenImg from 'components/common/TokenImg'
+import { TokenImg } from 'components/common/TokenImg'
 import styled from 'styled-components/macro'
 
 export const Wrapper = styled.div`
@@ -12,7 +12,7 @@ export const Wrapper = styled.div`
 `
 
 export const NativeWrapper = styled.span`
-  color: ${Color.explorer_textPrimary};
+  color: ${Color.neutral100};
 `
 
 export const StyledImg = styled(TokenImg)`

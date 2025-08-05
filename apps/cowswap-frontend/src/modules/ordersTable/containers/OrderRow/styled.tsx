@@ -120,21 +120,6 @@ export const PriceElement = styled(CellElement)`
   cursor: pointer;
 `
 
-export const CurrencyLogoPair = styled.div<{ clickable?: boolean }>`
-  display: flex;
-  cursor: ${({ clickable }) => (clickable ? 'pointer' : 'initial')};
-
-  > div,
-  > svg {
-    border: 2px solid var(${UI.COLOR_PAPER});
-  }
-
-  > div:last-child,
-  > svg:last-child {
-    margin: 0 0 0 -14px;
-  }
-`
-
 export const CurrencyCell = styled.div<{ clickable?: boolean }>`
   display: flex;
   flex-flow: row;

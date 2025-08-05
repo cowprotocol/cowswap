@@ -39,8 +39,15 @@ export enum TradeFormValidation {
   ApproveAndSwap,
   ApproveRequired,
 
-  // Native
+  // Intermediate token
+  ImportingIntermediateToken,
+
+  // Native - this should be the last validation, as it overrides all other validations
   SellNativeToken,
+
+  // Bridging
+  ProxyAccountLoading,
+  ProxyAccountUnknown,
 }
 
 export interface TradeFormValidationCommonContext {
@@ -58,6 +65,9 @@ export interface TradeFormValidationCommonContext {
   isInsufficientBalanceOrderAllowed: boolean
   isProviderNetworkUnsupported: boolean
   isOnline: boolean
+  intermediateTokenToBeImported: boolean
+  isAccountProxyLoading: boolean
+  isProxySetupValid: boolean | null | undefined
 }
 
 export interface TradeFormValidationContext extends TradeFormValidationCommonContext {}

@@ -1,4 +1,4 @@
-import { useContext, useMemo } from 'react'
+import { ReactNode, useContext, useMemo } from 'react'
 
 import { TokenLogo } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
@@ -30,10 +30,7 @@ export interface ApproveButtonProps {
   isDisabled?: boolean
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
-export function ApproveButton(props: ApproveButtonProps) {
+export function ApproveButton(props: ApproveButtonProps): ReactNode {
   const { currency, state, onClick, isDisabled } = props
 
   const theme = useContext(ThemeContext)

@@ -1,8 +1,10 @@
 import { useAtom, useAtomValue } from 'jotai'
-import { useEffect, useLayoutEffect, useRef } from 'react'
+import { useLayoutEffect, useRef } from 'react'
 
 import { useIsOnline, useIsWindowVisible, usePrevious } from '@cowprotocol/common-hooks'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
+
+import ms from 'ms.macro'
 
 import { usePollQuoteCallback } from './usePollQuoteCallback'
 import { useQuoteParams } from './useQuoteParams'
@@ -13,10 +15,12 @@ import { useTradeQuoteManager } from './useTradeQuoteManager'
 import { QUOTE_POLLING_INTERVAL } from '../consts'
 import { tradeQuoteCounterAtom } from '../state/tradeQuoteCounterAtom'
 import { tradeQuoteInputAtom } from '../state/tradeQuoteInputAtom'
+import { isQuoteExpired } from '../utils/quoteDeadline'
 
 const ONE_SEC = 1000
+const QUOTE_VALIDATION_INTERVAL = ms`2s`
 
-export function useTradeQuotePolling(isConfirmOpen = false): null {
+export function useTradeQuotePolling(isConfirmOpen = false, isQuoteUpdatePossible: boolean): null {
   const { amount, partiallyFillable } = useAtomValue(tradeQuoteInputAtom)
   const [tradeQuotePolling, setTradeQuotePolling] = useAtom(tradeQuoteCounterAtom)
   const resetQuoteCounter = useResetQuoteCounter()
@@ -36,12 +40,14 @@ export function useTradeQuotePolling(isConfirmOpen = false): null {
   const isOnlineRef = useRef(isOnline)
   isOnlineRef.current = isOnline
 
-  const pollQuote = usePollQuoteCallback(isConfirmOpen, quoteParamsState)
+  const pollQuote = usePollQuoteCallback(isConfirmOpen, isQuoteUpdatePossible, quoteParamsState)
+  const pollQuoteRef = useRef(pollQuote)
+  pollQuoteRef.current = pollQuote
 
   /**
    * Reset quote when window is not visible or sell amount has been cleared
    */
-  useEffect(() => {
+  useLayoutEffect(() => {
     // Do not reset the quote if the confirm modal is open
     // Because we already have a quote and don't want to reset it
     if (isConfirmOpen) return
@@ -49,17 +55,24 @@ export function useTradeQuotePolling(isConfirmOpen = false): null {
 
     if (!isWindowVisible || !amountStr) {
       tradeQuoteManager.reset()
+      setTradeQuotePolling(0)
     }
-  }, [isWindowVisible, tradeQuoteManager, isConfirmOpen, amountStr])
+  }, [isWindowVisible, tradeQuoteManager, isConfirmOpen, amountStr, setTradeQuotePolling])
 
   /**
    * Fetch the quote instantly once the quote params are changed
    */
   useLayoutEffect(() => {
-    if (pollQuote(true)) {
+    /**
+     * Quote params are not supposed to be changed once confirm screen is open
+     * So, we should not refetch quote
+     */
+    if (isConfirmOpen) return
+
+    if (pollQuoteRef.current(true)) {
       resetQuoteCounter()
     }
-  }, [pollQuote, quoteParams, resetQuoteCounter])
+  }, [isConfirmOpen, isQuoteUpdatePossible, quoteParams, resetQuoteCounter])
 
   /**
    * Update quote once a QUOTE_POLLING_INTERVAL
@@ -67,8 +80,8 @@ export function useTradeQuotePolling(isConfirmOpen = false): null {
   useLayoutEffect(() => {
     if (tradeQuotePolling !== 0) return
 
-    pollQuote(false, true)
-  }, [pollQuote, tradeQuotePolling])
+    pollQuoteRef.current(false, true)
+  }, [tradeQuotePolling])
 
   /**
    * Reset counter and update quote each time when confirmation modal is closed
@@ -84,8 +97,11 @@ export function useTradeQuotePolling(isConfirmOpen = false): null {
   /**
    * Tick quote polling counter
    */
-  useEffect(() => {
+  useLayoutEffect(() => {
     const interval = setInterval(() => {
+      // Do not tick while quote is loading
+      if (tradeQuoteRef.current.isLoading) return
+
       setTradeQuotePolling((state) => {
         const newState = state - ONE_SEC
 
@@ -101,6 +117,25 @@ export function useTradeQuotePolling(isConfirmOpen = false): null {
       clearInterval(interval)
     }
   }, [setTradeQuotePolling])
+
+  /**
+   * Once quote is expired - update quote
+   */
+  useLayoutEffect(() => {
+    function revalidateQuoteIfExpired(): void {
+      if (isQuoteExpired(tradeQuote)) {
+        setTradeQuotePolling(0)
+      }
+    }
+
+    revalidateQuoteIfExpired()
+
+    const interval = setInterval(revalidateQuoteIfExpired, QUOTE_VALIDATION_INTERVAL)
+
+    return () => {
+      clearInterval(interval)
+    }
+  }, [tradeQuote, setTradeQuotePolling])
 
   return null
 }

@@ -5,7 +5,7 @@ import { usePrevious } from '@cowprotocol/common-hooks'
 
 import { Field } from 'legacy/state/types'
 
-import { useReceiveAmountInfo } from 'modules/trade'
+import { useGetReceiveAmountInfo } from 'modules/trade'
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 import { useUpdateCurrencyAmount } from 'modules/trade/hooks/useUpdateCurrencyAmount'
 import { useTradeQuote } from 'modules/tradeQuote'
@@ -21,7 +21,7 @@ export function QuoteObserverUpdater() {
   const prevNumberOfParts = usePrevious(numberOfPartsValue)
 
   const updateCurrencyAmount = useUpdateCurrencyAmount()
-  const receiveAmountInfo = useReceiveAmountInfo()
+  const receiveAmountInfo = useGetReceiveAmountInfo()
 
   const outputCurrency = state?.outputCurrency
   const buyAmount = receiveAmountInfo?.beforeNetworkCosts.buyAmount

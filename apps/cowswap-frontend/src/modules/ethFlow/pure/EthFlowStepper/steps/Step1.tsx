@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import Checkmark from '@cowprotocol/assets/cow-swap/checkmark.svg'
 import Exclamation from '@cowprotocol/assets/cow-swap/exclamation.svg'
 import Send from '@cowprotocol/assets/cow-swap/send.svg'
@@ -13,9 +15,7 @@ interface Step1Config {
   label: string
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function Step1(props: EthFlowStepperProps) {
+export function Step1(props: EthFlowStepperProps): ReactNode {
   const {
     creation: { hash, replaced },
   } = props
@@ -34,34 +34,40 @@ function getStepConfig({ order, creation, nativeTokenSymbol }: EthFlowStepperPro
 
   const isFilled = order.state === SmartOrderStatus.FILLED
   const isCreating = order.state === SmartOrderStatus.CREATING
+  const isExpired = order.isExpired
+  const hasTransactionError = (failed || cancelled || (replaced && isCreating)) && !isFilled
 
-  if ((failed || cancelled || (replaced && isCreating)) && !isFilled) {
+  // Error states
+  if (hasTransactionError) {
+    const errorType = failed ? 'failed' : cancelled ? 'cancelled' : 'replaced'
     return {
       icon: X,
       state: 'error',
-      label: 'Transaction ' + (failed ? 'failed' : cancelled ? 'cancelled' : 'replaced'),
+      label: `Transaction ${errorType}`,
     }
   }
 
-  if (isCreating) {
-    if (order.isExpired) {
-      return {
-        icon: Exclamation,
-        state: 'error',
-        label: 'Order Expired',
-      }
+  if (isCreating && isExpired) {
+    return {
+      icon: Exclamation,
+      state: 'error',
+      label: 'Order Expired',
     }
+  }
 
+  // In-progress state
+  if (isCreating) {
     return {
       icon: Send,
       state: 'pending',
-      label: 'Sending ' + nativeTokenSymbol,
+      label: `Sending ${nativeTokenSymbol}`,
     }
   }
 
+  // Success state
   return {
     icon: Checkmark,
     state: 'success',
-    label: 'Sent ' + nativeTokenSymbol,
+    label: `Sent ${nativeTokenSymbol}`,
   }
 }

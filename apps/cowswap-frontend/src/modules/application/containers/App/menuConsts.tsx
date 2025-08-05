@@ -1,3 +1,4 @@
+import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
 import { MenuItem, ProductVariant } from '@cowprotocol/ui'
 
 import AppziButton from 'legacy/components/AppziButton'
@@ -16,6 +17,10 @@ export const NAV_ITEMS: MenuItem[] = [
       {
         href: '/account/tokens',
         label: 'Tokens',
+      },
+      {
+        href: '/account-proxy',
+        label: ACCOUNT_PROXY_LABEL,
       },
     ],
   },

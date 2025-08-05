@@ -1,5 +1,6 @@
+import { ReactNode } from 'react'
+
 import { getBlockExplorerUrl, getEtherscanLink, getExplorerLabel } from '@cowprotocol/common-utils'
-import { Command } from '@cowprotocol/types'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 import { useOrder } from 'legacy/state/orders/hooks'
@@ -9,12 +10,10 @@ import { ExternalLinkCustom } from './styled'
 type DisplayLinkProps = {
   id: string | undefined
   chainId: number
-  onClick?: Command
+  leadToBridgeTab: boolean
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function DisplayLink({ id, chainId }: DisplayLinkProps) {
+export function DisplayLink({ id, chainId, leadToBridgeTab }: DisplayLinkProps): ReactNode {
   const { orderCreationHash, status } = useOrder({ id, chainId }) || {}
 
   if (!id || !chainId) {
@@ -27,7 +26,7 @@ export function DisplayLink({ id, chainId }: DisplayLinkProps) {
       : undefined
   const href = ethFlowHash
     ? getBlockExplorerUrl(chainId, 'transaction', ethFlowHash)
-    : getEtherscanLink(chainId, 'transaction', id)
+    : getEtherscanLink(chainId, 'transaction', id) + (leadToBridgeTab ? '?tab=bridge' : '')
   const label = getExplorerLabel(chainId, 'transaction', ethFlowHash || id)
 
   return <ExternalLinkCustom href={href}>{label} ↗</ExternalLinkCustom>

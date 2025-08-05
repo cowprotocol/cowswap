@@ -1,6 +1,8 @@
-import styled, { css } from 'styled-components/macro'
-import { Color, Media, Font } from '@cowprotocol/ui'
 import React, { forwardRef } from 'react'
+
+import { Media, Font, UI } from '@cowprotocol/ui'
+
+import styled, { css } from 'styled-components/macro'
 
 export enum ButtonVariant {
   OUTLINE = 'outline',
@@ -33,10 +35,10 @@ type ButtonProps = {
 
 const Wrapper = styled.span<Omit<ButtonProps, 'href' | 'label' | 'target' | 'rel'>>`
   display: flex;
-  background: ${Color.neutral0};
+  background: var(${UI.COLOR_NEUTRAL_0});
   flex-flow: row;
   border: 0.1rem solid transparent;
-  color: ${Color.neutral100};
+  color: var(${UI.COLOR_NEUTRAL_100});
   padding-top: ${({ paddingTB }) => (paddingTB ? `${paddingTB}rem` : '0')};
   padding-bottom: ${({ paddingTB }) => (paddingTB ? `${paddingTB}rem` : '0')};
   padding-left: ${({ paddingLR }) => (paddingLR ? `${paddingLR}rem` : '2.4rem')};
@@ -49,7 +51,9 @@ const Wrapper = styled.span<Omit<ButtonProps, 'href' | 'label' | 'target' | 'rel
   font-size: ${({ fontSize }) => (fontSize ? `${fontSize}rem` : '2.2rem')};
   font-weight: ${({ fontWeight }) => (fontWeight ? fontWeight : Font.weight.bold)};
   justify-content: center;
-  transition: color 0.2s ease-in-out, background 0.2s ease-in-out;
+  transition:
+    color 0.2s ease-in-out,
+    background 0.2s ease-in-out;
   white-space: ${({ wrapText }) => (wrapText ? 'initial' : 'nowrap')};
   text-decoration: none;
 
@@ -67,16 +71,17 @@ const Wrapper = styled.span<Omit<ButtonProps, 'href' | 'label' | 'target' | 'rel
   }
 
   &:hover {
-    background: ${({ variant }) => (variant === ButtonVariant.OUTLINE ? Color.neutral0 : Color.neutral0)};
-    color: ${Color.neutral100}!important;
+    background: ${({ variant }) =>
+      variant === ButtonVariant.OUTLINE ? `var(${UI.COLOR_NEUTRAL_0})` : `var(${UI.COLOR_NEUTRAL_0})`};
+    color: var(${UI.COLOR_NEUTRAL_100}) !important;
   }
 
   ${({ variant }) =>
     variant === ButtonVariant.OUTLINE &&
     css`
       background: transparent;
-      border: 0.1rem solid ${Color.neutral0};
-      color: ${Color.neutral0};
+      border: 0.1rem solid var(${UI.COLOR_NEUTRAL_0});
+      color: var(${UI.COLOR_NEUTRAL_0});
     `}
 
   ${({ variant, borderRadius }) =>
@@ -90,11 +95,11 @@ const Wrapper = styled.span<Omit<ButtonProps, 'href' | 'label' | 'target' | 'rel
     variant === ButtonVariant.TEXT &&
     css`
     background: transparent;
-    color: ${Color.neutral0}!important;
+    color: var(${UI.COLOR_NEUTRAL_0})!important;
 
     &:hover {
       background: transparent;
-      color: ${Color.neutral0}!important;
+      color: var(${UI.COLOR_NEUTRAL_0})!important;
       text-decoration: underline;
   `}
 
@@ -102,21 +107,21 @@ const Wrapper = styled.span<Omit<ButtonProps, 'href' | 'label' | 'target' | 'rel
     variant === ButtonVariant.TEXT_LIGHT &&
     css`
       background: transparent;
-      color: ${Color.neutral100};
+      color: var(${UI.COLOR_NEUTRAL_100});
     `}
 
   ${({ variant }) =>
     variant === ButtonVariant.LIGHT &&
     css`
-      background: ${Color.neutral100};
-      color: ${Color.neutral0}!important;
+      background: var(${UI.COLOR_NEUTRAL_100});
+      color: var(${UI.COLOR_NEUTRAL_0}) !important;
     `}
 
   ${({ variant }) =>
     variant === ButtonVariant.OUTLINE_LIGHT &&
     css`
       background: transparent;
-      border: 0.1rem solid ${Color.neutral100};
+      border: 0.1rem solid var(${UI.COLOR_NEUTRAL_100});
     `}
 `
 
@@ -141,7 +146,7 @@ export const Button = forwardRef<HTMLAnchorElement, ButtonProps>(
       minHeight,
       onClick,
     },
-    ref
+    ref,
   ) => {
     return (
       <Wrapper
@@ -170,7 +175,7 @@ export const Button = forwardRef<HTMLAnchorElement, ButtonProps>(
         {label}
       </Wrapper>
     )
-  }
+  },
 )
 
 Button.displayName = 'Button'

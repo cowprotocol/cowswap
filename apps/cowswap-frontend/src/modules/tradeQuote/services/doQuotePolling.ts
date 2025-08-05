@@ -40,7 +40,7 @@ export function doQuotePolling({
   if (!forceUpdate) {
     // Don't fetch quote if the parameters are the same
     // Also avoid quote refresh when only appData.quote (contains slippage) is changed
-    // Important! We should skip quote updateing only if there is no quote response
+    // Important! We should skip quote updating only if there is no quote response
     if (
       isQuoteCached(currentQuote) &&
       quoteUsingSameParameters(currentQuote, quoteParams, currentQuoteAppDataDoc, appData)
@@ -54,9 +54,11 @@ export function doQuotePolling({
     }
   }
 
+  const isBridging = !!quoteParams && quoteParams.sellTokenChainId !== quoteParams.buyTokenChainId
   const fetchStartTimestamp = Date.now()
-  // Don't fetch fast quote in confirm screen
-  if (fastQuote && !isConfirmOpen) {
+
+  // Don't fetch fast quote in confirm screen and in bridging mode
+  if (fastQuote && !isConfirmOpen && !isBridging) {
     fetchQuote({ hasParamsChanged, priceQuality: PriceQuality.FAST, fetchStartTimestamp })
   }
   fetchQuote({ hasParamsChanged, priceQuality: PriceQuality.OPTIMAL, fetchStartTimestamp })

@@ -64,3 +64,9 @@ apps/cowswap-frontend/public/robots.txt
 # Claude context files (local only)
 CLAUDE.md
 .claude/
+
+# Serena project files
+.serena/
+
+# Github
+.github/

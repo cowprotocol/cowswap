@@ -2,10 +2,13 @@ import React, { ReactNode } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
+import type { CrossChainOrder } from '@cowprotocol/cow-sdk'
 import { NetworkLogo } from '@cowprotocol/ui'
 import { Color } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
+
+import { useBridgeProviderNetworks } from 'modules/bridge'
 
 import { LinkWithPrefixNetwork } from './LinkWithPrefixNetwork'
 
@@ -31,22 +34,40 @@ export interface AddressLinkProps {
   chainId: number
   showIcon?: boolean
   showNetworkName: boolean
+  bridgeProvider?: CrossChainOrder['provider']
 }
 
-export function AddressLink({ address, chainId, showIcon, showNetworkName }: AddressLinkProps): ReactNode {
-  const chainInfo = getChainInfo(chainId)
+export function AddressLink({
+  address,
+  chainId,
+  showIcon,
+  showNetworkName,
+  bridgeProvider,
+}: AddressLinkProps): ReactNode {
+  const { data: networks } = useBridgeProviderNetworks(bridgeProvider)
 
-  if (!chainInfo) return null
+  const bridgeNetwork = networks?.[chainId]
+  const bridgeBlockExplorer = bridgeNetwork?.blockExplorer
+
+  const chainLabel = bridgeNetwork?.label || getChainInfo(chainId)?.label
+
+  if (!chainLabel) return null
 
   return (
     <AddressLinkWrapper>
-      <LinkWithPrefixNetwork to={getExplorerLink(chainId, address, ExplorerDataType.ADDRESS)} target="_blank" noPrefix>
+      <LinkWithPrefixNetwork
+        to={getExplorerLink(chainId, address, ExplorerDataType.ADDRESS, bridgeBlockExplorer?.url)}
+        target="_blank"
+        noPrefix
+      >
         <LinkWithNetworkWrapper>
-          {(showIcon || showNetworkName) && <NetworkLogo chainId={chainId} size={16} forceLightMode={true} />}
-          {address} ↗
+          {(showIcon || showNetworkName) && (
+            <NetworkLogo chainId={chainId} size={16} logoUrl={bridgeNetwork?.logo.light} forceLightMode />
+          )}
+          {address.toLowerCase()} ↗
         </LinkWithNetworkWrapper>
       </LinkWithPrefixNetwork>
-      {showNetworkName && <NetworkName>on {chainInfo.label}</NetworkName>}
+      {showNetworkName && <NetworkName>on {chainLabel}</NetworkName>}
     </AddressLinkWrapper>
   )
 }

@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.24.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.24.0...cow-fi-v1.24.1) (2025-08-04)
+
+
+### Bug Fixes
+
+* **cow-fi:** enhance caching strategy and middleware for /learn routes to improve performance ([#6084](https://github.com/cowprotocol/cowswap/issues/6084)) ([f51652a](https://github.com/cowprotocol/cowswap/commit/f51652ac1c979aa8f3fde5a3af1003f9595d7722))
+* **cow-fi:** ISR optimization to prevent cache-busting in learn pages ([#6079](https://github.com/cowprotocol/cowswap/issues/6079)) ([6ace758](https://github.com/cowprotocol/cowswap/commit/6ace75842a7a5b686e3649f002b323309c47874d))
+* **cow-fi:** update articles page with caching strategy and type annotations … ([#6066](https://github.com/cowprotocol/cowswap/issues/6066)) ([a117209](https://github.com/cowprotocol/cowswap/commit/a117209a5dfdfd83aea83c606114211d9d5383c7))
+
+## [1.24.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.23.0...cow-fi-v1.24.0) (2025-07-03)
+
+
+### Features
+
+* **cow-fi-tokens:** refactor and add more networks to the token details page swap w… ([#5900](https://github.com/cowprotocol/cowswap/issues/5900)) ([14952b3](https://github.com/cowprotocol/cowswap/commit/14952b3f852cf61698ecad20061af6f244a43517))
+* **explorer:** display bridging data in order page ([#5787](https://github.com/cowprotocol/cowswap/issues/5787)) ([cd398f0](https://github.com/cowprotocol/cowswap/commit/cd398f0987064311d80c1628550a83df5ad31386))
+* update `cow.fi` `/tokens` page ([#5889](https://github.com/cowprotocol/cowswap/issues/5889)) ([c3d969d](https://github.com/cowprotocol/cowswap/commit/c3d969d74de12b6cefcd1140f99ad3aeadbc0b3e))
+* update FAQs list of supported networks ([#5901](https://github.com/cowprotocol/cowswap/issues/5901)) ([d0de55a](https://github.com/cowprotocol/cowswap/commit/d0de55a8d7868ef239e7264d0310aff53f81b6dd))
+
 ## [1.23.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.22.7...cow-fi-v1.23.0) (2025-06-18)
 
 

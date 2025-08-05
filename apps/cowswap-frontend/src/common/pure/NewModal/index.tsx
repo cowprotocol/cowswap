@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react'
+import React, { ReactNode, useCallback } from 'react'
 
 import { Command } from '@cowprotocol/types'
 import { BackButton, Media, UI } from '@cowprotocol/ui'
@@ -36,6 +36,7 @@ const Wrapper = styled.div<{
   ${Media.upToSmall()} {
     margin: 0;
     box-shadow: none;
+    ${({ modalMode }) => modalMode && 'border-radius: 0;'}
   }
 
   ${ModalInner} {
@@ -160,8 +161,6 @@ export interface NewModalProps {
   justifyContent?: string
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function NewModal({
   maxWidth,
   minHeight,
@@ -171,7 +170,7 @@ export function NewModal({
   title,
   children,
   onDismiss,
-}: NewModalProps) {
+}: NewModalProps): ReactNode {
   const onDismissCallback = useCallback(() => onDismiss?.(), [onDismiss])
 
   return (

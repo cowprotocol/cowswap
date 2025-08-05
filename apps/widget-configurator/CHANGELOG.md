@@ -1,5 +1,26 @@
 # Changelog
 
+## [1.16.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.15.0...widget-configurator-v1.16.0) (2025-07-30)
+
+
+### Features
+
+* **bridge:** adjust snackbars for bridge orders ([#5977](https://github.com/cowprotocol/cowswap/issues/5977)) ([4d41d5b](https://github.com/cowprotocol/cowswap/commit/4d41d5baac8fd02481173e533110dc309adee8c3))
+
+## [1.15.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.14.1...widget-configurator-v1.15.0) (2025-07-10)
+
+
+### Features
+
+* **trade:** slippage config for integrators ([#5906](https://github.com/cowprotocol/cowswap/issues/5906)) ([cbfa3b1](https://github.com/cowprotocol/cowswap/commit/cbfa3b142571df7bdf55919b8ae6df986017aeab))
+
+## [1.14.1](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.14.0...widget-configurator-v1.14.1) (2025-06-27)
+
+
+### Bug Fixes
+
+* **partner-fee:** update fee address ([#5896](https://github.com/cowprotocol/cowswap/issues/5896)) ([fc40661](https://github.com/cowprotocol/cowswap/commit/fc406616261ed1c77c6ee663ab9cc5e2f671232f))
+
 ## [1.14.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.13.2...widget-configurator-v1.14.0) (2025-06-18)
 
 

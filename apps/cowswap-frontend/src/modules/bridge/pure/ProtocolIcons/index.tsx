@@ -1,75 +1,100 @@
-import { BridgeProviderInfo } from '@cowprotocol/cow-sdk'
-import { ProductVariant, UI, ProductLogo } from '@cowprotocol/ui'
+import { ReactNode } from 'react'
 
-import { ProtocolIcon, ProtocolIconsContainer } from './styled'
+import { BridgeProviderInfo } from '@cowprotocol/cow-sdk'
+import { ProductVariant, ProductLogo, UI } from '@cowprotocol/ui'
+
+import { StackedProtocolIcons } from './StackedProtocolIcons'
+import { ProtocolIcon } from './styled'
+
+import { COW_PROTOCOL_NAME } from '../../constants'
 
 export interface ProtocolIconsProps {
-  secondProtocol: BridgeProviderInfo
+  secondProtocol?: BridgeProviderInfo
   showOnlyFirst?: boolean
   showOnlySecond?: boolean
   size?: number
 }
 
-const DEFAULT_ICON_SIZE = 18
-const DEFAULT_SINGLE_ICON_SIZE = 36
-const LOGO_HEIGHT_RATIO = 0.75
+const DEFAULT_ICON_SIZE = 18 // For stacked icons
+const DEFAULT_SINGLE_ICON_SIZE = 36 // For showOnlyFirst
+const LOGO_HEIGHT_RATIO = 0.5 // The ratio of the icon size to the logo height
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
+// Single Protocol Icon Component
+interface SingleProtocolIconProps {
+  showOnlyFirst?: boolean
+  secondProtocol?: BridgeProviderInfo
+  currentDisplaySize: number
+  currentLogoHeight: number
+}
+
+function SingleProtocolIcon({
+  showOnlyFirst,
+  secondProtocol,
+  currentDisplaySize,
+  currentLogoHeight,
+}: SingleProtocolIconProps): ReactNode {
+  const protocolName = showOnlyFirst ? COW_PROTOCOL_NAME : secondProtocol?.name
+  const protocolBgColor = showOnlyFirst ? UI.COLOR_PURPLE_800_PRIMARY : undefined
+  const iconChild = showOnlyFirst ? (
+    <ProductLogo
+      variant={ProductVariant.CowProtocol}
+      height={currentLogoHeight}
+      logoIconOnly
+      overrideColor={`var(${UI.COLOR_PURPLE_200_PRIMARY})`}
+      overrideHoverColor={`var(${UI.COLOR_PURPLE_200_PRIMARY})`}
+    />
+  ) : (
+    <img
+      src={secondProtocol?.logoUrl}
+      width={currentLogoHeight}
+      height={currentLogoHeight}
+      alt={secondProtocol?.name}
+    />
+  )
+
+  return (
+    <ProtocolIcon
+      title={protocolName}
+      size={currentDisplaySize}
+      isStacked={false}
+      bgColor={protocolBgColor}
+      color={showOnlyFirst ? `var(${UI.COLOR_PURPLE_200_PRIMARY})` : undefined}
+    >
+      {iconChild}
+    </ProtocolIcon>
+  )
+}
+
 export function ProtocolIcons({
   secondProtocol,
   showOnlyFirst,
   showOnlySecond,
-  size = DEFAULT_ICON_SIZE, // Default size for stacked icons
-}: ProtocolIconsProps) {
-  // If showing only first or only second, use the specified size or default single icon size
-  const iconSize =
-    showOnlyFirst || showOnlySecond ? (size === DEFAULT_ICON_SIZE ? DEFAULT_SINGLE_ICON_SIZE : size) : size
+  size = DEFAULT_ICON_SIZE,
+}: ProtocolIconsProps): ReactNode {
+  const isSingleIconDisplay = !!(showOnlyFirst || showOnlySecond)
+  const currentDisplaySize = isSingleIconDisplay ? (size === DEFAULT_ICON_SIZE ? DEFAULT_SINGLE_ICON_SIZE : size) : size
+  const currentLogoHeight = currentDisplaySize * LOGO_HEIGHT_RATIO
 
-  const logoHeight = iconSize ? iconSize * LOGO_HEIGHT_RATIO : DEFAULT_ICON_SIZE * LOGO_HEIGHT_RATIO
-
-  if (showOnlyFirst) {
+  if (isSingleIconDisplay) {
     return (
-      <ProtocolIcon bgColor={UI.COLOR_BLUE_900_PRIMARY} title="CoW Protocol" size={iconSize}>
-        <ProductLogo
-          variant={ProductVariant.CowProtocol}
-          height={logoHeight}
-          logoIconOnly
-          overrideColor={`var(${UI.COLOR_BLUE_300_PRIMARY})`}
-          overrideHoverColor={`var(${UI.COLOR_BLUE_300_PRIMARY})`}
-        />
-      </ProtocolIcon>
+      <SingleProtocolIcon
+        showOnlyFirst={showOnlyFirst}
+        secondProtocol={secondProtocol}
+        currentDisplaySize={currentDisplaySize}
+        currentLogoHeight={currentLogoHeight}
+      />
     )
   }
 
-  if (showOnlySecond) {
+  if (secondProtocol) {
     return (
-      <ProtocolIcon title={secondProtocol.name} size={iconSize}>
-        <img src={secondProtocol.logoUrl} width={logoHeight} height={logoHeight} alt={secondProtocol.name} />
-      </ProtocolIcon>
+      <StackedProtocolIcons
+        secondProtocol={secondProtocol}
+        currentDisplaySize={currentDisplaySize}
+        currentLogoHeight={currentLogoHeight}
+      />
     )
   }
 
-  return (
-    <ProtocolIconsContainer iconSize={size}>
-      <ProtocolIcon bgColor={UI.COLOR_BLUE_900_PRIMARY} title="Cow Protocol">
-        <ProductLogo
-          variant={ProductVariant.CowProtocol}
-          height={DEFAULT_ICON_SIZE * LOGO_HEIGHT_RATIO}
-          logoIconOnly
-          overrideColor={`var(${UI.COLOR_BLUE_300_PRIMARY})`}
-          overrideHoverColor={`var(${UI.COLOR_BLUE_300_PRIMARY})`}
-        />
-      </ProtocolIcon>
-      <ProtocolIcon title={secondProtocol.name}>
-        <img
-          src={secondProtocol.logoUrl}
-          width={DEFAULT_ICON_SIZE * LOGO_HEIGHT_RATIO}
-          height={DEFAULT_ICON_SIZE * LOGO_HEIGHT_RATIO}
-          alt={secondProtocol.name}
-        />
-      </ProtocolIcon>
-    </ProtocolIconsContainer>
-  )
+  return null
 }

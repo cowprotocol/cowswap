@@ -1,8 +1,13 @@
 import { useSetAtom } from 'jotai'
 import { useMemo } from 'react'
 
-import { BridgeQuoteResults, PriceQuality, QuoteBridgeRequest, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { QuoteAndPost } from '@cowprotocol/cow-sdk'
+import {
+  BridgeQuoteResults,
+  PriceQuality,
+  QuoteAndPost,
+  QuoteBridgeRequest,
+  SupportedChainId,
+} from '@cowprotocol/cow-sdk'
 
 import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
 
@@ -12,22 +17,22 @@ import { TradeQuoteState, updateTradeQuoteAtom } from '../state/tradeQuoteAtom'
 import { SellTokenAddress } from '../state/tradeQuoteInputAtom'
 import { TradeQuoteFetchParams } from '../types'
 
-
 export interface TradeQuoteManager {
   setLoading(hasParamsChanged: boolean): void
+
   reset(): void
+
   onError(
     error: TradeQuoteState['error'],
     chainId: SupportedChainId,
     quoteParams: QuoteBridgeRequest,
     fetchParams: TradeQuoteFetchParams,
   ): void
+
   onResponse(data: QuoteAndPost, bridgeQuote: BridgeQuoteResults | null, fetchParams: TradeQuoteFetchParams): void
 }
 
-export function useTradeQuoteManager(
-  sellTokenAddress: SellTokenAddress | undefined,
-): TradeQuoteManager | null {
+export function useTradeQuoteManager(sellTokenAddress: SellTokenAddress | undefined): TradeQuoteManager | null {
   const update = useSetAtom(updateTradeQuoteAtom)
   const processUnsupportedTokenError = useProcessUnsupportedTokenError()
 
@@ -51,7 +56,13 @@ export function useTradeQuoteManager(
               quoteParams: QuoteBridgeRequest,
               fetchParams: TradeQuoteFetchParams,
             ) {
-              update(sellTokenAddress, { error, fetchParams, isLoading: false, hasParamsChanged: false })
+              update(sellTokenAddress, {
+                error,
+                fetchParams,
+                isLoading: false,
+                hasParamsChanged: false,
+                isBridgeQuote: quoteParams.sellTokenChainId !== quoteParams.buyTokenChainId,
+              })
 
               if (error instanceof QuoteApiError && error.type === QuoteApiErrorCodes.UnsupportedToken) {
                 processUnsupportedTokenError(error, chainId, quoteParams)

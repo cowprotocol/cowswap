@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { ReactNode, useMemo } from 'react'
 
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
@@ -15,12 +15,12 @@ import {
   useBridgeQuoteAmounts,
 } from 'modules/bridge'
 import { useTokensBalancesCombined } from 'modules/combinedBalances/hooks/useTokensBalancesCombined'
-import { useOrderSubmittedContent } from 'modules/orderProgressBar'
+import { OrderSubmittedContent } from 'modules/orderProgressBar'
 import {
   TradeBasicConfirmDetails,
   TradeConfirmation,
   TradeConfirmModal,
-  useReceiveAmountInfo,
+  useGetReceiveAmountInfo,
   useTradeConfirmActions,
 } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
@@ -47,15 +47,14 @@ export interface SwapConfirmModalProps {
 }
 
 // TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
-export function SwapConfirmModal(props: SwapConfirmModalProps) {
+// eslint-disable-next-line max-lines-per-function
+export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
   const { inputCurrencyInfo, outputCurrencyInfo, priceImpact, recipient, doTrade } = props
 
-  const { account, chainId } = useWalletInfo()
+  const { account } = useWalletInfo()
   const { ensName } = useWalletDetails()
   const appData = useAppData()
-  const receiveAmountInfo = useReceiveAmountInfo()
+  const receiveAmountInfo = useGetReceiveAmountInfo()
   const tradeConfirmActions = useTradeConfirmActions()
   const { slippage } = useSwapDerivedState()
   const [deadline] = useSwapDeadlineState()
@@ -64,18 +63,17 @@ export function SwapConfirmModal(props: SwapConfirmModalProps) {
   const { bridgeQuote } = useTradeQuote()
 
   const bridgeProvider = bridgeQuote?.providerInfo
-  const bridgeQuoteAmounts = useBridgeQuoteAmounts(receiveAmountInfo, bridgeQuote)
+  const bridgeQuoteAmounts = useBridgeQuoteAmounts()
   const swapContext = useQuoteSwapContext()
   const bridgeContext = useQuoteBridgeContext()
 
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
-  const submittedContent = useOrderSubmittedContent(chainId, bridgeQuoteAmounts || undefined)
+  const submittedContent = <OrderSubmittedContent onDismiss={tradeConfirmActions.onDismiss} />
   const labelsAndTooltips = useLabelsAndTooltips()
 
   const { values: balances } = useTokensBalancesCombined()
 
   // TODO: Reduce function complexity by extracting logic
-
   const disableConfirm = useMemo(() => {
     const current = inputCurrencyInfo?.amount?.currency
 
@@ -99,13 +97,15 @@ export function SwapConfirmModal(props: SwapConfirmModalProps) {
     return true
   }, [balances, inputCurrencyInfo, shouldDisplayBridgeDetails, bridgeQuoteAmounts])
 
+  const confirmText = shouldDisplayBridgeDetails ? 'Confirm Swap and Bridge' : 'Confirm Swap'
+
   const buttonText = useMemo(() => {
     if (disableConfirm) {
       const { amount } = inputCurrencyInfo
       return `Insufficient ${amount?.currency?.symbol || 'token'} balance`
     }
-    return 'Confirm Swap'
-  }, [disableConfirm, inputCurrencyInfo])
+    return confirmText
+  }, [confirmText, disableConfirm, inputCurrencyInfo])
 
   return (
     <TradeConfirmModal title={CONFIRM_TITLE} submittedContent={submittedContent}>
@@ -126,14 +126,16 @@ export function SwapConfirmModal(props: SwapConfirmModalProps) {
         {shouldDisplayBridgeDetails && bridgeProvider && swapContext && bridgeContext
           ? (restContent) => (
               <>
-                <RateInfo label="Price" rateInfoParams={rateInfoParams} />
+                <RateInfo label="Price" rateInfoParams={rateInfoParams} fontSize={13} fontBold labelBold />
                 <QuoteDetails
                   isCollapsible
                   bridgeProvider={bridgeProvider}
                   swapContext={swapContext}
                   bridgeContext={bridgeContext}
+                  hideRecommendedSlippage
                 />
                 {restContent}
+                <HighFeeWarning readonlyMode />
               </>
             )
           : (restContent) => (

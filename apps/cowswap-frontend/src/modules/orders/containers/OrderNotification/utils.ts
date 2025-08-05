@@ -1,7 +1,13 @@
 import { EnrichedOrder, OrderKind } from '@cowprotocol/cow-sdk'
-import { CowWidgetEvents, OnToastMessagePayload, ToastMessagePayloads, ToastMessageType } from '@cowprotocol/events'
+import {
+  CowWidgetEvents,
+  OnBridgingSuccessPayload,
+  OnToastMessagePayload,
+  ToastMessagePayloads,
+  ToastMessageType,
+} from '@cowprotocol/events'
 import { TokensByAddress } from '@cowprotocol/tokens'
-import { TokenInfo } from '@cowprotocol/types'
+import { BridgeOrderData, TokenInfo } from '@cowprotocol/types'
 
 import { WIDGET_EVENT_EMITTER } from 'widgetEventEmitter'
 
@@ -56,4 +62,16 @@ export const mapStoreOrderToInfo = (orderFromStore: Order): OrderInfo => {
     inputAmount: BigInt(orderFromStore?.sellAmount),
     outputAmount: BigInt(orderFromStore?.buyAmount),
   } as OrderInfo
+}
+
+export function mapBridgingResultToOrderInfo(payload: OnBridgingSuccessPayload, orderData: BridgeOrderData): OrderInfo {
+  return {
+    owner: payload.order.owner,
+    kind: OrderKind.SELL,
+    receiver: payload.bridgingParams.recipient,
+    inputAmount: payload.bridgingParams.inputAmount,
+    outputAmount: payload.bridgingParams.outputAmount ?? 0n,
+    inputToken: orderData.quoteAmounts.swapMinReceiveAmount.currency as TokenInfo,
+    outputToken: orderData.quoteAmounts.bridgeMinReceiveAmount.currency as TokenInfo,
+  }
 }

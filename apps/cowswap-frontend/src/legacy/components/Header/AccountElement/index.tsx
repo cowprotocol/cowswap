@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { ReactNode, useState } from 'react'
 
 import { useNativeCurrencyAmount } from '@cowprotocol/balances-and-allowances'
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
@@ -27,14 +27,11 @@ function createNotificationClickEventData(event: string): string {
 }
 
 interface AccountElementProps {
-  pendingActivities: string[]
   standaloneMode?: boolean
   className?: string
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function AccountElement({ className, standaloneMode, pendingActivities }: AccountElementProps) {
+export function AccountElement({ className, standaloneMode }: AccountElementProps): ReactNode {
   const { account, chainId } = useWalletInfo()
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
   const userEthBalance = useNativeCurrencyAmount(chainId, account)
@@ -55,7 +52,7 @@ export function AccountElement({ className, standaloneMode, pendingActivities }:
             <TokenAmount amount={userEthBalance} tokenSymbol={{ symbol: nativeTokenSymbol }} />
           </BalanceText>
         )}
-        <Web3Status pendingActivities={pendingActivities} onClick={() => account && toggleAccountModal()} />
+        <Web3Status onClick={() => account && toggleAccountModal()} />
         {account && (
           <NotificationBell
             unreadCount={unreadNotificationsCount}

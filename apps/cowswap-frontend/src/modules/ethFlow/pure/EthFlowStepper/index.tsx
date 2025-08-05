@@ -16,7 +16,7 @@ export enum SmartOrderStatus {
   FILLED = 'FILLED',
 }
 
-type TxState = {
+export type TxState = {
   /**
    * undefined: there's no tx to track
    * string: tx was created and can be tracked
@@ -142,7 +142,7 @@ export const Progress = styled.div<ProgressProps>`
         : status === 'success'
           ? `var(${UI.COLOR_SUCCESS})`
           : status === 'pending'
-            ? `var(${UI.COLOR_PRIMARY})`
+            ? `var(${UI.COLOR_INFO})`
             : `var(${UI.COLOR_TEXT_OPACITY_25})`};
     border-radius: var(--height);
 

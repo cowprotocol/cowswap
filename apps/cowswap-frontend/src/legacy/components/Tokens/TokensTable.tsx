@@ -1,10 +1,11 @@
 import { useAtom } from 'jotai'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useFilterTokens, usePrevious } from '@cowprotocol/common-hooks'
-import { closableBannersStateAtom } from '@cowprotocol/ui'
+import { closableBannersStateAtom, Loader } from '@cowprotocol/ui'
+import { BigNumber } from '@ethersproject/bignumber'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
@@ -45,29 +46,30 @@ type TokenTableParams = {
   tokensData: TokenWithLogo[] | undefined
   maxItems?: number
   balances?: BalancesState['values']
+  allowances: Record<string, BigNumber | undefined> | undefined
   page: number
   setPage: (page: number) => void
   query: string
   prevQuery: string
   debouncedQuery: string
-  children?: React.ReactNode
+  children?: ReactNode
 }
 
 // TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
-export default function TokenTable({
+// eslint-disable-next-line max-lines-per-function
+export function TokenTable({
   tokensData: rawTokensData = [],
   maxItems = MAX_ITEMS,
   balances,
+  allowances,
   page,
   setPage,
   query,
   prevQuery,
   debouncedQuery,
   children,
-}: TokenTableParams) {
+}: TokenTableParams): ReactNode {
   const toggleWalletModal = useToggleWalletModal()
   const tableRef = useRef<HTMLTableElement | null>(null)
   const [bannerState] = useAtom(closableBannersStateAtom)
@@ -221,6 +223,11 @@ export default function TokenTable({
               const balanceRaw = balances && balances[data.address.toLowerCase()]
               const balance = balanceRaw ? CurrencyAmount.fromRawAmount(data, balanceRaw.toHexString()) : undefined
 
+              const allowancesRaw = allowances && allowances[data.address.toLowerCase()]
+              const allowance = allowancesRaw
+                ? CurrencyAmount.fromRawAmount(data, allowancesRaw.toHexString())
+                : undefined
+
               if (data) {
                 return (
                   <Row key={data.address} data-address={data.address}>
@@ -228,6 +235,7 @@ export default function TokenTable({
                       key={data.address}
                       toggleWalletModal={toggleWalletModal}
                       balance={balance}
+                      allowance={allowance}
                       openApproveModal={openApproveModal}
                       closeApproveModal={closeApproveModal}
                       index={getTokenIndex(i)}
@@ -238,10 +246,12 @@ export default function TokenTable({
               }
               return null
             })
-          ) : (
+          ) : query?.trim() ? (
             <NoResults>
               <h3>No results found ¯\_(ツ)_/¯</h3>
             </NoResults>
+          ) : (
+            <Loader />
           )}
         </Table>
 

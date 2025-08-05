@@ -1,10 +1,12 @@
-import { ReactElement, useCallback, useMemo } from 'react'
+import { ReactNode, useCallback, useMemo } from 'react'
 
 import { shortenOrderId } from '@cowprotocol/common-utils'
-import { EnrichedOrder, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { EnrichedOrder, SupportedChainId, getChainInfo } from '@cowprotocol/cow-sdk'
 import { ToastMessageType } from '@cowprotocol/events'
 import { useTokensByAddressMap } from '@cowprotocol/tokens'
 import { TokenInfo, UiOrderType } from '@cowprotocol/types'
+
+import { useBridgeSupportedNetwork } from 'entities/bridgeProvider'
 
 import { useOrder } from 'legacy/state/orders/hooks'
 
@@ -17,25 +19,43 @@ import {
 } from './utils'
 
 import { OrderSummary } from '../../pure/OrderSummary'
+import { SellForAtLeastTemplate } from '../../pure/OrderSummary/summaryTemplates'
 import { ReceiverInfo } from '../../pure/ReceiverInfo'
 import { TransactionContentWithLink } from '../TransactionContentWithLink'
 
 export interface BaseOrderNotificationProps {
-  title: ReactElement | string
+  title: ReactNode
   messageType: ToastMessageType
   chainId: SupportedChainId
   orderUid: string
   orderType: UiOrderType
+  actionTitle?: string
   orderInfo?: OrderInfo | EnrichedOrder
   transactionHash?: string
+  skipExplorerLink?: boolean
   isEthFlow?: boolean
-  children?: ReactElement
+  children?: ReactNode
+  bottomContent?: ReactNode
+  receiver?: string
+  hideReceiver?: boolean
+  customTemplate?: typeof SellForAtLeastTemplate
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function OrderNotification(props: BaseOrderNotificationProps) {
-  const { title, orderUid, orderType, transactionHash, chainId, messageType, children, orderInfo, isEthFlow } = props
+export function OrderNotification(props: BaseOrderNotificationProps): ReactNode {
+  const {
+    title,
+    actionTitle,
+    orderUid,
+    orderType,
+    transactionHash,
+    chainId,
+    messageType,
+    children,
+    orderInfo,
+    isEthFlow,
+    skipExplorerLink,
+    hideReceiver,
+  } = props
 
   const allTokens = useTokensByAddressMap()
 
@@ -48,6 +68,10 @@ export function OrderNotification(props: BaseOrderNotificationProps) {
 
     return orderFromStore ? mapStoreOrderToInfo(orderFromStore) : undefined
   }, [orderFromStore, orderInfo, allTokens])
+
+  const sourceChainId = order?.inputToken.chainId
+  const srcChainData = sourceChainId ? getChainInfo(sourceChainId) : undefined
+  const dstChainData = useBridgeSupportedNetwork(order?.outputToken.chainId)
 
   const onToastMessage = useMemo(
     () =>
@@ -67,26 +91,39 @@ export function OrderNotification(props: BaseOrderNotificationProps) {
 
   if (!order) return
 
+  const content = (
+    <div ref={ref}>
+      <strong>{title}</strong>
+      <br />
+      <p>
+        Order <strong>{shortenOrderId(orderUid)}</strong>:
+      </p>
+      {children ||
+        (order.inputToken && order.outputToken ? (
+          <OrderSummary
+            actionTitle={actionTitle}
+            kind={order.kind}
+            inputToken={order.inputToken as TokenInfo}
+            outputToken={order.outputToken as TokenInfo}
+            sellAmount={order.inputAmount.toString()}
+            buyAmount={order.outputAmount.toString()}
+            srcChainData={srcChainData}
+            dstChainData={dstChainData}
+            customTemplate={props.customTemplate}
+          />
+        ) : null)}
+      {!hideReceiver && <ReceiverInfo receiver={order.receiver} owner={order.owner} />}
+      {props.bottomContent}
+    </div>
+  )
+
+  if (skipExplorerLink) {
+    return content
+  }
+
   return (
     <TransactionContentWithLink isEthFlow={isEthFlow} transactionHash={transactionHash} orderUid={orderUid}>
-      <div ref={ref}>
-        <strong>{title}</strong>
-        <br />
-        <p>
-          Order <strong>{shortenOrderId(orderUid)}</strong>:
-        </p>
-        {children ||
-          (order.inputToken && order.outputToken ? (
-            <OrderSummary
-              kind={order.kind}
-              inputToken={order.inputToken as TokenInfo}
-              outputToken={order.outputToken as TokenInfo}
-              sellAmount={order.inputAmount.toString()}
-              buyAmount={order.outputAmount.toString()}
-            />
-          ) : null)}
-        <ReceiverInfo receiver={order.receiver} owner={order.owner} />
-      </div>
+      {content}
     </TransactionContentWithLink>
   )
 }

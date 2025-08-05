@@ -1,82 +1,113 @@
 import { ReactNode } from 'react'
 
-import { displayTime, isTruthy } from '@cowprotocol/common-utils'
+import { displayTime } from '@cowprotocol/common-utils'
 import { InfoTooltip } from '@cowprotocol/ui'
 
 import { ConfirmDetailsItem, ReceiveAmountTitle } from 'modules/trade'
+import { useUsdAmount } from 'modules/usdAmount'
 
+import { SuccessTextBold } from '../../../styles'
 import { QuoteBridgeContext } from '../../../types'
-import { RecipientDisplay } from '../../RecipientDisplay'
+import { RecipientDetailsItem } from '../../RecipientDetailsItem'
 import { TokenAmountDisplay } from '../../TokenAmountDisplay'
 
+const MIN_RECEIVE_TITLE = 'Min. to receive'
+
+const estBridgeTimeTooltip = (
+  <>
+    Est. bridge time <InfoTooltip content="The estimated time for the bridge transaction to complete." size={14} />
+  </>
+)
+
 export interface QuoteBridgeContentProps {
+  isQuoteDisplay?: boolean
+  isFinished?: boolean
   quoteContext: QuoteBridgeContext
   children?: ReactNode
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function QuoteBridgeContent({
-  quoteContext: { recipient, bridgeFee, estimatedTime, buyAmount, buyAmountUsd },
+  isQuoteDisplay = false,
+  isFinished = false,
+  quoteContext: {
+    recipient,
+    bridgeFee,
+    estimatedTime,
+    buyAmount,
+    buyAmountUsd,
+    bridgeMinReceiveAmount,
+    bridgeMinDepositAmount,
+    bridgeMinDepositAmountUsd,
+  },
   children,
-}: QuoteBridgeContentProps) {
-  const buyAmountEl = <TokenAmountDisplay displaySymbol usdValue={buyAmountUsd} currencyAmount={buyAmount} />
+}: QuoteBridgeContentProps): ReactNode {
+  const bridgeFeeUsd = useUsdAmount(bridgeFee).value
 
-  const contents = [
-    bridgeFee
-      ? {
-          withTimelineDot: true,
-          label: (
-            <>
-              Bridge fee <InfoTooltip content="The fee for the bridge transaction." size={14} />
-            </>
-          ),
-          content: bridgeFee.equalTo(0) ? 'FREE' : <TokenAmountDisplay currencyAmount={bridgeFee} />,
-        }
-      : null,
-    estimatedTime
-      ? {
-          withTimelineDot: true,
-          label: (
-            <>
-              Est. bridge time{' '}
-              <InfoTooltip content="The estimated time for the bridge transaction to complete." size={14} />
-            </>
-          ),
-          content: <>~ {displayTime(estimatedTime * 1000, true)}</>,
-        }
-      : null,
-    {
-      withTimelineDot: true,
-      label: (
-        <>
-          Recipient{' '}
-          <InfoTooltip content="The address that will receive the tokens on the destination chain." size={14} />
-        </>
-      ),
-      content: <RecipientDisplay recipient={recipient} chainId={buyAmount.currency.chainId} logoSize={16} />,
-    },
-    {
-      withTimelineDot: true,
-      label: children ? (
-        'Min. to receive'
-      ) : (
-        <ReceiveAmountTitle>
-          <b>Min. to receive</b>
-        </ReceiveAmountTitle>
-      ),
-      content: children ? buyAmountEl : <b>{buyAmountEl}</b>,
-    },
-  ]
+  const minReceiveAmountEl = (
+    <TokenAmountDisplay
+      displaySymbol
+      usdValue={bridgeMinReceiveAmount ? null : buyAmountUsd}
+      currencyAmount={bridgeMinReceiveAmount || buyAmount}
+    />
+  )
 
   return (
     <>
-      {contents.filter(isTruthy).map(({ withTimelineDot, label, content }, index) => (
-        <ConfirmDetailsItem key={index} withTimelineDot={withTimelineDot} label={label}>
-          {content}
+      {isQuoteDisplay && (
+        <ConfirmDetailsItem
+          withTimelineDot
+          label="Min. to deposit"
+          tooltip="The minimum possible outcome after swap, including costs and slippage."
+        >
+          <TokenAmountDisplay
+            displaySymbol
+            usdValue={bridgeMinDepositAmountUsd}
+            currencyAmount={bridgeMinDepositAmount}
+          />
         </ConfirmDetailsItem>
-      ))}
+      )}
+      {bridgeFee && (
+        <ConfirmDetailsItem
+          withTimelineDot
+          label={
+            <>
+              Bridge costs <InfoTooltip content="Bridge transaction costs." size={14} />
+            </>
+          }
+        >
+          {bridgeFee.equalTo(0) ? (
+            <SuccessTextBold>FREE</SuccessTextBold>
+          ) : (
+            <TokenAmountDisplay currencyAmount={bridgeFee} usdValue={bridgeFeeUsd} />
+          )}
+        </ConfirmDetailsItem>
+      )}
+
+      {estimatedTime && (
+        <ConfirmDetailsItem withTimelineDot label={estBridgeTimeTooltip}>
+          ~ {displayTime(estimatedTime * 1000, true)}
+        </ConfirmDetailsItem>
+      )}
+
+      <RecipientDetailsItem recipient={recipient} chainId={buyAmount.currency.chainId} />
+
+      {(!isFinished || !isQuoteDisplay) && (
+        <ConfirmDetailsItem
+          withTimelineDot={!isQuoteDisplay}
+          label={
+            isQuoteDisplay ? (
+              <ReceiveAmountTitle>
+                <b>{MIN_RECEIVE_TITLE}</b>
+              </ReceiveAmountTitle>
+            ) : (
+              MIN_RECEIVE_TITLE
+            )
+          }
+        >
+          {isQuoteDisplay ? <b>{minReceiveAmountEl}</b> : minReceiveAmountEl}
+        </ConfirmDetailsItem>
+      )}
+
       {children}
     </>
   )

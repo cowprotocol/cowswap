@@ -1,4 +1,4 @@
-import React, { ReactNode, useState } from 'react'
+import React, { ReactNode, useMemo, useState } from 'react'
 
 import { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
@@ -36,6 +36,8 @@ export interface SelectTokenModalProps<T = TokenListCategory[] | null> {
   defaultInputValue?: string
   areTokensLoading: boolean
   tokenListTags: TokenListTags
+  standalone?: boolean
+  areTokensFromBridge: boolean
 
   onSelectToken(token: TokenWithLogo): void
   openPoolPage(poolAddress: string): void
@@ -45,13 +47,34 @@ export interface SelectTokenModalProps<T = TokenListCategory[] | null> {
   onSelectChain(chain: ChainInfo): void
 }
 
-export function SelectTokenModal(props: SelectTokenModalProps): ReactNode {
+function useSelectTokenContext(props: SelectTokenModalProps): SelectTokenContext {
   const {
-    defaultInputValue = '',
     selectedToken,
     balancesState,
     unsupportedTokens,
     permitCompatibleTokens,
+    onSelectToken,
+    account,
+    tokenListTags,
+  } = props
+
+  return useMemo(
+    () => ({
+      balancesState,
+      selectedToken,
+      onSelectToken,
+      unsupportedTokens,
+      permitCompatibleTokens,
+      tokenListTags,
+      isWalletConnected: !!account,
+    }),
+    [balancesState, selectedToken, onSelectToken, unsupportedTokens, permitCompatibleTokens, tokenListTags, account],
+  )
+}
+
+export function SelectTokenModal(props: SelectTokenModalProps): ReactNode {
+  const {
+    defaultInputValue = '',
     onSelectToken,
     onDismiss,
     onInputPressEnter,
@@ -62,23 +85,21 @@ export function SelectTokenModal(props: SelectTokenModalProps): ReactNode {
     disableErc20,
     chainsToSelect,
     onSelectChain,
-    tokenListTags,
+    areTokensFromBridge,
   } = props
   const [inputValue, setInputValue] = useState<string>(defaultInputValue)
 
-  const selectTokenContext: SelectTokenContext = {
-    balancesState,
-    selectedToken,
-    onSelectToken,
-    unsupportedTokens,
-    permitCompatibleTokens,
-    tokenListTags,
-  }
+  const selectTokenContext = useSelectTokenContext(props)
 
   const trimmedInputValue = inputValue.trim()
 
   const allListsContent = (
-    <TokensContent {...props} selectTokenContext={selectTokenContext} searchInput={trimmedInputValue} />
+    <TokensContent
+      {...props}
+      selectTokenContext={selectTokenContext}
+      searchInput={trimmedInputValue}
+      areTokensFromBridge={areTokensFromBridge}
+    />
   )
 
   return (

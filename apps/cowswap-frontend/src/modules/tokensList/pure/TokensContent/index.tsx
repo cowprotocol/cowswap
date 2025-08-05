@@ -22,8 +22,9 @@ export interface TokensContentProps {
   hideFavoriteTokensTooltip?: boolean
   areTokensLoading: boolean
   allTokens: TokenWithLogo[]
-  account: string | undefined
   searchInput: string
+  standalone?: boolean
+  areTokensFromBridge: boolean
 
   onSelectToken(token: TokenWithLogo): void
   onOpenManageWidget(): void
@@ -38,9 +39,10 @@ export function TokensContent({
   hideFavoriteTokensTooltip,
   areTokensLoading,
   allTokens,
-  account,
   displayLpTokenLists,
   searchInput,
+  standalone,
+  areTokensFromBridge,
 }: TokensContentProps): ReactNode {
   return (
     <>
@@ -64,23 +66,31 @@ export function TokensContent({
       ) : (
         <>
           {searchInput ? (
-            <TokenSearchResults searchInput={searchInput} {...selectTokenContext} />
+            <TokenSearchResults
+              searchInput={searchInput}
+              selectTokenContext={selectTokenContext}
+              areTokensFromBridge={areTokensFromBridge}
+              allTokens={allTokens}
+            />
           ) : (
             <TokensVirtualList
+              selectTokenContext={selectTokenContext}
               allTokens={allTokens}
-              {...selectTokenContext}
-              account={account}
               displayLpTokenLists={displayLpTokenLists}
             />
           )}
         </>
       )}
-      <styledEl.Separator />
-      <div>
-        <styledEl.ActionButton id="list-token-manage-button" onClick={onOpenManageWidget}>
-          <Edit /> <span>Manage Token Lists</span>
-        </styledEl.ActionButton>
-      </div>
+      {!standalone && (
+        <>
+          <styledEl.Separator />
+          <div>
+            <styledEl.ActionButton id="list-token-manage-button" onClick={onOpenManageWidget}>
+              <Edit /> <span>Manage Token Lists</span>
+            </styledEl.ActionButton>
+          </div>
+        </>
+      )}
     </>
   )
 }

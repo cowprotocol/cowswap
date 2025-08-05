@@ -1,4 +1,4 @@
-import { Color } from '@cowprotocol/ui'
+import { Color, UI } from '@cowprotocol/ui'
 
 import { StylesheetCSS } from 'cytoscape'
 import styled, { css } from 'styled-components/macro'
@@ -34,7 +34,7 @@ export const FloatingWrapper = styled.div`
 
 const FloatingButton = css`
   cursor: pointer;
-  color: ${(): string => Color.neutral100};
+  color: var(${UI.COLOR_NEUTRAL_100});
   height: 3rem;
   border: 1px solid ${Color.explorer_border};
   border-radius: 0.5rem;
@@ -61,7 +61,7 @@ export const ResetButton = styled.button`
 export const LayoutButton = styled.span`
   ${FloatingButton} {
     display: flex;
-    color: ${Color.explorer_textPrimary};
+    color: ${Color.neutral100};
     font-size: ${({ theme }): string => theme.fontSizeDefault};
     font-weight: normal;
     white-space: nowrap;
@@ -123,7 +123,7 @@ export function STYLESHEET(): StylesheetCSS[] {
         color: Color.neutral0,
         'line-color': Color.explorer_grey,
         'line-opacity': 0.8,
-        'text-background-color': Color.explorer_labelTextOpen,
+        'text-background-color': Color.neutral100,
         'text-background-opacity': 1,
         'text-background-padding': '4px',
         'text-background-shape': 'roundrectangle',

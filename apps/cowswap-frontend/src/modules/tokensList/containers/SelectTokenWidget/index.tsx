@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { ReactNode, useCallback, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { TokenWithLogo } from '@cowprotocol/common-const'
@@ -49,14 +49,16 @@ const Wrapper = styled.div`
   }
 `
 
+const EMPTY_FAV_TOKENS: TokenWithLogo[] = []
+
 interface SelectTokenWidgetProps {
   displayLpTokenLists?: boolean
+  standalone?: boolean
 }
 
 // TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
-export function SelectTokenWidget({ displayLpTokenLists }: SelectTokenWidgetProps) {
+// eslint-disable-next-line max-lines-per-function
+export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTokenWidgetProps): ReactNode {
   const {
     open,
     onSelectToken,
@@ -92,7 +94,8 @@ export function SelectTokenWidget({ displayLpTokenLists }: SelectTokenWidgetProp
   })
   const importTokenCallback = useAddUserToken()
 
-  const { tokens: allTokens, isLoading: areTokensLoading, favoriteTokens } = useTokensToSelect()
+  const { tokens: allTokens, isLoading: areTokensLoading, favoriteTokens, areTokensFromBridge } = useTokensToSelect()
+
   const userAddedTokens = useUserAddedTokens()
   const allTokenLists = useAllListsList()
   const balancesState = useTokensBalancesCombined()
@@ -127,17 +130,13 @@ export function SelectTokenWidget({ displayLpTokenLists }: SelectTokenWidgetProp
     closeTokenSelectWidget()
   }, [closeTokenSelectWidget])
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const importTokenAndClose = (tokens: TokenWithLogo[]) => {
+  const importTokenAndClose = (tokens: TokenWithLogo[]): void => {
     importTokenCallback(tokens)
     onSelectToken?.(tokens[0])
     onDismiss()
   }
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const importListAndBack = (list: ListState) => {
+  const importListAndBack = (list: ListState): void => {
     try {
       addCustomTokenLists(list)
     } catch (error) {
@@ -152,7 +151,7 @@ export function SelectTokenWidget({ displayLpTokenLists }: SelectTokenWidgetProp
   return (
     <Wrapper>
       {(() => {
-        if (tokenToImport) {
+        if (tokenToImport && !standalone) {
           return (
             <ImportTokenModal
               tokens={[tokenToImport]}
@@ -163,7 +162,7 @@ export function SelectTokenWidget({ displayLpTokenLists }: SelectTokenWidgetProp
           )
         }
 
-        if (listToImport) {
+        if (listToImport && !standalone) {
           return (
             <ImportListModal
               list={listToImport}
@@ -174,7 +173,7 @@ export function SelectTokenWidget({ displayLpTokenLists }: SelectTokenWidgetProp
           )
         }
 
-        if (isManageWidgetOpen) {
+        if (isManageWidgetOpen && !standalone) {
           return (
             <ManageListsAndTokens
               lists={allTokenLists}
@@ -198,11 +197,12 @@ export function SelectTokenWidget({ displayLpTokenLists }: SelectTokenWidgetProp
 
         return (
           <SelectTokenModal
+            standalone={standalone}
             displayLpTokenLists={displayLpTokenLists}
             unsupportedTokens={unsupportedTokens}
             selectedToken={selectedToken}
             allTokens={allTokens}
-            favoriteTokens={favoriteTokens}
+            favoriteTokens={standalone ? EMPTY_FAV_TOKENS : favoriteTokens}
             balancesState={balancesState}
             permitCompatibleTokens={permitCompatibleTokens}
             onSelectToken={onSelectToken}
@@ -218,6 +218,7 @@ export function SelectTokenWidget({ displayLpTokenLists }: SelectTokenWidgetProp
             onSelectChain={onSelectChain}
             areTokensLoading={areTokensLoading}
             tokenListTags={tokenListTags}
+            areTokensFromBridge={areTokensFromBridge}
           />
         )
       })()}

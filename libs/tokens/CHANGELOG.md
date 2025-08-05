@@ -1,5 +1,32 @@
 # Changelog
 
+## [1.23.1](https://github.com/cowprotocol/cowswap/compare/tokens-v1.23.0...tokens-v1.23.1) (2025-08-05)
+
+
+### Bug Fixes
+
+* get relevant provider network for multicall ([#6093](https://github.com/cowprotocol/cowswap/issues/6093)) ([47f4cfb](https://github.com/cowprotocol/cowswap/commit/47f4cfbea5f2a394a0fc10c9b90d313a46613373))
+
+## [1.23.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.22.0...tokens-v1.23.0) (2025-07-30)
+
+
+### Features
+
+* **bridge:** do not search output tokens in selector ([#6017](https://github.com/cowprotocol/cowswap/issues/6017)) ([c6be067](https://github.com/cowprotocol/cowswap/commit/c6be06716820a7257d94639fecb4f6e382858eb3))
+* **bridge:** implement CurrencyLogoPair and styling ([#5995](https://github.com/cowprotocol/cowswap/issues/5995)) ([ced0884](https://github.com/cowprotocol/cowswap/commit/ced0884599b7cf6a62a1a3b3aa983ebca8924763))
+
+
+### Bug Fixes
+
+* migrate tokens store from localStorage to indexedDB ([#6037](https://github.com/cowprotocol/cowswap/issues/6037)) ([99f67eb](https://github.com/cowprotocol/cowswap/commit/99f67eb97d2cb111f00292427ac4c8d40e353464))
+
+## [1.22.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.21.0...tokens-v1.22.0) (2025-07-03)
+
+
+### Features
+
+* **bridge:** display account proxy ([#5881](https://github.com/cowprotocol/cowswap/issues/5881)) ([0692597](https://github.com/cowprotocol/cowswap/commit/0692597adf45b469b5a547057b64e79296714ee2))
+
 ## [1.21.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.20.0...tokens-v1.21.0) (2025-06-20)
 
 

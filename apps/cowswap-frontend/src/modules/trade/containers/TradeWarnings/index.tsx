@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 
 import { InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
 
@@ -6,7 +6,7 @@ import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFor
 import { HighSuggestedSlippageWarning } from 'modules/tradeSlippage'
 import { useShouldZeroApprove } from 'modules/zeroApproval'
 
-import { useReceiveAmountInfo } from '../../hooks/useReceiveAmountInfo'
+import { useGetReceiveAmountInfo } from '../../hooks/useGetReceiveAmountInfo'
 import { ZeroApprovalWarning } from '../../pure/ZeroApprovalWarning'
 import { NoImpactWarning } from '../NoImpactWarning'
 
@@ -15,11 +15,9 @@ interface TradeWarningsProps {
   enableSmartSlippage?: boolean
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function TradeWarnings({ isTradePriceUpdating, enableSmartSlippage }: TradeWarningsProps) {
+export function TradeWarnings({ isTradePriceUpdating, enableSmartSlippage }: TradeWarningsProps): ReactNode {
   const primaryFormValidation = useGetTradeFormValidation()
-  const receiveAmountInfo = useReceiveAmountInfo()
+  const receiveAmountInfo = useGetReceiveAmountInfo()
   const inputAmountWithSlippage = receiveAmountInfo?.afterSlippage.sellAmount
   const shouldZeroApprove = useShouldZeroApprove(inputAmountWithSlippage)
 
@@ -35,9 +33,7 @@ export function TradeWarnings({ isTradePriceUpdating, enableSmartSlippage }: Tra
   )
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function BundleTxApprovalBanner() {
+function BundleTxApprovalBanner(): ReactNode {
   return (
     <InlineBanner bannerType={StatusColorVariant.Info} iconSize={32}>
       <strong>Token approval bundling</strong>
