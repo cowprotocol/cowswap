@@ -2,7 +2,7 @@ import { registerOnWindow } from './misc'
 
 const DEFAULT_ENVIRONMENTS_REGEX: Record<EnvironmentName, string> = {
   local: '^(:?localhost:\\d{2,5}|(?:127|192)(?:\\.[0-9]{1,3}){3})',
-  pr: '^(explorer-[\\w\\d]+-cowswap-dev\\.vercel\\.app|swap-dev-git-[\\w\\d-]+|swap-\\w{9}-)cowswap-dev\\.vercel\\.app',
+  pr: '^((?:explorer|swap)-dev-git-[\\w\\d-]+|swap-\\w{9}-)cowswap-dev\\.vercel\\.app',
   development: '^(dev.swap.cow.fi|swap-develop.vercel.app)',
   staging: '^(staging.swap.cow.fi|swap-staging.vercel.app)',
   production: '^(swap.cow.fi|swap-prod.vercel.app)$',
@@ -77,7 +77,6 @@ export const ALL_ENVIRONMENTS: EnvironmentName[] = [
 export type EnvironmentName = 'local' | 'development' | 'pr' | 'staging' | 'production' | 'barn' | 'ens'
 
 export const environmentName: EnvironmentName | undefined = (function () {
-  console.log('getting environmentName ==>', isProd, isBarn, isEns, isStaging, isPr, isDev, isLocal)
   if (isProd) {
     return 'production'
   } else if (isBarn) {

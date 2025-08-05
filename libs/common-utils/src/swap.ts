@@ -15,6 +15,7 @@ function _getSwapUrlByEnvironment(): Record<EnvironmentName, string> {
 }
 
 export function getSwapBaseUrl(): string {
+  console.log('environmentName ==>', environmentName)
   if (!environmentName) {
     console.error('Missing environment name!')
     return DEFAULT_SWAP_URL
