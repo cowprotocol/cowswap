@@ -1,12 +1,16 @@
 import qs from 'qs'
 
+interface PopulateConfig {
+  [key: string]: unknown
+}
+
 // Helper function for query serialization
 export const querySerializer = (params: unknown): string => {
   return qs.stringify(params, { encodeValuesOnly: true, arrayFormat: 'brackets' })
 }
 
 // Helper function to get populate configuration for different endpoints
-export function getPopulateConfig(endpoint: '/categories' | '/articles' | '/pages'): unknown {
+export function getPopulateConfig(endpoint: '/categories' | '/articles' | '/pages'): PopulateConfig {
   switch (endpoint) {
     case '/categories':
       return {
