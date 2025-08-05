@@ -154,7 +154,7 @@ export interface NewModalProps {
   maxWidth?: number
   minHeight?: number
   contentPadding?: string
-  title?: string
+  title?: ReactNode
   onDismiss?: Command
   children?: React.ReactNode
   modalMode?: boolean

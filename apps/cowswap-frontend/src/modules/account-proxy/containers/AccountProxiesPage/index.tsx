@@ -13,9 +13,10 @@ import { useTradeNavigate } from 'modules/trade'
 import { Routes } from 'common/constants/routes'
 import { NewModal } from 'common/pure/NewModal'
 
-import { EmptyWrapper, ModalWrapper, WidgetWrapper } from './styled'
+import { EmptyWrapper, HelpLink, ModalWrapper, TitleWrapper, WidgetWrapper } from './styled'
 
 import { WalletNotConnected } from '../../pure/WalletNotConnected'
+import { parameterizeRoute } from '../../utils/parameterizeRoute'
 
 interface AccountProxiesPageProps {
   modalMode?: boolean
@@ -58,7 +59,12 @@ export function AccountProxiesPage({
       <WidgetWrapper ref={widgetRef}>
         <NewModal
           modalMode={modalMode}
-          title={'Proxy Accounts'}
+          title={
+            <TitleWrapper>
+              <span>Proxy Accounts</span>
+              <HelpLink to={parameterizeRoute(Routes.ACCOUNT_PROXY_HELP, { chainId })}>Need help?</HelpLink>
+            </TitleWrapper>
+          }
           onDismiss={onDismiss}
           contentPadding="10px"
           justifyContent="flex-start"

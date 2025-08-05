@@ -1,9 +1,9 @@
 import { Media } from '@cowprotocol/ui'
 
 import { transparentize } from 'color2k'
+import { Link } from 'react-router'
 import styled from 'styled-components/macro'
 import { WIDGET_MAX_WIDTH } from 'theme'
-
 
 export const EmptyWrapper = styled.div<{ $modalMode: boolean }>`
   width: 100%;
@@ -38,5 +38,21 @@ export const WidgetWrapper = styled.div`
 
   li {
     padding: 0.3rem;
+  }
+`
+
+export const TitleWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+`
+
+export const HelpLink = styled(Link)`
+  font-weight: 400;
+  font-size: 14px;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
   }
 `
