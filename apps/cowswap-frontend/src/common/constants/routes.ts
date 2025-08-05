@@ -16,7 +16,7 @@ export const Routes = {
   LONG_ADVANCED_ORDERS: `/:chainId?${TRADE_WIDGET_PREFIX}/advanced-orders/:inputCurrencyId?/:outputCurrencyId?`,
   ACCOUNT_PROXIES: '/:chainId/accountProxy',
   ACCOUNT_PROXY: '/:chainId/accountProxy/:proxyAddress',
-  ACCOUNT_PROXY_RECOVER: '/:chainId/accountProxy/recover/:proxyAddress',
+  ACCOUNT_PROXY_RECOVER: '/:chainId/accountProxy/:proxyAddress/recover/:tokenAddress',
   ACCOUNT_PROXY_HELP: '/:chainId/accountProxy/help',
   SEND: '/send',
   ACCOUNT: '/account',

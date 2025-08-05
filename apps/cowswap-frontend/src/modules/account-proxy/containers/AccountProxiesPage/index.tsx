@@ -27,7 +27,7 @@ export function AccountProxiesPage(): ReactNode {
       <Title>Choose a proxy account</Title>
       <div>
         {proxies?.map((proxy) => {
-          return <AccountItem chainId={chainId} account={proxy} />
+          return <AccountItem key={proxy} chainId={chainId} account={proxy} />
         })}
       </div>
     </div>

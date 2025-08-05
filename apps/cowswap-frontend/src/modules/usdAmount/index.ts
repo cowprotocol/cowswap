@@ -1,7 +1,7 @@
 export { useTradeUsdAmounts } from './hooks/useTradeUsdAmounts'
 export { UsdPricesUpdater } from './updaters/UsdPricesUpdater'
 export { useUsdAmount } from './hooks/useUsdAmount'
-export { useUsdPrice } from './hooks/useUsdPrice'
+export { useUsdPrice, useUsdPrices } from './hooks/useUsdPrice'
 export { fetchCurrencyUsdPrice } from './services/fetchCurrencyUsdPrice'
 export { getUsdPriceStateKey } from './utils/usdPriceStateKey'
 export type { UsdPriceState } from './state/usdTokenPricesAtom'
