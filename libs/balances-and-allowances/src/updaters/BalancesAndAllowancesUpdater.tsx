@@ -46,12 +46,13 @@ export function BalancesAndAllowancesUpdater({
   const tokenAddresses = useMemo(() => {
     if (allTokens.chainId !== chainId) return EMPTY_TOKENS
 
-    return allTokens.tokens
-      .filter((token) => {
-        return !(token instanceof LpToken) && !excludedTokens.has(token.address)
-      })
-      .map((token) => token.address)
-  }, [excludedTokens, allTokens, chainId])
+    return allTokens.tokens.reduce<string[]>((acc, token) => {
+      if (!(token instanceof LpToken)) {
+        acc.push(token.address)
+      }
+      return acc
+    }, [])
+  }, [allTokens, chainId])
 
   const balancesSwrConfig = useSwrConfigWithPauseForNetwork(chainId, account, BALANCES_SWR_CONFIG)
 
@@ -75,7 +76,7 @@ export function BalancesAndAllowancesUpdater({
   return (
     <>
       <BalancesResetUpdater chainId={chainId} account={account} />
-      <BalancesCacheUpdater chainId={chainId} account={account} />
+      <BalancesCacheUpdater chainId={chainId} account={account} excludedTokens={excludedTokens} />
     </>
   )
 }
