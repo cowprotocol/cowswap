@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import type { HTMLAttributes, AnchorHTMLAttributes } from 'react'
+import { isValidElement } from 'react'
 
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
@@ -13,25 +14,25 @@ interface CmsContentProps {
 
 // Component definitions outside render to avoid recreation on every render
 const CustomH1 = ({ children, ...props }: HTMLAttributes<HTMLHeadingElement>): ReactNode => (
-  <h1 {...props} id={slugify(String(children))}>
+  <h1 {...props} id={slugify(getTextFromChildren(children))}>
     {children}
   </h1>
 )
 
 const CustomH2 = ({ children, ...props }: HTMLAttributes<HTMLHeadingElement>): ReactNode => (
-  <h2 {...props} id={slugify(String(children))}>
+  <h2 {...props} id={slugify(getTextFromChildren(children))}>
     {children}
   </h2>
 )
 
 const CustomH3 = ({ children, ...props }: HTMLAttributes<HTMLHeadingElement>): ReactNode => (
-  <h3 {...props} id={slugify(String(children))}>
+  <h3 {...props} id={slugify(getTextFromChildren(children))}>
     {children}
   </h3>
 )
 
 const CustomH4 = ({ children, ...props }: HTMLAttributes<HTMLHeadingElement>): ReactNode => (
-  <h4 {...props} id={slugify(String(children))}>
+  <h4 {...props} id={slugify(getTextFromChildren(children))}>
     {children}
   </h4>
 )
@@ -79,6 +80,25 @@ export function CmsContent({ content }: CmsContentProps): ReactNode {
       {content}
     </ReactMarkdown>
   )
+}
+
+/**
+ * Extract text content from React children, handling nested elements and arrays
+ */
+function getTextFromChildren(children: ReactNode): string {
+  if (typeof children === 'string' || typeof children === 'number') {
+    return String(children)
+  }
+
+  if (Array.isArray(children)) {
+    return children.map(getTextFromChildren).join('')
+  }
+
+  if (isValidElement(children)) {
+    return getTextFromChildren((children.props as { children?: ReactNode }).children)
+  }
+
+  return ''
 }
 
 /**
