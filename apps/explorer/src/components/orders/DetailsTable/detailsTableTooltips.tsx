@@ -1,5 +1,6 @@
 import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
-import { ExternalLink } from '@cowprotocol/ui'
+
+import { AccountProxyLink } from '../shared/AccountProxyLink'
 
 export const DetailsTableTooltips = {
   orderID: 'A unique identifier ID for this order.',
@@ -7,11 +8,8 @@ export const DetailsTableTooltips = {
   to: 'The account address which will/did receive the bought amount.',
   toBridge: (
     <span>
-      The{' '}
-      <ExternalLink href="https://swap.cow.fi/#/account-proxy" target="_blank" rel="noopener noreferrer">
-{ACCOUNT_PROXY_LABEL}
-      </ExternalLink>{' '}
-      address which will/did receive bought amount of the Swap before the bridge is initiated.
+      The <AccountProxyLink>{ACCOUNT_PROXY_LABEL}</AccountProxyLink> address which will/did receive bought amount of the
+      Swap before the bridge is initiated.
     </span>
   ),
   hash: 'The onchain settlement transaction for this order. Can be viewed on Etherscan.',

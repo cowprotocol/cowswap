@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.2](https://github.com/cowprotocol/cowswap/compare/multicall-v1.2.1...multicall-v1.2.2) (2025-08-05)
+
+
+### Bug Fixes
+
+* get relevant provider network for multicall ([#6093](https://github.com/cowprotocol/cowswap/issues/6093)) ([47f4cfb](https://github.com/cowprotocol/cowswap/commit/47f4cfbea5f2a394a0fc10c9b90d313a46613373))
+
 ## [1.2.1](https://github.com/cowprotocol/cowswap/compare/multicall-v1.2.0...multicall-v1.2.1) (2025-07-31)
 
 
