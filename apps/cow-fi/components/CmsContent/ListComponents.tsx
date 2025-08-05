@@ -23,7 +23,6 @@ const StyledUl = styled.ul`
     }
   }
 
-  // Nested lists
   ul,
   ol {
     margin: 0.8rem 0 0;
@@ -51,7 +50,6 @@ const StyledOl = styled.ol`
     }
   }
 
-  // Nested lists
   ul,
   ol {
     margin: 0.8rem 0 0;
