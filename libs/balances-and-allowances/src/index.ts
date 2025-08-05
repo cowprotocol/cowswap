@@ -1,6 +1,6 @@
 // Updater
 export { BalancesAndAllowancesUpdater } from './updaters/BalancesAndAllowancesUpdater'
-export { PriorityTokensUpdater } from './updaters/PriorityTokensUpdater'
+export { PriorityTokensUpdater, PRIORITY_TOKENS_REFRESH_INTERVAL } from './updaters/PriorityTokensUpdater'
 
 // Hooks
 export { useTokensBalances } from './hooks/useTokensBalances'

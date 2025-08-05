@@ -4,13 +4,11 @@ import { useLocation } from 'react-router'
 
 import { useNavigate } from 'common/hooks/useNavigate'
 
-import useIsAnySwapAffectedUser from './useIsAnySwapAffectedUser'
+import { useIsAnySwapAffectedUser } from './useIsAnySwapAffectedUser'
 
 const WARNING_PAGE = '/anyswap-affected-users'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export default function RedirectAnySwapAffectedUsers() {
+export default function RedirectAnySwapAffectedUsers(): null {
   const navigate = useNavigate()
   const { pathname } = useLocation()
 
