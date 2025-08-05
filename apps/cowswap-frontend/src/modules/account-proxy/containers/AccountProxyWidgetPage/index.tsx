@@ -40,6 +40,7 @@ export function AccountProxyWidgetPage({
   const toggleWalletModal = useToggleWalletModal()
 
   const isWalletConnected = !!account
+  const isHelpPage = location.pathname.endsWith('/help')
   const query = new URLSearchParams(location.search)
   const [sourceRoute] = useState<string>(query.get('source') || 'swap')
 
@@ -75,7 +76,7 @@ export function AccountProxyWidgetPage({
           contentPadding="10px"
           justifyContent="flex-start"
         >
-          {isWalletConnected ? <Outlet /> : <WalletNotConnected onConnect={toggleWalletModal} />}
+          {isWalletConnected || isHelpPage ? <Outlet /> : <WalletNotConnected onConnect={toggleWalletModal} />}
         </NewModal>
       </WidgetWrapper>
     </Wrapper>
