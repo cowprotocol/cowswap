@@ -4,7 +4,6 @@ import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-// Styled list components for consistent CMS content formatting
 const StyledUl = styled.ul`
   margin: 1.6rem 0 2.4rem;
   padding-left: 2.4rem;
@@ -20,7 +19,7 @@ const StyledUl = styled.ul`
     }
 
     &::marker {
-      color: var(${UI.COLOR_PRIMARY_100});
+      color: var(${UI.COLOR_PRIMARY});
     }
   }
 
@@ -47,7 +46,7 @@ const StyledOl = styled.ol`
     }
 
     &::marker {
-      color: var(${UI.COLOR_PRIMARY_100});
+      color: var(${UI.COLOR_PRIMARY});
       font-weight: 600;
     }
   }
