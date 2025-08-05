@@ -1,16 +1,17 @@
+import { ReactNode } from 'react'
+
 import RefundIcon from '@cowprotocol/assets/cow-swap/icon-refund.svg'
+import { RECEIVED_LABEL } from '@cowprotocol/common-const'
 
 import { ConfirmDetailsItem, ReceiveAmountTitle } from 'modules/trade'
 
 import { AnimatedEllipsis, DangerText, InfoTextBold, InfoTextSpan } from '../../../../styles'
 import { StyledAnimatedTimelineRefundIcon } from '../../styled'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function FailedBridgingContent() {
+export function FailedBridgingContent(): ReactNode {
   return (
     <>
-      <ConfirmDetailsItem label="You received" withTimelineDot={true}>
+      <ConfirmDetailsItem label={RECEIVED_LABEL} withTimelineDot>
         <DangerText>Bridging failed</DangerText>
       </ConfirmDetailsItem>
       <ConfirmDetailsItem

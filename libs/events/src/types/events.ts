@@ -4,6 +4,7 @@ import {
   OnCancelledOrderPayload,
   OnExpiredOrderPayload,
   OnPresignedOrderPayload,
+  OnBridgingSuccessPayload,
 } from './orders'
 import { OnToastMessagePayload } from './toastMessages'
 import { OnTradeParamsPayload } from './trade'
@@ -21,6 +22,9 @@ export enum CowWidgetEvents {
   ON_PRESIGNED_ORDER = 'ON_PRESIGNED_ORDER',
   ON_ONCHAIN_TRANSACTION = 'ON_ONCHAIN_TRANSACTION',
   ON_CHANGE_TRADE_PARAMS = 'ON_CHANGE_TRADE_PARAMS',
+
+  // Bridging
+  ON_BRIDGING_SUCCESS = 'ON_BRIDGING_SUCCESS',
 }
 
 // Define types for event payloads
@@ -33,6 +37,7 @@ export interface CowWidgetEventPayloadMap {
   [CowWidgetEvents.ON_PRESIGNED_ORDER]: OnPresignedOrderPayload
   [CowWidgetEvents.ON_ONCHAIN_TRANSACTION]: OnTransactionPayload
   [CowWidgetEvents.ON_CHANGE_TRADE_PARAMS]: OnTradeParamsPayload
+  [CowWidgetEvents.ON_BRIDGING_SUCCESS]: OnBridgingSuccessPayload
 }
 
 export type CowEventPayloads = CowWidgetEventPayloadMap[CowWidgetEvents]

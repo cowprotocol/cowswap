@@ -1,169 +1,141 @@
-import { useAtomValue } from 'jotai'
-import { useEffect, useLayoutEffect, useRef } from 'react'
+import { useAtom, useAtomValue } from 'jotai'
+import { useLayoutEffect, useRef } from 'react'
 
-import { useIsOnline, useIsWindowVisible } from '@cowprotocol/common-hooks'
+import { useIsOnline, useIsWindowVisible, usePrevious } from '@cowprotocol/common-hooks'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
-import { PriceQuality } from '@cowprotocol/cow-sdk'
-import { useAreUnsupportedTokens } from '@cowprotocol/tokens'
-import { useWalletInfo } from '@cowprotocol/wallet'
 
 import ms from 'ms.macro'
 
-import { useUpdateCurrencyAmount } from 'modules/trade'
-
-import { useProcessUnsupportedTokenError } from './useProcessUnsupportedTokenError'
+import { usePollQuoteCallback } from './usePollQuoteCallback'
 import { useQuoteParams } from './useQuoteParams'
 import { useTradeQuote } from './useTradeQuote'
+import { useResetQuoteCounter } from './useTradeQuoteCounter'
 import { useTradeQuoteManager } from './useTradeQuoteManager'
 
-import { fetchAndProcessQuote } from '../services/fetchAndProcessQuote'
+import { QUOTE_POLLING_INTERVAL } from '../consts'
+import { tradeQuoteCounterAtom } from '../state/tradeQuoteCounterAtom'
 import { tradeQuoteInputAtom } from '../state/tradeQuoteInputAtom'
-import { TradeQuoteFetchParams } from '../types'
 import { isQuoteExpired } from '../utils/quoteDeadline'
-import { quoteUsingSameParameters } from '../utils/quoteUsingSameParameters'
 
-export const PRICE_UPDATE_INTERVAL = ms`30s`
-const QUOTE_EXPIRATION_CHECK_INTERVAL = ms`2s`
+const ONE_SEC = 1000
+const QUOTE_VALIDATION_INTERVAL = ms`2s`
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
-export function useTradeQuotePolling(isConfirmOpen = false, enableSmartSlippage = false) {
-  const { amount, fastQuote, partiallyFillable } = useAtomValue(tradeQuoteInputAtom)
+export function useTradeQuotePolling(isConfirmOpen = false, isQuoteUpdatePossible: boolean): null {
+  const { amount, partiallyFillable } = useAtomValue(tradeQuoteInputAtom)
+  const [tradeQuotePolling, setTradeQuotePolling] = useAtom(tradeQuoteCounterAtom)
+  const resetQuoteCounter = useResetQuoteCounter()
   const tradeQuote = useTradeQuote()
+  const prevIsConfirmOpen = usePrevious(isConfirmOpen)
   const tradeQuoteRef = useRef(tradeQuote)
   tradeQuoteRef.current = tradeQuote
 
   const amountStr = amount?.quotient.toString()
-  const { chainId } = useWalletInfo()
-  const { quoteParams, appData, inputCurrency } = useQuoteParams(amountStr, partiallyFillable) || {}
+  const quoteParamsState = useQuoteParams(amountStr, partiallyFillable)
+  const { quoteParams, inputCurrency } = quoteParamsState || {}
 
-  const tradeQuoteManager = useTradeQuoteManager(
-    inputCurrency && getCurrencyAddress(inputCurrency),
-    enableSmartSlippage,
-  )
-  const updateCurrencyAmount = useUpdateCurrencyAmount()
-  const getIsUnsupportedTokens = useAreUnsupportedTokens()
-  const processUnsupportedTokenError = useProcessUnsupportedTokenError()
+  const tradeQuoteManager = useTradeQuoteManager(inputCurrency && getCurrencyAddress(inputCurrency))
 
   const isWindowVisible = useIsWindowVisible()
-
   const isOnline = useIsOnline()
   const isOnlineRef = useRef(isOnline)
   isOnlineRef.current = isOnline
 
-  useEffect(() => {
+  const pollQuote = usePollQuoteCallback(isConfirmOpen, isQuoteUpdatePossible, quoteParamsState)
+  const pollQuoteRef = useRef(pollQuote)
+  pollQuoteRef.current = pollQuote
+
+  /**
+   * Reset quote when window is not visible or sell amount has been cleared
+   */
+  useLayoutEffect(() => {
     // Do not reset the quote if the confirm modal is open
     // Because we already have a quote and don't want to reset it
     if (isConfirmOpen) return
+    if (!tradeQuoteManager) return
 
-    if ((!isWindowVisible || !amountStr) && tradeQuoteManager) {
+    if (!isWindowVisible || !amountStr) {
       tradeQuoteManager.reset()
+      setTradeQuotePolling(0)
     }
-  }, [isWindowVisible, tradeQuoteManager, isConfirmOpen, amountStr])
+  }, [isWindowVisible, tradeQuoteManager, isConfirmOpen, amountStr, setTradeQuotePolling])
 
-  // TODO: Break down this large function into smaller functions
-
+  /**
+   * Fetch the quote instantly once the quote params are changed
+   */
   useLayoutEffect(() => {
-    if (!tradeQuoteManager) {
-      return
+    /**
+     * Quote params are not supposed to be changed once confirm screen is open
+     * So, we should not refetch quote
+     */
+    if (isConfirmOpen) return
+
+    if (pollQuoteRef.current(true)) {
+      resetQuoteCounter()
     }
+  }, [isConfirmOpen, isQuoteUpdatePossible, quoteParams, resetQuoteCounter])
 
-    if (!quoteParams || quoteParams.amount.toString() === '0') {
-      tradeQuoteManager.reset()
-      return
+  /**
+   * Update quote once a QUOTE_POLLING_INTERVAL
+   */
+  useLayoutEffect(() => {
+    if (tradeQuotePolling !== 0) return
+
+    pollQuoteRef.current(false, true)
+  }, [tradeQuotePolling])
+
+  /**
+   * Reset counter and update quote each time when confirmation modal is closed
+   */
+  useLayoutEffect(() => {
+    if (prevIsConfirmOpen === isConfirmOpen) return
+
+    if (!isConfirmOpen) {
+      setTradeQuotePolling(0)
     }
+  }, [setTradeQuotePolling, prevIsConfirmOpen, isConfirmOpen])
 
-    // Don't fetch quote if token is not supported
-    if (getIsUnsupportedTokens(quoteParams)) {
-      return
-    }
+  /**
+   * Tick quote polling counter
+   */
+  useLayoutEffect(() => {
+    const interval = setInterval(() => {
+      // Do not tick while quote is loading
+      if (tradeQuoteRef.current.isLoading) return
 
-    // TODO: Add proper return type annotation
-    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-    const fetchQuote = (fetchParams: TradeQuoteFetchParams) =>
-      fetchAndProcessQuote(chainId, fetchParams, quoteParams, appData, tradeQuoteManager)
+      setTradeQuotePolling((state) => {
+        const newState = state - ONE_SEC
 
-    // TODO: Add proper return type annotation
-    // TODO: Reduce function complexity by extracting logic
-    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, complexity
-    function fetchAndUpdateQuote(hasParamsChanged: boolean, forceUpdate = false) {
-      const currentQuote = tradeQuoteRef.current
-      const currentQuoteAppDataDoc = currentQuote.quote?.quoteResults.appDataInfo.doc
-      const hasCachedResponse = !!currentQuote.quote
-      const hasCachedError = !!currentQuote.error
-
-      if (!forceUpdate) {
-        // Don't fetch quote if the parameters are the same
-        // Also avoid quote refresh when only appData.quote (contains slippage) is changed
-        // Important! We should skip quote updateing only if there is no quote response
-        if (
-          (hasCachedResponse || hasCachedError) &&
-          quoteUsingSameParameters(currentQuote, quoteParams, currentQuoteAppDataDoc, appData)
-        ) {
-          return
+        if (newState < 0) {
+          return QUOTE_POLLING_INTERVAL
         }
 
-        // When browser is offline or the tab is not active do no fetch
-        if (!isOnlineRef.current || !isWindowVisible) {
-          return
-        }
-      }
-
-      const fetchStartTimestamp = Date.now()
-      // Don't fetch fast quote in confirm screen
-      if (fastQuote && !isConfirmOpen) {
-        fetchQuote({ hasParamsChanged, priceQuality: PriceQuality.FAST, fetchStartTimestamp })
-      }
-      fetchQuote({ hasParamsChanged, priceQuality: PriceQuality.OPTIMAL, fetchStartTimestamp })
-    }
-
-    /**
-     * Fetch the quote instantly once the quote params are changed
-     */
-    fetchAndUpdateQuote(true)
-
-    /**
-     * Start polling for the quote
-     */
-    const pollingIntervalId = setInterval(() => {
-      fetchAndUpdateQuote(false)
-    }, PRICE_UPDATE_INTERVAL)
-
-    /**
-     * Periodically check if the quote has expired and refetch it
-     */
-    const quoteExpirationInterval = setInterval(() => {
-      const currentQuote = tradeQuoteRef.current
-
-      if (
-        currentQuote.quote &&
-        currentQuote.fetchParams?.priceQuality === PriceQuality.OPTIMAL &&
-        isQuoteExpired(currentQuote)
-      ) {
-        /**
-         * Reset the quote state in order to not trigger the quote expiration check again
-         */
-        fetchAndUpdateQuote(false, true)
-      }
-    }, QUOTE_EXPIRATION_CHECK_INTERVAL)
+        return newState
+      })
+    }, ONE_SEC)
 
     return () => {
-      clearInterval(pollingIntervalId)
-      clearInterval(quoteExpirationInterval)
+      clearInterval(interval)
     }
-  }, [
-    chainId,
-    fastQuote,
-    quoteParams,
-    appData,
-    tradeQuoteManager,
-    updateCurrencyAmount,
-    processUnsupportedTokenError,
-    getIsUnsupportedTokens,
-    isWindowVisible,
-    isConfirmOpen,
-  ])
+  }, [setTradeQuotePolling])
+
+  /**
+   * Once quote is expired - update quote
+   */
+  useLayoutEffect(() => {
+    function revalidateQuoteIfExpired(): void {
+      if (isQuoteExpired(tradeQuote)) {
+        setTradeQuotePolling(0)
+      }
+    }
+
+    revalidateQuoteIfExpired()
+
+    const interval = setInterval(revalidateQuoteIfExpired, QUOTE_VALIDATION_INTERVAL)
+
+    return () => {
+      clearInterval(interval)
+    }
+  }, [tradeQuote, setTradeQuotePolling])
 
   return null
 }

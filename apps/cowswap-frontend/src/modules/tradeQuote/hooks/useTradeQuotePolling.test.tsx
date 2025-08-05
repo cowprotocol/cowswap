@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { COW, WETH_SEPOLIA } from '@cowprotocol/common-const'
+import { COW_TOKEN_TO_CHAIN, WETH_SEPOLIA } from '@cowprotocol/common-const'
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { WalletInfo, walletInfoAtom } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
@@ -10,8 +10,9 @@ import { JotaiTestProvider, WithMockedWeb3 } from 'test-utils'
 import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 
 import { LimitOrdersDerivedState, limitOrdersDerivedStateAtom } from 'modules/limitOrders/state/limitOrdersRawStateAtom'
-import * as tokensModule from 'modules/tokens'
 import { DEFAULT_TRADE_DERIVED_STATE, TradeType } from 'modules/trade'
+
+import { useEnoughAllowance } from 'common/hooks/useEnoughAllowance'
 
 import { useTradeQuotePolling } from './useTradeQuotePolling'
 
@@ -20,6 +21,10 @@ import { tradeQuoteInputAtom } from '../state/tradeQuoteInputAtom'
 
 jest.mock('modules/zeroApproval/hooks/useZeroApprovalState')
 jest.mock('common/hooks/useGetMarketDimension')
+jest.mock('common/hooks/useEnoughAllowance', () => ({
+  ...jest.requireActual('common/hooks/useEnoughAllowance'),
+  useEnoughAllowance: jest.fn().mockReturnValue(undefined),
+}))
 jest.mock('@cowprotocol/common-hooks', () => ({
   ...jest.requireActual('@cowprotocol/common-hooks'),
   useIsWindowVisible: jest.fn().mockReturnValue(true),
@@ -34,12 +39,17 @@ jest.mock('tradingSdk/bridgingSdk', () => ({
     getQuote: jest.fn(),
   },
 }))
-const useEnoughBalanceAndAllowanceMock = jest.spyOn(tokensModule, 'useEnoughBalanceAndAllowance')
+const useEnoughAllowanceMock = useEnoughAllowance as jest.Mock
 
 const bridgingSdkMock = bridgingSdk as unknown as { getQuote: jest.Mock }
 
 const inputCurrencyAmount = CurrencyAmount.fromRawAmount(WETH_SEPOLIA, 10_000_000)
-const outputCurrencyAmount = CurrencyAmount.fromRawAmount(COW[SupportedChainId.SEPOLIA], 2_000_000)
+
+if (!COW_TOKEN_TO_CHAIN[SupportedChainId.SEPOLIA]) {
+  throw new Error(`COW token not found for chain ${SupportedChainId.SEPOLIA}`)
+}
+
+const outputCurrencyAmount = CurrencyAmount.fromRawAmount(COW_TOKEN_TO_CHAIN[SupportedChainId.SEPOLIA], 2_000_000)
 
 const walletInfoMock: WalletInfo = {
   chainId: 1,
@@ -66,11 +76,11 @@ const Wrapper =
   // TODO: Replace any with proper type definitions
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   (mocks: any) =>
-  ({ children }: { children: ReactNode }) => (
-    <WithMockedWeb3 location={{ pathname: '/5/limit' }}>
-      <JotaiTestProvider initialValues={mocks}>{children}</JotaiTestProvider>
-    </WithMockedWeb3>
-  )
+    ({ children }: { children: ReactNode }) => (
+      <WithMockedWeb3 location={{ pathname: '/5/limit' }}>
+        <JotaiTestProvider initialValues={mocks}>{children}</JotaiTestProvider>
+      </WithMockedWeb3>
+    )
 
 describe('useTradeQuotePolling()', () => {
   beforeEach(() => {
@@ -78,7 +88,7 @@ describe('useTradeQuotePolling()', () => {
 
     bridgingSdkMock.getQuote.mockImplementation(() => new Promise(() => void 0))
 
-    useEnoughBalanceAndAllowanceMock.mockReturnValue({ enoughBalance: true, enoughAllowance: true })
+    useEnoughAllowanceMock.mockReturnValue(true)
   })
 
   describe('When wallet is connected', () => {
@@ -89,7 +99,7 @@ describe('useTradeQuotePolling()', () => {
       // Act
       renderHook(
         () => {
-          return useTradeQuotePolling()
+          return useTradeQuotePolling(false, true)
         },
         { wrapper: Wrapper(mocks) },
       )
@@ -109,12 +119,12 @@ describe('useTradeQuotePolling()', () => {
       const mocks = [...jotaiMock, [walletInfoAtom, { ...walletInfoMock, account: undefined }]]
 
       // Act
-      renderHook(() => useTradeQuotePolling(), { wrapper: Wrapper(mocks) })
+      renderHook(() => useTradeQuotePolling(false, true), { wrapper: Wrapper(mocks) })
 
       // Assert
-      const callParams = bridgingSdkMock.getQuote.mock.calls[0]
+      const { signer: _, ...callParams } = bridgingSdkMock.getQuote.mock.calls[0][0]
 
-      expect(callParams[0].receiver).toBe(undefined) // useAddress field value
+      expect(callParams.receiver).toBe(undefined) // useAddress field value
       expect(bridgingSdkMock.getQuote).toHaveBeenCalledTimes(1)
       expect(callParams).toMatchSnapshot()
     })

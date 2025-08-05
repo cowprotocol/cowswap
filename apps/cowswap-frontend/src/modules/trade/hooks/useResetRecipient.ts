@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 import { usePrevious } from '@cowprotocol/common-hooks'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { usePostHooksRecipientOverride } from 'modules/hooksStore'
+import { usePostHooksRecipientOverride } from 'entities/orderHooks/usePostHooksRecipientOverride'
 
 import { useTradeStateFromUrl } from './setupTradeState/useTradeStateFromUrl'
 import { useDerivedTradeState } from './useDerivedTradeState'

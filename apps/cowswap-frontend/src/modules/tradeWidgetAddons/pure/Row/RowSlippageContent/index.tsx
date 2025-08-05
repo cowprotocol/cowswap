@@ -1,4 +1,5 @@
 import { useSetAtom } from 'jotai'
+import { ReactNode } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
@@ -45,15 +46,14 @@ export interface RowSlippageContentProps {
   isSlippageModified: boolean
   setAutoSlippage?: Command // todo: make them optional
   smartSlippage?: string
+  isDefaultSlippageApplied: boolean;
   isSmartSlippageApplied: boolean
   isSmartSlippageLoading: boolean
+  hideRecommendedSlippage?: boolean
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
-export function RowSlippageContent(props: RowSlippageContentProps) {
+
+export function RowSlippageContent(props: RowSlippageContentProps): ReactNode {
   const {
     chainId,
     displaySlippage,
@@ -67,13 +67,13 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
     smartSlippage,
     isSmartSlippageApplied,
     isSmartSlippageLoading,
+    isDefaultSlippageApplied,
+    hideRecommendedSlippage,
   } = props
 
   const setSettingTabState = useSetAtom(settingsTabStateAtom)
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const openSettings = () => setSettingTabState({ open: true })
+  const openSettings: () => void = () => setSettingTabState({ open: true })
 
   const tooltipContent =
     slippageTooltip ||
@@ -84,7 +84,8 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
   // In case the user happened to set the same slippage as the suggestion, do not show the suggestion
   const suggestedEqualToUserSlippage = smartSlippage && smartSlippage === displaySlippage
 
-  const displayDefaultSlippage = isSlippageModified &&
+  const displayDefaultSlippage = !hideRecommendedSlippage &&
+    isSlippageModified &&
     setAutoSlippage &&
     smartSlippage &&
     !suggestedEqualToUserSlippage && (
@@ -117,8 +118,9 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
       <RowFixed>
         <TextWrapper onClick={openSettings}>
           <SlippageTextContents
-            isEoaEthFlow={isEoaEthFlow}
+            isDefaultSlippageApplied={isDefaultSlippageApplied}
             slippageLabel={slippageLabel}
+            isEoaEthFlow={isEoaEthFlow}
             isDynamicSlippageSet={isSmartSlippageApplied}
           />
         </TextWrapper>
@@ -135,18 +137,17 @@ export function RowSlippageContent(props: RowSlippageContentProps) {
 
 type SlippageTextContentsProps = {
   isEoaEthFlow: boolean
+  isDefaultSlippageApplied: boolean
   slippageLabel?: React.ReactNode
   isDynamicSlippageSet: boolean
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function SlippageTextContents({ isEoaEthFlow, slippageLabel, isDynamicSlippageSet }: SlippageTextContentsProps) {
+function SlippageTextContents({ slippageLabel, isDynamicSlippageSet, isEoaEthFlow, isDefaultSlippageApplied }: SlippageTextContentsProps): ReactNode {
   return (
     <TransactionText>
       <Trans>{slippageLabel || 'Slippage tolerance'}</Trans>
-      {isEoaEthFlow && <i>(modified)</i>}
-      {isDynamicSlippageSet && <i>(dynamic)</i>}
+      {isDynamicSlippageSet && !isDefaultSlippageApplied && <i>(dynamic)</i>}
+      {isEoaEthFlow && isDefaultSlippageApplied && <i>(modified)</i>}
     </TransactionText>
   )
 }

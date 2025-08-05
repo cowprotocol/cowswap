@@ -46,6 +46,7 @@ function getRpcUrl(chainId: SupportedChainId): string {
 
 const rpcProviderCache: Record<number, JsonRpcProvider> = {}
 
+export function getRpcProvider(chainId: SupportedChainId): JsonRpcProvider
 export function getRpcProvider(chainId: number): JsonRpcProvider | null {
   if (!rpcProviderCache[chainId]) {
     const url = RPC_URLS[chainId as SupportedChainId]

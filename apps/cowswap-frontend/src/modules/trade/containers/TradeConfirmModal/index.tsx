@@ -1,10 +1,11 @@
-import { ReactElement } from 'react'
+import { ReactElement, ReactNode } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 import { UI } from '@cowprotocol/ui'
 import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
+import { useSigningStep } from 'entities/trade'
 import styled from 'styled-components/macro'
 
 import { PermitModal } from 'common/containers/PermitModal'
@@ -24,23 +25,21 @@ const Container = styled.div`
     box-shadow: none;
   }
 `
-type CustomSubmittedContent = (onDismiss: Command) => ReactElement
 
 export interface TradeConfirmModalProps {
   children: ReactElement
   title: string
-  submittedContent?: CustomSubmittedContent
+  submittedContent?: ReactNode
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function TradeConfirmModal(props: TradeConfirmModalProps) {
+export function TradeConfirmModal(props: TradeConfirmModalProps): ReactNode {
   const { children, submittedContent, title } = props
 
   const { chainId, account } = useWalletInfo()
   const isSafeWallet = useIsSafeWallet()
   const { permitSignatureState, pendingTrade, transactionHash, error } = useTradeConfirmState()
   const { onDismiss } = useTradeConfirmActions()
+  const signingStep = useSigningStep()
 
   if (!account) return null
 
@@ -54,7 +53,8 @@ export function TradeConfirmModal(props: TradeConfirmModalProps) {
         pendingTrade={pendingTrade}
         transactionHash={transactionHash}
         onDismiss={onDismiss}
-        permitSignatureState={permitSignatureState}
+        // Disable default permit flow when signingStep is set
+        permitSignatureState={signingStep ? undefined : permitSignatureState}
         isSafeWallet={isSafeWallet}
         submittedContent={submittedContent}
       >
@@ -75,12 +75,10 @@ type InnerComponentProps = {
   onDismiss: Command
   permitSignatureState: string | undefined
   isSafeWallet: boolean
-  submittedContent?: CustomSubmittedContent
+  submittedContent?: ReactNode
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function InnerComponent(props: InnerComponentProps) {
+function InnerComponent(props: InnerComponentProps): ReactNode {
   const {
     account,
     chainId,
@@ -113,16 +111,16 @@ function InnerComponent(props: InnerComponentProps) {
   }
 
   if (transactionHash) {
-    return submittedContent ? (
-      submittedContent(onDismiss)
-    ) : (
-      <OrderSubmittedContent
-        chainId={chainId}
-        account={account}
-        isSafeWallet={isSafeWallet}
-        onDismiss={onDismiss}
-        hash={transactionHash}
-      />
+    return (
+      submittedContent || (
+        <OrderSubmittedContent
+          chainId={chainId}
+          account={account}
+          isSafeWallet={isSafeWallet}
+          onDismiss={onDismiss}
+          hash={transactionHash}
+        />
+      )
     )
   }
 

@@ -1,4 +1,4 @@
-import { getIsNativeToken, isAddress, isFractionFalsy } from '@cowprotocol/common-utils'
+import { getIsNativeToken, isAddress, isFractionFalsy, isSellOrder } from '@cowprotocol/common-utils'
 import { PriceQuality } from '@cowprotocol/cow-sdk'
 
 import { TradeType } from 'modules/trade'
@@ -8,10 +8,8 @@ import { ApprovalState } from 'common/hooks/useApproveState'
 
 import { TradeFormValidation, TradeFormValidationContext } from '../types'
 
-// TODO: Break down this large function into smaller functions
-// TODO: Reduce function complexity by extracting logic
 // eslint-disable-next-line max-lines-per-function, complexity
-export function validateTradeForm(context: TradeFormValidationContext): TradeFormValidation | null {
+export function validateTradeForm(context: TradeFormValidationContext): TradeFormValidation[] | null {
   const {
     derivedTradeState,
     approvalState,
@@ -27,9 +25,20 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     isInsufficientBalanceOrderAllowed,
     isProviderNetworkUnsupported,
     isOnline,
+    intermediateTokenToBeImported,
+    isAccountProxyLoading,
+    isProxySetupValid,
   } = context
 
-  const { inputCurrency, outputCurrency, inputCurrencyAmount, inputCurrencyBalance, recipient } = derivedTradeState
+  const {
+    inputCurrency,
+    outputCurrency,
+    inputCurrencyAmount,
+    outputCurrencyAmount,
+    inputCurrencyBalance,
+    recipient,
+    orderKind,
+  } = derivedTradeState
   const isBalanceGreaterThan1Atom = inputCurrencyBalance
     ? BigInt(inputCurrencyBalance.quotient.toString()) > BigInt(0)
     : false
@@ -39,92 +48,117 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
   const approvalRequired =
     !isPermitSupported && (approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING)
 
-  const inputAmountIsNotSet = !inputCurrencyAmount || isFractionFalsy(inputCurrencyAmount)
-  const isFastQuote = tradeQuote.fetchParams?.priceQuality === PriceQuality.FAST
+  const inputAmountIsNotSet = isSellOrder(orderKind)
+    ? !inputCurrencyAmount || isFractionFalsy(inputCurrencyAmount)
+    : !outputCurrencyAmount || isFractionFalsy(outputCurrencyAmount)
+
+  const isBridging = Boolean(inputCurrency && outputCurrency && inputCurrency.chainId !== outputCurrency.chainId)
+
+  const { isLoading: isQuoteLoading, fetchParams } = tradeQuote
+  const isFastQuote = fetchParams?.priceQuality === PriceQuality.FAST
+
+  const validations: TradeFormValidation[] = []
+
+  // Always check if the browser is online before checking any other conditions
+  if (!isOnline) {
+    validations.push(TradeFormValidation.BrowserOffline)
+  }
 
   if (!isWrapUnwrap && tradeQuote.error) {
-    return TradeFormValidation.QuoteErrors
+    if (inputAmountIsNotSet) {
+      validations.push(TradeFormValidation.InputAmountNotSet)
+    }
+
+    if (!tradeQuote.isLoading) {
+      validations.push(TradeFormValidation.QuoteErrors)
+    }
   }
 
   if (!isSwapUnsupported && !account) {
-    return TradeFormValidation.WalletNotConnected
+    validations.push(TradeFormValidation.WalletNotConnected)
   }
 
   if (!isSupportedWallet) {
-    return TradeFormValidation.WalletNotSupported
+    validations.push(TradeFormValidation.WalletNotSupported)
   }
 
   if (isProviderNetworkUnsupported) {
-    return TradeFormValidation.NetworkNotSupported
+    validations.push(TradeFormValidation.NetworkNotSupported)
   }
 
   if (isSafeReadonlyUser) {
-    return TradeFormValidation.SafeReadonlyUser
+    validations.push(TradeFormValidation.SafeReadonlyUser)
   }
 
   if (!inputCurrency || !outputCurrency) {
-    return TradeFormValidation.CurrencyNotSet
+    validations.push(TradeFormValidation.CurrencyNotSet)
   }
 
   if (inputAmountIsNotSet) {
-    return TradeFormValidation.InputAmountNotSet
-  }
-
-  if (!isOnline) {
-    return TradeFormValidation.BrowserOffline
+    validations.push(TradeFormValidation.InputAmountNotSet)
   }
 
   if (!isWrapUnwrap) {
     if (recipient && !recipientEnsAddress && !isAddress(recipient)) {
-      return TradeFormValidation.RecipientInvalid
+      validations.push(TradeFormValidation.RecipientInvalid)
     }
 
     if (isSwapUnsupported) {
-      return TradeFormValidation.CurrencyNotSupported
+      validations.push(TradeFormValidation.CurrencyNotSupported)
     }
 
-    if (isFastQuote || !tradeQuote.quote) {
-      return TradeFormValidation.QuoteLoading
+    if (isFastQuote || !tradeQuote.quote || (isBridging && tradeQuote.isLoading)) {
+      validations.push(TradeFormValidation.QuoteLoading)
     }
 
     if (
       derivedTradeState.tradeType !== TradeType.LIMIT_ORDER &&
-      !tradeQuote.isLoading &&
+      !isQuoteLoading &&
       !isFastQuote &&
       isQuoteExpired(tradeQuote)
     ) {
-      return TradeFormValidation.QuoteExpired
+      validations.push(TradeFormValidation.QuoteExpired)
+    }
+
+    if (isBridging && !isQuoteLoading) {
+      if (isAccountProxyLoading || typeof isProxySetupValid === 'undefined') {
+        validations.push(TradeFormValidation.ProxyAccountLoading)
+      }
+
+      if (isProxySetupValid === null) {
+        validations.push(TradeFormValidation.ProxyAccountUnknown)
+      }
     }
   }
 
   if (!canPlaceOrderWithoutBalance) {
     if (!inputCurrencyBalance) {
-      return TradeFormValidation.BalancesNotLoaded
+      validations.push(TradeFormValidation.BalancesNotLoaded)
     }
 
-    if (inputCurrencyBalance.lessThan(inputCurrencyAmount)) {
-      return TradeFormValidation.BalanceInsufficient
+    if (inputCurrencyBalance && inputCurrencyAmount && inputCurrencyBalance.lessThan(inputCurrencyAmount)) {
+      validations.push(TradeFormValidation.BalanceInsufficient)
     }
   }
 
   if (isWrapUnwrap) {
-    return TradeFormValidation.WrapUnwrapFlow
-  }
-
-  if (isNativeIn) {
-    return TradeFormValidation.SellNativeToken
+    validations.push(TradeFormValidation.WrapUnwrapFlow)
   }
 
   if (approvalRequired) {
     if (isBundlingSupported) {
-      return TradeFormValidation.ApproveAndSwap
+      validations.push(TradeFormValidation.ApproveAndSwap)
     }
-    return TradeFormValidation.ApproveRequired
+    validations.push(TradeFormValidation.ApproveRequired)
+  }
+
+  if (intermediateTokenToBeImported) {
+    validations.push(TradeFormValidation.ImportingIntermediateToken)
   }
 
   if (isNativeIn) {
-    return TradeFormValidation.SellNativeToken
+    validations.push(TradeFormValidation.SellNativeToken)
   }
 
-  return null
+  return validations.length > 0 ? validations : null
 }

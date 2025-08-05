@@ -1,5 +1,48 @@
 # Changelog
 
+## [1.21.1](https://github.com/cowprotocol/cowswap/compare/common-const-v1.21.0...common-const-v1.21.1) (2025-07-30)
+
+
+### Bug Fixes
+
+* **bridge:** use proper naming for eth mainnet ([#5915](https://github.com/cowprotocol/cowswap/issues/5915)) ([b83c32a](https://github.com/cowprotocol/cowswap/commit/b83c32a46dd82267741878e465ac24a612339726))
+* **bridging:** enhance account proxy validation ([#5985](https://github.com/cowprotocol/cowswap/issues/5985)) ([4366070](https://github.com/cowprotocol/cowswap/commit/436607005c5c743a4fd96c17b6d1f0b165d5baac))
+
+## [1.21.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.20.1...common-const-v1.21.0) (2025-07-03)
+
+
+### Features
+
+* use `eip155` chain names adding chain parameter to walllet ([#5916](https://github.com/cowprotocol/cowswap/issues/5916)) ([318c1bc](https://github.com/cowprotocol/cowswap/commit/318c1bcbb7528fdd3abf233068cebfff371dbea9))
+
+## [1.20.1](https://github.com/cowprotocol/cowswap/compare/common-const-v1.20.0...common-const-v1.20.1) (2025-06-27)
+
+
+### Bug Fixes
+
+* **partner-fee:** update fee address ([#5896](https://github.com/cowprotocol/cowswap/issues/5896)) ([fc40661](https://github.com/cowprotocol/cowswap/commit/fc406616261ed1c77c6ee663ab9cc5e2f671232f))
+
+## [1.20.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.19.0...common-const-v1.20.0) (2025-06-20)
+
+
+### Features
+
+* account shows banner is COW token is unavaillable ([#5833](https://github.com/cowprotocol/cowswap/issues/5833)) ([b553228](https://github.com/cowprotocol/cowswap/commit/b55322899161785076f95ee420a1b796661a1e52))
+* **new-newtworks:** fixed sort order for chains ([#5856](https://github.com/cowprotocol/cowswap/issues/5856)) ([65c1b36](https://github.com/cowprotocol/cowswap/commit/65c1b36b84b3a1d3570ce574e8d105da048b8c20))
+
+## [1.19.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.18.0...common-const-v1.19.0) (2025-06-18)
+
+
+### Features
+
+* consume chain data from sdk ([#5773](https://github.com/cowprotocol/cowswap/issues/5773)) ([895fdf1](https://github.com/cowprotocol/cowswap/commit/895fdf14b058d14fd9c4aa60aea94ef3af55f47c))
+* **new-networks:** add support to `Avalanche` and `Polygon` networks ([#5715](https://github.com/cowprotocol/cowswap/issues/5715)) ([e3e8a8d](https://github.com/cowprotocol/cowswap/commit/e3e8a8d6b94569a5dda7a425d1a79f0b4f6d5200))
+
+
+### Bug Fixes
+
+* make order progress bar UI more stable ([#5834](https://github.com/cowprotocol/cowswap/issues/5834)) ([80cebd1](https://github.com/cowprotocol/cowswap/commit/80cebd1104a0a2e30e12ce8a4b3d62c212559cec))
+
 ## [1.18.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.17.2...common-const-v1.18.0) (2025-05-19)
 
 

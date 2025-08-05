@@ -1,6 +1,5 @@
 import { useMemo } from 'react'
 
-import { useTokensAllowances } from '@cowprotocol/balances-and-allowances'
 import { usePrevious } from '@cowprotocol/common-hooks'
 import { getWrappedToken } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
@@ -11,7 +10,9 @@ import { useHasPendingApproval } from 'legacy/state/enhancedTransactions/hooks'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
-import { useTradeSpenderAddress } from './useTradeSpenderAddress'
+import { useTokenAllowance } from './useTokenAllowance'
+
+import { getApprovalState } from '../utils/getApprovalState'
 
 export enum ApprovalState {
   UNKNOWN = 'UNKNOWN',
@@ -26,49 +27,17 @@ function getCurrencyToApprove(amountToApprove: Nullish<CurrencyAmount<Currency>>
   return getWrappedToken(amountToApprove.currency)
 }
 
-export function useApproveState(
-  amountToApprove: Nullish<CurrencyAmount<Currency>>,
-  amountToCheckAgainstAllowance?: Nullish<CurrencyAmount<Currency>>
-): {
+export function useApproveState(amountToApprove: Nullish<CurrencyAmount<Currency>>): {
   state: ApprovalState
-  currentAllowance: Nullish<CurrencyAmount<Currency>>
+  currentAllowance: Nullish<bigint>
 } {
-  const spender = useTradeSpenderAddress()
   const token = getCurrencyToApprove(amountToApprove)
   const tokenAddress = token?.address?.toLowerCase()
-  const allowances = useTokensAllowances()
-  const pendingApproval = useHasPendingApproval(tokenAddress, spender)
-
-  const tokenAllowance = useMemo(() => {
-    const tokenRawAllowance = tokenAddress ? allowances.values[tokenAddress] : undefined
-
-    if (!token || !tokenRawAllowance) return undefined
-
-    return CurrencyAmount.fromRawAmount(token, tokenRawAllowance.toHexString())
-  }, [allowances, token, tokenAddress])
-
-  const currentAllowance = amountToCheckAgainstAllowance || tokenAllowance
+  const currentAllowance = useTokenAllowance(token).data
+  const pendingApproval = useHasPendingApproval(tokenAddress)
 
   const approvalStateBase = useSafeMemo(() => {
-    if (!amountToApprove || !currentAllowance) {
-      return ApprovalState.UNKNOWN
-    }
-
-    const amountToApproveString = amountToApprove.quotient.toString()
-
-    if (currentAllowance.greaterThan(amountToApproveString) || currentAllowance.equalTo(amountToApproveString)) {
-      return ApprovalState.APPROVED
-    }
-
-    if (pendingApproval) {
-      return ApprovalState.PENDING
-    }
-
-    if (currentAllowance.lessThan(amountToApproveString)) {
-      return ApprovalState.NOT_APPROVED
-    }
-
-    return ApprovalState.APPROVED
+    return getApprovalState(amountToApprove, currentAllowance, pendingApproval)
   }, [amountToApprove, currentAllowance, pendingApproval])
 
   const state = useAuxApprovalState(approvalStateBase, currentAllowance)
@@ -83,15 +52,11 @@ export function useApproveState(
  *
  * Solution: we check the prev approval state and also check if the allowance has been updated
  */
-function useAuxApprovalState(
-  approvalStateBase: ApprovalState,
-  currentAllowance?: CurrencyAmount<Currency>
-): ApprovalState {
+function useAuxApprovalState(approvalStateBase: ApprovalState, currentAllowance?: bigint): ApprovalState {
   const previousApprovalState = usePrevious(approvalStateBase)
-  const currentAllowanceString = currentAllowance?.quotient.toString(16)
-  const previousAllowanceString = usePrevious(currentAllowanceString)
+  const previousAllowance = usePrevious(currentAllowance)
   // Has allowance actually updated?
-  const allowanceHasNotChanged = previousAllowanceString === currentAllowanceString
+  const allowanceHasNotChanged = previousAllowance === currentAllowance
 
   return useMemo(() => {
     return previousApprovalState === ApprovalState.PENDING && allowanceHasNotChanged

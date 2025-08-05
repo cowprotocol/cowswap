@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai'
-import { useEffect, useMemo } from 'react'
+import { ReactNode, useEffect, useMemo } from 'react'
 
 import { LpToken, NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -9,6 +9,7 @@ import ms from 'ms.macro'
 import { SWRConfiguration } from 'swr'
 
 import { BalancesCacheUpdater } from './BalancesCacheUpdater'
+import { BalancesResetUpdater } from './BalancesResetUpdater'
 
 import { useNativeTokenBalance } from '../hooks/useNativeTokenBalance'
 import { usePersistBalancesAndAllowances } from '../hooks/usePersistBalancesAndAllowances'
@@ -21,18 +22,22 @@ const BASIC_SWR_CONFIG: SWRConfiguration = {
   refreshWhenHidden: false,
   refreshWhenOffline: false,
   revalidateOnFocus: false,
+  revalidateIfStale: false,
 }
 // A small gap between balances and allowances refresh intervals is needed to avoid high load to the node at the same time
 const BALANCES_SWR_CONFIG: SWRConfiguration = { ...BASIC_SWR_CONFIG, refreshInterval: ms`31s` }
-const ALLOWANCES_SWR_CONFIG: SWRConfiguration = { ...BASIC_SWR_CONFIG, refreshInterval: ms`33s` }
 
 export interface BalancesAndAllowancesUpdaterProps {
   account: string | undefined
   chainId: SupportedChainId
+  excludedTokens: Set<string>
 }
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function BalancesAndAllowancesUpdater({ account, chainId }: BalancesAndAllowancesUpdaterProps) {
+
+export function BalancesAndAllowancesUpdater({
+  account,
+  chainId,
+  excludedTokens,
+}: BalancesAndAllowancesUpdaterProps): ReactNode {
   const setBalances = useSetAtom(balancesAtom)
 
   const allTokens = useAllActiveTokens()
@@ -41,10 +46,15 @@ export function BalancesAndAllowancesUpdater({ account, chainId }: BalancesAndAl
   const tokenAddresses = useMemo(() => {
     if (allTokens.chainId !== chainId) return EMPTY_TOKENS
 
-    return allTokens.tokens.filter((token) => !(token instanceof LpToken)).map((token) => token.address)
+    return allTokens.tokens.reduce<string[]>((acc, token) => {
+      if (!(token instanceof LpToken)) {
+        acc.push(token.address)
+      }
+      return acc
+    }, [])
   }, [allTokens, chainId])
-  const balancesSwrConfig = useSwrConfigWithPauseForNetwork(chainId, BALANCES_SWR_CONFIG)
-  const allowancesSwrConfig = useSwrConfigWithPauseForNetwork(chainId, ALLOWANCES_SWR_CONFIG)
+
+  const balancesSwrConfig = useSwrConfigWithPauseForNetwork(chainId, account, BALANCES_SWR_CONFIG)
 
   usePersistBalancesAndAllowances({
     account,
@@ -52,7 +62,6 @@ export function BalancesAndAllowancesUpdater({ account, chainId }: BalancesAndAl
     tokenAddresses,
     setLoadingState: true,
     balancesSwrConfig,
-    allowancesSwrConfig,
   })
 
   // Add native token balance to the store as well
@@ -64,5 +73,10 @@ export function BalancesAndAllowancesUpdater({ account, chainId }: BalancesAndAl
     setBalances((state) => ({ ...state, values: { ...state.values, ...nativeBalanceState } }))
   }, [nativeTokenBalance, chainId, setBalances])
 
-  return <BalancesCacheUpdater chainId={chainId} account={account} />
+  return (
+    <>
+      <BalancesResetUpdater chainId={chainId} account={account} />
+      <BalancesCacheUpdater chainId={chainId} account={account} excludedTokens={excludedTokens} />
+    </>
+  )
 }

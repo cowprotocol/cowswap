@@ -23,7 +23,7 @@ const LAST_UPDATE_TIME_DEFAULT = 0
 
 const { atom: lastUpdateTimeAtom, updateAtom: updateLastUpdateTimeAtom } = atomWithPartialUpdate(
   atomWithStorage<PersistentStateByChain<number>>(
-    'tokens:lastUpdateTimeAtom:v4',
+    'tokens:lastUpdateTimeAtom:v5',
     mapSupportedNetworks(LAST_UPDATE_TIME_DEFAULT),
     getJotaiMergerStorage(),
   ),
@@ -54,7 +54,7 @@ const GEOBLOCK_ERRORS_TO_IGNORE = /(failed to fetch)|(load failed)/i
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function TokensListsUpdater({
   chainId: currentChainId,
   isGeoBlockEnabled,

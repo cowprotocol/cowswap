@@ -1,27 +1,18 @@
 import { useMemo } from 'react'
 
-import { Order, PENDING_STATES, OrderStatus } from 'legacy/state/orders/actions'
+import { Order, OrderStatus, PENDING_STATES } from 'legacy/state/orders/actions'
 import { useSetIsOrderUnfillable } from 'legacy/state/orders/hooks'
 
+import { BalancesAndAllowances } from 'common/types'
 import { getIsComposableCowOrder } from 'utils/orderUtils/getIsComposableCowOrder'
 import { getIsNotComposableCowOrder } from 'utils/orderUtils/getIsNotComposableCowOrder'
 
-import { TabOrderTypes } from '../../../types'
+import { OrdersTableList, OrderTableItem, TabOrderTypes } from '../../../types'
 import { getOrderParams } from '../../../utils/getOrderParams'
 import { groupOrdersTable } from '../../../utils/groupOrdersTable'
-import { getParsedOrderFromTableItem, isParsedOrder, OrderTableItem } from '../../../utils/orderTableGroupUtils'
+import { getParsedOrderFromTableItem, isParsedOrder } from '../../../utils/orderTableGroupUtils'
 
-export interface OrdersTableList {
-  pending: OrderTableItem[]
-  history: OrderTableItem[]
-  unfillable: OrderTableItem[]
-  signing: OrderTableItem[]
-  all: OrderTableItem[]
-}
-
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const ordersSorter = (a: OrderTableItem, b: OrderTableItem) => {
+const ordersSorter = (a: OrderTableItem, b: OrderTableItem): number => {
   const aCreationTime = getParsedOrderFromTableItem(a).creationTime
   const bCreationTime = getParsedOrderFromTableItem(b).creationTime
 
@@ -30,15 +21,11 @@ const ordersSorter = (a: OrderTableItem, b: OrderTableItem) => {
 
 const ORDERS_LIMIT = 100
 
-// TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
 export function useOrdersTableList(
   allOrders: Order[],
   orderType: TabOrderTypes,
   chainId: number,
-  // TODO: Replace any with proper type definitions
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  balancesAndAllowances: any,
+  balancesAndAllowances: BalancesAndAllowances,
 ): OrdersTableList {
   const setIsOrderUnfillable = useSetIsOrderUnfillable()
 
@@ -104,7 +91,7 @@ export function useOrdersTableList(
 
           // Add to pending if in a pending state and not in signing state
           if (isPending && !isSigning) {
-            acc.pending.push(item)
+            acc.open.push(item)
           }
 
           // Add to history if not pending and not signing
@@ -114,7 +101,7 @@ export function useOrdersTableList(
 
           return acc
         },
-        { pending: [], history: [], unfillable: [], signing: [], all: [] },
+        { open: [], history: [], unfillable: [], signing: [], all: [] },
       ),
     [allSortedOrders, chainId, balancesAndAllowances, orderType, setIsOrderUnfillable],
   )

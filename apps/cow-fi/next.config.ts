@@ -3,7 +3,6 @@ import { WithNxOptions } from '@nx/next/plugins/with-nx'
 
 const nextConfig: WithNxOptions = {
   reactStrictMode: true,
-  swcMinify: true,
   nx: {
     svgr: false,
   },
@@ -87,22 +86,34 @@ const nextConfig: WithNxOptions = {
       },
     ]
   },
-  i18n: {
-    locales: ['en'],
-    defaultLocale: 'en',
-  },
+
   images: {
     domains: ['celebrated-gift-f83e5c9419.media.strapiapp.com'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'coin-images.coingecko.com',
+      },
+    ],
   },
   async headers() {
     return [
-      // Cache all pages for 60 seconds
+      {
+        source: '/learn/:path*',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, s-maxage=3600, stale-while-revalidate=86400', // 1h cache, 24h stale
+          },
+        ],
+      },
+      // Cache all other pages for 1 hour
       {
         source: '/:path*',
         headers: [
           {
             key: 'Cache-Control',
-            value: 'public, s-maxage=60, stale-while-revalidate=300',
+            value: 'public, s-maxage=3600, stale-while-revalidate=86400', // 1h cache, 24h stale
           },
         ],
       },

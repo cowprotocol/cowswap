@@ -1,4 +1,5 @@
-import { BadgeTypes, MenuItem, ProductVariant } from '@cowprotocol/ui'
+import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
+import { MenuItem, ProductVariant } from '@cowprotocol/ui'
 
 import AppziButton from 'legacy/components/AppziButton'
 import { Version } from 'legacy/components/Version'
@@ -16,6 +17,10 @@ export const NAV_ITEMS: MenuItem[] = [
       {
         href: '/account/tokens',
         label: 'Tokens',
+      },
+      {
+        href: '/account-proxy',
+        label: ACCOUNT_PROXY_LABEL,
       },
     ],
   },
@@ -41,8 +46,6 @@ export const NAV_ITEMS: MenuItem[] = [
   },
   {
     label: 'More',
-    badge: 'New',
-    badgeType: BadgeTypes.ALERT,
     children: [
       {
         href: 'https://cow.fi/cow-protocol',
@@ -52,8 +55,6 @@ export const NAV_ITEMS: MenuItem[] = [
       {
         href: 'https://cow.fi/cow-amm',
         label: 'CoW AMM',
-        badge: 'New',
-        badgeType: BadgeTypes.ALERT,
         external: true,
       },
       {

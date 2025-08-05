@@ -1,5 +1,5 @@
 import { isSellOrder } from '@cowprotocol/common-utils'
-import { type OrderParameters, getQuoteAmountsAndCosts, QuoteAmountsAndCosts } from '@cowprotocol/cow-sdk'
+import { type OrderParameters, getQuoteAmountsAndCosts } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 
 import { OrderTypeReceiveAmounts, ReceiveAmountInfo } from '../types'
@@ -7,7 +7,7 @@ import { OrderTypeReceiveAmounts, ReceiveAmountInfo } from '../types'
 export function getOrderTypeReceiveAmounts(info: ReceiveAmountInfo): OrderTypeReceiveAmounts {
   const {
     isSell,
-    costs: { networkFee },
+    costs: { networkFee, bridgeFee },
     afterPartnerFees,
     afterSlippage,
     beforeNetworkCosts,
@@ -15,19 +15,26 @@ export function getOrderTypeReceiveAmounts(info: ReceiveAmountInfo): OrderTypeRe
 
   return {
     amountBeforeFees: isSell ? beforeNetworkCosts.buyAmount : beforeNetworkCosts.sellAmount,
-    amountAfterFees: isSell ? afterPartnerFees.buyAmount : afterPartnerFees.sellAmount,
+    amountAfterFees: isSell
+      ? bridgeFee
+        ? afterPartnerFees.buyAmount.subtract(bridgeFee.amountInIntermediateCurrency)
+        : afterPartnerFees.buyAmount
+      : afterPartnerFees.sellAmount,
     amountAfterSlippage: isSell ? afterSlippage.buyAmount : afterSlippage.sellAmount,
     networkFeeAmount: isSell ? networkFee.amountInBuyCurrency : networkFee.amountInSellCurrency,
   }
 }
 
-export function getTotalCosts(info: ReceiveAmountInfo): CurrencyAmount<Currency> {
+export function getTotalCosts(
+  info: ReceiveAmountInfo,
+  additionalCosts?: CurrencyAmount<Currency>,
+): CurrencyAmount<Currency> {
   const { networkFeeAmount } = getOrderTypeReceiveAmounts(info)
 
-  return networkFeeAmount.add(info.costs.partnerFee.amount)
-}
+  const fee = networkFeeAmount.add(info.costs.partnerFee.amount)
 
-type AmountsAndCosts = Omit<QuoteAmountsAndCosts<CurrencyAmount<Currency>>, 'quotePrice'>
+  return additionalCosts ? fee.add(additionalCosts) : fee
+}
 
 /**
  * Map native bigint amounts to CurrencyAmounts
@@ -38,9 +45,11 @@ export function getReceiveAmountInfo(
   outputCurrency: Currency,
   slippagePercent: Percent,
   _partnerFeeBps: number | undefined,
-): AmountsAndCosts & { quotePrice: Price<Currency, Currency> } {
+  intermediateCurrency?: Currency,
+  bridgeFeeRaw?: bigint,
+): ReceiveAmountInfo {
   const partnerFeeBps = _partnerFeeBps ?? 0
-  const currencies = { inputCurrency, outputCurrency }
+  const currenciesExcludingIntermediate = { inputCurrency, outputCurrency }
 
   const isSell = isSellOrder(orderParams.kind)
 
@@ -52,8 +61,20 @@ export function getReceiveAmountInfo(
     partnerFeeBps,
   })
 
-  const beforeNetworkCosts = mapBigIntAmounts(result.beforeNetworkCosts, currencies)
-  const afterNetworkCosts = mapBigIntAmounts(result.afterNetworkCosts, currencies)
+  const currenciesWithIntermediate = {
+    inputCurrency,
+    outputCurrency: intermediateCurrency ?? outputCurrency,
+  }
+  const beforeNetworkCosts = mapBigIntAmounts(result.beforeNetworkCosts, currenciesWithIntermediate)
+  const afterNetworkCosts = mapBigIntAmounts(result.afterNetworkCosts, currenciesWithIntermediate)
+
+  const bridgeFee =
+    typeof bridgeFeeRaw === 'bigint' && intermediateCurrency
+      ? {
+          amountInIntermediateCurrency: CurrencyAmount.fromRawAmount(intermediateCurrency, bridgeFeeRaw.toString()),
+          amountInDestinationCurrency: CurrencyAmount.fromRawAmount(outputCurrency, bridgeFeeRaw.toString()),
+        }
+      : undefined
 
   return {
     ...result,
@@ -64,26 +85,27 @@ export function getReceiveAmountInfo(
     costs: {
       networkFee: {
         amountInSellCurrency: CurrencyAmount.fromRawAmount(
-          inputCurrency,
+          currenciesWithIntermediate.inputCurrency,
           result.costs.networkFee.amountInSellCurrency.toString(),
         ),
         amountInBuyCurrency: CurrencyAmount.fromRawAmount(
-          outputCurrency,
+          currenciesWithIntermediate.outputCurrency,
           result.costs.networkFee.amountInBuyCurrency.toString(),
         ),
       },
       partnerFee: {
         amount: CurrencyAmount.fromRawAmount(
-          isSell ? outputCurrency : inputCurrency,
+          isSell ? currenciesWithIntermediate.outputCurrency : inputCurrency,
           result.costs.partnerFee.amount.toString(),
         ),
         bps: result.costs.partnerFee.bps,
       },
+      bridgeFee,
     },
     beforeNetworkCosts,
     afterNetworkCosts,
-    afterPartnerFees: mapBigIntAmounts(result.afterPartnerFees, currencies),
-    afterSlippage: mapBigIntAmounts(result.afterSlippage, currencies),
+    afterPartnerFees: mapBigIntAmounts(result.afterPartnerFees, currenciesWithIntermediate),
+    afterSlippage: mapBigIntAmounts(result.afterSlippage, currenciesExcludingIntermediate),
   }
 }
 

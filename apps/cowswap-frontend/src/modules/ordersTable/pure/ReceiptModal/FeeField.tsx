@@ -3,11 +3,11 @@ import { ReactElement } from 'react'
 import { TokenAmount } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import { getFeeToken } from 'modules/ordersTable/utils/getFeeToken'
-
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import * as styledEl from './styled'
+
+import { getFeeToken } from '../../utils/getFeeToken'
 
 export type Props = { order: ParsedOrder }
 

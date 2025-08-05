@@ -3,6 +3,7 @@ import React, { useCallback, useMemo, useState } from 'react'
 import ICON_SOCIAL_X from '@cowprotocol/assets/images/icon-social-x.svg'
 import LOTTIE_GREEN_CHECKMARK_DARK from '@cowprotocol/assets/lottie/green-checkmark-dark.json'
 import LOTTIE_GREEN_CHECKMARK from '@cowprotocol/assets/lottie/green-checkmark.json'
+import { RECEIVED_LABEL } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink, getRandomInt, isSellOrder, shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
@@ -19,6 +20,7 @@ import { useIsDarkMode } from 'legacy/state/user/hooks'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 import { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
+import { SolverCompetition } from 'common/types/soverCompetition'
 import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
 
 import * as styledEl from './styled'
@@ -26,7 +28,7 @@ import * as styledEl from './styled'
 import { CHAIN_SPECIFIC_BENEFITS, SURPLUS_IMAGES } from '../../constants'
 import { getSurplusText, getTwitterShareUrl, getTwitterShareUrlForBenefit } from '../../helpers'
 import { useWithConfetti } from '../../hooks/useWithConfetti'
-import { OrderProgressBarStepName, SolverCompetition } from '../../types'
+import { OrderProgressBarStepName } from '../../types'
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -71,7 +73,7 @@ function getReceivedAmount(
 ) {
   return (
     <styledEl.ReceivedAmount>
-      {!isCustomRecipient && 'You received '}
+      {!isCustomRecipient && `${RECEIVED_LABEL} `}
       <TokenLogo token={order.outputToken} size={20} />
       <b>
         <TokenAmount

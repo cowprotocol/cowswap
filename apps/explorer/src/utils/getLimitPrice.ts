@@ -3,7 +3,10 @@ import { getOrderLimitPrice } from './operator'
 
 import { Order } from '../api/operator'
 
-export function getLimitPrice(order: Order, isPriceInverted: boolean): string {
+export function getLimitPrice(
+  order: Pick<Order, 'buyToken' | 'sellToken' | 'buyAmount' | 'sellAmount'>,
+  isPriceInverted: boolean,
+): string {
   if (!order.buyToken || !order.sellToken) return '-'
 
   const calculatedPrice = getOrderLimitPrice({

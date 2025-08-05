@@ -1,7 +1,7 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
-import { getJotaiMergerStorage } from '@cowprotocol/core'
+import { atomWithIdbStorage, getJotaiMergerStorage } from '@cowprotocol/core'
 import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { DEFAULT_TOKENS_LISTS, LP_TOKEN_LISTS, UNISWAP_TOKENS_LIST } from '../../const/tokensLists'
@@ -59,11 +59,13 @@ export const allListsSourcesAtom = atom((get) => {
   return [...(DEFAULT_TOKENS_LISTS[chainId] || []), ...lpLists, ...userAddedTokenListsForChain]
 })
 
+// Migrating from localStorage to indexedDB
+localStorage.removeItem('allTokenListsInfoAtom:v5')
+
 // Lists states
-export const listsStatesByChainAtom = atomWithStorage<TokenListsByChainState>(
-  'allTokenListsInfoAtom:v5',
+export const listsStatesByChainAtom = atomWithIdbStorage<TokenListsByChainState>(
+  'allTokenListsInfoAtom:v6',
   mapSupportedNetworks({}),
-  getJotaiMergerStorage(),
 )
 
 export const tokenListsUpdatingAtom = atom<boolean>(false)
@@ -76,9 +78,9 @@ export const tokenListsUpdatingAtom = atom<boolean>(false)
  */
 export const virtualListsStateAtom = atom<TokenListsState>({})
 
-export const listsStatesMapAtom = atom((get) => {
+export const listsStatesMapAtom = atom(async (get) => {
   const { chainId, widgetAppCode, selectedLists, useCuratedListOnly } = get(environmentAtom)
-  const allTokenListsInfo = get(listsStatesByChainAtom)
+  const allTokenListsInfo = await get(listsStatesByChainAtom)
   const virtualListsState = get(virtualListsStateAtom)
   const userAddedTokenLists = get(userAddedListsSourcesAtom)
   const useeAddedTokenListsForChain = userAddedTokenLists[chainId] || []
@@ -140,13 +142,13 @@ export const listsStatesMapAtom = atom((get) => {
   }, {})
 })
 
-export const listsStatesListAtom = atom((get) => {
-  return Object.values(get(listsStatesMapAtom))
+export const listsStatesListAtom = atom(async (get) => {
+  return Object.values(await get(listsStatesMapAtom))
 })
 
-export const listsEnabledStateAtom = atom((get) => {
+export const listsEnabledStateAtom = atom(async (get) => {
   const allTokensLists = get(allListsSourcesAtom)
-  const listStates = get(listsStatesMapAtom)
+  const listStates = await get(listsStatesMapAtom)
   const virtualListsState = get(virtualListsStateAtom)
 
   const state = allTokensLists.reduce<{ [source: string]: boolean }>((acc, tokenList) => {

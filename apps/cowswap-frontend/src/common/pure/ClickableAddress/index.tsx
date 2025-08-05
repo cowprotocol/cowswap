@@ -1,9 +1,10 @@
-import { MouseEvent, useCallback, useRef, useState } from 'react'
+import { MouseEvent, ReactNode, useCallback, useRef, useState } from 'react'
 
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { ExplorerDataType, getExplorerLink, shortenAddress, getIsNativeToken } from '@cowprotocol/common-utils'
 import { Media, Tooltip } from '@cowprotocol/ui'
 
+import { useBridgeSupportedNetwork } from 'entities/bridgeProvider'
 import { Info } from 'react-feather'
 
 import { Content } from './Content'
@@ -14,20 +15,19 @@ export type ClickableAddressProps = {
   chainId: number
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function ClickableAddress(props: ClickableAddressProps) {
+export function ClickableAddress(props: ClickableAddressProps): ReactNode {
   const { address, chainId } = props
 
   const wrapperRef = useRef<HTMLDivElement>(null)
 
   const isMobile = useMediaQuery(Media.upToMedium(false))
+  const bridgeNetwork = useBridgeSupportedNetwork(chainId)
 
   const [openTooltip, setOpenTooltip] = useState(false)
 
   const shortAddress = shortenAddress(address)
 
-  const target = getExplorerLink(chainId, address, ExplorerDataType.TOKEN)
+  const target = getExplorerLink(chainId, address, ExplorerDataType.TOKEN, bridgeNetwork?.blockExplorer.url)
 
   const shouldShowAddress = target && !getIsNativeToken(chainId, address)
 

@@ -51,11 +51,19 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit, walletType 
   )
 
   const filteredDapps = useMemo(() => {
-    if (!searchQuery) return currentDapps
-    const lowerQuery = searchQuery.toLowerCase()
-    return currentDapps.filter(({ name = '', descriptionShort = '' }) =>
-      [name, descriptionShort].some((text) => text.toLowerCase().includes(lowerQuery)),
-    )
+    const lowerQuery = searchQuery?.toLowerCase()
+
+    return currentDapps.filter((item) => {
+      const { name = '', descriptionShort = '' } = item
+
+      const instance = isHookDappIframe(item) ? item.url : item.component
+
+      if (!instance) return false
+
+      if (!lowerQuery) return true
+
+      return [name, descriptionShort].some((text) => text.toLowerCase().includes(lowerQuery))
+    })
   }, [currentDapps, searchQuery])
 
   const sortedFilteredDapps = useMemo(() => {

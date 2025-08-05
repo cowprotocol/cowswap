@@ -1,4 +1,4 @@
-import { NATIVE_CURRENCY_ADDRESS, SupportedChainId, mapSupportedNetworks } from '@cowprotocol/cow-sdk'
+import { SupportedChainId, mapSupportedNetworks } from '@cowprotocol/cow-sdk'
 import { Fraction, Percent } from '@uniswap/sdk-core'
 
 import BigNumber from 'bignumber.js'
@@ -68,16 +68,19 @@ export const V_COW_CONTRACT_ADDRESS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.AVALANCHE]: null, // doesn't exist!
 }
 
-export const COW_CONTRACT_ADDRESS: Record<SupportedChainId, string> = {
+export const COW_CONTRACT_ADDRESS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.MAINNET]: '0xDEf1CA1fb7FBcDC777520aa7f396b4E015F497aB',
   [SupportedChainId.GNOSIS_CHAIN]: '0x177127622c4A00F3d409B75571e12cB3c8973d3c',
   [SupportedChainId.ARBITRUM_ONE]: '0xcb8b5cd20bdcaea9a010ac1f8d835824f5c87a04',
   [SupportedChainId.BASE]: '0xc694a91e6b071bF030A18BD3053A7fE09B6DaE69',
   [SupportedChainId.SEPOLIA]: '0x0625aFB445C3B6B7B929342a04A22599fd5dBB59',
-  [SupportedChainId.POLYGON]: NATIVE_CURRENCY_ADDRESS, // TODO: stopgap solution until we have COW contract on Polygon
-  [SupportedChainId.AVALANCHE]: NATIVE_CURRENCY_ADDRESS, // TODO: stopgap solution until we have COW contract on Avalanche
+  // https://polygonscan.com/token/0x2f4efd3aa42e15a1ec6114547151b63ee5d39958
+  [SupportedChainId.POLYGON]: '0x2f4efd3aa42e15a1ec6114547151b63ee5d39958',
+  [SupportedChainId.AVALANCHE]: null,
 }
 
+export const RECEIVED_LABEL = 'Received'
+export const ACCOUNT_PROXY_LABEL = 'Account Proxy'
 export const INPUT_OUTPUT_EXPLANATION = 'Only executed swaps incur fees.'
 export const PENDING_ORDERS_BUFFER = ms`60s` // 60s
 export const CANCELLED_ORDERS_PENDING_TIME = ms`5min` // 5min
@@ -95,6 +98,17 @@ export const MINIMUM_ETH_FLOW_SLIPPAGE_BPS: Record<SupportedChainId, number> = {
   [SupportedChainId.SEPOLIA]: DEFAULT_SLIPPAGE_BPS,
   [SupportedChainId.POLYGON]: DEFAULT_SLIPPAGE_BPS,
   [SupportedChainId.AVALANCHE]: DEFAULT_SLIPPAGE_BPS,
+}
+
+const DEFAULT_ETH_FLOW_SLIPPAGE_WARNING_THRESHOLD = 200 // 2%
+export const ETH_FLOW_SLIPPAGE_WARNING_THRESHOLD: Record<SupportedChainId, number> = {
+  [SupportedChainId.MAINNET]: 500, // 5%
+  [SupportedChainId.GNOSIS_CHAIN]: DEFAULT_ETH_FLOW_SLIPPAGE_WARNING_THRESHOLD,
+  [SupportedChainId.ARBITRUM_ONE]: DEFAULT_ETH_FLOW_SLIPPAGE_WARNING_THRESHOLD,
+  [SupportedChainId.BASE]: DEFAULT_ETH_FLOW_SLIPPAGE_WARNING_THRESHOLD,
+  [SupportedChainId.SEPOLIA]: DEFAULT_ETH_FLOW_SLIPPAGE_WARNING_THRESHOLD,
+  [SupportedChainId.POLYGON]: DEFAULT_ETH_FLOW_SLIPPAGE_WARNING_THRESHOLD,
+  [SupportedChainId.AVALANCHE]: DEFAULT_ETH_FLOW_SLIPPAGE_WARNING_THRESHOLD,
 }
 
 export const MINIMUM_ETH_FLOW_SLIPPAGE: Record<SupportedChainId, Percent> = mapSupportedNetworks(
@@ -169,14 +183,6 @@ export const LOCKED_GNO_VESTING_START_DATE = new Date('02-11-2022 13:05:15 GMT')
 // They are fixed and will never change.
 export const LOCKED_GNO_VESTING_START_TIME = 1644584715000
 export const LOCKED_GNO_VESTING_DURATION = 126144000000 // 4 years
-
-export const SWR_OPTIONS = {
-  refreshInterval: ms`30s`,
-  dedupingInterval: ms`10s`,
-  // don't revalidate data on focus, can cause too many re-renders
-  // see https://koba04.medium.com/revalidating-options-of-swr-4d9f08bee813
-  revalidateOnFocus: false,
-}
 
 export const SWR_NO_REFRESH_OPTIONS = {
   // Cache indefinitely

@@ -1,6 +1,5 @@
 import type { RequestArguments } from '@web3-react/types'
 
-import type { Command } from './common'
 import type EventEmitter from 'eventemitter3'
 
 export interface EIP6963ProviderInfo {
@@ -20,7 +19,6 @@ export interface EIP6963ProviderDetail {
 export type EIP1193Provider = EventEmitter & {
   isConnected?: () => boolean
   request<T>(args: RequestArguments): Promise<T>
-  enable?: Command
 }
 
 export interface EIP6963AnnounceProviderEvent extends CustomEvent {

@@ -1,4 +1,4 @@
-import { COW, WETH_SEPOLIA } from '@cowprotocol/common-const'
+import { COW_TOKEN_TO_CHAIN, WETH_SEPOLIA } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -7,7 +7,11 @@ import { getTwapFormState, TwapFormState } from './getTwapFormState'
 import { ExtensibleFallbackVerification } from '../../services/verifyExtensibleFallback'
 import { TWAPOrder } from '../../types'
 
-const COW_SEPOLIA = COW[SupportedChainId.SEPOLIA]
+const COW_SEPOLIA = COW_TOKEN_TO_CHAIN[SupportedChainId.SEPOLIA]
+
+if (!COW_SEPOLIA) {
+  throw new Error(`COW token not found for chain ${SupportedChainId.SEPOLIA}`)
+}
 
 const twapOrder: TWAPOrder = {
   sellAmount: CurrencyAmount.fromRawAmount(WETH_SEPOLIA, 10000000),

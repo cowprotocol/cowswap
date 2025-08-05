@@ -3,10 +3,9 @@ import { useCallback } from 'react'
 import { CowHookDetails } from '@cowprotocol/hook-dapp-lib'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { useHooks } from 'entities/orderHooks/useHooks'
+import { useOrderParams } from 'entities/orderHooks/useOrderParams'
 import useSWR from 'swr'
-
-import { useHooks } from 'modules/hooksStore'
-import { useOrderParams } from 'modules/hooksStore/hooks/useOrderParams'
 
 import { useGetTopTokenHolders } from './useGetTopTokenHolders'
 

@@ -1,4 +1,4 @@
-import { useAtomValue, useSetAtom } from 'jotai'
+import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
@@ -12,7 +12,7 @@ import { Nullish } from 'types'
 import { useAdvancedOrdersDerivedState, useUpdateAdvancedOrdersRawState } from 'modules/advancedOrders'
 import { useAppData, useUploadAppData } from 'modules/appData'
 import { emitPostedOrderEvent } from 'modules/orders'
-import { useNavigateToAllOrdersTable } from 'modules/ordersTable/hooks/useNavigateToAllOrdersTable'
+import { OrderTabId, useNavigateToOrdersTableTab } from 'modules/ordersTable'
 import { getCowSoundSend } from 'modules/sounds'
 import { useTradeConfirmActions, useTradePriceImpact } from 'modules/trade'
 import { TradeFlowAnalyticsContext, useTradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
@@ -21,12 +21,12 @@ import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
 
 import { useExtensibleFallbackContext } from './useExtensibleFallbackContext'
+import { useTwapOrder } from './useTwapOrder'
 import { useTwapOrderCreationContext } from './useTwapOrderCreationContext'
 
 import { DEFAULT_TWAP_EXECUTION_INFO } from '../const'
 import { createTwapOrderTxs } from '../services/createTwapOrderTxs'
 import { extensibleFallbackSetupTxs } from '../services/extensibleFallbackSetupTxs'
-import { twapOrderAtom } from '../state/twapOrderAtom'
 import { addTwapOrderToListAtom } from '../state/twapOrdersListAtom'
 import { TwapOrderItem, TwapOrderStatus } from '../types'
 import { buildTwapOrderParamsStruct } from '../utils/buildTwapOrderParamsStruct'
@@ -55,9 +55,9 @@ interface TwapOrderEvent extends TwapAnalyticsEvent {
 // eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function useCreateTwapOrder() {
   const { chainId, account } = useWalletInfo()
-  const twapOrder = useAtomValue(twapOrderAtom)
+  const twapOrder = useTwapOrder()
   const addTwapOrderToList = useSetAtom(addTwapOrderToListAtom)
-  const navigateToAllOrdersTable = useNavigateToAllOrdersTable()
+  const navigateToOrdersTableTab = useNavigateToOrdersTableTab()
 
   const { inputCurrencyAmount, outputCurrencyAmount } = useAdvancedOrdersDerivedState()
 
@@ -104,7 +104,7 @@ export function useCreateTwapOrder() {
   return useCallback(
     // TODO: Break down this large function into smaller functions
     // TODO: Reduce function complexity by extracting logic
-    // eslint-disable-next-line max-lines-per-function, complexity
+
     async (fallbackHandlerIsNotSet: boolean) => {
       if (!chainId || !account || chainId !== twapOrderCreationContext?.chainId) return
       if (
@@ -188,7 +188,7 @@ export function useCreateTwapOrder() {
         sendTwapConversionAnalytics('signed', fallbackHandlerIsNotSet)
 
         // Navigate to all orders after successful placement
-        navigateToAllOrdersTable()
+        navigateToOrdersTableTab(OrderTabId.all)
       } catch (error) {
         console.error('[useCreateTwapOrder] error', error)
         const errorMessage = getErrorMessage(error)
@@ -216,7 +216,7 @@ export function useCreateTwapOrder() {
       sendOrderAnalytics,
       sendTwapConversionAnalytics,
       tradeFlowAnalytics,
-      navigateToAllOrdersTable,
+      navigateToOrdersTableTab,
     ],
   )
 }

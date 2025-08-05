@@ -1,5 +1,55 @@
 # Changelog
 
+## [1.26.1](https://github.com/cowprotocol/cowswap/compare/ui-v1.26.0...ui-v1.26.1) (2025-07-31)
+
+
+### Bug Fixes
+
+* **bridge:** update protocol icons to use correct color scheme ([#6056](https://github.com/cowprotocol/cowswap/issues/6056)) ([2530852](https://github.com/cowprotocol/cowswap/commit/2530852b801eb11c3246c1b8107d68f709a26d18))
+
+## [1.26.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.25.1...ui-v1.26.0) (2025-07-30)
+
+
+### Features
+
+* add warning banner if bridge fees are over limit ([#6009](https://github.com/cowprotocol/cowswap/issues/6009)) ([a11bd0a](https://github.com/cowprotocol/cowswap/commit/a11bd0a6d5c6145cb52bdd09d1286b35e565b80d))
+
+
+### Bug Fixes
+
+* **trade:** do not display quote error when loading ([#5979](https://github.com/cowprotocol/cowswap/issues/5979)) ([d7cc313](https://github.com/cowprotocol/cowswap/commit/d7cc3133872d3fb950f3d89c967c4325b9ab3a01))
+
+## [1.25.1](https://github.com/cowprotocol/cowswap/compare/ui-v1.25.0...ui-v1.25.1) (2025-07-10)
+
+
+### Bug Fixes
+
+* add fontBold prop for customizable font weight ([#5949](https://github.com/cowprotocol/cowswap/issues/5949)) ([f212bf5](https://github.com/cowprotocol/cowswap/commit/f212bf56feec9ec1e3b39be9e75a670f8690bbfe))
+* update InlineBanner width for UnsignedOrderWarning component ([#5948](https://github.com/cowprotocol/cowswap/issues/5948)) ([bca7971](https://github.com/cowprotocol/cowswap/commit/bca79715be6e43c405be432eacd4a6ef5d8f978f))
+
+## [1.25.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.24.0...ui-v1.25.0) (2025-07-03)
+
+
+### Features
+
+* **bridge:** add collapsible banner for proxy account information  ([#5895](https://github.com/cowprotocol/cowswap/issues/5895)) ([0825186](https://github.com/cowprotocol/cowswap/commit/0825186e2870abf4c3251dd819a07802c69456dc))
+* **bridge:** display account proxy ([#5881](https://github.com/cowprotocol/cowswap/issues/5881)) ([0692597](https://github.com/cowprotocol/cowswap/commit/0692597adf45b469b5a547057b64e79296714ee2))
+* **explorer:** display bridging data in order page ([#5787](https://github.com/cowprotocol/cowswap/issues/5787)) ([cd398f0](https://github.com/cowprotocol/cowswap/commit/cd398f0987064311d80c1628550a83df5ad31386))
+* **trade:** display quote refetch indicator ([#5859](https://github.com/cowprotocol/cowswap/issues/5859)) ([c4f163f](https://github.com/cowprotocol/cowswap/commit/c4f163f8f7d56fc79057ed6d64e6fee4c8758824))
+
+## [1.24.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.23.2...ui-v1.24.0) (2025-06-18)
+
+
+### Features
+
+* **bridge:** swap and bridge refactoring + progress UI ([#5755](https://github.com/cowprotocol/cowswap/issues/5755)) ([8a4cb5c](https://github.com/cowprotocol/cowswap/commit/8a4cb5c497cdd006df860a9240611e12cff3e60c))
+
+
+### Bug Fixes
+
+* reduce rerenders count and theme recalculation ([#5831](https://github.com/cowprotocol/cowswap/issues/5831)) ([96a7a35](https://github.com/cowprotocol/cowswap/commit/96a7a350f366615a1e5149097541b5e2ccf880f1))
+* **service-worker:** disable verbose workbox logging in production ([#5815](https://github.com/cowprotocol/cowswap/issues/5815)) ([cb53ccb](https://github.com/cowprotocol/cowswap/commit/cb53ccb5a39a8857dfc030f0fb13869060211c8a))
+
 ## [1.23.2](https://github.com/cowprotocol/cowswap/compare/ui-v1.23.1...ui-v1.23.2) (2025-05-19)
 
 

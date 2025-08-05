@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react'
+import React, { ReactNode, useCallback, useMemo } from 'react'
 
 import ICON_ORDERS from '@cowprotocol/assets/svg/orders.svg'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
@@ -22,7 +22,6 @@ import { useOpenTokenSelectWidget } from 'modules/tokensList'
 import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternativeOrder'
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 
-import { useCategorizeRecentActivity } from 'common/hooks/useCategorizeRecentActivity'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useThrottleFn } from 'common/hooks/useThrottleFn'
 import { CurrencyArrowSeparator } from 'common/pure/CurrencyArrowSeparator'
@@ -35,10 +34,12 @@ import { TradeWidgetProps } from './types'
 import { useTradeStateFromUrl } from '../../hooks/setupTradeState/useTradeStateFromUrl'
 import { useIsCurrentTradeBridging } from '../../hooks/useIsCurrentTradeBridging'
 import { useIsEoaEthFlow } from '../../hooks/useIsEoaEthFlow'
+import { useIsQuoteUpdatePossible } from '../../hooks/useIsQuoteUpdatePossible'
 import { useIsWrapOrUnwrap } from '../../hooks/useIsWrapOrUnwrap'
 import { useLimitOrdersPromoBanner } from '../../hooks/useLimitOrdersPromoBanner'
 import { SetRecipient } from '../../pure/SetRecipient'
 import { LimitOrdersPromoBannerWrapper } from '../LimitOrdersPromoBannerWrapper'
+import { QuotePolingProgress } from '../QuotePolingProgress'
 import { TradeWarnings } from '../TradeWarnings'
 import { TradeWidgetLinks } from '../TradeWidgetLinks'
 import { WrapFlowActionButton } from '../WrapFlowActionButton'
@@ -54,16 +55,14 @@ const scrollToMyOrders = () => {
 }
 
 // TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
-export function TradeWidgetForm(props: TradeWidgetProps) {
+// eslint-disable-next-line max-lines-per-function, complexity
+export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
   const isInjectedWidgetMode = isInjectedWidget()
   const { standaloneMode, hideOrdersTable } = useInjectedWidgetParams()
   const isMobile = useMediaQuery(Media.upToSmall(false))
 
   const isAlternativeOrderModalVisible = useIsAlternativeOrderModalVisible()
-  const { pendingActivity } = useCategorizeRecentActivity()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const { isLimitOrdersUpgradeBannerEnabled, isBridgingEnabled } = useFeatureFlags()
   const isCurrentTradeBridging = useIsCurrentTradeBridging()
@@ -84,6 +83,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
     displayChainName = isBridgingEnabled && isCurrentTradeBridging,
     isMarketOrderWidget = false,
     isSellingEthSupported = false,
+    isPriceStatic = false,
   } = params
 
   const inputCurrencyInfo = useMemo(
@@ -109,6 +109,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
   const primaryFormValidation = useGetTradeFormValidation()
   const { shouldBeVisible: isLimitOrdersPromoBannerVisible } = useLimitOrdersPromoBanner()
   const isEoaEthFlow = useIsEoaEthFlow()
+  const isQuoteUpdatePossible = useIsQuoteUpdatePossible()
 
   const sellToken = inputCurrencyInfo.currency
   const buyToken = outputCurrencyInfo.currency
@@ -185,9 +186,7 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
       <styledEl.ContainerBox>
         <styledEl.Header>
           {isAlternativeOrderModalVisible ? <div></div> : <TradeWidgetLinks isDropdown={showDropdown} />}
-          {isInjectedWidgetMode && standaloneMode && (
-            <AccountElement standaloneMode pendingActivities={pendingActivity} />
-          )}
+          {isInjectedWidgetMode && standaloneMode && <AccountElement standaloneMode />}
 
           {shouldShowMyOrdersButton && (
             <ButtonOutlined margin={'0 16px 0 auto'} onClick={handleMyOrdersClick}>
@@ -195,7 +194,14 @@ export function TradeWidgetForm(props: TradeWidgetProps) {
             </ButtonOutlined>
           )}
 
-          {!lockScreen && settingsWidget}
+          <styledEl.HeaderRight>
+            {!lockScreen && (
+              <>
+                {!isPriceStatic && !showDropdown && isQuoteUpdatePossible && <QuotePolingProgress />}
+                {settingsWidget}
+              </>
+            )}
+          </styledEl.HeaderRight>
         </styledEl.Header>
 
         <LimitOrdersPromoBannerWrapper>

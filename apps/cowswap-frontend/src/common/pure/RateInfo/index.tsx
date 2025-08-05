@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
+import React, { Dispatch, ReactNode, SetStateAction, useEffect, useMemo, useState } from 'react'
 
 import { getAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -37,28 +37,31 @@ export interface RateInfoProps {
   opacitySymbol?: boolean
   noFiat?: boolean
   rightAlign?: boolean
+  fontBold?: boolean
+  fontSize?: number
+  labelBold?: boolean
 }
 
-const Wrapper = styled.div<{ stylized: boolean }>`
+const Wrapper = styled.div<{ stylized: boolean; fontSize?: number }>`
   display: flex;
   justify-content: space-between;
   width: 100%;
   align-items: center;
-  font-size: 14px;
-  font-weight: 400;
+  font-size: ${({ fontSize }) => (fontSize ? `${fontSize}px` : 'inherit')};
+  font-weight: inherit;
   gap: 10px;
   flex: 1 1 min-content;
 `
 
-const RateLabel = styled.div`
+const RateLabel = styled.div<{ labelBold?: boolean }>`
   display: flex;
   align-items: center;
-  font-weight: 400;
   gap: 5px;
   text-align: left;
   transition: color var(${UI.ANIMATION_DURATION}) ease-in-out;
   color: inherit;
   white-space: nowrap;
+  font-weight: ${({ labelBold }) => (labelBold ? 500 : 'inherit')};
 `
 
 const InvertIcon = styled.div`
@@ -112,7 +115,7 @@ const InvertIcon = styled.div`
   }
 `
 
-export const RateWrapper = styled.button<{ rightAlign?: boolean }>`
+export const RateWrapper = styled.button<{ rightAlign?: boolean; fontBold?: boolean }>`
   display: inline;
   background: none;
   border: 0;
@@ -121,24 +124,22 @@ export const RateWrapper = styled.button<{ rightAlign?: boolean }>`
   padding: 0;
   cursor: pointer;
   color: inherit;
-  font-size: 13px;
+  font-size: inherit;
+  font-family: var(${UI.FONT_FAMILY_PRIMARY});
   letter-spacing: -0.1px;
   text-align: ${({ rightAlign }) => (rightAlign ? 'right' : 'left')};
-  font-weight: 500;
+  font-weight: ${({ fontBold }) => (fontBold ? 500 : 'inherit')};
   width: 100%;
 `
 
 export const FiatRate = styled.span`
   color: inherit;
-  opacity: 0.7;
-  font-weight: 400;
+  font-weight: inherit;
   text-align: right;
   white-space: nowrap;
 `
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function InvertRateControl({ onClick, className }: { onClick(): void; className?: string }) {
+export function InvertRateControl({ onClick, className }: { onClick(): void; className?: string }): ReactNode {
   return (
     <InvertIcon className={className} onClick={onClick}>
       <Repeat size={11} />
@@ -147,9 +148,8 @@ export function InvertRateControl({ onClick, className }: { onClick(): void; cla
 }
 
 // TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
+// eslint-disable-next-line max-lines-per-function, complexity
 export function RateInfo({
   rateInfoParams,
   className,
@@ -164,7 +164,10 @@ export function RateInfo({
   opacitySymbol = false,
   noFiat = false,
   rightAlign = false,
-}: RateInfoProps) {
+  fontBold = false,
+  fontSize,
+  labelBold = false,
+}: RateInfoProps): ReactNode | null {
   const { chainId, inputCurrencyAmount, outputCurrencyAmount, activeRateFiatAmount, invertedActiveRateFiatAmount } =
     rateInfoParams
 
@@ -228,20 +231,18 @@ export function RateInfo({
 
   if (!rateInputCurrency || !rateOutputCurrency || !currentActiveRate) return null
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const toggleInverted = () => setCurrentIsInverted((state) => !state)
+  const toggleInverted = (): void => setCurrentIsInverted((state) => !state)
 
   return (
-    <Wrapper stylized={stylized} className={className}>
+    <Wrapper stylized={stylized} className={className} fontSize={fontSize}>
       {!noLabel && (
-        <RateLabel>
+        <RateLabel labelBold={labelBold}>
           <Trans>{label}</Trans>
           <InvertRateControl onClick={toggleInverted} />
         </RateLabel>
       )}
       <div>
-        <RateWrapper onClick={toggleInverted} rightAlign={rightAlign}>
+        <RateWrapper onClick={toggleInverted} rightAlign={rightAlign} fontBold={fontBold}>
           <span
             title={
               currentActiveRate.toFixed(rateOutputCurrency.decimals || DEFAULT_DECIMALS) +
@@ -263,7 +264,7 @@ export function RateInfo({
           </span>{' '}
           {!!fiatAmount && (
             <FiatRate>
-              (<FiatAmount amount={fiatAmount} />)
+              <FiatAmount amount={fiatAmount} withParentheses />
             </FiatRate>
           )}
         </RateWrapper>

@@ -5,9 +5,10 @@ import {
 } from '@cowprotocol/common-const'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function isNativeAddress(tokenAddress: string, chainId: ChainId) {
+import { doesTokenMatchSymbolOrAddress } from './doesTokenMatchSymbolOrAddress'
+
+
+export function isNativeAddress(tokenAddress: string, chainId: ChainId): boolean {
   if (!tokenAddress || !chainId) return false
 
   const tokenAddressLower = tokenAddress.toLowerCase()
@@ -16,9 +17,7 @@ export function isNativeAddress(tokenAddress: string, chainId: ChainId) {
 
   const native = NATIVE_CURRENCIES[chainId]
 
-  return (
-    native && (tokenAddressLower === native.address.toLowerCase() || tokenAddressLower === native.symbol?.toLowerCase())
-  )
+  return native && doesTokenMatchSymbolOrAddress(native, tokenAddressLower)
 }
 
 export function toErc20Address(tokenAddress: string, chainId: ChainId): string {

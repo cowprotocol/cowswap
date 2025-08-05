@@ -1,5 +1,50 @@
 # Changelog
 
+## [1.19.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.18.1...common-utils-v1.19.0) (2025-08-04)
+
+
+### Features
+
+* update same tokens warning message, address wrapped tokens bug ([#6028](https://github.com/cowprotocol/cowswap/issues/6028)) ([95b9089](https://github.com/cowprotocol/cowswap/commit/95b9089744cd6fd9445e1c2ebd021a86cf3da29a))
+
+## [1.18.1](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.18.0...common-utils-v1.18.1) (2025-07-30)
+
+
+### Bug Fixes
+
+* **bridge:** show correct intermedeate token for surplus ([9182f33](https://github.com/cowprotocol/cowswap/commit/9182f331e0cf74a8045eba53111732b2e0c30aa4))
+* **bridge:** show correct intermediate token for surplus ([0a20c43](https://github.com/cowprotocol/cowswap/commit/0a20c43cc8ec63138c8f7b5c1aec74feba227c1b))
+* do not multicall allowances globally ([#5984](https://github.com/cowprotocol/cowswap/issues/5984)) ([b142199](https://github.com/cowprotocol/cowswap/commit/b14219963baeb2d2fa4a24ded50c6dd74bc58afe))
+
+## [1.18.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.17.1...common-utils-v1.18.0) (2025-07-10)
+
+
+### Features
+
+* **trade:** slippage config for integrators ([#5906](https://github.com/cowprotocol/cowswap/issues/5906)) ([cbfa3b1](https://github.com/cowprotocol/cowswap/commit/cbfa3b142571df7bdf55919b8ae6df986017aeab))
+
+## [1.17.1](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.17.0...common-utils-v1.17.1) (2025-07-03)
+
+
+### Bug Fixes
+
+* **trade:** updating priority balances ([#5884](https://github.com/cowprotocol/cowswap/issues/5884)) ([272cebc](https://github.com/cowprotocol/cowswap/commit/272cebcdf68a07dcc0066402dbd9d729a98d10e7))
+
+## [1.17.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.16.0...common-utils-v1.17.0) (2025-06-20)
+
+
+### Features
+
+* **auto-slippage:** apply auto slippage for ETH flow ([#5836](https://github.com/cowprotocol/cowswap/issues/5836)) ([5bd3807](https://github.com/cowprotocol/cowswap/commit/5bd38079e73380ee489727bcaff0614b89e24439))
+* **new-newtworks:** fixed sort order for chains ([#5856](https://github.com/cowprotocol/cowswap/issues/5856)) ([65c1b36](https://github.com/cowprotocol/cowswap/commit/65c1b36b84b3a1d3570ce574e8d105da048b8c20))
+
+## [1.16.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.15.0...common-utils-v1.16.0) (2025-06-18)
+
+
+### Features
+
+* **analytics:** enhance UTM handling and analytics readiness checks ([#5779](https://github.com/cowprotocol/cowswap/issues/5779)) ([3fb616c](https://github.com/cowprotocol/cowswap/commit/3fb616cf8f5b5ad7c1736bd095912d692bbf1fd5))
+
 ## [1.15.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.14.0...common-utils-v1.15.0) (2025-05-28)
 
 

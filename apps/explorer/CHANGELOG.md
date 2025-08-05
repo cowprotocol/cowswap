@@ -1,5 +1,66 @@
 # Changelog
 
+## [2.50.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.49.0...explorer-v2.50.0) (2025-07-31)
+
+
+### Features
+
+* remove from Explorer bridge order `Sender` row ([#6051](https://github.com/cowprotocol/cowswap/issues/6051)) ([bf54034](https://github.com/cowprotocol/cowswap/commit/bf540347234906129496253f0c2c1d51f2fde6f7))
+
+## [2.49.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.48.3...explorer-v2.49.0) (2025-07-30)
+
+
+### Features
+
+* **bridge:** adjust addresses displaying in Explorer ([#6021](https://github.com/cowprotocol/cowswap/issues/6021)) ([37cdaf0](https://github.com/cowprotocol/cowswap/commit/37cdaf07a74c1b9b4357a4e942cc7ddc139f1873))
+
+
+### Bug Fixes
+
+* **bridge:** better destination tokens filtering ([#5965](https://github.com/cowprotocol/cowswap/issues/5965)) ([1e738e3](https://github.com/cowprotocol/cowswap/commit/1e738e3b547584158f8083500926819b1bb2de93))
+* **explorer:** display unknown network token logo ([#6013](https://github.com/cowprotocol/cowswap/issues/6013)) ([095ad7b](https://github.com/cowprotocol/cowswap/commit/095ad7bce0741fe0a45adc3f65b26cdf88e5dd6f))
+* **explorer:** load coingecko tokens for all chains ([#6015](https://github.com/cowprotocol/cowswap/issues/6015)) ([4d57a5c](https://github.com/cowprotocol/cowswap/commit/4d57a5c2caf7b26952a3661c1e6ae76ac5bffb16))
+* **explorer:** update bridge status ([#6041](https://github.com/cowprotocol/cowswap/issues/6041)) ([a548008](https://github.com/cowprotocol/cowswap/commit/a548008ba68355a00a7a1a69b32d1b6434a133af))
+* improve bridge details on cow explorer ([#6042](https://github.com/cowprotocol/cowswap/issues/6042)) ([77b17ca](https://github.com/cowprotocol/cowswap/commit/77b17ca2f5129aa874ba001b436b7299ade82e4a))
+
+## [2.48.3](https://github.com/cowprotocol/cowswap/compare/explorer-v2.48.2...explorer-v2.48.3) (2025-07-10)
+
+
+### Bug Fixes
+
+* **explorer:** remove selection styles ([#5941](https://github.com/cowprotocol/cowswap/issues/5941)) ([ad727f6](https://github.com/cowprotocol/cowswap/commit/ad727f6a6d70fa36300875ff4be4a4a51069ddfc))
+* update InlineBanner width for UnsignedOrderWarning component ([#5948](https://github.com/cowprotocol/cowswap/issues/5948)) ([bca7971](https://github.com/cowprotocol/cowswap/commit/bca79715be6e43c405be432eacd4a6ef5d8f978f))
+
+## [2.48.2](https://github.com/cowprotocol/cowswap/compare/explorer-v2.48.1...explorer-v2.48.2) (2025-07-03)
+
+
+### Bug Fixes
+
+* **bridge:** do not estimate gas for hook ([#5887](https://github.com/cowprotocol/cowswap/issues/5887)) ([028840b](https://github.com/cowprotocol/cowswap/commit/028840b7c4cab605a17462d98e1a13fb68e16cbc))
+* **explorer:** handle limit price is infinite ([#5886](https://github.com/cowprotocol/cowswap/issues/5886)) ([9c333cc](https://github.com/cowprotocol/cowswap/commit/9c333ccb0856b06a19d16f1e6a148655d89d8ba8))
+
+## [2.48.1](https://github.com/cowprotocol/cowswap/compare/explorer-v2.48.0...explorer-v2.48.1) (2025-06-20)
+
+
+### Bug Fixes
+
+* **explorer:** empty change to trigger build ([#5873](https://github.com/cowprotocol/cowswap/issues/5873)) ([b309e70](https://github.com/cowprotocol/cowswap/commit/b309e70fe042f566af2d10097cbcd90e433e2e0e))
+
+## [2.48.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.47.0...explorer-v2.48.0) (2025-06-18)
+
+
+### Features
+
+* **bridge:** add bridge types and order type guard to explorer ([#5725](https://github.com/cowprotocol/cowswap/issues/5725)) ([e4896fd](https://github.com/cowprotocol/cowswap/commit/e4896fd9bf3d9a8f3315cf8350ab45a702092534))
+* **bridge:** add cosmos explorer configuration and global decorator ([#5729](https://github.com/cowprotocol/cowswap/issues/5729)) ([8249f4a](https://github.com/cowprotocol/cowswap/commit/8249f4aa27b067cfecfb164b6ba9c2c2e45d46d4))
+* **new-networks:** add support to `Avalanche` and `Polygon` networks ([#5715](https://github.com/cowprotocol/cowswap/issues/5715)) ([e3e8a8d](https://github.com/cowprotocol/cowswap/commit/e3e8a8d6b94569a5dda7a425d1a79f0b4f6d5200))
+
+
+### Bug Fixes
+
+* **explorer:** adjust items order in order details ([#5846](https://github.com/cowprotocol/cowswap/issues/5846)) ([bf0e321](https://github.com/cowprotocol/cowswap/commit/bf0e3217132d7188bbb6749d2ef1e39c1dbbaa73))
+* make order progress bar UI more stable ([#5834](https://github.com/cowprotocol/cowswap/issues/5834)) ([80cebd1](https://github.com/cowprotocol/cowswap/commit/80cebd1104a0a2e30e12ce8a4b3d62c212559cec))
+
 ## [2.47.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.46.0...explorer-v2.47.0) (2025-05-19)
 
 

@@ -1,5 +1,26 @@
 # Changelog
 
+## [1.2.2](https://github.com/cowprotocol/cowswap/compare/multicall-v1.2.1...multicall-v1.2.2) (2025-08-05)
+
+
+### Bug Fixes
+
+* get relevant provider network for multicall ([#6093](https://github.com/cowprotocol/cowswap/issues/6093)) ([47f4cfb](https://github.com/cowprotocol/cowswap/commit/47f4cfbea5f2a394a0fc10c9b90d313a46613373))
+
+## [1.2.1](https://github.com/cowprotocol/cowswap/compare/multicall-v1.2.0...multicall-v1.2.1) (2025-07-31)
+
+
+### Bug Fixes
+
+* **safe:** check provider chainId for multicall provider ([#6057](https://github.com/cowprotocol/cowswap/issues/6057)) ([490436a](https://github.com/cowprotocol/cowswap/commit/490436a6b482f75876e471ba45ff1f7e02017ca0))
+
+## [1.2.0](https://github.com/cowprotocol/cowswap/compare/multicall-v1.1.2...multicall-v1.2.0) (2025-07-03)
+
+
+### Features
+
+* **bridge:** display account proxy ([#5881](https://github.com/cowprotocol/cowswap/issues/5881)) ([0692597](https://github.com/cowprotocol/cowswap/commit/0692597adf45b469b5a547057b64e79296714ee2))
+
 ## [1.1.2](https://github.com/cowprotocol/cowswap/compare/multicall-v1.1.1...multicall-v1.1.2) (2025-05-19)
 
 

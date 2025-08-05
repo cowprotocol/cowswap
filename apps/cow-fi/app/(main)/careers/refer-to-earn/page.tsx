@@ -1,10 +1,12 @@
 'use client'
 
-import { Color } from '@cowprotocol/ui'
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { CowFiCategory } from 'src/common/analytics/types'
+import { UI } from '@cowprotocol/ui'
+
 import styled from 'styled-components/macro'
+
 import { ContainerCard, ArticleContent, Breadcrumbs, ArticleMainTitle, BodyContent } from '@/styles/styled'
+import { CowFiCategory } from 'src/common/analytics/types'
 
 const Wrapper = styled.div`
   display: flex;
@@ -22,7 +24,14 @@ export default function Page() {
 
   return (
     <Wrapper>
-      <ContainerCard bgColor={Color.neutral100} minHeight="70vh" gap={62} gapMobile={42} centerContent touchFooter>
+      <ContainerCard
+        bgColor={`var(${UI.COLOR_NEUTRAL_100})`}
+        minHeight="70vh"
+        gap={62}
+        gapMobile={42}
+        centerContent
+        touchFooter
+      >
         <ArticleContent maxWidth="100%">
           <Breadcrumbs>
             <a
@@ -105,7 +114,7 @@ export default function Page() {
               <li>
                 The referrer should reach out to a CoW core team member or directly contact the People department via
                 email at <a href="mailto:jobs@cow.fi">jobs@cow.fi</a>, LinkedIn, or Telegram. When reaching out, the
-                Referrer must include the candidate's name, surname, and email or LinkedIn profile. The Referrer is
+                Referrer must include the candidate&apos;s name, surname, and email or LinkedIn profile. The Referrer is
                 responsible for ensuring that the Candidate has given consent to share this information.
               </li>
               <li>
@@ -132,7 +141,7 @@ export default function Page() {
             <ul>
               <li>
                 The Referrer becomes eligible to receive the full referral bonus up to six thousand USDC or USD (6,000)
-                after six (6) months from the Candidate's start date, provided that the Candidate remains providing
+                after six (6) months from the Candidate&apos;s start date, provided that the Candidate remains providing
                 services to CoW during this period. The referral bonus amount can vary for each role. You can find the
                 exact amount listed in the job description on our website at{' '}
                 <a href="https://cow.fi/careers">https://cow.fi/careers</a>. The Referrer can decide if they want to be

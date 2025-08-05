@@ -4,16 +4,14 @@ import { useEffect } from 'react'
 import { multiCallContextAtom } from '../state/multiCallContextAtom'
 
 interface MultiCallProviderProps {
-  chainId: number
+  chainId: number | undefined
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function MultiCallUpdater({ chainId }: MultiCallProviderProps) {
+export function MultiCallUpdater({ chainId }: MultiCallProviderProps): null {
   const setContext = useSetAtom(multiCallContextAtom)
 
   useEffect(() => {
-    setContext({ chainId })
+    setContext(chainId ? { chainId } : null)
   }, [chainId, setContext])
 
   return null

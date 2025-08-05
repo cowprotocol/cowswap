@@ -35,10 +35,11 @@ export function quoteUsingSameParameters(
       currentParams.amount === nextParams.amount.toString(),
       bridgeTradeParams.validFor === nextParams.validFor,
       bridgeTradeParams.receiver === nextParams.receiver,
-      bridgeTradeParams.slippageBps === nextParams.slippageBps,
+      nextParams.slippageBps ? bridgeTradeParams.slippageBps === nextParams.slippageBps : true,
       currentParams.sellToken.toLowerCase() === nextParams.sellTokenAddress.toLowerCase(),
       bridgeTradeParams.sellTokenChainId === nextParams.sellTokenChainId,
       bridgeTradeParams.buyTokenAddress.toLowerCase() === nextParams.buyTokenAddress.toLowerCase(),
+      bridgeTradeParams.buyTokenChainId === nextParams.buyTokenChainId,
     ]
 
     return cases.every(Boolean)
@@ -51,6 +52,13 @@ export function quoteUsingSameParameters(
     currentParams.amount === nextParams.amount.toString(),
     currentParams.validFor === nextParams.validFor,
     currentParams.receiver === nextParams.receiver,
+    /**
+     * Check slippage only if it is set in nextParams
+     * Because we should refetch quote only when a user changed slippage
+     * Auto-slippage should not trigger quote refetching
+     * See how slippageBps is defined in `useQuoteParams()`
+     */
+    nextParams.slippageBps ? currentParams.slippageBps === nextParams.slippageBps : true,
     currentParams.sellToken.toLowerCase() === nextParams.sellTokenAddress.toLowerCase(),
     currentParams.buyToken.toLowerCase() === nextParams.buyTokenAddress.toLowerCase(),
   ]
@@ -76,9 +84,17 @@ function compareAppDataWithoutQuoteData(a: AppDataInfo['doc'] | undefined, b: Ap
  */
 function removeQuoteMetadata(appData: AppDataInfo['doc']): string {
   const { metadata: fullMetadata, ...rest } = appData
-  const { quote: _, utm: __, ...metadata } = fullMetadata
+  const { partnerFee, hooks, referrer, replacedOrder } = fullMetadata
 
-  const obj = { ...rest, metadata }
+  const obj = {
+    ...rest,
+    metadata: {
+      partnerFee: partnerFee ?? undefined,
+      hooks: hooks ?? undefined,
+      referrer: referrer ?? undefined,
+      replacedOrder: replacedOrder ?? undefined,
+    },
+  }
   return jsonStringify(obj)
 }
 

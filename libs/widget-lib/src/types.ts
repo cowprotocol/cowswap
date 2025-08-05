@@ -57,12 +57,6 @@ export interface EthereumProvider {
    * @returns A promise that resolves with the response.
    */
   request<T>(params: JsonRpcRequest): Promise<T>
-
-  /**
-   * Requests permission to connect to the Ethereum provider.
-   * @returns A promise that resolves once permission is granted.
-   */
-  enable(): Promise<void>
 }
 
 export type CowSwapTheme = 'dark' | 'light'
@@ -173,6 +167,17 @@ export interface CowSwapWidgetContent {
   feeLabel?: string
   feeTooltipMarkdown?: string
 }
+
+export interface SlippageConfig {
+  /** Minimum slippage in basis points (e.g., 10 = 0.1%) */
+  min?: number
+  /** Maximum slippage in basis points (e.g., 5000 = 50%) - 5000 is max value for dApp */
+  max?: number
+  /** Default slippage value in basis points (e.g., 50 = 0.5%) - min <= defaultValue <= max */
+  defaultValue?: number
+}
+
+export type FlexibleSlippageConfig = FlexibleConfig<SlippageConfig>;
 
 export interface CowSwapWidgetParams {
   /**
@@ -330,6 +335,11 @@ export interface CowSwapWidgetParams {
    * Customizable labels and content for the widget.
    */
   content?: CowSwapWidgetContent
+
+  /**
+   * Customizable slippage settings for the widget.
+   */
+  slippage?: FlexibleSlippageConfig
 }
 
 // Define types for event payloads

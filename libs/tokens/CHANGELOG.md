@@ -1,5 +1,54 @@
 # Changelog
 
+## [1.23.1](https://github.com/cowprotocol/cowswap/compare/tokens-v1.23.0...tokens-v1.23.1) (2025-08-05)
+
+
+### Bug Fixes
+
+* get relevant provider network for multicall ([#6093](https://github.com/cowprotocol/cowswap/issues/6093)) ([47f4cfb](https://github.com/cowprotocol/cowswap/commit/47f4cfbea5f2a394a0fc10c9b90d313a46613373))
+
+## [1.23.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.22.0...tokens-v1.23.0) (2025-07-30)
+
+
+### Features
+
+* **bridge:** do not search output tokens in selector ([#6017](https://github.com/cowprotocol/cowswap/issues/6017)) ([c6be067](https://github.com/cowprotocol/cowswap/commit/c6be06716820a7257d94639fecb4f6e382858eb3))
+* **bridge:** implement CurrencyLogoPair and styling ([#5995](https://github.com/cowprotocol/cowswap/issues/5995)) ([ced0884](https://github.com/cowprotocol/cowswap/commit/ced0884599b7cf6a62a1a3b3aa983ebca8924763))
+
+
+### Bug Fixes
+
+* migrate tokens store from localStorage to indexedDB ([#6037](https://github.com/cowprotocol/cowswap/issues/6037)) ([99f67eb](https://github.com/cowprotocol/cowswap/commit/99f67eb97d2cb111f00292427ac4c8d40e353464))
+
+## [1.22.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.21.0...tokens-v1.22.0) (2025-07-03)
+
+
+### Features
+
+* **bridge:** display account proxy ([#5881](https://github.com/cowprotocol/cowswap/issues/5881)) ([0692597](https://github.com/cowprotocol/cowswap/commit/0692597adf45b469b5a547057b64e79296714ee2))
+
+## [1.21.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.20.0...tokens-v1.21.0) (2025-06-20)
+
+
+### Features
+
+* account shows banner is COW token is unavaillable ([#5833](https://github.com/cowprotocol/cowswap/issues/5833)) ([b553228](https://github.com/cowprotocol/cowswap/commit/b55322899161785076f95ee420a1b796661a1e52))
+
+## [1.20.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.19.1...tokens-v1.20.0) (2025-06-18)
+
+
+### Features
+
+* **bridge:** swap and bridge refactoring + progress UI ([#5755](https://github.com/cowprotocol/cowswap/issues/5755)) ([8a4cb5c](https://github.com/cowprotocol/cowswap/commit/8a4cb5c497cdd006df860a9240611e12cff3e60c))
+* **new-networks:** add support to `Avalanche` and `Polygon` networks ([#5715](https://github.com/cowprotocol/cowswap/issues/5715)) ([e3e8a8d](https://github.com/cowprotocol/cowswap/commit/e3e8a8d6b94569a5dda7a425d1a79f0b4f6d5200))
+
+
+### Bug Fixes
+
+* make order progress bar UI more stable ([#5834](https://github.com/cowprotocol/cowswap/issues/5834)) ([80cebd1](https://github.com/cowprotocol/cowswap/commit/80cebd1104a0a2e30e12ce8a4b3d62c212559cec))
+* **token-logo:** fix network logo size in mobile ([#5809](https://github.com/cowprotocol/cowswap/issues/5809)) ([6c4d2f4](https://github.com/cowprotocol/cowswap/commit/6c4d2f47771f3868a3fe530bc9ac1779175b2db5))
+* **tokens:** remove user-added tokens twice ([#5748](https://github.com/cowprotocol/cowswap/issues/5748)) ([78b9bc6](https://github.com/cowprotocol/cowswap/commit/78b9bc6b519ebc8aafe13a9be3194f1377d3461c))
+
 ## [1.19.1](https://github.com/cowprotocol/cowswap/compare/tokens-v1.19.0...tokens-v1.19.1) (2025-05-22)
 
 

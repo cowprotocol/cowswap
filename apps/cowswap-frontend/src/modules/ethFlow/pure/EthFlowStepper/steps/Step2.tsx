@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { ReactNode, useMemo } from 'react'
 
 import Checkmark from '@cowprotocol/assets/cow-swap/checkmark.svg'
 import Exclamation from '@cowprotocol/assets/cow-swap/exclamation.svg'
@@ -10,19 +10,17 @@ import { ExplorerLinkStyled, Step, StepProps } from '../Step'
 
 type Step2Config = StepProps & { error?: string }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
-export function Step2({ order, cancellation, creation }: EthFlowStepperProps) {
+export function Step2({ order, cancellation, creation }: EthFlowStepperProps): ReactNode {
   const { state, isExpired, orderId, rejectedReason } = order
-  const isCreating = state === SmartOrderStatus.CREATING
-  const isIndexing = state === SmartOrderStatus.CREATION_MINED
-  const isCancelled = cancellation.failed === false // if undefined: not cancelled, if true: cancellation failed
-  const isOrderCreated = order.isCreated
-  const isFilled = state === SmartOrderStatus.FILLED
   const { cancelled: creationCancelled, replaced: creationReplaced } = creation
 
+  const isCreating = state === SmartOrderStatus.CREATING
+  const isIndexing = state === SmartOrderStatus.CREATION_MINED
+  const isFilled = state === SmartOrderStatus.FILLED
+  const isCancelled = cancellation.failed === false
+  const isOrderCreated = order.isCreated
   const expiredBeforeCreate = isExpired && (isCreating || isIndexing)
+  const hasCreationError = (rejectedReason || creationCancelled || (creationReplaced && isCreating)) && !isFilled
 
   // Get config for Step 2
   const {
@@ -30,10 +28,10 @@ export function Step2({ order, cancellation, creation }: EthFlowStepperProps) {
     state: stepState,
     icon,
     error,
-  // TODO: Reduce function complexity by extracting logic
-  // eslint-disable-next-line complexity
+    // TODO: Reduce function complexity by extracting logic
   } = useMemo<Step2Config>(() => {
-    if ((rejectedReason || creationCancelled || (creationReplaced && isCreating)) && !isFilled) {
+    // Error states
+    if (hasCreationError) {
       return {
         label: 'Order Creation Failed',
         error: rejectedReason,
@@ -41,7 +39,8 @@ export function Step2({ order, cancellation, creation }: EthFlowStepperProps) {
         icon: X,
       }
     }
-    if (expiredBeforeCreate) {
+
+    if (expiredBeforeCreate && !isFilled) {
       return {
         label: 'Order Creation Failed',
         error: 'Expired before creation',
@@ -79,16 +78,7 @@ export function Step2({ order, cancellation, creation }: EthFlowStepperProps) {
       state: 'success',
       icon: Checkmark,
     }
-  }, [
-    expiredBeforeCreate,
-    isCancelled,
-    isCreating,
-    isFilled,
-    isIndexing,
-    rejectedReason,
-    creationReplaced,
-    creationCancelled,
-  ])
+  }, [hasCreationError, expiredBeforeCreate, isCancelled, isCreating, isFilled, isIndexing, rejectedReason])
 
   return (
     <Step state={stepState} icon={icon} label={label} errorMessage={error}>

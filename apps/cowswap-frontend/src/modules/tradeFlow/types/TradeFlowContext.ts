@@ -1,8 +1,11 @@
 import type { Erc20, GPv2Settlement, Weth } from '@cowprotocol/abis'
 import { QuoteAndPost } from '@cowprotocol/cow-sdk'
 import type { Command } from '@cowprotocol/types'
+import { BridgeOrderData, BridgeQuoteAmounts } from '@cowprotocol/types'
 import type { SendBatchTxCallback } from '@cowprotocol/wallet'
 import type { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+
+import { SigningSteps } from 'entities/trade'
 
 import type { AppDispatch } from 'legacy/state'
 import type { PostOrderParams } from 'legacy/utils/trade'
@@ -23,6 +26,7 @@ export enum FlowType {
 export interface TradeFlowContext {
   tradeQuote: QuoteAndPost
   tradeQuoteState: TradeQuoteState
+  bridgeQuoteAmounts: BridgeQuoteAmounts | null
   context: {
     chainId: number
     inputAmount: CurrencyAmount<Currency>
@@ -35,6 +39,8 @@ export interface TradeFlowContext {
     closeModals: Command
     getCachedPermit: ReturnType<typeof useGetCachedPermit>
     dispatch: AppDispatch
+    addBridgeOrder: (order: BridgeOrderData) => void
+    setSigningStep(stepNumber: string, step: SigningSteps): void
   }
   tradeConfirmActions: TradeConfirmActions
   swapFlowAnalyticsContext: TradeFlowAnalyticsContext

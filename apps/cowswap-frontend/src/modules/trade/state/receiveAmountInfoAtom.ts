@@ -9,7 +9,6 @@ import { derivedTradeStateAtom } from './derivedTradeStateAtom'
 
 import { getReceiveAmountInfo } from '../utils/getReceiveAmountInfo'
 
-// TODO: Reduce function complexity by extracting logic
 // eslint-disable-next-line complexity
 export const receiveAmountInfoAtom = atom((get) => {
   const tradeQuotes = get(tradeQuotesAtom)

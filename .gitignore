@@ -60,3 +60,13 @@ out
 apps/cow-fi/public/robots.txt
 apps/cow-fi/public/sitemap*
 apps/cowswap-frontend/public/robots.txt
+
+# Claude context files (local only)
+CLAUDE.md
+.claude/
+
+# Serena project files
+.serena/
+
+# Github
+.github/

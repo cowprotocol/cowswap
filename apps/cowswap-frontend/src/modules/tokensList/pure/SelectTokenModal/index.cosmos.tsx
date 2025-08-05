@@ -34,6 +34,7 @@ const defaultProps: SelectTokenModalProps = {
   allTokens: allTokensMock,
   favoriteTokens: favoriteTokensMock,
   areTokensLoading: false,
+  areTokensFromBridge: false,
   chainsToSelect: undefined,
   onSelectChain(chain: ChainInfo) {
     console.log('onSelectChain', chain)
@@ -43,6 +44,7 @@ const defaultProps: SelectTokenModalProps = {
     values: balances,
     isLoading: false,
     chainId: SupportedChainId.SEPOLIA,
+    fromCache: false,
   },
   selectedToken,
   onSelectToken() {

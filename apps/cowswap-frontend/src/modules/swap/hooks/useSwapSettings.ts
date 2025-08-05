@@ -6,11 +6,9 @@ import { StatefulValue } from '@cowprotocol/types'
 
 import { useUpdateSwapRawState } from './useUpdateSwapRawState'
 
-import { updateSwapSettingsAtom, swapSettingsAtom } from '../state/swapSettingsAtom'
+import { updateSwapSettingsAtom, swapSettingsAtom, SwapSettingsState } from '../state/swapSettingsAtom'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useSwapSettings() {
+export function useSwapSettings(): SwapSettingsState {
   return useAtomValue(swapSettingsAtom)
 }
 

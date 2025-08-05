@@ -8,7 +8,7 @@ import { Nullish } from 'types'
 
 import { useUsdAmount } from 'modules/usdAmount'
 
-import { RateInfoParams } from 'common/pure/RateInfo'
+import { RateInfoParams, RateInfo } from 'common/pure/RateInfo'
 
 import { LimitPriceRow } from './LimitPriceRow'
 import * as styledEl from './styled'
@@ -95,12 +95,16 @@ export function TradeBasicConfirmDetails(props: Props) {
   return (
     <styledEl.Wrapper>
       {/* Price */}
-      <styledEl.StyledRateInfo
-        label={priceLabel}
-        stylized={true}
-        rateInfoParams={rateInfoParams}
-        isInvertedState={isInvertedState}
-      />
+      <styledEl.RateInfoWrapper>
+        <RateInfo
+          label={priceLabel}
+          stylized={true}
+          rateInfoParams={rateInfoParams}
+          isInvertedState={isInvertedState}
+          fontBold
+          fontSize={13}
+        />
+      </styledEl.RateInfoWrapper>
 
       <TradeFeesAndCosts
         receiveAmountInfo={receiveAmountInfo}

@@ -1,10 +1,11 @@
 import { useCallback, useState } from 'react'
 
 import { PartnerFeeRow, TradeTotalCostsDetails } from 'modules/trade'
-import { Box, StyledRateInfo } from 'modules/trade/containers/TradeTotalCostsDetails/styled'
+import { Box } from 'modules/trade/containers/TradeTotalCostsDetails/styled'
 import { useUsdAmount } from 'modules/usdAmount'
 import { useVolumeFee, useVolumeFeeTooltip } from 'modules/volumeFee'
 
+import { RateInfo } from 'common/pure/RateInfo'
 import { RateInfoParams } from 'common/pure/RateInfo'
 
 import { useLimitOrderPartnerFeeAmount } from '../../hooks/useLimitOrderPartnerFeeAmount'
@@ -45,7 +46,14 @@ export function TradeRateDetails({ rateInfoParams, alwaysExpanded = false }: Tra
   if (alwaysExpanded) {
     return (
       <>
-        <StyledRateInfo label="Limit price" stylized={true} rateInfoParams={rateInfoParams} rightAlign />
+        <RateInfo
+          label="Limit price"
+          stylized={true}
+          rateInfoParams={rateInfoParams}
+          rightAlign
+          fontSize={13}
+          fontBold
+        />
         <Box noMargin>{partnerFeeRow}</Box>
       </>
     )
