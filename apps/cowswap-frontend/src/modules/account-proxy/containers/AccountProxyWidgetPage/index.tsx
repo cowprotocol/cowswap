@@ -15,6 +15,7 @@ import { NewModal } from 'common/pure/NewModal'
 
 import { EmptyWrapper, HelpLink, ModalWrapper, TitleWrapper, WidgetWrapper } from './styled'
 
+import { useNavigateBack } from '../../../../common/hooks/useNavigate'
 import { WalletNotConnected } from '../../pure/WalletNotConnected'
 import { parameterizeRoute } from '../../utils/parameterizeRoute'
 
@@ -35,6 +36,7 @@ export function AccountProxyWidgetPage({
   const tradeNavigate = useTradeNavigate()
   const { inputCurrencyId, outputCurrencyId } = useSwapRawState()
   const location = useLocation()
+  const navigateBack = useNavigateBack()
   const toggleWalletModal = useToggleWalletModal()
 
   const isWalletConnected = !!account
@@ -42,12 +44,16 @@ export function AccountProxyWidgetPage({
   const [sourceRoute] = useState<string>(query.get('source') || 'swap')
 
   const defaultOnDismiss = (): void => {
-    tradeNavigate(
-      chainId,
-      { inputCurrencyId, outputCurrencyId },
-      undefined,
-      sourceRoute === 'hooks' ? Routes.HOOKS : Routes.SWAP,
-    )
+    if (location.key === 'default') {
+      tradeNavigate(
+        chainId,
+        { inputCurrencyId, outputCurrencyId },
+        undefined,
+        sourceRoute === 'hooks' ? Routes.HOOKS : Routes.SWAP,
+      )
+    } else {
+      navigateBack()
+    }
   }
 
   const onDismiss = modalOnDismiss || defaultOnDismiss
