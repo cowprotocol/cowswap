@@ -1,10 +1,8 @@
-import { lazy, Suspense } from 'react'
+import { lazy, ReactNode } from 'react'
 
 import { PAGE_TITLES } from '@cowprotocol/common-const'
 
 import { Outlet, useLocation } from 'react-router'
-
-import { Loading } from 'legacy/components/FlashingLoading'
 
 import { PageTitle } from 'modules/application/containers/PageTitle'
 import { Content, Title } from 'modules/application/pure/Page'
@@ -20,9 +18,7 @@ const Balances = lazy(() => import(/* webpackChunkName: "account" */ 'pages/Acco
 const Governance = lazy(() => import(/* webpackChunkName: "governance" */ 'pages/Account/Governance'))
 const Delegate = lazy(() => import(/* webpackChunkName: "delegate" */ 'pages/Account/Delegate'))
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function _getPropsFromRoute(route: string) {
+function _getPropsFromRoute(route: string): string[] {
   switch (route) {
     case RoutesEnum.ACCOUNT:
       return ['account-overview', 'Account overview']
@@ -36,9 +32,7 @@ function _getPropsFromRoute(route: string) {
 }
 
 // Note: As we build these single pages, we will remove this component in the future
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export const AccountOverview = () => {
+export const AccountOverview = (): ReactNode => {
   return (
     <>
       <Container>
@@ -53,22 +47,18 @@ export const AccountOverview = () => {
   )
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export default function Account() {
+export default function Account(): ReactNode {
   const { pathname } = useLocation()
   const [id, name] = _getPropsFromRoute(pathname)
   return (
     <Wrapper>
       <AccountMenu />
-      <Suspense fallback={<Loading />}>
-        <AccountPageWrapper>
-          <Content>
-            <Title id={id}>{name}</Title>
-            <Outlet />
-          </Content>
-        </AccountPageWrapper>
-      </Suspense>
+      <AccountPageWrapper>
+        <Content>
+          <Title id={id}>{name}</Title>
+          <Outlet />
+        </Content>
+      </AccountPageWrapper>
     </Wrapper>
   )
 }

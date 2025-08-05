@@ -24,12 +24,13 @@ export function useTokenAllowances(tokenAddresses: string[]): {
   state: AllowancesState | undefined
   isLoading: boolean
 } {
-  const { account } = useWalletInfo()
+  const { chainId, account } = useWalletInfo()
 
   const spender = useTradeSpenderAddress()
   const allowanceParams = useMemo(() => (account && spender ? [account, spender] : undefined), [account, spender])
 
   const { data, isLoading } = useMultipleContractSingleData<[BigNumber]>(
+    chainId,
     tokenAddresses,
     ERC_20_INTERFACE,
     'allowance',
