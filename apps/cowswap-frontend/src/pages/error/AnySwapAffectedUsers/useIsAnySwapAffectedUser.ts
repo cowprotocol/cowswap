@@ -1,14 +1,13 @@
 import { useMemo } from 'react'
 
 import { Erc20Abi, Erc20Interface } from '@cowprotocol/abis'
-import { WRAPPED_NATIVE_CURRENCIES as WETH } from '@cowprotocol/common-const'
+import { SWR_NO_REFRESH_OPTIONS, WRAPPED_NATIVE_CURRENCIES as WETH } from '@cowprotocol/common-const'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { useMultipleContractSingleData } from '@cowprotocol/multicall'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Interface } from '@ethersproject/abi'
 import { BigNumber } from '@ethersproject/bignumber'
 
-import ms from 'ms.macro'
 import { SWRConfiguration } from 'swr'
 
 const WETH_ADDRESS = WETH[ChainId.MAINNET].address
@@ -25,17 +24,22 @@ const ANYSWAP_V4_CONTRACT = '0x6b7a87899490EcE95443e979cA9485CBE7E71522'
 // const ANYSWAP_V4_CONTRACT = '0xC92E8bdf79f0507f65a392b0ab4667716BFE0110' //'0x6b7a87899490EcE95443e979cA9485CBE7E71522'
 
 const MULTICALL_OPTIONS = {}
-const SWR_CONFIG: SWRConfiguration = { refreshInterval: ms`30m`, revalidateOnFocus: false, revalidateIfStale: false }
+const SWR_CONFIG: SWRConfiguration = {
+  ...SWR_NO_REFRESH_OPTIONS,
+  revalidateIfStale: false,
+}
 
 export function useIsAnySwapAffectedUser(): boolean {
   const { chainId, account } = useWalletInfo()
   const { data: allowances } = useMultipleContractSingleData<[BigNumber]>(
+    chainId,
     AFFECTED_TOKENS,
     ERC20_INTERFACE,
     'allowance',
     account ? [account, ANYSWAP_V4_CONTRACT] : undefined,
     MULTICALL_OPTIONS,
     SWR_CONFIG,
+    `useIsAnySwapAffectedUser`,
   )
 
   return useMemo(() => {

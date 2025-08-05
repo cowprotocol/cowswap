@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 
 import type { Multicall3 } from '@cowprotocol/abis'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Interface, Result } from '@ethersproject/abi'
 import type { Web3Provider } from '@ethersproject/providers'
 
@@ -11,6 +12,7 @@ import { useMultiCallRpcProvider } from './useMultiCallRpcProvider'
 import { multiCall, MultiCallOptions } from '../multicall'
 
 export function useMultipleContractSingleData<T = Result>(
+  chainId: SupportedChainId,
   addresses: string[],
   contractInterface: Interface,
   methodName: string,
@@ -42,6 +44,7 @@ export function useMultipleContractSingleData<T = Result>(
     !calls?.length || !provider
       ? null
       : [
+          chainId,
           provider,
           calls,
           multicallOptions,
@@ -51,7 +54,8 @@ export function useMultipleContractSingleData<T = Result>(
           cacheKey,
           'useMultipleContractSingleData',
         ],
-    async ([provider, calls, multicallOptions, methodName, contractInterface, callsCount, cacheKey]: [
+    async ([chainId, provider, calls, multicallOptions, methodName, contractInterface, callsCount, cacheKey]: [
+      SupportedChainId,
       Web3Provider,
       Multicall3.CallStruct[],
       MultiCallOptions,
@@ -60,12 +64,18 @@ export function useMultipleContractSingleData<T = Result>(
       number,
       string,
     ]) => {
+      const providerChainId = (await provider.getNetwork()).chainId
+
+      if (providerChainId !== chainId) return null
+
       console.debug('[Multicall] MultipleContractSingleData', {
+        chainId,
         cacheKey,
         methodName,
         callsCount,
         provider,
       })
+
       return multiCall(provider, calls, multicallOptions)
         .then((results) => {
           return results.map((result) => {

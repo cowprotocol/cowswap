@@ -30,13 +30,14 @@ export function useTokenAllowances(tokenAddresses: string[]): {
   const allowanceParams = useMemo(() => (account && spender ? [account, spender] : undefined), [account, spender])
 
   const { data, isLoading } = useMultipleContractSingleData<[BigNumber]>(
+    chainId,
     tokenAddresses,
     ERC_20_INTERFACE,
     'allowance',
     allowanceParams,
     MULTICALL_OPTIONS,
     SWR_CONFIG,
-    `${chainId}${account}`,
+    account,
   )
 
   const state = useMemo(() => {
