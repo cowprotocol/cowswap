@@ -23,7 +23,7 @@ interface AccountProxiesPageProps {
   onDismiss?(): void
 }
 
-export function AccountProxiesPage({
+export function AccountProxyWidgetPage({
   modalMode = false,
   onDismiss: modalOnDismiss,
 }: AccountProxiesPageProps): ReactNode {

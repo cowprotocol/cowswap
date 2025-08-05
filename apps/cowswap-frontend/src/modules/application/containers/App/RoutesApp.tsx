@@ -16,7 +16,7 @@ import { Loading } from 'legacy/components/FlashingLoading'
 import { RedirectPathToSwapOnly, RedirectToPath } from 'legacy/pages/Swap/redirects'
 
 import {
-  AccountProxiesPage,
+  AccountProxyWidgetPage,
   AccountProxyHelpPage,
   AccountProxyPage,
   AccountProxyRecoverPage,
@@ -88,7 +88,7 @@ export function RoutesApp(): ReactNode {
         <Route path="*" element={<AccountNotFound />} />
       </Route>
 
-      <Route path={RoutesEnum.ACCOUNT_PROXIES} element={<AccountProxiesPage />}>
+      <Route path={RoutesEnum.ACCOUNT_PROXIES} element={<AccountProxyWidgetPage />}>
         <Route path={RoutesEnum.ACCOUNT_PROXY} element={<AccountProxyPage />} />
         <Route path={RoutesEnum.ACCOUNT_PROXY_RECOVER} element={<AccountProxyRecoverPage />} />
         <Route path={RoutesEnum.ACCOUNT_PROXY_HELP} element={<AccountProxyHelpPage />} />
