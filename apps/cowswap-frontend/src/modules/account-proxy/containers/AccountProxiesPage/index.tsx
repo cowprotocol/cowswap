@@ -5,6 +5,8 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Outlet, useLocation } from 'react-router'
 
+import { useToggleWalletModal } from 'legacy/state/application/hooks'
+
 import { useSwapRawState } from 'modules/swap'
 import { useTradeNavigate } from 'modules/trade'
 
@@ -12,6 +14,8 @@ import { Routes } from 'common/constants/routes'
 import { NewModal } from 'common/pure/NewModal'
 
 import { EmptyWrapper, ModalWrapper, WidgetWrapper } from './styled'
+
+import { WalletNotConnected } from '../../pure/WalletNotConnected'
 
 interface AccountProxiesPageProps {
   modalMode?: boolean
@@ -26,11 +30,13 @@ export function AccountProxiesPage({
 
   const Wrapper = modalMode ? ModalWrapper : EmptyWrapper
 
-  const { chainId } = useWalletInfo()
+  const { chainId, account } = useWalletInfo()
   const tradeNavigate = useTradeNavigate()
   const { inputCurrencyId, outputCurrencyId } = useSwapRawState()
   const location = useLocation()
+  const toggleWalletModal = useToggleWalletModal()
 
+  const isWalletConnected = !!account
   const query = new URLSearchParams(location.search)
   const [sourceRoute] = useState<string>(query.get('source') || 'swap')
 
@@ -57,7 +63,7 @@ export function AccountProxiesPage({
           contentPadding="10px"
           justifyContent="flex-start"
         >
-          <Outlet />
+          {isWalletConnected ? <Outlet /> : <WalletNotConnected onConnect={toggleWalletModal} />}
         </NewModal>
       </WidgetWrapper>
     </Wrapper>
