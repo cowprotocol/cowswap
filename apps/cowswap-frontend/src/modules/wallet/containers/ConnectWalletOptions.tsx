@@ -22,9 +22,8 @@ interface ConnectWalletOptionsProps {
   tryActivation: TryActivation
   children: (content: ReactNode, count: number) => ReactNode
 }
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function ConnectWalletOptions({ tryActivation, children }: ConnectWalletOptionsProps) {
+
+export function ConnectWalletOptions({ tryActivation, children }: ConnectWalletOptionsProps): ReactNode {
   const selectedWallet = useSelectedWallet()
   const multiInjectedProviders = useMultiInjectedProviders()
   const { darkMode } = useTheme()
