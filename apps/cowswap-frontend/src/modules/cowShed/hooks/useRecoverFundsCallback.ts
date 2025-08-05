@@ -1,5 +1,7 @@
 import { useCallback } from 'react'
 
+import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
+
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
@@ -16,7 +18,7 @@ export function useRecoverFundsCallback(recoverFundsContext: RecoverFundsContext
       const txHash = await recoverFundsCallback()
 
       if (txHash) {
-        addTransaction({ hash: txHash, summary: 'Recover funds from CoW Shed Proxy' })
+        addTransaction({ hash: txHash, summary: `Recover funds from ${ACCOUNT_PROXY_LABEL}` })
       }
 
       return txHash

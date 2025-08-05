@@ -2,6 +2,7 @@ import { useState, ReactNode } from 'react'
 
 import IMG_ICON_MINUS from '@cowprotocol/assets/images/icon-minus.svg'
 import IMG_ICON_PLUS from '@cowprotocol/assets/images/icon-plus.svg'
+import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
 import { ExternalLink } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
@@ -11,11 +12,11 @@ import { FAQItem, FAQWrapper } from '../containers/CoWShedWidget/styled'
 
 const FAQ_DATA = [
   {
-    question: 'What is Account Proxy?',
+    question: `What is ${ACCOUNT_PROXY_LABEL}?`,
     answer: (
       <>
         <ExternalLink href="https://github.com/cowdao-grants/cow-shed">
-          Account Proxy (also known as CoW Shed)
+{ACCOUNT_PROXY_LABEL} (also known as CoW Shed)
         </ExternalLink>{' '}
         is a helper contract that improves the user experience within CoW Swap for features like{' '}
         <ExternalLink href="https://docs.cow.fi/cow-protocol/reference/core/intents/hooks">CoW Hooks</ExternalLink>

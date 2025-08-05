@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.115.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.114.0...cowswap-v1.115.0) (2025-08-04)
+
+
+### Features
+
+* update same tokens warning message, address wrapped tokens bug ([#6028](https://github.com/cowprotocol/cowswap/issues/6028)) ([95b9089](https://github.com/cowprotocol/cowswap/commit/95b9089744cd6fd9445e1c2ebd021a86cf3da29a))
+
+
+### Bug Fixes
+
+* **bridge:** broken network switching when try to select the same network as dst in token select ([#6067](https://github.com/cowprotocol/cowswap/issues/6067)) ([ed00fe4](https://github.com/cowprotocol/cowswap/commit/ed00fe4f19f00e80e6850f8098c761f09d576bdc))
+* **bridge:** fix received amount parsing from executed info ([#6088](https://github.com/cowprotocol/cowswap/issues/6088)) ([071a361](https://github.com/cowprotocol/cowswap/commit/071a361d7bf26a4260b91cd72f8af051cc733d1e))
+
 ## [1.114.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.113.0...cowswap-v1.114.0) (2025-07-31)
 
 

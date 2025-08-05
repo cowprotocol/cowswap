@@ -1,3 +1,5 @@
+import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
+
 import { AccountProxyLink } from '../shared/AccountProxyLink'
 
 export const DetailsTableTooltips = {
@@ -6,8 +8,8 @@ export const DetailsTableTooltips = {
   to: 'The account address which will/did receive the bought amount.',
   toBridge: (
     <span>
-      The <AccountProxyLink>Account Proxy</AccountProxyLink> address which will/did receive bought amount of the Swap
-      before the bridge is initiated.
+      The <AccountProxyLink>{ACCOUNT_PROXY_LABEL}</AccountProxyLink> address which will/did receive bought amount of the
+      Swap before the bridge is initiated.
     </span>
   ),
   hash: 'The onchain settlement transaction for this order. Can be viewed on Etherscan.',

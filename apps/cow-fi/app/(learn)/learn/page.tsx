@@ -1,9 +1,16 @@
+import type { ReactNode } from 'react'
+
+import { Category, getArticles, getCategories } from '../../../services/cms'
+
 import { LearnPageComponent } from '@/components/LearnPageComponent'
 import { FEATURED_ARTICLES_PAGE_SIZE } from '@/const/pagination'
 
-import { getArticles, getCategories } from '../../../services/cms'
 
-export default async function LearnPage() {
+// Next.js requires revalidate to be a literal number for static analysis
+// 12 hours (43200 seconds) - balanced between freshness and cache efficiency
+export const revalidate = 43200
+
+export default async function LearnPage(): Promise<ReactNode> {
   // Fetch featured articles
   const featuredArticlesResponse = await getArticles({
     filters: {
@@ -27,20 +34,40 @@ export default async function LearnPage() {
 
   const categoriesResponse = await getCategories()
   // Pass raw categories data to client component for styling
-  const categories =
-    categoriesResponse?.map((category: any) => {
-      const imageUrl = category?.attributes?.image?.data?.attributes?.url || ''
-
-      return {
-        name: category?.attributes?.name || '',
-        slug: category?.attributes?.slug || '',
-        description: category?.attributes?.description || '',
-        bgColor: category?.attributes?.backgroundColor || '',
-        textColor: category?.attributes?.textColor || '',
-        link: `/learn/topic/${category?.attributes?.slug}`,
-        imageUrl,
-      }
-    }) || []
+  const categories = categoriesResponse?.map(formatCategoryForComponent) || []
 
   return <LearnPageComponent featuredArticles={featuredArticles} categories={categories} />
+}
+
+function formatCategoryForComponent(category: Category): {
+  name: string
+  slug: string
+  description: string
+  bgColor: string
+  textColor: string
+  link: string
+  imageUrl: string
+} {
+  const attrs = category?.attributes
+  if (!attrs) {
+    return {
+      name: '',
+      slug: '',
+      description: '',
+      bgColor: '',
+      textColor: '',
+      link: '/learn/topic/',
+      imageUrl: '',
+    }
+  }
+
+  return {
+    name: attrs.name ?? '',
+    slug: attrs.slug ?? '',
+    description: attrs.description ?? '',
+    bgColor: attrs.backgroundColor ?? '',
+    textColor: attrs.textColor ?? '',
+    link: `/learn/topic/${attrs.slug ?? ''}`,
+    imageUrl: attrs.image?.data?.attributes?.url ?? '',
+  }
 }
