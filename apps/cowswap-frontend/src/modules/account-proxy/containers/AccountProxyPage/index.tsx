@@ -3,6 +3,7 @@ import { ReactNode } from 'react'
 import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
 import { COW_TOKEN_MAINNET, TokenWithLogo, USDC_MAINNET } from '@cowprotocol/common-const'
 import { useWalletInfo } from '@cowprotocol/wallet'
+import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { ChevronRight } from 'react-feather'
 import { useParams } from 'react-router'
@@ -32,14 +33,18 @@ export function AccountProxyPage(): ReactNode {
       <Title>Recoverable tokens · {tokens.length}</Title>
       {tokens.map((token) => {
         const balance = balances[token.address.toLowerCase()]
+
+        const balanceAmount = balance ? CurrencyAmount.fromRawAmount(token, balance.toHexString()) : undefined
+
         const usdPrice = usdPrices[getUsdPriceStateKey(token)]
+        const usdAmount = balanceAmount && usdPrice?.price?.quote(balanceAmount)
 
         return (
           <LinkStyled
             key={token.address}
             to={parameterizeRoute(Routes.ACCOUNT_PROXY_RECOVER, { chainId, proxyAddress, tokenAddress: token.address })}
           >
-            <TokenListItemStyled token={token} isWalletConnected balance={balance} usdPrice={usdPrice}>
+            <TokenListItemStyled token={token} isWalletConnected balance={balance} usdAmount={usdAmount}>
               <ChevronWrapper>
                 <ChevronRight size={24} />
               </ChevronWrapper>

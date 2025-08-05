@@ -10,8 +10,6 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
-import type { UsdPriceState } from 'modules/usdAmount'
-
 import * as styledEl from './styled'
 
 import { TokenInfo } from '../TokenInfo'
@@ -27,7 +25,7 @@ export interface TokenListItemProps {
   token: TokenWithLogo
   selectedToken?: Nullish<Currency>
   balance: BigNumber | undefined
-  usdPrice?: UsdPriceState | null
+  usdAmount?: CurrencyAmount<Currency> | null
 
   onSelectToken?(token: TokenWithLogo): void
 
@@ -50,7 +48,7 @@ export function TokenListItem(props: TokenListItemProps): ReactNode {
     token,
     selectedToken,
     balance,
-    usdPrice,
+    usdAmount,
     onSelectToken,
     isUnsupported = false,
     isPermitCompatible = false,
@@ -104,7 +102,7 @@ export function TokenListItem(props: TokenListItemProps): ReactNode {
           {isSupportedChain ? (
             <>
               {balanceAmount ? <TokenAmount amount={balanceAmount} /> : LoadingElement}
-              {usdPrice ? usdPrice.isLoading ? LoadingElement : <FiatAmount amount={usdPrice.price} /> : null}
+              {usdAmount ? <FiatAmount amount={usdAmount} /> : null}
             </>
           ) : null}
         </styledEl.TokenBalance>
