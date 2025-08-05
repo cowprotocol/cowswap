@@ -1,4 +1,4 @@
-import { SigningScheme } from '@cowprotocol/contracts'
+import { ContractsSigningScheme as SigningScheme } from '@cowprotocol/cow-sdk'
 import { CowHook } from '@cowprotocol/hook-dapp-lib'
 import { defaultAbiCoder } from '@ethersproject/abi'
 import type { Signer } from '@ethersproject/abstract-signer'

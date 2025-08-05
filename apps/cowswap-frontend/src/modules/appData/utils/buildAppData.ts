@@ -1,4 +1,4 @@
-import { stringifyDeterministic } from '@cowprotocol/app-data'
+import { stringifyDeterministic } from '@cowprotocol/cow-sdk'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { metadataApiSDK } from 'cowSdk'

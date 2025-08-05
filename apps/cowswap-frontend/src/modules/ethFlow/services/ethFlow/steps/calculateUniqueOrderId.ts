@@ -1,7 +1,7 @@
 import { CoWSwapEthFlow } from '@cowprotocol/abis'
 import { WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { MAX_VALID_TO_EPOCH } from '@cowprotocol/common-utils'
-import type { Order } from '@cowprotocol/contracts'
+import type { ContractsOrder as Order } from '@cowprotocol/cow-sdk'
 import { OrderSigningUtils } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -43,7 +43,7 @@ export async function calculateUniqueOrderId(
 
   const { order } = getSignOrderParams(orderParams)
 
-  const { hashOrder, packOrderUidParams } = await import('@cowprotocol/contracts')
+  const { hashOrder, packOrderUidParams } = await import('@cowprotocol/cow-sdk')
   const domain = await OrderSigningUtils.getDomain(chainId)
   // Different validTo when signing because EthFlow contract expects it to be max for all orders
   const orderDigest = hashOrder(domain, {

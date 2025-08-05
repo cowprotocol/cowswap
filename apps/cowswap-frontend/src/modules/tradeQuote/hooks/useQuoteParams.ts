@@ -76,7 +76,7 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
 
       account: owner,
       appCode,
-      signer: provider.provider || provider.getSigner(),
+      signer: provider.getSigner(),
 
       receiver,
       validFor: DEFAULT_QUOTE_TTL,

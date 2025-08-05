@@ -1,4 +1,4 @@
-import { AnyAppDataDocVersion } from '@cowprotocol/app-data'
+import { AnyAppDataDocVersion } from '@cowprotocol/cow-sdk'
 
 import { DEFAULT_IPFS_READ_URI, IPFS_INVALID_APP_IDS } from 'const'
 import { metadataApiSDK, orderBookSDK } from 'cowSdk'

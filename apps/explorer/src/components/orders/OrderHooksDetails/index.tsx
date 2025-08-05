@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react'
 
-import { latest } from '@cowprotocol/app-data'
+import { latest } from '@cowprotocol/cow-sdk'
 import { HookToDappMatch, matchHooksToDappsRegistry } from '@cowprotocol/hook-dapp-lib'
 
 import { HookItem } from './HookItem'

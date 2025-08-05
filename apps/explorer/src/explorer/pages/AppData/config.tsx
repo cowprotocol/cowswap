@@ -1,6 +1,6 @@
 import React, { RefObject } from 'react'
 
-import { LATEST_APP_DATA_VERSION } from '@cowprotocol/app-data'
+import { LATEST_APP_DATA_VERSION } from '@cowprotocol/cow-sdk'
 
 import Form, { AjvError, FieldProps, FormValidation } from '@rjsf/core'
 import { JSONSchema7 } from 'json-schema'

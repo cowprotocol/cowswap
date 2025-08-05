@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 
-import { latest } from '@cowprotocol/app-data'
+import { latest } from '@cowprotocol/cow-sdk'
 import { PermitHookData } from '@cowprotocol/permit-utils'
 import { useIsSmartContractWallet } from '@cowprotocol/wallet'
 

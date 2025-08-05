@@ -1,4 +1,4 @@
-import { AnyAppDataDocVersion } from '@cowprotocol/app-data'
+import { AnyAppDataDocVersion } from '@cowprotocol/cow-sdk'
 
 import { Nullish } from 'types'
 

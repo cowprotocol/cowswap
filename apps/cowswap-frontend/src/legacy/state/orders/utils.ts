@@ -1,6 +1,6 @@
-import type { LatestAppDataDocVersion } from '@cowprotocol/app-data'
 import { ONE_HUNDRED_PERCENT, PENDING_ORDERS_BUFFER, ZERO_FRACTION } from '@cowprotocol/common-const'
 import { bpsToPercent, buildPriceFromCurrencyAmounts, getWrappedToken, isSellOrder } from '@cowprotocol/common-utils'
+import type { LatestAppDataDocVersion } from '@cowprotocol/cow-sdk'
 import { EnrichedOrder, OrderKind, OrderStatus } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 import { Currency, CurrencyAmount, Percent, Price, Token } from '@uniswap/sdk-core'

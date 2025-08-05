@@ -1,6 +1,6 @@
 import { USDC_SEPOLIA, WETH_SEPOLIA } from '@cowprotocol/common-const'
 import { rawToTokenAmount } from '@cowprotocol/common-utils'
-import { OrderKind } from '@cowprotocol/contracts'
+import { ContractsOrderKind  as OrderKind} from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Fraction } from '@uniswap/sdk-core'
 
 import { calculateExecutionPrice, convertAmountToCurrency } from './calculateExecutionPrice'

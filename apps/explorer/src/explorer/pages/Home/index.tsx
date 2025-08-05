@@ -7,7 +7,7 @@ import { useFlags } from 'launchdarkly-react-client-sdk'
 import { Helmet } from 'react-helmet'
 import styled from 'styled-components/macro'
 
-import { SUBGRAPH_URLS } from '../../../consts/subgraphUrls'
+import { subgraphApiSDK } from '../../../cowSdk'
 import { useNetworkId } from '../../../state/network'
 import { Search } from '../../components/common/Search'
 import { StatsSummaryCardsWidget } from '../../components/SummaryCardsWidget'
@@ -76,7 +76,7 @@ export const Home: React.FC = () => {
 
   const { isTheGraphEnabled } = useFlags()
 
-  const showCharts = !!networkId && isTheGraphEnabled && SUBGRAPH_URLS[networkId] !== null
+  const showCharts = !!networkId && isTheGraphEnabled && subgraphApiSDK.SUBGRAPH_PROD_CONFIG[networkId] !== null
   const showTokensTable = !!networkId && isTheGraphEnabled && SHOW_TOKENS_TABLE[networkId]
 
   return (
