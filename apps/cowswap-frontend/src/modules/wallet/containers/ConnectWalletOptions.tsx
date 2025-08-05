@@ -35,8 +35,11 @@ export function ConnectWalletOptions({ tryActivation, children }: ConnectWalletO
 
   const connectionProps = { darkMode, selectedWallet, tryActivation }
 
-  // due to a lot of bugs - disable metaMask SDK on mobile devices
-  const metaMaskSdkOption = !isMobile ? <MetaMaskSdkOption key="MetaMaskSdkOption" {...connectionProps} /> : null
+  const hasInjectedMetaMask = multiInjectedProviders.some(providerInfo => providerInfo.info.rdns.startsWith('io.metamask'))
+  const showMetaMaskSdkOption = !hasInjectedMetaMask && !isMobile;
+  const metaMaskSdkOption = showMetaMaskSdkOption
+    ? <MetaMaskSdkOption key="MetaMaskSdkOption" {...connectionProps} />
+    : null
 
   const coinbaseWalletOption =
     (!hasCoinbaseEip6963 && !(isMobile && isWidget) && (
@@ -87,8 +90,6 @@ function InjectedOptions({ connectionProps, multiInjectedProviders }: InjectedOp
     return (
       <>
         {multiInjectedProviders
-          // Even if we detect the MetaMask Extension(and it's not mobile), we prefer to use the MetaMask SDK
-          .filter((providerInfo) => isMobile ? true : !providerInfo.info.rdns.startsWith('io.metamask'))
           .map((providerInfo) => {
             return (
               <Eip6963Option
