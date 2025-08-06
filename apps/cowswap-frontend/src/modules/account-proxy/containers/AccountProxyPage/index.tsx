@@ -1,57 +1,68 @@
 import { ReactNode } from 'react'
 
 import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
-import { COW_TOKEN_MAINNET, TokenWithLogo, USDC_MAINNET } from '@cowprotocol/common-const'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { ChevronRight } from 'react-feather'
 import { useParams } from 'react-router'
-
-import { getUsdPriceStateKey, useUsdPrices } from 'modules/usdAmount'
 
 import { Routes } from 'common/constants/routes'
 
 import { ChevronWrapper, LinkStyled, Title, TokenListItemStyled, Wrapper } from './styled'
 
+import { useRefundAmounts } from '../../hooks/useRefundAmounts'
+import { useSetupBalancesContext } from '../../hooks/useSetupBalancesContext'
+import { useTokensToRefund } from '../../hooks/useTokensToRefund'
 import { AccountCard } from '../../pure/AccountCard'
 import { parameterizeRoute } from '../../utils/parameterizeRoute'
-
-const tokens = [USDC_MAINNET, COW_TOKEN_MAINNET] as TokenWithLogo[]
+import { sumUpUsdAmounts } from '../../utils/sumUpUsdAmounts'
 
 export function AccountProxyPage(): ReactNode {
   const { chainId } = useWalletInfo()
   const { proxyAddress } = useParams()
-  const usdPrices = useUsdPrices(tokens)
-  const { values: balances } = useTokensBalances()
+
+  // Switch BalancesUpdater context to the current proxy
+  useSetupBalancesContext(proxyAddress)
+
+  const tokensToRefund = useTokensToRefund()
+  const refundAmounts = useRefundAmounts()
+  const balances = useTokensBalances()
+
+  const isSomeTokenLoading =
+    balances.isLoading || (!!refundAmounts && Object.values(refundAmounts).some((t) => t.isLoading))
+
+  const totalUsdAmount = refundAmounts ? sumUpUsdAmounts(chainId, refundAmounts) : null
 
   if (!proxyAddress) return null
 
   return (
     <Wrapper>
-      <AccountCard chainId={chainId} account={proxyAddress} />
-      <Title>Recoverable tokens · {tokens.length}</Title>
-      {tokens.map((token) => {
-        const balance = balances[token.address.toLowerCase()]
-
-        const balanceAmount = balance ? CurrencyAmount.fromRawAmount(token, balance.toHexString()) : undefined
-
-        const usdPrice = usdPrices[getUsdPriceStateKey(token)]
-        const usdAmount = balanceAmount && usdPrice?.price?.quote(balanceAmount)
-
-        return (
-          <LinkStyled
-            key={token.address}
-            to={parameterizeRoute(Routes.ACCOUNT_PROXY_RECOVER, { chainId, proxyAddress, tokenAddress: token.address })}
-          >
-            <TokenListItemStyled token={token} isWalletConnected balance={balance} usdAmount={usdAmount}>
-              <ChevronWrapper>
-                <ChevronRight size={24} />
-              </ChevronWrapper>
-            </TokenListItemStyled>
-          </LinkStyled>
-        )
-      })}
+      <AccountCard
+        chainId={chainId}
+        account={proxyAddress}
+        totalUsdAmount={totalUsdAmount}
+        loading={isSomeTokenLoading}
+      />
+      <Title>Recoverable tokens · {tokensToRefund?.length || 0}</Title>
+      {refundAmounts &&
+        Object.values(refundAmounts).map(({ token, balance, usdAmount }) => {
+          return (
+            <LinkStyled
+              key={token.address}
+              to={parameterizeRoute(Routes.ACCOUNT_PROXY_RECOVER, {
+                chainId,
+                proxyAddress,
+                tokenAddress: token.address,
+              })}
+            >
+              <TokenListItemStyled token={token} isWalletConnected balance={balance} usdAmount={usdAmount}>
+                <ChevronWrapper>
+                  <ChevronRight size={24} />
+                </ChevronWrapper>
+              </TokenListItemStyled>
+            </LinkStyled>
+          )
+        })}
     </Wrapper>
   )
 }

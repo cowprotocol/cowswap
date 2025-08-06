@@ -2,7 +2,9 @@ import { ReactNode } from 'react'
 
 import { ExplorerDataType, getExplorerLink, shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { FiatAmount, Loader } from '@cowprotocol/ui'
 import { JazzIcon } from '@cowprotocol/wallet'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Menu, MenuPopover } from '@reach/menu-button'
 import { MoreHorizontal } from 'react-feather'
@@ -17,17 +19,18 @@ import cowLogoImg from '../../img/cow-logo.svg'
 interface AccountCardProps {
   chainId: SupportedChainId
   account: string
+  totalUsdAmount: CurrencyAmount<Currency> | null
+  loading: boolean
 }
 
-export function AccountCard({ chainId, account }: AccountCardProps): ReactNode {
+export function AccountCard({ chainId, account, totalUsdAmount, loading }: AccountCardProps): ReactNode {
   const addressLink = getExplorerLink(chainId, account, ExplorerDataType.ADDRESS)
 
   return (
     <Wrapper>
       <LeftTop>
         <span>Recoverable value</span>
-        {/*TODO: add the value*/}
-        <h2>$23,000</h2>
+        <h2>{loading ? <Loader size="24px" /> : <FiatAmount amount={totalUsdAmount} />}</h2>
       </LeftTop>
       <RightTop>
         <Menu>
