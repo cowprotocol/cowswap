@@ -22,9 +22,8 @@ interface ConnectWalletOptionsProps {
   tryActivation: TryActivation
   children: (content: ReactNode, count: number) => ReactNode
 }
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function ConnectWalletOptions({ tryActivation, children }: ConnectWalletOptionsProps) {
+
+export function ConnectWalletOptions({ tryActivation, children }: ConnectWalletOptionsProps): ReactNode {
   const selectedWallet = useSelectedWallet()
   const multiInjectedProviders = useMultiInjectedProviders()
   const { darkMode } = useTheme()
@@ -36,7 +35,11 @@ export function ConnectWalletOptions({ tryActivation, children }: ConnectWalletO
 
   const connectionProps = { darkMode, selectedWallet, tryActivation }
 
-  const metaMaskSdkOption = <MetaMaskSdkOption key="MetaMaskSdkOption" {...connectionProps} />
+  const hasInjectedMetaMask = multiInjectedProviders.some(providerInfo => providerInfo.info.rdns.startsWith('io.metamask'))
+  const showMetaMaskSdkOption = !hasInjectedMetaMask && !isMobile;
+  const metaMaskSdkOption = showMetaMaskSdkOption
+    ? <MetaMaskSdkOption key="MetaMaskSdkOption" {...connectionProps} />
+    : null
 
   const coinbaseWalletOption =
     (!hasCoinbaseEip6963 && !(isMobile && isWidget) && (
@@ -82,15 +85,11 @@ interface InjectedOptionsProps {
   }
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function InjectedOptions({ connectionProps, multiInjectedProviders }: InjectedOptionsProps) {
+function InjectedOptions({ connectionProps, multiInjectedProviders }: InjectedOptionsProps): ReactNode {
   if (multiInjectedProviders.length) {
     return (
       <>
         {multiInjectedProviders
-          // Even if we detect the MetaMask Extension, we prefer to use the MetaMask SDK
-          .filter((providerInfo) => !providerInfo.info.rdns.startsWith('io.metamask'))
           .map((providerInfo) => {
             return (
               <Eip6963Option
