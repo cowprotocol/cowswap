@@ -14,8 +14,9 @@ import { parameterizeRoute } from '../../utils/parameterizeRoute'
 interface AccountItemProps {
   chainId: SupportedChainId
   account: string
+  version: string
 }
-export function AccountItem({ chainId, account }: AccountItemProps): ReactNode {
+export function AccountItem({ chainId, account, version }: AccountItemProps): ReactNode {
   return (
     <Wrapper to={parameterizeRoute(Routes.ACCOUNT_PROXY, { chainId, proxyAddress: account })}>
       <IconWrapper>
@@ -23,8 +24,7 @@ export function AccountItem({ chainId, account }: AccountItemProps): ReactNode {
       </IconWrapper>
       <AccountWrapper>
         <h3>{shortenAddress(account)}</h3>
-        {/*TODO: add funds state*/}
-        <p>No recoverable funds</p>
+        <p>Version: {version}</p>
       </AccountWrapper>
       <div>
         <ChevronRight size={24} />

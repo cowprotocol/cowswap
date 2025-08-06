@@ -7,7 +7,7 @@ import { Title } from './styled'
 
 import { AccountItem } from '../../pure/AccountItem'
 
-const versions: CoWShedVersion[] = [COW_SHED_1_0_0_VERSION, COW_SHED_LATEST_VERSION]
+const versions: CoWShedVersion[] = [COW_SHED_LATEST_VERSION, COW_SHED_1_0_0_VERSION]
 
 export function AccountProxiesPage(): ReactNode {
   const { chainId, account } = useWalletInfo()
@@ -18,16 +18,16 @@ export function AccountProxiesPage(): ReactNode {
     return versions.map((version) => {
       const sdk = new CowShedHooks(chainId, undefined, version)
 
-      return sdk.proxyOf(account)
+      return { account: sdk.proxyOf(account), version }
     })
   }, [chainId, account])
 
   return (
     <div>
-      <Title>Choose a proxy account</Title>
+      <Title>Select a proxy account to see the amounts available for refund</Title>
       <div>
-        {proxies?.map((proxy) => {
-          return <AccountItem key={proxy} chainId={chainId} account={proxy} />
+        {proxies?.map(({ account, version }) => {
+          return <AccountItem key={account} chainId={chainId} account={account} version={version} />
         })}
       </div>
     </div>

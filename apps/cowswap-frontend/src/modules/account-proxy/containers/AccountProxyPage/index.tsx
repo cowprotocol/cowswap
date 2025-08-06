@@ -28,8 +28,9 @@ export function AccountProxyPage(): ReactNode {
   const refundAmounts = useRefundAmounts()
   const balances = useTokensBalances()
 
-  const isSomeTokenLoading =
-    balances.isLoading || (!!refundAmounts && Object.values(refundAmounts).some((t) => t.isLoading))
+  const refundValues = refundAmounts ? Object.values(refundAmounts) : null
+
+  const isSomeTokenLoading = !!refundValues?.length ? refundValues.some((t) => t.isLoading) : balances.isLoading
 
   const totalUsdAmount = refundAmounts ? sumUpUsdAmounts(chainId, refundAmounts) : null
 
@@ -44,8 +45,8 @@ export function AccountProxyPage(): ReactNode {
         loading={isSomeTokenLoading}
       />
       <Title>Recoverable tokens · {tokensToRefund?.length || 0}</Title>
-      {refundAmounts &&
-        Object.values(refundAmounts).map(({ token, balance, usdAmount }) => {
+      {refundValues &&
+        refundValues.map(({ token, balance, usdAmount }) => {
           return (
             <LinkStyled
               key={token.address}
