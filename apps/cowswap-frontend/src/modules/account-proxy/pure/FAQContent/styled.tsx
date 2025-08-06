@@ -9,6 +9,11 @@ export const FAQWrapper = styled.div`
   gap: 10px;
   margin: 24px 0 0;
   width: 100%;
+
+  ul {
+    margin: 0;
+    padding: 0 0 0 20px;
+  }
 `
 
 export const FAQItem = styled.details`

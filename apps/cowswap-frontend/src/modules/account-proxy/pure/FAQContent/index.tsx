@@ -10,6 +10,8 @@ import { Link } from 'react-router'
 
 import { FAQItem, FAQWrapper } from './styled'
 
+import { COW_SHED_VERSIONS } from '../../consts'
+
 const FAQ_DATA = [
   {
     question: `What is ${ACCOUNT_PROXY_LABEL}?`,
@@ -23,13 +25,22 @@ const FAQ_DATA = [
         .
         <br />
         <br />
-        This contract is deployed only once per account, with that account becoming the single owner. CoW Shed acts as
-        an intermediary account that handles trading on your behalf.
+        This contract is deployed per account, with that account becoming the single owner. CoW Shed acts as an
+        intermediary account that handles trading on your behalf.
+        <br />
+        <br />
+        Since {ACCOUNT_PROXY_LABEL} is not an upgradeable smart-contract, it can be versioned and there are{' '}
+        {COW_SHED_VERSIONS.length} versions of {ACCOUNT_PROXY_LABEL}:
+        <ul>
+          {COW_SHED_VERSIONS.map((v) => (
+            <li>{v}</li>
+          ))}
+        </ul>
       </>
     ),
   },
   {
-    question: 'How do I recover my funds from CoW Shed?',
+    question: `How do I recover my funds from ${ACCOUNT_PROXY_LABEL}?`,
     answer(recoverRouteLink: string) {
       return (
         <>

@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
 
-import { COW_SHED_1_0_0_VERSION, COW_SHED_LATEST_VERSION, CowShedHooks, CoWShedVersion } from '@cowprotocol/cow-sdk'
+import { CowShedHooks, CoWShedVersion } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-const versions: CoWShedVersion[] = [COW_SHED_LATEST_VERSION, COW_SHED_1_0_0_VERSION]
+import { COW_SHED_VERSIONS } from '../consts'
 
 interface AccountProxyInfo {
   account: string
@@ -16,7 +16,7 @@ export function useAccountProxies(): AccountProxyInfo[] | null {
   return useMemo(() => {
     if (!account) return null
 
-    return versions.map((version) => {
+    return COW_SHED_VERSIONS.map((version) => {
       const sdk = new CowShedHooks(chainId, undefined, version)
 
       return { account: sdk.proxyOf(account), version }
