@@ -1,6 +1,12 @@
-import { TokenAmount, UI } from '@cowprotocol/ui'
+import { ButtonPrimary, TokenAmount, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
+
+export const ButtonPrimaryStyled = styled(ButtonPrimary)`
+  &:disabled {
+    font-size: 14px;
+  }
+`
 
 export const TokenWrapper = styled.div`
   background: var(${UI.COLOR_PAPER_DARKER});

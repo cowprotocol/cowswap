@@ -34,7 +34,7 @@ export interface RecoverFundsContext {
 
 export function useRecoverFundsFromProxy(
   proxyAddress: string | undefined,
-  proxyVersion: CoWShedVersion,
+  proxyVersion: CoWShedVersion | undefined,
   selectedTokenAddress: string | undefined,
   tokenBalance: CurrencyAmount<Currency> | null,
   isNativeToken: boolean,

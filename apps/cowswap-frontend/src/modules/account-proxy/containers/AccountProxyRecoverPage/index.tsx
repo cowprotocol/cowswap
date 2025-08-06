@@ -1,23 +1,38 @@
 import { ReactNode } from 'react'
 
+import { areAddressesEqual, getIsNativeToken, isFractionFalsy } from '@cowprotocol/common-utils'
 import { TokenLogo } from '@cowprotocol/tokens'
-import { ButtonPrimary, ButtonSize, FiatAmount, Loader, TokenSymbol } from '@cowprotocol/ui'
+import { ButtonSize, CenteredDots, FiatAmount, Loader, TokenSymbol } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useParams } from 'react-router'
 
-import { BalanceWrapper, TokenAmountStyled, TokenLogoWrapper, TokenWrapper } from './styled'
+import { BalanceWrapper, ButtonPrimaryStyled, TokenAmountStyled, TokenLogoWrapper, TokenWrapper } from './styled'
 
+import { useAccountProxies } from '../../hooks/useAccountProxies'
+import { useRecoverFundsCallback } from '../../hooks/useRecoverFundsCallback'
+import { RecoverSigningStep, useRecoverFundsFromProxy } from '../../hooks/useRecoverFundsFromProxy'
 import { useTokenBalanceAndUsdValue } from '../../hooks/useTokenBalanceAndUsdValue'
 
 export function AccountProxyRecoverPage(): ReactNode {
-  const { tokenAddress } = useParams()
+  const { chainId } = useWalletInfo()
+  const { proxyAddress, tokenAddress } = useParams()
 
   const { balance, usdValue } = useTokenBalanceAndUsdValue(tokenAddress)
 
-  const onRecover = (): void => {
-    // TODO: add a listener
-    console.log('onRecover')
-  }
+  const proxies = useAccountProxies()
+  const proxyVersion = proxies?.find((p) => areAddressesEqual(p.account, proxyAddress))?.version
+
+  const recoverFundsContext = useRecoverFundsFromProxy(
+    proxyAddress,
+    proxyVersion,
+    tokenAddress,
+    balance,
+    !!tokenAddress && getIsNativeToken(chainId, tokenAddress),
+  )
+  const { txSigningStep } = recoverFundsContext
+
+  const onRecover = useRecoverFundsCallback(recoverFundsContext)
 
   return (
     <div>
@@ -42,9 +57,21 @@ export function AccountProxyRecoverPage(): ReactNode {
           <FiatAmount amount={usdValue} />
         </div>
       </TokenWrapper>
-      <ButtonPrimary disabled={!balance} buttonSize={ButtonSize.BIG} onClick={onRecover}>
-        Recover funds
-      </ButtonPrimary>
+
+      <ButtonPrimaryStyled
+        disabled={isFractionFalsy(balance) || !!txSigningStep}
+        buttonSize={ButtonSize.BIG}
+        onClick={onRecover}
+      >
+        {txSigningStep && (
+          <>
+            {txSigningStep === RecoverSigningStep.SIGN_RECOVER_FUNDS && '1/2 Confirm funds recovering'}
+            {txSigningStep === RecoverSigningStep.SIGN_TRANSACTION && '2/2 Sign transaction'}
+            <CenteredDots smaller />
+          </>
+        )}
+        {!txSigningStep && 'Recover funds'}
+      </ButtonPrimaryStyled>
     </div>
   )
 }
