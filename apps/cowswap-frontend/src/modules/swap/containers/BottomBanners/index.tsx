@@ -8,7 +8,7 @@ import { Link } from 'react-router'
 import styled from 'styled-components/macro'
 import { WIDGET_MAX_WIDTH } from 'theme'
 
-import { getShedRouteLink, CoWShedWidgetTabs } from 'modules/cowShed'
+import { getProxyAccountUrl } from 'modules/account-proxy'
 import { useIsHooksTradeType } from 'modules/trade'
 
 import { NetworkBridgeBanner } from '../NetworkBridgeBanner/NetworkBridgeBanner'
@@ -25,7 +25,7 @@ const Wrapper = styled.div`
 export function BottomBanners(): ReactNode {
   const { chainId, account } = useWalletInfo()
   const isHookTradeType = useIsHooksTradeType()
-  const cowShedLink = getShedRouteLink(chainId, CoWShedWidgetTabs.RECOVER_FUNDS, undefined, 'hooks')
+  const accountProxyUrl = getProxyAccountUrl(chainId, 'hooks')
 
   return (
     <Wrapper>
@@ -39,7 +39,7 @@ export function BottomBanners(): ReactNode {
           backDropBlur
           margin="10px auto auto"
         >
-          Funds stuck? <Link to={cowShedLink}>Recover your funds</Link>
+          Funds stuck? <Link to={accountProxyUrl}>Recover your funds</Link>
         </InlineBanner>
       )}
     </Wrapper>

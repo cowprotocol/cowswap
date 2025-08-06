@@ -3,7 +3,9 @@ import { ReactNode } from 'react'
 import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
 import { BannerOrientation, CollapsibleInlineBanner, StatusColorVariant } from '@cowprotocol/ui'
 
-import { useSetShedModal } from 'entities/cowShed/useCowShedModal'
+import { Link } from 'react-router'
+
+import { getProxyAccountUrl } from 'modules/account-proxy'
 
 import { AddressLink } from 'common/pure/AddressLink'
 
@@ -13,14 +15,6 @@ interface ProxyAccountBannerProps {
 }
 
 export function ProxyAccountBanner({ recipient, chainId }: ProxyAccountBannerProps): ReactNode {
-  const setCowShedModal = useSetShedModal()
-
-  const handleReadMore = (): void => {
-    setCowShedModal((state) => ({
-      ...state,
-      isOpen: true,
-    }))
-  }
   return (
     <CollapsibleInlineBanner
       bannerType={StatusColorVariant.Info}
@@ -33,13 +27,13 @@ export function ProxyAccountBanner({ recipient, chainId }: ProxyAccountBannerPro
       }
       expandedContent={
         <div>
-          CoW Swap uses a dedicated {ACCOUNT_PROXY_LABEL}, controlled only by you, to ensure smooooth bridging. Confirm the
-          recipient address above is <AddressLink address={recipient} chainId={chainId} />
+          CoW Swap uses a dedicated {ACCOUNT_PROXY_LABEL}, controlled only by you, to ensure smooooth bridging. Confirm
+          the recipient address above is <AddressLink address={recipient} chainId={chainId} />
           <br />
           <br />
-          <b onClick={handleReadMore} style={{ cursor: 'pointer', textDecoration: 'underline' }}>
-            View your private {ACCOUNT_PROXY_LABEL} +{' '}
-          </b>
+          <Link to={getProxyAccountUrl(chainId)} target="_blank">
+            <b style={{ cursor: 'pointer', textDecoration: 'underline' }}>View your private {ACCOUNT_PROXY_LABEL} + </b>
+          </Link>
         </div>
       }
     />

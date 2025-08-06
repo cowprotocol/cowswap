@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { getChainInfo } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { useCurrentAccountProxy } from 'modules/cowShed'
+import { useCurrentAccountProxy } from 'modules/account-proxy'
 import { useGetReceiveAmountInfo } from 'modules/trade/hooks/useGetReceiveAmountInfo'
 import { BRIDGE_QUOTE_ACCOUNT } from 'modules/tradeQuote'
 import { useIsSlippageModified, useTradeSlippage } from 'modules/tradeSlippage'
@@ -46,5 +46,13 @@ export function useQuoteSwapContext(): QuoteSwapContext | null {
       minReceiveUsdValue: swapMinReceiveAmountUsd,
       expectedReceiveUsdValue: swapExpectedReceiveUsd,
     }
-  }, [receiveAmountInfo, quoteAmounts, slippage, isSlippageModified, cowShedAddress, swapMinReceiveAmountUsd, swapExpectedReceiveUsd])
+  }, [
+    receiveAmountInfo,
+    quoteAmounts,
+    slippage,
+    isSlippageModified,
+    cowShedAddress,
+    swapMinReceiveAmountUsd,
+    swapExpectedReceiveUsd,
+  ])
 }
