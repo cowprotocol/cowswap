@@ -28,8 +28,8 @@ export const LeftTop = styled.div`
   }
 
   > h2 {
-    font-size: 36px;
-    font-weight: 500;
+    font-size: 36px !important;
+    font-weight: 500 !important;
   }
 `
 

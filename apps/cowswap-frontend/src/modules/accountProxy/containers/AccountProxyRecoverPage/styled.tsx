@@ -15,13 +15,13 @@ export const TokenWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
-  font-size: 14px;
+  font-size: 14px !important;
   margin-bottom: 10px;
 
   > p {
     color: var(${UI.COLOR_TEXT_OPACITY_70});
-    margin: 0;
-    padding: 0;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 `
 
