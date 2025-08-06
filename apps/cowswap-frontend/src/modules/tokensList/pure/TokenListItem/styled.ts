@@ -54,6 +54,7 @@ export const TokenBalance = styled.span`
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
+  align-items: end;
 
   > span {
     text-align: right;
