@@ -1,11 +1,16 @@
-import { ReactNode } from 'react'
+import { ReactNode, useCallback, useState } from 'react'
 
+import { useUpdateTokenBalance } from '@cowprotocol/balances-and-allowances'
+import { useComponentDestroyedRef } from '@cowprotocol/common-hooks'
 import { areAddressesEqual, getIsNativeToken, isFractionFalsy } from '@cowprotocol/common-utils'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { ButtonSize, CenteredDots, FiatAmount, Loader, TokenSymbol } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
+import { BigNumber } from '@ethersproject/bignumber'
 
 import { useParams } from 'react-router'
+
+import { useNavigateBack } from 'common/hooks/useNavigate'
 
 import { BalanceWrapper, ButtonPrimaryStyled, TokenAmountStyled, TokenLogoWrapper, TokenWrapper } from './styled'
 
@@ -13,14 +18,19 @@ import { useAccountProxies } from '../../hooks/useAccountProxies'
 import { useRecoverFundsCallback } from '../../hooks/useRecoverFundsCallback'
 import { RecoverSigningStep, useRecoverFundsFromProxy } from '../../hooks/useRecoverFundsFromProxy'
 import { useTokenBalanceAndUsdValue } from '../../hooks/useTokenBalanceAndUsdValue'
+import { processRecoverTransaction } from '../../services/processRecoverTransaction'
 
 export function AccountProxyRecoverPage(): ReactNode {
   const { chainId } = useWalletInfo()
   const { proxyAddress, tokenAddress } = useParams()
+  const [txInProgress, setTxInProgress] = useState(false)
 
+  const navigateBack = useNavigateBack()
   const { balance, usdValue } = useTokenBalanceAndUsdValue(tokenAddress)
+  const destroyedRef = useComponentDestroyedRef()
 
   const proxies = useAccountProxies()
+  const updateTokenBalance = useUpdateTokenBalance()
   const proxyVersion = proxies?.find((p) => areAddressesEqual(p.account, proxyAddress))?.version
 
   const recoverFundsContext = useRecoverFundsFromProxy(
@@ -32,7 +42,27 @@ export function AccountProxyRecoverPage(): ReactNode {
   )
   const { txSigningStep } = recoverFundsContext
 
-  const onRecover = useRecoverFundsCallback(recoverFundsContext)
+  const recoverCallback = useRecoverFundsCallback(recoverFundsContext)
+
+  const onRecover = useCallback(() => {
+    recoverCallback().then((txHash) => {
+      if (!txHash) return
+
+      setTxInProgress(true)
+
+      processRecoverTransaction(
+        txHash,
+        destroyedRef,
+        // When tx is finished (successfully or not)
+        () => setTxInProgress(false),
+        // When tx is successfully mined
+        () => {
+          navigateBack()
+          tokenAddress && updateTokenBalance(tokenAddress, BigNumber.from(0))
+        },
+      )
+    })
+  }, [recoverCallback, navigateBack, updateTokenBalance, tokenAddress, destroyedRef])
 
   return (
     <div>
@@ -59,18 +89,19 @@ export function AccountProxyRecoverPage(): ReactNode {
       </TokenWrapper>
 
       <ButtonPrimaryStyled
-        disabled={isFractionFalsy(balance) || !!txSigningStep}
+        disabled={isFractionFalsy(balance) || !!txSigningStep || txInProgress}
         buttonSize={ButtonSize.BIG}
         onClick={onRecover}
       >
-        {txSigningStep && (
+        {txInProgress && <Loader />}
+        {txSigningStep && !txInProgress && (
           <>
             {txSigningStep === RecoverSigningStep.SIGN_RECOVER_FUNDS && '1/2 Confirm funds recovering'}
             {txSigningStep === RecoverSigningStep.SIGN_TRANSACTION && '2/2 Sign transaction'}
             <CenteredDots smaller />
           </>
         )}
-        {!txSigningStep && 'Recover funds'}
+        {!txSigningStep && !txInProgress && 'Recover funds'}
       </ButtonPrimaryStyled>
     </div>
   )
