@@ -1819,6 +1819,17 @@
     json-stringify-deterministic "^1.0.8"
     multiformats "^9.6.4"
 
+"@cowprotocol/app-data@^3.3.0":
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/app-data/-/app-data-3.3.0.tgz#644e7473a00eb5e6694a34d34b4359c6d7ef1060"
+  integrity sha512-3lfknouwg+j/xSyL5u5FI8rAlGPkzi+QsmXQvPS0O0ETaikx9v9pt5t3pZOv6jtsAmafFBFPtAUp/cdPrDSUaA==
+  dependencies:
+    ajv "^8.11.0"
+    cross-fetch "^3.1.5"
+    ipfs-only-hash "^4.0.0"
+    json-stringify-deterministic "^1.0.8"
+    multiformats "^9.6.4"
+
 "@cowprotocol/cms@^0.11.0":
   version "0.11.0"
   resolved "https://registry.yarnpkg.com/@cowprotocol/cms/-/cms-0.11.0.tgz#a355b07b84b362c1a01dc046acd8367d3d641235"
@@ -1841,12 +1852,12 @@
   resolved "https://registry.yarnpkg.com/@cowprotocol/cow-runner-game/-/cow-runner-game-0.2.9.tgz#3f94b3f370bd114f77db8b1d238cba3ef4e9d644"
   integrity sha512-rX7HnoV+HYEEkBaqVUsAkGGo0oBrExi+d6Io+8nQZYwZk+IYLmS9jdcIObsLviM2h4YX8+iin6NuKl35AaiHmg==
 
-"@cowprotocol/cow-sdk@6.0.0":
-  version "6.0.0"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-6.0.0.tgz#eb84fd753825c897453863835a1d8f195eae4c1a"
-  integrity sha512-OrNNTh1Uq0MXoj6znjbYiGQ/NeiMW0UaDkCQ0G8WXclwpnO1+EAwDCe45E1qq8D/v+rf0ZH3y2R6bdgA+FMgKQ==
+"@cowprotocol/cow-sdk@6.1.0-RC.0":
+  version "6.1.0-RC.0"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-6.1.0-RC.0.tgz#a7c05c38aed693f2ddd29c9868bd4e1a58030aaa"
+  integrity sha512-jsSNZzv1KqAhkxAYyR30bHCXoIQHn4amTtVz8TMOBaeDRlS7QfjKPx81pXf6Cz7Qsb1jHnPuS8Cuv3ITulWy8g==
   dependencies:
-    "@cowprotocol/app-data" "^3.2.0"
+    "@cowprotocol/app-data" "^3.3.0"
     "@cowprotocol/contracts" "^1.8.0"
     "@ethersproject/abstract-signer" "^5.8.0"
     "@openzeppelin/merkle-tree" "^1.0.8"
