@@ -7,7 +7,7 @@ import { Outlet, useLocation, useParams } from 'react-router'
 
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
-import { useSwapRawState } from 'modules/swap'
+import { useSwapRawState } from 'modules/swap/hooks/useSwapRawState'
 import { useTradeNavigate } from 'modules/trade'
 
 import { Routes } from 'common/constants/routes'
