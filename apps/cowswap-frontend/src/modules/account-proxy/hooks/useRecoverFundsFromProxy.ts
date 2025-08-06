@@ -3,6 +3,7 @@ import { useCallback, useState } from 'react'
 import { CowShedContract, CowShedContractAbi } from '@cowprotocol/abis'
 import { delay } from '@cowprotocol/common-utils'
 import { SigningScheme } from '@cowprotocol/contracts'
+import { CoWShedVersion } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { formatBytes32String } from '@ethersproject/strings'
@@ -13,7 +14,6 @@ import ms from 'ms.macro'
 import { useContract } from 'common/hooks/useContract'
 
 import { useCowShedHooks } from './useCowShedHooks'
-import { useCurrentAccountProxyAddress } from './useCurrentAccountProxy'
 
 import { getRecoverFundsCalls } from '../services/getRecoverFundsCalls'
 
@@ -33,6 +33,8 @@ export interface RecoverFundsContext {
 }
 
 export function useRecoverFundsFromProxy(
+  proxyAddress: string | undefined,
+  proxyVersion: CoWShedVersion,
   selectedTokenAddress: string | undefined,
   tokenBalance: CurrencyAmount<Currency> | null,
   isNativeToken: boolean,
@@ -41,13 +43,11 @@ export function useRecoverFundsFromProxy(
 
   const provider = useWalletProvider()
   const { account } = useWalletInfo()
-  const cowShedHooks = useCowShedHooks()
+  const cowShedHooks = useCowShedHooks(proxyVersion)
 
   const factoryAddress = cowShedHooks?.getFactoryAddress()
 
   const { contract: cowShedContract } = useContract<CowShedContract>(factoryAddress, CowShedContractAbi)
-
-  const proxyAddress = useCurrentAccountProxyAddress()
 
   const callback = useCallback(async () => {
     if (
