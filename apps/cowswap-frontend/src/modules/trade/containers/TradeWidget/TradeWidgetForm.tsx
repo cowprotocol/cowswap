@@ -258,7 +258,13 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
                     {...currencyInputCommonProps}
                   />
                 </div>
-                {withRecipient && <SetRecipient recipient={recipient || ''} onChangeRecipient={onChangeRecipient} />}
+                {withRecipient && (
+                  <SetRecipient 
+                    recipient={recipient || ''} 
+                    onChangeRecipient={onChangeRecipient}
+                    destinationChainId={buyToken?.chainId as SupportedChainId}
+                  />
+                )}
 
                 {isWrapOrUnwrap ? (
                   sellToken ? (

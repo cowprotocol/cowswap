@@ -1,9 +1,12 @@
-import { ReactNode, useState } from 'react'
+import { ReactNode, useState, useEffect } from 'react'
 
 import { BridgeProviderInfo } from '@cowprotocol/cow-sdk'
 import { Media } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
+
+import { RecipientRow } from 'modules/trade'
+import { useRecipientValidation } from 'modules/tradeWidgetAddons'
 
 import { RouteOverviewTitle } from '../RouteOverviewTitle'
 
@@ -21,6 +24,13 @@ const Wrapper = styled.div`
   }
 `
 
+const RecipientWrapper = styled.div`
+  font-size: 13px;
+  margin: 6px 0 0;
+  font-weight: 500;
+  width: 100%;
+`
+
 interface CollapsibleBridgeRouteProps {
   isCollapsible?: boolean
   isExpanded?: boolean
@@ -28,15 +38,48 @@ interface CollapsibleBridgeRouteProps {
   providerInfo: BridgeProviderInfo
   collapsedDefault?: ReactNode
   className?: string
+  recipient?: string | null
+  recipientEnsName?: string | null
+  account?: string | null
+  recipientChainId?: number
 }
 
 export function CollapsibleBridgeRoute(props: CollapsibleBridgeRouteProps): ReactNode {
-  const { isCollapsible = false, children, providerInfo, collapsedDefault, className } = props
+  const {
+    isCollapsible = false,
+    children,
+    providerInfo,
+    collapsedDefault,
+    className,
+    isExpanded: propIsExpanded,
+    recipient,
+    recipientEnsName,
+    account,
+    recipientChainId,
+  } = props
 
-  const [isExpanded, setIsExpanded] = useState(props.isExpanded || false)
+  const [isExpanded, setIsExpanded] = useState(propIsExpanded ?? false)
+
+  // Regular support for direct isExpanded prop
+  useEffect(() => {
+    if (propIsExpanded === true) {
+      setIsExpanded(true)
+    }
+  }, [propIsExpanded])
 
   // TODO: Add proper return type annotation
   const toggleExpanded = (): void => setIsExpanded((state) => !state)
+
+  // Show recipient row when collapsed
+  const recipientValidation = useRecipientValidation({
+    recipient,
+    recipientEnsName,
+    recipientChainId,
+    account,
+    isFeeDetailsOpen: isExpanded, // Hide when expanded, show when collapsed
+  })
+
+  const recipientRow = recipientValidation.isValid ? <RecipientRow {...recipientValidation.props} /> : null
 
   return (
     <Wrapper className={className}>
@@ -49,6 +92,7 @@ export function CollapsibleBridgeRoute(props: CollapsibleBridgeRouteProps): Reac
         />
       )}
       {isExpanded ? children : collapsedDefault}
+      {!isExpanded && recipientRow && <RecipientWrapper>{recipientRow}</RecipientWrapper>}
     </Wrapper>
   )
 }
