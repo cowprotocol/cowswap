@@ -11,7 +11,6 @@ import { Routes } from 'common/constants/routes'
 import { ChevronWrapper, LinkStyled, Title, TokenListItemStyled, Wrapper } from './styled'
 
 import { useRefundAmounts } from '../../hooks/useRefundAmounts'
-import { useSetupBalancesContext } from '../../hooks/useSetupBalancesContext'
 import { useTokensToRefund } from '../../hooks/useTokensToRefund'
 import { AccountCard } from '../../pure/AccountCard'
 import { parameterizeRoute } from '../../utils/parameterizeRoute'
@@ -20,9 +19,6 @@ import { sumUpUsdAmounts } from '../../utils/sumUpUsdAmounts'
 export function AccountProxyPage(): ReactNode {
   const { chainId } = useWalletInfo()
   const { proxyAddress } = useParams()
-
-  // Switch BalancesUpdater context to the current proxy
-  useSetupBalancesContext(proxyAddress)
 
   const tokensToRefund = useTokensToRefund()
   const refundAmounts = useRefundAmounts()

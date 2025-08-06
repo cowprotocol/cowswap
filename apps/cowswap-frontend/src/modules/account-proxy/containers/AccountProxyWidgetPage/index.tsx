@@ -3,7 +3,7 @@ import { ReactNode, useRef, useState } from 'react'
 import { useOnClickOutside } from '@cowprotocol/common-hooks'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { Outlet, useLocation } from 'react-router'
+import { Outlet, useLocation, useParams } from 'react-router'
 
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
@@ -16,6 +16,7 @@ import { NewModal } from 'common/pure/NewModal'
 import { EmptyWrapper, HelpLink, ModalWrapper, TitleWrapper, WidgetWrapper } from './styled'
 
 import { useNavigateBack } from '../../../../common/hooks/useNavigate'
+import { useSetupBalancesContext } from '../../hooks/useSetupBalancesContext'
 import { WalletNotConnected } from '../../pure/WalletNotConnected'
 import { parameterizeRoute } from '../../utils/parameterizeRoute'
 
@@ -36,8 +37,12 @@ export function AccountProxyWidgetPage({
   const tradeNavigate = useTradeNavigate()
   const { inputCurrencyId, outputCurrencyId } = useSwapRawState()
   const location = useLocation()
+  const { proxyAddress } = useParams()
   const navigateBack = useNavigateBack()
   const toggleWalletModal = useToggleWalletModal()
+
+  // Switch BalancesUpdater context to the current proxy
+  useSetupBalancesContext(proxyAddress)
 
   const isWalletConnected = !!account
   const isHelpPage = location.pathname.endsWith('/help')
