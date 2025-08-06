@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { getChainInfo } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { useCurrentAccountProxy } from 'modules/account-proxy'
+import { useCurrentAccountProxy } from 'modules/accountProxy'
 import { useGetReceiveAmountInfo } from 'modules/trade/hooks/useGetReceiveAmountInfo'
 import { BRIDGE_QUOTE_ACCOUNT } from 'modules/tradeQuote'
 import { useIsSlippageModified, useTradeSlippage } from 'modules/tradeSlippage'

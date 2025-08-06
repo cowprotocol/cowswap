@@ -5,7 +5,7 @@ import { BannerOrientation, CollapsibleInlineBanner, StatusColorVariant } from '
 
 import { Link } from 'react-router'
 
-import { getProxyAccountUrl } from 'modules/account-proxy'
+import { getProxyAccountUrl } from 'modules/accountProxy'
 
 import { AddressLink } from 'common/pure/AddressLink'
 

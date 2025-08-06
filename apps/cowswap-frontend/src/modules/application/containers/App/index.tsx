@@ -3,7 +3,7 @@ import { ReactNode } from 'react'
 import ErrorBoundary from 'legacy/components/ErrorBoundary'
 import { TopLevelModals } from 'legacy/components/TopLevelModals'
 
-import { InvalidCoWShedSetup } from 'modules/account-proxy'
+import { InvalidCoWShedSetup } from 'modules/accountProxy'
 
 import RedirectAnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers/RedirectAnySwapAffectedUsers'
 

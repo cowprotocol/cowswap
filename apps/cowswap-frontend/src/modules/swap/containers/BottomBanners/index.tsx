@@ -8,7 +8,7 @@ import { Link } from 'react-router'
 import styled from 'styled-components/macro'
 import { WIDGET_MAX_WIDTH } from 'theme'
 
-import { getProxyAccountUrl } from 'modules/account-proxy'
+import { getProxyAccountUrl } from 'modules/accountProxy'
 import { useIsHooksTradeType } from 'modules/trade'
 
 import { NetworkBridgeBanner } from '../NetworkBridgeBanner/NetworkBridgeBanner'

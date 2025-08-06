@@ -5,7 +5,7 @@ import { useENSAddress } from '@cowprotocol/ens'
 import { useIsTradeUnsupported } from '@cowprotocol/tokens'
 import { useGnosisSafeInfo, useIsTxBundlingSupported, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
-import { useCurrentAccountProxy } from 'modules/account-proxy'
+import { useCurrentAccountProxy } from 'modules/accountProxy'
 import { useTryFindIntermediateToken } from 'modules/bridge'
 import { useTokenSupportsPermit } from 'modules/permit'
 import { TradeType, useAmountsToSign, useDerivedTradeState, useIsWrapOrUnwrap } from 'modules/trade'

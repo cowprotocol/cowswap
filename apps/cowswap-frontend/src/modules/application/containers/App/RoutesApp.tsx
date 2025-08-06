@@ -21,7 +21,7 @@ import {
   AccountProxyPage,
   AccountProxyRecoverPage,
   AccountProxiesPage,
-} from 'modules/account-proxy'
+} from 'modules/accountProxy'
 
 import { Routes as RoutesEnum, RoutesValues } from 'common/constants/routes'
 import Account, { AccountOverview } from 'pages/Account'

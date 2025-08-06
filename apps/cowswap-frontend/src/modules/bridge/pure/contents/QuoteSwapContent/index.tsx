@@ -4,7 +4,7 @@ import { isTruthy } from '@cowprotocol/common-utils'
 import { InfoTooltip, PercentDisplay } from '@cowprotocol/ui'
 import { Percent } from '@uniswap/sdk-core'
 
-import { ProxyRecipient } from 'modules/account-proxy'
+import { ProxyRecipient } from 'modules/accountProxy'
 import { ReceiveAmountTitle, TradeFeesAndCosts, ConfirmDetailsItem } from 'modules/trade'
 import { BRIDGE_QUOTE_ACCOUNT } from 'modules/tradeQuote'
 import { RowSlippage } from 'modules/tradeWidgetAddons'
