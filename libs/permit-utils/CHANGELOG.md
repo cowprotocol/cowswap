@@ -1,6 +1,6 @@
 # Changelog
 
-## [0.6.3](https://github.com/cowprotocol/cowswap/compare/permit-utils-v0.6.2...permit-utils-v0.6.3) (2025-08-07)
+## [0.7.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v0.6.2...permit-utils-v0.7.0) (2025-08-07)
 
 
 ### Bug Fixes
