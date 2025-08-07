@@ -21,7 +21,6 @@ import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRou
 
 import { Routes } from 'common/constants/routes'
 import { useApproveCallback } from 'common/hooks/useApproveCallback'
-import { ApprovalState } from 'common/hooks/useApproveState'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { getApprovalState } from 'common/utils/getApprovalState'
 import { CardsSpinner, ExtLink } from 'pages/Account/styled'
@@ -39,6 +38,8 @@ import {
   TableButton,
   TokenText,
 } from './styled'
+
+import { ApprovalState } from '../../../modules/erc20Approve/hooks/useApproveState'
 
 type DataRowParams = {
   tokenData: TokenWithLogo

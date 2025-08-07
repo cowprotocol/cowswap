@@ -4,8 +4,7 @@ import { PriceQuality } from '@cowprotocol/cow-sdk'
 import { TradeType } from 'modules/trade'
 import { isQuoteExpired } from 'modules/tradeQuote'
 
-import { ApprovalState } from 'common/hooks/useApproveState'
-
+import { ApprovalState } from '../../erc20Approve/hooks/useApproveState'
 import { TradeFormValidation, TradeFormValidationContext } from '../types'
 
 // eslint-disable-next-line max-lines-per-function, complexity

@@ -12,9 +12,9 @@ import { TradeType, useAmountsToSign, useDerivedTradeState, useIsWrapOrUnwrap } 
 import { TradeQuoteState, useTradeQuote } from 'modules/tradeQuote'
 
 import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
-import { useApproveState } from 'common/hooks/useApproveState'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
+import { useApproveState } from '../../erc20Approve/hooks/useApproveState'
 import { TradeFormValidationCommonContext } from '../types'
 
 export function useTradeFormValidationContext(): TradeFormValidationCommonContext | null {

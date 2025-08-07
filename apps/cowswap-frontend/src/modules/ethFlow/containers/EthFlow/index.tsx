@@ -13,7 +13,6 @@ import { WrapUnwrapCallback } from 'legacy/hooks/useWrapCallback'
 import { useWrappedToken } from 'modules/trade'
 
 import { useTradeApproveCallback } from 'common/containers/TradeApprove'
-import { useApproveState } from 'common/hooks/useApproveState'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import { useEthFlowActions } from './hooks/useEthFlowActions'
@@ -21,6 +20,7 @@ import useRemainingNativeTxsAndCosts from './hooks/useRemainingNativeTxsAndCosts
 import { useSetupEthFlow } from './hooks/useSetupEthFlow'
 import { getDerivedEthFlowState } from './utils/getDerivedEthFlowState'
 
+import { useApproveState } from '../../../erc20Approve/hooks/useApproveState'
 import { EthFlowModalContent } from '../../pure/EthFlowModalContent'
 import { WrappingPreviewProps } from '../../pure/WrappingPreview'
 import { ethFlowContextAtom } from '../../state/ethFlowContextAtom'

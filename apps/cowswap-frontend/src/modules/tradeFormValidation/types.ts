@@ -3,8 +3,7 @@ import { Command } from '@cowprotocol/types'
 import { TradeDerivedState } from 'modules/trade'
 import { TradeQuoteState } from 'modules/tradeQuote'
 
-import { ApprovalState } from 'common/hooks/useApproveState'
-
+import { ApprovalState } from '../erc20Approve/hooks/useApproveState'
 import { AmountsToSign } from '../trade/hooks/useAmountsToSign'
 
 export enum TradeFormValidation {
@@ -81,6 +80,8 @@ export interface TradeFormButtonContext {
   widgetStandaloneMode?: boolean
 
   confirmTrade(): void
+
   connectWallet: Command
+
   wrapNativeFlow(): void
 }

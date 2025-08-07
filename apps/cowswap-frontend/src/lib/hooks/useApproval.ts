@@ -8,9 +8,10 @@ import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
-import { ApprovalState } from 'common/hooks/useApproveState'
 import { useTokenContract } from 'common/hooks/useContract'
 import { useTokenAllowance } from 'common/hooks/useTokenAllowance'
+
+import { ApprovalState } from '../../modules/erc20Approve/hooks/useApproveState'
 
 export interface ApprovalStateForSpenderResult {
   approvalState: ApprovalState

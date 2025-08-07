@@ -5,10 +5,9 @@ import { Command } from '@cowprotocol/types'
 
 import { ActivityDescriptors } from 'legacy/hooks/useRecentActivity'
 
-import { ApprovalState } from 'common/hooks/useApproveState'
-
 import { useHandleChainChange } from './useHandleChainChange'
 
+import { ApprovalState } from '../../../../erc20Approve/hooks/useApproveState'
 import { resetEthFlowContextAtom, updateEthFlowContextAtom } from '../../../state/ethFlowContextAtom'
 
 interface EthFlowSetupParams {
