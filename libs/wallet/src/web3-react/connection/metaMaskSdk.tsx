@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { RPC_URLS } from '@cowprotocol/common-const'
 import { initializeConnector } from '@web3-react/core'
 
@@ -40,9 +42,7 @@ export const metaMaskSdkConnection: Web3ReactConnection = {
   type: ConnectionType.METAMASK,
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function MetaMaskSdkOption({ tryActivation, selectedWallet }: ConnectionOptionProps) {
+export function MetaMaskSdkOption({ tryActivation, selectedWallet }: ConnectionOptionProps): ReactNode {
   const isActive = useIsActiveConnection(selectedWallet, metaMaskSdkConnection)
 
   return (
