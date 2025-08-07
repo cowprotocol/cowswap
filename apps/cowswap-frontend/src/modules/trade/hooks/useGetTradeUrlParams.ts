@@ -1,9 +1,10 @@
 import { useCallback } from 'react'
 
+import { IMenuItem, Routes } from 'common/constants/routes'
+
 import { useIsCurrentTradeBridging } from './useIsCurrentTradeBridging'
 import { useTradeRouteContext } from './useTradeRouteContext'
 
-import { IMenuItem, Routes } from '../../../common/constants/routes'
 import { getDefaultTradeRawState, TradeUrlParams } from '../types'
 
 /**

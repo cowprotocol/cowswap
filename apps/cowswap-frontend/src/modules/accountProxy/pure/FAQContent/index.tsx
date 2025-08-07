@@ -33,7 +33,7 @@ const FAQ_DATA = [
         {COW_SHED_VERSIONS.length} versions of {ACCOUNT_PROXY_LABEL}:
         <ul>
           {COW_SHED_VERSIONS.map((v) => (
-            <li>{v}</li>
+            <li key={v}>{v}</li>
           ))}
         </ul>
       </>

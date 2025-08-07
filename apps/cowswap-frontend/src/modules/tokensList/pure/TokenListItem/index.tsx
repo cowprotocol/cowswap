@@ -1,7 +1,7 @@
 import { MouseEventHandler, ReactNode } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { getCurrencyAddress } from '@cowprotocol/common-utils'
+import { areAddressesEqual, getCurrencyAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenListTags } from '@cowprotocol/tokens'
 import { FiatAmount, LoadingRows, LoadingRowSmall, TokenAmount } from '@cowprotocol/ui'
@@ -69,7 +69,7 @@ export function TokenListItem(props: TokenListItemProps): ReactNode {
 
   const isTokenSelected = Boolean(
     selectedToken &&
-      token.address.toLowerCase() === getCurrencyAddress(selectedToken).toLowerCase() &&
+      areAddressesEqual(token.address, getCurrencyAddress(selectedToken)) &&
       token.chainId === selectedToken.chainId,
   )
 
