@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v0.6.2...permit-utils-v0.7.0) (2025-08-07)
+
+
+### Bug Fixes
+
+* **trade:** use salt for eip712 if it's needed ([#6086](https://github.com/cowprotocol/cowswap/issues/6086)) ([bb6f26c](https://github.com/cowprotocol/cowswap/commit/bb6f26c72781df087e018ec14d9fefcbc225baa3))
+
 ## [0.6.2](https://github.com/cowprotocol/cowswap/compare/permit-utils-v0.6.1...permit-utils-v0.6.2) (2025-05-16)
 
 
