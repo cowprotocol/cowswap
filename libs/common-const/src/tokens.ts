@@ -1,4 +1,4 @@
-import { SupportedChainId, AdditionalTargetChainId } from '@cowprotocol/cow-sdk'
+import { AdditionalTargetChainId, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { COW_CONTRACT_ADDRESS, V_COW_CONTRACT_ADDRESS } from './common'
 import { cowprotocolTokenLogoUrl } from './cowprotocolTokenLogoUrl'
@@ -358,7 +358,6 @@ export const GNO_SEPOLIA = new TokenWithLogo(
   'GNO (test)',
 )
 
-// Sepolia
 export const USDC_SEPOLIA = new TokenWithLogo(
   USDC_MAINNET.logoURI,
   SupportedChainId.SEPOLIA,
@@ -375,6 +374,9 @@ export const USDT_SEPOLIA = new TokenWithLogo(
   'USDT',
   'Tether USD',
 )
+
+// Polygon
+
 export const USDC_POLYGON = new TokenWithLogo(
   USDC_MAINNET.logoURI,
   SupportedChainId.POLYGON,
@@ -403,21 +405,13 @@ export const DAI_POLYGON = new TokenWithLogo(
   'Dai',
 )
 
+// Avalanche
+
 export const USDC_AVALANCHE = new TokenWithLogo(
   USDC_MAINNET.logoURI,
   SupportedChainId.AVALANCHE,
   // https://snowscan.xyz/token/0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e
   '0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e',
-  6,
-  'USDC',
-  'USD Coin',
-)
-
-export const USDC_OPTIMISM = new TokenWithLogo(
-  USDC_MAINNET.logoURI,
-  AdditionalTargetChainId.OPTIMISM,
-  // https://optimistic.etherscan.io/address/0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85
-  '0x0b2c639c533813f4aa9d7837caf62653d097ff85',
   6,
   'USDC',
   'USD Coin',
@@ -433,6 +427,42 @@ export const USDT_AVALANCHE = new TokenWithLogo(
   'Tether USD',
 )
 
+// Lens
+
+export const USDC_LENS = new TokenWithLogo(
+  USDC_MAINNET.logoURI,
+  SupportedChainId.LENS,
+  // https://explorer.lens.xyz/address/0x88F08E304EC4f90D644Cec3Fb69b8aD414acf884
+  '0x88F08E304EC4f90D644Cec3Fb69b8aD414acf884',
+  6,
+  'USDC',
+  'USD Coin',
+)
+
+// BNB
+
+export const USDC_BNB = new TokenWithLogo(
+  USDC_MAINNET.logoURI,
+  SupportedChainId.BNB,
+  // https://bscscan.com/address/0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d
+  '0x8ac76a51cc950d9822d68b83fe1ad97b32cd580d',
+  18, // BNB USDC has 18 decimals!!!
+  'USDC',
+  'USD Coin',
+)
+
+// Optimism
+
+export const USDC_OPTIMISM = new TokenWithLogo(
+  USDC_MAINNET.logoURI,
+  AdditionalTargetChainId.OPTIMISM,
+  // https://optimistic.etherscan.io/address/0x0b2C639c533813f4Aa9D7837CAf62653d097Ff85
+  '0x0b2c639c533813f4aa9d7837caf62653d097ff85',
+  6,
+  'USDC',
+  'USD Coin',
+)
+
 export const USDC: Record<SupportedChainId | AdditionalTargetChainId, TokenWithLogo> = {
   [SupportedChainId.MAINNET]: USDC_MAINNET,
   [SupportedChainId.GNOSIS_CHAIN]: USDC_GNOSIS_CHAIN,
@@ -442,6 +472,8 @@ export const USDC: Record<SupportedChainId | AdditionalTargetChainId, TokenWithL
   [SupportedChainId.POLYGON]: USDC_POLYGON,
   [SupportedChainId.AVALANCHE]: USDC_AVALANCHE,
   [AdditionalTargetChainId.OPTIMISM]: USDC_OPTIMISM,
+  [SupportedChainId.LENS]: USDC_LENS,
+  [SupportedChainId.BNB]: USDC_BNB,
 }
 
 /**
@@ -474,14 +506,15 @@ const V_COW_TOKEN_SEPOLIA = new TokenWithLogo(
   'CoW Protocol Virtual Token',
 )
 
+/**
+ * VCOW token deployed during the airdrop in 2022.
+ * Not available for new chains after that date.
+ */
 export const V_COW: Record<SupportedChainId, TokenWithLogo | null> = {
+  ...mapSupportedNetworks(null),
   [SupportedChainId.MAINNET]: V_COW_TOKEN_MAINNET,
   [SupportedChainId.GNOSIS_CHAIN]: V_COW_TOKEN_XDAI,
-  [SupportedChainId.ARBITRUM_ONE]: null,
-  [SupportedChainId.BASE]: null,
   [SupportedChainId.SEPOLIA]: V_COW_TOKEN_SEPOLIA,
-  [SupportedChainId.POLYGON]: null,
-  [SupportedChainId.AVALANCHE]: null,
 }
 
 /**
@@ -498,6 +531,7 @@ function getMaybeCowTokenForChain(chain: SupportedChainId, logoURI?: string): To
 
   return new TokenWithLogo(logoURI, chain, address, COW_TOKEN_DECIMALS, COW_TOKEN_SYMBOL, COW_TOKEN_NAME)
 }
+
 export const COW_TOKEN_MAINNET = getMaybeCowTokenForChain(SupportedChainId.MAINNET)
 export const COW_TOKEN_XDAI = getMaybeCowTokenForChain(SupportedChainId.GNOSIS_CHAIN, COW_TOKEN_MAINNET?.logoURI)
 export const COW_TOKEN_ARBITRUM = getMaybeCowTokenForChain(SupportedChainId.ARBITRUM_ONE, COW_TOKEN_MAINNET?.logoURI)
@@ -505,6 +539,8 @@ export const COW_TOKEN_BASE = getMaybeCowTokenForChain(SupportedChainId.BASE, CO
 export const COW_TOKEN_SEPOLIA = getMaybeCowTokenForChain(SupportedChainId.SEPOLIA, COW_TOKEN_MAINNET?.logoURI)
 export const COW_TOKEN_POLYGON = getMaybeCowTokenForChain(SupportedChainId.POLYGON, COW_TOKEN_MAINNET?.logoURI)
 export const COW_TOKEN_AVALANCHE = getMaybeCowTokenForChain(SupportedChainId.AVALANCHE, COW_TOKEN_MAINNET?.logoURI)
+export const COW_TOKEN_LENS = getMaybeCowTokenForChain(SupportedChainId.LENS, COW_TOKEN_MAINNET?.logoURI)
+export const COW_TOKEN_BNB = getMaybeCowTokenForChain(SupportedChainId.BNB, COW_TOKEN_MAINNET?.logoURI)
 
 export const COW_TOKEN_TO_CHAIN: Record<SupportedChainId, TokenWithLogo | null> = {
   [SupportedChainId.MAINNET]: COW_TOKEN_MAINNET,
@@ -514,22 +550,21 @@ export const COW_TOKEN_TO_CHAIN: Record<SupportedChainId, TokenWithLogo | null> 
   [SupportedChainId.SEPOLIA]: COW_TOKEN_SEPOLIA,
   [SupportedChainId.POLYGON]: COW_TOKEN_POLYGON,
   [SupportedChainId.AVALANCHE]: COW_TOKEN_AVALANCHE,
+  [SupportedChainId.LENS]: COW_TOKEN_LENS,
+  [SupportedChainId.BNB]: COW_TOKEN_BNB,
 }
 
 export const GNO: Record<SupportedChainId, TokenWithLogo | null> = {
+  ...mapSupportedNetworks(null),
   [SupportedChainId.MAINNET]: GNO_MAINNET,
   [SupportedChainId.GNOSIS_CHAIN]: GNO_GNOSIS_CHAIN,
   [SupportedChainId.ARBITRUM_ONE]: GNO_ARBITRUM_ONE,
-  [SupportedChainId.BASE]: null,
   [SupportedChainId.SEPOLIA]: GNO_SEPOLIA,
-  [SupportedChainId.POLYGON]: null,
-  [SupportedChainId.AVALANCHE]: null,
 }
 
 const SDAI_GNOSIS_CHAIN_ADDRESS = '0xaf204776c7245bf4147c2612bf6e5972ee483701'
 const GBPE_GNOSIS_CHAIN_ADDRESS = '0x5cb9073902f2035222b9749f8fb0c9bfe5527108'
 
-// Not used for fees
 const MAINNET_STABLECOINS = [
   USDC_MAINNET.address,
   USDT.address,
@@ -565,7 +600,6 @@ const ARBITRUM_ONE_STABLECOINS = [
   MIM_ARBITRUM_ONE.address,
 ].map((t) => t.toLowerCase())
 
-// Not used for fees
 const BASE_STABLECOINS = [
   USDC_BASE.address,
   DAI_BASE.address,
@@ -584,7 +618,12 @@ const POLYGON_STABLECOINS = [USDC_POLYGON.address, USDT_POLYGON.address, DAI_POL
 
 const AVALANCHE_STABLECOINS = [USDC_AVALANCHE.address, USDT_AVALANCHE.address].map((t) => t.toLowerCase())
 
-// Not used for fees
+// TODO: add more stablecoins for Lens
+const LENS_STABLECOINS = [USDC_LENS.address].map((t) => t.toLowerCase())
+
+// TODO: add more stablecoins for BNB
+const BNB_STABLECOINS = [USDC_BNB.address].map((t) => t.toLowerCase())
+
 const SEPOLIA_STABLECOINS = [USDC_SEPOLIA.address, USDT_SEPOLIA.address].map((t) => t.toLowerCase())
 
 export const STABLECOINS: Record<SupportedChainId, Set<string>> = {
@@ -595,28 +634,23 @@ export const STABLECOINS: Record<SupportedChainId, Set<string>> = {
   [SupportedChainId.BASE]: new Set(BASE_STABLECOINS),
   [SupportedChainId.POLYGON]: new Set(POLYGON_STABLECOINS),
   [SupportedChainId.AVALANCHE]: new Set(AVALANCHE_STABLECOINS),
+  [SupportedChainId.LENS]: new Set(LENS_STABLECOINS),
+  [SupportedChainId.BNB]: new Set(BNB_STABLECOINS),
 }
 
 /**
  * Addresses related to COW vesting for Locked GNO
  * These are used in src/custom/pages/Account/LockedGnoVesting hooks and index files
+ * Doesn't exist for new chains after the airdrop in 2022.
  */
 export const MERKLE_DROP_CONTRACT_ADDRESSES: Record<SupportedChainId, string> = {
+  ...mapSupportedNetworks(''),
   [SupportedChainId.MAINNET]: '0x64646f112FfD6F1B7533359CFaAF7998F23C8c40',
   [SupportedChainId.GNOSIS_CHAIN]: '0x48D8566887F8c7d99757CE29c2cD39962bfd9547',
-  [SupportedChainId.ARBITRUM_ONE]: '', // doesn't exist
-  [SupportedChainId.BASE]: '', // doesn't exist
-  [SupportedChainId.SEPOLIA]: '', // TODO SEPOLIA: check it
-  [SupportedChainId.POLYGON]: '', // TODO POLYGON: doesn't exist
-  [SupportedChainId.AVALANCHE]: '', // TODO AVALANCHE: doesn't exist
 }
 
 export const TOKEN_DISTRO_CONTRACT_ADDRESSES: Record<SupportedChainId, string> = {
+  ...mapSupportedNetworks(''),
   [SupportedChainId.MAINNET]: '0x68FFAaC7A431f276fe73604C127Bd78E49070c92',
   [SupportedChainId.GNOSIS_CHAIN]: '0x3d610e917130f9D036e85A030596807f57e11093',
-  [SupportedChainId.ARBITRUM_ONE]: '', // doesn't exist
-  [SupportedChainId.BASE]: '', // doesn't exist
-  [SupportedChainId.SEPOLIA]: '', // TODO SEPOLIA: check it
-  [SupportedChainId.POLYGON]: '', // doesn't exist
-  [SupportedChainId.AVALANCHE]: '', //doesn't exist
 }

@@ -21,6 +21,8 @@ const COINGECKO_CHAINS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.SEPOLIA]: null,
   [SupportedChainId.POLYGON]: 'polygon-pos',
   [SupportedChainId.AVALANCHE]: 'avalanche',
+  [SupportedChainId.LENS]: 'lens',
+  [SupportedChainId.BNB]: 'binance-smart-chain',
 }
 
 const EMPTY_TOKENS: TokenListByAddress = {}

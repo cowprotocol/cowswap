@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { getChainInfo } from '@cowprotocol/common-const'
 import { getExplorerBaseUrl } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -7,25 +9,23 @@ import { Trans } from '@lingui/macro'
 
 import * as styledEl from './styled'
 
-const NEW_NETWORK_IDS = [137, 43114] // Avalanche, Polygon
+const NEW_NETWORK_IDS = [56, 232] // BNB, Lens
 
 export interface NetworksListProps {
   currentChainId: SupportedChainId | null
   isDarkMode: boolean
   availableChains: SupportedChainId[]
+
   onSelectChain(targetChainId: SupportedChainId): void
 }
 
 // TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
-export function NetworksList(props: NetworksListProps) {
+export function NetworksList(props: NetworksListProps): ReactNode {
   const { currentChainId, isDarkMode, availableChains, onSelectChain } = props
 
   return (
     <>
       {/* TODO: Break down this large function into smaller functions */}
-      {/* eslint-disable-next-line max-lines-per-function */}
       {availableChains.map((targetChainId: SupportedChainId) => {
         const info = getChainInfo(targetChainId)
         const { label, logo, bridge, explorer, explorerTitle, helpCenterUrl } = info

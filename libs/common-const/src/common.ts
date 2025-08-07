@@ -1,4 +1,4 @@
-import { SupportedChainId, mapSupportedNetworks } from '@cowprotocol/cow-sdk'
+import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Fraction, Percent } from '@uniswap/sdk-core'
 
 import BigNumber from 'bignumber.js'
@@ -18,15 +18,12 @@ export const INITIAL_ALLOWED_SLIPPAGE_PERCENT = new Percent(DEFAULT_SLIPPAGE_BPS
 export const RADIX_DECIMAL = 10
 export const RADIX_HEX = 16
 
-export const DEFAULT_DECIMALS = 18
-export const DEFAULT_PRECISION = 6
 export const AMOUNT_PRECISION = 4
 export const LONG_PRECISION = 10
 export const FULL_PRICE_PRECISION = 20
 export const FIAT_PRECISION = 2
 export const PERCENTAGE_PRECISION = 2
 
-export const SHORT_LOAD_THRESHOLD = 500
 export const LONG_LOAD_THRESHOLD = 2000
 
 export const AVG_APPROVE_COST_GWEI = '50000'
@@ -59,13 +56,10 @@ export function getEthFlowContractAddresses(env: Env): string {
 }
 
 export const V_COW_CONTRACT_ADDRESS: Record<SupportedChainId, string | null> = {
+  ...mapSupportedNetworks(null),
   [SupportedChainId.MAINNET]: '0xd057b63f5e69cf1b929b356b579cba08d7688048',
   [SupportedChainId.GNOSIS_CHAIN]: '0xc20C9C13E853fc64d054b73fF21d3636B2d97eaB',
-  [SupportedChainId.ARBITRUM_ONE]: null, // doesn't exist!
-  [SupportedChainId.BASE]: null, // doesn't exist!
   [SupportedChainId.SEPOLIA]: '0x21d06a222bbb94ec1406a0a8ba86b4d761bc9864',
-  [SupportedChainId.POLYGON]: null, //doesn't exist!
-  [SupportedChainId.AVALANCHE]: null, // doesn't exist!
 }
 
 export const COW_CONTRACT_ADDRESS: Record<SupportedChainId, string | null> = {
@@ -77,6 +71,8 @@ export const COW_CONTRACT_ADDRESS: Record<SupportedChainId, string | null> = {
   // https://polygonscan.com/token/0x2f4efd3aa42e15a1ec6114547151b63ee5d39958
   [SupportedChainId.POLYGON]: '0x2f4efd3aa42e15a1ec6114547151b63ee5d39958',
   [SupportedChainId.AVALANCHE]: null,
+  [SupportedChainId.LENS]: null,
+  [SupportedChainId.BNB]: null, // TODO: add BNB COW token address when available
 }
 
 export const RECEIVED_LABEL = 'Received'
@@ -91,29 +87,20 @@ export const MINIMUM_ORDER_VALID_TO_TIME_SECONDS = 120
 export const MINIMUM_ETH_FLOW_DEADLINE_SECONDS = 600 // 10 minutes in SECONDS
 
 export const MINIMUM_ETH_FLOW_SLIPPAGE_BPS: Record<SupportedChainId, number> = {
-  [SupportedChainId.MAINNET]: 200, // 2%
-  [SupportedChainId.GNOSIS_CHAIN]: DEFAULT_SLIPPAGE_BPS,
-  [SupportedChainId.ARBITRUM_ONE]: DEFAULT_SLIPPAGE_BPS,
-  [SupportedChainId.BASE]: DEFAULT_SLIPPAGE_BPS,
-  [SupportedChainId.SEPOLIA]: DEFAULT_SLIPPAGE_BPS,
-  [SupportedChainId.POLYGON]: DEFAULT_SLIPPAGE_BPS,
-  [SupportedChainId.AVALANCHE]: DEFAULT_SLIPPAGE_BPS,
+  ...mapSupportedNetworks(DEFAULT_SLIPPAGE_BPS),
+  [SupportedChainId.MAINNET]: 200, // 2% only for mainnet
 }
 
 const DEFAULT_ETH_FLOW_SLIPPAGE_WARNING_THRESHOLD = 200 // 2%
 export const ETH_FLOW_SLIPPAGE_WARNING_THRESHOLD: Record<SupportedChainId, number> = {
-  [SupportedChainId.MAINNET]: 500, // 5%
-  [SupportedChainId.GNOSIS_CHAIN]: DEFAULT_ETH_FLOW_SLIPPAGE_WARNING_THRESHOLD,
-  [SupportedChainId.ARBITRUM_ONE]: DEFAULT_ETH_FLOW_SLIPPAGE_WARNING_THRESHOLD,
-  [SupportedChainId.BASE]: DEFAULT_ETH_FLOW_SLIPPAGE_WARNING_THRESHOLD,
-  [SupportedChainId.SEPOLIA]: DEFAULT_ETH_FLOW_SLIPPAGE_WARNING_THRESHOLD,
-  [SupportedChainId.POLYGON]: DEFAULT_ETH_FLOW_SLIPPAGE_WARNING_THRESHOLD,
-  [SupportedChainId.AVALANCHE]: DEFAULT_ETH_FLOW_SLIPPAGE_WARNING_THRESHOLD,
+  ...mapSupportedNetworks(DEFAULT_ETH_FLOW_SLIPPAGE_WARNING_THRESHOLD),
+  [SupportedChainId.MAINNET]: 500, // 5% only for mainnet
 }
 
 export const MINIMUM_ETH_FLOW_SLIPPAGE: Record<SupportedChainId, Percent> = mapSupportedNetworks(
   (chainId) => new Percent(MINIMUM_ETH_FLOW_SLIPPAGE_BPS[chainId], 10_000),
 )
+
 export const HIGH_ETH_FLOW_SLIPPAGE_BPS = 1_000 // 10%
 
 const GITHUB_REPOSITORY = 'cowprotocol/cowswap'
@@ -125,19 +112,9 @@ export const COWDAO_KNOWLEDGE_BASE_LINK = 'https://cow.fi/learn'
 export const COWDAO_LEGAL_LINK = 'https://cow.fi/legal'
 export const COWDAO_COWSWAP_ABOUT_LINK = 'https://cow.fi/cow-swap'
 export const DOCS_LINK = 'https://docs.cow.fi'
-export const CONTRACTS_CODE_LINK = 'https://github.com/cowprotocol/contracts'
 export const DISCORD_LINK = 'https://discord.com/invite/cowprotocol'
 export const DUNE_DASHBOARD_LINK = 'https://dune.com/cowprotocol/cowswap'
 export const TWITTER_LINK = 'https://twitter.com/CoWSwap'
-export const GPAUDIT_LINK = 'https://github.com/cowprotocol/contracts/blob/main/audits/GnosisProtocolV2May2021.pdf'
-export const FLASHBOYS_LINK = 'https://arxiv.org/abs/1904.05234'
-export const COWWIKI_LINK = 'https://en.wikipedia.org/wiki/Coincidence_of_wants'
-export const WIDGET_LANDING_LINK = 'https://cow.fi/widget'
-export const GNOSIS_FORUM_ROADTODECENT_LINK = 'https://forum.gnosis.io/t/gpv2-road-to-decentralization/1245'
-
-// MEV Metrics from https://explore.flashbots.net/
-export const MEV_TOTAL = '606 Million'
-export const FLASHBOTS_LINK = 'https://explore.flashbots.net/'
 
 // TODO: test gas prices for all networks
 export const GAS_PRICE_UPDATE_THRESHOLD = ms`5s`
@@ -149,6 +126,8 @@ export const GAS_FEE_ENDPOINTS: Record<SupportedChainId, string> = {
   [SupportedChainId.SEPOLIA]: '',
   [SupportedChainId.POLYGON]: 'https://polygon.blockscout.com/api/v1/gas-price-oracle',
   [SupportedChainId.AVALANCHE]: 'https://api.blocknative.com/gasprices/blockprices?chainid=43114',
+  [SupportedChainId.LENS]: 'https://api.blocknative.com/gasprices/blockprices?chainid=232',
+  [SupportedChainId.BNB]: 'https://api.blocknative.com/gasprices/blockprices?chainid=56',
 }
 export const GAS_API_KEYS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.MAINNET]: process.env.REACT_APP_BLOCKNATIVE_API_KEY || null,
@@ -158,6 +137,8 @@ export const GAS_API_KEYS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.SEPOLIA]: null,
   [SupportedChainId.POLYGON]: null,
   [SupportedChainId.AVALANCHE]: process.env.REACT_APP_BLOCKNATIVE_API_KEY || null,
+  [SupportedChainId.LENS]: process.env.REACT_APP_BLOCKNATIVE_API_KEY || null,
+  [SupportedChainId.BNB]: process.env.REACT_APP_BLOCKNATIVE_API_KEY || null,
 }
 
 export const UNSUPPORTED_TOKENS_FAQ_URL = 'https://docs.cow.fi/cow-protocol/reference/core/tokens'
@@ -165,16 +146,8 @@ export const UNSUPPORTED_TOKENS_FAQ_URL = 'https://docs.cow.fi/cow-protocol/refe
 // fee threshold - should be greater than percentage, show warning
 export const FEE_SIZE_THRESHOLD = 10 // 10%
 
-// default value provided as userAddress to Paraswap API if the user wallet is not connected
-export const SOLVER_ADDRESS = '0xa6ddbd0de6b310819b49f680f65871bee85f517e'
-
 export const MAXIMUM_ORDERS_TO_DISPLAY = 10
 export const AMOUNT_OF_ORDERS_TO_FETCH = 100
-
-// Default price strategy to use for getting app prices
-// COWSWAP = new quote endpoint
-// LEGACY = price racing logic (checking 0x, gp, paraswap, etc)
-export const DEFAULT_PRICE_STRATEGY = 'COWSWAP'
 
 // Start date of COW vesting for locked GNO
 export const LOCKED_GNO_VESTING_START_DATE = new Date('02-11-2022 13:05:15 GMT')

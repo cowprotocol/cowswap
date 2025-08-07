@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Media } from '@cowprotocol/ui'
 
 import { useFlags } from 'launchdarkly-react-client-sdk'
@@ -62,13 +62,8 @@ const SummaryWrapper = styled.section`
 `
 
 const SHOW_TOKENS_TABLE: Record<SupportedChainId, boolean> = {
-  [SupportedChainId.MAINNET]: true,
-  [SupportedChainId.GNOSIS_CHAIN]: false, // Gchain data is not reliable
-  [SupportedChainId.ARBITRUM_ONE]: false, // No data for Arbitrum one
-  [SupportedChainId.BASE]: false, // No data for Base
-  [SupportedChainId.SEPOLIA]: false, // No data for Sepolia
-  [SupportedChainId.POLYGON]: false, // No data for Polygon
-  [SupportedChainId.AVALANCHE]: false, // No data for Avalanche
+  ...mapSupportedNetworks(false), // Default to false for all networks
+  [SupportedChainId.MAINNET]: true, // Only show tokens table for mainnet
 }
 
 export const Home: React.FC = () => {
