@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { ReactNode, RefObject } from 'react'
 
 import { UI } from '@cowprotocol/ui'
 
@@ -55,11 +55,12 @@ const Text = styled.span`
 interface ContentProps {
   address: string
   target: string
+  ref?: RefObject<HTMLDivElement | null>
 }
 
-export function AddressContextMenuContent({ address, target }: ContentProps): ReactNode {
+export function AddressContextMenuContent({ ref, address, target }: ContentProps): ReactNode {
   return (
-    <Box>
+    <Box ref={ref}>
       <CopyHelperWrapper toCopy={address} copyIconWidth="100%">
         <Text>Copy address</Text>
       </CopyHelperWrapper>
