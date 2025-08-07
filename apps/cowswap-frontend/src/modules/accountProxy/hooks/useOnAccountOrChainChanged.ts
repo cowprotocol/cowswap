@@ -6,5 +6,7 @@ export function useOnAccountOrChainChanged(): boolean {
   const prevChainId = usePrevious(chainId)
   const prevAccount = usePrevious(account)
 
-  return Boolean((prevChainId && prevChainId !== chainId) || (prevAccount && prevAccount !== account))
+  return Boolean(
+    (prevChainId !== undefined && prevChainId !== chainId) || (prevAccount !== undefined && prevAccount !== account),
+  )
 }
