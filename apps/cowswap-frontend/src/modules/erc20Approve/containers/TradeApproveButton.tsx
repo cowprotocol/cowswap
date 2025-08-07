@@ -1,9 +1,13 @@
-import React, { ReactNode } from 'react'
+import React, { ReactNode, useState } from 'react'
 
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, MaxUint256 } from '@uniswap/sdk-core'
 
-import { useApproveCurrency, useApproveState } from '../hooks'
-import { ApproveButton } from '../pure'
+import { useTradeSpenderAddress } from '../../../common/hooks/useTradeSpenderAddress'
+import { useApprovalStateForSpender } from '../../../lib/hooks/useApproval'
+import { ApprovalState, useApproveCurrency } from '../hooks'
+import { ApproveButton, ApproveConfirmation } from '../pure'
+
+const MaxApprovalAmount = BigInt(MaxUint256.toString())
 
 export interface TradeApproveButtonProps {
   amountToApprove: CurrencyAmount<Currency>
@@ -12,19 +16,37 @@ export interface TradeApproveButtonProps {
 }
 
 export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
-  const { amountToApprove, children, isDisabled } = props
+  const { amountToApprove, children } = props
 
   const currency = amountToApprove.currency
 
-  const { state: approvalState } = useApproveState(amountToApprove)
-
+  const [isConfirmationOpen, setIsCOnfirmationOpen] = useState(false)
   const handleApprove = useApproveCurrency(amountToApprove)
+  const spender = useTradeSpenderAddress()
+  // todo [approve] check the last arg
+  const { approvalState, currentAllowance } = useApprovalStateForSpender(amountToApprove, spender, () => false)
+
+  const isDisabled = props.isDisabled || !handleApprove
+
+  if (isConfirmationOpen && handleApprove && approvalState !== ApprovalState.PENDING) {
+    return (
+      <ApproveConfirmation
+        amountToApprove={amountToApprove}
+        currentAllowance={currentAllowance}
+        handleApprove={handleApprove}
+        maxApprovalAmount={MaxApprovalAmount}
+      />
+    )
+  }
 
   return (
-    <>
-      <ApproveButton isDisabled={isDisabled} currency={currency} onClick={handleApprove} state={approvalState} />
-
+    <ApproveButton
+      isDisabled={isDisabled || !handleApprove}
+      currency={currency}
+      onClick={() => setIsCOnfirmationOpen(true)}
+      state={approvalState}
+    >
       {children}
-    </>
+    </ApproveButton>
   )
 }
