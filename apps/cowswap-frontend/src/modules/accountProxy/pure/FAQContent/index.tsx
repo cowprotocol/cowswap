@@ -49,7 +49,7 @@ const FAQ_DATA = [
           <ol>
             <li>
               <Link to={recoverRouteLink}>Select an ${ACCOUNT_PROXY_LABEL}</Link> and then select a token you want to
-              recover from CoW Shed
+              recover from CoW Shed.
             </li>
             <li>Recover!</li>
           </ol>
