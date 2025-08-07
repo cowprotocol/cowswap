@@ -33,6 +33,7 @@ export function ClickableAddress(props: ClickableAddressProps): ReactNode {
 
   const handleClick = useCallback((event: MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation?.()
+    event.preventDefault?.()
     setOpenTooltip((prev) => !prev)
   }, [])
 

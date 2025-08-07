@@ -21,6 +21,9 @@ import { useSetupBalancesContext } from '../../hooks/useSetupBalancesContext'
 import { WalletNotConnected } from '../../pure/WalletNotConnected'
 import { getProxyAccountUrl } from '../../utils/getProxyAccountUrl'
 import { parameterizeRoute } from '../../utils/parameterizeRoute'
+import { WidgetPageTitle } from '../WidgetPageTitle'
+
+const URL_NETWORK_CHANGED_STATE = 'network-changed'
 
 interface AccountProxiesPageProps {
   modalMode?: boolean
@@ -54,7 +57,7 @@ export function AccountProxyWidgetPage({
   const [sourceRoute] = useState<string>(query.get('source') || 'swap')
 
   const defaultOnDismiss = (): void => {
-    if (location.key === 'default') {
+    if (location.key === 'default' || location.state === URL_NETWORK_CHANGED_STATE) {
       tradeNavigate(
         chainId,
         { inputCurrencyId, outputCurrencyId },
@@ -72,7 +75,7 @@ export function AccountProxyWidgetPage({
   useLayoutEffect(() => {
     if (!accountOrChainChanged) return
 
-    navigate(getProxyAccountUrl(chainId))
+    navigate(getProxyAccountUrl(chainId), { state: URL_NETWORK_CHANGED_STATE })
   }, [accountOrChainChanged, chainId, navigate])
 
   useOnClickOutside([widgetRef], modalMode ? onDismiss : undefined)
@@ -84,8 +87,12 @@ export function AccountProxyWidgetPage({
           modalMode={modalMode}
           title={
             <TitleWrapper>
-              <span>Proxy Accounts</span>
-              <HelpLink to={parameterizeRoute(Routes.ACCOUNT_PROXY_HELP, { chainId })}>Need help?</HelpLink>
+              <span>
+                <WidgetPageTitle />
+              </span>
+              {!isHelpPage && (
+                <HelpLink to={parameterizeRoute(Routes.ACCOUNT_PROXY_HELP, { chainId })}>Need help?</HelpLink>
+              )}
             </TitleWrapper>
           }
           onDismiss={onDismiss}

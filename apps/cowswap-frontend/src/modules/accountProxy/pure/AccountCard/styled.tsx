@@ -65,7 +65,7 @@ export const MenuButton = styled(ReachMenuButton)`
 `
 
 export const MenuItems = styled(ReachMenuItems)`
-  background: var(${UI.COLOR_TEXT_OPACITY_10});
+  background: var(${UI.COLOR_PAPER});
   box-shadow: var(${UI.BOX_SHADOW});
   right: 0;
   top: 20px;
