@@ -48,8 +48,8 @@ const FAQ_DATA = [
           cases. This tool helps you recover your funds.
           <ol>
             <li>
-              <Link to={recoverRouteLink}>Select a proxy</Link> and then select a token you want to recover from CoW
-              Shed
+              <Link to={recoverRouteLink}>Select an ${ACCOUNT_PROXY_LABEL}</Link> and then select a token you want to
+              recover from CoW Shed
             </li>
             <li>Recover!</li>
           </ol>

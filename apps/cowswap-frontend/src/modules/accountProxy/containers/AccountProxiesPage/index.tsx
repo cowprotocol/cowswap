@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
 
+import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Title } from './styled'
@@ -14,7 +15,7 @@ export function AccountProxiesPage(): ReactNode {
 
   return (
     <div>
-      <Title>Select a proxy account to see the amounts available for refund</Title>
+      <Title>Select an {ACCOUNT_PROXY_LABEL} to see the amounts available for refund</Title>
       <div>
         {proxies?.map(({ account, version }) => {
           return <AccountItem key={account} chainId={chainId} account={account} version={version} />
