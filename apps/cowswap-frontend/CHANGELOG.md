@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.116.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.115.1...cowswap-v1.116.0) (2025-08-07)
+
+
+### Features
+
+* **bridging:** add Avalanche bridge support ([#6106](https://github.com/cowprotocol/cowswap/issues/6106)) ([c3a8881](https://github.com/cowprotocol/cowswap/commit/c3a88818e4d8c7300491ef29b7e4579a1fee5950))
+* don't use mm sdk if injected provider exists or mobile device is used ([#6094](https://github.com/cowprotocol/cowswap/issues/6094)) ([f77de45](https://github.com/cowprotocol/cowswap/commit/f77de45ccf0b1423e85e0dbee5742e3b8dc6ca17))
+
 ## [1.115.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.115.0...cowswap-v1.115.1) (2025-08-05)
 
 
