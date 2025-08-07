@@ -1808,17 +1808,6 @@
   resolved "https://registry.yarnpkg.com/@corex/deepmerge/-/deepmerge-4.0.43.tgz#9bd42559ebb41cc5a7fb7cfeea5f231c20977dca"
   integrity sha512-N8uEMrMPL0cu/bdboEWpQYb/0i2K5Qn8eCsxzOmxSggJbbQte7ljMRoXm917AbntqTGOzdTu+vP3KOOzoC70HQ==
 
-"@cowprotocol/app-data@^3.2.0":
-  version "3.2.0"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/app-data/-/app-data-3.2.0.tgz#c6c0830aadcbbad99d063beb5a0361db4c69c7c0"
-  integrity sha512-KCLYUF8Jyzrv3EyT0TTzD1Pu0UQcPpka2hD8PW226ezdeD3JQUyZul08uKk9/wPm3a3b2PHOJwsNAvuYkT07qQ==
-  dependencies:
-    ajv "^8.11.0"
-    cross-fetch "^3.1.5"
-    ipfs-only-hash "^4.0.0"
-    json-stringify-deterministic "^1.0.8"
-    multiformats "^9.6.4"
-
 "@cowprotocol/app-data@^3.3.0":
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/@cowprotocol/app-data/-/app-data-3.3.0.tgz#644e7473a00eb5e6694a34d34b4359c6d7ef1060"
