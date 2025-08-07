@@ -33,7 +33,7 @@ export function getPermitUtilsInstance(
 
   // TODO: allow to receive the signer as a parameter
   const web3ProviderConnector = new PermitProviderConnector(provider, account ? undefined : PERMIT_SIGNER)
-  const eip2612PermitUtils = new Eip2612PermitUtils(web3ProviderConnector)
+  const eip2612PermitUtils = new Eip2612PermitUtils(web3ProviderConnector, { enabledCheckSalt: true })
 
   if (!account) {
     console.log(`[getPermitUtilsInstance] Set cached chain utils for chain ${chainId}`, eip2612PermitUtils)
