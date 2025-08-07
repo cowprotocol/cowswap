@@ -1,4 +1,6 @@
-import { ExternalLink } from '@cowprotocol/ui'
+import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
+
+import { AccountProxyLink } from '../shared/AccountProxyLink'
 
 export const BridgeDetailsTooltips = {
   transactionHash: 'The transaction hash or provider-specific explorer link for the bridge operation.',
@@ -11,11 +13,8 @@ export const BridgeDetailsTooltips = {
   provider: 'The bridging solution provider.',
   accountFromProxy: (
     <span>
-      The{' '}
-      <ExternalLink href="https://swap.cow.fi/#/account-proxy" target="_blank" rel="noopener noreferrer">
-        Account Proxy
-      </ExternalLink>{' '}
-      address which will/did receive bought amount of the Swap before the bridge is initiated.
+      The <AccountProxyLink>{ACCOUNT_PROXY_LABEL}</AccountProxyLink> address which will/did receive bought amount of the
+      Swap before the bridge is initiated.
     </span>
   ),
   receiverAddress: 'The account address to which the tokens are bridged on the destination chain.',

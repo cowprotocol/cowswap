@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 
 import RefundIcon from '@cowprotocol/assets/cow-swap/icon-refund.svg'
+import { RECEIVED_LABEL } from '@cowprotocol/common-const'
 
 import { ConfirmDetailsItem, ReceiveAmountTitle } from 'modules/trade'
 
@@ -10,7 +11,7 @@ import { StyledAnimatedTimelineRefundIcon } from '../../styled'
 export function FailedBridgingContent(): ReactNode {
   return (
     <>
-      <ConfirmDetailsItem label="You received" withTimelineDot>
+      <ConfirmDetailsItem label={RECEIVED_LABEL} withTimelineDot>
         <DangerText>Bridging failed</DangerText>
       </ConfirmDetailsItem>
       <ConfirmDetailsItem

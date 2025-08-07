@@ -4,7 +4,6 @@ import {
   COW_TOKEN_ARBITRUM,
   COW_TOKEN_BASE,
   COW_TOKEN_MAINNET,
-  COW_TOKEN_POLYGON,
   COW_TOKEN_SEPOLIA,
   COW_TOKEN_XDAI,
   DAI,
@@ -98,7 +97,7 @@ export const DEFAULT_FAVORITE_TOKENS: Record<SupportedChainId, TokensMap> = {
     USDC_POLYGON,
     USDT_POLYGON,
     DAI_POLYGON,
-    COW_TOKEN_POLYGON,
+    // Cow Token is deployed but there's no liquidity at the moment
     WRAPPED_NATIVE_CURRENCIES[SupportedChainId.POLYGON],
   ]),
   [SupportedChainId.AVALANCHE]: tokensListToMap([

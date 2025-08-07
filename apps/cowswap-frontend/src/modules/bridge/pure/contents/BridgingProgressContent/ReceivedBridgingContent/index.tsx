@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { getChainInfo } from '@cowprotocol/common-const'
+import { getChainInfo, RECEIVED_LABEL } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { BridgeStatusResult, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
@@ -47,7 +47,7 @@ export function ReceivedBridgingContent({
       <ConfirmDetailsItem
         label={
           <ReceiveAmountTitle variant="success">
-            <SuccessTextBold>You received</SuccessTextBold>
+            <SuccessTextBold>{RECEIVED_LABEL}</SuccessTextBold>
           </ReceiveAmountTitle>
         }
       >
