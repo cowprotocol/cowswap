@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.24.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.23.1...tokens-v1.24.0) (2025-08-07)
+
+
+### Features
+
+* **token-lists:** add Ondo tokens list to Mainnet ([#6115](https://github.com/cowprotocol/cowswap/issues/6115)) ([4e43496](https://github.com/cowprotocol/cowswap/commit/4e4349695be807febdcb52aec4b06adf68c950cf))
+
 ## [1.23.1](https://github.com/cowprotocol/cowswap/compare/tokens-v1.23.0...tokens-v1.23.1) (2025-08-05)
 
 

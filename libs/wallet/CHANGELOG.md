@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.14.0](https://github.com/cowprotocol/cowswap/compare/wallet-v1.13.1...wallet-v1.14.0) (2025-08-07)
+
+
+### Features
+
+* don't use mm sdk if injected provider exists or mobile device is used ([#6094](https://github.com/cowprotocol/cowswap/issues/6094)) ([f77de45](https://github.com/cowprotocol/cowswap/commit/f77de45ccf0b1423e85e0dbee5742e3b8dc6ca17))
+
 ## [1.13.1](https://github.com/cowprotocol/cowswap/compare/wallet-v1.13.0...wallet-v1.13.1) (2025-07-31)
 
 
