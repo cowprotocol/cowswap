@@ -7,7 +7,7 @@ import { Media, Tooltip } from '@cowprotocol/ui'
 import { useBridgeSupportedNetwork } from 'entities/bridgeProvider'
 import { Info } from 'react-feather'
 
-import { Content } from './Content'
+import { AddressContextMenuContent } from './AddressContextMenuContent'
 import * as styledEl from './styled'
 
 export type ClickableAddressProps = {
@@ -47,7 +47,7 @@ export function ClickableAddress(props: ClickableAddressProps): ReactNode {
         <styledEl.AddressWrapper>{shortAddress}</styledEl.AddressWrapper>
         <styledEl.InfoIcon onClick={handleClick}>
           <Tooltip
-            content={<Content address={address} target={target} />}
+            content={<AddressContextMenuContent address={address} target={target} />}
             placement="bottom"
             wrapInContainer={false}
             show={openTooltip}

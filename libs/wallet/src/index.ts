@@ -26,6 +26,7 @@ export * from './web3-react/updaters/HwAccountIndexUpdater'
 
 // Components
 export * from './api/container/Identicon'
+export * from './api/pure/JazzIcon'
 export * from './web3-react/pure/AccountIndexSelect'
 
 // Utils

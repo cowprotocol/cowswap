@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { UI } from '@cowprotocol/ui'
 
 import { Link2 } from 'react-feather'
@@ -22,6 +24,7 @@ const Box = styled.div`
 const CopyHelperWrapper = styled(CopyHelper)`
   padding: 12px;
   border-radius: 6px;
+  justify-content: normal;
 
   &:hover {
     background: var(${UI.COLOR_PAPER});
@@ -54,9 +57,7 @@ interface ContentProps {
   target: string
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function Content({ address, target }: ContentProps) {
+export function AddressContextMenuContent({ address, target }: ContentProps): ReactNode {
   return (
     <Box>
       <CopyHelperWrapper toCopy={address} copyIconWidth="100%">

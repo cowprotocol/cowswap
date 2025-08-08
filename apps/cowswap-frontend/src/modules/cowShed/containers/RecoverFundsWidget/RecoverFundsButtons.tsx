@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 
 import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
 import { getCurrencyAddress, getIsNativeToken } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { COW_SHED_LATEST_VERSION, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ButtonPrimary, CenteredDots } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
@@ -10,10 +10,10 @@ import styled from 'styled-components/macro'
 
 import { NoFunds } from './styled'
 
-import { useCurrentAccountProxy } from '../../hooks/useCurrentAccountProxy'
+import { useRecoverFundsCallback } from '../../../account-proxy/hooks/useRecoverFundsCallback'
+import { RecoverSigningStep, useRecoverFundsFromProxy } from '../../../account-proxy/hooks/useRecoverFundsFromProxy'
+import { useCurrentAccountProxy, useCurrentAccountProxyAddress } from '../../hooks/useCurrentAccountProxy'
 import { useFetchTokenBalance } from '../../hooks/useFetchTokenBalance'
-import { useRecoverFundsCallback } from '../../hooks/useRecoverFundsCallback'
-import { RecoverSigningStep, useRecoverFundsFromProxy } from '../../hooks/useRecoverFundsFromProxy'
 import { BalanceToRecover } from '../../pure/BalanceToRecover'
 
 const ButtonPrimaryStyled = styled(ButtonPrimary)`
@@ -32,7 +32,14 @@ export function RecoverFundsButtons({ selectedCurrency, sourceChainId }: Recover
   const isNativeToken = !!selectedCurrency && getIsNativeToken(selectedCurrency)
 
   const { isLoading: isBalanceLoading, tokenBalance } = useFetchTokenBalance(selectedCurrency, sourceChainId)
-  const recoverFundsContext = useRecoverFundsFromProxy(selectedTokenAddress, tokenBalance, isNativeToken)
+  const proxyAddress = useCurrentAccountProxyAddress()
+  const recoverFundsContext = useRecoverFundsFromProxy(
+    proxyAddress,
+    COW_SHED_LATEST_VERSION,
+    selectedTokenAddress,
+    tokenBalance,
+    isNativeToken,
+  )
   const { txSigningStep } = recoverFundsContext
 
   const recoverFunds = useRecoverFundsCallback(recoverFundsContext)

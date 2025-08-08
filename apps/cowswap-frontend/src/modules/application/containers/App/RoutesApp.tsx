@@ -15,6 +15,14 @@ import { Navigate, Route, Routes } from 'react-router'
 import { Loading } from 'legacy/components/FlashingLoading'
 import { RedirectPathToSwapOnly, RedirectToPath } from 'legacy/pages/Swap/redirects'
 
+import {
+  AccountProxyWidgetPage,
+  AccountProxyHelpPage,
+  AccountProxyPage,
+  AccountProxyRecoverPage,
+  AccountProxiesPage,
+} from 'modules/account-proxy'
+
 import { Routes as RoutesEnum, RoutesValues } from 'common/constants/routes'
 import Account, { AccountOverview } from 'pages/Account'
 import AdvancedOrdersPage from 'pages/AdvancedOrders'
@@ -79,6 +87,13 @@ export function RoutesApp(): ReactNode {
         <Route path={RoutesEnum.ACCOUNT} element={<AccountOverview />} />
         <Route path={RoutesEnum.ACCOUNT_TOKENS} element={<AccountTokensOverview />} />
         <Route path="*" element={<AccountNotFound />} />
+      </Route>
+
+      <Route path={RoutesEnum.ACCOUNT_PROXIES} element={<AccountProxyWidgetPage />}>
+        <Route path={RoutesEnum.ACCOUNT_PROXY} element={<AccountProxyPage />} />
+        <Route path={RoutesEnum.ACCOUNT_PROXY_RECOVER} element={<AccountProxyRecoverPage />} />
+        <Route path={RoutesEnum.ACCOUNT_PROXY_HELP} element={<AccountProxyHelpPage />} />
+        <Route index element={<AccountProxiesPage />} />
       </Route>
       <Route path="claim" element={<Navigate to={RoutesEnum.ACCOUNT} />} />
       <Route path="profile" element={<Navigate to={RoutesEnum.ACCOUNT} />} />
