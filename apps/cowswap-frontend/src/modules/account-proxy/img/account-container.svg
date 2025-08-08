@@ -1,0 +1,41 @@
+<svg width="110" height="82" viewBox="0 0 110 82" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <g filter="url(#filter0_dd_8_58)" data-figma-bg-blur-radius="100">
+  <rect x="20" y="12" width="70" height="42" rx="9" fill="url(#paint0_linear_8_58)"/>
+  <rect x="20.5" y="12.5" width="69" height="41" rx="8.5" stroke="#DADEE4"/>
+</g>
+  <path fill-rule="evenodd" clip-rule="evenodd" d="M79.2756 49C78.9841 49 78.7263 48.8118 78.6381 48.5349L78.1851 47.1111H77.9066C77.6152 47.1111 77.3573 46.923 77.2692 46.646L77 45.8L78.0097 45.8L77.4771 45H82.5229L81.9903 45.8L83 45.8L82.7308 46.646C82.6427 46.923 82.3848 47.1111 82.0934 47.1111H81.8149L81.3619 48.5349C81.2737 48.8118 81.0159 49 80.7244 49H79.2756ZM78.9333 46.7222C78.9333 46.937 79.0942 47.1111 79.2926 47.1111C79.491 47.1111 79.6519 46.937 79.6519 46.7222C79.6519 46.5074 79.491 46.3333 79.2926 46.3333C79.0942 46.3333 78.9333 46.5074 78.9333 46.7222ZM81.0667 46.7222C81.0667 46.937 80.9058 47.1111 80.7074 47.1111C80.509 47.1111 80.3481 46.937 80.3481 46.7222C80.3481 46.5074 80.509 46.3333 80.7074 46.3333C80.9058 46.3333 81.0667 46.5074 81.0667 46.7222Z" fill="url(#paint1_linear_8_58)"/>
+  <rect x="28" y="20" width="24" height="24" rx="12" fill="url(#pattern0_8_58)"/>
+  <rect x="60" y="36" width="20" height="2" fill="#DADEE4"/>
+  <rect x="60" y="32" width="14" height="2" fill="#DADEE4"/>
+  <rect x="60" y="28" width="17" height="2" fill="#DADEE4"/>
+  <defs>
+    <filter id="filter0_dd_8_58" x="-80" y="-88" width="270" height="242" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+      <feMorphology radius="4" operator="erode" in="SourceAlpha" result="effect1_dropShadow_8_58"/>
+      <feOffset dy="8"/>
+      <feGaussianBlur stdDeviation="12"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.0941176 0 0 0 0 0.152941 0 0 0 0 0.294118 0 0 0 0.08 0"/>
+      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_8_58"/>
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+      <feMorphology radius="6" operator="erode" in="SourceAlpha" result="effect2_dropShadow_8_58"/>
+      <feOffset dy="6"/>
+      <feGaussianBlur stdDeviation="6"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.0941176 0 0 0 0 0.152941 0 0 0 0 0.294118 0 0 0 0.12 0"/>
+      <feBlend mode="normal" in2="effect1_dropShadow_8_58" result="effect2_dropShadow_8_58"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="effect2_dropShadow_8_58" result="shape"/>
+    </filter>
+    <clipPath id="bgblur_0_8_58_clip_path" transform="translate(80 88)"><rect x="20" y="12" width="70" height="42" rx="9"/>
+    </clipPath><pattern id="pattern0_8_58" patternContentUnits="objectBoundingBox" width="1" height="1">
+    <use xlink:href="#image0_8_58" transform="scale(0.0078125)"/>
+  </pattern>
+    <linearGradient id="paint0_linear_8_58" x1="20" y1="33" x2="90" y2="33" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F2F2F2" stop-opacity="0.6"/>
+      <stop offset="1" stop-color="#F2F2F2"/>
+    </linearGradient>
+    <linearGradient id="paint1_linear_8_58" x1="77.1714" y1="45.4167" x2="82.9051" y2="49.1459" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#C6CACF"/>
+      <stop offset="1" stop-color="#8490A5"/>
+    </linearGradient>
+    </defs>
+</svg>
