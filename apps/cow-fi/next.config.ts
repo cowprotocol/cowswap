@@ -81,7 +81,12 @@ const nextConfig: WithNxOptions = {
       },
       {
         source: '/widget/terms-and-conditions',
-        destination: '/legal/widget-terms',
+        destination: '/legal/integrator-terms',
+        permanent: true,
+      },
+      {
+        source: '/legal/widget-terms',
+        destination: '/legal/integrator-terms',
         permanent: true,
       },
     ]
