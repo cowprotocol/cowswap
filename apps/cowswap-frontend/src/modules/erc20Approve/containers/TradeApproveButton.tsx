@@ -20,7 +20,7 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
 
   const currency = amountToApprove.currency
 
-  const [isConfirmationOpen, setIsCOnfirmationOpen] = useState(false)
+  const [isConfirmationOpen, setIsConfirmationOpen] = useState(false)
   const handleApprove = useApproveCurrency(amountToApprove)
   const spender = useTradeSpenderAddress()
   // todo [approve] check the last arg
@@ -43,7 +43,7 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
     <ApproveButton
       isDisabled={isDisabled || !handleApprove}
       currency={currency}
-      onClick={() => setIsCOnfirmationOpen(true)}
+      onClick={() => setIsConfirmationOpen(true)}
       state={approvalState}
     >
       {children}

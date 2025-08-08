@@ -6,24 +6,22 @@ import { useShouldZeroApprove, useZeroApprove } from 'modules/zeroApproval'
 
 import { useTradeApproveCallback } from 'common/containers/TradeApprove'
 
-
-// TODO: allocate a module for all approval process logic
-// TODO: Add proper return type annotation
 export function useApproveCurrency(
   amountToApprove: CurrencyAmount<Currency> | undefined,
-): (() => Promise<void>) | undefined {
-  const tradeApproveCallback = useTradeApproveCallback(amountToApprove)
+): (amount: bigint) => Promise<void> {
+  const currency = amountToApprove?.currency
+
+  const tradeApproveCallback = useTradeApproveCallback(currency)
   const shouldZeroApprove = useShouldZeroApprove(amountToApprove)
-  const zeroApprove = useZeroApprove(amountToApprove?.currency)
-  const callback = useCallback(async () => {
-    if (shouldZeroApprove) {
-      await zeroApprove()
-    }
+  const zeroApprove = useZeroApprove(currency)
+  return useCallback(
+    async (amount: bigint) => {
+      if (shouldZeroApprove) {
+        await zeroApprove()
+      }
 
-    await tradeApproveCallback()
-  }, [tradeApproveCallback, zeroApprove, shouldZeroApprove])
-
-  if (shouldZeroApprove === null) return undefined
-
-  return callback
+      await tradeApproveCallback(amount)
+    },
+    [tradeApproveCallback, zeroApprove, shouldZeroApprove],
+  )
 }
