@@ -191,14 +191,6 @@ export const SWR_NO_REFRESH_OPTIONS = {
   refreshInterval: 0,
 }
 
-// These are used for Account sidebar menu
-export const ACCOUNT_MENU_LINKS = [
-  { title: 'Overview', url: '/account' },
-  { title: 'Tokens', url: '/account/tokens' },
-  // { title: 'Governance', url: '/account/governance' },
-  // { title: 'Affiliate', url: '/account/affiliate' },
-]
-
 // Min USD value to show surplus
 export const MIN_FIAT_SURPLUS_VALUE = 0.01
 
