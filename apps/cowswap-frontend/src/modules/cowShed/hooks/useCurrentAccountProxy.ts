@@ -97,12 +97,22 @@ async function getIsProxySetupValid(
   // Skip validation if network mismatch
   if (providerNetwork.chainId !== chainId) return true
 
+  console.debug('[CoWShed validation] networks', {
+    providerNetwork,
+    chainId,
+  })
+
   const shedContract = getContract(proxyAddress, COW_SHED_ABI, provider) as CoWShedContract
   const expectedImplementation = cowShedHooks.getImplementationAddress()
   const expectedFactoryAddress = cowShedHooks.getFactoryAddress()
 
   try {
     const implementation = await implementationAddress(provider, proxyAddress)
+
+    console.debug('[CoWShed validation] implementation', {
+      implementation,
+      expectedImplementation,
+    })
 
     if (!areAddressesEqual(implementation, expectedImplementation)) return false
   } catch (e) {
@@ -113,6 +123,11 @@ async function getIsProxySetupValid(
 
   try {
     const trustedExecutor = await shedContract.callStatic.trustedExecutor()
+
+    console.debug('[CoWShed validation] trustedExecutor', {
+      trustedExecutor,
+      expectedFactoryAddress,
+    })
 
     return areAddressesEqual(trustedExecutor, expectedFactoryAddress)
   } catch (e) {

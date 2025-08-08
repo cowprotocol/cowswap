@@ -27,6 +27,8 @@ export function InvalidCoWShedSetup(): ReactNode {
 
   if (isProxySetupValid !== false) return null
 
+  console.debug('[CoWShed validation] networks', proxyInfo)
+
   return (
     <Wrapper>
       <InlineBanner bannerType={StatusColorVariant.Danger}>
