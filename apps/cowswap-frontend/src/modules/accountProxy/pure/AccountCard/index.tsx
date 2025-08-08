@@ -2,35 +2,69 @@ import { ReactNode } from 'react'
 
 import { ExplorerDataType, getExplorerLink, shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { FiatAmount, Loader } from '@cowprotocol/ui'
-import { JazzIcon } from '@cowprotocol/wallet'
+import { ExternalLink, FiatAmount, Loader, ProductLogo, ProductVariant } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Menu, MenuPopover } from '@reach/menu-button'
 import { MoreHorizontal } from 'react-feather'
-import SVG from 'react-inlinesvg'
 
 import { AddressContextMenuContent } from 'common/pure/ClickableAddress/AddressContextMenuContent'
 
-import { LeftBottom, LeftTop, RightTop, Wrapper, MenuButton, MenuItems } from './styled'
+import { CowProtocolIcon } from './CowProtocolIcon'
+import {
+  LeftBottom,
+  LeftTop,
+  RightTop,
+  AccountCardWrapper,
+  MenuButton,
+  MenuItems,
+  AddressDisplay,
+  AddressLinkWrapper,
+  ValueLabel,
+  ValueAmount,
+  WatermarkIcon,
+} from './styled'
 
-import cowLogoImg from '../../img/cow-logo.svg'
+import { AccountIcon } from '../AccountItem/AccountIcon'
 
 interface AccountCardProps {
-  chainId: SupportedChainId
-  account: string
-  totalUsdAmount: CurrencyAmount<Currency> | null
-  loading: boolean
+  children?: ReactNode
+  width?: number | string
+  height?: number | string
+  borderRadius?: number
+  padding?: number
+  chainId?: SupportedChainId
+  account?: string
+  totalUsdAmount?: CurrencyAmount<Currency> | null
+  loading?: boolean
+  hoverScale?: boolean
+  disableHover?: boolean
+  externalHover?: boolean
+  margin?: string
+  minHeight?: number | string
+  showWatermark?: boolean
 }
 
-export function AccountCard({ chainId, account, totalUsdAmount, loading }: AccountCardProps): ReactNode {
+function AccountCardContent({
+  account,
+  chainId,
+  totalUsdAmount,
+  loading,
+  showWatermark = false,
+}: {
+  account: string
+  chainId: SupportedChainId
+  totalUsdAmount?: CurrencyAmount<Currency> | null
+  loading?: boolean
+  showWatermark?: boolean
+}): ReactNode {
   const addressLink = getExplorerLink(chainId, account, ExplorerDataType.ADDRESS)
 
   return (
-    <Wrapper>
+    <>
       <LeftTop>
-        <span>Recoverable value</span>
-        <h2>{loading ? <Loader size="24px" /> : <FiatAmount amount={totalUsdAmount} />}</h2>
+        <ValueLabel>Recoverable value</ValueLabel>
+        <ValueAmount>{loading ? <Loader size="24px" /> : <FiatAmount amount={totalUsdAmount} />}</ValueAmount>
       </LeftTop>
       <RightTop>
         <Menu>
@@ -45,14 +79,80 @@ export function AccountCard({ chainId, account, totalUsdAmount, loading }: Accou
         </Menu>
       </RightTop>
       <LeftBottom>
-        <i>
-          <JazzIcon account={account} size={28} />
-        </i>
-        <span>{shortenAddress(account)}</span>
+        <ExternalLink href={addressLink}>
+          <AddressLinkWrapper>
+            <AccountIcon account={account} size={28} />
+            <AddressDisplay>{shortenAddress(account)}</AddressDisplay>
+          </AddressLinkWrapper>
+        </ExternalLink>
       </LeftBottom>
-      <div>
-        <SVG src={cowLogoImg} />
-      </div>
-    </Wrapper>
+      <CowProtocolIcon height={24} heightMobile={18} positionOffset={25} positionOffsetMobile={22} />
+      {showWatermark && (
+        <WatermarkIcon>
+          <ProductLogo variant={ProductVariant.CowProtocol} logoIconOnly height={140} />
+        </WatermarkIcon>
+      )}
+    </>
+  )
+}
+
+export function AccountCard({
+  children,
+  width,
+  height,
+  borderRadius,
+  padding,
+  chainId,
+  account,
+  totalUsdAmount,
+  loading,
+  hoverScale,
+  disableHover,
+  externalHover,
+  margin,
+  minHeight,
+  showWatermark = false,
+}: AccountCardProps): ReactNode {
+  if (children) {
+    return (
+      <AccountCardWrapper
+        width={width}
+        height={height}
+        borderRadius={borderRadius}
+        padding={padding}
+        hoverScale={hoverScale}
+        disableHover={disableHover}
+        externalHover={externalHover}
+        margin={margin}
+        minHeight={minHeight}
+      >
+        {children}
+        {showWatermark && (
+          <WatermarkIcon>
+            <ProductLogo variant={ProductVariant.CowProtocol} logoIconOnly height={140} />
+          </WatermarkIcon>
+        )}
+      </AccountCardWrapper>
+    )
+  }
+
+  if (!account || !chainId) {
+    return null
+  }
+
+  return (
+    <AccountCardWrapper
+      width={width}
+      height={height}
+      borderRadius={borderRadius}
+      padding={padding}
+      hoverScale={hoverScale}
+      disableHover={disableHover}
+      externalHover={externalHover}
+      margin={margin}
+      minHeight={minHeight}
+    >
+      <AccountCardContent account={account} chainId={chainId} totalUsdAmount={totalUsdAmount} loading={loading} showWatermark={showWatermark} />
+    </AccountCardWrapper>
   )
 }
