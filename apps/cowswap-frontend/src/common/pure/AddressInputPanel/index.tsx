@@ -1,6 +1,7 @@
 import { ChangeEvent, ReactNode, useCallback, useEffect, useState } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
+import { useDebounce } from '@cowprotocol/common-hooks'
 import {
   getBlockExplorerUrl as getExplorerLink,
   isPrefixedAddress,
@@ -87,7 +88,7 @@ const Input = styled.input<{ error?: boolean }>`
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function AddressInputPanel({
   id,
   className = 'recipient-address-input',
@@ -106,7 +107,8 @@ export function AddressInputPanel({
   const { chainId } = useWalletInfo()
   const chainInfo = getChainInfo(chainId)
   const addressPrefix = chainInfo?.addressPrefix
-  const { address, loading, name } = useENS(value)
+  const debouncedValue = useDebounce(value, 500)
+  const { address, loading, name } = useENS(debouncedValue)
   const [chainPrefixWarning, setChainPrefixWarning] = useState('')
   const isDarkMode = useIsDarkMode()
 
@@ -165,7 +167,7 @@ export function AddressInputPanel({
               autoCorrect="off"
               autoCapitalize="off"
               spellCheck="false"
-              placeholder={placeholder ?? t`Wallet Address or ENS name`}
+              placeholder={placeholder ?? t`Enter recipient address`}
               error={error}
               pattern="^(0x[a-fA-F0-9]{40})$"
               onChange={handleInput}
