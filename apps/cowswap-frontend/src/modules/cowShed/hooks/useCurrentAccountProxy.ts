@@ -1,3 +1,4 @@
+import { ZERO_ADDRESS } from '@cowprotocol/common-const'
 import { areAddressesEqual, getContract } from '@cowprotocol/common-utils'
 import { implementationAddress } from '@cowprotocol/contracts'
 import type { CowShedHooks, SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -111,12 +112,19 @@ async function getIsProxySetupValid(
   try {
     const implementation = await implementationAddress(provider, proxyAddress)
 
-    console.debug('[CoWShed validation] implementation', {
-      implementation,
-      expectedImplementation,
-    })
+    // If implementation is zero, it means proxy is not deployed and is considered as valid
+    if (areAddressesEqual(implementation, ZERO_ADDRESS)) {
+      return true
+    }
 
-    if (!areAddressesEqual(implementation, expectedImplementation)) return false
+    if (!areAddressesEqual(implementation, expectedImplementation)) {
+      console.debug('[CoWShed validation] implementation', {
+        implementation,
+        expectedImplementation,
+      })
+
+      return false
+    }
   } catch (e) {
     console.error('[CoWShed validation] Could not get implementationAddress', e)
 
@@ -126,12 +134,16 @@ async function getIsProxySetupValid(
   try {
     const trustedExecutor = await shedContract.callStatic.trustedExecutor()
 
-    console.debug('[CoWShed validation] trustedExecutor', {
-      trustedExecutor,
-      expectedFactoryAddress,
-    })
+    const isTrustedExecutorValid = areAddressesEqual(trustedExecutor, expectedFactoryAddress)
 
-    return areAddressesEqual(trustedExecutor, expectedFactoryAddress)
+    if (!isTrustedExecutorValid) {
+      console.debug('[CoWShed validation] trustedExecutor', {
+        trustedExecutor,
+        expectedFactoryAddress,
+      })
+    }
+
+    return isTrustedExecutorValid
   } catch (e) {
     console.error('[CoWShed validation] Could not get trustedExecutor', e)
 

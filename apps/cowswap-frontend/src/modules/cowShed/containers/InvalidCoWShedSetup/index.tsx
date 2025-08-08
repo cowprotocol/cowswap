@@ -29,7 +29,7 @@ export function InvalidCoWShedSetup(): ReactNode {
 
   if (isProxySetupValid !== false || proxyInfo?.chainId !== chainId) return null
 
-  console.debug('[CoWShed validation] proxyInfo', proxyInfo)
+  console.debug('[CoWShed validation] InvalidCoWShedSetup', proxyInfo)
 
   return (
     <Wrapper>
