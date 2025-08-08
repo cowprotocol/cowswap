@@ -19,6 +19,8 @@ const Box = styled.div`
   min-height: 104px;
   padding: 10px;
   margin: 0;
+  font-size: 13px;
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
 `
 
 const CopyHelperWrapper = styled(CopyHelper)`
@@ -27,7 +29,7 @@ const CopyHelperWrapper = styled(CopyHelper)`
   justify-content: normal;
 
   &:hover {
-    background: var(${UI.COLOR_PAPER});
+    background: var(${UI.COLOR_PAPER_DARKER});
   }
 `
 
@@ -38,13 +40,15 @@ const ExtLinkWrapper = styled(ExtLink)`
   display: flex;
   align-items: center;
   text-decoration: none;
-  font-size: 0.825rem;
+  font-size: inherit;
+  color: inherit;
 
   &:hover,
   &:active,
   &:focus {
     color: var(${UI.COLOR_TEXT});
-    background: var(${UI.COLOR_PAPER});
+    background: var(${UI.COLOR_PAPER_DARKER});
+    text-decoration: none;
   }
 `
 
