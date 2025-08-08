@@ -26,6 +26,9 @@ const { atom: lastUpdateTimeAtom, updateAtom: updateLastUpdateTimeAtom } = atomW
     'tokens:lastUpdateTimeAtom:v5',
     mapSupportedNetworks(LAST_UPDATE_TIME_DEFAULT),
     getJotaiMergerStorage(),
+    {
+      unstable_getOnInit: true,
+    },
   ),
 )
 
