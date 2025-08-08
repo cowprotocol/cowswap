@@ -9,7 +9,7 @@ export function sumUpUsdAmounts(chainId: SupportedChainId, amounts: TokenUsdAmou
 
   return Object.values(amounts).reduce(
     (acc, val) => {
-      if (!val.usdAmount) return acc
+      if (!val.usdAmount || !acc.currency.equals(val.usdAmount.currency)) return acc
 
       return acc.add(val.usdAmount)
     },

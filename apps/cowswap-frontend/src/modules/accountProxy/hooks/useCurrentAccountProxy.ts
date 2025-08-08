@@ -9,7 +9,7 @@ import type { Web3Provider } from '@ethersproject/providers'
 import ms from 'ms.macro'
 import useSWR, { SWRResponse, SWRConfiguration } from 'swr'
 
-import { useCowShedHooks } from '../../account-proxy/hooks/useCowShedHooks'
+import { useCowShedHooks } from './useCowShedHooks'
 
 const COW_SHED_ABI = [
   {

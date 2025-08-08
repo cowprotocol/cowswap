@@ -10,6 +10,8 @@ import { BigNumber } from '@ethersproject/bignumber'
 
 import { useParams } from 'react-router'
 
+import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
+
 import { useNavigateBack } from 'common/hooks/useNavigate'
 
 import { BalanceWrapper, ButtonPrimaryStyled, TokenAmountStyled, TokenLogoWrapper, TokenWrapper } from './styled'
@@ -42,7 +44,8 @@ export function AccountProxyRecoverPage(): ReactNode {
   )
   const { txSigningStep } = recoverFundsContext
 
-  const recoverCallback = useRecoverFundsCallback(recoverFundsContext)
+  const { handleSetError, ErrorModal } = useErrorModal()
+  const recoverCallback = useRecoverFundsCallback(recoverFundsContext, handleSetError)
 
   const onRecover = useCallback(() => {
     recoverCallback().then((txHash) => {
@@ -66,6 +69,7 @@ export function AccountProxyRecoverPage(): ReactNode {
 
   return (
     <div>
+      <ErrorModal />
       <TokenWrapper>
         <p>Recoverable balance</p>
         <BalanceWrapper>

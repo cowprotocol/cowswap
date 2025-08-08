@@ -19,6 +19,7 @@ export function ClickableAddress(props: ClickableAddressProps): ReactNode {
   const { address, chainId } = props
 
   const wrapperRef = useRef<HTMLDivElement>(null)
+  const contextMenuRef = useRef<HTMLDivElement>(null)
 
   const isMobile = useMediaQuery(Media.upToMedium(false))
   const bridgeNetwork = useBridgeSupportedNetwork(chainId)
@@ -33,6 +34,15 @@ export function ClickableAddress(props: ClickableAddressProps): ReactNode {
 
   const handleClick = useCallback((event: MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation?.()
+
+    const isContextMenuClicked = Boolean(event.target && contextMenuRef.current?.contains(event.target as HTMLElement))
+
+    // Prevent default behaviour when everything besides of the context menu is clicked
+    // Current use case is when this component is wrapped in a Link
+    // So we don't want to navigate when context menu is clicked
+    if (!isContextMenuClicked) {
+      event.preventDefault?.()
+    }
     setOpenTooltip((prev) => !prev)
   }, [])
 
@@ -47,7 +57,7 @@ export function ClickableAddress(props: ClickableAddressProps): ReactNode {
         <styledEl.AddressWrapper>{shortAddress}</styledEl.AddressWrapper>
         <styledEl.InfoIcon onClick={handleClick}>
           <Tooltip
-            content={<AddressContextMenuContent address={address} target={target} />}
+            content={<AddressContextMenuContent ref={contextMenuRef} address={address} target={target} />}
             placement="bottom"
             wrapInContainer={false}
             show={openTooltip}
