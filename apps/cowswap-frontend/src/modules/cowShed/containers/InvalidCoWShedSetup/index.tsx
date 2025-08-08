@@ -2,6 +2,7 @@ import React, { ReactNode } from 'react'
 
 import { DISCORD_LINK } from '@cowprotocol/common-const'
 import { ExternalLink, InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import styled from 'styled-components/macro'
 
@@ -22,12 +23,13 @@ const Wrapper = styled.div`
 `
 
 export function InvalidCoWShedSetup(): ReactNode {
+  const { chainId } = useWalletInfo()
   const proxyInfo = useCurrentAccountProxy()?.data
   const isProxySetupValid = proxyInfo?.isProxySetupValid
 
-  if (isProxySetupValid !== false) return null
+  if (isProxySetupValid !== false || proxyInfo?.chainId !== chainId) return null
 
-  console.debug('[CoWShed validation] networks', proxyInfo)
+  console.debug('[CoWShed validation] proxyInfo', proxyInfo)
 
   return (
     <Wrapper>

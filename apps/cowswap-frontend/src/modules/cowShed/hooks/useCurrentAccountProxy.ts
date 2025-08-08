@@ -28,6 +28,7 @@ interface CoWShedContract extends BaseContract {
 }
 
 interface ProxyAndAccount {
+  chainId: SupportedChainId
   proxyAddress: string
   account: string
   isProxyDeployed: boolean
@@ -72,6 +73,7 @@ export function useCurrentAccountProxy(): SWRResponse<ProxyAndAccount | undefine
         : true
 
       return {
+        chainId,
         proxyAddress,
         account,
         isProxyDeployed,
