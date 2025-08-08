@@ -8,6 +8,7 @@ export * from './styles'
 export * from './colors'
 
 export * from './pure/ButtonSecondaryAlt'
+export * from './pure/ArrowIcon'
 export * from './pure/Button'
 export * from './pure/CenteredDots'
 export * from './pure/Confetti'
