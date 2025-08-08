@@ -21,14 +21,13 @@ import {
   AccountProxyPage,
   AccountProxyRecoverPage,
   AccountProxiesPage,
-} from 'modules/account-proxy'
+} from 'modules/accountProxy'
 
 import { Routes as RoutesEnum, RoutesValues } from 'common/constants/routes'
 import Account, { AccountOverview } from 'pages/Account'
 import AdvancedOrdersPage from 'pages/AdvancedOrders'
 import AnySwapAffectedUsers from 'pages/error/AnySwapAffectedUsers'
 import { HooksPage } from 'pages/Hooks'
-import { CowShed } from 'pages/Hooks/cowShed'
 import LimitOrderPage from 'pages/LimitOrders'
 import { SwapPage } from 'pages/Swap'
 import YieldPage from 'pages/Yield'
@@ -101,7 +100,6 @@ export function RoutesApp(): ReactNode {
       {/*Swap*/}
       <Route path={RoutesEnum.SWAP} element={<SwapPage />} />
       <Route path={RoutesEnum.HOOKS} element={<HooksPage />} />
-      <Route path={RoutesEnum.COW_SHED} element={<CowShed />} />
       <Route path={RoutesEnum.SEND} element={<RedirectPathToSwapOnly />} />
 
       {lazyRoutes.map((item, key) => LazyRoute({ ...item, key }))}
