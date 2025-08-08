@@ -75,16 +75,15 @@ export const allActiveTokensAtom = atom(async (get) => {
   const { chainId, enableLpTokensByDefault } = get(environmentAtom)
   const userAddedTokens = get(userAddedTokensAtom)
   const favoriteTokensState = get(favoriteTokensAtom)
+  const listsStatesList = await get(listsStatesListAtom)
 
   const tokensMap = await get(tokensStateAtom)
   const nativeToken = NATIVE_CURRENCIES[chainId]
 
-  const activeTokensCount = Object.keys(tokensMap.activeTokens).length
-
   /**
-   * Wait till active tokens are loaded
+   * Wait till token lists loaded
    */
-  if (activeTokensCount === 0) {
+  if (listsStatesList.length === 0) {
     return { tokens: [], chainId }
   }
 
