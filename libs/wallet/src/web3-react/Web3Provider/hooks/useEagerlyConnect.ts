@@ -31,9 +31,8 @@ async function connect(connector: Connector) {
   }
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useEagerlyConnect(selectedWallet: ConnectionType | undefined, standaloneMode?: boolean) {
+
+export function useEagerlyConnect(selectedWallet: ConnectionType | undefined, standaloneMode?: boolean): void {
   const [tryConnectEip6963Provider, setTryConnectEip6963Provider] = useState(false)
   const eagerlyConnectInitRef = useRef(false)
   const selectedEip6963ProviderInfo = useSelectedEip6963ProviderInfo()
