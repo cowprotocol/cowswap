@@ -1,6 +1,6 @@
 import { areAddressesEqual, getContract } from '@cowprotocol/common-utils'
 import { implementationAddress } from '@cowprotocol/contracts'
-import type { CowShedHooks } from '@cowprotocol/cow-sdk'
+import type { CowShedHooks, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import type { BaseContract } from '@ethersproject/contracts'
@@ -60,7 +60,7 @@ export function useCurrentAccountProxy(): SWRResponse<ProxyAndAccount | undefine
 
   return useSWR(
     account && provider && cowShedHooks ? [account, chainId, 'useCurrentAccountProxyAddress'] : null,
-    async ([account]) => {
+    async ([account, chainId]) => {
       if (!provider || !cowShedHooks) return
 
       const proxyAddress = cowShedHooks.proxyOf(account)
@@ -68,7 +68,7 @@ export function useCurrentAccountProxy(): SWRResponse<ProxyAndAccount | undefine
       const isProxyDeployed = !!proxyCode && proxyCode !== '0x'
 
       const isProxySetupValid = isProxyDeployed
-        ? await getIsProxySetupValid(proxyAddress, provider, cowShedHooks)
+        ? await getIsProxySetupValid(chainId, proxyAddress, provider, cowShedHooks)
         : true
 
       return {
@@ -87,10 +87,16 @@ export function useCurrentAccountProxyAddress(): string | undefined {
 }
 
 async function getIsProxySetupValid(
+  chainId: SupportedChainId,
   proxyAddress: string,
   provider: Web3Provider,
   cowShedHooks: CowShedHooks,
 ): Promise<boolean | null> {
+  const providerNetwork = await provider.getNetwork()
+
+  // Skip validation if network mismatch
+  if (providerNetwork.chainId !== chainId) return true
+
   const shedContract = getContract(proxyAddress, COW_SHED_ABI, provider) as CoWShedContract
   const expectedImplementation = cowShedHooks.getImplementationAddress()
   const expectedFactoryAddress = cowShedHooks.getFactoryAddress()
