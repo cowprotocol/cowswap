@@ -4,6 +4,7 @@ import { Link } from 'react-router'
 import styled from 'styled-components/macro'
 
 import { TokenListItem } from 'modules/tokensList'
+import { TokenBalance } from 'modules/tokensList/pure/TokenListItem/styled'
 
 export const Wrapper = styled.div`
   padding-bottom: 10px;
@@ -23,6 +24,18 @@ export const TokenListItemStyled = styled(TokenListItem)`
   border-radius: 16px;
   padding: 12px;
   gap: 12px;
+
+  ${TokenBalance} {
+    gap: 4px;
+
+    > span:first-child {
+      font-weight: 500;
+    }
+
+    > span:last-child {
+      font-size: 13px;
+    }
+  }
 
   ${Media.upToSmall()} {
     padding: 12px 8px;
