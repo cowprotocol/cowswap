@@ -10,6 +10,11 @@ export const Wrapper = styled.div`
   padding-bottom: 10px;
 `
 
+export const AccountCardContainer = styled.div`
+  width: 100%;
+  isolation: isolate;
+`
+
 export const Title = styled.span`
   display: flex;
   font-size: 15px;
