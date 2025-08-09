@@ -74,6 +74,9 @@ export const FAQItem = styled.details`
     font-size: 15px;
     line-height: 1.8;
     color: var(${UI.COLOR_TEXT_OPACITY_70});
+    background: var(${UI.COLOR_PAPER_DARKER});
+    border-radius: 16px;
+    padding: 16px;
   }
 
   > div > ol {
