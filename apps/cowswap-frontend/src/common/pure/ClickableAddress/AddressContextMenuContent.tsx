@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { ReactNode, forwardRef } from 'react'
 
 import { UI } from '@cowprotocol/ui'
 
@@ -61,9 +61,9 @@ interface ContentProps {
   target: string
 }
 
-export function AddressContextMenuContent({ address, target }: ContentProps): ReactNode {
+export const AddressContextMenuContent = forwardRef<HTMLDivElement, ContentProps>(function AddressContextMenuContent({ address, target }, ref): ReactNode {
   return (
-    <Box>
+    <Box ref={ref}>
       <CopyHelperWrapper toCopy={address} copyIconWidth="100%">
         <Text>Copy address</Text>
       </CopyHelperWrapper>
@@ -73,4 +73,4 @@ export function AddressContextMenuContent({ address, target }: ContentProps): Re
       </ExtLinkWrapper>
     </Box>
   )
-}
+})
