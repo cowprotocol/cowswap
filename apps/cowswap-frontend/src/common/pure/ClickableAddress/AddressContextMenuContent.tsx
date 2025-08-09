@@ -61,13 +61,16 @@ interface ContentProps {
   target: string
 }
 
-export const AddressContextMenuContent = forwardRef<HTMLDivElement, ContentProps>(function AddressContextMenuContent({ address, target }, ref): ReactNode {
+export const AddressContextMenuContent = forwardRef<HTMLDivElement, ContentProps>(function AddressContextMenuContent(
+  { address, target },
+  ref,
+): ReactNode {
   return (
     <Box ref={ref}>
       <CopyHelperWrapper toCopy={address} copyIconWidth="100%">
         <Text>Copy address</Text>
       </CopyHelperWrapper>
-      <ExtLinkWrapper href={target} target="_blank">
+      <ExtLinkWrapper href={target} target="_blank" rel="noreferrer noopener">
         <Link2 size={16} />
         <Text>View details</Text>
       </ExtLinkWrapper>
