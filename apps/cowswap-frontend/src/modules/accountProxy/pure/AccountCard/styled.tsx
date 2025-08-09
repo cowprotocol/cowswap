@@ -3,6 +3,8 @@ import { UI, Font, Media } from '@cowprotocol/ui'
 import { MenuButton as ReachMenuButton, MenuItems as ReachMenuItems } from '@reach/menu-button'
 import styled from 'styled-components/macro'
 
+import { AccountCardHoverBehavior } from './types'
+
 export const LeftTop = styled.div`
   display: flex;
   flex-flow: column wrap;
@@ -108,9 +110,8 @@ export const AccountCardWrapper = styled.div<{
   height?: number | string
   borderRadius?: number
   padding?: number
-  hoverScale?: boolean
-  disableHover?: boolean
-  externalHover?: boolean
+  hoverBehavior?: AccountCardHoverBehavior
+  enableScale?: boolean
   margin?: string
   minHeight?: number | string
 }>`
@@ -147,8 +148,8 @@ export const AccountCardWrapper = styled.div<{
          gap: 8px;`
       : `grid-template-columns: 1fr auto;
          grid-template-rows: 1fr auto;`}
-  ${({ disableHover }) =>
-    !disableHover
+  ${({ hoverBehavior }) =>
+    hoverBehavior !== AccountCardHoverBehavior.NONE
       ? `
     transition:
       transform 0.2s ease-out,
@@ -193,19 +194,25 @@ export const AccountCardWrapper = styled.div<{
     pointer-events: none;
   }
 
-  ${({ hoverScale, disableHover, externalHover }) =>
-    !disableHover &&
+  ${({ hoverBehavior, enableScale }) => {
+    if (hoverBehavior === AccountCardHoverBehavior.NONE) return ''
+    
+    const hoverSelector = hoverBehavior === AccountCardHoverBehavior.PARENT 
+      ? '*:hover > &' 
+      : '&:hover'
+    
+    return `
+      ${hoverSelector} {
+        --cowprotocol-mask-start: 0%;
+        --cowprotocol-mask-end: 0%;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        ${enableScale ? 'transform: translateY(-1px) scale(1.03);' : ''}
+      }
+      ${hoverSelector}::before {
+        left: 100%;
+      }
     `
-    ${externalHover ? '*:hover > &' : '&:hover'} {
-      --cowprotocol-mask-start: 0%;
-      --cowprotocol-mask-end: 0%;
-      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-      ${hoverScale ? 'transform: translateY(-1px) scale(1.03);' : ''}
-    }
-    ${externalHover ? '*:hover > &::before' : '&:hover::before'} {
-      left: 100%;
-    }
-  `}
+  }}
 `
 
 export const IdentityIconStyled = styled.div`

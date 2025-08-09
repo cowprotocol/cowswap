@@ -24,6 +24,7 @@ import {
   ValueAmount,
   WatermarkIcon,
 } from './styled'
+import { AccountCardHoverBehavior } from './types'
 
 import { AccountIcon } from '../AccountItem/AccountIcon'
 
@@ -37,9 +38,8 @@ interface AccountCardProps {
   account?: string
   totalUsdAmount?: CurrencyAmount<Currency> | null
   loading?: boolean
-  hoverScale?: boolean
-  disableHover?: boolean
-  externalHover?: boolean
+  hoverBehavior?: AccountCardHoverBehavior
+  enableScale?: boolean
   margin?: string
   minHeight?: number | string
   showWatermark?: boolean
@@ -106,9 +106,8 @@ export function AccountCard({
   account,
   totalUsdAmount,
   loading,
-  hoverScale,
-  disableHover,
-  externalHover,
+  hoverBehavior = AccountCardHoverBehavior.SELF,
+  enableScale = false,
   margin,
   minHeight,
   showWatermark = false,
@@ -120,9 +119,8 @@ export function AccountCard({
         height={height}
         borderRadius={borderRadius}
         padding={padding}
-        hoverScale={hoverScale}
-        disableHover={disableHover}
-        externalHover={externalHover}
+        hoverBehavior={hoverBehavior}
+        enableScale={enableScale}
         margin={margin}
         minHeight={minHeight}
       >
@@ -146,13 +144,18 @@ export function AccountCard({
       height={height}
       borderRadius={borderRadius}
       padding={padding}
-      hoverScale={hoverScale}
-      disableHover={disableHover}
-      externalHover={externalHover}
+      hoverBehavior={hoverBehavior}
+      enableScale={enableScale}
       margin={margin}
       minHeight={minHeight}
     >
-      <AccountCardContent account={account} chainId={chainId} totalUsdAmount={totalUsdAmount} loading={loading} showWatermark={showWatermark} />
+      <AccountCardContent
+        account={account}
+        chainId={chainId}
+        totalUsdAmount={totalUsdAmount}
+        loading={loading}
+        showWatermark={showWatermark}
+      />
     </AccountCardWrapper>
   )
 }
