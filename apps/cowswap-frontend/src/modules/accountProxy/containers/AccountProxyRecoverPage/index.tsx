@@ -14,7 +14,14 @@ import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 
 import { useNavigateBack } from 'common/hooks/useNavigate'
 
-import { BalanceWrapper, ButtonPrimaryStyled, TokenAmountStyled, TokenLogoWrapper, TokenWrapper } from './styled'
+import {
+  BalanceWrapper,
+  ButtonPrimaryStyled,
+  TokenAmountStyled,
+  TokenLogoWrapper,
+  TokenWrapper,
+  Wrapper,
+} from './styled'
 
 import { useAccountProxies } from '../../hooks/useAccountProxies'
 import { useRecoverFundsCallback } from '../../hooks/useRecoverFundsCallback'
@@ -68,10 +75,10 @@ export function AccountProxyRecoverPage(): ReactNode {
   }, [recoverCallback, navigateBack, updateTokenBalance, tokenAddress, destroyedRef])
 
   return (
-    <div>
+    <Wrapper>
       <ErrorModal />
       <TokenWrapper>
-        <p>Recoverable balance</p>
+        <span>Recoverable balance</span>
         <BalanceWrapper>
           {balance ? (
             <>
@@ -107,6 +114,6 @@ export function AccountProxyRecoverPage(): ReactNode {
         )}
         {!txSigningStep && !txInProgress && 'Recover funds'}
       </ButtonPrimaryStyled>
-    </div>
+    </Wrapper>
   )
 }

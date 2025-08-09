@@ -31,14 +31,6 @@ export const WidgetWrapper = styled.div`
   max-width: ${WIDGET_MAX_WIDTH.swap};
   margin: 0 auto;
   position: relative;
-
-  p {
-    padding: 0.8rem 0 0.8rem 0;
-  }
-
-  li {
-    padding: 0.3rem;
-  }
 `
 
 export const TitleWrapper = styled.div`

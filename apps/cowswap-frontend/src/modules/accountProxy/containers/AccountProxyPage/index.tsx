@@ -1,14 +1,14 @@
 import { ReactNode } from 'react'
 
 import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
+import { ArrowIcon } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { ChevronRight } from 'react-feather'
 import { useParams } from 'react-router'
 
 import { Routes } from 'common/constants/routes'
 
-import { ChevronWrapper, LinkStyled, Title, TokenListItemStyled, Wrapper } from './styled'
+import { AccountCardContainer, LinkStyled, Title, TokenListItemStyled, Wrapper } from './styled'
 
 import { useRefundAmounts } from '../../hooks/useRefundAmounts'
 import { useTokensToRefund } from '../../hooks/useTokensToRefund'
@@ -34,12 +34,19 @@ export function AccountProxyPage(): ReactNode {
 
   return (
     <Wrapper>
-      <AccountCard
-        chainId={chainId}
-        account={proxyAddress}
-        totalUsdAmount={totalUsdAmount}
-        loading={isSomeTokenLoading}
-      />
+      <AccountCardContainer>
+        <AccountCard
+          chainId={chainId}
+          account={proxyAddress}
+          totalUsdAmount={totalUsdAmount}
+          loading={isSomeTokenLoading}
+          width="95%"
+          margin="12px auto 34px"
+          minHeight={218}
+          enableScale
+          showWatermark={true}
+        />
+      </AccountCardContainer>
       <Title>Recoverable tokens · {tokensToRefund?.length || 0}</Title>
       {refundValues &&
         refundValues.map(({ token, balance, usdAmount }) => {
@@ -53,9 +60,7 @@ export function AccountProxyPage(): ReactNode {
               })}
             >
               <TokenListItemStyled token={token} isWalletConnected balance={balance} usdAmount={usdAmount}>
-                <ChevronWrapper>
-                  <ChevronRight size={24} />
-                </ChevronWrapper>
+                <ArrowIcon verticalCenter />
               </TokenListItemStyled>
             </LinkStyled>
           )
