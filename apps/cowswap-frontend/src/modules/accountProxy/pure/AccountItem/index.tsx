@@ -13,6 +13,7 @@ import { parameterizeRoute } from '../../utils/parameterizeRoute'
 import { AccountCard } from '../AccountCard'
 import { CowProtocolIcon } from '../AccountCard/CowProtocolIcon'
 import { SkeletonLines } from '../AccountCard/SkeletonLines'
+import { AccountCardHoverBehavior } from '../AccountCard/types'
 
 interface AccountItemProps {
   chainId: SupportedChainId
@@ -23,7 +24,14 @@ interface AccountItemProps {
 export function AccountItem({ chainId, account, version, iconSize = 28 }: AccountItemProps): ReactNode {
   return (
     <Wrapper to={parameterizeRoute(Routes.ACCOUNT_PROXY, { chainId, proxyAddress: account })}>
-      <AccountCard width={90} height={56} borderRadius={8} padding={8} hoverScale externalHover>
+      <AccountCard
+        width={90}
+        height={56}
+        borderRadius={8}
+        padding={8}
+        hoverBehavior={AccountCardHoverBehavior.PARENT}
+        enableScale
+      >
         <MiniContent>
           <AccountIcon account={account} size={iconSize} />
           <SkeletonLines skeletonHeight={2} />

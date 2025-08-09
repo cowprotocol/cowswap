@@ -17,7 +17,7 @@ export function WalletNotConnected({ onConnect }: WalletNotConnectedProps): Reac
   return (
     <Container>
       <Wrapper>
-        <AccountCard width={206} height={116} padding={16} hoverScale>
+        <AccountCard width={206} height={116} padding={16} enableScale>
           <IdentityIcon icon={ICON_WALLET} />
           <SkeletonLines />
           <CowProtocolIcon />
