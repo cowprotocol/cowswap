@@ -6,6 +6,25 @@ import styled from 'styled-components/macro'
 
 import { AccountCardHoverBehavior } from './types'
 
+const getHoverStyles = (behavior: AccountCardHoverBehavior, enableScale: boolean): string => {
+  if (behavior === AccountCardHoverBehavior.NONE) return ''
+
+  const selector = behavior === AccountCardHoverBehavior.SELF ? '&:hover' : '[data-hover-trigger]:hover > &'
+  const transform = enableScale ? 'transform: translateY(-1px) scale(1.03);' : ''
+
+  return `
+    ${selector} {
+      --cowprotocol-mask-start: 0%;
+      --cowprotocol-mask-end: 0%;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+      ${transform}
+    }
+    ${selector}::before {
+      left: 100%;
+    }
+  `
+}
+
 export const LeftTop = styled.div`
   display: flex;
   flex-flow: column wrap;
@@ -60,6 +79,10 @@ export const AddressLinkWrapper = styled.span`
   display: inline-flex;
   align-items: center;
   gap: 12px;
+  border-radius: 8px;
+  padding: 2px;
+  margin: -2px;
+  transition: background 0.2s ease;
 
   &::after {
     content: '↗';
@@ -70,8 +93,15 @@ export const AddressLinkWrapper = styled.span`
     color: var(${UI.COLOR_TEXT_OPACITY_70});
   }
 
-  &:hover::after {
+  &:hover::after,
+  &:focus-within::after {
     opacity: 1;
+  }
+
+  &:focus-within {
+    background: var(${UI.COLOR_TEXT_OPACITY_10});
+    outline: 2px solid var(${UI.COLOR_PRIMARY});
+    outline-offset: 2px;
   }
 `
 
@@ -87,11 +117,21 @@ export const MenuButton = styled(ReachMenuButton)`
   display: flex;
   align-items: center;
   justify-content: center;
+  transition:
+    color 0.2s ease,
+    background 0.2s ease;
 
   &:hover {
     color: var(${UI.COLOR_TEXT});
     background: var(${UI.COLOR_TEXT_OPACITY_10});
     border-radius: 10px;
+  }
+
+  &:focus-visible {
+    color: var(${UI.COLOR_TEXT});
+    background: var(${UI.COLOR_TEXT_OPACITY_10});
+    border-radius: 10px;
+    box-shadow: 0 0 0 2px var(${UI.COLOR_PRIMARY});
   }
 `
 
@@ -106,25 +146,19 @@ export const MenuItems = styled(ReachMenuItems)`
   text-align: left;
 `
 
-
-
-const CARD_PROPS = {
-  $width: undefined as number | string | undefined,
-  $height: undefined as number | string | undefined,
-  $borderRadius: undefined as number | undefined,
-  $padding: undefined as number | undefined,
-  $hoverBehavior: undefined as AccountCardHoverBehavior | undefined,
-  $enableScale: undefined as boolean | undefined,
-  $margin: undefined as string | undefined,
-  $minHeight: undefined as number | string | undefined,
+interface CardProps {
+  $width?: number | string
+  $height?: number | string
+  $borderRadius?: number
+  $padding?: number
+  $hoverBehavior?: AccountCardHoverBehavior
+  $enableScale?: boolean
+  $margin?: string
+  $minHeight?: number | string
 }
 
-type CardProps = typeof CARD_PROPS
-
-const transientProps = Object.keys(CARD_PROPS)
-
 export const AccountCardWrapper = styled.div.withConfig({
-  shouldForwardProp: (prop) => !transientProps.includes(prop as string),
+  shouldForwardProp: (prop) => typeof prop !== 'string' || !prop.startsWith('$'),
 })<CardProps>`
   --cowprotocol-mask-start: 0%;
   --cowprotocol-mask-end: 40%;
@@ -150,17 +184,7 @@ export const AccountCardWrapper = styled.div.withConfig({
          gap: 8px;`
       : `grid-template-columns: 1fr auto;
          grid-template-rows: 1fr auto;`}
-  ${({ $hoverBehavior }) =>
-    $hoverBehavior !== AccountCardHoverBehavior.NONE
-      ? `
-    transition:
-      transform 0.2s ease-out,
-      box-shadow 0.2s ease-out;
-  `
-      : ''}
   transform: translateY(0) scale(1);
-
-
 
   ${Media.upToSmall()} {
     padding: 14px;
@@ -186,53 +210,16 @@ export const AccountCardWrapper = styled.div.withConfig({
     pointer-events: none;
   }
 
-  ${({ $hoverBehavior, $enableScale }) => {
-    if ($hoverBehavior === AccountCardHoverBehavior.NONE) return ''
-    
-    const hoverSelector = $hoverBehavior === AccountCardHoverBehavior.PARENT 
-      ? '[data-hover-trigger]:hover > &' 
-      : '&:hover'
-    
-    return `
-      ${hoverSelector} {
-        --cowprotocol-mask-start: 0%;
-        --cowprotocol-mask-end: 0%;
-        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-        ${$enableScale ? 'transform: translateY(-1px) scale(1.03);' : ''}
-      }
-      ${hoverSelector}::before {
-        left: 100%;
-      }
-    `
-  }}
-`
+  ${({ $hoverBehavior }) =>
+    $hoverBehavior !== AccountCardHoverBehavior.NONE
+      ? `
+    transition:
+      transform 0.2s ease-out,
+      box-shadow 0.2s ease-out;
+  `
+      : ''}
 
-export const IdentityIconStyled = styled.div`
-  --size: 70px;
-  width: var(--size);
-  height: var(--size);
-  border-radius: var(--size);
-  background: var(${UI.COLOR_TEXT_OPACITY_10});
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  > svg,
-  > img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    padding: 25%;
-    fill: var(${UI.COLOR_TEXT_OPACITY_70});
-  }
-`
-
-export const SkeletonLine = styled.div`
-  --skeletonHeight: 6px;
-  width: 65px;
-  height: var(--skeletonHeight);
-  background: var(${UI.COLOR_TEXT_OPACITY_10});
-  margin: 12px 0;
+  ${({ $hoverBehavior, $enableScale }) => ($hoverBehavior ? getHoverStyles($hoverBehavior, $enableScale || false) : '')}
 `
 
 export const WatermarkIcon = styled.div`

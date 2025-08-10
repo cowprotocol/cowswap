@@ -1,8 +1,28 @@
 import { ReactNode } from 'react'
 
-import SVG from 'react-inlinesvg'
+import { UI } from '@cowprotocol/ui'
 
-import { IdentityIconStyled } from './styled'
+import SVG from 'react-inlinesvg'
+import styled from 'styled-components/macro'
+
+const IdentityIconStyled = styled.div`
+  width: 70px;
+  height: 70px;
+  border-radius: 70px;
+  background: var(${UI.COLOR_TEXT_OPACITY_10});
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  > svg,
+  > img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 25%;
+    fill: var(${UI.COLOR_TEXT_OPACITY_70});
+  }
+`
 
 interface IdentityIconProps {
   icon?: string

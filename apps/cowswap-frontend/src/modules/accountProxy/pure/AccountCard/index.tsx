@@ -45,57 +45,6 @@ interface AccountCardProps {
   showWatermark?: boolean
 }
 
-function AccountCardContent({
-  account,
-  chainId,
-  totalUsdAmount,
-  loading,
-  showWatermark = false,
-}: {
-  account: string
-  chainId: SupportedChainId
-  totalUsdAmount?: CurrencyAmount<Currency> | null
-  loading?: boolean
-  showWatermark?: boolean
-}): ReactNode {
-  const addressLink = getExplorerLink(chainId, account, ExplorerDataType.ADDRESS)
-
-  return (
-    <>
-      <LeftTop>
-        <ValueLabel>Recoverable value</ValueLabel>
-        <ValueAmount>{loading ? <Loader size="24px" /> : <FiatAmount amount={totalUsdAmount} />}</ValueAmount>
-      </LeftTop>
-      <RightTop>
-        <Menu>
-          <MenuButton>
-            <MoreHorizontal size={20} />
-          </MenuButton>
-          <MenuPopover portal={false}>
-            <MenuItems>
-              <AddressContextMenuContent address={account} target={addressLink} />
-            </MenuItems>
-          </MenuPopover>
-        </Menu>
-      </RightTop>
-      <LeftBottom>
-        <ExternalLink href={addressLink}>
-          <AddressLinkWrapper>
-            <AccountIcon account={account} size={28} />
-            <AddressDisplay>{shortenAddress(account)}</AddressDisplay>
-          </AddressLinkWrapper>
-        </ExternalLink>
-      </LeftBottom>
-      <CowProtocolIcon height={24} heightMobile={18} positionOffset={25} positionOffsetMobile={22} />
-      {showWatermark && (
-        <WatermarkIcon>
-          <ProductLogo variant={ProductVariant.CowProtocol} logoIconOnly height={140} />
-        </WatermarkIcon>
-      )}
-    </>
-  )
-}
-
 export function AccountCard({
   children,
   width,
@@ -112,39 +61,63 @@ export function AccountCard({
   minHeight,
   showWatermark = false,
 }: AccountCardProps): ReactNode {
-  const wrapperProps = {
-    $width: width,
-    $height: height,
-    $borderRadius: borderRadius,
-    $padding: padding,
-    $hoverBehavior: hoverBehavior,
-    $enableScale: enableScale,
-    $margin: margin,
-    $minHeight: minHeight,
-  }
-
-  let content: ReactNode
-  
-  if (children) {
-    content = children
-  } else if (account && chainId) {
-    content = (
-      <AccountCardContent
-        account={account}
-        chainId={chainId}
-        totalUsdAmount={totalUsdAmount}
-        loading={loading}
-        showWatermark={showWatermark}
-      />
-    )
-  } else {
+  // Early return for invalid state
+  if (!children && (!account || !chainId)) {
     return null
   }
 
+  const addressLink = account && chainId ? getExplorerLink(chainId, account, ExplorerDataType.ADDRESS) : ''
+
   return (
-    <AccountCardWrapper {...wrapperProps}>
-      {content}
-      {showWatermark && children && (
+    <AccountCardWrapper
+      $width={width}
+      $height={height}
+      $borderRadius={borderRadius}
+      $padding={padding}
+      $hoverBehavior={hoverBehavior}
+      $enableScale={enableScale}
+      $margin={margin}
+      $minHeight={minHeight}
+      role="article"
+      aria-label={account ? `Account ${shortenAddress(account)} overview` : 'Account overview'}
+      aria-busy={loading}
+    >
+      {children || (
+        <>
+          <LeftTop>
+            <ValueLabel>Recoverable value</ValueLabel>
+            <ValueAmount aria-live="polite">
+              {loading ? <Loader size="24px" /> : <FiatAmount amount={totalUsdAmount} />}
+            </ValueAmount>
+          </LeftTop>
+          <RightTop>
+            <Menu>
+              <MenuButton aria-label="Account options menu">
+                <MoreHorizontal size={20} />
+              </MenuButton>
+              <MenuPopover portal={false}>
+                <MenuItems>
+                  <AddressContextMenuContent address={account!} target={addressLink} />
+                </MenuItems>
+              </MenuPopover>
+            </Menu>
+          </RightTop>
+          <LeftBottom>
+            <ExternalLink
+              href={addressLink}
+              aria-label={`View account ${shortenAddress(account!)} on explorer`}
+              rel="noopener noreferrer"
+            >
+              <AddressLinkWrapper>
+                <AccountIcon account={account!} size={28} />
+                <AddressDisplay>{shortenAddress(account!)}</AddressDisplay>
+              </AddressLinkWrapper>
+            </ExternalLink>
+          </LeftBottom>
+          <CowProtocolIcon height={24} heightMobile={18} positionOffset={25} positionOffsetMobile={22} />
+        </>
+      )}
+      {showWatermark && (
         <WatermarkIcon>
           <ProductLogo variant={ProductVariant.CowProtocol} logoIconOnly height={140} />
         </WatermarkIcon>
