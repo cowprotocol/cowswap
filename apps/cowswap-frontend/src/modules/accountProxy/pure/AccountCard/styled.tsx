@@ -198,7 +198,7 @@ export const AccountCardWrapper = styled.div<{
     if (hoverBehavior === AccountCardHoverBehavior.NONE) return ''
     
     const hoverSelector = hoverBehavior === AccountCardHoverBehavior.PARENT 
-      ? '*:hover > &' 
+      ? '[data-hover-trigger]:hover > &' 
       : '&:hover'
     
     return `

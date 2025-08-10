@@ -3,7 +3,9 @@ import { UI } from '@cowprotocol/ui'
 import { Link } from 'react-router'
 import styled from 'styled-components/macro'
 
-export const Wrapper = styled(Link)`
+export const Wrapper = styled(Link).attrs({
+  'data-hover-trigger': true,
+})`
   width: 100%;
   display: grid;
   align-items: center;
@@ -18,10 +20,11 @@ export const Wrapper = styled(Link)`
 
   &:hover {
     background: var(${UI.COLOR_PRIMARY_OPACITY_10});
-  }
 
-  &:hover svg path {
-    stroke: var(${UI.COLOR_TEXT});
+    /* Only target ArrowIcon's path */
+    > svg path {
+      stroke: var(${UI.COLOR_TEXT});
+    }
   }
 `
 
