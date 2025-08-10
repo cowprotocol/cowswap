@@ -1,4 +1,5 @@
 import { UI, Font, Media } from '@cowprotocol/ui'
+import { toPixelValue } from '@cowprotocol/ui-utils'
 
 import { MenuButton as ReachMenuButton, MenuItems as ReachMenuItems } from '@reach/menu-button'
 import styled from 'styled-components/macro'
@@ -105,51 +106,52 @@ export const MenuItems = styled(ReachMenuItems)`
   text-align: left;
 `
 
-export const AccountCardWrapper = styled.div<{
-  width?: number | string
-  height?: number | string
-  borderRadius?: number
-  padding?: number
-  hoverBehavior?: AccountCardHoverBehavior
-  enableScale?: boolean
-  margin?: string
-  minHeight?: number | string
-}>`
+
+
+const CARD_PROPS = {
+  $width: undefined as number | string | undefined,
+  $height: undefined as number | string | undefined,
+  $borderRadius: undefined as number | undefined,
+  $padding: undefined as number | undefined,
+  $hoverBehavior: undefined as AccountCardHoverBehavior | undefined,
+  $enableScale: undefined as boolean | undefined,
+  $margin: undefined as string | undefined,
+  $minHeight: undefined as number | string | undefined,
+}
+
+type CardProps = typeof CARD_PROPS
+
+const transientProps = Object.keys(CARD_PROPS)
+
+export const AccountCardWrapper = styled.div.withConfig({
+  shouldForwardProp: (prop) => !transientProps.includes(prop as string),
+})<CardProps>`
   --cowprotocol-mask-start: 0%;
   --cowprotocol-mask-end: 40%;
 
-  width: ${({ width }) => (typeof width === 'number' ? `${width}px` : width || '100%')};
-  height: ${({ height }) => (typeof height === 'number' ? `${height}px` : height || 'auto')};
-  min-height: ${({ minHeight, height }) =>
-    minHeight
-      ? typeof minHeight === 'number'
-        ? `${minHeight}px`
-        : minHeight
-      : height
-        ? typeof height === 'number'
-          ? `${height}px`
-          : height
-        : '200px'};
-  border-radius: ${({ borderRadius }) => (borderRadius ? `${borderRadius}px` : '24px')};
-  padding: ${({ padding }) => (padding ? `${padding}px` : '24px')};
-  margin: ${({ margin }) => margin || '0 auto'};
+  width: ${({ $width }) => toPixelValue($width) || '100%'};
+  height: ${({ $height }) => toPixelValue($height) || 'auto'};
+  min-height: ${({ $minHeight, $height }) => toPixelValue($minHeight) || toPixelValue($height) || '200px'};
+  border-radius: ${({ $borderRadius }) => ($borderRadius ? `${$borderRadius}px` : '24px')};
+  padding: ${({ $padding }) => ($padding ? `${$padding}px` : '24px')};
+  margin: ${({ $margin }) => $margin || '0 auto'};
   background: var(${UI.COLOR_PAPER_GRADIENT});
   border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
   box-shadow: var(${UI.BOX_SHADOW_3});
   backdrop-filter: blur(50px);
   position: relative;
   overflow: hidden;
-  display: ${({ width, height }) => (width && height ? 'flex' : 'grid')};
-  ${({ width, height }) =>
-    width && height
+  display: ${({ $width, $height }) => ($width && $height ? 'flex' : 'grid')};
+  ${({ $width, $height }) =>
+    $width && $height
       ? `flex-flow: row wrap;
          justify-content: space-between;
          align-items: center;
          gap: 8px;`
       : `grid-template-columns: 1fr auto;
          grid-template-rows: 1fr auto;`}
-  ${({ hoverBehavior }) =>
-    hoverBehavior !== AccountCardHoverBehavior.NONE
+  ${({ $hoverBehavior }) =>
+    $hoverBehavior !== AccountCardHoverBehavior.NONE
       ? `
     transition:
       transform 0.2s ease-out,
@@ -158,17 +160,7 @@ export const AccountCardWrapper = styled.div<{
       : ''}
   transform: translateY(0) scale(1);
 
-  @property --cowprotocol-mask-start {
-    syntax: '<percentage>';
-    inherits: true;
-    initial-value: 0%;
-  }
 
-  @property --cowprotocol-mask-end {
-    syntax: '<percentage>';
-    inherits: true;
-    initial-value: 40%;
-  }
 
   ${Media.upToSmall()} {
     padding: 14px;
@@ -194,10 +186,10 @@ export const AccountCardWrapper = styled.div<{
     pointer-events: none;
   }
 
-  ${({ hoverBehavior, enableScale }) => {
-    if (hoverBehavior === AccountCardHoverBehavior.NONE) return ''
+  ${({ $hoverBehavior, $enableScale }) => {
+    if ($hoverBehavior === AccountCardHoverBehavior.NONE) return ''
     
-    const hoverSelector = hoverBehavior === AccountCardHoverBehavior.PARENT 
+    const hoverSelector = $hoverBehavior === AccountCardHoverBehavior.PARENT 
       ? '[data-hover-trigger]:hover > &' 
       : '&:hover'
     
@@ -206,7 +198,7 @@ export const AccountCardWrapper = styled.div<{
         --cowprotocol-mask-start: 0%;
         --cowprotocol-mask-end: 0%;
         box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-        ${enableScale ? 'transform: translateY(-1px) scale(1.03);' : ''}
+        ${$enableScale ? 'transform: translateY(-1px) scale(1.03);' : ''}
       }
       ${hoverSelector}::before {
         left: 100%;

@@ -112,43 +112,23 @@ export function AccountCard({
   minHeight,
   showWatermark = false,
 }: AccountCardProps): ReactNode {
+  const wrapperProps = {
+    $width: width,
+    $height: height,
+    $borderRadius: borderRadius,
+    $padding: padding,
+    $hoverBehavior: hoverBehavior,
+    $enableScale: enableScale,
+    $margin: margin,
+    $minHeight: minHeight,
+  }
+
+  let content: ReactNode
+  
   if (children) {
-    return (
-      <AccountCardWrapper
-        width={width}
-        height={height}
-        borderRadius={borderRadius}
-        padding={padding}
-        hoverBehavior={hoverBehavior}
-        enableScale={enableScale}
-        margin={margin}
-        minHeight={minHeight}
-      >
-        {children}
-        {showWatermark && (
-          <WatermarkIcon>
-            <ProductLogo variant={ProductVariant.CowProtocol} logoIconOnly height={140} />
-          </WatermarkIcon>
-        )}
-      </AccountCardWrapper>
-    )
-  }
-
-  if (!account || !chainId) {
-    return null
-  }
-
-  return (
-    <AccountCardWrapper
-      width={width}
-      height={height}
-      borderRadius={borderRadius}
-      padding={padding}
-      hoverBehavior={hoverBehavior}
-      enableScale={enableScale}
-      margin={margin}
-      minHeight={minHeight}
-    >
+    content = children
+  } else if (account && chainId) {
+    content = (
       <AccountCardContent
         account={account}
         chainId={chainId}
@@ -156,6 +136,19 @@ export function AccountCard({
         loading={loading}
         showWatermark={showWatermark}
       />
+    )
+  } else {
+    return null
+  }
+
+  return (
+    <AccountCardWrapper {...wrapperProps}>
+      {content}
+      {showWatermark && children && (
+        <WatermarkIcon>
+          <ProductLogo variant={ProductVariant.CowProtocol} logoIconOnly height={140} />
+        </WatermarkIcon>
+      )}
     </AccountCardWrapper>
   )
 }
