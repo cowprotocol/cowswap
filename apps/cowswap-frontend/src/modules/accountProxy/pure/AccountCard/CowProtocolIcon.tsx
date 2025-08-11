@@ -4,13 +4,15 @@ import { UI, ProductLogo, ProductVariant, Media } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
+const DEFAULT_POSITION_OFFSET = 12
+
 const Wrapper = styled.div<{
   height: number
   positionOffset?: number
   heightMobile?: number
   positionOffsetMobile?: number
 }>`
-  --positionBottomRight: ${({ positionOffset }) => (positionOffset !== undefined ? `${positionOffset}px` : '12px')};
+  --positionBottomRight: ${({ positionOffset }) => (positionOffset !== undefined ? `${positionOffset}px` : `${DEFAULT_POSITION_OFFSET}px`)};
   --mask-start: var(--cowprotocol-mask-start, 0%);
   --mask-end: var(--cowprotocol-mask-end, 40%);
 
@@ -32,7 +34,7 @@ const Wrapper = styled.div<{
     --positionBottomRight: ${({ positionOffsetMobile, positionOffset }) => {
       if (positionOffsetMobile !== undefined) return `${positionOffsetMobile}px`
       if (positionOffset !== undefined) return `${positionOffset}px`
-      return '12px'
+      return `${DEFAULT_POSITION_OFFSET}px`
     }};
 
     > span {
@@ -55,7 +57,7 @@ const Wrapper = styled.div<{
 
 export function CowProtocolIcon({
   className,
-  height = 12,
+  height = DEFAULT_POSITION_OFFSET,
   heightMobile,
   color = `var(${UI.COLOR_TEXT_OPACITY_25})`,
   colorHover = `var(${UI.COLOR_TEXT_OPACITY_50})`,
