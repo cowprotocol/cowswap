@@ -13,7 +13,8 @@ import { AccountCardContainer, ErrorMessage, LinkStyled, Title, TokenListItemSty
 
 import { useRefundAmounts } from '../../hooks/useRefundAmounts'
 import { useTokensToRefund } from '../../hooks/useTokensToRefund'
-import { AccountCard } from '../../pure/AccountCard'
+import { AccountDataCard } from '../../pure/AccountDataCard'
+import { BaseAccountCard } from '../../pure/BaseAccountCard'
 import { parameterizeRoute } from '../../utils/parameterizeRoute'
 import { sumUpUsdAmounts } from '../../utils/sumUpUsdAmounts'
 
@@ -38,16 +39,14 @@ export function AccountProxyPage(): ReactNode {
     return (
       <Wrapper>
         <AccountCardContainer>
-          <AccountCard
-            chainId={chainId}
-            account={proxyAddress}
+          <BaseAccountCard
             width="95%"
             margin="12px auto 34px"
             minHeight={218}
             ariaLabel="Invalid proxy address"
           >
             <ErrorMessage>Invalid proxy address</ErrorMessage>
-          </AccountCard>
+          </BaseAccountCard>
         </AccountCardContainer>
       </Wrapper>
     )
@@ -56,7 +55,7 @@ export function AccountProxyPage(): ReactNode {
   return (
     <Wrapper>
       <AccountCardContainer>
-        <AccountCard
+        <AccountDataCard
           chainId={chainId}
           account={proxyAddress}
           totalUsdAmount={totalUsdAmount}
@@ -64,7 +63,6 @@ export function AccountProxyPage(): ReactNode {
           width="95%"
           margin="12px auto 34px"
           minHeight={218}
-          enableScale
           showWatermark
         />
       </AccountCardContainer>
