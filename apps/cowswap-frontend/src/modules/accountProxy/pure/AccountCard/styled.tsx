@@ -4,12 +4,8 @@ import { toPixelValue } from '@cowprotocol/ui-utils'
 import { MenuButton as ReachMenuButton, MenuItems as ReachMenuItems } from '@reach/menu-button'
 import styled from 'styled-components/macro'
 
-import { AccountCardHoverBehavior } from './types'
-
-const getHoverStyles = (behavior: AccountCardHoverBehavior, enableScale: boolean): string => {
-  if (behavior === AccountCardHoverBehavior.NONE) return ''
-
-  const selector = behavior === AccountCardHoverBehavior.SELF ? '&:hover' : '[data-hover-trigger]:hover > &'
+const getHoverStyles = (enableParentHover: boolean, enableScale: boolean): string => {
+  const selector = enableParentHover ? '[data-hover-trigger]:hover > &' : '&:hover'
   const transform = enableScale ? 'transform: translateY(-1px) scale(1.03);' : ''
 
   return `
@@ -151,8 +147,8 @@ interface CardProps {
   $height?: number | string
   $borderRadius?: number
   $padding?: number
-  $hoverBehavior?: AccountCardHoverBehavior
   $enableScale?: boolean
+  $enableParentHover?: boolean
   $margin?: string
   $minHeight?: number | string
 }
@@ -210,16 +206,11 @@ export const AccountCardWrapper = styled.div.withConfig({
     pointer-events: none;
   }
 
-  ${({ $hoverBehavior }) =>
-    $hoverBehavior !== AccountCardHoverBehavior.NONE
-      ? `
-    transition:
-      transform 0.2s ease-out,
-      box-shadow 0.2s ease-out;
-  `
-      : ''}
+  transition:
+    transform 0.2s ease-out,
+    box-shadow 0.2s ease-out;
 
-  ${({ $hoverBehavior, $enableScale }) => ($hoverBehavior ? getHoverStyles($hoverBehavior, $enableScale || false) : '')}
+  ${({ $enableParentHover, $enableScale }) => getHoverStyles($enableParentHover || false, $enableScale || false)}
 `
 
 export const WatermarkIcon = styled.div`
