@@ -22,3 +22,22 @@ export const Wrapper = styled.div`
     margin: 16px auto;
   }
 `
+
+export const WalletIcon = styled.div`
+  width: 70px;
+  height: 70px;
+  border-radius: 70px;
+  background: var(${UI.COLOR_TEXT_OPACITY_10});
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  > svg,
+  > img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 25%;
+    fill: var(${UI.COLOR_TEXT_OPACITY_70});
+  }
+`
