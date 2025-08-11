@@ -59,16 +59,12 @@ export function CowProtocolIcon({
   className,
   height = DEFAULT_POSITION_OFFSET,
   heightMobile,
-  color = `var(${UI.COLOR_TEXT_OPACITY_25})`,
-  colorHover = `var(${UI.COLOR_TEXT_OPACITY_50})`,
   positionOffset,
   positionOffsetMobile,
 }: {
   className?: string
   height?: number
   heightMobile?: number
-  color?: string
-  colorHover?: string
   positionOffset?: number
   positionOffsetMobile?: number
 }): ReactNode {
@@ -85,8 +81,8 @@ export function CowProtocolIcon({
         variant={ProductVariant.CowProtocol}
         logoIconOnly
         height={height}
-        overrideColor={color}
-        overrideHoverColor={colorHover}
+        overrideColor={`var(${UI.COLOR_TEXT_OPACITY_25})`}
+        overrideHoverColor={`var(${UI.COLOR_TEXT_OPACITY_50})`}
       />
     </Wrapper>
   )
