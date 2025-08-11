@@ -14,7 +14,7 @@ export const AccountCardContainer = styled.div`
   isolation: isolate;
 `
 
-export const Title = styled.span`
+export const Title = styled.span.attrs({ role: 'heading', 'aria-level': 3 })`
   display: flex;
   font-size: 15px;
   font-weight: 500;

@@ -9,7 +9,7 @@ export const Wrapper = styled.div`
   min-height: 260px;
 `
 
-export const Title = styled.span`
+export const Title = styled.span.attrs({ role: 'heading', 'aria-level': 3 })`
   color: var(${UI.COLOR_TEXT_OPACITY_70});
   font-weight: 500;
   font-size: 15px;
