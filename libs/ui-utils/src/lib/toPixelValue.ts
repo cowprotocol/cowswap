@@ -7,7 +7,7 @@
  * toPixelValue('50%') // '50%'
  * toPixelValue(undefined) // undefined
  */
-export function toPixelValue(value?: number | string): string | undefined {
+export function toPixelValue(value: number | string | undefined): string | undefined {
   if (value === undefined) return undefined
   return typeof value === 'number' ? `${value}px` : value
 }
