@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
 import { CHAIN_INFO } from '@cowprotocol/common-const'
-import { useFeatureFlags, useIsBridgingEnabled } from '@cowprotocol/common-hooks'
+import { useAvailableChains, useFeatureFlags, useIsBridgingEnabled } from '@cowprotocol/common-hooks'
 import { ChainInfo, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -13,13 +13,6 @@ import { useSelectTokenWidgetState } from './useSelectTokenWidgetState'
 
 import { ChainsToSelectState } from '../types'
 import { mapChainInfo } from '../utils/mapChainInfo'
-
-const SUPPORTED_CHAINS: ChainInfo[] = Object.keys(CHAIN_INFO).map((chainId) => {
-  const supportedChainId = +chainId as SupportedChainId
-  const info = CHAIN_INFO[supportedChainId]
-
-  return mapChainInfo(supportedChainId, info)
-})
 
 /**
  * Returns an array of chains to select in the token selector widget.
@@ -33,6 +26,17 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
   const { data: bridgeSupportedNetworks, isLoading } = useBridgeSupportedNetworks()
   const { areUnsupportedChainsEnabled } = useFeatureFlags()
   const isBridgingEnabled = useIsBridgingEnabled()
+  const availableChains = useAvailableChains()
+
+  const supportedChains = useMemo(() => {
+    return Object.keys(CHAIN_INFO).reduce((acc, chainId) => {
+      const supportedChainId = +chainId as SupportedChainId
+      if (availableChains.includes(supportedChainId)) {
+        acc.push(mapChainInfo(supportedChainId, CHAIN_INFO[supportedChainId]))
+      }
+      return acc
+    }, [] as ChainInfo[])
+  }, [availableChains])
 
   return useMemo(() => {
     if (!field || !isBridgingEnabled) return undefined
@@ -46,7 +50,7 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
     if (field === Field.INPUT) {
       return {
         defaultChainId: selectedTargetChainId,
-        chains: SUPPORTED_CHAINS,
+        chains: supportedChains,
         isLoading: false,
       }
     }
@@ -79,6 +83,7 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
     isLoading,
     isBridgingEnabled,
     areUnsupportedChainsEnabled,
+    supportedChains,
   ])
 }
 
