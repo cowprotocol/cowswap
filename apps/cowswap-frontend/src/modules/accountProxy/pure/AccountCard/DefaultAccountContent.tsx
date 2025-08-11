@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { ExplorerDataType, getExplorerLink, shortenAddress } from '@cowprotocol/common-utils'
+import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ExternalLink, FiatAmount, Loader } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
@@ -9,6 +9,7 @@ import { Menu, MenuPopover } from '@reach/menu-button'
 import { MoreHorizontal } from 'react-feather'
 
 import { AddressContextMenuContent } from 'common/pure/ClickableAddress/AddressContextMenuContent'
+import { safeShortenAddress } from 'utils/address'
 
 import {
   LeftBottom,
@@ -25,14 +26,6 @@ import {
 import { AccountIcon } from '../AccountItem/AccountIcon'
 import { CowProtocolIcon } from '../CowProtocolIcon'
 
-function safeShortenAddress(address: string): string {
-  try {
-    return shortenAddress(address)
-  } catch {
-    return address
-  }
-}
-
 interface DefaultAccountContentProps {
   account: string
   chainId: SupportedChainId
@@ -40,7 +33,12 @@ interface DefaultAccountContentProps {
   loading?: boolean
 }
 
-export function DefaultAccountContent({ account, chainId, totalUsdAmount, loading }: DefaultAccountContentProps): ReactNode {
+export function DefaultAccountContent({
+  account,
+  chainId,
+  totalUsdAmount,
+  loading,
+}: DefaultAccountContentProps): ReactNode {
   const addressLink = getExplorerLink(chainId, account, ExplorerDataType.ADDRESS)
 
   return (

@@ -1,8 +1,9 @@
 import { ReactNode } from 'react'
 
-import { shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+
+import { safeShortenAddress } from 'utils/address'
 
 import { DefaultAccountContent } from '../AccountCard/DefaultAccountContent'
 import { BaseAccountCard } from '../BaseAccountCard'
@@ -21,13 +22,6 @@ interface AccountDataCardProps {
   minHeight?: number | string
 }
 
-function safeShortenAddress(address: string): string {
-  try {
-    return shortenAddress(address)
-  } catch {
-    return address
-  }
-}
 
 export function AccountDataCard({
   account,
