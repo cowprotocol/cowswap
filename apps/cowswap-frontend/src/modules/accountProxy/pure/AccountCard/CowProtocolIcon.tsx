@@ -75,6 +75,7 @@ export function CowProtocolIcon({
   return (
     <Wrapper
       className={className}
+      aria-hidden="true"
       height={height}
       heightMobile={heightMobile}
       positionOffset={positionOffset}
