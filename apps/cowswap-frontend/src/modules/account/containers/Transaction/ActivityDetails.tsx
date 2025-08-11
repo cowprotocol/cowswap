@@ -6,13 +6,13 @@ import { BridgeStatus, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENS } from '@cowprotocol/ens'
 import { TokenLogo, useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
 import { UiOrderType } from '@cowprotocol/types'
-import { BannerOrientation, ExternalLink, Icon, IconType, TokenAmount, UI } from '@cowprotocol/ui'
-import { CurrencyAmount } from '@uniswap/sdk-core'
+import { BannerOrientation, ExternalLink, Icon, IconType, StatusColorVariant, TokenAmount, UI } from '@cowprotocol/ui'
+import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
-import { useBridgeOrderData, BRIDGING_FINAL_STATUSES } from 'entities/bridgeOrders'
+import { BRIDGING_FINAL_STATUSES, useBridgeOrderData } from 'entities/bridgeOrders'
 import { useAddOrderToSurplusQueue } from 'entities/surplusModal'
 
-import { getActivityState, ActivityState } from 'legacy/hooks/useActivityDerivedState'
+import { ActivityState, getActivityState } from 'legacy/hooks/useActivityDerivedState'
 import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { useToggleAccountModal } from 'modules/account'
@@ -26,6 +26,7 @@ import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { useEnhancedActivityDerivedState } from 'common/hooks/useEnhancedActivityDerivedState'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
+import { OrderFillability } from 'common/hooks/usePendingOrdersFillability'
 import { useSwapAndBridgeContext } from 'common/hooks/useSwapAndBridgeContext'
 import { CurrencyLogoPair } from 'common/pure/CurrencyLogoPair'
 import { CustomRecipientWarningBanner } from 'common/pure/CustomRecipientWarningBanner'
@@ -45,6 +46,7 @@ import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 import { StatusDetails } from './StatusDetails'
 import {
   ActivityVisual,
+  ApproveWrapper,
   CreationTimeText,
   FiatWrapper,
   StyledFiatAmount,
@@ -53,7 +55,10 @@ import {
   SummaryInnerRow,
   TextAlert,
   TransactionState as ActivityLink,
+  UnfillableWarning,
 } from './styled'
+
+import { TradeApproveButton } from '../../../erc20Approve'
 
 const progressBarVisibleStates = [ActivityState.OPEN]
 
@@ -179,6 +184,7 @@ interface OrderSummaryType {
   validTo: string | undefined
   fulfillmentTime?: string | undefined
   kind?: string
+  inputAmount?: CurrencyAmount<Token>
 }
 
 // TODO: Break down this large function into smaller functions
@@ -190,8 +196,9 @@ export function ActivityDetails(props: {
   activityLinkUrl: string | undefined
   disableMouseActions: boolean | undefined
   creationTime?: string | undefined
+  fillability?: OrderFillability
 }): ReactNode | null {
-  const { activityDerivedState, chainId, activityLinkUrl, disableMouseActions, creationTime } = props
+  const { activityDerivedState, chainId, activityLinkUrl, disableMouseActions, creationTime, fillability } = props
   const { id, isOrder, summary, order, enhancedTransaction, isExpired, isCancelled, isFailed, isCancelling } =
     activityDerivedState
   const tokenAddress =
@@ -319,6 +326,7 @@ export function ActivityDetails(props: {
         ? new Date(fulfillmentTime).toLocaleString(undefined, DateFormatOptions)
         : undefined,
       kind: kind.toString(),
+      inputAmount,
     }
   } else {
     orderSummary = DEFAULT_ORDER_SUMMARY
@@ -505,6 +513,10 @@ export function ActivityDetails(props: {
             (summary ?? id)
           )}
 
+          {fillability && orderSummary?.inputAmount ? (
+            <OrderFillabilityWarning fillability={fillability} inputAmount={orderSummary.inputAmount} />
+          ) : null}
+
           {activityLinkUrl && enhancedTransaction?.replacementType !== 'replaced' && (
             <ActivityLink href={activityLinkUrl} disableMouseActions={disableMouseActions}>
               View details ↗
@@ -523,6 +535,35 @@ export function ActivityDetails(props: {
       </Summary>
 
       <EthFlowStepper order={order} />
+    </>
+  )
+}
+
+function OrderFillabilityWarning({
+  fillability,
+  inputAmount,
+}: {
+  fillability: OrderFillability
+  inputAmount: CurrencyAmount<Token>
+}): ReactNode {
+  return (
+    <>
+      {fillability?.hasEnoughBalance === false && (
+        <UnfillableWarning bannerType={StatusColorVariant.Danger} orientation={BannerOrientation.Horizontal}>
+          Order cannot be filled due to insufficient balance on the current account.
+          <br />
+          Please, top up {inputAmount.currency.symbol} balance or cancel the order.
+        </UnfillableWarning>
+      )}
+
+      {fillability?.hasEnoughAllowance === false && (
+        <UnfillableWarning bannerType={StatusColorVariant.Danger} orientation={BannerOrientation.Horizontal}>
+          Order cannot be filled due to insufficient allowance on the current account.
+          <ApproveWrapper>
+            <TradeApproveButton amountToApprove={inputAmount} />
+          </ApproveWrapper>
+        </UnfillableWarning>
+      )}
     </>
   )
 }

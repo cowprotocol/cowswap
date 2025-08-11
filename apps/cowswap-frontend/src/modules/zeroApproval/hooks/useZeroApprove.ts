@@ -35,9 +35,7 @@ async function waitForSafeTransactionExecution({
   )
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useZeroApprove(currency: Currency | undefined) {
+export function useZeroApprove(currency: Currency | undefined): () => Promise<void> {
   const setZeroApprovalState = useSetAtom(zeroApprovalState)
   const spender = useTradeSpenderAddress()
   const amountToApprove = currency ? CurrencyAmount.fromRawAmount(currency, 0) : undefined

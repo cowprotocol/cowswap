@@ -1,4 +1,4 @@
-import { ExternalLink, FiatAmount, Media, RowFixed, StyledLink, UI } from '@cowprotocol/ui'
+import { ExternalLink, FiatAmount, InlineBanner, Media, RowFixed, StyledLink, UI } from '@cowprotocol/ui'
 
 import { transparentize } from 'color2k'
 import styled, { css } from 'styled-components/macro'
@@ -206,6 +206,7 @@ export const StatusLabelWrapper = styled.div`
 
   > span {
     color: inherit;
+
     &:hover {
       text-decoration: underline;
     }
@@ -294,7 +295,6 @@ export const StatusLabel = styled.div<{
         content: '';
       }
     `}
-
   > svg {
     margin: 0 5px 0 0;
     max-height: 13px;
@@ -417,4 +417,14 @@ export const FiatWrapper = styled.span`
   margin-left: 5px;
   align-items: center;
   display: flex;
+`
+
+export const UnfillableWarning = styled(InlineBanner)`
+  margin: 10px 0;
+  padding: 15px;
+`
+
+export const ApproveWrapper = styled.div`
+  width: 100%;
+  color: var(${UI.COLOR_TEXT});
 `
