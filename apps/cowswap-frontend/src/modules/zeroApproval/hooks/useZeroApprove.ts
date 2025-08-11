@@ -41,15 +41,17 @@ export function useZeroApprove(currency: Currency | undefined) {
   const setZeroApprovalState = useSetAtom(zeroApprovalState)
   const spender = useTradeSpenderAddress()
   const amountToApprove = currency ? CurrencyAmount.fromRawAmount(currency, 0) : undefined
-  const approveCallback = useApproveCallback(amountToApprove, spender)
+  const approveCallback = useApproveCallback(amountToApprove?.currency, spender)
   const safeApiKit = useSafeApiKit()
   const isWalletConnect = useIsWalletConnect()
   const isSafeWallet = useIsSafeWallet()
 
   return useCallback(async () => {
+    if (!amountToApprove) return
+
     try {
       setZeroApprovalState({ isApproving: true, currency })
-      const txReceipt = await approveCallback()
+      const txReceipt = await approveCallback(amountToApprove)
 
       // For Wallet Connect based Safe Wallet connections, wait for transaction to be executed.
       if (txReceipt && safeApiKit && isSafeWallet && isWalletConnect) {
@@ -58,5 +60,5 @@ export function useZeroApprove(currency: Currency | undefined) {
     } finally {
       setZeroApprovalState({ isApproving: false })
     }
-  }, [approveCallback, setZeroApprovalState, currency, safeApiKit, isSafeWallet, isWalletConnect])
+  }, [approveCallback, setZeroApprovalState, currency, safeApiKit, isSafeWallet, isWalletConnect, amountToApprove])
 }

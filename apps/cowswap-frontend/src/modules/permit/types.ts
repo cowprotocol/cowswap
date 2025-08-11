@@ -14,7 +14,7 @@ export type AddPermitTokenParams = {
   permitInfo: PermitInfo
 }
 
-export type GeneratePermitHookParams = Pick<PermitHookParams, 'inputToken' | 'permitInfo' | 'account'> & {
+export type GeneratePermitHookParams = Pick<PermitHookParams, 'inputToken' | 'permitInfo' | 'account' | 'amount'> & {
   customSpender?: string
 }
 

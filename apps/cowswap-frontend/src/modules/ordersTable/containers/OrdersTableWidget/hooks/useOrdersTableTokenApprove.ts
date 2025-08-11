@@ -3,9 +3,10 @@ import { Dispatch, SetStateAction, useMemo, useState } from 'react'
 import { MaxUint256 } from '@ethersproject/constants'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
+import { useApproveCurrency } from 'modules/erc20Approve/hooks/useApproveCurrency'
+
 import { useSafeEffect } from 'common/hooks/useSafeMemo'
 
-import { useApproveCurrency } from '../../../../erc20Approve/hooks/useApproveCurrency'
 
 export function useOrdersTableTokenApprove(): Dispatch<SetStateAction<Token | undefined>> {
   const [tokenToApprove, setTokenToApprove] = useState<Token | undefined>(undefined)
@@ -20,7 +21,7 @@ export function useOrdersTableTokenApprove(): Dispatch<SetStateAction<Token | un
   // Trigger approve flow once amountToApprove is set
   useSafeEffect(() => {
     if (amountToApprove && tradeApproveCallback) {
-      tradeApproveCallback()
+      tradeApproveCallback(BigInt(amountToApprove.quotient.toString()))
       setTokenToApprove(undefined)
     }
   }, [amountToApprove, tradeApproveCallback])
