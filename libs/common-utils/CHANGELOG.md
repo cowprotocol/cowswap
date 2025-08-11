@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.20.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.19.0...common-utils-v1.20.0) (2025-08-07)
+
+
+### Features
+
+* respect explorer environment for explorer navigation to Swap's … ([#6060](https://github.com/cowprotocol/cowswap/issues/6060)) ([c1d778a](https://github.com/cowprotocol/cowswap/commit/c1d778a56d1fc5facbc743b649af23f7953ee364))
+
 ## [1.19.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.18.1...common-utils-v1.19.0) (2025-08-04)
 
 
