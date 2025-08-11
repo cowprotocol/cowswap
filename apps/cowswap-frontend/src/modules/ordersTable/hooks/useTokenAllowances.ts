@@ -43,14 +43,12 @@ export function useTokenAllowances(tokenAddresses: string[]): {
   const results = data?.results
 
   const state = useMemo(() => {
-    if (!results) return
+    if (!results?.length) return
 
-    const res = tokenAddresses.reduce<AllowancesState>((acc, address, index) => {
+    return tokenAddresses.reduce<AllowancesState>((acc, address, index) => {
       acc[address.toLowerCase()] = results[index]?.[0]
       return acc
     }, {})
-
-    return res
   }, [tokenAddresses, results])
 
   return useMemo(() => ({ state, isLoading }), [state, isLoading])
