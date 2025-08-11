@@ -1,6 +1,6 @@
-import { getIsNotComposableCowOrder } from './getIsNotComposableCowOrder'
+import { ComposableCowInfo } from 'common/types'
 
-import { ComposableCowInfo } from '../../common/types'
+import { getIsNotComposableCowOrder } from './getIsNotComposableCowOrder'
 
 const TWAP_ORDER_REGEX = /"orderClass":\s*"twap"/
 

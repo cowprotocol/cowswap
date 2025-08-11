@@ -52,7 +52,9 @@ export const TokenItem = styled.div`
 export const TokenBalance = styled.span`
   flex: 1 0 auto;
   display: flex;
+  flex-direction: column;
   justify-content: flex-end;
+  align-items: end;
 
   > span {
     text-align: right;

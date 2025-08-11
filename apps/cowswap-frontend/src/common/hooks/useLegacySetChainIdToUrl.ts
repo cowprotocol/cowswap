@@ -5,24 +5,19 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { useLocation } from 'react-router'
 
-import { useTradeTypeInfo } from 'modules/trade'
-
 import { useNavigate } from 'common/hooks/useNavigate'
 
 /**
  * Changing chainId in query parameters: ?chain=mainnet
  */
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useLegacySetChainIdToUrl() {
+export function useLegacySetChainIdToUrl(): (chainId: SupportedChainId) => void {
   const navigate = useNavigate()
   const location = useLocation()
-  const tradeTypeInfo = useTradeTypeInfo()
 
   return useCallback(
     (chainId: SupportedChainId) => {
-      // Don't set chainId as query parameter because swap and limit orders have different routing scheme
-      if (tradeTypeInfo) return
+      // Don't set chainId as query parameter when it's already set as /{chainId}
+      if (/^\/\d+\//.test(location.pathname)) return
 
       const chainInfo = getChainInfo(chainId)
       if (!chainInfo) return
@@ -35,13 +30,11 @@ export function useLegacySetChainIdToUrl() {
         { replace: true },
       )
     },
-    [tradeTypeInfo, navigate, location],
+    [navigate, location],
   )
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const replaceURLParam = (search: string, param: string, newValue: string) => {
+const replaceURLParam = (search: string, param: string, newValue: string): string => {
   const searchParams = new URLSearchParams(search)
   searchParams.set(param, newValue)
   return searchParams.toString()

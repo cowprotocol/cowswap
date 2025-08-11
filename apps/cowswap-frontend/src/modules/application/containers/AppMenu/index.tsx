@@ -3,6 +3,7 @@ import { PropsWithChildren, ReactNode, useMemo } from 'react'
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { Color, Media, MenuBar } from '@cowprotocol/ui'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import SVG from 'react-inlinesvg'
 import { NavLink } from 'react-router'
@@ -32,6 +33,7 @@ interface AppMenuProps {
 }
 
 export function AppMenu({ children }: AppMenuProps): ReactNode {
+  const { chainId } = useWalletInfo()
   const isInjectedWidgetMode = isInjectedWidget()
   const menuItems = useMenuItems()
   const [darkMode, toggleDarkMode] = useDarkModeManager()
@@ -68,9 +70,9 @@ export function AppMenu({ children }: AppMenuProps): ReactNode {
           }
         }),
       },
-      ...NAV_ITEMS,
+      ...NAV_ITEMS(chainId),
     ]
-  }, [menuItems, getTradeUrlParams])
+  }, [menuItems, getTradeUrlParams, chainId])
 
   if (isInjectedWidgetMode) return null
 

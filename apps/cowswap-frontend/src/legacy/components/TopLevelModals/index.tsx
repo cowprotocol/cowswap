@@ -1,9 +1,9 @@
 import { useAtomValue } from 'jotai'
+import { ReactNode } from 'react'
 
 import { useModalIsOpen, useToggleModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 
-import { CoWShedModal } from 'modules/cowShed'
 import { SurplusModalSetup } from 'modules/orderProgressBar'
 
 import { CancellationModal } from 'common/containers/CancellationModal'
@@ -12,9 +12,7 @@ import { MultipleOrdersCancellationModal } from 'common/containers/MultipleOrder
 import { cancellationModalContextAtom } from 'common/hooks/useCancelOrder/state'
 import { confirmationModalContextAtom } from 'common/hooks/useConfirmationRequest'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function TopLevelModals() {
+export function TopLevelModals(): ReactNode {
   const cancelModalOpen = useModalIsOpen(ApplicationModal.CANCELLATION)
   const confirmationModalOpen = useModalIsOpen(ApplicationModal.CONFIRMATION)
   const multipleCancelModalOpen = useModalIsOpen(ApplicationModal.MULTIPLE_CANCELLATION)
@@ -35,7 +33,6 @@ export function TopLevelModals() {
       <CancellationModal isOpen={cancelModalOpen} onDismiss={onDismissCancellationModal || cancelModalToggle} />
       <MultipleOrdersCancellationModal isOpen={multipleCancelModalOpen} onDismiss={multipleCancelModalToggle} />
       <SurplusModalSetup />
-      <CoWShedModal />
     </>
   )
 }

@@ -1,9 +1,9 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
-import { TwapOrdersExecution } from './hooks/useTwapOrdersExecutions'
+import { SafeTransactionParams } from 'common/types'
 
-import { SafeTransactionParams } from '../../common/types'
+import { TwapOrdersExecution } from './hooks/useTwapOrdersExecutions'
 
 // Read more: https://github.com/rndlabs/composable-cow#data-structure
 export interface TWAPOrder {
