@@ -45,6 +45,53 @@ interface AccountCardProps {
   showWatermark?: boolean
 }
 
+interface DefaultAccountContentProps {
+  account: string
+  chainId: SupportedChainId
+  totalUsdAmount?: CurrencyAmount<Currency> | null
+  loading?: boolean
+}
+
+function DefaultAccountContent({ account, chainId, totalUsdAmount, loading }: DefaultAccountContentProps): ReactNode {
+  const addressLink = getExplorerLink(chainId, account, ExplorerDataType.ADDRESS)
+
+  return (
+    <>
+      <LeftTop>
+        <ValueLabel>Recoverable value</ValueLabel>
+        <ValueAmount aria-live="polite">
+          {loading ? <Loader size="24px" /> : <FiatAmount amount={totalUsdAmount} />}
+        </ValueAmount>
+      </LeftTop>
+      <RightTop>
+        <Menu>
+          <MenuButton aria-label="Account options menu">
+            <MoreHorizontal size={20} />
+          </MenuButton>
+          <MenuPopover portal={false}>
+            <MenuItems>
+              <AddressContextMenuContent address={account} target={addressLink} />
+            </MenuItems>
+          </MenuPopover>
+        </Menu>
+      </RightTop>
+      <LeftBottom>
+        <ExternalLink
+          href={addressLink}
+          aria-label={`View account ${shortenAddress(account)} on explorer`}
+          rel="noopener noreferrer"
+        >
+          <AddressLinkWrapper>
+            <AccountIcon account={account} size={28} />
+            <AddressDisplay>{shortenAddress(account)}</AddressDisplay>
+          </AddressLinkWrapper>
+        </ExternalLink>
+      </LeftBottom>
+      <CowProtocolIcon height={24} heightMobile={18} positionOffset={25} positionOffsetMobile={22} />
+    </>
+  )
+}
+
 export function AccountCard({
   children,
   width,
@@ -66,8 +113,6 @@ export function AccountCard({
     return null
   }
 
-  const addressLink = account && chainId ? getExplorerLink(chainId, account, ExplorerDataType.ADDRESS) : ''
-
   return (
     <AccountCardWrapper
       $width={width}
@@ -82,41 +127,14 @@ export function AccountCard({
       aria-label={account ? `Account ${shortenAddress(account)} overview` : 'Account overview'}
       aria-busy={loading}
     >
-      {children || (
-        <>
-          <LeftTop>
-            <ValueLabel>Recoverable value</ValueLabel>
-            <ValueAmount aria-live="polite">
-              {loading ? <Loader size="24px" /> : <FiatAmount amount={totalUsdAmount} />}
-            </ValueAmount>
-          </LeftTop>
-          <RightTop>
-            <Menu>
-              <MenuButton aria-label="Account options menu">
-                <MoreHorizontal size={20} />
-              </MenuButton>
-              <MenuPopover portal={false}>
-                <MenuItems>
-                  <AddressContextMenuContent address={account!} target={addressLink} />
-                </MenuItems>
-              </MenuPopover>
-            </Menu>
-          </RightTop>
-          <LeftBottom>
-            <ExternalLink
-              href={addressLink}
-              aria-label={`View account ${shortenAddress(account!)} on explorer`}
-              rel="noopener noreferrer"
-            >
-              <AddressLinkWrapper>
-                <AccountIcon account={account!} size={28} />
-                <AddressDisplay>{shortenAddress(account!)}</AddressDisplay>
-              </AddressLinkWrapper>
-            </ExternalLink>
-          </LeftBottom>
-          <CowProtocolIcon height={24} heightMobile={18} positionOffset={25} positionOffsetMobile={22} />
-        </>
-      )}
+      {children || (account && chainId && (
+        <DefaultAccountContent
+          account={account}
+          chainId={chainId}
+          totalUsdAmount={totalUsdAmount}
+          loading={loading}
+        />
+      ))}
       {showWatermark && (
         <WatermarkIcon>
           <ProductLogo variant={ProductVariant.CowProtocol} logoIconOnly height={140} />

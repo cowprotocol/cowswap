@@ -1,12 +1,12 @@
 import { ReactNode } from 'react'
 
-interface SkeletonLinesProps {
-  skeletonHeight?: number
-}
-
 import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
+
+interface SkeletonLinesProps {
+  skeletonHeight?: number
+}
 
 const SkeletonContainer = styled.div<{ $skeletonHeight: number }>`
   width: 65px;

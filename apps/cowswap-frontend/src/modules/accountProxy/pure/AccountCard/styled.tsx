@@ -31,6 +31,18 @@ export const LeftTop = styled.div`
   gap: 10px;
 `
 
+export const RightTop = styled.div`
+  text-align: right;
+  position: relative;
+`
+
+export const LeftBottom = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+`
+
 export const ValueAmount = styled.span`
   font-size: 36px;
   font-weight: 500;
@@ -50,18 +62,6 @@ export const ValueAmount = styled.span`
 export const ValueLabel = styled.span`
   font-size: 13px;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
-`
-
-export const RightTop = styled.div`
-  text-align: right;
-  position: relative;
-`
-
-export const LeftBottom = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 10px;
 `
 
 export const AddressDisplay = styled.span`
