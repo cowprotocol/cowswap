@@ -224,7 +224,6 @@ export function useMultipleActivityDescriptors({ chainId, ids }: UseActivityDesc
   const txs = useTransactionsByHash({ hashes: ids })
   const orders = useOrdersById({ chainId, ids })
   const pendingOrdersFillability = usePendingOrdersFillability()
-  console.log('pendingOrdersFillability', pendingOrdersFillability)
 
   return useMemo(() => {
     return ids.reduce<ActivityDescriptors[]>((acc, id) => {

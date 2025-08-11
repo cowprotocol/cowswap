@@ -6,7 +6,7 @@ import { BridgeStatus, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENS } from '@cowprotocol/ens'
 import { TokenLogo, useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
 import { UiOrderType } from '@cowprotocol/types'
-import { BannerOrientation, ExternalLink, Icon, IconType, StatusColorVariant, TokenAmount, UI } from '@cowprotocol/ui'
+import { BannerOrientation, ExternalLink, Icon, IconType, TokenAmount, UI } from '@cowprotocol/ui'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { BRIDGING_FINAL_STATUSES, useBridgeOrderData } from 'entities/bridgeOrders'
@@ -46,7 +46,6 @@ import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 import { StatusDetails } from './StatusDetails'
 import {
   ActivityVisual,
-  ApproveWrapper,
   CreationTimeText,
   FiatWrapper,
   StyledFiatAmount,
@@ -55,10 +54,9 @@ import {
   SummaryInnerRow,
   TextAlert,
   TransactionState as ActivityLink,
-  UnfillableWarning,
 } from './styled'
 
-import { TradeApproveButton } from '../../../erc20Approve'
+import { OrderFillabilityWarning } from '../../pure/OrderFillabilityWarning'
 
 const progressBarVisibleStates = [ActivityState.OPEN]
 
@@ -535,35 +533,6 @@ export function ActivityDetails(props: {
       </Summary>
 
       <EthFlowStepper order={order} />
-    </>
-  )
-}
-
-function OrderFillabilityWarning({
-  fillability,
-  inputAmount,
-}: {
-  fillability: OrderFillability
-  inputAmount: CurrencyAmount<Token>
-}): ReactNode {
-  return (
-    <>
-      {fillability?.hasEnoughBalance === false && (
-        <UnfillableWarning bannerType={StatusColorVariant.Danger} orientation={BannerOrientation.Horizontal}>
-          Order cannot be filled due to insufficient balance on the current account.
-          <br />
-          Please, top up {inputAmount.currency.symbol} balance or cancel the order.
-        </UnfillableWarning>
-      )}
-
-      {fillability?.hasEnoughAllowance === false && (
-        <UnfillableWarning bannerType={StatusColorVariant.Danger} orientation={BannerOrientation.Horizontal}>
-          Order cannot be filled due to insufficient allowance on the current account.
-          <ApproveWrapper>
-            <TradeApproveButton amountToApprove={inputAmount} />
-          </ApproveWrapper>
-        </UnfillableWarning>
-      )}
     </>
   )
 }
