@@ -2,6 +2,7 @@ import { useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
 import { ERC_20_INTERFACE } from '@cowprotocol/abis'
+import { usePrevious } from '@cowprotocol/common-hooks'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { MultiCallOptions, useMultipleContractSingleData } from '@cowprotocol/multicall'
@@ -39,7 +40,7 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
 
   const balanceOfParams = useMemo(() => (account ? [account] : undefined), [account])
 
-  const { isLoading: isBalancesLoading, data: balances } = useMultipleContractSingleData<{ balance: BigNumber }>(
+  const { isLoading: isBalancesLoading, data } = useMultipleContractSingleData<{ balance: BigNumber }>(
     chainId,
     tokenAddresses,
     ERC_20_INTERFACE,
@@ -49,6 +50,13 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
     balancesSwrConfig,
     account,
   )
+  const balances = data?.results
+  const blockNumber = data?.blockNumber
+  const prevBlockNumber = usePrevious(blockNumber)
+
+  // Skip multicall results from outdated block if there is a result from newer one
+  const isNewBlockNumber =
+    typeof prevBlockNumber === 'number' && typeof blockNumber === 'number' ? blockNumber > prevBlockNumber : true
 
   // Set balances loading state
   useEffect(() => {
@@ -59,7 +67,7 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
 
   // Set balances to the store
   useEffect(() => {
-    if (!account || !balances?.length) return
+    if (!account || !balances?.length || !isNewBlockNumber) return
 
     const balancesState = tokenAddresses.reduce<BalancesState['values']>((acc, address, index) => {
       if (getIsNativeToken(chainId, address)) return acc
@@ -89,5 +97,15 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
         },
       }))
     }
-  }, [chainId, account, balances, tokenAddresses, setBalances, setLoadingState, onBalancesLoaded, setBalancesUpdate])
+  }, [
+    chainId,
+    account,
+    balances,
+    isNewBlockNumber,
+    tokenAddresses,
+    setBalances,
+    setLoadingState,
+    onBalancesLoaded,
+    setBalancesUpdate,
+  ])
 }

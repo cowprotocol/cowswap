@@ -18,14 +18,21 @@ export async function multiCall(
   provider: JsonRpcProvider,
   calls: Multicall3.CallStruct[],
   options: MultiCallOptions = {},
-): Promise<Multicall3.ResultStructOutput[]> {
+): Promise<{ results: Multicall3.ResultStructOutput[]; blockNumber: number }> {
   const { batchSize = DEFAULT_BATCH_SIZE, consequentExecution } = options
 
   const multicall = getMulticallContract(provider)
 
   const batches = splitIntoBatches(calls, batchSize)
+  const blockNumberCallData = multicall.interface.encodeFunctionData('getBlockNumber')
 
-  return consequentExecution
+  const blockNumberCall = {
+    target: multicall.address,
+    callData: blockNumberCallData,
+  }
+  batches[0] = [blockNumberCall, ...batches[0]]
+
+  const result = consequentExecution
     ? batches
         .reduce<Promise<Multicall3.ResultStructOutput[][]>>((acc, batch) => {
           return acc.then((results) => {
@@ -42,6 +49,14 @@ export async function multiCall(
           return multicall.callStatic.tryAggregate(false, batch)
         }),
       ).then((res) => res.flat())
+
+  return result.then(([blockNumberRaw, ...results]) => {
+    const blockNumber = +blockNumberRaw.returnData.toString()
+    return {
+      blockNumber,
+      results,
+    }
+  })
 }
 
 function splitIntoBatches(calls: Multicall3.CallStruct[], batchSize: number): Multicall3.CallStruct[][] {

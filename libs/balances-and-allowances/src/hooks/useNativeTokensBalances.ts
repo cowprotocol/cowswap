@@ -11,7 +11,8 @@ export function useNativeTokensBalances(accounts: string[] | undefined): NativeB
   const contract = provider ? getMulticallContract(provider) : undefined
   const params = useMemo(() => accounts?.map((account) => [account]), [accounts])
 
-  const { data: results } = useSingleContractMultipleData<[BigNumber]>(contract, 'getEthBalance', params)
+  const { data } = useSingleContractMultipleData<[BigNumber]>(contract, 'getEthBalance', params)
+  const results = data?.results
 
   return useMemo(() => {
     if (!results || !accounts) return undefined

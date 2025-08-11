@@ -11,13 +11,15 @@ import { useMultiCallRpcProvider } from './useMultiCallRpcProvider'
 
 import { multiCall, MultiCallOptions } from '../multicall'
 
+type MulticallResponse<T> = { results: (T | undefined)[]; blockNumber: number } | null
+
 export function useSingleContractMultipleData<T = Result, P = unknown>(
   contract: BaseContract | undefined,
   methodName: string,
   params: P[] | undefined,
   options: MultiCallOptions = {},
   swrConfig?: SWRConfiguration,
-): SWRResponse<(T | undefined)[] | null> {
+): SWRResponse<MulticallResponse<T>> {
   const provider = useMultiCallRpcProvider()
 
   const chainId = provider?.network?.chainId
@@ -33,7 +35,7 @@ export function useSingleContractMultipleData<T = Result, P = unknown>(
     })
   }, [contract, methodName, params])
 
-  return useSWR<(T | undefined)[] | null>(
+  return useSWR<MulticallResponse<T>>(
     !contract || !calls || calls.length === 0 || !provider
       ? null
       : [provider, calls, options, methodName, contract, chainId, 'useSingleContractMultipleData'],
@@ -44,14 +46,17 @@ export function useSingleContractMultipleData<T = Result, P = unknown>(
       string,
       BaseContract,
     ]) => {
-      return multiCall(provider, calls, options).then((results) => {
-        return results.map((result) => {
-          try {
-            return contract.interface.decodeFunctionResult(methodName, result.returnData) as T
-          } catch {
-            return undefined
-          }
-        })
+      return multiCall(provider, calls, options).then(({ results, blockNumber }) => {
+        return {
+          results: results.map((result) => {
+            try {
+              return contract.interface.decodeFunctionResult(methodName, result.returnData) as T
+            } catch {
+              return undefined
+            }
+          }),
+          blockNumber,
+        }
       })
     },
     swrConfig,
