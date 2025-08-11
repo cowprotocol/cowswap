@@ -65,7 +65,7 @@ export function AccountProxyPage(): ReactNode {
           margin="12px auto 34px"
           minHeight={218}
           enableScale
-          showWatermark={true}
+          showWatermark
         />
       </AccountCardContainer>
       <Title>Recoverable tokens · {tokensToRefund?.length || 0}</Title>
