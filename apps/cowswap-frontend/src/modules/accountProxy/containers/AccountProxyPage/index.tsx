@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 
 import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
+import { isAddress } from '@cowprotocol/common-utils'
 import { ArrowIcon } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -8,7 +9,7 @@ import { useParams } from 'react-router'
 
 import { Routes } from 'common/constants/routes'
 
-import { AccountCardContainer, LinkStyled, Title, TokenListItemStyled, Wrapper } from './styled'
+import { AccountCardContainer, ErrorMessage, LinkStyled, Title, TokenListItemStyled, Wrapper } from './styled'
 
 import { useRefundAmounts } from '../../hooks/useRefundAmounts'
 import { useTokensToRefund } from '../../hooks/useTokensToRefund'
@@ -31,6 +32,26 @@ export function AccountProxyPage(): ReactNode {
   const totalUsdAmount = refundAmounts ? sumUpUsdAmounts(chainId, refundAmounts) : null
 
   if (!proxyAddress) return null
+
+  // Validate proxy address early
+  if (!isAddress(proxyAddress)) {
+    return (
+      <Wrapper>
+        <AccountCardContainer>
+          <AccountCard
+            chainId={chainId}
+            account={proxyAddress}
+            width="95%"
+            margin="12px auto 34px"
+            minHeight={218}
+            ariaLabel="Invalid proxy address"
+          >
+            <ErrorMessage>Invalid proxy address</ErrorMessage>
+          </AccountCard>
+        </AccountCardContainer>
+      </Wrapper>
+    )
+  }
 
   return (
     <Wrapper>

@@ -1,6 +1,7 @@
 import { ReactNode, useLayoutEffect, useRef, useState } from 'react'
 
 import { useOnClickOutside } from '@cowprotocol/common-hooks'
+import { isAddress } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Outlet, useLocation, useParams } from 'react-router'
@@ -49,8 +50,8 @@ export function AccountProxyWidgetPage({
   const navigateBack = useNavigateBack()
   const toggleWalletModal = useToggleWalletModal()
 
-  // Switch BalancesUpdater context to the current proxy
-  useSetupBalancesContext(proxyAddress)
+  // Switch BalancesUpdater context to the current proxy (only if valid address)
+  useSetupBalancesContext(proxyAddress && isAddress(proxyAddress) ? proxyAddress : undefined)
 
   const isWalletConnected = !!account
   const isHelpPage = location.pathname.endsWith('/help')

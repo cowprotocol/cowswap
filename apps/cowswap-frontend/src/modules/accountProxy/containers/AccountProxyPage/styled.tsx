@@ -55,3 +55,12 @@ export const LinkStyled = styled(Link)`
     stroke: var(${UI.COLOR_TEXT});
   }
 `
+
+export const ErrorMessage = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  text-align: center;
+  color: var(${UI.COLOR_TEXT_OPACITY_50});
+`

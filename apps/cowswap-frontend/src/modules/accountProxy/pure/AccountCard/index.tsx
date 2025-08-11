@@ -28,6 +28,14 @@ import { AccountCardHoverBehavior } from './types'
 
 import { AccountIcon } from '../AccountItem/AccountIcon'
 
+function safeShortenAddress(address: string): string {
+  try {
+    return shortenAddress(address)
+  } catch {
+    return address
+  }
+}
+
 interface AccountCardProps {
   children?: ReactNode
   width?: number | string
@@ -43,6 +51,7 @@ interface AccountCardProps {
   margin?: string
   minHeight?: number | string
   showWatermark?: boolean
+  ariaLabel?: string
 }
 
 interface DefaultAccountContentProps {
@@ -78,12 +87,12 @@ function DefaultAccountContent({ account, chainId, totalUsdAmount, loading }: De
       <LeftBottom>
         <ExternalLink
           href={addressLink}
-          aria-label={`View account ${shortenAddress(account)} on explorer`}
+          aria-label={`View account ${safeShortenAddress(account)} on explorer`}
           rel="noopener noreferrer"
         >
           <AddressLinkWrapper>
             <AccountIcon account={account} size={28} />
-            <AddressDisplay>{shortenAddress(account)}</AddressDisplay>
+            <AddressDisplay>{safeShortenAddress(account)}</AddressDisplay>
           </AddressLinkWrapper>
         </ExternalLink>
       </LeftBottom>
@@ -107,6 +116,7 @@ export function AccountCard({
   margin,
   minHeight,
   showWatermark = false,
+  ariaLabel,
 }: AccountCardProps): ReactNode {
   // Early return for invalid state
   if (!children && (!account || !chainId)) {
@@ -124,17 +134,18 @@ export function AccountCard({
       $margin={margin}
       $minHeight={minHeight}
       role="article"
-      aria-label={account ? `Account ${shortenAddress(account)} overview` : 'Account overview'}
+      aria-label={ariaLabel || (account ? `Account ${safeShortenAddress(account)} overview` : 'Account overview')}
       aria-busy={loading}
     >
-      {children || (account && chainId && (
-        <DefaultAccountContent
-          account={account}
-          chainId={chainId}
-          totalUsdAmount={totalUsdAmount}
-          loading={loading}
-        />
-      ))}
+      {children ||
+        (account && chainId && (
+          <DefaultAccountContent
+            account={account}
+            chainId={chainId}
+            totalUsdAmount={totalUsdAmount}
+            loading={loading}
+          />
+        ))}
       {showWatermark && (
         <WatermarkIcon>
           <ProductLogo variant={ProductVariant.CowProtocol} logoIconOnly height={140} />
