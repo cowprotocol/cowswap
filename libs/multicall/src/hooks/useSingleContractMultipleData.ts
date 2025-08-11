@@ -10,8 +10,7 @@ import useSWR, { SWRConfiguration, SWRResponse } from 'swr'
 import { useMultiCallRpcProvider } from './useMultiCallRpcProvider'
 
 import { multiCall, MultiCallOptions } from '../multicall'
-
-type MulticallResponse<T> = { results: (T | undefined)[]; blockNumber: number } | null
+import { MulticallResponseOptional } from '../types'
 
 export function useSingleContractMultipleData<T = Result, P = unknown>(
   contract: BaseContract | undefined,
@@ -19,7 +18,7 @@ export function useSingleContractMultipleData<T = Result, P = unknown>(
   params: P[] | undefined,
   options: MultiCallOptions = {},
   swrConfig?: SWRConfiguration,
-): SWRResponse<MulticallResponse<T>> {
+): SWRResponse<MulticallResponseOptional<T>> {
   const provider = useMultiCallRpcProvider()
 
   const chainId = provider?.network?.chainId
@@ -35,7 +34,7 @@ export function useSingleContractMultipleData<T = Result, P = unknown>(
     })
   }, [contract, methodName, params])
 
-  return useSWR<MulticallResponse<T>>(
+  return useSWR<MulticallResponseOptional<T>>(
     !contract || !calls || calls.length === 0 || !provider
       ? null
       : [provider, calls, options, methodName, contract, chainId, 'useSingleContractMultipleData'],

@@ -10,8 +10,7 @@ import useSWR, { SWRConfiguration, SWRResponse } from 'swr'
 import { useMultiCallRpcProvider } from './useMultiCallRpcProvider'
 
 import { multiCall, MultiCallOptions } from '../multicall'
-
-type MulticallResponse<T> = { results: (T | undefined)[]; blockNumber: number } | null
+import { MulticallResponseOptional } from '../types'
 
 export function useMultipleContractSingleData<T = Result>(
   chainId: SupportedChainId,
@@ -22,7 +21,7 @@ export function useMultipleContractSingleData<T = Result>(
   multicallOptions: MultiCallOptions = {},
   swrConfig?: SWRConfiguration,
   cacheKey?: string,
-): SWRResponse<MulticallResponse<T>> {
+): SWRResponse<MulticallResponseOptional<T>> {
   const provider = useMultiCallRpcProvider()
 
   const callData = useMemo(() => {
@@ -42,7 +41,7 @@ export function useMultipleContractSingleData<T = Result>(
     })
   }, [addresses, callData])
 
-  return useSWR<MulticallResponse<T>>(
+  return useSWR<MulticallResponseOptional<T>>(
     !calls?.length || !provider
       ? null
       : [
