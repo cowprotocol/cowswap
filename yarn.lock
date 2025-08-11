@@ -1819,17 +1819,6 @@
     json-stringify-deterministic "^1.0.8"
     multiformats "^9.6.4"
 
-"@cowprotocol/app-data@^3.3.0":
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/app-data/-/app-data-3.3.0.tgz#644e7473a00eb5e6694a34d34b4359c6d7ef1060"
-  integrity sha512-3lfknouwg+j/xSyL5u5FI8rAlGPkzi+QsmXQvPS0O0ETaikx9v9pt5t3pZOv6jtsAmafFBFPtAUp/cdPrDSUaA==
-  dependencies:
-    ajv "^8.11.0"
-    cross-fetch "^3.1.5"
-    ipfs-only-hash "^4.0.0"
-    json-stringify-deterministic "^1.0.8"
-    multiformats "^9.6.4"
-
 "@cowprotocol/cms@^0.11.0":
   version "0.11.0"
   resolved "https://registry.yarnpkg.com/@cowprotocol/cms/-/cms-0.11.0.tgz#a355b07b84b362c1a01dc046acd8367d3d641235"
