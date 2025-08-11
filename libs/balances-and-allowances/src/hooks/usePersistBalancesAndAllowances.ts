@@ -11,6 +11,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { SWRConfiguration } from 'swr'
 
 import { balancesAtom, BalancesState, balancesUpdateAtom } from '../state/balancesAtom'
+import { getIsBlockNumberRelevant } from '../utils/getIsBlockNumberRelevant'
 
 const MULTICALL_OPTIONS = {}
 
@@ -55,8 +56,7 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
   const prevBlockNumber = usePrevious(blockNumber)
 
   // Skip multicall results from outdated block if there is a result from newer one
-  const isNewBlockNumber =
-    typeof prevBlockNumber === 'number' && typeof blockNumber === 'number' ? blockNumber > prevBlockNumber : true
+  const isNewBlockNumber = getIsBlockNumberRelevant({ prevBlockNumber, blockNumber })
 
   // Set balances loading state
   useEffect(() => {
