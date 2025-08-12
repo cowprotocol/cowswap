@@ -52,7 +52,15 @@ export async function multiCall(
       ).then((res) => res.flat())
 
   return result.then(([blockNumberRaw, ...results]) => {
+    if (!blockNumberRaw.success) {
+      throw new Error('Failed to get block number from multicall')
+    }
+
     const blockNumber = +blockNumberRaw.returnData.toString()
+
+    if (isNaN(blockNumber)) {
+      throw new Error('Invalid block number received from multicall')
+    }
     return {
       blockNumber,
       results,
