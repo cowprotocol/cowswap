@@ -66,6 +66,7 @@ export function useGeneratePermitHook(): GeneratePermitHook {
         eip2612Utils,
         account,
         nonce,
+        amount,
       })
 
       hookData && storePermit({ ...permitParams, hookData, spender })

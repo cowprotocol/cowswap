@@ -68,12 +68,15 @@ export async function swapFlow(
 
     const { appData, account, isSafeWallet, recipientAddressOrName, inputAmount, outputAmount, kind } = orderParams
 
+    const amount = localStorage.getItem('allow_partial_permit') ? BigInt(inputAmount.quotient.toString()) : undefined
+
     orderParams.appData = await handlePermit({
       appData,
       typedHooks,
       account,
       inputToken: inputCurrency,
       permitInfo,
+      amount,
       generatePermitHook,
     })
 
