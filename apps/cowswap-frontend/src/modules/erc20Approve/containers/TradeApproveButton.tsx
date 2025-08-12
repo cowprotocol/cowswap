@@ -23,8 +23,7 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false)
   const handleApprove = useApproveCurrency(amountToApprove)
   const spender = useTradeSpenderAddress()
-  // todo [approve] check the last arg
-  const { approvalState, currentAllowance } = useApprovalStateForSpender(amountToApprove, spender, () => false)
+  const { approvalState, currentAllowance } = useApprovalStateForSpender(amountToApprove, spender)
 
   const isDisabled = props.isDisabled || !handleApprove
 

@@ -10,7 +10,6 @@ import { ApprovalState, useApproveState } from 'modules/erc20Approve/hooks/useAp
 
 import { useTokenAllowance } from 'common/hooks/useTokenAllowance'
 
-
 export interface ApprovalStateForSpenderResult {
   approvalState: ApprovalState
   currentAllowance?: bigint
@@ -18,7 +17,7 @@ export interface ApprovalStateForSpenderResult {
 
 export function useApprovalStateForSpender(
   amountToApprove: Nullish<CurrencyAmount<Currency>>,
-  spender: string | undefined,
+  spender?: string,
 ): ApprovalStateForSpenderResult {
   const { account } = useWalletInfo()
   const currency = amountToApprove?.currency
