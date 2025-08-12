@@ -1,8 +1,5 @@
-// this file essentially provides all the overrides employed in uniswap-xdai-sdk fork
-// + logic for chainId switch to/from xDAI
+import { NATIVE_CURRENCIES, WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-
-import { NATIVE_CURRENCIES, WRAPPED_NATIVE_CURRENCIES } from '../nativeAndWrappedTokens'
 
 const CURRENCY_SYMBOLS_ETH = { native: 'Ether', wrapped: 'WETH' }
 

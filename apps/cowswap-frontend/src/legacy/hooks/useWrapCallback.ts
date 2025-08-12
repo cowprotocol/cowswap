@@ -1,5 +1,5 @@
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { getChainCurrencySymbols, RADIX_HEX } from '@cowprotocol/common-const'
+import { RADIX_HEX } from '@cowprotocol/common-const'
 import {
   calculateGasMargin,
   formatTokenAmount,
@@ -8,6 +8,7 @@ import {
   isRejectRequestProviderError,
 } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { getChainCurrencySymbols } from '@cowprotocol/tokens'
 import { Command } from '@cowprotocol/types'
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
@@ -108,8 +109,8 @@ export async function wrapUnwrapCallback(
     useModals && closeModals()
 
     return txResponse
-  // TODO: Replace any with proper type definitions
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // TODO: Replace any with proper type definitions
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     useModals && closeModals()
 
