@@ -1,3 +1,5 @@
+import { PERMIT_HOOK_DAPP_ID } from './consts'
+
 export const hookDappsRegistry = {
   BUILD_CUSTOM_HOOK: {
     type: 'INTERNAL',
@@ -25,7 +27,7 @@ export const hookDappsRegistry = {
       position: 'pre',
     },
   },
-  PERMIT_TOKEN: {
+  [PERMIT_HOOK_DAPP_ID]: {
     type: 'INTERNAL',
     name: 'Permit a token',
     descriptionShort: 'Infinite permit an address to spend one token on your behalf.',

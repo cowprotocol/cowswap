@@ -1,14 +1,14 @@
-import { EIP6963AnnounceProviderEvent, EIP6963ProviderDetail } from '@cowprotocol/types'
+import type { EIP6963AnnounceProviderEvent, EIP6963ProviderDetail } from '@cowprotocol/types'
 
 import {
   IframeRpcProviderEvents,
   iframeRpcProviderTransport,
-  ProviderRpcResponsePayload,
   ProviderRpcRequestPayload,
+  ProviderRpcResponsePayload,
 } from './iframeRpcProviderEvents'
 import { getEip6963ProviderInfo, getProviderWcMetadata } from './utils'
 
-import { EthereumProvider, JsonRpcRequestMessage } from '../types'
+import type { EthereumProvider, JsonRpcRequestMessage } from '../types'
 
 const EVENTS_TO_FORWARD_TO_IFRAME = ['connect', 'disconnect', 'close', 'chainChanged', 'accountsChanged']
 const eip6963Providers: EIP6963ProviderDetail[] = []
