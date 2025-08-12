@@ -14,19 +14,20 @@ const SWR_CONFIG = { refreshInterval: ms`30s` }
 export function useTwapOrdersAuthMulticall(
   safeAddress: string,
   composableCowContract: ComposableCoW,
-  ordersInfo: TwapOrderInfo[]
+  ordersInfo: TwapOrderInfo[],
 ): TwapOrdersAuthResult | null {
   const input = useMemo(() => {
     return ordersInfo.map(({ id }) => [safeAddress, id])
   }, [safeAddress, ordersInfo])
 
-  const { data: loadedResults, isLoading } = useSingleContractMultipleData<[boolean]>(
+  const { data, isLoading } = useSingleContractMultipleData<[boolean]>(
     composableCowContract,
     'singleOrders',
     input,
     MULTICALL_OPTIONS,
-    SWR_CONFIG
+    SWR_CONFIG,
   )
+  const loadedResults = data?.results
 
   return useMemo(() => {
     if (ordersInfo.length === 0) return EMPTY_AUTH_RESULT
