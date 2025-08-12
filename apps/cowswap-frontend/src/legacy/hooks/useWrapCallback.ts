@@ -51,14 +51,12 @@ export interface WrapUnwrapContext {
 
 type WrapAction = 'Send' | 'Sign' | 'Reject' | 'Error'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function sendWrapEvent(
   analytics: WrapUnwrapContext['analytics'],
   action: WrapAction,
   operationMessage: string,
   amount: CurrencyAmount<Currency>,
-) {
+): void {
   analytics.sendEvent({
     category: CowSwapAnalyticsCategory.WRAP_NATIVE_TOKEN,
     action,
@@ -109,9 +107,7 @@ export async function wrapUnwrapCallback(
     useModals && closeModals()
 
     return txResponse
-    // TODO: Replace any with proper type definitions
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
+  } catch (error: unknown) {
     useModals && closeModals()
 
     const isRejected = isRejectRequestProviderError(error)
@@ -198,9 +194,7 @@ async function unwrapContractCall(
   }
 }
 
-// TODO: Replace any with proper type definitions
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function _handleGasEstimateError(error: any): BigNumber {
+function _handleGasEstimateError(error: unknown): BigNumber {
   console.log(
     '[useWrapCallback] Error estimating gas for wrap/unwrap. Using default gas limit ' +
       WRAP_UNWRAP_GAS_LIMIT_DEFAULT.toString(),
