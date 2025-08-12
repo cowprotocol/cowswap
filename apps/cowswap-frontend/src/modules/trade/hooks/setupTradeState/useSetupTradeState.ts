@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { usePrevious } from '@cowprotocol/common-hooks'
+import { useIsWindowVisible, usePrevious } from '@cowprotocol/common-hooks'
 import { getRawCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useSwitchNetwork, useWalletInfo } from '@cowprotocol/wallet'
@@ -26,6 +26,7 @@ export function useSetupTradeState(): void {
   const { chainId: providerChainId, account } = useWalletInfo()
   const prevProviderChainId = usePrevious(providerChainId)
 
+  const isWindowVisible = useIsWindowVisible()
   const provider = useWalletProvider()
   const tradeNavigate = useTradeNavigate()
   const switchNetwork = useSwitchNetwork()
@@ -61,11 +62,13 @@ export function useSetupTradeState(): void {
     [switchNetwork],
   )
 
-
-  const navigateAndSwitchNetwork = useCallback(async (chainId: number | null, tradeState: TradeRawState): Promise<void> => {
+  const navigateAndSwitchNetwork = useCallback(
+    async (chainId: number | null, tradeState: TradeRawState): Promise<void> => {
       await tradeNavigate(chainId, tradeState)
       await switchNetworkInWallet(chainId || SupportedChainId.MAINNET)
-    }, [tradeNavigate, switchNetworkInWallet])
+    },
+    [tradeNavigate, switchNetworkInWallet],
+  )
 
   const onProviderNetworkChanges = useCallback(() => {
     const rememberedUrlState = rememberedUrlStateRef.current
@@ -223,6 +226,12 @@ export function useSetupTradeState(): void {
    * 4. Otherwise, navigate to the new chainId with default tokens
    */
   useEffect(() => {
+    /**
+     * Ignore provider network changes till tab is inactive
+     * Otherwise, it can go into a network switching loop
+     */
+    if (!isWindowVisible) return
+
     // When wallet provider is not loaded yet, or chainId has not changed
     const shouldSkip = !providerChainId || providerChainId === urlChainId || providerChainId === prevProviderChainId
 
@@ -235,7 +244,7 @@ export function useSetupTradeState(): void {
       urlChanges: rememberedUrlStateRef.current,
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [onProviderNetworkChanges])
+  }, [isWindowVisible, onProviderNetworkChanges])
 
   /**
    * If user opened a link with some token symbol, and we have more than one token with the same symbol in the listing
