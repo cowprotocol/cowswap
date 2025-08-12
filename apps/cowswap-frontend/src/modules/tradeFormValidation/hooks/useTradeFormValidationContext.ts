@@ -7,14 +7,15 @@ import { useGnosisSafeInfo, useIsTxBundlingSupported, useWalletDetails, useWalle
 
 import { useTryFindIntermediateToken } from 'modules/bridge'
 import { useCurrentAccountProxy } from 'modules/cowShed'
+import { useApproveState } from 'modules/erc20Approve'
 import { useTokenSupportsPermit } from 'modules/permit'
 import { TradeType, useAmountsToSign, useDerivedTradeState, useIsWrapOrUnwrap } from 'modules/trade'
 import { TradeQuoteState, useTradeQuote } from 'modules/tradeQuote'
 
 import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
+import { useHasPendingOrdersWithPermitForInputToken } from 'common/hooks/useHasPendingOrdersWithPermit'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
-import { useApproveState } from '../../erc20Approve/hooks/useApproveState'
 import { TradeFormValidationCommonContext } from '../types'
 
 export function useTradeFormValidationContext(): TradeFormValidationCommonContext | null {
@@ -47,6 +48,8 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     bridgeQuote: tradeQuote.bridgeQuote,
   })
 
+  const hasActiveOrderWithTheSamePermit = useHasPendingOrdersWithPermitForInputToken(inputCurrency, isPermitSupported)
+
   const commonContext = {
     account,
     isWrapUnwrap,
@@ -65,6 +68,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     intermediateTokenToBeImported: !!intermediateBuyToken && toBeImported,
     isAccountProxyLoading: isLoading,
     isProxySetupValid: proxyAccount?.isProxySetupValid,
+    hasActiveOrderWithTheSamePermit,
   }
 
   return useMemo(() => {

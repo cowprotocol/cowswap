@@ -1,10 +1,10 @@
 import { getIsNativeToken, isAddress, isFractionFalsy, isSellOrder } from '@cowprotocol/common-utils'
 import { PriceQuality } from '@cowprotocol/cow-sdk'
 
+import { ApprovalState } from 'modules/erc20Approve'
 import { TradeType } from 'modules/trade'
 import { isQuoteExpired } from 'modules/tradeQuote'
 
-import { ApprovalState } from '../../erc20Approve/hooks/useApproveState'
 import { TradeFormValidation, TradeFormValidationContext } from '../types'
 
 // eslint-disable-next-line max-lines-per-function, complexity
@@ -21,6 +21,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     tradeQuote,
     account,
     isPermitSupported,
+    hasActiveOrderWithTheSamePermit,
     isInsufficientBalanceOrderAllowed,
     isProviderNetworkUnsupported,
     isOnline,
@@ -44,8 +45,9 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
   const canPlaceOrderWithoutBalance = isBalanceGreaterThan1Atom && isInsufficientBalanceOrderAllowed && !isWrapUnwrap
   const isNativeIn = inputCurrency && getIsNativeToken(inputCurrency) && !isWrapUnwrap
 
+  const allowPermitSigning = isPermitSupported && !hasActiveOrderWithTheSamePermit
   const approvalRequired =
-    !isPermitSupported && (approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING)
+    !allowPermitSigning && (approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING)
 
   const inputAmountIsNotSet = isSellOrder(orderKind)
     ? !inputCurrencyAmount || isFractionFalsy(inputCurrencyAmount)

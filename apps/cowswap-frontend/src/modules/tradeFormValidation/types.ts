@@ -1,10 +1,10 @@
 import { Command } from '@cowprotocol/types'
 
+import { ApprovalState } from 'modules/erc20Approve'
 import { TradeDerivedState } from 'modules/trade'
+import { AmountsToSign } from 'modules/trade/hooks/useAmountsToSign'
 import { TradeQuoteState } from 'modules/tradeQuote'
 
-import { ApprovalState } from '../erc20Approve/hooks/useApproveState'
-import { AmountsToSign } from '../trade/hooks/useAmountsToSign'
 
 export enum TradeFormValidation {
   // Wrap/unwrap
@@ -61,6 +61,7 @@ export interface TradeFormValidationCommonContext {
   isSwapUnsupported: boolean
   isSafeReadonlyUser: boolean
   isPermitSupported: boolean
+  hasActiveOrderWithTheSamePermit: boolean
   isInsufficientBalanceOrderAllowed: boolean
   isProviderNetworkUnsupported: boolean
   isOnline: boolean
