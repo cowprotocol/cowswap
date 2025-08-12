@@ -31,7 +31,7 @@ const SWR_CONFIG: SWRConfiguration = {
 
 export function useIsAnySwapAffectedUser(): boolean {
   const { chainId, account } = useWalletInfo()
-  const { data: allowances } = useMultipleContractSingleData<[BigNumber]>(
+  const { data } = useMultipleContractSingleData<[BigNumber]>(
     chainId,
     AFFECTED_TOKENS,
     ERC20_INTERFACE,
@@ -41,6 +41,8 @@ export function useIsAnySwapAffectedUser(): boolean {
     SWR_CONFIG,
     `useIsAnySwapAffectedUser`,
   )
+
+  const allowances = data?.results
 
   return useMemo(() => {
     // The error affects Mainnet

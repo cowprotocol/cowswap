@@ -31,39 +31,42 @@ const tokensStateAtom = atom(async (get) => {
   const listsStatesList = await get(listsStatesListAtom)
   const listsEnabledState = await get(listsEnabledStateAtom)
 
-  return listsStatesList.reduce<TokensState>(
-    (acc, list) => {
-      const isListEnabled = listsEnabledState[list.source]
-      const lpTokenProvider = list.lpTokenProvider
-      list.list.tokens.forEach((token) => {
-        const tokenInfo = parseTokenInfo(chainId, token)
-        const tokenAddressKey = tokenInfo?.address.toLowerCase()
+  return {
+    listsCount: listsStatesList.length,
+    tokensState: listsStatesList.reduce<TokensState>(
+      (acc, list) => {
+        const isListEnabled = listsEnabledState[list.source]
+        const lpTokenProvider = list.lpTokenProvider
+        list.list.tokens.forEach((token) => {
+          const tokenInfo = parseTokenInfo(chainId, token)
+          const tokenAddressKey = tokenInfo?.address.toLowerCase()
 
-        if (!tokenInfo || !tokenAddressKey) return
+          if (!tokenInfo || !tokenAddressKey) return
 
-        if (lpTokenProvider) {
-          tokenInfo.lpTokenProvider = lpTokenProvider
-        }
-
-        if (isListEnabled) {
-          if (!acc.activeTokens[tokenAddressKey]) {
-            acc.activeTokens[tokenAddressKey] = tokenInfo
+          if (lpTokenProvider) {
+            tokenInfo.lpTokenProvider = lpTokenProvider
           }
-        } else {
-          if (!acc.inactiveTokens[tokenAddressKey]) {
-            acc.inactiveTokens[tokenAddressKey] = tokenInfo
-          }
-        }
-      })
 
-      return acc
-    },
-    { activeTokens: {}, inactiveTokens: {} },
-  )
+          if (isListEnabled) {
+            if (!acc.activeTokens[tokenAddressKey]) {
+              acc.activeTokens[tokenAddressKey] = tokenInfo
+            }
+          } else {
+            if (!acc.inactiveTokens[tokenAddressKey]) {
+              acc.inactiveTokens[tokenAddressKey] = tokenInfo
+            }
+          }
+        })
+
+        return acc
+      },
+      { activeTokens: {}, inactiveTokens: {} },
+    ),
+  }
 })
 
 export const activeTokensMapAtom = atom(async (get) => {
-  return (await get(tokensStateAtom)).activeTokens
+  return (await get(tokensStateAtom)).tokensState.activeTokens
 })
 
 /**
@@ -76,15 +79,13 @@ export const allActiveTokensAtom = atom(async (get) => {
   const userAddedTokens = get(userAddedTokensAtom)
   const favoriteTokensState = get(favoriteTokensAtom)
 
-  const tokensMap = await get(tokensStateAtom)
+  const { tokensState: tokensMap, listsCount } = await get(tokensStateAtom)
   const nativeToken = NATIVE_CURRENCIES[chainId]
 
-  const activeTokensCount = Object.keys(tokensMap.activeTokens).length
-
   /**
-   * Wait till active tokens are loaded
+   * Wait till token lists loaded
    */
-  if (activeTokensCount === 0) {
+  if (listsCount === 0) {
     return { tokens: [], chainId }
   }
 
@@ -121,7 +122,7 @@ export const allActiveTokensAtom = atom(async (get) => {
 
 export const inactiveTokensAtom = atom(async (get) => {
   const { chainId } = get(environmentAtom)
-  const tokensMap = await get(tokensStateAtom)
+  const { tokensState: tokensMap } = await get(tokensStateAtom)
 
   return tokenMapToListWithLogo([tokensMap.inactiveTokens], chainId)
 })

@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.23.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.22.0...common-const-v1.23.0) (2025-08-12)
+
+
+### Features
+
+* rename Permit hook dapp id ([#6138](https://github.com/cowprotocol/cowswap/issues/6138)) ([41b0b18](https://github.com/cowprotocol/cowswap/commit/41b0b182d4a673bb1799a699ea83029ee8c6d73b))
+
+## [1.22.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.21.1...common-const-v1.22.0) (2025-08-07)
+
+
+### Features
+
+* use received label constant for consistency in bridging content ([#6071](https://github.com/cowprotocol/cowswap/issues/6071)) ([709d183](https://github.com/cowprotocol/cowswap/commit/709d183bf7d8e41fc6705dc3dda89214c96e6919))
+
+
+### Bug Fixes
+
+* **bridge:** use account proxy label for consistent naming ([#6073](https://github.com/cowprotocol/cowswap/issues/6073)) ([d2d4e39](https://github.com/cowprotocol/cowswap/commit/d2d4e392e1c9f05dae2552aba11f07dacee077f0))
+
 ## [1.21.1](https://github.com/cowprotocol/cowswap/compare/common-const-v1.21.0...common-const-v1.21.1) (2025-07-30)
 
 

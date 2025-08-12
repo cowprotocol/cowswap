@@ -1,3 +1,4 @@
+import { PERMIT_HOOK_DAPP_ID } from '@cowprotocol/hook-dapp-lib'
 import { JsonRpcProvider } from '@ethersproject/providers'
 
 import { DEFAULT_PERMIT_GAS_LIMIT, DEFAULT_PERMIT_VALUE, PERMIT_SIGNER } from '../const'
@@ -5,9 +6,6 @@ import { PermitHookData, PermitHookParams } from '../types'
 import { buildDaiLikePermitCallData, buildEip2612PermitCallData } from '../utils/buildPermitCallData'
 import { getPermitDeadline } from '../utils/getPermitDeadline'
 import { isSupportedPermitInfo } from '../utils/isSupportedPermitInfo'
-
-// See hookDappsRegistry.json in @cowprotocol/hook-dapp-lib
-const PERMIT_HOOK_DAPP_ID = 'PERMIT_TOKEN'
 
 const REQUESTS_CACHE: { [permitKey: string]: Promise<PermitHookData | undefined> } = {}
 
@@ -35,7 +33,6 @@ export async function generatePermitHook(params: PermitHookParams): Promise<Perm
   return request
 }
 
-// TODO: Break down this large function into smaller functions
 async function generatePermitHookRaw(params: PermitHookParams): Promise<PermitHookData> {
   const { inputToken, spender, chainId, permitInfo, provider, account, eip2612Utils, nonce: preFetchedNonce } = params
 

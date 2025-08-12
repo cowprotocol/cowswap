@@ -1,12 +1,14 @@
-import { SupportedChainId, mapSupportedNetworks } from '@cowprotocol/cow-sdk'
+import {
+  SupportedChainId,
+  mapSupportedNetworks,
+  ETH_FLOW_ADDRESS,
+  BARN_ETH_FLOW_ADDRESS,
+  CowEnv,
+} from '@cowprotocol/cow-sdk'
 import { Fraction, Percent } from '@uniswap/sdk-core'
 
-import BigNumber from 'bignumber.js'
 import ms from 'ms.macro'
 
-// TODO: move those consts to src/constants/common
-
-export const ZERO_BIG_NUMBER = new BigNumber(0)
 export const ZERO_FRACTION = new Fraction(0)
 
 export const DEFAULT_SLIPPAGE_BPS = 50 // 0.5%
@@ -18,15 +20,12 @@ export const INITIAL_ALLOWED_SLIPPAGE_PERCENT = new Percent(DEFAULT_SLIPPAGE_BPS
 export const RADIX_DECIMAL = 10
 export const RADIX_HEX = 16
 
-export const DEFAULT_DECIMALS = 18
-export const DEFAULT_PRECISION = 6
 export const AMOUNT_PRECISION = 4
 export const LONG_PRECISION = 10
 export const FULL_PRICE_PRECISION = 20
 export const FIAT_PRECISION = 2
 export const PERCENTAGE_PRECISION = 2
 
-export const SHORT_LOAD_THRESHOLD = 500
 export const LONG_LOAD_THRESHOLD = 2000
 
 export const AVG_APPROVE_COST_GWEI = '50000'
@@ -47,15 +46,8 @@ export const PAGE_TITLES = {
   HOOKS: 'Hooks',
 }
 
-type Env = 'barn' | 'prod'
-
-const NEW_COWSWAP_ETHFLOW_CONTRACT_ADDRESS: Record<Env, string> = {
-  prod: '0xba3cb449bd2b4adddbc894d8697f5170800eadec',
-  barn: '0x04501b9b1d52e67f6862d157e00d13419d2d6e95',
-}
-
-export function getEthFlowContractAddresses(env: Env): string {
-  return NEW_COWSWAP_ETHFLOW_CONTRACT_ADDRESS[env]
+export function getEthFlowContractAddresses(env: CowEnv): string {
+  return env === 'prod' ? ETH_FLOW_ADDRESS : BARN_ETH_FLOW_ADDRESS
 }
 
 export const V_COW_CONTRACT_ADDRESS: Record<SupportedChainId, string | null> = {
@@ -190,14 +182,6 @@ export const SWR_NO_REFRESH_OPTIONS = {
   revalidateOnReconnect: false,
   refreshInterval: 0,
 }
-
-// These are used for Account sidebar menu
-export const ACCOUNT_MENU_LINKS = [
-  { title: 'Overview', url: '/account' },
-  { title: 'Tokens', url: '/account/tokens' },
-  // { title: 'Governance', url: '/account/governance' },
-  // { title: 'Affiliate', url: '/account/affiliate' },
-]
 
 // Min USD value to show surplus
 export const MIN_FIAT_SURPLUS_VALUE = 0.01

@@ -1,5 +1,27 @@
 # Changelog
 
+## [0.8.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v0.7.0...permit-utils-v0.8.0) (2025-08-12)
+
+
+### Features
+
+* rename Permit hook dapp id ([#6138](https://github.com/cowprotocol/cowswap/issues/6138)) ([41b0b18](https://github.com/cowprotocol/cowswap/commit/41b0b182d4a673bb1799a699ea83029ee8c6d73b))
+
+
+### Bug Fixes
+
+* **dev-deps-update:** bump the dev-deps group with 76 updates ([#5663](https://github.com/cowprotocol/cowswap/issues/5663)) ([552b349](https://github.com/cowprotocol/cowswap/commit/552b349f53762a01ccf008e9a2083248424cbafa))
+* **permit:** dai permit issues ([#5680](https://github.com/cowprotocol/cowswap/issues/5680)) ([a9e2da0](https://github.com/cowprotocol/cowswap/commit/a9e2da026cab2b0e001adc7fb0ebf11d1b028089))
+* **permit:** nonce not supported [#5653](https://github.com/cowprotocol/cowswap/issues/5653) ([#5672](https://github.com/cowprotocol/cowswap/issues/5672)) ([a526222](https://github.com/cowprotocol/cowswap/commit/a526222e115c28540d68addd2476070815975846))
+* **trade:** use salt for eip712 if it's needed ([#6086](https://github.com/cowprotocol/cowswap/issues/6086)) ([bb6f26c](https://github.com/cowprotocol/cowswap/commit/bb6f26c72781df087e018ec14d9fefcbc225baa3))
+
+## [0.7.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v0.6.2...permit-utils-v0.7.0) (2025-08-07)
+
+
+### Bug Fixes
+
+* **trade:** use salt for eip712 if it's needed ([#6086](https://github.com/cowprotocol/cowswap/issues/6086)) ([bb6f26c](https://github.com/cowprotocol/cowswap/commit/bb6f26c72781df087e018ec14d9fefcbc225baa3))
+
 ## [0.6.2](https://github.com/cowprotocol/cowswap/compare/permit-utils-v0.6.1...permit-utils-v0.6.2) (2025-05-16)
 
 

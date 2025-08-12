@@ -1,7 +1,7 @@
-import { latest } from '@cowprotocol/app-data'
-import { JsonRpcProvider } from '@ethersproject/providers'
+import type { latest } from '@cowprotocol/app-data'
+import type { JsonRpcProvider } from '@ethersproject/providers'
 
-import { Eip2612PermitUtils } from '@1inch/permit-signed-approvals-utils'
+import type { Eip2612PermitUtils } from '@1inch/permit-signed-approvals-utils'
 
 export type PermitType = 'dai-like' | 'eip-2612' | 'unsupported'
 

@@ -1,5 +1,22 @@
 # Changelog
 
+## [2.51.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.50.0...explorer-v2.51.0) (2025-08-07)
+
+
+### Features
+
+* **explorer:** sort fills tab by execution date, descending ([#6080](https://github.com/cowprotocol/cowswap/issues/6080)) ([3c58f9d](https://github.com/cowprotocol/cowswap/commit/3c58f9d304a755cb4ed9ae8ea1584262bec40917))
+* respect explorer environment for explorer navigation to Swap's … ([#6060](https://github.com/cowprotocol/cowswap/issues/6060)) ([c1d778a](https://github.com/cowprotocol/cowswap/commit/c1d778a56d1fc5facbc743b649af23f7953ee364))
+* use received label constant for consistency in bridging content ([#6071](https://github.com/cowprotocol/cowswap/issues/6071)) ([709d183](https://github.com/cowprotocol/cowswap/commit/709d183bf7d8e41fc6705dc3dda89214c96e6919))
+
+
+### Bug Fixes
+
+* **bridge:** use account proxy label for consistent naming ([#6073](https://github.com/cowprotocol/cowswap/issues/6073)) ([d2d4e39](https://github.com/cowprotocol/cowswap/commit/d2d4e392e1c9f05dae2552aba11f07dacee077f0))
+* **explorer:** add space between native token and chain name ([#6101](https://github.com/cowprotocol/cowswap/issues/6101)) ([304bbdf](https://github.com/cowprotocol/cowswap/commit/304bbdf3c0a5a675615e6e22a6141ef240acc31a))
+* **explorer:** remove flickering from app-data details ([#6083](https://github.com/cowprotocol/cowswap/issues/6083)) ([310f445](https://github.com/cowprotocol/cowswap/commit/310f445444c42440a2c1cf0c7f941ef1f9109fd3))
+* **explorer:** resolve native tokens from hardcode ([#6081](https://github.com/cowprotocol/cowswap/issues/6081)) ([6fdec11](https://github.com/cowprotocol/cowswap/commit/6fdec114b2b060de087c7577654697edc1c1d6fe))
+
 ## [2.50.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.49.0...explorer-v2.50.0) (2025-07-31)
 
 

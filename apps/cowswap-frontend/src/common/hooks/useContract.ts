@@ -19,7 +19,7 @@ import {
 } from '@cowprotocol/common-const'
 import { getContract } from '@cowprotocol/common-utils'
 import { isEns, isProd, isStaging } from '@cowprotocol/common-utils'
-import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS, CowEnv, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { Contract, ContractInterface } from '@ethersproject/contracts'
@@ -29,7 +29,7 @@ const WETH_CONTRACT_ADDRESS_MAP = Object.fromEntries(
   Object.entries(WRAPPED_NATIVE_CURRENCIES).map(([chainId, token]) => [chainId, token.address]),
 )
 
-export const ethFlowEnv = isProd || isStaging || isEns ? 'prod' : 'barn'
+export const ethFlowEnv: CowEnv = isProd || isStaging || isEns ? 'prod' : 'staging'
 
 export type UseContractResult<T extends Contract = Contract> = {
   contract: T | null

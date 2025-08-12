@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.24.1](https://github.com/cowprotocol/cowswap/compare/tokens-v1.24.0...tokens-v1.24.1) (2025-08-12)
+
+
+### Bug Fixes
+
+* **balances:** skip balances update from old blocks ([#6137](https://github.com/cowprotocol/cowswap/issues/6137)) ([0748151](https://github.com/cowprotocol/cowswap/commit/074815141e2992171cf752ef395a5dc34ecf6176))
+* **tokens:** check lists instead of tokens to prevent flickering ([#6125](https://github.com/cowprotocol/cowswap/issues/6125)) ([2705327](https://github.com/cowprotocol/cowswap/commit/2705327508f29079e6e5b4a8dc11b4dc0c5fb9cc))
+
+## [1.24.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.23.1...tokens-v1.24.0) (2025-08-07)
+
+
+### Features
+
+* **token-lists:** add Ondo tokens list to Mainnet ([#6115](https://github.com/cowprotocol/cowswap/issues/6115)) ([4e43496](https://github.com/cowprotocol/cowswap/commit/4e4349695be807febdcb52aec4b06adf68c950cf))
+
 ## [1.23.1](https://github.com/cowprotocol/cowswap/compare/tokens-v1.23.0...tokens-v1.23.1) (2025-08-05)
 
 

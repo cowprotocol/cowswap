@@ -1,5 +1,26 @@
 # Changelog
 
+## [1.117.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.116.0...cowswap-v1.117.0) (2025-08-12)
+
+
+### Features
+
+* rename Permit hook dapp id ([#6138](https://github.com/cowprotocol/cowswap/issues/6138)) ([41b0b18](https://github.com/cowprotocol/cowswap/commit/41b0b182d4a673bb1799a699ea83029ee8c6d73b))
+
+
+### Bug Fixes
+
+* **balances:** skip balances update from old blocks ([#6137](https://github.com/cowprotocol/cowswap/issues/6137)) ([0748151](https://github.com/cowprotocol/cowswap/commit/074815141e2992171cf752ef395a5dc34ecf6176))
+* do not validate proxy when provider network mismatch ([#6124](https://github.com/cowprotocol/cowswap/issues/6124)) ([33544c2](https://github.com/cowprotocol/cowswap/commit/33544c2d6590dabc912e68b45cd99e4942131c33))
+
+## [1.116.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.115.1...cowswap-v1.116.0) (2025-08-07)
+
+
+### Features
+
+* **bridging:** add Avalanche bridge support ([#6106](https://github.com/cowprotocol/cowswap/issues/6106)) ([c3a8881](https://github.com/cowprotocol/cowswap/commit/c3a88818e4d8c7300491ef29b7e4579a1fee5950))
+* don't use mm sdk if injected provider exists or mobile device is used ([#6094](https://github.com/cowprotocol/cowswap/issues/6094)) ([f77de45](https://github.com/cowprotocol/cowswap/commit/f77de45ccf0b1423e85e0dbee5742e3b8dc6ca17))
+
 ## [1.115.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.115.0...cowswap-v1.115.1) (2025-08-05)
 
 

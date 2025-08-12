@@ -10,6 +10,7 @@ import useSWR, { SWRConfiguration, SWRResponse } from 'swr'
 import { useMultiCallRpcProvider } from './useMultiCallRpcProvider'
 
 import { multiCall, MultiCallOptions } from '../multicall'
+import { MulticallResponseOptional } from '../types'
 
 export function useMultipleContractSingleData<T = Result>(
   chainId: SupportedChainId,
@@ -20,7 +21,7 @@ export function useMultipleContractSingleData<T = Result>(
   multicallOptions: MultiCallOptions = {},
   swrConfig?: SWRConfiguration,
   cacheKey?: string,
-): SWRResponse<(T | undefined)[] | null> {
+): SWRResponse<MulticallResponseOptional<T>> {
   const provider = useMultiCallRpcProvider()
 
   const callData = useMemo(() => {
@@ -40,7 +41,7 @@ export function useMultipleContractSingleData<T = Result>(
     })
   }, [addresses, callData])
 
-  return useSWR<(T | undefined)[] | null>(
+  return useSWR<MulticallResponseOptional<T>>(
     !calls?.length || !provider
       ? null
       : [
@@ -77,14 +78,17 @@ export function useMultipleContractSingleData<T = Result>(
       })
 
       return multiCall(provider, calls, multicallOptions)
-        .then((results) => {
-          return results.map((result) => {
-            try {
-              return contractInterface.decodeFunctionResult(methodName, result.returnData) as T
-            } catch {
-              return undefined
-            }
-          })
+        .then(({ results, blockNumber }) => {
+          return {
+            results: results.map((result) => {
+              try {
+                return contractInterface.decodeFunctionResult(methodName, result.returnData) as T
+              } catch {
+                return undefined
+              }
+            }),
+            blockNumber,
+          }
         })
         .catch((error) => {
           console.error('Could not make a multicall (SingleData)', error)
