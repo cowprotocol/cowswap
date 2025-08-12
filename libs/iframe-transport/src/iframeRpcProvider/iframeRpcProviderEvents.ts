@@ -1,5 +1,6 @@
 import { IframeTransport } from '../IframeTransport'
-import { EIP6963ProviderInfo, JsonRpcRequestMessage, JsonRpcResponse, ProviderWcMetadata } from '../types'
+
+import type { EIP6963ProviderInfo, JsonRpcRequestMessage, JsonRpcResponse, ProviderWcMetadata } from '../types'
 
 export interface ProviderRpcRequestPayload {
   rpcRequest: JsonRpcRequestMessage
