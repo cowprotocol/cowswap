@@ -1,9 +1,9 @@
 import {
-  SupportedChainId,
-  mapSupportedNetworks,
-  ETH_FLOW_ADDRESS,
-  BARN_ETH_FLOW_ADDRESS,
+  BARN_ETH_FLOW_ADDRESSES,
   CowEnv,
+  ETH_FLOW_ADDRESSES,
+  mapSupportedNetworks,
+  SupportedChainId,
 } from '@cowprotocol/cow-sdk'
 import { Fraction, Percent } from '@uniswap/sdk-core'
 
@@ -46,8 +46,8 @@ export const PAGE_TITLES = {
   HOOKS: 'Hooks',
 }
 
-export function getEthFlowContractAddresses(env: CowEnv): string {
-  return env === 'prod' ? ETH_FLOW_ADDRESS : BARN_ETH_FLOW_ADDRESS
+export function getEthFlowContractAddresses(env: CowEnv, chainId: SupportedChainId): string {
+  return env === 'prod' ? ETH_FLOW_ADDRESSES[chainId] : BARN_ETH_FLOW_ADDRESSES[chainId]
 }
 
 export const V_COW_CONTRACT_ADDRESS: Record<SupportedChainId, string | null> = {
