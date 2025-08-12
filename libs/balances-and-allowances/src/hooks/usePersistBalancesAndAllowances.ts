@@ -2,7 +2,6 @@ import { useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
 import { ERC_20_INTERFACE } from '@cowprotocol/abis'
-import { usePrevious } from '@cowprotocol/common-hooks'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { MultiCallOptions, useMultipleContractSingleData } from '@cowprotocol/multicall'
@@ -10,8 +9,9 @@ import { BigNumber } from '@ethersproject/bignumber'
 
 import { SWRConfiguration } from 'swr'
 
+import { useIsBlockNumberRelevant } from './useIsBlockNumberRelevant'
+
 import { balancesAtom, BalancesState, balancesUpdateAtom } from '../state/balancesAtom'
-import { getIsBlockNumberRelevant } from '../utils/getIsBlockNumberRelevant'
 
 const MULTICALL_OPTIONS = {}
 
@@ -53,10 +53,9 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
   )
   const balances = data?.results
   const blockNumber = data?.blockNumber
-  const prevBlockNumber = usePrevious(blockNumber)
 
   // Skip multicall results from outdated block if there is a result from newer one
-  const isNewBlockNumber = getIsBlockNumberRelevant({ prevBlockNumber, blockNumber })
+  const isNewBlockNumber = useIsBlockNumberRelevant(chainId, blockNumber)
 
   // Set balances loading state
   useEffect(() => {
