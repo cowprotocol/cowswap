@@ -127,7 +127,12 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps): ReactNode {
         <span>{expiryDate.toLocaleString(undefined, DEFAULT_DATE_FORMAT)}</span>
       </styledEl.DetailsRow>
       <OrderType isPartiallyFillable={partiallyFillable} partiallyFillableOverride={partiallyFillableOverride} />
-      <RecipientRow chainId={tradeContext.chainId} recipient={recipientAddressOrName || recipient} account={account} />
+      <RecipientRow
+        chainId={tradeContext.chainId}
+        recipient={recipientAddressOrName || recipient}
+        recipientAddress={recipient}
+        account={account}
+      />
     </Wrapper>
   )
 }

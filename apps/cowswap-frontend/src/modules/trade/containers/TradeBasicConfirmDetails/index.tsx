@@ -26,7 +26,8 @@ type Props = {
   slippage: Percent
   labelsAndTooltips?: LabelsAndTooltips
   children?: ReactNode
-  recipient?: Nullish<string>
+  recipient: Nullish<string>
+  recipientAddress: Nullish<string>
   account: Nullish<string>
   hideLimitPrice?: boolean
   hideUsdValues?: boolean
@@ -74,8 +75,6 @@ export function TradeBasicConfirmDetails(props: Props): ReactNode {
     hideUsdValues,
     withTimelineDot = true,
     children,
-    recipient,
-    account,
   } = props
   const isInvertedState = useState(false)
   const { amountAfterFees, amountAfterSlippage } = getOrderTypeReceiveAmounts(receiveAmountInfo)
@@ -95,8 +94,8 @@ export function TradeBasicConfirmDetails(props: Props): ReactNode {
       {/* Price */}
       <styledEl.RateInfoWrapper>
         <RateInfo
+          stylized
           label={priceLabel}
-          stylized={true}
           rateInfoParams={rateInfoParams}
           isInvertedState={isInvertedState}
           fontBold
@@ -112,7 +111,7 @@ export function TradeBasicConfirmDetails(props: Props): ReactNode {
       />
 
       <ReviewOrderModalAmountRow
-        highlighted={true}
+        highlighted
         amount={amountAfterFees}
         fiatAmount={amountAfterFeesUsd}
         label={expectReceiveLabel}
@@ -147,7 +146,12 @@ export function TradeBasicConfirmDetails(props: Props): ReactNode {
       )}
 
       {/*Recipient*/}
-      <RecipientRow chainId={rateInfoParams.chainId} recipient={recipient} account={account} />
+      <RecipientRow
+        chainId={rateInfoParams.chainId}
+        recipient={props.recipient}
+        recipientAddress={props.recipientAddress}
+        account={props.account}
+      />
       {children}
     </styledEl.Wrapper>
   )
