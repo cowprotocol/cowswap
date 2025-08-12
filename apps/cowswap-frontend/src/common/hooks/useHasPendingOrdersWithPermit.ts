@@ -13,7 +13,7 @@ const EIP2612_SELECTOR = 'd505accf'
 
 export function useHasPendingOrdersWithPermitForInputToken(
   currency: Nullish<Currency>,
-  isPermitSupported: boolean,
+  isPermitSupported?: boolean,
 ): boolean {
   const { chainId, account } = useWalletInfo()
   const pendingOrders = useOnlyPendingOrders(chainId, account)

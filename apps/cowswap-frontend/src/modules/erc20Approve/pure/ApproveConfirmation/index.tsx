@@ -19,25 +19,53 @@ export interface ApproveConfirmationProps {
   handleApprove(amount: bigint): void
 
   maxApprovalAmount: bigint
+  disablePartialApproval?: boolean
 }
 
-// eslint-disable-next-line max-lines-per-function
 export function ApproveConfirmation({
   amountToApprove,
   handleApprove,
   maxApprovalAmount,
+  disablePartialApproval,
 }: ApproveConfirmationProps): ReactNode {
   const currency = amountToApprove.currency
-  const defaultAmountToApprove = amountToApprove.toExact()
 
-  const [isAdvancedOpen, setIsAdvancedOpen] = useState(false)
+  const tokenSymbol = <TokenSymbol token={currency} />
+
+  return (
+    <styledEl.Wrapper>
+      <ButtonPrimary buttonSize={ButtonSize.BIG} onClick={() => handleApprove(maxApprovalAmount)}>
+        <styledEl.ButtonWrapper>
+          <span>Default approve</span>
+          <HelpTooltip>
+            <>
+              You must give the CoW Protocol smart contracts permission to use your {tokenSymbol}. If you approve the
+              default amount, you will only have to do this once per token.
+            </>
+          </HelpTooltip>
+        </styledEl.ButtonWrapper>
+      </ButtonPrimary>
+      {!disablePartialApproval ? (
+        <AdvancedApprove amountToApprove={amountToApprove} handleApprove={handleApprove} />
+      ) : null}
+    </styledEl.Wrapper>
+  )
+}
+
+// eslint-disable-next-line max-lines-per-function
+function AdvancedApprove({
+  amountToApprove,
+  handleApprove,
+}: Pick<ApproveConfirmationProps, 'amountToApprove' | 'handleApprove'>): ReactNode {
+  const currency = amountToApprove.currency
+
+  const defaultAmountToApprove = amountToApprove.toExact()
   const [isAmountInputFocused, setIsAmountInputFocused] = useState(false)
+  const [isAdvancedOpen, setIsAdvancedOpen] = useState(false)
   const [approveAmountStr, setApproveAmountStr] = useState(defaultAmountToApprove)
   const [inputChangedText, setInputChangedText] = useState(approveAmountStr)
   const [isChangedTextValid, setIsChangedTextValid] = useState(true)
   const [amountToApproveOverride, setAmountToApproveOverride] = useState<CurrencyAmount<Currency> | null>(null)
-
-  const tokenSymbol = <TokenSymbol token={currency} />
 
   const filterAmountInput = (e: KeyboardEvent<HTMLDivElement>): void => {
     if (e.altKey || e.ctrlKey || e.metaKey) return
@@ -98,60 +126,47 @@ export function ApproveConfirmation({
   }
 
   return (
-    <styledEl.Wrapper>
-      <ButtonPrimary buttonSize={ButtonSize.BIG} onClick={() => handleApprove(maxApprovalAmount)}>
-        <styledEl.ButtonWrapper>
-          <span>Default approve</span>
-          <HelpTooltip>
-            <>
-              You must give the CoW Protocol smart contracts permission to use your {tokenSymbol}. If you approve the
-              default amount, you will only have to do this once per token.
-            </>
-          </HelpTooltip>
-        </styledEl.ButtonWrapper>
-      </ButtonPrimary>
-      <styledEl.AdvancedWrapper open={isAdvancedOpen} error={!isChangedTextValid}>
-        <styledEl.AdvancedDropdown height={isAdvancedOpen ? 500 : 0}>
-          <styledEl.TextWrapper>
-            Allow spending:
-            <styledEl.AmountInput
-              translate="no"
-              invalid={!isChangedTextValid}
-              contentEditable={true}
-              onKeyDown={filterAmountInput}
-              onKeyUp={onAmountTyping}
-              onBlur={onBlur}
-              onFocus={onFocus}
-              suppressContentEditableWarning={true}
-            >
-              {approveAmountStr}
-            </styledEl.AmountInput>
-            {tokenSymbol}
-          </styledEl.TextWrapper>
-          {!isChangedTextValid && <styledEl.ValidationText>Entered amount is invalid</styledEl.ValidationText>}
-          <styledEl.AdvancedApproveButton
-            disabled={isAmountInputFocused || !isChangedTextValid}
-            onClick={() =>
-              handleApprove(
-                amountToApproveOverride
-                  ? BigInt(amountToApproveOverride.quotient.toString())
-                  : BigInt(amountToApprove.quotient.toString()),
-              )
-            }
+    <styledEl.AdvancedWrapper open={isAdvancedOpen} error={!isChangedTextValid}>
+      <styledEl.AdvancedDropdown height={isAdvancedOpen ? 500 : 0}>
+        <styledEl.TextWrapper>
+          Allow spending:
+          <styledEl.AmountInput
+            translate="no"
+            invalid={!isChangedTextValid}
+            contentEditable={true}
+            onKeyDown={filterAmountInput}
+            onKeyUp={onAmountTyping}
+            onBlur={onBlur}
+            onFocus={onFocus}
+            suppressContentEditableWarning={true}
           >
-            <span>Approve</span>
-            <HelpTooltip>
-              In case you want to give allowance only for the trade amount, use the advanced mode. You can also change
-              the amount manually.
-            </HelpTooltip>
-          </styledEl.AdvancedApproveButton>
-        </styledEl.AdvancedDropdown>
-        <styledEl.AdvancedDropdownButton onClick={() => setIsAdvancedOpen((s) => !s)}>
-          <span>Advanced</span>
-          {!isAdvancedOpen ? <ChevronDown size={15} /> : <ChevronUp size={15} />}
-        </styledEl.AdvancedDropdownButton>
-      </styledEl.AdvancedWrapper>
-    </styledEl.Wrapper>
+            {approveAmountStr}
+          </styledEl.AmountInput>
+          <TokenSymbol token={currency} />
+        </styledEl.TextWrapper>
+        {!isChangedTextValid && <styledEl.ValidationText>Entered amount is invalid</styledEl.ValidationText>}
+        <styledEl.AdvancedApproveButton
+          disabled={isAmountInputFocused || !isChangedTextValid}
+          onClick={() =>
+            handleApprove(
+              amountToApproveOverride
+                ? BigInt(amountToApproveOverride.quotient.toString())
+                : BigInt(amountToApprove.quotient.toString()),
+            )
+          }
+        >
+          <span>Approve</span>
+          <HelpTooltip>
+            In case you want to give allowance only for the trade amount, use the advanced mode. You can also change the
+            amount manually.
+          </HelpTooltip>
+        </styledEl.AdvancedApproveButton>
+      </styledEl.AdvancedDropdown>
+      <styledEl.AdvancedDropdownButton onClick={() => setIsAdvancedOpen((s) => !s)}>
+        <span>Advanced</span>
+        {!isAdvancedOpen ? <ChevronDown size={15} /> : <ChevronUp size={15} />}
+      </styledEl.AdvancedDropdownButton>
+    </styledEl.AdvancedWrapper>
   )
 }
 
