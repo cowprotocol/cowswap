@@ -29,11 +29,13 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
   const availableChains = useAvailableChains()
 
   const supportedChains = useMemo(() => {
-    return Object.keys(CHAIN_INFO).reduce((acc, chainId) => {
-      const supportedChainId = +chainId as SupportedChainId
-      if (availableChains.includes(supportedChainId)) {
-        acc.push(mapChainInfo(supportedChainId, CHAIN_INFO[supportedChainId]))
+    return availableChains.reduce((acc, id) => {
+      const info = CHAIN_INFO[id]
+
+      if (info) {
+        acc.push(mapChainInfo(id, info))
       }
+
       return acc
     }, [] as ChainInfo[])
   }, [availableChains])
