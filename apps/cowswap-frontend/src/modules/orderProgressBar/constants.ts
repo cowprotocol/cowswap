@@ -89,7 +89,7 @@ export const COW_SWAP_BENEFITS = [
 ]
 
 export const TRADE_ON_NEW_CHAINS_BENEFIT =
-  'CoW Swap is now live on Arbitrum, Base, Polygon and Avalanche. Switch the network toggle in the nav bar for quick, cheap transactions.'
+  'CoW Swap is now live on Arbitrum, Base, Polygon, and Avalanche. Switch the network toggle in the nav bar for quick, cheap transactions.'
 
 export const CHAIN_SPECIFIC_BENEFITS: Record<SupportedChainId, string[]> = {
   [SupportedChainId.MAINNET]: [TRADE_ON_NEW_CHAINS_BENEFIT, ...COW_SWAP_BENEFITS],
