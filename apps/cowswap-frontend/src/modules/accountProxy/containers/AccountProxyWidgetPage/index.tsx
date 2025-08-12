@@ -17,6 +17,7 @@ import { NewModal } from 'common/pure/NewModal'
 
 import { EmptyWrapper, HelpLink, ModalWrapper, TitleWrapper, WidgetWrapper } from './styled'
 
+import { NEED_HELP_LABEL } from '../../consts'
 import { useOnAccountOrChainChanged } from '../../hooks/useOnAccountOrChainChanged'
 import { useSetupBalancesContext } from '../../hooks/useSetupBalancesContext'
 import { WalletNotConnected } from '../../pure/WalletNotConnected'
@@ -25,7 +26,6 @@ import { parameterizeRoute } from '../../utils/parameterizeRoute'
 import { WidgetPageTitle } from '../WidgetPageTitle'
 
 const URL_NETWORK_CHANGED_STATE = 'network-changed'
-const LABEL_NEED_HELP = 'Need help?'
 
 interface AccountProxiesPageProps {
   modalMode?: boolean
@@ -93,7 +93,9 @@ export function AccountProxyWidgetPage({
                 <WidgetPageTitle />
               </span>
               {!isHelpPage && (
-                <HelpLink to={parameterizeRoute(Routes.ACCOUNT_PROXY_HELP, { chainId })}>{LABEL_NEED_HELP}</HelpLink>
+                <HelpLink
+                  to={parameterizeRoute(Routes.ACCOUNT_PROXY_HELP, { chainId })}
+                >{`${NEED_HELP_LABEL}?`}</HelpLink>
               )}
             </TitleWrapper>
           }
