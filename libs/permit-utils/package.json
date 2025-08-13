@@ -5,7 +5,7 @@
   "dependencies": {
     "ethers": "^5.7.2",
     "@1inch/permit-signed-approvals-utils": "^1.4.10",
-    "@cowprotocol/app-data": "^1.1.0",
+    "@cowprotocol/app-data": "^3.2.0",
     "tslib": "^2.6.1"
   },
   "module": "./index.js",
