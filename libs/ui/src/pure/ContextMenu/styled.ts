@@ -114,7 +114,7 @@ const dangerVariantStyles = css`
   }
 `
 
-export const BaseMenuItemStyles = css`
+const BaseMenuItemStyles = css`
   padding: 12px;
   border-radius: 6px;
   margin: 0;
@@ -165,10 +165,6 @@ export const ContextMenuItemButton = styled.button<{ variant?: 'danger' }>`
   ${({ variant }) => variant === 'danger' && dangerVariantStyles}
 `
 
-export const ContextMenuItemLink = styled.a`
-  ${BaseMenuItemStyles}
-  text-decoration: none;
-`
 
 export const ContextMenuItemText = styled.span`
   ${BaseMenuItemStyles}

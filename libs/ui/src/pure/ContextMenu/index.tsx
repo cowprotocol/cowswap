@@ -11,21 +11,6 @@ import * as styledEl from './styled'
 import { UI } from '../../enum'
 import { Tooltip } from '../Tooltip'
 
-export const ContextMenuButton = forwardRef<
-  HTMLButtonElement,
-  {
-    children: ReactNode
-    className?: string
-    'aria-label'?: string
-    onClick?: () => void
-  }
->(function ContextMenuButton({ children, className, 'aria-label': ariaLabel, onClick }, ref): ReactNode {
-  return (
-    <styledEl.ContextMenuButton ref={ref} className={className} aria-label={ariaLabel} onClick={onClick}>
-      {children}
-    </styledEl.ContextMenuButton>
-  )
-})
 
 export const ContextMenuItem = forwardRef<
   HTMLDivElement,
@@ -101,6 +86,8 @@ export function ContextMenuTooltip({
 }
 
 const CopyFeedbackText = styled.span<{ isCopied?: boolean }>`
+  display: flex;
+  align-items: center;
   color: ${({ isCopied }) => (isCopied ? `var(${UI.COLOR_SUCCESS})` : 'inherit')};
 `
 
@@ -142,28 +129,18 @@ export function ContextMenuCopyButton({ address }: ContextMenuCopyButtonProps): 
 interface ContextMenuExternalLinkProps {
   href: string
   label: string
-  useButton?: boolean
 }
 
-export function ContextMenuExternalLink({ href, label, useButton = true }: ContextMenuExternalLinkProps): ReactNode {
+export function ContextMenuExternalLink({ href, label }: ContextMenuExternalLinkProps): ReactNode {
   const handleClick = useCallback(() => {
     window.open(href, '_blank', 'noopener,noreferrer')
   }, [href])
 
-  if (useButton) {
-    return (
-      <styledEl.ContextMenuItemButton onClick={handleClick}>
-        <Link2 size={16} />
-        <span>{label}</span>
-      </styledEl.ContextMenuItemButton>
-    )
-  }
-
   return (
-    <styledEl.ContextMenuItemLink href={href} target="_blank" rel="noreferrer noopener">
+    <styledEl.ContextMenuItemButton onClick={handleClick}>
       <Link2 size={16} />
-      {label}
-    </styledEl.ContextMenuItemLink>
+      <span>{label}</span>
+    </styledEl.ContextMenuItemButton>
   )
 }
 
@@ -173,6 +150,7 @@ export const ContextMenuItemText = styledEl.ContextMenuItemText
 // Dropdown/Selector pattern exports (for settings panels, form dropdowns, etc.)
 // Use ContextMenuTooltip for action menus (copy, view, delete)
 export const ContextMenu = styledEl.ContextMenu
+export const ContextMenuButton = styledEl.ContextMenuButton
 export function ContextMenuList({ children, portal = false }: { children: ReactNode; portal?: boolean }): ReactNode {
   return (
     <MenuPopover portal={portal}>
