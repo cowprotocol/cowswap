@@ -27,7 +27,7 @@ export function AddressLink({ address, chainId, className, content }: AddressLin
       target="_blank"
       rel="noreferrer"
     >
-      {content || shortenAddress(address)} ↗
+      {content ? (isAddress(content) ? shortenAddress(content) : content) : shortenAddress(address)} ↗
     </Link>
   ) : (
     address
