@@ -78,7 +78,8 @@ export const NetworkLabel = styled.span<{ color: string }>`
   font-weight: ${({ theme }): string => theme.fontBold};
   letter-spacing: 0.1rem;
   background: ${({ color }) => color};
-  color: var(${UI.COLOR_NEUTRAL_100});
+  // TODO: this is very brittle way to set contrasting text color, how to improve it?
+  color: ${({ color }) => `var(${color === '#FFFFFF' ? UI.COLOR_BLACK : UI.COLOR_NEUTRAL_100})`};
 `
 
 export const StyledFAIcon = styled(FontAwesomeIcon)`
