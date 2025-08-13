@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.0](https://github.com/cowprotocol/cowswap/compare/hook-dapp-lib-v1.9.0...hook-dapp-lib-v1.10.0) (2025-08-12)
+
+
+### Features
+
+* rename Permit hook dapp id ([#6138](https://github.com/cowprotocol/cowswap/issues/6138)) ([41b0b18](https://github.com/cowprotocol/cowswap/commit/41b0b182d4a673bb1799a699ea83029ee8c6d73b))
+
 ## [1.9.0](https://github.com/cowprotocol/cowswap/compare/hook-dapp-lib-v1.8.0...hook-dapp-lib-v1.9.0) (2025-07-30)
 
 
