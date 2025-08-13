@@ -39,6 +39,7 @@ import {
   useIsReceiverWalletBannerHidden,
 } from 'common/state/receiverWalletBannerVisibility'
 import { ActivityDerivedState, ActivityStatus } from 'common/types/activity'
+import { doesOrderHavePermit } from 'common/utils/doesOrderHavePermit'
 import { getIsBridgeOrder } from 'common/utils/getIsBridgeOrder'
 import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
@@ -56,7 +57,6 @@ import {
   TransactionState as ActivityLink,
 } from './styled'
 
-import { doesOrderHavePermit } from '../../../../common/utils/doesOrderHavePermit'
 import { OrderFillabilityWarning } from '../../pure/OrderFillabilityWarning'
 
 const progressBarVisibleStates = [ActivityState.OPEN]

@@ -10,7 +10,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { useSingleActivityDescriptor } from 'legacy/hooks/useRecentActivity'
 import { WrapUnwrapCallback } from 'legacy/hooks/useWrapCallback'
 
-import { useApproveState } from 'modules/erc20Approve/hooks/useApproveState'
+import { useApproveState } from 'modules/erc20Approve'
 import { useWrappedToken } from 'modules/trade'
 
 import { useTradeApproveCallback } from 'common/containers/TradeApprove'

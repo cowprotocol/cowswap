@@ -17,7 +17,7 @@ import { Link } from 'react-router'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 import { useHasPendingApproval } from 'legacy/state/enhancedTransactions/hooks'
 
-import { ApprovalState } from 'modules/erc20Approve/hooks/useApproveState'
+import { ApprovalState } from 'modules/erc20Approve'
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
 
 import { Routes } from 'common/constants/routes'

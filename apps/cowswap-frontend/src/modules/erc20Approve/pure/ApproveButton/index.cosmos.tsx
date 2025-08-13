@@ -3,14 +3,13 @@ import { ReactNode } from 'react'
 import { COW_TOKEN_TO_CHAIN, GNO_MAINNET } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
+import { DemoContainer } from 'cosmos.decorator'
 import { useSelect } from 'react-cosmos/client'
 
-import { DemoContainer } from '../../../../cosmos.decorator'
 import { ApprovalState } from '../../hooks'
 
 import { ApproveButton } from './index'
 
-// todo [approve] remove !
 const COW_TOKEN = COW_TOKEN_TO_CHAIN[SupportedChainId.MAINNET]!
 const GNO_TOKEN = GNO_MAINNET
 
