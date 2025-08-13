@@ -46,7 +46,7 @@ export function NetworkLogo({
   let logoUrl: string | undefined = defaultLogoUrl
 
   // Special handling for Arbitrum to ensure visibility (same logic as useNetworkLogo)
-  if (chainId === SupportedChainId.ARBITRUM_ONE && chainInfo) {
+  if (chainInfo.logo.light !== chainInfo.logo.dark) {
     logoUrl = chainInfo.logo.light
   } else if (!logoUrl && chainInfo) {
     // Use light mode if forced, or based on theme preference
