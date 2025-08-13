@@ -28,7 +28,7 @@ const UNISWAP_TOKEN_LIST_URL: Record<SupportedChainId, string> = {
   [SupportedChainId.AVALANCHE]:
     'https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/Uniswap.43114.json',
   [SupportedChainId.LENS]:
-    'https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/Coingecko.232.json', // There's no Uniswap list for Lens, using Coingecko as a fallback
+    'https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/CoinGecko.232.json', // There's no Uniswap list for Lens, using Coingecko as a fallback
   [SupportedChainId.BNB]: 'https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/Uniswap.56.json',
 }
 
