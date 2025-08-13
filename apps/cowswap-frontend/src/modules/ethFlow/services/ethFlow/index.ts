@@ -83,7 +83,7 @@ export async function ethFlow({
 
     // Last check before signing the order of the actual eth flow contract address (sending ETH to the wrong contract could lead to loss of funds)
     const actualContractAddress = contract.address.toLowerCase()
-    const expectedContractAddress = getEthFlowContractAddresses(ethFlowEnv).toLowerCase()
+    const expectedContractAddress = getEthFlowContractAddresses(ethFlowEnv, chainId).toLowerCase()
     if (actualContractAddress !== expectedContractAddress) {
       throw new Error(
         `EthFlow contract (${actualContractAddress}) address don't match the expected address for chain ${chainId} (${expectedContractAddress}). Please refresh the page and try again.`,

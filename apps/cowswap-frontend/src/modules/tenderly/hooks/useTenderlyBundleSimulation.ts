@@ -1,5 +1,6 @@
 import { useCallback } from 'react'
 
+import { TENDERLY_AVAILABLE } from '@cowprotocol/common-const'
 import { CowHookDetails } from '@cowprotocol/hook-dapp-lib'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -27,6 +28,8 @@ export function useTenderlyBundleSimulation() {
   const orderParams = useOrderParams()
 
   const getTopTokenHolder = useGetTopTokenHolders()
+
+  const isTenderlySupported = TENDERLY_AVAILABLE[chainId]
 
   const simulateBundle = useCallback(
     // TODO: Reduce function complexity by extracting logic
@@ -105,13 +108,15 @@ export function useTenderlyBundleSimulation() {
   )
 
   return useSWR(
-    [
-      'tenderly-bundle-simulation',
-      {
-        preHooks,
-        postHooks,
-      },
-    ],
+    isTenderlySupported
+      ? [
+          'tenderly-bundle-simulation',
+          {
+            preHooks,
+            postHooks,
+          },
+        ]
+      : null,
     getNewSimulationData,
     {
       revalidateOnFocus: false,

@@ -27,17 +27,10 @@ export interface NetworkLogoProps {
   chainId: SupportedChainId
   size?: number
   margin?: string
-  forceLightMode?: boolean
   logoUrl?: string
 }
 
-export function NetworkLogo({
-  chainId,
-  size = 16,
-  margin,
-  forceLightMode,
-  logoUrl: defaultLogoUrl,
-}: NetworkLogoProps): ReactNode {
+export function NetworkLogo({ chainId, size = 16, margin, logoUrl: defaultLogoUrl }: NetworkLogoProps): ReactNode {
   const theme = useTheme()
   const chainInfo = getChainInfo(chainId)
 
@@ -45,13 +38,8 @@ export function NetworkLogo({
 
   let logoUrl: string | undefined = defaultLogoUrl
 
-  // Special handling for Arbitrum to ensure visibility (same logic as useNetworkLogo)
-  if (chainId === SupportedChainId.ARBITRUM_ONE && chainInfo) {
-    logoUrl = chainInfo.logo.light
-  } else if (!logoUrl && chainInfo) {
-    // Use light mode if forced, or based on theme preference
-    const shouldUseLightLogo = forceLightMode || !theme.darkMode
-    logoUrl = shouldUseLightLogo ? chainInfo.logo.light : chainInfo.logo.dark
+  if (!logoUrl && chainInfo) {
+    logoUrl = theme.darkMode ? chainInfo.logo.dark : chainInfo.logo.light
   }
 
   return (

@@ -1841,10 +1841,10 @@
   resolved "https://registry.yarnpkg.com/@cowprotocol/cow-runner-game/-/cow-runner-game-0.2.9.tgz#3f94b3f370bd114f77db8b1d238cba3ef4e9d644"
   integrity sha512-rX7HnoV+HYEEkBaqVUsAkGGo0oBrExi+d6Io+8nQZYwZk+IYLmS9jdcIObsLviM2h4YX8+iin6NuKl35AaiHmg==
 
-"@cowprotocol/cow-sdk@6.1.0":
-  version "6.1.0"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-6.1.0.tgz#7067048e3a2ad6e53fc6305550000899b1658f30"
-  integrity sha512-Tgd5EBlf/QZzpRhe6riMP6/S7/3u3KLPqMzyMr5k9sIE2CD6lhUZUFtyLzGh4NMDu9jZ76+ZcmGG22nPC8u47A==
+"@cowprotocol/cow-sdk@6.2.0-RC.1":
+  version "6.2.0-RC.1"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-6.2.0-RC.1.tgz#60cdfc9874a38fbc70c99ff3471aa5789000d3a3"
+  integrity sha512-7Snls1yAkwGlDsyTl1WqaDEX0MLXMllWlxn/E38H98F9bb4AGlcVrevQkAkMTjr8V7wO+sFKBevWC9x7vB886w==
   dependencies:
     "@cowprotocol/app-data" "^3.3.0"
     "@cowprotocol/contracts" "^1.8.0"
@@ -1855,7 +1855,7 @@
     deepmerge "^4.3.1"
     exponential-backoff "^3.1.2"
     graphql "^16.11.0"
-    graphql-request "^4.3.0"
+    graphql-request "^6.1.0"
     limiter "^3.0.0"
 
 "@cowprotocol/ethflowcontract@cowprotocol/ethflowcontract.git#main-artifacts":
@@ -3441,7 +3441,7 @@
     "@gnosis.pm/dex-contracts" "^0.4.3"
     bignumber.js "^9.0.0"
 
-"@graphql-typed-document-node/core@^3.1.1":
+"@graphql-typed-document-node/core@^3.1.1", "@graphql-typed-document-node/core@^3.2.0":
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/@graphql-typed-document-node/core/-/core-3.2.0.tgz#5f3d96ec6b2354ad6d8a28bf216a1d97b5426861"
   integrity sha512-mB9oAsNCm9aM3/SOv4YtBMqZbYj10R7dkq8byBqxGY/ncFwhf2oQzMV+LCRlWoDSEBJ3COiR1yeDvMtsoOsuFQ==
@@ -18215,7 +18215,7 @@ graphemer@^1.4.0:
   resolved "https://registry.yarnpkg.com/graphemer/-/graphemer-1.4.0.tgz#fb2f1d55e0e3a1849aeffc90c4fa0dd53a0e66c6"
   integrity sha512-EtKwoO6kxCL9WO5xipiHTZlSzBm7WLT627TqC/uVRd0HKmq8NXyebnNYxDoBi7wt8eTWrUrKXCOVaFq9x1kgag==
 
-graphql-request@4.3.0, graphql-request@^4.3.0:
+graphql-request@4.3.0:
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/graphql-request/-/graphql-request-4.3.0.tgz#b934e08fcae764aa2cdc697d3c821f046cb5dbf2"
   integrity sha512-2v6hQViJvSsifK606AliqiNiijb1uwWp6Re7o0RTyH+uRTv/u7Uqm2g4Fjq/LgZIzARB38RZEvVBFOQOVdlBow==
@@ -18223,6 +18223,14 @@ graphql-request@4.3.0, graphql-request@^4.3.0:
     cross-fetch "^3.1.5"
     extract-files "^9.0.0"
     form-data "^3.0.0"
+
+graphql-request@^6.1.0:
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/graphql-request/-/graphql-request-6.1.0.tgz#f4eb2107967af3c7a5907eb3131c671eac89be4f"
+  integrity sha512-p+XPfS4q7aIpKVcgmnZKhMNqhltk20hfXtkaIkTfjjmiKMJ5xrt5c743cL03y/K7y1rg3WrIC49xGiEQ4mxdNw==
+  dependencies:
+    "@graphql-typed-document-node/core" "^3.2.0"
+    cross-fetch "^3.1.5"
 
 graphql-tag@^2.12.6:
   version "2.12.6"

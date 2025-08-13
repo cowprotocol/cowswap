@@ -1,5 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 
+import { TENDERLY_AVAILABLE } from '@cowprotocol/common-const'
+
 import { faListUl, faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
 
 import { BlockchainNetwork, TransactionsTableContext } from './context/TransactionsTableContext'
@@ -35,26 +37,34 @@ const DEFAULT_TAB = TabView[1]
 
 function useQueryViewParams(): string {
   const query = useQuery()
-  return query.get(TAB_QUERY_PARAM_KEY)?.toUpperCase() || DEFAULT_TAB  // if URL param empty will be used DEFAULT
+  return query.get(TAB_QUERY_PARAM_KEY)?.toUpperCase() || DEFAULT_TAB // if URL param empty will be used DEFAULT
 }
 
-const tabItems = (orders: Order[] | undefined, networkId: BlockchainNetwork, txHash: string): TabItemInterface[] => {
-  return [
+const tabItems = (
+  orders: Order[] | undefined,
+  networkId: BlockchainNetwork,
+  txHash: string,
+  hideBatchGraphTab: boolean = false,
+): TabItemInterface[] => {
+  const tabs = [
     {
       id: TabView.ORDERS,
       tab: <TabIcon title="Orders" iconFontName={faListUl} />,
       content: <TransactionsTableWithData />,
     },
-    {
+  ]
+  if (!hideBatchGraphTab) {
+    tabs.push({
       id: TabView.GRAPH,
       tab: <TabIcon title="Graph" iconFontName={faProjectDiagram} />,
       content: <TransactionBatchGraph orders={orders} networkId={networkId} txHash={txHash} />,
-    },
-  ]
+    })
+  }
+  return tabs
 }
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+
 export const TransactionsTableWidget: React.FC<Props> = ({ txHash }) => {
   const { orders, isLoading: isTxLoading, errorTxPresentInNetworkId, error } = useGetTxOrders(txHash)
   const networkId = useNetworkId() || undefined
@@ -87,8 +97,17 @@ export const TransactionsTableWidget: React.FC<Props> = ({ txHash }) => {
 
   useEffect(
     () => updateQueryString(TAB_QUERY_PARAM_KEY, TabView[tabViewSelected].toLowerCase()),
-    [tabViewSelected, updateQueryString]
+    [tabViewSelected, updateQueryString],
   )
+
+  const shouldHideBatchGraphTab = networkId && !TENDERLY_AVAILABLE[networkId]
+
+  useEffect(() => {
+    if (shouldHideBatchGraphTab && tabViewSelected === TabView.GRAPH) {
+      setTabViewSelected(TabView.ORDERS)
+      updateQueryString(TAB_QUERY_PARAM_KEY, DEFAULT_TAB)
+    }
+  }, [shouldHideBatchGraphTab, tabViewSelected, updateQueryString])
 
   if (errorTxPresentInNetworkId && networkId !== errorTxPresentInNetworkId) {
     return <RedirectToNetwork networkId={errorTxPresentInNetworkId} />
@@ -124,7 +143,7 @@ export const TransactionsTableWidget: React.FC<Props> = ({ txHash }) => {
         }}
       >
         <ExplorerTabs
-          tabItems={tabItems(orders, networkId, txHash)}
+          tabItems={tabItems(orders, networkId, txHash, shouldHideBatchGraphTab)}
           selectedTab={tabViewSelected}
           updateSelectedTab={(key: number): void => onChangeTab(key)}
         />

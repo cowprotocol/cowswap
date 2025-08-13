@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { getChainInfo } from '@cowprotocol/common-const'
 import { useTheme } from '@cowprotocol/common-hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -51,6 +53,7 @@ const RootWrapper = styled.div`
 
 const SHOULD_SHOW_ALERT = {
   [SupportedChainId.GNOSIS_CHAIN]: true,
+  [SupportedChainId.LENS]: true,
 }
 
 type NetworkAlertChains = keyof typeof SHOULD_SHOW_ALERT
@@ -136,9 +139,7 @@ function shouldShowAlert(chainId: number | undefined): chainId is NetworkAlertCh
   return Boolean(chainId && SHOULD_SHOW_ALERT[chainId as unknown as NetworkAlertChains])
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function NetworkBridgeBanner() {
+export function NetworkBridgeBanner(): ReactNode {
   const { active: isActive, chainId } = useWalletInfo()
   const [darkMode] = useDarkModeManager()
 
