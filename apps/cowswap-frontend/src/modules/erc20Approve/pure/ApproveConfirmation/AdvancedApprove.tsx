@@ -29,24 +29,7 @@ export function AdvancedApprove({
   const [isChangedTextValid, setIsChangedTextValid] = useState(true)
   const [amountToApproveOverride, setAmountToApproveOverride] = useState<CurrencyAmount<Currency> | null>(null)
 
-  const filterAmountInput = (e: KeyboardEvent<HTMLDivElement>): void => {
-    if (e.altKey || e.ctrlKey || e.metaKey) return
-
-    if (e.key.toLowerCase() !== 'backspace' && inputChangedText.length >= maxAmountLength) {
-      e.preventDefault()
-      return
-    }
-
-    if (e.key === '.') {
-      if (inputChangedText.includes('.')) {
-        e.preventDefault()
-        return
-      }
-    } else if ((e.key.length === 1 && !digitRegex.test(e.key)) || e.key.toLowerCase() === 'enter') {
-      e.preventDefault()
-      return
-    }
-  }
+  const onFilterAmountInput = (e: KeyboardEvent<HTMLDivElement>): void => filterAmountInput(e, inputChangedText)
 
   const onAmountTyping = (e: KeyboardEvent<HTMLDivElement>): void => {
     const content = (e.target as HTMLDivElement).innerText
@@ -83,10 +66,6 @@ export function AdvancedApprove({
     setApproveAmountStr(inputChangedText)
   }
 
-  const onFocus = (): void => {
-    setIsAmountInputFocused(true)
-  }
-
   return (
     <styledEl.AdvancedWrapper open={isAdvancedOpen} error={!isChangedTextValid}>
       <styledEl.AdvancedDropdown height={isAdvancedOpen ? 500 : 0}>
@@ -96,10 +75,10 @@ export function AdvancedApprove({
             translate="no"
             invalid={!isChangedTextValid}
             contentEditable={true}
-            onKeyDown={filterAmountInput}
+            onKeyDown={onFilterAmountInput}
             onKeyUp={onAmountTyping}
             onBlur={onBlur}
-            onFocus={onFocus}
+            onFocus={() => setIsAmountInputFocused(true)}
             suppressContentEditableWarning={true}
           >
             {approveAmountStr}
@@ -130,6 +109,25 @@ export function AdvancedApprove({
       </styledEl.AdvancedDropdownButton>
     </styledEl.AdvancedWrapper>
   )
+}
+
+function filterAmountInput(e: KeyboardEvent<HTMLDivElement>, inputChangedText: string): void {
+  if (e.altKey || e.ctrlKey || e.metaKey) return
+
+  if (e.key.toLowerCase() !== 'backspace' && inputChangedText.length >= maxAmountLength) {
+    e.preventDefault()
+    return
+  }
+
+  if (e.key === '.') {
+    if (inputChangedText.includes('.')) {
+      e.preventDefault()
+      return
+    }
+  } else if ((e.key.length === 1 && !digitRegex.test(e.key)) || e.key.toLowerCase() === 'enter') {
+    e.preventDefault()
+    return
+  }
 }
 
 export function HelpTooltip({ children }: { children: ReactNode }): ReactNode {
