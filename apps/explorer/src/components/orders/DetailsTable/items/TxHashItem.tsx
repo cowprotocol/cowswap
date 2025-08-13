@@ -16,7 +16,9 @@ import { LinkButton, Wrapper } from '../styled'
 interface TxHashItemProps {
   txHash: string | undefined
   chainId: SupportedChainId
+
   onCopy(label: string): void
+
   isLoading: boolean
 }
 
@@ -25,29 +27,27 @@ export function TxHashItem({ chainId, txHash, onCopy, isLoading }: TxHashItemPro
 
   return (
     <DetailRow label="Transaction hash" tooltipText={DetailsTableTooltips.hash} isLoading={isLoading}>
-      {txHash ? (
+      <Wrapper>
+        <RowWithCopyButton
+          textToCopy={txHash}
+          onCopy={() => onCopy('settlementTx')}
+          contentsToDisplay={
+            <Link to={getExplorerLink(chainId, txHash, ExplorerDataType.TRANSACTION)} target="_blank">
+              {txHash}↗
+            </Link>
+          }
+        />
         <Wrapper>
-          <RowWithCopyButton
-            textToCopy={txHash}
-            onCopy={() => onCopy('settlementTx')}
-            contentsToDisplay={
-              <Link to={getExplorerLink(chainId, txHash, ExplorerDataType.TRANSACTION)} target="_blank">
-                {txHash}↗
-              </Link>
-            }
-          />
-          <Wrapper>
-            <LinkButton to={`/tx/${txHash}`}>
-              <FontAwesomeIcon icon={faGroupArrowsRotate} />
-              Batch
-            </LinkButton>
-            <LinkButton to={`/tx/${txHash}/?${TAB_QUERY_PARAM_KEY}=graph`}>
-              <FontAwesomeIcon icon={faProjectDiagram} />
-              Graph
-            </LinkButton>
-          </Wrapper>
+          <LinkButton to={`/tx/${txHash}`}>
+            <FontAwesomeIcon icon={faGroupArrowsRotate} />
+            Batch
+          </LinkButton>
+          <LinkButton to={`/tx/${txHash}/?${TAB_QUERY_PARAM_KEY}=graph`}>
+            <FontAwesomeIcon icon={faProjectDiagram} />
+            Graph
+          </LinkButton>
         </Wrapper>
-      ) : null}
+      </Wrapper>
     </DetailRow>
   )
 }
