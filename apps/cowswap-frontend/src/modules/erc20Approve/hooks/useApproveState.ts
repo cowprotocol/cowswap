@@ -2,14 +2,14 @@ import { useMemo } from 'react'
 
 import { usePrevious } from '@cowprotocol/common-hooks'
 import { getWrappedToken } from '@cowprotocol/common-utils'
+import { Nullish } from '@cowprotocol/types'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
-import { useSafeMemo } from 'common/hooks/useSafeMemo'
+import { useHasPendingApproval } from 'legacy/state/enhancedTransactions/hooks'
 
-import { useTokenAllowance } from '../../../common/hooks/useTokenAllowance'
-import { getApprovalState } from '../../../common/utils/getApprovalState'
-import { useHasPendingApproval } from '../../../legacy/state/enhancedTransactions/hooks'
-import { Nullish } from '../../../types'
+import { useSafeMemo } from 'common/hooks/useSafeMemo'
+import { useTokenAllowance } from 'common/hooks/useTokenAllowance'
+import { getApprovalState } from 'common/utils/getApprovalState'
 
 export enum ApprovalState {
   UNKNOWN = 'UNKNOWN',

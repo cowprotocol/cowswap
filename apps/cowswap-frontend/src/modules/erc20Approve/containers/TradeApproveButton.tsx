@@ -5,8 +5,7 @@ import { Currency, CurrencyAmount, MaxUint256 } from '@uniswap/sdk-core'
 import { useHasPendingOrdersWithPermitForInputToken } from 'common/hooks/useHasPendingOrdersWithPermit'
 import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
 
-import { useApprovalStateForSpender } from '../../../lib/hooks/useApproval'
-import { ApprovalState, useApproveCurrency } from '../hooks'
+import { ApprovalState, useApprovalStateForSpender, useApproveCurrency } from '../hooks'
 import { ApproveButton, ApproveConfirmation } from '../pure'
 
 const MaxApprovalAmount = BigInt(MaxUint256.toString())
@@ -30,7 +29,6 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
   const isDisabled = props.isDisabled || !handleApprove
 
   const disablePartialApproval = useHasPendingOrdersWithPermitForInputToken(amountToApprove.currency)
-  console.log('disablePartialApproval', disablePartialApproval)
 
   if (isConfirmationOpen && handleApprove && approvalState !== ApprovalState.PENDING) {
     return (

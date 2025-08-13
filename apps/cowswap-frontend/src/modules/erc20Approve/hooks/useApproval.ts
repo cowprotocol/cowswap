@@ -4,11 +4,9 @@ import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { Nullish } from 'types'
-
-import { ApprovalState, useApproveState } from 'modules/erc20Approve/hooks/useApproveState'
-
 import { useTokenAllowance } from 'common/hooks/useTokenAllowance'
+
+import { ApprovalState, useApproveState } from './useApproveState'
 
 export interface ApprovalStateForSpenderResult {
   approvalState: ApprovalState
@@ -16,7 +14,7 @@ export interface ApprovalStateForSpenderResult {
 }
 
 export function useApprovalStateForSpender(
-  amountToApprove: Nullish<CurrencyAmount<Currency>>,
+  amountToApprove?: CurrencyAmount<Currency> | null,
   spender?: string,
 ): ApprovalStateForSpenderResult {
   const { account } = useWalletInfo()

@@ -5,11 +5,13 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
+import { useApprovalStateForSpender } from 'modules/erc20Approve'
+
 import { useTokenContract } from 'common/hooks/useContract'
 import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
-import { useApprovalStateForSpender } from 'lib/hooks/useApproval'
 
 import { shouldZeroApprove as shouldZeroApproveFn } from './shouldZeroApprove'
+
 
 // TODO: Handle tokens that don't allow approvals larger than the balance of the wallet
 /**
