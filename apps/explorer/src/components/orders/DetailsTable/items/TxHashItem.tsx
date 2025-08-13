@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react'
 
+import { TENDERLY_AVAILABLE } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
@@ -25,6 +26,8 @@ interface TxHashItemProps {
 export function TxHashItem({ chainId, txHash, onCopy, isLoading }: TxHashItemProps): ReactNode {
   if (!txHash) return null
 
+  const shouldDisplayBatchGraph = TENDERLY_AVAILABLE[chainId]
+
   return (
     <DetailRow label="Transaction hash" tooltipText={DetailsTableTooltips.hash} isLoading={isLoading}>
       <Wrapper>
@@ -42,10 +45,12 @@ export function TxHashItem({ chainId, txHash, onCopy, isLoading }: TxHashItemPro
             <FontAwesomeIcon icon={faGroupArrowsRotate} />
             Batch
           </LinkButton>
-          <LinkButton to={`/tx/${txHash}/?${TAB_QUERY_PARAM_KEY}=graph`}>
-            <FontAwesomeIcon icon={faProjectDiagram} />
-            Graph
-          </LinkButton>
+          {shouldDisplayBatchGraph && (
+            <LinkButton to={`/tx/${txHash}/?${TAB_QUERY_PARAM_KEY}=graph`}>
+              <FontAwesomeIcon icon={faProjectDiagram} />
+              Graph
+            </LinkButton>
+          )}
         </Wrapper>
       </Wrapper>
     </DetailRow>
