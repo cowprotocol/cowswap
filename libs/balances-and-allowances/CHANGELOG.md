@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.4](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.5.3...balances-and-allowances-v1.5.4) (2025-08-12)
+
+
+### Bug Fixes
+
+* **balances:** skip balances update from old blocks ([#6137](https://github.com/cowprotocol/cowswap/issues/6137)) ([0748151](https://github.com/cowprotocol/cowswap/commit/074815141e2992171cf752ef395a5dc34ecf6176))
+
 ## [1.5.3](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.5.2...balances-and-allowances-v1.5.3) (2025-08-05)
 
 
