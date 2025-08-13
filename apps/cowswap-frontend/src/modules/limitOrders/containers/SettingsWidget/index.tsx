@@ -1,9 +1,9 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { ReactNode, useCallback } from 'react'
 
-import { ContextMenu, ContextMenuButton, ContextMenuItem, ContextMenuList } from '@cowprotocol/ui'
+import { Menu, MenuItem, MenuPopover, MenuItems } from '@reach/menu-button'
 
-import { ButtonsContainer, SettingsIcon } from 'modules/trade/pure/Settings'
+import { ButtonsContainer, SettingsButton, SettingsIcon } from 'modules/trade/pure/Settings'
 
 import { useLimitOrderSettingsAnalytics } from '../../hooks/useLimitOrderSettingsAnalytics'
 import { useUpdateLimitOrdersRawState } from '../../hooks/useLimitOrdersRawState'
@@ -32,22 +32,24 @@ export function SettingsWidget(): ReactNode {
 
   return (
     <ButtonsContainer>
-      <ContextMenu>
-        <ContextMenuButton onClick={() => analytics.openSettings()}>
+      <Menu>
+        <SettingsButton onClick={() => analytics.openSettings()}>
           <SettingsIcon />
-        </ContextMenuButton>
-        <ContextMenuList portal={false}>
-          <ContextMenuItem onSelect={() => null}>
-            <div
-              onClick={(e) => e.stopPropagation()}
-              onMouseDown={(e) => e.stopPropagation()}
-              onMouseUp={(e) => e.stopPropagation()}
-            >
-              <Settings state={settingsState} onStateChanged={onSettingsChange} />
-            </div>
-          </ContextMenuItem>
-        </ContextMenuList>
-      </ContextMenu>
+        </SettingsButton>
+        <MenuPopover portal={false}>
+          <MenuItems>
+            <MenuItem onSelect={() => null}>
+              <div
+                onClick={(e) => e.stopPropagation()}
+                onMouseDown={(e) => e.stopPropagation()}
+                onMouseUp={(e) => e.stopPropagation()}
+              >
+                <Settings state={settingsState} onStateChanged={onSettingsChange} />
+              </div>
+            </MenuItem>
+          </MenuItems>
+        </MenuPopover>
+      </Menu>
     </ButtonsContainer>
   )
 }
