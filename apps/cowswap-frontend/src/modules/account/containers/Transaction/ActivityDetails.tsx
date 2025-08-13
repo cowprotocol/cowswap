@@ -56,6 +56,7 @@ import {
   TransactionState as ActivityLink,
 } from './styled'
 
+import { doesOrderHavePermit } from '../../../../common/utils/doesOrderHavePermit'
 import { OrderFillabilityWarning } from '../../pure/OrderFillabilityWarning'
 
 const progressBarVisibleStates = [ActivityState.OPEN]
@@ -369,6 +370,8 @@ export function ActivityDetails(props: {
     </>
   )
 
+  const hasPermit = order && doesOrderHavePermit(order)
+
   return (
     <>
       {/* Warning banner if custom recipient */}
@@ -511,7 +514,7 @@ export function ActivityDetails(props: {
             (summary ?? id)
           )}
 
-          {fillability && orderSummary?.inputAmount ? (
+          {fillability && !hasPermit && orderSummary?.inputAmount ? (
             <OrderFillabilityWarning fillability={fillability} inputAmount={orderSummary.inputAmount} />
           ) : null}
 
