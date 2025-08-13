@@ -1,5 +1,5 @@
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useNativeTokensBalances } from '@cowprotocol/balances-and-allowances'
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
@@ -24,10 +24,7 @@ import * as styledEl from './styled'
 
 const EMPTY_BALANCES = {}
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
-export function AccountSelectorModal() {
+export function AccountSelectorModal(): ReactNode {
   const { chainId } = useWalletInfo()
   const { isOpen } = useAtomValue(accountSelectorModalAtom)
   const closeModal = useSetAtom(toggleAccountSelectorModalAtom)
@@ -43,7 +40,7 @@ export function AccountSelectorModal() {
 
   const [accountsList, setAccountsList] = useState<string[] | null>(null)
 
-  const nativeTokensBalances = useNativeTokensBalances(accountsList || undefined)
+  const nativeTokensBalances = useNativeTokensBalances(chainId, accountsList || undefined)
 
   const balances = useMemo(() => {
     if (!nativeTokensBalances) return EMPTY_BALANCES
@@ -57,7 +54,7 @@ export function AccountSelectorModal() {
         }
         return acc
       },
-      {}
+      {},
     )
   }, [nativeTokensBalances, nativeToken])
 
@@ -76,7 +73,7 @@ export function AccountSelectorModal() {
 
       addSnackbar({ content: <Trans>{walletName} account changed</Trans>, id: 'account-changed', icon: 'success' })
     },
-    [walletName, addSnackbar, setHwAccountIndex, closeModal]
+    [walletName, addSnackbar, setHwAccountIndex, closeModal],
   )
 
   useEffect(() => {

@@ -9,6 +9,8 @@ import { BigNumber } from '@ethersproject/bignumber'
 
 import { SWRConfiguration } from 'swr'
 
+import { useIsBlockNumberRelevant } from './useIsBlockNumberRelevant'
+
 import { balancesAtom, BalancesState, balancesUpdateAtom } from '../state/balancesAtom'
 
 const MULTICALL_OPTIONS = {}
@@ -39,7 +41,7 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
 
   const balanceOfParams = useMemo(() => (account ? [account] : undefined), [account])
 
-  const { isLoading: isBalancesLoading, data: balances } = useMultipleContractSingleData<{ balance: BigNumber }>(
+  const { isLoading: isBalancesLoading, data } = useMultipleContractSingleData<{ balance: BigNumber }>(
     chainId,
     tokenAddresses,
     ERC_20_INTERFACE,
@@ -49,6 +51,11 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
     balancesSwrConfig,
     account,
   )
+  const balances = data?.results
+  const blockNumber = data?.blockNumber
+
+  // Skip multicall results from outdated block if there is a result from newer one
+  const isNewBlockNumber = useIsBlockNumberRelevant(chainId, blockNumber)
 
   // Set balances loading state
   useEffect(() => {
@@ -59,7 +66,7 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
 
   // Set balances to the store
   useEffect(() => {
-    if (!account || !balances?.length) return
+    if (!account || !balances?.length || !isNewBlockNumber) return
 
     const balancesState = tokenAddresses.reduce<BalancesState['values']>((acc, address, index) => {
       if (getIsNativeToken(chainId, address)) return acc
@@ -89,5 +96,15 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
         },
       }))
     }
-  }, [chainId, account, balances, tokenAddresses, setBalances, setLoadingState, onBalancesLoaded, setBalancesUpdate])
+  }, [
+    chainId,
+    account,
+    balances,
+    isNewBlockNumber,
+    tokenAddresses,
+    setBalances,
+    setLoadingState,
+    onBalancesLoaded,
+    setBalancesUpdate,
+  ])
 }
