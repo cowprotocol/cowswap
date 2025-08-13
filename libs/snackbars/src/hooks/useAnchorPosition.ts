@@ -7,16 +7,35 @@ export function useAnchorPosition(elementId: string | undefined): { top: number;
   useLayoutEffect(() => {
     if (!elementId) return
 
+    let rafId: number | null = null
+    let retryTimeoutId: number | null = null
+
     const updatePosition = (): void => {
-      requestAnimationFrame(() => {
+      if (rafId !== null) return
+
+      rafId = requestAnimationFrame(() => {
+        rafId = null
+
         const element = document.getElementById(elementId)
 
         if (element) {
           const { top, height } = element.getBoundingClientRect()
           setOffsetTop(top)
           setOffsetHeight(height)
-        } else {
-          setTimeout(updatePosition, 100)
+
+          if (retryTimeoutId !== null) {
+            clearTimeout(retryTimeoutId)
+            retryTimeoutId = null
+          }
+
+          return
+        }
+
+        if (retryTimeoutId === null) {
+          retryTimeoutId = window.setTimeout(() => {
+            retryTimeoutId = null
+            updatePosition()
+          }, 100)
         }
       })
     }
@@ -29,6 +48,9 @@ export function useAnchorPosition(elementId: string | undefined): { top: number;
     window.addEventListener('scroll', updatePosition)
 
     return () => {
+      if (retryTimeoutId) {
+        clearTimeout(retryTimeoutId)
+      }
       window.removeEventListener('scroll', updatePosition)
       resizeObserver.disconnect()
     }
