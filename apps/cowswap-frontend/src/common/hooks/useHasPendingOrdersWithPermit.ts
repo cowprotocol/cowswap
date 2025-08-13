@@ -19,7 +19,7 @@ export function useHasPendingOrdersWithPermitForInputToken(
   const pendingOrders = useOnlyPendingOrders(chainId, account)
 
   return useMemo(() => {
-    if (!isPermitSupported) return false
+    if (typeof isPermitSupported === 'boolean' && !isPermitSupported) return false
     if (currency && getIsNativeToken(currency)) return false
 
     return pendingOrders
