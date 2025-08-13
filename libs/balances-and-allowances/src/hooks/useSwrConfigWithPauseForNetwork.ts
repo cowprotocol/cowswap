@@ -36,6 +36,8 @@ export function useSwrConfigWithPauseForNetwork(
     () => ({
       ...config,
       isPaused: () => {
+        if (config.isPaused?.()) return true
+
         const lastUpdateTimestamp = lastUpdateTimestampRef.current
 
         return !!lastUpdateTimestamp && Date.now() - lastUpdateTimestamp < validityPeriod
