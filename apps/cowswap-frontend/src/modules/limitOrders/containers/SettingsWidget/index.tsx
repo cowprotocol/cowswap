@@ -1,9 +1,9 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { useCallback } from 'react'
+import { ReactNode, useCallback } from 'react'
 
-import { Menu, MenuItem, MenuPopover, MenuItems } from '@reach/menu-button'
+import { ContextMenu, ContextMenuButton, ContextMenuItem, ContextMenuList } from '@cowprotocol/ui'
 
-import { ButtonsContainer, SettingsButton, SettingsIcon } from 'modules/trade/pure/Settings'
+import { ButtonsContainer, SettingsIcon } from 'modules/trade/pure/Settings'
 
 import { useLimitOrderSettingsAnalytics } from '../../hooks/useLimitOrderSettingsAnalytics'
 import { useUpdateLimitOrdersRawState } from '../../hooks/useLimitOrdersRawState'
@@ -14,9 +14,7 @@ import {
   updateLimitOrdersSettingsAtom,
 } from '../../state/limitOrdersSettingsAtom'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function SettingsWidget() {
+export function SettingsWidget(): ReactNode {
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
   const updateSettingsState = useSetAtom(updateLimitOrdersSettingsAtom)
   const analytics = useLimitOrderSettingsAnalytics()
@@ -34,24 +32,22 @@ export function SettingsWidget() {
 
   return (
     <ButtonsContainer>
-      <Menu>
-        <SettingsButton onClick={() => analytics.openSettings()}>
+      <ContextMenu>
+        <ContextMenuButton onClick={() => analytics.openSettings()}>
           <SettingsIcon />
-        </SettingsButton>
-        <MenuPopover portal={false}>
-          <MenuItems>
-            <MenuItem onSelect={() => null}>
-              <div
-                onClick={(e) => e.stopPropagation()}
-                onMouseDown={(e) => e.stopPropagation()}
-                onMouseUp={(e) => e.stopPropagation()}
-              >
-                <Settings state={settingsState} onStateChanged={onSettingsChange} />
-              </div>
-            </MenuItem>
-          </MenuItems>
-        </MenuPopover>
-      </Menu>
+        </ContextMenuButton>
+        <ContextMenuList portal={false}>
+          <ContextMenuItem onSelect={() => null}>
+            <div
+              onClick={(e) => e.stopPropagation()}
+              onMouseDown={(e) => e.stopPropagation()}
+              onMouseUp={(e) => e.stopPropagation()}
+            >
+              <Settings state={settingsState} onStateChanged={onSettingsChange} />
+            </div>
+          </ContextMenuItem>
+        </ContextMenuList>
+      </ContextMenu>
     </ButtonsContainer>
   )
 }
