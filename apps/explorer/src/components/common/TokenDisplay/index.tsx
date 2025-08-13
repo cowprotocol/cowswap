@@ -13,13 +13,14 @@ import { NativeWrapper, StyledImg, Wrapper } from './styled'
 import { getNetworkSuffix, getTokenLabelBaseNode } from './utils'
 
 export type TokenDisplayProps = {
-  erc20: TokenErc20 & { chainId?: Network | SupportedChainId }
+  erc20: TokenErc20 & { chainId?: Network | SupportedChainId; logoUrl?: string }
   network: number
   showAbbreviated?: boolean
   showNetworkName?: boolean
   bridgeProvider?: CrossChainOrder['provider']
 }
 
+// eslint-disable-next-line complexity
 export function TokenDisplay(props: Readonly<TokenDisplayProps>): ReactNode {
   const { erc20, network, showAbbreviated, bridgeProvider, showNetworkName = false } = props
 
@@ -29,7 +30,7 @@ export function TokenDisplay(props: Readonly<TokenDisplayProps>): ReactNode {
   const { data: networks } = useBridgeProviderNetworks(bridgeProvider)
 
   const tokenInfo = tokens?.[erc20.address.toLowerCase()]
-  const tokenLogo = tokenInfo?.logoURI
+  const tokenLogo = erc20?.logoUrl || tokenInfo?.logoURI
 
   const bridgeNetwork = networks?.[network]
   const bridgeBlockExplorer = bridgeNetwork?.blockExplorer
