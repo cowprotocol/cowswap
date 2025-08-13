@@ -27,6 +27,7 @@ export function useSetupTradeState(): void {
   const prevProviderChainId = usePrevious(providerChainId)
 
   const isWindowVisible = useIsWindowVisible()
+  const prevIsWindowVisible = usePrevious(isWindowVisible)
   const provider = useWalletProvider()
   const tradeNavigate = useTradeNavigate()
   const switchNetwork = useSwitchNetwork()
@@ -207,7 +208,10 @@ export function useSetupTradeState(): void {
       setIsFirstLoad(false)
     }
 
-    if (!providerChainId || providerChainId === currentChainId) return
+    // Skip network switching when chainId in URL is not changed
+    const isUrlChainIdChanged = Boolean(urlChainId && urlChainId !== prevTradeStateFromUrl?.chainId)
+
+    if (!providerChainId || providerChainId === currentChainId || !isUrlChainIdChanged) return
 
     const targetChainId = urlChainId ?? rememberedUrlStateRef.current?.chainId ?? currentChainId
     switchNetworkInWallet(targetChainId)
@@ -226,14 +230,21 @@ export function useSetupTradeState(): void {
    * 4. Otherwise, navigate to the new chainId with default tokens
    */
   useEffect(() => {
+    // When we came back to the tab and there is a new chainId in provider
+    const providerChangedNetworkWhenWindowInactive =
+      isWindowVisible && prevIsWindowVisible !== isWindowVisible && providerChainId !== urlChainId
+
+    // When wallet provider is not loaded yet, or chainId has not changed
+    const noNetworkChanges =
+      !providerChainId || providerChainId === urlChainId || providerChainId === prevProviderChainId
+
+    const shouldSkip = !providerChangedNetworkWhenWindowInactive && noNetworkChanges
+
     /**
      * Ignore provider network changes till tab is inactive
      * Otherwise, it can go into a network switching loop
      */
     if (!isWindowVisible) return
-
-    // When wallet provider is not loaded yet, or chainId has not changed
-    const shouldSkip = !providerChainId || providerChainId === urlChainId || providerChainId === prevProviderChainId
 
     if (shouldSkip) return
 
