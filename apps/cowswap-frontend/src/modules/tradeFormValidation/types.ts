@@ -5,7 +5,6 @@ import { TradeDerivedState } from 'modules/trade'
 import { AmountsToSign } from 'modules/trade/hooks/useAmountsToSign'
 import { TradeQuoteState } from 'modules/tradeQuote'
 
-
 export enum TradeFormValidation {
   // Wrap/unwrap
   WrapUnwrapFlow,
@@ -60,8 +59,7 @@ export interface TradeFormValidationCommonContext {
   isSupportedWallet: boolean
   isSwapUnsupported: boolean
   isSafeReadonlyUser: boolean
-  isPermitSupported: boolean
-  hasActiveOrderWithTheSamePermit: boolean
+  isApproveRequired: boolean
   isInsufficientBalanceOrderAllowed: boolean
   isProviderNetworkUnsupported: boolean
   isOnline: boolean

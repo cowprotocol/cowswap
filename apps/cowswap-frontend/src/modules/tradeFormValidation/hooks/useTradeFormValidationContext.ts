@@ -7,13 +7,11 @@ import { useGnosisSafeInfo, useIsTxBundlingSupported, useWalletDetails, useWalle
 
 import { useCurrentAccountProxy } from 'modules/accountProxy'
 import { useTryFindIntermediateToken } from 'modules/bridge'
-import { useApproveState } from 'modules/erc20Approve'
-import { useTokenSupportsPermit } from 'modules/permit'
+import { useApproveState, useIsApprovalRequired } from 'modules/erc20Approve'
 import { TradeType, useAmountsToSign, useDerivedTradeState, useIsWrapOrUnwrap } from 'modules/trade'
 import { TradeQuoteState, useTradeQuote } from 'modules/tradeQuote'
 
 import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
-import { useHasPendingOrdersWithPermitForInputToken } from 'common/hooks/useHasPendingOrdersWithPermit'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 import { TradeFormValidationCommonContext } from '../types'
@@ -40,15 +38,13 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
 
   const isSafeReadonlyUser = gnosisSafeInfo?.isReadOnly === true
 
-  const isPermitSupported = useTokenSupportsPermit(inputCurrency, tradeType)
+  const isApproveRequired = useIsApprovalRequired()
 
   const isInsufficientBalanceOrderAllowed = tradeType === TradeType.LIMIT_ORDER
 
   const { intermediateBuyToken, toBeImported } = useTryFindIntermediateToken({
     bridgeQuote: tradeQuote.bridgeQuote,
   })
-
-  const hasActiveOrderWithTheSamePermit = useHasPendingOrdersWithPermitForInputToken(inputCurrency, isPermitSupported)
 
   const commonContext = {
     account,
@@ -60,7 +56,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     recipientEnsAddress,
     approvalState,
     tradeQuote,
-    isPermitSupported,
+    isApproveRequired,
     isInsufficientBalanceOrderAllowed,
     isProviderNetworkUnsupported,
     isOnline,
@@ -68,7 +64,6 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     intermediateTokenToBeImported: !!intermediateBuyToken && toBeImported,
     isAccountProxyLoading: isLoading,
     isProxySetupValid: proxyAccount?.isProxySetupValid,
-    hasActiveOrderWithTheSamePermit,
   }
 
   return useMemo(() => {
