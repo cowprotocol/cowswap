@@ -10,6 +10,7 @@ import { SWRConfiguration } from 'swr'
 import { BalancesCacheUpdater } from './BalancesCacheUpdater'
 import { BalancesResetUpdater } from './BalancesResetUpdater'
 
+import { BASIC_MULTICALL_SWR_CONFIG } from '../consts'
 import { useNativeTokenBalance } from '../hooks/useNativeTokenBalance'
 import { usePersistBalancesAndAllowances } from '../hooks/usePersistBalancesAndAllowances'
 import { useSwrConfigWithPauseForNetwork } from '../hooks/useSwrConfigWithPauseForNetwork'
@@ -17,14 +18,8 @@ import { useUpdateTokenBalance } from '../hooks/useUpdateTokenBalance'
 
 const EMPTY_TOKENS: string[] = []
 
-const BASIC_SWR_CONFIG: SWRConfiguration = {
-  refreshWhenHidden: false,
-  refreshWhenOffline: false,
-  revalidateOnFocus: false,
-  revalidateIfStale: false,
-}
 // A small gap between balances and allowances refresh intervals is needed to avoid high load to the node at the same time
-const BALANCES_SWR_CONFIG: SWRConfiguration = { ...BASIC_SWR_CONFIG, refreshInterval: ms`31s` }
+const BALANCES_SWR_CONFIG: SWRConfiguration = { ...BASIC_MULTICALL_SWR_CONFIG, refreshInterval: ms`31s` }
 
 export interface BalancesAndAllowancesUpdaterProps {
   account: string | undefined
