@@ -2,6 +2,7 @@ const { FlatCompat } = require('@eslint/eslintrc')
 const js = require('@eslint/js')
 const nxEslintPlugin = require('@nx/eslint-plugin')
 const eslintImport = require('eslint-plugin-import')
+const pluginLingui = require('eslint-plugin-lingui')
 const react = require('eslint-plugin-react')
 const reactHooks = require('eslint-plugin-react-hooks')
 const unusedImports = require('eslint-plugin-unused-imports')
@@ -12,6 +13,9 @@ const compat = new FlatCompat({
 })
 
 module.exports = [
+  // Add lingui recommended configuration
+  pluginLingui.configs['flat/recommended'],
+
   {
     ignores: ['static-files/'],
   },
