@@ -14,12 +14,13 @@ import { useAppData, useAppDataHooks } from 'modules/appData'
 import { useBridgeQuoteAmounts } from 'modules/bridge'
 import { useGeneratePermitHook, useGetCachedPermit, usePermitInfo } from 'modules/permit'
 import {
+  TradeTypeToUiOrderType,
+  useAmountsToSign,
   useDerivedTradeState,
   useGetReceiveAmountInfo,
   useIsHooksTradeType,
   useTradeConfirmActions,
   useTradeTypeInfo,
-  TradeTypeToUiOrderType,
 } from 'modules/trade'
 import { getOrderValidTo, useTradeQuote } from 'modules/tradeQuote'
 
@@ -72,6 +73,9 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
   const typedHooks = useAppDataHooks()
   const addBridgeOrder = useAddBridgeOrder()
   const bridgeQuoteAmounts = useBridgeQuoteAmounts()
+  const { maximumSendSellAmount } = useAmountsToSign() ?? {}
+  // todo should be removed when we will add ui for partial permit signing
+  const permitAmountToSign = maximumSendSellAmount ? BigInt(maximumSendSellAmount.quotient.toString()) : undefined
 
   const enoughAllowance = useEnoughAllowance(inputAmount)
 
@@ -113,6 +117,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             dispatch,
             enoughAllowance,
             generatePermitHook,
+            permitAmountToSign,
             inputAmount,
             networkFee,
             outputAmount,
@@ -147,6 +152,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
         dispatch,
         enoughAllowance,
         generatePermitHook,
+        permitAmountToSign,
         inputAmount,
         networkFee,
         outputAmount,
@@ -198,6 +204,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
           contract: settlementContract,
           permitInfo: !enoughAllowance ? permitInfo : undefined,
           generatePermitHook,
+          permitAmountToSign,
           typedHooks,
           orderParams: {
             account,

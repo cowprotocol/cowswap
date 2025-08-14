@@ -51,7 +51,15 @@ export async function swapFlow(
     return false
   }
 
-  const { orderParams, context, permitInfo, generatePermitHook, swapFlowAnalyticsContext, callbacks } = input
+  const {
+    orderParams,
+    context,
+    permitInfo,
+    generatePermitHook,
+    permitAmountToSign,
+    swapFlowAnalyticsContext,
+    callbacks,
+  } = input
   const { chainId } = context
   const inputCurrency = inputAmount.currency
   const cachedPermit = await getCachedPermit(getAddress(inputCurrency))
@@ -68,7 +76,7 @@ export async function swapFlow(
 
     const { appData, account, isSafeWallet, recipientAddressOrName, inputAmount, outputAmount, kind } = orderParams
 
-    const amount = localStorage.getItem('allow_partial_permit') ? BigInt(inputAmount.quotient.toString()) : undefined
+    const amount = localStorage.getItem('allow_partial_permit') ? permitAmountToSign : undefined
 
     orderParams.appData = await handlePermit({
       appData,
