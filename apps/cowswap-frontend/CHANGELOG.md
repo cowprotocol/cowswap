@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.117.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.117.0...cowswap-v1.117.1) (2025-08-14)
+
+
+### Bug Fixes
+
+* **token-search:** increase results limit from 10 to 100 ([#6158](https://github.com/cowprotocol/cowswap/issues/6158)) ([b81c459](https://github.com/cowprotocol/cowswap/commit/b81c4598475a0b5097d7ff05046f41c8a3270ed8))
+
 ## [1.117.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.116.0...cowswap-v1.117.0) (2025-08-12)
 
 
