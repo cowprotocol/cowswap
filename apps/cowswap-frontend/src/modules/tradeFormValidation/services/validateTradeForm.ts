@@ -106,7 +106,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
      */
     const isRecipientValid = isBridging ? isRecipientAddress : isRecipientAddress && !recipientEnsAddress
 
-    if (!isRecipientValid) {
+    if (recipient && !isRecipientValid) {
       validations.push(TradeFormValidation.RecipientInvalid)
     }
 
