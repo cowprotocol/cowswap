@@ -104,7 +104,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     /**
      * For bridging, recipient can be only an address (ENS is not supported)
      */
-    const isRecipientValid = isBridging ? isRecipientAddress : isRecipientAddress && !recipientEnsAddress
+    const isRecipientValid = isBridging ? isRecipientAddress : recipientEnsAddress ? true : isRecipientAddress
 
     if (recipient && !isRecipientValid) {
       validations.push(TradeFormValidation.RecipientInvalid)
