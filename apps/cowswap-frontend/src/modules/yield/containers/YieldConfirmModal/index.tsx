@@ -1,5 +1,6 @@
-import React, { useMemo } from 'react'
+import React, { ReactNode, useMemo } from 'react'
 
+import { Nullish } from '@cowprotocol/types'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import type { PriceImpact } from 'legacy/hooks/usePriceImpact'
@@ -9,8 +10,9 @@ import { OrderSubmittedContent } from 'modules/orderProgressBar'
 import {
   TradeBasicConfirmDetails,
   TradeConfirmation,
-  TradeConfirmModal, useGetReceiveAmountInfo,
-  useTradeConfirmActions
+  TradeConfirmModal,
+  useGetReceiveAmountInfo,
+  useTradeConfirmActions,
 } from 'modules/trade'
 import { HighFeeWarning } from 'modules/tradeWidgetAddons'
 
@@ -33,13 +35,12 @@ export interface YieldConfirmModalProps {
   inputCurrencyInfo: CurrencyPreviewInfo
   outputCurrencyInfo: CurrencyPreviewInfo
   priceImpact: PriceImpact
-  recipient?: string | null
+  recipient: Nullish<string>
+  recipientAddress: Nullish<string>
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function YieldConfirmModal(props: YieldConfirmModalProps) {
-  const { inputCurrencyInfo, outputCurrencyInfo, priceImpact, recipient, doTrade: _doTrade } = props
+export function YieldConfirmModal(props: YieldConfirmModalProps): ReactNode {
+  const { inputCurrencyInfo, outputCurrencyInfo, priceImpact, recipient, recipientAddress, doTrade: _doTrade } = props
 
   /**
    * This is a very important part of the code.
@@ -83,6 +84,7 @@ export function YieldConfirmModal(props: YieldConfirmModalProps) {
                 slippage={slippage}
                 receiveAmountInfo={receiveAmountInfo}
                 recipient={recipient}
+                recipientAddress={recipientAddress}
                 account={account}
                 labelsAndTooltips={labelsAndTooltips}
                 hideLimitPrice
