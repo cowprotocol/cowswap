@@ -1,5 +1,5 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { useCallback } from 'react'
+import { ReactNode, useCallback } from 'react'
 
 import { Menu, MenuItem, MenuPopover, MenuItems } from '@reach/menu-button'
 
@@ -14,9 +14,7 @@ import {
   updateLimitOrdersSettingsAtom,
 } from '../../state/limitOrdersSettingsAtom'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function SettingsWidget() {
+export function SettingsWidget(): ReactNode {
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
   const updateSettingsState = useSetAtom(updateLimitOrdersSettingsAtom)
   const analytics = useLimitOrderSettingsAnalytics()

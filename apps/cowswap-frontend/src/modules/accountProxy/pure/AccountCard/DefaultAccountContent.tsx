@@ -2,26 +2,21 @@ import { ReactNode } from 'react'
 
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { ExternalLink, FiatAmount, Loader } from '@cowprotocol/ui'
+import {
+  ExternalLink,
+  FiatAmount,
+  Loader,
+  ContextMenuTooltip,
+  ContextMenuCopyButton,
+  ContextMenuExternalLink,
+} from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { Menu, MenuPopover } from '@reach/menu-button'
 import { MoreHorizontal } from 'react-feather'
 
-import { AddressContextMenuContent } from 'common/pure/ClickableAddress/AddressContextMenuContent'
 import { safeShortenAddress } from 'utils/address'
 
-import {
-  LeftBottom,
-  LeftTop,
-  RightTop,
-  MenuButton,
-  MenuItems,
-  AddressDisplay,
-  AddressLinkWrapper,
-  ValueLabel,
-  ValueAmount,
-} from './styled'
+import { LeftBottom, LeftTop, RightTop, AddressDisplay, AddressLinkWrapper, ValueLabel, ValueAmount } from './styled'
 
 import { AccountIcon } from '../AccountItem/AccountIcon'
 import { CowProtocolIcon } from '../CowProtocolIcon'
@@ -50,16 +45,17 @@ export function DefaultAccountContent({
         </ValueAmount>
       </LeftTop>
       <RightTop>
-        <Menu>
-          <MenuButton aria-label="Account options menu">
-            <MoreHorizontal size={20} />
-          </MenuButton>
-          <MenuPopover portal={false}>
-            <MenuItems>
-              <AddressContextMenuContent address={account} target={addressLink} />
-            </MenuItems>
-          </MenuPopover>
-        </Menu>
+        <ContextMenuTooltip
+          placement="bottom"
+          content={
+            <>
+              <ContextMenuCopyButton address={account} />
+              <ContextMenuExternalLink href={addressLink} label="View details" />
+            </>
+          }
+        >
+          <MoreHorizontal size={20} />
+        </ContextMenuTooltip>
       </RightTop>
       <LeftBottom>
         <ExternalLink
