@@ -2,6 +2,7 @@ import { Color, Media, UI } from '@cowprotocol/ui'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { ArrowIconCSS } from 'components/icons/cssIcons'
+import { readableColor } from 'polished'
 import { NavLink } from 'react-router'
 import styled from 'styled-components/macro'
 
@@ -9,11 +10,12 @@ export const SelectorContainer = styled.div`
   display: flex;
   align-items: center;
   cursor: pointer;
+
   ${Media.upToExtraSmall()} {
     padding-right: 2rem;
   }
 
-  ${ArrowIconCSS}
+  ${ArrowIconCSS};
   color: ${Color.explorer_orange1};
 `
 
@@ -78,7 +80,7 @@ export const NetworkLabel = styled.span<{ color: string }>`
   font-weight: ${({ theme }): string => theme.fontBold};
   letter-spacing: 0.1rem;
   background: ${({ color }) => color};
-  color: var(${UI.COLOR_NEUTRAL_100});
+  color: ${({ color }) => readableColor(color)};
 `
 
 export const StyledFAIcon = styled(FontAwesomeIcon)`

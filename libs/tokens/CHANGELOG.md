@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.24.2](https://github.com/cowprotocol/cowswap/compare/tokens-v1.24.1...tokens-v1.24.2) (2025-08-14)
+
+
+### Bug Fixes
+
+* **token-search:** increase results limit from 10 to 100 ([#6158](https://github.com/cowprotocol/cowswap/issues/6158)) ([b81c459](https://github.com/cowprotocol/cowswap/commit/b81c4598475a0b5097d7ff05046f41c8a3270ed8))
+
 ## [1.24.1](https://github.com/cowprotocol/cowswap/compare/tokens-v1.24.0...tokens-v1.24.1) (2025-08-12)
 
 

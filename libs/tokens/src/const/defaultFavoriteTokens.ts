@@ -16,6 +16,8 @@ import {
   USDC_ARBITRUM_ONE,
   USDC_AVALANCHE,
   USDC_BASE,
+  USDC_BNB,
+  USDC_LENS,
   USDC_MAINNET,
   USDC_POLYGON,
   USDC_SEPOLIA,
@@ -35,9 +37,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { TokensMap } from '../types'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const tokensListToMap = (list: (TokenWithLogo | null)[]) =>
+const tokensListToMap = (list: (TokenWithLogo | null)[]): TokensMap =>
   list.reduce<TokensMap>((acc, token) => {
     if (!token) {
       return acc
@@ -105,4 +105,6 @@ export const DEFAULT_FAVORITE_TOKENS: Record<SupportedChainId, TokensMap> = {
     USDT_AVALANCHE,
     WRAPPED_NATIVE_CURRENCIES[SupportedChainId.AVALANCHE],
   ]),
+  [SupportedChainId.LENS]: tokensListToMap([WRAPPED_NATIVE_CURRENCIES[SupportedChainId.LENS], USDC_LENS]), // TODO: Add Lens tokens when available
+  [SupportedChainId.BNB]: tokensListToMap([WRAPPED_NATIVE_CURRENCIES[SupportedChainId.BNB], USDC_BNB]), // TODO: Add BNB tokens when available
 }

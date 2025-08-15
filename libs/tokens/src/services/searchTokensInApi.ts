@@ -130,6 +130,8 @@ const CHAIN_NAMES: Record<SupportedChainId, Chain | null> = {
   [SupportedChainId.GNOSIS_CHAIN]: null,
   [SupportedChainId.POLYGON]: 'POLYGON',
   [SupportedChainId.AVALANCHE]: 'AVALANCHE',
+  [SupportedChainId.LENS]: null,
+  [SupportedChainId.BNB]: 'BNB',
 }
 
 const CHAIN_IDS = Object.entries(CHAIN_NAMES).reduce(
