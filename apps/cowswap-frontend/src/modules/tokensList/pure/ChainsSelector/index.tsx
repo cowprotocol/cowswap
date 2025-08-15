@@ -1,10 +1,8 @@
 import { ReactNode } from 'react'
 
-import { useTheme } from '@cowprotocol/common-hooks'
-import { useMediaQuery } from '@cowprotocol/common-hooks'
+import { useMediaQuery, useTheme } from '@cowprotocol/common-hooks'
 import { ChainInfo } from '@cowprotocol/cow-sdk'
-import { HoverTooltip } from '@cowprotocol/ui'
-import { Media } from '@cowprotocol/ui'
+import { HoverTooltip, Media } from '@cowprotocol/ui'
 
 import { Menu, MenuButton, MenuItem } from '@reach/menu-button'
 import { Check, ChevronDown, ChevronUp } from 'react-feather'
@@ -12,7 +10,7 @@ import { Check, ChevronDown, ChevronUp } from 'react-feather'
 import * as styledEl from './styled'
 
 // Number of skeleton shimmers to show during loading state
-const LOADING_ITEMS_COUNT = 7
+const LOADING_ITEMS_COUNT = 9
 
 const LoadingShimmerElements = (
   <styledEl.Wrapper>

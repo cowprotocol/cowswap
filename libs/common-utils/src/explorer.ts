@@ -23,6 +23,8 @@ function _getExplorerUrlByEnvironment(): Record<ChainId, string> {
     [ChainId.SEPOLIA]: `${baseUrl}/sepolia`,
     [ChainId.POLYGON]: `${baseUrl}/pol`,
     [ChainId.AVALANCHE]: `${baseUrl}/avax`,
+    [ChainId.LENS]: `${baseUrl}/lens`,
+    [ChainId.BNB]: `${baseUrl}/bnb`,
   }
 }
 
@@ -48,31 +50,4 @@ export function getExplorerAddressLink(chainId: ChainId, address: string): strin
   const baseUrl = getExplorerBaseUrl(chainId)
 
   return baseUrl + `/address/${address}`
-}
-
-enum Explorers {
-  Explorer = 'Explorer',
-  Blockscout = 'Blockscout',
-  Etherscan = 'Etherscan',
-  Arbiscan = 'Arbiscan',
-  GnosisScan = 'GnosisScan',
-}
-
-// Used for GA ExternalLink detection
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function detectExplorer(href: string) {
-  if (href.includes('explorer.cow.fi')) {
-    return Explorers.Explorer
-  } else if (href.includes('blockscout.com')) {
-    return Explorers.Blockscout
-  } else if (href.includes('etherscan.io')) {
-    return Explorers.Etherscan
-  } else if (href.includes('arbiscan.io')) {
-    return Explorers.Arbiscan
-  } else if (href.includes('gnosisscan.io')) {
-    return Explorers.GnosisScan
-  } else {
-    return undefined
-  }
 }

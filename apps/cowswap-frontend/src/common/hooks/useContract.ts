@@ -17,8 +17,7 @@ import {
   V_COW_CONTRACT_ADDRESS,
   WRAPPED_NATIVE_CURRENCIES,
 } from '@cowprotocol/common-const'
-import { getContract } from '@cowprotocol/common-utils'
-import { isEns, isProd, isStaging } from '@cowprotocol/common-utils'
+import { getContract, isEns, isProd, isStaging } from '@cowprotocol/common-utils'
 import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS, CowEnv, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
@@ -107,7 +106,9 @@ export function useWethContract(withSignerIfPossible?: boolean): UseContractResu
 export function useEthFlowContract(): {
   result: UseContractResult<CoWSwapEthFlow>
 } {
-  const contractAddress = getEthFlowContractAddresses(ethFlowEnv)
+  const { chainId } = useWalletInfo()
+
+  const contractAddress = getEthFlowContractAddresses(ethFlowEnv, chainId)
 
   return {
     result: useContract<CoWSwapEthFlow>(contractAddress, CoWSwapEthFlowAbi, true),

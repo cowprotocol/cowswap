@@ -47,10 +47,15 @@ interface TargetPoolPreviewInfoProps {
   oppositeToken?: Currency | null
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function TargetPoolPreviewInfo({ chainId, sellToken, oppositeToken, children }: TargetPoolPreviewInfoProps) {
+export function TargetPoolPreviewInfo({
+  chainId,
+  sellToken,
+  oppositeToken,
+  children,
+}: TargetPoolPreviewInfoProps): ReactNode | null {
   if (!(sellToken instanceof LpToken) || !sellToken.lpTokenProvider) return null
+  const pageLink = LP_PAGE_LINKS[sellToken.lpTokenProvider](chainId, sellToken.address)
+  if (!pageLink) return null
 
   return (
     <Wrapper>
@@ -67,9 +72,7 @@ export function TargetPoolPreviewInfo({ chainId, sellToken, oppositeToken, child
           </InfoButton>
         )}
       </LeftPart>
-      <StyledExternalLink href={LP_PAGE_LINKS[sellToken.lpTokenProvider](chainId, sellToken.address)}>
-        Analytics ↗
-      </StyledExternalLink>
+      <StyledExternalLink href={pageLink}>Analytics ↗</StyledExternalLink>
     </Wrapper>
   )
 }
