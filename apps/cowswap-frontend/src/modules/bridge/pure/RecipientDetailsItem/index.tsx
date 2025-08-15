@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
 
+import { isAddress } from '@cowprotocol/common-utils'
 import { InfoTooltip } from '@cowprotocol/ui'
 
 import { ConfirmDetailsItem } from 'modules/trade'
@@ -15,7 +16,7 @@ interface RecipientDetailsItemProps {
 export function RecipientDetailsItem({ recipient, chainId }: RecipientDetailsItemProps): ReactNode {
   return (
     <>
-      {recipient !== BRIDGE_QUOTE_ACCOUNT && (
+      {recipient !== BRIDGE_QUOTE_ACCOUNT && isAddress(recipient) && (
         <ConfirmDetailsItem
           withTimelineDot
           label={

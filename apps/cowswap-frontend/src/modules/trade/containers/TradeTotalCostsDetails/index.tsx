@@ -16,10 +16,11 @@ export interface TradeRatesProps {
   toggleAccordion: () => void
   children?: ReactNode
   feeWrapper?: (defaultFeeContent: React.ReactNode, isOpen: boolean) => ReactNode
+  bottomContent?: ReactNode
 }
 
 export function TradeTotalCostsDetails(props: TradeRatesProps): ReactNode {
-  const { rateInfoParams, totalCosts, isFeeDetailsOpen, toggleAccordion, children, feeWrapper } = props
+  const { rateInfoParams, totalCosts, isFeeDetailsOpen, toggleAccordion, children, feeWrapper, bottomContent } = props
   const totalCostsUsd = useUsdAmount(totalCosts).value
 
   if (!totalCosts) {
@@ -34,6 +35,7 @@ export function TradeTotalCostsDetails(props: TradeRatesProps): ReactNode {
       open={isFeeDetailsOpen}
       onToggle={toggleAccordion}
       feeWrapper={feeWrapper}
+      bottomContent={bottomContent}
     >
       <styledEl.Box noMargin>{children}</styledEl.Box>
     </TradeDetailsAccordion>

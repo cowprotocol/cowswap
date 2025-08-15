@@ -1,12 +1,13 @@
 import { ReactNode } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { InfoTooltip } from '@cowprotocol/ui'
+import { InfoTooltip, NetworkLogo } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 import { Nullish } from 'types'
 
 import { AddressLink } from 'common/pure/AddressLink'
+import { resolveDisplayChainId } from 'common/utils/resolveDisplayChainId'
 
 const Row = styled.div`
   display: flex;
@@ -16,33 +17,50 @@ const Row = styled.div`
   align-items: center;
   text-align: right;
   gap: 3px;
+
+  > div {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+
+  > div:first-child {
+    justify-content: flex-start;
+  }
+
+  > div:last-child {
+    justify-content: flex-end;
+  }
 `
 
-interface RecipientRowProps {
+export interface RecipientRowProps {
   chainId: SupportedChainId
   recipient: Nullish<string>
-  account: Nullish<string>
+  recipientEnsName?: string | null
+  recipientChainId?: number
+  showNetworkLogo?: boolean
 }
 
 export function RecipientRow(props: RecipientRowProps): ReactNode {
-  const { chainId, recipient, account } = props
+  const { chainId, recipient, recipientEnsName, recipientChainId, showNetworkLogo = false } = props
+
+  if (!recipient) {
+    return null
+  }
+
+  const displayChainId = resolveDisplayChainId(recipientChainId, chainId)
+
   return (
-    <>
-      {recipient && recipient.toLowerCase() !== account?.toLowerCase() && (
-        <Row>
-          <div>
-            <span>Recipient</span>{' '}
-            <InfoTooltip
-              content={
-                'The tokens received from this order will automatically be sent to this address. No need to do a second transaction!'
-              }
-            />
-          </div>
-          <div>
-            <AddressLink address={recipient} chainId={chainId} />
-          </div>
-        </Row>
-      )}
-    </>
+    <Row>
+      <div>
+        <span>Recipient</span>{' '}
+        <InfoTooltip content="The tokens received from this order will automatically be sent to this address. No need to do a second transaction!" />
+      </div>
+      <div>
+        {showNetworkLogo && recipientChainId !== undefined && <NetworkLogo chainId={displayChainId} size={16} />}
+        <AddressLink address={recipient} chainId={displayChainId} ensName={recipientEnsName} />
+      </div>
+    </Row>
   )
 }

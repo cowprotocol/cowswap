@@ -30,6 +30,7 @@ interface TradeRateDetailsProps {
   isTradePriceUpdating: boolean
   accordionContent?: ReactNode
   feeWrapper?: (feeElement: ReactNode, isOpen: boolean) => ReactNode
+  bottomContent?: ReactNode
 }
 
 export function TradeRateDetails({
@@ -38,6 +39,7 @@ export function TradeRateDetails({
   isTradePriceUpdating,
   accordionContent,
   feeWrapper,
+  bottomContent,
 }: TradeRateDetailsProps): ReactNode {
   const [isFeeDetailsOpen, setFeeDetailsOpen] = useState(false)
 
@@ -108,6 +110,7 @@ export function TradeRateDetails({
       isFeeDetailsOpen={isFeeDetailsOpen}
       toggleAccordion={toggleAccordion}
       feeWrapper={feeWrapper}
+      bottomContent={bottomContent}
     >
       {accordionContent || defaultExpandedContent}
     </TradeTotalCostsDetails>
