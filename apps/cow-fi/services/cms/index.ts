@@ -2,17 +2,12 @@ import { components } from '@cowprotocol/cms'
 import { getCmsClient } from '@cowprotocol/core'
 
 import qs from 'qs'
-
 import { PaginationParam } from 'types'
+
 import { toQueryParams } from 'util/queryParams'
 
-const DEFAULT_PAGE_SIZE = 100
-const CMS_CACHE_TIME = 60 * 60 // 60 minutes
-
-// Helper function for query serialization
-const querySerializer = (params: any) => {
-  return qs.stringify(params, { encodeValuesOnly: true, arrayFormat: 'brackets' })
-}
+import { DEFAULT_PAGE_SIZE, clientAddons } from './config'
+import { querySerializer, getPopulateConfig } from './helpers'
 
 type Schemas = components['schemas']
 export type Article = Schemas['ArticleListResponseDataItem']
@@ -36,17 +31,6 @@ export type Category = Schemas['CategoryListResponseDataItem']
  * Open API Fetch client. See docs for usage https://openapi-ts.pages.dev/openapi-fetch/
  */
 export const client = getCmsClient()
-
-const clientAddons = {
-  // https://github.com/openapi-ts/openapi-typescript/issues/1569#issuecomment-1982247959
-  fetch: (request: unknown) =>
-    fetch(request as Request, {
-      next: {
-        revalidate: CMS_CACHE_TIME,
-        tags: ['cms-content'], // tag for cache invalidation
-      },
-    }),
-}
 
 /**
  * Returns all article slugs.
@@ -125,7 +109,7 @@ export async function getArticles({
   page = 0,
   pageSize = DEFAULT_PAGE_SIZE,
   filters = {},
-}: PaginationParam & { filters?: any } = {}): Promise<ArticleListResponse> {
+}: PaginationParam & { filters?: Record<string, unknown> } = {}): Promise<ArticleListResponse> {
   const { data, error, response } = await client.GET('/articles', {
     params: {
       query: {
@@ -226,10 +210,7 @@ export async function searchArticles({
  * @returns Article with the given slug
  */
 export async function getArticleBySlug(slug: string): Promise<Article | null> {
-  if (!slug) {
-    console.error('getArticleBySlug called with empty slug')
-    return null
-  }
+  if (!slug) throw new Error('Article slug is required') // Fail fast - no silent failures per CMS architecture
 
   try {
     const result = await getBySlugAux(slug, '/articles')
@@ -248,90 +229,65 @@ export async function getArticleBySlug(slug: string): Promise<Article | null> {
  * @throws Error if slug is not found
  * @throws Error if multiple categories are found with the same slug
  *
- * @returns Article with the given slug
+ * @returns Category with the given slug
  */
 export async function getCategoryBySlug(slug: string): Promise<Category | null> {
   return getBySlugAux(slug, '/categories')
 }
 
+export type Page = Schemas['PageListResponseDataItem']
+
+/**
+ * Get page by slug.
+ *
+ * @param slug Slug of the page
+ *
+ * @throws Error if slug is not found
+ * @throws Error if multiple pages are found with the same slug
+ *
+ * @returns Page with the given slug
+ */
+export async function getPageBySlug(slug: string): Promise<Page | null> {
+  return getBySlugAux(slug, '/pages')
+}
+
 async function getBySlugAux(slug: string, endpoint: '/articles'): Promise<Article | null>
 async function getBySlugAux(slug: string, endpoint: '/categories'): Promise<Category | null>
+async function getBySlugAux(slug: string, endpoint: '/pages'): Promise<Page | null>
 
-async function getBySlugAux(slug: string, endpoint: '/categories' | '/articles'): Promise<unknown | null> {
-  if (!slug) {
-    throw new Error('Slug is required')
-  }
+async function getBySlugAux(slug: string, endpoint: '/categories' | '/articles' | '/pages'): Promise<unknown | null> {
+  if (!slug) throw new Error('Slug is required') // Fail fast - no silent failures per CMS architecture
+
   const entity = endpoint.slice(1, -1)
+  const populate = getPopulateConfig(endpoint)
 
-  const populate =
-    endpoint === '/categories'
-      ? // Category
-        {
-          articles: {
-            populate: {
-              authorsBio: {
-                fields: ['name'],
-              },
-              seo: '*',
-            },
-          },
-          image: { fields: ['url'] }, // Ensure the image is populated
-        }
-      : // Articles
-        {
-          cover: {
-            fields: ['url', 'width', 'height', 'alternativeText'],
-          },
-          blocks: '*',
-          seo: {
-            fields: ['metaTitle', 'metaDescription'],
-            populate: {
-              shareImage: {
-                fields: ['url'],
-              },
-            },
-          },
-          authorsBio: {
-            fields: ['name'],
-          },
-        }
-
-  const query = toQueryParams({
-    filters: {
-      slug: {
-        $eq: slug,
-      },
-    },
-
-    pagination: {
-      page: 1,
-      pageSize: 2,
-    },
-
+  // Build query params
+  const queryParams = {
+    filters: { slug: { $eq: slug } },
+    pagination: { page: 1, pageSize: 2 },
     populate,
-  })
+  }
 
-  const { data, error } = await client.GET(endpoint, {
-    params: {
-      query,
-    },
-    ...clientAddons,
-  })
+  // Make API call
+  const queryString = endpoint === '/pages' ? qs.stringify(queryParams, { encodeValuesOnly: true }) : null
+
+  const { data, error } =
+    endpoint === '/pages'
+      ? await client.GET(`${endpoint}?${queryString}`, clientAddons)
+      : await client.GET(endpoint, {
+          params: { query: toQueryParams(queryParams) },
+          ...clientAddons,
+        })
 
   if (error) {
     console.error(`Error getting slug ${slug} for ${entity}`, error)
     throw error
   }
 
+  // Handle response
   const { total } = data.meta.pagination
-
-  if (total === 0) {
-    return null
-  }
-
-  if (total > 1) {
-    throw new Error(`Multiple ${entity} found with slug ${slug}`)
-  }
+  if (total === 0) return null
+  if (total > 1) throw new Error(`Multiple ${entity} found with slug ${slug}`)
 
   return data.data[0]
 }
