@@ -1,7 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import React, { useCallback, useState } from 'react'
+import React, { ReactNode, useCallback, useState } from 'react'
 
-import { isRejectRequestProviderError } from '@cowprotocol/common-utils'
+import { getProviderErrorMessage, isRejectRequestProviderError } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
 import { ButtonPrimary } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -9,6 +9,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { LegacyConfirmationModalContent } from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationModalContent'
 import { useRequestOrderCancellation } from 'legacy/state/orders/hooks'
 
+import { getIsOrderBookTypedError } from 'api/cowProtocol'
 import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
 import { useCancelMultipleOrders } from 'common/hooks/useMultipleOrdersCancellation/useCancelMultipleOrders'
 import { CowModal as Modal } from 'common/pure/Modal'
@@ -20,10 +21,7 @@ interface Props {
   onDismiss: Command
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
-export function MultipleOrdersCancellationModal(props: Props) {
+export function MultipleOrdersCancellationModal(props: Props): ReactNode {
   const { isOpen, onDismiss } = props
 
   const { chainId } = useWalletInfo()
@@ -60,9 +58,7 @@ export function MultipleOrdersCancellationModal(props: Props) {
       // Clean cancellation queue
       updateOrdersToCancel([])
       dismissAll()
-    // TODO: Replace any with proper type definitions
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
+    } catch (error) {
       setCancellationInProgress(false)
       setCancellationError(error)
     }
@@ -70,14 +66,15 @@ export function MultipleOrdersCancellationModal(props: Props) {
 
   if (!isOpen || !chainId) return null
 
-  // TODO: use TradeConfirmModal
   if (cancellationError) {
     const errorMessage = isRejectRequestProviderError(cancellationError)
-      ? 'User rejected signing'
-      : cancellationError.message
+      ? 'User rejected signing the cancellation'
+      : getIsOrderBookTypedError(cancellationError)
+        ? cancellationError.body.description || cancellationError.body.errorType
+        : (getProviderErrorMessage(cancellationError) ?? String(cancellationError))
 
     return (
-      <Modal isOpen={true} onDismiss={dismissAll}>
+      <Modal isOpen onDismiss={dismissAll}>
         <TransactionErrorContent modalMode onDismiss={dismissAll} message={errorMessage} />
       </Modal>
     )
