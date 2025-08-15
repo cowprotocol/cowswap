@@ -7,6 +7,13 @@ import { ApprovalState } from 'common/hooks/useApproveState'
 
 import { AmountsToSign } from '../trade/hooks/useAmountsToSign'
 
+export interface RecipientValidationResult {
+  isBridging: boolean
+  chainSupportsENS: boolean
+  isENSName: boolean
+  validationMessage: string
+}
+
 export enum TradeFormValidation {
   // Wrap/unwrap
   WrapUnwrapFlow,
@@ -79,6 +86,7 @@ export interface TradeFormButtonContext {
   quote: TradeQuoteState
   isSupportedWallet: boolean
   widgetStandaloneMode?: boolean
+  recipientValidation?: RecipientValidationResult
 
   confirmTrade(): void
   connectWallet: Command
