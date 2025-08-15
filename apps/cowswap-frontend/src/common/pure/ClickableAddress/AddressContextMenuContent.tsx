@@ -1,4 +1,4 @@
-import { ReactNode, RefObject } from 'react'
+import { ReactNode, forwardRef } from 'react'
 
 import { UI } from '@cowprotocol/ui'
 
@@ -19,6 +19,8 @@ const Box = styled.div`
   min-height: 104px;
   padding: 10px;
   margin: 0;
+  font-size: 13px;
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
 `
 
 const CopyHelperWrapper = styled(CopyHelper)`
@@ -27,7 +29,7 @@ const CopyHelperWrapper = styled(CopyHelper)`
   justify-content: normal;
 
   &:hover {
-    background: var(${UI.COLOR_PAPER});
+    background: var(${UI.COLOR_PAPER_DARKER});
   }
 `
 
@@ -38,13 +40,15 @@ const ExtLinkWrapper = styled(ExtLink)`
   display: flex;
   align-items: center;
   text-decoration: none;
-  font-size: 0.825rem;
+  font-size: inherit;
+  color: inherit;
 
   &:hover,
   &:active,
   &:focus {
     color: var(${UI.COLOR_TEXT});
-    background: var(${UI.COLOR_PAPER});
+    background: var(${UI.COLOR_PAPER_DARKER});
+    text-decoration: none;
   }
 `
 
@@ -55,19 +59,21 @@ const Text = styled.span`
 interface ContentProps {
   address: string
   target: string
-  ref?: RefObject<HTMLDivElement | null>
 }
 
-export function AddressContextMenuContent({ ref, address, target }: ContentProps): ReactNode {
+export const AddressContextMenuContent = forwardRef<HTMLDivElement, ContentProps>(function AddressContextMenuContent(
+  { address, target },
+  ref,
+): ReactNode {
   return (
     <Box ref={ref}>
       <CopyHelperWrapper toCopy={address} copyIconWidth="100%">
         <Text>Copy address</Text>
       </CopyHelperWrapper>
-      <ExtLinkWrapper href={target} target="_blank">
+      <ExtLinkWrapper href={target} target="_blank" rel="noreferrer noopener">
         <Link2 size={16} />
         <Text>View details</Text>
       </ExtLinkWrapper>
     </Box>
   )
-}
+})
