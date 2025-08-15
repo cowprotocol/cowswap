@@ -1,11 +1,13 @@
 import { ReactNode } from 'react'
 
+import { areAddressesEqual, isAddress } from '@cowprotocol/common-utils'
 import { InfoTooltip, NetworkLogo } from '@cowprotocol/ui'
 
 import { ConfirmDetailsItem } from 'modules/trade'
 import { BRIDGE_QUOTE_ACCOUNT } from 'modules/tradeQuote'
 
-import { AddressLink } from '../../../../common/pure/AddressLink'
+import { AddressLink } from 'common/pure/AddressLink'
+
 import { RecipientWrapper } from '../../styles'
 
 interface RecipientDetailsItemProps {
@@ -16,7 +18,7 @@ interface RecipientDetailsItemProps {
 export function RecipientDetailsItem({ recipient, chainId }: RecipientDetailsItemProps): ReactNode {
   return (
     <>
-      {recipient !== BRIDGE_QUOTE_ACCOUNT && (
+      {!areAddressesEqual(recipient, BRIDGE_QUOTE_ACCOUNT) && isAddress(recipient) && (
         <ConfirmDetailsItem
           withTimelineDot
           label={
