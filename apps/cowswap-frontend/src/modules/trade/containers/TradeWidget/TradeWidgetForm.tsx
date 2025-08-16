@@ -8,7 +8,7 @@ import { ButtonOutlined, Media, MY_ORDERS_ID, SWAP_HEADER_OFFSET } from '@cowpro
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
 
-import { t } from '@lingui/macro'
+import { t } from '@lingui/core/macro'
 import SVG from 'react-inlinesvg'
 import { Nullish } from 'types'
 
@@ -246,7 +246,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
                     }
                     inputTooltip={
                       isSellingEthSupported && isEoaEthFlow
-                        ? t`You cannot edit this field when selling ${inputCurrencyInfo?.currency?.symbol}`
+                        ? `${t`You cannot edit this field when selling`} ${inputCurrencyInfo?.currency?.symbol}`
                         : undefined
                     }
                     currencyInfo={outputCurrencyInfo}
