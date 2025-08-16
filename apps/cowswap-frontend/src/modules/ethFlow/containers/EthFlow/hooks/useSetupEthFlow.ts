@@ -5,7 +5,7 @@ import { Command } from '@cowprotocol/types'
 
 import { ActivityDescriptors } from 'legacy/hooks/useRecentActivity'
 
-import { ApprovalState } from 'common/hooks/useApproveState'
+import { ApprovalState } from 'modules/erc20Approve'
 
 import { useHandleChainChange } from './useHandleChainChange'
 
@@ -19,15 +19,13 @@ interface EthFlowSetupParams {
   onDismiss: Command
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useSetupEthFlow({
   hasEnoughWrappedBalanceForSwap,
   approvalState,
   approveActivity,
   wrapActivity,
   onDismiss,
-}: EthFlowSetupParams) {
+}: EthFlowSetupParams): void {
   const updateEthFlowContext = useSetAtom(updateEthFlowContextAtom)
   const resetEthFlowContext = useSetAtom(resetEthFlowContextAtom)
 

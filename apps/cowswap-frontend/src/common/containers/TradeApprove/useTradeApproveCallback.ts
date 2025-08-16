@@ -3,7 +3,7 @@ import { useCallback } from 'react'
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { errorToString, isRejectRequestProviderError } from '@cowprotocol/common-utils'
 import { TransactionResponse } from '@ethersproject/providers'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency } from '@uniswap/sdk-core'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 import { useApproveCallback } from 'common/hooks/useApproveCallback'
@@ -16,17 +16,16 @@ interface TradeApproveCallbackParams {
 }
 
 export interface TradeApproveCallback {
-  (params?: TradeApproveCallbackParams): Promise<TransactionResponse | undefined>
+  (amount: bigint, params?: TradeApproveCallbackParams): Promise<TransactionResponse | undefined>
 }
 
-export function useTradeApproveCallback(amountToApprove?: CurrencyAmount<Currency>): TradeApproveCallback {
+export function useTradeApproveCallback(currency: Currency | undefined): TradeApproveCallback {
   const updateTradeApproveState = useUpdateTradeApproveState()
   const spender = useTradeSpenderAddress()
-  const currency = amountToApprove?.currency
   const symbol = currency?.symbol
   const cowAnalytics = useCowAnalytics()
 
-  const approveCallback = useApproveCallback(amountToApprove, spender)
+  const approveCallback = useApproveCallback(currency, spender)
 
   const approvalAnalytics = useCallback(
     (action: string, symbol?: string, errorCode?: number | null) => {
@@ -41,14 +40,14 @@ export function useTradeApproveCallback(amountToApprove?: CurrencyAmount<Currenc
   )
 
   return useCallback(
-    async ({ useModals = true }: TradeApproveCallbackParams = { useModals: true }) => {
+    async (amount, { useModals = true } = { useModals: true }) => {
       if (useModals) {
         updateTradeApproveState({ currency, approveInProgress: true })
       }
 
       approvalAnalytics('Send', symbol)
 
-      return approveCallback()
+      return approveCallback(amount)
         .then((response) => {
           approvalAnalytics('Sign', symbol)
           return response

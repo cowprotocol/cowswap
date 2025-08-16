@@ -13,6 +13,6 @@ export const DEFAULT_MIN_GAS_LIMIT = 55_000
 
 export const DEFAULT_PERMIT_GAS_LIMIT = '80000'
 
-export const DEFAULT_PERMIT_VALUE = MaxUint256.toString()
+export const DEFAULT_PERMIT_VALUE = MaxUint256.toBigInt()
 
 export const DEFAULT_PERMIT_DURATION = ms`5 years`

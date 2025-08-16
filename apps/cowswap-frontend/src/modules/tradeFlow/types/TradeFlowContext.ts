@@ -48,6 +48,7 @@ export interface TradeFlowContext {
   contract: GPv2Settlement
   permitInfo: IsTokenPermittableResult
   generatePermitHook: GeneratePermitHook
+  permitAmountToSign?: bigint
   typedHooks?: TypedAppDataHooks
 }
 

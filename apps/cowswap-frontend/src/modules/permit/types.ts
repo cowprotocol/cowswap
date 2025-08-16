@@ -4,8 +4,6 @@ import { Currency } from '@uniswap/sdk-core'
 
 import { AppDataInfo, TypedAppDataHooks } from 'modules/appData'
 
-import { ParsedOrder } from 'utils/orderUtils/parseOrder'
-
 export type IsTokenPermittableResult = PermitInfo | undefined
 
 export type AddPermitTokenParams = {
@@ -14,7 +12,7 @@ export type AddPermitTokenParams = {
   permitInfo: PermitInfo
 }
 
-export type GeneratePermitHookParams = Pick<PermitHookParams, 'inputToken' | 'permitInfo' | 'account'> & {
+export type GeneratePermitHookParams = Pick<PermitHookParams, 'inputToken' | 'permitInfo' | 'account' | 'amount'> & {
   customSpender?: string
 }
 
@@ -46,9 +44,5 @@ export type PermitCacheKeyParams = {
 export type StorePermitCacheParams = PermitCacheKeyParams & { hookData: PermitHookData }
 
 export type GetPermitCacheParams = PermitCacheKeyParams
-
-export type CheckHasValidPendingPermit = (order: ParsedOrder) => Promise<boolean | undefined>
-
-export type OrdersPermitStatus = Record<string, boolean | undefined>
 
 export type PermitCompatibleTokens = Record<string, boolean>

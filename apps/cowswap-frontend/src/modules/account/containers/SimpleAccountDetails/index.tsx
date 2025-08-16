@@ -1,11 +1,11 @@
-import { Fragment } from 'react'
+import { Fragment, ReactNode } from 'react'
 
 import { Media } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import styled from 'styled-components/macro'
 
-import { useMultipleActivityDescriptors, groupActivitiesByDay } from 'legacy/hooks/useRecentActivity'
+import { groupActivitiesByDay, useMultipleActivityDescriptors } from 'legacy/hooks/useRecentActivity'
 
 import { AccountDetailsProps } from '../AccountDetails'
 import { ActivitiesList } from '../AccountDetails/ActivitiesList'
@@ -22,13 +22,11 @@ const SimpleWrapper = styled(Wrapper)<StyledWrapperProps>`
   }
 `
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function SimpleAccountDetails({
   pendingTransactions = [],
   confirmedTransactions = [],
   ...styleProps
-}: SimpleAccountDetailsProps) {
+}: SimpleAccountDetailsProps): ReactNode | null {
   const { chainId } = useWalletInfo()
 
   const activities = useMultipleActivityDescriptors({ chainId, ids: pendingTransactions.concat(confirmedTransactions) })

@@ -4,6 +4,7 @@ import { useMemo } from 'react'
 import { WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
+import { MaxUint256 } from '@ethersproject/constants'
 
 import { WrapUnwrapCallback } from 'legacy/hooks/useWrapCallback'
 import { Field } from 'legacy/state/types'
@@ -31,9 +32,7 @@ export interface EthFlowActions {
   directSwap(): void
 }
 
-// TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
-export function useEthFlowActions(callbacks: EthFlowActionCallbacks): EthFlowActions {
+export function useEthFlowActions(callbacks: EthFlowActionCallbacks, partialAmountToApprove?: bigint): EthFlowActions {
   const { chainId } = useWalletInfo()
 
   const updateEthFlowContext = useSetAtom(updateEthFlowContextAtom)
@@ -41,6 +40,7 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks): EthFlowAct
   const onCurrencySelection = useOnCurrencySelection()
   const { onOpen: openSwapConfirmModal } = useTradeConfirmActions()
 
+  const amountToApprove = partialAmountToApprove || MaxUint256.toBigInt()
   return useMemo(() => {
     function sendTransaction(type: 'approve' | 'wrap', callback: () => Promise<string | undefined>): Promise<void> {
       updateEthFlowContext({ [type]: { inProgress: true } })
@@ -60,26 +60,20 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks): EthFlowAct
         })
     }
 
-    // TODO: Add proper return type annotation
-    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-    const swap = async () => {
+    const swap = async (): Promise<void> => {
       callbacks.dismiss()
       onCurrencySelection(Field.INPUT, WRAPPED_NATIVE_CURRENCIES[chainId], () => {
         openSwapConfirmModal(true)
       })
     }
 
-    // TODO: Add proper return type annotation
-    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-    const approve = (useModals?: boolean) => {
+    const approve = (useModals?: boolean): Promise<void> => {
       return sendTransaction('approve', () => {
-        return callbacks.approve({ useModals: !!useModals }).then((res) => res?.hash)
+        return callbacks.approve(amountToApprove, { useModals: !!useModals }).then((res) => res?.hash)
       })
     }
 
-    // TODO: Add proper return type annotation
-    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-    const wrap = (useModals?: boolean) => {
+    const wrap = (useModals?: boolean): Promise<void> => {
       return sendTransaction('wrap', () => {
         if (!callbacks.wrap) return Promise.resolve(undefined)
 
@@ -87,9 +81,7 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks): EthFlowAct
       })
     }
 
-    // TODO: Add proper return type annotation
-    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-    const directSwap = () => {
+    const directSwap = (): void => {
       callbacks.dismiss()
       onCurrencySelection(Field.INPUT, WRAPPED_NATIVE_CURRENCIES[chainId])
       callbacks.directSwap()
@@ -101,5 +93,5 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks): EthFlowAct
       wrap,
       directSwap,
     }
-  }, [callbacks, chainId, updateEthFlowContext, onCurrencySelection, openSwapConfirmModal])
+  }, [callbacks, chainId, updateEthFlowContext, onCurrencySelection, openSwapConfirmModal, amountToApprove])
 }

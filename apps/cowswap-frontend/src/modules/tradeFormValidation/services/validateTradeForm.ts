@@ -4,15 +4,12 @@ import { PriceQuality } from '@cowprotocol/cow-sdk'
 import { TradeType } from 'modules/trade'
 import { isQuoteExpired } from 'modules/tradeQuote'
 
-import { ApprovalState } from 'common/hooks/useApproveState'
-
 import { TradeFormValidation, TradeFormValidationContext } from '../types'
 
 // eslint-disable-next-line max-lines-per-function, complexity
 export function validateTradeForm(context: TradeFormValidationContext): TradeFormValidation[] | null {
   const {
     derivedTradeState,
-    approvalState,
     isBundlingSupported,
     isWrapUnwrap,
     isSupportedWallet,
@@ -21,7 +18,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     recipientEnsAddress,
     tradeQuote,
     account,
-    isPermitSupported,
+    isApproveRequired,
     isInsufficientBalanceOrderAllowed,
     isProviderNetworkUnsupported,
     isOnline,
@@ -44,9 +41,6 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     : false
   const canPlaceOrderWithoutBalance = isBalanceGreaterThan1Atom && isInsufficientBalanceOrderAllowed && !isWrapUnwrap
   const isNativeIn = inputCurrency && getIsNativeToken(inputCurrency) && !isWrapUnwrap
-
-  const approvalRequired =
-    !isPermitSupported && (approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING)
 
   const inputAmountIsNotSet = isSellOrder(orderKind)
     ? !inputCurrencyAmount || isFractionFalsy(inputCurrencyAmount)
@@ -152,7 +146,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     validations.push(TradeFormValidation.WrapUnwrapFlow)
   }
 
-  if (approvalRequired) {
+  if (isApproveRequired) {
     if (isBundlingSupported) {
       validations.push(TradeFormValidation.ApproveAndSwap)
     }
