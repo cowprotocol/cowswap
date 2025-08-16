@@ -1,26 +1,43 @@
 import { useLayoutEffect, useState } from 'react'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useAnchorPosition(elementId: string | undefined) {
+export function useAnchorPosition(elementId: string | undefined): { top: number; height: number } {
   const [top, setOffsetTop] = useState(0)
   const [height, setOffsetHeight] = useState(0)
 
   useLayoutEffect(() => {
     if (!elementId) return
 
-    // TODO: Add proper return type annotation
-    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-    const updatePosition = () => {
-      const element = document.getElementById(elementId)
+    let rafId: number | null = null
+    let retryTimeoutId: number | null = null
 
-      if (element) {
-        const { top, height } = element.getBoundingClientRect()
-        setOffsetTop(top)
-        setOffsetHeight(height)
-      } else {
-        setTimeout(updatePosition, 100)
-      }
+    const updatePosition = (): void => {
+      if (rafId !== null) return
+
+      rafId = requestAnimationFrame(() => {
+        rafId = null
+
+        const element = document.getElementById(elementId)
+
+        if (element) {
+          const { top, height } = element.getBoundingClientRect()
+          setOffsetTop(top)
+          setOffsetHeight(height)
+
+          if (retryTimeoutId !== null) {
+            clearTimeout(retryTimeoutId)
+            retryTimeoutId = null
+          }
+
+          return
+        }
+
+        if (retryTimeoutId === null) {
+          retryTimeoutId = window.setTimeout(() => {
+            retryTimeoutId = null
+            updatePosition()
+          }, 100)
+        }
+      })
     }
 
     updatePosition()
@@ -31,6 +48,9 @@ export function useAnchorPosition(elementId: string | undefined) {
     window.addEventListener('scroll', updatePosition)
 
     return () => {
+      if (retryTimeoutId) {
+        clearTimeout(retryTimeoutId)
+      }
       window.removeEventListener('scroll', updatePosition)
       resizeObserver.disconnect()
     }
