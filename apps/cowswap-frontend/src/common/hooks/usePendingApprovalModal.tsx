@@ -2,6 +2,9 @@ import { useCallback, useMemo } from 'react'
 
 import { Command } from '@cowprotocol/types'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
+
 import { useModalState } from './useModalState'
 
 import { ConfirmationPendingContent } from '../pure/ConfirmationPendingContent'
@@ -26,10 +29,9 @@ export function usePendingApprovalModal(params?: PendingApprovalModalParams) {
   }, [closeModal, onDismiss])
 
   return useMemo(() => {
-
     const Title = (
       <>
-        Approving <strong>{currencySymbol || context}</strong> for trading
+        <Trans>Approving</Trans> <strong>{currencySymbol || context}</strong> <Trans>for trading</Trans>
       </>
     )
 
@@ -38,11 +40,11 @@ export function usePendingApprovalModal(params?: PendingApprovalModalParams) {
         modalMode={!!modalMode}
         onDismiss={onDismissCallback}
         title={Title}
-        description="Approving token"
-        operationLabel="token approval"
+        description={t`Approving token`}
+        operationLabel={t`token approval`}
       />
     )
 
-    return ({ Modal, state })
+    return { Modal, state }
   }, [currencySymbol, context, modalMode, onDismissCallback, state])
 }

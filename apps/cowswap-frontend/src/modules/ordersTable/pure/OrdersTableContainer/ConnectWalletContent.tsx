@@ -3,7 +3,7 @@ import { ReactNode } from 'react'
 import imageConnectWallet from '@cowprotocol/assets/cow-swap/wallet-plus.svg'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 
 import { Web3Status } from 'modules/wallet/containers/Web3Status'

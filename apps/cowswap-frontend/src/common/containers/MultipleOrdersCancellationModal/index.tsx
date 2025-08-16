@@ -86,9 +86,9 @@ export function MultipleOrdersCancellationModal(props: Props): ReactNode {
         <ConfirmationPendingContent
           modalMode
           onDismiss={onDismiss}
-          title={<>Cancelling {ordersCount} orders</>}
-          description="Canceling your order"
-          operationLabel="cancellation"
+          title={t`Cancelling ${ordersCount} orders`}
+          description={t`Canceling your order`}
+          operationLabel={t`cancellation`}
         />
       </Modal>
     )

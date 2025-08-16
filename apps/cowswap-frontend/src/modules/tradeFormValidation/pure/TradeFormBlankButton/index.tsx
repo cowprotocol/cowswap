@@ -2,7 +2,7 @@ import { ReactElement, useEffect, useRef, useState } from 'react'
 
 import { CenteredDots, LongLoadText, UI } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 import ms from 'ms.macro'
 import styled from 'styled-components/macro'
 

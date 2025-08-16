@@ -5,7 +5,8 @@ import { CODE_LINK, DISCORD_LINK } from '@cowprotocol/common-const'
 import { userAgent } from '@cowprotocol/common-utils'
 import { AutoRow, MEDIA_WIDTHS, ExternalLink, UI, Media } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/macro'
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 import { ThemedText } from 'theme'
 
@@ -91,7 +92,7 @@ export const ErrorWithStackTrace = ({ error }: { error: Error }) => {
               href={
                 CODE_LINK +
                 `/issues/new?assignees=&labels=🐞 Bug,🔥 Critical&body=${encodedBody}&title=${encodeURIComponent(
-                  `Crash report: \`${error.name}${error.message && `: ${truncate(error.message)}`}\``,
+                  `${t`Crash report`}: \`${error.name}${error.message && `: ${truncate(error.message)}`}\``,
                 )}`
               }
             >

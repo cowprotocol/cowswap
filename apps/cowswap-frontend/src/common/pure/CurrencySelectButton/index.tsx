@@ -6,7 +6,7 @@ import { TokenLogo } from '@cowprotocol/tokens'
 import { TokenName } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 import { useBridgeSupportedNetwork } from 'entities/bridgeProvider'
 import { Nullish } from 'types'
 

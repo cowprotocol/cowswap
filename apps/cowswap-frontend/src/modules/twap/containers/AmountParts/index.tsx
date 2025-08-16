@@ -4,7 +4,7 @@ import { ReactElement, ReactNode } from 'react'
 import { HelpTooltip, renderTooltip } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 import { Nullish } from 'types'
 
 import { useGetReceiveAmountInfo } from 'modules/trade'

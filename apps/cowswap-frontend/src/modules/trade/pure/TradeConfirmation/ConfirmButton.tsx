@@ -2,7 +2,7 @@ import { ReactNode, useEffect, useState } from 'react'
 
 import { ButtonPrimary, ButtonSize, CenteredDots, LongLoadText } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 import { SigningStepState } from 'entities/trade'
 
 import { upToMedium, useMediaQuery } from 'legacy/hooks/useMediaQuery'

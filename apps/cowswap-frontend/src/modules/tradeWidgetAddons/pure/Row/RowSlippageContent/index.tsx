@@ -6,7 +6,7 @@ import { Command } from '@cowprotocol/types'
 import { CenteredDots, HoverTooltip, LinkStyledButton, RowFixed, UI } from '@cowprotocol/ui'
 import { Percent } from '@uniswap/sdk-core'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from 'common/utils/tradeSettingsTooltips'
@@ -46,12 +46,11 @@ export interface RowSlippageContentProps {
   isSlippageModified: boolean
   setAutoSlippage?: Command // todo: make them optional
   smartSlippage?: string
-  isDefaultSlippageApplied: boolean;
+  isDefaultSlippageApplied: boolean
   isSmartSlippageApplied: boolean
   isSmartSlippageLoading: boolean
   hideRecommendedSlippage?: boolean
 }
-
 
 export function RowSlippageContent(props: RowSlippageContentProps): ReactNode {
   const {
@@ -142,7 +141,12 @@ type SlippageTextContentsProps = {
   isDynamicSlippageSet: boolean
 }
 
-function SlippageTextContents({ slippageLabel, isDynamicSlippageSet, isEoaEthFlow, isDefaultSlippageApplied }: SlippageTextContentsProps): ReactNode {
+function SlippageTextContents({
+  slippageLabel,
+  isDynamicSlippageSet,
+  isEoaEthFlow,
+  isDefaultSlippageApplied,
+}: SlippageTextContentsProps): ReactNode {
   return (
     <TransactionText>
       <Trans>{slippageLabel || 'Slippage tolerance'}</Trans>

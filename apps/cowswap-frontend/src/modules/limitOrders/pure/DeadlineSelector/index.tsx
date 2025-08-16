@@ -2,7 +2,7 @@ import { ChangeEventHandler, useCallback, useEffect, useMemo, useRef, useState }
 
 import { ButtonPrimary, ButtonSecondary } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 import { Menu } from '@reach/menu-button'
 import { ChevronDown } from 'react-feather'
 

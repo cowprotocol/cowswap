@@ -4,6 +4,8 @@ import { useCowAnalytics } from '@cowprotocol/analytics'
 import { PAGE_TITLES } from '@cowprotocol/common-const'
 import { CowGame } from '@cowprotocol/cow-runner-game'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
 import { PageTitle } from 'modules/application/containers/PageTitle'
@@ -53,13 +55,12 @@ export default function CowRunnerPage() {
     <Wrapper>
       <PageTitle title={PAGE_TITLES.COW_RUNNER} />
       <p>
-        Run! ...and try not getting sandwiched{' '}
-        <span role="img" aria-label="sandwich-icon">
+        <Trans>Run! ...and try not getting sandwiched</Trans>{' '}
+        <span role="img" aria-label={t`Sandwich icon`}>
           🥪
         </span>
-        - MEV is lethal these days!
+        - <Trans>MEV is lethal these days!</Trans>
       </p>
-
       <Content>
         <CowGame />
       </Content>

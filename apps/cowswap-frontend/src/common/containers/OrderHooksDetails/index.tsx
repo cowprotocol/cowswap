@@ -4,6 +4,7 @@ import { latest } from '@cowprotocol/app-data'
 import { CowHookDetails, HookToDappMatch, matchHooksToDappsRegistry } from '@cowprotocol/hook-dapp-lib'
 import { InfoTooltip } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
 import { useHooksStateWithSimulatedGas } from 'entities/orderHooks/useHooksStateWithSimulatedGas'
 import { ChevronDown, ChevronUp } from 'react-feather'
 
@@ -82,8 +83,8 @@ export function OrderHooksDetails({ appData, children, margin, isTradeConfirmati
       </styledEl.Summary>
       {isOpen && (
         <styledEl.Details>
-          <HooksInfo data={preHooksToDapp} hooks={isTradeConfirmation ? hooks.preHooks : []} title="Pre Hooks" />
-          <HooksInfo data={postHooksToDapp} hooks={isTradeConfirmation ? hooks.postHooks : []} title="Post Hooks" />
+          <HooksInfo data={preHooksToDapp} hooks={isTradeConfirmation ? hooks.preHooks : []} title={t`Pre Hooks`} />
+          <HooksInfo data={postHooksToDapp} hooks={isTradeConfirmation ? hooks.postHooks : []} title={t`Post Hooks`} />
         </styledEl.Details>
       )}
     </styledEl.Wrapper>,

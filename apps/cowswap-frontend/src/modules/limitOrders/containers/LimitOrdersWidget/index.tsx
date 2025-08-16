@@ -4,6 +4,8 @@ import React, { useCallback, useEffect, useMemo } from 'react'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { isSellOrder } from '@cowprotocol/common-utils'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import { useLocation } from 'react-router'
 
 import { Field } from 'legacy/state/types'
@@ -39,25 +41,6 @@ import { LimitOrdersConfirmModal } from '../LimitOrdersConfirmModal'
 import { RateInput } from '../RateInput'
 import { SettingsWidget } from '../SettingsWidget'
 import { TradeRateDetails } from '../TradeRateDetails'
-
-export const LIMIT_BULLET_LIST_CONTENT: BulletListItem[] = [
-  { content: 'Set any limit price and time horizon' },
-  { content: 'FREE order placement and cancellation' },
-  { content: 'Place multiple orders using the same balance' },
-  { content: 'Receive surplus of your order' },
-  { content: 'Protection from MEV by default' },
-  {
-    content: <span>Place orders for higher than available balance!</span>,
-  },
-]
-
-const UNLOCK_SCREEN = {
-  title: 'Want to try out limit orders?',
-  subtitle: 'Get started!',
-  orderType: 'partially fillable',
-  buttonText: 'Get started with limit orders',
-  buttonLink: 'https://cow.fi/learn/cow-swap-improves-the-limit-order-experience-with-partially-fillable-limit-orders',
-}
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
@@ -96,7 +79,7 @@ export function LimitOrdersWidget() {
 
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
-    label: isSell ? 'Sell' : 'You sell at most',
+    label: isSell ? t`Sell` : t`You sell at most`,
     currency: inputCurrency,
     amount: inputCurrencyAmount,
     isIndependent: isSell,
@@ -105,9 +88,10 @@ export function LimitOrdersWidget() {
     receiveAmountInfo: null,
     isUsdValuesMode,
   }
+
   const outputCurrencyInfo: CurrencyInfo = {
     field: Field.OUTPUT,
-    label: isSell ? 'Receive at least' : 'Buy exactly',
+    label: isSell ? t`Receive at least` : t`Buy exactly`,
     currency: outputCurrency,
     amount: outputCurrencyAmount,
     isIndependent: !isSell,
@@ -137,6 +121,29 @@ export function LimitOrdersWidget() {
 // TODO: Break down this large function into smaller functions
 // eslint-disable-next-line max-lines-per-function
 const LimitOrders = React.memo((props: LimitOrdersProps) => {
+  const LIMIT_BULLET_LIST_CONTENT: BulletListItem[] = [
+    { content: t`Set any limit price and time horizon` },
+    { content: t`FREE order placement and cancellation` },
+    { content: t`Place multiple orders using the same balance` },
+    { content: t`Receive surplus of your order` },
+    { content: t`Protection from MEV by default` },
+    {
+      content: (
+        <span>
+          <Trans>Place orders for higher than available balance!</Trans>
+        </span>
+      ),
+    },
+  ]
+
+  const UNLOCK_SCREEN = {
+    title: t`Want to try out limit orders?`,
+    subtitle: t`Get started!`,
+    orderType: t`partially fillable`,
+    buttonText: t`Get started with limit orders`,
+    buttonLink:
+      'https://cow.fi/learn/cow-swap-improves-the-limit-order-experience-with-partially-fillable-limit-orders',
+  }
   const {
     inputCurrencyInfo,
     outputCurrencyInfo,

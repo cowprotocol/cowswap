@@ -2,7 +2,7 @@ import { Command } from '@cowprotocol/types'
 import { ButtonEmpty, ButtonPrimary, Loader } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 import { ThemedText } from 'theme'
 

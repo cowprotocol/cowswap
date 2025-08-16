@@ -2,6 +2,7 @@ import ICON_INFO from '@cowprotocol/assets/cow-swap/info.svg'
 import { HookDappWalletCompatibility } from '@cowprotocol/hook-dapp-lib'
 import { Command } from '@cowprotocol/types'
 
+import { t } from '@lingui/core/macro'
 import SVG from 'react-inlinesvg'
 
 import * as styled from './styled'
@@ -51,7 +52,7 @@ export function HookListItem({ dapp, walletType, onSelect, onOpenDetails, onRemo
             Open
           </styled.LinkButton>
         ) : (
-          <styled.LinkButton disabled title="Not compatible with current wallet type">
+          <styled.LinkButton disabled title={t`Not compatible with current wallet type`}>
             n/a
           </styled.LinkButton>
         )}

@@ -2,6 +2,8 @@ import ninjaCowImg from '@cowprotocol/assets/cow-swap/ninja-cow.png'
 import { PAGE_TITLES } from '@cowprotocol/common-const'
 import { ButtonPrimary } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
 import { PageTitle } from 'modules/application/containers/PageTitle'
@@ -56,19 +58,21 @@ export default function MevSlicer() {
   return (
     <Wrapper>
       <PageTitle title={PAGE_TITLES.MEV_SLICER} />
-      <p>This CoW doesn&apos;t run away any more! Not from MEV!</p>
       <p>
-        Now is the time to take some action! -{' '}
+        <Trans>This CoW doesn&apos;t run away any more! Not from MEV!</Trans>
+      </p>
+      <p>
+        <Trans>Now is the time to take some action!</Trans> -{' '}
         <strong>
-          Let&apos;s slice some{' '}
-          <span role="img" aria-label="sandwich-icon">
+          <Trans>Let&apos;s slice some</Trans>{' '}
+          <span role="img" aria-label={t`sandwich-icon`}>
             🥪
           </span>
           !
         </strong>
       </p>
       <p>
-        <img src={ninjaCowImg} alt="Ninja Cow" />
+        <img src={ninjaCowImg} alt={t`Ninja Cow`} />
       </p>
 
       <ButtonPrimary

@@ -6,7 +6,7 @@ import { ButtonPrimary, MEDIA_WIDTHS } from '@cowprotocol/ui'
 import { AutoRow } from '@cowprotocol/ui'
 import { ExternalLink } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 import { ThemedText } from 'theme'
 

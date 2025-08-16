@@ -4,7 +4,7 @@ import { Command } from '@cowprotocol/types'
 import { ButtonError, ButtonSize, TokenSymbol } from '@cowprotocol/ui'
 import { Currency, Token } from '@uniswap/sdk-core'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
 import { Field } from 'legacy/state/types'

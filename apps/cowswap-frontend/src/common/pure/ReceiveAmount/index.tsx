@@ -3,7 +3,7 @@ import { ReactNode } from 'react'
 import { TokenAmount } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
-import { Trans } from '@lingui/macro'
+import { t } from '@lingui/core/macro'
 
 import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'
 
@@ -30,10 +30,7 @@ export function ReceiveAmount(props: ReceiveAmountProps): ReactNode {
   return (
     <styledEl.ReceiveAmountBox>
       <div>
-        <span>
-          <Trans>{!isSell ? 'From (incl. costs)' : 'Receive (incl. costs)'}</Trans>
-        </span>
-
+        <span>{!isSell ? t`From (incl. costs)` : t`Receive (incl. costs)`}</span>
         <styledEl.QuestionHelperWrapped text={<ReceiveAmountInfoTooltip {...props} />} />
       </div>
       <div>

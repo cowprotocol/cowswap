@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 
 import { tradeButtonsMap } from './tradeButtonsMap'
 

@@ -3,7 +3,7 @@ import { ReactNode } from 'react'
 import cowMeditatingV2 from '@cowprotocol/assets/cow-swap/meditating-cow-v2.svg'
 import { CowSwapSafeAppLink } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 
 import * as styledEl from './OrdersTableContainer.styled'
 

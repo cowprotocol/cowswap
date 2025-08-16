@@ -3,6 +3,8 @@ import { useCallback, useState } from 'react'
 import { UI } from '@cowprotocol/ui'
 import { HelpTooltip } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
 import { ORDERS_TABLE_SETTINGS } from 'modules/trade/const/common'
@@ -105,12 +107,6 @@ export interface SettingsProps {
   onStateChanged: (state: LimitOrdersSettingsState) => void
 }
 
-const POSITION_LABELS = {
-  top: 'Top',
-  between: 'Between currencies',
-  bottom: 'Bottom',
-}
-
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
 // eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
@@ -174,22 +170,30 @@ export function Settings({ state, onStateChanged }: SettingsProps) {
     e.stopPropagation()
   }
 
+  const POSITION_LABELS = {
+    top: t`Top`,
+    between: t`Between currencies`,
+    bottom: t`Bottom`,
+  }
+
   return (
     <div onClick={handleContainerClick}>
       <SettingsContainer>
-        <SettingsTitle>Limit Order Settings</SettingsTitle>
+        <SettingsTitle>
+          <Trans>Limit Order Settings</Trans>
+        </SettingsTitle>
 
         <SettingsBox
-          title="Custom Recipient"
-          tooltip="Allows you to choose a destination address for the swap other than the connected one."
+          title={t`Custom Recipient`}
+          tooltip={t`Allows you to choose a destination address for the swap other than the connected one.`}
           value={showRecipient}
           toggle={handleRecipientToggle}
         />
 
         <SettingsBox
-          title="Enable Partial Executions"
+          title={t`Enable Partial Executions`}
           tooltip={
-            <>
+            <Trans>
               Allow you to chose whether your limit orders will be <i>Partially fillable</i> or <i>Fill or kill</i>.
               <br />
               <br />
@@ -197,15 +201,15 @@ export function Settings({ state, onStateChanged }: SettingsProps) {
               <br />
               <i>Partially fillable</i> orders may be filled partially if there isn't enough liquidity to fill the full
               amount.
-            </>
+            </Trans>
           }
           value={partialFillsEnabled}
           toggle={handlePartialFillsToggle}
         />
 
         <SettingsBox
-          title="Lock Limit Price"
-          tooltip="When enabled, the limit price stays fixed when changing the BUY amount. When disabled, the limit price will update based on the BUY amount changes."
+          title={t`Lock Limit Price`}
+          tooltip={t`When enabled, the limit price stays fixed when changing the BUY amount. When disabled, the limit price will update based on the BUY amount changes.`}
           value={limitPriceLocked}
           toggle={handleLimitPriceLockedToggle}
         />
@@ -227,7 +231,7 @@ export function Settings({ state, onStateChanged }: SettingsProps) {
 
         <SettingsRow>
           <SettingsLabel>
-            Limit Price Position <HelpTooltip text="Choose where to display the limit price input." />
+            <Trans>Limit Price Position</Trans> <HelpTooltip text={t`Choose where to display the limit price input.`} />
           </SettingsLabel>
           <DropdownContainer>
             <DropdownButton onClick={toggleDropdown}>{POSITION_LABELS[limitPricePosition]}</DropdownButton>

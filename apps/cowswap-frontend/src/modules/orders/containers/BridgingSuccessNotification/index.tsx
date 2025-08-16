@@ -3,7 +3,7 @@ import { ReactNode } from 'react'
 import { OnBridgingSuccessPayload, ToastMessageType } from '@cowprotocol/events'
 import { ExternalLink } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 import { useBridgeOrderData } from 'entities/bridgeOrders'
 
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'

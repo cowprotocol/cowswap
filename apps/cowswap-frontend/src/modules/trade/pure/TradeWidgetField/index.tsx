@@ -2,7 +2,7 @@ import { ReactElement } from 'react'
 
 import { HelpTooltip, renderTooltip } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 
 import { Content, ErrorText, TradeWidgetFieldBox, TradeWidgetFieldLabel } from './styled'
 

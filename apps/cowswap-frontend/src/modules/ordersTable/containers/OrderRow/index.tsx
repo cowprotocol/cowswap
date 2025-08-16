@@ -9,6 +9,8 @@ import { PercentDisplay, percentIsAlmostHundred, TokenAmount } from '@cowprotoco
 import { useIsSafeWallet } from '@cowprotocol/wallet'
 import { Currency, Price } from '@uniswap/sdk-core'
 
+import { t } from '@lingui/core/macro'
+
 import { OrderStatus } from 'legacy/state/orders/actions'
 import { getEstimatedExecutionPrice } from 'legacy/state/orders/utils'
 
@@ -150,10 +152,10 @@ export function OrderRow({
 
   const warningText =
     hasEnoughBalance === false
-      ? 'Insufficient balance'
+      ? t`Insufficient balance`
       : hasEnoughAllowance === false
-        ? 'Insufficient allowance'
-        : 'Unfillable'
+        ? t`Insufficient allowance`
+        : t`Unfillable`
 
   const onApprove = withAllowanceWarning ? () => orderActions.approveOrderToken(order.inputToken) : undefined
 

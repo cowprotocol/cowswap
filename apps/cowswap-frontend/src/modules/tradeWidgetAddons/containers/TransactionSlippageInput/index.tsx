@@ -1,18 +1,13 @@
 import { JSX, useContext } from 'react'
 
-
 import { HelpTooltip, RowBetween, RowFixed } from '@cowprotocol/ui'
 import { Percent } from '@uniswap/sdk-core'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 import { ThemeContext } from 'styled-components/macro'
 
 import { useSmartSlippageFromQuote } from 'modules/tradeQuote'
-import {
-  useIsSlippageModified,
-  useIsSmartSlippageApplied,
-  useTradeSlippage
-} from 'modules/tradeSlippage'
+import { useIsSlippageModified, useIsSmartSlippageApplied, useTradeSlippage } from 'modules/tradeSlippage'
 import { SlippageWarningMessage } from 'modules/tradeWidgetAddons/pure/SlippageWarning'
 
 import { useSlippageInput } from './hooks/useSlippageInput'
@@ -28,17 +23,17 @@ export function TransactionSlippageInput(): JSX.Element {
   const isSmartSlippageApplied = useIsSmartSlippageApplied()
   const smartSlippageFromQuote = useSmartSlippageFromQuote()
 
-  const chosenSlippageMatchesSmartSlippage = smartSlippageFromQuote !== null && new Percent(smartSlippageFromQuote, 10_000).equalTo(swapSlippage)
+  const chosenSlippageMatchesSmartSlippage =
+    smartSlippageFromQuote !== null && new Percent(smartSlippageFromQuote, 10_000).equalTo(swapSlippage)
   const isSlippageModified = useIsSlippageModified()
 
   const showSlippageWarning = !isSmartSlippageApplied && !chosenSlippageMatchesSmartSlippage
 
-  const {
-    tooLow,
-    tooHigh,
-    min,
-    max
-  } = useSlippageWarningParams(swapSlippage, smartSlippageFromQuote, isSlippageModified)
+  const { tooLow, tooHigh, min, max } = useSlippageWarningParams(
+    swapSlippage,
+    smartSlippageFromQuote,
+    isSlippageModified,
+  )
 
   const {
     slippageError,
@@ -46,28 +41,25 @@ export function TransactionSlippageInput(): JSX.Element {
     parseSlippageInput,
     placeholderSlippage,
     onSlippageInputBlur,
-    setAutoSlippage
+    setAutoSlippage,
   } = useSlippageInput()
 
   return (
     <>
       <RowFixed>
-        <SlippageTooltip/>
+        <SlippageTooltip />
       </RowFixed>
       <RowBetween>
-        <styledEl.Option
-          onClick={setAutoSlippage}
-          active={!isSlippageModified}
-        >
+        <styledEl.Option onClick={setAutoSlippage} active={!isSlippageModified}>
           <Trans>Auto</Trans>
         </styledEl.Option>
         <styledEl.OptionCustom active={isSlippageModified} warning={!!slippageError} tabIndex={-1}>
           <RowBetween>
             {showSlippageWarning && (tooLow || tooHigh) ? (
               <styledEl.SlippageEmojiContainer>
-                    <span role="img" aria-label="warning">
-                      ⚠️
-                    </span>
+                <span role="img" aria-label="warning">
+                  ⚠️
+                </span>
               </styledEl.SlippageEmojiContainer>
             ) : null}
             <styledEl.Input
@@ -80,13 +72,15 @@ export function TransactionSlippageInput(): JSX.Element {
           </RowBetween>
         </styledEl.OptionCustom>
       </RowBetween>
-      { showSlippageWarning && (
-        <SlippageWarningMessage error={!!slippageError}
-                                theme={theme}
-                                tooLow={tooLow}
-                                tooHigh={tooHigh}
-                                max={max}
-                                min={min}/>
+      {showSlippageWarning && (
+        <SlippageWarningMessage
+          error={!!slippageError}
+          theme={theme}
+          tooLow={tooLow}
+          tooHigh={tooHigh}
+          max={max}
+          min={min}
+        />
       )}
       {isSmartSlippageApplied && (
         <RowBetween>

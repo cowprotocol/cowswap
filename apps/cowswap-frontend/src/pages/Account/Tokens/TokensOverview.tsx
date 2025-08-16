@@ -8,7 +8,8 @@ import { useTokensByAddressMap, useFavoriteTokens, useResetFavoriteTokens } from
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
-import { Trans, t } from '@lingui/macro'
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import { Check } from 'react-feather'
 import { CloseIcon } from 'theme'
 
@@ -42,19 +43,18 @@ export enum PageViewKeys {
   FAVORITE_TOKENS = 'FAVORITE_TOKENS',
 }
 
-const PageView = {
-  [PageViewKeys.ALL_TOKENS]: {
-    label: 'All tokens',
-  },
-  [PageViewKeys.FAVORITE_TOKENS]: {
-    label: 'Favorite tokens',
-  },
-}
-
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
 // eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export default function TokensOverview() {
+  const PageView = {
+    [PageViewKeys.ALL_TOKENS]: {
+      label: t`All tokens`,
+    },
+    [PageViewKeys.FAVORITE_TOKENS]: {
+      label: t`Favorite tokens`,
+    },
+  }
   const { chainId, account } = useWalletInfo()
   const provider = useWalletProvider()
 
@@ -186,7 +186,7 @@ export default function TokensOverview() {
             {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
             <MenuWrapper ref={node as any}>
               <MenuButton onClick={toggleMenu}>
-                <Trans>{PageView[selectedView].label}</Trans>
+                {PageView[selectedView].label}
                 <StyledChevronDown size={14} />
               </MenuButton>
 

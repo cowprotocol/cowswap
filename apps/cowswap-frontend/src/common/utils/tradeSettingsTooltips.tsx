@@ -8,7 +8,7 @@ import {
 } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 
 export function getNativeOrderDeadlineTooltip(symbols: (string | undefined)[] | undefined): ReactNode {
   return (
@@ -33,18 +33,20 @@ export function getNonNativeOrderDeadlineTooltip(): ReactNode {
   )
 }
 
-export const getNativeSlippageTooltip = (chainId: SupportedChainId, symbols: (string | undefined)[] | undefined): ReactNode => (
+export const getNativeSlippageTooltip = (
+  chainId: SupportedChainId,
+  symbols: (string | undefined)[] | undefined,
+): ReactNode => (
   <Trans>
     When selling {symbols?.[0] || 'a native currency'}, the minimum slippage tolerance is set to{' '}
-    {MINIMUM_ETH_FLOW_SLIPPAGE[chainId].toSignificant(PERCENTAGE_PRECISION)}% or higher to ensure a high likelihood of order
-    matching, even in volatile market conditions.
+    {MINIMUM_ETH_FLOW_SLIPPAGE[chainId].toSignificant(PERCENTAGE_PRECISION)}% or higher to ensure a high likelihood of
+    order matching, even in volatile market conditions.
     <br />
     <br />
     {symbols?.[0] || 'Native currency'} orders can, in rare cases, be frontrun due to their on-chain component. For more
     robust MEV protection, consider wrapping your {symbols?.[0] || 'native currency'} before trading.
   </Trans>
 )
-
 
 export const getNonNativeSlippageTooltip = (params?: { isDynamic?: boolean; isSettingsModal?: boolean }): ReactNode => (
   <Trans>

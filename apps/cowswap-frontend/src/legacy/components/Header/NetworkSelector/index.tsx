@@ -9,7 +9,7 @@ import { Media } from '@cowprotocol/ui'
 import { useIsRabbyWallet, useIsSmartContractWallet, useWalletInfo, useIsSafeViaWc } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 import { darken, transparentize } from 'color2k'
 import { AlertTriangle, ChevronDown } from 'react-feather'
 import styled from 'styled-components/macro'

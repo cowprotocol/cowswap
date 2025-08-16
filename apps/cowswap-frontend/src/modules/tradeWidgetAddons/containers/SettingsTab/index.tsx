@@ -6,7 +6,7 @@ import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { StatefulValue } from '@cowprotocol/types'
 import { HelpTooltip, RowBetween, RowFixed } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 import { Menu, useMenuButtonContext } from '@reach/menu-button'
 import SVG from 'react-inlinesvg'
 import { Text } from 'rebass'

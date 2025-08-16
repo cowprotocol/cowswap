@@ -6,7 +6,7 @@ import { AutoRow, ButtonEmpty, ExternalLink, Media, RowBetween } from '@cowproto
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 import { ThemedText, Z_INDEX, CloseIcon } from 'theme'
 

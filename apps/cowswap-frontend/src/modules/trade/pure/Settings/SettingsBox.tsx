@@ -3,7 +3,7 @@ import { ReactNode } from 'react'
 import { Command } from '@cowprotocol/types'
 import { HelpTooltip } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 
 import { Toggle } from 'legacy/components/Toggle'
 

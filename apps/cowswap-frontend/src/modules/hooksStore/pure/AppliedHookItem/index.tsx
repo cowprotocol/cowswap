@@ -5,6 +5,8 @@ import ICON_X from '@cowprotocol/assets/cow-swap/x.svg'
 import { CowHookDetails } from '@cowprotocol/hook-dapp-lib'
 import { InfoTooltip } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import { Edit2, Trash2, ExternalLink as ExternalLinkIcon, RefreshCw } from 'react-feather'
 import SVG from 'react-inlinesvg'
 
@@ -38,10 +40,10 @@ export function AppliedHookItem({ account, hookDetails, dapp, isPreHook, editHoo
 
   const simulationData = useSimulationData(hookDetails.uuid)
 
-  const simulationStatus = simulationData?.status ? 'Simulation successful' : 'Simulation failed'
+  const simulationStatus = simulationData?.status ? t`Simulation successful` : t`Simulation failed`
   const simulationTooltip = simulationData?.status
-    ? 'The Tenderly simulation was successful. Your transaction is expected to succeed.'
-    : 'The Tenderly simulation failed. Please review your transaction.'
+    ? t`The Tenderly simulation was successful. Your transaction is expected to succeed.`
+    : t`The Tenderly simulation failed. Please review your transaction.`
 
   return (
     <styledEl.HookItemWrapper data-uid={hookDetails.uuid} as="li">
@@ -71,9 +73,9 @@ export function AppliedHookItem({ account, hookDetails, dapp, isPreHook, editHoo
       {account && isBundleSimulationReady && simulationData && (
         <styledEl.SimulateContainer isSuccessful={simulationData.status}>
           {simulationData.status ? (
-            <SVG src={ICON_CHECK_ICON} color="green" width={16} height={16} aria-label="Simulation Successful" />
+            <SVG src={ICON_CHECK_ICON} color="green" width={16} height={16} aria-label={t`Simulation Successful`} />
           ) : (
-            <SVG src={ICON_X} color="red" width={14} height={14} aria-label="Simulation Failed" />
+            <SVG src={ICON_X} color="red" width={14} height={14} aria-label={t`Simulation Failed`} />
           )}
           {simulationData.link ? (
             <a href={simulationData.link} target="_blank" rel="noopener noreferrer">
@@ -91,11 +93,17 @@ export function AppliedHookItem({ account, hookDetails, dapp, isPreHook, editHoo
         <styledEl.OldSimulateContainer>
           <div>
             <styledEl.SimulateHeader>
-              <strong>Run a simulation</strong>
-              <InfoTooltip content="This transaction can be simulated before execution to ensure that it will be succeed, generating a detailed report of the transaction execution." />
+              <strong>
+                <Trans>Run a simulation</Trans>
+              </strong>
+              <InfoTooltip
+                content={t`This transaction can be simulated before execution to ensure that it will be succeed, generating a detailed report of the transaction execution.`}
+              />
             </styledEl.SimulateHeader>
             <styledEl.SimulateFooter>
-              <span>Powered by</span>
+              <span>
+                <Trans>Powered by</Trans>
+              </span>
               <SVG src={TenderlyLogo} description="Tenderly" />
             </styledEl.SimulateFooter>
           </div>

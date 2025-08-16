@@ -8,7 +8,7 @@ import { closableBannersStateAtom, Loader } from '@cowprotocol/ui'
 import { BigNumber } from '@ethersproject/bignumber'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 import { useToggleWalletModal } from 'legacy/state/application/hooks'

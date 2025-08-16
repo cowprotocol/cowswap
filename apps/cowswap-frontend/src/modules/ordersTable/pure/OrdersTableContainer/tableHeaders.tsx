@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
 const HeaderElement = styled.div<{ doubleRow?: boolean }>`

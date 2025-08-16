@@ -5,7 +5,7 @@ import { getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
 import { BridgeProviderQuoteError, BridgeQuoteErrors } from '@cowprotocol/cow-sdk'
 import { CenteredDots, HelpTooltip, TokenSymbol } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
 import { CompatibilityIssuesWarning } from 'modules/trade'

@@ -16,7 +16,7 @@ import {
   ConnectionType,
 } from '@cowprotocol/wallet'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 
 import Copy from 'legacy/components/Copy'
 import { groupActivitiesByDay, useMultipleActivityDescriptors } from 'legacy/hooks/useRecentActivity'

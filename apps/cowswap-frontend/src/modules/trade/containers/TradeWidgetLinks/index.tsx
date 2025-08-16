@@ -4,7 +4,8 @@ import { Command } from '@cowprotocol/types'
 import { Badge, BadgeTypes } from '@cowprotocol/ui'
 import type { TradeType } from '@cowprotocol/widget-lib'
 
-import { Trans } from '@lingui/macro'
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import IMAGE_CARET from 'assets/icon/caret.svg'
 import SVG from 'react-inlinesvg'
 import { useLocation } from 'react-router'
@@ -77,10 +78,10 @@ export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) 
 
       const tradeUrlParams = isCurrentPathYield
         ? ({
-          chainId,
-          inputCurrencyId: itemTradeState.inputCurrencyId || defaultState?.inputCurrencyId || null,
-          outputCurrencyId: itemTradeState.outputCurrencyId,
-        } as TradeUrlParams)
+            chainId,
+            inputCurrencyId: itemTradeState.inputCurrencyId || defaultState?.inputCurrencyId || null,
+            outputCurrencyId: itemTradeState.outputCurrencyId,
+          } as TradeUrlParams)
         : getTradeUrlParams(item)
 
       const routePath =
@@ -124,13 +125,15 @@ export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) 
       >
         <styledEl.DropdownButton>
           {selectedMenuItem.props.item.label}
-          {!singleMenuItem ? <SVG src={IMAGE_CARET} title="select" /> : null}
+          {!singleMenuItem ? <SVG src={IMAGE_CARET} title={t`select`} /> : null}
         </styledEl.DropdownButton>
       </styledEl.MenuItem>
 
       {isDropdownVisible && (
         <styledEl.SelectMenu>
-          <ModalHeader onBack={handleMenuItemClick}>Trading mode</ModalHeader>
+          <ModalHeader onBack={handleMenuItemClick}>
+            <Trans>Trading mode</Trans>
+          </ModalHeader>
           <styledEl.TradeWidgetContent>{menuItemsElements}</styledEl.TradeWidgetContent>
         </styledEl.SelectMenu>
       )}
@@ -152,8 +155,8 @@ const MenuItem = ({
   isActive: boolean
   onClick: Command
   isDropdownVisible: boolean
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 }) => (
   <styledEl.MenuItem isActive={isActive} onClick={onClick} isDropdownVisible={isDropdownVisible}>
     <styledEl.Link to={routePath}>

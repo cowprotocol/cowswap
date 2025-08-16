@@ -1,5 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 
+import { t } from '@lingui/core/macro'
+
 import {
   limitOrdersSettingsAtom,
   updateLimitOrdersSettingsAtom,
@@ -27,8 +29,8 @@ export function Settings({ state, onStateChanged }: SettingsProps) {
       <SettingsTitle>Advanced Order Settings</SettingsTitle>
 
       <SettingsBox
-        title="Custom Recipient"
-        tooltip="Allows you to choose a destination address for the swap other than the connected one."
+        title={t`Custom Recipient`}
+        tooltip={t`Allows you to choose a destination address for the swap other than the connected one.`}
         value={showRecipient}
         toggle={() => onStateChanged({ showRecipient: !showRecipient })}
       />

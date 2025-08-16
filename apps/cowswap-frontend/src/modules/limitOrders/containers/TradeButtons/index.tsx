@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 
 import { useLimitOrdersWarningsAccepted } from 'modules/limitOrders/hooks/useLimitOrdersWarningsAccepted'
 import { useTradeConfirmActions } from 'modules/trade'

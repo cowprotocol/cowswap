@@ -9,7 +9,7 @@ import { ExternalLink, Media } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 import { Confetti } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 import ReactDOM from 'react-dom'
 import { X } from 'react-feather'
 import SVG from 'react-inlinesvg'

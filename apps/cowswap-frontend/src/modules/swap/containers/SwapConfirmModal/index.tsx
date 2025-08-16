@@ -5,6 +5,8 @@ import { Nullish } from '@cowprotocol/types'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
+import { t } from '@lingui/core/macro'
+
 import type { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { useAppData } from 'modules/appData'
@@ -36,8 +38,6 @@ import { useLabelsAndTooltips } from './useLabelsAndTooltips'
 import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
 import { useSwapDeadlineState } from '../../hooks/useSwapSettings'
 
-const CONFIRM_TITLE = 'Swap'
-
 export interface SwapConfirmModalProps {
   doTrade(): Promise<false | void>
 
@@ -51,6 +51,7 @@ export interface SwapConfirmModalProps {
 // TODO: Break down this large function into smaller functions
 // eslint-disable-next-line max-lines-per-function
 export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
+  const CONFIRM_TITLE = t`Swap`
   const { inputCurrencyInfo, outputCurrencyInfo, priceImpact, recipient, recipientAddress, doTrade } = props
 
   const { account } = useWalletInfo()
@@ -99,12 +100,14 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
     return true
   }, [balances, inputCurrencyInfo, shouldDisplayBridgeDetails, bridgeQuoteAmounts])
 
-  const confirmText = shouldDisplayBridgeDetails ? 'Confirm Swap and Bridge' : 'Confirm Swap'
+  const confirmText = shouldDisplayBridgeDetails ? t`Confirm Swap and Bridge` : t`Confirm Swap`
 
   const buttonText = useMemo(() => {
+    const { amount } = inputCurrencyInfo
+    const symbol = amount?.currency?.symbol || t`token`
+
     if (disableConfirm) {
-      const { amount } = inputCurrencyInfo
-      return `Insufficient ${amount?.currency?.symbol || 'token'} balance`
+      return t`Insufficient ${symbol} balance`
     }
     return confirmText
   }, [confirmText, disableConfirm, inputCurrencyInfo])
@@ -128,7 +131,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
         {shouldDisplayBridgeDetails && bridgeProvider && swapContext && bridgeContext
           ? (restContent) => (
               <>
-                <RateInfo label="Price" rateInfoParams={rateInfoParams} fontSize={13} fontBold labelBold />
+                <RateInfo label={t`Price`} rateInfoParams={rateInfoParams} fontSize={13} fontBold labelBold />
                 <QuoteDetails
                   isCollapsible
                   bridgeProvider={bridgeProvider}

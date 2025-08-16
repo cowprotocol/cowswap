@@ -5,7 +5,6 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { FiatAmount, TokenAmount, TokenSymbol, UI } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { Trans } from '@lingui/macro'
 import { Repeat } from 'react-feather'
 import styled from 'styled-components/macro'
 import { Nullish } from 'types'
@@ -237,7 +236,7 @@ export function RateInfo({
     <Wrapper stylized={stylized} className={className} fontSize={fontSize}>
       {!noLabel && (
         <RateLabel labelBold={labelBold}>
-          <Trans>{label}</Trans>
+          {label}
           <InvertRateControl onClick={toggleInverted} />
         </RateLabel>
       )}

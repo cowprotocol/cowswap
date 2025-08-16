@@ -4,7 +4,7 @@ import alertCircle from '@cowprotocol/assets/cow-swap/alert-circle.svg'
 import orderPresignaturePending from '@cowprotocol/assets/cow-swap/order-presignature-pending.svg'
 import { Media, UI } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 import { Link } from 'react-router'
 import styled from 'styled-components/macro'

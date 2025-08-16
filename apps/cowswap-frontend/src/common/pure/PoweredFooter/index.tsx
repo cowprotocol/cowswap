@@ -1,7 +1,7 @@
 import { COW_PROTOCOL_LINK } from '@cowprotocol/common-const'
 import { ExternalLink, UI, ProductLogo, ProductVariant } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
 const Wrapper = styled.div`
