@@ -40,7 +40,7 @@ const getQuoteState = ({
   }) as TradeQuoteState
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+ 
 describe('Quote deadline utils', () => {
   describe('getQuoteTimeOffset()', () => {
     it('When expected validTo and quote validTo are the same, then should return 0', () => {

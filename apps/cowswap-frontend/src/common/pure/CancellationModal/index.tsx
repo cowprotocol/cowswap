@@ -18,7 +18,7 @@ export type CancellationModalProps = {
 }
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+ 
 export function CancellationModal(props: CancellationModalProps): ReactElement | null {
   const { isOpen, onDismiss, context } = props
   const {

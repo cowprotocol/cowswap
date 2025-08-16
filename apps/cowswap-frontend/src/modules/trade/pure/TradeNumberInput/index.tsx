@@ -61,7 +61,7 @@ export function InputArrows({ onClickUp, onClickDown }: InputArrowsProps) {
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function TradeNumberInput(props: TradeNumberInputProps) {
   const {
     value,
@@ -84,7 +84,7 @@ export function TradeNumberInput(props: TradeNumberInputProps) {
 
   const validateInput = useCallback(
     // TODO: Reduce function complexity by extracting logic
-    // eslint-disable-next-line complexity
+     
     (newValue: string) => {
       const hasDot = newValue.includes('.')
       const [quotient, decimals] = (newValue || '').split('.')

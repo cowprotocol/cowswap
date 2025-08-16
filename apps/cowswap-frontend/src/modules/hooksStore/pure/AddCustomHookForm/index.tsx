@@ -61,7 +61,7 @@ export function AddCustomHookForm({ addHookDapp, children, isPreHook, walletType
 
   // Normalizes URLs only on explicit actions (paste/submit) to prevent interrupting user typing
   // TODO: Reduce function complexity by extracting logic
-  // eslint-disable-next-line complexity
+   
   const normalizeUrl = useCallback((url: string, shouldNormalize = false) => {
     if (!url) return ''
 

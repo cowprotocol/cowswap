@@ -58,7 +58,7 @@ export function ExternalDappLoader({
   const fetchManifest = useCallback(
     // TODO: Break down this large function into smaller functions
     // TODO: Reduce function complexity by extracting logic
-    // eslint-disable-next-line max-lines-per-function, complexity
+     
     async (url: string) => {
       if (!url) return
 
