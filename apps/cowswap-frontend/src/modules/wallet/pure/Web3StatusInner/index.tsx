@@ -1,5 +1,6 @@
-import { useMemo } from 'react'
+import { ReactNode, useMemo } from 'react'
 
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { shortenAddress } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
 import { Loader, RowBetween } from '@cowprotocol/ui'
@@ -7,13 +8,14 @@ import { ConnectionType } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/macro'
 import ICON_WALLET from 'assets/icon/wallet.svg'
+import { AlertCircle } from 'react-feather'
 import SVG from 'react-inlinesvg'
 
 import { upToExtraSmall, upToTiny, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 
-import { CowSwapAnalyticsCategory, toCowSwapGtmEvent, CowSwapGtmEvent } from 'common/analytics/types'
+import { CowSwapAnalyticsCategory, CowSwapGtmEvent, toCowSwapGtmEvent } from 'common/analytics/types'
 
-import { Text, Web3StatusConnect, Web3StatusConnected } from './styled'
+import { Text, UnfillableWarning, Web3StatusConnect, Web3StatusConnected } from './styled'
 
 import { StatusIcon } from '../StatusIcon'
 
@@ -23,16 +25,16 @@ export interface Web3StatusInnerProps {
   connectWallet: Command
   connectionType: ConnectionType
   ensName?: string | null
+  unfillableOrdersCount: number
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function Web3StatusInner(props: Web3StatusInnerProps) {
-  const { account, pendingCount, ensName, connectionType, connectWallet } = props
+export function Web3StatusInner(props: Web3StatusInnerProps): ReactNode {
+  const { account, pendingCount, ensName, connectionType, connectWallet, unfillableOrdersCount } = props
 
   const hasPendingTransactions = !!pendingCount
   const isUpToExtraSmall = useMediaQuery(upToExtraSmall)
   const isUpToTiny = useMediaQuery(upToTiny)
+  const { isPartialApproveEnabled } = useFeatureFlags()
 
   const connectWalletEvent = useMemo(
     (): CowSwapGtmEvent => ({
@@ -52,7 +54,13 @@ export function Web3StatusInner(props: Web3StatusInnerProps) {
             <Text>
               <Trans>{pendingCount} Pending</Trans>
             </Text>{' '}
-            <Loader stroke="currentColor" />
+            {isPartialApproveEnabled && unfillableOrdersCount > 0 ? (
+              <UnfillableWarning>
+                <AlertCircle size={18} />
+              </UnfillableWarning>
+            ) : (
+              <Loader stroke="currentColor" />
+            )}
           </RowBetween>
         ) : (
           <Text>{ensName || shortenAddress(account, isUpToTiny ? 4 : isUpToExtraSmall ? 3 : 4)}</Text>
