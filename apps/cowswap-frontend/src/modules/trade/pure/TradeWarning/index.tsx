@@ -3,7 +3,6 @@ import { ReactNode } from 'react'
 import { UI } from '@cowprotocol/ui'
 import { InfoTooltip } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/react/macro'
 import { AlertTriangle } from 'react-feather'
 import styled from 'styled-components/macro'
 
@@ -126,9 +125,7 @@ export function TradeWarning(props: TradeWarningProps) {
                 acceptCallback?.(event.target.checked)
               }}
             />
-            <span>
-              <Trans>{acceptLabel}</Trans>
-            </span>
+            <span>{acceptLabel}</span>
           </AcceptBox>
         </div>
       )}

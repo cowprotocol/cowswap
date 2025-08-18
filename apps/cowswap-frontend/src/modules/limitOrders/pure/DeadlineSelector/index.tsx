@@ -147,9 +147,7 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
           <styledEl.ListWrapper>
             {limitOrderDeadlines.map((item) => (
               <li key={item.value}>
-                <styledEl.ListItem onSelect={() => setDeadline(item)}>
-                  <Trans>{item.title}</Trans>
-                </styledEl.ListItem>
+                <styledEl.ListItem onSelect={() => setDeadline(item)}>{item.title}</styledEl.ListItem>
               </li>
             ))}
             <styledEl.ListItem onSelect={openModal}>
@@ -191,11 +189,7 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
               />
             </styledEl.CustomLabel>
             {/* TODO: style me!!! */}
-            {error && (
-              <div>
-                <Trans>{error}</Trans>
-              </div>
-            )}
+            {error && <div>{error}</div>}
           </styledEl.ModalContent>
           <styledEl.ModalFooter>
             <ButtonSecondary onClick={onDismiss}>Cancel</ButtonSecondary>

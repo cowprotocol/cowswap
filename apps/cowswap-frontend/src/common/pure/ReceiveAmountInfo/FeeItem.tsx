@@ -19,9 +19,7 @@ export function FeeItem({ title, isSell, feeAmount: feeAmount }: FeeItemProps): 
 
   return (
     <div>
-      <span>
-        <Trans>{title}</Trans>
-      </span>
+      <span>{title}</span>
       {!isFractionFalsy(feeAmount) ? (
         <span>
           {typeString}

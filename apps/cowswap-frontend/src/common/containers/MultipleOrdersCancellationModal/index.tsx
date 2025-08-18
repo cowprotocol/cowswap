@@ -6,6 +6,9 @@ import { Command } from '@cowprotocol/types'
 import { ButtonPrimary } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
+
 import { LegacyConfirmationModalContent } from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationModalContent'
 import { useRequestOrderCancellation } from 'legacy/state/orders/hooks'
 
@@ -103,14 +106,18 @@ export function MultipleOrdersCancellationModal(props: Props): ReactNode {
         // eslint-disable-next-line react/no-unstable-nested-components
         topContent={() => (
           <div>
-            <p>Are you sure you want to cancel {ordersCount} orders?</p>
+            <p>
+              <Trans>Are you sure you want to cancel {ordersCount} orders?</Trans>
+            </p>
           </div>
         )}
         // TODO: Extract nested component outside render function
         // eslint-disable-next-line react/no-unstable-nested-components
         bottomContent={() => (
           <div>
-            <ButtonPrimary onClick={signAndSendCancellation}>Request cancellations</ButtonPrimary>
+            <ButtonPrimary onClick={signAndSendCancellation}>
+              <Trans>Request cancellations</Trans>
+            </ButtonPrimary>
           </div>
         )}
       />

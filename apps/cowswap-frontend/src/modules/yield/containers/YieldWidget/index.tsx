@@ -5,6 +5,8 @@ import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { LpTokenProvider } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { t } from '@lingui/core/macro'
+
 import { Field } from 'legacy/state/types'
 
 import { SelectTokenWidget } from 'modules/tokensList'
@@ -36,26 +38,25 @@ import { TradeButtons } from '../TradeButtons'
 import { Warnings } from '../Warnings'
 import { YieldConfirmModal } from '../YieldConfirmModal'
 
-const YIELD_BULLET_LIST_CONTENT: BulletListItem[] = [
-  { content: 'Maximize your yield on existing LP positions' },
-  { content: 'Seamlessly swap your tokens into CoW AMM pools' },
-  { content: 'Earn higher returns with reduced impermanent loss' },
-  { content: 'Leverage advanced strategies for optimal growth' },
-]
-
-const YIELD_UNLOCK_SCREEN = {
-  id: 'yield-widget',
-  title: 'Unlock Enhanced Yield Features',
-  subtitle: 'Boooost your current LP positions with CoW AMM’s pools.',
-  orderType: 'yield',
-  buttonText: 'Start boooosting your yield!',
-}
-
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
 // eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
 export function YieldWidget() {
+  const YIELD_BULLET_LIST_CONTENT: BulletListItem[] = [
+    { content: t`Maximize your yield on existing LP positions` },
+    { content: t`Seamlessly swap your tokens into CoW AMM pools` },
+    { content: t`Earn higher returns with reduced impermanent loss` },
+    { content: t`Leverage advanced strategies for optimal growth` },
+  ]
+
+  const YIELD_UNLOCK_SCREEN = {
+    id: t`yield-widget`,
+    title: t`Unlock Enhanced Yield Features`,
+    subtitle: t`Boooost your current LP positions with CoW AMM’s pools.`,
+    orderType: t`yield`,
+    buttonText: t`Start boooosting your yield!`,
+  }
   const { chainId, account } = useWalletInfo()
   const { showRecipient } = useYieldSettings()
   const deadlineState = useYieldDeadlineState()

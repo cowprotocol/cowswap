@@ -4,7 +4,6 @@ import { ReactElement, ReactNode } from 'react'
 import { HelpTooltip, renderTooltip } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { Trans } from '@lingui/react/macro'
 import { Nullish } from 'types'
 
 import { useGetReceiveAmountInfo } from 'modules/trade'
@@ -12,8 +11,8 @@ import { useUsdAmount } from 'modules/usdAmount'
 
 import * as styledEl from './styled'
 
-import { AMOUNT_PARTS_LABELS } from '../../containers/TwapFormWidget/tooltips'
 import { twapOrdersSettingsAtom } from '../../state/twapOrdersSettingsAtom'
+import { AMOUNT_PARTS_LABELS } from '../TwapFormWidget/tooltips'
 
 interface TradeAmountPreviewProps {
   amount: Nullish<CurrencyAmount<Currency>>
@@ -31,7 +30,7 @@ function TradeAmountPreview(props: TradeAmountPreviewProps) {
   return (
     <styledEl.Part>
       <styledEl.Label>
-        <Trans>{label}</Trans>
+        {label}
         <HelpTooltip text={tooltip} />
       </styledEl.Label>
 

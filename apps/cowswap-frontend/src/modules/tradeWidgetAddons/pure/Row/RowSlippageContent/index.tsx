@@ -6,6 +6,7 @@ import { Command } from '@cowprotocol/types'
 import { CenteredDots, HoverTooltip, LinkStyledButton, RowFixed, UI } from '@cowprotocol/ui'
 import { Percent } from '@uniswap/sdk-core'
 
+import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
@@ -30,9 +31,6 @@ const DefaultSlippage = styled.span`
   }
 `
 
-const SUGGESTED_SLIPPAGE_TOOLTIP =
-  'This is the recommended slippage tolerance based on current gas prices & trade size. A lower amount may result in slower execution.'
-
 export interface RowSlippageContentProps {
   chainId: SupportedChainId
   displaySlippage: string
@@ -53,6 +51,7 @@ export interface RowSlippageContentProps {
 }
 
 export function RowSlippageContent(props: RowSlippageContentProps): ReactNode {
+  const SUGGESTED_SLIPPAGE_TOOLTIP = t`This is the recommended slippage tolerance based on current gas prices & trade size. A lower amount may result in slower execution.`
   const {
     chainId,
     displaySlippage,
@@ -93,7 +92,9 @@ export function RowSlippageContent(props: RowSlippageContentProps): ReactNode {
           <CenteredDots />
         ) : (
           <>
-            <LinkStyledButton onClick={setAutoSlippage}>(Recommended: {smartSlippage})</LinkStyledButton>
+            <LinkStyledButton onClick={setAutoSlippage}>
+              (<Trans>Recommended</Trans>: {smartSlippage})
+            </LinkStyledButton>
             <HoverTooltip wrapInContainer content={SUGGESTED_SLIPPAGE_TOOLTIP}>
               <StyledInfoIcon size={16} />
             </HoverTooltip>
@@ -149,9 +150,17 @@ function SlippageTextContents({
 }: SlippageTextContentsProps): ReactNode {
   return (
     <TransactionText>
-      <Trans>{slippageLabel || 'Slippage tolerance'}</Trans>
-      {isDynamicSlippageSet && !isDefaultSlippageApplied && <i>(dynamic)</i>}
-      {isEoaEthFlow && isDefaultSlippageApplied && <i>(modified)</i>}
+      {slippageLabel || t`Slippage tolerance`}
+      {isDynamicSlippageSet && !isDefaultSlippageApplied && (
+        <i>
+          <Trans>(dynamic)</Trans>
+        </i>
+      )}
+      {isEoaEthFlow && isDefaultSlippageApplied && (
+        <i>
+          <Trans>(modified)</Trans>
+        </i>
+      )}
     </TransactionText>
   )
 }

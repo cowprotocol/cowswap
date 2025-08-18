@@ -117,10 +117,13 @@ export function TradeFormBlankButton({
     >
       {showLoader ? (
         <>
-          <LongLoadText>Confirm with your wallet </LongLoadText> <CenteredDots smaller />
+          <LongLoadText>
+            <Trans>Confirm with your wallet</Trans>
+          </LongLoadText>{' '}
+          <CenteredDots smaller />
         </>
       ) : (
-        <Trans>{children}</Trans>
+        <>{children}</>
       )}
     </ActionButton>
   )

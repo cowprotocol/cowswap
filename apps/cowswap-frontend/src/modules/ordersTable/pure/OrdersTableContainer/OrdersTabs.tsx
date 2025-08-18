@@ -4,7 +4,7 @@ import alertCircle from '@cowprotocol/assets/cow-swap/alert-circle.svg'
 import orderPresignaturePending from '@cowprotocol/assets/cow-swap/order-presignature-pending.svg'
 import { Media, UI } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/react/macro'
+import { t } from '@lingui/core/macro'
 import SVG from 'react-inlinesvg'
 import { Link } from 'react-router'
 import styled from 'styled-components/macro'
@@ -194,9 +194,9 @@ export function OrdersTabs({ tabs, isWalletConnected = true }: OrdersTabsProps):
               $isDisabled={!isWalletConnected}
               to={buildOrdersTableUrl({ tabId: tab.id, pageNumber: 1 })}
             >
-              {isUnfillable && <SVG src={alertCircle} description="warning" />}
-              {isSigning && <SVG src={orderPresignaturePending} description="signing" />}
-              <Trans>{tab.title}</Trans> {isWalletConnected && <span>({tab.count})</span>}
+              {isUnfillable && <SVG src={alertCircle} description={t`warning`} />}
+              {isSigning && <SVG src={orderPresignaturePending} description={t`signing`} />}
+              {tab.title} {isWalletConnected && <span>({tab.count})</span>}
             </TabButton>
           )
         })}

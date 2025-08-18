@@ -3,6 +3,7 @@ import { ReactNode } from 'react'
 import cowMeditatingV2 from '@cowprotocol/assets/cow-swap/meditating-cow-v2.svg'
 import { CowSwapSafeAppLink } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 
 import * as styledEl from './OrdersTableContainer.styled'
@@ -10,16 +11,6 @@ import * as styledEl from './OrdersTableContainer.styled'
 import { OrderTabId } from '../../const/tabs'
 import { useOrdersTableState } from '../../hooks/useOrdersTableState'
 import { TabOrderTypes } from '../../types'
-
-function getSectionTitle(currentTab: OrderTabId): string {
-  return currentTab === OrderTabId.all
-    ? 'No orders'
-    : currentTab === OrderTabId.unfillable
-      ? 'No unfillable orders'
-      : currentTab === OrderTabId.open
-        ? 'No open orders'
-        : 'No order history'
-}
 
 interface NoOrdersContentProps {
   currentTab: OrderTabId
@@ -30,33 +21,42 @@ export function NoOrdersContent({ currentTab, searchTerm }: NoOrdersContentProps
   const { orderType, isSafeViaWc, displayOrdersOnlyForSafeApp, injectedWidgetParams } = useOrdersTableState() || {}
 
   const emptyOrdersImage = injectedWidgetParams?.images?.emptyOrders
+  const orderTabLink = currentTab === OrderTabId.history ? t`orders history` : t`your orders`
+  const orderTabState =
+    currentTab === OrderTabId.unfillable ? t`unfillable` : currentTab === OrderTabId.open ? t`open` : ''
+
+  function getSectionTitle(currentTab: OrderTabId): string {
+    return currentTab === OrderTabId.all
+      ? t`No orders`
+      : currentTab === OrderTabId.unfillable
+        ? t`No unfillable orders`
+        : currentTab === OrderTabId.open
+          ? t`No open orders`
+          : t`No order history`
+  }
 
   return (
     <styledEl.Content>
       <span>
         {emptyOrdersImage ? (
-          <img src={emptyOrdersImage} alt="There are no orders" />
+          <img src={emptyOrdersImage} alt={t`There are no orders`} />
         ) : (
-          <styledEl.MeditatingCowImg src={cowMeditatingV2} alt="Cow meditating ..." />
+          <styledEl.MeditatingCowImg src={cowMeditatingV2} alt={t`Cow meditating...`} />
         )}
       </span>
-      <h3>
-        <Trans>{searchTerm ? 'No matching orders found' : getSectionTitle(currentTab)}</Trans>
-      </h3>
+      <h3>{searchTerm ? t`No matching orders found` : getSectionTitle(currentTab)}</h3>
       <p>
         {displayOrdersOnlyForSafeApp && isSafeViaWc ? (
-          <Trans>
-            Use the <CowSwapSafeAppLink /> to see {currentTab === OrderTabId.history ? 'orders history' : 'your orders'}
-          </Trans>
+          <>
+            <Trans>
+              Use the <CowSwapSafeAppLink /> to see {orderTabLink}
+            </Trans>
+          </>
         ) : searchTerm ? (
           <Trans>Try adjusting your search term or clearing the filter</Trans>
         ) : (
           <>
-            <Trans>
-              You don't have any{' '}
-              {currentTab === OrderTabId.unfillable ? 'unfillable' : currentTab === OrderTabId.open ? 'open' : ''}{' '}
-              orders at the moment.
-            </Trans>{' '}
+            <Trans>You don't have any {orderTabState} orders at the moment.</Trans>{' '}
             {(currentTab === OrderTabId.open || currentTab === OrderTabId.all) && (
               <>
                 <br />

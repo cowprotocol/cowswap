@@ -13,9 +13,7 @@ const compat = new FlatCompat({
 })
 
 module.exports = [
-  // Add lingui recommended configuration
   pluginLingui.configs['flat/recommended'],
-
   {
     ignores: ['static-files/'],
   },

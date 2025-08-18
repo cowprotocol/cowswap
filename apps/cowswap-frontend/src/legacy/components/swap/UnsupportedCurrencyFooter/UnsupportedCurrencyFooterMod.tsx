@@ -6,7 +6,6 @@ import { AutoRow, ButtonEmpty, ExternalLink, Media, RowBetween } from '@cowproto
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
 
-import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 import { ThemedText, Z_INDEX, CloseIcon } from 'theme'
 
@@ -83,9 +82,7 @@ export default function UnsupportedCurrencyFooter({
         <Card padding="2rem">
           <AutoColumn gap="lg">
             <RowBetween>
-              <ThemedText.MediumHeader>
-                <Trans>{detailsTitle}</Trans>
-              </ThemedText.MediumHeader>
+              <ThemedText.MediumHeader>{detailsTitle}</ThemedText.MediumHeader>
               <CloseIcon onClick={() => setShowDetails(false)} />
             </RowBetween>
             {tokens.map((token) => {
@@ -109,16 +106,14 @@ export default function UnsupportedCurrencyFooter({
               )
             })}
             <AutoColumn gap="lg">
-              <ThemedText.Body fontWeight={500}>
-                <Trans>{detailsText}</Trans>
-              </ThemedText.Body>
+              <ThemedText.Body fontWeight={500}>{detailsText}</ThemedText.Body>
             </AutoColumn>
           </AutoColumn>
         </Card>
       </Modal>
       <StyledButtonEmpty padding={'0'} onClick={() => setShowDetails(true)}>
         <ThemedText.Error error={!!showDetailsText} color={'danger'}>
-          <Trans>{showDetailsText}</Trans>
+          {showDetailsText}
         </ThemedText.Error>
       </StyledButtonEmpty>
     </DetailsFooter>

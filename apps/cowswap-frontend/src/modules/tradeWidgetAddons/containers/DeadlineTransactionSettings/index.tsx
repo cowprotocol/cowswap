@@ -32,11 +32,7 @@ export function DeadlineTransactionSettings({ deadlineState }: DeadlineSettingsP
         </ThemedText.Black>
         <HelpTooltip
           text={
-            <Trans>
-              {isEoaEthFlow
-                ? getNativeOrderDeadlineTooltip([nativeCurrency.symbol])
-                : getNonNativeOrderDeadlineTooltip()}
-            </Trans>
+            isEoaEthFlow ? getNativeOrderDeadlineTooltip([nativeCurrency.symbol]) : getNonNativeOrderDeadlineTooltip()
           }
         />
       </RowFixed>

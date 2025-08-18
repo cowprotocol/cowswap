@@ -160,10 +160,10 @@ const MenuItem = ({
 }) => (
   <styledEl.MenuItem isActive={isActive} onClick={onClick} isDropdownVisible={isDropdownVisible}>
     <styledEl.Link to={routePath}>
-      <Trans>{item.label}</Trans>
+      {item.label}
       {(!isActive && item.badgeImage) || item.badge ? (
         <Badge {...(item.badgeType && { type: item.badgeType })}>
-          {item.badgeImage ? <SVG src={item.badgeImage} /> : <Trans>{item.badge}</Trans>}
+          {item.badgeImage ? <SVG src={item.badgeImage} /> : <>{item.badge}</>}
         </Badge>
       ) : null}
     </styledEl.Link>

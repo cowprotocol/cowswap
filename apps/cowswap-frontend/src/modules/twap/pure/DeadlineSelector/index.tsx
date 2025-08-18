@@ -2,6 +2,7 @@ import React, { useCallback, useMemo, useState } from 'react'
 
 import { renderTooltip, UI } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
 import styled from 'styled-components/macro'
 
 import { TradeSelect, TradeSelectItem } from 'modules/trade/pure/TradeSelect'
@@ -22,8 +23,6 @@ interface DeadlineSelectorProps {
 
   setDeadline(value: TwapOrdersDeadline): void
 }
-
-const CUSTOM_OPTION: TradeSelectItem = { label: 'Custom', value: 'CUSTOM_ITEM_VALUE' }
 
 const StyledTradeSelect = styled(TradeSelect)`
   font-weight: 500;
@@ -75,9 +74,13 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
   } = props
   const [isCustomModalOpen, setIsCustomModalOpen] = useState(false)
 
+  const CUSTOM_OPTION: TradeSelectItem = useMemo((): TradeSelectItem => {
+    return { label: t`Custom`, value: 'CUSTOM_ITEM_VALUE' }
+  }, [])
+
   const itemsWithCustom = useMemo(() => {
     return [...items, CUSTOM_OPTION]
-  }, [items])
+  }, [CUSTOM_OPTION, items])
 
   const onSelect = useCallback(
     (item: TradeSelectItem) => {
@@ -91,7 +94,7 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
         })
       }
     },
-    [setIsCustomModalOpen, setDeadline],
+    [CUSTOM_OPTION, setDeadline],
   )
 
   const activeLabel = useMemo(() => {
