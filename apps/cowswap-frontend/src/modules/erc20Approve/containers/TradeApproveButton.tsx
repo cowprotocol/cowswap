@@ -14,7 +14,7 @@ const MaxApprovalAmount = BigInt(MaxUint256.toString())
 
 export interface TradeApproveButtonProps {
   amountToApprove: CurrencyAmount<Currency>
-  children?: React.ReactNode
+  children?: ReactNode
   isDisabled?: boolean
 }
 
