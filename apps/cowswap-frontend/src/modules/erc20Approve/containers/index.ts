@@ -1,1 +1,2 @@
-export * from './TradeApproveButton';
+export * from './TradeApproveButton'
+export * from './TradeApprove'

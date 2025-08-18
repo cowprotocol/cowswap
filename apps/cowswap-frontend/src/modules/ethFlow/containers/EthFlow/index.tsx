@@ -11,9 +11,9 @@ import { useSingleActivityDescriptor } from 'legacy/hooks/useRecentActivity'
 import { WrapUnwrapCallback } from 'legacy/hooks/useWrapCallback'
 
 import { useApproveState } from 'modules/erc20Approve'
+import { useTradeApproveCallback } from 'modules/erc20Approve/containers/TradeApprove'
 import { useWrappedToken } from 'modules/trade'
 
-import { useTradeApproveCallback } from 'common/containers/TradeApprove'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import { useEthFlowActions } from './hooks/useEthFlowActions'
