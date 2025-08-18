@@ -1,8 +1,8 @@
+import { useBalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useOnlyPendingOrders } from 'legacy/state/orders/hooks'
 
-import { useBalancesAndAllowances } from 'modules/ordersTable/hooks/useBalancesAndAllowances'
 
 export interface OrderFillability {
   hasEnoughAllowance: boolean | undefined

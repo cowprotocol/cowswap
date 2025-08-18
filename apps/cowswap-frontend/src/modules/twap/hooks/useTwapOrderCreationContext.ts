@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 
 import { ComposableCoW, Erc20 } from '@cowprotocol/abis'
+import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
@@ -12,7 +13,7 @@ import { useNeedsZeroApproval } from 'modules/zeroApproval'
 
 import { useTokenContract } from 'common/hooks/useContract'
 import { useNeedsApproval } from 'common/hooks/useNeedsApproval'
-import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
+
 
 export interface TwapOrderCreationContext {
   composableCowContract: ComposableCoW

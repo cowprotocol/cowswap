@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 
+import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -8,7 +9,6 @@ import { Nullish } from 'types'
 import { useApprovalStateForSpender } from 'modules/erc20Approve'
 
 import { useTokenContract } from 'common/hooks/useContract'
-import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
 
 import { shouldZeroApprove as shouldZeroApproveFn } from './shouldZeroApprove'
 
