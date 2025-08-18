@@ -1,6 +1,7 @@
 import { ReactNode, useMemo } from 'react'
 
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
+import { Nullish } from '@cowprotocol/types'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -43,13 +44,14 @@ export interface SwapConfirmModalProps {
   inputCurrencyInfo: CurrencyPreviewInfo
   outputCurrencyInfo: CurrencyPreviewInfo
   priceImpact: PriceImpact
-  recipient?: string | null
+  recipient: Nullish<string>
+  recipientAddress: Nullish<string>
 }
 
 // TODO: Break down this large function into smaller functions
 // eslint-disable-next-line max-lines-per-function
 export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
-  const { inputCurrencyInfo, outputCurrencyInfo, priceImpact, recipient, doTrade } = props
+  const { inputCurrencyInfo, outputCurrencyInfo, priceImpact, recipient, recipientAddress, doTrade } = props
 
   const { account } = useWalletInfo()
   const { ensName } = useWalletDetails()
@@ -146,6 +148,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
                     slippage={slippage}
                     receiveAmountInfo={receiveAmountInfo}
                     recipient={recipient}
+                    recipientAddress={recipientAddress}
                     account={account}
                     labelsAndTooltips={labelsAndTooltips}
                     hideLimitPrice

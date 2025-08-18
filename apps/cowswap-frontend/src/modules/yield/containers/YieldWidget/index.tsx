@@ -8,12 +8,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { Field } from 'legacy/state/types'
 
 import { SelectTokenWidget } from 'modules/tokensList'
-import {
-  TradeWidget,
-  TradeWidgetSlots,
-  useGetReceiveAmountInfo,
-  useTradePriceImpact
-} from 'modules/trade'
+import { TradeWidget, TradeWidgetSlots, useGetReceiveAmountInfo, useTradePriceImpact } from 'modules/trade'
 import { BulletListItem, UnlockWidgetScreen } from 'modules/trade/pure/UnlockWidgetScreen'
 import { useHandleSwap } from 'modules/tradeFlow'
 import { useTradeQuote } from 'modules/tradeQuote'
@@ -84,6 +79,7 @@ export function YieldWidget() {
     inputCurrencyFiatAmount,
     outputCurrencyFiatAmount,
     recipient,
+    recipientAddress,
   } = useYieldDerivedState()
   const doTrade = useHandleSwap(useSafeMemoObject({ deadline: deadlineState[0] }), widgetActions)
 
@@ -230,6 +226,7 @@ export function YieldWidget() {
         <YieldConfirmModal
           doTrade={doTrade.callback}
           recipient={recipient}
+          recipientAddress={recipientAddress}
           priceImpact={priceImpact}
           inputCurrencyInfo={inputCurrencyPreviewInfo}
           outputCurrencyInfo={outputCurrencyPreviewInfo}
