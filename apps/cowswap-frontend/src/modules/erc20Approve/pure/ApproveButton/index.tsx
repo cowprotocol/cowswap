@@ -9,7 +9,7 @@ import { Trans } from '@lingui/macro'
 
 import * as styledEl from './styledEl'
 
-import { ApprovalState } from '../../hooks'
+import { ApprovalState } from '../../types'
 
 export interface ApproveButtonProps {
   currency: Currency

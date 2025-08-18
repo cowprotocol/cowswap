@@ -9,7 +9,7 @@ import { Trans } from '@lingui/macro'
 import { CheckCircle, HelpCircle } from 'react-feather'
 import styled, { ThemeContext } from 'styled-components/macro'
 
-import { ApprovalState } from '../../hooks'
+import { ApprovalState } from '../../types'
 
 const ApproveButtonContentWrapper = styled.span`
   padding: 0 3px;

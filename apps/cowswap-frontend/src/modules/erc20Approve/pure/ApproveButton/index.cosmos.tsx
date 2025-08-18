@@ -6,7 +6,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { DemoContainer } from 'cosmos.decorator'
 import { useSelect } from 'react-cosmos/client'
 
-import { ApprovalState } from '../../hooks'
+import { ApprovalState } from '../../types/approval-state'
 
 import { ApproveButton } from './index'
 

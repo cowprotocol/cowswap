@@ -3,7 +3,9 @@ import { useAmountsToSign, useDerivedTradeState } from 'modules/trade'
 
 import { useHasPendingOrdersWithPermitForInputToken } from 'common/hooks/useHasPendingOrdersWithPermit'
 
-import { ApprovalState, useApproveState } from './useApproveState'
+import { useApproveState } from './useApproveState'
+
+import { ApprovalState } from '../types'
 
 export function useIsApprovalRequired(): boolean {
   const { maximumSendSellAmount } = useAmountsToSign() || {}
