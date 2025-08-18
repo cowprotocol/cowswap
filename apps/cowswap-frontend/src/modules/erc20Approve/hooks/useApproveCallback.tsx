@@ -52,7 +52,7 @@ export function useApproveCallback(
     async (amount: CurrencyAmount<Currency> | bigint) => {
       const amountToApprove = amount instanceof CurrencyAmount ? BigInt(amount.quotient.toString()) : amount
 
-      const summary = amountToApprove > 0 ? `Approve ${token?.symbol}` : `Revoke ${token?.symbol} approval`
+      const summary = amountToApprove > 0n ? `Approve ${token?.symbol}` : `Revoke ${token?.symbol} approval`
       const amountToApproveStr = '0x' + amountToApprove.toString(16)
 
       if (!tokenChainId || !token || !tokenContract || !spender) {
