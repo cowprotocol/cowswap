@@ -1,4 +1,5 @@
 import { useBalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
+import { OrderClass } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useOnlyPendingOrders } from 'legacy/state/orders/hooks'
@@ -11,7 +12,7 @@ export interface OrderFillability {
   hasPermit?: boolean
 }
 
-export function usePendingOrdersFillability(): Record<string, OrderFillability | undefined> {
+export function usePendingOrdersFillability(orderClass?: OrderClass): Record<string, OrderFillability | undefined> {
   const { chainId, account } = useWalletInfo()
 
   const pendingOrders = useOnlyPendingOrders(chainId, account)
@@ -20,6 +21,9 @@ export function usePendingOrdersFillability(): Record<string, OrderFillability |
   const { balances, allowances } = useBalancesAndAllowances(tokens)
 
   return pendingOrders.reduce<Record<string, OrderFillability>>((acc, order) => {
+    // todo implement checking for non-market orders when we prepare the UI for that
+    if (orderClass && order.class !== orderClass) return acc
+
     const balance = balances[order.sellToken.toLowerCase()]
     const allowance = allowances?.[order.sellToken.toLowerCase()]
 
