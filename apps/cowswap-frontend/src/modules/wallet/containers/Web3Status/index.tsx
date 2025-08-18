@@ -5,8 +5,8 @@ import { useConnectionType, useWalletDetails, useWalletInfo } from '@cowprotocol
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
 import { usePendingActivitiesCount } from 'common/hooks/usePendingActivitiesCount'
-import { usePendingOrdersFillability } from 'common/hooks/usePendingOrdersFillability'
 
+import { useShowUnfillableOrderAlert } from '../../hooks/useShowUnfillableOrderAlert'
 import { Web3StatusInner } from '../../pure/Web3StatusInner'
 import { Wrapper } from '../../pure/Web3StatusInner/styled'
 import { AccountSelectorModal } from '../AccountSelectorModal'
@@ -24,13 +24,12 @@ export function Web3Status({ className, onClick }: Web3StatusProps): ReactNode {
 
   const toggleWalletModal = useToggleWalletModal()
   const pendingCount = usePendingActivitiesCount()
-  const pendingOrdersFillability = usePendingOrdersFillability()
-  const unfillableOrdersCount = Object.keys(pendingOrdersFillability).length
+  const showUnfillableOrdersAlert = useShowUnfillableOrderAlert()
 
   return (
     <Wrapper className={className} onClick={onClick}>
       <Web3StatusInner
-        unfillableOrdersCount={unfillableOrdersCount}
+        showUnfillableOrdersAlert={showUnfillableOrdersAlert}
         pendingCount={pendingCount}
         account={account}
         ensName={ensName}

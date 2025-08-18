@@ -3,10 +3,12 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useOnlyPendingOrders } from 'legacy/state/orders/hooks'
 
+import { doesOrderHavePermit } from '../utils/doesOrderHavePermit'
 
 export interface OrderFillability {
   hasEnoughAllowance: boolean | undefined
   hasEnoughBalance: boolean | undefined
+  hasPermit?: boolean
 }
 
 export function usePendingOrdersFillability(): Record<string, OrderFillability | undefined> {
@@ -24,6 +26,7 @@ export function usePendingOrdersFillability(): Record<string, OrderFillability |
     acc[order.id] = {
       hasEnoughBalance: balance ? balance.gte(order.sellAmount) : undefined,
       hasEnoughAllowance: allowance ? allowance.gte(order.sellAmount) : undefined,
+      hasPermit: doesOrderHavePermit(order),
     }
 
     return acc

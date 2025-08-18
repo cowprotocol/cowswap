@@ -1,6 +1,5 @@
 import { ReactNode, useMemo } from 'react'
 
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { shortenAddress } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
 import { Loader, RowBetween } from '@cowprotocol/ui'
@@ -25,16 +24,15 @@ export interface Web3StatusInnerProps {
   connectWallet: Command
   connectionType: ConnectionType
   ensName?: string | null
-  unfillableOrdersCount: number
+  showUnfillableOrdersAlert?: boolean
 }
 
 export function Web3StatusInner(props: Web3StatusInnerProps): ReactNode {
-  const { account, pendingCount, ensName, connectionType, connectWallet, unfillableOrdersCount } = props
+  const { account, pendingCount, ensName, connectionType, connectWallet, showUnfillableOrdersAlert } = props
 
   const hasPendingTransactions = !!pendingCount
   const isUpToExtraSmall = useMediaQuery(upToExtraSmall)
   const isUpToTiny = useMediaQuery(upToTiny)
-  const { isPartialApproveEnabled } = useFeatureFlags()
 
   const connectWalletEvent = useMemo(
     (): CowSwapGtmEvent => ({
@@ -54,7 +52,7 @@ export function Web3StatusInner(props: Web3StatusInnerProps): ReactNode {
             <Text>
               <Trans>{pendingCount} Pending</Trans>
             </Text>{' '}
-            {isPartialApproveEnabled && unfillableOrdersCount > 0 ? (
+            {showUnfillableOrdersAlert ? (
               <UnfillableWarning>
                 <AlertCircle size={18} />
               </UnfillableWarning>
