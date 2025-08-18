@@ -17,11 +17,10 @@ import { Link } from 'react-router'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 import { useHasPendingApproval } from 'legacy/state/enhancedTransactions/hooks'
 
-import { ApprovalState } from 'modules/erc20Approve'
+import { ApprovalState, useApproveCallback } from 'modules/erc20Approve'
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
 
 import { Routes } from 'common/constants/routes'
-import { useApproveCallback } from 'common/hooks/useApproveCallback'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { getApprovalState } from 'common/utils/getApprovalState'
 import { CardsSpinner, ExtLink } from 'pages/Account/styled'

@@ -2,7 +2,7 @@ import { Erc20 } from '@cowprotocol/abis'
 import { PopulatedTransaction } from '@ethersproject/contracts'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { estimateApprove } from 'common/hooks/useApproveCallback'
+import { estimateApprove } from '../../erc20Approve/hooks/useApproveCallback'
 
 export type BuildApproveTxParams = {
   erc20Contract: Erc20

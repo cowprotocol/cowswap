@@ -8,9 +8,8 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
-import { useTokenContract } from './useContract'
-
-import { GAS_LIMIT_DEFAULT } from '../constants/common'
+import { GAS_LIMIT_DEFAULT } from 'common/constants/common'
+import { useTokenContract } from 'common/hooks/useContract'
 
 export async function estimateApprove(
   tokenContract: Erc20,
@@ -41,7 +40,6 @@ export async function estimateApprove(
   }
 }
 
-// TODO: Reduce function complexity by extracting logic
 export function useApproveCallback(
   currency: Currency | undefined,
   spender?: string,
