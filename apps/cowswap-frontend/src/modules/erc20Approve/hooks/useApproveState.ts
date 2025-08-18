@@ -9,7 +9,8 @@ import { useHasPendingApproval } from 'legacy/state/enhancedTransactions/hooks'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { useTokenAllowance } from 'common/hooks/useTokenAllowance'
-import { getApprovalState } from 'common/utils/getApprovalState'
+
+import { getApprovalState } from '../utils'
 
 export enum ApprovalState {
   UNKNOWN = 'UNKNOWN',

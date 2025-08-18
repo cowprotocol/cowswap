@@ -8,7 +8,7 @@ import { Currency } from '@uniswap/sdk-core'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 
-import { useApproveCallback } from '../../index'
+import { useApproveCallback } from '../../hooks'
 import { useUpdateTradeApproveState } from '../../state'
 
 interface TradeApproveCallbackParams {
