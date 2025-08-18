@@ -1,4 +1,3 @@
-import { getRpcProvider } from '@cowprotocol/common-const'
 import { isBarn, isDev, isProd, isStaging } from '@cowprotocol/common-utils'
 import { BridgingSdk, BungeeBridgeProvider } from '@cowprotocol/cow-sdk'
 
@@ -14,7 +13,6 @@ export const bungeeBridgeProvider = new BungeeBridgeProvider({
     apiBaseUrl: bungeeApiBase ? `${bungeeApiBase}/api/v1/bungee` : undefined,
     manualApiBaseUrl: bungeeApiBase ? `${bungeeApiBase}/api/v1/bungee-manual` : undefined,
   },
-  getRpcProvider,
 })
 
 export const bridgingSdk = new BridgingSdk({
