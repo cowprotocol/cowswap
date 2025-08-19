@@ -1,13 +1,12 @@
 import { Erc20 } from '@cowprotocol/abis'
 import { PopulatedTransaction } from '@ethersproject/contracts'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { estimateApprove } from 'modules/erc20Approve'
 
 export type BuildApproveTxParams = {
   erc20Contract: Erc20
   spender: string
-  amountToApprove: CurrencyAmount<Currency>
+  amountToApprove: bigint
 }
 
 /**
@@ -15,9 +14,6 @@ export type BuildApproveTxParams = {
  */
 export async function buildApproveTx(params: BuildApproveTxParams): Promise<PopulatedTransaction> {
   const { erc20Contract, spender, amountToApprove } = params
-
-  const toApprove = BigInt(amountToApprove.quotient.toString())
-  const estimatedAmount = await estimateApprove(erc20Contract, spender, toApprove)
-
+  const estimatedAmount = await estimateApprove(erc20Contract, spender, amountToApprove)
   return erc20Contract.populateTransaction.approve(spender, estimatedAmount.approveAmount)
 }

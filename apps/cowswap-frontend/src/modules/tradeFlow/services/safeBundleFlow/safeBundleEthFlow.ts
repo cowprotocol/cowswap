@@ -2,6 +2,7 @@ import { Erc20 } from '@cowprotocol/abis'
 import { WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { SigningScheme, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
+import { MaxUint256 } from '@ethersproject/constants'
 import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { Percent } from '@uniswap/sdk-core'
 
@@ -47,7 +48,8 @@ export async function safeBundleEthFlow(
     return false
   }
 
-  const { spender, sendBatchTransactions, needsApproval, wrappedNativeContract } = safeBundleContext
+  const { spender, sendBatchTransactions, needsApproval, wrappedNativeContract, isPartialApproveEnabled } =
+    safeBundleContext
 
   const { chainId, inputAmount, outputAmount } = context
 
@@ -78,11 +80,13 @@ export async function safeBundleEthFlow(
 
     logTradeFlow(LOG_PREFIX, 'STEP 3: [optional] build approval tx')
 
+    const amountToApprove = isPartialApproveEnabled ? BigInt(inputAmount.quotient.toString()) : MaxUint256.toBigInt()
+
     if (needsApproval) {
       const approveTx = await buildApproveTx({
         erc20Contract: wrappedNativeContract as unknown as Erc20,
         spender,
-        amountToApprove: inputAmount,
+        amountToApprove,
       })
 
       txs.push({
