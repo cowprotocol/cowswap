@@ -3,6 +3,7 @@ import { JSX, useContext } from 'react'
 import { HelpTooltip, RowBetween, RowFixed } from '@cowprotocol/ui'
 import { Percent } from '@uniswap/sdk-core'
 
+import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import { ThemeContext } from 'styled-components/macro'
 
@@ -57,7 +58,7 @@ export function TransactionSlippageInput(): JSX.Element {
           <RowBetween>
             {showSlippageWarning && (tooLow || tooHigh) ? (
               <styledEl.SlippageEmojiContainer>
-                <span role="img" aria-label="warning">
+                <span role="img" aria-label={t`warning`}>
                   ⚠️
                 </span>
               </styledEl.SlippageEmojiContainer>
@@ -93,7 +94,9 @@ export function TransactionSlippageInput(): JSX.Element {
                 </Trans>
               }
             />
-            <span>Dynamic</span>
+            <span>
+              <Trans>Dynamic</Trans>
+            </span>
           </styledEl.SmartSlippageInfo>
         </RowBetween>
       )}

@@ -1,24 +1,26 @@
 import { UI } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
+
 import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
-const orderStatusTitleMap: { [key in OrderStatus]: string } = {
-  [OrderStatus.PENDING]: 'Open',
-  [OrderStatus.PRESIGNATURE_PENDING]: 'Signing',
-  [OrderStatus.FULFILLED]: 'Filled',
-  [OrderStatus.EXPIRED]: 'Expired',
-  [OrderStatus.CANCELLED]: 'Cancelled',
-  [OrderStatus.CREATING]: 'Creating',
-  [OrderStatus.FAILED]: 'Failed',
-  [OrderStatus.SCHEDULED]: 'Scheduled',
-}
-
 // TODO: Reduce function complexity by extracting logic
 // eslint-disable-next-line complexity
 export function getOrderStatusTitleAndColor(order: ParsedOrder): { title: string; color: string; background: string } {
+  const orderStatusTitleMap: { [key in OrderStatus]: string } = {
+    [OrderStatus.PENDING]: t`Open`,
+    [OrderStatus.PRESIGNATURE_PENDING]: t`Signing`,
+    [OrderStatus.FULFILLED]: t`Filled`,
+    [OrderStatus.EXPIRED]: t`Expired`,
+    [OrderStatus.CANCELLED]: t`Cancelled`,
+    [OrderStatus.CREATING]: t`Creating`,
+    [OrderStatus.FAILED]: t`Failed`,
+    [OrderStatus.SCHEDULED]: t`Scheduled`,
+  }
+
   // We consider the order fully filled for display purposes even if not 100% filled
   // For this reason we use the flag to override the order status
   if (order.executionData.fullyFilled || order.status === OrderStatus.FULFILLED) {
@@ -33,7 +35,7 @@ export function getOrderStatusTitleAndColor(order: ParsedOrder): { title: string
     // Partially filled is also not a real status
     if (order.executionData.partiallyFilled) {
       return {
-        title: 'Partially Filled',
+        title: t`Partially Filled`,
         color: `var(${UI.COLOR_SUCCESS_TEXT})`,
         background: `var(${UI.COLOR_SUCCESS_BG})`,
       }
@@ -49,7 +51,7 @@ export function getOrderStatusTitleAndColor(order: ParsedOrder): { title: string
   // Cancelling is not a real order status
   if (order.isCancelling) {
     return {
-      title: 'Cancelling...',
+      title: t`Cancelling...`,
       color: `var(${UI.COLOR_DANGER_TEXT})`,
       background: `var(${UI.COLOR_DANGER_BG})`,
     }
@@ -67,7 +69,7 @@ export function getOrderStatusTitleAndColor(order: ParsedOrder): { title: string
   // Handle unfillable orders
   if (order.isUnfillable) {
     return {
-      title: 'Unfillable',
+      title: t`Unfillable`,
       color: `var(${UI.COLOR_DANGER_TEXT})`,
       background: `var(${UI.COLOR_DANGER_BG})`,
     }

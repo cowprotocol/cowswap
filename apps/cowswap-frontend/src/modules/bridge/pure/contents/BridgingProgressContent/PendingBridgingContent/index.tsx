@@ -3,6 +3,9 @@ import { ReactNode } from 'react'
 import { RECEIVED_LABEL } from '@cowprotocol/common-const'
 import { BridgeStatusResult, SupportedChainId } from '@cowprotocol/cow-sdk'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
+
 import { ConfirmDetailsItem, ReceiveAmountTitle } from 'modules/trade'
 
 import { AnimatedEllipsis, StatusAwareText } from '../../../../styles'
@@ -34,14 +37,13 @@ export function PendingBridgingContent({
       >
         <b>
           <StatusAwareText status={SwapAndBridgeStatus.PENDING}>
-            in progress
+            <Trans>in progress</Trans>
             <AnimatedEllipsis isVisible />
           </StatusAwareText>
         </b>
       </ConfirmDetailsItem>
-      
       {explorerUrl ? (
-        <BridgeTransactionLink link={explorerUrl} label="Bridge transaction" />
+        <BridgeTransactionLink link={explorerUrl} label={t`Bridge transaction`} />
       ) : (
         <DepositTxLink depositTxHash={depositTxHash} sourceChainId={sourceChainId} />
       )}

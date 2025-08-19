@@ -3,6 +3,8 @@ import React from 'react'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Token } from '@uniswap/sdk-core'
 
+import { t } from '@lingui/core/macro'
+
 import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { BalancesAndAllowances } from 'common/types'
@@ -40,10 +42,10 @@ export function WarningEstimatedPrice(props: WarningEstimatedPriceProps) {
       canShowWarning={true}
       warningText={
         warningChildWithParams.params.hasEnoughAllowance === false
-          ? 'Insufficient allowance'
+          ? t`Insufficient allowance`
           : warningChildWithParams.params.hasEnoughBalance === false
-            ? 'Insufficient balance'
-            : 'Unfillable'
+            ? t`Insufficient balance`
+            : t`Unfillable`
       }
       onApprove={
         warningChildWithParams.params.hasEnoughAllowance === false

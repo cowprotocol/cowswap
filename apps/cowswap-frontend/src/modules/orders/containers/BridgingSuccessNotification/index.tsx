@@ -3,6 +3,7 @@ import { ReactNode } from 'react'
 import { OnBridgingSuccessPayload, ToastMessageType } from '@cowprotocol/events'
 import { ExternalLink } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import { useBridgeOrderData } from 'entities/bridgeOrders'
 
@@ -19,12 +20,14 @@ function summaryTemplate({
   srcChainData,
   dstChainData,
 }: OrderSummaryTemplateProps): ReactNode {
+  const label =
+    srcChainData &&
+    `(${srcChainData.label}) ${t`for a total of`} ${outputAmount} ${dstChainData && ` (${dstChainData.label})`}`
+
   return (
-    <>
-      Sell {inputAmount}
-      {srcChainData && ` (${srcChainData.label})`} for a total of {outputAmount}
-      {dstChainData && ` (${dstChainData.label})`}
-    </>
+    <Trans>
+      Sell {inputAmount} {label}
+    </Trans>
   )
 }
 
@@ -42,8 +45,8 @@ export function BridgingSuccessNotification({ payload }: BridgingSuccessNotifica
 
   return (
     <OrderNotification
-      title="Bridging succeeded"
-      actionTitle="Bridge"
+      title={<Trans>Bridging succeeded</Trans>}
+      actionTitle={t`Bridge`}
       skipExplorerLink
       chainId={chainId}
       orderInfo={orderInfo}

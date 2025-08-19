@@ -15,6 +15,7 @@ import {
 } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Fraction, Percent, Price } from '@uniswap/sdk-core'
 
+import { t } from '@lingui/core/macro'
 import { darken } from 'color2k'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
@@ -262,7 +263,7 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
                     />
                   </b>
                   .
-                    <styledEl.ExecuteInformationTooltipWarning>
+                  <styledEl.ExecuteInformationTooltipWarning>
                     This price is taken from external sources and may not accurately reflect the current on-chain price.
                   </styledEl.ExecuteInformationTooltipWarning>
                 </>
@@ -315,7 +316,7 @@ function UnlikelyToExecuteWarning(props: UnlikelyToExecuteWarningProps) {
           </styledEl.WarningContent>
         }
       >
-        <SVG src={AlertTriangle} description="Alert" width="14" height="13" />
+        <SVG src={AlertTriangle} description={t`Alert`} width="14" height="13" />
       </HoverTooltip>
     </styledEl.WarningIndicator>
   )

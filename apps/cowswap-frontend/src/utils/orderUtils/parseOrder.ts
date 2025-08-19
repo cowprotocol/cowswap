@@ -1,6 +1,7 @@
 import { OrderClass, OrderKind, SigningScheme } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Price, Token } from '@uniswap/sdk-core'
 
+import { t } from '@lingui/core/macro'
 import BigNumber from 'bignumber.js'
 import JSBI from 'jsbi'
 
@@ -87,7 +88,7 @@ export const parseOrder = (order: Order): ParsedOrder => {
     order.orderCreationHash &&
     !order.apiAdditionalInfo
   const activityId = showCreationTxLink ? order.orderCreationHash : order.id
-  const activityTitle = showCreationTxLink ? 'Creation transaction' : 'Order ID'
+  const activityTitle = showCreationTxLink ? t`Creation transaction` : t`Order ID`
 
   const executionData: ParsedOrderExecutionData = {
     executedFeeToken,

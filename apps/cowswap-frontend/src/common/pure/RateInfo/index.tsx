@@ -5,6 +5,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { FiatAmount, TokenAmount, TokenSymbol, UI } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { t } from '@lingui/core/macro'
 import { Repeat } from 'react-feather'
 import styled from 'styled-components/macro'
 import { Nullish } from 'types'
@@ -152,7 +153,7 @@ export function InvertRateControl({ onClick, className }: { onClick(): void; cla
 export function RateInfo({
   rateInfoParams,
   className,
-  label = 'Limit price',
+  label = t`Limit price`,
   setSmartQuoteSelectionOnce = false,
   doNotUseSmartQuote = false,
   stylized = false,

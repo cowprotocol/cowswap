@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from 'react'
 import carretDown from '@cowprotocol/assets/cow-swap/carret-down.svg'
 import { Command } from '@cowprotocol/types'
 
+import { t } from '@lingui/core/macro'
 import BigNumberJs from 'bignumber.js'
 import SVG from 'react-inlinesvg'
 
@@ -43,14 +44,14 @@ type InputArrowsProps = {
 export function InputArrows({ onClickUp, onClickDown }: InputArrowsProps) {
   return (
     <ArrowsWrapper>
-      <span role="button" aria-label="Increase Value" aria-disabled="false" onClick={onClickUp}>
-        <span role="img" aria-label="up">
+      <span role="button" aria-label={t`Increase Value`} aria-disabled="false" onClick={onClickUp}>
+        <span role="img" aria-label={t`up`}>
           <SVG src={carretDown} />
         </span>
       </span>
 
-      <span role="button" aria-label="Decrease Value" aria-disabled="false" onClick={onClickDown}>
-        <span role="img" aria-label="down">
+      <span role="button" aria-label={t`Decrease Value`} aria-disabled="false" onClick={onClickDown}>
+        <span role="img" aria-label={t`down`}>
           <SVG src={carretDown} />
         </span>
       </span>
@@ -84,7 +85,6 @@ export function TradeNumberInput(props: TradeNumberInputProps) {
 
   const validateInput = useCallback(
     // TODO: Reduce function complexity by extracting logic
-     
     (newValue: string) => {
       const hasDot = newValue.includes('.')
       const [quotient, decimals] = (newValue || '').split('.')
@@ -110,7 +110,7 @@ export function TradeNumberInput(props: TradeNumberInputProps) {
         onUserInput(parsedValue)
       }
     },
-    [onUserInput, value, min, max, decimalsPlaces]
+    [onUserInput, value, min, max, decimalsPlaces],
   )
 
   // Initial setup of value
@@ -136,7 +136,7 @@ export function TradeNumberInput(props: TradeNumberInputProps) {
         onClickDown()
       }
     },
-    [onClickDown, onClickUp]
+    [onClickDown, onClickUp],
   )
 
   return (

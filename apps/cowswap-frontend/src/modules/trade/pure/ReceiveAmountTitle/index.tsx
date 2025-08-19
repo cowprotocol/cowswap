@@ -3,6 +3,7 @@ import { ReactNode } from 'react'
 import EqualIcon from '@cowprotocol/assets/cow-swap/equal.svg'
 import { UI } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
@@ -69,7 +70,7 @@ export function ReceiveAmountTitle({ className, children, icon, variant }: Recei
           icon.endsWith('.svg') ? (
             <SVG src={icon} />
           ) : (
-            <img src={icon} alt="icon" />
+            <img src={icon} alt={t`icon`} />
           )
         ) : (
           icon

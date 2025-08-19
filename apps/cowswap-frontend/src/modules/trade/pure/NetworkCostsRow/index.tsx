@@ -2,6 +2,9 @@ import { ReactNode } from 'react'
 
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
+
 import { ReviewOrderModalAmountRow } from '../ReviewOrderModalAmountRow'
 
 interface NetworkCostsRowProps {
@@ -15,7 +18,6 @@ interface NetworkCostsRowProps {
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function NetworkCostsRow({
   withTimelineDot,
-
   networkFeeAmount,
   networkFeeAmountUsd,
   amountSuffix,
@@ -29,14 +31,14 @@ export function NetworkCostsRow({
       amountSuffix={amountSuffix}
       tooltip={
         <>
-          This is the cost of settling your order on-chain, including gas and any LP fees.
+          <Trans>This is the cost of settling your order on-chain, including gas and any LP fees.</Trans>
           <br />
           <br />
-          CoW Swap will try to lower this cost where possible.
+          <Trans>CoW Swap will try to lower this cost where possible.</Trans>
           {tooltipSuffix}
         </>
       }
-      label="Network costs (est.)"
+      label={t`Network costs (est.)`}
     />
   )
 }

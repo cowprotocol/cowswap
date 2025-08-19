@@ -4,6 +4,7 @@ import { useCowAnalytics } from '@cowprotocol/analytics'
 import { Command } from '@cowprotocol/types'
 import { ButtonPrimary } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 
 import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
@@ -79,7 +80,7 @@ export function CustomDeadlineSelector(props: CustomDeadlineSelectorProps) {
 
         <styledEl.ModalContent>
           <TradeNumberInput
-            label="Hours"
+            label={t`Hours`}
             onUserInput={onHoursChange}
             value={hoursValue}
             showUpDownArrows
@@ -87,7 +88,7 @@ export function CustomDeadlineSelector(props: CustomDeadlineSelectorProps) {
             max={null}
           />
           <TradeNumberInput
-            label="Minutes"
+            label={t`Minutes`}
             onUserInput={onMinutesChange}
             value={minutesValue}
             showUpDownArrows

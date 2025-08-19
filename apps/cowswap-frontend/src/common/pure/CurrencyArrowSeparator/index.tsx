@@ -3,6 +3,8 @@ import React from 'react'
 import loadingCowWebp from '@cowprotocol/assets/cow-swap/cow-load.webp'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 
+import { t } from '@lingui/core/macro'
+
 import * as styledEl from './styled'
 
 export interface CurrencyArrowSeparatorProps {
@@ -23,7 +25,7 @@ export function CurrencyArrowSeparator(props: CurrencyArrowSeparatorProps) {
     <styledEl.Box isCollapsed={isCollapsed} hasSeparatorLine={hasSeparatorLine} disabled={disabled}>
       <styledEl.LoadingWrapper isLoading={isLoading} onClick={disabled ? undefined : onSwitchTokens}>
         {!isInjectedWidgetMode && isLoading ? (
-          <styledEl.CowImg src={loadingCowWebp} alt="loading" />
+          <styledEl.CowImg src={loadingCowWebp} alt={t`loading`} />
         ) : (
           <styledEl.ArrowDownIcon disabled={disabled} />
         )}

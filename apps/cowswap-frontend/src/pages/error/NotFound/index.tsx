@@ -1,6 +1,8 @@
 import cow404IMG from '@cowprotocol/assets/cow-swap/cow-404.png'
 import { ButtonPrimary, Media } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import { Link } from 'react-router'
 import styled from 'styled-components/macro'
 
@@ -67,13 +69,17 @@ const Container = styled.div`
 export default function NotFound() {
   return (
     <Wrapper>
-      <Title>Page not found!</Title>
+      <Title>
+        <Trans>Page not found!</Trans>
+      </Title>
       <Content>
         <Container>
-          <img src={cow404IMG} alt="CowSwap 404 not found" />
-          <h2>The page you are looking for does not exist. </h2>
+          <img src={cow404IMG} alt={t`CowSwap 404 not found`} />
+          <h2>
+            <Trans>The page you are looking for does not exist.</Trans>{' '}
+          </h2>
           <ButtonPrimary as={Link} to={'/'}>
-            Back home
+            <Trans>Back home</Trans>
           </ButtonPrimary>
         </Container>
       </Content>

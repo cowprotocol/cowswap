@@ -7,6 +7,8 @@ import { TokenLogo } from '@cowprotocol/tokens'
 import { LoadingRows, LoadingRowSmall, Media, TokenAmount, TokenName, TokenSymbol } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import { VirtualItem } from '@tanstack/react-virtual'
 import { Info } from 'react-feather'
 
@@ -114,13 +116,13 @@ export function LpTokenLists({
             onClick={() => onSelectToken(token)}
           >
             <MobileCardRow>{commonContent}</MobileCardRow>
-            <MobileCardRowItem label="Balance" value={BalanceDisplay} />
-            <MobileCardRowItem label="APR" value={info?.apy ? `${info.apy}%` : ''} />
+            <MobileCardRowItem label={t`Balance`} value={BalanceDisplay} />
+            <MobileCardRowItem label={t`APR`} value={info?.apy ? `${info.apy}%` : ''} />
             <MobileCardRowItem
-              label="Details"
+              label={t`Details`}
               value={
                 <LpTokenTooltip onClick={onInfoClick}>
-                  Pool details
+                  <Trans>Pool details</Trans>
                   <Info size={18} />
                 </LpTokenTooltip>
               }
@@ -156,21 +158,33 @@ export function LpTokenLists({
         <>
           {!isMobile && (
             <ListHeader>
-              <span>Pool</span>
-              <span>Balance</span>
-              <span>APR</span>
+              <span>
+                <Trans>Pool</Trans>
+              </span>
+              <span>
+                <Trans>Balance</Trans>
+              </span>
+              <span>
+                <Trans>APR</Trans>
+              </span>
               <span></span>
             </ListHeader>
           )}
           <VirtualList items={lpTokens} getItemView={getItemView} />
         </>
       ) : (
-        <EmptyList>No pool tokens available</EmptyList>
+        <EmptyList>
+          <Trans>No pool tokens available</Trans>
+        </EmptyList>
       )}
       {displayCreatePoolBanner && (
         <NoPoolWrapper>
-          <div>Can't find the pool you're looking for?</div>
-          <CreatePoolLink href="https://pool-creator.balancer.fi/cow">Create a pool ↗</CreatePoolLink>
+          <div>
+            <Trans>Can't find the pool you're looking for?</Trans>
+          </div>
+          <CreatePoolLink href="https://pool-creator.balancer.fi/cow">
+            <Trans>Create a pool</Trans> ↗
+          </CreatePoolLink>
         </NoPoolWrapper>
       )}
     </Wrapper>

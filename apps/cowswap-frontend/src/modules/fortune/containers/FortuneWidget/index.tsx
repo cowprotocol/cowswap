@@ -2,17 +2,15 @@ import { useAtom, useAtomValue } from 'jotai'
 import { useSetAtom } from 'jotai'
 import { useCallback, useRef, useState, useMemo } from 'react'
 
-import twitterImage from '@cowprotocol/assets/cow-swap/twitter.svg'
-import IMAGE_ICON_FORTUNE_COOKIE from '@cowprotocol/assets/images/icon-fortune-cookie.svg'
 import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
 import { ExternalLink, Media } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 import { Confetti } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import ReactDOM from 'react-dom'
 import { X } from 'react-feather'
-import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
 import { useOpenRandomFortune } from 'modules/fortune/hooks/useOpenRandomFortune'
@@ -347,8 +345,8 @@ export function FortuneWidget({ menuTitle, isMobileMenuOpen }: FortuneWidgetProp
             </HeaderElement>
             <FortuneTitle>
               {isNewFortuneOpen
-                ? 'CoW Fortune of the day'
-                : "Already seen today's fortune? Return tomorrow for a fresh one!"}
+                ? t`CoW Fortune of the day`
+                : t`Already seen today's fortune? Return tomorrow for a fresh one!`}
             </FortuneTitle>
             <FortuneContent>
               <FortuneText>{openFortune.text}</FortuneText>
@@ -358,12 +356,11 @@ export function FortuneWidget({ menuTitle, isMobileMenuOpen }: FortuneWidgetProp
                   href={`https://twitter.com/intent/tweet?text=${twitterText}`}
                   data-click-event={toCowSwapGtmEvent({
                     category: CowSwapAnalyticsCategory.COW_FORTUNE,
-                    action: 'Share on Twitter',
+                    action: t`Share on Twitter`,
                   })}
                 >
                   <SuccessBanner type={'Twitter'}>
                     <Trans>Share on Twitter</Trans>
-                    <SVG src={twitterImage} description="Twitter" />
                   </SuccessBanner>
                 </StyledExternalLink>
                 {!isNewFortuneOpen && !isFortunedShared && (
@@ -393,7 +390,6 @@ export function FortuneWidget({ menuTitle, isMobileMenuOpen }: FortuneWidgetProp
           action: 'Open Fortune Cookie',
         })}
       >
-        <SVG src={IMAGE_ICON_FORTUNE_COOKIE} description="Fortune Cookie" />
         {menuTitle && <span>{menuTitle}</span>}
       </FortuneButton>
       {ReactDOM.createPortal(<PortalContent />, document.body)}

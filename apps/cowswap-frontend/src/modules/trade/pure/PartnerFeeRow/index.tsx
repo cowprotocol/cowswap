@@ -1,6 +1,8 @@
 import { bpsToPercent, formatPercent, FractionUtils } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import { Nullish } from 'types'
 
 import { WidgetMarkdownContent } from 'modules/injectedWidget'
@@ -41,18 +43,26 @@ export function PartnerFeeRow({
               <WidgetMarkdownContent>{volumeFeeTooltip.content}</WidgetMarkdownContent>
             ) : (
               <>
-                This fee helps pay for maintenance & improvements to the trade experience.
+                <Trans>This fee helps pay for maintenance & improvements to the trade experience.</Trans>
                 <br />
                 <br />
-                The fee is {partnerFeeBps} BPS ({feeAsPercent}%), applied only if the trade is executed.
+                <Trans>
+                  The fee is {partnerFeeBps} BPS ({feeAsPercent}%), applied only if the trade is executed.
+                </Trans>
               </>
             )
           }
           label={`${volumeFeeTooltip.label} (${feeAsPercent}%)`}
         />
       ) : (
-        <ReviewOrderModalAmountRow withTimelineDot={withTimelineDot} tooltip="No fee for order placement!" label="Fee">
-          <styledEl.GreenText>FREE</styledEl.GreenText>
+        <ReviewOrderModalAmountRow
+          withTimelineDot={withTimelineDot}
+          tooltip={t`No fee for order placement!`}
+          label={t`Fee`}
+        >
+          <styledEl.GreenText>
+            <Trans>FREE</Trans>
+          </styledEl.GreenText>
         </ReviewOrderModalAmountRow>
       )}
     </>

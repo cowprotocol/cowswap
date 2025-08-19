@@ -14,7 +14,7 @@ interface ZeroApprovalModalProps {
 export function ZeroApprovalModal({ onDismiss }: ZeroApprovalModalProps) {
   const { currency } = useZeroApprovalState()
 
-  const symbol = currency?.symbol?.toUpperCase() ?? 'Unknown Currency' // This should never happen.
+  const symbol = currency?.symbol?.toUpperCase() ?? t`Unknown Currency` // This should never happen.
 
   return (
     <ConfirmationPendingContent

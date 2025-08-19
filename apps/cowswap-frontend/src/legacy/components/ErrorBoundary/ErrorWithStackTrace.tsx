@@ -75,7 +75,7 @@ export const ErrorWithStackTrace = ({ error }: { error: Error }) => {
         <StyledTitle>
           <Trans>Something went wrong</Trans>
         </StyledTitle>
-        <img src={CowError} alt="CowSwap Error" height="125" />
+        <img src={CowError} alt={t`CowSwap Error`} height="125" />
       </FlexContainer>
       <AutoColumn gap={'md'}>
         <CodeBlockWrapper>
@@ -92,7 +92,7 @@ export const ErrorWithStackTrace = ({ error }: { error: Error }) => {
               href={
                 CODE_LINK +
                 `/issues/new?assignees=&labels=🐞 Bug,🔥 Critical&body=${encodedBody}&title=${encodeURIComponent(
-                  `${t`Crash report`}: \`${error.name}${error.message && `: ${truncate(error.message)}`}\``,
+                  `Crash report: \`${error.name}${error.message && `: ${truncate(error.message)}`}\``,
                 )}`
               }
             >

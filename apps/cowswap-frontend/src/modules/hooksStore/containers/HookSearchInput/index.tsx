@@ -1,6 +1,7 @@
 import IMG_CLOSE_ICON from '@cowprotocol/assets/cow-swap/x.svg'
 import { SearchInput } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
@@ -68,8 +69,8 @@ const ClearButton = styled(ButtonIcon)`
 export function HookSearchInput({
   value,
   onChange,
-  placeholder = 'Search hooks...',
-  ariaLabel = 'Search hooks',
+  placeholder = t`Search hooks...`,
+  ariaLabel = t`Search hooks`,
   onClear,
 }: HookSearchInputProps) {
   return (
@@ -82,7 +83,7 @@ export function HookSearchInput({
         style={{ paddingRight: '38px' }}
       />
       {value && (
-        <ClearButton onClick={onClear} aria-label="Clear search input">
+        <ClearButton onClick={onClear} aria-label={t`Clear search input`}>
           <SVG src={IMG_CLOSE_ICON} />
         </ClearButton>
       )}

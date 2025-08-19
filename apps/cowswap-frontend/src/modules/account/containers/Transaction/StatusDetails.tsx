@@ -69,34 +69,34 @@ function _getStatusIcon(activityDerivedState: ActivityDerivedState): ReactNode {
     return <Info size={16} />
   }
   if (isConfirmed && isTransaction) {
-    return <SVG src={OrderCheckImage} description={`Transaction Confirmed`} />
+    return <SVG src={OrderCheckImage} description={t`Transaction Confirmed`} />
   }
   if (isConfirmed) {
-    return <SVG src={OrderCheckImage} description={`Order Filled`} />
+    return <SVG src={OrderCheckImage} description={t`Order Filled`} />
   }
   if (isExpired && isTransaction) {
-    return <SVG src={OrderCancelledImage} description={`Transaction Failed`} />
+    return <SVG src={OrderCancelledImage} description={t`Transaction Failed`} />
   }
   if (isExpired) {
-    return <SVG src={OrderExpiredImage} description={`Order Expired`} />
+    return <SVG src={OrderExpiredImage} description={t`Order Expired`} />
   }
   if (isFailed) {
-    return <SVG src={OrderCancelledImage} description={`Failed`} />
+    return <SVG src={OrderCancelledImage} description={t`Failed`} />
   }
   if (isCreating) {
     // TODO: use another icon for Creating state
-    return <SVG src={OrderExpiredImage} description={`Creating Order`} />
+    return <SVG src={OrderExpiredImage} description={t`Creating Order`} />
   }
   if (isCancelled) {
-    return <SVG src={OrderCancelledImage} description={`Order Cancelled`} />
+    return <SVG src={OrderCancelledImage} description={t`Order Cancelled`} />
   }
   if (isPresignaturePending) {
-    return <SVG src={PresignaturePendingImage} description={`Pending pre-signature`} />
+    return <SVG src={PresignaturePendingImage} description={t`Pending pre-signature`} />
   }
   if (isCancelling) {
     return null
   }
-  return <SVG src={OrderOpenImage} description="Order Open" />
+  return <SVG src={OrderOpenImage} description={t`Order Open`} />
 }
 
 function _getSafeAddress(activityDerivedState: ActivityDerivedState): string | undefined {

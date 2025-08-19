@@ -6,6 +6,8 @@ import { Command } from '@cowprotocol/types'
 import { BannerOrientation, ExternalLink, Icon, IconType, InlineBanner, StatusColorVariant, UI } from '@cowprotocol/ui'
 import { CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import { CloseIcon } from 'theme'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
@@ -127,11 +129,12 @@ export function ReceiptModal({
 
   const isSell = isSellOrder(order.kind)
 
-  const inputLabel = isSell ? 'You sell' : 'You sell at most'
-  const outputLabel = isSell ? 'You receive at least' : 'You receive exactly'
+  const inputLabel = isSell ? t`You sell` : t`You sell at most`
+  const outputLabel = isSell ? t`You receive at least` : t`You receive exactly`
   const safeTxParams = twapOrder?.safeTxParams
 
   const volumeFeeBps = getOrderVolumeFee(order.fullAppData)
+  const twapOrderN = twapOrder?.order.n
 
   return (
     <CowModal onDismiss={onDismiss} isOpen={isOpen}>
@@ -141,7 +144,7 @@ export function ReceiptModal({
             <styledEl.Title>Order Receipt</styledEl.Title>
             {alternativeOrderModalContext && (
               <styledEl.LightButton onClick={alternativeOrderModalContext.showAlternativeOrderModal}>
-                {alternativeOrderModalContext.isEdit ? 'Edit' : 'Recreate'} this order
+                {alternativeOrderModalContext.isEdit ? t`Edit` : t`Recreate`} t`this order`
               </styledEl.LightButton>
             )}
           </div>
@@ -152,9 +155,11 @@ export function ReceiptModal({
           <styledEl.InfoBannerWrapper>
             <InlineBanner bannerType={StatusColorVariant.Info}>
               <p>
-                {isTwapPartOrder
-                  ? `Part of a ${twapOrder.order.n}-part TWAP order split`
-                  : `TWAP order split into ${twapOrder.order.n} parts`}
+                {isTwapPartOrder ? (
+                  <Trans>Part of a {twapOrderN}-part TWAP order split</Trans>
+                ) : (
+                  <Trans>TWAP order split into {twapOrderN} parts</Trans>
+                )}
               </p>
             </InlineBanner>
           </styledEl.InfoBannerWrapper>
@@ -175,16 +180,16 @@ export function ReceiptModal({
             )}
 
             <styledEl.Field>
-              <FieldLabel label="Status" />
+              <FieldLabel label={t`Status`} />
               <StatusField order={order} />
             </styledEl.Field>
 
             {order.receiver && (
               <styledEl.Field>
-                <FieldLabel label="Recipient" tooltip={tooltips.RECEIVER} />
+                <FieldLabel label={t`Recipient`} tooltip={tooltips.RECEIVER} />
                 <div>
                   {showCustomRecipientBanner && (
-                    <Icon image={IconType.ALERT} color={UI.COLOR_ALERT} description="Alert" />
+                    <Icon image={IconType.ALERT} color={UI.COLOR_ALERT} description={t`Alert`} />
                   )}
                   <ExternalLink href={getExplorerLink(chainId, order.receiver, ExplorerDataType.ADDRESS)}>
                     {receiverEnsName || shortenAddress(order.receiver)} ↗
@@ -194,7 +199,7 @@ export function ReceiptModal({
             )}
 
             <styledEl.Field>
-              <FieldLabel label="Limit price (incl.costs)" tooltip={tooltips.LIMIT_PRICE} />
+              <FieldLabel label={t`Limit price (incl.costs)`} tooltip={tooltips.LIMIT_PRICE} />
               <PriceField order={order} price={limitPrice} />
             </styledEl.Field>
 
@@ -202,13 +207,13 @@ export function ReceiptModal({
               <styledEl.Field>
                 {estimatedExecutionPrice && order.status === OrderStatus.PENDING ? (
                   <>
-                    <FieldLabel label="Executes at" tooltip={tooltips.EXECUTES_AT} />
+                    <FieldLabel label={t`Executes at`} tooltip={tooltips.EXECUTES_AT} />
                     <PriceField order={order} price={estimatedExecutionPrice} />
                   </>
                 ) : (
                   <>
                     <FieldLabel
-                      label={order.partiallyFillable ? 'Avg. execution price' : 'Execution price'}
+                      label={order.partiallyFillable ? t`Avg. execution price` : t`Execution price`}
                       tooltip={tooltips.EXECUTION_PRICE}
                     />{' '}
                     <PriceField order={order} price={executionPrice} />
@@ -219,18 +224,18 @@ export function ReceiptModal({
 
             {volumeFeeBps && (
               <styledEl.Field>
-                <FieldLabel label="Total fee" tooltip={tooltips.TOTAL_FEE} />
+                <FieldLabel label={t`Total fee`} tooltip={tooltips.TOTAL_FEE} />
                 <span>{(volumeFeeBps / 100).toFixed(2)}%</span>
               </styledEl.Field>
             )}
 
             <styledEl.Field>
-              <FieldLabel label="Filled" tooltip={twapOrder ? tooltips.FILLED_TWAP : tooltips.FILLED} />
+              <FieldLabel label={t`Filled`} tooltip={twapOrder ? tooltips.FILLED_TWAP : tooltips.FILLED} />
               <FilledField order={order} />
             </styledEl.Field>
 
             <styledEl.Field>
-              <FieldLabel label="Order surplus" tooltip={tooltips.SURPLUS} />
+              <FieldLabel label={t`Order surplus`} tooltip={tooltips.SURPLUS} />
               <SurplusField order={order} />
             </styledEl.Field>
 
@@ -239,24 +244,24 @@ export function ReceiptModal({
             {(!twapOrder || isTwapPartOrder) && (
               <>
                 <styledEl.Field>
-                  <FieldLabel label="Network costs" tooltip={tooltips.NETWORK_COSTS} />
+                  <FieldLabel label={t`Network costs`} tooltip={tooltips.NETWORK_COSTS} />
                   <FeeField order={order} />
                 </styledEl.Field>
               </>
             )}
 
             <styledEl.Field>
-              <FieldLabel label="Created" tooltip={tooltips.CREATED} />
+              <FieldLabel label={t`Created`} tooltip={tooltips.CREATED} />
               <DateField date={order.creationTime} />
             </styledEl.Field>
 
             <styledEl.Field>
-              <FieldLabel label="Expiry" tooltip={tooltips.EXPIRY} />
+              <FieldLabel label={t`Expiry`} tooltip={tooltips.EXPIRY} />
               <DateField date={order.expirationTime} />
             </styledEl.Field>
 
             <styledEl.Field>
-              <FieldLabel label="Order type" tooltip={tooltips.ORDER_TYPE} />
+              <FieldLabel label={t`Order type`} tooltip={tooltips.ORDER_TYPE} />
               <OrderTypeField order={order} />
             </styledEl.Field>
 

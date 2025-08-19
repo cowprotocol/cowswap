@@ -1,6 +1,8 @@
 import { useSetAtom } from 'jotai'
 import React, { ReactNode, useEffect, useMemo } from 'react'
 
+import { Trans } from '@lingui/react/macro'
+
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
 import { ListWrapper, NoNotifications, NotificationCard, NotificationsListWrapper, NotificationThumb } from './styled'
@@ -80,8 +82,12 @@ export function NotificationsList({ children }: { children: ReactNode }) {
 
         {groups?.length === 0 && (
           <NoNotifications>
-            <h4>Nothing new yet</h4>
-            <p>As soon as anything important or interesting happens, we will definitely let you know.</p>
+            <h4>
+              <Trans>Nothing new yet</Trans>
+            </h4>
+            <p>
+              <Trans>As soon as anything important or interesting happens, we will definitely let you know.</Trans>
+            </p>
           </NoNotifications>
         )}
       </ListWrapper>

@@ -2,6 +2,8 @@ import { ReactNode, useState } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { t } from '@lingui/core/macro'
+
 import { SearchIcon, SearchInput, SearchInputContainer, StyledCloseIcon } from './styled'
 
 import { OrderTabId } from '../../const/tabs'
@@ -42,7 +44,7 @@ export function OrdersTableWidget(props: OrdersTableWidgetProps): ReactNode {
             <SearchIcon />
             <SearchInput
               type="text"
-              placeholder="Token symbol, address"
+              placeholder={t`Token symbol, address`}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
