@@ -7,6 +7,7 @@ import {
 } from '@cowprotocol/cow-sdk'
 import { Fraction, Percent } from '@uniswap/sdk-core'
 
+import { t } from '@lingui/core/macro'
 import ms from 'ms.macro'
 
 export const ZERO_FRACTION = new Fraction(0)
@@ -32,19 +33,23 @@ export const AVG_APPROVE_COST_GWEI = '50000'
 export const DEFAULT_APP_CODE = 'CoW Swap'
 export const SAFE_APP_CODE = `${DEFAULT_APP_CODE}-SafeApp`
 
-export const APP_TITLE = 'CoW Swap | The smartest way to trade cryptocurrencies'
+const getAppTitle = (): string => t`The smartest way to trade cryptocurrencies`
 
-export const PAGE_TITLES = {
-  SWAP: 'Swap',
-  LIMIT_ORDERS: 'Limit Orders',
-  YIELD: 'Yield',
-  ADVANCED: 'TWAP',
-  ACCOUNT_OVERVIEW: 'Account Overview',
-  TOKENS_OVERVIEW: 'Tokens Overview',
-  COW_RUNNER: 'CoW Runner',
-  MEV_SLICER: 'Mev Slicer',
-  HOOKS: 'Hooks',
-}
+export const APP_TITLE = `CoW Swap | ${getAppTitle()}`
+
+const getPageTitles = (): Record<string, string> => ({
+  SWAP: t`Swap`,
+  LIMIT_ORDERS: t`Limit Orders`,
+  YIELD: t`Yield`,
+  ADVANCED: `TWAP`,
+  ACCOUNT_OVERVIEW: t`Account Overview`,
+  TOKENS_OVERVIEW: t`Tokens Overview`,
+  COW_RUNNER: t`CoW Runner`,
+  MEV_SLICER: t`Mev Slicer`,
+  HOOKS: t`Hooks`,
+})
+
+export const PAGE_TITLES = getPageTitles()
 
 export function getEthFlowContractAddresses(env: CowEnv, chainId: SupportedChainId): string {
   return env === 'prod' ? ETH_FLOW_ADDRESSES[chainId] : BARN_ETH_FLOW_ADDRESSES[chainId]
@@ -70,9 +75,13 @@ export const COW_CONTRACT_ADDRESS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.BNB]: null, // TODO: add BNB COW token address when available
 }
 
-export const RECEIVED_LABEL = 'Received'
-export const ACCOUNT_PROXY_LABEL = 'Account Proxy'
-export const INPUT_OUTPUT_EXPLANATION = 'Only executed swaps incur fees.'
+const getReceivedLabel = (): string => t`Received`
+const getAccountProxyLabel = (): string => t`Account Proxy`
+const getInputOutputExplanation = (): string => t`Only executed swaps incur fees.`
+
+export const RECEIVED_LABEL = getReceivedLabel()
+export const ACCOUNT_PROXY_LABEL = getAccountProxyLabel()
+export const INPUT_OUTPUT_EXPLANATION = getInputOutputExplanation()
 export const PENDING_ORDERS_BUFFER = ms`60s` // 60s
 export const CANCELLED_ORDERS_PENDING_TIME = ms`5min` // 5min
 export const PRICE_API_TIMEOUT_MS = ms`10s` // 10s

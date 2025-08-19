@@ -6,6 +6,7 @@ import { FiatAmount, Loader } from '@cowprotocol/ui'
 import { JazzIcon } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { Trans } from '@lingui/react/macro'
 import { Menu, MenuPopover } from '@reach/menu-button'
 import { MoreHorizontal } from 'react-feather'
 import SVG from 'react-inlinesvg'
@@ -29,7 +30,9 @@ export function AccountCard({ chainId, account, totalUsdAmount, loading }: Accou
   return (
     <Wrapper>
       <LeftTop>
-        <span>Recoverable value</span>
+        <span>
+          <Trans>Recoverable value</Trans>
+        </span>
         <h2>{loading ? <Loader size="24px" /> : <FiatAmount amount={totalUsdAmount} />}</h2>
       </LeftTop>
       <RightTop>

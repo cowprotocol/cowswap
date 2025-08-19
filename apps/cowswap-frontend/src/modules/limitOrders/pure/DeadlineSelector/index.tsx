@@ -2,6 +2,7 @@ import { ChangeEventHandler, useCallback, useEffect, useMemo, useRef, useState }
 
 import { ButtonPrimary, ButtonSecondary } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import { Menu } from '@reach/menu-button'
 import { ChevronDown } from 'react-feather'
@@ -57,18 +58,20 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
   useEffect(() => {
     try {
       const newDeadline = new Date(value).getTime()
-      const { timeZone } = Intl.DateTimeFormat().resolvedOptions()
+      const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
+      const minDateStr = minDate.toLocaleString()
+      const maxDateStr = maxDate.toLocaleString()
 
       if (newDeadline < minDate.getTime()) {
-        setError(`Must be after ${minDate.toLocaleString()} ${timeZone}`)
+        setError(t`Must be after ${minDateStr} ${timeZone}`)
       } else if (newDeadline > maxDate.getTime()) {
-        setError(`Must be before ${maxDate.toLocaleString()} ${timeZone}`)
+        setError(t`Must be before ${maxDateStr} ${timeZone}`)
       } else {
         setError(null)
       }
     } catch (e) {
       console.error(`[DeadlineSelector] Failed to parse input value to Date`, value, e)
-      setError(`Failed to parse date and time provided`)
+      setError(t`Failed to parse date and time provided`)
     }
   }, [maxDate, minDate, selectCustomDeadline, value])
 
@@ -192,7 +195,9 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
             {error && <div>{error}</div>}
           </styledEl.ModalContent>
           <styledEl.ModalFooter>
-            <ButtonSecondary onClick={onDismiss}>Cancel</ButtonSecondary>
+            <ButtonSecondary onClick={onDismiss}>
+              <Trans>Cancel</Trans>
+            </ButtonSecondary>
             <ButtonPrimary onClick={setCustomDeadline} disabled={!!error}>
               <Trans>Set custom date</Trans>
             </ButtonPrimary>

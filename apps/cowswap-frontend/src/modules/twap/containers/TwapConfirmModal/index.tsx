@@ -25,35 +25,45 @@ import { TwapFormWarnings } from '../TwapFormWarnings'
 
 const CONFIRM_TITLE = 'TWAP'
 
+const getConfirmModalConfig = (): {
+  priceLabel: string
+  slippageLabel: string
+  slippageTooltip: React.ReactNode
+  limitPriceLabel: string
+  limitPriceTooltip: React.ReactNode
+  minReceivedLabel: string
+  minReceivedTooltip: string
+} => ({
+  priceLabel: t`Rate`,
+  slippageLabel: t`Price protection`,
+  slippageTooltip: (
+    <Trans>
+      <p>
+        Since TWAP orders consist of multiple parts, prices are expected to fluctuate. However, to protect you against
+        bad prices, CoW Swap will not execute your TWAP if the price dips below this percentage.
+      </p>
+      <p>
+        This percentage only applies to dips; if prices are better than this percentage, CoW Swap will still execute
+        your order.
+      </p>
+    </Trans>
+  ),
+  limitPriceLabel: t`Limit price (incl. costs)`,
+  limitPriceTooltip: (
+    <Trans>
+      If CoW Swap cannot get this price or better (taking into account fees and price protection tolerance), your TWAP
+      will not execute. CoW Swap will <strong>always</strong> improve on this price if possible.
+    </Trans>
+  ),
+  minReceivedLabel: t`Minimum receive`,
+  minReceivedTooltip: t`This is the minimum amount that you will receive across your entire TWAP order, assuming all parts of the order execute.`,
+})
+
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
 // eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function TwapConfirmModal() {
-  const CONFIRM_MODAL_CONFIG = {
-    priceLabel: t`Rate`,
-    slippageLabel: t`Price protection`,
-    slippageTooltip: (
-      <Trans>
-        <p>
-          Since TWAP orders consist of multiple parts, prices are expected to fluctuate. However, to protect you against
-          bad prices, CoW Swap will not execute your TWAP if the price dips below this percentage.
-        </p>
-        <p>
-          This percentage only applies to dips; if prices are better than this percentage, CoW Swap will still execute
-          your order.
-        </p>
-      </Trans>
-    ),
-    limitPriceLabel: t`Limit price (incl. costs)`,
-    limitPriceTooltip: (
-      <Trans>
-        If CoW Swap cannot get this price or better (taking into account fees and price protection tolerance), your TWAP
-        will not execute. CoW Swap will <strong>always</strong> improve on this price if possible.
-      </Trans>
-    ),
-    minReceivedLabel: t`Minimum receive`,
-    minReceivedTooltip: t`This is the minimum amount that you will receive across your entire TWAP order, assuming all parts of the order execute.`,
-  }
+  const confirmModalConfig = getConfirmModalConfig()
   const { account } = useWalletInfo()
   const { ensName, allowsOffchainSigning } = useWalletDetails()
   const {
@@ -83,14 +93,14 @@ export function TwapConfirmModal() {
     amount: inputCurrencyAmount,
     fiatAmount: inputCurrencyFiatAmount,
     balance: inputCurrencyBalance,
-    label: 'Sell amount',
+    label: t`Sell amount`,
   }
 
   const outputCurrencyInfo = {
     amount: outputCurrencyAmount,
     fiatAmount: outputCurrencyFiatAmount,
     balance: outputCurrencyBalance,
-    label: 'Receive (before fees)',
+    label: t`Receive (before fees)`,
   }
 
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
@@ -126,14 +136,16 @@ export function TwapConfirmModal() {
                 recipientAddress={recipientAddress}
                 account={account}
                 labelsAndTooltips={{
-                  ...CONFIRM_MODAL_CONFIG,
+                  ...confirmModalConfig,
                   networkCostsSuffix: !allowsOffchainSigning ? <NetworkCostsSuffix /> : null,
                   networkCostsTooltipSuffix: !allowsOffchainSigning ? (
                     <>
                       <br />
                       <br />
-                      Because you are using a smart contract wallet, you will pay a separate gas cost for signing the
-                      order placement on-chain.
+                      <Trans>
+                        Because you are using a smart contract wallet, you will pay a separate gas cost for signing the
+                        order placement on-chain.
+                      </Trans>
                     </>
                   ) : null,
                 }}

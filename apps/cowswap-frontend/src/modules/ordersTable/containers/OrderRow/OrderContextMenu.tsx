@@ -1,6 +1,8 @@
 import { Command } from '@cowprotocol/types'
 import { UI } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import { Menu, MenuButton, MenuItem, MenuList } from '@reach/menu-button'
 import { Edit, FileText, Link2, MoreVertical, Repeat, Trash2 } from 'react-feather'
 import styled from 'styled-components/macro'
@@ -92,24 +94,30 @@ export function OrderContextMenu({
       <ContextMenuList>
         <ContextMenuItem onSelect={openReceipt}>
           <FileText size={16} />
-          <span>Order receipt</span>
+          <span>
+            <Trans>Order receipt</Trans>
+          </span>
         </ContextMenuItem>
         {activityUrl && (
           <ContextMenuLink as="a" href={activityUrl} target="_blank">
             <Link2 size={16} />
-            <span>View on explorer</span>
+            <span>
+              <Trans>View on explorer</Trans>
+            </span>
           </ContextMenuLink>
         )}
         {alternativeOrderModalContext && (
           <ContextMenuItem onSelect={alternativeOrderModalContext.showAlternativeOrderModal}>
             {alternativeOrderModalContext.isEdit ? <Edit size={16} /> : <Repeat size={16} />}
-            <span>{alternativeOrderModalContext.isEdit ? 'Edit' : 'Recreate'} order</span>
+            <span>{alternativeOrderModalContext.isEdit ? t`Edit` : t`Recreate`} order</span>
           </ContextMenuItem>
         )}
         {showCancellationModal && (
           <ContextMenuItem $red onSelect={showCancellationModal}>
             <Trash2 size={16} />
-            <span>Cancel order</span>
+            <span>
+              <Trans>Cancel order</Trans>
+            </span>
           </ContextMenuItem>
         )}
       </ContextMenuList>

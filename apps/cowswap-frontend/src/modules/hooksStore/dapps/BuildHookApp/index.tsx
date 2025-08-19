@@ -3,6 +3,8 @@ import { useCallback, useState } from 'react'
 import { capitalizeFirstLetter } from '@cowprotocol/common-utils'
 import { ButtonPrimary } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
+
 import { CowHook, HookDappProps } from '../../types/hooks'
 import { ContentWrapper, Row, Wrapper, ErrorText } from '../styled'
 
@@ -26,23 +28,25 @@ const DEFAULT_ERRORS_STATE: Record<keyof CowHook, string> = {
   dappId: '',
 }
 
-const FIELDS = [
-  { name: 'target', label: 'Target', type: 'text' },
-  { name: 'gasLimit', label: 'Gas limit', type: 'number' },
-  { name: 'callData', label: 'Calldata', type: 'textarea', rows: 8 },
-] as ReadonlyArray<FormFieldParams>
+const getFields = (): ReadonlyArray<FormFieldParams> =>
+  [
+    { name: 'target', label: t`Target`, type: 'text' },
+    { name: 'gasLimit', label: t`Gas limit`, type: 'number' },
+    { name: 'callData', label: t`Calldata`, type: 'textarea', rows: 8 },
+  ] as ReadonlyArray<FormFieldParams>
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function BuildHookApp({ context }: HookDappProps) {
+  const FIELDS = getFields()
   const hookToEdit = context.hookToEdit
   const isPreHook = context.isPreHook
   const [hook, setHook] = useState<CowHook>(hookToEdit?.hook || DEFAULT_HOOK_STATE)
   const [errors, setErrors] = useState<Record<keyof CowHook, string>>(DEFAULT_ERRORS_STATE)
 
   const validateInput = useCallback((name: keyof CowHook, value: string) => {
-    setErrors((prev) => ({ ...prev, [name]: value.trim() ? '' : `${capitalizeFirstLetter(name)} is required` }))
+    setErrors((prev) => ({ ...prev, [name]: value.trim() ? '' : `${capitalizeFirstLetter(name)} ${t`is required`}` }))
   }, [])
 
   const handleInputChange = useCallback(
@@ -60,7 +64,7 @@ export function BuildHookApp({ context }: HookDappProps) {
       if (key === 'dappId') return false
 
       if (!value.trim()) {
-        newErrors[key as keyof CowHook] = `${capitalizeFirstLetter(key)} is required`
+        newErrors[key as keyof CowHook] = `${capitalizeFirstLetter(key)} ${t`is required`}`
         return true
       }
       return false
@@ -95,7 +99,7 @@ export function BuildHookApp({ context }: HookDappProps) {
         })}
       </ContentWrapper>
       <ButtonPrimary onClick={handleSubmit}>
-        {hookToEdit ? 'Save changes' : `Add ${isPreHook ? 'Pre' : 'Post'}-hook`}
+        {hookToEdit ? t`Save changes` : `${t`Add`} ${isPreHook ? t`Pre` : t`Post`}-hook`}
       </ButtonPrimary>
     </Wrapper>
   )
@@ -139,8 +143,8 @@ function FormField({ params, value, error, onChange }: FormFieldProps) {
         <label htmlFor={name} className={error ? 'error' : ''}>
           {label}*
         </label>
+        {error && <ErrorText>{error}</ErrorText>}
       </Row>
-      {error && <ErrorText>{error}</ErrorText>}
     </>
   )
 }

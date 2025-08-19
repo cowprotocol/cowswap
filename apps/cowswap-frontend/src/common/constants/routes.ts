@@ -2,6 +2,8 @@ import EXPERIMENT_ICON from '@cowprotocol/assets/cow-swap/experiment.svg'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { BadgeTypes } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
+
 export const TRADE_WIDGET_PREFIX = isInjectedWidget() ? '/widget' : ''
 
 export const Routes = {
@@ -54,25 +56,31 @@ export interface IMenuItem {
   badgeType?: (typeof BadgeTypes)[keyof typeof BadgeTypes]
 }
 
-export const MENU_ITEMS: IMenuItem[] = [
-  { route: Routes.SWAP, label: 'Swap', description: 'Trade tokens' },
-  { route: Routes.LIMIT_ORDER, label: 'Limit', fullLabel: 'Limit order', description: 'Set your own price' },
-  { route: Routes.ADVANCED_ORDERS, label: 'TWAP', description: 'Place orders with a time-weighted average price' },
+export const getMenuItems = (): IMenuItem[] => [
+  { route: Routes.SWAP, label: t`Swap`, description: t`Trade tokens` },
+  { route: Routes.LIMIT_ORDER, label: t`Limit`, fullLabel: t`Limit order`, description: t`Set your own price` },
+  { route: Routes.ADVANCED_ORDERS, label: `TWAP`, description: `Place orders with a time-weighted average price` },
 ]
 
-export const HOOKS_STORE_MENU_ITEM: IMenuItem = {
+export const MENU_ITEMS: IMenuItem[] = getMenuItems()
+
+const getHookStoreMenuItem = (): IMenuItem => ({
   route: Routes.HOOKS,
-  label: 'Hooks',
-  description: 'Powerful tool to generate pre/post interaction for CoW Protocol',
+  label: t`Hooks`,
+  description: t`Powerful tool to generate pre/post interaction for CoW Protocol`,
   badgeImage: EXPERIMENT_ICON,
   badgeType: BadgeTypes.INFORMATION,
-}
+})
 
-export const YIELD_MENU_ITEM: IMenuItem = {
+export const HOOKS_STORE_MENU_ITEM: IMenuItem = getHookStoreMenuItem()
+
+export const getYieldMenuItem = (): IMenuItem => ({
   route: Routes.YIELD,
-  label: 'Yield',
-  fullLabel: 'Yield',
-  description: 'Provide liquidity',
-  badge: 'New',
+  label: t`Yield`,
+  fullLabel: `Yield`,
+  description: `Provide liquidity`,
+  badge: `New`,
   badgeType: BadgeTypes.ALERT,
-}
+})
+
+export const YIELD_MENU_ITEM = getYieldMenuItem()

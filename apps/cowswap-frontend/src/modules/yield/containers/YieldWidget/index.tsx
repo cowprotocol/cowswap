@@ -38,25 +38,35 @@ import { TradeButtons } from '../TradeButtons'
 import { Warnings } from '../Warnings'
 import { YieldConfirmModal } from '../YieldConfirmModal'
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
-export function YieldWidget() {
-  const YIELD_BULLET_LIST_CONTENT: BulletListItem[] = [
-    { content: t`Maximize your yield on existing LP positions` },
-    { content: t`Seamlessly swap your tokens into CoW AMM pools` },
-    { content: t`Earn higher returns with reduced impermanent loss` },
-    { content: t`Leverage advanced strategies for optimal growth` },
-  ]
+const yieldBulletListContent = (): BulletListItem[] => [
+  { content: t`Maximize your yield on existing LP positions` },
+  { content: t`Seamlessly swap your tokens into CoW AMM pools` },
+  { content: t`Earn higher returns with reduced impermanent loss` },
+  { content: t`Leverage advanced strategies for optimal growth` },
+]
 
-  const YIELD_UNLOCK_SCREEN = {
-    id: t`yield-widget`,
+const getYieldUnlockScreen = (): {
+  id: string
+  title: string
+  subtitle: string
+  orderType: string
+  buttonText: string
+} => {
+  return {
+    id: `yield-widget`,
     title: t`Unlock Enhanced Yield Features`,
     subtitle: t`Boooost your current LP positions with CoW AMM’s pools.`,
     orderType: t`yield`,
     buttonText: t`Start boooosting your yield!`,
   }
+}
+
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
+export function YieldWidget() {
+  const yieldUnlockScreen = getYieldUnlockScreen()
   const { chainId, account } = useWalletInfo()
   const { showRecipient } = useYieldSettings()
   const deadlineState = useYieldDeadlineState()
@@ -152,17 +162,18 @@ export function YieldWidget() {
     amount: inputCurrencyInfo.amount,
     fiatAmount: inputCurrencyInfo.fiatAmount,
     balance: inputCurrencyInfo.balance,
-    label: 'Sell amount',
+    label: t`Sell amount`,
   }
 
   const outputCurrencyPreviewInfo = {
     amount: outputCurrencyInfo.amount,
     fiatAmount: outputCurrencyInfo.fiatAmount,
     balance: outputCurrencyInfo.balance,
-    label: 'Receive (before fees)',
+    label: t`Receive (before fees)`,
   }
 
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
+  const YIELD_BULLET_LIST_CONTENT = yieldBulletListContent()
 
   const slots: TradeWidgetSlots = {
     topContent: vampireAttackContext ? (
@@ -192,13 +203,13 @@ export function YieldWidget() {
 
     lockScreen: !isUnlocked ? (
       <UnlockWidgetScreen
-        id={YIELD_UNLOCK_SCREEN.id}
+        id={yieldUnlockScreen.id}
         items={YIELD_BULLET_LIST_CONTENT}
         handleUnlock={() => setIsUnlocked(true)}
-        title={YIELD_UNLOCK_SCREEN.title}
-        subtitle={YIELD_UNLOCK_SCREEN.subtitle}
-        orderType={YIELD_UNLOCK_SCREEN.orderType}
-        buttonText={YIELD_UNLOCK_SCREEN.buttonText}
+        title={yieldUnlockScreen.title}
+        subtitle={yieldUnlockScreen.subtitle}
+        orderType={yieldUnlockScreen.orderType}
+        buttonText={yieldUnlockScreen.buttonText}
       />
     ) : undefined,
   }

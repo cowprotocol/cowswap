@@ -3,6 +3,8 @@ import { useMemo } from 'react'
 import { TokenAmount, TokenSymbol } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import ICON_ARROW from 'assets/icon/arrow.svg'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
@@ -35,11 +37,11 @@ export function PermitModal(props: PermitModalProps) {
       {
         stepState: step === 'approve' ? 'loading' : 'finished',
         stepNumber: 1,
-        label: 'Approve' + (step === 'approve' ? '' : 'd'),
+        label: step === 'approve' ? t`Approve` : t`Approved`,
       },
-      { stepState: step === 'submit' ? 'loading' : 'active', stepNumber: 2, label: 'Submit' },
+      { stepState: step === 'submit' ? 'loading' : 'active', stepNumber: 2, label: t`Submit` },
     ],
-    [step]
+    [step],
   )
   const icon = useMemo(
     () =>
@@ -48,20 +50,21 @@ export function PermitModal(props: PermitModalProps) {
       ) : (
         <IconSpinner size={84}>{inputIcon}</IconSpinner>
       ),
-    [inputAmount?.currency, inputIcon, step]
+    [inputAmount?.currency, inputIcon, step],
   )
 
   const title = useMemo(
     () =>
       step === 'approve' ? (
         <>
-          Approve spending <TokenSymbol token={inputAmount?.currency} /> <br />
-          on CoW Swap
+          <Trans>
+            Approve spending <TokenSymbol token={inputAmount?.currency} /> <br /> on CoW Swap
+          </Trans>
         </>
       ) : (
-        `Confirm ${orderType}`
+        t`Confirm ${orderType}`
       ),
-    [inputAmount?.currency, orderType, step]
+    [inputAmount?.currency, orderType, step],
   )
 
   const body = useMemo(
@@ -72,7 +75,7 @@ export function PermitModal(props: PermitModalProps) {
           <TokenAmount amount={outputAmount} tokenSymbol={outputAmount?.currency} />
         </p>
       ),
-    [inputAmount, outputAmount, step]
+    [inputAmount, outputAmount, step],
   )
 
   return (
@@ -86,7 +89,9 @@ export function PermitModal(props: PermitModalProps) {
       </NewModalContentTop>
 
       <NewModalContentBottom gap={24}>
-        <SignDescription>Sign (gas-free!) in your wallet...</SignDescription>
+        <SignDescription>
+          <Trans>Sign (gas-free!) in your wallet...</Trans>
+        </SignDescription>
         <Stepper maxWidth={'75%'} steps={steps} />
       </NewModalContentBottom>
     </NewModal>

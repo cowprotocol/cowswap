@@ -7,6 +7,8 @@ import { MaxUint256 } from '@ethersproject/constants'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { t } from '@lingui/core/macro'
+
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
 import { useTokenContract } from './useContract'
@@ -36,8 +38,8 @@ export async function estimateApprove(
         approveAmount,
         gasLimit: await tokenContract.estimateGas.approve(spender, approveAmount),
       }
-    // TODO: Replace any with proper type definitions
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // TODO: Replace any with proper type definitions
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error(
         '[useApproveCallbackMod] Error estimating gas for approval. Using default gas limit ' +
@@ -63,7 +65,8 @@ export function useApproveCallback(
   const token = currency && !getIsNativeToken(currency) ? currency : undefined
   const { contract: tokenContract, chainId: tokenChainId } = useTokenContract(token?.address)
   const addTransaction = useTransactionAdder()
-  const summary = amountToApprove?.greaterThan('0') ? `Approve ${token?.symbol}` : `Revoke ${token?.symbol} approval`
+  const tokenSymbol = token?.symbol || ''
+  const summary = amountToApprove?.greaterThan('0') ? t`Approve ${tokenSymbol}` : t`Revoke ${tokenSymbol} approval`
   const amountToApproveStr = amountToApprove ? '0x' + amountToApprove?.quotient.toString(16) : undefined
 
   return useCallback(async () => {

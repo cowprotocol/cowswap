@@ -2,6 +2,8 @@ import { useCallback, useRef, useState } from 'react'
 
 import { useFeatureFlags, useOnClickOutside } from '@cowprotocol/common-hooks'
 
+import { Trans } from '@lingui/react/macro'
+
 import { upToSmall, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
@@ -53,7 +55,9 @@ export function NotificationSidebar({ isOpen, onClose }: NotificationSidebarProp
                 })}
               />
             </span>
-            <h3>Settings</h3>
+            <h3>
+              <Trans>Settings</Trans>
+            </h3>
           </SidebarHeader>
         </NotificationSettings>
       ) : (
@@ -81,7 +85,9 @@ export function NotificationSidebar({ isOpen, onClose }: NotificationSidebarProp
                 />
               )}
             </span>
-            <h3>Notifications</h3>
+            <h3>
+              <Trans>Notifications</Trans>
+            </h3>
             {areTelegramNotificationsEnabled && <SettingsIcon size={18} onClick={toggleSettingsOpen} />}
           </SidebarHeader>
         </NotificationsList>

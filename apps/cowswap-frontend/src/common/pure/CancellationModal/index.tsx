@@ -60,7 +60,7 @@ export function CancellationModal(props: CancellationModalProps): ReactElement |
             </Trans>
           }
           description={t`Canceling your order`}
-          operationLabel="cancellation"
+          operationLabel={t`cancellation`}
         />
       )
     } else {

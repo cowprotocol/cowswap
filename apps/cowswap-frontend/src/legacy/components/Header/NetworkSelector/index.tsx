@@ -198,7 +198,7 @@ export function NetworkSelector(): ReactNode {
           <>
             <NetworkIcon />
             <NetworkAlertLabel>
-              <span>Switch</span> Network
+              <Trans>Switch Network</Trans>
             </NetworkAlertLabel>
             <StyledChevronDown />
           </>

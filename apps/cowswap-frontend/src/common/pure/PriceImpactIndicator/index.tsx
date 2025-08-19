@@ -2,7 +2,7 @@ import { formatPercent } from '@cowprotocol/common-utils'
 import { Loader, HoverTooltip } from '@cowprotocol/ui'
 import { Percent } from '@uniswap/sdk-core'
 
-import { t } from '@lingui/macro'
+import { t } from '@lingui/core/macro'
 import styled from 'styled-components/macro'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'

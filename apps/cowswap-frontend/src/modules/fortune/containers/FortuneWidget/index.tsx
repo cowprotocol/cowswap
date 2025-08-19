@@ -367,7 +367,9 @@ export function FortuneWidget({ menuTitle, isMobileMenuOpen }: FortuneWidgetProp
                   <DontShowAgainBox>
                     <label>
                       <input type="checkbox" ref={checkboxRef} />
-                      <span>Hide today's fortune cookie</span>
+                      <span>
+                        <Trans>Hide today's fortune cookie</Trans>
+                      </span>
                     </label>
                   </DontShowAgainBox>
                 )}

@@ -71,7 +71,7 @@ export function MultipleOrdersCancellationModal(props: Props): ReactNode {
 
   if (cancellationError) {
     const errorMessage = isRejectRequestProviderError(cancellationError)
-      ? 'User rejected signing the cancellation'
+      ? t`User rejected signing the cancellation`
       : getIsOrderBookTypedError(cancellationError)
         ? cancellationError.body.description || cancellationError.body.errorType
         : (getProviderErrorMessage(cancellationError) ?? String(cancellationError))
@@ -100,7 +100,7 @@ export function MultipleOrdersCancellationModal(props: Props): ReactNode {
   return (
     <Modal isOpen={isOpen} onDismiss={onDismiss}>
       <LegacyConfirmationModalContent
-        title={`Cancel multiple orders: ${ordersCount}`}
+        title={t`Cancel multiple orders: ${ordersCount}`}
         onDismiss={onDismiss}
         // TODO: Extract nested component outside render function
         // eslint-disable-next-line react/no-unstable-nested-components

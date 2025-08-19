@@ -10,6 +10,8 @@ import { TokenLogo } from '@cowprotocol/tokens'
 import { Confetti, ExternalLink, InfoTooltip, TokenAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import Lottie from 'lottie-react'
 import { PiCaretDown, PiCaretUp, PiTrophyFill } from 'react-icons/pi'
 import SVG from 'react-inlinesvg'
@@ -144,7 +146,9 @@ function getSolverRow(solver: SolverCompetition, index: number, solvers: SolverC
             <styledEl.TrophyIcon>
               <PiTrophyFill />
             </styledEl.TrophyIcon>
-            <span>Winning solver</span>
+            <span>
+              <Trans>Winning solver</Trans>
+            </span>
           </styledEl.WinningBadge>
         )}
       </styledEl.SolverTableCell>
@@ -226,7 +230,10 @@ export function FinishedStep({
       {showConfetti && <Confetti start={true} />}
       {cancellationFailed && (
         <styledEl.CancellationFailedBanner>
-          <b>Cancellation failed:</b> The order was executed before it could be cancelled.
+          <b>
+            <Trans>Cancellation failed</Trans>:
+          </b>{' '}
+          <Trans>The order was executed before it could be cancelled.</Trans>
         </styledEl.CancellationFailedBanner>
       )}
 
@@ -242,14 +249,16 @@ export function FinishedStep({
 
         {solvers && solvers.length > 0 && (
           <styledEl.SolverRankings>
-            <h3>Solver auction rankings</h3>
+            <h3>
+              <Trans>Solver auction rankings</Trans>
+            </h3>
             {solvers.length > 1 && (
               <p>
                 <b>
                   {solvers.length}
-                  {totalSolvers ? ` out of ${totalSolvers}` : ''} solvers
+                  {totalSolvers ? t` out of ${totalSolvers}` : ''} <Trans>solvers</Trans>
                 </b>{' '}
-                submitted a solution
+                <Trans>submitted a solution</Trans>
               </p>
             )}
 
@@ -268,11 +277,11 @@ export function FinishedStep({
               >
                 {showAllSolvers ? (
                   <>
-                    Collapse <PiCaretUp />
+                    <Trans>Collapse</Trans> <PiCaretUp />
                   </>
                 ) : (
                   <>
-                    View {solvers.length - 3} more <PiCaretDown />
+                    <Trans>View</Trans> {solvers.length - 3} <Trans>more</Trans> <PiCaretDown />
                   </>
                 )}
               </styledEl.ViewMoreButton>
@@ -291,7 +300,7 @@ export function FinishedStep({
         onClick={shareOnTwitter}
       >
         <SVG src={ICON_SOCIAL_X} />
-        <span>Share this {shouldShowSurplus ? 'win' : 'tip'}!</span>
+        <span>{`${t`Share this`} ${shouldShowSurplus ? t`win` : t`tip`}!`}</span>
       </styledEl.ShareButton>
     </styledEl.FinishedStepContainer>
   )

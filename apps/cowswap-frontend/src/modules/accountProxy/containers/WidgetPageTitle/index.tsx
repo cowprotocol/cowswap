@@ -3,6 +3,7 @@ import { ReactNode } from 'react'
 import { useTokensByAddressMap } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { t } from '@lingui/core/macro'
 import { useLocation, useParams } from 'react-router'
 
 export function WidgetPageTitle(): ReactNode {
@@ -17,16 +18,17 @@ export function WidgetPageTitle(): ReactNode {
   const isRecoverPage = !!tokenAddress
 
   if (!isWalletConnected) {
-    return 'Proxy Accounts'
+    return t`Proxy Accounts`
   }
 
   if (isRecoverPage) {
-    return `Recover ${token?.symbol ?? 'funds'}`
+    const target = token?.symbol ?? t`funds`
+    return t`Recover ${target}`
   }
 
   if (isHelpPage) {
-    return 'Need help'
+    return t`Need help`
   }
 
-  return 'Recover funds'
+  return t`Recover funds`
 }

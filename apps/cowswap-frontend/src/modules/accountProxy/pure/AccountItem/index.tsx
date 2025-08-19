@@ -3,6 +3,7 @@ import { ReactNode } from 'react'
 import { shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
+import { Trans } from '@lingui/react/macro'
 import { ChevronRight } from 'react-feather'
 
 import { Routes } from 'common/constants/routes'
@@ -24,7 +25,9 @@ export function AccountItem({ chainId, account, version }: AccountItemProps): Re
       </IconWrapper>
       <AccountWrapper>
         <h3>{shortenAddress(account)}</h3>
-        <p>Version: {version}</p>
+        <p>
+          <Trans>Version:</Trans> {version}
+        </p>
       </AccountWrapper>
       <div>
         <ChevronRight size={24} />

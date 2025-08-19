@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react'
 import iconCompleted from '@cowprotocol/assets/cow-swap/check.svg'
 import { UI } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 
 import { useIsDarkMode } from 'legacy/state/user/hooks'
@@ -11,13 +13,13 @@ import { ArrowBackground } from 'common/pure/ArrowBackground'
 
 import * as styledEl from './styled'
 
-const BULLET_POINTS = [
-  'Locked limits - lock or unlock prices for finer control, the order does the rest',
-  'Easily set and manage your orders in USD',
-  'Try before you buy - see the potential fill price before you hit trade',
-  'Longer limit orders - place orders for up to a year.',
-  'Trade your way - personalize the interface and customize your limit orders',
-  'More intuitive UI and improved design',
+const getBulletPoints = (): string[] => [
+  t`Locked limits - lock or unlock prices for finer control, the order does the rest`,
+  t`Easily set and manage your orders in USD`,
+  t`Try before you buy - see the potential fill price before you hit trade`,
+  t`Longer limit orders - place orders for up to a year.`,
+  t`Trade your way - personalize the interface and customize your limit orders`,
+  t`More intuitive UI and improved design`,
 ]
 
 interface LimitOrdersPromoBannerProps {
@@ -38,6 +40,7 @@ export function LimitOrdersPromoBanner({
   const [arrowRef, setArrowRef] = useState<HTMLDivElement | null>(null)
   const [arrowsReady, setArrowsReady] = useState(false)
   const darkMode = useIsDarkMode()
+  const bulletPoints = getBulletPoints()
 
   useEffect(() => {
     // First make arrows visible but transparent
@@ -69,16 +72,19 @@ export function LimitOrdersPromoBanner({
       <styledEl.CloseButton size={24} onClick={onDismiss} />
       <styledEl.TitleSection>
         <h3>
-          Limit orders, but <span>s-moooo-ther</span> than ever
+          <Trans>
+            Limit orders, but <span>s-moooo-ther</span> than ever
+          </Trans>
         </h3>
         <strong>
-          Limit orders are now easier to use. <br />
-          Give them a try
+          <Trans>
+            Limit orders are now easier to use. <br /> Give them a try
+          </Trans>
         </strong>
       </styledEl.TitleSection>
 
       <styledEl.List>
-        {BULLET_POINTS.map((point, index) => (
+        {bulletPoints.map((point, index) => (
           <li key={index}>
             <span>
               <SVG src={iconCompleted} />
@@ -94,10 +100,16 @@ export function LimitOrdersPromoBanner({
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
         >
-          <styledEl.ButtonText $hover={isHovered}>Try new limit orders now</styledEl.ButtonText>
+          <styledEl.ButtonText $hover={isHovered}>
+            <Trans>Try new limit orders now</Trans>
+          </styledEl.ButtonText>
           <styledEl.Shimmer />
         </styledEl.CTAButton>
-        {!isLimitOrdersTab && <styledEl.DismissLink onClick={onDismiss}>Maybe next time</styledEl.DismissLink>}
+        {!isLimitOrdersTab && (
+          <styledEl.DismissLink onClick={onDismiss}>
+            <Trans>Maybe next time</Trans>
+          </styledEl.DismissLink>
+        )}
       </styledEl.ControlSection>
     </styledEl.BannerWrapper>
   )

@@ -1,3 +1,4 @@
+import { t } from '@lingui/core/macro'
 import ms from 'ms.macro'
 import { format } from 'timeago.js'
 
@@ -11,18 +12,22 @@ export interface LimitOrderDeadline {
 export const MIN_CUSTOM_DEADLINE = ms`30min`
 export const MAX_CUSTOM_DEADLINE = MAX_ORDER_DEADLINE
 
-export const defaultLimitOrderDeadline: LimitOrderDeadline = { title: '7 Days', value: ms`7d` }
+export const getDefaultLimitOrderDeadline = (): LimitOrderDeadline => ({ title: t`7 Days`, value: ms`7d` })
 
-export const LIMIT_ORDERS_DEADLINES: LimitOrderDeadline[] = [
-  { title: '5 Minutes', value: ms`5m` },
-  { title: '30 Minutes', value: ms`30m` },
-  { title: '1 Hour', value: ms`1 hour` },
-  { title: '1 Day', value: ms`1d` },
-  { title: '3 Days', value: ms`3d` },
+export const defaultLimitOrderDeadline: LimitOrderDeadline = getDefaultLimitOrderDeadline()
+
+export const getLimitOrderDeadlinesConfig = (): LimitOrderDeadline[] => [
+  { title: t`5 Minutes`, value: ms`5m` },
+  { title: t`30 Minutes`, value: ms`30m` },
+  { title: t`1 Hour`, value: ms`1 hour` },
+  { title: t`1 Day`, value: ms`1d` },
+  { title: t`3 Days`, value: ms`3d` },
   defaultLimitOrderDeadline,
-  { title: '1 Month', value: ms`30d` },
-  { title: '1 Year (max)', value: MAX_CUSTOM_DEADLINE },
+  { title: t`1 Month`, value: ms`30d` },
+  { title: t`1 Year (max)`, value: MAX_CUSTOM_DEADLINE },
 ]
+
+export const LIMIT_ORDERS_DEADLINES: LimitOrderDeadline[] = getLimitOrderDeadlinesConfig()
 
 /**
  * Get limit order deadlines and optionally adds

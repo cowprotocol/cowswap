@@ -2,6 +2,7 @@ import { ReactNode, RefObject } from 'react'
 
 import { UI } from '@cowprotocol/ui'
 
+import { Trans } from '@lingui/react/macro'
 import { Link2 } from 'react-feather'
 import styled from 'styled-components/macro'
 
@@ -62,11 +63,15 @@ export function AddressContextMenuContent({ ref, address, target }: ContentProps
   return (
     <Box ref={ref}>
       <CopyHelperWrapper toCopy={address} copyIconWidth="100%">
-        <Text>Copy address</Text>
+        <Text>
+          <Trans>Copy address</Trans>
+        </Text>
       </CopyHelperWrapper>
       <ExtLinkWrapper href={target} target="_blank">
         <Link2 size={16} />
-        <Text>View details</Text>
+        <Text>
+          <Trans>View details</Trans>
+        </Text>
       </ExtLinkWrapper>
     </Box>
   )

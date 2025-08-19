@@ -1,5 +1,6 @@
 import { ProductLogo, ProductVariant } from '@cowprotocol/ui'
 
+import { Trans } from '@lingui/react/macro'
 import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 
@@ -63,7 +64,9 @@ export const Loading: React.FC = () => {
   return (
     <LoadingWrapper>
       <ProductLogo variant={ProductVariant.CowSwap} height={100} logoIconOnly />
-      <span>Loading...</span>
+      <span>
+        <Trans>Loading...</Trans>
+      </span>
     </LoadingWrapper>
   )
 }

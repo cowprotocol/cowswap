@@ -3,6 +3,7 @@ import { ReactNode } from 'react'
 import imageConnectWallet from '@cowprotocol/assets/cow-swap/wallet-plus.svg'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 
+import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 
@@ -18,7 +19,7 @@ export function ConnectWalletContent(): ReactNode {
   return (
     <styledEl.Content>
       <span>
-        <SVG src={imageConnectWallet} description="connect wallet" />
+        <SVG src={imageConnectWallet} description={t`connect wallet`} />
       </span>
       <h3>
         <Trans>Connect a wallet</Trans>
@@ -31,7 +32,6 @@ export function ConnectWalletContent(): ReactNode {
               to one of our supported networks.
             </Trans>
           </p>
-
           {pendingActivitiesCount && <Web3Status />}
         </>
       )}

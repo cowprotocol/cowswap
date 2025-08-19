@@ -3,6 +3,7 @@ import { ReactNode } from 'react'
 import orderPresignaturePending from '@cowprotocol/assets/cow-swap/order-presignature-pending.svg'
 import { Command } from '@cowprotocol/types'
 
+import { t } from '@lingui/core/macro'
 import SVG from 'react-inlinesvg'
 import styled, { css, keyframes } from 'styled-components/macro'
 
@@ -117,7 +118,7 @@ export function OrderStatusBox({ order, widthAuto, withWarning, onClick, Warning
     <StatusContent>
       {withWarning && WarningTooltip}
       {order.status === OrderStatus.PRESIGNATURE_PENDING && (
-        <SVG src={orderPresignaturePending} description="signing" />
+        <SVG src={orderPresignaturePending} description={t`signing`} />
       )}
       {title}
     </StatusContent>

@@ -6,6 +6,7 @@ import { useTokensByAddressMap } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
+import { t } from '@lingui/core/macro'
 import { useBridgeOrderData, useCrossChainOrder } from 'entities/bridgeOrders'
 import { useBridgeSupportedNetwork } from 'entities/bridgeProvider'
 import { bridgingSdk } from 'tradingSdk/bridgingSdk'
@@ -60,21 +61,21 @@ export function useSwapAndBridgeContext(
   // If not available (common in fresh sessions), create a fallback token from order data
   const intermediateToken = useMemo(() => {
     if (!order) return undefined
-    
+
     // Primary: Try to get from tokensByAddress map (enriched with logos, etc.)
     const enrichedToken = tokensByAddress[order.buyToken.toLowerCase()]
     if (enrichedToken) {
       return enrichedToken
     }
-    
+
     // Fallback: Create basic TokenWithLogo from order data when tokensByAddress isn't populated yet
     // This allows bridge functionality to work in fresh sessions while token lists are loading
     return TokenWithLogo.fromToken({
       chainId: order.inputToken.chainId, // Intermediate token is on same chain as input
       address: order.buyToken,
       decimals: order.outputToken.decimals, // Use output token decimals as approximation
-      symbol: 'Loading...', // Placeholder until tokens are loaded
-      name: 'Loading...', // Placeholder until tokens are loaded
+      symbol: t`Loading...`, // Placeholder until tokens are loaded
+      name: t`Loading...`, // Placeholder until tokens are loaded
     })
   }, [order, tokensByAddress])
 

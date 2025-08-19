@@ -71,7 +71,11 @@ export function RowFeeContent(props: RowFeeContentProps) {
           <>
             {feeIsApproximate ? '≈ ' : ''}
             <TokenAmount amount={feeAmount} tokenSymbol={tokenSymbol} />
-            {requireGas && <PlusGas>&nbsp;+ gas</PlusGas>}
+            {requireGas && (
+              <PlusGas>
+                &nbsp; + <Trans>gas</Trans>
+              </PlusGas>
+            )}
           </>
         )}{' '}
         {!isFree && feeInFiat && (

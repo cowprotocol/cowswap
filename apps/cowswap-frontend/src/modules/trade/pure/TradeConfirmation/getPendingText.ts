@@ -1,11 +1,14 @@
+import { t } from '@lingui/core/macro'
 import { SigningSteps, SigningStepState } from 'entities/trade'
 
-const SigningStepsTitles: Record<SigningSteps, string> = {
-  [SigningSteps.PermitSigning]: 'Confirm approval',
-  [SigningSteps.BridgingSigning]: 'Confirm bridging',
-  [SigningSteps.OrderSigning]: 'Confirm swap',
-}
+const getSigningStepsTitles = (): Record<SigningSteps, string> => ({
+  [SigningSteps.PermitSigning]: t`Confirm approval`,
+  [SigningSteps.BridgingSigning]: t`Confirm bridging`,
+  [SigningSteps.OrderSigning]: t`Confirm swap`,
+})
 
 export function getPendingText(signingStep: SigningStepState): string {
-  return `${signingStep.stepNumber} ${SigningStepsTitles[signingStep.step]}`
+  const signingStepsTitles = getSigningStepsTitles()
+
+  return `${signingStep.stepNumber} ${signingStepsTitles[signingStep.step]}`
 }

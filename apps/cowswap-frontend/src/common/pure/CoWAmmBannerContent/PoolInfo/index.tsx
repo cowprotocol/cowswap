@@ -4,6 +4,8 @@ import { LpToken } from '@cowprotocol/common-const'
 import { TokenLogo, TokensByAddress } from '@cowprotocol/tokens'
 import { TokenSymbol, UI } from '@cowprotocol/ui'
 
+import { Trans } from '@lingui/react/macro'
+
 import { LP_PROVIDER_NAMES } from '../const'
 import * as styledEl from '../styled'
 
@@ -50,7 +52,8 @@ export function PoolInfo({ token, tokensByAddress, isTokenSelectorView, isDarkMo
           : undefined
       }
     >
-      higher APR available for your {poolName} pool:
+      {/* Split to avoid applying macros to acronyms/brands like APR */}
+      <Trans>higher</Trans> APR <Trans>available for your {poolName} pool</Trans>:
       <i>
         <div>
           <TokenLogo token={token0} /> <TokenLogo token={token1} />

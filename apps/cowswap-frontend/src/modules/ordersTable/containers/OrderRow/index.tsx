@@ -9,8 +9,6 @@ import { PercentDisplay, percentIsAlmostHundred, TokenAmount } from '@cowprotoco
 import { useIsSafeWallet } from '@cowprotocol/wallet'
 import { Currency, Price } from '@uniswap/sdk-core'
 
-import { t } from '@lingui/core/macro'
-
 import { OrderStatus } from 'legacy/state/orders/actions'
 import { getEstimatedExecutionPrice } from 'legacy/state/orders/utils'
 
@@ -150,47 +148,48 @@ export function OrderRow({
 
   const inputTokenSymbol = order.inputToken.symbol || ''
 
+  // NOTE: Don't internationalize this
   const warningText =
     hasEnoughBalance === false
-      ? t`Insufficient balance`
+      ? `Insufficient balance`
       : hasEnoughAllowance === false
-        ? t`Insufficient allowance`
-        : t`Unfillable`
+        ? `Insufficient allowance`
+        : `Unfillable`
 
   const onApprove = withAllowanceWarning ? () => orderActions.approveOrderToken(order.inputToken) : undefined
 
   const estimatedPriceWarning = withWarning ? (
     <WarningEstimatedPrice
-      order={order}
       approveOrderToken={orderActions.approveOrderToken}
-      isInverted={isInverted}
       balancesAndAllowances={balancesAndAllowances}
       chainId={chainId}
-      withAllowanceWarning={withAllowanceWarning}
-      isChild={isChild}
       childOrders={childOrders}
+      isChild={isChild}
+      isInverted={isInverted}
       isTwapTable={isTwapTable}
+      order={order}
+      withAllowanceWarning={withAllowanceWarning}
     />
   ) : undefined
 
   const orderFillsAt = (
     <OrderFillsAt
-      order={order}
-      withWarning={withWarning}
-      warningText={warningText}
-      onApprove={onApprove}
-      isInverted={isInverted}
-      isUnfillable={isUnfillable}
-      estimatedExecutionPrice={estimatedExecutionPrice}
-      spotPrice={spotPrice}
-      estimatedPriceWarning={estimatedPriceWarning}
-      prices={prices}
-      priceDiffs={priceDiffs}
       childOrders={childOrders}
-      isTwapTable={isTwapTable}
+      estimatedExecutionPrice={estimatedExecutionPrice}
+      estimatedPriceWarning={estimatedPriceWarning}
       isChild={isChild}
+      isInverted={isInverted}
       isSafeWallet={isSafeWallet}
+      isTwapTable={isTwapTable}
+      isUnfillable={isUnfillable}
+      onApprove={onApprove}
+      order={order}
+      priceDiffs={priceDiffs}
+      prices={prices}
       rateInfoParams={rateInfoParams}
+      spotPrice={spotPrice}
+      warningText={warningText}
+      withWarning={withWarning}
     />
   )
 

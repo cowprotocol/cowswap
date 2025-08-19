@@ -7,6 +7,8 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ButtonPrimary } from '@cowprotocol/ui'
 import { Token } from '@uniswap/sdk-core'
 
+import { Trans } from '@lingui/react/macro'
+
 import { HookDappProps } from 'modules/hooksStore/types/hooks'
 
 import { AIRDROP_PREVIEW_ERRORS, useClaimData } from './hooks/useClaimData'
@@ -67,17 +69,22 @@ export function AirdropHookApp({ context }: HookDappProps) {
       <ContentWrapper>
         {messageToUser === null ? (
           <div>
-            <Label>Claimable amount</Label>:<Amount>{claimData?.formattedAmount}</Amount>
+            <Label>
+              <Trans>Claimable amount</Trans>
+            </Label>
+            :<Amount>{claimData?.formattedAmount}</Amount>
           </div>
         ) : (
           messageToUser
         )}
       </ContentWrapper>
       {context.hookToEdit ? (
-        <ButtonPrimary onClick={onEditHook}>Return to Swap</ButtonPrimary>
+        <ButtonPrimary onClick={onEditHook}>
+          <Trans>Return to Swap</Trans>
+        </ButtonPrimary>
       ) : messageToUser === null ? (
         <ButtonPrimary disabled={!canClaim || isValidating} onClick={clickOnAddHook}>
-          Add Hook
+          <Trans>Add Hook</Trans>
         </ButtonPrimary>
       ) : undefined}
     </Wrapper>
@@ -99,23 +106,39 @@ function getMessageToUser({
   isValidating?: boolean
 }) {
   if (!account) {
-    return <span>Connect your wallet</span>
+    return (
+      <span>
+        <Trans>Connect your wallet</Trans>
+      </span>
+    )
   }
 
   if (isValidating) {
-    return <span>Loading...</span>
+    return (
+      <span>
+        <Trans>Loading...</Trans>
+      </span>
+    )
   }
 
   if (error) {
     if (Object.values(AIRDROP_PREVIEW_ERRORS).includes(error.message)) {
       return <span>{error.message}</span>
     } else {
-      return <span>An unexpected error occurred</span>
+      return (
+        <span>
+          <Trans>An unexpected error occurred</Trans>
+        </span>
+      )
     }
   }
 
   if (claimData?.isClaimed) {
-    return <span>You have already claimed this airdrop</span>
+    return (
+      <span>
+        <Trans>You have already claimed this airdrop</Trans>
+      </span>
+    )
   }
 
   return null

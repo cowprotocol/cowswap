@@ -187,9 +187,13 @@ export function AccountDetails({
               <span>
                 {' '}
                 <h5>
-                  Recent Activity <span>{`(${activityTotalCount})`}</span>
+                  <Trans>Recent Activity</Trans> <span>{`(${activityTotalCount})`}</span>
                 </h5>
-                {explorerOrdersLink && <ExternalLink href={explorerOrdersLink}>View all orders ↗</ExternalLink>}
+                {explorerOrdersLink && (
+                  <ExternalLink href={explorerOrdersLink}>
+                    <Trans>View all orders</Trans> ↗
+                  </ExternalLink>
+                )}
               </span>
 
               <div>
@@ -200,13 +204,19 @@ export function AccountDetails({
                     <ActivitiesList activities={activities} />
                   </Fragment>
                 ))}
-                {explorerOrdersLink && <ExternalLink href={explorerOrdersLink}>View all orders ↗</ExternalLink>}
+                {explorerOrdersLink && (
+                  <ExternalLink href={explorerOrdersLink}>
+                    <Trans>View all orders</Trans> ↗
+                  </ExternalLink>
+                )}
               </div>
             </LowerSection>
           ) : (
             <LowerSection>
               <NoActivityMessage>
-                <span>Your activity will appear here...</span>
+                <span>
+                  <Trans>Your activity will appear here...</Trans>
+                </span>
               </NoActivityMessage>
             </LowerSection>
           )}

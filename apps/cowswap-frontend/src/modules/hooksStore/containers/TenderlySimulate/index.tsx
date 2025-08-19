@@ -4,6 +4,8 @@ import { useCallback, useState } from 'react'
 import { errorToString } from '@cowprotocol/common-utils'
 import { ButtonOutlined, ExternalLink, LinkIcon, Loader } from '@cowprotocol/ui'
 
+import { Trans } from '@lingui/react/macro'
+
 import { ErrorText, ErrorWrapper, ExternalLinkContent, LoaderWrapper } from './styled'
 
 import { getSimulationLink } from '../../const'
@@ -50,8 +52,8 @@ export function TenderlySimulate({ hook }: TenderlySimulateProps) {
       } else {
         setSimulationError({ [hookId]: response.error.message })
       }
-    // TODO: Replace any with proper type definitions
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      // TODO: Replace any with proper type definitions
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       setSimulationError({ [hookId]: errorToString(error) })
     } finally {
@@ -71,7 +73,9 @@ export function TenderlySimulate({ hook }: TenderlySimulateProps) {
     return (
       <ErrorWrapper>
         <ErrorText>{simulationError}</ErrorText>
-        <ButtonOutlined onClick={onSimulate}>Retry</ButtonOutlined>
+        <ButtonOutlined onClick={onSimulate}>
+          <Trans>Retry</Trans>
+        </ButtonOutlined>
       </ErrorWrapper>
     )
   }
@@ -80,11 +84,18 @@ export function TenderlySimulate({ hook }: TenderlySimulateProps) {
     return (
       <ExternalLink href={simulationLink}>
         <ExternalLinkContent>
-          <span>Simulation report</span> <LinkIcon />
+          <span>
+            <Trans>Simulation report</Trans>
+          </span>{' '}
+          <LinkIcon />
         </ExternalLinkContent>
       </ExternalLink>
     )
   }
 
-  return <ButtonOutlined onClick={onSimulate}>Simulate</ButtonOutlined>
+  return (
+    <ButtonOutlined onClick={onSimulate}>
+      <Trans>Simulate</Trans>
+    </ButtonOutlined>
+  )
 }
