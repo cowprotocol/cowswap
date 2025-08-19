@@ -6,7 +6,9 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useTokenAllowance } from 'common/hooks/useTokenAllowance'
 
-import { ApprovalState, useApproveState } from './useApproveState'
+import { useApproveState } from './useApproveState'
+
+import { ApprovalState } from '../types'
 
 export interface ApprovalStateForSpenderResult {
   approvalState: ApprovalState

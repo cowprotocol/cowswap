@@ -9,9 +9,8 @@ import { MaxUint256 } from '@ethersproject/constants'
 import { WrapUnwrapCallback } from 'legacy/hooks/useWrapCallback'
 import { Field } from 'legacy/state/types'
 
-import { TradeApproveCallback } from 'modules/erc20Approve/containers/TradeApprove'
+import { TradeApproveCallback } from 'modules/erc20Approve'
 import { useOnCurrencySelection, useTradeConfirmActions } from 'modules/trade'
-
 
 import { updateEthFlowContextAtom } from '../../../state/ethFlowContextAtom'
 

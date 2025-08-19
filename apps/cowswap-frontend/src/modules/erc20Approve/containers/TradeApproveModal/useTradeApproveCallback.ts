@@ -1,14 +1,14 @@
 import { useCallback } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
+import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { errorToString, isRejectRequestProviderError } from '@cowprotocol/common-utils'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Currency } from '@uniswap/sdk-core'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
-import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
 
-import { useApproveCallback } from '../../index'
+import { useApproveCallback } from '../../hooks'
 import { useUpdateTradeApproveState } from '../../state'
 
 interface TradeApproveCallbackParams {

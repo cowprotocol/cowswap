@@ -1,14 +1,15 @@
 import React, { ReactNode, useState } from 'react'
 
+import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { Currency, CurrencyAmount, MaxUint256 } from '@uniswap/sdk-core'
 
 import { useHasPendingOrdersWithPermitForInputToken } from 'common/hooks/useHasPendingOrdersWithPermit'
-import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
 
-import { ApprovalState, useApprovalStateForSpender, useApproveCurrency } from '../hooks'
-import { ApproveButton, ApproveConfirmation } from '../pure'
-import { LegacyApproveButton } from '../pure/LegacyApproveButton'
+import { useApprovalStateForSpender, useApproveCurrency } from '../../hooks'
+import { ApproveButton, ApproveConfirmation } from '../../pure'
+import { LegacyApproveButton } from '../../pure/LegacyApproveButton'
+import { ApprovalState } from '../../types/approval-state'
 
 const MaxApprovalAmount = BigInt(MaxUint256.toString())
 

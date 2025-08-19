@@ -5,6 +5,7 @@ import { TradeDerivedState } from 'modules/trade'
 import { AmountsToSign } from 'modules/trade/hooks/useAmountsToSign'
 import { TradeQuoteState } from 'modules/tradeQuote'
 
+
 export enum TradeFormValidation {
   // Wrap/unwrap
   WrapUnwrapFlow,

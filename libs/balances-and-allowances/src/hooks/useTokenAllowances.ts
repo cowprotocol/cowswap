@@ -9,7 +9,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import ms from 'ms.macro'
 import { SWRConfiguration } from 'swr'
 
-import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
+import { useTradeSpenderAddress } from './useTradeSpenderAddress'
 
 const MULTICALL_OPTIONS = {}
 

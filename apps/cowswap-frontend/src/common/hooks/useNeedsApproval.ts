@@ -1,11 +1,11 @@
+import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { getWrappedToken, isEnoughAmount } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
-import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
-
 import { useTokenAllowance } from './useTokenAllowance'
+
 
 /**
  * Hook to check if a token needs approval

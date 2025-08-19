@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 
+import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances';
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, Price } from '@uniswap/sdk-core'
 
@@ -9,8 +10,6 @@ import styled from 'styled-components/macro'
 import { OrderStatus } from 'legacy/state/orders/actions'
 
 import type { PendingOrderPrices } from 'modules/orders'
-
-import { BalancesAndAllowances } from 'common/types'
 
 import { ORDERS_TABLE_PAGE_SIZE } from '../../const/tabs'
 import { OrderRow } from '../../containers/OrderRow'

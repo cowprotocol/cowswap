@@ -1,11 +1,11 @@
 import React from 'react'
 
+import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Token } from '@uniswap/sdk-core'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 
-import { BalancesAndAllowances } from 'common/types'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { EstimatedExecutionPrice } from '../../containers/OrderRow/EstimatedExecutionPrice'
@@ -20,6 +20,7 @@ interface WarningEstimatedPriceProps {
   isInverted: boolean
   childOrders?: ParsedOrder[]
   withAllowanceWarning?: boolean
+
   approveOrderToken(token: Token): void
 }
 

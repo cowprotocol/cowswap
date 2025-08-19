@@ -9,14 +9,9 @@ import { useHasPendingApproval } from 'legacy/state/enhancedTransactions/hooks'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { useTokenAllowance } from 'common/hooks/useTokenAllowance'
-import { getApprovalState } from 'common/utils/getApprovalState'
 
-export enum ApprovalState {
-  UNKNOWN = 'UNKNOWN',
-  NOT_APPROVED = 'NOT_APPROVED',
-  PENDING = 'PENDING',
-  APPROVED = 'APPROVED',
-}
+import { ApprovalState } from '../types'
+import { getApprovalState } from '../utils'
 
 function getCurrencyToApprove(amountToApprove: Nullish<CurrencyAmount<Currency>>): Token | undefined {
   if (!amountToApprove) return undefined

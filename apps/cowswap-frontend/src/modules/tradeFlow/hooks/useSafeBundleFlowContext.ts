@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 
+import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { useSendBatchTransactions } from '@cowprotocol/wallet'
 
@@ -9,7 +10,6 @@ import { useAmountsToSign } from 'modules/trade'
 
 import { useTokenContract, useWethContract } from 'common/hooks/useContract'
 import { useNeedsApproval } from 'common/hooks/useNeedsApproval'
-import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
 
 import { SafeBundleFlowContext } from '../types/TradeFlowContext'
 
