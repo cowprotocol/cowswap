@@ -82,8 +82,8 @@ export function useRecoverFundsFromProxy(
         calls,
         nonce,
         BigInt(validTo),
-        provider.getSigner(),
         ContractsSigningScheme.EIP712, // TODO: support other signing types
+        provider.getSigner(),
       )
 
       setTxSigningStep(RecoverSigningStep.SIGN_TRANSACTION)
