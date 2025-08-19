@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { getTokenListViewLink, ListState } from '@cowprotocol/tokens'
 
+import { Trans } from '@lingui/react/macro'
 import { Menu, MenuItem } from '@reach/menu-button'
 import { Settings } from 'react-feather'
 
@@ -76,7 +77,7 @@ export function ListItem(props: TokenListItemProps) {
                     label: list.source,
                   })}
                 >
-                  View List
+                  <Trans>View List</Trans>
                 </a>
               </styledEl.SettingsAction>
             </MenuItem>
@@ -88,7 +89,7 @@ export function ListItem(props: TokenListItemProps) {
                   label: list.source,
                 })}
               >
-                Remove list
+                <Trans>Remove list</Trans>
               </styledEl.SettingsAction>
             </MenuItem>
           </styledEl.SettingsContainer>

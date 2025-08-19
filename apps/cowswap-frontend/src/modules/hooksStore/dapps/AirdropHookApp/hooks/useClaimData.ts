@@ -5,6 +5,7 @@ import { formatTokenAmount } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Fraction } from '@uniswap/sdk-core'
 
+import { t } from '@lingui/core/macro'
 import useSWR from 'swr'
 
 import { useContract } from 'common/hooks/useContract'
@@ -20,12 +21,14 @@ export interface PreviewClaimableTokensParams {
   address: string
 }
 
-export const AIRDROP_PREVIEW_ERRORS = {
-  NO_CLAIMABLE_TOKENS: 'You are not eligible for this airdrop',
-  ERROR_FETCHING_DATA: 'There was an error trying to load claimable tokens',
-  NO_CLAIMABLE_AIRDROPS: 'You possibly have other items to claim, but not Airdrops',
-  UNEXPECTED_WRONG_FORMAT_DATA: 'Unexpected error fetching data: wrong format data',
-}
+const getAirdropPreviewErrors = (): Record<string, string> => ({
+  NO_CLAIMABLE_TOKENS: t`You are not eligible for this airdrop`,
+  ERROR_FETCHING_DATA: t`There was an error trying to load claimable tokens`,
+  NO_CLAIMABLE_AIRDROPS: t`You possibly have other items to claim, but not Airdrops`,
+  UNEXPECTED_WRONG_FORMAT_DATA: t`Unexpected error fetching data: wrong format data`,
+})
+
+export const AIRDROP_PREVIEW_ERRORS = getAirdropPreviewErrors()
 
 /*
 function to check if a name is inside a interval

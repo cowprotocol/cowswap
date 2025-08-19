@@ -4,6 +4,8 @@ import { TokenWithLogo } from '@cowprotocol/common-const'
 import { isAddress, parseENSAddress, uriToHttp } from '@cowprotocol/common-utils'
 import { ListState, useSearchList, useSearchToken } from '@cowprotocol/tokens'
 
+import { Trans } from '@lingui/react/macro'
+
 import * as styledEl from './styled'
 
 import { ModalHeader } from '../../pure/ModalHeader'
@@ -66,14 +68,14 @@ export function ManageListsAndTokens(props: ManageListsAndTokensProps) {
   return (
     <styledEl.Wrapper>
       <ModalHeader onBack={onBack} onClose={onDismiss}>
-        Manage
+        <Trans>Manage</Trans>
       </ModalHeader>
       <styledEl.TabsContainer>
         <styledEl.Tab active$={isListsTab} onClick={setListsTab}>
-          Lists
+          <Trans>Lists</Trans>
         </styledEl.Tab>
         <styledEl.Tab active$={!isListsTab} onClick={setTokensTab}>
-          Tokens
+          <Trans>Tokens</Trans>
         </styledEl.Tab>
       </styledEl.TabsContainer>
       <styledEl.PrimaryInputBox>
@@ -82,8 +84,16 @@ export function ManageListsAndTokens(props: ManageListsAndTokensProps) {
           onChange={(e) => setInputValue(e.target.value)}
           placeholder={isListsTab ? listsInputPlaceholder : tokensInputPlaceholder}
         />
-        {!isListUrlValid && listInput && <styledEl.InputError>Enter valid list location</styledEl.InputError>}
-        {!isTokenAddressValid && <styledEl.InputError>Enter valid token address</styledEl.InputError>}
+        {!isListUrlValid && listInput && (
+          <styledEl.InputError>
+            <Trans>Enter valid list location</Trans>
+          </styledEl.InputError>
+        )}
+        {!isTokenAddressValid && (
+          <styledEl.InputError>
+            <Trans>Enter valid token address</Trans>
+          </styledEl.InputError>
+        )}
       </styledEl.PrimaryInputBox>
       {currentTab === 'lists' ? (
         <ManageLists listSearchResponse={listSearchResponse} lists={lists} isListUrlValid={isListUrlValid} />

@@ -5,6 +5,7 @@ import RefundIcon from '@cowprotocol/assets/cow-swap/icon-refund.svg'
 import SpinnerIcon from '@cowprotocol/assets/cow-swap/spinner.svg'
 import CLOSE_ICON_X from '@cowprotocol/assets/cow-swap/x.svg'
 
+import { t } from '@lingui/core/macro'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
@@ -50,22 +51,28 @@ export const SwapStatusIcons: Record<SwapAndBridgeStatus, ReactNode> = {
 export const BridgeStatusIcons = CommonStatusIcons
 
 // Title text used for different swap states
-export const SwapStatusTitlePrefixes: Record<SwapAndBridgeStatus, string> = {
-  [SwapAndBridgeStatus.DONE]: 'Swapped on',
-  [SwapAndBridgeStatus.PENDING]: 'Swapping on',
-  [SwapAndBridgeStatus.FAILED]: 'Swap failed',
-  [SwapAndBridgeStatus.REFUND_COMPLETE]: 'Swap refunded',
-  [SwapAndBridgeStatus.DEFAULT]: 'Swap on',
-}
+const getSwapStatusTitlePrefixes = (): Record<SwapAndBridgeStatus, string> => ({
+  [SwapAndBridgeStatus.DONE]: t`Swapped on`,
+  [SwapAndBridgeStatus.PENDING]: t`Swapping on`,
+  [SwapAndBridgeStatus.FAILED]: t`Swap failed`,
+  [SwapAndBridgeStatus.REFUND_COMPLETE]: t`Swap refunded`,
+  [SwapAndBridgeStatus.DEFAULT]: t`Swap on`,
+})
+
+export const SwapStatusTitlePrefixes: Record<SwapAndBridgeStatus, string> = getSwapStatusTitlePrefixes()
+
+const getbridgeFailedTitle = (): string => t`Bridge failed on`
 
 // Reusable text for different states
-export const bridgeFailedTitle = 'Bridge failed on'
+export const bridgeFailedTitle = getbridgeFailedTitle()
 
-// Title text used for different bridge states
-export const BridgeStatusTitlePrefixes: Record<SwapAndBridgeStatus, string> = {
-  [SwapAndBridgeStatus.DONE]: 'Bridged via',
-  [SwapAndBridgeStatus.PENDING]: 'Bridging via',
+const getBridgeStatusTitlePrefixes = (): Record<SwapAndBridgeStatus, string> => ({
+  [SwapAndBridgeStatus.DONE]: t`Bridged via`,
+  [SwapAndBridgeStatus.PENDING]: t`Bridging via`,
   [SwapAndBridgeStatus.FAILED]: bridgeFailedTitle,
   [SwapAndBridgeStatus.REFUND_COMPLETE]: bridgeFailedTitle,
-  [SwapAndBridgeStatus.DEFAULT]: 'Bridge via',
-}
+  [SwapAndBridgeStatus.DEFAULT]: t`Bridge via`,
+})
+
+// Title text used for different bridge states
+export const BridgeStatusTitlePrefixes: Record<SwapAndBridgeStatus, string> = getBridgeStatusTitlePrefixes()

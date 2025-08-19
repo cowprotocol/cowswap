@@ -217,8 +217,8 @@ export function Settings({ state, onStateChanged }: SettingsProps) {
 
         {/* TODO: Temporarily disabled - Global USD Mode feature and isUsdValuesMode
         <SettingsBox
-          title="Global USD Mode"
-          tooltip="When enabled, all prices will be displayed in USD by default."
+          title={t`Global USD Mode`}
+          tooltip={t`When enabled, all prices will be displayed in USD by default.`}
           value={isUsdValuesMode}
           toggle={handleUsdValuesModeToggle}
         /> */}

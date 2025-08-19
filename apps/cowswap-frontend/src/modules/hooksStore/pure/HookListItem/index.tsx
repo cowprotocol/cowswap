@@ -3,6 +3,7 @@ import { HookDappWalletCompatibility } from '@cowprotocol/hook-dapp-lib'
 import { Command } from '@cowprotocol/types'
 
 import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 
 import * as styled from './styled'
@@ -36,7 +37,11 @@ export function HookListItem({ dapp, walletType, onSelect, onOpenDetails, onRemo
   }
 
   return (
-    <styled.HookDappListItem onClick={handleItemClick} isCompatible={isCompatible}>
+    <styled.HookDappListItem
+      onClick={handleItemClick}
+      isCompatible={isCompatible}
+      data-incompatibility-text={t`This hook is not compatible with your wallet`}
+    >
       <img src={image} alt={name} />
 
       <styled.HookDappDetails onClick={onOpenDetails}>
@@ -49,16 +54,16 @@ export function HookListItem({ dapp, walletType, onSelect, onOpenDetails, onRemo
       <span>
         {isCompatible ? (
           <styled.LinkButton onClick={onSelect} className="link-button">
-            Open
+            <Trans>Open</Trans>
           </styled.LinkButton>
         ) : (
           <styled.LinkButton disabled title={t`Not compatible with current wallet type`}>
-            n/a
+            <Trans>N/A</Trans>
           </styled.LinkButton>
         )}
         {onRemove ? (
           <styled.RemoveButton onClick={onRemove} className="remove-button">
-            Remove
+            <Trans>Remove</Trans>
           </styled.RemoveButton>
         ) : null}
         <i
@@ -67,7 +72,7 @@ export function HookListItem({ dapp, walletType, onSelect, onOpenDetails, onRemo
             onOpenDetails()
           }}
         >
-          <SVG src={ICON_INFO} /> details
+          <SVG src={ICON_INFO} /> <Trans>details</Trans>
         </i>
       </span>
     </styled.HookDappListItem>

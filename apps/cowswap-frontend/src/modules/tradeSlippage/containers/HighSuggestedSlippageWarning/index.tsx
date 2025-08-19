@@ -49,7 +49,7 @@ export function HighSuggestedSlippageWarning(props: HighSuggestedSlippageWarning
 
   return (
     <StyledInlineBanner bannerType={StatusColorVariant.Alert} orientation={BannerOrientation.Horizontal} noWrapContent>
-      <Trans>Slippage adjusted to {`${slippageBpsPercentage}`}% to ensure quick execution</Trans>
+      <Trans>Slippage adjusted to {slippageBpsPercentage}% to ensure quick execution</Trans>
       <InfoTooltip
         size={24}
         content={t`CoW Swap dynamically adjusts your slippage tolerance based on current gas prices and trade size. You can set a custom slippage using the settings icon above.`}

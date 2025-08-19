@@ -59,7 +59,7 @@ export interface IMenuItem {
 export const getMenuItems = (): IMenuItem[] => [
   { route: Routes.SWAP, label: t`Swap`, description: t`Trade tokens` },
   { route: Routes.LIMIT_ORDER, label: t`Limit`, fullLabel: t`Limit order`, description: t`Set your own price` },
-  { route: Routes.ADVANCED_ORDERS, label: `TWAP`, description: `Place orders with a time-weighted average price` },
+  { route: Routes.ADVANCED_ORDERS, label: `TWAP`, description: t`Place orders with a time-weighted average price` },
 ]
 
 export const MENU_ITEMS: IMenuItem[] = getMenuItems()
@@ -77,9 +77,9 @@ export const HOOKS_STORE_MENU_ITEM: IMenuItem = getHookStoreMenuItem()
 export const getYieldMenuItem = (): IMenuItem => ({
   route: Routes.YIELD,
   label: t`Yield`,
-  fullLabel: `Yield`,
-  description: `Provide liquidity`,
-  badge: `New`,
+  fullLabel: t`Yield`,
+  description: t`Provide liquidity`,
+  badge: t`New`,
   badgeType: BadgeTypes.ALERT,
 })
 

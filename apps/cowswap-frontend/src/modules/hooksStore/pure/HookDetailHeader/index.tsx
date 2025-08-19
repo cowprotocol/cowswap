@@ -1,6 +1,7 @@
 import { HookDappWalletCompatibility } from '@cowprotocol/hook-dapp-lib'
 
 import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 
 import * as styled from './styled'
 
@@ -30,10 +31,12 @@ export function HookDetailHeader({ dapp, walletType, onSelect, iconSize, gap, pa
         <styled.Description>{descriptionShort}</styled.Description>
         {onSelect &&
           (isCompatible ? (
-            <styled.AddButton onClick={onSelect}>Add</styled.AddButton>
+            <styled.AddButton onClick={onSelect}>
+              <Trans>Add</Trans>
+            </styled.AddButton>
           ) : (
             <styled.AddButton disabled title={t`Not compatible with current wallet type`}>
-              n/a
+              <Trans>N/A</Trans>
             </styled.AddButton>
           ))}
       </styled.Content>

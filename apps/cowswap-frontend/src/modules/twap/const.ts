@@ -2,6 +2,7 @@ import { USDC } from '@cowprotocol/common-const'
 import { mapAddressToSupportedNetworks, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
+import { t } from '@lingui/core/macro'
 import ms from 'ms.macro'
 
 import { MAX_ORDER_DEADLINE } from 'common/constants/common'
@@ -16,16 +17,20 @@ export type OrderDeadline = { label: string; value: number }
 
 export const DEFAULT_NUM_OF_PARTS = 2
 
-export const DEFAULT_ORDER_DEADLINE: OrderDeadline = { label: '1 Hour', value: ms`1 hour` }
+const getDefaultOrderDeadline = (): OrderDeadline => ({ label: t`1 Hour`, value: ms`1 hour` })
 
-export const ORDER_DEADLINES: OrderDeadline[] = [
+export const DEFAULT_ORDER_DEADLINE: OrderDeadline = getDefaultOrderDeadline()
+
+const getOrderDeadlines = (): OrderDeadline[] => [
   DEFAULT_ORDER_DEADLINE,
-  { label: '6 Hours', value: ms`6 hour` },
-  { label: '12 Hours', value: ms`12 hour` },
-  { label: '24 Hours', value: ms`1d` },
-  { label: '1 Week', value: ms`1d` * 7 },
-  { label: '1 Month', value: ms`1d` * 30 },
+  { label: t`6 Hours`, value: ms`6 hour` },
+  { label: t`12 Hours`, value: ms`12 hour` },
+  { label: t`24 Hours`, value: ms`1d` },
+  { label: t`1 Week`, value: ms`1d` * 7 },
+  { label: t`1 Month`, value: ms`1d` * 30 },
 ]
+
+export const ORDER_DEADLINES: OrderDeadline[] = getOrderDeadlines()
 
 export const TWAP_ORDER_STRUCT =
   'tuple(address sellToken,address buyToken,address receiver,uint256 partSellAmount,uint256 minPartLimit,uint256 t0,uint256 n,uint256 t,uint256 span,bytes32 appData)'

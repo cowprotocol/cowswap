@@ -5,6 +5,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import { Text } from 'rebass'
 
 import { AutoColumn } from 'legacy/components/Column'
@@ -61,7 +62,7 @@ export default function CowSubsidyModal({
     () => (
       <Row style={{ justifyContent: 'center' }}>
         <ExternalLink href="https://medium.com/@cow-protocol/cow-token-is-moving-forward-at-full-speed-d9f047a23b57">
-          Read more about the tokenomics
+          <Trans>Read more about the tokenomics</Trans>
         </ExternalLink>
       </Row>
     ),

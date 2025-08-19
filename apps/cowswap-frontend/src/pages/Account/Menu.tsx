@@ -4,6 +4,7 @@ import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { t } from '@lingui/core/macro'
 import { NavLink } from 'react-router'
 
 import { SideMenu } from 'legacy/components/SideMenu'
@@ -17,8 +18,8 @@ interface MenuItem {
 
 const ACCOUNT_MENU_LINKS = (chainId: SupportedChainId): MenuItem[] => {
   return [
-    { title: 'Overview', url: '/account' },
-    { title: 'Tokens', url: '/account/tokens' },
+    { title: t`Overview`, url: '/account' },
+    { title: t`Tokens`, url: '/account/tokens' },
     { title: ACCOUNT_PROXY_LABEL, url: getProxyAccountUrl(chainId) },
   ]
 }

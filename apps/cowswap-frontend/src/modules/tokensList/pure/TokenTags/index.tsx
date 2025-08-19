@@ -4,29 +4,31 @@ import { UNSUPPORTED_TOKENS_FAQ_URL } from '@cowprotocol/common-const'
 import { TagInfo, TokenListTags } from '@cowprotocol/tokens'
 import { getStatusColorEnums, HoverTooltip, StatusColorVariant } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
 import ICON_GAS_FREE from 'assets/icon/gas-free.svg'
 import SVG from 'react-inlinesvg'
 import { NavLink } from 'react-router'
 
 import * as styledEl from './styled'
 
-// Programmatic tags that don't come from tokenlists
-const APP_TOKEN_TAGS: TokenListTags = {
+const getAppTokenTags = (): TokenListTags => ({
   unsupported: {
-    name: 'Unsupported',
-    description:
-      'This token is unsupported as it does not operate optimally with CoW Protocol. Please refer to the FAQ for more information.',
+    name: t`Unsupported`,
+    description: t`This token is unsupported as it does not operate optimally with CoW Protocol. Please refer to the FAQ for more information.`,
     id: '0',
     color: StatusColorVariant.Warning,
   },
   'gas-free': {
-    name: 'Gas-free',
+    name: t`Gas-free`,
     icon: ICON_GAS_FREE,
-    description: 'This token supports gas-free approvals. Enjoy! 🐮',
+    description: t`This token supports gas-free approvals. Enjoy! 🐮`,
     id: '1',
     color: StatusColorVariant.Success,
   },
-}
+})
+
+// Programmatic tags that don't come from tokenlists
+const APP_TOKEN_TAGS: TokenListTags = getAppTokenTags()
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -45,11 +47,11 @@ export function TokenTags({
     return isUnsupported
       ? [APP_TOKEN_TAGS.unsupported]
       : [
-        // Include valid tags from token.tags
-        ...tags.filter((tag) => tag in tokenListTags).map((tag) => tokenListTags[tag]),
-        // Add gas-free tag if applicable
-        ...(isPermitCompatible ? [APP_TOKEN_TAGS['gas-free']] : []),
-      ]
+          // Include valid tags from token.tags
+          ...tags.filter((tag) => tag in tokenListTags).map((tag) => tokenListTags[tag]),
+          // Add gas-free tag if applicable
+          ...(isPermitCompatible ? [APP_TOKEN_TAGS['gas-free']] : []),
+        ]
   }, [isUnsupported, tags, tokenListTags, isPermitCompatible])
 
   if (tagsToShow.length === 0) return null

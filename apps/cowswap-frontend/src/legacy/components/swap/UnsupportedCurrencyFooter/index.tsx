@@ -1,5 +1,7 @@
 import { UNSUPPORTED_TOKENS_FAQ_URL } from '@cowprotocol/common-const'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import { transparentize } from 'color2k'
 import { NavLink } from 'react-router'
 import styled from 'styled-components/macro'
@@ -11,19 +13,25 @@ import UnsupportedCurrencyFooterMod, {
 
 const DEFAULT_DETAILS_TEXT = (
   <div>
-    CoW Swap does not support all tokens. Some tokens implement similar, but logically different ERC20 contract methods
-    which do not operate optimally with CoW Protocol.
-    <p>
-      For more information, please refer to the{' '}
-      <NavLink target="_blank" to={UNSUPPORTED_TOKENS_FAQ_URL}>
-        FAQ
-      </NavLink>
-      .
-    </p>
+    <Trans>
+      CoW Swap does not support all tokens. Some tokens implement similar, but logically different ERC20 contract
+      methods which do not operate optimally with CoW Protocol.
+      <p>
+        For more information, please refer to the{' '}
+        <NavLink target="_blank" to={UNSUPPORTED_TOKENS_FAQ_URL}>
+          FAQ
+        </NavLink>
+        .
+      </p>
+    </Trans>
   </div>
 )
-const DEFAULT_DETAILS_TITLE = 'Unsupported Token'
-const DEFAULT_SHOW_DETAILS_TEXT = 'Read more about unsupported tokens'
+
+const getDefaultDetailsTitle = (): string => t`Unsupported Token`
+const getDefaultShowDetailsText = (): string => t`Read more about unsupported tokens`
+
+const DEFAULT_DETAILS_TITLE = getDefaultDetailsTitle()
+const DEFAULT_SHOW_DETAILS_TEXT = getDefaultShowDetailsText()
 
 type Props = Omit<UnsupportedCurrencyFooterParams, 'currencies'> & {
   currencies?: UnsupportedCurrencyFooterParams['currencies']

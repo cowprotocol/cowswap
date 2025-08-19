@@ -235,8 +235,7 @@ export default function TokensOverview() {
       )}
       <Overview>
         <PageTitle title={PAGE_TITLES.TOKENS_OVERVIEW} />
-
-        {isProviderNetworkUnsupported ? 'Unsupported network' : renderTableContent()}
+        {isProviderNetworkUnsupported ? <Trans>Unsupported network</Trans> : renderTableContent()}
       </Overview>
     </>
   )

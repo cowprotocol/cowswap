@@ -84,7 +84,7 @@ export default function MevSlicer() {
           action: 'Playing MEV Slicer game',
         })}
       >
-        Play MEV Slicer
+        <Trans>Play MEV Slicer</Trans>
       </ButtonPrimary>
 
       <Content></Content>

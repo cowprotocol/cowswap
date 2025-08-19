@@ -25,7 +25,7 @@ export function AlternativeLimitOrder() {
     return null
   }
 
-  const title = `${isEdit ? t`Edit` : t`Recreate`} ${t`limit order`}`
+  const title = isEdit ? t`Edit limit order` : t`Recreate limit order`
 
   return (
     <Wrapper>

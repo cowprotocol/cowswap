@@ -120,7 +120,7 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
         let errorMessage
         const isRejected = isRejectRequestProviderError(error)
         if (isRejected) {
-          errorMessage = 'User rejected signing COW claim transaction'
+          errorMessage = t`User rejected signing COW claim transaction`
         } else {
           errorMessage = getProviderErrorMessage(error)
           console.error('Error Signing locked GNO COW claiming', error)
@@ -150,7 +150,9 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
         <BalanceDisplay hAlign="left">
           <img src={cowImage} alt={t`COW token`} width="56" height="56" />
           <span>
-            <i>COW vesting from locked GNO</i>
+            <i>
+              <Trans>COW vesting from locked GNO</Trans>
+            </i>
             <b>
               <TokenAmount amount={allocated} defaultValue="0" tokenSymbol={allocated.currency} />
               <HoverTooltip
@@ -230,7 +232,9 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
             <Trans>View contract</Trans> ↗
           </ExtLink>
           <CopyHelper toCopy={contractAddress}>
-            <div title={t`Click to copy contract address`}>Copy contract</div>
+            <div title={t`Click to copy contract address`}>
+              <Trans>Copy contract</Trans>
+            </div>
           </CopyHelper>
         </CardActions>
       </Card>
