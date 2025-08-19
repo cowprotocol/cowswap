@@ -2,12 +2,11 @@ import { DEFAULT_APP_CODE } from '@cowprotocol/common-const'
 import { ALL_ENVIRONMENTS, EnvironmentName } from '@cowprotocol/common-utils'
 import { LATEST_APP_DATA_VERSION } from '@cowprotocol/cow-sdk'
 import { MetadataApi } from '@cowprotocol/cow-sdk'
+import type { AnyAppDataDocVersion } from '@cowprotocol/sdk-app-data'
 
 import { getFullAppDataByEnv } from './fullAppData'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const getAppData = (env: EnvironmentName | undefined) => JSON.parse(getFullAppDataByEnv(env))
+const getAppData = (env: EnvironmentName | undefined): AnyAppDataDocVersion => JSON.parse(getFullAppDataByEnv(env))
 const metadataApi = new MetadataApi()
 
 describe('getFullAppDataByEnv', () => {

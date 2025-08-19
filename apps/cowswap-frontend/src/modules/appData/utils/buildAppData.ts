@@ -1,6 +1,5 @@
-import { stringifyDeterministic } from '@cowprotocol/cow-sdk'
 import { UtmParams } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { stringifyDeterministic, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { metadataApiSDK } from 'cowSdk'
 import { keccak256, toUtf8Bytes } from 'ethers/lib/utils'

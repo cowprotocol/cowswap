@@ -3,17 +3,19 @@ import { areAddressesEqual, getContract } from '@cowprotocol/common-utils'
 import type { CowShedHooks, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
+import { defaultAbiCoder } from '@ethersproject/abi'
+import { BigNumber } from '@ethersproject/bignumber'
 import type { BaseContract } from '@ethersproject/contracts'
+import { id } from '@ethersproject/hash'
 import type { Web3Provider } from '@ethersproject/providers'
 
-import { BigNumber, BytesLike, ethers } from 'ethers'
 import ms from 'ms.macro'
 import useSWR, { SWRResponse, SWRConfiguration } from 'swr'
 
 import { useCowShedHooks } from './useCowShedHooks'
 
-function slot(name: string): BytesLike {
-  return ethers.utils.defaultAbiCoder.encode(['bytes32'], [BigNumber.from(ethers.utils.id(name)).sub(1)])
+function slot(name: string): string {
+  return defaultAbiCoder.encode(['bytes32'], [BigNumber.from(id(name)).sub(1)])
 }
 
 const COW_SHED_ABI = [
@@ -36,7 +38,7 @@ const IMPLEMENTATION_STORAGE_SLOT = slot('eip1967.proxy.implementation')
  * @returns The address of the contract storing the proxy implementation.
  */
 export async function implementationAddress(provider: Web3Provider, proxy: string): Promise<string> {
-  const [implementation] = ethers.utils.defaultAbiCoder.decode(
+  const [implementation] = defaultAbiCoder.decode(
     ['address'],
     await provider.getStorageAt(proxy, IMPLEMENTATION_STORAGE_SLOT),
   )
