@@ -1,4 +1,5 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { OrderClass, PriceQuality } from '@cowprotocol/cow-sdk'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
@@ -74,8 +75,11 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
   const addBridgeOrder = useAddBridgeOrder()
   const bridgeQuoteAmounts = useBridgeQuoteAmounts()
   const { maximumSendSellAmount } = useAmountsToSign() ?? {}
+
   // todo should be removed when we will add ui for partial permit signing
-  const permitAmountToSign = maximumSendSellAmount ? BigInt(maximumSendSellAmount.quotient.toString()) : undefined
+  const { isPartialPermitEnabled } = useFeatureFlags()
+  const permitAmountToSign =
+    isPartialPermitEnabled && maximumSendSellAmount ? BigInt(maximumSendSellAmount.quotient.toString()) : undefined
 
   const enoughAllowance = useEnoughAllowance(inputAmount)
 
