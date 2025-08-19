@@ -9,7 +9,7 @@ import { classifyOrder, OrderTransitionStatus } from 'legacy/state/orders/utils'
 
 import { getOrder } from 'api/cowProtocol'
 import { getIsComposableCowChildOrder } from 'utils/orderUtils/getIsComposableCowChildOrder'
-import { getUiOrderType, ORDER_UI_TYPE_TITLES, UiOrderTypeParams } from 'utils/orderUtils/getUiOrderType'
+import { getUiOrderType, getUiOrderTypeTitles, UiOrderTypeParams } from 'utils/orderUtils/getUiOrderType'
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -42,7 +42,7 @@ export function computeOrderSummary({
   const receiver = orderFromApi?.receiver || orderFromStore?.receiver
 
   const uiOrderType = getUiOrderType((orderFromStore || orderFromApi) as UiOrderTypeParams)
-  const orderTitle = ORDER_UI_TYPE_TITLES[uiOrderType]
+  const orderTitle = getUiOrderTypeTitles()[uiOrderType]
 
   let summary: string | undefined = undefined
 

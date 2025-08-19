@@ -12,7 +12,7 @@ import { useUsdAmount } from 'modules/usdAmount'
 import * as styledEl from './styled'
 
 import { twapOrdersSettingsAtom } from '../../state/twapOrdersSettingsAtom'
-import { AMOUNT_PARTS_LABELS } from '../TwapFormWidget/tooltips'
+import { useAmountPartsLabels } from '../TwapFormWidget/tooltips'
 
 interface TradeAmountPreviewProps {
   amount: Nullish<CurrencyAmount<Currency>>
@@ -47,7 +47,7 @@ export function AmountParts() {
   const {
     sellAmount: { label: sellLabel, tooltip: sellTooltip },
     buyAmount: { label: buyLabel, tooltip: buyTooltip },
-  } = AMOUNT_PARTS_LABELS
+  } = useAmountPartsLabels()
 
   const { numberOfPartsValue } = useAtomValue(twapOrdersSettingsAtom)
 

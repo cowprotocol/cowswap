@@ -57,40 +57,44 @@ interface ReceiptProps {
   alternativeOrderModalContext: AlternativeOrderModalContext
 }
 
-const FILLED_COMMON_TOOLTIP = 'How much of the order has been filled.'
-
-const tooltips: { [key: string]: string | ReactElement } = {
-  LIMIT_PRICE: 'You will receive this price or better for your tokens.',
-  EXECUTION_PRICE: 'An order’s actual execution price will vary based on the market price and network costs.',
-  EXECUTES_AT:
-    'Network costs (incl. gas) are covered by filling your order when the market price is better than your limit price.',
-  FILLED_TWAP: FILLED_COMMON_TOOLTIP,
-  FILLED: (
-    <span>
-      {FILLED_COMMON_TOOLTIP}
-      <br />
-      Market orders are always <i>Fill or kill</i>, while limit orders are by default <i>Partially fillable</i>, but can
-      also be changed to <i>Fill or kill</i> through your order settings.
-    </span>
-  ),
-  SURPLUS: 'The amount of extra tokens you get on top of your limit price.',
-  NETWORK_COSTS:
-    'CoW Protocol covers the costs by executing your order at a slightly better price than your limit price.',
-  CREATED: 'Your order was created on this date & time. It will remain open until it expires or is filled.',
-  RECEIVER: 'The account address which will/did receive the bought amount.',
-  EXPIRY:
-    "If your order has not been filled by this date & time, it will expire. Don't worry - expirations and order placement are free on CoW Swap!",
-  TOTAL_FEE: 'This fee helps pay for maintenance & improvements to the trade experience',
-  ORDER_TYPE: (
-    <span>
-      Orders on CoW Swap can either be market orders (which fill at the market price within the slippage tolerance you
-      set) or limit orders (which fill at a price you specify).
-      <br />
-      <br />
-      Market orders are always <i>Fill or kill</i>, while limit orders are by default <i>Partially fillable</i>, but can
-      also be changed to <i>Fill or kill</i> through your order settings.
-    </span>
-  ),
+function useReceiptTooltips(): Record<string, string | ReactElement> {
+  const FILLED_COMMON_TOOLTIP = t`How much of the order has been filled.`
+  return {
+    LIMIT_PRICE: t`You will receive this price or better for your tokens.`,
+    EXECUTION_PRICE: t`An order’s actual execution price will vary based on the market price and network costs.`,
+    EXECUTES_AT: t`Network costs (incl. gas) are covered by filling your order when the market price is better than your limit price.`,
+    FILLED_TWAP: FILLED_COMMON_TOOLTIP,
+    FILLED: (
+      <span>
+        {FILLED_COMMON_TOOLTIP}
+        <br />
+        <Trans>
+          Market orders are always <i>Fill or kill</i>, while limit orders are by default <i>Partially fillable</i>, but
+          can also be changed to <i>Fill or kill</i> through your order settings.
+        </Trans>
+      </span>
+    ),
+    SURPLUS: t`The amount of extra tokens you get on top of your limit price.`,
+    NETWORK_COSTS: t`CoW Protocol covers the costs by executing your order at a slightly better price than your limit price.`,
+    CREATED: t`Your order was created on this date & time. It will remain open until it expires or is filled.`,
+    RECEIVER: t`The account address which will/did receive the bought amount.`,
+    EXPIRY: t`If your order has not been filled by this date & time, it will expire. Don't worry - expirations and order placement are free on CoW Swap!`,
+    TOTAL_FEE: t`This fee helps pay for maintenance & improvements to the trade experience`,
+    ORDER_TYPE: (
+      <span>
+        <Trans>
+          Orders on CoW Swap can either be market orders (which fill at the market price within the slippage tolerance
+          you set) or limit orders (which fill at a price you specify).
+        </Trans>
+        <br />
+        <br />
+        <Trans>
+          Market orders are always <i>Fill or kill</i>, while limit orders are by default <i>Partially fillable</i>, but
+          can also be changed to <i>Fill or kill</i> through your order settings.
+        </Trans>
+      </span>
+    ),
+  }
 }
 
 const TWAP_PART_ORDER_EXISTS_STATES = new Set([OrderStatus.PENDING, OrderStatus.FULFILLED, OrderStatus.EXPIRED])
@@ -114,6 +118,8 @@ export function ReceiptModal({
   receiverEnsName,
   alternativeOrderModalContext,
 }: ReceiptProps) {
+  const tooltips = useReceiptTooltips()
+
   // Check if Custom Recipient Warning Banner should be visible
   const isCustomRecipientWarningBannerVisible = !useIsReceiverWalletBannerHidden(order.id)
   const hideCustomRecipientWarning = useHideReceiverWalletBanner()

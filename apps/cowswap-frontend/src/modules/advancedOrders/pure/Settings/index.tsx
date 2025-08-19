@@ -1,12 +1,13 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 
 import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 
 import {
   limitOrdersSettingsAtom,
   updateLimitOrdersSettingsAtom,
 } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
-import { ORDERS_TABLE_SETTINGS } from 'modules/trade/const/common'
+import { useOrdersTableSettings } from 'modules/trade/const/common'
 import { SettingsBox, SettingsContainer, SettingsTitle } from 'modules/trade/pure/Settings'
 
 import { AdvancedOrdersSettingsState } from '../../state/advancedOrdersSettingsAtom'
@@ -23,10 +24,13 @@ export function Settings({ state, onStateChanged }: SettingsProps) {
   // TODO: we should use limit orders settings in Advanced Orders!
   const limitOrdersSettings = useAtomValue(limitOrdersSettingsAtom)
   const updateLimitOrdersSettings = useSetAtom(updateLimitOrdersSettingsAtom)
+  const { LEFT_ALIGNED } = useOrdersTableSettings()
 
   return (
     <SettingsContainer>
-      <SettingsTitle>Advanced Order Settings</SettingsTitle>
+      <SettingsTitle>
+        <Trans>Advanced Order Settings</Trans>
+      </SettingsTitle>
 
       <SettingsBox
         title={t`Custom Recipient`}
@@ -36,8 +40,8 @@ export function Settings({ state, onStateChanged }: SettingsProps) {
       />
 
       <SettingsBox
-        title={ORDERS_TABLE_SETTINGS.LEFT_ALIGNED.title}
-        tooltip={ORDERS_TABLE_SETTINGS.LEFT_ALIGNED.tooltip}
+        title={LEFT_ALIGNED.title}
+        tooltip={LEFT_ALIGNED.tooltip}
         value={limitOrdersSettings.ordersTableOnLeft}
         toggle={() => updateLimitOrdersSettings({ ordersTableOnLeft: !limitOrdersSettings.ordersTableOnLeft })}
       />

@@ -3,6 +3,8 @@ import { ReactElement, ReactNode } from 'react'
 
 import { isSellOrder } from '@cowprotocol/common-utils'
 
+import { t } from '@lingui/core/macro'
+
 import { Field } from 'legacy/state/types'
 
 import { useAdvancedOrdersActions } from 'modules/advancedOrders/hooks/useAdvancedOrdersActions'
@@ -18,21 +20,27 @@ import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { useUpdateAdvancedOrdersRawState } from '../../hooks/useAdvancedOrdersRawState'
 import { AdvancedOrdersSettings } from '../AdvancedOrdersSettings'
 
-const TWAP_BULLET_LIST_CONTENT: BulletListItem[] = [
-  { content: 'Get the Time-Weighted Average Price by splitting your large order into parts' },
-  { content: 'Customize your order size, expiration, and number of parts' },
-  { content: 'Receive surplus of your order' },
-  { content: 'Reduce your slippage by breaking big orders into smaller ones' },
+const twapBulletListContent = (): BulletListItem[] => [
+  { content: t`Get the Time-Weighted Average Price by splitting your large order into parts` },
+  { content: t`Customize your order size, expiration, and number of parts` },
+  { content: t`Receive surplus of your order` },
+  { content: t`Reduce your slippage by breaking big orders into smaller ones` },
 ]
 
-const UNLOCK_SCREEN = {
-  title: 'Unlock the Power of TWAP Orders',
-  subtitle: 'Begin with TWAP Today!',
-  orderType: 'TWAP',
-  buttonText: 'Unlock TWAP orders',
+const unlockScreen = (): {
+  buttonLink: string
+  buttonText: string
+  orderType: string
+  subtitle: string
+  title: string
+} => ({
+  title: t`Unlock the Power of TWAP Orders`,
+  subtitle: t`Begin with TWAP Today!`,
+  orderType: t`TWAP`,
+  buttonText: t`Unlock TWAP orders`,
   // TODO: add actual link before deploy to PROD
   buttonLink: TWAP_LEARN_MORE_LINK,
-}
+})
 
 export type AdvancedOrdersWidgetParams = {
   disablePriceImpact: boolean
@@ -56,6 +64,7 @@ export function AdvancedOrdersWidget({
   confirmContent,
   mapCurrencyInfo,
 }: AdvancedOrdersWidgetProps) {
+  const { title, orderType, buttonText, buttonLink, subtitle } = unlockScreen()
   const { disablePriceImpact } = params
 
   const {
@@ -109,12 +118,12 @@ export function AdvancedOrdersWidget({
     lockScreen: isUnlocked ? undefined : (
       <UnlockWidgetScreen
         id="advanced-orders"
-        items={TWAP_BULLET_LIST_CONTENT}
-        buttonLink={UNLOCK_SCREEN.buttonLink}
-        title={UNLOCK_SCREEN.title}
-        subtitle={UNLOCK_SCREEN.subtitle}
-        orderType={UNLOCK_SCREEN.orderType}
-        buttonText={UNLOCK_SCREEN.buttonText}
+        items={twapBulletListContent()}
+        buttonLink={buttonLink}
+        title={title}
+        subtitle={subtitle}
+        orderType={orderType}
+        buttonText={buttonText}
         handleUnlock={() => updateAdvancedOrdersState({ isUnlocked: true })}
       />
     ),

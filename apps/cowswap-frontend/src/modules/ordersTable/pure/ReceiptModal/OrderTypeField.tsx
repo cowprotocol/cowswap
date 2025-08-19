@@ -12,22 +12,24 @@ export type Props = {
   order: ParsedOrder
 }
 
+const orderUITypeLabels = (): Record<UiOrderType, string> => ({
+  [UiOrderType.SWAP]: t`Market`,
+  [UiOrderType.LIMIT]: t`Limit`,
+  [UiOrderType.TWAP]: t`TWAP`,
+  [UiOrderType.HOOKS]: t`Hooks`,
+  [UiOrderType.YIELD]: t`Yield`,
+})
+
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function OrderTypeField({ order }: Props) {
   const uiOrderType = getUiOrderType(order)
-  const ORDER_UI_TYPE_LABELS: Record<UiOrderType, string> = {
-    [UiOrderType.SWAP]: t`Market`,
-    [UiOrderType.LIMIT]: t`Limit`,
-    [UiOrderType.TWAP]: t`TWAP`,
-    [UiOrderType.HOOKS]: t`Hooks`,
-    [UiOrderType.YIELD]: t`Yield`,
-  }
+  const typeLabels = orderUITypeLabels()
 
   return (
     <styledEl.Value>
       <styledEl.OrderTypeValue>
-        {ORDER_UI_TYPE_LABELS[uiOrderType]} {order.kind} <Trans>order</Trans>{' '}
+        {typeLabels[uiOrderType]} {order.kind} <Trans>order</Trans>{' '}
         {order.partiallyFillable ? t`(Partially fillable)` : t`(Fill or Kill)`}
       </styledEl.OrderTypeValue>
     </styledEl.Value>

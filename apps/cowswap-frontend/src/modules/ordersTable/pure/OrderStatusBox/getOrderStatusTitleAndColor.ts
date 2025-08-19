@@ -7,25 +7,27 @@ import { OrderStatus } from 'legacy/state/orders/actions'
 import { getIsFinalizedOrder } from 'utils/orderUtils/getIsFinalizedOrder'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
+const orderStatusTitleMap = (): { [key in OrderStatus]: string } => ({
+  [OrderStatus.PENDING]: t`Open`,
+  [OrderStatus.PRESIGNATURE_PENDING]: t`Signing`,
+  [OrderStatus.FULFILLED]: t`Filled`,
+  [OrderStatus.EXPIRED]: t`Expired`,
+  [OrderStatus.CANCELLED]: t`Cancelled`,
+  [OrderStatus.CREATING]: t`Creating`,
+  [OrderStatus.FAILED]: t`Failed`,
+  [OrderStatus.SCHEDULED]: t`Scheduled`,
+})
+
 // TODO: Reduce function complexity by extracting logic
 // eslint-disable-next-line complexity
 export function getOrderStatusTitleAndColor(order: ParsedOrder): { title: string; color: string; background: string } {
-  const orderStatusTitleMap: { [key in OrderStatus]: string } = {
-    [OrderStatus.PENDING]: t`Open`,
-    [OrderStatus.PRESIGNATURE_PENDING]: t`Signing`,
-    [OrderStatus.FULFILLED]: t`Filled`,
-    [OrderStatus.EXPIRED]: t`Expired`,
-    [OrderStatus.CANCELLED]: t`Cancelled`,
-    [OrderStatus.CREATING]: t`Creating`,
-    [OrderStatus.FAILED]: t`Failed`,
-    [OrderStatus.SCHEDULED]: t`Scheduled`,
-  }
+  const titleMap = orderStatusTitleMap()
 
   // We consider the order fully filled for display purposes even if not 100% filled
   // For this reason we use the flag to override the order status
   if (order.executionData.fullyFilled || order.status === OrderStatus.FULFILLED) {
     return {
-      title: orderStatusTitleMap[OrderStatus.FULFILLED],
+      title: titleMap[OrderStatus.FULFILLED],
       color: `var(${UI.COLOR_SUCCESS_TEXT})`,
       background: `var(${UI.COLOR_SUCCESS_BG})`,
     }
@@ -42,7 +44,7 @@ export function getOrderStatusTitleAndColor(order: ParsedOrder): { title: string
     }
 
     return {
-      title: orderStatusTitleMap[order.status],
+      title: titleMap[order.status],
       color: order.status === OrderStatus.EXPIRED ? `var(${UI.COLOR_ALERT_TEXT})` : `var(${UI.COLOR_DANGER_TEXT})`,
       background: order.status === OrderStatus.EXPIRED ? `var(${UI.COLOR_ALERT_BG})` : `var(${UI.COLOR_DANGER_BG})`,
     }
@@ -60,7 +62,7 @@ export function getOrderStatusTitleAndColor(order: ParsedOrder): { title: string
   // Handle signing state
   if (order.status === OrderStatus.PRESIGNATURE_PENDING) {
     return {
-      title: orderStatusTitleMap[OrderStatus.PRESIGNATURE_PENDING],
+      title: titleMap[OrderStatus.PRESIGNATURE_PENDING],
       color: `var(${UI.COLOR_ALERT_TEXT})`,
       background: `var(${UI.COLOR_ALERT_BG})`,
     }
@@ -77,7 +79,7 @@ export function getOrderStatusTitleAndColor(order: ParsedOrder): { title: string
 
   // Finally, map order status to their display version
   return {
-    title: orderStatusTitleMap[order.status],
+    title: titleMap[order.status],
     color: order.status === OrderStatus.PENDING ? `var(${UI.COLOR_TEXT})` : `var(${UI.COLOR_TEXT})`,
     background:
       order.status === OrderStatus.PENDING ? `var(${UI.COLOR_TEXT_OPACITY_10})` : `var(${UI.COLOR_TEXT_OPACITY_10})`,

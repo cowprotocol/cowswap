@@ -7,7 +7,7 @@ import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
-import { ORDERS_TABLE_SETTINGS } from 'modules/trade/const/common'
+import { useOrdersTableSettings } from 'modules/trade/const/common'
 import { SettingsBox, SettingsContainer, SettingsTitle } from 'modules/trade/pure/Settings'
 
 import { useLimitOrderSettingsAnalytics } from '../../hooks/useLimitOrderSettingsAnalytics'
@@ -111,6 +111,7 @@ export interface SettingsProps {
 // TODO: Add proper return type annotation
 // eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function Settings({ state, onStateChanged }: SettingsProps) {
+  const { LEFT_ALIGNED } = useOrdersTableSettings()
   const analytics = useLimitOrderSettingsAnalytics()
   const [isOpen, setIsOpen] = useState(false)
   const {
@@ -223,8 +224,8 @@ export function Settings({ state, onStateChanged }: SettingsProps) {
         /> */}
 
         <SettingsBox
-          title={ORDERS_TABLE_SETTINGS.LEFT_ALIGNED.title}
-          tooltip={ORDERS_TABLE_SETTINGS.LEFT_ALIGNED.tooltip}
+          title={LEFT_ALIGNED.title}
+          tooltip={LEFT_ALIGNED.tooltip}
           value={ordersTableOnLeft}
           toggle={handleOrdersTablePositionToggle}
         />
