@@ -76,15 +76,13 @@ export async function swapFlow(
 
     const { appData, account, isSafeWallet, recipientAddressOrName, inputAmount, outputAmount, kind } = orderParams
 
-    const amount = localStorage.getItem('allow_partial_permit') ? permitAmountToSign : undefined
-
     orderParams.appData = await handlePermit({
       appData,
       typedHooks,
       account,
       inputToken: inputCurrency,
       permitInfo,
-      amount,
+      amount: permitAmountToSign,
       generatePermitHook,
     })
 

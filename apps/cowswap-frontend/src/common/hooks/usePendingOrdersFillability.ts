@@ -21,7 +21,6 @@ export function usePendingOrdersFillability(orderClass?: OrderClass): Record<str
   const { balances, allowances } = useBalancesAndAllowances(tokens)
 
   return pendingOrders.reduce<Record<string, OrderFillability>>((acc, order) => {
-    // todo implement checking for non-market orders when we prepare the UI for that
     if (orderClass && order.class !== orderClass) return acc
 
     const balance = balances[order.sellToken.toLowerCase()]
