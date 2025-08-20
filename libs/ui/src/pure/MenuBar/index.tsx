@@ -1,6 +1,7 @@
 import React, {
   ComponentType,
   forwardRef,
+  isValidElement,
   PropsWithChildren,
   ReactElement,
   useEffect,
@@ -16,8 +17,9 @@ import IMG_ICON_MENU_HAMBURGER from '@cowprotocol/assets/images/menu-hamburger.s
 import IMG_ICON_SETTINGS_GLOBAL from '@cowprotocol/assets/images/settings-global.svg'
 import IMG_ICON_X from '@cowprotocol/assets/images/x.svg'
 import { useMediaQuery, useOnClickOutside } from '@cowprotocol/common-hooks'
-import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
+import { addBodyClass, extractTextFromStringOrI18nDescriptor, removeBodyClass } from '@cowprotocol/common-utils'
 
+import { MessageDescriptor } from '@lingui/core'
 import SVG from 'react-inlinesvg'
 
 import {
@@ -97,8 +99,8 @@ type LinkComponentType = ComponentType<PropsWithChildren<{ href: string }>>
 
 export interface MenuItem {
   href?: string
-  label?: string
-  badge?: string | ReactElement
+  label?: string | MessageDescriptor
+  badge?: string | MessageDescriptor | ReactElement
   children?: DropdownMenuItem[]
   productVariant?: ProductVariant
   icon?: string
@@ -120,10 +122,10 @@ export interface MenuItem {
 interface DropdownMenuItem {
   href?: string
   external?: boolean
-  label?: string
+  label?: string | MessageDescriptor
   icon?: string
-  badge?: string | ReactElement
-  description?: string
+  badge?: string | MessageDescriptor | ReactElement
+  description?: string | MessageDescriptor
   isButton?: boolean
   children?: DropdownMenuItem[]
   productVariant?: ProductVariant
@@ -178,21 +180,23 @@ const NavItem = ({
   // TODO: Add proper return type annotation
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 }: NavItemProps) => {
+  const extractedLabel = extractTextFromStringOrI18nDescriptor(item.label)
+
   // TODO: Add proper return type annotation
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleToggle = () => {
     setOpenDropdown((prev) => {
-      return prev === item.label ? null : item.label || null
+      return prev === extractedLabel ? null : extractedLabel || null
     })
   }
 
   const href = item.external
-    ? appendUtmParams(item.href!, item.utmSource, item.utmContent, rootDomain, item.external, item.label)
+    ? appendUtmParams(item.href!, item.utmSource, item.utmContent, rootDomain, item.external, extractedLabel)
     : item.href
 
   return item.children ? (
     <GenericDropdown
-      isOpen={openDropdown === item.label}
+      isOpen={openDropdown === extractedLabel}
       item={item}
       onTrigger={handleToggle}
       interaction="click" // Ensure it's 'click' for both mobile and desktop
@@ -205,7 +209,7 @@ const NavItem = ({
   ) : href ? (
     <RootNavItem mobileMode={mobileMode}>
       <LinkComponent href={href}>
-        {item.label} {item.external && <span>&#8599;</span>}
+        {extractedLabel} {item.external && <span>&#8599;</span>}
       </LinkComponent>
     </RootNavItem>
   ) : null
@@ -248,6 +252,8 @@ const DropdownContentItem: React.FC<{
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const renderItemContent = () => {
     const { productVariant, icon, label, description, hoverColor } = item
+    const extractedLabel = extractTextFromStringOrI18nDescriptor(label)
+
     return (
       <>
         {productVariant ? (
@@ -259,13 +265,17 @@ const DropdownContentItem: React.FC<{
           />
         ) : icon ? (
           <DropdownContentItemImage>
-            <img src={icon} alt={label} />
+            <img src={icon} alt={extractedLabel} />
           </DropdownContentItemImage>
         ) : null}
-        {label && (
+        {extractedLabel && (
           <DropdownContentItemText>
-            <DropdownContentItemTitle>{label}</DropdownContentItemTitle>
-            {description && <DropdownContentItemDescription>{description}</DropdownContentItemDescription>}
+            <DropdownContentItemTitle>{extractedLabel}</DropdownContentItemTitle>
+            {description && (
+              <DropdownContentItemDescription>
+                {extractTextFromStringOrI18nDescriptor(description)}
+              </DropdownContentItemDescription>
+            )}
           </DropdownContentItemText>
         )}
       </>
@@ -275,7 +285,14 @@ const DropdownContentItem: React.FC<{
   const itemClassName = item.hasDivider ? 'hasDivider' : ''
 
   const href = item.external
-    ? appendUtmParams(item.href!, item.utmSource, item.utmContent, rootDomain, item.external, item.label)
+    ? appendUtmParams(
+        item.href!,
+        item.utmSource,
+        item.utmContent,
+        rootDomain,
+        item.external,
+        extractTextFromStringOrI18nDescriptor(item.label),
+      )
     : item.href
 
   if (item.isButton && item.href) {
@@ -356,7 +373,6 @@ const NavDaoTrigger: React.FC<{
   rootDomain: string
   LinkComponent: LinkComponentType
   // TODO: Break down this large function into smaller functions
-  // eslint-disable-next-line max-lines-per-function
 }> = ({ isOpen, setIsOpen, mobileMode, rootDomain, LinkComponent }) => {
   const triggerRef = useRef<HTMLDivElement>(null)
   const dropdownRef = useRef<HTMLUListElement>(null)
@@ -444,20 +460,28 @@ const GenericDropdown: React.FC<DropdownProps> = ({
         }
   }, [interaction, onTrigger])
 
+  const extractedLabel = extractTextFromStringOrI18nDescriptor(item.label)
+
   return (
     <DropdownMenu {...interactionProps} mobileMode={mobileMode}>
       <RootNavItem as="button" aria-haspopup="true" aria-expanded={isOpen} isOpen={isOpen} mobileMode={mobileMode}>
-        <span>{item.label}</span>
+        <span>{extractedLabel}</span>
         {(item.badge || item.badgeImage) && (
           <Badge {...(item.badgeType && { type: item.badgeType })}>
-            {item.badgeImage ? <SVG src={item.badgeImage} /> : item.badge}
+            {item.badgeImage ? (
+              <SVG src={item.badgeImage} />
+            ) : isValidElement(item.badge) ? (
+              item.badge
+            ) : (
+              extractTextFromStringOrI18nDescriptor(item.badge)
+            )}
           </Badge>
         )}
         {item.children && <SVG src={IMG_ICON_CARRET_DOWN} />}
       </RootNavItem>
       {isOpen && (
         <DropdownContentWrapper
-          content={{ title: item.label, items: item.children }}
+          content={{ title: extractedLabel, items: item.children }}
           mobileMode={mobileMode}
           isNavItemDropdown={isNavItemDropdown}
           closeDropdown={closeDropdown}
@@ -518,12 +542,13 @@ const DropdownContentWrapper: React.FC<DropdownContentWrapperProps> = ({
     >
       {/* TODO: Break down this large function into smaller functions */}
       {/* TODO: Reduce function complexity by extracting logic */}
-      {/* eslint-disable-next-line max-lines-per-function, complexity */}
+      {/* eslint-disable-next-line complexity */}
       {content.items?.map((item: DropdownMenuItem, index: number) => {
         const hasChildren = !!item.children
         const Tag = hasChildren ? 'div' : item.isButton ? DropdownContentItemButton : undefined
+        const extractedLabel = extractTextFromStringOrI18nDescriptor(item.label)
         const href = !hasChildren
-          ? appendUtmParams(item.href!, item.utmSource, item.utmContent, rootDomain, !!item.external, item.label)
+          ? appendUtmParams(item.href!, item.utmSource, item.utmContent, rootDomain, !!item.external, extractedLabel)
           : undefined
 
         const content = (
@@ -531,14 +556,24 @@ const DropdownContentWrapper: React.FC<DropdownContentWrapperProps> = ({
             {item.icon && <DropdownContentItemIcon src={item.icon} alt="" />}
             <DropdownContentItemText>
               <DropdownContentItemTitle>
-                <span>{item.label}</span>
+                <span>{extractedLabel}</span>
                 {(item.badge || item.badgeImage) && (
                   <Badge {...(item.badgeType && { type: item.badgeType })}>
-                    {item.badgeImage ? <SVG src={item.badgeImage} /> : item.badge}
+                    {item.badgeImage ? (
+                      <SVG src={item.badgeImage} />
+                    ) : isValidElement(item.badge) ? (
+                      item.badge
+                    ) : (
+                      extractTextFromStringOrI18nDescriptor(item.badge)
+                    )}
                   </Badge>
                 )}
               </DropdownContentItemTitle>
-              {item.description && <DropdownContentItemDescription>{item.description}</DropdownContentItemDescription>}
+              {item.description && (
+                <DropdownContentItemDescription>
+                  {extractTextFromStringOrI18nDescriptor(item.description)}
+                </DropdownContentItemDescription>
+              )}
             </DropdownContentItemText>
             {item.children && <SVG src={IMG_ICON_CARRET_DOWN} />}
             {!item.children && (
@@ -631,7 +666,7 @@ interface GlobalSettingsDropdownProps {
 }
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+
 const GlobalSettingsDropdown = forwardRef<HTMLUListElement, GlobalSettingsDropdownProps>((props, ref) => {
   const { mobileMode, settingsNavItems, isOpen, closeDropdown, rootDomain, LinkComponent } = props
 
@@ -646,8 +681,16 @@ const GlobalSettingsDropdown = forwardRef<HTMLUListElement, GlobalSettingsDropdo
           <MobileDropdownContainer mobileMode={mobileMode} ref={ref as unknown as React.RefObject<HTMLDivElement>}>
             <DropdownContent isOpen={true} alignRight={true} mobileMode={mobileMode}>
               {settingsNavItems.map((item, index) => {
+                const extractedLabel = extractTextFromStringOrI18nDescriptor(item.label)
                 const to = item.external
-                  ? appendUtmParams(item.href!, item.utmSource, item.utmContent, rootDomain, item.external, item.label)
+                  ? appendUtmParams(
+                      item.href!,
+                      item.utmSource,
+                      item.utmContent,
+                      rootDomain,
+                      item.external,
+                      extractedLabel,
+                    )
                   : item.href
                     ? `${new URL(item.href, `https://${rootDomain}`).pathname}`
                     : undefined
@@ -655,7 +698,7 @@ const GlobalSettingsDropdown = forwardRef<HTMLUListElement, GlobalSettingsDropdo
                 const content = (
                   <>
                     <DropdownContentItemText>
-                      <DropdownContentItemTitle>{item.label}</DropdownContentItemTitle>
+                      <DropdownContentItemTitle>{extractedLabel}</DropdownContentItemTitle>
                     </DropdownContentItemText>
                     <SVG src={IMG_ICON_ARROW_RIGHT} className="arrow-icon-right" />
                   </>
@@ -672,14 +715,22 @@ const GlobalSettingsDropdown = forwardRef<HTMLUListElement, GlobalSettingsDropdo
         ) : (
           <DropdownContent isOpen={true} ref={ref} alignRight={true} mobileMode={mobileMode}>
             {settingsNavItems.map((item, index) => {
+              const extractedLabel = extractTextFromStringOrI18nDescriptor(item.label)
               const to = item.external
-                ? appendUtmParams(item.href!, item.utmSource, item.utmContent, rootDomain, item.external, item.label)
+                ? appendUtmParams(
+                    item.href!,
+                    item.utmSource,
+                    item.utmContent,
+                    rootDomain,
+                    item.external,
+                    extractedLabel,
+                  )
                 : item.href
 
               const content = (
                 <>
                   <DropdownContentItemText>
-                    <DropdownContentItemTitle>{item.label}</DropdownContentItemTitle>
+                    <DropdownContentItemTitle>{extractedLabel}</DropdownContentItemTitle>
                   </DropdownContentItemText>
                   <SVG src={IMG_ICON_ARROW_RIGHT} className="arrow-icon-right" />
                 </>
@@ -880,8 +931,16 @@ export const MenuBar = (props: MenuBarProps) => {
             isLoaded &&
             additionalNavButtons &&
             additionalNavButtons.map((item, index) => {
+              const extractedLabel = extractTextFromStringOrI18nDescriptor(item.label)
               const href = item.external
-                ? appendUtmParams(item.href!, item.utmSource, item.utmContent, rootDomain, item.external, item.label)
+                ? appendUtmParams(
+                    item.href!,
+                    item.utmSource,
+                    item.utmContent,
+                    rootDomain,
+                    item.external,
+                    extractedLabel,
+                  )
                 : item.href
 
               if (!href) return null
@@ -898,7 +957,7 @@ export const MenuBar = (props: MenuBarProps) => {
                 >
                   <LinkComponent href={href}>
                     <DropdownContentItemText>
-                      <DropdownContentItemTitle>{item.label}</DropdownContentItemTitle>
+                      <DropdownContentItemTitle>{extractedLabel}</DropdownContentItemTitle>
                     </DropdownContentItemText>
                     <SVG src={IMG_ICON_ARROW_RIGHT} className={`arrow-icon-right ${item.external ? 'external' : ''}`} />
                   </LinkComponent>
@@ -953,35 +1012,38 @@ export const MenuBar = (props: MenuBarProps) => {
             <RightAligned mobileMode={isMobile}>
               {additionalContent} {/* Add additional content here */}
               {additionalNavButtons &&
-                additionalNavButtons.map((item, index) => (
-                  <DropdownContentItemButton
-                    key={index}
-                    bgColor={item.bgColor}
-                    color={item.color}
-                    hoverBgColor={item.hoverBgColor}
-                    hoverColor={item.hoverColor}
-                    as={item.isButton ? 'button' : 'div'}
-                  >
-                    <LinkComponent
-                      href={appendUtmParams(
-                        item.href!,
-                        item.utmSource,
-                        item.utmContent,
-                        rootDomain,
-                        !!item.external,
-                        item.label,
-                      )}
+                additionalNavButtons.map((item, index) => {
+                  const extractedLabel = extractTextFromStringOrI18nDescriptor(item.label)
+                  return (
+                    <DropdownContentItemButton
+                      key={index}
+                      bgColor={item.bgColor}
+                      color={item.color}
+                      hoverBgColor={item.hoverBgColor}
+                      hoverColor={item.hoverColor}
+                      as={item.isButton ? 'button' : 'div'}
                     >
-                      <DropdownContentItemText>
-                        <DropdownContentItemTitle>{item.label}</DropdownContentItemTitle>
-                      </DropdownContentItemText>
-                      <SVG
-                        src={IMG_ICON_ARROW_RIGHT}
-                        className={`arrow-icon-right ${item.external ? 'external' : ''}`}
-                      />
-                    </LinkComponent>
-                  </DropdownContentItemButton>
-                ))}
+                      <LinkComponent
+                        href={appendUtmParams(
+                          item.href!,
+                          item.utmSource,
+                          item.utmContent,
+                          rootDomain,
+                          !!item.external,
+                          extractedLabel,
+                        )}
+                      >
+                        <DropdownContentItemText>
+                          <DropdownContentItemTitle>{extractedLabel}</DropdownContentItemTitle>
+                        </DropdownContentItemText>
+                        <SVG
+                          src={IMG_ICON_ARROW_RIGHT}
+                          className={`arrow-icon-right ${item.external ? 'external' : ''}`}
+                        />
+                      </LinkComponent>
+                    </DropdownContentItemButton>
+                  )
+                })}
             </RightAligned>
           </div>
         </NavItems>

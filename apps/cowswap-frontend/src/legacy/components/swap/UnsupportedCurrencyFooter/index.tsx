@@ -1,6 +1,7 @@
 import { UNSUPPORTED_TOKENS_FAQ_URL } from '@cowprotocol/common-const'
 
-import { t } from '@lingui/core/macro'
+import { MessageDescriptor } from '@lingui/core'
+import { msg } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import { transparentize } from 'color2k'
 import { NavLink } from 'react-router'
@@ -11,7 +12,7 @@ import UnsupportedCurrencyFooterMod, {
   UnsupportedCurrencyFooterParams,
 } from './UnsupportedCurrencyFooterMod'
 
-const DEFAULT_DETAILS_TEXT = (
+const DEFAULT_DETAILS_TEXT: React.ReactNode = (
   <div>
     <Trans>
       CoW Swap does not support all tokens. Some tokens implement similar, but logically different ERC20 contract
@@ -26,12 +27,8 @@ const DEFAULT_DETAILS_TEXT = (
     </Trans>
   </div>
 )
-
-const getDefaultDetailsTitle = (): string => t`Unsupported Token`
-const getDefaultShowDetailsText = (): string => t`Read more about unsupported tokens`
-
-const DEFAULT_DETAILS_TITLE = getDefaultDetailsTitle()
-const DEFAULT_SHOW_DETAILS_TEXT = getDefaultShowDetailsText()
+const DEFAULT_DETAILS_TITLE: MessageDescriptor = msg`Unsupported Token`
+const DEFAULT_SHOW_DETAILS_TEXT: MessageDescriptor = msg`Read more about unsupported tokens`
 
 type Props = Omit<UnsupportedCurrencyFooterParams, 'currencies'> & {
   currencies?: UnsupportedCurrencyFooterParams['currencies']

@@ -3,7 +3,7 @@ import { memo } from 'react'
 import { genericPropsChecker } from '@cowprotocol/common-utils'
 import { Currency } from '@uniswap/sdk-core'
 
-import { t } from '@lingui/core/macro'
+import { msg } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import { Link as ReactRouterLink } from 'react-router'
 
@@ -27,7 +27,7 @@ export const CompatibilityIssuesWarning = memo((props: CompatibilityIssuesWarnin
       <UnsupportedCurrencyFooter
         show={true}
         currencies={currenciesPair}
-        showDetailsText={t`Read more about unsupported wallets`}
+        showDetailsText={msg`Read more about unsupported wallets`}
         detailsText={
           <Trans>
             <p>CoW Swap requires offline signatures, which is currently not supported by some wallets.</p>
@@ -40,7 +40,7 @@ export const CompatibilityIssuesWarning = memo((props: CompatibilityIssuesWarnin
             </p>
           </Trans>
         }
-        detailsTitle={t`This wallet is not yet supported`}
+        detailsTitle={msg`This wallet is not yet supported`}
       />
     )
   }

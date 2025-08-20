@@ -8,6 +8,7 @@ import IMG_ICON_SOCIAL_GITHUB from '@cowprotocol/assets/images/icon-social-githu
 import IMG_ICON_SOCIAL_SNAPSHOT from '@cowprotocol/assets/images/icon-social-snapshot.svg'
 import IMG_ICON_SOCIAL_X from '@cowprotocol/assets/images/icon-social-x.svg'
 import { useTheme } from '@cowprotocol/common-hooks'
+import { extractTextFromStringOrI18nDescriptor } from '@cowprotocol/common-utils'
 
 import SVG from 'react-inlinesvg'
 
@@ -257,8 +258,8 @@ const appendUtmParams = (
   rootDomain: string,
   isExternal: boolean,
   label: string | undefined,
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 ) => {
   const finalRootDomain = rootDomain || (typeof window !== 'undefined' ? window.location.host : '')
 
@@ -296,8 +297,8 @@ export const Footer = ({
   hasTouchFooter = false,
   maxWidth,
   host,
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 }: FooterProps) => {
   const [isFooterExpanded, setIsFooterExpanded] = useState(expanded)
   const footerRef = useRef<HTMLDivElement>(null)
@@ -344,14 +345,14 @@ export const Footer = ({
             <LinkListWrapper>
               {navItems.map((item, index) => (
                 <LinkListGroup key={index}>
-                  <SectionTitle>{item.label}</SectionTitle>
+                  <SectionTitle>{extractTextFromStringOrI18nDescriptor(item.label)}</SectionTitle>
                   <LinkList>
                     {item.children?.map((child, childIndex) => (
                       <li key={childIndex}>
                         <FooterLink
                           href={child.href || '#'}
                           external={child.external}
-                          label={child.label}
+                          label={extractTextFromStringOrI18nDescriptor(child.label)}
                           utmSource={child.utmSource}
                           utmContent={child.utmContent}
                           rootDomain={host || window.location.host}

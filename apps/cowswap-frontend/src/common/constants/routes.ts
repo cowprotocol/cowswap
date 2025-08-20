@@ -2,7 +2,8 @@ import EXPERIMENT_ICON from '@cowprotocol/assets/cow-swap/experiment.svg'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { BadgeTypes } from '@cowprotocol/ui'
 
-import { t } from '@lingui/core/macro'
+import { MessageDescriptor } from '@lingui/core'
+import { msg } from '@lingui/core/macro'
 
 export const TRADE_WIDGET_PREFIX = isInjectedWidget() ? '/widget' : ''
 
@@ -48,39 +49,42 @@ export type RoutesValues = (typeof Routes)[RoutesKeys]
 
 export interface IMenuItem {
   route: RoutesValues
-  label: string
-  fullLabel?: string
-  description: string
-  badge?: string
+  label: string | MessageDescriptor
+  fullLabel?: MessageDescriptor
+  description: MessageDescriptor
+  badge?: string | MessageDescriptor
   badgeImage?: string
   badgeType?: (typeof BadgeTypes)[keyof typeof BadgeTypes]
 }
 
-export const getMenuItems = (): IMenuItem[] => [
-  { route: Routes.SWAP, label: t`Swap`, description: t`Trade tokens` },
-  { route: Routes.LIMIT_ORDER, label: t`Limit`, fullLabel: t`Limit order`, description: t`Set your own price` },
-  { route: Routes.ADVANCED_ORDERS, label: `TWAP`, description: t`Place orders with a time-weighted average price` },
+export const MENU_ITEMS: IMenuItem[] = [
+  { route: Routes.SWAP, label: msg`Swap`, description: msg`Trade tokens` },
+  {
+    route: Routes.LIMIT_ORDER,
+    label: msg`Limits`,
+    fullLabel: msg`Limit order`,
+    description: msg`Set your own price`,
+  },
+  {
+    route: Routes.ADVANCED_ORDERS,
+    label: msg`TWAP`,
+    description: msg`Place orders with a time-weighted average price`,
+  },
 ]
 
-export const MENU_ITEMS: IMenuItem[] = getMenuItems()
-
-const getHookStoreMenuItem = (): IMenuItem => ({
+export const HOOKS_STORE_MENU_ITEM: IMenuItem = {
   route: Routes.HOOKS,
-  label: t`Hooks`,
-  description: t`Powerful tool to generate pre/post interaction for CoW Protocol`,
+  label: msg`Hooks`,
+  description: msg`Powerful tool to generate pre/post interaction for CoW Protocol`,
   badgeImage: EXPERIMENT_ICON,
   badgeType: BadgeTypes.INFORMATION,
-})
+}
 
-export const HOOKS_STORE_MENU_ITEM: IMenuItem = getHookStoreMenuItem()
-
-export const getYieldMenuItem = (): IMenuItem => ({
+export const YIELD_MENU_ITEM = {
   route: Routes.YIELD,
-  label: t`Yield`,
-  fullLabel: t`Yield`,
-  description: t`Provide liquidity`,
-  badge: t`New`,
+  label: msg`Yield`,
+  fullLabel: msg`Yield`,
+  description: msg`Provide liquidity`,
+  badge: msg`New`,
   badgeType: BadgeTypes.ALERT,
-})
-
-export const YIELD_MENU_ITEM = getYieldMenuItem()
+}

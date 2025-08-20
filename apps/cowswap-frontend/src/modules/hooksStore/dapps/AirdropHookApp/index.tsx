@@ -7,6 +7,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ButtonPrimary } from '@cowprotocol/ui'
 import { Token } from '@uniswap/sdk-core'
 
+import { i18n } from '@lingui/core'
 import { Trans } from '@lingui/react/macro'
 
 import { HookDappProps } from 'modules/hooksStore/types/hooks'
@@ -122,7 +123,11 @@ function getMessageToUser({
   }
 
   if (error) {
-    if (Object.values(AIRDROP_PREVIEW_ERRORS).includes(error.message)) {
+    if (
+      Object.values(AIRDROP_PREVIEW_ERRORS)
+        .map((item) => i18n._(item))
+        .includes(error.message)
+    ) {
       return <span>{error.message}</span>
     } else {
       return (

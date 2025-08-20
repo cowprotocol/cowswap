@@ -5,7 +5,7 @@ import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { Color, Media, MenuBar } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { t } from '@lingui/core/macro'
+import { msg } from '@lingui/core/macro'
 import SVG from 'react-inlinesvg'
 import { NavLink } from 'react-router'
 
@@ -46,7 +46,7 @@ export function AppMenu({ children }: AppMenuProps): ReactNode {
   const settingsNavItems = useMemo(
     () => [
       {
-        label: darkMode ? t`Light mode` : t`Dark mode`,
+        label: darkMode ? msg`Light mode` : msg`Dark mode`,
         onClick: toggleDarkMode,
       },
     ],
@@ -58,7 +58,7 @@ export function AppMenu({ children }: AppMenuProps): ReactNode {
   const navItems = useMemo(() => {
     return [
       {
-        label: t`Trade`,
+        label: msg`Trade`,
         children: menuItems.map((item) => {
           const href = parameterizeTradeRoute(getTradeUrlParams(item), item.route, true)
 
@@ -66,7 +66,11 @@ export function AppMenu({ children }: AppMenuProps): ReactNode {
             href,
             label: item.label,
             description: item.description,
-            badge: item.badgeImage ? <SVG src={item.badgeImage} width={10} height={10} /> : item.badge,
+            badge: item.badgeImage ? (
+              <SVG src={item.badgeImage} width={10} height={10} />
+            ) : item.badge ? (
+              item.badge
+            ) : undefined,
             badgeType: item.badgeType,
           }
         }),

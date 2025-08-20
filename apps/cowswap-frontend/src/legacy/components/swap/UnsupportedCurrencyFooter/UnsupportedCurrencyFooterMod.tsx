@@ -6,6 +6,8 @@ import { AutoRow, ButtonEmpty, ExternalLink, Media, RowBetween } from '@cowproto
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
 
+import { i18n } from '@lingui/core'
+import { MessageDescriptor } from '@lingui/core'
 import styled from 'styled-components/macro'
 import { ThemedText, Z_INDEX, CloseIcon } from 'theme'
 
@@ -47,11 +49,11 @@ export const AddressText = styled(ThemedText.Blue)`
 `
 
 export interface UnsupportedCurrencyFooterParams {
-  show: boolean
   currencies: (Currency | null | undefined)[]
-  detailsTitle?: React.ReactNode
   detailsText?: React.ReactNode
-  showDetailsText?: React.ReactNode
+  detailsTitle?: MessageDescriptor
+  show: boolean
+  showDetailsText?: MessageDescriptor
 }
 
 // TODO: Break down this large function into smaller functions
@@ -82,7 +84,7 @@ export default function UnsupportedCurrencyFooter({
         <Card padding="2rem">
           <AutoColumn gap="lg">
             <RowBetween>
-              <ThemedText.MediumHeader>{detailsTitle}</ThemedText.MediumHeader>
+              <ThemedText.MediumHeader>{detailsTitle ? i18n._(detailsTitle) : ''}</ThemedText.MediumHeader>
               <CloseIcon onClick={() => setShowDetails(false)} />
             </RowBetween>
             {tokens.map((token) => {
@@ -113,7 +115,7 @@ export default function UnsupportedCurrencyFooter({
       </Modal>
       <StyledButtonEmpty padding={'0'} onClick={() => setShowDetails(true)}>
         <ThemedText.Error error={!!showDetailsText} color={'danger'}>
-          {showDetailsText}
+          {showDetailsText ? i18n._(showDetailsText) : ''}
         </ThemedText.Error>
       </StyledButtonEmpty>
     </DetailsFooter>

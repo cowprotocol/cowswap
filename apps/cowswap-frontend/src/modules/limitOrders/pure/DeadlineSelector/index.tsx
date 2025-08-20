@@ -1,5 +1,6 @@
 import { ChangeEventHandler, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
+import { extractTextFromStringOrI18nDescriptor } from '@cowprotocol/common-utils'
 import { ButtonPrimary, ButtonSecondary } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
@@ -30,7 +31,7 @@ const CUSTOM_DATE_OPTIONS: Intl.DateTimeFormatOptions = {
 }
 
 export interface DeadlineSelectorProps {
-  deadline: LimitOrderDeadline | undefined
+  deadline?: LimitOrderDeadline
   customDeadline: number | null
   isDeadlineDisabled: boolean
 
@@ -127,7 +128,11 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
     onDismiss()
   }, [onDismiss, selectCustomDeadline, value])
 
-  const deadlineDisplay = customDeadline ? customDeadlineTitle : deadline?.title
+  const deadlineDisplay = customDeadline
+    ? customDeadlineTitle
+    : deadline
+      ? extractTextFromStringOrI18nDescriptor(deadline.title)
+      : ''
 
   return (
     <styledEl.Wrapper>
@@ -150,7 +155,9 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
           <styledEl.ListWrapper>
             {limitOrderDeadlines.map((item) => (
               <li key={item.value}>
-                <styledEl.ListItem onSelect={() => setDeadline(item)}>{item.title}</styledEl.ListItem>
+                <styledEl.ListItem onSelect={() => setDeadline(item)}>
+                  {extractTextFromStringOrI18nDescriptor(item.title)}
+                </styledEl.ListItem>
               </li>
             ))}
             <styledEl.ListItem onSelect={openModal}>
@@ -171,7 +178,7 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
           </styledEl.ModalHeader>
           <styledEl.ModalContent>
             <styledEl.CustomLabel htmlFor="custom-deadline">
-              <Trans>Choose a custom deadline for your limit order:</Trans>
+              <Trans>Choose a custom deadline for your limit order</Trans>:
               <styledEl.CustomInput
                 type="datetime-local"
                 id="custom-deadline"

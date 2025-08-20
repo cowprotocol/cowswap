@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react'
 
+import { extractTextFromStringOrI18nDescriptor } from '@cowprotocol/common-utils'
 import { renderTooltip, UI } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
@@ -33,7 +34,7 @@ const StyledTradeSelect = styled(TradeSelect)`
     height: auto;
     justify-content: space-between;
     font-size: 18px;
-    
+
     &:hover,
     &:active,
     &:focus {
@@ -119,18 +120,20 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
     return items.find((item) => item.value === deadline)?.label || ''
   }, [items, deadline, customDeadline, isCustomDeadline])
 
+  const activeLabelExtracted = extractTextFromStringOrI18nDescriptor(activeLabel) || ''
+
   return (
     <>
       {isDeadlineDisabled ? (
         <StyledTradeField label={label} tooltip={renderTooltip(tooltip)}>
-          <div>{activeLabel}</div>
+          <div>{activeLabelExtracted}</div>
         </StyledTradeField>
       ) : (
         <StyledTradeSelect
           label={label}
           tooltip={renderTooltip(tooltip)}
           items={itemsWithCustom}
-          activeLabel={activeLabel}
+          activeLabel={activeLabelExtracted}
           onSelect={onSelect}
         />
       )}

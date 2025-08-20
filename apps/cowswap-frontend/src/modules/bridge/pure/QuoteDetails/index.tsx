@@ -2,6 +2,8 @@ import { ReactNode } from 'react'
 
 import { BridgeProviderInfo } from '@cowprotocol/cow-sdk'
 
+import { i18n } from '@lingui/core'
+
 import { COW_PROTOCOL_NAME } from '../../constants'
 import { DividerHorizontal } from '../../styles'
 import { QuoteBridgeContext, QuoteSwapContext, SwapAndBridgeStatus } from '../../types'
@@ -37,7 +39,12 @@ interface BridgeStepProps {
   bridgeContext: QuoteBridgeContext
 }
 
-function SwapStep({ stepsCollapsible, bridgeProvider, swapContext, hideRecommendedSlippage }: SwapStepProps): ReactNode {
+function SwapStep({
+  stepsCollapsible,
+  bridgeProvider,
+  swapContext,
+  hideRecommendedSlippage,
+}: SwapStepProps): ReactNode {
   const status = SwapAndBridgeStatus.DEFAULT
 
   return (
@@ -49,14 +56,14 @@ function SwapStep({ stepsCollapsible, bridgeProvider, swapContext, hideRecommend
       statusIcon={null}
       protocolIconShowOnly="first"
       protocolIconSize={21}
-      titlePrefix={SwapStatusTitlePrefixes[status]}
+      titlePrefix={i18n._(SwapStatusTitlePrefixes[status])}
       protocolName={COW_PROTOCOL_NAME}
       bridgeProvider={bridgeProvider}
       chainName={swapContext.chainName}
       sellAmount={swapContext.sellAmount}
       buyAmount={swapContext.buyAmount}
     >
-      <QuoteSwapContent context={swapContext} hideRecommendedSlippage={hideRecommendedSlippage}/>
+      <QuoteSwapContent context={swapContext} hideRecommendedSlippage={hideRecommendedSlippage} />
     </BridgeDetailsContainer>
   )
 }
@@ -72,7 +79,7 @@ function BridgeStep({ stepsCollapsible, bridgeProvider, bridgeContext }: BridgeS
       stopNumber={2}
       statusIcon={null}
       protocolIconShowOnly="second"
-      titlePrefix={BridgeStatusTitlePrefixes[status]}
+      titlePrefix={i18n._(BridgeStatusTitlePrefixes[status])}
       protocolName={bridgeProvider.name}
       bridgeProvider={bridgeProvider}
       chainName={bridgeContext.chainName}
@@ -92,7 +99,7 @@ export function QuoteDetails({
   swapContext,
   bridgeContext,
   collapsedDefault,
-  hideRecommendedSlippage
+  hideRecommendedSlippage,
 }: QuoteDetailsProps): ReactNode {
   return (
     <CollapsibleBridgeRoute
@@ -101,10 +108,12 @@ export function QuoteDetails({
       providerInfo={bridgeProvider}
       collapsedDefault={collapsedDefault}
     >
-      <SwapStep hideRecommendedSlippage={hideRecommendedSlippage}
-                stepsCollapsible={stepsCollapsible}
-                bridgeProvider={bridgeProvider}
-                swapContext={swapContext} />
+      <SwapStep
+        hideRecommendedSlippage={hideRecommendedSlippage}
+        stepsCollapsible={stepsCollapsible}
+        bridgeProvider={bridgeProvider}
+        swapContext={swapContext}
+      />
       <DividerHorizontal margin="8px 0 4px" />
       <BridgeStep stepsCollapsible={stepsCollapsible} bridgeProvider={bridgeProvider} bridgeContext={bridgeContext} />
     </CollapsibleBridgeRoute>

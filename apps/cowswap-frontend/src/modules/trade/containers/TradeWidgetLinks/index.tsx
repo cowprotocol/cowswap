@@ -1,9 +1,11 @@
 import { useCallback, useMemo, useState } from 'react'
 
+import { extractTextFromStringOrI18nDescriptor } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
 import { Badge, BadgeTypes } from '@cowprotocol/ui'
 import type { TradeType } from '@cowprotocol/widget-lib'
 
+import { MessageDescriptor } from '@lingui/core'
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import IMAGE_CARET from 'assets/icon/caret.svg'
@@ -26,8 +28,8 @@ import { addChainIdToRoute, parameterizeTradeRoute } from '../../utils/parameter
 
 interface MenuItemConfig {
   route: RoutesValues
-  label: string
-  badge?: string
+  label: string | MessageDescriptor
+  badge?: string | MessageDescriptor
   badgeImage?: string
   badgeType?: (typeof BadgeTypes)[keyof typeof BadgeTypes]
 }
@@ -93,7 +95,7 @@ export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) 
 
       return (
         <MenuItem
-          key={item.label}
+          key={extractTextFromStringOrI18nDescriptor(item.label)}
           routePath={routePath}
           item={item}
           isActive={isActive}
@@ -160,10 +162,14 @@ const MenuItem = ({
 }) => (
   <styledEl.MenuItem isActive={isActive} onClick={onClick} isDropdownVisible={isDropdownVisible}>
     <styledEl.Link to={routePath}>
-      {item.label}
+      {extractTextFromStringOrI18nDescriptor(item.label)}
       {(!isActive && item.badgeImage) || item.badge ? (
         <Badge {...(item.badgeType && { type: item.badgeType })}>
-          {item.badgeImage ? <SVG src={item.badgeImage} /> : <>{item.badge}</>}
+          {item.badgeImage ? (
+            <SVG src={item.badgeImage} />
+          ) : item.badge ? (
+            <>{extractTextFromStringOrI18nDescriptor(item.badge)}</>
+          ) : null}
         </Badge>
       ) : null}
     </styledEl.Link>

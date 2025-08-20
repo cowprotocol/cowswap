@@ -1,12 +1,14 @@
 import { ReactNode } from 'react'
 
+import { extractTextFromStringOrI18nDescriptor } from '@cowprotocol/common-utils'
 import { ContextMenu, ContextMenuButton, ContextMenuItem, ContextMenuList } from '@cowprotocol/ui'
 
+import { MessageDescriptor } from '@lingui/core'
 import { ChevronDown } from 'react-feather'
 
 import { TradeWidgetField, TradeWidgetFieldProps } from '../TradeWidgetField'
 
-export type TradeSelectItem = { label: string; value: unknown }
+export type TradeSelectItem = { label: string | MessageDescriptor; value: unknown }
 
 export interface TradeSelectProps extends TradeWidgetFieldProps {
   activeLabel: string
@@ -26,9 +28,10 @@ export function TradeSelect(props: TradeSelectProps): ReactNode {
           </ContextMenuButton>
           <ContextMenuList>
             {items.map((item) => {
+              const label = extractTextFromStringOrI18nDescriptor(item.label)
               return (
-                <ContextMenuItem key={item.label} onSelect={() => onSelect(item)}>
-                  {item.label}
+                <ContextMenuItem key={label} onSelect={() => onSelect(item)}>
+                  {label}
                 </ContextMenuItem>
               )
             })}

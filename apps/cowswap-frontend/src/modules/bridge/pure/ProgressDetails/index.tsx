@@ -1,5 +1,7 @@
 import { ReactNode } from 'react'
 
+import { i18n } from '@lingui/core'
+
 import { COW_PROTOCOL_NAME } from '../../constants'
 import { DividerHorizontal } from '../../styles'
 import { SwapAndBridgeStatus, SwapAndBridgeContext } from '../../types'
@@ -37,7 +39,7 @@ function SwapStep({ context }: SwapStepProps): ReactNode {
       statusIcon={SwapStatusIcons[swapStatus]}
       protocolIconShowOnly="first"
       protocolIconSize={21}
-      titlePrefix={SwapStatusTitlePrefixes[swapStatus]}
+      titlePrefix={i18n._(SwapStatusTitlePrefixes[swapStatus])}
       protocolName={COW_PROTOCOL_NAME}
       bridgeProvider={bridgeProvider}
       chainName={sourceChainName}
@@ -60,7 +62,7 @@ function BridgeStep({ context, bridgeStatus }: BridgeStepProps): ReactNode {
       status={bridgeStatus}
       statusIcon={BridgeStatusIcons[bridgeStatus]}
       protocolIconShowOnly="second"
-      titlePrefix={BridgeStatusTitlePrefixes[bridgeStatus]}
+      titlePrefix={i18n._(BridgeStatusTitlePrefixes[bridgeStatus])}
       protocolName={bridgeProvider.name}
       bridgeProvider={bridgeProvider}
       chainName={targetChainName}
