@@ -8,6 +8,7 @@ export interface CancelTwapOrderContext {
   orderId: string
   partOrderId?: string
 }
+
 export function cancelTwapOrderTxs(context: CancelTwapOrderContext): MetaTransactionData[] {
   const { composableCowContract, settlementContract, orderId, partOrderId } = context
   const cancelTwapOrderTx = {
@@ -31,11 +32,11 @@ export function cancelTwapOrderTxs(context: CancelTwapOrderContext): MetaTransac
 
 export async function estimateCancelTwapOrderTxs(context: CancelTwapOrderContext): Promise<BigNumber> {
   const { composableCowContract, settlementContract, orderId, partOrderId } = context
-  const canelComposableCowTxCost = await composableCowContract.estimateGas.remove(orderId)
+  const cancelComposableCowTxCost = await composableCowContract.estimateGas.remove(orderId)
 
-  if (!partOrderId) return canelComposableCowTxCost
+  if (!partOrderId) return cancelComposableCowTxCost
 
   const cancelPartOrderTx = await settlementContract.estimateGas.invalidateOrder(partOrderId)
 
-  return canelComposableCowTxCost.add(cancelPartOrderTx)
+  return cancelComposableCowTxCost.add(cancelPartOrderTx)
 }
