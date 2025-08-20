@@ -165,6 +165,13 @@ export const ContextMenuItemButton = styled.button<{ variant?: 'danger' }>`
   ${({ variant }) => variant === 'danger' && dangerVariantStyles}
 `
 
+export const ContextMenuItemLink = styled.a<{ variant?: 'danger' }>`
+  ${BaseMenuItemStyles}
+  border: none;
+  text-decoration: none;
+
+  ${({ variant }) => variant === 'danger' && dangerVariantStyles}
+`
 
 export const ContextMenuItemText = styled.span`
   ${BaseMenuItemStyles}
