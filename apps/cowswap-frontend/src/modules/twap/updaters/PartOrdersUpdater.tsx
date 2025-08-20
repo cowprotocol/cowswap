@@ -1,4 +1,4 @@
-import { useSetAtom, useAtomValue } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
 import { isTruthy } from '@cowprotocol/common-utils'
@@ -9,7 +9,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { computeOrderUid } from 'utils/orderUtils/computeOrderUid'
 
 import { twapOrdersListAtom } from '../state/twapOrdersListAtom'
-import { TwapPartOrderItem, setPartOrdersAtom } from '../state/twapPartOrdersAtom'
+import { setPartOrdersAtom, TwapPartOrderItem } from '../state/twapPartOrdersAtom'
 import { TwapOrderItem } from '../types'
 
 // TODO: Add proper return type annotation
@@ -72,7 +72,7 @@ async function generateTwapOrderParts(
   }
 }
 
-function createPartOrderFromParent(twapOrder: TwapOrderItem, index: number): OrderParameters | null {
+export function createPartOrderFromParent(twapOrder: TwapOrderItem, index: number): OrderParameters | null {
   const executionDate = twapOrder.safeTxParams?.executionDate
 
   if (!executionDate) {
