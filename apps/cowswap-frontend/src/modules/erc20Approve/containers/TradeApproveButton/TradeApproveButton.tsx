@@ -4,8 +4,6 @@ import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { Currency, CurrencyAmount, MaxUint256 } from '@uniswap/sdk-core'
 
-import { useHasPendingOrdersWithPermitForInputToken } from 'common/hooks/useHasPendingOrdersWithPermit'
-
 import { useApprovalStateForSpender, useApproveCurrency } from '../../hooks'
 import { ApproveButton, ApproveConfirmation } from '../../pure'
 import { LegacyApproveButton } from '../../pure/LegacyApproveButton'
@@ -30,9 +28,6 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
   const { approvalState, currentAllowance } = useApprovalStateForSpender(amountToApprove, spender)
 
   const isDisabled = props.isDisabled || !handleApprove
-
-  const disablePartialApproval = useHasPendingOrdersWithPermitForInputToken(amountToApprove.currency)
-
   const { isPartialApproveEnabled } = useFeatureFlags()
 
   if (!isPartialApproveEnabled) {
@@ -55,7 +50,6 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
         currentAllowance={currentAllowance}
         handleApprove={handleApprove}
         maxApprovalAmount={MaxApprovalAmount}
-        disablePartialApproval={disablePartialApproval}
       />
     )
   }

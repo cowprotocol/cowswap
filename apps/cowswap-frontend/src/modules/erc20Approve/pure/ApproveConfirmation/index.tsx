@@ -13,14 +13,12 @@ export interface ApproveConfirmationProps {
   handleApprove(amount: bigint): void
 
   maxApprovalAmount: bigint
-  disablePartialApproval?: boolean
 }
 
 export function ApproveConfirmation({
   amountToApprove,
   handleApprove,
   maxApprovalAmount,
-  disablePartialApproval,
 }: ApproveConfirmationProps): ReactNode {
   const currency = amountToApprove.currency
 
@@ -39,9 +37,7 @@ export function ApproveConfirmation({
           </HelpTooltip>
         </styledEl.ButtonWrapper>
       </ButtonPrimary>
-      {!disablePartialApproval ? (
-        <AdvancedApprove amountToApprove={amountToApprove} handleApprove={handleApprove} />
-      ) : null}
+      <AdvancedApprove amountToApprove={amountToApprove} handleApprove={handleApprove} />
     </styledEl.Wrapper>
   )
 }
