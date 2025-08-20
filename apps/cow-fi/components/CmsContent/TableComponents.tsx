@@ -66,7 +66,6 @@ const StyledTh = styled.th`
   ${Media.upToMedium()} {
     padding: 1rem 1.2rem;
     white-space: normal;
-    word-break: break-word;
   }
 `
 
@@ -81,7 +80,6 @@ const StyledTd = styled.td`
 
   ${Media.upToMedium()} {
     padding: 1rem 1.2rem;
-    word-break: break-word;
   }
 `
 
