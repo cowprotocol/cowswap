@@ -32,10 +32,18 @@ export const ThemeColorVars = css`
       theme.darkMode ? darken(theme.paper, 0.07) : darken(theme.paper, 0.05)};
     ${UI.COLOR_PAPER_DARKEST}: ${({ theme }) =>
       theme.darkMode ? darken(theme.paper, 0.1) : darken(theme.paper, 0.15)};
+    ${UI.COLOR_PAPER_GRADIENT}: ${({ theme }) =>
+      theme.darkMode
+        ? `linear-gradient(90deg, ${transparentize(theme.text, 0.9)} 0%, ${transparentize(theme.text, 0.8)} 100%)`
+        : `linear-gradient(90deg, ${transparentize(theme.text, 0.92)} 0%, ${transparentize(theme.text, 0.96)} 100%)`};
 
     ${UI.COLOR_BORDER}: var(${UI.COLOR_PAPER_DARKER});
     ${UI.BOX_SHADOW}: 0 12px 12px ${({ theme }) => transparentize(theme.primary, 0.94)};
     ${UI.BOX_SHADOW_2}: 0px 4px 8px ${({ theme }) => transparentize(theme.primary, 0.94)};
+    ${UI.BOX_SHADOW_3}: ${({ theme }) =>
+      theme.darkMode
+        ? `0px 6px 12px -6px ${darken(theme.paper, 0.04)}, 0px 8px 24px -4px ${darken(theme.paper, 0.08)}`
+        : `0px 6px 12px -6px ${transparentize(theme.text, 0.88)}, 0px 8px 24px -4px ${transparentize(theme.text, 0.92)}`};
 
     ${UI.COLOR_TEXT}: ${({ theme }) => theme.text};
     ${UI.COLOR_TEXT_PAPER}: ${({ theme }) => getContrastText(theme.paper, theme.text)};

@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import LOGO_COWAMM from '@cowprotocol/assets/images/logo-cowamm.svg'
 import LOGO_COWDAO from '@cowprotocol/assets/images/logo-cowdao.svg'
 import LOGO_COWEXPLORER from '@cowprotocol/assets/images/logo-cowexplorer.svg'
@@ -10,6 +12,7 @@ import LOGO_ICON_COW from '@cowprotocol/assets/images/logo-icon-cow.svg'
 import LOGO_ICON_MEVBLOCKER from '@cowprotocol/assets/images/logo-icon-mevblocker.svg'
 import LOGO_MEVBLOCKER from '@cowprotocol/assets/images/logo-mevblocker.svg'
 import { useTheme } from '@cowprotocol/common-hooks'
+import { toPixelValue } from '@cowprotocol/ui-utils'
 
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
@@ -261,9 +264,8 @@ export const ProductLogoWrapper = styled.span<{
   heightMobile?: number | string
   preserveOriginalColors?: boolean
 }>`
-  --height: ${({ height }) => (typeof height === 'number' ? `${height}px` : height || '28px')};
-  --heightMobile: ${({ heightMobile }) =>
-    typeof heightMobile === 'number' ? `${heightMobile}px` : heightMobile || 'var(--height)'};
+  --height: ${({ height }) => toPixelValue(height) || '28px'};
+  --heightMobile: ${({ heightMobile }) => toPixelValue(heightMobile) || 'var(--height)'};
   ${({ preserveOriginalColors, color, hoverColor }) =>
     !preserveOriginalColors &&
     `
@@ -320,9 +322,7 @@ export const ProductLogo = ({
   href,
   external = false,
   className,
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-}: LogoProps) => {
+}: LogoProps): ReactNode => {
   const themeMode = useTheme()
   const selectedTheme = customThemeMode || (themeMode.darkMode ? 'dark' : 'light')
   const logoForTheme = LOGOS[variant][selectedTheme] || LOGOS[variant]['light'] // Fallback to light theme if selected theme is not available
@@ -334,9 +334,7 @@ export const ProductLogo = ({
   // First use logoInfo heightMobile, then prop heightMobile, then logoInfo height, then prop height, then default
   const logoHeightMobile = logoInfo.heightMobile || heightMobile || logoInfo.height || height || logoHeight
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const getAccessibleAltText = () => {
+  const getAccessibleAltText = (): string => {
     const baseAlt = logoInfo.alt
     const linkText = href ? (external ? 'Visit external site: ' : 'Go to: ') : ''
     return `${linkText}${baseAlt}`

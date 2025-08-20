@@ -1,12 +1,15 @@
 import { ReactNode } from 'react'
 
+import ICON_WALLET from '@cowprotocol/assets/cow-swap/wallet-plus.svg'
 import { ButtonPrimary, ButtonSize } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
 
-import { Wrapper, Container } from './styled'
+import { Wrapper, Container, WalletIcon } from './styled'
 
-import notConnectedImg from '../../img/wallet-not-connected.svg'
+import { BaseAccountCard } from '../BaseAccountCard'
+import { CowProtocolIcon } from '../CowProtocolIcon'
+import { SkeletonLines } from '../SkeletonLines'
 
 interface WalletNotConnectedProps {
   onConnect(): void
@@ -15,7 +18,14 @@ export function WalletNotConnected({ onConnect }: WalletNotConnectedProps): Reac
   return (
     <Container>
       <Wrapper>
-        <SVG src={notConnectedImg} />
+        <BaseAccountCard width={206} height={116} padding={16} enableScale ariaLabel="Connect wallet banner">
+          <WalletIcon>
+            <SVG src={ICON_WALLET} />
+          </WalletIcon>
+          <SkeletonLines />
+          <CowProtocolIcon />
+        </BaseAccountCard>
+
         <p>Connect wallet to recover funds</p>
       </Wrapper>
       <ButtonPrimary buttonSize={ButtonSize.BIG} onClick={onConnect}>
