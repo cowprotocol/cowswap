@@ -2,8 +2,11 @@ import type { ReactNode } from 'react'
 import type { HTMLAttributes, AnchorHTMLAttributes } from 'react'
 import { isValidElement } from 'react'
 
+import { Font, Media, UI } from '@cowprotocol/ui'
+
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import styled from 'styled-components/macro'
 
 import { CustomUl, CustomOl, CustomLi } from './ListComponents'
 import { CustomTable, CustomTHead, CustomTBody, CustomTr, CustomTh, CustomTd } from './TableComponents'
@@ -12,29 +15,86 @@ interface CmsContentProps {
   content: string
 }
 
+// Styled heading components that use the correct font-family
+const StyledH1 = styled.h1`
+  font-family: ${Font.family};
+  font-size: 4.2rem;
+  font-weight: ${Font.weight.bold};
+  line-height: 1.2;
+  color: var(${UI.COLOR_NEUTRAL_0});
+  margin: 3.2rem 0 1.6rem;
+
+  ${Media.upToMedium()} {
+    font-size: 3.6rem;
+    margin: 2.4rem 0 1.2rem;
+  }
+`
+
+const StyledH2 = styled.h2`
+  font-family: ${Font.family};
+  font-size: 3.6rem;
+  font-weight: ${Font.weight.bold};
+  line-height: 1.2;
+  color: var(${UI.COLOR_NEUTRAL_0});
+  margin: 2.8rem 0 1.4rem;
+
+  ${Media.upToMedium()} {
+    font-size: 3rem;
+    margin: 2rem 0 1rem;
+  }
+`
+
+const StyledH3 = styled.h3`
+  font-family: ${Font.family};
+  font-size: 3rem;
+  font-weight: ${Font.weight.bold};
+  line-height: 1.2;
+  color: var(${UI.COLOR_NEUTRAL_0});
+  margin: 2.4rem 0 1.2rem;
+
+  ${Media.upToMedium()} {
+    font-size: 2.6rem;
+    margin: 1.8rem 0 0.8rem;
+  }
+`
+
+const StyledH4 = styled.h4`
+  font-family: ${Font.family};
+  font-size: 2.4rem;
+  font-weight: ${Font.weight.bold};
+  line-height: 1.3;
+  color: var(${UI.COLOR_NEUTRAL_0});
+  margin: 2rem 0 1rem;
+
+  ${Media.upToMedium()} {
+    font-size: 2.2rem;
+    margin: 1.6rem 0 0.8rem;
+  }
+`
+
 // Component definitions outside render to avoid recreation on every render
 const CustomH1 = ({ children, ...props }: HTMLAttributes<HTMLHeadingElement>): ReactNode => (
-  <h1 {...props} id={slugify(getTextFromChildren(children))}>
+  <StyledH1 {...props} id={slugify(getTextFromChildren(children))}>
     {children}
-  </h1>
+  </StyledH1>
 )
 
 const CustomH2 = ({ children, ...props }: HTMLAttributes<HTMLHeadingElement>): ReactNode => (
-  <h2 {...props} id={slugify(getTextFromChildren(children))}>
+  <StyledH2 {...props} id={slugify(getTextFromChildren(children))}>
     {children}
-  </h2>
+  </StyledH2>
 )
 
 const CustomH3 = ({ children, ...props }: HTMLAttributes<HTMLHeadingElement>): ReactNode => (
-  <h3 {...props} id={slugify(getTextFromChildren(children))}>
+  <StyledH3 {...props} id={slugify(getTextFromChildren(children))}>
     {children}
-  </h3>
+  </StyledH3>
 )
 
 const CustomH4 = ({ children, ...props }: HTMLAttributes<HTMLHeadingElement>): ReactNode => (
-  <h4 {...props} id={slugify(getTextFromChildren(children))}>
+  <StyledH4 {...props} id={slugify(getTextFromChildren(children))}>
     {children}
-  </h4>
+  </StyledH4>
 )
 
 const CustomP = ({ children, ...props }: HTMLAttributes<HTMLParagraphElement>): ReactNode => (
