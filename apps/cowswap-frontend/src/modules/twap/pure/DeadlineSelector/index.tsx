@@ -28,6 +28,20 @@ const StyledTradeSelect = styled(TradeSelect)`
   font-weight: 500;
   color: inherit;
 
+  button[data-reach-menu-button] {
+    width: 100%;
+    height: auto;
+    justify-content: space-between;
+    font-size: 18px;
+    
+    &:hover,
+    &:active,
+    &:focus {
+      background: none;
+      border-radius: 0;
+    }
+  }
+
   > svg {
     color: inherit;
     stroke: currentColor;

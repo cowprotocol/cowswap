@@ -1,11 +1,16 @@
-import { useState } from 'react'
+import { ReactNode, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { getTokenListViewLink, ListState } from '@cowprotocol/tokens'
+import {
+  ContextMenuTooltip,
+  ContextMenuExternalLink,
+  ContextMenuItemButton,
+  ContextMenuItemText,
+} from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
-import { Menu, MenuItem } from '@reach/menu-button'
-import { Settings } from 'react-feather'
+import { Settings, Trash2 } from 'react-feather'
 
 import { Toggle } from 'legacy/components/Toggle'
 
@@ -22,20 +27,15 @@ export interface TokenListItemProps {
   removeList(list: ListState): void
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function ListItem(props: TokenListItemProps) {
+export function ListItem(props: TokenListItemProps): ReactNode {
   const { list, removeList, toggleList, enabled } = props
   const [isActive, setIsActive] = useState(enabled)
   const cowAnalytics = useCowAnalytics()
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const toggle = () => {
+  const toggle = (): void => {
     toggleList(list, enabled)
     setIsActive((state) => !state)
-    // Track the actual state change
+
     const newState = !enabled
     cowAnalytics.sendEvent({
       category: CowSwapAnalyticsCategory.LIST,
@@ -44,9 +44,7 @@ export function ListItem(props: TokenListItemProps) {
     })
   }
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const handleRemove = () => {
+  const handleRemove = (): void => {
     removeList(list)
   }
 
@@ -55,45 +53,40 @@ export function ListItem(props: TokenListItemProps) {
   return (
     <styledEl.Wrapper $enabled={isActive}>
       <TokenListDetails list={list.list}>
-        <Menu>
-          <styledEl.SettingsButton>
-            <Settings size={12} />
-          </styledEl.SettingsButton>
-          <styledEl.SettingsContainer>
-            <MenuItem onSelect={() => void 0}>
-              <styledEl.ListVersion>
+        <ContextMenuTooltip
+          content={
+            <>
+              <ContextMenuItemText>
                 v{major}.{minor}.{patch}
-              </styledEl.ListVersion>
-            </MenuItem>
-            <MenuItem onSelect={() => void 0}>
-              <styledEl.SettingsAction>
-                <a
-                  target="_blank"
-                  href={getTokenListViewLink(list.source)}
-                  rel="noreferrer"
-                  data-click-event={toCowSwapGtmEvent({
-                    category: CowSwapAnalyticsCategory.LIST,
-                    action: 'View List',
-                    label: list.source,
-                  })}
-                >
-                  <Trans>View List</Trans>
-                </a>
-              </styledEl.SettingsAction>
-            </MenuItem>
-            <MenuItem onSelect={handleRemove}>
-              <styledEl.SettingsAction
+              </ContextMenuItemText>
+              <ContextMenuExternalLink
+                href={getTokenListViewLink(list.source)}
+                label="View List"
+                data-click-event={toCowSwapGtmEvent({
+                  category: CowSwapAnalyticsCategory.LIST,
+                  action: 'View List',
+                  label: list.source,
+                })}
+              />
+              <ContextMenuItemButton
+                variant="danger"
+                onClick={handleRemove}
                 data-click-event={toCowSwapGtmEvent({
                   category: CowSwapAnalyticsCategory.LIST,
                   action: 'Remove List',
                   label: list.source,
                 })}
               >
-                <Trans>Remove list</Trans>
-              </styledEl.SettingsAction>
-            </MenuItem>
-          </styledEl.SettingsContainer>
-        </Menu>
+                <Trash2 size={16} />
+                <span><Trans>Remove list</Trans></span>
+              </ContextMenuItemButton>
+            </>
+          }
+        >
+          <styledEl.SettingsButton>
+            <Settings size={14} />
+          </styledEl.SettingsButton>
+        </ContextMenuTooltip>
       </TokenListDetails>
       <div>
         <Toggle

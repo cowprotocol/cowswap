@@ -26,7 +26,7 @@ const ARBITRUM_ONE_START_DATE = 'May 2024'
 const BASE_START_DATE = 'December 2024'
 const POLYGON_START_DATE = 'June 2025'
 const AVALANCHE_START_DATE = 'June 2025'
-const LENS_START_DATE = 'August 2025'
+const LENS_START_DATE = 'September 2025'
 const BNB_START_DATE = 'September 2025' // TODO: Update when BNB is supported
 
 const START_DATE: Record<SupportedChainId, string> = {

@@ -19,9 +19,11 @@ export enum UI {
   COLOR_PAPER_OPACITY_99 = '--cow-color-paper-opacity-99',
   COLOR_PAPER_DARKER = '--cow-color-paper-darker',
   COLOR_PAPER_DARKEST = '--cow-color-paper-darkest',
+  COLOR_PAPER_GRADIENT = '--cow-color-paper-gradient',
 
   BOX_SHADOW = '--cow-box-shadow',
   BOX_SHADOW_2 = '--cow-box-shadow-2',
+  BOX_SHADOW_3 = '--cow-box-shadow-3',
 
   COLOR_TEXT = '--cow-color-text',
   COLOR_TEXT_PAPER = '--cow-color-text-paper',

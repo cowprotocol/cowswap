@@ -6,6 +6,8 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { t } from '@lingui/core/macro'
 import { useLocation, useParams } from 'react-router'
 
+import { NEED_HELP_LABEL } from '../../consts'
+
 export function WidgetPageTitle(): ReactNode {
   const { account } = useWalletInfo()
   const { tokenAddress } = useParams()
@@ -17,6 +19,11 @@ export function WidgetPageTitle(): ReactNode {
   const isHelpPage = location.pathname.endsWith('/help')
   const isRecoverPage = !!tokenAddress
 
+  // Check for help page first, regardless of wallet connection
+  if (isHelpPage) {
+    return NEED_HELP_LABEL
+  }
+
   if (!isWalletConnected) {
     return t`Proxy Accounts`
   }
@@ -24,10 +31,6 @@ export function WidgetPageTitle(): ReactNode {
   if (isRecoverPage) {
     const target = token?.symbol ?? t`funds`
     return t`Recover ${target}`
-  }
-
-  if (isHelpPage) {
-    return t`Need help`
   }
 
   return t`Recover funds`
