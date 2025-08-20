@@ -1,4 +1,5 @@
 import { useBalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
+import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { OrderClass } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -22,6 +23,15 @@ export function usePendingOrdersFillability(orderClass?: OrderClass): Record<str
 
   return pendingOrders.reduce<Record<string, OrderFillability>>((acc, order) => {
     if (orderClass && order.class !== orderClass) return acc
+
+    if (getIsNativeToken(chainId, order.inputToken.address)) {
+      acc[order.id] = {
+        hasEnoughBalance: true,
+        hasEnoughAllowance: true,
+        hasPermit: false,
+      }
+      return acc
+    }
 
     const balance = balances[order.sellToken.toLowerCase()]
     const allowance = allowances?.[order.sellToken.toLowerCase()]
