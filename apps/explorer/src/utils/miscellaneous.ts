@@ -67,8 +67,8 @@ const NetworkImageAddressMap: Record<Network, string> = {
   [Network.POLYGON]: 'pol',
   [Network.AVALANCHE]: 'avax',
   [Network.SEPOLIA]: 'eth',
-  [Network.LENS]: 'lens', // TODO: add proper image for Lens
-  [Network.BNB]: 'bnb', // TODO: add proper image for BNB
+  [Network.LENS]: 'lens',
+  [Network.BNB]: 'bnb',
 }
 
 export function getImageAddress(address: string, network: Network): string {
