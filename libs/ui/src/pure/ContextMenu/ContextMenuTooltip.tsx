@@ -1,4 +1,4 @@
-import { MouseEvent, ReactNode, useCallback, useRef, useState } from 'react'
+import { MouseEvent, ReactNode, useRef, useState, useEffect } from 'react'
 
 import * as styledEl from './styled'
 
@@ -23,28 +23,54 @@ export function ContextMenuTooltip({
   const defaultContainerRef = useRef<HTMLElement>(null)
   const [openTooltip, setOpenTooltip] = useState(false)
 
-  const handleClick = useCallback((event: MouseEvent<HTMLButtonElement>) => {
+  const handleClick = (event: MouseEvent<HTMLDivElement>): void => {
     event.stopPropagation?.()
     event.preventDefault?.()
     setOpenTooltip((prev) => !prev)
-  }, [])
+  }
 
-  const handleClickOutside = useCallback((event: MouseEvent<HTMLDivElement>) => {
-    // Only close if clicking outside the context menu content
-    if (contextMenuRef.current && !contextMenuRef.current.contains(event.target as HTMLElement)) {
-      event.stopPropagation?.()
-      setOpenTooltip(false)
+  // Click outside handler
+  useEffect(() => {
+    if (!openTooltip) return
+
+    const handleClickOutside = (event: Event): void => {
+      const target = event.target as HTMLElement
+      
+      // Only close if clicking outside the context menu
+      if (!contextMenuRef.current?.contains(target)) {
+        setOpenTooltip(false)
+      }
     }
-  }, [])
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [openTooltip])
+
+  // Custom click handler that allows anchor tags to work
+  const handleTooltipClick = (event: MouseEvent<HTMLDivElement>): void => {
+    const target = event.target as HTMLElement
+    
+    // Don't prevent default for anchor tags - let them work naturally
+    if (target.tagName === 'A' || target.closest('a')) {
+      return
+    }
+    
+    // For other elements, toggle the tooltip
+    event.preventDefault()
+    setOpenTooltip((prev) => !prev)
+  }
 
   return (
     <styledEl.ContextMenuTooltipButton onClick={handleClick} disableHoverBackground={disableHoverBackground}>
       <Tooltip
-        content={<styledEl.ContextMenuContent ref={contextMenuRef}>{content}</styledEl.ContextMenuContent>}
+        content={
+          <styledEl.ContextMenuContent ref={contextMenuRef} onClick={handleTooltipClick}>
+            {content}
+          </styledEl.ContextMenuContent>
+        }
         placement={placement}
         wrapInContainer={false}
         show={openTooltip}
-        onClickCapture={handleClickOutside}
         containerRef={(containerRef as React.RefObject<HTMLElement>) || defaultContainerRef}
       >
         {children}

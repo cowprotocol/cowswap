@@ -38,7 +38,7 @@ export const ContextMenuButton = styled(MenuButton).attrs({ type: 'button' })`
   }
 `
 
-export const ContextMenuTooltipButton = styled.button<{ disableHoverBackground?: boolean }>`
+export const ContextMenuTooltipButton = styled.div<{ disableHoverBackground?: boolean }>`
   background: none;
   border: none;
   outline: none;
