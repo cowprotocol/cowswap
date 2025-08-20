@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { ReactNode, useRef } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
 import { useAvailableChains } from '@cowprotocol/common-hooks'
@@ -6,7 +6,7 @@ import { useOnClickOutside } from '@cowprotocol/common-hooks'
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { UI } from '@cowprotocol/ui'
 import { Media } from '@cowprotocol/ui'
-import { useIsRabbyWallet, useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
+import { useIsRabbyWallet, useIsSmartContractWallet, useWalletInfo, useIsSafeViaWc } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { Trans } from '@lingui/macro'
@@ -154,10 +154,7 @@ const NetworkAlertLabel = styled.div`
   }
 `
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
-export function NetworkSelector() {
+export function NetworkSelector(): ReactNode {
   const provider = useWalletProvider()
   const { chainId } = useWalletInfo()
   const node = useRef<HTMLDivElement>(null)
@@ -165,6 +162,7 @@ export function NetworkSelector() {
   const isOpen = useModalIsOpen(ApplicationModal.NETWORK_SELECTOR)
   const toggleModal = useToggleModal(ApplicationModal.NETWORK_SELECTOR)
 
+  const isSafeViaWc = useIsSafeViaWc()
   const isSmartContractWallet = useIsSmartContractWallet()
   const isRabbyWallet = useIsRabbyWallet()
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
@@ -183,7 +181,7 @@ export function NetworkSelector() {
 
   const availableChains = useAvailableChains()
 
-  if (!provider || (isSmartContractWallet && !isRabbyWallet)) {
+  if (!provider || (isSmartContractWallet && !isRabbyWallet && !isSafeViaWc)) {
     return null
   }
 

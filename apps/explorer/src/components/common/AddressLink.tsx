@@ -3,8 +3,7 @@ import React, { ReactNode } from 'react'
 import { getChainInfo } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import type { CrossChainOrder } from '@cowprotocol/cow-sdk'
-import { NetworkLogo } from '@cowprotocol/ui'
-import { Color } from '@cowprotocol/ui'
+import { Color, NetworkLogo } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -62,7 +61,7 @@ export function AddressLink({
       >
         <LinkWithNetworkWrapper>
           {(showIcon || showNetworkName) && (
-            <NetworkLogo chainId={chainId} size={16} logoUrl={bridgeNetwork?.logo.light} forceLightMode />
+            <NetworkLogo chainId={chainId} size={16} logoUrl={bridgeNetwork?.logo.dark} />
           )}
           {address.toLowerCase()} ↗
         </LinkWithNetworkWrapper>

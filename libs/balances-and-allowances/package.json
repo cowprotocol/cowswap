@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/balances-and-allowances",
-  "version": "1.5.3",
+  "version": "1.5.4",
   "main": "./index.js",
   "types": "./index.d.ts",
   "exports": {

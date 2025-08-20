@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react'
 
+import { TENDERLY_AVAILABLE } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
@@ -16,38 +17,42 @@ import { LinkButton, Wrapper } from '../styled'
 interface TxHashItemProps {
   txHash: string | undefined
   chainId: SupportedChainId
+
   onCopy(label: string): void
+
   isLoading: boolean
 }
 
 export function TxHashItem({ chainId, txHash, onCopy, isLoading }: TxHashItemProps): ReactNode {
   if (!txHash) return null
 
+  const shouldDisplayBatchGraph = TENDERLY_AVAILABLE[chainId]
+
   return (
     <DetailRow label="Transaction hash" tooltipText={DetailsTableTooltips.hash} isLoading={isLoading}>
-      {txHash ? (
+      <Wrapper>
+        <RowWithCopyButton
+          textToCopy={txHash}
+          onCopy={() => onCopy('settlementTx')}
+          contentsToDisplay={
+            <Link to={getExplorerLink(chainId, txHash, ExplorerDataType.TRANSACTION)} target="_blank">
+              {txHash}↗
+            </Link>
+          }
+        />
         <Wrapper>
-          <RowWithCopyButton
-            textToCopy={txHash}
-            onCopy={() => onCopy('settlementTx')}
-            contentsToDisplay={
-              <Link to={getExplorerLink(chainId, txHash, ExplorerDataType.TRANSACTION)} target="_blank">
-                {txHash}↗
-              </Link>
-            }
-          />
-          <Wrapper>
-            <LinkButton to={`/tx/${txHash}`}>
-              <FontAwesomeIcon icon={faGroupArrowsRotate} />
-              Batch
-            </LinkButton>
+          <LinkButton to={`/tx/${txHash}`}>
+            <FontAwesomeIcon icon={faGroupArrowsRotate} />
+            Batch
+          </LinkButton>
+          {shouldDisplayBatchGraph && (
             <LinkButton to={`/tx/${txHash}/?${TAB_QUERY_PARAM_KEY}=graph`}>
               <FontAwesomeIcon icon={faProjectDiagram} />
               Graph
             </LinkButton>
-          </Wrapper>
+          )}
         </Wrapper>
-      ) : null}
+      </Wrapper>
     </DetailRow>
   )
 }

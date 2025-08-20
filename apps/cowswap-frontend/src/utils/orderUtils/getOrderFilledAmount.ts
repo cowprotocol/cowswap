@@ -1,9 +1,10 @@
-import { ZERO_BIG_NUMBER } from '@cowprotocol/common-const'
 import { isSellOrder } from '@cowprotocol/common-utils'
 
 import BigNumber from 'bignumber.js'
 
 import { Order } from 'legacy/state/orders/actions'
+
+const ZERO_BIG_NUMBER = new BigNumber(0)
 
 /**
  * Get order filled amount, both as raw amount (in atoms) and as percentage (from 0 to 1)
@@ -25,7 +26,7 @@ export function getOrderFilledAmount(order: Order): FilledAmountResult {
 
   if (isSellOrder(order.kind)) {
     executedAmount = new BigNumber(order.apiAdditionalInfo.executedSellAmount).minus(
-      order.apiAdditionalInfo?.executedFeeAmount
+      order.apiAdditionalInfo?.executedFeeAmount,
     )
     totalAmount = new BigNumber(order.sellAmount.toString())
   } else {

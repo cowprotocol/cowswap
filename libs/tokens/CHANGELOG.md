@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.24.2](https://github.com/cowprotocol/cowswap/compare/tokens-v1.24.1...tokens-v1.24.2) (2025-08-14)
+
+
+### Bug Fixes
+
+* **token-search:** increase results limit from 10 to 100 ([#6158](https://github.com/cowprotocol/cowswap/issues/6158)) ([b81c459](https://github.com/cowprotocol/cowswap/commit/b81c4598475a0b5097d7ff05046f41c8a3270ed8))
+
+## [1.24.1](https://github.com/cowprotocol/cowswap/compare/tokens-v1.24.0...tokens-v1.24.1) (2025-08-12)
+
+
+### Bug Fixes
+
+* **balances:** skip balances update from old blocks ([#6137](https://github.com/cowprotocol/cowswap/issues/6137)) ([0748151](https://github.com/cowprotocol/cowswap/commit/074815141e2992171cf752ef395a5dc34ecf6176))
+* **tokens:** check lists instead of tokens to prevent flickering ([#6125](https://github.com/cowprotocol/cowswap/issues/6125)) ([2705327](https://github.com/cowprotocol/cowswap/commit/2705327508f29079e6e5b4a8dc11b4dc0c5fb9cc))
+
 ## [1.24.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.23.1...tokens-v1.24.0) (2025-08-07)
 
 
