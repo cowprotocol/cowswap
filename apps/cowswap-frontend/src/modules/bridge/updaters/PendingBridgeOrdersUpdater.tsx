@@ -70,7 +70,7 @@ function PendingOrderUpdater({ chainId, orderUid }: PendingOrderUpdaterProps): R
 
       analytics.sendEvent({
         category: CowSwapAnalyticsCategory.Bridge,
-        action: 'Bridging succeeded',
+        action: 'bridging_succeeded',
         label: analyticsSummary,
         orderId: orderUid,
         chainId: sourceChainId,
@@ -80,7 +80,7 @@ function PendingOrderUpdater({ chainId, orderUid }: PendingOrderUpdaterProps): R
 
       analytics.sendEvent({
         category: CowSwapAnalyticsCategory.Bridge,
-        action: 'Bridging failed',
+        action: 'bridging_failed',
         label: analyticsSummary,
         orderId: orderUid,
         chainId: sourceChainId,

@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 
 import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
+import { areAddressesEqual } from '@cowprotocol/common-utils'
 
 import { Pocket } from 'react-feather'
 import styled from 'styled-components/macro'
@@ -31,7 +32,7 @@ export function ProxyRecipient({ recipient, chainId, size = 14 }: ProxyRecipient
 
   if (!recipient || !proxyAddress) return null
 
-  if (recipient.toLowerCase() !== proxyAddress.toLowerCase()) {
+  if (!areAddressesEqual(recipient, proxyAddress)) {
     throw new Error(
       `Provided proxy address does not match ${ACCOUNT_PROXY_LABEL} address!, recipient=${recipient}, proxyAddress=${proxyAddress}`,
     )
