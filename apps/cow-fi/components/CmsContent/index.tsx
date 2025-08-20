@@ -105,11 +105,24 @@ const CustomStrong = ({ children, ...props }: HTMLAttributes<HTMLElement>): Reac
   <strong {...props}>{children}</strong>
 )
 
-const CustomA = ({ children, ...props }: AnchorHTMLAttributes<HTMLAnchorElement>): ReactNode => (
-  <a {...props} target="_blank" rel="nofollow noopener">
-    {children}
-  </a>
-)
+const CustomA = ({ children, href, ...props }: AnchorHTMLAttributes<HTMLAnchorElement>): ReactNode => {
+  // Determine if link is external based on href
+  const isExternal = href?.startsWith('http') || href?.startsWith('mailto:')
+  const isAnchor = href?.startsWith('#')
+  
+  // Apply appropriate attributes based on link type
+  const linkProps = isExternal
+    ? { target: '_blank', rel: 'noopener noreferrer' }
+    : isAnchor
+    ? {} // No special attributes for anchor links
+    : { rel: 'noopener' } // Internal links get noopener but no target
+
+  return (
+    <a {...props} href={href} {...linkProps}>
+      {children}
+    </a>
+  )
+}
 
 /**
  * Component to render CMS markdown content with proper styling
