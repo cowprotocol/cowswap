@@ -65,10 +65,11 @@ export function useSearchToken(input: string | null): TokenSearchResponse {
   }, [debouncedInputInList, tokensFromActiveLists, tokensFromInactiveLists])
 
   // Search in external API
-  const { data: apiResultTokens, isLoading: apiIsLoading } = useSearchTokensInApi(
+  // TODO: Temporarily disabled since the API is no longer available. Re-enable when the API is fixed
+  const { data: apiResultTokens, isLoading: apiIsLoading } = { data: null, isLoading: false } /*useSearchTokensInApi(
     debouncedInputInExternals,
     isTokenAlreadyFoundByAddress,
-  )
+  )*/
 
   // Search in Blockchain
   const { data: tokenFromBlockChain, isLoading: blockchainIsLoading } = useFetchTokenFromBlockchain(
@@ -152,6 +153,7 @@ function useSearchTokensInLists(input: string | undefined): FromListsResult {
   return inListsResult || emptyFromListsResult
 }
 
+// eslint-disable-next-line unused-imports/no-unused-vars
 function useSearchTokensInApi(
   input: string | undefined,
   isTokenAlreadyFoundByAddress: boolean,

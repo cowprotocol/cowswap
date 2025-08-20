@@ -23,8 +23,10 @@ const COWSWAP_VOLUME_FEES: Record<SupportedChainId, VolumeFee | null> = {
     volumeBps: 10, // 0.1%
     recipient: DEFAULT_PARTNER_FEE_RECIPIENT,
   },
-  [SupportedChainId.POLYGON]: null, // TODO: check if we should apply fee on Polygon
-  [SupportedChainId.AVALANCHE]: null, // TODO: check if we should apply fee on Avalanche
+  [SupportedChainId.POLYGON]: null,
+  [SupportedChainId.AVALANCHE]: null,
+  [SupportedChainId.LENS]: null,
+  [SupportedChainId.BNB]: null,
 }
 
 // TODO: Reduce function complexity by extracting logic

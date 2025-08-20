@@ -11,7 +11,7 @@ import { ImportTokenItem } from '../ImportTokenItem'
 import { TokenListItemContainer } from '../TokenListItemContainer'
 import { TokenSourceTitle } from '../TokenSourceTitle'
 
-const SEARCH_RESULTS_LIMIT = 10
+const SEARCH_RESULTS_LIMIT = 100
 
 interface TokenSearchContentProps {
   searchInput: string
