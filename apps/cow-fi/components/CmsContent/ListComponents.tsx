@@ -19,7 +19,7 @@ const StyledUl = styled.ul`
     }
 
     &::marker {
-      color: var(${UI.COLOR_PRIMARY});
+      color: var(${UI.COLOR_NEUTRAL_0});
     }
   }
 
@@ -45,7 +45,7 @@ const StyledOl = styled.ol`
     }
 
     &::marker {
-      color: var(${UI.COLOR_PRIMARY});
+      color: var(${UI.COLOR_NEUTRAL_0});
       font-weight: 600;
     }
   }
