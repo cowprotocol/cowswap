@@ -1,7 +1,6 @@
 import { UI, Font, Media } from '@cowprotocol/ui'
 import { toPixelValue } from '@cowprotocol/ui-utils'
 
-import { MenuButton as ReachMenuButton, MenuItems as ReachMenuItems } from '@reach/menu-button'
 import styled from 'styled-components/macro'
 
 const getHoverStyles = (enableParentHover: boolean, enableScale: boolean): string => {
@@ -101,46 +100,6 @@ export const AddressLinkWrapper = styled.span`
   }
 `
 
-export const MenuButton = styled(ReachMenuButton)`
-  background: none;
-  border: none;
-  outline: none;
-  padding: 0;
-  margin: 0;
-  color: var(${UI.COLOR_TEXT_OPACITY_50});
-  cursor: pointer;
-  height: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition:
-    color 0.2s ease,
-    background 0.2s ease;
-
-  &:hover {
-    color: var(${UI.COLOR_TEXT});
-    background: var(${UI.COLOR_TEXT_OPACITY_10});
-    border-radius: 10px;
-  }
-
-  &:focus-visible {
-    color: var(${UI.COLOR_TEXT});
-    background: var(${UI.COLOR_TEXT_OPACITY_10});
-    border-radius: 10px;
-    box-shadow: 0 0 0 2px var(${UI.COLOR_PRIMARY});
-  }
-`
-
-export const MenuItems = styled(ReachMenuItems)`
-  background: var(${UI.COLOR_PAPER});
-  box-shadow: var(${UI.BOX_SHADOW});
-  right: 0;
-  top: 20px;
-  border-radius: 10px;
-  position: absolute;
-  min-width: 180px;
-  text-align: left;
-`
 
 interface CardProps {
   $width?: number | string
