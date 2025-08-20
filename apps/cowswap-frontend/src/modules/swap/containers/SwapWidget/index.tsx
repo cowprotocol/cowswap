@@ -13,7 +13,7 @@ import {
   TradeWidgetSlots,
   useGetReceiveAmountInfo,
   useTradePriceImpact,
-  useWrapNativeFlow
+  useWrapNativeFlow,
 } from 'modules/trade'
 import { useHandleSwap } from 'modules/tradeFlow'
 import { useTradeQuote } from 'modules/tradeQuote'
@@ -70,6 +70,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
     inputCurrencyFiatAmount,
     outputCurrencyFiatAmount,
     recipient,
+    recipientAddress,
     orderKind,
   } = useSwapDerivedState()
   const doTrade = useHandleSwap(useSafeMemoObject({ deadline: deadlineState[0] }), widgetActions)
@@ -205,6 +206,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
             <SwapConfirmModal
               doTrade={doTrade.callback}
               recipient={recipient}
+              recipientAddress={recipientAddress}
               priceImpact={priceImpact}
               inputCurrencyInfo={inputCurrencyPreviewInfo}
               outputCurrencyInfo={outputCurrencyPreviewInfo}
