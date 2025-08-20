@@ -1577,7 +1577,7 @@ export const BodyContent = styled.div<{ color?: string }>`
   > ul > li ul,
   > ol,
   > ol > li ul {
-    padding: 0.8rem 0 0 2rem;
+    padding: 0.8rem 0 0 4rem;
 
     > li,
     > li > p,

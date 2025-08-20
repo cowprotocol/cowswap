@@ -34,6 +34,22 @@ const StyledOl = styled.ol`
   margin: 1.6rem 0 2.4rem;
   padding-left: 2.4rem;
 
+  &[type="a"] {
+    list-style-type: lower-alpha;
+  }
+
+  &[type="A"] {
+    list-style-type: upper-alpha;
+  }
+
+  &[type="i"] {
+    list-style-type: lower-roman;
+  }
+
+  &[type="I"] {
+    list-style-type: upper-roman;
+  }
+
   li {
     margin-bottom: 0.8rem;
     font-size: 1.8rem;
