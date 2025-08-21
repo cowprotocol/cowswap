@@ -29,7 +29,7 @@ export function ImportListModal(props: ImportListModalProps) {
   return (
     <styledEl.Wrapper>
       <ModalHeader onBack={onBack} onClose={onDismiss}>
-        Import List
+        <Trans>Import List</Trans>
       </ModalHeader>
       <styledEl.ListInfo>
         <TokenLogo logoURI={list.list.logoURI} size={36} />

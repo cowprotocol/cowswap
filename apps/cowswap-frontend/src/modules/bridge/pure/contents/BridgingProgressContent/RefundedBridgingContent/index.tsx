@@ -7,6 +7,8 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { NetworkLogo } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { Trans } from '@lingui/react/macro'
+
 import { ConfirmDetailsItem, ReceiveAmountTitle } from 'modules/trade'
 
 import { DangerText, SuccessTextBold, TimelineIconCircleWrapper } from '../../../../styles'
@@ -24,7 +26,9 @@ export function RefundedBridgingContent({ account, bridgeSendCurrencyAmount }: R
   return (
     <>
       <ConfirmDetailsItem label={RECEIVED_LABEL} withTimelineDot>
-        <DangerText>Bridging failed</DangerText>
+        <DangerText>
+          <Trans>Bridging failed</Trans>
+        </DangerText>
       </ConfirmDetailsItem>
       <ConfirmDetailsItem
         label={
@@ -35,7 +39,9 @@ export function RefundedBridgingContent({ account, bridgeSendCurrencyAmount }: R
               </TimelineIconCircleWrapper>
             }
           >
-            <SuccessTextBold>Refunded to</SuccessTextBold>
+            <SuccessTextBold>
+              <Trans>Refunded to</Trans>
+            </SuccessTextBold>
             <RefundRecipientWrapper>
               <NetworkLogo chainId={sourceChainId} size={16} />
               <b>

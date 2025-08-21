@@ -229,7 +229,7 @@ export function AddCustomHookForm({ addHookDapp, children, isPreHook, walletType
             )}
 
             <ButtonOutlined style={{ fontSize: '16px', padding: '12px 0' }} onClick={goBack}>
-              Back
+              <Trans>Back</Trans>
             </ButtonOutlined>
           </form>
         </Wrapper>

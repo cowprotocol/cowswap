@@ -107,6 +107,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
     fiatAmount: outputCurrencyFiatAmount,
     receiveAmountInfo: isSellTrade ? receiveAmountInfo : null,
   }
+
   const inputCurrencyPreviewInfo = {
     amount: inputCurrencyInfo.amount,
     fiatAmount: inputCurrencyInfo.fiatAmount,

@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { getCmsClient } from '@cowprotocol/core'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
 import { TelegramConnectionStatus } from '../pure/TelegramConnectionStatus'
@@ -163,7 +164,9 @@ export function ConnectTelegram() {
   return (
     <Wrapper ref={telegramWrapperRef}>
       <Option>
-        <div>Enable notifications</div>
+        <div>
+          <Trans>Enable notifications</Trans>
+        </div>
         <TelegramConnectionStatus
           isLoading={isLoading}
           isSubscribed={isTgSubscribed}

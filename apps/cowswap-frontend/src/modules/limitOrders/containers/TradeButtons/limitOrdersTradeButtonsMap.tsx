@@ -1,13 +1,14 @@
 import { ReactElement } from 'react'
 
-import { Trans } from '@lingui/react/macro'
+import { MessageDescriptor } from '@lingui/core'
+import { msg } from '@lingui/core/macro'
 
 import { TradeLoadingButton } from 'common/pure/TradeLoadingButton'
 
 import { LimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
 
 interface ButtonConfig {
-  text: ReactElement | string
+  text: ReactElement | MessageDescriptor
   id?: string
 }
 
@@ -20,12 +21,12 @@ export const limitOrdersTradeButtonsMap: { [key in LimitOrdersFormState]: Button
     text: <TradeLoadingButton />,
   },
   [LimitOrdersFormState.PriceIsNotSet]: {
-    text: <Trans>Enter a price</Trans>,
+    text: msg`Enter a price`,
   },
   [LimitOrdersFormState.ZeroPrice]: {
-    text: <Trans>Invalid price. Try increasing input/output amount.</Trans>,
+    text: msg`Invalid price. Try increasing input/output amount.`,
   },
   [LimitOrdersFormState.FeeExceedsFrom]: {
-    text: <Trans>Sell amount is too small</Trans>,
+    text: msg`Sell amount is too small`,
   },
 }

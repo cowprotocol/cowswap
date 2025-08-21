@@ -148,7 +148,7 @@ export function OrderRow({
 
   const inputTokenSymbol = order.inputToken.symbol || ''
 
-  // NOTE: Don't internationalize this
+  // NOTE: Don't internationalize this, the text is being used as a flag...
   const warningText =
     hasEnoughBalance === false
       ? `Insufficient balance`
@@ -241,7 +241,7 @@ export function OrderRow({
       {!isHistoryTab ? (
         <>
           <styledEl.PriceElement onClick={toggleIsInverted}>
-            {/*Special case for PRESIGNATURE_PENDING - return just the signing content*/}
+            {/* Special case for PRESIGNATURE_PENDING - return just the signing content */}
             {order.status === OrderStatus.PRESIGNATURE_PENDING ? (
               orderFillsAt
             ) : (

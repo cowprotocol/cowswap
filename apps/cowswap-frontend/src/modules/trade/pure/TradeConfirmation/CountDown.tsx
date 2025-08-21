@@ -1,5 +1,7 @@
 import { ReactNode, useEffect, useState } from 'react'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import ms from 'ms.macro'
 
 import { useTradeQuoteCounter } from 'modules/tradeQuote'
@@ -28,11 +30,11 @@ export const QuoteCountdown = (): ReactNode => {
   return (
     <QuoteCountdownWrapper blink={blink}>
       {value === 0 ? (
-        'Refreshing quote...'
+        t`Refreshing quote...`
       ) : (
-        <>
-          Quote refresh in <b>{counter / ONE_SEC} sec</b>
-        </>
+        <Trans>
+          Quote refresh in <b>{value} sec</b>
+        </Trans>
       )}
     </QuoteCountdownWrapper>
   )

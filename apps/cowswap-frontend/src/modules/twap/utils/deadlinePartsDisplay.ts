@@ -1,3 +1,4 @@
+import { t } from '@lingui/core/macro'
 import ms from 'ms'
 
 import { TwapOrdersDeadline } from '../state/twapOrdersSettingsAtom'
@@ -23,12 +24,12 @@ export function deadlinePartsDisplay(timeInterval: number, longLabels = false): 
   const seconds = Math.floor((timeMs % oneM) / oneS)
 
   return [
-    [years, longLabels ? ' years' : 'y'],
-    [months, longLabels ? ' months' : 'mo'],
-    [days, longLabels ? ' days' : 'd'],
-    [hours, longLabels ? ' hours' : 'h'],
-    [minutes, longLabels ? ' minutes' : 'm'],
-    [seconds, longLabels ? ' seconds' : 's'],
+    [years, longLabels ? ` ${t`years`}` : 'y'],
+    [months, longLabels ? ` ${t`months`}` : 'mo'],
+    [days, longLabels ? ` ${t`days`}` : 'd'],
+    [hours, longLabels ? ` ${t`hours`}` : 'h'],
+    [minutes, longLabels ? ` ${t`minutes`}` : 'm'],
+    [seconds, longLabels ? ` ${t`seconds`}` : 's'],
   ]
     .filter(([value]) => !!value)
     .map(([value, suffix]) => `${value}${suffix}`)

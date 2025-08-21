@@ -3,14 +3,15 @@ import { useCallback, useState } from 'react'
 import { capitalizeFirstLetter } from '@cowprotocol/common-utils'
 import { ButtonPrimary } from '@cowprotocol/ui'
 
-import { t } from '@lingui/core/macro'
+import { i18n, MessageDescriptor } from '@lingui/core'
+import { msg, t } from '@lingui/core/macro'
 
 import { CowHook, HookDappProps } from '../../types/hooks'
 import { ContentWrapper, Row, Wrapper, ErrorText } from '../styled'
 
 interface FormFieldParams {
   name: string
-  label: string
+  label: MessageDescriptor
   type: string
   rows?: number
 }
@@ -28,18 +29,16 @@ const DEFAULT_ERRORS_STATE: Record<keyof CowHook, string> = {
   dappId: '',
 }
 
-const getFields = (): ReadonlyArray<FormFieldParams> =>
-  [
-    { name: 'target', label: t`Target`, type: 'text' },
-    { name: 'gasLimit', label: t`Gas limit`, type: 'number' },
-    { name: 'callData', label: t`Calldata`, type: 'textarea', rows: 8 },
-  ] as ReadonlyArray<FormFieldParams>
+const FIELDS: ReadonlyArray<FormFieldParams> = [
+  { name: 'target', label: msg`Target`, type: 'text' },
+  { name: 'gasLimit', label: msg`Gas limit`, type: 'number' },
+  { name: 'callData', label: msg`Calldata`, type: 'textarea', rows: 8 },
+]
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function BuildHookApp({ context }: HookDappProps) {
-  const FIELDS = getFields()
   const hookToEdit = context.hookToEdit
   const isPreHook = context.isPreHook
   const [hook, setHook] = useState<CowHook>(hookToEdit?.hook || DEFAULT_HOOK_STATE)
@@ -141,7 +140,7 @@ function FormField({ params, value, error, onChange }: FormFieldProps) {
           />
         )}
         <label htmlFor={name} className={error ? 'error' : ''}>
-          {label}*
+          {i18n._(label)}*
         </label>
         {error && <ErrorText>{error}</ErrorText>}
       </Row>

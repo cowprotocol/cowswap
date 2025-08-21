@@ -2,6 +2,7 @@ import { ReactNode, useMemo } from 'react'
 
 import { getRandomInt } from '@cowprotocol/common-utils'
 
+import { i18n } from '@lingui/core'
 import { AnimatePresence, motion } from 'framer-motion'
 
 import { FinishedStepContentSection } from './FinishedStepContentSection'
@@ -91,7 +92,7 @@ export function RenderProgressTopSection({
 
     return {
       randomImage: SURPLUS_IMAGES[getRandomInt(0, SURPLUS_IMAGES.length - 1)],
-      randomBenefit: benefits[getRandomInt(0, benefits.length - 1)],
+      randomBenefit: i18n._(benefits[getRandomInt(0, benefits.length - 1)]),
     }
   }, [chainId])
 

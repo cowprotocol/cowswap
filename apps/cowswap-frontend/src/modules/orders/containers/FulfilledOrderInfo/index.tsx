@@ -55,7 +55,7 @@ export function FulfilledOrderInfo({ chainId, orderUid }: ExecutedSummaryProps):
       {!!surplusAmount && (
         <styledEl.SurplusWrapper>
           <span>
-            <Trans>Order surplus:</Trans>{' '}
+            <Trans>Order surplus</Trans>:{' '}
           </span>
           <styledEl.SurplusAmount>
             <styledEl.StyledTokenAmount amount={surplusAmount} tokenSymbol={surplusToken} />

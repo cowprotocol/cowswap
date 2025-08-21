@@ -46,7 +46,7 @@ export function PoweredFooter() {
     <Wrapper>
       <StyledExternalLink href={COW_PROTOCOL_LINK}>
         <ProductLogo variant={ProductVariant.CowExplorer} height={11} logoIconOnly />
-        <Trans>Powered by CoW Protocol</Trans>
+        <Trans>Powered by</Trans> CoW Protocol
       </StyledExternalLink>
     </Wrapper>
   )

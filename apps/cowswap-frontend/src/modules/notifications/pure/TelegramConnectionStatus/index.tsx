@@ -1,5 +1,6 @@
 import { Loader, UI } from '@cowprotocol/ui'
 
+import { Trans } from '@lingui/react/macro'
 import { CheckCircle } from 'react-feather'
 import styled from 'styled-components/macro'
 
@@ -35,7 +36,9 @@ export function TelegramConnectionStatus({ isLoading, isSubscribed, subscribeAcc
 
   return (
     <Connected>
-      Connected <CheckCircle size={14} />
+      <Trans>
+        Connected <CheckCircle size={14} />
+      </Trans>
     </Connected>
   )
 }

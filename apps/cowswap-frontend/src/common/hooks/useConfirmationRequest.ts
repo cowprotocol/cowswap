@@ -54,7 +54,7 @@ export const updateConfirmationModalContextAtom = atom(
 
       return { ...prevState, ...nextState }
     })
-  }
+  },
 )
 
 // TODO: Add proper return type annotation
@@ -97,6 +97,6 @@ export function useConfirmationRequest({
         openModal()
       })
     },
-    [closeModal, onDismissParam, onEnableParam, openModal, resetContext, setContext]
+    [closeModal, onDismissParam, onEnableParam, openModal, resetContext, setContext],
   )
 }

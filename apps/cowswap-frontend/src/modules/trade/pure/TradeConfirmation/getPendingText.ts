@@ -1,14 +1,13 @@
-import { t } from '@lingui/core/macro'
+import { i18n, MessageDescriptor } from '@lingui/core'
+import { msg } from '@lingui/core/macro'
 import { SigningSteps, SigningStepState } from 'entities/trade'
 
-const getSigningStepsTitles = (): Record<SigningSteps, string> => ({
-  [SigningSteps.PermitSigning]: t`Confirm approval`,
-  [SigningSteps.BridgingSigning]: t`Confirm bridging`,
-  [SigningSteps.OrderSigning]: t`Confirm swap`,
-})
+const SIGNING_STEPS_TITLE: Record<SigningSteps, MessageDescriptor> = {
+  [SigningSteps.PermitSigning]: msg`Confirm approval`,
+  [SigningSteps.BridgingSigning]: msg`Confirm bridging`,
+  [SigningSteps.OrderSigning]: msg`Confirm swap`,
+}
 
 export function getPendingText(signingStep: SigningStepState): string {
-  const signingStepsTitles = getSigningStepsTitles()
-
-  return `${signingStep.stepNumber} ${signingStepsTitles[signingStep.step]}`
+  return `${signingStep.stepNumber} ${i18n._(SIGNING_STEPS_TITLE[signingStep.step])}`
 }

@@ -117,7 +117,7 @@ export function LpTokenLists({
           >
             <MobileCardRow>{commonContent}</MobileCardRow>
             <MobileCardRowItem label={t`Balance`} value={BalanceDisplay} />
-            <MobileCardRowItem label={t`APR`} value={info?.apy ? `${info.apy}%` : ''} />
+            <MobileCardRowItem label={`APR`} value={info?.apy ? `${info.apy}%` : ''} />
             <MobileCardRowItem
               label={t`Details`}
               value={
@@ -164,9 +164,7 @@ export function LpTokenLists({
               <span>
                 <Trans>Balance</Trans>
               </span>
-              <span>
-                <Trans>APR</Trans>
-              </span>
+              <span>APR</span>
               <span></span>
             </ListHeader>
           )}

@@ -2,6 +2,7 @@ import { Dispatch, ReactNode, SetStateAction } from 'react'
 
 import { Currency, Price } from '@uniswap/sdk-core'
 
+import { t } from '@lingui/core/macro'
 import { Nullish } from 'types'
 
 import { ConfirmDetailsItem } from 'modules/trade/pure/ConfirmDetailsItem'
@@ -17,7 +18,7 @@ type Props = {
 }
 
 export function LimitPriceRow(props: Props): ReactNode {
-  const { price, isInvertedState, limitPriceLabel = 'Limit price', limitPriceTooltip = 'The limit price' } = props
+  const { price, isInvertedState, limitPriceLabel = t`Limit price`, limitPriceTooltip = t`The limit price` } = props
   const [isInverted, setIsInverted] = isInvertedState
 
   return (

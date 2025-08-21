@@ -281,9 +281,10 @@ export function FortuneWidget({ menuTitle, isMobileMenuOpen }: FortuneWidgetProp
   const [isNewFortuneOpen, setIsNewFortuneOpen] = useState(false)
   const [isFortunedShared, setIsFortunedShared] = useState(false)
   const checkboxRef = useRef<HTMLInputElement>(null)
+  const openFortuneText = openFortune?.text || ''
 
   const twitterText = openFortune
-    ? encodeURIComponent(`My CoW fortune cookie 🐮💬: "${openFortune.text}" \n\n Get yours at swap.cow.fi @CoWSwap`)
+    ? encodeURIComponent(t`My CoW fortune cookie 🐮💬: "${openFortuneText}" \n\n Get yours at swap.cow.fi @CoWSwap`)
     : ''
 
   const isDailyFortuneChecked = useMemo(() => {

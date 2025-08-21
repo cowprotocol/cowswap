@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { isValidElement } from 'react'
 
+import { i18n, MessageDescriptor } from '@lingui/core'
 import { t } from '@lingui/core/macro'
 
 import { useLimitOrdersWarningsAccepted } from 'modules/limitOrders/hooks/useLimitOrdersWarningsAccepted'
@@ -54,7 +55,7 @@ export function TradeButtons({ isTradeContextReady }: TradeButtonsProps) {
       buttonFactory()
     ) : (
       <TradeFormBlankButton id={buttonFactory.id} disabled={true}>
-        {buttonFactory.text}
+        {isValidElement(buttonFactory.text) ? buttonFactory.text : i18n._(buttonFactory.text as MessageDescriptor)}
       </TradeFormBlankButton>
     )
   }

@@ -2,6 +2,8 @@ import { ReactNode } from 'react'
 
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
+import { t } from '@lingui/core/macro'
+
 import { ConfirmDetailsItem } from 'modules/trade'
 
 import { ArrowIcon, TokenFlowContainer } from '../../styles'
@@ -21,7 +23,7 @@ export function RouteTitle({ chainName, sellAmount, buyAmount, buyAmountUsd }: R
         <TokenAmountDisplay currencyAmount={sellAmount} displaySymbol />
         <ArrowIcon>→</ArrowIcon>
         <TokenAmountDisplay currencyAmount={buyAmount} usdValue={buyAmountUsd} displaySymbol />
-        {` on ${chainName}`}
+        {` ${t`on`} ${chainName}`}
       </TokenFlowContainer>
     </ConfirmDetailsItem>
   )

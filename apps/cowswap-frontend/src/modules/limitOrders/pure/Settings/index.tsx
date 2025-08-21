@@ -3,6 +3,7 @@ import { useCallback, useState } from 'react'
 import { UI } from '@cowprotocol/ui'
 import { HelpTooltip } from '@cowprotocol/ui'
 
+import { i18n } from '@lingui/core'
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
@@ -224,8 +225,8 @@ export function Settings({ state, onStateChanged }: SettingsProps) {
         /> */}
 
         <SettingsBox
-          title={LEFT_ALIGNED.title}
-          tooltip={LEFT_ALIGNED.tooltip}
+          title={i18n._(LEFT_ALIGNED.title)}
+          tooltip={i18n._(LEFT_ALIGNED.tooltip)}
           value={ordersTableOnLeft}
           toggle={handleOrdersTablePositionToggle}
         />

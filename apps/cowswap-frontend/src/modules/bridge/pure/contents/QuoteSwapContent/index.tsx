@@ -5,6 +5,7 @@ import { InfoTooltip, PercentDisplay } from '@cowprotocol/ui'
 import { Percent } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 
 import { ProxyRecipient } from 'modules/accountProxy'
 import { ReceiveAmountTitle, TradeFeesAndCosts, ConfirmDetailsItem } from 'modules/trade'
@@ -93,7 +94,9 @@ function createMinReceiveContent(
   return {
     label: (
       <ReceiveAmountTitle>
-        <b>Min. to receive</b>
+        <b>
+          <Trans>Min. to receive</Trans>
+        </b>
       </ReceiveAmountTitle>
     ),
     content: (

@@ -1,5 +1,6 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 
+import { i18n } from '@lingui/core'
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 
@@ -31,17 +32,15 @@ export function Settings({ state, onStateChanged }: SettingsProps) {
       <SettingsTitle>
         <Trans>Advanced Order Settings</Trans>
       </SettingsTitle>
-
       <SettingsBox
         title={t`Custom Recipient`}
         tooltip={t`Allows you to choose a destination address for the swap other than the connected one.`}
         value={showRecipient}
         toggle={() => onStateChanged({ showRecipient: !showRecipient })}
       />
-
       <SettingsBox
-        title={LEFT_ALIGNED.title}
-        tooltip={LEFT_ALIGNED.tooltip}
+        title={i18n._(LEFT_ALIGNED.title)}
+        tooltip={i18n._(LEFT_ALIGNED.tooltip)}
         value={limitOrdersSettings.ordersTableOnLeft}
         toggle={() => updateLimitOrdersSettings({ ordersTableOnLeft: !limitOrdersSettings.ordersTableOnLeft })}
       />

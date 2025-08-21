@@ -2,6 +2,7 @@ import { ReactElement, ReactNode, useEffect, useRef, useState } from 'react'
 
 import { BackButton } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
 import { useSigningStep } from 'entities/trade'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
@@ -56,7 +57,7 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
     onDismiss,
     isConfirmDisabled,
     title,
-    buttonText = 'Confirm',
+    buttonText = t`Confirm`,
     children,
     recipient,
     isPriceStatic,

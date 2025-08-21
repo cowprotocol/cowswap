@@ -37,16 +37,20 @@ const getConfirmModalConfig = (): {
   priceLabel: t`Rate`,
   slippageLabel: t`Price protection`,
   slippageTooltip: (
-    <Trans>
+    <>
       <p>
-        Since TWAP orders consist of multiple parts, prices are expected to fluctuate. However, to protect you against
-        bad prices, CoW Swap will not execute your TWAP if the price dips below this percentage.
+        <Trans>
+          Since TWAP orders consist of multiple parts, prices are expected to fluctuate. However, to protect you against
+          bad prices, CoW Swap will not execute your TWAP if the price dips below this percentage.
+        </Trans>
       </p>
       <p>
-        This percentage only applies to dips; if prices are better than this percentage, CoW Swap will still execute
-        your order.
+        <Trans>
+          This percentage only applies to dips; if prices are better than this percentage, CoW Swap will still execute
+          your order.
+        </Trans>
       </p>
-    </Trans>
+    </>
   ),
   limitPriceLabel: t`Limit price (incl. costs)`,
   limitPriceTooltip: (

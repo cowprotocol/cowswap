@@ -1,5 +1,7 @@
 import { useRef, ReactNode, useState, useLayoutEffect } from 'react'
 
+import { i18n } from '@lingui/core'
+
 import { StepComponent } from './StepComponent'
 import * as styledEl from './styled'
 
@@ -64,9 +66,9 @@ export function StepsWrapper({
               <StepComponent
                 status={getStatus(index)}
                 isFirst={index === 0}
-                step={{ ...step, title: customTitle || step.title }}
+                step={{ ...step, title: customTitle || i18n._(step.title) }}
                 index={index}
-                extraContent={index === currentStep ? extraContent : step.description}
+                extraContent={index === currentStep ? extraContent : step.description ? i18n._(step.description) : ''}
                 customColor={index === currentStep ? customColor : undefined}
                 isUnfillable={isUnfillable && index === currentStep}
                 isCancelling={isCancelling}

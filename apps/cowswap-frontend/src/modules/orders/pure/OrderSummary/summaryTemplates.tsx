@@ -2,6 +2,8 @@ import { ReactElement, ReactNode } from 'react'
 
 import { ChainInfo } from '@cowprotocol/cow-sdk'
 
+import { t } from '@lingui/core/macro'
+
 export interface OrderSummaryTemplateProps {
   inputAmount: ReactElement
   outputAmount: ReactElement
@@ -15,7 +17,7 @@ export function SellForAtLeastTemplate({
   outputAmount,
   srcChainData,
   dstChainData,
-  actionTitle = 'Sell',
+  actionTitle = t`Sell`,
 }: OrderSummaryTemplateProps): ReactNode {
   return (
     <>
@@ -31,7 +33,7 @@ export function BuyForAtMostTemplate({
   outputAmount,
   srcChainData,
   dstChainData,
-  actionTitle = 'Buy',
+  actionTitle = t`Buy`,
 }: OrderSummaryTemplateProps): ReactNode {
   return (
     <>

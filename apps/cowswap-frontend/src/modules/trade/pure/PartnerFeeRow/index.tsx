@@ -42,14 +42,12 @@ export function PartnerFeeRow({
             volumeFeeTooltip.content ? (
               <WidgetMarkdownContent>{volumeFeeTooltip.content}</WidgetMarkdownContent>
             ) : (
-              <>
-                <Trans>This fee helps pay for maintenance & improvements to the trade experience.</Trans>
+              <Trans>
+                This fee helps pay for maintenance & improvements to the trade experience.
                 <br />
                 <br />
-                <Trans>
-                  The fee is {partnerFeeBps} BPS ({feeAsPercent}%), applied only if the trade is executed.
-                </Trans>
-              </>
+                The fee is {partnerFeeBps} BPS ({feeAsPercent}%), applied only if the trade is executed.
+              </Trans>
             )
           }
           label={`${volumeFeeTooltip.label} (${feeAsPercent}%)`}

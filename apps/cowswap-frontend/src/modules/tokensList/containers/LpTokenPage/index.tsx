@@ -1,7 +1,11 @@
+import { FC } from 'react'
+
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink, shortenAddress } from '@cowprotocol/common-utils'
 import { TokenLogo, useTokensByAddressMap } from '@cowprotocol/tokens'
 import { ExternalLink, TokenSymbol } from '@cowprotocol/ui'
+
+import { Trans } from '@lingui/react/macro'
 
 import { usePoolsInfo } from 'modules/yield/shared'
 
@@ -29,6 +33,29 @@ interface LpTokenPageProps {
   onSelectToken(token: TokenWithLogo): void
 }
 
+const Token: FC<{ token: TokenWithLogo | undefined; onClick: () => void }> = ({ token, onClick }) => (
+  <>
+    {token && (
+      <TokenWrapper>
+        <TokenInfoWrapper>
+          <TokenLogo token={token} size={64} />
+          <div>
+            <div>
+              <StyledTokenSymbol token={token} />
+            </div>
+            <StyledTokenName token={token} />
+          </div>
+        </TokenInfoWrapper>
+        <div>
+          <SelectButton onClick={onClick}>
+            <Trans>Select</Trans>
+          </SelectButton>
+        </div>
+      </TokenWrapper>
+    )}
+  </>
+)
+
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -42,46 +69,38 @@ export function LpTokenPage({ poolAddress, onBack, onDismiss, onSelectToken }: L
   return (
     <Wrapper>
       <ModalHeader onBack={onBack} onClose={onDismiss}>
-        Pool description
+        <Trans>Pool description</Trans>
       </ModalHeader>
       {token && (
-        <TokenWrapper>
-          <TokenInfoWrapper>
-            <TokenLogo token={token} size={64} />
-            <div>
-              <div>
-                <StyledTokenSymbol token={token} />
-              </div>
-              <StyledTokenName token={token} />
-            </div>
-          </TokenInfoWrapper>
-          <div>
-            <SelectButton
-              onClick={() => {
-                onDismiss()
-                onSelectToken(token)
-              }}
-            >
-              Select
-            </SelectButton>
-          </div>
-        </TokenWrapper>
+        <Token
+          token={token}
+          onClick={() => {
+            onDismiss()
+            onSelectToken(token)
+          }}
+        />
       )}
       <InfoTable>
         <InfoRow>
-          <div>Symbol</div>
+          <div>
+            <Trans>Symbol</Trans>
+          </div>
           <div>
             <TokenSymbol token={token} />
           </div>
         </InfoRow>
         <InfoRow>
-          <div>Fee tier</div>
+          <div>
+            <Trans>Fee tier</Trans>
+          </div>
           <div>
             <span>{renderValue(info?.feeTier, (t) => `${t}%`, '-')}</span>
           </div>
         </InfoRow>
         <InfoRow>
-          <div>Volume (24h)</div>
+          <div>
+            <Trans>Volume (24h)</Trans>
+          </div>
           <div>
             <span>{renderValue(info?.volume24h, (t) => `$${t}`, '-')}</span>
           </div>
@@ -99,7 +118,9 @@ export function LpTokenPage({ poolAddress, onBack, onDismiss, onSelectToken }: L
           </div>
         </InfoRow>
         <InfoRow>
-          <div>Pool address</div>
+          <div>
+            <Trans>Pool address</Trans>
+          </div>
           <div>
             {token && (
               <ExternalLink href={getExplorerLink(token.chainId, token.address, ExplorerDataType.ADDRESS)}>

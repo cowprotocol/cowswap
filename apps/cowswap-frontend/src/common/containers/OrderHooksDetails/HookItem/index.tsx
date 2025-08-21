@@ -76,19 +76,19 @@ export function HookItem({ details, item, index }: { details?: CowHookDetails; i
               )}
               <p>
                 <b>
-                  <Trans>Description:</Trans>
+                  <Trans>Description</Trans>:
                 </b>{' '}
                 {item.dapp.descriptionShort}
               </p>
               <p>
                 <b>
-                  <Trans>Version:</Trans>
+                  <Trans>Version</Trans>:
                 </b>{' '}
                 {item.dapp.version}
               </p>
               <p>
                 <b>
-                  <Trans>Website:</Trans>
+                  <Trans>Website</Trans>:
                 </b>{' '}
                 <a
                   href={item.dapp.website}

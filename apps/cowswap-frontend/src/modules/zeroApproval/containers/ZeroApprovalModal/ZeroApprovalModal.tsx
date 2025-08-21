@@ -13,7 +13,6 @@ interface ZeroApprovalModalProps {
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function ZeroApprovalModal({ onDismiss }: ZeroApprovalModalProps) {
   const { currency } = useZeroApprovalState()
-
   const symbol = currency?.symbol?.toUpperCase() ?? t`Unknown Currency` // This should never happen.
 
   return (

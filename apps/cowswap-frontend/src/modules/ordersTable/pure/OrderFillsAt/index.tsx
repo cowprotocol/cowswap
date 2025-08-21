@@ -116,7 +116,7 @@ export function OrderFillsAt({
   if (getIsFinalizedOrder(order)) {
     // Check filled status first
     if (Number(filledPercentDisplay) > 0) {
-      const value = Number(filledPercentDisplay) < 100 ? 'partially ' : ''
+      const value = Number(filledPercentDisplay) < 100 ? `${t`partially`} ` : ''
 
       return (
         <styledEl.FilledDisplay>
@@ -154,7 +154,7 @@ export function OrderFillsAt({
 
   if (estimatedExecutionPrice && !estimatedExecutionPrice.equalTo(ZERO_FRACTION)) {
     const priceDiff = priceDiffs?.percentage.toFixed(2)
-    const filledValue = !percentIsAlmostHundred(filledPercentDisplay) ? 'partially' : ''
+    const filledValue = !percentIsAlmostHundred(filledPercentDisplay) ? t`partially` : ''
 
     return (
       <styledEl.ExecuteCellWrapper>

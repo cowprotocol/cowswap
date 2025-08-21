@@ -184,7 +184,7 @@ export function SurplusModal(props: SurplusModalProps) {
         <StyledExternalLink
           href={`https://twitter.com/intent/tweet?text=${getTwitterText(
             surplusAmount.toSignificant(),
-            surplusToken.symbol || 'Unknown token',
+            surplusToken.symbol || t`Unknown token`,
             order.kind,
           )}`}
           data-click-event={toCowSwapGtmEvent({

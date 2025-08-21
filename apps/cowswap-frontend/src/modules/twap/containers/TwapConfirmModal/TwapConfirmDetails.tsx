@@ -53,7 +53,7 @@ export type TwapConfirmDetailsProps = {
 export const TwapConfirmDetails = React.memo(function TwapConfirmDetails(props: TwapConfirmDetailsProps) {
   const { partDuration, totalDuration, numOfParts } = props
 
-  const partsSuffix = ` part (1/${numOfParts})`
+  const partsSuffix = ` ${t`part`} (1/${numOfParts})`
   const amountLabelSuffix = ` ${t`amount per`}${partsSuffix}`
 
   const partDurationDisplay = partDuration ? deadlinePartsDisplay(partDuration, true) : ''
@@ -79,7 +79,7 @@ export const TwapConfirmDetails = React.memo(function TwapConfirmDetails(props: 
         amount={inputPartAfterSlippageAmount}
         fiatAmount={inputPartAmountUsd}
         tooltip={t`This is the amount that will be sold in each part of the TWAP order.`}
-        label={`${t`Sell`}${amountLabelSuffix}`}
+        label={`${t`Sell`} ${amountLabelSuffix}`}
         withTimelineDot={true}
       />
 

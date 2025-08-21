@@ -3,7 +3,8 @@ import { useState, useEffect } from 'react'
 import iconCompleted from '@cowprotocol/assets/cow-swap/check.svg'
 import { UI } from '@cowprotocol/ui'
 
-import { t } from '@lingui/core/macro'
+import { i18n, MessageDescriptor } from '@lingui/core'
+import { msg } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 
@@ -13,13 +14,13 @@ import { ArrowBackground } from 'common/pure/ArrowBackground'
 
 import * as styledEl from './styled'
 
-const getBulletPoints = (): string[] => [
-  t`Locked limits - lock or unlock prices for finer control, the order does the rest`,
-  t`Easily set and manage your orders in USD`,
-  t`Try before you buy - see the potential fill price before you hit trade`,
-  t`Longer limit orders - place orders for up to a year.`,
-  t`Trade your way - personalize the interface and customize your limit orders`,
-  t`More intuitive UI and improved design`,
+const BULLET_POINTS: MessageDescriptor[] = [
+  msg`Locked limits - lock or unlock prices for finer control, the order does the rest`,
+  msg`Easily set and manage your orders in USD`,
+  msg`Try before you buy - see the potential fill price before you hit trade`,
+  msg`Longer limit orders - place orders for up to a year.`,
+  msg`Trade your way - personalize the interface and customize your limit orders`,
+  msg`More intuitive UI and improved design`,
 ]
 
 interface LimitOrdersPromoBannerProps {
@@ -40,7 +41,6 @@ export function LimitOrdersPromoBanner({
   const [arrowRef, setArrowRef] = useState<HTMLDivElement | null>(null)
   const [arrowsReady, setArrowsReady] = useState(false)
   const darkMode = useIsDarkMode()
-  const bulletPoints = getBulletPoints()
 
   useEffect(() => {
     // First make arrows visible but transparent
@@ -84,12 +84,12 @@ export function LimitOrdersPromoBanner({
       </styledEl.TitleSection>
 
       <styledEl.List>
-        {bulletPoints.map((point, index) => (
+        {BULLET_POINTS.map((point, index) => (
           <li key={index}>
             <span>
               <SVG src={iconCompleted} />
             </span>
-            {point}
+            {i18n._(point)}
           </li>
         ))}
       </styledEl.List>

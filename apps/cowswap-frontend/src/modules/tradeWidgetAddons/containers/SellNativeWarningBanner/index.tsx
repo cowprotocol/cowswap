@@ -2,6 +2,7 @@ import { OrderKind } from '@cowprotocol/cow-sdk'
 import { InlineBanner, LinkStyledButton, StatusColorVariant } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
@@ -32,8 +33,8 @@ export function SellNativeWarningBanner() {
       }
     : undefined
 
-  const nativeSymbol = native.symbol || 'native'
-  const wrappedNativeSymbol = wrapped.symbol || 'wrapped native'
+  const nativeSymbol = native.symbol || t`native`
+  const wrappedNativeSymbol = wrapped.symbol || t`wrapped native`
 
   if (!account) return null
 
@@ -46,16 +47,16 @@ export function SellNativeWarningBanner() {
         <Trans>Selling {nativeSymbol} is only supported on SWAP orders.</Trans>
       </p>
       <p>
-        <Button onClick={() => navigateOnCurrencySelection(Field.INPUT, wrapped)}>
-          <Trans>Switch to {wrappedNativeSymbol}</Trans>
-        </Button>{' '}
-        <Trans>or</Trans>{' '}
-        <Button onClick={() => navigateOnCurrencySelection(Field.OUTPUT, wrapped, undefined, queryParams)}>
-          <Trans>
+        <Trans>
+          <Button onClick={() => navigateOnCurrencySelection(Field.INPUT, wrapped)}>
+            Switch to {wrappedNativeSymbol}
+          </Button>{' '}
+          or{' '}
+          <Button onClick={() => navigateOnCurrencySelection(Field.OUTPUT, wrapped, undefined, queryParams)}>
             Wrap {nativeSymbol} to {wrappedNativeSymbol}
-          </Trans>
-        </Button>{' '}
-        <Trans>first.</Trans>
+          </Button>{' '}
+          first.
+        </Trans>
       </p>
     </InlineBanner>
   )

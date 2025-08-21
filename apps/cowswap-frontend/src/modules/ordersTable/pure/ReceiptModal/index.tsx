@@ -6,7 +6,9 @@ import { Command } from '@cowprotocol/types'
 import { BannerOrientation, ExternalLink, Icon, IconType, InlineBanner, StatusColorVariant, UI } from '@cowprotocol/ui'
 import { CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
 
-import { t } from '@lingui/core/macro'
+import { i18n, MessageDescriptor } from '@lingui/core'
+import { msg, t } from '@lingui/core/macro'
+import { Trans as TransReact } from '@lingui/react'
 import { Trans } from '@lingui/react/macro'
 import { CloseIcon } from 'theme'
 
@@ -57,44 +59,48 @@ interface ReceiptProps {
   alternativeOrderModalContext: AlternativeOrderModalContext
 }
 
-function useReceiptTooltips(): Record<string, string | ReactElement> {
-  const FILLED_COMMON_TOOLTIP = t`How much of the order has been filled.`
-  return {
-    LIMIT_PRICE: t`You will receive this price or better for your tokens.`,
-    EXECUTION_PRICE: t`An order’s actual execution price will vary based on the market price and network costs.`,
-    EXECUTES_AT: t`Network costs (incl. gas) are covered by filling your order when the market price is better than your limit price.`,
-    FILLED_TWAP: FILLED_COMMON_TOOLTIP,
-    FILLED: (
-      <span>
-        {FILLED_COMMON_TOOLTIP}
-        <br />
-        <Trans>
-          Market orders are always <i>Fill or kill</i>, while limit orders are by default <i>Partially fillable</i>, but
-          can also be changed to <i>Fill or kill</i> through your order settings.
-        </Trans>
-      </span>
-    ),
-    SURPLUS: t`The amount of extra tokens you get on top of your limit price.`,
-    NETWORK_COSTS: t`CoW Protocol covers the costs by executing your order at a slightly better price than your limit price.`,
-    CREATED: t`Your order was created on this date & time. It will remain open until it expires or is filled.`,
-    RECEIVER: t`The account address which will/did receive the bought amount.`,
-    EXPIRY: t`If your order has not been filled by this date & time, it will expire. Don't worry - expirations and order placement are free on CoW Swap!`,
-    TOTAL_FEE: t`This fee helps pay for maintenance & improvements to the trade experience`,
-    ORDER_TYPE: (
-      <span>
-        <Trans>
-          Orders on CoW Swap can either be market orders (which fill at the market price within the slippage tolerance
-          you set) or limit orders (which fill at a price you specify).
-        </Trans>
-        <br />
-        <br />
-        <Trans>
-          Market orders are always <i>Fill or kill</i>, while limit orders are by default <i>Partially fillable</i>, but
-          can also be changed to <i>Fill or kill</i> through your order settings.
-        </Trans>
-      </span>
-    ),
-  }
+const FILLED_COMMON_TOOLTIP = msg`How much of the order has been filled.`
+
+const TOOLTIPS_MSG: Record<string, MessageDescriptor> = {
+  LIMIT_PRICE: msg`You will receive this price or better for your tokens.`,
+  EXECUTION_PRICE: msg`An order’s actual execution price will vary based on the market price and network costs.`,
+  EXECUTES_AT: msg`Network costs (incl. gas) are covered by filling your order when the market price is better than your limit price.`,
+  FILLED_TWAP: FILLED_COMMON_TOOLTIP,
+  SURPLUS: msg`The amount of extra tokens you get on top of your limit price.`,
+  NETWORK_COSTS: msg`CoW Protocol covers the costs by executing your order at a slightly better price than your limit price.`,
+  CREATED: msg`Your order was created on this date & time. It will remain open until it expires or is filled.`,
+  RECEIVER: msg`The account address which will/did receive the bought amount.`,
+  EXPIRY: msg`If your order has not been filled by this date & time, it will expire. Don't worry - expirations and order placement are free on CoW Swap!`,
+  TOTAL_FEE: msg`This fee helps pay for maintenance & improvements to the trade experience`,
+}
+
+const TOOLTIPS_JSX: Record<string, ReactElement> = {
+  FILLED: (
+    <span>
+      {[FILLED_COMMON_TOOLTIP].map((item) => (
+        <TransReact id={item.id} />
+      ))}
+      <br />
+      <Trans>
+        Market orders are always <i>Fill or kill</i>, while limit orders are by default <i>Partially fillable</i>, but
+        can also be changed to <i>Fill or kill</i> through your order settings.
+      </Trans>
+    </span>
+  ),
+  ORDER_TYPE: (
+    <span>
+      <Trans>
+        Orders on CoW Swap can either be market orders (which fill at the market price within the slippage tolerance you
+        set) or limit orders (which fill at a price you specify).
+      </Trans>
+      <br />
+      <br />
+      <Trans>
+        Market orders are always <i>Fill or kill</i>, while limit orders are by default <i>Partially fillable</i>, but
+        can also be changed to <i>Fill or kill</i> through your order settings.
+      </Trans>
+    </span>
+  ),
 }
 
 const TWAP_PART_ORDER_EXISTS_STATES = new Set([OrderStatus.PENDING, OrderStatus.FULFILLED, OrderStatus.EXPIRED])
@@ -118,8 +124,6 @@ export function ReceiptModal({
   receiverEnsName,
   alternativeOrderModalContext,
 }: ReceiptProps) {
-  const tooltips = useReceiptTooltips()
-
   // Check if Custom Recipient Warning Banner should be visible
   const isCustomRecipientWarningBannerVisible = !useIsReceiverWalletBannerHidden(order.id)
   const hideCustomRecipientWarning = useHideReceiverWalletBanner()
@@ -192,7 +196,7 @@ export function ReceiptModal({
 
             {order.receiver && (
               <styledEl.Field>
-                <FieldLabel label={t`Recipient`} tooltip={tooltips.RECEIVER} />
+                <FieldLabel label={t`Recipient`} tooltip={i18n._(TOOLTIPS_MSG.RECEIVER)} />
                 <div>
                   {showCustomRecipientBanner && (
                     <Icon image={IconType.ALERT} color={UI.COLOR_ALERT} description={t`Alert`} />
@@ -205,7 +209,7 @@ export function ReceiptModal({
             )}
 
             <styledEl.Field>
-              <FieldLabel label={t`Limit price (incl.costs)`} tooltip={tooltips.LIMIT_PRICE} />
+              <FieldLabel label={t`Limit price (incl.costs)`} tooltip={i18n._(TOOLTIPS_MSG.LIMIT_PRICE)} />
               <PriceField order={order} price={limitPrice} />
             </styledEl.Field>
 
@@ -213,14 +217,14 @@ export function ReceiptModal({
               <styledEl.Field>
                 {estimatedExecutionPrice && order.status === OrderStatus.PENDING ? (
                   <>
-                    <FieldLabel label={t`Executes at`} tooltip={tooltips.EXECUTES_AT} />
+                    <FieldLabel label={t`Executes at`} tooltip={i18n._(TOOLTIPS_MSG.EXECUTES_AT)} />
                     <PriceField order={order} price={estimatedExecutionPrice} />
                   </>
                 ) : (
                   <>
                     <FieldLabel
                       label={order.partiallyFillable ? t`Avg. execution price` : t`Execution price`}
-                      tooltip={tooltips.EXECUTION_PRICE}
+                      tooltip={i18n._(TOOLTIPS_MSG.EXECUTION_PRICE)}
                     />{' '}
                     <PriceField order={order} price={executionPrice} />
                   </>
@@ -230,18 +234,21 @@ export function ReceiptModal({
 
             {volumeFeeBps && (
               <styledEl.Field>
-                <FieldLabel label={t`Total fee`} tooltip={tooltips.TOTAL_FEE} />
+                <FieldLabel label={t`Total fee`} tooltip={i18n._(TOOLTIPS_MSG.TOTAL_FEE)} />
                 <span>{(volumeFeeBps / 100).toFixed(2)}%</span>
               </styledEl.Field>
             )}
 
             <styledEl.Field>
-              <FieldLabel label={t`Filled`} tooltip={twapOrder ? tooltips.FILLED_TWAP : tooltips.FILLED} />
+              <FieldLabel
+                label={t`Filled`}
+                tooltip={twapOrder ? i18n._(TOOLTIPS_MSG.FILLED_TWAP) : TOOLTIPS_JSX.FILLED}
+              />
               <FilledField order={order} />
             </styledEl.Field>
 
             <styledEl.Field>
-              <FieldLabel label={t`Order surplus`} tooltip={tooltips.SURPLUS} />
+              <FieldLabel label={t`Order surplus`} tooltip={i18n._(TOOLTIPS_MSG.SURPLUS)} />
               <SurplusField order={order} />
             </styledEl.Field>
 
@@ -250,24 +257,24 @@ export function ReceiptModal({
             {(!twapOrder || isTwapPartOrder) && (
               <>
                 <styledEl.Field>
-                  <FieldLabel label={t`Network costs`} tooltip={tooltips.NETWORK_COSTS} />
+                  <FieldLabel label={t`Network costs`} tooltip={i18n._(TOOLTIPS_MSG.NETWORK_COSTS)} />
                   <FeeField order={order} />
                 </styledEl.Field>
               </>
             )}
 
             <styledEl.Field>
-              <FieldLabel label={t`Created`} tooltip={tooltips.CREATED} />
+              <FieldLabel label={t`Created`} tooltip={i18n._(TOOLTIPS_MSG.CREATED)} />
               <DateField date={order.creationTime} />
             </styledEl.Field>
 
             <styledEl.Field>
-              <FieldLabel label={t`Expiry`} tooltip={tooltips.EXPIRY} />
+              <FieldLabel label={t`Expiry`} tooltip={i18n._(TOOLTIPS_MSG.EXPIRY)} />
               <DateField date={order.expirationTime} />
             </styledEl.Field>
 
             <styledEl.Field>
-              <FieldLabel label={t`Order type`} tooltip={tooltips.ORDER_TYPE} />
+              <FieldLabel label={t`Order type`} tooltip={TOOLTIPS_JSX.ORDER_TYPE} />
               <OrderTypeField order={order} />
             </styledEl.Field>
 

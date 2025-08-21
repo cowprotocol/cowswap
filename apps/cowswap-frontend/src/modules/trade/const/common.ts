@@ -1,6 +1,7 @@
 import { UiOrderType } from '@cowprotocol/types'
 
-import { t } from '@lingui/core/macro'
+import { MessageDescriptor } from '@lingui/core'
+import { msg } from '@lingui/core/macro'
 
 import { TradeType } from '../types'
 
@@ -12,14 +13,14 @@ export const TradeTypeToUiOrderType: Record<TradeType, UiOrderType> = {
 }
 
 export interface OrdersTableSettings {
-  [key: string]: { title: string; tooltip: string }
+  [key: string]: { title: MessageDescriptor; tooltip: MessageDescriptor }
 }
 
 export function useOrdersTableSettings(): OrdersTableSettings {
   return {
     LEFT_ALIGNED: {
-      title: t`Desktop: Left-Aligned Orders Table`,
-      tooltip: t`When enabled, the orders table will be displayed on the left side on desktop screens. On mobile, the orders table will always be stacked below.`,
+      title: msg`Desktop: Left-Aligned Orders Table`,
+      tooltip: msg`When enabled, the orders table will be displayed on the left side on desktop screens. On mobile, the orders table will always be stacked below.`,
     },
   } as const
 }

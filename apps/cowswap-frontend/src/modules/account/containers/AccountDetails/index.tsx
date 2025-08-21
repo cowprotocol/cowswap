@@ -16,6 +16,7 @@ import {
   ConnectionType,
 } from '@cowprotocol/wallet'
 
+import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 
 import Copy from 'legacy/components/Copy'
@@ -107,7 +108,7 @@ export function AccountDetails({
   // In case the wallet is connected via WalletConnect and has wallet name set, add the suffix to be clear
   // This to avoid confusion for instance when using Metamask mobile
   // When name is not set, it defaults to WalletConnect already
-  const walletConnectSuffix = isWalletConnect && walletDetails?.walletName ? ' (via WalletConnect)' : ''
+  const walletConnectSuffix = isWalletConnect && walletDetails?.walletName ? ` ${t`(via WalletConnect)`}` : ''
 
   const handleDisconnectClick = (): void => {
     disconnectWallet()

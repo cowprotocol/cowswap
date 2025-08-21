@@ -10,6 +10,7 @@ import { TokenLogo } from '@cowprotocol/tokens'
 import { Confetti, ExternalLink, InfoTooltip, TokenAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { i18n } from '@lingui/core'
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import Lottie from 'lottie-react'
@@ -43,7 +44,7 @@ function getTransactionStatus(isDarkMode: boolean) {
         autoplay
         style={{ width: '36px', height: '36px' }}
       />
-      Transaction completed!
+      <Trans>Transaction completed!</Trans>
     </styledEl.TransactionStatus>
   )
 }
@@ -53,7 +54,9 @@ function getTransactionStatus(isDarkMode: boolean) {
 function getSoldAmount(order: Order) {
   return (
     <styledEl.SoldAmount>
-      You sold <TokenLogo token={order.inputToken} size={20} />
+      <Trans>
+        You sold <TokenLogo token={order.inputToken} size={20} />
+      </Trans>
       <b>
         <TokenAmount
           amount={CurrencyAmount.fromRawAmount(order.inputToken, order.apiAdditionalInfo?.executedSellAmount || 0)}
@@ -85,7 +88,7 @@ function getReceivedAmount(
       </b>{' '}
       {isCustomRecipient && receiver && (
         <>
-          was sent to
+          <Trans>was sent to</Trans>
           <ExternalLink href={getExplorerLink(chainId, receiver, ExplorerDataType.ADDRESS)}>
             {receiverEnsName || shortenAddress(receiver)} ↗
           </ExternalLink>
@@ -209,7 +212,7 @@ export function FinishedStep({
 
     return {
       randomImage: SURPLUS_IMAGES[getRandomInt(0, SURPLUS_IMAGES.length - 1)],
-      randomBenefit: benefits[getRandomInt(0, benefits.length - 1)],
+      randomBenefit: i18n._(benefits[getRandomInt(0, benefits.length - 1)]),
     }
   }, [chainId])
 

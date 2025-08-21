@@ -1,10 +1,12 @@
 import { ReactNode } from 'react'
 
 import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
+import { extractTextFromStringOrI18nDescriptor } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { t } from '@lingui/core/macro'
+import { MessageDescriptor } from '@lingui/core'
+import { msg } from '@lingui/core/macro'
 import { NavLink } from 'react-router'
 
 import { SideMenu } from 'legacy/components/SideMenu'
@@ -12,14 +14,14 @@ import { SideMenu } from 'legacy/components/SideMenu'
 import { getProxyAccountUrl } from '../../modules/accountProxy'
 
 interface MenuItem {
-  title: string
+  title: string | MessageDescriptor
   url: string
 }
 
 const ACCOUNT_MENU_LINKS = (chainId: SupportedChainId): MenuItem[] => {
   return [
-    { title: t`Overview`, url: '/account' },
-    { title: t`Tokens`, url: '/account/tokens' },
+    { title: msg`Overview`, url: '/account' },
+    { title: msg`Tokens`, url: '/account/tokens' },
     { title: ACCOUNT_PROXY_LABEL, url: getProxyAccountUrl(chainId) },
   ]
 }
@@ -33,7 +35,7 @@ export function AccountMenu(): ReactNode {
         {ACCOUNT_MENU_LINKS(chainId).map(({ title, url }) => (
           <li key={url}>
             <NavLink end to={url} className={({ isActive }) => (isActive ? 'active' : undefined)}>
-              {title}
+              {extractTextFromStringOrI18nDescriptor(title)}
             </NavLink>
           </li>
         ))}

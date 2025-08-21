@@ -4,6 +4,9 @@ import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
 import { getChainInfo } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
+
 import { Title, Wrapper } from './styled'
 
 import { useAccountProxies } from '../../hooks/useAccountProxies'
@@ -16,11 +19,14 @@ export function AccountProxiesPage(): ReactNode {
 
   const chainIfo = getChainInfo(chainId)
   const chainLabel = chainIfo?.label
+  const chain = chainLabel ? t`on ${chainLabel}` : ''
 
   return (
     <Wrapper>
       <Title>
-        Select an {ACCOUNT_PROXY_LABEL} to check for available refunds {chainLabel ? `on ${chainLabel}` : ''}
+        <Trans>
+          Select an {ACCOUNT_PROXY_LABEL} to check for available refunds {chain}
+        </Trans>
       </Title>
 
       {proxies?.map(({ account, version }) => {

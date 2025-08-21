@@ -3,6 +3,9 @@ import { ReactNode } from 'react'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { Currency, Token } from '@uniswap/sdk-core'
 
+import { i18n, MessageDescriptor } from '@lingui/core'
+import { msg } from '@lingui/core/macro'
+
 import { SwapStatusIcons } from 'modules/bridge/pure/StopStatus'
 import { SwapAndBridgeStatus } from 'modules/bridge/types'
 
@@ -12,11 +15,11 @@ import { BridgingFlowStep } from '../../types'
 
 const TOKEN_LOGO_SIZE = 46
 
-const titles: Record<BridgingFlowStep, string> = {
-  bridgingInProgress: 'Bridging to destination...',
-  bridgingFailed: 'Bridging failed. Refund started...',
-  bridgingFinished: 'Bridging completed!',
-  refundCompleted: 'Refund completed!',
+const titles: Record<BridgingFlowStep, MessageDescriptor> = {
+  bridgingInProgress: msg`Bridging to destination...`,
+  bridgingFailed: msg`Bridging failed. Refund started...`,
+  bridgingFinished: msg`Bridging completed!`,
+  refundCompleted: msg`Refund completed!`,
 }
 
 // Map BridgingFlowStep to SwapAndBridgeStatus for consistent icon usage
@@ -71,7 +74,7 @@ export function BridgingStatusHeader({
         <styledEl.StatusIcon $step={stepName}>{SwapStatusIcons[stepToStatusMap[stepName]]}</styledEl.StatusIcon>
         {!isBridgingFailed ? buyTokenEl : sellTokenEl}
       </styledEl.HeaderState>
-      <h3>{titles[stepName]}</h3>
+      <h3>{i18n._(titles[stepName])}</h3>
     </styledEl.Header>
   )
 }

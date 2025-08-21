@@ -70,7 +70,7 @@ export function BridgeSummaryHeader({
       {isCustomRecipient && targetRecipient && targetAmount && (
         <SummaryRow>
           <b>
-            <Trans>Recipient:</Trans>
+            <Trans>Recipient</Trans>:
           </b>
           <i>
             {isCustomRecipientWarning && (

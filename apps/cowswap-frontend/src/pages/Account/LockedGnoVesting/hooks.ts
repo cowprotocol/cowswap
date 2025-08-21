@@ -114,19 +114,19 @@ export function useClaimCowFromLockedGnoCallback({
 
   return useCallback(async () => {
     if (!account) {
-      throw new Error('Not connected')
+      throw new Error(t`Not connected`)
     }
 
     if (!merkleDrop || !tokenDistro) {
-      throw new Error('Contract not present or not connected to any supported chain')
+      throw new Error(t`Contract not present or not connected to any supported chain`)
     }
 
     if (merkleDropChainId !== tokenDistroChainId) {
-      throw new Error('Contract and chainId are not on the same chain')
+      throw new Error(t`Contract and chainId are not on the same chain`)
     }
 
     const claim = await fetchClaim(account, tokenDistroChainId)
-    if (!claim) throw new Error('Trying to claim without claim data')
+    if (!claim) throw new Error(t`Trying to claim without claim data`)
 
     const { index, proof, amount } = claim
 
