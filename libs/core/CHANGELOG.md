@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.0](https://github.com/cowprotocol/cowswap/compare/core-v1.7.4...core-v1.8.0) (2025-08-21)
+
+
+### Features
+
+* **new-networks:** lens and bnb ([#5992](https://github.com/cowprotocol/cowswap/issues/5992)) ([19ac060](https://github.com/cowprotocol/cowswap/commit/19ac060f94088e7a1f6a2a891ef11d2c1ded4525))
+
 ## [1.7.4](https://github.com/cowprotocol/cowswap/compare/core-v1.7.3...core-v1.7.4) (2025-07-03)
 
 

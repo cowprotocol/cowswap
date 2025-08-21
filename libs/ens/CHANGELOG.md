@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/cowprotocol/cowswap/compare/ens-v1.4.0...ens-v1.5.0) (2025-08-21)
+
+
+### Features
+
+* **new-networks:** lens and bnb ([#5992](https://github.com/cowprotocol/cowswap/issues/5992)) ([19ac060](https://github.com/cowprotocol/cowswap/commit/19ac060f94088e7a1f6a2a891ef11d2c1ded4525))
+
 ## [1.4.0](https://github.com/cowprotocol/cowswap/compare/ens-v1.3.1...ens-v1.4.0) (2025-06-18)
 
 

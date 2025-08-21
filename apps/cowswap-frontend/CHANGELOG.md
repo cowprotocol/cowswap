@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.117.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.117.1...cowswap-v1.117.2) (2025-08-21)
+
+
+### Bug Fixes
+
+* **ga:** rename bridging events ([#6164](https://github.com/cowprotocol/cowswap/issues/6164)) ([ff6a649](https://github.com/cowprotocol/cowswap/commit/ff6a649a4d3155217a08ed569304f6bb6cf4f3fe))
+* ignore wallet chainId changes when tab is inactive ([#6143](https://github.com/cowprotocol/cowswap/issues/6143)) ([5bac4cb](https://github.com/cowprotocol/cowswap/commit/5bac4cbdf43fefef36fad5900a6f0ac6fa7b547a))
+* **lens:** fix lens twap cancellation ([#6170](https://github.com/cowprotocol/cowswap/issues/6170)) ([d04d82e](https://github.com/cowprotocol/cowswap/commit/d04d82ebe4eb7943d8cde4493446cdc5e3344f51))
+* **lens:** lens fee addresses ([#6167](https://github.com/cowprotocol/cowswap/issues/6167)) ([2027ee1](https://github.com/cowprotocol/cowswap/commit/2027ee18324f89342d45219908e3673a91dec972))
+* **lens:** update surplus tooltip for Lens ([#6168](https://github.com/cowprotocol/cowswap/issues/6168)) ([3efc943](https://github.com/cowprotocol/cowswap/commit/3efc943c1abd6aeebecbf3c254dcc192c7aabe1f))
+* **limit-orders:** display multi cancellation error ([#6163](https://github.com/cowprotocol/cowswap/issues/6163)) ([aebb129](https://github.com/cowprotocol/cowswap/commit/aebb129dc70f63e081bb46cc8956ef00c602f266))
+* **trade:** add a link to recipient as ens name ([#6142](https://github.com/cowprotocol/cowswap/issues/6142)) ([22a3c7f](https://github.com/cowprotocol/cowswap/commit/22a3c7f8b068736b2cdca11fde98e3c3fd7aabfc))
+
 ## [1.117.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.117.0...cowswap-v1.117.1) (2025-08-14)
 
 

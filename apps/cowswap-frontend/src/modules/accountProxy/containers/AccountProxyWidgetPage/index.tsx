@@ -1,6 +1,7 @@
 import { ReactNode, useLayoutEffect, useRef, useState } from 'react'
 
 import { useOnClickOutside } from '@cowprotocol/common-hooks'
+import { isAddress } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Outlet, useLocation, useParams } from 'react-router'
@@ -16,6 +17,7 @@ import { NewModal } from 'common/pure/NewModal'
 
 import { EmptyWrapper, HelpLink, ModalWrapper, TitleWrapper, WidgetWrapper } from './styled'
 
+import { NEED_HELP_LABEL } from '../../consts'
 import { useOnAccountOrChainChanged } from '../../hooks/useOnAccountOrChainChanged'
 import { useSetupBalancesContext } from '../../hooks/useSetupBalancesContext'
 import { WalletNotConnected } from '../../pure/WalletNotConnected'
@@ -48,8 +50,8 @@ export function AccountProxyWidgetPage({
   const navigateBack = useNavigateBack()
   const toggleWalletModal = useToggleWalletModal()
 
-  // Switch BalancesUpdater context to the current proxy
-  useSetupBalancesContext(proxyAddress)
+  // Switch BalancesUpdater context to the current proxy (only if valid address)
+  useSetupBalancesContext(proxyAddress && isAddress(proxyAddress) ? proxyAddress : undefined)
 
   const isWalletConnected = !!account
   const isHelpPage = location.pathname.endsWith('/help')
@@ -91,7 +93,9 @@ export function AccountProxyWidgetPage({
                 <WidgetPageTitle />
               </span>
               {!isHelpPage && (
-                <HelpLink to={parameterizeRoute(Routes.ACCOUNT_PROXY_HELP, { chainId })}>Need help?</HelpLink>
+                <HelpLink
+                  to={parameterizeRoute(Routes.ACCOUNT_PROXY_HELP, { chainId })}
+                >{`${NEED_HELP_LABEL}?`}</HelpLink>
               )}
             </TitleWrapper>
           }

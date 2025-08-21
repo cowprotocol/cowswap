@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.21.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.20.0...common-utils-v1.21.0) (2025-08-21)
+
+
+### Features
+
+* **new-networks:** lens and bnb ([#5992](https://github.com/cowprotocol/cowswap/issues/5992)) ([19ac060](https://github.com/cowprotocol/cowswap/commit/19ac060f94088e7a1f6a2a891ef11d2c1ded4525))
+
 ## [1.20.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.19.0...common-utils-v1.20.0) (2025-08-07)
 
 
