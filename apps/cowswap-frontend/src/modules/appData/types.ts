@@ -1,4 +1,4 @@
-import { latest, LatestAppDataDocVersion } from '@cowprotocol/cow-sdk'
+import { cowAppDataLatestScheme, LatestAppDataDocVersion } from '@cowprotocol/cow-sdk'
 import { CowEnv, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 export type AppDataInfo = {
@@ -21,8 +21,8 @@ export type AppDataKeyParams = {
 
 export type AppDataRecord = AppDataInfo & AppDataUploadStatus & AppDataKeyParams
 
-export type AppDataMetadataOrderClass = latest.OrderClass
-export type AppDataOrderClass = latest.OrderClass['orderClass']
+export type AppDataMetadataOrderClass = cowAppDataLatestScheme.OrderClass
+export type AppDataOrderClass = cowAppDataLatestScheme.OrderClass['orderClass']
 
 export type AppDataPendingToUpload = Array<AppDataRecord>
 
@@ -32,27 +32,27 @@ export type UploadAppDataParams = AppDataKeyParams & {
 export type UpdateAppDataOnUploadQueueParams = AppDataKeyParams & Partial<AppDataUploadStatus>
 export type RemoveAppDataFromUploadQueueParams = AppDataKeyParams
 
-export type CowHook = latest.CoWHook
+export type CowHook = cowAppDataLatestScheme.CoWHook
 
 export type TypedCowHook = CowHook & {
   type: 'permit' | 'hookStore'
 }
 
-export type AppDataHooks = latest.OrderInteractionHooks
+export type AppDataHooks = cowAppDataLatestScheme.OrderInteractionHooks
 
 export type TypedAppDataHooks = Omit<AppDataHooks, 'pre' | 'post'> & {
   pre?: TypedCowHook[]
   post?: TypedCowHook[]
 }
 
-export type PreHooks = latest.PreHooks
+export type PreHooks = cowAppDataLatestScheme.PreHooks
 
-export type PostHooks = latest.PostHooks
+export type PostHooks = cowAppDataLatestScheme.PostHooks
 
-export type AppDataRootSchema = latest.AppDataRootSchema
+export type AppDataRootSchema = cowAppDataLatestScheme.AppDataRootSchema
 
-export type AppDataWidget = latest.Widget
+export type AppDataWidget = cowAppDataLatestScheme.Widget
 
-export type AppDataPartnerFee = latest.PartnerFee
+export type AppDataPartnerFee = cowAppDataLatestScheme.PartnerFee
 
-export type OrderInteractionHooks = latest.OrderInteractionHooks
+export type OrderInteractionHooks = cowAppDataLatestScheme.OrderInteractionHooks

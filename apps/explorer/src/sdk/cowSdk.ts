@@ -1,13 +1,8 @@
 import { useEffect } from 'react'
 
 import { getRpcProvider } from '@cowprotocol/common-const'
-import {
-  AcrossBridgeProvider,
-  BungeeBridgeProvider,
-  OrderBookApi,
-  setGlobalAdapter,
-  SupportedChainId,
-} from '@cowprotocol/cow-sdk'
+import { OrderBookApi, setGlobalAdapter, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { AcrossBridgeProvider, BungeeBridgeProvider } from '@cowprotocol/sdk-bridging'
 import { EthersV5Adapter } from '@cowprotocol/sdk-ethers-v5-adapter'
 
 import { useNetworkId } from '../state/network'
@@ -37,10 +32,10 @@ export function CowSdkUpdater(): null {
     if (!chainId) return
 
     const provider = getRpcProvider(chainId)
-    const signer = provider?.getSigner()
 
-    if (signer) {
-      cowSdkAdapter.setSigner(signer)
+    if (provider) {
+      cowSdkAdapter.setProvider(provider)
+      cowSdkAdapter.setSigner(provider.getSigner())
     }
   }, [chainId])
 

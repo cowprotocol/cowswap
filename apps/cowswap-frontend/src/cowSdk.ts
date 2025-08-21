@@ -4,7 +4,7 @@ import { getRpcProvider } from '@cowprotocol/common-const'
 import { getCurrentChainIdFromUrl, isBarnBackendEnv } from '@cowprotocol/common-utils'
 import { DEFAULT_BACKOFF_OPTIONS, MetadataApi, OrderBookApi, setGlobalAdapter } from '@cowprotocol/cow-sdk'
 import { EthersV5Adapter } from '@cowprotocol/sdk-ethers-v5-adapter'
-import { useWalletChainId, useWalletProvider } from '@cowprotocol/wallet-provider'
+import { useWeb3React } from '@web3-react/core'
 
 const chainId = getCurrentChainIdFromUrl()
 const prodBaseUrls = process.env.REACT_APP_ORDER_BOOK_URLS
@@ -26,15 +26,14 @@ export const orderBookApi = new OrderBookApi({
 export const metadataApiSDK = new MetadataApi()
 
 export function CowSdkUpdater(): null {
-  const chainId = useWalletChainId()
-  const provider = useWalletProvider()
+  const { chainId, provider, account } = useWeb3React()
 
   useEffect(() => {
-    const signer = provider?.getSigner()
-    if (signer) {
-      adapter.setSigner(signer)
-    }
-  }, [chainId, provider])
+    if (!provider) return
+
+    adapter.setProvider(provider)
+    adapter.setSigner(provider.getSigner())
+  }, [chainId, account, provider])
 
   return null
 }

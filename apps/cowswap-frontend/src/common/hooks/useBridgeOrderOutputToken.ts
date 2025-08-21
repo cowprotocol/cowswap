@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { CrossChainOrder } from '@cowprotocol/cow-sdk'
+import { CrossChainOrder } from '@cowprotocol/sdk-bridging'
 import { Nullish } from '@cowprotocol/types'
 
 import { useBridgeSupportedTokens } from 'entities/bridgeProvider'

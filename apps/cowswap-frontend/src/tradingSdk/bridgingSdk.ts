@@ -1,5 +1,5 @@
 import { isBarn, isDev, isProd, isStaging } from '@cowprotocol/common-utils'
-import { BridgingSdk, BungeeBridgeProvider } from '@cowprotocol/cow-sdk'
+import { BridgingSdk, BungeeBridgeProvider } from '@cowprotocol/sdk-bridging'
 
 import { orderBookApi } from 'cowSdk'
 

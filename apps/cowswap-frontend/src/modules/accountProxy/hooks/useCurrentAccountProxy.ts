@@ -1,6 +1,7 @@
 import { ZERO_ADDRESS } from '@cowprotocol/common-const'
 import { areAddressesEqual, getContract } from '@cowprotocol/common-utils'
-import type { CowShedHooks, SupportedChainId } from '@cowprotocol/cow-sdk'
+import type { SupportedChainId } from '@cowprotocol/cow-sdk'
+import type { CowShedHooks } from '@cowprotocol/sdk-cow-shed'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { defaultAbiCoder } from '@ethersproject/abi'

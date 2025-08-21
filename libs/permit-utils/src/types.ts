@@ -1,4 +1,4 @@
-import type { latest } from '@cowprotocol/cow-sdk'
+import type { cowAppDataLatestScheme } from '@cowprotocol/cow-sdk'
 import type { JsonRpcProvider } from '@ethersproject/providers'
 
 import type { Eip2612PermitUtils } from '@1inch/permit-signed-approvals-utils'
@@ -31,7 +31,7 @@ export type PermitHookParams = {
   amount?: bigint
 }
 
-export type PermitHookData = latest.CoWHook
+export type PermitHookData = cowAppDataLatestScheme.CoWHook
 
 type FailedToIdentify = { error: string }
 

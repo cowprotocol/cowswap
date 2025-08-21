@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react'
 
-import { CrossChainOrder } from '@cowprotocol/cow-sdk'
+import { CrossChainOrder } from '@cowprotocol/sdk-bridging'
 
 import { DetailRow } from 'components/common/DetailRow'
 import { LoadingWrapper } from 'components/common/LoadingWrapper'

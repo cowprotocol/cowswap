@@ -1,4 +1,4 @@
-import { QuoteBridgeRequest } from '@cowprotocol/cow-sdk'
+import { QuoteBridgeRequest } from '@cowprotocol/sdk-bridging'
 
 import jsonStringify from 'json-stringify-deterministic'
 import { Nullish } from 'types'

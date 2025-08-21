@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 
-import { latest } from '@cowprotocol/cow-sdk'
+import { cowAppDataLatestScheme } from '@cowprotocol/cow-sdk'
 import { PermitHookData } from '@cowprotocol/permit-utils'
 import { useIsSmartContractWallet } from '@cowprotocol/wallet'
 
@@ -15,7 +15,7 @@ import { TypedAppDataHooks, TypedCowHook } from '../types'
 import { buildAppDataHooks } from '../utils/buildAppDataHooks'
 import { cowHookToTypedCowHook } from '../utils/typedHooks'
 
-type OrderInteractionHooks = latest.OrderInteractionHooks
+type OrderInteractionHooks = cowAppDataLatestScheme.OrderInteractionHooks
 
 function useAgnosticPermitDataIfUserHasNoAllowance(): Nullish<PermitHookData> {
   const hookData = useAccountAgnosticPermitHookData()
