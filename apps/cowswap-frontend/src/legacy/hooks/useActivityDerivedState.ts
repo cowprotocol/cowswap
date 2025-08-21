@@ -7,9 +7,10 @@ import { GnosisSafeInfo, useGnosisSafeInfo } from '@cowprotocol/wallet'
 import { EnhancedTransactionDetails, HashType } from 'legacy/state/enhancedTransactions/reducer'
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
+import { ActivityDerivedState, ActivityStatus, ActivityType, OrderCreationTxInfo } from 'common/types/activity'
+
 import { ActivityDescriptors } from './useRecentActivity'
 
-import { ActivityDerivedState, ActivityStatus, ActivityType, OrderCreationTxInfo } from '../../common/types/activity'
 import { useAllTransactions } from '../state/enhancedTransactions/hooks'
 
 export function useActivityDerivedState({
@@ -189,7 +190,7 @@ export function getActivityState({
   if (isLoading) {
     return ActivityState.LOADING
   }
-  
+
   if (isPending) {
     if (enhancedTransaction) {
       const { safeTransaction, transactionHash } = enhancedTransaction

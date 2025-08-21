@@ -1,6 +1,6 @@
 import { atom } from 'jotai'
 
-import { DEFAULT_PARTNER_FEE_RECIPIENT, LpToken, STABLECOINS } from '@cowprotocol/common-const'
+import { DEFAULT_PARTNER_FEE_RECIPIENT_PER_NETWORK, LpToken, STABLECOINS } from '@cowprotocol/common-const'
 import { getCurrencyAddress, isInjectedWidget } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { walletInfoAtom } from '@cowprotocol/wallet'
@@ -16,15 +16,17 @@ const COWSWAP_VOLUME_FEES: Record<SupportedChainId, VolumeFee | null> = {
   [SupportedChainId.SEPOLIA]: null,
   [SupportedChainId.ARBITRUM_ONE]: {
     volumeBps: 10, // 0.1%
-    recipient: DEFAULT_PARTNER_FEE_RECIPIENT,
+    recipient: DEFAULT_PARTNER_FEE_RECIPIENT_PER_NETWORK[SupportedChainId.ARBITRUM_ONE],
   },
   [SupportedChainId.BASE]: null,
   [SupportedChainId.GNOSIS_CHAIN]: {
     volumeBps: 10, // 0.1%
-    recipient: DEFAULT_PARTNER_FEE_RECIPIENT,
+    recipient: DEFAULT_PARTNER_FEE_RECIPIENT_PER_NETWORK[SupportedChainId.GNOSIS_CHAIN],
   },
-  [SupportedChainId.POLYGON]: null, // TODO: check if we should apply fee on Polygon
-  [SupportedChainId.AVALANCHE]: null, // TODO: check if we should apply fee on Avalanche
+  [SupportedChainId.POLYGON]: null,
+  [SupportedChainId.AVALANCHE]: null,
+  [SupportedChainId.LENS]: null,
+  [SupportedChainId.BNB]: null,
 }
 
 // TODO: Reduce function complexity by extracting logic

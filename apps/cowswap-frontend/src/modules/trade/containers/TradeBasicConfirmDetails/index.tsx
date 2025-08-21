@@ -1,8 +1,7 @@
 import { ReactNode, useMemo, useState } from 'react'
 
-import { FractionUtils } from '@cowprotocol/common-utils'
 import { PercentDisplay } from '@cowprotocol/ui'
-import { Percent, Price } from '@uniswap/sdk-core'
+import { Percent } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
@@ -17,6 +16,7 @@ import { RecipientRow } from '../../pure/RecipientRow'
 import { ReviewOrderModalAmountRow } from '../../pure/ReviewOrderModalAmountRow'
 import { DividerHorizontal } from '../../pure/Row/styled'
 import { ReceiveAmountInfo } from '../../types'
+import { getLimitPriceFromReceiveAmount } from '../../utils/getLimitPriceFromReceiveAmount'
 import { getOrderTypeReceiveAmounts } from '../../utils/getReceiveAmountInfo'
 import { TradeFeesAndCosts } from '../TradeFeesAndCosts'
 
@@ -26,7 +26,8 @@ type Props = {
   slippage: Percent
   labelsAndTooltips?: LabelsAndTooltips
   children?: ReactNode
-  recipient?: Nullish<string>
+  recipient: Nullish<string>
+  recipientAddress: Nullish<string>
   account: Nullish<string>
   hideLimitPrice?: boolean
   hideUsdValues?: boolean
@@ -46,11 +47,25 @@ type LabelsAndTooltips = {
   networkCostsTooltipSuffix?: ReactNode
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
-export function TradeBasicConfirmDetails(props: Props) {
+function getLabelsAndTooltipsWithDefaults(labelsAndTooltips: LabelsAndTooltips | undefined): LabelsAndTooltips {
+  const priceLabel = labelsAndTooltips?.priceLabel || 'Price'
+  const minReceivedLabel = labelsAndTooltips?.minReceivedLabel || 'Min received (incl. costs)'
+  const expectReceiveLabel = labelsAndTooltips?.expectReceiveLabel || 'Expected to receive'
+  const minReceivedTooltip =
+    labelsAndTooltips?.minReceivedTooltip || 'This is the minimum amount that you will receive.'
+  const slippageLabel = labelsAndTooltips?.slippageLabel || 'Slippage tolerance'
+
+  return {
+    ...labelsAndTooltips,
+    priceLabel,
+    minReceivedLabel,
+    expectReceiveLabel,
+    minReceivedTooltip,
+    slippageLabel,
+  }
+}
+
+export function TradeBasicConfirmDetails(props: Props): ReactNode {
   const {
     rateInfoParams,
     slippage,
@@ -60,45 +75,27 @@ export function TradeBasicConfirmDetails(props: Props) {
     hideUsdValues,
     withTimelineDot = true,
     children,
-    recipient,
-    account,
   } = props
   const isInvertedState = useState(false)
   const { amountAfterFees, amountAfterSlippage } = getOrderTypeReceiveAmounts(receiveAmountInfo)
   const { networkCostsSuffix, networkCostsTooltipSuffix } = labelsAndTooltips || {}
 
-  const priceLabel = labelsAndTooltips?.priceLabel || 'Price'
-  const minReceivedLabel = labelsAndTooltips?.minReceivedLabel || 'Min received (incl. costs)'
-  const expectReceiveLabel = labelsAndTooltips?.expectReceiveLabel || 'Expected to receive'
-  const minReceivedTooltip =
-    labelsAndTooltips?.minReceivedTooltip || 'This is the minimum amount that you will receive.'
-  const slippageTooltip = labelsAndTooltips?.slippageTooltip
-  const slippageLabel = labelsAndTooltips?.slippageLabel || 'Slippage tolerance'
+  const { priceLabel, minReceivedLabel, expectReceiveLabel, minReceivedTooltip, slippageTooltip, slippageLabel } =
+    getLabelsAndTooltipsWithDefaults(labelsAndTooltips)
 
   const amountAfterSlippageUsd = useUsdAmount(hideUsdValues ? null : amountAfterSlippage).value
   const amountAfterFeesUsd = useUsdAmount(hideUsdValues ? null : amountAfterFees).value
 
   // Limit price is the same for all parts
-  const limitPrice = useMemo(() => {
-    const { afterNetworkCosts, afterSlippage } = receiveAmountInfo
-
-    const quoteAmount = FractionUtils.amountToAtLeastOneWei(afterSlippage.buyAmount)
-
-    if (!quoteAmount) return null
-
-    return new Price({
-      quoteAmount,
-      baseAmount: afterNetworkCosts.sellAmount,
-    })
-  }, [receiveAmountInfo])
+  const limitPrice = useMemo(() => getLimitPriceFromReceiveAmount(receiveAmountInfo), [receiveAmountInfo])
 
   return (
     <styledEl.Wrapper>
       {/* Price */}
       <styledEl.RateInfoWrapper>
         <RateInfo
+          stylized
           label={priceLabel}
-          stylized={true}
           rateInfoParams={rateInfoParams}
           isInvertedState={isInvertedState}
           fontBold
@@ -114,7 +111,7 @@ export function TradeBasicConfirmDetails(props: Props) {
       />
 
       <ReviewOrderModalAmountRow
-        highlighted={true}
+        highlighted
         amount={amountAfterFees}
         fiatAmount={amountAfterFeesUsd}
         label={expectReceiveLabel}
@@ -149,7 +146,12 @@ export function TradeBasicConfirmDetails(props: Props) {
       )}
 
       {/*Recipient*/}
-      <RecipientRow chainId={rateInfoParams.chainId} recipient={recipient} account={account} />
+      <RecipientRow
+        chainId={rateInfoParams.chainId}
+        recipient={props.recipient}
+        recipientAddress={props.recipientAddress}
+        account={props.account}
+      />
       {children}
     </styledEl.Wrapper>
   )

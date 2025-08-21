@@ -1,6 +1,6 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useResetAtom } from 'jotai/utils'
-import { ReactElement, useCallback, useEffect, useMemo } from 'react'
+import { ReactElement, ReactNode, useCallback, useEffect, useMemo } from 'react'
 
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { Media, UI } from '@cowprotocol/ui'
@@ -86,9 +86,7 @@ interface SnackbarsWidgetProps {
   anchorElementId?: string
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function SnackbarsWidget({ hidden, anchorElementId }: SnackbarsWidgetProps) {
+export function SnackbarsWidget({ hidden, anchorElementId }: SnackbarsWidgetProps): ReactNode {
   const snackbarsState = useAtomValue(snackbarsAtom)
   const resetSnackbarsState = useResetAtom(snackbarsAtom)
   const removeSnackbar = useSetAtom(removeSnackbarAtom)

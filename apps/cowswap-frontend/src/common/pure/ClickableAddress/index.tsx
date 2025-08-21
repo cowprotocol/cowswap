@@ -1,63 +1,76 @@
-import { MouseEvent, ReactNode, useCallback, useRef, useState } from 'react'
+import { ReactNode, useRef } from 'react'
 
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { ExplorerDataType, getExplorerLink, shortenAddress, getIsNativeToken } from '@cowprotocol/common-utils'
-import { Media, Tooltip } from '@cowprotocol/ui'
+import { Media, ContextMenuTooltip, ContextMenuCopyButton, ContextMenuExternalLink, Opacity, UI } from '@cowprotocol/ui'
 
 import { useBridgeSupportedNetwork } from 'entities/bridgeProvider'
 import { Info } from 'react-feather'
-
-import { Content } from './Content'
-import * as styledEl from './styled'
+import styled from 'styled-components/macro'
 
 export type ClickableAddressProps = {
   address: string
   chainId: number
 }
 
+const Wrapper = styled.div<{ alwaysShow: boolean }>`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+
+  &:hover {
+    > button {
+      opacity: ${Opacity.medium};
+    }
+  }
+
+  > button {
+    opacity: ${({ alwaysShow }) => (alwaysShow ? Opacity.medium : Opacity.none)};
+
+    &:hover {
+      opacity: ${Opacity.full};
+    }
+  }
+`
+
+const AddressWrapper = styled.span`
+  margin: 0;
+  line-height: 1;
+  font-size: 13px;
+  font-weight: 400;
+  color: var(${UI.COLOR_TEXT_OPACITY_50});
+  opacity: ${Opacity.full};
+`
+
 export function ClickableAddress(props: ClickableAddressProps): ReactNode {
   const { address, chainId } = props
 
   const wrapperRef = useRef<HTMLDivElement>(null)
-
   const isMobile = useMediaQuery(Media.upToMedium(false))
   const bridgeNetwork = useBridgeSupportedNetwork(chainId)
 
-  const [openTooltip, setOpenTooltip] = useState(false)
-
   const shortAddress = shortenAddress(address)
-
   const target = getExplorerLink(chainId, address, ExplorerDataType.TOKEN, bridgeNetwork?.blockExplorer.url)
-
   const shouldShowAddress = target && !getIsNativeToken(chainId, address)
-
-  const handleClick = useCallback((event: MouseEvent<HTMLButtonElement>) => {
-    event.stopPropagation?.()
-    setOpenTooltip((prev) => !prev)
-  }, [])
-
-  const handleClickOutside = useCallback((event: MouseEvent<HTMLDivElement>) => {
-    event.stopPropagation?.()
-    setOpenTooltip(false)
-  }, [])
 
   return (
     shouldShowAddress && (
-      <styledEl.Wrapper openTooltip={openTooltip} alwaysShow={isMobile} ref={wrapperRef}>
-        <styledEl.AddressWrapper>{shortAddress}</styledEl.AddressWrapper>
-        <styledEl.InfoIcon onClick={handleClick}>
-          <Tooltip
-            content={<Content address={address} target={target} />}
-            placement="bottom"
-            wrapInContainer={false}
-            show={openTooltip}
-            onClickCapture={handleClickOutside}
-            containerRef={wrapperRef}
-          >
-            <Info size={16} />
-          </Tooltip>
-        </styledEl.InfoIcon>
-      </styledEl.Wrapper>
+      <Wrapper alwaysShow={isMobile} ref={wrapperRef}>
+        <AddressWrapper>{shortAddress}</AddressWrapper>
+        <ContextMenuTooltip
+          content={
+            <>
+              <ContextMenuCopyButton address={address} />
+              <ContextMenuExternalLink href={target} label="View details" />
+            </>
+          }
+          placement="bottom"
+          containerRef={wrapperRef}
+        >
+          <Info size={16} />
+        </ContextMenuTooltip>
+      </Wrapper>
     )
   )
 }

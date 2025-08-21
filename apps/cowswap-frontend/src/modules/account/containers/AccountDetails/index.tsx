@@ -156,24 +156,20 @@ export function AccountDetails({
         <AccountGroupingRow>
           <AccountControl>
             <WalletSecondaryActions>
-              {!isInjectedMobileBrowser && (
-                <>
-                  {account && !isChainIdUnsupported && (
-                    <AddressLink
-                      hasENS={!!ENSName}
-                      isENS={!!ENSName}
-                      href={getEtherscanLink(chainId, 'address', ENSName ? ENSName : account)}
-                    >
-                      {explorerLabel} ↗
-                    </AddressLink>
-                  )}
+              {!isInjectedMobileBrowser && account && !isChainIdUnsupported && (
+                <AddressLink
+                  hasENS={!!ENSName}
+                  isENS={!!ENSName}
+                  href={getEtherscanLink(chainId, 'address', ENSName ? ENSName : account)}
+                >
+                  {explorerLabel} ↗
+                </AddressLink>
+              )}
 
-                  {standaloneMode !== false && connectionType !== ConnectionType.GNOSIS_SAFE && (
-                    <WalletAction onClick={handleDisconnectClick}>
-                      <Trans>Disconnect</Trans>
-                    </WalletAction>
-                  )}
-                </>
+              {standaloneMode !== false && connectionType !== ConnectionType.GNOSIS_SAFE && (
+                <WalletAction onClick={handleDisconnectClick}>
+                  <Trans>Disconnect</Trans>
+                </WalletAction>
               )}
             </WalletSecondaryActions>
           </AccountControl>

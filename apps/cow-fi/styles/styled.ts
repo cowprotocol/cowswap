@@ -1516,6 +1516,16 @@ export const BodyContent = styled.div<{ color?: string }>`
   line-height: 1.6;
   color: ${({ color }) => color || `var(${UI.COLOR_NEUTRAL_0})`};
 
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin: 2.4rem 0 1.6rem;
+    display: inline-block;
+  }
+
   img {
     max-width: 100%;
     border-radius: 1rem;
@@ -1567,7 +1577,7 @@ export const BodyContent = styled.div<{ color?: string }>`
   > ul > li ul,
   > ol,
   > ol > li ul {
-    padding: 0.8rem 0 0 2rem;
+    padding: 0.8rem 0 0 4rem;
 
     > li,
     > li > p,

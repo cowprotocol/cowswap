@@ -105,8 +105,22 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   [TradeFormValidation.BrowserOffline]: {
     text: 'Error loading price. You are currently offline.',
   },
-  [TradeFormValidation.RecipientInvalid]: {
-    text: 'Enter a valid recipient',
+  [TradeFormValidation.RecipientInvalid]: ({ derivedState: { inputCurrency, outputCurrency, recipient } }) => {
+    const isBridging = inputCurrency && outputCurrency && inputCurrency.chainId !== outputCurrency.chainId
+
+    return (
+      <TradeFormBlankButton disabled>
+        <>
+          <Trans>Enter a valid recipient</Trans>
+          {isBridging && recipient && (
+            <HelpTooltip
+              placement="top"
+              text="ENS recipient not supported for Swap and Bridge — use address instead."
+            />
+          )}
+        </>
+      </TradeFormBlankButton>
+    )
   },
   [TradeFormValidation.CurrencyNotSupported]: (context) => {
     return unsupportedTokenButton(context)

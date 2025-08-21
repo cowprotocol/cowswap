@@ -2,8 +2,10 @@ import {
   arbitrumOne,
   avalanche,
   base,
+  bnb,
   ChainInfo,
   gnosisChain,
+  lens,
   mainnet,
   polygon,
   sepolia,
@@ -74,9 +76,14 @@ export const CHAIN_INFO: ChainInfoMap = {
     urlAlias: '',
     nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.MAINNET],
   },
+  [SupportedChainId.BNB]: {
+    ...mapChainInfoToBaseChainInfo(bnb),
+    name: 'bnb',
+    urlAlias: 'bnb',
+    nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.BNB],
+  },
   [SupportedChainId.BASE]: {
     ...mapChainInfoToBaseChainInfo(base),
-
     name: 'base',
     urlAlias: 'base',
     nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.BASE],
@@ -105,6 +112,12 @@ export const CHAIN_INFO: ChainInfoMap = {
     urlAlias: 'gc',
     nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.GNOSIS_CHAIN],
   },
+  [SupportedChainId.LENS]: {
+    ...mapChainInfoToBaseChainInfo(lens),
+    name: 'lens',
+    urlAlias: 'lens',
+    nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.LENS],
+  },
   [SupportedChainId.SEPOLIA]: {
     ...mapChainInfoToBaseChainInfo(sepolia),
     name: 'sepolia',
@@ -118,11 +131,13 @@ export const CHAIN_INFO: ChainInfoMap = {
  */
 export const SORTED_CHAIN_IDS: SupportedChainId[] = [
   SupportedChainId.MAINNET,
+  SupportedChainId.BNB,
   SupportedChainId.BASE,
   SupportedChainId.ARBITRUM_ONE,
   SupportedChainId.POLYGON,
   SupportedChainId.AVALANCHE,
   SupportedChainId.GNOSIS_CHAIN,
+  SupportedChainId.LENS,
   SupportedChainId.SEPOLIA,
 ]
 
