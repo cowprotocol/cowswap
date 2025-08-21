@@ -2,6 +2,7 @@ import { useSetAtom } from 'jotai'
 import { useMemo } from 'react'
 
 import { WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { MaxUint256 } from '@ethersproject/constants'
@@ -38,8 +39,12 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks, partialAmou
 
   const onCurrencySelection = useOnCurrencySelection()
   const { onOpen: openSwapConfirmModal } = useTradeConfirmActions()
+  const { isPartialApproveEnabled } = useFeatureFlags()
 
-  const amountToApprove = partialAmountToApprove || MaxUint256.toBigInt()
+  const amountToApprove = isPartialApproveEnabled
+    ? partialAmountToApprove || MaxUint256.toBigInt()
+    : MaxUint256.toBigInt()
+
   return useMemo(() => {
     function sendTransaction(type: 'approve' | 'wrap', callback: () => Promise<string | undefined>): Promise<void> {
       updateEthFlowContext({ [type]: { inProgress: true } })
