@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.52.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.51.0...explorer-v2.52.0) (2025-08-21)
+
+
+### Features
+
+* **new-networks:** lens and bnb ([#5992](https://github.com/cowprotocol/cowswap/issues/5992)) ([19ac060](https://github.com/cowprotocol/cowswap/commit/19ac060f94088e7a1f6a2a891ef11d2c1ded4525))
+
+
+### Bug Fixes
+
+* **lens:** fix lens twap cancellation ([#6170](https://github.com/cowprotocol/cowswap/issues/6170)) ([d04d82e](https://github.com/cowprotocol/cowswap/commit/d04d82ebe4eb7943d8cde4493446cdc5e3344f51))
+
 ## [2.51.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.50.0...explorer-v2.51.0) (2025-08-07)
 
 
