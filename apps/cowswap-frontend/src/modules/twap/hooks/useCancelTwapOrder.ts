@@ -35,7 +35,13 @@ export function useCancelTwapOrder(): (twapOrderId: string, order: Order) => Pro
       const partOrder = twapPartOrders[twapOrderId]?.sort((a, b) => a.order.validTo - b.order.validTo)[0]
       const partOrderId = partOrder?.uid
 
-      const context = { composableCowContract, settlementContract, orderId: twapOrderId, partOrderId }
+      const context = {
+        composableCowContract,
+        settlementContract,
+        orderId: twapOrderId,
+        partOrderId,
+        chainId: composableCowChainId,
+      }
 
       return {
         estimatedGas: await estimateCancelTwapOrderTxs(context),
