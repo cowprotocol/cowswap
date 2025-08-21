@@ -371,6 +371,9 @@ export function ActivityDetails(props: {
   )
 
   const hasPermit = order && doesOrderHavePermit(order)
+  const showWarning = fillability
+    ? (!fillability.hasEnoughAllowance && !hasPermit) || !fillability.hasEnoughBalance
+    : false
 
   return (
     <>
@@ -514,7 +517,7 @@ export function ActivityDetails(props: {
             (summary ?? id)
           )}
 
-          {fillability && !hasPermit && orderSummary?.inputAmount ? (
+          {fillability && showWarning && orderSummary?.inputAmount ? (
             <OrderFillabilityWarning fillability={fillability} inputAmount={orderSummary.inputAmount} />
           ) : null}
 
