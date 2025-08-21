@@ -89,23 +89,39 @@ const APP_DATA_HASH = toKeccak256(JSON.stringify({ version: '1.6.0', appCode: 'C
 
 const FAKE_OWNER = '0x330d9F4906EDA1f73f668660d1946bea71f48827'
 
+const START_TIME = Math.floor(Date.now() / 1000)
+
 const FAKE_TWAP_ORDER: TWAPOrder = {
   sellAmount: CurrencyAmount.fromRawAmount(WRAPPED_NATIVE_CURRENCIES[SupportedChainId.LENS], 100_000_000_000),
   buyAmount: CurrencyAmount.fromRawAmount(USDC_LENS, 200_000_000_000),
   receiver: FAKE_OWNER,
   numOfParts: 2,
-  startTime: Math.floor(Date.now() / 1000),
+  startTime: START_TIME,
   timeInterval: 600,
   span: 0,
   appData: APP_DATA_HASH,
 }
 
+const FAKE_ORDER_IDS_CACHE: Partial<Record<SupportedChainId, string>> = {}
+
 function getFakeTwapOrderId(chainId: SupportedChainId): string {
+  if (FAKE_ORDER_IDS_CACHE[chainId]) {
+    return FAKE_ORDER_IDS_CACHE[chainId]
+  }
+
   const paramsStruct = buildTwapOrderParamsStruct(chainId, FAKE_TWAP_ORDER)
-  return getConditionalOrderId(paramsStruct)
+
+  FAKE_ORDER_IDS_CACHE[chainId] = getConditionalOrderId(paramsStruct)
+  return FAKE_ORDER_IDS_CACHE[chainId]
 }
 
+const FAKE_PART_ORDER_IDS_CACHE: Partial<Record<SupportedChainId, string>> = {}
+
 async function getFakeTwapPartOrderId(chainId: SupportedChainId): Promise<string> {
+  if (FAKE_PART_ORDER_IDS_CACHE[chainId]) {
+    return FAKE_PART_ORDER_IDS_CACHE[chainId]
+  }
+
   const part = createPartOrderFromParent(
     {
       order: twapOrderToStruct(FAKE_TWAP_ORDER),
@@ -113,5 +129,7 @@ async function getFakeTwapPartOrderId(chainId: SupportedChainId): Promise<string
     } as TwapOrderItem,
     0,
   )
-  return computeOrderUid(chainId, FAKE_OWNER, part as Order)
+
+  FAKE_PART_ORDER_IDS_CACHE[chainId] = await computeOrderUid(chainId, FAKE_OWNER, part as Order)
+  return FAKE_PART_ORDER_IDS_CACHE[chainId]
 }
