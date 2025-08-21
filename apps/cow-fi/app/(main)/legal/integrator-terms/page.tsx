@@ -1,6 +1,6 @@
 import { createCmsPage } from '@/util/createCmsPage'
 
-const { default: Page, generateMetadata } = createCmsPage('cowswap-cookie-policy')
+const { default: Page, generateMetadata } = createCmsPage('integrator-terms')
 
 export { Page as default, generateMetadata }
 

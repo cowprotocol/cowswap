@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.16.1](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.16.0...widget-configurator-v1.16.1) (2025-08-21)
+
+
+### Bug Fixes
+
+* **lens:** lens fee addresses ([#6167](https://github.com/cowprotocol/cowswap/issues/6167)) ([2027ee1](https://github.com/cowprotocol/cowswap/commit/2027ee18324f89342d45219908e3673a91dec972))
+
 ## [1.16.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.15.0...widget-configurator-v1.16.0) (2025-07-30)
 
 

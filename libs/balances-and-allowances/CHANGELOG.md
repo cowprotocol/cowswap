@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.5](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.5.4...balances-and-allowances-v1.5.5) (2025-08-21)
+
+
+### Bug Fixes
+
+* do not poll multicall when document is not focused ([#6146](https://github.com/cowprotocol/cowswap/issues/6146)) ([d7fde7c](https://github.com/cowprotocol/cowswap/commit/d7fde7c2eb21e75d58c97a410653d648f68dfcb9))
+
 ## [1.5.4](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.5.3...balances-and-allowances-v1.5.4) (2025-08-12)
 
 
