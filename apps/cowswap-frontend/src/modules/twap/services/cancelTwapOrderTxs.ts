@@ -7,7 +7,7 @@ import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { computeOrderUid } from '../../../utils/orderUtils/computeOrderUid'
-import { getAppData } from '../../appData'
+import { toKeccak256 } from '../../appData/utils/buildAppData'
 import { TWAPOrder, TwapOrderItem } from '../types'
 import { createPartOrderFromParent } from '../updaters/PartOrdersUpdater'
 import { buildTwapOrderParamsStruct } from '../utils/buildTwapOrderParamsStruct'
@@ -85,7 +85,7 @@ async function estimateZkSyncCancelTwapOrderTxs(context: CancelTwapOrderContext)
   return cancelComposableCowTxCost.add(cancelPartOrderTx)
 }
 
-const APP_DATA_HASH = getAppData().appDataKeccak256
+const APP_DATA_HASH = toKeccak256(JSON.stringify({ version: '1.6.0', appCode: 'CoW Swap', metadata: {} }))
 
 const FAKE_OWNER = '0x330d9F4906EDA1f73f668660d1946bea71f48827'
 
