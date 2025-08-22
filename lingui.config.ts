@@ -21,7 +21,8 @@ const linguiConfig = {
     'de-DE',
     'el-GR', */
     'en-US',
-    /* 'es-ES',
+    'es-ES',
+    /*
     'fi-FI',
     'fr-FR',
     'he-IL',
@@ -36,7 +37,9 @@ const linguiConfig = {
     'pt-BR',
     'pt-PT',
     'ro-RO',
+    */
     'ru-RU',
+    /*
     'sr-SP',
     'sv-SE',
     'sw-TZ',

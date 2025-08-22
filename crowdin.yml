@@ -1,0 +1,7 @@
+project_id: "822524"
+api_token_env: CROWDIN_PERSONAL_TOKEN
+preserve_hierarchy: true
+
+files: # Paths to the source and translation files
+  - source: /apps/cowswap-frontend/src/locales/en-US.po
+    translation: /apps/cowswap-frontend/src/locales/%locale%.po
