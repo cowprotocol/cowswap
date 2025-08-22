@@ -1,5 +1,6 @@
 import { ReactNode, useCallback, useMemo, useState } from 'react'
 
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { isSellOrder } from '@cowprotocol/common-utils'
 
 import { Field } from 'legacy/state/types'
@@ -27,13 +28,19 @@ import { Container } from './styled'
 
 import { useHasEnoughWrappedBalanceForSwap } from '../../hooks/useHasEnoughWrappedBalanceForSwap'
 import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
-import { useSwapDeadlineState, useSwapRecipientToggleState, useSwapSettings } from '../../hooks/useSwapSettings'
+import {
+  useSwapDeadlineState,
+  useSwapPartialApprovalToggleState,
+  useSwapRecipientToggleState,
+  useSwapSettings,
+} from '../../hooks/useSwapSettings'
 import { useSwapWidgetActions } from '../../hooks/useSwapWidgetActions'
 import { BottomBanners } from '../BottomBanners'
 import { SwapConfirmModal } from '../SwapConfirmModal'
 import { SwapRateDetails } from '../SwapRateDetails'
 import { TradeButtons } from '../TradeButtons'
 import { Warnings } from '../Warnings'
+
 export interface SwapWidgetProps {
   topContent?: ReactNode
   bottomContent?: ReactNode
@@ -134,6 +141,9 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
     setShowAddIntermediateTokenModal(false)
   }, [])
 
+  const { isPartialApproveEnabled } = useFeatureFlags()
+  const enablePartialApprovalState = useSwapPartialApprovalToggleState(isPartialApproveEnabled)
+
   const slots: TradeWidgetSlots = {
     topContent,
     settingsWidget: (
@@ -141,6 +151,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
         recipientToggleState={recipientToggleState}
         hooksEnabledState={hooksEnabledState}
         deadlineState={deadlineState}
+        enablePartialApprovalState={enablePartialApprovalState}
       />
     ),
     bottomContent: useCallback(
