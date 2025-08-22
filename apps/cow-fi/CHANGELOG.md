@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.25.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.24.1...cow-fi-v1.25.0) (2025-08-21)
+
+
+### Features
+
+* **cowfi:** add CMS pages for all legal content ([#6100](https://github.com/cowprotocol/cowswap/issues/6100)) ([7ccfc07](https://github.com/cowprotocol/cowswap/commit/7ccfc07a702fd60d7928586cb95ad924bae03967))
+
 ## [1.24.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.24.0...cow-fi-v1.24.1) (2025-08-04)
 
 
