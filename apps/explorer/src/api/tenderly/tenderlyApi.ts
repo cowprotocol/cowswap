@@ -79,7 +79,7 @@ export function traceToTransfersAndTrades(trace: Trace): TxTradesAndTransfers {
   const trades: Array<Trade> = []
 
   try {
-    trace.logs.forEach((log) => {
+    trace.logs?.forEach((log) => {
       if (log.name === TypeOfTrace.TRANSFER) {
         const from = log.inputs[IndexTransferInput.from].value
         const to = log.inputs[IndexTransferInput.to].value
