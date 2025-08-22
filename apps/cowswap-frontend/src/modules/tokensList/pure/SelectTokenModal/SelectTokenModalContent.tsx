@@ -11,7 +11,7 @@ export function SelectTokenModalContent({ isRouteAvailable, children }: SelectTo
   return (
     <>
       {isRouteAvailable === false ? (
-        <styledEl.RouteNotAvailable>This route is not currently available</styledEl.RouteNotAvailable>
+        <styledEl.RouteNotAvailable>This route is not yet supported.</styledEl.RouteNotAvailable>
       ) : (
         children
       )}
