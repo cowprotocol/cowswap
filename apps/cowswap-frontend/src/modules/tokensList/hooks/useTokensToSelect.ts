@@ -38,16 +38,14 @@ export function useTokensToSelect(): TokensToSelectContext {
   const { data: result, isLoading } = useBridgeSupportedTokens(params)
 
   const bridgeSupportedTokensMap = useMemo(() => {
-    if (result) {
-      const { tokens } = result
+    const tokens = result?.tokens
 
-      return tokens?.reduce<Record<string, boolean>>((acc, val) => {
-        acc[val.address.toLowerCase()] = true
-        return acc
-      }, {})
-    }
+    if (!tokens || !tokens.length) return null
 
-    return {}
+    return tokens.reduce<Record<string, boolean>>((acc, val) => {
+      acc[val.address.toLowerCase()] = true
+      return acc
+    }, {})
   }, [result])
 
   return useMemo(() => {

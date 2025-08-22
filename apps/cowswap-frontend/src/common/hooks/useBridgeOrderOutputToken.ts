@@ -35,14 +35,14 @@ export function useBridgeOrderOutputToken(
   return useMemo(() => {
     if (isLocalOrderCached) return localOrderOutputToken as TokenWithLogo
 
-    if (!data?.tokens?.length || !outputTokenAddress) {
+    if (data?.isRouteAvailable === false || !data?.tokens?.length || !outputTokenAddress) {
       // Fallback to localOrderOutputToken when crossChainOrder data is still loading
       // This prevents swapAndBridgeOverview from being undefined in fresh sessions
       return localOrderOutputToken as TokenWithLogo
     }
 
     const tokenAddressLower = outputTokenAddress.toLowerCase()
-    const token = data?.tokens.find((token) => token.address.toLowerCase() === tokenAddressLower)
+    const token = data.tokens.find((token) => token.address.toLowerCase() === tokenAddressLower)
 
     // This is actually a hack
     // For some reason Bungee replaces ETH with WETH, so we cannot find WETH in tokens

@@ -32,18 +32,16 @@ export function useBridgeSupportedTokens(
         .getBuyTokens(params)
         .then(({ tokens, isRouteAvailable }) => {
           return {
-            tokens:
-              tokens &&
-              tokens.map((token) =>
-                TokenWithLogo.fromToken(
-                  {
-                    ...token,
-                    name: token.name || '',
-                    symbol: token.symbol || '',
-                  },
-                  token.logoUrl,
-                ),
+            tokens: (tokens ?? []).map((token) =>
+              TokenWithLogo.fromToken(
+                {
+                  ...token,
+                  name: token.name || '',
+                  symbol: token.symbol || '',
+                },
+                token.logoUrl,
               ),
+            ),
             isRouteAvailable: isBridgingEnabled ? isRouteAvailable : true,
           }
         })
