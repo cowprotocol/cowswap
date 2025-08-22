@@ -33,7 +33,15 @@ const FAQ_DATA = [
         {COW_SHED_VERSIONS.length} versions of {ACCOUNT_PROXY_LABEL}:
         <ul>
           {COW_SHED_VERSIONS.map((v) => (
-            <li key={v}>{v}</li>
+            <li key={v}>
+              <Link
+                to={`https://github.com/cowdao-grants/cow-shed/releases/tag/v${v}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {v}
+              </Link>
+            </li>
           ))}
         </ul>
       </>
