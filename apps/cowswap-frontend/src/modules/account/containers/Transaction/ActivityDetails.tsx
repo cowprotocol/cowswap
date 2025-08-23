@@ -206,7 +206,7 @@ export function ActivityDetails(props: {
     (enhancedTransaction?.claim && V_COW_CONTRACT_ADDRESS[chainId as SupportedChainId])
   const singleToken = useTokenBySymbolOrAddress(tokenAddress) || null
 
-  const { isPartialApprovalEnabled } = useFeatureFlags()
+  const { isPartialApproveEnabled } = useFeatureFlags()
 
   const getShowCancellationModal = useCancelOrder()
 
@@ -376,7 +376,7 @@ export function ActivityDetails(props: {
   const hasPermit = order && doesOrderHavePermit(order)
 
   const showWarning =
-    isPartialApprovalEnabled && fillability
+    isPartialApproveEnabled && fillability
       ? (!fillability.hasEnoughAllowance && !hasPermit) || !fillability.hasEnoughBalance
       : false
 
