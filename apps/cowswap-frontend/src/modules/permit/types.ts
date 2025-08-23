@@ -39,6 +39,7 @@ export type PermitCacheKeyParams = {
   account: string | undefined
   nonce: number | undefined
   spender: string
+  amount?: bigint
 }
 
 export type StorePermitCacheParams = PermitCacheKeyParams & { hookData: PermitHookData }

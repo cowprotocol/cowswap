@@ -1,4 +1,4 @@
-import { delay, getAddress, reportPermitWithDefaultSigner } from '@cowprotocol/common-utils'
+import { delay, getCurrencyAddress, reportPermitWithDefaultSigner } from '@cowprotocol/common-utils'
 import { SigningScheme, SigningStepManager } from '@cowprotocol/cow-sdk'
 import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { UiOrderType } from '@cowprotocol/types'
@@ -62,7 +62,7 @@ export async function swapFlow(
   } = input
   const { chainId } = context
   const inputCurrency = inputAmount.currency
-  const cachedPermit = await getCachedPermit(getAddress(inputCurrency))
+  const cachedPermit = await getCachedPermit(getCurrencyAddress(inputCurrency), permitAmountToSign)
 
   const shouldSignPermit = isSupportedPermitInfo(permitInfo) && !cachedPermit
   const isBridgingOrder = inputAmount.currency.chainId !== outputAmount.currency.chainId
