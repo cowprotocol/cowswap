@@ -32,6 +32,8 @@ import {
   DropdownContentItemTitle,
   DropdownMenu,
   GlobalSettingsButton,
+  LanguageSettingsButton,
+  LanguagesDropdownWrapper,
   MenuBarInner,
   MenuBarWrapper,
   MobileDropdownContainer,
@@ -656,21 +658,23 @@ const appendUtmParams = (
   return href
 }
 
-interface GlobalSettingsDropdownProps {
-  mobileMode: boolean
-  settingsNavItems?: MenuItem[]
-  isOpen: boolean
+interface SettingsDropdownProps {
   closeDropdown: () => void
-  rootDomain: string
+  isOpen: boolean
+  mobileMode: boolean
+  navItems?: MenuItem[]
+}
+
+interface GlobalSettingsDropdownProps extends SettingsDropdownProps {
   LinkComponent: LinkComponentType
+  rootDomain: string
 }
 
 // TODO: Break down this large function into smaller functions
-
 const GlobalSettingsDropdown = forwardRef<HTMLUListElement, GlobalSettingsDropdownProps>((props, ref) => {
-  const { mobileMode, settingsNavItems, isOpen, closeDropdown, rootDomain, LinkComponent } = props
+  const { mobileMode, navItems, isOpen, closeDropdown, rootDomain, LinkComponent } = props
 
-  if (!settingsNavItems || settingsNavItems.length === 0) {
+  if (!navItems || navItems.length === 0) {
     return null
   }
 
@@ -680,7 +684,7 @@ const GlobalSettingsDropdown = forwardRef<HTMLUListElement, GlobalSettingsDropdo
         (mobileMode ? (
           <MobileDropdownContainer mobileMode={mobileMode} ref={ref as unknown as React.RefObject<HTMLDivElement>}>
             <DropdownContent isOpen={true} alignRight={true} mobileMode={mobileMode}>
-              {settingsNavItems.map((item, index) => {
+              {navItems.map((item, index) => {
                 const extractedLabel = extractTextFromStringOrI18nDescriptor(item.label)
                 const to = item.external
                   ? appendUtmParams(
@@ -714,7 +718,7 @@ const GlobalSettingsDropdown = forwardRef<HTMLUListElement, GlobalSettingsDropdo
           </MobileDropdownContainer>
         ) : (
           <DropdownContent isOpen={true} ref={ref} alignRight={true} mobileMode={mobileMode}>
-            {settingsNavItems.map((item, index) => {
+            {navItems.map((item, index) => {
               const extractedLabel = extractTextFromStringOrI18nDescriptor(item.label)
               const to = item.external
                 ? appendUtmParams(
@@ -748,6 +752,49 @@ const GlobalSettingsDropdown = forwardRef<HTMLUListElement, GlobalSettingsDropdo
   )
 })
 
+// TODO: Break down this large function into smaller functions
+const LanguagesDropdown = forwardRef<HTMLUListElement, SettingsDropdownProps>((props, ref) => {
+  const { mobileMode, navItems, isOpen, closeDropdown } = props
+
+  if (!navItems || navItems.length === 0) return null
+
+  const dropdownContent = navItems.map((item, index) => {
+    const extractedLabel = extractTextFromStringOrI18nDescriptor(item.label)
+
+    const content = (
+      <>
+        <DropdownContentItemText>
+          <DropdownContentItemTitle>{extractedLabel}</DropdownContentItemTitle>
+        </DropdownContentItemText>
+        <SVG src={IMG_ICON_ARROW_RIGHT} className="arrow-icon-right" />
+      </>
+    )
+
+    return (
+      <StyledDropdownContentItem key={index} onClick={_onDropdownItemClickFactory(item, closeDropdown)}>
+        <div>{content}</div>
+      </StyledDropdownContentItem>
+    )
+  })
+
+  return (
+    <>
+      {isOpen &&
+        (mobileMode ? (
+          <MobileDropdownContainer mobileMode={mobileMode} ref={ref as unknown as React.RefObject<HTMLDivElement>}>
+            <DropdownContent isOpen={true} alignRight={true} mobileMode={mobileMode}>
+              {dropdownContent}
+            </DropdownContent>
+          </MobileDropdownContainer>
+        ) : (
+          <DropdownContent isOpen={true} ref={ref} alignRight={true} mobileMode={mobileMode}>
+            {dropdownContent}
+          </DropdownContent>
+        ))}
+    </>
+  )
+})
+
 function _onDropdownItemClickFactory(item: MenuItem, postClick?: () => void) {
   return (e: React.MouseEvent<HTMLElement>) => {
     if (item.onClick) {
@@ -758,32 +805,33 @@ function _onDropdownItemClickFactory(item: MenuItem, postClick?: () => void) {
 }
 
 interface MenuBarProps {
-  id?: string
-  navItems: MenuItem[]
-  productVariant: ProductVariant
   LinkComponent: LinkComponentType
-  persistentAdditionalContent?: React.ReactNode
-  additionalContent?: React.ReactNode
-  showGlobalSettings?: boolean
-  settingsNavItems?: MenuItem[]
-  additionalNavButtons?: MenuItem[]
-  bgColorLight?: string
-  bgColorDark?: string
-  bgDropdownColorLight?: string
-  bgDropdownColorDark?: string
-  colorLight?: string
-  colorDark?: string
-  defaultFillLight?: string
-  defaultFillDark?: string
-  activeBackgroundLight?: string
   activeBackgroundDark?: string
-  activeFillLight?: string
+  activeBackgroundLight?: string
   activeFillDark?: string
-  hoverBackgroundLight?: string
-  hoverBackgroundDark?: string
-  padding?: string
-  maxWidth?: number
+  activeFillLight?: string
+  additionalContent?: React.ReactNode
+  additionalNavButtons?: MenuItem[]
+  bgColorDark?: string
+  bgColorLight?: string
+  bgDropdownColorDark?: string
+  bgDropdownColorLight?: string
+  colorDark?: string
+  colorLight?: string
   customTheme?: CowSwapTheme
+  defaultFillDark?: string
+  defaultFillLight?: string
+  hoverBackgroundDark?: string
+  hoverBackgroundLight?: string
+  id?: string
+  languageNavItems?: MenuItem[]
+  maxWidth?: number
+  navItems: MenuItem[]
+  padding?: string
+  persistentAdditionalContent?: React.ReactNode
+  productVariant: ProductVariant
+  settingsNavItems?: MenuItem[]
+  showGlobalSettings?: boolean
 }
 
 // TODO: Break down this large function into smaller functions
@@ -792,37 +840,39 @@ interface MenuBarProps {
 // eslint-disable-next-line max-lines-per-function, complexity, @typescript-eslint/explicit-function-return-type
 export const MenuBar = (props: MenuBarProps) => {
   const {
-    id,
-    navItems,
-    productVariant,
-    persistentAdditionalContent,
-    additionalContent,
-    showGlobalSettings,
-    additionalNavButtons,
-    settingsNavItems,
-    bgColorLight,
-    bgColorDark,
-    bgDropdownColorLight,
-    bgDropdownColorDark,
-    colorLight,
-    colorDark,
-    defaultFillLight,
-    defaultFillDark,
-    activeBackgroundLight,
-    activeBackgroundDark,
-    activeFillLight,
-    activeFillDark,
-    hoverBackgroundLight,
-    hoverBackgroundDark,
-    padding,
-    maxWidth,
-    customTheme,
     LinkComponent,
+    activeBackgroundDark,
+    activeBackgroundLight,
+    activeFillDark,
+    activeFillLight,
+    additionalContent,
+    additionalNavButtons,
+    bgColorDark,
+    bgColorLight,
+    bgDropdownColorDark,
+    bgDropdownColorLight,
+    colorDark,
+    colorLight,
+    customTheme,
+    defaultFillDark,
+    defaultFillLight,
+    hoverBackgroundDark,
+    hoverBackgroundLight,
+    id,
+    languageNavItems,
+    maxWidth,
+    navItems,
+    padding,
+    persistentAdditionalContent,
+    productVariant,
+    settingsNavItems,
+    showGlobalSettings,
   } = props
 
   const [isDaoOpen, setIsDaoOpen] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
+  const [isLanguageOpen, setIsLanguageOpen] = useState(false)
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
   const [isLoaded, setIsLoaded] = useState(false)
 
@@ -832,12 +882,18 @@ export const MenuBar = (props: MenuBarProps) => {
   const navItemsRef = useRef<HTMLUListElement>(null)
   const settingsButtonRef = useRef<HTMLButtonElement>(null)
   const settingsDropdownRef = useRef<HTMLUListElement>(null)
+  const languageButtonRef = useRef<HTMLButtonElement>(null)
+  const languageDropdownRef = useRef<HTMLUListElement>(null)
 
   const rootDomain = typeof window !== 'undefined' ? window.location.host : ''
 
   // TODO: Add proper return type annotation
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleSettingsToggle = () => setIsSettingsOpen((prev) => !prev)
+
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  const handleLanguageToggle = () => setIsLanguageOpen((prev) => !prev)
 
   const isMobile = useMediaQuery(Media.upToLarge(false))
   const isMedium = useMediaQuery(Media.upToMedium(false))
@@ -850,6 +906,8 @@ export const MenuBar = (props: MenuBarProps) => {
 
   useOnClickOutside([settingsButtonRef, settingsDropdownRef], () => setIsSettingsOpen(false))
 
+  useOnClickOutside([languageButtonRef, languageDropdownRef], () => setIsLanguageOpen(false))
+
   // TODO: Add proper return type annotation
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleMobileMenuToggle = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -859,7 +917,7 @@ export const MenuBar = (props: MenuBarProps) => {
 
   React.useEffect(() => {
     if (isMobile) {
-      if (isMobileMenuOpen || isDaoOpen || isSettingsOpen) {
+      if (isMobileMenuOpen || isDaoOpen || isSettingsOpen || isLanguageOpen) {
         addBodyClass('noScroll')
       } else {
         removeBodyClass('noScroll')
@@ -869,7 +927,7 @@ export const MenuBar = (props: MenuBarProps) => {
     return () => {
       removeBodyClass('noScroll')
     }
-  }, [isMobile, isMobileMenuOpen, isDaoOpen, isSettingsOpen])
+  }, [isMobile, isMobileMenuOpen, isDaoOpen, isSettingsOpen, isLanguageOpen])
 
   useEffect(() => {
     setIsLoaded(true)
@@ -964,6 +1022,22 @@ export const MenuBar = (props: MenuBarProps) => {
                 </DropdownContentItemButton>
               )
             })}
+          {languageNavItems && (
+            <LanguagesDropdownWrapper>
+              <LanguageSettingsButton ref={languageButtonRef} mobileMode={isMedium} onClick={handleLanguageToggle}>
+                Lang
+              </LanguageSettingsButton>
+              {isLanguageOpen && (
+                <LanguagesDropdown
+                  closeDropdown={handleLanguageToggle}
+                  isOpen={isLanguageOpen}
+                  mobileMode={isMedium}
+                  ref={languageDropdownRef}
+                  navItems={languageNavItems}
+                />
+              )}
+            </LanguagesDropdownWrapper>
+          )}
           {showGlobalSettings && settingsNavItems && (
             <>
               <GlobalSettingsButton ref={settingsButtonRef} mobileMode={isMedium} onClick={handleSettingsToggle}>
@@ -972,7 +1046,7 @@ export const MenuBar = (props: MenuBarProps) => {
               {isSettingsOpen && (
                 <GlobalSettingsDropdown
                   mobileMode={isMedium}
-                  settingsNavItems={settingsNavItems}
+                  navItems={settingsNavItems}
                   isOpen={isSettingsOpen}
                   closeDropdown={handleSettingsToggle}
                   ref={settingsDropdownRef}

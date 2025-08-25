@@ -706,3 +706,9 @@ export const GlobalSettingsButton = styled.button<{ mobileMode?: boolean }>`
     }
   }
 `
+
+export const LanguageSettingsButton = styled(GlobalSettingsButton)``
+
+export const LanguagesDropdownWrapper = styled.div`
+  position: relative;
+`

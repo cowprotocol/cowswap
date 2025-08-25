@@ -53,6 +53,16 @@ export function AppMenu({ children }: AppMenuProps): ReactNode {
     [darkMode, toggleDarkMode],
   )
 
+  const languageNavItems = useMemo(
+    () => [
+      {
+        label: 'Language',
+        onClick: () => console.log('change language'),
+      },
+    ],
+    [],
+  )
+
   const getTradeUrlParams = useGetTradeUrlParams()
 
   const navItems = useMemo(() => {
@@ -84,23 +94,24 @@ export function AppMenu({ children }: AppMenuProps): ReactNode {
   // TODO: Move hard-coded colors to theme
   return (
     <MenuBar
-      id={APP_HEADER_ELEMENT_ID}
-      navItems={navItems}
-      productVariant={PRODUCT_VARIANT}
+      LinkComponent={LinkComponent}
+      activeBackgroundDark="#282854"
+      activeFillDark="#DEE3E6"
+      additionalContent={null} // On desktop renders inside the menu bar, on mobile renders inside the mobile menu
+      bgColorDark={'rgb(222 227 230 / 7%)'}
+      bgDropdownColorDark={Color.neutral0}
+      bgDropdownColorLight={Color.neutral100}
+      colorDark={'#DEE3E6'}
       customTheme={customTheme}
+      defaultFillDark="rgba(222, 227, 230, 0.4)"
+      hoverBackgroundDark={'#18193B'}
+      id={APP_HEADER_ELEMENT_ID}
+      languageNavItems={languageNavItems}
+      navItems={navItems}
+      persistentAdditionalContent={isMobile ? null : children} // This will stay at its original location
+      productVariant={PRODUCT_VARIANT}
       settingsNavItems={settingsNavItems}
       showGlobalSettings
-      bgColorDark={'rgb(222 227 230 / 7%)'}
-      colorDark={'#DEE3E6'}
-      bgDropdownColorLight={Color.neutral100}
-      bgDropdownColorDark={Color.neutral0}
-      defaultFillDark="rgba(222, 227, 230, 0.4)"
-      activeFillDark="#DEE3E6"
-      activeBackgroundDark="#282854"
-      hoverBackgroundDark={'#18193B'}
-      LinkComponent={LinkComponent}
-      persistentAdditionalContent={isMobile ? null : children} // This will stay at its original location
-      additionalContent={null} // On desktop renders inside the menu bar, on mobile renders inside the mobile menu
     />
   )
 }
