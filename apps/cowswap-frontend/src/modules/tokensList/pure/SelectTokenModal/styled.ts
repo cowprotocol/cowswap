@@ -72,3 +72,11 @@ export const TokensLoader = styled.div`
   padding: 20px 0;
   text-align: center;
 `
+
+export const RouteNotAvailable = styled.div`
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  padding: 20px 0;
+  text-align: center;
+`

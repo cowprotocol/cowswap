@@ -18,6 +18,7 @@ export interface TokensToSelectContext {
   tokens: TokenWithLogo[]
   favoriteTokens: TokenWithLogo[]
   areTokensFromBridge: boolean
+  isRouteAvailable: boolean | undefined
 }
 
 export function useTokensToSelect(): TokensToSelectContext {
@@ -34,14 +35,18 @@ export function useTokensToSelect(): TokensToSelectContext {
     return { buyChainId: selectedTargetChainId, sellChainId: chainId }
   }, [areTokensFromBridge, chainId, selectedTargetChainId])
 
-  const { data: bridgeSupportedTokens, isLoading } = useBridgeSupportedTokens(params)
+  const { data: result, isLoading } = useBridgeSupportedTokens(params)
 
   const bridgeSupportedTokensMap = useMemo(() => {
-    return bridgeSupportedTokens?.reduce<Record<string, boolean>>((acc, val) => {
+    const tokens = result?.tokens
+
+    if (!tokens || !tokens.length) return null
+
+    return tokens.reduce<Record<string, boolean>>((acc, val) => {
       acc[val.address.toLowerCase()] = true
       return acc
     }, {})
-  }, [bridgeSupportedTokens])
+  }, [result])
 
   return useMemo(() => {
     const favoriteTokensToSelect = bridgeSupportedTokensMap
@@ -50,9 +55,10 @@ export function useTokensToSelect(): TokensToSelectContext {
 
     return {
       isLoading: areTokensFromBridge ? isLoading : false,
-      tokens: (areTokensFromBridge ? bridgeSupportedTokens : allTokens) || EMPTY_TOKENS,
+      tokens: (areTokensFromBridge ? result?.tokens : allTokens) || EMPTY_TOKENS,
       favoriteTokens: favoriteTokensToSelect,
       areTokensFromBridge,
+      isRouteAvailable: result?.isRouteAvailable,
     }
-  }, [allTokens, bridgeSupportedTokens, bridgeSupportedTokensMap, isLoading, areTokensFromBridge, favoriteTokens])
+  }, [allTokens, bridgeSupportedTokensMap, isLoading, areTokensFromBridge, favoriteTokens, result])
 }
