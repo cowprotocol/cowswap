@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
+import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances';
 import { ZERO_FRACTION } from '@cowprotocol/common-const'
 import { useTimeAgo } from '@cowprotocol/common-hooks'
 import { formatDateWithTimezone, getAddress, getIsNativeToken } from '@cowprotocol/common-utils'
@@ -18,7 +19,6 @@ import { useSafeMemo } from 'common/hooks/useSafeMemo'
 import { CurrencyLogoPair } from 'common/pure/CurrencyLogoPair'
 import { RateInfo } from 'common/pure/RateInfo'
 import { getQuoteCurrency } from 'common/services/getQuoteCurrency'
-import { BalancesAndAllowances } from 'common/types'
 import { isOrderCancellable } from 'common/utils/isOrderCancellable'
 import { getSellAmountWithFee } from 'utils/orderUtils/getSellAmountWithFee'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'

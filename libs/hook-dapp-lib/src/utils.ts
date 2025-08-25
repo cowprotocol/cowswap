@@ -41,7 +41,7 @@ export function matchHooksToDapps(hooks: StrictCowHook[], dapps: HookDappBase[])
         /**
          * Permit token is a special case, as it's not a dapp, but a hook
          */
-        if (hook.callData.startsWith(EIP_2612_PERMIT_SELECTOR) || hook.callData.startsWith(DAI_PERMIT_SELECTOR)) {
+        if (doesHookHavePermit(hook)) {
           return {
             hook,
             dapp: hookDappsRegistry[PERMIT_HOOK_DAPP_ID] as HookDappBase,
@@ -54,6 +54,10 @@ export function matchHooksToDapps(hooks: StrictCowHook[], dapps: HookDappBase[])
         }
       })
   )
+}
+
+export function doesHookHavePermit(hook: { callData: string }): boolean {
+  return hook.callData.startsWith(EIP_2612_PERMIT_SELECTOR) || hook.callData.startsWith(DAI_PERMIT_SELECTOR)
 }
 
 export function matchHooksToDappsRegistry(

@@ -1,6 +1,6 @@
 import { useAtomValue } from 'jotai'
 
-import { tradeApproveStateAtom } from '../containers/TradeApprove/tradeApproveStateAtom'
+import { tradeApproveStateAtom } from '../index'
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type

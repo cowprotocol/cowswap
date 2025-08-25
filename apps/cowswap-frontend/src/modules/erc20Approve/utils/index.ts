@@ -1,0 +1,1 @@
+export { getApprovalState } from './getApprovalState'

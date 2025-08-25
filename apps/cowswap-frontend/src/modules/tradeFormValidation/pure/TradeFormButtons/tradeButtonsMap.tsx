@@ -8,10 +8,10 @@ import { CenteredDots, HelpTooltip, TokenSymbol } from '@cowprotocol/ui'
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
 
+import { TradeApproveButton } from 'modules/erc20Approve'
 import { CompatibilityIssuesWarning } from 'modules/trade'
 
 import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
-import { TradeApproveButton } from 'common/containers/TradeApprove'
 import { TradeLoadingButton } from 'common/pure/TradeLoadingButton'
 
 import { TradeFormButtonContext, TradeFormValidation } from '../../types'
@@ -236,7 +236,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     const { maximumSendSellAmount } = context.amountsToSign
 
     return (
-      <TradeApproveButton amountToApprove={maximumSendSellAmount}>
+      <TradeApproveButton amountToApprove={maximumSendSellAmount} enablePartialApprove={context.enablePartialApprove}>
         <TradeFormBlankButton disabled={true}>
           <Trans>{context.defaultText}</Trans>
         </TradeFormBlankButton>

@@ -1,36 +1,35 @@
-import { useEffect, useMemo, useState, useCallback, useRef, ChangeEventHandler } from 'react'
+import { ChangeEventHandler, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
+import { useTokenAllowances, useTokensBalances } from '@cowprotocol/balances-and-allowances'
 import { LpToken, PAGE_TITLES, TokenWithLogo } from '@cowprotocol/common-const'
-import { useTheme, useDebounce, useOnClickOutside, usePrevious } from '@cowprotocol/common-hooks'
+import { useDebounce, useOnClickOutside, usePrevious, useTheme } from '@cowprotocol/common-hooks'
 import { isAddress, isTruthy } from '@cowprotocol/common-utils'
-import { useTokensByAddressMap, useFavoriteTokens, useResetFavoriteTokens } from '@cowprotocol/tokens'
+import { useFavoriteTokens, useResetFavoriteTokens, useTokensByAddressMap } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
-import { Trans, t } from '@lingui/macro'
+import { t, Trans } from '@lingui/macro'
 import { Check } from 'react-feather'
 import { CloseIcon } from 'theme'
 
 import { TokenTable } from 'legacy/components/Tokens/TokensTable'
 
 import { PageTitle } from 'modules/application/containers/PageTitle'
-import { useTokenAllowances } from 'modules/ordersTable/hooks/useTokenAllowances'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
 import {
+  AccountHeading,
+  ClearSearchInput,
+  LeftSection,
   Menu,
   MenuButton,
   MenuItem,
   MenuWrapper,
-  StyledChevronDown,
-  AccountHeading,
-  RemoveTokens,
-  LeftSection,
-  ClearSearchInput,
   Overview,
+  RemoveTokens,
   SearchInputFormatter,
+  StyledChevronDown,
   TokenSearchInput,
 } from './styled'
 
