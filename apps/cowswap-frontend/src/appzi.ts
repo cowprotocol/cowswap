@@ -52,7 +52,7 @@ type AppziCustomSettings = {
   waitedTooLong?: true
   expired?: true
   traded?: true
-  bridged?: true
+  isBridging?: true
   created?: true
   cancelled?: true
   openedLimitPage?: true

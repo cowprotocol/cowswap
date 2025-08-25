@@ -26,7 +26,7 @@ function processExecutedBridging(crossChainOrder: CrossChainOrder): void {
   // Trigger Appzi survey
   triggerAppziSurvey(
     {
-      bridged: true,
+      isBridging: true,
       explorerUrl: crossChainOrder.explorerUrl,
       chainId: crossChainOrder.chainId,
       orderType: UiOrderType.SWAP,
