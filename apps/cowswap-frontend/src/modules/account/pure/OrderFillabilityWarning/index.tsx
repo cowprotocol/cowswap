@@ -30,7 +30,7 @@ export function OrderFillabilityWarning({
         <UnfillableWarning bannerType={StatusColorVariant.Danger} orientation={BannerOrientation.Horizontal}>
           Order cannot be filled due to insufficient allowance on the current account.
           <ApproveWrapper>
-            <TradeApproveButton amountToApprove={inputAmount} />
+            <TradeApproveButton enablePartialApprove={true} amountToApprove={inputAmount} />
           </ApproveWrapper>
         </UnfillableWarning>
       )}

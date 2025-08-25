@@ -236,7 +236,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     const { maximumSendSellAmount } = context.amountsToSign
 
     return (
-      <TradeApproveButton amountToApprove={maximumSendSellAmount}>
+      <TradeApproveButton amountToApprove={maximumSendSellAmount} enablePartialApprove={context.enablePartialApprove}>
         <TradeFormBlankButton disabled={true}>
           <Trans>{context.defaultText}</Trans>
         </TradeFormBlankButton>

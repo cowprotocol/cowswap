@@ -1,6 +1,7 @@
 import { ReactElement, ReactNode, useMemo } from 'react'
 
 import { COW_TOKEN_TO_CHAIN, V_COW, V_COW_CONTRACT_ADDRESS } from '@cowprotocol/common-const'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { areAddressesEqual, ExplorerDataType, getExplorerLink, shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENS } from '@cowprotocol/ens'
@@ -206,6 +207,8 @@ export function ActivityDetails(props: {
     (enhancedTransaction?.claim && V_COW_CONTRACT_ADDRESS[chainId as SupportedChainId])
   const singleToken = useTokenBySymbolOrAddress(tokenAddress) || null
 
+  const { isPartialApproveEnabled } = useFeatureFlags()
+
   const getShowCancellationModal = useCancelOrder()
 
   const isSwap = order && getUiOrderType(order) === UiOrderType.SWAP
@@ -373,6 +376,11 @@ export function ActivityDetails(props: {
 
   const hasPermit = order && doesOrderHavePermit(order)
 
+  const showWarning =
+    isPartialApproveEnabled && fillability
+      ? (!fillability.hasEnoughAllowance && !hasPermit) || !fillability.hasEnoughBalance
+      : false
+
   return (
     <>
       {/* Warning banner if custom recipient */}
@@ -515,7 +523,7 @@ export function ActivityDetails(props: {
             (summary ?? id)
           )}
 
-          {fillability && !hasPermit && orderSummary?.inputAmount ? (
+          {fillability && showWarning && orderSummary?.inputAmount ? (
             <OrderFillabilityWarning fillability={fillability} inputAmount={orderSummary.inputAmount} />
           ) : null}
 

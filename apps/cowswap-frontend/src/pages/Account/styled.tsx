@@ -1,4 +1,5 @@
 import { UI, ExternalLink, Loader as SpinnerLoader, ButtonPrimary, Media } from '@cowprotocol/ui'
+import { toPixelValue } from '@cowprotocol/ui-utils'
 
 import { X } from 'react-feather'
 import styled, { css } from 'styled-components/macro'
@@ -217,8 +218,8 @@ export const BannerCardIcon = styled.div<{ width?: string | number; height?: str
   display: flex;
   align-items: center;
   justify-content: center;
-  width: ${({ width }) => (typeof width === 'number' ? `${width}px` : (width ?? '100%'))};
-  height: ${({ height }) => (typeof height === 'number' ? `${height}px` : (height ?? '100%'))};
+  width: ${({ width }) => toPixelValue(width) || '100%'};
+  height: ${({ height }) => toPixelValue(height) || '100%'};
 `
 
 export const CardActions = styled.div<{ content?: string }>`

@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.4](https://github.com/cowprotocol/cowswap/compare/snackbars-v1.1.3...snackbars-v1.1.4) (2025-08-21)
+
+
+### Bug Fixes
+
+* avoid ResizeObserver render errors ([#6144](https://github.com/cowprotocol/cowswap/issues/6144)) ([5c8b029](https://github.com/cowprotocol/cowswap/commit/5c8b02988da94540034bb6045618fd2084800bf3))
+
 ## [1.1.3](https://github.com/cowprotocol/cowswap/compare/snackbars-v1.1.2...snackbars-v1.1.3) (2025-06-18)
 
 

@@ -1,33 +1,31 @@
 import { UI } from '@cowprotocol/ui'
-import { JazzIcon } from '@cowprotocol/wallet'
 
 import { Link } from 'react-router'
 import styled from 'styled-components/macro'
 
-import accountContainerImg from '../../img/account-container.svg'
-
-export const Wrapper = styled(Link)`
+export const Wrapper = styled(Link).attrs({
+  'data-hover-trigger': true,
+})`
   width: 100%;
   display: grid;
   align-items: center;
   justify-content: center;
-  grid-template-columns: 100px 1fr 30px;
-  grid-template-rows: max-content;
-  margin-bottom: 10px;
+  grid-template-columns: min-content 1fr min-content;
   cursor: pointer;
-  border-radius: 8px;
+  border-radius: 16px;
+  gap: 16px;
   text-decoration: none;
+  padding: 8px;
+  transition: background 0.2s ease-out;
 
   &:hover {
     background: var(${UI.COLOR_PRIMARY_OPACITY_10});
-  }
-`
 
-export const IconWrapper = styled.div`
-  width: 100px;
-  height: 67px;
-  background-repeat: no-repeat;
-  background-image: url(${accountContainerImg});
+    /* Only target ArrowIcon's path */
+    > svg path {
+      stroke: var(${UI.COLOR_TEXT});
+    }
+  }
 `
 
 export const AccountWrapper = styled.div`
@@ -44,7 +42,14 @@ export const AccountWrapper = styled.div`
   }
 `
 
-export const JazzIconStyled = styled(JazzIcon)`
+export const MiniContent = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-flow: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0;
+  gap: 10px;
   position: relative;
-  left: -10px;
 `
