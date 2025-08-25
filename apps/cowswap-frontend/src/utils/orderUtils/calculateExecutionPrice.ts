@@ -1,5 +1,5 @@
 import { rawToTokenAmount } from '@cowprotocol/common-utils'
-import { OrderKind } from '@cowprotocol/contracts'
+import { ContractsOrderKind as OrderKind } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Fraction, Price } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'

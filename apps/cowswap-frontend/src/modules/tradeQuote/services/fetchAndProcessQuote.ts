@@ -1,13 +1,11 @@
 import { onlyResolvesLast } from '@cowprotocol/common-utils'
+import { PriceQuality, SupportedChainId, SwapAdvancedSettings } from '@cowprotocol/cow-sdk'
 import {
   BridgeProviderQuoteError,
   CrossChainQuoteAndPost,
   isBridgeQuoteAndPost,
-  PriceQuality,
   QuoteBridgeRequest,
-  SupportedChainId,
-  SwapAdvancedSettings,
-} from '@cowprotocol/cow-sdk'
+} from '@cowprotocol/sdk-bridging'
 
 import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 

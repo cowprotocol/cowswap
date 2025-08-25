@@ -1,7 +1,8 @@
 import { ReactNode, useEffect } from 'react'
 
 import { GtmEvent, useCowAnalytics } from '@cowprotocol/analytics'
-import { BridgeStatus, CrossChainOrder, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { BridgeStatus, CrossChainOrder } from '@cowprotocol/sdk-bridging'
 import { UiOrderType } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 

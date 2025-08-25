@@ -1,5 +1,6 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import type { BridgeProviderInfo, BridgeStatusResult, SupportedChainId } from '@cowprotocol/cow-sdk'
+import type { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { BridgeProviderInfo, BridgeStatusResult } from '@cowprotocol/sdk-bridging'
 import type { Currency, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
 
 import type { ReceiveAmountInfo } from 'modules/trade'

@@ -1,6 +1,6 @@
 import { USDC_SEPOLIA, WETH_SEPOLIA } from '@cowprotocol/common-const'
 import { rawToTokenAmount } from '@cowprotocol/common-utils'
-import { OrderKind } from '@cowprotocol/contracts'
+import { OrderKind } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Fraction } from '@uniswap/sdk-core'
 
 import { calculateExecutionPrice, convertAmountToCurrency } from './calculateExecutionPrice'
@@ -48,7 +48,7 @@ describe('calculateExecutionPrice', () => {
         inputCurrencyAmount: CurrencyAmount.fromRawAmount(USDC_SEPOLIA, rawToTokenAmount(6000, USDC_SEPOLIA.decimals)),
         outputCurrencyAmount: CurrencyAmount.fromRawAmount(
           WETH_SEPOLIA,
-          rawToTokenAmount(30000, WETH_SEPOLIA.decimals)
+          rawToTokenAmount(30000, WETH_SEPOLIA.decimals),
         ),
         feeAmount: CurrencyAmount.fromRawAmount(USDC_SEPOLIA, rawToTokenAmount(250, USDC_SEPOLIA.decimals)),
         marketRate: marketPrice,

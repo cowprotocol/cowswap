@@ -1,6 +1,6 @@
 import { ReactNode, useState } from 'react'
 
-import { BridgeProviderInfo } from '@cowprotocol/cow-sdk'
+import { BridgeProviderInfo } from '@cowprotocol/sdk-bridging'
 import { Media } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'

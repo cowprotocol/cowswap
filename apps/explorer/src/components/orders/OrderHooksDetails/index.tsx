@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react'
 
-import { latest } from '@cowprotocol/app-data'
+import { cowAppDataLatestScheme } from '@cowprotocol/cow-sdk'
 import { HookToDappMatch, matchHooksToDappsRegistry } from '@cowprotocol/hook-dapp-lib'
 
 import { HookItem } from './HookItem'
@@ -16,13 +16,13 @@ interface OrderHooksDetailsProps {
 
 // TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, complexity
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function OrderHooksDetails({ appData, fullAppData, children }: OrderHooksDetailsProps) {
   const { appDataDoc } = useAppData(appData, fullAppData)
 
   if (!appDataDoc?.metadata) return null
 
-  const metadata = appDataDoc.metadata as latest.Metadata
+  const metadata = appDataDoc.metadata as cowAppDataLatestScheme.Metadata
 
   const preHooksToDapp = matchHooksToDappsRegistry(metadata.hooks?.pre || [])
   const postHooksToDapp = matchHooksToDappsRegistry(metadata.hooks?.post || [])

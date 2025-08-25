@@ -1,6 +1,6 @@
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
-import type { CrossChainOrder } from '@cowprotocol/cow-sdk'
 import { ChainInfo } from '@cowprotocol/cow-sdk'
+import type { CrossChainOrder } from '@cowprotocol/sdk-bridging'
 
 import useSWR, { SWRResponse } from 'swr'
 

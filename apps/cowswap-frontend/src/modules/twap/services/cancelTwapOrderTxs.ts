@@ -1,7 +1,7 @@
 import { ComposableCoW, GPv2Settlement } from '@cowprotocol/abis'
 import { USDC_LENS, WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
-import { Order } from '@cowprotocol/contracts'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { ContractsOrder } from '@cowprotocol/sdk-contracts-ts'
 import { BigNumber } from '@ethersproject/bignumber'
 import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { CurrencyAmount } from '@uniswap/sdk-core'
@@ -130,6 +130,6 @@ async function getFakeTwapPartOrderId(chainId: SupportedChainId): Promise<string
     0,
   )
 
-  FAKE_PART_ORDER_IDS_CACHE[chainId] = await computeOrderUid(chainId, FAKE_OWNER, part as Order)
+  FAKE_PART_ORDER_IDS_CACHE[chainId] = await computeOrderUid(chainId, FAKE_OWNER, part as ContractsOrder)
   return FAKE_PART_ORDER_IDS_CACHE[chainId]
 }

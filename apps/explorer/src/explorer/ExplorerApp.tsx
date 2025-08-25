@@ -21,6 +21,7 @@ import { GlobalStyle, MainWrapper } from './styled'
 import { version } from '../../package.json'
 import { GenericLayout } from '../components/layout'
 import { withGlobalContext } from '../hooks/useGlobalState'
+import { CowSdkUpdater } from '../sdk/cowSdk'
 import { RedirectMainnet, RedirectXdai, useNetworkId } from '../state/network'
 import { NetworkUpdater } from '../state/network/NetworkUpdater'
 import { environmentName } from '../utils/env'
@@ -166,6 +167,7 @@ export const ExplorerApp: React.FC = () => {
       <MainWrapper>
         <Router basename={process.env.BASE_URL}>
           <StateUpdaters />
+          <CowSdkUpdater />
           <Routes>
             <Route path="/mainnet" element={<RedirectMainnet />} />
             <Route path="/xdai" element={<RedirectXdai />} />

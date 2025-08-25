@@ -1,4 +1,4 @@
-import { ICoWShedCall } from '@cowprotocol/cow-sdk'
+import { ICoWShedCall } from '@cowprotocol/sdk-cow-shed'
 import { defaultAbiCoder } from '@ethersproject/abi'
 import { keccak256 } from '@ethersproject/keccak256'
 import { pack } from '@ethersproject/solidity'

@@ -1,10 +1,10 @@
 import { useMemo } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
+import { BigNumber } from '@ethersproject/bignumber'
 
 import { useHooks } from 'entities/orderHooks/useHooks'
 import { useOrderParams } from 'entities/orderHooks/useOrderParams'
-import { BigNumber } from 'ethers'
 
 import { useTenderlyBundleSimulation } from 'modules/tenderly/hooks/useTenderlyBundleSimulation'
 import { BalancesDiff } from 'modules/tenderly/types'

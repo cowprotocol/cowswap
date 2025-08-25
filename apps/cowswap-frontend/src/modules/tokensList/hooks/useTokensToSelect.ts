@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { BuyTokensParams } from '@cowprotocol/cow-sdk'
+import { BuyTokensParams } from '@cowprotocol/sdk-bridging'
 import { useAllActiveTokens, useFavoriteTokens } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 

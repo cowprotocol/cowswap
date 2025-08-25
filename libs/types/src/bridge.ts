@@ -1,4 +1,4 @@
-import type { BridgeStatusResult } from '@cowprotocol/cow-sdk'
+import type { BridgeStatusResult } from '@cowprotocol/sdk-bridging'
 import type { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import type { TokenInfo } from './common'

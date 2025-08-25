@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react'
 
 import { getChainInfo } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
-import type { CrossChainOrder } from '@cowprotocol/cow-sdk'
+import type { CrossChainOrder } from '@cowprotocol/sdk-bridging'
 import { Color, NetworkLogo } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'

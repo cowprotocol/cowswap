@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react'
 
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
-import { CrossChainOrder } from '@cowprotocol/cow-sdk'
+import type { CrossChainOrder } from '@cowprotocol/sdk-bridging'
 
 import { LinkWithPrefixNetwork } from '../../common/LinkWithPrefixNetwork'
 import { RowWithCopyButton } from '../../common/RowWithCopyButton'

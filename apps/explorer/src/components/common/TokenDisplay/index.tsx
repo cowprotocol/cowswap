@@ -1,6 +1,7 @@
 import { ReactNode } from 'react'
 
-import { type CrossChainOrder, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import type { CrossChainOrder } from '@cowprotocol/sdk-bridging'
 
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 import { BlockExplorerLink } from 'components/common/BlockExplorerLink'

@@ -1,6 +1,7 @@
 import { atom } from 'jotai'
 
-import { BridgeProviderQuoteError, BridgeQuoteResults, PriceQuality, QuoteAndPost } from '@cowprotocol/cow-sdk'
+import { PriceQuality, QuoteAndPost } from '@cowprotocol/cow-sdk'
+import { BridgeProviderQuoteError, BridgeQuoteResults } from '@cowprotocol/sdk-bridging'
 
 import { QuoteApiError } from 'api/cowProtocol/errors/QuoteError'
 

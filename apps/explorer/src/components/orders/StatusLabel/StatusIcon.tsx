@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { BridgeStatus } from '@cowprotocol/cow-sdk'
+import { BridgeStatus } from '@cowprotocol/sdk-bridging'
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 

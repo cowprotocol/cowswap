@@ -5,6 +5,7 @@ import { MultiCallUpdater } from '@cowprotocol/multicall'
 import { TokensListsTagsUpdater, TokensListsUpdater, UnsupportedTokensUpdater } from '@cowprotocol/tokens'
 import { HwAccountIndexUpdater, useWalletInfo, WalletUpdater } from '@cowprotocol/wallet'
 
+import { CowSdkUpdater } from 'cowSdk'
 import { useBalancesContext } from 'entities/balancesContext/useBalancesContext'
 import { BridgeOrdersCleanUpdater } from 'entities/bridgeOrders'
 import { useBridgeSupportedNetworks } from 'entities/bridgeProvider'
@@ -60,6 +61,7 @@ export function Updaters(): ReactNode {
 
   return (
     <>
+      <CowSdkUpdater />
       <ThemeConfigUpdater />
       <ThemeFromUrlUpdater />
       <ConnectionStatusUpdater />

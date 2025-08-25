@@ -1,13 +1,8 @@
 import { useSetAtom } from 'jotai'
 import { useMemo } from 'react'
 
-import {
-  BridgeQuoteResults,
-  PriceQuality,
-  QuoteAndPost,
-  QuoteBridgeRequest,
-  SupportedChainId,
-} from '@cowprotocol/cow-sdk'
+import { PriceQuality, QuoteAndPost, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { BridgeQuoteResults, QuoteBridgeRequest } from '@cowprotocol/sdk-bridging'
 
 import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
 

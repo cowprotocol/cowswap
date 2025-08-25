@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 
-import { SupportedChainId, CrossChainOrder } from '@cowprotocol/cow-sdk'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import type { CrossChainOrder } from '@cowprotocol/sdk-bridging'
 import { Command } from '@cowprotocol/types'
 import { TruncatedText } from '@cowprotocol/ui/pure/TruncatedText'
 

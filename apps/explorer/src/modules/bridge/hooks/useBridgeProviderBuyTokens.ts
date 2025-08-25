@@ -1,5 +1,5 @@
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
-import type { CrossChainOrder } from '@cowprotocol/cow-sdk'
+import type { CrossChainOrder } from '@cowprotocol/sdk-bridging'
 import type { TokenInfo } from '@uniswap/token-lists'
 
 import useSWR, { SWRResponse } from 'swr'

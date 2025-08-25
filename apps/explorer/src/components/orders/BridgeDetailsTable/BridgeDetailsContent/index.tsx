@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react'
 
 import { RECEIVED_LABEL } from '@cowprotocol/common-const'
-import { BridgeStatus, CrossChainOrder } from '@cowprotocol/cow-sdk'
+import { BridgeStatus, CrossChainOrder } from '@cowprotocol/sdk-bridging'
 
 import { AddressLink } from 'components/common/AddressLink'
 import { DetailRow } from 'components/common/DetailRow'

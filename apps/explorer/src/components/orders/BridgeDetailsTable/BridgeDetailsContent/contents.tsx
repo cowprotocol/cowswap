@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react'
 
 import { displayTime } from '@cowprotocol/common-utils'
-import { BridgeStatus } from '@cowprotocol/cow-sdk'
+import { BridgeStatus } from '@cowprotocol/sdk-bridging'
 
 import { DetailRow } from '../../../common/DetailRow'
 import { BridgeDetailsTooltips } from '../bridgeDetailsTooltips'

@@ -1,11 +1,12 @@
-import { latest } from '@cowprotocol/app-data'
-import { EnrichedOrder, HOOK_DAPP_BRIDGE_PROVIDER_PREFIX } from '@cowprotocol/cow-sdk'
+import { cowAppDataLatestScheme } from '@cowprotocol/cow-sdk'
+import { EnrichedOrder } from '@cowprotocol/cow-sdk'
+import { HOOK_DAPP_BRIDGE_PROVIDER_PREFIX } from '@cowprotocol/sdk-bridging'
 
 export function getOrderBridgeProviderId(order: EnrichedOrder): string | undefined {
   if (!order.fullAppData) return
 
   try {
-    const appData = JSON.parse(order.fullAppData) as latest.AppDataRootSchema
+    const appData = JSON.parse(order.fullAppData) as cowAppDataLatestScheme.AppDataRootSchema
 
     const postHooks = appData.metadata.hooks?.post || []
     const bridgeHooks = postHooks.filter((hook) => hook.dappId?.startsWith(HOOK_DAPP_BRIDGE_PROVIDER_PREFIX))

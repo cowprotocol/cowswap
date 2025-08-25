@@ -1,6 +1,7 @@
 import React from 'react'
 
-import { BridgeStatus, CrossChainOrder, OrderClass, OrderKind } from '@cowprotocol/cow-sdk'
+import { OrderClass, OrderKind } from '@cowprotocol/cow-sdk'
+import { BridgeStatus, CrossChainOrder } from '@cowprotocol/sdk-bridging'
 
 import { TokenErc20 } from '@gnosis.pm/dex-js'
 import BigNumber from 'bignumber.js'

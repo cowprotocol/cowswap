@@ -1,4 +1,5 @@
-import { PriceQuality, QuoteBridgeRequest } from '@cowprotocol/cow-sdk'
+import { PriceQuality } from '@cowprotocol/cow-sdk'
+import { QuoteBridgeRequest } from '@cowprotocol/sdk-bridging'
 
 import { AppDataInfo } from '../../appData'
 import { TradeQuoteState } from '../state/tradeQuoteAtom'

@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { BridgeProviderInfo } from '@cowprotocol/cow-sdk'
+import { BridgeProviderInfo } from '@cowprotocol/sdk-bridging'
 import { ProductVariant, ProductLogo, UI } from '@cowprotocol/ui'
 
 import { StackedProtocolIcons } from './StackedProtocolIcons'

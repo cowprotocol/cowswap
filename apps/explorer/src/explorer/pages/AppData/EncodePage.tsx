@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 
-import { AppDataInfo, stringifyDeterministic } from '@cowprotocol/app-data'
+import { AppDataInfo, stringifyDeterministic } from '@cowprotocol/cow-sdk'
 
 import Form, { FormValidation } from '@rjsf/core'
 import { JSONSchema7 } from 'json-schema'

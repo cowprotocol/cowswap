@@ -1,4 +1,5 @@
-import { SupportedChainId, CrossChainOrder, BridgeStatus } from '@cowprotocol/cow-sdk'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { CrossChainOrder, BridgeStatus } from '@cowprotocol/sdk-bridging'
 
 import ms from 'ms.macro'
 import useSWR, { SWRConfiguration, SWRResponse } from 'swr'

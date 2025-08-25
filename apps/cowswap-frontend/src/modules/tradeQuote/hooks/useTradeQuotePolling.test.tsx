@@ -31,7 +31,12 @@ jest.mock('@cowprotocol/common-hooks', () => ({
 }))
 jest.mock('@cowprotocol/wallet-provider', () => ({
   ...jest.requireActual('@cowprotocol/wallet-provider'),
-  useWalletProvider: jest.fn().mockReturnValue({ provider: {} }),
+  useWalletProvider: jest.fn().mockReturnValue({
+    provider: {},
+    getSigner() {
+      return {}
+    },
+  }),
 }))
 
 jest.mock('tradingSdk/bridgingSdk', () => ({

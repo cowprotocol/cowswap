@@ -1,6 +1,6 @@
 import { useState, useMemo, ReactNode } from 'react'
 
-import { BridgeProviderInfo } from '@cowprotocol/cow-sdk'
+import { BridgeProviderInfo } from '@cowprotocol/sdk-bridging'
 import { ProductVariant, ProductLogo, UI } from '@cowprotocol/ui'
 
 import { ProtocolIcon, ProtocolIconsContainer, getBorderWidth } from './styled'
@@ -122,10 +122,10 @@ export function StackedProtocolIcons({
   const secondIconZIndex = isSecondOnTop ? 3 : isFirstOnTop ? 1 : 2
 
   const firstIconChildContent = (
-    <ProductLogo 
-      variant={ProductVariant.CowProtocol} 
-      height={currentLogoHeight} 
-      logoIconOnly 
+    <ProductLogo
+      variant={ProductVariant.CowProtocol}
+      height={currentLogoHeight}
+      logoIconOnly
       overrideColor={`var(${UI.COLOR_PURPLE_200_PRIMARY})`}
       overrideHoverColor={`var(${UI.COLOR_PURPLE_200_PRIMARY})`}
     />

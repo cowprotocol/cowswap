@@ -2,8 +2,8 @@ import { useCallback, useState } from 'react'
 
 import { CowShedContract, CowShedContractAbi } from '@cowprotocol/abis'
 import { delay } from '@cowprotocol/common-utils'
-import { SigningScheme } from '@cowprotocol/contracts'
-import { CoWShedVersion } from '@cowprotocol/cow-sdk'
+import { ContractsSigningScheme } from '@cowprotocol/sdk-contracts-ts'
+import { CoWShedVersion } from '@cowprotocol/sdk-cow-shed'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { formatBytes32String } from '@ethersproject/strings'
@@ -82,8 +82,8 @@ export function useRecoverFundsFromProxy(
         calls,
         nonce,
         BigInt(validTo),
+        ContractsSigningScheme.EIP712, // TODO: support other signing types
         provider.getSigner(),
-        SigningScheme.EIP712, // TODO: support other signing types
       )
 
       setTxSigningStep(RecoverSigningStep.SIGN_TRANSACTION)
