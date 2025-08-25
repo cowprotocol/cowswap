@@ -8,9 +8,6 @@ import { Trans } from '@lingui/react/macro'
 import { ModalState, useModalState } from 'common/hooks/useModalState'
 import { ConfirmationPendingContent } from 'common/pure/ConfirmationPendingContent'
 
-
-import { ConfirmationPendingContent } from '../pure/ConfirmationPendingContent'
-
 interface PendingApprovalModalParams {
   currencySymbol?: string
   onDismiss?: Command
