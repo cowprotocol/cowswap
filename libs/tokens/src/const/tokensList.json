@@ -163,11 +163,6 @@
       "priority": 2,
       "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/CoinGecko.232.json",
       "enabledByDefault": true
-    },
-    {
-      "priority": 3,
-      "enabledByDefault": true,
-      "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/Uniswap.232.json"
     }
   ]
 }

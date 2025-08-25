@@ -618,8 +618,11 @@ const POLYGON_STABLECOINS = [USDC_POLYGON.address, USDT_POLYGON.address, DAI_POL
 
 const AVALANCHE_STABLECOINS = [USDC_AVALANCHE.address, USDT_AVALANCHE.address].map((t) => t.toLowerCase())
 
-// TODO: add more stablecoins for Lens
-const LENS_STABLECOINS = [USDC_LENS.address].map((t) => t.toLowerCase())
+const LENS_STABLECOINS = [
+  USDC_LENS.address,
+  NATIVE_CURRENCIES[SupportedChainId.LENS].address, // GHO
+  WRAPPED_NATIVE_CURRENCIES[SupportedChainId.LENS].address, // WGHO
+].map((t) => t.toLowerCase())
 
 // TODO: add more stablecoins for BNB
 const BNB_STABLECOINS = [USDC_BNB.address].map((t) => t.toLowerCase())
