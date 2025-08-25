@@ -51,7 +51,7 @@ export function useGeneratePermitHook(): GeneratePermitHook {
 
       const permitParams = { chainId, tokenAddress: inputToken.address, account, nonce, amount }
 
-      const cachedPermit = await getCachedPermit(inputToken.address, spender)
+      const cachedPermit = await getCachedPermit(inputToken.address, amount, spender)
 
       if (cachedPermit) {
         return cachedPermit
