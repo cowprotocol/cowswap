@@ -11,16 +11,14 @@ export function useShowUnfillableOrderAlert(): boolean {
     return false
   }
 
-  return Object.keys(pendingOrdersFillability)
-    .map((orderId) => {
-      const fillability = pendingOrdersFillability[orderId]
-      if (fillability) {
-        // todo check permit amount and validity further
-        const hasEnoughAllowance = fillability.hasEnoughAllowance || fillability.hasPermit
-        return !hasEnoughAllowance || !fillability.hasEnoughBalance
-      }
+  return Object.keys(pendingOrdersFillability).some((orderId) => {
+    const fillability = pendingOrdersFillability[orderId]
+    if (fillability) {
+      // todo check permit amount and validity further
+      const hasEnoughAllowance = fillability.hasEnoughAllowance || fillability.hasPermit
+      return !hasEnoughAllowance || !fillability.hasEnoughBalance
+    }
 
-      return false
-    })
-    .some(Boolean)
+    return false
+  })
 }
