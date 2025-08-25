@@ -63,7 +63,6 @@ export function EthFlowModal({
       dismiss: onDismiss,
       directSwap: directSwapCallback,
     },
-    // todo [approve] check case when input is undefined
     nativeInput ? BigInt(nativeInput?.quotient.toString()) : undefined,
   )
 
