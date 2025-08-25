@@ -29,7 +29,8 @@ const FEEDBACK_KEY = process.env.REACT_APP_APPZI_FEEDBACK_KEY || isProdLike ? PR
 
 const APPZI_TOKEN = process.env.REACT_APP_APPZI_TOKEN || '5ju0G'
 
-const PENDING_TOO_LONG_TIME = ms`5 min`
+const PENDING_TOO_LONG_TIME_SWAP = ms`5 min`
+const PENDING_TOO_LONG_TIME_BRIDGE = ms`7 min`
 
 declare global {
   interface Window {
@@ -102,10 +103,11 @@ export function openFeedbackAppzi(params: { account?: string; walletName?: strin
   }
 }
 
-export function isOrderInPendingTooLong(openSince: number | undefined): boolean {
+export function isOrderInPendingTooLong(openSince: number | undefined, isBridging?: boolean): boolean {
   const now = Date.now()
+  const pendingTime = isBridging ? PENDING_TOO_LONG_TIME_BRIDGE : PENDING_TOO_LONG_TIME_SWAP
 
-  return !!openSince && now - openSince > PENDING_TOO_LONG_TIME
+  return !!openSince && now - openSince > pendingTime
 }
 
 // Different triggers for each NPS survey.
