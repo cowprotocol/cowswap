@@ -39,10 +39,12 @@ const IMPLEMENTATION_STORAGE_SLOT = slot('eip1967.proxy.implementation')
  * @returns The address of the contract storing the proxy implementation.
  */
 export async function implementationAddress(provider: Web3Provider, proxy: string): Promise<string> {
-  const [implementation] = defaultAbiCoder.decode(
-    ['address'],
-    await provider.getStorageAt(proxy, IMPLEMENTATION_STORAGE_SLOT),
-  )
+  const storage = await provider.getStorageAt(proxy, IMPLEMENTATION_STORAGE_SLOT)
+
+  if (storage === '0x') return ZERO_ADDRESS
+
+  const [implementation] = defaultAbiCoder.decode(['address'], storage)
+
   return implementation
 }
 
