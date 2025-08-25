@@ -25,6 +25,7 @@ import { swapTradeButtonsMap } from './swapTradeButtonsMap'
 import { useOnCurrencySelection } from '../../hooks/useOnCurrencySelection'
 import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
 import { useSwapFormState } from '../../hooks/useSwapFormState'
+import { useSwapSettings } from '../../hooks/useSwapSettings'
 
 interface TradeButtonsProps {
   isTradeContextReady: boolean
@@ -55,13 +56,18 @@ export function TradeButtons({
   const wrappedToken = useWrappedToken()
   const onCurrencySelection = useOnCurrencySelection()
   const isCurrentTradeBridging = useIsCurrentTradeBridging()
+  const { enablePartialApproval } = useSwapSettings()
 
   const confirmTrade = tradeConfirmActions.onOpen
 
   const confirmText = isCurrentTradeBridging ? 'Swap and Bridge' : 'Swap'
 
   const { isPartialApproveEnabled } = useFeatureFlags()
-  const tradeFormButtonContext = useTradeFormButtonContext(confirmText, confirmTrade, !!isPartialApproveEnabled)
+  const tradeFormButtonContext = useTradeFormButtonContext(
+    confirmText,
+    confirmTrade,
+    !!isPartialApproveEnabled && enablePartialApproval,
+  )
 
   const context = useSafeMemoObject({
     wrappedToken,
