@@ -6,6 +6,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: @lingui/cli\n"
 "Language: en-US\n"
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Plural-Forms: \n"
 
 #: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTableRow.tsx
 #: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTableRow.tsx
@@ -57,6 +63,10 @@ msgstr "Approve operation failed."
 msgid "To override this, enter your desired slippage amount.<0/><1/>Either way, your slippage is protected from MEV!"
 msgstr "To override this, enter your desired slippage amount.<0/><1/>Either way, your slippage is protected from MEV!"
 
+#: apps/cowswap-frontend/src/modules/account/pure/OrderFillabilityWarning/index.tsx
+msgid "Order cannot be filled due to insufficient allowance on the current account."
+msgstr "Order cannot be filled due to insufficient allowance on the current account."
+
 #: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
 msgid ""
 "Did you know? {benefit}\n"
@@ -101,6 +111,10 @@ msgstr "Simulation failed"
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderFillsAt/index.tsx
 msgid "Order {value} filled"
 msgstr "Order {value} filled"
+
+#: apps/cowswap-frontend/src/modules/erc20Approve/pure/ApproveConfirmation/index.tsx
+msgid "You must give the CoW Protocol smart contracts permission to use your {tokenSymbol}. If you approve the default amount, you will only have to do this once per token."
+msgstr "You must give the CoW Protocol smart contracts permission to use your {tokenSymbol}. If you approve the default amount, you will only have to do this once per token."
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/steps/Step3.tsx
 msgid "Receiving {nativeTokenSymbol} Refund..."
@@ -254,6 +268,10 @@ msgstr "Click \"Wrap {nativeSymbol}\" to try again."
 #: apps/cowswap-frontend/src/modules/tokensList/pure/TokenSearchContent/index.tsx
 msgid "Tokens from inactive lists. Import specific tokens below or click Manage to activate more lists."
 msgstr "Tokens from inactive lists. Import specific tokens below or click Manage to activate more lists."
+
+#: apps/cowswap-frontend/src/modules/account/pure/OrderFillabilityWarning/index.tsx
+msgid "Order cannot be filled due to insufficient balance on the current account.<0/>Please, top up {inputAmountCurrencySymbol} balance or cancel the order."
+msgstr "Order cannot be filled due to insufficient balance on the current account.<0/>Please, top up {inputAmountCurrencySymbol} balance or cancel the order."
 
 #: apps/cowswap-frontend/src/modules/wallet/pure/WalletModal/index.tsx
 msgid "By connecting a wallet, you acknowledge that you have read, understood and agree to the interface’s <0>Terms & Conditions</0>."
@@ -1468,8 +1486,8 @@ msgid "Maximizing Your Gains!"
 msgstr "Maximizing Your Gains!"
 
 #: apps/cowswap-frontend/src/common/hooks/useApproveCallback.ts
-msgid "Revoke {tokenSymbol} approval"
-msgstr "Revoke {tokenSymbol} approval"
+#~ msgid "Revoke {tokenSymbol} approval"
+#~ msgstr "Revoke {tokenSymbol} approval"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
 msgid "Use the <0/> to see {orderTabLink}"
@@ -1988,6 +2006,10 @@ msgstr "Estimated bridge transaction time: {bridgeEstimatedTime} minutes"
 msgid "Booooost APR gas-free!"
 msgstr "Booooost APR gas-free!"
 
+#: apps/cowswap-frontend/src/modules/erc20Approve/pure/ApproveConfirmation/AdvancedApprove.tsx
+msgid "In case you want to give allowance only for the trade amount, use the advanced mode. You can also change the amount manually."
+msgstr "In case you want to give allowance only for the trade amount, use the advanced mode. You can also change the amount manually."
+
 #: apps/cowswap-frontend/src/modules/twap/pure/PrimaryActionButton/index.tsx
 msgid "Sell amount too small"
 msgstr "Sell amount too small"
@@ -2159,7 +2181,7 @@ msgstr "Bridge costs are at least {formattedBridgeFeePercentage}% of the swap am
 msgid "TWAP order"
 msgstr "TWAP order"
 
-#: apps/cowswap-frontend/src/common/pure/ApproveButton/index.tsx
+#: apps/cowswap-frontend/src/modules/erc20Approve/pure/LegacyApproveButton/index.tsx
 msgid "You can now trade <0/>"
 msgstr "You can now trade <0/>"
 
@@ -2487,7 +2509,7 @@ msgstr "Sell {inputAmount} {label}"
 msgid "Something went wrong and your order couldn't be executed with this batch. But don't worry! CoW Swap is already holding another competition for your order."
 msgstr "Something went wrong and your order couldn't be executed with this batch. But don't worry! CoW Swap is already holding another competition for your order."
 
-#: apps/cowswap-frontend/src/common/hooks/usePendingApprovalModal.tsx
+#: apps/cowswap-frontend/src/modules/erc20Approve/hooks/usePendingApprovalModal.tsx
 msgid "Approving token"
 msgstr "Approving token"
 
@@ -2834,8 +2856,8 @@ msgid "{solver} logo"
 msgstr "{solver} logo"
 
 #: apps/cowswap-frontend/src/common/hooks/useApproveCallback.ts
-msgid "Approve {tokenSymbol}"
-msgstr "Approve {tokenSymbol}"
+#~ msgid "Approve {tokenSymbol}"
+#~ msgstr "Approve {tokenSymbol}"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/OrderRow/EstimatedExecutionPrice.tsx
 msgid "The fill price of this order is close or at the market price and is expected to fill soon"
@@ -2934,7 +2956,7 @@ msgstr "Recent Activity"
 msgid "2 stops"
 msgstr "2 stops"
 
-#: apps/cowswap-frontend/src/common/pure/ApproveButton/index.tsx
+#: apps/cowswap-frontend/src/modules/erc20Approve/pure/LegacyApproveButton/index.tsx
 msgid "You must give the CoW Protocol smart contracts permission to use your <0/>. If you approve the default amount, you will only have to do this once per token."
 msgstr "You must give the CoW Protocol smart contracts permission to use your <0/>. If you approve the default amount, you will only have to do this once per token."
 
@@ -3016,6 +3038,7 @@ msgstr "Unsupported Network"
 
 #: apps/cowswap-frontend/src/common/pure/PermitModal/index.tsx
 #: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTableRow.tsx
+#: apps/cowswap-frontend/src/modules/erc20Approve/pure/ApproveConfirmation/AdvancedApprove.tsx
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersConfirmModal/index.tsx
 msgid "Approve"
 msgstr "Approve"
@@ -3358,8 +3381,8 @@ msgstr "24 Hours"
 msgid "Contract not present or not connected to any supported chain"
 msgstr "Contract not present or not connected to any supported chain"
 
-#: apps/cowswap-frontend/src/common/hooks/usePendingApprovalModal.tsx
 #: apps/cowswap-frontend/src/common/pure/ConfirmationPendingContent/ConfirmationPendingContent.cosmos.tsx
+#: apps/cowswap-frontend/src/modules/erc20Approve/hooks/usePendingApprovalModal.tsx
 #: apps/cowswap-frontend/src/modules/zeroApproval/containers/ZeroApprovalModal/ZeroApprovalModal.tsx
 msgid "token approval"
 msgstr "token approval"
@@ -3852,7 +3875,7 @@ msgstr "Token approval bundling"
 msgid "New"
 msgstr "New"
 
-#: apps/cowswap-frontend/src/common/hooks/usePendingApprovalModal.tsx
+#: apps/cowswap-frontend/src/modules/erc20Approve/hooks/usePendingApprovalModal.tsx
 msgid "Approving"
 msgstr "Approving"
 
@@ -3886,7 +3909,7 @@ msgstr "This is the estimated amount you will receive for each part of the TWAP 
 msgid "Hooks"
 msgstr "Hooks"
 
-#: apps/cowswap-frontend/src/common/hooks/usePendingApprovalModal.tsx
+#: apps/cowswap-frontend/src/modules/erc20Approve/hooks/usePendingApprovalModal.tsx
 msgid "for trading"
 msgstr "for trading"
 
@@ -4248,7 +4271,8 @@ msgstr "part"
 msgid "Fee discount"
 msgstr "Fee discount"
 
-#: apps/cowswap-frontend/src/common/pure/ApproveButton/index.tsx
+#: apps/cowswap-frontend/src/modules/erc20Approve/pure/ApproveButton/index.tsx
+#: apps/cowswap-frontend/src/modules/erc20Approve/pure/LegacyApproveButton/index.tsx
 msgid "Allow CoW Swap to use your <0/>"
 msgstr "Allow CoW Swap to use your <0/>"
 
@@ -4453,6 +4477,10 @@ msgstr "Add Hook"
 msgid "select"
 msgstr "select"
 
+#: apps/cowswap-frontend/src/modules/erc20Approve/pure/ApproveConfirmation/AdvancedApprove.tsx
+msgid "Allow spending"
+msgstr "Allow spending"
+
 #: apps/cowswap-frontend/src/pages/Account/Tokens/TokensOverview.tsx
 msgid "Reset favorites"
 msgstr "Reset favorites"
@@ -4472,6 +4500,10 @@ msgstr "View on explorer"
 #: apps/cowswap-frontend/src/legacy/utils/trade.ts
 msgid "for"
 msgstr "for"
+
+#: apps/cowswap-frontend/src/modules/erc20Approve/pure/ApproveConfirmation/index.tsx
+msgid "Default approve"
+msgstr "Default approve"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
@@ -4506,6 +4538,10 @@ msgstr "If CoW Swap cannot get this price or better (taking into account fees an
 #: apps/cowswap-frontend/src/pages/error/AnySwapAffectedUsers/index.tsx
 msgid "In order to protect your funds, you will need to remove the approval on this contract."
 msgstr "In order to protect your funds, you will need to remove the approval on this contract."
+
+#: apps/cowswap-frontend/src/modules/erc20Approve/pure/ApproveConfirmation/AdvancedApprove.tsx
+msgid "Advanced"
+msgstr "Advanced"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Not yet supported"
@@ -5080,6 +5116,10 @@ msgstr "yield over average"
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/SolvingStep.tsx
 msgid "Uh oh! The market price has moved outside of your slippage tolerance. You can wait for prices to change{cancellationModal}"
 msgstr "Uh oh! The market price has moved outside of your slippage tolerance. You can wait for prices to change{cancellationModal}"
+
+#: apps/cowswap-frontend/src/modules/erc20Approve/pure/ApproveConfirmation/AdvancedApprove.tsx
+msgid "Entered amount is invalid"
+msgstr "Entered amount is invalid"
 
 #: apps/cowswap-frontend/src/utils/orderUtils/parseOrder.ts
 msgid "Creation transaction"
