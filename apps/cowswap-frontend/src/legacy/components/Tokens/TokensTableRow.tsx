@@ -19,13 +19,11 @@ import { Link } from 'react-router'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 import { useHasPendingApproval } from 'legacy/state/enhancedTransactions/hooks'
 
+import { ApprovalState, getApprovalState, useApproveCallback } from 'modules/erc20Approve'
 import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRoute'
 
 import { Routes } from 'common/constants/routes'
-import { useApproveCallback } from 'common/hooks/useApproveCallback'
-import { ApprovalState } from 'common/hooks/useApproveState'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
-import { getApprovalState } from 'common/utils/getApprovalState'
 import { CardsSpinner, ExtLink } from 'pages/Account/styled'
 
 import BalanceCell from './BalanceCell'
@@ -104,7 +102,7 @@ export const TokensTableRow = ({
     return getApprovalState(amountToApprove, BigInt(allowance.quotient.toString()), pendingApproval)
   }, [amountToApprove, allowance, isNativeToken, pendingApproval])
 
-  const approveCallback = useApproveCallback(amountToApprove, vaultRelayer)
+  const approveCallback = useApproveCallback(amountToApprove.currency, vaultRelayer)
 
   const handleApprove = useCallback(async () => {
     handleCloseError()
@@ -117,9 +115,10 @@ export const TokensTableRow = ({
     // TODO: make a separate hook out of this and add GA
     try {
       openApproveModal(tokenData?.symbol)
-
+      
       const symbol = tokenData?.symbol || t`token`
-      await approveCallback(t`Approve ${symbol}`)
+      await approveCallback(amountToApprove, t`Approve ${symbol}`)
+      
       // TODO: Replace any with proper type definitions
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
@@ -137,6 +136,7 @@ export const TokensTableRow = ({
     tokenData?.symbol,
     openApproveModal,
     closeApproveModal,
+    amountToApprove,
   ])
 
   const hasZeroBalance = !balance || balance?.equalTo(0)

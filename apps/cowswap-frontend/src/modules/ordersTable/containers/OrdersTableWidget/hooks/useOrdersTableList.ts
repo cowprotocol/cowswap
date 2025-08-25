@@ -1,9 +1,10 @@
 import { useMemo } from 'react'
 
+import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances';
+
 import { Order, OrderStatus, PENDING_STATES } from 'legacy/state/orders/actions'
 import { useSetIsOrderUnfillable } from 'legacy/state/orders/hooks'
 
-import { BalancesAndAllowances } from 'common/types'
 import { getIsComposableCowOrder } from 'utils/orderUtils/getIsComposableCowOrder'
 import { getIsNotComposableCowOrder } from 'utils/orderUtils/getIsNotComposableCowOrder'
 

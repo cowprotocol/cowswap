@@ -2,7 +2,7 @@ import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { Nullish } from '@cowprotocol/types'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { ApprovalState } from '../hooks/useApproveState'
+import { ApprovalState } from '../types'
 
 export function getApprovalState(
   amountToApprove: Nullish<CurrencyAmount<Currency>>,

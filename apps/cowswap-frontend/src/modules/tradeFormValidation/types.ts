@@ -1,11 +1,9 @@
 import { Command } from '@cowprotocol/types'
 
+import { ApprovalState } from 'modules/erc20Approve'
 import { TradeDerivedState } from 'modules/trade'
+import { AmountsToSign } from 'modules/trade/hooks/useAmountsToSign'
 import { TradeQuoteState } from 'modules/tradeQuote'
-
-import { ApprovalState } from 'common/hooks/useApproveState'
-
-import { AmountsToSign } from '../trade/hooks/useAmountsToSign'
 
 export enum TradeFormValidation {
   // Wrap/unwrap
@@ -61,7 +59,7 @@ export interface TradeFormValidationCommonContext {
   isSupportedWallet: boolean
   isSwapUnsupported: boolean
   isSafeReadonlyUser: boolean
-  isPermitSupported: boolean
+  isApproveRequired: boolean
   isInsufficientBalanceOrderAllowed: boolean
   isProviderNetworkUnsupported: boolean
   isOnline: boolean
@@ -79,8 +77,11 @@ export interface TradeFormButtonContext {
   quote: TradeQuoteState
   isSupportedWallet: boolean
   widgetStandaloneMode?: boolean
+  enablePartialApprove?: boolean
 
   confirmTrade(): void
+
   connectWallet: Command
+
   wrapNativeFlow(): void
 }

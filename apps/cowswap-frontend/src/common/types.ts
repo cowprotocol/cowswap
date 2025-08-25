@@ -1,4 +1,3 @@
-import type { BigNumber } from '@ethersproject/bignumber'
 import type { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 /**
@@ -28,10 +27,4 @@ export type SafeTransactionParams = {
 export interface TradeAmounts {
   readonly inputAmount: CurrencyAmount<Currency>
   readonly outputAmount: CurrencyAmount<Currency>
-}
-
-export interface BalancesAndAllowances {
-  balances: Record<string, BigNumber | undefined>
-  allowances?: Record<string, BigNumber | undefined>
-  isLoading: boolean
 }

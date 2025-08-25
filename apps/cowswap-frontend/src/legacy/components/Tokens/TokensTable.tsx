@@ -14,8 +14,9 @@ import { Trans } from '@lingui/react/macro'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
+import { usePendingApprovalModal } from 'modules/erc20Approve'
+
 import { BANNER_IDS } from 'common/constants/banners'
-import { usePendingApprovalModal } from 'common/hooks/usePendingApprovalModal'
 import { CowModal } from 'common/pure/Modal'
 
 import { balanceComparator, useTokenComparator } from './sorting'
@@ -23,6 +24,7 @@ import {
   Arrow,
   ArrowButton,
   ClickableText,
+  DelegateRow,
   IndexLabel,
   Label,
   NoResults,
@@ -32,9 +34,9 @@ import {
   Table,
   TableHeader,
   Wrapper,
-  DelegateRow,
 } from './styled'
 import { TokensTableRow } from './TokensTableRow'
+
 
 const MAX_ITEMS = 20
 

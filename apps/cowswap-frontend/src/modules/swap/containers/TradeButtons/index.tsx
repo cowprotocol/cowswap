@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 
 import { t } from '@lingui/core/macro'
 
@@ -29,7 +30,9 @@ import { useSwapFormState } from '../../hooks/useSwapFormState'
 
 interface TradeButtonsProps {
   isTradeContextReady: boolean
+
   openNativeWrapModal(): void
+
   hasEnoughWrappedBalanceForSwap: boolean
   tokenToBeImported: boolean
   intermediateBuyToken: TokenWithLogo | null
@@ -59,7 +62,8 @@ export function TradeButtons({
 
   const confirmText = isCurrentTradeBridging ? t`Swap and Bridge` : t`Swap`
 
-  const tradeFormButtonContext = useTradeFormButtonContext(confirmText, confirmTrade)
+  const { isPartialApproveEnabled } = useFeatureFlags()
+  const tradeFormButtonContext = useTradeFormButtonContext(confirmText, confirmTrade, !!isPartialApproveEnabled)
 
   const context = useSafeMemoObject({
     wrappedToken,

@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { ReactNode, useCallback, useMemo, useState } from 'react'
 
 import { SimpleAccountDetails } from 'modules/account/containers/SimpleAccountDetails'
 import { TradeFormBlankButton } from 'modules/tradeFormValidation'
@@ -32,9 +32,7 @@ export type BottomContentParams = {
   wrappingPreview: WrappingPreviewProps
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function EthFlowModalBottomContent(params: BottomContentParams) {
+export function EthFlowModalBottomContent(params: BottomContentParams): ReactNode {
   const { state, buttonText, ethFlowContext, ethFlowActions, wrappingPreview } = params
   const {
     approve: { txStatus: approveTxStatus, txHash: approveTxHash },

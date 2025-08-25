@@ -2,15 +2,16 @@ import { useMemo } from 'react'
 
 import { MAXIMUM_ORDERS_TO_DISPLAY } from '@cowprotocol/common-const'
 import { getDateTimestamp } from '@cowprotocol/common-utils'
-import { SupportedChainId, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useAllTransactions, useTransactionsByHash } from 'legacy/state/enhancedTransactions/hooks'
 import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
-import { useCombinedPendingOrders, useOrder, useOrders, useOrdersById } from 'legacy/state/orders/hooks'
+import { useOrder, useOrders, useOrdersById } from 'legacy/state/orders/hooks'
 
+import { OrderFillability, usePendingOrdersFillability } from 'common/hooks/usePendingOrdersFillability'
 import { ActivityStatus, ActivityType } from 'common/types/activity'
 
 /**
@@ -24,6 +25,7 @@ function isTransactionRecent(tx: EnhancedTransactionDetails): boolean {
 export interface AddedOrder extends Order {
   addedTime: number
 }
+
 export type TransactionAndOrder =
   | AddedOrder
   | (EnhancedTransactionDetails & {
@@ -108,6 +110,7 @@ export interface ActivityDescriptors {
   status: ActivityStatus
   type: ActivityType
   date: Date
+  fillability?: OrderFillability
 }
 
 type UseActivityDescriptionParams = {
@@ -119,9 +122,9 @@ type UseActivityDescriptionParams = {
 // TODO: Reduce function complexity by extracting logic
 // eslint-disable-next-line complexity
 export function createActivityDescriptor(
-  chainId: SupportedChainId,
   tx?: EnhancedTransactionDetails,
   order?: Order,
+  orderFillability?: OrderFillability,
 ): ActivityDescriptors | null {
   if (!tx && !order) return null
 
@@ -213,24 +216,24 @@ export function createActivityDescriptor(
     status,
     type,
     date,
+    fillability: orderFillability,
   }
 }
 
 export function useMultipleActivityDescriptors({ chainId, ids }: UseActivityDescriptionParams): ActivityDescriptors[] {
   const txs = useTransactionsByHash({ hashes: ids })
   const orders = useOrdersById({ chainId, ids })
+  const pendingOrdersFillability = usePendingOrdersFillability()
 
   return useMemo(() => {
-    if (!chainId) return []
-
     return ids.reduce<ActivityDescriptors[]>((acc, id) => {
-      const activity = createActivityDescriptor(chainId, txs[id], orders?.[id])
+      const activity = createActivityDescriptor(txs[id], orders?.[id], pendingOrdersFillability[id])
       if (activity) {
         acc.push(activity)
       }
       return acc
     }, [])
-  }, [chainId, ids, orders, txs])
+  }, [ids, orders, txs, pendingOrdersFillability])
 }
 
 export function useSingleActivityDescriptor({
@@ -247,7 +250,7 @@ export function useSingleActivityDescriptor({
 
   return useMemo(() => {
     if (!chainId) return null
-    return createActivityDescriptor(chainId, tx, order)
+    return createActivityDescriptor(tx, order)
   }, [chainId, order, tx])
 }
 
@@ -279,21 +282,6 @@ export function groupActivitiesByDay(activities: ActivityDescriptors[]): Activit
     // For easier handling later, transform into a list of objects with nested lists
     return { date: new Date(timestamp), activities: mapByTimestamp[timestamp] }
   })
-}
-
-export function useRecentActivityLastPendingOrder(): Order | null {
-  const { chainId, account } = useWalletInfo()
-  const pending = useCombinedPendingOrders({ chainId, account })
-
-  return useMemo(() => {
-    if (!pending.length) {
-      return null
-    }
-    return pending[pending.length - 1] || null
-
-    // Disabling hook to avoid unnecessary re-renders
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(pending)])
 }
 
 function isNotEthFlowTx(tx: EnhancedTransactionDetails): boolean {

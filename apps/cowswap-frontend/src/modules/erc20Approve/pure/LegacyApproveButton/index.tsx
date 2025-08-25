@@ -9,7 +9,7 @@ import { Trans } from '@lingui/react/macro'
 import { CheckCircle, HelpCircle } from 'react-feather'
 import styled, { ThemeContext } from 'styled-components/macro'
 
-import { ApprovalState } from '../../hooks/useApproveState'
+import { ApprovalState } from '../../types'
 
 const ApproveButtonContentWrapper = styled.span`
   padding: 0 3px;
@@ -30,7 +30,7 @@ export interface ApproveButtonProps {
   isDisabled?: boolean
 }
 
-export function ApproveButton(props: ApproveButtonProps): ReactNode {
+export function LegacyApproveButton(props: ApproveButtonProps): ReactNode {
   const { currency, state, onClick, isDisabled } = props
 
   const theme = useContext(ThemeContext)

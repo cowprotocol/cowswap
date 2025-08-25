@@ -1,11 +1,11 @@
 import { useSetAtom } from 'jotai/index'
 import { useEffect } from 'react'
 
+import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances';
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { msg } from '@lingui/core/macro'
 
-import { BalancesAndAllowances } from 'common/types'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { ordersMock } from './orders.mock'
