@@ -19,7 +19,9 @@ import IMG_ICON_X from '@cowprotocol/assets/images/x.svg'
 import { useMediaQuery, useOnClickOutside } from '@cowprotocol/common-hooks'
 import { addBodyClass, extractTextFromStringOrI18nDescriptor, removeBodyClass } from '@cowprotocol/common-utils'
 
-import { MessageDescriptor } from '@lingui/core'
+import { i18n, MessageDescriptor } from '@lingui/core'
+import { t } from '@lingui/core/macro'
+import { flag } from 'country-emoji'
 import SVG from 'react-inlinesvg'
 
 import {
@@ -96,6 +98,15 @@ const DAO_NAV_ITEMS: MenuItem[] = [
     utmContent: 'menubar-dao-nav-mevblocker',
   },
 ]
+
+const getLanguageName = (locale: string): string => {
+  const display = new Intl.DisplayNames([locale], { type: 'language' })
+  const languageName = display.of(locale)
+
+  return languageName ? languageName : t`Language ${locale} not found`
+}
+
+const getFlag = (locale: string): string => flag((locale.split('-')[1] as string) || (locale as string)) || ''
 
 type LinkComponentType = ComponentType<PropsWithChildren<{ href: string }>>
 
@@ -759,12 +770,13 @@ const LanguagesDropdown = forwardRef<HTMLUListElement, SettingsDropdownProps>((p
   if (!navItems || navItems.length === 0) return null
 
   const dropdownContent = navItems.map((item, index) => {
-    const extractedLabel = extractTextFromStringOrI18nDescriptor(item.label)
-
     const content = (
       <>
         <DropdownContentItemText>
-          <DropdownContentItemTitle>{extractedLabel}</DropdownContentItemTitle>
+          <DropdownContentItemTitle>
+            <span>{getFlag(item.label as string)}</span>
+            <span>{getLanguageName(item.label as string)}</span>
+          </DropdownContentItemTitle>
         </DropdownContentItemText>
         <SVG src={IMG_ICON_ARROW_RIGHT} className="arrow-icon-right" />
       </>
@@ -1025,7 +1037,7 @@ export const MenuBar = (props: MenuBarProps) => {
           {languageNavItems && (
             <LanguagesDropdownWrapper>
               <LanguageSettingsButton ref={languageButtonRef} mobileMode={isMedium} onClick={handleLanguageToggle}>
-                Lang
+                {getFlag(i18n.locale)}
               </LanguageSettingsButton>
               {isLanguageOpen && (
                 <LanguagesDropdown

@@ -1,5 +1,6 @@
 import { PropsWithChildren, ReactNode, useMemo } from 'react'
 
+import { SUPPORTED_LOCALES } from '@cowprotocol/common-const'
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { Color, Media, MenuBar } from '@cowprotocol/ui'
@@ -16,6 +17,7 @@ import { parameterizeTradeRoute, useGetTradeUrlParams } from 'modules/trade'
 import { APP_HEADER_ELEMENT_ID } from 'common/constants/common'
 import { useCustomTheme } from 'common/hooks/useCustomTheme'
 import { useMenuItems } from 'common/hooks/useMenuItems'
+import { dynamicActivate } from 'lib/i18n'
 
 import { NAV_ITEMS, PRODUCT_VARIANT } from '../App/menuConsts'
 
@@ -38,10 +40,9 @@ export function AppMenu({ children }: AppMenuProps): ReactNode {
   const isInjectedWidgetMode = isInjectedWidget()
   const menuItems = useMenuItems()
   const [darkMode, toggleDarkMode] = useDarkModeManager()
-
   const isMobile = useMediaQuery(Media.upToMedium(false))
-
   const customTheme = useCustomTheme()
+  const getTradeUrlParams = useGetTradeUrlParams()
 
   const settingsNavItems = useMemo(
     () => [
@@ -53,17 +54,10 @@ export function AppMenu({ children }: AppMenuProps): ReactNode {
     [darkMode, toggleDarkMode],
   )
 
-  const languageNavItems = useMemo(
-    () => [
-      {
-        label: 'Language',
-        onClick: () => console.log('change language'),
-      },
-    ],
-    [],
-  )
-
-  const getTradeUrlParams = useGetTradeUrlParams()
+  const languageNavItems = SUPPORTED_LOCALES.map((item) => ({
+    label: item,
+    onClick: () => dynamicActivate(item),
+  }))
 
   const navItems = useMemo(() => {
     return [

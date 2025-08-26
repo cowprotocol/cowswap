@@ -393,6 +393,7 @@ export const StyledDropdownContentItem = styled.li<{
     gap: 20px;
     position: relative;
     width: 100%;
+    text-transform: capitalize;
   }
 
   ${({ mobileMode }) =>
@@ -707,7 +708,9 @@ export const GlobalSettingsButton = styled.button<{ mobileMode?: boolean }>`
   }
 `
 
-export const LanguageSettingsButton = styled(GlobalSettingsButton)``
+export const LanguageSettingsButton = styled(GlobalSettingsButton)`
+  font-size: 22px;
+`
 
 export const LanguagesDropdownWrapper = styled.div`
   position: relative;
