@@ -1,7 +1,7 @@
 import { bpsToPercent, formatPercent, FractionUtils } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { t } from '@lingui/core/macro'
+import { useLingui } from '@lingui/react/macro'
 import { Trans } from '@lingui/react/macro'
 import { Nullish } from 'types'
 
@@ -30,6 +30,7 @@ export function PartnerFeeRow({
 }: PartnerFeeRowProps) {
   const feeAsPercent = partnerFeeBps ? formatPercent(bpsToPercent(partnerFeeBps)) : null
   const minPartnerFeeAmount = FractionUtils.amountToAtLeastOneWei(partnerFeeAmount)
+  const { t } = useLingui()
 
   return (
     <>

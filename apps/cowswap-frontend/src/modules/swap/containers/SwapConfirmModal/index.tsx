@@ -5,7 +5,7 @@ import { Nullish } from '@cowprotocol/types'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import { t } from '@lingui/core/macro'
+import { useLingui } from '@lingui/react/macro'
 
 import type { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
@@ -51,6 +51,7 @@ export interface SwapConfirmModalProps {
 // TODO: Break down this large function into smaller functions
 // eslint-disable-next-line max-lines-per-function
 export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
+  const { t } = useLingui()
   const CONFIRM_TITLE = t`Swap`
   const { inputCurrencyInfo, outputCurrencyInfo, priceImpact, recipient, recipientAddress, doTrade } = props
 
@@ -110,7 +111,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
       return t`Insufficient ${symbol} balance`
     }
     return confirmText
-  }, [confirmText, disableConfirm, inputCurrencyInfo])
+  }, [confirmText, disableConfirm, inputCurrencyInfo, t])
 
   return (
     <TradeConfirmModal title={CONFIRM_TITLE} submittedContent={submittedContent}>

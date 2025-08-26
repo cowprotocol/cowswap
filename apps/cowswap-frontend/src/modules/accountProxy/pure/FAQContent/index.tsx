@@ -5,9 +5,8 @@ import IMG_ICON_PLUS from '@cowprotocol/assets/images/icon-plus.svg'
 import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
 import { ExternalLink } from '@cowprotocol/ui'
 
-import { i18n } from '@lingui/core'
 import { msg } from '@lingui/core/macro'
-import { Trans } from '@lingui/react/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 import { Link } from 'react-router'
 
@@ -92,6 +91,7 @@ interface FAQContentProps {
 }
 
 export function FAQContent({ recoverRouteLink }: FAQContentProps): ReactNode {
+  const { i18n } = useLingui()
   const [openItems, setOpenItems] = useState<Record<number, boolean>>({ 0: true })
 
   const handleToggle = (index: number) => (e: React.MouseEvent) => {

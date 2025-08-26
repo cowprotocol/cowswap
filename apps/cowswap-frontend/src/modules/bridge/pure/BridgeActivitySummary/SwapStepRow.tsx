@@ -2,8 +2,7 @@ import { ReactNode } from 'react'
 
 import type { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { i18n } from '@lingui/core'
-import { Trans } from '@lingui/react/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 
 import { StepContent, SwapSummaryRow } from './styled'
 
@@ -29,6 +28,7 @@ export function SwapStepRow({
   sourceChainName,
   children,
 }: SwapStepRowProps): ReactNode {
+  const { i18n } = useLingui()
   const isPending = !swapResultContext
   const swapStatus = isPending ? SwapAndBridgeStatus.PENDING : SwapAndBridgeStatus.DONE
   const titlePrefix: string = i18n._(SwapStatusTitlePrefixes[swapStatus])

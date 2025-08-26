@@ -6,9 +6,10 @@ import { Command } from '@cowprotocol/types'
 import { BannerOrientation, ExternalLink, Icon, IconType, InlineBanner, StatusColorVariant, UI } from '@cowprotocol/ui'
 import { CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
 
-import { i18n, MessageDescriptor } from '@lingui/core'
+import { MessageDescriptor } from '@lingui/core'
 import { msg, t } from '@lingui/core/macro'
 import { Trans as TransReact } from '@lingui/react'
+import { useLingui } from '@lingui/react/macro'
 import { Trans } from '@lingui/react/macro'
 import { CloseIcon } from 'theme'
 
@@ -124,6 +125,7 @@ export function ReceiptModal({
   receiverEnsName,
   alternativeOrderModalContext,
 }: ReceiptProps) {
+  const { i18n } = useLingui()
   // Check if Custom Recipient Warning Banner should be visible
   const isCustomRecipientWarningBannerVisible = !useIsReceiverWalletBannerHidden(order.id)
   const hideCustomRecipientWarning = useHideReceiverWalletBanner()

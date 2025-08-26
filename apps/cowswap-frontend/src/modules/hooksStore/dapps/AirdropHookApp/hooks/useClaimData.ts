@@ -8,6 +8,7 @@ import { Fraction } from '@uniswap/sdk-core'
 import { MessageDescriptor } from '@lingui/core'
 import { i18n } from '@lingui/core'
 import { msg, t } from '@lingui/core/macro'
+import { useLingui } from '@lingui/react/macro'
 import useSWR from 'swr'
 
 import { useContract } from 'common/hooks/useContract'
@@ -110,6 +111,7 @@ const fetchAddressIsEligible = async ({
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const useClaimData = (tokenToClaimData?: IAirdrop) => {
   const { account } = useWalletInfo()
+  const { i18n } = useLingui()
   const { contract: airdropContract, chainId: airdropChainId } = useContract<Airdrop>(
     tokenToClaimData?.address,
     AirdropAbi,
@@ -151,7 +153,7 @@ export const useClaimData = (tokenToClaimData?: IAirdrop) => {
         formattedAmount,
       }
     },
-    [account, airdropContract, tokenToClaimData, airdropChainId],
+    [airdropContract, tokenToClaimData, account, airdropChainId, i18n],
   )
 
   return useSWR<IClaimData | undefined, Error>(

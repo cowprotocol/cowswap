@@ -4,9 +4,9 @@ import React, { isValidElement, ReactNode, useCallback, useEffect, useMemo } fro
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { isSellOrder } from '@cowprotocol/common-utils'
 
-import { i18n, MessageDescriptor } from '@lingui/core'
+import { MessageDescriptor } from '@lingui/core'
 import { msg, t } from '@lingui/core/macro'
-import { Trans } from '@lingui/react/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 import { useLocation } from 'react-router'
 
 import { Field } from 'legacy/state/types'
@@ -141,6 +141,7 @@ const UNLOCK_SCREEN = {
 // TODO: Break down this large function into smaller functions
 // eslint-disable-next-line max-lines-per-function
 const LimitOrders = React.memo((props: LimitOrdersProps) => {
+  const { i18n } = useLingui()
   const {
     inputCurrencyInfo,
     outputCurrencyInfo,

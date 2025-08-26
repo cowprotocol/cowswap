@@ -8,7 +8,6 @@ import IMG_ICON_SOCIAL_GITHUB from '@cowprotocol/assets/images/icon-social-githu
 import IMG_ICON_SOCIAL_SNAPSHOT from '@cowprotocol/assets/images/icon-social-snapshot.svg'
 import IMG_ICON_SOCIAL_X from '@cowprotocol/assets/images/icon-social-x.svg'
 import { useTheme } from '@cowprotocol/common-hooks'
-import { extractTextFromStringOrI18nDescriptor } from '@cowprotocol/common-utils'
 
 import SVG from 'react-inlinesvg'
 
@@ -37,9 +36,14 @@ import { UI } from '../../enum'
 import { MenuItem } from '../../pure/MenuBar'
 import { ProductLogo, ProductVariant } from '../../pure/ProductLogo'
 
+interface NavItemProps extends Omit<MenuItem, 'label' | 'badge'> {
+  label?: string
+  badge?: string
+}
+
 export interface FooterProps {
   description?: string
-  navItems?: MenuItem[]
+  navItems?: Array<NavItemProps>
   productVariant: ProductVariant
   additionalFooterContent?: ReactNode
   expanded?: boolean
@@ -126,7 +130,7 @@ const PRODUCT_LOGO_LINKS: {
 const GLOBAL_FOOTER_DESCRIPTION =
   'CoW DAO is an open collective of developers, market makers, and community contributors on a mission to protect users from the dangers of DeFi.'
 
-const GLOBAL_FOOTER_NAV_ITEMS: MenuItem[] = [
+const GLOBAL_FOOTER_NAV_ITEMS: Array<NavItemProps> = [
   {
     label: 'About',
     children: [
@@ -345,14 +349,14 @@ export const Footer = ({
             <LinkListWrapper>
               {navItems.map((item, index) => (
                 <LinkListGroup key={index}>
-                  <SectionTitle>{extractTextFromStringOrI18nDescriptor(item.label)}</SectionTitle>
+                  <SectionTitle>{item.label}</SectionTitle>
                   <LinkList>
                     {item.children?.map((child, childIndex) => (
                       <li key={childIndex}>
                         <FooterLink
                           href={child.href || '#'}
                           external={child.external}
-                          label={extractTextFromStringOrI18nDescriptor(child.label)}
+                          label={child.label as string}
                           utmSource={child.utmSource}
                           utmContent={child.utmContent}
                           rootDomain={host || window.location.host}

@@ -6,8 +6,8 @@ import { AutoRow, ButtonEmpty, ExternalLink, Media, RowBetween } from '@cowproto
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
 
-import { i18n } from '@lingui/core'
 import { MessageDescriptor } from '@lingui/core'
+import { useLingui } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 import { ThemedText, Z_INDEX, CloseIcon } from 'theme'
 
@@ -66,16 +66,15 @@ export default function UnsupportedCurrencyFooter({
   detailsText,
   showDetailsText,
 }: UnsupportedCurrencyFooterParams) {
+  const { i18n } = useLingui()
   const { chainId } = useWalletInfo()
   const [showDetails, setShowDetails] = useState(false)
-
   const tokens =
     chainId && currencies
       ? currencies.map((currency) => {
           return currency && getWrappedToken(currency)
         })
       : []
-
   const isUnsupportedToken = useIsUnsupportedToken()
 
   return (

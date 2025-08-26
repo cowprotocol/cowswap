@@ -1,5 +1,4 @@
-import { i18n } from '@lingui/core'
-import { msg, t } from '@lingui/core/macro'
+import { t } from '@lingui/core/macro'
 
 import { EthFlowState } from '../../services/ethFlow/types'
 
@@ -9,8 +8,9 @@ export interface EthFlowConfig {
   descriptions: string[]
 }
 
-const commonSingularTxProgressDescription = msg`Transaction in progress. See below for live status updates.`
-const commonFailedSingularTxGasLimitDescription = msg`Check that you are providing a sufficient gas limit for the transaction in your wallet.`
+const commonSingularTxProgressDescription = (): string => t`Transaction in progress. See below for live status updates.`
+const commonFailedSingularTxGasLimitDescription = (): string =>
+  t`Check that you are providing a sufficient gas limit for the transaction in your wallet.`
 
 export const ethFlowConfigs: {
   [key in EthFlowState]: (context: { nativeSymbol: string; wrappedSymbol: string }) => EthFlowConfig
@@ -23,7 +23,7 @@ export const ethFlowConfigs: {
     buttonText: t`Wrap ${nativeSymbol}`,
     descriptions: [
       t`Wrap operation failed.`,
-      i18n._(commonFailedSingularTxGasLimitDescription),
+      commonFailedSingularTxGasLimitDescription(),
       t`Click "Wrap ${nativeSymbol}" to try again.`,
     ],
   }),
@@ -32,7 +32,7 @@ export const ethFlowConfigs: {
     buttonText: t`Approve ${wrappedSymbol}`,
     descriptions: [
       t`Approve operation failed.`,
-      i18n._(commonFailedSingularTxGasLimitDescription),
+      commonFailedSingularTxGasLimitDescription(),
       t`Click "Approve ${wrappedSymbol}" to try again.`,
     ],
   }),
@@ -42,12 +42,12 @@ export const ethFlowConfigs: {
   [EthFlowState.WrapPending]: ({ nativeSymbol }) => ({
     title: t`Swap with Wrapped ${nativeSymbol}`,
     buttonText: '',
-    descriptions: [i18n._(commonSingularTxProgressDescription)],
+    descriptions: [commonSingularTxProgressDescription()],
   }),
   [EthFlowState.ApprovePending]: ({ wrappedSymbol }) => ({
     title: t`Approve ${wrappedSymbol}`,
     buttonText: '',
-    descriptions: [i18n._(commonSingularTxProgressDescription)],
+    descriptions: [commonSingularTxProgressDescription()],
   }),
   [EthFlowState.ApproveInsufficient]: ({ wrappedSymbol }) => ({
     title: t`Approval amount insufficient!`,

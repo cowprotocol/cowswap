@@ -17,9 +17,11 @@ import IMG_ICON_MENU_HAMBURGER from '@cowprotocol/assets/images/menu-hamburger.s
 import IMG_ICON_SETTINGS_GLOBAL from '@cowprotocol/assets/images/settings-global.svg'
 import IMG_ICON_X from '@cowprotocol/assets/images/x.svg'
 import { useMediaQuery, useOnClickOutside } from '@cowprotocol/common-hooks'
-import { addBodyClass, extractTextFromStringOrI18nDescriptor, removeBodyClass } from '@cowprotocol/common-utils'
+import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
 
-import { MessageDescriptor } from '@lingui/core'
+import { i18n } from '@lingui/core'
+import { t } from '@lingui/core/macro'
+import { flag } from 'country-emoji'
 import SVG from 'react-inlinesvg'
 
 import {
@@ -32,6 +34,8 @@ import {
   DropdownContentItemTitle,
   DropdownMenu,
   GlobalSettingsButton,
+  LanguageSettingsButton,
+  LanguagesDropdownWrapper,
   MenuBarInner,
   MenuBarWrapper,
   MobileDropdownContainer,
@@ -95,12 +99,21 @@ const DAO_NAV_ITEMS: MenuItem[] = [
   },
 ]
 
+const getLanguageName = (locale: string): string => {
+  const display = new Intl.DisplayNames([locale], { type: 'language' })
+  const languageName = display.of(locale)
+
+  return languageName ? languageName : t`Language ${locale} not found`
+}
+
+const getFlag = (locale: string): string => flag((locale.split('-')[1] as string) || (locale as string)) || ''
+
 type LinkComponentType = ComponentType<PropsWithChildren<{ href: string }>>
 
 export interface MenuItem {
   href?: string
-  label?: string | MessageDescriptor
-  badge?: string | MessageDescriptor | ReactElement
+  label?: string
+  badge?: string | ReactElement
   children?: DropdownMenuItem[]
   productVariant?: ProductVariant
   icon?: string
@@ -122,10 +135,10 @@ export interface MenuItem {
 interface DropdownMenuItem {
   href?: string
   external?: boolean
-  label?: string | MessageDescriptor
+  label?: string
   icon?: string
-  badge?: string | MessageDescriptor | ReactElement
-  description?: string | MessageDescriptor
+  badge?: string | ReactElement
+  description?: string
   isButton?: boolean
   children?: DropdownMenuItem[]
   productVariant?: ProductVariant
@@ -180,7 +193,7 @@ const NavItem = ({
   // TODO: Add proper return type annotation
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 }: NavItemProps) => {
-  const extractedLabel = extractTextFromStringOrI18nDescriptor(item.label)
+  const extractedLabel = item.label
 
   // TODO: Add proper return type annotation
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -252,7 +265,7 @@ const DropdownContentItem: React.FC<{
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const renderItemContent = () => {
     const { productVariant, icon, label, description, hoverColor } = item
-    const extractedLabel = extractTextFromStringOrI18nDescriptor(label)
+    const extractedLabel = label
 
     return (
       <>
@@ -271,11 +284,7 @@ const DropdownContentItem: React.FC<{
         {extractedLabel && (
           <DropdownContentItemText>
             <DropdownContentItemTitle>{extractedLabel}</DropdownContentItemTitle>
-            {description && (
-              <DropdownContentItemDescription>
-                {extractTextFromStringOrI18nDescriptor(description)}
-              </DropdownContentItemDescription>
-            )}
+            {description && <DropdownContentItemDescription>{description}</DropdownContentItemDescription>}
           </DropdownContentItemText>
         )}
       </>
@@ -285,14 +294,7 @@ const DropdownContentItem: React.FC<{
   const itemClassName = item.hasDivider ? 'hasDivider' : ''
 
   const href = item.external
-    ? appendUtmParams(
-        item.href!,
-        item.utmSource,
-        item.utmContent,
-        rootDomain,
-        item.external,
-        extractTextFromStringOrI18nDescriptor(item.label),
-      )
+    ? appendUtmParams(item.href!, item.utmSource, item.utmContent, rootDomain, item.external, item.label)
     : item.href
 
   if (item.isButton && item.href) {
@@ -460,7 +462,7 @@ const GenericDropdown: React.FC<DropdownProps> = ({
         }
   }, [interaction, onTrigger])
 
-  const extractedLabel = extractTextFromStringOrI18nDescriptor(item.label)
+  const extractedLabel = item.label
 
   return (
     <DropdownMenu {...interactionProps} mobileMode={mobileMode}>
@@ -468,13 +470,7 @@ const GenericDropdown: React.FC<DropdownProps> = ({
         <span>{extractedLabel}</span>
         {(item.badge || item.badgeImage) && (
           <Badge {...(item.badgeType && { type: item.badgeType })}>
-            {item.badgeImage ? (
-              <SVG src={item.badgeImage} />
-            ) : isValidElement(item.badge) ? (
-              item.badge
-            ) : (
-              extractTextFromStringOrI18nDescriptor(item.badge)
-            )}
+            {item.badgeImage ? <SVG src={item.badgeImage} /> : isValidElement(item.badge) ? item.badge : item.badge}
           </Badge>
         )}
         {item.children && <SVG src={IMG_ICON_CARRET_DOWN} />}
@@ -546,7 +542,7 @@ const DropdownContentWrapper: React.FC<DropdownContentWrapperProps> = ({
       {content.items?.map((item: DropdownMenuItem, index: number) => {
         const hasChildren = !!item.children
         const Tag = hasChildren ? 'div' : item.isButton ? DropdownContentItemButton : undefined
-        const extractedLabel = extractTextFromStringOrI18nDescriptor(item.label)
+        const extractedLabel = item.label
         const href = !hasChildren
           ? appendUtmParams(item.href!, item.utmSource, item.utmContent, rootDomain, !!item.external, extractedLabel)
           : undefined
@@ -564,16 +560,12 @@ const DropdownContentWrapper: React.FC<DropdownContentWrapperProps> = ({
                     ) : isValidElement(item.badge) ? (
                       item.badge
                     ) : (
-                      extractTextFromStringOrI18nDescriptor(item.badge)
+                      item.badge
                     )}
                   </Badge>
                 )}
               </DropdownContentItemTitle>
-              {item.description && (
-                <DropdownContentItemDescription>
-                  {extractTextFromStringOrI18nDescriptor(item.description)}
-                </DropdownContentItemDescription>
-              )}
+              {item.description && <DropdownContentItemDescription>{item.description}</DropdownContentItemDescription>}
             </DropdownContentItemText>
             {item.children && <SVG src={IMG_ICON_CARRET_DOWN} />}
             {!item.children && (
@@ -656,21 +648,23 @@ const appendUtmParams = (
   return href
 }
 
-interface GlobalSettingsDropdownProps {
-  mobileMode: boolean
-  settingsNavItems?: MenuItem[]
-  isOpen: boolean
+interface SettingsDropdownProps {
   closeDropdown: () => void
-  rootDomain: string
+  isOpen: boolean
+  mobileMode: boolean
+  navItems?: MenuItem[]
+}
+
+interface GlobalSettingsDropdownProps extends SettingsDropdownProps {
   LinkComponent: LinkComponentType
+  rootDomain: string
 }
 
 // TODO: Break down this large function into smaller functions
-
 const GlobalSettingsDropdown = forwardRef<HTMLUListElement, GlobalSettingsDropdownProps>((props, ref) => {
-  const { mobileMode, settingsNavItems, isOpen, closeDropdown, rootDomain, LinkComponent } = props
+  const { mobileMode, navItems, isOpen, closeDropdown, rootDomain, LinkComponent } = props
 
-  if (!settingsNavItems || settingsNavItems.length === 0) {
+  if (!navItems || navItems.length === 0) {
     return null
   }
 
@@ -680,8 +674,8 @@ const GlobalSettingsDropdown = forwardRef<HTMLUListElement, GlobalSettingsDropdo
         (mobileMode ? (
           <MobileDropdownContainer mobileMode={mobileMode} ref={ref as unknown as React.RefObject<HTMLDivElement>}>
             <DropdownContent isOpen={true} alignRight={true} mobileMode={mobileMode}>
-              {settingsNavItems.map((item, index) => {
-                const extractedLabel = extractTextFromStringOrI18nDescriptor(item.label)
+              {navItems.map((item, index) => {
+                const extractedLabel = item.label
                 const to = item.external
                   ? appendUtmParams(
                       item.href!,
@@ -714,8 +708,8 @@ const GlobalSettingsDropdown = forwardRef<HTMLUListElement, GlobalSettingsDropdo
           </MobileDropdownContainer>
         ) : (
           <DropdownContent isOpen={true} ref={ref} alignRight={true} mobileMode={mobileMode}>
-            {settingsNavItems.map((item, index) => {
-              const extractedLabel = extractTextFromStringOrI18nDescriptor(item.label)
+            {navItems.map((item, index) => {
+              const extractedLabel = item.label
               const to = item.external
                 ? appendUtmParams(
                     item.href!,
@@ -748,6 +742,50 @@ const GlobalSettingsDropdown = forwardRef<HTMLUListElement, GlobalSettingsDropdo
   )
 })
 
+// TODO: Break down this large function into smaller functions
+const LanguagesDropdown = forwardRef<HTMLUListElement, SettingsDropdownProps>((props, ref) => {
+  const { mobileMode, navItems, isOpen, closeDropdown } = props
+
+  if (!navItems || navItems.length === 0) return null
+
+  const dropdownContent = navItems.map((item, index) => {
+    const content = (
+      <>
+        <DropdownContentItemText>
+          <DropdownContentItemTitle>
+            <span>{getFlag(item.label as string)}</span>
+            <span>{getLanguageName(item.label as string)}</span>
+          </DropdownContentItemTitle>
+        </DropdownContentItemText>
+        <SVG src={IMG_ICON_ARROW_RIGHT} className="arrow-icon-right" />
+      </>
+    )
+
+    return (
+      <StyledDropdownContentItem key={index} onClick={_onDropdownItemClickFactory(item, closeDropdown)}>
+        <div>{content}</div>
+      </StyledDropdownContentItem>
+    )
+  })
+
+  return (
+    <>
+      {isOpen &&
+        (mobileMode ? (
+          <MobileDropdownContainer mobileMode={mobileMode} ref={ref as unknown as React.RefObject<HTMLDivElement>}>
+            <DropdownContent isOpen={true} alignRight={true} mobileMode={mobileMode}>
+              {dropdownContent}
+            </DropdownContent>
+          </MobileDropdownContainer>
+        ) : (
+          <DropdownContent isOpen={true} ref={ref} alignRight={true} mobileMode={mobileMode}>
+            {dropdownContent}
+          </DropdownContent>
+        ))}
+    </>
+  )
+})
+
 function _onDropdownItemClickFactory(item: MenuItem, postClick?: () => void) {
   return (e: React.MouseEvent<HTMLElement>) => {
     if (item.onClick) {
@@ -758,32 +796,33 @@ function _onDropdownItemClickFactory(item: MenuItem, postClick?: () => void) {
 }
 
 interface MenuBarProps {
-  id?: string
-  navItems: MenuItem[]
-  productVariant: ProductVariant
   LinkComponent: LinkComponentType
-  persistentAdditionalContent?: React.ReactNode
-  additionalContent?: React.ReactNode
-  showGlobalSettings?: boolean
-  settingsNavItems?: MenuItem[]
-  additionalNavButtons?: MenuItem[]
-  bgColorLight?: string
-  bgColorDark?: string
-  bgDropdownColorLight?: string
-  bgDropdownColorDark?: string
-  colorLight?: string
-  colorDark?: string
-  defaultFillLight?: string
-  defaultFillDark?: string
-  activeBackgroundLight?: string
   activeBackgroundDark?: string
-  activeFillLight?: string
+  activeBackgroundLight?: string
   activeFillDark?: string
-  hoverBackgroundLight?: string
-  hoverBackgroundDark?: string
-  padding?: string
-  maxWidth?: number
+  activeFillLight?: string
+  additionalContent?: React.ReactNode
+  additionalNavButtons?: MenuItem[]
+  bgColorDark?: string
+  bgColorLight?: string
+  bgDropdownColorDark?: string
+  bgDropdownColorLight?: string
+  colorDark?: string
+  colorLight?: string
   customTheme?: CowSwapTheme
+  defaultFillDark?: string
+  defaultFillLight?: string
+  hoverBackgroundDark?: string
+  hoverBackgroundLight?: string
+  id?: string
+  languageNavItems?: MenuItem[]
+  maxWidth?: number
+  navItems: MenuItem[]
+  padding?: string
+  persistentAdditionalContent?: React.ReactNode
+  productVariant: ProductVariant
+  settingsNavItems?: MenuItem[]
+  showGlobalSettings?: boolean
 }
 
 // TODO: Break down this large function into smaller functions
@@ -792,37 +831,39 @@ interface MenuBarProps {
 // eslint-disable-next-line max-lines-per-function, complexity, @typescript-eslint/explicit-function-return-type
 export const MenuBar = (props: MenuBarProps) => {
   const {
-    id,
-    navItems,
-    productVariant,
-    persistentAdditionalContent,
-    additionalContent,
-    showGlobalSettings,
-    additionalNavButtons,
-    settingsNavItems,
-    bgColorLight,
-    bgColorDark,
-    bgDropdownColorLight,
-    bgDropdownColorDark,
-    colorLight,
-    colorDark,
-    defaultFillLight,
-    defaultFillDark,
-    activeBackgroundLight,
-    activeBackgroundDark,
-    activeFillLight,
-    activeFillDark,
-    hoverBackgroundLight,
-    hoverBackgroundDark,
-    padding,
-    maxWidth,
-    customTheme,
     LinkComponent,
+    activeBackgroundDark,
+    activeBackgroundLight,
+    activeFillDark,
+    activeFillLight,
+    additionalContent,
+    additionalNavButtons,
+    bgColorDark,
+    bgColorLight,
+    bgDropdownColorDark,
+    bgDropdownColorLight,
+    colorDark,
+    colorLight,
+    customTheme,
+    defaultFillDark,
+    defaultFillLight,
+    hoverBackgroundDark,
+    hoverBackgroundLight,
+    id,
+    languageNavItems,
+    maxWidth,
+    navItems,
+    padding,
+    persistentAdditionalContent,
+    productVariant,
+    settingsNavItems,
+    showGlobalSettings,
   } = props
 
   const [isDaoOpen, setIsDaoOpen] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
+  const [isLanguageOpen, setIsLanguageOpen] = useState(false)
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
   const [isLoaded, setIsLoaded] = useState(false)
 
@@ -832,12 +873,18 @@ export const MenuBar = (props: MenuBarProps) => {
   const navItemsRef = useRef<HTMLUListElement>(null)
   const settingsButtonRef = useRef<HTMLButtonElement>(null)
   const settingsDropdownRef = useRef<HTMLUListElement>(null)
+  const languageButtonRef = useRef<HTMLButtonElement>(null)
+  const languageDropdownRef = useRef<HTMLUListElement>(null)
 
   const rootDomain = typeof window !== 'undefined' ? window.location.host : ''
 
   // TODO: Add proper return type annotation
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleSettingsToggle = () => setIsSettingsOpen((prev) => !prev)
+
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  const handleLanguageToggle = () => setIsLanguageOpen((prev) => !prev)
 
   const isMobile = useMediaQuery(Media.upToLarge(false))
   const isMedium = useMediaQuery(Media.upToMedium(false))
@@ -850,6 +897,8 @@ export const MenuBar = (props: MenuBarProps) => {
 
   useOnClickOutside([settingsButtonRef, settingsDropdownRef], () => setIsSettingsOpen(false))
 
+  useOnClickOutside([languageButtonRef, languageDropdownRef], () => setIsLanguageOpen(false))
+
   // TODO: Add proper return type annotation
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleMobileMenuToggle = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -859,7 +908,7 @@ export const MenuBar = (props: MenuBarProps) => {
 
   React.useEffect(() => {
     if (isMobile) {
-      if (isMobileMenuOpen || isDaoOpen || isSettingsOpen) {
+      if (isMobileMenuOpen || isDaoOpen || isSettingsOpen || isLanguageOpen) {
         addBodyClass('noScroll')
       } else {
         removeBodyClass('noScroll')
@@ -869,7 +918,7 @@ export const MenuBar = (props: MenuBarProps) => {
     return () => {
       removeBodyClass('noScroll')
     }
-  }, [isMobile, isMobileMenuOpen, isDaoOpen, isSettingsOpen])
+  }, [isMobile, isMobileMenuOpen, isDaoOpen, isSettingsOpen, isLanguageOpen])
 
   useEffect(() => {
     setIsLoaded(true)
@@ -931,7 +980,7 @@ export const MenuBar = (props: MenuBarProps) => {
             isLoaded &&
             additionalNavButtons &&
             additionalNavButtons.map((item, index) => {
-              const extractedLabel = extractTextFromStringOrI18nDescriptor(item.label)
+              const extractedLabel = item.label
               const href = item.external
                 ? appendUtmParams(
                     item.href!,
@@ -964,6 +1013,22 @@ export const MenuBar = (props: MenuBarProps) => {
                 </DropdownContentItemButton>
               )
             })}
+          {languageNavItems && (
+            <LanguagesDropdownWrapper>
+              <LanguageSettingsButton ref={languageButtonRef} mobileMode={isMedium} onClick={handleLanguageToggle}>
+                {getFlag(i18n.locale)}
+              </LanguageSettingsButton>
+              {isLanguageOpen && (
+                <LanguagesDropdown
+                  closeDropdown={handleLanguageToggle}
+                  isOpen={isLanguageOpen}
+                  mobileMode={isMedium}
+                  ref={languageDropdownRef}
+                  navItems={languageNavItems}
+                />
+              )}
+            </LanguagesDropdownWrapper>
+          )}
           {showGlobalSettings && settingsNavItems && (
             <>
               <GlobalSettingsButton ref={settingsButtonRef} mobileMode={isMedium} onClick={handleSettingsToggle}>
@@ -972,7 +1037,7 @@ export const MenuBar = (props: MenuBarProps) => {
               {isSettingsOpen && (
                 <GlobalSettingsDropdown
                   mobileMode={isMedium}
-                  settingsNavItems={settingsNavItems}
+                  navItems={settingsNavItems}
                   isOpen={isSettingsOpen}
                   closeDropdown={handleSettingsToggle}
                   ref={settingsDropdownRef}
@@ -1013,7 +1078,7 @@ export const MenuBar = (props: MenuBarProps) => {
               {additionalContent} {/* Add additional content here */}
               {additionalNavButtons &&
                 additionalNavButtons.map((item, index) => {
-                  const extractedLabel = extractTextFromStringOrI18nDescriptor(item.label)
+                  const extractedLabel = item.label
                   return (
                     <DropdownContentItemButton
                       key={index}

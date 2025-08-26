@@ -1,9 +1,9 @@
 import React, { useCallback, useMemo, useState } from 'react'
 
-import { extractTextFromStringOrI18nDescriptor } from '@cowprotocol/common-utils'
+import { useExtractText } from '@cowprotocol/common-utils'
 import { renderTooltip, UI } from '@cowprotocol/ui'
 
-import { t } from '@lingui/core/macro'
+import { useLingui } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
 import { TradeSelect, TradeSelectItem } from 'modules/trade/pure/TradeSelect'
@@ -88,10 +88,12 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
     setDeadline,
   } = props
   const [isCustomModalOpen, setIsCustomModalOpen] = useState(false)
+  const { extractTextFromStringOrI18nDescriptor } = useExtractText()
+  const { t } = useLingui()
 
   const CUSTOM_OPTION: TradeSelectItem = useMemo((): TradeSelectItem => {
     return { label: t`Custom`, value: 'CUSTOM_ITEM_VALUE' }
-  }, [])
+  }, [t])
 
   const itemsWithCustom = useMemo(() => {
     return [...items, CUSTOM_OPTION]

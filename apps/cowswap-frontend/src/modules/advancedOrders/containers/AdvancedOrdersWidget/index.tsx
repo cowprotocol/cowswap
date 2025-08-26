@@ -3,8 +3,9 @@ import { ReactElement, ReactNode } from 'react'
 
 import { isSellOrder } from '@cowprotocol/common-utils'
 
-import { i18n, MessageDescriptor } from '@lingui/core'
+import { MessageDescriptor } from '@lingui/core'
 import { msg } from '@lingui/core/macro'
+import { useLingui } from '@lingui/react/macro'
 
 import { Field } from 'legacy/state/types'
 
@@ -28,20 +29,20 @@ const TWAP_BULLETIN_LIST_CONTENT: MessageDescriptor[] = [
   msg`Reduce your slippage by breaking big orders into smaller ones`,
 ]
 
-const unlockScreen = (): {
+const UNLOCK_SCREEN: {
   buttonLink: string
   buttonText: MessageDescriptor
   orderType: MessageDescriptor
   subtitle: MessageDescriptor
   title: MessageDescriptor
-} => ({
+} = {
   title: msg`Unlock the Power of TWAP Orders`,
   subtitle: msg`Begin with TWAP Today!`,
   orderType: msg`TWAP`,
   buttonText: msg`Unlock TWAP orders`,
   // TODO: add actual link before deploy to PROD
   buttonLink: TWAP_LEARN_MORE_LINK,
-})
+}
 
 export type AdvancedOrdersWidgetParams = {
   disablePriceImpact: boolean
@@ -65,7 +66,8 @@ export function AdvancedOrdersWidget({
   confirmContent,
   mapCurrencyInfo,
 }: AdvancedOrdersWidgetProps) {
-  const { title, orderType, buttonText, buttonLink, subtitle } = unlockScreen()
+  const { i18n } = useLingui()
+  const { title, orderType, buttonText, buttonLink, subtitle } = UNLOCK_SCREEN
   const { disablePriceImpact } = params
 
   const {
@@ -100,6 +102,7 @@ export function AdvancedOrdersWidget({
     balance: inputCurrencyBalance,
     fiatAmount: inputCurrencyFiatAmount,
   }
+
   const outputCurrencyInfo: CurrencyInfo = {
     field: Field.OUTPUT,
     currency: outputCurrency,

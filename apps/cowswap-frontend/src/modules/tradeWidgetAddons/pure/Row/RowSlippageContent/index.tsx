@@ -6,7 +6,7 @@ import { Command } from '@cowprotocol/types'
 import { CenteredDots, HoverTooltip, LinkStyledButton, RowFixed, UI } from '@cowprotocol/ui'
 import { Percent } from '@uniswap/sdk-core'
 
-import { t } from '@lingui/core/macro'
+import { useLingui } from '@lingui/react/macro'
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
@@ -51,6 +51,7 @@ export interface RowSlippageContentProps {
 }
 
 export function RowSlippageContent(props: RowSlippageContentProps): ReactNode {
+  const { t } = useLingui()
   const SUGGESTED_SLIPPAGE_TOOLTIP = t`This is the recommended slippage tolerance based on current gas prices & trade size. A lower amount may result in slower execution.`
   const {
     chainId,
@@ -70,7 +71,6 @@ export function RowSlippageContent(props: RowSlippageContentProps): ReactNode {
   } = props
 
   const setSettingTabState = useSetAtom(settingsTabStateAtom)
-
   const openSettings: () => void = () => setSettingTabState({ open: true })
 
   const tooltipContent =
@@ -148,6 +148,8 @@ function SlippageTextContents({
   isEoaEthFlow,
   isDefaultSlippageApplied,
 }: SlippageTextContentsProps): ReactNode {
+  const { t } = useLingui()
+
   return (
     <TransactionText>
       {slippageLabel || t`Slippage tolerance`}

@@ -3,8 +3,9 @@ import { ReactNode } from 'react'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { Currency, Token } from '@uniswap/sdk-core'
 
-import { i18n, MessageDescriptor } from '@lingui/core'
+import { MessageDescriptor } from '@lingui/core'
 import { msg } from '@lingui/core/macro'
+import { useLingui } from '@lingui/react/macro'
 
 import { SwapStatusIcons } from 'modules/bridge/pure/StopStatus'
 import { SwapAndBridgeStatus } from 'modules/bridge/types'
@@ -59,11 +60,10 @@ export function BridgingStatusHeader({
   sourceChainId,
   destinationChainId,
 }: BridgingStatusHeaderProps): ReactNode {
+  const { i18n } = useLingui()
   const isBridgingFailed = stepName === 'bridgingFailed'
-
   const sellTokenWithChain = createTokenWithChain(sellToken, sourceChainId)
   const buyTokenWithChain = createTokenWithChain(buyToken, destinationChainId)
-
   const sellTokenEl = createTokenLogo(sellTokenWithChain, stepName)
   const buyTokenEl = createTokenLogo(buyTokenWithChain, stepName)
 

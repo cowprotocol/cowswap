@@ -49,16 +49,27 @@ export type RoutesValues = (typeof Routes)[RoutesKeys]
 
 export interface IMenuItem {
   route: RoutesValues
-  label: string | MessageDescriptor
-  fullLabel?: MessageDescriptor
-  description: MessageDescriptor
-  badge?: string | MessageDescriptor
+  label: string
+  fullLabel?: string
+  description: string
+  badge?: string
   badgeImage?: string
   badgeType?: (typeof BadgeTypes)[keyof typeof BadgeTypes]
 }
 
-export const MENU_ITEMS: IMenuItem[] = [
-  { route: Routes.SWAP, label: msg`Swap`, description: msg`Trade tokens` },
+interface i18nIMenuItem extends Omit<IMenuItem, 'label' | 'fullLabel' | 'description' | 'badge'> {
+  label: MessageDescriptor
+  fullLabel?: MessageDescriptor
+  description: MessageDescriptor
+  badge?: MessageDescriptor
+}
+
+export const MENU_ITEMS: i18nIMenuItem[] = [
+  {
+    route: Routes.SWAP,
+    label: msg`Swap`,
+    description: msg`Trade tokens`,
+  },
   {
     route: Routes.LIMIT_ORDER,
     label: msg`Limits`,
@@ -72,7 +83,7 @@ export const MENU_ITEMS: IMenuItem[] = [
   },
 ]
 
-export const HOOKS_STORE_MENU_ITEM: IMenuItem = {
+export const HOOKS_STORE_MENU_ITEM: i18nIMenuItem = {
   route: Routes.HOOKS,
   label: msg`Hooks`,
   description: msg`Powerful tool to generate pre/post interaction for CoW Protocol`,
@@ -80,7 +91,7 @@ export const HOOKS_STORE_MENU_ITEM: IMenuItem = {
   badgeType: BadgeTypes.INFORMATION,
 }
 
-export const YIELD_MENU_ITEM = {
+export const YIELD_MENU_ITEM: i18nIMenuItem = {
   route: Routes.YIELD,
   label: msg`Yield`,
   fullLabel: msg`Yield`,

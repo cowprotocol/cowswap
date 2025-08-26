@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { getMinimumReceivedTooltip, isSellOrder } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { t } from '@lingui/core/macro'
+import { useLingui } from '@lingui/react/macro'
 
 import { useIsEoaEthFlow, useShouldPayGas } from 'modules/trade'
 import { useIsSmartSlippageApplied } from 'modules/tradeSlippage'
@@ -23,9 +23,9 @@ export function useLabelsAndTooltips() {
   const shouldPayGas = useShouldPayGas()
   const isEoaEthFlow = useIsEoaEthFlow()
   const nativeCurrency = useNativeCurrency()
-
   const isSmartSlippageApplied = useIsSmartSlippageApplied()
   const isSell = isSellOrder(orderKind)
+  const { t } = useLingui()
 
   return useMemo(
     () => ({
@@ -41,6 +41,6 @@ export function useLabelsAndTooltips() {
       networkCostsSuffix: shouldPayGas ? <NetworkCostsSuffix /> : null,
       networkCostsTooltipSuffix: <NetworkCostsTooltipSuffix />,
     }),
-    [chainId, slippage, nativeCurrency.symbol, isEoaEthFlow, isSell, shouldPayGas, isSmartSlippageApplied],
+    [chainId, isEoaEthFlow, isSell, isSmartSlippageApplied, nativeCurrency.symbol, shouldPayGas, slippage, t],
   )
 }

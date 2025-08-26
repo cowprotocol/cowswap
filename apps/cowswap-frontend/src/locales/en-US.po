@@ -619,6 +619,10 @@ msgstr "Order recipient address differs from order owner!"
 msgid "Import intermediate token"
 msgstr "Import intermediate token"
 
+#: libs/ui/src/pure/MenuBar/index.tsx
+msgid "Language {locale} not found"
+msgstr "Language {locale} not found"
+
 #: apps/cowswap-frontend/src/common/pure/ExternalSourceAlert/index.tsx
 msgid "I understand"
 msgstr "I understand"
@@ -1197,6 +1201,10 @@ msgstr "Connect Wallet"
 msgid "View all orders"
 msgstr "View all orders"
 
+#: apps/cowswap-frontend/src/modules/accountProxy/consts.ts
+msgid "Need help"
+msgstr "Need help"
+
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
 msgid "CoW Swap is the only token exchange that gets you extra tokens."
 msgstr "CoW Swap is the only token exchange that gets you extra tokens."
@@ -1480,6 +1488,10 @@ msgstr "<0>Note:</0> {symbol} specifically requires 2 approval transactions. The
 #: apps/cowswap-frontend/src/modules/yield/containers/YieldWidget/index.tsx
 msgid "Earn higher returns with reduced impermanent loss"
 msgstr "Earn higher returns with reduced impermanent loss"
+
+#: apps/cowswap-frontend/src/modules/swap/containers/BottomBanners/index.tsx
+msgid "Funds stuck? <0>Recover your funds</0>"
+msgstr "Funds stuck? <0>Recover your funds</0>"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SwapPriceDifferenceWarning.tsx
 msgid "Maximizing Your Gains!"
@@ -1991,8 +2003,8 @@ msgid "If allowance remains insufficient at creation time, this portion will not
 msgstr "If allowance remains insufficient at creation time, this portion will not be created. Approve the"
 
 #: apps/cowswap-frontend/src/common/utils/getSwapErrorMessage.ts
-msgid "User rejected signing the order"
-msgstr "User rejected signing the order"
+#~ msgid "User rejected signing the order"
+#~ msgstr "User rejected signing the order"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 msgid "Executing', description: 'The winner of the competition is now executing your order on-chain."
