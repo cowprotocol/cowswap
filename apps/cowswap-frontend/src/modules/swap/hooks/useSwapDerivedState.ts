@@ -16,6 +16,7 @@ export function useSwapDerivedState(): SwapDerivedState {
 export function useFillSwapDerivedState(): void {
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const updateDerivedState = useSetAtom(swapDerivedStateAtom)
+  const rawState = useAtomValue(swapRawStateAtom)
   const derivedState = useBuildTradeDerivedState(swapRawStateAtom, true)
 
   const slippage = useTradeSlippage()
@@ -23,12 +24,13 @@ export function useFillSwapDerivedState(): void {
   useEffect(() => {
     updateDerivedState(
       isProviderNetworkUnsupported
-        ? DEFAULT_TRADE_DERIVED_STATE
+        ? { ...DEFAULT_TRADE_DERIVED_STATE, isUnlocked: false }
         : {
             ...derivedState,
             slippage,
             tradeType: TradeType.SWAP,
+            isUnlocked: rawState.isUnlocked,
           },
     )
-  }, [derivedState, slippage, updateDerivedState, isProviderNetworkUnsupported])
+  }, [derivedState, slippage, updateDerivedState, isProviderNetworkUnsupported, rawState.isUnlocked])
 }
