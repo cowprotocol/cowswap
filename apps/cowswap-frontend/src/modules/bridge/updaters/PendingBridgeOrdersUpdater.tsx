@@ -120,7 +120,7 @@ function PendingOrderUpdater({ chainId, orderUid, openSince }: PendingOrderUpdat
         chainId: sourceChainId,
       } as GtmEvent<CowSwapAnalyticsCategory.Bridge>)
     }
-  }, [crossChainOrder, updateBridgeOrderQuote, addOrderToSurplusQueue, analytics, openSince])
+  }, [crossChainOrder, updateBridgeOrderQuote, addOrderToSurplusQueue, analytics])
 
   return null
 }
