@@ -95,7 +95,16 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
       </TradeFormBlankButton>
     )
   },
-
+  [TradeFormValidation.CustomTokenError]: ({ customTokenError }) => {
+    // todo replace by token symbol
+    return (
+      <TradeFormBlankButton disabled={true}>
+        <span>
+          <Trans>{customTokenError}</Trans>
+        </span>
+      </TradeFormBlankButton>
+    )
+  },
   [TradeFormValidation.CurrencyNotSet]: {
     text: 'Select a token',
   },

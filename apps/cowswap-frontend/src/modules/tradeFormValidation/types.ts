@@ -46,6 +46,7 @@ export enum TradeFormValidation {
   // Bridging
   ProxyAccountLoading,
   ProxyAccountUnknown,
+  CustomTokenError,
 }
 
 export interface TradeFormValidationCommonContext {
@@ -66,6 +67,7 @@ export interface TradeFormValidationCommonContext {
   intermediateTokenToBeImported: boolean
   isAccountProxyLoading: boolean
   isProxySetupValid: boolean | null | undefined
+  customTokenError?: string
 }
 
 export interface TradeFormValidationContext extends TradeFormValidationCommonContext {}
@@ -78,6 +80,7 @@ export interface TradeFormButtonContext {
   isSupportedWallet: boolean
   widgetStandaloneMode?: boolean
   enablePartialApprove?: boolean
+  customTokenError?: string
 
   confirmTrade(): void
 

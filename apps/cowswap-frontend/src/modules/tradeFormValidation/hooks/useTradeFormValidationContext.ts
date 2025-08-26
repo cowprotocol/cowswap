@@ -14,6 +14,8 @@ import { TradeQuoteState, useTradeQuote } from 'modules/tradeQuote'
 import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
+import { useTokenCustomTradeError } from './useTokenCustomTradeError'
+
 import { TradeFormValidationCommonContext } from '../types'
 
 export function useTradeFormValidationContext(): TradeFormValidationCommonContext | null {
@@ -24,6 +26,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const isOnline = useIsOnline()
 
   const { inputCurrency, outputCurrency, recipient, tradeType } = derivedTradeState || {}
+  const customTokenError = useTokenCustomTradeError(inputCurrency, outputCurrency, tradeQuote.error)
   const { maximumSendSellAmount } = useAmountsToSign() || {}
   const { state: approvalState } = useApproveState(maximumSendSellAmount)
   const { address: recipientEnsAddress } = useENSAddress(recipient)
@@ -64,6 +67,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     intermediateTokenToBeImported: !!intermediateBuyToken && toBeImported,
     isAccountProxyLoading: isLoading,
     isProxySetupValid: proxyAccount?.isProxySetupValid,
+    customTokenError,
   }
 
   return useMemo(() => {
