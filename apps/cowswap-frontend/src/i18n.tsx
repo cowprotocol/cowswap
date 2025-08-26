@@ -13,14 +13,14 @@ dynamicActivate(initialLocale)
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const locale = useActiveLocale()
-  const [, setUserLocale] = useUserLocaleManager()
+  const { setLocale } = useUserLocaleManager()
 
   const onActivate = useCallback(
     (locale: SupportedLocale) => {
       document.documentElement.setAttribute('lang', locale)
-      setUserLocale(locale) // stores the selected locale to persist across sessions
+      setLocale(locale) // stores the selected locale to persist across sessions
     },
-    [setUserLocale]
+    [setLocale],
   )
 
   return (

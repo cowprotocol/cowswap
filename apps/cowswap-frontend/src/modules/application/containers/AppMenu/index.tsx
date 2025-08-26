@@ -10,14 +10,13 @@ import { msg } from '@lingui/core/macro'
 import SVG from 'react-inlinesvg'
 import { NavLink } from 'react-router'
 
-import { useDarkModeManager } from 'legacy/state/user/hooks'
+import { useDarkModeManager, useUserLocaleManager } from 'legacy/state/user/hooks'
 
 import { parameterizeTradeRoute, useGetTradeUrlParams } from 'modules/trade'
 
 import { APP_HEADER_ELEMENT_ID } from 'common/constants/common'
 import { useCustomTheme } from 'common/hooks/useCustomTheme'
 import { useMenuItems } from 'common/hooks/useMenuItems'
-import { dynamicActivate } from 'lib/i18n'
 
 import { NAV_ITEMS, PRODUCT_VARIANT } from '../App/menuConsts'
 
@@ -40,6 +39,7 @@ export function AppMenu({ children }: AppMenuProps): ReactNode {
   const isInjectedWidgetMode = isInjectedWidget()
   const menuItems = useMenuItems()
   const [darkMode, toggleDarkMode] = useDarkModeManager()
+  const { setLocale } = useUserLocaleManager()
   const isMobile = useMediaQuery(Media.upToMedium(false))
   const customTheme = useCustomTheme()
   const getTradeUrlParams = useGetTradeUrlParams()
@@ -56,7 +56,7 @@ export function AppMenu({ children }: AppMenuProps): ReactNode {
 
   const languageNavItems = SUPPORTED_LOCALES.map((item) => ({
     label: item,
-    onClick: () => dynamicActivate(item),
+    onClick: () => setLocale(item),
   }))
 
   const navItems = useMemo(() => {
