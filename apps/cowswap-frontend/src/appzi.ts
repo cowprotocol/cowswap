@@ -25,7 +25,7 @@ export const isAppziEnabled =
 const PROD_FEEDBACK_KEY = 'f7591eca-72f7-4888-b15f-e7ff5fcd60cd'
 const TEST_FEEDBACK_KEY = '6da8bf10-4904-4952-9a34-12db70e9194e'
 
-const FEEDBACK_KEY = process.env.REACT_APP_APPZI_FEEDBACK_KEY || isProdLike ? PROD_FEEDBACK_KEY : TEST_FEEDBACK_KEY
+const FEEDBACK_KEY = process.env.REACT_APP_APPZI_FEEDBACK_KEY || (isProdLike ? PROD_FEEDBACK_KEY : TEST_FEEDBACK_KEY)
 
 const APPZI_TOKEN = process.env.REACT_APP_APPZI_TOKEN || '5ju0G'
 
