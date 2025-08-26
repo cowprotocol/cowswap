@@ -2,8 +2,7 @@ import { ReactNode } from 'react'
 
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { t } from '@lingui/core/macro'
-import { Trans } from '@lingui/react/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 
 import { ReviewOrderModalAmountRow } from '../ReviewOrderModalAmountRow'
 
@@ -23,6 +22,8 @@ export function NetworkCostsRow({
   amountSuffix,
   tooltipSuffix,
 }: NetworkCostsRowProps) {
+  const { t } = useLingui()
+
   return (
     <ReviewOrderModalAmountRow
       withTimelineDot={withTimelineDot}
