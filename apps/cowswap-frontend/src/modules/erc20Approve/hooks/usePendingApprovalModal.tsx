@@ -1,10 +1,9 @@
-import { useCallback, useMemo } from 'react'
+import { ReactNode, useCallback, useMemo } from 'react'
 
 import { Command } from '@cowprotocol/types'
 
-import { useModalState } from './useModalState'
-
-import { ConfirmationPendingContent } from '../pure/ConfirmationPendingContent'
+import { ModalState, useModalState } from 'common/hooks/useModalState'
+import { ConfirmationPendingContent } from 'common/pure/ConfirmationPendingContent'
 
 interface PendingApprovalModalParams {
   currencySymbol?: string
@@ -12,9 +11,10 @@ interface PendingApprovalModalParams {
   modalMode?: boolean
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function usePendingApprovalModal(params?: PendingApprovalModalParams) {
+export function usePendingApprovalModal(params?: PendingApprovalModalParams): {
+  Modal: ReactNode
+  state: ModalState<string>
+} {
   const { currencySymbol, modalMode, onDismiss } = params || {}
 
   const state = useModalState<string>()
@@ -26,7 +26,6 @@ export function usePendingApprovalModal(params?: PendingApprovalModalParams) {
   }, [closeModal, onDismiss])
 
   return useMemo(() => {
-
     const Title = (
       <>
         Approving <strong>{currencySymbol || context}</strong> for trading
@@ -43,6 +42,6 @@ export function usePendingApprovalModal(params?: PendingApprovalModalParams) {
       />
     )
 
-    return ({ Modal, state })
+    return { Modal, state }
   }, [currencySymbol, context, modalMode, onDismissCallback, state])
 }

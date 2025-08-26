@@ -48,6 +48,7 @@ export interface TradeFlowContext {
   contract: GPv2Settlement
   permitInfo: IsTokenPermittableResult
   generatePermitHook: GeneratePermitHook
+  permitAmountToSign?: bigint
   typedHooks?: TypedAppDataHooks
 }
 
@@ -57,4 +58,5 @@ export interface SafeBundleFlowContext {
   wrappedNativeContract: Weth
   needsApproval: boolean
   erc20Contract: Erc20
+  isPartialApproveEnabled?: boolean
 }

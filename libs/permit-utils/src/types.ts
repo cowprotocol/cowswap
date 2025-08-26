@@ -26,8 +26,9 @@ export type PermitHookParams = {
   permitInfo: PermitInfo
   provider: JsonRpcProvider
   eip2612Utils: Eip2612PermitUtils
-  account?: string | undefined
-  nonce?: number | undefined
+  account?: string
+  nonce?: number
+  amount?: bigint
 }
 
 export type PermitHookData = latest.CoWHook
@@ -56,4 +57,5 @@ export type GetTokenPermitInfoParams = {
   chainId: number
   provider: JsonRpcProvider
   minGasLimit?: number | undefined
+  amount?: bigint
 }

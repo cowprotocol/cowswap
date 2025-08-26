@@ -55,7 +55,7 @@ async function generatePermitHookRaw(params: PermitHookParams): Promise<PermitHo
   const nonce = preFetchedNonce === undefined ? await eip2612Utils.getTokenNonce(tokenAddress, owner) : preFetchedNonce
 
   const deadline = getPermitDeadline()
-  const value = DEFAULT_PERMIT_VALUE
+  const value = params.amount || DEFAULT_PERMIT_VALUE
 
   const callData =
     permitInfo.type === 'eip-2612'
@@ -65,7 +65,7 @@ async function generatePermitHookRaw(params: PermitHookParams): Promise<PermitHo
             {
               owner,
               spender,
-              value,
+              value: value.toString(),
               nonce,
               deadline,
             },
@@ -82,7 +82,7 @@ async function generatePermitHookRaw(params: PermitHookParams): Promise<PermitHo
               holder: owner,
               spender,
               allowed: true,
-              value,
+              value: value.toString(),
               nonce,
               expiry: deadline,
             },
@@ -128,7 +128,6 @@ async function calculateGasLimit(
 }
 
 function getCacheKey(params: PermitHookParams): string {
-  const { inputToken, chainId, account } = params
-
-  return `${inputToken.address.toLowerCase()}-${chainId}${account ? `-${account.toLowerCase()}` : ''}`
+  const { inputToken, chainId, account, amount } = params
+  return `${inputToken.address.toLowerCase()}-${chainId}${account ? `-${account.toLowerCase()}` : ''}${amount ? `-${amount.toString()}` : ''}`
 }
