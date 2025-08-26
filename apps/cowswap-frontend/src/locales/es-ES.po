@@ -8,7 +8,7 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: cowswapdev\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-08-26 14:50\n"
+"PO-Revision-Date: 2025-08-26 20:10\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -616,6 +616,10 @@ msgstr "Dirección del destinatario del pedido difiere del propietario del pedid
 msgid "Import intermediate token"
 msgstr "Importar token intermedio"
 
+#: libs/ui/src/pure/MenuBar/index.tsx
+msgid "Language {locale} not found"
+msgstr "Idioma {locale} no encontrado"
+
 #: apps/cowswap-frontend/src/common/pure/ExternalSourceAlert/index.tsx
 msgid "I understand"
 msgstr "Entiendo"
@@ -1190,6 +1194,10 @@ msgstr "Conectar cartera"
 msgid "View all orders"
 msgstr "Ver todos los pedidos"
 
+#: apps/cowswap-frontend/src/modules/accountProxy/consts.ts
+msgid "Need help"
+msgstr "Necesita ayuda"
+
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
 msgid "CoW Swap is the only token exchange that gets you extra tokens."
 msgstr "CoW Swap es el único intercambio de tokens que te da fichas extra."
@@ -1473,6 +1481,10 @@ msgstr "<0>Nota:</0> {symbol} requiere específicamente 2 transacciones de aprob
 #: apps/cowswap-frontend/src/modules/yield/containers/YieldWidget/index.tsx
 msgid "Earn higher returns with reduced impermanent loss"
 msgstr "Gana mayores beneficios con pérdida inpermanente reducida"
+
+#: apps/cowswap-frontend/src/modules/swap/containers/BottomBanners/index.tsx
+msgid "Funds stuck? <0>Recover your funds</0>"
+msgstr "¿Fondos atascados? <0>Recuperar tus fondos</0>"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SwapPriceDifferenceWarning.tsx
 msgid "Maximizing Your Gains!"
@@ -1984,8 +1996,7 @@ msgid "If allowance remains insufficient at creation time, this portion will not
 msgstr "Si la asignación sigue siendo insuficiente en tiempo de creación, esta porción no se creará. Aprobar el"
 
 #: apps/cowswap-frontend/src/common/utils/getSwapErrorMessage.ts
-msgid "User rejected signing the order"
-msgstr "El usuario rechazó la firma del pedido"
+#~ msgstr "El usuario rechazó la firma del pedido"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 msgid "Executing', description: 'The winner of the competition is now executing your order on-chain."

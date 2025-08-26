@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cowswapdev\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-08-25 19:37\n"
+"PO-Revision-Date: 2025-08-26 20:10\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -616,6 +616,10 @@ msgstr "Адрес получателя заказа отличается от �
 msgid "Import intermediate token"
 msgstr "Импорт промежуточного токена"
 
+#: libs/ui/src/pure/MenuBar/index.tsx
+msgid "Language {locale} not found"
+msgstr "Язык {locale} не найден"
+
 #: apps/cowswap-frontend/src/common/pure/ExternalSourceAlert/index.tsx
 msgid "I understand"
 msgstr "Я понимаю"
@@ -1190,6 +1194,10 @@ msgstr "Подключить кошелек"
 msgid "View all orders"
 msgstr "Просмотреть все заказы"
 
+#: apps/cowswap-frontend/src/modules/accountProxy/consts.ts
+msgid "Need help"
+msgstr "Нужна помощь"
+
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
 msgid "CoW Swap is the only token exchange that gets you extra tokens."
 msgstr "CoW Swap - это единственная биржа токенов, которая дает вам дополнительные токены."
@@ -1473,6 +1481,10 @@ msgstr "<0>Примечание:</0> {symbol} специально требуе�
 #: apps/cowswap-frontend/src/modules/yield/containers/YieldWidget/index.tsx
 msgid "Earn higher returns with reduced impermanent loss"
 msgstr "Заработайте больше возвратов с уменьшенными потерями"
+
+#: apps/cowswap-frontend/src/modules/swap/containers/BottomBanners/index.tsx
+msgid "Funds stuck? <0>Recover your funds</0>"
+msgstr "Средства застряли? <0>Восстановить средства</0>"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SwapPriceDifferenceWarning.tsx
 msgid "Maximizing Your Gains!"
@@ -1984,8 +1996,7 @@ msgid "If allowance remains insufficient at creation time, this portion will not
 msgstr "Если пособие остается недостаточным в момент создания, эта часть не будет создана. Утвердите"
 
 #: apps/cowswap-frontend/src/common/utils/getSwapErrorMessage.ts
-msgid "User rejected signing the order"
-msgstr "Пользователь отклонил подписание заказа"
+#~ msgstr "Пользователь отклонил подписание заказа"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 msgid "Executing', description: 'The winner of the competition is now executing your order on-chain."
