@@ -1,4 +1,4 @@
-import { ReactNode, useEffect } from 'react'
+import { ReactNode, useEffect, useRef } from 'react'
 
 import { GtmEvent, useCowAnalytics } from '@cowprotocol/analytics'
 import { timeSinceInSeconds } from '@cowprotocol/common-utils'
@@ -48,12 +48,18 @@ function PendingOrderUpdater({ chainId, orderUid, openSince }: PendingOrderUpdat
   const updateBridgeOrderQuote = useUpdateBridgeOrderQuote()
   const addOrderToSurplusQueue = useAddOrderToSurplusQueue()
   const analytics = useCowAnalytics()
+  const waitingTooLongNpsTriggeredRef = useRef(false)
 
   // Check once a minute the time it has been pending and trigger appzi if greater than threshold
   useEffect(() => {
-    if (!crossChainOrder) return
+    if (!crossChainOrder || waitingTooLongNpsTriggeredRef.current) return
 
     const interval = setInterval(() => {
+      if (waitingTooLongNpsTriggeredRef.current) {
+        clearInterval(interval)
+        return
+      }
+
       const isPendingTooLong = isOrderInPendingTooLong(openSince, true)
       if (isPendingTooLong) {
         // Trigger Appzi survey for pending bridges that are pending for too long
@@ -67,6 +73,7 @@ function PendingOrderUpdater({ chainId, orderUid, openSince }: PendingOrderUpdat
           waitedTooLong: true,
           secondsSinceOpen: timeSinceInSeconds(openSince),
         })
+        waitingTooLongNpsTriggeredRef.current = true
       }
     }, 60_000)
 
