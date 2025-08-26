@@ -1,11 +1,12 @@
 import { ReactNode, useEffect } from 'react'
 
 import { GtmEvent, useCowAnalytics } from '@cowprotocol/analytics'
+import { timeSinceInSeconds } from '@cowprotocol/common-utils'
 import { BridgeStatus, CrossChainOrder, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { triggerAppziSurvey } from 'appzi'
+import { isOrderInPendingTooLong, triggerAppziSurvey } from 'appzi'
 import { useCrossChainOrder, usePendingBridgeOrders, useUpdateBridgeOrderQuote } from 'entities/bridgeOrders'
 import { useAddOrderToSurplusQueue } from 'entities/surplusModal'
 
@@ -39,13 +40,38 @@ function processExecutedBridging(crossChainOrder: CrossChainOrder): void {
 interface PendingOrderUpdaterProps {
   chainId: SupportedChainId
   orderUid: string
+  openSince?: number
 }
 
-function PendingOrderUpdater({ chainId, orderUid }: PendingOrderUpdaterProps): ReactNode {
+function PendingOrderUpdater({ chainId, orderUid, openSince }: PendingOrderUpdaterProps): ReactNode {
   const { data: crossChainOrder } = useCrossChainOrder(chainId, orderUid)
   const updateBridgeOrderQuote = useUpdateBridgeOrderQuote()
   const addOrderToSurplusQueue = useAddOrderToSurplusQueue()
   const analytics = useCowAnalytics()
+
+  // Check once a minute the time it has been pending and trigger appzi if greater than threshold
+  useEffect(() => {
+    if (!crossChainOrder) return
+
+    const interval = setInterval(() => {
+      const isPendingTooLong = isOrderInPendingTooLong(openSince, true)
+      if (isPendingTooLong) {
+        // Trigger Appzi survey for pending bridges that are pending for too long
+        // Start counting from bridge creation timestamp
+        triggerAppziSurvey({
+          isBridging: true,
+          explorerUrl: crossChainOrder.explorerUrl,
+          chainId: crossChainOrder.chainId,
+          orderType: UiOrderType.SWAP,
+          account: crossChainOrder.order.owner,
+          waitedTooLong: true,
+          secondsSinceOpen: timeSinceInSeconds(openSince),
+        })
+      }
+    }, 60_000)
+
+    return () => clearInterval(interval)
+  }, [crossChainOrder, openSince])
 
   useEffect(() => {
     if (!crossChainOrder) return
@@ -53,6 +79,7 @@ function PendingOrderUpdater({ chainId, orderUid }: PendingOrderUpdaterProps): R
     const orderUid = crossChainOrder.order.uid
     const orderStatus = crossChainOrder.statusResult.status
     const isOrderExecuted = orderStatus === BridgeStatus.EXECUTED
+    // TODO: detect also when the bridge hook failed to execute after the order was executed
     const isOrderFailed = orderStatus === BridgeStatus.REFUND || orderStatus === BridgeStatus.EXPIRED
 
     const { sourceChainId, destinationChainId } = crossChainOrder.bridgingParams
@@ -86,7 +113,7 @@ function PendingOrderUpdater({ chainId, orderUid }: PendingOrderUpdaterProps): R
         chainId: sourceChainId,
       } as GtmEvent<CowSwapAnalyticsCategory.Bridge>)
     }
-  }, [crossChainOrder, updateBridgeOrderQuote, addOrderToSurplusQueue, analytics])
+  }, [crossChainOrder, updateBridgeOrderQuote, addOrderToSurplusQueue, analytics, openSince])
 
   return null
 }
@@ -101,7 +128,12 @@ export function PendingBridgeOrdersUpdater(): ReactNode {
   return (
     <>
       {pendingBridgeOrders.map((order) => (
-        <PendingOrderUpdater key={order.orderUid} chainId={chainId} orderUid={order.orderUid} />
+        <PendingOrderUpdater
+          key={order.orderUid}
+          chainId={chainId}
+          orderUid={order.orderUid}
+          openSince={order.creationTimestamp}
+        />
       ))}
     </>
   )
