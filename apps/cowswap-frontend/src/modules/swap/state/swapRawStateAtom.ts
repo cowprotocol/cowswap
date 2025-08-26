@@ -8,9 +8,13 @@ import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { DEFAULT_TRADE_DERIVED_STATE, TradeDerivedState } from 'modules/trade/types/TradeDerivedState'
 import { ExtendedTradeRawState, getDefaultTradeRawState } from 'modules/trade/types/TradeRawState'
 
-export interface SwapDerivedState extends TradeDerivedState {}
+export interface SwapDerivedState extends TradeDerivedState {
+  isUnlocked: boolean
+}
 
-export interface SwapRawState extends ExtendedTradeRawState {}
+export interface SwapRawState extends ExtendedTradeRawState {
+  isUnlocked: boolean
+}
 
 export function getDefaultSwapState(chainId: SupportedChainId | null): SwapRawState {
   return {
@@ -18,6 +22,7 @@ export function getDefaultSwapState(chainId: SupportedChainId | null): SwapRawSt
     inputCurrencyAmount: null,
     outputCurrencyAmount: null,
     orderKind: OrderKind.SELL,
+    isUnlocked: false,
   }
 }
 
@@ -27,4 +32,5 @@ export const { atom: swapRawStateAtom, updateAtom: updateSwapRawStateAtom } = at
 
 export const swapDerivedStateAtom = atom<SwapDerivedState>({
   ...DEFAULT_TRADE_DERIVED_STATE,
+  isUnlocked: false,
 })
