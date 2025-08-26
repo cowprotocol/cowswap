@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
 import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
-import { extractTextFromStringOrI18nDescriptor } from '@cowprotocol/common-utils'
+import { useExtractText } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -28,6 +28,7 @@ const ACCOUNT_MENU_LINKS = (chainId: SupportedChainId): MenuItem[] => {
 
 export function AccountMenu(): ReactNode {
   const { chainId } = useWalletInfo()
+  const { extractTextFromStringOrI18nDescriptor } = useExtractText()
 
   return (
     <SideMenu longList>

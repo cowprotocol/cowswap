@@ -82,7 +82,7 @@ export function AppMenu({ children }: AppMenuProps): ReactNode {
       },
       ...NAV_ITEMS(chainId),
     ]
-  }, [menuItems, chainId, getTradeUrlParams, t])
+  }, [t, menuItems, chainId, getTradeUrlParams])
 
   if (isInjectedWidgetMode) return null
 

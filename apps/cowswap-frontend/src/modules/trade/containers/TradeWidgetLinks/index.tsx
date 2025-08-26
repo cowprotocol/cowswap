@@ -1,6 +1,6 @@
-import { useCallback, useMemo, useState } from 'react'
+import React, { JSX, useCallback, useMemo, useState } from 'react'
 
-import { extractTextFromStringOrI18nDescriptor } from '@cowprotocol/common-utils'
+import { useExtractText } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
 import { Badge, BadgeTypes } from '@cowprotocol/ui'
 import type { TradeType } from '@cowprotocol/widget-lib'
@@ -45,10 +45,53 @@ interface TradeWidgetLinksProps {
   isDropdown?: boolean
 }
 
+interface TradeWidgetMenuItemProps {
+  dropdownVisible: boolean
+  isDropdown: boolean
+  menuItemsElements: JSX.Element[]
+  onBack: (_item?: MenuItemConfig) => void
+  onClick: () => false | void
+  selectedMenuItem: JSX.Element
+  singleMenuItem: boolean
+}
+
+const TradeWidgetMenuItem: React.FC<TradeWidgetMenuItemProps> = ({
+  isDropdown,
+  onClick,
+  dropdownVisible,
+  selectedMenuItem,
+  singleMenuItem,
+  onBack,
+  menuItemsElements,
+}) => {
+  return isDropdown ? (
+    <>
+      <styledEl.MenuItem onClick={onClick} isDropdownVisible={dropdownVisible}>
+        <styledEl.DropdownButton>
+          {selectedMenuItem.props.item.label}
+          {!singleMenuItem ? <SVG src={IMAGE_CARET} title={t`select`} /> : null}
+        </styledEl.DropdownButton>
+      </styledEl.MenuItem>
+
+      {dropdownVisible && (
+        <styledEl.SelectMenu>
+          <ModalHeader onBack={onBack}>
+            <Trans>Trading mode</Trans>
+          </ModalHeader>
+          <styledEl.TradeWidgetContent>{menuItemsElements}</styledEl.TradeWidgetContent>
+        </styledEl.SelectMenu>
+      )}
+    </>
+  ) : (
+    <styledEl.Wrapper>{menuItemsElements}</styledEl.Wrapper>
+  )
+}
+
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) {
+  const { extractTextFromStringOrI18nDescriptor } = useExtractText()
   const tradeContext = useTradeRouteContext()
   const location = useLocation()
   const [isDropdownVisible, setDropdownVisible] = useState(false)
@@ -64,7 +107,6 @@ export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) 
   const enabledItems = useMemo(() => {
     return menuItems.filter((item) => {
       if (!enabledTradeTypes?.length) return true
-
       return enabledTradeTypes.some((type: TradeType) => TRADE_TYPE_TO_ROUTE[type] === item.route)
     })
   }, [menuItems, enabledTradeTypes])
@@ -73,7 +115,6 @@ export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) 
     return enabledItems.map((item) => {
       const isItemYield = item.route === Routes.YIELD
       const chainId = tradeContext.chainId
-
       const isCurrentPathYield = location.pathname.startsWith(addChainIdToRoute(Routes.YIELD, chainId))
       const itemTradeState = getTradeStateByType(item.route)
       const defaultState = chainId ? getDefaultTradeRawState(+chainId) : null
@@ -105,43 +146,29 @@ export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) 
       )
     })
   }, [
-    isDropdown,
-    isDropdownVisible,
     enabledItems,
-    tradeContext,
-    location.pathname,
-    handleMenuItemClick,
+    extractTextFromStringOrI18nDescriptor,
     getTradeStateByType,
     getTradeUrlParams,
+    handleMenuItemClick,
+    isDropdown,
+    isDropdownVisible,
+    location.pathname,
+    tradeContext.chainId,
   ])
-
   const singleMenuItem = menuItemsElements.length === 1
-
   const selectedMenuItem = menuItemsElements.find((item) => item.props.isActive) || menuItemsElements[0]
 
-  return isDropdown ? (
-    <>
-      <styledEl.MenuItem
-        onClick={() => !singleMenuItem && setDropdownVisible(!isDropdownVisible)}
-        isDropdownVisible={isDropdownVisible}
-      >
-        <styledEl.DropdownButton>
-          {selectedMenuItem.props.item.label}
-          {!singleMenuItem ? <SVG src={IMAGE_CARET} title={t`select`} /> : null}
-        </styledEl.DropdownButton>
-      </styledEl.MenuItem>
-
-      {isDropdownVisible && (
-        <styledEl.SelectMenu>
-          <ModalHeader onBack={handleMenuItemClick}>
-            <Trans>Trading mode</Trans>
-          </ModalHeader>
-          <styledEl.TradeWidgetContent>{menuItemsElements}</styledEl.TradeWidgetContent>
-        </styledEl.SelectMenu>
-      )}
-    </>
-  ) : (
-    <styledEl.Wrapper>{menuItemsElements}</styledEl.Wrapper>
+  return (
+    <TradeWidgetMenuItem
+      isDropdown={isDropdown}
+      onClick={() => !singleMenuItem && setDropdownVisible(!isDropdownVisible)}
+      dropdownVisible={isDropdownVisible}
+      selectedMenuItem={selectedMenuItem}
+      singleMenuItem={singleMenuItem}
+      onBack={handleMenuItemClick}
+      menuItemsElements={menuItemsElements}
+    />
   )
 }
 
@@ -159,19 +186,23 @@ const MenuItem = ({
   isDropdownVisible: boolean
   // TODO: Add proper return type annotation
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-}) => (
-  <styledEl.MenuItem isActive={isActive} onClick={onClick} isDropdownVisible={isDropdownVisible}>
-    <styledEl.Link to={routePath}>
-      {extractTextFromStringOrI18nDescriptor(item.label)}
-      {(!isActive && item.badgeImage) || item.badge ? (
-        <Badge {...(item.badgeType && { type: item.badgeType })}>
-          {item.badgeImage ? (
-            <SVG src={item.badgeImage} />
-          ) : item.badge ? (
-            <>{extractTextFromStringOrI18nDescriptor(item.badge)}</>
-          ) : null}
-        </Badge>
-      ) : null}
-    </styledEl.Link>
-  </styledEl.MenuItem>
-)
+}) => {
+  const { extractTextFromStringOrI18nDescriptor } = useExtractText()
+
+  return (
+    <styledEl.MenuItem isActive={isActive} onClick={onClick} isDropdownVisible={isDropdownVisible}>
+      <styledEl.Link to={routePath}>
+        {extractTextFromStringOrI18nDescriptor(item.label)}
+        {(!isActive && item.badgeImage) || item.badge ? (
+          <Badge {...(item.badgeType && { type: item.badgeType })}>
+            {item.badgeImage ? (
+              <SVG src={item.badgeImage} />
+            ) : item.badge ? (
+              <>{extractTextFromStringOrI18nDescriptor(item.badge)}</>
+            ) : null}
+          </Badge>
+        ) : null}
+      </styledEl.Link>
+    </styledEl.MenuItem>
+  )
+}

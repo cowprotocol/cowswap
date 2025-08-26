@@ -1,6 +1,6 @@
 import { ChangeEventHandler, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import { extractTextFromStringOrI18nDescriptor } from '@cowprotocol/common-utils'
+import { useExtractText } from '@cowprotocol/common-utils'
 import { ButtonPrimary, ButtonSecondary } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
@@ -45,7 +45,7 @@ export interface DeadlineSelectorProps {
 // eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function DeadlineSelector(props: DeadlineSelectorProps) {
   const { deadline, customDeadline, isDeadlineDisabled, selectDeadline, selectCustomDeadline } = props
-
+  const { extractTextFromStringOrI18nDescriptor } = useExtractText()
   const currentDeadlineNode = useRef<HTMLButtonElement | null>(null)
   const [[minDate, maxDate], setMinMax] = useState<[Date, Date]>(calculateMinMax)
 

@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { extractTextFromStringOrI18nDescriptor } from '@cowprotocol/common-utils'
+import { useExtractText } from '@cowprotocol/common-utils'
 import { ContextMenu, ContextMenuButton, ContextMenuItem, ContextMenuList } from '@cowprotocol/ui'
 
 import { MessageDescriptor } from '@lingui/core'
@@ -19,6 +19,8 @@ export interface TradeSelectProps extends TradeWidgetFieldProps {
 
 export function TradeSelect(props: TradeSelectProps): ReactNode {
   const { activeLabel, items, onSelect, className } = props
+  const { extractTextFromStringOrI18nDescriptor } = useExtractText()
+
   return (
     <TradeWidgetField {...props}>
       <div>

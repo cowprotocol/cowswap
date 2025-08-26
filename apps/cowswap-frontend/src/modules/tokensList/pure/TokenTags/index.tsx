@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
 import { UNSUPPORTED_TOKENS_FAQ_URL } from '@cowprotocol/common-const'
-import { extractTextFromStringOrI18nDescriptor } from '@cowprotocol/common-utils'
+import { useExtractText } from '@cowprotocol/common-utils'
 import { TagInfo, TokenListTags } from '@cowprotocol/tokens'
 import { getStatusColorEnums, HoverTooltip, StatusColorVariant } from '@cowprotocol/ui'
 
@@ -71,6 +71,8 @@ export function TokenTags({
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function TagDescriptor({ tags, children }: { children?: React.ReactNode; tags: TagInfo[] }) {
+  const { extractTextFromStringOrI18nDescriptor } = useExtractText()
+
   return (
     <styledEl.TagContainer>
       {tags.map((tag) => {

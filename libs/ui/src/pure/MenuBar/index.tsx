@@ -17,9 +17,9 @@ import IMG_ICON_MENU_HAMBURGER from '@cowprotocol/assets/images/menu-hamburger.s
 import IMG_ICON_SETTINGS_GLOBAL from '@cowprotocol/assets/images/settings-global.svg'
 import IMG_ICON_X from '@cowprotocol/assets/images/x.svg'
 import { useMediaQuery, useOnClickOutside } from '@cowprotocol/common-hooks'
-import { addBodyClass, extractTextFromStringOrI18nDescriptor, removeBodyClass } from '@cowprotocol/common-utils'
+import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
 
-import { i18n, MessageDescriptor } from '@lingui/core'
+import { i18n } from '@lingui/core'
 import { t } from '@lingui/core/macro'
 import { flag } from 'country-emoji'
 import SVG from 'react-inlinesvg'
@@ -112,8 +112,8 @@ type LinkComponentType = ComponentType<PropsWithChildren<{ href: string }>>
 
 export interface MenuItem {
   href?: string
-  label?: string | MessageDescriptor
-  badge?: string | MessageDescriptor | ReactElement
+  label?: string
+  badge?: string | ReactElement
   children?: DropdownMenuItem[]
   productVariant?: ProductVariant
   icon?: string
@@ -135,10 +135,10 @@ export interface MenuItem {
 interface DropdownMenuItem {
   href?: string
   external?: boolean
-  label?: string | MessageDescriptor
+  label?: string
   icon?: string
-  badge?: string | MessageDescriptor | ReactElement
-  description?: string | MessageDescriptor
+  badge?: string | ReactElement
+  description?: string
   isButton?: boolean
   children?: DropdownMenuItem[]
   productVariant?: ProductVariant
@@ -193,7 +193,7 @@ const NavItem = ({
   // TODO: Add proper return type annotation
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 }: NavItemProps) => {
-  const extractedLabel = extractTextFromStringOrI18nDescriptor(item.label)
+  const extractedLabel = item.label
 
   // TODO: Add proper return type annotation
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -265,7 +265,7 @@ const DropdownContentItem: React.FC<{
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const renderItemContent = () => {
     const { productVariant, icon, label, description, hoverColor } = item
-    const extractedLabel = extractTextFromStringOrI18nDescriptor(label)
+    const extractedLabel = label
 
     return (
       <>
@@ -284,11 +284,7 @@ const DropdownContentItem: React.FC<{
         {extractedLabel && (
           <DropdownContentItemText>
             <DropdownContentItemTitle>{extractedLabel}</DropdownContentItemTitle>
-            {description && (
-              <DropdownContentItemDescription>
-                {extractTextFromStringOrI18nDescriptor(description)}
-              </DropdownContentItemDescription>
-            )}
+            {description && <DropdownContentItemDescription>{description}</DropdownContentItemDescription>}
           </DropdownContentItemText>
         )}
       </>
@@ -298,14 +294,7 @@ const DropdownContentItem: React.FC<{
   const itemClassName = item.hasDivider ? 'hasDivider' : ''
 
   const href = item.external
-    ? appendUtmParams(
-        item.href!,
-        item.utmSource,
-        item.utmContent,
-        rootDomain,
-        item.external,
-        extractTextFromStringOrI18nDescriptor(item.label),
-      )
+    ? appendUtmParams(item.href!, item.utmSource, item.utmContent, rootDomain, item.external, item.label)
     : item.href
 
   if (item.isButton && item.href) {
@@ -473,7 +462,7 @@ const GenericDropdown: React.FC<DropdownProps> = ({
         }
   }, [interaction, onTrigger])
 
-  const extractedLabel = extractTextFromStringOrI18nDescriptor(item.label)
+  const extractedLabel = item.label
 
   return (
     <DropdownMenu {...interactionProps} mobileMode={mobileMode}>
@@ -481,13 +470,7 @@ const GenericDropdown: React.FC<DropdownProps> = ({
         <span>{extractedLabel}</span>
         {(item.badge || item.badgeImage) && (
           <Badge {...(item.badgeType && { type: item.badgeType })}>
-            {item.badgeImage ? (
-              <SVG src={item.badgeImage} />
-            ) : isValidElement(item.badge) ? (
-              item.badge
-            ) : (
-              extractTextFromStringOrI18nDescriptor(item.badge)
-            )}
+            {item.badgeImage ? <SVG src={item.badgeImage} /> : isValidElement(item.badge) ? item.badge : item.badge}
           </Badge>
         )}
         {item.children && <SVG src={IMG_ICON_CARRET_DOWN} />}
@@ -559,7 +542,7 @@ const DropdownContentWrapper: React.FC<DropdownContentWrapperProps> = ({
       {content.items?.map((item: DropdownMenuItem, index: number) => {
         const hasChildren = !!item.children
         const Tag = hasChildren ? 'div' : item.isButton ? DropdownContentItemButton : undefined
-        const extractedLabel = extractTextFromStringOrI18nDescriptor(item.label)
+        const extractedLabel = item.label
         const href = !hasChildren
           ? appendUtmParams(item.href!, item.utmSource, item.utmContent, rootDomain, !!item.external, extractedLabel)
           : undefined
@@ -577,16 +560,12 @@ const DropdownContentWrapper: React.FC<DropdownContentWrapperProps> = ({
                     ) : isValidElement(item.badge) ? (
                       item.badge
                     ) : (
-                      extractTextFromStringOrI18nDescriptor(item.badge)
+                      item.badge
                     )}
                   </Badge>
                 )}
               </DropdownContentItemTitle>
-              {item.description && (
-                <DropdownContentItemDescription>
-                  {extractTextFromStringOrI18nDescriptor(item.description)}
-                </DropdownContentItemDescription>
-              )}
+              {item.description && <DropdownContentItemDescription>{item.description}</DropdownContentItemDescription>}
             </DropdownContentItemText>
             {item.children && <SVG src={IMG_ICON_CARRET_DOWN} />}
             {!item.children && (
@@ -696,7 +675,7 @@ const GlobalSettingsDropdown = forwardRef<HTMLUListElement, GlobalSettingsDropdo
           <MobileDropdownContainer mobileMode={mobileMode} ref={ref as unknown as React.RefObject<HTMLDivElement>}>
             <DropdownContent isOpen={true} alignRight={true} mobileMode={mobileMode}>
               {navItems.map((item, index) => {
-                const extractedLabel = extractTextFromStringOrI18nDescriptor(item.label)
+                const extractedLabel = item.label
                 const to = item.external
                   ? appendUtmParams(
                       item.href!,
@@ -730,7 +709,7 @@ const GlobalSettingsDropdown = forwardRef<HTMLUListElement, GlobalSettingsDropdo
         ) : (
           <DropdownContent isOpen={true} ref={ref} alignRight={true} mobileMode={mobileMode}>
             {navItems.map((item, index) => {
-              const extractedLabel = extractTextFromStringOrI18nDescriptor(item.label)
+              const extractedLabel = item.label
               const to = item.external
                 ? appendUtmParams(
                     item.href!,
@@ -1001,7 +980,7 @@ export const MenuBar = (props: MenuBarProps) => {
             isLoaded &&
             additionalNavButtons &&
             additionalNavButtons.map((item, index) => {
-              const extractedLabel = extractTextFromStringOrI18nDescriptor(item.label)
+              const extractedLabel = item.label
               const href = item.external
                 ? appendUtmParams(
                     item.href!,
@@ -1099,7 +1078,7 @@ export const MenuBar = (props: MenuBarProps) => {
               {additionalContent} {/* Add additional content here */}
               {additionalNavButtons &&
                 additionalNavButtons.map((item, index) => {
-                  const extractedLabel = extractTextFromStringOrI18nDescriptor(item.label)
+                  const extractedLabel = item.label
                   return (
                     <DropdownContentItemButton
                       key={index}

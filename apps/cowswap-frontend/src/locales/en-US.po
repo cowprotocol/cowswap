@@ -1489,6 +1489,10 @@ msgstr "<0>Note:</0> {symbol} specifically requires 2 approval transactions. The
 msgid "Earn higher returns with reduced impermanent loss"
 msgstr "Earn higher returns with reduced impermanent loss"
 
+#: apps/cowswap-frontend/src/modules/swap/containers/BottomBanners/index.tsx
+msgid "Funds stuck? <0>Recover your funds</0>"
+msgstr "Funds stuck? <0>Recover your funds</0>"
+
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SwapPriceDifferenceWarning.tsx
 msgid "Maximizing Your Gains!"
 msgstr "Maximizing Your Gains!"
