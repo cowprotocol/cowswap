@@ -8,7 +8,7 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: cowswapdev\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-08-25 19:37\n"
+"PO-Revision-Date: 2025-08-26 14:50\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -58,7 +58,7 @@ msgstr "cancelado. Demasiadas cancelaciones de pedidos"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/SetupFallbackHandlerWarning/index.tsx
 msgid "Your Safe fallback handler was changed after TWAP orders were placed. All open TWAP orders are not getting created because of that. Please, update the fallback handler in order to make the orders work again."
-msgstr "Su gestor de reserva seguro fue cambiado después de que se realizaron pedidos TWAP. Todos los pedidos TWAP abiertos no se están creando debido a eso. Por favor, actualice el gestor de reserva para hacer que las órdenes funcionen de nuevo."
+msgstr "Su gestor de reserva seguro fue cambiado después de que se realizaron órdenes TWAP. Todas las órdenes TWAP abiertas no se están creando debido a eso. Por favor, actualice el gestor de reserva para hacer que las órdenes funcionen de nuevo."
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 msgid "Approve operation failed."
@@ -2810,7 +2810,7 @@ msgstr "envió una solución"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/MetamaskTransactionWarning/index.tsx
 msgid "Issues have been reported with Metamask sending transactions to the wrong chain on versions prior to <0>v{VERSION_WHERE_BUG_WAS_FIXED}</0>. Before you sign, please check in your wallet that the transaction is being sent to the network:"
-msgstr "Los problemas han sido reportados con Metamask enviando transacciones a la cadena incorrecta en versiones anteriores a <0>v{VERSION_WHERE_BUG_WAS_FIXED}</0>. Antes de registrarte, por favor comprueba en tu cartera que la transacción está siendo enviada a la red:"
+msgstr "Los problemas han sido reportados con Metamask enviando transacciones a la cadena incorrecta en versiones anteriores a <0>v{VERSION_WHERE_BUG_WAS_FIXED}</0>. Antes de registrarte, por favor comprueba en tu billetera que la transacción está siendo enviada a la red:"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/TradeButtons/limitOrdersTradeButtonsMap.tsx
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
@@ -3416,7 +3416,7 @@ msgstr "El precio de relleno de esta orden está cerrado o al precio de mercado 
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
 msgid "TWAP order split in <0>{numOfParts} equal parts</0>"
-msgstr "Orden TWAP dividido en <0>{numOfParts} partes iguales</0>"
+msgstr "Orden TWAP dividido en <0> {numOfParts} partes iguales</0>"
 
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/SurplusCard.tsx
 msgid "Your total surplus"
@@ -4851,7 +4851,7 @@ msgstr "Gastos"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/CompatibilityIssuesWarning/index.tsx
 msgid "<0>CoW Swap requires offline signatures, which is currently not supported by some wallets.</0><1>Read more in the <2>FAQ</2>.</1>"
-msgstr "<0>CoW Swap requiere firmas sin conexión, que actualmente no están soportadas por algunas carteras.</0><1>Leer más en <2>Preguntas frecuentes</2>.</1>"
+msgstr "<0>CoW Swap requiere firmas sin conexión, que actualmente no están soportadas por algunas billeteras.</0><1>Leer más en <2>Preguntas frecuentes</2>.</1>"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TopSections.tsx
 #: apps/cowswap-frontend/src/modules/orders/updaters/OrdersNotificationsUpdater/handlers.tsx
@@ -4938,7 +4938,7 @@ msgstr "Est. hora de puente <0/>"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 msgid "Check that you are providing a sufficient gas limit for the transaction in your wallet."
-msgstr "Compruebe que está proporcionando un límite de gas suficiente para la transacción en su cartera."
+msgstr "Compruebe que está proporcionando un límite de gas suficiente para la transacción en su billetera."
 
 #: apps/cowswap-frontend/src/legacy/hooks/useWrapCallback.ts
 msgid "Wrap {amountStr} {native} to {wrapped}"
@@ -5155,7 +5155,7 @@ msgstr "Pedido completado"
 
 #: apps/cowswap-frontend/src/common/hooks/useOnSelectNetwork.tsx
 msgid "Failed to switch networks from the CoW Swap Interface. In order to use CoW Swap on {chainInfoLabel}, you must change the network in your wallet."
-msgstr "No se pudo cambiar de redes desde la interfaz de intercambio de CoW. Para poder usar CoW Swap en {chainInfoLabel}, debes cambiar la red de tu cartera."
+msgstr "No se pudo cambiar de redes desde la interfaz de intercambio de CoW. Para poder usar CoW Swap en {chainInfoLabel}, debes cambiar la red de tu billetera."
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/InfoBanner/index.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
