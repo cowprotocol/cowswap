@@ -619,6 +619,10 @@ msgstr "Order recipient address differs from order owner!"
 msgid "Import intermediate token"
 msgstr "Import intermediate token"
 
+#: libs/ui/src/pure/MenuBar/index.tsx
+msgid "Language {locale} not found"
+msgstr "Language {locale} not found"
+
 #: apps/cowswap-frontend/src/common/pure/ExternalSourceAlert/index.tsx
 msgid "I understand"
 msgstr "I understand"

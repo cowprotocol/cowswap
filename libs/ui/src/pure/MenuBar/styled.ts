@@ -263,6 +263,7 @@ export const DropdownContent = styled.ul<DropdownContentProps>`
   padding: ${({ isThirdLevel }) => (isThirdLevel ? '6px' : '6px')};
   margin: 0;
   width: ${({ isThirdLevel }) => (isThirdLevel ? '100%' : '320px')};
+  min-width: fit-content;
   height: auto;
   border-radius: 28px;
   position: ${({ isThirdLevel }) => (isThirdLevel ? 'relative' : 'absolute')};
@@ -392,6 +393,8 @@ export const StyledDropdownContentItem = styled.li<{
       color 0.2s ease-in-out;
     gap: 20px;
     position: relative;
+    flex-wrap: nowrap;
+    min-width: fit-content;
     width: 100%;
     text-transform: capitalize;
   }

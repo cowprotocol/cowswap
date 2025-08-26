@@ -6,7 +6,7 @@ import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { Color, Media, MenuBar } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { msg } from '@lingui/core/macro'
+import { useLingui } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 import { NavLink } from 'react-router'
 
@@ -43,15 +43,16 @@ export function AppMenu({ children }: AppMenuProps): ReactNode {
   const isMobile = useMediaQuery(Media.upToMedium(false))
   const customTheme = useCustomTheme()
   const getTradeUrlParams = useGetTradeUrlParams()
+  const { t } = useLingui()
 
   const settingsNavItems = useMemo(
     () => [
       {
-        label: darkMode ? msg`Light mode` : msg`Dark mode`,
+        label: darkMode ? t`Light mode` : t`Dark mode`,
         onClick: toggleDarkMode,
       },
     ],
-    [darkMode, toggleDarkMode],
+    [darkMode, toggleDarkMode, t],
   )
 
   const languageNavItems = SUPPORTED_LOCALES.map((item) => ({
@@ -62,7 +63,7 @@ export function AppMenu({ children }: AppMenuProps): ReactNode {
   const navItems = useMemo(() => {
     return [
       {
-        label: msg`Trade`,
+        label: t`Trade`,
         children: menuItems.map((item) => {
           const href = parameterizeTradeRoute(getTradeUrlParams(item), item.route, true)
 
@@ -81,7 +82,7 @@ export function AppMenu({ children }: AppMenuProps): ReactNode {
       },
       ...NAV_ITEMS(chainId),
     ]
-  }, [menuItems, getTradeUrlParams, chainId])
+  }, [menuItems, chainId, getTradeUrlParams, t])
 
   if (isInjectedWidgetMode) return null
 
