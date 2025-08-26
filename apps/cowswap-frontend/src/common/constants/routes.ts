@@ -57,14 +57,14 @@ export interface IMenuItem {
   badgeType?: (typeof BadgeTypes)[keyof typeof BadgeTypes]
 }
 
-interface i18nIMenuItem extends Omit<IMenuItem, 'label' | 'fullLabel' | 'description' | 'badge'> {
+export interface I18nIMenuItem extends Omit<IMenuItem, 'label' | 'fullLabel' | 'description' | 'badge'> {
   label: MessageDescriptor
   fullLabel?: MessageDescriptor
   description: MessageDescriptor
   badge?: MessageDescriptor
 }
 
-export const MENU_ITEMS: i18nIMenuItem[] = [
+export const MENU_ITEMS: I18nIMenuItem[] = [
   {
     route: Routes.SWAP,
     label: msg`Swap`,
@@ -83,7 +83,7 @@ export const MENU_ITEMS: i18nIMenuItem[] = [
   },
 ]
 
-export const HOOKS_STORE_MENU_ITEM: i18nIMenuItem = {
+export const HOOKS_STORE_MENU_ITEM: I18nIMenuItem = {
   route: Routes.HOOKS,
   label: msg`Hooks`,
   description: msg`Powerful tool to generate pre/post interaction for CoW Protocol`,
@@ -91,7 +91,7 @@ export const HOOKS_STORE_MENU_ITEM: i18nIMenuItem = {
   badgeType: BadgeTypes.INFORMATION,
 }
 
-export const YIELD_MENU_ITEM: i18nIMenuItem = {
+export const YIELD_MENU_ITEM: I18nIMenuItem = {
   route: Routes.YIELD,
   label: msg`Yield`,
   fullLabel: msg`Yield`,

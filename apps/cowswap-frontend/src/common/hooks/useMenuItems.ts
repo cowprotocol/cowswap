@@ -7,7 +7,7 @@ import { useLingui } from '@lingui/react/macro'
 
 import { useHooksEnabled } from 'legacy/state/user/hooks'
 
-import { HOOKS_STORE_MENU_ITEM, MENU_ITEMS, IMenuItem, i18nIMenuItem, YIELD_MENU_ITEM } from '../constants/routes'
+import { HOOKS_STORE_MENU_ITEM, MENU_ITEMS, IMenuItem, I18nIMenuItem, YIELD_MENU_ITEM } from '../constants/routes'
 
 export function useMenuItems(): IMenuItem[] {
   const isHooksEnabled = useHooksEnabled()
@@ -15,7 +15,7 @@ export function useMenuItems(): IMenuItem[] {
   const { i18n } = useLingui()
 
   const extractMenuItem = useCallback(
-    (item: i18nIMenuItem): IMenuItem => {
+    (item: I18nIMenuItem): IMenuItem => {
       const { label, fullLabel, description, badge, ...restProps } = item
 
       return {
