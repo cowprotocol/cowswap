@@ -10,9 +10,8 @@ import { TokenLogo } from '@cowprotocol/tokens'
 import { Confetti, ExternalLink, InfoTooltip, TokenAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { i18n } from '@lingui/core'
 import { t } from '@lingui/core/macro'
-import { Trans } from '@lingui/react/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 import Lottie from 'lottie-react'
 import { PiCaretDown, PiCaretUp, PiTrophyFill } from 'react-icons/pi'
 import SVG from 'react-inlinesvg'
@@ -185,9 +184,9 @@ export function FinishedStep({
   totalSolvers,
   debugForceShowSurplus,
 }: FinishedStepProps) {
+  const { i18n } = useLingui()
   const [showAllSolvers, setShowAllSolvers] = useState(false)
   const cancellationFailed = stepName === 'cancellationFailed'
-
   const { surplusFiatValue, surplusAmount, showSurplus } = surplusData || {}
   const shouldShowSurplus = debugForceShowSurplus || showSurplus
 
@@ -214,7 +213,7 @@ export function FinishedStep({
       randomImage: SURPLUS_IMAGES[getRandomInt(0, SURPLUS_IMAGES.length - 1)],
       randomBenefit: i18n._(benefits[getRandomInt(0, benefits.length - 1)]),
     }
-  }, [chainId])
+  }, [chainId, i18n])
 
   const shareOnTwitter = useCallback(() => {
     const twitterUrl = shouldShowSurplus

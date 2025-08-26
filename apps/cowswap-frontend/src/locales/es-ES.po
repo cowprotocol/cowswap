@@ -2091,7 +2091,7 @@ msgstr "Los pozos de liquidez en CoW AMM crecen más rápido que en otros AMM, p
 #: apps/cowswap-frontend/src/modules/advancedOrders/containers/AdvancedOrdersWidget/index.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/OrderTypeField.tsx
 msgid "TWAP"
-msgstr "DOS"
+msgstr "TWAP"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/BridgingProgressContent/RefundedBridgingContent/index.tsx
 msgid "Refunded to"
@@ -2856,7 +2856,7 @@ msgstr "El precio de relleno de este pedido está cerrado o al precio de mercado
 
 #: apps/cowswap-frontend/src/modules/trade/containers/TradeWidget/TradeWidgetForm.tsx
 msgid "My orders <0/>"
-msgstr "Mis pedidos <0/>"
+msgstr "Mis órdenes <0/>"
 
 #: apps/cowswap-frontend/src/modules/twap/pure/CustomDeadlineSelector/index.tsx
 msgid "Define custom total time"
@@ -3093,7 +3093,7 @@ msgstr "Analíticas"
 
 #: apps/cowswap-frontend/src/modules/advancedOrders/containers/AdvancedOrdersWidget/index.tsx
 msgid "Unlock TWAP orders"
-msgstr "Desbloquear pedidos TWAP"
+msgstr "Desbloquear órdenes TWAP"
 
 #: apps/cowswap-frontend/src/common/pure/CancellationModal/index.tsx
 msgid "Failed to cancel order"
@@ -4243,7 +4243,7 @@ msgstr "Permite elegir si sus órdenes de límite serán <0>parcialmente factura
 
 #: apps/cowswap-frontend/src/modules/trade/pure/UnlockWidgetScreen/index.tsx
 msgid "Learn more about <0>{orderType} orders ↗</0>"
-msgstr "Más información sobre los pedidos <0>{orderType} ↗️</0>"
+msgstr "Más información sobre las órdenes <0>{orderType} ↗️</0>"
 
 #: apps/cowswap-frontend/src/common/pure/NetworksList/index.tsx
 msgid "NEW"

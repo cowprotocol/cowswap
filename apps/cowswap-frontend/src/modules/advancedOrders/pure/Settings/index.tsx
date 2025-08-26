@@ -1,8 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 
-import { i18n } from '@lingui/core'
 import { t } from '@lingui/core/macro'
-import { Trans } from '@lingui/react/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 
 import {
   limitOrdersSettingsAtom,
@@ -26,6 +25,7 @@ export function Settings({ state, onStateChanged }: SettingsProps) {
   const limitOrdersSettings = useAtomValue(limitOrdersSettingsAtom)
   const updateLimitOrdersSettings = useSetAtom(updateLimitOrdersSettingsAtom)
   const { LEFT_ALIGNED } = useOrdersTableSettings()
+  const { i18n } = useLingui()
 
   return (
     <SettingsContainer>

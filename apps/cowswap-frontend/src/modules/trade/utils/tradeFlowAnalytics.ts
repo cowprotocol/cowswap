@@ -3,8 +3,6 @@ import { useMemo } from 'react'
 import { GtmEvent, useCowAnalytics } from '@cowprotocol/analytics'
 import { UiOrderType } from '@cowprotocol/types'
 
-import { i18n } from '@lingui/core'
-
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 import { USER_SWAP_REJECTED_ERROR } from 'common/utils/getSwapErrorMessage'
 
@@ -69,7 +67,7 @@ export function useTradeFlowAnalytics(): TradeFlowAnalytics {
       error(error: Error & { code?: number }, errorMessage: string, context: TradeFlowAnalyticsContext) {
         const { marketLabel, orderType } = context
 
-        if (errorMessage === i18n._(USER_SWAP_REJECTED_ERROR)) {
+        if (errorMessage === USER_SWAP_REJECTED_ERROR) {
           sendTradeAnalytics('Reject', orderType, marketLabel)
         } else {
           sendTradeAnalytics('Error', orderType, marketLabel, error.code)

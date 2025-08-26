@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 
 import { BridgeProviderInfo } from '@cowprotocol/cow-sdk'
 
-import { i18n } from '@lingui/core'
+import { useLingui } from '@lingui/react/macro'
 
 import { COW_PROTOCOL_NAME } from '../../constants'
 import { DividerHorizontal } from '../../styles'
@@ -17,11 +17,9 @@ interface QuoteDetailsProps {
   isCollapsible?: boolean
   stepsCollapsible?: boolean
   hideRecommendedSlippage?: boolean
-
   bridgeProvider: BridgeProviderInfo
   swapContext: QuoteSwapContext
   bridgeContext: QuoteBridgeContext
-
   collapsedDefault?: ReactNode
 }
 
@@ -45,6 +43,7 @@ function SwapStep({
   swapContext,
   hideRecommendedSlippage,
 }: SwapStepProps): ReactNode {
+  const { i18n } = useLingui()
   const status = SwapAndBridgeStatus.DEFAULT
 
   return (
@@ -69,6 +68,7 @@ function SwapStep({
 }
 
 function BridgeStep({ stepsCollapsible, bridgeProvider, bridgeContext }: BridgeStepProps): ReactNode {
+  const { i18n } = useLingui()
   const status = SwapAndBridgeStatus.DEFAULT
 
   return (

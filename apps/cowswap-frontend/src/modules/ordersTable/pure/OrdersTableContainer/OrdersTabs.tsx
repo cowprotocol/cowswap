@@ -4,8 +4,8 @@ import alertCircle from '@cowprotocol/assets/cow-swap/alert-circle.svg'
 import orderPresignaturePending from '@cowprotocol/assets/cow-swap/order-presignature-pending.svg'
 import { Media, UI } from '@cowprotocol/ui'
 
-import { i18n } from '@lingui/core'
 import { t } from '@lingui/core/macro'
+import { useLingui } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 import { Link } from 'react-router'
 import styled from 'styled-components/macro'
@@ -152,6 +152,7 @@ export interface OrdersTabsProps {
 }
 
 export function OrdersTabs({ tabs, isWalletConnected = true }: OrdersTabsProps): ReactNode {
+  const { i18n } = useLingui()
   const buildOrdersTableUrl = useGetBuildOrdersTableUrl()
   const navigate = useNavigate()
   const activeTabIndex = Math.max(

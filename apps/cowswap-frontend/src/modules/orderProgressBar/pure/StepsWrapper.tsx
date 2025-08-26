@@ -1,6 +1,6 @@
 import { useRef, ReactNode, useState, useLayoutEffect } from 'react'
 
-import { i18n } from '@lingui/core'
+import { useLingui } from '@lingui/react/macro'
 
 import { StepComponent } from './StepComponent'
 import * as styledEl from './styled'
@@ -26,6 +26,7 @@ export function StepsWrapper({
   isUnfillable?: boolean
   isBridgingTrade?: boolean
 }): ReactNode {
+  const { i18n } = useLingui()
   const wrapperRef = useRef<HTMLDivElement>(null)
   const [containerHeight, setContainerHeight] = useState(0)
   const [translateY, setTranslateY] = useState(0)

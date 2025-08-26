@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { i18n } from '@lingui/core'
+import { useLingui } from '@lingui/react/macro'
 
 import { COW_PROTOCOL_NAME } from '../../constants'
 import { DividerHorizontal } from '../../styles'
@@ -27,6 +27,7 @@ interface BridgeStepProps {
 }
 
 function SwapStep({ context }: SwapStepProps): ReactNode {
+  const { i18n } = useLingui()
   const { bridgeProvider, overview, swapResultContext } = context
   const { sourceAmounts, sourceChainName } = overview
   const swapStatus = SwapAndBridgeStatus.DONE
@@ -54,6 +55,7 @@ function SwapStep({ context }: SwapStepProps): ReactNode {
 function BridgeStep({ context, bridgeStatus }: BridgeStepProps): ReactNode {
   const { bridgeProvider, overview, quoteBridgeContext, bridgingProgressContext, statusResult, explorerUrl } = context
   const { targetAmounts, targetChainName } = overview
+  const { i18n } = useLingui()
 
   return (
     <BridgeDetailsContainer

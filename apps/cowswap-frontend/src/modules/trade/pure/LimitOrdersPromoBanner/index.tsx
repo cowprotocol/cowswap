@@ -3,9 +3,9 @@ import { useState, useEffect } from 'react'
 import iconCompleted from '@cowprotocol/assets/cow-swap/check.svg'
 import { UI } from '@cowprotocol/ui'
 
-import { i18n, MessageDescriptor } from '@lingui/core'
+import { MessageDescriptor } from '@lingui/core'
 import { msg } from '@lingui/core/macro'
-import { Trans } from '@lingui/react/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 
 import { useIsDarkMode } from 'legacy/state/user/hooks'
@@ -37,6 +37,7 @@ export function LimitOrdersPromoBanner({
   onDismiss,
   isLimitOrdersTab = false,
 }: LimitOrdersPromoBannerProps) {
+  const { i18n } = useLingui()
   const [isHovered, setIsHovered] = useState(false)
   const [arrowRef, setArrowRef] = useState<HTMLDivElement | null>(null)
   const [arrowsReady, setArrowsReady] = useState(false)

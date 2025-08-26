@@ -3,9 +3,8 @@ import { useCallback, useState } from 'react'
 import { UI } from '@cowprotocol/ui'
 import { HelpTooltip } from '@cowprotocol/ui'
 
-import { i18n } from '@lingui/core'
 import { t } from '@lingui/core/macro'
-import { Trans } from '@lingui/react/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
 import { useOrdersTableSettings } from 'modules/trade/const/common'
@@ -112,6 +111,7 @@ export interface SettingsProps {
 // TODO: Add proper return type annotation
 // eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function Settings({ state, onStateChanged }: SettingsProps) {
+  const { i18n } = useLingui()
   const { LEFT_ALIGNED } = useOrdersTableSettings()
   const analytics = useLimitOrderSettingsAnalytics()
   const [isOpen, setIsOpen] = useState(false)

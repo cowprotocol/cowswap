@@ -3,8 +3,9 @@ import { useCallback, useState } from 'react'
 import { capitalizeFirstLetter } from '@cowprotocol/common-utils'
 import { ButtonPrimary } from '@cowprotocol/ui'
 
-import { i18n, MessageDescriptor } from '@lingui/core'
+import { MessageDescriptor } from '@lingui/core'
 import { msg, t } from '@lingui/core/macro'
+import { useLingui } from '@lingui/react/macro'
 
 import { CowHook, HookDappProps } from '../../types/hooks'
 import { ContentWrapper, Row, Wrapper, ErrorText } from '../styled'
@@ -115,6 +116,8 @@ interface FormFieldProps {
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function FormField({ params, value, error, onChange }: FormFieldProps) {
   const { name, label, type, rows } = params
+  const { i18n } = useLingui()
+
   return (
     <>
       <Row key={name}>

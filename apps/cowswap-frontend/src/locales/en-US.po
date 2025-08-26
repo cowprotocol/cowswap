@@ -1201,6 +1201,10 @@ msgstr "Connect Wallet"
 msgid "View all orders"
 msgstr "View all orders"
 
+#: apps/cowswap-frontend/src/modules/accountProxy/consts.ts
+msgid "Need help"
+msgstr "Need help"
+
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
 msgid "CoW Swap is the only token exchange that gets you extra tokens."
 msgstr "CoW Swap is the only token exchange that gets you extra tokens."
@@ -1995,8 +1999,8 @@ msgid "If allowance remains insufficient at creation time, this portion will not
 msgstr "If allowance remains insufficient at creation time, this portion will not be created. Approve the"
 
 #: apps/cowswap-frontend/src/common/utils/getSwapErrorMessage.ts
-msgid "User rejected signing the order"
-msgstr "User rejected signing the order"
+#~ msgid "User rejected signing the order"
+#~ msgstr "User rejected signing the order"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 msgid "Executing', description: 'The winner of the competition is now executing your order on-chain."

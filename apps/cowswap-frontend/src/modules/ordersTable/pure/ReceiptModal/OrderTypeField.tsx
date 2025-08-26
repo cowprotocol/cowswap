@@ -1,8 +1,9 @@
 import { UiOrderType } from '@cowprotocol/types'
 
-import { i18n, MessageDescriptor } from '@lingui/core'
+import { MessageDescriptor } from '@lingui/core'
 import { msg, t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
+import { useLingui } from '@lingui/react/macro'
 
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
@@ -25,6 +26,7 @@ const orderUITypeLabels: Record<UiOrderType, MessageDescriptor> = {
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function OrderTypeField({ order }: Props) {
   const uiOrderType = getUiOrderType(order)
+  const { i18n } = useLingui()
 
   return (
     <styledEl.Value>

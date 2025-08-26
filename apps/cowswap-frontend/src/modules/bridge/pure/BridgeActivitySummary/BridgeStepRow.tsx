@@ -1,7 +1,6 @@
 import { ReactNode } from 'react'
 
-import { i18n } from '@lingui/core'
-import { Trans } from '@lingui/react/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 
 import { BridgeSummaryRow, StepContent } from './styled'
 
@@ -25,7 +24,7 @@ export function BridgeStepRow({ context }: BridgeStepRowProps): ReactNode {
     statusResult,
     explorerUrl,
   } = context
-
+  const { i18n } = useLingui()
   const bridgeStatus = bridgingStatus === SwapAndBridgeStatus.DEFAULT ? SwapAndBridgeStatus.PENDING : bridgingStatus
 
   return (
