@@ -17,7 +17,7 @@ import IMG_ICON_MENU_HAMBURGER from '@cowprotocol/assets/images/menu-hamburger.s
 import IMG_ICON_SETTINGS_GLOBAL from '@cowprotocol/assets/images/settings-global.svg'
 import IMG_ICON_X from '@cowprotocol/assets/images/x.svg'
 import { useMediaQuery, useOnClickOutside } from '@cowprotocol/common-hooks'
-import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
+import { addBodyClass, isLinguiInternationalizationEnabled, removeBodyClass } from '@cowprotocol/common-utils'
 
 import { i18n } from '@lingui/core'
 import { t } from '@lingui/core/macro'
@@ -1013,7 +1013,7 @@ export const MenuBar = (props: MenuBarProps) => {
                 </DropdownContentItemButton>
               )
             })}
-          {languageNavItems && (
+          {languageNavItems && isLinguiInternationalizationEnabled && (
             <LanguagesDropdownWrapper>
               <LanguageSettingsButton ref={languageButtonRef} mobileMode={isMedium} onClick={handleLanguageToggle}>
                 {getFlag(i18n.locale)}

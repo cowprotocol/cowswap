@@ -4636,8 +4636,8 @@ msgid "Confirm Swap"
 msgstr "Confirm Swap"
 
 #: apps/cowswap-frontend/src/api/cowProtocol/errors/OperatorError.ts
-msgid "Something failed. Please try again later."
-msgstr "Something failed. Please try again later."
+#~ msgid "Something failed. Please try again later."
+#~ msgstr "Something failed. Please try again later."
 
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/HookSearchInput/index.tsx
 msgid "Search hooks..."

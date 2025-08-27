@@ -1,6 +1,7 @@
 import { ReactNode, useEffect } from 'react'
 
 import { DEFAULT_LOCALE, SupportedLocale } from '@cowprotocol/common-const'
+import { isLinguiInternationalizationEnabled } from '@cowprotocol/common-utils'
 
 import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
@@ -9,7 +10,17 @@ import { I18nProvider } from '@lingui/react'
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export async function dynamicActivate(locale: SupportedLocale) {
   try {
+    // Load default (en-EN) catalog if internationalization is disabled
+    if (!isLinguiInternationalizationEnabled) {
+      const defaultCatalog = await import(`../locales/${DEFAULT_LOCALE}.po`)
+
+      i18n.load(DEFAULT_LOCALE, defaultCatalog.messages || defaultCatalog.default.messages)
+      i18n.activate(DEFAULT_LOCALE)
+      return
+    }
+
     const catalog = await import(`../locales/${locale}.po`)
+
     // Bundlers will either export it as default or as a named export named default.
     i18n.load(locale, catalog.messages || catalog.default.messages)
     i18n.activate(locale)
@@ -20,9 +31,9 @@ export async function dynamicActivate(locale: SupportedLocale) {
 }
 
 interface ProviderProps {
+  children: ReactNode
   locale: SupportedLocale
   onActivate?: (locale: SupportedLocale) => void
-  children: ReactNode
 }
 
 // TODO: Add proper return type annotation

@@ -110,7 +110,7 @@ function _mapActionToErrorDetail(action?: ApiActionType) {
       console.error(
         '[OperatorError::_mapActionToErrorDetails] Uncaught error mapping error action type to server error. Please try again later.',
       )
-      return t`Something failed. Please try again later.`
+      return `Something failed. Please try again later.`
   }
 }
 
