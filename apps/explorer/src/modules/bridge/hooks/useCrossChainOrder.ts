@@ -33,8 +33,6 @@ export function useCrossChainOrder(orderId: string | undefined): SWRResponse<Cro
     async ([_, orderId, chainId]) => {
       if (!orderId || !chainId) return
 
-      console.log('useCrossChainOrder orderId ==>', orderId, chainId)
-
       const getOrder = (env: CowEnv): ReturnType<typeof getCrossChainOrder> => {
         return getCrossChainOrder({
           chainId,
@@ -45,10 +43,7 @@ export function useCrossChainOrder(orderId: string | undefined): SWRResponse<Cro
         })
       }
 
-      return getOrder('prod').catch((e) => {
-        console.log('useCrossChainOrder error ==>', e)
-        return getOrder('staging')
-      })
+      return getOrder('prod').catch(() => getOrder('staging'))
     },
     swrOptions,
   )
