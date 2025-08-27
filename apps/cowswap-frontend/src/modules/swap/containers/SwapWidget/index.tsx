@@ -141,9 +141,11 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
     setShowAddIntermediateTokenModal(false)
   }, [])
 
+  const shouldShowLockScreen = !isUnlocked && !isInjectedWidget() && !isSmartContractWallet
+
   const slots: TradeWidgetSlots = {
     topContent,
-    lockScreen: !isUnlocked && !isInjectedWidget() && !isSmartContractWallet ? <CrossChainUnlockScreen handleUnlock={handleUnlock} /> : undefined,
+    lockScreen: shouldShowLockScreen ? <CrossChainUnlockScreen handleUnlock={handleUnlock} /> : undefined,
     settingsWidget: (
       <SettingsTab
         recipientToggleState={recipientToggleState}

@@ -26,6 +26,8 @@ export function useFillSwapDerivedState(): void {
   const slippage = useTradeSlippage()
 
   useEffect(() => {
+    const shouldShowLockScreen = !isInjectedWidget() && !isSmartContractWallet && !rawState.isUnlocked
+
     updateDerivedState(
       isProviderNetworkUnsupported
         ? DEFAULT_SWAP_DERIVED_STATE
@@ -33,7 +35,7 @@ export function useFillSwapDerivedState(): void {
             ...derivedState,
             slippage,
             tradeType: TradeType.SWAP,
-            isUnlocked: isInjectedWidget() || isSmartContractWallet || rawState.isUnlocked,
+            isUnlocked: !shouldShowLockScreen,
           },
     )
   }, [derivedState, slippage, updateDerivedState, isProviderNetworkUnsupported, rawState.isUnlocked, isSmartContractWallet])
