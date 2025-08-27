@@ -1,6 +1,8 @@
 import { ReactNode, useCallback, useMemo, useState } from 'react'
 
 import { isSellOrder } from '@cowprotocol/common-utils'
+import { isInjectedWidget } from '@cowprotocol/common-utils'
+import { useIsSmartContractWallet } from '@cowprotocol/wallet'
 
 import { Field } from 'legacy/state/types'
 import { useHooksEnabledManager } from 'legacy/state/user/hooks'
@@ -79,6 +81,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   } = useSwapDerivedState()
   const doTrade = useHandleSwap(useSafeMemoObject({ deadline: deadlineState[0] }), widgetActions)
   const hasEnoughWrappedBalanceForSwap = useHasEnoughWrappedBalanceForSwap()
+  const isSmartContractWallet = useIsSmartContractWallet()
   const handleUnlock = useCallback(() => updateSwapState({ isUnlocked: true }), [updateSwapState])
 
   const isSellTrade = isSellOrder(orderKind)
@@ -141,7 +144,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
 
   const slots: TradeWidgetSlots = {
     topContent,
-    lockScreen: !isUnlocked ? <CrossChainUnlockScreen handleUnlock={handleUnlock} /> : undefined,
+    lockScreen: !isUnlocked && !isInjectedWidget() && !isSmartContractWallet ? <CrossChainUnlockScreen handleUnlock={handleUnlock} /> : undefined,
     settingsWidget: (
       <SettingsTab
         recipientToggleState={recipientToggleState}
