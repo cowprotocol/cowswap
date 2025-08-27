@@ -12,6 +12,11 @@ export interface SwapDerivedState extends TradeDerivedState {
   isUnlocked: boolean
 }
 
+export const DEFAULT_SWAP_DERIVED_STATE: SwapDerivedState = {
+  ...DEFAULT_TRADE_DERIVED_STATE,
+  isUnlocked: false,
+}
+
 export interface SwapRawState extends ExtendedTradeRawState {
   isUnlocked: boolean
 }
@@ -30,7 +35,4 @@ export const { atom: swapRawStateAtom, updateAtom: updateSwapRawStateAtom } = at
   atomWithStorage<SwapRawState>('swapStateAtom:v1', getDefaultSwapState(null), getJotaiIsolatedStorage()),
 )
 
-export const swapDerivedStateAtom = atom<SwapDerivedState>({
-  ...DEFAULT_TRADE_DERIVED_STATE,
-  isUnlocked: false,
-})
+export const swapDerivedStateAtom = atom<SwapDerivedState>(DEFAULT_SWAP_DERIVED_STATE)
