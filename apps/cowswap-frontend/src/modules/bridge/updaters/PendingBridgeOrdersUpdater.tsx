@@ -15,6 +15,8 @@ import { getCowSoundError, getCowSoundSuccess } from 'modules/sounds'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 
+const APPZI_CHECK_INTERVAL = 60_000
+
 function processExecutedBridging(crossChainOrder: CrossChainOrder): void {
   const { provider: _, ...eventPayload } = crossChainOrder
 
@@ -75,7 +77,7 @@ function PendingOrderUpdater({ chainId, orderUid, openSince }: PendingOrderUpdat
         })
         waitingTooLongNpsTriggeredRef.current = true
       }
-    }, 60_000)
+    }, APPZI_CHECK_INTERVAL)
 
     return () => clearInterval(interval)
   }, [crossChainOrder, openSince])
