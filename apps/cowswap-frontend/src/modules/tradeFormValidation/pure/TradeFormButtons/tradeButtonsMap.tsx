@@ -96,7 +96,6 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     )
   },
   [TradeFormValidation.CustomTokenError]: ({ customTokenError }) => {
-    // todo replace by token symbol
     return (
       <TradeFormBlankButton disabled={true}>
         <span>
