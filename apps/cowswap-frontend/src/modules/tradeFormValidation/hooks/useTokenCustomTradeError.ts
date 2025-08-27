@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 import { useIsAnyOfTokensOndo } from '@cowprotocol/tokens'
 import { Currency } from '@uniswap/sdk-core'
 
@@ -14,12 +16,16 @@ export function useTokenCustomTradeError(
   const outputToken = outputCurrent?.isToken ? outputCurrent : undefined
   const ondoToken = useIsAnyOfTokensOndo(inputToken, outputToken)
 
-  if (!ondoToken) return undefined
-  if (!isValidQuoteError(error)) return undefined
-  if (error.type !== QuoteApiErrorCodes.InsufficientLiquidity) return undefined
-  if (!isWeekend()) return undefined
+  return useMemo(() => {
+    if (!ondoToken) return undefined
+    if (!isValidQuoteError(error)) return undefined
+    if (error.type !== QuoteApiErrorCodes.InsufficientLiquidity) return undefined
+    // Ondo tokens are not tradable on weekends only
+    // it's not a pure function, but it's ok for this case
+    if (!isWeekend()) return undefined
 
-  return `${ondoToken.symbol} not tradable until Sunday 23:59 UTC`
+    return `${ondoToken.symbol} not tradable until Sunday 23:59 UTC`
+  }, [error, ondoToken])
 }
 
 function isWeekend(): boolean {
