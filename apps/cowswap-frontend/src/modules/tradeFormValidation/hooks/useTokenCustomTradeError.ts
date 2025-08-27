@@ -1,7 +1,8 @@
 import { useIsAnyOfTokensOndo } from '@cowprotocol/tokens'
 import { Currency } from '@uniswap/sdk-core'
 
-import { isValidQuoteError, QuoteApiErrorCodes } from '../../../api/cowProtocol/errors/QuoteError'
+import { isValidQuoteError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
+
 import { TradeQuoteState } from '../../tradeQuote'
 
 export function useTokenCustomTradeError(
