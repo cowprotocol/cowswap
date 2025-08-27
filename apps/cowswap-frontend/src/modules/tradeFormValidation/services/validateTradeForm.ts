@@ -25,6 +25,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     intermediateTokenToBeImported,
     isAccountProxyLoading,
     isProxySetupValid,
+    customTokenError,
   } = context
 
   const {
@@ -56,6 +57,10 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
   // Always check if the browser is online before checking any other conditions
   if (!isOnline) {
     validations.push(TradeFormValidation.BrowserOffline)
+  }
+
+  if (customTokenError) {
+    validations.push(TradeFormValidation.CustomTokenError)
   }
 
   if (!isWrapUnwrap && tradeQuote.error) {
