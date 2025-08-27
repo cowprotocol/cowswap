@@ -2,12 +2,15 @@ import { useAtomValue } from 'jotai'
 import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
-import { DEFAULT_TRADE_DERIVED_STATE, TradeType, useBuildTradeDerivedState } from 'modules/trade'
+import { isInjectedWidget } from '@cowprotocol/common-utils'
+import { useIsSmartContractWallet } from '@cowprotocol/wallet'
+
+import { TradeType, useBuildTradeDerivedState } from 'modules/trade'
 import { useTradeSlippage } from 'modules/tradeSlippage'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
-import { SwapDerivedState, swapDerivedStateAtom, swapRawStateAtom } from '../state/swapRawStateAtom'
+import { DEFAULT_SWAP_DERIVED_STATE, SwapDerivedState, swapDerivedStateAtom, swapRawStateAtom } from '../state/swapRawStateAtom'
 
 export function useSwapDerivedState(): SwapDerivedState {
   return useAtomValue(swapDerivedStateAtom)
@@ -16,19 +19,24 @@ export function useSwapDerivedState(): SwapDerivedState {
 export function useFillSwapDerivedState(): void {
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const updateDerivedState = useSetAtom(swapDerivedStateAtom)
+  const rawState = useAtomValue(swapRawStateAtom)
   const derivedState = useBuildTradeDerivedState(swapRawStateAtom, true)
+  const isSmartContractWallet = useIsSmartContractWallet()
 
   const slippage = useTradeSlippage()
 
   useEffect(() => {
+    const shouldShowLockScreen = !isInjectedWidget() && !isSmartContractWallet && !rawState.isUnlocked
+
     updateDerivedState(
       isProviderNetworkUnsupported
-        ? DEFAULT_TRADE_DERIVED_STATE
+        ? DEFAULT_SWAP_DERIVED_STATE
         : {
             ...derivedState,
             slippage,
             tradeType: TradeType.SWAP,
+            isUnlocked: !shouldShowLockScreen,
           },
     )
-  }, [derivedState, slippage, updateDerivedState, isProviderNetworkUnsupported])
+  }, [derivedState, slippage, updateDerivedState, isProviderNetworkUnsupported, rawState.isUnlocked, isSmartContractWallet])
 }
