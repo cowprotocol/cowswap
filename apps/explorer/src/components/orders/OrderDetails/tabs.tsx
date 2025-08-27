@@ -63,6 +63,8 @@ export function getBridgeTab(
   // Note: swap+bridge orders don't support partial fills for now
   const isSwapComplete = order.status === OrderStatus.Filled || order.partiallyFilled
 
+  console.log('getBridgeTab order ==>', order, crossChainOrder, crossChainOrderLoading)
+
   return {
     id: TabView.BRIDGE,
     tab: (

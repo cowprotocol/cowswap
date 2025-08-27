@@ -22,7 +22,7 @@ const swrOptions: SWRConfiguration = {
       }
     }
     return UPDATE_INTERVAL
-  }
+  },
 }
 
 export function useCrossChainOrder(orderId: string | undefined): SWRResponse<CrossChainOrder | null | undefined> {
@@ -32,6 +32,8 @@ export function useCrossChainOrder(orderId: string | undefined): SWRResponse<Cro
     ['useCrossChainOrder', orderId, chainId],
     async ([_, orderId, chainId]) => {
       if (!orderId || !chainId) return
+
+      console.log('useCrossChainOrder orderId ==>', orderId, chainId)
 
       const getOrder = (env: CowEnv): ReturnType<typeof getCrossChainOrder> => {
         return getCrossChainOrder({
@@ -43,7 +45,10 @@ export function useCrossChainOrder(orderId: string | undefined): SWRResponse<Cro
         })
       }
 
-      return getOrder('prod').catch(() => getOrder('staging'))
+      return getOrder('prod').catch((e) => {
+        console.log('useCrossChainOrder error ==>', e)
+        return getOrder('staging')
+      })
     },
     swrOptions,
   )

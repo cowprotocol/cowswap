@@ -22,6 +22,7 @@ export function BridgeDetailsTable({
   message,
   isLoading = false,
 }: BridgeDetailsTableProps): ReactNode {
+  console.log('BridgeDetailsTable crossChainOrder ==>', isLoading, crossChainOrder)
   return (
     <Wrapper>
       <SimpleTable
