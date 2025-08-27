@@ -1,7 +1,6 @@
 import { ReactNode, useCallback, useMemo, useState } from 'react'
 
-import { isSellOrder } from '@cowprotocol/common-utils'
-import { isInjectedWidget } from '@cowprotocol/common-utils'
+import { isSellOrder, isInjectedWidget } from '@cowprotocol/common-utils'
 import { useIsSmartContractWallet } from '@cowprotocol/wallet'
 
 import { Field } from 'legacy/state/types'
