@@ -66,9 +66,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   [TradeFormValidation.CustomTokenError]: ({ customTokenError }) => {
     return (
       <TradeFormBlankButton disabled={true}>
-        <span>
-          <Trans>{customTokenError}</Trans>
-        </span>
+        <span>{customTokenError}</span>
       </TradeFormBlankButton>
     )
   },
@@ -249,9 +247,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
 
     return (
       <TradeApproveButton amountToApprove={maximumSendSellAmount} enablePartialApprove={context.enablePartialApprove}>
-        <TradeFormBlankButton disabled={true}>
-          {context.defaultText}
-        </TradeFormBlankButton>
+        <TradeFormBlankButton disabled={true}>{context.defaultText}</TradeFormBlankButton>
       </TradeApproveButton>
     )
   },
