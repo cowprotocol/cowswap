@@ -95,7 +95,15 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
       </TradeFormBlankButton>
     )
   },
-
+  [TradeFormValidation.CustomTokenError]: ({ customTokenError }) => {
+    return (
+      <TradeFormBlankButton disabled={true}>
+        <span>
+          <Trans>{customTokenError}</Trans>
+        </span>
+      </TradeFormBlankButton>
+    )
+  },
   [TradeFormValidation.CurrencyNotSet]: {
     text: 'Select a token',
   },
