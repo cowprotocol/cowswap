@@ -63,7 +63,7 @@ export const STEPS: (StepConfig | BridgeStepConfig)[] = [
   {
     title: msg`The competition has started`,
   },
-  { title: msg`Executing', description: 'The winner of the competition is now executing your order on-chain.` },
+  { title: msg`Executing`, description: msg`The winner of the competition is now executing your order on-chain.` },
   (isBridgingTrade: boolean) => ({ title: isBridgingTrade ? msg`Start bridging` : msg`Transaction completed` }),
 ]
 
