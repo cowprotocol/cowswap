@@ -13,9 +13,9 @@ export function useBridgeProviderBuyTokens(
     async ([provider, buyChainId]) => {
       if (!provider) return undefined
 
-      const tokens = await provider.getBuyTokens({ buyChainId })
+      const { tokens } = await provider.getBuyTokens({ buyChainId })
 
-      return tokens.reduce<Record<string, TokenInfo>>((acc, val) => {
+      return tokens?.reduce<Record<string, TokenInfo>>((acc, val) => {
         acc[val.address.toLowerCase()] = {
           ...val,
           name: val.name || '',

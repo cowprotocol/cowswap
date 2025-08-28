@@ -1,12 +1,16 @@
 import { SWR_NO_REFRESH_OPTIONS, TokenWithLogo } from '@cowprotocol/common-const'
 import { useIsBridgingEnabled } from '@cowprotocol/common-hooks'
-import { BuyTokensParams } from '@cowprotocol/sdk-bridging'
+import { BuyTokensParams, GetProviderBuyTokens } from '@cowprotocol/sdk-bridging'
 
 import useSWR, { SWRResponse } from 'swr'
 
 import { useBridgeProvider } from './useBridgeProvider'
 
-export function useBridgeSupportedTokens(params: BuyTokensParams | undefined): SWRResponse<TokenWithLogo[] | null> {
+export type BridgeSupportedToken = Pick<GetProviderBuyTokens, 'isRouteAvailable'> & { tokens: TokenWithLogo[] }
+
+export function useBridgeSupportedTokens(
+  params: BuyTokensParams | undefined,
+): SWRResponse<BridgeSupportedToken | null> {
   const isBridgingEnabled = useIsBridgingEnabled()
   const bridgeProvider = useBridgeProvider()
 
@@ -26,10 +30,9 @@ export function useBridgeSupportedTokens(params: BuyTokensParams | undefined): S
 
       return bridgeProvider
         .getBuyTokens(params)
-        .then((tokens) => {
-          return (
-            tokens &&
-            tokens.map((token) =>
+        .then(({ tokens, isRouteAvailable }) => {
+          return {
+            tokens: (tokens ?? []).map((token) =>
               TokenWithLogo.fromToken(
                 {
                   ...token,
@@ -38,8 +41,9 @@ export function useBridgeSupportedTokens(params: BuyTokensParams | undefined): S
                 },
                 token.logoUrl,
               ),
-            )
-          )
+            ),
+            isRouteAvailable: isBridgingEnabled ? isRouteAvailable : true,
+          }
         })
         .catch((error) => {
           console.error('Cannot getBuyTokens from bridgeProvider', error)

@@ -80,15 +80,15 @@ export function useBuildTradeDerivedState(
 }
 
 function useTokenForTargetChain(params: BuyTokensParams | undefined, currencyId: string | null): TokenWithLogo | null {
-  const bridgeSupportedTokens = useBridgeSupportedTokens(params).data
+  const result = useBridgeSupportedTokens(params)
 
   return useMemo(() => {
-    if (!bridgeSupportedTokens || !currencyId) return null
+    if (!result.data?.tokens?.length || !currencyId) return null
 
     const currencyIdLower = currencyId.toLowerCase()
 
-    return bridgeSupportedTokens.find((token) => token.address.toLowerCase() === currencyIdLower) || null
-  }, [bridgeSupportedTokens, currencyId])
+    return result.data.tokens.find((token) => token.address.toLowerCase() === currencyIdLower) || null
+  }, [result, currencyId])
 }
 
 function getCurrencyAmount(

@@ -1,6 +1,7 @@
 import { ReactNode, useCallback, useMemo, useState } from 'react'
 
-import { isSellOrder } from '@cowprotocol/common-utils'
+import { isSellOrder, isInjectedWidget } from '@cowprotocol/common-utils'
+import { useIsSmartContractWallet } from '@cowprotocol/wallet'
 
 import { Field } from 'legacy/state/types'
 import { useHooksEnabledManager } from 'legacy/state/user/hooks'
@@ -29,6 +30,8 @@ import { useHasEnoughWrappedBalanceForSwap } from '../../hooks/useHasEnoughWrapp
 import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
 import { useSwapDeadlineState, useSwapRecipientToggleState, useSwapSettings } from '../../hooks/useSwapSettings'
 import { useSwapWidgetActions } from '../../hooks/useSwapWidgetActions'
+import { useUpdateSwapRawState } from '../../hooks/useUpdateSwapRawState'
+import { CrossChainUnlockScreen } from '../../pure/CrossChainUnlockScreen'
 import { BottomBanners } from '../BottomBanners'
 import { SwapConfirmModal } from '../SwapConfirmModal'
 import { SwapRateDetails } from '../SwapRateDetails'
@@ -59,6 +62,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   const dismissNativeWrapModal = useCallback(() => setOpenNativeWrapModal(false), [])
 
   const wrapCallback = useWrapNativeFlow()
+  const updateSwapState = useUpdateSwapRawState()
 
   const {
     inputCurrency,
@@ -72,9 +76,12 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
     recipient,
     recipientAddress,
     orderKind,
+    isUnlocked,
   } = useSwapDerivedState()
   const doTrade = useHandleSwap(useSafeMemoObject({ deadline: deadlineState[0] }), widgetActions)
   const hasEnoughWrappedBalanceForSwap = useHasEnoughWrappedBalanceForSwap()
+  const isSmartContractWallet = useIsSmartContractWallet()
+  const handleUnlock = useCallback(() => updateSwapState({ isUnlocked: true }), [updateSwapState])
 
   const isSellTrade = isSellOrder(orderKind)
 
@@ -134,8 +141,11 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
     setShowAddIntermediateTokenModal(false)
   }, [])
 
+  const shouldShowLockScreen = !isUnlocked && !isInjectedWidget() && !isSmartContractWallet
+
   const slots: TradeWidgetSlots = {
     topContent,
+    lockScreen: shouldShowLockScreen ? <CrossChainUnlockScreen handleUnlock={handleUnlock} /> : undefined,
     settingsWidget: (
       <SettingsTab
         recipientToggleState={recipientToggleState}

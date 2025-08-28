@@ -95,7 +95,15 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
       </TradeFormBlankButton>
     )
   },
-
+  [TradeFormValidation.CustomTokenError]: ({ customTokenError }) => {
+    return (
+      <TradeFormBlankButton disabled={true}>
+        <span>
+          <Trans>{customTokenError}</Trans>
+        </span>
+      </TradeFormBlankButton>
+    )
+  },
   [TradeFormValidation.CurrencyNotSet]: {
     text: 'Select a token',
   },
@@ -115,7 +123,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
           {isBridging && recipient && (
             <HelpTooltip
               placement="top"
-              text="ENS recipient not supported for Swap and Bridge — use address instead."
+              text="ENS recipient not supported for Swap and Bridge. Use address instead."
             />
           )}
         </>

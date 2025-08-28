@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.24.1](https://github.com/cowprotocol/cowswap/compare/common-const-v1.24.0...common-const-v1.24.1) (2025-08-28)
+
+
+### Bug Fixes
+
+* **lens:** follow up fixes ([#6176](https://github.com/cowprotocol/cowswap/issues/6176)) ([cd8f3c0](https://github.com/cowprotocol/cowswap/commit/cd8f3c0201b8f04fc31a59588b6d2d05d215e112))
+
 ## [1.24.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.23.0...common-const-v1.24.0) (2025-08-21)
 
 

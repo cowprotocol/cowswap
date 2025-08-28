@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.25.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.24.2...tokens-v1.25.0) (2025-08-28)
+
+
+### Features
+
+* add ondo token list for us ([#6185](https://github.com/cowprotocol/cowswap/issues/6185)) ([18e3179](https://github.com/cowprotocol/cowswap/commit/18e31798ec4130b672aa4c5294700c2252cf730f))
+* handle weekend for ondo tokens ([#6183](https://github.com/cowprotocol/cowswap/issues/6183)) ([cb3af07](https://github.com/cowprotocol/cowswap/commit/cb3af077192a24d09e23272fbcbfef69ea0f5812))
+
+
+### Bug Fixes
+
+* **lens:** follow up fixes ([#6176](https://github.com/cowprotocol/cowswap/issues/6176)) ([cd8f3c0](https://github.com/cowprotocol/cowswap/commit/cd8f3c0201b8f04fc31a59588b6d2d05d215e112))
+* **tokens:** check token lists loading state ([#6190](https://github.com/cowprotocol/cowswap/issues/6190)) ([3a0c358](https://github.com/cowprotocol/cowswap/commit/3a0c3585db8375c57af245ed55a272f72a67f4e2))
+
 ## [1.24.2](https://github.com/cowprotocol/cowswap/compare/tokens-v1.24.1...tokens-v1.24.2) (2025-08-14)
 
 

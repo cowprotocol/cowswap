@@ -56,3 +56,4 @@ export { fetchTokenList } from './services/fetchTokenList'
 
 // Consts
 export { DEFAULT_TOKENS_LISTS } from './const/tokensLists'
+export { useIsAnyOfTokensOndo } from './hooks/lists/useIsAnyOfTokensOndo'
