@@ -36,9 +36,7 @@ export function TelegramConnectionStatus({ isLoading, isSubscribed, subscribeAcc
 
   return (
     <Connected>
-      <Trans>
-        Connected <CheckCircle size={14} />
-      </Trans>
+      <Trans>Connected</Trans> <CheckCircle size={14} />
     </Connected>
   )
 }
