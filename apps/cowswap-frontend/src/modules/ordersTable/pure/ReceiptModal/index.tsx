@@ -147,6 +147,7 @@ export function ReceiptModal({
 
   const volumeFeeBps = getOrderVolumeFee(order.fullAppData)
   const twapOrderN = twapOrder?.order.n
+  const alternativeOrderModalContextIsEdit = alternativeOrderModalContext?.isEdit
 
   return (
     <CowModal onDismiss={onDismiss} isOpen={isOpen}>
@@ -156,7 +157,7 @@ export function ReceiptModal({
             <styledEl.Title>Order Receipt</styledEl.Title>
             {alternativeOrderModalContext && (
               <styledEl.LightButton onClick={alternativeOrderModalContext.showAlternativeOrderModal}>
-                {alternativeOrderModalContext.isEdit ? t`Edit` : t`Recreate`} t`this order`
+                `${alternativeOrderModalContextIsEdit ? t`Edit` : t`Recreate`} ${t`this order`}`
               </styledEl.LightButton>
             )}
           </div>
