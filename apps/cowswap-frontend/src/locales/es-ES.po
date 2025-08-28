@@ -8,7 +8,7 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: cowswapdev\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-08-26 20:10\n"
+"PO-Revision-Date: 2025-08-28 00:49\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -2867,7 +2867,7 @@ msgstr "El precio de relleno de este pedido está cerrado o al precio de mercado
 
 #: apps/cowswap-frontend/src/modules/trade/containers/TradeWidget/TradeWidgetForm.tsx
 msgid "My orders <0/>"
-msgstr "Mis órdenes <0/>"
+msgstr "Mis pedidos <0/>"
 
 #: apps/cowswap-frontend/src/modules/twap/pure/CustomDeadlineSelector/index.tsx
 msgid "Define custom total time"
@@ -3104,7 +3104,7 @@ msgstr "Analíticas"
 
 #: apps/cowswap-frontend/src/modules/advancedOrders/containers/AdvancedOrdersWidget/index.tsx
 msgid "Unlock TWAP orders"
-msgstr "Desbloquear órdenes TWAP"
+msgstr "Desbloquear pedidos TWAP"
 
 #: apps/cowswap-frontend/src/common/pure/CancellationModal/index.tsx
 msgid "Failed to cancel order"
@@ -4254,7 +4254,7 @@ msgstr "Permite elegir si sus órdenes de límite serán <0>parcialmente factura
 
 #: apps/cowswap-frontend/src/modules/trade/pure/UnlockWidgetScreen/index.tsx
 msgid "Learn more about <0>{orderType} orders ↗</0>"
-msgstr "Más información sobre las órdenes <0>{orderType} ↗️</0>"
+msgstr "Más información sobre los pedidos <0>{orderType} ↗️</0>"
 
 #: apps/cowswap-frontend/src/common/pure/NetworksList/index.tsx
 msgid "NEW"
@@ -4626,8 +4626,7 @@ msgid "Confirm Swap"
 msgstr "Confirmar intercambio"
 
 #: apps/cowswap-frontend/src/api/cowProtocol/errors/OperatorError.ts
-msgid "Something failed. Please try again later."
-msgstr "Algo falló. Inténtalo de nuevo más tarde."
+#~ msgstr "Algo falló. Inténtalo de nuevo más tarde."
 
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/HookSearchInput/index.tsx
 msgid "Search hooks..."
