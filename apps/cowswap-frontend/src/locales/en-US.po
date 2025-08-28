@@ -68,9 +68,14 @@ msgid "Order cannot be filled due to insufficient allowance on the current accou
 msgstr "Order cannot be filled due to insufficient allowance on the current account."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
-msgid "Did you know? {benefit}\n\n"
+msgid ""
+"Did you know? {benefit}\n"
+"\n"
 "Start swapping on swap.cow.fi #CoWSwap @CoWSwap 🐮"
-msgstr "Did you know? {benefit}\n\nStart swapping on swap.cow.fi #CoWSwap @CoWSwap 🐮"
+msgstr ""
+"Did you know? {benefit}\n"
+"\n"
+"Start swapping on swap.cow.fi #CoWSwap @CoWSwap 🐮"
 
 #: apps/cowswap-frontend/src/common/updaters/ConnectionStatusUpdater.tsx
 msgid "<0>Connection Lost</0><1/>You appear to be offline. Some features may not work properly."
@@ -319,9 +324,14 @@ msgid "30 Minutes"
 msgstr "30 Minutes"
 
 #: apps/cowswap-frontend/src/modules/fortune/containers/FortuneWidget/index.tsx
-msgid "My CoW fortune cookie 🐮💬: \"{openFortuneText}\" \n\n"
+msgid ""
+"My CoW fortune cookie 🐮💬: \"{openFortuneText}\" \n"
+"\n"
 " Get yours at swap.cow.fi @CoWSwap"
-msgstr "My CoW fortune cookie 🐮💬: \"{openFortuneText}\" \n\n Get yours at swap.cow.fi @CoWSwap"
+msgstr ""
+"My CoW fortune cookie 🐮💬: \"{openFortuneText}\" \n"
+"\n"
+" Get yours at swap.cow.fi @CoWSwap"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
 msgid "amount per"
@@ -1173,9 +1183,14 @@ msgstr "Great!"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
-msgid "Hey, I just {actionWord} an extra {surplus} on @CoWSwap! 🐮💸\n\n"
+msgid ""
+"Hey, I just {actionWord} an extra {surplus} on @CoWSwap! 🐮💸\n"
+"\n"
 "Start swapping on swap.cow.fi"
-msgstr "Hey, I just {actionWord} an extra {surplus} on @CoWSwap! 🐮💸\n\nStart swapping on swap.cow.fi"
+msgstr ""
+"Hey, I just {actionWord} an extra {surplus} on @CoWSwap! 🐮💸\n"
+"\n"
+"Start swapping on swap.cow.fi"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Connect Wallet"
@@ -1457,6 +1472,10 @@ msgstr "Run! ...and try not getting sandwiched"
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowBanner/index.tsx
 msgid "Wrap your {nativeSymbol} and use the classic {wrappedSymbol} experience!"
 msgstr "Wrap your {nativeSymbol} and use the classic {wrappedSymbol} experience!"
+
+#: apps/cowswap-frontend/src/modules/application/containers/AppMenu/index.tsx
+msgid "Languages"
+msgstr "Languages"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/DeadlineSelector/index.tsx
 msgid "Set custom deadline"
@@ -2629,9 +2648,12 @@ msgid "It is required to do a one-time approval of {wrappedSymbol} via an on-cha
 msgstr "It is required to do a one-time approval of {wrappedSymbol} via an on-chain ERC20 Approve transaction."
 
 #: apps/cowswap-frontend/src/modules/trade/hooks/setupTradeState/useResetStateWithSymbolDuplication.ts
-msgid "There is more than one token in the list of tokens with the symbol: {doubledSymbol}.\n"
+msgid ""
+"There is more than one token in the list of tokens with the symbol: {doubledSymbol}.\n"
 "Please select the token you need from the UI or use the address of the token instead of the symbol"
-msgstr "There is more than one token in the list of tokens with the symbol: {doubledSymbol}.\nPlease select the token you need from the UI or use the address of the token instead of the symbol"
+msgstr ""
+"There is more than one token in the list of tokens with the symbol: {doubledSymbol}.\n"
+"Please select the token you need from the UI or use the address of the token instead of the symbol"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
 msgid "unfillable"
@@ -2690,8 +2712,8 @@ msgid "No open orders"
 msgstr "No open orders"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
-msgid "ENS recipient not supported for Swap and Bridge — use address instead."
-msgstr "ENS recipient not supported for Swap and Bridge — use address instead."
+#~ msgid "ENS recipient not supported for Swap and Bridge — use address instead."
+#~ msgstr "ENS recipient not supported for Swap and Bridge — use address instead."
 
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapWidget/index.tsx
 msgid "Expected sell amount"
@@ -4765,6 +4787,10 @@ msgstr "1 Week"
 msgid "There are no orders"
 msgstr "There are no orders"
 
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+msgid "ENS recipient not supported for Swap and Bridge. Use address instead."
+msgstr "ENS recipient not supported for Swap and Bridge. Use address instead."
+
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 msgid "Enough signatures"
@@ -5171,4 +5197,3 @@ msgstr "Learn more"
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/HighFeeWarning/highFeeWarningHelpers.ts
 msgid "Swap and bridge costs are at least {formattedFeePercentage}% of the swap amount"
 msgstr "Swap and bridge costs are at least {formattedFeePercentage}% of the swap amount"
-

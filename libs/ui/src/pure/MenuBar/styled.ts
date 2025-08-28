@@ -314,6 +314,11 @@ export const DropdownContent = styled.ul<DropdownContentProps>`
   }
 `
 
+export const DropdownContentLanguages = styled(DropdownContent)`
+  max-height: 200px;
+  overflow-y: auto;
+`
+
 export const MobileDropdownContainer = styled.div<{ mobileMode: boolean }>`
   ${({ mobileMode }) =>
     mobileMode &&
@@ -709,12 +714,4 @@ export const GlobalSettingsButton = styled.button<{ mobileMode?: boolean }>`
       color: var(--activeFill);
     }
   }
-`
-
-export const LanguageSettingsButton = styled(GlobalSettingsButton)`
-  font-size: 22px;
-`
-
-export const LanguagesDropdownWrapper = styled.div`
-  position: relative;
 `

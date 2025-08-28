@@ -55,10 +55,13 @@ export function AppMenu({ children }: AppMenuProps): ReactNode {
     [darkMode, toggleDarkMode, t],
   )
 
-  const languageNavItems = SUPPORTED_LOCALES.map((item) => ({
-    label: item,
-    onClick: () => setLocale(item),
-  }))
+  const languageNavItems = {
+    label: t`Languages`,
+    children: SUPPORTED_LOCALES.map((item) => ({
+      label: item,
+      onClick: () => setLocale(item),
+    })),
+  }
 
   const navItems = useMemo(() => {
     return [
