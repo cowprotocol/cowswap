@@ -1,5 +1,5 @@
 import { getRpcProvider } from '@cowprotocol/common-const'
-import { isBarn, isDev, isProd, isStaging } from '@cowprotocol/common-utils'
+import { isLocal } from '@cowprotocol/common-utils'
 import { AcrossBridgeProvider, BungeeBridgeProvider, OrderBookApi } from '@cowprotocol/cow-sdk'
 
 export const orderBookApi = new OrderBookApi()
@@ -11,9 +11,11 @@ const bungeeAffiliateCode =
 export const bungeeBridgeProvider = new BungeeBridgeProvider({
   apiOptions: {
     includeBridges: ['across', 'cctp', 'gnosis-native-bridge'],
+    // if undefined, the sdk will default to the public api that allows custom headers
     apiBaseUrl: bungeeApiBase ? `${bungeeApiBase}/api/v1/bungee` : undefined,
+    // if undefined, the sdk will default to the public api that allows custom headers
     manualApiBaseUrl: bungeeApiBase ? `${bungeeApiBase}/api/v1/bungee-manual` : undefined,
-    affiliate: bungeeApiBase ? bungeeAffiliateCode : undefined,
+    affiliate: bungeeApiBase ? undefined : bungeeAffiliateCode,
   },
   getRpcProvider,
 })
@@ -23,9 +25,5 @@ export const acrossBridgeProvider = new AcrossBridgeProvider({ getRpcProvider })
 export const knownBridgeProviders = [bungeeBridgeProvider, acrossBridgeProvider]
 
 function getBungeeApiBase(): string | undefined {
-  if (isProd || isDev || isStaging || isBarn) {
-    return 'https://backend.bungee.exchange'
-  }
-
-  return undefined
+  return isLocal ? 'https://backend.bungee.exchange' : undefined
 }
