@@ -662,15 +662,33 @@ const LanguagesDropdownItems: React.FC<LanguagesDropdownItemsProps> = (props) =>
 
   const [visibleThirdLevel, setVisibleThirdLevel] = useState<boolean>(false)
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const handleToggleThirdLevelVisibility = (event: React.MouseEvent<HTMLDivElement>) => {
+  const handleToggleThirdLevelVisibility = (event: React.MouseEvent<HTMLDivElement>): void => {
     event.preventDefault()
     event.stopPropagation()
     setVisibleThirdLevel((prevState) => !prevState)
   }
 
-  return !children ? null : (
+  const languagesContent = !children ? null : (
+    <DropdownContentLanguages isThirdLevel isOpen={visibleThirdLevel}>
+      {children.map(({ label, onClick }) => (
+        <StyledDropdownContentItem
+          isThirdLevel
+          onClick={(e: React.MouseEvent<HTMLElement>) => {
+            if (onClick) {
+              onClick(e as React.MouseEvent<HTMLDivElement>)
+            }
+            closeDropdown()
+          }}
+        >
+          <div
+            style={{ fontWeight: `${label === i18n.locale ? 700 : 400}` }}
+          >{`${getFlag(label as string)} ${getLanguageName(label as string)}`}</div>
+        </StyledDropdownContentItem>
+      ))}
+    </DropdownContentLanguages>
+  )
+
+  return (
     <StyledDropdownContentItem
       as={'div'}
       isOpen={visibleThirdLevel}
@@ -686,25 +704,9 @@ const LanguagesDropdownItems: React.FC<LanguagesDropdownItemsProps> = (props) =>
           </DropdownContentItemTitle>
         </DropdownContentItemText>
         <SVG src={IMG_ICON_CARRET_DOWN} />
-        <DropdownContentLanguages isThirdLevel isOpen={visibleThirdLevel} mobileMode={mobileMode}>
-          {children.map(({ label, onClick }) => (
-            <StyledDropdownContentItem
-              isThirdLevel
-              onClick={(e: React.MouseEvent<HTMLElement>) => {
-                if (onClick) {
-                  onClick(e as React.MouseEvent<HTMLDivElement>)
-                }
-                closeDropdown()
-              }}
-              mobileMode={mobileMode}
-            >
-              <div
-                style={{ fontWeight: `${label === i18n.locale ? 700 : 400}` }}
-              >{`${getFlag(label as string)} ${getLanguageName(label as string)}`}</div>
-            </StyledDropdownContentItem>
-          ))}
-        </DropdownContentLanguages>
+        {!mobileMode && languagesContent}
       </div>
+      {mobileMode && languagesContent}
     </StyledDropdownContentItem>
   )
 }
@@ -746,7 +748,11 @@ const GlobalSettingsDropdown = forwardRef<HTMLUListElement, GlobalSettingsDropdo
     )
 
     return (
-      <StyledDropdownContentItem key={index} onClick={_onDropdownItemClickFactory(item, closeDropdown)}>
+      <StyledDropdownContentItem
+        mobileMode={mobileMode}
+        key={index}
+        onClick={_onDropdownItemClickFactory(item, closeDropdown)}
+      >
         {to ? <LinkComponent href={to}>{content}</LinkComponent> : <div>{content}</div>}
       </StyledDropdownContentItem>
     )
