@@ -3,9 +3,9 @@ import { useMemo } from 'react'
 import { useIsAnyOfTokensOndo } from '@cowprotocol/tokens'
 import { Currency } from '@uniswap/sdk-core'
 
-import { isValidQuoteError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
+import { TradeQuoteState } from 'modules/tradeQuote'
 
-import { TradeQuoteState } from '../../tradeQuote'
+import { isValidQuoteError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
 
 export function useTokenCustomTradeError(
   inputCurrency: Currency | undefined | null,

@@ -139,7 +139,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
     !alternativeOrderModalVisible &&
     (!isInjectedWidgetMode && isConnectedMarketOrderWidget ? isUpToLarge : true) &&
     (isConnectedMarketOrderWidget || !hideOrdersTable) &&
-    ((isConnectedMarketOrderWidget && standaloneMode !== true) || (!isMarketOrderWidget && isUpToLarge && !lockScreen))
+    ((isConnectedMarketOrderWidget && standaloneMode !== true && !lockScreen) || (!isMarketOrderWidget && isUpToLarge && !lockScreen))
 
   const showDropdown = shouldShowMyOrdersButton || isInjectedWidgetMode || isMobile
 

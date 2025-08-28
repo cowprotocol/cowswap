@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.118.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.117.2...cowswap-v1.118.0) (2025-08-28)
+
+
+### Features
+
+* **account-proxy:** add links to cowshed releases ([#6175](https://github.com/cowprotocol/cowswap/issues/6175)) ([9641d53](https://github.com/cowprotocol/cowswap/commit/9641d5371ba5c7b682096386c2738991002506f5))
+* add swap unlock screen ([#6181](https://github.com/cowprotocol/cowswap/issues/6181)) ([6bb5593](https://github.com/cowprotocol/cowswap/commit/6bb55937792f9a13c620555a0a82eaeaa9d41e21))
+* **bridge:** add bridge appzi nps survey ([#6179](https://github.com/cowprotocol/cowswap/issues/6179)) ([83b8e2e](https://github.com/cowprotocol/cowswap/commit/83b8e2e1dec88af2e7f4b87162e3bce369244866))
+* **bridging:** enable mainnet-&gt;gnosis bridge ([#6172](https://github.com/cowprotocol/cowswap/issues/6172)) ([d1bb3d5](https://github.com/cowprotocol/cowswap/commit/d1bb3d5376cdd09ce2801a9bbf4a67b8b70f5d1b))
+* handle weekend for ondo tokens ([#6183](https://github.com/cowprotocol/cowswap/issues/6183)) ([cb3af07](https://github.com/cowprotocol/cowswap/commit/cb3af077192a24d09e23272fbcbfef69ea0f5812))
+* **trade:** implement partial approve ([#6139](https://github.com/cowprotocol/cowswap/issues/6139)) ([6f9d6b0](https://github.com/cowprotocol/cowswap/commit/6f9d6b055323d25705ee88a533f71190944be6e2))
+
 ## [1.117.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.117.1...cowswap-v1.117.2) (2025-08-21)
 
 

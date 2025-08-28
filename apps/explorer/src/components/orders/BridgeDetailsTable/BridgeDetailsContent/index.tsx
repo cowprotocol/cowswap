@@ -32,9 +32,10 @@ export function BridgeDetailsContent({ crossChainOrder }: BridgeDetailsContentPr
   const bridgeProvider = crossChainOrder.provider
   const { sourceToken, destinationToken } = useCrossChainTokens(crossChainOrder)
 
-  const RecipientAddress = (
+  const RecipientAddress = recipient ? (
     <AddressLink address={recipient} chainId={destinationChainId} bridgeProvider={bridgeProvider} showNetworkName />
-  )
+  ) : null
+
   return (
     <>
       <DetailRow label="Provider" tooltipText={BridgeDetailsTooltips.provider}>
@@ -52,7 +53,7 @@ export function BridgeDetailsContent({ crossChainOrder }: BridgeDetailsContentPr
       </DetailRow>
 
       <DetailRow label="To" tooltipText={BridgeDetailsTooltips.receiverAddress}>
-        <RowWithCopyButton textToCopy={recipient} contentsToDisplay={RecipientAddress} />
+        {recipient ? <RowWithCopyButton textToCopy={recipient} contentsToDisplay={RecipientAddress} /> : <span>-</span>}
       </DetailRow>
 
       <DetailRow label="Status" tooltipText={BridgeDetailsTooltips.status}>

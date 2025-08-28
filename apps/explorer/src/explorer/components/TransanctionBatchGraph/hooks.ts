@@ -71,12 +71,24 @@ export function useCytoscape(params: UseCytoscapeParams): UseCytoscapeReturn {
 
   const stableTxSettlement = JSON.stringify(txSettlement)
 
+  // eslint-disable-next-line complexity
   useEffect(() => {
     try {
       setFailedToLoadGraph(false)
       const cy = cytoscapeRef.current
       setElements([])
-      if (error || isLoading || !networkId || !heightSize || !cy || !txSettlement) return
+      if (
+        error ||
+        isLoading ||
+        !networkId ||
+        !heightSize ||
+        !cy ||
+        !txSettlement ||
+        !txSettlement.trades.length ||
+        !txSettlement.transfers.length
+      ) {
+        return
+      }
 
       const getNodesFn = txSettlement.contractTrades ? buildTokenViewNodes : buildContractViewNodes
       const nodes = getNodesFn(txSettlement, networkId, heightSize, layout.name)
@@ -219,7 +231,7 @@ function useUpdateVisQuery(): (vis: string) => void {
 }
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+ 
 export function useTxBatchData(
   networkId: Network | undefined,
   orders: Order[] | undefined,

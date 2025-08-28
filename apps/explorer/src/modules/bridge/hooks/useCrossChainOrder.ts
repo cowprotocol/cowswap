@@ -22,7 +22,7 @@ const swrOptions: SWRConfiguration = {
       }
     }
     return UPDATE_INTERVAL
-  }
+  },
 }
 
 export function useCrossChainOrder(orderId: string | undefined): SWRResponse<CrossChainOrder | null | undefined> {
