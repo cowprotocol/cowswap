@@ -1,7 +1,8 @@
 import { useMemo } from 'react'
 
 import { getChainInfo, TokenWithLogo } from '@cowprotocol/common-const'
-import { BridgeStatus, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { BridgeStatus } from '@cowprotocol/sdk-bridging'
 import { useTokensByAddressMap } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'

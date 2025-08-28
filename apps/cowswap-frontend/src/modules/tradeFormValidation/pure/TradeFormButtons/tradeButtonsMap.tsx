@@ -2,7 +2,7 @@ import { ReactElement, ReactNode } from 'react'
 
 import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
 import { getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
-import { BridgeProviderQuoteError, BridgeQuoteErrors } from '@cowprotocol/cow-sdk'
+import { BridgeProviderQuoteError, BridgeQuoteErrors } from '@cowprotocol/sdk-bridging'
 import { CenteredDots, HelpTooltip, TokenSymbol } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'

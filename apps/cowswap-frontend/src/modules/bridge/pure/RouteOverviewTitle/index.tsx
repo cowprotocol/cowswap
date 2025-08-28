@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { BridgeProviderInfo } from '@cowprotocol/cow-sdk'
+import { BridgeProviderInfo } from '@cowprotocol/sdk-bridging'
 import { InfoTooltip } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'

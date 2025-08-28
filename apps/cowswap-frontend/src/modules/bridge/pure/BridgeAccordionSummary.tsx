@@ -6,7 +6,7 @@
 import { ReactNode } from 'react'
 
 import { displayTime } from '@cowprotocol/common-utils'
-import { BridgeProviderInfo } from '@cowprotocol/cow-sdk'
+import { BridgeProviderInfo } from '@cowprotocol/sdk-bridging'
 import { UI } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'

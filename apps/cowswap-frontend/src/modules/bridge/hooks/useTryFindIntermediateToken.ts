@@ -1,7 +1,8 @@
 import { useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { BridgeQuoteResults, OrderKind } from '@cowprotocol/cow-sdk'
+import { OrderKind } from '@cowprotocol/cow-sdk'
+import { BridgeQuoteResults } from '@cowprotocol/sdk-bridging'
 import { useSearchToken } from '@cowprotocol/tokens'
 
 import { useTryFindIntermediateTokenInTokensMap } from 'modules/trade'
@@ -18,7 +19,7 @@ export function useTryFindIntermediateToken({ bridgeQuote }: UseTryFindIntermedi
   const { sellTokenAddress: intermediateBuyTokenAddress, kind } = bridgeQuote?.tradeParameters || {}
   const orderParams = useMemo(
     () => getOrderParamsFromQuote(intermediateBuyTokenAddress, kind),
-    [intermediateBuyTokenAddress, kind]
+    [intermediateBuyTokenAddress, kind],
   )
   const intermediateBuyToken = useTryFindIntermediateTokenInTokensMap(orderParams) ?? null
   const { inactiveListsResult, blockchainResult, externalApiResult, isLoading } = useSearchToken(
@@ -52,8 +53,10 @@ export function useTryFindIntermediateToken({ bridgeQuote }: UseTryFindIntermedi
   return { intermediateBuyToken, toBeImported: false }
 }
 
-function getOrderParamsFromQuote(buyToken?: string, kind?: OrderKind):
-  { kind: OrderKind; buyToken: string } | undefined {
+function getOrderParamsFromQuote(
+  buyToken?: string,
+  kind?: OrderKind,
+): { kind: OrderKind; buyToken: string } | undefined {
   if (!buyToken || !kind) return undefined
 
   return { kind, buyToken }

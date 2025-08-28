@@ -1,7 +1,8 @@
 import { ReactNode } from 'react'
 
 import { RECEIVED_LABEL } from '@cowprotocol/common-const'
-import { BridgeStatusResult, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { BridgeStatusResult } from '@cowprotocol/sdk-bridging'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'

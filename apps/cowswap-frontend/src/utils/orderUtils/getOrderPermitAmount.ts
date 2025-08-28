@@ -1,5 +1,5 @@
 import { Erc20__factory, type Erc20Interface } from '@cowprotocol/abis'
-import type { LatestAppDataDocVersion } from '@cowprotocol/app-data'
+import type { LatestAppDataDocVersion } from '@cowprotocol/cow-sdk'
 import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Interface } from '@ethersproject/abi'
 import { BigNumber } from '@ethersproject/bignumber'
