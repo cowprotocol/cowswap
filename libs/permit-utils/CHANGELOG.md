@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.10.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v0.9.0...permit-utils-v0.10.0) (2025-08-28)
+
+
+### Features
+
+* **trade:** implement partial approve ([#6139](https://github.com/cowprotocol/cowswap/issues/6139)) ([6f9d6b0](https://github.com/cowprotocol/cowswap/commit/6f9d6b055323d25705ee88a533f71190944be6e2))
+
 ## [0.9.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v0.8.0...permit-utils-v0.9.0) (2025-08-21)
 
 
