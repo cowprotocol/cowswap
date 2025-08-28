@@ -147,7 +147,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
     setShowAddIntermediateTokenModal(false)
   }, [])
 
-  const shouldShowLockScreen = isHydrated && !isUnlocked && !isInjectedWidget() && isSmartContractWallet !== true
+  const shouldShowLockScreen = isHydrated && !isUnlocked && !isInjectedWidget() && isSmartContractWallet === false
 
   const slots: TradeWidgetSlots = {
     topContent,
