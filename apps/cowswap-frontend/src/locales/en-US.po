@@ -1125,6 +1125,10 @@ msgstr "of"
 msgid "Error {verb} the order"
 msgstr "Error {verb} the order"
 
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
+msgid "this order"
+msgstr "this order"
+
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SmallPartTimeWarning.tsx
 msgid "A minimum of <0>{time}</0> between parts is required. Decrease the number of parts or increase the total duration."
 msgstr "A minimum of <0>{time}</0> between parts is required. Decrease the number of parts or increase the total duration."
@@ -1573,8 +1577,8 @@ msgid "Replaced"
 msgstr "Replaced"
 
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapConfirmModal/useLabelsAndTooltips.tsx
-msgid "dynamic'"
-msgstr "dynamic'"
+#~ msgid "dynamic'"
+#~ msgstr "dynamic'"
 
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
 msgid "MEV Slicer"
@@ -2011,8 +2015,8 @@ msgstr "If allowance remains insufficient at creation time, this portion will no
 #~ msgstr "User rejected signing the order"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
-msgid "Executing', description: 'The winner of the competition is now executing your order on-chain."
-msgstr "Executing', description: 'The winner of the competition is now executing your order on-chain."
+#~ msgid "Executing', description: 'The winner of the competition is now executing your order on-chain."
+#~ msgstr "Executing', description: 'The winner of the competition is now executing your order on-chain."
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/BridgeAccordionSummary.tsx
 msgid "Estimated bridge transaction time: {bridgeEstimatedTime} minutes"
@@ -2343,6 +2347,10 @@ msgstr "Hooks are interactions before/after order execution."
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/HookRegistryList/index.tsx
 msgid "Add a custom hook"
 msgstr "Add a custom hook"
+
+#: apps/cowswap-frontend/src/modules/notifications/pure/TelegramConnectionStatus/index.tsx
+msgid "Connected"
+msgstr "Connected"
 
 #: apps/cowswap-frontend/src/legacy/components/ErrorBoundary/ChunkLoadError.tsx
 msgid "This page can't be reached"
@@ -3261,6 +3269,7 @@ msgstr "More intuitive UI and improved design"
 msgid "External"
 msgstr "External"
 
+#: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/ExecutingStep.tsx
 msgid "The winner of the competition is now executing your order on-chain."
 msgstr "The winner of the competition is now executing your order on-chain."
@@ -3333,6 +3342,10 @@ msgstr "Fills at"
 #: apps/cowswap-frontend/src/common/hooks/useConfirmPriceImpactWithoutFee.ts
 msgid "Confirm Price Impact"
 msgstr "Confirm Price Impact"
+
+#: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
+msgid "Executing"
+msgstr "Executing"
 
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/SurplusCard.tsx
 msgid "The total surplus CoW Swap has generated for you in {nativeSymbol} across all your trades since {startDate}."
@@ -3653,6 +3666,10 @@ msgstr "Balance"
 msgid "The Uniswap invariant x*y=k was not satisfied by the swap. This usually means one of the tokens you are swapping incorporates custom behavior on transfer."
 msgstr "The Uniswap invariant x*y=k was not satisfied by the swap. This usually means one of the tokens you are swapping incorporates custom behavior on transfer."
 
+#: apps/cowswap-frontend/src/modules/swap/containers/SwapConfirmModal/useLabelsAndTooltips.tsx
+msgid "dynamic"
+msgstr "dynamic"
+
 #: apps/cowswap-frontend/src/common/pure/PoweredFooter/index.tsx
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AppliedHookItem/index.tsx
 msgid "Powered by"
@@ -3863,8 +3880,8 @@ msgid "Select a network"
 msgstr "Select a network"
 
 #: apps/cowswap-frontend/src/modules/notifications/pure/TelegramConnectionStatus/index.tsx
-msgid "Connected <0/>"
-msgstr "Connected <0/>"
+#~ msgid "Connected <0/>"
+#~ msgstr "Connected <0/>"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/DeadlineSelector/index.tsx
 msgid "Choose a custom deadline for your limit order"
