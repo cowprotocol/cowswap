@@ -1,8 +1,7 @@
 import { useMemo } from 'react'
 
+import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { useWalletInfo } from '@cowprotocol/wallet'
-
-import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
 
 import { useAppSelector } from '../../hooks'
 import { EnhancedTransactionDetails } from '../reducer'

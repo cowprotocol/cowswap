@@ -8,11 +8,14 @@ import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useAmountsToSign, useDerivedTradeState, useWrapNativeFlow } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 
+import { useTokenCustomTradeError } from './useTokenCustomTradeError'
+
 import { TradeFormButtonContext } from '../types'
 
 export function useTradeFormButtonContext(
   defaultText: string,
   confirmTrade: () => void,
+  enablePartialApprove = false,
 ): TradeFormButtonContext | null {
   const wrapNativeFlow = useWrapNativeFlow()
   const { isSupportedWallet } = useWalletDetails()
@@ -21,6 +24,11 @@ export function useTradeFormButtonContext(
   const { standaloneMode } = useInjectedWidgetParams()
   const derivedState = useDerivedTradeState()
   const amountsToSign = useAmountsToSign()
+  const customTokenError = useTokenCustomTradeError(
+    derivedState?.inputCurrency,
+    derivedState?.outputCurrency,
+    quote.error,
+  )
 
   return useMemo(() => {
     if (!derivedState) return null
@@ -35,6 +43,8 @@ export function useTradeFormButtonContext(
       wrapNativeFlow,
       connectWallet: toggleWalletModal,
       widgetStandaloneMode: standaloneMode,
+      enablePartialApprove,
+      customTokenError,
     }
   }, [
     defaultText,
@@ -46,5 +56,7 @@ export function useTradeFormButtonContext(
     wrapNativeFlow,
     toggleWalletModal,
     standaloneMode,
+    enablePartialApprove,
+    customTokenError,
   ])
 }

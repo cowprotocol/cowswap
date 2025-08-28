@@ -3,7 +3,7 @@ import { ReactNode } from 'react'
 import { RowFixed } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { useActivityDerivedState, ActivityState } from 'legacy/hooks/useActivityDerivedState'
+import { ActivityState, useActivityDerivedState } from 'legacy/hooks/useActivityDerivedState'
 import { ActivityDescriptors } from 'legacy/hooks/useRecentActivity'
 
 import { ActivityStatus, ActivityType } from 'common/types/activity'
@@ -86,6 +86,7 @@ export default function Activity({ activity }: { activity: ActivityDescriptors }
               activityLinkUrl={activityLinkUrl ?? undefined}
               disableMouseActions={!hasLink}
               creationTime={creationTime && creationTime}
+              fillability={activity.fillability}
             />
           </ActivityDetailsText>
         </RowFixed>

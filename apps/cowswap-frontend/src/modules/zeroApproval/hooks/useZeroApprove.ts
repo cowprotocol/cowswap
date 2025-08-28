@@ -1,14 +1,15 @@
 import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
+import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { useIsSafeWallet, useIsWalletConnect } from '@cowprotocol/wallet'
 import SafeApiKit from '@safe-global/api-kit'
 import type { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { useApproveCallback } from 'common/hooks/useApproveCallback'
+import { useApproveCallback } from 'modules/erc20Approve'
+
 import { useSafeApiKit } from 'common/hooks/useSafeApiKit'
-import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
 import { pollUntil } from 'common/utils/pollUntil'
 
 import { zeroApprovalState } from '../state/zeroApprovalState'
@@ -35,21 +36,21 @@ async function waitForSafeTransactionExecution({
   )
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useZeroApprove(currency: Currency | undefined) {
+export function useZeroApprove(currency: Currency | undefined): () => Promise<void> {
   const setZeroApprovalState = useSetAtom(zeroApprovalState)
   const spender = useTradeSpenderAddress()
   const amountToApprove = currency ? CurrencyAmount.fromRawAmount(currency, 0) : undefined
-  const approveCallback = useApproveCallback(amountToApprove, spender)
+  const approveCallback = useApproveCallback(amountToApprove?.currency, spender)
   const safeApiKit = useSafeApiKit()
   const isWalletConnect = useIsWalletConnect()
   const isSafeWallet = useIsSafeWallet()
 
   return useCallback(async () => {
+    if (!amountToApprove) return
+
     try {
       setZeroApprovalState({ isApproving: true, currency })
-      const txReceipt = await approveCallback()
+      const txReceipt = await approveCallback(amountToApprove)
 
       // For Wallet Connect based Safe Wallet connections, wait for transaction to be executed.
       if (txReceipt && safeApiKit && isSafeWallet && isWalletConnect) {
@@ -58,5 +59,5 @@ export function useZeroApprove(currency: Currency | undefined) {
     } finally {
       setZeroApprovalState({ isApproving: false })
     }
-  }, [approveCallback, setZeroApprovalState, currency, safeApiKit, isSafeWallet, isWalletConnect])
+  }, [approveCallback, setZeroApprovalState, currency, safeApiKit, isSafeWallet, isWalletConnect, amountToApprove])
 }

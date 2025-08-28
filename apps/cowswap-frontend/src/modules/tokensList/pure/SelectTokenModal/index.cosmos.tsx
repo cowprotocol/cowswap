@@ -47,6 +47,7 @@ const defaultProps: SelectTokenModalProps = {
     fromCache: false,
   },
   selectedToken,
+  isRouteAvailable: true,
   onSelectToken() {
     console.log('onSelectToken')
   },

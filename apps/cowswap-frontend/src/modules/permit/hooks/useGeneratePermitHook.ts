@@ -6,7 +6,7 @@ import {
   generatePermitHook,
   getPermitUtilsInstance,
   isSupportedPermitInfo,
-  PermitHookData,
+  PermitHookData
 } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
@@ -36,7 +36,7 @@ export function useGeneratePermitHook(): GeneratePermitHook {
 
   return useCallback(
     async (params: GeneratePermitHookParams): Promise<PermitHookData | undefined> => {
-      const { inputToken, account, permitInfo, customSpender } = params
+      const { inputToken, account, permitInfo, customSpender, amount } = params
 
       if (!provider || !isSupportedPermitInfo(permitInfo)) {
         return
@@ -49,9 +49,9 @@ export function useGeneratePermitHook(): GeneratePermitHook {
       // Static account should never need to pre-check the nonce as it'll never change once cached
       const nonce = account ? await eip2612Utils.getTokenNonce(inputToken.address, account) : undefined
 
-      const permitParams = { chainId, tokenAddress: inputToken.address, account, nonce }
+      const permitParams = { chainId, tokenAddress: inputToken.address, account, nonce, amount }
 
-      const cachedPermit = await getCachedPermit(inputToken.address, spender)
+      const cachedPermit = await getCachedPermit(inputToken.address, amount, spender)
 
       if (cachedPermit) {
         return cachedPermit
@@ -66,6 +66,7 @@ export function useGeneratePermitHook(): GeneratePermitHook {
         eip2612Utils,
         account,
         nonce,
+        amount,
       })
 
       hookData && storePermit({ ...permitParams, hookData, spender })

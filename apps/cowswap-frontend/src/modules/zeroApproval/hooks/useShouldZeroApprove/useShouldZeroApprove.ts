@@ -1,15 +1,17 @@
 import { useEffect, useState } from 'react'
 
+import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
+import { useApprovalStateForSpender } from 'modules/erc20Approve'
+
 import { useTokenContract } from 'common/hooks/useContract'
-import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
-import { useApprovalStateForSpender } from 'lib/hooks/useApproval'
 
 import { shouldZeroApprove as shouldZeroApproveFn } from './shouldZeroApprove'
+
 
 // TODO: Handle tokens that don't allow approvals larger than the balance of the wallet
 /**
@@ -22,7 +24,7 @@ export function useShouldZeroApprove(amountToApprove: Nullish<CurrencyAmount<Cur
   const currency = amountToApprove?.currency
   const token = currency && !getIsNativeToken(currency) ? currency : undefined
   const { contract: tokenContract } = useTokenContract(token?.address)
-  const approvalState = useApprovalStateForSpender(amountToApprove, spender, () => false) // ignore approval pending state
+  const approvalState = useApprovalStateForSpender(amountToApprove, spender)
 
   useEffect(() => {
     let isStale = false
