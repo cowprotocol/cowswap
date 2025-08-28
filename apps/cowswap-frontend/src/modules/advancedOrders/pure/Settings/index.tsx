@@ -7,7 +7,7 @@ import {
   limitOrdersSettingsAtom,
   updateLimitOrdersSettingsAtom,
 } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
-import { useOrdersTableSettings } from 'modules/trade/const/common'
+import { getOrdersTableSettings } from 'modules/trade/const/common'
 import { SettingsBox, SettingsContainer, SettingsTitle } from 'modules/trade/pure/Settings'
 
 import { AdvancedOrdersSettingsState } from '../../state/advancedOrdersSettingsAtom'
@@ -24,7 +24,7 @@ export function Settings({ state, onStateChanged }: SettingsProps) {
   // TODO: we should use limit orders settings in Advanced Orders!
   const limitOrdersSettings = useAtomValue(limitOrdersSettingsAtom)
   const updateLimitOrdersSettings = useSetAtom(updateLimitOrdersSettingsAtom)
-  const { LEFT_ALIGNED } = useOrdersTableSettings()
+  const { LEFT_ALIGNED } = getOrdersTableSettings()
   const { i18n } = useLingui()
 
   return (

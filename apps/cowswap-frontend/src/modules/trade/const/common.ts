@@ -16,7 +16,7 @@ export interface OrdersTableSettings {
   [key: string]: { title: MessageDescriptor; tooltip: MessageDescriptor }
 }
 
-export function useOrdersTableSettings(): OrdersTableSettings {
+export function getOrdersTableSettings(): OrdersTableSettings {
   return {
     LEFT_ALIGNED: {
       title: msg`Desktop: Left-Aligned Orders Table`,
