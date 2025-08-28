@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cowswapdev\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-08-28 00:49\n"
+"PO-Revision-Date: 2025-08-28 01:18\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -1484,7 +1484,7 @@ msgstr "Заработайте больше возвратов с уменьше
 
 #: apps/cowswap-frontend/src/modules/swap/containers/BottomBanners/index.tsx
 msgid "Funds stuck? <0>Recover your funds</0>"
-msgstr "Средства застряли? <0>Восстановить средства</0>"
+msgstr "Сделки средств? <0>Восстановить средства</0>"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SwapPriceDifferenceWarning.tsx
 msgid "Maximizing Your Gains!"
@@ -1722,7 +1722,7 @@ msgstr "Сроки замены"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/EthFlowModalTopContent.tsx
 msgid "At current gas prices, your remaining {nativeSymbol} balance after confirmation may be only sufficient for<0>up to {txsRemaining} wrapping, unwrapping, or approval operation(s).</0>"
-msgstr ""
+msgstr "По текущим ценам на газ ваш оставшийся баланс {nativeSymbol} после подтверждения может быть достаточен только для<0>до {txsRemaining} операции(й) обертывания, развёртывания или подтверждения.</0>"
 
 #: apps/cowswap-frontend/src/legacy/components/Badge/RangeBadge.tsx
 msgid "The price of this pool is outside of your selected range. Your position is not currently earning fees."
@@ -3008,8 +3008,8 @@ msgid "Lock Limit Price"
 msgstr "Заблокировать лимитную цену"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/BuildHookApp/index.tsx
-msgid "Target"
-msgstr "Target"
+msgid "цель"
+msgstr "цель"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/StopStatus/index.tsx
 msgid "Bridge failed on"
