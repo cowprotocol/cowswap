@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cowswapdev\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-08-28 20:26\n"
+"PO-Revision-Date: 2025-08-28 21:56\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -3301,6 +3301,10 @@ msgstr "3 дня"
 msgid "Now"
 msgstr "Сейчас"
 
+#: apps/cowswap-frontend/src/modules/swap/pure/CrossChainUnlockScreen/index.tsx
+msgid "Mooove between <0/> any chain, hassle-free"
+msgstr "Переходите между <0/> любыми сетями легко и просто"
+
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteSwapContent/index.tsx
 msgid "The address that will receive the tokens."
 msgstr "Адрес, который будет получать токены."
@@ -4097,6 +4101,10 @@ msgstr "Вы подключены к"
 msgid "Unknown hook dapp"
 msgstr "Неизвестное приложение для хука"
 
+#: apps/cowswap-frontend/src/modules/swap/pure/CrossChainUnlockScreen/index.tsx
+msgid "Swap now"
+msgstr "Поменять"
+
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/AirdropHookApp/index.tsx
 msgid "An unexpected error occurred"
 msgstr "Произошла непредвиденная ошибка"
@@ -4118,6 +4126,10 @@ msgstr "Заказ начнется после его подтверждения
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormBlankButton/index.tsx
 msgid "Confirm with your wallet"
 msgstr "Подтвердите с помощью кошелька"
+
+#: apps/cowswap-frontend/src/modules/swap/pure/CrossChainUnlockScreen/index.tsx
+msgid "Swaps just got smarter"
+msgstr "Обмены стали умнее"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/HighFeeWarning/highFeeWarningHelpers.ts
 msgid "Swap costs are at least {formattedFeePercentage}% of the swap amount"
