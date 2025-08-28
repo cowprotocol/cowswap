@@ -10,7 +10,7 @@ import { I18nProvider } from '@lingui/react'
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export async function dynamicActivate(locale: SupportedLocale) {
   try {
-    // Load default (en-EN) catalog if internationalization is disabled
+    // Load default (en-US) catalog if internationalization is disabled
     if (!isLinguiInternationalizationEnabled) {
       const defaultCatalog = await import(`../locales/${DEFAULT_LOCALE}.po`)
 
