@@ -12,6 +12,7 @@ import { Nullish } from 'types'
 
 import { PermitCompatibleTokens } from 'modules/permit'
 
+import { SelectTokenModalContent } from './SelectTokenModalContent'
 import * as styledEl from './styled'
 
 import { LpTokenListsWidget } from '../../containers/LpTokenListsWidget'
@@ -38,6 +39,7 @@ export interface SelectTokenModalProps<T = TokenListCategory[] | null> {
   tokenListTags: TokenListTags
   standalone?: boolean
   areTokensFromBridge: boolean
+  isRouteAvailable: boolean | undefined
 
   onSelectToken(token: TokenWithLogo): void
   openPoolPage(poolAddress: string): void
@@ -86,6 +88,7 @@ export function SelectTokenModal(props: SelectTokenModalProps): ReactNode {
     chainsToSelect,
     onSelectChain,
     areTokensFromBridge,
+    isRouteAvailable,
   } = props
   const [inputValue, setInputValue] = useState<string>(defaultInputValue)
 
@@ -141,7 +144,7 @@ export function SelectTokenModal(props: SelectTokenModalProps): ReactNode {
               </styledEl.ChainsSelectorWrapper>
             </>
           )}
-          {allListsContent}
+          <SelectTokenModalContent isRouteAvailable={isRouteAvailable}>{allListsContent}</SelectTokenModalContent>
         </>
       )}
     </styledEl.Wrapper>

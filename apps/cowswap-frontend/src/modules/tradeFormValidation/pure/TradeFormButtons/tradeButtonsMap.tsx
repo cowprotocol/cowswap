@@ -123,7 +123,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
           {isBridging && recipient && (
             <HelpTooltip
               placement="top"
-              text="ENS recipient not supported for Swap and Bridge — use address instead."
+              text="ENS recipient not supported for Swap and Bridge. Use address instead."
             />
           )}
         </>

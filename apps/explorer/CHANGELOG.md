@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.53.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.52.0...explorer-v2.53.0) (2025-08-28)
+
+
+### Features
+
+* **bridging:** enable mainnet-&gt;gnosis bridge ([#6172](https://github.com/cowprotocol/cowswap/issues/6172)) ([d1bb3d5](https://github.com/cowprotocol/cowswap/commit/d1bb3d5376cdd09ce2801a9bbf4a67b8b70f5d1b))
+
+
+### Bug Fixes
+
+* **lens:** follow up fixes ([#6176](https://github.com/cowprotocol/cowswap/issues/6176)) ([cd8f3c0](https://github.com/cowprotocol/cowswap/commit/cd8f3c0201b8f04fc31a59588b6d2d05d215e112))
+
 ## [2.52.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.51.0...explorer-v2.52.0) (2025-08-21)
 
 
