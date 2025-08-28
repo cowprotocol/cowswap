@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.5.5...balances-and-allowances-v1.6.0) (2025-08-28)
+
+
+### Features
+
+* **trade:** implement partial approve ([#6139](https://github.com/cowprotocol/cowswap/issues/6139)) ([6f9d6b0](https://github.com/cowprotocol/cowswap/commit/6f9d6b055323d25705ee88a533f71190944be6e2))
+
 ## [1.5.5](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.5.4...balances-and-allowances-v1.5.5) (2025-08-21)
 
 
