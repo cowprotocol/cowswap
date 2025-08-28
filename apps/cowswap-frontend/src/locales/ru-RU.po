@@ -1996,7 +1996,8 @@ msgid "If allowance remains insufficient at creation time, this portion will not
 msgstr "Если пособие остается недостаточным в момент создания, эта часть не будет создана. Утвердите"
 
 #: apps/cowswap-frontend/src/common/utils/getSwapErrorMessage.ts
-#~ msgstr "Пользователь отклонил подписание заказа"
+#~ msgid "User rejected signing the order"
+#~ msgstr "User rejected signing the order"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 msgid "Executing', description: 'The winner of the competition is now executing your order on-chain."
@@ -4626,7 +4627,8 @@ msgid "Confirm Swap"
 msgstr "Подтверждение смены"
 
 #: apps/cowswap-frontend/src/api/cowProtocol/errors/OperatorError.ts
-#~ msgstr "Что-то не удалось. Повторите попытку позже."
+#~ msgid "Something failed. Please try again later."
+#~ msgstr "Something failed. Please try again later."
 
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/HookSearchInput/index.tsx
 msgid "Search hooks..."
