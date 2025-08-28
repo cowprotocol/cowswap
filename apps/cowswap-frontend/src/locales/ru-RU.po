@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cowswapdev\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-08-28 01:43\n"
+"PO-Revision-Date: 2025-08-28 20:26\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -1466,6 +1466,10 @@ msgstr "Выполнить! ...и старайтесь не получать б�
 msgid "Wrap your {nativeSymbol} and use the classic {wrappedSymbol} experience!"
 msgstr "Отредактируйте {nativeSymbol} и используйте классический опыт {wrappedSymbol}!"
 
+#: apps/cowswap-frontend/src/modules/application/containers/AppMenu/index.tsx
+msgid "Languages"
+msgstr "Языки"
+
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/DeadlineSelector/index.tsx
 msgid "Set custom deadline"
 msgstr "Установить свой срок"
@@ -2699,8 +2703,8 @@ msgid "No open orders"
 msgstr "Нет открытых ордеров"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
-msgid "ENS recipient not supported for Swap and Bridge — use address instead."
-msgstr "Получатель ENS не поддерживается для подкачки и моста — используйте адрес."
+#~ msgid "ENS recipient not supported for Swap and Bridge — use address instead."
+#~ msgstr "ENS recipient not supported for Swap and Bridge — use address instead."
 
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapWidget/index.tsx
 msgid "Expected sell amount"
@@ -4773,6 +4777,10 @@ msgstr "1 неделя"
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
 msgid "There are no orders"
 msgstr "Нет заказов"
+
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+msgid "ENS recipient not supported for Swap and Bridge. Use address instead."
+msgstr "ENS получатель не поддерживается для подкачки и моста. Используйте адрес."
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
