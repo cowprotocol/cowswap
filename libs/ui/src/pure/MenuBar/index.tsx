@@ -681,7 +681,9 @@ const LanguagesDropdownItems: React.FC<LanguagesDropdownItemsProps> = (props) =>
     >
       <div>
         <DropdownContentItemText>
-          <DropdownContentItemTitle>{label}</DropdownContentItemTitle>
+          <DropdownContentItemTitle>
+            {label} {getFlag(i18n.locale)}
+          </DropdownContentItemTitle>
         </DropdownContentItemText>
         <SVG src={IMG_ICON_CARRET_DOWN} />
         <DropdownContentLanguages isThirdLevel isOpen={visibleThirdLevel} mobileMode={mobileMode}>
