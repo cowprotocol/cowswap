@@ -94,7 +94,13 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
   })
   const importTokenCallback = useAddUserToken()
 
-  const { tokens: allTokens, isLoading: areTokensLoading, favoriteTokens, areTokensFromBridge } = useTokensToSelect()
+  const {
+    tokens: allTokens,
+    isLoading: areTokensLoading,
+    favoriteTokens,
+    areTokensFromBridge,
+    isRouteAvailable,
+  } = useTokensToSelect()
 
   const userAddedTokens = useUserAddedTokens()
   const allTokenLists = useAllListsList()
@@ -219,6 +225,7 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
             areTokensLoading={areTokensLoading}
             tokenListTags={tokenListTags}
             areTokensFromBridge={areTokensFromBridge}
+            isRouteAvailable={isRouteAvailable}
           />
         )
       })()}

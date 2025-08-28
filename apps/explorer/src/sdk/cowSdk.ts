@@ -5,7 +5,7 @@ export const orderBookApi = new OrderBookApi()
 
 export const bungeeBridgeProvider = new BungeeBridgeProvider({
   apiOptions: {
-    includeBridges: ['across', 'cctp'],
+    includeBridges: ['across', 'cctp', 'gnosis-native-bridge'],
   },
   getRpcProvider,
 })
