@@ -1820,10 +1820,10 @@
   resolved "https://registry.yarnpkg.com/@cowprotocol/cow-runner-game/-/cow-runner-game-0.2.9.tgz#3f94b3f370bd114f77db8b1d238cba3ef4e9d644"
   integrity sha512-rX7HnoV+HYEEkBaqVUsAkGGo0oBrExi+d6Io+8nQZYwZk+IYLmS9jdcIObsLviM2h4YX8+iin6NuKl35AaiHmg==
 
-"@cowprotocol/cow-sdk@7.0.0-monorepo.5":
-  version "7.0.0-monorepo.5"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-7.0.0-monorepo.5.tgz#ca00865073cec1f001a470a5b6d685de1a87e3c0"
-  integrity sha512-Yb2wOI+EpLb5tKyxvWpHbrDJ+vzWdZJaowEnTWAZCQgTvKXMGCwT57rI1G1WfLwcoxEQHtWPfLDwNHkdK1TKxg==
+"@cowprotocol/cow-sdk@7.0.0-beta.0":
+  version "7.0.0-beta.0"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-7.0.0-beta.0.tgz#cdd60d0cb9bb0f887b6e7654deaf833635a22a28"
+  integrity sha512-PqiaIOa0g0zxLpBOnz2B/XsNNrguvD377XubIFaF4MKoEFzN0Un1cnfre8MNUX4PcDUyWWR0xpJyR2UY9XIdxQ==
   dependencies:
     "@cowprotocol/sdk-app-data" "workspace:*"
     "@cowprotocol/sdk-bridging" "workspace:*"
@@ -1850,10 +1850,10 @@
     json-stringify-deterministic "^1.0.8"
     multiformats "^9.6.4"
 
-"@cowprotocol/sdk-bridging@^0.1.0-monorepo.4":
-  version "0.1.0-monorepo.4"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/sdk-bridging/-/sdk-bridging-0.1.0-monorepo.4.tgz#5817e129f604e3881a9e19f263e0fb58952a6d4e"
-  integrity sha512-3XEuzbHrK3dI4zWJz0ndNi8+7KbS0KQyNTnmSL8tOi8cjlZx2uMnocnip89wKZ/HfMJYjxrrmNzgf+HZvarZwg==
+"@cowprotocol/sdk-bridging@^0.2.0-beta.0":
+  version "0.2.0-beta.0"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/sdk-bridging/-/sdk-bridging-0.2.0-beta.0.tgz#be6de3793f1deb886dfb3adb278b3ee54305f8f1"
+  integrity sha512-cXet0aGAiFgR/l2X1D2BsVtvZBgegHXlOOZN9t5C1CAPKDVcw37aM+8/LjebJIeV9lQ9ABf++zhEoC6j/fyplg==
   dependencies:
     "@cowprotocol/sdk-app-data" "workspace:*"
     "@cowprotocol/sdk-common" "workspace:*"
@@ -1911,7 +1911,16 @@
     "@cowprotocol/sdk-common" "workspace:*"
     "@cowprotocol/sdk-config" "workspace:*"
 
-"@cowprotocol/sdk-cow-shed@^0.1.0-monorepo.3", "@cowprotocol/sdk-cow-shed@workspace:*":
+"@cowprotocol/sdk-cow-shed@^0.2.0-beta.0":
+  version "0.2.0-beta.0"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/sdk-cow-shed/-/sdk-cow-shed-0.2.0-beta.0.tgz#a8f92dd884fa93111211e135b2c00c3d4cfffb90"
+  integrity sha512-vTRmJhsvoLL1/QbegVckzHwFM4Yv4yHji7OHl/tccqQ+Dv+kJGeSvYq/V5MwnZcgyHd9EXXSDOc2EfZ/LcMunA==
+  dependencies:
+    "@cowprotocol/sdk-common" "workspace:*"
+    "@cowprotocol/sdk-config" "workspace:*"
+    "@cowprotocol/sdk-contracts-ts" "workspace:*"
+
+"@cowprotocol/sdk-cow-shed@workspace:*":
   version "0.1.0-monorepo.3"
   resolved "https://registry.yarnpkg.com/@cowprotocol/sdk-cow-shed/-/sdk-cow-shed-0.1.0-monorepo.3.tgz#13bac9c45f0d1c7f347aed598e852032ea01abae"
   integrity sha512-69a+R6W2huFKKN7/Afl5MDnQnemoy/NGzskqUwGmK+FIKVntgElhJC6hmbu24VJk23VwEeKVRFwcVy2wGANIUg==
@@ -1920,10 +1929,10 @@
     "@cowprotocol/sdk-config" "workspace:*"
     "@cowprotocol/sdk-contracts-ts" "workspace:*"
 
-"@cowprotocol/sdk-ethers-v5-adapter@^0.1.0-monorepo.5":
-  version "0.1.0-monorepo.5"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/sdk-ethers-v5-adapter/-/sdk-ethers-v5-adapter-0.1.0-monorepo.5.tgz#7e57d1109dc7d7225446a852ea8d7f7e37f09430"
-  integrity sha512-dgLNVudig9ybt2N4TSZL9rhYhOEtrKWHUVhtiOz+vJ+frO1NWZvokL5feEO67zD9MtGoSOdFHjNR0fH93+Ox0A==
+"@cowprotocol/sdk-ethers-v5-adapter@^0.2.0-beta.0":
+  version "0.2.0-beta.0"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/sdk-ethers-v5-adapter/-/sdk-ethers-v5-adapter-0.2.0-beta.0.tgz#25384b41f18b01e6eedadcaf5a0eaeb83c4eccb8"
+  integrity sha512-ioAcQF+Xo9SWpzZ2G9I52MI0OjD+Zne0peAdMooPIr02/enAau4XUW0yCkh0sx30xF4gdX0vXw8Nidp9VxljVQ==
   dependencies:
     "@cowprotocol/sdk-common" "workspace:*"
 
@@ -1948,7 +1957,17 @@
     "@cowprotocol/sdk-contracts-ts" "workspace:*"
     "@cowprotocol/sdk-order-book" "workspace:*"
 
-"@cowprotocol/sdk-subgraph@^0.1.0-monorepo.2", "@cowprotocol/sdk-subgraph@workspace:*":
+"@cowprotocol/sdk-subgraph@^0.2.0-beta.0":
+  version "0.2.0-beta.0"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/sdk-subgraph/-/sdk-subgraph-0.2.0-beta.0.tgz#fa2dd17409d74a0c0de2adbffd2f4f3e73bf1e2a"
+  integrity sha512-X/fdQX7rigZ3nyP0O7g8x36E+6pfA5iDcp98/ZatjNUwYaBPfXpXMNGuYIeD4fk5HatF4JexzUF+jvWZmbXXyA==
+  dependencies:
+    "@cowprotocol/sdk-common" "workspace:*"
+    "@cowprotocol/sdk-config" "workspace:*"
+    graphql "^16.11.0"
+    graphql-request "^4.3.0"
+
+"@cowprotocol/sdk-subgraph@workspace:*":
   version "0.1.0-monorepo.2"
   resolved "https://registry.yarnpkg.com/@cowprotocol/sdk-subgraph/-/sdk-subgraph-0.1.0-monorepo.2.tgz#7e94ebf8490d627a25f0beea5e9d48a15ea9cdbc"
   integrity sha512-XL8+J2sUEpq2gFy33S/4/l6J70pR+ljVM7Vhxawf9Gt6kmojq8T9Co5mgGvmSdSb0KbUgOSHIFrb6Rw88nWu5Q==
