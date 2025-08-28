@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cowswapdev\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-08-28 01:18\n"
+"PO-Revision-Date: 2025-08-28 01:43\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -3008,7 +3008,7 @@ msgid "Lock Limit Price"
 msgstr "Заблокировать лимитную цену"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/BuildHookApp/index.tsx
-msgid "цель"
+msgid "Target"
 msgstr "цель"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/StopStatus/index.tsx

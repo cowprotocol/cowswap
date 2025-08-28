@@ -2999,7 +2999,7 @@ msgid "Lock Limit Price"
 msgstr "Lock Limit Price"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/BuildHookApp/index.tsx
-msgid "цель"
+msgid "Target"
 msgstr "Target"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/StopStatus/index.tsx
