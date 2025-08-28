@@ -3310,6 +3310,10 @@ msgstr "3 Days"
 msgid "Now"
 msgstr "Now"
 
+#: apps/cowswap-frontend/src/modules/swap/pure/CrossChainUnlockScreen/index.tsx
+msgid "Mooove between <0/> any chain, hassle-free"
+msgstr "Mooove between <0/> any chain, hassle-free"
+
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteSwapContent/index.tsx
 msgid "The address that will receive the tokens."
 msgstr "The address that will receive the tokens."
@@ -4106,6 +4110,10 @@ msgstr "You are connected to"
 msgid "Unknown hook dapp"
 msgstr "Unknown hook dapp"
 
+#: apps/cowswap-frontend/src/modules/swap/pure/CrossChainUnlockScreen/index.tsx
+msgid "Swap now"
+msgstr "Swap now"
+
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/AirdropHookApp/index.tsx
 msgid "An unexpected error occurred"
 msgstr "An unexpected error occurred"
@@ -4127,6 +4135,10 @@ msgstr "The order will start when it is validated and executed in your Safe."
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormBlankButton/index.tsx
 msgid "Confirm with your wallet"
 msgstr "Confirm with your wallet"
+
+#: apps/cowswap-frontend/src/modules/swap/pure/CrossChainUnlockScreen/index.tsx
+msgid "Swaps just got smarter"
+msgstr "Swaps just got smarter"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/HighFeeWarning/highFeeWarningHelpers.ts
 msgid "Swap costs are at least {formattedFeePercentage}% of the swap amount"
