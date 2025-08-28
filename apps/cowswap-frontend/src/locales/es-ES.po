@@ -8,7 +8,7 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: cowswapdev\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-08-28 20:26\n"
+"PO-Revision-Date: 2025-08-28 21:55\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -3301,6 +3301,10 @@ msgstr "3 Días"
 msgid "Now"
 msgstr "Ahora"
 
+#: apps/cowswap-frontend/src/modules/swap/pure/CrossChainUnlockScreen/index.tsx
+msgid "Mooove between <0/> any chain, hassle-free"
+msgstr "Muuuuevete entre <0/> cualquier cadena, sin problemas"
+
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteSwapContent/index.tsx
 msgid "The address that will receive the tokens."
 msgstr "La dirección que recibirá las fichas."
@@ -4097,6 +4101,10 @@ msgstr "Estás conectado a"
 msgid "Unknown hook dapp"
 msgstr "Dapp de hook desconocido"
 
+#: apps/cowswap-frontend/src/modules/swap/pure/CrossChainUnlockScreen/index.tsx
+msgid "Swap now"
+msgstr "Intercambiar ahora"
+
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/AirdropHookApp/index.tsx
 msgid "An unexpected error occurred"
 msgstr "Se ha producido un error inesperado"
@@ -4118,6 +4126,10 @@ msgstr "La orden comenzará cuando sea validada y ejecutada en su caja fuerte."
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormBlankButton/index.tsx
 msgid "Confirm with your wallet"
 msgstr "Confirmar con su billetera"
+
+#: apps/cowswap-frontend/src/modules/swap/pure/CrossChainUnlockScreen/index.tsx
+msgid "Swaps just got smarter"
+msgstr "Los swaps se volvieron más inteligentes"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/HighFeeWarning/highFeeWarningHelpers.ts
 msgid "Swap costs are at least {formattedFeePercentage}% of the swap amount"
