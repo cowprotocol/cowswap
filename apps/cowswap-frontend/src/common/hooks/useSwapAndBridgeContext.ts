@@ -1,7 +1,8 @@
 import { useMemo } from 'react'
 
 import { getChainInfo, TokenWithLogo } from '@cowprotocol/common-const'
-import { BridgeStatus, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { BridgeStatus } from '@cowprotocol/sdk-bridging'
 import { useTokensByAddressMap } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
@@ -60,13 +61,13 @@ export function useSwapAndBridgeContext(
   // If not available (common in fresh sessions), create a fallback token from order data
   const intermediateToken = useMemo(() => {
     if (!order) return undefined
-    
+
     // Primary: Try to get from tokensByAddress map (enriched with logos, etc.)
     const enrichedToken = tokensByAddress[order.buyToken.toLowerCase()]
     if (enrichedToken) {
       return enrichedToken
     }
-    
+
     // Fallback: Create basic TokenWithLogo from order data when tokensByAddress isn't populated yet
     // This allows bridge functionality to work in fresh sessions while token lists are loading
     return TokenWithLogo.fromToken({

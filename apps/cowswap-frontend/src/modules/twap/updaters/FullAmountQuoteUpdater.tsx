@@ -2,7 +2,7 @@ import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
 import { onlyResolvesLast } from '@cowprotocol/common-utils'
-import { CrossChainQuoteAndPost, isBridgeQuoteAndPost } from '@cowprotocol/cow-sdk'
+import { CrossChainQuoteAndPost, isBridgeQuoteAndPost } from '@cowprotocol/sdk-bridging'
 
 import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 

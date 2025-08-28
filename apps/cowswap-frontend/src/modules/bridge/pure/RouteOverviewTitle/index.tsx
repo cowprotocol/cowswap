@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { BridgeProviderInfo } from '@cowprotocol/cow-sdk'
+import { BridgeProviderInfo } from '@cowprotocol/sdk-bridging'
 import { InfoTooltip } from '@cowprotocol/ui'
 
 import { ToggleArrow } from 'common/pure/ToggleArrow'
@@ -32,8 +32,8 @@ export function RouteOverviewTitle({
         <InfoTooltip
           content={
             <>
-              Your trade will be executed in 2 stops. First, you swap on <b>{COW_PROTOCOL_NAME} (Stop 1)</b>, then you bridge
-              via <b>{providerInfo.name} (Stop 2)</b>.
+              Your trade will be executed in 2 stops. First, you swap on <b>{COW_PROTOCOL_NAME} (Stop 1)</b>, then you
+              bridge via <b>{providerInfo.name} (Stop 2)</b>.
             </>
           }
           size={14}

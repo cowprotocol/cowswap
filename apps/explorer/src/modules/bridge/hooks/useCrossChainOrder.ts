@@ -1,5 +1,6 @@
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
-import { CrossChainOrder, getCrossChainOrder, CowEnv, BridgeStatus } from '@cowprotocol/cow-sdk'
+import { CowEnv } from '@cowprotocol/cow-sdk'
+import { CrossChainOrder, getCrossChainOrder, BridgeStatus } from '@cowprotocol/sdk-bridging'
 
 import ms from 'ms.macro'
 import { orderBookApi, knownBridgeProviders } from 'sdk/cowSdk'

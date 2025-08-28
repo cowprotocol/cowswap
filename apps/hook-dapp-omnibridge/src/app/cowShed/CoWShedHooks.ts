@@ -1,10 +1,8 @@
 import {
-  EcdsaSigningScheme,
+  ContractsEcdsaSigningScheme as EcdsaSigningScheme,
   hashTypedData,
-  isTypedDataSigner,
-  SigningScheme,
-  TypedDataTypes,
-} from '@cowprotocol/contracts'
+  ContractsSigningScheme as SigningScheme,
+} from '@cowprotocol/cow-sdk'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { Signer } from '@ethersproject/abstract-signer'
 import { BigNumberish } from '@ethersproject/bignumber'
@@ -14,6 +12,7 @@ import { arrayify, joinSignature, splitSignature } from 'ethers/lib/utils'
 
 import { COW_SHED_FACTORY, COW_SHED_IMPLEMENTATION } from './consts'
 import { getCoWShedFactoryInterface } from './contracts'
+import { isTypedDataSigner, TypedDataTypes } from './ethers'
 import { CoWShedFactory__factory } from './generated'
 import { COW_SHED_712_TYPES, ICoWShedCall, ICoWShedOptions } from './types'
 
