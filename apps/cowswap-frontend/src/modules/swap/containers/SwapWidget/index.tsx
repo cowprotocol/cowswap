@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useMemo, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { isSellOrder, isInjectedWidget } from '@cowprotocol/common-utils'
 import { useIsSmartContractWallet } from '@cowprotocol/wallet'
@@ -81,7 +81,13 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   const doTrade = useHandleSwap(useSafeMemoObject({ deadline: deadlineState[0] }), widgetActions)
   const hasEnoughWrappedBalanceForSwap = useHasEnoughWrappedBalanceForSwap()
   const isSmartContractWallet = useIsSmartContractWallet()
+  const [isHydrated, setIsHydrated] = useState(false)
   const handleUnlock = useCallback(() => updateSwapState({ isUnlocked: true }), [updateSwapState])
+
+  useEffect(() => {
+    // Check if localStorage has been loaded to prevent flash of lock screen
+    setIsHydrated(true)
+  }, [])
 
   const isSellTrade = isSellOrder(orderKind)
 
@@ -141,7 +147,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
     setShowAddIntermediateTokenModal(false)
   }, [])
 
-  const shouldShowLockScreen = !isUnlocked && !isInjectedWidget() && !isSmartContractWallet
+  const shouldShowLockScreen = isHydrated && !isUnlocked && !isInjectedWidget() && isSmartContractWallet !== true
 
   const slots: TradeWidgetSlots = {
     topContent,
