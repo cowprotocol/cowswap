@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cowswapdev\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-08-29 01:56\n"
+"PO-Revision-Date: 2025-08-29 02:33\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -1511,8 +1511,8 @@ msgid "Provide Feedback"
 msgstr "Оставить отзыв"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
-msgid "solvers"
-msgstr "решения"
+#~ msgid "solvers"
+#~ msgstr "solvers"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/TokenTags/index.tsx
 msgid "This token supports gas-free approvals. Enjoy! 🐮"
@@ -1862,6 +1862,10 @@ msgstr "Чтобы использовать заказы {orderType} , подк�
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/Settings/index.tsx
 msgid "When enabled, the limit price stays fixed when changing the BUY amount. When disabled, the limit price will update based on the BUY amount changes."
 msgstr "Когда включено, лимитная цена остается фиксированной при изменении суммы КУПЫ. При отключении, лимитная цена обновится на основе изменения суммы КУПЫ."
+
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
+msgid "{solversLength} solvers"
+msgstr "{solversLength} решения"
 
 #: apps/cowswap-frontend/src/pages/Account/LockedGnoVesting/hooks.ts
 msgid "Claim vested"
@@ -3001,8 +3005,8 @@ msgid "No pool tokens available"
 msgstr "Нет доступных маркеров пула"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/RateImpactWarning/index.tsx
-msgid "Your limit price is {percent}% lower than current market price. You could be selling your<0/> at a loss (although CoW Swap will always try to give you the best price regardless)."
-msgstr "Ваша лимитная цена на {percent}% ниже текущей рыночной цены. Вы можете продать свой&lt;0/&gt; с убытком (хотя CoW Swap всегда будет пытаться дать вам лучшую цену независимо от этого)."
+#~ msgid "Your limit price is {percent}% lower than current market price. You could be selling your<0/> at a loss (although CoW Swap will always try to give you the best price regardless)."
+#~ msgstr "Your limit price is {percent}% lower than current market price. You could be selling your<0/> at a loss (although CoW Swap will always try to give you the best price regardless)."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/SolvingStep.tsx
 msgid "Still searching"
@@ -3593,6 +3597,10 @@ msgstr "больше"
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
 msgid "CoW Protocol covers the costs by executing your order at a slightly better price than your limit price."
 msgstr "Протокол CoW покрывает расходы, выполняя ваш ордер по несколько более высокой цене, чем лимитная цена."
+
+#: apps/cowswap-frontend/src/modules/limitOrders/pure/RateImpactWarning/index.tsx
+msgid "Your limit price is {absoluteRateImpact}% lower than current market price. You could be selling your<0/> at a loss (although CoW Swap will always try to give you the best price regardless)."
+msgstr "Ваша лимитная цена на {absoluteRateImpact}% ниже текущей рыночной цены. Вы можете продать свой&lt;0/&gt; с убытком (хотя CoW Swap всегда будет пытаться дать вам лучшую цену независимо от этого)."
 
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/HookSearchInput/index.tsx
 msgid "Clear search input"
@@ -4227,6 +4235,10 @@ msgstr "Для этого заказа, сетевые расходы будут
 msgid "Canceling your order"
 msgstr "Отмена заказа"
 
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
+msgid "{solversLength} out of {totalSolvers} solvers"
+msgstr "{solversLength} из {totalSolvers} решений"
+
 #: apps/cowswap-frontend/src/legacy/components/ErrorBoundary/ErrorWithStackTrace.tsx
 msgid "Something went wrong"
 msgstr "Что-то пошло не так"
@@ -4571,6 +4583,11 @@ msgstr "Рыночные ордера всегда <0>Заполнить или 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
 msgid "The first part of your TWAP order will become active as soon as you confirm the order below."
 msgstr "Первая часть вашего заказа TWAP станет активной, как только вы подтвердите заказ."
+
+#. js-lingui-explicit-id
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
+#~ msgid "solver-rankings"
+#~ msgstr "{0}"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/const/tabs.ts
 msgid "All orders"
@@ -5217,8 +5234,8 @@ msgid "Failed to switch networks from the CoW Swap Interface. In order to use Co
 msgstr "Не удалось переключить сети из интерфейса подкачки CoW. Чтобы использовать CoW Swap на {chainInfoLabel}, вы должны изменить сеть в вашем кошельке."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
-msgid "out of"
-msgstr "из"
+#~ msgid "out of"
+#~ msgstr "out of"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/InfoBanner/index.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
