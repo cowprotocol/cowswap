@@ -8,7 +8,7 @@ import { tokenListsTagsAtom } from '../../state/tokenLists/tokenListsTagsAtom'
 import { TokenListTags } from '../../types'
 
 // The list of tag names that we want to support from tokenlists
-const ALLOWED_TOKENLIST_TAGS = ['circle']
+const ALLOWED_TOKENLIST_TAGS = ['circle', 'ondo']
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type

@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.25.1](https://github.com/cowprotocol/cowswap/compare/tokens-v1.25.0...tokens-v1.25.1) (2025-08-29)
+
+
+### Bug Fixes
+
+* **ondo:** allow ondo token list tag ([#6197](https://github.com/cowprotocol/cowswap/issues/6197)) ([55ebdd8](https://github.com/cowprotocol/cowswap/commit/55ebdd899faf91d2d625ee0b2a78d2b7eee227b8))
+
 ## [1.25.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.24.2...tokens-v1.25.0) (2025-08-28)
 
 

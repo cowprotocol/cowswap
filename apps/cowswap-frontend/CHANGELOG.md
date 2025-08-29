@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.118.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.118.0...cowswap-v1.118.1) (2025-08-28)
+
+
+### Bug Fixes
+
+* **bungee:** remove custom affiliate logic/endpoints ([#6193](https://github.com/cowprotocol/cowswap/issues/6193)) ([d4feb5c](https://github.com/cowprotocol/cowswap/commit/d4feb5cbdedcbd4761498d0ab7c1e055cbc5e545))
+
 ## [1.118.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.117.2...cowswap-v1.118.0) (2025-08-28)
 
 
