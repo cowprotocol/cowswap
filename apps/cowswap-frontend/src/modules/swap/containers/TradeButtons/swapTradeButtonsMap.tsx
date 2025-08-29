@@ -32,12 +32,10 @@ type SwapTradeButton = (props: SwapTradeButtonsContext, isDisabled: boolean) => 
 
 export const swapTradeButtonsMap: Record<SwapFormState, SwapTradeButton> = {
   [SwapFormState.SwapWithWrappedToken]: (props: SwapTradeButtonsContext, isDisabled: boolean) => {
-    const symbol = props.wrappedToken.symbol
-
     return (
       <ButtonError buttonSize={ButtonSize.BIG} onClick={props.onEthFlow} disabled={isDisabled}>
         <div>
-          <Trans>Swap with {symbol}</Trans>
+          <Trans>Swap with</Trans> {props.wrappedToken.symbol}
         </div>
       </ButtonError>
     )
