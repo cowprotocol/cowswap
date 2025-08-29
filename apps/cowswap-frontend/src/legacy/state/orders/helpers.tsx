@@ -49,7 +49,7 @@ type TxnPopupContent = PopupContent<OrderTxTypes.TXN>
 function setOrderSummary({ id, summary, status, descriptor }: SetOrderSummaryParams) {
   // If there isn't summary, return generalized summary
   if (!summary) {
-    return `${t`Order`} ${formatOrderId(id)} ${descriptor || status || ''}`
+    return t`Order` + ' ' + `${formatOrderId(id)} ${descriptor || status || ''}`
   }
 
   if (typeof summary === 'string') {

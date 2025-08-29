@@ -140,7 +140,9 @@ export function CoWAmmBannerContent({
               isTokenSelectorView={isTokenSelectorView}
             />
           ) : isCowAmmAverageBetter && averageProvidersNames ? (
-            `${t`yield over average`} ${averageProvidersNames.join(', ')} ${averageProvidersNames.length > 1 ? t`pools` : t`pool`}`
+            t`yield over average` +
+            ` ${averageProvidersNames.join(', ')}` +
+            (averageProvidersNames.length > 1 ? t`pools` : t`pool`)
           ) : (
             t`pools available to get yield on your assets!`
           )}

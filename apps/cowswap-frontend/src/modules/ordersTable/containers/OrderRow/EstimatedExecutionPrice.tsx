@@ -237,7 +237,7 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
     </UnfillableLabel>
   )
 
-  const marketPriceDirection = marketPriceNeedsToGoDown ? `${t`down`} 📉` : `${t`up`} 📈`
+  const marketPriceDirection = marketPriceNeedsToGoDown ? t`down` + ` 📉` : t`up` + ` 📈`
   const percentageDifferenceInvertedFormatted = percentageDifferenceInverted?.toFixed(2)
 
   return (

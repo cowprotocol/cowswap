@@ -116,7 +116,7 @@ export function OrderFillsAt({
   if (getIsFinalizedOrder(order)) {
     // Check filled status first
     if (Number(filledPercentDisplay) > 0) {
-      const value = Number(filledPercentDisplay) < 100 ? `${t`partially`} ` : ''
+      const value = Number(filledPercentDisplay) < 100 ? t`partially` + ' ' : ''
 
       return (
         <styledEl.FilledDisplay>

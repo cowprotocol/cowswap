@@ -79,7 +79,11 @@ export function getOrderSubmitSummary(
   const inputAmountValue = formatTokenAmount(feeAmount ? inputAmount.add(feeAmount) : inputAmount)
   const outputAmountValue = formatTokenAmount(outputAmount)
 
-  const base = `${t`Swap`} ${inputQuantifier}${inputAmountValue} ${inputSymbol} ${t`for`} ${outputQuantifier}${outputAmountValue} ${outputSymbol}`
+  const base =
+    t`Swap` +
+    ` ${inputQuantifier}${inputAmountValue} ${inputSymbol} ` +
+    t`for` +
+    ` ${outputQuantifier}${outputAmountValue} ${outputSymbol}`
 
   if (recipient === account) {
     return base
@@ -89,7 +93,7 @@ export function getOrderSubmitSummary(
         ? shortenAddress(recipientAddressOrName)
         : recipientAddressOrName
 
-    return `${base} ${t`to`} ${toAddress}`
+    return `${base} ` + t`to` + ` ${toAddress}`
   }
 }
 

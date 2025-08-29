@@ -64,7 +64,7 @@ export function DefaultAccountContent({
       <LeftBottom>
         <ExternalLink
           href={addressLink}
-          aria-label={`${t`View account`} ${safeShortenAddress(account)} ${t`on explorer`}`}
+          aria-label={t`View account` + ` ${safeShortenAddress(account)} ` + t`on explorer`}
           rel="noopener noreferrer"
         >
           <AddressLinkWrapper>

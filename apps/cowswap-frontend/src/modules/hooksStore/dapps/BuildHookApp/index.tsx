@@ -46,7 +46,7 @@ export function BuildHookApp({ context }: HookDappProps) {
   const [errors, setErrors] = useState<Record<keyof CowHook, string>>(DEFAULT_ERRORS_STATE)
 
   const validateInput = useCallback((name: keyof CowHook, value: string) => {
-    setErrors((prev) => ({ ...prev, [name]: value.trim() ? '' : `${capitalizeFirstLetter(name)} ${t`is required`}` }))
+    setErrors((prev) => ({ ...prev, [name]: value.trim() ? '' : `${capitalizeFirstLetter(name)} ` + t`is required` }))
   }, [])
 
   const handleInputChange = useCallback(
@@ -64,7 +64,7 @@ export function BuildHookApp({ context }: HookDappProps) {
       if (key === 'dappId') return false
 
       if (!value.trim()) {
-        newErrors[key as keyof CowHook] = `${capitalizeFirstLetter(key)} ${t`is required`}`
+        newErrors[key as keyof CowHook] = `${capitalizeFirstLetter(key)} ` + t`is required`
         return true
       }
       return false
@@ -99,7 +99,7 @@ export function BuildHookApp({ context }: HookDappProps) {
         })}
       </ContentWrapper>
       <ButtonPrimary onClick={handleSubmit}>
-        {hookToEdit ? t`Save changes` : `${t`Add`} ${isPreHook ? t`Pre` : t`Post`}-hook`}
+        {hookToEdit ? t`Save changes` : t`Add` + (isPreHook ? t`Pre` : t`Post`) + `-hook`}
       </ButtonPrimary>
     </Wrapper>
   )

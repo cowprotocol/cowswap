@@ -302,7 +302,9 @@ export function FinishedStep({
         onClick={shareOnTwitter}
       >
         <SVG src={ICON_SOCIAL_X} />
-        <span>{`${t`Share this`} ${shouldShowSurplus ? t`win` : t`tip`}!`}</span>
+        <span>
+          <Trans>Share this</Trans> ${shouldShowSurplus ? <Trans>win</Trans> : <Trans>tip</Trans>}!
+        </span>
       </styledEl.ShareButton>
     </styledEl.FinishedStepContainer>
   )

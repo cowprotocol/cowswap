@@ -24,12 +24,12 @@ export function deadlinePartsDisplay(timeInterval: number, longLabels = false): 
   const seconds = Math.floor((timeMs % oneM) / oneS)
 
   return [
-    [years, longLabels ? ` ${t`years`}` : 'y'],
-    [months, longLabels ? ` ${t`months`}` : 'mo'],
-    [days, longLabels ? ` ${t`days`}` : 'd'],
-    [hours, longLabels ? ` ${t`hours`}` : 'h'],
-    [minutes, longLabels ? ` ${t`minutes`}` : 'm'],
-    [seconds, longLabels ? ` ${t`seconds`}` : 's'],
+    [years, longLabels ? ' ' + t`years` : 'y'],
+    [months, longLabels ? ' ' + t`months` : 'mo'],
+    [days, longLabels ? ' ' + t`days` : 'd'],
+    [hours, longLabels ? ' ' + t`hours` : 'h'],
+    [minutes, longLabels ? ' ' + t`minutes` : 'm'],
+    [seconds, longLabels ? ' ' + t`seconds` : 's'],
   ]
     .filter(([value]) => !!value)
     .map(([value, suffix]) => `${value}${suffix}`)

@@ -136,7 +136,7 @@ export function RequestCancellationModal(props: RequestCancellationModalProps): 
               typeLabel
             )}{' '}
             <Trans>cancellation</Trans>{' '}
-            <LinkStyledButton onClick={toggleShowMore}>[{showMore ? `- ${t`less`}` : `+ ${t`more`}`}]</LinkStyledButton>
+            <LinkStyledButton onClick={toggleShowMore}>[{showMore ? `- ` + t`less` : `+ ` + t`more`}]</LinkStyledButton>
           </p>
           {showMore && (
             <OrderTypeDetails>

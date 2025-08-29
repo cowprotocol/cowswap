@@ -139,7 +139,8 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
     !alternativeOrderModalVisible &&
     (!isInjectedWidgetMode && isConnectedMarketOrderWidget ? isUpToLarge : true) &&
     (isConnectedMarketOrderWidget || !hideOrdersTable) &&
-    ((isConnectedMarketOrderWidget && standaloneMode !== true && !lockScreen) || (!isMarketOrderWidget && isUpToLarge && !lockScreen))
+    ((isConnectedMarketOrderWidget && standaloneMode !== true && !lockScreen) ||
+      (!isMarketOrderWidget && isUpToLarge && !lockScreen))
 
   const showDropdown = shouldShowMyOrdersButton || isInjectedWidgetMode || isMobile
 
@@ -249,7 +250,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
                     }
                     inputTooltip={
                       isSellingEthSupported && isEoaEthFlow
-                        ? `${t`You cannot edit this field when selling`} ${inputCurrencyInfo?.currency?.symbol}`
+                        ? t`You cannot edit this field when selling` + ` ${inputCurrencyInfo?.currency?.symbol}`
                         : undefined
                     }
                     currencyInfo={outputCurrencyInfo}

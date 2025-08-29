@@ -20,7 +20,7 @@ export function NetworkCostsTooltipSuffix() {
   const addons = [
     isPresign && t`Because you are using a smart contract wallet`,
     isEoaEthFlow && t`Because you are selling ${nativeSymbol} (native currency)`,
-    (isPresign || isEoaEthFlow) && `, ${t`you will pay a separate gas cost for signing the order placement on-chain.`}`,
+    (isPresign || isEoaEthFlow) && `, ` + t`you will pay a separate gas cost for signing the order placement on-chain.`,
   ].filter(isTruthy)
 
   if (!addons.length) return null

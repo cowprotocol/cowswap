@@ -367,7 +367,7 @@ export function ActivityDetails(props: {
   }
 
   const { kind, from, to, fulfillmentTime, validTo } = orderSummary
-  const activityName = isOrder ? `${kind} ${t`order`}` : t`Transaction`
+  const activityName = isOrder ? `${kind} ` + t`order` : t`Transaction`
   let inputToken = activityDerivedState?.order?.inputToken || null
   let outputToken = activityDerivedState?.order?.outputToken || null
 

@@ -39,7 +39,7 @@ export function HookDappDetails({ dapp, onSelect, walletType }: HookDappDetailsP
       }
 
       const supportedTypes = walletCompatibility.map((type) => supportedWallets[type]).filter(Boolean)
-      const joinedSupportedTypes = supportedTypes.join(` ${t`and`} `)
+      const joinedSupportedTypes = supportedTypes.join(` ` + t`and` + ` `)
       const compatibleWith = supportedTypes.length > 1 ? t`both ${joinedSupportedTypes}` : supportedTypes[0]
 
       return t`This hook is compatible with ${compatibleWith}.`
