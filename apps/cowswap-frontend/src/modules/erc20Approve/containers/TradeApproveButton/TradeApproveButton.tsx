@@ -1,12 +1,11 @@
-import React, { ReactNode, useState } from 'react'
+import React, { ReactNode } from 'react'
 
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { Currency, CurrencyAmount, MaxUint256 } from '@uniswap/sdk-core'
 
 import { useApprovalStateForSpender, useApproveCurrency } from '../../hooks'
-import { ApproveButton, ApproveConfirmation } from '../../pure'
 import { LegacyApproveButton } from '../../pure/LegacyApproveButton'
-import { ApprovalState } from '../../types'
+import { useIsPartialApproveSelectedByUser } from '../../state'
 
 const MaxApprovalAmount = BigInt(MaxUint256.toString())
 
@@ -19,48 +18,20 @@ export interface TradeApproveButtonProps {
 
 export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
   const { amountToApprove, children, enablePartialApprove } = props
-
-  const currency = amountToApprove.currency
-
-  const [isConfirmationOpen, setIsConfirmationOpen] = useState(false)
+  const isPartialApproveEnabledByUser = useIsPartialApproveSelectedByUser()
   const handleApprove = useApproveCurrency(amountToApprove)
   const spender = useTradeSpenderAddress()
-  const { approvalState, currentAllowance } = useApprovalStateForSpender(amountToApprove, spender)
-
-  const isDisabled = props.isDisabled || !handleApprove
-
+  const { approvalState } = useApprovalStateForSpender(amountToApprove, spender)
   if (!enablePartialApprove) {
     return (
-      <>
-        <LegacyApproveButton
-          currency={currency}
-          state={approvalState}
-          onClick={() => handleApprove(MaxApprovalAmount)}
-        />
-        {children}
-      </>
+      <LegacyApproveButton
+        currency={amountToApprove.currency}
+        state={approvalState}
+        onClick={() => handleApprove(MaxApprovalAmount)}
+      ></LegacyApproveButton>
     )
   }
 
-  if (isConfirmationOpen && handleApprove && approvalState !== ApprovalState.PENDING) {
-    return (
-      <ApproveConfirmation
-        amountToApprove={amountToApprove}
-        currentAllowance={currentAllowance}
-        handleApprove={handleApprove}
-        maxApprovalAmount={MaxApprovalAmount}
-      />
-    )
-  }
-
-  return (
-    <ApproveButton
-      isDisabled={isDisabled || !handleApprove}
-      currency={currency}
-      onClick={() => setIsConfirmationOpen(true)}
-      state={approvalState}
-    >
-      {children}
-    </ApproveButton>
-  )
+  const toApprove = isPartialApproveEnabledByUser ? BigInt(amountToApprove.quotient.toString()) : MaxApprovalAmount
+  return <div onClick={() => handleApprove(toApprove)}>{children}</div>
 }
