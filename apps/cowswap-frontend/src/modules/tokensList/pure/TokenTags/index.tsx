@@ -1,9 +1,11 @@
 import { useMemo } from 'react'
 
 import { UNSUPPORTED_TOKENS_FAQ_URL } from '@cowprotocol/common-const'
+import { useExtractText } from '@cowprotocol/common-utils'
 import { TagInfo, TokenListTags } from '@cowprotocol/tokens'
 import { getStatusColorEnums, HoverTooltip, StatusColorVariant } from '@cowprotocol/ui'
 
+import { msg } from '@lingui/core/macro'
 import ICON_GAS_FREE from 'assets/icon/gas-free.svg'
 import SVG from 'react-inlinesvg'
 import { NavLink } from 'react-router'
@@ -13,16 +15,15 @@ import * as styledEl from './styled'
 // Programmatic tags that don't come from tokenlists
 const APP_TOKEN_TAGS: TokenListTags = {
   unsupported: {
-    name: 'Unsupported',
-    description:
-      'This token is unsupported as it does not operate optimally with CoW Protocol. Please refer to the FAQ for more information.',
+    name: msg`Unsupported`,
+    description: msg`This token is unsupported as it does not operate optimally with CoW Protocol. Please refer to the FAQ for more information.`,
     id: '0',
     color: StatusColorVariant.Warning,
   },
   'gas-free': {
-    name: 'Gas-free',
+    name: msg`Gas-free`,
     icon: ICON_GAS_FREE,
-    description: 'This token supports gas-free approvals. Enjoy! 🐮',
+    description: msg`This token supports gas-free approvals. Enjoy! 🐮`,
     id: '1',
     color: StatusColorVariant.Success,
   },
@@ -45,11 +46,11 @@ export function TokenTags({
     return isUnsupported
       ? [APP_TOKEN_TAGS.unsupported]
       : [
-        // Include valid tags from token.tags
-        ...tags.filter((tag) => tag in tokenListTags).map((tag) => tokenListTags[tag]),
-        // Add gas-free tag if applicable
-        ...(isPermitCompatible ? [APP_TOKEN_TAGS['gas-free']] : []),
-      ]
+          // Include valid tags from token.tags
+          ...tags.filter((tag) => tag in tokenListTags).map((tag) => tokenListTags[tag]),
+          // Add gas-free tag if applicable
+          ...(isPermitCompatible ? [APP_TOKEN_TAGS['gas-free']] : []),
+        ]
   }, [isUnsupported, tags, tokenListTags, isPermitCompatible])
 
   if (tagsToShow.length === 0) return null
@@ -70,15 +71,17 @@ export function TokenTags({
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function TagDescriptor({ tags, children }: { children?: React.ReactNode; tags: TagInfo[] }) {
+  const { extractTextFromStringOrI18nDescriptor } = useExtractText()
+
   return (
     <styledEl.TagContainer>
       {tags.map((tag) => {
         const colorEnums = getStatusColorEnums(tag.color || StatusColorVariant.Default)
         return (
-          <HoverTooltip wrapInContainer key={tag.id} content={tag.description}>
+          <HoverTooltip wrapInContainer key={tag.id} content={extractTextFromStringOrI18nDescriptor(tag.description)}>
             <styledEl.Tag tag={tag} colorEnums={colorEnums}>
-              {tag.icon ? <SVG src={tag.icon} title={tag.name} /> : null}
-              {tag.name}
+              {tag.icon ? <SVG src={tag.icon} title={extractTextFromStringOrI18nDescriptor(tag.name)} /> : null}
+              {extractTextFromStringOrI18nDescriptor(tag.name)}
             </styledEl.Tag>
           </HoverTooltip>
         )

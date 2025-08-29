@@ -55,7 +55,7 @@ interface IframeDappContainerProps {
 }
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function IframeDappContainer({ dapp, context }: IframeDappContainerProps) {
   const iframeRef = useRef<HTMLIFrameElement | null>(null)
   const bridgeRef = useRef<IframeRpcProviderBridge | null>(null)

@@ -4,6 +4,7 @@ import { isTruthy } from '@cowprotocol/common-utils'
 import { TokensByAddress } from '@cowprotocol/tokens'
 import { LpTokenProvider } from '@cowprotocol/types'
 
+import { t } from '@lingui/core/macro'
 import styled from 'styled-components/macro'
 
 import { upToSmall, useMediaQuery } from 'legacy/hooks/useMediaQuery'
@@ -139,9 +140,11 @@ export function CoWAmmBannerContent({
               isTokenSelectorView={isTokenSelectorView}
             />
           ) : isCowAmmAverageBetter && averageProvidersNames ? (
-            `yield over average ${averageProvidersNames.join(', ')} pool${averageProvidersNames.length > 1 ? 's' : ''}`
+            t`yield over average` +
+            ` ${averageProvidersNames.join(', ')}` +
+            (averageProvidersNames.length > 1 ? t`pools` : t`pool`)
           ) : (
-            'pools available to get yield on your assets!'
+            t`pools available to get yield on your assets!`
           )}
         </TextFit>
       </span>

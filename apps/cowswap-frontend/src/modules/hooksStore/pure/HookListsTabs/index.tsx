@@ -1,5 +1,7 @@
 import { Dispatch, ReactNode, SetStateAction } from 'react'
 
+import { Trans } from '@lingui/react/macro'
+
 import * as styledEl from 'common/pure/Tabs'
 
 interface HookListsTabsProps {
@@ -19,10 +21,10 @@ export function HookListsTabs({
   return (
     <styledEl.Tabs>
       <styledEl.Tab $active={isAllHooksTab} onClick={() => setIsAllHooksTab(true)}>
-        All Hooks ({allHooksCount})
+        <Trans>All Hooks ({allHooksCount})</Trans>
       </styledEl.Tab>
       <styledEl.Tab $active={!isAllHooksTab} onClick={() => setIsAllHooksTab(false)}>
-        My Custom Hooks ({customHooksCount})
+        <Trans>My Custom Hooks ({customHooksCount})</Trans>
       </styledEl.Tab>
     </styledEl.Tabs>
   )

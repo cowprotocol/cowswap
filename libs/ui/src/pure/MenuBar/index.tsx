@@ -1,6 +1,7 @@
 import React, {
   ComponentType,
   forwardRef,
+  isValidElement,
   PropsWithChildren,
   ReactElement,
   useEffect,
@@ -16,8 +17,11 @@ import IMG_ICON_MENU_HAMBURGER from '@cowprotocol/assets/images/menu-hamburger.s
 import IMG_ICON_SETTINGS_GLOBAL from '@cowprotocol/assets/images/settings-global.svg'
 import IMG_ICON_X from '@cowprotocol/assets/images/x.svg'
 import { useMediaQuery, useOnClickOutside } from '@cowprotocol/common-hooks'
-import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
+import { addBodyClass, isLinguiInternationalizationEnabled, removeBodyClass } from '@cowprotocol/common-utils'
 
+import { i18n } from '@lingui/core'
+import { t } from '@lingui/core/macro'
+import { flag } from 'country-emoji'
 import SVG from 'react-inlinesvg'
 
 import {
@@ -28,6 +32,7 @@ import {
   DropdownContentItemImage,
   DropdownContentItemText,
   DropdownContentItemTitle,
+  DropdownContentLanguages,
   DropdownMenu,
   GlobalSettingsButton,
   MenuBarInner,
@@ -92,6 +97,15 @@ const DAO_NAV_ITEMS: MenuItem[] = [
     utmContent: 'menubar-dao-nav-mevblocker',
   },
 ]
+
+const getLanguageName = (locale: string): string => {
+  const display = new Intl.DisplayNames([locale], { type: 'language' })
+  const languageName = display.of(locale)
+
+  return languageName ? languageName : t`Language ${locale} not found`
+}
+
+const getFlag = (locale: string): string => flag((locale.split('-')[1] as string) || (locale as string)) || ''
 
 type LinkComponentType = ComponentType<PropsWithChildren<{ href: string }>>
 
@@ -178,21 +192,23 @@ const NavItem = ({
   // TODO: Add proper return type annotation
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 }: NavItemProps) => {
+  const extractedLabel = item.label
+
   // TODO: Add proper return type annotation
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleToggle = () => {
     setOpenDropdown((prev) => {
-      return prev === item.label ? null : item.label || null
+      return prev === extractedLabel ? null : extractedLabel || null
     })
   }
 
   const href = item.external
-    ? appendUtmParams(item.href!, item.utmSource, item.utmContent, rootDomain, item.external, item.label)
+    ? appendUtmParams(item.href!, item.utmSource, item.utmContent, rootDomain, item.external, extractedLabel)
     : item.href
 
   return item.children ? (
     <GenericDropdown
-      isOpen={openDropdown === item.label}
+      isOpen={openDropdown === extractedLabel}
       item={item}
       onTrigger={handleToggle}
       interaction="click" // Ensure it's 'click' for both mobile and desktop
@@ -205,7 +221,7 @@ const NavItem = ({
   ) : href ? (
     <RootNavItem mobileMode={mobileMode}>
       <LinkComponent href={href}>
-        {item.label} {item.external && <span>&#8599;</span>}
+        {extractedLabel} {item.external && <span>&#8599;</span>}
       </LinkComponent>
     </RootNavItem>
   ) : null
@@ -248,6 +264,8 @@ const DropdownContentItem: React.FC<{
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const renderItemContent = () => {
     const { productVariant, icon, label, description, hoverColor } = item
+    const extractedLabel = label
+
     return (
       <>
         {productVariant ? (
@@ -259,12 +277,12 @@ const DropdownContentItem: React.FC<{
           />
         ) : icon ? (
           <DropdownContentItemImage>
-            <img src={icon} alt={label} />
+            <img src={icon} alt={extractedLabel} />
           </DropdownContentItemImage>
         ) : null}
-        {label && (
+        {extractedLabel && (
           <DropdownContentItemText>
-            <DropdownContentItemTitle>{label}</DropdownContentItemTitle>
+            <DropdownContentItemTitle>{extractedLabel}</DropdownContentItemTitle>
             {description && <DropdownContentItemDescription>{description}</DropdownContentItemDescription>}
           </DropdownContentItemText>
         )}
@@ -356,7 +374,6 @@ const NavDaoTrigger: React.FC<{
   rootDomain: string
   LinkComponent: LinkComponentType
   // TODO: Break down this large function into smaller functions
-  // eslint-disable-next-line max-lines-per-function
 }> = ({ isOpen, setIsOpen, mobileMode, rootDomain, LinkComponent }) => {
   const triggerRef = useRef<HTMLDivElement>(null)
   const dropdownRef = useRef<HTMLUListElement>(null)
@@ -444,20 +461,22 @@ const GenericDropdown: React.FC<DropdownProps> = ({
         }
   }, [interaction, onTrigger])
 
+  const extractedLabel = item.label
+
   return (
     <DropdownMenu {...interactionProps} mobileMode={mobileMode}>
       <RootNavItem as="button" aria-haspopup="true" aria-expanded={isOpen} isOpen={isOpen} mobileMode={mobileMode}>
-        <span>{item.label}</span>
+        <span>{extractedLabel}</span>
         {(item.badge || item.badgeImage) && (
           <Badge {...(item.badgeType && { type: item.badgeType })}>
-            {item.badgeImage ? <SVG src={item.badgeImage} /> : item.badge}
+            {item.badgeImage ? <SVG src={item.badgeImage} /> : isValidElement(item.badge) ? item.badge : item.badge}
           </Badge>
         )}
         {item.children && <SVG src={IMG_ICON_CARRET_DOWN} />}
       </RootNavItem>
       {isOpen && (
         <DropdownContentWrapper
-          content={{ title: item.label, items: item.children }}
+          content={{ title: extractedLabel, items: item.children }}
           mobileMode={mobileMode}
           isNavItemDropdown={isNavItemDropdown}
           closeDropdown={closeDropdown}
@@ -518,12 +537,13 @@ const DropdownContentWrapper: React.FC<DropdownContentWrapperProps> = ({
     >
       {/* TODO: Break down this large function into smaller functions */}
       {/* TODO: Reduce function complexity by extracting logic */}
-      {/* eslint-disable-next-line max-lines-per-function, complexity */}
+      {/* eslint-disable-next-line complexity */}
       {content.items?.map((item: DropdownMenuItem, index: number) => {
         const hasChildren = !!item.children
         const Tag = hasChildren ? 'div' : item.isButton ? DropdownContentItemButton : undefined
+        const extractedLabel = item.label
         const href = !hasChildren
-          ? appendUtmParams(item.href!, item.utmSource, item.utmContent, rootDomain, !!item.external, item.label)
+          ? appendUtmParams(item.href!, item.utmSource, item.utmContent, rootDomain, !!item.external, extractedLabel)
           : undefined
 
         const content = (
@@ -531,10 +551,16 @@ const DropdownContentWrapper: React.FC<DropdownContentWrapperProps> = ({
             {item.icon && <DropdownContentItemIcon src={item.icon} alt="" />}
             <DropdownContentItemText>
               <DropdownContentItemTitle>
-                <span>{item.label}</span>
+                <span>{extractedLabel}</span>
                 {(item.badge || item.badgeImage) && (
                   <Badge {...(item.badgeType && { type: item.badgeType })}>
-                    {item.badgeImage ? <SVG src={item.badgeImage} /> : item.badge}
+                    {item.badgeImage ? (
+                      <SVG src={item.badgeImage} />
+                    ) : isValidElement(item.badge) ? (
+                      item.badge
+                    ) : (
+                      item.badge
+                    )}
                   </Badge>
                 )}
               </DropdownContentItemTitle>
@@ -621,23 +647,127 @@ const appendUtmParams = (
   return href
 }
 
-interface GlobalSettingsDropdownProps {
-  mobileMode: boolean
-  settingsNavItems?: MenuItem[]
-  isOpen: boolean
+interface LanguagesDropdownItemsProps {
   closeDropdown: () => void
-  rootDomain: string
+  languageNavItems: MenuItem
+  mobileMode?: boolean
+}
+
+const LanguagesDropdownItems: React.FC<LanguagesDropdownItemsProps> = (props) => {
+  const {
+    languageNavItems: { label, children },
+    closeDropdown,
+    mobileMode,
+  } = props
+
+  const [visibleThirdLevel, setVisibleThirdLevel] = useState<boolean>(false)
+
+  const handleToggleThirdLevelVisibility = (event: React.MouseEvent<HTMLDivElement>): void => {
+    event.preventDefault()
+    event.stopPropagation()
+    setVisibleThirdLevel((prevState) => !prevState)
+  }
+
+  const languagesContent = !children ? null : (
+    <DropdownContentLanguages isThirdLevel isOpen={visibleThirdLevel}>
+      {children.map(({ label, onClick }) => (
+        <StyledDropdownContentItem
+          isThirdLevel
+          onClick={(e: React.MouseEvent<HTMLElement>) => {
+            if (onClick) {
+              onClick(e as React.MouseEvent<HTMLDivElement>)
+            }
+            closeDropdown()
+          }}
+        >
+          <div
+            style={{ fontWeight: `${label === i18n.locale ? 700 : 400}` }}
+          >{`${getFlag(label as string)} ${getLanguageName(label as string)}`}</div>
+        </StyledDropdownContentItem>
+      ))}
+    </DropdownContentLanguages>
+  )
+
+  return (
+    <StyledDropdownContentItem
+      as={'div'}
+      isOpen={visibleThirdLevel}
+      mobileMode={mobileMode}
+      onClick={(e: React.MouseEvent<HTMLElement>) => {
+        handleToggleThirdLevelVisibility(e as React.MouseEvent<HTMLDivElement>)
+      }}
+    >
+      <div>
+        <DropdownContentItemText>
+          <DropdownContentItemTitle>
+            {label} {getFlag(i18n.locale)}
+          </DropdownContentItemTitle>
+        </DropdownContentItemText>
+        <SVG src={IMG_ICON_CARRET_DOWN} />
+        {!mobileMode && languagesContent}
+      </div>
+      {mobileMode && languagesContent}
+    </StyledDropdownContentItem>
+  )
+}
+
+interface GlobalSettingsDropdownProps {
   LinkComponent: LinkComponentType
+  closeDropdown: () => void
+  isOpen: boolean
+  languageNavItems?: MenuItem
+  mobileMode: boolean
+  navItems?: MenuItem[]
+  rootDomain: string
 }
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
 const GlobalSettingsDropdown = forwardRef<HTMLUListElement, GlobalSettingsDropdownProps>((props, ref) => {
-  const { mobileMode, settingsNavItems, isOpen, closeDropdown, rootDomain, LinkComponent } = props
+  const { mobileMode, navItems, isOpen, closeDropdown, rootDomain, LinkComponent, languageNavItems } = props
 
-  if (!settingsNavItems || settingsNavItems.length === 0) {
+  if (!navItems || navItems.length === 0) {
     return null
   }
+
+  const settingsItems = navItems.map((item, index) => {
+    const extractedLabel = item.label
+    const mobileHref = item.href ? `${new URL(item.href, `https://${rootDomain}`).pathname}` : undefined
+    const to = item.external
+      ? appendUtmParams(item.href!, item.utmSource, item.utmContent, rootDomain, item.external, extractedLabel)
+      : mobileMode
+        ? mobileHref
+        : item.href
+
+    const content = (
+      <>
+        <DropdownContentItemText>
+          <DropdownContentItemTitle>{extractedLabel}</DropdownContentItemTitle>
+        </DropdownContentItemText>
+        <SVG src={IMG_ICON_ARROW_RIGHT} className="arrow-icon-right" />
+      </>
+    )
+
+    return (
+      <StyledDropdownContentItem
+        mobileMode={mobileMode}
+        key={index}
+        onClick={_onDropdownItemClickFactory(item, closeDropdown)}
+      >
+        {to ? <LinkComponent href={to}>{content}</LinkComponent> : <div>{content}</div>}
+      </StyledDropdownContentItem>
+    )
+  })
+
+  const languageItems = languageNavItems && isLinguiInternationalizationEnabled && (
+    <LanguagesDropdownItems closeDropdown={closeDropdown} languageNavItems={languageNavItems} mobileMode={mobileMode} />
+  )
+
+  const allItems = (
+    <>
+      {settingsItems}
+      {languageItems}
+    </>
+  )
 
   return (
     <>
@@ -645,52 +775,12 @@ const GlobalSettingsDropdown = forwardRef<HTMLUListElement, GlobalSettingsDropdo
         (mobileMode ? (
           <MobileDropdownContainer mobileMode={mobileMode} ref={ref as unknown as React.RefObject<HTMLDivElement>}>
             <DropdownContent isOpen={true} alignRight={true} mobileMode={mobileMode}>
-              {settingsNavItems.map((item, index) => {
-                const to = item.external
-                  ? appendUtmParams(item.href!, item.utmSource, item.utmContent, rootDomain, item.external, item.label)
-                  : item.href
-                    ? `${new URL(item.href, `https://${rootDomain}`).pathname}`
-                    : undefined
-
-                const content = (
-                  <>
-                    <DropdownContentItemText>
-                      <DropdownContentItemTitle>{item.label}</DropdownContentItemTitle>
-                    </DropdownContentItemText>
-                    <SVG src={IMG_ICON_ARROW_RIGHT} className="arrow-icon-right" />
-                  </>
-                )
-
-                return (
-                  <StyledDropdownContentItem key={index} onClick={_onDropdownItemClickFactory(item, closeDropdown)}>
-                    {to ? <LinkComponent href={to}>{content}</LinkComponent> : <div>{content}</div>}
-                  </StyledDropdownContentItem>
-                )
-              })}
+              {allItems}
             </DropdownContent>
           </MobileDropdownContainer>
         ) : (
           <DropdownContent isOpen={true} ref={ref} alignRight={true} mobileMode={mobileMode}>
-            {settingsNavItems.map((item, index) => {
-              const to = item.external
-                ? appendUtmParams(item.href!, item.utmSource, item.utmContent, rootDomain, item.external, item.label)
-                : item.href
-
-              const content = (
-                <>
-                  <DropdownContentItemText>
-                    <DropdownContentItemTitle>{item.label}</DropdownContentItemTitle>
-                  </DropdownContentItemText>
-                  <SVG src={IMG_ICON_ARROW_RIGHT} className="arrow-icon-right" />
-                </>
-              )
-
-              return (
-                <StyledDropdownContentItem key={index} onClick={_onDropdownItemClickFactory(item, closeDropdown)}>
-                  {to ? <LinkComponent href={to}>{content}</LinkComponent> : <div>{content}</div>}
-                </StyledDropdownContentItem>
-              )
-            })}
+            {allItems}
           </DropdownContent>
         ))}
     </>
@@ -707,32 +797,33 @@ function _onDropdownItemClickFactory(item: MenuItem, postClick?: () => void) {
 }
 
 interface MenuBarProps {
-  id?: string
-  navItems: MenuItem[]
-  productVariant: ProductVariant
   LinkComponent: LinkComponentType
-  persistentAdditionalContent?: React.ReactNode
-  additionalContent?: React.ReactNode
-  showGlobalSettings?: boolean
-  settingsNavItems?: MenuItem[]
-  additionalNavButtons?: MenuItem[]
-  bgColorLight?: string
-  bgColorDark?: string
-  bgDropdownColorLight?: string
-  bgDropdownColorDark?: string
-  colorLight?: string
-  colorDark?: string
-  defaultFillLight?: string
-  defaultFillDark?: string
-  activeBackgroundLight?: string
   activeBackgroundDark?: string
-  activeFillLight?: string
+  activeBackgroundLight?: string
   activeFillDark?: string
-  hoverBackgroundLight?: string
-  hoverBackgroundDark?: string
-  padding?: string
-  maxWidth?: number
+  activeFillLight?: string
+  additionalContent?: React.ReactNode
+  additionalNavButtons?: MenuItem[]
+  bgColorDark?: string
+  bgColorLight?: string
+  bgDropdownColorDark?: string
+  bgDropdownColorLight?: string
+  colorDark?: string
+  colorLight?: string
   customTheme?: CowSwapTheme
+  defaultFillDark?: string
+  defaultFillLight?: string
+  hoverBackgroundDark?: string
+  hoverBackgroundLight?: string
+  id?: string
+  languageNavItems?: MenuItem
+  maxWidth?: number
+  navItems: MenuItem[]
+  padding?: string
+  persistentAdditionalContent?: React.ReactNode
+  productVariant: ProductVariant
+  settingsNavItems?: MenuItem[]
+  showGlobalSettings?: boolean
 }
 
 // TODO: Break down this large function into smaller functions
@@ -741,32 +832,33 @@ interface MenuBarProps {
 // eslint-disable-next-line max-lines-per-function, complexity, @typescript-eslint/explicit-function-return-type
 export const MenuBar = (props: MenuBarProps) => {
   const {
-    id,
-    navItems,
-    productVariant,
-    persistentAdditionalContent,
-    additionalContent,
-    showGlobalSettings,
-    additionalNavButtons,
-    settingsNavItems,
-    bgColorLight,
-    bgColorDark,
-    bgDropdownColorLight,
-    bgDropdownColorDark,
-    colorLight,
-    colorDark,
-    defaultFillLight,
-    defaultFillDark,
-    activeBackgroundLight,
-    activeBackgroundDark,
-    activeFillLight,
-    activeFillDark,
-    hoverBackgroundLight,
-    hoverBackgroundDark,
-    padding,
-    maxWidth,
-    customTheme,
     LinkComponent,
+    activeBackgroundDark,
+    activeBackgroundLight,
+    activeFillDark,
+    activeFillLight,
+    additionalContent,
+    additionalNavButtons,
+    bgColorDark,
+    bgColorLight,
+    bgDropdownColorDark,
+    bgDropdownColorLight,
+    colorDark,
+    colorLight,
+    customTheme,
+    defaultFillDark,
+    defaultFillLight,
+    hoverBackgroundDark,
+    hoverBackgroundLight,
+    id,
+    languageNavItems,
+    maxWidth,
+    navItems,
+    padding,
+    persistentAdditionalContent,
+    productVariant,
+    settingsNavItems,
+    showGlobalSettings,
   } = props
 
   const [isDaoOpen, setIsDaoOpen] = useState(false)
@@ -792,11 +884,8 @@ export const MenuBar = (props: MenuBarProps) => {
   const isMedium = useMediaQuery(Media.upToMedium(false))
 
   useOnClickOutside([menuRef], () => setIsDaoOpen(false))
-
   useOnClickOutside(isMobile ? [mobileMenuRef] : [navItemsRef], () => setOpenDropdown(null))
-
   useOnClickOutside([mobileMenuRef, mobileMenuTriggerRef], () => setIsMobileMenuOpen(false))
-
   useOnClickOutside([settingsButtonRef, settingsDropdownRef], () => setIsSettingsOpen(false))
 
   // TODO: Add proper return type annotation
@@ -880,8 +969,16 @@ export const MenuBar = (props: MenuBarProps) => {
             isLoaded &&
             additionalNavButtons &&
             additionalNavButtons.map((item, index) => {
+              const extractedLabel = item.label
               const href = item.external
-                ? appendUtmParams(item.href!, item.utmSource, item.utmContent, rootDomain, item.external, item.label)
+                ? appendUtmParams(
+                    item.href!,
+                    item.utmSource,
+                    item.utmContent,
+                    rootDomain,
+                    item.external,
+                    extractedLabel,
+                  )
                 : item.href
 
               if (!href) return null
@@ -898,7 +995,7 @@ export const MenuBar = (props: MenuBarProps) => {
                 >
                   <LinkComponent href={href}>
                     <DropdownContentItemText>
-                      <DropdownContentItemTitle>{item.label}</DropdownContentItemTitle>
+                      <DropdownContentItemTitle>{extractedLabel}</DropdownContentItemTitle>
                     </DropdownContentItemText>
                     <SVG src={IMG_ICON_ARROW_RIGHT} className={`arrow-icon-right ${item.external ? 'external' : ''}`} />
                   </LinkComponent>
@@ -912,13 +1009,14 @@ export const MenuBar = (props: MenuBarProps) => {
               </GlobalSettingsButton>
               {isSettingsOpen && (
                 <GlobalSettingsDropdown
-                  mobileMode={isMedium}
-                  settingsNavItems={settingsNavItems}
-                  isOpen={isSettingsOpen}
+                  LinkComponent={LinkComponent}
                   closeDropdown={handleSettingsToggle}
+                  isOpen={isSettingsOpen}
+                  languageNavItems={languageNavItems}
+                  mobileMode={isMedium}
+                  navItems={settingsNavItems}
                   ref={settingsDropdownRef}
                   rootDomain={rootDomain}
-                  LinkComponent={LinkComponent}
                 />
               )}
             </>
@@ -953,35 +1051,38 @@ export const MenuBar = (props: MenuBarProps) => {
             <RightAligned mobileMode={isMobile}>
               {additionalContent} {/* Add additional content here */}
               {additionalNavButtons &&
-                additionalNavButtons.map((item, index) => (
-                  <DropdownContentItemButton
-                    key={index}
-                    bgColor={item.bgColor}
-                    color={item.color}
-                    hoverBgColor={item.hoverBgColor}
-                    hoverColor={item.hoverColor}
-                    as={item.isButton ? 'button' : 'div'}
-                  >
-                    <LinkComponent
-                      href={appendUtmParams(
-                        item.href!,
-                        item.utmSource,
-                        item.utmContent,
-                        rootDomain,
-                        !!item.external,
-                        item.label,
-                      )}
+                additionalNavButtons.map((item, index) => {
+                  const extractedLabel = item.label
+                  return (
+                    <DropdownContentItemButton
+                      key={index}
+                      bgColor={item.bgColor}
+                      color={item.color}
+                      hoverBgColor={item.hoverBgColor}
+                      hoverColor={item.hoverColor}
+                      as={item.isButton ? 'button' : 'div'}
                     >
-                      <DropdownContentItemText>
-                        <DropdownContentItemTitle>{item.label}</DropdownContentItemTitle>
-                      </DropdownContentItemText>
-                      <SVG
-                        src={IMG_ICON_ARROW_RIGHT}
-                        className={`arrow-icon-right ${item.external ? 'external' : ''}`}
-                      />
-                    </LinkComponent>
-                  </DropdownContentItemButton>
-                ))}
+                      <LinkComponent
+                        href={appendUtmParams(
+                          item.href!,
+                          item.utmSource,
+                          item.utmContent,
+                          rootDomain,
+                          !!item.external,
+                          extractedLabel,
+                        )}
+                      >
+                        <DropdownContentItemText>
+                          <DropdownContentItemTitle>{extractedLabel}</DropdownContentItemTitle>
+                        </DropdownContentItemText>
+                        <SVG
+                          src={IMG_ICON_ARROW_RIGHT}
+                          className={`arrow-icon-right ${item.external ? 'external' : ''}`}
+                        />
+                      </LinkComponent>
+                    </DropdownContentItemButton>
+                  )
+                })}
             </RightAligned>
           </div>
         </NavItems>

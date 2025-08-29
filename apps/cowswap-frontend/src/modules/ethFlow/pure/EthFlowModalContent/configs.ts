@@ -1,3 +1,5 @@
+import { t } from '@lingui/core/macro'
+
 import { EthFlowState } from '../../services/ethFlow/types'
 
 export interface EthFlowConfig {
@@ -6,9 +8,9 @@ export interface EthFlowConfig {
   descriptions: string[]
 }
 
-const commonSingularTxProgressDescription = 'Transaction in progress. See below for live status updates.'
-const commonFailedSingularTxGasLimitDescription =
-  'Check that you are providing a sufficient gas limit for the transaction in your wallet.'
+const commonSingularTxProgressDescription = (): string => t`Transaction in progress. See below for live status updates.`
+const commonFailedSingularTxGasLimitDescription = (): string =>
+  t`Check that you are providing a sufficient gas limit for the transaction in your wallet.`
 
 export const ethFlowConfigs: {
   [key in EthFlowState]: (context: { nativeSymbol: string; wrappedSymbol: string }) => EthFlowConfig
@@ -17,69 +19,69 @@ export const ethFlowConfigs: {
    * FAILED operations
    */
   [EthFlowState.WrapFailed]: ({ nativeSymbol }) => ({
-    title: `Wrap ${nativeSymbol} failed`,
-    buttonText: `Wrap ${nativeSymbol}`,
+    title: t`Wrap ${nativeSymbol} failed`,
+    buttonText: t`Wrap ${nativeSymbol}`,
     descriptions: [
-      'Wrap operation failed.',
-      commonFailedSingularTxGasLimitDescription,
-      `Click "Wrap ${nativeSymbol}" to try again.`,
+      t`Wrap operation failed.`,
+      commonFailedSingularTxGasLimitDescription(),
+      t`Click "Wrap ${nativeSymbol}" to try again.`,
     ],
   }),
   [EthFlowState.ApproveFailed]: ({ wrappedSymbol }) => ({
-    title: `Approve ${wrappedSymbol} failed!`,
-    buttonText: `Approve ${wrappedSymbol}`,
+    title: t`Approve ${wrappedSymbol} failed!`,
+    buttonText: t`Approve ${wrappedSymbol}`,
     descriptions: [
-      'Approve operation failed.',
-      commonFailedSingularTxGasLimitDescription,
-      `Click "Approve ${wrappedSymbol}" to try again.`,
+      t`Approve operation failed.`,
+      commonFailedSingularTxGasLimitDescription(),
+      t`Click "Approve ${wrappedSymbol}" to try again.`,
     ],
   }),
   /**
    * PENDING operations
    */
   [EthFlowState.WrapPending]: ({ nativeSymbol }) => ({
-    title: `Swap with Wrapped ${nativeSymbol}`,
+    title: t`Swap with Wrapped ${nativeSymbol}`,
     buttonText: '',
-    descriptions: [commonSingularTxProgressDescription],
+    descriptions: [commonSingularTxProgressDescription()],
   }),
   [EthFlowState.ApprovePending]: ({ wrappedSymbol }) => ({
-    title: `Approve ${wrappedSymbol}`,
+    title: t`Approve ${wrappedSymbol}`,
     buttonText: '',
-    descriptions: [commonSingularTxProgressDescription],
+    descriptions: [commonSingularTxProgressDescription()],
   }),
   [EthFlowState.ApproveInsufficient]: ({ wrappedSymbol }) => ({
-    title: 'Approval amount insufficient!',
-    buttonText: `Approve ${wrappedSymbol}`,
+    title: t`Approval amount insufficient!`,
+    buttonText: t`Approve ${wrappedSymbol}`,
     descriptions: [
-      'Approval amount insufficient for input amount.',
-      'Check that you are approving an amount equal to or greater than the input amount.',
+      t`Approval amount insufficient for input amount.`,
+      t`Check that you are approving an amount equal to or greater than the input amount.`,
     ],
   }),
   /**
    * NEEDS operations
    */
   [EthFlowState.WrapNeeded]: ({ nativeSymbol, wrappedSymbol }) => ({
-    title: `Swap with Wrapped ${nativeSymbol}`,
-    buttonText: `Wrap ${nativeSymbol}`,
+    title: t`Swap with Wrapped ${nativeSymbol}`,
+    buttonText: t`Wrap ${nativeSymbol}`,
     descriptions: [
-      `To continue, click below to wrap your ${nativeSymbol} to ${wrappedSymbol} via an on-chain ERC20 transaction.`,
+      t`To continue, click below to wrap your ${nativeSymbol} to ${wrappedSymbol} via an on-chain ERC20 transaction.`,
     ],
   }),
   [EthFlowState.ApproveNeeded]: ({ wrappedSymbol }) => ({
-    title: `Approve ${wrappedSymbol}`,
-    buttonText: `Approve ${wrappedSymbol}`,
+    title: t`Approve ${wrappedSymbol}`,
+    buttonText: t`Approve ${wrappedSymbol}`,
     descriptions: [
-      `It is required to do a one-time approval of ${wrappedSymbol} via an on-chain ERC20 Approve transaction.`,
+      t`It is required to do a one-time approval of ${wrappedSymbol} via an on-chain ERC20 Approve transaction.`,
     ],
   }),
   [EthFlowState.SwapReady]: ({ wrappedSymbol }) => ({
-    title: `Continue swap with ${wrappedSymbol}`,
-    buttonText: 'Swap',
-    descriptions: [`To continue, click SWAP below to use your existing ${wrappedSymbol} balance and trade.`],
+    title: t`Continue swap with ${wrappedSymbol}`,
+    buttonText: t`Swap`,
+    descriptions: [t`To continue, click SWAP below to use your existing ${wrappedSymbol} balance and trade.`],
   }),
   [EthFlowState.Loading]: () => ({
-    title: 'Loading operation',
+    title: t`Loading operation`,
     buttonText: '',
-    descriptions: ['Operation in progress!'],
+    descriptions: [t`Operation in progress!`],
   }),
 }

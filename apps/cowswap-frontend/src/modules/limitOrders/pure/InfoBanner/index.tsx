@@ -1,6 +1,7 @@
 import AlertIcon from '@cowprotocol/assets/cow-swap/alert-circle.svg'
 import { ClosableBanner } from '@cowprotocol/ui'
 
+import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 import { Link as ReactRouterLink } from 'react-router'
 
@@ -22,7 +23,7 @@ export function InfoBanner() {
               <SVG src={AlertIcon} />
             </div>
             <div className="content">
-              Your order may not fill exactly when the market price reaches your limit price.{' '}
+              <Trans>Your order may not fill exactly when the market price reaches your limit price.</Trans>{' '}
               <ReactRouterLink
                 target="_blank"
                 to="https://docs.cow.fi/cow-protocol/tutorials/cow-swap/limit#track-a-limit-order"
@@ -31,7 +32,7 @@ export function InfoBanner() {
                   action: 'Click limit order fees FAQ link',
                 })}
               >
-                Learn more
+                <Trans>Learn more</Trans>
               </ReactRouterLink>
             </div>
 

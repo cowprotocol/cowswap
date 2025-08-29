@@ -6,6 +6,8 @@ import { formatInputAmount } from '@cowprotocol/common-utils'
 import { InfoTooltip, HelpTooltip, RowFixed } from '@cowprotocol/ui'
 import { Currency, Price } from '@uniswap/sdk-core'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
@@ -93,7 +95,9 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps): ReactNode {
               <ArrowDownRight>
                 <SVG src={ArrowDownImage} />
               </ArrowDownRight>
-              <p>order executes at</p>{' '}
+              <p>
+                <Trans>order executes at</Trans>
+              </p>{' '}
               <HelpTooltip
                 text={
                   <ExecutionPriceTooltip
@@ -115,12 +119,12 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps): ReactNode {
 
       <styledEl.DetailsRow>
         <RowFixed>
-          <p>Order expires</p>
+          <p>
+            <Trans>Order expires</Trans>
+          </p>
 
           <InfoTooltip
-            content={
-              "If your order has not been filled by this date & time, it will expire. Don't worry - expirations and order placement are free on CoW Swap!"
-            }
+            content={t`If your order has not been filled by this date & time, it will expire. Don't worry - expirations and order placement are free on CoW Swap!`}
           />
         </RowFixed>
 

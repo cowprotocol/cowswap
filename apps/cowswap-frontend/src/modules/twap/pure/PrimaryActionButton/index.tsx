@@ -2,6 +2,8 @@ import { ReactElement } from 'react'
 
 import { ButtonPrimary, ButtonSize } from '@cowprotocol/ui'
 
+import { Trans } from '@lingui/react/macro'
+
 import { TwapFormState } from './getTwapFormState'
 
 export interface PrimaryActionButtonContext {
@@ -11,27 +13,27 @@ export interface PrimaryActionButtonContext {
 const buttonsMap: Record<TwapFormState, (_context: PrimaryActionButtonContext) => ReactElement> = {
   [TwapFormState.LOADING_SAFE_INFO]: () => (
     <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
-      Loading...
+      <Trans>Loading...</Trans>
     </ButtonPrimary>
   ),
   [TwapFormState.TX_BUNDLING_NOT_SUPPORTED]: () => (
     <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
-      Unsupported wallet
+      <Trans>Unsupported wallet</Trans>
     </ButtonPrimary>
   ),
   [TwapFormState.SELL_AMOUNT_TOO_SMALL]: () => (
     <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
-      Sell amount too small
+      <Trans>Sell amount too small</Trans>
     </ButtonPrimary>
   ),
   [TwapFormState.PART_TIME_INTERVAL_TOO_SHORT]: () => (
     <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
-      Interval time too short
+      <Trans>Interval time too short</Trans>
     </ButtonPrimary>
   ),
   [TwapFormState.PART_TIME_INTERVAL_TOO_LONG]: () => (
     <ButtonPrimary disabled={true} buttonSize={ButtonSize.BIG}>
-      Interval time too long
+      <Trans>Interval time too long</Trans>
     </ButtonPrimary>
   ),
 }

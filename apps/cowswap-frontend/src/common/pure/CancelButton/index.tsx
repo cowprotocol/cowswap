@@ -3,6 +3,7 @@ import { PropsWithChildren } from 'react'
 import { Command } from '@cowprotocol/types'
 import { UI } from '@cowprotocol/ui'
 
+import { Trans } from '@lingui/react/macro'
 import { LinkStyledButton } from 'theme'
 
 export type CancelButtonProps = {
@@ -15,7 +16,7 @@ export type CancelButtonProps = {
 export function CancelButton({ onClick, children, className }: CancelButtonProps) {
   return (
     <LinkStyledButton onClick={onClick} className={className} color={`var(${UI.COLOR_DANGER})`}>
-      {children || 'Cancel order'}
+      {children || <Trans>Cancel order</Trans>}
     </LinkStyledButton>
   )
 }

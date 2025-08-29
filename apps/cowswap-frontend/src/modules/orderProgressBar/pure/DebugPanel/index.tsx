@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
 
+import { t } from '@lingui/core/macro'
 import styled from 'styled-components/macro'
 
 import { OrderProgressBarStepName } from '../../types'
@@ -23,11 +24,11 @@ interface DebugPanelProps {
 export function DebugPanel({ stepName, setDebugStep }: DebugPanelProps): ReactNode {
   return (
     <Wrapper>
-      <label htmlFor="debug-step-select">Debug Step:</label>
+      <label htmlFor="debug-step-select">{t`Debug Step:`}</label>
       <select
         id="debug-step-select"
         value={stepName}
-        aria-label="Select debug step"
+        aria-label={t`Select debug step`}
         onChange={(e) => setDebugStep(e.target.value as OrderProgressBarStepName)}
       >
         {Object.values(OrderProgressBarStepName).map((step) => (

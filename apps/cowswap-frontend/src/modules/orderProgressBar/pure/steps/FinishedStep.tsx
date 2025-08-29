@@ -10,6 +10,7 @@ import { TokenLogo } from '@cowprotocol/tokens'
 import { Confetti, ExternalLink, InfoTooltip, TokenAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { Trans, useLingui } from '@lingui/react/macro'
 import Lottie from 'lottie-react'
 import { PiCaretDown, PiCaretUp, PiTrophyFill } from 'react-icons/pi'
 import SVG from 'react-inlinesvg'
@@ -41,7 +42,7 @@ function getTransactionStatus(isDarkMode: boolean) {
         autoplay
         style={{ width: '36px', height: '36px' }}
       />
-      Transaction completed!
+      <Trans>Transaction completed!</Trans>
     </styledEl.TransactionStatus>
   )
 }
@@ -51,7 +52,9 @@ function getTransactionStatus(isDarkMode: boolean) {
 function getSoldAmount(order: Order) {
   return (
     <styledEl.SoldAmount>
-      You sold <TokenLogo token={order.inputToken} size={20} />
+      <Trans>
+        You sold <TokenLogo token={order.inputToken} size={20} />
+      </Trans>
       <b>
         <TokenAmount
           amount={CurrencyAmount.fromRawAmount(order.inputToken, order.apiAdditionalInfo?.executedSellAmount || 0)}
@@ -83,7 +86,7 @@ function getReceivedAmount(
       </b>{' '}
       {isCustomRecipient && receiver && (
         <>
-          was sent to
+          <Trans>was sent to</Trans>
           <ExternalLink href={getExplorerLink(chainId, receiver, ExplorerDataType.ADDRESS)}>
             {receiverEnsName || shortenAddress(receiver)} ↗
           </ExternalLink>
@@ -144,7 +147,9 @@ function getSolverRow(solver: SolverCompetition, index: number, solvers: SolverC
             <styledEl.TrophyIcon>
               <PiTrophyFill />
             </styledEl.TrophyIcon>
-            <span>Winning solver</span>
+            <span>
+              <Trans>Winning solver</Trans>
+            </span>
           </styledEl.WinningBadge>
         )}
       </styledEl.SolverTableCell>
@@ -178,9 +183,9 @@ export function FinishedStep({
   totalSolvers,
   debugForceShowSurplus,
 }: FinishedStepProps) {
+  const { i18n } = useLingui()
   const [showAllSolvers, setShowAllSolvers] = useState(false)
   const cancellationFailed = stepName === 'cancellationFailed'
-
   const { surplusFiatValue, surplusAmount, showSurplus } = surplusData || {}
   const shouldShowSurplus = debugForceShowSurplus || showSurplus
 
@@ -205,9 +210,9 @@ export function FinishedStep({
 
     return {
       randomImage: SURPLUS_IMAGES[getRandomInt(0, SURPLUS_IMAGES.length - 1)],
-      randomBenefit: benefits[getRandomInt(0, benefits.length - 1)],
+      randomBenefit: i18n._(benefits[getRandomInt(0, benefits.length - 1)]),
     }
-  }, [chainId])
+  }, [chainId, i18n])
 
   const shareOnTwitter = useCallback(() => {
     const twitterUrl = shouldShowSurplus
@@ -220,13 +225,17 @@ export function FinishedStep({
   if (!order) {
     return null
   }
+  const solversLength = solvers?.length || 0
 
   return (
     <styledEl.FinishedStepContainer>
       {showConfetti && <Confetti start={true} />}
       {cancellationFailed && (
         <styledEl.CancellationFailedBanner>
-          <b>Cancellation failed:</b> The order was executed before it could be cancelled.
+          <b>
+            <Trans>Cancellation failed</Trans>:
+          </b>{' '}
+          <Trans>The order was executed before it could be cancelled.</Trans>
         </styledEl.CancellationFailedBanner>
       )}
 
@@ -240,16 +249,23 @@ export function FinishedStep({
 
         {shouldShowSurplus ? getExtraAmount(surplusAmount, surplusFiatValue, isCustomRecipient, isSell) : null}
 
-        {solvers && solvers.length > 0 && (
+        {solvers && solversLength > 0 && (
           <styledEl.SolverRankings>
-            <h3>Solver auction rankings</h3>
-            {solvers.length > 1 && (
+            <h3>
+              <Trans>Solver auction rankings</Trans>
+            </h3>
+            {solversLength > 1 && (
               <p>
                 <b>
-                  {solvers.length}
-                  {totalSolvers ? ` out of ${totalSolvers}` : ''} solvers
+                  {totalSolvers ? (
+                    <Trans>
+                      {solversLength} out of {totalSolvers} solvers
+                    </Trans>
+                  ) : (
+                    <Trans>{solversLength} solvers</Trans>
+                  )}
                 </b>{' '}
-                submitted a solution
+                <Trans>submitted a solution</Trans>
               </p>
             )}
 
@@ -257,7 +273,7 @@ export function FinishedStep({
               <tbody>{visibleSolvers?.map((solver, index) => getSolverRow(solver, index, solvers))}</tbody>
             </styledEl.SolverTable>
 
-            {solvers.length > 3 && (
+            {solversLength > 3 && (
               <styledEl.ViewMoreButton
                 data-click-event={toCowSwapGtmEvent({
                   category: CowSwapAnalyticsCategory.PROGRESS_BAR,
@@ -268,11 +284,11 @@ export function FinishedStep({
               >
                 {showAllSolvers ? (
                   <>
-                    Collapse <PiCaretUp />
+                    <Trans>Collapse</Trans> <PiCaretUp />
                   </>
                 ) : (
                   <>
-                    View {solvers.length - 3} more <PiCaretDown />
+                    <Trans>View</Trans> {solversLength - 3} <Trans>more</Trans> <PiCaretDown />
                   </>
                 )}
               </styledEl.ViewMoreButton>
@@ -291,7 +307,9 @@ export function FinishedStep({
         onClick={shareOnTwitter}
       >
         <SVG src={ICON_SOCIAL_X} />
-        <span>Share this {shouldShowSurplus ? 'win' : 'tip'}!</span>
+        <span>
+          <Trans>Share this</Trans> {shouldShowSurplus ? <Trans>win</Trans> : <Trans>tip</Trans>}!
+        </span>
       </styledEl.ShareButton>
     </styledEl.FinishedStepContainer>
   )

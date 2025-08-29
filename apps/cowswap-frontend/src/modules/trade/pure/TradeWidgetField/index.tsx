@@ -2,8 +2,6 @@ import { ReactElement } from 'react'
 
 import { HelpTooltip, renderTooltip } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/macro'
-
 import { Content, ErrorText, TradeWidgetFieldBox, TradeWidgetFieldLabel } from './styled'
 
 export type TradeWidgetFieldError = { type: 'error' | 'warning'; text: string | null } | null
@@ -28,7 +26,7 @@ export function TradeWidgetField(props: TradeWidgetFieldProps) {
   return (
     <TradeWidgetFieldBox className={className} hasPrefix={hasPrefix}>
       <TradeWidgetFieldLabel>
-        <Trans>{label}</Trans>
+        {label}
         {tooltip && <HelpTooltip text={tooltipElement} />}
       </TradeWidgetFieldLabel>
       <Content>{children}</Content>

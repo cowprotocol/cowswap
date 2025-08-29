@@ -1,6 +1,7 @@
 import { ReactNode, useCallback } from 'react'
 
-import { SupportedLocale } from '@cowprotocol/common-const'
+import { DEFAULT_LOCALE, SupportedLocale } from '@cowprotocol/common-const'
+import { isLinguiInternationalizationEnabled } from '@cowprotocol/common-utils'
 
 import { initialLocale, useActiveLocale } from 'legacy/hooks/useActiveLocale'
 import { useUserLocaleManager } from 'legacy/state/user/hooks'
@@ -13,14 +14,14 @@ dynamicActivate(initialLocale)
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function LanguageProvider({ children }: { children: ReactNode }) {
   const locale = useActiveLocale()
-  const [, setUserLocale] = useUserLocaleManager()
+  const { setLocale } = useUserLocaleManager()
 
   const onActivate = useCallback(
     (locale: SupportedLocale) => {
       document.documentElement.setAttribute('lang', locale)
-      setUserLocale(locale) // stores the selected locale to persist across sessions
+      setLocale(isLinguiInternationalizationEnabled ? locale : DEFAULT_LOCALE) // stores the selected locale to persist across sessions
     },
-    [setUserLocale]
+    [setLocale],
   )
 
   return (

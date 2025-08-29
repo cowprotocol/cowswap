@@ -2,6 +2,8 @@ import { getSafeAccountUrl } from '@cowprotocol/core'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ExternalLink, InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
 
+import { Trans } from '@lingui/react/macro'
+
 import { UNSUPPORTED_WALLET_LINK } from 'modules/twap/const'
 
 export interface UnsupportedWalletWarningProps {
@@ -16,9 +18,14 @@ export function UnsupportedWalletWarning({ isSafeViaWc, chainId, account }: Unsu
   if (isSafeViaWc && account) {
     return (
       <InlineBanner bannerType={StatusColorVariant.Info}>
-        <strong>Use Safe web app</strong>
+        <strong>
+          <Trans>Use Safe web app</Trans>
+        </strong>
         <p>
-          Use the <ExternalLink href={getSafeAccountUrl(chainId, account)}>Safe app</ExternalLink> for advanced trading.
+          <Trans>
+            Use the <ExternalLink href={getSafeAccountUrl(chainId, account)}>Safe app</ExternalLink> for advanced
+            trading.
+          </Trans>
         </p>
       </InlineBanner>
     )
@@ -26,14 +33,20 @@ export function UnsupportedWalletWarning({ isSafeViaWc, chainId, account }: Unsu
 
   return (
     <InlineBanner bannerType={StatusColorVariant.Alert} iconSize={32}>
-      <strong>Unsupported wallet detected</strong>
+      <strong>
+        <Trans>Unsupported wallet detected</Trans>
+      </strong>
       <p>
-        TWAP orders currently require a Safe with a special fallback handler. Have one? Switch to it! Need setup?{' '}
-        <ExternalLink href={UNSUPPORTED_WALLET_LINK}>Click here</ExternalLink>. Future updates may extend wallet
-        support!
+        <Trans>
+          TWAP orders currently require a Safe with a special fallback handler. Have one? Switch to it! Need setup?{' '}
+          <ExternalLink href={UNSUPPORTED_WALLET_LINK}>Click here</ExternalLink>. Future updates may extend wallet
+          support!
+        </Trans>
       </p>
       <p>
-        <strong>Note:</strong> If you are using a Safe but still see this message, ensure your Safe is deployed!
+        <Trans>
+          <strong>Note:</strong> If you are using a Safe but still see this message, ensure your Safe is deployed!
+        </Trans>
       </p>
     </InlineBanner>
   )

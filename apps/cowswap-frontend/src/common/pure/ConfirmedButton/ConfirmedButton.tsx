@@ -4,6 +4,7 @@ import { Command } from '@cowprotocol/types'
 import { ButtonError } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
+import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
 const Container = styled.div``
@@ -63,17 +64,21 @@ export function ConfirmedButton({
 
       onConfirm()
     },
-    [onConfirm, shouldButtonBeDisabled]
+    [onConfirm, shouldButtonBeDisabled],
   )
 
   return (
     <Container className={className} onKeyDown={onKeyDown}>
       {shouldShowInput ? (
         <Instruction>
-          Please type the word <strong>"{confirmWord}"</strong> to {action}.
+          <Trans>
+            Please type the word <strong>"{confirmWord}"</strong> to {action}.
+          </Trans>
         </Instruction>
       ) : (
-        <Instruction>Please click confirm to {action}.</Instruction>
+        <Instruction>
+          <Trans>Please click confirm to {action}.</Trans>
+        </Instruction>
       )}
       {shouldShowInput && <Input id="confirm-modal-input" onChange={onInputChange} />}
       <ButtonError

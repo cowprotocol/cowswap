@@ -2,6 +2,8 @@ import { useCallback } from 'react'
 
 import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
 
+import { t } from '@lingui/core/macro'
+
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
 import { RecoverFundsContext } from './useRecoverFundsFromProxy'
@@ -19,7 +21,7 @@ export function useRecoverFundsCallback(
       const txHash = await recoverFundsCallback()
 
       if (txHash) {
-        addTransaction({ hash: txHash, summary: `Recover funds from ${ACCOUNT_PROXY_LABEL}` })
+        addTransaction({ hash: txHash, summary: t`Recover funds from ${ACCOUNT_PROXY_LABEL}` })
       }
 
       return txHash

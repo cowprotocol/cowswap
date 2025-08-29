@@ -12,6 +12,9 @@ import {
   StatusColorVariant,
 } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
+
 import { ExternalSourceAlert } from 'common/pure/ExternalSourceAlert'
 
 import { ExternalDappLoader } from './CustomDappLoader'
@@ -61,7 +64,7 @@ export function AddCustomHookForm({ addHookDapp, children, isPreHook, walletType
 
   // Normalizes URLs only on explicit actions (paste/submit) to prevent interrupting user typing
   // TODO: Reduce function complexity by extracting logic
-  // eslint-disable-next-line complexity
+
   const normalizeUrl = useCallback((url: string, shouldNormalize = false) => {
     if (!url) return ''
 
@@ -164,7 +167,7 @@ export function AddCustomHookForm({ addHookDapp, children, isPreHook, walletType
       {!isSearchOpen && (
         <Wrapper>
           <ButtonPrimary disabled={loading} onClick={() => setSearchOpen(true)}>
-            {loading ? <Loader /> : 'Add custom hook'}
+            {loading ? <Loader /> : t`Add custom hook`}
           </ButtonPrimary>
         </Wrapper>
       )}
@@ -173,7 +176,7 @@ export function AddCustomHookForm({ addHookDapp, children, isPreHook, walletType
         <Wrapper>
           <form onSubmit={handleSubmit}>
             <SearchInput
-              placeholder="Enter a hook dapp URL"
+              placeholder={t`Enter a hook dapp URL`}
               value={input}
               onChange={handleInputChange}
               onPaste={handlePaste}
@@ -204,24 +207,29 @@ export function AddCustomHookForm({ addHookDapp, children, isPreHook, walletType
             {isFinalStep && (
               <>
                 <ExternalSourceAlert
-                  title="Add the app at your own risk"
+                  title={t`Add the app at your own risk`}
                   onChange={() => setWarningAccepted((state) => !state)}
                 >
                   <p>
-                    Adding this app/hook grants it access to your wallet actions and trading information. Ensure you
-                    understand the implications. <br />
+                    <Trans>
+                      Adding this app/hook grants it access to your wallet actions and trading information. Ensure you
+                      understand the implications.
+                    </Trans>
                     <br />
-                    <strong>Always review wallet requests carefully before approving.</strong>
+                    <br />
+                    <strong>
+                      <Trans>Always review wallet requests carefully before approving.</Trans>
+                    </strong>
                   </p>
                 </ExternalSourceAlert>
                 <ButtonPrimary disabled={!isWarningAccepted} onClick={addHookDappCallback}>
-                  Add custom hook
+                  <Trans>Add custom hook</Trans>
                 </ButtonPrimary>
               </>
             )}
 
             <ButtonOutlined style={{ fontSize: '16px', padding: '12px 0' }} onClick={goBack}>
-              Back
+              <Trans>Back</Trans>
             </ButtonOutlined>
           </form>
         </Wrapper>

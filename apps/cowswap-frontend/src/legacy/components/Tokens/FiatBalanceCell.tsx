@@ -1,7 +1,7 @@
 import { FiatAmount, HoverTooltip } from '@cowprotocol/ui'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 
 import { useUsdAmount } from 'modules/usdAmount'
 
@@ -24,7 +24,10 @@ export function FiatBalanceCell({ balance }: FiatBalanceCellProps) {
       ) : (
         <FiatValue>
           <span>$ 0.00</span>
-          <HoverTooltip wrapInContainer content={<Trans>Value may be zero due to missing token price information</Trans>}>
+          <HoverTooltip
+            wrapInContainer
+            content={<Trans>Value may be zero due to missing token price information</Trans>}
+          >
             <InfoCircle size="20" color={'white'} />
           </HoverTooltip>
         </FiatValue>
