@@ -225,6 +225,7 @@ export function FinishedStep({
   if (!order) {
     return null
   }
+  const solversLength = solvers?.length || 0
 
   return (
     <styledEl.FinishedStepContainer>
@@ -248,22 +249,21 @@ export function FinishedStep({
 
         {shouldShowSurplus ? getExtraAmount(surplusAmount, surplusFiatValue, isCustomRecipient, isSell) : null}
 
-        {solvers && solvers.length > 0 && (
+        {solvers && solversLength > 0 && (
           <styledEl.SolverRankings>
             <h3>
               <Trans>Solver auction rankings</Trans>
             </h3>
-            {solvers.length > 1 && (
+            {solversLength > 1 && (
               <p>
                 <b>
-                  <Trans id="solver-rankings"
-                    values={{
-                      solvers: solvers.length,
-                      totalSolvers: totalSolvers,
-                    }}
-                  >
-                    {totalSolvers ? '{solvers} out of {totalSolvers} solvers' : '{solvers} solvers'}
-                  </Trans>
+                  {totalSolvers ? (
+                    <Trans>
+                      {solversLength} out of {totalSolvers} solvers
+                    </Trans>
+                  ) : (
+                    <Trans>{solversLength} solvers</Trans>
+                  )}
                 </b>{' '}
                 <Trans>submitted a solution</Trans>
               </p>
@@ -273,7 +273,7 @@ export function FinishedStep({
               <tbody>{visibleSolvers?.map((solver, index) => getSolverRow(solver, index, solvers))}</tbody>
             </styledEl.SolverTable>
 
-            {solvers.length > 3 && (
+            {solversLength > 3 && (
               <styledEl.ViewMoreButton
                 data-click-event={toCowSwapGtmEvent({
                   category: CowSwapAnalyticsCategory.PROGRESS_BAR,
@@ -288,7 +288,7 @@ export function FinishedStep({
                   </>
                 ) : (
                   <>
-                    <Trans>View</Trans> {solvers.length - 3} <Trans>more</Trans> <PiCaretDown />
+                    <Trans>View</Trans> {solversLength - 3} <Trans>more</Trans> <PiCaretDown />
                   </>
                 )}
               </styledEl.ViewMoreButton>
