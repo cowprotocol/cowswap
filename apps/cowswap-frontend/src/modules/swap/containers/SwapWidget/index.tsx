@@ -12,6 +12,7 @@ import { AddIntermediateTokenModal } from 'modules/tokensList'
 import {
   TradeWidget,
   TradeWidgetSlots,
+  useAmountsToSign,
   useGetReceiveAmountInfo,
   useTradePriceImpact,
   useWrapNativeFlow,
@@ -26,6 +27,7 @@ import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 
 import { Container } from './styled'
 
+import { TradeApproveToggle } from '../../../erc20Approve'
 import { useHasEnoughWrappedBalanceForSwap } from '../../hooks/useHasEnoughWrappedBalanceForSwap'
 import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
 import {
@@ -143,6 +145,8 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
 
   const { isPartialApproveEnabled } = useFeatureFlags()
   const enablePartialApprovalState = useSwapPartialApprovalToggleState(isPartialApproveEnabled)
+  // todo move from here
+  const { maximumSendSellAmount } = useAmountsToSign() || {}
 
   const slots: TradeWidgetSlots = {
     topContent,
@@ -159,6 +163,10 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
         return (
           <>
             {bottomContent}
+            // todo refactor it
+            {enablePartialApprovalState && enablePartialApprovalState[0] && maximumSendSellAmount ? (
+              <TradeApproveToggle amountToApprove={maximumSendSellAmount} />
+            ) : null}
             <SwapRateDetails rateInfoParams={rateInfoParams} deadline={deadlineState[0]} />
             <Warnings buyingFiatAmount={buyingFiatAmount} />
             {tradeWarnings}
@@ -174,6 +182,8 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
         )
       },
       [
+        enablePartialApprovalState,
+        maximumSendSellAmount,
         bottomContent,
         rateInfoParams,
         deadlineState,
