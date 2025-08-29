@@ -307,7 +307,7 @@ export function FinishedStep({
       >
         <SVG src={ICON_SOCIAL_X} />
         <span>
-          <Trans>Share this</Trans> ${shouldShowSurplus ? <Trans>win</Trans> : <Trans>tip</Trans>}!
+          <Trans>Share this</Trans> {shouldShowSurplus ? <Trans>win</Trans> : <Trans>tip</Trans>}!
         </span>
       </styledEl.ShareButton>
     </styledEl.FinishedStepContainer>
