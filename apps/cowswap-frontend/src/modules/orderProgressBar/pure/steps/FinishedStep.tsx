@@ -10,7 +10,6 @@ import { TokenLogo } from '@cowprotocol/tokens'
 import { Confetti, ExternalLink, InfoTooltip, TokenAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { t } from '@lingui/core/macro'
 import { Trans, useLingui } from '@lingui/react/macro'
 import Lottie from 'lottie-react'
 import { PiCaretDown, PiCaretUp, PiTrophyFill } from 'react-icons/pi'
@@ -257,8 +256,13 @@ export function FinishedStep({
             {solvers.length > 1 && (
               <p>
                 <b>
-                  {solvers.length}
-                  {totalSolvers ? t` out of ${totalSolvers}` : ''} <Trans>solvers</Trans>
+                  {solvers.length}{' '}
+                  {totalSolvers && (
+                    <>
+                      <Trans>out of</Trans> {totalSolvers}
+                    </>
+                  )}{' '}
+                  <Trans>solvers</Trans>
                 </b>{' '}
                 <Trans>submitted a solution</Trans>
               </p>
