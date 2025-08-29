@@ -1518,8 +1518,8 @@ msgid "Provide Feedback"
 msgstr "Provide Feedback"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
-msgid "solvers"
-msgstr "solvers"
+#~ msgid "solvers"
+#~ msgstr "solvers"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/TokenTags/index.tsx
 msgid "This token supports gas-free approvals. Enjoy! 🐮"
@@ -3010,8 +3010,8 @@ msgid "No pool tokens available"
 msgstr "No pool tokens available"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/RateImpactWarning/index.tsx
-msgid "Your limit price is {percent}% lower than current market price. You could be selling your<0/> at a loss (although CoW Swap will always try to give you the best price regardless)."
-msgstr "Your limit price is {percent}% lower than current market price. You could be selling your<0/> at a loss (although CoW Swap will always try to give you the best price regardless)."
+#~ msgid "Your limit price is {percent}% lower than current market price. You could be selling your<0/> at a loss (although CoW Swap will always try to give you the best price regardless)."
+#~ msgstr "Your limit price is {percent}% lower than current market price. You could be selling your<0/> at a loss (although CoW Swap will always try to give you the best price regardless)."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/SolvingStep.tsx
 msgid "Still searching"
@@ -3602,6 +3602,10 @@ msgstr "more"
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
 msgid "CoW Protocol covers the costs by executing your order at a slightly better price than your limit price."
 msgstr "CoW Protocol covers the costs by executing your order at a slightly better price than your limit price."
+
+#: apps/cowswap-frontend/src/modules/limitOrders/pure/RateImpactWarning/index.tsx
+msgid "Your limit price is {absoluteRateImpact}% lower than current market price. You could be selling your<0/> at a loss (although CoW Swap will always try to give you the best price regardless)."
+msgstr "Your limit price is {absoluteRateImpact}% lower than current market price. You could be selling your<0/> at a loss (although CoW Swap will always try to give you the best price regardless)."
 
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/HookSearchInput/index.tsx
 msgid "Clear search input"
@@ -4581,6 +4585,12 @@ msgstr "Market orders are always <0>Fill or kill</0>, while limit orders are by 
 msgid "The first part of your TWAP order will become active as soon as you confirm the order below."
 msgstr "The first part of your TWAP order will become active as soon as you confirm the order below."
 
+#. js-lingui-explicit-id
+#. placeholder {0}: totalSolvers ? '{solvers} out of {totalSolvers} solvers' : '{solvers} solvers'
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
+msgid "solver-rankings"
+msgstr "{0}"
+
 #: apps/cowswap-frontend/src/modules/ordersTable/const/tabs.ts
 msgid "All orders"
 msgstr "All orders"
@@ -5226,8 +5236,8 @@ msgid "Failed to switch networks from the CoW Swap Interface. In order to use Co
 msgstr "Failed to switch networks from the CoW Swap Interface. In order to use CoW Swap on {chainInfoLabel}, you must change the network in your wallet."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
-msgid "out of"
-msgstr "out of"
+#~ msgid "out of"
+#~ msgstr "out of"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/InfoBanner/index.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
