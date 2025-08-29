@@ -201,7 +201,7 @@ export function SurplusModal(props: SurplusModalProps) {
       <p>
         <Trans>CoW Swap is the only token exchange that gets you extra tokens.</Trans>{' '}
         <ExternalLink href={'https://blog.cow.fi/announcing-cow-swap-surplus-notifications-f679c77702ea'}>
-          <Trans>Learn how</Trans> 
+          <Trans>Learn how</Trans> ↗
         </ExternalLink>
       </p>
     </Wrapper>
