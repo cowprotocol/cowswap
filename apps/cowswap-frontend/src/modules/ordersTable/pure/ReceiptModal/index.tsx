@@ -78,9 +78,7 @@ const TOOLTIPS_MSG: Record<string, MessageDescriptor> = {
 const TOOLTIPS_JSX: Record<string, ReactElement> = {
   FILLED: (
     <span>
-      {[FILLED_COMMON_TOOLTIP].map((item) => (
-        <TransReact id={item.id} />
-      ))}
+      <TransReact id={FILLED_COMMON_TOOLTIP.id} />
       <br />
       <Trans>
         Market orders are always <i>Fill or kill</i>, while limit orders are by default <i>Partially fillable</i>, but
