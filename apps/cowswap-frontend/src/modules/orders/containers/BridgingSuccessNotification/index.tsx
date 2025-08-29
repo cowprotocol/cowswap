@@ -20,14 +20,16 @@ function summaryTemplate({
   srcChainData,
   dstChainData,
 }: OrderSummaryTemplateProps): ReactNode {
-  const label =
-    srcChainData &&
-    `(${srcChainData.label}) ${t`for a total of`} ${outputAmount} ${dstChainData && ` (${dstChainData.label})`}`
-
   return (
-    <Trans>
-      Sell {inputAmount} {label}
-    </Trans>
+    <>
+      <Trans>Sell</Trans> {inputAmount}{' '}
+      {srcChainData && (
+        <>
+          ({srcChainData.label}) <Trans>for a total of</Trans> {outputAmount}{' '}
+          {dstChainData && <> ({dstChainData.label})</>}
+        </>
+      )}
+    </>
   )
 }
 
