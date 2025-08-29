@@ -66,20 +66,14 @@ const ClearButton = styled(ButtonIcon)`
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function HookSearchInput({
-  value,
-  onChange,
-  placeholder = t`Search hooks...`,
-  ariaLabel = t`Search hooks`,
-  onClear,
-}: HookSearchInputProps) {
+export function HookSearchInput({ value, onChange, placeholder, ariaLabel, onClear }: HookSearchInputProps) {
   return (
     <SearchContainer>
       <SearchInput
-        placeholder={placeholder}
+        placeholder={placeholder ? placeholder : t`Search hooks...`}
         value={value}
         onChange={onChange}
-        aria-label={ariaLabel}
+        aria-label={ariaLabel ? ariaLabel : t`Search hooks`}
         style={{ paddingRight: '38px' }}
       />
       {value && (

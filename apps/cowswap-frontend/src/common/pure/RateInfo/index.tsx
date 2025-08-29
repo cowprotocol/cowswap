@@ -153,7 +153,7 @@ export function InvertRateControl({ onClick, className }: { onClick(): void; cla
 export function RateInfo({
   rateInfoParams,
   className,
-  label = t`Limit price`,
+  label,
   setSmartQuoteSelectionOnce = false,
   doNotUseSmartQuote = false,
   stylized = false,
@@ -237,7 +237,7 @@ export function RateInfo({
     <Wrapper stylized={stylized} className={className} fontSize={fontSize}>
       {!noLabel && (
         <RateLabel labelBold={labelBold}>
-          {label}
+          {label ? label : t`Limit price`}
           <InvertRateControl onClick={toggleInverted} />
         </RateLabel>
       )}

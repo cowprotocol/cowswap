@@ -18,23 +18,29 @@ type Props = {
 }
 
 export function LimitPriceRow(props: Props): ReactNode {
-  const { price, isInvertedState, limitPriceLabel = t`Limit price`, limitPriceTooltip = t`The limit price` } = props
+  const { price, isInvertedState, limitPriceLabel, limitPriceTooltip } = props
   const [isInverted, setIsInverted] = isInvertedState
 
   return (
     <RateWrapper onClick={() => setIsInverted((curr) => !curr)}>
-      <ConfirmDetailsItem withTimelineDot label={limitPriceLabel} tooltip={limitPriceTooltip}>
-        {price ? (
-          <ExecutionPrice
-            executionPrice={price}
-            isInverted={isInverted}
-            hideFiat
-            showBaseCurrency
-            separatorSymbol="="
-          />
-        ) : (
-          '-'
-        )}
+      <ConfirmDetailsItem
+        withTimelineDot
+        label={limitPriceLabel ? limitPriceLabel : t`Limit price`}
+        tooltip={limitPriceTooltip ? limitPriceTooltip : t`The limit price`}
+      >
+        <>
+          {price ? (
+            <ExecutionPrice
+              executionPrice={price}
+              isInverted={isInverted}
+              hideFiat
+              showBaseCurrency
+              separatorSymbol="="
+            />
+          ) : (
+            '-'
+          )}
+        </>
       </ConfirmDetailsItem>
     </RateWrapper>
   )

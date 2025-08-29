@@ -1,6 +1,6 @@
 import { Command } from '@cowprotocol/types'
 
-import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
 import { ContentWrapper, Modal } from 'common/pure/Modal'
@@ -44,7 +44,7 @@ export function ConfirmationModal({
   title,
   description,
   warning,
-  callToAction = t`Confirm`,
+  callToAction,
   onDismiss,
   onEnable,
   action,
@@ -65,7 +65,7 @@ export function ConfirmationModal({
           </Description>
         )}
         <ConfirmedButton skipInput={skipInput} action={action} confirmWord={confirmWord} onConfirm={onEnable}>
-          {callToAction}
+          {callToAction ? callToAction : <Trans>Confirm</Trans>}
         </ConfirmedButton>
       </ModalContentWrapper>
     </Modal>

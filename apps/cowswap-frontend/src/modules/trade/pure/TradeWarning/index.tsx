@@ -100,7 +100,7 @@ const StyledInfoIcon = styled(InfoTooltip)`
 export function TradeWarning(props: TradeWarningProps) {
   const {
     type = TradeWarningType.LOW,
-    acceptLabel = t`Swap anyway`,
+    acceptLabel,
     text,
     tooltipContent,
     withoutAccepting,
@@ -126,7 +126,7 @@ export function TradeWarning(props: TradeWarningProps) {
                 acceptCallback?.(event.target.checked)
               }}
             />
-            <span>{acceptLabel}</span>
+            <span>{acceptLabel ? acceptLabel : t`Swap anyway`}</span>
           </AcceptBox>
         </div>
       )}

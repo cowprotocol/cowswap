@@ -17,11 +17,11 @@ export function SellForAtLeastTemplate({
   outputAmount,
   srcChainData,
   dstChainData,
-  actionTitle = t`Sell`,
+  actionTitle,
 }: OrderSummaryTemplateProps): ReactNode {
   return (
     <>
-      {actionTitle} {inputAmount}
+      {actionTitle ? actionTitle : t`Sell`} {inputAmount}
       {srcChainData && ` (${srcChainData.label})`} for at least {outputAmount}
       {dstChainData && ` (${dstChainData.label})`}
     </>
@@ -33,11 +33,11 @@ export function BuyForAtMostTemplate({
   outputAmount,
   srcChainData,
   dstChainData,
-  actionTitle = t`Buy`,
+  actionTitle,
 }: OrderSummaryTemplateProps): ReactNode {
   return (
     <>
-      {actionTitle} {outputAmount}
+      {actionTitle ? actionTitle : t`Buy`} {outputAmount}
       {dstChainData && ` (${dstChainData.label})`} for at most {inputAmount}
       {srcChainData && ` (${srcChainData.label})`}
     </>

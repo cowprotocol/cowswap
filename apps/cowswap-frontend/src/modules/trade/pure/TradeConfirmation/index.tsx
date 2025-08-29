@@ -52,17 +52,8 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
   const hasPendingTrade = !!pendingTrade
 
   const props = frozenProps || _props
-  const {
-    onConfirm,
-    onDismiss,
-    isConfirmDisabled,
-    title,
-    buttonText = t`Confirm`,
-    children,
-    recipient,
-    isPriceStatic,
-    appData,
-  } = props
+  const { onConfirm, onDismiss, isConfirmDisabled, title, buttonText, children, recipient, isPriceStatic, appData } =
+    props
 
   /**
    * Once user sends a transaction, we keep the confirmation content frozen
@@ -127,7 +118,7 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
 
         <ConfirmButton
           onConfirm={onConfirm}
-          buttonText={buttonText}
+          buttonText={buttonText ? buttonText : t`Confirm`}
           isButtonDisabled={isButtonDisabled}
           hasPendingTrade={hasPendingTrade}
           signingStep={signingStep}
