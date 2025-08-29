@@ -60,13 +60,11 @@ interface ReceiptProps {
   alternativeOrderModalContext: AlternativeOrderModalContext
 }
 
-const FILLED_COMMON_TOOLTIP = msg`How much of the order has been filled.`
-
 const TOOLTIPS_MSG: Record<string, MessageDescriptor> = {
   LIMIT_PRICE: msg`You will receive this price or better for your tokens.`,
   EXECUTION_PRICE: msg`An order’s actual execution price will vary based on the market price and network costs.`,
   EXECUTES_AT: msg`Network costs (incl. gas) are covered by filling your order when the market price is better than your limit price.`,
-  FILLED_TWAP: FILLED_COMMON_TOOLTIP,
+  FILLED_TWAP: msg`How much of the order has been filled.`,
   SURPLUS: msg`The amount of extra tokens you get on top of your limit price.`,
   NETWORK_COSTS: msg`CoW Protocol covers the costs by executing your order at a slightly better price than your limit price.`,
   CREATED: msg`Your order was created on this date & time. It will remain open until it expires or is filled.`,
@@ -78,7 +76,7 @@ const TOOLTIPS_MSG: Record<string, MessageDescriptor> = {
 const TOOLTIPS_JSX: Record<string, ReactElement> = {
   FILLED: (
     <span>
-      <TransReact id={FILLED_COMMON_TOOLTIP.id} />
+      <TransReact id={TOOLTIPS_MSG.FILLED_TWAP.id} />
       <br />
       <Trans>
         Market orders are always <i>Fill or kill</i>, while limit orders are by default <i>Partially fillable</i>, but
