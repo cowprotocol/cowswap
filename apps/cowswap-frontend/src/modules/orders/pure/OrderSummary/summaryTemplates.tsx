@@ -21,7 +21,7 @@ export function SellForAtLeastTemplate({
 }: OrderSummaryTemplateProps): ReactNode {
   return (
     <>
-      {actionTitle ? actionTitle : t`Sell`} {inputAmount}
+      {actionTitle ?? t`Sell`} {inputAmount}
       {srcChainData && ` (${srcChainData.label})`} for at least {outputAmount}
       {dstChainData && ` (${dstChainData.label})`}
     </>
