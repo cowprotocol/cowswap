@@ -2526,8 +2526,8 @@ msgid "Error"
 msgstr "Error"
 
 #: apps/cowswap-frontend/src/modules/orders/containers/BridgingSuccessNotification/index.tsx
-msgid "Sell {inputAmount} {label}"
-msgstr "Sell {inputAmount} {label}"
+#~ msgid "Sell {inputAmount} {label}"
+#~ msgstr "Sell {inputAmount} {label}"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/SolvingStep.tsx
 msgid "Something went wrong and your order couldn't be executed with this batch. But don't worry! CoW Swap is already holding another competition for your order."
@@ -4943,6 +4943,7 @@ msgid "Loading bridge data <0/>"
 msgstr "Loading bridge data <0/>"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/index.tsx
+#: apps/cowswap-frontend/src/modules/orders/containers/BridgingSuccessNotification/index.tsx
 #: apps/cowswap-frontend/src/modules/orders/pure/OrderSummary/summaryTemplates.tsx
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
 msgid "Sell"
