@@ -1870,6 +1870,10 @@ msgstr "To use {orderType} orders, please connect your wallet <0/>to one of our 
 msgid "When enabled, the limit price stays fixed when changing the BUY amount. When disabled, the limit price will update based on the BUY amount changes."
 msgstr "When enabled, the limit price stays fixed when changing the BUY amount. When disabled, the limit price will update based on the BUY amount changes."
 
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
+msgid "{solversLength} solvers"
+msgstr "{solversLength} solvers"
+
 #: apps/cowswap-frontend/src/pages/Account/LockedGnoVesting/hooks.ts
 msgid "Claim vested"
 msgstr "Claim vested"
@@ -4240,6 +4244,10 @@ msgstr "For this order, network costs would be"
 msgid "Canceling your order"
 msgstr "Canceling your order"
 
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
+msgid "{solversLength} out of {totalSolvers} solvers"
+msgstr "{solversLength} out of {totalSolvers} solvers"
+
 #: apps/cowswap-frontend/src/legacy/components/ErrorBoundary/ErrorWithStackTrace.tsx
 msgid "Something went wrong"
 msgstr "Something went wrong"
@@ -4586,10 +4594,9 @@ msgid "The first part of your TWAP order will become active as soon as you confi
 msgstr "The first part of your TWAP order will become active as soon as you confirm the order below."
 
 #. js-lingui-explicit-id
-#. placeholder {0}: totalSolvers ? '{solvers} out of {totalSolvers} solvers' : '{solvers} solvers'
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
-msgid "solver-rankings"
-msgstr "{0}"
+#~ msgid "solver-rankings"
+#~ msgstr "{0}"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/const/tabs.ts
 msgid "All orders"
