@@ -1,5 +1,7 @@
 import { ReactNode } from 'react'
 
+import * as styledEl from './styled'
+
 export function Option({
   title,
   children,
@@ -12,10 +14,10 @@ export function Option({
   isActive?: boolean
 }): ReactNode {
   return (
-    <button onClick={onClick}>
-      <div>{title}</div>
+    <styledEl.OptionWrapper isActive={isActive} onClick={onClick}>
+      <styledEl.OptionTitle>{title}</styledEl.OptionTitle>
       {isActive}
       {children}
-    </button>
+    </styledEl.OptionWrapper>
   )
 }

@@ -1,9 +1,13 @@
 import React, { ReactNode } from 'react'
 
+import EDIT from '@cowprotocol/assets/cow-swap/edit.svg'
 import { TokenSymbol } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import SVG from 'react-inlinesvg'
+
 import { Option } from './Option'
+import * as styledEl from './styled'
 
 export function Toggle({
   isPartialApproveEnabled,
@@ -15,13 +19,15 @@ export function Toggle({
   amountToApprove: CurrencyAmount<Currency>
 }): ReactNode {
   return (
-    <div>
+    <styledEl.ToggleWrapper>
       <Option isActive={isPartialApproveEnabled} onClick={() => enablePartialApprove(true)} title={'Partial approval'}>
-        {amountToApprove.toExact()} <TokenSymbol token={amountToApprove.currency} />
+        <styledEl.PartialApproveWrapper>
+          {amountToApprove.toSignificant(5)} <TokenSymbol token={amountToApprove.currency} /> <SVG src={EDIT} />
+        </styledEl.PartialApproveWrapper>
       </Option>
       <Option isActive={!isPartialApproveEnabled} onClick={() => enablePartialApprove(false)} title={'Full approval'}>
         Unlimited one-time
       </Option>
-    </div>
+    </styledEl.ToggleWrapper>
   )
 }
