@@ -46,10 +46,10 @@ function UnfillableDescription({
   cancelEventData,
 }: Omit<StepDescriptionProps, 'stepName'>): ReactNode {
   const cancellationModal = showCancellationModal ? (
-    <>
+    <Trans>
       {' '}
       or <CancelButton showCancellationModal={showCancellationModal} cancelEventData={cancelEventData} />
-    </>
+    </Trans>
   ) : (
     '.'
   )
@@ -67,10 +67,10 @@ function DelayedDescription({
   cancelEventData,
 }: Omit<StepDescriptionProps, 'stepName'>): ReactNode {
   const cancellationModal = showCancellationModal ? (
-    <>
+    <Trans>
       {' '}
       or <CancelButton showCancellationModal={showCancellationModal} cancelEventData={cancelEventData} />
-    </>
+    </Trans>
   ) : (
     '.'
   )
