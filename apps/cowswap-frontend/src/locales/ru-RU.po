@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cowswapdev\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-08-28 21:56\n"
+"PO-Revision-Date: 2025-08-29 01:19\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -1122,6 +1122,10 @@ msgstr "из"
 msgid "Error {verb} the order"
 msgstr "Ошибка {verb} заказа"
 
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
+msgid "this order"
+msgstr "этот заказ"
+
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SmallPartTimeWarning.tsx
 msgid "A minimum of <0>{time}</0> between parts is required. Decrease the number of parts or increase the total duration."
 msgstr "Между частями требуется минимум <0>{time}</0>. Уменьшите количество частей или увеличьте общую длительность."
@@ -1566,8 +1570,8 @@ msgid "Replaced"
 msgstr "Заменено"
 
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapConfirmModal/useLabelsAndTooltips.tsx
-msgid "dynamic'"
-msgstr "динамичный"
+#~ msgid "dynamic'"
+#~ msgstr "dynamic'"
 
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
 msgid "MEV Slicer"
@@ -2004,8 +2008,8 @@ msgstr "Если пособие остается недостаточным в �
 #~ msgstr "User rejected signing the order"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
-msgid "Executing', description: 'The winner of the competition is now executing your order on-chain."
-msgstr "Выполнить\", описание: \"Победитель конкурса теперь исполняет Ваш заказ по цепочке."
+#~ msgid "Executing', description: 'The winner of the competition is now executing your order on-chain."
+#~ msgstr "Executing', description: 'The winner of the competition is now executing your order on-chain."
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/BridgeAccordionSummary.tsx
 msgid "Estimated bridge transaction time: {bridgeEstimatedTime} minutes"
@@ -2337,6 +2341,10 @@ msgstr "Хуки взаимодействуют до/после выполнен
 msgid "Add a custom hook"
 msgstr "Добавить пользовательский хук"
 
+#: apps/cowswap-frontend/src/modules/notifications/pure/TelegramConnectionStatus/index.tsx
+msgid "Connected"
+msgstr "Подключено"
+
 #: apps/cowswap-frontend/src/legacy/components/ErrorBoundary/ChunkLoadError.tsx
 msgid "This page can't be reached"
 msgstr "Эта страница недоступна"
@@ -2511,8 +2519,8 @@ msgid "Error"
 msgstr "Ошибка"
 
 #: apps/cowswap-frontend/src/modules/orders/containers/BridgingSuccessNotification/index.tsx
-msgid "Sell {inputAmount} {label}"
-msgstr "Продать {inputAmount} {label}"
+#~ msgid "Sell {inputAmount} {label}"
+#~ msgstr "Sell {inputAmount} {label}"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/SolvingStep.tsx
 msgid "Something went wrong and your order couldn't be executed with this batch. But don't worry! CoW Swap is already holding another competition for your order."
@@ -3252,6 +3260,7 @@ msgstr "Интуитивно понятный интерфейс и улучше
 msgid "External"
 msgstr "Внешний"
 
+#: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/ExecutingStep.tsx
 msgid "The winner of the competition is now executing your order on-chain."
 msgstr "Победитель конкурса в настоящее время выполняет Ваш заказ по цепочке."
@@ -3303,7 +3312,7 @@ msgstr "Сейчас"
 
 #: apps/cowswap-frontend/src/modules/swap/pure/CrossChainUnlockScreen/index.tsx
 msgid "Mooove between <0/> any chain, hassle-free"
-msgstr "Переходите между <0/> любыми сетями легко и просто"
+msgstr "Размещение между <0/> любой цепи, без проблем"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteSwapContent/index.tsx
 msgid "The address that will receive the tokens."
@@ -3324,6 +3333,10 @@ msgstr "Заполняется"
 #: apps/cowswap-frontend/src/common/hooks/useConfirmPriceImpactWithoutFee.ts
 msgid "Confirm Price Impact"
 msgstr "Подтверждение влияния цены"
+
+#: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
+msgid "Executing"
+msgstr "Выполнение"
 
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/SurplusCard.tsx
 msgid "The total surplus CoW Swap has generated for you in {nativeSymbol} across all your trades since {startDate}."
@@ -3644,6 +3657,10 @@ msgstr "Баланс"
 msgid "The Uniswap invariant x*y=k was not satisfied by the swap. This usually means one of the tokens you are swapping incorporates custom behavior on transfer."
 msgstr "Инвентарист Uniswap x*y=k не удовлетворен обменом. Обычно это означает, что один из токенов, который вы осуществляете, включает в себя индивидуальное поведение при передаче."
 
+#: apps/cowswap-frontend/src/modules/swap/containers/SwapConfirmModal/useLabelsAndTooltips.tsx
+msgid "dynamic"
+msgstr "динамичный"
+
 #: apps/cowswap-frontend/src/common/pure/PoweredFooter/index.tsx
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AppliedHookItem/index.tsx
 msgid "Powered by"
@@ -3854,8 +3871,8 @@ msgid "Select a network"
 msgstr "Выберите сеть"
 
 #: apps/cowswap-frontend/src/modules/notifications/pure/TelegramConnectionStatus/index.tsx
-msgid "Connected <0/>"
-msgstr "Подключено <0/>"
+#~ msgid "Connected <0/>"
+#~ msgstr "Connected <0/>"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/DeadlineSelector/index.tsx
 msgid "Choose a custom deadline for your limit order"
@@ -4129,7 +4146,7 @@ msgstr "Подтвердите с помощью кошелька"
 
 #: apps/cowswap-frontend/src/modules/swap/pure/CrossChainUnlockScreen/index.tsx
 msgid "Swaps just got smarter"
-msgstr "Обмены стали умнее"
+msgstr "Меняет только что умнее"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/HighFeeWarning/highFeeWarningHelpers.ts
 msgid "Swap costs are at least {formattedFeePercentage}% of the swap amount"
@@ -4917,6 +4934,7 @@ msgid "Loading bridge data <0/>"
 msgstr "Загрузка данных моста <0/>"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/index.tsx
+#: apps/cowswap-frontend/src/modules/orders/containers/BridgingSuccessNotification/index.tsx
 #: apps/cowswap-frontend/src/modules/orders/pure/OrderSummary/summaryTemplates.tsx
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
 msgid "Sell"

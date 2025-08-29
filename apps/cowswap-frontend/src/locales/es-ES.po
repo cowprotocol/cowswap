@@ -8,7 +8,7 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: cowswapdev\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-08-28 21:55\n"
+"PO-Revision-Date: 2025-08-29 01:19\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -1122,6 +1122,10 @@ msgstr "de"
 msgid "Error {verb} the order"
 msgstr "Error {verb} la orden"
 
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
+msgid "this order"
+msgstr "este pedido"
+
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SmallPartTimeWarning.tsx
 msgid "A minimum of <0>{time}</0> between parts is required. Decrease the number of parts or increase the total duration."
 msgstr "Se requiere un mínimo de <0>{time}</0> entre partes. Reducir el número de partes o aumentar la duración total."
@@ -1566,8 +1570,8 @@ msgid "Replaced"
 msgstr "Reemplazado"
 
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapConfirmModal/useLabelsAndTooltips.tsx
-msgid "dynamic'"
-msgstr "dinámico'"
+#~ msgid "dynamic'"
+#~ msgstr "dynamic'"
 
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
 msgid "MEV Slicer"
@@ -2004,8 +2008,8 @@ msgstr "Si la asignación sigue siendo insuficiente en tiempo de creación, esta
 #~ msgstr "User rejected signing the order"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
-msgid "Executing', description: 'The winner of the competition is now executing your order on-chain."
-msgstr "Ejecutando', descripción: 'El ganador del concurso está ahora ejecutando su pedido en cadena."
+#~ msgid "Executing', description: 'The winner of the competition is now executing your order on-chain."
+#~ msgstr "Executing', description: 'The winner of the competition is now executing your order on-chain."
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/BridgeAccordionSummary.tsx
 msgid "Estimated bridge transaction time: {bridgeEstimatedTime} minutes"
@@ -2337,6 +2341,10 @@ msgstr "Los Hooks son interacciones antes/después de la ejecución de la orden.
 msgid "Add a custom hook"
 msgstr "Añadir un hook personalizado"
 
+#: apps/cowswap-frontend/src/modules/notifications/pure/TelegramConnectionStatus/index.tsx
+msgid "Connected"
+msgstr "Conectado"
+
 #: apps/cowswap-frontend/src/legacy/components/ErrorBoundary/ChunkLoadError.tsx
 msgid "This page can't be reached"
 msgstr "No se puede acceder a esta página"
@@ -2511,8 +2519,8 @@ msgid "Error"
 msgstr "Error"
 
 #: apps/cowswap-frontend/src/modules/orders/containers/BridgingSuccessNotification/index.tsx
-msgid "Sell {inputAmount} {label}"
-msgstr "Vender {inputAmount} {label}"
+#~ msgid "Sell {inputAmount} {label}"
+#~ msgstr "Sell {inputAmount} {label}"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/SolvingStep.tsx
 msgid "Something went wrong and your order couldn't be executed with this batch. But don't worry! CoW Swap is already holding another competition for your order."
@@ -3252,6 +3260,7 @@ msgstr "IU más intuitiva y diseño mejorado"
 msgid "External"
 msgstr "Externo"
 
+#: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/ExecutingStep.tsx
 msgid "The winner of the competition is now executing your order on-chain."
 msgstr "El ganador del concurso está ejecutando su pedido en cadena."
@@ -3324,6 +3333,10 @@ msgstr "Rellenar en"
 #: apps/cowswap-frontend/src/common/hooks/useConfirmPriceImpactWithoutFee.ts
 msgid "Confirm Price Impact"
 msgstr "Confirmar Impacto de Precio"
+
+#: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
+msgid "Executing"
+msgstr "Ejecutando"
 
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/SurplusCard.tsx
 msgid "The total surplus CoW Swap has generated for you in {nativeSymbol} across all your trades since {startDate}."
@@ -3644,6 +3657,10 @@ msgstr "Saldo"
 msgid "The Uniswap invariant x*y=k was not satisfied by the swap. This usually means one of the tokens you are swapping incorporates custom behavior on transfer."
 msgstr "El invariante Uniswap x*y=k no estaba satisfecho con el intercambio. Esto generalmente significa que uno de los tokens que estás intercambiando incorpora un comportamiento personalizado en la transferencia."
 
+#: apps/cowswap-frontend/src/modules/swap/containers/SwapConfirmModal/useLabelsAndTooltips.tsx
+msgid "dynamic"
+msgstr "dinámico"
+
 #: apps/cowswap-frontend/src/common/pure/PoweredFooter/index.tsx
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AppliedHookItem/index.tsx
 msgid "Powered by"
@@ -3854,8 +3871,8 @@ msgid "Select a network"
 msgstr "Seleccione una red"
 
 #: apps/cowswap-frontend/src/modules/notifications/pure/TelegramConnectionStatus/index.tsx
-msgid "Connected <0/>"
-msgstr "Conectado <0/>"
+#~ msgid "Connected <0/>"
+#~ msgstr "Connected <0/>"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/DeadlineSelector/index.tsx
 msgid "Choose a custom deadline for your limit order"
@@ -4917,6 +4934,7 @@ msgid "Loading bridge data <0/>"
 msgstr "Cargando datos de puente <0/>"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/index.tsx
+#: apps/cowswap-frontend/src/modules/orders/containers/BridgingSuccessNotification/index.tsx
 #: apps/cowswap-frontend/src/modules/orders/pure/OrderSummary/summaryTemplates.tsx
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
 msgid "Sell"
