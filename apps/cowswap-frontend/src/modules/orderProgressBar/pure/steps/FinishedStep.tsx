@@ -256,13 +256,14 @@ export function FinishedStep({
             {solvers.length > 1 && (
               <p>
                 <b>
-                  {solvers.length}{' '}
-                  {totalSolvers && (
-                    <>
-                      <Trans>out of</Trans> {totalSolvers}
-                    </>
-                  )}{' '}
-                  <Trans>solvers</Trans>
+                  <Trans id="solver-rankings"
+                    values={{
+                      solvers: solvers.length,
+                      totalSolvers: totalSolvers,
+                    }}
+                  >
+                    {totalSolvers ? '{solvers} out of {totalSolvers} solvers' : '{solvers} solvers'}
+                  </Trans>
                 </b>{' '}
                 <Trans>submitted a solution</Trans>
               </p>
