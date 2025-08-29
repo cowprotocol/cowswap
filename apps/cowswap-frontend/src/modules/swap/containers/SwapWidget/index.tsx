@@ -163,7 +163,6 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
         return (
           <>
             {bottomContent}
-            // todo refactor it
             {enablePartialApprovalState && enablePartialApprovalState[0] && maximumSendSellAmount ? (
               <TradeApproveToggle amountToApprove={maximumSendSellAmount} />
             ) : null}
