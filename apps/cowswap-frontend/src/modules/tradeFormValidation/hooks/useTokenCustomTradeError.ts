@@ -12,10 +12,10 @@ export function useTokenCustomTradeError(
   outputCurrent: Currency | undefined | null,
   error: TradeQuoteState['error'],
 ): string | undefined {
-  const inputToken = inputCurrency?.isToken ? inputCurrency : undefined
-  const outputToken = outputCurrent?.isToken ? outputCurrent : undefined
-  const ondoToken = useIsAnyOfTokensOndo(inputToken, outputToken)
   const isWeekendDay = isWeekend()
+  const inputToken = !isWeekendDay && inputCurrency?.isToken ? inputCurrency : undefined
+  const outputToken = !isWeekendDay && outputCurrent?.isToken ? outputCurrent : undefined
+  const ondoToken = useIsAnyOfTokensOndo(inputToken, outputToken)
 
   return useMemo(() => {
     if (!isWeekendDay) return undefined
