@@ -47,7 +47,7 @@ const curatedListSourceAtom = atom((get) => {
 
   const ONDO_LiST_SOURCE: ListSourceConfig = {
     priority: 2,
-    enabledByDefault: true,
+    enabledByDefault: false,
     source: ONDO_TOKENS_LIST_SOURCE,
   }
 
