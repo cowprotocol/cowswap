@@ -37,7 +37,7 @@ const UNISWAP_TOKEN_LIST_URL: Record<SupportedChainId, string> = {
   [SupportedChainId.BNB]: 'https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/Uniswap.56.json',
 }
 
-const ONDO_LiST_SOURCE: ListSourceConfig = {
+const ONDO_LIST_SOURCE: ListSourceConfig = {
   priority: 2,
   enabledByDefault: false,
   source: ONDO_TOKENS_LIST_SOURCE,
@@ -53,7 +53,7 @@ const curatedListSourceAtom = atom((get) => {
 
   const hasOndoList = chainId === SupportedChainId.MAINNET
 
-  return [UNISWAP_LIST_SOURCE].concat(hasOndoList ? [ONDO_LiST_SOURCE] : [])
+  return [UNISWAP_LIST_SOURCE].concat(hasOndoList ? [ONDO_LIST_SOURCE] : [])
 })
 
 export const userAddedListsSourcesAtom = atomWithStorage<ListsSourcesByNetwork>(
