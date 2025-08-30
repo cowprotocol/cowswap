@@ -2,8 +2,7 @@ import { ReactNode } from 'react'
 
 import { Currency } from '@uniswap/sdk-core'
 
-import { usePendingApprovalModal } from 'common/hooks/usePendingApprovalModal'
-
+import { usePendingApprovalModal } from '../../hooks'
 import { useUpdateTradeApproveState } from '../../state'
 
 export function TradeApproveModal({ currency }: { currency: Currency | undefined }): ReactNode {
