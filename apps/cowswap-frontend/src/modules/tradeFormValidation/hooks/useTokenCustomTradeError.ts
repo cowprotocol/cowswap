@@ -15,17 +15,16 @@ export function useTokenCustomTradeError(
   const inputToken = inputCurrency?.isToken ? inputCurrency : undefined
   const outputToken = outputCurrent?.isToken ? outputCurrent : undefined
   const ondoToken = useIsAnyOfTokensOndo(inputToken, outputToken)
+  const isWeekendDay = isWeekend()
 
   return useMemo(() => {
+    if (!isWeekendDay) return undefined
     if (!ondoToken) return undefined
     if (!isValidQuoteError(error)) return undefined
     if (error.type !== QuoteApiErrorCodes.InsufficientLiquidity) return undefined
-    // Ondo tokens are not tradable on weekends only
-    // it's not a pure function, but it's ok for this case
-    if (!isWeekend()) return undefined
 
     return `${ondoToken.symbol} not tradable until Sunday 23:59 UTC`
-  }, [error, ondoToken])
+  }, [isWeekendDay, error, ondoToken])
 }
 
 function isWeekend(): boolean {
