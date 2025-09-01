@@ -117,6 +117,7 @@ export enum UI {
   COLOR_NEUTRAL_10 = '--cow-color-neutral-10',
   COLOR_NEUTRAL_0 = '--cow-color-neutral-0',
   COLOR_BLACK = '--cow-color-neutral-0',
+  COLOR_BLACK_OPACITY_90 = '--cow-color-neutral-0-opacity-90',
 
   // Elements
   COLOR_BORDER = '--cow-color-border',

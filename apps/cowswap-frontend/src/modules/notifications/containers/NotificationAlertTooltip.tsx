@@ -32,12 +32,20 @@ const TooltipTitle = styled.h3`
   font-weight: 700;
   color: var(${UI.COLOR_TEXT});
 
+  ${Media.upToSmall()} {
+    font-size: 24px;
+  }
+
   > svg {
     --size: 20px;
     width: var(--size);
     height: var(--size);
     color: var(${UI.COLOR_TEXT});
     display: inline-block;
+
+    ${Media.upToSmall()} {
+      --size: 24px;
+    }
   }
 `
 
@@ -47,13 +55,23 @@ const TooltipBody = styled.p`
   color: var(${UI.COLOR_TEXT_OPACITY_70});
   line-height: 1;
   font-size: 14px;
+
+  ${Media.upToSmall()} {
+    font-size: 16px;
+  }
 `
 
 const TooltipActions = styled.div`
   display: flex;
   flex-flow: column wrap;
+  width: 100%;
   gap: 16px;
   margin: 10px 0 0;
+
+  ${Media.upToSmall()} {
+    gap: 24px;
+    margin: 24px auto;
+  }
 `
 
 const SecondaryButton = styled.button`
@@ -67,6 +85,12 @@ const SecondaryButton = styled.button`
   font-size: inherit;
   font-weight: inherit;
 
+  ${Media.upToSmall()} {
+    font-size: 16px;
+    min-height: 56px;
+    padding: 16px;
+  }
+
   &:hover {
     color: var(${UI.COLOR_TEXT});
   }
@@ -76,6 +100,12 @@ const PrimaryButton = styled(ButtonPrimary)`
   font-size: 14px;
   min-height: 40px;
   padding: 8px 16px;
+
+  ${Media.upToSmall()} {
+    font-size: 16px;
+    min-height: 56px;
+    padding: 16px;
+  }
 `
 
 interface NotificationAlertTooltipProps {

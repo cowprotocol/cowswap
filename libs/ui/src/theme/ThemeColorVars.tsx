@@ -130,6 +130,7 @@ export const ThemeColorVars = css`
     ${UI.COLOR_NEUTRAL_10}: ${({ theme }) => theme.neutral10};
     ${UI.COLOR_NEUTRAL_0}: ${({ theme }) => theme.neutral0};
     ${UI.COLOR_BLACK}: ${({ theme }) => theme.neutral0};
+    ${UI.COLOR_BLACK_OPACITY_90}: ${({ theme }) => transparentize(theme.neutral0, 0.1)};
 
     // CoW AMM Colors
     ${UI.COLOR_COWAMM_DARK_GREEN}: #194d05;
