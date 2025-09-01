@@ -51,12 +51,15 @@ export function ConnectTelegram(): ReactNode {
   )
 
   useEffect(() => {
-    if (!account || !tgData) return
+    if (!account || !tgData) {
+      setTgSubscribed(false)
+      return
+    }
 
-    setTgSubscribed(false)
-
-    checkOrAddTgSubscription('/add-tg-subscription')
-  }, [account, tgData, checkOrAddTgSubscription])
+    if (!isTgSubscribed) {
+      checkOrAddTgSubscription('/add-tg-subscription')
+    }
+  }, [isTgSubscribed, account, tgData, checkOrAddTgSubscription])
 
   useEffect(() => {
     if (!telegramWrapperRef.current) return

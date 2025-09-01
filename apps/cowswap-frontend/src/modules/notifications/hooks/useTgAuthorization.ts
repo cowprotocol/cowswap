@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
+import ms from 'ms.macro'
+
 import { getTelegramAuth } from '../services/getTelegramAuth'
+
+const TG_SESSION_CHECK_INTERVAL = ms`3s`
 
 const TG_BOT_ID = 7076584722 // cowNotificationsBot
 
@@ -33,13 +37,13 @@ export function useTgAuthorization(): TgAuthorization {
 
   const isAuthRequestedRef = useRef(false)
 
-  const authenticate = useCallback((callback?: () => void): void => {
+  const authenticate = useCallback((callback?: (tgData: TelegramData | null) => void): void => {
     getTelegramAuth(TG_BOT_ID, (response) => {
-      if (response && response.user) {
-        setTgData(response.user)
-      }
+      const tgData = (response && response.user) || null
+
+      setTgData(tgData)
       setIsAuthChecked(true)
-      callback?.()
+      callback?.(tgData)
     })
   }, [])
 
@@ -68,7 +72,13 @@ export function useTgAuthorization(): TgAuthorization {
 
     isAuthRequestedRef.current = true
 
-    authenticate()
+    authenticate((tgData) => {
+      if (!tgData) return
+
+      // When is connected to Telegram, do a periodical check if the connection still exists
+      // Because the session might be terminated from Telegram side
+      setInterval(authenticate, TG_SESSION_CHECK_INTERVAL)
+    })
   }, [authenticate])
 
   return { authorize, tgData, isAuthChecked, isLoginInProgress }
