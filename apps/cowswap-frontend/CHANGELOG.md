@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.118.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.118.1...cowswap-v1.118.2) (2025-09-01)
+
+
+### Bug Fixes
+
+* do not crash when metadata is undefined ([#6204](https://github.com/cowprotocol/cowswap/issues/6204)) ([38de63a](https://github.com/cowprotocol/cowswap/commit/38de63ace9b104211e0eeacc4c68045fff6c793f))
+
 ## [1.118.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.118.0...cowswap-v1.118.1) (2025-08-28)
 
 
