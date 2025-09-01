@@ -16,7 +16,6 @@ import type { OffsetsFunction } from '@popperjs/core/lib/modifiers/offset'
 const MOBILE_FULL_WIDTH_STYLES = {
   width: '100vw',
   maxWidth: '100vw',
-  borderRadius: '12px 12px 0 0',
   boxSizing: 'border-box' as const,
 }
 
@@ -62,6 +61,7 @@ export interface PopoverProps extends PopoverContainerProps, Omit<React.HTMLAttr
   placement?: Placement
   mobileMode?: 'popper' | 'fullWidth'
   showMobileBackdrop?: boolean
+  mobileBorderRadius?: string
 }
 
 export default function Popover(props: PopoverProps): React.JSX.Element {
@@ -76,6 +76,7 @@ export default function Popover(props: PopoverProps): React.JSX.Element {
     className,
     mobileMode = 'popper',
     showMobileBackdrop = false,
+    mobileBorderRadius,
   } = props
 
   const [referenceElement, setReferenceElement] = useState<HTMLDivElement | null>(null)
@@ -125,6 +126,8 @@ export default function Popover(props: PopoverProps): React.JSX.Element {
             zIndex: 999999,
             // Add full-width styling for mobile
             ...(shouldUseFullWidth && MOBILE_FULL_WIDTH_STYLES),
+            // Add mobile border radius if specified
+            ...(shouldUseFullWidth && mobileBorderRadius && { borderRadius: mobileBorderRadius }),
           }}
           {...attributes.popper}
           bgColor={bgColor}

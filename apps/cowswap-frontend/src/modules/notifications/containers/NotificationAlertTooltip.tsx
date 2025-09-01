@@ -117,6 +117,7 @@ export function NotificationAlertTooltip({
       borderColor={`var(${UI.COLOR_BLUE_700_PRIMARY_OPACITY_25})`}
       mobileMode="fullWidth"
       showMobileBackdrop={true}
+      mobileBorderRadius="12px 12px 0 0"
     >
       {children}
     </Tooltip>
