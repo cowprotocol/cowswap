@@ -1,7 +1,8 @@
-import { ReactNode, useState } from 'react'
+import { ReactNode, useRef, useState } from 'react'
 
 import { useNativeCurrencyAmount } from '@cowprotocol/balances-and-allowances'
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { TokenAmount } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -11,6 +12,8 @@ import { upToLarge, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 
 import { useToggleAccountModal } from 'modules/account'
 import { NotificationBell, NotificationSidebar } from 'modules/notifications'
+import { NotificationAlertTooltip } from 'modules/notifications/containers/NotificationAlertTooltip'
+import { useNotificationAlertDismissal } from 'modules/notifications/hooks/useNotificationAlertDismissal'
 import { useUnreadNotifications } from 'modules/notifications/hooks/useUnreadNotifications'
 import { Web3Status } from 'modules/wallet/containers/Web3Status'
 
@@ -43,10 +46,22 @@ export function AccountElement({ className, standaloneMode }: AccountElementProp
   const unreadNotificationsCount = Object.keys(unreadNotifications).length
 
   const [isSidebarOpen, setSidebarOpen] = useState(false)
+  const [shouldOpenSettings, setShouldOpenSettings] = useState(false)
+  const wrapperRef = useRef<HTMLDivElement>(null)
+  const { isDismissed, dismiss } = useNotificationAlertDismissal()
+  const { areTelegramNotificationsEnabled } = useFeatureFlags()
+
+  const shouldShowTooltip = !!account && !isDismissed && unreadNotificationsCount === 0
+
+  const handleEnableAlerts = (): void => {
+    setShouldOpenSettings(areTelegramNotificationsEnabled)
+    setSidebarOpen(true)
+    dismiss()
+  }
 
   return (
     <>
-      <Wrapper className={className} active={!!account}>
+      <Wrapper className={className} active={!!account} ref={wrapperRef}>
         {standaloneMode !== false && account && !isChainIdUnsupported && userEthBalance && chainId && !isUpToLarge && (
           <BalanceText>
             <TokenAmount amount={userEthBalance} tokenSymbol={{ symbol: nativeTokenSymbol }} />
@@ -54,18 +69,32 @@ export function AccountElement({ className, standaloneMode }: AccountElementProp
         )}
         <Web3Status onClick={() => account && toggleAccountModal()} />
         {account && (
-          <NotificationBell
-            unreadCount={unreadNotificationsCount}
-            data-click-event={createNotificationClickEventData(
-              unreadNotificationsCount === 0 ? 'click-bell' : 'click-bell-with-pending-notifications',
-            )}
-            onClick={() => setSidebarOpen(true)}
-          />
+          <NotificationAlertTooltip
+            show={shouldShowTooltip}
+            onEnableAlerts={handleEnableAlerts}
+            onDismiss={dismiss}
+            containerRef={wrapperRef}
+          >
+            <NotificationBell
+              unreadCount={unreadNotificationsCount}
+              data-click-event={createNotificationClickEventData(
+                unreadNotificationsCount === 0 ? 'click-bell' : 'click-bell-with-pending-notifications',
+              )}
+              onClick={() => setSidebarOpen(true)}
+            />
+          </NotificationAlertTooltip>
         )}
       </Wrapper>
 
       {ReactDOM.createPortal(
-        <NotificationSidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} />,
+        <NotificationSidebar
+          isOpen={isSidebarOpen}
+          onClose={() => {
+            setSidebarOpen(false)
+            setShouldOpenSettings(false)
+          }}
+          initialSettingsOpen={shouldOpenSettings}
+        />,
         document.body,
       )}
     </>
