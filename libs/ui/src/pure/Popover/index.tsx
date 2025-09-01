@@ -1,6 +1,6 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 
-import { useMediaQuery, useInterval } from '@cowprotocol/common-hooks'
+import { useMediaQuery, useInterval, useElementViewportTracking } from '@cowprotocol/common-hooks'
 
 import { Options, Placement, Modifier } from '@popperjs/core'
 import { Portal } from '@reach/portal'
@@ -9,6 +9,7 @@ import { usePopper } from 'react-popper'
 import { Arrow, MobileBackdrop, PopoverContainer, ReferenceElement } from './styled'
 
 import { Media } from '../../consts'
+import { calculateAvailableSpaceAbove } from '../../utils/calculateAvailableSpaceAbove'
 
 import type { OffsetsFunction } from '@popperjs/core/lib/modifiers/offset'
 
@@ -47,44 +48,68 @@ function createDesktopModifiers(arrowElement: HTMLDivElement | null): Array<Part
   ]
 }
 
-interface RenderPopoverProps {
-  children: React.ReactNode
-  isMobile: boolean
-  showMobileBackdrop: boolean
-  backdropHeight: string
+
+export interface PopoverContainerProps {
   show: boolean
-  className?: string
-  styles: { popper?: React.CSSProperties; arrow?: React.CSSProperties }
-  shouldUseFullWidth: boolean
-  attributes: { popper?: Record<string, unknown>; arrow?: Record<string, unknown> }
   bgColor?: string
   color?: string
   borderColor?: string
-  content: React.ReactNode
-  setReferenceElement: (element: HTMLDivElement | null) => void
-  setPopperElement: (element: HTMLDivElement | null) => void
-  setArrowElement: (element: HTMLDivElement | null) => void
 }
 
-function renderPopover(props: RenderPopoverProps): React.JSX.Element {
+export interface PopoverProps extends PopoverContainerProps, Omit<React.HTMLAttributes<HTMLDivElement>, 'content'> {
+  content: React.ReactNode
+  children: React.ReactNode
+  placement?: Placement
+  mobileMode?: 'popper' | 'fullWidth'
+  showMobileBackdrop?: boolean
+}
+
+export default function Popover(props: PopoverProps): React.JSX.Element {
   const {
-    children,
-    isMobile,
-    showMobileBackdrop,
-    backdropHeight,
+    content,
     show,
-    className,
-    styles,
-    shouldUseFullWidth,
-    attributes,
+    children,
+    placement = 'auto',
     bgColor,
     color,
     borderColor,
-    content,
-    setReferenceElement,
-    setPopperElement,
-    setArrowElement,
+    className,
+    mobileMode = 'popper',
+    showMobileBackdrop = false,
   } = props
+
+  const [referenceElement, setReferenceElement] = useState<HTMLDivElement | null>(null)
+  const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(null)
+  const [arrowElement, setArrowElement] = useState<HTMLDivElement | null>(null)
+
+  const isMobile = useMediaQuery(Media.upToSmall(false))
+  const shouldUseFullWidth = isMobile && mobileMode === 'fullWidth'
+
+  // Use hook for viewport tracking and utility for backdrop height calculation
+  const { rect } = useElementViewportTracking(referenceElement, shouldUseFullWidth && showMobileBackdrop)
+  
+  const backdropHeight = useMemo(() => {
+    if (!shouldUseFullWidth || !showMobileBackdrop) return '100vh'
+    return calculateAvailableSpaceAbove(rect, 8)
+  }, [rect, shouldUseFullWidth, showMobileBackdrop])
+
+  const options = useMemo(
+    (): Options => ({
+      placement: shouldUseFullWidth ? 'top' : placement,
+      strategy: 'fixed',
+      modifiers: shouldUseFullWidth
+        ? createMobileModifiers(arrowElement)
+        : createDesktopModifiers(arrowElement),
+    }),
+    [arrowElement, placement, shouldUseFullWidth],
+  )
+
+  const { styles, update, attributes } = usePopper(referenceElement, popperElement, options)
+
+  const updateCallback = useCallback(() => {
+    update && update()
+  }, [update])
+  useInterval(updateCallback, show ? 100 : null)
 
   return (
     <>
@@ -119,135 +144,4 @@ function renderPopover(props: RenderPopoverProps): React.JSX.Element {
       </Portal>
     </>
   )
-}
-
-export interface PopoverContainerProps {
-  show: boolean
-  bgColor?: string
-  color?: string
-  borderColor?: string
-}
-
-export interface PopoverProps extends PopoverContainerProps, Omit<React.HTMLAttributes<HTMLDivElement>, 'content'> {
-  content: React.ReactNode
-  children: React.ReactNode
-  placement?: Placement
-  mobileMode?: 'popper' | 'fullWidth'
-  showMobileBackdrop?: boolean
-}
-
-// eslint-disable-next-line max-lines-per-function
-export default function Popover(props: PopoverProps): React.JSX.Element {
-  const {
-    content,
-    show,
-    children,
-    placement = 'auto',
-    bgColor,
-    color,
-    borderColor,
-    className,
-    mobileMode = 'popper',
-    showMobileBackdrop = false,
-  } = props
-
-  const [referenceElement, setReferenceElement] = useState<HTMLDivElement | null>(null)
-  const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(null)
-  const [arrowElement, setArrowElement] = useState<HTMLDivElement | null>(null)
-
-  const isMobile = useMediaQuery(Media.upToSmall(false))
-  const shouldUseFullWidth = isMobile && mobileMode === 'fullWidth'
-
-  // State to force recalculation on viewport changes
-  const [viewportKey, setViewportKey] = useState(0)
-
-  // Efficient viewport change detection with debouncing
-  useEffect(() => {
-    if (!shouldUseFullWidth || !showMobileBackdrop) return
-
-    let timeoutId: number | undefined
-
-    const debouncedResize = (): void => {
-      if (timeoutId) clearTimeout(timeoutId)
-      timeoutId = window.setTimeout(() => {
-        setViewportKey(prev => prev + 1)
-      }, 16) // ~60fps debounce
-    }
-
-    // Use ResizeObserver for reference element changes if available
-    let resizeObserver: ResizeObserver | undefined
-    if (referenceElement && window.ResizeObserver) {
-      resizeObserver = new ResizeObserver(debouncedResize)
-      resizeObserver.observe(referenceElement)
-    }
-
-    // Minimal event listeners for actual viewport changes
-    window.addEventListener('resize', debouncedResize, { passive: true })
-    window.addEventListener('orientationchange', debouncedResize, { passive: true })
-
-    // Visual viewport for mobile browser UI changes
-    if (window.visualViewport) {
-      window.visualViewport.addEventListener('resize', debouncedResize)
-    }
-
-    return () => {
-      if (timeoutId) clearTimeout(timeoutId)
-      resizeObserver?.disconnect()
-      window.removeEventListener('resize', debouncedResize)
-      window.removeEventListener('orientationchange', debouncedResize)
-      if (window.visualViewport) {
-        window.visualViewport.removeEventListener('resize', debouncedResize)
-      }
-    }
-  }, [shouldUseFullWidth, showMobileBackdrop, referenceElement])
-
-  // Calculate backdrop height to stop just above the tooltip (8px gap)
-  const backdropHeight = useMemo(() => {
-    if (!referenceElement || !shouldUseFullWidth || !showMobileBackdrop) return '100vh'
-    
-    const rect = referenceElement.getBoundingClientRect()
-    const gapFromElement = 8 // Same gap as used in the mobile modifier
-    const maxHeight = rect.top - gapFromElement
-    
-    return `${Math.max(0, maxHeight)}px`
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [referenceElement, shouldUseFullWidth, showMobileBackdrop, viewportKey])
-
-  const options = useMemo(
-    (): Options => ({
-      placement: shouldUseFullWidth ? 'top' : placement,
-      strategy: 'fixed',
-      modifiers: shouldUseFullWidth
-        ? createMobileModifiers(arrowElement)
-        : createDesktopModifiers(arrowElement),
-    }),
-    [arrowElement, placement, shouldUseFullWidth],
-  )
-
-  const { styles, update, attributes } = usePopper(referenceElement, popperElement, options)
-
-  const updateCallback = useCallback(() => {
-    update && update()
-  }, [update])
-
-  useInterval(updateCallback, show ? 100 : null)
-
-  return renderPopover({
-    children,
-    isMobile,
-    showMobileBackdrop,
-    backdropHeight,
-    show,
-    className,
-    styles,
-    shouldUseFullWidth,
-    attributes,
-    bgColor,
-    color,
-    borderColor,
-    content,
-    setReferenceElement,
-    setPopperElement,
-    setArrowElement,
-  })
 }
