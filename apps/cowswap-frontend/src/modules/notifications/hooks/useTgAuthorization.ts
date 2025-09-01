@@ -6,7 +6,8 @@ import { getTelegramAuth } from '../services/getTelegramAuth'
 
 const TG_SESSION_CHECK_INTERVAL = ms`3s`
 
-const TG_BOT_ID = 7076584722 // cowNotificationsBot
+const ENV_TG_BOT_ID = process.env.REACT_APP_TG_BOT_ID
+const TG_BOT_ID = ENV_TG_BOT_ID ? parseInt(ENV_TG_BOT_ID) : 7076584722 // cowNotificationsBot
 
 const AUTH_OPTIONS = {
   bot_id: TG_BOT_ID,
