@@ -73,13 +73,19 @@ export function useTgAuthorization(): TgAuthorization {
 
     isAuthRequestedRef.current = true
 
+    let intervalId: number | null = null
+
     authenticate((tgData) => {
       if (!tgData) return
 
       // When is connected to Telegram, do a periodical check if the connection still exists
       // Because the session might be terminated from Telegram side
-      setInterval(authenticate, TG_SESSION_CHECK_INTERVAL)
+      intervalId = setInterval(authenticate, TG_SESSION_CHECK_INTERVAL) as unknown as number
     })
+
+    return () => {
+      if (intervalId) clearInterval(intervalId)
+    }
   }, [authenticate])
 
   return { authorize, tgData, isAuthChecked, isLoginInProgress }
