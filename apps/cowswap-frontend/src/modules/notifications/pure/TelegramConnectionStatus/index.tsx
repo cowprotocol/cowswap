@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { Loader, UI } from '@cowprotocol/ui'
 
 import { CheckCircle } from 'react-feather'
@@ -22,9 +24,11 @@ interface TelegramConnectionStatusProps {
   subscribeAccount(): void
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function TelegramConnectionStatus({ isLoading, isSubscribed, subscribeAccount }: TelegramConnectionStatusProps) {
+export function TelegramConnectionStatus({
+  isLoading,
+  isSubscribed,
+  subscribeAccount,
+}: TelegramConnectionStatusProps): ReactNode {
   if (isLoading) {
     return <Loader />
   }

@@ -50,24 +50,12 @@ export function ConnectTelegram(): ReactNode {
     [tgData, account],
   )
 
-  const subscribeAccount = (): void => {
-    const addSubscription = (): void => {
-      checkOrAddTgSubscription('/add-tg-subscription')
-    }
-
-    if (!isTgSubscribed) {
-      authorize(addSubscription)
-    } else {
-      addSubscription()
-    }
-  }
-
   useEffect(() => {
     if (!account || !tgData) return
 
     setTgSubscribed(false)
 
-    checkOrAddTgSubscription('/check-tg-subscription')
+    checkOrAddTgSubscription('/add-tg-subscription')
   }, [account, tgData, checkOrAddTgSubscription])
 
   useEffect(() => {
@@ -94,11 +82,7 @@ export function ConnectTelegram(): ReactNode {
     <Wrapper ref={telegramWrapperRef}>
       <Option>
         <div>Enable notifications</div>
-        <TelegramConnectionStatus
-          isLoading={isLoading}
-          isSubscribed={isTgSubscribed}
-          subscribeAccount={subscribeAccount}
-        />
+        <TelegramConnectionStatus isLoading={isLoading} isSubscribed={isTgSubscribed} subscribeAccount={authorize} />
       </Option>
     </Wrapper>
   )

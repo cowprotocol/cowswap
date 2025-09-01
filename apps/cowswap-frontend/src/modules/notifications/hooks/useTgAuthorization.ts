@@ -21,7 +21,7 @@ interface TelegramData {
 
 export interface TgAuthorization {
   tgData: TelegramData | null
-  authorize(callback: () => void): void
+  authorize(): void
   isAuthChecked: boolean
   isLoginInProgress: boolean
 }
@@ -43,27 +43,22 @@ export function useTgAuthorization(): TgAuthorization {
     })
   }, [])
 
-  const authorize = useCallback(
-    (callback: () => void): void => {
-      if (!window.Telegram) return
+  const authorize = useCallback((): void => {
+    if (!window.Telegram) return
 
-      setIsLoginInProgress(true)
+    setIsLoginInProgress(true)
 
-      window.Telegram.Login.auth(AUTH_OPTIONS, (data) => {
-        if (data) {
-          setTgData(data)
+    window.Telegram.Login.auth(AUTH_OPTIONS, (data) => {
+      if (data) {
+        setTgData(data)
+        setIsLoginInProgress(false)
+      } else {
+        authenticate(() => {
           setIsLoginInProgress(false)
-          callback()
-        } else {
-          authenticate(() => {
-            setIsLoginInProgress(false)
-            callback()
-          })
-        }
-      })
-    },
-    [authenticate],
-  )
+        })
+      }
+    })
+  }, [authenticate])
 
   /**
    * Check if the user is already authenticated
