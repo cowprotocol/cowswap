@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.118.3](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.118.2...cowswap-v1.118.3) (2025-09-02)
+
+
+### Bug Fixes
+
+* **trade:** do not close auto-import modal when account changes ([#6209](https://github.com/cowprotocol/cowswap/issues/6209)) ([af643a9](https://github.com/cowprotocol/cowswap/commit/af643a94c0b28fe60639aeed22a69ea591b3fdcc))
+
 ## [1.118.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.118.1...cowswap-v1.118.2) (2025-09-01)
 
 
