@@ -12,6 +12,7 @@ import { upToLarge, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 
 import { useToggleAccountModal } from 'modules/account'
 import { NotificationBell, NotificationSidebar } from 'modules/notifications'
+import { useHasNotificationSubscription } from 'modules/notifications/hooks/useHasNotificationSubscription'
 import { useNotificationAlertDismissal } from 'modules/notifications/hooks/useNotificationAlertDismissal'
 import { useUnreadNotifications } from 'modules/notifications/hooks/useUnreadNotifications'
 import { Web3Status } from 'modules/wallet/containers/Web3Status'
@@ -50,8 +51,9 @@ export function AccountElement({ className, standaloneMode }: AccountElementProp
   const wrapperRef = useRef<HTMLDivElement>(null)
   const { isDismissed, dismiss } = useNotificationAlertDismissal()
   const { areTelegramNotificationsEnabled } = useFeatureFlags()
+  const { hasSubscription, isLoading } = useHasNotificationSubscription()
 
-  const shouldShowTooltip = !!account && !isDismissed
+  const shouldShowPopover = !!account && !isDismissed && !hasSubscription && !isLoading
 
   const handleEnableAlerts = (): void => {
     setShouldOpenSettings(areTelegramNotificationsEnabled)
@@ -70,7 +72,7 @@ export function AccountElement({ className, standaloneMode }: AccountElementProp
         <Web3Status onClick={() => account && toggleAccountModal()} />
         {account && (
           <NotificationAlertPopover
-            show={shouldShowTooltip}
+            show={shouldShowPopover}
             onEnableAlerts={handleEnableAlerts}
             onDismiss={dismiss}
             containerRef={wrapperRef}
@@ -80,7 +82,12 @@ export function AccountElement({ className, standaloneMode }: AccountElementProp
               data-click-event={createNotificationClickEventData(
                 unreadNotificationsCount === 0 ? 'click-bell' : 'click-bell-with-pending-notifications',
               )}
-              onClick={() => setSidebarOpen(true)}
+              onClick={() => {
+                if (shouldShowPopover) {
+                  dismiss() // Dismiss popover if shown
+                }
+                setSidebarOpen(true) // Always open sidebar
+              }}
             />
           </NotificationAlertPopover>
         )}

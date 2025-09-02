@@ -8,7 +8,7 @@ interface NotificationAlertDismissalState {
   dismissedAt: number | null
 }
 
-const DISMISSAL_DURATION_MS = 90 * 24 * 60 * 60 * 1000 // 90 days
+const DISMISSAL_DURATION_MS = 180 * 24 * 60 * 60 * 1000 // 180 days
 const STORAGE_KEY = 'notification-alert-tooltip-dismissed'
 
 const DEFAULT_STATE: NotificationAlertDismissalState = {
