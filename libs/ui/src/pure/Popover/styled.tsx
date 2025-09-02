@@ -14,7 +14,7 @@ export const MobileBackdrop = styled.div<Pick<PopoverContainerProps, 'show'> & {
   left: 0;
   width: 100vw;
   height: ${(props) => props.maxHeight || '100vh'};
-  background: var(${UI.COLOR_BLACK_OPACITY_90});
+  background: var(${UI.COLOR_BLACK_OPACITY_70});
   backdrop-filter: blur(5px);
   z-index: 999998;
   visibility: ${(props) => (props.show ? 'visible' : 'hidden')};
