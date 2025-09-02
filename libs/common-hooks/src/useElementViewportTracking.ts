@@ -65,8 +65,7 @@ export function useElementViewportTracking(
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [element, enabled, viewportVersion])
 
-  return {
-    rect,
-    viewportVersion,
-  }
+  const value = useMemo(() => ({ rect, viewportVersion }), [rect, viewportVersion])
+  
+  return value
 }
