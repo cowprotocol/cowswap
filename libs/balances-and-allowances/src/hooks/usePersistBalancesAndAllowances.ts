@@ -2,6 +2,7 @@ import { useSetAtom } from 'jotai'
 import { useEffect, useMemo } from 'react'
 
 import { ERC_20_INTERFACE } from '@cowprotocol/abis'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { MultiCallOptions, useMultipleContractSingleData } from '@cowprotocol/multicall'
@@ -9,6 +10,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 
 import { SWRConfiguration } from 'swr'
 
+import { useBalancesFromBff } from './useBalancesFromBff'
 import { useIsBlockNumberRelevant } from './useIsBlockNumberRelevant'
 
 import { balancesAtom, BalancesState, balancesUpdateAtom } from '../state/balancesAtom'
@@ -22,9 +24,12 @@ export interface PersistBalancesAndAllowancesParams {
   balancesSwrConfig: SWRConfiguration
   setLoadingState?: boolean
   multicallOptions?: MultiCallOptions
+
   onBalancesLoaded?(loaded: boolean): void
 }
 
+// todo remove this one
+// eslint-disable-next-line max-lines-per-function
 export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowancesParams): void {
   const {
     account,
@@ -41,7 +46,9 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
 
   const balanceOfParams = useMemo(() => (account ? [account] : undefined), [account])
 
-  const { isLoading: isBalancesLoading, data } = useMultipleContractSingleData<{ balance: BigNumber }>(
+  const { isBffBalanceApiEnabled } = useFeatureFlags()
+
+  const { isLoading: isViewCallBalancesLoading, data } = useMultipleContractSingleData<{ balance: BigNumber }>(
     chainId,
     tokenAddresses,
     ERC_20_INTERFACE,
@@ -50,7 +57,28 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
     multicallOptions,
     balancesSwrConfig,
     account,
+    !isBffBalanceApiEnabled,
   )
+
+  const { isLoading: isBffBalancesLoading, data: bffData } = useBalancesFromBff(
+    account,
+    chainId,
+    balancesSwrConfig,
+    isBffBalanceApiEnabled,
+  )
+
+  const isBalancesLoading = isBffBalancesLoading || isViewCallBalancesLoading
+
+  const parsedBffData = bffData
+    ? Object.keys(bffData).reduce(
+        (acc, key) => {
+          acc[key] = BigNumber.from(bffData[key])
+          return acc
+        },
+        {} as Record<string, BigNumber>,
+      )
+    : undefined
+
   const balances = data?.results
   const blockNumber = data?.blockNumber
 
@@ -66,14 +94,16 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
 
   // Set balances to the store
   useEffect(() => {
-    if (!account || !balances?.length || !isNewBlockNumber) return
+    if (!account || !balances?.length || !isNewBlockNumber || !parsedBffData) return
 
-    const balancesState = tokenAddresses.reduce<BalancesState['values']>((acc, address, index) => {
-      if (getIsNativeToken(chainId, address)) return acc
+    const balancesState = balances
+      ? tokenAddresses.reduce<BalancesState['values']>((acc, address, index) => {
+          if (getIsNativeToken(chainId, address)) return acc
 
-      acc[address.toLowerCase()] = balances[index]?.balance
-      return acc
-    }, {})
+          acc[address.toLowerCase()] = balances[index]?.balance
+          return acc
+        }, {})
+      : parsedBffData
 
     onBalancesLoaded?.(true)
 
@@ -106,5 +136,6 @@ export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowa
     setLoadingState,
     onBalancesLoaded,
     setBalancesUpdate,
+    parsedBffData,
   ])
 }

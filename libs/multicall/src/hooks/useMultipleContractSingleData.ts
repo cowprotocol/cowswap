@@ -21,6 +21,7 @@ export function useMultipleContractSingleData<T = Result>(
   multicallOptions: MultiCallOptions = {},
   swrConfig?: SWRConfiguration,
   cacheKey?: string,
+  skipCall = false,
 ): SWRResponse<MulticallResponseOptional<T>> {
   const provider = useMultiCallRpcProvider()
 
@@ -42,7 +43,7 @@ export function useMultipleContractSingleData<T = Result>(
   }, [addresses, callData])
 
   return useSWR<MulticallResponseOptional<T>>(
-    !calls?.length || !provider
+    !calls?.length || !provider || skipCall
       ? null
       : [
           chainId,
