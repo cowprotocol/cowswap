@@ -67,6 +67,7 @@ export interface PopoverProps extends PopoverContainerProps, Omit<React.HTMLAttr
   mobileMode?: PopoverMobileMode
   showMobileBackdrop?: boolean
   mobileBorderRadius?: string
+  zIndex?: number
 }
 
 export default function Popover(props: PopoverProps): React.JSX.Element {
@@ -82,6 +83,7 @@ export default function Popover(props: PopoverProps): React.JSX.Element {
     mobileMode = PopoverMobileMode.Popper,
     showMobileBackdrop = false,
     mobileBorderRadius,
+    zIndex = 999999,
   } = props
 
   const [referenceElement, setReferenceElement] = useState<HTMLDivElement | null>(null)
@@ -128,7 +130,7 @@ export default function Popover(props: PopoverProps): React.JSX.Element {
           ref={setPopperElement}
           style={{
             ...styles.popper,
-            zIndex: 999999,
+            zIndex,
             // Add full-width styling for mobile
             ...(shouldUseFullWidth && MOBILE_FULL_WIDTH_STYLES),
             // Add mobile border radius if specified
