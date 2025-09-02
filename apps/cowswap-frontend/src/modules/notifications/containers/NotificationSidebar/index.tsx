@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useRef, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 
 import { useFeatureFlags, useOnClickOutside } from '@cowprotocol/common-hooks'
 
@@ -23,6 +23,11 @@ export function NotificationSidebar({ isOpen, onClose, initialSettingsOpen = fal
   const isMobile = useMediaQuery(upToSmall)
 
   const { areTelegramNotificationsEnabled } = useFeatureFlags()
+
+  // Sync state when initialSettingsOpen prop changes
+  useEffect(() => {
+    setIsSettingsOpen(initialSettingsOpen)
+  }, [initialSettingsOpen])
 
   const onDismiss = useCallback(() => {
     onClose()
