@@ -55,6 +55,8 @@ const PopoverBody = styled.p`
   color: var(${UI.COLOR_TEXT_OPACITY_70});
   line-height: 1;
   font-size: 14px;
+  line-height: 1.2;
+  text-align: center;
 
   ${Media.upToSmall()} {
     font-size: 16px;
@@ -148,17 +150,11 @@ export function NotificationAlertPopover({
   }, [show, onDismiss])
 
   const popoverContent = (
-    <PopoverContent
-      role="dialog"
-      aria-label="Enable order alerts"
-      aria-describedby="notification-alert-description"
-    >
+    <PopoverContent role="dialog" aria-label="Enable order alerts" aria-describedby="notification-alert-description">
       <PopoverTitle>
         <SVG src={ICON_BELL_ALERT} /> Get order alerts
       </PopoverTitle>
-      <PopoverBody id="notification-alert-description">
-        Get notified when orders fill or expire
-      </PopoverBody>
+      <PopoverBody id="notification-alert-description">Get notified when orders fill or expire</PopoverBody>
       <PopoverActions>
         <PrimaryButton ref={primaryButtonRef} onClick={onEnableAlerts}>
           Enable alerts
@@ -180,6 +176,7 @@ export function NotificationAlertPopover({
       mobileMode={PopoverMobileMode.FullWidth}
       showMobileBackdrop={true}
       mobileBorderRadius="16px 16px 0 0"
+      zIndex={90}
     >
       {children}
     </Tooltip>
