@@ -1,4 +1,4 @@
-import { ReactNode, RefObject } from 'react'
+import { ReactNode, RefObject, useEffect, useRef } from 'react'
 
 import ICON_BELL_ALERT from '@cowprotocol/assets/images/icon-bell-alert.svg?url'
 import { Command } from '@cowprotocol/types'
@@ -7,7 +7,7 @@ import { ButtonPrimary, Media, PopoverMobileMode, Tooltip, UI } from '@cowprotoc
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
-const TooltipContent = styled.div`
+const PopoverContent = styled.div`
   padding: 15px 20px;
   max-width: 280px;
   color: var(${UI.COLOR_TEXT});
@@ -22,7 +22,7 @@ const TooltipContent = styled.div`
   }
 `
 
-const TooltipTitle = styled.h3`
+const PopoverTitle = styled.h3`
   display: flex;
   gap: 8px;
   align-items: center;
@@ -49,7 +49,7 @@ const TooltipTitle = styled.h3`
   }
 `
 
-const TooltipBody = styled.p`
+const PopoverBody = styled.p`
   margin: 0;
   line-height: 1.4;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
@@ -61,7 +61,7 @@ const TooltipBody = styled.p`
   }
 `
 
-const TooltipActions = styled.div`
+const PopoverActions = styled.div`
   display: flex;
   flex-flow: column wrap;
   width: 100%;
@@ -108,7 +108,7 @@ const PrimaryButton = styled(ButtonPrimary)`
   }
 `
 
-interface NotificationAlertTooltipProps {
+interface NotificationAlertPopoverProps {
   children: ReactNode
   show: boolean
   onEnableAlerts: Command
@@ -116,30 +116,62 @@ interface NotificationAlertTooltipProps {
   containerRef: RefObject<HTMLElement | null>
 }
 
-export function NotificationAlertTooltip({
+export function NotificationAlertPopover({
   children,
   show,
   onEnableAlerts,
   onDismiss,
   containerRef,
-}: NotificationAlertTooltipProps): ReactNode {
-  const tooltipContent = (
-    <TooltipContent>
-      <TooltipTitle>
+}: NotificationAlertPopoverProps): ReactNode {
+  const primaryButtonRef = useRef<HTMLButtonElement>(null)
+
+  // Focus management for accessibility
+  useEffect(() => {
+    if (show && primaryButtonRef.current) {
+      primaryButtonRef.current.focus()
+    }
+  }, [show])
+
+  // Keyboard navigation
+  useEffect(() => {
+    if (!show) return
+
+    const handleKeyDown = (event: KeyboardEvent): void => {
+      if (event.key === 'Escape') {
+        event.preventDefault()
+        onDismiss()
+      }
+    }
+
+    document.addEventListener('keydown', handleKeyDown)
+    return () => document.removeEventListener('keydown', handleKeyDown)
+  }, [show, onDismiss])
+
+  const popoverContent = (
+    <PopoverContent
+      role="dialog"
+      aria-label="Enable order alerts"
+      aria-describedby="notification-alert-description"
+    >
+      <PopoverTitle>
         <SVG src={ICON_BELL_ALERT} /> Get order alerts
-      </TooltipTitle>
-      <TooltipBody>Fills, cancels, expiries</TooltipBody>
-      <TooltipActions>
-        <PrimaryButton onClick={onEnableAlerts}>Enable alerts</PrimaryButton>
+      </PopoverTitle>
+      <PopoverBody id="notification-alert-description">
+        Get notified when orders fill or expire
+      </PopoverBody>
+      <PopoverActions>
+        <PrimaryButton ref={primaryButtonRef} onClick={onEnableAlerts}>
+          Enable alerts
+        </PrimaryButton>
         <SecondaryButton onClick={onDismiss}>Not now</SecondaryButton>
-      </TooltipActions>
-    </TooltipContent>
+      </PopoverActions>
+    </PopoverContent>
   )
 
   return (
     <Tooltip
       show={show}
-      content={tooltipContent}
+      content={popoverContent}
       placement="bottom"
       containerRef={containerRef}
       wrapInContainer={false}

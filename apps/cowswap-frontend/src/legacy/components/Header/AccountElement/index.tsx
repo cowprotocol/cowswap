@@ -12,7 +12,6 @@ import { upToLarge, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 
 import { useToggleAccountModal } from 'modules/account'
 import { NotificationBell, NotificationSidebar } from 'modules/notifications'
-import { NotificationAlertTooltip } from 'modules/notifications/containers/NotificationAlertTooltip'
 import { useNotificationAlertDismissal } from 'modules/notifications/hooks/useNotificationAlertDismissal'
 import { useUnreadNotifications } from 'modules/notifications/hooks/useUnreadNotifications'
 import { Web3Status } from 'modules/wallet/containers/Web3Status'
@@ -20,6 +19,7 @@ import { Web3Status } from 'modules/wallet/containers/Web3Status'
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
+import { NotificationAlertPopover } from './NotificationAlertPopover'
 import { BalanceText, Wrapper } from './styled'
 
 function createNotificationClickEventData(event: string): string {
@@ -69,7 +69,7 @@ export function AccountElement({ className, standaloneMode }: AccountElementProp
         )}
         <Web3Status onClick={() => account && toggleAccountModal()} />
         {account && (
-          <NotificationAlertTooltip
+          <NotificationAlertPopover
             show={shouldShowTooltip}
             onEnableAlerts={handleEnableAlerts}
             onDismiss={dismiss}
@@ -82,7 +82,7 @@ export function AccountElement({ className, standaloneMode }: AccountElementProp
               )}
               onClick={() => setSidebarOpen(true)}
             />
-          </NotificationAlertTooltip>
+          </NotificationAlertPopover>
         )}
       </Wrapper>
 
