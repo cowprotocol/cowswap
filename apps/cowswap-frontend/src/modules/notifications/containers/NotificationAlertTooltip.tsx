@@ -2,7 +2,7 @@ import { ReactNode, RefObject } from 'react'
 
 import ICON_BELL_ALERT from '@cowprotocol/assets/images/icon-bell-alert.svg?url'
 import { Command } from '@cowprotocol/types'
-import { ButtonPrimary, Media, Tooltip, UI } from '@cowprotocol/ui'
+import { ButtonPrimary, Media, PopoverMobileMode, Tooltip, UI } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
@@ -145,9 +145,9 @@ export function NotificationAlertTooltip({
       wrapInContainer={false}
       bgColor={`var(${UI.COLOR_BLUE_100_PRIMARY})`}
       borderColor={`var(${UI.COLOR_BLUE_700_PRIMARY_OPACITY_25})`}
-      mobileMode="fullWidth"
+      mobileMode={PopoverMobileMode.FullWidth}
       showMobileBackdrop={true}
-      mobileBorderRadius="12px 12px 0 0"
+      mobileBorderRadius="16px 16px 0 0"
     >
       {children}
     </Tooltip>

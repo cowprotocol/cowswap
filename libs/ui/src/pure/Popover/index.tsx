@@ -13,6 +13,11 @@ import { calculateAvailableSpaceAbove } from '../../utils/calculateAvailableSpac
 
 import type { OffsetsFunction } from '@popperjs/core/lib/modifiers/offset'
 
+export enum PopoverMobileMode {
+  Popper = 'popper',
+  FullWidth = 'fullWidth',
+}
+
 const MOBILE_FULL_WIDTH_STYLES = {
   width: '100vw',
   maxWidth: '100vw',
@@ -59,7 +64,7 @@ export interface PopoverProps extends PopoverContainerProps, Omit<React.HTMLAttr
   content: React.ReactNode
   children: React.ReactNode
   placement?: Placement
-  mobileMode?: 'popper' | 'fullWidth'
+  mobileMode?: PopoverMobileMode
   showMobileBackdrop?: boolean
   mobileBorderRadius?: string
 }
@@ -74,7 +79,7 @@ export default function Popover(props: PopoverProps): React.JSX.Element {
     color,
     borderColor,
     className,
-    mobileMode = 'popper',
+    mobileMode = PopoverMobileMode.Popper,
     showMobileBackdrop = false,
     mobileBorderRadius,
   } = props
@@ -84,7 +89,7 @@ export default function Popover(props: PopoverProps): React.JSX.Element {
   const [arrowElement, setArrowElement] = useState<HTMLDivElement | null>(null)
 
   const isMobile = useMediaQuery(Media.upToSmall(false))
-  const shouldUseFullWidth = isMobile && mobileMode === 'fullWidth'
+  const shouldUseFullWidth = isMobile && mobileMode === PopoverMobileMode.FullWidth
 
   // Use hook for viewport tracking and utility for backdrop height calculation
   const { rect } = useElementViewportTracking(referenceElement, shouldUseFullWidth && showMobileBackdrop)
