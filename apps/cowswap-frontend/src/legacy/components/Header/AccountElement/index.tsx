@@ -51,7 +51,7 @@ export function AccountElement({ className, standaloneMode }: AccountElementProp
   const { isDismissed, dismiss } = useNotificationAlertDismissal()
   const { areTelegramNotificationsEnabled } = useFeatureFlags()
 
-  const shouldShowTooltip = !!account && !isDismissed && unreadNotificationsCount === 0
+  const shouldShowTooltip = !!account && !isDismissed
 
   const handleEnableAlerts = (): void => {
     setShouldOpenSettings(areTelegramNotificationsEnabled)
