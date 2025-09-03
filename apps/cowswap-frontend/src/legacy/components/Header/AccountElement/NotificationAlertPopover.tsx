@@ -154,10 +154,12 @@ export function NotificationAlertPopover({
       <PopoverTitle>
         <SVG src={ICON_BELL_ALERT} /> Get order alerts
       </PopoverTitle>
-      <PopoverBody id="notification-alert-description">Get notified when orders fill or expire</PopoverBody>
+      <PopoverBody id="notification-alert-description">
+        Get trade alerts <br /> when orders fill or expire
+      </PopoverBody>
       <PopoverActions>
         <PrimaryButton ref={primaryButtonRef} onClick={onEnableAlerts}>
-          Enable alerts
+          Enable trade alerts
         </PrimaryButton>
         <SecondaryButton onClick={onDismiss}>Not now</SecondaryButton>
       </PopoverActions>
