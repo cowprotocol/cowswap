@@ -1,17 +1,8 @@
-import { ReactNode } from 'react'
+import { ReactNode, useCallback, useState } from 'react'
 
-import { FancyButton, Loader } from '@cowprotocol/ui'
-
-import styled from 'styled-components/macro'
+import { Loader, UI } from '@cowprotocol/ui'
 
 import { Toggle } from 'legacy/components/Toggle'
-
-const AuthButton = styled(FancyButton)`
-  padding-left: 14px;
-  padding-right: 14px;
-  font-size: 13px;
-  cursor: pointer;
-`
 
 interface TelegramConnectionStatusProps {
   isLoading: boolean
@@ -28,17 +19,42 @@ export function TelegramConnectionStatus({
   authorize,
   toggleSubscription,
 }: TelegramConnectionStatusProps): ReactNode {
-  if (isLoading) {
+  const [isAuthorizingInProgress, setIsAuthorizingInProgress] = useState(false)
+
+  const handleToggle = useCallback(async () => {
+    if (needsAuthorization) {
+      // If not authorized, trigger authorization when toggled ON
+      setIsAuthorizingInProgress(true)
+      try {
+        await authorize()
+        // If successful, the toggle will stay ON due to subscription state update
+      } catch (error) {
+        // If authorization fails, the toggle will revert to OFF automatically
+        console.warn('Telegram authorization failed or was cancelled:', error)
+      } finally {
+        setIsAuthorizingInProgress(false)
+      }
+    } else {
+      // If already authorized, handle normal subscription toggle
+      toggleSubscription()
+    }
+  }, [needsAuthorization, authorize, toggleSubscription])
+
+  if (isLoading || isAuthorizingInProgress) {
     return <Loader />
   }
 
+  // Always show toggle - when needsAuthorization=true, isSubscribed will be false
+  const isToggleActive = !needsAuthorization && isSubscribed
+  
   return (
     <div>
-      {needsAuthorization ? (
-        <AuthButton onClick={authorize}>Authorize Telegram</AuthButton>
-      ) : (
-        <Toggle id="toggle-telegram-notifications" isActive={isSubscribed} toggle={toggleSubscription} />
-      )}
+      <Toggle 
+        id="toggle-telegram-notifications" 
+        isActive={isToggleActive} 
+        toggle={handleToggle}
+        inactiveBgColor={`var(${UI.COLOR_PAPER})`}
+      />
     </div>
   )
 }
