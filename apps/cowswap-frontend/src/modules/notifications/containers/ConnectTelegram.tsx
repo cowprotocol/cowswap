@@ -1,11 +1,11 @@
-import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
+import { ReactNode, useEffect, useRef, useState } from 'react'
 
-import { getCmsClient } from '@cowprotocol/core'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import styled from 'styled-components/macro'
 
 import { useTgAuthorization } from '../hooks/useTgAuthorization'
+import { useTgSubscription } from '../hooks/useTgSubscription'
 import { TelegramConnectionStatus } from '../pure/TelegramConnectionStatus'
 
 const Wrapper = styled.div`
@@ -26,40 +26,12 @@ const TELEGRAM_AUTH_WIDGET_URL = 'https://telegram.org/js/telegram-widget.js?22'
 export function ConnectTelegram(): ReactNode {
   const { account } = useWalletInfo()
   const [isTelegramScriptLoading, setIsTelegramScriptLoading] = useState<boolean>(true)
-  const [isTgSubscribed, setTgSubscribed] = useState<boolean>(false)
-  const [isCmsCallInProgress, setIsCmsCallInProgress] = useState<boolean>(false)
   const telegramWrapperRef = useRef<HTMLDivElement>(null)
 
-  const { authorize, tgData, isLoginInProgress, isAuthChecked } = useTgAuthorization()
+  const authorization = useTgAuthorization()
+  const { isTgSubscribed, isCmsCallInProgress, toggleSubscription } = useTgSubscription(account, authorization)
 
-  const checkOrAddTgSubscription = useCallback(
-    (method: string) => {
-      if (!tgData || !account) return
-
-      setIsCmsCallInProgress(true)
-
-      getCmsClient()
-        .POST(method, { body: { account, data: tgData } })
-        .then(({ data: result }: { data: boolean }) => {
-          setTgSubscribed(result)
-        })
-        .finally(() => {
-          setIsCmsCallInProgress(false)
-        })
-    },
-    [tgData, account],
-  )
-
-  useEffect(() => {
-    if (!account || !tgData) {
-      setTgSubscribed(false)
-      return
-    }
-
-    if (!isTgSubscribed) {
-      checkOrAddTgSubscription('/add-tg-subscription')
-    }
-  }, [isTgSubscribed, account, tgData, checkOrAddTgSubscription])
+  const { authorize, authenticate, tgData, isLoginInProgress, isAuthChecked } = authorization
 
   useEffect(() => {
     if (!telegramWrapperRef.current) return
@@ -79,13 +51,27 @@ export function ConnectTelegram(): ReactNode {
     telegramWrapperRef.current.appendChild(scriptElement)
   }, [])
 
+  /**
+   * Authenticate once on start
+   */
+  useEffect(() => {
+    authenticate()
+  }, [authenticate])
+
   const isLoading = isTelegramScriptLoading || !isAuthChecked || isCmsCallInProgress || isLoginInProgress
+  const needsAuthorization = isAuthChecked && !tgData
 
   return (
     <Wrapper ref={telegramWrapperRef}>
       <Option>
         <div>Enable notifications</div>
-        <TelegramConnectionStatus isLoading={isLoading} isSubscribed={isTgSubscribed} subscribeAccount={authorize} />
+        <TelegramConnectionStatus
+          isLoading={isLoading}
+          isSubscribed={isTgSubscribed}
+          needsAuthorization={needsAuthorization}
+          authorize={authorize}
+          toggleSubscription={toggleSubscription}
+        />
       </Option>
     </Wrapper>
   )

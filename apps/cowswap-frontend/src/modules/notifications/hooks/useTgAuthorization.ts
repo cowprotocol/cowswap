@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import ms from 'ms.macro'
 
@@ -26,7 +26,8 @@ interface TelegramData {
 
 export interface TgAuthorization {
   tgData: TelegramData | null
-  authorize(): void
+  authorize(): Promise<void>
+  authenticate(): Promise<TelegramData | null>
   isAuthChecked: boolean
   isLoginInProgress: boolean
 }
@@ -36,57 +37,52 @@ export function useTgAuthorization(): TgAuthorization {
   const [isAuthChecked, setIsAuthChecked] = useState<boolean>(false)
   const [isLoginInProgress, setIsLoginInProgress] = useState<boolean>(false)
 
-  const isAuthRequestedRef = useRef(false)
+  const authenticate = useCallback((): Promise<TelegramData | null> => {
+    return new Promise((resolve) => {
+      getTelegramAuth(TG_BOT_ID, (response) => {
+        const tgData = (response && response.user) || null
 
-  const authenticate = useCallback((callback?: (tgData: TelegramData | null) => void): void => {
-    getTelegramAuth(TG_BOT_ID, (response) => {
-      const tgData = (response && response.user) || null
-
-      setTgData(tgData)
-      setIsAuthChecked(true)
-      callback?.(tgData)
+        setTgData(tgData)
+        setIsAuthChecked(true)
+        resolve?.(tgData)
+      })
     })
   }, [])
 
-  const authorize = useCallback((): void => {
-    if (!window.Telegram) return
+  const authorize = useCallback(async (): Promise<void> => {
+    if (!window.Telegram) return Promise.resolve()
 
     setIsLoginInProgress(true)
 
-    window.Telegram.Login.auth(AUTH_OPTIONS, (data) => {
-      if (data) {
-        setTgData(data)
-        setIsLoginInProgress(false)
-      } else {
-        authenticate(() => {
+    return new Promise((resolve) => {
+      window.Telegram?.Login.auth(AUTH_OPTIONS, (data) => {
+        if (data) {
+          setTgData(data)
           setIsLoginInProgress(false)
-        })
-      }
+          resolve()
+        } else {
+          authenticate().then((tgData) => {
+            setTgData(tgData)
+            setIsLoginInProgress(false)
+            resolve()
+          })
+        }
+      })
     })
   }, [authenticate])
 
   /**
-   * Check if the user is already authenticated
+   * Periodically check if the user is already authenticated
    */
   useEffect(() => {
-    if (isAuthRequestedRef.current) return
+    if (!tgData) return
 
-    isAuthRequestedRef.current = true
-
-    let intervalId: number | null = null
-
-    authenticate((tgData) => {
-      if (!tgData) return
-
-      // When is connected to Telegram, do a periodical check if the connection still exists
-      // Because the session might be terminated from Telegram side
-      intervalId = setInterval(authenticate, TG_SESSION_CHECK_INTERVAL) as unknown as number
-    })
+    const intervalId = setInterval(authenticate, TG_SESSION_CHECK_INTERVAL)
 
     return () => {
-      if (intervalId) clearInterval(intervalId)
+      clearInterval(intervalId)
     }
-  }, [authenticate])
+  }, [tgData, authenticate])
 
-  return { authorize, tgData, isAuthChecked, isLoginInProgress }
+  return { authorize, authenticate, tgData, isAuthChecked, isLoginInProgress }
 }
