@@ -629,24 +629,34 @@ interface GlobalSettingsDropdownProps {
   closeDropdown: () => void
   rootDomain: string
   LinkComponent: LinkComponentType
-  buttonRef?: React.RefObject<HTMLButtonElement>
+  buttonRef?: React.RefObject<HTMLButtonElement | null>
 }
 
-// TODO: Break down this large function into smaller functions
-
-const GlobalSettingsDropdown = forwardRef<HTMLUListElement, GlobalSettingsDropdownProps>((props, ref) => {
-  const { mobileMode, settingsNavItems, isOpen, closeDropdown, rootDomain, LinkComponent, buttonRef } = props
+// Custom hook for portal dropdown positioning
+function usePortalPosition(
+  buttonRef: React.RefObject<HTMLElement | null> | undefined,
+  isOpen: boolean,
+  isMobile: boolean,
+  gap: number = 14,
+): { top: number; right: number } {
   const [position, setPosition] = useState({ top: 0, right: 0 })
 
   useEffect(() => {
-    if (buttonRef?.current && isOpen && !mobileMode) {
+    if (buttonRef?.current && isOpen && !isMobile) {
       const rect = buttonRef.current.getBoundingClientRect()
       setPosition({
-        top: rect.bottom + 14,
-        right: window.innerWidth - rect.right, // Align with right edge of button
+        top: rect.bottom + gap,
+        right: window.innerWidth - rect.right,
       })
     }
-  }, [buttonRef, isOpen, mobileMode])
+  }, [buttonRef, isOpen, isMobile, gap])
+
+  return position
+}
+
+const GlobalSettingsDropdown = forwardRef<HTMLUListElement, GlobalSettingsDropdownProps>((props, ref) => {
+  const { mobileMode, settingsNavItems, isOpen, closeDropdown, rootDomain, LinkComponent, buttonRef } = props
+  const position = usePortalPosition(buttonRef, isOpen, mobileMode)
 
   if (!settingsNavItems || settingsNavItems.length === 0) {
     return null
