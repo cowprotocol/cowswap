@@ -152,11 +152,9 @@ export function NotificationAlertPopover({
   const popoverContent = (
     <PopoverContent role="dialog" aria-label="Enable order alerts" aria-describedby="notification-alert-description">
       <PopoverTitle>
-        <SVG src={ICON_BELL_ALERT} /> Get order alerts
+        <SVG src={ICON_BELL_ALERT} /> Get trade alerts
       </PopoverTitle>
-      <PopoverBody id="notification-alert-description">
-        Get trade alerts <br /> when orders fill or expire
-      </PopoverBody>
+      <PopoverBody id="notification-alert-description">When orders fill or expire</PopoverBody>
       <PopoverActions>
         <PrimaryButton ref={primaryButtonRef} onClick={onEnableAlerts}>
           Enable trade alerts
