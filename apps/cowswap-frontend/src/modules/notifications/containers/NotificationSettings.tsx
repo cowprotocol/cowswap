@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import { ReactNode } from 'react'
 
 import styled from 'styled-components/macro'
 
@@ -25,9 +25,7 @@ interface NotificationSettingsProps {
   children: ReactNode
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function NotificationSettings({ children }: NotificationSettingsProps) {
+export function NotificationSettings({ children }: NotificationSettingsProps): ReactNode {
   return (
     <>
       {children}
