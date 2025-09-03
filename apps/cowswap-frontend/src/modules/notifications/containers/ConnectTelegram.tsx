@@ -8,18 +8,7 @@ import { useTgAuthorization } from '../hooks/useTgAuthorization'
 import { useTgSubscription } from '../hooks/useTgSubscription'
 import { TelegramConnectionStatus } from '../pure/TelegramConnectionStatus'
 
-const Wrapper = styled.div`
-  padding-left: 12px;
-`
-
-const Option = styled.div`
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  align-items: center;
-  justify-content: space-between;
-  min-height: 40px;
-`
+const Wrapper = styled.div``
 
 const TELEGRAM_AUTH_WIDGET_URL = 'https://telegram.org/js/telegram-widget.js?22'
 
@@ -63,16 +52,13 @@ export function ConnectTelegram(): ReactNode {
 
   return (
     <Wrapper ref={telegramWrapperRef}>
-      <Option>
-        <div>Enable notifications</div>
-        <TelegramConnectionStatus
-          isLoading={isLoading}
-          isSubscribed={isTgSubscribed}
-          needsAuthorization={needsAuthorization}
-          authorize={authorize}
-          toggleSubscription={toggleSubscription}
-        />
-      </Option>
+      <TelegramConnectionStatus
+        isLoading={isLoading}
+        isSubscribed={isTgSubscribed}
+        needsAuthorization={needsAuthorization}
+        authorize={authorize}
+        toggleSubscription={toggleSubscription}
+      />
     </Wrapper>
   )
 }
