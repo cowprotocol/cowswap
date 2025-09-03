@@ -249,6 +249,38 @@ interface DropdownContentProps {
   isNavItemDropdown?: boolean
 }
 
+export const PortaledDropdownContent = styled.ul<DropdownContentProps & { top?: number; right?: number }>`
+  --dropdownOffset: 8px;
+  --bgDropdownColor: ${({ theme }) => (theme.darkMode ? `var(${UI.COLOR_NEUTRAL_0})` : `var(${UI.COLOR_NEUTRAL_100})`)};
+  --blur: 16px;
+  --hoverBackground: ${({ theme }) => (theme.darkMode ? `var(${UI.COLOR_PAPER})` : `var(${UI.COLOR_NEUTRAL_90})`)};
+  --color: ${({ theme }) => (theme.darkMode ? `var(${UI.COLOR_NEUTRAL_98})` : `var(${UI.COLOR_NEUTRAL_0})`)};
+  --activeBackground: ${({ theme }) =>
+    theme.darkMode ? `var(${UI.COLOR_NEUTRAL_30})` : `var(${UI.COLOR_NEUTRAL_100})`};
+  --activeFill: ${({ theme }) => (theme.darkMode ? `var(${UI.COLOR_NEUTRAL_100})` : `var(${UI.COLOR_NEUTRAL_0})`)};
+  --defaultFill: ${({ theme }) => (theme.darkMode ? `var(${UI.COLOR_NEUTRAL_60})` : 'rgb(0 0 0 / 50%)')};
+
+  display: ${({ isOpen }) => (isOpen ? 'block' : 'none')};
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  background: var(--bgDropdownColor);
+  backdrop-filter: blur(var(--blur));
+  z-index: 1000;
+  padding: 6px;
+  margin: 0;
+  width: 320px;
+  height: auto;
+  border-radius: 28px;
+  position: fixed;
+  top: ${({ top }) => (top ? `${top}px` : 'auto')};
+  right: ${({ right }) => (right !== undefined ? `${right}px` : 'auto')};
+  cursor: pointer;
+  border: 1px solid var(--hoverBackground);
+  list-style: none;
+  color: var(--color);
+`
+
 export const DropdownContent = styled.ul<DropdownContentProps>`
   --dropdownOffset: 8px;
 

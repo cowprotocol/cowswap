@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 
 import { useFeatureFlags, useOnClickOutside } from '@cowprotocol/common-hooks'
 
@@ -14,17 +14,20 @@ import { NotificationsList } from '../NotificationsList'
 interface NotificationSidebarProps {
   isOpen: boolean
   onClose: () => void
+  initialSettingsOpen?: boolean
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
-export function NotificationSidebar({ isOpen, onClose }: NotificationSidebarProps) {
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false)
+export function NotificationSidebar({ isOpen, onClose, initialSettingsOpen = false }: NotificationSidebarProps): ReactNode {
+  const [isSettingsOpen, setIsSettingsOpen] = useState(initialSettingsOpen)
   const sidebarRef = useRef<HTMLDivElement>(null)
   const isMobile = useMediaQuery(upToSmall)
 
   const { areTelegramNotificationsEnabled } = useFeatureFlags()
+
+  // Sync state when initialSettingsOpen prop changes
+  useEffect(() => {
+    setIsSettingsOpen(initialSettingsOpen)
+  }, [initialSettingsOpen])
 
   const onDismiss = useCallback(() => {
     onClose()

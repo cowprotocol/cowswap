@@ -72,6 +72,13 @@ export function useTgAuthorization(): TgAuthorization {
   }, [authenticate])
 
   /**
+   * Initial authentication check on mount
+   */
+  useEffect(() => {
+    authenticate()
+  }, [authenticate])
+
+  /**
    * Periodically check if the user is already authenticated
    */
   useEffect(() => {
