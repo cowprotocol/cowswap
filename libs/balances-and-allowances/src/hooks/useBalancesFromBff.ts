@@ -33,9 +33,6 @@ export async function getBffBalances(
 
   try {
     const res = await fetch(url)
-
-    // todo add status code handling
-
     const data: BalanceResponse = await res.json()
 
     if (!data.balances) {
