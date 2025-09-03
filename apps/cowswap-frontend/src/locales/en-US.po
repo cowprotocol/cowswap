@@ -2353,8 +2353,8 @@ msgid "Add a custom hook"
 msgstr "Add a custom hook"
 
 #: apps/cowswap-frontend/src/modules/notifications/pure/TelegramConnectionStatus/index.tsx
-msgid "Connected"
-msgstr "Connected"
+#~ msgid "Connected"
+#~ msgstr "Connected"
 
 #: apps/cowswap-frontend/src/legacy/components/ErrorBoundary/ChunkLoadError.tsx
 msgid "This page can't be reached"
@@ -2492,6 +2492,10 @@ msgstr "Read how to prevent losing funds"
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
 msgid "The time each part of your TWAP order will remain active."
 msgstr "The time each part of your TWAP order will remain active."
+
+#: apps/cowswap-frontend/src/modules/notifications/pure/TelegramConnectionStatus/index.tsx
+msgid "Authorize Telegram"
+msgstr "Authorize Telegram"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "Buy per part"
