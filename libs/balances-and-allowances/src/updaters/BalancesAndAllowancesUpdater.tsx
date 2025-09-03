@@ -24,6 +24,7 @@ const BALANCES_SWR_CONFIG: SWRConfiguration = { ...BASIC_MULTICALL_SWR_CONFIG }
 export interface BalancesAndAllowancesUpdaterProps {
   account: string | undefined
   chainId: SupportedChainId
+  pendingOrdersCount: number
   excludedTokens: Set<string>
   isBffEnabled: boolean
 }
@@ -31,8 +32,9 @@ export interface BalancesAndAllowancesUpdaterProps {
 export function BalancesAndAllowancesUpdater({
   account,
   chainId,
-  excludedTokens,
+  pendingOrdersCount,
   isBffEnabled,
+  excludedTokens,
 }: BalancesAndAllowancesUpdaterProps): ReactNode {
   const updateTokenBalance = useUpdateTokenBalance()
 
@@ -54,17 +56,19 @@ export function BalancesAndAllowancesUpdater({
 
   // Add native token balance to the store as well
   useEffect(() => {
+    if (isBffEnabled) return
+
     const nativeToken = NATIVE_CURRENCIES[chainId]
 
     if (nativeToken && nativeTokenBalance) {
       updateTokenBalance(nativeToken.address, nativeTokenBalance)
     }
-  }, [nativeTokenBalance, chainId, updateTokenBalance])
+  }, [isBffEnabled, nativeTokenBalance, chainId, updateTokenBalance])
 
   return (
     <>
       {isBffEnabled ? (
-        <BalancesBffUpdater account={account} chainId={chainId} />
+        <BalancesBffUpdater account={account} chainId={chainId} pendingOrdersCount={pendingOrdersCount} />
       ) : (
         <BalancesRpcCallUpdater
           account={account}

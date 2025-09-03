@@ -13,14 +13,17 @@ const BALANCES_SWR_CONFIG = { ...BASIC_MULTICALL_SWR_CONFIG, refreshInterval: TO
 export function BalancesBffUpdater({
   account,
   chainId,
+  pendingOrdersCount,
 }: {
   account: string | undefined
   chainId: SupportedChainId
+  pendingOrdersCount?: number
 }): null {
   usePersistBalancesFromBff({
     account,
     chainId,
     balancesSwrConfig: BALANCES_SWR_CONFIG,
+    pendingOrdersCount,
   })
 
   return null

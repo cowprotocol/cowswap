@@ -12,7 +12,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { useBalancesContext } from 'entities/balancesContext/useBalancesContext'
 
 import { useSourceChainId } from 'modules/tokensList'
-import { usePriorityTokenAddresses } from 'modules/trade'
+import { usePendingOrdersCount, usePriorityTokenAddresses } from 'modules/trade'
 
 export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
   const sourceChainId = useSourceChainId().chainId
@@ -53,6 +53,7 @@ export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
   const { isBffBalanceApiEnabled } = useFeatureFlags()
   const isBffFailed = useIsBffFailed()
   const isBffEnabled = isBffBalanceApiEnabled && !isBffFailed
+  const pendingOrdersCount = usePendingOrdersCount(sourceChainId, account)
 
   return (
     <>
@@ -71,6 +72,7 @@ export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
         chainId={sourceChainId}
         isBffEnabled={isBffEnabled}
         excludedTokens={priorityTokenAddresses}
+        pendingOrdersCount={pendingOrdersCount}
       />
     </>
   )

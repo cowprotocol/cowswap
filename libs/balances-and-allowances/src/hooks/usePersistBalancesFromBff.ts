@@ -2,7 +2,6 @@ import { useSetAtom } from 'jotai/index'
 import { useEffect } from 'react'
 
 import { BFF_BASE_URL } from '@cowprotocol/common-const'
-import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { BigNumber } from '@ethersproject/bignumber'
@@ -21,12 +20,13 @@ export interface PersistBalancesFromBffParams {
   chainId: SupportedChainId
   balancesSwrConfig: SWRConfiguration
   setLoadingState?: boolean
+  pendingOrdersCount?: number
 
   onBalancesLoaded?(loaded: boolean): void
 }
 
 export function usePersistBalancesFromBff(params: PersistBalancesFromBffParams): void {
-  const { account, chainId, balancesSwrConfig, onBalancesLoaded, setLoadingState } = params
+  const { account, chainId, balancesSwrConfig, onBalancesLoaded, setLoadingState, pendingOrdersCount } = params
 
   const { chainId: activeChainId, account: connectedAccount } = useWalletInfo()
   const targetAccount = account ?? connectedAccount
@@ -39,7 +39,7 @@ export function usePersistBalancesFromBff(params: PersistBalancesFromBffParams):
     data,
     error,
   } = useSWR(
-    targetAccount ? [targetAccount, targetChainId, 'bff-balances'] : null,
+    targetAccount ? [targetAccount, targetChainId, pendingOrdersCount, 'bff-balances'] : null,
     ([walletAddress, chainId]) => getBffBalances(walletAddress, chainId),
     balancesSwrConfig,
   )
@@ -61,8 +61,6 @@ export function usePersistBalancesFromBff(params: PersistBalancesFromBffParams):
     if (!account || !data || error) return
 
     const balancesState = Object.keys(data).reduce<BalancesState['values']>((acc, address) => {
-      if (getIsNativeToken(chainId, address)) return acc
-
       acc[address] = BigNumber.from(data[address])
       return acc
     }, {})
@@ -74,7 +72,7 @@ export function usePersistBalancesFromBff(params: PersistBalancesFromBffParams):
         ...state,
         chainId,
         fromCache: false,
-        values: { ...state.values, ...balancesState },
+        values: balancesState,
         ...(setLoadingState ? { isLoading: false } : {}),
       }
     })
