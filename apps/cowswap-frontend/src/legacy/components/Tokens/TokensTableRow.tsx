@@ -11,6 +11,8 @@ import { Loader, TokenAmount, TokenName, TokenSymbol } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount, MaxUint256, Token } from '@uniswap/sdk-core'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 import { Link } from 'react-router'
 
@@ -113,7 +115,10 @@ export const TokensTableRow = ({
     // TODO: make a separate hook out of this and add GA
     try {
       openApproveModal(tokenData?.symbol)
-      await approveCallback(amountToApprove, `Approve ${tokenData?.symbol || 'token'}`)
+      
+      const symbol = tokenData?.symbol || t`token`
+      await approveCallback(amountToApprove, t`Approve ${symbol}`)
+      
       // TODO: Replace any with proper type definitions
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
@@ -155,19 +160,29 @@ export const TokensTableRow = ({
     }
 
     if (approvalState === ApprovalState.APPROVED || balanceLessThanAllowance) {
-      return <ApproveLabel>Approved ✓</ApproveLabel>
+      return (
+        <ApproveLabel>
+          <Trans>Approved</Trans> ✓
+        </ApproveLabel>
+      )
     }
 
     if (!account || approvalState === ApprovalState.NOT_APPROVED) {
       if (isFractionFalsy(allowance)) {
-        return <TableButton onClick={handleApprove}>Approve</TableButton>
+        return (
+          <TableButton onClick={handleApprove}>
+            <Trans>Approve</Trans>
+          </TableButton>
+        )
       }
 
       return (
         <CustomLimit>
-          <TableButton onClick={handleApprove}>Approve all</TableButton>
+          <TableButton onClick={handleApprove}>
+            <Trans>Approve all</Trans>
+          </TableButton>
           <ApproveLabel>
-            Approved:{' '}
+            <Trans>Approved</Trans>:{' '}
             <strong>
               <TokenAmount amount={allowance} />
             </strong>
@@ -213,7 +228,7 @@ export const TokensTableRow = ({
           <>
             <ExtLink href={getBlockExplorerUrl(chainId, 'token', tokenData.address)}>
               <TableButton>
-                <SVG src={EtherscanImage} title="View token contract" description="View token contract" />
+                <SVG src={EtherscanImage} title={t`View token contract`} description={t`View token contract`} />
               </TableButton>
             </ExtLink>
             {displayApproveContent}

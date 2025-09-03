@@ -3,6 +3,9 @@ import { useCallback } from 'react'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { TokenAmount, TokenSymbol } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
+
 import { ConfirmationPendingContent } from 'common/pure/ConfirmationPendingContent'
 
 import { useDerivedTradeState } from '../../hooks/useDerivedTradeState'
@@ -24,11 +27,11 @@ export function WrapNativeModal() {
   const inputCurrency = inputCurrencyAmount?.currency
   const isNativeIn = !!inputCurrency && getIsNativeToken(inputCurrency)
 
-  const operationLabel = isNativeIn ? 'Wrapping' : 'Unwrapping'
+  const operationLabel = isNativeIn ? t`Wrapping` : t`Unwrapping`
 
   const title = (
     <span>
-      {operationLabel} <TokenAmount amount={inputCurrencyAmount} tokenSymbol={inputCurrency} /> to{' '}
+      {operationLabel} <TokenAmount amount={inputCurrencyAmount} tokenSymbol={inputCurrency} /> <Trans>to</Trans>{' '}
       <TokenSymbol token={outputCurrency} />
     </span>
   )

@@ -1,7 +1,7 @@
 import { useTheme } from '@cowprotocol/common-hooks'
 import { ExternalLink } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 import { AlertOctagon } from 'react-feather'
 import styled from 'styled-components/macro'
 import { ThemedText } from 'theme'

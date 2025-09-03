@@ -4,6 +4,7 @@ import { useIsOnline } from '@cowprotocol/common-hooks'
 import { useAddSnackbar, useRemoveSnackbar, SnackbarItem } from '@cowprotocol/snackbars'
 import { UI } from '@cowprotocol/ui'
 
+import { Trans } from '@lingui/react/macro'
 import { AlertTriangle } from 'react-feather'
 import styled from 'styled-components/macro'
 
@@ -23,11 +24,11 @@ const createOfflineNotification = (): SnackbarItem => ({
   icon: 'custom',
   customIcon: <OfflineIcon size={24} />,
   content: (
-    <div>
+    <Trans>
       <strong>Connection Lost</strong>
       <br />
       You appear to be offline. Some features may not work properly.
-    </div>
+    </Trans>
   ),
   duration: NOTIFICATION_DURATION,
 })

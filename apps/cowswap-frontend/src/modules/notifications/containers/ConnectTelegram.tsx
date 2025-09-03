@@ -2,6 +2,7 @@ import { ReactNode, useEffect, useRef, useState } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
 import { useTgAuthorization } from '../hooks/useTgAuthorization'
@@ -64,7 +65,9 @@ export function ConnectTelegram(): ReactNode {
   return (
     <Wrapper ref={telegramWrapperRef}>
       <Option>
-        <div>Enable notifications</div>
+        <div>
+          <Trans>Enable notifications</Trans>
+        </div>
         <TelegramConnectionStatus
           isLoading={isLoading}
           isSubscribed={isTgSubscribed}

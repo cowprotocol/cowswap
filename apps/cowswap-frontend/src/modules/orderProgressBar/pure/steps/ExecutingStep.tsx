@@ -1,5 +1,8 @@
 import { ReactNode } from 'react'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
+
 import * as styledEl from './styled'
 
 import { STEPS } from '../../constants'
@@ -21,8 +24,12 @@ export function ExecutingStep({ children, isBridgingTrade }: ExecutingStepProps)
         isBridgingTrade={isBridgingTrade}
         steps={STEPS}
         currentStep={2}
-        customStepTitles={{ 2: 'Best price found!' }}
-        extraContent={<Description>The winner of the competition is now executing your order on-chain.</Description>}
+        customStepTitles={{ 2: t`Best price found!` }}
+        extraContent={
+          <Description>
+            <Trans>The winner of the competition is now executing your order on-chain.</Trans>
+          </Description>
+        }
       />
     </styledEl.ProgressContainer>
   )

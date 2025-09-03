@@ -3,6 +3,7 @@ import { ReactNode } from 'react'
 import { FiatAmount, getTokenAmountTitle, InfoTooltip, RowBetween, RowFixed, TokenAmount, UI } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
+import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
 import { FiatRate } from 'common/pure/RateInfo'
@@ -63,12 +64,18 @@ export function RowFeeContent(props: RowFeeContentProps) {
 
       <div title={getTokenAmountTitle({ amount: feeAmount, tokenSymbol })}>
         {isFree ? (
-          <FreeLabel>FREE</FreeLabel>
+          <FreeLabel>
+            <Trans>FREE</Trans>
+          </FreeLabel>
         ) : (
           <>
             {feeIsApproximate ? '≈ ' : ''}
             <TokenAmount amount={feeAmount} tokenSymbol={tokenSymbol} />
-            {requireGas && <PlusGas>&nbsp;+ gas</PlusGas>}
+            {requireGas && (
+              <PlusGas>
+                &nbsp; + <Trans>gas</Trans>
+              </PlusGas>
+            )}
           </>
         )}{' '}
         {!isFree && feeInFiat && (

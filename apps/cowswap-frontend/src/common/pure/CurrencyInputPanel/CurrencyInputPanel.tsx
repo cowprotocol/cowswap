@@ -6,6 +6,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenAmount, HoverTooltip } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { Trans } from '@lingui/react/macro'
 import { Nullish } from 'types'
 
 import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'
@@ -193,7 +194,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps): ReactNode {
               })}
               onClick={handleMaxInput}
             >
-              Max
+              <Trans>Max</Trans>
             </styledEl.SetMaxBtn>
           )}
         </styledEl.BalanceText>

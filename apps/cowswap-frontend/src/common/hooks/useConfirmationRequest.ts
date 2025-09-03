@@ -4,12 +4,10 @@ import { useCallback } from 'react'
 
 import { Command } from '@cowprotocol/types'
 
-import { t } from '@lingui/macro'
-
 import { useCloseModal, useOpenModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 
-import { ConfirmationModalProps } from '../pure/ConfirmationModal/ConfirmationModal'
+import { ConfirmationModalProps } from '../pure/ConfirmationModal'
 
 type TriggerConfirmationParams = Pick<
   ConfirmationModalProps,
@@ -35,18 +33,19 @@ interface ConfirmationModalContext {
   }: TriggerConfirmationParams) => Promise<void>
 }
 
-const DEFAULT_CONFIRMATION_MODAL_CONTEXT: ConfirmationModalContext = {
+export const DEFAULT_CONFIRMATION_MODAL_CONTEXT: ConfirmationModalContext = {
   onDismiss: () => {},
   onEnable: () => {},
   title: 'Confirm Action',
   callToAction: 'Confirm',
-  confirmWord: t`confirm`,
+  confirmWord: 'confirm',
   action: 'confirm',
   skipInput: false,
   triggerConfirmation: async () => {},
 }
 
 export const confirmationModalContextAtom = atomWithReset<ConfirmationModalContext>(DEFAULT_CONFIRMATION_MODAL_CONTEXT)
+
 export const updateConfirmationModalContextAtom = atom(
   null,
   (get, set, nextState: Partial<ConfirmationModalContext>) => {
@@ -55,7 +54,7 @@ export const updateConfirmationModalContextAtom = atom(
 
       return { ...prevState, ...nextState }
     })
-  }
+  },
 )
 
 // TODO: Add proper return type annotation
@@ -98,6 +97,6 @@ export function useConfirmationRequest({
         openModal()
       })
     },
-    [setContext, openModal, closeModal, onDismissParam, resetContext, onEnableParam]
+    [closeModal, onDismissParam, onEnableParam, openModal, resetContext, setContext],
   )
 }

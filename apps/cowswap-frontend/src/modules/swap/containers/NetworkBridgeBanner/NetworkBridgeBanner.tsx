@@ -6,7 +6,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { AutoRow, ExternalLink, Media, UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 import { ArrowUpRight } from 'react-feather'
 import styled from 'styled-components/macro'
 
