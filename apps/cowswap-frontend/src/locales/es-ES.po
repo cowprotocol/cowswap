@@ -8,7 +8,7 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: cowswapdev\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-08-29 02:33\n"
+"PO-Revision-Date: 2025-09-03 16:38\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -2346,8 +2346,8 @@ msgid "Add a custom hook"
 msgstr "Añadir un hook personalizado"
 
 #: apps/cowswap-frontend/src/modules/notifications/pure/TelegramConnectionStatus/index.tsx
-msgid "Connected"
-msgstr "Conectado"
+#~ msgid "Connected"
+#~ msgstr "Connected"
 
 #: apps/cowswap-frontend/src/legacy/components/ErrorBoundary/ChunkLoadError.tsx
 msgid "This page can't be reached"
@@ -2485,6 +2485,10 @@ msgstr "Lee cómo prevenir la pérdida de fondos"
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
 msgid "The time each part of your TWAP order will remain active."
 msgstr "El tiempo que cada parte de su pedido de TWAP permanecerá activo."
+
+#: apps/cowswap-frontend/src/modules/notifications/pure/TelegramConnectionStatus/index.tsx
+msgid "Authorize Telegram"
+msgstr "Autorizar Telegram"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "Buy per part"

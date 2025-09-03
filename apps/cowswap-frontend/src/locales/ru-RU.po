@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cowswapdev\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-08-29 02:33\n"
+"PO-Revision-Date: 2025-09-03 16:38\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -2346,8 +2346,8 @@ msgid "Add a custom hook"
 msgstr "Добавить пользовательский хук"
 
 #: apps/cowswap-frontend/src/modules/notifications/pure/TelegramConnectionStatus/index.tsx
-msgid "Connected"
-msgstr "Подключено"
+#~ msgid "Connected"
+#~ msgstr "Connected"
 
 #: apps/cowswap-frontend/src/legacy/components/ErrorBoundary/ChunkLoadError.tsx
 msgid "This page can't be reached"
@@ -2485,6 +2485,10 @@ msgstr "Читайте как предотвратить потерю средс
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
 msgid "The time each part of your TWAP order will remain active."
 msgstr "Время каждой части вашего заказа TWAP останется активным."
+
+#: apps/cowswap-frontend/src/modules/notifications/pure/TelegramConnectionStatus/index.tsx
+msgid "Authorize Telegram"
+msgstr "Авторизовать Telegram"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "Buy per part"
