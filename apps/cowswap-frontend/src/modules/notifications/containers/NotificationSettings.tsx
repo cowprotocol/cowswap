@@ -96,7 +96,7 @@ export function NotificationSettings({ children }: NotificationSettingsProps): R
         <SettingsCard>
           <SettingsRow>
             <RowBetween>
-              <RowFixed gap={8}>
+              <RowFixed gap="8px">
                 <TelegramIcon src={TELEGRAM_ICON} />
                 <span>Telegram</span>
               </RowFixed>
