@@ -51,7 +51,7 @@ const Divider = styled.div`
 `
 
 const SectionDescription = styled.p`
-  margin: 8px 16px 32px;
+  margin: 8px 16px 42px;
   font-size: 12px;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
   line-height: 1.4;
@@ -62,11 +62,19 @@ const TelegramIcon = styled(SVG)`
   height: 28px;
 `
 
+const TelegramUsername = styled.div`
+  font-size: 12px;
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
+  margin: 3px 0 0;
+`
+
 interface NotificationSettingsProps {
   children: ReactNode
 }
 
 export function NotificationSettings({ children }: NotificationSettingsProps): ReactNode {
+  const { element: telegramToggle, username } = ConnectTelegram()
+
   return (
     <>
       {children}
@@ -96,11 +104,14 @@ export function NotificationSettings({ children }: NotificationSettingsProps): R
         <SettingsCard>
           <SettingsRow>
             <RowBetween>
-              <RowFixed gap="8px">
+              <RowFixed gap={8}>
                 <TelegramIcon src={TELEGRAM_ICON} />
-                <span>Telegram</span>
+                <div>
+                  <span>Telegram</span>
+                  {username && <TelegramUsername>@{username}</TelegramUsername>}
+                </div>
               </RowFixed>
-              <ConnectTelegram />
+              {telegramToggle}
             </RowBetween>
           </SettingsRow>
         </SettingsCard>

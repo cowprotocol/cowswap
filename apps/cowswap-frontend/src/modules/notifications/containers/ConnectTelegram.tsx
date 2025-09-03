@@ -12,7 +12,12 @@ const Wrapper = styled.div``
 
 const TELEGRAM_AUTH_WIDGET_URL = 'https://telegram.org/js/telegram-widget.js?22'
 
-export function ConnectTelegram(): ReactNode {
+interface ConnectTelegramResult {
+  element: ReactNode
+  username?: string
+}
+
+export function ConnectTelegram(): ConnectTelegramResult {
   const { account } = useWalletInfo()
   const [isTelegramScriptLoading, setIsTelegramScriptLoading] = useState<boolean>(true)
   const telegramWrapperRef = useRef<HTMLDivElement>(null)
@@ -50,15 +55,18 @@ export function ConnectTelegram(): ReactNode {
   const isLoading = isTelegramScriptLoading || !isAuthChecked || isCmsCallInProgress || isLoginInProgress
   const needsAuthorization = isAuthChecked && !tgData
 
-  return (
-    <Wrapper ref={telegramWrapperRef}>
-      <TelegramConnectionStatus
-        isLoading={isLoading}
-        isSubscribed={isTgSubscribed}
-        needsAuthorization={needsAuthorization}
-        authorize={authorize}
-        toggleSubscription={toggleSubscription}
-      />
-    </Wrapper>
-  )
+  return {
+    element: (
+      <Wrapper ref={telegramWrapperRef}>
+        <TelegramConnectionStatus
+          isLoading={isLoading}
+          isSubscribed={isTgSubscribed}
+          needsAuthorization={needsAuthorization}
+          authorize={authorize}
+          toggleSubscription={toggleSubscription}
+        />
+      </Wrapper>
+    ),
+    username: tgData?.username,
+  }
 }
