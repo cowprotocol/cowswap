@@ -23,10 +23,11 @@ const IconButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: inherit;
+  color: var(${UI.COLOR_TEXT_OPACITY_60});
 
   &:hover {
     background: var(${UI.COLOR_PAPER_DARKER});
+    color: var(${UI.COLOR_TEXT});
   }
 `
 
@@ -37,17 +38,12 @@ const IconBase = styled(SVG)<{ size?: string; opacity?: string }>`
   object-fit: contain;
   margin: auto;
   cursor: pointer;
-  opacity: ${({ opacity }) => opacity || 0.3};
   fill: currentColor;
   transition:
     opacity var(${UI.ANIMATION_DURATION}) ease-in-out,
     background var(${UI.ANIMATION_DURATION}) ease-in-out;
   padding: 8px;
   box-sizing: content-box;
-
-  &:hover {
-    opacity: 1;
-  }
 
   > path {
     fill: inherit;
@@ -68,7 +64,7 @@ export const CloseIcon = ({ onClick }: IconProps): ReactNode => (
 
 export const ArrowLeft = ({ onClick }: IconProps): ReactNode => (
   <IconButton onClick={onClick}>
-    <IconBase src={ICON_ARROW} size="14px" opacity="1" />
+    <IconBase src={ICON_ARROW} size="14px" />
   </IconButton>
 )
 
