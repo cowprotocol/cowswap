@@ -23,7 +23,7 @@ export function ConnectTelegram(): ConnectTelegramResult {
   const telegramWrapperRef = useRef<HTMLDivElement>(null)
 
   const authorization = useTgAuthorization()
-  const { isTgSubscribed, isCmsCallInProgress, toggleSubscription } = useTgSubscription(account, authorization)
+  const { isTgSubscribed, isCmsCallInProgress, toggleSubscription, subscribeWithData } = useTgSubscription(account, authorization)
 
   const { authorize, authenticate, tgData, isLoginInProgress, isAuthChecked } = authorization
 
@@ -64,6 +64,7 @@ export function ConnectTelegram(): ConnectTelegramResult {
           needsAuthorization={needsAuthorization}
           authorize={authorize}
           toggleSubscription={toggleSubscription}
+          subscribeWithData={subscribeWithData}
         />
       </Wrapper>
     ),
