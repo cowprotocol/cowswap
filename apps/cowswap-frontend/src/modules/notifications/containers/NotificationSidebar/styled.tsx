@@ -110,6 +110,7 @@ export const SidebarHeader = styled.div`
 `
 
 export const NotificationSettingsIcon = styled.button`
+  --size: 38px;
   border: none;
   background: none;
   padding: 8px;
@@ -119,8 +120,8 @@ export const NotificationSettingsIcon = styled.button`
   align-items: center;
   justify-content: center;
   color: var(${UI.COLOR_TEXT_OPACITY_60});
-  width: 34px;
-  height: 34px;
+  width: var(--size);
+  height: var(--size);
 
   &:hover {
     background: var(${UI.COLOR_PAPER_DARKER});
@@ -128,8 +129,8 @@ export const NotificationSettingsIcon = styled.button`
   }
 
   > svg {
-    width: 18px;
-    height: 18px;
+    width: 100%;
+    height: 100%;
     fill: currentColor;
   }
 `
