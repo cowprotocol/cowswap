@@ -279,6 +279,16 @@ export const PortaledDropdownContent = styled.ul<DropdownContentProps & { top?: 
   border: 1px solid var(--hoverBackground);
   list-style: none;
   color: var(--color);
+
+  ${({ mobileMode }) =>
+    mobileMode &&
+    css`
+      max-width: 100%;
+      width: 100%;
+      position: fixed;
+      border: 0;
+      background: var(--bgDropdownColor, var(${UI.COLOR_PAPER}, var(${UI.COLOR_NEUTRAL_100})));
+    `}
 `
 
 export const DropdownContent = styled.ul<DropdownContentProps>`

@@ -940,8 +940,8 @@ export const MenuBar = (props: MenuBarProps) => {
               <GlobalSettingsButton ref={settingsButtonRef} mobileMode={isMedium} onClick={handleSettingsToggle}>
                 <SVG src={IMG_ICON_SETTINGS_GLOBAL} />
               </GlobalSettingsButton>
-              {isSettingsOpen && (
-                <Portal>
+              {isSettingsOpen &&
+                (isMedium ? (
                   <GlobalSettingsDropdown
                     mobileMode={isMedium}
                     settingsNavItems={settingsNavItems}
@@ -950,10 +950,22 @@ export const MenuBar = (props: MenuBarProps) => {
                     ref={settingsDropdownRef}
                     rootDomain={rootDomain}
                     LinkComponent={LinkComponent}
-                    buttonRef={settingsButtonRef}
                   />
-                </Portal>
-              )}
+                ) : (
+                  // Desktop: Use Portal for positioning
+                  <Portal>
+                    <GlobalSettingsDropdown
+                      mobileMode={isMedium}
+                      settingsNavItems={settingsNavItems}
+                      isOpen={isSettingsOpen}
+                      closeDropdown={handleSettingsToggle}
+                      ref={settingsDropdownRef}
+                      rootDomain={rootDomain}
+                      LinkComponent={LinkComponent}
+                      buttonRef={settingsButtonRef}
+                    />
+                  </Portal>
+                ))}
             </>
           )}
         </RightAligned>
