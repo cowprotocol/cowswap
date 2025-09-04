@@ -4,13 +4,15 @@ import {
   BalancesAndAllowancesUpdater,
   PRIORITY_TOKENS_REFRESH_INTERVAL,
   PriorityTokensUpdater,
+  useIsBffFailed,
 } from '@cowprotocol/balances-and-allowances'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useBalancesContext } from 'entities/balancesContext/useBalancesContext'
 
 import { useSourceChainId } from 'modules/tokensList'
-import { usePriorityTokenAddresses } from 'modules/trade'
+import { usePendingOrdersCount, usePriorityTokenAddresses } from 'modules/trade'
 
 export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
   const sourceChainId = useSourceChainId().chainId
@@ -48,20 +50,29 @@ export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
     }
   }, [account, priorityTokenCount])
 
+  const { isBffBalanceApiEnabled } = useFeatureFlags()
+  const isBffFailed = useIsBffFailed()
+  const isBffEnabled = isBffBalanceApiEnabled && !isBffFailed
+  const pendingOrdersCount = usePendingOrdersCount(sourceChainId, account)
+
   return (
     <>
-      <PriorityTokensUpdater
-        // We can and should save one RPC call at the very beginning
-        // Since regular BalancesAndAllowancesUpdater will update all tokens (including priority tokens)
-        // We can skip first update for PriorityTokensUpdater
-        account={skipFirstPriorityUpdate ? undefined : balancesAccount}
-        chainId={sourceChainId}
-        tokenAddresses={priorityTokenAddressesAsArray}
-      />
+      {!isBffEnabled ? (
+        <PriorityTokensUpdater
+          // We can and should save one RPC call at the very beginning
+          // Since regular BalancesAndAllowancesUpdater will update all tokens (including priority tokens)
+          // We can skip first update for PriorityTokensUpdater
+          account={skipFirstPriorityUpdate ? undefined : balancesAccount}
+          chainId={sourceChainId}
+          tokenAddresses={priorityTokenAddressesAsArray}
+        />
+      ) : null}
       <BalancesAndAllowancesUpdater
         account={balancesAccount}
         chainId={sourceChainId}
+        isBffEnabled={isBffEnabled}
         excludedTokens={priorityTokenAddresses}
+        pendingOrdersCount={pendingOrdersCount}
       />
     </>
   )

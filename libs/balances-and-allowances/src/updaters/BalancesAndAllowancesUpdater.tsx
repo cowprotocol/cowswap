@@ -4,32 +4,36 @@ import { LpToken, NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useAllActiveTokens } from '@cowprotocol/tokens'
 
-import ms from 'ms.macro'
 import { SWRConfiguration } from 'swr'
 
+import { BalancesBffUpdater } from './BalancesBffUpdater'
 import { BalancesCacheUpdater } from './BalancesCacheUpdater'
 import { BalancesResetUpdater } from './BalancesResetUpdater'
+import { BalancesRpcCallUpdater } from './BalancesRpcCallUpdater'
 
 import { BASIC_MULTICALL_SWR_CONFIG } from '../consts'
 import { useNativeTokenBalance } from '../hooks/useNativeTokenBalance'
-import { usePersistBalancesAndAllowances } from '../hooks/usePersistBalancesAndAllowances'
 import { useSwrConfigWithPauseForNetwork } from '../hooks/useSwrConfigWithPauseForNetwork'
 import { useUpdateTokenBalance } from '../hooks/useUpdateTokenBalance'
 
 const EMPTY_TOKENS: string[] = []
 
 // A small gap between balances and allowances refresh intervals is needed to avoid high load to the node at the same time
-const BALANCES_SWR_CONFIG: SWRConfiguration = { ...BASIC_MULTICALL_SWR_CONFIG, refreshInterval: ms`31s` }
+const BALANCES_SWR_CONFIG: SWRConfiguration = { ...BASIC_MULTICALL_SWR_CONFIG }
 
 export interface BalancesAndAllowancesUpdaterProps {
   account: string | undefined
   chainId: SupportedChainId
+  pendingOrdersCount: number
   excludedTokens: Set<string>
+  isBffEnabled: boolean
 }
 
 export function BalancesAndAllowancesUpdater({
   account,
   chainId,
+  pendingOrdersCount,
+  isBffEnabled,
   excludedTokens,
 }: BalancesAndAllowancesUpdaterProps): ReactNode {
   const updateTokenBalance = useUpdateTokenBalance()
@@ -50,25 +54,30 @@ export function BalancesAndAllowancesUpdater({
 
   const balancesSwrConfig = useSwrConfigWithPauseForNetwork(chainId, account, BALANCES_SWR_CONFIG)
 
-  usePersistBalancesAndAllowances({
-    account,
-    chainId,
-    tokenAddresses,
-    setLoadingState: true,
-    balancesSwrConfig,
-  })
-
   // Add native token balance to the store as well
   useEffect(() => {
+    if (isBffEnabled) return
+
     const nativeToken = NATIVE_CURRENCIES[chainId]
 
     if (nativeToken && nativeTokenBalance) {
       updateTokenBalance(nativeToken.address, nativeTokenBalance)
     }
-  }, [nativeTokenBalance, chainId, updateTokenBalance])
+  }, [isBffEnabled, nativeTokenBalance, chainId, updateTokenBalance])
 
   return (
     <>
+      {isBffEnabled ? (
+        <BalancesBffUpdater account={account} chainId={chainId} pendingOrdersCount={pendingOrdersCount} />
+      ) : (
+        <BalancesRpcCallUpdater
+          account={account}
+          chainId={chainId}
+          tokenAddresses={tokenAddresses}
+          balancesSwrConfig={balancesSwrConfig}
+          setLoadingState={true}
+        />
+      )}
       <BalancesResetUpdater chainId={chainId} account={account} />
       <BalancesCacheUpdater chainId={chainId} account={account} excludedTokens={excludedTokens} />
     </>
