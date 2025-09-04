@@ -1,14 +1,19 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 
+import ICON_NOTIFICATION_SETTINGS from '@cowprotocol/assets/images/icon-notification-settings.svg'
 import { useOnClickOutside } from '@cowprotocol/common-hooks'
+
+import SVG from 'react-inlinesvg'
 
 import { upToSmall, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
-import { Sidebar, SidebarHeader, ArrowLeft, SettingsIcon, EnableAlertsButtonWithIcon } from './styled'
+import { Sidebar, SidebarHeader, ArrowLeft, NotificationSettingsIcon, EnableAlertsButtonWithIcon } from './styled'
 
 import { useHasNotificationSubscription } from '../../hooks/useHasNotificationSubscription'
+import { useNotificationSettingsPopoverDismissal } from '../../hooks/useNotificationSettingsPopoverDismissal'
+import { NotificationSettingsPopover } from '../../pure/NotificationSettingsPopover'
 import { NotificationSettings } from '../NotificationSettings'
 import { NotificationsList } from '../NotificationsList'
 
@@ -40,6 +45,9 @@ interface NotificationsHeaderProps {
   onDismiss: () => void
   onToggleSettings: () => void
   onEnableAlerts: () => void
+  shouldShowSettingsPopover: boolean
+  onDismissSettingsPopover: () => void
+  headerRef: React.RefObject<HTMLDivElement | null>
 }
 
 function NotificationsHeader({
@@ -49,9 +57,12 @@ function NotificationsHeader({
   onDismiss,
   onToggleSettings,
   onEnableAlerts,
+  shouldShowSettingsPopover,
+  onDismissSettingsPopover,
+  headerRef,
 }: NotificationsHeaderProps): ReactNode {
   return (
-    <SidebarHeader>
+    <SidebarHeader ref={headerRef}>
       <span>
         <ArrowLeft
           onClick={onDismiss}
@@ -65,7 +76,23 @@ function NotificationsHeader({
       <h3>Notifications</h3>
       {areTelegramNotificationsEnabled &&
         (hasSubscription ? (
-          <SettingsIcon size={18} onClick={onToggleSettings} />
+          <NotificationSettingsPopover
+            show={shouldShowSettingsPopover}
+            onDismiss={onDismissSettingsPopover}
+            containerRef={headerRef}
+          >
+            <NotificationSettingsIcon
+              onClick={onToggleSettings}
+              aria-label="Trade alert settings"
+              data-click-event={toCowSwapGtmEvent({
+                category: CowSwapAnalyticsCategory.NOTIFICATIONS,
+                action: 'Open notification settings',
+                label: 'notification sidebar',
+              })}
+            >
+              <SVG src={ICON_NOTIFICATION_SETTINGS} />
+            </NotificationSettingsIcon>
+          </NotificationSettingsPopover>
         ) : (
           <EnableAlertsButtonWithIcon
             onClick={onEnableAlerts}
@@ -93,11 +120,17 @@ export function NotificationSidebar({
 }: NotificationSidebarProps): ReactNode {
   const [isSettingsOpen, setIsSettingsOpen] = useState(initialSettingsOpen)
   const sidebarRef = useRef<HTMLDivElement>(null)
+  const headerRef = useRef<HTMLDivElement>(null)
   const isMobile = useMediaQuery(upToSmall)
 
   // const { areTelegramNotificationsEnabled } = useFeatureFlags()
   const areTelegramNotificationsEnabled = true // HARDCODE TRUE FOR NOW
   const { hasSubscription } = useHasNotificationSubscription()
+  const { isDismissed: isSettingsPopoverDismissed, dismiss: dismissSettingsPopover } =
+    useNotificationSettingsPopoverDismissal()
+
+  // Show settings popover when trade alerts are enabled (hasSubscription) but popover hasn't been dismissed
+  const shouldShowSettingsPopover = hasSubscription && !isSettingsPopoverDismissed && !isSettingsOpen
 
   // Sync state when initialSettingsOpen prop changes
   useEffect(() => {
@@ -121,6 +154,9 @@ export function NotificationSidebar({
 
   if (!isOpen) return null
 
+  // Force re-mount of NotificationsList when returning from settings to refresh subscription status
+  const listKey = `notifications-list-${isSettingsOpen}`
+
   return (
     <Sidebar ref={sidebarRef} isOpen={isOpen}>
       {isSettingsOpen ? (
@@ -128,7 +164,7 @@ export function NotificationSidebar({
           <SettingsHeader onBack={toggleSettingsOpen} />
         </NotificationSettings>
       ) : (
-        <NotificationsList hasSubscription={hasSubscription} onToggleSettings={toggleSettingsOpen}>
+        <NotificationsList key={listKey} hasSubscription={hasSubscription} onToggleSettings={toggleSettingsOpen}>
           <NotificationsHeader
             isMobile={isMobile}
             areTelegramNotificationsEnabled={areTelegramNotificationsEnabled}
@@ -136,6 +172,9 @@ export function NotificationSidebar({
             onDismiss={onDismiss}
             onToggleSettings={toggleSettingsOpen}
             onEnableAlerts={handleEnableAlertsClick}
+            shouldShowSettingsPopover={shouldShowSettingsPopover}
+            onDismissSettingsPopover={dismissSettingsPopover}
+            headerRef={headerRef}
           />
         </NotificationsList>
       )}
