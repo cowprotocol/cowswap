@@ -1,5 +1,5 @@
 import { useAtom } from 'jotai'
-import React, { createElement, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { createElement, ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { getCmsClient } from '@cowprotocol/core'
 import { useAddSnackbar } from '@cowprotocol/snackbars'
@@ -49,7 +49,7 @@ const simulateDevModeApiCall = (
   })
 }
 
-const createSubscriptionSuccessContent = (username: string): React.ReactElement => {
+const createSubscriptionSuccessContent = (username: string): ReactNode => {
   return createElement('div', {}, [
     createElement('strong', { key: 'title' }, 'Trade alerts enabled successfully'),
     createElement('br', { key: 'br' }),
