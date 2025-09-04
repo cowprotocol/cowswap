@@ -1,5 +1,6 @@
 import { UI } from '@cowprotocol/ui'
 
+import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
 export const ListWrapper = styled.div`
@@ -109,11 +110,45 @@ export const NoNotifications = styled.div`
   display: flex;
   flex-flow: column wrap;
   align-items: center;
-  justify-content: space-between;
-  margin-top: 30px;
-  opacity: 0.7;
+  justify-content: center;
+  margin: auto;
+  gap: 16px;
+  text-align: center;
+  margin: 30% 0 0;
 
   > h4 {
     margin: 0;
+    font-size: 24px;
+    font-weight: var(${UI.FONT_WEIGHT_BOLD});
+    color: var(${UI.COLOR_TEXT_OPACITY_70});
+  }
+
+  > p {
+    margin: 0;
+    font-size: 14px;
+    color: var(${UI.COLOR_TEXT_OPACITY_70});
+    line-height: 1.4;
+  }
+`
+
+export const MessageReadIcon = styled(SVG)`
+  --size: 90px;
+  width: var(--size);
+  height: var(--size);
+  color: var(${UI.COLOR_TEXT_OPACITY_15});
+`
+
+export const EnableAlertsLink = styled.button`
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(${UI.COLOR_PRIMARY});
+  font-size: inherit;
+  font-weight: var(${UI.FONT_WEIGHT_MEDIUM});
+  text-decoration: underline;
+  cursor: pointer;
+
+  &:hover {
+    color: var(${UI.COLOR_PRIMARY_DARKER});
   }
 `
