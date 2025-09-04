@@ -2,10 +2,12 @@ import { useSetAtom } from 'jotai/index'
 import { useEffect } from 'react'
 
 import { BFF_BASE_URL } from '@cowprotocol/common-const'
+import { useDebounce } from '@cowprotocol/common-hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { BigNumber } from '@ethersproject/bignumber'
 
+import ms from 'ms.macro'
 import useSWR, { SWRConfiguration } from 'swr'
 
 import { balancesAtom, BalancesState, balancesUpdateAtom } from '../state/balancesAtom'
@@ -22,6 +24,8 @@ export interface PersistBalancesFromBffParams {
   pendingOrdersCount?: number
 }
 
+const DEBOUNCE_FOR_PENDING_ORDERS_MS = ms`1s`
+
 export function usePersistBalancesFromBff(params: PersistBalancesFromBffParams): void {
   const { account, chainId, balancesSwrConfig, pendingOrdersCount } = params
 
@@ -30,15 +34,16 @@ export function usePersistBalancesFromBff(params: PersistBalancesFromBffParams):
   const targetChainId = chainId ?? activeChainId
 
   const setIsBffFailed = useSetIsBffFailed()
+  const debouncedPendingOrdersCount = useDebounce(pendingOrdersCount, DEBOUNCE_FOR_PENDING_ORDERS_MS)
 
   const {
     isLoading: isBalancesLoading,
     data,
     error,
   } = useSWR(
-    // pendingOrdersCount is added to the key to refetch balances when it changes (new order created or order filled)
-    targetAccount ? [targetAccount, targetChainId, pendingOrdersCount, 'bff-balances'] : null,
-    ([walletAddress, chainId]) => getBffBalances(walletAddress, chainId),
+    // debouncedPendingOrdersCount is added to the key to refetch balances when it changes (new order created or order filled)
+    targetAccount ? [targetAccount, targetChainId, debouncedPendingOrdersCount, 'bff-balances'] : null,
+    ([walletAddress, chainId, _]) => getBffBalances(walletAddress, chainId),
     balancesSwrConfig,
   )
 
