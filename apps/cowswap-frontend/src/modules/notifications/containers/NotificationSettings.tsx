@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
 import TELEGRAM_ICON from '@cowprotocol/assets/images/icon-telegram.svg'
-import { RowBetween, RowFixed } from '@cowprotocol/ui'
+import { RowBetween, RowFixed, HoverTooltip } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
@@ -10,6 +10,15 @@ import styled from 'styled-components/macro'
 import { Toggle } from 'legacy/components/Toggle'
 
 import { ConnectTelegram } from './ConnectTelegram'
+
+const DISABLED_TOGGLE_TOOLTIP_MESSAGE = 'This toggle is on by default. Toggling on/off will be supported in the future.'
+
+const DisabledToggleTooltip = styled.span`
+  display: block;
+  font-size: 13px;
+  padding: 5px 10px;
+  max-width: 250px;
+`
 
 const SettingsContainer = styled.div`
   padding: 16px;
@@ -32,6 +41,9 @@ const SettingsRow = styled.div`
 
   &.disabled {
     opacity: 0.7;
+  }
+  
+  &.disabled .toggle-wrapper {
     pointer-events: none;
   }
 `
@@ -85,14 +97,28 @@ export function NotificationSettings({ children }: NotificationSettingsProps): R
           <SettingsRow className="disabled">
             <RowBetween>
               <span>Order fills</span>
-              <Toggle isActive={true} toggle={() => {}} isDisabled={true} />
+              <HoverTooltip 
+                content={<DisabledToggleTooltip>{DISABLED_TOGGLE_TOOLTIP_MESSAGE}</DisabledToggleTooltip>}
+                placement="bottom"
+                wrapInContainer={false}
+                className="toggle-wrapper"
+              >
+                <Toggle isActive={true} toggle={() => {}} isDisabled={true} />
+              </HoverTooltip>
             </RowBetween>
           </SettingsRow>
           <Divider />
           <SettingsRow className="disabled">
             <RowBetween>
               <span>Order expired</span>
-              <Toggle isActive={true} toggle={() => {}} isDisabled={true} />
+              <HoverTooltip 
+                content={<DisabledToggleTooltip>{DISABLED_TOGGLE_TOOLTIP_MESSAGE}</DisabledToggleTooltip>}
+                placement="bottom"
+                wrapInContainer={false}
+                className="toggle-wrapper"
+              >
+                <Toggle isActive={true} toggle={() => {}} isDisabled={true} />
+              </HoverTooltip>
             </RowBetween>
           </SettingsRow>
         </SettingsCard>
