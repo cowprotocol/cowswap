@@ -43,6 +43,7 @@ interface NotificationsHeaderProps {
 }
 
 function NotificationsHeader({
+  isMobile,
   areTelegramNotificationsEnabled,
   hasSubscription,
   onDismiss,
@@ -57,7 +58,7 @@ function NotificationsHeader({
           data-click-event={toCowSwapGtmEvent({
             category: CowSwapAnalyticsCategory.NOTIFICATIONS,
             action: 'Close notifications panel',
-            label: 'mobile',
+            label: isMobile ? 'mobile' : 'desktop',
           })}
         />
       </span>
