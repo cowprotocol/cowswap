@@ -4,7 +4,6 @@ import ICON_ARROW from '@cowprotocol/assets/images/arrow-left.svg'
 import ICON_BELL_ALERT from '@cowprotocol/assets/images/icon-bell-alert.svg'
 import { Media, UI } from '@cowprotocol/ui'
 
-import { Settings } from 'react-feather'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
@@ -110,11 +109,28 @@ export const SidebarHeader = styled.div`
   }
 `
 
-export const SettingsIcon = styled(Settings)`
+export const NotificationSettingsIcon = styled.button`
+  border: none;
+  background: none;
+  padding: 8px;
   cursor: pointer;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(${UI.COLOR_TEXT_OPACITY_60});
+  width: 34px;
+  height: 34px;
 
   &:hover {
-    opacity: 0.7;
+    background: var(${UI.COLOR_PAPER_DARKER});
+    color: var(${UI.COLOR_TEXT});
+  }
+
+  > svg {
+    width: 18px;
+    height: 18px;
+    fill: currentColor;
   }
 `
 
