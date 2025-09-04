@@ -1,9 +1,12 @@
+import { useAtom } from 'jotai'
 import React, { createElement, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { getCmsClient } from '@cowprotocol/core'
 import { useAddSnackbar } from '@cowprotocol/snackbars'
 
 import { TgAuthorization } from './useTgAuthorization'
+
+import { tgSubscriptionAtom } from '../atoms/tgSubscriptionAtom'
 
 const TG_DEV_BYPASS = process.env.NODE_ENV === 'development' && process.env.REACT_APP_TG_DEV_BYPASS === 'true'
 
@@ -18,12 +21,15 @@ const setDevSubscriptionState = (subscribed: boolean): void => {
   sessionStorage.setItem(DEV_SUBSCRIPTION_KEY, String(subscribed))
 }
 
-const simulateDevModeApiCall = (method: string, setIsCmsCallInProgress: (loading: boolean) => void): Promise<{ data: boolean }> => {
+const simulateDevModeApiCall = (
+  method: string,
+  setIsCmsCallInProgress: (loading: boolean) => void,
+): Promise<{ data: boolean }> => {
   setIsCmsCallInProgress(true)
   return new Promise((resolve) => {
     setTimeout(() => {
       setIsCmsCallInProgress(false)
-      
+
       if (method.includes('check')) {
         // Return current subscription state
         const currentState = getDevSubscriptionState()
@@ -63,10 +69,17 @@ interface TgSubscriptionContext {
 export function useTgSubscription(account: string | undefined, authorization: TgAuthorization): TgSubscriptionContext {
   const { tgData, authorize, clearAuth } = authorization
   const [isCmsCallInProgress, setIsCmsCallInProgress] = useState<boolean>(false)
-  const [isTgSubscribed, setTgSubscribed] = useState<boolean>(false)
+  const [isTgSubscribed, setTgSubscribed] = useAtom(tgSubscriptionAtom)
   const addSnackbar = useAddSnackbar()
-  const isSubscriptionCheckedRef = useRef(false)
   const skipNextCheckRef = useRef(false)
+
+  // Reset subscription state when account changes (wallet disconnects/switches)
+  useEffect(() => {
+    if (!account) {
+      setTgSubscribed(false)
+    }
+  }, [account, setTgSubscribed])
+
   const callSubscriptionApi: SubscriptionApiCaller = useCallback(
     (method: string, data: TelegramData) => {
       if (!account) return
@@ -92,7 +105,7 @@ export function useTgSubscription(account: string | undefined, authorization: Tg
         }
       })
     },
-    [callSubscriptionApi, addSnackbar],
+    [callSubscriptionApi, addSnackbar, setTgSubscribed],
   )
 
   const removeSubscription = useCallback(
@@ -101,17 +114,19 @@ export function useTgSubscription(account: string | undefined, authorization: Tg
         if (!result) return
         setTgSubscribed(false)
         clearAuth()
-        isSubscriptionCheckedRef.current = false
         if (TG_DEV_BYPASS) setDevSubscriptionState(false)
       })
     },
-    [callSubscriptionApi, clearAuth],
+    [callSubscriptionApi, clearAuth, setTgSubscribed],
   )
 
-  const subscribeWithData = useCallback(async (data: TelegramData) => {
-    skipNextCheckRef.current = true
-    isTgSubscribed ? removeSubscription(data) : addTgSubscription(data)
-  }, [isTgSubscribed, addTgSubscription, removeSubscription])
+  const subscribeWithData = useCallback(
+    async (data: TelegramData) => {
+      skipNextCheckRef.current = true
+      isTgSubscribed ? removeSubscription(data) : addTgSubscription(data)
+    },
+    [isTgSubscribed, addTgSubscription, removeSubscription],
+  )
 
   const toggleSubscription = useCallback(async () => {
     const data = tgData || (await authorize())
@@ -120,18 +135,17 @@ export function useTgSubscription(account: string | undefined, authorization: Tg
   }, [tgData, authorize, subscribeWithData])
 
   /**
-   * Check the subscription once Telegram is authorized
+   * Check the subscription when Telegram is authorized
    */
   useEffect(() => {
-    if (!tgData || isSubscriptionCheckedRef.current || skipNextCheckRef.current) {
+    if (!tgData || skipNextCheckRef.current) {
       skipNextCheckRef.current = false
       return
     }
-    isSubscriptionCheckedRef.current = true
     callSubscriptionApi('/check-tg-subscription', tgData)?.then(({ data: result }: { data: boolean }) => {
       setTgSubscribed(result)
     })
-  }, [tgData, callSubscriptionApi])
+  }, [tgData, callSubscriptionApi, setTgSubscribed])
 
   return useMemo(
     () => ({ isTgSubscribed, isCmsCallInProgress, toggleSubscription, subscribeWithData }),
