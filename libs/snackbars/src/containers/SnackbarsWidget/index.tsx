@@ -21,7 +21,8 @@ const Overlay = styled.div`
   width: 100%;
   height: 100%;
   z-index: 4;
-  background: var(${UI.COLOR_PAPER_DARKEST});
+  background: var(${UI.COLOR_BLACK_OPACITY_30});
+  backdrop-filter: blur(10px);
 `
 
 const List = styled.div`
