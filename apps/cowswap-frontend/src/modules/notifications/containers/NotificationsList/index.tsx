@@ -15,14 +15,15 @@ import {
   EnableAlertsLink,
 } from './styled'
 
+import { NOTIFICATION_MARK_READ_DELAY_MS } from '../../constants'
 import { useAccountNotifications } from '../../hooks/useAccountNotifications'
 import { useUnreadNotifications } from '../../hooks/useUnreadNotifications'
 import { markNotificationsAsReadAtom } from '../../state/readNotificationsAtom'
 import { groupNotificationsByDate } from '../../utils/groupNotificationsByDate'
 
 interface EmptyNotificationsProps {
-  hasSubscription?: boolean
-  onToggleSettings?: () => void
+  hasSubscription: boolean | undefined
+  onToggleSettings: (() => void) | undefined
 }
 
 function EmptyNotifications({ hasSubscription, onToggleSettings }: EmptyNotificationsProps): ReactNode {
@@ -55,14 +56,12 @@ const DATE_FORMAT_OPTION: Intl.DateTimeFormatOptions = {
 
 interface NotificationsListProps {
   children: ReactNode
-  hasSubscription?: boolean
-  onToggleSettings?: () => void
+  hasSubscription: boolean | undefined
+  onToggleSettings: (() => void) | undefined
 }
 
 // TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function NotificationsList({ children, hasSubscription, onToggleSettings }: NotificationsListProps) {
+export function NotificationsList({ children, hasSubscription, onToggleSettings }: NotificationsListProps): ReactNode {
   const notifications = useAccountNotifications()
   const unreadNotifications = useUnreadNotifications()
   const markNotificationsAsRead = useSetAtom(markNotificationsAsReadAtom)
@@ -72,9 +71,13 @@ export function NotificationsList({ children, hasSubscription, onToggleSettings 
   useEffect(() => {
     if (!notifications) return
 
-    setTimeout(() => {
+    const timeoutId = setTimeout(() => {
       markNotificationsAsRead(notifications.map(({ id }) => id) || [])
-    }, 1000)
+    }, NOTIFICATION_MARK_READ_DELAY_MS)
+
+    return () => {
+      clearTimeout(timeoutId)
+    }
   }, [notifications, markNotificationsAsRead])
 
   return (
