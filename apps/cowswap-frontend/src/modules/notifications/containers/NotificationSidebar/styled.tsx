@@ -1,9 +1,7 @@
 import { ReactNode } from 'react'
 
 import ICON_ARROW from '@cowprotocol/assets/images/arrow-left.svg'
-import ICON_DOUBLE_ARROW_RIGHT from '@cowprotocol/assets/images/double-arrow-right.svg'
 import ICON_BELL_ALERT from '@cowprotocol/assets/images/icon-bell-alert.svg'
-import ICON_CLOSE_X from '@cowprotocol/assets/images/x.svg'
 import { Media, UI } from '@cowprotocol/ui'
 
 import { Settings } from 'react-feather'
@@ -50,18 +48,6 @@ const IconBase = styled(SVG)<{ size?: string; opacity?: string }>`
   }
 `
 
-export const DoubleArrowRightIcon = ({ onClick }: IconProps): ReactNode => (
-  <IconButton onClick={onClick}>
-    <IconBase src={ICON_DOUBLE_ARROW_RIGHT} />
-  </IconButton>
-)
-
-export const CloseIcon = ({ onClick }: IconProps): ReactNode => (
-  <IconButton onClick={onClick}>
-    <IconBase src={ICON_CLOSE_X} />
-  </IconButton>
-)
-
 export const ArrowLeft = ({ onClick }: IconProps): ReactNode => (
   <IconButton onClick={onClick}>
     <IconBase src={ICON_ARROW} size="14px" />
@@ -81,7 +67,7 @@ export const Sidebar = styled.div<{ isOpen: boolean }>`
   box-shadow: 0 0 100px var(${UI.COLOR_BLACK_OPACITY_30});
   transform: ${({ isOpen }) => (isOpen ? 'translateX(0)' : 'translateX(102%)')};
   transition: transform 0.3s ease-in-out;
-  z-index: 10000;
+  z-index: 9;
   border-top-left-radius: 16px;
   overflow-y: auto;
 
@@ -160,8 +146,6 @@ export const EnableAlertsButton = styled.button`
     color: var(${UI.COLOR_BUTTON_TEXT});
   }
 `
-
-// TODO: Add proper return type annotation
 
 export const EnableAlertsButtonWithIcon = ({
   onClick,

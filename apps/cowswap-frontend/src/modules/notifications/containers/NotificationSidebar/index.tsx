@@ -6,14 +6,7 @@ import { upToSmall, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
-import {
-  Sidebar,
-  SidebarHeader,
-  DoubleArrowRightIcon,
-  ArrowLeft,
-  SettingsIcon,
-  EnableAlertsButtonWithIcon,
-} from './styled'
+import { Sidebar, SidebarHeader, ArrowLeft, SettingsIcon, EnableAlertsButtonWithIcon } from './styled'
 
 import { useHasNotificationSubscription } from '../../hooks/useHasNotificationSubscription'
 import { NotificationSettings } from '../NotificationSettings'
@@ -50,7 +43,6 @@ interface NotificationsHeaderProps {
 }
 
 function NotificationsHeader({
-  isMobile,
   areTelegramNotificationsEnabled,
   hasSubscription,
   onDismiss,
@@ -60,26 +52,14 @@ function NotificationsHeader({
   return (
     <SidebarHeader>
       <span>
-        {!isMobile && (
-          <DoubleArrowRightIcon
-            onClick={onDismiss}
-            data-click-event={toCowSwapGtmEvent({
-              category: CowSwapAnalyticsCategory.NOTIFICATIONS,
-              action: 'Close notifications panel',
-              label: 'desktop',
-            })}
-          />
-        )}
-        {isMobile && (
-          <ArrowLeft
-            onClick={onDismiss}
-            data-click-event={toCowSwapGtmEvent({
-              category: CowSwapAnalyticsCategory.NOTIFICATIONS,
-              action: 'Close notifications panel',
-              label: 'mobile',
-            })}
-          />
-        )}
+        <ArrowLeft
+          onClick={onDismiss}
+          data-click-event={toCowSwapGtmEvent({
+            category: CowSwapAnalyticsCategory.NOTIFICATIONS,
+            action: 'Close notifications panel',
+            label: 'mobile',
+          })}
+        />
       </span>
       <h3>Notifications</h3>
       {areTelegramNotificationsEnabled &&
@@ -114,10 +94,8 @@ export function NotificationSidebar({
   const sidebarRef = useRef<HTMLDivElement>(null)
   const isMobile = useMediaQuery(upToSmall)
 
-  // HARDCODE TRUE FOR NOW
-  // const { areTelegramNotificationsEnabled} = useFeatureFlags()
-  const areTelegramNotificationsEnabled = true
-
+  // const { areTelegramNotificationsEnabled } = useFeatureFlags()
+  const areTelegramNotificationsEnabled = true // HARDCODE TRUE FOR NOW
   const { hasSubscription } = useHasNotificationSubscription()
 
   // Sync state when initialSettingsOpen prop changes
