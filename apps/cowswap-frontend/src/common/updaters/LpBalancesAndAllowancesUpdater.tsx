@@ -1,9 +1,8 @@
 import { atom, useSetAtom } from 'jotai'
-import { useEffect, useMemo, useState } from 'react'
+import { ReactNode, useEffect, useMemo, useState } from 'react'
 
-import { BalancesBffUpdater, BalancesRpcCallUpdater, useIsBffFailed } from '@cowprotocol/balances-and-allowances'
+import { BalancesRpcCallUpdater } from '@cowprotocol/balances-and-allowances'
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { LP_TOKEN_LIST_CATEGORIES, useAllLpTokens } from '@cowprotocol/tokens'
 
@@ -25,9 +24,11 @@ export interface BalancesAndAllowancesUpdaterProps {
   enablePolling: boolean
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function LpBalancesAndAllowancesUpdater({ account, chainId, enablePolling }: BalancesAndAllowancesUpdaterProps) {
+export function LpBalancesAndAllowancesUpdater({
+  account,
+  chainId,
+  enablePolling,
+}: BalancesAndAllowancesUpdaterProps): ReactNode {
   const allLpTokens = useAllLpTokens(LP_TOKEN_LIST_CATEGORIES)
   const [isUpdaterPaused, setIsUpdaterPaused] = useState(true)
   const setAreLpBalancesLoaded = useSetAtom(areLpBalancesLoadedAtom)
@@ -48,25 +49,17 @@ export function LpBalancesAndAllowancesUpdater({ account, chainId, enablePolling
     setAreLpBalancesLoaded(false)
   }, [account, setAreLpBalancesLoaded])
 
-  const { isBffBalanceApiEnabled } = useFeatureFlags()
-  const isBffFailed = useIsBffFailed()
-  const isBffEnabled = isBffBalanceApiEnabled && !isBffFailed
-
   return (
     <>
-      {isBffEnabled ? (
-        <BalancesBffUpdater account={account} chainId={chainId} />
-      ) : (
-        <BalancesRpcCallUpdater
-          chainId={chainId}
-          tokenAddresses={lpTokenAddresses}
-          balancesSwrConfig={enablePolling ? LP_BALANCES_SWR_CONFIG : SWR_NO_REFRESH_OPTIONS}
-          account={isUpdaterPaused ? undefined : account}
-          setLoadingState={false}
-          onBalancesLoaded={setAreLpBalancesLoaded}
-          multicallOptions={LP_MULTICALL_OPTIONS}
-        />
-      )}
+      <BalancesRpcCallUpdater
+        chainId={chainId}
+        tokenAddresses={lpTokenAddresses}
+        balancesSwrConfig={enablePolling ? LP_BALANCES_SWR_CONFIG : SWR_NO_REFRESH_OPTIONS}
+        account={isUpdaterPaused ? undefined : account}
+        setLoadingState={false}
+        onBalancesLoaded={setAreLpBalancesLoaded}
+        multicallOptions={LP_MULTICALL_OPTIONS}
+      />
     </>
   )
 }

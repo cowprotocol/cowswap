@@ -19,14 +19,11 @@ export interface PersistBalancesFromBffParams {
   account?: string
   chainId: SupportedChainId
   balancesSwrConfig: SWRConfiguration
-  setLoadingState?: boolean
   pendingOrdersCount?: number
-
-  onBalancesLoaded?(loaded: boolean): void
 }
 
 export function usePersistBalancesFromBff(params: PersistBalancesFromBffParams): void {
-  const { account, chainId, balancesSwrConfig, onBalancesLoaded, setLoadingState, pendingOrdersCount } = params
+  const { account, chainId, balancesSwrConfig, pendingOrdersCount } = params
 
   const { chainId: activeChainId, account: connectedAccount } = useWalletInfo()
   const targetAccount = account ?? connectedAccount
@@ -39,6 +36,7 @@ export function usePersistBalancesFromBff(params: PersistBalancesFromBffParams):
     data,
     error,
   } = useSWR(
+    // pendingOrdersCount is added to the key to refetch balances when it changes (new order created or order filled)
     targetAccount ? [targetAccount, targetChainId, pendingOrdersCount, 'bff-balances'] : null,
     ([walletAddress, chainId]) => getBffBalances(walletAddress, chainId),
     balancesSwrConfig,
@@ -48,10 +46,8 @@ export function usePersistBalancesFromBff(params: PersistBalancesFromBffParams):
   const setBalancesUpdate = useSetAtom(balancesUpdateAtom)
 
   useEffect(() => {
-    if (!setLoadingState) return
-
     setBalances((state) => ({ ...state, isLoading: isBalancesLoading, chainId }))
-  }, [setBalances, isBalancesLoading, setLoadingState, chainId])
+  }, [setBalances, isBalancesLoading, chainId])
 
   if (error) {
     setIsBffFailed(true)
@@ -65,28 +61,24 @@ export function usePersistBalancesFromBff(params: PersistBalancesFromBffParams):
       return acc
     }, {})
 
-    onBalancesLoaded?.(true)
-
     setBalances((state) => {
       return {
         ...state,
         chainId,
         fromCache: false,
         values: balancesState,
-        ...(setLoadingState ? { isLoading: false } : {}),
+        isLoading: false,
       }
     })
 
-    if (setLoadingState) {
-      setBalancesUpdate((state) => ({
-        ...state,
-        [chainId]: {
-          ...state[chainId],
-          [account.toLowerCase()]: Date.now(),
-        },
-      }))
-    }
-  }, [chainId, account, data, setBalances, setLoadingState, onBalancesLoaded, setBalancesUpdate, error])
+    setBalancesUpdate((state) => ({
+      ...state,
+      [chainId]: {
+        ...state[chainId],
+        [account.toLowerCase()]: Date.now(),
+      },
+    }))
+  }, [chainId, account, data, setBalances, setBalancesUpdate, error])
 }
 
 export async function getBffBalances(
