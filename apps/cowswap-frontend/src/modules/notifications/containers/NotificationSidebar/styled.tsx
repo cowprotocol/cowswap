@@ -7,6 +7,8 @@ import { Media, UI } from '@cowprotocol/ui'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
+import { NOTIFICATION_SIDEBAR_Z_INDEX } from '../../constants'
+
 interface IconProps {
   onClick?: () => void
 }
@@ -66,7 +68,7 @@ export const Sidebar = styled.div<{ isOpen: boolean }>`
   box-shadow: 0 0 100px var(${UI.COLOR_BLACK_OPACITY_30});
   transform: ${({ isOpen }) => (isOpen ? 'translateX(0)' : 'translateX(102%)')};
   transition: transform 0.3s ease-in-out;
-  z-index: 9;
+  z-index: ${NOTIFICATION_SIDEBAR_Z_INDEX};
   border-top-left-radius: 16px;
   overflow-y: auto;
 
