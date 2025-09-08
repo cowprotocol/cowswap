@@ -2,6 +2,7 @@ import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 
 import ICON_NOTIFICATION_SETTINGS from '@cowprotocol/assets/images/icon-notification-settings.svg'
 import { useOnClickOutside } from '@cowprotocol/common-hooks'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 
 import SVG from 'react-inlinesvg'
 
@@ -123,8 +124,7 @@ export function NotificationSidebar({
   const headerRef = useRef<HTMLDivElement>(null)
   const isMobile = useMediaQuery(upToSmall)
 
-  // const { areTelegramNotificationsEnabled } = useFeatureFlags()
-  const areTelegramNotificationsEnabled = true // HARDCODE TRUE FOR NOW
+  const { areTelegramNotificationsEnabled } = useFeatureFlags()
   const { hasSubscription } = useHasNotificationSubscription()
   const { isDismissed: isSettingsPopoverDismissed, dismiss: dismissSettingsPopover } =
     useNotificationSettingsPopoverDismissal()
