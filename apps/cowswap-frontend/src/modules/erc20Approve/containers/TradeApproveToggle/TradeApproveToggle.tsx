@@ -15,7 +15,7 @@ export function TradeApproveToggle({ amountToApprove }: { amountToApprove: Curre
   const changeApproveAmount = useSetChangeApproveAmountState()
 
   const openChangeApproveAmount = useCallback((): void => {
-    changeApproveAmount({ inProgress: true })
+    changeApproveAmount({ isModalOpen: true })
   }, [changeApproveAmount])
 
   return (

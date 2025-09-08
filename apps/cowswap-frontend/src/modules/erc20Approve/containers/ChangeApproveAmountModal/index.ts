@@ -1,2 +1,2 @@
 export * from './ChangeApproveAmountModal'
-export * from './ChangeApproveAmountAtom'
+export * from './ChangeApproveAmountModalAtom'

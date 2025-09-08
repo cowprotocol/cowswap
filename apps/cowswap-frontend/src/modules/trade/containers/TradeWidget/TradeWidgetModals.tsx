@@ -50,7 +50,7 @@ export function TradeWidgetModals({
   const { open: isTokenSelectOpen } = useSelectTokenWidgetState()
   const [{ isOpen: isWrapNativeOpen }, setWrapNativeScreenState] = useWrapNativeScreenState()
   const { approveInProgress, currency: approvingCurrency, error: approveError } = useTradeApproveState()
-  const { inProgress: changeApproveAmountInProgress } = useChangeApproveAmountState()
+  const { isModalOpen: changeApproveAmountInProgress } = useChangeApproveAmountState()
   const [tokenListAddingError, setTokenListAddingError] = useTokenListAddingError()
   const { isModalOpen: isZeroApprovalModalOpen, closeModal: closeZeroApprovalModal } = useZeroApproveModalState()
   const {
@@ -74,7 +74,7 @@ export function TradeWidgetModals({
       setWrapNativeScreenState({ isOpen: false })
       updateTradeApproveState({ approveInProgress: false, error: undefined })
       setTokenListAddingError(null)
-      updateApproveAmountState({ inProgress: false })
+      updateApproveAmountState({ isModalOpen: false })
     },
     [
       closeTradeConfirm,

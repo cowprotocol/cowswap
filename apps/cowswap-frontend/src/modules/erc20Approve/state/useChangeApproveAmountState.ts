@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai'
 
-import { changeApproveAmountAtom, ChangeTradeApproveState } from '../containers/ChangeApproveAmountModal'
+import { changeApproveAmountModalAtom, ChangeApproveModalState } from '../containers/ChangeApproveAmountModal'
 
-export function useChangeApproveAmountState(): ChangeTradeApproveState {
-  return useAtomValue(changeApproveAmountAtom)
+export function useChangeApproveAmountState(): ChangeApproveModalState {
+  return useAtomValue(changeApproveAmountModalAtom)
 }
