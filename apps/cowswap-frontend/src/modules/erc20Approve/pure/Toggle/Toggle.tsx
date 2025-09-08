@@ -13,15 +13,17 @@ export function Toggle({
   isPartialApproveEnabled,
   enablePartialApprove,
   amountToApprove,
+  changeApproveAmount,
 }: {
   isPartialApproveEnabled: boolean
   enablePartialApprove: (isPartialApproveEnabled: boolean) => void
   amountToApprove: CurrencyAmount<Currency>
+  changeApproveAmount?: () => void
 }): ReactNode {
   return (
     <styledEl.ToggleWrapper>
       <Option isActive={isPartialApproveEnabled} onClick={() => enablePartialApprove(true)} title={'Partial approval'}>
-        <styledEl.PartialApproveWrapper>
+        <styledEl.PartialApproveWrapper onClick={changeApproveAmount}>
           {amountToApprove.toSignificant(5)} <TokenSymbol token={amountToApprove.currency} /> <SVG src={EDIT} />
         </styledEl.PartialApproveWrapper>
       </Option>
