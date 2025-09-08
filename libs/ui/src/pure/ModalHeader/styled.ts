@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components/macro'
 
-import { UI } from '../../enum';
+import { UI } from '../../enum'
 
 export const blankButtonMixin = css`
   background: none;
@@ -31,7 +31,7 @@ export const IconButton = styled.button`
   }
 `
 
-export const Header = styled.div`
+export const Header = styled.div<{ withoutBorder?: boolean }>`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -39,11 +39,15 @@ export const Header = styled.div`
   padding: 16px;
   align-items: center;
   font-size: 17px;
-  border-bottom: 1px solid var(${UI.COLOR_BORDER});
+  border-bottom: ${({ withoutBorder }) => (withoutBorder ? 'none' : `1px solid var(${UI.COLOR_BORDER})`)};
 
   > div {
     display: flex;
     align-items: center;
     justify-content: center;
   }
+`
+
+export const Title = styled.div<{ hasClose?: boolean }>`
+  width: ${({ hasClose }) => (hasClose ? 'auto' : '100%')};
 `

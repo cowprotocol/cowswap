@@ -18,13 +18,13 @@ export interface ModalHeaderProps {
 
 export function ModalHeader({ children, className, onBack, onClose }: ModalHeaderProps): ReactNode {
   return (
-    <styledEl.Header className={className}>
+    <styledEl.Header className={className} withoutBorder={true}>
       {onBack && (
         <div>
           <BackButton onClick={onBack} />
         </div>
       )}
-      <div>{children}</div>
+      <styledEl.Title hasClose={!!onClose}>{children}</styledEl.Title>
       {onClose && (
         <div>
           <styledEl.IconButton onClick={onClose}>
