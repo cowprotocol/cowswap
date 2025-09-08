@@ -1,6 +1,7 @@
 import { useSetAtom } from 'jotai/index'
 import { useEffect } from 'react'
 
+import { BFF_BASE_URL } from '@cowprotocol/common-const'
 import { useDebounce } from '@cowprotocol/common-hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -91,8 +92,7 @@ export async function getBffBalances(
   address: string,
   chainId: SupportedChainId,
 ): Promise<Record<string, string> | null> {
-  // todo remove this hardcoded localhost url and use env variable instead
-  const url = `http://localhost:8080/${chainId}/tokens/${address}/balances`
+  const url = `${BFF_BASE_URL}/${chainId}/tokens/${address}/balances`
 
   try {
     const res = await fetch(url)
