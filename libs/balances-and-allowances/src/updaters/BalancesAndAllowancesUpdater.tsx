@@ -4,6 +4,7 @@ import { LpToken, NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useAllActiveTokens } from '@cowprotocol/tokens'
 
+import ms from 'ms.macro'
 import { SWRConfiguration } from 'swr'
 
 import { BalancesBffUpdater } from './BalancesBffUpdater'
@@ -19,7 +20,7 @@ import { useUpdateTokenBalance } from '../hooks/useUpdateTokenBalance'
 const EMPTY_TOKENS: string[] = []
 
 // A small gap between balances and allowances refresh intervals is needed to avoid high load to the node at the same time
-const BALANCES_SWR_CONFIG: SWRConfiguration = { ...BASIC_MULTICALL_SWR_CONFIG }
+const BALANCES_SWR_CONFIG: SWRConfiguration = { ...BASIC_MULTICALL_SWR_CONFIG, refreshInterval: ms`31s` }
 
 export interface BalancesAndAllowancesUpdaterProps {
   account: string | undefined

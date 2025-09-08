@@ -53,7 +53,7 @@ export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
   const { isBffBalanceApiEnabled } = useFeatureFlags()
   const isBffFailed = useIsBffFailed()
   const isBffEnabled = isBffBalanceApiEnabled && !isBffFailed
-  const pendingOrdersCount = usePendingOrdersCount(sourceChainId, account)
+  const pendingOrdersCount = usePendingOrdersCount(sourceChainId, balancesAccount)
 
   return (
     <>
