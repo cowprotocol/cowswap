@@ -98,6 +98,10 @@ export async function getBffBalances(
     const res = await fetch(url)
     const data: BalanceResponse = await res.json()
 
+    if (!res.ok) {
+      return Promise.reject(new Error(`BFF error: ${res.status} ${res.statusText}`))
+    }
+
     if (!data.balances) {
       return null
     }
