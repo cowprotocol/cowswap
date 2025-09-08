@@ -151,13 +151,13 @@ export function NotificationSettingsPopover({
     <Tooltip
       show={show}
       content={popoverContent}
-      placement="bottom"
+      placement="auto"
       containerRef={containerRef}
       wrapInContainer={false}
       bgColor={`var(${UI.COLOR_BLUE_100_PRIMARY})`}
       borderColor={`var(${UI.COLOR_BLUE_700_PRIMARY_OPACITY_25})`}
-      mobileMode={PopoverMobileMode.FullWidth}
-      showMobileBackdrop={true}
+      mobileMode={PopoverMobileMode.Popper}
+      showMobileBackdrop={false}
       mobileBorderRadius="16px 16px 0 0"
       zIndex={90}
     >

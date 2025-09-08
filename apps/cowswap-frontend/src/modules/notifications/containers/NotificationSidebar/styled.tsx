@@ -80,6 +80,7 @@ export const Sidebar = styled.div<{ isOpen: boolean }>`
     top: 0;
     border: 0;
     border-radius: 0;
+    z-index: ${NOTIFICATION_SIDEBAR_Z_INDEX + 1};
   }
 `
 
