@@ -14,6 +14,7 @@ import * as styledEl from './styled'
 import { CurrencyInputPanel } from '../../../../common/pure/CurrencyInputPanel'
 import { CurrencyInfo } from '../../../../common/pure/CurrencyInputPanel/types'
 import { Field } from '../../../../legacy/state/types'
+import { useUsdAmount } from '../../../usdAmount'
 
 export function ApprovalAmountInput({
   initialAmount,
@@ -30,6 +31,8 @@ export function ApprovalAmountInput({
     [customAmountValueState, initialAmount],
   )
 
+  const usdAmount = useUsdAmount(customAmountValue)
+
   const currencyInfo = useMemo(() => {
     return {
       field: 'INPUT',
@@ -38,9 +41,9 @@ export function ApprovalAmountInput({
       isIndependent: true,
       receiveAmountInfo: null,
       balance: null,
-      fiatAmount: null,
+      fiatAmount: usdAmount.value,
     } as CurrencyInfo
-  }, [customAmountValue])
+  }, [customAmountValue, usdAmount])
 
   const onUserInput = useCallback(
     (_: Field, typedValue: string) => {
@@ -49,9 +52,10 @@ export function ApprovalAmountInput({
       if (!currency) return
 
       const value = tryParseCurrencyAmount(typedValue, currency)
-      setCustomApproveAmount({ amount: value, isChanged: true })
+      const isInvalid = value.lessThan(initialAmount)
+      setCustomApproveAmount({ amount: value, isChanged: true, isInvalid })
     },
-    [setCustomApproveAmount, tokenWithLogo],
+    [setCustomApproveAmount, tokenWithLogo, initialAmount],
   )
 
   const onReset = useCallback(() => {
@@ -64,13 +68,14 @@ export function ApprovalAmountInput({
         Approval amount: <styledEl.ResetBtn onClick={onReset}>Reset</styledEl.ResetBtn>
       </styledEl.InputHeader>
       <CurrencyInputPanel
-        id={'test'}
+        id={'custom-approve-amount-input'}
         chainId={tokenWithLogo.chainId}
         areCurrenciesLoading={false}
         bothCurrenciesSet={false}
         isChainIdUnsupported={false}
         allowsOffchainSigning={false}
         currencyInfo={currencyInfo}
+        isInvalid={customAmountValueState.isInvalid}
         onCurrencySelection={() => {}}
         onUserInput={onUserInput}
         openTokenSelectWidget={() => {}}

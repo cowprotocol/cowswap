@@ -5,11 +5,13 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 interface CustomApproveAmountState {
   amount: CurrencyAmount<Currency> | null
   isChanged?: boolean
+  isInvalid?: boolean
 }
 
 const customApproveAmountAtom = atom<CustomApproveAmountState>({
   amount: null,
   isChanged: false,
+  isInvalid: false,
 })
 
 export function useUpdateCustomApproveAmount(): (val: CustomApproveAmountState) => void {
