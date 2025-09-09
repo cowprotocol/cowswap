@@ -80,6 +80,11 @@ const nextConfig: WithNxOptions = {
         permanent: true,
       },
       {
+        source: '/mev-blocker',
+        destination: 'https://mevblocker.io',
+        permanent: true,
+      },
+      {
         source: '/widget/terms-and-conditions',
         destination: '/legal/integrator-terms',
         permanent: true,

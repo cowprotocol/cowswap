@@ -54,7 +54,7 @@ export const Content = styled.div`
 export const Title = styled.h2`
   margin: 0;
   color: inherit;
-  font-size: 36px;
+  font-size: 34px;
   font-weight: 800;
   line-height: 1.2;
 
