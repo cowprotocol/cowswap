@@ -8,6 +8,7 @@ import * as styledEl from './styled'
 
 import { useAmountsToSign } from '../../../trade'
 import { useSetChangeApproveAmountState } from '../../state'
+import { SwapAmountPreview } from '../SwapAmountPreview/SwapAmountPreview'
 
 export function ChangeApproveAmountModal(): ReactNode {
   const setChangeApproveAmountState = useSetChangeApproveAmountState()
@@ -19,7 +20,7 @@ export function ChangeApproveAmountModal(): ReactNode {
 
   if (!maximumSendSellAmount) return null
 
-  const token = getWrappedToken(maximumSendSellAmount.currency)
+  const inputToken = getWrappedToken(maximumSendSellAmount.currency)
 
   return (
     <styledEl.Wrapper>
@@ -30,8 +31,9 @@ export function ChangeApproveAmountModal(): ReactNode {
         </styledEl.Title>
       </ModalHeader>
       <styledEl.SwapInfo>
-        <TokenLogo token={token} size={55} />
+        <TokenLogo token={inputToken} size={55} />
         <styledEl.SetTitle>Set approval amount</styledEl.SetTitle>
+        <SwapAmountPreview />
       </styledEl.SwapInfo>
     </styledEl.Wrapper>
   )
