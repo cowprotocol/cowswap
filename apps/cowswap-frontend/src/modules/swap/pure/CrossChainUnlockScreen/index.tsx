@@ -20,7 +20,7 @@ export function CrossChainUnlockScreen({ handleUnlock }: CrossChainUnlockScreenP
     <>
       <styledEl.Container darkMode={darkMode}>
         <styledEl.Content>
-          <styledEl.Title>Swaps just got smarter</styledEl.Title>
+          <styledEl.Title>Cross-chain swaps are here</styledEl.Title>
           <styledEl.Subtitle>
             Mooove between <br /> any chain, hassle-free
           </styledEl.Subtitle>
