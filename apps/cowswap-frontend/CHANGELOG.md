@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.118.4](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.118.3...cowswap-v1.118.4) (2025-09-09)
+
+
+### Bug Fixes
+
+* **swap:** replace swap unlock screen banner header ([#6217](https://github.com/cowprotocol/cowswap/issues/6217)) ([2e61b94](https://github.com/cowprotocol/cowswap/commit/2e61b942d5b31d14b8aa8884106a1206f6e85187))
+
 ## [1.118.3](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.118.2...cowswap-v1.118.3) (2025-09-02)
 
 
