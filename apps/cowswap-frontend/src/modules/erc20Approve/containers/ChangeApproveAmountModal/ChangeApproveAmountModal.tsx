@@ -8,6 +8,7 @@ import * as styledEl from './styled'
 
 import { useAmountsToSign } from '../../../trade'
 import { useSetChangeApproveAmountState } from '../../state'
+import { ApprovalAmountInput } from '../ApprovalAmountInput/ApprovalAmountInput'
 import { SwapAmountPreview } from '../SwapAmountPreview/SwapAmountPreview'
 
 export function ChangeApproveAmountModal(): ReactNode {
@@ -35,6 +36,7 @@ export function ChangeApproveAmountModal(): ReactNode {
         <styledEl.SetTitle>Set approval amount</styledEl.SetTitle>
         <SwapAmountPreview />
       </styledEl.SwapInfo>
+      <ApprovalAmountInput initialAmount={maximumSendSellAmount} tokenWithLogo={inputToken} />
     </styledEl.Wrapper>
   )
 }
