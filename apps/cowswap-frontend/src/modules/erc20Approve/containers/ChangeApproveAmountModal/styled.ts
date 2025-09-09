@@ -1,4 +1,4 @@
-import { UI } from '@cowprotocol/ui'
+import { ButtonPrimary, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -34,3 +34,8 @@ export const HelpLink = styled.a`
   font-weight: normal;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
 `
+
+export const BtnWrapper = styled.div`
+  margin: 15px;
+`
+export const ActionButton = styled(ButtonPrimary)``

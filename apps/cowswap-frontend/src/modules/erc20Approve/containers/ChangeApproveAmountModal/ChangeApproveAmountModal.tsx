@@ -8,12 +8,15 @@ import * as styledEl from './styled'
 
 import { useAmountsToSign } from '../../../trade'
 import { useSetChangeApproveAmountState } from '../../state'
+import { useCustomApproveAmountState } from '../../state/customApproveAmountState'
 import { ApprovalAmountInput } from '../ApprovalAmountInput/ApprovalAmountInput'
 import { SwapAmountPreview } from '../SwapAmountPreview/SwapAmountPreview'
 
 export function ChangeApproveAmountModal(): ReactNode {
   const setChangeApproveAmountState = useSetChangeApproveAmountState()
   const { maximumSendSellAmount } = useAmountsToSign() || {}
+
+  const { isInvalid } = useCustomApproveAmountState()
 
   const onBack = (): void => {
     setChangeApproveAmountState({ isModalOpen: false })
@@ -37,6 +40,14 @@ export function ChangeApproveAmountModal(): ReactNode {
         <SwapAmountPreview />
       </styledEl.SwapInfo>
       <ApprovalAmountInput initialAmount={maximumSendSellAmount} tokenWithLogo={inputToken} />
+      <styledEl.BtnWrapper>
+        <styledEl.ActionButton disabled={isInvalid}>
+          {isInvalid ? 'Amount must be at least trade amount' : 'Confirm'}
+          {/*<ActionButton disabled={isInvalid}>*/}
+          {/*  */}
+          {/*</ActionButton>*/}
+        </styledEl.ActionButton>
+      </styledEl.BtnWrapper>
     </styledEl.Wrapper>
   )
 }
