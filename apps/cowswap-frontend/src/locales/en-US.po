@@ -4175,8 +4175,8 @@ msgid "Confirm with your wallet"
 msgstr "Confirm with your wallet"
 
 #: apps/cowswap-frontend/src/modules/swap/pure/CrossChainUnlockScreen/index.tsx
-msgid "Swaps just got smarter"
-msgstr "Swaps just got smarter"
+#~ msgid "Swaps just got smarter"
+#~ msgstr "Swaps just got smarter"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/HighFeeWarning/highFeeWarningHelpers.ts
 msgid "Swap costs are at least {formattedFeePercentage}% of the swap amount"
@@ -4336,6 +4336,10 @@ msgstr "Simulation successful"
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
 msgid "part"
 msgstr "part"
+
+#: apps/cowswap-frontend/src/modules/swap/pure/CrossChainUnlockScreen/index.tsx
+msgid "Cross-chain swaps are here"
+msgstr "Cross-chain swaps are here"
 
 #: apps/cowswap-frontend/src/legacy/components/CowSubsidyModal/SubsidyTable.tsx
 msgid "Fee discount"
