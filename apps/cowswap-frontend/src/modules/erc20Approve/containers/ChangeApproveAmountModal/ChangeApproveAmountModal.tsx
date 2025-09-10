@@ -1,4 +1,4 @@
-import { ReactNode, useCallback } from 'react'
+import { ReactNode, useCallback, useMemo } from 'react'
 
 import { getWrappedToken } from '@cowprotocol/common-utils'
 import { TokenLogo } from '@cowprotocol/tokens'
@@ -7,30 +7,35 @@ import { ModalHeader } from '@cowprotocol/ui'
 import * as styledEl from './styled'
 
 import { useAmountsToSign } from '../../../trade'
-import { useSetChangeApproveAmountState } from '../../state'
-import { useCustomApproveAmountState, useUpdateCustomApproveAmount } from '../../state/customApproveAmountState'
+import { useSetChangeApproveAmountModalState } from '../../state'
+import {
+  useCustomApproveAmountInputState,
+  useUpdateOrResetCustomApproveAmountInputState,
+} from '../../state/customApproveAmountState'
 import { ApprovalAmountInput } from '../ApprovalAmountInput/ApprovalAmountInput'
 import { SwapAmountPreview } from '../SwapAmountPreview/SwapAmountPreview'
 
 export function ChangeApproveAmountModal(): ReactNode {
-  const setChangeApproveAmountState = useSetChangeApproveAmountState()
-  const updateCustomApproveAmount = useUpdateCustomApproveAmount()
+  const setChangeApproveAmountState = useSetChangeApproveAmountModalState()
+  const { amount: customApproveAmountInput } = useCustomApproveAmountInputState() || {}
+  const [_, resetCustomApproveAmountInput] = useUpdateOrResetCustomApproveAmountInputState()
   const { maximumSendSellAmount } = useAmountsToSign() || {}
 
-  const { isInvalid } = useCustomApproveAmountState()
+  const { isInvalid } = useCustomApproveAmountInputState()
 
   const onBack = (): void => {
-    setChangeApproveAmountState({ isModalOpen: false })
+    setChangeApproveAmountState({ isModalOpen: false, confirmedAmount: undefined })
+    resetCustomApproveAmountInput()
   }
 
   const OnConfirm = useCallback(() => {
-    updateCustomApproveAmount({ isConfirmed: true })
-    setChangeApproveAmountState({ isModalOpen: false })
-  }, [setChangeApproveAmountState, updateCustomApproveAmount])
+    setChangeApproveAmountState({ isModalOpen: false, confirmedAmount: customApproveAmountInput ?? undefined })
+  }, [setChangeApproveAmountState, customApproveAmountInput])
 
-  if (!maximumSendSellAmount) return null
-
-  const inputToken = getWrappedToken(maximumSendSellAmount.currency)
+  const inputToken = useMemo(
+    () => (maximumSendSellAmount ? getWrappedToken(maximumSendSellAmount.currency) : null),
+    [maximumSendSellAmount],
+  )
 
   return (
     <styledEl.Wrapper>

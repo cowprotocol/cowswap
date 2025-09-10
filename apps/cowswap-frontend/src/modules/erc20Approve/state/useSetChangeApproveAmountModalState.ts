@@ -2,6 +2,6 @@ import { useSetAtom } from 'jotai'
 
 import { ChangeApproveModalState, updateChangeApproveAmountModalAtom } from '../containers/ChangeApproveAmountModal'
 
-export function useSetChangeApproveAmountState(): (nextState: Partial<ChangeApproveModalState>) => void {
+export function useSetChangeApproveAmountModalState(): (nextState: Partial<ChangeApproveModalState>) => void {
   return useSetAtom(updateChangeApproveAmountModalAtom)
 }

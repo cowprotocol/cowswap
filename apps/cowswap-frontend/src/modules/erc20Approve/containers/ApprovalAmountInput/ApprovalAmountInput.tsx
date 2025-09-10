@@ -7,8 +7,8 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { Field } from 'legacy/state/types'
 
 import {
-  useCustomApproveAmountState,
-  useUpdateCustomApproveAmount,
+  useCustomApproveAmountInputState,
+  useUpdateOrResetCustomApproveAmountInputState,
 } from 'modules/erc20Approve/state/customApproveAmountState'
 import { useUsdAmount } from 'modules/usdAmount'
 
@@ -21,11 +21,11 @@ export function ApprovalAmountInput({
   initialAmount,
   tokenWithLogo,
 }: {
-  tokenWithLogo: TokenWithLogo
-  initialAmount: CurrencyAmount<Currency>
+  tokenWithLogo: TokenWithLogo | null
+  initialAmount: CurrencyAmount<Currency> | null | undefined
 }): ReactNode {
-  const setCustomApproveAmount = useUpdateCustomApproveAmount()
-  const customAmountValueState = useCustomApproveAmountState()
+  const [updateCustomApproveAmountInput] = useUpdateOrResetCustomApproveAmountInputState()
+  const customAmountValueState = useCustomApproveAmountInputState()
 
   const customAmountValue = useMemo(
     () => customAmountValueState.amount ?? initialAmount,
@@ -37,7 +37,7 @@ export function ApprovalAmountInput({
   const currencyInfo = useMemo(() => {
     return {
       field: 'INPUT',
-      currency: customAmountValue.currency,
+      currency: customAmountValue?.currency,
       amount: customAmountValue,
       isIndependent: true,
       receiveAmountInfo: null,
@@ -53,15 +53,15 @@ export function ApprovalAmountInput({
       if (!currency) return
 
       const value = tryParseCurrencyAmount(typedValue, currency)
-      const isInvalid = value.lessThan(initialAmount)
-      setCustomApproveAmount({ amount: value, isChanged: true, isInvalid, isConfirmed: false })
+      const isInvalid = initialAmount ? value.lessThan(initialAmount) : false
+      updateCustomApproveAmountInput({ amount: value, isChanged: true, isInvalid })
     },
-    [setCustomApproveAmount, tokenWithLogo, initialAmount],
+    [updateCustomApproveAmountInput, tokenWithLogo, initialAmount],
   )
 
   const onReset = useCallback(() => {
-    setCustomApproveAmount({ amount: initialAmount, isChanged: false, isInvalid: false, isConfirmed: false })
-  }, [setCustomApproveAmount, initialAmount])
+    updateCustomApproveAmountInput({ amount: initialAmount, isChanged: false, isInvalid: false })
+  }, [updateCustomApproveAmountInput, initialAmount])
 
   return (
     <styledEl.EditWrapper>
@@ -70,7 +70,7 @@ export function ApprovalAmountInput({
       </styledEl.InputHeader>
       <CurrencyInputPanel
         id={'custom-approve-amount-input'}
-        chainId={tokenWithLogo.chainId}
+        chainId={tokenWithLogo?.chainId}
         areCurrenciesLoading={false}
         bothCurrenciesSet={false}
         isChainIdUnsupported={false}

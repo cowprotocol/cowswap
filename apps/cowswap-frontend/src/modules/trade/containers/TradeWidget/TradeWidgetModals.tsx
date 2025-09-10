@@ -6,7 +6,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import {
   TradeApproveModal,
   useChangeApproveAmountState,
-  useSetChangeApproveAmountState,
+  useSetChangeApproveAmountModalState,
   useUpdateTradeApproveState,
 } from 'modules/erc20Approve'
 import { useTradeApproveState } from 'modules/erc20Approve/state/useTradeApproveState'
@@ -61,7 +61,7 @@ export function TradeWidgetModals({
   const { onDismiss: closeTradeConfirm } = useTradeConfirmActions()
   const updateSelectTokenWidgetState = useUpdateSelectTokenWidgetState()
   const updateTradeApproveState = useUpdateTradeApproveState()
-  const updateApproveAmountState = useSetChangeApproveAmountState()
+  const updateApproveAmountState = useSetChangeApproveAmountModalState()
 
   const resetAllScreens = useCallback(
     (closeTokenSelectWidget = true) => {

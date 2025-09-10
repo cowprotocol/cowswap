@@ -5,14 +5,14 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { Toggle } from '../../pure/Toggle'
 import {
   useIsPartialApproveSelectedByUser,
-  useSetChangeApproveAmountState,
+  useSetChangeApproveAmountModalState,
   useSetIsPartialApproveSelectedByUser,
 } from '../../state'
 
 export function TradeApproveToggle({ amountToApprove }: { amountToApprove: CurrencyAmount<Currency> }): ReactNode {
   const isPartialApproveSelectedByUser = useIsPartialApproveSelectedByUser()
   const setIsPartialApproveSelectedByUser = useSetIsPartialApproveSelectedByUser()
-  const changeApproveAmount = useSetChangeApproveAmountState()
+  const changeApproveAmount = useSetChangeApproveAmountModalState()
 
   const openChangeApproveAmount = useCallback((): void => {
     changeApproveAmount({ isModalOpen: true })

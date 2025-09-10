@@ -1,4 +1,4 @@
 export * from './useUpdateTradeApproveState'
 export * from './useChangeApproveAmountState'
-export * from './useSetChangeApproveAmountState'
+export * from './useSetChangeApproveAmountModalState'
 export * from './useIsPartialApproveSelectedByUser'
