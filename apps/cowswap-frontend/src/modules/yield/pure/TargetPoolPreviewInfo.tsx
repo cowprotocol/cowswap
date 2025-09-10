@@ -5,6 +5,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ExternalLink, InfoTooltip, TokenSymbol, UI } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
+import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
 import { LP_PAGE_LINKS } from '../lpPageLinks'
@@ -63,16 +64,20 @@ export function TargetPoolPreviewInfo({
         {children}
         {oppositeToken && (
           <InfoButton>
-            Details{' '}
+            <Trans>Details</Trans>{' '}
             <InfoTooltip>
-              When you swap (sell) <TokenSymbol token={oppositeToken} />, solvers handle the transaction by purchasing
-              the required tokens, depositing them into the pool, and issuing LP tokens to you in return — all in a
-              gas-less operation.
+              <Trans>
+                When you swap (sell) <TokenSymbol token={oppositeToken} />, solvers handle the transaction by purchasing
+                the required tokens, depositing them into the pool, and issuing LP tokens to you in return — all in a
+                gas-less operation.
+              </Trans>
             </InfoTooltip>
           </InfoButton>
         )}
       </LeftPart>
-      <StyledExternalLink href={pageLink}>Analytics ↗</StyledExternalLink>
+      <StyledExternalLink href={pageLink}>
+        <Trans>Analytics</Trans> ↗
+      </StyledExternalLink>
     </Wrapper>
   )
 }

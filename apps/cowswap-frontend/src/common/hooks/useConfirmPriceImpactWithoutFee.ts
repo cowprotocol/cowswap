@@ -3,17 +3,21 @@ import { useCallback, useMemo, useState } from 'react'
 import { ALLOWED_PRICE_IMPACT_HIGH, PRICE_IMPACT_WITHOUT_FEE_CONFIRM_MIN } from '@cowprotocol/common-const'
 import { Percent } from '@uniswap/sdk-core'
 
+import { t } from '@lingui/core/macro'
+
 import { useConfirmationRequest } from 'common/hooks/useConfirmationRequest'
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function getDescription(priceImpactWithoutFee: Percent) {
+  const pct = priceImpactWithoutFee.toFixed(0)
+
   if (!priceImpactWithoutFee.lessThan(PRICE_IMPACT_WITHOUT_FEE_CONFIRM_MIN)) {
-    return `This swap has a price impact of at least ${priceImpactWithoutFee.toFixed(0)}%.`
+    return t`This swap has a price impact of at least ${pct}%.`
   }
 
   if (!priceImpactWithoutFee.lessThan(ALLOWED_PRICE_IMPACT_HIGH)) {
-    return `This swap has a price impact of at least ${priceImpactWithoutFee.toFixed(0)}%.`
+    return t`This swap has a price impact of at least ${pct}%.`
   }
 
   return undefined
@@ -45,10 +49,10 @@ export function useConfirmPriceImpactWithoutFee() {
         setIsConfirmed(false)
         try {
           const result = await triggerConfirmation({
-            confirmWord: 'confirm',
-            title: 'Confirm Price Impact',
-            action: 'continue with this swap',
-            callToAction: 'Confirm Swap',
+            confirmWord: t`confirm`,
+            title: t`Confirm Price Impact`,
+            action: t`continue with this swap`,
+            callToAction: t`Confirm Swap`,
             description: getDescription(priceImpactWithoutFee),
             skipInput: shouldSkipInput(priceImpactWithoutFee),
           })

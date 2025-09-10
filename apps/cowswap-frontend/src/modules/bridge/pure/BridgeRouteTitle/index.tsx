@@ -3,6 +3,8 @@ import { ReactNode } from 'react'
 import { BridgeProviderInfo } from '@cowprotocol/sdk-bridging'
 import { InfoTooltip } from '@cowprotocol/ui'
 
+import { useLingui } from '@lingui/react/macro'
+
 import { BRIDGE_DISCLAIMER_TOOLTIP_CONTENT, COW_PROTOCOL_NAME } from '../../constants'
 import { StopNumberCircle } from '../../styles'
 import { SwapAndBridgeStatus } from '../../types'
@@ -31,6 +33,8 @@ export function BridgeRouteTitle({
   circleSize,
   stopNumber,
 }: BridgeRouteTitleProps): ReactNode {
+  const { i18n } = useLingui()
+
   return (
     <>
       <StopNumberCircle status={status} stopNumber={stopNumber} size={circleSize}>
@@ -46,7 +50,7 @@ export function BridgeRouteTitle({
         />
         <span> {protocolName}</span>
         {!protocolName.includes(COW_PROTOCOL_NAME) && (
-          <InfoTooltip content={BRIDGE_DISCLAIMER_TOOLTIP_CONTENT} size={14} />
+          <InfoTooltip content={i18n._(BRIDGE_DISCLAIMER_TOOLTIP_CONTENT)} size={14} />
         )}
       </b>
     </>

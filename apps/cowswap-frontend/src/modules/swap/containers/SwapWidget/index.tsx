@@ -3,6 +3,8 @@ import { ReactNode, useCallback, useMemo, useState } from 'react'
 import { isSellOrder, isInjectedWidget } from '@cowprotocol/common-utils'
 import { useIsSmartContractWallet } from '@cowprotocol/wallet'
 
+import { t } from '@lingui/core/macro'
+
 import { Field } from 'legacy/state/types'
 import { useHooksEnabledManager } from 'legacy/state/user/hooks'
 
@@ -112,18 +114,19 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
     fiatAmount: outputCurrencyFiatAmount,
     receiveAmountInfo: isSellTrade ? receiveAmountInfo : null,
   }
+
   const inputCurrencyPreviewInfo = {
     amount: inputCurrencyInfo.amount,
     fiatAmount: inputCurrencyInfo.fiatAmount,
     balance: inputCurrencyInfo.balance,
-    label: isSellTrade ? 'Sell amount' : 'Expected sell amount',
+    label: isSellTrade ? t`Sell amount` : t`Expected sell amount`,
   }
 
   const outputCurrencyPreviewInfo = {
     amount: outputCurrencyInfo.amount,
     fiatAmount: outputCurrencyInfo.fiatAmount,
     balance: outputCurrencyInfo.balance,
-    label: isSellTrade ? 'Receive (before fees)' : 'Buy exactly',
+    label: isSellTrade ? t`Receive (before fees)` : t`Buy exactly`,
   }
 
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)

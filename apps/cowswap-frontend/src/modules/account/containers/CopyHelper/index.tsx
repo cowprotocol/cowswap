@@ -2,7 +2,7 @@ import React, { useCallback } from 'react'
 
 import { useCopyClipboard } from '@cowprotocol/common-hooks'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 import { CheckCircle, Copy } from 'react-feather'
 import styled from 'styled-components/macro'
 import { LinkStyledButton } from 'theme'

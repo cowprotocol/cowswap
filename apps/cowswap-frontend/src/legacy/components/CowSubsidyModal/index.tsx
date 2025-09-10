@@ -4,6 +4,8 @@ import { ExternalLink, Row } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import { Text } from 'rebass'
 
 import { AutoColumn } from 'legacy/components/Column'
@@ -53,18 +55,18 @@ export default function CowSubsidyModal({
 
   const TopContent = useCallback(
     () => <CowSubsidyInfo account={account ?? undefined} balance={balance} subsidy={subsidy} />,
-    [account, balance, subsidy]
+    [account, balance, subsidy],
   )
 
   const BottomContent = useCallback(
     () => (
       <Row style={{ justifyContent: 'center' }}>
         <ExternalLink href="https://medium.com/@cow-protocol/cow-token-is-moving-forward-at-full-speed-d9f047a23b57">
-          Read more about the tokenomics
+          <Trans>Read more about the tokenomics</Trans>
         </ExternalLink>
       </Row>
     ),
-    []
+    [],
   )
 
   if (!chainId) return null
@@ -74,7 +76,7 @@ export default function CowSubsidyModal({
     <CowModal isOpen={isOpen} onDismiss={onDismiss} maxHeight={90} maxWidth={500} padding={'12px 0 18px'}>
       <LegacyConfirmationModalContent
         {...restProps}
-        title="CoWmunity fees discount"
+        title={t`CoWmunity fees discount`}
         titleSize={21}
         styles={{ textAlign: 'center', width: '100%' }}
         onDismiss={onDismiss}

@@ -38,7 +38,7 @@ export interface OrderFillsAtWithDistanceProps {
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, complexity
 export function OrderFillsAtWithDistance({
   isTwapTable,
   isChild,

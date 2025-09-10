@@ -1,5 +1,7 @@
 import { ReactNode } from 'react'
 
+import { Trans } from '@lingui/react/macro'
+
 import { useLocalTimeOffset } from './localTimeOffsetState'
 
 import { GlobalWarning } from '../../pure/GlobalWarning'
@@ -18,7 +20,10 @@ export function InvalidLocalTimeWarning(): ReactNode | null {
 
   return (
     <GlobalWarning>
-      Local device time is not accurate, CoW Swap most likely will not work correctly. Please adjust your device's time.
+      <Trans>
+        Local device time is not accurate, CoW Swap most likely will not work correctly. Please adjust your device's
+        time.
+      </Trans>
     </GlobalWarning>
   )
 }

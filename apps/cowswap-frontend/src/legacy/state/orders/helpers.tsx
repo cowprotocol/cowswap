@@ -2,6 +2,8 @@ import { ReactElement } from 'react'
 
 import { BlockExplorerLinkType, formatOrderId } from '@cowprotocol/common-utils'
 
+import { t } from '@lingui/core/macro'
+
 import { OrderStatus } from './actions'
 import { OrderObject, OrdersStateNetwork } from './reducer'
 
@@ -47,7 +49,7 @@ type TxnPopupContent = PopupContent<OrderTxTypes.TXN>
 function setOrderSummary({ id, summary, status, descriptor }: SetOrderSummaryParams) {
   // If there isn't summary, return generalized summary
   if (!summary) {
-    return `Order ${formatOrderId(id)} ${descriptor || status || ''}`
+    return t`Order` + ' ' + `${formatOrderId(id)} ${descriptor || status || ''}`
   }
 
   if (typeof summary === 'string') {

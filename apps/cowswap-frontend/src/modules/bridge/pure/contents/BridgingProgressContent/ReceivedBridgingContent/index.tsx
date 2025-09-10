@@ -6,6 +6,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { BridgeStatusResult } from '@cowprotocol/sdk-bridging'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
+import { t } from '@lingui/core/macro'
 import { useBridgeSupportedNetwork } from 'entities/bridgeProvider'
 
 import { ConfirmDetailsItem, ReceiveAmountTitle } from 'modules/trade'
@@ -58,12 +59,12 @@ export function ReceivedBridgingContent({
       </ConfirmDetailsItem>
 
       {explorerUrl ? (
-        <BridgeTransactionLink link={explorerUrl} label="Bridge transaction" />
+        <BridgeTransactionLink link={explorerUrl} label={t`Bridge transaction`} />
       ) : (
         <>
           <DepositTxLink depositTxHash={depositTxHash} sourceChainId={sourceChainId} />
           {fillTxLink && (
-            <TransactionLinkItem link={fillTxLink} label="Destination transaction" chainId={destinationChainId} />
+            <TransactionLinkItem link={fillTxLink} label={t`Destination transaction`} chainId={destinationChainId} />
           )}
         </>
       )}

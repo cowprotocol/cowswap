@@ -1,5 +1,10 @@
 import { UiOrderType } from '@cowprotocol/types'
 
+import { MessageDescriptor } from '@lingui/core'
+import { msg, t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
+import { useLingui } from '@lingui/react/macro'
+
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
@@ -9,24 +14,25 @@ export type Props = {
   order: ParsedOrder
 }
 
-const ORDER_UI_TYPE_LABELS: Record<UiOrderType, string> = {
-  [UiOrderType.SWAP]: 'Market',
-  [UiOrderType.LIMIT]: 'Limit',
-  [UiOrderType.TWAP]: 'TWAP',
-  [UiOrderType.HOOKS]: 'Hooks',
-  [UiOrderType.YIELD]: 'Yield',
+const orderUITypeLabels: Record<UiOrderType, MessageDescriptor> = {
+  [UiOrderType.SWAP]: msg`Market`,
+  [UiOrderType.LIMIT]: msg`Limit`,
+  [UiOrderType.TWAP]: msg`TWAP`,
+  [UiOrderType.HOOKS]: msg`Hooks`,
+  [UiOrderType.YIELD]: msg`Yield`,
 }
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function OrderTypeField({ order }: Props) {
   const uiOrderType = getUiOrderType(order)
+  const { i18n } = useLingui()
 
   return (
     <styledEl.Value>
       <styledEl.OrderTypeValue>
-        {ORDER_UI_TYPE_LABELS[uiOrderType]} {order.kind} order{' '}
-        {order.partiallyFillable ? '(Partially fillable)' : '(Fill or Kill)'}
+        {i18n._(orderUITypeLabels[uiOrderType])} {order.kind} <Trans>order</Trans>{' '}
+        {order.partiallyFillable ? t`(Partially fillable)` : t`(Fill or Kill)`}
       </styledEl.OrderTypeValue>
     </styledEl.Value>
   )

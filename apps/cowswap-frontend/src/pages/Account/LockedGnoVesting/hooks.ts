@@ -14,6 +14,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { ContractTransaction } from '@ethersproject/contracts'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
+import { t } from '@lingui/core/macro'
 import useSWR from 'swr'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
@@ -113,26 +114,26 @@ export function useClaimCowFromLockedGnoCallback({
 
   return useCallback(async () => {
     if (!account) {
-      throw new Error('Not connected')
+      throw new Error(t`Not connected`)
     }
 
     if (!merkleDrop || !tokenDistro) {
-      throw new Error('Contract not present or not connected to any supported chain')
+      throw new Error(t`Contract not present or not connected to any supported chain`)
     }
 
     if (merkleDropChainId !== tokenDistroChainId) {
-      throw new Error('Contract and chainId are not on the same chain')
+      throw new Error(t`Contract and chainId are not on the same chain`)
     }
 
     const claim = await fetchClaim(account, tokenDistroChainId)
-    if (!claim) throw new Error('Trying to claim without claim data')
+    if (!claim) throw new Error(t`Trying to claim without claim data`)
 
     const { index, proof, amount } = claim
 
     // On the very first claim we need to provide the merkle proof.
     // Afterwards the allocation will be already in the tokenDistro contract and we can just claim it there.
     const claimPromise = isFirstClaim ? merkleDrop.claim(index, amount, proof) : tokenDistro.claim()
-    const summary = 'Claim vested COW'
+    const summary = t`Claim vested` + ` COW`
     openModal(summary)
 
     return claimPromise

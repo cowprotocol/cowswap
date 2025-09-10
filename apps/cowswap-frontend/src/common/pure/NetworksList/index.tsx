@@ -5,7 +5,7 @@ import { getExplorerBaseUrl } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Badge, BadgeTypes, ExternalLink } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 
 import * as styledEl from './styled'
 
@@ -40,7 +40,7 @@ export function NetworksList(props: NetworksListProps): ReactNode {
             <styledEl.NetworkLabel color={info.color}>{label}</styledEl.NetworkLabel>
             {isNewNetwork && (
               <Badge type={BadgeTypes.ALERT2} style={isActive ? { marginRight: '10px' } : undefined}>
-                NEW
+                <Trans>NEW</Trans>
               </Badge>
             )}
             {isActive && <styledEl.FlyoutRowActiveIndicator active />}
@@ -63,7 +63,7 @@ export function NetworksList(props: NetworksListProps): ReactNode {
               )}
               {explorer && (
                 <ExternalLink href={explorer}>
-                  <Trans>{explorerTitle}</Trans>
+                  {explorerTitle}
                   <styledEl.LinkOutCircle />
                 </ExternalLink>
               )}
