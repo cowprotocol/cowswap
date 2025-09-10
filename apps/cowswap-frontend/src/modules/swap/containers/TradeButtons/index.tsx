@@ -1,7 +1,8 @@
-import React, { ReactNode } from 'react'
+import { ReactNode } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { AddIntermediateToken } from 'modules/tokensList'
 import {
@@ -18,6 +19,7 @@ import {
 } from 'modules/tradeFormValidation'
 import { useHighFeeWarning } from 'modules/tradeWidgetAddons'
 
+import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
 
 import { swapTradeButtonsMap } from './swapTradeButtonsMap'
@@ -25,6 +27,11 @@ import { swapTradeButtonsMap } from './swapTradeButtonsMap'
 import { useOnCurrencySelection } from '../../hooks/useOnCurrencySelection'
 import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
 import { useSwapFormState } from '../../hooks/useSwapFormState'
+
+const BRIDGE_ANALYTICS_EVENT = {
+  category: CowSwapAnalyticsCategory.Bridge,
+  action: 'swap_bridge_click',
+}
 
 interface TradeButtonsProps {
   isTradeContextReady: boolean
@@ -37,6 +44,7 @@ interface TradeButtonsProps {
   setShowAddIntermediateTokenModal: (show: boolean) => void
 }
 
+// eslint-disable-next-line complexity
 export function TradeButtons({
   isTradeContextReady,
   openNativeWrapModal,
@@ -45,7 +53,8 @@ export function TradeButtons({
   intermediateBuyToken,
   setShowAddIntermediateTokenModal,
 }: TradeButtonsProps): ReactNode {
-  const { inputCurrency } = useSwapDerivedState()
+  const { chainId } = useWalletInfo()
+  const { inputCurrency, outputCurrency, inputCurrencyAmount } = useSwapDerivedState()
 
   const primaryFormValidation = useGetTradeFormValidation()
   const tradeConfirmActions = useTradeConfirmActions()
@@ -62,6 +71,15 @@ export function TradeButtons({
 
   const { isPartialApproveEnabled } = useFeatureFlags()
   const tradeFormButtonContext = useTradeFormButtonContext(confirmText, confirmTrade, !!isPartialApproveEnabled)
+
+  // Analytics event for bridge transactions
+  const swapBridgeClickEvent =
+    isCurrentTradeBridging && inputCurrency && outputCurrency && inputCurrencyAmount
+      ? toCowSwapGtmEvent({
+          ...BRIDGE_ANALYTICS_EVENT,
+          label: `From: ${chainId}, To: ${outputCurrency.chainId || chainId}, TokenIn: ${inputCurrency.symbol || ''}, TokenOut: ${outputCurrency.symbol || ''}, Amount: ${inputCurrencyAmount.toSignificant(6)}`,
+        })
+      : undefined
 
   const context = useSafeMemoObject({
     wrappedToken,
@@ -96,6 +114,7 @@ export function TradeButtons({
         validation={primaryFormValidation}
         context={tradeFormButtonContext}
         isDisabled={isDisabled}
+        data-click-event={swapBridgeClickEvent}
       />
       {shouldShowAddIntermediateToken && (
         <AddIntermediateToken

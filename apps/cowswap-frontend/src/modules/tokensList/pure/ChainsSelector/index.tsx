@@ -7,6 +7,10 @@ import { HoverTooltip, Media } from '@cowprotocol/ui'
 import { Menu, MenuButton, MenuItem } from '@reach/menu-button'
 import { Check, ChevronDown, ChevronUp } from 'react-feather'
 
+import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
+import { useSelectTokenWidgetState } from '../../hooks/useSelectTokenWidgetState'
+import { Field } from 'legacy/state/types'
+
 import * as styledEl from './styled'
 
 // Number of skeleton shimmers to show during loading state
@@ -28,6 +32,8 @@ export interface ChainsSelectorProps {
   isLoading: boolean
 }
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 export function ChainsSelector({
   chains,
   onSelectChain,
@@ -38,6 +44,8 @@ export function ChainsSelector({
   const isMobile = useMediaQuery(Media.upToSmall(false))
 
   const theme = useTheme()
+  const { field } = useSelectTokenWidgetState()
+  const contextLabel = field === Field.INPUT ? 'sell' : field === Field.OUTPUT ? 'buy' : 'unknown'
 
   if (isLoading) {
     return LoadingShimmerElements
@@ -58,7 +66,16 @@ export function ChainsSelector({
           content={chain.label}
           placement="bottom"
         >
-          <styledEl.ChainItem active$={defaultChainId === chain.id} onClick={() => onSelectChain(chain)} iconOnly>
+          <styledEl.ChainItem
+            active$={defaultChainId === chain.id}
+            onClick={() => onSelectChain(chain)}
+            iconOnly
+            data-click-event={toCowSwapGtmEvent({
+              category: CowSwapAnalyticsCategory.TRADE,
+              action: 'network_selected',
+              label: `Chain: ${chain.id}, Previous: ${defaultChainId || 'none'}, Context: ${contextLabel}, CrossChain: ${chains.length > 1}`,
+            })}
+          >
             <img src={theme.darkMode ? chain.logo.dark : chain.logo.light} alt={chain.label} loading="lazy" />
           </styledEl.ChainItem>
         </HoverTooltip>
@@ -91,6 +108,11 @@ export function ChainsSelector({
                     iconSize={21}
                     tabIndex={0}
                     borderless
+                    data-click-event={toCowSwapGtmEvent({
+                      category: CowSwapAnalyticsCategory.TRADE,
+                      action: 'network_selected',
+                      label: `Chain: ${chain.id}, Previous: ${defaultChainId || 'none'}, Context: ${contextLabel}, CrossChain: ${chains.length > 1}`,
+                    })}
                   >
                     <img src={theme.darkMode ? chain.logo.dark : chain.logo.light} alt={chain.label} loading="lazy" />
                     <span>{chain.label}</span>
