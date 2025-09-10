@@ -52,6 +52,7 @@ function PendingOrderUpdater({ chainId, orderUid, openSince }: PendingOrderUpdat
   const addOrderToSurplusQueue = useAddOrderToSurplusQueue()
   const analytics = useCowAnalytics()
   const waitingTooLongNpsTriggeredRef = useRef(false)
+  const reportedOrdersRef = useRef(new Set<string>())
 
   // Check once a minute the time it has been pending and trigger appzi if greater than threshold
   useEffect(() => {
@@ -67,6 +68,7 @@ function PendingOrderUpdater({ chainId, orderUid, openSince }: PendingOrderUpdat
       if (isPendingTooLong) {
         // Trigger Appzi survey for pending bridges that are pending for too long
         // Start counting from bridge creation timestamp
+        const secondsSinceOpen = openSince ? timeSinceInSeconds(openSince) : undefined
         triggerAppziSurvey({
           isBridging: true,
           explorerUrl: crossChainOrder.explorerUrl,
@@ -74,7 +76,7 @@ function PendingOrderUpdater({ chainId, orderUid, openSince }: PendingOrderUpdat
           orderType: UiOrderType.SWAP,
           account: crossChainOrder.order.owner,
           waitedTooLong: true,
-          secondsSinceOpen: timeSinceInSeconds(openSince),
+          secondsSinceOpen,
         })
         waitingTooLongNpsTriggeredRef.current = true
       }
@@ -105,13 +107,31 @@ function PendingOrderUpdater({ chainId, orderUid, openSince }: PendingOrderUpdat
 
       processExecutedBridging(crossChainOrder)
 
-      analytics.sendEvent({
+      // Calculate latency if possible (from order creation to completion)
+      const secondsSinceStart = openSince ? timeSinceInSeconds(openSince) : undefined
+      const latencyMs = secondsSinceStart ? secondsSinceStart * 1000 : undefined
+
+      // Only send analytics event once per order
+      if (!reportedOrdersRef.current.has(orderUid)) {
+        reportedOrdersRef.current.add(orderUid)
+        analytics.sendEvent({
         category: CowSwapAnalyticsCategory.Bridge,
         action: 'bridging_succeeded',
         label: analyticsSummary,
         orderId: orderUid,
         chainId: sourceChainId,
+        from_chain_id: sourceChainId,
+        to_chain_id: destinationChainId,
+        token_in: crossChainOrder.order.sellToken,
+        token_out: crossChainOrder.order.buyToken,
+        amount_in: crossChainOrder.order.sellAmount,
+        amount_out_received: crossChainOrder.bridgingParams.outputAmount,
+        bridge_provider: crossChainOrder.provider.info.name,
+        tx_hash: crossChainOrder.statusResult.fillTxHash || crossChainOrder.statusResult.depositTxHash,
+        latency_ms: latencyMs,
+        page: 'swap',
       } as GtmEvent<CowSwapAnalyticsCategory.Bridge>)
+      }
     } else if (isOrderFailed) {
       getCowSoundError().play()
 
@@ -123,7 +143,7 @@ function PendingOrderUpdater({ chainId, orderUid, openSince }: PendingOrderUpdat
         chainId: sourceChainId,
       } as GtmEvent<CowSwapAnalyticsCategory.Bridge>)
     }
-  }, [crossChainOrder, updateBridgeOrderQuote, addOrderToSurplusQueue, analytics])
+  }, [crossChainOrder, updateBridgeOrderQuote, addOrderToSurplusQueue, analytics, openSince])
 
   return null
 }
