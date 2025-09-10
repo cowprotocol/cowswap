@@ -17,6 +17,7 @@ import { limitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
 import { TradeConfirmation, TradeConfirmModal, useTradeConfirmActions } from 'modules/trade'
 
+import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 import { useIsSafeApprovalBundle } from 'common/hooks/useIsSafeApprovalBundle'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
@@ -81,6 +82,22 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
     'Place limit order'
   )
 
+  // Generate analytics data for limit order placement
+  const placeLimitOrderEvent = useMemo(() => {
+    // Relax gating: allow event even if executionPrice is not yet available
+    if (!inputAmount || !outputAmount || !limitRateState.activeRate) return undefined
+
+    const inputToken = inputAmount.currency
+    const outputToken = outputAmount.currency
+    const side = limitRateState.isInverted ? 'sell' : 'buy'
+
+    return toCowSwapGtmEvent({
+      category: CowSwapAnalyticsCategory.LIMIT_ORDER_SETTINGS,
+      action: 'place_limit_order',
+      label: `TokenIn: ${inputToken.symbol || ''}, TokenOut: ${outputToken.symbol || ''}, Side: ${side}, Price: ${executionPrice ? executionPrice.toSignificant(6) : ''}, Amount: ${inputAmount.toSignificant(6)}, PartialFills: ${settingsState.partialFillsEnabled}`
+    })
+  }, [inputAmount, outputAmount, executionPrice, limitRateState, settingsState])
+
   return (
     <TradeConfirmModal title={CONFIRM_TITLE}>
       <TradeConfirmation
@@ -97,6 +114,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
         recipient={recipient}
         appData={tradeContext.postOrderParams.appData || undefined}
         isPriceStatic
+        data-click-event={placeLimitOrderEvent}
       >
         {(restContent) => (
           <>
