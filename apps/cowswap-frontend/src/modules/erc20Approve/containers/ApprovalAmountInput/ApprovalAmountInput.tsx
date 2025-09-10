@@ -4,17 +4,18 @@ import { TokenWithLogo } from '@cowprotocol/common-const'
 import { tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { Field } from 'legacy/state/types'
+
 import {
   useCustomApproveAmountState,
   useUpdateCustomApproveAmount,
 } from 'modules/erc20Approve/state/customApproveAmountState'
+import { useUsdAmount } from 'modules/usdAmount'
 
 import * as styledEl from './styled'
 
 import { CurrencyInputPanel } from '../../../../common/pure/CurrencyInputPanel'
 import { CurrencyInfo } from '../../../../common/pure/CurrencyInputPanel/types'
-import { Field } from '../../../../legacy/state/types'
-import { useUsdAmount } from '../../../usdAmount'
 
 export function ApprovalAmountInput({
   initialAmount,
@@ -53,13 +54,13 @@ export function ApprovalAmountInput({
 
       const value = tryParseCurrencyAmount(typedValue, currency)
       const isInvalid = value.lessThan(initialAmount)
-      setCustomApproveAmount({ amount: value, isChanged: true, isInvalid })
+      setCustomApproveAmount({ amount: value, isChanged: true, isInvalid, isConfirmed: false })
     },
     [setCustomApproveAmount, tokenWithLogo, initialAmount],
   )
 
   const onReset = useCallback(() => {
-    setCustomApproveAmount({ amount: initialAmount, isChanged: false })
+    setCustomApproveAmount({ amount: initialAmount, isChanged: false, isInvalid: false, isConfirmed: false })
   }, [setCustomApproveAmount, initialAmount])
 
   return (

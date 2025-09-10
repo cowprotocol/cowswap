@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { ReactNode, useCallback } from 'react'
 
 import { getWrappedToken } from '@cowprotocol/common-utils'
 import { TokenLogo } from '@cowprotocol/tokens'
@@ -8,12 +8,13 @@ import * as styledEl from './styled'
 
 import { useAmountsToSign } from '../../../trade'
 import { useSetChangeApproveAmountState } from '../../state'
-import { useCustomApproveAmountState } from '../../state/customApproveAmountState'
+import { useCustomApproveAmountState, useUpdateCustomApproveAmount } from '../../state/customApproveAmountState'
 import { ApprovalAmountInput } from '../ApprovalAmountInput/ApprovalAmountInput'
 import { SwapAmountPreview } from '../SwapAmountPreview/SwapAmountPreview'
 
 export function ChangeApproveAmountModal(): ReactNode {
   const setChangeApproveAmountState = useSetChangeApproveAmountState()
+  const updateCustomApproveAmount = useUpdateCustomApproveAmount()
   const { maximumSendSellAmount } = useAmountsToSign() || {}
 
   const { isInvalid } = useCustomApproveAmountState()
@@ -21,6 +22,11 @@ export function ChangeApproveAmountModal(): ReactNode {
   const onBack = (): void => {
     setChangeApproveAmountState({ isModalOpen: false })
   }
+
+  const OnConfirm = useCallback(() => {
+    updateCustomApproveAmount({ isConfirmed: true })
+    setChangeApproveAmountState({ isModalOpen: false })
+  }, [setChangeApproveAmountState, updateCustomApproveAmount])
 
   if (!maximumSendSellAmount) return null
 
@@ -41,11 +47,8 @@ export function ChangeApproveAmountModal(): ReactNode {
       </styledEl.SwapInfo>
       <ApprovalAmountInput initialAmount={maximumSendSellAmount} tokenWithLogo={inputToken} />
       <styledEl.BtnWrapper>
-        <styledEl.ActionButton disabled={isInvalid}>
+        <styledEl.ActionButton disabled={isInvalid} onClick={OnConfirm}>
           {isInvalid ? 'Amount must be at least trade amount' : 'Confirm'}
-          {/*<ActionButton disabled={isInvalid}>*/}
-          {/*  */}
-          {/*</ActionButton>*/}
         </styledEl.ActionButton>
       </styledEl.BtnWrapper>
     </styledEl.Wrapper>

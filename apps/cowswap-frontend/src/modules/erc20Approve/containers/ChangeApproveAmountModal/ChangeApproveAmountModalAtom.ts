@@ -2,7 +2,6 @@ import { atom } from 'jotai/index'
 
 export interface ChangeApproveModalState {
   isModalOpen: boolean
-  amount?: bigint
 }
 
 export const changeApproveAmountModalAtom = atom<ChangeApproveModalState>({
