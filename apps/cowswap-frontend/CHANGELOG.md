@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.118.5](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.118.4...cowswap-v1.118.5) (2025-09-09)
+
+
+### Bug Fixes
+
+* **swap:** adjust swap banner header font size ([#6221](https://github.com/cowprotocol/cowswap/issues/6221)) ([c5d895d](https://github.com/cowprotocol/cowswap/commit/c5d895d2935737dbac9d4b0c9e71850f6011d0b5))
+
 ## [1.118.4](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.118.3...cowswap-v1.118.4) (2025-09-09)
 
 
