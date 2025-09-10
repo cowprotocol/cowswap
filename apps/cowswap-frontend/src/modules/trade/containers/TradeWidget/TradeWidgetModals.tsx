@@ -5,8 +5,8 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import {
   TradeApproveModal,
-  useChangeApproveAmountState,
-  useSetChangeApproveAmountModalState,
+  useGetUserApproveAmountState,
+  useSetUserApproveAmountModalState,
   useUpdateTradeApproveState,
 } from 'modules/erc20Approve'
 import { useTradeApproveState } from 'modules/erc20Approve/state/useTradeApproveState'
@@ -50,7 +50,7 @@ export function TradeWidgetModals({
   const { open: isTokenSelectOpen } = useSelectTokenWidgetState()
   const [{ isOpen: isWrapNativeOpen }, setWrapNativeScreenState] = useWrapNativeScreenState()
   const { approveInProgress, currency: approvingCurrency, error: approveError } = useTradeApproveState()
-  const { isModalOpen: changeApproveAmountInProgress } = useChangeApproveAmountState()
+  const { isModalOpen: changeApproveAmountInProgress } = useGetUserApproveAmountState()
   const [tokenListAddingError, setTokenListAddingError] = useTokenListAddingError()
   const { isModalOpen: isZeroApprovalModalOpen, closeModal: closeZeroApprovalModal } = useZeroApproveModalState()
   const {
@@ -61,7 +61,7 @@ export function TradeWidgetModals({
   const { onDismiss: closeTradeConfirm } = useTradeConfirmActions()
   const updateSelectTokenWidgetState = useUpdateSelectTokenWidgetState()
   const updateTradeApproveState = useUpdateTradeApproveState()
-  const updateApproveAmountState = useSetChangeApproveAmountModalState()
+  const updateApproveAmountState = useSetUserApproveAmountModalState()
 
   const resetAllScreens = useCallback(
     (closeTokenSelectWidget = true) => {

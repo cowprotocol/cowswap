@@ -1,22 +1,25 @@
 import { ReactNode, useCallback } from 'react'
 
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
-
+import { useGetAmountToSignApprove } from '../../hooks'
 import { Toggle } from '../../pure/Toggle'
 import {
   useIsPartialApproveSelectedByUser,
-  useSetChangeApproveAmountModalState,
   useSetIsPartialApproveSelectedByUser,
+  useSetUserApproveAmountModalState,
 } from '../../state'
 
-export function TradeApproveToggle({ amountToApprove }: { amountToApprove: CurrencyAmount<Currency> }): ReactNode {
+export function TradeApproveToggle(): ReactNode {
   const isPartialApproveSelectedByUser = useIsPartialApproveSelectedByUser()
   const setIsPartialApproveSelectedByUser = useSetIsPartialApproveSelectedByUser()
-  const changeApproveAmount = useSetChangeApproveAmountModalState()
+  const updateUserApproveAmountModalState = useSetUserApproveAmountModalState()
 
   const openChangeApproveAmount = useCallback((): void => {
-    changeApproveAmount({ isModalOpen: true })
-  }, [changeApproveAmount])
+    updateUserApproveAmountModalState({ isModalOpen: true })
+  }, [updateUserApproveAmountModalState])
+
+  const amountToApprove = useGetAmountToSignApprove()
+
+  if (!amountToApprove) return null
 
   return (
     <>

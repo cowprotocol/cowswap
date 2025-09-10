@@ -1,5 +1,5 @@
 export * from './useUpdateTradeApproveState'
-export * from './useChangeApproveAmountState'
-export * from './useSetChangeApproveAmountModalState'
+export * from './useGetUserApproveAmountState'
+export * from './useSetUserApproveAmountModalState'
 export * from './useIsPartialApproveSelectedByUser'
 export * from './customApproveAmountInputState'

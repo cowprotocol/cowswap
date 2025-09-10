@@ -6,35 +6,36 @@ import { ModalHeader } from '@cowprotocol/ui'
 
 import * as styledEl from './styled'
 
-import { useAmountsToSign } from '../../../trade'
-import { useSetChangeApproveAmountModalState } from '../../state'
+import { useGetAmountToSignApprove } from '../../hooks'
 import {
   useCustomApproveAmountInputState,
+  useSetUserApproveAmountModalState,
   useUpdateOrResetCustomApproveAmountInputState,
-} from '../../state/customApproveAmountInputState'
+} from '../../state'
 import { ApprovalAmountInput } from '../ApprovalAmountInput/ApprovalAmountInput'
 import { SwapAmountPreview } from '../SwapAmountPreview/SwapAmountPreview'
 
 export function ChangeApproveAmountModal(): ReactNode {
-  const setChangeApproveAmountState = useSetChangeApproveAmountModalState()
-  const { amount: customApproveAmountInput } = useCustomApproveAmountInputState() || {}
+  const setUserApproveAmountState = useSetUserApproveAmountModalState()
+  const { amount: approveAmountInput } = useCustomApproveAmountInputState() || {}
   const [_, resetCustomApproveAmountInput] = useUpdateOrResetCustomApproveAmountInputState()
-  const { maximumSendSellAmount } = useAmountsToSign() || {}
+  const initialAmountToApprove = useGetAmountToSignApprove()
 
   const { isInvalid } = useCustomApproveAmountInputState()
 
   const onBack = (): void => {
-    setChangeApproveAmountState({ isModalOpen: false, confirmedAmount: undefined })
+    setUserApproveAmountState({ isModalOpen: false, amountSetByUser: undefined })
     resetCustomApproveAmountInput()
   }
 
   const OnConfirm = useCallback(() => {
-    setChangeApproveAmountState({ isModalOpen: false, confirmedAmount: customApproveAmountInput ?? undefined })
-  }, [setChangeApproveAmountState, customApproveAmountInput])
+    setUserApproveAmountState({ isModalOpen: false, amountSetByUser: approveAmountInput ?? undefined })
+    resetCustomApproveAmountInput()
+  }, [setUserApproveAmountState, approveAmountInput, resetCustomApproveAmountInput])
 
   const inputToken = useMemo(
-    () => (maximumSendSellAmount ? getWrappedToken(maximumSendSellAmount.currency) : null),
-    [maximumSendSellAmount],
+    () => (initialAmountToApprove ? getWrappedToken(initialAmountToApprove.currency) : null),
+    [initialAmountToApprove],
   )
 
   return (
@@ -50,7 +51,7 @@ export function ChangeApproveAmountModal(): ReactNode {
         <styledEl.SetTitle>Set approval amount</styledEl.SetTitle>
         <SwapAmountPreview />
       </styledEl.SwapInfo>
-      <ApprovalAmountInput initialAmount={maximumSendSellAmount} tokenWithLogo={inputToken} />
+      <ApprovalAmountInput initialAmount={initialAmountToApprove} tokenWithLogo={inputToken} />
       <styledEl.BtnWrapper>
         <styledEl.ActionButton disabled={isInvalid} onClick={OnConfirm}>
           {isInvalid ? 'Amount must be at least trade amount' : 'Confirm'}

@@ -12,7 +12,6 @@ import { AddIntermediateTokenModal } from 'modules/tokensList'
 import {
   TradeWidget,
   TradeWidgetSlots,
-  useAmountsToSign,
   useGetReceiveAmountInfo,
   useTradePriceImpact,
   useWrapNativeFlow,
@@ -145,8 +144,6 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
 
   const { isPartialApproveEnabled } = useFeatureFlags()
   const enablePartialApprovalState = useSwapPartialApprovalToggleState(isPartialApproveEnabled)
-  // todo move from here
-  const { maximumSendSellAmount } = useAmountsToSign() || {}
 
   const slots: TradeWidgetSlots = {
     topContent,
@@ -163,9 +160,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
         return (
           <>
             {bottomContent}
-            {enablePartialApprovalState && enablePartialApprovalState[0] && maximumSendSellAmount ? (
-              <TradeApproveToggle amountToApprove={maximumSendSellAmount} />
-            ) : null}
+            {enablePartialApprovalState && enablePartialApprovalState[0] ? <TradeApproveToggle /> : null}
             <SwapRateDetails rateInfoParams={rateInfoParams} deadline={deadlineState[0]} />
             <Warnings buyingFiatAmount={buyingFiatAmount} />
             {tradeWarnings}
@@ -182,7 +177,6 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
       },
       [
         enablePartialApprovalState,
-        maximumSendSellAmount,
         bottomContent,
         rateInfoParams,
         deadlineState,
