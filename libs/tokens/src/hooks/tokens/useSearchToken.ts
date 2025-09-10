@@ -17,7 +17,7 @@ import { getTokenSearchFilter } from '../../utils/getTokenSearchFilter'
 import { parseTokensFromApi } from '../../utils/parseTokensFromApi'
 
 const IN_LISTS_DEBOUNCE_TIME = ms`100ms`
-const IN_EXTERNALS_DEBOUNCE_TIME = ms`1s`
+const IN_EXTERNALS_DEBOUNCE_TIME = ms`300ms`
 
 export type TokenSearchResponse = {
   isLoading: boolean
@@ -66,10 +66,10 @@ export function useSearchToken(input: string | null): TokenSearchResponse {
 
   // Search in external API
   // TODO: Temporarily disabled since the API is no longer available. Re-enable when the API is fixed
-  const { data: apiResultTokens, isLoading: apiIsLoading } = { data: null, isLoading: false } /*useSearchTokensInApi(
+  const { data: apiResultTokens, isLoading: apiIsLoading } = useSearchTokensInApi(
     debouncedInputInExternals,
     isTokenAlreadyFoundByAddress,
-  )*/
+  )
 
   // Search in Blockchain
   const { data: tokenFromBlockChain, isLoading: blockchainIsLoading } = useFetchTokenFromBlockchain(
@@ -153,20 +153,28 @@ function useSearchTokensInLists(input: string | undefined): FromListsResult {
   return inListsResult || emptyFromListsResult
 }
 
-// eslint-disable-next-line unused-imports/no-unused-vars
 function useSearchTokensInApi(
   input: string | undefined,
   isTokenAlreadyFoundByAddress: boolean,
 ): SWRResponse<TokenWithLogo[] | null> {
   const { chainId } = useAtomValue(environmentAtom)
 
-  return useSWR<TokenWithLogo[] | null>(['searchTokensInApi', input], () => {
-    if (isTokenAlreadyFoundByAddress || !input) {
-      return null
-    }
+  return useSWR<TokenWithLogo[] | null>(
+    ['searchTokensInApi', input],
+    () => {
+      if (isTokenAlreadyFoundByAddress || !input) {
+        return null
+      }
 
-    return searchTokensInApi(chainId, input).then((result) => parseTokensFromApi(result, chainId))
-  })
+      return searchTokensInApi(chainId, input).then((result) => parseTokensFromApi(result))
+    },
+    {
+      onErrorRetry: (error, key, config, revalidate, { retryCount }) => {
+        if (error.status === 400 || error.status === 503) return
+        if (retryCount >= 10) return
+      },
+    },
+  )
 }
 
 function useFetchTokenFromBlockchain(
