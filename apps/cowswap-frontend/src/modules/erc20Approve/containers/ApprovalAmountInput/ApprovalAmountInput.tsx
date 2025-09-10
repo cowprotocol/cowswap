@@ -6,16 +6,13 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Field } from 'legacy/state/types'
 
-import {
-  useCustomApproveAmountInputState,
-  useUpdateOrResetCustomApproveAmountInputState,
-} from 'modules/erc20Approve/state/customApproveAmountState'
 import { useUsdAmount } from 'modules/usdAmount'
 
 import * as styledEl from './styled'
 
 import { CurrencyInputPanel } from '../../../../common/pure/CurrencyInputPanel'
 import { CurrencyInfo } from '../../../../common/pure/CurrencyInputPanel/types'
+import { useCustomApproveAmountInputState, useUpdateOrResetCustomApproveAmountInputState } from '../../state'
 
 export function ApprovalAmountInput({
   initialAmount,
@@ -63,10 +60,12 @@ export function ApprovalAmountInput({
     updateCustomApproveAmountInput({ amount: initialAmount, isChanged: false, isInvalid: false })
   }, [updateCustomApproveAmountInput, initialAmount])
 
+  const resetLabel = customAmountValueState.isInvalid ? 'Set to trade' : 'Reset'
+
   return (
     <styledEl.EditWrapper>
       <styledEl.InputHeader>
-        Approval amount: <styledEl.ResetBtn onClick={onReset}>Reset</styledEl.ResetBtn>
+        Approval amount: <styledEl.ResetBtn onClick={onReset}>{resetLabel}</styledEl.ResetBtn>
       </styledEl.InputHeader>
       <CurrencyInputPanel
         id={'custom-approve-amount-input'}

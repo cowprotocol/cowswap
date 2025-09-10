@@ -11,7 +11,7 @@ import { useSetChangeApproveAmountModalState } from '../../state'
 import {
   useCustomApproveAmountInputState,
   useUpdateOrResetCustomApproveAmountInputState,
-} from '../../state/customApproveAmountState'
+} from '../../state/customApproveAmountInputState'
 import { ApprovalAmountInput } from '../ApprovalAmountInput/ApprovalAmountInput'
 import { SwapAmountPreview } from '../SwapAmountPreview/SwapAmountPreview'
 
