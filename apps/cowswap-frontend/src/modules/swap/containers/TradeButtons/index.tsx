@@ -2,6 +2,7 @@ import { ReactNode } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { AddIntermediateToken } from 'modules/tokensList'
@@ -44,7 +45,7 @@ interface TradeButtonsProps {
   setShowAddIntermediateTokenModal: (show: boolean) => void
 }
 
-// eslint-disable-next-line complexity
+// eslint-disable-next-line complexity, max-lines-per-function
 export function TradeButtons({
   isTradeContextReady,
   openNativeWrapModal,
@@ -54,7 +55,7 @@ export function TradeButtons({
   setShowAddIntermediateTokenModal,
 }: TradeButtonsProps): ReactNode {
   const { chainId } = useWalletInfo()
-  const { inputCurrency, outputCurrency, inputCurrencyAmount } = useSwapDerivedState()
+  const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount } = useSwapDerivedState()
 
   const primaryFormValidation = useGetTradeFormValidation()
   const tradeConfirmActions = useTradeConfirmActions()
@@ -78,6 +79,21 @@ export function TradeButtons({
       ? toCowSwapGtmEvent({
           ...BRIDGE_ANALYTICS_EVENT,
           label: `From: ${chainId}, To: ${outputCurrency.chainId || chainId}, TokenIn: ${inputCurrency.symbol || ''}, TokenOut: ${outputCurrency.symbol || ''}, Amount: ${inputCurrencyAmount.toSignificant(6)}`,
+          from_chain_id: chainId,
+          to_chain_id: outputCurrency.chainId || chainId,
+          sell_token: getCurrencyAddress(inputCurrency),
+          sell_token_symbol: inputCurrency.symbol || '',
+          sell_token_chain_id: inputCurrency.chainId,
+          sell_amount: inputCurrencyAmount.quotient.toString(),
+          sell_amount_human: inputCurrencyAmount.toSignificant(6),
+          ...(outputCurrencyAmount && {
+            buy_token: getCurrencyAddress(outputCurrency),
+            buy_token_symbol: outputCurrency.symbol || '',
+            buy_token_chain_id: outputCurrency.chainId,
+            buy_amount_expected: outputCurrencyAmount.quotient.toString(),
+            buy_amount_human: outputCurrencyAmount.toSignificant(6),
+          }),
+          value: Number(inputCurrencyAmount.toSignificant(6)),
         })
       : undefined
 
