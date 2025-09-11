@@ -1,5 +1,6 @@
 import { ReactElement, useEffect, useRef, useState } from 'react'
 
+import { isDevelopmentEnv } from '@cowprotocol/common-utils'
 import { CenteredDots, LongLoadText, UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
@@ -60,7 +61,7 @@ export interface TradeFormPrimaryButtonProps {
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function TradeFormBlankButton({
   onClick,
   children,
@@ -89,6 +90,17 @@ export function TradeFormBlankButton({
   // TODO: Add proper return type annotation
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleClick = () => {
+    // Dev-only: mirror GTM click payload in console for local testing
+    if (isDevelopmentEnv() && dataClickEvent) {
+      try {
+        // Attempt to pretty print the GTM event JSON
+
+        console.debug('[GTM click]', JSON.parse(dataClickEvent))
+      } catch {
+        console.debug('[GTM click]', dataClickEvent)
+      }
+    }
+
     if (isUpToMedium) {
       window.scrollTo({ top: 0, left: 0 })
     }

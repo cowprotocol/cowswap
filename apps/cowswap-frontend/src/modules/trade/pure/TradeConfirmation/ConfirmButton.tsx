@@ -1,5 +1,6 @@
 import { ReactNode, useEffect, useState } from 'react'
 
+import { isDevelopmentEnv } from '@cowprotocol/common-utils'
 import { ButtonPrimary, ButtonSize, CenteredDots, LongLoadText } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
@@ -26,6 +27,15 @@ export function ConfirmButton(props: ConfirmButtonProps): ReactNode {
   const isUpToMedium = useMediaQuery(upToMedium)
 
   const handleConfirmClick = async (): Promise<void> => {
+    // Dev-only: mirror GTM click payload in console for local testing
+    if (isDevelopmentEnv() && dataClickEvent) {
+      try {
+        console.debug('[GTM click]', JSON.parse(dataClickEvent))
+      } catch {
+        console.debug('[GTM click]', dataClickEvent)
+      }
+    }
+
     if (isUpToMedium) {
       window.scrollTo({ top: 0, left: 0 })
     }
@@ -50,9 +60,9 @@ export function ConfirmButton(props: ConfirmButtonProps): ReactNode {
   }, [hasPendingTrade])
 
   return (
-    <ButtonPrimary 
-      onClick={handleConfirmClick} 
-      disabled={isButtonDisabled} 
+    <ButtonPrimary
+      onClick={handleConfirmClick}
+      disabled={isButtonDisabled}
       buttonSize={ButtonSize.BIG}
       data-click-event={dataClickEvent}
     >
