@@ -1,3 +1,4 @@
+import { formatUnitsSafe } from '@cowprotocol/common-utils'
 import {
   CowWidgetEvents,
   SimpleCowEventEmitter,
@@ -10,6 +11,8 @@ import {
 } from '@cowprotocol/events'
 
 import { getCowAnalytics } from '../utils'
+// Local alias to keep call sites tidy in this file
+const formatUnits = formatUnitsSafe
 
 // Specialized helper function for string properties to ensure we always return a string
 const safeGetString = <T, K extends keyof T>(obj: T | undefined, key: K, fallback: string = ''): string => {
@@ -17,49 +20,89 @@ const safeGetString = <T, K extends keyof T>(obj: T | undefined, key: K, fallbac
   return String(value)
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const getOrderPayload = (payload: BaseOrderPayload) => ({
-  walletAddress: safeGetString(payload.order, 'owner'),
-  orderId: safeGetString(payload.order, 'uid'),
-  chainId: payload.chainId.toString(),
-  sellToken: safeGetString(payload.order, 'sellToken'),
-  buyToken: safeGetString(payload.order, 'buyToken'),
-  sellAmount: safeGetString(payload.order, 'sellAmount'),
-  buyAmount: safeGetString(payload.order, 'buyAmount'),
-})
+type AnalyticsPayload = Record<string, unknown>
+
+type TokenLike = { symbol?: string; decimals?: number; address?: string }
+
+function extractTokenMeta(order: unknown): { inputToken?: TokenLike; outputToken?: TokenLike } {
+  const { inputToken, outputToken } = (order as { inputToken?: TokenLike; outputToken?: TokenLike }) || {}
+  return { inputToken, outputToken }
+}
+
+function buildBaseFields(payload: BaseOrderPayload): AnalyticsPayload {
+  return {
+    walletAddress: safeGetString(payload.order, 'owner'),
+    wallet_address: safeGetString(payload.order, 'owner'),
+    orderId: safeGetString(payload.order, 'uid'),
+    chainId: payload.chainId.toString(),
+    chain_id: payload.chainId.toString(),
+  }
+}
+
+function buildTokenFields(
+  payload: BaseOrderPayload,
+  meta: { inputToken?: TokenLike; outputToken?: TokenLike },
+): AnalyticsPayload {
+  const sellTokenAddress = safeGetString(payload.order, 'sellToken')
+  const buyTokenAddress = safeGetString(payload.order, 'buyToken')
+
+  const sellAmountAtoms = safeGetString(payload.order, 'sellAmount')
+  const buyAmountAtoms = safeGetString(payload.order, 'buyAmount')
+
+  const sellTokenDecimals: number | undefined = meta.inputToken?.decimals
+  const buyTokenDecimals: number | undefined = meta.outputToken?.decimals
+
+  return {
+    sellToken: sellTokenAddress,
+    buyToken: buyTokenAddress,
+    sellAmount: sellAmountAtoms,
+    buyAmount: buyAmountAtoms,
+    sellTokenSymbol: meta.inputToken?.symbol || '',
+    buyTokenSymbol: meta.outputToken?.symbol || '',
+    sellTokenDecimals,
+    buyTokenDecimals,
+    sellAmountUnits: formatUnits(sellAmountAtoms, sellTokenDecimals),
+    buyAmountUnits: formatUnits(buyAmountAtoms, buyTokenDecimals),
+  }
+}
+
+function buildSafaryAliases(fields: AnalyticsPayload): AnalyticsPayload {
+  const sellTokenAddress = String(fields.sellToken || '')
+  const buyTokenAddress = String(fields.buyToken || '')
+  const sellTokenDecimals = (fields.sellTokenDecimals as number | undefined) || 0
+  const buyTokenDecimals = (fields.buyTokenDecimals as number | undefined) || 0
+
+  return {
+    from_currency_address: sellTokenAddress,
+    to_currency_address: buyTokenAddress,
+    from_currency: String(fields.sellTokenSymbol || ''),
+    to_currency: String(fields.buyTokenSymbol || ''),
+    from_amount: formatUnits(String(fields.sellAmount || ''), sellTokenDecimals),
+    to_amount: formatUnits(String(fields.buyAmount || ''), buyTokenDecimals),
+  }
+}
+
+function getOrderPayload(payload: BaseOrderPayload): AnalyticsPayload {
+  const meta = extractTokenMeta(payload.order)
+  const base = buildBaseFields(payload)
+  const tokenFields = buildTokenFields(payload, meta)
+  const aliases = buildSafaryAliases(tokenFields)
+
+  return { ...base, ...tokenFields, ...aliases }
+}
 
 const EVENT_CONFIGS = [
   // Handle order submission
   {
     event: CowWidgetEvents.ON_POSTED_ORDER,
     analyticsEvent: 'order_submitted',
-    mapper: (p: OnPostedOrderPayload) => ({
-      walletAddress: p.owner,
-      orderId: p.orderUid,
-      chainId: p.chainId.toString(),
-      sellToken: safeGetString(p.inputToken, 'address'),
-      buyToken: safeGetString(p.outputToken, 'address'),
-      sellAmount: p.inputAmount.toString() || '',
-      buyAmount: p.outputAmount.toString() || '',
-      sellTokenSymbol: safeGetString(p.inputToken, 'symbol'),
-      buyTokenSymbol: safeGetString(p.outputToken, 'symbol'),
-      orderType: p.orderType,
-      kind: p.kind,
-      receiver: p.receiver || '',
-      orderCreationHash: p.orderCreationHash || '',
-    }),
+    mapper: mapPostedOrder,
   },
   // Handle order fulfillment
   {
     event: CowWidgetEvents.ON_FULFILLED_ORDER,
     analyticsEvent: 'swap_executed',
-    mapper: (p: OnFulfilledOrderPayload) => ({
-      ...getOrderPayload(p),
-      executedSellAmount: safeGetString(p.order, 'executedSellAmount'),
-      executedBuyAmount: safeGetString(p.order, 'executedBuyAmount'),
-      executedFeeAmount: safeGetString(p.order, 'executedFeeAmount'),
-    }),
+    mapper: mapFulfilledOrder,
   },
   // Handle order cancellation
   {
@@ -82,19 +125,76 @@ const EVENT_CONFIGS = [
   },
 ]
 
+function mapPostedOrder(p: OnPostedOrderPayload): AnalyticsPayload {
+  const tokenFields: AnalyticsPayload = {
+    sellToken: safeGetString(p.inputToken, 'address'),
+    buyToken: safeGetString(p.outputToken, 'address'),
+    sellAmount: p.inputAmount.toString() || '',
+    buyAmount: p.outputAmount.toString() || '',
+    sellTokenSymbol: safeGetString(p.inputToken, 'symbol'),
+    buyTokenSymbol: safeGetString(p.outputToken, 'symbol'),
+    sellTokenDecimals: p.inputToken?.decimals,
+    buyTokenDecimals: p.outputToken?.decimals,
+    sellAmountUnits: formatUnits(p.inputAmount, p.inputToken?.decimals),
+    buyAmountUnits: formatUnits(p.outputAmount, p.outputToken?.decimals),
+  }
+
+  return {
+    walletAddress: p.owner,
+    wallet_address: p.owner,
+    orderId: p.orderUid,
+    chainId: p.chainId.toString(),
+    chain_id: p.chainId.toString(),
+    ...tokenFields,
+    ...buildSafaryAliases(tokenFields),
+    orderType: p.orderType,
+    kind: p.kind,
+    receiver: p.receiver || '',
+    orderCreationHash: p.orderCreationHash || '',
+  }
+}
+
+function mapFulfilledOrder(p: OnFulfilledOrderPayload): AnalyticsPayload {
+  const base = getOrderPayload(p)
+
+  const executedSellAmountAtoms = safeGetString(p.order, 'executedSellAmount')
+  const executedBuyAmountAtoms = safeGetString(p.order, 'executedBuyAmount')
+  const executedFeeAmountAtoms = safeGetString(p.order, 'executedFeeAmount')
+
+  const { inputToken, outputToken } = extractTokenMeta(p.order)
+
+  const sellDecimals = inputToken?.decimals
+  const buyDecimals = outputToken?.decimals
+
+  return {
+    ...base,
+    // Atoms
+    executedSellAmount: executedSellAmountAtoms,
+    executedBuyAmount: executedBuyAmountAtoms,
+    executedFeeAmount: executedFeeAmountAtoms,
+
+    // Units (decimals-adjusted)
+    executedSellAmountUnits: formatUnits(executedSellAmountAtoms, sellDecimals),
+    executedBuyAmountUnits: formatUnits(executedBuyAmountAtoms, buyDecimals),
+
+    // Safary-lexicon style fields (explicit for fulfillment amounts)
+    from_amount: formatUnits(executedSellAmountAtoms, sellDecimals),
+    to_amount: formatUnits(executedBuyAmountAtoms, buyDecimals),
+  }
+}
+
 // Sets up event handlers for order lifecycle events.
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export const setupEventHandlers = (eventEmitter: SimpleCowEventEmitter<CowWidgetEventPayloadMap, CowWidgetEvents>) => {
+export const setupEventHandlers = (
+  eventEmitter: SimpleCowEventEmitter<CowWidgetEventPayloadMap, CowWidgetEvents>,
+): void => {
   // Register each event handler
   EVENT_CONFIGS.forEach((config) => {
     const { event, mapper, analyticsEvent } = config
 
     eventEmitter.on({
       event,
-      // TODO: Replace any with proper type definitions
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      handler: (payload: any) => {
+
+      handler: (payload: unknown): void => {
         const analytics = getCowAnalytics()
 
         if (!analytics) {
@@ -102,7 +202,8 @@ export const setupEventHandlers = (eventEmitter: SimpleCowEventEmitter<CowWidget
           return
         }
 
-        analytics.sendEvent(analyticsEvent, mapper(payload))
+        const normalizedMapper = mapper as (p: unknown) => AnalyticsPayload
+        analytics.sendEvent(analyticsEvent, normalizedMapper(payload))
       },
     })
   })
