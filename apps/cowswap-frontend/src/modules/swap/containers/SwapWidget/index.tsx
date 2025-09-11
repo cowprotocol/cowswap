@@ -1,7 +1,7 @@
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { isSellOrder, isInjectedWidget } from '@cowprotocol/common-utils'
-import { useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
+import { useIsSmartContractWallet, useWalletInfo, useIsEagerConnectInProgress } from '@cowprotocol/wallet'
 
 import { Field } from 'legacy/state/types'
 import { useHooksEnabledManager } from 'legacy/state/user/hooks'
@@ -82,6 +82,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   const hasEnoughWrappedBalanceForSwap = useHasEnoughWrappedBalanceForSwap()
   const isSmartContractWallet = useIsSmartContractWallet()
   const { account } = useWalletInfo()
+  const isEagerConnectInProgress = useIsEagerConnectInProgress()
   const [isHydrated, setIsHydrated] = useState(false)
   const handleUnlock = useCallback(() => updateSwapState({ isUnlocked: true }), [updateSwapState])
 
@@ -149,12 +150,13 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   }, [])
 
   const isConnected = Boolean(account)
+
   const shouldShowLockScreen =
     isHydrated &&
     !isUnlocked &&
     !isInjectedWidget() &&
-    // Show for EOAs (confirmed), or when not connected; avoid showing while wallet type is unknown
-    ((isConnected && isSmartContractWallet === false) || !isConnected)
+    // Show for EOAs (confirmed) or for truly disconnected users after eager connect settles
+    ((isConnected && isSmartContractWallet === false) || (!isConnected && !isEagerConnectInProgress))
 
   const slots: TradeWidgetSlots = {
     topContent,
