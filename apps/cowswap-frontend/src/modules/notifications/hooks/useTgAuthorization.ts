@@ -3,7 +3,14 @@ import { useCallback, useEffect, useState } from 'react'
 import ms from 'ms.macro'
 
 import { getTelegramAuth } from '../services/getTelegramAuth'
-import { TG_DEV_BYPASS, hasDevAuthState, setDevAuthState, clearDevAuthState, MOCK_TELEGRAM_DATA, type TelegramData } from '../utils/devTg'
+import {
+  TG_DEV_BYPASS,
+  hasDevAuthState,
+  setDevAuthState,
+  clearDevAuthState,
+  MOCK_TELEGRAM_DATA,
+  type TelegramData,
+} from '../utils/devTg'
 
 const TG_SESSION_CHECK_INTERVAL = ms`3s`
 
@@ -15,8 +22,6 @@ const AUTH_OPTIONS = {
   lang: 'en',
   request_access: 'write',
 }
-
-// (TelegramData type re-exported from utils/devTg)
 
 export interface TgAuthorization {
   tgData: TelegramData | null
@@ -61,7 +66,7 @@ export function useTgAuthorization(): TgAuthorization {
     if (TG_DEV_BYPASS) {
       // In dev bypass mode, simulate authorization flow
       setIsLoginInProgress(true)
-      await new Promise(resolve => setTimeout(resolve, 200)) // Small delay for UX
+      await new Promise((resolve) => setTimeout(resolve, 200)) // Small delay for UX
       setTgData(MOCK_TELEGRAM_DATA)
       setDevAuthState() // Store auth state
       setIsLoginInProgress(false)
