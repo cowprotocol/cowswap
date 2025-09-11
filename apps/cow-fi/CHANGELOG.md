@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.26.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.25.0...cow-fi-v1.26.0) (2025-09-11)
+
+
+### Features
+
+* **cow-fi:** add redirect for MEV blocker to external site ([#6220](https://github.com/cowprotocol/cowswap/issues/6220)) ([dbd887a](https://github.com/cowprotocol/cowswap/commit/dbd887a0568cfc0fc09316ff54c2a4ab8c40fe71))
+
 ## [1.25.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.24.1...cow-fi-v1.25.0) (2025-08-21)
 
 
