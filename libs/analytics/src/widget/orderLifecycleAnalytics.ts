@@ -66,7 +66,10 @@ function buildTokenFields(
   }
 }
 
-function buildSafaryAliases(fields: AnalyticsPayload): AnalyticsPayload {
+// Build generic analytics-friendly alias fields for currency/amounts.
+// The current keys align with Safary's lexicon, but the helper name is
+// provider-agnostic so we can evolve the mapping without touching call sites.
+function buildAnalyticsCurrencyAliases(fields: AnalyticsPayload): AnalyticsPayload {
   const sellTokenAddress = String(fields.sellToken || '')
   const buyTokenAddress = String(fields.buyToken || '')
   const sellTokenDecimals = (fields.sellTokenDecimals as number | undefined) || 0
@@ -86,7 +89,7 @@ function getOrderPayload(payload: BaseOrderPayload): AnalyticsPayload {
   const meta = extractTokenMeta(payload.order)
   const base = buildBaseFields(payload)
   const tokenFields = buildTokenFields(payload, meta)
-  const aliases = buildSafaryAliases(tokenFields)
+  const aliases = buildAnalyticsCurrencyAliases(tokenFields)
 
   return { ...base, ...tokenFields, ...aliases }
 }
@@ -146,7 +149,7 @@ function mapPostedOrder(p: OnPostedOrderPayload): AnalyticsPayload {
     chainId: p.chainId.toString(),
     chain_id: p.chainId.toString(),
     ...tokenFields,
-    ...buildSafaryAliases(tokenFields),
+    ...buildAnalyticsCurrencyAliases(tokenFields),
     orderType: p.orderType,
     kind: p.kind,
     receiver: p.receiver || '',
