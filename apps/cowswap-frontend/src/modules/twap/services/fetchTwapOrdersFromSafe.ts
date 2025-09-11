@@ -13,8 +13,8 @@ import { ConditionalOrderParams, TwapOrdersSafeData } from '../types'
 
 // ComposableCoW.createWithContext method
 const CREATE_COMPOSABLE_ORDER_SELECTOR = '0d0d9800'
-// Each page contains 20 transactions by default, so we need to fetch 200 pages to get 4000 transactions
-const SAFE_TX_HISTORY_DEPTH = 200
+// Each page contains 100 transactions by default, so we need to fetch 40 pages to get 4000 transactions
+const SAFE_TX_HISTORY_DEPTH = 40
 // Just in case, make a short delay between requests
 const SAFE_TX_REQUEST_DELAY = ms`100ms`
 
