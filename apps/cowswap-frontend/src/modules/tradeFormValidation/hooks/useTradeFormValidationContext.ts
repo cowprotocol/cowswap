@@ -7,8 +7,8 @@ import { useGnosisSafeInfo, useIsTxBundlingSupported, useWalletDetails, useWalle
 
 import { useCurrentAccountProxy } from 'modules/accountProxy'
 import { useTryFindIntermediateToken } from 'modules/bridge'
-import { useApproveState, useIsApprovalRequired } from 'modules/erc20Approve'
-import { TradeType, useAmountsToSign, useDerivedTradeState, useIsWrapOrUnwrap } from 'modules/trade'
+import { useApproveState, useGetAmountToSignApprove, useIsApprovalRequired } from 'modules/erc20Approve'
+import { TradeType, useDerivedTradeState, useIsWrapOrUnwrap } from 'modules/trade'
 import { TradeQuoteState, useTradeQuote } from 'modules/tradeQuote'
 
 import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
@@ -27,8 +27,8 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
 
   const { inputCurrency, outputCurrency, recipient, tradeType } = derivedTradeState || {}
   const customTokenError = useTokenCustomTradeError(inputCurrency, outputCurrency, tradeQuote.error)
-  const { maximumSendSellAmount } = useAmountsToSign() || {}
-  const { state: approvalState } = useApproveState(maximumSendSellAmount)
+  const amountToApprove = useGetAmountToSignApprove()
+  const { state: approvalState } = useApproveState(amountToApprove)
   const { address: recipientEnsAddress } = useENSAddress(recipient)
   const isSwapUnsupported =
     useIsTradeUnsupported(inputCurrency, outputCurrency) || isUnsupportedTokenInQuote(tradeQuote)

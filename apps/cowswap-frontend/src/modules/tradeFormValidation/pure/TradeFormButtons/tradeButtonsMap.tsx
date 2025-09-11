@@ -240,11 +240,11 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     )
   },
   [TradeFormValidation.ApproveRequired]: (context) => {
-    if (!context.amountsToSign) return null
-    const { maximumSendSellAmount } = context.amountsToSign
+    const amountToApprove = context.amountToApprove
+    if (!amountToApprove) return null
 
     return (
-      <TradeApproveButton amountToApprove={maximumSendSellAmount} enablePartialApprove={context.enablePartialApprove}>
+      <TradeApproveButton amountToApprove={amountToApprove} enablePartialApprove={context.enablePartialApprove}>
         <TradeFormBlankButton>
           {/*todo add lower case*/}
           <Trans>Approve and {context.defaultText}</Trans>

@@ -1,13 +1,14 @@
 import { useTokenSupportsPermit } from 'modules/permit'
-import { useAmountsToSign, useDerivedTradeState } from 'modules/trade'
+import { useDerivedTradeState } from 'modules/trade'
 
 import { useApproveState } from './useApproveState'
+import { useGetAmountToSignApprove } from './useGetAmountToSignApprove'
 
 import { ApprovalState } from '../types'
 
 export function useIsApprovalRequired(): boolean {
-  const { maximumSendSellAmount } = useAmountsToSign() || {}
-  const { state: approvalState } = useApproveState(maximumSendSellAmount)
+  const amountToApprove = useGetAmountToSignApprove()
+  const { state: approvalState } = useApproveState(amountToApprove)
   const derivedTradeState = useDerivedTradeState()
 
   const { inputCurrency, tradeType } = derivedTradeState || {}

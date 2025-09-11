@@ -1,6 +1,6 @@
 import { ReactNode, useCallback } from 'react'
 
-import { useGetAmountToSignApprove } from '../../hooks'
+import { useGetPartialAmountToSignApprove } from '../../hooks'
 import { Toggle } from '../../pure/Toggle'
 import {
   useIsPartialApproveSelectedByUser,
@@ -17,7 +17,7 @@ export function TradeApproveToggle(): ReactNode {
     updateUserApproveAmountModalState({ isModalOpen: true })
   }, [updateUserApproveAmountModalState])
 
-  const amountToApprove = useGetAmountToSignApprove()
+  const amountToApprove = useGetPartialAmountToSignApprove()
 
   if (!amountToApprove) return null
 

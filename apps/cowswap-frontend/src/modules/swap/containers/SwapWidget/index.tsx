@@ -145,8 +145,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   const { isPartialApproveEnabled } = useFeatureFlags()
   const enablePartialApprovalState = useSwapPartialApprovalToggleState(isPartialApproveEnabled)
 
-  const showApproveToggle =
-    enablePartialApprovalState && enablePartialApprovalState[0] && inputCurrency && !getIsNativeToken(inputCurrency)
+  const showApproveToggle = enablePartialApprovalState[0] && inputCurrency && !getIsNativeToken(inputCurrency)
 
   const slots: TradeWidgetSlots = {
     topContent,

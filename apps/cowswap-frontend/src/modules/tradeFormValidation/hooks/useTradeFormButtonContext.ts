@@ -5,11 +5,12 @@ import { useWalletDetails } from '@cowprotocol/wallet'
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
-import { useAmountsToSign, useDerivedTradeState, useWrapNativeFlow } from 'modules/trade'
+import { useDerivedTradeState, useWrapNativeFlow } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 
 import { useTokenCustomTradeError } from './useTokenCustomTradeError'
 
+import { useGetAmountToSignApprove } from '../../erc20Approve'
 import { TradeFormButtonContext } from '../types'
 
 export function useTradeFormButtonContext(
@@ -23,7 +24,7 @@ export function useTradeFormButtonContext(
   const toggleWalletModal = useToggleWalletModal()
   const { standaloneMode } = useInjectedWidgetParams()
   const derivedState = useDerivedTradeState()
-  const amountsToSign = useAmountsToSign()
+  const amountToApprove = useGetAmountToSignApprove()
   const customTokenError = useTokenCustomTradeError(
     derivedState?.inputCurrency,
     derivedState?.outputCurrency,
@@ -35,7 +36,7 @@ export function useTradeFormButtonContext(
 
     return {
       defaultText,
-      amountsToSign,
+      amountToApprove,
       derivedState,
       quote,
       isSupportedWallet,
@@ -48,7 +49,7 @@ export function useTradeFormButtonContext(
     }
   }, [
     defaultText,
-    amountsToSign,
+    amountToApprove,
     derivedState,
     quote,
     isSupportedWallet,

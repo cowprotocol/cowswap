@@ -6,7 +6,7 @@ import { ModalHeader } from '@cowprotocol/ui'
 
 import * as styledEl from './styled'
 
-import { useGetAmountToSignApprove } from '../../hooks'
+import { useGetPartialAmountToSignApprove } from '../../hooks'
 import {
   useCustomApproveAmountInputState,
   useSetUserApproveAmountModalState,
@@ -19,7 +19,7 @@ export function ChangeApproveAmountModal(): ReactNode {
   const setUserApproveAmountState = useSetUserApproveAmountModalState()
   const { amount: approveAmountInput } = useCustomApproveAmountInputState() || {}
   const [_, resetCustomApproveAmountInput] = useUpdateOrResetCustomApproveAmountInputState()
-  const initialAmountToApprove = useGetAmountToSignApprove()
+  const initialAmountToApprove = useGetPartialAmountToSignApprove()
 
   const { isInvalid } = useCustomApproveAmountInputState()
 
