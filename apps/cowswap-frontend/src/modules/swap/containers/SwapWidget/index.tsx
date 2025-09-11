@@ -1,7 +1,7 @@
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { isSellOrder, isInjectedWidget } from '@cowprotocol/common-utils'
-import { useIsSmartContractWallet } from '@cowprotocol/wallet'
+import { useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import { Field } from 'legacy/state/types'
 import { useHooksEnabledManager } from 'legacy/state/user/hooks'
@@ -81,6 +81,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   const doTrade = useHandleSwap(useSafeMemoObject({ deadline: deadlineState[0] }), widgetActions)
   const hasEnoughWrappedBalanceForSwap = useHasEnoughWrappedBalanceForSwap()
   const isSmartContractWallet = useIsSmartContractWallet()
+  const { account } = useWalletInfo()
   const [isHydrated, setIsHydrated] = useState(false)
   const handleUnlock = useCallback(() => updateSwapState({ isUnlocked: true }), [updateSwapState])
 
@@ -147,7 +148,13 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
     setShowAddIntermediateTokenModal(false)
   }, [])
 
-  const shouldShowLockScreen = isHydrated && !isUnlocked && !isInjectedWidget() && isSmartContractWallet === false
+  const isConnected = Boolean(account)
+  const shouldShowLockScreen =
+    isHydrated &&
+    !isUnlocked &&
+    !isInjectedWidget() &&
+    // Show for EOAs (confirmed), or when not connected; avoid showing while wallet type is unknown
+    ((isConnected && isSmartContractWallet === false) || !isConnected)
 
   const slots: TradeWidgetSlots = {
     topContent,
