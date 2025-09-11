@@ -87,7 +87,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   const handleUnlock = useCallback(() => updateSwapState({ isUnlocked: true }), [updateSwapState])
 
   useEffect(() => {
-    // Check if localStorage has been loaded to prevent flash of lock screen
+    // Hydration guard: defer lock-screen until persisted state (isUnlocked) loads to prevent initial flash.
     setIsHydrated(true)
   }, [])
 
@@ -151,11 +151,11 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
 
   const isConnected = Boolean(account)
 
+  // Guarded render: require hydration and no active eager-connect; show only for confirmed EOAs or truly disconnected users.
   const shouldShowLockScreen =
     isHydrated &&
     !isUnlocked &&
     !isInjectedWidget() &&
-    // Show for EOAs (confirmed) or for truly disconnected users after eager connect settles
     ((isConnected && isSmartContractWallet === false) || (!isConnected && !isEagerConnectInProgress))
 
   const slots: TradeWidgetSlots = {
