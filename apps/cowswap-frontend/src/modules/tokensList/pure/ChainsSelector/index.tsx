@@ -8,7 +8,6 @@ import { HoverTooltip, Media } from '@cowprotocol/ui'
 import { Menu, MenuButton, MenuItem } from '@reach/menu-button'
 import { Check, ChevronDown, ChevronUp } from 'react-feather'
 
-// Route awareness via trade hook (avoids manual pathname parsing)
 import { Field } from 'legacy/state/types'
 
 import { useTradeTypeInfoFromUrl } from 'modules/trade/hooks/useTradeTypeInfoFromUrl'
