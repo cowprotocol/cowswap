@@ -1,5 +1,48 @@
 # Changelog
 
+## [1.118.6](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.118.5...cowswap-v1.118.6) (2025-09-11)
+
+
+### Bug Fixes
+
+* **twap:** adjust safe tx history depth ([#6233](https://github.com/cowprotocol/cowswap/issues/6233)) ([3e626e1](https://github.com/cowprotocol/cowswap/commit/3e626e1b21df0102364f6670a092dbeda6e383d7))
+* **twap:** load orders history faster ([#6226](https://github.com/cowprotocol/cowswap/issues/6226)) ([bfba891](https://github.com/cowprotocol/cowswap/commit/bfba89170c63333e3182adb27624cac33106af1d))
+
+## [1.118.5](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.118.4...cowswap-v1.118.5) (2025-09-09)
+
+
+### Bug Fixes
+
+* **swap:** adjust swap banner header font size ([#6221](https://github.com/cowprotocol/cowswap/issues/6221)) ([c5d895d](https://github.com/cowprotocol/cowswap/commit/c5d895d2935737dbac9d4b0c9e71850f6011d0b5))
+
+## [1.118.4](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.118.3...cowswap-v1.118.4) (2025-09-09)
+
+
+### Bug Fixes
+
+* **swap:** replace swap unlock screen banner header ([#6217](https://github.com/cowprotocol/cowswap/issues/6217)) ([2e61b94](https://github.com/cowprotocol/cowswap/commit/2e61b942d5b31d14b8aa8884106a1206f6e85187))
+
+## [1.118.3](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.118.2...cowswap-v1.118.3) (2025-09-02)
+
+
+### Bug Fixes
+
+* **trade:** do not close auto-import modal when account changes ([#6209](https://github.com/cowprotocol/cowswap/issues/6209)) ([af643a9](https://github.com/cowprotocol/cowswap/commit/af643a94c0b28fe60639aeed22a69ea591b3fdcc))
+
+## [1.118.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.118.1...cowswap-v1.118.2) (2025-09-01)
+
+
+### Bug Fixes
+
+* do not crash when metadata is undefined ([#6204](https://github.com/cowprotocol/cowswap/issues/6204)) ([38de63a](https://github.com/cowprotocol/cowswap/commit/38de63ace9b104211e0eeacc4c68045fff6c793f))
+
+## [1.118.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.118.0...cowswap-v1.118.1) (2025-08-28)
+
+
+### Bug Fixes
+
+* **bungee:** remove custom affiliate logic/endpoints ([#6193](https://github.com/cowprotocol/cowswap/issues/6193)) ([d4feb5c](https://github.com/cowprotocol/cowswap/commit/d4feb5cbdedcbd4761498d0ab7c1e055cbc5e545))
+
 ## [1.118.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.117.2...cowswap-v1.118.0) (2025-08-28)
 
 

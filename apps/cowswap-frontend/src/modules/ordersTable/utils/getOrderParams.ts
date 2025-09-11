@@ -1,4 +1,4 @@
-import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances';
+import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
 import { isEnoughAmount } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { BigNumber } from '@ethersproject/bignumber'
@@ -7,7 +7,6 @@ import { Currency, CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
 import { RateInfoParams } from 'common/pure/RateInfo'
 import { getOrderPermitAmount } from 'utils/orderUtils/getOrderPermitAmount'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
-
 
 export interface OrderParams {
   chainId: SupportedChainId | undefined
