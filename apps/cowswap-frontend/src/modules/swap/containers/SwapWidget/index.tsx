@@ -1,7 +1,7 @@
 import { ReactNode, useCallback, useMemo, useState } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { isSellOrder } from '@cowprotocol/common-utils'
+import { getIsNativeToken, isSellOrder } from '@cowprotocol/common-utils'
 
 import { Field } from 'legacy/state/types'
 import { useHooksEnabledManager } from 'legacy/state/user/hooks'
@@ -145,6 +145,9 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   const { isPartialApproveEnabled } = useFeatureFlags()
   const enablePartialApprovalState = useSwapPartialApprovalToggleState(isPartialApproveEnabled)
 
+  const showApproveToggle =
+    enablePartialApprovalState && enablePartialApprovalState[0] && inputCurrency && !getIsNativeToken(inputCurrency)
+
   const slots: TradeWidgetSlots = {
     topContent,
     settingsWidget: (
@@ -160,7 +163,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
         return (
           <>
             {bottomContent}
-            {enablePartialApprovalState && enablePartialApprovalState[0] ? <TradeApproveToggle /> : null}
+            {showApproveToggle ? <TradeApproveToggle /> : null}
             <SwapRateDetails rateInfoParams={rateInfoParams} deadline={deadlineState[0]} />
             <Warnings buyingFiatAmount={buyingFiatAmount} />
             {tradeWarnings}
@@ -176,7 +179,6 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
         )
       },
       [
-        enablePartialApprovalState,
         bottomContent,
         rateInfoParams,
         deadlineState,
@@ -186,6 +188,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
         hasEnoughWrappedBalanceForSwap,
         toBeImported,
         intermediateBuyToken,
+        showApproveToggle,
       ],
     ),
   }
