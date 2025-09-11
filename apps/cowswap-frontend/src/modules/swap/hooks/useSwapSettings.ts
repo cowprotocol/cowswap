@@ -51,6 +51,9 @@ export function useSwapPartialApprovalToggleState(isFeatureEnabled = false): Sta
       return emptyState as [null, null]
     }
 
-    return [settings.enablePartialApproval, (enablePartialApproval: boolean) => updateState({ enablePartialApproval })]
-  }, [settings.enablePartialApproval, updateState, isFeatureEnabled])
+    return [
+      settings.enablePartialApprovalBySettings,
+      (enablePartialApproval: boolean) => updateState({ enablePartialApprovalBySettings: enablePartialApproval }),
+    ]
+  }, [settings.enablePartialApprovalBySettings, updateState, isFeatureEnabled])
 }

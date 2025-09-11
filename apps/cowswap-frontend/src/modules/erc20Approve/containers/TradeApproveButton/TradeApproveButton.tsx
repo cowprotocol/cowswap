@@ -24,11 +24,14 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
   const { approvalState } = useApprovalStateForSpender(amountToApprove, spender)
   if (!enablePartialApprove) {
     return (
-      <LegacyApproveButton
-        currency={amountToApprove.currency}
-        state={approvalState}
-        onClick={() => handleApprove(MaxApprovalAmount)}
-      ></LegacyApproveButton>
+      <>
+        <LegacyApproveButton
+          currency={amountToApprove.currency}
+          state={approvalState}
+          onClick={() => handleApprove(MaxApprovalAmount)}
+        ></LegacyApproveButton>
+        {children}
+      </>
     )
   }
 

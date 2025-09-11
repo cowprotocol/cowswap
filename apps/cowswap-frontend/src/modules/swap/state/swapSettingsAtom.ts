@@ -7,13 +7,13 @@ import { getJotaiIsolatedStorage } from '@cowprotocol/core'
 export interface SwapSettingsState {
   readonly showRecipient: boolean
   readonly deadline: number
-  readonly enablePartialApproval: boolean
+  readonly enablePartialApprovalBySettings: boolean
 }
 
 export const defaultSwapSettings: SwapSettingsState = {
   showRecipient: false,
   deadline: DEFAULT_DEADLINE_FROM_NOW,
-  enablePartialApproval: false,
+  enablePartialApprovalBySettings: false,
 }
 
 export const { atom: swapSettingsAtom, updateAtom: updateSwapSettingsAtom } = atomWithPartialUpdate(
