@@ -9,7 +9,7 @@ import { NOTIFICATION_SETTINGS_POPOVER_DISMISSAL_PERIOD_MS } from '../constants'
 interface NotificationAlertDismissalState {
   dismissedAt: number | null
 }
-const STORAGE_KEY = 'notification-alert-tooltip-dismissed'
+const STORAGE_KEY = 'notificationAlertTooltipDismissed:v0'
 
 const DEFAULT_STATE: NotificationAlertDismissalState = {
   dismissedAt: null,
