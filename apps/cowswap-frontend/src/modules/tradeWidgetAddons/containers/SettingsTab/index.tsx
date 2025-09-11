@@ -29,7 +29,7 @@ interface SettingsTabProps {
   recipientToggleState: StatefulValue<boolean>
   hooksEnabledState?: StatefulValue<boolean>
   deadlineState: StatefulValue<number>
-  enablePartialApprovalState: StatefulValue<boolean> | [null, null]
+  enablePartialApprovalState?: StatefulValue<boolean> | [null, null]
 }
 
 // TODO: Break down this large function into smaller functions
@@ -64,7 +64,7 @@ export function SettingsTab({
     [hooksEnabled, toggleHooksEnabledAux],
   )
 
-  const [enablePartialApproval, toggleEnablePartialApprovalAux] = enablePartialApprovalState
+  const [enablePartialApproval, toggleEnablePartialApprovalAux] = enablePartialApprovalState || [null, null]
   const toggleEnablePartialApproval = useCallback(
     (value?: boolean) => {
       if (enablePartialApproval === null || toggleEnablePartialApprovalAux === null) return
