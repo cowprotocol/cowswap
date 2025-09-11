@@ -8,7 +8,7 @@ interface NotificationSettingsPopoverDismissalState {
   dismissedAt: number | null
 }
 
-const STORAGE_KEY = 'notification-settings-popover-dismissed'
+const STORAGE_KEY = 'notificationSettingsPopoverDismissed:v0'
 
 const DEFAULT_STATE: NotificationSettingsPopoverDismissalState = {
   dismissedAt: null,

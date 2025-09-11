@@ -3,27 +3,12 @@ import { useCallback, useEffect, useState } from 'react'
 import ms from 'ms.macro'
 
 import { getTelegramAuth } from '../services/getTelegramAuth'
+import { TG_DEV_BYPASS, hasDevAuthState, setDevAuthState, clearDevAuthState, MOCK_TELEGRAM_DATA, type TelegramData } from '../utils/devTg'
 
 const TG_SESSION_CHECK_INTERVAL = ms`3s`
 
 const ENV_TG_BOT_ID = process.env.REACT_APP_TG_BOT_ID
 const TG_BOT_ID = ENV_TG_BOT_ID ? parseInt(ENV_TG_BOT_ID) : 7076584722 // cowNotificationsBot
-const TG_DEV_BYPASS = process.env.NODE_ENV === 'development' && process.env.REACT_APP_TG_DEV_BYPASS === 'true'
-
-// In dev mode, store auth state in sessionStorage
-const DEV_AUTH_KEY = 'tg_dev_auth_state'
-const clearDevAuthState = (): void => {
-  if (!TG_DEV_BYPASS) return
-  sessionStorage.removeItem(DEV_AUTH_KEY)
-}
-const hasDevAuthState = (): boolean => {
-  if (!TG_DEV_BYPASS) return false
-  return sessionStorage.getItem(DEV_AUTH_KEY) === 'true'
-}
-const setDevAuthState = (): void => {
-  if (!TG_DEV_BYPASS) return
-  sessionStorage.setItem(DEV_AUTH_KEY, 'true')
-}
 
 const AUTH_OPTIONS = {
   bot_id: TG_BOT_ID,
@@ -31,23 +16,7 @@ const AUTH_OPTIONS = {
   request_access: 'write',
 }
 
-const MOCK_TELEGRAM_DATA: TelegramData = {
-  auth_date: Math.floor(Date.now() / 1000),
-  first_name: 'Dev',
-  hash: 'mock-hash-dev-mode',
-  id: 12345,
-  photo_url: '',
-  username: 'devuser',
-}
-
-interface TelegramData {
-  auth_date: number
-  first_name: string
-  hash: string
-  id: number
-  photo_url: string
-  username: string
-}
+// (TelegramData type re-exported from utils/devTg)
 
 export interface TgAuthorization {
   tgData: TelegramData | null

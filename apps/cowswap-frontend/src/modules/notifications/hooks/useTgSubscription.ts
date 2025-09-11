@@ -7,47 +7,8 @@ import { useAddSnackbar } from '@cowprotocol/snackbars'
 import { TgAuthorization } from './useTgAuthorization'
 
 import { tgSubscriptionAtom } from '../atoms/tgSubscriptionAtom'
+import { TG_DEV_BYPASS, type TelegramData, simulateDevModeApiCall, setDevSubscriptionState } from '../utils/devTg'
 
-const TG_DEV_BYPASS = process.env.NODE_ENV === 'development' && process.env.REACT_APP_TG_DEV_BYPASS === 'true'
-
-// In dev mode, store subscription state in sessionStorage to persist across calls
-const DEV_SUBSCRIPTION_KEY = 'tg_dev_subscription_state'
-const getDevSubscriptionState = (): boolean => {
-  if (!TG_DEV_BYPASS) return false
-  return sessionStorage.getItem(DEV_SUBSCRIPTION_KEY) === 'true'
-}
-const setDevSubscriptionState = (subscribed: boolean): void => {
-  if (!TG_DEV_BYPASS) return
-  sessionStorage.setItem(DEV_SUBSCRIPTION_KEY, String(subscribed))
-}
-
-const simulateDevModeApiCall = (
-  method: string,
-  setIsCmsCallInProgress: (loading: boolean) => void,
-): Promise<{ data: boolean }> => {
-  setIsCmsCallInProgress(true)
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      setIsCmsCallInProgress(false)
-
-      if (method.includes('check')) {
-        // Return current subscription state
-        const currentState = getDevSubscriptionState()
-        resolve({ data: currentState })
-      } else if (method.includes('add')) {
-        // Set subscription to true
-        setDevSubscriptionState(true)
-        resolve({ data: true })
-      } else if (method.includes('remove')) {
-        // Set subscription to false
-        setDevSubscriptionState(false)
-        resolve({ data: true }) // API call succeeds
-      } else {
-        resolve({ data: true })
-      }
-    }, 300) // Small delay for realism
-  })
-}
 
 const createSubscriptionSuccessContent = (username: string): ReactNode => {
   return createElement('div', {}, [
@@ -83,7 +44,7 @@ export function useTgSubscription(account: string | undefined, authorization: Tg
   const callSubscriptionApi: SubscriptionApiCaller = useCallback(
     (method: string, data: TelegramData) => {
       if (!account) return
-      if (TG_DEV_BYPASS) return simulateDevModeApiCall(method, setIsCmsCallInProgress)
+      if (TG_DEV_BYPASS) return simulateDevModeApiCall(method, setIsCmsCallInProgress, account)
       setIsCmsCallInProgress(true)
       return getCmsClient()
         .POST(method, { body: { account, data } })
@@ -114,10 +75,10 @@ export function useTgSubscription(account: string | undefined, authorization: Tg
         if (!result) return
         setTgSubscribed(false)
         clearAuth()
-        if (TG_DEV_BYPASS) setDevSubscriptionState(false)
+        if (TG_DEV_BYPASS && account) setDevSubscriptionState(account, false)
       })
     },
-    [callSubscriptionApi, clearAuth, setTgSubscribed],
+    [callSubscriptionApi, clearAuth, setTgSubscribed, account],
   )
 
   const subscribeWithData = useCallback(
@@ -146,6 +107,16 @@ export function useTgSubscription(account: string | undefined, authorization: Tg
       setTgSubscribed(result)
     })
   }, [tgData, callSubscriptionApi, setTgSubscribed])
+
+  /**
+   * Re-check subscription when account changes (if authorized already)
+   */
+  useEffect(() => {
+    if (!account || !tgData || skipNextCheckRef.current) return
+    callSubscriptionApi('/check-tg-subscription', tgData)?.then(({ data: result }: { data: boolean }) => {
+      setTgSubscribed(result)
+    })
+  }, [account, tgData, callSubscriptionApi, setTgSubscribed])
 
   return useMemo(
     () => ({ isTgSubscribed, isCmsCallInProgress, toggleSubscription, subscribeWithData }),
