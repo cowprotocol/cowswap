@@ -9,7 +9,7 @@ interface NotificationAlertDismissalState {
 }
 
 const DISMISSAL_DURATION_MS = 180 * 24 * 60 * 60 * 1000 // 180 days
-const STORAGE_KEY = 'notification-alert-tooltip-dismissed'
+const STORAGE_KEY = 'notificationAlertTooltipDismissed:v0'
 
 const DEFAULT_STATE: NotificationAlertDismissalState = {
   dismissedAt: null,
@@ -42,7 +42,5 @@ export function useNotificationAlertDismissal(): UseNotificationAlertDismissalRe
     setState({ dismissedAt: Date.now() })
   }, [setState])
 
-  const value = useMemo(() => ({ isDismissed, dismiss }), [isDismissed, dismiss])
-
-  return value
+  return useMemo(() => ({ isDismissed, dismiss }), [isDismissed, dismiss])
 }
