@@ -250,6 +250,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
         amountToApprove={amountToApprove}
         enablePartialApprove={enablePartialApprove}
         confirmSwap={context.confirmTrade}
+        label={label}
       >
         <TradeFormBlankButton disabled={!enablePartialApprove}>
           <Trans>{label}</Trans>

@@ -1,11 +1,19 @@
 import React, { ReactNode, useCallback } from 'react'
 
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
+import { useTheme } from '@cowprotocol/common-hooks'
+import { ButtonConfirmed, ButtonSize, HoverTooltip, Loader, TokenSymbol } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, MaxUint256 } from '@uniswap/sdk-core'
+
+import { Trans } from '@lingui/macro'
+import { HelpCircle } from 'react-feather'
+
+import * as styledEl from './styled'
 
 import { useApprovalStateForSpender, useApproveCurrency } from '../../hooks'
 import { LegacyApproveButton } from '../../pure/LegacyApproveButton'
 import { useIsPartialApproveSelectedByUser } from '../../state'
+import { ApprovalState } from '../../types'
 
 const MaxApprovalAmount = BigInt(MaxUint256.toString())
 
@@ -15,14 +23,16 @@ export interface TradeApproveButtonProps {
   isDisabled?: boolean
   enablePartialApprove?: boolean
   confirmSwap?: () => void
+  label: string
 }
 
 export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
-  const { amountToApprove, children, enablePartialApprove, confirmSwap } = props
+  const { amountToApprove, children, enablePartialApprove, confirmSwap, label } = props
   const isPartialApproveEnabledByUser = useIsPartialApproveSelectedByUser()
   const handleApprove = useApproveCurrency(amountToApprove)
   const spender = useTradeSpenderAddress()
   const { approvalState } = useApprovalStateForSpender(amountToApprove, spender)
+  const theme = useTheme()
 
   const approveAndSwap = useCallback(async (): Promise<void> => {
     // todo maybe remove this check
@@ -44,5 +54,32 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
     )
   }
 
-  return <div onClick={approveAndSwap}>{children}</div>
+  const isPending = approvalState === ApprovalState.PENDING
+
+  return (
+    <ButtonConfirmed
+      disabled={isPending}
+      buttonSize={ButtonSize.BIG}
+      onClick={approveAndSwap}
+      width="100%"
+      marginBottom={10}
+      altDisabledStyle={isPending}
+    >
+      <styledEl.ButtonLabelWrapper>
+        {label}{' '}
+        <HoverTooltip
+          wrapInContainer
+          content={
+            <Trans>
+              You must give the CoW Protocol smart contracts permission to use your{' '}
+              <TokenSymbol token={amountToApprove.currency} />. If you approve the default amount, you will only have to
+              do this once per token.
+            </Trans>
+          }
+        >
+          {isPending ? <Loader stroke={theme.text1} /> : <HelpCircle size="24" />}
+        </HoverTooltip>
+      </styledEl.ButtonLabelWrapper>
+    </ButtonConfirmed>
+  )
 }
