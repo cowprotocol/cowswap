@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.118.7](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.118.6...cowswap-v1.118.7) (2025-09-11)
+
+
+### Bug Fixes
+
+* **twap:** fix navigation for big count of orders ([#6237](https://github.com/cowprotocol/cowswap/issues/6237)) ([dcf51a7](https://github.com/cowprotocol/cowswap/commit/dcf51a7dbc290ea9540d816e564d101daaed6dad))
+
 ## [1.118.6](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.118.5...cowswap-v1.118.6) (2025-09-11)
 
 
