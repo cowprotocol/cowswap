@@ -119,7 +119,6 @@ function PendingOrderUpdater({ chainId, orderUid, openSince }: PendingOrderUpdat
         action: 'bridging_succeeded',
         label: analyticsSummary,
         orderId: orderUid,
-        chainId: sourceChainId,
         from_chain_id: sourceChainId,
         to_chain_id: destinationChainId,
         token_in: crossChainOrder.order.sellToken,
@@ -140,7 +139,6 @@ function PendingOrderUpdater({ chainId, orderUid, openSince }: PendingOrderUpdat
         action: 'bridging_failed',
         label: analyticsSummary,
         orderId: orderUid,
-        chainId: sourceChainId,
       } as GtmEvent<CowSwapAnalyticsCategory.Bridge>)
     }
   }, [crossChainOrder, updateBridgeOrderQuote, addOrderToSurplusQueue, analytics, openSince])
