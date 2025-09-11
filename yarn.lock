@@ -1883,6 +1883,18 @@
   resolved "https://registry.yarnpkg.com/@cowprotocol/sdk-common/-/sdk-common-0.2.1-beta.0.tgz#620d7f3696cedf4d150dc6c1df09497b1bc9124c"
   integrity sha512-CxdATzImnAQDDixZRhPijf7hYynWSFl9CXMefMWBHEI4opstiV+rdhG4FNu/EJoxtdR0otjuIDGTfPPzcRI/zQ==
 
+"@cowprotocol/sdk-composable@^0.2.1-beta.0":
+  version "0.2.1-beta.0"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/sdk-composable/-/sdk-composable-0.2.1-beta.0.tgz#eb6dbc5b2644c5ee975cf6af1dbe40ea762e06f5"
+  integrity sha512-Lvy/PtqxztNOb1cDYYx99gi3X9ZODLXqHAcymNGq5H11xiAIZ4d3Wjqae/5agsSzT2qQRAgGs7MYABFUA4mGVw==
+  dependencies:
+    "@cowprotocol/sdk-common" "workspace:*"
+    "@cowprotocol/sdk-config" "workspace:*"
+    "@cowprotocol/sdk-contracts-ts" "workspace:*"
+    "@cowprotocol/sdk-order-book" "workspace:*"
+    "@cowprotocol/sdk-order-signing" "workspace:*"
+    "@openzeppelin/merkle-tree" "^1.0.8"
+
 "@cowprotocol/sdk-composable@workspace:*":
   version "0.1.0-monorepo.2"
   resolved "https://registry.yarnpkg.com/@cowprotocol/sdk-composable/-/sdk-composable-0.1.0-monorepo.2.tgz#850902d119c82bb5ec3591348faa854a1152d7e2"
