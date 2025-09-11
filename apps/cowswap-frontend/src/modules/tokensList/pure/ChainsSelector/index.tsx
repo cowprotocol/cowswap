@@ -1,17 +1,24 @@
 import { ReactNode } from 'react'
 
 import { useMediaQuery, useTheme } from '@cowprotocol/common-hooks'
+import { isDevelopmentEnv } from '@cowprotocol/common-utils'
 import { ChainInfo } from '@cowprotocol/cow-sdk'
 import { HoverTooltip, Media } from '@cowprotocol/ui'
 
 import { Menu, MenuButton, MenuItem } from '@reach/menu-button'
 import { Check, ChevronDown, ChevronUp } from 'react-feather'
 
-import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
-import { useSelectTokenWidgetState } from '../../hooks/useSelectTokenWidgetState'
+// Route awareness via trade hook (avoids manual pathname parsing)
 import { Field } from 'legacy/state/types'
 
+import { useTradeTypeInfoFromUrl } from 'modules/trade/hooks/useTradeTypeInfoFromUrl'
+import { TradeType } from 'modules/trade/types/TradeType'
+
+import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
+
 import * as styledEl from './styled'
+
+import { useSelectTokenWidgetState } from '../../hooks/useSelectTokenWidgetState'
 
 // Number of skeleton shimmers to show during loading state
 const LOADING_ITEMS_COUNT = 9
@@ -44,6 +51,16 @@ export function ChainsSelector({
   const isMobile = useMediaQuery(Media.upToSmall(false))
 
   const theme = useTheme()
+  const tradeTypeInfo = useTradeTypeInfoFromUrl()
+  const mode =
+    tradeTypeInfo?.tradeType === TradeType.SWAP
+      ? 'swap'
+      : tradeTypeInfo?.tradeType === TradeType.LIMIT_ORDER
+        ? 'limit'
+        : tradeTypeInfo?.tradeType === TradeType.ADVANCED_ORDERS
+          ? 'twap'
+          : 'unknown'
+  const isSwapMode = mode === 'swap'
   const { field } = useSelectTokenWidgetState()
   const contextLabel = field === Field.INPUT ? 'sell' : field === Field.OUTPUT ? 'buy' : 'unknown'
 
@@ -66,18 +83,32 @@ export function ChainsSelector({
           content={chain.label}
           placement="bottom"
         >
-          <styledEl.ChainItem
-            active$={defaultChainId === chain.id}
-            onClick={() => onSelectChain(chain)}
-            iconOnly
-            data-click-event={toCowSwapGtmEvent({
+          {(() => {
+            const clickEvent = toCowSwapGtmEvent({
               category: CowSwapAnalyticsCategory.TRADE,
               action: 'network_selected',
-              label: `Chain: ${chain.id}, Previous: ${defaultChainId || 'none'}, Context: ${contextLabel}, CrossChain: ${chains.length > 1}`,
-            })}
-          >
-            <img src={theme.darkMode ? chain.logo.dark : chain.logo.light} alt={chain.label} loading="lazy" />
-          </styledEl.ChainItem>
+              label: `Chain: ${chain.id}, Previous: ${defaultChainId || 'none'}, Context: ${contextLabel}, Mode: ${mode}, CrossChain: ${isSwapMode && chains.length > 1}`,
+            })
+            return (
+              <styledEl.ChainItem
+                active$={defaultChainId === chain.id}
+                onClick={() => {
+                  if (isSwapMode && isDevelopmentEnv()) {
+                    try {
+                      console.debug('[GTM click]', JSON.parse(clickEvent))
+                    } catch {
+                      console.debug('[GTM click]', clickEvent)
+                    }
+                  }
+                  onSelectChain(chain)
+                }}
+                iconOnly
+                data-click-event={isSwapMode ? clickEvent : undefined}
+              >
+                <img src={theme.darkMode ? chain.logo.dark : chain.logo.light} alt={chain.label} loading="lazy" />
+              </styledEl.ChainItem>
+            )
+          })()}
         </HoverTooltip>
       ))}
       {shouldDisplayMore && (
@@ -99,26 +130,44 @@ export function ChainsSelector({
                 {isOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
               </MenuButton>
               <styledEl.MenuListStyled portal={false}>
-                {chains.map((chain) => (
-                  <MenuItem
-                    key={chain.id}
-                    as={styledEl.ChainItem}
-                    onSelect={() => onSelectChain(chain)}
-                    active$={defaultChainId === chain.id}
-                    iconSize={21}
-                    tabIndex={0}
-                    borderless
-                    data-click-event={toCowSwapGtmEvent({
+                {chains.map((chain) =>
+                  (() => {
+                    const clickEvent = toCowSwapGtmEvent({
                       category: CowSwapAnalyticsCategory.TRADE,
                       action: 'network_selected',
-                      label: `Chain: ${chain.id}, Previous: ${defaultChainId || 'none'}, Context: ${contextLabel}, CrossChain: ${chains.length > 1}`,
-                    })}
-                  >
-                    <img src={theme.darkMode ? chain.logo.dark : chain.logo.light} alt={chain.label} loading="lazy" />
-                    <span>{chain.label}</span>
-                    {chain.id === defaultChainId && <Check size={16} />}
-                  </MenuItem>
-                ))}
+                      label: `Chain: ${chain.id}, Previous: ${defaultChainId || 'none'}, Context: ${contextLabel}, Mode: ${mode}, CrossChain: ${isSwapMode && chains.length > 1}`,
+                    })
+                    return (
+                      <MenuItem
+                        key={chain.id}
+                        as={styledEl.ChainItem}
+                        onSelect={() => {
+                          if (isSwapMode && isDevelopmentEnv()) {
+                            try {
+                              console.debug('[GTM click]', JSON.parse(clickEvent))
+                            } catch {
+                              console.debug('[GTM click]', clickEvent)
+                            }
+                          }
+                          onSelectChain(chain)
+                        }}
+                        active$={defaultChainId === chain.id}
+                        iconSize={21}
+                        tabIndex={0}
+                        borderless
+                        data-click-event={isSwapMode ? clickEvent : undefined}
+                      >
+                        <img
+                          src={theme.darkMode ? chain.logo.dark : chain.logo.light}
+                          alt={chain.label}
+                          loading="lazy"
+                        />
+                        <span>{chain.label}</span>
+                        {chain.id === defaultChainId && <Check size={16} />}
+                      </MenuItem>
+                    )
+                  })(),
+                )}
               </styledEl.MenuListStyled>
             </>
           )}
