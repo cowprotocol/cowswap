@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import React, { ReactNode, useCallback } from 'react'
 
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { Currency, CurrencyAmount, MaxUint256 } from '@uniswap/sdk-core'
@@ -14,14 +14,23 @@ export interface TradeApproveButtonProps {
   children?: ReactNode
   isDisabled?: boolean
   enablePartialApprove?: boolean
+  confirmSwap?: () => void
 }
 
 export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
-  const { amountToApprove, children, enablePartialApprove } = props
+  const { amountToApprove, children, enablePartialApprove, confirmSwap } = props
   const isPartialApproveEnabledByUser = useIsPartialApproveSelectedByUser()
   const handleApprove = useApproveCurrency(amountToApprove)
   const spender = useTradeSpenderAddress()
   const { approvalState } = useApprovalStateForSpender(amountToApprove, spender)
+
+  const approveAndSwap = useCallback(async (): Promise<void> => {
+    // todo maybe remove this check
+    const toApprove = isPartialApproveEnabledByUser ? BigInt(amountToApprove.quotient.toString()) : MaxApprovalAmount
+    await handleApprove(toApprove)
+    confirmSwap?.()
+  }, [handleApprove, confirmSwap, amountToApprove, isPartialApproveEnabledByUser])
+
   if (!enablePartialApprove) {
     return (
       <>
@@ -35,6 +44,5 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
     )
   }
 
-  const toApprove = isPartialApproveEnabledByUser ? BigInt(amountToApprove.quotient.toString()) : MaxApprovalAmount
-  return <div onClick={() => handleApprove(toApprove)}>{children}</div>
+  return <div onClick={approveAndSwap}>{children}</div>
 }
