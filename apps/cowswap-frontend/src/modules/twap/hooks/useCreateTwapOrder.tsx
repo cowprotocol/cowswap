@@ -24,7 +24,7 @@ import { useExtensibleFallbackContext } from './useExtensibleFallbackContext'
 import { useTwapOrder } from './useTwapOrder'
 import { useTwapOrderCreationContext } from './useTwapOrderCreationContext'
 
-import { DEFAULT_TWAP_EXECUTION_INFO } from '../const'
+import { DEFAULT_TWAP_EXECUTION } from '../const'
 import { createTwapOrderTxs } from '../services/createTwapOrderTxs'
 import { extensibleFallbackSetupTxs } from '../services/extensibleFallbackSetupTxs'
 import { addTwapOrderToListAtom } from '../state/twapOrdersListAtom'
@@ -161,7 +161,7 @@ export function useCreateTwapOrder() {
           safeAddress: account,
           submissionDate: new Date().toISOString(),
           id: orderId,
-          executionInfo: { confirmedPartsCount: 0, info: DEFAULT_TWAP_EXECUTION_INFO },
+          executionInfo: { ...DEFAULT_TWAP_EXECUTION },
         }
 
         addTwapOrderToList(orderItem)

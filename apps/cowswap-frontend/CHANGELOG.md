@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.118.6](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.118.5...cowswap-v1.118.6) (2025-09-11)
+
+
+### Bug Fixes
+
+* **twap:** adjust safe tx history depth ([#6233](https://github.com/cowprotocol/cowswap/issues/6233)) ([3e626e1](https://github.com/cowprotocol/cowswap/commit/3e626e1b21df0102364f6670a092dbeda6e383d7))
+* **twap:** load orders history faster ([#6226](https://github.com/cowprotocol/cowswap/issues/6226)) ([bfba891](https://github.com/cowprotocol/cowswap/commit/bfba89170c63333e3182adb27624cac33106af1d))
+
 ## [1.118.5](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.118.4...cowswap-v1.118.5) (2025-09-09)
 
 

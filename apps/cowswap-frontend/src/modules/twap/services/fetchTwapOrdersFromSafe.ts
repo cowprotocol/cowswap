@@ -1,6 +1,7 @@
 import { ComposableCoW } from '@cowprotocol/abis'
 import { delay, isTruthy } from '@cowprotocol/common-utils'
-import type SafeApiKit from '@safe-global/api-kit'
+import { SAFE_TRANSACTION_SERVICE_URL } from '@cowprotocol/core'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { AllTransactionsListResponse } from '@safe-global/api-kit'
 import type { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
 
@@ -12,40 +13,49 @@ import { ConditionalOrderParams, TwapOrdersSafeData } from '../types'
 
 // ComposableCoW.createWithContext method
 const CREATE_COMPOSABLE_ORDER_SELECTOR = '0d0d9800'
-// Each page contains 20 transactions by default, so we need to fetch 200 pages to get 4000 transactions
-const SAFE_TX_HISTORY_DEPTH = 200
+// Each page contains 100 transactions by default, so we need to fetch 40 pages to get 4000 transactions
+const SAFE_TX_HISTORY_DEPTH = 40
 // Just in case, make a short delay between requests
 const SAFE_TX_REQUEST_DELAY = ms`100ms`
 
+const HISTORY_TX_COUNT_LIMIT = 100
+
+type TwapDataArray = TwapOrdersSafeData[]
+
 export async function fetchTwapOrdersFromSafe(
+  chainId: SupportedChainId,
   safeAddress: string,
-  safeApiKit: SafeApiKit,
   composableCowContract: ComposableCoW,
+  setData: (state: TwapDataArray) => void,
   /**
    * Example of the second chunk url:
    * https://safe-transaction-goerli.safe.global/api/v1/safes/0xe9B79591E270B3bCd0CC7e84f7B7De74BA3D0E2F/all-transactions/?executed=false&limit=20&offset=40&queued=true&trusted=true
    */
   nextUrl?: string,
-  accumulator: TwapOrdersSafeData[][] = [],
-): Promise<TwapOrdersSafeData[]> {
-  const response = await fetchSafeTransactionsChunk(safeAddress, safeApiKit, nextUrl)
+  accumulator: TwapDataArray[] = [],
+): Promise<TwapDataArray> {
+  const response = await fetchSafeTransactionsChunk(chainId, safeAddress, nextUrl)
 
   const results = response?.results || []
-  const parsedResults = parseSafeTranasctionsResult(safeAddress, composableCowContract, results)
+  const parsedResults = parseSafeTranasctionsResult(composableCowContract, results)
 
   accumulator.push(parsedResults)
 
+  const flattenState = accumulator.flat()
+
+  setData(flattenState)
+
   // Exit from the recursion if we have enough transactions or there is no next page
   if (accumulator.length >= SAFE_TX_HISTORY_DEPTH || !response?.next) {
-    return accumulator.flat()
+    return flattenState
   }
 
-  return fetchTwapOrdersFromSafe(safeAddress, safeApiKit, composableCowContract, response.next, accumulator)
+  return fetchTwapOrdersFromSafe(chainId, safeAddress, composableCowContract, setData, response.next, accumulator)
 }
 
 async function fetchSafeTransactionsChunk(
+  chainId: SupportedChainId,
   safeAddress: string,
-  safeApiKit: SafeApiKit,
   nextUrl?: string,
 ): Promise<AllTransactionsListResponse> {
   if (nextUrl) {
@@ -62,11 +72,20 @@ async function fetchSafeTransactionsChunk(
     }
   }
 
-  return safeApiKit.getAllTransactions(safeAddress)
+  /**
+   * SafeApiKit set limit=20 by default and there is no way to change it using the SDK
+   *
+   */
+  const url = getSafeHistoryRequestUrl(chainId, safeAddress, 0)
+
+  return fetch(url).then((res) => res.json())
+}
+
+function getSafeHistoryRequestUrl(chainId: SupportedChainId, safeAddress: string, offset: number): string {
+  return `${SAFE_TRANSACTION_SERVICE_URL[chainId]}/api/v1/safes/${safeAddress}/all-transactions/?executed=false&limit=${HISTORY_TX_COUNT_LIMIT}&offset=${offset}&queued=true&trusted=true`
 }
 
 function parseSafeTranasctionsResult(
-  safeAddress: string,
   composableCowContract: ComposableCoW,
   results: AllTransactionsListResponse['results'],
 ): TwapOrdersSafeData[] {
@@ -80,7 +99,7 @@ function parseSafeTranasctionsResult(
 
       const callData = '0x' + result.data.substring(selectorIndex)
 
-      const conditionalOrderParams = parseConditionalOrderParams(safeAddress, composableCowContract, callData)
+      const conditionalOrderParams = parseConditionalOrderParams(composableCowContract, callData)
 
       if (!conditionalOrderParams) return null
 
@@ -101,7 +120,6 @@ function isSafeMultisigTransactionListResponse(response: any): response is SafeM
 }
 
 function parseConditionalOrderParams(
-  safeAddress: string,
   composableCowContract: ComposableCoW,
   callData: string,
 ): ConditionalOrderParams | null {
