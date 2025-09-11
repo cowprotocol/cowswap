@@ -164,7 +164,11 @@ export function NotificationSidebar({
           <SettingsHeader onBack={toggleSettingsOpen} />
         </NotificationSettings>
       ) : (
-        <NotificationsList key={listKey} hasSubscription={hasSubscription} onToggleSettings={toggleSettingsOpen}>
+        <NotificationsList
+          key={listKey}
+          hasSubscription={hasSubscription}
+          onToggleSettings={areTelegramNotificationsEnabled ? toggleSettingsOpen : undefined}
+        >
           <NotificationsHeader
             isMobile={isMobile}
             areTelegramNotificationsEnabled={areTelegramNotificationsEnabled}
