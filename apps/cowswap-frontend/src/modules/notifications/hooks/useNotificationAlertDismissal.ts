@@ -42,7 +42,5 @@ export function useNotificationAlertDismissal(): UseNotificationAlertDismissalRe
     setState({ dismissedAt: Date.now() })
   }, [setState])
 
-  const value = useMemo(() => ({ isDismissed, dismiss }), [isDismissed, dismiss])
-
-  return value
+  return useMemo(() => ({ isDismissed, dismiss }), [isDismissed, dismiss])
 }
