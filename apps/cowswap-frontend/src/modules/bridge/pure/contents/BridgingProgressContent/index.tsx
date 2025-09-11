@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
 import { isFractionFalsy } from '@cowprotocol/common-utils'
-import { BridgeStatusResult } from '@cowprotocol/cow-sdk'
+import { BridgeStatusResult } from '@cowprotocol/sdk-bridging'
 
 import { FailedBridgingContent } from './FailedBridgingContent'
 import { PendingBridgingContent } from './PendingBridgingContent'

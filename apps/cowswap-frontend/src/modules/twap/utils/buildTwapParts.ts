@@ -1,12 +1,10 @@
 import { isTruthy } from '@cowprotocol/common-utils'
-import { Order } from '@cowprotocol/contracts'
-import { OrderParameters, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { ContractsOrder, OrderParameters, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { computeOrderUid } from 'utils/orderUtils/computeOrderUid'
 
 import { TwapPartOrderItem } from '../state/twapPartOrdersAtom'
 import { TwapOrderItem } from '../types'
-
 
 export async function generateTwapOrderParts(
   twapOrder: TwapOrderItem,
@@ -19,7 +17,7 @@ export async function generateTwapOrderParts(
     .map((_, index) => createPartOrderFromParent(twapOrder, index))
     .filter(isTruthy)
 
-  const ids = await Promise.all(parts.map((part) => computeOrderUid(chainId, safeAddress, part as Order)))
+  const ids = await Promise.all(parts.map((part) => computeOrderUid(chainId, safeAddress, part as ContractsOrder)))
 
   return {
     [twapOrderId]: ids.map<TwapPartOrderItem>((uid, index) => {

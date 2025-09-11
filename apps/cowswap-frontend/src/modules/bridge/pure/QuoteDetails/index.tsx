@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { BridgeProviderInfo } from '@cowprotocol/cow-sdk'
+import { BridgeProviderInfo } from '@cowprotocol/sdk-bridging'
 
 import { COW_PROTOCOL_NAME } from '../../constants'
 import { DividerHorizontal } from '../../styles'
@@ -37,7 +37,12 @@ interface BridgeStepProps {
   bridgeContext: QuoteBridgeContext
 }
 
-function SwapStep({ stepsCollapsible, bridgeProvider, swapContext, hideRecommendedSlippage }: SwapStepProps): ReactNode {
+function SwapStep({
+  stepsCollapsible,
+  bridgeProvider,
+  swapContext,
+  hideRecommendedSlippage,
+}: SwapStepProps): ReactNode {
   const status = SwapAndBridgeStatus.DEFAULT
 
   return (
@@ -56,7 +61,7 @@ function SwapStep({ stepsCollapsible, bridgeProvider, swapContext, hideRecommend
       sellAmount={swapContext.sellAmount}
       buyAmount={swapContext.buyAmount}
     >
-      <QuoteSwapContent context={swapContext} hideRecommendedSlippage={hideRecommendedSlippage}/>
+      <QuoteSwapContent context={swapContext} hideRecommendedSlippage={hideRecommendedSlippage} />
     </BridgeDetailsContainer>
   )
 }
@@ -92,7 +97,7 @@ export function QuoteDetails({
   swapContext,
   bridgeContext,
   collapsedDefault,
-  hideRecommendedSlippage
+  hideRecommendedSlippage,
 }: QuoteDetailsProps): ReactNode {
   return (
     <CollapsibleBridgeRoute
@@ -101,10 +106,12 @@ export function QuoteDetails({
       providerInfo={bridgeProvider}
       collapsedDefault={collapsedDefault}
     >
-      <SwapStep hideRecommendedSlippage={hideRecommendedSlippage}
-                stepsCollapsible={stepsCollapsible}
-                bridgeProvider={bridgeProvider}
-                swapContext={swapContext} />
+      <SwapStep
+        hideRecommendedSlippage={hideRecommendedSlippage}
+        stepsCollapsible={stepsCollapsible}
+        bridgeProvider={bridgeProvider}
+        swapContext={swapContext}
+      />
       <DividerHorizontal margin="8px 0 4px" />
       <BridgeStep stepsCollapsible={stepsCollapsible} bridgeProvider={bridgeProvider} bridgeContext={bridgeContext} />
     </CollapsibleBridgeRoute>

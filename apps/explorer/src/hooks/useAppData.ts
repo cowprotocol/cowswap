@@ -1,5 +1,5 @@
-import { AnyAppDataDocVersion } from '@cowprotocol/app-data'
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
+import { AnyAppDataDocVersion } from '@cowprotocol/cow-sdk'
 
 import { DEFAULT_IPFS_READ_URI, IPFS_INVALID_APP_IDS } from 'const'
 import { metadataApiSDK, orderBookSDK } from 'cowSdk'

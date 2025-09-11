@@ -1,6 +1,6 @@
 import { SWR_NO_REFRESH_OPTIONS, TokenWithLogo } from '@cowprotocol/common-const'
 import { useIsBridgingEnabled } from '@cowprotocol/common-hooks'
-import { BuyTokensParams, GetProviderBuyTokens } from '@cowprotocol/cow-sdk'
+import { BuyTokensParams, GetProviderBuyTokens } from '@cowprotocol/sdk-bridging'
 
 import useSWR, { SWRResponse } from 'swr'
 

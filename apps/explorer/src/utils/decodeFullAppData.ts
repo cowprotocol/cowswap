@@ -1,4 +1,4 @@
-import { AnyAppDataDocVersion } from '@cowprotocol/app-data'
+import { AnyAppDataDocVersion } from '@cowprotocol/cow-sdk'
 
 /**
  * Decode appData from a string to a AnyAppDataDocVersion instance
