@@ -1,3 +1,7 @@
+import { migrateNetworkMismatchUserAddedTokens } from './state/migrations/migrateNetworkMismatchUserAddedTokens'
+
+migrateNetworkMismatchUserAddedTokens()
+
 // Updaters
 export { TokensListsUpdater } from './updaters/TokensListsUpdater'
 export { TokensListsTagsUpdater } from './updaters/TokensListsTagsUpdater'
