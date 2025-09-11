@@ -16,7 +16,8 @@ export function BridgingEnabledUpdater(): null {
   const isSwapRoute = tradeTypeInfo?.route === Routes.SWAP
 
   useEffect(() => {
-    setIsBridgingEnabled(isBridgingEnabled && !isSmartContractWallet && isSwapRoute)
+    // Only enable bridging once we definitively know it's an EOA (strict false)
+    setIsBridgingEnabled(isBridgingEnabled && isSmartContractWallet === false && isSwapRoute)
   }, [setIsBridgingEnabled, isBridgingEnabled, isSmartContractWallet, isSwapRoute])
 
   return null
