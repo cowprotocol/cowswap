@@ -2,7 +2,6 @@ import { useCallback } from 'react'
 
 import { LpToken, TokenWithLogo } from '@cowprotocol/common-const'
 import { useIsBridgingEnabled } from '@cowprotocol/common-hooks'
-import { useWalletChainId } from '@cowprotocol/wallet-provider'
 import { Currency } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
@@ -21,7 +20,7 @@ export function useOpenTokenSelectWidget(): (
   const updateSelectTokenWidget = useUpdateSelectTokenWidgetState()
   const closeTokenSelectWidget = useCloseTokenSelectWidget()
   const isBridgingEnabled = useIsBridgingEnabled()
-  const walletChainId = useWalletChainId()
+  // No need to derive wallet chain id here; selection closes regardless of network
 
   return useCallback(
     (selectedToken, field, oppositeToken, onSelectToken) => {
@@ -36,14 +35,14 @@ export function useOpenTokenSelectWidget(): (
         open: true,
         selectedTargetChainId,
         onSelectToken: (currency) => {
-          const withoutNetworkSwitch = selectedTargetChainId || walletChainId === currency.chainId || isOutputField
-          if (withoutNetworkSwitch) {
-            closeTokenSelectWidget()
-          }
+          // Close the token selector regardless of network switching.
+          // UX: When a user picks a token (even from another network),
+          // the selector should close as per issue #6251 expected behavior.
+          closeTokenSelectWidget()
           onSelectToken(currency)
         },
       })
     },
-    [closeTokenSelectWidget, updateSelectTokenWidget, isBridgingEnabled, walletChainId],
+    [closeTokenSelectWidget, updateSelectTokenWidget, isBridgingEnabled],
   )
 }
