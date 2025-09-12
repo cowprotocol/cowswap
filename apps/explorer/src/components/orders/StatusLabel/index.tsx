@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react'
 
-import { BridgeStatus } from '@cowprotocol/cow-sdk'
+import { BridgeStatus } from '@cowprotocol/sdk-bridging'
 
 import BigNumber from 'bignumber.js'
 import { formatPercentage } from 'utils'

@@ -12,9 +12,7 @@ const AUTH_GET_URL = 'https://oauth.telegram.org/auth/get'
 /**
  * Reverse engineered from https://telegram.org/js/widget-frame.js?63
  */
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function getTelegramAuth(botId: number, callback: (data: { user: TelegramData } | false) => void) {
+export function getTelegramAuth(botId: number, callback: (data: { user: TelegramData } | false) => void): void {
   const xhr = new XMLHttpRequest()
 
   xhr.open('POST', AUTH_GET_URL + '?bot_id=' + botId)

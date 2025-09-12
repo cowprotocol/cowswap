@@ -1,7 +1,7 @@
 import { DEFAULT_APP_CODE } from '@cowprotocol/common-const'
 import { useDebounce } from '@cowprotocol/common-hooks'
 import { getCurrencyAddress, isAddress } from '@cowprotocol/common-utils'
-import { QuoteBridgeRequest } from '@cowprotocol/cow-sdk'
+import { QuoteBridgeRequest } from '@cowprotocol/sdk-bridging'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { Currency } from '@uniswap/sdk-core'
@@ -71,7 +71,7 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
      * Whe real one is not connected
      * See `SocketVerifier.callStatic.validateRotueId` in BridgingSDK
      */
-    const signer = account ? provider.provider || provider.getSigner() : getBridgeQuoteSigner(inputCurrency.chainId)
+    const signer = account ? provider.getSigner() : getBridgeQuoteSigner(inputCurrency.chainId)
     const owner = (account || BRIDGE_QUOTE_ACCOUNT) as `0x${string}`
 
     const quoteParams: QuoteBridgeRequest = {

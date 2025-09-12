@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 
-import type { CrossChainOrder } from '@cowprotocol/cow-sdk'
+import type { CrossChainOrder } from '@cowprotocol/sdk-bridging'
 import type { TokenInfo } from '@uniswap/token-lists'
 
 import BigNumber from 'bignumber.js'

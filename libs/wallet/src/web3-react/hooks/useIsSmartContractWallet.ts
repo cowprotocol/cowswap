@@ -15,11 +15,11 @@ export function useIsSmartContractWallet(): boolean | undefined {
 }
 
 function useHasContractAtAddress(): boolean | undefined {
-  const { provider } = useWeb3React()
+  const { provider, chainId } = useWeb3React()
   const { account } = useWalletInfo()
 
   const { data } = useSWR(
-    account && provider ? ['isSmartContract', account, provider] : null,
+    account && provider ? ['isSmartContract', account, provider, chainId] : null,
     async ([, _account, _provider]) => {
       try {
         const code = await _provider.getCode(_account)
@@ -33,7 +33,8 @@ function useHasContractAtAddress(): boolean | undefined {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (e: any) {
         console.debug(`checkIsSmartContractWallet: failed to check address ${_account}`, e.message)
-        return false
+        // If we cannot determine yet, return undefined to avoid false negatives during init
+        return undefined
       }
     },
     SWR_NO_REFRESH_OPTIONS,

@@ -1,4 +1,5 @@
-import type { EnrichedOrder, OrderKind, CrossChainOrder, SupportedChainId } from '@cowprotocol/cow-sdk'
+import type { EnrichedOrder, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { CrossChainOrder } from '@cowprotocol/sdk-bridging'
 import { BridgeOrderDataSerialized, TokenInfo, UiOrderType } from '@cowprotocol/types'
 
 export type BaseOrderPayload = {
