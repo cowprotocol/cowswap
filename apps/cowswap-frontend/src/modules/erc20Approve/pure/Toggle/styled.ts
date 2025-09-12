@@ -21,11 +21,12 @@ export const OptionWrapper = styled.button<{ isActive?: boolean }>`
   color: ${({ isActive }) => (isActive ? Color.cowfi_darkBlue : transparentize(0.5, Color.cowfi_darkBlue))};
 `
 
-export const PartialApproveWrapper = styled.div`
+export const PartialApproveWrapper = styled.div<{ isActive?: boolean }>`
   display: inline-block;
   border-radius: 140px;
   font-size: 12px;
   padding: 0 6px;
+  cursor: ${({ isActive }) => (isActive ? 'default' : 'pointer')};
   // todo
   background: rgba(13, 94, 217, 0.1);
 `

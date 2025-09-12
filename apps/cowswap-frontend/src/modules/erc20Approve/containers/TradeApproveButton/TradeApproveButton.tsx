@@ -32,6 +32,7 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
   const handleApprove = useApproveCurrency(amountToApprove)
   const spender = useTradeSpenderAddress()
   const { approvalState } = useApprovalStateForSpender(amountToApprove, spender)
+  // todo remove theme
   const theme = useTheme()
 
   const approveAndSwap = useCallback(async (): Promise<void> => {
