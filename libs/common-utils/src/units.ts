@@ -4,7 +4,7 @@
  * - Handles negatives and trims trailing zeros in the fractional part
  * - Returns an empty string for undefined/null inputs
  */
-export function formatUnitsSafe(value: string | number | bigint | undefined, decimals?: number): string {
+export function formatUnitsSafe(value: string | number | bigint | undefined | null, decimals?: number): string {
   if (value === undefined || value === null) return ''
   const raw = typeof value === 'bigint' ? value.toString() : String(value)
   if (!decimals || decimals <= 0) return raw
@@ -21,4 +21,3 @@ export function formatUnitsSafe(value: string | number | bigint | undefined, dec
 
   return negative ? `-${result}` : result
 }
-
