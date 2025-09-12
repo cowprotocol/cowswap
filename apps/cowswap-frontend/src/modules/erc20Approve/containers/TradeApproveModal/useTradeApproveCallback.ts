@@ -3,6 +3,7 @@ import { useCallback } from 'react'
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { errorToString, isRejectRequestProviderError } from '@cowprotocol/common-utils'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Currency } from '@uniswap/sdk-core'
 
@@ -24,6 +25,7 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
   const spender = useTradeSpenderAddress()
   const symbol = currency?.symbol
   const cowAnalytics = useCowAnalytics()
+  const provider = useWalletProvider()
 
   const approveCallback = useApproveCallback(currency, spender)
 
@@ -50,7 +52,7 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
       return approveCallback(amount)
         .then((response) => {
           approvalAnalytics('Sign', symbol)
-          return response
+          return response && provider ? provider.waitForTransaction(response?.hash).then(() => response) : response
         })
         .finally(() => {
           updateTradeApproveState({ currency: undefined, approveInProgress: false })
@@ -70,6 +72,6 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
           return undefined
         })
     },
-    [symbol, approveCallback, updateTradeApproveState, currency, approvalAnalytics],
+    [symbol, approveCallback, updateTradeApproveState, currency, approvalAnalytics, provider],
   )
 }
