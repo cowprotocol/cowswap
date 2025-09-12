@@ -1,7 +1,7 @@
 import { useAtom, useAtomValue } from 'jotai'
 import React, { useMemo } from 'react'
 
-import { getWrappedToken } from '@cowprotocol/common-utils'
+import { getWrappedToken, getCurrencyAddress } from '@cowprotocol/common-utils'
 import { TokenSymbol } from '@cowprotocol/ui'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
@@ -17,6 +17,7 @@ import { limitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
 import { TradeConfirmation, TradeConfirmModal, useTradeConfirmActions } from 'modules/trade'
 
+import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 import { useIsSafeApprovalBundle } from 'common/hooks/useIsSafeApprovalBundle'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
@@ -38,7 +39,7 @@ export interface LimitOrdersConfirmModalProps {
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, max-lines-per-function
 export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
   const { inputCurrencyInfo, outputCurrencyInfo, tradeContext: tradeContextInitial, priceImpact, recipient } = props
 
@@ -81,6 +82,34 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
     'Place limit order'
   )
 
+  // Generate analytics data for limit order placement
+  const placeLimitOrderEvent = useMemo(() => {
+    // Relax gating: allow event even if executionPrice is not yet available
+    if (!inputAmount || !outputAmount || !limitRateState.activeRate) return undefined
+
+    const inputToken = inputAmount.currency
+    const outputToken = outputAmount.currency
+    const side = limitRateState.isInverted ? 'sell' : 'buy'
+
+    return toCowSwapGtmEvent({
+      category: CowSwapAnalyticsCategory.LIMIT_ORDER_SETTINGS,
+      action: 'place_limit_order',
+      label: `TokenIn: ${inputToken.symbol || ''}, TokenOut: ${outputToken.symbol || ''}, Side: ${side}, Price: ${executionPrice ? executionPrice.toSignificant(6) : ''}, Amount: ${inputAmount.toSignificant(6)}, PartialFills: ${settingsState.partialFillsEnabled}`,
+      sell_token: getCurrencyAddress(inputToken),
+      sell_token_symbol: inputToken.symbol || '',
+      sell_token_chain_id: inputToken.chainId,
+      sell_amount: inputAmount.quotient.toString(),
+      sell_amount_human: inputAmount.toSignificant(6),
+      buy_token: getCurrencyAddress(outputToken),
+      buy_token_symbol: outputToken.symbol || '',
+      buy_token_chain_id: outputToken.chainId,
+      buy_amount_expected: outputAmount.quotient.toString(),
+      buy_amount_human: outputAmount.toSignificant(6),
+      side,
+      ...(executionPrice && { execution_price: executionPrice.toSignificant(6) }),
+    })
+  }, [inputAmount, outputAmount, executionPrice, limitRateState, settingsState])
+
   return (
     <TradeConfirmModal title={CONFIRM_TITLE}>
       <TradeConfirmation
@@ -97,6 +126,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
         recipient={recipient}
         appData={tradeContext.postOrderParams.appData || undefined}
         isPriceStatic
+        data-click-event={placeLimitOrderEvent}
       >
         {(restContent) => (
           <>

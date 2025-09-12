@@ -4,6 +4,8 @@
  * Matches the utm-fix.js attribution loading system
  */
 
+import { isDevelopmentEnv } from '@cowprotocol/common-utils'
+
 import { isGtmReady } from './gtm/gtmDetection'
 import { isSafaryReady } from './safary/safaryDetection'
 
@@ -31,7 +33,7 @@ function logAnalyticsStatus(
   analytics: AnalyticsReadiness,
   bothReady: boolean,
 ): void {
-  if (process.env.NODE_ENV === 'development') {
+  if (isDevelopmentEnv()) {
     console.log('[UTM Analytics] Readiness check:', {
       attempt: attempts,
       elapsed: elapsed + 'ms',
@@ -54,7 +56,7 @@ function logAnalyticsStatus(
  */
 function handleBothReady(analyticsInterval: NodeJS.Timeout, resolve: () => void): void {
   clearInterval(analyticsInterval)
-  if (process.env.NODE_ENV === 'development') {
+  if (isDevelopmentEnv()) {
     console.log('[UTM Analytics] Both GTM and Safary detected, giving extra time for attribution...')
   }
   // Give analytics scripts extra time to actually track (matches utm-fix.js timing)
@@ -66,7 +68,7 @@ function handleBothReady(analyticsInterval: NodeJS.Timeout, resolve: () => void)
  */
 function handleGtmOnlyReady(analyticsInterval: NodeJS.Timeout, resolve: () => void): void {
   clearInterval(analyticsInterval)
-  if (process.env.NODE_ENV === 'development') {
+  if (isDevelopmentEnv()) {
     console.log('[UTM Analytics] GTM ready, proceeding (Safary may still be loading)')
   }
   // Shorter delay when only GTM is available
@@ -78,7 +80,7 @@ function handleGtmOnlyReady(analyticsInterval: NodeJS.Timeout, resolve: () => vo
  */
 function handleTimeout(analyticsInterval: NodeJS.Timeout, resolve: () => void, message: string): void {
   clearInterval(analyticsInterval)
-  if (process.env.NODE_ENV === 'development') {
+  if (isDevelopmentEnv()) {
     console.log(`[UTM Analytics] ${message}`)
   }
   resolve()

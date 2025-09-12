@@ -38,8 +38,11 @@ export interface TradeConfirmationProps {
   recipient?: string | null
   buttonText?: ReactNode
   children?: (restContent: ReactElement) => ReactElement
+  'data-click-event'?: string
 }
 
+// TODO: Break down this large function into smaller functions
+// eslint-disable-next-line max-lines-per-function
 export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
   const { pendingTrade, forcePriceConfirmation } = useTradeConfirmState()
   const signingStep = useSigningStep()
@@ -61,6 +64,7 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
     recipient,
     isPriceStatic,
     appData,
+    'data-click-event': dataClickEvent,
   } = props
 
   /**
@@ -130,6 +134,7 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
           isButtonDisabled={isButtonDisabled}
           hasPendingTrade={hasPendingTrade}
           signingStep={signingStep}
+          data-click-event={dataClickEvent}
         />
       </styledEl.ContentWrapper>
     </styledEl.WidgetWrapper>

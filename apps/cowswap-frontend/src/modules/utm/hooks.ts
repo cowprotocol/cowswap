@@ -2,7 +2,7 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useLayoutEffect, useRef } from 'react'
 
 import { waitForAnalytics } from '@cowprotocol/analytics'
-import { getUtmParams, cleanUpUtmParams, UtmParams } from '@cowprotocol/common-utils'
+import { getUtmParams, cleanUpUtmParams, UtmParams, isDevelopmentEnv } from '@cowprotocol/common-utils'
 
 import { useLocation } from 'react-router'
 
@@ -18,7 +18,7 @@ export function useUtm(): UtmParams | undefined {
  * Debug logging for UTM processing
  */
 function logUtmDebug(message: string, data: Record<string, unknown>): void {
-  if (process.env.NODE_ENV === 'development') {
+  if (isDevelopmentEnv()) {
     console.log(`[UTM DEBUG] ${message}`, data)
   }
 }

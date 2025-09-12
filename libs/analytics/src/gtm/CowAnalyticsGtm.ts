@@ -1,4 +1,4 @@
-import { debounce } from '@cowprotocol/common-utils'
+import { debounce, isDevelopmentEnv } from '@cowprotocol/common-utils'
 
 import { AnalyticsContext, CowAnalytics, EventOptions, OutboundLinkParams } from '../CowAnalytics'
 import { GtmEvent, Category } from '../types'
@@ -270,7 +270,7 @@ export class CowAnalyticsGtm implements CowAnalytics {
       const dataLayerEvent = { ...data }
 
       // Debug log in development environment
-      if (process.env.NODE_ENV === 'development') {
+      if (isDevelopmentEnv()) {
         console.debug('[GTM] Pushing to data layer:', dataLayerEvent)
       }
 
