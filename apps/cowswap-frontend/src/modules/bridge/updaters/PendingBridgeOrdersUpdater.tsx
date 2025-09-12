@@ -52,7 +52,7 @@ function PendingOrderUpdater({ chainId, orderUid, openSince }: PendingOrderUpdat
   const addOrderToSurplusQueue = useAddOrderToSurplusQueue()
   const analytics = useCowAnalytics()
   const waitingTooLongNpsTriggeredRef = useRef(false)
-  const reportedOrdersRef = useRef(new Set<string>())
+  const hasReportedRef = useRef(false)
 
   // Check once a minute the time it has been pending and trigger appzi if greater than threshold
   useEffect(() => {
@@ -107,29 +107,27 @@ function PendingOrderUpdater({ chainId, orderUid, openSince }: PendingOrderUpdat
 
       processExecutedBridging(crossChainOrder)
 
-      // Calculate latency if possible (from order creation to completion)
-      const secondsSinceStart = openSince ? timeSinceInSeconds(openSince) : undefined
-      const latencyMs = secondsSinceStart ? secondsSinceStart * 1000 : undefined
+      const latencyMs = openSince ? Date.now() - openSince : undefined
 
-      // Only send analytics event once per order
-      if (!reportedOrdersRef.current.has(orderUid)) {
-        reportedOrdersRef.current.add(orderUid)
+      // Only send analytics event once for this order instance.
+      if (!hasReportedRef.current) {
+        hasReportedRef.current = true
         analytics.sendEvent({
-        category: CowSwapAnalyticsCategory.Bridge,
-        action: 'bridging_succeeded',
-        label: analyticsSummary,
-        orderId: orderUid,
-        from_chain_id: sourceChainId,
-        to_chain_id: destinationChainId,
-        token_in: crossChainOrder.order.sellToken,
-        token_out: crossChainOrder.order.buyToken,
-        amount_in: crossChainOrder.order.sellAmount,
-        amount_out_received: crossChainOrder.bridgingParams.outputAmount,
-        bridge_provider: crossChainOrder.provider.info.name,
-        tx_hash: crossChainOrder.statusResult.fillTxHash || crossChainOrder.statusResult.depositTxHash,
-        latency_ms: latencyMs,
-        page: 'swap',
-      } as GtmEvent<CowSwapAnalyticsCategory.Bridge>)
+          category: CowSwapAnalyticsCategory.Bridge,
+          action: 'bridging_succeeded',
+          label: analyticsSummary,
+          orderId: orderUid,
+          from_chain_id: sourceChainId,
+          to_chain_id: destinationChainId,
+          token_in: crossChainOrder.order.sellToken,
+          token_out: crossChainOrder.order.buyToken,
+          amount_in: crossChainOrder.order.sellAmount,
+          amount_out_received: crossChainOrder.bridgingParams.outputAmount,
+          bridge_provider: crossChainOrder.provider.info.name,
+          tx_hash: crossChainOrder.statusResult.fillTxHash || crossChainOrder.statusResult.depositTxHash,
+          latency_ms: latencyMs,
+          page: 'swap',
+        } as GtmEvent<CowSwapAnalyticsCategory.Bridge>)
       }
     } else if (isOrderFailed) {
       getCowSoundError().play()
