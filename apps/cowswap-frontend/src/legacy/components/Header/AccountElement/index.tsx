@@ -52,8 +52,8 @@ export function AccountElement({ className, standaloneMode }: AccountElementProp
   const { isDismissed, dismiss } = useNotificationAlertDismissal()
   const { areTelegramNotificationsEnabled } = useFeatureFlags()
   const { hasSubscription, isLoading } = useHasNotificationSubscription()
-
-  const shouldShowPopover = !!account && !isDismissed && !hasSubscription && !isLoading
+  const shouldShowPopover =
+    areTelegramNotificationsEnabled && !!account && !isDismissed && !hasSubscription && !isLoading
 
   const handleEnableAlerts = (): void => {
     setShouldOpenSettings(areTelegramNotificationsEnabled)
