@@ -8,15 +8,34 @@ export const ReferenceElement = styled.div`
   display: inline-block;
 `
 
+export const MobileBackdrop = styled.div<Pick<PopoverContainerProps, 'show'> & { maxHeight?: string }>`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: ${(props) => props.maxHeight || '100vh'};
+  background: var(${UI.COLOR_BLACK_OPACITY_70});
+  backdrop-filter: blur(5px);
+  z-index: 90;
+  visibility: ${(props) => (props.show ? 'visible' : 'hidden')};
+  opacity: ${(props) => (props.show ? 1 : 0)};
+  transition:
+    visibility 0.15s linear,
+    opacity 0.15s linear;
+  pointer-events: none;
+`
+
 export const PopoverContainer = styled.div<PopoverContainerProps>`
   visibility: ${(props) => (props.show ? 'visible' : 'hidden')};
   opacity: ${(props) => (props.show ? 1 : 0)};
-  transition: visibility 150ms linear, opacity 150ms linear;
+  transition:
+    visibility 0.15s linear,
+    opacity 0.15s linear;
 
   background: ${({ bgColor }) => bgColor || `var(${UI.COLOR_PAPER_DARKER})`};
   color: ${({ color }) => color || `var(${UI.COLOR_TEXT_PAPER})`};
   box-shadow: var(${UI.BOX_SHADOW});
-  border: 1px solid ${({ bgColor }) => bgColor || `var(${UI.COLOR_PAPER_DARKEST})`};
+  border: 1px solid ${({ borderColor, bgColor }) => borderColor || bgColor || `var(${UI.COLOR_PAPER_DARKEST})`};
   border-radius: 12px;
   padding: 6px 3px;
   z-index: 10;
@@ -78,6 +97,6 @@ export const Arrow = styled.div<Omit<PopoverContainerProps, 'color' | 'show'>>`
 
   ::before {
     background: ${({ bgColor }) => bgColor || `var(${UI.COLOR_PAPER_DARKER})`};
-    border: 1px solid ${({ bgColor }) => bgColor || `var(${UI.COLOR_PAPER_DARKEST})`};
+    border: 1px solid ${({ borderColor, bgColor }) => borderColor || bgColor || `var(${UI.COLOR_PAPER_DARKEST})`};
   }
 `
