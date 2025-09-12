@@ -1,7 +1,9 @@
 import { ReactNode } from 'react'
 
+import { WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenInfo } from '@cowprotocol/types'
+import type { Token as UniToken } from '@uniswap/sdk-core'
 
 import { useOrder } from 'legacy/state/orders/hooks'
 
@@ -34,15 +36,41 @@ export function FulfilledOrderInfo({ chainId, orderUid }: ExecutedSummaryProps):
 
   const { formattedFilledAmount, formattedSwappedAmount } = useGetExecutedBridgeSummary(order) || {}
 
+  // Prefer wrapped native symbol (e.g. WETH) when the address matches the
+  // chain's wrapped native token. Some sources may label it as ETH, which is
+  // misleading on non-Ethereum chains (e.g. Polygon). This ensures consistency
+  // with the rest of the UI and the bridge summary card.
+  const wrappedNative = WRAPPED_NATIVE_CURRENCIES[chainId as SupportedChainId]
+
+  const filledCurrency = formattedFilledAmount?.currency
+  const swappedCurrency = formattedSwappedAmount?.currency
+
+  type TokenLike = TokenInfo | UniToken
+
+  function toTokenInfo(token: TokenLike | undefined): TokenInfo | undefined {
+    if (!token) return undefined
+    const { chainId, address, decimals } = token
+    const symbol = (token as { symbol?: string }).symbol || ''
+    const name = (token as { name?: string }).name || symbol || ''
+
+    return { chainId, address, decimals, symbol, name }
+  }
+
+  const isWrapped = (t: TokenLike | undefined): boolean =>
+    Boolean(t && wrappedNative && t.address?.toLowerCase() === wrappedNative.address.toLowerCase())
+
+  const inputTokenForSummary = toTokenInfo(isWrapped(filledCurrency) ? wrappedNative : filledCurrency)
+  const outputTokenForSummary = toTokenInfo(isWrapped(swappedCurrency) ? wrappedNative : swappedCurrency)
+
   if (!order) return null
 
   return (
     <>
-      {formattedFilledAmount?.currency && formattedSwappedAmount?.currency && (
+      {formattedFilledAmount && formattedSwappedAmount && inputTokenForSummary && outputTokenForSummary && (
         <OrderSummary
           kind={order.kind}
-          inputToken={formattedFilledAmount.currency as TokenInfo}
-          outputToken={formattedSwappedAmount.currency as TokenInfo}
+          inputToken={inputTokenForSummary}
+          outputToken={outputTokenForSummary}
           sellAmount={formattedFilledAmount.quotient.toString()}
           buyAmount={formattedSwappedAmount.quotient.toString()}
           customTemplate={FulfilledSummaryTemplate}
