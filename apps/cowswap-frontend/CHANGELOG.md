@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.118.9](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.118.8...cowswap-v1.118.9) (2025-09-12)
+
+
+### Bug Fixes
+
+* ensure token selector closes on token selection ([#6252](https://github.com/cowprotocol/cowswap/issues/6252)) ([fe35182](https://github.com/cowprotocol/cowswap/commit/fe351822913fa8db44a34cc5c778ba4630da3e95))
+
 ## [1.118.8](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.118.7...cowswap-v1.118.8) (2025-09-12)
 
 
