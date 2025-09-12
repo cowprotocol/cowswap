@@ -115,9 +115,10 @@ export default function Popover(props: PopoverProps): React.JSX.Element {
   const { styles, update, attributes } = usePopper(referenceElement, popperElement, options)
 
   const updateCallback = useCallback(() => {
-    update && update()
+    update?.()
   }, [update])
-  useInterval(updateCallback, show ? 100 : null)
+  const intervalDelay = useMemo(() => (show ? 100 : null), [show])
+  useInterval(updateCallback, intervalDelay)
 
   return (
     <>
@@ -143,7 +144,7 @@ export default function Popover(props: PopoverProps): React.JSX.Element {
         >
           {content}
           <Arrow
-            className={`arrow-${attributes.popper?.['data-popper-placement'] ?? ''}`}
+            className={`arrow-${(attributes.popper?.['data-popper-placement'] as string | undefined)?.split('-')[0] ?? ''}`}
             ref={setArrowElement}
             style={styles.arrow}
             bgColor={bgColor}

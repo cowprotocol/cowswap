@@ -22,38 +22,55 @@ export function useElementViewportTracking(
   useEffect(() => {
     if (!enabled) return
 
-    let timeoutId: number | undefined
+    let rafId: number | null = null
 
     const debouncedResize = (): void => {
-      if (timeoutId) clearTimeout(timeoutId)
-      timeoutId = window.setTimeout(() => {
+      if (rafId != null) cancelAnimationFrame(rafId)
+      rafId = requestAnimationFrame(() => {
+        rafId = null
         setViewportVersion(prev => prev + 1)
-      }, 16) // ~60fps debounce
+      })
     }
 
     // Use ResizeObserver for reference element changes if available
     let resizeObserver: ResizeObserver | undefined
-    if (element && window.ResizeObserver) {
+    if (element && typeof window !== 'undefined' && 'ResizeObserver' in window) {
       resizeObserver = new ResizeObserver(debouncedResize)
       resizeObserver.observe(element)
+    }
+
+    // Observe intersection changes so ancestor/root scrolls can trigger updates
+    let intersectionObserver: IntersectionObserver | undefined
+    if (element && typeof window !== 'undefined' && 'IntersectionObserver' in window) {
+      intersectionObserver = new IntersectionObserver(() => {
+        debouncedResize()
+      })
+      intersectionObserver.observe(element)
     }
 
     // Minimal event listeners for actual viewport changes
     window.addEventListener('resize', debouncedResize, { passive: true })
     window.addEventListener('orientationchange', debouncedResize, { passive: true })
+    // Root scrolls (best-effort; element scroll containers handled by IO above)
+    window.addEventListener('scroll', debouncedResize, { passive: true })
 
     // Visual viewport for mobile browser UI changes
     if (window.visualViewport) {
       window.visualViewport.addEventListener('resize', debouncedResize)
+      // Visual viewport scroll changes (e.g., mobile toolbars)
+      window.visualViewport.addEventListener('scroll', debouncedResize)
     }
 
     return () => {
-      if (timeoutId) clearTimeout(timeoutId)
+      if (rafId != null) cancelAnimationFrame(rafId)
       resizeObserver?.disconnect()
+      intersectionObserver?.disconnect()
       window.removeEventListener('resize', debouncedResize)
       window.removeEventListener('orientationchange', debouncedResize)
+      window.removeEventListener('scroll', debouncedResize)
       if (window.visualViewport) {
         window.visualViewport.removeEventListener('resize', debouncedResize)
+        window.visualViewport.removeEventListener('scroll', debouncedResize)
       }
     }
   }, [enabled, element])
