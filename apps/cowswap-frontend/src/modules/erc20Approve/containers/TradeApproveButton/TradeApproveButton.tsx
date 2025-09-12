@@ -38,8 +38,10 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
   const approveAndSwap = useCallback(async (): Promise<void> => {
     // todo maybe remove this check
     const toApprove = isPartialApproveEnabledByUser ? BigInt(amountToApprove.quotient.toString()) : MaxApprovalAmount
-    await handleApprove(toApprove)
-    confirmSwap?.()
+    const tx = await handleApprove(toApprove)
+    if (tx && confirmSwap) {
+      confirmSwap()
+    }
   }, [handleApprove, confirmSwap, amountToApprove, isPartialApproveEnabledByUser])
 
   if (!enablePartialApprove) {

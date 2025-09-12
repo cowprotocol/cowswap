@@ -3,6 +3,8 @@ import { useCallback } from 'react'
 
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { useIsSafeWallet, useIsWalletConnect } from '@cowprotocol/wallet'
+import { useWalletProvider } from '@cowprotocol/wallet-provider'
+import { TransactionReceipt } from '@ethersproject/abstract-provider'
 import SafeApiKit from '@safe-global/api-kit'
 import type { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
@@ -36,7 +38,9 @@ async function waitForSafeTransactionExecution({
   )
 }
 
-export function useZeroApprove(currency: Currency | undefined): () => Promise<void> {
+export function useZeroApprove(
+  currency: Currency | undefined,
+): () => Promise<TransactionReceipt | null | SafeMultisigTransactionResponse | undefined> {
   const setZeroApprovalState = useSetAtom(zeroApprovalState)
   const spender = useTradeSpenderAddress()
   const amountToApprove = currency ? CurrencyAmount.fromRawAmount(currency, 0) : undefined
@@ -44,6 +48,7 @@ export function useZeroApprove(currency: Currency | undefined): () => Promise<vo
   const safeApiKit = useSafeApiKit()
   const isWalletConnect = useIsWalletConnect()
   const isSafeWallet = useIsSafeWallet()
+  const provider = useWalletProvider()
 
   return useCallback(async () => {
     if (!amountToApprove) return
@@ -54,10 +59,21 @@ export function useZeroApprove(currency: Currency | undefined): () => Promise<vo
 
       // For Wallet Connect based Safe Wallet connections, wait for transaction to be executed.
       if (txReceipt && safeApiKit && isSafeWallet && isWalletConnect) {
-        await waitForSafeTransactionExecution({ safeApiKit, txHash: txReceipt.hash })
+        return waitForSafeTransactionExecution({ safeApiKit, txHash: txReceipt.hash })
+      } else {
+        return provider && txReceipt ? provider.waitForTransaction(txReceipt?.hash) : null
       }
     } finally {
       setZeroApprovalState({ isApproving: false })
     }
-  }, [approveCallback, setZeroApprovalState, currency, safeApiKit, isSafeWallet, isWalletConnect, amountToApprove])
+  }, [
+    amountToApprove,
+    setZeroApprovalState,
+    currency,
+    approveCallback,
+    safeApiKit,
+    isSafeWallet,
+    isWalletConnect,
+    provider,
+  ])
 }
