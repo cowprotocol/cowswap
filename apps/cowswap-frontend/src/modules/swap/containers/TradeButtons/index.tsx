@@ -54,7 +54,7 @@ export function TradeButtons({
   intermediateBuyToken,
   setShowAddIntermediateTokenModal,
 }: TradeButtonsProps): ReactNode {
-  const { chainId } = useWalletInfo()
+  const { chainId, account: walletAddress } = useWalletInfo()
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount } = useSwapDerivedState()
 
   const primaryFormValidation = useGetTradeFormValidation()
@@ -81,15 +81,16 @@ export function TradeButtons({
           label: `From: ${chainId}, To: ${outputCurrency.chainId || chainId}, TokenIn: ${inputCurrency.symbol || ''}, TokenOut: ${outputCurrency.symbol || ''}, Amount: ${inputCurrencyAmount.toSignificant(6)}`,
           from_chain_id: chainId,
           to_chain_id: outputCurrency.chainId || chainId,
+          wallet_address: walletAddress,
           sell_token: getCurrencyAddress(inputCurrency),
           sell_token_symbol: inputCurrency.symbol || '',
-          sell_token_chain_id: inputCurrency.chainId,
+          sell_token_chain_id: inputCurrency.chainId ?? '',
           sell_amount: inputCurrencyAmount.quotient.toString(),
           sell_amount_human: inputCurrencyAmount.toSignificant(6),
           ...(outputCurrencyAmount && {
             buy_token: getCurrencyAddress(outputCurrency),
             buy_token_symbol: outputCurrency.symbol || '',
-            buy_token_chain_id: outputCurrency.chainId,
+            buy_token_chain_id: outputCurrency.chainId ?? '',
             buy_amount_expected: outputCurrencyAmount.quotient.toString(),
             buy_amount_human: outputCurrencyAmount.toSignificant(6),
           }),
