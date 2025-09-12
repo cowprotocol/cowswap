@@ -78,6 +78,7 @@
     "@cowprotocol/cow-runner-game": "^0.2.9",
     "@cowprotocol/cow-sdk": "7.0.1-beta.0",
     "@cowprotocol/sdk-common": "^0.2.1-beta.0",
+    "@cowprotocol/sdk-composable": "^0.2.1-beta.0",
     "@cowprotocol/sdk-config": "^0.2.1-beta.0",
     "@cowprotocol/sdk-bridging": "^0.2.1-beta.0",
     "@cowprotocol/sdk-cow-shed": "^0.2.0-beta.0",
