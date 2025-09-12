@@ -14,6 +14,20 @@ import { useBalancesContext } from 'entities/balancesContext/useBalancesContext'
 import { useSourceChainId } from 'modules/tokensList'
 import { usePendingOrdersCount, usePriorityTokenAddresses } from 'modules/trade'
 
+function shouldApplyBffBalances(account: string | undefined, percentage: number | boolean | undefined): boolean {
+  // Early exit for 100%, meaning should be enabled for everyone
+  if (percentage === 100) {
+    return true
+  }
+
+  // Falsy conditions
+  if (typeof percentage !== 'number' || !account || percentage < 0 || percentage > 100) {
+    return false
+  }
+
+  return BigInt(account) % 100n < percentage
+}
+
 export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
   const sourceChainId = useSourceChainId().chainId
   const { account } = useWalletInfo()
@@ -50,9 +64,9 @@ export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
     }
   }, [account, priorityTokenCount])
 
-  const { isBffBalanceApiEnabled } = useFeatureFlags()
+  const { enableBffBalancesFeePercentage } = useFeatureFlags()
   const isBffFailed = useIsBffFailed()
-  const isBffEnabled = isBffBalanceApiEnabled && !isBffFailed
+  const isBffEnabled = shouldApplyBffBalances(account, enableBffBalancesFeePercentage) && !isBffFailed
   const pendingOrdersCount = usePendingOrdersCount(sourceChainId, balancesAccount)
 
   return (

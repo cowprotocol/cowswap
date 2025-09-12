@@ -1,7 +1,6 @@
 import { useSetAtom } from 'jotai/index'
 import { useEffect } from 'react'
 
-import { BFF_BASE_URL } from '@cowprotocol/common-const'
 import { useDebounce } from '@cowprotocol/common-hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -92,7 +91,8 @@ export async function getBffBalances(
   address: string,
   chainId: SupportedChainId,
 ): Promise<Record<string, string> | null> {
-  const url = `${BFF_BASE_URL}/${chainId}/address/${address}/balances`
+  const url1 = 'http://localhost:8080'
+  const url = `${url1}/${chainId}/address/${address}/balances`
 
   try {
     const res = await fetch(url)
