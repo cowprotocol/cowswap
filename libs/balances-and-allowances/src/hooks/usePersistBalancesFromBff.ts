@@ -92,7 +92,7 @@ export async function getBffBalances(
   address: string,
   chainId: SupportedChainId,
 ): Promise<Record<string, string> | null> {
-  const url = `${BFF_BASE_URL}/${chainId}/tokens/${address}/balances`
+  const url = `${BFF_BASE_URL}/${chainId}/address/${address}/balances`
 
   try {
     const res = await fetch(url)
