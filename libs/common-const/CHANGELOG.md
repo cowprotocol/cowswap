@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.25.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.24.1...common-const-v1.25.0) (2025-09-12)
+
+
+### Features
+
+* restore Gnosis Affiliate header ([#6228](https://github.com/cowprotocol/cowswap/issues/6228)) ([22d0894](https://github.com/cowprotocol/cowswap/commit/22d08941a67032712e6d206ea8579786ed78715f))
+
 ## [1.24.1](https://github.com/cowprotocol/cowswap/compare/common-const-v1.24.0...common-const-v1.24.1) (2025-08-28)
 
 

@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://github.com/cowprotocol/cowswap/compare/events-v1.7.0...events-v2.0.0) (2025-09-12)
+
+
+### ⚠ BREAKING CHANGES
+
+* add cow-sdk v7 ([#6165](https://github.com/cowprotocol/cowswap/issues/6165))
+
+### Features
+
+* add cow-sdk v7 ([#6165](https://github.com/cowprotocol/cowswap/issues/6165)) ([46d7afe](https://github.com/cowprotocol/cowswap/commit/46d7afeab94c172dbad975f39b25033abd966498))
+
 ## [1.7.0](https://github.com/cowprotocol/cowswap/compare/events-v1.6.1...events-v1.7.0) (2025-07-30)
 
 
