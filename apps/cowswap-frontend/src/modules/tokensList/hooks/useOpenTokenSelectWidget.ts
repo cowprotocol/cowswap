@@ -20,7 +20,6 @@ export function useOpenTokenSelectWidget(): (
   const updateSelectTokenWidget = useUpdateSelectTokenWidgetState()
   const closeTokenSelectWidget = useCloseTokenSelectWidget()
   const isBridgingEnabled = useIsBridgingEnabled()
-  // No need to derive wallet chain id here; selection closes regardless of network
 
   return useCallback(
     (selectedToken, field, oppositeToken, onSelectToken) => {
