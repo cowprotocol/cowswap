@@ -1,7 +1,7 @@
 import { Command } from '@cowprotocol/types'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { ApprovalState } from 'modules/erc20Approve'
+import { ApprovalState, ApproveRequiredReason } from 'modules/erc20Approve'
 import { TradeDerivedState } from 'modules/trade'
 import { TradeQuoteState } from 'modules/tradeQuote'
 
@@ -47,6 +47,7 @@ export enum TradeFormValidation {
   ProxyAccountLoading,
   ProxyAccountUnknown,
   CustomTokenError,
+  PermitRequired,
 }
 
 export interface TradeFormValidationCommonContext {
@@ -60,7 +61,7 @@ export interface TradeFormValidationCommonContext {
   isSupportedWallet: boolean
   isSwapUnsupported: boolean
   isSafeReadonlyUser: boolean
-  isApproveRequired: boolean
+  isApproveRequired: ApproveRequiredReason
   isInsufficientBalanceOrderAllowed: boolean
   isProviderNetworkUnsupported: boolean
   isOnline: boolean

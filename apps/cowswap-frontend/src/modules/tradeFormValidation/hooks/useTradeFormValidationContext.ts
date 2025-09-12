@@ -7,7 +7,7 @@ import { useGnosisSafeInfo, useIsTxBundlingSupported, useWalletDetails, useWalle
 
 import { useCurrentAccountProxy } from 'modules/accountProxy'
 import { useTryFindIntermediateToken } from 'modules/bridge'
-import { useApproveState, useGetAmountToSignApprove, useIsApprovalRequired } from 'modules/erc20Approve'
+import { useApproveState, useGetAmountToSignApprove, useIsApprovalOrPermitRequired } from 'modules/erc20Approve'
 import { TradeType, useDerivedTradeState, useIsWrapOrUnwrap } from 'modules/trade'
 import { TradeQuoteState, useTradeQuote } from 'modules/tradeQuote'
 
@@ -41,7 +41,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
 
   const isSafeReadonlyUser = gnosisSafeInfo?.isReadOnly === true
 
-  const isApproveRequired = useIsApprovalRequired()
+  const isApproveRequired = useIsApprovalOrPermitRequired()
 
   const isInsufficientBalanceOrderAllowed = tradeType === TradeType.LIMIT_ORDER
 

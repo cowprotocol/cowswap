@@ -6,7 +6,13 @@ import { useGetAmountToSignApprove } from './useGetAmountToSignApprove'
 
 import { ApprovalState } from '../types'
 
-export function useIsApprovalRequired(): boolean {
+export enum ApproveRequiredReason {
+  NotRequired,
+  Required,
+  PermitSupported,
+}
+
+export function useIsApprovalOrPermitRequired(): ApproveRequiredReason {
   const amountToApprove = useGetAmountToSignApprove()
   const { state: approvalState } = useApproveState(amountToApprove)
   const derivedTradeState = useDerivedTradeState()
@@ -15,5 +21,11 @@ export function useIsApprovalRequired(): boolean {
 
   const isPermitSupported = useTokenSupportsPermit(inputCurrency, tradeType)
 
-  return !isPermitSupported && (approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING)
+  if (!isPermitSupported && (approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING)) {
+    return ApproveRequiredReason.Required
+  }
+
+  if (isPermitSupported) return ApproveRequiredReason.PermitSupported
+
+  return ApproveRequiredReason.NotRequired
 }
