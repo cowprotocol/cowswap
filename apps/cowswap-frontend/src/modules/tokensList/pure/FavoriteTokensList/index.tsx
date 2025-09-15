@@ -3,7 +3,7 @@ import { ReactNode } from 'react'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { HelpTooltip, TokenSymbol } from '@cowprotocol/ui'
-import { Link } from 'react-router-dom'
+
 import * as styledEl from './styled'
 
 export interface FavoriteTokensListProps {
@@ -16,7 +16,7 @@ export interface FavoriteTokensListProps {
 
 export function FavoriteTokensList(props: FavoriteTokensListProps): ReactNode {
   const { tokens, hideTooltip, selectedToken, onSelectToken } = props
-  
+  import { Link } from 'react-router-dom'
   return (
     <div>
       <styledEl.Header>
