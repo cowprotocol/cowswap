@@ -16,7 +16,7 @@ export interface FavoriteTokensListProps {
 
 export function FavoriteTokensList(props: FavoriteTokensListProps): ReactNode {
   const { tokens, hideTooltip, selectedToken, onSelectToken } = props
-  const tokenspagetUrl = '/#/account/tokens'
+  const tokensPageUrl = '/#/account/tokens'
   return (
     <div>
       <styledEl.Header>
@@ -24,7 +24,7 @@ export function FavoriteTokensList(props: FavoriteTokensListProps): ReactNode {
         {!hideTooltip && <HelpTooltip text={
           <>
             Your favorite saved tokens. Edit this list in your{' '}
-            <a href={tokenspageUrl}>Tokens page</a>.
+            <a href={tokensPageUrl}>Tokens page</a>.
           </>
         } />}
       </styledEl.Header>
