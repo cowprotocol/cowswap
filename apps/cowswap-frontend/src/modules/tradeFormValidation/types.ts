@@ -47,7 +47,6 @@ export enum TradeFormValidation {
   ProxyAccountLoading,
   ProxyAccountUnknown,
   CustomTokenError,
-  PermitRequired,
 }
 
 export interface TradeFormValidationCommonContext {

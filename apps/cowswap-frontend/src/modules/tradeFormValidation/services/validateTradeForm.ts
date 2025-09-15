@@ -152,15 +152,11 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     validations.push(TradeFormValidation.WrapUnwrapFlow)
   }
 
-  if (isApproveRequired === ApproveRequiredReason.Required) {
+  if (isApproveRequired !== ApproveRequiredReason.NotRequired) {
     if (isBundlingSupported) {
       validations.push(TradeFormValidation.ApproveAndSwapInBundle)
     }
     validations.push(TradeFormValidation.ApproveRequired)
-  }
-
-  if (isApproveRequired === ApproveRequiredReason.PermitSupported) {
-    validations.push(TradeFormValidation.PermitRequired)
   }
 
   if (intermediateTokenToBeImported) {

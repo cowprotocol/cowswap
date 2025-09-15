@@ -14,12 +14,16 @@ export function ApproveWithAffectedOrderList(): ReactNode {
   const amountToApprove = useGetAmountToSignApprove()
 
   const showAffectedOrders =
-    isApproveRequired === ApproveRequiredReason.PermitSupported &&
+    isApproveRequired === ApproveRequiredReason.Eip2612PermitRequired &&
     amountToApprove?.quotient.toString() !== MAX_APPROVE_AMOUNT
+
+  const isApproveOrPartialPermitRequired =
+    isApproveRequired === ApproveRequiredReason.Required ||
+    isApproveRequired === ApproveRequiredReason.Eip2612PermitRequired
 
   return (
     <>
-      <TradeApproveToggle />
+      {isApproveOrPartialPermitRequired && <TradeApproveToggle />}
       {showAffectedOrders && amountToApprove && <ActiveOrdersWithAffectedPermit currency={amountToApprove?.currency} />}
     </>
   )

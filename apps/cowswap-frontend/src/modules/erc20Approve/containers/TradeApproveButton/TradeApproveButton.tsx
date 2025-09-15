@@ -8,8 +8,11 @@ import { Currency, CurrencyAmount, MaxUint256 } from '@uniswap/sdk-core'
 import { Trans } from '@lingui/macro'
 import { HelpCircle } from 'react-feather'
 
+import { useTokenSupportsPermit } from 'modules/permit'
+
 import * as styledEl from './styled'
 
+import { TradeType } from '../../../trade'
 import { useApprovalStateForSpender, useApproveCurrency } from '../../hooks'
 import { LegacyApproveButton } from '../../pure/LegacyApproveButton'
 import { useIsPartialApproveSelectedByUser } from '../../state'
@@ -34,18 +37,22 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
   const { approvalState } = useApprovalStateForSpender(amountToApprove, spender)
   // todo remove theme
   const theme = useTheme()
+  const isPermitSupported = useTokenSupportsPermit(amountToApprove.currency, TradeType.SWAP)
 
   const approveAndSwap = useCallback(async (): Promise<void> => {
-    // todo maybe remove this check
+    if (isPermitSupported && confirmSwap) {
+      confirmSwap()
+      return
+    }
+
     const toApprove = isPartialApproveEnabledByUser ? BigInt(amountToApprove.quotient.toString()) : MaxApprovalAmount
     const tx = await handleApprove(toApprove)
     if (tx && confirmSwap) {
       confirmSwap()
     }
-  }, [handleApprove, confirmSwap, amountToApprove, isPartialApproveEnabledByUser])
+  }, [handleApprove, confirmSwap, amountToApprove, isPartialApproveEnabledByUser, isPermitSupported])
 
   if (!enablePartialApprove) {
-    console.log('!enablePartialApprove rendering legacy approve button')
     return (
       <>
         <LegacyApproveButton

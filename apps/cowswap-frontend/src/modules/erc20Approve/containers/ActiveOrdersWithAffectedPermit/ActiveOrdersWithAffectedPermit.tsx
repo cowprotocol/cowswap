@@ -23,7 +23,7 @@ export function ActiveOrdersWithAffectedPermit({ currency }: { currency: Currenc
 
   const ordersWithPermit = pendingOrders.filter((order) => {
     // need to check for buy order
-    return doesOrderHavePermit(order) && currency.equals(order.inputToken)
+    return currency.equals(order.inputToken) && doesOrderHavePermit(order)
   })
 
   if (!ordersWithPermit.length) return null
@@ -40,7 +40,6 @@ export function ActiveOrdersWithAffectedPermit({ currency }: { currency: Currenc
       {isDropdownOpen ? (
         <>
           <styledEl.DropdownList>
-            {/** todo think how to move it from here */}
             <AffectedPermitOrdersTable orders={ordersWithPermit} />
           </styledEl.DropdownList>
           <styledEl.DropdownFooter>

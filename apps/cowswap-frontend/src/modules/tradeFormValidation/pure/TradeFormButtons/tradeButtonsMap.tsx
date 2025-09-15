@@ -8,7 +8,7 @@ import { CenteredDots, HelpTooltip, TokenSymbol } from '@cowprotocol/ui'
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
 
-import { TradeApproveButton, TradeSignPermitButton } from 'modules/erc20Approve'
+import { TradeApproveButton } from 'modules/erc20Approve'
 import { CompatibilityIssuesWarning } from 'modules/trade'
 
 import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
@@ -245,8 +245,6 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
 
     const label = enablePartialApprove ? `Approve and ${defaultText}` : defaultText
 
-    console.log('enablePartialApprove ', enablePartialApprove)
-
     return (
       <TradeApproveButton
         amountToApprove={amountToApprove}
@@ -258,16 +256,6 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
           <Trans>{label}</Trans>
         </TradeFormBlankButton>
       </TradeApproveButton>
-    )
-  },
-  [TradeFormValidation.PermitRequired]: (context) => {
-    const { amountToApprove, confirmTrade } = context
-    if (!amountToApprove) return null
-
-    return (
-      <TradeSignPermitButton amountToApprove={amountToApprove} confirmSwap={confirmTrade}>
-        <Trans>Approve and swap</Trans>
-      </TradeSignPermitButton>
     )
   },
   [TradeFormValidation.SellNativeToken]: (context) => {
