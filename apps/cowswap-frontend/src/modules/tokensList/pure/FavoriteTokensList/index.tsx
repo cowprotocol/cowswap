@@ -5,7 +5,7 @@ import { TokenLogo } from '@cowprotocol/tokens'
 import { HelpTooltip, TokenSymbol } from '@cowprotocol/ui'
 
 import * as styledEl from './styled'
-
+import { Link } from 'react-router-dom'
 export interface FavoriteTokensListProps {
   tokens: TokenWithLogo[]
   hideTooltip?: boolean
@@ -16,7 +16,7 @@ export interface FavoriteTokensListProps {
 
 export function FavoriteTokensList(props: FavoriteTokensListProps): ReactNode {
   const { tokens, hideTooltip, selectedToken, onSelectToken } = props
-  import { Link } from 'react-router-dom'
+  
   return (
     <div>
       <styledEl.Header>
