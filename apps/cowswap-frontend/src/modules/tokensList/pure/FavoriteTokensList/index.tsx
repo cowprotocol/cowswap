@@ -21,7 +21,12 @@ export function FavoriteTokensList(props: FavoriteTokensListProps): ReactNode {
     <div>
       <styledEl.Header>
         <h4>Favorite tokens</h4>
-        {!hideTooltip && <HelpTooltip text="Your favorite saved tokens. Edit this list in your account page." />}
+        {!hideTooltip && <HelpTooltip text={
+          <>
+            Your favorite saved tokens. Edit this list in your{' '}
+            <a href={accountUrl}>account page</a>.
+          </>
+        } />}
       </styledEl.Header>
       <styledEl.List>
         {tokens.map((token) => {
