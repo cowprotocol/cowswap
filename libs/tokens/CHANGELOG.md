@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.25.2](https://github.com/cowprotocol/cowswap/compare/tokens-v1.25.1...tokens-v1.25.2) (2025-09-12)
+
+
+### Bug Fixes
+
+* **tokens:** remove mismatched network tokens from localStorage ([#6234](https://github.com/cowprotocol/cowswap/issues/6234)) ([ab57ec0](https://github.com/cowprotocol/cowswap/commit/ab57ec0ca185d34167f69b3b2b508e121a0a1deb))
+
 ## [1.25.1](https://github.com/cowprotocol/cowswap/compare/tokens-v1.25.0...tokens-v1.25.1) (2025-08-29)
 
 

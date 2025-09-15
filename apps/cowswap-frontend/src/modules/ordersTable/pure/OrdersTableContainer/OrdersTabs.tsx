@@ -169,11 +169,11 @@ export function OrdersTabs({ tabs, isWalletConnected = true }: OrdersTabsProps):
     <>
       <SelectContainer>
         <Select value={tabs[activeTabIndex].id} onChange={handleSelectChange}>
-          {tabs.map((tab, index) => {
+          {tabs.map((tab) => {
             const isUnfillable = tab.id === 'unfillable'
             const isSigning = tab.id === 'signing'
             return (
-              <option key={index} value={tab.id}>
+              <option key={tab.id} value={tab.id}>
                 {isUnfillable && '⚠️ '}
                 {isSigning && '⏳ '}
                 {i18n._(tab.title)} {isWalletConnected && `(${tab.count})`}

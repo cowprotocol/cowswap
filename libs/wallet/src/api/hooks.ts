@@ -1,7 +1,15 @@
 import { useAtomValue, useSetAtom } from 'jotai'
+import { useCallback } from 'react'
 
 import { useWalletCapabilities } from './hooks/useWalletCapabilities'
-import { gnosisSafeInfoAtom, walletDetailsAtom, walletDisplayedAddress, walletInfoAtom } from './state'
+import {
+  gnosisSafeInfoAtom,
+  walletDetailsAtom,
+  walletDisplayedAddress,
+  walletInfoAtom,
+  eagerConnectPendingOpsAtom,
+  isEagerConnectInProgressAtom,
+} from './state'
 import {
   multiInjectedProvidersAtom,
   selectedEip6963ProviderAtom,
@@ -27,6 +35,20 @@ export function useWalletDisplayedAddress(): string {
 
 export function useGnosisSafeInfo(): GnosisSafeInfo | undefined {
   return useAtomValue(gnosisSafeInfoAtom)
+}
+
+export function useIsEagerConnectInProgress(): boolean {
+  return useAtomValue(isEagerConnectInProgressAtom)
+}
+
+export function useBeginEagerConnect(): () => void {
+  const set = useSetAtom(eagerConnectPendingOpsAtom)
+  return useCallback(() => set((prev) => prev + 1), [set])
+}
+
+export function useEndEagerConnect(): () => void {
+  const set = useSetAtom(eagerConnectPendingOpsAtom)
+  return useCallback(() => set((prev) => (prev > 0 ? prev - 1 : 0)), [set])
 }
 
 // TODO: if you want to test TWAP with others EIP-5792 wallets - keep only atomicBatch.supported

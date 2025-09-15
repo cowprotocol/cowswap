@@ -1,7 +1,7 @@
-import { ReactNode, useCallback, useMemo, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { isSellOrder, isInjectedWidget } from '@cowprotocol/common-utils'
-import { useIsSmartContractWallet } from '@cowprotocol/wallet'
+import { useIsSmartContractWallet, useWalletInfo, useIsEagerConnectInProgress } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
 
@@ -83,7 +83,15 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   const doTrade = useHandleSwap(useSafeMemoObject({ deadline: deadlineState[0] }), widgetActions)
   const hasEnoughWrappedBalanceForSwap = useHasEnoughWrappedBalanceForSwap()
   const isSmartContractWallet = useIsSmartContractWallet()
+  const { account } = useWalletInfo()
+  const isEagerConnectInProgress = useIsEagerConnectInProgress()
+  const [isHydrated, setIsHydrated] = useState(false)
   const handleUnlock = useCallback(() => updateSwapState({ isUnlocked: true }), [updateSwapState])
+
+  useEffect(() => {
+    // Hydration guard: defer lock-screen until persisted state (isUnlocked) loads to prevent initial flash.
+    setIsHydrated(true)
+  }, [])
 
   const isSellTrade = isSellOrder(orderKind)
 
@@ -144,7 +152,14 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
     setShowAddIntermediateTokenModal(false)
   }, [])
 
-  const shouldShowLockScreen = !isUnlocked && !isInjectedWidget() && !isSmartContractWallet
+  const isConnected = Boolean(account)
+
+  // Guarded render: require hydration and no active eager-connect; show only for confirmed EOAs or truly disconnected users.
+  const shouldShowLockScreen =
+    isHydrated &&
+    !isUnlocked &&
+    !isInjectedWidget() &&
+    ((isConnected && isSmartContractWallet === false) || (!isConnected && !isEagerConnectInProgress))
 
   const slots: TradeWidgetSlots = {
     topContent,
