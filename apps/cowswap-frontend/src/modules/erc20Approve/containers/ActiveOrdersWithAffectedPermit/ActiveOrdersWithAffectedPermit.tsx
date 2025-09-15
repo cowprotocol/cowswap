@@ -8,18 +8,12 @@ import { AlertCircle } from 'react-feather'
 
 import { useOnlyPendingOrders } from 'legacy/state/orders/hooks'
 
-import { usePendingOrdersPrices } from 'modules/orders'
-import { TabOrderTypes } from 'modules/ordersTable'
-import { OrdersReceiptModal } from 'modules/ordersTable/containers/OrdersReceiptModal'
-import { OrdersTableStateUpdater } from 'modules/ordersTable/updaters/OrdersTableStateUpdater'
-
 import { ToggleArrow } from 'common/pure/ToggleArrow'
 import { doesOrderHavePermit } from 'common/utils/doesOrderHavePermit'
 
 import * as styledEl from './styled'
 
-// todo fix imports
-import { AffectedOrdersWithPermit } from '../../pure'
+import { AffectedPermitOrdersTable } from '../AffectedPermitOrdersTable'
 
 export function ActiveOrdersWithAffectedPermit({ currency }: { currency: Currency }): ReactNode {
   const { chainId, account } = useWalletInfo()
@@ -31,8 +25,6 @@ export function ActiveOrdersWithAffectedPermit({ currency }: { currency: Currenc
     // need to check for buy order
     return doesOrderHavePermit(order) && currency.equals(order.inputToken)
   })
-
-  const pendingOrdersPrices = usePendingOrdersPrices()
 
   if (!ordersWithPermit.length) return null
 
@@ -49,9 +41,7 @@ export function ActiveOrdersWithAffectedPermit({ currency }: { currency: Currenc
         <>
           <styledEl.DropdownList>
             {/** todo think how to move it from here */}
-            <OrdersReceiptModal pendingOrdersPrices={pendingOrdersPrices} />
-            <OrdersTableStateUpdater searchTerm={''} orders={ordersWithPermit} orderType={TabOrderTypes.LIMIT} />
-            <AffectedOrdersWithPermit orders={ordersWithPermit} />
+            <AffectedPermitOrdersTable orders={ordersWithPermit} />
           </styledEl.DropdownList>
           <styledEl.DropdownFooter>
             There are <span className={'font-bold'}>{ordersWithPermit.length}</span> existing orders using a{' '}

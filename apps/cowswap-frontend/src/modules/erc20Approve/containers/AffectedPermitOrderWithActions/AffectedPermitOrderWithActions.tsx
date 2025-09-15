@@ -7,19 +7,19 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 import { Order } from 'legacy/state/orders/actions'
 
 import { OrderContextMenu } from 'modules/ordersTable/containers/OrderRow/OrderContextMenu'
+import { getActivityUrl } from 'modules/ordersTable/containers/OrderRow/utils'
 import { useOrdersTableState } from 'modules/ordersTable/hooks/useOrdersTableState'
 import { OrderStatusBox } from 'modules/ordersTable/pure/OrderStatusBox'
 
-import * as styledEl from './styled'
+import { parseOrder } from 'utils/orderUtils/parseOrder'
 
-import { parseOrder } from '../../../../utils/orderUtils/parseOrder'
-import { getActivityUrl } from '../../../ordersTable/containers/OrderRow/utils'
+import * as styledEl from './styled'
 
 export type AffectedPermitOrderProps = {
   order: Order
 }
 
-export function AffectedPermitOrder({ order }: AffectedPermitOrderProps): ReactNode {
+export function AffectedPermitOrderWithActions({ order }: AffectedPermitOrderProps): ReactNode {
   const { orderActions } = useOrdersTableState() ?? {}
   const parsedOrder = parseOrder(order)
   const cancelOrder = orderActions?.getShowCancellationModal(parsedOrder)
