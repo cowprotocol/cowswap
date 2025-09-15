@@ -30,7 +30,6 @@ export function CowSdkUpdater(): null {
 
   useEffect(() => {
     if (!provider) return
-
     adapter.setProvider(provider)
     adapter.setSigner(provider.getSigner())
   }, [chainId, account, provider])
