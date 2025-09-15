@@ -7,7 +7,7 @@ peer-to-peer among its users or into any on-chain liquidity source while
 providing MEV protection.
 
 | **Platform**          | **Link**                                                                                                      |
-|-----------------------|---------------------------------------------------------------------------------------------------------------|
+| --------------------- | ------------------------------------------------------------------------------------------------------------- |
 | 🐮 **CoW Swap** 🐮    | [swap.cow.fi](https://swap.cow.fi/)                                                                           |
 | CoW Swap (IPFS)       | Every release is deployed automatically to IPFS ([Releases](https://github.com/cowprotocol/cowswap/releases)) |
 | CoW Swap (ENS)        | [ens://cowswap.eth](ens://cowswap.eth) or ([cowswap.eth.limo](https://cowswap.eth.limo))                      |
@@ -245,7 +245,7 @@ All price feeds are enabled by default, but they can be individually disabled by
 using an environment variable:
 
 | Name      | Environment variable                 | Type                         | Description                                                                          |
-|-----------|--------------------------------------|------------------------------|--------------------------------------------------------------------------------------|
+| --------- | ------------------------------------ | ---------------------------- | ------------------------------------------------------------------------------------ |
 | **1inch** | `REACT_APP_PRICE_FEED_1INCH_ENABLED` | `boolean` (default = `true`) | [Paraswap](https://1inch.exchange) price estimation. Used for all price estimations. |
 | **0x**    | `REACT_APP_PRICE_FEED_0X_ENABLED`    | `boolean` (default = `true`) | [0x](https://0x.org/) price estimation. Used for all price estimation.               |
 
@@ -292,7 +292,7 @@ In case of problems with the service worker cache you force a reset using
 
 Since this repo includes multiple apps, we do not want to build all of them on each PR because it causes long build queues in Vercel.  
 Some apps (see the list bellow) are not required to be built on each PR so we run them only a PR is labeled with a specific label.
-This label is defined in the project settings on Vercel in `Settings`/`Git`/`Ignored Build Step` script.
+This label is defined in the project settings on Vercel in `Settings`/`Git`/`Ignored Build Step` scriptå
 For example, the label for the widget-configurator is `preview-widget-cfg`:
 
 ```
