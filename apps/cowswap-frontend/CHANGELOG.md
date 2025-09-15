@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.118.10](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.118.9...cowswap-v1.118.10) (2025-09-15)
+
+
+### Bug Fixes
+
+* update CoW Swap and Explorer with bungee changes ([#6265](https://github.com/cowprotocol/cowswap/issues/6265)) ([a38b9d9](https://github.com/cowprotocol/cowswap/commit/a38b9d97ebffd9837ef4d1ea9a946e979d9ed7e4))
+
 ## [1.118.9](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.118.8...cowswap-v1.118.9) (2025-09-12)
 
 
