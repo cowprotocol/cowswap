@@ -9,7 +9,7 @@ import { useGetPartialAmountToSignApprove } from './useGetPartialAmountToSignApp
 import { useSwapPartialApprovalToggleState } from '../../swap/hooks/useSwapSettings'
 import { useIsPartialApproveSelectedByUser } from '../state'
 
-const MAX_APPROVE_AMOUNT = MaxUint256.toString()
+export const MAX_APPROVE_AMOUNT = MaxUint256.toString()
 
 /**
  * Returns the amount to sign for the approval transaction/permit

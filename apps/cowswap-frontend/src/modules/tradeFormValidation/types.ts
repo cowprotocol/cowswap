@@ -34,7 +34,7 @@ export enum TradeFormValidation {
   BalanceInsufficient,
 
   // Approve
-  ApproveAndSwap,
+  ApproveAndSwapInBundle,
   ApproveRequired,
 
   // Intermediate token

@@ -26,7 +26,7 @@ import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 
 import { Container } from './styled'
 
-import { TradeApproveToggle } from '../../../erc20Approve'
+import { ApproveWithAffectedOrderList } from '../../../erc20Approve'
 import { useHasEnoughWrappedBalanceForSwap } from '../../hooks/useHasEnoughWrappedBalanceForSwap'
 import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
 import {
@@ -145,7 +145,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   const { isPartialApproveEnabled } = useFeatureFlags()
   const enablePartialApprovalState = useSwapPartialApprovalToggleState(isPartialApproveEnabled)
 
-  const showApproveToggle = enablePartialApprovalState[0] && inputCurrency && !getIsNativeToken(inputCurrency)
+  const enablePartialApproval = enablePartialApprovalState[0] && inputCurrency && !getIsNativeToken(inputCurrency)
 
   const slots: TradeWidgetSlots = {
     topContent,
@@ -162,7 +162,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
         return (
           <>
             {bottomContent}
-            {showApproveToggle ? <TradeApproveToggle /> : null}
+            {enablePartialApproval ? <ApproveWithAffectedOrderList /> : null}
             <SwapRateDetails rateInfoParams={rateInfoParams} deadline={deadlineState[0]} />
             <Warnings buyingFiatAmount={buyingFiatAmount} />
             {tradeWarnings}
@@ -187,7 +187,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
         hasEnoughWrappedBalanceForSwap,
         toBeImported,
         intermediateBuyToken,
-        showApproveToggle,
+        enablePartialApproval,
       ],
     ),
   }

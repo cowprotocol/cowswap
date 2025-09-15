@@ -21,7 +21,7 @@ export function TradeWarnings({ isTradePriceUpdating, enableSmartSlippage }: Tra
   const inputAmountWithSlippage = receiveAmountInfo?.afterSlippage.sellAmount
   const shouldZeroApprove = useShouldZeroApprove(inputAmountWithSlippage)
 
-  const showBundleTxApprovalBanner = primaryFormValidation === TradeFormValidation.ApproveAndSwap
+  const showBundleTxApprovalBanner = primaryFormValidation === TradeFormValidation.ApproveAndSwapInBundle
 
   return (
     <>

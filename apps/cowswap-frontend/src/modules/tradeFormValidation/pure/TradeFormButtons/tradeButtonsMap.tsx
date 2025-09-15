@@ -225,7 +225,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
       </TradeFormBlankButton>
     )
   },
-  [TradeFormValidation.ApproveAndSwap]: (context, isDisabled = false) => {
+  [TradeFormValidation.ApproveAndSwapInBundle]: (context, isDisabled = false) => {
     const inputCurrency = context.derivedState.inputCurrency
     const tokenToApprove = inputCurrency && getWrappedToken(inputCurrency)
 
@@ -244,6 +244,8 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     if (!amountToApprove) return null
 
     const label = enablePartialApprove ? `Approve and ${defaultText}` : defaultText
+
+    console.log('enablePartialApprove ', enablePartialApprove)
 
     return (
       <TradeApproveButton

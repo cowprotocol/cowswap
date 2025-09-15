@@ -45,6 +45,7 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
   }, [handleApprove, confirmSwap, amountToApprove, isPartialApproveEnabledByUser])
 
   if (!enablePartialApprove) {
+    console.log('!enablePartialApprove rendering legacy approve button')
     return (
       <>
         <LegacyApproveButton

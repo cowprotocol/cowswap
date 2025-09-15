@@ -25,6 +25,7 @@ export function useIsApprovalOrPermitRequired(): ApproveRequiredReason {
     return ApproveRequiredReason.Required
   }
 
+  // todo fix for limit orders and other forms
   if (isPermitSupported) return ApproveRequiredReason.PermitSupported
 
   return ApproveRequiredReason.NotRequired

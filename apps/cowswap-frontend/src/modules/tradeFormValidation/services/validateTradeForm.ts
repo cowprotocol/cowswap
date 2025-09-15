@@ -154,7 +154,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
 
   if (isApproveRequired === ApproveRequiredReason.Required) {
     if (isBundlingSupported) {
-      validations.push(TradeFormValidation.ApproveAndSwap)
+      validations.push(TradeFormValidation.ApproveAndSwapInBundle)
     }
     validations.push(TradeFormValidation.ApproveRequired)
   }
