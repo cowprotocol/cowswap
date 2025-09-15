@@ -13,6 +13,10 @@ import * as styledEl from './styled'
 // todo fix imports
 import { ToggleArrow } from '../../../../common/pure/ToggleArrow'
 import { doesOrderHavePermit } from '../../../../common/utils/doesOrderHavePermit'
+import { usePendingOrdersPrices } from '../../../orders'
+import { TabOrderTypes } from '../../../ordersTable'
+import { OrdersReceiptModal } from '../../../ordersTable/containers/OrdersReceiptModal'
+import { OrdersTableStateUpdater } from '../../../ordersTable/updaters/OrdersTableStateUpdater'
 import { AffectedOrdersWithPermit } from '../../pure'
 
 export function ActiveOrdersWithAffectedPermit({ currency }: { currency: Currency }): ReactNode {
@@ -25,6 +29,8 @@ export function ActiveOrdersWithAffectedPermit({ currency }: { currency: Currenc
     // need to check for buy order
     return doesOrderHavePermit(order) && currency.equals(order.inputToken)
   })
+
+  const pendingOrdersPrices = usePendingOrdersPrices()
 
   if (!ordersWithPermit.length) return null
 
@@ -40,6 +46,8 @@ export function ActiveOrdersWithAffectedPermit({ currency }: { currency: Currenc
       {isDropdownOpen ? (
         <>
           <styledEl.DropdownList>
+            <OrdersReceiptModal pendingOrdersPrices={pendingOrdersPrices} />
+            <OrdersTableStateUpdater searchTerm={''} orders={ordersWithPermit} orderType={TabOrderTypes.LIMIT} />
             <AffectedOrdersWithPermit orders={ordersWithPermit} />
           </styledEl.DropdownList>
           <styledEl.DropdownFooter>

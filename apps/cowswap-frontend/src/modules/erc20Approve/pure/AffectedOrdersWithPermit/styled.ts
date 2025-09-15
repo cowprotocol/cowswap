@@ -34,3 +34,7 @@ export const TokenLogos = styled.div`
     margin-left: -14px;
   }
 `
+
+export const OrderActionsWrapper = styled.div`
+  display: flex;
+`
