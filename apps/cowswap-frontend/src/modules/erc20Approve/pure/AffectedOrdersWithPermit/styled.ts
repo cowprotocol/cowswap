@@ -19,6 +19,7 @@ export const SwapInfo = styled.div`
 export const AmountInfo = styled.div`
   display: flex;
   flex-direction: column;
+  margin-left: 6px;
 
   .token-amount {
     font-size: 12px;

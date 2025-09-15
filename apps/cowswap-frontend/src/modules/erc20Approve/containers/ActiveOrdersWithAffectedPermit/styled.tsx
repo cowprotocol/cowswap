@@ -6,6 +6,16 @@ export const DropdownWrapper = styled.div`
   border-radius: 14px;
   padding: 9px 6px;
   background: var(${UI.COLOR_BLUE_200_PRIMARY});
+
+  .font-bold {
+    font-weight: 600;
+  }
+`
+
+export const ArrowWrapper = styled.div`
+  cursor: pointer;
+  margin-left: auto;
+  font-size: 6px;
 `
 
 export const DropdownHeader = styled.div<{ isOpened?: boolean }>`
@@ -24,8 +34,4 @@ export const DropdownList = styled.div`
 export const DropdownFooter = styled.div`
   font-size: 13px;
   padding: 15px 0;
-
-  .font-bold {
-    font-weight: 600;
-  }
 `

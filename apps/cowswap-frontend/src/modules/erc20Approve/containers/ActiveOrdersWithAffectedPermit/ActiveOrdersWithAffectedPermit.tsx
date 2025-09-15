@@ -32,8 +32,10 @@ export function ActiveOrdersWithAffectedPermit({ currency }: { currency: Currenc
     <styledEl.DropdownWrapper>
       <styledEl.DropdownHeader isOpened={isDropdownOpen} onClick={(): void => setIsDropdownOpen((prev) => !prev)}>
         <AlertCircle />
-        Partial approval may block {ordersWithPermit.length} other orders
-        <ToggleArrow isOpen={isDropdownOpen} />
+        Partial approval may block <span className={'font-bold'}>{ordersWithPermit.length}</span> other orders
+        <styledEl.ArrowWrapper>
+          <ToggleArrow size={10} isOpen={isDropdownOpen} />
+        </styledEl.ArrowWrapper>
       </styledEl.DropdownHeader>
       {isDropdownOpen ? (
         <>
