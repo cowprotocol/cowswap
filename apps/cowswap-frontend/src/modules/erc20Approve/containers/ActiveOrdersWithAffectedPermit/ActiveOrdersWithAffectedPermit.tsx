@@ -8,15 +8,17 @@ import { AlertCircle } from 'react-feather'
 
 import { useOnlyPendingOrders } from 'legacy/state/orders/hooks'
 
+import { usePendingOrdersPrices } from 'modules/orders'
+import { TabOrderTypes } from 'modules/ordersTable'
+import { OrdersReceiptModal } from 'modules/ordersTable/containers/OrdersReceiptModal'
+import { OrdersTableStateUpdater } from 'modules/ordersTable/updaters/OrdersTableStateUpdater'
+
+import { ToggleArrow } from 'common/pure/ToggleArrow'
+import { doesOrderHavePermit } from 'common/utils/doesOrderHavePermit'
+
 import * as styledEl from './styled'
 
 // todo fix imports
-import { ToggleArrow } from '../../../../common/pure/ToggleArrow'
-import { doesOrderHavePermit } from '../../../../common/utils/doesOrderHavePermit'
-import { usePendingOrdersPrices } from '../../../orders'
-import { TabOrderTypes } from '../../../ordersTable'
-import { OrdersReceiptModal } from '../../../ordersTable/containers/OrdersReceiptModal'
-import { OrdersTableStateUpdater } from '../../../ordersTable/updaters/OrdersTableStateUpdater'
 import { AffectedOrdersWithPermit } from '../../pure'
 
 export function ActiveOrdersWithAffectedPermit({ currency }: { currency: Currency }): ReactNode {
@@ -46,6 +48,7 @@ export function ActiveOrdersWithAffectedPermit({ currency }: { currency: Currenc
       {isDropdownOpen ? (
         <>
           <styledEl.DropdownList>
+            {/** todo think how to move it from here */}
             <OrdersReceiptModal pendingOrdersPrices={pendingOrdersPrices} />
             <OrdersTableStateUpdater searchTerm={''} orders={ordersWithPermit} orderType={TabOrderTypes.LIMIT} />
             <AffectedOrdersWithPermit orders={ordersWithPermit} />
