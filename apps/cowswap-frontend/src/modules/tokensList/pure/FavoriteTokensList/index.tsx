@@ -24,7 +24,7 @@ export function FavoriteTokensList(props: FavoriteTokensListProps): ReactNode {
         {!hideTooltip && <HelpTooltip text={
           <>
             Your favorite saved tokens. Edit this list in your{' '}
-            <a href={tokensPageUrl}>Tokens page</a>.
+            <Link to="/account/tokens">Tokens page</Link>.
           </>
         } />}
       </styledEl.Header>
