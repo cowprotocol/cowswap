@@ -1808,6 +1808,17 @@
   resolved "https://registry.yarnpkg.com/@corex/deepmerge/-/deepmerge-4.0.43.tgz#9bd42559ebb41cc5a7fb7cfeea5f231c20977dca"
   integrity sha512-N8uEMrMPL0cu/bdboEWpQYb/0i2K5Qn8eCsxzOmxSggJbbQte7ljMRoXm917AbntqTGOzdTu+vP3KOOzoC70HQ==
 
+"@cowprotocol/app-data@^3.3.0":
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/app-data/-/app-data-3.3.0.tgz#644e7473a00eb5e6694a34d34b4359c6d7ef1060"
+  integrity sha512-3lfknouwg+j/xSyL5u5FI8rAlGPkzi+QsmXQvPS0O0ETaikx9v9pt5t3pZOv6jtsAmafFBFPtAUp/cdPrDSUaA==
+  dependencies:
+    ajv "^8.11.0"
+    cross-fetch "^3.1.5"
+    ipfs-only-hash "^4.0.0"
+    json-stringify-deterministic "^1.0.8"
+    multiformats "^9.6.4"
+
 "@cowprotocol/cms@^0.11.0":
   version "0.11.0"
   resolved "https://registry.yarnpkg.com/@cowprotocol/cms/-/cms-0.11.0.tgz#a355b07b84b362c1a01dc046acd8367d3d641235"
@@ -1815,28 +1826,32 @@
   dependencies:
     openapi-fetch "^0.9.3"
 
+"@cowprotocol/contracts@^1.8.0":
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/contracts/-/contracts-1.8.0.tgz#daffbd9846231c11a74b15a186bb754627e420b0"
+  integrity sha512-rMEHo1UBB6k4kRoWejHZNGggg6IBVt7vAd8x0FhEvjxhbq3zlAex61f9HpAcDExJNuvfwwDjsOc/7UGztCzhSw==
+
 "@cowprotocol/cow-runner-game@^0.2.9":
   version "0.2.9"
   resolved "https://registry.yarnpkg.com/@cowprotocol/cow-runner-game/-/cow-runner-game-0.2.9.tgz#3f94b3f370bd114f77db8b1d238cba3ef4e9d644"
   integrity sha512-rX7HnoV+HYEEkBaqVUsAkGGo0oBrExi+d6Io+8nQZYwZk+IYLmS9jdcIObsLviM2h4YX8+iin6NuKl35AaiHmg==
 
-"@cowprotocol/cow-sdk@7.0.1-beta.0":
-  version "7.0.1-beta.0"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-7.0.1-beta.0.tgz#1383a585a464949ba9211ac927573f8170d8cdd3"
-  integrity sha512-sizdFPnoIMWfRWp/6eFcZSsaw/H5MMrpe2JCKdLY9pSR4xCbbVYeUPLmDZqcmHF0O0Gpopk8zPy0Vv6kLooRGA==
+"@cowprotocol/cow-sdk@6.3.3":
+  version "6.3.3"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-6.3.3.tgz#a299d5596c58771a33c7298f61a555d5cdbd1297"
+  integrity sha512-34fy9xdmWn2/4LBEP7vPYG5WBMBHdc45ajaETt2RnpNIJYxHt/0IYjBKIdDw4QT73JVEo6+1TMSBUha1eSMn+A==
   dependencies:
-    "@cowprotocol/sdk-app-data" "workspace:*"
-    "@cowprotocol/sdk-bridging" "workspace:*"
-    "@cowprotocol/sdk-common" "workspace:*"
-    "@cowprotocol/sdk-composable" "workspace:*"
-    "@cowprotocol/sdk-config" "workspace:*"
-    "@cowprotocol/sdk-contracts-ts" "workspace:*"
-    "@cowprotocol/sdk-cow-shed" "workspace:*"
-    "@cowprotocol/sdk-order-book" "workspace:*"
-    "@cowprotocol/sdk-order-signing" "workspace:*"
-    "@cowprotocol/sdk-subgraph" "workspace:*"
-    "@cowprotocol/sdk-trading" "workspace:*"
-    "@cowprotocol/sdk-weiroll" "workspace:*"
+    "@cowprotocol/app-data" "^3.3.0"
+    "@cowprotocol/contracts" "^1.8.0"
+    "@ethersproject/abstract-signer" "^5.8.0"
+    "@openzeppelin/merkle-tree" "^1.0.8"
+    "@weiroll/weiroll.js" "^0.3.0"
+    cross-fetch "^3.2.0"
+    deepmerge "^4.3.1"
+    exponential-backoff "^3.1.2"
+    graphql "^16.11.0"
+    graphql-request "^6.1.0"
+    limiter "^3.0.0"
 
 "@cowprotocol/sdk-app-data@workspace:*":
   version "4.0.0-monorepo.2"
@@ -1864,20 +1879,6 @@
     "@cowprotocol/sdk-trading" "workspace:*"
     "@cowprotocol/sdk-weiroll" "workspace:*"
 
-"@cowprotocol/sdk-bridging@workspace:*":
-  version "0.1.0-monorepo.3"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/sdk-bridging/-/sdk-bridging-0.1.0-monorepo.3.tgz#f168535dd31b5a80a690a1d92b87e04bde4e0c01"
-  integrity sha512-oSb4DfRAM7hJRpQxl7rr2r+L+N7MibvzT+8rnCe2jjFhbcfNMcg9Nib/7fcbifcewQYbj0tJHsRcUlZKZ6y+iQ==
-  dependencies:
-    "@cowprotocol/sdk-app-data" "workspace:*"
-    "@cowprotocol/sdk-common" "workspace:*"
-    "@cowprotocol/sdk-config" "workspace:*"
-    "@cowprotocol/sdk-contracts-ts" "workspace:*"
-    "@cowprotocol/sdk-cow-shed" "workspace:*"
-    "@cowprotocol/sdk-order-book" "workspace:*"
-    "@cowprotocol/sdk-trading" "workspace:*"
-    "@cowprotocol/sdk-weiroll" "workspace:*"
-
 "@cowprotocol/sdk-common@^0.2.1-beta.0", "@cowprotocol/sdk-common@workspace:*":
   version "0.2.1-beta.0"
   resolved "https://registry.yarnpkg.com/@cowprotocol/sdk-common/-/sdk-common-0.2.1-beta.0.tgz#620d7f3696cedf4d150dc6c1df09497b1bc9124c"
@@ -1887,18 +1888,6 @@
   version "0.2.1-beta.0"
   resolved "https://registry.yarnpkg.com/@cowprotocol/sdk-composable/-/sdk-composable-0.2.1-beta.0.tgz#eb6dbc5b2644c5ee975cf6af1dbe40ea762e06f5"
   integrity sha512-Lvy/PtqxztNOb1cDYYx99gi3X9ZODLXqHAcymNGq5H11xiAIZ4d3Wjqae/5agsSzT2qQRAgGs7MYABFUA4mGVw==
-  dependencies:
-    "@cowprotocol/sdk-common" "workspace:*"
-    "@cowprotocol/sdk-config" "workspace:*"
-    "@cowprotocol/sdk-contracts-ts" "workspace:*"
-    "@cowprotocol/sdk-order-book" "workspace:*"
-    "@cowprotocol/sdk-order-signing" "workspace:*"
-    "@openzeppelin/merkle-tree" "^1.0.8"
-
-"@cowprotocol/sdk-composable@workspace:*":
-  version "0.1.0-monorepo.2"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/sdk-composable/-/sdk-composable-0.1.0-monorepo.2.tgz#850902d119c82bb5ec3591348faa854a1152d7e2"
-  integrity sha512-LyK0wbhOYS9YIbmQqXJBAiboG+Mg2+bq3MEO77rYGIB4a0VG3cO1dxLZPwiSjSyVJS8kG13SFlmnuPh/eaWDqA==
   dependencies:
     "@cowprotocol/sdk-common" "workspace:*"
     "@cowprotocol/sdk-config" "workspace:*"
@@ -1973,16 +1962,6 @@
   version "0.2.1-beta.0"
   resolved "https://registry.yarnpkg.com/@cowprotocol/sdk-subgraph/-/sdk-subgraph-0.2.1-beta.0.tgz#c6b87984435a186a12c7a7ce3596faea4eb0ecaf"
   integrity sha512-cJgnlkOSCMzO2LXT19+HsqEDxB9IXsc242of4EFxvUaHpCs2io04GmyTMrXhYqf8Qx7kw3DRWZMov7R2q632gA==
-  dependencies:
-    "@cowprotocol/sdk-common" "workspace:*"
-    "@cowprotocol/sdk-config" "workspace:*"
-    graphql "^16.11.0"
-    graphql-request "^4.3.0"
-
-"@cowprotocol/sdk-subgraph@workspace:*":
-  version "0.1.0-monorepo.2"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/sdk-subgraph/-/sdk-subgraph-0.1.0-monorepo.2.tgz#7e94ebf8490d627a25f0beea5e9d48a15ea9cdbc"
-  integrity sha512-XL8+J2sUEpq2gFy33S/4/l6J70pR+ljVM7Vhxawf9Gt6kmojq8T9Co5mgGvmSdSb0KbUgOSHIFrb6Rw88nWu5Q==
   dependencies:
     "@cowprotocol/sdk-common" "workspace:*"
     "@cowprotocol/sdk-config" "workspace:*"
@@ -3589,7 +3568,7 @@
     "@gnosis.pm/dex-contracts" "^0.4.3"
     bignumber.js "^9.0.0"
 
-"@graphql-typed-document-node/core@^3.1.1":
+"@graphql-typed-document-node/core@^3.1.1", "@graphql-typed-document-node/core@^3.2.0":
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/@graphql-typed-document-node/core/-/core-3.2.0.tgz#5f3d96ec6b2354ad6d8a28bf216a1d97b5426861"
   integrity sha512-mB9oAsNCm9aM3/SOv4YtBMqZbYj10R7dkq8byBqxGY/ncFwhf2oQzMV+LCRlWoDSEBJ3COiR1yeDvMtsoOsuFQ==
@@ -10892,6 +10871,13 @@
     "@webassemblyjs/ast" "1.14.1"
     "@xtuc/long" "4.2.2"
 
+"@weiroll/weiroll.js@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@weiroll/weiroll.js/-/weiroll.js-0.3.0.tgz#75a7b6c7016c0c0c2be13e6be408a4ead1c68815"
+  integrity sha512-RV+iKtY/V/Oc0zoPFPaNGAkOOOV89uGdiocxWd4HT5XNdGob0/XI+07GtP0Dv3B7QLwLTs8QMNKPvsH846svrw==
+  dependencies:
+    ethers "^5.3.1"
+
 "@wry/caches@^1.0.0":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@wry/caches/-/caches-1.0.1.tgz#8641fd3b6e09230b86ce8b93558d44cf1ece7e52"
@@ -16812,7 +16798,7 @@ ethers@5.7.2:
     "@ethersproject/web" "5.7.1"
     "@ethersproject/wordlists" "5.7.0"
 
-ethers@^5.8.0:
+ethers@^5.3.1, ethers@^5.8.0:
   version "5.8.0"
   resolved "https://registry.yarnpkg.com/ethers/-/ethers-5.8.0.tgz#97858dc4d4c74afce83ea7562fe9493cedb4d377"
   integrity sha512-DUq+7fHrCg1aPDFCHx6UIPb3nmt2XMpM7Y/g2gLhsl3lIBqeAfOJIl1qEvRf2uq3BiKxmh6Fh5pfp2ieyek7Kg==
@@ -18371,6 +18357,14 @@ graphql-request@4.3.0, graphql-request@^4.3.0:
     cross-fetch "^3.1.5"
     extract-files "^9.0.0"
     form-data "^3.0.0"
+
+graphql-request@^6.1.0:
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/graphql-request/-/graphql-request-6.1.0.tgz#f4eb2107967af3c7a5907eb3131c671eac89be4f"
+  integrity sha512-p+XPfS4q7aIpKVcgmnZKhMNqhltk20hfXtkaIkTfjjmiKMJ5xrt5c743cL03y/K7y1rg3WrIC49xGiEQ4mxdNw==
+  dependencies:
+    "@graphql-typed-document-node/core" "^3.2.0"
+    cross-fetch "^3.1.5"
 
 graphql-tag@^2.12.6:
   version "2.12.6"
