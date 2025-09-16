@@ -1,8 +1,12 @@
-import { ReactNode, useMemo } from 'react'
+import { ReactNode } from 'react'
 
-import { useAmountsToSignFromQuote } from '../../../trade'
-import { ApproveRequiredReason, MAX_APPROVE_AMOUNT, useIsApprovalOrPermitRequired } from '../../hooks'
-import { useGetUserApproveAmountState, useSetUserApproveAmountModalState } from '../../state'
+import {
+  ApproveRequiredReason,
+  MAX_APPROVE_AMOUNT,
+  useGetPartialAmountToSignApprove,
+  useIsApprovalOrPermitRequired,
+} from '../../hooks'
+import { useSetUserApproveAmountModalState } from '../../state'
 import { ActiveOrdersWithAffectedPermit } from '../ActiveOrdersWithAffectedPermit'
 import { TradeApproveToggle } from '../TradeApproveToggle'
 
@@ -11,13 +15,7 @@ export function TradeApproveWithAffectedOrderList(): ReactNode {
 
   const setUserApproveAmountModalState = useSetUserApproveAmountModalState()
 
-  const { amountSetByUser } = useGetUserApproveAmountState() || {}
-  const { maximumSendSellAmount } = useAmountsToSignFromQuote() || {}
-
-  const amountToApprove = useMemo(
-    () => amountSetByUser || maximumSendSellAmount,
-    [amountSetByUser, maximumSendSellAmount],
-  )
+  const amountToApprove = useGetPartialAmountToSignApprove()
 
   const showAffectedOrders =
     isApproveRequired === ApproveRequiredReason.Eip2612PermitRequired &&
