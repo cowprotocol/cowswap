@@ -1,27 +1,29 @@
+import { MessageDescriptor } from '@lingui/core'
+import { msg } from '@lingui/core/macro'
 import ms from 'ms.macro'
 import { format } from 'timeago.js'
 
 import { MAX_ORDER_DEADLINE } from 'common/constants/common'
 
 export interface LimitOrderDeadline {
-  title: string
+  title: MessageDescriptor | string
   value: number
 }
 
 export const MIN_CUSTOM_DEADLINE = ms`30min`
 export const MAX_CUSTOM_DEADLINE = MAX_ORDER_DEADLINE
 
-export const defaultLimitOrderDeadline: LimitOrderDeadline = { title: '7 Days', value: ms`7d` }
+export const defaultLimitOrderDeadline: LimitOrderDeadline = { title: msg`7 Days`, value: ms`7d` }
 
 export const LIMIT_ORDERS_DEADLINES: LimitOrderDeadline[] = [
-  { title: '5 Minutes', value: ms`5m` },
-  { title: '30 Minutes', value: ms`30m` },
-  { title: '1 Hour', value: ms`1 hour` },
-  { title: '1 Day', value: ms`1d` },
-  { title: '3 Days', value: ms`3d` },
+  { title: msg`5 Minutes`, value: ms`5m` },
+  { title: msg`30 Minutes`, value: ms`30m` },
+  { title: msg`1 Hour`, value: ms`1 hour` },
+  { title: msg`1 Day`, value: ms`1d` },
+  { title: msg`3 Days`, value: ms`3d` },
   defaultLimitOrderDeadline,
-  { title: '1 Month', value: ms`30d` },
-  { title: '1 Year (max)', value: MAX_CUSTOM_DEADLINE },
+  { title: msg`1 Month`, value: ms`30d` },
+  { title: msg`1 Year (max)`, value: MAX_CUSTOM_DEADLINE },
 ]
 
 /**

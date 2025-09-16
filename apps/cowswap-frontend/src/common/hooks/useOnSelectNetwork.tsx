@@ -6,6 +6,8 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useAddSnackbar } from '@cowprotocol/snackbars'
 import { useSwitchNetwork } from '@cowprotocol/wallet'
 
+import { Trans } from '@lingui/react/macro'
+
 import { useCloseModal } from 'legacy/state/application/hooks'
 import { ApplicationModal } from 'legacy/state/application/reducer'
 
@@ -27,8 +29,8 @@ export function useOnSelectNetwork(): (chainId: SupportedChainId, skipClose?: bo
         await switchNetwork(targetChain)
 
         setChainIdToUrl(targetChain)
-      // TODO: Replace any with proper type definitions
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // TODO: Replace any with proper type definitions
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (error: any) {
         console.error('Failed to switch networks', error)
 
@@ -36,14 +38,16 @@ export function useOnSelectNetwork(): (chainId: SupportedChainId, skipClose?: bo
           return
         }
 
+        const chainInfoLabel = getChainInfo(targetChain)?.label
+
         addSnackbar({
           id: 'failed-network-switch',
           icon: 'alert',
           content: (
-            <>
-              Failed to switch networks from the CoW Swap Interface. In order to use CoW Swap on{' '}
-              {getChainInfo(targetChain)?.label}, you must change the network in your wallet.
-            </>
+            <Trans>
+              Failed to switch networks from the CoW Swap Interface. In order to use CoW Swap on {chainInfoLabel}, you
+              must change the network in your wallet.
+            </Trans>
           ),
         })
 
@@ -54,6 +58,6 @@ export function useOnSelectNetwork(): (chainId: SupportedChainId, skipClose?: bo
         closeModal()
       }
     },
-    [switchNetwork, setWalletConnectionError, addSnackbar, closeModal, setChainIdToUrl]
+    [switchNetwork, setWalletConnectionError, addSnackbar, closeModal, setChainIdToUrl],
   )
 }

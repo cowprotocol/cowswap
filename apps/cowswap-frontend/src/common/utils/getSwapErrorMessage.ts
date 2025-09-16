@@ -2,7 +2,7 @@ import { capitalizeFirstLetter, getProviderErrorMessage, isRejectRequestProvider
 
 import { isValidOperatorError } from 'api/cowProtocol/errors/OperatorError'
 
-export const USER_SWAP_REJECTED_ERROR = 'User rejected signing the order'
+export const USER_SWAP_REJECTED_ERROR: string = `User rejected signing the order`
 
 export function getSwapErrorMessage(error: Error): string {
   if (isRejectRequestProviderError(error)) {

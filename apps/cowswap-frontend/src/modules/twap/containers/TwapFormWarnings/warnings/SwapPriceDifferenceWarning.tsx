@@ -1,6 +1,7 @@
 import { FiatAmount, InlineBanner, StatusColorVariant, TokenAmount } from '@cowprotocol/ui'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
+import { Trans } from '@lingui/react/macro'
 import { NavLink } from 'react-router'
 import styled from 'styled-components/macro'
 
@@ -9,7 +10,6 @@ import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRou
 import { SwapAmountDifference } from 'modules/twap/hooks/useSwapAmountDifference'
 
 import { Routes } from 'common/constants/routes'
-
 
 export type SwapPriceDifferenceWarningProps = {
   swapAmountDifference: SwapAmountDifference
@@ -51,24 +51,32 @@ export function SwapPriceDifferenceWarning({
     <InlineBanner bannerType={StatusColorVariant.Savings}>
       {isTwapBetter ? (
         <>
-          <strong>Maximizing Your Gains! </strong>
+          <strong>
+            <Trans>Maximizing Your Gains!</Trans>
+          </strong>
           <p>
-            You could gain an extra{' '}
-            <b>
-              <TokenAmount amount={amount} tokenSymbol={amount.currency} />
-            </b>{' '}
-            compared to using a {swapOrderLink}
+            <Trans>
+              You could gain an extra{' '}
+              <b>
+                <TokenAmount amount={amount} tokenSymbol={amount.currency} />
+              </b>{' '}
+              compared to using a {swapOrderLink}
+            </Trans>
           </p>
         </>
       ) : (
         <>
-          <strong>Trade Smart, Save More!</strong>
+          <strong>
+            <Trans>Trade Smart, Save More!</Trans>
+          </strong>
           <p>
-            Considering current network costs (
-            <b>
-              <FiatAmount amount={feeFiatAmount} />
-            </b>{' '}
-            per chunk), you could save more by reducing the number of parts or switch to a {swapOrderLink}.
+            <Trans>
+              Considering current network costs (
+              <b>
+                <FiatAmount amount={feeFiatAmount} />
+              </b>{' '}
+              per chunk), you could save more by reducing the number of parts or switch to a {swapOrderLink}.
+            </Trans>
           </p>
         </>
       )}

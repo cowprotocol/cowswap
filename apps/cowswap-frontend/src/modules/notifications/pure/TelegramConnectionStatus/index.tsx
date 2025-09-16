@@ -2,6 +2,7 @@ import { ReactNode } from 'react'
 
 import { FancyButton, Loader } from '@cowprotocol/ui'
 
+import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
 import { Toggle } from 'legacy/components/Toggle'
@@ -35,7 +36,9 @@ export function TelegramConnectionStatus({
   return (
     <div>
       {needsAuthorization ? (
-        <AuthButton onClick={authorize}>Authorize Telegram</AuthButton>
+        <AuthButton onClick={authorize}>
+          <Trans>Authorize Telegram</Trans>
+        </AuthButton>
       ) : (
         <Toggle id="toggle-telegram-notifications" isActive={isSubscribed} toggle={toggleSubscription} />
       )}

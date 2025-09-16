@@ -1,7 +1,5 @@
 import { ReactNode, useCallback, useMemo, useState } from 'react'
 
-import { Trans } from '@lingui/macro'
-
 import { SimpleAccountDetails } from 'modules/account/containers/SimpleAccountDetails'
 import { TradeFormBlankButton } from 'modules/tradeFormValidation'
 
@@ -72,7 +70,7 @@ export function EthFlowModalBottomContent(params: BottomContentParams): ReactNod
       {showWrapPreview && <WrappingPreview {...wrappingPreview} />}
       <SimpleAccountDetails pendingTransactions={pendingTransactions} confirmedTransactions={[]} $margin="12px 0 0" />
       <TradeFormBlankButton onClick={onClick} loading={isActionInProgress || showLoader}>
-        <Trans>{buttonText}</Trans>
+        {buttonText}
       </TradeFormBlankButton>
     </>
   )

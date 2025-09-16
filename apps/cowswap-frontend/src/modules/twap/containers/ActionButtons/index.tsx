@@ -2,6 +2,8 @@ import { useCallback } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 
+import { t } from '@lingui/core/macro'
+
 import { useTradeConfirmActions } from 'modules/trade'
 import { TradeFormButtons, TradeFormValidation, useTradeFormButtonContext } from 'modules/tradeFormValidation'
 
@@ -51,7 +53,7 @@ export function ActionButtons({
     confirmTrade,
   }
 
-  const tradeFormButtonContext = useTradeFormButtonContext('TWAP order', confirmTrade)
+  const tradeFormButtonContext = useTradeFormButtonContext(t`TWAP order`, confirmTrade)
 
   if (!tradeFormButtonContext) return null
 
@@ -62,7 +64,7 @@ export function ActionButtons({
 
   return (
     <TradeFormButtons
-      confirmText="Review TWAP order"
+      confirmText={t`Review TWAP order`}
       validation={primaryFormValidation}
       context={tradeFormButtonContext}
       isDisabled={!areWarningsAccepted}

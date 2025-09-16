@@ -1,5 +1,7 @@
 import { ReactNode } from 'react'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import { Textfit } from 'react-textfit'
 
 import * as styledEl from './styled'
@@ -18,7 +20,7 @@ export function ShowSurplus({
 }): ReactNode {
   return (
     <styledEl.BenefitSurplusContainer>
-      I just received surplus on
+      <Trans>I just received surplus on</Trans>
       <styledEl.TokenPairTitle title={`${order?.inputToken.symbol} / ${order?.outputToken.symbol}`}>
         {truncateWithEllipsis(`${order?.inputToken.symbol} / ${order?.outputToken.symbol}`, 30)}
       </styledEl.TokenPairTitle>{' '}
@@ -36,7 +38,7 @@ export function ShowSurplus({
             lineHeight: 1.2,
           }}
         >
-          {shouldShowSurplus && surplusPercentValue !== 'N/A' ? `+${surplusPercentValue}%` : 'N/A'}
+          {shouldShowSurplus && surplusPercentValue !== 'N/A' ? `+${surplusPercentValue}%` : t`N/A`}
         </Textfit>
       </styledEl.Surplus>
     </styledEl.BenefitSurplusContainer>
@@ -46,7 +48,9 @@ export function ShowSurplus({
 export function NoSurplus({ randomBenefit }: { randomBenefit: string }): ReactNode {
   return (
     <styledEl.BenefitSurplusContainer>
-      <styledEl.BenefitTagLine>Did you know?</styledEl.BenefitTagLine>
+      <styledEl.BenefitTagLine>
+        <Trans>Did you know?</Trans>
+      </styledEl.BenefitTagLine>
       <styledEl.BenefitText>
         <Textfit
           mode="multi"

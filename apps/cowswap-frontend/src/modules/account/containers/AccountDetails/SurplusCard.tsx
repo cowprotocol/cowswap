@@ -9,6 +9,8 @@ import {
   UI,
 } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 
@@ -176,28 +178,32 @@ export function SurplusCard() {
         <div>
           <span>
             <i>
-              Your total surplus{' '}
+              <Trans>Your total surplus</Trans>{' '}
               <HelpTooltip
-                text={`The total surplus CoW Swap has generated for you in ${nativeSymbol} across all your trades since ${startDate}.`}
+                text={t`The total surplus CoW Swap has generated for you in ${nativeSymbol} across all your trades since ${startDate}.`}
               />
             </i>
           </span>
           <span>
             {isLoading ? (
-              <p>Loading...</p>
+              <p>
+                <Trans>Loading...</Trans>
+              </p>
             ) : showSurplusAmount ? (
               <b>
                 +<TokenAmount amount={surplusAmount} tokenSymbol={surplusAmount?.currency} />
               </b>
             ) : (
-              <p>No surplus for the given time period</p>
+              <p>
+                <Trans>No surplus for the given time period</Trans>
+              </p>
             )}
           </span>
           <small>{surplusUsdAmount && <FiatAmount amount={surplusUsdAmount} accurate={false} />}</small>
         </div>
         <div>
           <ExternalLink href={'https://cow.fi/learn/announcing-cow-swap-surplus-notifications'}>
-            Learn about surplus on CoW Swap ↗
+            <Trans>Learn about surplus on CoW Swap</Trans> ↗
           </ExternalLink>
         </div>
       </InfoCard>

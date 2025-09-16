@@ -1,3 +1,4 @@
+import { t } from '@lingui/core/macro'
 import styled from 'styled-components/macro'
 
 import { LimitOrdersWidget } from 'modules/limitOrders'
@@ -24,7 +25,7 @@ export function AlternativeLimitOrder() {
     return null
   }
 
-  const title = `${isEdit ? 'Edit' : 'Recreate'} limit order`
+  const title = isEdit ? t`Edit limit order` : t`Recreate limit order`
 
   return (
     <Wrapper>

@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
 
+import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
 import { ConfirmDetailsItem } from 'modules/trade'
@@ -26,7 +27,9 @@ export function PreparingBridgingContent({
         withTimelineDot
         label={
           <Wrapper>
-            Loading bridge data <AnimatedEllipsis isVisible />
+            <Trans>
+              Loading bridge data <AnimatedEllipsis isVisible />
+            </Trans>
           </Wrapper>
         }
       >

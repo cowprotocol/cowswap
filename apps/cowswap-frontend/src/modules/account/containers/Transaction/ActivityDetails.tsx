@@ -11,7 +11,9 @@ import { UiOrderType } from '@cowprotocol/types'
 import { BannerOrientation, ExternalLink, Icon, IconType, TokenAmount, UI } from '@cowprotocol/ui'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
-import { BRIDGING_FINAL_STATUSES, useBridgeOrderData } from 'entities/bridgeOrders'
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
+import { useBridgeOrderData, BRIDGING_FINAL_STATUSES } from 'entities/bridgeOrders'
 import { useAddOrderToSurplusQueue } from 'entities/surplusModal'
 
 import { ActivityState, getActivityState } from 'legacy/hooks/useActivityDerivedState'
@@ -106,43 +108,67 @@ export function GnosisSafeTxDetails(props: {
 
   let signaturesMessage: ReactElement
 
-  const areIsMessage = pendingSignaturesCount > 1 ? 's are' : ' is'
-
   if (isExecutedActivity) {
-    signaturesMessage = <span>Executed</span>
+    signaturesMessage = (
+      <span>
+        <Trans>Executed</Trans>
+      </span>
+    )
   } else if (isCancelled) {
-    signaturesMessage = <span>Cancelled order</span>
+    signaturesMessage = (
+      <span>
+        <Trans>Cancelled order</Trans>
+      </span>
+    )
   } else if (isExpired) {
-    signaturesMessage = <span>Expired order</span>
+    signaturesMessage = (
+      <span>
+        <Trans>Expired order</Trans>
+      </span>
+    )
   } else if (isFailed) {
-    signaturesMessage = <span>Invalid order</span>
+    signaturesMessage = (
+      <span>
+        <Trans>Invalid order</Trans>
+      </span>
+    )
   } else if (alreadySigned) {
-    signaturesMessage = <span>Enough signatures</span>
+    signaturesMessage = (
+      <span>
+        <Trans>Enough signatures</Trans>
+      </span>
+    )
   } else if (numConfirmations === 0) {
     signaturesMessage = (
       <>
         <span>
-          <b>No signatures yet</b>
+          <b>
+            <Trans>No signatures yet</Trans>
+          </b>
         </span>
         <TextAlert isPending={isPendingSignatures} isCancelled={isCancelled} isExpired={isExpired}>
-          {gnosisSafeThreshold} signature{areIsMessage} required
+          {gnosisSafeThreshold} {gnosisSafeThreshold === 1 ? t`signature is` : t`signatures are`} {t`required`}
         </TextAlert>
       </>
     )
   } else if (numConfirmations >= gnosisSafeThreshold) {
     signaturesMessage = isExecuted ? (
       <span>
-        <b>Enough signatures</b>
+        <b>
+          <Trans>Enough signatures</Trans>
+        </b>
       </span>
     ) : (
       <>
         {!isReplaced && (
           <>
             <span>
-              Enough signatures, <b>but not executed</b>
+              <Trans>
+                Enough signatures, <b>but not executed</b>
+              </Trans>
             </span>
             <TextAlert isPending={isPendingSignatures} isCancelled={isCancelled} isExpired={isExpired}>
-              Execute Safe transaction
+              <Trans>Execute Safe transaction</Trans>
             </TextAlert>
           </>
         )}
@@ -152,13 +178,16 @@ export function GnosisSafeTxDetails(props: {
     signaturesMessage = (
       <>
         <span>
-          Signed:{' '}
-          <b>
-            {numConfirmations} out of {gnosisSafeThreshold} signers
-          </b>
+          <Trans>
+            Signed:{' '}
+            <b>
+              {numConfirmations} out of {gnosisSafeThreshold} signers
+            </b>
+          </Trans>
         </span>
         <TextAlert isPending={isPendingSignatures} isCancelled={isCancelled} isExpired={isExpired}>
-          {pendingSignaturesCount} more signature{areIsMessage} required
+          {pendingSignaturesCount} {pendingSignaturesCount === 1 ? t`more signature is` : t`more signatures are`}{' '}
+          {t`required`}
         </TextAlert>
       </>
     )
@@ -167,7 +196,9 @@ export function GnosisSafeTxDetails(props: {
   return (
     <TransactionInnerDetail>
       <span>
-        Safe Nonce: <b>{nonce}</b>
+        <Trans>
+          Safe Nonce: <b>{nonce}</b>
+        </Trans>
       </span>
       {signaturesMessage}
 
@@ -336,7 +367,7 @@ export function ActivityDetails(props: {
   }
 
   const { kind, from, to, fulfillmentTime, validTo } = orderSummary
-  const activityName = isOrder ? `${kind} order` : 'Transaction'
+  const activityName = isOrder ? `${kind} ` + t`order` : t`Transaction`
   let inputToken = activityDerivedState?.order?.inputToken || null
   let outputToken = activityDerivedState?.order?.outputToken || null
 
@@ -354,7 +385,9 @@ export function ActivityDetails(props: {
     <OrderHooksDetails appData={fullAppData} margin="10px 0 0">
       {(children) => (
         <SummaryInnerRow>
-          <b>Hooks</b>
+          <b>
+            <Trans>Hooks</Trans>
+          </b>
           <i>{children}</i>
         </SummaryInnerRow>
       )}
@@ -363,12 +396,12 @@ export function ActivityDetails(props: {
 
   const orderBasicDetails = (
     <>
-      <ConfirmDetailsItem withTimelineDot label="Limit price">
+      <ConfirmDetailsItem withTimelineDot label={t`Limit price`}>
         <span>
           <RateInfo noLabel rateInfoParams={rateInfoParams} />
         </span>
       </ConfirmDetailsItem>
-      <ConfirmDetailsItem withTimelineDot label="Valid to">
+      <ConfirmDetailsItem withTimelineDot label={t`Valid to`}>
         <span>{validTo}</span>
       </ConfirmDetailsItem>
     </>
@@ -461,15 +494,19 @@ export function ActivityDetails(props: {
                 // Regular order layout
                 <>
                   <SummaryInnerRow>
-                    <b>From{kind === 'buy' && ' at most'}</b>
+                    <b>
+                      <Trans>From</Trans> {kind === 'buy' && ' ' && <Trans>at most</Trans>}
+                    </b>
                     <i>{from}</i>
                   </SummaryInnerRow>
                   <SummaryInnerRow>
-                    <b>To{kind === 'sell' && ' at least'}</b>
+                    <b>
+                      <Trans>To</Trans> {kind === 'sell' && ' ' && <Trans>at least</Trans>}
+                    </b>
                     <i>{to}</i>
                   </SummaryInnerRow>
                   <SummaryInnerRow>
-                    <b>{isOrderFulfilled ? 'Exec. price' : 'Limit price'}</b>
+                    <b>{isOrderFulfilled ? <Trans>Exec. price</Trans> : <Trans>Limit price</Trans>}</b>
                     <i>
                       <RateInfo noLabel rateInfoParams={rateInfoParams} />
                     </i>
@@ -477,22 +514,28 @@ export function ActivityDetails(props: {
                   <SummaryInnerRow isCancelled={isCancelled} isExpired={isExpired}>
                     {fulfillmentTime ? (
                       <>
-                        <b>Filled on</b>
+                        <b>
+                          <Trans>Filled on</Trans>
+                        </b>
                         <i>{fulfillmentTime}</i>
                       </>
                     ) : (
                       <>
-                        <b>Valid to</b>
+                        <b>
+                          <Trans>Valid to</Trans>
+                        </b>
                         <i>{validTo}</i>
                       </>
                     )}
                   </SummaryInnerRow>
                   {order && isCustomRecipient && (
                     <SummaryInnerRow>
-                      <b>Recipient:</b>
+                      <b>
+                        <Trans>Recipient</Trans>:
+                      </b>
                       <i>
                         {isCustomRecipientWarningBannerVisible && (
-                          <Icon image={IconType.ALERT} color={UI.COLOR_ALERT} description="Alert" size={18} />
+                          <Icon image={IconType.ALERT} color={UI.COLOR_ALERT} description={t`Alert`} size={18} />
                         )}
                         <ExternalLink
                           href={getExplorerLink(chainId, order.receiver || order.owner, ExplorerDataType.ADDRESS)}
@@ -504,7 +547,9 @@ export function ActivityDetails(props: {
                   )}
                   {surplusAmount?.greaterThan(0) && (
                     <SummaryInnerRow>
-                      <b>Surplus</b>
+                      <b>
+                        <Trans>Surplus</Trans>
+                      </b>
                       <i>
                         <TokenAmount amount={surplusAmount} tokenSymbol={surplusToken} />
                         {showFiatValue && (
@@ -529,7 +574,7 @@ export function ActivityDetails(props: {
 
           {activityLinkUrl && enhancedTransaction?.replacementType !== 'replaced' && (
             <ActivityLink href={activityLinkUrl} disableMouseActions={disableMouseActions}>
-              View details ↗
+              <Trans>View details</Trans> ↗
             </ActivityLink>
           )}
           <GnosisSafeTxDetails chainId={chainId} activityDerivedState={activityDerivedState} />

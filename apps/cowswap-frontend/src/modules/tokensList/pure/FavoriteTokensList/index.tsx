@@ -4,6 +4,9 @@ import { TokenWithLogo } from '@cowprotocol/common-const'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { HelpTooltip, TokenSymbol } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
+
 import * as styledEl from './styled'
 
 export interface FavoriteTokensListProps {
@@ -20,8 +23,10 @@ export function FavoriteTokensList(props: FavoriteTokensListProps): ReactNode {
   return (
     <div>
       <styledEl.Header>
-        <h4>Favorite tokens</h4>
-        {!hideTooltip && <HelpTooltip text="Your favorite saved tokens. Edit this list in your account page." />}
+        <h4>
+          <Trans>Favorite tokens</Trans>
+        </h4>
+        {!hideTooltip && <HelpTooltip text={t`Your favorite saved tokens. Edit this list in your account page.`} />}
       </styledEl.Header>
       <styledEl.List>
         {tokens.map((token) => {
