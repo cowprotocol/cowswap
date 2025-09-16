@@ -664,8 +664,9 @@ const LENS_STABLECOINS = [
   WRAPPED_NATIVE_CURRENCIES[SupportedChainId.LENS].address, // WGHO
 ].map((t) => t.toLowerCase())
 
-// TODO: add more stablecoins for BNB
-const BNB_STABLECOINS = [USDC_BNB.address].map((t) => t.toLowerCase())
+const BNB_STABLECOINS = [USDC_BNB.address, USDT_BNB.address, DAI_BNB.address, BUSD_BNB.address].map((t) =>
+  t.toLowerCase(),
+)
 
 const SEPOLIA_STABLECOINS = [USDC_SEPOLIA.address, USDT_SEPOLIA.address].map((t) => t.toLowerCase())
 
