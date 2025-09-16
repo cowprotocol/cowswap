@@ -73,24 +73,29 @@ export function TradeButtons({
   const { isPartialApproveEnabled } = useFeatureFlags()
   const tradeFormButtonContext = useTradeFormButtonContext(confirmText, confirmTrade, !!isPartialApproveEnabled)
 
+  const sellTokenChainId = inputCurrency?.chainId ?? chainId
+  const destinationChainFallback = !isCurrentTradeBridging ? chainId : undefined
+  const buyTokenChainId = outputCurrency?.chainId ?? destinationChainFallback
+  const toChainId = outputCurrency?.chainId ?? destinationChainFallback
+
   // Analytics event for bridge transactions
   const swapBridgeClickEvent =
     isCurrentTradeBridging && inputCurrency && outputCurrency && inputCurrencyAmount
       ? toCowSwapGtmEvent({
           ...BRIDGE_ANALYTICS_EVENT,
-          label: `From: ${chainId}, To: ${outputCurrency.chainId || chainId}, TokenIn: ${inputCurrency.symbol || ''}, TokenOut: ${outputCurrency.symbol || ''}, Amount: ${inputCurrencyAmount.toSignificant(6)}`,
+          label: `From: ${chainId}, To: ${toChainId ?? 'unknown'}, TokenIn: ${inputCurrency.symbol || ''}, TokenOut: ${outputCurrency.symbol || ''}, Amount: ${inputCurrencyAmount.toSignificant(6)}`,
           from_chain_id: chainId,
-          to_chain_id: outputCurrency.chainId || chainId,
+          ...(toChainId !== undefined && { to_chain_id: toChainId }),
           wallet_address: walletAddress,
           sell_token: getCurrencyAddress(inputCurrency),
           sell_token_symbol: inputCurrency.symbol || '',
-          sell_token_chain_id: inputCurrency.chainId ?? '',
+          sell_token_chain_id: sellTokenChainId,
           sell_amount: inputCurrencyAmount.quotient.toString(),
           sell_amount_human: inputCurrencyAmount.toSignificant(6),
           ...(outputCurrencyAmount && {
             buy_token: getCurrencyAddress(outputCurrency),
             buy_token_symbol: outputCurrency.symbol || '',
-            buy_token_chain_id: outputCurrency.chainId ?? '',
+            ...(buyTokenChainId !== undefined && { buy_token_chain_id: buyTokenChainId }),
             buy_amount_expected: outputCurrencyAmount.quotient.toString(),
             buy_amount_human: outputCurrencyAmount.toSignificant(6),
           }),
