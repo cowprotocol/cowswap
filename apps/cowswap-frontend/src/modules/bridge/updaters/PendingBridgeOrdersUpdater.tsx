@@ -137,6 +137,8 @@ function PendingOrderUpdater({ chainId, orderUid, openSince }: PendingOrderUpdat
         action: 'bridging_failed',
         label: analyticsSummary,
         orderId: orderUid,
+        from_chain_id: sourceChainId,
+        to_chain_id: destinationChainId,
       } as GtmEvent<CowSwapAnalyticsCategory.Bridge>)
     }
   }, [crossChainOrder, updateBridgeOrderQuote, addOrderToSurplusQueue, analytics, openSince])
