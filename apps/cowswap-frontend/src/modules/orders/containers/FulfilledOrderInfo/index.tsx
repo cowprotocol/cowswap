@@ -34,9 +34,6 @@ export function FulfilledOrderInfo({ chainId, orderUid }: ExecutedSummaryProps):
 
   const { formattedFilledAmount, formattedSwappedAmount } = useGetExecutedBridgeSummary(order) || {}
 
-  const filledCurrency = formattedFilledAmount?.currency
-  const swappedCurrency = formattedSwappedAmount?.currency
-
   if (!order) return null
 
   return (
@@ -44,8 +41,8 @@ export function FulfilledOrderInfo({ chainId, orderUid }: ExecutedSummaryProps):
       {formattedFilledAmount?.currency && formattedSwappedAmount?.currency && (
         <OrderSummary
           kind={order.kind}
-          inputToken={filledCurrency as TokenInfo}
-          outputToken={swappedCurrency as TokenInfo}
+          inputToken={formattedFilledAmount.currency as TokenInfo}
+          outputToken={formattedSwappedAmount.currency as TokenInfo}
           sellAmount={formattedFilledAmount.quotient.toString()}
           buyAmount={formattedSwappedAmount.quotient.toString()}
           customTemplate={FulfilledSummaryTemplate}
