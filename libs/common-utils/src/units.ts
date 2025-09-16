@@ -5,12 +5,29 @@
  * - Returns an empty string for undefined/null inputs
  */
 export function formatUnitsSafe(value: string | number | bigint | undefined | null, decimals?: number): string {
-  if (value === undefined || value === null) return ''
-  const raw = typeof value === 'bigint' ? value.toString() : String(value)
-  if (!decimals || decimals <= 0) return raw
+  const normalized = sanitizeIntegerLikeValue(value)
+  if (!normalized) return ''
+  if (!decimals || decimals <= 0) return normalized
 
-  const negative = raw.startsWith('-')
-  const digits = negative ? raw.slice(1) : raw
+  return applyDecimals(normalized, decimals)
+}
+
+function sanitizeIntegerLikeValue(value: string | number | bigint | undefined | null): string {
+  if (value === undefined || value === null) return ''
+
+  const raw = typeof value === 'bigint' ? value.toString() : String(value)
+  const normalized = raw.trim()
+
+  if (!/^-?\d+$/.test(normalized)) {
+    throw new TypeError(`formatUnitsSafe expected an integer-like value, received "${raw}"`)
+  }
+
+  return normalized
+}
+
+function applyDecimals(normalized: string, decimals: number): string {
+  const negative = normalized.startsWith('-')
+  const digits = negative ? normalized.slice(1) : normalized
 
   const pad = decimals - digits.length + 1
   const padded = pad > 0 ? '0'.repeat(pad) + digits : digits
