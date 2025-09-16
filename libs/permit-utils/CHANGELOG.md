@@ -1,5 +1,30 @@
 # Changelog
 
+## [1.0.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v0.10.0...permit-utils-v1.0.0) (2025-09-12)
+
+
+### ⚠ BREAKING CHANGES
+
+* add cow-sdk v7 ([#6165](https://github.com/cowprotocol/cowswap/issues/6165))
+
+### Features
+
+* add cow-sdk v7 ([#6165](https://github.com/cowprotocol/cowswap/issues/6165)) ([46d7afe](https://github.com/cowprotocol/cowswap/commit/46d7afeab94c172dbad975f39b25033abd966498))
+
+## [0.10.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v0.9.0...permit-utils-v0.10.0) (2025-08-28)
+
+
+### Features
+
+* **trade:** implement partial approve ([#6139](https://github.com/cowprotocol/cowswap/issues/6139)) ([6f9d6b0](https://github.com/cowprotocol/cowswap/commit/6f9d6b055323d25705ee88a533f71190944be6e2))
+
+## [0.9.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v0.8.0...permit-utils-v0.9.0) (2025-08-21)
+
+
+### Features
+
+* **new-networks:** lens and bnb ([#5992](https://github.com/cowprotocol/cowswap/issues/5992)) ([19ac060](https://github.com/cowprotocol/cowswap/commit/19ac060f94088e7a1f6a2a891ef11d2c1ded4525))
+
 ## [0.8.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v0.7.0...permit-utils-v0.8.0) (2025-08-12)
 
 

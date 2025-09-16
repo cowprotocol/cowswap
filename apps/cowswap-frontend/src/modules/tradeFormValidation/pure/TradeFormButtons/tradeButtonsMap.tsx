@@ -2,16 +2,16 @@ import { ReactElement, ReactNode } from 'react'
 
 import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
 import { getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
-import { BridgeProviderQuoteError, BridgeQuoteErrors } from '@cowprotocol/cow-sdk'
+import { BridgeProviderQuoteError, BridgeQuoteErrors } from '@cowprotocol/sdk-bridging'
 import { CenteredDots, HelpTooltip, TokenSymbol } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
 
+import { TradeApproveButton } from 'modules/erc20Approve'
 import { CompatibilityIssuesWarning } from 'modules/trade'
 
 import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
-import { TradeApproveButton } from 'common/containers/TradeApprove'
 import { TradeLoadingButton } from 'common/pure/TradeLoadingButton'
 
 import { TradeFormButtonContext, TradeFormValidation } from '../../types'
@@ -95,7 +95,15 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
       </TradeFormBlankButton>
     )
   },
-
+  [TradeFormValidation.CustomTokenError]: ({ customTokenError }) => {
+    return (
+      <TradeFormBlankButton disabled={true}>
+        <span>
+          <Trans>{customTokenError}</Trans>
+        </span>
+      </TradeFormBlankButton>
+    )
+  },
   [TradeFormValidation.CurrencyNotSet]: {
     text: 'Select a token',
   },
@@ -105,8 +113,22 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   [TradeFormValidation.BrowserOffline]: {
     text: 'Error loading price. You are currently offline.',
   },
-  [TradeFormValidation.RecipientInvalid]: {
-    text: 'Enter a valid recipient',
+  [TradeFormValidation.RecipientInvalid]: ({ derivedState: { inputCurrency, outputCurrency, recipient } }) => {
+    const isBridging = inputCurrency && outputCurrency && inputCurrency.chainId !== outputCurrency.chainId
+
+    return (
+      <TradeFormBlankButton disabled>
+        <>
+          <Trans>Enter a valid recipient</Trans>
+          {isBridging && recipient && (
+            <HelpTooltip
+              placement="top"
+              text="ENS recipient not supported for Swap and Bridge. Use address instead."
+            />
+          )}
+        </>
+      </TradeFormBlankButton>
+    )
   },
   [TradeFormValidation.CurrencyNotSupported]: (context) => {
     return unsupportedTokenButton(context)
@@ -222,7 +244,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     const { maximumSendSellAmount } = context.amountsToSign
 
     return (
-      <TradeApproveButton amountToApprove={maximumSendSellAmount}>
+      <TradeApproveButton amountToApprove={maximumSendSellAmount} enablePartialApprove={context.enablePartialApprove}>
         <TradeFormBlankButton disabled={true}>
           <Trans>{context.defaultText}</Trans>
         </TradeFormBlankButton>

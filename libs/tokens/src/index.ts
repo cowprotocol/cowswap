@@ -1,3 +1,7 @@
+import { migrateNetworkMismatchUserAddedTokens } from './state/migrations/migrateNetworkMismatchUserAddedTokens'
+
+migrateNetworkMismatchUserAddedTokens()
+
 // Updaters
 export { TokensListsUpdater } from './updaters/TokensListsUpdater'
 export { TokensListsTagsUpdater } from './updaters/TokensListsTagsUpdater'
@@ -56,3 +60,4 @@ export { fetchTokenList } from './services/fetchTokenList'
 
 // Consts
 export { DEFAULT_TOKENS_LISTS } from './const/tokensLists'
+export { useIsAnyOfTokensOndo } from './hooks/lists/useIsAnyOfTokensOndo'

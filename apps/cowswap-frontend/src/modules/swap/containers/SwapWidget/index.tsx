@@ -1,6 +1,7 @@
-import { ReactNode, useCallback, useMemo, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
-import { isSellOrder } from '@cowprotocol/common-utils'
+import { isSellOrder, isInjectedWidget } from '@cowprotocol/common-utils'
+import { useIsSmartContractWallet, useWalletInfo, useIsEagerConnectInProgress } from '@cowprotocol/wallet'
 
 import { Field } from 'legacy/state/types'
 import { useHooksEnabledManager } from 'legacy/state/user/hooks'
@@ -13,7 +14,7 @@ import {
   TradeWidgetSlots,
   useGetReceiveAmountInfo,
   useTradePriceImpact,
-  useWrapNativeFlow
+  useWrapNativeFlow,
 } from 'modules/trade'
 import { useHandleSwap } from 'modules/tradeFlow'
 import { useTradeQuote } from 'modules/tradeQuote'
@@ -29,6 +30,8 @@ import { useHasEnoughWrappedBalanceForSwap } from '../../hooks/useHasEnoughWrapp
 import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
 import { useSwapDeadlineState, useSwapRecipientToggleState, useSwapSettings } from '../../hooks/useSwapSettings'
 import { useSwapWidgetActions } from '../../hooks/useSwapWidgetActions'
+import { useUpdateSwapRawState } from '../../hooks/useUpdateSwapRawState'
+import { CrossChainUnlockScreen } from '../../pure/CrossChainUnlockScreen'
 import { BottomBanners } from '../BottomBanners'
 import { SwapConfirmModal } from '../SwapConfirmModal'
 import { SwapRateDetails } from '../SwapRateDetails'
@@ -59,6 +62,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   const dismissNativeWrapModal = useCallback(() => setOpenNativeWrapModal(false), [])
 
   const wrapCallback = useWrapNativeFlow()
+  const updateSwapState = useUpdateSwapRawState()
 
   const {
     inputCurrency,
@@ -70,10 +74,22 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
     inputCurrencyFiatAmount,
     outputCurrencyFiatAmount,
     recipient,
+    recipientAddress,
     orderKind,
+    isUnlocked,
   } = useSwapDerivedState()
   const doTrade = useHandleSwap(useSafeMemoObject({ deadline: deadlineState[0] }), widgetActions)
   const hasEnoughWrappedBalanceForSwap = useHasEnoughWrappedBalanceForSwap()
+  const isSmartContractWallet = useIsSmartContractWallet()
+  const { account } = useWalletInfo()
+  const isEagerConnectInProgress = useIsEagerConnectInProgress()
+  const [isHydrated, setIsHydrated] = useState(false)
+  const handleUnlock = useCallback(() => updateSwapState({ isUnlocked: true }), [updateSwapState])
+
+  useEffect(() => {
+    // Hydration guard: defer lock-screen until persisted state (isUnlocked) loads to prevent initial flash.
+    setIsHydrated(true)
+  }, [])
 
   const isSellTrade = isSellOrder(orderKind)
 
@@ -133,8 +149,18 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
     setShowAddIntermediateTokenModal(false)
   }, [])
 
+  const isConnected = Boolean(account)
+
+  // Guarded render: require hydration and no active eager-connect; show only for confirmed EOAs or truly disconnected users.
+  const shouldShowLockScreen =
+    isHydrated &&
+    !isUnlocked &&
+    !isInjectedWidget() &&
+    ((isConnected && isSmartContractWallet === false) || (!isConnected && !isEagerConnectInProgress))
+
   const slots: TradeWidgetSlots = {
     topContent,
+    lockScreen: shouldShowLockScreen ? <CrossChainUnlockScreen handleUnlock={handleUnlock} /> : undefined,
     settingsWidget: (
       <SettingsTab
         recipientToggleState={recipientToggleState}
@@ -205,6 +231,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
             <SwapConfirmModal
               doTrade={doTrade.callback}
               recipient={recipient}
+              recipientAddress={recipientAddress}
               priceImpact={priceImpact}
               inputCurrencyInfo={inputCurrencyPreviewInfo}
               outputCurrencyInfo={outputCurrencyPreviewInfo}

@@ -1,4 +1,4 @@
-import { AnyAppDataDocVersion } from '@cowprotocol/app-data'
+import { AnyAppDataDocVersion } from '@cowprotocol/cow-sdk'
 
 import { Nullish } from 'types'
 
@@ -14,7 +14,7 @@ import { AppDataHooks } from '../types'
 export function getAppDataHooks(fullAppData: Nullish<AnyAppDataDocVersion | string>): AppDataHooks | undefined {
   const decodedAppData = typeof fullAppData === 'string' ? decodeAppData(fullAppData) : fullAppData
 
-  if (!decodedAppData || !('hooks' in decodedAppData.metadata)) return undefined
+  if (!decodedAppData || !decodedAppData.metadata || !('hooks' in decodedAppData.metadata)) return undefined
 
   // TODO: this requires app-data v0.9.0. Might not work for newer versions...
   return decodedAppData.metadata.hooks as AppDataHooks

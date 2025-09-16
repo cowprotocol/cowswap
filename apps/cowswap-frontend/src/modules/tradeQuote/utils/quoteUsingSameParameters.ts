@@ -1,4 +1,4 @@
-import { QuoteBridgeRequest, areHooksEqual } from '@cowprotocol/cow-sdk'
+import { QuoteBridgeRequest } from '@cowprotocol/sdk-bridging'
 
 import jsonStringify from 'json-stringify-deterministic'
 import { Nullish } from 'types'
@@ -123,4 +123,8 @@ function removeBridgePostHook(
   }
 
   return copy
+}
+
+function areHooksEqual(hookA: CowHook, hookB: CowHook): boolean {
+  return hookA.callData === hookB.callData && hookA.gasLimit === hookB.gasLimit && hookA.target === hookB.target
 }

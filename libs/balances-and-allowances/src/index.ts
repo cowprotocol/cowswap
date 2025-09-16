@@ -11,6 +11,10 @@ export { useCurrencyAmountBalance } from './hooks/useCurrencyAmountBalance'
 export { useTokenBalanceForAccount } from './hooks/useTokenBalanceForAccount'
 export { usePersistBalancesAndAllowances } from './hooks/usePersistBalancesAndAllowances'
 export { useUpdateTokenBalance } from './hooks/useUpdateTokenBalance'
+export { useTokenAllowances } from './hooks/useTokenAllowances'
+export { useBalancesAndAllowances } from './hooks/useBalancesAndAllowances'
+export { useTradeSpenderAddress } from './hooks/useTradeSpenderAddress'
+export type { BalancesAndAllowances } from './types/balances-and-allowances'
 
 // Types
 export type { BalancesState } from './state/balancesAtom'

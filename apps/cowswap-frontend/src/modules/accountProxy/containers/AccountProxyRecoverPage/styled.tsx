@@ -2,6 +2,12 @@ import { ButtonPrimary, TokenAmount, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
+export const Wrapper = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+  gap: 10px;
+`
+
 export const ButtonPrimaryStyled = styled(ButtonPrimary)`
   &:disabled {
     font-size: 14px;
@@ -15,13 +21,14 @@ export const TokenWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 10px;
-  font-size: 14px !important;
-  margin-bottom: 10px;
+  font-size: 13px;
 
-  > p {
+  > span {
     color: var(${UI.COLOR_TEXT_OPACITY_70});
-    margin: 0 !important;
-    padding: 0 !important;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+    display: flex;
   }
 `
 

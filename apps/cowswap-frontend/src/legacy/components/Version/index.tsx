@@ -5,8 +5,8 @@ import ICON_X from '@cowprotocol/assets/images/x.svg'
 import { CODE_LINK } from '@cowprotocol/common-const'
 import { useOnClickOutside } from '@cowprotocol/common-hooks'
 import { getEtherscanLink } from '@cowprotocol/common-utils'
-import contractsPkg from '@cowprotocol/contracts/package.json'
 import {
+  CONTRACTS_PKG_VERSION,
   COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS,
   COW_PROTOCOL_VAULT_RELAYER_ADDRESS,
   SupportedChainId as ChainId,
@@ -18,6 +18,8 @@ import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
 import pkg from '../../../../package.json'
+
+const contractsTsVersion = CONTRACTS_PKG_VERSION
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -37,11 +39,11 @@ const VERSIONS: Record<string, VersionInfo> = {
     href: () => CODE_LINK,
   },
   'Vault Relayer': {
-    version: 'v' + contractsPkg.version,
+    version: 'v' + contractsTsVersion,
     href: (chainId: ChainId) => _getContractsUrls(chainId, COW_PROTOCOL_VAULT_RELAYER_ADDRESS),
   },
   'Settlement Contract': {
-    version: 'v' + contractsPkg.version,
+    version: 'v' + contractsTsVersion,
     href: (chainId: ChainId) => _getContractsUrls(chainId, COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS),
   },
 }

@@ -1,9 +1,10 @@
 import { useMemo } from 'react'
 
+import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
+
 import { Order, OrderStatus, PENDING_STATES } from 'legacy/state/orders/actions'
 import { useSetIsOrderUnfillable } from 'legacy/state/orders/hooks'
 
-import { BalancesAndAllowances } from 'common/types'
 import { getIsComposableCowOrder } from 'utils/orderUtils/getIsComposableCowOrder'
 import { getIsNotComposableCowOrder } from 'utils/orderUtils/getIsNotComposableCowOrder'
 
@@ -19,14 +20,13 @@ const ordersSorter = (a: OrderTableItem, b: OrderTableItem): number => {
   return bCreationTime.getTime() - aCreationTime.getTime()
 }
 
-const ORDERS_LIMIT = 100
-
 export function useOrdersTableList(
   allOrders: Order[],
   orderType: TabOrderTypes,
   chainId: number,
   balancesAndAllowances: BalancesAndAllowances,
 ): OrdersTableList {
+  const orderLimit = orderType === TabOrderTypes.LIMIT ? 100 : 1000
   const setIsOrderUnfillable = useSetIsOrderUnfillable()
 
   // First, group and sort all orders
@@ -37,7 +37,7 @@ export function useOrdersTableList(
   // Then, categorize orders into their respective lists
   return useMemo(
     () =>
-      allSortedOrders.slice(0, ORDERS_LIMIT).reduce<OrdersTableList>(
+      allSortedOrders.slice(0, orderLimit).reduce<OrdersTableList>(
         // TODO: Reduce function complexity by extracting logic
         // eslint-disable-next-line complexity
         (acc, item) => {
@@ -103,6 +103,6 @@ export function useOrdersTableList(
         },
         { open: [], history: [], unfillable: [], signing: [], all: [] },
       ),
-    [allSortedOrders, chainId, balancesAndAllowances, orderType, setIsOrderUnfillable],
+    [allSortedOrders, chainId, balancesAndAllowances, orderType, setIsOrderUnfillable, orderLimit],
   )
 }

@@ -206,6 +206,7 @@ export const StatusLabelWrapper = styled.div`
 
   > span {
     color: inherit;
+
     &:hover {
       text-decoration: underline;
     }
@@ -294,7 +295,6 @@ export const StatusLabel = styled.div<{
         content: '';
       }
     `}
-
   > svg {
     margin: 0 5px 0 0;
     max-height: 13px;

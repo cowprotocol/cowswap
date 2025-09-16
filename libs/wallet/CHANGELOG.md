@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.15.1](https://github.com/cowprotocol/cowswap/compare/wallet-v1.15.0...wallet-v1.15.1) (2025-09-12)
+
+
+### Bug Fixes
+
+* **swap:** improve lock screen logic in SwapWidget to prevent flash ([#6195](https://github.com/cowprotocol/cowswap/issues/6195)) ([159b199](https://github.com/cowprotocol/cowswap/commit/159b199e5e63d13feabe7832c0c8cd877024717a))
+
+## [1.15.0](https://github.com/cowprotocol/cowswap/compare/wallet-v1.14.0...wallet-v1.15.0) (2025-08-21)
+
+
+### Features
+
+* **account-proxy:** support all versions of proxy ([#6105](https://github.com/cowprotocol/cowswap/issues/6105)) ([5bcae43](https://github.com/cowprotocol/cowswap/commit/5bcae43625a14933abc4e7a4f40e02b568997118))
+* **new-networks:** lens and bnb ([#5992](https://github.com/cowprotocol/cowswap/issues/5992)) ([19ac060](https://github.com/cowprotocol/cowswap/commit/19ac060f94088e7a1f6a2a891ef11d2c1ded4525))
+
 ## [1.14.0](https://github.com/cowprotocol/cowswap/compare/wallet-v1.13.1...wallet-v1.14.0) (2025-08-07)
 
 

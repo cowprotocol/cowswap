@@ -1,5 +1,4 @@
-import { ButtonSecondary } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { ButtonSecondary, UI } from '@cowprotocol/ui'
 
 import styled, { css } from 'styled-components/macro'
 
@@ -110,6 +109,25 @@ export const Wrapper = styled.div`
     > div > svg > path {
       stroke: currentColor;
       opacity: 0.7;
+    }
+  }
+`
+
+export const UnfillableWarning = styled.div`
+  color: var(${UI.COLOR_DANGER});
+  line-height: 0;
+
+  > svg {
+    animation: growShrink 1s ease-in-out infinite;
+  }
+
+  @keyframes growShrink {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.2); /* Change to desired size */
     }
   }
 `

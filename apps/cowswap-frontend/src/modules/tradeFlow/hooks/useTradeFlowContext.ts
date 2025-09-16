@@ -1,4 +1,5 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { OrderClass, PriceQuality } from '@cowprotocol/cow-sdk'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
@@ -14,12 +15,13 @@ import { useAppData, useAppDataHooks } from 'modules/appData'
 import { useBridgeQuoteAmounts } from 'modules/bridge'
 import { useGeneratePermitHook, useGetCachedPermit, usePermitInfo } from 'modules/permit'
 import {
+  TradeTypeToUiOrderType,
+  useAmountsToSign,
   useDerivedTradeState,
   useGetReceiveAmountInfo,
   useIsHooksTradeType,
   useTradeConfirmActions,
   useTradeTypeInfo,
-  TradeTypeToUiOrderType,
 } from 'modules/trade'
 import { getOrderValidTo, useTradeQuote } from 'modules/tradeQuote'
 
@@ -72,6 +74,12 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
   const typedHooks = useAppDataHooks()
   const addBridgeOrder = useAddBridgeOrder()
   const bridgeQuoteAmounts = useBridgeQuoteAmounts()
+  const { maximumSendSellAmount } = useAmountsToSign() ?? {}
+
+  // todo should be removed when we will add ui for partial permit signing
+  const { isPartialPermitEnabled } = useFeatureFlags()
+  const permitAmountToSign =
+    isPartialPermitEnabled && maximumSendSellAmount ? BigInt(maximumSendSellAmount.quotient.toString()) : undefined
 
   const enoughAllowance = useEnoughAllowance(inputAmount)
 
@@ -100,7 +108,8 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
         tradeQuote.fetchParams?.priceQuality === PriceQuality.OPTIMAL &&
         orderKind &&
         settlementContract &&
-        uiOrderType
+        uiOrderType &&
+        validTo > 0
         ? [
             account,
             allowsOffchainSigning,
@@ -113,6 +122,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             dispatch,
             enoughAllowance,
             generatePermitHook,
+            permitAmountToSign,
             inputAmount,
             networkFee,
             outputAmount,
@@ -147,6 +157,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
         dispatch,
         enoughAllowance,
         generatePermitHook,
+        permitAmountToSign,
         inputAmount,
         networkFee,
         outputAmount,
@@ -198,6 +209,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
           contract: settlementContract,
           permitInfo: !enoughAllowance ? permitInfo : undefined,
           generatePermitHook,
+          permitAmountToSign,
           typedHooks,
           orderParams: {
             account,

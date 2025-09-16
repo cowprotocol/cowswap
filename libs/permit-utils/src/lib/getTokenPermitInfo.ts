@@ -13,7 +13,6 @@ import { getTokenName } from '../utils/getTokenName'
 import { getTokenPermitVersion } from '../utils/getTokenPermitVersion'
 
 const EIP_2612_PERMIT_PARAMS = {
-  value: DEFAULT_PERMIT_VALUE,
   nonce: 0,
   deadline: getPermitDeadline(),
 }
@@ -50,7 +49,7 @@ export async function getTokenPermitInfo(params: GetTokenPermitInfoParams): Prom
 // TODO: Reduce function complexity by extracting logic
 // eslint-disable-next-line max-lines-per-function, complexity
 async function actuallyCheckTokenIsPermittable(params: GetTokenPermitInfoParams): Promise<GetTokenPermitIntoResult> {
-  const { spender, tokenAddress, chainId, provider, minGasLimit } = params
+  const { spender, tokenAddress, chainId, provider, minGasLimit, amount } = params
 
   const eip2612PermitUtils = getPermitUtilsInstance(chainId, provider)
 
@@ -130,6 +129,7 @@ async function actuallyCheckTokenIsPermittable(params: GetTokenPermitInfoParams)
     walletAddress: owner,
     version,
     minGasLimit,
+    amount,
   }
 
   try {
@@ -182,6 +182,7 @@ type BaseParams = {
   nonce: number
   version: string | undefined
   minGasLimit?: number | undefined
+  amount?: bigint
 }
 
 type EstimateParams = BaseParams & {
@@ -226,7 +227,8 @@ async function estimateTokenPermit(params: EstimateParams): Promise<GetTokenPerm
 }
 
 async function getEip2612CallData(params: BaseParams): Promise<string> {
-  const { eip2612PermitUtils, walletAddress, spender, nonce, chainId, tokenName, tokenAddress, version } = params
+  const { eip2612PermitUtils, walletAddress, spender, nonce, chainId, tokenName, tokenAddress, version, amount } =
+    params
   return buildEip2612PermitCallData({
     eip2612Utils: eip2612PermitUtils,
     callDataParams: [
@@ -235,6 +237,7 @@ async function getEip2612CallData(params: BaseParams): Promise<string> {
         owner: walletAddress,
         spender,
         nonce,
+        value: amount ? amount.toString() : DEFAULT_PERMIT_VALUE.toString(),
       },
       +chainId,
       tokenName,

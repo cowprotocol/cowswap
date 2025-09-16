@@ -6,7 +6,7 @@ import {
   GetPermitCacheParams,
   PermitCache,
   PermitCacheKeyParams,
-  StorePermitCacheParams,
+  StorePermitCacheParams
 } from '../types'
 
 /**
@@ -91,12 +91,11 @@ export const getPermitCacheAtom = atom(null, (get, set, params: GetPermitCachePa
   }
 })
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function buildKey({ chainId, tokenAddress, account, spender }: PermitCacheKeyParams) {
+function buildKey({ chainId, tokenAddress, account, spender, amount }: PermitCacheKeyParams): string {
   const base = `${chainId}-${tokenAddress.toLowerCase()}-${spender.toLowerCase()}`
+  const withAmount = amount ? `${base}-${amount.toString()}` : base
 
-  return account ? `${base}-${account.toLowerCase()}` : base
+  return account ? `${withAmount}-${account.toLowerCase()}` : withAmount
 }
 
 const removePermitCacheBuilder = (key: string) => (permitCache: PermitCache) => {

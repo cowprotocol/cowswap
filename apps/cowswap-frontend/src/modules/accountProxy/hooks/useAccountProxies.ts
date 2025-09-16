@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { CowShedHooks, CoWShedVersion } from '@cowprotocol/cow-sdk'
+import { CowShedHooks, CoWShedVersion } from '@cowprotocol/sdk-cow-shed'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { COW_SHED_VERSIONS } from '../consts'

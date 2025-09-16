@@ -3,6 +3,8 @@ import { ReactNode, useCallback, useEffect } from 'react'
 import { useAddUserToken } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { TradeApproveModal, useUpdateTradeApproveState } from 'modules/erc20Approve'
+import { useTradeApproveState } from 'modules/erc20Approve/state/useTradeApproveState'
 import {
   ImportTokenModal,
   SelectTokenWidget,
@@ -12,9 +14,6 @@ import {
 } from 'modules/tokensList'
 import { useZeroApproveModalState, ZeroApprovalModal } from 'modules/zeroApproval'
 
-import { TradeApproveModal } from 'common/containers/TradeApprove'
-import { useTradeApproveState } from 'common/hooks/useTradeApproveState'
-import { useUpdateTradeApproveState } from 'common/hooks/useUpdateTradeApproveState'
 import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
 
 import { useAutoImportTokensState } from '../../hooks/useAutoImportTokensState'
@@ -55,10 +54,12 @@ export function TradeWidgetModals({
   const updateTradeApproveState = useUpdateTradeApproveState()
 
   const resetAllScreens = useCallback(
-    (closeTokenSelectWidget = true) => {
+    (closeTokenSelectWidget = true, shouldCloseAutoImportModal = true) => {
       closeTradeConfirm()
       closeZeroApprovalModal()
-      closeAutoImportModal()
+      if (shouldCloseAutoImportModal) {
+        closeAutoImportModal()
+      }
       if (closeTokenSelectWidget) {
         updateSelectTokenWidgetState({ open: false })
       }
@@ -80,11 +81,11 @@ export function TradeWidgetModals({
   const error = tokenListAddingError || approveError || confirmError
 
   /**
-   * Close modals on chainId/account change
+   * Close all modals besides auto-import on account change
    */
   useEffect(() => {
-    resetAllScreens()
-  }, [chainId, account, resetAllScreens])
+    resetAllScreens(true, false)
+  }, [account, resetAllScreens])
 
   /**
    * Close all modals besides token select widget on chain change
