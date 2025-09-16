@@ -3,9 +3,11 @@ import { registerOnWindow } from './misc'
 const DEFAULT_ENVIRONMENTS_REGEX: Record<EnvironmentName, string> = {
   local: '^(:?localhost:\\d{2,5}|(?:127|192)(?:\\.[0-9]{1,3}){3})',
   pr: '^((?:explorer|swap)-dev-git-[\\w\\d-]+|swap-\\w{9}-)cowswap-dev\\.vercel\\.app',
-  development: '^(dev.swap.cow.fi|swap-develop.vercel.app)',
-  staging: '^(staging.swap.cow.fi|swap-staging.vercel.app)',
-  production: '^(swap.cow.fi|swap-prod.vercel.app)$',
+  development:
+    '^(dev.swap.cow.fi|dev.explorer.cow.fi|swap-develop.vercel.app|explorer-dev-git-develop-cowswap-dev.vercel.app)',
+  staging:
+    '^(staging.swap.cow.fi|staging.explorer.cow.fi|swap-staging.vercel.app|explorer-dev-git-main-cowswap-dev.vercel.app)',
+  production: '^(swap.cow.fi|staging.cow.fi|swap-prod.vercel.app)$',
   barn: '^(barn.cow.fi|swap-barn.vercel.app)$',
   ens: '(:?^cowswap.eth|ipfs)',
 }
