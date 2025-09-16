@@ -1,5 +1,5 @@
 import { usePermitInfo } from 'modules/permit'
-import { useDerivedTradeState } from 'modules/trade'
+import { TradeType, useDerivedTradeState } from 'modules/trade'
 
 import { useApproveState } from './useApproveState'
 import { useGetAmountToSignApprove } from './useGetAmountToSignApprove'
@@ -28,7 +28,11 @@ export function useIsApprovalOrPermitRequired(): ApproveRequiredReason {
     return ApproveRequiredReason.Required
   }
 
-  // todo fix for limit orders and other forms
+  // we use new approve/permit flow only for swaps for now
+  if (tradeType !== TradeType.SWAP) {
+    return ApproveRequiredReason.NotRequired
+  }
+
   if (type === 'dai-like') return ApproveRequiredReason.DaiLikePermitRequired
   if (type === 'eip-2612') return ApproveRequiredReason.Eip2612PermitRequired
 
