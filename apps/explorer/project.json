@@ -18,6 +18,9 @@
         "staging": {
           "mode": "staging"
         },
+        "barn": {
+          "mode": "barn"
+        },
         "production": {
           "mode": "production"
         }
