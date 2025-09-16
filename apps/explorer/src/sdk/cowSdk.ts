@@ -46,7 +46,6 @@ export function CowSdkUpdater(): null {
     if (!chainId) return
 
     const provider = getRpcProvider(chainId)
-
     if (provider) {
       cowSdkAdapter.setProvider(provider)
       cowSdkAdapter.setSigner(provider.getSigner())

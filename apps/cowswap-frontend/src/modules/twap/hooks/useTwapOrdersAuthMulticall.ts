@@ -16,9 +16,13 @@ export function useTwapOrdersAuthMulticall(
   composableCowContract: ComposableCoW,
   pendingTwapOrderIds: string[],
 ): TwapOrdersAuthResult | null {
+  // Use stringified key to avoid excessive multicalls
+  const orderIdsKey = pendingTwapOrderIds.join(',')
+
   const input = useMemo(() => {
-    return pendingTwapOrderIds.map((id) => [safeAddress, id])
-  }, [safeAddress, pendingTwapOrderIds])
+    if (!orderIdsKey) return undefined
+    return orderIdsKey.split(',').map((id) => [safeAddress, id])
+  }, [safeAddress, orderIdsKey])
 
   const { data, isLoading } = useSingleContractMultipleData<[boolean]>(
     composableCowContract,
