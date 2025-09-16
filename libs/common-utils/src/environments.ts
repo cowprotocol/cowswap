@@ -7,7 +7,7 @@ const DEFAULT_ENVIRONMENTS_REGEX: Record<EnvironmentName, string> = {
     '^(dev.swap.cow.fi|dev.explorer.cow.fi|swap-develop.vercel.app|explorer-dev-git-develop-cowswap-dev.vercel.app)',
   staging:
     '^(staging.swap.cow.fi|staging.explorer.cow.fi|swap-staging.vercel.app|explorer-dev-git-main-cowswap-dev.vercel.app)',
-  production: '^(swap.cow.fi|staging.cow.fi|swap-prod.vercel.app)$',
+  production: '^(swap.cow.fi|explorer.cow.fi|swap-prod.vercel.app)$',
   barn: '^(barn.cow.fi|swap-barn.vercel.app)$',
   ens: '(:?^cowswap.eth|ipfs)',
 }
