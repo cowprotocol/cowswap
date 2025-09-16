@@ -64,10 +64,15 @@ export function getExecutedSummaryDataWithSurplusToken(order: Order | ParsedOrde
   const surplusAmount = CurrencyAmount.fromRawAmount(surplusToken, amount?.decimalPlaces(0).toFixed())
   const surplusPercent = percentage?.multipliedBy(100)?.toFixed(2)
 
+  // For bridge orders, "surplusToken" is the intermediate buy token on the
+  // source chain (e.g. WETH on Polygon). Use it to format the swapped amount
+  // so the filled-order toast shows the correct token symbol for the swap leg.
+  const effectiveOutputToken = surplusToken || parsedOutputToken
+
   const { formattedFilledAmount, formattedSwappedAmount, swappedAmountWithFee } = getFilledAmounts({
     ...parsedOrder,
     inputToken: parsedInputToken,
-    outputToken: parsedOutputToken,
+    outputToken: effectiveOutputToken,
   })
 
   return {
