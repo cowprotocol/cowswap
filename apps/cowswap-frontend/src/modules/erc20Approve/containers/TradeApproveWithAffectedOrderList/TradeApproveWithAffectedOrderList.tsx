@@ -2,12 +2,14 @@ import { ReactNode, useMemo } from 'react'
 
 import { useAmountsToSignFromQuote } from '../../../trade'
 import { ApproveRequiredReason, MAX_APPROVE_AMOUNT, useIsApprovalOrPermitRequired } from '../../hooks'
-import { useGetUserApproveAmountState } from '../../state'
+import { useGetUserApproveAmountState, useSetUserApproveAmountModalState } from '../../state'
 import { ActiveOrdersWithAffectedPermit } from '../ActiveOrdersWithAffectedPermit'
 import { TradeApproveToggle } from '../TradeApproveToggle'
 
 export function TradeApproveWithAffectedOrderList(): ReactNode {
   const isApproveRequired = useIsApprovalOrPermitRequired()
+
+  const setUserApproveAmountModalState = useSetUserApproveAmountModalState()
 
   const { amountSetByUser } = useGetUserApproveAmountState() || {}
   const { maximumSendSellAmount } = useAmountsToSignFromQuote() || {}
@@ -27,7 +29,12 @@ export function TradeApproveWithAffectedOrderList(): ReactNode {
 
   return (
     <>
-      {amountToApprove && isApproveOrPartialPermitRequired && <TradeApproveToggle amountToApprove={amountToApprove} />}
+      {amountToApprove && isApproveOrPartialPermitRequired && (
+        <TradeApproveToggle
+          updateModalState={() => setUserApproveAmountModalState({ isModalOpen: true })}
+          amountToApprove={amountToApprove}
+        />
+      )}
       {showAffectedOrders && amountToApprove && <ActiveOrdersWithAffectedPermit currency={amountToApprove?.currency} />}
     </>
   )

@@ -5,12 +5,12 @@ import { useSetUserApproveAmountModalState } from '../../state'
 import { ChangeApproveAmountModal } from '../ChangeApproveAmountModal'
 
 export function TradeChangeApproveAmountModal(): ReactNode {
-  const setUserApproveAmountState = useSetUserApproveAmountModalState()
+  const setUserApproveAmountModalState = useSetUserApproveAmountModalState()
   const initialAmountToApprove = useGetPartialAmountToSignApprove()
 
   return (
     <ChangeApproveAmountModal
-      setUserApproveAmountState={setUserApproveAmountState}
+      setUserApproveAmountState={setUserApproveAmountModalState}
       initialAmountToApprove={initialAmountToApprove}
     />
   )

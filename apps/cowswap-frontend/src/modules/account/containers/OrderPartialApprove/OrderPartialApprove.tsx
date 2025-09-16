@@ -17,7 +17,7 @@ export function OrderPartialApprove({ amountToApprove }: OrderPartialApproveProp
 
   return (
     <>
-      <TradeApproveToggle amountToApprove={amountToApprove} />
+      <TradeApproveToggle amountToApprove={amountToApprove} updateModalState={() => {}} />
       {isPartialApproveSelectedByUser && <ActiveOrdersWithAffectedPermit currency={amountToApprove.currency} />}
     </>
   )
