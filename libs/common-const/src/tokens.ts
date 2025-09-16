@@ -451,6 +451,46 @@ export const USDC_BNB = new TokenWithLogo(
   'USD Coin',
 )
 
+export const USDT_BNB = new TokenWithLogo(
+  USDT.logoURI,
+  SupportedChainId.BNB,
+  // https://bscscan.com/address/0x55d398326f99059ff775485246999027b3197955
+  '0x55d398326f99059ff775485246999027b3197955',
+  18, // BNB USDT has 18 decimals!!!
+  'USDT',
+  'Tether USD',
+)
+
+export const DAI_BNB = new TokenWithLogo(
+  DAI.logoURI,
+  SupportedChainId.BNB,
+  // https://bscscan.com/address/0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3
+  '0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3',
+  18,
+  'DAI',
+  'Dai Stablecoin',
+)
+
+export const BUSD_BNB = new TokenWithLogo(
+  'https://cryptologos.cc/logos/binance-usd-busd-logo.png?v=024', // TODO: add logo
+  SupportedChainId.BNB,
+  // https://bscscan.com/address/0xe9e7cea3dedca5984780bafc599bd69add087d56
+  '0xe9e7cea3dedca5984780bafc599bd69add087d56',
+  18,
+  'BUSD',
+  'Binance USD',
+)
+
+export const BTCB_BNB = new TokenWithLogo(
+  'https', // TODO: add logo
+  SupportedChainId.BNB,
+  // https://bscscan.com/address/0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c
+  '0x0555e30da8f98308edb960aa94c0db47230d2b9c',
+  18,
+  'BTCB',
+  'BTCB Token',
+)
+
 // Optimism
 
 export const USDC_OPTIMISM = new TokenWithLogo(
