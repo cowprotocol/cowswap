@@ -18,6 +18,7 @@ export interface ChangeApproveAmountModalPureProps {
   isInvalid?: boolean
   onBack: () => void
   onConfirm: () => void
+  onReset: () => void
 }
 
 export function ChangeApproveAmountModalPure({
@@ -26,6 +27,7 @@ export function ChangeApproveAmountModalPure({
   isInvalid,
   onBack,
   onConfirm,
+  onReset,
 }: ChangeApproveAmountModalPureProps): ReactNode {
   return (
     <styledEl.Wrapper>
@@ -40,7 +42,7 @@ export function ChangeApproveAmountModalPure({
         <styledEl.SetTitle>Set approval amount</styledEl.SetTitle>
         <SwapAmountPreview />
       </styledEl.SwapInfo>
-      <ApprovalAmountInput initialAmount={initialAmount} tokenWithLogo={inputToken} />
+      <ApprovalAmountInput onReset={onReset} initialAmount={initialAmount} tokenWithLogo={inputToken} />
       <styledEl.BtnWrapper>
         <styledEl.ActionButton disabled={isInvalid} onClick={onConfirm}>
           {isInvalid ? 'Amount must be at least trade amount' : 'Confirm'}

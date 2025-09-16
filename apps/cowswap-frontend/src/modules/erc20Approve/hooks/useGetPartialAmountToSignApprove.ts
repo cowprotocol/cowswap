@@ -12,12 +12,12 @@ import { useGetUserApproveAmountState } from '../state'
  * and returns the higher of the two.
  * If the user hasn't set an amount, it returns the maximum maximumSendSellAmount amount.
  */
-export function useGetPartialAmountToSignApprove(): CurrencyAmount<Currency> | undefined {
+export function useGetPartialAmountToSignApprove(): CurrencyAmount<Currency> | null {
   const { maximumSendSellAmount } = useAmountsToSignFromQuote() || {}
   const { amountSetByUser } = useGetUserApproveAmountState() || {}
 
   return useMemo(() => {
-    if (!maximumSendSellAmount) return undefined
+    if (!maximumSendSellAmount) return null
 
     // todo fix case with native token
     const areCurrenciesEqualAndUserAmountIsHigher =

@@ -10,7 +10,7 @@ import { useCustomApproveAmountInputState, useUpdateOrResetCustomApproveAmountIn
 
 interface ChangeApproveAmountModalProps {
   setUserApproveAmountState: (state: Partial<UserApproveModalState>) => void
-  initialAmountToApprove?: CurrencyAmount<Currency>
+  initialAmountToApprove: CurrencyAmount<Currency> | null
 }
 
 export function ChangeApproveAmountModal({
@@ -35,12 +35,18 @@ export function ChangeApproveAmountModal({
     [initialAmountToApprove],
   )
 
+  const onReset = useCallback((): void => {
+    setUserApproveAmountState({ amountSetByUser: undefined })
+    resetCustomApproveAmountInput()
+  }, [resetCustomApproveAmountInput, setUserApproveAmountState])
+
   return (
     <ChangeApproveAmountModalPure
       inputToken={inputToken}
       initialAmount={initialAmountToApprove}
       isInvalid={isInvalid}
       onBack={onBack}
+      onReset={onReset}
       onConfirm={onConfirm}
     />
   )

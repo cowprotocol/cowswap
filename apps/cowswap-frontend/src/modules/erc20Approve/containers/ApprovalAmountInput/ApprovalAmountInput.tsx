@@ -17,9 +17,11 @@ import { useCustomApproveAmountInputState, useUpdateOrResetCustomApproveAmountIn
 export function ApprovalAmountInput({
   initialAmount,
   tokenWithLogo,
+  onReset,
 }: {
   tokenWithLogo: TokenWithLogo | null
   initialAmount: CurrencyAmount<Currency> | null | undefined
+  onReset: () => void
 }): ReactNode {
   const [updateCustomApproveAmountInput] = useUpdateOrResetCustomApproveAmountInputState()
   const customAmountValueState = useCustomApproveAmountInputState()
@@ -55,10 +57,6 @@ export function ApprovalAmountInput({
     },
     [updateCustomApproveAmountInput, tokenWithLogo, initialAmount],
   )
-
-  const onReset = useCallback(() => {
-    updateCustomApproveAmountInput({ amount: initialAmount, isChanged: false, isInvalid: false })
-  }, [updateCustomApproveAmountInput, initialAmount])
 
   const resetLabel = customAmountValueState.isInvalid ? 'Set to trade' : 'Reset'
 
