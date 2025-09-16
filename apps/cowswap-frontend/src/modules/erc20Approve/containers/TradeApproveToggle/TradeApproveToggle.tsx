@@ -10,7 +10,7 @@ import {
 } from '../../state'
 
 type TradeApproveToggleProps = {
-  amountToApprove?: CurrencyAmount<Currency> | null
+  amountToApprove: CurrencyAmount<Currency>
 }
 
 export function TradeApproveToggle({ amountToApprove }: TradeApproveToggleProps): ReactNode {
@@ -21,8 +21,6 @@ export function TradeApproveToggle({ amountToApprove }: TradeApproveToggleProps)
   const openChangeApproveAmount = useCallback((): void => {
     updateUserApproveAmountModalState({ isModalOpen: true })
   }, [updateUserApproveAmountModalState])
-
-  if (!amountToApprove) return null
 
   return (
     <>

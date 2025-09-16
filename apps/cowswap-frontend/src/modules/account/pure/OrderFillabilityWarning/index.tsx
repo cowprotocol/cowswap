@@ -22,7 +22,6 @@ export function OrderFillabilityWarning({
   enablePartialApprove?: boolean
   enablePartialApproveBySettings?: boolean
 }): ReactNode {
-  // fillability?.hasEnoughAllowance === false
   return (
     <>
       {fillability?.hasEnoughBalance === false && (
@@ -33,7 +32,7 @@ export function OrderFillabilityWarning({
         </UnfillableWarning>
       )}
 
-      {
+      {fillability?.hasEnoughAllowance === false && (
         <UnfillableWarning bannerType={StatusColorVariant.Danger} orientation={BannerOrientation.Horizontal}>
           Order cannot be filled due to insufficient allowance on the current account.
           <ApproveWrapper>
@@ -48,7 +47,7 @@ export function OrderFillabilityWarning({
             />
           </ApproveWrapper>
         </UnfillableWarning>
-      }
+      )}
     </>
   )
 }

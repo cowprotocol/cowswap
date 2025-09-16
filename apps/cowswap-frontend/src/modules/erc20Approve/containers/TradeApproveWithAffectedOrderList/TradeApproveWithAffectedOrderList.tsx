@@ -1,17 +1,21 @@
-import { ReactNode } from 'react'
+import { ReactNode, useMemo } from 'react'
 
-import {
-  ApproveRequiredReason,
-  MAX_APPROVE_AMOUNT,
-  useGetAmountToSignApprove,
-  useIsApprovalOrPermitRequired,
-} from '../../hooks'
+import { useAmountsToSignFromQuote } from '../../../trade'
+import { ApproveRequiredReason, MAX_APPROVE_AMOUNT, useIsApprovalOrPermitRequired } from '../../hooks'
+import { useGetUserApproveAmountState } from '../../state'
 import { ActiveOrdersWithAffectedPermit } from '../ActiveOrdersWithAffectedPermit'
 import { TradeApproveToggle } from '../TradeApproveToggle'
 
 export function TradeApproveWithAffectedOrderList(): ReactNode {
   const isApproveRequired = useIsApprovalOrPermitRequired()
-  const amountToApprove = useGetAmountToSignApprove()
+
+  const { amountSetByUser } = useGetUserApproveAmountState() || {}
+  const { maximumSendSellAmount } = useAmountsToSignFromQuote() || {}
+
+  const amountToApprove = useMemo(
+    () => amountSetByUser || maximumSendSellAmount,
+    [amountSetByUser, maximumSendSellAmount],
+  )
 
   const showAffectedOrders =
     isApproveRequired === ApproveRequiredReason.Eip2612PermitRequired &&
@@ -23,7 +27,7 @@ export function TradeApproveWithAffectedOrderList(): ReactNode {
 
   return (
     <>
-      {isApproveOrPartialPermitRequired && <TradeApproveToggle amountToApprove={amountToApprove} />}
+      {amountToApprove && isApproveOrPartialPermitRequired && <TradeApproveToggle amountToApprove={amountToApprove} />}
       {showAffectedOrders && amountToApprove && <ActiveOrdersWithAffectedPermit currency={amountToApprove?.currency} />}
     </>
   )

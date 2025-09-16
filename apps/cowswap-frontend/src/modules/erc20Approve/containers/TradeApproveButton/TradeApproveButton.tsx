@@ -53,8 +53,6 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
     }
   }, [handleApprove, confirmSwap, amountToApprove, isPartialApproveEnabledByUser, isPermitSupported])
 
-  console.log('!enablePartialApprove', !enablePartialApprove)
-
   if (!enablePartialApprove) {
     return (
       <>
