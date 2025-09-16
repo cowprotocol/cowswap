@@ -5,6 +5,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import {
   TradeApproveModal,
+  TradeChangeApproveAmountModal,
   useGetUserApproveAmountState,
   useSetUserApproveAmountModalState,
   useUpdateTradeApproveState,
@@ -21,7 +22,6 @@ import { useZeroApproveModalState, ZeroApprovalModal } from 'modules/zeroApprova
 
 import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
 
-import { ChangeApproveAmountModal } from '../../../erc20Approve/containers/ChangeApproveAmountModal'
 import { useAutoImportTokensState } from '../../hooks/useAutoImportTokensState'
 import { useTradeConfirmActions } from '../../hooks/useTradeConfirmActions'
 import { useTradeConfirmState } from '../../hooks/useTradeConfirmState'
@@ -114,7 +114,7 @@ export function TradeWidgetModals({
   }
 
   if (changeApproveAmountInProgress) {
-    return <ChangeApproveAmountModal />
+    return <TradeChangeApproveAmountModal />
   }
 
   if (isTokenSelectOpen) {

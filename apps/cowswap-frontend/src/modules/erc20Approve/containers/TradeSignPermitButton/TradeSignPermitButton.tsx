@@ -14,6 +14,7 @@ export type SignPermitButtonProps = {
   confirmSwap?: () => void
 }
 
+// todo for new flow only
 export function TradeSignPermitButton(props: SignPermitButtonProps): ReactNode {
   const { amountToApprove, children, confirmSwap } = props
 

@@ -1,30 +1,31 @@
 import { ReactNode, useCallback, useMemo } from 'react'
 
 import { getWrappedToken } from '@cowprotocol/common-utils'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { ChangeApproveAmountModalPure } from './ChangeApproveAmountModalPure'
+import { UserApproveModalState } from './userApproveAmountModalAtom'
 
-import { useGetPartialAmountToSignApprove } from '../../hooks'
-import {
-  useCustomApproveAmountInputState,
-  useSetUserApproveAmountModalState,
-  useUpdateOrResetCustomApproveAmountInputState,
-} from '../../state'
+import { useCustomApproveAmountInputState, useUpdateOrResetCustomApproveAmountInputState } from '../../state'
 
-export function ChangeApproveAmountModal(): ReactNode {
-  const setUserApproveAmountState = useSetUserApproveAmountModalState()
-  const { amount: approveAmountInput } = useCustomApproveAmountInputState() || {}
+interface ChangeApproveAmountModalProps {
+  setUserApproveAmountState: (state: Partial<UserApproveModalState>) => void
+  initialAmountToApprove?: CurrencyAmount<Currency>
+}
+
+export function ChangeApproveAmountModal({
+  setUserApproveAmountState,
+  initialAmountToApprove,
+}: ChangeApproveAmountModalProps): ReactNode {
+  const { amount: approveAmountInput, isInvalid } = useCustomApproveAmountInputState() || {}
   const [_, resetCustomApproveAmountInput] = useUpdateOrResetCustomApproveAmountInputState()
-  const initialAmountToApprove = useGetPartialAmountToSignApprove()
 
-  const { isInvalid } = useCustomApproveAmountInputState()
-
-  const onBack = (): void => {
+  const onBack = useCallback((): void => {
     setUserApproveAmountState({ isModalOpen: false, amountSetByUser: undefined })
     resetCustomApproveAmountInput()
-  }
+  }, [setUserApproveAmountState, resetCustomApproveAmountInput])
 
-  const OnConfirm = useCallback(() => {
+  const onConfirm = useCallback(() => {
     setUserApproveAmountState({ isModalOpen: false, amountSetByUser: approveAmountInput ?? undefined })
     resetCustomApproveAmountInput()
   }, [setUserApproveAmountState, approveAmountInput, resetCustomApproveAmountInput])
@@ -38,9 +39,9 @@ export function ChangeApproveAmountModal(): ReactNode {
     <ChangeApproveAmountModalPure
       inputToken={inputToken}
       initialAmount={initialAmountToApprove}
-      onBack={onBack}
       isInvalid={isInvalid}
-      onConfirm={OnConfirm}
+      onBack={onBack}
+      onConfirm={onConfirm}
     />
   )
 }
