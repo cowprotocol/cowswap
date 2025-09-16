@@ -36,6 +36,7 @@ export function OrderFillabilityWarning({
         <UnfillableWarning bannerType={StatusColorVariant.Danger} orientation={BannerOrientation.Horizontal}>
           Order cannot be filled due to insufficient allowance on the current account.
           <ApproveWrapper>
+            {/*<ChangeApproveAmountModal />*/}
             {enablePartialApprove && enablePartialApproveBySettings && (
               <OrderPartialApprove amountToApprove={inputAmount} />
             )}
