@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.54.2](https://github.com/cowprotocol/cowswap/compare/explorer-v2.54.1...explorer-v2.54.2) (2025-09-16)
+
+
+### Bug Fixes
+
+* explorer environments ([#6271](https://github.com/cowprotocol/cowswap/issues/6271)) ([cffe763](https://github.com/cowprotocol/cowswap/commit/cffe763fd99bb2ee2de50146c6a91ad78f8e71e7))
+
 ## [2.54.1](https://github.com/cowprotocol/cowswap/compare/explorer-v2.54.0...explorer-v2.54.1) (2025-09-15)
 
 
