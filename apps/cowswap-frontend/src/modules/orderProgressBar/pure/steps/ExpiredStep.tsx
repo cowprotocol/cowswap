@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import PROGRESS_BAR_BAD_NEWS from '@cowprotocol/assets/cow-swap/progressbar-bad-news.svg'
 import PROGRESS_BAR_GOOD_NEWS from '@cowprotocol/assets/cow-swap/progressbar-good-news.svg'
 import { Command } from '@cowprotocol/types'
@@ -17,19 +19,13 @@ interface ExpiredStepProps {
 
 const INFO_ICON_HEIGHT = 38
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
-export function ExpiredStep({ children, navigateToNewOrder }: ExpiredStepProps) {
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const handleAnalytics = (action: string) => {
+export function ExpiredStep({ children, navigateToNewOrder }: ExpiredStepProps): ReactNode {
+  const handleAnalytics = (action: string): string =>
     toCowSwapGtmEvent({
       category: CowSwapAnalyticsCategory.PROGRESS_BAR,
       action,
       label: 'Expired Step',
     })
-  }
 
   return (
     <styledEl.ProgressContainer>
