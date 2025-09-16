@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.21.1](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.21.0...common-utils-v1.21.1) (2025-09-16)
+
+
+### Bug Fixes
+
+* explorer environments ([#6271](https://github.com/cowprotocol/cowswap/issues/6271)) ([cffe763](https://github.com/cowprotocol/cowswap/commit/cffe763fd99bb2ee2de50146c6a91ad78f8e71e7))
+
 ## [1.21.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.20.0...common-utils-v1.21.0) (2025-08-21)
 
 
