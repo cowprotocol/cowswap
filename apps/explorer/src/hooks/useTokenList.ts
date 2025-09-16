@@ -51,9 +51,23 @@ export function useTokenList(chainId: SupportedChainId | undefined): { data: Tok
   return useMemo(() => {
     if (!chainId) return { data: EMPTY_TOKENS, isLoading: false }
 
-    const data = {
-      ...({ ...coingeckoUniswapList, ...honeyswapList, ...cowSwapList, ...coingeckoList }[chainId] || EMPTY_TOKENS),
-    }
+    // Merge token lists deterministically per chain with first-wins precedence.
+    // Highest priority first: CowSwap > Honeyswap > CoinGecko Uniswap (mainnet only) > CoinGecko per-chain
+    const sourcesInOrder: TokenListPerNetwork[] = [
+      cowSwapList,
+      honeyswapList,
+      coingeckoUniswapList,
+      coingeckoList,
+    ]
+
+    const data = sourcesInOrder.reduce<TokenListByAddress>((acc, source) => {
+      const tokens = source[chainId] || EMPTY_TOKENS
+      for (const [addr, info] of Object.entries(tokens)) {
+        const key = addr.toLowerCase()
+        if (!acc[key]) acc[key] = info
+      }
+      return acc
+    }, {})
 
     const nativeToken = NATIVE_TOKEN_PER_NETWORK[chainId]
 
