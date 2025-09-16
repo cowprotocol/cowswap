@@ -203,7 +203,11 @@ export class CowAnalyticsGtm implements CowAnalytics {
     const gtmEvent = event as GtmEvent<Category>
 
     if (typeof event === 'string') {
-      this.pushToDataLayer({ event, ...(params as Record<string, unknown>) })
+      this.pushToDataLayer({
+        event,
+        ...this.getDimensions(),
+        ...(params as Record<string, unknown>),
+      })
       return
     }
 
