@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.118.9](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.118.8...cowswap-v1.118.9) (2025-09-12)
+
+
+### Bug Fixes
+
+* ensure token selector closes on token selection ([#6252](https://github.com/cowprotocol/cowswap/issues/6252)) ([fe35182](https://github.com/cowprotocol/cowswap/commit/fe351822913fa8db44a34cc5c778ba4630da3e95))
+
+## [1.118.8](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.118.7...cowswap-v1.118.8) (2025-09-12)
+
+
+### Bug Fixes
+
+* skip trade if order valid time is non-positive ([#6243](https://github.com/cowprotocol/cowswap/issues/6243)) ([bc9783c](https://github.com/cowprotocol/cowswap/commit/bc9783c98be352047360b1e8b61b692aa309e464))
+* **swap:** improve lock screen logic in SwapWidget to prevent flash ([#6195](https://github.com/cowprotocol/cowswap/issues/6195)) ([159b199](https://github.com/cowprotocol/cowswap/commit/159b199e5e63d13feabe7832c0c8cd877024717a))
+
 ## [1.118.7](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.118.6...cowswap-v1.118.7) (2025-09-11)
 
 
