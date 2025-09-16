@@ -9,13 +9,20 @@ import { OrderFillability } from 'common/hooks/usePendingOrdersFillability'
 
 import { ApproveWrapper, UnfillableWarning } from './styled'
 
+import { OrderPartialApprove } from '../../containers/OrderPartialApprove'
+
 export function OrderFillabilityWarning({
   fillability,
   inputAmount,
+  enablePartialApprove,
+  enablePartialApproveBySettings,
 }: {
   fillability: OrderFillability
   inputAmount: CurrencyAmount<Token>
+  enablePartialApprove?: boolean
+  enablePartialApproveBySettings?: boolean
 }): ReactNode {
+  // fillability?.hasEnoughAllowance === false
   return (
     <>
       {fillability?.hasEnoughBalance === false && (
@@ -26,18 +33,22 @@ export function OrderFillabilityWarning({
         </UnfillableWarning>
       )}
 
-      {fillability?.hasEnoughAllowance === false && (
+      {
         <UnfillableWarning bannerType={StatusColorVariant.Danger} orientation={BannerOrientation.Horizontal}>
           Order cannot be filled due to insufficient allowance on the current account.
           <ApproveWrapper>
+            {enablePartialApprove && enablePartialApproveBySettings && (
+              <OrderPartialApprove amountToApprove={inputAmount} />
+            )}
             <TradeApproveButton
-              enablePartialApprove={true}
+              ignorePermit={true}
+              enablePartialApprove={enablePartialApprove}
               amountToApprove={inputAmount}
               label={'Approve ' + inputAmount.currency.symbol}
             />
           </ApproveWrapper>
         </UnfillableWarning>
-      )}
+      }
     </>
   )
 }

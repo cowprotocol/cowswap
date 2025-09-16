@@ -20,6 +20,7 @@ import { useToggleAccountModal } from 'modules/account'
 import { BridgeActivitySummary } from 'modules/bridge'
 import { EthFlowStepper } from 'modules/ethFlow'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
+import { useSwapPartialApprovalToggleState } from 'modules/swap/hooks/useSwapSettings'
 import { ConfirmDetailsItem } from 'modules/trade'
 
 import { OrderHooksDetails } from 'common/containers/OrderHooksDetails'
@@ -207,7 +208,7 @@ export function ActivityDetails(props: {
   const singleToken = useTokenBySymbolOrAddress(tokenAddress) || null
 
   const { isPartialApproveEnabled } = useFeatureFlags()
-
+  const [isPartialApproveEnabledBySettings] = useSwapPartialApprovalToggleState(isPartialApproveEnabled)
   const getShowCancellationModal = useCancelOrder()
 
   const isSwap = order && getUiOrderType(order) === UiOrderType.SWAP
@@ -374,7 +375,6 @@ export function ActivityDetails(props: {
   )
 
   const hasPermit = order && doesOrderHavePermit(order)
-
   const showWarning =
     isPartialApproveEnabled && fillability
       ? (!fillability.hasEnoughAllowance && !hasPermit) || !fillability.hasEnoughBalance
@@ -523,7 +523,12 @@ export function ActivityDetails(props: {
           )}
 
           {fillability && showWarning && orderSummary?.inputAmount ? (
-            <OrderFillabilityWarning fillability={fillability} inputAmount={orderSummary.inputAmount} />
+            <OrderFillabilityWarning
+              fillability={fillability}
+              inputAmount={orderSummary.inputAmount}
+              enablePartialApprove={isPartialApproveEnabled}
+              enablePartialApproveBySettings={!!isPartialApproveEnabledBySettings}
+            />
           ) : null}
 
           {activityLinkUrl && enhancedTransaction?.replacementType !== 'replaced' && (

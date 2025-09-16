@@ -9,7 +9,7 @@ import {
 import { ActiveOrdersWithAffectedPermit } from '../ActiveOrdersWithAffectedPermit'
 import { TradeApproveToggle } from '../TradeApproveToggle'
 
-export function ApproveWithAffectedOrderList(): ReactNode {
+export function TradeApproveWithAffectedOrderList(): ReactNode {
   const isApproveRequired = useIsApprovalOrPermitRequired()
   const amountToApprove = useGetAmountToSignApprove()
 
@@ -23,7 +23,7 @@ export function ApproveWithAffectedOrderList(): ReactNode {
 
   return (
     <>
-      {isApproveOrPartialPermitRequired && <TradeApproveToggle />}
+      {isApproveOrPartialPermitRequired && <TradeApproveToggle amountToApprove={amountToApprove} />}
       {showAffectedOrders && amountToApprove && <ActiveOrdersWithAffectedPermit currency={amountToApprove?.currency} />}
     </>
   )

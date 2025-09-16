@@ -9,10 +9,10 @@ import { Trans } from '@lingui/macro'
 import { HelpCircle } from 'react-feather'
 
 import { useTokenSupportsPermit } from 'modules/permit'
+import { TradeType } from 'modules/trade'
 
 import * as styledEl from './styled'
 
-import { TradeType } from '../../../trade'
 import { useApprovalStateForSpender, useApproveCurrency } from '../../hooks'
 import { LegacyApproveButton } from '../../pure/LegacyApproveButton'
 import { useIsPartialApproveSelectedByUser } from '../../state'
@@ -26,18 +26,19 @@ export interface TradeApproveButtonProps {
   isDisabled?: boolean
   enablePartialApprove?: boolean
   confirmSwap?: () => void
+  ignorePermit?: boolean
   label: string
 }
 
 export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
-  const { amountToApprove, children, enablePartialApprove, confirmSwap, label } = props
+  const { amountToApprove, children, enablePartialApprove, confirmSwap, label, ignorePermit } = props
   const isPartialApproveEnabledByUser = useIsPartialApproveSelectedByUser()
   const handleApprove = useApproveCurrency(amountToApprove)
   const spender = useTradeSpenderAddress()
   const { approvalState } = useApprovalStateForSpender(amountToApprove, spender)
   // todo remove theme
   const theme = useTheme()
-  const isPermitSupported = useTokenSupportsPermit(amountToApprove.currency, TradeType.SWAP)
+  const isPermitSupported = useTokenSupportsPermit(amountToApprove.currency, TradeType.SWAP) && !ignorePermit
 
   const approveAndSwap = useCallback(async (): Promise<void> => {
     if (isPermitSupported && confirmSwap) {
@@ -51,6 +52,8 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
       confirmSwap()
     }
   }, [handleApprove, confirmSwap, amountToApprove, isPartialApproveEnabledByUser, isPermitSupported])
+
+  console.log('!enablePartialApprove', !enablePartialApprove)
 
   if (!enablePartialApprove) {
     return (

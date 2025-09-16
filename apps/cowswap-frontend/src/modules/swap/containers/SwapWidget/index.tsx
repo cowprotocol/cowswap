@@ -7,6 +7,7 @@ import { Field } from 'legacy/state/types'
 import { useHooksEnabledManager } from 'legacy/state/user/hooks'
 
 import { useTryFindIntermediateToken } from 'modules/bridge'
+import { TradeApproveWithAffectedOrderList } from 'modules/erc20Approve'
 import { EthFlowModal, EthFlowProps } from 'modules/ethFlow'
 import { AddIntermediateTokenModal } from 'modules/tokensList'
 import {
@@ -26,7 +27,6 @@ import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 
 import { Container } from './styled'
 
-import { ApproveWithAffectedOrderList } from '../../../erc20Approve'
 import { useHasEnoughWrappedBalanceForSwap } from '../../hooks/useHasEnoughWrappedBalanceForSwap'
 import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
 import {
@@ -162,7 +162,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
         return (
           <>
             {bottomContent}
-            {enablePartialApproval ? <ApproveWithAffectedOrderList /> : null}
+            {enablePartialApproval ? <TradeApproveWithAffectedOrderList /> : null}
             <SwapRateDetails rateInfoParams={rateInfoParams} deadline={deadlineState[0]} />
             <Warnings buyingFiatAmount={buyingFiatAmount} />
             {tradeWarnings}
