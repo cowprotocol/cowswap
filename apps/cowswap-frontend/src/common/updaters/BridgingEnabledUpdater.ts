@@ -21,8 +21,7 @@ export function BridgingEnabledUpdater(): null {
     accountType: AccountType | undefined,
     swapRoute: boolean,
   ): boolean {
-    // Only enable bridging once we definitively know it's an EOA
-    return featureFlagEnabled && accountType === AccountType.EOA && swapRoute
+    return featureFlagEnabled && accountType !== AccountType.SMART_CONTRACT && swapRoute
   }
 
   useEffect(() => {

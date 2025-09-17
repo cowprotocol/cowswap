@@ -1,6 +1,7 @@
 import { delay, getCurrencyAddress, reportPermitWithDefaultSigner } from '@cowprotocol/common-utils'
 import { SigningScheme, SigningStepManager } from '@cowprotocol/cow-sdk'
 import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
+import { CoWShedEip1271SignatureInvalid } from '@cowprotocol/sdk-cow-shed'
 import { UiOrderType } from '@cowprotocol/types'
 import { Percent } from '@uniswap/sdk-core'
 
@@ -23,6 +24,9 @@ import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
 import { TradeFlowContext } from '../../types/TradeFlowContext'
 
 const DELAY_BETWEEN_SIGNATURES = ms`500ms`
+
+const BridgeInvalidEip1271SignatureError =
+  'Cross-chain swaps are not supported with your current account delegate (EIP-7702). Please ensure the delegate implements the default EIP-1271 standard.'
 
 // TODO: Break down this large function into smaller functions
 // TODO: Reduce function complexity by extracting logic
@@ -243,7 +247,12 @@ export async function swapFlow(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     logTradeFlow('SWAP FLOW', 'STEP 8: ERROR: ', error)
-    const swapErrorMessage = getSwapErrorMessage(error)
+    const isCoWShedEip1271SignatureError = error instanceof CoWShedEip1271SignatureInvalid
+
+    const swapErrorMessage =
+      isBridgingOrder && isCoWShedEip1271SignatureError
+        ? BridgeInvalidEip1271SignatureError
+        : getSwapErrorMessage(error)
 
     analytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)
 
