@@ -11,6 +11,7 @@ import type { OnChainCancellation } from 'common/hooks/useCancelOrder/onChainCan
 import { useGP2SettlementContract } from 'common/hooks/useContract'
 
 import { cancelTwapOrderTxs, estimateCancelTwapOrderTxs } from '../services/cancelTwapOrderTxs'
+import { processTwapCancellation } from '../services/processTwapCancellation'
 import { setTwapOrderStatusAtom } from '../state/twapOrdersListAtom'
 import { twapPartOrdersAtom } from '../state/twapPartOrdersAtom'
 import { TwapOrderStatus } from '../types'
@@ -52,6 +53,10 @@ export function useCancelTwapOrder(): (twapOrderId: string, order: Order) => Pro
 
             setTwapOrderStatus(twapOrderId, TwapOrderStatus.Cancelling)
             processCancelledOrder({ txHash, orderId: twapOrderId, sellTokenAddress, sellTokenSymbol })
+
+            processTwapCancellation(txHash, () => {
+              setTwapOrderStatus(twapOrderId, TwapOrderStatus.Cancelled)
+            })
           })
         },
       }
