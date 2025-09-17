@@ -1,7 +1,8 @@
 import { useEffect } from 'react'
 
 import { useFeatureFlags, useSetIsBridgingEnabled } from '@cowprotocol/common-hooks'
-import { useIsSmartContractWallet } from '@cowprotocol/wallet'
+import { AccountType } from '@cowprotocol/types'
+import { useAccountType } from '@cowprotocol/wallet'
 
 import { useTradeTypeInfo } from 'modules/trade'
 
@@ -10,23 +11,22 @@ import { Routes } from '../constants/routes'
 export function BridgingEnabledUpdater(): null {
   const { isBridgingEnabled } = useFeatureFlags()
   const tradeTypeInfo = useTradeTypeInfo()
-  const isSmartContractWallet = useIsSmartContractWallet()
+  const accountType = useAccountType()
   const setIsBridgingEnabled = useSetIsBridgingEnabled()
 
   const isSwapRoute = tradeTypeInfo?.route === Routes.SWAP
 
   function shouldEnableBridging(
     featureFlagEnabled: boolean,
-    scWallet: boolean | undefined,
+    accountType: AccountType | undefined,
     swapRoute: boolean,
   ): boolean {
-    // Only enable bridging once we definitively know it's an EOA (strict false)
-    return featureFlagEnabled && scWallet === false && swapRoute
+    return featureFlagEnabled && accountType !== AccountType.SMART_CONTRACT && swapRoute
   }
 
   useEffect(() => {
-    setIsBridgingEnabled(shouldEnableBridging(isBridgingEnabled, isSmartContractWallet, isSwapRoute))
-  }, [setIsBridgingEnabled, isBridgingEnabled, isSmartContractWallet, isSwapRoute])
+    setIsBridgingEnabled(shouldEnableBridging(isBridgingEnabled, accountType, isSwapRoute))
+  }, [setIsBridgingEnabled, isBridgingEnabled, accountType, isSwapRoute])
 
   return null
 }
