@@ -23,7 +23,7 @@ export function Toggle({
   return (
     <styledEl.ToggleWrapper>
       <Option isActive={isPartialApproveEnabled} onClick={() => enablePartialApprove(true)} title={'Partial approval'}>
-        <styledEl.PartialApproveWrapper
+        <styledEl.PartialAmountWrapper
           onClick={() => {
             if (isPartialApproveEnabled && changeApproveAmount) {
               changeApproveAmount()
@@ -31,7 +31,7 @@ export function Toggle({
           }}
         >
           {amountToApprove.toSignificant(5)} <TokenSymbol token={amountToApprove.currency} /> <SVG src={EDIT} />
-        </styledEl.PartialApproveWrapper>
+        </styledEl.PartialAmountWrapper>
       </Option>
       <Option isActive={!isPartialApproveEnabled} onClick={() => enablePartialApprove(false)} title={'Full approval'}>
         Unlimited one-time

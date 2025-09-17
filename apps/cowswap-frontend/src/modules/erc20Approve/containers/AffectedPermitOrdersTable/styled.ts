@@ -7,7 +7,7 @@ export const OrderWrapper = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 10px;
-  background: var(${UI.COLOR_NEUTRAL_100});
+  background: var(${UI.COLOR_PAPER});
   border-radius: 4px;
   margin-bottom: 1px;
 `
