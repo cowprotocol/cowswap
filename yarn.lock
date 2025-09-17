@@ -4369,7 +4369,7 @@
     jest-validate "^29.4.3"
     jiti "^1.17.1"
 
-"@lingui/core@4.10.0", "@lingui/core@^4.10.0":
+"@lingui/core@4.10.0":
   version "4.10.0"
   resolved "https://registry.yarnpkg.com/@lingui/core/-/core-4.10.0.tgz#7944cd49e3f6778f7a7be98f7ab64ccb0ec53b5f"
   integrity sha512-KfwkghuCVFt3AxZlAIotTvIcopIpHj4prwG9v6iyrksLXoxKPQMBXutYGl/EIZE1KYQZdR6rjAaoilMl0pSGKA==
@@ -4386,6 +4386,14 @@
     "@babel/runtime" "^7.20.13"
     "@lingui/message-utils" "5.3.1"
     unraw "^3.0.0"
+
+"@lingui/core@^5.5.0":
+  version "5.5.0"
+  resolved "https://registry.yarnpkg.com/@lingui/core/-/core-5.5.0.tgz#d1da45cad9211d911aea06a5de98702ab6109c9a"
+  integrity sha512-xQ8gtz7MAl+90VgQEvcBYgpzQXCxTGTSW5WFpPv1jpzGbhfIA6zarZ+DZmQEStpZrKjTLbuxeP9beJ+ThSMQHg==
+  dependencies:
+    "@babel/runtime" "^7.20.13"
+    "@lingui/message-utils" "5.5.0"
 
 "@lingui/format-po@4.10.0":
   version "4.10.0"
@@ -4430,6 +4438,14 @@
   version "5.3.1"
   resolved "https://registry.yarnpkg.com/@lingui/message-utils/-/message-utils-5.3.1.tgz#4c6f123df40fb029020bdc53bf692020becbcf5d"
   integrity sha512-/nwO/uXHYNO4pT+gor7iFdvNHSIjhGhJnqGeWMndSAAqmx0LstrFp9yWhcUU3XaTceyy7AtgVZh0ter7ghOw/Q==
+  dependencies:
+    "@messageformat/parser" "^5.0.0"
+    js-sha256 "^0.10.1"
+
+"@lingui/message-utils@5.5.0":
+  version "5.5.0"
+  resolved "https://registry.yarnpkg.com/@lingui/message-utils/-/message-utils-5.5.0.tgz#abedc8d085cf267213e210def53e27a74fa69425"
+  integrity sha512-LY7AclexJm5sJnbcqeYjgRg/tL1/HDceH9/tR+GiD/Ei1ZNubzqHOvoI0JRZNmxG4x0qKzz9fxLl1ympM3a0VA==
   dependencies:
     "@messageformat/parser" "^5.0.0"
     js-sha256 "^0.10.1"
