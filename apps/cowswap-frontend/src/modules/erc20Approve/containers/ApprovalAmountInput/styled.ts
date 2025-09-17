@@ -10,6 +10,11 @@ export const EditWrapper = styled.div`
   margin: 15px;
   border-radius: 14px;
   border: 2px solid var(${UI.COLOR_PAPER_DARKEST});
+
+  .custom-input-panel {
+    padding: 0;
+    min-height: auto;
+  }
 `
 
 export const InputHeader = styled.div`

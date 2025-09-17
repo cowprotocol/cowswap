@@ -66,6 +66,7 @@ export function ApprovalAmountInput({
         Approval amount: <styledEl.ResetBtn onClick={onReset}>{resetLabel}</styledEl.ResetBtn>
       </styledEl.InputHeader>
       <CurrencyInputPanel
+        className={'custom-input-panel'}
         id={'custom-approve-amount-input'}
         chainId={tokenWithLogo?.chainId}
         areCurrenciesLoading={false}
