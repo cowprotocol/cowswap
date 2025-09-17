@@ -4,8 +4,9 @@ import { TokenWithLogo } from '@cowprotocol/common-const'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { HelpTooltip, TokenSymbol } from '@cowprotocol/ui'
 
-import * as styledEl from './styled'
 import { Link } from 'react-router'
+
+import * as styledEl from './styled'
 export interface FavoriteTokensListProps {
   tokens: TokenWithLogo[]
   hideTooltip?: boolean
