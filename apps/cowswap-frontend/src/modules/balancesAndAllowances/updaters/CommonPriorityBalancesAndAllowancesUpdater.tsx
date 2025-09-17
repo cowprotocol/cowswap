@@ -64,9 +64,9 @@ export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
     }
   }, [account, priorityTokenCount])
 
-  const { enableBffBalancesFeePercentage } = useFeatureFlags()
+  const { bffBalanceEnabledPercentage } = useFeatureFlags()
   const isBffFailed = useIsBffFailed()
-  const isBffEnabled = shouldApplyBffBalances(account, enableBffBalancesFeePercentage) && !isBffFailed
+  const isBffEnabled = shouldApplyBffBalances(account, bffBalanceEnabledPercentage) && !isBffFailed
   const pendingOrdersCount = usePendingOrdersCount(sourceChainId, balancesAccount)
 
   return (
