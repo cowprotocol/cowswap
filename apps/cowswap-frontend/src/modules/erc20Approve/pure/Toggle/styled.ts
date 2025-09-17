@@ -15,6 +15,7 @@ export const OptionWrapper = styled.button<{ isActive?: boolean }>`
   border-radius: 9px;
   margin: 4px;
   flex: 1;
+  line-height: 1;
   fornt-size: 12px;
   cursor: ${({ isActive }) => (isActive ? 'default' : 'pointer')};
   color: ${({ isActive }) => (isActive ? `var(${UI.COLOR_TEXT})` : `var(${UI.COLOR_TEXT_OPACITY_70})`)};
@@ -25,7 +26,7 @@ export const PartialAmountWrapper = styled.div<{ isActive?: boolean }>`
   display: inline-block;
   border-radius: 140px;
   font-size: 12px;
-  padding: 0 6px;
+  padding: 1px 6px;
   cursor: ${({ isActive }) => (isActive ? 'default' : 'pointer')};
   background: var(${UI.COLOR_INFO_BG});
 `
