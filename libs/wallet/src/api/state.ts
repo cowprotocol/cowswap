@@ -32,3 +32,8 @@ export const walletDisplayedAddress = atom((get) => {
 })
 
 export const hwAccountIndexAtom = atomWithStorage<number>('hw-account-index:v1', 0)
+
+// Tracks the number of ongoing eager-connect operations.
+// A derived selector can expose a boolean for "is eager connect in progress".
+export const eagerConnectPendingOpsAtom = atom(0)
+export const isEagerConnectInProgressAtom = atom((get) => get(eagerConnectPendingOpsAtom) > 0)

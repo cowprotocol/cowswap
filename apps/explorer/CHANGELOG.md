@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.54.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.53.1...explorer-v2.54.0) (2025-09-12)
+
+
+### Features
+
+* restore Gnosis Affiliate header ([#6228](https://github.com/cowprotocol/cowswap/issues/6228)) ([22d0894](https://github.com/cowprotocol/cowswap/commit/22d08941a67032712e6d206ea8579786ed78715f))
+
 ## [2.53.1](https://github.com/cowprotocol/cowswap/compare/explorer-v2.53.0...explorer-v2.53.1) (2025-08-28)
 
 
