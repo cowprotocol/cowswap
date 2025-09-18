@@ -1,4 +1,5 @@
 import { formatTokenAmount } from '@cowprotocol/common-utils'
+import type { EnrichedOrder } from '@cowprotocol/cow-sdk'
 import {
   CowWidgetEvents,
   SimpleCowEventEmitter,
@@ -9,6 +10,7 @@ import {
   OnExpiredOrderPayload,
   BaseOrderPayload,
 } from '@cowprotocol/events'
+import type { TokenInfo } from '@cowprotocol/types'
 import { Fraction } from '@uniswap/sdk-core'
 
 import { getCowAnalytics } from '../utils'
@@ -21,10 +23,11 @@ const safeGetString = <T, K extends keyof T>(obj: T | undefined, key: K, fallbac
 
 type AnalyticsPayload = Record<string, unknown>
 
-type TokenLike = { symbol?: string; decimals?: number; address?: string }
-
-function extractTokenMeta(order: unknown): { inputToken?: TokenLike; outputToken?: TokenLike } {
-  const { inputToken, outputToken } = (order as { inputToken?: TokenLike; outputToken?: TokenLike }) || {}
+function extractTokenMeta(order: Partial<EnrichedOrder> | undefined): {
+  inputToken?: TokenInfo
+  outputToken?: TokenInfo
+} {
+  const { inputToken, outputToken } = (order as unknown as { inputToken?: TokenInfo; outputToken?: TokenInfo }) || {}
   return { inputToken, outputToken }
 }
 
@@ -38,7 +41,7 @@ function buildBaseFields(payload: BaseOrderPayload): AnalyticsPayload {
 
 function buildTokenFields(
   payload: BaseOrderPayload,
-  meta: { inputToken?: TokenLike; outputToken?: TokenLike },
+  meta: { inputToken?: TokenInfo; outputToken?: TokenInfo },
 ): AnalyticsPayload {
   const sellTokenAddress = safeGetString(payload.order, 'sellToken')
   const buyTokenAddress = safeGetString(payload.order, 'buyToken')
