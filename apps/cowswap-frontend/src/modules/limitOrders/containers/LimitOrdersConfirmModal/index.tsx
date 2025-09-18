@@ -1,5 +1,5 @@
 import { useAtom, useAtomValue } from 'jotai'
-import React, { useMemo } from 'react'
+import React, { ReactNode, useMemo } from 'react'
 
 import { getWrappedToken, getCurrencyAddress } from '@cowprotocol/common-utils'
 import { TokenSymbol } from '@cowprotocol/ui'
@@ -37,10 +37,73 @@ export interface LimitOrdersConfirmModalProps {
   recipient?: string | null
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, max-lines-per-function
-export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
+function buildLimitOrderEventLabel(params: {
+  inputSymbol?: string
+  outputSymbol?: string
+  side: string
+  executionPrice?: string
+  inputAmountHuman: string
+  partialFillsEnabled: boolean
+}): string {
+  const { inputSymbol, outputSymbol, side, executionPrice, inputAmountHuman, partialFillsEnabled } = params
+  return `TokenIn: ${inputSymbol || ''}, TokenOut: ${outputSymbol || ''}, Side: ${side}, Price: ${executionPrice || ''}, Amount: ${inputAmountHuman}, PartialFills: ${partialFillsEnabled}`
+}
+
+type ExecutionPriceLike = { toSignificant: (n: number) => string } | null | undefined
+
+function buildPlaceLimitOrderEvent(params: {
+  inputAmount: LimitOrdersConfirmModalProps['inputCurrencyInfo']['amount']
+  outputAmount: LimitOrdersConfirmModalProps['outputCurrencyInfo']['amount']
+  side: 'sell' | 'buy'
+  executionPrice?: ExecutionPriceLike
+  partialFillsEnabled: boolean
+}): string {
+  const { inputAmount, outputAmount, side, executionPrice, partialFillsEnabled } = params
+
+  const inputToken = inputAmount!.currency
+  const outputToken = outputAmount!.currency
+
+  const label = buildLimitOrderEventLabel({
+    inputSymbol: inputToken.symbol || '',
+    outputSymbol: outputToken.symbol || '',
+    side,
+    executionPrice: executionPrice ? executionPrice.toSignificant(6) : undefined,
+    inputAmountHuman: inputAmount!.toSignificant(6),
+    partialFillsEnabled,
+  })
+
+  return toCowSwapGtmEvent({
+    category: CowSwapAnalyticsCategory.LIMIT_ORDER_SETTINGS,
+    action: 'place_limit_order',
+    label,
+    sellToken: getCurrencyAddress(inputToken),
+    sellTokenSymbol: inputToken.symbol || '',
+    sellTokenChainId: inputToken.chainId,
+    sellAmount: inputAmount!.quotient.toString(),
+    sellAmountHuman: inputAmount!.toSignificant(6),
+    buyToken: getCurrencyAddress(outputToken),
+    buyTokenSymbol: outputToken.symbol || '',
+    buyTokenChainId: outputToken.chainId,
+    buyAmountExpected: outputAmount!.quotient.toString(),
+    buyAmountHuman: outputAmount!.toSignificant(6),
+    side,
+    ...(executionPrice && { executionPrice: executionPrice.toSignificant(6) }),
+  })
+}
+
+function buildConfirmButtonText(isSafeApprovalBundle: boolean, inputAmount: LimitOrdersConfirmModalProps['inputCurrencyInfo']['amount']): ReactNode {
+  if (!isSafeApprovalBundle) return 'Place limit order'
+
+  return (
+    <>
+      Confirm (Approve&nbsp;
+      <TokenSymbol token={inputAmount && getWrappedToken(inputAmount.currency)} length={6} />
+      &nbsp;& Limit order)
+    </>
+  )
+}
+
+export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps): ReactNode {
   const { inputCurrencyInfo, outputCurrencyInfo, tradeContext: tradeContextInitial, priceImpact, recipient } = props
 
   /**
@@ -72,41 +135,20 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
   const isConfirmDisabled = isTooLowRate ? !warningsAccepted : false
 
   const isSafeApprovalBundle = useIsSafeApprovalBundle(inputAmount)
-  const buttonText = isSafeApprovalBundle ? (
-    <>
-      Confirm (Approve&nbsp;
-      <TokenSymbol token={inputAmount && getWrappedToken(inputAmount.currency)} length={6} />
-      &nbsp;& Limit order)
-    </>
-  ) : (
-    'Place limit order'
-  )
+  const buttonText = buildConfirmButtonText(isSafeApprovalBundle, inputAmount)
 
   // Generate analytics data for limit order placement
   const placeLimitOrderEvent = useMemo(() => {
-    // Relax gating: allow event even if executionPrice is not yet available
     if (!inputAmount || !outputAmount || !limitRateState.activeRate) return undefined
 
-    const inputToken = inputAmount.currency
-    const outputToken = outputAmount.currency
     const side = limitRateState.isInverted ? 'sell' : 'buy'
 
-    return toCowSwapGtmEvent({
-      category: CowSwapAnalyticsCategory.LIMIT_ORDER_SETTINGS,
-      action: 'place_limit_order',
-      label: `TokenIn: ${inputToken.symbol || ''}, TokenOut: ${outputToken.symbol || ''}, Side: ${side}, Price: ${executionPrice ? executionPrice.toSignificant(6) : ''}, Amount: ${inputAmount.toSignificant(6)}, PartialFills: ${settingsState.partialFillsEnabled}`,
-      sellToken: getCurrencyAddress(inputToken),
-      sellTokenSymbol: inputToken.symbol || '',
-      sellTokenChainId: inputToken.chainId,
-      sellAmount: inputAmount.quotient.toString(),
-      sellAmountHuman: inputAmount.toSignificant(6),
-      buyToken: getCurrencyAddress(outputToken),
-      buyTokenSymbol: outputToken.symbol || '',
-      buyTokenChainId: outputToken.chainId,
-      buyAmountExpected: outputAmount.quotient.toString(),
-      buyAmountHuman: outputAmount.toSignificant(6),
+    return buildPlaceLimitOrderEvent({
+      inputAmount,
+      outputAmount,
       side,
-      ...(executionPrice && { executionPrice: executionPrice.toSignificant(6) }),
+      executionPrice,
+      partialFillsEnabled: settingsState.partialFillsEnabled,
     })
   }, [inputAmount, outputAmount, executionPrice, limitRateState, settingsState])
 
