@@ -3,8 +3,6 @@ import { ReactNode } from 'react'
 import { BannerOrientation, StatusColorVariant } from '@cowprotocol/ui'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
-import { TradeApproveButton } from 'modules/erc20Approve'
-
 import { OrderFillability } from 'common/hooks/usePendingOrdersFillability'
 
 import { ApproveWrapper, UnfillableWarning } from './styled'
@@ -16,11 +14,13 @@ export function OrderFillabilityWarning({
   inputAmount,
   enablePartialApprove,
   enablePartialApproveBySettings,
+  isCustomApproveModalOpen,
 }: {
   fillability: OrderFillability
   inputAmount: CurrencyAmount<Token>
   enablePartialApprove?: boolean
   enablePartialApproveBySettings?: boolean
+  isCustomApproveModalOpen?: boolean
 }): ReactNode {
   return (
     <>
@@ -36,16 +36,9 @@ export function OrderFillabilityWarning({
         <UnfillableWarning bannerType={StatusColorVariant.Danger} orientation={BannerOrientation.Horizontal}>
           Order cannot be filled due to insufficient allowance on the current account.
           <ApproveWrapper>
-            {/*<ChangeApproveAmountModal />*/}
-            {enablePartialApprove && enablePartialApproveBySettings && (
+            {enablePartialApprove && enablePartialApproveBySettings && !isCustomApproveModalOpen && (
               <OrderPartialApprove amountToApprove={inputAmount} />
             )}
-            <TradeApproveButton
-              ignorePermit={true}
-              enablePartialApprove={enablePartialApprove}
-              amountToApprove={inputAmount}
-              label={'Approve ' + inputAmount.currency.symbol}
-            />
           </ApproveWrapper>
         </UnfillableWarning>
       )}
