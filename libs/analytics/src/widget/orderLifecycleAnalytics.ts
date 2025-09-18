@@ -166,6 +166,7 @@ function mapFulfilledOrder(p: OnFulfilledOrderPayload): AnalyticsPayload {
 
   const sellDecimals = inputToken?.decimals
   const buyDecimals = outputToken?.decimals
+  const hasBridgeOrder = Boolean(p.bridgeOrder ?? (p.order as { bridgeOrder?: unknown } | undefined)?.bridgeOrder)
 
   return {
     ...base,
@@ -177,10 +178,13 @@ function mapFulfilledOrder(p: OnFulfilledOrderPayload): AnalyticsPayload {
     // Units (decimals-adjusted)
     executedSellAmountUnits: formatUnitsViaCommon(executedSellAmountAtoms, sellDecimals),
     executedBuyAmountUnits: formatUnitsViaCommon(executedBuyAmountAtoms, buyDecimals),
+    executedFeeAmountUnits: formatUnitsViaCommon(executedFeeAmountAtoms, sellDecimals),
 
     // Safary-lexicon style fields (explicit for fulfillment amounts)
     from_amount: formatUnitsViaCommon(executedSellAmountAtoms, sellDecimals),
     to_amount: formatUnitsViaCommon(executedBuyAmountAtoms, buyDecimals),
+
+    isCrossChain: hasBridgeOrder,
   }
 }
 

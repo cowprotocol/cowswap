@@ -102,8 +102,8 @@ function buildSwapConfirmBaseEvent(params: {
     ...(walletAddressAlias ? { walletAddressAlias } : {}),
     sellToken: getCurrencyAddress(inputCurrency),
     sellTokenSymbol: inputCurrency.symbol || '',
-    sellTokenChainId: inputCurrency.chainId,
-    sellAmount: inputAmount.quotient.toString(),
+    sellTokenChainId: inputCurrency.chainId ?? fromChainId,
+    sellAmount: inputAmount.toExact(),
     sellAmountHuman: inputAmount.toSignificant(6),
     value: Number(inputAmount.toSignificant(6)),
   }
@@ -112,16 +112,18 @@ function buildSwapConfirmBaseEvent(params: {
 function buildSwapConfirmExtraFields(params: {
   outputCurrency?: Currency
   outputAmount?: CurrencyAmount<Currency> | null
+  toChainId?: number
 }): Record<string, unknown> {
-  const { outputCurrency, outputAmount } = params
+  const { outputCurrency, outputAmount, toChainId } = params
   if (!outputCurrency || !outputAmount) return {}
   const extra: Record<string, unknown> = {
     buyToken: getCurrencyAddress(outputCurrency),
     buyTokenSymbol: outputCurrency.symbol || '',
-    buyAmountExpected: outputAmount.quotient.toString(),
+    buyAmountExpected: outputAmount.toExact(),
     buyAmountHuman: outputAmount.toSignificant(6),
   }
-  if (typeof outputCurrency.chainId !== 'undefined') extra.buyTokenChainId = outputCurrency.chainId
+  const resolvedBuyChainId = outputCurrency.chainId ?? toChainId
+  if (typeof resolvedBuyChainId !== 'undefined') extra.buyTokenChainId = resolvedBuyChainId
   return extra
 }
 
@@ -339,7 +341,7 @@ function useConfirmClickEvent(params: {
       outputSymbol: outputCurrency?.symbol,
     })
 
-    const extra = buildSwapConfirmExtraFields({ outputCurrency, outputAmount })
+    const extra = buildSwapConfirmExtraFields({ outputCurrency, outputAmount, toChainId })
 
     return toCowSwapGtmEvent({ ...base, ...extra })
   }, [account, ensName, chainId, inputAmount, outputAmount, shouldDisplayBridgeDetails])

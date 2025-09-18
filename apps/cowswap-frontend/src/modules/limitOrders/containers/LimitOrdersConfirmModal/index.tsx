@@ -2,6 +2,7 @@ import { useAtom, useAtomValue } from 'jotai'
 import React, { ReactNode, useMemo } from 'react'
 
 import { getWrappedToken, getCurrencyAddress } from '@cowprotocol/common-utils'
+import { OrderKind } from '@cowprotocol/cow-sdk'
 import { TokenSymbol } from '@cowprotocol/ui'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
@@ -63,8 +64,10 @@ function buildPlaceLimitOrderEvent(params: {
   side: 'sell' | 'buy'
   executionPrice?: ExecutionPriceLike
   partialFillsEnabled: boolean
+  walletAddress?: string
+  chainId?: number
 }): string {
-  const { inputAmount, outputAmount, side, executionPrice, partialFillsEnabled } = params
+  const { inputAmount, outputAmount, side, executionPrice, partialFillsEnabled, walletAddress, chainId } = params
   const inputToken = inputAmount.currency
   const outputToken = outputAmount.currency
 
@@ -81,16 +84,18 @@ function buildPlaceLimitOrderEvent(params: {
     category: CowSwapAnalyticsCategory.LIMIT_ORDER_SETTINGS,
     action: 'place_limit_order',
     label,
+    chainId,
+    walletAddress,
     sellToken: getCurrencyAddress(inputToken),
     sellTokenSymbol: inputToken.symbol || '',
-    sellTokenChainId: inputToken.chainId,
-    sellAmount: inputAmount.quotient.toString(),
+    sellTokenChainId: inputToken.chainId ?? chainId,
+    sellAmount: inputAmount.toExact(),
     sellAmountHuman: inputAmount.toSignificant(6),
     buyToken: getCurrencyAddress(outputToken),
     buyTokenSymbol: outputToken.symbol || '',
-    buyTokenChainId: outputToken.chainId,
-      buyAmountExpected: outputAmount.quotient.toString(),
-      buyAmountHuman: outputAmount.toSignificant(6),
+    buyTokenChainId: outputToken.chainId ?? chainId,
+    buyAmountExpected: outputAmount.toExact(),
+    buyAmountHuman: outputAmount.toSignificant(6),
     side,
     ...(executionPrice && { executionPrice: executionPrice.toSignificant(6) }),
   })
@@ -122,7 +127,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps): Re
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const tradeContext = useMemo(() => tradeContextInitial, [])
 
-  const { account } = useWalletInfo()
+  const { account, chainId } = useWalletInfo()
   const { ensName } = useWalletDetails()
   const warningsAccepted = useLimitOrdersWarningsAccepted(true)
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
@@ -148,8 +153,9 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps): Re
   // Generate analytics data for limit order placement
   const placeLimitOrderEvent = useMemo(() => {
     if (!inputAmount || !outputAmount || !limitRateState.activeRate) return undefined
-
-    const side = limitRateState.isInverted ? 'sell' : 'buy'
+    const walletAddress = account || undefined
+    const resolvedChainId = chainId ?? tradeContext.postOrderParams.chainId
+    const side = tradeContext.postOrderParams.kind === OrderKind.SELL ? 'sell' : 'buy'
 
     return buildPlaceLimitOrderEvent({
       inputAmount,
@@ -157,8 +163,19 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps): Re
       side,
       executionPrice,
       partialFillsEnabled: settingsState.partialFillsEnabled,
+      walletAddress,
+      chainId: resolvedChainId,
     })
-  }, [inputAmount, outputAmount, executionPrice, limitRateState, settingsState])
+  }, [
+    account,
+    chainId,
+    executionPrice,
+    inputAmount,
+    limitRateState.activeRate,
+    outputAmount,
+    settingsState,
+    tradeContext,
+  ])
 
   return (
     <TradeConfirmModal title={CONFIRM_TITLE}>
