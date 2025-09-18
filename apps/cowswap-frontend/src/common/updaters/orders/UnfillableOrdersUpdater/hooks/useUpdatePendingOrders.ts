@@ -11,6 +11,7 @@ import { Order } from 'legacy/state/orders/actions'
 import { getRemainderAmount } from 'legacy/state/orders/utils'
 
 import { updatePendingOrderPricesAtom } from 'modules/orders/state/pendingOrdersPricesAtom'
+import { ORDERS_TABLE_PAGE_SIZE, OrderTabId } from 'modules/ordersTable/const/tabs'
 
 import { useUpdateIsUnfillableFlag } from './useUpdateIsUnfillableFlag'
 
@@ -37,16 +38,28 @@ async function getOrderPrice(chainId: SupportedChainId, order: Order): Promise<Q
   }
 }
 
-export function useUpdatePendingOrders(): (orders: Order[]) => void {
+export function useUpdatePendingOrders(
+  isWindowVisible: boolean,
+  pageNumber?: number,
+  tabId?: OrderTabId,
+): (orders: Order[]) => void {
   const { chainId, account } = useWalletInfo()
   const updatePendingOrderPrices = useSetAtom(updatePendingOrderPricesAtom)
   const updateIsUnfillableFlag = useUpdateIsUnfillableFlag()
 
+  const isValidTab = tabId === OrderTabId.open || tabId === OrderTabId.all
+
   return useCallback(
     (orders: Order[]) => {
-      if (!account || !orders.length) return
+      if (!isWindowVisible || !account || !orders.length || !pageNumber || !isValidTab) return
 
-      orders.forEach((order) => {
+      // Only update orders that are visible in the current page
+      const updatableOrders = orders.slice(
+        (pageNumber - 1) * ORDERS_TABLE_PAGE_SIZE,
+        pageNumber * ORDERS_TABLE_PAGE_SIZE,
+      )
+
+      updatableOrders.forEach((order) => {
         getOrderPrice(chainId, order)
           .then((results) => {
             if (!results) return
@@ -72,6 +85,6 @@ export function useUpdatePendingOrders(): (orders: Order[]) => void {
           })
       })
     },
-    [account, chainId, updateIsUnfillableFlag, updatePendingOrderPrices],
+    [account, chainId, updateIsUnfillableFlag, updatePendingOrderPrices, pageNumber, isValidTab, isWindowVisible],
   )
 }
