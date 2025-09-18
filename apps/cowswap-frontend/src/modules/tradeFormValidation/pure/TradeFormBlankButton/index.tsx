@@ -1,6 +1,5 @@
-import { ReactElement, useEffect, useRef, useState } from 'react'
+import { ReactNode, useEffect, useRef, useState } from 'react'
 
-import { isDevelopmentEnv } from '@cowprotocol/common-utils'
 import { CenteredDots, LongLoadText, UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
@@ -48,7 +47,7 @@ const ActionButton = styled.button<{ hasLongText$: boolean }>`
 `
 
 export interface TradeFormPrimaryButtonProps {
-  children: ReactElement | string
+  children: ReactNode | string
   disabled?: boolean
   loading?: boolean
   id?: string
@@ -59,9 +58,6 @@ export interface TradeFormPrimaryButtonProps {
   'data-click-event'?: string
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function TradeFormBlankButton({
   onClick,
   children,
@@ -70,7 +66,7 @@ export function TradeFormBlankButton({
   id,
   className,
   'data-click-event': dataClickEvent,
-}: TradeFormPrimaryButtonProps) {
+}: TradeFormPrimaryButtonProps): ReactNode {
   const ref = useRef<HTMLButtonElement>(null)
   const [hasLongText, setHasLongText] = useState(false)
   const [justClicked, setJustClicked] = useState(false)
@@ -86,21 +82,7 @@ export function TradeFormBlankButton({
     setHasLongText(text.length > LONG_TEXT_LENGTH)
   }, [children])
 
-  // Combine local onClick logic with incoming onClick
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const handleClick = () => {
-    // Dev-only: mirror GTM click payload in console for local testing
-    if (isDevelopmentEnv() && dataClickEvent) {
-      try {
-        // Attempt to pretty print the GTM event JSON
-
-        console.debug('[GTM click]', JSON.parse(dataClickEvent))
-      } catch {
-        console.debug('[GTM click]', dataClickEvent)
-      }
-    }
-
+  const handleClick = (): void => {
     if (isUpToMedium) {
       window.scrollTo({ top: 0, left: 0 })
     }
