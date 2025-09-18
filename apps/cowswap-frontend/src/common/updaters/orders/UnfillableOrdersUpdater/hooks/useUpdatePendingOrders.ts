@@ -38,6 +38,14 @@ async function getOrderPrice(chainId: SupportedChainId, order: Order): Promise<Q
   }
 }
 
+// Only update orders that are visible in the current page
+const getUpdatableOrders = (orders: Order[], pageNumber?: number): Order[] => {
+  const page = pageNumber && pageNumber > 0 ? pageNumber : 1
+  const start = (page - 1) * ORDERS_TABLE_PAGE_SIZE
+  const end = start + ORDERS_TABLE_PAGE_SIZE
+  return orders.slice(start, end)
+}
+
 export function useUpdatePendingOrders(
   isWindowVisible: boolean,
   pageNumber?: number,
@@ -49,15 +57,18 @@ export function useUpdatePendingOrders(
 
   const isValidTab = tabId === OrderTabId.open || tabId === OrderTabId.all
 
+  const shouldUpdate = useCallback(
+    (orders: Order[]): boolean => {
+      return Boolean(isWindowVisible && account && chainId && orders.length && pageNumber && isValidTab)
+    },
+    [isWindowVisible, account, chainId, pageNumber, isValidTab],
+  )
+
   return useCallback(
     (orders: Order[]) => {
-      if (!isWindowVisible || !account || !chainId || !orders.length || !pageNumber || !isValidTab) return
+      if (!shouldUpdate(orders)) return
 
-      // Only update orders that are visible in the current page
-      const page = pageNumber && pageNumber > 0 ? pageNumber : 1
-      const start = (page - 1) * ORDERS_TABLE_PAGE_SIZE
-      const end = start + ORDERS_TABLE_PAGE_SIZE
-      const updatableOrders = orders.slice(start, end)
+      const updatableOrders = getUpdatableOrders(orders, pageNumber)
 
       updatableOrders.forEach((order) => {
         getOrderPrice(chainId, order)
@@ -85,6 +96,6 @@ export function useUpdatePendingOrders(
           })
       })
     },
-    [account, chainId, updateIsUnfillableFlag, updatePendingOrderPrices, pageNumber, isValidTab, isWindowVisible],
+    [chainId, updateIsUnfillableFlag, updatePendingOrderPrices, pageNumber, shouldUpdate],
   )
 }
