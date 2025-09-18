@@ -58,16 +58,15 @@ function buildLimitOrderEventLabel(params: {
 type ExecutionPriceLike = { toSignificant: (n: number) => string } | null | undefined
 
 function buildPlaceLimitOrderEvent(params: {
-  inputAmount: LimitOrdersConfirmModalProps['inputCurrencyInfo']['amount']
-  outputAmount: LimitOrdersConfirmModalProps['outputCurrencyInfo']['amount']
+  inputAmount: NonNullable<LimitOrdersConfirmModalProps['inputCurrencyInfo']['amount']>
+  outputAmount: NonNullable<LimitOrdersConfirmModalProps['outputCurrencyInfo']['amount']>
   side: 'sell' | 'buy'
   executionPrice?: ExecutionPriceLike
   partialFillsEnabled: boolean
 }): string {
   const { inputAmount, outputAmount, side, executionPrice, partialFillsEnabled } = params
-
-  const inputToken = inputAmount!.currency
-  const outputToken = outputAmount!.currency
+  const inputToken = inputAmount.currency
+  const outputToken = outputAmount.currency
 
   const label = buildLimitOrderEventLabel({
     inputToken,
@@ -85,13 +84,13 @@ function buildPlaceLimitOrderEvent(params: {
     sellToken: getCurrencyAddress(inputToken),
     sellTokenSymbol: inputToken.symbol || '',
     sellTokenChainId: inputToken.chainId,
-    sellAmount: inputAmount!.quotient.toString(),
-    sellAmountHuman: inputAmount!.toSignificant(6),
+    sellAmount: inputAmount.quotient.toString(),
+    sellAmountHuman: inputAmount.toSignificant(6),
     buyToken: getCurrencyAddress(outputToken),
     buyTokenSymbol: outputToken.symbol || '',
     buyTokenChainId: outputToken.chainId,
-    buyAmountExpected: outputAmount!.quotient.toString(),
-    buyAmountHuman: outputAmount!.toSignificant(6),
+      buyAmountExpected: outputAmount.quotient.toString(),
+      buyAmountHuman: outputAmount.toSignificant(6),
     side,
     ...(executionPrice && { executionPrice: executionPrice.toSignificant(6) }),
   })

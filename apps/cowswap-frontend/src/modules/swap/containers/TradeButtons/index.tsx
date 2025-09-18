@@ -100,6 +100,7 @@ function buildSwapBridgeClickEvent(params: {
   if (!isBridgeEventBuildable(params)) return undefined
 
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount, chainId, walletAddress } = params
+  if (!inputCurrency || !inputCurrencyAmount) return undefined
   const { sellTokenChainId, buyTokenChainId, toChainId } = getChainIds(params)
 
   const baseEvent: Record<string, unknown> = {
@@ -107,18 +108,18 @@ function buildSwapBridgeClickEvent(params: {
     label: buildBridgeLabel(
       chainId,
       toChainId,
-      inputCurrency?.symbol,
+      inputCurrency.symbol,
       outputCurrency?.symbol,
-      inputCurrencyAmount!.toSignificant(6),
+      inputCurrencyAmount.toSignificant(6),
     ),
     fromChainId: chainId,
     walletAddress,
-    sellToken: getCurrencyAddress(inputCurrency!),
-    sellTokenSymbol: inputCurrency?.symbol || '',
+    sellToken: getCurrencyAddress(inputCurrency),
+    sellTokenSymbol: inputCurrency.symbol || '',
     sellTokenChainId: sellTokenChainId,
-    sellAmount: inputCurrencyAmount!.quotient.toString(),
-    sellAmountHuman: inputCurrencyAmount!.toSignificant(6),
-    value: Number(inputCurrencyAmount!.toSignificant(6)),
+    sellAmount: inputCurrencyAmount.quotient.toString(),
+    sellAmountHuman: inputCurrencyAmount.toSignificant(6),
+    value: Number(inputCurrencyAmount.toSignificant(6)),
   }
 
   const extra = buildBuyFields({
