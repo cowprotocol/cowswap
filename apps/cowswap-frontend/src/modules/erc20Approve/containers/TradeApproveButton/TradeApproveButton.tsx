@@ -5,7 +5,6 @@ import { ButtonConfirmed, ButtonSize, HoverTooltip, TokenSymbol } from '@cowprot
 import { Currency, CurrencyAmount, MaxUint256 } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
-import { HelpCircle } from 'react-feather'
 
 import { useTokenSupportsPermit } from 'modules/permit'
 import { TradeType } from 'modules/trade'
@@ -86,7 +85,7 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
             </Trans>
           }
         >
-          {isPending ? <styledEl.StyledLoader /> : <HelpCircle size="24" />}
+          {isPending ? <styledEl.StyledLoader /> : <styledEl.StyledAlert size={24} />}
         </HoverTooltip>
       </styledEl.ButtonLabelWrapper>
     </ButtonConfirmed>
