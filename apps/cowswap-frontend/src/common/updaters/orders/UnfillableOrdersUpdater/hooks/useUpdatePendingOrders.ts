@@ -51,13 +51,13 @@ export function useUpdatePendingOrders(
 
   return useCallback(
     (orders: Order[]) => {
-      if (!isWindowVisible || !account || !orders.length || !pageNumber || !isValidTab) return
+      if (!isWindowVisible || !account || !chainId || !orders.length || !pageNumber || !isValidTab) return
 
       // Only update orders that are visible in the current page
-      const updatableOrders = orders.slice(
-        (pageNumber - 1) * ORDERS_TABLE_PAGE_SIZE,
-        pageNumber * ORDERS_TABLE_PAGE_SIZE,
-      )
+      const page = pageNumber && pageNumber > 0 ? pageNumber : 1
+      const start = (page - 1) * ORDERS_TABLE_PAGE_SIZE
+      const end = start + ORDERS_TABLE_PAGE_SIZE
+      const updatableOrders = orders.slice(start, end)
 
       updatableOrders.forEach((order) => {
         getOrderPrice(chainId, order)
