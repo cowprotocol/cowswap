@@ -1,6 +1,6 @@
 import { ReactNode, useMemo } from 'react'
 
-import { getCurrencyAddress } from '@cowprotocol/common-utils'
+import { formatUnitsSafe, getCurrencyAddress } from '@cowprotocol/common-utils'
 import type { BridgeProviderInfo } from '@cowprotocol/sdk-bridging'
 import { Nullish } from '@cowprotocol/types'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
@@ -86,6 +86,7 @@ function buildSwapConfirmBaseEvent(params: {
     inputAmount,
     outputSymbol,
   } = params
+  const sellAmount = formatUnitsSafe(inputAmount.quotient.toString(), inputCurrency.decimals)
   return {
     category: isBridge ? CowSwapAnalyticsCategory.Bridge : CowSwapAnalyticsCategory.TRADE,
     action: isBridge ? 'swap_bridge_confirm_click' : 'swap_confirm_click',
@@ -103,7 +104,7 @@ function buildSwapConfirmBaseEvent(params: {
     sellToken: getCurrencyAddress(inputCurrency),
     sellTokenSymbol: inputCurrency.symbol || '',
     sellTokenChainId: inputCurrency.chainId ?? fromChainId,
-    sellAmount: inputAmount.toExact(),
+    sellAmount,
     sellAmountHuman: inputAmount.toSignificant(6),
     value: Number(inputAmount.toSignificant(6)),
   }
@@ -116,10 +117,11 @@ function buildSwapConfirmExtraFields(params: {
 }): Record<string, unknown> {
   const { outputCurrency, outputAmount, toChainId } = params
   if (!outputCurrency || !outputAmount) return {}
+  const buyAmountExpected = formatUnitsSafe(outputAmount.quotient.toString(), outputCurrency.decimals)
   const extra: Record<string, unknown> = {
     buyToken: getCurrencyAddress(outputCurrency),
     buyTokenSymbol: outputCurrency.symbol || '',
-    buyAmountExpected: outputAmount.toExact(),
+    buyAmountExpected,
     buyAmountHuman: outputAmount.toSignificant(6),
   }
   const resolvedBuyChainId = outputCurrency.chainId ?? toChainId

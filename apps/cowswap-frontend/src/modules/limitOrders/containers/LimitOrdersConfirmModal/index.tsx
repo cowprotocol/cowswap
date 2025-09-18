@@ -1,7 +1,7 @@
 import { useAtom, useAtomValue } from 'jotai'
 import React, { ReactNode, useMemo } from 'react'
 
-import { getWrappedToken, getCurrencyAddress } from '@cowprotocol/common-utils'
+import { formatUnitsSafe, getWrappedToken, getCurrencyAddress } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { TokenSymbol } from '@cowprotocol/ui'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
@@ -80,6 +80,11 @@ function buildPlaceLimitOrderEvent(params: {
     partialFillsEnabled,
   })
 
+  const sellAmount =
+    inputAmount && inputToken ? formatUnitsSafe(inputAmount.quotient.toString(), inputToken.decimals) : ''
+  const buyAmount =
+    outputAmount && outputToken ? formatUnitsSafe(outputAmount.quotient.toString(), outputToken.decimals) : ''
+
   return toCowSwapGtmEvent({
     category: CowSwapAnalyticsCategory.LIMIT_ORDER_SETTINGS,
     action: 'place_limit_order',
@@ -89,12 +94,12 @@ function buildPlaceLimitOrderEvent(params: {
     sellToken: getCurrencyAddress(inputToken),
     sellTokenSymbol: inputToken.symbol || '',
     sellTokenChainId: inputToken.chainId ?? chainId,
-    sellAmount: inputAmount.toExact(),
+    sellAmount,
     sellAmountHuman: inputAmount.toSignificant(6),
     buyToken: getCurrencyAddress(outputToken),
     buyTokenSymbol: outputToken.symbol || '',
     buyTokenChainId: outputToken.chainId ?? chainId,
-    buyAmountExpected: outputAmount.toExact(),
+    buyAmountExpected: buyAmount,
     buyAmountHuman: outputAmount.toSignificant(6),
     side,
     ...(executionPrice && { executionPrice: executionPrice.toSignificant(6) }),
