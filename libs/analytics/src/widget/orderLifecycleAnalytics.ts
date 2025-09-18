@@ -1,4 +1,4 @@
-import { formatUnitsSafe } from '@cowprotocol/common-utils'
+import { formatTokenAmount } from '@cowprotocol/common-utils'
 import {
   CowWidgetEvents,
   SimpleCowEventEmitter,
@@ -9,10 +9,9 @@ import {
   OnExpiredOrderPayload,
   BaseOrderPayload,
 } from '@cowprotocol/events'
+import { Fraction } from '@uniswap/sdk-core'
 
 import { getCowAnalytics } from '../utils'
-// Local alias to keep call sites tidy in this file
-const formatUnits = formatUnitsSafe
 
 // Specialized helper function for string properties to ensure we always return a string
 const safeGetString = <T, K extends keyof T>(obj: T | undefined, key: K, fallback: string = ''): string => {
@@ -59,8 +58,8 @@ function buildTokenFields(
     buyTokenSymbol: meta.outputToken?.symbol || '',
     sellTokenDecimals,
     buyTokenDecimals,
-    sellAmountUnits: formatUnits(sellAmountAtoms, sellTokenDecimals),
-    buyAmountUnits: formatUnits(buyAmountAtoms, buyTokenDecimals),
+    sellAmountUnits: formatUnitsViaCommon(sellAmountAtoms, sellTokenDecimals),
+    buyAmountUnits: formatUnitsViaCommon(buyAmountAtoms, buyTokenDecimals),
   }
 }
 
@@ -78,8 +77,8 @@ function buildAnalyticsCurrencyAliases(fields: AnalyticsPayload): AnalyticsPaylo
     to_currency_address: buyTokenAddress,
     from_currency: String(fields.sellTokenSymbol || ''),
     to_currency: String(fields.buyTokenSymbol || ''),
-    from_amount: formatUnits(String(fields.sellAmount || ''), sellTokenDecimals),
-    to_amount: formatUnits(String(fields.buyAmount || ''), buyTokenDecimals),
+    from_amount: formatUnitsViaCommon(String(fields.sellAmount || ''), sellTokenDecimals),
+    to_amount: formatUnitsViaCommon(String(fields.buyAmount || ''), buyTokenDecimals),
   }
 }
 
@@ -136,8 +135,8 @@ function mapPostedOrder(p: OnPostedOrderPayload): AnalyticsPayload {
     buyTokenSymbol: safeGetString(p.outputToken, 'symbol'),
     sellTokenDecimals: p.inputToken?.decimals,
     buyTokenDecimals: p.outputToken?.decimals,
-    sellAmountUnits: formatUnits(p.inputAmount, p.inputToken?.decimals),
-    buyAmountUnits: formatUnits(p.outputAmount, p.outputToken?.decimals),
+    sellAmountUnits: formatUnitsViaCommon(p.inputAmount, p.inputToken?.decimals),
+    buyAmountUnits: formatUnitsViaCommon(p.outputAmount, p.outputToken?.decimals),
   }
 
   return {
@@ -173,12 +172,12 @@ function mapFulfilledOrder(p: OnFulfilledOrderPayload): AnalyticsPayload {
     executedFeeAmount: executedFeeAmountAtoms,
 
     // Units (decimals-adjusted)
-    executedSellAmountUnits: formatUnits(executedSellAmountAtoms, sellDecimals),
-    executedBuyAmountUnits: formatUnits(executedBuyAmountAtoms, buyDecimals),
+    executedSellAmountUnits: formatUnitsViaCommon(executedSellAmountAtoms, sellDecimals),
+    executedBuyAmountUnits: formatUnitsViaCommon(executedBuyAmountAtoms, buyDecimals),
 
     // Safary-lexicon style fields (explicit for fulfillment amounts)
-    from_amount: formatUnits(executedSellAmountAtoms, sellDecimals),
-    to_amount: formatUnits(executedBuyAmountAtoms, buyDecimals),
+    from_amount: formatUnitsViaCommon(executedSellAmountAtoms, sellDecimals),
+    to_amount: formatUnitsViaCommon(executedBuyAmountAtoms, buyDecimals),
   }
 }
 
@@ -206,4 +205,18 @@ export const setupEventHandlers = (
       },
     })
   })
+}
+
+// Format atom values to human-readable units using existing amount formatter
+function formatUnitsViaCommon(value: string | number | bigint, decimals?: number): string {
+  if (value === undefined || value === null) return ''
+  const dec = typeof decimals === 'number' && decimals > 0 ? decimals : 0
+  const numerator = typeof value === 'bigint' ? value.toString() : String(value)
+  const denominator = dec > 0 ? '1' + '0'.repeat(dec) : '1'
+  try {
+    return formatTokenAmount(new Fraction(numerator, denominator))
+  } catch {
+    // Fallback to raw string if formatting fails
+    return numerator
+  }
 }
