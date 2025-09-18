@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.118.11](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.118.10...cowswap-v1.118.11) (2025-09-18)
+
+
+### Bug Fixes
+
+* **bridge:** allow bridging when wallet not connected ([#6281](https://github.com/cowprotocol/cowswap/issues/6281)) ([00c1f69](https://github.com/cowprotocol/cowswap/commit/00c1f692f528eb81104b8e634c74f198c334d423))
+
 ## [1.118.10](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.118.9...cowswap-v1.118.10) (2025-09-15)
 
 
