@@ -1,7 +1,6 @@
 import { ReactNode } from 'react'
 
 import { useMediaQuery, useTheme } from '@cowprotocol/common-hooks'
-import { isDevelopmentEnv } from '@cowprotocol/common-utils'
 import { ChainInfo } from '@cowprotocol/cow-sdk'
 import { HoverTooltip, Media } from '@cowprotocol/ui'
 
@@ -13,6 +12,7 @@ import { Field } from 'legacy/state/types'
 import { TradeType } from 'modules/trade/types/TradeType'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
+import { createLogger } from 'common/utils/logger'
 
 import * as styledEl from './styled'
 
@@ -28,6 +28,8 @@ const LoadingShimmerElements = (
 )
 
 type BuildClickEvent = (chain: ChainInfo) => string
+
+const log = createLogger('ChainsSelector')
 
 function makeBuildClickEvent(
   defaultChainId: ChainInfo['id'] | undefined,
@@ -50,11 +52,11 @@ function handleSelect(
   onSelectChain: (c: ChainInfo) => void,
   isSwapMode: boolean,
 ): void {
-  if (isSwapMode && isDevelopmentEnv()) {
+  if (isSwapMode) {
     try {
-      console.debug('[GTM click]', JSON.parse(clickEvent))
+      log.debug('[GTM click]', JSON.parse(clickEvent) as unknown)
     } catch {
-      console.debug('[GTM click]', clickEvent)
+      log.debug('[GTM click]', clickEvent)
     }
   }
   onSelectChain(chain)
