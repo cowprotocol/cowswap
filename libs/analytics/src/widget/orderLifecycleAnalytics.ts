@@ -32,7 +32,6 @@ function extractTokenMeta(order: unknown): { inputToken?: TokenLike; outputToken
 function buildBaseFields(payload: BaseOrderPayload): AnalyticsPayload {
   return {
     walletAddress: safeGetString(payload.order, 'owner'),
-    wallet_address: safeGetString(payload.order, 'owner'),
     orderId: safeGetString(payload.order, 'uid'),
     chainId: payload.chainId.toString(),
     chain_id: payload.chainId.toString(),
@@ -144,7 +143,6 @@ function mapPostedOrder(p: OnPostedOrderPayload): AnalyticsPayload {
 
   return {
     walletAddress: p.owner,
-    wallet_address: p.owner,
     orderId: p.orderUid,
     chainId: p.chainId.toString(),
     chain_id: p.chainId.toString(),
