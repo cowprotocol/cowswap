@@ -42,8 +42,24 @@ export interface TradeConfirmationProps {
   'data-click-event'?: string
 }
 
-// TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+function ConfirmationHeader({
+  title,
+  onDismiss,
+  showCountdown,
+}: {
+  title: ReactElement | string
+  onDismiss: () => void
+  showCountdown: boolean
+}): ReactElement {
+  return (
+    <styledEl.Header>
+      <BackButton onClick={onDismiss} />
+      <styledEl.ConfirmHeaderTitle>{title}</styledEl.ConfirmHeaderTitle>
+      <styledEl.HeaderRightContent>{showCountdown ? <QuoteCountdown /> : null}</styledEl.HeaderRightContent>
+    </styledEl.Header>
+  )
+}
+
 export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
   const { pendingTrade, forcePriceConfirmation } = useTradeConfirmState()
   const signingStep = useSigningStep()
@@ -100,14 +116,7 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
 
   return (
     <styledEl.WidgetWrapper onKeyDown={(e) => e.key === 'Escape' && onDismiss()}>
-      <styledEl.Header>
-        <BackButton onClick={onDismiss} />
-        <styledEl.ConfirmHeaderTitle>{title}</styledEl.ConfirmHeaderTitle>
-
-        <styledEl.HeaderRightContent>
-          {hasPendingTrade || isPriceStatic ? null : <QuoteCountdown />}
-        </styledEl.HeaderRightContent>
-      </styledEl.Header>
+      <ConfirmationHeader title={title} onDismiss={onDismiss} showCountdown={!hasPendingTrade && !isPriceStatic} />
       <styledEl.ContentWrapper id="trade-confirmation">
         <ConfirmAmounts
           inputCurrencyInfo={props.inputCurrencyInfo}
