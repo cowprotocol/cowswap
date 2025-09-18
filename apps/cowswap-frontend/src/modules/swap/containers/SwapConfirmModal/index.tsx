@@ -67,10 +67,11 @@ function buildSwapConfirmBaseEvent(params: {
   fromChainId: number | undefined
   toChainId: number | undefined
   walletAddress: string | undefined
+  walletAddressAlias?: string | undefined
   inputCurrency: Currency
   inputAmount: CurrencyAmount<Currency>
 }): Omit<CowSwapGtmEvent, 'category'> & { category: CowSwapAnalyticsCategory } {
-  const { isBridge, fromChainId, toChainId, walletAddress, inputCurrency, inputAmount } = params
+  const { isBridge, fromChainId, toChainId, walletAddress, walletAddressAlias, inputCurrency, inputAmount } = params
   return {
     category: isBridge ? CowSwapAnalyticsCategory.Bridge : CowSwapAnalyticsCategory.TRADE,
     action: isBridge ? 'swap_bridge_confirm_click' : 'swap_confirm_click',
@@ -84,6 +85,7 @@ function buildSwapConfirmBaseEvent(params: {
     fromChainId,
     ...(toChainId !== undefined ? { toChainId } : {}),
     walletAddress,
+    ...(walletAddressAlias ? { walletAddressAlias } : {}),
     sellToken: getCurrencyAddress(inputCurrency),
     sellTokenSymbol: inputCurrency.symbol || '',
     sellTokenChainId: inputCurrency.chainId,
@@ -194,6 +196,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
       fromChainId: chainId,
       toChainId,
       walletAddress: account,
+      walletAddressAlias: ensName || undefined,
       inputCurrency: inputCurrency!,
       inputAmount: inputAmount!,
     })
@@ -201,7 +204,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
     const extra = buildSwapConfirmExtraFields({ outputCurrency, outputAmount })
 
     return toCowSwapGtmEvent({ ...base, ...extra })
-  }, [account, chainId, inputCurrencyInfo.amount, outputCurrencyInfo.amount, shouldDisplayBridgeDetails])
+  }, [account, ensName, chainId, inputCurrencyInfo.amount, outputCurrencyInfo.amount, shouldDisplayBridgeDetails])
 
   return (
     <TradeConfirmModal title={CONFIRM_TITLE} submittedContent={submittedContent}>
