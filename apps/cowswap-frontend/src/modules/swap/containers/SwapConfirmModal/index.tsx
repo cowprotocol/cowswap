@@ -49,7 +49,12 @@ function isSwapConfirmBridge(
   fromChainId: number | undefined,
   toChainId: number | undefined,
 ): boolean {
-  return Boolean(shouldDisplayBridgeDetails && toChainId !== undefined && toChainId !== fromChainId)
+  return Boolean(
+    shouldDisplayBridgeDetails &&
+      fromChainId !== undefined &&
+      toChainId !== undefined &&
+      toChainId !== fromChainId,
+  )
 }
 
 function buildSwapConfirmLabel(
@@ -70,8 +75,18 @@ function buildSwapConfirmBaseEvent(params: {
   walletAddressAlias?: string | undefined
   inputCurrency: Currency
   inputAmount: CurrencyAmount<Currency>
+  outputSymbol?: string | undefined
 }): Omit<CowSwapGtmEvent, 'category'> & { category: CowSwapAnalyticsCategory } {
-  const { isBridge, fromChainId, toChainId, walletAddress, walletAddressAlias, inputCurrency, inputAmount } = params
+  const {
+    isBridge,
+    fromChainId,
+    toChainId,
+    walletAddress,
+    walletAddressAlias,
+    inputCurrency,
+    inputAmount,
+    outputSymbol,
+  } = params
   return {
     category: isBridge ? CowSwapAnalyticsCategory.Bridge : CowSwapAnalyticsCategory.TRADE,
     action: isBridge ? 'swap_bridge_confirm_click' : 'swap_confirm_click',
@@ -79,7 +94,7 @@ function buildSwapConfirmBaseEvent(params: {
       fromChainId,
       toChainId,
       inputCurrency.symbol || '',
-      undefined,
+      outputSymbol || '',
       inputAmount.toSignificant(6),
     ),
     fromChainId,
@@ -199,6 +214,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
       walletAddressAlias: ensName || undefined,
       inputCurrency: inputCurrency!,
       inputAmount: inputAmount!,
+      outputSymbol: outputCurrency?.symbol,
     })
 
     const extra = buildSwapConfirmExtraFields({ outputCurrency, outputAmount })
