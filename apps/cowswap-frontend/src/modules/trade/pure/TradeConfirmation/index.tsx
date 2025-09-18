@@ -37,7 +37,8 @@ export interface TradeConfirmationProps {
   isPriceStatic?: boolean
   recipient?: string | null
   buttonText?: ReactNode
-  children?: (restContent: ReactElement) => ReactElement
+  beforeContent?: ReactNode
+  afterContent?: ReactNode
   'data-click-event'?: string
 }
 
@@ -60,7 +61,8 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
     isConfirmDisabled,
     title,
     buttonText = 'Confirm',
-    children,
+    beforeContent,
+    afterContent,
     recipient,
     isPriceStatic,
     appData,
@@ -112,12 +114,9 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
           outputCurrencyInfo={props.outputCurrencyInfo}
           priceImpact={props.priceImpact}
         />
-        {children?.(
-          <>
-            {hookDetailsElement}
-            <NoImpactWarning withoutAccepting />
-          </>,
-        )}
+        {beforeContent}
+        {hookDetailsElement}
+        <NoImpactWarning withoutAccepting />
 
         <ConfirmWarnings
           account={props.account}
@@ -136,6 +135,7 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
           signingStep={signingStep}
           data-click-event={dataClickEvent}
         />
+        {afterContent}
       </styledEl.ContentWrapper>
     </styledEl.WidgetWrapper>
   )

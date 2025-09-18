@@ -219,45 +219,37 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
         recipient={recipient}
         appData={appData || undefined}
         data-click-event={confirmClickEvent}
-      >
-        {shouldDisplayBridgeDetails && bridgeProvider && swapContext && bridgeContext
-          ? (restContent) => (
-              <>
-                <RateInfo label="Price" rateInfoParams={rateInfoParams} fontSize={13} fontBold labelBold />
-                <QuoteDetails
-                  isCollapsible
-                  bridgeProvider={bridgeProvider}
-                  swapContext={swapContext}
-                  bridgeContext={bridgeContext}
-                  hideRecommendedSlippage
-                />
-                {restContent}
-                <HighFeeWarning readonlyMode />
-              </>
-            )
-          : (restContent) => (
-              <>
-                {receiveAmountInfo && slippage && (
-                  <TradeBasicConfirmDetails
-                    rateInfoParams={rateInfoParams}
-                    slippage={slippage}
-                    receiveAmountInfo={receiveAmountInfo}
-                    recipient={recipient}
-                    recipientAddress={recipientAddress}
-                    account={account}
-                    labelsAndTooltips={labelsAndTooltips}
-                    hideLimitPrice
-                    hideUsdValues
-                    withTimelineDot={false}
-                  >
-                    <RowDeadline deadline={deadline} />
-                  </TradeBasicConfirmDetails>
-                )}
-                {restContent}
-                <HighFeeWarning readonlyMode />
-              </>
-            )}
-      </TradeConfirmation>
+        beforeContent={
+          shouldDisplayBridgeDetails && bridgeProvider && swapContext && bridgeContext ? (
+            <>
+              <RateInfo label="Price" rateInfoParams={rateInfoParams} fontSize={13} fontBold labelBold />
+              <QuoteDetails
+                isCollapsible
+                bridgeProvider={bridgeProvider}
+                swapContext={swapContext}
+                bridgeContext={bridgeContext}
+                hideRecommendedSlippage
+              />
+            </>
+          ) : receiveAmountInfo && slippage ? (
+            <TradeBasicConfirmDetails
+              rateInfoParams={rateInfoParams}
+              slippage={slippage}
+              receiveAmountInfo={receiveAmountInfo}
+              recipient={recipient}
+              recipientAddress={recipientAddress}
+              account={account}
+              labelsAndTooltips={labelsAndTooltips}
+              hideLimitPrice
+              hideUsdValues
+              withTimelineDot={false}
+            >
+              <RowDeadline deadline={deadline} />
+            </TradeBasicConfirmDetails>
+          ) : undefined
+        }
+        afterContent={<HighFeeWarning readonlyMode />}
+      />
     </TradeConfirmModal>
   )
 }
