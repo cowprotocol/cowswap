@@ -4,8 +4,9 @@ import { TokenWithLogo } from '@cowprotocol/common-const'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { HelpTooltip, TokenSymbol } from '@cowprotocol/ui'
 
-import * as styledEl from './styled'
+import { Link } from 'react-router'
 
+import * as styledEl from './styled'
 export interface FavoriteTokensListProps {
   tokens: TokenWithLogo[]
   hideTooltip?: boolean
@@ -16,12 +17,17 @@ export interface FavoriteTokensListProps {
 
 export function FavoriteTokensList(props: FavoriteTokensListProps): ReactNode {
   const { tokens, hideTooltip, selectedToken, onSelectToken } = props
-
+  
   return (
     <div>
       <styledEl.Header>
         <h4>Favorite tokens</h4>
-        {!hideTooltip && <HelpTooltip text="Your favorite saved tokens. Edit this list in your account page." />}
+        {!hideTooltip && <HelpTooltip text={
+          <>
+            Your favorite saved tokens. Edit this list in the{' '}
+            <Link to="/account/tokens">Tokens page</Link>.
+          </>
+        } />}
       </styledEl.Header>
       <styledEl.List>
         {tokens.map((token) => {
