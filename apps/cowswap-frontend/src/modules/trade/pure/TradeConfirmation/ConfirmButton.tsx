@@ -1,6 +1,5 @@
 import { ReactNode, useEffect, useState } from 'react'
 
-import { isDevelopmentEnv } from '@cowprotocol/common-utils'
 import { ButtonPrimary, ButtonSize, CenteredDots, LongLoadText } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
@@ -8,7 +7,11 @@ import { SigningStepState } from 'entities/trade'
 
 import { upToMedium, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 
+import { createLogger } from 'common/utils/logger'
+
 import { getPendingText } from './getPendingText'
+
+const log = createLogger('ConfirmButton')
 
 interface ConfirmButtonProps {
   buttonText: ReactNode
@@ -27,12 +30,12 @@ export function ConfirmButton(props: ConfirmButtonProps): ReactNode {
   const isUpToMedium = useMediaQuery(upToMedium)
 
   const handleConfirmClick = async (): Promise<void> => {
-    // Dev-only: mirror GTM click payload in console for local testing
-    if (isDevelopmentEnv() && dataClickEvent) {
+    // Dev-only: mirror GTM click payload via centralized logger
+    if (dataClickEvent) {
       try {
-        console.debug('[GTM click]', JSON.parse(dataClickEvent))
+        log.debug('[GTM click]', JSON.parse(dataClickEvent) as unknown)
       } catch {
-        console.debug('[GTM click]', dataClickEvent)
+        log.debug('[GTM click]', dataClickEvent)
       }
     }
 
