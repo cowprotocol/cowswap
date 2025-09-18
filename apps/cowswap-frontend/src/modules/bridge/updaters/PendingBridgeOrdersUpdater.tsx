@@ -117,15 +117,15 @@ function PendingOrderUpdater({ chainId, orderUid, openSince }: PendingOrderUpdat
           action: 'bridging_succeeded',
           label: analyticsSummary,
           orderId: orderUid,
-          from_chain_id: sourceChainId,
-          to_chain_id: destinationChainId,
-          token_in: crossChainOrder.order.sellToken,
-          token_out: crossChainOrder.order.buyToken,
-          amount_in: crossChainOrder.order.sellAmount,
-          amount_out_received: crossChainOrder.bridgingParams.outputAmount,
-          bridge_provider: crossChainOrder.provider.info.name,
-          tx_hash: crossChainOrder.statusResult.fillTxHash || crossChainOrder.statusResult.depositTxHash,
-          latency_ms: latencyMs,
+          fromChainId: sourceChainId,
+          toChainId: destinationChainId,
+          tokenIn: crossChainOrder.order.sellToken,
+          tokenOut: crossChainOrder.order.buyToken,
+          amountIn: crossChainOrder.order.sellAmount,
+          amountOutReceived: crossChainOrder.bridgingParams.outputAmount,
+          bridgeProvider: crossChainOrder.provider.info.name,
+          txHash: crossChainOrder.statusResult.fillTxHash || crossChainOrder.statusResult.depositTxHash,
+          latencyMs: latencyMs,
           page: 'swap',
         } as GtmEvent<CowSwapAnalyticsCategory.Bridge>)
       }
@@ -137,8 +137,8 @@ function PendingOrderUpdater({ chainId, orderUid, openSince }: PendingOrderUpdat
         action: 'bridging_failed',
         label: analyticsSummary,
         orderId: orderUid,
-        from_chain_id: sourceChainId,
-        to_chain_id: destinationChainId,
+        fromChainId: sourceChainId,
+        toChainId: destinationChainId,
       } as GtmEvent<CowSwapAnalyticsCategory.Bridge>)
     }
   }, [crossChainOrder, updateBridgeOrderQuote, addOrderToSurplusQueue, analytics, openSince])
