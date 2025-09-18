@@ -3,7 +3,7 @@ import { ReactNode, useMemo } from 'react'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { Nullish } from '@cowprotocol/types'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
-import { CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import type { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
@@ -27,6 +27,8 @@ import {
 import { useTradeQuote } from 'modules/tradeQuote'
 import { HighFeeWarning, RowDeadline } from 'modules/tradeWidgetAddons'
 
+import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
+import type { CowSwapGtmEvent } from 'common/analytics/types'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
 import { RateInfo } from 'common/pure/RateInfo'
@@ -37,6 +39,75 @@ import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
 import { useSwapDeadlineState } from '../../hooks/useSwapSettings'
 
 const CONFIRM_TITLE = 'Swap'
+
+function isConfirmClickEventBuildable(inputAmount: CurrencyAmount<Currency> | null | undefined): boolean {
+  return Boolean(inputAmount && inputAmount.currency)
+}
+
+function isSwapConfirmBridge(
+  shouldDisplayBridgeDetails: boolean,
+  fromChainId: number | undefined,
+  toChainId: number | undefined,
+): boolean {
+  return Boolean(shouldDisplayBridgeDetails && toChainId !== undefined && toChainId !== fromChainId)
+}
+
+function buildSwapConfirmLabel(
+  fromChainId: number | undefined,
+  toChainId: number | undefined,
+  inputSymbol?: string,
+  outputSymbol?: string,
+  amountHuman?: string,
+): string {
+  return `From: ${fromChainId}, To: ${toChainId ?? 'unknown'}, TokenIn: ${inputSymbol || ''}, TokenOut: ${outputSymbol || ''}, Amount: ${amountHuman || ''}`
+}
+
+function buildSwapConfirmBaseEvent(params: {
+  isBridge: boolean
+  fromChainId: number | undefined
+  toChainId: number | undefined
+  walletAddress: string | undefined
+  inputCurrency: Currency
+  inputAmount: CurrencyAmount<Currency>
+}): Omit<CowSwapGtmEvent, 'category'> & { category: CowSwapAnalyticsCategory } {
+  const { isBridge, fromChainId, toChainId, walletAddress, inputCurrency, inputAmount } = params
+  return {
+    category: isBridge ? CowSwapAnalyticsCategory.Bridge : CowSwapAnalyticsCategory.TRADE,
+    action: isBridge ? 'swap_bridge_confirm_click' : 'swap_confirm_click',
+    label: buildSwapConfirmLabel(
+      fromChainId,
+      toChainId,
+      inputCurrency.symbol || '',
+      undefined,
+      inputAmount.toSignificant(6),
+    ),
+    fromChainId,
+    ...(toChainId !== undefined ? { toChainId } : {}),
+    walletAddress,
+    sellToken: getCurrencyAddress(inputCurrency),
+    sellTokenSymbol: inputCurrency.symbol || '',
+    sellTokenChainId: inputCurrency.chainId,
+    sellAmount: inputAmount.quotient.toString(),
+    sellAmountHuman: inputAmount.toSignificant(6),
+    value: Number(inputAmount.toSignificant(6)),
+  }
+}
+
+function buildSwapConfirmExtraFields(params: {
+  outputCurrency?: Currency
+  outputAmount?: CurrencyAmount<Currency> | null
+}): Record<string, unknown> {
+  const { outputCurrency, outputAmount } = params
+  if (!outputCurrency || !outputAmount) return {}
+  const extra: Record<string, unknown> = {
+    buyToken: getCurrencyAddress(outputCurrency),
+    buyTokenSymbol: outputCurrency.symbol || '',
+    buyAmountExpected: outputAmount.quotient.toString(),
+    buyAmountHuman: outputAmount.toSignificant(6),
+  }
+  if (typeof outputCurrency.chainId !== 'undefined') extra.buyTokenChainId = outputCurrency.chainId
+  return extra
+}
 
 export interface SwapConfirmModalProps {
   doTrade(): Promise<false | void>
@@ -53,7 +124,7 @@ export interface SwapConfirmModalProps {
 export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
   const { inputCurrencyInfo, outputCurrencyInfo, priceImpact, recipient, recipientAddress, doTrade } = props
 
-  const { account } = useWalletInfo()
+  const { account, chainId } = useWalletInfo()
   const { ensName } = useWalletDetails()
   const appData = useAppData()
   const receiveAmountInfo = useGetReceiveAmountInfo()
@@ -109,6 +180,29 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
     return confirmText
   }, [confirmText, disableConfirm, inputCurrencyInfo])
 
+  const confirmClickEvent = useMemo(() => {
+    const inputAmount = inputCurrencyInfo.amount
+    const outputAmount = outputCurrencyInfo.amount
+    const inputCurrency = inputAmount?.currency
+    const outputCurrency = outputAmount?.currency
+    if (!isConfirmClickEventBuildable(inputAmount)) return undefined
+
+    const toChainId = outputCurrency?.chainId
+    const isBridge = isSwapConfirmBridge(shouldDisplayBridgeDetails, chainId, toChainId)
+    const base = buildSwapConfirmBaseEvent({
+      isBridge,
+      fromChainId: chainId,
+      toChainId,
+      walletAddress: account,
+      inputCurrency: inputCurrency!,
+      inputAmount: inputAmount!,
+    })
+
+    const extra = buildSwapConfirmExtraFields({ outputCurrency, outputAmount })
+
+    return toCowSwapGtmEvent({ ...base, ...extra })
+  }, [account, chainId, inputCurrencyInfo.amount, outputCurrencyInfo.amount, shouldDisplayBridgeDetails])
+
   return (
     <TradeConfirmModal title={CONFIRM_TITLE} submittedContent={submittedContent}>
       <TradeConfirmation
@@ -124,6 +218,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
         buttonText={buttonText}
         recipient={recipient}
         appData={appData || undefined}
+        data-click-event={confirmClickEvent}
       >
         {shouldDisplayBridgeDetails && bridgeProvider && swapContext && bridgeContext
           ? (restContent) => (
