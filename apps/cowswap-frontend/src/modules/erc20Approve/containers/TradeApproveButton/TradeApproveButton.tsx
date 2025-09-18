@@ -1,8 +1,7 @@
 import React, { ReactNode, useCallback } from 'react'
 
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
-import { useTheme } from '@cowprotocol/common-hooks'
-import { ButtonConfirmed, ButtonSize, HoverTooltip, Loader, TokenSymbol } from '@cowprotocol/ui'
+import { ButtonConfirmed, ButtonSize, HoverTooltip, TokenSymbol } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, MaxUint256 } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
@@ -36,8 +35,6 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
   const handleApprove = useApproveCurrency(amountToApprove)
   const spender = useTradeSpenderAddress()
   const { approvalState } = useApprovalStateForSpender(amountToApprove, spender)
-  // todo remove theme
-  const theme = useTheme()
   const isPermitSupported = useTokenSupportsPermit(amountToApprove.currency, TradeType.SWAP) && !ignorePermit
 
   const approveAndSwap = useCallback(async (): Promise<void> => {
@@ -89,7 +86,7 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
             </Trans>
           }
         >
-          {isPending ? <Loader stroke={theme.text1} /> : <HelpCircle size="24" />}
+          {isPending ? <styledEl.StyledLoader /> : <HelpCircle size="24" />}
         </HoverTooltip>
       </styledEl.ButtonLabelWrapper>
     </ButtonConfirmed>
