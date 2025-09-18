@@ -4,6 +4,7 @@ import React, { ReactNode, useMemo } from 'react'
 import { getWrappedToken, getCurrencyAddress } from '@cowprotocol/common-utils'
 import { TokenSymbol } from '@cowprotocol/ui'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
@@ -38,15 +39,20 @@ export interface LimitOrdersConfirmModalProps {
 }
 
 function buildLimitOrderEventLabel(params: {
-  inputSymbol?: string
-  outputSymbol?: string
-  side: string
-  executionPrice?: string
-  inputAmountHuman: string
+  inputToken?: Currency
+  outputToken?: Currency
+  side: 'sell' | 'buy'
+  executionPrice?: ExecutionPriceLike
+  inputAmount?: CurrencyAmount<Currency> | null
   partialFillsEnabled: boolean
 }): string {
-  const { inputSymbol, outputSymbol, side, executionPrice, inputAmountHuman, partialFillsEnabled } = params
-  return `TokenIn: ${inputSymbol || ''}, TokenOut: ${outputSymbol || ''}, Side: ${side}, Price: ${executionPrice || ''}, Amount: ${inputAmountHuman}, PartialFills: ${partialFillsEnabled}`
+  const { inputToken, outputToken, side, executionPrice, inputAmount, partialFillsEnabled } = params
+  const inputSymbol = inputToken?.symbol || ''
+  const outputSymbol = outputToken?.symbol || ''
+  const priceStr = executionPrice ? executionPrice.toSignificant(6) : ''
+  const inputAmountHuman = inputAmount ? inputAmount.toSignificant(6) : ''
+
+  return `TokenIn: ${inputSymbol}, TokenOut: ${outputSymbol}, Side: ${side}, Price: ${priceStr}, Amount: ${inputAmountHuman}, PartialFills: ${partialFillsEnabled}`
 }
 
 type ExecutionPriceLike = { toSignificant: (n: number) => string } | null | undefined
@@ -64,11 +70,11 @@ function buildPlaceLimitOrderEvent(params: {
   const outputToken = outputAmount!.currency
 
   const label = buildLimitOrderEventLabel({
-    inputSymbol: inputToken.symbol || '',
-    outputSymbol: outputToken.symbol || '',
+    inputToken,
+    outputToken,
     side,
-    executionPrice: executionPrice ? executionPrice.toSignificant(6) : undefined,
-    inputAmountHuman: inputAmount!.toSignificant(6),
+    executionPrice,
+    inputAmount,
     partialFillsEnabled,
   })
 
@@ -91,7 +97,10 @@ function buildPlaceLimitOrderEvent(params: {
   })
 }
 
-function buildConfirmButtonText(isSafeApprovalBundle: boolean, inputAmount: LimitOrdersConfirmModalProps['inputCurrencyInfo']['amount']): ReactNode {
+function buildConfirmButtonText(
+  isSafeApprovalBundle: boolean,
+  inputAmount: LimitOrdersConfirmModalProps['inputCurrencyInfo']['amount'],
+): ReactNode {
   if (!isSafeApprovalBundle) return 'Place limit order'
 
   return (
