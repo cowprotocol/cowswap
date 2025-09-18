@@ -2,7 +2,7 @@ import React, { ReactNode, useCallback } from 'react'
 
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { ButtonConfirmed, ButtonSize, HoverTooltip, TokenSymbol } from '@cowprotocol/ui'
-import { Currency, CurrencyAmount, MaxUint256 } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
 
@@ -11,12 +11,11 @@ import { TradeType } from 'modules/trade'
 
 import * as styledEl from './styled'
 
+import { MAX_APPROVE_AMOUNT } from '../../constants'
 import { useApprovalStateForSpender, useApproveCurrency } from '../../hooks'
 import { LegacyApproveButton } from '../../pure/LegacyApproveButton'
 import { useIsPartialApproveSelectedByUser } from '../../state'
 import { ApprovalState } from '../../types'
-
-const MaxApprovalAmount = BigInt(MaxUint256.toString())
 
 export interface TradeApproveButtonProps {
   amountToApprove: CurrencyAmount<Currency>
@@ -42,7 +41,7 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
       return
     }
 
-    const toApprove = isPartialApproveEnabledByUser ? BigInt(amountToApprove.quotient.toString()) : MaxApprovalAmount
+    const toApprove = isPartialApproveEnabledByUser ? BigInt(amountToApprove.quotient.toString()) : MAX_APPROVE_AMOUNT
     const tx = await handleApprove(toApprove)
     if (tx && confirmSwap) {
       confirmSwap()
@@ -55,7 +54,7 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
         <LegacyApproveButton
           currency={amountToApprove.currency}
           state={approvalState}
-          onClick={() => handleApprove(MaxApprovalAmount)}
+          onClick={() => handleApprove(MAX_APPROVE_AMOUNT)}
         ></LegacyApproveButton>
         {children}
       </>

@@ -1,15 +1,13 @@
 import { useMemo } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { MaxUint256 } from '@ethersproject/constants'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useGetPartialAmountToSignApprove } from './useGetPartialAmountToSignApprove'
 
 import { useSwapPartialApprovalToggleState } from '../../swap/hooks/useSwapSettings'
+import { MAX_APPROVE_AMOUNT } from '../constants'
 import { useIsPartialApproveSelectedByUser } from '../state'
-
-export const MAX_APPROVE_AMOUNT = MaxUint256.toString()
 
 /**
  * Returns the amount to sign for the approval transaction/permit
@@ -30,7 +28,7 @@ export function useGetAmountToSignApprove(): CurrencyAmount<Currency> | null {
       return partialAmountToSign
     }
 
-    return CurrencyAmount.fromRawAmount(partialAmountToSign.currency, MAX_APPROVE_AMOUNT)
+    return CurrencyAmount.fromRawAmount(partialAmountToSign.currency, MAX_APPROVE_AMOUNT.toString())
   }, [
     partialAmountToSign,
     isPartialApproveEnabled,
