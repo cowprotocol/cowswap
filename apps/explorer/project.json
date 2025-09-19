@@ -6,16 +6,20 @@
   "targets": {
     "build": {
       "executor": "@nx/vite:build",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "defaultConfiguration": "production",
       "options": {
         "outputPath": "build/explorer"
       },
       "configurations": {
-        "development": {
-          "mode": "development"
+        "dev": {
+          "mode": "dev"
+        },
+        "staging": {
+          "mode": "staging"
+        },
+        "barn": {
+          "mode": "barn"
         },
         "production": {
           "mode": "production"
@@ -24,13 +28,17 @@
     },
     "serve": {
       "executor": "@nx/vite:dev-server",
-      "defaultConfiguration": "development",
+      "defaultConfiguration": "dev",
       "options": {
         "buildTarget": "explorer:build"
       },
       "configurations": {
-        "development": {
-          "buildTarget": "explorer:build:development",
+        "dev": {
+          "buildTarget": "explorer:build:dev",
+          "hmr": true
+        },
+        "staging": {
+          "buildTarget": "explorer:build:staging",
           "hmr": true
         },
         "production": {
@@ -41,13 +49,16 @@
     },
     "preview": {
       "executor": "@nx/vite:preview-server",
-      "defaultConfiguration": "development",
+      "defaultConfiguration": "dev",
       "options": {
         "buildTarget": "explorer:build"
       },
       "configurations": {
-        "development": {
-          "buildTarget": "explorer:build:development"
+        "dev": {
+          "buildTarget": "explorer:build:dev"
+        },
+        "staging": {
+          "buildTarget": "explorer:build:staging"
         },
         "production": {
           "buildTarget": "explorer:build:production"
@@ -63,13 +74,9 @@
     },
     "lint": {
       "executor": "@nx/eslint:lint",
-      "outputs": [
-        "{options.outputFile}"
-      ],
+      "outputs": ["{options.outputFile}"],
       "options": {
-        "lintFilePatterns": [
-          "apps/explorer/**/*.{ts,tsx,js,jsx}"
-        ]
+        "lintFilePatterns": ["apps/explorer/**/*.{ts,tsx,js,jsx}"]
       }
     },
     "serve-static": {

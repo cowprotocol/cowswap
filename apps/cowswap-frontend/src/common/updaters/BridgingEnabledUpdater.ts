@@ -2,13 +2,14 @@ import { useEffect } from 'react'
 
 import { useFeatureFlags, useSetIsBridgingEnabled } from '@cowprotocol/common-hooks'
 import { AccountType } from '@cowprotocol/types'
-import { useAccountType } from '@cowprotocol/wallet'
+import { useAccountType, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useTradeTypeInfo } from 'modules/trade'
 
 import { Routes } from '../constants/routes'
 
 export function BridgingEnabledUpdater(): null {
+  const { account } = useWalletInfo()
   const { isBridgingEnabled } = useFeatureFlags()
   const tradeTypeInfo = useTradeTypeInfo()
   const accountType = useAccountType()
@@ -16,17 +17,12 @@ export function BridgingEnabledUpdater(): null {
 
   const isSwapRoute = tradeTypeInfo?.route === Routes.SWAP
 
-  function shouldEnableBridging(
-    featureFlagEnabled: boolean,
-    accountType: AccountType | undefined,
-    swapRoute: boolean,
-  ): boolean {
-    return featureFlagEnabled && accountType !== AccountType.SMART_CONTRACT && swapRoute
-  }
+  const isWalletCompatible = Boolean(account ? accountType !== AccountType.SMART_CONTRACT : true)
+  const shouldEnableBridging = isBridgingEnabled && isWalletCompatible && isSwapRoute
 
   useEffect(() => {
-    setIsBridgingEnabled(shouldEnableBridging(isBridgingEnabled, accountType, isSwapRoute))
-  }, [setIsBridgingEnabled, isBridgingEnabled, accountType, isSwapRoute])
+    setIsBridgingEnabled(shouldEnableBridging)
+  }, [setIsBridgingEnabled, shouldEnableBridging])
 
   return null
 }
