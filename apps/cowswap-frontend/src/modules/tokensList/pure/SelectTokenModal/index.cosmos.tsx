@@ -5,6 +5,8 @@ import { BigNumber } from '@ethersproject/bignumber'
 
 import styled from 'styled-components/macro'
 
+import { TradeType } from 'modules/trade/types/TradeType'
+
 import { allTokensMock, favoriteTokensMock } from '../../mocks'
 
 import { SelectTokenModal, SelectTokenModalProps } from './index'
@@ -60,6 +62,7 @@ const defaultProps: SelectTokenModalProps = {
   openPoolPage() {
     console.log('openPoolPage')
   },
+  tradeType: TradeType.SWAP,
 }
 
 const Fixtures = {
