@@ -6,6 +6,8 @@ import { orderBookApi } from 'cowSdk'
 
 import { tradingSdk } from './tradingSdk'
 
+export const bungeeApiKey = process.env.REACT_APP_BUNGEE_API_KEY
+
 const bungeeApiBase = getBungeeApiBase()
 
 export const bungeeBridgeProvider = new BungeeBridgeProvider({
@@ -14,6 +16,8 @@ export const bungeeBridgeProvider = new BungeeBridgeProvider({
     apiBaseUrl: bungeeApiBase ? `${bungeeApiBase}/api/v1/bungee` : undefined,
     manualApiBaseUrl: bungeeApiBase ? `${bungeeApiBase}/api/v1/bungee-manual` : undefined,
     affiliate: bungeeApiBase ? bungeeAffiliateCode : undefined,
+    customApiBaseUrl: bungeeApiKey ? bungeeApiBase : undefined,
+    apiKey: bungeeApiKey,
   },
 })
 
@@ -25,6 +29,9 @@ export const bridgingSdk = new BridgingSdk({
 })
 
 function getBungeeApiBase(): string | undefined {
+  if (bungeeApiKey) {
+    return 'https://dedicated-backend.bungee.exchange'
+  }
   if (isProd || isDev || isStaging || isBarn) {
     return 'https://backend.bungee.exchange'
   }
