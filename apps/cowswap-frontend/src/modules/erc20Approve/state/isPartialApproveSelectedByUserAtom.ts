@@ -1,3 +1,3 @@
-import { atom } from 'jotai/index'
+import { atom } from 'jotai'
 
 export const isPartialApproveSelectedByUserAtom = atom<boolean>(true)

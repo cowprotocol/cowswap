@@ -8,7 +8,7 @@ import { TokenAmount } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-import { useDerivedTradeState } from '../../../trade'
+import { useDerivedTradeState } from 'modules/trade'
 
 const Wrapper = styled.div`
   display: flex;

@@ -14,9 +14,8 @@ export function Option({
   isActive?: boolean
 }): ReactNode {
   return (
-    <styledEl.OptionWrapper isActive={isActive} onClick={onClick}>
+    <styledEl.OptionWrapper isActive={isActive} onClick={onClick} aria-pressed={isActive}>
       <styledEl.OptionTitle>{title}</styledEl.OptionTitle>
-      {isActive}
       {children}
     </styledEl.OptionWrapper>
   )

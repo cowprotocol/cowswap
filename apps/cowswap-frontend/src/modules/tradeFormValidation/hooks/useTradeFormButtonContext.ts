@@ -4,13 +4,13 @@ import { useWalletDetails } from '@cowprotocol/wallet'
 
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
+import { useGetAmountToSignApprove } from 'modules/erc20Approve'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useDerivedTradeState, useWrapNativeFlow } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 
 import { useTokenCustomTradeError } from './useTokenCustomTradeError'
 
-import { useGetAmountToSignApprove } from '../../erc20Approve'
 import { TradeFormButtonContext } from '../types'
 
 export function useTradeFormButtonContext(

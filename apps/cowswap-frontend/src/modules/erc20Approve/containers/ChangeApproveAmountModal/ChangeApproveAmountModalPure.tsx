@@ -1,4 +1,3 @@
-// ChangeApproveAmountModalPure.tsx
 import { ReactNode } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'

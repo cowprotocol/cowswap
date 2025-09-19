@@ -1,5 +1,4 @@
-import { useAtomValue, useSetAtom } from 'jotai'
-import { atom } from 'jotai/index'
+import { atom, useAtomValue, useSetAtom } from 'jotai'
 
 import { atomWithPartialUpdate } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'

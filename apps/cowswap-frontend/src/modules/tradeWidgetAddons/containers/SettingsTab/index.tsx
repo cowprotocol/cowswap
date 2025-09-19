@@ -124,11 +124,7 @@ export function SettingsTab({
                       <Trans>Enable partial approvals</Trans>
                     </ThemedText.Black>
                     <HelpTooltip
-                      text={
-                        <Trans>
-                          // todo fix text Allows you to set partial token approvals instead of full approvals.
-                        </Trans>
-                      }
+                      text={<Trans>Allows you to set partial token approvals instead of full approvals.</Trans>}
                     />
                   </RowFixed>
                   <Toggle

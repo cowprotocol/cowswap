@@ -12,6 +12,7 @@ import { useCloseModals } from 'legacy/state/application/hooks'
 
 import { useAppData, useAppDataHooks } from 'modules/appData'
 import { useBridgeQuoteAmounts } from 'modules/bridge'
+import { useGetAmountToSignApprove } from 'modules/erc20Approve'
 import { useGeneratePermitHook, useGetCachedPermit, usePermitInfo } from 'modules/permit'
 import {
   TradeTypeToUiOrderType,
@@ -28,7 +29,6 @@ import { useEnoughAllowance } from 'common/hooks/useEnoughAllowance'
 
 import { useSetSigningStep } from './useSetSigningStep'
 
-import { useGetAmountToSignApprove } from '../../erc20Approve'
 import { TradeFlowContext } from '../types/TradeFlowContext'
 
 export interface TradeFlowParams {
