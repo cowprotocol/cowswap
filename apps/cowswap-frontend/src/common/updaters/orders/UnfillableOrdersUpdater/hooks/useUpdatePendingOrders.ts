@@ -11,6 +11,7 @@ import { Order } from 'legacy/state/orders/actions'
 import { getRemainderAmount } from 'legacy/state/orders/utils'
 
 import { updatePendingOrderPricesAtom } from 'modules/orders/state/pendingOrdersPricesAtom'
+import { ORDERS_TABLE_PAGE_SIZE, OrderTabId } from 'modules/ordersTable/const/tabs'
 
 import { useUpdateIsUnfillableFlag } from './useUpdateIsUnfillableFlag'
 
@@ -37,16 +38,39 @@ async function getOrderPrice(chainId: SupportedChainId, order: Order): Promise<Q
   }
 }
 
-export function useUpdatePendingOrders(): (orders: Order[]) => void {
+// Only update orders that are visible in the current page
+const getUpdatableOrders = (orders: Order[], pageNumber?: number): Order[] => {
+  const page = pageNumber && pageNumber > 0 ? pageNumber : 1
+  const start = (page - 1) * ORDERS_TABLE_PAGE_SIZE
+  const end = start + ORDERS_TABLE_PAGE_SIZE
+  return orders.slice(start, end)
+}
+
+export function useUpdatePendingOrders(
+  isWindowVisible: boolean,
+  pageNumber?: number,
+  tabId?: OrderTabId,
+): (orders: Order[]) => void {
   const { chainId, account } = useWalletInfo()
   const updatePendingOrderPrices = useSetAtom(updatePendingOrderPricesAtom)
   const updateIsUnfillableFlag = useUpdateIsUnfillableFlag()
 
+  const isValidTab = tabId === OrderTabId.open || tabId === OrderTabId.all
+
+  const shouldUpdate = useCallback(
+    (orders: Order[]): boolean => {
+      return Boolean(isWindowVisible && account && chainId && orders.length && pageNumber && isValidTab)
+    },
+    [isWindowVisible, account, chainId, pageNumber, isValidTab],
+  )
+
   return useCallback(
     (orders: Order[]) => {
-      if (!account || !orders.length) return
+      if (!shouldUpdate(orders)) return
 
-      orders.forEach((order) => {
+      const updatableOrders = getUpdatableOrders(orders, pageNumber)
+
+      updatableOrders.forEach((order) => {
         getOrderPrice(chainId, order)
           .then((results) => {
             if (!results) return
@@ -72,6 +96,6 @@ export function useUpdatePendingOrders(): (orders: Order[]) => void {
           })
       })
     },
-    [account, chainId, updateIsUnfillableFlag, updatePendingOrderPrices],
+    [chainId, updateIsUnfillableFlag, updatePendingOrderPrices, pageNumber, shouldUpdate],
   )
 }
