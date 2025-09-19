@@ -472,23 +472,23 @@ export const DAI_BNB = new TokenWithLogo(
 )
 
 export const BUSD_BNB = new TokenWithLogo(
-  'https://cryptologos.cc/logos/binance-usd-busd-logo.png?v=024', // TODO: add logo
+  cowprotocolTokenLogoUrl('0xe9e7cea3dedca5984780bafc599bd69add087d56', SupportedChainId.BNB),
   SupportedChainId.BNB,
   // https://bscscan.com/address/0xe9e7cea3dedca5984780bafc599bd69add087d56
   '0xe9e7cea3dedca5984780bafc599bd69add087d56',
   18,
   'BUSD',
-  'Binance USD',
+  'Binance-Peg BUSD Token',
 )
 
 export const BTCB_BNB = new TokenWithLogo(
-  'https', // TODO: add logo
+  cowprotocolTokenLogoUrl('0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c', SupportedChainId.BNB),
   SupportedChainId.BNB,
   // https://bscscan.com/address/0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c
-  '0x0555e30da8f98308edb960aa94c0db47230d2b9c',
+  '0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c',
   18,
   'BTCB',
-  'BTCB Token',
+  'Binance-Peg BTCB Token',
 )
 
 // Optimism
