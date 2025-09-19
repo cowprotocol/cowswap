@@ -31,9 +31,11 @@ function isBridgeEventBuildable(params: BuildEventParams): params is BuildEventP
   return Boolean(isCurrentTradeBridging && inputCurrency && outputCurrency && inputCurrencyAmount)
 }
 
-function getChainIds(
-  params: BuildEventParams & { inputCurrency: Currency | null; outputCurrency: Currency | null },
-): { sellTokenChainId?: number; buyTokenChainId?: number; toChainId?: number } {
+function getChainIds(params: BuildEventParams & { inputCurrency: Currency | null; outputCurrency: Currency | null }): {
+  sellTokenChainId?: number
+  buyTokenChainId?: number
+  toChainId?: number
+} {
   const { isCurrentTradeBridging, inputCurrency, outputCurrency, chainId } = params
   const sellTokenChainId = inputCurrency?.chainId ?? chainId
   const destinationChainFallback = !isCurrentTradeBridging ? chainId : undefined
@@ -74,19 +76,19 @@ function buildBuyFields(params: {
 export function buildSwapBridgeClickEvent(params: BuildEventParams): string | undefined {
   if (!isBridgeEventBuildable(params)) return undefined
 
-  const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount, chainId, walletAddress } = params
+  const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount, walletAddress } = params
   const { sellTokenChainId, buyTokenChainId, toChainId } = getChainIds(params)
 
   const baseEvent: Omit<CowSwapGtmEvent, 'category'> & { category: CowSwapAnalyticsCategory } = {
     ...BRIDGE_ANALYTICS_EVENT,
     label: buildBridgeLabel(
-      chainId,
+      sellTokenChainId,
       toChainId,
       inputCurrency.symbol,
       outputCurrency?.symbol,
       inputCurrencyAmount.toSignificant(6),
     ),
-    fromChainId: chainId,
+    fromChainId: sellTokenChainId,
     walletAddress,
     sellToken: getCurrencyAddress(inputCurrency),
     sellTokenSymbol: inputCurrency.symbol || '',

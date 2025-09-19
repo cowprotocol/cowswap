@@ -21,7 +21,6 @@ export interface SwapConfirmExtraFieldsParams {
 }
 
 export interface SwapConfirmEventParams {
-  shouldDisplayBridgeDetails: boolean
   chainId: number | undefined
   inputAmount: CurrencyAmount<Currency> | null
   outputAmount: CurrencyAmount<Currency> | null
@@ -29,14 +28,8 @@ export interface SwapConfirmEventParams {
   ensName: string | undefined
 }
 
-export function isSwapConfirmBridge(
-  shouldDisplayBridgeDetails: boolean,
-  fromChainId: number | undefined,
-  toChainId: number | undefined,
-): boolean {
-  return Boolean(
-    shouldDisplayBridgeDetails && fromChainId !== undefined && toChainId !== undefined && toChainId !== fromChainId,
-  )
+export function isSwapConfirmBridge(fromChainId: number | undefined, toChainId: number | undefined): boolean {
+  return fromChainId !== undefined && toChainId !== undefined && toChainId !== fromChainId
 }
 
 export function buildSwapConfirmLabel(
@@ -105,7 +98,7 @@ export function buildSwapConfirmExtraFields(params: SwapConfirmExtraFieldsParams
 }
 
 export function buildSwapConfirmEvent(params: SwapConfirmEventParams): string | undefined {
-  const { shouldDisplayBridgeDetails, chainId, inputAmount, outputAmount, account, ensName } = params
+  const { chainId, inputAmount, outputAmount, account, ensName } = params
 
   const inputCurrency = inputAmount?.currency
   const outputCurrency = outputAmount?.currency
@@ -113,7 +106,7 @@ export function buildSwapConfirmEvent(params: SwapConfirmEventParams): string | 
   if (!inputAmount || !inputCurrency) return undefined
 
   const toChainId = outputCurrency?.chainId
-  const isBridge = isSwapConfirmBridge(shouldDisplayBridgeDetails, chainId, toChainId)
+  const isBridge = isSwapConfirmBridge(chainId, toChainId)
 
   const base = buildSwapConfirmBaseEvent({
     isBridge,

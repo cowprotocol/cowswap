@@ -18,7 +18,6 @@ describe('swap confirm analytics', () => {
 
   it('builds same-chain swap confirm event payload', () => {
     const event = buildSwapConfirmEvent({
-      shouldDisplayBridgeDetails: false,
       chainId: 1,
       inputAmount: amountIn,
       outputAmount: amountOutSameChain,
@@ -46,7 +45,6 @@ describe('swap confirm analytics', () => {
 
   it('builds bridge swap confirm event payload', () => {
     const event = buildSwapConfirmEvent({
-      shouldDisplayBridgeDetails: true,
       chainId: 1,
       inputAmount: amountIn,
       outputAmount: amountOutBridge,
@@ -72,7 +70,6 @@ describe('swap confirm analytics', () => {
 
   it('returns undefined when input amount missing', () => {
     const event = buildSwapConfirmEvent({
-      shouldDisplayBridgeDetails: false,
       chainId: 1,
       inputAmount: null,
       outputAmount: amountOutSameChain,
@@ -83,4 +80,3 @@ describe('swap confirm analytics', () => {
     expect(event).toBeUndefined()
   })
 })
-

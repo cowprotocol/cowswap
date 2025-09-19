@@ -233,22 +233,48 @@ function useConfirmClickEvent(params: {
   account: string | undefined
   ensName: string | undefined
   chainId: number | undefined
-  shouldDisplayBridgeDetails: boolean
 }): string | undefined {
-  const { inputAmount, outputAmount, account, ensName, chainId, shouldDisplayBridgeDetails } = params
+  const { inputAmount, outputAmount, account, ensName, chainId } = params
 
   return useMemo(
     () =>
       buildSwapConfirmEvent({
-        shouldDisplayBridgeDetails,
         chainId,
         inputAmount,
         outputAmount,
         account,
         ensName,
       }),
-    [shouldDisplayBridgeDetails, chainId, inputAmount, outputAmount, account, ensName],
+    [chainId, inputAmount, outputAmount, account, ensName],
   )
+}
+
+function useConfirmEventAmounts(params: {
+  shouldDisplayBridgeDetails: boolean
+  bridgeContext: ReturnType<typeof useQuoteBridgeContext>
+  inputCurrencyAmount: CurrencyPreviewInfo['amount']
+  outputCurrencyAmount: CurrencyPreviewInfo['amount']
+  receiveAmountInfo: ReturnType<typeof useGetReceiveAmountInfo>
+}): {
+  inputAmount: CurrencyAmount<Currency> | null
+  outputAmount: CurrencyAmount<Currency> | null
+} {
+  const { shouldDisplayBridgeDetails, bridgeContext, inputCurrencyAmount, outputCurrencyAmount, receiveAmountInfo } =
+    params
+
+  return useMemo(() => {
+    if (shouldDisplayBridgeDetails) {
+      const inputAmount = bridgeContext?.sellAmount ?? inputCurrencyAmount ?? null
+      const outputAmount = bridgeContext?.buyAmount ?? outputCurrencyAmount ?? null
+      return { inputAmount, outputAmount }
+    }
+
+    const slippageAmounts = receiveAmountInfo?.afterSlippage
+    const inputAmount = slippageAmounts?.sellAmount ?? inputCurrencyAmount ?? null
+    const outputAmount = slippageAmounts?.buyAmount ?? outputCurrencyAmount ?? null
+
+    return { inputAmount, outputAmount }
+  }, [shouldDisplayBridgeDetails, bridgeContext, inputCurrencyAmount, outputCurrencyAmount, receiveAmountInfo])
 }
 
 export interface SwapConfirmModalProps {
@@ -297,13 +323,20 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
 
   const buttonText = useConfirmButtonText(disableConfirm, inputCurrencyInfo, confirmText)
 
+  const { inputAmount: eventInputAmount, outputAmount: eventOutputAmount } = useConfirmEventAmounts({
+    shouldDisplayBridgeDetails,
+    bridgeContext,
+    inputCurrencyAmount: inputCurrencyInfo.amount,
+    outputCurrencyAmount: outputCurrencyInfo.amount,
+    receiveAmountInfo,
+  })
+
   const confirmClickEvent = useConfirmClickEvent({
-    inputAmount: inputCurrencyInfo.amount ?? null,
-    outputAmount: outputCurrencyInfo.amount ?? null,
+    inputAmount: eventInputAmount,
+    outputAmount: eventOutputAmount,
     account,
     ensName,
     chainId,
-    shouldDisplayBridgeDetails,
   })
 
   const beforeContent = useBeforeContent({
