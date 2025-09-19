@@ -21,7 +21,7 @@ export function AffectedPermitOrdersTable({ orders }: AffectedPermitOrdersTableP
   return (
     <>
       <OrdersReceiptModal pendingOrdersPrices={pendingOrdersPrices} />
-      <OrdersTableStateUpdater searchTerm={''} orders={orders} orderType={TabOrderTypes.LIMIT} />
+      <OrdersTableStateUpdater searchTerm={''} orders={orders} orderType={TabOrderTypes.LIMIT} syncWithUrl={false} />
       {orders.map((order) => (
         <styledEl.OrderWrapper key={order.id}>
           <AffectedPermitOrderWithActions order={order} />
