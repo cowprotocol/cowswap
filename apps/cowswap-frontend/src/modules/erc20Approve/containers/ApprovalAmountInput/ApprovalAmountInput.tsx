@@ -52,8 +52,13 @@ export function ApprovalAmountInput({
       if (!currency) return
 
       const value = tryParseCurrencyAmount(typedValue, currency)
-      const isInvalid = initialAmount ? value.lessThan(initialAmount) : false
-      updateCustomApproveAmountInput({ amount: value, isChanged: true, isInvalid })
+      // function can return undefined
+      if (!value) {
+        updateCustomApproveAmountInput({ amount: null, isChanged: true, isInvalid: true })
+      } else {
+        const isInvalid = initialAmount ? value.lessThan(initialAmount) : false
+        updateCustomApproveAmountInput({ amount: value, isChanged: true, isInvalid })
+      }
     },
     [updateCustomApproveAmountInput, tokenWithLogo, initialAmount],
   )
