@@ -3,6 +3,8 @@ import { useMemo } from 'react'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { useNeedsApproval } from 'common/hooks/useNeedsApproval'
+
 import { useGetPartialAmountToSignApprove } from './useGetPartialAmountToSignApprove'
 
 import { useSwapPartialApprovalToggleState } from '../../swap/hooks/useSwapSettings'
@@ -17,12 +19,15 @@ import { useIsPartialApproveSelectedByUser } from '../state'
  */
 export function useGetAmountToSignApprove(): CurrencyAmount<Currency> | null {
   const partialAmountToSign = useGetPartialAmountToSignApprove()
+  const isApprovalNeeded = useNeedsApproval(partialAmountToSign)
   const isPartialApprovalSelectedByUser = useIsPartialApproveSelectedByUser()
   const { isPartialApproveEnabled } = useFeatureFlags()
   const [isPartialApprovalEnabledInSettings] = useSwapPartialApprovalToggleState(isPartialApproveEnabled)
 
   return useMemo(() => {
     if (!partialAmountToSign) return null
+
+    if (!isApprovalNeeded) return CurrencyAmount.fromRawAmount(partialAmountToSign.currency, '0')
 
     if (isPartialApproveEnabled && isPartialApprovalSelectedByUser && isPartialApprovalEnabledInSettings) {
       return partialAmountToSign
@@ -31,6 +36,7 @@ export function useGetAmountToSignApprove(): CurrencyAmount<Currency> | null {
     return CurrencyAmount.fromRawAmount(partialAmountToSign.currency, MAX_APPROVE_AMOUNT.toString())
   }, [
     partialAmountToSign,
+    isApprovalNeeded,
     isPartialApproveEnabled,
     isPartialApprovalSelectedByUser,
     isPartialApprovalEnabledInSettings,

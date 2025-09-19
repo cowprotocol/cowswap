@@ -18,14 +18,12 @@ export enum ApproveRequiredReason {
 
 export function useIsApprovalOrPermitRequired(): ApproveRequiredReason {
   const amountToApprove = useGetAmountToSignApprove()
-  const { state: approvalState } = useApproveState(amountToApprove)
-  const derivedTradeState = useDerivedTradeState()
+  const { isPartialApproveEnabled } = useFeatureFlags()
 
-  const { inputCurrency, tradeType } = derivedTradeState || {}
+  const { state: approvalState } = useApproveState(amountToApprove)
+  const { inputCurrency, tradeType } = useDerivedTradeState() || {}
 
   const { type } = usePermitInfo(inputCurrency, tradeType) || {}
-
-  const { isPartialApproveEnabled } = useFeatureFlags()
 
   const isPermitSupported = type && type !== 'unsupported'
 
