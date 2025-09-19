@@ -58,9 +58,9 @@ export const ToggleElement = styled.span<{ isActive?: boolean; bgColor?: string;
   width: 24px;
 `
 
-const Wrapper = styled.button<{ isActive?: boolean; activeElement?: boolean }>`
+const Wrapper = styled.button<{ isActive?: boolean; activeElement?: boolean; inactiveBgColor?: string }>`
   align-items: center;
-  background: ${({ isActive }) => (isActive ? `var(${UI.COLOR_PRIMARY_OPACITY_25})` : `var(${UI.COLOR_PAPER_DARKER})`)};
+  background: ${({ isActive, inactiveBgColor }) => (isActive ? `var(${UI.COLOR_PRIMARY_OPACITY_25})` : (inactiveBgColor || `var(${UI.COLOR_PAPER_DARKER})`))};
   border: none;
   border-radius: 20px;
   cursor: pointer;
@@ -99,6 +99,7 @@ export interface ToggleProps extends WithClassName {
   isActive: boolean
   toggle: Command
   isDisabled?: boolean // Mod
+  inactiveBgColor?: string
   'data-click-event'?: string
 }
 
@@ -111,6 +112,7 @@ export function Toggle({
   toggle,
   className,
   isDisabled,
+  inactiveBgColor,
   'data-click-event': dataClickEvent,
 }: ToggleProps) {
   const [isInitialToggleLoad, setIsInitialToggleLoad] = useState(true)
@@ -125,7 +127,7 @@ export function Toggle({
   }
 
   return (
-    <Wrapper id={id} isActive={isActive} onClick={switchToggle} className={className} data-click-event={dataClickEvent}>
+    <Wrapper id={id} isActive={isActive} inactiveBgColor={inactiveBgColor} onClick={switchToggle} className={className} data-click-event={dataClickEvent}>
       <ToggleElement isActive={isActive} bgColor={bgColor} isInitialToggleLoad={isInitialToggleLoad} />
     </Wrapper>
   )

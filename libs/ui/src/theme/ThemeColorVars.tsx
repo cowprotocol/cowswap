@@ -100,10 +100,13 @@ export const ThemeColorVars = css`
     // Colors
     ${UI.COLOR_BLUE}: ${({ theme }) => theme.blueDark2};
     ${UI.COLOR_BLUE_100_PRIMARY}: ${({ theme }) => theme.blue100Primary};
+    ${UI.COLOR_BLUE_100_PRIMARY_OPACITY_15}: ${({ theme }) => transparentize(theme.blue100Primary, 0.85)};
     ${UI.COLOR_BLUE_200_PRIMARY}: ${({ theme }) => theme.blue200Primary};
     ${UI.COLOR_BLUE_300_PRIMARY}: ${({ theme }) => theme.blue300Primary};
     ${UI.COLOR_BLUE_400_PRIMARY}: ${({ theme }) => theme.blue400Primary};
     ${UI.COLOR_BLUE_500_PRIMARY}: ${({ theme }) => theme.blue500Primary};
+    ${UI.COLOR_BLUE_700_PRIMARY}: ${({ theme }) => theme.blue700Primary};
+    ${UI.COLOR_BLUE_700_PRIMARY_OPACITY_25}: ${({ theme }) => transparentize(theme.blue700Primary, 0.75)};
     ${UI.COLOR_BLUE_900_PRIMARY}: ${({ theme }) => theme.blue900Primary};
     ${UI.COLOR_PURPLE_200_PRIMARY}: ${({ theme }) => theme.purple200Primary};
     ${UI.COLOR_PURPLE_800_PRIMARY}: ${({ theme }) => theme.purple800Primary};
@@ -127,6 +130,8 @@ export const ThemeColorVars = css`
     ${UI.COLOR_NEUTRAL_10}: ${({ theme }) => theme.neutral10};
     ${UI.COLOR_NEUTRAL_0}: ${({ theme }) => theme.neutral0};
     ${UI.COLOR_BLACK}: ${({ theme }) => theme.neutral0};
+    ${UI.COLOR_BLACK_OPACITY_70}: ${({ theme }) => transparentize(theme.neutral0, 0.3)};
+    ${UI.COLOR_BLACK_OPACITY_30}: ${({ theme }) => transparentize(theme.neutral0, 0.7)};
 
     // CoW AMM Colors
     ${UI.COLOR_COWAMM_DARK_GREEN}: #194d05;
