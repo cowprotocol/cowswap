@@ -42,7 +42,7 @@ export function makeBuildClickEvent(
     toCowSwapGtmEvent({
       category: CowSwapAnalyticsCategory.TRADE,
       action: 'network_selected',
-      label: `Chain: ${chain.id}, Previous: ${defaultChainId || 'none'}, Context: ${contextLabel}, Mode: ${mode}, CrossChain: ${isSwapMode && chainsCount > 1}`,
+      label: `Chain: ${chain.id}, PreviousChain: ${defaultChainId || 'none'}, Context: ${contextLabel}, Mode: ${mode}, CrossChain: ${isSwapMode && chainsCount > 1}`,
     })
 }
 

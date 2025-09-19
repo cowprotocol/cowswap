@@ -20,7 +20,7 @@ describe('ChainsSelector analytics', () => {
       }),
     )
     expect(parsed.event_label).toContain('Chain: 100')
-    expect(parsed.event_label).toContain('Previous: 1')
+    expect(parsed.event_label).toContain('PreviousChain: 1')
     expect(parsed.event_label).toContain('Context: sell')
     expect(parsed.event_label).toContain('Mode: swap')
   })
@@ -31,7 +31,7 @@ describe('ChainsSelector analytics', () => {
       buildEvent({ id: 1, label: 'Ethereum', logo: { dark: '', light: '' } } as ChainInfo),
     ) as Record<string, unknown>
 
-    expect(parsed.event_label).toContain('Previous: none')
+    expect(parsed.event_label).toContain('PreviousChain: none')
     expect(parsed.event_label).toContain('Mode: limit')
   })
 })

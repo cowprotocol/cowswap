@@ -228,6 +228,7 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
             areTokensFromBridge={areTokensFromBridge}
             isRouteAvailable={isRouteAvailable}
             tradeType={tradeType}
+            field={field}
           />
         )
       })()}
