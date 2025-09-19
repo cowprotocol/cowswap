@@ -4,12 +4,7 @@ import { atomWithStorage } from 'jotai/utils'
 import { atomWithIdbStorage, getJotaiMergerStorage } from '@cowprotocol/core'
 import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import {
-  DEFAULT_TOKENS_LISTS,
-  LP_TOKEN_LISTS,
-  ONDO_TOKENS_LIST_SOURCE,
-  UNISWAP_TOKENS_LIST,
-} from '../../const/tokensLists'
+import { DEFAULT_TOKENS_LISTS, LP_TOKEN_LISTS, UNISWAP_TOKENS_LIST } from '../../const/tokensLists'
 import {
   ListSourceConfig,
   ListsSourcesByNetwork,
@@ -37,12 +32,6 @@ const UNISWAP_TOKEN_LIST_URL: Record<SupportedChainId, string> = {
   [SupportedChainId.BNB]: 'https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/Uniswap.56.json',
 }
 
-const ONDO_LIST_SOURCE: ListSourceConfig = {
-  priority: 2,
-  enabledByDefault: false,
-  source: ONDO_TOKENS_LIST_SOURCE,
-}
-
 const curatedListSourceAtom = atom((get) => {
   const chainId = get(environmentAtom).chainId
   const UNISWAP_LIST_SOURCE: ListSourceConfig = {
@@ -51,9 +40,7 @@ const curatedListSourceAtom = atom((get) => {
     source: UNISWAP_TOKEN_LIST_URL[chainId],
   }
 
-  const hasOndoList = chainId === SupportedChainId.MAINNET
-
-  return [UNISWAP_LIST_SOURCE].concat(hasOndoList ? [ONDO_LIST_SOURCE] : [])
+  return [UNISWAP_LIST_SOURCE]
 })
 
 export const userAddedListsSourcesAtom = atomWithStorage<ListsSourcesByNetwork>(
