@@ -25,6 +25,3 @@ export function createLogger(scope: string): Logger {
 
   return { debug, info, warn, error }
 }
-
-export const logger = createLogger('App')
-
