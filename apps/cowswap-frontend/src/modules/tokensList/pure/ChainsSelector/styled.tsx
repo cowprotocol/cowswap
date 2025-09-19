@@ -71,7 +71,6 @@ export const ChainItem = styled.button<{
   }
 
   > img {
-    pointer-events: none;
     width: ${({ iconOnly, iconSize = 24 }) => (iconOnly ? '100%' : `${iconSize}px`)};
     height: ${({ iconOnly, iconSize = 24 }) => (iconOnly ? '100%' : `${iconSize}px`)};
     border-radius: 100%;
