@@ -1,3 +1,6 @@
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { PermitType } from '@cowprotocol/permit-utils'
+
 import { usePermitInfo } from 'modules/permit'
 import { TradeType, useDerivedTradeState } from 'modules/trade'
 
@@ -22,6 +25,8 @@ export function useIsApprovalOrPermitRequired(): ApproveRequiredReason {
 
   const { type } = usePermitInfo(inputCurrency, tradeType) || {}
 
+  const { isPartialApproveEnabled } = useFeatureFlags()
+
   const isPermitSupported = type && type !== 'unsupported'
 
   if (!isPermitSupported && (approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING)) {
@@ -29,12 +34,15 @@ export function useIsApprovalOrPermitRequired(): ApproveRequiredReason {
   }
 
   // we use new approve/permit flow only for swaps for now
-  if (tradeType !== TradeType.SWAP) {
+  if (tradeType !== TradeType.SWAP || !isPartialApproveEnabled) {
     return ApproveRequiredReason.NotRequired
   }
 
+  return getPermitRequirements(type)
+}
+
+function getPermitRequirements(type?: PermitType): ApproveRequiredReason {
   if (type === 'dai-like') return ApproveRequiredReason.DaiLikePermitRequired
   if (type === 'eip-2612') return ApproveRequiredReason.Eip2612PermitRequired
-
   return ApproveRequiredReason.NotRequired
 }
