@@ -31,7 +31,7 @@ type BuildClickEvent = (chain: ChainInfo) => string
 
 const log = createLogger('ChainsSelector')
 
-function makeBuildClickEvent(
+export function makeBuildClickEvent(
   defaultChainId: ChainInfo['id'] | undefined,
   contextLabel: 'sell' | 'buy' | 'unknown',
   mode: 'swap' | 'limit' | 'twap' | 'unknown',

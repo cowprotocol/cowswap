@@ -15,14 +15,14 @@ import type { TokenInfo } from '@cowprotocol/types'
 import { getCowAnalytics } from '../utils'
 
 // Specialized helper function for string properties to ensure we always return a string
-const safeGetString = <T, K extends keyof T>(obj: T | undefined, key: K, fallback: string = ''): string => {
+export const safeGetString = <T, K extends keyof T>(obj: T | undefined, key: K, fallback: string = ''): string => {
   const value = obj && obj[key] !== undefined ? obj[key] : fallback
   return String(value)
 }
 
-type AnalyticsPayload = Record<string, unknown>
+export type AnalyticsPayload = Record<string, unknown>
 
-function extractTokenMeta(order: Partial<EnrichedOrder> | undefined): {
+export function extractTokenMeta(order: Partial<EnrichedOrder> | undefined): {
   inputToken?: TokenInfo
   outputToken?: TokenInfo
 } {
@@ -30,7 +30,7 @@ function extractTokenMeta(order: Partial<EnrichedOrder> | undefined): {
   return { inputToken, outputToken }
 }
 
-function buildBaseFields(payload: BaseOrderPayload): AnalyticsPayload {
+export function buildBaseFields(payload: BaseOrderPayload): AnalyticsPayload {
   return {
     walletAddress: safeGetString(payload.order, 'owner'),
     orderId: safeGetString(payload.order, 'uid'),
@@ -38,7 +38,7 @@ function buildBaseFields(payload: BaseOrderPayload): AnalyticsPayload {
   }
 }
 
-function buildTokenFields(
+export function buildTokenFields(
   payload: BaseOrderPayload,
   meta: { inputToken?: TokenInfo; outputToken?: TokenInfo },
 ): AnalyticsPayload {
@@ -68,7 +68,7 @@ function buildTokenFields(
 // Build generic analytics-friendly alias fields for currency/amounts.
 // The current keys align with Safary's lexicon, but the helper name is
 // provider-agnostic so we can evolve the mapping without touching call sites.
-function buildAnalyticsCurrencyAliases(fields: AnalyticsPayload): AnalyticsPayload {
+export function buildAnalyticsCurrencyAliases(fields: AnalyticsPayload): AnalyticsPayload {
   const sellTokenAddress = String(fields.sellToken || '')
   const buyTokenAddress = String(fields.buyToken || '')
   const sellTokenDecimals = (fields.sellTokenDecimals as number | undefined) || 0
@@ -84,7 +84,7 @@ function buildAnalyticsCurrencyAliases(fields: AnalyticsPayload): AnalyticsPaylo
   }
 }
 
-function getOrderPayload(payload: BaseOrderPayload): AnalyticsPayload {
+export function getOrderPayload(payload: BaseOrderPayload): AnalyticsPayload {
   const meta = extractTokenMeta(payload.order)
   const base = buildBaseFields(payload)
   const tokenFields = buildTokenFields(payload, meta)
@@ -127,7 +127,7 @@ const EVENT_CONFIGS = [
   },
 ]
 
-function mapPostedOrder(p: OnPostedOrderPayload): AnalyticsPayload {
+export function mapPostedOrder(p: OnPostedOrderPayload): AnalyticsPayload {
   const tokenFields: AnalyticsPayload = {
     sellToken: safeGetString(p.inputToken, 'address'),
     buyToken: safeGetString(p.outputToken, 'address'),
@@ -154,7 +154,7 @@ function mapPostedOrder(p: OnPostedOrderPayload): AnalyticsPayload {
   }
 }
 
-function mapFulfilledOrder(p: OnFulfilledOrderPayload): AnalyticsPayload {
+export function mapFulfilledOrder(p: OnFulfilledOrderPayload): AnalyticsPayload {
   const base = getOrderPayload(p)
 
   const executedSellAmountAtoms = safeGetString(p.order, 'executedSellAmount')
@@ -214,7 +214,10 @@ export const setupEventHandlers = (
 }
 
 // Format atom values to human-readable units using existing amount formatter
-function formatUnitsViaCommon(value: string | number | bigint, decimals?: number): string {
+export function formatUnitsViaCommon(
+  value: string | number | bigint | null | undefined,
+  decimals?: number,
+): string {
   if (value === undefined || value === null) return ''
 
   try {
