@@ -126,6 +126,7 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
         {beforeContent}
         {hookDetailsElement}
         <NoImpactWarning withoutAccepting />
+        {afterContent}
 
         <ConfirmWarnings
           account={props.account}
@@ -144,7 +145,6 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
           signingStep={signingStep}
           data-click-event={dataClickEvent}
         />
-        {afterContent}
       </styledEl.ContentWrapper>
     </styledEl.WidgetWrapper>
   )
