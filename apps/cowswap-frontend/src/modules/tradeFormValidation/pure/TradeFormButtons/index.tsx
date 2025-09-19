@@ -13,10 +13,11 @@ export interface TradeFormButtonsProps {
   confirmText: string
   className?: string
   isDisabled?: boolean
+  'data-click-event'?: string
 }
 
 export function TradeFormButtons(props: TradeFormButtonsProps): ReactNode {
-  const { validation, context, isDisabled, confirmText, className } = props
+  const { validation, context, isDisabled, confirmText, className, 'data-click-event': dataClickEvent } = props
 
   // When there are no validation errors
   if (validation === null) {
@@ -26,6 +27,7 @@ export function TradeFormButtons(props: TradeFormButtonsProps): ReactNode {
         className={className}
         disabled={isDisabled}
         onClick={() => context.confirmTrade()}
+        data-click-event={dataClickEvent}
       >
         {confirmText}
       </TradeFormBlankButton>

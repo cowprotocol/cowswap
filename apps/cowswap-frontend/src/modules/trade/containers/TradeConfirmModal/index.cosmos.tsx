@@ -70,9 +70,7 @@ function Custom({ stateValue }: { stateValue: string }) {
 
   return (
     <TradeConfirmModal title="Swap">
-      <TradeConfirmation {...confirmationState} onDismiss={console.log}>
-        {() => <span>Some content</span>}
-      </TradeConfirmation>
+      <TradeConfirmation {...confirmationState} onDismiss={console.log} beforeContent={<span>Some content</span>} />
     </TradeConfirmModal>
   )
 }
