@@ -1,4 +1,4 @@
-import { formatTokenAmount } from '@cowprotocol/common-utils'
+import { formatUnitsSafe } from '@cowprotocol/common-utils'
 import type { EnrichedOrder } from '@cowprotocol/cow-sdk'
 import {
   CowWidgetEvents,
@@ -11,7 +11,6 @@ import {
   BaseOrderPayload,
 } from '@cowprotocol/events'
 import type { TokenInfo } from '@cowprotocol/types'
-import { Fraction } from '@uniswap/sdk-core'
 
 import { getCowAnalytics } from '../utils'
 
@@ -217,13 +216,11 @@ export const setupEventHandlers = (
 // Format atom values to human-readable units using existing amount formatter
 function formatUnitsViaCommon(value: string | number | bigint, decimals?: number): string {
   if (value === undefined || value === null) return ''
-  const dec = typeof decimals === 'number' && decimals > 0 ? decimals : 0
-  const numerator = typeof value === 'bigint' ? value.toString() : String(value)
-  const denominator = dec > 0 ? '1' + '0'.repeat(dec) : '1'
+
   try {
-    return formatTokenAmount(new Fraction(numerator, denominator))
+    return formatUnitsSafe(value, decimals)
   } catch {
     // Fallback to raw string if formatting fails
-    return numerator
+    return typeof value === 'bigint' ? value.toString() : String(value)
   }
 }
