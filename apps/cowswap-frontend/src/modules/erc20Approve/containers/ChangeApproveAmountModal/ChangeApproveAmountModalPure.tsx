@@ -14,7 +14,6 @@ import { SwapAmountPreview } from '../SwapAmountPreview/SwapAmountPreview'
 export interface ChangeApproveAmountModalPureProps {
   inputToken: TokenWithLogo | null
   initialAmount?: CurrencyAmount<Currency> | null
-  approveAmountInput?: string
   isInvalid?: boolean
   onBack: () => void
   onConfirm: () => void
