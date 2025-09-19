@@ -1,29 +1,28 @@
-import { useMemo, useState } from 'react'
+import { ReactNode, useMemo, useState } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { isAddress, parseENSAddress, uriToHttp } from '@cowprotocol/common-utils'
 import { ListState, useSearchList, useSearchToken } from '@cowprotocol/tokens'
+import { ModalHeader } from '@cowprotocol/ui'
 
 import * as styledEl from './styled'
 
-import { ModalHeader } from '../../pure/ModalHeader'
 import { ManageLists } from '../ManageLists'
 import { ManageTokens } from '../ManageTokens'
 
 export interface ManageListsAndTokensProps {
   lists: ListState[]
   customTokens: TokenWithLogo[]
+
   onBack(): void
+
   onDismiss(): void
 }
 
 const tokensInputPlaceholder = '0x0000'
 const listsInputPlaceholder = 'https:// or ipfs:// or ENS name'
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
-export function ManageListsAndTokens(props: ManageListsAndTokensProps) {
+export function ManageListsAndTokens(props: ManageListsAndTokensProps): ReactNode {
   const { lists, customTokens, onBack, onDismiss } = props
 
   const [currentTab, setCurrentTab] = useState<'tokens' | 'lists'>('lists')

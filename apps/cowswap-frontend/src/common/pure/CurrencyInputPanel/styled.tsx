@@ -1,5 +1,4 @@
-import { TokenAmount, loadingOpacityMixin, Media } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { loadingOpacityMixin, Media, TokenAmount, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -30,7 +29,7 @@ export const Wrapper = styled.div<{ withReceiveAmountInfo: boolean; readOnly: bo
   }
 `
 
-export const CurrencyInputBox = styled.div`
+export const CurrencyInputBox = styled.div<{ isInvalid?: boolean }>`
   display: grid;
   width: 100%;
   grid-template-columns: repeat(2, auto);
@@ -40,7 +39,7 @@ export const CurrencyInputBox = styled.div`
   margin: 0;
   font-weight: 400;
   font-size: 13px;
-  color: inherit;
+  color: ${({ isInvalid }) => (isInvalid ? `var(${UI.COLOR_RED})` : 'inherit')};
 
   ${Media.upToSmall()} {
     gap: 8px;

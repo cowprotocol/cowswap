@@ -1,5 +1,7 @@
 import { useCallback } from 'react'
 
+import { TransactionReceipt } from '@ethersproject/abstract-provider'
+import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useTradeApproveCallback } from 'modules/erc20Approve'
@@ -7,7 +9,7 @@ import { useShouldZeroApprove, useZeroApprove } from 'modules/zeroApproval'
 
 export function useApproveCurrency(
   amountToApprove: CurrencyAmount<Currency> | undefined,
-): (amount: bigint) => Promise<void> {
+): (amount: bigint) => Promise<TransactionReceipt | undefined | null | SafeMultisigTransactionResponse> {
   const currency = amountToApprove?.currency
 
   const tradeApproveCallback = useTradeApproveCallback(currency)
@@ -16,10 +18,10 @@ export function useApproveCurrency(
   return useCallback(
     async (amount: bigint) => {
       if (shouldZeroApprove) {
-        await zeroApprove()
+        return zeroApprove()
       }
 
-      await tradeApproveCallback(amount)
+      return tradeApproveCallback(amount)
     },
     [tradeApproveCallback, zeroApprove, shouldZeroApprove],
   )

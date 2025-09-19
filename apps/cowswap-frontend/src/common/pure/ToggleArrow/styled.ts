@@ -4,8 +4,8 @@ import styled from 'styled-components/macro'
 
 export const ARROW_ICON_SIZE = '12px'
 
-export const StyledToggleArrow = styled.div<{ isOpen: boolean }>`
-  --size: ${ARROW_ICON_SIZE};
+export const StyledToggleArrow = styled.div<{ isOpen: boolean; size?: number }>`
+  --size: ${({ size }) => (size ? `${size}px` : ARROW_ICON_SIZE)};
   transform: ${({ isOpen }) => (isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
   transition: transform var(${UI.ANIMATION_DURATION}) ease-in-out;
   display: flex;

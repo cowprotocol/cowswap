@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState } from 'react'
 
 import { Command } from '@cowprotocol/types'
-import { Badge, BadgeTypes } from '@cowprotocol/ui'
+import { Badge, BadgeTypes, ModalHeader } from '@cowprotocol/ui'
 import type { TradeType } from '@cowprotocol/widget-lib'
 
 import { Trans } from '@lingui/macro'
@@ -10,7 +10,6 @@ import SVG from 'react-inlinesvg'
 import { useLocation } from 'react-router'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
-import { ModalHeader } from 'modules/tokensList/pure/ModalHeader'
 
 import { Routes, RoutesValues } from 'common/constants/routes'
 import { useMenuItems } from 'common/hooks/useMenuItems'
@@ -77,10 +76,10 @@ export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) 
 
       const tradeUrlParams = isCurrentPathYield
         ? ({
-          chainId,
-          inputCurrencyId: itemTradeState.inputCurrencyId || defaultState?.inputCurrencyId || null,
-          outputCurrencyId: itemTradeState.outputCurrencyId,
-        } as TradeUrlParams)
+            chainId,
+            inputCurrencyId: itemTradeState.inputCurrencyId || defaultState?.inputCurrencyId || null,
+            outputCurrencyId: itemTradeState.outputCurrencyId,
+          } as TradeUrlParams)
         : getTradeUrlParams(item)
 
       const routePath =
@@ -152,8 +151,8 @@ const MenuItem = ({
   isActive: boolean
   onClick: Command
   isDropdownVisible: boolean
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 }) => (
   <styledEl.MenuItem isActive={isActive} onClick={onClick} isDropdownVisible={isDropdownVisible}>
     <styledEl.Link to={routePath}>
