@@ -15,9 +15,8 @@ const Fixtures = {
       isConfirmDisabled={false}
       priceImpact={priceImpactMock}
       recipient={null}
-    >
-      {() => <span>Trade confirmation</span>}
-    </TradeConfirmation>
+      beforeContent={<span>Trade confirmation</span>}
+    />
   ),
 }
 

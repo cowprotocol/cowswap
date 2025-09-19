@@ -7,7 +7,11 @@ import { SigningStepState } from 'entities/trade'
 
 import { upToMedium, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 
+import { createLogger } from 'common/utils/logger'
+
 import { getPendingText } from './getPendingText'
+
+const log = createLogger('ConfirmButton')
 
 interface ConfirmButtonProps {
   buttonText: ReactNode
@@ -15,16 +19,26 @@ interface ConfirmButtonProps {
   hasPendingTrade: boolean
   onConfirm(): Promise<void | boolean>
   signingStep: SigningStepState | null
+  'data-click-event'?: string
 }
 export function ConfirmButton(props: ConfirmButtonProps): ReactNode {
   const [isConfirmClicked, setIsConfirmClicked] = useState(false)
-  const { buttonText, onConfirm, hasPendingTrade, signingStep } = props
+  const { buttonText, onConfirm, hasPendingTrade, signingStep, 'data-click-event': dataClickEvent } = props
 
   const isButtonDisabled = props.isButtonDisabled || isConfirmClicked
 
   const isUpToMedium = useMediaQuery(upToMedium)
 
   const handleConfirmClick = async (): Promise<void> => {
+    // Dev-only: mirror GTM click payload via centralized logger
+    if (dataClickEvent) {
+      try {
+        log.debug('[GTM click]', JSON.parse(dataClickEvent) as unknown)
+      } catch {
+        log.debug('[GTM click]', dataClickEvent)
+      }
+    }
+
     if (isUpToMedium) {
       window.scrollTo({ top: 0, left: 0 })
     }
@@ -49,7 +63,12 @@ export function ConfirmButton(props: ConfirmButtonProps): ReactNode {
   }, [hasPendingTrade])
 
   return (
-    <ButtonPrimary onClick={handleConfirmClick} disabled={isButtonDisabled} buttonSize={ButtonSize.BIG}>
+    <ButtonPrimary
+      onClick={handleConfirmClick}
+      disabled={isButtonDisabled}
+      buttonSize={ButtonSize.BIG}
+      data-click-event={dataClickEvent}
+    >
       {hasPendingTrade || isConfirmClicked ? (
         <LongLoadText fontSize={15} fontWeight={500}>
           <span>{signingStep ? getPendingText(signingStep) : 'Confirm with your wallet'}</span>
