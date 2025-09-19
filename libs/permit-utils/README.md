@@ -76,8 +76,7 @@ To illustrate, we'll show the flow of placing an order with a permit hook using 
 
 ```typescript
 import { checkIsCallDataAValidPermit, generatePermitHook, getPermitUtilsInstance, getTokenPermitInfo } from '@cowprotocol/permit-utils'
-import { stringifyDeterministic } from '@cowprotocol/app-data'
-import { OrderBookApi } from '@cowprotocol/cow-sdk'
+import { stringifyDeterministic, OrderBookApi } from '@cowprotocol/cow-sdk'
 
 
 // Check whether token is permittable.

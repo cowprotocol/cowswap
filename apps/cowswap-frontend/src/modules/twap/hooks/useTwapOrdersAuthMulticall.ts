@@ -5,7 +5,7 @@ import { useSingleContractMultipleData } from '@cowprotocol/multicall'
 
 import ms from 'ms.macro'
 
-import { TwapOrderInfo, TwapOrdersAuthResult } from '../types'
+import { TwapOrdersAuthResult } from '../types'
 
 const EMPTY_AUTH_RESULT = {}
 const MULTICALL_OPTIONS = {}
@@ -14,11 +14,15 @@ const SWR_CONFIG = { refreshInterval: ms`30s` }
 export function useTwapOrdersAuthMulticall(
   safeAddress: string,
   composableCowContract: ComposableCoW,
-  ordersInfo: TwapOrderInfo[],
+  pendingTwapOrderIds: string[],
 ): TwapOrdersAuthResult | null {
+  // Use stringified key to avoid excessive multicalls
+  const orderIdsKey = pendingTwapOrderIds.join(',')
+
   const input = useMemo(() => {
-    return ordersInfo.map(({ id }) => [safeAddress, id])
-  }, [safeAddress, ordersInfo])
+    if (!orderIdsKey) return undefined
+    return orderIdsKey.split(',').map((id) => [safeAddress, id])
+  }, [safeAddress, orderIdsKey])
 
   const { data, isLoading } = useSingleContractMultipleData<[boolean]>(
     composableCowContract,
@@ -30,13 +34,13 @@ export function useTwapOrdersAuthMulticall(
   const loadedResults = data?.results
 
   return useMemo(() => {
-    if (ordersInfo.length === 0) return EMPTY_AUTH_RESULT
+    if (pendingTwapOrderIds.length === 0) return EMPTY_AUTH_RESULT
 
-    if (isLoading || !loadedResults || loadedResults.length !== ordersInfo.length) return null
+    if (isLoading || !loadedResults || loadedResults.length !== pendingTwapOrderIds.length) return null
 
-    return ordersInfo.reduce((acc, val, index) => {
-      acc[val.id] = loadedResults[index]?.[0]
+    return pendingTwapOrderIds.reduce((acc, id, index) => {
+      acc[id] = loadedResults[index]?.[0]
       return acc
     }, {} as TwapOrdersAuthResult)
-  }, [ordersInfo, loadedResults, isLoading])
+  }, [pendingTwapOrderIds, loadedResults, isLoading])
 }

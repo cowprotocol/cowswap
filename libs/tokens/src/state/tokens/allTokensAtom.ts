@@ -11,7 +11,7 @@ import { lowerCaseTokensMap } from '../../utils/lowerCaseTokensMap'
 import { parseTokenInfo } from '../../utils/parseTokenInfo'
 import { tokenMapToListWithLogo } from '../../utils/tokenMapToListWithLogo'
 import { environmentAtom } from '../environmentAtom'
-import { listsEnabledStateAtom, listsStatesListAtom } from '../tokenLists/tokenListsStateAtom'
+import { listsEnabledStateAtom, listsStatesListAtom, tokenListsUpdatingAtom } from '../tokenLists/tokenListsStateAtom'
 
 export interface TokensByAddress {
   [address: string]: TokenWithLogo | undefined
@@ -33,7 +33,12 @@ const tokensStateAtom = atom(async (get) => {
 
   return {
     listsCount: listsStatesList.length,
-    tokensState: listsStatesList.reduce<TokensState>(
+    // Always process lists in a deterministic order so that precedence
+    // between lists is stable across sessions/updates. Lower priority
+    // value means higher precedence in our config (e.g. CowSwap list is 1).
+    tokensState: [...listsStatesList]
+      .sort((a, b) => (a.priority ?? Number.MAX_SAFE_INTEGER) - (b.priority ?? Number.MAX_SAFE_INTEGER))
+      .reduce<TokensState>(
       (acc, list) => {
         const isListEnabled = listsEnabledState[list.source]
         const lpTokenProvider = list.lpTokenProvider
@@ -78,6 +83,7 @@ export const allActiveTokensAtom = atom(async (get) => {
   const { chainId, enableLpTokensByDefault } = get(environmentAtom)
   const userAddedTokens = get(userAddedTokensAtom)
   const favoriteTokensState = get(favoriteTokensAtom)
+  const isTokenListsUpdating = get(tokenListsUpdatingAtom)
 
   const { tokensState: tokensMap, listsCount } = await get(tokensStateAtom)
   const nativeToken = NATIVE_CURRENCIES[chainId]
@@ -85,7 +91,7 @@ export const allActiveTokensAtom = atom(async (get) => {
   /**
    * Wait till token lists loaded
    */
-  if (listsCount === 0) {
+  if (!isTokenListsUpdating ? false : listsCount === 0) {
     return { tokens: [], chainId }
   }
 

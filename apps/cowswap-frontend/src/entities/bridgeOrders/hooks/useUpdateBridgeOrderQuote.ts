@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai/index'
 import { useCallback } from 'react'
 
-import { BridgeStatusResult } from '@cowprotocol/cow-sdk'
+import { BridgeStatusResult } from '@cowprotocol/sdk-bridging'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { bridgeOrdersAtom } from '../state/bridgeOrdersAtom'

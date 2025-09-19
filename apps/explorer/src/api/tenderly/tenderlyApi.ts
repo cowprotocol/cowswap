@@ -63,23 +63,12 @@ export async function getTransactionContracts(networkId: SupportedChainId, txHas
   return _fetchTradesAccounts(networkId, txHash)
 }
 
-export async function getTradesAndTransfers(
-  networkId: SupportedChainId,
-  txHash: string,
-): Promise<TxTradesAndTransfers> {
-  const trace = await _fetchTrace(networkId, txHash)
-
-  return traceToTransfersAndTrades(trace)
-}
-
-// TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
 export function traceToTransfersAndTrades(trace: Trace): TxTradesAndTransfers {
   const transfers: Array<Transfer> = []
   const trades: Array<Trade> = []
 
   try {
-    trace.logs.forEach((log) => {
+    trace.logs?.forEach((log) => {
       if (log.name === TypeOfTrace.TRANSFER) {
         const from = log.inputs[IndexTransferInput.from].value
         const to = log.inputs[IndexTransferInput.to].value

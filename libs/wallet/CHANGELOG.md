@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.15.1](https://github.com/cowprotocol/cowswap/compare/wallet-v1.15.0...wallet-v1.15.1) (2025-09-12)
+
+
+### Bug Fixes
+
+* **swap:** improve lock screen logic in SwapWidget to prevent flash ([#6195](https://github.com/cowprotocol/cowswap/issues/6195)) ([159b199](https://github.com/cowprotocol/cowswap/commit/159b199e5e63d13feabe7832c0c8cd877024717a))
+
 ## [1.15.0](https://github.com/cowprotocol/cowswap/compare/wallet-v1.14.0...wallet-v1.15.0) (2025-08-21)
 
 

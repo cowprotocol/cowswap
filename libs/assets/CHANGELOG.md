@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.15.0](https://github.com/cowprotocol/cowswap/compare/assets-v1.14.0...assets-v1.15.0) (2025-08-28)
+
+
+### Features
+
+* add swap unlock screen ([#6181](https://github.com/cowprotocol/cowswap/issues/6181)) ([6bb5593](https://github.com/cowprotocol/cowswap/commit/6bb55937792f9a13c620555a0a82eaeaa9d41e21))
+
 ## [1.14.0](https://github.com/cowprotocol/cowswap/compare/assets-v1.13.1...assets-v1.14.0) (2025-06-18)
 
 

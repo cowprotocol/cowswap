@@ -69,6 +69,7 @@ export const hookDappsRegistry = {
     conditions: {
       position: 'pre',
       walletCompatibility: ['EOA'],
+      supportedNetworks: [1, 100, 8453, 42161, 11155111],
     },
   },
   CLAIM_LLAMAPAY_VESTING: {
@@ -131,6 +132,7 @@ export const hookDappsRegistry = {
     conditions: {
       position: 'post',
       walletCompatibility: ['EOA'],
+      supportedNetworks: [1, 100, 8453, 42161, 11155111],
     },
   },
   UNI_V2_DEPOSIT: {

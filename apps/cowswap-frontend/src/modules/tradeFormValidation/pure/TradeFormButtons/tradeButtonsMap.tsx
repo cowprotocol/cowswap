@@ -2,7 +2,7 @@ import { ReactElement, ReactNode } from 'react'
 
 import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
 import { getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
-import { BridgeProviderQuoteError, BridgeQuoteErrors } from '@cowprotocol/cow-sdk'
+import { BridgeProviderQuoteError, BridgeQuoteErrors } from '@cowprotocol/sdk-bridging'
 import { CenteredDots, HelpTooltip, TokenSymbol } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
@@ -123,7 +123,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
           {isBridging && recipient && (
             <HelpTooltip
               placement="top"
-              text="ENS recipient not supported for Swap and Bridge — use address instead."
+              text="ENS recipient not supported for Swap and Bridge. Use address instead."
             />
           )}
         </>

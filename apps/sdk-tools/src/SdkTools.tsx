@@ -1,12 +1,12 @@
 import React from 'react'
 
+import { COMPOSABLE_COW } from '@cowprotocol/cow-sdk'
 import {
-  COMPOSABLE_COW,
   ConditionalOrder,
   ConditionalOrderFactory,
   DEFAULT_CONDITIONAL_ORDER_REGISTRY,
   IsValidResult,
-} from '@cowprotocol/cow-sdk'
+} from '@cowprotocol/sdk-composable'
 
 import styled from 'styled-components/macro'
 
@@ -175,7 +175,7 @@ export function SdkTools() {
 
   // TODO: Break down this large function into smaller functions
   // TODO: Add proper return type annotation
-  // eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     setError(undefined)

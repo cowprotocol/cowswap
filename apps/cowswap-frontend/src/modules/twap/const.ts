@@ -40,7 +40,7 @@ export const TWAP_FINAL_STATUSES = [TwapOrderStatus.Fulfilled, TwapOrderStatus.E
 export const MINIMUM_PART_SELL_AMOUNT_FIAT: Record<SupportedChainId, CurrencyAmount<Currency>> = {
   ...mapSupportedNetworks((chainId: SupportedChainId) => CurrencyAmount.fromRawAmount(USDC[chainId], 1e6)), // 1$ for most chains
   [SupportedChainId.MAINNET]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.MAINNET], 1_000e6), // 1k for mainnet
-  [SupportedChainId.SEPOLIA]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.SEPOLIA], 100e18), // 100 for sepolia
+  [SupportedChainId.SEPOLIA]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.SEPOLIA], 10e18), // 10 for sepolia
   [SupportedChainId.BNB]: CurrencyAmount.fromRawAmount(USDC[SupportedChainId.BNB], 1e18), // 1 for BNB, but it has 18 decimals!
 }
 
@@ -52,6 +52,8 @@ export const DEFAULT_TWAP_EXECUTION_INFO: TwapOrderExecutionInfo = {
   executedBuyAmount: '0',
   executedFeeAmount: '0',
 }
+
+export const DEFAULT_TWAP_EXECUTION = { confirmedPartsCount: 0, info: DEFAULT_TWAP_EXECUTION_INFO }
 
 export const UNSUPPORTED_SAFE_LINK =
   'https://cow.fi/learn/all-you-need-to-know-about-cow-swap-new-safe-fallback-handler'

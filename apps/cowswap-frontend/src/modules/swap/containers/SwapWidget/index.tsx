@@ -1,7 +1,8 @@
-import { ReactNode, useCallback, useMemo, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { getIsNativeToken, isSellOrder } from '@cowprotocol/common-utils'
+import { getIsNativeToken, isInjectedWidget, isSellOrder } from '@cowprotocol/common-utils'
+import { useIsEagerConnectInProgress, useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import { Field } from 'legacy/state/types'
 import { useHooksEnabledManager } from 'legacy/state/user/hooks'
@@ -36,6 +37,8 @@ import {
   useSwapSettings,
 } from '../../hooks/useSwapSettings'
 import { useSwapWidgetActions } from '../../hooks/useSwapWidgetActions'
+import { useUpdateSwapRawState } from '../../hooks/useUpdateSwapRawState'
+import { CrossChainUnlockScreen } from '../../pure/CrossChainUnlockScreen'
 import { BottomBanners } from '../BottomBanners'
 import { SwapConfirmModal } from '../SwapConfirmModal'
 import { SwapRateDetails } from '../SwapRateDetails'
@@ -49,8 +52,8 @@ export interface SwapWidgetProps {
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
-export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
+// eslint-disable-next-line max-lines-per-function,complexity
+export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps): ReactNode {
   const { showRecipient } = useSwapSettings()
   const deadlineState = useSwapDeadlineState()
   const recipientToggleState = useSwapRecipientToggleState()
@@ -67,6 +70,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   const dismissNativeWrapModal = useCallback(() => setOpenNativeWrapModal(false), [])
 
   const wrapCallback = useWrapNativeFlow()
+  const updateSwapState = useUpdateSwapRawState()
 
   const {
     inputCurrency,
@@ -80,9 +84,20 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
     recipient,
     recipientAddress,
     orderKind,
+    isUnlocked,
   } = useSwapDerivedState()
   const doTrade = useHandleSwap(useSafeMemoObject({ deadline: deadlineState[0] }), widgetActions)
   const hasEnoughWrappedBalanceForSwap = useHasEnoughWrappedBalanceForSwap()
+  const isSmartContractWallet = useIsSmartContractWallet()
+  const { account } = useWalletInfo()
+  const isEagerConnectInProgress = useIsEagerConnectInProgress()
+  const [isHydrated, setIsHydrated] = useState(false)
+  const handleUnlock = useCallback(() => updateSwapState({ isUnlocked: true }), [updateSwapState])
+
+  useEffect(() => {
+    // Hydration guard: defer lock-screen until persisted state (isUnlocked) loads to prevent initial flash.
+    setIsHydrated(true)
+  }, [])
 
   const isSellTrade = isSellOrder(orderKind)
 
@@ -147,8 +162,18 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
 
   const enablePartialApproval = enablePartialApprovalState[0] && inputCurrency && !getIsNativeToken(inputCurrency)
 
+  const isConnected = Boolean(account)
+
+  // Guarded render: require hydration and no active eager-connect; show only for confirmed EOAs or truly disconnected users.
+  const shouldShowLockScreen =
+    isHydrated &&
+    !isUnlocked &&
+    !isInjectedWidget() &&
+    ((isConnected && isSmartContractWallet === false) || (!isConnected && !isEagerConnectInProgress))
+
   const slots: TradeWidgetSlots = {
     topContent,
+    lockScreen: shouldShowLockScreen ? <CrossChainUnlockScreen handleUnlock={handleUnlock} /> : undefined,
     settingsWidget: (
       <SettingsTab
         recipientToggleState={recipientToggleState}

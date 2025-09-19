@@ -103,7 +103,8 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
         tradeQuote.fetchParams?.priceQuality === PriceQuality.OPTIMAL &&
         orderKind &&
         settlementContract &&
-        uiOrderType
+        uiOrderType &&
+        validTo > 0
         ? [
             account,
             allowsOffchainSigning,
