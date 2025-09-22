@@ -5,6 +5,13 @@ export type Command = () => void
 export type StatefulValue<T> = [T, (value: T) => void]
 
 export type Nullish<T> = T | null | undefined
+
+export enum AccountType {
+  EOA = 'EOA',
+  EIP7702EOA = 'EIP7702EOA',
+  SMART_CONTRACT = 'SMART_CONTRACT',
+}
+
 /**
  * UI order type that is different from existing types or classes
  *

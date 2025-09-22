@@ -282,8 +282,8 @@ msgid "<0>By adding this list you are implicitly trusting that the data is corre
 msgstr "<0>By adding this list you are implicitly trusting that the data is correct. Anyone can create a list, including creating fake versions of existing lists and lists that claim to represent projects that do not have one.</0><1><2>If you purchase a token from this list, you may not be able to sell it back.</2></1>"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/FavoriteTokensList/index.tsx
-msgid "Your favorite saved tokens. Edit this list in your account page."
-msgstr "Your favorite saved tokens. Edit this list in your account page."
+#~ msgid "Your favorite saved tokens. Edit this list in your account page."
+#~ msgstr "Your favorite saved tokens. Edit this list in your account page."
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/NotificationsList/index.tsx
 msgid "As soon as anything important or interesting happens, we will definitely let you know."
@@ -503,6 +503,10 @@ msgstr "Sign (gas-free!) in your wallet..."
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
 msgid "If your order has not been filled by this date & time, it will expire. Don't worry - expirations and order placement are free on CoW Swap!"
 msgstr "If your order has not been filled by this date & time, it will expire. Don't worry - expirations and order placement are free on CoW Swap!"
+
+#: apps/cowswap-frontend/src/modules/tokensList/pure/FavoriteTokensList/index.tsx
+msgid "Your favorite saved tokens. Edit this list in the <0>Tokens page</0>."
+msgstr "Your favorite saved tokens. Edit this list in the <0>Tokens page</0>."
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/index.tsx
 msgid "This is the minimum amount that you will receive across your entire TWAP order, assuming all parts of the order execute."

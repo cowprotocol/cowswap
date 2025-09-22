@@ -37,7 +37,7 @@ export async function fetchTwapOrdersFromSafe(
   const response = await fetchSafeTransactionsChunk(chainId, safeAddress, nextUrl)
 
   const results = response?.results || []
-  const parsedResults = parseSafeTranasctionsResult(composableCowContract, results)
+  const parsedResults = parseSafeTransactionsResult(composableCowContract, results)
 
   accumulator.push(parsedResults)
 
@@ -85,7 +85,7 @@ function getSafeHistoryRequestUrl(chainId: SupportedChainId, safeAddress: string
   return `${SAFE_TRANSACTION_SERVICE_URL[chainId]}/api/v1/safes/${safeAddress}/all-transactions/?executed=false&limit=${HISTORY_TX_COUNT_LIMIT}&offset=${offset}&queued=true&trusted=true`
 }
 
-function parseSafeTranasctionsResult(
+function parseSafeTransactionsResult(
   composableCowContract: ComposableCoW,
   results: AllTransactionsListResponse['results'],
 ): TwapOrdersSafeData[] {
