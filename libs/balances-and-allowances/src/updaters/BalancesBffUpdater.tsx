@@ -11,16 +11,19 @@ export function BalancesBffUpdater({
   account,
   chainId,
   pendingOrdersCount,
+  tokenAddresses,
 }: {
   account: string | undefined
   chainId: SupportedChainId
   pendingOrdersCount?: number
+  tokenAddresses: string[]
 }): null {
   usePersistBalancesFromBff({
     account,
     chainId,
     balancesSwrConfig: BALANCES_SWR_CONFIG,
     pendingOrdersCount,
+    tokenAddresses,
   })
 
   return null

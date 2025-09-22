@@ -22,12 +22,13 @@ export interface PersistBalancesFromBffParams {
   chainId: SupportedChainId
   balancesSwrConfig: SWRConfiguration
   pendingOrdersCount?: number
+  tokenAddresses: string[]
 }
 
 const DEBOUNCE_FOR_PENDING_ORDERS_MS = ms`1s`
 
 export function usePersistBalancesFromBff(params: PersistBalancesFromBffParams): void {
-  const { account, chainId, balancesSwrConfig, pendingOrdersCount } = params
+  const { account, chainId, balancesSwrConfig, pendingOrdersCount, tokenAddresses } = params
 
   const { chainId: activeChainId, account: connectedAccount } = useWalletInfo()
   const targetAccount = account ?? connectedAccount
@@ -52,7 +53,7 @@ export function usePersistBalancesFromBff(params: PersistBalancesFromBffParams):
 
   useEffect(() => {
     setBalances((state) => ({ ...state, isLoading: isBalancesLoading, chainId }))
-  }, [setBalances, isBalancesLoading, chainId])
+  }, [setBalances, isBalancesLoading, chainId, targetAccount])
 
   useEffect(() => {
     if (error) {
@@ -63,8 +64,10 @@ export function usePersistBalancesFromBff(params: PersistBalancesFromBffParams):
   useEffect(() => {
     if (!account || !data || error) return
 
-    const balancesState = Object.keys(data).reduce<BalancesState['values']>((acc, address) => {
-      acc[address] = BigNumber.from(data[address])
+    const balancesState = tokenAddresses.reduce<BalancesState['values']>((acc, address) => {
+      address = address.toLowerCase()
+      const balance = data[address] || '0'
+      acc[address] = BigNumber.from(balance)
       return acc
     }, {})
 
@@ -85,7 +88,7 @@ export function usePersistBalancesFromBff(params: PersistBalancesFromBffParams):
         [account.toLowerCase()]: Date.now(),
       },
     }))
-  }, [chainId, account, data, setBalances, setBalancesUpdate, error])
+  }, [chainId, account, data, setBalances, setBalancesUpdate, error, tokenAddresses, isBalancesLoading])
 }
 
 export async function getBffBalances(

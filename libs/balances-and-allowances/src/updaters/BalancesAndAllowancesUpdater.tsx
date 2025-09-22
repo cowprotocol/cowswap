@@ -69,7 +69,12 @@ export function BalancesAndAllowancesUpdater({
   return (
     <>
       {isBffEnabled ? (
-        <BalancesBffUpdater account={account} chainId={chainId} pendingOrdersCount={pendingOrdersCount} />
+        <BalancesBffUpdater
+          account={account}
+          chainId={chainId}
+          pendingOrdersCount={pendingOrdersCount}
+          tokenAddresses={tokenAddresses}
+        />
       ) : (
         <BalancesRpcCallUpdater
           account={account}
