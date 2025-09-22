@@ -17,10 +17,11 @@ import { useNativeTokenBalance } from '../hooks/useNativeTokenBalance'
 import { useSwrConfigWithPauseForNetwork } from '../hooks/useSwrConfigWithPauseForNetwork'
 import { useUpdateTokenBalance } from '../hooks/useUpdateTokenBalance'
 
-const EMPTY_TOKENS: string[] = []
-
 // A small gap between balances and allowances refresh intervals is needed to avoid high load to the node at the same time
-const BALANCES_SWR_CONFIG: SWRConfiguration = { ...BASIC_MULTICALL_SWR_CONFIG, refreshInterval: ms`31s` }
+const RPC_BALANCES_SWR_CONFIG: SWRConfiguration = { ...BASIC_MULTICALL_SWR_CONFIG, refreshInterval: ms`31s` }
+const BFF_BALANCES_SWR_CONFIG = { ...BASIC_MULTICALL_SWR_CONFIG, revalidateIfStale: true, refreshInterval: ms`8s` }
+
+const EMPTY_TOKENS: string[] = []
 
 export interface BalancesAndAllowancesUpdaterProps {
   account: string | undefined
@@ -53,7 +54,12 @@ export function BalancesAndAllowancesUpdater({
     }, [])
   }, [allTokens, chainId])
 
-  const balancesSwrConfig = useSwrConfigWithPauseForNetwork(chainId, account, BALANCES_SWR_CONFIG)
+  const balancesSwrConfig = useSwrConfigWithPauseForNetwork(
+    chainId,
+    account,
+    isBffEnabled ? BFF_BALANCES_SWR_CONFIG : RPC_BALANCES_SWR_CONFIG,
+    isBffEnabled ? BFF_BALANCES_SWR_CONFIG.refreshInterval : undefined,
+  )
 
   // Add native token balance to the store as well
   useEffect(() => {
@@ -74,6 +80,7 @@ export function BalancesAndAllowancesUpdater({
           chainId={chainId}
           pendingOrdersCount={pendingOrdersCount}
           tokenAddresses={tokenAddresses}
+          balancesSwrConfig={balancesSwrConfig}
         />
       ) : (
         <BalancesRpcCallUpdater
