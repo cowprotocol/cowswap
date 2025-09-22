@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/cowprotocol/cowswap/compare/types-v2.0.0...types-v2.0.1) (2025-09-22)
+
+
+### Bug Fixes
+
+* **bridge:** disable bridging for EIP7702EOA accounts ([#6249](https://github.com/cowprotocol/cowswap/issues/6249)) ([9eb219f](https://github.com/cowprotocol/cowswap/commit/9eb219f000fc92cb2f76d0ace2a9aaea4cf7110d))
+
 ## [2.0.0](https://github.com/cowprotocol/cowswap/compare/types-v1.9.0...types-v2.0.0) (2025-09-12)
 
 
