@@ -50,7 +50,7 @@ function getBridgeAmounts({
   inputAmount: CurrencyAmount<Currency> | null
   outputAmount: CurrencyAmount<Currency> | null
 } {
-  const inputAmount = bridgeContext?.sellAmount ?? inputCurrencyAmount ?? null
+  const inputAmount = inputCurrencyAmount ?? bridgeContext?.sellAmount ?? null
   const outputAmount = bridgeContext?.buyAmount ?? outputCurrencyAmount ?? null
   return { inputAmount, outputAmount }
 }
