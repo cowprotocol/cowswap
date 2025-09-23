@@ -21,6 +21,8 @@ import { useUpdateTokenBalance } from '../hooks/useUpdateTokenBalance'
 const RPC_BALANCES_SWR_CONFIG: SWRConfiguration = { ...BASIC_MULTICALL_SWR_CONFIG, refreshInterval: ms`31s` }
 const BFF_BALANCES_SWR_CONFIG = { ...BASIC_MULTICALL_SWR_CONFIG, revalidateIfStale: true, refreshInterval: ms`8s` }
 
+const BFF_CHAIN_UPDATE_DELAY = ms`2s`
+
 const EMPTY_TOKENS: string[] = []
 
 export interface BalancesAndAllowancesUpdaterProps {
@@ -58,7 +60,7 @@ export function BalancesAndAllowancesUpdater({
     chainId,
     account,
     isBffEnabled ? BFF_BALANCES_SWR_CONFIG : RPC_BALANCES_SWR_CONFIG,
-    isBffEnabled ? BFF_BALANCES_SWR_CONFIG.refreshInterval : undefined,
+    isBffEnabled ? BFF_CHAIN_UPDATE_DELAY : undefined,
   )
 
   // Add native token balance to the store as well

@@ -7,12 +7,15 @@ import {
   useIsBffFailed,
 } from '@cowprotocol/balances-and-allowances'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useBalancesContext } from 'entities/balancesContext/useBalancesContext'
 
 import { useSourceChainId } from 'modules/tokensList'
 import { usePendingOrdersCount, usePriorityTokenAddresses } from 'modules/trade'
+
+const UNSUPPORTED_BFF_NETWORKS = [SupportedChainId.LENS]
 
 function shouldApplyBffBalances(account: string | undefined, percentage: number | boolean | undefined): boolean {
   // Early exit for 100%, meaning should be enabled for everyone
@@ -66,7 +69,9 @@ export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
 
   const { bffBalanceEnabledPercentage } = useFeatureFlags()
   const isBffFailed = useIsBffFailed()
-  const isBffEnabled = shouldApplyBffBalances(account, bffBalanceEnabledPercentage) && !isBffFailed
+  const isBffUnsupportedNetwork = UNSUPPORTED_BFF_NETWORKS.includes(sourceChainId)
+  const isBffEnabled =
+    shouldApplyBffBalances(account, bffBalanceEnabledPercentage) && !isBffFailed && !isBffUnsupportedNetwork
   const pendingOrdersCount = usePendingOrdersCount(sourceChainId, balancesAccount)
 
   return (
