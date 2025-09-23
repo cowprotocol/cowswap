@@ -1,6 +1,5 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { formatTokenAmount } from '@cowprotocol/common-utils'
-import type { EnrichedOrder } from '@cowprotocol/cow-sdk'
+import type { EnrichedOrder, TokenInfo } from '@cowprotocol/cow-sdk'
 import {
   CowWidgetEvents,
   SimpleCowEventEmitter,
@@ -11,7 +10,6 @@ import {
   OnExpiredOrderPayload,
   BaseOrderPayload,
 } from '@cowprotocol/events'
-import type { TokenInfo } from '@cowprotocol/types'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { getCowAnalytics } from '../utils'
@@ -24,12 +22,23 @@ export const safeGetString = <T, K extends keyof T>(obj: T | undefined, key: K, 
 
 export type AnalyticsPayload = Record<string, unknown>
 
-export function extractTokenMeta(order: Partial<EnrichedOrder> | undefined): {
+type EnrichedOrderWithTokens = EnrichedOrder & {
+  inputToken?: TokenInfo
+  outputToken?: TokenInfo
+}
+
+export function extractTokenMeta(order: Partial<EnrichedOrderWithTokens> | undefined): {
   inputToken?: TokenInfo
   outputToken?: TokenInfo
 } {
-  const { inputToken, outputToken } = (order as unknown as { inputToken?: TokenInfo; outputToken?: TokenInfo }) || {}
-  return { inputToken, outputToken }
+  if (!order) {
+    return {}
+  }
+
+  return {
+    inputToken: order.inputToken,
+    outputToken: order.outputToken,
+  }
 }
 
 export function buildBaseFields(payload: BaseOrderPayload): AnalyticsPayload {
@@ -225,7 +234,7 @@ function atomsToUnits(
   const amount = toCurrencyAmount(value, token, decimalsOverride)
   if (!amount) return undefined
 
-  const formatted = formatTokenAmount(amount)
+  const formatted = amount.toExact()
   return formatted || undefined
 }
 
