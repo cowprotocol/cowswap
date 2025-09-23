@@ -234,33 +234,37 @@ function toCurrencyAmount(
   token?: TokenInfo,
   decimalsOverride?: number,
 ): CurrencyAmount<TokenWithLogo> | null {
-  if (!isTokenInfo(token)) return null
-
-  const decimals = decimalsOverride ?? token.decimals
-  if (!Number.isInteger(decimals) || decimals < 0) return null
-
   const raw = normalizeValue(value)
-  if (!raw) return null
+  const currency = toTokenCurrency(token, decimalsOverride)
+  if (!raw || !currency) return null
 
   try {
-    const currency = TokenWithLogo.fromToken({
-      ...token,
-      chainId: token.chainId ?? 0,
-      decimals,
-      symbol: token.symbol || '',
-      name: token.name || '',
-    })
     return CurrencyAmount.fromRawAmount(currency, raw)
   } catch {
     return null
   }
 }
 
-function isTokenInfo(token?: TokenInfo): token is TokenInfo & { address: string } {
-  return Boolean(token?.address)
-}
-
 function normalizeValue(value: string | number | bigint | null | undefined): string | null {
   if (value === undefined || value === null) return null
   return typeof value === 'bigint' ? value.toString() : String(value)
+}
+
+function toTokenCurrency(token?: TokenInfo, decimalsOverride?: number): TokenWithLogo | null {
+  if (!token?.address) return null
+
+  const decimals = decimalsOverride ?? token.decimals
+  if (!Number.isInteger(decimals) || decimals < 0) return null
+
+  try {
+    return TokenWithLogo.fromToken({
+      ...token,
+      chainId: token.chainId ?? 0,
+      decimals,
+      symbol: token.symbol || '',
+      name: token.name || '',
+    })
+  } catch {
+    return null
+  }
 }
