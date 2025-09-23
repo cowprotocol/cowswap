@@ -11,7 +11,6 @@ import { Order } from 'legacy/state/orders/actions'
 import { getRemainderAmount } from 'legacy/state/orders/utils'
 
 import { updatePendingOrderPricesAtom } from 'modules/orders/state/pendingOrdersPricesAtom'
-import { ORDERS_TABLE_PAGE_SIZE, OrderTabId } from 'modules/ordersTable/const/tabs'
 
 import { useUpdateIsUnfillableFlag } from './useUpdateIsUnfillableFlag'
 
@@ -39,36 +38,35 @@ async function getOrderPrice(chainId: SupportedChainId, order: Order): Promise<Q
 }
 
 // Only update orders that are visible in the current page
-const getUpdatableOrders = (orders: Order[], pageNumber?: number): Order[] => {
+const getUpdatableOrders = (orders: Order[], pageSize: number, pageNumber?: number): Order[] => {
   const page = pageNumber && pageNumber > 0 ? pageNumber : 1
-  const start = (page - 1) * ORDERS_TABLE_PAGE_SIZE
-  const end = start + ORDERS_TABLE_PAGE_SIZE
+  const start = (page - 1) * pageSize
+  const end = start + pageSize
   return orders.slice(start, end)
 }
 
 export function useUpdatePendingOrders(
   isWindowVisible: boolean,
+  isTabWithPending: boolean,
+  pageSize: number,
   pageNumber?: number,
-  tabId?: OrderTabId,
 ): (orders: Order[]) => void {
   const { chainId, account } = useWalletInfo()
   const updatePendingOrderPrices = useSetAtom(updatePendingOrderPricesAtom)
   const updateIsUnfillableFlag = useUpdateIsUnfillableFlag()
 
-  const isValidTab = tabId === OrderTabId.open || tabId === OrderTabId.all
-
   const shouldUpdate = useCallback(
     (orders: Order[]): boolean => {
-      return Boolean(isWindowVisible && account && chainId && orders.length && pageNumber && isValidTab)
+      return Boolean(isWindowVisible && account && chainId && orders.length && pageNumber && isTabWithPending)
     },
-    [isWindowVisible, account, chainId, pageNumber, isValidTab],
+    [isWindowVisible, account, chainId, pageNumber, isTabWithPending],
   )
 
   return useCallback(
     (orders: Order[]) => {
       if (!shouldUpdate(orders)) return
 
-      const updatableOrders = getUpdatableOrders(orders, pageNumber)
+      const updatableOrders = getUpdatableOrders(orders, pageSize, pageNumber)
 
       updatableOrders.forEach((order) => {
         getOrderPrice(chainId, order)
@@ -96,6 +94,6 @@ export function useUpdatePendingOrders(
           })
       })
     },
-    [chainId, updateIsUnfillableFlag, updatePendingOrderPrices, pageNumber, shouldUpdate],
+    [chainId, updateIsUnfillableFlag, updatePendingOrderPrices, pageNumber, pageSize, shouldUpdate],
   )
 }
