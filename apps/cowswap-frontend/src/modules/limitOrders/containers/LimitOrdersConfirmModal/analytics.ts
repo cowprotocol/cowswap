@@ -1,4 +1,4 @@
-import { formatTokenAmount, getCurrencyAddress } from '@cowprotocol/common-utils'
+import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import type { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -49,8 +49,8 @@ export function buildPlaceLimitOrderEvent(params: LimitOrderEventParams): string
     partialFillsEnabled,
   })
 
-  const sellAmount = formatTokenAmount(inputAmount)
-  const buyAmount = formatTokenAmount(outputAmount)
+  const sellAmount = inputAmount.toExact()
+  const buyAmount = outputAmount.toExact()
 
   return toCowSwapGtmEvent({
     category: CowSwapAnalyticsCategory.LIMIT_ORDER_SETTINGS,
