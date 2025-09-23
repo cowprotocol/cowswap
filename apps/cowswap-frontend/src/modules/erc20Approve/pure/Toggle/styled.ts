@@ -16,7 +16,7 @@ export const OptionWrapper = styled.button<{ isActive?: boolean }>`
   margin: 4px;
   flex: 1;
   line-height: 1;
-  fornt-size: 12px;
+  font-size: 12px;
   cursor: ${({ isActive }) => (isActive ? 'default' : 'pointer')};
   color: ${({ isActive }) => (isActive ? `var(${UI.COLOR_TEXT})` : `var(${UI.COLOR_TEXT_OPACITY_70})`)};
   background: ${({ isActive }) => (isActive ? `var(${UI.COLOR_PAPER})` : 'transparent')};
@@ -32,7 +32,7 @@ export const PartialAmountWrapper = styled.div<{ isActive?: boolean }>`
 `
 
 export const OptionTitle = styled.div`
-  fornt-size: 14px;
+  font-size: 14px;
   font-weight: 600;
   margin: 0 0 5px 0;
   color: inherit;

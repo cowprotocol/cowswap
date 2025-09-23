@@ -1,4 +1,4 @@
-import { ReactNode, useMemo } from 'react'
+import { ReactNode } from 'react'
 
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -21,7 +21,7 @@ export function OrderPartialApprove({ amountToApprove }: OrderPartialApproveProp
   const { isModalOpen, amountSetByUser } = usePendingApproveAmountModalState() || {}
   const updatePendingApproveAmountModalState = useUpdatePendingApproveAmountModalState()
 
-  const amountToApproveFinal = useMemo(() => amountSetByUser ?? amountToApprove, [amountSetByUser, amountToApprove])
+  const amountToApproveFinal = amountSetByUser ?? amountToApprove
 
   if (isModalOpen) {
     return <PendingOrderApproveAmountModal initialAmountToApprove={amountToApproveFinal} />
@@ -35,8 +35,8 @@ export function OrderPartialApprove({ amountToApprove }: OrderPartialApproveProp
       />
       {isPartialApproveSelectedByUser && <ActiveOrdersWithAffectedPermit currency={amountToApprove.currency} />}
       <TradeApproveButton
-        ignorePermit={true}
-        enablePartialApprove={true}
+        ignorePermit
+        enablePartialApprove
         amountToApprove={amountToApproveFinal}
         label={'Approve ' + amountToApprove.currency.symbol}
       />

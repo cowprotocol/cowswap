@@ -55,7 +55,7 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
           currency={amountToApprove.currency}
           state={approvalState}
           onClick={() => handleApprove(MAX_APPROVE_AMOUNT)}
-        ></LegacyApproveButton>
+        />
         {children}
       </>
     )
