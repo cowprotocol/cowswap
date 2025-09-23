@@ -16,6 +16,7 @@ import {
   ConnectionType,
 } from '@cowprotocol/wallet'
 
+import { i18n } from '@lingui/core'
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 
@@ -201,7 +202,7 @@ export function AccountDetails({
                 {activitiesGroupedByDate.map(({ date, activities }) => (
                   <Fragment key={date.getTime()}>
                     {/* TODO: style me! */}
-                    <CreationDateText>{date.toLocaleString(undefined, DATE_FORMAT_OPTION)}</CreationDateText>
+                    <CreationDateText>{date.toLocaleString(i18n.locale, DATE_FORMAT_OPTION)}</CreationDateText>
                     <ActivitiesList activities={activities} />
                   </Fragment>
                 ))}
