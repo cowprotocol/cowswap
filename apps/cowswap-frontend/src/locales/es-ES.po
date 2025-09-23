@@ -2084,8 +2084,8 @@ msgid "Select a pool"
 msgstr "Seleccione un grupo"
 
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/index.tsx
-msgid "Since ${ACCOUNT_PROXY_LABEL} is not an upgradeable smart-contract, it can be versioned and there are"
-msgstr "Dado que ${ACCOUNT_PROXY_LABEL} no es un contrato inteligente, puede ser versionado y hay"
+msgid "Since {ACCOUNT_PROXY_LABEL} is not an upgradeable smart-contract, it can be versioned and there are"
+msgstr "Dado que {ACCOUNT_PROXY_LABEL} no es un contrato inteligente, puede ser versionado y hay"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/PermitHookApp/index.tsx
 msgid "Token not permittable"

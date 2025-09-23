@@ -33,7 +33,7 @@ const Answer1: FC = () => (
     <br />
     <br />
     <Trans>
-      Since ${ACCOUNT_PROXY_LABEL} is not an upgradeable smart-contract, it can be versioned and there are
+      Since {ACCOUNT_PROXY_LABEL} is not an upgradeable smart-contract, it can be versioned and there are
     </Trans>{' '}
     {COW_SHED_VERSIONS.length} <Trans>versions of</Trans> {ACCOUNT_PROXY_LABEL}:
     <ul>
