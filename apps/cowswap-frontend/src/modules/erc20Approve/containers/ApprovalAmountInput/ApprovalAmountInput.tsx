@@ -8,21 +8,20 @@ import { Field } from 'legacy/state/types'
 
 import { useUsdAmount } from 'modules/usdAmount'
 
+import { CurrencyInputPanel } from 'common/pure/CurrencyInputPanel'
+import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
+
 import * as styledEl from './styled'
 
-import { CurrencyInputPanel } from '../../../../common/pure/CurrencyInputPanel'
-import { CurrencyInfo } from '../../../../common/pure/CurrencyInputPanel/types'
 import { useCustomApproveAmountInputState, useUpdateOrResetCustomApproveAmountInputState } from '../../state'
 
-export function ApprovalAmountInput({
-  initialAmount,
-  tokenWithLogo,
-  onReset,
-}: {
+type ApprovalAmountInputProps = {
   tokenWithLogo: TokenWithLogo | null
   initialAmount: CurrencyAmount<Currency> | null | undefined
   onReset: () => void
-}): ReactNode {
+}
+
+export function ApprovalAmountInput({ initialAmount, tokenWithLogo, onReset }: ApprovalAmountInputProps): ReactNode {
   const [updateCustomApproveAmountInput] = useUpdateOrResetCustomApproveAmountInputState()
   const customAmountValueState = useCustomApproveAmountInputState()
 

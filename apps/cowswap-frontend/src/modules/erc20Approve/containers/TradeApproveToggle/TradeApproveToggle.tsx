@@ -1,4 +1,4 @@
-import { ReactNode, useCallback } from 'react'
+import { ReactNode } from 'react'
 
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -14,17 +14,13 @@ export function TradeApproveToggle({ amountToApprove, updateModalState }: TradeA
   const isPartialApproveSelectedByUser = useIsPartialApproveSelectedByUser()
   const setIsPartialApproveSelectedByUser = useSetIsPartialApproveSelectedByUser()
 
-  const openChangeApproveAmount = useCallback((): void => {
-    updateModalState()
-  }, [updateModalState])
-
   return (
     <>
       <Toggle
         isPartialApproveEnabled={isPartialApproveSelectedByUser}
         enablePartialApprove={setIsPartialApproveSelectedByUser}
         amountToApprove={amountToApprove}
-        changeApproveAmount={openChangeApproveAmount}
+        changeApproveAmount={updateModalState}
       />
     </>
   )
