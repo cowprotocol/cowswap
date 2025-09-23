@@ -7,15 +7,27 @@ import { TextDecoder as NodeTextDecoder, TextEncoder as NodeTextEncoder } from '
 ;(global as unknown as { TextDecoder?: typeof NodeTextDecoder; TextEncoder?: typeof NodeTextEncoder }).TextEncoder =
   NodeTextEncoder
 
-const { mapPostedOrder, mapFulfilledOrder, formatUnitsViaCommon } =
+const { mapPostedOrder, mapFulfilledOrder } =
   require('./orderLifecycleAnalytics') as typeof import('./orderLifecycleAnalytics')
 
 const basePostedPayload = {
   owner: '0xowner',
   orderUid: '0xorder',
   chainId: 1,
-  inputToken: { address: '0xinput', symbol: 'TK1', decimals: 18 },
-  outputToken: { address: '0xoutput', symbol: 'TK2', decimals: 6 },
+  inputToken: {
+    address: '0x0000000000000000000000000000000000000001',
+    symbol: 'TK1',
+    decimals: 18,
+    chainId: 1,
+    name: 'Token 1',
+  },
+  outputToken: {
+    address: '0x0000000000000000000000000000000000000002',
+    symbol: 'TK2',
+    decimals: 6,
+    chainId: 1,
+    name: 'Token 2',
+  },
   inputAmount: BigInt('1000000000000000000'),
   outputAmount: BigInt('2500000'),
   orderType: 'swap',
@@ -33,8 +45,8 @@ describe('order lifecycle analytics mappers', () => {
         walletAddress: '0xowner',
         orderId: '0xorder',
         chainId: '1',
-        sellToken: '0xinput',
-        buyToken: '0xoutput',
+        sellToken: '0x0000000000000000000000000000000000000001',
+        buyToken: '0x0000000000000000000000000000000000000002',
         sellAmountUnits: '1',
         buyAmountUnits: '2.5',
         from_currency: 'TK1',
@@ -51,15 +63,27 @@ describe('order lifecycle analytics mappers', () => {
       order: {
         owner: '0xowner',
         uid: '0xorder',
-        sellToken: '0xinput',
-        buyToken: '0xoutput',
+        sellToken: '0x0000000000000000000000000000000000000001',
+        buyToken: '0x0000000000000000000000000000000000000002',
         sellAmount: '1000000000000000000',
         buyAmount: '2500000',
         executedSellAmount: '500000000000000000',
         executedBuyAmount: '1250000',
         executedFeeAmount: '1000000000000000',
-        inputToken: { decimals: 18, symbol: 'TK1' },
-        outputToken: { decimals: 6, symbol: 'TK2' },
+        inputToken: {
+          decimals: 18,
+          symbol: 'TK1',
+          chainId: 1,
+          address: '0x0000000000000000000000000000000000000001',
+          name: 'Token 1',
+        },
+        outputToken: {
+          decimals: 6,
+          symbol: 'TK2',
+          chainId: 1,
+          address: '0x0000000000000000000000000000000000000002',
+          name: 'Token 2',
+        },
       },
       bridgeOrder: { id: 'bridge' },
     } as unknown as OnFulfilledOrderPayload
@@ -78,9 +102,21 @@ describe('order lifecycle analytics mappers', () => {
     )
   })
 
-  it('formatUnitsViaCommon falls back gracefully', () => {
-    expect(formatUnitsViaCommon('1000', 3)).toBe('1')
-    expect(formatUnitsViaCommon(undefined, 3)).toBe('')
-    expect(formatUnitsViaCommon('1000', undefined)).toBe('1000')
+  it('formats atoms across different decimals', () => {
+    const samples: Array<{ value: bigint; decimals: number; expected: string }> = [
+      { value: BigInt('1000000000000000000'), decimals: 18, expected: '1' },
+      { value: BigInt('2500000'), decimals: 6, expected: '2.5' },
+      { value: BigInt('1'), decimals: 18, expected: '0.000000000000000001' },
+    ]
+
+    samples.forEach(({ value, decimals, expected }) => {
+      const formatted = (mapPostedOrder({
+        ...basePostedPayload,
+        inputAmount: value,
+        inputToken: { ...basePostedPayload.inputToken, decimals },
+      }) as { sellAmountUnits?: string }).sellAmountUnits
+
+      expect(formatted).toBe(expected)
+    })
   })
 })
