@@ -8,12 +8,12 @@ import { AlertCircle } from 'react-feather'
 
 import { useOnlyPendingOrders } from 'legacy/state/orders/hooks'
 
+import { AffectedPermitOrdersTable } from 'modules/ordersTable'
+
 import { ToggleArrow } from 'common/pure/ToggleArrow'
 import { doesOrderHavePermit } from 'common/utils/doesOrderHavePermit'
 
 import * as styledEl from './styled'
-
-import { AffectedPermitOrdersTable } from '../AffectedPermitOrdersTable'
 
 export function ActiveOrdersWithAffectedPermit({ currency }: { currency: Currency }): ReactNode {
   const { chainId, account } = useWalletInfo()

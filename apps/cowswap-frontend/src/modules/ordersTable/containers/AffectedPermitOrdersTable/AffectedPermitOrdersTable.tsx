@@ -2,14 +2,13 @@ import { ReactNode } from 'react'
 
 import { Order } from 'legacy/state/orders/actions'
 
-import { usePendingOrdersPrices } from 'modules/orders'
-import { TabOrderTypes } from 'modules/ordersTable'
-import { OrdersReceiptModal } from 'modules/ordersTable/containers/OrdersReceiptModal'
-import { OrdersTableStateUpdater } from 'modules/ordersTable/updaters/OrdersTableStateUpdater'
-
 import * as styledEl from './styled'
 
+import { usePendingOrdersPrices } from '../../../orders'
+import { TabOrderTypes } from '../../index'
+import { OrdersTableStateUpdater } from '../../updaters/OrdersTableStateUpdater'
 import { AffectedPermitOrderWithActions } from '../AffectedPermitOrderWithActions'
+import { OrdersReceiptModal } from '../OrdersReceiptModal'
 
 type AffectedPermitOrdersTableProps = {
   orders: Order[]
