@@ -72,7 +72,7 @@ export const MENU_ITEMS: I18nIMenuItem[] = [
   },
   {
     route: Routes.LIMIT_ORDER,
-    label: msg`Limits`,
+    label: msg`Limit`,
     fullLabel: msg`Limit order`,
     description: msg`Set your own price`,
   },

@@ -645,7 +645,7 @@ msgid "Loading operation"
 msgstr "Операция загрузки"
 
 #: apps/cowswap-frontend/src/common/constants/routes.ts
-msgid "Limits"
+msgid "Limit"
 msgstr "Лимиты"
 
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx

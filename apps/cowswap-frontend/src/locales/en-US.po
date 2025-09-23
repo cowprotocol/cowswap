@@ -652,8 +652,8 @@ msgid "Loading operation"
 msgstr "Loading operation"
 
 #: apps/cowswap-frontend/src/common/constants/routes.ts
-msgid "Limits"
-msgstr "Limits"
+msgid "Limit"
+msgstr "Limit"
 
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
 msgid "CoW Runner"
