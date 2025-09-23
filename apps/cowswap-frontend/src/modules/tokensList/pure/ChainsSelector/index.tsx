@@ -12,6 +12,14 @@ import * as styledEl from './styled'
 // Number of skeleton shimmers to show during loading state
 const LOADING_ITEMS_COUNT = 9
 
+function getChainLogoSrc(chain: ChainInfo, isDarkMode: boolean): string {
+  return isDarkMode ? chain.logo.dark : chain.logo.light
+}
+
+function ChainLogo({ chain, isDarkMode, alt }: { chain: ChainInfo; isDarkMode: boolean; alt: string }): ReactNode {
+  return <img src={getChainLogoSrc(chain, isDarkMode)} alt={alt} loading="lazy" />
+}
+
 const LoadingShimmerElements = (
   <styledEl.Wrapper>
     {Array.from({ length: LOADING_ITEMS_COUNT }, (_, index) => (
@@ -59,7 +67,7 @@ export function ChainsSelector({
           placement="bottom"
         >
           <styledEl.ChainItem active$={defaultChainId === chain.id} onClick={() => onSelectChain(chain)} iconOnly>
-            <img src={theme.darkMode ? chain.logo.dark : chain.logo.light} alt={chain.label} loading="lazy" />
+            <ChainLogo chain={chain} isDarkMode={theme.darkMode} alt={chain.label} />
           </styledEl.ChainItem>
         </HoverTooltip>
       ))}
@@ -69,11 +77,7 @@ export function ChainsSelector({
             <>
               <MenuButton as={styledEl.ChainItem} active$={!!selectedMenuChain}>
                 {selectedMenuChain ? (
-                  <img
-                    src={theme.darkMode ? selectedMenuChain.logo.dark : selectedMenuChain.logo.light}
-                    alt={selectedMenuChain.label}
-                    loading="lazy"
-                  />
+                  <ChainLogo chain={selectedMenuChain} isDarkMode={theme.darkMode} alt={selectedMenuChain.label} />
                 ) : isOpen ? (
                   <span>Less</span>
                 ) : (
@@ -92,7 +96,7 @@ export function ChainsSelector({
                     tabIndex={0}
                     borderless
                   >
-                    <img src={theme.darkMode ? chain.logo.dark : chain.logo.light} alt={chain.label} loading="lazy" />
+                    <ChainLogo chain={chain} isDarkMode={theme.darkMode} alt={chain.label} />
                     <span>{chain.label}</span>
                     {chain.id === defaultChainId && <Check size={16} />}
                   </MenuItem>
