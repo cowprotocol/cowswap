@@ -55,16 +55,11 @@ export function useUpdatePendingOrders(
   const updatePendingOrderPrices = useSetAtom(updatePendingOrderPricesAtom)
   const updateIsUnfillableFlag = useUpdateIsUnfillableFlag()
 
-  const shouldUpdate = useCallback(
-    (orders: Order[]): boolean => {
-      return Boolean(isWindowVisible && account && chainId && orders.length && pageNumber && isTabWithPending)
-    },
-    [isWindowVisible, account, chainId, pageNumber, isTabWithPending],
-  )
+  const isReadyToUpdate = Boolean(isWindowVisible && account && chainId && pageNumber && isTabWithPending)
 
   return useCallback(
     (orders: Order[]) => {
-      if (!shouldUpdate(orders)) return
+      if (!isReadyToUpdate || !orders.length) return
 
       const updatableOrders = getUpdatableOrders(orders, pageSize, pageNumber)
 
@@ -94,6 +89,6 @@ export function useUpdatePendingOrders(
           })
       })
     },
-    [chainId, updateIsUnfillableFlag, updatePendingOrderPrices, pageNumber, pageSize, shouldUpdate],
+    [chainId, updateIsUnfillableFlag, updatePendingOrderPrices, pageNumber, pageSize, isReadyToUpdate],
   )
 }
