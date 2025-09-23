@@ -11,6 +11,7 @@ import { UiOrderType } from '@cowprotocol/types'
 import { BannerOrientation, ExternalLink, Icon, IconType, TokenAmount, UI } from '@cowprotocol/ui'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
+import { i18n } from '@lingui/core'
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import { useBridgeOrderData, BRIDGING_FINAL_STATUSES } from 'entities/bridgeOrders'
@@ -359,7 +360,7 @@ export function ActivityDetails(props: {
       to: <TokenAmount amount={outputAmount} tokenSymbol={outputAmount.currency} />,
       validTo: validTo ? new Date((validTo as number) * 1000).toLocaleString(undefined, DateFormatOptions) : undefined,
       fulfillmentTime: fulfillmentTime
-        ? new Date(fulfillmentTime).toLocaleString(undefined, DateFormatOptions)
+        ? new Date(fulfillmentTime).toLocaleString(i18n.locale, DateFormatOptions)
         : undefined,
       kind: orderKind === 'sell' ? t`sell` : orderKind === 'buy' ? t`buy` : orderKind,
       inputAmount,
@@ -426,7 +427,6 @@ export function ActivityDetails(props: {
           onDismiss={() => hideCustomRecipientWarning(id)}
         />
       )}
-
       <Summary>
         <span>
           {creationTime && <CreationTimeText>{creationTime}</CreationTimeText>}
