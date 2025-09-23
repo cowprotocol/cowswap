@@ -9,7 +9,7 @@ export type ExecutionPriceLike = { toSignificant: (n: number) => string } | null
 export interface LimitOrderEventParams {
   inputAmount: CurrencyAmount<Currency>
   outputAmount: CurrencyAmount<Currency>
-  side: 'sell' | 'buy'
+  kind: OrderKind
   executionPrice?: ExecutionPriceLike
   partialFillsEnabled: boolean
   walletAddress?: string
@@ -19,29 +19,31 @@ export interface LimitOrderEventParams {
 export function buildLimitOrderEventLabel(params: {
   inputToken?: Currency
   outputToken?: Currency
-  side: 'sell' | 'buy'
+  kind: OrderKind
   executionPrice?: ExecutionPriceLike
   inputAmount?: CurrencyAmount<Currency> | null
   partialFillsEnabled: boolean
 }): string {
-  const { inputToken, outputToken, side, executionPrice, inputAmount, partialFillsEnabled } = params
+  const { inputToken, outputToken, kind, executionPrice, inputAmount, partialFillsEnabled } = params
   const inputSymbol = inputToken?.symbol || ''
   const outputSymbol = outputToken?.symbol || ''
   const priceStr = executionPrice ? executionPrice.toSignificant(6) : ''
   const inputAmountHuman = inputAmount ? inputAmount.toSignificant(6) : ''
+  const orderSide = kind.toLowerCase()
 
-  return `TokenIn: ${inputSymbol}, TokenOut: ${outputSymbol}, Side: ${side}, Price: ${priceStr}, Amount: ${inputAmountHuman}, PartialFills: ${partialFillsEnabled}`
+  return `TokenIn: ${inputSymbol}, TokenOut: ${outputSymbol}, Side: ${orderSide}, Price: ${priceStr}, Amount: ${inputAmountHuman}, PartialFills: ${partialFillsEnabled}`
 }
 
 export function buildPlaceLimitOrderEvent(params: LimitOrderEventParams): string {
-  const { inputAmount, outputAmount, side, executionPrice, partialFillsEnabled, walletAddress, chainId } = params
+  const { inputAmount, outputAmount, kind, executionPrice, partialFillsEnabled, walletAddress, chainId } = params
   const inputToken = inputAmount.currency
   const outputToken = outputAmount.currency
+  const orderSide = kind.toLowerCase()
 
   const label = buildLimitOrderEventLabel({
     inputToken,
     outputToken,
-    side,
+    kind,
     executionPrice,
     inputAmount,
     partialFillsEnabled,
@@ -66,11 +68,8 @@ export function buildPlaceLimitOrderEvent(params: LimitOrderEventParams): string
     buyTokenChainId: outputToken.chainId ?? chainId,
     buyAmountExpected: buyAmount,
     buyAmountHuman: outputAmount.toSignificant(6),
-    side,
+    side: orderSide,
+    orderKind: kind,
     ...(executionPrice && { executionPrice: executionPrice.toSignificant(6) }),
   })
-}
-
-export function resolveLimitOrderSide(kind: OrderKind): 'sell' | 'buy' {
-  return kind === OrderKind.SELL ? 'sell' : 'buy'
 }
