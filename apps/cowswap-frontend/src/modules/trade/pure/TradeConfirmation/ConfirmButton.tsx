@@ -30,7 +30,6 @@ export function ConfirmButton(props: ConfirmButtonProps): ReactNode {
   const isUpToMedium = useMediaQuery(upToMedium)
 
   const handleConfirmClick = async (): Promise<void> => {
-    // Dev-only: mirror GTM click payload via centralized logger
     if (dataClickEvent) {
       try {
         log.debug('[GTM click]', JSON.parse(dataClickEvent) as unknown)
