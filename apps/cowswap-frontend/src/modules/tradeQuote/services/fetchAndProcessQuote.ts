@@ -1,11 +1,13 @@
 import { onlyResolvesLast } from '@cowprotocol/common-utils'
-import { PriceQuality, SupportedChainId, SwapAdvancedSettings } from '@cowprotocol/cow-sdk'
+import { PriceQuality, SwapAdvancedSettings } from '@cowprotocol/cow-sdk'
 import {
   BridgeProviderQuoteError,
   CrossChainQuoteAndPost,
-  isBridgeQuoteAndPost,
+  MultiQuoteRequest,
+  MultiQuoteResult,
   QuoteBridgeRequest,
 } from '@cowprotocol/sdk-bridging'
+import { QuoteAndPost } from '@cowprotocol/sdk-trading'
 
 import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 
@@ -23,15 +25,14 @@ const getFastQuote = onlyResolvesLast<CrossChainQuoteAndPost>(getQuote)
 const getOptimalQuote = onlyResolvesLast<CrossChainQuoteAndPost>(getQuote)
 
 export async function fetchAndProcessQuote(
-  chainId: SupportedChainId,
   fetchParams: TradeQuoteFetchParams,
   quoteParams: QuoteBridgeRequest,
   appData: AppDataInfo['doc'] | undefined,
   tradeQuoteManager: TradeQuoteManager,
 ): Promise<void> {
   const { hasParamsChanged, priceQuality } = fetchParams
-  const isOptimalQuote = priceQuality === PriceQuality.OPTIMAL
 
+  const chainId = quoteParams.sellTokenChainId
   const isBridge = quoteParams.sellTokenChainId !== quoteParams.buyTokenChainId
 
   const advancedSettings: SwapAdvancedSettings = {
@@ -42,7 +43,35 @@ export async function fetchAndProcessQuote(
     quoteSigner: isBridge ? getBridgeQuoteSigner(chainId) : undefined,
   }
 
+  const processQuoteError = (error: Error): void => {
+    const parsedError = parseError(error)
+
+    console.error('[fetchAndProcessQuote]:: fetchQuote error', parsedError)
+
+    if (parsedError instanceof QuoteApiError) {
+      tradeQuoteManager.onError(parsedError, chainId, quoteParams, fetchParams)
+    }
+  }
+
   tradeQuoteManager.setLoading(hasParamsChanged)
+
+  if (isBridge) {
+    await fetchBridgingQuote(fetchParams, quoteParams, advancedSettings, tradeQuoteManager, processQuoteError)
+  } else {
+    await fetchSwapQuote(fetchParams, quoteParams, advancedSettings, tradeQuoteManager, processQuoteError)
+  }
+}
+
+async function fetchSwapQuote(
+  fetchParams: TradeQuoteFetchParams,
+  quoteParams: QuoteBridgeRequest,
+  advancedSettings: SwapAdvancedSettings,
+  tradeQuoteManager: TradeQuoteManager,
+  processQuoteError: (error: Error) => void,
+): Promise<void> {
+  const { priceQuality } = fetchParams
+  const isOptimalQuote = priceQuality === PriceQuality.OPTIMAL
+
   const request = isOptimalQuote
     ? getOptimalQuote(quoteParams, advancedSettings)
     : getFastQuote(quoteParams, advancedSettings)
@@ -54,26 +83,52 @@ export async function fetchAndProcessQuote(
       return
     }
 
-    const quoteAndPost = isBridgeQuoteAndPost(data)
-      ? { quoteResults: data.swap, postSwapOrderFromQuote: data.postSwapOrderFromQuote }
-      : { quoteResults: data.quoteResults, postSwapOrderFromQuote: data.postSwapOrderFromQuote }
+    const quoteAndPost = data as QuoteAndPost
 
-    const bridgeQuote = isBridgeQuoteAndPost(data) ? data.bridge : null
-
-    tradeQuoteManager.onResponse(quoteAndPost, bridgeQuote, fetchParams)
+    tradeQuoteManager.onResponse(quoteAndPost, null, fetchParams)
   } catch (error) {
+    processQuoteError(error)
+  }
+}
+
+async function fetchBridgingQuote(
+  fetchParams: TradeQuoteFetchParams,
+  quoteParams: QuoteBridgeRequest,
+  advancedSettings: SwapAdvancedSettings,
+  tradeQuoteManager: TradeQuoteManager,
+  processQuoteError: (error: Error) => void,
+): Promise<void> {
+  const multiQuoteRequest: MultiQuoteRequest = {
+    quoteBridgeRequest: quoteParams,
+    advancedSettings,
+    options: {
+      onQuoteResult(result: MultiQuoteResult) {
+        if (result.quote) {
+          const { swap, bridge, postSwapOrderFromQuote } = result.quote
+          const quoteAndPost = { quoteResults: swap, postSwapOrderFromQuote: postSwapOrderFromQuote }
+
+          tradeQuoteManager.onResponse(quoteAndPost, bridge, fetchParams)
+        }
+      },
+    },
+  }
+
+  try {
+    const result = await bridgingSdk.getBestQuote(multiQuoteRequest)
+    const error = result?.error
+
     if (error instanceof BridgeProviderQuoteError) {
-      tradeQuoteManager.onError(error, chainId, quoteParams, fetchParams)
+      tradeQuoteManager.onError(error, quoteParams.sellTokenChainId, quoteParams, fetchParams)
       return
     }
 
-    const parsedError = parseError(error)
-
-    console.error('[fetchAndProcessQuote]:: fetchQuote error', parsedError)
-
-    if (parsedError instanceof QuoteApiError) {
-      tradeQuoteManager.onError(parsedError, chainId, quoteParams, fetchParams)
+    if (error) {
+      processQuoteError(error)
     }
+    // bridgingSdk.getBestQuote() is not supposed to throw any error
+    // we only expect error to be returned as promise result
+  } catch (error) {
+    console.error('[fetchAndProcessQuote]:: unexpected bridge error', error)
   }
 }
 

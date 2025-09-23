@@ -1,6 +1,6 @@
 import { bungeeAffiliateCode } from '@cowprotocol/common-const'
 import { isBarn, isDev, isProd, isStaging } from '@cowprotocol/common-utils'
-import { BridgingSdk, BungeeBridgeProvider } from '@cowprotocol/sdk-bridging'
+import { AcrossBridgeProvider, BridgingSdk, BungeeBridgeProvider } from '@cowprotocol/sdk-bridging'
 
 import { orderBookApi } from 'cowSdk'
 
@@ -17,8 +17,10 @@ export const bungeeBridgeProvider = new BungeeBridgeProvider({
   },
 })
 
+const acrossBridgeProvider = new AcrossBridgeProvider()
+
 export const bridgingSdk = new BridgingSdk({
-  providers: [bungeeBridgeProvider],
+  providers: [bungeeBridgeProvider, acrossBridgeProvider],
   enableLogging: false,
   tradingSdk,
   orderBookApi,
