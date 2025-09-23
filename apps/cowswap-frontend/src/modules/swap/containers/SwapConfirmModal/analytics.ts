@@ -1,4 +1,4 @@
-import { formatTokenAmount, getCurrencyAddress } from '@cowprotocol/common-utils'
+import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import type { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
@@ -54,7 +54,7 @@ export function buildSwapConfirmBaseEvent(params: SwapConfirmBaseEventParams): R
     outputSymbol,
   } = params
 
-  const sellAmount = formatTokenAmount(inputAmount)
+  const sellAmount = inputAmount.toExact()
 
   return {
     category: isBridge ? CowSwapAnalyticsCategory.Bridge : CowSwapAnalyticsCategory.TRADE,
@@ -83,7 +83,7 @@ export function buildSwapConfirmExtraFields(params: SwapConfirmExtraFieldsParams
   const { outputCurrency, outputAmount, toChainId } = params
   if (!outputCurrency || !outputAmount) return {}
 
-  const buyAmountExpected = formatTokenAmount(outputAmount)
+  const buyAmountExpected = outputAmount.toExact()
   const extra: Record<string, unknown> = {
     buyToken: getCurrencyAddress(outputCurrency),
     buyTokenSymbol: outputCurrency.symbol || '',
