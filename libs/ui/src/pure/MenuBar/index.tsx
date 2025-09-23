@@ -1,5 +1,6 @@
 import React, {
   ComponentType,
+  FC,
   forwardRef,
   isValidElement,
   PropsWithChildren,
@@ -21,7 +22,7 @@ import { addBodyClass, isLinguiInternationalizationEnabled, removeBodyClass } fr
 
 import { i18n } from '@lingui/core'
 import { t } from '@lingui/core/macro'
-import { flag } from 'country-emoji'
+import Flag from 'react-country-flag'
 import SVG from 'react-inlinesvg'
 
 import {
@@ -105,7 +106,15 @@ const getLanguageName = (locale: string): string => {
   return languageName ? languageName : t`Language ${locale} not found`
 }
 
-const getFlag = (locale: string): string => flag((locale.split('-')[1] as string) || (locale as string)) || ''
+const CountryFlag: FC<{ locale: string }> = ({ locale }) => (
+  <Flag
+    style={{
+      width: '20px',
+    }}
+    svg
+    countryCode={locale.split('-')[1] || locale}
+  />
+)
 
 type LinkComponentType = ComponentType<PropsWithChildren<{ href: string }>>
 
@@ -680,9 +689,10 @@ const LanguagesDropdownItems: React.FC<LanguagesDropdownItemsProps> = (props) =>
             closeDropdown()
           }}
         >
-          <div
-            style={{ fontWeight: `${label === i18n.locale ? 700 : 400}` }}
-          >{`${getFlag(label as string)} ${getLanguageName(label as string)}`}</div>
+          <div style={{ fontWeight: `${label === i18n.locale ? 700 : 400}` }}>
+            <CountryFlag locale={label as string} />
+            {getLanguageName(label as string)}
+          </div>
         </StyledDropdownContentItem>
       ))}
     </DropdownContentLanguages>
@@ -700,7 +710,8 @@ const LanguagesDropdownItems: React.FC<LanguagesDropdownItemsProps> = (props) =>
       <div>
         <DropdownContentItemText>
           <DropdownContentItemTitle>
-            {label} {getFlag(i18n.locale)}
+            {label}
+            <CountryFlag locale={i18n.locale} />
           </DropdownContentItemTitle>
         </DropdownContentItemText>
         <SVG src={IMG_ICON_CARRET_DOWN} />
