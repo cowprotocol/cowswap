@@ -351,6 +351,8 @@ export function ActivityDetails(props: {
       timeStyle: 'short',
     }
 
+    const orderKind = kind.toString()
+
     orderSummary = {
       ...DEFAULT_ORDER_SUMMARY,
       from: <TokenAmount amount={inputAmount.add(feeAmount)} tokenSymbol={inputAmount.currency} />,
@@ -359,7 +361,7 @@ export function ActivityDetails(props: {
       fulfillmentTime: fulfillmentTime
         ? new Date(fulfillmentTime).toLocaleString(undefined, DateFormatOptions)
         : undefined,
-      kind: kind.toString(),
+      kind: orderKind === 'sell' ? t`sell` : orderKind === 'buy' ? t`buy` : orderKind,
       inputAmount,
     }
   } else {
