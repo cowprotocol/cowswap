@@ -105,7 +105,6 @@ async function fetchBridgingQuote(
     advancedSettings,
     options: {
       onQuoteResult(result: MultiQuoteResult) {
-        console.log('AAAAAA', result)
         if (result.quote) {
           const { swap, bridge, postSwapOrderFromQuote } = result.quote
           const quoteAndPost = { quoteResults: swap, postSwapOrderFromQuote: postSwapOrderFromQuote }
