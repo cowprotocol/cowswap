@@ -1,10 +1,12 @@
 import type { ChainInfo } from '@cowprotocol/cow-sdk'
 
+import { TradeType } from 'modules/trade/types/TradeType'
+
 import { makeBuildClickEvent } from './index'
 
 describe('ChainsSelector analytics', () => {
   it('produces network_selected event with contextual label', () => {
-    const buildEvent = makeBuildClickEvent(1, 'sell', 'swap', true, 5)
+    const buildEvent = makeBuildClickEvent(1, 'sell', TradeType.SWAP, true, 5)
     const event = buildEvent({
       id: 100,
       label: 'Gnosis',
@@ -22,16 +24,16 @@ describe('ChainsSelector analytics', () => {
     expect(parsed.event_label).toContain('Chain: 100')
     expect(parsed.event_label).toContain('PreviousChain: 1')
     expect(parsed.event_label).toContain('Context: sell')
-    expect(parsed.event_label).toContain('Mode: swap')
+    expect(parsed.event_label).toContain('Mode: SWAP')
   })
 
   it('marks non-swap contexts as unknown mode', () => {
-    const buildEvent = makeBuildClickEvent(undefined, 'unknown', 'limit', false, 2)
+    const buildEvent = makeBuildClickEvent(undefined, 'unknown', TradeType.LIMIT_ORDER, false, 2)
     const parsed = JSON.parse(
       buildEvent({ id: 1, label: 'Ethereum', logo: { dark: '', light: '' } } as ChainInfo),
     ) as Record<string, unknown>
 
     expect(parsed.event_label).toContain('PreviousChain: none')
-    expect(parsed.event_label).toContain('Mode: limit')
+    expect(parsed.event_label).toContain('Mode: LIMIT_ORDER')
   })
 })
