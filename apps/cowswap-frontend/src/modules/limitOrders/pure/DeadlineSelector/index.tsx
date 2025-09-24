@@ -3,6 +3,7 @@ import { ChangeEventHandler, useCallback, useEffect, useMemo, useRef, useState }
 import { useExtractText } from '@cowprotocol/common-utils'
 import { ButtonPrimary, ButtonSecondary } from '@cowprotocol/ui'
 
+import { i18n } from '@lingui/core'
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import { Menu } from '@reach/menu-button'
@@ -60,8 +61,8 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
     try {
       const newDeadline = new Date(value).getTime()
       const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
-      const minDateStr = minDate.toLocaleString()
-      const maxDateStr = maxDate.toLocaleString()
+      const minDateStr = minDate.toLocaleString(i18n.locale)
+      const maxDateStr = maxDate.toLocaleString(i18n.locale)
 
       if (newDeadline < minDate.getTime()) {
         setError(t`Must be after ${minDateStr} ${timeZone}`)
@@ -82,7 +83,7 @@ export function DeadlineSelector(props: DeadlineSelectorProps) {
     if (!customDeadline) {
       return ''
     }
-    return new Date(customDeadline * 1000).toLocaleString(undefined, CUSTOM_DATE_OPTIONS)
+    return new Date(customDeadline * 1000).toLocaleString(i18n.locale, CUSTOM_DATE_OPTIONS)
   }, [customDeadline])
 
   const setDeadline = useCallback(

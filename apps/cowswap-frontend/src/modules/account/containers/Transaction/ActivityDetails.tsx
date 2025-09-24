@@ -358,7 +358,9 @@ export function ActivityDetails(props: {
       ...DEFAULT_ORDER_SUMMARY,
       from: <TokenAmount amount={inputAmount.add(feeAmount)} tokenSymbol={inputAmount.currency} />,
       to: <TokenAmount amount={outputAmount} tokenSymbol={outputAmount.currency} />,
-      validTo: validTo ? new Date((validTo as number) * 1000).toLocaleString(undefined, DateFormatOptions) : undefined,
+      validTo: validTo
+        ? new Date((validTo as number) * 1000).toLocaleString(i18n.locale, DateFormatOptions)
+        : undefined,
       fulfillmentTime: fulfillmentTime
         ? new Date(fulfillmentTime).toLocaleString(i18n.locale, DateFormatOptions)
         : undefined,

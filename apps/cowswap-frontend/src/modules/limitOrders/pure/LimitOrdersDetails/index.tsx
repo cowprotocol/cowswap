@@ -6,6 +6,7 @@ import { formatInputAmount } from '@cowprotocol/common-utils'
 import { InfoTooltip, HelpTooltip, RowFixed } from '@cowprotocol/ui'
 import { Currency, Price } from '@uniswap/sdk-core'
 
+import { i18n } from '@lingui/core'
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
@@ -128,7 +129,7 @@ export function LimitOrdersDetails(props: LimitOrdersDetailsProps): ReactNode {
           />
         </RowFixed>
 
-        <span>{expiryDate.toLocaleString(undefined, DEFAULT_DATE_FORMAT)}</span>
+        <span>{expiryDate.toLocaleString(i18n.locale, DEFAULT_DATE_FORMAT)}</span>
       </styledEl.DetailsRow>
       <OrderType isPartiallyFillable={partiallyFillable} partiallyFillableOverride={partiallyFillableOverride} />
       <RecipientRow
