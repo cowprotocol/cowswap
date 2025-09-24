@@ -45,13 +45,9 @@ export function useLabelsTooltips(): LabelTooltipItems {
             The "Total duration" is the duration it takes to execute all parts of your TWAP order.
             <br />
             <br />
-            For instance, your order consists of
-            <b>{parts} parts</b>
-            placed every
-            <b>{partDurationDisplay}</b>, the total time to complete the order is
-            <b>{totalDurationDisplay}</b>. Each limit order remains open for
-            <b>{partDurationDisplay}</b>
-            until the next part becomes active.
+            For instance, your order consists of <b>{parts} parts</b> placed every <b>{partDurationDisplay}</b>, the
+            total time to complete the order is <b>{totalDurationDisplay}</b>. Each limit order remains open for{' '}
+            <b>{partDurationDisplay}</b> until the next part becomes active.
           </Trans>
         )
       },
