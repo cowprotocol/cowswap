@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.54.3](https://github.com/cowprotocol/cowswap/compare/explorer-v2.54.2...explorer-v2.54.3) (2025-09-22)
+
+
+### Bug Fixes
+
+* **explorer:** handle type for order class data ([#6295](https://github.com/cowprotocol/cowswap/issues/6295)) ([60fe5cd](https://github.com/cowprotocol/cowswap/commit/60fe5cd750d065a5210ece2c0101bc1ca7da462b))
+
 ## [2.54.2](https://github.com/cowprotocol/cowswap/compare/explorer-v2.54.1...explorer-v2.54.2) (2025-09-16)
 
 
