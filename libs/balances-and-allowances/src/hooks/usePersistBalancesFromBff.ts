@@ -44,7 +44,7 @@ export function usePersistBalancesFromBff(params: PersistBalancesFromBffParams):
   } = useSWR(
     // debouncedPendingOrdersCount is added to the key to refetch balances when it changes (new order created or order filled)
     targetAccount ? [targetAccount, targetChainId, debouncedPendingOrdersCount, 'bff-balances'] : null,
-    ([walletAddress, chainId, _]) => getBffBalances(walletAddress, chainId),
+    ([walletAddress, chainId]) => getBffBalances(walletAddress, chainId),
     balancesSwrConfig,
   )
 

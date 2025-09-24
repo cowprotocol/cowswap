@@ -90,7 +90,7 @@ export function BalancesAndAllowancesUpdater({
           chainId={chainId}
           tokenAddresses={tokenAddresses}
           balancesSwrConfig={balancesSwrConfig}
-          setLoadingState={true}
+          setLoadingState
         />
       )}
       <BalancesResetUpdater chainId={chainId} account={account} />
