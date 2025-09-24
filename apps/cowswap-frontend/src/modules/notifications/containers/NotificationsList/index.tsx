@@ -1,6 +1,7 @@
 import { useSetAtom } from 'jotai'
 import React, { ReactNode, useEffect, useMemo } from 'react'
 
+import { i18n } from '@lingui/core'
 import { Trans } from '@lingui/react/macro'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
@@ -40,7 +41,7 @@ export function NotificationsList({ children }: { children: ReactNode }) {
       <ListWrapper>
         {groups?.map((group) => (
           <>
-            <h4>{group.date.toLocaleString(undefined, DATE_FORMAT_OPTION)}</h4>
+            <h4>{group.date.toLocaleString(i18n.locale, DATE_FORMAT_OPTION)}</h4>
             <NotificationsListWrapper key={group.date.getTime()}>
               {group.notifications.map(({ id, thumbnail, title, description, url }) => {
                 const target = url
