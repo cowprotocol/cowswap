@@ -693,6 +693,7 @@ msgstr "Tokens"
 
 #: apps/cowswap-frontend/src/legacy/components/Copy/CopyMod.tsx
 #: apps/cowswap-frontend/src/modules/account/containers/CopyHelper/index.tsx
+#: libs/ui/src/pure/ContextMenu/ContextMenuCopyButton.tsx
 msgid "Copied"
 msgstr "Copied"
 
@@ -1283,6 +1284,10 @@ msgstr "Approval amount insufficient!"
 #: apps/cowswap-frontend/src/modules/bridge/constants.ts
 msgid "Bridging feature is exclusively operated by the indicated third party. Please review their terms."
 msgstr "Bridging feature is exclusively operated by the indicated third party. Please review their terms."
+
+#: libs/ui/src/pure/ContextMenu/ContextMenuCopyButton.tsx
+msgid "Copy address"
+msgstr "Copy address"
 
 #: apps/cowswap-frontend/src/modules/trade/containers/TradeBasicConfirmDetails/LimitPriceRow.tsx
 msgid "The limit price"
