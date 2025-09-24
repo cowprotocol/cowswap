@@ -8,7 +8,7 @@ import { tradingSdk } from './tradingSdk'
 
 const bungeeApiBase = getBungeeApiBase()
 
-export const bungeeBridgeProvider = new BungeeBridgeProvider({
+const bungeeBridgeProvider = new BungeeBridgeProvider({
   apiOptions: {
     includeBridges: ['across', 'cctp', 'gnosis-native-bridge'],
     apiBaseUrl: bungeeApiBase ? `${bungeeApiBase}/api/v1/bungee` : undefined,
@@ -19,8 +19,10 @@ export const bungeeBridgeProvider = new BungeeBridgeProvider({
 
 const acrossBridgeProvider = new AcrossBridgeProvider()
 
+export const bridgeProviders = [bungeeBridgeProvider, acrossBridgeProvider]
+
 export const bridgingSdk = new BridgingSdk({
-  providers: [bungeeBridgeProvider, acrossBridgeProvider],
+  providers: bridgeProviders,
   enableLogging: false,
   tradingSdk,
   orderBookApi,
