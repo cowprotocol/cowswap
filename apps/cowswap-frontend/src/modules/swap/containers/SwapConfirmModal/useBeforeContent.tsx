@@ -133,7 +133,7 @@ export function useBeforeContent(params: BeforeContentParams): ReactNode {
         labelsAndTooltips={labelsAndTooltips}
         deadline={deadline}
       />
-    ) : undefined
+    ) : null
   }, [
     shouldDisplayBridgeDetails,
     bridgeProvider,
