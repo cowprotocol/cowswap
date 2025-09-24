@@ -1698,7 +1698,7 @@ msgstr "Показать прогресс"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/PartnerFeeRow/index.tsx
 msgid "This fee helps pay for maintenance & improvements to the trade experience.<0/><1/>The fee is {partnerFeeBps} BPS ({feeAsPercent}%), applied only if the trade is executed."
-msgstr "Эта комиссия помогает оплатить техническое обслуживание и улучшение торгового опыта. 0/><1/>Комиссия составляет {partnerFeeBps} BPS ({feeAsPercent}%), применяется только при выполнении сделки."
+msgstr "Эта комиссия помогает оплатить техническое обслуживание и улучшение торгового опыта. <0/><1/>Комиссия составляет {partnerFeeBps} BPS ({feeAsPercent}%), применяется только при выполнении сделки."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "Share this"
