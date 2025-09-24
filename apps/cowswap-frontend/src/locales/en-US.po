@@ -273,6 +273,10 @@ msgstr "Tokens from inactive lists. Import specific tokens below or click Manage
 msgid "Order cannot be filled due to insufficient balance on the current account.<0/>Please, top up {inputAmountCurrencySymbol} balance or cancel the order."
 msgstr "Order cannot be filled due to insufficient balance on the current account.<0/>Please, top up {inputAmountCurrencySymbol} balance or cancel the order."
 
+#: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
+msgid "sell"
+msgstr "sell"
+
 #: apps/cowswap-frontend/src/modules/wallet/pure/WalletModal/index.tsx
 msgid "By connecting a wallet, you acknowledge that you have read, understood and agree to the interface’s <0>Terms & Conditions</0>."
 msgstr "By connecting a wallet, you acknowledge that you have read, understood and agree to the interface’s <0>Terms & Conditions</0>."
@@ -650,10 +654,6 @@ msgstr "Overview"
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 msgid "Loading operation"
 msgstr "Loading operation"
-
-#: apps/cowswap-frontend/src/common/constants/routes.ts
-msgid "Limit"
-msgstr "Limit"
 
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
 msgid "CoW Runner"
@@ -2094,10 +2094,6 @@ msgstr "batched together"
 msgid "Select a pool"
 msgstr "Select a pool"
 
-#: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/index.tsx
-msgid "Since {ACCOUNT_PROXY_LABEL} is not an upgradeable smart-contract, it can be versioned and there are"
-msgstr "Since {ACCOUNT_PROXY_LABEL} is not an upgradeable smart-contract, it can be versioned and there are"
-
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/PermitHookApp/index.tsx
 msgid "Token not permittable"
 msgstr "Token not permittable"
@@ -2509,6 +2505,10 @@ msgstr "Buy per part"
 msgid "Total claimable rewards:"
 msgstr "Total claimable rewards:"
 
+#: libs/common-utils/src/legacyAddressUtils.ts
+msgid "View on"
+msgstr "View on"
+
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/index.tsx
 msgid "Connected with"
 msgstr "Connected with"
@@ -2532,6 +2532,10 @@ msgstr "Hang in there. Calculating best price"
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappDetails/index.tsx
 msgid "both {joinedSupportedTypes}"
 msgstr "both {joinedSupportedTypes}"
+
+#: libs/common-utils/src/legacyAddressUtils.ts
+msgid "View on Explorer"
+msgstr "View on Explorer"
 
 #: apps/cowswap-frontend/src/common/pure/TransactionErrorContent/index.tsx
 msgid "Error"
@@ -3049,6 +3053,10 @@ msgstr "Lock Limit Price"
 msgid "Target"
 msgstr "Target"
 
+#: libs/common-utils/src/legacyAddressUtils.ts
+#~ msgid "View on {explorerTitle}"
+#~ msgstr "View on {explorerTitle}"
+
 #: apps/cowswap-frontend/src/modules/bridge/pure/StopStatus/index.tsx
 msgid "Bridge failed on"
 msgstr "Bridge failed on"
@@ -3269,6 +3277,10 @@ msgstr "Safe contracts have a so-called \"nonce.\" This is to ensure that each t
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/pure/Row/RowSlippageContent/index.tsx
 msgid "This is the recommended slippage tolerance based on current gas prices & trade size. A lower amount may result in slower execution."
 msgstr "This is the recommended slippage tolerance based on current gas prices & trade size. A lower amount may result in slower execution."
+
+#: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
+msgid "buy"
+msgstr "buy"
 
 #: apps/cowswap-frontend/src/pages/Account/Balances.tsx
 msgid "Converting vCOW to COW"
@@ -3928,6 +3940,10 @@ msgstr "on {chainLabel}"
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Invalid price. Try increasing input/output amount."
 msgstr "Invalid price. Try increasing input/output amount."
+
+#: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/index.tsx
+msgid "Since {ACCOUNT_PROXY_LABEL} is not an upgradeable smart-contract, it can be versioned and there are"
+msgstr "Since {ACCOUNT_PROXY_LABEL} is not an upgradeable smart-contract, it can be versioned and there are"
 
 #: apps/cowswap-frontend/src/modules/trade/containers/TradeWarnings/index.tsx
 msgid "Token approval bundling"
@@ -5109,6 +5125,7 @@ msgstr "View cancellation"
 msgid "Loading"
 msgstr "Loading"
 
+#: apps/cowswap-frontend/src/common/constants/routes.ts
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/OrderTypeField.tsx
 msgid "Limit"
 msgstr "Limit"
