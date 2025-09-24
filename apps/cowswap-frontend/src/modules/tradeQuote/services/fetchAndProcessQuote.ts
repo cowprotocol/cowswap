@@ -50,6 +50,8 @@ export async function fetchAndProcessQuote(
 
     if (parsedError instanceof QuoteApiError) {
       tradeQuoteManager.onError(parsedError, chainId, quoteParams, fetchParams)
+    } else {
+      tradeQuoteManager.setLoading(false)
     }
   }
 
@@ -103,6 +105,7 @@ async function fetchBridgingQuote(
     advancedSettings,
     options: {
       onQuoteResult(result: MultiQuoteResult) {
+        console.log('AAAAAA', result)
         if (result.quote) {
           const { swap, bridge, postSwapOrderFromQuote } = result.quote
           const quoteAndPost = { quoteResults: swap, postSwapOrderFromQuote: postSwapOrderFromQuote }
@@ -117,12 +120,12 @@ async function fetchBridgingQuote(
     const result = await bridgingSdk.getBestQuote(multiQuoteRequest)
     const error = result?.error
 
-    if (error instanceof BridgeProviderQuoteError) {
-      tradeQuoteManager.onError(error, quoteParams.sellTokenChainId, quoteParams, fetchParams)
-      return
-    }
-
     if (error) {
+      if (error instanceof BridgeProviderQuoteError) {
+        tradeQuoteManager.onError(error, quoteParams.sellTokenChainId, quoteParams, fetchParams)
+        return
+      }
+
       processQuoteError(error)
     }
     // bridgingSdk.getBestQuote() is not supposed to throw any error

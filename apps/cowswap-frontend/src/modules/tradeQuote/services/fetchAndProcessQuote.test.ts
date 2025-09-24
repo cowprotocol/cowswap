@@ -3,7 +3,9 @@
 import { OrderKind, PriceQuality, SupportedChainId } from '@cowprotocol/cow-sdk'
 import {
   BridgeProviderError,
+  BridgeProviderQuoteError,
   BridgeQuoteAndPost,
+  BridgeQuoteErrors,
   BridgeQuoteResults,
   MultiQuoteResult,
   QuoteBridgeRequest,
@@ -336,9 +338,8 @@ describe('fetchAndProcessQuote', () => {
       )
     })
 
-    // TODO: enable when BridgeProviderQuoteError is fixed in SDK
-    it.skip('should handle BridgeProviderQuoteError', async () => {
-      const mockBridgeError = new BridgeProviderError('Bridge error', { context: 'test' })
+    it('should handle BridgeProviderQuoteError', async () => {
+      const mockBridgeError = new BridgeProviderQuoteError(BridgeQuoteErrors.API_ERROR, { context: 'test' })
       const mockResult: MultiQuoteResult = {
         providerDappId: 'test-provider',
         quote: null,
