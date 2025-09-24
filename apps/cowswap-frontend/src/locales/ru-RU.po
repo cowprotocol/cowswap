@@ -4457,10 +4457,6 @@ msgstr "обязательно"
 msgid "Operation in progress!"
 msgstr "Выполняется операция!"
 
-#: apps/cowswap-frontend/src/modules/ordersTable/containers/OrderRow/EstimatedExecutionPrice.tsx
-msgid "Current market price is <0><1/></0>and needs to go {marketPriceDirection} by <2><3/></2> <4>(<5>{percentageDifferenceInvertedFormatted}%</5>)</4>to execute your order at <6><7/></6>."
-msgstr "Текущая рыночная цена <0><1/></0>и должна пойти {marketPriceDirection} <2><3/></2> <4>(<5>{percentageDifferenceInvertedFormatted}%</5>)</4>, чтобы выполнить ордер по <6><7/></6>."
-
 #: apps/cowswap-frontend/src/modules/trade/const/common.ts
 msgid "When enabled, the orders table will be displayed on the left side on desktop screens. On mobile, the orders table will always be stacked below."
 msgstr "Если включено, таблица ордеров будет отображаться на экранах рабочего стола. На мобильных устройствах таблица ордеров будет всегда складываться ниже."

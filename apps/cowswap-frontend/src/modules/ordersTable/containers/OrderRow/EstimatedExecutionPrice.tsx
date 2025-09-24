@@ -256,7 +256,7 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
               ) : (
                 <>
                   <Trans>
-                    Current market price is&nbsp;
+                    Current market price is{' '}
                     <b>
                       <TokenAmount
                         amount={marketPrice}
@@ -264,16 +264,15 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
                         round={false}
                         tokenSymbol={marketPrice?.quoteCurrency}
                       />
-                    </b>
-                    and needs to go {marketPriceDirection} by&nbsp;
+                    </b>{' '}
+                    and needs to go {marketPriceDirection} by{' '}
                     <b>
                       <TokenAmount {...rest} amount={absoluteDifferenceAmount} round={false} />
-                    </b>
-                    &nbsp;
+                    </b>{' '}
                     <span>
                       (<i>{percentageDifferenceInvertedFormatted}%</i>)
-                    </span>
-                    to execute your order at&nbsp;
+                    </span>{' '}
+                    to execute your order at{' '}
                     <b>
                       <TokenAmount
                         amount={executesAtPrice}

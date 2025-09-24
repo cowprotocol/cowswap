@@ -171,7 +171,7 @@ export function OrderFillsAt({
                     fills at{' '}
                     <TokenAmount amount={executionPriceInverted} tokenSymbol={executionPriceInverted?.quoteCurrency} />
                   </b>
-                  ,{priceDiff}% from market) and is expected to {filledValue} fill soon.
+                  , {priceDiff}% from market) and is expected to {filledValue} fill soon.
                 </Trans>
                 <styledEl.ExecuteInformationTooltipWarning>
                   <Trans>
