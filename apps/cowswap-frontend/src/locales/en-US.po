@@ -1362,6 +1362,10 @@ msgstr "Min. to receive"
 msgid "No unfillable orders"
 msgstr "No unfillable orders"
 
+#: libs/common-utils/src/tooltips.ts
+msgid "This accounts for the current price and the slippage tolerance ({allowedSlippagePercentage}%). If the price moves beyond the slippage tolerance, you won't trade but also you won't pay any fees or gas."
+msgstr "This accounts for the current price and the slippage tolerance ({allowedSlippagePercentage}%). If the price moves beyond the slippage tolerance, you won't trade but also you won't pay any fees or gas."
+
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowBanner/index.tsx
 msgid "No fees for failed transactions"
 msgstr "No fees for failed transactions"
@@ -2735,6 +2739,10 @@ msgstr "For your convenience, token approval and order placement will be bundled
 msgid "No open orders"
 msgstr "No open orders"
 
+#: libs/common-utils/src/tooltips.ts
+msgid "Maximum tokens you'll sell."
+msgstr "Maximum tokens you'll sell."
+
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/SolvingStep.tsx
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/SolvingStep.tsx
 msgid " or <0/>"
@@ -3915,6 +3923,10 @@ msgstr "Transaction Failed"
 #: apps/cowswap-frontend/src/legacy/components/Header/NetworkSelector/index.tsx
 msgid "Select a network"
 msgstr "Select a network"
+
+#: libs/common-utils/src/tooltips.ts
+msgid "Minimum tokens you'll receive."
+msgstr "Minimum tokens you'll receive."
 
 #: apps/cowswap-frontend/src/modules/notifications/pure/TelegramConnectionStatus/index.tsx
 #~ msgid "Connected <0/>"
