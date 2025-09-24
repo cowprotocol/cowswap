@@ -280,7 +280,7 @@ msgstr "Al conectar una billetera, usted reconoce que ha leído, entendido y est
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/ImportListModal/index.tsx
 msgid "<0>By adding this list you are implicitly trusting that the data is correct. Anyone can create a list, including creating fake versions of existing lists and lists that claim to represent projects that do not have one.</0><1><2>If you purchase a token from this list, you may not be able to sell it back.</2></1>"
-msgstr "<0>Al añadir esta lista confías implícitamente en que los datos son correctos. Cualquiera puede crear una lista, incluyendo la creación de versiones falsas de listas existentes y listas que afirman representar proyectos que no tienen uno. /0><1><2>Si compras una ficha de esta lista, es posible que no puedas venderla.</2></1>"
+msgstr "<0>Al añadir esta lista confías implícitamente en que los datos son correctos. Cualquiera puede crear una lista, incluyendo la creación de versiones falsas de listas existentes y listas que afirman representar proyectos que no tienen uno.</0><1><2>Si compras una ficha de esta lista, es posible que no puedas venderla.</2></1>"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/FavoriteTokensList/index.tsx
 msgid "Your favorite saved tokens. Edit this list in your account page."

@@ -280,7 +280,7 @@ msgstr "Подключая кошелек, вы подтверждаете, чт
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/ImportListModal/index.tsx
 msgid "<0>By adding this list you are implicitly trusting that the data is correct. Anyone can create a list, including creating fake versions of existing lists and lists that claim to represent projects that do not have one.</0><1><2>If you purchase a token from this list, you may not be able to sell it back.</2></1>"
-msgstr "<0>Добавляя этот список, вы явно верите, что данные верны. Каждый может создать список, включая создание поддельных версий существующих списков и списков, которые претендуют на представление проектов, которые у них нет. /0><1><2>Если вы приобрели токен из этого списка, вы можете не продать его обратно.</2></1>"
+msgstr "<0>Добавляя этот список, вы явно верите, что данные верны. Каждый может создать список, включая создание поддельных версий существующих списков и списков, которые претендуют на представление проектов, которые у них нет.</0><1><2>Если вы приобрели токен из этого списка, вы можете не продать его обратно.</2></1>"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/FavoriteTokensList/index.tsx
 msgid "Your favorite saved tokens. Edit this list in your account page."
