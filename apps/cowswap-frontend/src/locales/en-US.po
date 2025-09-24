@@ -95,6 +95,7 @@ msgid "in progress"
 msgstr "in progress"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/TradeWarning/index.tsx
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/HighFeeWarning/index.tsx
 msgid "Swap anyway"
 msgstr "Swap anyway"
 
