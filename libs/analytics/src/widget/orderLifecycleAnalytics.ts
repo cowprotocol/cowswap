@@ -1,5 +1,5 @@
-import { formatUnitsSafe } from '@cowprotocol/common-utils'
-import type { EnrichedOrder } from '@cowprotocol/cow-sdk'
+import { TokenWithLogo } from '@cowprotocol/common-const'
+import type { EnrichedOrder, TokenInfo } from '@cowprotocol/cow-sdk'
 import {
   CowWidgetEvents,
   SimpleCowEventEmitter,
@@ -10,7 +10,7 @@ import {
   OnExpiredOrderPayload,
   BaseOrderPayload,
 } from '@cowprotocol/events'
-import type { TokenInfo } from '@cowprotocol/types'
+import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { getCowAnalytics } from '../utils'
 
@@ -22,12 +22,23 @@ export const safeGetString = <T, K extends keyof T>(obj: T | undefined, key: K, 
 
 export type AnalyticsPayload = Record<string, unknown>
 
-export function extractTokenMeta(order: Partial<EnrichedOrder> | undefined): {
+type EnrichedOrderWithTokens = EnrichedOrder & {
+  inputToken?: TokenInfo
+  outputToken?: TokenInfo
+}
+
+export function extractTokenMeta(order: Partial<EnrichedOrderWithTokens> | undefined): {
   inputToken?: TokenInfo
   outputToken?: TokenInfo
 } {
-  const { inputToken, outputToken } = (order as unknown as { inputToken?: TokenInfo; outputToken?: TokenInfo }) || {}
-  return { inputToken, outputToken }
+  if (!order) {
+    return {}
+  }
+
+  return {
+    inputToken: order.inputToken,
+    outputToken: order.outputToken,
+  }
 }
 
 export function buildBaseFields(payload: BaseOrderPayload): AnalyticsPayload {
@@ -38,10 +49,46 @@ export function buildBaseFields(payload: BaseOrderPayload): AnalyticsPayload {
   }
 }
 
-export function buildTokenFields(
+const createCurrency = (meta?: TokenInfo): TokenWithLogo | null => {
+  if (!meta?.address) return null
+
+  const decimals = meta.decimals
+  if (typeof decimals !== 'number' || !Number.isInteger(decimals) || decimals < 0) return null
+
+  try {
+    return TokenWithLogo.fromToken({
+      ...meta,
+      chainId: meta.chainId ?? 0,
+      decimals,
+      symbol: meta.symbol || '',
+      name: meta.name || '',
+    })
+  } catch {
+    return null
+  }
+}
+
+const toDecimalAmount = (
+  meta: TokenInfo | undefined,
+  rawAmount: string | number | bigint | null | undefined,
+): string | undefined => {
+  if (rawAmount === null || rawAmount === undefined) return undefined
+
+  const currency = createCurrency(meta)
+  if (!currency) return undefined
+
+  try {
+    const raw = typeof rawAmount === 'bigint' ? rawAmount.toString() : String(rawAmount)
+    return CurrencyAmount.fromRawAmount(currency, raw).toExact() || undefined
+  } catch {
+    return undefined
+  }
+}
+
+const buildTokenFields = (
   payload: BaseOrderPayload,
   meta: { inputToken?: TokenInfo; outputToken?: TokenInfo },
-): AnalyticsPayload {
+): AnalyticsPayload => {
   const sellTokenAddress = safeGetString(payload.order, 'sellToken')
   const buyTokenAddress = safeGetString(payload.order, 'buyToken')
 
@@ -60,8 +107,8 @@ export function buildTokenFields(
     buyTokenSymbol: meta.outputToken?.symbol || '',
     sellTokenDecimals,
     buyTokenDecimals,
-    sellAmountUnits: formatUnitsViaCommon(sellAmountAtoms, sellTokenDecimals),
-    buyAmountUnits: formatUnitsViaCommon(buyAmountAtoms, buyTokenDecimals),
+    sellAmountUnits: toDecimalAmount(meta.inputToken, sellAmountAtoms),
+    buyAmountUnits: toDecimalAmount(meta.outputToken, buyAmountAtoms),
   }
 }
 
@@ -71,16 +118,17 @@ export function buildTokenFields(
 export function buildAnalyticsCurrencyAliases(fields: AnalyticsPayload): AnalyticsPayload {
   const sellTokenAddress = String(fields.sellToken || '')
   const buyTokenAddress = String(fields.buyToken || '')
-  const sellTokenDecimals = (fields.sellTokenDecimals as number | undefined) || 0
-  const buyTokenDecimals = (fields.buyTokenDecimals as number | undefined) || 0
+
+  const sellAmountUnits = typeof fields.sellAmountUnits === 'string' ? fields.sellAmountUnits : undefined
+  const buyAmountUnits = typeof fields.buyAmountUnits === 'string' ? fields.buyAmountUnits : undefined
 
   return {
     from_currency_address: sellTokenAddress,
     to_currency_address: buyTokenAddress,
     from_currency: String(fields.sellTokenSymbol || ''),
     to_currency: String(fields.buyTokenSymbol || ''),
-    from_amount: formatUnitsViaCommon(String(fields.sellAmount || ''), sellTokenDecimals),
-    to_amount: formatUnitsViaCommon(String(fields.buyAmount || ''), buyTokenDecimals),
+    from_amount: sellAmountUnits,
+    to_amount: buyAmountUnits,
   }
 }
 
@@ -137,8 +185,8 @@ export function mapPostedOrder(p: OnPostedOrderPayload): AnalyticsPayload {
     buyTokenSymbol: safeGetString(p.outputToken, 'symbol'),
     sellTokenDecimals: p.inputToken?.decimals,
     buyTokenDecimals: p.outputToken?.decimals,
-    sellAmountUnits: formatUnitsViaCommon(p.inputAmount, p.inputToken?.decimals),
-    buyAmountUnits: formatUnitsViaCommon(p.outputAmount, p.outputToken?.decimals),
+    sellAmountUnits: toDecimalAmount(p.inputToken, p.inputAmount),
+    buyAmountUnits: toDecimalAmount(p.outputToken, p.outputAmount),
   }
 
   return {
@@ -163,9 +211,11 @@ export function mapFulfilledOrder(p: OnFulfilledOrderPayload): AnalyticsPayload 
 
   const { inputToken, outputToken } = extractTokenMeta(p.order)
 
-  const sellDecimals = inputToken?.decimals
-  const buyDecimals = outputToken?.decimals
   const hasBridgeOrder = Boolean(p.bridgeOrder ?? (p.order as { bridgeOrder?: unknown } | undefined)?.bridgeOrder)
+
+  const executedSellAmountUnits = toDecimalAmount(inputToken, executedSellAmountAtoms)
+  const executedBuyAmountUnits = toDecimalAmount(outputToken, executedBuyAmountAtoms)
+  const executedFeeAmountUnits = toDecimalAmount(inputToken, executedFeeAmountAtoms)
 
   return {
     ...base,
@@ -175,13 +225,13 @@ export function mapFulfilledOrder(p: OnFulfilledOrderPayload): AnalyticsPayload 
     executedFeeAmount: executedFeeAmountAtoms,
 
     // Units (decimals-adjusted)
-    executedSellAmountUnits: formatUnitsViaCommon(executedSellAmountAtoms, sellDecimals),
-    executedBuyAmountUnits: formatUnitsViaCommon(executedBuyAmountAtoms, buyDecimals),
-    executedFeeAmountUnits: formatUnitsViaCommon(executedFeeAmountAtoms, sellDecimals),
+    executedSellAmountUnits,
+    executedBuyAmountUnits,
+    executedFeeAmountUnits,
 
     // Safary-lexicon style fields (explicit for fulfillment amounts)
-    from_amount: formatUnitsViaCommon(executedSellAmountAtoms, sellDecimals),
-    to_amount: formatUnitsViaCommon(executedBuyAmountAtoms, buyDecimals),
+    from_amount: executedSellAmountUnits,
+    to_amount: executedBuyAmountUnits,
 
     isCrossChain: hasBridgeOrder,
   }
@@ -211,19 +261,4 @@ export const setupEventHandlers = (
       },
     })
   })
-}
-
-// Format atom values to human-readable units using existing amount formatter
-export function formatUnitsViaCommon(
-  value: string | number | bigint | null | undefined,
-  decimals?: number,
-): string {
-  if (value === undefined || value === null) return ''
-
-  try {
-    return formatUnitsSafe(value, decimals)
-  } catch {
-    // Fallback to raw string if formatting fails
-    return typeof value === 'bigint' ? value.toString() : String(value)
-  }
 }

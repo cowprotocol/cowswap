@@ -451,6 +451,46 @@ export const USDC_BNB = new TokenWithLogo(
   'USD Coin',
 )
 
+export const USDT_BNB = new TokenWithLogo(
+  USDT.logoURI,
+  SupportedChainId.BNB,
+  // https://bscscan.com/address/0x55d398326f99059ff775485246999027b3197955
+  '0x55d398326f99059ff775485246999027b3197955',
+  18, // BNB USDT has 18 decimals!!!
+  'USDT',
+  'Tether USD',
+)
+
+export const DAI_BNB = new TokenWithLogo(
+  DAI.logoURI,
+  SupportedChainId.BNB,
+  // https://bscscan.com/address/0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3
+  '0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3',
+  18,
+  'DAI',
+  'Dai Stablecoin',
+)
+
+export const BUSD_BNB = new TokenWithLogo(
+  cowprotocolTokenLogoUrl('0xe9e7cea3dedca5984780bafc599bd69add087d56', SupportedChainId.BNB),
+  SupportedChainId.BNB,
+  // https://bscscan.com/address/0xe9e7cea3dedca5984780bafc599bd69add087d56
+  '0xe9e7cea3dedca5984780bafc599bd69add087d56',
+  18,
+  'BUSD',
+  'Binance-Peg BUSD Token',
+)
+
+export const BTCB_BNB = new TokenWithLogo(
+  cowprotocolTokenLogoUrl('0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c', SupportedChainId.BNB),
+  SupportedChainId.BNB,
+  // https://bscscan.com/address/0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c
+  '0x7130d2a12b9bcbfae4f2634d864a1ee1ce3ead9c',
+  18,
+  'BTCB',
+  'Binance-Peg BTCB Token',
+)
+
 // Optimism
 
 export const USDC_OPTIMISM = new TokenWithLogo(
@@ -624,8 +664,9 @@ const LENS_STABLECOINS = [
   WRAPPED_NATIVE_CURRENCIES[SupportedChainId.LENS].address, // WGHO
 ].map((t) => t.toLowerCase())
 
-// TODO: add more stablecoins for BNB
-const BNB_STABLECOINS = [USDC_BNB.address].map((t) => t.toLowerCase())
+const BNB_STABLECOINS = [USDC_BNB.address, USDT_BNB.address, DAI_BNB.address, BUSD_BNB.address].map((t) =>
+  t.toLowerCase(),
+)
 
 const SEPOLIA_STABLECOINS = [USDC_SEPOLIA.address, USDT_SEPOLIA.address].map((t) => t.toLowerCase())
 

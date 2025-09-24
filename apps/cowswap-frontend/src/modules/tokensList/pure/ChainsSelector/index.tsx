@@ -19,6 +19,12 @@ import * as styledEl from './styled'
 // Number of skeleton shimmers to show during loading state
 const LOADING_ITEMS_COUNT = 9
 
+function ChainLogo({ chain, isDarkMode, alt }: { chain: ChainInfo; isDarkMode: boolean; alt: string }): ReactNode {
+  const src = isDarkMode ? chain.logo.dark : chain.logo.light
+
+  return <img src={src} alt={alt} loading="lazy" />
+}
+
 const LoadingShimmerElements = (
   <styledEl.Wrapper>
     {Array.from({ length: LOADING_ITEMS_COUNT }, (_, index) => (
@@ -42,7 +48,9 @@ export function makeBuildClickEvent(
     toCowSwapGtmEvent({
       category: CowSwapAnalyticsCategory.TRADE,
       action: 'network_selected',
-      label: `Chain: ${chain.id}, PreviousChain: ${defaultChainId || 'none'}, Context: ${contextLabel}, Mode: ${mode}, CrossChain: ${isSwapMode && chainsCount > 1}`,
+      label: `Chain: ${chain.id}, PreviousChain: ${defaultChainId || 'none'}, Context: ${contextLabel}, Mode: ${mode}, CrossChain: ${
+        isSwapMode && chainsCount > 1
+      }`,
     })
 }
 
@@ -59,11 +67,8 @@ function handleSelect(
       log.debug('[GTM click]', clickEvent)
     }
   }
-  onSelectChain(chain)
-}
 
-function getLogoSrc(theme: ReturnType<typeof useTheme>, chain: ChainInfo): string {
-  return theme.darkMode ? chain.logo.dark : chain.logo.light
+  onSelectChain(chain)
 }
 
 function VisibleChainsRow(props: {
@@ -72,13 +77,15 @@ function VisibleChainsRow(props: {
   buildClickEvent: BuildClickEvent
   isSwapMode: boolean
   onSelectChain: (c: ChainInfo) => void
-  theme: ReturnType<typeof useTheme>
+  isDarkMode: boolean
 }): ReactNode {
-  const { visibleChains, defaultChainId, buildClickEvent, isSwapMode, onSelectChain, theme } = props
+  const { visibleChains, defaultChainId, buildClickEvent, isSwapMode, onSelectChain, isDarkMode } = props
+
   return (
     <>
       {visibleChains.map((chain) => {
         const clickEvent = buildClickEvent(chain)
+
         return (
           <HoverTooltip
             key={chain.id}
@@ -93,7 +100,7 @@ function VisibleChainsRow(props: {
               iconOnly
               data-click-event={isSwapMode ? clickEvent : undefined}
             >
-              <img src={getLogoSrc(theme, chain)} alt={chain.label} loading="lazy" />
+              <ChainLogo chain={chain} isDarkMode={isDarkMode} alt={chain.label} />
             </styledEl.ChainItem>
           </HoverTooltip>
         )
@@ -109,16 +116,17 @@ function MoreMenuSection(props: {
   buildClickEvent: BuildClickEvent
   isSwapMode: boolean
   onSelectChain: (c: ChainInfo) => void
-  theme: ReturnType<typeof useTheme>
+  isDarkMode: boolean
 }): ReactNode {
-  const { chains, defaultChainId, selectedMenuChain, buildClickEvent, isSwapMode, onSelectChain, theme } = props
+  const { chains, defaultChainId, selectedMenuChain, buildClickEvent, isSwapMode, onSelectChain, isDarkMode } = props
+
   return (
     <Menu as={styledEl.MenuWrapper}>
       {({ isOpen }) => (
         <>
           <MenuButton as={styledEl.ChainItem} active$={!!selectedMenuChain}>
             {selectedMenuChain ? (
-              <img src={getLogoSrc(theme, selectedMenuChain)} alt={selectedMenuChain.label} loading="lazy" />
+              <ChainLogo chain={selectedMenuChain} isDarkMode={isDarkMode} alt={selectedMenuChain.label} />
             ) : isOpen ? (
               <span>Less</span>
             ) : (
@@ -141,7 +149,7 @@ function MoreMenuSection(props: {
                   borderless
                   data-click-event={isSwapMode ? clickEvent : undefined}
                 >
-                  <img src={getLogoSrc(theme, chain)} alt={chain.label} loading="lazy" />
+                  <ChainLogo chain={chain} isDarkMode={isDarkMode} alt={chain.label} />
                   <span>{chain.label}</span>
                   {chain.id === defaultChainId && <Check size={16} />}
                 </MenuItem>
@@ -206,7 +214,7 @@ export function ChainsSelector({
         buildClickEvent={buildClickEvent}
         isSwapMode={isSwapMode}
         onSelectChain={onSelectChain}
-        theme={theme}
+        isDarkMode={theme.darkMode}
       />
       {shouldDisplayMore && (
         <MoreMenuSection
@@ -216,7 +224,7 @@ export function ChainsSelector({
           buildClickEvent={buildClickEvent}
           isSwapMode={isSwapMode}
           onSelectChain={onSelectChain}
-          theme={theme}
+          isDarkMode={theme.darkMode}
         />
       )}
     </styledEl.Wrapper>

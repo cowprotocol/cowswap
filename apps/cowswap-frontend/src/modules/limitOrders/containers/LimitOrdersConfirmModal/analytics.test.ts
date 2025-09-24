@@ -1,12 +1,7 @@
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { Token, CurrencyAmount } from '@uniswap/sdk-core'
 
-import {
-  buildPlaceLimitOrderEvent,
-  buildLimitOrderEventLabel,
-  resolveLimitOrderSide,
-  ExecutionPriceLike,
-} from './analytics'
+import { buildPlaceLimitOrderEvent, buildLimitOrderEventLabel, ExecutionPriceLike } from './analytics'
 
 const tokenSell = new Token(1, '0x0000000000000000000000000000000000000001', 18, 'TK1', 'Token 1')
 const tokenBuy = new Token(1, '0x0000000000000000000000000000000000000002', 6, 'TK2', 'Token 2')
@@ -22,7 +17,7 @@ describe('limit order analytics', () => {
     const label = buildLimitOrderEventLabel({
       inputToken: tokenSell,
       outputToken: tokenBuy,
-      side: 'sell',
+      kind: OrderKind.SELL,
       executionPrice,
       inputAmount,
       partialFillsEnabled: true,
@@ -38,7 +33,7 @@ describe('limit order analytics', () => {
     const event = buildPlaceLimitOrderEvent({
       inputAmount,
       outputAmount,
-      side: 'sell',
+      kind: OrderKind.SELL,
       executionPrice,
       partialFillsEnabled: false,
       walletAddress: '0xabc',
@@ -57,10 +52,7 @@ describe('limit order analytics', () => {
     expect(parsed.buyTokenSymbol).toBe('TK2')
     expect(parsed.chain_id).toBe(1)
     expect(parsed.walletAddress).toBe('0xabc')
-  })
-
-  it('resolves side from order kind', () => {
-    expect(resolveLimitOrderSide(OrderKind.SELL)).toBe('sell')
-    expect(resolveLimitOrderSide(OrderKind.BUY)).toBe('buy')
+    expect(parsed.orderKind).toBe(OrderKind.SELL)
+    expect(parsed.side).toBe('sell')
   })
 })
