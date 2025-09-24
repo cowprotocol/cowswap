@@ -56,9 +56,7 @@ export function usePersistBalancesFromBff(params: PersistBalancesFromBffParams):
   }, [setBalances, isBalancesLoading, chainId, targetAccount])
 
   useEffect(() => {
-    if (error) {
-      setIsBffFailed(true)
-    }
+    setIsBffFailed(!!error)
   }, [error, setIsBffFailed])
 
   useEffect(() => {

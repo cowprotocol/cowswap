@@ -12,6 +12,7 @@ import { BalancesCacheUpdater } from './BalancesCacheUpdater'
 import { BalancesResetUpdater } from './BalancesResetUpdater'
 import { BalancesRpcCallUpdater } from './BalancesRpcCallUpdater'
 
+import { BFF_BALANCES_SWR_CONFIG } from '../constants/bff-balances-swr-config'
 import { BASIC_MULTICALL_SWR_CONFIG } from '../consts'
 import { useNativeTokenBalance } from '../hooks/useNativeTokenBalance'
 import { useSwrConfigWithPauseForNetwork } from '../hooks/useSwrConfigWithPauseForNetwork'
@@ -19,7 +20,6 @@ import { useUpdateTokenBalance } from '../hooks/useUpdateTokenBalance'
 
 // A small gap between balances and allowances refresh intervals is needed to avoid high load to the node at the same time
 const RPC_BALANCES_SWR_CONFIG: SWRConfiguration = { ...BASIC_MULTICALL_SWR_CONFIG, refreshInterval: ms`31s` }
-const BFF_BALANCES_SWR_CONFIG = { ...BASIC_MULTICALL_SWR_CONFIG, revalidateIfStale: true, refreshInterval: ms`8s` }
 
 const BFF_CHAIN_UPDATE_DELAY = ms`2s`
 
