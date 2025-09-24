@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.118.12](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.118.11...cowswap-v1.118.12) (2025-09-23)
+
+
+### Bug Fixes
+
+* trigger version bump ([#6296](https://github.com/cowprotocol/cowswap/issues/6296)) ([1fc4f2c](https://github.com/cowprotocol/cowswap/commit/1fc4f2cb3462809bdde328baaf15d37fb65902da))
+
 ## [1.118.11](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.118.10...cowswap-v1.118.11) (2025-09-18)
 
 
