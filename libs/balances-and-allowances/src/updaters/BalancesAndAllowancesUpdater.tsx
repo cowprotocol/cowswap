@@ -76,23 +76,22 @@ export function BalancesAndAllowancesUpdater({
 
   return (
     <>
-      {isBffEnabled ? (
-        <BalancesBffUpdater
-          account={account}
-          chainId={chainId}
-          pendingOrdersCount={pendingOrdersCount}
-          tokenAddresses={tokenAddresses}
-          balancesSwrConfig={balancesSwrConfig}
-        />
-      ) : (
-        <BalancesRpcCallUpdater
-          account={account}
-          chainId={chainId}
-          tokenAddresses={tokenAddresses}
-          balancesSwrConfig={balancesSwrConfig}
-          setLoadingState
-        />
-      )}
+      <BalancesBffUpdater
+        account={account}
+        chainId={chainId}
+        pendingOrdersCount={pendingOrdersCount}
+        tokenAddresses={tokenAddresses}
+        balancesSwrConfig={balancesSwrConfig}
+      />
+      !isBffEnabled && (
+      <BalancesRpcCallUpdater
+        account={account}
+        chainId={chainId}
+        tokenAddresses={tokenAddresses}
+        balancesSwrConfig={balancesSwrConfig}
+        setLoadingState
+      />
+      )
       <BalancesResetUpdater chainId={chainId} account={account} />
       <BalancesCacheUpdater chainId={chainId} account={account} excludedTokens={excludedTokens} />
     </>
