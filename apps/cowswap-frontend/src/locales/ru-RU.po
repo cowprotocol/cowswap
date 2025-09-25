@@ -3604,7 +3604,7 @@ msgstr "Протокол CoW покрывает расходы, выполняя
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/RateImpactWarning/index.tsx
 msgid "Your limit price is {absoluteRateImpact}% lower than current market price. You could be selling your<0/> at a loss (although CoW Swap will always try to give you the best price regardless)."
-msgstr "Ваша лимитная цена на {absoluteRateImpact}% ниже текущей рыночной цены. Вы можете продать свой&lt;0/&gt; с убытком (хотя CoW Swap всегда будет пытаться дать вам лучшую цену независимо от этого)."
+msgstr "Ваша лимитная цена на {absoluteRateImpact}% ниже текущей рыночной цены. Вы можете продать свой&lt<0/> с убытком (хотя CoW Swap всегда будет пытаться дать вам лучшую цену независимо от этого)."
 
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/HookSearchInput/index.tsx
 msgid "Clear search input"
