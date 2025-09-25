@@ -18,6 +18,7 @@ export { useIsBffFailed } from './state/isBffFailedAtom'
 export { BalancesBffUpdater } from './updaters/BalancesBffUpdater'
 export { BalancesRpcCallUpdater } from './updaters/BalancesRpcCallUpdater'
 export type { BalancesAndAllowances } from './types/balances-and-allowances'
+export * from './utils/isBffSupportedNetwork'
 
 // Types
 export type { BalancesState } from './state/balancesAtom'

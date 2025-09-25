@@ -10,12 +10,14 @@ export function BalancesBffUpdater({
   pendingOrdersCount,
   tokenAddresses,
   balancesSwrConfig,
+  isEnabled,
 }: {
   account: string | undefined
   chainId: SupportedChainId
   pendingOrdersCount?: number
   tokenAddresses: string[]
   balancesSwrConfig: SWRConfiguration
+  isEnabled?: boolean
 }): null {
   usePersistBalancesFromBff({
     account,
@@ -23,6 +25,7 @@ export function BalancesBffUpdater({
     balancesSwrConfig,
     pendingOrdersCount,
     tokenAddresses,
+    isEnabled,
   })
 
   return null

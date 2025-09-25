@@ -12,6 +12,7 @@ import useSWR, { SWRConfiguration } from 'swr'
 
 import { balancesAtom, BalancesState, balancesUpdateAtom } from '../state/balancesAtom'
 import { useSetIsBffFailed } from '../state/isBffFailedAtom'
+import { isBffSupportedNetwork } from '../utils/isBffSupportedNetwork'
 
 type BalanceResponse = {
   balances: Record<string, string> | null
@@ -23,16 +24,18 @@ export interface PersistBalancesFromBffParams {
   balancesSwrConfig: SWRConfiguration
   pendingOrdersCount?: number
   tokenAddresses: string[]
+  isEnabled?: boolean
 }
 
 const DEBOUNCE_FOR_PENDING_ORDERS_MS = ms`1s`
 
 export function usePersistBalancesFromBff(params: PersistBalancesFromBffParams): void {
-  const { account, chainId, balancesSwrConfig, pendingOrdersCount, tokenAddresses } = params
+  const { account, chainId, balancesSwrConfig, pendingOrdersCount, tokenAddresses, isEnabled } = params
 
   const { chainId: activeChainId, account: connectedAccount } = useWalletInfo()
   const targetAccount = account ?? connectedAccount
   const targetChainId = chainId ?? activeChainId
+  const isSupportedNetwork = isBffSupportedNetwork(targetChainId)
 
   const setIsBffFailed = useSetIsBffFailed()
   const debouncedPendingOrdersCount = useDebounce(pendingOrdersCount, DEBOUNCE_FOR_PENDING_ORDERS_MS)
@@ -43,7 +46,9 @@ export function usePersistBalancesFromBff(params: PersistBalancesFromBffParams):
     error,
   } = useSWR(
     // debouncedPendingOrdersCount is added to the key to refetch balances when it changes (new order created or order filled)
-    targetAccount ? [targetAccount, targetChainId, debouncedPendingOrdersCount, 'bff-balances'] : null,
+    targetAccount && isEnabled && isSupportedNetwork
+      ? [targetAccount, targetChainId, debouncedPendingOrdersCount, 'bff-balances']
+      : null,
     ([walletAddress, chainId]) => getBffBalances(walletAddress, chainId),
     balancesSwrConfig,
   )

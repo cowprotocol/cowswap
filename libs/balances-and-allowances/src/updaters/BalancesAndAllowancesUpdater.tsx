@@ -30,15 +30,17 @@ export interface BalancesAndAllowancesUpdaterProps {
   chainId: SupportedChainId
   pendingOrdersCount: number
   excludedTokens: Set<string>
-  isBffEnabled: boolean
+  isBffSwitchedOn: boolean
+  isBffEnabled?: boolean
 }
 
 export function BalancesAndAllowancesUpdater({
   account,
   chainId,
   pendingOrdersCount,
-  isBffEnabled,
+  isBffSwitchedOn,
   excludedTokens,
+  isBffEnabled,
 }: BalancesAndAllowancesUpdaterProps): ReactNode {
   const updateTokenBalance = useUpdateTokenBalance()
 
@@ -59,20 +61,20 @@ export function BalancesAndAllowancesUpdater({
   const balancesSwrConfig = useSwrConfigWithPauseForNetwork(
     chainId,
     account,
-    isBffEnabled ? BFF_BALANCES_SWR_CONFIG : RPC_BALANCES_SWR_CONFIG,
-    isBffEnabled ? BFF_CHAIN_UPDATE_DELAY : undefined,
+    isBffSwitchedOn ? BFF_BALANCES_SWR_CONFIG : RPC_BALANCES_SWR_CONFIG,
+    isBffSwitchedOn ? BFF_CHAIN_UPDATE_DELAY : undefined,
   )
 
   // Add native token balance to the store as well
   useEffect(() => {
-    if (isBffEnabled) return
+    if (isBffSwitchedOn) return
 
     const nativeToken = NATIVE_CURRENCIES[chainId]
 
     if (nativeToken && nativeTokenBalance) {
       updateTokenBalance(nativeToken.address, nativeTokenBalance)
     }
-  }, [isBffEnabled, nativeTokenBalance, chainId, updateTokenBalance])
+  }, [isBffSwitchedOn, nativeTokenBalance, chainId, updateTokenBalance])
 
   return (
     <>
@@ -82,16 +84,17 @@ export function BalancesAndAllowancesUpdater({
         pendingOrdersCount={pendingOrdersCount}
         tokenAddresses={tokenAddresses}
         balancesSwrConfig={balancesSwrConfig}
+        isEnabled={isBffEnabled}
       />
-      !isBffEnabled && (
-      <BalancesRpcCallUpdater
-        account={account}
-        chainId={chainId}
-        tokenAddresses={tokenAddresses}
-        balancesSwrConfig={balancesSwrConfig}
-        setLoadingState
-      />
-      )
+      {!isBffSwitchedOn && (
+        <BalancesRpcCallUpdater
+          account={account}
+          chainId={chainId}
+          tokenAddresses={tokenAddresses}
+          balancesSwrConfig={balancesSwrConfig}
+          setLoadingState
+        />
+      )}
       <BalancesResetUpdater chainId={chainId} account={account} />
       <BalancesCacheUpdater chainId={chainId} account={account} excludedTokens={excludedTokens} />
     </>

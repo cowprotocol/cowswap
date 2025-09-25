@@ -2,20 +2,18 @@ import { ReactNode, useEffect, useMemo, useState } from 'react'
 
 import {
   BalancesAndAllowancesUpdater,
+  isBffSupportedNetwork,
   PRIORITY_TOKENS_REFRESH_INTERVAL,
   PriorityTokensUpdater,
   useIsBffFailed,
 } from '@cowprotocol/balances-and-allowances'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useBalancesContext } from 'entities/balancesContext/useBalancesContext'
 
 import { useSourceChainId } from 'modules/tokensList'
 import { usePendingOrdersCount, usePriorityTokenAddresses } from 'modules/trade'
-
-const UNSUPPORTED_BFF_NETWORKS = [SupportedChainId.LENS]
 
 function shouldApplyBffBalances(account: string | undefined, percentage: number | boolean | undefined): boolean {
   // Early exit for 100%, meaning should be enabled for everyone
@@ -69,14 +67,15 @@ export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
 
   const { bffBalanceEnabledPercentage } = useFeatureFlags()
   const isBffFailed = useIsBffFailed()
-  const isBffUnsupportedNetwork = UNSUPPORTED_BFF_NETWORKS.includes(sourceChainId)
-  const isBffEnabled =
-    shouldApplyBffBalances(account, bffBalanceEnabledPercentage) && !isBffFailed && !isBffUnsupportedNetwork
+  const isBffSupportNetwork = isBffSupportedNetwork(sourceChainId)
+  const isBffEnabled = shouldApplyBffBalances(account, bffBalanceEnabledPercentage)
+  const isBffSwitchedOn = isBffEnabled && !isBffFailed && isBffSupportNetwork
+
   const pendingOrdersCount = usePendingOrdersCount(sourceChainId, balancesAccount)
 
   return (
     <>
-      {!isBffEnabled ? (
+      {!isBffSwitchedOn ? (
         <PriorityTokensUpdater
           // We can and should save one RPC call at the very beginning
           // Since regular BalancesAndAllowancesUpdater will update all tokens (including priority tokens)
@@ -89,6 +88,7 @@ export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
       <BalancesAndAllowancesUpdater
         account={balancesAccount}
         chainId={sourceChainId}
+        isBffSwitchedOn={isBffSwitchedOn}
         isBffEnabled={isBffEnabled}
         excludedTokens={priorityTokenAddresses}
         pendingOrdersCount={pendingOrdersCount}
