@@ -18,6 +18,8 @@ const mockUseBridgeProviders = useBridgeProviders as jest.MockedFunction<typeof 
 // Mock console.error to avoid noise in tests
 jest.spyOn(console, 'error').mockImplementation(() => {})
 
+const chains = ALL_SUPPORTED_CHAINS.sort((a, b) => a.id - b.id)
+
 const mockProvider1: jest.Mocked<BridgeProvider<BridgeQuoteResult>> = {
   info: { dappId: 'provider1', name: 'Provider 1', logoUrl: '', website: '' },
   getBuyTokens: jest.fn(),
@@ -67,8 +69,8 @@ describe('useBridgeSupportedNetworks', () => {
   })
 
   it('should fetch and combine networks from multiple providers', async () => {
-    mockProvider1.getNetworks.mockResolvedValue([ALL_SUPPORTED_CHAINS[0], ALL_SUPPORTED_CHAINS[1]])
-    mockProvider2.getNetworks.mockResolvedValue([ALL_SUPPORTED_CHAINS[1], ALL_SUPPORTED_CHAINS[2]])
+    mockProvider1.getNetworks.mockResolvedValue([chains[0], chains[1]])
+    mockProvider2.getNetworks.mockResolvedValue([chains[1], chains[2]])
 
     const { result } = renderHook(() => useBridgeSupportedNetworks(), { wrapper })
 
@@ -87,7 +89,7 @@ describe('useBridgeSupportedNetworks', () => {
   })
 
   it('should deduplicate networks by id', async () => {
-    const duplicateNetwork = ALL_SUPPORTED_CHAINS[0]
+    const duplicateNetwork = chains[0]
 
     mockProvider1.getNetworks.mockResolvedValue([duplicateNetwork])
     mockProvider2.getNetworks.mockResolvedValue([duplicateNetwork])
@@ -102,13 +104,13 @@ describe('useBridgeSupportedNetworks', () => {
 
   it('should handle provider failures gracefully', async () => {
     mockProvider1.getNetworks.mockRejectedValue(new Error('Provider 1 failed'))
-    mockProvider2.getNetworks.mockResolvedValue([ALL_SUPPORTED_CHAINS[0]])
+    mockProvider2.getNetworks.mockResolvedValue([chains[0]])
 
     const { result } = renderHook(() => useBridgeSupportedNetworks(), { wrapper })
 
     await waitFor(() => {
       expect(result.current.data).toHaveLength(1)
-      expect(result.current.data![0]).toEqual(ALL_SUPPORTED_CHAINS[0])
+      expect(result.current.data![0]).toEqual(chains[0])
     })
   })
 
@@ -148,7 +150,7 @@ describe('useBridgeSupportedNetworks', () => {
 
   it('should maintain network object integrity', async () => {
     const networkWithExtraProps = {
-      ...ALL_SUPPORTED_CHAINS[0],
+      ...chains[0],
       customProp: 'custom value',
     }
 
@@ -170,7 +172,7 @@ describe('useBridgeSupportedNetwork', () => {
   })
 
   it('should return undefined when chainId is undefined', () => {
-    mockProvider1.getNetworks.mockResolvedValue(ALL_SUPPORTED_CHAINS)
+    mockProvider1.getNetworks.mockResolvedValue(chains)
 
     const { result } = renderHook(() => useBridgeSupportedNetwork(undefined), { wrapper })
 
@@ -178,17 +180,17 @@ describe('useBridgeSupportedNetwork', () => {
   })
 
   it('should return the correct network when chainId is provided', async () => {
-    mockProvider1.getNetworks.mockResolvedValue(ALL_SUPPORTED_CHAINS)
+    mockProvider1.getNetworks.mockResolvedValue(chains)
 
     const { result } = renderHook(() => useBridgeSupportedNetwork(42161), { wrapper })
 
     await waitFor(() => {
-      expect(result.current).toEqual(ALL_SUPPORTED_CHAINS[1])
+      expect(result.current).toEqual(chains[1])
     })
   })
 
   it('should return undefined when chainId is not found in networks', async () => {
-    mockProvider1.getNetworks.mockResolvedValue(ALL_SUPPORTED_CHAINS)
+    mockProvider1.getNetworks.mockResolvedValue(chains)
 
     const { result } = renderHook(() => useBridgeSupportedNetwork(999), { wrapper })
 
@@ -198,7 +200,7 @@ describe('useBridgeSupportedNetwork', () => {
   })
 
   it('should update when chainId changes', async () => {
-    mockProvider1.getNetworks.mockResolvedValue(ALL_SUPPORTED_CHAINS)
+    mockProvider1.getNetworks.mockResolvedValue(chains)
 
     const { result, rerender } = renderHook(({ chainId }) => useBridgeSupportedNetwork(chainId), {
       wrapper,
@@ -206,13 +208,13 @@ describe('useBridgeSupportedNetwork', () => {
     })
 
     await waitFor(() => {
-      expect(result.current).toEqual(ALL_SUPPORTED_CHAINS[0])
+      expect(result.current).toEqual(chains[0])
     })
 
     rerender({ chainId: 42161 })
 
     await waitFor(() => {
-      expect(result.current).toEqual(ALL_SUPPORTED_CHAINS[1])
+      expect(result.current).toEqual(chains[1])
     })
   })
 
@@ -223,7 +225,7 @@ describe('useBridgeSupportedNetwork', () => {
   })
 
   it('should memoize result properly', async () => {
-    mockProvider1.getNetworks.mockResolvedValue(ALL_SUPPORTED_CHAINS)
+    mockProvider1.getNetworks.mockResolvedValue(chains)
 
     const { result, rerender } = renderHook(({ chainId }) => useBridgeSupportedNetwork(chainId), {
       wrapper,
@@ -231,7 +233,7 @@ describe('useBridgeSupportedNetwork', () => {
     })
 
     await waitFor(() => {
-      expect(result.current).toEqual(ALL_SUPPORTED_CHAINS[0])
+      expect(result.current).toEqual(chains[0])
     })
 
     const firstResult = result.current
