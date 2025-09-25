@@ -143,6 +143,8 @@ async function fetchBridgingQuote(
     // we only expect error to be returned as promise result
   } catch (error) {
     console.error('[fetchAndProcessQuote]:: unexpected bridge error', error)
+    const unexpectedError = error instanceof Error ? error : new Error(String(error))
+    processQuoteError(unexpectedError)
   }
 }
 
