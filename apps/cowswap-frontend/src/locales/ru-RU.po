@@ -4309,7 +4309,7 @@ msgstr "Пул"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/Settings/index.tsx
 msgid "Allow you to chose whether your limit orders will be <0>Partially fillable</0> or <1>Fill or kill</1>.<2/><3/><4>Fill or kill</4> orders will either be filled fully or not at all.<5/><6>Partially fillable</6> orders may be filled partially if there isn't enough liquidity to fill the full amount."
-msgstr "Выберите, будут ли ваши лимитные ордера <0>Частично заполнены</0> или <1>Заполнить или убить </1>. 2/><3/><4>Заполнение или убийство</4> ордера будут либо выполнены полностью, либо вообще не будут выполнены. 5/><6>Частично заполняемые ордеры</6> могут быть исполнены частично, если недостаточно ликвидности для пополнения полной суммы."
+msgstr "Выберите, будут ли ваши лимитные ордера <0>Частично заполнены</0> или <1>Заполнить или убить </1>.<2/><3/><4>Заполнение или убийство</4> ордера будут либо выполнены полностью, либо вообще не будут выполнены.<5/><6>Частично заполняемые ордеры</6> могут быть исполнены частично, если недостаточно ликвидности для пополнения полной суммы."
 
 #: apps/cowswap-frontend/src/modules/trade/pure/UnlockWidgetScreen/index.tsx
 msgid "Learn more about <0>{orderType} orders ↗</0>"

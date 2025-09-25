@@ -4309,7 +4309,7 @@ msgstr "Herramienta"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/Settings/index.tsx
 msgid "Allow you to chose whether your limit orders will be <0>Partially fillable</0> or <1>Fill or kill</1>.<2/><3/><4>Fill or kill</4> orders will either be filled fully or not at all.<5/><6>Partially fillable</6> orders may be filled partially if there isn't enough liquidity to fill the full amount."
-msgstr "Permite elegir si sus órdenes de límite serán <0>parcialmente facturables</0> o <1>Llenar o matar</1>. 2/><3/><4>Llenar o matar pedidos </4> se completarán o no se completarán en absoluto. 5/><6>Los pedidos se pueden llenar parcialmente</6> parcialmente si no hay suficiente liquidez para llenar la cantidad completa."
+msgstr "Permite elegir si sus órdenes de límite serán <0>parcialmente facturables</0> o <1>Llenar o matar</1>.<2/><3/><4>Llenar o matar pedidos </4> se completarán o no se completarán en absoluto.<5/><6>Los pedidos se pueden llenar parcialmente</6> parcialmente si no hay suficiente liquidez para llenar la cantidad completa."
 
 #: apps/cowswap-frontend/src/modules/trade/pure/UnlockWidgetScreen/index.tsx
 msgid "Learn more about <0>{orderType} orders ↗</0>"
