@@ -1,5 +1,26 @@
 # Changelog
 
+## [1.118.12](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.118.11...cowswap-v1.118.12) (2025-09-23)
+
+
+### Bug Fixes
+
+* trigger version bump ([#6296](https://github.com/cowprotocol/cowswap/issues/6296)) ([1fc4f2c](https://github.com/cowprotocol/cowswap/commit/1fc4f2cb3462809bdde328baaf15d37fb65902da))
+
+## [1.118.11](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.118.10...cowswap-v1.118.11) (2025-09-18)
+
+
+### Bug Fixes
+
+* **bridge:** allow bridging when wallet not connected ([#6281](https://github.com/cowprotocol/cowswap/issues/6281)) ([00c1f69](https://github.com/cowprotocol/cowswap/commit/00c1f692f528eb81104b8e634c74f198c334d423))
+
+## [1.118.10](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.118.9...cowswap-v1.118.10) (2025-09-15)
+
+
+### Bug Fixes
+
+* update CoW Swap and Explorer with bungee changes ([#6265](https://github.com/cowprotocol/cowswap/issues/6265)) ([a38b9d9](https://github.com/cowprotocol/cowswap/commit/a38b9d97ebffd9837ef4d1ea9a946e979d9ed7e4))
+
 ## [1.118.9](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.118.8...cowswap-v1.118.9) (2025-09-12)
 
 
