@@ -1,5 +1,34 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+// Mock modules that require window before imports
+jest.mock('@cowprotocol/common-utils', () => ({
+  ...jest.requireActual('@cowprotocol/common-utils'),
+  getCurrentChainIdFromUrl: jest.fn().mockReturnValue(1),
+  onlyResolvesLast: jest.fn().mockImplementation((fn) => {
+    return async (...args: any[]) => {
+      const result = await fn(...args)
+      // If the function already returns a CancelableResult format, return as-is
+      if (result && typeof result === 'object' && 'cancelled' in result) {
+        return result
+      }
+      // Otherwise wrap in CancelableResult format
+      return { cancelled: false, data: result }
+    }
+  }),
+}))
+
+jest.mock('cowSdk', () => ({
+  orderBookApi: {},
+}))
+
+jest.mock('tradingSdk/bridgingSdk', () => ({
+  bridgingSdk: {
+    getQuote: jest.fn(),
+    getBestQuote: jest.fn(),
+  },
+}))
+
+import { onlyResolvesLast } from '@cowprotocol/common-utils'
 import { OrderKind, PriceQuality, SupportedChainId } from '@cowprotocol/cow-sdk'
 import {
   BridgeProviderError,
@@ -24,20 +53,8 @@ import { TradeQuoteFetchParams } from '../types'
 import { getBridgeQuoteSigner } from '../utils/getBridgeQuoteSigner'
 
 // Mock dependencies
-jest.mock('tradingSdk/bridgingSdk', () => ({
-  bridgingSdk: {
-    getQuote: jest.fn(),
-    getBestQuote: jest.fn(),
-  },
-}))
-
 jest.mock('../utils/getBridgeQuoteSigner', () => ({
   getBridgeQuoteSigner: jest.fn(),
-}))
-
-jest.mock('@cowprotocol/common-utils', () => ({
-  ...jest.requireActual('@cowprotocol/common-utils'),
-  onlyResolvesLast: <T>(fn: (...args: unknown[]) => Promise<T>) => fn,
 }))
 
 jest.mock('api/cowProtocol/getIsOrderBookTypedError', () => ({
@@ -59,6 +76,7 @@ describe('fetchAndProcessQuote', () => {
   let mockGetBridgeQuoteSigner: jest.MockedFunction<typeof getBridgeQuoteSigner>
   let mockGetIsOrderBookTypedError: jest.MockedFunction<typeof getIsOrderBookTypedError>
   let mockMapOperatorErrorToQuoteError: jest.MockedFunction<typeof mapOperatorErrorToQuoteError>
+  let mockOnlyResolvesLast: jest.MockedFunction<typeof onlyResolvesLast>
 
   const mockFetchParams: TradeQuoteFetchParams = {
     hasParamsChanged: true,
@@ -108,6 +126,7 @@ describe('fetchAndProcessQuote', () => {
     mockMapOperatorErrorToQuoteError = mapOperatorErrorToQuoteError as jest.MockedFunction<
       typeof mapOperatorErrorToQuoteError
     >
+    mockOnlyResolvesLast = onlyResolvesLast as jest.MockedFunction<typeof onlyResolvesLast>
 
     mockGetBridgeQuoteSigner.mockReturnValue({} as jest.Mocked<any>)
     mockGetIsOrderBookTypedError.mockReturnValue(false)
@@ -412,6 +431,29 @@ describe('fetchAndProcessQuote', () => {
         onQuoteResultCallback(mockResult)
       }
 
+      expect(mockTradeQuoteManager.onResponse).not.toHaveBeenCalled()
+    })
+
+    it('should handle request cancellation in getBestQuote', async () => {
+      const mockResult: MultiQuoteResult = {
+        providerDappId: 'test-provider',
+        quote: null,
+      }
+
+      mockBridgingSdk.getBestQuote.mockResolvedValue(mockResult)
+
+      // Override onlyResolvesLast to return cancelled for this test
+      mockOnlyResolvesLast.mockImplementation((fn: any) => {
+        return async (...args: any[]) => {
+          const data = await fn(...args)
+          return { cancelled: true, data }
+        }
+      })
+
+      await fetchAndProcessQuote(mockFetchParams, crossChainQuoteParams, mockAppData, mockTradeQuoteManager)
+
+      // Should not call any manager methods when request is cancelled
+      expect(mockTradeQuoteManager.onError).not.toHaveBeenCalled()
       expect(mockTradeQuoteManager.onResponse).not.toHaveBeenCalled()
     })
   })

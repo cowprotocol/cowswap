@@ -21,8 +21,10 @@ import { TradeQuoteFetchParams } from '../types'
 import { getBridgeQuoteSigner } from '../utils/getBridgeQuoteSigner'
 
 const getQuote = bridgingSdk.getQuote.bind(bridgingSdk)
+
 const getFastQuote = onlyResolvesLast<CrossChainQuoteAndPost>(getQuote)
 const getOptimalQuote = onlyResolvesLast<CrossChainQuoteAndPost>(getQuote)
+const getBestQuote = onlyResolvesLast<MultiQuoteResult | null>(bridgingSdk.getBestQuote.bind(bridgingSdk))
 
 export async function fetchAndProcessQuote(
   fetchParams: TradeQuoteFetchParams,
@@ -100,11 +102,15 @@ async function fetchBridgingQuote(
   tradeQuoteManager: TradeQuoteManager,
   processQuoteError: (error: Error) => void,
 ): Promise<void> {
+  let isRequestCancelled = false
+
   const multiQuoteRequest: MultiQuoteRequest = {
     quoteBridgeRequest: quoteParams,
     advancedSettings,
     options: {
       onQuoteResult(result: MultiQuoteResult) {
+        if (isRequestCancelled) return
+
         if (result.quote) {
           const { swap, bridge, postSwapOrderFromQuote } = result.quote
           const quoteAndPost = { quoteResults: swap, postSwapOrderFromQuote: postSwapOrderFromQuote }
@@ -116,8 +122,14 @@ async function fetchBridgingQuote(
   }
 
   try {
-    const result = await bridgingSdk.getBestQuote(multiQuoteRequest)
-    const error = result?.error
+    const { cancelled, data } = await getBestQuote(multiQuoteRequest)
+
+    if (cancelled) {
+      isRequestCancelled = true
+      return
+    }
+
+    const error = data?.error
 
     if (error) {
       if (error instanceof BridgeProviderQuoteError) {
