@@ -19,7 +19,7 @@ const mockUseBridgeProviders = useBridgeProviders as jest.MockedFunction<typeof 
 // Mock console.error to avoid noise in tests
 jest.spyOn(console, 'error').mockImplementation(() => {})
 
-const chains = ALL_SUPPORTED_CHAINS.sort((a, b) => a.id - b.id)
+const chains = [...ALL_SUPPORTED_CHAINS].sort((a, b) => a.id - b.id)
 
 const mockProvider1: jest.Mocked<BridgeProvider<BridgeQuoteResult>> = {
   info: { dappId: 'provider1', name: 'Provider 1', logoUrl: '', website: '' },
@@ -205,17 +205,17 @@ describe('useBridgeSupportedNetwork', () => {
 
     const { result, rerender } = renderHook(({ chainId }) => useBridgeSupportedNetwork(chainId), {
       wrapper,
-      initialProps: { chainId: 1 },
+      initialProps: { chainId: SupportedChainId.MAINNET },
     })
 
     await waitFor(() => {
-      expect(result.current).toEqual(chains[0])
+      expect(result.current).toEqual(ALL_SUPPORTED_CHAINS_MAP[SupportedChainId.MAINNET])
     })
 
-    rerender({ chainId: 42161 })
+    rerender({ chainId: SupportedChainId.ARBITRUM_ONE })
 
     await waitFor(() => {
-      expect(result.current).toEqual(chains[1])
+      expect(result.current).toEqual(ALL_SUPPORTED_CHAINS_MAP[SupportedChainId.ARBITRUM_ONE])
     })
   })
 
