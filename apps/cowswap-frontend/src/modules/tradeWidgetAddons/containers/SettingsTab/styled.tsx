@@ -69,7 +69,7 @@ export const MenuFlyout = styled(MenuList)`
   right: 0;
   width: 280px;
 
-  ${Media.upToMedium()} {
-    min-width: 18.125rem;
-  }
+  // ${Media.upToMedium()} {
+  //   min-width: 18.125rem;
+  // }
 `

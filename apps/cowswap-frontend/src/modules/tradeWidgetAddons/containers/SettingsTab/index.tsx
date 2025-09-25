@@ -74,7 +74,7 @@ export function SettingsTab({ className, recipientToggleState, hooksEnabledState
                 <Trans>Interface Settings</Trans>
               </Text>
 
-              <RowBetween>
+              <RowBetween gap={'4px'}>
                 <RowFixed>
                   <ThemedText.Black fontWeight={400} fontSize={14}>
                     <Trans>Custom Recipient</Trans>
