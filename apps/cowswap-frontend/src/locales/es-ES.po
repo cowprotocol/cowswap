@@ -4204,7 +4204,7 @@ msgstr "No es compatible con el tipo de billetera actual"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "The \"Total duration\" is the duration it takes to execute all parts of your TWAP order.<0/><1/>For instance, your order consists of<2>{parts} parts</2>placed every<3>{partDurationDisplay}</3>, the total time to complete the order is<4>{totalDurationDisplay}</4>. Each limit order remains open for<5>{partDurationDisplay}</5>until the next part becomes active."
-msgstr "La \"Duración total\" es la duración que se tarda en ejecutar todas las partes de su pedido TWAP. 0/><1/>Por ejemplo, tu pedido consiste en <2>{parts} partes</2>colocado cada <3>{partDurationDisplay}</3>, el tiempo total para completar el pedido es<4>{totalDurationDisplay}</4>. Cada orden de límite permanece abierta para<5>{partDurationDisplay}</5>hasta que la siguiente parte se active."
+msgstr "La \"Duración total\" es la duración que se tarda en ejecutar todas las partes de su pedido TWAP.<0/><1/>Por ejemplo, tu pedido consiste en <2>{parts} partes</2>colocado cada <3>{partDurationDisplay}</3>, el tiempo total para completar el pedido es<4>{totalDurationDisplay}</4>. Cada orden de límite permanece abierta para<5>{partDurationDisplay}</5>hasta que la siguiente parte se active."
 
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/AccountCard/DefaultAccountContent.tsx
 msgid "on explorer"
@@ -5102,7 +5102,7 @@ msgstr "<0>La adquisición de CÚ de la cerradura GNO</0> se concede linealmente
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "The \"Part duration\" refers to the duration between each part of your TWAP order.<0/><1/>Choosing a shorter time allows for faster execution of each part, potentially reducing price fluctuations. Striking the right balance is crucial for optimal execution."
-msgstr "La \"Duración de la pieza\" se refiere a la duración entre cada parte de su pedido TWAP. 0/><1/>Elegir un tiempo más corto permite una ejecución más rápida de cada pieza, reduciendo potencialmente las fluctuaciones de precios. Lograr el equilibrio correcto es crucial para una ejecución óptima."
+msgstr "La \"Duración de la pieza\" se refiere a la duración entre cada parte de su pedido TWAP.<0/><1/>Elegir un tiempo más corto permite una ejecución más rápida de cada pieza, reduciendo potencialmente las fluctuaciones de precios. Lograr el equilibrio correcto es crucial para una ejecución óptima."
 
 #: apps/cowswap-frontend/src/modules/twap/pure/CustomDeadlineSelector/index.tsx
 msgid "Hours"
