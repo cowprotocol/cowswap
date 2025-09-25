@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.27.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.26.0...tokens-v1.27.0) (2025-09-25)
+
+
+### Features
+
+* **bnb:** add BNB favorite tokens ([#6291](https://github.com/cowprotocol/cowswap/issues/6291)) ([db3b963](https://github.com/cowprotocol/cowswap/commit/db3b963e0032a13aa60972845c8502d53e0ef539))
+
 ## [1.26.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.25.2...tokens-v1.26.0) (2025-09-17)
 
 
