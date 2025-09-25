@@ -78,7 +78,7 @@
     "@cowprotocol/cow-runner-game": "^0.2.9",
     "@cowprotocol/cow-sdk": "7.0.3",
     "@cowprotocol/sdk-composable": "^0.1.3",
-    "@cowprotocol/sdk-bridging": "^0.3.2",
+    "@cowprotocol/sdk-bridging": "^0.3.3",
     "@cowprotocol/sdk-cow-shed": "^0.1.3",
     "@cowprotocol/sdk-ethers-v5-adapter": "^0.1.0",
     "@cowprotocol/sdk-subgraph": "^0.1.0",

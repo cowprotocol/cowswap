@@ -1845,10 +1845,10 @@
     json-stringify-deterministic "^1.0.8"
     multiformats "^9.6.4"
 
-"@cowprotocol/sdk-bridging@^0.3.2":
-  version "0.3.2"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/sdk-bridging/-/sdk-bridging-0.3.2.tgz#0567f3eb193224ab7733805c5a5e31df37f369d1"
-  integrity sha512-l7PzMUABVhivhWwJE1NtfUTFQEC5v5twN1wXi2FDAQh1sx2malNKF13Tvze+g/VRsCC3bl6TeKaoRfmzi5Y+1A==
+"@cowprotocol/sdk-bridging@^0.3.3":
+  version "0.3.3"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/sdk-bridging/-/sdk-bridging-0.3.3.tgz#dead85385ee8befc0ae7aca3b71eefa3715c0608"
+  integrity sha512-T8/Np0rJZIvHVTLrtKAUBEMHaX0OUJ7YJyAWG7wNAW/sTkgIVXU/IhIrOAektTn2heWdJ8qlr8Pr7TRFiXWrRQ==
   dependencies:
     "@cowprotocol/sdk-app-data" "4.0.0"
     "@cowprotocol/sdk-common" "0.1.0"
