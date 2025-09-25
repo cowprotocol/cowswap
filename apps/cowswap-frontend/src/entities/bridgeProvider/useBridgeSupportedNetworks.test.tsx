@@ -1,7 +1,8 @@
 import React, { ReactNode } from 'react'
 
-import { ALL_SUPPORTED_CHAINS } from '@cowprotocol/cow-sdk'
+import { ALL_SUPPORTED_CHAINS, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { BridgeProvider, BridgeQuoteResult } from '@cowprotocol/sdk-bridging'
+import { ALL_SUPPORTED_CHAINS_MAP } from '@cowprotocol/sdk-config'
 
 import { renderHook, waitFor } from '@testing-library/react'
 import { SWRConfig } from 'swr'
@@ -182,10 +183,10 @@ describe('useBridgeSupportedNetwork', () => {
   it('should return the correct network when chainId is provided', async () => {
     mockProvider1.getNetworks.mockResolvedValue(chains)
 
-    const { result } = renderHook(() => useBridgeSupportedNetwork(42161), { wrapper })
+    const { result } = renderHook(() => useBridgeSupportedNetwork(SupportedChainId.ARBITRUM_ONE), { wrapper })
 
     await waitFor(() => {
-      expect(result.current).toEqual(chains[1])
+      expect(result.current).toEqual(ALL_SUPPORTED_CHAINS_MAP[SupportedChainId.ARBITRUM_ONE])
     })
   })
 
