@@ -112,11 +112,11 @@ export default function Page() {
           <p>retention rate of all major DEXs</p>
         </MetricsItem>
         <MetricsItem dividerColor={Color.cowfi_darkBlue5}>
-          <h2>$83B+</h2>
+          <h2>$144B+</h2>
           <p>total volume traded</p>
         </MetricsItem>
         <MetricsItem>
-          <h2>$441M+</h2>
+          <h2>$661M+</h2>
           <p>surplus found for users</p>
         </MetricsItem>
 
