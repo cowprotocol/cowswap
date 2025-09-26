@@ -3,6 +3,9 @@ import { ReactNode } from 'react'
 import { areAddressesEqual, isAddress } from '@cowprotocol/common-utils'
 import { InfoTooltip, NetworkLogo } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
+
 import { ConfirmDetailsItem } from 'modules/trade'
 import { BRIDGE_QUOTE_ACCOUNT } from 'modules/tradeQuote'
 
@@ -23,8 +26,8 @@ export function RecipientDetailsItem({ recipient, chainId }: RecipientDetailsIte
           withTimelineDot
           label={
             <>
-              Recipient{' '}
-              <InfoTooltip content="The address that will receive the tokens on the destination chain." size={14} />
+              <Trans>Recipient</Trans>{' '}
+              <InfoTooltip content={t`The address that will receive the tokens on the destination chain.`} size={14} />
             </>
           }
         >

@@ -1,3 +1,5 @@
+import { i18n } from '@lingui/core'
+
 const numberFormatter = new Intl.NumberFormat('en-US', {
   style: 'currency',
   currency: 'USD',
@@ -9,5 +11,5 @@ export const formatDecimal = (number?: number): string => {
 }
 
 export const formatInt = (number?: number): string => {
-  return number ? number.toLocaleString() : '-'
+  return number ? number.toLocaleString(i18n.locale) : '-'
 }

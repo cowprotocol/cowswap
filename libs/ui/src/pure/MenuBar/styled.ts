@@ -473,6 +473,15 @@ export const StyledDropdownContentItem = styled.li<{
   }
 `
 
+export const DropdownContentLanguages = styled(DropdownContent)`
+  max-height: 200px;
+  overflow-y: auto;
+
+  ${StyledDropdownContentItem} {
+    text-transform: capitalize;
+  }
+`
+
 export const DropdownContentItemIcon = styled.img`
   width: 56px;
   height: 56px;

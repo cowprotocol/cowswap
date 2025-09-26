@@ -15,6 +15,8 @@ import { Contract } from '@ethersproject/contracts'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { t } from '@lingui/core/macro'
+
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
@@ -131,10 +133,12 @@ function getWrapDescription(
   inputAmount: CurrencyAmount<Currency>,
 ): WrapDescription {
   const { native, wrapped } = getChainCurrencySymbols(chainId)
-  const baseSummarySuffix = isWrap ? `${native} to ${wrapped}` : `${wrapped} to ${native}`
-  const baseSummary = `${formatTokenAmount(inputAmount)} ${baseSummarySuffix}`
-  const summary = `${isWrap ? 'Wrap' : 'Unwrap'} ${baseSummary}`
-  const confirmationMessage = `${isWrap ? 'Wrapping' : 'Unwrapping'} ${baseSummary}`
+  const amountStr = formatTokenAmount(inputAmount)
+  const summary = isWrap ? t`Wrap ${amountStr} ${native} to ${wrapped}` : t`Unwrap ${amountStr} ${wrapped} to ${native}`
+  const confirmationMessage = isWrap
+    ? t`Wrapping ${amountStr} ${native} to ${wrapped}`
+    : t`Unwrapping ${amountStr} ${wrapped} to ${native}`
+  // Keep analytics label un-translated on purpose
   const operationMessage = isWrap ? 'Wrapping ' + native : 'Unwrapping ' + wrapped
 
   return {

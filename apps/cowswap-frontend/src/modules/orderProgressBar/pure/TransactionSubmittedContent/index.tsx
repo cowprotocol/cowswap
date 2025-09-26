@@ -5,6 +5,9 @@ import { Command } from '@cowprotocol/types'
 import { BackButton } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
+import { i18n, MessageDescriptor } from '@lingui/core'
+import { msg, t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import { Nullish } from 'types'
 
 import { DisplayLink } from 'legacy/components/TransactionConfirmationModal/DisplayLink'
@@ -24,12 +27,12 @@ import * as styledEl from './styled'
 import { OrderProgressBarProps } from '../../types'
 import { OrderProgressBar } from '../OrderProgressBar'
 
-const activityStatusLabels: Partial<Record<ActivityStatus, string>> = {
-  [ActivityStatus.CONFIRMED]: 'Confirmed',
-  [ActivityStatus.EXPIRED]: 'Expired',
-  [ActivityStatus.CANCELLED]: 'Cancelled',
-  [ActivityStatus.CANCELLING]: 'Cancelling',
-  [ActivityStatus.FAILED]: 'Failed',
+const activityStatusLabels: Partial<Record<ActivityStatus, MessageDescriptor>> = {
+  [ActivityStatus.CONFIRMED]: msg`Confirmed`,
+  [ActivityStatus.EXPIRED]: msg`Expired`,
+  [ActivityStatus.CANCELLED]: msg`Cancelled`,
+  [ActivityStatus.CANCELLING]: msg`Cancelling`,
+  [ActivityStatus.FAILED]: msg`Failed`,
 }
 
 function getTitleStatus(activityDerivedState: ActivityDerivedState | null): string {
@@ -37,8 +40,8 @@ function getTitleStatus(activityDerivedState: ActivityDerivedState | null): stri
     return ''
   }
 
-  const prefix = activityDerivedState.isOrder ? 'Order' : 'Transaction'
-  const postfix = activityStatusLabels[activityDerivedState.status] || 'Submitted'
+  const prefix = activityDerivedState.isOrder ? t`Order` : t`Transaction`
+  const postfix = i18n._(activityStatusLabels[activityDerivedState.status] as MessageDescriptor) || t`Submitted`
 
   return `${prefix} ${postfix}`
 }
@@ -100,7 +103,7 @@ export function TransactionSubmittedContent({
                   action: 'Click Cancel Order',
                 })}
               >
-                Cancel
+                <Trans>Cancel</Trans>
               </CancelButton>
             )}
             <DisplayLink
@@ -143,7 +146,7 @@ export function TransactionSubmittedContent({
                   action: 'Click Close',
                 })}
               >
-                Close
+                <Trans>Close</Trans>
               </styledEl.ButtonCustom>
             )}
 
@@ -155,7 +158,7 @@ export function TransactionSubmittedContent({
                   action: 'Click Close',
                 })}
               >
-                Close
+                <Trans>Close</Trans>
               </styledEl.ButtonSecondary>
             )}
           </styledEl.ButtonGroup>

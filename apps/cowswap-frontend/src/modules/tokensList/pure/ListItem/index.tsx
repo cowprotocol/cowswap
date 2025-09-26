@@ -9,6 +9,7 @@ import {
   ContextMenuItemText,
 } from '@cowprotocol/ui'
 
+import { Trans } from '@lingui/react/macro'
 import { Settings, Trash2 } from 'react-feather'
 
 import { Toggle } from 'legacy/components/Toggle'
@@ -77,7 +78,7 @@ export function ListItem(props: TokenListItemProps): ReactNode {
                 })}
               >
                 <Trash2 size={16} />
-                <span>Remove list</span>
+                <span><Trans>Remove list</Trans></span>
               </ContextMenuItemButton>
             </>
           }

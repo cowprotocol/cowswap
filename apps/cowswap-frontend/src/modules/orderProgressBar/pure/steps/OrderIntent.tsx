@@ -5,6 +5,8 @@ import { TokenLogo } from '@cowprotocol/tokens'
 import { TokenAmount } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
+import { Trans } from '@lingui/react/macro'
+
 import type { Order } from 'legacy/state/orders/actions'
 
 import * as styledEl from './styled'
@@ -45,11 +47,15 @@ export function OrderIntent({ order }: { order?: Order }): ReactNode {
     <styledEl.OriginalOrderIntent>
       {isSell ? (
         <>
-          {sellTokenPart} for at least {buyTokenPart}
+          <Trans>
+            {sellTokenPart} for at least {buyTokenPart}
+          </Trans>
         </>
       ) : (
         <>
-          {buyTokenPart} for at most {sellTokenPart}
+          <Trans>
+            {buyTokenPart} for at most {sellTokenPart}
+          </Trans>
         </>
       )}
     </styledEl.OriginalOrderIntent>

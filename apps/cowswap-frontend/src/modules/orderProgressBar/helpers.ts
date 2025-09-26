@@ -1,6 +1,8 @@
 import { isSellOrder } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 
+import { t } from '@lingui/core/macro'
+
 import { Order } from 'legacy/state/orders/actions'
 
 import { SurplusData } from 'common/hooks/useGetSurplusFiatValue'
@@ -13,16 +15,16 @@ export function truncateWithEllipsis(str: string, maxLength: number): string {
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function getTwitterText(surplusAmount: string, surplusToken: string, orderKind: OrderKind) {
-  const actionWord = isSellOrder(orderKind) ? 'got' : 'saved'
+  const actionWord = isSellOrder(orderKind) ? t`got` : t`saved`
   const surplus = `${surplusAmount} ${surplusToken}`
   return encodeURIComponent(
-    `Hey, I just ${actionWord} an extra ${surplus} on @CoWSwap! 🐮💸\n\nStart swapping on swap.cow.fi`,
+    t`Hey, I just ${actionWord} an extra ${surplus} on @CoWSwap! 🐮💸\n\nStart swapping on swap.cow.fi`,
   )
 }
 
 export function getTwitterShareUrl(surplusData: SurplusData | undefined, order: Order | undefined): string {
   const surplusAmount = surplusData?.surplusAmount?.toSignificant() || '0'
-  const surplusToken = surplusData?.surplusAmount?.currency.symbol || 'Unknown token'
+  const surplusToken = surplusData?.surplusAmount?.currency.symbol || t`Unknown token`
   const orderKind = order?.kind || OrderKind.SELL
 
   const twitterText = getTwitterText(surplusAmount, surplusToken, orderKind)
@@ -30,7 +32,7 @@ export function getTwitterShareUrl(surplusData: SurplusData | undefined, order: 
 }
 
 export function getTwitterTextForBenefit(benefit: string): string {
-  return encodeURIComponent(`Did you know? ${benefit}\n\nStart swapping on swap.cow.fi #CoWSwap @CoWSwap 🐮`)
+  return encodeURIComponent(t`Did you know? ${benefit}\n\nStart swapping on swap.cow.fi #CoWSwap @CoWSwap 🐮`)
 }
 
 export function getTwitterShareUrlForBenefit(benefit: string): string {
@@ -40,7 +42,7 @@ export function getTwitterShareUrlForBenefit(benefit: string): string {
 
 export function getSurplusText(isSell: boolean | undefined, isCustomRecipient: boolean | undefined): string {
   if (isSell) {
-    return isCustomRecipient ? 'including an extra ' : 'and got an extra '
+    return isCustomRecipient ? t`including an extra ` : t`and got an extra `
   }
-  return 'and saved '
+  return t`and saved `
 }

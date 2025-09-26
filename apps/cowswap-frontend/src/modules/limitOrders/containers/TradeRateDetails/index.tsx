@@ -1,5 +1,7 @@
 import { useCallback, useState } from 'react'
 
+import { t } from '@lingui/core/macro'
+
 import { PartnerFeeRow, TradeTotalCostsDetails } from 'modules/trade'
 import { Box } from 'modules/trade/containers/TradeTotalCostsDetails/styled'
 import { useUsdAmount } from 'modules/usdAmount'
@@ -47,7 +49,7 @@ export function TradeRateDetails({ rateInfoParams, alwaysExpanded = false }: Tra
     return (
       <>
         <RateInfo
-          label="Limit price"
+          label={t`Limit price`}
           stylized={true}
           rateInfoParams={rateInfoParams}
           rightAlign

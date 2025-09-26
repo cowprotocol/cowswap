@@ -4,7 +4,7 @@ import { getWrappedToken } from '@cowprotocol/common-utils'
 import { HelpTooltip } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 import { ThemedText } from 'theme'
 
 import { useIsEoaEthFlow } from 'modules/trade'
@@ -12,7 +12,6 @@ import { useIsSmartSlippageApplied } from 'modules/tradeSlippage'
 
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from 'common/utils/tradeSettingsTooltips'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
-
 
 export function SlippageTooltip(): JSX.Element {
   const { chainId } = useWalletInfo()

@@ -14,7 +14,7 @@ const actionMock = mock<AnyAction>()
 jest.mock('modules/sounds')
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+ 
 describe('soundMiddleware', () => {
   beforeEach(() => {
     resetCalls(actionMock)
