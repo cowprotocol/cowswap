@@ -70,6 +70,7 @@ export function buildPlaceLimitOrderEvent(params: LimitOrderEventParams): string
     buyAmountHuman: outputAmount.toSignificant(6),
     side: orderSide,
     orderKind: kind,
+    partialFillsEnabled,
     ...(executionPrice && { executionPrice: executionPrice.toSignificant(6) }),
   })
 }
