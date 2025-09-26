@@ -99,7 +99,7 @@ export default function Page() {
         </MetricsItem>
 
         <MetricsItem>
-          <h2>2.1B+</h2>
+          <h2>2.5B+</h2>
           <p>all time transactions</p>
         </MetricsItem>
 
