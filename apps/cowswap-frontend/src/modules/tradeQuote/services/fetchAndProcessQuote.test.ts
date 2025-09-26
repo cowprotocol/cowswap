@@ -296,8 +296,8 @@ describe('fetchAndProcessQuote', () => {
 
       await fetchAndProcessQuote(mockFetchParams, mockQuoteParams, mockAppData, mockTradeQuoteManager)
 
-      // Should not call onError for generic errors in swap quotes
-      expect(mockTradeQuoteManager.onError).not.toHaveBeenCalled()
+      // Should call onError for generic errors in swap quotes
+      expect(mockTradeQuoteManager.onError).toHaveBeenCalled()
       expect(console.error).toHaveBeenCalledWith('[fetchAndProcessQuote]:: fetchQuote error', mockError)
     })
   })
@@ -493,7 +493,7 @@ describe('fetchAndProcessQuote', () => {
       await fetchAndProcessQuote(mockFetchParams, mockQuoteParams, mockAppData, mockTradeQuoteManager)
 
       expect(mockMapOperatorErrorToQuoteError).not.toHaveBeenCalled()
-      expect(mockTradeQuoteManager.onError).not.toHaveBeenCalled()
+      expect(mockTradeQuoteManager.onError).toHaveBeenCalled()
       expect(console.error).toHaveBeenCalledWith('[fetchAndProcessQuote]:: fetchQuote error', mockError)
     })
   })
