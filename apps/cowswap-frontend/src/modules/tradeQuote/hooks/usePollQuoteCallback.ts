@@ -4,7 +4,6 @@ import { useCallback, useRef } from 'react'
 import { useIsOnline, useIsWindowVisible } from '@cowprotocol/common-hooks'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { useAreUnsupportedTokens } from '@cowprotocol/tokens'
-import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { QuoteParams } from './useQuoteParams'
 import { useTradeQuote } from './useTradeQuote'
@@ -25,7 +24,6 @@ export function usePollQuoteCallback(
   const tradeQuoteRef = useRef(tradeQuote)
   tradeQuoteRef.current = tradeQuote
 
-  const { chainId } = useWalletInfo()
   const { quoteParams, appData, inputCurrency } = quoteParamsState || {}
 
   const tradeQuoteManager = useTradeQuoteManager(inputCurrency && getCurrencyAddress(inputCurrency))
@@ -48,7 +46,7 @@ export function usePollQuoteCallback(
       }
 
       const fetchQuote = (fetchParams: TradeQuoteFetchParams): Promise<void> =>
-        fetchAndProcessQuote(chainId, fetchParams, quoteParams, appData, tradeQuoteManager)
+        fetchAndProcessQuote(fetchParams, quoteParams, appData, tradeQuoteManager)
 
       const context: QuoteUpdateContext = {
         currentQuote: tradeQuoteRef.current,
@@ -68,7 +66,6 @@ export function usePollQuoteCallback(
       return doQuotePolling(context)
     },
     [
-      chainId,
       quoteParams,
       appData,
       tradeQuoteManager,
