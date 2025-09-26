@@ -124,7 +124,7 @@ export async function safeBundleApprovalFlow(
       tokenContract: erc20Contract,
       spender,
       amountToApprove: context.inputAmount,
-      isBundle: true,
+      forceApprove: true,
     })
 
     if (shouldZeroApprove) {

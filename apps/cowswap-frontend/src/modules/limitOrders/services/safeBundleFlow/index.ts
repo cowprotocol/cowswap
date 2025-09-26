@@ -143,7 +143,7 @@ export async function safeBundleFlow(
       tokenContract: erc20Contract,
       spender,
       amountToApprove: inputAmount,
-      isBundle: true,
+      forceApprove: true,
     })
 
     if (shouldZeroApprove) {

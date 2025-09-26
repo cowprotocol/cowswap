@@ -11,11 +11,11 @@ export function useApproveCurrency(
   const currency = amountToApprove?.currency
 
   const tradeApproveCallback = useTradeApproveCallback(currency)
-  const shouldZeroApprove = useShouldZeroApprove(amountToApprove)
+  const shouldZeroApprove = useShouldZeroApprove(amountToApprove, true)
   const zeroApprove = useZeroApprove(currency)
   return useCallback(
     async (amount: bigint) => {
-      if (shouldZeroApprove) {
+      if (await shouldZeroApprove()) {
         await zeroApprove()
       }
 
