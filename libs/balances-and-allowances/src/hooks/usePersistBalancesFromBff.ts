@@ -2,13 +2,13 @@ import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
 import { BFF_BASE_URL } from '@cowprotocol/common-const'
-import { useDebounce } from '@cowprotocol/common-hooks'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { BigNumber } from '@ethersproject/bignumber'
 
-import ms from 'ms.macro'
 import useSWR, { SWRConfiguration } from 'swr'
+
+import { usePendingOrdersCountInvalidateCacheTrigger } from './usePendingOrdersCountInvalidateCacheTrigger'
 
 import { balancesAtom, BalancesState, balancesUpdateAtom } from '../state/balancesAtom'
 import { useSetIsBffFailed } from '../state/isBffFailedAtom'
@@ -27,8 +27,6 @@ export interface PersistBalancesFromBffParams {
   isEnabled?: boolean
 }
 
-const DEBOUNCE_FOR_PENDING_ORDERS_MS = ms`1s`
-
 export function usePersistBalancesFromBff(params: PersistBalancesFromBffParams): void {
   const { account, chainId, balancesSwrConfig, pendingOrdersCount, tokenAddresses, isEnabled } = params
 
@@ -38,16 +36,16 @@ export function usePersistBalancesFromBff(params: PersistBalancesFromBffParams):
   const isSupportedNetwork = isBffSupportedNetwork(targetChainId)
 
   const setIsBffFailed = useSetIsBffFailed()
-  const debouncedPendingOrdersCount = useDebounce(pendingOrdersCount, DEBOUNCE_FOR_PENDING_ORDERS_MS)
+
+  const invalidateCacheTrigger = usePendingOrdersCountInvalidateCacheTrigger(pendingOrdersCount)
 
   const {
     isLoading: isBalancesLoading,
     data,
     error,
   } = useSWR(
-    // debouncedPendingOrdersCount is added to the key to refetch balances when it changes (new order created or order filled)
     targetAccount && isEnabled && isSupportedNetwork
-      ? [targetAccount, targetChainId, debouncedPendingOrdersCount, 'bff-balances']
+      ? [targetAccount, targetChainId, invalidateCacheTrigger, 'bff-balances']
       : null,
     ([walletAddress, chainId]) => getBffBalances(walletAddress, chainId),
     balancesSwrConfig,
