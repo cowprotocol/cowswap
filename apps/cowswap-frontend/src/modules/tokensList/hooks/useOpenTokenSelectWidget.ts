@@ -8,7 +8,7 @@ import { Nullish } from 'types'
 
 import { Field } from 'legacy/state/types'
 
-import { TradeType } from 'modules/trade/types/TradeType'
+import { TradeType } from 'modules/trade'
 
 import { useCloseTokenSelectWidget } from './useCloseTokenSelectWidget'
 import { useUpdateSelectTokenWidgetState } from './useUpdateSelectTokenWidgetState'

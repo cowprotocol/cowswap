@@ -6,7 +6,7 @@ import { Media } from '@cowprotocol/ui'
 
 import { Field } from 'legacy/state/types'
 
-import { TradeType } from 'modules/trade/types/TradeType'
+import { TradeType } from 'modules/trade'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 

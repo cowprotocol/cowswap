@@ -13,7 +13,7 @@ import { Nullish } from 'types'
 import { Field } from 'legacy/state/types'
 
 import { PermitCompatibleTokens } from 'modules/permit'
-import { TradeType } from 'modules/trade/types/TradeType'
+import { TradeType } from 'modules/trade'
 
 import { SelectTokenModalContent } from './SelectTokenModalContent'
 import * as styledEl from './styled'

@@ -5,7 +5,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 
 import styled from 'styled-components/macro'
 
-import { TradeType } from 'modules/trade/types/TradeType'
+import { TradeType } from 'modules/trade'
 
 import { allTokensMock, favoriteTokensMock } from '../../mocks'
 
