@@ -1,5 +1,5 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import type { EnrichedOrder, TokenInfo } from '@cowprotocol/cow-sdk'
+import type { EnrichedOrder } from '@cowprotocol/cow-sdk'
 import {
   CowWidgetEvents,
   SimpleCowEventEmitter,
@@ -10,6 +10,7 @@ import {
   OnExpiredOrderPayload,
   BaseOrderPayload,
 } from '@cowprotocol/events'
+import type { TokenInfo } from '@cowprotocol/types'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { getCowAnalytics } from '../utils'
