@@ -39,7 +39,6 @@ import {
   ExpiredOrdersUpdater,
   OrdersFromApiUpdater,
   PendingOrdersUpdater,
-  UnfillableOrdersUpdater,
 } from 'common/updaters/orders'
 import { SpotPricesUpdater } from 'common/updaters/orders/SpotPricesUpdater'
 import { SentryUpdater } from 'common/updaters/SentryUpdater'
@@ -77,7 +76,6 @@ export function Updaters(): ReactNode {
       <PendingOrdersUpdater />
       <CancelledOrdersUpdater />
       <ExpiredOrdersUpdater />
-      <UnfillableOrdersUpdater />
       <OrdersFromApiUpdater />
       <GasUpdater />
       <SentryUpdater />

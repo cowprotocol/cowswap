@@ -21,7 +21,17 @@ const SWR_CONFIG: SWRConfiguration = {
 /**
  * Updater that checks whether pending orders are still "fillable"
  */
-export function UnfillableOrdersUpdater(): null {
+export function UnfillableOrdersUpdater({
+  isWindowVisible,
+  pageSize,
+  pageNumber,
+  isTabWithPending,
+}: {
+  isWindowVisible: boolean
+  pageSize: number
+  pageNumber?: number
+  isTabWithPending: boolean
+}): null {
   const { chainId, account } = useWalletInfo()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
 
@@ -29,7 +39,7 @@ export function UnfillableOrdersUpdater(): null {
   const pendingOrdersRef = useRef(pendingOrders)
   pendingOrdersRef.current = pendingOrders
 
-  const updatePending = useUpdatePendingOrders()
+  const updatePending = useUpdatePendingOrders(isWindowVisible, isTabWithPending, pageSize, pageNumber)
 
   const updatePendingRef = useRef(updatePending)
   updatePendingRef.current = updatePending
