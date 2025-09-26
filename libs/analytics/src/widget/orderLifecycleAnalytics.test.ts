@@ -31,6 +31,7 @@ const basePostedPayload = {
   inputAmount: BigInt('1000000000000000000'),
   outputAmount: BigInt('2500000'),
   orderType: 'swap',
+  partiallyFillable: true,
   kind: OrderKind.SELL,
   receiver: '0xreceiver',
   orderCreationHash: '0xhash',
@@ -53,6 +54,7 @@ describe('order lifecycle analytics mappers', () => {
         to_currency: 'TK2',
         from_amount: '1',
         to_amount: '2.5',
+        partiallyFillable: true,
       }),
     )
   })

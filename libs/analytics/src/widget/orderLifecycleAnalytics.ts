@@ -197,6 +197,7 @@ export function mapPostedOrder(p: OnPostedOrderPayload): AnalyticsPayload {
     ...tokenFields,
     ...buildAnalyticsCurrencyAliases(tokenFields),
     orderType: p.orderType,
+    partiallyFillable: p.partiallyFillable,
     kind: p.kind,
     receiver: p.receiver || '',
     orderCreationHash: p.orderCreationHash || '',

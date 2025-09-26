@@ -171,6 +171,7 @@ export async function safeBundleFlow(
       outputAmount,
       owner: account,
       uiOrderType: UiOrderType.LIMIT,
+      partiallyFillable: postOrderParams.partiallyFillable,
     })
 
     logTradeFlow(LOG_PREFIX, 'STEP 7: add safe tx hash and unhide order')
