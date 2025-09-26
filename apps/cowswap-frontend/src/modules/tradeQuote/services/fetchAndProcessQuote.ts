@@ -13,7 +13,7 @@ import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 
 import { AppDataInfo } from 'modules/appData'
 
-import { mapOperatorErrorToQuoteError, QuoteApiError } from 'api/cowProtocol/errors/QuoteError'
+import { mapOperatorErrorToQuoteError, QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
 import { getIsOrderBookTypedError } from 'api/cowProtocol/getIsOrderBookTypedError'
 
 import { TradeQuoteManager } from '../hooks/useTradeQuoteManager'
@@ -53,7 +53,15 @@ export async function fetchAndProcessQuote(
     if (parsedError instanceof QuoteApiError) {
       tradeQuoteManager.onError(parsedError, chainId, quoteParams, fetchParams)
     } else {
-      tradeQuoteManager.setLoading(false)
+      tradeQuoteManager.onError(
+        new QuoteApiError({
+          errorType: QuoteApiErrorCodes.UNHANDLED_ERROR,
+          description: String(error),
+        }),
+        chainId,
+        quoteParams,
+        fetchParams,
+      )
     }
   }
 
