@@ -113,8 +113,7 @@ export function TwapConfirmModal() {
         priceImpact={priceImpact}
         buttonText={'Place TWAP order'}
         recipient={recipient}
-      >
-        {(warnings) => (
+        beforeContent={
           <>
             {receiveAmountInfo && numOfParts && (
               <TradeBasicConfirmDetails
@@ -145,11 +144,10 @@ export function TwapConfirmModal() {
               partDuration={partDuration}
               totalDuration={totalDuration}
             />
-            {warnings}
-            <TwapFormWarnings localFormValidation={localFormValidation} isConfirmationModal />
           </>
-        )}
-      </TradeConfirmation>
+        }
+        afterContent={<TwapFormWarnings localFormValidation={localFormValidation} isConfirmationModal />}
+      />
     </TradeConfirmModal>
   )
 }

@@ -1,15 +1,12 @@
-import { ReactNode, useMemo } from 'react'
+import { ReactNode } from 'react'
 
-import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { Nullish } from '@cowprotocol/types'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
-import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import type { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { useAppData } from 'modules/appData'
 import {
-  QuoteDetails,
   useQuoteBridgeContext,
   useQuoteSwapContext,
   useShouldDisplayBridgeDetails,
@@ -17,20 +14,18 @@ import {
 } from 'modules/bridge'
 import { useTokensBalancesCombined } from 'modules/combinedBalances/hooks/useTokensBalancesCombined'
 import { OrderSubmittedContent } from 'modules/orderProgressBar'
-import {
-  TradeBasicConfirmDetails,
-  TradeConfirmation,
-  TradeConfirmModal,
-  useGetReceiveAmountInfo,
-  useTradeConfirmActions,
-} from 'modules/trade'
+import { TradeConfirmation, TradeConfirmModal, useGetReceiveAmountInfo, useTradeConfirmActions } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
-import { HighFeeWarning, RowDeadline } from 'modules/tradeWidgetAddons'
+import { HighFeeWarning } from 'modules/tradeWidgetAddons'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
-import { RateInfo } from 'common/pure/RateInfo'
 
+import { useBeforeContent } from './useBeforeContent'
+import { useConfirmButtonText } from './useConfirmButtonText'
+import { useConfirmClickEvent } from './useConfirmClickEvent'
+import { useConfirmEventAmounts } from './useConfirmEventAmounts'
+import { useDisableConfirm } from './useDisableConfirm'
 import { useLabelsAndTooltips } from './useLabelsAndTooltips'
 
 import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
@@ -48,12 +43,10 @@ export interface SwapConfirmModalProps {
   recipientAddress: Nullish<string>
 }
 
-// TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
 export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
   const { inputCurrencyInfo, outputCurrencyInfo, priceImpact, recipient, recipientAddress, doTrade } = props
 
-  const { account } = useWalletInfo()
+  const { account, chainId } = useWalletInfo()
   const { ensName } = useWalletDetails()
   const appData = useAppData()
   const receiveAmountInfo = useGetReceiveAmountInfo()
@@ -75,39 +68,47 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
 
   const { values: balances } = useTokensBalancesCombined()
 
-  // TODO: Reduce function complexity by extracting logic
-  const disableConfirm = useMemo(() => {
-    const current = inputCurrencyInfo?.amount?.currency
-
-    if (shouldDisplayBridgeDetails && !bridgeQuoteAmounts) {
-      return true
-    }
-
-    if (current) {
-      const normalisedAddress = getCurrencyAddress(current).toLowerCase()
-      const balance = balances[normalisedAddress]
-      const balanceAsCurrencyAmount = CurrencyAmount.fromRawAmount(current, balance?.toString() ?? '0')
-
-      const isBalanceEnough = balanceAsCurrencyAmount
-        ? inputCurrencyInfo?.amount?.equalTo(balanceAsCurrencyAmount) ||
-          inputCurrencyInfo?.amount?.lessThan(balanceAsCurrencyAmount)
-        : false
-
-      return !isBalanceEnough
-    }
-
-    return true
-  }, [balances, inputCurrencyInfo, shouldDisplayBridgeDetails, bridgeQuoteAmounts])
+  const disableConfirm = useDisableConfirm({
+    inputCurrencyInfo,
+    shouldDisplayBridgeDetails,
+    bridgeQuoteAmounts,
+    balances,
+  })
 
   const confirmText = shouldDisplayBridgeDetails ? 'Confirm Swap and Bridge' : 'Confirm Swap'
 
-  const buttonText = useMemo(() => {
-    if (disableConfirm) {
-      const { amount } = inputCurrencyInfo
-      return `Insufficient ${amount?.currency?.symbol || 'token'} balance`
-    }
-    return confirmText
-  }, [confirmText, disableConfirm, inputCurrencyInfo])
+  const buttonText = useConfirmButtonText(disableConfirm, inputCurrencyInfo, confirmText)
+
+  const { inputAmount: eventInputAmount, outputAmount: eventOutputAmount } = useConfirmEventAmounts({
+    shouldDisplayBridgeDetails,
+    bridgeContext,
+    inputCurrencyAmount: inputCurrencyInfo.amount,
+    outputCurrencyAmount: outputCurrencyInfo.amount,
+    receiveAmountInfo,
+  })
+
+  const confirmClickEvent = useConfirmClickEvent({
+    inputAmount: eventInputAmount,
+    outputAmount: eventOutputAmount,
+    account,
+    ensName,
+    chainId,
+  })
+
+  const beforeContent = useBeforeContent({
+    shouldDisplayBridgeDetails,
+    bridgeProvider,
+    swapContext,
+    bridgeContext,
+    rateInfoParams,
+    receiveAmountInfo,
+    slippage,
+    recipient,
+    recipientAddress,
+    account,
+    labelsAndTooltips,
+    deadline,
+  })
 
   return (
     <TradeConfirmModal title={CONFIRM_TITLE} submittedContent={submittedContent}>
@@ -124,45 +125,10 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
         buttonText={buttonText}
         recipient={recipient}
         appData={appData || undefined}
-      >
-        {shouldDisplayBridgeDetails && bridgeProvider && swapContext && bridgeContext
-          ? (restContent) => (
-              <>
-                <RateInfo label="Price" rateInfoParams={rateInfoParams} fontSize={13} fontBold labelBold />
-                <QuoteDetails
-                  isCollapsible
-                  bridgeProvider={bridgeProvider}
-                  swapContext={swapContext}
-                  bridgeContext={bridgeContext}
-                  hideRecommendedSlippage
-                />
-                {restContent}
-                <HighFeeWarning readonlyMode />
-              </>
-            )
-          : (restContent) => (
-              <>
-                {receiveAmountInfo && slippage && (
-                  <TradeBasicConfirmDetails
-                    rateInfoParams={rateInfoParams}
-                    slippage={slippage}
-                    receiveAmountInfo={receiveAmountInfo}
-                    recipient={recipient}
-                    recipientAddress={recipientAddress}
-                    account={account}
-                    labelsAndTooltips={labelsAndTooltips}
-                    hideLimitPrice
-                    hideUsdValues
-                    withTimelineDot={false}
-                  >
-                    <RowDeadline deadline={deadline} />
-                  </TradeBasicConfirmDetails>
-                )}
-                {restContent}
-                <HighFeeWarning readonlyMode />
-              </>
-            )}
-      </TradeConfirmation>
+        data-click-event={confirmClickEvent}
+        beforeContent={beforeContent}
+        afterContent={<HighFeeWarning readonlyMode />}
+      />
     </TradeConfirmModal>
   )
 }

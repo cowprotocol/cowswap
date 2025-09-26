@@ -178,6 +178,7 @@ export async function tradeFlow(
       outputAmount,
       owner: account,
       uiOrderType: UiOrderType.LIMIT,
+      partiallyFillable: postOrderParams.partiallyFillable,
     })
 
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 8: Sign order')
