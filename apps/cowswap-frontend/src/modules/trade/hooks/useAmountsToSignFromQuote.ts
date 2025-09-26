@@ -14,7 +14,7 @@ export interface AmountsToSign {
  * Returns amounts that will end up in signed order
  * It means, those values already include fees and slippage depending on order type
  */
-export function useAmountsToSign(): AmountsToSign | null {
+export function useAmountsToSignFromQuote(): AmountsToSign | null {
   const { isQuoteBasedOrder, inputCurrencyAmount, outputCurrencyAmount } = useDerivedTradeState() || {}
   const { afterSlippage } = useGetReceiveAmountInfo() || {}
 

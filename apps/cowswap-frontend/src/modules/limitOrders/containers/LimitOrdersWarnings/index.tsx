@@ -25,7 +25,7 @@ import { calculatePercentageInRelationToReference } from 'utils/orderUtils/calcu
 import { RateImpactWarning } from '../../pure/RateImpactWarning'
 import { SmallVolumeWarningBanner } from '../../pure/SmallVolumeWarningBanner'
 
-const FORM_STATES_TO_SHOW_BUNDLE_BANNER = [TradeFormValidation.ApproveAndSwap]
+const FORM_STATES_TO_SHOW_BUNDLE_BANNER = [TradeFormValidation.ApproveAndSwapInBundle]
 
 export interface LimitOrdersWarningsProps {
   feeAmount?: Nullish<CurrencyAmount<Currency>>

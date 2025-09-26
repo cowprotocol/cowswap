@@ -4,6 +4,7 @@ import { PriceQuality } from '@cowprotocol/cow-sdk'
 import { TradeType } from 'modules/trade'
 import { isQuoteExpired } from 'modules/tradeQuote'
 
+import { ApproveRequiredReason } from '../../erc20Approve'
 import { TradeFormValidation, TradeFormValidationContext } from '../types'
 
 // eslint-disable-next-line max-lines-per-function, complexity
@@ -151,9 +152,9 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     validations.push(TradeFormValidation.WrapUnwrapFlow)
   }
 
-  if (isApproveRequired) {
+  if (isApproveRequired !== ApproveRequiredReason.NotRequired) {
     if (isBundlingSupported) {
-      validations.push(TradeFormValidation.ApproveAndSwap)
+      validations.push(TradeFormValidation.ApproveAndSwapInBundle)
     }
     validations.push(TradeFormValidation.ApproveRequired)
   }

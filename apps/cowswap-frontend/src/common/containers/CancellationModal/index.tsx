@@ -1,4 +1,5 @@
 import { useAtomValue } from 'jotai'
+import { ReactNode } from 'react'
 
 import { Command } from '@cowprotocol/types'
 
@@ -10,9 +11,7 @@ export type CancellationModalProps = {
   onDismiss: Command
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function CancellationModal(props: CancellationModalProps) {
+export function CancellationModal(props: CancellationModalProps): ReactNode {
   const { isOpen, onDismiss } = props
 
   const context = useAtomValue(cancellationModalContextAtom)

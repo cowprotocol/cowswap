@@ -37,14 +37,18 @@ function getOrdersInputTokens(allOrders: Order[]): string[] {
 
 interface OrdersTableStateUpdaterProps extends OrdersTableParams {
   searchTerm?: string
+  syncWithUrl?: boolean
 }
 
+// todo will fix in the next pr
+// eslint-disable-next-line max-lines-per-function
 export function OrdersTableStateUpdater({
   orders: allOrders,
   orderType,
   searchTerm = '',
   isTwapTable = false,
   displayOrdersOnlyForSafeApp = false,
+  syncWithUrl = true,
 }: OrdersTableStateUpdaterProps): ReactNode {
   const { chainId, account } = useWalletInfo()
   const { allowsOffchainSigning } = useWalletDetails()
@@ -120,7 +124,15 @@ export function OrdersTableStateUpdater({
 
   // Set page params initially once
   useEffect(() => {
-    navigate(buildOrdersTableUrl(location, { pageNumber: currentPageNumber, tabId: currentTabId }), { replace: true })
+    // todo - need to divide this logic from updater
+    syncWithUrl &&
+      navigate(
+        buildOrdersTableUrl(location, {
+          pageNumber: currentPageNumber,
+          tabId: currentTabId,
+        }),
+        { replace: true },
+      )
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useValidatePageUrlParams(orders.length, currentTabId, currentPageNumber)
