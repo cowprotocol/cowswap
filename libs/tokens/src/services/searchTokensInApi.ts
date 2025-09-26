@@ -1,8 +1,6 @@
 import { BFF_BASE_URL } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { gql, GraphQLClient } from 'graphql-request'
-
 type Address = `0x${string}`
 
 type Chain =
@@ -17,110 +15,14 @@ type Chain =
   | 'BASE'
   | 'UNKNOWN_CHAIN'
 
-interface FetchTokensResult {
-  id: string
-  decimals: number
-  name: string
-  chain: Chain
-  standard: string
-  address: Address
-  symbol: string
-  project: {
-    id: string
-    name: string
-    logoUrl: string
-    logo: {
-      id: string
-      url: string
-    }
-    safetyLevel: string
-  }
-}
-
-interface FetchTokensApiResult {
-  searchTokens: FetchTokensResult[]
-}
-
-export interface TokenSearchFromApiResult extends FetchTokensResult {
+export type TokenSearchFromApiResult = {
   chainId: SupportedChainId
+  address: Address
+  name: string
+  symbol: string
+  decimals: number
+  logoURI: string
 }
-
-const SEARCH_TOKENS = gql`
-  query SearchTokensWeb($searchQuery: String!, $chains: [Chain!]) {
-    searchTokens(searchQuery: $searchQuery, chains: $chains) {
-      ...SimpleTokenDetails
-      id
-      decimals
-      name
-      chain
-      standard
-      address
-      symbol
-      market(currency: USD) {
-        id
-        price {
-          id
-          value
-          currency
-          __typename
-        }
-        pricePercentChange(duration: DAY) {
-          id
-          value
-          __typename
-        }
-        volume24H: volume(duration: DAY) {
-          id
-          value
-          currency
-          __typename
-        }
-        __typename
-      }
-      project {
-        id
-        name
-        logo {
-          id
-          url
-          __typename
-        }
-        safetyLevel
-        logoUrl
-        isSpam
-        __typename
-      }
-      __typename
-    }
-  }
-
-  fragment SimpleTokenDetails on Token {
-    id
-    address
-    chain
-    symbol
-    name
-    decimals
-    standard
-    project {
-      id
-      name
-      logo {
-        id
-        url
-        __typename
-      }
-      safetyLevel
-      logoUrl
-      isSpam
-      __typename
-    }
-    __typename
-  }
-`
-
-const BASE_URL = `${BFF_BASE_URL}/proxies/tokens`
-const GQL_CLIENT = new GraphQLClient(BASE_URL)
 
 const CHAIN_NAMES: Record<SupportedChainId, Chain | null> = {
   [SupportedChainId.MAINNET]: 'ETHEREUM',
@@ -134,40 +36,17 @@ const CHAIN_NAMES: Record<SupportedChainId, Chain | null> = {
   [SupportedChainId.BNB]: 'BNB',
 }
 
-const CHAIN_IDS = Object.entries(CHAIN_NAMES).reduce(
-  (acc, [supportedChainId, chain]) => {
-    if (chain) {
-      acc[chain] = parseInt(supportedChainId)
-    }
-
-    return acc
-  },
-  {} as Record<Chain, SupportedChainId>,
-)
-
 export async function searchTokensInApi(
   chainId: SupportedChainId,
-  searchQuery: string,
+  searchParam: string,
 ): Promise<TokenSearchFromApiResult[]> {
   const chain = CHAIN_NAMES[chainId]
 
-  if (!chain) {
+  if (!chain || !searchParam || searchParam.length < 3) {
     return []
   }
 
-  return await GQL_CLIENT.request<FetchTokensApiResult>(SEARCH_TOKENS, {
-    searchQuery,
-    chains: [chain],
-  }).then((result) => {
-    if (!result?.searchTokens?.length) {
-      return []
-    }
+  const BFF_SEARCH_URL = `${BFF_BASE_URL}/${chainId}/tokens/search/${searchParam}`
 
-    return result.searchTokens.map((token) => {
-      return {
-        ...token,
-        chainId: CHAIN_IDS[token.chain],
-      }
-    })
-  })
+  return fetch(BFF_SEARCH_URL).then((res) => res.json())
 }
