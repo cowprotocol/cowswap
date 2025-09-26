@@ -55,6 +55,7 @@ describe('order lifecycle analytics mappers', () => {
         from_amount: '1',
         to_amount: '2.5',
         partiallyFillable: true,
+        isEthFlow: false,
       }),
     )
   })
