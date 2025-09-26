@@ -61,13 +61,28 @@ export function getExecutedSummaryDataWithSurplusToken(order: Order | ParsedOrde
 
   const { surplusAmount: amount, surplusPercentage: percentage } = parsedOrder.executionData
 
-  const surplusAmount = CurrencyAmount.fromRawAmount(surplusToken, amount?.decimalPlaces(0).toFixed())
+  // Guard against missing surplus by falling back to '0' raw amount
+  const rawSurplus = amount ? amount.decimalPlaces(0).toFixed() : '0'
+  const surplusAmount = CurrencyAmount.fromRawAmount(surplusToken, rawSurplus)
   const surplusPercent = percentage?.multipliedBy(100)?.toFixed(2)
+
+  // Prefer the provided surplusToken (used to pass the intermediate token for bridge flows)
+  // only when it is safe to do so:
+  // - decimals must match the parsed output token (avoid mis-scaling)
+  // - and either the order is a BUY (destination amount displayed in output token),
+  //   or surplusToken differs from parsedOutputToken (bridge/intermediate case)
+  const decimalsMatch = surplusToken.decimals === parsedOutputToken.decimals
+  const isBuy = !isSellOrder(parsedOrder.kind)
+  const isDifferentToken =
+    surplusToken.address.toLowerCase() !== parsedOutputToken.address.toLowerCase() ||
+    surplusToken.chainId !== parsedOutputToken.chainId
+  const useSurplusForOutput = decimalsMatch && (isBuy || isDifferentToken)
+  const effectiveOutputToken = useSurplusForOutput ? surplusToken : parsedOutputToken
 
   const { formattedFilledAmount, formattedSwappedAmount, swappedAmountWithFee } = getFilledAmounts({
     ...parsedOrder,
     inputToken: parsedInputToken,
-    outputToken: parsedOutputToken,
+    outputToken: effectiveOutputToken,
   })
 
   return {
