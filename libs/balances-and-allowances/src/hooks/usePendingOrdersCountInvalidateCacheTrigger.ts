@@ -4,7 +4,7 @@ import { useDebounce, usePrevious } from '@cowprotocol/common-hooks'
 
 import ms from 'ms.macro'
 
-const DEBOUNCE_FOR_PENDING_ORDERS_MS = ms`1s`
+const DEBOUNCE_FOR_PENDING_ORDERS_MS = ms`2s`
 
 /**
  * Invalidate cache trigger that only updates when the number of pending orders decreases
