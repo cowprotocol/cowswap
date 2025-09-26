@@ -60,6 +60,12 @@ describe('order lifecycle analytics mappers', () => {
     )
   })
 
+  it('falls back for nullish string fields', () => {
+    const result = mapPostedOrder({ ...basePostedPayload, owner: null } as unknown as OnPostedOrderPayload)
+
+    expect(result).toEqual(expect.objectContaining({ walletAddress: '' }))
+  })
+
   it('maps fulfilled order payload with executed totals', () => {
     const fulfilledPayload = {
       ...basePostedPayload,

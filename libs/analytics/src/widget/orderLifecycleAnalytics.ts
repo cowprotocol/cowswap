@@ -17,7 +17,7 @@ import { getCowAnalytics } from '../utils'
 
 // Specialized helper function for string properties to ensure we always return a string
 export const safeGetString = <T, K extends keyof T>(obj: T | undefined, key: K, fallback: string = ''): string => {
-  const value = obj && obj[key] !== undefined ? obj[key] : fallback
+  const value = obj && obj[key] != null ? obj[key] : fallback
   return String(value)
 }
 
@@ -191,7 +191,7 @@ export function mapPostedOrder(p: OnPostedOrderPayload): AnalyticsPayload {
   }
 
   return {
-    walletAddress: p.owner,
+    walletAddress: p.owner || '',
     orderId: p.orderUid,
     chainId: p.chainId.toString(),
     ...tokenFields,
