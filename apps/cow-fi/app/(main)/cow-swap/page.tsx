@@ -112,11 +112,11 @@ export default function Page() {
           <p>retention rate of all major DEXs</p>
         </MetricsItem>
         <MetricsItem dividerColor={Color.cowfi_darkBlue5}>
-          <h2>$83B+</h2>
+          <h2>$144B+</h2>
           <p>total volume traded</p>
         </MetricsItem>
         <MetricsItem>
-          <h2>$441M+</h2>
+          <h2>$661M+</h2>
           <p>surplus found for users</p>
         </MetricsItem>
 
@@ -303,10 +303,10 @@ export default function Page() {
             >
               <TopicCardInner contentAlign="left">
                 <TopicTitle color={`var(${UI.COLOR_NEUTRAL_100})`} fontSize={51}>
-                  $2,500
+                  $67k
                 </TopicTitle>
                 <TopicDescription fontSize={21} color={`var(${UI.COLOR_BLUE_300_PRIMARY})`}>
-                  Average trade size (more than 2x Uniswap&apos;s)
+                  Average trade size 
                 </TopicDescription>
               </TopicCardInner>
             </TopicCard>
@@ -320,7 +320,7 @@ export default function Page() {
             >
               <TopicCardInner contentAlign="left">
                 <TopicTitle color={`var(${UI.COLOR_NEUTRAL_100})`} fontSize={51}>
-                  50%
+                  67%
                 </TopicTitle>
                 <TopicDescription fontSize={21} color={`var(${UI.COLOR_BLUE_300_PRIMARY})`}>
                   Market share among smart contract wallets
@@ -337,7 +337,7 @@ export default function Page() {
             >
               <TopicCardInner contentAlign="left">
                 <TopicTitle color={`var(${UI.COLOR_NEUTRAL_100})`} fontSize={51}>
-                  42%
+                  70%
                 </TopicTitle>
                 <TopicDescription fontSize={21} color={`var(${UI.COLOR_BLUE_300_PRIMARY})`}>
                   Monthly user retention rate – the highest in DeFi

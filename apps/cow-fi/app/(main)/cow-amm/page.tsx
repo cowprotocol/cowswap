@@ -80,11 +80,11 @@ export default function Page() {
           <p>more TVL achieved than reference pool (beta phase)</p>
         </MetricsItem>
         <MetricsItem dividerColor={Color.cowamm_green_light}>
-          <h2>$18M+</h2>
+          <h2>$13M+</h2>
           <p>liquidity protected from LVR</p>
         </MetricsItem>
         <MetricsItem>
-          <h2>$1.2M+</h2>
+          <h2>$1.5M+</h2>
           <p>surplus captured for LPs (beta phase)</p>
         </MetricsItem>
 
