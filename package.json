@@ -39,7 +39,6 @@
     "lint-staged": "lint-staged --verbose -c lint-staged.config.js",
     "prebuild:cowswap": "yarn i18n",
     "prepare": "husky",
-    "preinstall": "node tools/scripts/add-github-npm-auth.js",
     "postinstall": "yarn run patch-package",
     "analyze-build": "cross-env ANALYZE_BUNDLE=true ANALYZE_BUNDLE_TEMPLATE=sunburst yarn build"
   },
