@@ -57,15 +57,15 @@ export function usePersistBalancesFromBff(params: PersistBalancesFromBffParams):
   const setBalancesUpdate = useSetAtom(balancesUpdateAtom)
 
   useEffect(() => {
-    setBalances((state) => ({ ...state, isLoading: isBalancesLoading, chainId }))
-  }, [setBalances, isBalancesLoading, chainId, targetAccount])
+    setBalances((state) => ({ ...state, isLoading: isBalancesLoading, chainId: targetChainId }))
+  }, [setBalances, isBalancesLoading, targetChainId, targetAccount])
 
   useEffect(() => {
     setIsBffFailed(!!error)
   }, [error, setIsBffFailed])
 
   useEffect(() => {
-    if (!account || !data || error) return
+    if (!targetAccount || !data || error) return
 
     const balancesState = tokenAddresses.reduce<BalancesState['values']>((acc, address) => {
       address = address.toLowerCase()
@@ -77,7 +77,7 @@ export function usePersistBalancesFromBff(params: PersistBalancesFromBffParams):
     setBalances((state) => {
       return {
         ...state,
-        chainId,
+        chainId: targetChainId,
         fromCache: false,
         values: balancesState,
         isLoading: false,
@@ -86,12 +86,23 @@ export function usePersistBalancesFromBff(params: PersistBalancesFromBffParams):
 
     setBalancesUpdate((state) => ({
       ...state,
-      [chainId]: {
-        ...state[chainId],
-        [account.toLowerCase()]: Date.now(),
+      [targetChainId]: {
+        ...state[targetChainId],
+        [targetAccount.toLowerCase()]: Date.now(),
       },
     }))
-  }, [chainId, account, data, setBalances, setBalancesUpdate, error, tokenAddresses, isBalancesLoading])
+  }, [
+    targetChainId,
+    account,
+    data,
+    setBalances,
+    setBalancesUpdate,
+    error,
+    tokenAddresses,
+    isBalancesLoading,
+    chainId,
+    targetAccount,
+  ])
 }
 
 export async function getBffBalances(
