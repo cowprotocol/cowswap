@@ -1,9 +1,11 @@
+import { msg } from '@lingui/core/macro'
+
 import { PERMIT_HOOK_DAPP_ID } from './consts'
 
 export const hookDappsRegistry = {
   BUILD_CUSTOM_HOOK: {
     type: 'INTERNAL',
-    name: 'Build your own hook',
+    name: msg`Build your own hook`,
     descriptionShort: 'Call any smart contract with your own parameters',
     description:
       "Didn't find a suitable hook? You can always create your own! To do this, you need to specify which smart contract you want to call, the parameters for the call and the gas limit.",
@@ -14,7 +16,7 @@ export const hookDappsRegistry = {
   },
   CLAIM_GNO_FROM_VALIDATORS: {
     type: 'INTERNAL',
-    name: 'Claim GNO from validators',
+    name: msg`Claim GNO from validators`,
     descriptionShort: 'Withdraw rewards from your Gnosis validators.',
     description:
       "This hook allows you to withdraw rewards from your Gnosis Chain validators through CoW Swap. It automates the process of interacting with the Gnosis Deposit Contract, enabling you to claim any available rewards directly to your specified withdrawal address. The hook monitors your validator's accrued rewards and triggers the claimWithdrawals function when rewards are ready for withdrawal. This simplifies the management of Gnosis validator earnings without requiring ready for withdrawal. This simplifies the management of Gnosis validator earnings without requiring manual contract interaction, providing a smoother and more efficient experience for users.",
@@ -29,7 +31,7 @@ export const hookDappsRegistry = {
   },
   [PERMIT_HOOK_DAPP_ID]: {
     type: 'INTERNAL',
-    name: 'Permit a token',
+    name: msg`Permit a token`,
     descriptionShort: 'Infinite permit an address to spend one token on your behalf.',
     description:
       'This hook allows you to permit an address to spend your tokens on your behalf. This is useful for allowing a smart contract to spend your tokens without needing to approve each transaction.',
@@ -44,7 +46,7 @@ export const hookDappsRegistry = {
   },
   CLAIM_COW_AIRDROP: {
     type: 'INTERNAL',
-    name: 'Claim COW Airdrop',
+    name: msg`Claim COW Airdrop`,
     descriptionShort: 'Retrieve COW tokens before or after a swap.',
     description:
       "Effortless Airdrop Claims! The Claim COW Airdrop feature simplifies the process of collecting free COW tokens before or after your swap, seamlessly integrating into the CoW Swap platform. Whether you're claiming new airdrops or exploring CoW on a new network, this tool ensures you get your rewards quickly and easily.",
@@ -57,7 +59,7 @@ export const hookDappsRegistry = {
     },
   },
   COW_AMM_WITHDRAW: {
-    name: 'CoW AMM Withdraw Liquidity',
+    name: msg`CoW AMM Withdraw Liquidity`,
     type: 'IFRAME',
     descriptionShort: 'Remove liquidity from a CoW AMM pool before the swap',
     description:
@@ -74,7 +76,7 @@ export const hookDappsRegistry = {
   },
   CLAIM_LLAMAPAY_VESTING: {
     type: 'IFRAME',
-    name: 'Claim LlamaPay Vesting Hook',
+    name: msg`Claim LlamaPay Vesting Hook`,
     description:
       'The Claim LlamaPay Vesting Hook is a powerful and user-friendly feature designed to streamline the process of claiming funds from LlamaPay vesting contracts. This tool empowers users to easily access and manage their vested tokens, ensuring a smooth and efficient experience in handling time-locked assets.',
     descriptionShort: 'Claim your LlamaPay vesting contract funds',
@@ -89,7 +91,7 @@ export const hookDappsRegistry = {
   },
   CREATE_LLAMAPAY_VESTING: {
     type: 'IFRAME',
-    name: 'Create LlamaPay Vesting',
+    name: msg`Create LlamaPay Vesting`,
     descriptionShort: 'Create a LlamaPay vesting contract',
     description:
       'This hook allows you to easily set up vesting contracts with LlamaPay. Enter the recipient’s address or ENS name, then choose how much to transfer: the token buy will be automatically detected by the hook and the contracts will be linked to your LlamaPay dashboard for seamless tracking.',
@@ -105,7 +107,7 @@ export const hookDappsRegistry = {
   },
   UNI_V2_WITHDRAW: {
     type: 'IFRAME',
-    name: 'Withdraw Uniswap v2 Liquidity',
+    name: msg`Withdraw Uniswap v2 Liquidity`,
     descriptionShort: 'Remove liquidity from a Uniswap v2 Weighted pool before the swap',
     description:
       'Reduce or withdraw Uniswap v2 from a pool before a token swap integrating the process directly into the transaction flow. By adjusting your liquidity ahead of time, you gain more control over your assets without any extra steps. Optimize your position in a pool, all in one seamless action — no need for multiple transactions or added complexity.',
@@ -120,7 +122,7 @@ export const hookDappsRegistry = {
     },
   },
   COW_AMM_DEPOSIT: {
-    name: 'CoW AMM Deposit',
+    name: msg`CoW AMM Deposit`,
     type: 'IFRAME',
     descriptionShort: 'Add liquidity to any of the CoW AMM pools',
     description:
@@ -136,7 +138,7 @@ export const hookDappsRegistry = {
     },
   },
   UNI_V2_DEPOSIT: {
-    name: 'Uniswap v2 Deposit',
+    name: msg`Uniswap v2 Deposit`,
     type: 'IFRAME',
     descriptionShort: 'Add liquidity to a Uniswap v2 pool after the swap',
     description:
@@ -152,7 +154,7 @@ export const hookDappsRegistry = {
     },
   },
   MORPHO_BORROW: {
-    name: 'Morpho Borrow',
+    name: msg`Morpho Borrow`,
     type: 'IFRAME',
     descriptionShort: 'Supply collateral, borrow, repay and withdraw collateral on Morpho Protocol.',
     description:
@@ -167,7 +169,7 @@ export const hookDappsRegistry = {
     },
   },
   'cow-sdk://bridging/providers/bungee': {
-    name: 'Bungee',
+    name: msg`Bungee`,
     type: 'INTERNAL',
     descriptionShort: 'Bungee Protocol - Swap tokens across chains',
     description:
@@ -181,7 +183,7 @@ export const hookDappsRegistry = {
     },
   },
   'cow-sdk://bridging/providers/across': {
-    name: 'Across',
+    name: msg`Across`,
     type: 'INTERNAL',
     descriptionShort: 'Across Protocol - Transfer Assets Between Layer 2s and Mainnet',
     description:
