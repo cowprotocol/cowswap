@@ -5,7 +5,7 @@ import { Command } from '@cowprotocol/types'
 import { HelpTooltip } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
-import { Trans } from '@lingui/react/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 
 import * as styled from './styled'
 
@@ -22,6 +22,7 @@ interface HookDappDetailsProps {
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function HookDappDetails({ dapp, onSelect, walletType }: HookDappDetailsProps) {
+  const { i18n } = useLingui()
   const tags = useMemo(() => {
     const { version, website, type, conditions } = dapp
     const walletCompatibility = conditions?.walletCompatibility || []
@@ -70,7 +71,7 @@ export function HookDappDetails({ dapp, onSelect, walletType }: HookDappDetailsP
     <styled.Wrapper>
       <HookDetailHeader dapp={dapp} onSelect={onSelect} walletType={walletType} />
       <styled.Body>
-        <p>{dapp.description}</p>
+        <p>{dapp?.description ? i18n._(dapp.description) : ''}</p>
       </styled.Body>
       {dapp.version && (
         <styled.Tags>

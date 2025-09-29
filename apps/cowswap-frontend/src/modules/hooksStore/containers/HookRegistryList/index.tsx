@@ -6,7 +6,7 @@ import { Command } from '@cowprotocol/types'
 import { BannerOrientation, DismissableInlineBanner } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
-import { Trans } from '@lingui/react/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 
 import { NewModal } from 'common/pure/NewModal'
 
@@ -47,6 +47,7 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit, walletType 
   const customHookDapps = useCustomHookDapps(isPreHook)
   const hookToEditDetails = useHookById(hookToEdit, isPreHook)
   const internalHookDapps = useInternalHookDapps(isPreHook)
+  const { i18n } = useLingui()
 
   const currentDapps = useMemo(
     () => (isAllHooksTab ? [...internalHookDapps, ...customHookDapps] : customHookDapps),
@@ -57,7 +58,7 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit, walletType 
     const lowerQuery = searchQuery?.toLowerCase()
 
     return currentDapps.filter((item) => {
-      const { name = '', descriptionShort = '' } = item
+      const { name = undefined, descriptionShort = undefined } = item
 
       const instance = isHookDappIframe(item) ? item.url : item.component
 
@@ -65,9 +66,11 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit, walletType 
 
       if (!lowerQuery) return true
 
-      return [name, descriptionShort].some((text) => text.toLowerCase().includes(lowerQuery))
+      return [name ? i18n._(name) : '', descriptionShort ? i18n._(descriptionShort) : ''].some((text) =>
+        text.toLowerCase().includes(lowerQuery),
+      )
     })
-  }, [currentDapps, searchQuery])
+  }, [currentDapps, i18n, searchQuery])
 
   const sortedFilteredDapps = useMemo(() => {
     return filteredDapps.sort((a, b) => {
@@ -80,7 +83,8 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit, walletType 
   const customHooksCount = customHookDapps.length
   const allHooksCount = internalHookDapps.length + customHooksCount
 
-  const title = selectedDapp?.name || (dappDetails ? t`Hook description` : t`Hook Store`)
+  const title =
+    (selectedDapp?.name ? i18n._(selectedDapp?.name) : undefined) || (dappDetails ? t`Hook description` : t`Hook Store`)
 
   const onDismissModal = useCallback(() => {
     if (hookToEdit) {
@@ -154,7 +158,7 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit, walletType 
           <HookDappsList>
             {sortedFilteredDapps.map((dapp) => (
               <HookListItem
-                key={isHookDappIframe(dapp) ? dapp.url : dapp.name}
+                key={isHookDappIframe(dapp) ? dapp.url : i18n._(dapp.name)}
                 dapp={dapp}
                 walletType={walletType}
                 onRemove={!isAllHooksTab ? () => removeCustomHookDapp(dapp as HookDappIframe) : undefined}
@@ -169,14 +173,15 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit, walletType 
       </>
     ),
     [
-      isAllHooksTab,
       searchQuery,
-      sortedFilteredDapps,
-      handleAddCustomHook,
       handleClearSearch,
+      isAllHooksTab,
+      handleAddCustomHook,
+      sortedFilteredDapps,
       emptyListMessage,
-      removeCustomHookDapp,
+      i18n,
       walletType,
+      removeCustomHookDapp,
     ],
   )
 

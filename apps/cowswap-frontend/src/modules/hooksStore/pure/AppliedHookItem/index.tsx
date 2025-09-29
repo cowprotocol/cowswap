@@ -6,7 +6,7 @@ import { CowHookDetails } from '@cowprotocol/hook-dapp-lib'
 import { InfoTooltip } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
-import { Trans } from '@lingui/react/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 import { Edit2, Trash2, ExternalLink as ExternalLinkIcon, RefreshCw } from 'react-feather'
 import SVG from 'react-inlinesvg'
 
@@ -37,13 +37,15 @@ const isBundleSimulationReady = true
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, complexity
 export function AppliedHookItem({ account, hookDetails, dapp, isPreHook, editHook, removeHook, index }: HookItemProp) {
   const { isValidating, mutate } = useTenderlyBundleSimulation()
-
+  const { i18n } = useLingui()
   const simulationData = useSimulationData(hookDetails.uuid)
 
   const simulationStatus = simulationData?.status ? t`Simulation successful` : t`Simulation failed`
   const simulationTooltip = simulationData?.status
     ? t`The Tenderly simulation was successful. Your transaction is expected to succeed.`
     : t`The Tenderly simulation failed. Please review your transaction.`
+
+  const dAppName = dapp?.name ? i18n._(dapp.name) : ''
 
   return (
     <styledEl.HookItemWrapper data-uid={hookDetails.uuid} as="li">
@@ -53,8 +55,8 @@ export function AppliedHookItem({ account, hookDetails, dapp, isPreHook, editHoo
             <SVG src={ICON_GRID} />
           </styledEl.DragIcon>
           <styledEl.HookNumber>{index + 1}</styledEl.HookNumber>
-          <img src={dapp?.image || ''} alt={dapp?.name} />
-          <span>{dapp?.name}</span>
+          <img src={dapp?.image || ''} alt={dAppName} />
+          <span>{dAppName}</span>
           {isValidating && <styledEl.Spinner />}
         </styledEl.HookItemInfo>
         <styledEl.HookItemActions>

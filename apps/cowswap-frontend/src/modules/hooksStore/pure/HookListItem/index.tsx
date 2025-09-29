@@ -3,7 +3,7 @@ import { HookDappWalletCompatibility } from '@cowprotocol/hook-dapp-lib'
 import { Command } from '@cowprotocol/types'
 
 import { t } from '@lingui/core/macro'
-import { Trans } from '@lingui/react/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 
 import * as styled from './styled'
@@ -23,7 +23,7 @@ interface HookListItemProps {
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function HookListItem({ dapp, walletType, onSelect, onOpenDetails, onRemove }: HookListItemProps) {
   const { name, descriptionShort, image, version } = dapp
-
+  const { i18n } = useLingui()
   const isCompatible = isHookCompatible(dapp, walletType)
 
   // TODO: Add proper return type annotation
@@ -36,18 +36,20 @@ export function HookListItem({ dapp, walletType, onSelect, onOpenDetails, onRemo
     }
   }
 
+  const dAppName = i18n._(name)
+
   return (
     <styled.HookDappListItem
       onClick={handleItemClick}
       isCompatible={isCompatible}
       data-incompatibility-text={t`This hook is not compatible with your wallet`}
     >
-      <img src={image} alt={name} />
+      <img src={image} alt={dAppName} />
 
       <styled.HookDappDetails onClick={onOpenDetails}>
-        <h3>{name}</h3>
+        <h3>{dAppName}</h3>
         <p>
-          {descriptionShort}
+          {descriptionShort ? i18n._(descriptionShort) : ''}
           <styled.Version>{version}</styled.Version>
         </p>
       </styled.HookDappDetails>

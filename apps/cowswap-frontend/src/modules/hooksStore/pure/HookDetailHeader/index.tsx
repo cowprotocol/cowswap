@@ -1,7 +1,7 @@
 import { HookDappWalletCompatibility } from '@cowprotocol/hook-dapp-lib'
 
 import { t } from '@lingui/core/macro'
-import { Trans } from '@lingui/react/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 
 import * as styled from './styled'
 
@@ -22,13 +22,15 @@ interface HookDetailHeaderProps {
 export function HookDetailHeader({ dapp, walletType, onSelect, iconSize, gap, padding }: HookDetailHeaderProps) {
   const { name, image, descriptionShort } = dapp
   const isCompatible = isHookCompatible(dapp, walletType)
+  const { i18n } = useLingui()
+  const dAppName = i18n._(name)
 
   return (
     <styled.Header iconSize={iconSize} gap={gap} padding={padding}>
-      <img src={image} alt={name} />
+      <img src={image} alt={dAppName} />
       <styled.Content>
-        <h3>{name}</h3>
-        <styled.Description>{descriptionShort}</styled.Description>
+        <h3>{dAppName}</h3>
+        <styled.Description>{descriptionShort ? i18n._(descriptionShort) : ''}</styled.Description>
         {onSelect &&
           (isCompatible ? (
             <styled.AddButton onClick={onSelect}>
