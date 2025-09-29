@@ -59,6 +59,9 @@ export function useSetupTradeState(): void {
 
         console.error('Network switching error: ', error)
       }
+
+      // Clean up rememberedUrlStateRef when network switching is finished
+      rememberedUrlStateRef.current = null
     },
     [switchNetwork],
   )
