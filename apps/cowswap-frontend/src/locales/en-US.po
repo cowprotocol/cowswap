@@ -34,6 +34,10 @@ msgstr "years"
 msgid "Learn about surplus on CoW Swap"
 msgstr "Learn about surplus on CoW Swap"
 
+#: libs/hook-dapp-lib/src/hookDappsRegistry.ts
+msgid "Retrieve COW tokens before or after a swap."
+msgstr "Retrieve COW tokens before or after a swap."
+
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/index.tsx
 msgid "Disconnect"
 msgstr "Disconnect"
@@ -76,6 +80,10 @@ msgstr ""
 "Did you know? {benefit}\n"
 "\n"
 "Start swapping on swap.cow.fi #CoWSwap @CoWSwap 🐮"
+
+#: libs/hook-dapp-lib/src/hookDappsRegistry.ts
+msgid "This hook allows you to permit an address to spend your tokens on your behalf. This is useful for allowing a smart contract to spend your tokens without needing to approve each transaction."
+msgstr "This hook allows you to permit an address to spend your tokens on your behalf. This is useful for allowing a smart contract to spend your tokens without needing to approve each transaction."
 
 #: apps/cowswap-frontend/src/common/updaters/ConnectionStatusUpdater.tsx
 msgid "<0>Connection Lost</0><1/>You appear to be offline. Some features may not work properly."
@@ -457,6 +465,10 @@ msgstr "(modified)"
 msgid "1 Month"
 msgstr "1 Month"
 
+#: libs/hook-dapp-lib/src/hookDappsRegistry.ts
+msgid "Infinite permit an address to spend one token on your behalf."
+msgstr "Infinite permit an address to spend one token on your behalf."
+
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/BridgingStatusHeader/index.tsx
 msgid "Bridging completed!"
 msgstr "Bridging completed!"
@@ -516,6 +528,10 @@ msgstr "Your favorite saved tokens. Edit this list in the <0>Tokens page</0>."
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/index.tsx
 msgid "This is the minimum amount that you will receive across your entire TWAP order, assuming all parts of the order execute."
 msgstr "This is the minimum amount that you will receive across your entire TWAP order, assuming all parts of the order execute."
+
+#: libs/hook-dapp-lib/src/hookDappsRegistry.ts
+msgid "CoW AMM Withdraw Liquidity"
+msgstr "CoW AMM Withdraw Liquidity"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/index.tsx
 msgid "Adding this app/hook grants it access to your wallet actions and trading information. Ensure you understand the implications."
@@ -643,6 +659,10 @@ msgstr "Sell per part"
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SettingsTab/index.tsx
 msgid "Enable Hooks"
 msgstr "Enable Hooks"
+
+#: libs/hook-dapp-lib/src/hookDappsRegistry.ts
+msgid "Claim LlamaPay Vesting Hook"
+msgstr "Claim LlamaPay Vesting Hook"
 
 #: apps/cowswap-frontend/src/modules/yield/containers/YieldWidget/index.tsx
 msgid "Seamlessly swap your tokens into CoW AMM pools"
@@ -904,6 +924,10 @@ msgstr "Loaded"
 msgid "Insufficient <0/> balance"
 msgstr "Insufficient <0/> balance"
 
+#: libs/hook-dapp-lib/src/hookDappsRegistry.ts
+msgid "The Claim LlamaPay Vesting Hook is a powerful and user-friendly feature designed to streamline the process of claiming funds from LlamaPay vesting contracts. This tool empowers users to easily access and manage their vested tokens, ensuring a smooth and efficient experience in handling time-locked assets."
+msgstr "The Claim LlamaPay Vesting Hook is a powerful and user-friendly feature designed to streamline the process of claiming funds from LlamaPay vesting contracts. This tool empowers users to easily access and manage their vested tokens, ensuring a smooth and efficient experience in handling time-locked assets."
+
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/StatusDetails.tsx
 msgid "Order Open"
 msgstr "Order Open"
@@ -954,6 +978,10 @@ msgstr "Select an {ACCOUNT_PROXY_LABEL} to check for available refunds {chain}"
 #: apps/cowswap-frontend/src/api/cowProtocol/errors/OperatorError.ts
 msgid "creating"
 msgstr "creating"
+
+#: libs/hook-dapp-lib/src/hookDappsRegistry.ts
+msgid "Permit a token"
+msgstr "Permit a token"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/AirdropHookApp/index.tsx
 msgid "Claimable amount"
@@ -1123,6 +1151,10 @@ msgstr "Update fallback handler"
 msgid "Please read more in this"
 msgstr "Please read more in this"
 
+#: libs/hook-dapp-lib/src/hookDappsRegistry.ts
+msgid "Bungee"
+msgstr "Bungee"
+
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/FilledField.tsx
 msgid "of"
 msgstr "of"
@@ -1146,6 +1178,10 @@ msgstr "Remove list"
 #: apps/cowswap-frontend/src/common/pure/NetworksList/index.tsx
 msgid "Help Center"
 msgstr "Help Center"
+
+#: libs/hook-dapp-lib/src/hookDappsRegistry.ts
+msgid "Bungee is a liquidity marketplace that lets you swap into any token on any chain in a fully abstracted manner. Trade any token with the best quotes and a gasless UX!"
+msgstr "Bungee is a liquidity marketplace that lets you swap into any token on any chain in a fully abstracted manner. Trade any token with the best quotes and a gasless UX!"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/tableHeaders.tsx
 msgid "Market price"
@@ -1182,6 +1218,10 @@ msgstr "On-chain cancellations require a regular on-chain transaction and cost g
 #: apps/cowswap-frontend/src/modules/bridge/pure/StopStatus/index.tsx
 msgid "Swap failed"
 msgstr "Swap failed"
+
+#: libs/hook-dapp-lib/src/hookDappsRegistry.ts
+msgid "Didn't find a suitable hook? You can always create your own! To do this, you need to specify which smart contract you want to call, the parameters for the call and the gas limit."
+msgstr "Didn't find a suitable hook? You can always create your own! To do this, you need to specify which smart contract you want to call, the parameters for the call and the gas limit."
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowBanner/index.tsx
 msgid "Switch to WETH"
@@ -1305,6 +1345,10 @@ msgstr "Increase Value"
 msgid "All Hooks ({allHooksCount})"
 msgstr "All Hooks ({allHooksCount})"
 
+#: libs/hook-dapp-lib/src/hookDappsRegistry.ts
+msgid "Reduce or withdraw liquidity from a pool before a token swap integrating the process directly into the transaction flow. By adjusting your liquidity ahead of time, you gain more control over your assets without any extra steps. Optimize your position in a pool, all in one seamless action — no need for multiple transactions or added complexity."
+msgstr "Reduce or withdraw liquidity from a pool before a token swap integrating the process directly into the transaction flow. By adjusting your liquidity ahead of time, you gain more control over your assets without any extra steps. Optimize your position in a pool, all in one seamless action — no need for multiple transactions or added complexity."
+
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/OrderRow/EstimatedExecutionPrice.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderFillsAt/index.tsx
 msgid "This price is taken from external sources and may not accurately reflect the current on-chain price."
@@ -1375,6 +1419,10 @@ msgstr "This accounts for the current price and the slippage tolerance ({allowed
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowBanner/index.tsx
 msgid "No fees for failed transactions"
 msgstr "No fees for failed transactions"
+
+#: libs/hook-dapp-lib/src/hookDappsRegistry.ts
+msgid "Across"
+msgstr "Across"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/OrderType/index.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
@@ -1577,6 +1625,10 @@ msgstr "Please connect your wallet to one of our supported networks:<0/>{chainLa
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 msgid "To continue, click SWAP below to use your existing {wrappedSymbol} balance and trade."
 msgstr "To continue, click SWAP below to use your existing {wrappedSymbol} balance and trade."
+
+#: libs/hook-dapp-lib/src/hookDappsRegistry.ts
+msgid "Effortless Airdrop Claims! The Claim COW Airdrop feature simplifies the process of collecting free COW tokens before or after your swap, seamlessly integrating into the CoW Swap platform. Whether you're claiming new airdrops or exploring CoW on a new network, this tool ensures you get your rewards quickly and easily."
+msgstr "Effortless Airdrop Claims! The Claim COW Airdrop feature simplifies the process of collecting free COW tokens before or after your swap, seamlessly integrating into the CoW Swap platform. Whether you're claiming new airdrops or exploring CoW on a new network, this tool ensures you get your rewards quickly and easily."
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
@@ -2150,6 +2202,10 @@ msgstr "Pool description"
 msgid "6 Hours"
 msgstr "6 Hours"
 
+#: libs/hook-dapp-lib/src/hookDappsRegistry.ts
+msgid "Add liquidity to a Uniswap v2 pool after the swap"
+msgstr "Add liquidity to a Uniswap v2 pool after the swap"
+
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/OrderIntent.tsx
 msgid "{buyTokenPart} for at most {sellTokenPart}"
 msgstr "{buyTokenPart} for at most {sellTokenPart}"
@@ -2169,6 +2225,10 @@ msgstr "Description"
 #: apps/cowswap-frontend/src/common/pure/CancellationModal/RequestCancellationModal.tsx
 msgid "on-chain"
 msgstr "on-chain"
+
+#: libs/hook-dapp-lib/src/hookDappsRegistry.ts
+msgid "Across Protocol - Transfer Assets Between Layer 2s and Mainnet"
+msgstr "Across Protocol - Transfer Assets Between Layer 2s and Mainnet"
 
 #: apps/cowswap-frontend/src/pages/Account/index.tsx
 msgid "Tokens overview"
@@ -2247,6 +2307,10 @@ msgstr "Signed: <0>{numConfirmations} out of {gnosisSafeThreshold} signers</0>"
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/OrderType/index.tsx
 msgid "This order can be partially filled"
 msgstr "This order can be partially filled"
+
+#: libs/hook-dapp-lib/src/hookDappsRegistry.ts
+msgid "Build your own hook"
+msgstr "Build your own hook"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "Estimated amount that you will receive from each part of the order."
@@ -2357,6 +2421,10 @@ msgstr "Approve {wrappedSymbol} failed!"
 #: apps/cowswap-frontend/src/common/containers/OrderHooksDetails/index.tsx
 msgid "Hooks are interactions before/after order execution."
 msgstr "Hooks are interactions before/after order execution."
+
+#: libs/hook-dapp-lib/src/hookDappsRegistry.ts
+msgid "Withdraw Uniswap v2 Liquidity"
+msgstr "Withdraw Uniswap v2 Liquidity"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/HookRegistryList/index.tsx
 msgid "Add a custom hook"
@@ -2489,6 +2557,10 @@ msgstr "Order presigned"
 #: apps/cowswap-frontend/src/legacy/components/ErrorBoundary/ErrorWithStackTrace.tsx
 msgid "Get support on Discord"
 msgstr "Get support on Discord"
+
+#: libs/hook-dapp-lib/src/hookDappsRegistry.ts
+msgid "Remove liquidity from a CoW AMM pool before the swap"
+msgstr "Remove liquidity from a CoW AMM pool before the swap"
 
 #: apps/cowswap-frontend/src/common/hooks/useConfirmPriceImpactWithoutFee.ts
 #: apps/cowswap-frontend/src/common/hooks/useConfirmPriceImpactWithoutFee.ts
@@ -2707,6 +2779,10 @@ msgstr "Hook Store"
 msgid "CoW Swap dynamically adjusts your slippage tolerance to ensure your trade executes quickly while still getting the best price."
 msgstr "CoW Swap dynamically adjusts your slippage tolerance to ensure your trade executes quickly while still getting the best price."
 
+#: libs/hook-dapp-lib/src/hookDappsRegistry.ts
+msgid "Bungee Protocol - Swap tokens across chains"
+msgstr "Bungee Protocol - Swap tokens across chains"
+
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 msgid "CoW Swap's robust solver competition protects your slippage from being exploited by MEV bots."
 msgstr "CoW Swap's robust solver competition protects your slippage from being exploited by MEV bots."
@@ -2828,6 +2904,10 @@ msgstr "Approve all"
 msgid "Caution"
 msgstr "Caution"
 
+#: libs/hook-dapp-lib/src/hookDappsRegistry.ts
+msgid "Morpho Borrow"
+msgstr "Morpho Borrow"
+
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/index.tsx
 msgid "This contract is deployed per account, with that account becoming the single owner. CoW Shed acts as an intermediary account that handles trading on your behalf."
 msgstr "This contract is deployed per account, with that account becoming the single owner. CoW Shed acts as an intermediary account that handles trading on your behalf."
@@ -2905,6 +2985,10 @@ msgstr "Part duration"
 #: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
 msgid "hours"
 msgstr "hours"
+
+#: libs/hook-dapp-lib/src/hookDappsRegistry.ts
+msgid "Supply collateral, borrow, repay and withdraw collateral on Morpho Protocol."
+msgstr "Supply collateral, borrow, repay and withdraw collateral on Morpho Protocol."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TopSections.tsx
 msgid "Order out of market"
@@ -3047,6 +3131,10 @@ msgstr "No pool tokens available"
 msgid "Still searching"
 msgstr "Still searching"
 
+#: libs/hook-dapp-lib/src/hookDappsRegistry.ts
+msgid "Across is the fastest, cheapest and most secure cross-chain bridge for Ethereum, Arbitrum, Optimism, Polygon and other Layer 1 and Layer 2 networks. Transfer tokens with Across."
+msgstr "Across is the fastest, cheapest and most secure cross-chain bridge for Ethereum, Arbitrum, Optimism, Polygon and other Layer 1 and Layer 2 networks. Transfer tokens with Across."
+
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
 msgid "check"
 msgstr "check"
@@ -3135,6 +3223,10 @@ msgstr "Submitted"
 msgid "connect wallet"
 msgstr "connect wallet"
 
+#: libs/hook-dapp-lib/src/hookDappsRegistry.ts
+msgid "Create LlamaPay Vesting"
+msgstr "Create LlamaPay Vesting"
+
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/pure/Row/RowDeadline/index.tsx
 msgid "Transaction expiration"
 msgstr "Transaction expiration"
@@ -3170,6 +3262,10 @@ msgstr "Unlock TWAP orders"
 #: apps/cowswap-frontend/src/common/pure/CancellationModal/index.tsx
 msgid "Failed to cancel order"
 msgstr "Failed to cancel order"
+
+#: libs/hook-dapp-lib/src/hookDappsRegistry.ts
+msgid "Uniswap v2 Deposit"
+msgstr "Uniswap v2 Deposit"
 
 #: apps/cowswap-frontend/src/common/constants/routes.ts
 msgid "Set your own price"
@@ -3487,6 +3583,10 @@ msgstr "order"
 msgid "cancellation"
 msgstr "cancellation"
 
+#: libs/hook-dapp-lib/src/hookDappsRegistry.ts
+msgid "Create a LlamaPay vesting contract"
+msgstr "Create a LlamaPay vesting contract"
+
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "tip"
 msgstr "tip"
@@ -3518,6 +3618,10 @@ msgstr "Your total surplus"
 #: apps/cowswap-frontend/src/modules/trade/const/common.ts
 msgid "Desktop: Left-Aligned Orders Table"
 msgstr "Desktop: Left-Aligned Orders Table"
+
+#: libs/hook-dapp-lib/src/hookDappsRegistry.ts
+msgid "Withdraw rewards from your Gnosis validators."
+msgstr "Withdraw rewards from your Gnosis validators."
 
 #: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/swapTradeButtonsMap.tsx
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
@@ -3616,6 +3720,21 @@ msgstr "{nativeTokenSymbol} Refunded"
 msgid "Unlock the Power of TWAP Orders"
 msgstr "Unlock the Power of TWAP Orders"
 
+#: libs/hook-dapp-lib/src/hookDappsRegistry.ts
+msgid "Claim GNO from validators"
+msgstr "Claim GNO from validators"
+
+#: libs/hook-dapp-lib/src/hookDappsRegistry.ts
+#: libs/hook-dapp-lib/src/hookDappsRegistry.ts
+msgid ""
+"Easily increase your position in a liquidity pool, adding both tokens in the right ratio.\n"
+"\n"
+" Whether you're seeking to increase your exposure to specific tokens or maximize the returns from your assets, this tool offers a quick and efficient way to enhance your liquidity position after a token swap, all in a smooth, efficient process."
+msgstr ""
+"Easily increase your position in a liquidity pool, adding both tokens in the right ratio.\n"
+"\n"
+" Whether you're seeking to increase your exposure to specific tokens or maximize the returns from your assets, this tool offers a quick and efficient way to enhance your liquidity position after a token swap, all in a smooth, efficient process."
+
 #: apps/cowswap-frontend/src/modules/trade/containers/WrapNativeModal/index.tsx
 msgid "Unwrapping"
 msgstr "Unwrapping"
@@ -3660,6 +3779,10 @@ msgstr "The fill price of this order is close or at the market price (<0>fills a
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/OrderRow/EstimatedExecutionPrice.tsx
 msgid "of your sell amount! Therefore, your order is unlikely to execute."
 msgstr "of your sell amount! Therefore, your order is unlikely to execute."
+
+#: libs/hook-dapp-lib/src/hookDappsRegistry.ts
+msgid "This hook allows you to easily set up vesting contracts with LlamaPay. Enter the recipient’s address or ENS name, then choose how much to transfer: the token buy will be automatically detected by the hook and the contracts will be linked to your LlamaPay dashboard for seamless tracking."
+msgstr "This hook allows you to easily set up vesting contracts with LlamaPay. Enter the recipient’s address or ENS name, then choose how much to transfer: the token buy will be automatically detected by the hook and the contracts will be linked to your LlamaPay dashboard for seamless tracking."
 
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/OrderRow/OrderContextMenu.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
@@ -3958,6 +4081,10 @@ msgstr "Choose a custom deadline for your limit order"
 msgid "Cancelled order"
 msgstr "Cancelled order"
 
+#: libs/hook-dapp-lib/src/hookDappsRegistry.ts
+msgid "CoW AMM Deposit"
+msgstr "CoW AMM Deposit"
+
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/Settings/index.tsx
 msgid "Limit Order Settings"
 msgstr "Limit Order Settings"
@@ -4024,6 +4151,10 @@ msgstr "for trading"
 #: apps/cowswap-frontend/src/legacy/utils/trade.ts
 msgid "at most "
 msgstr "at most "
+
+#: libs/hook-dapp-lib/src/hookDappsRegistry.ts
+msgid "This hook allows you to withdraw rewards from your Gnosis Chain validators through CoW Swap. It automates the process of interacting with the Gnosis Deposit Contract, enabling you to claim any available rewards directly to your specified withdrawal address. The hook monitors your validator's accrued rewards and triggers the claimWithdrawals function when rewards are ready for withdrawal. This simplifies the management of Gnosis validator earnings without requiring ready for withdrawal. This simplifies the management of Gnosis validator earnings without requiring manual contract interaction, providing a smoother and more efficient experience for users."
+msgstr "This hook allows you to withdraw rewards from your Gnosis Chain validators through CoW Swap. It automates the process of interacting with the Gnosis Deposit Contract, enabling you to claim any available rewards directly to your specified withdrawal address. The hook monitors your validator's accrued rewards and triggers the claimWithdrawals function when rewards are ready for withdrawal. This simplifies the management of Gnosis validator earnings without requiring ready for withdrawal. This simplifies the management of Gnosis validator earnings without requiring manual contract interaction, providing a smoother and more efficient experience for users."
 
 #: apps/cowswap-frontend/src/pages/games/CowRunner/index.tsx
 msgid "Sandwich icon"
@@ -4144,6 +4275,10 @@ msgstr "Simulation Failed"
 #: apps/cowswap-frontend/src/pages/Account/LockedGnoVesting/index.tsx
 msgid "Successfully claimed"
 msgstr "Successfully claimed"
+
+#: libs/hook-dapp-lib/src/hookDappsRegistry.ts
+msgid "Call any smart contract with your own parameters"
+msgstr "Call any smart contract with your own parameters"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowBanner/index.tsx
 msgid "Switch to the classic {wrappedSymbol} experience and benefit!"
@@ -4519,6 +4654,10 @@ msgstr "is required"
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 msgid "Operation in progress!"
 msgstr "Operation in progress!"
+
+#: libs/hook-dapp-lib/src/hookDappsRegistry.ts
+msgid "The Morpho Borrow hook enables users to seamlessly combine swaps with borrow-related actions. Users can enter new positions, leave existing ones, or move between different markets through a unified, streamlined process."
+msgstr "The Morpho Borrow hook enables users to seamlessly combine swaps with borrow-related actions. Users can enter new positions, leave existing ones, or move between different markets through a unified, streamlined process."
 
 #: apps/cowswap-frontend/src/modules/trade/const/common.ts
 msgid "When enabled, the orders table will be displayed on the left side on desktop screens. On mobile, the orders table will always be stacked below."
@@ -4979,6 +5118,10 @@ msgstr "Try new limit orders now"
 msgid "Custom Tokens"
 msgstr "Custom Tokens"
 
+#: libs/hook-dapp-lib/src/hookDappsRegistry.ts
+msgid "Remove liquidity from a Uniswap v2 Weighted pool before the swap"
+msgstr "Remove liquidity from a Uniswap v2 Weighted pool before the swap"
+
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappDetails/index.tsx
 msgid "Hook version"
 msgstr "Hook version"
@@ -5049,6 +5192,10 @@ msgstr "Leverage advanced strategies for optimal growth"
 msgid "Try adjusting your search term or clearing the filter"
 msgstr "Try adjusting your search term or clearing the filter"
 
+#: libs/hook-dapp-lib/src/hookDappsRegistry.ts
+msgid "Add liquidity to any of the CoW AMM pools"
+msgstr "Add liquidity to any of the CoW AMM pools"
+
 #: apps/cowswap-frontend/src/modules/accountProxy/containers/AccountProxyPage/index.tsx
 #: apps/cowswap-frontend/src/modules/accountProxy/containers/AccountProxyPage/index.tsx
 msgid "Invalid proxy address"
@@ -5071,6 +5218,10 @@ msgstr "You sold <0/>"
 msgid "Less"
 msgstr "Less"
 
+#: libs/hook-dapp-lib/src/hookDappsRegistry.ts
+msgid "Claim your LlamaPay vesting contract funds"
+msgstr "Claim your LlamaPay vesting contract funds"
+
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteBridgeContent/index.tsx
 msgid "Est. bridge time <0/>"
 msgstr "Est. bridge time <0/>"
@@ -5082,6 +5233,10 @@ msgstr "Check that you are providing a sufficient gas limit for the transaction 
 #: apps/cowswap-frontend/src/legacy/hooks/useWrapCallback.ts
 msgid "Wrap {amountStr} {native} to {wrapped}"
 msgstr "Wrap {amountStr} {native} to {wrapped}"
+
+#: libs/hook-dapp-lib/src/hookDappsRegistry.ts
+msgid "Claim COW Airdrop"
+msgstr "Claim COW Airdrop"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/CancelledStep.tsx
 msgid "Your order was successfully cancelled."
@@ -5235,6 +5390,10 @@ msgstr "Execute Safe transaction"
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/index.tsx
 msgid "Always review wallet requests carefully before approving."
 msgstr "Always review wallet requests carefully before approving."
+
+#: libs/hook-dapp-lib/src/hookDappsRegistry.ts
+msgid "Reduce or withdraw Uniswap v2 from a pool before a token swap integrating the process directly into the transaction flow. By adjusting your liquidity ahead of time, you gain more control over your assets without any extra steps. Optimize your position in a pool, all in one seamless action — no need for multiple transactions or added complexity."
+msgstr "Reduce or withdraw Uniswap v2 from a pool before a token swap integrating the process directly into the transaction flow. By adjusting your liquidity ahead of time, you gain more control over your assets without any extra steps. Optimize your position in a pool, all in one seamless action — no need for multiple transactions or added complexity."
 
 #: apps/cowswap-frontend/src/modules/accountProxy/containers/AccountProxyRecoverPage/index.tsx
 msgid "2/2 Sign transaction"
