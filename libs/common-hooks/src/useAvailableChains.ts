@@ -14,7 +14,7 @@ import { useFeatureFlags } from './useFeatureFlags'
  */
 export function useAvailableChains(): SupportedChainId[] {
   // 1. Load feature flag for chain being enabled
-  const { isLensEnabled, isBnbEnabled } = useFeatureFlags()
+  const { isBnbEnabled } = useFeatureFlags()
 
   return useMemo(
     // 2. Conditionally build a list of chain ids to exclude
@@ -22,16 +22,12 @@ export function useAvailableChains(): SupportedChainId[] {
     () => {
       const chainsToSkip: SupportedChainId[] = []
 
-      if (!isLensEnabled) {
-        chainsToSkip.push(SupportedChainId.LENS)
-      }
-
       if (!isBnbEnabled) {
         chainsToSkip.push(SupportedChainId.BNB)
       }
 
       return getAvailableChains(chainsToSkip)
     },
-    [isLensEnabled, isBnbEnabled],
+    [isBnbEnabled],
   )
 }
