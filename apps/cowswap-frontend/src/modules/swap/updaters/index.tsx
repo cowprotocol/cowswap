@@ -3,12 +3,8 @@ import { ReactNode } from 'react'
 import { useIsWindowVisible } from '@cowprotocol/common-hooks'
 import { isSellOrder, percentToBps } from '@cowprotocol/common-utils'
 
-import { useLocation } from 'react-router'
-
 import { AppDataUpdater } from 'modules/appData'
 import { EthFlowDeadlineUpdater } from 'modules/ethFlow'
-import { OrderTabId } from 'modules/ordersTable'
-import { parseOrdersTableUrl } from 'modules/ordersTable/utils/parseOrdersTableUrl'
 import { useIsHooksTradeType } from 'modules/trade'
 import { useSetTradeQuoteParams } from 'modules/tradeQuote'
 import { useIsSmartSlippageApplied } from 'modules/tradeSlippage'
@@ -24,6 +20,9 @@ import { useSwapDeadlineState } from '../hooks/useSwapSettings'
 // update last 10 pending swap orders
 const PENDING_ORDERS_PAGE_SIZE = 10
 
+// swap page doesn't have tabs
+const IS_SWAP_PAGE = true
+
 export function SwapUpdaters(): ReactNode {
   const { orderKind, inputCurrencyAmount, outputCurrencyAmount, slippage } = useSwapDerivedState()
   const isSmartSlippageApplied = useIsSmartSlippageApplied()
@@ -31,11 +30,7 @@ export function SwapUpdaters(): ReactNode {
   const isHookTradeType = useIsHooksTradeType()
   const partiallyFillable = isHookTradeType
 
-  const location = useLocation()
   const isWindowVisible = useIsWindowVisible()
-
-  const { tabId } = parseOrdersTableUrl(location.search)
-  const isTabWithPending = tabId === OrderTabId.open || tabId === OrderTabId.all
 
   useFillSwapDerivedState()
   useSetTradeQuoteParams({
@@ -48,7 +43,7 @@ export function SwapUpdaters(): ReactNode {
     <>
       <UnfillableOrdersUpdater
         pageSize={PENDING_ORDERS_PAGE_SIZE}
-        isTabWithPending={isTabWithPending}
+        isTabWithPending={IS_SWAP_PAGE}
         isWindowVisible={isWindowVisible}
       />
       <EthFlowDeadlineUpdater deadlineState={swapDeadlineState} />
