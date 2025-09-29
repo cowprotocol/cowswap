@@ -9,7 +9,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { t } from '@lingui/core/macro'
-import { Trans } from '@lingui/react/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 import { Check } from 'react-feather'
 import { CloseIcon } from 'theme'
 
@@ -46,6 +46,7 @@ export enum PageViewKeys {
 // TODO: Add proper return type annotation
 // eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export default function TokensOverview() {
+  const { i18n } = useLingui()
   const PageView = {
     [PageViewKeys.ALL_TOKENS]: {
       label: t`All tokens`,
@@ -233,7 +234,7 @@ export default function TokensOverview() {
         </AccountHeading>
       )}
       <Overview>
-        <PageTitle title={PAGE_TITLES.TOKENS_OVERVIEW} />
+        <PageTitle title={i18n._(PAGE_TITLES.TOKENS_OVERVIEW)} />
         {isProviderNetworkUnsupported ? <Trans>Unsupported network</Trans> : renderTableContent()}
       </Overview>
     </>

@@ -3,6 +3,7 @@ import { lazy, ReactNode } from 'react'
 import { PAGE_TITLES } from '@cowprotocol/common-const'
 
 import { t } from '@lingui/core/macro'
+import { useLingui } from '@lingui/react/macro'
 import { Outlet, useLocation } from 'react-router'
 
 import { PageTitle } from 'modules/application/containers/PageTitle'
@@ -34,10 +35,12 @@ function _getPropsFromRoute(route: string): string[] {
 
 // Note: As we build these single pages, we will remove this component in the future
 export const AccountOverview = (): ReactNode => {
+  const { i18n } = useLingui()
+
   return (
     <>
       <Container>
-        <PageTitle title={PAGE_TITLES.ACCOUNT_OVERVIEW} />
+        <PageTitle title={i18n._(PAGE_TITLES.ACCOUNT_OVERVIEW)} />
         <CardsWrapper>
           <Balances />
           <Governance />

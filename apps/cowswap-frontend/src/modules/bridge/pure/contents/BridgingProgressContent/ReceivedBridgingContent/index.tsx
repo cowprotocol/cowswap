@@ -7,6 +7,7 @@ import { BridgeStatusResult } from '@cowprotocol/sdk-bridging'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
+import { useLingui } from '@lingui/react/macro'
 import { useBridgeSupportedNetwork } from 'entities/bridgeProvider'
 
 import { ConfirmDetailsItem, ReceiveAmountTitle } from 'modules/trade'
@@ -36,7 +37,7 @@ export function ReceivedBridgingContent({
 }: ReceivedBridgingContentProps): ReactNode {
   const { depositTxHash, fillTxHash } = statusResult || {}
   const destinationBridgeNetwork = useBridgeSupportedNetwork(destinationChainId)
-
+  const { i18n } = useLingui()
   const blockExplorerUrl = destinationBridgeNetwork?.blockExplorer?.url || getChainInfo(destinationChainId)?.explorer
 
   const fillTxLink =
@@ -49,7 +50,7 @@ export function ReceivedBridgingContent({
       <ConfirmDetailsItem
         label={
           <ReceiveAmountTitle variant="success">
-            <SuccessTextBold>{RECEIVED_LABEL}</SuccessTextBold>
+            <SuccessTextBold>{i18n._(RECEIVED_LABEL)}</SuccessTextBold>
           </ReceiveAmountTitle>
         }
       >

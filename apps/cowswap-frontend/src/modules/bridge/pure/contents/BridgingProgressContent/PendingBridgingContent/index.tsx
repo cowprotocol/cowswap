@@ -5,7 +5,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { BridgeStatusResult } from '@cowprotocol/sdk-bridging'
 
 import { t } from '@lingui/core/macro'
-import { Trans } from '@lingui/react/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 
 import { ConfirmDetailsItem, ReceiveAmountTitle } from 'modules/trade'
 
@@ -26,13 +26,14 @@ export function PendingBridgingContent({
   explorerUrl,
 }: PendingBridgingContentProps): ReactNode {
   const { depositTxHash } = statusResult || {}
+  const { i18n } = useLingui()
 
   return (
     <>
       <ConfirmDetailsItem
         label={
           <ReceiveAmountTitle>
-            <b>{RECEIVED_LABEL}</b>
+            <b>{i18n._(RECEIVED_LABEL)}</b>
           </ReceiveAmountTitle>
         }
       >

@@ -5,6 +5,7 @@ import { getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
 import { BridgeProviderQuoteError, BridgeQuoteErrors } from '@cowprotocol/sdk-bridging'
 import { CenteredDots, HelpTooltip, TokenSymbol } from '@cowprotocol/ui'
 
+import { i18n } from '@lingui/core'
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
@@ -51,6 +52,23 @@ const unsupportedTokenButton = (context: TradeFormButtonContext) => {
       </CompatibilityIssuesWarningWrapper>
     </>
   ) : null
+}
+
+const ProxyAccountLoading = (): ReactNode => {
+  const accountProxyLabel = i18n._(ACCOUNT_PROXY_LABEL)
+  return (
+    <>
+      <span>
+        <Trans>Loading {accountProxyLabel}</Trans>
+      </span>
+      <CenteredDots smaller />
+    </>
+  )
+}
+
+const ProxyAccountUnknown = (): ReactNode => {
+  const accountProxyLabel = i18n._(ACCOUNT_PROXY_LABEL)
+  return <Trans>Couldn't verify {accountProxyLabel}, please try later</Trans>
 }
 
 export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | ButtonCallback> = {
@@ -268,16 +286,9 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     text: <Trans>Import intermediate token</Trans>,
   },
   [TradeFormValidation.ProxyAccountLoading]: {
-    text: (
-      <>
-        <span>
-          <Trans>Loading {ACCOUNT_PROXY_LABEL}</Trans>
-        </span>
-        <CenteredDots smaller />
-      </>
-    ),
+    text: <ProxyAccountLoading />,
   },
   [TradeFormValidation.ProxyAccountUnknown]: {
-    text: <Trans>Couldn't verify {ACCOUNT_PROXY_LABEL}, please try later</Trans>,
+    text: <ProxyAccountUnknown />,
   },
 }

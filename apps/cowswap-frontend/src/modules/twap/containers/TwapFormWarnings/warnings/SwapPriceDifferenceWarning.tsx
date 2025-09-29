@@ -45,7 +45,11 @@ export function SwapPriceDifferenceWarning({
   if (isTwapBetter && diffLessThanLimit) return null
 
   const routePath = parameterizeTradeRoute(tradeUrlParams, Routes.SWAP, true)
-  const swapOrderLink = <StyledNavLink to={routePath}>SWAP order</StyledNavLink>
+  const swapOrderLink = (
+    <StyledNavLink to={routePath}>
+      <Trans>SWAP order</Trans>
+    </StyledNavLink>
+  )
 
   return (
     <InlineBanner bannerType={StatusColorVariant.Savings}>

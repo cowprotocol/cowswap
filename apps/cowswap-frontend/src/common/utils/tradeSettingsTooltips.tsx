@@ -8,6 +8,7 @@ import {
 } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
+import { i18n } from '@lingui/core'
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 
@@ -30,12 +31,12 @@ export function getNativeOrderDeadlineTooltip(symbols: (string | undefined)[] | 
 
 export function getNonNativeOrderDeadlineTooltip(): ReactNode {
   return (
-    <Trans>
-      Your swap expires and will not execute if it is pending for longer than the selected duration.
+    <>
+      <Trans>Your swap expires and will not execute if it is pending for longer than the selected duration.</Trans>
       <br />
       <br />
-      {INPUT_OUTPUT_EXPLANATION}
-    </Trans>
+      {i18n._(INPUT_OUTPUT_EXPLANATION)}
+    </>
   )
 }
 

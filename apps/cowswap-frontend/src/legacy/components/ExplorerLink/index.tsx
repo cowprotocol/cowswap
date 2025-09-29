@@ -43,6 +43,7 @@ export function ExplorerLink(props: Props): ReactNode {
   const { className } = props
 
   const linkContent = getContent(chainId, props)
+
   return (
     <ExternalLink className={className} href={url}>
       {linkContent}

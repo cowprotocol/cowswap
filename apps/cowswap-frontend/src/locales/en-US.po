@@ -150,6 +150,10 @@ msgstr "orders history"
 msgid "Bridging failed"
 msgstr "Bridging failed"
 
+#: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/index.tsx
+msgid "What is {accountProxyLabel}?"
+msgstr "What is {accountProxyLabel}?"
+
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/index.tsx
 msgid "Your activity will appear here..."
 msgstr "Your activity will appear here..."
@@ -302,6 +306,10 @@ msgstr "<0>By adding this list you are implicitly trusting that the data is corr
 msgid "As soon as anything important or interesting happens, we will definitely let you know."
 msgstr "As soon as anything important or interesting happens, we will definitely let you know."
 
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SwapPriceDifferenceWarning.tsx
+msgid "SWAP order"
+msgstr "SWAP order"
+
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "This is the current market price, including the fee."
 msgstr "This is the current market price, including the fee."
@@ -381,8 +389,8 @@ msgid "This CoW doesn't run away any more! Not from MEV!"
 msgstr "This CoW doesn't run away any more! Not from MEV!"
 
 #: apps/cowswap-frontend/src/modules/accountProxy/hooks/useRecoverFundsCallback.ts
-msgid "Recover funds from {ACCOUNT_PROXY_LABEL}"
-msgstr "Recover funds from {ACCOUNT_PROXY_LABEL}"
+#~ msgid "Recover funds from {ACCOUNT_PROXY_LABEL}"
+#~ msgstr "Recover funds from {ACCOUNT_PROXY_LABEL}"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteSwapContent/index.tsx
 msgid "Max. swap slippage"
@@ -441,6 +449,10 @@ msgstr "Unlike most other exchanges, CoW Swap doesn't charge you any fees if you
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/DeadlineSelector/index.tsx
 msgid "Failed to parse date and time provided"
 msgstr "Failed to parse date and time provided"
+
+#: libs/common-const/src/common.ts
+msgid "Only executed swaps incur fees."
+msgstr "Only executed swaps incur fees."
 
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapWidget/index.tsx
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/index.tsx
@@ -542,8 +554,8 @@ msgid "(View on Explorer)"
 msgstr "(View on Explorer)"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
-msgid "Loading {ACCOUNT_PROXY_LABEL}"
-msgstr "Loading {ACCOUNT_PROXY_LABEL}"
+#~ msgid "Loading {ACCOUNT_PROXY_LABEL}"
+#~ msgstr "Loading {ACCOUNT_PROXY_LABEL}"
 
 #: apps/cowswap-frontend/src/modules/wallet/pure/PendingView/index.tsx
 msgid "The connection attempt failed. Please click try again and follow the steps to connect in your wallet."
@@ -677,6 +689,7 @@ msgid "Loading operation"
 msgstr "Loading operation"
 
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
+#: libs/common-const/src/common.ts
 msgid "CoW Runner"
 msgstr "CoW Runner"
 
@@ -972,8 +985,8 @@ msgid "Minimize price impact with TWAP"
 msgstr "Minimize price impact with TWAP"
 
 #: apps/cowswap-frontend/src/modules/accountProxy/containers/AccountProxiesPage/index.tsx
-msgid "Select an {ACCOUNT_PROXY_LABEL} to check for available refunds {chain}"
-msgstr "Select an {ACCOUNT_PROXY_LABEL} to check for available refunds {chain}"
+#~ msgid "Select an {ACCOUNT_PROXY_LABEL} to check for available refunds {chain}"
+#~ msgstr "Select an {ACCOUNT_PROXY_LABEL} to check for available refunds {chain}"
 
 #: apps/cowswap-frontend/src/api/cowProtocol/errors/OperatorError.ts
 msgid "creating"
@@ -990,6 +1003,10 @@ msgstr "Claimable amount"
 #: apps/cowswap-frontend/src/modules/governance/pure/GovernanceList/index.tsx
 msgid "Proposal 1"
 msgstr "Proposal 1"
+
+#: apps/cowswap-frontend/src/modules/accountProxy/containers/AccountProxiesPage/index.tsx
+msgid "Select an {accountProxyLabelString} to check for available refunds {chain}"
+msgstr "Select an {accountProxyLabelString} to check for available refunds {chain}"
 
 #: apps/cowswap-frontend/src/modules/twap/pure/PrimaryActionButton/index.tsx
 msgid "Unsupported wallet"
@@ -1230,6 +1247,10 @@ msgstr "Switch to WETH"
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
 msgid "Great!"
 msgstr "Great!"
+
+#: apps/cowswap-frontend/src/modules/bridge/pure/ProxyAccountBanner/index.tsx
+msgid "View your private {accountProxyLabelString}"
+msgstr "View your private {accountProxyLabelString}"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
@@ -1520,8 +1541,8 @@ msgid "or send us an email at"
 msgstr "or send us an email at"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/ProxyAccountBanner/index.tsx
-msgid "CoW Swap uses a dedicated {ACCOUNT_PROXY_LABEL}, controlled only by you, to ensure smooooth bridging. Confirm the recipient address above is <0/>"
-msgstr "CoW Swap uses a dedicated {ACCOUNT_PROXY_LABEL}, controlled only by you, to ensure smooooth bridging. Confirm the recipient address above is <0/>"
+#~ msgid "CoW Swap uses a dedicated {ACCOUNT_PROXY_LABEL}, controlled only by you, to ensure smooooth bridging. Confirm the recipient address above is <0/>"
+#~ msgstr "CoW Swap uses a dedicated {ACCOUNT_PROXY_LABEL}, controlled only by you, to ensure smooooth bridging. Confirm the recipient address above is <0/>"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteBridgeContent/index.tsx
 msgid "The minimum possible outcome after swap, including costs and slippage."
@@ -1718,6 +1739,10 @@ msgstr "so we can investigate the problem."
 msgid "(via WalletConnect)"
 msgstr "(via WalletConnect)"
 
+#: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/index.tsx
+msgid "<0>Select an {accountProxyLabelString}</0> and then select a token you want to recover from CoW Shed."
+msgstr "<0>Select an {accountProxyLabelString}</0> and then select a token you want to recover from CoW Shed."
+
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Error loading price. Try again later."
 msgstr "Error loading price. Try again later."
@@ -1879,8 +1904,8 @@ msgid "BEFORE"
 msgstr "BEFORE"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/ProxyAccountBanner/index.tsx
-msgid "View your private {ACCOUNT_PROXY_LABEL}"
-msgstr "View your private {ACCOUNT_PROXY_LABEL}"
+#~ msgid "View your private {ACCOUNT_PROXY_LABEL}"
+#~ msgstr "View your private {ACCOUNT_PROXY_LABEL}"
 
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/index.tsx
 msgid "This tool helps you recover your funds."
@@ -1951,6 +1976,10 @@ msgstr "Transaction Settings"
 #: apps/cowswap-frontend/src/common/pure/Modal/index.tsx
 msgid "dialog content"
 msgstr "dialog content"
+
+#: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/index.tsx
+msgid "Since {accountProxyLabelString} is not an upgradeable smart-contract, it can be versioned and there are"
+msgstr "Since {accountProxyLabelString} is not an upgradeable smart-contract, it can be versioned and there are"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
 msgid "open"
@@ -2069,8 +2098,8 @@ msgid "native currency"
 msgstr "native currency"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
-msgid "Couldn't verify {ACCOUNT_PROXY_LABEL}, please try later"
-msgstr "Couldn't verify {ACCOUNT_PROXY_LABEL}, please try later"
+#~ msgid "Couldn't verify {ACCOUNT_PROXY_LABEL}, please try later"
+#~ msgstr "Couldn't verify {ACCOUNT_PROXY_LABEL}, please try later"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 msgid "Wrap operation failed."
@@ -2083,6 +2112,10 @@ msgstr "If allowance remains insufficient at creation time, this portion will no
 #: apps/cowswap-frontend/src/common/utils/getSwapErrorMessage.ts
 #~ msgid "User rejected signing the order"
 #~ msgstr "User rejected signing the order"
+
+#: libs/common-const/src/common.ts
+msgid "Account Proxy"
+msgstr "Account Proxy"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 #~ msgid "Executing', description: 'The winner of the competition is now executing your order on-chain."
@@ -2119,6 +2152,10 @@ msgstr "Click to copy contract address"
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/UnsupportedWalletWarning.tsx
 msgid "Unsupported wallet detected"
 msgstr "Unsupported wallet detected"
+
+#: libs/common-const/src/common.ts
+msgid "Tokens Overview"
+msgstr "Tokens Overview"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/TradeConfirmation/getPendingText.ts
 msgid "Confirm approval"
@@ -2183,6 +2220,7 @@ msgstr "Liquidity pools on CoW AMM grow faster than on other AMMs because they d
 #: apps/cowswap-frontend/src/common/constants/routes.ts
 #: apps/cowswap-frontend/src/modules/advancedOrders/containers/AdvancedOrdersWidget/index.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/OrderTypeField.tsx
+#: libs/common-const/src/common.ts
 msgid "TWAP"
 msgstr "TWAP"
 
@@ -2247,8 +2285,8 @@ msgid "Token wrapping bundling"
 msgstr "Token wrapping bundling"
 
 #: apps/cowswap-frontend/src/modules/accountProxy/containers/ProxyRecipient/index.tsx
-msgid "Provided proxy address does not match {ACCOUNT_PROXY_LABEL} address!, recipient={recipient}, proxyAddress={proxyAddress}"
-msgstr "Provided proxy address does not match {ACCOUNT_PROXY_LABEL} address!, recipient={recipient}, proxyAddress={proxyAddress}"
+#~ msgid "Provided proxy address does not match {ACCOUNT_PROXY_LABEL} address!, recipient={recipient}, proxyAddress={proxyAddress}"
+#~ msgstr "Provided proxy address does not match {ACCOUNT_PROXY_LABEL} address!, recipient={recipient}, proxyAddress={proxyAddress}"
 
 #: apps/cowswap-frontend/src/pages/Account/index.tsx
 msgid "Account overview"
@@ -2387,9 +2425,13 @@ msgstr "Reduce your slippage by breaking big orders into smaller ones"
 msgid "CoW Swap is the only exchange that matches Coincidences of Wants (CoWs): peer-to-peer swaps that save on settlement costs."
 msgstr "CoW Swap is the only exchange that matches Coincidences of Wants (CoWs): peer-to-peer swaps that save on settlement costs."
 
+#: apps/cowswap-frontend/src/modules/bridge/pure/ProxyAccountBanner/index.tsx
+msgid "CoW Swap uses a dedicated {accountProxyLabelString}, controlled only by you, to ensure smooooth bridging. Confirm the recipient address above is <0/>"
+msgstr "CoW Swap uses a dedicated {accountProxyLabelString}, controlled only by you, to ensure smooooth bridging. Confirm the recipient address above is <0/>"
+
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
-msgid "Your swap expires and will not execute if it is pending for longer than the selected duration.<0/><1/>{INPUT_OUTPUT_EXPLANATION}"
-msgstr "Your swap expires and will not execute if it is pending for longer than the selected duration.<0/><1/>{INPUT_OUTPUT_EXPLANATION}"
+#~ msgid "Your swap expires and will not execute if it is pending for longer than the selected duration.<0/><1/>{INPUT_OUTPUT_EXPLANATION}"
+#~ msgstr "Your swap expires and will not execute if it is pending for longer than the selected duration.<0/><1/>{INPUT_OUTPUT_EXPLANATION}"
 
 #: apps/cowswap-frontend/src/common/pure/NetworkCostsSuffix/index.tsx
 #: apps/cowswap-frontend/src/modules/trade/pure/RowFeeContent/index.tsx
@@ -2437,6 +2479,10 @@ msgstr "Add a custom hook"
 #: apps/cowswap-frontend/src/legacy/components/ErrorBoundary/ChunkLoadError.tsx
 msgid "This page can't be reached"
 msgstr "This page can't be reached"
+
+#: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
+msgid "Your swap expires and will not execute if it is pending for longer than the selected duration."
+msgstr "Your swap expires and will not execute if it is pending for longer than the selected duration."
 
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
 msgid "{currencyNameCapitalized} orders can, in rare cases, be frontrun due to their on-chain component. For more robust MEV protection, consider wrapping your {currencyName} before trading."
@@ -2502,6 +2548,10 @@ msgstr "Interface Settings"
 msgid "Enter a price"
 msgstr "Enter a price"
 
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+msgid "Couldn't verify {accountProxyLabel}, please try later"
+msgstr "Couldn't verify {accountProxyLabel}, please try later"
+
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/tableHeaders.tsx
 msgid "Creation time"
 msgstr "Creation time"
@@ -2522,6 +2572,10 @@ msgstr "Included in the estimated execution price"
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
 msgid "Network costs (incl. gas) are covered by filling your order when the market price is better than your limit price."
 msgstr "Network costs (incl. gas) are covered by filling your order when the market price is better than your limit price."
+
+#: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/index.tsx
+msgid "How do I recover my funds from {accountProxyLabel}?"
+msgstr "How do I recover my funds from {accountProxyLabel}?"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/fields/SafeTxFields.tsx
 msgid "Safe confirmed signatures"
@@ -2794,6 +2848,7 @@ msgstr "Details"
 
 #: apps/cowswap-frontend/src/legacy/state/orders/helpers.tsx
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/index.tsx
+#: apps/cowswap-frontend/src/modules/orders/containers/OrderNotification/index.tsx
 msgid "Order"
 msgstr "Order"
 
@@ -2932,6 +2987,7 @@ msgstr "Price change"
 #: apps/cowswap-frontend/src/common/constants/routes.ts
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/OrderTypeField.tsx
 #: apps/cowswap-frontend/src/utils/orderUtils/getUiOrderType.ts
+#: libs/common-const/src/common.ts
 msgid "Yield"
 msgstr "Yield"
 
@@ -3790,6 +3846,7 @@ msgid "Recreate"
 msgstr "Recreate"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/SwapResultContent/contents.tsx
+#: libs/common-const/src/common.ts
 msgid "Received"
 msgstr "Received"
 
@@ -3882,6 +3939,10 @@ msgstr "Quote expired. Refreshing..."
 msgid "Favorite tokens"
 msgstr "Favorite tokens"
 
+#: libs/common-const/src/common.ts
+msgid "Limit Orders"
+msgstr "Limit Orders"
+
 #: apps/cowswap-frontend/src/modules/accountProxy/containers/WidgetPageTitle/index.tsx
 msgid "funds"
 msgstr "funds"
@@ -3934,6 +3995,10 @@ msgstr "Lower minimal slippage (instead of {minEthFlowSlippageToSignificant}% mi
 #: apps/cowswap-frontend/src/common/pure/PermitModal/index.tsx
 msgid "Submit"
 msgstr "Submit"
+
+#: libs/common-const/src/common.ts
+msgid "Account Overview"
+msgstr "Account Overview"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/index.tsx
 msgid "FREE order placement and cancellation"
@@ -4099,8 +4164,8 @@ msgid "Invalid price. Try increasing input/output amount."
 msgstr "Invalid price. Try increasing input/output amount."
 
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/index.tsx
-msgid "Since {ACCOUNT_PROXY_LABEL} is not an upgradeable smart-contract, it can be versioned and there are"
-msgstr "Since {ACCOUNT_PROXY_LABEL} is not an upgradeable smart-contract, it can be versioned and there are"
+#~ msgid "Since {ACCOUNT_PROXY_LABEL} is not an upgradeable smart-contract, it can be versioned and there are"
+#~ msgstr "Since {ACCOUNT_PROXY_LABEL} is not an upgradeable smart-contract, it can be versioned and there are"
 
 #: apps/cowswap-frontend/src/modules/trade/containers/TradeWarnings/index.tsx
 msgid "Token approval bundling"
@@ -4141,6 +4206,7 @@ msgstr "This is the estimated amount you will receive for each part of the TWAP 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/OrderTypeField.tsx
 #: apps/cowswap-frontend/src/utils/orderUtils/getUiOrderType.ts
+#: libs/common-const/src/common.ts
 msgid "Hooks"
 msgstr "Hooks"
 
@@ -4192,6 +4258,10 @@ msgstr "token before creation."
 #: apps/cowswap-frontend/src/legacy/utils/trade.ts
 msgid "at least "
 msgstr "at least "
+
+#: apps/cowswap-frontend/src/modules/accountProxy/hooks/useRecoverFundsCallback.ts
+msgid "Recover funds from {accountProxyLabelString}"
+msgstr "Recover funds from {accountProxyLabelString}"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/RecipientDetailsItem/index.tsx
 msgid "The address that will receive the tokens on the destination chain."
@@ -4310,8 +4380,8 @@ msgid "Bridged via"
 msgstr "Bridged via"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/ProxyAccountBanner/index.tsx
-msgid "Swap bridged via your {ACCOUNT_PROXY_LABEL}: <0/>"
-msgstr "Swap bridged via your {ACCOUNT_PROXY_LABEL}: <0/>"
+#~ msgid "Swap bridged via your {ACCOUNT_PROXY_LABEL}: <0/>"
+#~ msgstr "Swap bridged via your {ACCOUNT_PROXY_LABEL}: <0/>"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/TenderlySimulate/index.tsx
 msgid "Simulation report"
@@ -4388,8 +4458,8 @@ msgid "Post Hooks"
 msgstr "Post Hooks"
 
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/index.tsx
-msgid "How do I recover my funds from {ACCOUNT_PROXY_LABEL}?"
-msgstr "How do I recover my funds from {ACCOUNT_PROXY_LABEL}?"
+#~ msgid "How do I recover my funds from {ACCOUNT_PROXY_LABEL}?"
+#~ msgstr "How do I recover my funds from {ACCOUNT_PROXY_LABEL}?"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDetailHeader/index.tsx
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookListItem/index.tsx
@@ -4543,6 +4613,10 @@ msgstr "Safe logo"
 msgid "Wrapping"
 msgstr "Wrapping"
 
+#: apps/cowswap-frontend/src/modules/accountProxy/containers/ProxyRecipient/index.tsx
+msgid "Provided proxy address does not match {accountProxyLabelString} address!, recipient={recipient}, proxyAddress={proxyAddress}"
+msgstr "Provided proxy address does not match {accountProxyLabelString} address!, recipient={recipient}, proxyAddress={proxyAddress}"
+
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/EthFlowModalTopContent.tsx
 msgid "At current gas prices, your remaining {nativeSymbol} balance after confirmation may be <0>insufficient for any further on-chain transactions.</0>"
 msgstr "At current gas prices, your remaining {nativeSymbol} balance after confirmation may be <0>insufficient for any further on-chain transactions.</0>"
@@ -4695,6 +4769,10 @@ msgstr "Swap costs are at least {formattedFeePercentage}% of the swap amount and
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SlippageTooltip/index.tsx
 msgid "MEV-protected slippage"
 msgstr "MEV-protected slippage"
+
+#: apps/cowswap-frontend/src/modules/bridge/pure/ProxyAccountBanner/index.tsx
+msgid "Swap bridged via your {accountProxyLabelString}: <0/>"
+msgstr "Swap bridged via your {accountProxyLabelString}: <0/>"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/AirdropHookApp/hooks/useClaimData.ts
 msgid "There was an error trying to load claimable tokens"
@@ -4986,6 +5064,7 @@ msgstr "Because you are using a smart contract wallet"
 #: apps/cowswap-frontend/src/modules/yield/containers/TradeButtons/index.tsx
 #: apps/cowswap-frontend/src/modules/yield/containers/YieldWidget/elements.tsx
 #: apps/cowswap-frontend/src/utils/orderUtils/getUiOrderType.ts
+#: libs/common-const/src/common.ts
 msgid "Swap"
 msgstr "Swap"
 
@@ -5097,6 +5176,10 @@ msgstr "Longer limit orders - place orders for up to a year."
 #: apps/cowswap-frontend/src/common/containers/MultipleOrdersCancellationModal/index.tsx
 msgid "User rejected signing the cancellation"
 msgstr "User rejected signing the cancellation"
+
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+msgid "Loading {accountProxyLabel}"
+msgstr "Loading {accountProxyLabel}"
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/ManageListsAndTokens/index.tsx
 msgid "Manage"
@@ -5279,8 +5362,8 @@ msgid "Insufficient time between parts"
 msgstr "Insufficient time between parts"
 
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/index.tsx
-msgid "<0>Select an {ACCOUNT_PROXY_LABEL}</0> and then select a token you want to recover from CoW Shed."
-msgstr "<0>Select an {ACCOUNT_PROXY_LABEL}</0> and then select a token you want to recover from CoW Shed."
+#~ msgid "<0>Select an {ACCOUNT_PROXY_LABEL}</0> and then select a token you want to recover from CoW Shed."
+#~ msgstr "<0>Select an {ACCOUNT_PROXY_LABEL}</0> and then select a token you want to recover from CoW Shed."
 
 #: apps/cowswap-frontend/src/common/pure/Stepper/index.tsx
 msgid "checkmark"
@@ -5336,8 +5419,8 @@ msgid "Please click confirm to {action}."
 msgstr "Please click confirm to {action}."
 
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/index.tsx
-msgid "What is {ACCOUNT_PROXY_LABEL}?"
-msgstr "What is {ACCOUNT_PROXY_LABEL}?"
+#~ msgid "What is {ACCOUNT_PROXY_LABEL}?"
+#~ msgstr "What is {ACCOUNT_PROXY_LABEL}?"
 
 #: apps/cowswap-frontend/src/pages/error/NotFound/index.tsx
 msgid "Page not found!"
@@ -5410,6 +5493,10 @@ msgstr "Uh oh! The market price has moved outside of your slippage tolerance. Yo
 #: apps/cowswap-frontend/src/modules/erc20Approve/pure/ApproveConfirmation/AdvancedApprove.tsx
 msgid "Entered amount is invalid"
 msgstr "Entered amount is invalid"
+
+#: libs/common-const/src/common.ts
+msgid "Mev Slicer"
+msgstr "Mev Slicer"
 
 #: apps/cowswap-frontend/src/utils/orderUtils/parseOrder.ts
 msgid "Creation transaction"

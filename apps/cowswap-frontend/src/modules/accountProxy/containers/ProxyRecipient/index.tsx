@@ -4,6 +4,7 @@ import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
 import { areAddressesEqual } from '@cowprotocol/common-utils'
 
 import { t } from '@lingui/core/macro'
+import { useLingui } from '@lingui/react/macro'
 import { Pocket } from 'react-feather'
 import styled from 'styled-components/macro'
 
@@ -30,12 +31,14 @@ interface ProxyRecipientProps {
 
 export function ProxyRecipient({ recipient, chainId, size = 14 }: ProxyRecipientProps): ReactNode {
   const proxyAddress = useCurrentAccountProxyAddress()
+  const { i18n } = useLingui()
+  const accountProxyLabelString = i18n._(ACCOUNT_PROXY_LABEL)
 
   if (!recipient || !proxyAddress) return null
 
   if (!areAddressesEqual(recipient, proxyAddress)) {
     throw new Error(
-      t`Provided proxy address does not match ${ACCOUNT_PROXY_LABEL} address!, recipient=${recipient}, proxyAddress=${proxyAddress}`,
+      t`Provided proxy address does not match ${accountProxyLabelString} address!, recipient=${recipient}, proxyAddress=${proxyAddress}`,
     )
   }
 
