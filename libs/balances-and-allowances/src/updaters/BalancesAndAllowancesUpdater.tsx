@@ -12,7 +12,6 @@ import { BalancesCacheUpdater } from './BalancesCacheUpdater'
 import { BalancesResetUpdater } from './BalancesResetUpdater'
 import { BalancesRpcCallUpdater } from './BalancesRpcCallUpdater'
 
-import { BFF_BALANCES_SWR_CONFIG } from '../constants/bff-balances-swr-config'
 import { BASIC_MULTICALL_SWR_CONFIG } from '../consts'
 import { useNativeTokenBalance } from '../hooks/useNativeTokenBalance'
 import { useSwrConfigWithPauseForNetwork } from '../hooks/useSwrConfigWithPauseForNetwork'
@@ -20,8 +19,6 @@ import { useUpdateTokenBalance } from '../hooks/useUpdateTokenBalance'
 
 // A small gap between balances and allowances refresh intervals is needed to avoid high load to the node at the same time
 const RPC_BALANCES_SWR_CONFIG: SWRConfiguration = { ...BASIC_MULTICALL_SWR_CONFIG, refreshInterval: ms`31s` }
-
-const BFF_CHAIN_UPDATE_DELAY = ms`2s`
 
 const EMPTY_TOKENS: string[] = []
 
@@ -58,13 +55,7 @@ export function BalancesAndAllowancesUpdater({
     }, [])
   }, [allTokens, chainId])
 
-  const balancesSwrConfig = useSwrConfigWithPauseForNetwork(
-    chainId,
-    account,
-    isBffSwitchedOn ? BFF_BALANCES_SWR_CONFIG : RPC_BALANCES_SWR_CONFIG,
-    isBffSwitchedOn ? BFF_CHAIN_UPDATE_DELAY : undefined,
-  )
-
+  const rpcBalancesSwrConfig = useSwrConfigWithPauseForNetwork(chainId, account, RPC_BALANCES_SWR_CONFIG)
   // Add native token balance to the store as well
   useEffect(() => {
     if (isBffSwitchedOn) return
@@ -83,7 +74,6 @@ export function BalancesAndAllowancesUpdater({
         chainId={chainId}
         invalidateCacheTrigger={invalidateCacheTrigger}
         tokenAddresses={tokenAddresses}
-        balancesSwrConfig={balancesSwrConfig}
         isEnabled={isBffEnabled}
       />
       {!isBffSwitchedOn && (
@@ -91,7 +81,7 @@ export function BalancesAndAllowancesUpdater({
           account={account}
           chainId={chainId}
           tokenAddresses={tokenAddresses}
-          balancesSwrConfig={balancesSwrConfig}
+          balancesSwrConfig={rpcBalancesSwrConfig}
           setLoadingState
         />
       )}
