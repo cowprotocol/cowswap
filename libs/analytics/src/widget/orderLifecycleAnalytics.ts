@@ -1,5 +1,5 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import type { EnrichedOrder, TokenInfo } from '@cowprotocol/cow-sdk'
+import type { EnrichedOrder } from '@cowprotocol/cow-sdk'
 import {
   CowWidgetEvents,
   SimpleCowEventEmitter,
@@ -10,13 +10,14 @@ import {
   OnExpiredOrderPayload,
   BaseOrderPayload,
 } from '@cowprotocol/events'
+import type { TokenInfo } from '@cowprotocol/types'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { getCowAnalytics } from '../utils'
 
 // Specialized helper function for string properties to ensure we always return a string
 export const safeGetString = <T, K extends keyof T>(obj: T | undefined, key: K, fallback: string = ''): string => {
-  const value = obj && obj[key] !== undefined ? obj[key] : fallback
+  const value = obj && obj[key] != null ? obj[key] : fallback
   return String(value)
 }
 
@@ -190,12 +191,14 @@ export function mapPostedOrder(p: OnPostedOrderPayload): AnalyticsPayload {
   }
 
   return {
-    walletAddress: p.owner,
+    walletAddress: p.owner || '',
     orderId: p.orderUid,
     chainId: p.chainId.toString(),
     ...tokenFields,
     ...buildAnalyticsCurrencyAliases(tokenFields),
     orderType: p.orderType,
+    partiallyFillable: p.partiallyFillable,
+    isEthFlow: Boolean(p.isEthFlow),
     kind: p.kind,
     receiver: p.receiver || '',
     orderCreationHash: p.orderCreationHash || '',

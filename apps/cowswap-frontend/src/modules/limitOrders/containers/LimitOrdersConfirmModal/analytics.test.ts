@@ -54,5 +54,6 @@ describe('limit order analytics', () => {
     expect(parsed.walletAddress).toBe('0xabc')
     expect(parsed.orderKind).toBe(OrderKind.SELL)
     expect(parsed.side).toBe('sell')
+    expect(parsed.partialFillsEnabled).toBe(false)
   })
 })

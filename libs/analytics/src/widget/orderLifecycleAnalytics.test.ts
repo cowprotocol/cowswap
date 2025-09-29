@@ -31,6 +31,7 @@ const basePostedPayload = {
   inputAmount: BigInt('1000000000000000000'),
   outputAmount: BigInt('2500000'),
   orderType: 'swap',
+  partiallyFillable: true,
   kind: OrderKind.SELL,
   receiver: '0xreceiver',
   orderCreationHash: '0xhash',
@@ -53,8 +54,16 @@ describe('order lifecycle analytics mappers', () => {
         to_currency: 'TK2',
         from_amount: '1',
         to_amount: '2.5',
+        partiallyFillable: true,
+        isEthFlow: false,
       }),
     )
+  })
+
+  it('falls back for nullish string fields', () => {
+    const result = mapPostedOrder({ ...basePostedPayload, owner: null } as unknown as OnPostedOrderPayload)
+
+    expect(result).toEqual(expect.objectContaining({ walletAddress: '' }))
   })
 
   it('maps fulfilled order payload with executed totals', () => {

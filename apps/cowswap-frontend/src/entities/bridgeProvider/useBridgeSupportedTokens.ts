@@ -1,18 +1,20 @@
 import { SWR_NO_REFRESH_OPTIONS, TokenWithLogo } from '@cowprotocol/common-const'
 import { useIsBridgingEnabled } from '@cowprotocol/common-hooks'
-import { BuyTokensParams, GetProviderBuyTokens } from '@cowprotocol/sdk-bridging'
+import { BuyTokensParams } from '@cowprotocol/sdk-bridging'
 
 import useSWR, { SWRResponse } from 'swr'
 
-import { useBridgeProvider } from './useBridgeProvider'
+import { useBridgeProviders } from './useBridgeProviders'
 
-export type BridgeSupportedToken = Pick<GetProviderBuyTokens, 'isRouteAvailable'> & { tokens: TokenWithLogo[] }
+export type BridgeSupportedToken = { tokens: TokenWithLogo[]; isRouteAvailable: boolean }
 
 export function useBridgeSupportedTokens(
   params: BuyTokensParams | undefined,
 ): SWRResponse<BridgeSupportedToken | null> {
   const isBridgingEnabled = useIsBridgingEnabled()
-  const bridgeProvider = useBridgeProvider()
+
+  const bridgeProviders = useBridgeProviders()
+  const providerIds = bridgeProviders.map((i) => i.info.dappId).join('|')
 
   return useSWR(
     isBridgingEnabled
@@ -21,34 +23,52 @@ export function useBridgeSupportedTokens(
           params?.sellChainId,
           params?.buyChainId,
           params?.sellTokenAddress,
-          bridgeProvider.info.dappId,
+          providerIds,
           'useBridgeSupportedTokens',
         ]
       : null,
-    ([params]) => {
+    async ([params]) => {
       if (typeof params === 'undefined') return null
 
-      return bridgeProvider
-        .getBuyTokens(params)
-        .then(({ tokens, isRouteAvailable }) => {
-          return {
-            tokens: (tokens ?? []).map((token) =>
-              TokenWithLogo.fromToken(
-                {
-                  ...token,
-                  name: token.name || '',
-                  symbol: token.symbol || '',
-                },
-                token.logoUrl,
-              ),
-            ),
-            isRouteAvailable: isBridgingEnabled ? isRouteAvailable : true,
+      const results = await Promise.allSettled(
+        bridgeProviders.map((provider) => {
+          return provider.getBuyTokens(params)
+        }),
+      )
+
+      const state = results.reduce<{ tokens: Record<string, TokenWithLogo>; isRouteAvailable: boolean }>(
+        (acc, val) => {
+          if (val.status === 'fulfilled') {
+            const { tokens, isRouteAvailable } = val.value
+
+            if (isRouteAvailable) {
+              tokens.forEach((token) => {
+                const address = token.address.toLowerCase()
+
+                if (!acc.tokens[address]) {
+                  acc.tokens[address] = TokenWithLogo.fromToken(
+                    {
+                      ...token,
+                      name: token.name || '',
+                      symbol: token.symbol || '',
+                    },
+                    token.logoUrl,
+                  )
+                }
+              })
+
+              acc.isRouteAvailable = isBridgingEnabled ? isRouteAvailable : true
+            }
           }
-        })
-        .catch((error) => {
-          console.error('Cannot getBuyTokens from bridgeProvider', error)
-          return Promise.reject(error)
-        })
+
+          return acc
+        },
+        { isRouteAvailable: false, tokens: {} },
+      )
+      return {
+        isRouteAvailable: state.isRouteAvailable,
+        tokens: Object.values(state.tokens),
+      }
     },
     SWR_NO_REFRESH_OPTIONS,
   )
