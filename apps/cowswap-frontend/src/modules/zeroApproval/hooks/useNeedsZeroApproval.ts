@@ -21,7 +21,7 @@ export function useNeedsZeroApproval(
       tokenContract: erc20Contract,
       spender: spender,
       amountToApprove: sellAmount,
-      isBundle: true,
+      forceApprove: true,
     }).then((res) => {
       setShouldZeroApprove(!!res)
     })

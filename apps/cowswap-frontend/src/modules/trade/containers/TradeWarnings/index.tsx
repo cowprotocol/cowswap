@@ -6,9 +6,9 @@ import { Trans } from '@lingui/react/macro'
 
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { HighSuggestedSlippageWarning } from 'modules/tradeSlippage'
-import { useShouldZeroApprove } from 'modules/zeroApproval'
 
 import { useGetReceiveAmountInfo } from '../../hooks/useGetReceiveAmountInfo'
+import { useShouldShowZeroApproveWarning } from '../../hooks/useShouldShowZeroApproveWarning'
 import { ZeroApprovalWarning } from '../../pure/ZeroApprovalWarning'
 import { NoImpactWarning } from '../NoImpactWarning'
 
@@ -21,7 +21,7 @@ export function TradeWarnings({ isTradePriceUpdating, enableSmartSlippage }: Tra
   const primaryFormValidation = useGetTradeFormValidation()
   const receiveAmountInfo = useGetReceiveAmountInfo()
   const inputAmountWithSlippage = receiveAmountInfo?.afterSlippage.sellAmount
-  const shouldZeroApprove = useShouldZeroApprove(inputAmountWithSlippage)
+  const shouldZeroApprove = useShouldShowZeroApproveWarning(inputAmountWithSlippage)
 
   const showBundleTxApprovalBanner = primaryFormValidation === TradeFormValidation.ApproveAndSwap
 
