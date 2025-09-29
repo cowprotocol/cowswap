@@ -7,14 +7,14 @@ import { usePersistBalancesFromBff } from '../hooks/usePersistBalancesFromBff'
 export function BalancesBffUpdater({
   account,
   chainId,
-  pendingOrdersCount,
+  invalidateCacheTrigger,
   tokenAddresses,
   balancesSwrConfig,
   isEnabled,
 }: {
   account: string | undefined
   chainId: SupportedChainId
-  pendingOrdersCount?: number
+  invalidateCacheTrigger?: number
   tokenAddresses: string[]
   balancesSwrConfig: SWRConfiguration
   isEnabled?: boolean
@@ -23,7 +23,7 @@ export function BalancesBffUpdater({
     account,
     chainId,
     balancesSwrConfig,
-    pendingOrdersCount,
+    invalidateCacheTrigger,
     tokenAddresses,
     isEnabled,
   })

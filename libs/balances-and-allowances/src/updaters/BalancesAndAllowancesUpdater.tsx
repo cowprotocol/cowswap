@@ -28,7 +28,7 @@ const EMPTY_TOKENS: string[] = []
 export interface BalancesAndAllowancesUpdaterProps {
   account: string | undefined
   chainId: SupportedChainId
-  pendingOrdersCount: number
+  invalidateCacheTrigger: number
   excludedTokens: Set<string>
   isBffSwitchedOn: boolean
   isBffEnabled?: boolean
@@ -37,7 +37,7 @@ export interface BalancesAndAllowancesUpdaterProps {
 export function BalancesAndAllowancesUpdater({
   account,
   chainId,
-  pendingOrdersCount,
+  invalidateCacheTrigger,
   isBffSwitchedOn,
   excludedTokens,
   isBffEnabled,
@@ -81,7 +81,7 @@ export function BalancesAndAllowancesUpdater({
       <BalancesBffUpdater
         account={account}
         chainId={chainId}
-        pendingOrdersCount={pendingOrdersCount}
+        invalidateCacheTrigger={invalidateCacheTrigger}
         tokenAddresses={tokenAddresses}
         balancesSwrConfig={balancesSwrConfig}
         isEnabled={isBffEnabled}

@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 
 import { BFF_BASE_URL } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -7,8 +7,6 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { BigNumber } from '@ethersproject/bignumber'
 
 import useSWR, { SWRConfiguration } from 'swr'
-
-import { usePendingOrdersCountInvalidateCacheTrigger } from './usePendingOrdersCountInvalidateCacheTrigger'
 
 import { balancesAtom, BalancesState, balancesUpdateAtom } from '../state/balancesAtom'
 import { useSetIsBffFailed } from '../state/isBffFailedAtom'
@@ -22,13 +20,13 @@ export interface PersistBalancesFromBffParams {
   account?: string
   chainId: SupportedChainId
   balancesSwrConfig: SWRConfiguration
-  pendingOrdersCount?: number
+  invalidateCacheTrigger?: number
   tokenAddresses: string[]
   isEnabled?: boolean
 }
 
 export function usePersistBalancesFromBff(params: PersistBalancesFromBffParams): void {
-  const { account, chainId, balancesSwrConfig, pendingOrdersCount, tokenAddresses, isEnabled } = params
+  const { account, chainId, balancesSwrConfig, invalidateCacheTrigger, tokenAddresses, isEnabled } = params
 
   const { chainId: activeChainId, account: connectedAccount } = useWalletInfo()
   const targetAccount = account ?? connectedAccount
@@ -37,7 +35,7 @@ export function usePersistBalancesFromBff(params: PersistBalancesFromBffParams):
 
   const setIsBffFailed = useSetIsBffFailed()
 
-  const invalidateCacheTrigger = usePendingOrdersCountInvalidateCacheTrigger(pendingOrdersCount)
+  const lastTriggerRef = useRef(invalidateCacheTrigger)
 
   const {
     isLoading: isBalancesLoading,
@@ -47,7 +45,11 @@ export function usePersistBalancesFromBff(params: PersistBalancesFromBffParams):
     targetAccount && isEnabled && isSupportedNetwork
       ? [targetAccount, targetChainId, invalidateCacheTrigger, 'bff-balances']
       : null,
-    ([walletAddress, chainId]) => getBffBalances(walletAddress, chainId),
+    ([walletAddress, chainId]) => {
+      const skipCache = lastTriggerRef.current !== invalidateCacheTrigger
+      lastTriggerRef.current = invalidateCacheTrigger
+      return getBffBalances(walletAddress, chainId, skipCache)
+    },
     balancesSwrConfig,
   )
 
@@ -95,11 +97,14 @@ export function usePersistBalancesFromBff(params: PersistBalancesFromBffParams):
 export async function getBffBalances(
   address: string,
   chainId: SupportedChainId,
+  skipCache = false,
 ): Promise<Record<string, string> | null> {
   const url = `${BFF_BASE_URL}/${chainId}/address/${address}/balances`
+  const queryParams = skipCache ? '?ignoreCache=true' : ''
+  const fullUrl = url + queryParams
 
   try {
-    const res = await fetch(url)
+    const res = await fetch(fullUrl)
     const data: BalanceResponse = await res.json()
 
     if (!res.ok) {

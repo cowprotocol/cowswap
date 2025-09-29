@@ -13,7 +13,9 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { useBalancesContext } from 'entities/balancesContext/useBalancesContext'
 
 import { useSourceChainId } from 'modules/tokensList'
-import { usePendingOrdersCount, usePriorityTokenAddresses } from 'modules/trade'
+import { usePriorityTokenAddresses } from 'modules/trade'
+
+import { useOrdersFilledEventsTrigger } from '../hooks/useOrdersFilledEventsTrigger'
 
 function shouldApplyBffBalances(account: string | undefined, percentage: number | boolean | undefined): boolean {
   // Early exit for 100%, meaning should be enabled for everyone
@@ -70,8 +72,7 @@ export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
   const isBffSupportNetwork = isBffSupportedNetwork(sourceChainId)
   const isBffEnabled = shouldApplyBffBalances(account, bffBalanceEnabledPercentage)
   const isBffSwitchedOn = isBffEnabled && !isBffFailed && isBffSupportNetwork
-
-  const pendingOrdersCount = usePendingOrdersCount(sourceChainId, balancesAccount)
+  const invalidateCacheTrigger = useOrdersFilledEventsTrigger()
 
   return (
     <>
@@ -91,7 +92,7 @@ export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
         isBffSwitchedOn={isBffSwitchedOn}
         isBffEnabled={isBffEnabled}
         excludedTokens={priorityTokenAddresses}
-        pendingOrdersCount={pendingOrdersCount}
+        invalidateCacheTrigger={invalidateCacheTrigger}
       />
     </>
   )
