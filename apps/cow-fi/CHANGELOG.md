@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.26.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.26.0...cow-fi-v1.26.1) (2025-09-22)
+
+
+### Bug Fixes
+
+* **cow-fi:** update description in refer-to-earn layout for clarity ([#6245](https://github.com/cowprotocol/cowswap/issues/6245)) ([b21e160](https://github.com/cowprotocol/cowswap/commit/b21e160f6f6d9f29de7b1424a38e8789b34ed57e))
+
 ## [1.26.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.25.0...cow-fi-v1.26.0) (2025-09-11)
 
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.26.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.25.2...tokens-v1.26.0) (2025-09-17)
+
+
+### Features
+
+* remove Ondo tokens from curated token list ([#6276](https://github.com/cowprotocol/cowswap/issues/6276)) ([68b8cbd](https://github.com/cowprotocol/cowswap/commit/68b8cbd64569fdc1f9734fb678b6c19d978b38ab))
+
 ## [1.25.2](https://github.com/cowprotocol/cowswap/compare/tokens-v1.25.1...tokens-v1.25.2) (2025-09-12)
 
 
