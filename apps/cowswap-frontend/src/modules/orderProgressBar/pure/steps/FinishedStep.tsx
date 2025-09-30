@@ -184,7 +184,7 @@ export function FinishedStep({
   totalSolvers,
   debugForceShowSurplus,
 }: FinishedStepProps) {
-  const { i18n } = useLingui()
+  const { t } = useLingui()
   const [showAllSolvers, setShowAllSolvers] = useState(false)
   const cancellationFailed = stepName === 'cancellationFailed'
   const { surplusFiatValue, surplusAmount, showSurplus } = surplusData || {}
@@ -211,9 +211,9 @@ export function FinishedStep({
 
     return {
       randomImage: SURPLUS_IMAGES[getRandomInt(0, SURPLUS_IMAGES.length - 1)],
-      randomBenefit: i18n._(benefits[getRandomInt(0, benefits.length - 1)]),
+      randomBenefit: t(benefits[getRandomInt(0, benefits.length - 1)]),
     }
-  }, [chainId, i18n])
+  }, [chainId, t])
 
   const shareOnTwitter = useCallback(() => {
     const twitterUrl = shouldShowSurplus
