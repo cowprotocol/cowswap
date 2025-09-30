@@ -4,7 +4,7 @@ import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Token } from '@uniswap/sdk-core'
 
-import { t } from '@lingui/core/macro'
+import { useLingui } from '@lingui/react/macro'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 
@@ -31,6 +31,7 @@ interface WarningEstimatedPriceProps {
 export function WarningEstimatedPrice(props: WarningEstimatedPriceProps) {
   const { order, isInverted, withAllowanceWarning, approveOrderToken } = props
   const warningChildWithParams = findWarningChildWithParams(props)
+  const { t } = useLingui()
 
   if (!warningChildWithParams?.params) return null
 

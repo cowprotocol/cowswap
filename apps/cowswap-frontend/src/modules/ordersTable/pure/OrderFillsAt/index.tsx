@@ -6,8 +6,7 @@ import { Command, UiOrderType } from '@cowprotocol/types'
 import { HoverTooltip, TokenAmount, percentIsAlmostHundred } from '@cowprotocol/ui'
 import { Currency, Price } from '@uniswap/sdk-core'
 
-import { t } from '@lingui/core/macro'
-import { Trans } from '@lingui/react/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 import { Check, Clock, X, Zap } from 'react-feather'
 import SVG from 'react-inlinesvg'
 import { Nullish } from 'types'
@@ -70,13 +69,13 @@ export function OrderFillsAt({
   onApprove,
 }: OrderFillsAtProps) {
   const { filledPercentDisplay } = order.executionData
-
+  const { t } = useLingui()
   const executionPriceInverted = isInverted ? estimatedExecutionPrice?.invert() : estimatedExecutionPrice
   const spotPriceInverted = isInverted ? spotPrice?.invert() : spotPrice
   const { feeAmount } = prices || {}
 
   const feeDifference = useFeeAmountDifference(rateInfoParams, prices)
-  const walletType = isSafeWallet ? 'Safe' : 'Smart contract'
+  const walletType = isSafeWallet ? t`Safe` : `Smart contract`
 
   // Check for signing state first, regardless of order type
   if (order.status === OrderStatus.PRESIGNATURE_PENDING) {

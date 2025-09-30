@@ -22,7 +22,7 @@ export function SellForAtLeastTemplate({
   return (
     <>
       {actionTitle ?? t`Sell`} {inputAmount}
-      {srcChainData && ` (${srcChainData.label})`} for at least {outputAmount}
+      {srcChainData && ` (${srcChainData.label})`} {t`for at least`} {outputAmount}
       {dstChainData && ` (${dstChainData.label})`}
     </>
   )
@@ -38,7 +38,7 @@ export function BuyForAtMostTemplate({
   return (
     <>
       {actionTitle ? actionTitle : t`Buy`} {outputAmount}
-      {dstChainData && ` (${dstChainData.label})`} for at most {inputAmount}
+      {dstChainData && ` (${dstChainData.label})`} {t`for at most`} {inputAmount}
       {srcChainData && ` (${srcChainData.label})`}
     </>
   )
