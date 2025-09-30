@@ -10,6 +10,7 @@ import { TokenLogo } from '@cowprotocol/tokens'
 import { Confetti, ExternalLink, InfoTooltip, TokenAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { i18n } from '@lingui/core'
 import { Trans, useLingui } from '@lingui/react/macro'
 import Lottie from 'lottie-react'
 import { PiCaretDown, PiCaretUp, PiTrophyFill } from 'react-icons/pi'
@@ -76,7 +77,7 @@ function getReceivedAmount(
 ) {
   return (
     <styledEl.ReceivedAmount>
-      {!isCustomRecipient && `${RECEIVED_LABEL} `}
+      {!isCustomRecipient && i18n._(RECEIVED_LABEL)}
       <TokenLogo token={order.outputToken} size={20} />
       <b>
         <TokenAmount
