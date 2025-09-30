@@ -1,7 +1,7 @@
 import { UiOrderType } from '@cowprotocol/types'
 
 import { MessageDescriptor } from '@lingui/core'
-import { msg, t } from '@lingui/core/macro'
+import { msg } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import { useLingui } from '@lingui/react/macro'
 
@@ -26,12 +26,17 @@ const orderUITypeLabels: Record<UiOrderType, MessageDescriptor> = {
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function OrderTypeField({ order }: Props) {
   const uiOrderType = getUiOrderType(order)
-  const { i18n } = useLingui()
+  const { i18n, t } = useLingui()
+  const orderKind = order.kind === 'buy' ? t`buy` : order.kind === 'sell' ? t`sell` : order.kind
+  const orderType = i18n._(orderUITypeLabels[uiOrderType])
 
   return (
     <styledEl.Value>
       <styledEl.OrderTypeValue>
-        {i18n._(orderUITypeLabels[uiOrderType])} {order.kind} <Trans>order</Trans>{' '}
+        {/* TODO: this may need a rework for better localization */}
+        <Trans>
+          {orderType} {orderKind} order
+        </Trans>{' '}
         {order.partiallyFillable ? t`(Partially fillable)` : t`(Fill or Kill)`}
       </styledEl.OrderTypeValue>
     </styledEl.Value>
