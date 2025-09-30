@@ -28,9 +28,10 @@ interface CancelButtonProps {
 
 function CancelButton({ showCancellationModal, cancelEventData }: CancelButtonProps): ReactNode {
   if (!showCancellationModal) return null
+
   return (
     <styledEl.CancelButton data-click-event={cancelEventData} onClick={showCancellationModal}>
-      cancel the order
+      <Trans>cancel the order</Trans>
     </styledEl.CancelButton>
   )
 }
