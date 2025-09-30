@@ -1,4 +1,4 @@
-import { isSellOrder } from '@cowprotocol/common-utils'
+import { areAddressesEqual, isSellOrder } from '@cowprotocol/common-utils'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { BigNumber } from 'bignumber.js'
@@ -43,6 +43,7 @@ export function getExecutedSummaryData(order: Order | ParsedOrder): ExecutedSumm
 export function getExecutedSummaryDataWithSurplusToken(order: Order | ParsedOrder, surplusToken: Token): ExecutedSummaryData {
   const parsedOrder = isParsedOrder(order) ? order : parseOrder(order)
   const { inputToken, outputToken } = parsedOrder
+  const isSell = isSellOrder(parsedOrder.kind)
 
   const parsedInputToken = new Token(
     inputToken.chainId,
@@ -69,14 +70,12 @@ export function getExecutedSummaryDataWithSurplusToken(order: Order | ParsedOrde
   // Prefer the provided surplusToken (used to pass the intermediate token for bridge flows)
   // only when it is safe to do so:
   // - decimals must match the parsed output token (avoid mis-scaling)
-  // - and either the order is a BUY (destination amount displayed in output token),
-  //   or surplusToken differs from parsedOutputToken (bridge/intermediate case)
+  // - the order is a SELL and surplusToken differs from parsedOutputToken (bridge/intermediate case)
   const decimalsMatch = surplusToken.decimals === parsedOutputToken.decimals
-  const isBuy = !isSellOrder(parsedOrder.kind)
   const isDifferentToken =
-    surplusToken.address.toLowerCase() !== parsedOutputToken.address.toLowerCase() ||
+    !areAddressesEqual(surplusToken.address, parsedOutputToken.address) ||
     surplusToken.chainId !== parsedOutputToken.chainId
-  const useSurplusForOutput = decimalsMatch && (isBuy || isDifferentToken)
+  const useSurplusForOutput = decimalsMatch && isSell && isDifferentToken
   const effectiveOutputToken = useSurplusForOutput ? surplusToken : parsedOutputToken
 
   const { formattedFilledAmount, formattedSwappedAmount, swappedAmountWithFee } = getFilledAmounts({
