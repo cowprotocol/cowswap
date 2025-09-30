@@ -65,7 +65,9 @@ export function AccountProxyPage(): ReactNode {
           showWatermark
         />
       </AccountCardContainer>
-      <Title>Recoverable tokens · {tokensToRefund?.length || 0}</Title>
+      <Title>
+        <Trans>Recoverable tokens</Trans> · {tokensToRefund?.length || 0}
+      </Title>
       {refundValues &&
         refundValues.map(({ token, balance, usdAmount }) => {
           return (
