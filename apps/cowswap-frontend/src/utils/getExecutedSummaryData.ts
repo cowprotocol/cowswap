@@ -64,7 +64,6 @@ export function getExecutedSummaryDataWithSurplusToken(order: Order | ParsedOrde
 
   // Guard against missing surplus by falling back to '0' raw amount
   const rawSurplus = amount ? amount.decimalPlaces(0).toFixed() : '0'
-  const surplusAmount = CurrencyAmount.fromRawAmount(surplusToken, rawSurplus)
   const surplusPercent = percentage?.multipliedBy(100)?.toFixed(2)
 
   // Prefer the provided surplusToken (used to pass the intermediate token for bridge flows)
@@ -77,6 +76,7 @@ export function getExecutedSummaryDataWithSurplusToken(order: Order | ParsedOrde
     surplusToken.chainId !== parsedOutputToken.chainId
   const useSurplusForOutput = decimalsMatch && isSell && isDifferentToken
   const effectiveOutputToken = useSurplusForOutput ? surplusToken : parsedOutputToken
+  const surplusAmount = CurrencyAmount.fromRawAmount(effectiveOutputToken, rawSurplus)
 
   const { formattedFilledAmount, formattedSwappedAmount, swappedAmountWithFee } = getFilledAmounts({
     ...parsedOrder,
@@ -87,7 +87,7 @@ export function getExecutedSummaryDataWithSurplusToken(order: Order | ParsedOrde
   return {
     surplusAmount,
     surplusPercent,
-    surplusToken,
+    surplusToken: effectiveOutputToken,
     formattedFilledAmount,
     formattedSwappedAmount,
     swappedAmountWithFee,
