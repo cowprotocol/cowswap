@@ -8,7 +8,7 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: cowswapdev\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-09-30 19:19\n"
+"PO-Revision-Date: 2025-09-30 21:52\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -2571,6 +2571,10 @@ msgstr "Añadir pre-hook"
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 msgid "Limit orders on CoW Swap are free to place and cancel. That's unique in DeFi!"
 msgstr "Las órdenes limitadas en el intercambio de CoW son gratuitas para realizar y cancelar. ¡Eso es único en DeFi!"
+
+#: apps/cowswap-frontend/src/modules/limitOrders/hooks/useHandleOrderPlacement.ts
+msgid "safeBundleFlowContext is not set!"
+msgstr "safeBundleFlowContext no está establecido!"
 
 #: apps/cowswap-frontend/src/pages/Account/LockedGnoVesting/hooks.ts
 #: apps/cowswap-frontend/src/pages/Account/LockedGnoVesting/hooks.ts
