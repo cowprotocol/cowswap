@@ -1,5 +1,7 @@
 import {
   ARB_ARBITRUM_ONE,
+  BTCB_BNB,
+  BUSD_BNB,
   CBBTC_BASE,
   COW_TOKEN_ARBITRUM,
   COW_TOKEN_BASE,
@@ -9,6 +11,7 @@ import {
   DAI,
   DAI_ARBITRUM_ONE,
   DAI_BASE,
+  DAI_BNB,
   DAI_POLYGON,
   EURE_GNOSIS_CHAIN,
   GNO_GNOSIS_CHAIN,
@@ -26,6 +29,7 @@ import {
   USDT_ARBITRUM_ONE,
   USDT_AVALANCHE,
   USDT_BASE,
+  USDT_BNB,
   USDT_POLYGON,
   WBTC,
   WBTC_ARBITRUM_ONE,
@@ -106,5 +110,12 @@ export const DEFAULT_FAVORITE_TOKENS: Record<SupportedChainId, TokensMap> = {
     WRAPPED_NATIVE_CURRENCIES[SupportedChainId.AVALANCHE],
   ]),
   [SupportedChainId.LENS]: tokensListToMap([WRAPPED_NATIVE_CURRENCIES[SupportedChainId.LENS], USDC_LENS]), // TODO: Add Lens tokens when available
-  [SupportedChainId.BNB]: tokensListToMap([WRAPPED_NATIVE_CURRENCIES[SupportedChainId.BNB], USDC_BNB]), // TODO: Add BNB tokens when available
+  [SupportedChainId.BNB]: tokensListToMap([
+    WRAPPED_NATIVE_CURRENCIES[SupportedChainId.BNB],
+    USDC_BNB,
+    USDT_BNB,
+    BUSD_BNB,
+    DAI_BNB,
+    BTCB_BNB,
+  ]),
 }

@@ -1,5 +1,6 @@
 {
   "last-release-sha": "dbf70fcb64ad3255b34779821721fc7b2dab0c31",
+  "plugins": ["node-workspace"],
   "packages": {
     "apps/cowswap-frontend": {
       "changelog-path": "CHANGELOG.md",

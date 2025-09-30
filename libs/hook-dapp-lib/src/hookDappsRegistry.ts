@@ -180,4 +180,18 @@ export const hookDappsRegistry = {
       walletCompatibility: ['EOA'],
     },
   },
+  'cow-sdk://bridging/providers/across': {
+    name: 'Across',
+    type: 'INTERNAL',
+    descriptionShort: 'Across Protocol - Transfer Assets Between Layer 2s and Mainnet',
+    description:
+      'Across is the fastest, cheapest and most secure cross-chain bridge for Ethereum, Arbitrum, Optimism, Polygon and other Layer 1 and Layer 2 networks. Transfer tokens with Across.',
+    version: '0.0.1',
+    website: 'https://across.to',
+    image:
+      'https://raw.githubusercontent.com/cowprotocol/cow-sdk/refs/heads/main/src/bridging/providers/across/across-logo.png',
+    conditions: {
+      walletCompatibility: ['EOA'],
+    },
+  },
 }

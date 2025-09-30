@@ -31,6 +31,7 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
   const { amountToApprove, children, enablePartialApprove, confirmSwap, label, ignorePermit } = props
   const isPartialApproveEnabledByUser = useIsPartialApproveSelectedByUser()
   const handleApprove = useApproveCurrency(amountToApprove)
+  
   const spender = useTradeSpenderAddress()
   const { approvalState } = useApprovalStateForSpender(amountToApprove, spender)
   const isPermitSupported = useTokenSupportsPermit(amountToApprove.currency, TradeType.SWAP) && !ignorePermit
