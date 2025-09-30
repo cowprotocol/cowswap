@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.15.2](https://github.com/cowprotocol/cowswap/compare/wallet-v1.15.1...wallet-v1.15.2) (2025-09-22)
+
+
+### Bug Fixes
+
+* **bridge:** disable bridging for EIP7702EOA accounts ([#6249](https://github.com/cowprotocol/cowswap/issues/6249)) ([9eb219f](https://github.com/cowprotocol/cowswap/commit/9eb219f000fc92cb2f76d0ace2a9aaea4cf7110d))
+* **twap:** mark twap as cancelled when tx is mined ([#6262](https://github.com/cowprotocol/cowswap/issues/6262)) ([52d7b66](https://github.com/cowprotocol/cowswap/commit/52d7b6699bef391db7e2045f400e8480b23960ca))
+
 ## [1.15.1](https://github.com/cowprotocol/cowswap/compare/wallet-v1.15.0...wallet-v1.15.1) (2025-09-12)
 
 
