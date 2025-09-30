@@ -5,7 +5,7 @@ import { BASIC_MULTICALL_SWR_CONFIG } from '../consts'
 
 let focusLostTimestamp: number | null = null
 let listenersInitialized = false
-const FOCUS_HIDDEN_DILAY = ms`10s`
+const FOCUS_HIDDEN_DILAY = ms`20s`
 
 function initializeFocusListeners(): void {
   if (listenersInitialized || typeof document === 'undefined') {
