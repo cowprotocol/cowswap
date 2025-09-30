@@ -4552,7 +4552,7 @@ msgstr "Precio de ejecución medio"
 
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
 msgid "Terms and Conditions"
-msgstr "Términos y Condiciones"
+msgstr "Térms. & Conds."
 
 #: apps/cowswap-frontend/src/modules/fortune/containers/FortuneWidget/index.tsx
 msgid "Hide today's fortune cookie"
@@ -4759,7 +4759,7 @@ msgstr "Vaca meditando..."
 
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
 msgid "About CoW Swap"
-msgstr "Acerca del intercambio de CoW"
+msgstr "Acerca de CoW Swap"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/ExpiredStep.tsx
 msgid "Unlike on other exchanges, you won't be charged for this! Feel free to"
