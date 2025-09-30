@@ -18,6 +18,7 @@ import { SettingsTab } from 'modules/tradeWidgetAddons'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
+import type { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 
 import { useHasEnoughWrappedBalanceForSwap } from '../../../hooks/useHasEnoughWrappedBalanceForSwap'
@@ -56,13 +57,6 @@ interface CurrencyData {
   outputPreviewInfo: CurrencyPreviewInfo
   rateInfoParams: ReturnType<typeof useRateInfoParams>
   buyingFiatAmount: CurrencyInfo['fiatAmount']
-}
-
-interface CurrencyPreviewInfo {
-  amount: CurrencyInfo['amount']
-  fiatAmount: CurrencyInfo['fiatAmount']
-  balance: CurrencyInfo['balance']
-  label: string
 }
 
 interface LockScreenArgs {
