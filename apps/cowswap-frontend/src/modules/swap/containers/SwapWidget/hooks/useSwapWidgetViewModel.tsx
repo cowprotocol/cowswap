@@ -569,7 +569,7 @@ function useWidgetModals(): {
     () => ({
       onDismiss: () => setShowAddIntermediateTokenModal(false),
       onBack: () => setShowAddIntermediateTokenModal(false),
-      onImport: () => setShowAddIntermediateTokenModal(false),
+      onImport: (_token) => setShowAddIntermediateTokenModal(false),
     }),
     [setShowAddIntermediateTokenModal],
   )
