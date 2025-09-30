@@ -212,62 +212,6 @@ describe('usePersistBalancesFromBff - balancesSwrConfig and invalidateCacheTrigg
       )
     })
 
-    // it('should call getBffBalances with skipCache=true when trigger changes', async () => {
-    //   fetchMock.mockResolvedValue({
-    //     ok: true,
-    //     json: async () => ({ balances: mockBalancesData }),
-    //   } as Response)
-    //
-    //   const mockUseSWR = useSWR as jest.MockedFunction<typeof useSWR>
-    //
-    //   const capturedFetchers: Array<SWRFetcher> = []
-    //   mockUseSWR.mockImplementation((key, fetcher) => {
-    //     if (key && fetcher) {
-    //       capturedFetchers.push(fetcher as SWRFetcher)
-    //     }
-    //     return {
-    //       data: undefined,
-    //       error: undefined,
-    //       isLoading: false,
-    //       isValidating: false,
-    //       mutate: jest.fn(),
-    //     } as ReturnType<typeof useSWR>
-    //   })
-    //
-    //   const { rerender } = renderHook(
-    //     ({ trigger }: { trigger: number }) =>
-    //       usePersistBalancesFromBff({ ...defaultParams, invalidateCacheTrigger: trigger }),
-    //     {
-    //       wrapper,
-    //       initialProps: { trigger: 0 },
-    //     },
-    //   )
-    //
-    //   // First render with trigger = 0 (lastTriggerRef.current = 0, so skipCache = false)
-    //   const firstFetcher = capturedFetchers[capturedFetchers.length - 1]
-    //   if (firstFetcher) {
-    //     await firstFetcher([defaultParams.account!, defaultParams.chainId])
-    //   }
-    //
-    //   expect(fetchMock).toHaveBeenCalledWith(
-    //     `${BFF_BASE_URL}/${defaultParams.chainId}/address/${defaultParams.account}/balances`,
-    //   )
-    //
-    //   fetchMock.mockClear()
-    //
-    //   // Change trigger - this creates a new fetcher with skipCache = true
-    //   rerender({ trigger: 5 })
-    //
-    //   const secondFetcher = capturedFetchers[capturedFetchers.length - 1]
-    //   if (secondFetcher) {
-    //     await secondFetcher([defaultParams.account!, defaultParams.chainId])
-    //   }
-    //
-    //   expect(fetchMock).toHaveBeenCalledWith(
-    //     `${BFF_BASE_URL}/${defaultParams.chainId}/address/${defaultParams.account}/balances?ignoreCache=true`,
-    //   )
-    // })
-
     it('should handle undefined invalidateCacheTrigger', () => {
       const mockUseSWR = useSWR as jest.MockedFunction<typeof useSWR>
       mockUseSWR.mockReturnValue({
