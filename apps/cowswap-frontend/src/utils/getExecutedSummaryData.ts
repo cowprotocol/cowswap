@@ -43,7 +43,6 @@ export function getExecutedSummaryData(order: Order | ParsedOrder): ExecutedSumm
 export function getExecutedSummaryDataWithSurplusToken(order: Order | ParsedOrder, surplusToken: Token): ExecutedSummaryData {
   const parsedOrder = isParsedOrder(order) ? order : parseOrder(order)
   const { inputToken, outputToken } = parsedOrder
-  const isSell = isSellOrder(parsedOrder.kind)
 
   const parsedInputToken = new Token(
     inputToken.chainId,
@@ -66,17 +65,13 @@ export function getExecutedSummaryDataWithSurplusToken(order: Order | ParsedOrde
   const rawSurplus = amount ? amount.decimalPlaces(0).toFixed() : '0'
   const surplusPercent = percentage?.multipliedBy(100)?.toFixed(2)
 
-  // Prefer the provided surplusToken (used to pass the intermediate token for bridge flows)
-  // only when it is safe to do so:
-  // - decimals must match the parsed output token (avoid mis-scaling)
-  // - the order is a SELL and surplusToken differs from parsedOutputToken (bridge/intermediate case)
-  const decimalsMatch = surplusToken.decimals === parsedOutputToken.decimals
-  const isDifferentToken =
-    !areAddressesEqual(surplusToken.address, parsedOutputToken.address) ||
-    surplusToken.chainId !== parsedOutputToken.chainId
-  const useSurplusForOutput = decimalsMatch && isSell && isDifferentToken
-  const effectiveOutputToken = useSurplusForOutput ? surplusToken : parsedOutputToken
-  const surplusAmount = CurrencyAmount.fromRawAmount(effectiveOutputToken, rawSurplus)
+  const { effectiveOutputToken, surplusDisplayToken } = resolveDisplayTokens({
+    parsedOrder,
+    parsedInputToken,
+    parsedOutputToken,
+    surplusToken,
+  })
+  const surplusAmount = CurrencyAmount.fromRawAmount(surplusDisplayToken, rawSurplus)
 
   const { formattedFilledAmount, formattedSwappedAmount, swappedAmountWithFee } = getFilledAmounts({
     ...parsedOrder,
@@ -87,9 +82,53 @@ export function getExecutedSummaryDataWithSurplusToken(order: Order | ParsedOrde
   return {
     surplusAmount,
     surplusPercent,
-    surplusToken: effectiveOutputToken,
+    surplusToken: surplusDisplayToken,
     formattedFilledAmount,
     formattedSwappedAmount,
     swappedAmountWithFee,
+  }
+}
+
+interface ResolveDisplayTokensParams {
+  parsedOrder: ParsedOrder
+  parsedInputToken: Token
+  parsedOutputToken: Token
+  surplusToken: Token
+}
+
+function resolveDisplayTokens({
+  parsedOrder,
+  parsedInputToken,
+  parsedOutputToken,
+  surplusToken,
+}: ResolveDisplayTokensParams): { effectiveOutputToken: Token; surplusDisplayToken: Token } {
+  const isSell = isSellOrder(parsedOrder.kind)
+  const defaultSurplusToken = isSell ? parsedOutputToken : parsedInputToken
+
+  if (!isSell) {
+    return {
+      effectiveOutputToken: parsedOutputToken,
+      surplusDisplayToken: defaultSurplusToken,
+    }
+  }
+
+  const decimalsAlignWithDefault = surplusToken.decimals === defaultSurplusToken.decimals
+  const differsFromOutputToken =
+    !areAddressesEqual(surplusToken.address, parsedOutputToken.address) ||
+    surplusToken.chainId !== parsedOutputToken.chainId
+  const differsFromDefaultToken =
+    !areAddressesEqual(surplusToken.address, defaultSurplusToken.address) ||
+    surplusToken.chainId !== defaultSurplusToken.chainId
+
+  if (decimalsAlignWithDefault && differsFromOutputToken && differsFromDefaultToken) {
+    return {
+      effectiveOutputToken: surplusToken,
+      surplusDisplayToken: surplusToken,
+    }
+  }
+
+  return {
+    effectiveOutputToken: parsedOutputToken,
+    surplusDisplayToken: defaultSurplusToken,
   }
 }
