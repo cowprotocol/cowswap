@@ -1,5 +1,6 @@
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import type { OnPostedOrderPayload, OnFulfilledOrderPayload } from '@cowprotocol/events'
+import type { TokenInfo } from '@cowprotocol/types'
 
 import { TextDecoder as NodeTextDecoder, TextEncoder as NodeTextEncoder } from 'util'
 ;(global as unknown as { TextDecoder?: typeof NodeTextDecoder; TextEncoder?: typeof NodeTextEncoder }).TextDecoder =
@@ -7,8 +8,40 @@ import { TextDecoder as NodeTextDecoder, TextEncoder as NodeTextEncoder } from '
 ;(global as unknown as { TextDecoder?: typeof NodeTextDecoder; TextEncoder?: typeof NodeTextEncoder }).TextEncoder =
   NodeTextEncoder
 
-const { mapPostedOrder, mapFulfilledOrder } =
+const { mapPostedOrder, mapFulfilledOrder, extractTokenMeta } =
   require('./orderLifecycleAnalytics') as typeof import('./orderLifecycleAnalytics')
+
+describe('extractTokenMeta', () => {
+  it('returns empty object for missing order', () => {
+    expect(extractTokenMeta(undefined)).toEqual({})
+  })
+
+  it('only returns tokens with an address', () => {
+    const tokenWithAddress: TokenInfo = {
+      chainId: 1,
+      address: '0x0000000000000000000000000000000000000003',
+      symbol: 'TK3',
+      name: 'Token 3',
+      decimals: 6,
+    }
+
+    const result = extractTokenMeta({
+      inputToken: tokenWithAddress,
+      outputToken: {
+        chainId: 1,
+        address: '',
+        symbol: 'TK4',
+        name: 'Token 4',
+        decimals: 18,
+      },
+    })
+
+    expect(result).toEqual({
+      inputToken: tokenWithAddress,
+      outputToken: undefined,
+    })
+  })
+})
 
 const basePostedPayload = {
   owner: '0xowner',
@@ -127,5 +160,28 @@ describe('order lifecycle analytics mappers', () => {
 
       expect(formatted).toBe(expected)
     })
+  })
+
+  it('detects bridge orders from nested order payloads', () => {
+    const nestedBridgePayload = {
+      ...basePostedPayload,
+      bridgeOrder: undefined,
+      order: {
+        owner: '0xowner',
+        uid: '0xorder',
+        sellToken: '0x0000000000000000000000000000000000000001',
+        buyToken: '0x0000000000000000000000000000000000000002',
+        sellAmount: '1000000000000000000',
+        buyAmount: '2500000',
+        executedSellAmount: '500000000000000000',
+        executedBuyAmount: '1250000',
+        executedFeeAmount: '1000000000000000',
+        bridgeOrder: { id: 'bridge' },
+      },
+    } as unknown as OnFulfilledOrderPayload
+
+    const result = mapFulfilledOrder(nestedBridgePayload)
+
+    expect(result.isCrossChain).toBe(true)
   })
 })

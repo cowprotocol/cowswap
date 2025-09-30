@@ -4,6 +4,7 @@ import {
   CowWidgetEvents,
   SimpleCowEventEmitter,
   CowWidgetEventPayloadMap,
+  CowEventHandler,
   OnPostedOrderPayload,
   OnFulfilledOrderPayload,
   OnCancelledOrderPayload,
@@ -37,8 +38,8 @@ export function extractTokenMeta(order: Partial<EnrichedOrderWithTokens> | undef
   }
 
   return {
-    inputToken: order.inputToken,
-    outputToken: order.outputToken,
+    inputToken: order.inputToken?.address ? order.inputToken : undefined,
+    outputToken: order.outputToken?.address ? order.outputToken : undefined,
   }
 }
 
@@ -142,39 +143,16 @@ export function getOrderPayload(payload: BaseOrderPayload): AnalyticsPayload {
   return { ...base, ...tokenFields, ...aliases }
 }
 
-const EVENT_CONFIGS = [
-  // Handle order submission
-  {
-    event: CowWidgetEvents.ON_POSTED_ORDER,
-    analyticsEvent: 'order_submitted',
-    mapper: mapPostedOrder,
-  },
-  // Handle order fulfillment
-  {
-    event: CowWidgetEvents.ON_FULFILLED_ORDER,
-    analyticsEvent: 'swap_executed',
-    mapper: mapFulfilledOrder,
-  },
-  // Handle order cancellation
-  {
-    event: CowWidgetEvents.ON_CANCELLED_ORDER,
-    analyticsEvent: 'swap_cancelled',
-    mapper: (p: OnCancelledOrderPayload) => ({
-      ...getOrderPayload(p),
-      reason: 'cancelled',
-      transactionHash: p.transactionHash || '',
-    }),
-  },
-  // Handle order expiration
-  {
-    event: CowWidgetEvents.ON_EXPIRED_ORDER,
-    analyticsEvent: 'swap_expired',
-    mapper: (p: OnExpiredOrderPayload) => ({
-      ...getOrderPayload(p),
-      reason: 'expired',
-    }),
-  },
-]
+const mapCancelledOrder = (p: OnCancelledOrderPayload): AnalyticsPayload => ({
+  ...getOrderPayload(p),
+  reason: 'cancelled',
+  transactionHash: p.transactionHash || '',
+})
+
+const mapExpiredOrder = (p: OnExpiredOrderPayload): AnalyticsPayload => ({
+  ...getOrderPayload(p),
+  reason: 'expired',
+})
 
 export function mapPostedOrder(p: OnPostedOrderPayload): AnalyticsPayload {
   const tokenFields: AnalyticsPayload = {
@@ -240,28 +218,44 @@ export function mapFulfilledOrder(p: OnFulfilledOrderPayload): AnalyticsPayload 
   }
 }
 
+const createAnalyticsHandler = <K extends CowWidgetEvents>(
+  analyticsEvent: string,
+  mapper: (payload: CowWidgetEventPayloadMap[K]) => AnalyticsPayload,
+): CowEventHandler<CowWidgetEventPayloadMap, K> => {
+  return (payload: CowWidgetEventPayloadMap[K]): void => {
+    const analytics = getCowAnalytics()
+
+    if (!analytics) {
+      console.warn('Analytics instance not available for event:', analyticsEvent)
+      return
+    }
+
+    analytics.sendEvent(analyticsEvent, mapper(payload))
+  }
+}
+
 // Sets up event handlers for order lifecycle events.
 export const setupEventHandlers = (
   eventEmitter: SimpleCowEventEmitter<CowWidgetEventPayloadMap, CowWidgetEvents>,
 ): void => {
   // Register each event handler
-  EVENT_CONFIGS.forEach((config) => {
-    const { event, mapper, analyticsEvent } = config
+  eventEmitter.on({
+    event: CowWidgetEvents.ON_POSTED_ORDER,
+    handler: createAnalyticsHandler<CowWidgetEvents.ON_POSTED_ORDER>('order_submitted', mapPostedOrder),
+  })
 
-    eventEmitter.on({
-      event,
+  eventEmitter.on({
+    event: CowWidgetEvents.ON_FULFILLED_ORDER,
+    handler: createAnalyticsHandler<CowWidgetEvents.ON_FULFILLED_ORDER>('swap_executed', mapFulfilledOrder),
+  })
 
-      handler: (payload: unknown): void => {
-        const analytics = getCowAnalytics()
+  eventEmitter.on({
+    event: CowWidgetEvents.ON_CANCELLED_ORDER,
+    handler: createAnalyticsHandler<CowWidgetEvents.ON_CANCELLED_ORDER>('swap_cancelled', mapCancelledOrder),
+  })
 
-        if (!analytics) {
-          console.warn('Analytics instance not available for event:', analyticsEvent)
-          return
-        }
-
-        const normalizedMapper = mapper as (p: unknown) => AnalyticsPayload
-        analytics.sendEvent(analyticsEvent, normalizedMapper(payload))
-      },
-    })
+  eventEmitter.on({
+    event: CowWidgetEvents.ON_EXPIRED_ORDER,
+    handler: createAnalyticsHandler<CowWidgetEvents.ON_EXPIRED_ORDER>('swap_expired', mapExpiredOrder),
   })
 }
