@@ -62,7 +62,9 @@ export function getExecutedSummaryDataWithSurplusToken(order: Order | ParsedOrde
   const { surplusAmount: amount, surplusPercentage: percentage } = parsedOrder.executionData
 
   // Guard against missing surplus by falling back to '0' raw amount
-  const rawSurplus = amount ? amount.decimalPlaces(0).toFixed() : '0'
+  const rawSurplus = amount
+    ? amount.decimalPlaces(0, BigNumber.ROUND_DOWN).toFixed(0)
+    : '0'
   const surplusPercent = percentage?.multipliedBy(100)?.toFixed(2)
 
   const { effectiveOutputToken, surplusDisplayToken } = resolveDisplayTokens({
