@@ -1,5 +1,6 @@
 import { Dispatch, ReactNode, SetStateAction, useCallback, useEffect, useMemo, useState } from 'react'
 
+import { TokenWithLogo } from '@cowprotocol/common-const'
 import { isSellOrder, isInjectedWidget } from '@cowprotocol/common-utils'
 import { useIsSmartContractWallet, useWalletInfo, useIsEagerConnectInProgress } from '@cowprotocol/wallet'
 
@@ -39,7 +40,7 @@ export interface SwapWidgetViewModel {
 export interface AddIntermediateModalHandlers {
   onDismiss: () => void
   onBack: () => void
-  onImport: () => void
+  onImport: (token: TokenWithLogo) => void
 }
 
 export interface SwapWidgetPropsInternal {
@@ -152,9 +153,7 @@ export function useSwapWidgetViewModel({ topContent, bottomContent }: SwapWidget
     deadlineState,
     widgetActions,
   )
-  const walletStatus = useWalletStatus()
-  const isHydrated = useHydrationFlag()
-  const handleUnlock = useCallback(() => updateSwapState({ isUnlocked: true }), [updateSwapState])
+  const { handleUnlock, shouldShowLockScreen } = useLockScreenState(derivedState, updateSwapState)
   const currencyData = useCurrencyData(derivedState, receiveAmountInfo)
   const ethFlowProps: EthFlowProps = useSafeMemoObject({
     nativeInput: derivedState.inputCurrencyAmount || undefined,
@@ -163,13 +162,11 @@ export function useSwapWidgetViewModel({ topContent, bottomContent }: SwapWidget
     directSwapCallback: doTrade.callback,
     hasEnoughWrappedBalanceForSwap,
   })
-  const shouldShowLockScreen = useShouldShowLockScreen({
-    isHydrated,
-    isUnlocked: derivedState.isUnlocked,
-    isNetworkUnsupported: walletStatus.isNetworkUnsupported,
-    account: walletStatus.account,
-    isSmartContractWallet: walletStatus.isSmartContractWallet,
-    isEagerConnectInProgress: walletStatus.isEagerConnectInProgress,
+  const shouldShowAddIntermediateTokenModal = useIntermediateTokenModalVisibility({
+    showAddIntermediateTokenModal,
+    setShowAddIntermediateTokenModal,
+    toBeImported,
+    intermediateBuyToken,
   })
   const slots = useTradeWidgetSlotsMemo({
     topContent,
@@ -208,7 +205,7 @@ export function useSwapWidgetViewModel({ topContent, bottomContent }: SwapWidget
   })
 
   return {
-    showAddIntermediateTokenModal,
+    showAddIntermediateTokenModal: shouldShowAddIntermediateTokenModal,
     addIntermediateModalHandlers,
     tradeWidgetProps,
   }
@@ -595,4 +592,52 @@ function useHydrationFlag(): boolean {
   }, [])
 
   return isHydrated
+}
+
+function useLockScreenState(
+  derivedState: ReturnType<typeof useSwapDerivedState>,
+  updateSwapState: ReturnType<typeof useUpdateSwapRawState>,
+): {
+  handleUnlock: () => void
+  shouldShowLockScreen: boolean
+} {
+  const walletStatus = useWalletStatus()
+  const isHydrated = useHydrationFlag()
+  const handleUnlock = useCallback(() => updateSwapState({ isUnlocked: true }), [updateSwapState])
+
+  const shouldShowLockScreen = useShouldShowLockScreen({
+    isHydrated,
+    isUnlocked: derivedState.isUnlocked,
+    isNetworkUnsupported: walletStatus.isNetworkUnsupported,
+    account: walletStatus.account,
+    isSmartContractWallet: walletStatus.isSmartContractWallet,
+    isEagerConnectInProgress: walletStatus.isEagerConnectInProgress,
+  })
+
+  return useMemo(
+    () => ({ handleUnlock, shouldShowLockScreen }),
+    [handleUnlock, shouldShowLockScreen],
+  )
+}
+
+function useIntermediateTokenModalVisibility({
+  showAddIntermediateTokenModal,
+  setShowAddIntermediateTokenModal,
+  toBeImported,
+  intermediateBuyToken,
+}: {
+  showAddIntermediateTokenModal: boolean
+  setShowAddIntermediateTokenModal: Dispatch<SetStateAction<boolean>>
+  toBeImported: boolean
+  intermediateBuyToken: TokenWithLogo | null
+}): boolean {
+  const hasIntermediateTokenToImport = Boolean(toBeImported || intermediateBuyToken)
+
+  useEffect(() => {
+    if (showAddIntermediateTokenModal && !hasIntermediateTokenToImport) {
+      setShowAddIntermediateTokenModal(false)
+    }
+  }, [showAddIntermediateTokenModal, hasIntermediateTokenToImport, setShowAddIntermediateTokenModal])
+
+  return showAddIntermediateTokenModal && hasIntermediateTokenToImport
 }
