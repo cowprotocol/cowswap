@@ -4,7 +4,7 @@ import { TokenWithLogo } from '@cowprotocol/common-const'
 import { isAddress, parseENSAddress, uriToHttp } from '@cowprotocol/common-utils'
 import { ListState, useSearchList, useSearchToken } from '@cowprotocol/tokens'
 
-import { Trans } from '@lingui/react/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 
 import * as styledEl from './styled'
 
@@ -19,13 +19,15 @@ export interface ManageListsAndTokensProps {
   onDismiss(): void
 }
 
-const tokensInputPlaceholder = '0x0000'
-const listsInputPlaceholder = 'https:// or ipfs:// or ENS name'
-
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function ManageListsAndTokens(props: ManageListsAndTokensProps) {
+  const { t } = useLingui()
+
+  const listsInputPlaceholder = t`https:// or ipfs:// or ENS name`
+  const tokensInputPlaceholder = '0x0000'
+
   const { lists, customTokens, onBack, onDismiss } = props
 
   const [currentTab, setCurrentTab] = useState<'tokens' | 'lists'>('lists')
