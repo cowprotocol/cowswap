@@ -5,7 +5,7 @@ import { BASIC_MULTICALL_SWR_CONFIG } from '../consts'
 
 let focusLostTimestamp: number | null = null
 let listenersInitialized = false
-const FOCUS_HIDDEN_DILAY = ms`20s`
+const FOCUS_HIDDEN_DELAY = ms`20s`
 
 function initializeFocusListeners(): void {
   if (listenersInitialized || typeof document === 'undefined') {
@@ -46,8 +46,8 @@ export const BFF_BALANCES_SWR_CONFIG: SWRConfiguration = {
       return false
     }
 
-    // Pause only if focus has been lost for more than ${FOCUS_HIDDEN_DILAY} seconds
-    return Date.now() - focusLostTimestamp > FOCUS_HIDDEN_DILAY
+    // Pause only if focus has been lost for more than ${FOCUS_HIDDEN_DELAY} seconds
+    return Date.now() - focusLostTimestamp > FOCUS_HIDDEN_DELAY
   },
   onErrorRetry: (_: unknown, __key, config, revalidate, { retryCount }) => {
     const timeout = config.errorRetryInterval * Math.pow(2, retryCount - 1)
