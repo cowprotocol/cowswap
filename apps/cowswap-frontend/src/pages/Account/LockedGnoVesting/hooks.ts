@@ -14,7 +14,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { ContractTransaction } from '@ethersproject/contracts'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
-import { t } from '@lingui/core/macro'
+import { useLingui } from '@lingui/react/macro'
 import useSWR from 'swr'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
@@ -34,8 +34,11 @@ const useMerkleDropContract = () => useContract<MerkleDrop>(MERKLE_DROP_CONTRACT
 const useTokenDistroContract = () => useContract<TokenDistro>(TOKEN_DISTRO_CONTRACT_ADDRESSES, TokenDistroAbi, true)
 
 export const useAllocation = (): CurrencyAmount<Token> => {
+  const { t } = useLingui()
+  const SupportedChainIdMAINNET = SupportedChainId.MAINNET
+
   if (!_COW) {
-    throw new Error(`COW token not found for chain ${SupportedChainId.MAINNET}`)
+    throw new Error(t`COW token not found for chain ${SupportedChainIdMAINNET}`)
   }
 
   const { chainId, account } = useWalletInfo()
@@ -64,8 +67,11 @@ export const useAllocation = (): CurrencyAmount<Token> => {
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const useCowFromLockedGnoBalances = () => {
+  const { t } = useLingui()
+  const SupportedChainIdMAINNET = SupportedChainId.MAINNET
+
   if (!_COW) {
-    throw new Error(`COW token not found for chain ${SupportedChainId.MAINNET}`)
+    throw new Error(t`COW token not found for chain ${SupportedChainIdMAINNET}`)
   }
   const { account } = useWalletInfo()
   const allocated = useAllocation()
@@ -109,6 +115,7 @@ export function useClaimCowFromLockedGnoCallback({
   const { account } = useWalletInfo()
   const { contract: merkleDrop, chainId: merkleDropChainId } = useMerkleDropContract()
   const { contract: tokenDistro, chainId: tokenDistroChainId } = useTokenDistroContract()
+  const { t } = useLingui()
 
   const addTransaction = useTransactionAdder()
 
@@ -148,13 +155,14 @@ export function useClaimCowFromLockedGnoCallback({
       .finally(closeModal)
   }, [
     account,
-    addTransaction,
-    closeModal,
-    openModal,
-    isFirstClaim,
     merkleDrop,
     tokenDistro,
     merkleDropChainId,
     tokenDistroChainId,
+    t,
+    isFirstClaim,
+    openModal,
+    closeModal,
+    addTransaction,
   ])
 }

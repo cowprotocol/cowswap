@@ -118,9 +118,10 @@ export function getSignOrderParams(params: PostOrderParams): SignOrderParams {
     quoteId,
   } = params
   const sellTokenAddress = sellToken.address
+  const stringifiedJSON = JSON.stringify(sellToken, undefined, 2)
 
   if (!sellTokenAddress) {
-    throw new Error(`Order params invalid sellToken address for token: ${JSON.stringify(sellToken, undefined, 2)}`)
+    throw new Error(t`Order params invalid sellToken address for token: ${stringifiedJSON}`)
   }
 
   const isSellTrade = isSellOrder(kind)
@@ -232,7 +233,7 @@ export async function sendOrderCancellation(params: OrderCancellationParams): Pr
 
   const { signature, signingScheme } = await OrderSigningUtils.signOrderCancellation(orderId, chainId, signer)
 
-  if (!signature) throw new Error('Signature is undefined!')
+  if (!signature) throw new Error(t`Signature is undefined!`)
 
   await wrapErrorInOperatorError(async () => {
     await orderBookApi.sendSignedOrderCancellations(

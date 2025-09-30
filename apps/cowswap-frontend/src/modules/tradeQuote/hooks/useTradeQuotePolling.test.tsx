@@ -45,6 +45,7 @@ jest.mock('tradingSdk/bridgingSdk', () => ({
     getBestQuote: jest.fn(),
   },
 }))
+
 const useEnoughAllowanceMock = useEnoughAllowance as jest.Mock
 
 const bridgingSdkMock = bridgingSdk as unknown as { getQuote: jest.Mock }
