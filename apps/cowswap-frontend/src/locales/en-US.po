@@ -2579,6 +2579,10 @@ msgstr "Add Pre-hook"
 msgid "Limit orders on CoW Swap are free to place and cancel. That's unique in DeFi!"
 msgstr "Limit orders on CoW Swap are free to place and cancel. That's unique in DeFi!"
 
+#: apps/cowswap-frontend/src/modules/limitOrders/hooks/useHandleOrderPlacement.ts
+msgid "safeBundleFlowContext is not set!"
+msgstr "safeBundleFlowContext is not set!"
+
 #: apps/cowswap-frontend/src/pages/Account/LockedGnoVesting/hooks.ts
 #: apps/cowswap-frontend/src/pages/Account/LockedGnoVesting/hooks.ts
 msgid "COW token not found for chain {SupportedChainIdMAINNET}"
