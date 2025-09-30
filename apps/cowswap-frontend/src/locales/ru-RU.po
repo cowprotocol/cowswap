@@ -165,7 +165,7 @@ msgstr "Заказ истекает через"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/NetworkCostsRow/index.tsx
 msgid "Network costs (est.)"
-msgstr "Сетевые расходы (est.)"
+msgstr "Сетевые расходы (оцен.)"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
 msgid "The account address which will/did receive the bought amount."
