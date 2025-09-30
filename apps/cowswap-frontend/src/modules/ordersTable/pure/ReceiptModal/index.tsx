@@ -149,7 +149,9 @@ export function ReceiptModal({
       <styledEl.Wrapper>
         <styledEl.Header>
           <div>
-            <styledEl.Title>Order Receipt</styledEl.Title>
+            <styledEl.Title>
+              <Trans>Order Receipt</Trans>
+            </styledEl.Title>
             {alternativeOrderModalContext && (
               <styledEl.LightButton onClick={alternativeOrderModalContext.showAlternativeOrderModal}>
                 {alternativeOrderModalContext?.isEdit ? <Trans>Edit</Trans> : <Trans>Recreate</Trans>}{' '}
