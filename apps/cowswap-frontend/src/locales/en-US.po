@@ -19,6 +19,7 @@ msgid "View token contract"
 msgstr "View token contract"
 
 #: apps/cowswap-frontend/src/common/hooks/useMultipleOrdersCancellation/useCancelMultipleOrders.ts
+#: apps/cowswap-frontend/src/legacy/utils/trade.ts
 msgid "Signature is undefined!"
 msgstr "Signature is undefined!"
 
@@ -140,6 +141,10 @@ msgstr "Value may be zero due to missing token price information"
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappDetails/index.tsx
 msgid "Type"
 msgstr "Type"
+
+#: apps/cowswap-frontend/src/modules/usdAmount/apis/getBffUsdPrice.ts
+msgid "Unexpected response from BFF: {resStatus}"
+msgstr "Unexpected response from BFF: {resStatus}"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
 msgid "orders history"
@@ -287,8 +292,9 @@ msgid "Order cannot be filled due to insufficient balance on the current account
 msgstr "Order cannot be filled due to insufficient balance on the current account.<0/>Please, top up {inputAmountCurrencySymbol} balance or cancel the order."
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/OrderTypeField.tsx
 msgid "sell"
-msgstr "sell"
+msgstr "vender"
 
 #: apps/cowswap-frontend/src/modules/wallet/pure/WalletModal/index.tsx
 msgid "By connecting a wallet, you acknowledge that you have read, understood and agree to the interface’s <0>Terms & Conditions</0>."
@@ -442,6 +448,10 @@ msgstr "Blocked Address"
 msgid "Considering current network costs (<0><1/></0> per chunk), you could save more by reducing the number of parts or switch to a {swapOrderLink}."
 msgstr "Considering current network costs (<0><1/></0> per chunk), you could save more by reducing the number of parts or switch to a {swapOrderLink}."
 
+#: apps/cowswap-frontend/src/utils/orderUtils/getFilledAmounts.ts
+msgid "sold"
+msgstr "sold"
+
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 msgid "Unlike most other exchanges, CoW Swap doesn't charge you any fees if your trade fails."
 msgstr "Unlike most other exchanges, CoW Swap doesn't charge you any fees if your trade fails."
@@ -497,6 +507,10 @@ msgstr "One-click convert, <0>boost yield</0>"
 msgid "Name, symbol or address"
 msgstr "Name, symbol or address"
 
+#: apps/cowswap-frontend/src/legacy/state/cowToken/hooks.ts
+msgid "No chainId"
+msgstr "No chainId"
+
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
 msgid "When selling {aNativeCurrency}, the minimum slippage tolerance is set to {minimumETHFlowSlippage}% or higher to ensure a high likelihood of order matching, even in volatile market conditions."
 msgstr "When selling {aNativeCurrency}, the minimum slippage tolerance is set to {minimumETHFlowSlippage}% or higher to ensure a high likelihood of order matching, even in volatile market conditions."
@@ -504,6 +518,10 @@ msgstr "When selling {aNativeCurrency}, the minimum slippage tolerance is set to
 #: apps/cowswap-frontend/src/modules/account/pure/ConnectedAccountBlocked/index.tsx
 msgid "If you believe this is an error, please send an email including your address to "
 msgstr "If you believe this is an error, please send an email including your address to "
+
+#: apps/cowswap-frontend/src/modules/ethFlow/services/ethFlow/index.ts
+msgid "EthFlow contract ({actualContractAddress}) address don't match the expected address for chain {chainId} ({expectedContractAddress}). Please refresh the page and try again."
+msgstr "EthFlow contract ({actualContractAddress}) address don't match the expected address for chain {chainId} ({expectedContractAddress}). Please refresh the page and try again."
 
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapWidget/index.tsx
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/index.tsx
@@ -614,7 +632,7 @@ msgstr "Limit price (incl. costs)"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/OrderRow/OrderContextMenu.tsx
 msgid "Order receipt"
-msgstr "Order receipt"
+msgstr "Recibo de la orden"
 
 #: apps/cowswap-frontend/src/pages/Account/Governance.tsx
 msgid "CoW forum"
@@ -663,6 +681,15 @@ msgstr "Language {locale} not found"
 #: apps/cowswap-frontend/src/common/pure/ExternalSourceAlert/index.tsx
 msgid "I understand"
 msgstr "I understand"
+
+#: apps/cowswap-frontend/src/modules/tradeFlow/hooks/useHandleSwap.ts
+#: apps/cowswap-frontend/src/modules/tradeFlow/hooks/useHandleSwap.ts
+msgid "Safe bundle flow context is not ready"
+msgstr "Safe bundle flow context is not ready"
+
+#: apps/cowswap-frontend/src/modules/tradeQuote/utils/getBridgeQuoteSigner.ts
+msgid "No RPC provider available for chain ID: {chainId}"
+msgstr "No RPC provider available for chain ID: {chainId}"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "Sell per part"
@@ -1416,6 +1443,10 @@ msgstr "Make the modification when placing order"
 msgid "Limit orders, but <0>s-moooo-ther</0> than ever"
 msgstr "Limit orders, but <0>s-moooo-ther</0> than ever"
 
+#: apps/cowswap-frontend/src/legacy/state/cowToken/hooks.ts
+msgid "vCOW contract not present"
+msgstr "vCOW contract not present"
+
 #: apps/cowswap-frontend/src/common/pure/CancellationModal/RequestCancellationModal.tsx
 msgid "Unknown"
 msgstr "Unknown"
@@ -1615,6 +1646,10 @@ msgstr "Wallet support"
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/BridgingProgressContent/FailedBridgingContent/index.tsx
 msgid "Refunding"
 msgstr "Refunding"
+
+#: apps/cowswap-frontend/src/modules/onchainTransactions/updaters/FinalizeTxUpdater/services/finalizeOnChainCancellation.ts
+msgid "Failed to cancel order selling {sellTokenSymbol}"
+msgstr "Failed to cancel order selling {sellTokenSymbol}"
 
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapConfirmModal/useLabelsAndTooltips.tsx
 #: apps/cowswap-frontend/src/modules/trade/containers/TradeBasicConfirmDetails/index.tsx
@@ -1871,6 +1906,10 @@ msgstr "Error connecting"
 msgid "Trade"
 msgstr "Trade"
 
+#: apps/cowswap-frontend/src/modules/twap/hooks/useCancelTwapOrder.ts
+msgid "Context is not full to cancel TWAP order"
+msgstr "Context is not full to cancel TWAP order"
+
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmount/index.tsx
 msgid "Receive (incl. costs)"
 msgstr "Receive (incl. costs)"
@@ -1907,6 +1946,10 @@ msgstr "BEFORE"
 #~ msgid "View your private {ACCOUNT_PROXY_LABEL}"
 #~ msgstr "View your private {ACCOUNT_PROXY_LABEL}"
 
+#: apps/cowswap-frontend/src/modules/usdAmount/apis/getBffUsdPrice.ts
+msgid "BFF did not return a price for '{currencyAddress}' on chain '{currencyChainId}'"
+msgstr "BFF did not return a price for '{currencyAddress}' on chain '{currencyChainId}'"
+
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/index.tsx
 msgid "This tool helps you recover your funds."
 msgstr "This tool helps you recover your funds."
@@ -1918,6 +1961,10 @@ msgstr "Transaction completed"
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/FallbackHandlerWarning.tsx
 msgid "Your Safe needs a modification"
 msgstr "Your Safe needs a modification"
+
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/OrderTypeField.tsx
+msgid "{orderType} {orderKind} order"
+msgstr "Orden {orderType} {orderKind}"
 
 #: apps/cowswap-frontend/src/common/pure/SafeWalletLink/index.tsx
 #: apps/cowswap-frontend/src/legacy/components/ExplorerLink/index.tsx
@@ -1960,6 +2007,10 @@ msgstr "To use {orderType} orders, please connect your wallet <0/>to one of our 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/Settings/index.tsx
 msgid "When enabled, the limit price stays fixed when changing the BUY amount. When disabled, the limit price will update based on the BUY amount changes."
 msgstr "When enabled, the limit price stays fixed when changing the BUY amount. When disabled, the limit price will update based on the BUY amount changes."
+
+#: apps/cowswap-frontend/src/legacy/state/cowToken/hooks.ts
+msgid "vCOW token not present"
+msgstr "vCOW token not present"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "{solversLength} solvers"
@@ -2014,6 +2065,10 @@ msgstr "Executed"
 msgid "CoW Swap solvers search Uniswap, 1inch, Matcha, Sushi and more to find you the best price."
 msgstr "CoW Swap solvers search Uniswap, 1inch, Matcha, Sushi and more to find you the best price."
 
+#: apps/cowswap-frontend/src/modules/permit/utils/handlePermit.ts
+msgid "Unable to generate permit data"
+msgstr "Unable to generate permit data"
+
 #: apps/cowswap-frontend/src/common/constants/routes.ts
 msgid "Place orders with a time-weighted average price"
 msgstr "Place orders with a time-weighted average price"
@@ -2063,6 +2118,10 @@ msgstr "link"
 msgid "A new competition has started"
 msgstr "A new competition has started"
 
+#: apps/cowswap-frontend/src/modules/ethFlow/services/ethFlow/index.ts
+msgid "Quote expired. Please refresh."
+msgstr "Quote expired. Please refresh."
+
 #: apps/cowswap-frontend/src/pages/Account/Balances.tsx
 msgid "Successfully converted!"
 msgstr "Successfully converted!"
@@ -2110,8 +2169,8 @@ msgid "If allowance remains insufficient at creation time, this portion will not
 msgstr "If allowance remains insufficient at creation time, this portion will not be created. Approve the"
 
 #: apps/cowswap-frontend/src/common/utils/getSwapErrorMessage.ts
-#~ msgid "User rejected signing the order"
-#~ msgstr "User rejected signing the order"
+msgid "User rejected signing the order"
+msgstr "User rejected signing the order"
 
 #: libs/common-const/src/common.ts
 msgid "Account Proxy"
@@ -2371,6 +2430,10 @@ msgstr "1 Hour"
 msgid "{prefix}-hooks allow you to automatically execute any action {position} your trade is executed"
 msgstr "{prefix}-hooks allow you to automatically execute any action {position} your trade is executed"
 
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderFillsAt/index.tsx
+msgid "Safe"
+msgstr "Safe"
+
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/ExpiredStep.tsx
 msgid "Your order expired. This could be due to gas spikes, volatile prices, or problems with the network."
 msgstr "Your order expired. This could be due to gas spikes, volatile prices, or problems with the network."
@@ -2516,6 +2579,11 @@ msgstr "Add Pre-hook"
 msgid "Limit orders on CoW Swap are free to place and cancel. That's unique in DeFi!"
 msgstr "Limit orders on CoW Swap are free to place and cancel. That's unique in DeFi!"
 
+#: apps/cowswap-frontend/src/pages/Account/LockedGnoVesting/hooks.ts
+#: apps/cowswap-frontend/src/pages/Account/LockedGnoVesting/hooks.ts
+msgid "COW token not found for chain {SupportedChainIdMAINNET}"
+msgstr "COW token not found for chain {SupportedChainIdMAINNET}"
+
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Unwrap"
 msgstr "Unwrap"
@@ -2599,6 +2667,7 @@ msgstr "Insufficient"
 msgid "Unknown error{0}. Try increasing your slippage tolerance. Note: fee on transfer and rebase tokens are incompatible with Uniswap V3."
 msgstr "Unknown error{0}. Try increasing your slippage tolerance. Note: fee on transfer and rebase tokens are incompatible with Uniswap V3."
 
+#: apps/cowswap-frontend/src/legacy/state/cowToken/hooks.ts
 #: apps/cowswap-frontend/src/pages/Account/LockedGnoVesting/hooks.ts
 msgid "Not connected"
 msgstr "Not connected"
@@ -2615,6 +2684,10 @@ msgstr "Get support on Discord"
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 msgid "Remove liquidity from a CoW AMM pool before the swap"
 msgstr "Remove liquidity from a CoW AMM pool before the swap"
+
+#: apps/cowswap-frontend/src/modules/limitOrders/pure/LimitOrdersDetails/index.cosmos.tsx
+#~ msgid "Input currency not found for chain {supportedChainId}"
+#~ msgstr "Input currency not found for chain {supportedChainId}"
 
 #: apps/cowswap-frontend/src/common/hooks/useConfirmPriceImpactWithoutFee.ts
 #: apps/cowswap-frontend/src/common/hooks/useConfirmPriceImpactWithoutFee.ts
@@ -2931,6 +3004,10 @@ msgstr "View account"
 msgid "When you swap (sell) <0/>, solvers handle the transaction by purchasing the required tokens, depositing them into the pool, and issuing LP tokens to you in return — all in a gas-less operation."
 msgstr "When you swap (sell) <0/>, solvers handle the transaction by purchasing the required tokens, depositing them into the pool, and issuing LP tokens to you in return — all in a gas-less operation."
 
+#: apps/cowswap-frontend/src/common/hooks/useBlockNumber.tsx
+msgid "BlockNumber hooks must be wrapped in a"
+msgstr "BlockNumber hooks must be wrapped in a"
+
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/BigPartTimeWarning.tsx
 msgid "A maximum of <0>{time}</0> between parts is required. Increase the number of parts or decrease the total duration."
 msgstr "A maximum of <0>{time}</0> between parts is required. Increase the number of parts or decrease the total duration."
@@ -3104,6 +3181,10 @@ msgstr "Couldn't load balances"
 msgid "Delegate"
 msgstr "Delegate"
 
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/SolvingStep.tsx
+msgid "cancel the order"
+msgstr "cancel the order"
+
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/HookRegistryList/index.tsx
 msgid "Can't find a hook that you like?"
 msgstr "Can't find a hook that you like?"
@@ -3171,6 +3252,10 @@ msgstr "Because you are selling {nativeSymbol} (native currency)"
 msgid "Token symbol, address"
 msgstr "Token symbol, address"
 
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
+msgid "Order Receipt"
+msgstr "Recibo de la orden"
+
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "Transaction completed!"
 msgstr "Transaction completed!"
@@ -3228,6 +3313,10 @@ msgstr "The {operationLabel} is submitted."
 msgid "Valid to"
 msgstr "Valid to"
 
+#: apps/cowswap-frontend/src/modules/twap/hooks/useCancelTwapOrder.ts
+msgid "Composable Cow and Settlement contracts are not on the same chain"
+msgstr "Composable Cow and Settlement contracts are not on the same chain"
+
 #: apps/cowswap-frontend/src/common/hooks/useSwapAndBridgeContext.ts
 #: apps/cowswap-frontend/src/common/hooks/useSwapAndBridgeContext.ts
 #: apps/cowswap-frontend/src/legacy/components/FlashingLoading/index.tsx
@@ -3270,6 +3359,10 @@ msgstr "Place orders for higher than available balance!"
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "No routes found"
 msgstr "No routes found"
+
+#: apps/cowswap-frontend/src/modules/orders/pure/OrderSummary/summaryTemplates.tsx
+msgid "for at most"
+msgstr "for at most"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/index.tsx
 msgid "Submitted"
@@ -3445,8 +3538,9 @@ msgid "This is the recommended slippage tolerance based on current gas prices & 
 msgstr "This is the recommended slippage tolerance based on current gas prices & trade size. A lower amount may result in slower execution."
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/OrderTypeField.tsx
 msgid "buy"
-msgstr "buy"
+msgstr "comprar"
 
 #: apps/cowswap-frontend/src/pages/Account/Balances.tsx
 msgid "Converting vCOW to COW"
@@ -3613,6 +3707,10 @@ msgstr "to"
 msgid "24 Hours"
 msgstr "24 Hours"
 
+#: apps/cowswap-frontend/src/modules/accountProxy/containers/AccountProxyPage/index.tsx
+msgid "Recoverable tokens"
+msgstr "Recoverable tokens"
+
 #: apps/cowswap-frontend/src/pages/Account/LockedGnoVesting/hooks.ts
 msgid "Contract not present or not connected to any supported chain"
 msgstr "Contract not present or not connected to any supported chain"
@@ -3629,7 +3727,6 @@ msgstr "including an extra "
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/OrderRow/OrderContextMenu.tsx
-#: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/OrderTypeField.tsx
 msgid "order"
 msgstr "order"
 
@@ -3803,6 +3900,10 @@ msgstr "Unknown quote error"
 msgid "Read more about unsupported wallets"
 msgstr "Read more about unsupported wallets"
 
+#: apps/cowswap-frontend/src/common/hooks/useCancelOrder/useGetOnChainCancellation.ts
+msgid "Chain Id from contracts should match (ethFlow={ethFlowChainId}, settlement={settlementChainId})"
+msgstr "Chain Id from contracts should match (ethFlow={ethFlowChainId}, settlement={settlementChainId})"
+
 #: apps/cowswap-frontend/src/modules/wallet/pure/PendingView/index.tsx
 msgid "Back to wallet selection"
 msgstr "Back to wallet selection"
@@ -3866,6 +3967,7 @@ msgstr "Turn on Expert mode?"
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDetailHeader/index.tsx
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookListItem/index.tsx
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/BenefitComponents.tsx
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/RenderProgressTopSection.tsx
 msgid "N/A"
 msgstr "N/A"
 
@@ -3979,6 +4081,14 @@ msgstr "at least"
 #: apps/cowswap-frontend/src/modules/tokensList/containers/ManageListsAndTokens/index.tsx
 msgid "Lists"
 msgstr "Lists"
+
+#: apps/cowswap-frontend/src/modules/usdAmount/apis/getBffUsdPrice.ts
+msgid "Unexpected response from BFF: {stringifiedData}"
+msgstr "Unexpected response from BFF: {stringifiedData}"
+
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/TwapStatusAndToggle/index.tsx
+msgid "parts"
+msgstr "parts"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/NetworkCostsRow/index.tsx
 msgid "This is the cost of settling your order on-chain, including gas and any LP fees."
@@ -4179,6 +4289,10 @@ msgstr "New"
 msgid "Approving"
 msgstr "Approving"
 
+#: apps/cowswap-frontend/src/modules/tokensList/containers/ManageListsAndTokens/index.tsx
+msgid "https:// or ipfs:// or ENS name"
+msgstr "https:// or ipfs:// or ENS name"
+
 #: apps/cowswap-frontend/src/common/constants/routes.ts
 msgid "Trade tokens"
 msgstr "Trade tokens"
@@ -4330,6 +4444,10 @@ msgstr "Each time you claim, you will receive the entire claimable amount."
 msgid "Import"
 msgstr "Import"
 
+#: apps/cowswap-frontend/src/legacy/utils/trade.ts
+msgid "Order params invalid sellToken address for token: {stringifiedJSON}"
+msgstr "Order params invalid sellToken address for token: {stringifiedJSON}"
+
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/Settings/index.tsx
 msgid "Enable Partial Executions"
 msgstr "Enable Partial Executions"
@@ -4474,9 +4592,17 @@ msgstr "Not compatible with current wallet type"
 msgid "on explorer"
 msgstr "on explorer"
 
+#: apps/cowswap-frontend/src/common/hooks/useGetReceipt.ts
+msgid "No provider yet"
+msgstr "No provider yet"
+
 #: apps/cowswap-frontend/src/modules/bridge/pure/RouteOverviewTitle/index.tsx
 msgid "Your trade will be executed in 2 stops. First, you swap on <0>{COW_PROTOCOL_NAME} (Stop 1)</0>, then you bridge via <1>{providerInfoName} (Stop 2)</1>."
 msgstr "Your trade will be executed in 2 stops. First, you swap on <0>{COW_PROTOCOL_NAME} (Stop 1)</0>, then you bridge via <1>{providerInfoName} (Stop 2)</1>."
+
+#: apps/cowswap-frontend/src/common/utils/assertProviderNetwork.ts
+msgid "Wallet chainId differs from app chainId. Wallet: {networkString}, App: {chainId}. Action: {description}"
+msgstr "Wallet chainId differs from app chainId. Wallet: {networkString}, App: {chainId}. Action: {description}"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
 msgid "Executes at"
@@ -4588,6 +4714,7 @@ msgstr "NEW"
 msgid "Simulation successful"
 msgstr "Simulation successful"
 
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/TwapStatusAndToggle/index.tsx
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
 msgid "part"
 msgstr "part"
@@ -4620,6 +4747,10 @@ msgstr "Provided proxy address does not match {accountProxyLabelString} address!
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/EthFlowModalTopContent.tsx
 msgid "At current gas prices, your remaining {nativeSymbol} balance after confirmation may be <0>insufficient for any further on-chain transactions.</0>"
 msgstr "At current gas prices, your remaining {nativeSymbol} balance after confirmation may be <0>insufficient for any further on-chain transactions.</0>"
+
+#: apps/cowswap-frontend/src/modules/orders/pure/OrderSummary/summaryTemplates.tsx
+msgid "for at least"
+msgstr "for at least"
 
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/WalletNotConnected/index.tsx
 msgid "Connect wallet to recover funds"
@@ -4937,6 +5068,10 @@ msgstr "Reload page"
 msgid "Enter a valid recipient"
 msgstr "Enter a valid recipient"
 
+#: apps/cowswap-frontend/src/modules/onchainTransactions/updaters/FinalizeTxUpdater/services/finalizeEthFlowTx.ts
+msgid "Failed to place order selling {nativeCurrencySymbol}"
+msgstr "Failed to place order selling {nativeCurrencySymbol}"
+
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SellNativeWarningBanner/index.tsx
 msgid "native"
 msgstr "native"
@@ -5110,6 +5245,10 @@ msgstr "FREE"
 msgid "1 Week"
 msgstr "1 Week"
 
+#: apps/cowswap-frontend/src/modules/tradeFlow/hooks/useHandleSwap.ts
+msgid "Eth flow context is not ready"
+msgstr "Eth flow context is not ready"
+
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
 msgid "There are no orders"
 msgstr "There are no orders"
@@ -5152,6 +5291,10 @@ msgstr "Invalid parameters"
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/SmallVolumeWarningBanner/index.tsx
 msgid "Small orders are unlikely to be executed"
 msgstr "Small orders are unlikely to be executed"
+
+#: apps/cowswap-frontend/src/utils/orderUtils/getFilledAmounts.ts
+msgid "bought"
+msgstr "bought"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/StatusDetails.tsx
 msgid "Cancellation transaction"
@@ -5274,6 +5417,10 @@ msgstr "Leverage advanced strategies for optimal growth"
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
 msgid "Try adjusting your search term or clearing the filter"
 msgstr "Try adjusting your search term or clearing the filter"
+
+#: apps/cowswap-frontend/src/modules/tokensList/pure/ListItem/index.tsx
+msgid "View List"
+msgstr "View List"
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 msgid "Add liquidity to any of the CoW AMM pools"
@@ -5422,6 +5569,10 @@ msgstr "Please click confirm to {action}."
 #~ msgid "What is {ACCOUNT_PROXY_LABEL}?"
 #~ msgstr "What is {ACCOUNT_PROXY_LABEL}?"
 
+#: apps/cowswap-frontend/src/modules/ethFlow/services/ethFlow/steps/calculateUniqueOrderId.ts
+msgid "Missing currency for Eth Flow Fee"
+msgstr "Missing currency for Eth Flow Fee"
+
 #: apps/cowswap-frontend/src/pages/error/NotFound/index.tsx
 msgid "Page not found!"
 msgstr "Page not found!"
@@ -5455,6 +5606,10 @@ msgstr "confirm"
 #: apps/cowswap-frontend/src/pages/error/NotFound/index.tsx
 msgid "Back home"
 msgstr "Back home"
+
+#: apps/cowswap-frontend/src/common/utils/assertProviderNetwork.ts
+#~ msgid "Wallet chainId differs from app chainId. Wallet: {network}, App: {chainId}. Action: {description}"
+#~ msgstr "Wallet chainId differs from app chainId. Wallet: {network}, App: {chainId}. Action: {description}"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/BridgingProgressContent/FailedBridgingContent/index.tsx
 msgid "Refund started"

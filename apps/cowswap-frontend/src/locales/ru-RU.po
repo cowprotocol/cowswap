@@ -1759,7 +1759,7 @@ msgstr "Подключение..."
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/PermitHookApp/index.tsx
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookTooltip/index.tsx
 msgid "Pre"
-msgstr "Pre"
+msgstr "Пре"
 
 #: apps/cowswap-frontend/src/legacy/components/CowSubsidyModal/constants.ts
 msgid "(v)COW token holders are eligible for a fee discount"
@@ -2387,7 +2387,7 @@ msgstr "Лимит ордера на замену CoW можно размест�
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Unwrap"
-msgstr "Unwrap"
+msgstr "Развернуть"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/ClaimGnoHookApp/index.tsx
 msgid "Connect your wallet first"
@@ -3446,7 +3446,7 @@ msgstr "отмена"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "tip"
-msgstr "tip"
+msgstr "Совет"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/index.cosmos.tsx
 msgid "Open orders"
@@ -4105,7 +4105,7 @@ msgstr "Подтвердить замену"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
 msgid "Part of a {twapOrderN}-part TWAP order split"
-msgstr "Часть раздела {twapOrderN}части TWAP ордера"
+msgstr "Часть раздела {twapOrderN} части TWAP ордера"
 
 #: apps/cowswap-frontend/src/pages/Account/LockedGnoVesting/index.tsx
 msgid "Claim COW <0/>"

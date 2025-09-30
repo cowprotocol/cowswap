@@ -148,7 +148,7 @@ msgstr "Tu actividad aparecerá aquí..."
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/OrderTypeField.tsx
 msgid "(Partially fillable)"
-msgstr "(Parcialmente rellenable)"
+msgstr "(Parcialmente llenable)"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/LimitOrdersPromoBanner/index.tsx
 msgid "Try before you buy - see the potential fill price before you hit trade"
@@ -350,7 +350,7 @@ msgstr "conseguida"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/OrderIntent.tsx
 msgid "{sellTokenPart} for at least {buyTokenPart}"
-msgstr "{sellTokenPart} para al menos {buyTokenPart}"
+msgstr "{sellTokenPart} por al menos {buyTokenPart}"
 
 #: apps/cowswap-frontend/src/pages/Account/Balances.tsx
 msgid "Converting vCOW..."
@@ -1104,7 +1104,7 @@ msgstr "Adquisición de COW de GNO bloqueado"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
 msgid "Limit price (incl.costs)"
-msgstr "Limitar precio (incl.costs)"
+msgstr "Limitar precio (incl. costos)"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/SetupFallbackHandlerWarning/index.tsx
 msgid "Update fallback handler"
@@ -2387,7 +2387,7 @@ msgstr "Las órdenes limitadas en el intercambio de CoW son gratuitas para reali
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Unwrap"
-msgstr "Unwrap"
+msgstr "Desenvolver"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/ClaimGnoHookApp/index.tsx
 msgid "Connect your wallet first"
@@ -3234,7 +3234,7 @@ msgstr "Recuperar {target}"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
 msgid "Expiry"
-msgstr "Expiry"
+msgstr "Expira"
 
 #: apps/cowswap-frontend/src/modules/twap/pure/CustomDeadlineSelector/index.tsx
 msgid "Minutes"
@@ -3407,7 +3407,7 @@ msgstr "Envolviendo {amountStr} {native} a {wrapped}"
 #: apps/cowswap-frontend/src/modules/orders/containers/FulfilledOrderInfo/index.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
 msgid "Order surplus"
-msgstr "excedente de pedido"
+msgstr "Excedente de orden"
 
 #: apps/cowswap-frontend/src/legacy/utils/trade.ts
 #: apps/cowswap-frontend/src/modules/trade/containers/WrapNativeModal/index.tsx
@@ -4025,7 +4025,7 @@ msgstr "Cambiando en"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/OrderTypeField.tsx
 msgid "(Fill or Kill)"
-msgstr "(Rellenar o matar)"
+msgstr "(Llenar o matar)"
 
 #: apps/cowswap-frontend/src/pages/games/MevSlicer/index.tsx
 msgid "Play MEV Slicer"
