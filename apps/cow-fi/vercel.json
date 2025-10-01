@@ -1,5 +1,0 @@
-{
-  "buildCommand": "cd ../../ && npx nx build cow-fi --configuration=$NX_CONFIGURATION",
-  "outputDirectory": "../../build/cow-fi",
-  "installCommand": "cd ../../ && yarn run install:sdk-preview"
-}
