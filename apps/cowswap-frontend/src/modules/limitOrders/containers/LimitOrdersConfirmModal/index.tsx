@@ -14,7 +14,10 @@ import { useRateImpact } from 'modules/limitOrders/hooks/useRateImpact'
 import { executionPriceAtom } from 'modules/limitOrders/state/executionPriceAtom'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { limitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
-import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
+import {
+  partiallyFillableOverrideAtom,
+  type PartiallyFillableOverrideDispatcherType,
+} from 'modules/limitOrders/state/partiallyFillableOverride'
 import { TradeConfirmation, TradeConfirmModal, useTradeConfirmActions } from 'modules/trade'
 
 import { useIsSafeApprovalBundle } from 'common/hooks/useIsSafeApprovalBundle'
@@ -127,7 +130,11 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps): Re
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
   const executionPrice = useAtomValue(executionPriceAtom)
   const limitRateState = useAtomValue(limitRateAtom)
-  const partiallyFillableOverride = useAtom(partiallyFillableOverrideAtom)
+  const [partiallyFillableOverrideValue, setPartiallyFillableOverride] = useAtom(partiallyFillableOverrideAtom)
+  const partiallyFillableOverride: PartiallyFillableOverrideDispatcherType = [
+    partiallyFillableOverrideValue,
+    setPartiallyFillableOverride,
+  ]
 
   const { amount: inputAmount } = inputCurrencyInfo
   const { amount: outputAmount } = outputCurrencyInfo
@@ -144,6 +151,12 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps): Re
   const isSafeApprovalBundle = useIsSafeApprovalBundle(inputAmount)
   const buttonText = useLimitOrderButtonText(inputAmount, isSafeApprovalBundle)
 
+  const partialFillsEnabledForAnalytics =
+    partiallyFillableOverrideValue ??
+    tradeContext.postOrderParams.partiallyFillable ??
+    settingsState.partialFillsEnabled ??
+    false
+
   const placeLimitOrderEvent = usePlaceLimitOrderEvent({
     inputAmount,
     outputAmount,
@@ -152,7 +165,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps): Re
     chainId,
     tradeContext,
     executionPrice,
-    partialFillsEnabled: settingsState.partialFillsEnabled,
+    partialFillsEnabled: partialFillsEnabledForAnalytics,
   })
 
   return (
