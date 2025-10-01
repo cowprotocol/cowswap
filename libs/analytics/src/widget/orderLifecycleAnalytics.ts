@@ -29,6 +29,8 @@ type EnrichedOrderWithTokens = EnrichedOrder & {
   outputToken?: TokenInfo
 }
 
+type TokenMetadata = TokenInfo | OnPostedOrderPayload['inputToken'] | OnPostedOrderPayload['outputToken']
+
 export function extractTokenMeta(order: Partial<EnrichedOrderWithTokens> | undefined): {
   inputToken?: TokenInfo
   outputToken?: TokenInfo
@@ -51,7 +53,7 @@ export function buildBaseFields(payload: BaseOrderPayload): AnalyticsPayload {
   }
 }
 
-const createCurrency = (meta?: TokenInfo): TokenWithLogo | null => {
+const createCurrency = (meta?: TokenMetadata): TokenWithLogo | null => {
   if (!meta?.address) return null
 
   const decimals = meta.decimals
@@ -71,7 +73,7 @@ const createCurrency = (meta?: TokenInfo): TokenWithLogo | null => {
 }
 
 const toDecimalAmount = (
-  meta: TokenInfo | undefined,
+  meta: TokenMetadata | undefined,
   rawAmount: string | number | bigint | null | undefined,
 ): string | undefined => {
   if (rawAmount === null || rawAmount === undefined) return undefined
