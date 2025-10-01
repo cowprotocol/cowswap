@@ -277,8 +277,8 @@ describe('useTradeSlippageValueAndType', () => {
       const { result } = renderHook(() => useTradeSlippageValueAndType())
 
       expect(result.current).toEqual({
-        type: 'smart',
-        value: Math.min(smartSlippage, mockSlippageConfig.max), // -10
+        type: 'default',
+        value: mockSlippageConfig.defaultValue,
       })
     })
   })

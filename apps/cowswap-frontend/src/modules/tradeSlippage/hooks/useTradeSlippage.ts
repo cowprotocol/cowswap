@@ -25,7 +25,7 @@ export function useTradeSlippageValueAndType(): { type: SlippageType; value: num
       return { type: 'user', value: currentUserSlippage }
     }
 
-    if (shouldUseAutoSlippage && smartSlippageFromQuote) {
+    if (shouldUseAutoSlippage && smartSlippageFromQuote && smartSlippageFromQuote > 0) {
       return { type: 'smart', value: Math.min(smartSlippageFromQuote, max) }
     }
 
