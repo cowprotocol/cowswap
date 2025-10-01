@@ -17,8 +17,9 @@ export function useSwrConfigWithPauseForNetwork(
   chainId: SupportedChainId,
   account: string | undefined,
   config: SWRConfiguration,
-  validityPeriod = BALANCE_VALIDITY_PERIOD,
+  validityPeriod?: number,
 ): SWRConfiguration {
+  validityPeriod = validityPeriod || BALANCE_VALIDITY_PERIOD
   const balances = useAtomValue(balancesAtom)
   const balancesUpdate = useAtomValue(balancesUpdateAtom)
 

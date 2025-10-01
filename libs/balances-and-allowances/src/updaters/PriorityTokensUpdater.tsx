@@ -3,7 +3,7 @@ import type { SupportedChainId } from '@cowprotocol/cow-sdk'
 import ms from 'ms.macro'
 
 import { BASIC_MULTICALL_SWR_CONFIG } from '../consts'
-import { usePersistBalancesAndAllowances } from '../hooks/usePersistBalancesAndAllowances'
+import { usePersistBalancesViaWebCalls } from '../hooks/usePersistBalancesViaWebCalls'
 
 export const PRIORITY_TOKENS_REFRESH_INTERVAL = ms`8s`
 
@@ -17,7 +17,7 @@ export interface PriorityTokensUpdaterProps {
 }
 
 export function PriorityTokensUpdater(props: PriorityTokensUpdaterProps): null {
-  usePersistBalancesAndAllowances({
+  usePersistBalancesViaWebCalls({
     ...props,
     balancesSwrConfig: BALANCES_SWR_CONFIG,
   })
