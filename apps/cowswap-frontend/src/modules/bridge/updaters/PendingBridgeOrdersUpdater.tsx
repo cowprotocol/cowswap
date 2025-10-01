@@ -122,7 +122,7 @@ function PendingOrderUpdater({ chainId, orderUid, openSince }: PendingOrderUpdat
           tokenIn: crossChainOrder.order.sellToken,
           tokenOut: crossChainOrder.order.buyToken,
           amountIn: crossChainOrder.order.sellAmount,
-          amountOutReceived: crossChainOrder.bridgingParams.outputAmount,
+          amountOutReceived: crossChainOrder.bridgingParams.outputAmount?.toString(),
           bridgeProvider: crossChainOrder.provider.info.name,
           txHash: crossChainOrder.statusResult.fillTxHash || crossChainOrder.statusResult.depositTxHash,
           latencyMs: latencyMs,
