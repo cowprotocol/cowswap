@@ -8,6 +8,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 
 import useSWR, { SWRConfiguration } from 'swr'
 
+import { BFF_BALANCES_SWR_CONFIG } from '../constants/bff-balances-swr-config'
 import { balancesAtom, BalancesState, balancesUpdateAtom } from '../state/balancesAtom'
 import { useSetIsBffFailed } from '../state/isBffFailedAtom'
 import { isBffSupportedNetwork } from '../utils/isBffSupportedNetwork'
@@ -19,14 +20,13 @@ type BalanceResponse = {
 export interface PersistBalancesFromBffParams {
   account?: string
   chainId: SupportedChainId
-  balancesSwrConfig: SWRConfiguration
+  balancesSwrConfig?: SWRConfiguration
   invalidateCacheTrigger?: number
   tokenAddresses: string[]
-  isEnabled?: boolean
 }
 
 export function usePersistBalancesFromBff(params: PersistBalancesFromBffParams): void {
-  const { account, chainId, balancesSwrConfig, invalidateCacheTrigger, tokenAddresses, isEnabled } = params
+  const { account, chainId, invalidateCacheTrigger, tokenAddresses } = params
 
   const { chainId: activeChainId, account: connectedAccount } = useWalletInfo()
   const targetAccount = account ?? connectedAccount
@@ -42,15 +42,13 @@ export function usePersistBalancesFromBff(params: PersistBalancesFromBffParams):
     data,
     error,
   } = useSWR(
-    targetAccount && isEnabled && isSupportedNetwork
-      ? [targetAccount, targetChainId, invalidateCacheTrigger, 'bff-balances']
-      : null,
+    targetAccount && isSupportedNetwork ? [targetAccount, targetChainId, invalidateCacheTrigger, 'bff-balances'] : null,
     ([walletAddress, chainId]) => {
       const skipCache = lastTriggerRef.current !== invalidateCacheTrigger
       lastTriggerRef.current = invalidateCacheTrigger
       return getBffBalances(walletAddress, chainId, skipCache)
     },
-    balancesSwrConfig,
+    BFF_BALANCES_SWR_CONFIG,
   )
 
   const setBalances = useSetAtom(balancesAtom)

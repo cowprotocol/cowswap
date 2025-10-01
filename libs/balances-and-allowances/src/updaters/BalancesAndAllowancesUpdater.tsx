@@ -67,16 +67,19 @@ export function BalancesAndAllowancesUpdater({
     }
   }, [isBffSwitchedOn, nativeTokenBalance, chainId, updateTokenBalance])
 
+  const enableRpcFallback = !isBffSwitchedOn || !isBffEnabled
+
   return (
     <>
-      <BalancesBffUpdater
-        account={account}
-        chainId={chainId}
-        invalidateCacheTrigger={invalidateCacheTrigger}
-        tokenAddresses={tokenAddresses}
-        isEnabled={isBffEnabled}
-      />
-      {!isBffSwitchedOn && (
+      {isBffEnabled && (
+        <BalancesBffUpdater
+          account={account}
+          chainId={chainId}
+          invalidateCacheTrigger={invalidateCacheTrigger}
+          tokenAddresses={tokenAddresses}
+        />
+      )}
+      {enableRpcFallback && (
         <BalancesRpcCallUpdater
           account={account}
           chainId={chainId}
