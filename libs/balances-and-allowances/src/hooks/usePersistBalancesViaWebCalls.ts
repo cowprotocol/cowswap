@@ -22,10 +22,11 @@ export interface PersistBalancesAndAllowancesParams {
   balancesSwrConfig: SWRConfiguration
   setLoadingState?: boolean
   multicallOptions?: MultiCallOptions
+
   onBalancesLoaded?(loaded: boolean): void
 }
 
-export function usePersistBalancesAndAllowances(params: PersistBalancesAndAllowancesParams): void {
+export function usePersistBalancesViaWebCalls(params: PersistBalancesAndAllowancesParams): void {
   const {
     account,
     chainId,
