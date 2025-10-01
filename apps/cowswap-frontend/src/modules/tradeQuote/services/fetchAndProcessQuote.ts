@@ -1,3 +1,4 @@
+import { BFF_BASE_URL } from '@cowprotocol/common-const'
 import { onlyResolvesLast } from '@cowprotocol/common-utils'
 import { PriceQuality, SwapAdvancedSettings } from '@cowprotocol/cow-sdk'
 import {
@@ -17,7 +18,7 @@ import { mapOperatorErrorToQuoteError, QuoteApiError, QuoteApiErrorCodes } from 
 import { getIsOrderBookTypedError } from 'api/cowProtocol/getIsOrderBookTypedError'
 
 import { TradeQuoteManager } from '../hooks/useTradeQuoteManager'
-import { TradeQuoteFetchParams } from '../types'
+import { TradeQuoteFetchParams, TradeQuotePollingParameters } from '../types'
 import { getBridgeQuoteSigner } from '../utils/getBridgeQuoteSigner'
 
 const getQuote = bridgingSdk.getQuote.bind(bridgingSdk)
@@ -29,6 +30,7 @@ const getBestQuote = onlyResolvesLast<MultiQuoteResult | null>(bridgingSdk.getBe
 export async function fetchAndProcessQuote(
   fetchParams: TradeQuoteFetchParams,
   quoteParams: QuoteBridgeRequest,
+  { useSuggestedSlippageApi }: TradeQuotePollingParameters,
   appData: AppDataInfo['doc'] | undefined,
   tradeQuoteManager: TradeQuoteManager,
 ): Promise<void> {
@@ -43,6 +45,7 @@ export async function fetchAndProcessQuote(
     },
     appData,
     quoteSigner: isBridge ? getBridgeQuoteSigner(chainId) : undefined,
+    bffOrigin: useSuggestedSlippageApi ? BFF_BASE_URL : undefined,
   }
 
   const processQuoteError = (error: Error): void => {
