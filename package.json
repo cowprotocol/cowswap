@@ -40,7 +40,8 @@
     "prebuild:cowswap": "yarn i18n",
     "prepare": "husky",
     "postinstall": "yarn run patch-package",
-    "analyze-build": "cross-env ANALYZE_BUNDLE=true ANALYZE_BUNDLE_TEMPLATE=sunburst yarn build"
+    "analyze-build": "cross-env ANALYZE_BUNDLE=true ANALYZE_BUNDLE_TEMPLATE=sunburst yarn build",
+    "install:sdk-preview": "node tools/scripts/install-sdk-preview.js && yarn"
   },
   "browser": {
     "crypto": false
@@ -76,12 +77,12 @@
     "@coinbase/wallet-sdk": "^3.3.0",
     "@cowprotocol/cms": "^0.11.0",
     "@cowprotocol/cow-runner-game": "^0.2.9",
-    "@cowprotocol/cow-sdk": "7.0.4-pr-546-738aac70.0",
-    "@cowprotocol/sdk-composable": "^0.1.4-pr-546-738aac70.0",
-    "@cowprotocol/sdk-bridging": "^0.3.4-pr-546-738aac70.0",
-    "@cowprotocol/sdk-cow-shed": "^0.1.4-pr-546-738aac70.0",
-    "@cowprotocol/sdk-ethers-v5-adapter": "^0.1.1-pr-546-738aac70.0",
-    "@cowprotocol/sdk-subgraph": "^0.1.1-pr-546-738aac70.0",
+    "@cowprotocol/cow-sdk": "7.0.4-pr-546-c04641f0.0",
+    "@cowprotocol/sdk-composable": "^0.1.4-pr-546-c04641f0.0",
+    "@cowprotocol/sdk-bridging": "^0.3.4-pr-546-c04641f0.0",
+    "@cowprotocol/sdk-cow-shed": "^0.1.4-pr-546-c04641f0.0",
+    "@cowprotocol/sdk-ethers-v5-adapter": "^0.1.1-pr-546-c04641f0.0",
+    "@cowprotocol/sdk-subgraph": "^0.1.1-pr-546-c04641f0.0",
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@ethersproject/experimental": "^5.8.0",
