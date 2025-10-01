@@ -1,5 +1,6 @@
 import { useRef } from 'react'
 
+import { useIsWindowVisible } from '@cowprotocol/common-hooks'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import useSWR, { SWRConfiguration } from 'swr'
@@ -18,22 +19,23 @@ const SWR_CONFIG: SWRConfiguration = {
   revalidateOnFocus: false,
 }
 
+interface UnfillableOrdersUpdaterProps {
+  pageSize: number
+  pageNumber?: number
+  isTabWithPending: boolean
+}
+
 /**
  * Updater that checks whether pending orders are still "fillable"
  */
 export function UnfillableOrdersUpdater({
-  isWindowVisible,
   pageSize,
   pageNumber,
   isTabWithPending,
-}: {
-  isWindowVisible: boolean
-  pageSize: number
-  pageNumber?: number
-  isTabWithPending: boolean
-}): null {
+}: UnfillableOrdersUpdaterProps): null {
   const { chainId, account } = useWalletInfo()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
+  const isWindowVisible = useIsWindowVisible()
 
   const pendingOrders = useOnlyPendingOrders(chainId, account)
   const pendingOrdersRef = useRef(pendingOrders)

@@ -1,6 +1,5 @@
 import { ReactNode, useState } from 'react'
 
-import { useIsWindowVisible } from '@cowprotocol/common-hooks'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useLocation } from 'react-router'
@@ -27,8 +26,6 @@ export function OrdersTableWidget(props: OrdersTableWidgetProps): ReactNode {
   const { children, ...stateParams } = props
 
   const location = useLocation()
-  const isWindowVisible = useIsWindowVisible()
-
   const { account } = useWalletInfo()
 
   const [searchTerm, setSearchTerm] = useState('')
@@ -44,7 +41,6 @@ export function OrdersTableWidget(props: OrdersTableWidgetProps): ReactNode {
         pageSize={ORDERS_TABLE_PAGE_SIZE}
         pageNumber={pageNumber}
         isTabWithPending={isTabWithPending}
-        isWindowVisible={isWindowVisible}
       />
       <OrdersTableStateUpdater searchTerm={searchTerm} {...stateParams} />
       {children}

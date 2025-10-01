@@ -1,6 +1,5 @@
 import { ReactNode } from 'react'
 
-import { useIsWindowVisible } from '@cowprotocol/common-hooks'
 import { isSellOrder, percentToBps } from '@cowprotocol/common-utils'
 
 import { AppDataUpdater } from 'modules/appData'
@@ -27,10 +26,7 @@ export function SwapUpdaters(): ReactNode {
   const { orderKind, inputCurrencyAmount, outputCurrencyAmount, slippage } = useSwapDerivedState()
   const isSmartSlippageApplied = useIsSmartSlippageApplied()
   const swapDeadlineState = useSwapDeadlineState()
-  const isHookTradeType = useIsHooksTradeType()
-  const partiallyFillable = isHookTradeType
-
-  const isWindowVisible = useIsWindowVisible()
+  const partiallyFillable = useIsHooksTradeType()
 
   useFillSwapDerivedState()
   useSetTradeQuoteParams({
@@ -41,11 +37,7 @@ export function SwapUpdaters(): ReactNode {
 
   return (
     <>
-      <UnfillableOrdersUpdater
-        pageSize={PENDING_ORDERS_PAGE_SIZE}
-        isTabWithPending={IS_SWAP_PAGE}
-        isWindowVisible={isWindowVisible}
-      />
+      <UnfillableOrdersUpdater pageSize={PENDING_ORDERS_PAGE_SIZE} isTabWithPending={IS_SWAP_PAGE} />
       <EthFlowDeadlineUpdater deadlineState={swapDeadlineState} />
       <SetupSwapAmountsFromUrlUpdater />
       <QuoteObserverUpdater />
