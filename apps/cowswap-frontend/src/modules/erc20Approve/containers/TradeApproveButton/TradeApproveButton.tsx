@@ -13,6 +13,7 @@ import * as styledEl from './styled'
 
 import { MAX_APPROVE_AMOUNT } from '../../constants'
 import { useApprovalStateForSpender, useApproveCurrency } from '../../hooks'
+import { useGeneratePermitInAdvanceToTrade } from '../../hooks/useGeneratePermitInAdvanceToTrade'
 import { LegacyApproveButton } from '../../pure/LegacyApproveButton'
 import { useIsPartialApproveSelectedByUser } from '../../state'
 import { ApprovalState } from '../../types'
@@ -31,14 +32,19 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
   const { amountToApprove, children, enablePartialApprove, confirmSwap, label, ignorePermit } = props
   const isPartialApproveEnabledByUser = useIsPartialApproveSelectedByUser()
   const handleApprove = useApproveCurrency(amountToApprove)
-  
+
   const spender = useTradeSpenderAddress()
   const { approvalState } = useApprovalStateForSpender(amountToApprove, spender)
   const isPermitSupported = useTokenSupportsPermit(amountToApprove.currency, TradeType.SWAP) && !ignorePermit
+  const generatePermitToTrade = useGeneratePermitInAdvanceToTrade(amountToApprove)
 
   const approveAndSwap = useCallback(async (): Promise<void> => {
     if (isPermitSupported && confirmSwap) {
-      confirmSwap()
+      const permit = await generatePermitToTrade()
+      if (permit) {
+        confirmSwap()
+      }
+
       return
     }
 
@@ -47,7 +53,14 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
     if (tx && confirmSwap) {
       confirmSwap()
     }
-  }, [handleApprove, confirmSwap, amountToApprove, isPartialApproveEnabledByUser, isPermitSupported])
+  }, [
+    isPermitSupported,
+    confirmSwap,
+    isPartialApproveEnabledByUser,
+    amountToApprove.quotient,
+    handleApprove,
+    generatePermitToTrade,
+  ])
 
   if (!enablePartialApprove) {
     return (
