@@ -39,8 +39,8 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
 
   const approveAndSwap = useCallback(async (): Promise<void> => {
     if (isPermitSupported && confirmSwap) {
-      const permit = await generatePermitToTrade()
-      if (permit) {
+      const isPermitSigned = await generatePermitToTrade()
+      if (isPermitSigned) {
         confirmSwap()
       }
 
