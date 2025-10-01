@@ -4,11 +4,10 @@ import { getWrappedToken } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { useUpdateTradeApproveState } from 'modules/erc20Approve'
-import { TradeType } from 'modules/trade'
+import { useGeneratePermitHook, usePermitInfo } from 'modules/permit'
 
-import { useGeneratePermitHook } from './useGeneratePermitHook'
-import { usePermitInfo } from './usePermitInfo'
+import { TradeType } from '../../trade'
+import { useUpdateTradeApproveState } from '../index'
 
 export function useGeneratePermitInAdvanceToTrade(amountToApprove: CurrencyAmount<Currency>): () => Promise<boolean> {
   const generatePermit = useGeneratePermitHook()

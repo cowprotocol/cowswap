@@ -6,13 +6,13 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
 
-import { useGeneratePermitInAdvanceToTrade, useTokenSupportsPermit } from 'modules/permit'
+import { useTokenSupportsPermit } from 'modules/permit'
 import { TradeType } from 'modules/trade'
 
 import * as styledEl from './styled'
 
 import { MAX_APPROVE_AMOUNT } from '../../constants'
-import { useApprovalStateForSpender, useApproveCurrency } from '../../hooks'
+import { useApprovalStateForSpender, useApproveCurrency, useGeneratePermitInAdvanceToTrade } from '../../hooks'
 import { LegacyApproveButton } from '../../pure/LegacyApproveButton'
 import { useIsPartialApproveSelectedByUser } from '../../state'
 import { ApprovalState } from '../../types'
