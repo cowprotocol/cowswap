@@ -135,7 +135,7 @@ export function classifyOrder(
  * @param executionPrice
  */
 export function isOrderUnfillable(
-  order: Order,
+  order: Order | ParsedOrder,
   orderPrice: Price<Currency, Currency>,
   executionPrice: Price<Currency, Currency>,
 ): boolean {
@@ -169,7 +169,11 @@ export function isOrderUnfillable(
  * @param quotedAmount
  * @param feeAmount
  */
-export function getOrderMarketPrice(order: Order, quotedAmount: string, feeAmount: string): Price<Currency, Currency> {
+export function getOrderMarketPrice(
+  order: Order | ParsedOrder,
+  quotedAmount: string,
+  feeAmount: string,
+): Price<Currency, Currency> {
   // We get the remainder as the order might have already been partially filled
   const remainingAmount = getRemainderAmount(order.kind, order)
 
@@ -257,7 +261,7 @@ export function getEstimatedExecutionPrice(
  */
 // TODO: Break down this large function into smaller functions
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, complexity
+// eslint-disable-next-line complexity
 export function getEstimatedExecutionPrice(
   order: Order | ParsedOrder | undefined,
   fillPrice: Price<Currency, Currency>,

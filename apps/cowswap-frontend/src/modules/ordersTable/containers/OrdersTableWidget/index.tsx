@@ -1,8 +1,8 @@
-import { ReactNode, useState } from 'react'
+import { ReactNode, useMemo, useState } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { useLocation } from 'react-router'
+import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { UnfillableOrdersUpdater } from 'common/updaters/orders/UnfillableOrdersUpdater'
 
@@ -14,9 +14,10 @@ import { OrdersTableContainer } from '../../pure/OrdersTableContainer'
 import { OrdersTableParams } from '../../types'
 import { OrdersTableStateUpdater } from '../../updaters/OrdersTableStateUpdater'
 import { tableItemsToOrders } from '../../utils/orderTableGroupUtils'
-import { parseOrdersTableUrl } from '../../utils/parseOrdersTableUrl'
 import { MultipleCancellationMenu } from '../MultipleCancellationMenu'
 import { OrdersReceiptModal } from '../OrdersReceiptModal'
+
+const tabsWithPendingOrders: OrderTabId[] = [OrderTabId.open, OrderTabId.all, OrderTabId.unfillable] as const
 
 interface OrdersTableWidgetProps extends OrdersTableParams {
   children?: ReactNode
@@ -25,30 +26,35 @@ interface OrdersTableWidgetProps extends OrdersTableParams {
 export function OrdersTableWidget(props: OrdersTableWidgetProps): ReactNode {
   const { children, ...stateParams } = props
 
-  const location = useLocation()
   const { account } = useWalletInfo()
 
   const [searchTerm, setSearchTerm] = useState('')
 
-  const { filteredOrders, orders, currentTabId, pendingOrdersPrices } = useOrdersTableState() || {}
+  const { filteredOrders, orders, currentTabId, pendingOrdersPrices, currentPageNumber } = useOrdersTableState() || {}
 
-  const { pageNumber, tabId } = parseOrdersTableUrl(location.search)
-  const isTabWithPending = tabId === OrderTabId.open || tabId === OrderTabId.all
+  const isTabWithPending = !!currentTabId && tabsWithPendingOrders.includes(currentTabId)
+
+  const pendingOrders = useMemo(() => {
+    if (!isTabWithPending || !filteredOrders) return undefined
+
+    return tableItemsToOrders(filteredOrders).filter((order) => {
+      return order.status === OrderStatus.PENDING
+    })
+  }, [isTabWithPending, filteredOrders])
 
   return (
     <>
-      <UnfillableOrdersUpdater
-        pageSize={ORDERS_TABLE_PAGE_SIZE}
-        pageNumber={pageNumber}
-        isTabWithPending={isTabWithPending}
-      />
+      {!!pendingOrders?.length && typeof currentPageNumber === 'number' && (
+        <UnfillableOrdersUpdater
+          orders={pendingOrders}
+          pageSize={ORDERS_TABLE_PAGE_SIZE}
+          pageNumber={currentPageNumber}
+        />
+      )}
       <OrdersTableStateUpdater searchTerm={searchTerm} {...stateParams} />
       {children}
       <OrdersTableContainer searchTerm={searchTerm}>
-        {(currentTabId === OrderTabId.open ||
-          currentTabId === OrderTabId.all ||
-          currentTabId === OrderTabId.unfillable) &&
-          !!filteredOrders?.length && <MultipleCancellationMenu pendingOrders={tableItemsToOrders(filteredOrders)} />}
+        {!!pendingOrders?.length && <MultipleCancellationMenu pendingOrders={pendingOrders} />}
 
         {/* If account is not connected, don't show the search input */}
         {!!account && !!orders?.length && (
