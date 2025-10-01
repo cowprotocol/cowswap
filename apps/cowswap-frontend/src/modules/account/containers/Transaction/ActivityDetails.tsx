@@ -42,7 +42,6 @@ import {
   useIsReceiverWalletBannerHidden,
 } from 'common/state/receiverWalletBannerVisibility'
 import { ActivityDerivedState, ActivityStatus } from 'common/types/activity'
-import { doesOrderHavePermit } from 'common/utils/doesOrderHavePermit'
 import { getIsBridgeOrder } from 'common/utils/getIsBridgeOrder'
 import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
@@ -59,6 +58,7 @@ import {
   TextAlert,
   TransactionState as ActivityLink,
 } from './styled'
+import { useIsOrderHasValidPermit } from './useIsOrderHasValidPermit'
 
 import { OrderFillabilityWarning } from '../../pure/OrderFillabilityWarning'
 
@@ -269,6 +269,8 @@ export function ActivityDetails(props: {
     }
   }, [showProgressBar, setShowProgressBar, order?.id, toggleAccountModal])
 
+  const hasValidPermit = useIsOrderHasValidPermit(order)
+
   if (!order && !enhancedTransaction) return null
 
   // Order Summary default object
@@ -375,10 +377,10 @@ export function ActivityDetails(props: {
     </>
   )
 
-  const hasPermit = order && doesOrderHavePermit(order)
+  const isPermitValid = hasValidPermit === undefined ? true : hasValidPermit
   const showWarning =
     isPartialApproveEnabled && fillability
-      ? (!fillability.hasEnoughAllowance && !hasPermit) || !fillability.hasEnoughBalance
+      ? (!fillability.hasEnoughAllowance && !isPermitValid) || !fillability.hasEnoughBalance
       : false
 
   return (
