@@ -4,15 +4,12 @@ import { SWRConfiguration } from 'swr'
 import { BASIC_MULTICALL_SWR_CONFIG } from '../consts'
 
 let focusLostTimestamp: number | null = null
-let listenersInitialized = false
 const FOCUS_HIDDEN_DELAY = ms`20s`
 
 function initializeFocusListeners(): void {
-  if (listenersInitialized || typeof document === 'undefined') {
+  if (typeof document === 'undefined') {
     return
   }
-
-  listenersInitialized = true
 
   document.addEventListener('visibilitychange', () => {
     focusLostTimestamp = document.hidden ? Date.now() : null
