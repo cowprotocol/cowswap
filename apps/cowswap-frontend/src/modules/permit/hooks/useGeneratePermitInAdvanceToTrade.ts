@@ -4,9 +4,11 @@ import { getWrappedToken } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { useGeneratePermitHook, usePermitInfo } from '../../permit'
-import { TradeType } from '../../trade'
-import { useUpdateTradeApproveState } from '../state'
+import { useUpdateTradeApproveState } from 'modules/erc20Approve'
+import { TradeType } from 'modules/trade'
+
+import { useGeneratePermitHook } from './useGeneratePermitHook'
+import { usePermitInfo } from './usePermitInfo'
 
 export function useGeneratePermitInAdvanceToTrade(amountToApprove: CurrencyAmount<Currency>): () => Promise<boolean> {
   const generatePermit = useGeneratePermitHook()
@@ -14,7 +16,7 @@ export function useGeneratePermitInAdvanceToTrade(amountToApprove: CurrencyAmoun
   const { account } = useWalletInfo()
 
   const token = getWrappedToken(amountToApprove.currency)
-  const permitInfo = usePermitInfo(token, TradeType.SWAP, undefined)
+  const permitInfo = usePermitInfo(token, TradeType.SWAP)
 
   return useCallback(async () => {
     if (!account || !permitInfo) return false
@@ -27,6 +29,7 @@ export function useGeneratePermitInAdvanceToTrade(amountToApprove: CurrencyAmoun
     const postSignCallback = (): void => updateTradeApproveState({ currency: undefined, approveInProgress: false })
 
     const permitData = await generatePermit({
+      // todo handle empty token name/address?
       inputToken: { name: token.name || '', address: token.address },
       account,
       permitInfo,
