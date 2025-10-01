@@ -7,11 +7,12 @@ import { PersistentStateByChain } from '@cowprotocol/types'
 
 import { renderHook } from '@testing-library/react'
 import fetchMock from 'jest-fetch-mock'
-import useSWR, { SWRConfiguration } from 'swr'
+import useSWR from 'swr'
 
 // Import the function to test after all mocks are set up
 import { PersistBalancesFromBffParams, usePersistBalancesFromBff } from './usePersistBalancesFromBff'
 
+import { BFF_BALANCES_SWR_CONFIG } from '../constants/bff-balances-swr-config'
 import { balancesAtom, BalancesState, balancesUpdateAtom } from '../state/balancesAtom'
 import * as isBffFailedAtom from '../state/isBffFailedAtom'
 import * as bffUtils from '../utils/isBffSupportedNetwork'
@@ -32,10 +33,7 @@ jest.mock('@cowprotocol/wallet', () => ({
   useWalletInfo: () => mockUseWalletInfo(),
 }))
 
-type SWRKey = [string, SupportedChainId, number | undefined, 'bff-balances'] | null
-type SWRFetcher = (key: [string, SupportedChainId]) => Promise<Record<string, string> | null>
-
-describe('usePersistBalancesFromBff - balancesSwrConfig and invalidateCacheTrigger', () => {
+describe('usePersistBalancesFromBff - invalidateCacheTrigger', () => {
   const mockSetIsBffFailed = jest.fn()
   const mockWalletInfo = {
     chainId: SupportedChainId.MAINNET,
@@ -45,10 +43,8 @@ describe('usePersistBalancesFromBff - balancesSwrConfig and invalidateCacheTrigg
   const defaultParams: PersistBalancesFromBffParams = {
     account: '0x1234567890123456789012345678901234567890',
     chainId: SupportedChainId.MAINNET,
-    balancesSwrConfig: { refreshInterval: 30000 },
     invalidateCacheTrigger: 0,
     tokenAddresses: ['0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48'],
-    isEnabled: true,
   }
 
   const mockBalancesData = {
@@ -90,16 +86,8 @@ describe('usePersistBalancesFromBff - balancesSwrConfig and invalidateCacheTrigg
     ;(bffUtils.isBffSupportedNetwork as jest.Mock).mockReturnValue(true)
   })
 
-  describe('balancesSwrConfig parameter', () => {
-    it('should pass custom SWR config to useSWR', () => {
-      const customConfig: SWRConfiguration = {
-        refreshInterval: 5000,
-        dedupingInterval: 2000,
-        revalidateOnFocus: false,
-        revalidateOnReconnect: true,
-        errorRetryCount: 5,
-      }
-
+  describe('hardcoded SWR config', () => {
+    it('should use hardcoded BFF_BALANCES_SWR_CONFIG', () => {
       const mockUseSWR = useSWR as jest.MockedFunction<typeof useSWR>
       mockUseSWR.mockReturnValue({
         data: mockBalancesData,
@@ -109,50 +97,13 @@ describe('usePersistBalancesFromBff - balancesSwrConfig and invalidateCacheTrigg
         mutate: jest.fn(),
       } as ReturnType<typeof useSWR>)
 
-      renderHook(() => usePersistBalancesFromBff({ ...defaultParams, balancesSwrConfig: customConfig }), { wrapper })
+      renderHook(() => usePersistBalancesFromBff(defaultParams), { wrapper })
 
       expect(mockUseSWR).toHaveBeenCalledWith(
         expect.any(Array),
         expect.any(Function),
-        customConfig, // Verify custom config is passed
+        BFF_BALANCES_SWR_CONFIG, // Verify hardcoded config is used
       )
-    })
-
-    it('should handle empty SWR config', () => {
-      const emptyConfig = {}
-
-      const mockUseSWR = useSWR as jest.MockedFunction<typeof useSWR>
-      mockUseSWR.mockReturnValue({
-        data: mockBalancesData,
-        error: undefined,
-        isLoading: false,
-        isValidating: false,
-        mutate: jest.fn(),
-      } as ReturnType<typeof useSWR>)
-
-      renderHook(() => usePersistBalancesFromBff({ ...defaultParams, balancesSwrConfig: emptyConfig }), { wrapper })
-
-      expect(mockUseSWR).toHaveBeenCalledWith(expect.any(Array), expect.any(Function), emptyConfig)
-    })
-
-    it('should respect isPaused function in SWR config', () => {
-      const pausedConfig: SWRConfiguration = {
-        isPaused: () => true,
-        refreshInterval: 1000,
-      }
-
-      const mockUseSWR = useSWR as jest.MockedFunction<typeof useSWR>
-      mockUseSWR.mockReturnValue({
-        data: undefined,
-        error: undefined,
-        isLoading: false,
-        isValidating: false,
-        mutate: jest.fn(),
-      } as ReturnType<typeof useSWR>)
-
-      renderHook(() => usePersistBalancesFromBff({ ...defaultParams, balancesSwrConfig: pausedConfig }), { wrapper })
-
-      expect(mockUseSWR).toHaveBeenCalledWith(expect.any(Array), expect.any(Function), pausedConfig)
     })
   })
 
@@ -190,7 +141,7 @@ describe('usePersistBalancesFromBff - balancesSwrConfig and invalidateCacheTrigg
       expect(mockUseSWR).toHaveBeenCalledWith(
         [defaultParams.account, defaultParams.chainId, 0, 'bff-balances'],
         expect.any(Function),
-        expect.any(Object),
+        BFF_BALANCES_SWR_CONFIG,
       )
 
       // Change trigger to force cache invalidation
@@ -199,7 +150,7 @@ describe('usePersistBalancesFromBff - balancesSwrConfig and invalidateCacheTrigg
       expect(mockUseSWR).toHaveBeenCalledWith(
         [defaultParams.account, defaultParams.chainId, 1, 'bff-balances'],
         expect.any(Function),
-        expect.any(Object),
+        BFF_BALANCES_SWR_CONFIG,
       )
 
       // Change trigger again
@@ -208,7 +159,7 @@ describe('usePersistBalancesFromBff - balancesSwrConfig and invalidateCacheTrigg
       expect(mockUseSWR).toHaveBeenCalledWith(
         [defaultParams.account, defaultParams.chainId, 5, 'bff-balances'],
         expect.any(Function),
-        expect.any(Object),
+        BFF_BALANCES_SWR_CONFIG,
       )
     })
 
@@ -225,9 +176,7 @@ describe('usePersistBalancesFromBff - balancesSwrConfig and invalidateCacheTrigg
       const paramsWithoutTrigger: Omit<PersistBalancesFromBffParams, 'invalidateCacheTrigger'> = {
         account: defaultParams.account,
         chainId: defaultParams.chainId,
-        balancesSwrConfig: defaultParams.balancesSwrConfig,
         tokenAddresses: defaultParams.tokenAddresses,
-        isEnabled: defaultParams.isEnabled,
       }
 
       renderHook(() => usePersistBalancesFromBff(paramsWithoutTrigger as PersistBalancesFromBffParams), { wrapper })
@@ -235,87 +184,9 @@ describe('usePersistBalancesFromBff - balancesSwrConfig and invalidateCacheTrigg
       expect(mockUseSWR).toHaveBeenCalledWith(
         [defaultParams.account, defaultParams.chainId, undefined, 'bff-balances'],
         expect.any(Function),
-        expect.any(Object),
-      )
-    })
-
-    it('should maintain trigger value across rerenders when not changed', () => {
-      const mockUseSWR = useSWR as jest.MockedFunction<typeof useSWR>
-      mockUseSWR.mockReturnValue({
-        data: mockBalancesData,
-        error: undefined,
-        isLoading: false,
-        isValidating: false,
-        mutate: jest.fn(),
-      } as ReturnType<typeof useSWR>)
-
-      const { rerender } = renderHook<
-        void,
-        {
-          invalidateCacheTrigger: number
-          isEnabled?: boolean
-        }
-      >((props) => usePersistBalancesFromBff({ ...defaultParams, ...props }), {
-        wrapper,
-        initialProps: { invalidateCacheTrigger: 3 },
-      })
-
-      // Rerender with same trigger value but different prop
-      rerender({ invalidateCacheTrigger: 3, isEnabled: false })
-      rerender({ invalidateCacheTrigger: 3, isEnabled: true })
-
-      // All calls should have the same trigger value
-      const calls = (mockUseSWR as jest.Mock).mock.calls
-      const triggersFromCalls = calls
-        .filter((call: [SWRKey, SWRFetcher | undefined, SWRConfiguration | undefined]) => call[0] !== null)
-        .map((call: [SWRKey, SWRFetcher | undefined, SWRConfiguration | undefined]) => call[0]?.[2])
-
-      expect(triggersFromCalls).toEqual([3, 3])
-    })
-  })
-
-  describe('balancesSwrConfig and invalidateCacheTrigger interaction', () => {
-    it('should apply both custom config and trigger changes', () => {
-      const customConfig: SWRConfiguration = {
-        refreshInterval: 10000,
-        revalidateOnFocus: true,
-      }
-
-      const mockUseSWR = useSWR as jest.MockedFunction<typeof useSWR>
-      mockUseSWR.mockReturnValue({
-        data: mockBalancesData,
-        error: undefined,
-        isLoading: false,
-        isValidating: false,
-        mutate: jest.fn(),
-      } as ReturnType<typeof useSWR>)
-
-      const { rerender } = renderHook(
-        ({ trigger }: { trigger: number }) =>
-          usePersistBalancesFromBff({
-            ...defaultParams,
-            balancesSwrConfig: customConfig,
-            invalidateCacheTrigger: trigger,
-          }),
-        {
-          wrapper,
-          initialProps: { trigger: 0 },
-        },
-      )
-
-      expect(mockUseSWR).toHaveBeenCalledWith(
-        [defaultParams.account, defaultParams.chainId, 0, 'bff-balances'],
-        expect.any(Function),
-        customConfig,
-      )
-
-      rerender({ trigger: 2 })
-
-      expect(mockUseSWR).toHaveBeenLastCalledWith(
-        [defaultParams.account, defaultParams.chainId, 2, 'bff-balances'],
-        expect.any(Function),
-        customConfig,
+        BFF_BALANCES_SWR_CONFIG,
       )
     })
   })
+
 })
