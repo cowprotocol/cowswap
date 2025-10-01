@@ -19,7 +19,7 @@ export function useApproveCurrency(
   return useCallback(
     async (amount: bigint) => {
       if (await shouldZeroApprove()) {
-        return zeroApprove()
+        await zeroApprove()
       }
 
       return tradeApproveCallback(amount)

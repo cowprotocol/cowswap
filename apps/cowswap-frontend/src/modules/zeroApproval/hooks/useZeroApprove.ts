@@ -2,6 +2,7 @@ import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
+import { Nullish } from '@cowprotocol/types'
 import { useIsSafeWallet, useIsWalletConnect } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
@@ -40,7 +41,7 @@ async function waitForSafeTransactionExecution({
 
 export function useZeroApprove(
   currency: Currency | undefined,
-): () => Promise<TransactionReceipt | null | SafeMultisigTransactionResponse | undefined> {
+): () => Promise<Nullish<TransactionReceipt | SafeMultisigTransactionResponse>> {
   const setZeroApprovalState = useSetAtom(zeroApprovalState)
   const spender = useTradeSpenderAddress()
   const amountToApprove = currency ? CurrencyAmount.fromRawAmount(currency, 0) : undefined
