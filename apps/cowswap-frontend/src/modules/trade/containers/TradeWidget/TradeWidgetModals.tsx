@@ -80,7 +80,7 @@ export function TradeWidgetModals({
     ],
   )
 
-  const isOutputTokenSelector = field == Field.OUTPUT
+  const isOutputTokenSelector = field === Field.OUTPUT
   const error = tokenListAddingError || approveError || confirmError
 
   /**
