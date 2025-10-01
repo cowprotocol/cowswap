@@ -3,6 +3,8 @@ import { ReactNode, useCallback, useEffect } from 'react'
 import { useAddUserToken } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { Field } from 'legacy/state/types'
+
 import { TradeApproveModal, useUpdateTradeApproveState } from 'modules/erc20Approve'
 import { useTradeApproveState } from 'modules/erc20Approve/state/useTradeApproveState'
 import {
@@ -39,7 +41,7 @@ export function TradeWidgetModals({
   const importTokenCallback = useAddUserToken()
 
   const { isOpen: isTradeReviewOpen, error: confirmError, pendingTrade } = useTradeConfirmState()
-  const { open: isTokenSelectOpen } = useSelectTokenWidgetState()
+  const { open: isTokenSelectOpen, field } = useSelectTokenWidgetState()
   const [{ isOpen: isWrapNativeOpen }, setWrapNativeScreenState] = useWrapNativeScreenState()
   const { approveInProgress, currency: approvingCurrency, error: approveError } = useTradeApproveState()
   const [tokenListAddingError, setTokenListAddingError] = useTokenListAddingError()
@@ -78,6 +80,7 @@ export function TradeWidgetModals({
     ],
   )
 
+  const isOutputTokenSelector = field === Field.OUTPUT
   const error = tokenListAddingError || approveError || confirmError
 
   /**
@@ -92,8 +95,8 @@ export function TradeWidgetModals({
    * Because network might be changed from the widget inside
    */
   useEffect(() => {
-    resetAllScreens(false)
-  }, [chainId, resetAllScreens])
+    resetAllScreens(isOutputTokenSelector)
+  }, [chainId, resetAllScreens, isOutputTokenSelector])
 
   if (genericModal) {
     return genericModal
