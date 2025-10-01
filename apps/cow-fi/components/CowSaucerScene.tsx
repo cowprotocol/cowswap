@@ -37,7 +37,7 @@ const COW_POSITION = {
 }
 
 const COW_MAX_WIDTH = '10rem'
-const FOOTER_OVERLAP = '0'
+const FOOTER_OVERLAP = '0rem'
 
 const SAUCER_HEIGHT = {
   min: '18rem',
@@ -119,8 +119,8 @@ const cowAbduction = keyframes`
 
 const SceneSection = styled.section`
   position: relative;
-  width: 100vw;
-  margin: 0 calc((100vw - 100%) / -2) calc(-1 * ${FOOTER_OVERLAP});
+  width: 100%;
+  margin: 0 0 calc(${FOOTER_OVERLAP} * -1);
   padding-bottom: ${FOOTER_OVERLAP};
   background: url(${BG_IMAGE}) left bottom / 100% auto no-repeat;
   overflow: hidden;
