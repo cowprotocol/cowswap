@@ -41,7 +41,8 @@
     "prepare": "husky",
     "postinstall": "yarn run patch-package",
     "analyze-build": "cross-env ANALYZE_BUNDLE=true ANALYZE_BUNDLE_TEMPLATE=sunburst yarn build",
-    "install:sdk-preview": "node tools/scripts/install-sdk-preview.js && yarn"
+    "install:sdk-preview": "node tools/scripts/install-sdk-preview.js && yarn",
+    "install:ci": "yarn run install:sdk-preview"
   },
   "browser": {
     "crypto": false

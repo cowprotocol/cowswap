@@ -42,7 +42,7 @@ jobs:
             ${{ runner.os }}-${{ matrix.node-version }}-nodemodules1-
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: yarn install:ci --frozen-lockfile
 
       - name: Cache generated files
         id: cache-generated-files
