@@ -69,19 +69,23 @@ export function useGeneratePermitHook(): GeneratePermitHook {
         return cachedPermit
       }
 
-      preSignCallback?.()
-      const hookData = await generatePermitHook({
-        chainId,
-        inputToken,
-        spender,
-        provider,
-        permitInfo,
-        eip2612Utils,
-        account,
-        nonce,
-        amount,
-      })
-      postSignCallback?.()
+      let hookData: PermitHookData | undefined
+      try {
+        preSignCallback?.()
+        hookData = await generatePermitHook({
+          chainId,
+          inputToken,
+          spender,
+          provider,
+          permitInfo,
+          eip2612Utils,
+          account,
+          nonce,
+          amount,
+        })
+      } finally {
+        postSignCallback?.()
+      }
 
       hookData && storePermit({ ...permitParams, hookData, spender })
 

@@ -39,7 +39,7 @@ export function useIsOrderHasValidPermit(order?: Order, tradeType?: TradeType): 
   const checkPermit = account && provider && permit && isPendingOrder && tradeType
 
   const { data: isValid } = useSWR(
-    checkPermit ? [account, chainId, order?.id, tradeType] : null,
+    checkPermit ? [account, chainId, order?.id, tradeType, permit] : null,
     async ([account, chainId]) => {
       if (!permit || !order || !account || !provider || !chainId || !tokenPermitInfo) {
         return undefined
@@ -101,7 +101,6 @@ async function checkPermitNonceAndAmount(
     }
 
     if (permitAmount === null) {
-      console.warn('Could not extract amount from permit')
       return true // If we can't extract amount, assume it's valid
     }
 
