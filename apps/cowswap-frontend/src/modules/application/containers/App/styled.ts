@@ -28,8 +28,8 @@ export const AppWrapper = styled.div<Partial<CSS.Properties>>`
   display: flex;
   flex-flow: column;
   align-items: flex-start;
-  min-height: ${({ theme }) => (theme.isInjectedWidgetMode ? '400px' : '100vh')};
-  height: ${({ theme }) => (theme.isInjectedWidgetMode ? 'initial' : '100%')};
+  min-height: ${({ theme }) => (theme.isWidget ? '400px' : '100vh')};
+  height: ${({ theme }) => (theme.isWidget ? 'initial' : '100%')};
 `
 
 export const Marginer = styled.div`
@@ -46,13 +46,13 @@ export const BodyWrapper = styled.div<{ customTheme?: CowSwapTheme }>`
   flex: 1 1 auto;
   z-index: 2;
   color: inherit;
-  padding: ${({ theme }) => (theme.isInjectedWidgetMode ? '16px 16px 0' : '150px 16px 76px')};
-  margin: ${({ theme }) => (theme.isInjectedWidgetMode ? '0' : '-76px auto calc(var(--marginBottomOffset) * -1);')};
-  border-bottom-left-radius: ${({ theme }) => (theme.isInjectedWidgetMode ? '0' : 'var(--marginBottomOffset)')};
-  border-bottom-right-radius: ${({ theme }) => (theme.isInjectedWidgetMode ? '0' : 'var(--marginBottomOffset)')};
-  min-height: ${({ theme }) => (theme.isInjectedWidgetMode ? 'initial' : 'calc(100vh - 200px)')};
+  padding: ${({ theme }) => (theme.isWidget ? '16px 16px 0' : '150px 16px 76px')};
+  margin: ${({ theme }) => (theme.isWidget ? '0' : '-76px auto calc(var(--marginBottomOffset) * -1);')};
+  border-bottom-left-radius: ${({ theme }) => (theme.isWidget ? '0' : 'var(--marginBottomOffset)')};
+  border-bottom-right-radius: ${({ theme }) => (theme.isWidget ? '0' : 'var(--marginBottomOffset)')};
+  min-height: ${({ theme }) => (theme.isWidget ? 'initial' : 'calc(100vh - 200px)')};
   background: ${({ theme, customTheme }) => {
-    if (theme.isInjectedWidgetMode) {
+    if (theme.isWidget) {
       return 'transparent'
     } else {
       const backgroundColor = theme.darkMode ? '#0E0F2D' : `var(${UI.COLOR_BLUE_300_PRIMARY})`
@@ -73,9 +73,9 @@ export const BodyWrapper = styled.div<{ customTheme?: CowSwapTheme }>`
   }};
 
   ${Media.upToMedium()} {
-    padding: ${({ theme }) => (theme.isInjectedWidgetMode ? '0 0 16px' : '150px 16px 76px')};
+    padding: ${({ theme }) => (theme.isWidget ? '0 0 16px' : '150px 16px 76px')};
     flex: none;
-    min-height: ${({ theme }) => (theme.isInjectedWidgetMode ? 'initial' : 'calc(100vh - 200px)')};
+    min-height: ${({ theme }) => (theme.isWidget ? 'initial' : 'calc(100vh - 200px)')};
     background-size: auto;
 
     ${({ customTheme }) =>
@@ -86,15 +86,15 @@ export const BodyWrapper = styled.div<{ customTheme?: CowSwapTheme }>`
 
     ${({ customTheme, theme }) =>
       isChristmasTheme(customTheme) &&
-      !theme.isInjectedWidgetMode &&
+      !theme.isWidget &&
       `
         background-image: url(${theme.darkMode ? IMAGE_BACKGROUND_DARK_CHRISTMAS_MEDIUM : IMAGE_BACKGROUND_LIGHT_CHRISTMAS_MEDIUM});
       `}
   }
 
   ${Media.upToSmall()} {
-    padding: ${({ theme }) => (theme.isInjectedWidgetMode ? '0 0 16px' : '90px 16px 76px')};
-    min-height: ${({ theme }) => (theme.isInjectedWidgetMode ? 'initial' : 'calc(100vh - 100px)')};
+    padding: ${({ theme }) => (theme.isWidget ? '0 0 16px' : '90px 16px 76px')};
+    min-height: ${({ theme }) => (theme.isWidget ? 'initial' : 'calc(100vh - 100px)')};
 
     ${({ customTheme }) =>
       customTheme === 'darkHalloween' &&
@@ -104,7 +104,7 @@ export const BodyWrapper = styled.div<{ customTheme?: CowSwapTheme }>`
 
     ${({ customTheme, theme }) =>
       isChristmasTheme(customTheme) &&
-      !theme.isInjectedWidgetMode &&
+      !theme.isWidget &&
       `
         background-image: url(${theme.darkMode ? IMAGE_BACKGROUND_DARK_CHRISTMAS_SMALL : IMAGE_BACKGROUND_LIGHT_CHRISTMAS_SMALL});
       `}

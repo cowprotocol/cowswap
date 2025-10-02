@@ -83,10 +83,10 @@ export const MenuItem = styled.div<{ isActive?: boolean; isDropdownVisible: bool
     align-items: center;
     justify-content: flex-start;
     text-align: left;
-    font-size: ${({ theme }) => (theme.isInjectedWidgetMode ? '16px' : '14px')};
-    font-weight: ${({ theme }) => (theme.isInjectedWidgetMode ? '600' : '500')};
+    font-size: ${({ theme }) => (theme.isWidget ? '16px' : '14px')};
+    font-weight: ${({ theme }) => (theme.isWidget ? '600' : '500')};
     border-radius: var(${UI.BORDER_RADIUS_NORMAL});
-    padding: ${({ theme }) => (theme.isInjectedWidgetMode ? '7px' : '5px 10px')};
+    padding: ${({ theme }) => (theme.isWidget ? '7px' : '5px 10px')};
     background: transparent;
     transition: background var(${UI.ANIMATION_DURATION}) ease-in-out;
     color: inherit;
@@ -131,7 +131,7 @@ export const SelectMenu = styled.div`
   border-radius: var(${UI.BORDER_RADIUS_NORMAL});
 
   > div:first-child {
-    margin-bottom: ${({ theme }) => (theme.isInjectedWidgetMode ? '16px' : '24px')};
+    margin-bottom: ${({ theme }) => (theme.isWidget ? '16px' : '24px')};
   }
 `
 

@@ -52,8 +52,7 @@ export const ThemedGlobalStyle = createGlobalStyle`
   }
 
   html {
-    background-color: ${({ theme }) =>
-      theme.isInjectedWidgetMode ? 'transparent' : `var(${UI.COLOR_CONTAINER_BG_02})`};
+    background-color: ${({ theme }) => (theme.isWidget ? 'transparent' : `var(${UI.COLOR_CONTAINER_BG_02})`)};
   }
 
   *, *:after, *:before {
@@ -61,8 +60,8 @@ export const ThemedGlobalStyle = createGlobalStyle`
   }
 
   body {
-    background: ${({ theme }) => (theme?.isInjectedWidgetMode ? 'transparent' : `var(${UI.COLOR_NEUTRAL_98})`)};
-    min-height: ${({ theme }) => (theme.isInjectedWidgetMode ? 'auto' : '100vh')};
+    background: ${({ theme }) => (theme.isWidget ? 'transparent' : `var(${UI.COLOR_NEUTRAL_98})`)};
+    min-height: ${({ theme }) => (theme.isWidget ? 'auto' : '100vh')};
 
     &.noScroll {
       overflow: hidden;
