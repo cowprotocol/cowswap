@@ -10,6 +10,7 @@ export interface PageBackgroundContextValue {
 }
 
 export const PageBackgroundContext = createContext<PageBackgroundContextValue | undefined>(undefined)
+PageBackgroundContext.displayName = 'PageBackgroundContext'
 
 export function usePageBackground(): PageBackgroundContextValue {
   const context = useContext(PageBackgroundContext)
