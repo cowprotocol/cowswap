@@ -75,7 +75,7 @@ export const BodyWrapper = styled.div<{ customTheme?: CowSwapTheme; backgroundVa
   z-index: 2;
   color: inherit;
   padding: ${({ theme }) => (theme.isWidget ? '16px 16px 0' : '150px 16px 76px')};
-  margin: ${({ theme }) => (theme.isWidget ? '0' : '-76px auto calc(var(--marginBottomOffset) * -1);')};
+  margin: ${({ theme }) => (theme.isWidget ? '0' : '-76px auto calc(var(--marginBottomOffset) * -1)')};
   border-bottom-left-radius: ${({ theme }) => (theme.isWidget ? '0' : 'var(--marginBottomOffset)')};
   border-bottom-right-radius: ${({ theme }) => (theme.isWidget ? '0' : 'var(--marginBottomOffset)')};
   min-height: ${({ theme }) => (theme.isWidget ? 'initial' : 'calc(100vh - 200px)')};

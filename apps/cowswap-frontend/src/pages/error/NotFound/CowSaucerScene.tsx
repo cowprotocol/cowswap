@@ -161,6 +161,10 @@ const SaucerWrapper = styled.div`
   animation: ${saucerFlight} ${ANIMATION_DURATION} linear infinite both;
   transform-origin: center;
   z-index: 4;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
 `
 
 const Cow = styled.div`
@@ -180,6 +184,10 @@ const Cow = styled.div`
   ${Media.upToSmall()} {
     width: clamp(4.4rem, 7.2vw, 7.2rem);
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
 `
 
 const CowSprite = styled.div<{ $image: string }>`
@@ -188,6 +196,10 @@ const CowSprite = styled.div<{ $image: string }>`
   background: ${({ $image }) => `url(${$image}) no-repeat bottom / contain`};
   animation: ${cowShrink} ${ANIMATION_DURATION} linear infinite both;
   transform-origin: center;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
 `
 
 const twinkle = keyframes`
@@ -245,6 +257,12 @@ const StyledSaucerSvg = styled.svg`
     --twinkle-rotation: 4deg;
     --twinkle-scale-min: 0.9;
     --twinkle-scale-mid: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .star {
+      animation: none;
+    }
   }
 `
 
