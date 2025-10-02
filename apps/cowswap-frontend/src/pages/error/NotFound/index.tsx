@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { ReactNode, useEffect, useMemo } from 'react'
 
 import { ButtonPrimary, Media, UI } from '@cowprotocol/ui'
 
@@ -54,25 +54,21 @@ const Container = styled.div`
   }
 `
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export default function NotFound() {
+export default function NotFound(): ReactNode {
   const { setVariant, setScene } = usePageBackground()
   const [darkMode] = useDarkModeManager()
-
-  useEffect(() => {
-    setVariant('nocows')
-
-    return () => setVariant('default')
-  }, [setVariant])
 
   const scene = useMemo(() => <CowSaucerScene darkMode={darkMode} />, [darkMode])
 
   useEffect(() => {
+    setVariant('nocows')
     setScene(scene)
 
-    return () => setScene(null)
-  }, [scene, setScene])
+    return () => {
+      setVariant('default')
+      setScene(null)
+    }
+  }, [scene, setVariant, setScene])
 
   return (
     <Wrapper>
