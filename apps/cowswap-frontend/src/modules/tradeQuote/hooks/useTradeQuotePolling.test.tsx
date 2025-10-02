@@ -42,6 +42,7 @@ jest.mock('@cowprotocol/wallet-provider', () => ({
 jest.mock('tradingSdk/bridgingSdk', () => ({
   bridgingSdk: {
     getQuote: jest.fn(),
+    getBestQuote: jest.fn(),
   },
 }))
 const useEnoughAllowanceMock = useEnoughAllowance as jest.Mock

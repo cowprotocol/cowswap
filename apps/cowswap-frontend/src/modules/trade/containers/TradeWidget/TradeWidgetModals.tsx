@@ -1,7 +1,9 @@
-import { ReactNode, useCallback, useEffect } from 'react'
+import { ReactNode, useCallback, useEffect, useRef } from 'react'
 
 import { useAddUserToken } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
+
+import { Field } from 'legacy/state/types'
 
 import { TradeApproveModal, useUpdateTradeApproveState } from 'modules/erc20Approve'
 import { useTradeApproveState } from 'modules/erc20Approve/state/useTradeApproveState'
@@ -39,7 +41,7 @@ export function TradeWidgetModals({
   const importTokenCallback = useAddUserToken()
 
   const { isOpen: isTradeReviewOpen, error: confirmError, pendingTrade } = useTradeConfirmState()
-  const { open: isTokenSelectOpen } = useSelectTokenWidgetState()
+  const { open: isTokenSelectOpen, field } = useSelectTokenWidgetState()
   const [{ isOpen: isWrapNativeOpen }, setWrapNativeScreenState] = useWrapNativeScreenState()
   const { approveInProgress, currency: approvingCurrency, error: approveError } = useTradeApproveState()
   const [tokenListAddingError, setTokenListAddingError] = useTokenListAddingError()
@@ -57,12 +59,8 @@ export function TradeWidgetModals({
     (closeTokenSelectWidget = true, shouldCloseAutoImportModal = true) => {
       closeTradeConfirm()
       closeZeroApprovalModal()
-      if (shouldCloseAutoImportModal) {
-        closeAutoImportModal()
-      }
-      if (closeTokenSelectWidget) {
-        updateSelectTokenWidgetState({ open: false })
-      }
+      if (shouldCloseAutoImportModal) closeAutoImportModal()
+      if (closeTokenSelectWidget) updateSelectTokenWidgetState({ open: false })
       setWrapNativeScreenState({ isOpen: false })
       updateTradeApproveState({ approveInProgress: false, error: undefined })
       setTokenListAddingError(null)
@@ -78,6 +76,10 @@ export function TradeWidgetModals({
     ],
   )
 
+  const isOutputTokenSelector = field === Field.OUTPUT
+  const isOutputTokenSelectorRef = useRef(isOutputTokenSelector)
+  isOutputTokenSelectorRef.current = isOutputTokenSelector
+
   const error = tokenListAddingError || approveError || confirmError
 
   /**
@@ -92,7 +94,7 @@ export function TradeWidgetModals({
    * Because network might be changed from the widget inside
    */
   useEffect(() => {
-    resetAllScreens(false)
+    resetAllScreens(isOutputTokenSelectorRef.current)
   }, [chainId, resetAllScreens])
 
   if (genericModal) {
