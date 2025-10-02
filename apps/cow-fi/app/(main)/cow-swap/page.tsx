@@ -337,7 +337,7 @@ export default function Page() {
             >
               <TopicCardInner contentAlign="left">
                 <TopicTitle color={`var(${UI.COLOR_NEUTRAL_100})`} fontSize={51}>
-                  70%
+                  36%
                 </TopicTitle>
                 <TopicDescription fontSize={21} color={`var(${UI.COLOR_BLUE_300_PRIMARY})`}>
                   Monthly user retention rate – the highest in DeFi
