@@ -223,9 +223,14 @@ const RECENT_STEP_THRESHOLD_MS = 1_800_000
 
 function shouldAnimateInProgress(state: OrderProgressBarState): boolean {
   const step = state.progressBarStepName
+  const countdownActive = hasActiveCountdown(state.countdown)
+
+  if (!step) {
+    return false
+  }
 
   if (step === OrderProgressBarStepName.INITIAL) {
-    if (state.previousStepName && isSuccess(state.previousStepName)) {
+    if (isSuccess(state.previousStepName)) {
       return false
     }
 
@@ -233,26 +238,18 @@ function shouldAnimateInProgress(state: OrderProgressBarState): boolean {
       return false
     }
 
-    if (state.countdown && state.countdown > 0) {
-      return true
-    }
-
-    if (!state.lastTimeChangedSteps) {
+    if (!countdownActive && !state.lastTimeChangedSteps) {
       return false
     }
 
-    return isRecentStateChange(state)
+    return countdownActive || isRecentStateChange(state)
   }
 
-  if (!step || !SOLVING_ANIMATION_STEPS.has(step)) {
+  if (!SOLVING_ANIMATION_STEPS.has(step)) {
     return false
   }
 
-  if (state.countdown && state.countdown > 0) {
-    return true
-  }
-
-  return isRecentStateChange(state)
+  return countdownActive || isRecentStateChange(state)
 }
 
 function isRecentStateChange(state: OrderProgressBarState): boolean {
@@ -261,6 +258,10 @@ function isRecentStateChange(state: OrderProgressBarState): boolean {
   }
 
   return Date.now() - state.lastTimeChangedSteps < RECENT_STEP_THRESHOLD_MS
+}
+
+function hasActiveCountdown(countdown: OrderProgressBarState['countdown']): boolean {
+  return typeof countdown === 'number' && countdown > 0
 }
 
 function isSuccess(step: OrderProgressBarStepName | undefined): step is OrderProgressBarStepName {

@@ -10,7 +10,7 @@ const ICON_SELECTOR = 'link[rel~="icon"]'
 export class FaviconAnimator {
   private readonly iconElements: HTMLLinkElement[]
   private animationId = 0
-  private frameTimer: ReturnType<typeof setTimeout> | undefined
+  private frameTimer: number | undefined
   private isRunning = false
   private readonly originalHrefs = new Map<HTMLLinkElement, string>()
 
@@ -112,7 +112,7 @@ export class FaviconAnimator {
 
   private cancelCurrentAnimation(): void {
     if (this.frameTimer) {
-      clearTimeout(this.frameTimer)
+      window.clearTimeout(this.frameTimer)
       this.frameTimer = undefined
     }
     this.isRunning = false
