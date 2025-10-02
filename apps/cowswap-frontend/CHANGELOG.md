@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.118.13](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.118.12...cowswap-v1.118.13) (2025-09-25)
+
+
+### Bug Fixes
+
+* add return type annotations (to trigger release please build) ([#6307](https://github.com/cowprotocol/cowswap/issues/6307)) ([dcfcc86](https://github.com/cowprotocol/cowswap/commit/dcfcc86679e082fde2d6c5e8cbd61c8db65bf286))
+
 ## [1.118.12](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.118.11...cowswap-v1.118.12) (2025-09-23)
 
 

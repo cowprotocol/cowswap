@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.26.2](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.26.1...cow-fi-v1.26.2) (2025-09-25)
+
+
+### Bug Fixes
+
+* **cowfi:** update chains info on CoW protocol and CoW Swap pages ([#6159](https://github.com/cowprotocol/cowswap/issues/6159)) ([5ebdd51](https://github.com/cowprotocol/cowswap/commit/5ebdd513b3209495aa05710b05dc863f4b3ef47a))
+
 ## [1.26.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.26.0...cow-fi-v1.26.1) (2025-09-22)
 
 
