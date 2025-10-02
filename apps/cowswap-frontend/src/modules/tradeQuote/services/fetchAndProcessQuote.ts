@@ -1,4 +1,3 @@
-import { BFF_BASE_URL } from '@cowprotocol/common-const'
 import { onlyResolvesLast } from '@cowprotocol/common-utils'
 import { PriceQuality, SwapAdvancedSettings } from '@cowprotocol/cow-sdk'
 import {
@@ -16,6 +15,7 @@ import { AppDataInfo } from 'modules/appData'
 
 import { mapOperatorErrorToQuoteError, QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
 import { getIsOrderBookTypedError } from 'api/cowProtocol/getIsOrderBookTypedError'
+import { coWBFFClient } from 'common/services/bff'
 
 import { TradeQuoteManager } from '../hooks/useTradeQuoteManager'
 import { TradeQuoteFetchParams, TradeQuotePollingParameters } from '../types'
@@ -45,7 +45,7 @@ export async function fetchAndProcessQuote(
     },
     appData,
     quoteSigner: isBridge ? getBridgeQuoteSigner(chainId) : undefined,
-    bffOrigin: useSuggestedSlippageApi ? BFF_BASE_URL : undefined,
+    getSlippageSuggestion: useSuggestedSlippageApi ? coWBFFClient.getSlippageTolerance.bind(coWBFFClient) : undefined,
   }
 
   const processQuoteError = (error: Error): void => {
