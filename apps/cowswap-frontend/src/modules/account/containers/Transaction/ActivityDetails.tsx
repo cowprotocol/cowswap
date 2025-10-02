@@ -22,7 +22,7 @@ import { BridgeActivitySummary } from 'modules/bridge'
 import { EthFlowStepper } from 'modules/ethFlow'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useSwapPartialApprovalToggleState } from 'modules/swap/hooks/useSwapSettings'
-import { ConfirmDetailsItem } from 'modules/trade'
+import { ConfirmDetailsItem, TradeType } from 'modules/trade'
 
 import { OrderHooksDetails } from 'common/containers/OrderHooksDetails'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
@@ -269,7 +269,7 @@ export function ActivityDetails(props: {
     }
   }, [showProgressBar, setShowProgressBar, order?.id, toggleAccountModal])
 
-  const hasValidPermit = useIsOrderHasValidPermit(order)
+  const hasValidPermit = useIsOrderHasValidPermit(order, TradeType.SWAP)
 
   if (!order && !enhancedTransaction) return null
 
