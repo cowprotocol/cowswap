@@ -62,13 +62,16 @@ export default function NotFound(): ReactNode {
 
   useEffect(() => {
     setVariant('nocows')
-    setScene(scene)
 
     return () => {
       setVariant('default')
       setScene(null)
     }
-  }, [scene, setVariant, setScene])
+  }, [setVariant, setScene])
+
+  useEffect(() => {
+    setScene(scene)
+  }, [scene, setScene])
 
   return (
     <Wrapper>
