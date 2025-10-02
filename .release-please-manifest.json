@@ -1,6 +1,6 @@
 {
-  "apps/cowswap-frontend": "1.118.13",
-  "apps/explorer": "2.54.3",
+  "apps/cowswap-frontend": "1.119.0",
+  "apps/explorer": "2.55.0",
   "libs/permit-utils": "1.0.0",
   "libs/widget-lib": "0.20.0",
   "libs/widget-react": "0.11.2",
@@ -8,7 +8,7 @@
   "libs/analytics": "1.13.0",
   "libs/assets": "1.15.0",
   "libs/common-const": "1.26.0",
-  "libs/common-hooks": "1.10.0",
+  "libs/common-hooks": "1.10.1",
   "libs/common-utils": "1.21.1",
   "libs/core": "1.8.1",
   "libs/ens": "1.5.0",
@@ -18,12 +18,12 @@
   "libs/types": "2.0.1",
   "libs/ui": "1.27.0",
   "libs/wallet": "1.15.2",
-  "apps/cow-fi": "1.26.2",
+  "apps/cow-fi": "1.26.3",
   "libs/wallet-provider": "1.0.1",
   "libs/ui-utils": "1.1.1",
   "libs/abis": "1.2.3",
-  "libs/balances-and-allowances": "1.6.0",
+  "libs/balances-and-allowances": "1.7.0",
   "libs/iframe-transport": "1.1.0",
-  "libs/hook-dapp-lib": "1.11.0",
+  "libs/hook-dapp-lib": "1.12.0",
   "libs/multicall": "1.2.3"
 }

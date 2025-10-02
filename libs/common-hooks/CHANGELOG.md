@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.1](https://github.com/cowprotocol/cowswap/compare/common-hooks-v1.10.0...common-hooks-v1.10.1) (2025-10-02)
+
+
+### Bug Fixes
+
+* remove feature flags ([#6314](https://github.com/cowprotocol/cowswap/issues/6314)) ([5af6323](https://github.com/cowprotocol/cowswap/commit/5af632364742d5d8064d016d019763262d2a9de4))
+
 ## [1.10.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v1.9.1...common-hooks-v1.10.0) (2025-08-21)
 
 
