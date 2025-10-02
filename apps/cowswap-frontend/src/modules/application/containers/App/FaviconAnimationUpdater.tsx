@@ -211,6 +211,7 @@ const SOLVING_ANIMATION_STEPS = new Set<OrderProgressBarStepName>([
   OrderProgressBarStepName.SOLVING,
   OrderProgressBarStepName.SOLVED,
   OrderProgressBarStepName.EXECUTING,
+  OrderProgressBarStepName.BRIDGING_IN_PROGRESS,
 ])
 
 const SUCCESS_STEPS = new Set<OrderProgressBarStepName>([
