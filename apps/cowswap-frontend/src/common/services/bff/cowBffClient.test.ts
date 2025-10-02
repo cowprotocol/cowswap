@@ -52,7 +52,7 @@ describe('CoWBFFClient', () => {
 
       const result = await client.getSlippageTolerance({ sellToken, buyToken, chainId })
 
-      expect(result).toBeNull()
+      expect(result.slippageBps).toBeNull()
     })
 
     it('should return null on invalid response structure', async () => {
@@ -65,7 +65,7 @@ describe('CoWBFFClient', () => {
 
       const result = await client.getSlippageTolerance({ sellToken, buyToken, chainId })
 
-      expect(result).toBeNull()
+      expect(result.slippageBps).toBeNull()
     })
 
     it('should return null when slippageBps is not a number', async () => {
@@ -78,7 +78,7 @@ describe('CoWBFFClient', () => {
 
       const result = await client.getSlippageTolerance({ sellToken, buyToken, chainId })
 
-      expect(result).toBeNull()
+      expect(result.slippageBps).toBeNull()
     })
 
     it('should return null on network error', async () => {
@@ -87,7 +87,7 @@ describe('CoWBFFClient', () => {
 
       const result = await client.getSlippageTolerance({ sellToken, buyToken, chainId })
 
-      expect(result).toBeNull()
+      expect(result.slippageBps).toBeNull()
     })
 
     it('should return null when response is null', async () => {
@@ -99,7 +99,7 @@ describe('CoWBFFClient', () => {
 
       const result = await client.getSlippageTolerance({ sellToken, buyToken, chainId })
 
-      expect(result).toBeNull()
+      expect(result.slippageBps).toBeNull()
     })
 
     it('should construct correct URL for different chain IDs', async () => {

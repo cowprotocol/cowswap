@@ -42,7 +42,7 @@ exports[`useTradeQuotePolling() When wallet is connected Then should put account
   },
   {
     "appData": undefined,
-    "bffOrigin": undefined,
+    "getSlippageSuggestion": undefined,
     "quoteRequest": {
       "priceQuality": "optimal",
     },
