@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react'
 
-import { ButtonPrimary, Media } from '@cowprotocol/ui'
+import { ButtonPrimary, Media, UI } from '@cowprotocol/ui'
 
 import { Link } from 'react-router'
 import styled from 'styled-components/macro'
@@ -50,6 +50,7 @@ const Container = styled.div`
   h2 {
     text-align: center;
     font-weight: 400;
+    color: var(${UI.COLOR_TEXT_OPACITY_70});
   }
 `
 
