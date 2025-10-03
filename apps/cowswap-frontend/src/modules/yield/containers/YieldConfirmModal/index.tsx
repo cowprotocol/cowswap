@@ -60,6 +60,22 @@ export function YieldConfirmModal(props: YieldConfirmModalProps): ReactNode {
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
   const submittedContent = <OrderSubmittedContent onDismiss={tradeConfirmActions.onDismiss} />
 
+  const beforeContent =
+    receiveAmountInfo && slippage ? (
+      <TradeBasicConfirmDetails
+        rateInfoParams={rateInfoParams}
+        slippage={slippage}
+        receiveAmountInfo={receiveAmountInfo}
+        recipient={recipient}
+        recipientAddress={recipientAddress}
+        account={account}
+        labelsAndTooltips={labelsAndTooltips}
+        hideLimitPrice
+        hideUsdValues
+        withTimelineDot={false}
+      />
+    ) : null
+
   return (
     <TradeConfirmModal title={CONFIRM_TITLE} submittedContent={submittedContent}>
       <TradeConfirmation
@@ -75,28 +91,9 @@ export function YieldConfirmModal(props: YieldConfirmModalProps): ReactNode {
         buttonText="Confirm Swap"
         recipient={recipient}
         appData={appData || undefined}
-      >
-        {(restContent) => (
-          <>
-            {receiveAmountInfo && slippage && (
-              <TradeBasicConfirmDetails
-                rateInfoParams={rateInfoParams}
-                slippage={slippage}
-                receiveAmountInfo={receiveAmountInfo}
-                recipient={recipient}
-                recipientAddress={recipientAddress}
-                account={account}
-                labelsAndTooltips={labelsAndTooltips}
-                hideLimitPrice
-                hideUsdValues
-                withTimelineDot={false}
-              ></TradeBasicConfirmDetails>
-            )}
-            {restContent}
-            <HighFeeWarning readonlyMode />
-          </>
-        )}
-      </TradeConfirmation>
+        beforeContent={beforeContent}
+        afterContent={<HighFeeWarning readonlyMode />}
+      />
     </TradeConfirmModal>
   )
 }

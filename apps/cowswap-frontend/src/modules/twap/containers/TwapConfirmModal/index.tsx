@@ -99,6 +99,40 @@ export function TwapConfirmModal() {
   const partDuration = timeInterval
   const totalDuration = timeInterval && numOfParts ? timeInterval * numOfParts : undefined
 
+  const beforeContent = (
+    <>
+      {receiveAmountInfo && numOfParts && (
+        <TradeBasicConfirmDetails
+          rateInfoParams={rateInfoParams}
+          receiveAmountInfo={receiveAmountInfo}
+          slippage={slippage}
+          recipient={recipient}
+          recipientAddress={recipientAddress}
+          account={account}
+          labelsAndTooltips={{
+            ...CONFIRM_MODAL_CONFIG,
+            networkCostsSuffix: !allowsOffchainSigning ? <NetworkCostsSuffix /> : null,
+            networkCostsTooltipSuffix: !allowsOffchainSigning ? (
+              <>
+                <br />
+                <br />
+                Because you are using a smart contract wallet, you will pay a separate gas cost for signing the order
+                placement on-chain.
+              </>
+            ) : null,
+          }}
+        />
+      )}
+      <DividerHorizontal />
+      <TwapConfirmDetails
+        startTime={twapOrder?.startTime}
+        numOfParts={numOfParts}
+        partDuration={partDuration}
+        totalDuration={totalDuration}
+      />
+    </>
+  )
+
   return (
     <TradeConfirmModal title={CONFIRM_TITLE}>
       <TradeConfirmation
@@ -113,43 +147,9 @@ export function TwapConfirmModal() {
         priceImpact={priceImpact}
         buttonText={'Place TWAP order'}
         recipient={recipient}
-      >
-        {(warnings) => (
-          <>
-            {receiveAmountInfo && numOfParts && (
-              <TradeBasicConfirmDetails
-                rateInfoParams={rateInfoParams}
-                receiveAmountInfo={receiveAmountInfo}
-                slippage={slippage}
-                recipient={recipient}
-                recipientAddress={recipientAddress}
-                account={account}
-                labelsAndTooltips={{
-                  ...CONFIRM_MODAL_CONFIG,
-                  networkCostsSuffix: !allowsOffchainSigning ? <NetworkCostsSuffix /> : null,
-                  networkCostsTooltipSuffix: !allowsOffchainSigning ? (
-                    <>
-                      <br />
-                      <br />
-                      Because you are using a smart contract wallet, you will pay a separate gas cost for signing the
-                      order placement on-chain.
-                    </>
-                  ) : null,
-                }}
-              />
-            )}
-            <DividerHorizontal />
-            <TwapConfirmDetails
-              startTime={twapOrder?.startTime}
-              numOfParts={numOfParts}
-              partDuration={partDuration}
-              totalDuration={totalDuration}
-            />
-            {warnings}
-            <TwapFormWarnings localFormValidation={localFormValidation} isConfirmationModal />
-          </>
-        )}
-      </TradeConfirmation>
+        beforeContent={beforeContent}
+        afterContent={<TwapFormWarnings localFormValidation={localFormValidation} isConfirmationModal />}
+      />
     </TradeConfirmModal>
   )
 }

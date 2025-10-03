@@ -109,6 +109,59 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
     return confirmText
   }, [confirmText, disableConfirm, inputCurrencyInfo])
 
+  const beforeContent = useMemo(() => {
+    if (shouldDisplayBridgeDetails && bridgeProvider && swapContext && bridgeContext) {
+      return (
+        <>
+          <RateInfo label="Price" rateInfoParams={rateInfoParams} fontSize={13} fontBold labelBold />
+          <QuoteDetails
+            isCollapsible
+            bridgeProvider={bridgeProvider}
+            swapContext={swapContext}
+            bridgeContext={bridgeContext}
+            hideRecommendedSlippage
+          />
+        </>
+      )
+    }
+
+    if (receiveAmountInfo && slippage) {
+      return (
+        <TradeBasicConfirmDetails
+          rateInfoParams={rateInfoParams}
+          slippage={slippage}
+          receiveAmountInfo={receiveAmountInfo}
+          recipient={recipient}
+          recipientAddress={recipientAddress}
+          account={account}
+          labelsAndTooltips={labelsAndTooltips}
+          hideLimitPrice
+          hideUsdValues
+          withTimelineDot={false}
+        >
+          <RowDeadline deadline={deadline} />
+        </TradeBasicConfirmDetails>
+      )
+    }
+
+    return null
+  }, [
+    shouldDisplayBridgeDetails,
+    bridgeProvider,
+    swapContext,
+    bridgeContext,
+    rateInfoParams,
+    receiveAmountInfo,
+    slippage,
+    recipient,
+    recipientAddress,
+    account,
+    labelsAndTooltips,
+    deadline,
+  ])
+
+  const afterContent = <HighFeeWarning readonlyMode />
+
   return (
     <TradeConfirmModal title={CONFIRM_TITLE} submittedContent={submittedContent}>
       <TradeConfirmation
@@ -124,45 +177,9 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
         buttonText={buttonText}
         recipient={recipient}
         appData={appData || undefined}
-      >
-        {shouldDisplayBridgeDetails && bridgeProvider && swapContext && bridgeContext
-          ? (restContent) => (
-              <>
-                <RateInfo label="Price" rateInfoParams={rateInfoParams} fontSize={13} fontBold labelBold />
-                <QuoteDetails
-                  isCollapsible
-                  bridgeProvider={bridgeProvider}
-                  swapContext={swapContext}
-                  bridgeContext={bridgeContext}
-                  hideRecommendedSlippage
-                />
-                {restContent}
-                <HighFeeWarning readonlyMode />
-              </>
-            )
-          : (restContent) => (
-              <>
-                {receiveAmountInfo && slippage && (
-                  <TradeBasicConfirmDetails
-                    rateInfoParams={rateInfoParams}
-                    slippage={slippage}
-                    receiveAmountInfo={receiveAmountInfo}
-                    recipient={recipient}
-                    recipientAddress={recipientAddress}
-                    account={account}
-                    labelsAndTooltips={labelsAndTooltips}
-                    hideLimitPrice
-                    hideUsdValues
-                    withTimelineDot={false}
-                  >
-                    <RowDeadline deadline={deadline} />
-                  </TradeBasicConfirmDetails>
-                )}
-                {restContent}
-                <HighFeeWarning readonlyMode />
-              </>
-            )}
-      </TradeConfirmation>
+        beforeContent={beforeContent}
+        afterContent={afterContent}
+      />
     </TradeConfirmModal>
   )
 }

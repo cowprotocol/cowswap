@@ -37,7 +37,27 @@ export interface TradeConfirmationProps {
   isPriceStatic?: boolean
   recipient?: string | null
   buttonText?: ReactNode
-  children?: (restContent: ReactElement) => ReactElement
+  beforeContent?: ReactNode
+  afterContent?: ReactNode
+  'data-click-event'?: string
+}
+
+function ConfirmationHeader({
+  title,
+  onDismiss,
+  showCountdown,
+}: {
+  title: ReactElement | string
+  onDismiss: () => void
+  showCountdown: boolean
+}): ReactElement {
+  return (
+    <styledEl.Header>
+      <BackButton onClick={onDismiss} />
+      <styledEl.ConfirmHeaderTitle>{title}</styledEl.ConfirmHeaderTitle>
+      <styledEl.HeaderRightContent>{showCountdown ? <QuoteCountdown /> : null}</styledEl.HeaderRightContent>
+    </styledEl.Header>
+  )
 }
 
 export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
@@ -57,10 +77,12 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
     isConfirmDisabled,
     title,
     buttonText = 'Confirm',
-    children,
+    beforeContent,
+    afterContent,
     recipient,
     isPriceStatic,
     appData,
+    'data-click-event': dataClickEvent,
   } = props
 
   /**
@@ -94,26 +116,17 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
 
   return (
     <styledEl.WidgetWrapper onKeyDown={(e) => e.key === 'Escape' && onDismiss()}>
-      <styledEl.Header>
-        <BackButton onClick={onDismiss} />
-        <styledEl.ConfirmHeaderTitle>{title}</styledEl.ConfirmHeaderTitle>
-
-        <styledEl.HeaderRightContent>
-          {hasPendingTrade || isPriceStatic ? null : <QuoteCountdown />}
-        </styledEl.HeaderRightContent>
-      </styledEl.Header>
+      <ConfirmationHeader title={title} onDismiss={onDismiss} showCountdown={!hasPendingTrade && !isPriceStatic} />
       <styledEl.ContentWrapper id="trade-confirmation">
         <ConfirmAmounts
           inputCurrencyInfo={props.inputCurrencyInfo}
           outputCurrencyInfo={props.outputCurrencyInfo}
           priceImpact={props.priceImpact}
         />
-        {children?.(
-          <>
-            {hookDetailsElement}
-            <NoImpactWarning withoutAccepting />
-          </>,
-        )}
+        {beforeContent}
+        {hookDetailsElement}
+        <NoImpactWarning withoutAccepting />
+        {afterContent}
 
         <ConfirmWarnings
           account={props.account}
@@ -130,6 +143,7 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
           isButtonDisabled={isButtonDisabled}
           hasPendingTrade={hasPendingTrade}
           signingStep={signingStep}
+          data-click-event={dataClickEvent}
         />
       </styledEl.ContentWrapper>
     </styledEl.WidgetWrapper>

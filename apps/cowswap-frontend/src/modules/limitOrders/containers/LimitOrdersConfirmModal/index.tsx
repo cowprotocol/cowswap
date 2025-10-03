@@ -1,5 +1,5 @@
 import { useAtom, useAtomValue } from 'jotai'
-import React, { useMemo } from 'react'
+import React, { ReactNode, useMemo } from 'react'
 
 import { getWrappedToken } from '@cowprotocol/common-utils'
 import { TokenSymbol } from '@cowprotocol/ui'
@@ -81,6 +81,19 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
     'Place limit order'
   )
 
+  const beforeContent: ReactNode = tradeContext ? (
+    <LimitOrdersDetails
+      limitRateState={limitRateState}
+      tradeContext={tradeContext}
+      rateInfoParams={rateInfoParams}
+      settingsState={settingsState}
+      executionPrice={executionPrice}
+      partiallyFillableOverride={partiallyFillableOverride}
+    >
+      <TradeRateDetails />
+    </LimitOrdersDetails>
+  ) : null
+
   return (
     <TradeConfirmModal title={CONFIRM_TITLE}>
       <TradeConfirmation
@@ -97,26 +110,9 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
         recipient={recipient}
         appData={tradeContext.postOrderParams.appData || undefined}
         isPriceStatic
-      >
-        {(restContent) => (
-          <>
-            {tradeContext && (
-              <LimitOrdersDetails
-                limitRateState={limitRateState}
-                tradeContext={tradeContext}
-                rateInfoParams={rateInfoParams}
-                settingsState={settingsState}
-                executionPrice={executionPrice}
-                partiallyFillableOverride={partiallyFillableOverride}
-              >
-                <TradeRateDetails />
-              </LimitOrdersDetails>
-            )}
-            {restContent}
-            <LimitOrdersWarnings isConfirmScreen={true} />
-          </>
-        )}
-      </TradeConfirmation>
+        beforeContent={beforeContent}
+        afterContent={<LimitOrdersWarnings isConfirmScreen={true} />}
+      />
     </TradeConfirmModal>
   )
 }
