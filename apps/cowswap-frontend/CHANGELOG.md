@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.119.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.118.13...cowswap-v1.119.0) (2025-10-02)
+
+
+### Features
+
+* **bridge:** use best quote among all providers ([#6299](https://github.com/cowprotocol/cowswap/issues/6299)) ([ba90184](https://github.com/cowprotocol/cowswap/commit/ba901842f4f940e30dedda66b0b39273f53713ae))
+* load balances via bff API ([#6213](https://github.com/cowprotocol/cowswap/issues/6213)) ([8884a89](https://github.com/cowprotocol/cowswap/commit/8884a89b1cf11b44a9cc92f7d7bb4e7b3415747c))
+
+
+### Bug Fixes
+
+* fix network switching from token selector ([#6312](https://github.com/cowprotocol/cowswap/issues/6312)) ([3abf90f](https://github.com/cowprotocol/cowswap/commit/3abf90f2084f35f36a6090fb6c09bcf7d2def49d))
+* fix token selector opening for output token ([#6326](https://github.com/cowprotocol/cowswap/issues/6326)) ([bd11fc9](https://github.com/cowprotocol/cowswap/commit/bd11fc91b48dd2fc7a56bf3c3dd58287b9894068))
+* **limit-orders:** handle zero approval for lo ([#6308](https://github.com/cowprotocol/cowswap/issues/6308)) ([58fd644](https://github.com/cowprotocol/cowswap/commit/58fd6447a429a0ab0f81f11ec41562e1f24529d9))
+
+## [1.118.13](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.118.12...cowswap-v1.118.13) (2025-09-25)
+
+
+### Bug Fixes
+
+* add return type annotations (to trigger release please build) ([#6307](https://github.com/cowprotocol/cowswap/issues/6307)) ([dcfcc86](https://github.com/cowprotocol/cowswap/commit/dcfcc86679e082fde2d6c5e8cbd61c8db65bf286))
+
 ## [1.118.12](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.118.11...cowswap-v1.118.12) (2025-09-23)
 
 

@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.0](https://github.com/cowprotocol/cowswap/compare/hook-dapp-lib-v1.11.0...hook-dapp-lib-v1.12.0) (2025-10-02)
+
+
+### Features
+
+* **bridge:** use best quote among all providers ([#6299](https://github.com/cowprotocol/cowswap/issues/6299)) ([ba90184](https://github.com/cowprotocol/cowswap/commit/ba901842f4f940e30dedda66b0b39273f53713ae))
+
 ## [1.11.0](https://github.com/cowprotocol/cowswap/compare/hook-dapp-lib-v1.10.0...hook-dapp-lib-v1.11.0) (2025-08-28)
 
 

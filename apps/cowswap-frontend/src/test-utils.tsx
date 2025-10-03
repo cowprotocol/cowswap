@@ -27,9 +27,7 @@ type JotaiStore = ReturnType<typeof createStore>
 // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-function-return-type
 const MockedI18nProvider = ({ children }: any) => <I18nProvider i18n={i18n}>{children}</I18nProvider>
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const MockThemeProvider = ({ children }: { children: React.ReactNode }) => {
+const MockThemeProvider = ({ children }: { children: React.ReactNode }): ReactNode => {
   const darkMode = useIsDarkMode()
 
   const themeObject = useMemo(() => getCowswapTheme(darkMode), [darkMode])
@@ -37,9 +35,7 @@ const MockThemeProvider = ({ children }: { children: React.ReactNode }) => {
   return <StyledComponentsThemeProvider theme={themeObject}>{children}</StyledComponentsThemeProvider>
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const WithProviders = ({ children }: { children?: ReactNode }) => {
+const WithProviders = ({ children }: { children?: ReactNode }): ReactNode => {
   return (
     <LanguageProvider>
       <MockedI18nProvider>
@@ -76,9 +72,7 @@ export const [mockedConnector, mockedConnectorHooks] = initializeConnector<Mocke
   (actions) => new MockedConnector(actions),
 )
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function WithMockedWeb3({ children, location }: { children?: ReactNode; location?: Location }) {
+export function WithMockedWeb3({ children, location }: { children?: ReactNode; location?: Location }): ReactNode {
   const connectors: [Connector, Web3ReactHooks][] = [[mockedConnector, mockedConnectorHooks]]
 
   return (
@@ -100,8 +94,8 @@ const HydrateAtoms = ({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   initialValues: any[]
   children?: ReactNode
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 }) => {
   useHydrateAtoms(initialValues, { store })
   return <>{children}</>
@@ -117,8 +111,8 @@ export const JotaiTestProvider = ({
   initialValues: any[]
   children?: ReactNode
   store?: JotaiStore
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 }) => (
   <JotaiProvider store={store}>
     <HydrateAtoms initialValues={initialValues} store={store}>
