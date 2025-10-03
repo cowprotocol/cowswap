@@ -1,3 +1,5 @@
+import completedHoldSvg from '../../assets/animated-favicon/shared/completed-hold.svg?raw'
+
 const defaultFrameModules = import.meta.glob<string>('../../assets/animated-favicon/default/*.svg', {
   as: 'raw',
   eager: true,
@@ -54,12 +56,45 @@ const defaultDarkSources = toSortedFrames(filterModules(defaultFrameModules, (pa
 const solvingSources = toSortedFrames(solvingFrameModules)
 const completedLightSources = toSortedFrames(completedFrameModules)
 const completedDarkSources = toSortedFrames(completedDarkFrameModules)
-const backToDefaultLightSources = toSortedFrames(backToDefaultFrameModules)
-const backToDefaultDarkSources = toSortedFrames(backToDefaultDarkFrameModules)
+const baseBackToDefaultLightSources = toSortedFrames(backToDefaultFrameModules)
+const baseBackToDefaultDarkSources = toSortedFrames(backToDefaultDarkFrameModules)
+const completedHoldSource = completedHoldSvg.trim()
 
 const fallbackDefaultSources = defaultLightSources.length ? defaultLightSources : defaultDarkSources
 const fallbackCompletedSources = completedLightSources.length ? completedLightSources : completedDarkSources
-const fallbackBackToDefaultSources = backToDefaultLightSources.length ? backToDefaultLightSources : backToDefaultDarkSources
+
+type BackToDefaultSourceOptions = {
+  preferredSources: string[]
+  fallbackSources: string[]
+  holdSource?: string
+}
+
+// Ensure the back-to-default animation starts with the completed hold frame without duplicating SVG assets.
+function resolveBackToDefaultSources({
+  preferredSources,
+  fallbackSources,
+  holdSource,
+}: BackToDefaultSourceOptions): string[] {
+  const baseSources = (preferredSources.length ? preferredSources : fallbackSources).map((source) => source.trim())
+
+  if (!baseSources.length) {
+    return holdSource ? [holdSource] : baseSources
+  }
+
+  if (!holdSource) {
+    return baseSources
+  }
+
+  if (baseSources[0] === holdSource) {
+    return baseSources
+  }
+
+  if (baseSources.includes(holdSource)) {
+    return baseSources
+  }
+
+  return [holdSource, ...baseSources]
+}
 
 const SOLVING_FRAME_DURATION_MS = 50
 const COMPLETED_FRAME_DURATION_MS = 140
@@ -160,6 +195,7 @@ type FrameSetSources = {
   solvingSources: string[]
   completedSources: string[]
   backToDefaultSources: string[]
+  completedHoldSource?: string
 }
 
 function createFrameSet({
@@ -167,13 +203,18 @@ function createFrameSet({
   solvingSources,
   completedSources,
   backToDefaultSources,
+  completedHoldSource,
 }: FrameSetSources): FrameSet {
   const defaultFrame = defaultSources[0] ? svgToDataUri(defaultSources[0]) : ''
   const solvingFrames = solvingSources.length
     ? createSmoothLoopFrames(solvingSources, SOLVING_CROSSFADE_STEPS)
     : [defaultFrame].filter(Boolean)
   const completedFrames = completedSources.map(svgToDataUri)
-  const completedHoldFrame = completedFrames.length ? completedFrames[completedFrames.length - 1] : defaultFrame
+  const completedHoldFrame = completedHoldSource
+    ? svgToDataUri(completedHoldSource)
+    : completedFrames.length
+      ? completedFrames[completedFrames.length - 1]
+      : defaultFrame
   const backToDefaultFrames = backToDefaultSources.length
     ? backToDefaultSources.map(svgToDataUri)
     : [defaultFrame].filter(Boolean)
@@ -191,18 +232,24 @@ const lightFrameSet = createFrameSet({
   defaultSources: defaultLightSources.length ? defaultLightSources : fallbackDefaultSources,
   solvingSources,
   completedSources: completedLightSources.length ? completedLightSources : fallbackCompletedSources,
-  backToDefaultSources: backToDefaultLightSources.length
-    ? backToDefaultLightSources
-    : fallbackBackToDefaultSources,
+  backToDefaultSources: resolveBackToDefaultSources({
+    preferredSources: baseBackToDefaultLightSources,
+    fallbackSources: baseBackToDefaultDarkSources,
+    holdSource: completedHoldSource,
+  }),
+  completedHoldSource,
 })
 
 const darkFrameSet = createFrameSet({
   defaultSources: defaultDarkSources.length ? defaultDarkSources : fallbackDefaultSources,
   solvingSources,
   completedSources: completedDarkSources.length ? completedDarkSources : fallbackCompletedSources,
-  backToDefaultSources: backToDefaultDarkSources.length
-    ? backToDefaultDarkSources
-    : fallbackBackToDefaultSources,
+  backToDefaultSources: resolveBackToDefaultSources({
+    preferredSources: baseBackToDefaultDarkSources,
+    fallbackSources: baseBackToDefaultLightSources,
+    holdSource: completedHoldSource,
+  }),
+  completedHoldSource,
 })
 
 const frameSetsByTheme: Record<FaviconTheme, FrameSet> = {
