@@ -1,5 +1,4 @@
 import { useAtom, useSetAtom } from 'jotai'
-import { atomWithStorage } from 'jotai/utils'
 import { useRef } from 'react'
 
 import { useIsWindowVisible } from '@cowprotocol/common-hooks'
@@ -15,6 +14,7 @@ import { updatePendingOrderPricesAtom } from 'modules/orders/state/pendingOrders
 import { useIsProviderNetworkUnsupported } from '../../../../hooks/useIsProviderNetworkUnsupported'
 import { useUpdateIsUnfillableFlag } from '../hooks/useUpdateIsUnfillableFlag'
 import { fetchOrderPrice } from '../services/fetchOrderPrice'
+import { orderLastTimePriceUpdateAtom } from '../state/orderLastTimePriceUpdateAtom'
 import { OrderToCheckFillability } from '../types'
 
 const SWR_CONFIG: SWRConfiguration = {
@@ -31,11 +31,6 @@ const SWR_CONFIG: SWRConfiguration = {
   revalidateOnFocus: false,
   revalidateIfStale: false,
 }
-
-export const orderLastTimePriceUpdateAtom = atomWithStorage<Record<string, number>>(
-  'order-last-time-price-update-atom:v1',
-  {},
-)
 
 interface UnfillableOrderUpdaterProps {
   chainId: SupportedChainId
