@@ -118,12 +118,13 @@ export const SummaryInner = styled.div`
 `
 
 export const SummaryInnerRow = styled.div<{ isExpired?: boolean; isCancelled?: boolean }>`
-  display: grid;
-  grid-template-rows: 1fr;
-  grid-template-columns: 100px 1fr;
-  width: 100%;
-  margin: 0 0 4px;
   color: inherit;
+  display: grid;
+  gap: 20px;
+  grid-template-columns: minmax(100px, 0.4fr) 1fr;
+  grid-template-rows: 1fr;
+  margin: 0 0 4px;
+  width: 100%;
 
   ${Media.upToSmall()} {
     grid-template-columns: 1fr;
@@ -144,8 +145,9 @@ export const SummaryInnerRow = styled.div<{ isExpired?: boolean; isCancelled?: b
   }
 
   > b {
-    padding: 0;
     opacity: 0.7;
+    padding: 0;
+    white-space: nowrap;
   }
 
   > i {

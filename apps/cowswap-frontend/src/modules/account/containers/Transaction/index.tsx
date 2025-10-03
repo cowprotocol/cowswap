@@ -3,6 +3,8 @@ import { ReactNode } from 'react'
 import { RowFixed } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { i18n } from '@lingui/core'
+
 import { ActivityState, useActivityDerivedState } from 'legacy/hooks/useActivityDerivedState'
 import { ActivityDescriptors } from 'legacy/hooks/useRecentActivity'
 
@@ -61,6 +63,7 @@ export default function Activity({ activity }: { activity: ActivityDescriptors }
 
   const creationTimeEnhanced = activityDerivedState?.enhancedTransaction?.addedTime
   const creationTimeOrder = activityDerivedState?.order?.creationTime
+
   const creationTimeFull = creationTimeEnhanced
     ? new Date(creationTimeEnhanced)
     : creationTimeOrder
@@ -72,7 +75,7 @@ export default function Activity({ activity }: { activity: ActivityDescriptors }
   }
 
   // Hour:Minute
-  const creationTime = creationTimeFull?.toLocaleString(undefined, timeFormatOptionHM)
+  const creationTime = creationTimeFull?.toLocaleString(i18n.locale, timeFormatOptionHM)
 
   return (
     <Wrapper>

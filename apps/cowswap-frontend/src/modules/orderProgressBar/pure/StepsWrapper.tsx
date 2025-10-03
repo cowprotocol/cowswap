@@ -1,5 +1,7 @@
 import { useRef, ReactNode, useState, useLayoutEffect } from 'react'
 
+import { useLingui } from '@lingui/react/macro'
+
 import { StepComponent } from './StepComponent'
 import * as styledEl from './styled'
 
@@ -24,6 +26,7 @@ export function StepsWrapper({
   isUnfillable?: boolean
   isBridgingTrade?: boolean
 }): ReactNode {
+  const { i18n } = useLingui()
   const wrapperRef = useRef<HTMLDivElement>(null)
   const [containerHeight, setContainerHeight] = useState(0)
   const [translateY, setTranslateY] = useState(0)
@@ -64,9 +67,9 @@ export function StepsWrapper({
               <StepComponent
                 status={getStatus(index)}
                 isFirst={index === 0}
-                step={{ ...step, title: customTitle || step.title }}
+                step={{ ...step, title: customTitle || i18n._(step.title) }}
                 index={index}
-                extraContent={index === currentStep ? extraContent : step.description}
+                extraContent={index === currentStep ? extraContent : step.description ? i18n._(step.description) : ''}
                 customColor={index === currentStep ? customColor : undefined}
                 isUnfillable={isUnfillable && index === currentStep}
                 isCancelling={isCancelling}

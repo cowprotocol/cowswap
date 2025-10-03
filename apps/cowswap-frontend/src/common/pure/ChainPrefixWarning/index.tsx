@@ -1,5 +1,6 @@
 import { BaseChainInfo } from '@cowprotocol/common-const'
 
+import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
 import { WarningCard } from '../WarningCard'
@@ -46,18 +47,22 @@ export default function ChainPrefixWarning({ chainPrefixWarning, chainInfo, isDa
   return (
     <Wrapper>
       <p>
-        The recipient address you inputted had the chain prefix <strong>{chainPrefixWarning}</strong>, which is not the
-        expected for the network you are in.
+        <Trans>
+          The recipient address you inputted had the chain prefix <strong>{chainPrefixWarning}</strong>, which is not
+          the expected for the network you are in.
+        </Trans>
       </p>
       <p>
-        You are connected to
+        <Trans>You are connected to</Trans>
         <Label color={color}>
           <NetworkImg src={logoUrl} /> {label}
         </Label>
       </p>
       <p>
-        Please, make sure your address follows the format <Format>{addressPrefix}:&lt;your-address&gt;</Format> or
-        double-check if it is compatible with <strong>{label}</strong> network.
+        <Trans>
+          Please, make sure your address follows the format <Format>{addressPrefix}:&lt;your-address&gt;</Format> or
+          double-check if it is compatible with <strong>{label}</strong> network.
+        </Trans>
       </p>
     </Wrapper>
   )

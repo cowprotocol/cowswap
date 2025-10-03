@@ -1,3 +1,5 @@
+import { t } from '@lingui/core/macro'
+
 import { ConfirmationPendingContent } from './ConfirmationPendingContent'
 
 import { CowModal } from '../Modal'
@@ -12,8 +14,8 @@ const Fixtures = {
             Reset <strong>USDT</strong> allowance
           </>
         }
-        description="Reset USDT allowance to 0 before setting new spending cap"
-        operationLabel="token approval"
+        description={t`Reset USDT allowance to 0 before setting new spending cap`}
+        operationLabel={t`token approval`}
       />
     </CowModal>
   ),

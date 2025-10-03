@@ -4,6 +4,8 @@ import { useCallback } from 'react'
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { getAddress } from '@cowprotocol/common-utils'
 
+import { useLingui } from '@lingui/react/macro'
+
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { useUpdateLimitOrdersRawState } from 'modules/limitOrders/hooks/useLimitOrdersRawState'
@@ -61,6 +63,7 @@ export function useHandleOrderPlacement(
   const isSafeBundle = useIsSafeApprovalBundle(tradeContext?.postOrderParams.inputAmount)
   const alternativeModalAnalytics = useAlternativeModalAnalytics()
   const analytics = useTradeFlowAnalytics()
+  const { t } = useLingui()
 
   const beforePermit = useCallback(async () => {
     if (!tradeContext) return
@@ -86,7 +89,7 @@ export function useHandleOrderPlacement(
 
   const tradeFn = useCallback(async () => {
     if (isSafeBundle) {
-      if (!safeBundleFlowContext) throw new Error('safeBundleFlowContext is not set!')
+      if (!safeBundleFlowContext) throw new Error(t`safeBundleFlowContext is not set!`)
 
       safeBundleFlowContext.postOrderParams.partiallyFillable =
         partiallyFillableOverride ?? safeBundleFlowContext.postOrderParams.partiallyFillable
@@ -114,16 +117,17 @@ export function useHandleOrderPlacement(
       beforeTrade,
     )
   }, [
-    beforePermit,
-    beforeTrade,
-    confirmPriceImpactWithoutFee,
     isSafeBundle,
+    tradeContext,
     partiallyFillableOverride,
     priceImpact,
-    safeBundleFlowContext,
     settingsState,
-    tradeContext,
     analytics,
+    confirmPriceImpactWithoutFee,
+    beforePermit,
+    beforeTrade,
+    safeBundleFlowContext,
+    t,
   ])
 
   return useCallback(() => {

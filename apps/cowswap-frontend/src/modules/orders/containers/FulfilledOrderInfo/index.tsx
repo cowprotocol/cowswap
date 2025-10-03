@@ -3,6 +3,8 @@ import { ReactNode } from 'react'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenInfo } from '@cowprotocol/types'
 
+import { Trans } from '@lingui/react/macro'
+
 import { useOrder } from 'legacy/state/orders/hooks'
 
 import { useGetExecutedBridgeSummary } from 'common/hooks/useGetExecutedBridgeSummary'
@@ -16,7 +18,9 @@ import { OrderSummaryTemplateProps } from '../../pure/OrderSummary/summaryTempla
 function FulfilledSummaryTemplate({ inputAmount, outputAmount }: OrderSummaryTemplateProps): ReactNode {
   return (
     <>
-      Traded {inputAmount} for a total of {outputAmount}
+      <Trans>
+        Traded {inputAmount} for a total of {outputAmount}
+      </Trans>
     </>
   )
 }
@@ -50,7 +54,9 @@ export function FulfilledOrderInfo({ chainId, orderUid }: ExecutedSummaryProps):
       )}
       {!!surplusAmount && (
         <styledEl.SurplusWrapper>
-          <span>Order surplus: </span>
+          <span>
+            <Trans>Order surplus</Trans>:{' '}
+          </span>
           <styledEl.SurplusAmount>
             <styledEl.StyledTokenAmount amount={surplusAmount} tokenSymbol={surplusToken} />
             {showFiatValue && (

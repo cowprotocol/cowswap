@@ -1,6 +1,6 @@
 import { HoverTooltip, RowFixed } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 
 import { getNativeOrderDeadlineTooltip, getNonNativeOrderDeadlineTooltip } from 'common/utils/tradeSettingsTooltips'
 
@@ -49,7 +49,11 @@ function DeadlineTextContents({ isEoaEthFlow }: DeadlineTextContentsProps) {
   return (
     <TransactionText>
       <Trans>Transaction expiration</Trans>
-      {isEoaEthFlow && <i>(modified)</i>}
+      {isEoaEthFlow && (
+        <i>
+          <Trans>(modified)</Trans>
+        </i>
+      )}
     </TransactionText>
   )
 }

@@ -28,7 +28,7 @@ export type UseAppDataParams = {
  * The hook can be called only from an updater
  */
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+ 
 export function AppDataInfoUpdater({
   appCodeWithWidgetMetadata,
   chainId,

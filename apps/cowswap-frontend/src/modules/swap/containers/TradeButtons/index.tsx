@@ -3,6 +3,8 @@ import React, { ReactNode } from 'react'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 
+import { t } from '@lingui/core/macro'
+
 import { AddIntermediateToken } from 'modules/tokensList'
 import {
   useIsCurrentTradeBridging,
@@ -58,7 +60,7 @@ export function TradeButtons({
 
   const confirmTrade = tradeConfirmActions.onOpen
 
-  const confirmText = isCurrentTradeBridging ? 'Swap and Bridge' : 'Swap'
+  const confirmText = isCurrentTradeBridging ? t`Swap and Bridge` : t`Swap`
 
   const { isPartialApproveEnabled } = useFeatureFlags()
   const tradeFormButtonContext = useTradeFormButtonContext(confirmText, confirmTrade, !!isPartialApproveEnabled)

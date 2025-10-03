@@ -7,6 +7,7 @@ import {
 } from '@cowprotocol/cow-sdk'
 import { Fraction, Percent } from '@uniswap/sdk-core'
 
+import { msg } from '@lingui/core/macro'
 import ms from 'ms.macro'
 
 export const ZERO_FRACTION = new Fraction(0)
@@ -35,15 +36,15 @@ export const SAFE_APP_CODE = `${DEFAULT_APP_CODE}-SafeApp`
 export const APP_TITLE = 'CoW Swap | The smartest way to trade cryptocurrencies'
 
 export const PAGE_TITLES = {
-  SWAP: 'Swap',
-  LIMIT_ORDERS: 'Limit Orders',
-  YIELD: 'Yield',
-  ADVANCED: 'TWAP',
-  ACCOUNT_OVERVIEW: 'Account Overview',
-  TOKENS_OVERVIEW: 'Tokens Overview',
-  COW_RUNNER: 'CoW Runner',
-  MEV_SLICER: 'Mev Slicer',
-  HOOKS: 'Hooks',
+  SWAP: msg`Swap`,
+  LIMIT_ORDERS: msg`Limit Orders`,
+  YIELD: msg`Yield`,
+  ADVANCED: msg`TWAP`,
+  ACCOUNT_OVERVIEW: msg`Account Overview`,
+  TOKENS_OVERVIEW: msg`Tokens Overview`,
+  COW_RUNNER: msg`CoW Runner`,
+  MEV_SLICER: msg`Mev Slicer`,
+  HOOKS: msg`Hooks`,
 }
 
 export function getEthFlowContractAddresses(env: CowEnv, chainId: SupportedChainId): string {
@@ -70,9 +71,15 @@ export const COW_CONTRACT_ADDRESS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.BNB]: null, // TODO: add BNB COW token address when available
 }
 
-export const RECEIVED_LABEL = 'Received'
-export const ACCOUNT_PROXY_LABEL = 'Account Proxy'
-export const INPUT_OUTPUT_EXPLANATION = 'Only executed swaps incur fees.'
+// Explorer (TODO: reuse the CowSwap msg`` strings below when the explorer is localized
+export const RECEIVED_LABEL_EXPLORER = 'Received'
+export const ACCOUNT_PROXY_LABEL_EXPLORER = 'Account Proxy'
+
+// CowSwap
+export const RECEIVED_LABEL = msg`Received`
+export const ACCOUNT_PROXY_LABEL = msg`Account Proxy`
+export const INPUT_OUTPUT_EXPLANATION = msg`Only executed swaps incur fees.`
+
 export const PENDING_ORDERS_BUFFER = ms`60s` // 60s
 export const CANCELLED_ORDERS_PENDING_TIME = ms`5min` // 5min
 export const PRICE_API_TIMEOUT_MS = ms`10s` // 10s

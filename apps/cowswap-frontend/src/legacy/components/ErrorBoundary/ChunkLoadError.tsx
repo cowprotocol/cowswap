@@ -6,7 +6,8 @@ import { ButtonPrimary, MEDIA_WIDTHS } from '@cowprotocol/ui'
 import { AutoRow } from '@cowprotocol/ui'
 import { ExternalLink } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/macro'
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 import { ThemedText } from 'theme'
 
@@ -104,12 +105,16 @@ export const ChunkLoadError = () => {
       <AutoColumn gap={'md'}>
         <NoConnectionContainer>
           <NoConnectionDesc>
-            <p>Sorry, we were unable to load the requested page.</p>
             <p>
-              This could have happened due to the lack of internet or the release of a new version of the application.
+              <Trans>Sorry, we were unable to load the requested page.</Trans>
+            </p>
+            <p>
+              <Trans>
+                This could have happened due to the lack of internet or the release of a new version of the application.
+              </Trans>
             </p>
           </NoConnectionDesc>
-          {cowNoConnectionIMGCache && <NoConnectionImg src={cowNoConnectionIMGCache} alt="CowSwap no connection" />}
+          {cowNoConnectionIMGCache && <NoConnectionImg src={cowNoConnectionIMGCache} alt={t`CowSwap no connection`} />}
         </NoConnectionContainer>
         <AutoRowWithGap justify="center">
           <ButtonPrimary width="fit-content" onClick={reloadPage}>

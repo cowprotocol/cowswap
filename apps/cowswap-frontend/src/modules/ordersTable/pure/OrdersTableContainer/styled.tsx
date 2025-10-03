@@ -23,10 +23,10 @@ export const TableHeaderWrapper = styled.div<{
                 repeat(4, minmax(110px, 1fr))
                 minmax(106px,112px)
                 minmax(120px, 1fr)
-                minmax(106px, 0.8fr)
+                minmax(150px, 0.8fr)
                 24px`
       }
-      return `${checkboxColumn} minmax(160px,2fr) minmax(120px,1fr) minmax(140px,1fr) minmax(120px,1fr) minmax(120px,1fr) minmax(106px,112px) minmax(120px,1fr) minmax(106px, 0.8fr) 24px`
+      return `${checkboxColumn} minmax(160px,2fr) minmax(120px,1fr) minmax(140px,1fr) minmax(120px,1fr) minmax(120px,1fr) minmax(106px,112px) minmax(120px,1fr) minmax(150px, 0.8fr) 24px`
     }
 
     // Default layout for history tab
@@ -34,12 +34,12 @@ export const TableHeaderWrapper = styled.div<{
       return `minmax(200px, 2.5fr)
               repeat(4, minmax(110px, 1fr))
               minmax(106px,112px)
-              minmax(106px, 0.8fr)
+              minmax(150px, 0.8fr)
               24px`
     }
 
     // Default/Limit orders layout
-    return `${checkboxColumn} minmax(160px,2fr) minmax(120px,1fr) minmax(140px,1fr) minmax(120px,1fr) minmax(120px,1fr) minmax(106px,112px) minmax(106px, 0.8fr) 24px`
+    return `${checkboxColumn} minmax(160px,2fr) minmax(120px,1fr) minmax(140px,1fr) minmax(120px,1fr) minmax(120px,1fr) minmax(106px,112px) minmax(150px, 0.8fr) 24px`
   }};
   grid-template-rows: minmax(var(--header-height), 1fr);
   align-items: center;

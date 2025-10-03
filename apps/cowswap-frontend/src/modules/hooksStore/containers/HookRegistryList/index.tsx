@@ -5,6 +5,9 @@ import { HookDappWalletCompatibility } from '@cowprotocol/hook-dapp-lib'
 import { Command } from '@cowprotocol/types'
 import { BannerOrientation, DismissableInlineBanner } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
+
 import { NewModal } from 'common/pure/NewModal'
 
 import { EmptyList, HookDappsList, Wrapper } from './styled'
@@ -44,6 +47,7 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit, walletType 
   const customHookDapps = useCustomHookDapps(isPreHook)
   const hookToEditDetails = useHookById(hookToEdit, isPreHook)
   const internalHookDapps = useInternalHookDapps(isPreHook)
+  const { i18n } = useLingui()
 
   const currentDapps = useMemo(
     () => (isAllHooksTab ? [...internalHookDapps, ...customHookDapps] : customHookDapps),
@@ -54,7 +58,7 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit, walletType 
     const lowerQuery = searchQuery?.toLowerCase()
 
     return currentDapps.filter((item) => {
-      const { name = '', descriptionShort = '' } = item
+      const { name = undefined, descriptionShort = undefined } = item
 
       const instance = isHookDappIframe(item) ? item.url : item.component
 
@@ -62,9 +66,11 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit, walletType 
 
       if (!lowerQuery) return true
 
-      return [name, descriptionShort].some((text) => text.toLowerCase().includes(lowerQuery))
+      return [name ? i18n._(name) : '', descriptionShort ? i18n._(descriptionShort) : ''].some((text) =>
+        text.toLowerCase().includes(lowerQuery),
+      )
     })
-  }, [currentDapps, searchQuery])
+  }, [currentDapps, i18n, searchQuery])
 
   const sortedFilteredDapps = useMemo(() => {
     return filteredDapps.sort((a, b) => {
@@ -77,7 +83,8 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit, walletType 
   const customHooksCount = customHookDapps.length
   const allHooksCount = internalHookDapps.length + customHooksCount
 
-  const title = selectedDapp?.name || (dappDetails ? 'Hook description' : 'Hook Store')
+  const title =
+    (selectedDapp?.name ? i18n._(selectedDapp?.name) : undefined) || (dappDetails ? t`Hook description` : t`Hook Store`)
 
   const onDismissModal = useCallback(() => {
     if (hookToEdit) {
@@ -112,9 +119,9 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit, walletType 
     () =>
       isAllHooksTab
         ? searchQuery
-          ? 'No hooks match your search.'
-          : 'No hooks available.'
-        : "You haven't added any custom hooks yet. Add a custom hook to get started.",
+          ? t`No hooks match your search.`
+          : t`No hooks available.`
+        : t`You haven't added any custom hooks yet. Add a custom hook to get started.`,
     [isAllHooksTab, searchQuery],
   )
 
@@ -124,8 +131,8 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit, walletType 
         <HookSearchInput
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value?.trim())}
-          placeholder="Search hooks by title or description"
-          ariaLabel="Search hooks"
+          placeholder={t`Search hooks by title or description`}
+          ariaLabel={t`Search hooks`}
           onClear={handleClearSearch}
         />
 
@@ -139,9 +146,9 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit, walletType 
             width="auto"
           >
             <p>
-              Can't find a hook that you like?{' '}
+              <Trans>Can't find a hook that you like?</Trans>{' '}
               <span onClick={handleAddCustomHook} style={{ cursor: 'pointer', textDecoration: 'underline' }}>
-                Add a custom hook
+                <Trans>Add a custom hook</Trans>
               </span>
             </p>
           </DismissableInlineBanner>
@@ -151,7 +158,7 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit, walletType 
           <HookDappsList>
             {sortedFilteredDapps.map((dapp) => (
               <HookListItem
-                key={isHookDappIframe(dapp) ? dapp.url : dapp.name}
+                key={isHookDappIframe(dapp) ? dapp.url : i18n._(dapp.name)}
                 dapp={dapp}
                 walletType={walletType}
                 onRemove={!isAllHooksTab ? () => removeCustomHookDapp(dapp as HookDappIframe) : undefined}
@@ -166,14 +173,15 @@ export function HookRegistryList({ onDismiss, isPreHook, hookToEdit, walletType 
       </>
     ),
     [
-      isAllHooksTab,
       searchQuery,
-      sortedFilteredDapps,
-      handleAddCustomHook,
       handleClearSearch,
+      isAllHooksTab,
+      handleAddCustomHook,
+      sortedFilteredDapps,
       emptyListMessage,
-      removeCustomHookDapp,
+      i18n,
       walletType,
+      removeCustomHookDapp,
     ],
   )
 
