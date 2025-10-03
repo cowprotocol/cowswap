@@ -30,6 +30,9 @@ const SWR_CONFIG: SWRConfiguration = {
   refreshWhenOffline: false,
   revalidateOnFocus: false,
   revalidateIfStale: false,
+  isPaused() {
+    return !document.hasFocus()
+  },
 }
 
 interface UnfillableOrderUpdaterProps {
