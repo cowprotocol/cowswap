@@ -20,6 +20,7 @@ import { OrderToCheckFillability } from '../types'
 
 // Mock all dependencies
 jest.mock('jotai', () => ({
+  atom: jest.fn(),
   useAtom: jest.fn(),
   useSetAtom: jest.fn(),
 }))
