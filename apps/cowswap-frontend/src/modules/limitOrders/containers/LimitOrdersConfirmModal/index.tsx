@@ -1,5 +1,5 @@
 import { useAtom, useAtomValue } from 'jotai'
-import React, { useMemo } from 'react'
+import { ReactNode, useMemo } from 'react'
 
 import { getWrappedToken } from '@cowprotocol/common-utils'
 import { TokenSymbol } from '@cowprotocol/ui'
@@ -14,12 +14,17 @@ import { useRateImpact } from 'modules/limitOrders/hooks/useRateImpact'
 import { executionPriceAtom } from 'modules/limitOrders/state/executionPriceAtom'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { limitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
-import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
+import {
+  partiallyFillableOverrideAtom,
+  type PartiallyFillableOverrideDispatcherType,
+} from 'modules/limitOrders/state/partiallyFillableOverride'
 import { TradeConfirmation, TradeConfirmModal, useTradeConfirmActions } from 'modules/trade'
 
 import { useIsSafeApprovalBundle } from 'common/hooks/useIsSafeApprovalBundle'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
+
+import { buildPlaceLimitOrderEvent, ExecutionPriceLike } from './analytics'
 
 import { LOW_RATE_THRESHOLD_PERCENT } from '../../const/trade'
 import { LimitOrdersDetails } from '../../pure/LimitOrdersDetails'
@@ -27,6 +32,79 @@ import { TradeFlowContext } from '../../services/types'
 import { TradeRateDetails } from '../TradeRateDetails'
 
 const CONFIRM_TITLE = 'Limit Order'
+const DEFAULT_BUTTON_TEXT = 'Place limit order'
+
+function useStableTradeContext(tradeContext: TradeFlowContext): TradeFlowContext {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  return useMemo(() => tradeContext, [])
+}
+
+function useLimitOrderButtonText(
+  inputAmount: CurrencyPreviewInfo['amount'],
+  isSafeApprovalBundle: boolean,
+): ReactNode {
+  return useMemo(() => {
+    if (!isSafeApprovalBundle) return DEFAULT_BUTTON_TEXT
+    if (!inputAmount) return DEFAULT_BUTTON_TEXT
+
+    return (
+      <>
+        Confirm (Approve&nbsp;
+        <TokenSymbol token={getWrappedToken(inputAmount.currency)} length={6} />
+        &nbsp;& Limit order)
+      </>
+    )
+  }, [inputAmount, isSafeApprovalBundle])
+}
+
+type PlaceLimitOrderEventDeps = {
+  inputAmount: CurrencyPreviewInfo['amount']
+  outputAmount: CurrencyPreviewInfo['amount']
+  limitRateActive: boolean
+  account: string | undefined
+  chainId: number | undefined
+  tradeContext: TradeFlowContext
+  executionPrice: ExecutionPriceLike
+  partialFillsEnabled: boolean
+}
+
+function usePlaceLimitOrderEvent({
+  inputAmount,
+  outputAmount,
+  limitRateActive,
+  account,
+  chainId,
+  tradeContext,
+  executionPrice,
+  partialFillsEnabled,
+}: PlaceLimitOrderEventDeps): string | undefined {
+  return useMemo(() => {
+    if (!inputAmount || !outputAmount || !limitRateActive) return undefined
+
+    const walletAddress = account || undefined
+    const resolvedChainId = chainId ?? tradeContext.postOrderParams.chainId
+    const kind = tradeContext.postOrderParams.kind
+
+    return buildPlaceLimitOrderEvent({
+      inputAmount,
+      outputAmount,
+      kind,
+      executionPrice,
+      partialFillsEnabled,
+      walletAddress,
+      chainId: resolvedChainId,
+    })
+  }, [
+    account,
+    chainId,
+    executionPrice,
+    inputAmount,
+    limitRateActive,
+    outputAmount,
+    partialFillsEnabled,
+    tradeContext,
+  ])
+}
 
 export interface LimitOrdersConfirmModalProps {
   tradeContext: TradeFlowContext
@@ -36,10 +114,7 @@ export interface LimitOrdersConfirmModalProps {
   recipient?: string | null
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
+export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps): ReactNode {
   const { inputCurrencyInfo, outputCurrencyInfo, tradeContext: tradeContextInitial, priceImpact, recipient } = props
 
   /**
@@ -47,16 +122,19 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
    * After the confirmation modal opens, the trade context should not be recreated.
    * In order to prevent this, we use useMemo to keep the trade context the same when the modal was opened.
    */
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const tradeContext = useMemo(() => tradeContextInitial, [])
+  const tradeContext = useStableTradeContext(tradeContextInitial)
 
-  const { account } = useWalletInfo()
+  const { account, chainId } = useWalletInfo()
   const { ensName } = useWalletDetails()
   const warningsAccepted = useLimitOrdersWarningsAccepted(true)
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
   const executionPrice = useAtomValue(executionPriceAtom)
   const limitRateState = useAtomValue(limitRateAtom)
-  const partiallyFillableOverride = useAtom(partiallyFillableOverrideAtom)
+  const [partiallyFillableOverrideValue, setPartiallyFillableOverride] = useAtom(partiallyFillableOverrideAtom)
+  const partiallyFillableOverride: PartiallyFillableOverrideDispatcherType = [
+    partiallyFillableOverrideValue,
+    setPartiallyFillableOverride,
+  ]
 
   const { amount: inputAmount } = inputCurrencyInfo
   const { amount: outputAmount } = outputCurrencyInfo
@@ -71,15 +149,37 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
   const isConfirmDisabled = isTooLowRate ? !warningsAccepted : false
 
   const isSafeApprovalBundle = useIsSafeApprovalBundle(inputAmount)
-  const buttonText = isSafeApprovalBundle ? (
-    <>
-      Confirm (Approve&nbsp;
-      <TokenSymbol token={inputAmount && getWrappedToken(inputAmount.currency)} length={6} />
-      &nbsp;& Limit order)
-    </>
-  ) : (
-    'Place limit order'
-  )
+  const buttonText = useLimitOrderButtonText(inputAmount, isSafeApprovalBundle)
+
+  const partialFillsEnabledForAnalytics =
+    partiallyFillableOverrideValue ??
+    tradeContext.postOrderParams.partiallyFillable ??
+    settingsState.partialFillsEnabled ??
+    false
+
+  const placeLimitOrderEvent = usePlaceLimitOrderEvent({
+    inputAmount,
+    outputAmount,
+    limitRateActive: Boolean(limitRateState.activeRate),
+    account,
+    chainId,
+    tradeContext,
+    executionPrice,
+    partialFillsEnabled: partialFillsEnabledForAnalytics,
+  })
+
+  const beforeContent: ReactNode = tradeContext ? (
+    <LimitOrdersDetails
+      limitRateState={limitRateState}
+      tradeContext={tradeContext}
+      rateInfoParams={rateInfoParams}
+      settingsState={settingsState}
+      executionPrice={executionPrice}
+      partiallyFillableOverride={partiallyFillableOverride}
+    >
+      <TradeRateDetails />
+    </LimitOrdersDetails>
+  ) : null
 
   return (
     <TradeConfirmModal title={CONFIRM_TITLE}>
@@ -97,26 +197,10 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
         recipient={recipient}
         appData={tradeContext.postOrderParams.appData || undefined}
         isPriceStatic
-      >
-        {(restContent) => (
-          <>
-            {tradeContext && (
-              <LimitOrdersDetails
-                limitRateState={limitRateState}
-                tradeContext={tradeContext}
-                rateInfoParams={rateInfoParams}
-                settingsState={settingsState}
-                executionPrice={executionPrice}
-                partiallyFillableOverride={partiallyFillableOverride}
-              >
-                <TradeRateDetails />
-              </LimitOrdersDetails>
-            )}
-            {restContent}
-            <LimitOrdersWarnings isConfirmScreen={true} />
-          </>
-        )}
-      </TradeConfirmation>
+        data-click-event={placeLimitOrderEvent}
+        beforeContent={beforeContent}
+        afterContent={<LimitOrdersWarnings isConfirmScreen={true} />}
+      />
     </TradeConfirmModal>
   )
 }
