@@ -240,11 +240,13 @@ function shouldAnimateInProgress(state: OrderProgressBarState): boolean {
 }
 
 function isRecentStateChange(state: OrderProgressBarState): boolean {
-  if (!state.lastTimeChangedSteps) {
-    return true
+  const { lastTimeChangedSteps, progressBarStepName } = state
+
+  if (lastTimeChangedSteps == null) {
+    return progressBarStepName === OrderProgressBarStepName.INITIAL
   }
 
-  return Date.now() - state.lastTimeChangedSteps < RECENT_STEP_THRESHOLD_MS
+  return Date.now() - lastTimeChangedSteps < RECENT_STEP_THRESHOLD_MS
 }
 
 function shouldAnimateInitialStep(state: OrderProgressBarState): boolean {

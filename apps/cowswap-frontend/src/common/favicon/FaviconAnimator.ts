@@ -97,13 +97,16 @@ export class FaviconAnimator {
       return
     }
 
-    const firstFallback = this.originalHrefs.get(this.iconElements[0])
-    if (firstFallback) {
-      this.setHref(firstFallback)
-      return
-    }
+    this.iconElements.forEach((link) => {
+      const originalHref = this.originalHrefs.get(link)
 
-    this.unsetHref()
+      if (originalHref) {
+        this.setHref(originalHref, link)
+        return
+      }
+
+      this.unsetHref(link)
+    })
   }
 
   isAnimationRunning(): boolean {
@@ -118,21 +121,28 @@ export class FaviconAnimator {
     this.isRunning = false
   }
 
-  private setHref(href: string): void {
+  private setHref(href: string, targetLink?: HTMLLinkElement): void {
     if (!href) {
       return
     }
 
-    this.iconElements.forEach((link) => {
+    const applyHref = (link: HTMLLinkElement): void => {
       this.decorateLink(link)
       if (link.href !== href) {
         link.setAttribute('href', href)
       }
-    })
+    }
+
+    if (targetLink) {
+      applyHref(targetLink)
+      return
+    }
+
+    this.iconElements.forEach(applyHref)
   }
 
-  private unsetHref(): void {
-    this.iconElements.forEach((link) => {
+  private unsetHref(targetLink?: HTMLLinkElement): void {
+    const unsetHref = (link: HTMLLinkElement): void => {
       const fallback = this.originalHrefs.get(link)
       if (fallback) {
         link.setAttribute('href', fallback)
@@ -140,7 +150,14 @@ export class FaviconAnimator {
       }
 
       link.removeAttribute('href')
-    })
+    }
+
+    if (targetLink) {
+      unsetHref(targetLink)
+      return
+    }
+
+    this.iconElements.forEach(unsetHref)
   }
 
   private decorateLink(link: HTMLLinkElement): void {
