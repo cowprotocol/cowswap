@@ -2,7 +2,6 @@ import { ReactNode } from 'react'
 
 import { UI } from '@cowprotocol/ui'
 
-import { useTheme } from 'styled-components'
 import styled, { keyframes } from 'styled-components/macro'
 
 const VIEWBOX_SIZE = 44
@@ -83,13 +82,11 @@ const Eye = styled.circle<{ $delay?: number; $fill: string }>`
 export interface CowLoadingIconProps {
   size?: number
   className?: string
+  isDarkMode?: boolean
 }
 
 export function CowLoadingIcon(props: CowLoadingIconProps = {}): ReactNode {
-  const { size = 36, className } = props
-  const theme = useTheme() as { darkMode?: boolean }
-
-  const isDarkMode = Boolean(theme?.darkMode)
+  const { size = 36, className, isDarkMode = false } = props
   const palette = isDarkMode
     ? {
         background: `var(${UI.COLOR_PAPER_DARKER})`,
