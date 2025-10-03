@@ -1,7 +1,17 @@
 import { TelegramConnectionStatus } from './index'
 
+interface TelegramData {
+  auth_date: number
+  first_name: string
+  hash: string
+  id: number
+  photo_url: string
+  username: string
+}
+
 const subscribeAccount = (): void => {}
-const authorize = (): Promise<void> => Promise.resolve()
+const subscribeWithData = async (_data: TelegramData): Promise<void> => {}
+const authorize = (): Promise<TelegramData | null> => Promise.resolve(null)
 
 const Fixtures = {
   loading: () => (
@@ -11,6 +21,7 @@ const Fixtures = {
       needsAuthorization={false}
       authorize={authorize}
       toggleSubscription={subscribeAccount}
+      subscribeWithData={subscribeWithData}
     />
   ),
   subscribed: () => (
@@ -20,6 +31,7 @@ const Fixtures = {
       needsAuthorization={false}
       authorize={authorize}
       toggleSubscription={subscribeAccount}
+      subscribeWithData={subscribeWithData}
     />
   ),
   needLogin: () => (
@@ -29,6 +41,7 @@ const Fixtures = {
       needsAuthorization={false}
       authorize={authorize}
       toggleSubscription={subscribeAccount}
+      subscribeWithData={subscribeWithData}
     />
   ),
   needsAuthorization: () => (
@@ -38,6 +51,7 @@ const Fixtures = {
       needsAuthorization={true}
       authorize={authorize}
       toggleSubscription={subscribeAccount}
+      subscribeWithData={subscribeWithData}
     />
   ),
 }

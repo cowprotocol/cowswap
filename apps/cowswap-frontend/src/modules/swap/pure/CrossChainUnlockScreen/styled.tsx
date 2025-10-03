@@ -3,12 +3,10 @@ import { Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-const SPECIAL_BANNER_BG_COLOR_LIGHT = '#CCF8FF'
-
 export const Container = styled.div<{ darkMode: boolean }>`
   padding: 24px;
   border-radius: 16px;
-  background: ${({ darkMode }) => (darkMode ? `var(${UI.COLOR_PAPER_DARKER})` : SPECIAL_BANNER_BG_COLOR_LIGHT)};
+  background: ${({ darkMode }) => (darkMode ? `var(${UI.COLOR_PAPER_DARKER})` : `var(${UI.COLOR_BLUE_100_PRIMARY})`)};
   display: grid;
   grid-template-columns: auto auto;
   gap: 32px;
