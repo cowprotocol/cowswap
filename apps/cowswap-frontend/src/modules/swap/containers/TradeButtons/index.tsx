@@ -2,6 +2,7 @@ import React, { ReactNode } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { AddIntermediateToken } from 'modules/tokensList'
 import {
@@ -20,6 +21,7 @@ import { useHighFeeWarning } from 'modules/tradeWidgetAddons'
 
 import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
 
+import { buildSwapBridgeClickEvent } from './analytics'
 import { swapTradeButtonsMap } from './swapTradeButtonsMap'
 
 import { useOnCurrencySelection } from '../../hooks/useOnCurrencySelection'
@@ -45,7 +47,19 @@ export function TradeButtons({
   intermediateBuyToken,
   setShowAddIntermediateTokenModal,
 }: TradeButtonsProps): ReactNode {
-  const { inputCurrency } = useSwapDerivedState()
+  const { chainId, account: walletAddress } = useWalletInfo()
+  const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount } = useSwapDerivedState()
+  const isCurrentTradeBridging = useIsCurrentTradeBridging()
+
+  const swapBridgeClickEvent = buildSwapBridgeClickEvent({
+    isCurrentTradeBridging,
+    inputCurrency,
+    outputCurrency,
+    inputCurrencyAmount,
+    outputCurrencyAmount,
+    chainId,
+    walletAddress,
+  })
 
   const primaryFormValidation = useGetTradeFormValidation()
   const tradeConfirmActions = useTradeConfirmActions()
@@ -54,7 +68,6 @@ export function TradeButtons({
   const localFormValidation = useSwapFormState()
   const wrappedToken = useWrappedToken()
   const onCurrencySelection = useOnCurrencySelection()
-  const isCurrentTradeBridging = useIsCurrentTradeBridging()
 
   const confirmTrade = tradeConfirmActions.onOpen
 
@@ -62,6 +75,9 @@ export function TradeButtons({
 
   const { isPartialApproveEnabled } = useFeatureFlags()
   const tradeFormButtonContext = useTradeFormButtonContext(confirmText, confirmTrade, !!isPartialApproveEnabled)
+  const tradeFormButtonContextWithAnalytics = tradeFormButtonContext
+    ? { ...tradeFormButtonContext, analyticsEvent: swapBridgeClickEvent }
+    : null
 
   const context = useSafeMemoObject({
     wrappedToken,
@@ -71,6 +87,7 @@ export function TradeButtons({
     hasEnoughWrappedBalanceForSwap,
     onCurrencySelection,
     confirmText,
+    analyticsEvent: swapBridgeClickEvent,
   })
 
   const shouldShowAddIntermediateToken =
@@ -83,7 +100,7 @@ export function TradeButtons({
     !primaryFormValidation || primaryFormValidation === TradeFormValidation.SellNativeToken
   const isDisabled = !isTradeContextReady || !feeWarningAccepted || !isNoImpactWarningAccepted
 
-  if (!tradeFormButtonContext) return null
+  if (!tradeFormButtonContextWithAnalytics) return null
 
   if (localFormValidation && isPrimaryValidationPassed) {
     return swapTradeButtonsMap[localFormValidation](context, isDisabled)
@@ -94,7 +111,7 @@ export function TradeButtons({
       <TradeFormButtons
         confirmText={confirmText}
         validation={primaryFormValidation}
-        context={tradeFormButtonContext}
+        context={tradeFormButtonContextWithAnalytics}
         isDisabled={isDisabled}
       />
       {shouldShowAddIntermediateToken && (

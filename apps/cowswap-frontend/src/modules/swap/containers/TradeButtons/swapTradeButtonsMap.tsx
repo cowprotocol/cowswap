@@ -26,20 +26,31 @@ interface SwapTradeButtonsContext {
   hasEnoughWrappedBalanceForSwap: boolean
   onCurrencySelection: (field: Field, currency: Currency) => void
   confirmText: string
+  analyticsEvent?: string
 }
 
 type SwapTradeButton = (props: SwapTradeButtonsContext, isDisabled: boolean) => ReactNode | string
 
 export const swapTradeButtonsMap: Record<SwapFormState, SwapTradeButton> = {
   [SwapFormState.SwapWithWrappedToken]: (props: SwapTradeButtonsContext, isDisabled: boolean) => (
-    <ButtonError buttonSize={ButtonSize.BIG} onClick={props.onEthFlow} disabled={isDisabled}>
+    <ButtonError
+      buttonSize={ButtonSize.BIG}
+      onClick={props.onEthFlow}
+      disabled={isDisabled}
+      data-click-event={props.analyticsEvent}
+    >
       <div>
         <Trans>Swap with {props.wrappedToken.symbol}</Trans>
       </div>
     </ButtonError>
   ),
   [SwapFormState.WrapAndSwap]: (props: SwapTradeButtonsContext, isDisabled: boolean) => (
-    <ButtonError buttonSize={ButtonSize.BIG} onClick={props.openSwapConfirm} disabled={isDisabled}>
+    <ButtonError
+      buttonSize={ButtonSize.BIG}
+      onClick={props.openSwapConfirm}
+      disabled={isDisabled}
+      data-click-event={props.analyticsEvent}
+    >
       <div>
         <Trans>Wrap&nbsp;{<TokenSymbol token={props.inputCurrency} length={6} />}&nbsp;and Swap</Trans>
       </div>
@@ -47,7 +58,12 @@ export const swapTradeButtonsMap: Record<SwapFormState, SwapTradeButton> = {
   ),
   [SwapFormState.RegularEthFlowSwap]: (props: SwapTradeButtonsContext, isDisabled: boolean) => (
     <Wrapper>
-      <ButtonError buttonSize={ButtonSize.BIG} onClick={props.openSwapConfirm} disabled={isDisabled}>
+      <ButtonError
+        buttonSize={ButtonSize.BIG}
+        onClick={props.openSwapConfirm}
+        disabled={isDisabled}
+        data-click-event={props.analyticsEvent}
+      >
         <div>
           <Trans>{props.confirmText}</Trans>
         </div>
