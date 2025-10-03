@@ -8,8 +8,6 @@ import { Nullish } from 'types'
 
 import { Field } from 'legacy/state/types'
 
-import { TradeType } from 'modules/trade'
-
 import { useCloseTokenSelectWidget } from './useCloseTokenSelectWidget'
 import { useUpdateSelectTokenWidgetState } from './useUpdateSelectTokenWidgetState'
 
@@ -18,14 +16,13 @@ export function useOpenTokenSelectWidget(): (
   field: Field | undefined,
   oppositeToken: TokenWithLogo | LpToken | Currency | undefined,
   onSelectToken: (currency: Currency) => void,
-  tradeType?: TradeType,
 ) => void {
   const updateSelectTokenWidget = useUpdateSelectTokenWidgetState()
   const closeTokenSelectWidget = useCloseTokenSelectWidget()
   const isBridgingEnabled = useIsBridgingEnabled()
 
   return useCallback(
-    (selectedToken, field, oppositeToken, onSelectToken, tradeType) => {
+    (selectedToken, field, oppositeToken, onSelectToken) => {
       const isOutputField = field === Field.OUTPUT
       const selectedTargetChainId =
         isOutputField && selectedToken && isBridgingEnabled ? selectedToken.chainId : undefined
@@ -36,7 +33,6 @@ export function useOpenTokenSelectWidget(): (
         oppositeToken,
         open: true,
         selectedTargetChainId,
-        tradeType,
         onSelectToken: (currency) => {
           // Close the token selector regardless of network switching.
           // UX: When a user picks a token (even from another network),

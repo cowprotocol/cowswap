@@ -1,5 +1,6 @@
-import { ButtonHTMLAttributes, ReactElement, useEffect, useRef, useState } from 'react'
+import { ReactElement, useEffect, useRef, useState } from 'react'
 
+import { isDevelopmentEnv } from '@cowprotocol/common-utils'
 import { CenteredDots, LongLoadText, UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
@@ -46,9 +47,16 @@ const ActionButton = styled.button<{ hasLongText$: boolean }>`
   }
 `
 
-export interface TradeFormPrimaryButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+export interface TradeFormPrimaryButtonProps {
   children: ReactElement | string
+  disabled?: boolean
   loading?: boolean
+  id?: string
+
+  onClick?(): void
+
+  className?: string
+  'data-click-event'?: string
 }
 
 // TODO: Break down this large function into smaller functions
@@ -61,7 +69,7 @@ export function TradeFormBlankButton({
   loading,
   id,
   className,
-  ...rest
+  'data-click-event': dataClickEvent,
 }: TradeFormPrimaryButtonProps) {
   const ref = useRef<HTMLButtonElement>(null)
   const [hasLongText, setHasLongText] = useState(false)
@@ -82,6 +90,17 @@ export function TradeFormBlankButton({
   // TODO: Add proper return type annotation
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleClick = () => {
+    // Dev-only: mirror GTM click payload in console for local testing
+    if (isDevelopmentEnv() && dataClickEvent) {
+      try {
+        // Attempt to pretty print the GTM event JSON
+
+        console.debug('[GTM click]', JSON.parse(dataClickEvent))
+      } catch {
+        console.debug('[GTM click]', dataClickEvent)
+      }
+    }
+
     if (isUpToMedium) {
       window.scrollTo({ top: 0, left: 0 })
     }
@@ -103,13 +122,13 @@ export function TradeFormBlankButton({
 
   return (
     <ActionButton
-      {...rest}
       ref={ref}
       id={id}
       className={className}
       onClick={handleClick}
       disabled={showLoader || disabled}
       hasLongText$={hasLongText}
+      data-click-event={dataClickEvent}
     >
       {showLoader ? (
         <>

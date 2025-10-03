@@ -19,7 +19,6 @@ import { Field } from 'legacy/state/types'
 import { useToggleAccountModal } from 'modules/account'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useOpenTokenSelectWidget } from 'modules/tokensList'
-import { useTradeTypeInfo } from 'modules/trade'
 import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternativeOrder'
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 
@@ -105,8 +104,6 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
   const isSafeWallet = useIsSafeWallet()
   const openTokenSelectWidget = useOpenTokenSelectWidget()
-  const tradeTypeInfo = useTradeTypeInfo()
-  const currentTradeType = tradeTypeInfo?.tradeType
   const tradeStateFromUrl = useTradeStateFromUrl()
   const alternativeOrderModalVisible = useIsAlternativeOrderModalVisible()
   const primaryFormValidation = useGetTradeFormValidation()
@@ -160,16 +157,16 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
 
   const openSellTokenSelect = useCallback(
     (selectedToken: Nullish<Currency>, field: Field | undefined, onSelectToken: (currency: Currency) => void) => {
-      openTokenSelectWidget(selectedToken, field, buyToken || undefined, onSelectToken, currentTradeType)
+      openTokenSelectWidget(selectedToken, field, buyToken || undefined, onSelectToken)
     },
-    [openTokenSelectWidget, buyToken, currentTradeType],
+    [openTokenSelectWidget, buyToken],
   )
 
   const openBuyTokenSelect = useCallback(
     (selectedToken: Nullish<Currency>, field: Field | undefined, onSelectToken: (currency: Currency) => void) => {
-      openTokenSelectWidget(selectedToken, field, sellToken || undefined, onSelectToken, currentTradeType)
+      openTokenSelectWidget(selectedToken, field, sellToken || undefined, onSelectToken)
     },
-    [openTokenSelectWidget, sellToken, currentTradeType],
+    [openTokenSelectWidget, sellToken],
   )
 
   const toggleAccountModal = useToggleAccountModal()

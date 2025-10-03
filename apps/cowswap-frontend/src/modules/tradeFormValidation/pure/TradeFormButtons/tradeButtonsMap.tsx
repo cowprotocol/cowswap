@@ -71,7 +71,7 @@ const unsupportedTokenButton = (context: TradeFormButtonContext) => {
 
   return inputCurrency && outputCurrency ? (
     <>
-      <TradeFormBlankButton disabled={true} data-click-event={context.analyticsEvent}>
+      <TradeFormBlankButton disabled={true}>
         <Trans>Unsupported token</Trans>
       </TradeFormBlankButton>
       <CompatibilityIssuesWarningWrapper>
@@ -90,17 +90,14 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     const isNativeIn = !!context.derivedState.inputCurrency && getIsNativeToken(context.derivedState.inputCurrency)
 
     return (
-      <TradeFormBlankButton
-        onClick={() => context.wrapNativeFlow()}
-        data-click-event={context.analyticsEvent}
-      >
+      <TradeFormBlankButton onClick={() => context.wrapNativeFlow()}>
         <Trans>{isNativeIn ? 'Wrap' : 'Unwrap'}</Trans>
       </TradeFormBlankButton>
     )
   },
-  [TradeFormValidation.CustomTokenError]: ({ customTokenError, analyticsEvent }) => {
+  [TradeFormValidation.CustomTokenError]: ({ customTokenError }) => {
     return (
-      <TradeFormBlankButton disabled={true} data-click-event={analyticsEvent}>
+      <TradeFormBlankButton disabled={true}>
         <span>
           <Trans>{customTokenError}</Trans>
         </span>
@@ -116,14 +113,11 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   [TradeFormValidation.BrowserOffline]: {
     text: 'Error loading price. You are currently offline.',
   },
-  [TradeFormValidation.RecipientInvalid]: ({
-    derivedState: { inputCurrency, outputCurrency, recipient },
-    analyticsEvent,
-  }) => {
+  [TradeFormValidation.RecipientInvalid]: ({ derivedState: { inputCurrency, outputCurrency, recipient } }) => {
     const isBridging = inputCurrency && outputCurrency && inputCurrency.chainId !== outputCurrency.chainId
 
     return (
-      <TradeFormBlankButton disabled data-click-event={analyticsEvent}>
+      <TradeFormBlankButton disabled>
         <>
           <Trans>Enter a valid recipient</Trans>
           {isBridging && recipient && (
@@ -141,7 +135,6 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   },
   [TradeFormValidation.QuoteErrors]: (context) => {
     const { quote } = context
-    const { analyticsEvent } = context
 
     if (quote.error instanceof QuoteApiError) {
       const errorType = quote.error.type
@@ -157,7 +150,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
       const errorTooltipText = isBridge && errorTooltipContentForBridges[errorType]
 
       return (
-        <TradeFormBlankButton disabled={true} data-click-event={analyticsEvent}>
+        <TradeFormBlankButton disabled={true}>
           <>
             <Trans>{errorText}</Trans>
             {errorTooltipText && <HelpTooltip text={errorTooltipText} />}
@@ -171,7 +164,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
       const errorText = bridgeQuoteErrorTexts[errorMessage] || DEFAULT_QUOTE_ERROR
 
       return (
-        <TradeFormBlankButton disabled={true} data-click-event={analyticsEvent}>
+        <TradeFormBlankButton disabled={true}>
           <>
             <Trans>{errorText}</Trans>
           </>
@@ -180,7 +173,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     }
 
     return (
-      <TradeFormBlankButton disabled={true} data-click-event={analyticsEvent}>
+      <TradeFormBlankButton disabled={true}>
         <Trans>Unknown quote error</Trans>
       </TradeFormBlankButton>
     )
@@ -188,11 +181,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   [TradeFormValidation.QuoteExpired]: { text: 'Quote expired. Refreshing...' },
   [TradeFormValidation.WalletNotConnected]: (context) => {
     return (
-      <TradeFormBlankButton
-        onClick={context.connectWallet}
-        disabled={context.widgetStandaloneMode === false}
-        data-click-event={context.analyticsEvent}
-      >
+      <TradeFormBlankButton onClick={context.connectWallet} disabled={context.widgetStandaloneMode === false}>
         <Trans>Connect Wallet</Trans>
       </TradeFormBlankButton>
     )
@@ -229,7 +218,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     const inputCurrency = context.derivedState.inputCurrency
 
     return (
-      <TradeFormBlankButton disabled={true} data-click-event={context.analyticsEvent}>
+      <TradeFormBlankButton disabled={true}>
         <span>
           <Trans>Insufficient {<TokenSymbol token={inputCurrency} />} balance</Trans>
         </span>
@@ -241,11 +230,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     const tokenToApprove = inputCurrency && getWrappedToken(inputCurrency)
 
     return (
-      <TradeFormBlankButton
-        disabled={isDisabled}
-        onClick={context.confirmTrade}
-        data-click-event={context.analyticsEvent}
-      >
+      <TradeFormBlankButton disabled={isDisabled} onClick={context.confirmTrade}>
         <span>
           <Trans>
             Approve {<TokenSymbol token={tokenToApprove} length={6} />} and {context.defaultText}
@@ -260,7 +245,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
 
     return (
       <TradeApproveButton amountToApprove={maximumSendSellAmount} enablePartialApprove={context.enablePartialApprove}>
-        <TradeFormBlankButton disabled={true} data-click-event={context.analyticsEvent}>
+        <TradeFormBlankButton disabled={true}>
           <Trans>{context.defaultText}</Trans>
         </TradeFormBlankButton>
       </TradeApproveButton>
@@ -273,7 +258,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     if (!isNativeIn) return null
 
     return (
-      <TradeFormBlankButton disabled data-click-event={context.analyticsEvent}>
+      <TradeFormBlankButton disabled>
         <Trans>Selling {inputCurrency.symbol} is not supported</Trans>
       </TradeFormBlankButton>
     )

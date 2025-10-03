@@ -1,4 +1,4 @@
-import { debounce } from '@cowprotocol/common-utils'
+import { debounce, isDevelopmentEnv } from '@cowprotocol/common-utils'
 
 import { AnalyticsContext, CowAnalytics, EventOptions, OutboundLinkParams } from '../CowAnalytics'
 import { GtmEvent, Category } from '../types'
@@ -202,25 +202,50 @@ export class CowAnalyticsGtm implements CowAnalytics {
   sendEvent(event: string | EventOptions, params?: unknown): void {
     const gtmEvent = event as GtmEvent<Category>
 
-    const eventData: DataLayerEvent =
-      typeof event === 'string'
-        ? { event, ...(params as Record<string, unknown>) }
-        : {
-            event: event.action,
-            category: event.category,
-            action: event.action,
-            label: event.label,
-            value: event.value,
-            non_interaction: event.nonInteraction,
-            ...this.getDimensions(),
-            ...(gtmEvent.isBridgeOrder && { isBridgeOrder: gtmEvent.isBridgeOrder }),
-            ...(gtmEvent.orderId && { order_id: gtmEvent.orderId }),
-            ...(gtmEvent.orderType && { order_type: gtmEvent.orderType }),
-            ...(gtmEvent.tokenSymbol && {
-              token_symbol: gtmEvent.tokenSymbol,
-            }),
-            ...(gtmEvent.chainId && { chain_id: gtmEvent.chainId }),
-          }
+    if (typeof event === 'string') {
+      this.pushToDataLayer({ event, ...(params as Record<string, unknown>) })
+      return
+    }
+
+    const {
+      category,
+      action,
+      label,
+      value,
+      nonInteraction,
+      orderId,
+      orderType,
+      tokenSymbol,
+      chainId,
+      isBridgeOrder,
+      ...additionalParams
+    } = gtmEvent
+
+    const sanitizedAdditionalParams = Object.entries(additionalParams).reduce(
+      (acc, [key, value]) => {
+        if (value !== undefined) {
+          acc[key] = value
+        }
+        return acc
+      },
+      {} as Record<string, unknown>,
+    )
+
+    const eventData: DataLayerEvent = {
+      event: action,
+      category,
+      action,
+      label,
+      value,
+      non_interaction: nonInteraction,
+      ...this.getDimensions(),
+      ...(isBridgeOrder && { isBridgeOrder }),
+      ...(orderId && { order_id: orderId }),
+      ...(orderType && { order_type: orderType }),
+      ...(tokenSymbol && { token_symbol: tokenSymbol }),
+      ...(chainId && { chain_id: chainId }),
+      ...sanitizedAdditionalParams,
+    }
 
     this.pushToDataLayer(eventData)
   }
@@ -270,7 +295,7 @@ export class CowAnalyticsGtm implements CowAnalytics {
       const dataLayerEvent = { ...data }
 
       // Debug log in development environment
-      if (process.env.NODE_ENV === 'development') {
+      if (isDevelopmentEnv()) {
         console.debug('[GTM] Pushing to data layer:', dataLayerEvent)
       }
 

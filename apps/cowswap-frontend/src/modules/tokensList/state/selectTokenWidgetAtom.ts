@@ -10,8 +10,6 @@ import { Nullish } from 'types'
 
 import { Field } from 'legacy/state/types'
 
-import { TradeType } from 'modules/trade'
-
 interface SelectTokenWidgetState {
   open: boolean
   field?: Field
@@ -23,7 +21,6 @@ interface SelectTokenWidgetState {
   onSelectToken?: (currency: Currency) => void
   onInputPressEnter?: Command
   selectedTargetChainId?: number
-  tradeType?: TradeType
 }
 
 export const DEFAULT_SELECT_TOKEN_WIDGET_STATE: SelectTokenWidgetState = {
@@ -35,7 +32,6 @@ export const DEFAULT_SELECT_TOKEN_WIDGET_STATE: SelectTokenWidgetState = {
   listToImport: undefined,
   selectedPoolAddress: undefined,
   selectedTargetChainId: undefined,
-  tradeType: undefined,
 }
 
 export const { atom: selectTokenWidgetAtom, updateAtom: updateSelectTokenWidgetAtom } = atomWithPartialUpdate(
