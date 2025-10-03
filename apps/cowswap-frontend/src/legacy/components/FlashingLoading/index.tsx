@@ -1,5 +1,6 @@
+import { useTheme } from '@cowprotocol/common-hooks'
+
 import { transparentize } from 'color2k'
-import { useTheme } from 'styled-components'
 import styled from 'styled-components/macro'
 
 import { CowLoadingIcon } from '../../../common/pure/CowLoadingIcon'
@@ -30,11 +31,11 @@ export const LoadingWrapper = styled.div`
 `
 
 export const Loading: React.FC = () => {
-  const theme = useTheme() as { darkMode?: boolean }
+  const { darkMode } = useTheme()
 
   return (
     <LoadingWrapper>
-      <CowLoadingIcon size={120} isDarkMode={Boolean(theme?.darkMode)} />
+      <CowLoadingIcon size={120} isDarkMode={darkMode} />
       <span>Loading...</span>
     </LoadingWrapper>
   )
