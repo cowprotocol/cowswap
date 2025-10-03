@@ -19,7 +19,7 @@ export const ContainerBox = styled.div`
   color: var(${UI.COLOR_TEXT_PAPER});
   border: none;
   border-radius: var(${UI.BORDER_RADIUS_NORMAL});
-  box-shadow: ${({ theme }) => (theme.isInjectedWidgetMode ? theme.boxShadow1 : 'none')};
+  box-shadow: ${({ theme }) => (theme.isWidget ? theme.boxShadow1 : 'none')};
   padding: 10px;
   position: relative;
 
@@ -37,7 +37,7 @@ export const Header = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: ${({ theme }) => (theme.isInjectedWidgetMode ? '0 7px' : '0 5px 0 0')};
+  padding: ${({ theme }) => (theme.isWidget ? '0 7px' : '0 5px 0 0')};
   margin: 0;
   color: inherit;
 `
