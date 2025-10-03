@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.6.0...balances-and-allowances-v1.7.0) (2025-10-02)
+
+
+### Features
+
+* load balances via bff API ([#6213](https://github.com/cowprotocol/cowswap/issues/6213)) ([8884a89](https://github.com/cowprotocol/cowswap/commit/8884a89b1cf11b44a9cc92f7d7bb4e7b3415747c))
+
 ## [1.6.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.5.5...balances-and-allowances-v1.6.0) (2025-08-28)
 
 
