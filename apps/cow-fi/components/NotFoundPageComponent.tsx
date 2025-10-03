@@ -1,18 +1,33 @@
 'use client'
 
-import { ArticleContent, ArticleMainTitle, BodyContent, ContainerCard, PageWrapper } from '@/styles/styled'
-import { Link } from '@/components/Link'
-import { useCowAnalytics } from '@cowprotocol/analytics'
-import { CowFiCategory } from 'src/common/analytics/types'
+import type { ReactElement } from 'react'
 
-export function NotFoundPageComponent() {
+import { useCowAnalytics } from '@cowprotocol/analytics'
+import { Media } from '@cowprotocol/ui'
+
+import { CowFiCategory } from 'src/common/analytics/types'
+import styled from 'styled-components/macro'
+
+import { Link } from '@/components/Link'
+import { ArticleContent, ArticleMainTitle, BodyContent, ContainerCard, PageWrapper } from '@/styles/styled'
+
+const Content = styled(ArticleContent)`
+  position: relative;
+  z-index: 1;
+
+  ${Media.upToMedium()} {
+    text-align: center;
+  }
+`
+
+export function NotFoundPageComponent(): ReactElement {
   const analytics = useCowAnalytics()
 
   return (
     <PageWrapper>
-      <ContainerCard bgColor={'transparent'} minHeight="70vh" gap={62} gapMobile={42} centerContent touchFooter>
-        <ArticleContent maxWidth="90rem">
-          <ArticleMainTitle margin={'0 0 62px'} fontSize={52}>
+      <ContainerCard bgColor="transparent" gap={62} gapMobile={42} centerContent>
+        <Content maxWidth="90rem">
+          <ArticleMainTitle margin="0 0 62px" fontSize={52}>
             404 - Page Not Found
           </ArticleMainTitle>
 
@@ -34,7 +49,7 @@ export function NotFoundPageComponent() {
               or use the navigation menu to find what you are looking for.
             </p>
           </BodyContent>
-        </ArticleContent>
+        </Content>
       </ContainerCard>
     </PageWrapper>
   )
