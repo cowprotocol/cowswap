@@ -224,6 +224,7 @@ const SaucerWrapper = styled.div`
 
   @media (prefers-reduced-motion: reduce) {
     animation: none;
+    transform: translate(-50%, 0);
   }
 `
 
@@ -247,6 +248,7 @@ const Cow = styled.div`
 
   @media (prefers-reduced-motion: reduce) {
     animation: none;
+    transform: translate(-50%, 0);
   }
 `
 
@@ -259,6 +261,7 @@ const CowSprite = styled.div<{ $image: string }>`
 
   @media (prefers-reduced-motion: reduce) {
     animation: none;
+    transform: scale(1);
   }
 `
 
