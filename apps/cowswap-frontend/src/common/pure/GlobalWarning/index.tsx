@@ -38,8 +38,8 @@ const Container = styled.div`
   font-size: 12px;
   color: var(${UI.COLOR_BUTTON_TEXT});
   background-color: var(${UI.COLOR_PRIMARY});
-  border-radius: ${({ theme }) => (theme.isInjectedWidgetMode ? '8px' : '')};
-  margin-bottom: ${({ theme }) => (theme.isInjectedWidgetMode ? '10px' : '')};
+  border-radius: ${({ theme }) => (theme.isWidget ? '8px' : '')};
+  margin-bottom: ${({ theme }) => (theme.isWidget ? '10px' : '')};
 
   ${Media.upToSmall()} {
     padding: 12px 8px;

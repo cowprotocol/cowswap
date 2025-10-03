@@ -44,7 +44,7 @@ export const Wrapper = styled.div<{ active: boolean }>`
   }
 
   ${({ theme }) =>
-    theme.isInjectedWidgetMode &&
+    theme.isWidget &&
     `
     background-color: transparent;
     margin: 0 20px 0 auto!important;
