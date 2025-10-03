@@ -28,7 +28,7 @@ const acrossBridgeProvider = new AcrossBridgeProvider()
 export const bridgeProviders: BridgeProvider<BridgeQuoteResult>[] = [bungeeBridgeProvider]
 
 // TODO: Should not enable Across on Prod until it's finalized
-isProdLike && bridgeProviders.push(acrossBridgeProvider)
+!isProdLike && bridgeProviders.push(acrossBridgeProvider)
 
 export const bridgingSdk = new BridgingSdk({
   providers: bridgeProviders,
