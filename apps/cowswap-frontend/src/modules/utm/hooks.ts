@@ -7,6 +7,7 @@ import { getUtmParams, cleanUpUtmParams, UtmParams } from '@cowprotocol/common-u
 import { useLocation } from 'react-router'
 
 import { useNavigate } from 'common/hooks/useNavigate'
+import { createLogger } from 'common/utils/logger'
 
 import { utmAtom } from './state'
 
@@ -14,14 +15,7 @@ export function useUtm(): UtmParams | undefined {
   return useAtomValue(utmAtom)
 }
 
-/**
- * Debug logging for UTM processing
- */
-function logUtmDebug(message: string, data: Record<string, unknown>): void {
-  if (process.env.NODE_ENV === 'development') {
-    console.log(`[UTM DEBUG] ${message}`, data)
-  }
-}
+const log = createLogger('UTM')
 
 /**
  * Extract and merge UTM parameters from both router and window search params
@@ -50,7 +44,7 @@ function extractUtmParams(search: string): {
   // For cleanup, we need to check both sources
   const searchParams = hasQueryParamsOutOfHashbang ? windowSearchParams : routerSearchParams
 
-  logUtmDebug('UTM processing state:', {
+  log.debug('UTM processing state:', {
     hasQueryParamsOutOfHashbang,
     routerSearch: search,
     windowSearch: window.location.search,
@@ -73,7 +67,7 @@ function handleHashBasedNavigation(newSearch: string, navigate: ReturnType<typeo
   const currentHash = window.location.hash
   const [hashPath, hashQuery] = currentHash.substring(1).split('?') // Remove # and split
 
-  logUtmDebug('Processing hash-based routing:', {
+  log.debug('Processing hash-based routing:', {
     currentHash,
     hashPath,
     hashQuery,
@@ -91,14 +85,14 @@ function handleHashBasedNavigation(newSearch: string, navigate: ReturnType<typeo
   const finalHashQuery = existingHashParams.toString()
   const finalHash = finalHashQuery ? `#${hashPath}?${finalHashQuery}` : `#${hashPath}`
 
-  logUtmDebug('Navigating to hash-based route:', {
+  log.debug('Navigating to hash-based route:', {
     finalHash,
     finalHashQuery,
   })
 
   // Use History API to update URL without page refresh, then sync with React Router
   const newUrl = `${window.location.origin}/${finalHash}`
-  logUtmDebug('Updating URL to clear UTM params without refresh:', {
+  log.debug('Updating URL to clear UTM params without refresh:', {
     currentUrl: window.location.href,
     newUrl,
     hashPath,
@@ -122,7 +116,7 @@ function handleUrlNavigation(
   pathname: string,
   hash: string,
 ): void {
-  logUtmDebug('handleUrlNavigation called with:', {
+  log.debug('handleUrlNavigation called with:', {
     newSearch,
     hasQueryParamsOutOfHashbang,
     pathname,
@@ -136,7 +130,7 @@ function handleUrlNavigation(
   }
 
   // For normal hash-based routing, just update the search params
-  logUtmDebug('Navigating with normal hash-based routing:', {
+  log.debug('Navigating with normal hash-based routing:', {
     pathname,
     search: newSearch,
     hash,
@@ -156,7 +150,7 @@ function processUtmParams(
   pathname: string,
   hash: string,
 ): () => void {
-  logUtmDebug('Found UTM params, processing...', utm)
+  log.debug('Found UTM params, processing...', utm)
   // Only overrides the UTM if the URL includes at least one UTM param
   setUtm(utm)
 
@@ -178,7 +172,7 @@ function processUtmParams(
     const newSearchParams = cleanUpUtmParams(new URLSearchParams(sourceToClean || ''))
     const newSearch = newSearchParams.toString()
 
-    logUtmDebug('Cleaned search params:', {
+    log.debug('Cleaned search params:', {
       hasQueryParamsOutOfHashbang,
       originalSearch: sourceToClean,
       newSearch,
@@ -192,12 +186,12 @@ function processUtmParams(
   // Wait for analytics to be ready before cleaning up UTM parameters
   waitForAnalytics()
     .then(() => {
-      logUtmDebug('Analytics ready, cleaning up UTM params after delay', {})
+      log.debug('Analytics ready, cleaning up UTM params after delay')
       // Small additional delay to ensure analytics has captured the parameters
       timeoutId = window.setTimeout(performUtmCleanup, 250)
     })
     .catch((error) => {
-      logUtmDebug('Analytics detection failed, proceeding with cleanup', { error })
+      log.debug('Analytics detection failed, proceeding with cleanup', { error })
       // Additional 250ms delay for analytics capture
       timeoutId = window.setTimeout(performUtmCleanup, 250)
     })
@@ -212,7 +206,7 @@ export function useInitializeUtm(): void {
   const setUtm = useSetAtom(utmAtom)
 
   useLayoutEffect(() => {
-    logUtmDebug('useInitializeUtm effect running:', {
+    log.debug('useInitializeUtm effect running:', {
       hasProcessedUtm: hasProcessedUtm.current,
       search,
       pathname,
@@ -223,7 +217,7 @@ export function useInitializeUtm(): void {
 
     // Prevent multiple runs of UTM processing
     if (hasProcessedUtm.current) {
-      logUtmDebug('Already processed UTM, skipping', {})
+      log.debug('Already processed UTM, skipping')
       return undefined
     }
 
@@ -235,21 +229,21 @@ export function useInitializeUtm(): void {
       return processUtmParams(utm, setUtm, search, hasQueryParamsOutOfHashbang, navigate, pathname, hash)
     }
 
-    logUtmDebug('No UTM params found, checking for cleanup', {})
+    log.debug('No UTM params found, checking for cleanup')
     // Check if we need to clean up any remaining UTM parameters
     const newSearchParams = cleanUpUtmParams(searchParams)
     const newSearch = newSearchParams.toString()
 
     // Only navigate if there's actually a change needed
     const currentSearch = searchParams.toString()
-    logUtmDebug('Cleanup check:', {
+    log.debug('Cleanup check:', {
       currentSearch,
       newSearch,
       needsCleanup: newSearch !== currentSearch,
     })
 
     if (newSearch !== currentSearch) {
-      logUtmDebug('Cleanup needed, processing...', {})
+      log.debug('Cleanup needed, processing...')
       // Mark as processed to prevent re-runs
       hasProcessedUtm.current = true
       handleUrlNavigation(newSearch, hasQueryParamsOutOfHashbang, navigate, pathname, hash)
