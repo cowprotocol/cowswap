@@ -34,7 +34,7 @@ export function ApprovalAmountInput({ initialAmount, tokenWithLogo, onReset }: A
 
   const currencyInfo = useMemo(() => {
     return {
-      field: 'INPUT',
+      field: Field.INPUT,
       currency: customAmountValue?.currency,
       amount: customAmountValue,
       isIndependent: true,
