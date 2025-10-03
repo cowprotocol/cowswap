@@ -6,6 +6,8 @@ import { errorToString, isRejectRequestProviderError } from '@cowprotocol/common
 import { TransactionResponse } from '@ethersproject/providers'
 import { Currency } from '@uniswap/sdk-core'
 
+import { useLingui } from '@lingui/react/macro'
+
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 
 import { useApproveCallback } from '../../hooks'
@@ -24,6 +26,7 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
   const spender = useTradeSpenderAddress()
   const symbol = currency?.symbol
   const cowAnalytics = useCowAnalytics()
+  const { t } = useLingui()
 
   const approveCallback = useApproveCallback(currency, spender)
 
@@ -59,7 +62,7 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
           console.error('Error setting the allowance for token', error)
 
           if (isRejectRequestProviderError(error)) {
-            updateTradeApproveState({ error: 'User rejected approval transaction' })
+            updateTradeApproveState({ error: t`User rejected approval transaction` })
           } else {
             const errorCode = error?.code && typeof error.code === 'number' ? error.code : null
 
@@ -70,6 +73,6 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
           return undefined
         })
     },
-    [symbol, approveCallback, updateTradeApproveState, currency, approvalAnalytics],
+    [approvalAnalytics, symbol, approveCallback, updateTradeApproveState, currency, t],
   )
 }
