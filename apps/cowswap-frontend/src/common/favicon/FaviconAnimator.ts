@@ -14,7 +14,7 @@ export class FaviconAnimator {
   private isRunning = false
   private readonly originalHrefs = new Map<HTMLLinkElement, string>()
 
-  constructor(private readonly defaultFrame: string) {
+  constructor(private defaultFrame: string) {
     const existingIcons = Array.from(document.querySelectorAll<HTMLLinkElement>(ICON_SELECTOR))
 
     if (existingIcons.length) {
@@ -111,6 +111,18 @@ export class FaviconAnimator {
 
   isAnimationRunning(): boolean {
     return this.isRunning
+  }
+
+  setDefaultFrame(frame: string): void {
+    if (this.defaultFrame === frame) {
+      return
+    }
+
+    this.defaultFrame = frame
+
+    if (!this.isRunning) {
+      this.resetToDefault()
+    }
   }
 
   private cancelCurrentAnimation(): void {

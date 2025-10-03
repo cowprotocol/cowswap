@@ -1,4 +1,4 @@
-const defaultFrameModule = import.meta.glob<string>('../../assets/animated-favicon/default/*.svg', {
+const defaultFrameModules = import.meta.glob<string>('../../assets/animated-favicon/default/*.svg', {
   as: 'raw',
   eager: true,
 })
@@ -13,10 +13,26 @@ const completedFrameModules = import.meta.glob<string>('../../assets/animated-fa
   eager: true,
 })
 
+const completedDarkFrameModules = import.meta.glob<string>(
+  '../../assets/animated-favicon/completed-dark/*.svg',
+  {
+    as: 'raw',
+    eager: true,
+  },
+)
+
 const backToDefaultFrameModules = import.meta.glob<string>('../../assets/animated-favicon/back-to-default/*.svg', {
   as: 'raw',
   eager: true,
 })
+
+const backToDefaultDarkFrameModules = import.meta.glob<string>(
+  '../../assets/animated-favicon/back-to-default-dark/*.svg',
+  {
+    as: 'raw',
+    eager: true,
+  },
+)
 
 function toSortedFrames(modules: Record<string, string>): string[] {
   return Object.entries(modules)
@@ -24,11 +40,26 @@ function toSortedFrames(modules: Record<string, string>): string[] {
     .map(([, source]) => source)
 }
 
-const defaultFrames = toSortedFrames(defaultFrameModule)
-
-if (defaultFrames.length !== 1) {
-  console.warn('[Favicon] Expected exactly one default frame, found', defaultFrames.length)
+function filterModules(
+  modules: Record<string, string>,
+  predicate: (path: string, source: string) => boolean,
+): Record<string, string> {
+  return Object.fromEntries(Object.entries(modules).filter(([path, source]) => predicate(path, source)))
 }
+
+const defaultLightSources = toSortedFrames(
+  filterModules(defaultFrameModules, (path) => !path.includes('-dark')),
+)
+const defaultDarkSources = toSortedFrames(filterModules(defaultFrameModules, (path) => path.includes('-dark')))
+const solvingSources = toSortedFrames(solvingFrameModules)
+const completedLightSources = toSortedFrames(completedFrameModules)
+const completedDarkSources = toSortedFrames(completedDarkFrameModules)
+const backToDefaultLightSources = toSortedFrames(backToDefaultFrameModules)
+const backToDefaultDarkSources = toSortedFrames(backToDefaultDarkFrameModules)
+
+const fallbackDefaultSources = defaultLightSources.length ? defaultLightSources : defaultDarkSources
+const fallbackCompletedSources = completedLightSources.length ? completedLightSources : completedDarkSources
+const fallbackBackToDefaultSources = backToDefaultLightSources.length ? backToDefaultLightSources : backToDefaultDarkSources
 
 const SOLVING_FRAME_DURATION_MS = 50
 const COMPLETED_FRAME_DURATION_MS = 140
@@ -114,18 +145,155 @@ function createSmoothLoopFrames(sources: string[], crossfadeSteps: number): stri
   return frames
 }
 
-export const defaultFrame = defaultFrames[0] ? svgToDataUri(defaultFrames[0]) : ''
-const solvingSources = toSortedFrames(solvingFrameModules)
-const solvingLoopSources = solvingSources
-export const solvingFrames = solvingLoopSources.length
-  ? createSmoothLoopFrames(solvingLoopSources, SOLVING_CROSSFADE_STEPS)
-  : [defaultFrame].filter(Boolean)
-export const completedFrames = toSortedFrames(completedFrameModules).map(svgToDataUri)
-export const completedHoldFrame = completedFrames.length ? completedFrames[completedFrames.length - 1] : defaultFrame
-const backToDefaultSources = toSortedFrames(backToDefaultFrameModules)
-export const backToDefaultFrames = backToDefaultSources.length
-  ? backToDefaultSources.map(svgToDataUri)
-  : [defaultFrame].filter(Boolean)
+export type FaviconTheme = 'light' | 'dark'
+
+export type FrameSet = {
+  defaultFrame: string
+  solvingFrames: string[]
+  completedFrames: string[]
+  completedHoldFrame: string
+  backToDefaultFrames: string[]
+}
+
+type FrameSetSources = {
+  defaultSources: string[]
+  solvingSources: string[]
+  completedSources: string[]
+  backToDefaultSources: string[]
+}
+
+function createFrameSet({
+  defaultSources,
+  solvingSources,
+  completedSources,
+  backToDefaultSources,
+}: FrameSetSources): FrameSet {
+  const defaultFrame = defaultSources[0] ? svgToDataUri(defaultSources[0]) : ''
+  const solvingFrames = solvingSources.length
+    ? createSmoothLoopFrames(solvingSources, SOLVING_CROSSFADE_STEPS)
+    : [defaultFrame].filter(Boolean)
+  const completedFrames = completedSources.map(svgToDataUri)
+  const completedHoldFrame = completedFrames.length ? completedFrames[completedFrames.length - 1] : defaultFrame
+  const backToDefaultFrames = backToDefaultSources.length
+    ? backToDefaultSources.map(svgToDataUri)
+    : [defaultFrame].filter(Boolean)
+
+  return {
+    defaultFrame,
+    solvingFrames,
+    completedFrames,
+    completedHoldFrame,
+    backToDefaultFrames,
+  }
+}
+
+const lightFrameSet = createFrameSet({
+  defaultSources: defaultLightSources.length ? defaultLightSources : fallbackDefaultSources,
+  solvingSources,
+  completedSources: completedLightSources.length ? completedLightSources : fallbackCompletedSources,
+  backToDefaultSources: backToDefaultLightSources.length
+    ? backToDefaultLightSources
+    : fallbackBackToDefaultSources,
+})
+
+const darkFrameSet = createFrameSet({
+  defaultSources: defaultDarkSources.length ? defaultDarkSources : fallbackDefaultSources,
+  solvingSources,
+  completedSources: completedDarkSources.length ? completedDarkSources : fallbackCompletedSources,
+  backToDefaultSources: backToDefaultDarkSources.length
+    ? backToDefaultDarkSources
+    : fallbackBackToDefaultSources,
+})
+
+const frameSetsByTheme: Record<FaviconTheme, FrameSet> = {
+  light: lightFrameSet,
+  dark: darkFrameSet,
+}
+
+function detectPreferredTheme(): FaviconTheme {
+  if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
+    return 'light'
+  }
+
+  try {
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  } catch (error) {
+    console.warn('[Favicon] Failed to evaluate prefers-color-scheme media query', error)
+    return 'light'
+  }
+}
+
+const themeChangeListeners = new Set<(theme: FaviconTheme, frameSet: FrameSet) => void>()
+
+let currentTheme: FaviconTheme = detectPreferredTheme()
+let currentFrameSet = frameSetsByTheme[currentTheme]
+
+function notifyThemeChange(theme: FaviconTheme): void {
+  const nextFrameSet = frameSetsByTheme[theme]
+
+  if (currentTheme === theme) {
+    currentFrameSet = nextFrameSet
+    return
+  }
+
+  currentTheme = theme
+  currentFrameSet = nextFrameSet
+  themeChangeListeners.forEach((listener) => listener(theme, nextFrameSet))
+}
+
+let isThemeListenerInitialized = false
+
+function ensureThemeListener(): void {
+  if (isThemeListenerInitialized) {
+    return
+  }
+
+  if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
+    return
+  }
+
+  try {
+    const matcher = window.matchMedia('(prefers-color-scheme: dark)')
+    notifyThemeChange(matcher.matches ? 'dark' : 'light')
+
+    const handleChange = (event: MediaQueryListEvent): void => {
+      notifyThemeChange(event.matches ? 'dark' : 'light')
+    }
+
+    if (typeof matcher.addEventListener === 'function') {
+      matcher.addEventListener('change', handleChange)
+    } else if (typeof matcher.addListener === 'function') {
+      matcher.addListener(handleChange)
+    }
+
+    isThemeListenerInitialized = true
+  } catch (error) {
+    console.warn('[Favicon] Failed to register prefers-color-scheme listener', error)
+  }
+}
+
+export function getFrameSet(theme: FaviconTheme): FrameSet {
+  return frameSetsByTheme[theme]
+}
+
+export function getPreferredTheme(): FaviconTheme {
+  return currentTheme
+}
+
+export function getCurrentFrameSet(): FrameSet {
+  return currentFrameSet
+}
+
+export function subscribeToPreferredThemeChanges(
+  listener: (theme: FaviconTheme, frameSet: FrameSet) => void,
+): () => void {
+  themeChangeListeners.add(listener)
+  ensureThemeListener()
+
+  return () => {
+    themeChangeListeners.delete(listener)
+  }
+}
 
 export const frameDurations = {
   solving: SOLVING_FRAME_DURATION_MS,
@@ -133,6 +301,16 @@ export const frameDurations = {
   completedHold: COMPLETED_HOLD_DURATION_MS,
   backToDefault: BACK_TO_DEFAULT_FRAME_DURATION_MS,
 } as const
+
+function gatherFrameSetFrames(frameSet: FrameSet): string[] {
+  return [
+    frameSet.defaultFrame,
+    frameSet.completedHoldFrame,
+    ...frameSet.solvingFrames,
+    ...frameSet.completedFrames,
+    ...frameSet.backToDefaultFrames,
+  ]
+}
 
 const preloadedFrames = new Set<string>()
 const retainedImages = new Set<HTMLImageElement>()
@@ -196,9 +374,6 @@ function scheduleWarmup(frames: string[]): void {
 }
 
 scheduleWarmup([
-  defaultFrame,
-  completedHoldFrame,
-  ...solvingFrames,
-  ...completedFrames,
-  ...backToDefaultFrames,
+  ...gatherFrameSetFrames(lightFrameSet),
+  ...gatherFrameSetFrames(darkFrameSet),
 ])
