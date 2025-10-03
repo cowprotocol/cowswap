@@ -1,4 +1,4 @@
-import { ReactElement, useEffect, useRef, useState } from 'react'
+import { ReactNode, useEffect, useRef, useState } from 'react'
 
 import { CenteredDots, LongLoadText, UI } from '@cowprotocol/ui'
 
@@ -47,7 +47,7 @@ const ActionButton = styled.button<{ hasLongText$: boolean }>`
 `
 
 export interface TradeFormPrimaryButtonProps {
-  children: ReactElement | string
+  children: ReactNode | string
   disabled?: boolean
   loading?: boolean
   id?: string
@@ -55,11 +55,9 @@ export interface TradeFormPrimaryButtonProps {
   onClick?(): void
 
   className?: string
+  'data-click-event'?: string
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function TradeFormBlankButton({
   onClick,
   children,
@@ -67,7 +65,8 @@ export function TradeFormBlankButton({
   loading,
   id,
   className,
-}: TradeFormPrimaryButtonProps) {
+  'data-click-event': dataClickEvent,
+}: TradeFormPrimaryButtonProps): ReactNode {
   const ref = useRef<HTMLButtonElement>(null)
   const [hasLongText, setHasLongText] = useState(false)
   const [justClicked, setJustClicked] = useState(false)
@@ -83,10 +82,7 @@ export function TradeFormBlankButton({
     setHasLongText(text.length > LONG_TEXT_LENGTH)
   }, [children])
 
-  // Combine local onClick logic with incoming onClick
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const handleClick = () => {
+  const handleClick = (): void => {
     if (isUpToMedium) {
       window.scrollTo({ top: 0, left: 0 })
     }
@@ -114,6 +110,7 @@ export function TradeFormBlankButton({
       onClick={handleClick}
       disabled={showLoader || disabled}
       hasLongText$={hasLongText}
+      data-click-event={dataClickEvent}
     >
       {showLoader ? (
         <>

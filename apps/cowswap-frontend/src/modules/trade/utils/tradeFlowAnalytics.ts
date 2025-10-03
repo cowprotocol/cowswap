@@ -68,7 +68,7 @@ export function useTradeFlowAnalytics(): TradeFlowAnalytics {
         const { marketLabel, orderType } = context
 
         if (errorMessage === USER_SWAP_REJECTED_ERROR) {
-          sendTradeAnalytics('Reject', orderType, marketLabel)
+          sendTradeAnalytics('Reject', orderType, marketLabel, undefined, context.isBridgeOrder)
         } else {
           sendTradeAnalytics('Error', orderType, marketLabel, error.code)
         }

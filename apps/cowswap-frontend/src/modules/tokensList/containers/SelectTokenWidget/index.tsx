@@ -69,6 +69,7 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
     selectedPoolAddress,
     field,
     oppositeToken,
+    tradeType,
   } = useSelectTokenWidgetState()
   const { count: lpTokensWithBalancesCount } = useLpTokensWithBalances()
   const chainsToSelect = useChainsToSelect()
@@ -226,6 +227,8 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
             tokenListTags={tokenListTags}
             areTokensFromBridge={areTokensFromBridge}
             isRouteAvailable={isRouteAvailable}
+            tradeType={tradeType}
+            field={field}
           />
         )
       })()}
