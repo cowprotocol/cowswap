@@ -133,3 +133,72 @@ export const frameDurations = {
   completedHold: COMPLETED_HOLD_DURATION_MS,
   backToDefault: BACK_TO_DEFAULT_FRAME_DURATION_MS,
 } as const
+
+const preloadedFrames = new Set<string>()
+const retainedImages = new Set<HTMLImageElement>()
+
+function scheduleWarmup(frames: string[]): void {
+  if (typeof window === 'undefined' || typeof document === 'undefined' || !frames.length) {
+    return
+  }
+
+  const uniqueFrames = frames.filter((frame): frame is string => Boolean(frame) && !preloadedFrames.has(frame))
+
+  if (!uniqueFrames.length) {
+    return
+  }
+
+  const requestIdleCallback = (window as Window & { requestIdleCallback?: (cb: IdleRequestCallback) => number }).requestIdleCallback
+
+  const runner = (): void => {
+    uniqueFrames.forEach((frame) => {
+      if (preloadedFrames.has(frame)) {
+        return
+      }
+
+      preloadedFrames.add(frame)
+
+      if (frame.startsWith('data:image')) {
+        if (typeof Image === 'undefined') {
+          return
+        }
+
+        const image = new Image()
+        image.decoding = 'async'
+        image.src = frame
+
+        const cleanup = (): void => {
+          retainedImages.delete(image)
+        }
+
+        image.onload = cleanup
+        image.onerror = cleanup
+
+        retainedImages.add(image)
+
+        return
+      }
+
+      const link = document.createElement('link')
+      link.rel = 'preload'
+      link.as = 'image'
+      link.href = frame
+      link.setAttribute('data-animated-favicon-preload', 'true')
+      document.head.appendChild(link)
+    })
+  }
+
+  if (typeof requestIdleCallback === 'function') {
+    requestIdleCallback(() => runner())
+  } else {
+    window.setTimeout(runner, 0)
+  }
+}
+
+scheduleWarmup([
+  defaultFrame,
+  completedHoldFrame,
+  ...solvingFrames,
+  ...completedFrames,
+  ...backToDefaultFrames,
+])
