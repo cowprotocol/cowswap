@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.55.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.54.3...explorer-v2.55.0) (2025-10-02)
+
+
+### Features
+
+* use bff's socket proxy for local/pr envs ([#6292](https://github.com/cowprotocol/cowswap/issues/6292)) ([610a6cc](https://github.com/cowprotocol/cowswap/commit/610a6cc3ba320e3b88f34cfd8ad28e810cc20ae8))
+
 ## [2.54.3](https://github.com/cowprotocol/cowswap/compare/explorer-v2.54.2...explorer-v2.54.3) (2025-09-22)
 
 

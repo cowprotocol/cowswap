@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useEffect } from 'react'
+import { ReactNode, useCallback, useEffect, useRef } from 'react'
 
 import { useAddUserToken } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -59,12 +59,8 @@ export function TradeWidgetModals({
     (closeTokenSelectWidget = true, shouldCloseAutoImportModal = true) => {
       closeTradeConfirm()
       closeZeroApprovalModal()
-      if (shouldCloseAutoImportModal) {
-        closeAutoImportModal()
-      }
-      if (closeTokenSelectWidget) {
-        updateSelectTokenWidgetState({ open: false })
-      }
+      if (shouldCloseAutoImportModal) closeAutoImportModal()
+      if (closeTokenSelectWidget) updateSelectTokenWidgetState({ open: false })
       setWrapNativeScreenState({ isOpen: false })
       updateTradeApproveState({ approveInProgress: false, error: undefined })
       setTokenListAddingError(null)
@@ -81,6 +77,9 @@ export function TradeWidgetModals({
   )
 
   const isOutputTokenSelector = field === Field.OUTPUT
+  const isOutputTokenSelectorRef = useRef(isOutputTokenSelector)
+  isOutputTokenSelectorRef.current = isOutputTokenSelector
+
   const error = tokenListAddingError || approveError || confirmError
 
   /**
@@ -95,8 +94,8 @@ export function TradeWidgetModals({
    * Because network might be changed from the widget inside
    */
   useEffect(() => {
-    resetAllScreens(isOutputTokenSelector)
-  }, [chainId, resetAllScreens, isOutputTokenSelector])
+    resetAllScreens(isOutputTokenSelectorRef.current)
+  }, [chainId, resetAllScreens])
 
   if (genericModal) {
     return genericModal
