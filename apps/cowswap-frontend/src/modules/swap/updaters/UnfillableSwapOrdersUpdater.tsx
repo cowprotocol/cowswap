@@ -13,7 +13,9 @@ const PENDING_ORDERS_PAGE_SIZE = 10
 export function UnfillableSwapOrdersUpdater(): ReactNode {
   const { chainId, account } = useWalletInfo()
   const allPendingOrders = useOnlyPendingOrders(chainId, account)
-  const swapPendingOrders = allPendingOrders.filter((order) => order.class === OrderClass.MARKET)
+  const swapPendingOrders = allPendingOrders
+    .filter((order) => order.class === OrderClass.MARKET)
+    .slice(0, PENDING_ORDERS_PAGE_SIZE)
 
-  return <UnfillableOrdersUpdater orders={swapPendingOrders} pageSize={PENDING_ORDERS_PAGE_SIZE} pageNumber={1} />
+  return <UnfillableOrdersUpdater orders={swapPendingOrders} />
 }

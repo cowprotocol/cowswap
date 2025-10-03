@@ -5,6 +5,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { UnfillableOrdersUpdater } from 'common/updaters/orders/UnfillableOrdersUpdater'
+import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { SearchIcon, SearchInput, SearchInputContainer, StyledCloseIcon } from './styled'
 
@@ -16,6 +17,12 @@ import { OrdersTableStateUpdater } from '../../updaters/OrdersTableStateUpdater'
 import { tableItemsToOrders } from '../../utils/orderTableGroupUtils'
 import { MultipleCancellationMenu } from '../MultipleCancellationMenu'
 import { OrdersReceiptModal } from '../OrdersReceiptModal'
+
+function getOrdersPageChunk(orders: ParsedOrder[], pageSize: number, pageNumber: number): ParsedOrder[] {
+  const start = (pageNumber - 1) * pageSize
+  const end = start + pageSize
+  return orders.slice(start, end)
+}
 
 const tabsWithPendingOrders: OrderTabId[] = [OrderTabId.open, OrderTabId.all, OrderTabId.unfillable] as const
 
@@ -35,22 +42,22 @@ export function OrdersTableWidget(props: OrdersTableWidgetProps): ReactNode {
   const isTabWithPending = !!currentTabId && tabsWithPendingOrders.includes(currentTabId)
 
   const pendingOrders = useMemo(() => {
-    if (!isTabWithPending || !filteredOrders) return undefined
+    if (!isTabWithPending || !filteredOrders || typeof currentPageNumber !== 'number') return undefined
 
-    return tableItemsToOrders(filteredOrders).filter((order) => {
+    const currentPageItems = getOrdersPageChunk(
+      tableItemsToOrders(filteredOrders),
+      ORDERS_TABLE_PAGE_SIZE,
+      currentPageNumber,
+    )
+
+    return currentPageItems.filter((order) => {
       return order.status === OrderStatus.PENDING
     })
-  }, [isTabWithPending, filteredOrders])
+  }, [isTabWithPending, filteredOrders, currentPageNumber])
 
   return (
     <>
-      {!!pendingOrders?.length && typeof currentPageNumber === 'number' && (
-        <UnfillableOrdersUpdater
-          orders={pendingOrders}
-          pageSize={ORDERS_TABLE_PAGE_SIZE}
-          pageNumber={currentPageNumber}
-        />
-      )}
+      {!!pendingOrders?.length && <UnfillableOrdersUpdater orders={pendingOrders} />}
       <OrdersTableStateUpdater searchTerm={searchTerm} {...stateParams} />
       {children}
       <OrdersTableContainer searchTerm={searchTerm}>
