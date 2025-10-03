@@ -81,6 +81,7 @@ export interface TradeFormButtonContext {
   widgetStandaloneMode?: boolean
   enablePartialApprove?: boolean
   customTokenError?: string
+  analyticsEvent?: string
 
   confirmTrade(): void
 

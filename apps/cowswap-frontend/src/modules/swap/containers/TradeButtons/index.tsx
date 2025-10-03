@@ -1,7 +1,8 @@
-import React, { ReactNode } from 'react'
+import { ReactNode } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { AddIntermediateToken } from 'modules/tokensList'
 import {
@@ -20,6 +21,7 @@ import { useHighFeeWarning } from 'modules/tradeWidgetAddons'
 
 import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
 
+import { buildSwapBridgeClickEvent } from './analytics'
 import { swapTradeButtonsMap } from './swapTradeButtonsMap'
 
 import { useOnCurrencySelection } from '../../hooks/useOnCurrencySelection'
@@ -45,7 +47,8 @@ export function TradeButtons({
   intermediateBuyToken,
   setShowAddIntermediateTokenModal,
 }: TradeButtonsProps): ReactNode {
-  const { inputCurrency } = useSwapDerivedState()
+  const { chainId, account: walletAddress } = useWalletInfo()
+  const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount } = useSwapDerivedState()
 
   const primaryFormValidation = useGetTradeFormValidation()
   const tradeConfirmActions = useTradeConfirmActions()
@@ -63,15 +66,26 @@ export function TradeButtons({
   const { isPartialApproveEnabled } = useFeatureFlags()
   const tradeFormButtonContext = useTradeFormButtonContext(confirmText, confirmTrade, !!isPartialApproveEnabled)
 
-  const context = useSafeMemoObject({
-    wrappedToken,
-    onEthFlow: openNativeWrapModal,
-    openSwapConfirm: confirmTrade,
+  const swapBridgeClickEvent = buildSwapBridgeClickEvent({
+    isCurrentTradeBridging,
     inputCurrency,
-    hasEnoughWrappedBalanceForSwap,
-    onCurrencySelection,
-    confirmText,
+    outputCurrency,
+    inputCurrencyAmount,
+    outputCurrencyAmount,
+    chainId,
+    walletAddress,
   })
+
+const context = useSafeMemoObject({
+  wrappedToken,
+  onEthFlow: openNativeWrapModal,
+  openSwapConfirm: confirmTrade,
+  inputCurrency,
+  hasEnoughWrappedBalanceForSwap,
+  onCurrencySelection,
+  confirmText,
+  analyticsEvent: swapBridgeClickEvent,
+})
 
   const shouldShowAddIntermediateToken =
     tokenToBeImported &&
@@ -96,6 +110,7 @@ export function TradeButtons({
         validation={primaryFormValidation}
         context={tradeFormButtonContext}
         isDisabled={isDisabled}
+        data-click-event={swapBridgeClickEvent}
       />
       {shouldShowAddIntermediateToken && (
         <AddIntermediateToken
