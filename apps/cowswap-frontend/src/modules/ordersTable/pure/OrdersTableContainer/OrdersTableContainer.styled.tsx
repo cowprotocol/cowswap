@@ -1,4 +1,4 @@
-import { ExternalLink, Media } from '@cowprotocol/ui'
+import { ExternalLink, Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -13,24 +13,25 @@ export const Content = styled.div`
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
-  justify-content: flex-start;
-  color: inherit;
+  justify-content: center;
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
   min-height: 490px;
   padding: 24px 0 0;
-  gap: 16px;
+  gap: 32px;
 
   > h3 {
-    font-size: 26px;
-    line-height: 1.2;
-    font-weight: 500;
-    margin: 0 auto 16px;
+    font-size: 32px;
+    line-height: 1;
+    font-weight: 600;
+    margin: 0 auto;
     text-align: center;
+    color: inherit;
   }
 
   > p {
     font-size: 15px;
     line-height: 1.4;
-    margin: 0 auto 21px;
+    margin: 0 auto;
     font-weight: 400;
     text-align: center;
     color: inherit;
@@ -39,12 +40,12 @@ export const Content = styled.div`
 
 export const NoOrdersAnimation = styled.div`
   width: 100%;
-  max-width: 420px;
-  margin-top: auto;
+  max-width: 320px;
+  margin: 16px auto 0;
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  padding: 0 0 16px;
+  padding: 0;
 
   > img {
     width: 100%;
