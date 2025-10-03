@@ -1,4 +1,4 @@
-import { ExternalLink, Media, UI } from '@cowprotocol/ui'
+import { ExternalLink, Media } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -11,60 +11,13 @@ export const Wrapper = styled.div`
 
 export const Content = styled.div`
   display: flex;
-  flex-flow: column wrap;
+  flex-flow: column nowrap;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   color: inherit;
   min-height: 490px;
-  padding: 0;
-
-  > span {
-    --size: 130px;
-    width: var(--size);
-    height: var(--size);
-    border-radius: var(--size);
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    margin: 0 0 16px;
-    color: inherit;
-    transform: rotate(0);
-    transition: transform 5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-
-    &::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      background: var(${UI.COLOR_PAPER_DARKER});
-      width: var(--size);
-      height: var(--size);
-      border-radius: var(--size);
-      z-index: -1;
-    }
-
-    &:hover {
-      transform: rotate(360deg);
-    }
-
-    > img,
-    > svg {
-      max-width: 100%;
-      max-height: 100%;
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      display: inline;
-    }
-
-    > svg {
-      padding: 28px;
-      fill: currentColor;
-      opacity: 0.5;
-    }
-  }
+  padding: 24px 0 0;
+  gap: 16px;
 
   > h3 {
     font-size: 26px;
@@ -84,8 +37,33 @@ export const Content = styled.div`
   }
 `
 
-export const MeditatingCowImg = styled.img`
-  padding: 16px;
+export const NoOrdersAnimation = styled.div`
+  width: 100%;
+  max-width: 420px;
+  margin-top: auto;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0 0 16px;
+
+  > img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+`
+
+export const NoOrdersLottieFrame = styled.div`
+  position: relative;
+  width: 100%;
+  padding-top: calc(386 / 1099 * 100%);
+
+  > div {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
 `
 
 export const TopContainer = styled.div`
