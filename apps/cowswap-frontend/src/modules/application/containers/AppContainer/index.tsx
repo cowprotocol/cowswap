@@ -1,4 +1,4 @@
-import { ReactNode, useMemo } from 'react'
+import { ReactNode, useMemo, useState } from 'react'
 
 import { initPixelAnalytics, useAnalyticsReporter, useCowAnalytics, WebVitalsAnalytics } from '@cowprotocol/analytics'
 import { useFeatureFlags, useMediaQuery } from '@cowprotocol/common-hooks'
@@ -20,6 +20,7 @@ import { InvalidLocalTimeWarning } from 'common/containers/InvalidLocalTimeWarni
 import { useCustomTheme } from 'common/hooks/useCustomTheme'
 import { useGetMarketDimension } from 'common/hooks/useGetMarketDimension'
 
+import { PageBackgroundContext, PageBackgroundVariant } from '../../contexts/PageBackgroundContext'
 import { ADDITIONAL_FOOTER_CONTENT, PRODUCT_VARIANT } from '../App/menuConsts'
 import * as styledEl from '../App/styled'
 import { AppMenu } from '../AppMenu'
@@ -54,55 +55,71 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
   const { isYieldEnabled } = useFeatureFlags()
   const isInjectedWidgetMode = isInjectedWidget()
   const [darkMode] = useDarkModeManager()
+  const [pageBackgroundVariant, setPageBackgroundVariant] = useState<PageBackgroundVariant>('default')
+  const [pageScene, setPageScene] = useState<ReactNode | null>(null)
 
   const isMobile = useMediaQuery(Media.upToMedium(false))
 
   const customTheme = useCustomTheme()
+  const pageBackgroundValue = useMemo(
+    () => ({
+      variant: pageBackgroundVariant,
+      setVariant: setPageBackgroundVariant,
+      scene: pageScene,
+      setScene: setPageScene,
+    }),
+    [pageBackgroundVariant, pageScene],
+  )
 
   const networkAndAccountControls = <NetworkAndAccountControls />
 
   const isChristmasTheme = customTheme === 'darkChristmas' || customTheme === 'lightChristmas'
 
   return (
-    <styledEl.AppWrapper>
-      <URLWarning />
-      <InvalidLocalTimeWarning />
+    <PageBackgroundContext.Provider value={pageBackgroundValue}>
+      <styledEl.AppWrapper>
+        <URLWarning />
+        <InvalidLocalTimeWarning />
 
-      <OrdersPanel />
+        <OrdersPanel />
 
-      <AppMenu>{networkAndAccountControls}</AppMenu>
+        <AppMenu>{networkAndAccountControls}</AppMenu>
 
-      {isYieldEnabled && <CoWAmmBanner />}
+        {isYieldEnabled && <CoWAmmBanner />}
 
-      <styledEl.BodyWrapper customTheme={customTheme}>
-        {children}
-        <styledEl.Marginer />
-      </styledEl.BodyWrapper>
+        <styledEl.BodyWrapper customTheme={customTheme} backgroundVariant={pageBackgroundVariant}>
+          {children}
+          <styledEl.Marginer />
+        </styledEl.BodyWrapper>
 
-      {!isInjectedWidgetMode && isChristmasTheme && (
-        <Snowfall
-          style={{
-            position: 'fixed',
-            width: '100vw',
-            height: '100vh',
-            zIndex: 3,
-            pointerEvents: 'none',
-            top: 0,
-            left: 0,
-          }}
-          snowflakeCount={isMobile ? 25 : darkMode ? 75 : 200}
-          radius={[0.5, 2.0]}
-          speed={[0.5, 2.0]}
-          wind={[-0.5, 1.0]}
-        />
-      )}
+        {!isInjectedWidgetMode && isChristmasTheme && (
+          <Snowfall
+            style={{
+              position: 'fixed',
+              width: '100vw',
+              height: '100vh',
+              zIndex: 3,
+              pointerEvents: 'none',
+              top: 0,
+              left: 0,
+            }}
+            snowflakeCount={isMobile ? 25 : darkMode ? 75 : 200}
+            radius={[0.5, 2.0]}
+            speed={[0.5, 2.0]}
+            wind={[-0.5, 1.0]}
+          />
+        )}
 
-      {!isInjectedWidgetMode && (
-        <Footer productVariant={PRODUCT_VARIANT} additionalFooterContent={ADDITIONAL_FOOTER_CONTENT} hasTouchFooter />
-      )}
+        {!isInjectedWidgetMode && (
+          <styledEl.FooterSlot>
+            {pageScene && <styledEl.SceneContainer>{pageScene}</styledEl.SceneContainer>}
+            <Footer productVariant={PRODUCT_VARIANT} additionalFooterContent={ADDITIONAL_FOOTER_CONTENT} hasTouchFooter />
+          </styledEl.FooterSlot>
+        )}
 
-      {/* Render MobileHeaderControls outside of MenuBar on mobile */}
-      {isMobile && !isInjectedWidgetMode && networkAndAccountControls}
-    </styledEl.AppWrapper>
+        {/* Render MobileHeaderControls outside of MenuBar on mobile */}
+        {isMobile && !isInjectedWidgetMode && networkAndAccountControls}
+      </styledEl.AppWrapper>
+    </PageBackgroundContext.Provider>
   )
 }

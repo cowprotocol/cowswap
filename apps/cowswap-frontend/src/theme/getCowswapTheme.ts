@@ -8,9 +8,6 @@ const isWidget = isInjectedWidget()
 const widgetMode = {
   isWidget,
   isIframe: isIframe(),
-  // TODO: isInjectedWidgetMode is deprecated, use isWidget instead
-  // This alias is kept for backward compatibility with styled components
-  isInjectedWidgetMode: isWidget,
 }
 
 export function getCowswapTheme(darkmode: boolean): CoWSwapTheme {
