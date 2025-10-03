@@ -1,4 +1,5 @@
 import completedHoldSvg from '../../assets/animated-favicon/shared/completed-hold.svg?raw'
+import defaultBaseSvg from '../../assets/animated-favicon/shared/default-base.svg?raw'
 
 const defaultFrameModules = import.meta.glob<string>('../../assets/animated-favicon/default/*.svg', {
   as: 'raw',
@@ -49,12 +50,23 @@ function filterModules(
   return Object.fromEntries(Object.entries(modules).filter(([path, source]) => predicate(path, source)))
 }
 
-const defaultLightSources = toSortedFrames(
+const defaultBaseSource = defaultBaseSvg.trim()
+const moduleDefaultLightSources = toSortedFrames(
   filterModules(defaultFrameModules, (path) => !path.includes('-dark')),
 )
+const defaultLightSources = [
+  defaultBaseSource,
+  ...moduleDefaultLightSources.filter((source) => source.trim() !== defaultBaseSource),
+]
 const defaultDarkSources = toSortedFrames(filterModules(defaultFrameModules, (path) => path.includes('-dark')))
-const solvingSources = toSortedFrames(solvingFrameModules)
-const completedLightSources = toSortedFrames(completedFrameModules)
+const solvingSources = toSortedFrames({
+  ...solvingFrameModules,
+  '../../assets/animated-favicon/solving/solving-6.svg': defaultBaseSource,
+})
+const completedLightSources = toSortedFrames({
+  ...completedFrameModules,
+  '../../assets/animated-favicon/completed/completed-1.svg': defaultBaseSource,
+})
 const completedDarkSources = toSortedFrames(completedDarkFrameModules)
 const baseBackToDefaultLightSources = toSortedFrames(backToDefaultFrameModules)
 const baseBackToDefaultDarkSources = toSortedFrames(backToDefaultDarkFrameModules)
