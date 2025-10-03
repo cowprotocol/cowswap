@@ -8,7 +8,7 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: cowswapdev\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-09-30 21:52\n"
+"PO-Revision-Date: 2025-10-03 20:06\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -21,7 +21,7 @@ msgstr ""
 #: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTableRow.tsx
 #: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTableRow.tsx
 msgid "View token contract"
-msgstr "Ver contrato de token"
+msgstr "Ver contrato del token"
 
 #: apps/cowswap-frontend/src/common/hooks/useMultipleOrdersCancellation/useCancelMultipleOrders.ts
 #: apps/cowswap-frontend/src/legacy/utils/trade.ts
@@ -38,7 +38,7 @@ msgstr "años"
 
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/SurplusCard.tsx
 msgid "Learn about surplus on CoW Swap"
-msgstr "Aprender sobre excedentes en el intercambio de CoW"
+msgstr "Aprender sobre superávit en CoW Swap"
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 msgid "Retrieve COW tokens before or after a swap."
@@ -259,6 +259,10 @@ msgstr "Puente vía"
 msgid "Trade your way - personalize the interface and customize your limit orders"
 msgstr "Opera a tu manera: personaliza la interfaz y personaliza tus órdenes de límite"
 
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
+msgid "Supported networks:"
+msgstr "Redes soportadas:"
+
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappDetails/index.tsx
 msgid "EOA wallets"
 msgstr "Billeteras EOA"
@@ -337,7 +341,7 @@ msgstr "Descartar"
 #: apps/cowswap-frontend/src/modules/ordersTable/const/tabs.ts
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderStatusBox/getOrderStatusTitleAndColor.ts
 msgid "Open"
-msgstr "Abrir"
+msgstr "Abiertas"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/BridgingStatusHeader/index.tsx
 msgid "Refund completed!"
@@ -389,7 +393,7 @@ msgstr "Ejecutar una simulación"
 
 #: apps/cowswap-frontend/src/pages/games/MevSlicer/index.tsx
 msgid "This CoW doesn't run away any more! Not from MEV!"
-msgstr "¡Esta CoW no huye más! ¡Ni de MEV!"
+msgstr "¡Esta vaca no huye más! ¡Ni de MEV!"
 
 #: apps/cowswap-frontend/src/modules/accountProxy/hooks/useRecoverFundsCallback.ts
 #~ msgid "Recover funds from {ACCOUNT_PROXY_LABEL}"
@@ -473,6 +477,10 @@ msgstr "Vender monto"
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/WarningEstimatedPrice/index.tsx
 msgid "Unfillable"
 msgstr "No rellenable"
+
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
+msgid "Request timed out. Please try again."
+msgstr "Tiempo de espera agotado. Por favor, inténtelo de nuevo."
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/pure/Row/RowDeadline/index.tsx
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/pure/Row/RowSlippageContent/index.tsx
@@ -645,7 +653,7 @@ msgstr "El intercambio de CoW ahora está en vivo en Arbitrum, Base, Polygon y A
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
 msgid "You don't have any {orderTabState} orders at the moment."
-msgstr "No tienes ninguna orden {orderTabState} en este momento."
+msgstr "No tienes ningún pedido {orderTabState} en este momento."
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/Settings/index.tsx
 msgid "Limit Price Position"
@@ -818,7 +826,7 @@ msgstr "Posiblemente tenga otros artículos que reclamar, pero no Airdrops"
 
 #: apps/cowswap-frontend/src/common/pure/NetworksList/index.tsx
 msgid "CoW Protocol Explorer"
-msgstr "Explorador de protocolos CoW"
+msgstr "Explorador de CoW Protocol"
 
 #: apps/cowswap-frontend/src/common/pure/CoWAmmBannerContent/index.tsx
 msgid "pools"
@@ -987,6 +995,10 @@ msgstr "Exceso recibido"
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 msgid "signature is"
 msgstr "firma es"
+
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
+msgid "This app/hook can only be used as a <0>{hookType}-hook</0>"
+msgstr "Esta aplicación/gancho solo puede utilizarse como un gancho <0>{hookType}-hook</0>"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersConfirmModal/index.tsx
 msgid "Place limit order"
@@ -1338,6 +1350,10 @@ msgstr "Cargo total"
 msgid "Recoverable balance"
 msgstr "Saldo recuperable"
 
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
+msgid "Invalid hook dapp ID format. The ID must be a 64-character hexadecimal string."
+msgstr "Formato de ID dapp de gancho inválido. El ID debe ser una cadena hexadecimal de 64 caracteres."
+
 #: apps/cowswap-frontend/src/common/pure/CurrencySelectButton/index.tsx
 msgid "Select custom token"
 msgstr "Seleccionar token personalizado"
@@ -1558,7 +1574,7 @@ msgstr "Orden parcialmente llenada"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
 msgid "Time to create a new one!"
-msgstr "¡Es hora de crear uno nuevo!"
+msgstr "¡Es hora de crear una nueva!"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/ExpiredStep.tsx
 msgid "or send us an email at"
@@ -1578,7 +1594,7 @@ msgstr "La cantidad estimada que recibirás después de los costes estimados de 
 
 #: apps/cowswap-frontend/src/pages/games/CowRunner/index.tsx
 msgid "Run! ...and try not getting sandwiched"
-msgstr "¡Ejecuta! ...e intenta no ser sándwickeado"
+msgstr "¡Corre! ...e intenta no ser sandwickeado"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowBanner/index.tsx
 msgid "Wrap your {nativeSymbol} and use the classic {wrappedSymbol} experience!"
@@ -1929,7 +1945,7 @@ msgstr "Paso de depuración:"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/InfoBanner/index.tsx
 msgid "Your order may not fill exactly when the market price reaches your limit price."
-msgstr "Su orden no puede llenar exactamente cuando el precio de mercado alcanza su límite."
+msgstr "Su orden podría no rellenarse exactamente cuando el precio de mercado llega al precio límite"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookTooltip/index.tsx
 msgid "BEFORE"
@@ -1976,6 +1992,10 @@ msgstr "Protocolo CoW"
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/OrderRow/OrderWarning.tsx
 msgid "Insufficient allowance granted for"
 msgstr "Permiso insuficiente concedido para"
+
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/CustomDappLoader/index.tsx
+msgid "Failed to fetch manifest from {manifestUrl}. Please verify the URL and try again."
+msgstr "No se pudo obtener el manifiesto de {manifestUrl}. Por favor, comprueba la URL y vuelve a intentarlo."
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/ExecutionPriceTooltip/index.tsx
 msgid "Order executes at"
@@ -2027,7 +2047,7 @@ msgstr "Dado que {accountProxyLabelString} no es un contrato inteligente, puede 
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
 msgid "open"
-msgstr "abierto"
+msgstr "abierta"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 msgid "Filled on"
@@ -2167,7 +2187,7 @@ msgstr "El usuario rechazó la firma del pedido"
 
 #: libs/common-const/src/common.ts
 msgid "Account Proxy"
-msgstr "Proxy de cuenta"
+msgstr "Proxy de la cuenta"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 #~ msgid "Executing', description: 'The winner of the competition is now executing your order on-chain."
@@ -2576,6 +2596,10 @@ msgstr "Las órdenes limitadas en el intercambio de CoW son gratuitas para reali
 msgid "safeBundleFlowContext is not set!"
 msgstr "safeBundleFlowContext no está establecido!"
 
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
+msgid "Invalid URL: No manifest.json file found. Please check the URL and try again."
+msgstr "URL no válida: No se encontró archivo manifest.json. Por favor, compruebe la URL y vuelva a intentarlo."
+
 #: apps/cowswap-frontend/src/pages/Account/LockedGnoVesting/hooks.ts
 #: apps/cowswap-frontend/src/pages/Account/LockedGnoVesting/hooks.ts
 msgid "COW token not found for chain {SupportedChainIdMAINNET}"
@@ -2600,6 +2624,10 @@ msgstr "Usted pagará un coste de gas separado por firmar el pedido colocado en 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/StatusIcon.tsx
 msgid "Status: {label}"
 msgstr "Estado: {label}"
+
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
+msgid "This app/hook doesn't support the current network:"
+msgstr "Esta aplicación/hook no soporta la red actual:"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/ImportTokenModal/index.tsx
 msgid "Import token"
@@ -2637,6 +2665,10 @@ msgstr "Incluido en el precio estimado de ejecución"
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
 msgid "Network costs (incl. gas) are covered by filling your order when the market price is better than your limit price."
 msgstr "Los costes de red (incluido el gas) se cubren llenando su pedido cuando el precio de mercado es mejor que su precio límite."
+
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
+msgid "Technical details:"
+msgstr "Detalles técnicos:"
 
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/index.tsx
 msgid "How do I recover my funds from {accountProxyLabel}?"
@@ -2757,7 +2789,7 @@ msgstr "Algo salió mal y su pedido no pudo ser ejecutado con este lote. ¡Pero 
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/hooks/usePendingApprovalModal.tsx
 msgid "Approving token"
-msgstr "Token de aprobación"
+msgstr "Aprobación de token"
 
 #: apps/cowswap-frontend/src/modules/trade/containers/NoImpactWarning/index.tsx
 msgid "We are unable to calculate the price impact for this order.<0/><1/>You may still move forward but <2>please review carefully that the receive amounts are what you expect.</2>"
@@ -2942,7 +2974,7 @@ msgstr "Para su comodidad, la aprobación de tokens y la colocación de pedidos 
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
 msgid "No open orders"
-msgstr "No hay pedidos abiertos"
+msgstr "No hay órdenes abiertas"
 
 #: libs/common-utils/src/tooltips.ts
 msgid "Maximum tokens you'll sell."
@@ -3235,6 +3267,10 @@ msgstr "2 paradas"
 msgid "You must give the CoW Protocol smart contracts permission to use your <0/>. If you approve the default amount, you will only have to do this once per token."
 msgstr "Debe dar permiso a los contratos inteligentes del Protocolo CoW para usar su <0/>. Si aprueba la cantidad por defecto, sólo tendrá que hacer esto una vez por token."
 
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
+msgid "Please enter the base URL of your dapp, not the direct manifest.json path"
+msgstr "Por favor, introduzca la URL base de su dapp, no la ruta directa de manifest.json"
+
 #: apps/cowswap-frontend/src/modules/orders/pure/PendingOrderNotification/index.tsx
 msgid "submitted"
 msgstr "enviado"
@@ -3302,6 +3338,10 @@ msgstr "Puente fallido en"
 #: apps/cowswap-frontend/src/common/pure/ConfirmationPendingContent/ConfirmationPendingContent.tsx
 msgid "The {operationLabel} is submitted."
 msgstr "El {operationLabel} ha sido enviado."
+
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/CustomDappLoader/index.tsx
+msgid "Invalid manifest format at {manifestUrl}: missing cow_hook_dapp property"
+msgstr "Formato de manifiesto no válido en {manifestUrl}: falta la propiedad cow_hook_dapp"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
@@ -3515,6 +3555,10 @@ msgstr "Expira"
 msgid "Minutes"
 msgstr "Minutos"
 
+#: apps/cowswap-frontend/src/modules/erc20Approve/containers/TradeApproveModal/useTradeApproveCallback.ts
+msgid "User rejected approval transaction"
+msgstr "Transacción rechazada por el usuario"
+
 #: apps/cowswap-frontend/src/modules/bridge/pure/StopStatus/index.tsx
 msgid "Swap on"
 msgstr "Intercambiar en"
@@ -3719,6 +3763,10 @@ msgstr "aprobación de token"
 #: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
 msgid "including an extra "
 msgstr "incluyendo un extra "
+
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
+msgid "Invalid URL format"
+msgstr "Formato de URL inválido"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/OrderRow/OrderContextMenu.tsx
@@ -4027,6 +4075,10 @@ msgstr "Esta es la cantidad que se venderá en cada parte del pedido TWAP."
 msgid "Quote expired. Refreshing..."
 msgstr "Cotización caducada. Actualizando..."
 
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
+msgid "The URL provided does not return a valid manifest file<0/><1>The server returned an HTML page instead of the expected JSON manifest.json file. Please check if the URL is correct and points to a valid hook dapp.</1>"
+msgstr "La URL proporcionada no devuelve un archivo manifest válido<0/><1>El servidor devolvió una página HTML en lugar del manifiesto JSON esperado. son archivos. Por favor, comprueba si la URL es correcta y apunta a un enlace válido dapp.</1>"
+
 #: apps/cowswap-frontend/src/modules/tokensList/pure/FavoriteTokensList/index.tsx
 #: apps/cowswap-frontend/src/pages/Account/Tokens/TokensOverview.tsx
 msgid "Favorite tokens"
@@ -4034,7 +4086,7 @@ msgstr "Tokens Favoritos"
 
 #: libs/common-const/src/common.ts
 msgid "Limit Orders"
-msgstr "Limitar pedidos"
+msgstr "Órdenes límite"
 
 #: apps/cowswap-frontend/src/modules/accountProxy/containers/WidgetPageTitle/index.tsx
 msgid "funds"
@@ -4136,6 +4188,10 @@ msgstr "Ninguno seguro: <0>{nonce}</0>"
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 msgid "You can protect all your Ethereum transactions from MEV - not just trades on CoW Swap - by installing MEV Blocker."
 msgstr "Puede proteger todas sus transacciones de Ethereum de MEV - no sólo operaciones en CoW Swap - instalando MEV Blocker."
+
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
+msgid "HTTPS is required. Please use <0>https://</0>"
+msgstr "Se requiere HTTPS. Por favor usa <0>https://</0>"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 msgid "Transaction in progress. See below for live status updates."
@@ -4331,6 +4387,14 @@ msgstr "Este gancho te permite retirar recompensas de tus validadores de Gnosis 
 msgid "Sandwich icon"
 msgstr "Icono de Sandwich"
 
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
+msgid "Network compatibility error"
+msgstr "Error de compatibilidad de red"
+
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
+msgid "Invalid URL: URLs cannot contain spaces"
+msgstr "URL no válida: las URLs no pueden contener espacios"
+
 #: apps/cowswap-frontend/src/modules/tokensList/containers/ManageListsAndTokens/index.tsx
 msgid "Enter valid list location"
 msgstr "Introduzca una ubicación de lista válida"
@@ -4411,6 +4475,10 @@ msgstr "Depósito"
 #: apps/cowswap-frontend/src/modules/twap/containers/ActionButtons/index.tsx
 msgid "Review TWAP order"
 msgstr "Revisar el pedido TWAP"
+
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
+msgid "Invalid manifest format: Missing \"cow_hook_dapp\" property in manifest.json"
+msgstr "Formato de manifiesto no válido: Falta la propiedad \"cow_hook_dapp\" en manifest.json"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 msgid "Click \"Approve {wrappedSymbol}\" to try again."
@@ -4554,13 +4622,17 @@ msgstr "Límite de órdenes en excedente de captura de intercambio de CoW - así
 msgid "Avg. execution price"
 msgstr "Precio de ejecución medio"
 
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
+msgid "Hook position mismatch:"
+msgstr "Posición del hook no concuerda:"
+
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
 msgid "Terms and Conditions"
 msgstr "Térms. & Conds."
 
 #: apps/cowswap-frontend/src/modules/fortune/containers/FortuneWidget/index.tsx
 msgid "Hide today's fortune cookie"
-msgstr "Ocultar la cookie de fortune de hoy"
+msgstr "Ocultar la fortune cookie de hoy"
 
 #: apps/cowswap-frontend/src/common/containers/OrderHooksDetails/index.tsx
 msgid "Post Hooks"
@@ -4746,6 +4818,10 @@ msgstr "por lo menos"
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/WalletNotConnected/index.tsx
 msgid "Connect wallet to recover funds"
 msgstr "Conectar billetera para recuperar fondos"
+
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
+msgid "Failed to load manifest. Please verify the URL and try again."
+msgstr "No se pudo cargar el manifiesto. Por favor, compruebe la URL y vuelva a intentarlo."
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/steps/Step2.tsx
 msgid "Order Created"
@@ -5043,6 +5119,10 @@ msgstr "Reclamando COW..."
 msgid "continue with this swap"
 msgstr "continuar con este intercambio"
 
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
+msgid "Could not connect to the provided URL. Please check if the URL is correct and the server is accessible."
+msgstr "No se pudo conectar a la URL proporcionada. Por favor, compruebe si la URL es correcta y el servidor es accesible."
+
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderFillsAt/index.tsx
 msgid "Pending execution"
 msgstr "Ejecución pendiente"
@@ -5210,6 +5290,10 @@ msgstr "Los costes de puente actuales representan <0><1>{formattedBridgeFeePerce
 msgid "In range"
 msgstr "En rango"
 
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
+msgid "This hook is not compatible with smart contract wallets. It only supports EOA wallets."
+msgstr "Este hook no es compatible con carteras de contratos inteligentes. Sólo soporta carteras EOA."
+
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/LimitOrdersDetails/index.tsx
 msgid "Order expires"
 msgstr "El orden expira"
@@ -5371,8 +5455,8 @@ msgid "Continue"
 msgstr "Continuar"
 
 #: apps/cowswap-frontend/src/pages/error/NotFound/index.tsx
-msgid "CowSwap 404 not found"
-msgstr "CowSwap 404 no encontrado"
+#~ msgid "CowSwap 404 not found"
+#~ msgstr "CowSwap 404 not found"
 
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/index.tsx
 msgid "(also known as CoW Shed)"
@@ -5556,6 +5640,11 @@ msgstr "Limpiar todo"
 msgid "Please click confirm to {action}."
 msgstr "Por favor haz clic en confirmar a {action}."
 
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
+msgid "Chain ID:"
+msgstr "ID de cadena:"
+
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/index.tsx
 #~ msgid "What is {ACCOUNT_PROXY_LABEL}?"
 #~ msgstr "What is {ACCOUNT_PROXY_LABEL}?"
@@ -5663,6 +5752,10 @@ msgstr "Llenado"
 msgid "pool"
 msgstr "piscina"
 
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
+msgid "Invalid URL: Path contains consecutive forward slashes"
+msgstr "URL no válida: La ruta contiene barras de reenvío consecutivas"
+
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderFillsAt/index.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderFillsAt/index.tsx
 msgid "partially"
@@ -5684,6 +5777,10 @@ msgstr "Abajo"
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/StatusDetails.tsx
 msgid "Order Filled"
 msgstr "Pedido completado"
+
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/CustomDappLoader/index.tsx
+msgid "Invalid content type: Expected JSON but received {errorContentType}. Make sure the URL points to a valid manifest file."
+msgstr "Tipo de contenido inválido: Se esperaba JSON pero se recibió {errorContentType}. Asegúrese de que la URL apunta a un archivo manifest válido."
 
 #: apps/cowswap-frontend/src/common/hooks/useOnSelectNetwork.tsx
 msgid "Failed to switch networks from the CoW Swap Interface. In order to use CoW Swap on {chainInfoLabel}, you must change the network in your wallet."

@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cowswapdev\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-09-30 21:47\n"
+"PO-Revision-Date: 2025-10-03 19:59\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -259,6 +259,10 @@ msgstr "Мост через"
 msgid "Trade your way - personalize the interface and customize your limit orders"
 msgstr "Торгуйте своим способом - персонализируйте интерфейс и настройте лимитные ордера"
 
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
+msgid "Supported networks:"
+msgstr "Поддерживаемые сети:"
+
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappDetails/index.tsx
 msgid "EOA wallets"
 msgstr "EOA кошельки"
@@ -473,6 +477,10 @@ msgstr "Сумма продажи"
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/WarningEstimatedPrice/index.tsx
 msgid "Unfillable"
 msgstr "Неизлечимый"
+
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
+msgid "Request timed out. Please try again."
+msgstr "Истекло время ожидания запроса. Попробуйте еще раз."
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/pure/Row/RowDeadline/index.tsx
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/pure/Row/RowSlippageContent/index.tsx
@@ -988,6 +996,10 @@ msgstr "Излишки получены"
 msgid "signature is"
 msgstr "подпись"
 
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
+msgid "This app/hook can only be used as a <0>{hookType}-hook</0>"
+msgstr "Это приложение/хук может быть использовано только как <0>{hookType}-hook</0>"
+
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersConfirmModal/index.tsx
 msgid "Place limit order"
 msgstr "Разместить лимитный ордер"
@@ -1337,6 +1349,10 @@ msgstr "Общая сумма"
 #: apps/cowswap-frontend/src/modules/accountProxy/containers/AccountProxyRecoverPage/index.tsx
 msgid "Recoverable balance"
 msgstr "Восстановленный баланс"
+
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
+msgid "Invalid hook dapp ID format. The ID must be a 64-character hexadecimal string."
+msgstr "Недопустимый формат идентификатора hook dapp. Идентификатор должен быть 64-символьной шестнадцатеричной строкой."
 
 #: apps/cowswap-frontend/src/common/pure/CurrencySelectButton/index.tsx
 msgid "Select custom token"
@@ -1977,6 +1993,10 @@ msgstr "Протокол о СОЗ"
 msgid "Insufficient allowance granted for"
 msgstr "Недостаточная надбавка для"
 
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/CustomDappLoader/index.tsx
+msgid "Failed to fetch manifest from {manifestUrl}. Please verify the URL and try again."
+msgstr "Не удалось получить манифест от {manifestUrl}. Проверьте URL-адрес и повторите попытку."
+
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/ExecutionPriceTooltip/index.tsx
 msgid "Order executes at"
 msgstr "Заказ выполняется в"
@@ -2576,6 +2596,10 @@ msgstr "Лимит ордера на замену CoW можно размест�
 msgid "safeBundleFlowContext is not set!"
 msgstr "safeBundleFlowContext не установлен!"
 
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
+msgid "Invalid URL: No manifest.json file found. Please check the URL and try again."
+msgstr "Недопустимый URL: Файл manifest.json не найден. Проверьте URL-адрес и повторите попытку."
+
 #: apps/cowswap-frontend/src/pages/Account/LockedGnoVesting/hooks.ts
 #: apps/cowswap-frontend/src/pages/Account/LockedGnoVesting/hooks.ts
 msgid "COW token not found for chain {SupportedChainIdMAINNET}"
@@ -2600,6 +2624,10 @@ msgstr "оплатить отдельную газовую стоимость д
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/StatusIcon.tsx
 msgid "Status: {label}"
 msgstr "Статус: {label}"
+
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
+msgid "This app/hook doesn't support the current network:"
+msgstr "Это приложение/хук не поддерживает текущую сеть:"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/ImportTokenModal/index.tsx
 msgid "Import token"
@@ -2637,6 +2665,10 @@ msgstr "Включено в предполагаемую цену исполне
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
 msgid "Network costs (incl. gas) are covered by filling your order when the market price is better than your limit price."
 msgstr "Сетевые расходы (включая газ) покрываются за счет заполнения ордера, когда рыночная цена выше лимитной цены."
+
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
+msgid "Technical details:"
+msgstr "Технические подробности:"
 
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/index.tsx
 msgid "How do I recover my funds from {accountProxyLabel}?"
@@ -3235,6 +3267,10 @@ msgstr "2 остановки"
 msgid "You must give the CoW Protocol smart contracts permission to use your <0/>. If you approve the default amount, you will only have to do this once per token."
 msgstr "Вы должны предоставить разрешение на использование вашего <0/>. Если вы подтвердите сумму по умолчанию, это необходимо будет сделать только один раз за токен."
 
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
+msgid "Please enter the base URL of your dapp, not the direct manifest.json path"
+msgstr "Пожалуйста, введите базовый URL-адрес вашего приложения, а не прямой путь manifest.json"
+
 #: apps/cowswap-frontend/src/modules/orders/pure/PendingOrderNotification/index.tsx
 msgid "submitted"
 msgstr "опубликовано"
@@ -3302,6 +3338,10 @@ msgstr "Мост не удался на"
 #: apps/cowswap-frontend/src/common/pure/ConfirmationPendingContent/ConfirmationPendingContent.tsx
 msgid "The {operationLabel} is submitted."
 msgstr "{operationLabel} отправлен."
+
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/CustomDappLoader/index.tsx
+msgid "Invalid manifest format at {manifestUrl}: missing cow_hook_dapp property"
+msgstr "Недопустимый формат манифеста на {manifestUrl}: отсутствует свойство cow_hook_dapp"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
@@ -3515,6 +3555,10 @@ msgstr "Срок действия"
 msgid "Minutes"
 msgstr "Минут"
 
+#: apps/cowswap-frontend/src/modules/erc20Approve/containers/TradeApproveModal/useTradeApproveCallback.ts
+msgid "User rejected approval transaction"
+msgstr "Пользователь отклонил транзакцию утверждения"
+
 #: apps/cowswap-frontend/src/modules/bridge/pure/StopStatus/index.tsx
 msgid "Swap on"
 msgstr "Поменять на"
@@ -3719,6 +3763,10 @@ msgstr "одобрение токена"
 #: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
 msgid "including an extra "
 msgstr "включая доп. "
+
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
+msgid "Invalid URL format"
+msgstr "Неверный формат URL"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/OrderRow/OrderContextMenu.tsx
@@ -4027,6 +4075,10 @@ msgstr "Это сумма, которая будет продана в кажд�
 msgid "Quote expired. Refreshing..."
 msgstr "Истек срок действия предложения. Обновление..."
 
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
+msgid "The URL provided does not return a valid manifest file<0/><1>The server returned an HTML page instead of the expected JSON manifest.json file. Please check if the URL is correct and points to a valid hook dapp.</1>"
+msgstr "Указанный URL не возвращает допустимый файл манифеста<0/><1>Сервер вернул HTML-страницу вместо ожидаемого манифеста JSON. son файл. Пожалуйста, проверьте, правильно ли URL и указывает на корректную дату хуков.</1>"
+
 #: apps/cowswap-frontend/src/modules/tokensList/pure/FavoriteTokensList/index.tsx
 #: apps/cowswap-frontend/src/pages/Account/Tokens/TokensOverview.tsx
 msgid "Favorite tokens"
@@ -4136,6 +4188,10 @@ msgstr "Сейф Nonce: <0>{nonce}</0>"
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 msgid "You can protect all your Ethereum transactions from MEV - not just trades on CoW Swap - by installing MEV Blocker."
 msgstr "Вы можете защитить все ваши Ethereum транзакции от MEV - а не просто торговать на CoW Swap - установив MEV Blocker."
+
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
+msgid "HTTPS is required. Please use <0>https://</0>"
+msgstr "Требуется HTTPS. Пожалуйста, используйте <0>https://</0>"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 msgid "Transaction in progress. See below for live status updates."
@@ -4331,6 +4387,14 @@ msgstr "Этот хук позволяет снимать вознагражде
 msgid "Sandwich icon"
 msgstr "Значок Сэндвича"
 
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
+msgid "Network compatibility error"
+msgstr "Ошибка совместимости сети"
+
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
+msgid "Invalid URL: URLs cannot contain spaces"
+msgstr "Недопустимый URL: URL-адреса не могут содержать пробелы"
+
 #: apps/cowswap-frontend/src/modules/tokensList/containers/ManageListsAndTokens/index.tsx
 msgid "Enter valid list location"
 msgstr "Введите правильное расположение списка"
@@ -4411,6 +4475,10 @@ msgstr "Пополнение"
 #: apps/cowswap-frontend/src/modules/twap/containers/ActionButtons/index.tsx
 msgid "Review TWAP order"
 msgstr "Просмотреть порядок TWAP"
+
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
+msgid "Invalid manifest format: Missing \"cow_hook_dapp\" property in manifest.json"
+msgstr "Недопустимый формат манифеста: отсутствует свойство \"cow_hook_dapp\" в manifest.json"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 msgid "Click \"Approve {wrappedSymbol}\" to try again."
@@ -4553,6 +4621,10 @@ msgstr "Лимит ордера на покупку заменителя - по�
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
 msgid "Avg. execution price"
 msgstr "Средняя цена исполнения"
+
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
+msgid "Hook position mismatch:"
+msgstr "Позиция обработчика не совпадает:"
 
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
 msgid "Terms and Conditions"
@@ -4746,6 +4818,10 @@ msgstr "хотя бы для"
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/WalletNotConnected/index.tsx
 msgid "Connect wallet to recover funds"
 msgstr "Подключите кошелек для восстановления средств"
+
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
+msgid "Failed to load manifest. Please verify the URL and try again."
+msgstr "Не удалось загрузить манифест. Проверьте URL-адрес и повторите попытку."
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/steps/Step2.tsx
 msgid "Order Created"
@@ -5043,6 +5119,10 @@ msgstr "Получение COW..."
 msgid "continue with this swap"
 msgstr "продолжить с этим обменом"
 
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
+msgid "Could not connect to the provided URL. Please check if the URL is correct and the server is accessible."
+msgstr "Не удалось подключиться к предоставленному URL. Пожалуйста, проверьте, правильно ли URL-адрес и сервер доступен."
+
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderFillsAt/index.tsx
 msgid "Pending execution"
 msgstr "В ожидании исполнения"
@@ -5210,6 +5290,10 @@ msgstr "Текущие расходы моста составляют <0><1>{for
 msgid "In range"
 msgstr "В диапазоне"
 
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
+msgid "This hook is not compatible with smart contract wallets. It only supports EOA wallets."
+msgstr "Этот хук несовместим с смарт-контрактными кошельками. Он поддерживает только кошельки EOA."
+
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/LimitOrdersDetails/index.tsx
 msgid "Order expires"
 msgstr "Срок действия заказа истекает"
@@ -5371,8 +5455,8 @@ msgid "Continue"
 msgstr "Продолжить"
 
 #: apps/cowswap-frontend/src/pages/error/NotFound/index.tsx
-msgid "CowSwap 404 not found"
-msgstr "CowSwap 404 не найден"
+#~ msgid "CowSwap 404 not found"
+#~ msgstr "CowSwap 404 not found"
 
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/index.tsx
 msgid "(also known as CoW Shed)"
@@ -5556,6 +5640,11 @@ msgstr "Очистить все"
 msgid "Please click confirm to {action}."
 msgstr "Пожалуйста, подтвердите для {action}."
 
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
+msgid "Chain ID:"
+msgstr "ID цепочки:"
+
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/index.tsx
 #~ msgid "What is {ACCOUNT_PROXY_LABEL}?"
 #~ msgstr "What is {ACCOUNT_PROXY_LABEL}?"
@@ -5663,6 +5752,10 @@ msgstr "Заполнено"
 msgid "pool"
 msgstr "бассейн"
 
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
+msgid "Invalid URL: Path contains consecutive forward slashes"
+msgstr "Недопустимый URL: Путь содержит последовательную прямолинейную слэш"
+
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderFillsAt/index.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderFillsAt/index.tsx
 msgid "partially"
@@ -5684,6 +5777,10 @@ msgstr "Внизу"
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/StatusDetails.tsx
 msgid "Order Filled"
 msgstr "Заказ заполнен"
+
+#: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/CustomDappLoader/index.tsx
+msgid "Invalid content type: Expected JSON but received {errorContentType}. Make sure the URL points to a valid manifest file."
+msgstr "Недопустимый тип содержимого: ожидался JSON, но получил {errorContentType}. Убедитесь, что URL указывает на допустимый файл манифеста."
 
 #: apps/cowswap-frontend/src/common/hooks/useOnSelectNetwork.tsx
 msgid "Failed to switch networks from the CoW Swap Interface. In order to use CoW Swap on {chainInfoLabel}, you must change the network in your wallet."
