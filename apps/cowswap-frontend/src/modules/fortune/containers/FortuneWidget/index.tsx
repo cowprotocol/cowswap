@@ -42,6 +42,7 @@ const FortuneButton = styled.div<{ isDailyFortuneChecked: boolean }>`
   font-size: 40px;
   line-height: 0;
   color: inherit;
+  z-index: 10;
 
   &:hover {
     color: var(${UI.COLOR_NEUTRAL_100});
