@@ -43,7 +43,7 @@ const SideBar = styled.div`
     width: 100%;
     height: 100%;
     max-width: 100%;
-    border-radius: ${({ theme }) => (theme.isInjectedWidgetMode ? '24px' : '0')};
+    border-radius: ${({ theme }) => (theme.isWidget ? '24px' : '0')};
     z-index: 10;
   }
 
@@ -59,7 +59,7 @@ const SidebarBackground = styled.div`
   z-index: 4;
   width: 100%;
   height: 100%;
-  background: ${({ theme }) => (theme.isInjectedWidgetMode ? 'transparent' : transparentize(theme.black, 0.1))};
+  background: ${({ theme }) => (theme.isWidget ? 'transparent' : transparentize(theme.black, 0.1))};
   backdrop-filter: blur(3px);
 
   ${Media.upToSmall()} {

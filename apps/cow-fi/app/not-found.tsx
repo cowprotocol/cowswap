@@ -1,8 +1,12 @@
 // This is a Server Component by default in the app directory
+import type { ReactNode } from 'react'
+
+import type { Metadata } from 'next'
+
 import { Layout } from '@/components/Layout'
 import { NotFoundPageComponent } from '@/components/NotFoundPageComponent'
 import { getPageMetadata } from '@/util/getPageMetadata'
-import type { Metadata } from 'next'
+
 
 export async function generateMetadata(): Promise<Metadata> {
   return getPageMetadata({
@@ -12,9 +16,9 @@ export async function generateMetadata(): Promise<Metadata> {
   })
 }
 
-export default async function Page() {
+export default async function Page(): Promise<ReactNode> {
   return (
-    <Layout bgColor="#F0DEDE">
+    <Layout bgColor="#F0DEDE" showCowSaucer contentMinHeight="auto">
       <NotFoundPageComponent />
     </Layout>
   )

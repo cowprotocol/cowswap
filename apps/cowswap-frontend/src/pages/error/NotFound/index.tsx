@@ -1,27 +1,38 @@
-import cow404IMG from '@cowprotocol/assets/cow-swap/cow-404.png'
-import { ButtonPrimary, Media } from '@cowprotocol/ui'
+import { ReactNode, useEffect, useMemo } from 'react'
 
-import { t } from '@lingui/core/macro'
+import { ButtonPrimary, Media, UI } from '@cowprotocol/ui'
+
 import { Trans } from '@lingui/react/macro'
 import { Link } from 'react-router'
 import styled from 'styled-components/macro'
 
+import { useDarkModeManager } from 'legacy/state/user/hooks'
+
+import { usePageBackground } from 'modules/application/contexts/PageBackgroundContext'
 import { Content, GdocsListStyle, Page, Title } from 'modules/application/pure/Page'
+
+import { CowSaucerScene } from './CowSaucerScene'
 
 const Wrapper = styled(Page)`
   ${GdocsListStyle};
   min-height: auto;
   padding-bottom: 32px;
+  background: transparent;
+  box-shadow: none;
+  border: none;
+  padding-top: 0;
 
   ${Media.upToSmall()} {
     padding-bottom: 24px;
   }
 
   ${Title} {
-    margin-bottom: 50px;
-    font-size: 26px;
+    font-size: 52px;
+    font-weight: 600;
+    text-align: center;
+
     ${Media.upToSmall()} {
-      font-size: 18px;
+      font-size: 28px;
       text-align: center;
     }
   }
@@ -35,38 +46,34 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-
-  ${ButtonPrimary} {
-    width: 196px;
-    padding: 9px;
-
-    &:hover {
-    }
-  }
+  gap: 32px;
 
   h2 {
-    margin: 36px 0 32px;
-  }
-
-  img {
-    max-width: 506px;
-  }
-
-  ${Media.upToSmall()} {
-    img {
-      max-width: 287px;
-    }
-
-    h2 {
-      font-size: 16px;
-      text-align: center;
-    }
+    text-align: center;
+    font-weight: 400;
+    color: var(${UI.COLOR_TEXT_OPACITY_70});
   }
 `
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export default function NotFound() {
+export default function NotFound(): ReactNode {
+  const { setVariant, setScene } = usePageBackground()
+  const [darkMode] = useDarkModeManager()
+
+  const scene = useMemo(() => <CowSaucerScene darkMode={darkMode} />, [darkMode])
+
+  useEffect(() => {
+    setVariant('nocows')
+
+    return () => {
+      setVariant('default')
+      setScene(null)
+    }
+  }, [setVariant, setScene])
+
+  useEffect(() => {
+    setScene(scene)
+  }, [scene, setScene])
+
   return (
     <Wrapper>
       <Title>
@@ -74,10 +81,7 @@ export default function NotFound() {
       </Title>
       <Content>
         <Container>
-          <img src={cow404IMG} alt={t`CowSwap 404 not found`} />
-          <h2>
-            <Trans>The page you are looking for does not exist.</Trans>{' '}
-          </h2>
+          <h2><Trans>The page you are looking for does not exist.</Trans></h2>
           <ButtonPrimary as={Link} to={'/'}>
             <Trans>Back home</Trans>
           </ButtonPrimary>
