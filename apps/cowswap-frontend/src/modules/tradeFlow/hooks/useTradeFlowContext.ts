@@ -1,5 +1,4 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { OrderClass, PriceQuality } from '@cowprotocol/cow-sdk'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
@@ -13,10 +12,10 @@ import { useCloseModals } from 'legacy/state/application/hooks'
 
 import { useAppData, useAppDataHooks } from 'modules/appData'
 import { useBridgeQuoteAmounts } from 'modules/bridge'
+import { useGetAmountToSignApprove } from 'modules/erc20Approve'
 import { useGeneratePermitHook, useGetCachedPermit, usePermitInfo } from 'modules/permit'
 import {
   TradeTypeToUiOrderType,
-  useAmountsToSign,
   useDerivedTradeState,
   useGetReceiveAmountInfo,
   useIsHooksTradeType,
@@ -74,12 +73,8 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
   const typedHooks = useAppDataHooks()
   const addBridgeOrder = useAddBridgeOrder()
   const bridgeQuoteAmounts = useBridgeQuoteAmounts()
-  const { maximumSendSellAmount } = useAmountsToSign() ?? {}
-
-  // todo should be removed when we will add ui for partial permit signing
-  const { isPartialPermitEnabled } = useFeatureFlags()
-  const permitAmountToSign =
-    isPartialPermitEnabled && maximumSendSellAmount ? BigInt(maximumSendSellAmount.quotient.toString()) : undefined
+  const amountToSignApprove = useGetAmountToSignApprove()
+  const permitAmountToSign = amountToSignApprove ? BigInt(amountToSignApprove.quotient.toString()) : undefined
 
   const enoughAllowance = useEnoughAllowance(inputAmount)
 

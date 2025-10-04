@@ -1,5 +1,5 @@
 import { useAtom } from 'jotai'
-import { ReactElement, RefObject, useCallback, useEffect, useRef } from 'react'
+import { ReactElement, ReactNode, RefObject, useCallback, useEffect, useRef } from 'react'
 
 import EXPERIMENT_ICON from '@cowprotocol/assets/cow-swap/experiment.svg'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
@@ -29,12 +29,19 @@ interface SettingsTabProps {
   recipientToggleState: StatefulValue<boolean>
   hooksEnabledState?: StatefulValue<boolean>
   deadlineState: StatefulValue<number>
+  enablePartialApprovalState?: StatefulValue<boolean> | [null, null]
 }
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
-export function SettingsTab({ className, recipientToggleState, hooksEnabledState, deadlineState }: SettingsTabProps) {
+// eslint-disable-next-line max-lines-per-function
+export function SettingsTab({
+  className,
+  recipientToggleState,
+  hooksEnabledState,
+  deadlineState,
+  enablePartialApprovalState,
+}: SettingsTabProps): ReactNode {
   const menuButtonRef = useRef<HTMLButtonElement>(null)
 
   const [recipientToggleVisible, toggleRecipientVisibilityAux] = recipientToggleState
@@ -55,6 +62,17 @@ export function SettingsTab({ className, recipientToggleState, hooksEnabledState
       toggleHooksEnabledAux(isEnabled)
     },
     [hooksEnabled, toggleHooksEnabledAux],
+  )
+
+  const [enablePartialApproval, toggleEnablePartialApprovalAux] = enablePartialApprovalState || [null, null]
+  const toggleEnablePartialApproval = useCallback(
+    (value?: boolean) => {
+      if (enablePartialApproval === null || toggleEnablePartialApprovalAux === null) return
+
+      const isEnabled = value ?? !enablePartialApproval
+      toggleEnablePartialApprovalAux(isEnabled)
+    },
+    [toggleEnablePartialApprovalAux, enablePartialApproval],
   )
 
   return (
@@ -98,6 +116,24 @@ export function SettingsTab({ className, recipientToggleState, hooksEnabledState
                   })}
                 />
               </RowBetween>
+
+              {enablePartialApproval !== null && (
+                <RowBetween>
+                  <RowFixed>
+                    <ThemedText.Black fontWeight={400} fontSize={14}>
+                      <Trans>Enable partial approvals</Trans>
+                    </ThemedText.Black>
+                    <HelpTooltip
+                      text={<Trans>Allows you to set partial token approvals instead of full approvals.</Trans>}
+                    />
+                  </RowFixed>
+                  <Toggle
+                    id="enable-partial-approvals-button"
+                    isActive={enablePartialApproval}
+                    toggle={toggleEnablePartialApproval}
+                  />
+                </RowBetween>
+              )}
 
               {!isInjectedWidget() && hooksEnabled !== null && (
                 <RowBetween>

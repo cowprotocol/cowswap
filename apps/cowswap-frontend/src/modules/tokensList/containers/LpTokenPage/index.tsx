@@ -1,7 +1,9 @@
+import { ReactNode } from 'react'
+
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink, shortenAddress } from '@cowprotocol/common-utils'
 import { TokenLogo, useTokensByAddressMap } from '@cowprotocol/tokens'
-import { ExternalLink, TokenSymbol } from '@cowprotocol/ui'
+import { ExternalLink, ModalHeader, TokenSymbol } from '@cowprotocol/ui'
 
 import { usePoolsInfo } from 'modules/yield/shared'
 
@@ -16,23 +18,21 @@ import {
   Wrapper,
 } from './styled'
 
-import { ModalHeader } from '../../pure/ModalHeader'
-
 function renderValue<T>(value: T | undefined, template: (v: T) => string, defaultValue?: string): string | undefined {
   return value ? template(value) : defaultValue
 }
 
 interface LpTokenPageProps {
   poolAddress: string
+
   onBack(): void
+
   onDismiss(): void
+
   onSelectToken(token: TokenWithLogo): void
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
-export function LpTokenPage({ poolAddress, onBack, onDismiss, onSelectToken }: LpTokenPageProps) {
+export function LpTokenPage({ poolAddress, onBack, onDismiss, onSelectToken }: LpTokenPageProps): ReactNode {
   const poolsInfo = usePoolsInfo()
   const tokensByAddress = useTokensByAddressMap()
 
