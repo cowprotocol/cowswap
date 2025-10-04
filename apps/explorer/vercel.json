@@ -7,5 +7,5 @@
   ],
   "buildCommand": "cd ../../ && yarn build:explorer",
   "outputDirectory": "../../build/explorer",
-  "installCommand": "cd ../../ && yarn"
+  "installCommand": "cd ../../ && yarn run install:ci"
 }

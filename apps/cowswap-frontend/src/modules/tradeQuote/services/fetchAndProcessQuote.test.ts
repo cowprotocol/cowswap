@@ -49,7 +49,7 @@ import { getIsOrderBookTypedError } from 'api/cowProtocol/getIsOrderBookTypedErr
 import { fetchAndProcessQuote } from './fetchAndProcessQuote'
 
 import { TradeQuoteManager } from '../hooks/useTradeQuoteManager'
-import { TradeQuoteFetchParams } from '../types'
+import { TradeQuoteFetchParams, TradeQuotePollingParameters } from '../types'
 import { getBridgeQuoteSigner } from '../utils/getBridgeQuoteSigner'
 
 // Mock dependencies
@@ -68,6 +68,12 @@ jest.mock('api/cowProtocol/errors/QuoteError', () => ({
 
 // Mock console.error to avoid noise in tests
 jest.spyOn(console, 'error').mockImplementation(() => {})
+
+const tradeQuotePollingParameters: TradeQuotePollingParameters = {
+  isConfirmOpen: false,
+  isQuoteUpdatePossible: true,
+  useSuggestedSlippageApi: false,
+}
 
 // eslint-disable-next-line max-lines-per-function
 describe('fetchAndProcessQuote', () => {
@@ -153,7 +159,13 @@ describe('fetchAndProcessQuote', () => {
         data: mockQuoteAndPost,
       } as any)
 
-      await fetchAndProcessQuote(mockFetchParams, sameChainQuoteParams, mockAppData, mockTradeQuoteManager)
+      await fetchAndProcessQuote(
+        mockFetchParams,
+        sameChainQuoteParams,
+        tradeQuotePollingParameters,
+        mockAppData,
+        mockTradeQuoteManager,
+      )
 
       expect(mockTradeQuoteManager.setLoading).toHaveBeenCalledWith(true)
       expect(mockBridgingSdk.getQuote).toHaveBeenCalledWith(sameChainQuoteParams, {
@@ -180,7 +192,13 @@ describe('fetchAndProcessQuote', () => {
 
       mockBridgingSdk.getBestQuote.mockResolvedValue(mockResult)
 
-      await fetchAndProcessQuote(mockFetchParams, crossChainQuoteParams, mockAppData, mockTradeQuoteManager)
+      await fetchAndProcessQuote(
+        mockFetchParams,
+        crossChainQuoteParams,
+        tradeQuotePollingParameters,
+        mockAppData,
+        mockTradeQuoteManager,
+      )
 
       expect(mockTradeQuoteManager.setLoading).toHaveBeenCalledWith(true)
       expect(mockGetBridgeQuoteSigner).toHaveBeenCalledWith(SupportedChainId.MAINNET)
@@ -215,7 +233,13 @@ describe('fetchAndProcessQuote', () => {
         data: mockQuoteAndPost,
       } as any)
 
-      await fetchAndProcessQuote(optimalFetchParams, mockQuoteParams, mockAppData, mockTradeQuoteManager)
+      await fetchAndProcessQuote(
+        optimalFetchParams,
+        mockQuoteParams,
+        tradeQuotePollingParameters,
+        mockAppData,
+        mockTradeQuoteManager,
+      )
 
       expect(mockBridgingSdk.getQuote).toHaveBeenCalledWith(mockQuoteParams, {
         quoteRequest: {
@@ -251,7 +275,13 @@ describe('fetchAndProcessQuote', () => {
         data: mockQuoteAndPost,
       } as any)
 
-      await fetchAndProcessQuote(mockFetchParams, mockQuoteParams, mockAppData, mockTradeQuoteManager)
+      await fetchAndProcessQuote(
+        mockFetchParams,
+        mockQuoteParams,
+        tradeQuotePollingParameters,
+        mockAppData,
+        mockTradeQuoteManager,
+      )
 
       expect(mockTradeQuoteManager.onResponse).toHaveBeenCalledWith(mockQuoteAndPost, null, mockFetchParams)
     })
@@ -262,7 +292,13 @@ describe('fetchAndProcessQuote', () => {
         data: null,
       } as any)
 
-      await fetchAndProcessQuote(mockFetchParams, mockQuoteParams, mockAppData, mockTradeQuoteManager)
+      await fetchAndProcessQuote(
+        mockFetchParams,
+        mockQuoteParams,
+        tradeQuotePollingParameters,
+        mockAppData,
+        mockTradeQuoteManager,
+      )
 
       expect(mockTradeQuoteManager.onResponse).not.toHaveBeenCalled()
       expect(mockTradeQuoteManager.onError).not.toHaveBeenCalled()
@@ -278,7 +314,13 @@ describe('fetchAndProcessQuote', () => {
         description: 'Unsupported token',
       })
 
-      await fetchAndProcessQuote(mockFetchParams, mockQuoteParams, mockAppData, mockTradeQuoteManager)
+      await fetchAndProcessQuote(
+        mockFetchParams,
+        mockQuoteParams,
+        tradeQuotePollingParameters,
+        mockAppData,
+        mockTradeQuoteManager,
+      )
 
       expect(mockTradeQuoteManager.onError).toHaveBeenCalledWith(
         expect.any(QuoteApiError),
@@ -294,7 +336,13 @@ describe('fetchAndProcessQuote', () => {
       mockBridgingSdk.getQuote.mockRejectedValue(mockError)
       mockGetIsOrderBookTypedError.mockReturnValue(false)
 
-      await fetchAndProcessQuote(mockFetchParams, mockQuoteParams, mockAppData, mockTradeQuoteManager)
+      await fetchAndProcessQuote(
+        mockFetchParams,
+        mockQuoteParams,
+        tradeQuotePollingParameters,
+        mockAppData,
+        mockTradeQuoteManager,
+      )
 
       // Should call onError for generic errors in swap quotes
       expect(mockTradeQuoteManager.onError).toHaveBeenCalled()
@@ -340,7 +388,13 @@ describe('fetchAndProcessQuote', () => {
         return mockResult
       })
 
-      await fetchAndProcessQuote(mockFetchParams, crossChainQuoteParams, mockAppData, mockTradeQuoteManager)
+      await fetchAndProcessQuote(
+        mockFetchParams,
+        crossChainQuoteParams,
+        tradeQuotePollingParameters,
+        mockAppData,
+        mockTradeQuoteManager,
+      )
 
       // Simulate the callback being called
       if (onQuoteResultCallback) {
@@ -367,7 +421,13 @@ describe('fetchAndProcessQuote', () => {
 
       mockBridgingSdk.getBestQuote.mockResolvedValue(mockResult)
 
-      await fetchAndProcessQuote(mockFetchParams, crossChainQuoteParams, mockAppData, mockTradeQuoteManager)
+      await fetchAndProcessQuote(
+        mockFetchParams,
+        crossChainQuoteParams,
+        tradeQuotePollingParameters,
+        mockAppData,
+        mockTradeQuoteManager,
+      )
 
       expect(mockTradeQuoteManager.onError).toHaveBeenCalledWith(
         mockBridgeError,
@@ -387,7 +447,13 @@ describe('fetchAndProcessQuote', () => {
 
       mockBridgingSdk.getBestQuote.mockResolvedValue(mockResult)
 
-      await fetchAndProcessQuote(mockFetchParams, crossChainQuoteParams, mockAppData, mockTradeQuoteManager)
+      await fetchAndProcessQuote(
+        mockFetchParams,
+        crossChainQuoteParams,
+        tradeQuotePollingParameters,
+        mockAppData,
+        mockTradeQuoteManager,
+      )
 
       expect(console.error).toHaveBeenCalledWith('[fetchAndProcessQuote]:: fetchQuote error', mockGenericError)
     })
@@ -395,7 +461,13 @@ describe('fetchAndProcessQuote', () => {
     it('should handle null result', async () => {
       mockBridgingSdk.getBestQuote.mockResolvedValue(null)
 
-      await fetchAndProcessQuote(mockFetchParams, crossChainQuoteParams, mockAppData, mockTradeQuoteManager)
+      await fetchAndProcessQuote(
+        mockFetchParams,
+        crossChainQuoteParams,
+        tradeQuotePollingParameters,
+        mockAppData,
+        mockTradeQuoteManager,
+      )
 
       // Should not call any manager methods for null result
       expect(mockTradeQuoteManager.onError).not.toHaveBeenCalled()
@@ -406,7 +478,13 @@ describe('fetchAndProcessQuote', () => {
       const unexpectedError = new Error('Unexpected error')
       mockBridgingSdk.getBestQuote.mockRejectedValue(unexpectedError)
 
-      await fetchAndProcessQuote(mockFetchParams, crossChainQuoteParams, mockAppData, mockTradeQuoteManager)
+      await fetchAndProcessQuote(
+        mockFetchParams,
+        crossChainQuoteParams,
+        tradeQuotePollingParameters,
+        mockAppData,
+        mockTradeQuoteManager,
+      )
 
       expect(console.error).toHaveBeenCalledWith('[fetchAndProcessQuote]:: unexpected bridge error', unexpectedError)
     })
@@ -424,7 +502,13 @@ describe('fetchAndProcessQuote', () => {
         return mockResult
       })
 
-      await fetchAndProcessQuote(mockFetchParams, crossChainQuoteParams, mockAppData, mockTradeQuoteManager)
+      await fetchAndProcessQuote(
+        mockFetchParams,
+        crossChainQuoteParams,
+        tradeQuotePollingParameters,
+        mockAppData,
+        mockTradeQuoteManager,
+      )
 
       // Simulate the callback being called with null quote
       if (onQuoteResultCallback) {
@@ -450,7 +534,13 @@ describe('fetchAndProcessQuote', () => {
         }
       })
 
-      await fetchAndProcessQuote(mockFetchParams, crossChainQuoteParams, mockAppData, mockTradeQuoteManager)
+      await fetchAndProcessQuote(
+        mockFetchParams,
+        crossChainQuoteParams,
+        tradeQuotePollingParameters,
+        mockAppData,
+        mockTradeQuoteManager,
+      )
 
       // Should not call any manager methods when request is cancelled
       expect(mockTradeQuoteManager.onError).not.toHaveBeenCalled()
@@ -473,7 +563,13 @@ describe('fetchAndProcessQuote', () => {
       mockGetIsOrderBookTypedError.mockReturnValue(true)
       mockMapOperatorErrorToQuoteError.mockReturnValue(mockErrorBody)
 
-      await fetchAndProcessQuote(mockFetchParams, mockQuoteParams, mockAppData, mockTradeQuoteManager)
+      await fetchAndProcessQuote(
+        mockFetchParams,
+        mockQuoteParams,
+        tradeQuotePollingParameters,
+        mockAppData,
+        mockTradeQuoteManager,
+      )
 
       expect(mockMapOperatorErrorToQuoteError).toHaveBeenCalledWith(mockErrorBody)
       expect(mockTradeQuoteManager.onError).toHaveBeenCalledWith(
@@ -490,7 +586,13 @@ describe('fetchAndProcessQuote', () => {
       mockBridgingSdk.getQuote.mockRejectedValue(mockError)
       mockGetIsOrderBookTypedError.mockReturnValue(false)
 
-      await fetchAndProcessQuote(mockFetchParams, mockQuoteParams, mockAppData, mockTradeQuoteManager)
+      await fetchAndProcessQuote(
+        mockFetchParams,
+        mockQuoteParams,
+        tradeQuotePollingParameters,
+        mockAppData,
+        mockTradeQuoteManager,
+      )
 
       expect(mockMapOperatorErrorToQuoteError).not.toHaveBeenCalled()
       expect(mockTradeQuoteManager.onError).toHaveBeenCalled()
@@ -510,7 +612,13 @@ describe('fetchAndProcessQuote', () => {
         data: mockQuoteAndPost,
       } as any)
 
-      await fetchAndProcessQuote(mockFetchParams, mockQuoteParams, undefined, mockTradeQuoteManager)
+      await fetchAndProcessQuote(
+        mockFetchParams,
+        mockQuoteParams,
+        tradeQuotePollingParameters,
+        undefined,
+        mockTradeQuoteManager,
+      )
 
       expect(mockBridgingSdk.getQuote).toHaveBeenCalledWith(mockQuoteParams, {
         quoteRequest: {
@@ -537,7 +645,13 @@ describe('fetchAndProcessQuote', () => {
         data: mockQuoteAndPost,
       } as any)
 
-      await fetchAndProcessQuote(noParamsChangedFetchParams, mockQuoteParams, mockAppData, mockTradeQuoteManager)
+      await fetchAndProcessQuote(
+        noParamsChangedFetchParams,
+        mockQuoteParams,
+        tradeQuotePollingParameters,
+        mockAppData,
+        mockTradeQuoteManager,
+      )
 
       expect(mockTradeQuoteManager.setLoading).toHaveBeenCalledWith(false)
     })

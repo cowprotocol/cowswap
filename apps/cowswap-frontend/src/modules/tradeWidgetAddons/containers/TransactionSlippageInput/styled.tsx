@@ -1,4 +1,4 @@
-import { FancyButton, Media, UI } from '@cowprotocol/ui'
+import { FancyButton, Loader, Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -72,4 +72,9 @@ export const OptionCustom = styled(FancyButton)<{ active?: boolean; warning?: bo
   background-color: var(${UI.COLOR_PAPER_DARKER});
   color: inherit;
   border: 0;
+  text-align: right;
+`
+
+export const SlippageLoader = styled(Loader)`
+  margin-top: 4px;
 `

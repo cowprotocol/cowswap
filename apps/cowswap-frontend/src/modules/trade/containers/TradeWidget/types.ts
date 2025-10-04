@@ -13,7 +13,7 @@ export interface TradeWidgetActions {
   onSwitchTokens(): void
 }
 
-interface TradeWidgetParams {
+export interface TradeWidgetParams {
   recipient?: string | null
   compactView: boolean
   showRecipient: boolean
@@ -23,6 +23,7 @@ interface TradeWidgetParams {
   disableQuotePolling?: boolean
   disableNativeSelling?: boolean
   disablePriceImpact?: boolean
+  disableSuggestedSlippageApi?: boolean
   hideTradeWarnings?: boolean
   enableSmartSlippage?: boolean
   isMarketOrderWidget?: boolean

@@ -81,20 +81,13 @@ export const MINIMUM_ORDER_VALID_TO_TIME_SECONDS = 120
 // Minimum deadline for EthFlow orders. Like the default deadline, anything smaller will be replaced by this
 export const MINIMUM_ETH_FLOW_DEADLINE_SECONDS = 600 // 10 minutes in SECONDS
 
-export const MINIMUM_ETH_FLOW_SLIPPAGE_BPS: Record<SupportedChainId, number> = {
-  ...mapSupportedNetworks(DEFAULT_SLIPPAGE_BPS),
-  [SupportedChainId.MAINNET]: 200, // 2% only for mainnet
-}
+export const MINIMUM_ETH_FLOW_SLIPPAGE_BPS = DEFAULT_SLIPPAGE_BPS
 
-const DEFAULT_ETH_FLOW_SLIPPAGE_WARNING_THRESHOLD = 200 // 2%
-export const ETH_FLOW_SLIPPAGE_WARNING_THRESHOLD: Record<SupportedChainId, number> = {
-  ...mapSupportedNetworks(DEFAULT_ETH_FLOW_SLIPPAGE_WARNING_THRESHOLD),
-  [SupportedChainId.MAINNET]: 500, // 5% only for mainnet
-}
-
-export const MINIMUM_ETH_FLOW_SLIPPAGE: Record<SupportedChainId, Percent> = mapSupportedNetworks(
-  (chainId) => new Percent(MINIMUM_ETH_FLOW_SLIPPAGE_BPS[chainId], 10_000),
+export const ETH_FLOW_SLIPPAGE_WARNING_THRESHOLD: Record<SupportedChainId, number> = mapSupportedNetworks(
+  200, // 2%
 )
+
+export const MINIMUM_ETH_FLOW_SLIPPAGE = new Percent(DEFAULT_SLIPPAGE_BPS, 10_000)
 
 export const HIGH_ETH_FLOW_SLIPPAGE_BPS = 1_000 // 10%
 

@@ -1,7 +1,6 @@
 import { ReactNode, useMemo } from 'react'
 
 import { bpsToPercent, formatPercent } from '@cowprotocol/common-utils'
-import { useWalletInfo } from '@cowprotocol/wallet'
 import { Percent } from '@uniswap/sdk-core'
 
 import { useIsEoaEthFlow } from 'modules/trade'
@@ -29,8 +28,6 @@ export function RowSlippage({
   isSlippageModified,
   hideRecommendedSlippage,
 }: RowSlippageProps): ReactNode {
-  const { chainId } = useWalletInfo()
-
   const isEoaEthFlow = useIsEoaEthFlow()
   const nativeCurrency = useNativeCurrency()
   const smartSlippageFromQuote = useSmartSlippageFromQuote()
@@ -44,7 +41,6 @@ export function RowSlippage({
 
   const props = useMemo(
     () => ({
-      chainId,
       isEoaEthFlow,
       symbols: [nativeCurrency.symbol],
       allowedSlippage,
@@ -58,7 +54,6 @@ export function RowSlippage({
       setAutoSlippage: smartSlippageFromQuote ? () => setSlippage(null) : undefined,
     }),
     [
-      chainId,
       isEoaEthFlow,
       nativeCurrency.symbol,
       allowedSlippage,
@@ -73,5 +68,11 @@ export function RowSlippage({
     ],
   )
 
-  return <RowSlippageContent {...props} isSlippageModified={isSlippageModified} hideRecommendedSlippage={hideRecommendedSlippage}/>
+  return (
+    <RowSlippageContent
+      {...props}
+      isSlippageModified={isSlippageModified}
+      hideRecommendedSlippage={hideRecommendedSlippage}
+    />
+  )
 }

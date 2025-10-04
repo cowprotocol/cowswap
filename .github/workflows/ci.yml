@@ -15,6 +15,7 @@ env:
   REACT_APP_BFF_BASE_URL: ${{ secrets.BFF_BASE_URL }}
   REACT_APP_CMS_BASE_URL: ${{ secrets.CMS_BASE_URL }}
   NEXT_PUBLIC_CMS_BASE_URL: ${{ secrets.CMS_BASE_URL }}
+  PACKAGE_READ_AUTH_TOKEN: ${{ secrets.PACKAGE_READ_AUTH_TOKEN }}
 
 jobs:
   setup:
@@ -41,7 +42,7 @@ jobs:
             ${{ runner.os }}-${{ matrix.node-version }}-nodemodules1-
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: yarn install:ci --frozen-lockfile
 
       - name: Cache generated files
         id: cache-generated-files
