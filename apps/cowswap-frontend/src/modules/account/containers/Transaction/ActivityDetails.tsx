@@ -21,8 +21,9 @@ import { useToggleAccountModal } from 'modules/account'
 import { BridgeActivitySummary } from 'modules/bridge'
 import { EthFlowStepper } from 'modules/ethFlow'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
+import { usePendingOrdersPermitValidityState } from 'modules/ordersTable/state/pendingOrdersPermitValidityState'
 import { useSwapPartialApprovalToggleState } from 'modules/swap/hooks/useSwapSettings'
-import { ConfirmDetailsItem, TradeType } from 'modules/trade'
+import { ConfirmDetailsItem } from 'modules/trade'
 
 import { OrderHooksDetails } from 'common/containers/OrderHooksDetails'
 import { useCancelOrder } from 'common/hooks/useCancelOrder'
@@ -58,7 +59,6 @@ import {
   TextAlert,
   TransactionState as ActivityLink,
 } from './styled'
-import { useIsOrderHasValidPermit } from './useIsOrderHasValidPermit'
 
 import { OrderFillabilityWarning } from '../../pure/OrderFillabilityWarning'
 
@@ -269,7 +269,8 @@ export function ActivityDetails(props: {
     }
   }, [showProgressBar, setShowProgressBar, order?.id, toggleAccountModal])
 
-  const hasValidPermit = useIsOrderHasValidPermit(order, TradeType.SWAP)
+  const { pendingOrdersPermitValidityState } = usePendingOrdersPermitValidityState()
+  const hasValidPermit = order ? pendingOrdersPermitValidityState[order.id] : true
 
   if (!order && !enhancedTransaction) return null
 
@@ -377,10 +378,9 @@ export function ActivityDetails(props: {
     </>
   )
 
-  const isPermitValid = hasValidPermit === undefined ? true : hasValidPermit
   const showWarning =
     isPartialApproveEnabled && fillability
-      ? (!fillability.hasEnoughAllowance && !isPermitValid) || !fillability.hasEnoughBalance
+      ? (!fillability.hasEnoughAllowance && !hasValidPermit) || !fillability.hasEnoughBalance
       : false
 
   return (

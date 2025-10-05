@@ -16,6 +16,7 @@ import { CowSwapAnalyticsCategory, CowSwapGtmEvent, toCowSwapGtmEvent } from 'co
 
 import { Text, UnfillableWarning, Web3StatusConnect, Web3StatusConnected } from './styled'
 
+import { PendingOrdersPermitChecker } from '../../containers/Web3Status/PendingOrdersPermitChecker/PendingOrdersPermitChecker'
 import { StatusIcon } from '../StatusIcon'
 
 export interface Web3StatusInnerProps {
@@ -47,6 +48,7 @@ export function Web3StatusInner(props: Web3StatusInnerProps): ReactNode {
   if (account) {
     return (
       <Web3StatusConnected id="web3-status-connected" pending={hasPendingTransactions}>
+        <PendingOrdersPermitChecker />
         {hasPendingTransactions ? (
           <RowBetween gap="6px">
             <Text>

@@ -1,4 +1,4 @@
-import { checkIsCallDataAValidPermit, getPermitUtilsInstance, PermitInfo } from '@cowprotocol/permit-utils'
+import { checkIsCallDataAValidPermit, getPermitUtilsInstance, PermitInfo, PermitType } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { Interface } from '@ethersproject/abi'
@@ -29,7 +29,7 @@ const SWR_CONFIG: SWRConfiguration = {
   errorRetryInterval: 0,
 }
 
-export function useIsOrderHasValidPermit(order?: Order, tradeType?: TradeType): boolean | undefined {
+export function useDoesOrderHaveValidPermit(order?: Order, tradeType?: TradeType): boolean | undefined {
   const { chainId, account } = useWalletInfo()
   const provider = useWalletProvider()
   const permit = order ? getOrderPermitIfExists(order) : null
@@ -65,14 +65,14 @@ async function checkPermitNonceAndAmount(
   order: Order,
   permitCallData: string,
   permitInfo: PermitInfo,
-): Promise<boolean> {
+): Promise<boolean | undefined> {
   try {
     const eip2612Utils = getPermitUtilsInstance(chainId, provider, account)
     const sellTokenAddress = order.sellToken
 
     const { permitNonce, permitAmount, permitType } = extractPermitData(permitCallData)
 
-    if (permitType === 'dai' && permitNonce !== null) {
+    if (permitType === 'dai-like' && permitNonce !== null) {
       // For DAI permits, compare nonces directly
       const currentNonceAsNumber = await eip2612Utils.getTokenNonce(sellTokenAddress, account)
       const currentNonce = BigInt(currentNonceAsNumber)
@@ -101,7 +101,7 @@ async function checkPermitNonceAndAmount(
     }
 
     if (permitAmount === null) {
-      return true // If we can't extract amount, assume it's valid
+      return undefined
     }
 
     const orderSellAmount = BigInt(order.sellAmount)
@@ -115,7 +115,7 @@ async function checkPermitNonceAndAmount(
 function extractPermitData(callData: string): {
   permitNonce: bigint | null
   permitAmount: bigint | null
-  permitType: 'eip-2612' | 'dai' | 'unknown'
+  permitType: PermitType
 } {
   try {
     if (callData.startsWith(EIP_2612_PERMIT_SELECTOR)) {
@@ -136,13 +136,13 @@ function extractPermitData(callData: string): {
       return {
         permitNonce: decoded.nonce ? BigInt(decoded.nonce.toString()) : null,
         permitAmount: decoded.allowed ? MAX_APPROVE_AMOUNT : 0n,
-        permitType: 'dai',
+        permitType: 'dai-like',
       }
     }
 
-    return { permitNonce: null, permitAmount: null, permitType: 'unknown' }
+    return { permitNonce: null, permitAmount: null, permitType: 'unsupported' }
   } catch (error) {
     console.error('Error extracting permit data:', error)
-    return { permitNonce: null, permitAmount: null, permitType: 'unknown' }
+    return { permitNonce: null, permitAmount: null, permitType: 'unsupported' }
   }
 }
