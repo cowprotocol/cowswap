@@ -12,12 +12,9 @@ type OrderPermitCheckerProps = {
 
 export function OrderPermitChecker(props: OrderPermitCheckerProps): null {
   const { order } = props
-  const { updatePendingOrdersPermitValidityState, pendingOrdersPermitValidityState } =
-    usePendingOrdersPermitValidityState()
+  const { updatePendingOrdersPermitValidityState } = usePendingOrdersPermitValidityState()
 
-  const isPermitInvalid = pendingOrdersPermitValidityState[order.id] === false
-  // skip if we already know the permit is invalid
-  const isPermitValid = useDoesOrderHaveValidPermit(!isPermitInvalid ? order : undefined, TradeType.SWAP)
+  const isPermitValid = useDoesOrderHaveValidPermit(order, TradeType.SWAP)
   // undefined means we don't know yet, so we optimistically assume it's valid
   useEffect(() => {
     updatePendingOrdersPermitValidityState({ [order.id]: isPermitValid === undefined ? true : isPermitValid })
