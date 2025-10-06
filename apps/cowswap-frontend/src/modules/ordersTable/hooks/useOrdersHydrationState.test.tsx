@@ -56,4 +56,21 @@ describe('useOrdersHydrationState', () => {
 
     expect(result.current).toBe(true)
   })
+
+  it('returns true immediately when orders exist', () => {
+    const chainId = SupportedChainId.MAINNET
+    currentStore = createStore()
+
+    const sampleOrder = { id: '1' } as unknown as Order
+
+    const { result } = renderHook(
+      ({ injectedOrders }) => useOrdersHydrationState({ chainId, orders: injectedOrders }),
+      {
+        wrapper: TestStoreProvider,
+        initialProps: { injectedOrders: [sampleOrder] },
+      },
+    )
+
+    expect(result.current).toBe(true)
+  })
 })

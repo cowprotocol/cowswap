@@ -23,12 +23,14 @@ export function useOrdersHydrationState({ chainId, orders }: UseOrdersHydrationS
     return state.orders?.[chainId as SupportedChainId]
   })
 
+  const ordersLength = orders.length
+
   return useMemo(() => {
     if (chainId === undefined) {
       return false
     }
 
-    if (orders.length > 0) {
+    if (ordersLength > 0) {
       return true
     }
 
@@ -37,5 +39,5 @@ export function useOrdersHydrationState({ chainId, orders }: UseOrdersHydrationS
     const defaultBlock = ContractDeploymentBlocks[chainKey] ?? 0
 
     return typeof lastCheckedBlock === 'number' && lastCheckedBlock !== defaultBlock
-  }, [chainId, networkState?.lastCheckedBlock, orders])
+  }, [chainId, networkState?.lastCheckedBlock, ordersLength])
 }

@@ -14,6 +14,7 @@ interface OrdersTableContentProps {
 
 export function OrdersTableContent({ searchTerm, currentTab }: OrdersTableContentProps): ReactNode {
   const { filteredOrders, isWalletConnected, hasHydratedOrders } = useOrdersTableState() || {}
+  const isHydrated = !!hasHydratedOrders
 
   if (!isWalletConnected) {
     return <ConnectWalletContent />
@@ -24,7 +25,7 @@ export function OrdersTableContent({ searchTerm, currentTab }: OrdersTableConten
       <NoOrdersContent
         currentTab={currentTab}
         searchTerm={searchTerm}
-        hasHydratedOrders={hasHydratedOrders}
+        hasHydratedOrders={isHydrated}
       />
     )
   }

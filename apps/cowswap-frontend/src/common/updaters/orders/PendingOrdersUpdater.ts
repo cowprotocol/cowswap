@@ -178,7 +178,52 @@ interface UpdateOrdersParams {
   getSafeTxInfo: GetSafeTxInfo
   safeInfo: GnosisSafeInfo | undefined
   allTransactions: ReturnType<typeof useAllTransactions>
-  markPollComplete: (chainId: ChainId) => void
+  markPollComplete?: (chainId: ChainId) => void
+}
+
+interface HandlePresignedParams {
+  presigned: EnrichedOrder[]
+  orders: Order[]
+  chainId: ChainId
+  isSafeWallet: boolean
+  presignOrders: PresignOrdersCallback
+}
+
+function handlePresignedOrders({
+  presigned,
+  orders,
+  chainId,
+  isSafeWallet,
+  presignOrders,
+}: HandlePresignedParams): void {
+  if (presigned.length === 0) {
+    return
+  }
+
+  const presignedMap = presigned.reduce<{ [key: string]: EnrichedOrder }>((acc, order) => {
+    acc[order.uid] = order
+    return acc
+  }, {})
+
+  const presignedIds = presigned.map((order) => order.uid)
+
+  const newlyPreSignedOrders = orders
+    .filter((order) => order.status === OrderStatus.PRESIGNATURE_PENDING && presignedIds.includes(order.id))
+    .map((order) => presignedMap[order.id])
+
+  if (newlyPreSignedOrders.length === 0) {
+    return
+  }
+
+  presignOrders({
+    ids: newlyPreSignedOrders.map((order) => order.uid),
+    chainId,
+    isSafeWallet,
+  })
+
+  newlyPreSignedOrders.forEach((order) => {
+    emitPresignedOrderEvent({ chainId, order })
+  })
 }
 
 // TODO: Break down this large function into smaller functions
@@ -209,7 +254,7 @@ async function _updateOrders({
 
   // Exit early when there are no pending orders
   if (!pending.length) {
-    markPollComplete(chainId)
+    markPollComplete?.(chainId)
     return
   } else {
     _triggerNps(pending, chainId, account)
@@ -234,32 +279,7 @@ async function _updateOrders({
     { fulfilled: [], expired: [], cancelled: [], unknown: [], presigned: [], pending: [], presignaturePending: [] },
   )
 
-  if (presigned.length > 0) {
-    const presignedMap = presigned.reduce<{ [key: string]: EnrichedOrder }>((acc, order) => {
-      acc[order.uid] = order
-      return acc
-    }, {})
-
-    const presignedIds = presigned.map((order) => order.uid)
-
-    const newlyPreSignedOrders = orders
-      .filter((order) => {
-        return order.status === OrderStatus.PRESIGNATURE_PENDING && presignedIds.includes(order.id)
-      })
-      .map((order) => presignedMap[order.id])
-
-    if (newlyPreSignedOrders.length > 0) {
-      presignOrders({
-        ids: newlyPreSignedOrders.map((order) => order.uid),
-        chainId,
-        isSafeWallet,
-      })
-
-      newlyPreSignedOrders.forEach((order) => {
-        emitPresignedOrderEvent({ chainId, order })
-      })
-    }
-  }
+  handlePresignedOrders({ presigned, orders, chainId, isSafeWallet, presignOrders })
 
   if (expired.length > 0) {
     expireOrdersBatch({
@@ -330,7 +350,7 @@ async function _updateOrders({
   // Update the creating EthFlow orders (if any)
   await _updateCreatingOrders(chainId, orders, isSafeWallet, addOrUpdateOrders)
 
-  markPollComplete(chainId)
+  markPollComplete?.(chainId)
 }
 
 function getReplacedOrCancelledEthFlowOrders(
@@ -457,6 +477,7 @@ export function PendingOrdersUpdater(): null {
       }
 
       const isUpdating = updatersRefMap[uiOrderType]
+      const shouldMarkCompletion = uiOrderType === UiOrderType.SWAP
 
       if (!isUpdating.current) {
         isUpdating.current = true
@@ -477,7 +498,7 @@ export function PendingOrdersUpdater(): null {
           getSafeTxInfo,
           safeInfo,
           allTransactions,
-          markPollComplete,
+          markPollComplete: shouldMarkCompletion ? markPollComplete : undefined,
         }).finally(() => {
           isUpdating.current = false
         })

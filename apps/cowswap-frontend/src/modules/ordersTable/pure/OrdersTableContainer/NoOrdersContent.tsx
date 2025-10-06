@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from 'react'
+import { ReactNode, useEffect, useState, memo } from 'react'
 
 import { useTheme } from '@cowprotocol/common-hooks'
 import { CowSwapSafeAppLink } from '@cowprotocol/ui'
@@ -22,7 +22,7 @@ interface NoOrdersDescriptionProps {
   displayOrdersOnlyForSafeApp: boolean | undefined
 }
 
-function NoOrdersDescription({
+const NoOrdersDescription = memo(function NoOrdersDescription({
   currentTab,
   orderType,
   searchTerm,
@@ -62,7 +62,7 @@ function NoOrdersDescription({
       )}
     </>
   )
-}
+})
 
 function getSectionTitle(currentTab: OrderTabId): string {
   return currentTab === OrderTabId.all
