@@ -7,7 +7,7 @@ import { useSendBatchTransactions } from '@cowprotocol/wallet'
 
 import useSWR from 'swr'
 
-import { useAmountsToSign } from 'modules/trade'
+import { useAmountsToSignFromQuote } from 'modules/trade'
 
 import { useTokenContract, useWethContract } from 'common/hooks/useContract'
 import { useNeedsApproval } from 'common/hooks/useNeedsApproval'
@@ -20,7 +20,8 @@ export function useSafeBundleFlowContext(): SafeBundleFlowContext | null {
   const sendBatchTransactions = useSendBatchTransactions()
   const { contract: wrappedNativeContract } = useWethContract()
 
-  const { maximumSendSellAmount } = useAmountsToSign() || {}
+  // todo check for safe wallet
+  const { maximumSendSellAmount } = useAmountsToSignFromQuote() || {}
 
   const { isPartialApproveEnabled } = useFeatureFlags()
   const needsApproval = useNeedsApproval(maximumSendSellAmount)
