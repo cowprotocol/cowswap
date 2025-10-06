@@ -19,8 +19,62 @@ export const Content = styled.div`
   padding: 24px 0 0;
   gap: 32px;
 
+  > span {
+    --size: 130px;
+    width: var(--size);
+    height: var(--size);
+    border-radius: var(--size);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    margin: 0;
+    color: inherit;
+    transform: rotate(0);
+    transition: transform 5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(${UI.COLOR_PAPER_DARKER});
+      border-radius: var(--size);
+      z-index: -1;
+    }
+
+    &:hover {
+      transform: rotate(360deg);
+    }
+
+    > svg,
+    > img {
+      max-width: 100%;
+      max-height: 100%;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: inline;
+    }
+
+    > svg {
+      padding: 28px;
+      fill: currentColor;
+      opacity: 0.5;
+    }
+  }
+
   > h3 {
     font-size: 32px;
+    line-height: 1;
+    font-weight: 600;
+    margin: 0 auto;
+    text-align: center;
+    color: inherit;
+  }
+
+  > h4 {
+    font-size: 24px;
     line-height: 1;
     font-weight: 600;
     margin: 0 auto;

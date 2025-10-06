@@ -1,6 +1,5 @@
-import { ReactNode } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 
-import imageConnectWallet from '@cowprotocol/assets/cow-swap/wallet-plus.svg'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 
 import { Trans } from '@lingui/macro'
@@ -14,15 +13,32 @@ import { useOrdersTableState } from '../../hooks/useOrdersTableState'
 
 export function ConnectWalletContent(): ReactNode {
   const { orderType, pendingActivitiesCount } = useOrdersTableState() || {}
+  const [walletIcon, setWalletIcon] = useState<string | null>(null)
+
+  useEffect(() => {
+    let isCancelled = false
+
+    void import('@cowprotocol/assets/cow-swap/wallet-plus.svg').then((module) => {
+      if (!isCancelled) {
+        setWalletIcon(module.default)
+      }
+    })
+
+    return () => {
+      isCancelled = true
+    }
+  }, [])
 
   return (
     <styledEl.Content>
-      <span>
-        <SVG src={imageConnectWallet} description="connect wallet" />
-      </span>
-      <h3>
+      {walletIcon ? (
+        <span>
+          <SVG src={walletIcon} description="connect wallet" />
+        </span>
+      ) : null}
+      <h4>
         <Trans>Connect a wallet</Trans>
-      </h3>
+      </h4>
       {!isInjectedWidget && (
         <>
           <p>
