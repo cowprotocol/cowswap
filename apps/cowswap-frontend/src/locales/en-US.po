@@ -1227,6 +1227,10 @@ msgstr "of"
 msgid "Error {verb} the order"
 msgstr "Error {verb} the order"
 
+#: libs/common-const/src/common.ts
+msgid "CoW Swap | The smartest way to trade cryptocurrencies"
+msgstr "CoW Swap | The smartest way to trade cryptocurrencies"
+
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
 msgid "this order"
 msgstr "this order"
