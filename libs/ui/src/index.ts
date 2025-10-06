@@ -41,6 +41,7 @@ export * from './pure/Badge'
 export * from './pure/NetworkLogo'
 export * from './pure/CircleProgress'
 export * from './pure/CowSaucerScene'
+export * from './pure/ModalHeader'
 
 export * from './containers/CowSwapSafeAppLink'
 export * from './pure/InlineBanner'

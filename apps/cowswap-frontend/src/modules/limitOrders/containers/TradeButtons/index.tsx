@@ -19,7 +19,7 @@ import { useLimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
 const CONFIRM_TEXT = 'Review limit order'
 
 const PRIMARY_VALIDATION_OVERRIDEN_BY_LOCAL_VALIDATION: TradeFormValidation[] = [
-  TradeFormValidation.ApproveAndSwap,
+  TradeFormValidation.ApproveAndSwapInBundle,
   TradeFormValidation.ApproveRequired,
 ]
 
