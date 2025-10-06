@@ -8,7 +8,7 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: cowswapdev\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-10-06 13:06\n"
+"PO-Revision-Date: 2025-10-06 15:15\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -1223,6 +1223,10 @@ msgstr "de"
 #: apps/cowswap-frontend/src/api/cowProtocol/errors/OperatorError.ts
 msgid "Error {verb} the order"
 msgstr "Error {verb} la orden"
+
+#: libs/common-const/src/common.ts
+msgid "CoW Swap | The smartest way to trade cryptocurrencies"
+msgstr "CoW Swap | La forma más inteligente de operar con criptomonedas"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
 msgid "this order"
