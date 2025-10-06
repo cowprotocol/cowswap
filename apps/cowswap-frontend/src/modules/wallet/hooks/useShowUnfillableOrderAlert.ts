@@ -5,7 +5,6 @@ import { usePendingOrdersPermitValidityState } from 'modules/ordersTable/state/p
 
 import { usePendingOrdersFillability } from 'common/hooks/usePendingOrdersFillability'
 
-
 export function useShowUnfillableOrderAlert(): boolean {
   const pendingOrdersFillability = usePendingOrdersFillability(OrderClass.MARKET)
   const { isPartialApproveEnabled } = useFeatureFlags()
@@ -20,7 +19,6 @@ export function useShowUnfillableOrderAlert(): boolean {
     const isPermitValid =
       pendingOrdersPermitValidityState[orderId] === undefined ? true : pendingOrdersPermitValidityState[orderId]
     if (fillability) {
-      // todo check permit amount and validity further
       const hasEnoughAllowance = fillability.hasEnoughAllowance || isPermitValid
       return !hasEnoughAllowance || !fillability.hasEnoughBalance
     }
