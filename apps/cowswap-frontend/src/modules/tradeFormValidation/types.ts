@@ -1,8 +1,8 @@
 import { Command } from '@cowprotocol/types'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { ApprovalState } from 'modules/erc20Approve'
+import { ApprovalState, ApproveRequiredReason } from 'modules/erc20Approve'
 import { TradeDerivedState } from 'modules/trade'
-import { AmountsToSign } from 'modules/trade/hooks/useAmountsToSign'
 import { TradeQuoteState } from 'modules/tradeQuote'
 
 export enum TradeFormValidation {
@@ -34,7 +34,7 @@ export enum TradeFormValidation {
   BalanceInsufficient,
 
   // Approve
-  ApproveAndSwap,
+  ApproveAndSwapInBundle,
   ApproveRequired,
 
   // Intermediate token
@@ -60,7 +60,7 @@ export interface TradeFormValidationCommonContext {
   isSupportedWallet: boolean
   isSwapUnsupported: boolean
   isSafeReadonlyUser: boolean
-  isApproveRequired: boolean
+  isApproveRequired: ApproveRequiredReason
   isInsufficientBalanceOrderAllowed: boolean
   isProviderNetworkUnsupported: boolean
   isOnline: boolean
@@ -74,7 +74,7 @@ export interface TradeFormValidationContext extends TradeFormValidationCommonCon
 
 export interface TradeFormButtonContext {
   defaultText: string
-  amountsToSign: AmountsToSign | null
+  amountToApprove: CurrencyAmount<Currency> | null
   derivedState: TradeDerivedState
   quote: TradeQuoteState
   isSupportedWallet: boolean
