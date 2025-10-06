@@ -28,7 +28,6 @@ export function useGeneratePermitInAdvanceToTrade(amountToApprove: CurrencyAmoun
     const postSignCallback = (): void => updateTradeApproveState({ currency: undefined, approveInProgress: false })
 
     const permitData = await generatePermit({
-      // todo handle empty token name/address?
       inputToken: { name: token.name || '', address: token.address },
       account,
       permitInfo,
@@ -38,14 +37,5 @@ export function useGeneratePermitInAdvanceToTrade(amountToApprove: CurrencyAmoun
     })
 
     return !!permitData
-  }, [
-    account,
-    amountToApprove.currency,
-    amountToApprove.quotient,
-    generatePermit,
-    permitInfo,
-    token.address,
-    token.name,
-    updateTradeApproveState,
-  ])
+  }, [account, amountToApprove, generatePermit, permitInfo, token, updateTradeApproveState])
 }

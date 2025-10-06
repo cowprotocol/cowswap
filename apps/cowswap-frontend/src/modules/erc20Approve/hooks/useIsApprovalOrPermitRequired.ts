@@ -16,6 +16,7 @@ export enum ApproveRequiredReason {
   DaiLikePermitRequired,
 }
 
+// eslint-disable-next-line complexity
 export function useIsApprovalOrPermitRequired(): ApproveRequiredReason {
   const amountToApprove = useGetAmountToSignApprove()
   const { isPartialApproveEnabled } = useFeatureFlags()
@@ -24,6 +25,10 @@ export function useIsApprovalOrPermitRequired(): ApproveRequiredReason {
   const { inputCurrency, tradeType } = useDerivedTradeState() || {}
 
   const { type } = usePermitInfo(inputCurrency, tradeType) || {}
+
+  if (amountToApprove && amountToApprove.equalTo('0')) {
+    return ApproveRequiredReason.NotRequired
+  }
 
   const isPermitSupported = type && type !== 'unsupported'
 
