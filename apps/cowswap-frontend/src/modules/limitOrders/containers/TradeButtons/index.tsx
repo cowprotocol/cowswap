@@ -19,7 +19,7 @@ import { limitOrdersTradeButtonsMap } from './limitOrdersTradeButtonsMap'
 import { useLimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
 
 const PRIMARY_VALIDATION_OVERRIDEN_BY_LOCAL_VALIDATION: TradeFormValidation[] = [
-  TradeFormValidation.ApproveAndSwap,
+  TradeFormValidation.ApproveAndSwapInBundle,
   TradeFormValidation.ApproveRequired,
 ]
 

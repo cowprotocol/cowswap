@@ -5,18 +5,24 @@ import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/react/macro'
 
-import { TradeApproveButton } from 'modules/erc20Approve'
-
 import { OrderFillability } from 'common/hooks/usePendingOrdersFillability'
 
 import { ApproveWrapper, UnfillableWarning } from './styled'
 
+import { OrderPartialApprove } from '../../containers/OrderPartialApprove'
+
 export function OrderFillabilityWarning({
   fillability,
   inputAmount,
+  enablePartialApprove,
+  enablePartialApproveBySettings,
+  isCustomApproveModalOpen,
 }: {
   fillability: OrderFillability
   inputAmount: CurrencyAmount<Token>
+  enablePartialApprove?: boolean
+  enablePartialApproveBySettings?: boolean
+  isCustomApproveModalOpen?: boolean
 }): ReactNode {
   const inputAmountCurrencySymbol = inputAmount.currency.symbol
   return (
@@ -35,7 +41,9 @@ export function OrderFillabilityWarning({
         <UnfillableWarning bannerType={StatusColorVariant.Danger} orientation={BannerOrientation.Horizontal}>
           <Trans>Order cannot be filled due to insufficient allowance on the current account.</Trans>
           <ApproveWrapper>
-            <TradeApproveButton enablePartialApprove={true} amountToApprove={inputAmount} />
+            {enablePartialApprove && enablePartialApproveBySettings && !isCustomApproveModalOpen && (
+              <OrderPartialApprove amountToApprove={inputAmount} />
+            )}
           </ApproveWrapper>
         </UnfillableWarning>
       )}

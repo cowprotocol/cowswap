@@ -50,7 +50,7 @@ export function NoImpactWarning(props: NoImpactWarningProps) {
   const tradeQuote = useTradeQuote()
 
   const canTrade =
-    (primaryFormValidation === null || primaryFormValidation === TradeFormValidation.ApproveAndSwap) &&
+    (primaryFormValidation === null || primaryFormValidation === TradeFormValidation.ApproveAndSwapInBundle) &&
     !tradeQuote.error
 
   const showPriceImpactWarning = canTrade && !!account && !priceImpactParams.loading && !priceImpactParams.priceImpact

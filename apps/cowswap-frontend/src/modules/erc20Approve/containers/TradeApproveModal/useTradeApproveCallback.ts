@@ -3,7 +3,7 @@ import { useCallback } from 'react'
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { errorToString, isRejectRequestProviderError } from '@cowprotocol/common-utils'
-import { TransactionResponse } from '@ethersproject/providers'
+import { TransactionReceipt } from '@ethersproject/abstract-provider'
 import { Currency } from '@uniswap/sdk-core'
 
 import { useLingui } from '@lingui/react/macro'
@@ -18,7 +18,7 @@ interface TradeApproveCallbackParams {
 }
 
 export interface TradeApproveCallback {
-  (amount: bigint, params?: TradeApproveCallbackParams): Promise<TransactionResponse | undefined>
+  (amount: bigint, params?: TradeApproveCallbackParams): Promise<TransactionReceipt | undefined>
 }
 
 export function useTradeApproveCallback(currency: Currency | undefined): TradeApproveCallback {
@@ -53,7 +53,7 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
       return approveCallback(amount)
         .then((response) => {
           approvalAnalytics('Sign', symbol)
-          return response
+          return response?.wait()
         })
         .finally(() => {
           updateTradeApproveState({ currency: undefined, approveInProgress: false })

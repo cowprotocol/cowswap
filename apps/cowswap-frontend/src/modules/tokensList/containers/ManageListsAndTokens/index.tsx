@@ -1,14 +1,15 @@
-import { useMemo, useState } from 'react'
+import { ReactNode, useMemo, useState } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { isAddress, parseENSAddress, uriToHttp } from '@cowprotocol/common-utils'
 import { ListState, useSearchList, useSearchToken } from '@cowprotocol/tokens'
+import { ModalHeader } from '@cowprotocol/ui'
 
+import { msg } from '@lingui/core/macro'
 import { Trans, useLingui } from '@lingui/react/macro'
 
 import * as styledEl from './styled'
 
-import { ModalHeader } from '../../pure/ModalHeader'
 import { ManageLists } from '../ManageLists'
 import { ManageTokens } from '../ManageTokens'
 
@@ -19,15 +20,11 @@ export interface ManageListsAndTokensProps {
   onDismiss(): void
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function ManageListsAndTokens(props: ManageListsAndTokensProps) {
-  const { t } = useLingui()
+const tokensInputPlaceholder = '0x0000'
+const listsInputPlaceholder = msg`https:// or ipfs:// or ENS name`
 
-  const listsInputPlaceholder = t`https:// or ipfs:// or ENS name`
-  const tokensInputPlaceholder = '0x0000'
-
+export function ManageListsAndTokens(props: ManageListsAndTokensProps): ReactNode {
+  const { i18n } = useLingui()
   const { lists, customTokens, onBack, onDismiss } = props
 
   const [currentTab, setCurrentTab] = useState<'tokens' | 'lists'>('lists')
@@ -82,9 +79,9 @@ export function ManageListsAndTokens(props: ManageListsAndTokensProps) {
       </styledEl.TabsContainer>
       <styledEl.PrimaryInputBox>
         <styledEl.PrimaryInput
-          type="text"
           onChange={(e) => setInputValue(e.target.value)}
-          placeholder={isListsTab ? listsInputPlaceholder : tokensInputPlaceholder}
+          placeholder={isListsTab ? i18n._(listsInputPlaceholder) : tokensInputPlaceholder}
+          type="text"
         />
         {!isListUrlValid && listInput && (
           <styledEl.InputError>

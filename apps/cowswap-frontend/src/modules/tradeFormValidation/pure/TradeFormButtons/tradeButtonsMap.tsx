@@ -244,7 +244,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
       </TradeFormBlankButton>
     )
   },
-  [TradeFormValidation.ApproveAndSwap]: (context, isDisabled = false) => {
+  [TradeFormValidation.ApproveAndSwapInBundle]: (context, isDisabled = false) => {
     const inputCurrency = context.derivedState.inputCurrency
     const tokenToApprove = inputCurrency && getWrappedToken(inputCurrency)
     const contextDefaultText = context.defaultText
@@ -260,12 +260,19 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     )
   },
   [TradeFormValidation.ApproveRequired]: (context) => {
-    if (!context.amountsToSign) return null
-    const { maximumSendSellAmount } = context.amountsToSign
+    const { amountToApprove, enablePartialApprove, defaultText } = context
+    if (!amountToApprove) return null
+
+    const label = enablePartialApprove ? t`Approve and ${defaultText}` : defaultText
 
     return (
-      <TradeApproveButton amountToApprove={maximumSendSellAmount} enablePartialApprove={context.enablePartialApprove}>
-        <TradeFormBlankButton disabled={true}>{context.defaultText}</TradeFormBlankButton>
+      <TradeApproveButton
+        amountToApprove={amountToApprove}
+        enablePartialApprove={enablePartialApprove}
+        confirmSwap={context.confirmTrade}
+        label={label}
+      >
+        <TradeFormBlankButton disabled={!enablePartialApprove}>{label}</TradeFormBlankButton>
       </TradeApproveButton>
     )
   },

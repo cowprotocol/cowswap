@@ -10,12 +10,13 @@ import { StyledToggleArrow } from './styled'
 export interface ToggleArrowProps {
   isOpen: boolean
   title?: string
+  size?: number
 }
 
-export function ToggleArrow({ isOpen, title }: ToggleArrowProps): React.ReactElement {
+export function ToggleArrow({ isOpen, title, size }: ToggleArrowProps): React.ReactElement {
   const SvgTitle = title ?? (isOpen ? t`Close` : t`Open`)
   return (
-    <StyledToggleArrow isOpen={isOpen}>
+    <StyledToggleArrow size={size} isOpen={isOpen}>
       <SVG src={CarretIcon} title={SvgTitle} />
     </StyledToggleArrow>
   )

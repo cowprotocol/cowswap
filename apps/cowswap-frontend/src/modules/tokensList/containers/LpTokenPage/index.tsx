@@ -1,9 +1,9 @@
-import { FC } from 'react'
+import { ReactNode } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink, shortenAddress } from '@cowprotocol/common-utils'
 import { TokenLogo, useTokensByAddressMap } from '@cowprotocol/tokens'
-import { ExternalLink, TokenSymbol } from '@cowprotocol/ui'
+import { ExternalLink, ModalHeader, TokenSymbol } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 
@@ -20,46 +20,22 @@ import {
   Wrapper,
 } from './styled'
 
-import { ModalHeader } from '../../pure/ModalHeader'
-
 function renderValue<T>(value: T | undefined, template: (v: T) => string, defaultValue?: string): string | undefined {
   return value ? template(value) : defaultValue
 }
 
 interface LpTokenPageProps {
   poolAddress: string
+
   onBack(): void
+
   onDismiss(): void
+
   onSelectToken(token: TokenWithLogo): void
 }
 
-const Token: FC<{ token: TokenWithLogo | undefined; onClick: () => void }> = ({ token, onClick }) => (
-  <>
-    {token && (
-      <TokenWrapper>
-        <TokenInfoWrapper>
-          <TokenLogo token={token} size={64} />
-          <div>
-            <div>
-              <StyledTokenSymbol token={token} />
-            </div>
-            <StyledTokenName token={token} />
-          </div>
-        </TokenInfoWrapper>
-        <div>
-          <SelectButton onClick={onClick}>
-            <Trans>Select</Trans>
-          </SelectButton>
-        </div>
-      </TokenWrapper>
-    )}
-  </>
-)
-
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function LpTokenPage({ poolAddress, onBack, onDismiss, onSelectToken }: LpTokenPageProps) {
+// eslint-disable-next-line max-lines-per-function
+export function LpTokenPage({ poolAddress, onBack, onDismiss, onSelectToken }: LpTokenPageProps): ReactNode {
   const poolsInfo = usePoolsInfo()
   const tokensByAddress = useTokensByAddressMap()
 
@@ -69,16 +45,30 @@ export function LpTokenPage({ poolAddress, onBack, onDismiss, onSelectToken }: L
   return (
     <Wrapper>
       <ModalHeader onBack={onBack} onClose={onDismiss}>
-        <Trans>Pool description</Trans>
+        Pool description
       </ModalHeader>
       {token && (
-        <Token
-          token={token}
-          onClick={() => {
-            onDismiss()
-            onSelectToken(token)
-          }}
-        />
+        <TokenWrapper>
+          <TokenInfoWrapper>
+            <TokenLogo token={token} size={64} />
+            <div>
+              <div>
+                <StyledTokenSymbol token={token} />
+              </div>
+              <StyledTokenName token={token} />
+            </div>
+          </TokenInfoWrapper>
+          <div>
+            <SelectButton
+              onClick={() => {
+                onDismiss()
+                onSelectToken(token)
+              }}
+            >
+              <Trans>Select</Trans>
+            </SelectButton>
+          </div>
+        </TokenWrapper>
       )}
       <InfoTable>
         <InfoRow>
@@ -106,13 +96,17 @@ export function LpTokenPage({ poolAddress, onBack, onDismiss, onSelectToken }: L
           </div>
         </InfoRow>
         <InfoRow>
-          <div>APR</div>
+          <div>
+            <Trans>APR</Trans>
+          </div>
           <div>
             <span>{renderValue(info?.apy, (t) => `${t}%`, '-')}</span>
           </div>
         </InfoRow>
         <InfoRow>
-          <div>TVL</div>
+          <div>
+            <Trans>TVL</Trans>
+          </div>
           <div>
             <span>{renderValue(info?.tvl, (t) => `$${t}`, '-')}</span>
           </div>

@@ -3,7 +3,7 @@ import React, { ReactNode, useCallback, useEffect, useMemo, useState } from 'rea
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { formatInputAmount, getIsNativeToken } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { TokenAmount, HoverTooltip } from '@cowprotocol/ui'
+import { HoverTooltip, TokenAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/react/macro'
@@ -49,11 +49,14 @@ export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
   subsidyAndBalance?: BalanceAndSubsidy
   onCurrencySelection: (field: Field, currency: Currency) => void
   onUserInput: (field: Field, typedValue: string) => void
+  isInvalid?: boolean
+
   openTokenSelectWidget(
     selectedToken: Nullish<Currency>,
     field: Field | undefined,
     onCurrencySelection: (currency: Currency) => void,
   ): void
+
   topLabel?: string
   topContent?: ReactNode
   customSelectTokenButton?: ReactNode
@@ -91,6 +94,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps): ReactNode {
     topLabel,
     topContent,
     customSelectTokenButton,
+    isInvalid,
   } = props
 
   const {
@@ -238,7 +242,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps): ReactNode {
         </styledEl.TopRow>
 
         {topContent}
-        <styledEl.CurrencyInputBox>
+        <styledEl.CurrencyInputBox isInvalid={isInvalid}>
           <div>
             {inputTooltip ? (
               <HoverTooltip wrapInContainer content={inputTooltip}>

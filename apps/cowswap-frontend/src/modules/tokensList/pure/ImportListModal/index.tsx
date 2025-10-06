@@ -1,19 +1,20 @@
 import { useState } from 'react'
 
-import { TokenLogo, getTokenListViewLink, ListState } from '@cowprotocol/tokens'
-import { ButtonPrimary } from '@cowprotocol/ui'
+import { getTokenListViewLink, ListState, TokenLogo } from '@cowprotocol/tokens'
+import { ButtonPrimary, ModalHeader } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 
 import * as styledEl from './styled'
 
-import { ModalHeader } from '../ModalHeader'
-
 export interface ImportListModalProps {
   list: ListState
+
   onImport(list: ListState): void
+
   onBack(): void
+
   onDismiss(): void
 }
 

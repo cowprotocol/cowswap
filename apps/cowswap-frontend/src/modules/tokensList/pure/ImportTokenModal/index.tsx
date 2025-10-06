@@ -1,15 +1,13 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { TokenLogo } from '@cowprotocol/tokens'
-import { ButtonPrimary, ExternalLink } from '@cowprotocol/ui'
+import { ButtonPrimary, ExternalLink, ModalHeader } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 import { AlertCircle } from 'react-feather'
 import styled from 'styled-components/macro'
 
 import * as styledEl from './styled'
-
-import { ModalHeader } from '../ModalHeader'
 
 const ExternalLinkStyled = styled(ExternalLink)`
   text-decoration: underline;
@@ -18,8 +16,11 @@ const ExternalLinkStyled = styled(ExternalLink)`
 
 export interface ImportTokenModalProps {
   tokens: TokenWithLogo[]
+
   onBack?(): void
+
   onDismiss(): void
+
   onImport(tokens: TokenWithLogo[]): void
 }
 

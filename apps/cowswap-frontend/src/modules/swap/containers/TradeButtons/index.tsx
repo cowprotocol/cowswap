@@ -63,6 +63,7 @@ export function TradeButtons({
   const confirmText = isCurrentTradeBridging ? t`Swap and Bridge` : t`Swap`
 
   const { isPartialApproveEnabled } = useFeatureFlags()
+  // enable partial approve only for swap
   const tradeFormButtonContext = useTradeFormButtonContext(confirmText, confirmTrade, !!isPartialApproveEnabled)
 
   const context = useSafeMemoObject({
