@@ -9,10 +9,13 @@ import { GnosisSafeInfo, useGnosisSafeInfo, useWalletInfo } from '@cowprotocol/w
 import { isOrderInPendingTooLong, triggerAppziSurvey } from 'appzi'
 import { useBridgeOrdersSerializedMap } from 'entities/bridgeOrders'
 import { useAddOrderToSurplusQueue } from 'entities/surplusModal'
+import { useDispatch } from 'react-redux'
 
 import { GetSafeTxInfo, useGetSafeTxInfo } from 'legacy/hooks/useGetSafeTxInfo'
+import { AppDispatch } from 'legacy/state'
 import { useAllTransactions } from 'legacy/state/enhancedTransactions/hooks'
 import { CREATING_STATES, FulfillOrdersBatchParams, Order, OrderStatus } from 'legacy/state/orders/actions'
+import { updateLastCheckedBlock } from 'legacy/state/orders/actions'
 import { LIMIT_OPERATOR_API_POLL_INTERVAL, MARKET_OPERATOR_API_POLL_INTERVAL } from 'legacy/state/orders/consts'
 import {
   AddOrUpdateOrdersCallback,
@@ -29,7 +32,7 @@ import {
   useFulfillOrdersBatch,
   useInvalidateOrdersBatch,
   usePresignOrders,
-  useUpdatePresignGnosisSafeTx
+  useUpdatePresignGnosisSafeTx,
 } from 'legacy/state/orders/hooks'
 import { OrderTransitionStatus } from 'legacy/state/orders/utils'
 
@@ -37,7 +40,7 @@ import {
   emitCancelledOrderEvent,
   emitExpiredOrderEvent,
   emitFulfilledOrderEvent,
-  emitPresignedOrderEvent
+  emitPresignedOrderEvent,
 } from 'modules/orders'
 
 import { getOrder } from 'api/cowProtocol'
@@ -175,6 +178,7 @@ interface UpdateOrdersParams {
   getSafeTxInfo: GetSafeTxInfo
   safeInfo: GnosisSafeInfo | undefined
   allTransactions: ReturnType<typeof useAllTransactions>
+  markPollComplete: (chainId: ChainId) => void
 }
 
 // TODO: Break down this large function into smaller functions
@@ -197,6 +201,7 @@ async function _updateOrders({
   getSafeTxInfo,
   safeInfo,
   allTransactions,
+  markPollComplete,
 }: UpdateOrdersParams): Promise<void> {
   // Only check pending orders of current connected account
   const lowerCaseAccount = account.toLowerCase()
@@ -204,6 +209,7 @@ async function _updateOrders({
 
   // Exit early when there are no pending orders
   if (!pending.length) {
+    markPollComplete(chainId)
     return
   } else {
     _triggerNps(pending, chainId, account)
@@ -323,6 +329,8 @@ async function _updateOrders({
   )
   // Update the creating EthFlow orders (if any)
   await _updateCreatingOrders(chainId, orders, isSafeWallet, addOrUpdateOrders)
+
+  markPollComplete(chainId)
 }
 
 function getReplacedOrCancelledEthFlowOrders(
@@ -380,6 +388,7 @@ export function PendingOrdersUpdater(): null {
   const isSafeWallet = !!safeInfo
   const { chainId, account } = useWalletInfo()
   const removeOrdersToCancel = useSetAtom(removeOrdersToCancelAtom)
+  const dispatch = useDispatch<AppDispatch>()
 
   const pending = useCombinedPendingOrders({ chainId, account })
   // TODO: Implement using SWR or retry/cancellable promises
@@ -416,6 +425,11 @@ export function PendingOrdersUpdater(): null {
   const allTransactions = useAllTransactions()
   const getSafeTxInfo = useGetSafeTxInfo()
   const bridgeOrdersMap = useBridgeOrdersSerializedMap()
+  const markPollComplete = useCallback(
+    (targetChainId: ChainId) =>
+      dispatch(updateLastCheckedBlock({ chainId: targetChainId, lastCheckedBlock: Date.now() })),
+    [dispatch],
+  )
 
   const fulfillOrdersBatch = useCallback(
     (fulfillOrdersBatchParams: FulfillOrdersBatchParams) => {
@@ -463,6 +477,7 @@ export function PendingOrdersUpdater(): null {
           getSafeTxInfo,
           safeInfo,
           allTransactions,
+          markPollComplete,
         }).finally(() => {
           isUpdating.current = false
         })
@@ -482,6 +497,7 @@ export function PendingOrdersUpdater(): null {
       getSafeTxInfo,
       safeInfo,
       allTransactions,
+      markPollComplete,
     ],
   )
 

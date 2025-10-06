@@ -1,7 +1,5 @@
-import { ReactNode } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 
-import surprisedCowAnimationDark from '@cowprotocol/assets/lottie/surprised-cow-dark.json'
-import surprisedCowAnimation from '@cowprotocol/assets/lottie/surprised-cow.json'
 import { useTheme } from '@cowprotocol/common-hooks'
 import { CowSwapSafeAppLink } from '@cowprotocol/ui'
 
@@ -13,6 +11,8 @@ import * as styledEl from './OrdersTableContainer.styled'
 import { OrderTabId } from '../../const/tabs'
 import { useOrdersTableState } from '../../hooks/useOrdersTableState'
 import { TabOrderTypes } from '../../types'
+
+import type { LottieComponentProps } from 'lottie-react'
 
 interface NoOrdersDescriptionProps {
   currentTab: OrderTabId
@@ -44,8 +44,9 @@ function NoOrdersDescription({
   return (
     <>
       <Trans>
-        You don't have any {currentTab === OrderTabId.unfillable ? 'unfillable' : currentTab === OrderTabId.open ? 'open' : ''}{' '}
-        orders at the moment.
+        You don't have any{' '}
+        {currentTab === OrderTabId.unfillable ? 'unfillable' : currentTab === OrderTabId.open ? 'open' : ''} orders at
+        the moment.
       </Trans>{' '}
       {(currentTab === OrderTabId.open || currentTab === OrderTabId.all) && (
         <>
@@ -76,13 +77,39 @@ function getSectionTitle(currentTab: OrderTabId): string {
 interface NoOrdersContentProps {
   currentTab: OrderTabId
   searchTerm?: string
+  hasHydratedOrders: boolean | undefined
 }
 
-export function NoOrdersContent({ currentTab, searchTerm }: NoOrdersContentProps): ReactNode {
+export function NoOrdersContent({ currentTab, searchTerm, hasHydratedOrders }: NoOrdersContentProps): ReactNode {
   const { orderType, isSafeViaWc, displayOrdersOnlyForSafeApp, injectedWidgetParams } = useOrdersTableState() || {}
   const theme = useTheme()
   const emptyOrdersImage = injectedWidgetParams?.images?.emptyOrders
-  const animationData = theme.darkMode ? surprisedCowAnimationDark : surprisedCowAnimation
+  const [animationData, setAnimationData] = useState<LottieComponentProps['animationData']>()
+
+  useEffect(() => {
+    if (emptyOrdersImage || !hasHydratedOrders) {
+      setAnimationData(undefined)
+      return
+    }
+
+    let isCancelled = false
+
+    async function loadAnimation(): Promise<void> {
+      const animationModule = theme.darkMode
+        ? await import('@cowprotocol/assets/lottie/surprised-cow-dark.json')
+        : await import('@cowprotocol/assets/lottie/surprised-cow.json')
+
+      if (!isCancelled) {
+        setAnimationData(animationModule.default)
+      }
+    }
+
+    void loadAnimation()
+
+    return () => {
+      isCancelled = true
+    }
+  }, [emptyOrdersImage, theme.darkMode, hasHydratedOrders])
 
   return (
     <styledEl.Content>
@@ -101,10 +128,12 @@ export function NoOrdersContent({ currentTab, searchTerm }: NoOrdersContentProps
       <styledEl.NoOrdersAnimation>
         {emptyOrdersImage ? (
           <img src={emptyOrdersImage} alt="There are no orders" />
-        ) : (
+        ) : animationData ? (
           <styledEl.NoOrdersLottieFrame aria-label="Animated cow reacts to empty order list">
             <Lottie animationData={animationData} loop autoplay />
           </styledEl.NoOrdersLottieFrame>
+        ) : (
+          <styledEl.NoOrdersLottieFrame aria-hidden="true" />
         )}
       </styledEl.NoOrdersAnimation>
     </styledEl.Content>
