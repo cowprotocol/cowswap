@@ -18,11 +18,18 @@ export function ConnectWalletContent(): ReactNode {
   useEffect(() => {
     let isCancelled = false
 
-    void import('@cowprotocol/assets/cow-swap/wallet-plus.svg').then((module) => {
-      if (!isCancelled) {
-        setWalletIcon(module.default)
-      }
-    })
+    void import('@cowprotocol/assets/cow-swap/wallet-plus.svg')
+      .then((module) => {
+        if (!isCancelled) {
+          setWalletIcon(module.default)
+        }
+      })
+      .catch((error) => {
+        if (!isCancelled) {
+          console.error('[ConnectWalletContent] Failed to load wallet icon', error)
+          setWalletIcon(null)
+        }
+      })
 
     return () => {
       isCancelled = true
