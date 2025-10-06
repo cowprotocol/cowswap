@@ -1,13 +1,15 @@
 import { Dispatch, ReactNode, SetStateAction, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { isSellOrder, isInjectedWidget } from '@cowprotocol/common-utils'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { getIsNativeToken, isInjectedWidget, isSellOrder } from '@cowprotocol/common-utils'
 import { useIsSmartContractWallet, useWalletInfo, useIsEagerConnectInProgress } from '@cowprotocol/wallet'
 
 import { Field } from 'legacy/state/types'
 import { useHooksEnabledManager } from 'legacy/state/user/hooks'
 
 import { useTryFindIntermediateToken } from 'modules/bridge'
+import { TradeApproveWithAffectedOrderList } from 'modules/erc20Approve'
 import { EthFlowModal, EthFlowProps } from 'modules/ethFlow'
 import { TradeWidgetSlots, useGetReceiveAmountInfo, useTradePriceImpact, useWrapNativeFlow } from 'modules/trade'
 import type { TradeWidgetProps as TradeWidgetComponentProps } from 'modules/trade'
@@ -23,7 +25,12 @@ import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 
 import { useHasEnoughWrappedBalanceForSwap } from '../../../hooks/useHasEnoughWrappedBalanceForSwap'
 import { useSwapDerivedState } from '../../../hooks/useSwapDerivedState'
-import { useSwapDeadlineState, useSwapRecipientToggleState, useSwapSettings } from '../../../hooks/useSwapSettings'
+import {
+  useSwapDeadlineState,
+  useSwapPartialApprovalToggleState,
+  useSwapRecipientToggleState,
+  useSwapSettings,
+} from '../../../hooks/useSwapSettings'
 import { useSwapWidgetActions } from '../../../hooks/useSwapWidgetActions'
 import { useUpdateSwapRawState } from '../../../hooks/useUpdateSwapRawState'
 import { CrossChainUnlockScreen } from '../../../pure/CrossChainUnlockScreen'
@@ -75,6 +82,8 @@ interface SlotArgs {
   handleUnlock: () => void
   recipientToggleState: ReturnType<typeof useSwapRecipientToggleState>
   hooksEnabledState: ReturnType<typeof useHooksEnabledManager>
+  enablePartialApprovalState: ReturnType<typeof useSwapPartialApprovalToggleState>
+  enablePartialApproval: boolean
   deadlineState: ReturnType<typeof useSwapDeadlineState>
   rateInfoParams: CurrencyData['rateInfoParams']
   buyingFiatAmount: CurrencyData['buyingFiatAmount']
@@ -149,6 +158,7 @@ export function useSwapWidgetViewModel({ topContent, bottomContent }: SwapWidget
   )
   const { handleUnlock, shouldShowLockScreen } = useLockScreenState(derivedState, updateSwapState)
   const currencyData = useCurrencyData(derivedState, receiveAmountInfo)
+  const { enablePartialApprovalState, enablePartialApproval } = usePartialApprovalOptions(derivedState)
   const ethFlowProps: EthFlowProps = useSafeMemoObject({
     nativeInput: derivedState.inputCurrencyAmount || undefined,
     onDismiss: dismissNativeWrapModal,
@@ -169,6 +179,8 @@ export function useSwapWidgetViewModel({ topContent, bottomContent }: SwapWidget
     handleUnlock,
     recipientToggleState,
     hooksEnabledState,
+    enablePartialApprovalState,
+    enablePartialApproval,
     deadlineState,
     rateInfoParams: currencyData.rateInfoParams,
     buyingFiatAmount: currencyData.buyingFiatAmount,
@@ -365,6 +377,31 @@ function useShouldShowLockScreen({
   }, [isHydrated, isUnlocked, isNetworkUnsupported, account, isSmartContractWallet, isEagerConnectInProgress])
 }
 
+function usePartialApprovalOptions(derivedState: ReturnType<typeof useSwapDerivedState>): {
+  enablePartialApprovalState: ReturnType<typeof useSwapPartialApprovalToggleState>
+  enablePartialApproval: boolean
+} {
+  const { isPartialApproveEnabled } = useFeatureFlags()
+  const enablePartialApprovalState = useSwapPartialApprovalToggleState(isPartialApproveEnabled)
+
+  const enablePartialApproval = useMemo(() => {
+    const [enablePartialApprovalBySettings] = enablePartialApprovalState
+
+    if (enablePartialApprovalBySettings === null) {
+      return false
+    }
+
+    const inputCurrency = derivedState.inputCurrency
+
+    return Boolean(enablePartialApprovalBySettings && inputCurrency && !getIsNativeToken(inputCurrency))
+  }, [enablePartialApprovalState, derivedState.inputCurrency])
+
+  return useMemo(
+    () => ({ enablePartialApprovalState, enablePartialApproval }),
+    [enablePartialApprovalState, enablePartialApproval],
+  )
+}
+
 function useTradeWidgetSlotsMemo({
   topContent,
   bottomContent,
@@ -372,6 +409,8 @@ function useTradeWidgetSlotsMemo({
   handleUnlock,
   recipientToggleState,
   hooksEnabledState,
+  enablePartialApprovalState,
+  enablePartialApproval,
   deadlineState,
   rateInfoParams,
   buyingFiatAmount,
@@ -393,15 +432,17 @@ function useTradeWidgetSlotsMemo({
         recipientToggleState={recipientToggleState}
         hooksEnabledState={hooksEnabledState}
         deadlineState={deadlineState}
+        enablePartialApprovalState={enablePartialApprovalState}
       />
     ),
-    [recipientToggleState, hooksEnabledState, deadlineState],
+    [recipientToggleState, hooksEnabledState, deadlineState, enablePartialApprovalState],
   )
 
   const bottomContentRenderer = useCallback(
     (tradeWarnings: ReactNode | null) => (
       <>
         {bottomContent}
+        {enablePartialApproval ? <TradeApproveWithAffectedOrderList /> : null}
         <SwapRateDetails rateInfoParams={rateInfoParams} deadline={deadlineState[0]} />
         <Warnings buyingFiatAmount={buyingFiatAmount} />
         {tradeWarnings}
@@ -417,6 +458,7 @@ function useTradeWidgetSlotsMemo({
     ),
     [
       bottomContent,
+      enablePartialApproval,
       rateInfoParams,
       deadlineState,
       buyingFiatAmount,
@@ -608,10 +650,7 @@ function useLockScreenState(
     isEagerConnectInProgress: walletStatus.isEagerConnectInProgress,
   })
 
-  return useMemo(
-    () => ({ handleUnlock, shouldShowLockScreen }),
-    [handleUnlock, shouldShowLockScreen],
-  )
+  return useMemo(() => ({ handleUnlock, shouldShowLockScreen }), [handleUnlock, shouldShowLockScreen])
 }
 
 function useIntermediateTokenModalVisibility({
