@@ -218,6 +218,18 @@ describe('useIsApprovalOrPermitRequired', () => {
       expect(result.current).toBe(ApproveRequiredReason.Required)
     })
 
+    it('should handle zero amount to approve', () => {
+      mockUseGetAmountToSignApprove.mockReturnValue(CurrencyAmount.fromRawAmount(mockToken, '0'))
+      mockUseApproveState.mockReturnValue({
+        state: ApprovalState.NOT_APPROVED,
+        currentAllowance: BigInt(0),
+      })
+
+      const { result } = renderHook(() => useIsApprovalOrPermitRequired())
+
+      expect(result.current).toBe(ApproveRequiredReason.NotRequired)
+    })
+
     it('should handle undefined input currency', () => {
       mockUseDerivedTradeState.mockReturnValue(
         createMockTradeState({
