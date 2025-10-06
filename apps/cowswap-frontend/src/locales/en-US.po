@@ -827,6 +827,10 @@ msgstr "Available COW balance"
 msgid "You possibly have other items to claim, but not Airdrops"
 msgstr "You possibly have other items to claim, but not Airdrops"
 
+#: apps/cowswap-frontend/src/modules/tokensList/containers/LpTokenPage/index.tsx
+msgid "APR"
+msgstr "APR"
+
 #: apps/cowswap-frontend/src/common/pure/NetworksList/index.tsx
 msgid "CoW Protocol Explorer"
 msgstr "CoW Protocol Explorer"
@@ -1022,6 +1026,10 @@ msgstr "Get started with limit orders"
 #: apps/cowswap-frontend/src/modules/swap/pure/TwapSuggestionBanner.tsx
 msgid "Minimize price impact with TWAP"
 msgstr "Minimize price impact with TWAP"
+
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SettingsTab/index.tsx
+msgid "Allows you to set partial token approvals instead of full approvals."
+msgstr "Allows you to set partial token approvals instead of full approvals."
 
 #: apps/cowswap-frontend/src/modules/accountProxy/containers/AccountProxiesPage/index.tsx
 #~ msgid "Select an {ACCOUNT_PROXY_LABEL} to check for available refunds {chain}"
@@ -1512,6 +1520,10 @@ msgstr "Clear selection"
 #: apps/cowswap-frontend/src/api/cowProtocol/errors/OperatorError.ts
 msgid "accepted"
 msgstr "accepted"
+
+#: apps/cowswap-frontend/src/modules/tokensList/containers/LpTokenPage/index.tsx
+msgid "TVL"
+msgstr "TVL"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/UnsupportedWalletWarning.tsx
 msgid "Use Safe web app"
@@ -2312,8 +2324,8 @@ msgid "Maximize your yield on existing LP positions"
 msgstr "Maximize your yield on existing LP positions"
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/LpTokenPage/index.tsx
-msgid "Pool description"
-msgstr "Pool description"
+#~ msgid "Pool description"
+#~ msgstr "Pool description"
 
 #: apps/cowswap-frontend/src/modules/twap/const.ts
 msgid "6 Hours"
@@ -3272,6 +3284,8 @@ msgstr "Recent Activity"
 msgid "2 stops"
 msgstr "2 stops"
 
+#: apps/cowswap-frontend/src/modules/erc20Approve/containers/TradeApproveButton/TradeApproveButton.tsx
+#: apps/cowswap-frontend/src/modules/erc20Approve/containers/TradeSignPermitButton/TradeSignPermitButton.tsx
 #: apps/cowswap-frontend/src/modules/erc20Approve/pure/LegacyApproveButton/index.tsx
 msgid "You must give the CoW Protocol smart contracts permission to use your <0/>. If you approve the default amount, you will only have to do this once per token."
 msgstr "You must give the CoW Protocol smart contracts permission to use your <0/>. If you approve the default amount, you will only have to do this once per token."
@@ -3851,6 +3865,10 @@ msgstr "Transaction {errorType}"
 msgid "Price impact <0>unknown</0> - trade carefully"
 msgstr "Price impact <0>unknown</0> - trade carefully"
 
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SettingsTab/index.tsx
+msgid "Enable partial approvals"
+msgstr "Enable partial approvals"
+
 #: apps/cowswap-frontend/src/common/containers/OrderHooksDetails/HookItem/index.tsx
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/AccountItem/index.tsx
 msgid "Version"
@@ -4265,8 +4283,8 @@ msgid "Notifications"
 msgstr "Notifications"
 
 #: apps/cowswap-frontend/src/modules/trade/containers/TradeWidgetLinks/index.tsx
-msgid "Trading mode"
-msgstr "Trading mode"
+#~ msgid "Trading mode"
+#~ msgstr "Trading mode"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/AirdropHookApp/index.tsx
 msgid "Connect your wallet"
@@ -5022,8 +5040,8 @@ msgid "Add Hook"
 msgstr "Add Hook"
 
 #: apps/cowswap-frontend/src/modules/trade/containers/TradeWidgetLinks/index.tsx
-msgid "select"
-msgstr "select"
+#~ msgid "select"
+#~ msgstr "select"
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/pure/ApproveConfirmation/AdvancedApprove.tsx
 msgid "Allow spending"
@@ -5632,6 +5650,10 @@ msgstr "Limit"
 #: apps/cowswap-frontend/src/modules/trade/pure/TradeConfirmation/getPendingText.ts
 msgid "Confirm bridging"
 msgstr "Confirm bridging"
+
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+msgid "Approve and {defaultText}"
+msgstr "Approve and {defaultText}"
 
 #: apps/cowswap-frontend/src/pages/Account/LockedGnoVesting/index.tsx
 msgid "<0>COW vesting from the GNO lock</0> is vested linearly over four years, starting on"
