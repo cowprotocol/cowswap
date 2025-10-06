@@ -14,13 +14,21 @@ import { OrderTabId } from '../../const/tabs'
 import { useOrdersTableState } from '../../hooks/useOrdersTableState'
 import { TabOrderTypes } from '../../types'
 
-function renderDescription(
-  displayOrdersOnlyForSafeApp: boolean | undefined,
-  isSafeViaWc: boolean | undefined,
-  searchTerm: string | undefined,
-  currentTab: OrderTabId,
-  orderType: TabOrderTypes | undefined,
-): ReactNode {
+interface NoOrdersDescriptionProps {
+  currentTab: OrderTabId
+  orderType: TabOrderTypes | undefined
+  searchTerm: string | undefined
+  isSafeViaWc: boolean | undefined
+  displayOrdersOnlyForSafeApp: boolean | undefined
+}
+
+function NoOrdersDescription({
+  currentTab,
+  orderType,
+  searchTerm,
+  isSafeViaWc,
+  displayOrdersOnlyForSafeApp,
+}: NoOrdersDescriptionProps): ReactNode {
   if (displayOrdersOnlyForSafeApp && isSafeViaWc) {
     return (
       <Trans>
@@ -81,7 +89,15 @@ export function NoOrdersContent({ currentTab, searchTerm }: NoOrdersContentProps
       <h3>
         <Trans>{searchTerm ? 'No matching orders found' : getSectionTitle(currentTab)}</Trans>
       </h3>
-      <p>{renderDescription(displayOrdersOnlyForSafeApp, isSafeViaWc, searchTerm, currentTab, orderType)}</p>
+      <p>
+        <NoOrdersDescription
+          currentTab={currentTab}
+          orderType={orderType}
+          searchTerm={searchTerm}
+          isSafeViaWc={isSafeViaWc}
+          displayOrdersOnlyForSafeApp={displayOrdersOnlyForSafeApp}
+        />
+      </p>
       <styledEl.NoOrdersAnimation>
         {emptyOrdersImage ? (
           <img src={emptyOrdersImage} alt="There are no orders" />
