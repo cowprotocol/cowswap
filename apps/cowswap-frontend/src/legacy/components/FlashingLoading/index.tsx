@@ -3,7 +3,7 @@ import { useTheme } from '@cowprotocol/common-hooks'
 import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 
-import { CowLoadingIcon } from '../../../common/pure/CowLoadingIcon'
+import { CowLoadingIcon } from 'common/pure/CowLoadingIcon'
 
 export const LoadingWrapper = styled.div`
   display: flex;
