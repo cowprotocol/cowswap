@@ -27,6 +27,7 @@ export interface TradeApproveButtonProps {
   ignorePermit?: boolean
   label: string
   buttonSize?: ButtonSize
+  useModals?: boolean
 }
 
 export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
@@ -39,9 +40,10 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
     ignorePermit,
     isDisabled,
     buttonSize = ButtonSize.DEFAULT,
+    useModals = true,
   } = props
   const isPartialApproveEnabledByUser = useIsPartialApproveSelectedByUser()
-  const handleApprove = useApproveCurrency(amountToApprove)
+  const handleApprove = useApproveCurrency(amountToApprove, useModals)
 
   const spender = useTradeSpenderAddress()
   const { approvalState } = useApprovalStateForSpender(amountToApprove, spender)

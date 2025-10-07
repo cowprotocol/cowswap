@@ -46,6 +46,7 @@ export function OrderPartialApprove({
       <TradeApproveButton
         ignorePermit
         enablePartialApprove
+        useModals={false}
         amountToApprove={amountToApproveFinal}
         buttonSize={ButtonSize.SMALL}
         label={'Approve ' + amountToApprove.currency.symbol}
