@@ -51,7 +51,9 @@ export function TransactionSlippageInput(): JSX.Element {
             <SlippageLoader size="16px" />
           ) : (
             <RowBetween>
-              {slippageWarningParams && (slippageWarningParams.tooLow || slippageWarningParams?.tooHigh) ? (
+              {slippageWarningParams &&
+              !isQuoteLoading &&
+              (slippageWarningParams.tooLow || slippageWarningParams?.tooHigh) ? (
                 <styledEl.SlippageEmojiContainer>
                   <span role="img" aria-label="warning">
                     ⚠️
