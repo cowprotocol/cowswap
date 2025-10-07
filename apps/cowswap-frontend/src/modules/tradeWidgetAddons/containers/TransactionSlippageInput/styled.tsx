@@ -11,9 +11,12 @@ export const SlippageEmojiContainer = styled.span`
 
 export const Option = styled(FancyButton)<{ active: boolean }>`
   margin-right: 8px;
+  background: var(${({ active }) => (active ? UI.COLOR_PRIMARY : UI.COLOR_PRIMARY_OPACITY_50)});
+  transition: background-color 0.2s;
 
   :hover {
     cursor: pointer;
+    background: var(${UI.COLOR_PRIMARY});
   }
 
   &:disabled {
