@@ -15,7 +15,7 @@ export type SwapPriceDifferenceWarningProps = {
   swapAmountDifference: SwapAmountDifference
   feeFiatAmount: CurrencyAmount<Token> | null
   tradeUrlParams: TradeUrlParams
-  chainID?: number
+  chainId?: number
 }
 
 const StyledNavLink = styled(NavLink)`
