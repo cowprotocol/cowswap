@@ -45,8 +45,9 @@ export function SwapPriceDifferenceWarning({
   if (!isTwapBetter && !feeFiatAmount) return null
 
   if (isTwapBetter && diffLessThanLimit) return null
-   // Only show banner on Ethereum mainnet
-  if (chainId !== 1) return null
+   // Only show banner on Ethereum mainnet (1) or Sepolia (11155111)
+  const supportedChains = [1, 11155111]
+  if (!chainId || !supportedChains.includes(chainId)) return null
 
   const routePath = parameterizeTradeRoute(tradeUrlParams, Routes.SWAP, true)
   const swapOrderLink = <StyledNavLink to={routePath}>SWAP order</StyledNavLink>
