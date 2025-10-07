@@ -4,7 +4,8 @@ import styled from 'styled-components/macro'
 
 export const UnfillableWarning = styled(InlineBanner)`
   margin: 10px 0;
-  padding: 15px;
+  padding: 10px;
+  font-size: 13px;
 `
 
 export const ApproveWrapper = styled.div`
@@ -13,7 +14,7 @@ export const ApproveWrapper = styled.div`
 `
 
 export const Subtitle = styled.div`
-  margin: 10px 25px 10px;
+  margin: 10px 30px 10px;
   color: var(${UI.COLOR_RED});
   font-size: 13px;
 `

@@ -3,8 +3,6 @@ import { ReactNode } from 'react'
 import { BannerOrientation, StatusColorVariant } from '@cowprotocol/ui'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
-import { AlertTriangle } from 'react-feather'
-
 import { OrderFillability } from 'common/hooks/usePendingOrdersFillability'
 import { AccordionBanner } from 'common/pure/AccordionBanner'
 
@@ -27,7 +25,6 @@ export function OrderFillabilityWarning({
 }): ReactNode {
   const title = (
     <Title>
-      <AlertTriangle size={20} />
       <span>Order cannot be filled due to insufficient allowance</span>
     </Title>
   )
@@ -35,7 +32,11 @@ export function OrderFillabilityWarning({
   return (
     <Wrapper>
       {fillability?.hasEnoughBalance === false && (
-        <UnfillableWarning bannerType={StatusColorVariant.Danger} orientation={BannerOrientation.Horizontal}>
+        <UnfillableWarning
+          padding={'10px'}
+          bannerType={StatusColorVariant.Danger}
+          orientation={BannerOrientation.Horizontal}
+        >
           Order cannot be filled due to insufficient balance on the current account.
           <br />
           Please, top up {inputAmount.currency.symbol} balance or cancel the order.
@@ -43,7 +44,7 @@ export function OrderFillabilityWarning({
       )}
 
       {fillability?.hasEnoughAllowance === false && (
-        <AccordionBanner title={title} bannerType={StatusColorVariant.Danger}>
+        <AccordionBanner title={title} bannerType={StatusColorVariant.Danger} accordionPadding={'10px'}>
           <OrderActionsWrapper>
             <Subtitle>
               Another order has used up the approval amount. Set a new token approval to proceed with your order.

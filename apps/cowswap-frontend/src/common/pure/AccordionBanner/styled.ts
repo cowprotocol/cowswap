@@ -2,9 +2,9 @@ import { StatusColorEnums } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-export const AccordionWrapper = styled.div<{ colorEnums: StatusColorEnums }>`
+export const AccordionWrapper = styled.div<{ colorEnums: StatusColorEnums; accordionPadding: string }>`
   border-radius: 14px;
-  padding: 9px 6px;
+  padding: ${({ accordionPadding }) => accordionPadding};
   background: var(${({ colorEnums }) => colorEnums.bg});
 
   .font-bold {

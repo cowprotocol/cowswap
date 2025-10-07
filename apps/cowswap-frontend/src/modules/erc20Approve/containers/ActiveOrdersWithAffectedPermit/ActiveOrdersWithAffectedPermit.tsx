@@ -4,8 +4,6 @@ import { TokenSymbol } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
 
-import { AlertCircle } from 'react-feather'
-
 import { useOnlyPendingOrders } from 'legacy/state/orders/hooks'
 
 import { AffectedPermitOrdersTable } from 'modules/ordersTable'
@@ -28,13 +26,12 @@ export function ActiveOrdersWithAffectedPermit({ currency }: { currency: Currenc
 
   const titleContent = (
     <>
-      <AlertCircle />
       Partial approval may block <span className={'font-bold'}>{ordersWithPermit.length}</span> other orders
     </>
   )
 
   return (
-    <AccordionBanner title={titleContent}>
+    <AccordionBanner title={titleContent} accordionPadding={'9px 6px'}>
       <styledEl.DropdownList>
         <AffectedPermitOrdersTable orders={ordersWithPermit} />
       </styledEl.DropdownList>
