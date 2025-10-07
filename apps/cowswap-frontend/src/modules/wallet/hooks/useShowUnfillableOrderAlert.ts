@@ -16,10 +16,9 @@ export function useShowUnfillableOrderAlert(): boolean {
 
   return Object.keys(pendingOrdersFillability).some((orderId) => {
     const fillability = pendingOrdersFillability[orderId]
-    const isPermitValid =
-      pendingOrdersPermitValidityState[orderId] === undefined ? true : pendingOrdersPermitValidityState[orderId]
+    const hasValidPermit = pendingOrdersPermitValidityState[orderId] === true
     if (fillability) {
-      const hasEnoughAllowance = fillability.hasEnoughAllowance || isPermitValid
+      const hasEnoughAllowance = fillability.hasEnoughAllowance || hasValidPermit
       return !hasEnoughAllowance || !fillability.hasEnoughBalance
     }
 
