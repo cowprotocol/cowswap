@@ -1,4 +1,4 @@
-import { Dispatch, ReactNode, SetStateAction, useCallback, useEffect, useMemo, useState } from 'react'
+import { Dispatch, ReactNode, SetStateAction, createElement, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
@@ -422,40 +422,43 @@ function useTradeWidgetSlotsMemo({
   setShowAddIntermediateTokenModal,
 }: SlotArgs): TradeWidgetSlots {
   const lockScreen = useMemo(
-    () => (shouldShowLockScreen ? <CrossChainUnlockScreen handleUnlock={handleUnlock} /> : undefined),
+    () =>
+      shouldShowLockScreen
+        ? createElement(LockScreenSlot, {
+            shouldShowLockScreen,
+            handleUnlock,
+          })
+        : undefined,
     [shouldShowLockScreen, handleUnlock],
   )
 
   const settingsWidget = useMemo(
-    () => (
-      <SettingsTab
-        recipientToggleState={recipientToggleState}
-        hooksEnabledState={hooksEnabledState}
-        deadlineState={deadlineState}
-        enablePartialApprovalState={enablePartialApprovalState}
-      />
-    ),
+    () =>
+      createElement(SettingsWidgetSlot, {
+        recipientToggleState,
+        hooksEnabledState,
+        deadlineState,
+        enablePartialApprovalState,
+      }),
     [recipientToggleState, hooksEnabledState, deadlineState, enablePartialApprovalState],
   )
 
   const bottomContentRenderer = useCallback(
-    (tradeWarnings: ReactNode | null) => (
-      <>
-        {bottomContent}
-        {enablePartialApproval ? <TradeApproveWithAffectedOrderList /> : null}
-        <SwapRateDetails rateInfoParams={rateInfoParams} deadline={deadlineState[0]} />
-        <Warnings buyingFiatAmount={buyingFiatAmount} />
-        {tradeWarnings}
-        <TradeButtons
-          isTradeContextReady={isTradeContextReady}
-          openNativeWrapModal={openNativeWrapModal}
-          hasEnoughWrappedBalanceForSwap={hasEnoughWrappedBalanceForSwap}
-          tokenToBeImported={toBeImported}
-          intermediateBuyToken={intermediateBuyToken}
-          setShowAddIntermediateTokenModal={setShowAddIntermediateTokenModal}
-        />
-      </>
-    ),
+    (tradeWarnings: ReactNode | null) =>
+      createElement(BottomContentSlot, {
+        bottomContent,
+        tradeWarnings,
+        enablePartialApproval,
+        rateInfoParams,
+        deadline: deadlineState[0],
+        buyingFiatAmount,
+        isTradeContextReady,
+        openNativeWrapModal,
+        hasEnoughWrappedBalanceForSwap,
+        tokenToBeImported: toBeImported,
+        intermediateBuyToken,
+        setShowAddIntermediateTokenModal,
+      }),
     [
       bottomContent,
       enablePartialApproval,
@@ -516,16 +519,15 @@ function useTradeWidgetPropsMemo({
   ethFlowProps,
 }: TradePropsArgs): TradeWidgetComponentProps {
   const confirmModal = useMemo(
-    () => (
-      <SwapConfirmModal
-        doTrade={doTradeCallback}
-        recipient={recipient}
-        recipientAddress={recipientAddress}
-        priceImpact={priceImpact}
-        inputCurrencyInfo={currencyData.inputPreviewInfo}
-        outputCurrencyInfo={currencyData.outputPreviewInfo}
-      />
-    ),
+    () =>
+      createElement(ConfirmModalSlot, {
+        doTradeCallback,
+        recipient,
+        recipientAddress,
+        priceImpact,
+        inputPreviewInfo: currencyData.inputPreviewInfo,
+        outputPreviewInfo: currencyData.outputPreviewInfo,
+      }),
     [
       doTradeCallback,
       recipient,
@@ -537,7 +539,13 @@ function useTradeWidgetPropsMemo({
   )
 
   const genericModal = useMemo(
-    () => (showNativeWrapModal ? <EthFlowModal {...ethFlowProps} /> : undefined),
+    () =>
+      showNativeWrapModal
+        ? createElement(GenericModalSlot, {
+            showNativeWrapModal,
+            ethFlowProps,
+          })
+        : undefined,
     [showNativeWrapModal, ethFlowProps],
   )
 
@@ -673,4 +681,130 @@ function useIntermediateTokenModalVisibility({
   }, [showAddIntermediateTokenModal, hasIntermediateTokenToImport, setShowAddIntermediateTokenModal])
 
   return showAddIntermediateTokenModal && hasIntermediateTokenToImport
+}
+
+interface LockScreenSlotProps {
+  shouldShowLockScreen: boolean
+  handleUnlock: () => void
+}
+
+function LockScreenSlot({ shouldShowLockScreen, handleUnlock }: LockScreenSlotProps): ReactNode {
+  if (!shouldShowLockScreen) {
+    return null
+  }
+
+  return <CrossChainUnlockScreen handleUnlock={handleUnlock} />
+}
+
+interface SettingsWidgetSlotProps {
+  recipientToggleState: ReturnType<typeof useSwapRecipientToggleState>
+  hooksEnabledState: ReturnType<typeof useHooksEnabledManager>
+  deadlineState: ReturnType<typeof useSwapDeadlineState>
+  enablePartialApprovalState: ReturnType<typeof useSwapPartialApprovalToggleState>
+}
+
+function SettingsWidgetSlot({
+  recipientToggleState,
+  hooksEnabledState,
+  deadlineState,
+  enablePartialApprovalState,
+}: SettingsWidgetSlotProps): ReactNode {
+  return (
+    <SettingsTab
+      recipientToggleState={recipientToggleState}
+      hooksEnabledState={hooksEnabledState}
+      deadlineState={deadlineState}
+      enablePartialApprovalState={enablePartialApprovalState}
+    />
+  )
+}
+
+interface BottomContentSlotProps {
+  bottomContent?: ReactNode
+  tradeWarnings: ReactNode | null
+  enablePartialApproval: boolean
+  rateInfoParams: CurrencyData['rateInfoParams']
+  deadline: ReturnType<typeof useSwapDeadlineState>[0]
+  buyingFiatAmount: CurrencyInfo['fiatAmount']
+  isTradeContextReady: boolean
+  openNativeWrapModal: () => void
+  hasEnoughWrappedBalanceForSwap: boolean
+  tokenToBeImported: ReturnType<typeof useTryFindIntermediateToken>['toBeImported']
+  intermediateBuyToken: ReturnType<typeof useTryFindIntermediateToken>['intermediateBuyToken']
+  setShowAddIntermediateTokenModal: Dispatch<SetStateAction<boolean>>
+}
+
+function BottomContentSlot({
+  bottomContent,
+  tradeWarnings,
+  enablePartialApproval,
+  rateInfoParams,
+  deadline,
+  buyingFiatAmount,
+  isTradeContextReady,
+  openNativeWrapModal,
+  hasEnoughWrappedBalanceForSwap,
+  tokenToBeImported,
+  intermediateBuyToken,
+  setShowAddIntermediateTokenModal,
+}: BottomContentSlotProps): ReactNode {
+  return (
+    <>
+      {bottomContent}
+      {enablePartialApproval ? <TradeApproveWithAffectedOrderList /> : null}
+      <SwapRateDetails rateInfoParams={rateInfoParams} deadline={deadline} />
+      <Warnings buyingFiatAmount={buyingFiatAmount} />
+      {tradeWarnings}
+      <TradeButtons
+        isTradeContextReady={isTradeContextReady}
+        openNativeWrapModal={openNativeWrapModal}
+        hasEnoughWrappedBalanceForSwap={hasEnoughWrappedBalanceForSwap}
+        tokenToBeImported={tokenToBeImported}
+        intermediateBuyToken={intermediateBuyToken}
+        setShowAddIntermediateTokenModal={setShowAddIntermediateTokenModal}
+      />
+    </>
+  )
+}
+
+interface ConfirmModalProps {
+  doTradeCallback: ReturnType<typeof useHandleSwap>['callback']
+  recipient: ReturnType<typeof useSwapDerivedState>['recipient']
+  recipientAddress: ReturnType<typeof useSwapDerivedState>['recipientAddress']
+  priceImpact: ReturnType<typeof useTradePriceImpact>
+  inputPreviewInfo: CurrencyPreviewInfo
+  outputPreviewInfo: CurrencyPreviewInfo
+}
+
+function ConfirmModalSlot({
+  doTradeCallback,
+  recipient,
+  recipientAddress,
+  priceImpact,
+  inputPreviewInfo,
+  outputPreviewInfo,
+}: ConfirmModalProps): ReactNode {
+  return (
+    <SwapConfirmModal
+      doTrade={doTradeCallback}
+      recipient={recipient}
+      recipientAddress={recipientAddress}
+      priceImpact={priceImpact}
+      inputCurrencyInfo={inputPreviewInfo}
+      outputCurrencyInfo={outputPreviewInfo}
+    />
+  )
+}
+
+interface GenericModalProps {
+  showNativeWrapModal: boolean
+  ethFlowProps: EthFlowProps
+}
+
+function GenericModalSlot({ showNativeWrapModal, ethFlowProps }: GenericModalProps): ReactNode {
+  if (!showNativeWrapModal) {
+    return null
+  }
+
+  return <EthFlowModal {...ethFlowProps} />
 }
