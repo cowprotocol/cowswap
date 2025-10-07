@@ -3,12 +3,12 @@ import { ReactNode } from 'react'
 import { BannerOrientation, StatusColorVariant } from '@cowprotocol/ui'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
-import { AlertCircle } from 'react-feather'
+import { AlertTriangle } from 'react-feather'
 
 import { OrderFillability } from 'common/hooks/usePendingOrdersFillability'
 import { AccordionBanner } from 'common/pure/AccordionBanner'
 
-import { ApproveWrapper, OrderActionsWrapper, Subtitle, UnfillableWarning, Wrapper } from './styled'
+import { ApproveWrapper, OrderActionsWrapper, Subtitle, Title, UnfillableWarning, Wrapper } from './styled'
 
 import { OrderPartialApprove } from '../../containers/OrderPartialApprove'
 
@@ -26,10 +26,10 @@ export function OrderFillabilityWarning({
   isCustomApproveModalOpen?: boolean
 }): ReactNode {
   const title = (
-    <>
-      <AlertCircle />
-      Order cannot be filled due to insufficient allowance
-    </>
+    <Title>
+      <AlertTriangle size={20} />
+      <span>Order cannot be filled due to insufficient allowance</span>
+    </Title>
   )
 
   return (

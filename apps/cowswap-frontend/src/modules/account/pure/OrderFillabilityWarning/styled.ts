@@ -13,7 +13,7 @@ export const ApproveWrapper = styled.div`
 `
 
 export const Subtitle = styled.div`
-  margin-left: 30px;
+  margin: 10px 25px 10px;
   color: var(${UI.COLOR_RED});
   font-size: 13px;
 `
@@ -26,4 +26,11 @@ export const OrderActionsWrapper = styled.div`
 
 export const Wrapper = styled.div`
   max-width: 450px;
+`
+
+export const Title = styled.div`
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  gap: 6px;
 `
