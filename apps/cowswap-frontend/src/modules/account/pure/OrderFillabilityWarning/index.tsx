@@ -6,10 +6,10 @@ import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { AlertCircle } from 'react-feather'
 
 import { OrderFillability } from 'common/hooks/usePendingOrdersFillability'
+import { AccordionBanner } from 'common/pure/AccordionBanner'
 
-import { ApproveWrapper, UnfillableWarning } from './styled'
+import { ApproveWrapper, OrderActionsWrapper, Subtitle, UnfillableWarning, Wrapper } from './styled'
 
-import { AccordionBanner } from '../../../../common/pure/AccordionBanner'
 import { OrderPartialApprove } from '../../containers/OrderPartialApprove'
 
 export function OrderFillabilityWarning({
@@ -33,7 +33,7 @@ export function OrderFillabilityWarning({
   )
 
   return (
-    <>
+    <Wrapper>
       {fillability?.hasEnoughBalance === false && (
         <UnfillableWarning bannerType={StatusColorVariant.Danger} orientation={BannerOrientation.Horizontal}>
           Order cannot be filled due to insufficient balance on the current account.
@@ -43,15 +43,19 @@ export function OrderFillabilityWarning({
       )}
 
       {fillability?.hasEnoughAllowance === false && (
-        <AccordionBanner title={title}>
-          Another order has used up the approval amount. Set a new token approval to proceed with your order.
-          <ApproveWrapper>
-            {enablePartialApprove && enablePartialApproveBySettings && !isCustomApproveModalOpen && (
-              <OrderPartialApprove amountToApprove={inputAmount} />
-            )}
-          </ApproveWrapper>
+        <AccordionBanner title={title} bannerType={StatusColorVariant.Danger}>
+          <OrderActionsWrapper>
+            <Subtitle>
+              Another order has used up the approval amount. Set a new token approval to proceed with your order.
+            </Subtitle>
+            <ApproveWrapper>
+              {enablePartialApprove && enablePartialApproveBySettings && !isCustomApproveModalOpen && (
+                <OrderPartialApprove amountToApprove={inputAmount} />
+              )}
+            </ApproveWrapper>
+          </OrderActionsWrapper>
         </AccordionBanner>
       )}
-    </>
+    </Wrapper>
   )
 }

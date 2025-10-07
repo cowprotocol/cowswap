@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
 
+import { ButtonSize } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import {
@@ -11,6 +12,8 @@ import {
   usePendingApproveAmountModalState,
   useUpdatePendingApproveAmountModalState,
 } from 'modules/erc20Approve'
+
+import { OrderActionsWrapper } from './styled'
 
 export type OrderPartialApproveProps = {
   amountToApprove: CurrencyAmount<Currency>
@@ -28,7 +31,7 @@ export function OrderPartialApprove({ amountToApprove }: OrderPartialApproveProp
   }
 
   return (
-    <>
+    <OrderActionsWrapper>
       <TradeApproveToggle
         amountToApprove={amountToApproveFinal}
         updateModalState={() => updatePendingApproveAmountModalState({ isModalOpen: true })}
@@ -38,8 +41,9 @@ export function OrderPartialApprove({ amountToApprove }: OrderPartialApproveProp
         ignorePermit
         enablePartialApprove
         amountToApprove={amountToApproveFinal}
+        buttonSize={ButtonSize.DEFAULT}
         label={'Approve ' + amountToApprove.currency.symbol}
       />
-    </>
+    </OrderActionsWrapper>
   )
 }

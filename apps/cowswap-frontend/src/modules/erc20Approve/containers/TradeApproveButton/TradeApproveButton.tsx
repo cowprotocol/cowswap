@@ -25,10 +25,19 @@ export interface TradeApproveButtonProps {
   confirmSwap?: () => void
   ignorePermit?: boolean
   label: string
+  buttonSize?: ButtonSize
 }
 
 export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
-  const { amountToApprove, children, enablePartialApprove, confirmSwap, label, ignorePermit } = props
+  const {
+    amountToApprove,
+    children,
+    enablePartialApprove,
+    confirmSwap,
+    label,
+    ignorePermit,
+    buttonSize = ButtonSize.DEFAULT,
+  } = props
   const isPartialApproveEnabledByUser = useIsPartialApproveSelectedByUser()
   const handleApprove = useApproveCurrency(amountToApprove)
 
@@ -77,15 +86,8 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
   const isPending = approvalState === ApprovalState.PENDING
 
   return (
-    <ButtonConfirmed
-      disabled={isPending}
-      buttonSize={ButtonSize.BIG}
-      onClick={approveAndSwap}
-      width="100%"
-      marginBottom={10}
-      altDisabledStyle={isPending}
-    >
-      <styledEl.ButtonLabelWrapper>
+    <ButtonConfirmed disabled={isPending} onClick={approveAndSwap} width="100%" altDisabledStyle={isPending}>
+      <styledEl.ButtonLabelWrapper buttonSize={buttonSize}>
         {label}{' '}
         <HoverTooltip
           wrapInContainer
