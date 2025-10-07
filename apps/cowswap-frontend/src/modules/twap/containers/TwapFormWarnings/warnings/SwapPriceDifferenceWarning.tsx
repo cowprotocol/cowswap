@@ -15,6 +15,7 @@ export type SwapPriceDifferenceWarningProps = {
   swapAmountDifference: SwapAmountDifference
   feeFiatAmount: CurrencyAmount<Token> | null
   tradeUrlParams: TradeUrlParams
+  chainID: number
 }
 
 const StyledNavLink = styled(NavLink)`
@@ -35,6 +36,7 @@ export function SwapPriceDifferenceWarning({
   tradeUrlParams,
   swapAmountDifference,
   feeFiatAmount,
+  chainId,
 }: SwapPriceDifferenceWarningProps) {
   const { amount, percent } = swapAmountDifference
   const isTwapBetter = amount.greaterThan(0)
@@ -62,7 +64,8 @@ export function SwapPriceDifferenceWarning({
         </>
       ) : (
         <>
-          <strong>Trade Smart, Save More!</strong>
+           {/* Only show this banner if on Ethereum mainnet */}
+          {chainId === 1 && <strong>Trade Smart, Save More!</strong>}
           <p>
             Considering current network costs (
             <b>
