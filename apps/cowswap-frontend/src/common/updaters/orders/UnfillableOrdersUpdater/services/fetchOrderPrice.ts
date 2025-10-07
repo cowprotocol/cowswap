@@ -10,20 +10,20 @@ export async function fetchOrderPrice(chainId: SupportedChainId, order: GenericO
   const amount = getRemainderAmount(order.kind, order)
 
   try {
-    return tradingSdk
-      .getQuote({
-        chainId,
-        kind: order.kind,
-        owner: order.owner as AccountAddress,
-        sellToken: order.inputToken.address,
-        sellTokenDecimals: order.inputToken.decimals,
-        buyToken: order.outputToken.address,
-        buyTokenDecimals: order.outputToken.decimals,
-        amount,
-        receiver: order.receiver,
-        partiallyFillable: order.partiallyFillable,
-      })
-      .then((res) => res.quoteResults)
+    const quote = await tradingSdk.getQuote({
+      chainId,
+      kind: order.kind,
+      owner: order.owner as AccountAddress,
+      sellToken: order.inputToken.address,
+      sellTokenDecimals: order.inputToken.decimals,
+      buyToken: order.outputToken.address,
+      buyTokenDecimals: order.outputToken.decimals,
+      amount,
+      receiver: order.receiver,
+      partiallyFillable: order.partiallyFillable,
+    })
+
+    return quote.quoteResults
   } catch {
     return null
   }
