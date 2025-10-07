@@ -1,7 +1,7 @@
 import React, { ReactNode, useCallback } from 'react'
 
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
-import { ButtonConfirmed, ButtonSize, HoverTooltip, TokenSymbol } from '@cowprotocol/ui'
+import { ButtonSize, HoverTooltip, TokenSymbol } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
@@ -10,6 +10,7 @@ import { useTokenSupportsPermit } from 'modules/permit'
 import { TradeType } from 'modules/trade'
 
 import * as styledEl from './styled'
+import { ButtonWrapper } from './styled'
 
 import { MAX_APPROVE_AMOUNT } from '../../constants'
 import { useApprovalStateForSpender, useApproveCurrency, useGeneratePermitInAdvanceToTrade } from '../../hooks'
@@ -86,7 +87,7 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
   const isPending = approvalState === ApprovalState.PENDING
 
   return (
-    <ButtonConfirmed disabled={isPending} onClick={approveAndSwap} width="100%" altDisabledStyle={isPending}>
+    <ButtonWrapper disabled={isPending} buttonSize={buttonSize} onClick={approveAndSwap} altDisabledStyle={isPending}>
       <styledEl.ButtonLabelWrapper buttonSize={buttonSize}>
         {label}{' '}
         <HoverTooltip
@@ -102,6 +103,6 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
           {isPending ? <styledEl.StyledLoader /> : <styledEl.StyledAlert size={24} />}
         </HoverTooltip>
       </styledEl.ButtonLabelWrapper>
-    </ButtonConfirmed>
+    </ButtonWrapper>
   )
 }

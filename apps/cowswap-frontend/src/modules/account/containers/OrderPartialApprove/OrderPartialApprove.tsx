@@ -41,7 +41,7 @@ export function OrderPartialApprove({ amountToApprove }: OrderPartialApproveProp
         ignorePermit
         enablePartialApprove
         amountToApprove={amountToApproveFinal}
-        buttonSize={ButtonSize.DEFAULT}
+        buttonSize={ButtonSize.SMALL}
         label={'Approve ' + amountToApprove.currency.symbol}
       />
     </OrderActionsWrapper>
