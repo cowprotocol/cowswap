@@ -1,6 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { useCallback } from 'react'
+import { ReactNode, useCallback } from 'react'
 
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useIsSafeViaWc, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
@@ -28,15 +29,14 @@ import { twapDeadlineAtom } from '../../state/twapOrderAtom'
 import { twapOrdersSettingsAtom, updateTwapOrdersSettingsAtom } from '../../state/twapOrdersSettingsAtom'
 import { isPriceProtectionNotEnough } from '../../utils/isPriceProtectionNotEnough'
 
+const NETWORKS_TO_SHOW_PRICE_DIFF_BANNER = [SupportedChainId.MAINNET, SupportedChainId.SEPOLIA]
+
 interface TwapFormWarningsProps {
   localFormValidation: TwapFormState | null
   isConfirmationModal?: boolean
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: TwapFormWarningsProps) {
+export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: TwapFormWarningsProps): ReactNode {
   const { isFallbackHandlerSetupAccepted } = useAtomValue(twapOrdersSettingsAtom)
   const updateTwapOrdersSettings = useSetAtom(updateTwapOrdersSettingsAtom)
   const slippage = useTwapSlippage()
@@ -64,13 +64,14 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
   // Don't display any warnings while a wallet is not connected
   if (walletIsNotConnected) return null
 
-  const swapPriceDifferenceWarning = swapAmountDifference ? (
-    <SwapPriceDifferenceWarning
-      tradeUrlParams={tradeUrlParams}
-      feeFiatAmount={tradeQuoteFeeFiatAmount}
-      swapAmountDifference={swapAmountDifference}
-    />
-  ) : null
+  const swapPriceDifferenceWarning =
+    swapAmountDifference && NETWORKS_TO_SHOW_PRICE_DIFF_BANNER.includes(chainId) ? (
+      <SwapPriceDifferenceWarning
+        tradeUrlParams={tradeUrlParams}
+        feeFiatAmount={tradeQuoteFeeFiatAmount}
+        swapAmountDifference={swapAmountDifference}
+      />
+    ) : null
 
   return (
     <>
