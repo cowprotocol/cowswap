@@ -45,6 +45,8 @@ export function SwapPriceDifferenceWarning({
   if (!isTwapBetter && !feeFiatAmount) return null
 
   if (isTwapBetter && diffLessThanLimit) return null
+   // Only show banner on Ethereum mainnet
+  if (chainId !== 1) return null
 
   const routePath = parameterizeTradeRoute(tradeUrlParams, Routes.SWAP, true)
   const swapOrderLink = <StyledNavLink to={routePath}>SWAP order</StyledNavLink>
@@ -64,15 +66,14 @@ export function SwapPriceDifferenceWarning({
         </>
       ) : (
         <>
-           {/* Only show this banner if on Ethereum mainnet */}
-          {chainId === 1 && <strong>Trade Smart, Save More!</strong>}
-          <p>
-            Considering current network costs (
-            <b>
+         <strong>Trade Smart, Save More!</strong>
+           <p>
+              Considering current network costs (
+             <b>
               <FiatAmount amount={feeFiatAmount} />
             </b>{' '}
-            per chunk), you could save more by reducing the number of parts or switch to a {swapOrderLink}.
-          </p>
+            per chunk), you could save more by reducing the number of parts or switch to a {swapOrderLink}.      
+          </p>          
         </>
       )}
     </InlineBanner>
