@@ -49,6 +49,7 @@ import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { fetchAndClassifyOrder } from './utils'
 
+import { useBlockNumber } from '../../hooks/useBlockNumber'
 import { removeOrdersToCancelAtom } from '../../hooks/useMultipleOrdersCancellation/state'
 import { useTriggerTotalSurplusUpdateCallback } from '../../state/totalSurplusState'
 
@@ -407,6 +408,7 @@ export function PendingOrdersUpdater(): null {
   const safeInfo = useGnosisSafeInfo()
   const isSafeWallet = !!safeInfo
   const { chainId, account } = useWalletInfo()
+  const blockNumber = useBlockNumber()
   const removeOrdersToCancel = useSetAtom(removeOrdersToCancelAtom)
   const dispatch = useDispatch<AppDispatch>()
 
@@ -432,6 +434,9 @@ export function PendingOrdersUpdater(): null {
   // Ref, so we don't rerun useEffect
   const pendingRef = useRef(pending)
   pendingRef.current = pending
+  // Keep block number in a ref so markPollComplete doesn't depend on it and re-trigger polling effect each block
+  const blockNumberRef = useRef(blockNumber)
+  blockNumberRef.current = blockNumber
 
   const _fulfillOrdersBatch = useFulfillOrdersBatch()
   const expireOrdersBatch = useExpireOrdersBatch()
@@ -446,9 +451,18 @@ export function PendingOrdersUpdater(): null {
   const getSafeTxInfo = useGetSafeTxInfo()
   const bridgeOrdersMap = useBridgeOrdersSerializedMap()
   const markPollComplete = useCallback(
-    (targetChainId: ChainId) =>
-      dispatch(updateLastCheckedBlock({ chainId: targetChainId, lastCheckedBlock: Date.now() })),
-    [dispatch],
+    (targetChainId: ChainId) => {
+      if (!chainId || targetChainId !== chainId) {
+        return
+      }
+
+      const latestBlock = blockNumberRef.current
+
+      if (typeof latestBlock === 'number') {
+        dispatch(updateLastCheckedBlock({ chainId: targetChainId, lastCheckedBlock: latestBlock }))
+      }
+    },
+    [chainId, dispatch],
   )
 
   const fulfillOrdersBatch = useCallback(
