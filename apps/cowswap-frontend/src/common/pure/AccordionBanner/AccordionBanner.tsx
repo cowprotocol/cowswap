@@ -1,5 +1,7 @@
 import { ReactNode, useState } from 'react'
 
+import { getStatusColorEnums, StatusColorVariant } from '@cowprotocol/ui'
+
 import * as styledEl from './styled'
 
 import { ToggleArrow } from '../ToggleArrow'
@@ -7,21 +9,27 @@ import { ToggleArrow } from '../ToggleArrow'
 type AccordionBannerProps = {
   children: ReactNode
   title: ReactNode
+  bannerType?: StatusColorVariant
 }
 
 export function AccordionBanner(props: AccordionBannerProps): ReactNode {
-  const { children, title } = props
+  const { children, title, bannerType = StatusColorVariant.Info } = props
+  const colorEnums = getStatusColorEnums(bannerType)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
 
   return (
-    <styledEl.DropdownWrapper>
-      <styledEl.DropdownHeader isOpened={isDropdownOpen} onClick={(): void => setIsDropdownOpen((prev) => !prev)}>
+    <styledEl.AccordionWrapper colorEnums={colorEnums}>
+      <styledEl.AccordionHeader
+        colorEnums={colorEnums}
+        isOpened={isDropdownOpen}
+        onClick={(): void => setIsDropdownOpen((prev) => !prev)}
+      >
         {title}
         <styledEl.ArrowWrapper>
           <ToggleArrow size={10} isOpen={isDropdownOpen} />
         </styledEl.ArrowWrapper>
-      </styledEl.DropdownHeader>
+      </styledEl.AccordionHeader>
       {isDropdownOpen ? children : null}
-    </styledEl.DropdownWrapper>
+    </styledEl.AccordionWrapper>
   )
 }

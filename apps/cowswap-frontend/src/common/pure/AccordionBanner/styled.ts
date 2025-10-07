@@ -1,20 +1,19 @@
-import { UI } from '@cowprotocol/ui';
+import { StatusColorEnums } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-
-export const DropdownWrapper = styled.div`
+export const AccordionWrapper = styled.div<{ colorEnums: StatusColorEnums }>`
   border-radius: 14px;
   padding: 9px 6px;
-  background: var(${UI.COLOR_INFO_BG});
+  background: var(${({ colorEnums }) => colorEnums.bg});
 
   .font-bold {
     font-weight: 600;
   }
 `
 
-export const DropdownHeader = styled.div<{ isOpened?: boolean }>`
-  color: var(${UI.COLOR_INFO_TEXT});
+export const AccordionHeader = styled.div<{ isOpened?: boolean; colorEnums: StatusColorEnums }>`
+  color: var(${({ colorEnums }) => colorEnums.text});
   cursor: ${({ isOpened }) => (isOpened ? 'default' : 'pointer')};
   display: flex;
   gap: 6px;
