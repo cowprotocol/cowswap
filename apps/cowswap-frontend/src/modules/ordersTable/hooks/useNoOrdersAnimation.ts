@@ -12,8 +12,8 @@ export function useNoOrdersAnimation({
   emptyOrdersImage,
   hasHydratedOrders,
   isDarkMode,
-}: UseNoOrdersAnimationParams): LottieComponentProps['animationData'] | undefined {
-  const [animationData, setAnimationData] = useState<LottieComponentProps['animationData']>()
+}: UseNoOrdersAnimationParams): LottieComponentProps['animationData'] | null | undefined {
+  const [animationData, setAnimationData] = useState<LottieComponentProps['animationData'] | null | undefined>()
 
   useEffect(() => {
     if (emptyOrdersImage || !hasHydratedOrders) {
@@ -24,12 +24,19 @@ export function useNoOrdersAnimation({
     let isCancelled = false
 
     async function loadAnimation(): Promise<void> {
-      const animationModule = isDarkMode
-        ? await import('@cowprotocol/assets/lottie/surprised-cow-dark.json')
-        : await import('@cowprotocol/assets/lottie/surprised-cow.json')
+      try {
+        const animationModule = isDarkMode
+          ? await import('@cowprotocol/assets/lottie/surprised-cow-dark.json')
+          : await import('@cowprotocol/assets/lottie/surprised-cow.json')
 
-      if (!isCancelled) {
-        setAnimationData(animationModule.default)
+        if (!isCancelled) {
+          setAnimationData(animationModule.default)
+        }
+      } catch (error) {
+        if (!isCancelled) {
+          console.error('[useNoOrdersAnimation] Failed to load animation', error)
+          setAnimationData(null)
+        }
       }
     }
 
