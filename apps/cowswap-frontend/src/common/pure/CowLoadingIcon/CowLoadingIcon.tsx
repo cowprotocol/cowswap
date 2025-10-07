@@ -1,6 +1,5 @@
 import { ReactNode } from 'react'
 
-import { useTheme } from '@cowprotocol/common-hooks'
 import { UI } from '@cowprotocol/ui'
 
 import styled, { keyframes } from 'styled-components/macro'
@@ -86,10 +85,8 @@ export interface CowLoadingIconProps {
   isDarkMode?: boolean
 }
 
-export function CowLoadingIcon({ size = 36, className, isDarkMode }: CowLoadingIconProps = {}): ReactNode {
-  const theme = useTheme()
-  const effectiveDarkMode = isDarkMode ?? theme.darkMode
-  const palette = effectiveDarkMode
+export function CowLoadingIcon({ size = 36, className, isDarkMode = false }: CowLoadingIconProps = {}): ReactNode {
+  const palette = isDarkMode
     ? {
         background: `var(${UI.COLOR_PAPER_DARKER})`,
         head: `var(${UI.COLOR_TEXT})`,
