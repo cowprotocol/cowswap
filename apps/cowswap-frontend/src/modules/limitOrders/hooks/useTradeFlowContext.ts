@@ -10,11 +10,12 @@ import { useDispatch } from 'react-redux'
 import { AppDispatch } from 'legacy/state'
 
 import { useAppData } from 'modules/appData'
+import { useGetAmountToSignApprove } from 'modules/erc20Approve'
 import { useRateImpact } from 'modules/limitOrders/hooks/useRateImpact'
 import { TradeFlowContext } from 'modules/limitOrders/services/types'
 import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { useGeneratePermitHook, useGetCachedPermit, usePermitInfo } from 'modules/permit'
-import { TradeType, useAmountsToSign } from 'modules/trade'
+import { TradeType } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 
 import { useGP2SettlementContract } from 'common/hooks/useContract'
@@ -22,6 +23,7 @@ import { useEnoughAllowance } from 'common/hooks/useEnoughAllowance'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
 import { useLimitOrdersDerivedState } from './useLimitOrdersDerivedState'
+
 
 // TODO: Break down this large function into smaller functions
 // eslint-disable-next-line max-lines-per-function
@@ -38,9 +40,9 @@ export function useTradeFlowContext(): TradeFlowContext | null {
   const rateImpact = useRateImpact()
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
   const permitInfo = usePermitInfo(state.inputCurrency, TradeType.LIMIT_ORDER)
-  const { maximumSendSellAmount } = useAmountsToSign() || {}
+  const amountToApprove = useGetAmountToSignApprove()
 
-  const enoughAllowance = useEnoughAllowance(maximumSendSellAmount || undefined)
+  const enoughAllowance = useEnoughAllowance(amountToApprove || undefined)
   const generatePermitHook = useGeneratePermitHook()
   const getCachedPermit = useGetCachedPermit()
 
