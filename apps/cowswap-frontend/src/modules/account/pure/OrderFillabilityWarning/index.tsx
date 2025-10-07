@@ -49,8 +49,11 @@ export function OrderFillabilityWarning({
               Another order has used up the approval amount. Set a new token approval to proceed with your order.
             </Subtitle>
             <ApproveWrapper>
-              {enablePartialApprove && enablePartialApproveBySettings && !isCustomApproveModalOpen && (
-                <OrderPartialApprove amountToApprove={inputAmount} />
+              {enablePartialApprove && !isCustomApproveModalOpen && (
+                <OrderPartialApprove
+                  isPartialApproveEnabledBySettings={enablePartialApproveBySettings}
+                  amountToApprove={inputAmount}
+                />
               )}
             </ApproveWrapper>
           </OrderActionsWrapper>
