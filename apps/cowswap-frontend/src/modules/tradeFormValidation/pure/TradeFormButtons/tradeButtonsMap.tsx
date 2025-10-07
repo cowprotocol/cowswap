@@ -240,7 +240,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     const { amountToApprove, enablePartialApprove, defaultText } = context
     if (!amountToApprove) return null
 
-    const label = enablePartialApprove ? `Approve and ${defaultText}` : defaultText
+    const label = enablePartialApprove ? `Approve and swap` : defaultText
 
     return (
       <TradeApproveButton
