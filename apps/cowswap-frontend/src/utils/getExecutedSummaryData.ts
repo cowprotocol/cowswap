@@ -5,6 +5,7 @@ import { BigNumber } from 'bignumber.js'
 
 import { Order } from 'legacy/state/orders/actions'
 
+import { GenericOrder } from 'common/types'
 import { getFilledAmounts } from 'utils/orderUtils/getFilledAmounts'
 
 import { isParsedOrder, ParsedOrder, parseOrder } from './orderUtils/parseOrder'
@@ -18,7 +19,7 @@ export interface ExecutedSummaryData {
   swappedAmountWithFee: BigNumber
 }
 
-export function getExecutedSummaryData(order: Order | ParsedOrder): ExecutedSummaryData {
+export function getExecutedSummaryData(order: GenericOrder): ExecutedSummaryData {
   const { inputToken, outputToken } = order
 
   const parsedInputToken = new Token(
@@ -40,7 +41,10 @@ export function getExecutedSummaryData(order: Order | ParsedOrder): ExecutedSumm
   return getExecutedSummaryDataWithSurplusToken(order, surplusToken)
 }
 
-export function getExecutedSummaryDataWithSurplusToken(order: Order | ParsedOrder, surplusToken: Token): ExecutedSummaryData {
+export function getExecutedSummaryDataWithSurplusToken(
+  order: Order | ParsedOrder,
+  surplusToken: Token,
+): ExecutedSummaryData {
   const parsedOrder = isParsedOrder(order) ? order : parseOrder(order)
   const { inputToken, outputToken } = parsedOrder
 

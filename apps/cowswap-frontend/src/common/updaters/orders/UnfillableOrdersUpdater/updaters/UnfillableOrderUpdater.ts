@@ -11,11 +11,12 @@ import { PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL } from 'legacy/state/orders/co
 
 import { updatePendingOrderPricesAtom } from 'modules/orders/state/pendingOrdersPricesAtom'
 
+import { GenericOrder } from 'common/types'
+
 import { useIsProviderNetworkUnsupported } from '../../../../hooks/useIsProviderNetworkUnsupported'
 import { useUpdateIsUnfillableFlag } from '../hooks/useUpdateIsUnfillableFlag'
 import { fetchOrderPrice } from '../services/fetchOrderPrice'
 import { orderLastTimePriceUpdateAtom } from '../state/orderLastTimePriceUpdateAtom'
-import { OrderToCheckFillability } from '../types'
 
 const SWR_CONFIG: SWRConfiguration = {
   // Since we use orderLastTimePriceUpdateAtom to avoid frequent quote updates
@@ -37,7 +38,7 @@ const SWR_CONFIG: SWRConfiguration = {
 
 interface UnfillableOrderUpdaterProps {
   chainId: SupportedChainId
-  order: OrderToCheckFillability
+  order: GenericOrder
 }
 
 export function UnfillableOrderUpdater({ chainId, order }: UnfillableOrderUpdaterProps): null {

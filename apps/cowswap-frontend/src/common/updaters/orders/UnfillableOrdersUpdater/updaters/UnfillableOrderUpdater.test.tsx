@@ -11,12 +11,13 @@ import useSWR from 'swr'
 
 import { PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL } from 'legacy/state/orders/consts'
 
+import { GenericOrder } from 'common/types'
+
 import { UnfillableOrderUpdater } from './UnfillableOrderUpdater'
 
 import { useIsProviderNetworkUnsupported } from '../../../../hooks/useIsProviderNetworkUnsupported'
 import { useUpdateIsUnfillableFlag } from '../hooks/useUpdateIsUnfillableFlag'
 import { fetchOrderPrice } from '../services/fetchOrderPrice'
-import { OrderToCheckFillability } from '../types'
 
 // Mock all dependencies
 jest.mock('jotai', () => ({
@@ -76,7 +77,7 @@ describe('UnfillableOrderUpdater', () => {
   const mockToken1 = new Token(mockChainId, '0x0000000000000000000000000000000000000001', 18, 'TEST1', 'Test Token 1')
   const mockToken2 = new Token(mockChainId, '0x0000000000000000000000000000000000000002', 18, 'TEST2', 'Test Token 2')
 
-  const mockOrder: OrderToCheckFillability = {
+  const mockOrder: GenericOrder = {
     id: 'order-123',
     kind: OrderKind.SELL,
     inputToken: mockToken1,
@@ -87,7 +88,7 @@ describe('UnfillableOrderUpdater', () => {
     owner: '0xowner',
     receiver: '0xreceiver',
     partiallyFillable: false,
-  } as OrderToCheckFillability
+  } as GenericOrder
 
   const mockQuoteResponse = {
     quoteResponse: {
@@ -131,7 +132,7 @@ describe('UnfillableOrderUpdater', () => {
   })
 
   describe('successful quote response handling', () => {
-    let swrFetcher: (args: [OrderToCheckFillability, jest.Mock, SupportedChainId]) => Promise<void>
+    let swrFetcher: (args: [GenericOrder, jest.Mock, SupportedChainId]) => Promise<void>
 
     beforeEach(() => {
       mockedUseAtom.mockReturnValue([{}, mockSetOrderLastTimePriceUpdate] as any)
@@ -178,7 +179,7 @@ describe('UnfillableOrderUpdater', () => {
   })
 
   describe('error handling', () => {
-    let swrFetcher: (args: [OrderToCheckFillability, jest.Mock, SupportedChainId]) => Promise<void>
+    let swrFetcher: (args: [GenericOrder, jest.Mock, SupportedChainId]) => Promise<void>
 
     beforeEach(() => {
       mockedUseAtom.mockReturnValue([{}, mockSetOrderLastTimePriceUpdate] as any)
@@ -213,7 +214,7 @@ describe('UnfillableOrderUpdater', () => {
   })
 
   describe('time-based update logic', () => {
-    let swrFetcher: (args: [OrderToCheckFillability, jest.Mock, SupportedChainId]) => Promise<void>
+    let swrFetcher: (args: [GenericOrder, jest.Mock, SupportedChainId]) => Promise<void>
 
     beforeEach(() => {
       renderHook(() => UnfillableOrderUpdater({ chainId: mockChainId, order: mockOrder }))

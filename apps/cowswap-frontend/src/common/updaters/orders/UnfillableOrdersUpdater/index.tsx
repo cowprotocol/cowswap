@@ -2,14 +2,15 @@ import { ReactNode } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { OrderToCheckFillability } from './types'
+import { GenericOrder } from 'common/types'
+
 import { LastTimePriceUpdateResetUpdater } from './updaters/LastTimePriceUpdateResetUpdater'
 import { UnfillableOrderUpdater } from './updaters/UnfillableOrderUpdater'
 
 export { LastTimePriceUpdateResetUpdater }
 
 interface UnfillableOrdersUpdaterProps {
-  orders: OrderToCheckFillability[]
+  orders: GenericOrder[]
 }
 
 /**

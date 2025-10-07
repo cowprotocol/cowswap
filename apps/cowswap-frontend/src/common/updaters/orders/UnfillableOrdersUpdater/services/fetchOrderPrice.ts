@@ -4,12 +4,9 @@ import { tradingSdk } from 'tradingSdk/tradingSdk'
 
 import { getRemainderAmount } from 'legacy/state/orders/utils'
 
-import { OrderToCheckFillability } from '../types'
+import { GenericOrder } from 'common/types'
 
-export async function fetchOrderPrice(
-  chainId: SupportedChainId,
-  order: OrderToCheckFillability,
-): Promise<QuoteResults | null> {
+export async function fetchOrderPrice(chainId: SupportedChainId, order: GenericOrder): Promise<QuoteResults | null> {
   const amount = getRemainderAmount(order.kind, order)
 
   try {
