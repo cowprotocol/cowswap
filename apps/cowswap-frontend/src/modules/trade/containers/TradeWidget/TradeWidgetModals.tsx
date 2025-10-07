@@ -1,11 +1,17 @@
-import { ReactNode, useCallback, useEffect } from 'react'
+import { ReactNode, useCallback, useEffect, useRef } from 'react'
 
 import { useAddUserToken } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Field } from 'legacy/state/types'
 
-import { TradeApproveModal, useUpdateTradeApproveState } from 'modules/erc20Approve'
+import {
+  TradeApproveModal,
+  TradeChangeApproveAmountModal,
+  useGetUserApproveAmountState,
+  useSetUserApproveAmountModalState,
+  useUpdateTradeApproveState,
+} from 'modules/erc20Approve'
 import { useTradeApproveState } from 'modules/erc20Approve/state/useTradeApproveState'
 import {
   ImportTokenModal,
@@ -31,6 +37,8 @@ interface TradeWidgetModalsProps {
   selectTokenWidget: ReactNode | undefined
 }
 
+// todo refactor it
+// eslint-disable-next-line complexity,max-lines-per-function
 export function TradeWidgetModals({
   confirmModal,
   genericModal,
@@ -44,6 +52,7 @@ export function TradeWidgetModals({
   const { open: isTokenSelectOpen, field } = useSelectTokenWidgetState()
   const [{ isOpen: isWrapNativeOpen }, setWrapNativeScreenState] = useWrapNativeScreenState()
   const { approveInProgress, currency: approvingCurrency, error: approveError } = useTradeApproveState()
+  const { isModalOpen: changeApproveAmountInProgress } = useGetUserApproveAmountState()
   const [tokenListAddingError, setTokenListAddingError] = useTokenListAddingError()
   const { isModalOpen: isZeroApprovalModalOpen, closeModal: closeZeroApprovalModal } = useZeroApproveModalState()
   const {
@@ -54,20 +63,18 @@ export function TradeWidgetModals({
   const { onDismiss: closeTradeConfirm } = useTradeConfirmActions()
   const updateSelectTokenWidgetState = useUpdateSelectTokenWidgetState()
   const updateTradeApproveState = useUpdateTradeApproveState()
+  const updateApproveAmountState = useSetUserApproveAmountModalState()
 
   const resetAllScreens = useCallback(
     (closeTokenSelectWidget = true, shouldCloseAutoImportModal = true) => {
       closeTradeConfirm()
       closeZeroApprovalModal()
-      if (shouldCloseAutoImportModal) {
-        closeAutoImportModal()
-      }
-      if (closeTokenSelectWidget) {
-        updateSelectTokenWidgetState({ open: false })
-      }
+      if (shouldCloseAutoImportModal) closeAutoImportModal()
+      if (closeTokenSelectWidget) updateSelectTokenWidgetState({ open: false })
       setWrapNativeScreenState({ isOpen: false })
       updateTradeApproveState({ approveInProgress: false, error: undefined })
       setTokenListAddingError(null)
+      updateApproveAmountState({ isModalOpen: false })
     },
     [
       closeTradeConfirm,
@@ -76,11 +83,15 @@ export function TradeWidgetModals({
       updateSelectTokenWidgetState,
       setWrapNativeScreenState,
       updateTradeApproveState,
+      updateApproveAmountState,
       setTokenListAddingError,
     ],
   )
 
   const isOutputTokenSelector = field === Field.OUTPUT
+  const isOutputTokenSelectorRef = useRef(isOutputTokenSelector)
+  isOutputTokenSelectorRef.current = isOutputTokenSelector
+
   const error = tokenListAddingError || approveError || confirmError
 
   /**
@@ -95,8 +106,8 @@ export function TradeWidgetModals({
    * Because network might be changed from the widget inside
    */
   useEffect(() => {
-    resetAllScreens(isOutputTokenSelector)
-  }, [chainId, resetAllScreens, isOutputTokenSelector])
+    resetAllScreens(isOutputTokenSelectorRef.current)
+  }, [chainId, resetAllScreens])
 
   if (genericModal) {
     return genericModal
@@ -104,6 +115,10 @@ export function TradeWidgetModals({
 
   if (isTradeReviewOpen || pendingTrade) {
     return confirmModal
+  }
+
+  if (changeApproveAmountInProgress) {
+    return <TradeChangeApproveAmountModal />
   }
 
   if (isTokenSelectOpen) {

@@ -1,67 +1,93 @@
-import React, { ReactNode, useState } from 'react'
+import React, { ReactNode, useCallback } from 'react'
 
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
-import { Currency, CurrencyAmount, MaxUint256 } from '@uniswap/sdk-core'
+import { ButtonConfirmed, ButtonSize, HoverTooltip, TokenSymbol } from '@cowprotocol/ui'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { Trans } from '@lingui/macro'
+
+import { useTokenSupportsPermit } from 'modules/permit'
+import { TradeType } from 'modules/trade'
+
+import * as styledEl from './styled'
+
+import { MAX_APPROVE_AMOUNT } from '../../constants'
 import { useApprovalStateForSpender, useApproveCurrency } from '../../hooks'
-import { ApproveButton, ApproveConfirmation } from '../../pure'
 import { LegacyApproveButton } from '../../pure/LegacyApproveButton'
+import { useIsPartialApproveSelectedByUser } from '../../state'
 import { ApprovalState } from '../../types'
-
-const MaxApprovalAmount = BigInt(MaxUint256.toString())
 
 export interface TradeApproveButtonProps {
   amountToApprove: CurrencyAmount<Currency>
   children?: ReactNode
   isDisabled?: boolean
   enablePartialApprove?: boolean
+  confirmSwap?: () => void
+  ignorePermit?: boolean
+  label: string
 }
 
 export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
-  const { amountToApprove, children, enablePartialApprove } = props
-
-  const currency = amountToApprove.currency
-
-  const [isConfirmationOpen, setIsConfirmationOpen] = useState(false)
+  const { amountToApprove, children, enablePartialApprove, confirmSwap, label, ignorePermit } = props
+  const isPartialApproveEnabledByUser = useIsPartialApproveSelectedByUser()
   const handleApprove = useApproveCurrency(amountToApprove)
   
   const spender = useTradeSpenderAddress()
-  const { approvalState, currentAllowance } = useApprovalStateForSpender(amountToApprove, spender)
+  const { approvalState } = useApprovalStateForSpender(amountToApprove, spender)
+  const isPermitSupported = useTokenSupportsPermit(amountToApprove.currency, TradeType.SWAP) && !ignorePermit
 
-  const isDisabled = props.isDisabled || !handleApprove
+  const approveAndSwap = useCallback(async (): Promise<void> => {
+    if (isPermitSupported && confirmSwap) {
+      confirmSwap()
+      return
+    }
+
+    const toApprove = isPartialApproveEnabledByUser ? BigInt(amountToApprove.quotient.toString()) : MAX_APPROVE_AMOUNT
+    const tx = await handleApprove(toApprove)
+    if (tx && confirmSwap) {
+      confirmSwap()
+    }
+  }, [handleApprove, confirmSwap, amountToApprove, isPartialApproveEnabledByUser, isPermitSupported])
 
   if (!enablePartialApprove) {
     return (
       <>
         <LegacyApproveButton
-          currency={currency}
+          currency={amountToApprove.currency}
           state={approvalState}
-          onClick={() => handleApprove(MaxApprovalAmount)}
+          onClick={() => handleApprove(MAX_APPROVE_AMOUNT)}
         />
         {children}
       </>
     )
   }
 
-  if (isConfirmationOpen && handleApprove && approvalState !== ApprovalState.PENDING) {
-    return (
-      <ApproveConfirmation
-        amountToApprove={amountToApprove}
-        currentAllowance={currentAllowance}
-        handleApprove={handleApprove}
-        maxApprovalAmount={MaxApprovalAmount}
-      />
-    )
-  }
+  const isPending = approvalState === ApprovalState.PENDING
 
   return (
-    <ApproveButton
-      isDisabled={isDisabled || !handleApprove}
-      currency={currency}
-      onClick={() => setIsConfirmationOpen(true)}
-      state={approvalState}
+    <ButtonConfirmed
+      disabled={isPending}
+      buttonSize={ButtonSize.BIG}
+      onClick={approveAndSwap}
+      width="100%"
+      marginBottom={10}
+      altDisabledStyle={isPending}
     >
-      {children}
-    </ApproveButton>
+      <styledEl.ButtonLabelWrapper>
+        {label}{' '}
+        <HoverTooltip
+          wrapInContainer
+          content={
+            <Trans>
+              You must give the CoW Protocol smart contracts permission to use your{' '}
+              <TokenSymbol token={amountToApprove.currency} />. If you approve the default amount, you will only have to
+              do this once per token.
+            </Trans>
+          }
+        >
+          {isPending ? <styledEl.StyledLoader /> : <styledEl.StyledAlert size={24} />}
+        </HoverTooltip>
+      </styledEl.ButtonLabelWrapper>
+    </ButtonConfirmed>
   )
 }
