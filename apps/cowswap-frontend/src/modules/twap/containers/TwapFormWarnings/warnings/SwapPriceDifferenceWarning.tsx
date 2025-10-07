@@ -36,7 +36,7 @@ export function SwapPriceDifferenceWarning({
   tradeUrlParams,
   swapAmountDifference,
   feeFiatAmount,
-  chainId={chainId},
+  chainId,
 }: SwapPriceDifferenceWarningProps) {
   const { amount, percent } = swapAmountDifference
   const isTwapBetter = amount.greaterThan(0)
