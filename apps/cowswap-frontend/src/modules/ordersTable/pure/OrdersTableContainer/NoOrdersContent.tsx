@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState, memo } from 'react'
+import { ReactNode, memo } from 'react'
 
 import { CowSwapSafeAppLink } from '@cowprotocol/ui'
 
@@ -8,10 +8,9 @@ import Lottie from 'lottie-react'
 import * as styledEl from './OrdersTableContainer.styled'
 
 import { OrderTabId } from '../../const/tabs'
+import { useNoOrdersAnimation } from '../../hooks/useNoOrdersAnimation'
 import { useOrdersTableState } from '../../hooks/useOrdersTableState'
 import { TabOrderTypes } from '../../types'
-
-import type { LottieComponentProps } from 'lottie-react'
 
 interface NoOrdersDescriptionProps {
   currentTab: OrderTabId
@@ -76,39 +75,14 @@ function getSectionTitle(currentTab: OrderTabId): string {
 interface NoOrdersContentProps {
   currentTab: OrderTabId
   searchTerm?: string
-  hasHydratedOrders: boolean | undefined
+  hasHydratedOrders: boolean
   isDarkMode: boolean
 }
 
 export function NoOrdersContent({ currentTab, searchTerm, hasHydratedOrders, isDarkMode }: NoOrdersContentProps): ReactNode {
   const { orderType, isSafeViaWc, displayOrdersOnlyForSafeApp, injectedWidgetParams } = useOrdersTableState() || {}
   const emptyOrdersImage = injectedWidgetParams?.images?.emptyOrders
-  const [animationData, setAnimationData] = useState<LottieComponentProps['animationData']>()
-
-  useEffect(() => {
-    if (emptyOrdersImage || !hasHydratedOrders) {
-      setAnimationData(undefined)
-      return
-    }
-
-    let isCancelled = false
-
-    async function loadAnimation(): Promise<void> {
-      const animationModule = isDarkMode
-        ? await import('@cowprotocol/assets/lottie/surprised-cow-dark.json')
-        : await import('@cowprotocol/assets/lottie/surprised-cow.json')
-
-      if (!isCancelled) {
-        setAnimationData(animationModule.default)
-      }
-    }
-
-    void loadAnimation()
-
-    return () => {
-      isCancelled = true
-    }
-  }, [emptyOrdersImage, hasHydratedOrders, isDarkMode])
+  const animationData = useNoOrdersAnimation({ emptyOrdersImage, hasHydratedOrders, isDarkMode })
 
   return (
     <styledEl.Content>

@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from 'react'
+import { ReactNode } from 'react'
 
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 
@@ -10,31 +10,11 @@ import { Web3Status } from 'modules/wallet/containers/Web3Status'
 import * as styledEl from './OrdersTableContainer.styled'
 
 import { useOrdersTableState } from '../../hooks/useOrdersTableState'
+import { useWalletIcon } from '../../hooks/useWalletIcon'
 
 export function ConnectWalletContent(): ReactNode {
   const { orderType, pendingActivitiesCount } = useOrdersTableState() || {}
-  const [walletIcon, setWalletIcon] = useState<string | null>(null)
-
-  useEffect(() => {
-    let isCancelled = false
-
-    void import('@cowprotocol/assets/cow-swap/wallet-plus.svg')
-      .then((module) => {
-        if (!isCancelled) {
-          setWalletIcon(module.default)
-        }
-      })
-      .catch((error) => {
-        if (!isCancelled) {
-          console.error('[ConnectWalletContent] Failed to load wallet icon', error)
-          setWalletIcon(null)
-        }
-      })
-
-    return () => {
-      isCancelled = true
-    }
-  }, [])
+  const walletIcon = useWalletIcon()
 
   return (
     <styledEl.Content>
