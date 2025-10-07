@@ -1,6 +1,5 @@
 import { ReactNode, useEffect, useState, memo } from 'react'
 
-import { useTheme } from '@cowprotocol/common-hooks'
 import { CowSwapSafeAppLink } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
@@ -78,11 +77,11 @@ interface NoOrdersContentProps {
   currentTab: OrderTabId
   searchTerm?: string
   hasHydratedOrders: boolean | undefined
+  isDarkMode: boolean
 }
 
-export function NoOrdersContent({ currentTab, searchTerm, hasHydratedOrders }: NoOrdersContentProps): ReactNode {
+export function NoOrdersContent({ currentTab, searchTerm, hasHydratedOrders, isDarkMode }: NoOrdersContentProps): ReactNode {
   const { orderType, isSafeViaWc, displayOrdersOnlyForSafeApp, injectedWidgetParams } = useOrdersTableState() || {}
-  const theme = useTheme()
   const emptyOrdersImage = injectedWidgetParams?.images?.emptyOrders
   const [animationData, setAnimationData] = useState<LottieComponentProps['animationData']>()
 
@@ -95,7 +94,7 @@ export function NoOrdersContent({ currentTab, searchTerm, hasHydratedOrders }: N
     let isCancelled = false
 
     async function loadAnimation(): Promise<void> {
-      const animationModule = theme.darkMode
+      const animationModule = isDarkMode
         ? await import('@cowprotocol/assets/lottie/surprised-cow-dark.json')
         : await import('@cowprotocol/assets/lottie/surprised-cow.json')
 
@@ -109,7 +108,7 @@ export function NoOrdersContent({ currentTab, searchTerm, hasHydratedOrders }: N
     return () => {
       isCancelled = true
     }
-  }, [emptyOrdersImage, theme.darkMode, hasHydratedOrders])
+  }, [emptyOrdersImage, hasHydratedOrders, isDarkMode])
 
   return (
     <styledEl.Content>

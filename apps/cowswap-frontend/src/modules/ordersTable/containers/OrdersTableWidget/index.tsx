@@ -1,5 +1,6 @@
 import { ReactNode, useState } from 'react'
 
+import { useTheme } from '@cowprotocol/common-hooks'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { SearchIcon, SearchInput, SearchInputContainer, StyledCloseIcon } from './styled'
@@ -21,6 +22,7 @@ export function OrdersTableWidget(props: OrdersTableWidgetProps): ReactNode {
   const { children, ...stateParams } = props
 
   const { account } = useWalletInfo()
+  const { darkMode } = useTheme()
 
   const [searchTerm, setSearchTerm] = useState('')
 
@@ -30,7 +32,7 @@ export function OrdersTableWidget(props: OrdersTableWidgetProps): ReactNode {
     <>
       <OrdersTableStateUpdater searchTerm={searchTerm} {...stateParams} />
       {children}
-      <OrdersTableContainer searchTerm={searchTerm}>
+      <OrdersTableContainer searchTerm={searchTerm} isDarkMode={darkMode}>
         {(currentTabId === OrderTabId.open ||
           currentTabId === OrderTabId.all ||
           currentTabId === OrderTabId.unfillable) &&

@@ -10,9 +10,10 @@ import { useOrdersTableState } from '../../hooks/useOrdersTableState'
 interface OrdersTableContentProps {
   currentTab: OrderTabId
   searchTerm?: string
+  isDarkMode: boolean
 }
 
-export function OrdersTableContent({ searchTerm, currentTab }: OrdersTableContentProps): ReactNode {
+export function OrdersTableContent({ searchTerm, currentTab, isDarkMode }: OrdersTableContentProps): ReactNode {
   const { filteredOrders, isWalletConnected, hasHydratedOrders } = useOrdersTableState() || {}
   const isHydrated = !!hasHydratedOrders
 
@@ -26,6 +27,7 @@ export function OrdersTableContent({ searchTerm, currentTab }: OrdersTableConten
         currentTab={currentTab}
         searchTerm={searchTerm}
         hasHydratedOrders={isHydrated}
+        isDarkMode={isDarkMode}
       />
     )
   }
