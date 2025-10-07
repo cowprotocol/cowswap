@@ -1,12 +1,11 @@
-import { useSetAtom } from 'jotai'
-import { useAtomValue } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useMemo } from 'react'
 
 import { StatefulValue } from '@cowprotocol/types'
 
 import { useUpdateSwapRawState } from './useUpdateSwapRawState'
 
-import { updateSwapSettingsAtom, swapSettingsAtom, SwapSettingsState } from '../state/swapSettingsAtom'
+import { swapSettingsAtom, SwapSettingsState, updateSwapSettingsAtom } from '../state/swapSettingsAtom'
 
 export function useSwapSettings(): SwapSettingsState {
   return useAtomValue(swapSettingsAtom)
@@ -39,4 +38,22 @@ export function useSwapRecipientToggleState(): StatefulValue<boolean> {
     ],
     [settings.showRecipient, updateState, updateSwapRawState],
   )
+}
+
+const emptyState: [null, null] = [null, null]
+
+export function useSwapPartialApprovalToggleState(isFeatureEnabled = false): StatefulValue<boolean> | [null, null] {
+  const updateState = useSetAtom(updateSwapSettingsAtom)
+  const settings = useSwapSettings()
+
+  return useMemo(() => {
+    if (!isFeatureEnabled) {
+      return emptyState
+    }
+
+    return [
+      settings.enablePartialApprovalBySettings,
+      (enablePartialApproval: boolean) => updateState({ enablePartialApprovalBySettings: enablePartialApproval }),
+    ]
+  }, [settings.enablePartialApprovalBySettings, updateState, isFeatureEnabled])
 }
