@@ -11,19 +11,20 @@ import styled, { createGlobalStyle, css, ThemeProvider } from 'styled-components
 import { NAV_ADDITIONAL_BUTTONS, NAV_ITEMS, PAGE_MAX_WIDTH, PRODUCT_VARIANT } from './const'
 
 import { useSetupPage } from '../../hooks/useSetupPage'
+import { CowSaucerScene } from '../CowSaucerScene'
 
 const darkTheme = baseTheme('dark')
 
-const LinkComponent = (props: PropsWithChildren<{ href: string }>) => {
+const LinkComponent = (props: PropsWithChildren<{ href: string }>): ReactNode => {
   const external = props.href.startsWith('http')
 
   return <Link {...props} target={external ? '_blank' : '_self'} rel={external ? 'noopener noreferrer' : undefined} />
 }
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ minHeight?: string }>`
   display: flex;
   flex-direction: column;
-  min-height: 60vh;
+  min-height: ${({ minHeight }) => minHeight ?? '60vh'};
   max-width: ${PAGE_MAX_WIDTH}px;
   margin: 0 auto;
   padding: 0 60px;
@@ -37,9 +38,11 @@ interface LayoutProps {
   children: ReactNode
   bgColor?: string
   host?: string
+  showCowSaucer?: boolean
+  contentMinHeight?: string
 }
 
-export function Layout({ children, bgColor, host }: Readonly<LayoutProps>): ReactNode {
+export function Layout({ children, bgColor, host, showCowSaucer, contentMinHeight }: Readonly<LayoutProps>): ReactNode {
   useSetupPage()
 
   const GlobalStyles = GlobalCoWDAOStyles()
@@ -66,7 +69,8 @@ export function Layout({ children, bgColor, host }: Readonly<LayoutProps>): Reac
           LinkComponent={LinkComponent}
         />
       </ThemeProvider>
-      <Wrapper>{children}</Wrapper>
+      <Wrapper minHeight={contentMinHeight}>{children}</Wrapper>
+      {showCowSaucer ? <CowSaucerScene /> : null}
       {/* Override global light theme to force dark mode for Footer only */}
       <ThemeProvider theme={darkTheme}>
         <Footer

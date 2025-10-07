@@ -11,6 +11,8 @@ import {
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
+import { MAX_APPROVE_AMOUNT } from 'modules/erc20Approve/constants'
+
 import { useGetCachedPermit } from './useGetCachedPermit'
 
 import { staticPermitCacheAtom, storePermitCacheAtom, userPermitCacheAtom } from '../state/permitCacheAtom'
@@ -36,7 +38,9 @@ export function useGeneratePermitHook(): GeneratePermitHook {
 
   return useCallback(
     async (params: GeneratePermitHookParams): Promise<PermitHookData | undefined> => {
-      const { inputToken, account, permitInfo, customSpender, amount } = params
+      const { inputToken, account, permitInfo, customSpender, amount: maybeAmount } = params
+
+      const amount = maybeAmount ?? MAX_APPROVE_AMOUNT
 
       if (!provider || !isSupportedPermitInfo(permitInfo)) {
         return

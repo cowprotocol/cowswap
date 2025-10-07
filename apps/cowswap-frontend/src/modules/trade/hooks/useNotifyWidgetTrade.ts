@@ -7,17 +7,17 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { WIDGET_EVENT_EMITTER } from 'widgetEventEmitter'
 
-import { AmountsToSign, useAmountsToSign } from './useAmountsToSign'
+import { AmountsToSign, useAmountsToSignFromQuote } from './useAmountsToSignFromQuote'
 import { useDerivedTradeState } from './useDerivedTradeState'
 
 import { TradeTypeToUiOrderType } from '../const/common'
-import { TradeType, TradeDerivedState } from '../types'
+import { TradeDerivedState, TradeType } from '../types'
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useNotifyWidgetTrade() {
   const state = useDerivedTradeState()
-  const amountsToSign = useAmountsToSign()
+  const amountsToSign = useAmountsToSignFromQuote()
 
   useEffect(() => {
     if (!state || !amountsToSign) return

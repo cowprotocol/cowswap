@@ -5,7 +5,13 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Field } from 'legacy/state/types'
 
-import { TradeApproveModal, useUpdateTradeApproveState } from 'modules/erc20Approve'
+import {
+  TradeApproveModal,
+  TradeChangeApproveAmountModal,
+  useGetUserApproveAmountState,
+  useSetUserApproveAmountModalState,
+  useUpdateTradeApproveState,
+} from 'modules/erc20Approve'
 import { useTradeApproveState } from 'modules/erc20Approve/state/useTradeApproveState'
 import {
   ImportTokenModal,
@@ -31,6 +37,8 @@ interface TradeWidgetModalsProps {
   selectTokenWidget: ReactNode | undefined
 }
 
+// todo refactor it
+// eslint-disable-next-line complexity,max-lines-per-function
 export function TradeWidgetModals({
   confirmModal,
   genericModal,
@@ -44,6 +52,7 @@ export function TradeWidgetModals({
   const { open: isTokenSelectOpen, field } = useSelectTokenWidgetState()
   const [{ isOpen: isWrapNativeOpen }, setWrapNativeScreenState] = useWrapNativeScreenState()
   const { approveInProgress, currency: approvingCurrency, error: approveError } = useTradeApproveState()
+  const { isModalOpen: changeApproveAmountInProgress } = useGetUserApproveAmountState()
   const [tokenListAddingError, setTokenListAddingError] = useTokenListAddingError()
   const { isModalOpen: isZeroApprovalModalOpen, closeModal: closeZeroApprovalModal } = useZeroApproveModalState()
   const {
@@ -54,6 +63,7 @@ export function TradeWidgetModals({
   const { onDismiss: closeTradeConfirm } = useTradeConfirmActions()
   const updateSelectTokenWidgetState = useUpdateSelectTokenWidgetState()
   const updateTradeApproveState = useUpdateTradeApproveState()
+  const updateApproveAmountState = useSetUserApproveAmountModalState()
 
   const resetAllScreens = useCallback(
     (closeTokenSelectWidget = true, shouldCloseAutoImportModal = true) => {
@@ -64,6 +74,7 @@ export function TradeWidgetModals({
       setWrapNativeScreenState({ isOpen: false })
       updateTradeApproveState({ approveInProgress: false, error: undefined })
       setTokenListAddingError(null)
+      updateApproveAmountState({ isModalOpen: false })
     },
     [
       closeTradeConfirm,
@@ -72,6 +83,7 @@ export function TradeWidgetModals({
       updateSelectTokenWidgetState,
       setWrapNativeScreenState,
       updateTradeApproveState,
+      updateApproveAmountState,
       setTokenListAddingError,
     ],
   )
@@ -103,6 +115,10 @@ export function TradeWidgetModals({
 
   if (isTradeReviewOpen || pendingTrade) {
     return confirmModal
+  }
+
+  if (changeApproveAmountInProgress) {
+    return <TradeChangeApproveAmountModal />
   }
 
   if (isTokenSelectOpen) {

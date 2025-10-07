@@ -48,6 +48,8 @@ import { ThemeFromUrlUpdater } from 'common/updaters/ThemeFromUrlUpdater'
 import { UserUpdater } from 'common/updaters/UserUpdater'
 import { WidgetTokensUpdater } from 'common/updaters/WidgetTokensUpdater'
 
+import { FaviconAnimationUpdater } from './FaviconAnimationUpdater'
+
 export function Updaters(): ReactNode {
   const { account } = useWalletInfo()
   const { standaloneMode } = useInjectedWidgetParams()
@@ -92,6 +94,7 @@ export function Updaters(): ReactNode {
       <SolversInfoUpdater />
       <AnnouncementsUpdater />
       <BridgingEnabledUpdater />
+      <FaviconAnimationUpdater />
 
       <TokensListsUpdater
         chainId={sourceChainId}
