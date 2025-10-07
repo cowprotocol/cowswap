@@ -59,7 +59,8 @@ export function UnfillableOrderUpdater({ chainId, order }: UnfillableOrderUpdate
     ([order, setOrderLastTimePriceUpdate, chainId]) => {
       const now = Date.now()
       const shouldSkipUpdate =
-        !!lastTimePriceUpdate && now - lastTimePriceUpdate < PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL
+        !!lastTimePriceUpdateRef.current &&
+        now - lastTimePriceUpdateRef.current < PENDING_ORDERS_PRICE_CHECK_POLL_INTERVAL
 
       if (shouldSkipUpdate) return
 
