@@ -1,5 +1,5 @@
 import { useAtom } from 'jotai'
-import { createElement, ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { getCmsClient } from '@cowprotocol/core'
 import { useAddSnackbar } from '@cowprotocol/snackbars'
@@ -10,13 +10,13 @@ import { tgSubscriptionAtom } from '../atoms/tgSubscriptionAtom'
 import { TG_DEV_BYPASS, type TelegramData, simulateDevModeApiCall, setDevSubscriptionState } from '../utils/devTg'
 
 
-const createSubscriptionSuccessContent = (username: string): ReactNode => {
-  return createElement('div', {}, [
-    createElement('strong', { key: 'title' }, 'Trade alerts enabled successfully'),
-    createElement('br', { key: 'br' }),
-    `Telegram trade alerts enabled for user @${username}`,
-  ])
-}
+const createSubscriptionSuccessContent = (username: string): ReactNode => (
+  <div>
+    <strong>Trade alerts enabled successfully</strong>
+    <br />
+    {`Telegram trade alerts enabled for user @${username}`}
+  </div>
+)
 
 type SubscriptionApiCaller = (method: string, data: TelegramData) => Promise<{ data: boolean }> | undefined
 

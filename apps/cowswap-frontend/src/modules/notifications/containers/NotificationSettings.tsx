@@ -9,7 +9,7 @@ import styled from 'styled-components/macro'
 
 import { Toggle } from 'legacy/components/Toggle'
 
-import { ConnectTelegram } from './ConnectTelegram'
+import { ConnectTelegram, useConnectTelegram } from './ConnectTelegram'
 
 const DISABLED_TOGGLE_TOOLTIP_MESSAGE = 'This toggle is on by default. Toggling on/off will be supported in the future.'
 
@@ -85,7 +85,8 @@ interface NotificationSettingsProps {
 }
 
 export function NotificationSettings({ children }: NotificationSettingsProps): ReactNode {
-  const { element: telegramToggle, username } = ConnectTelegram()
+  const telegramController = useConnectTelegram()
+  const { username } = telegramController
 
   return (
     <>
@@ -137,7 +138,7 @@ export function NotificationSettings({ children }: NotificationSettingsProps): R
                   {username && <TelegramUsername>@{username}</TelegramUsername>}
                 </div>
               </RowFixed>
-              {telegramToggle}
+              <ConnectTelegram controller={telegramController} />
             </RowBetween>
           </SettingsRow>
         </SettingsCard>

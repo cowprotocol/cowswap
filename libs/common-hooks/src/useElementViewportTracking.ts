@@ -78,8 +78,9 @@ export function useElementViewportTracking(
   // Get current element rect
   const rect = useMemo(() => {
     if (!element || !enabled) return null
+    // Access viewportVersion so the memo recomputes whenever it increments
+    void viewportVersion
     return element.getBoundingClientRect()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [element, enabled, viewportVersion])
 
   return useMemo(() => ({ rect, viewportVersion }), [rect, viewportVersion])
