@@ -1,4 +1,4 @@
-import { ReactNode, useRef, useState } from 'react'
+import { ReactNode, useCallback, useRef, useState } from 'react'
 
 import { useNativeCurrencyAmount } from '@cowprotocol/balances-and-allowances'
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
@@ -30,6 +30,27 @@ function createNotificationClickEventData(event: string): string {
   })
 }
 
+interface NotificationSidebarPortalProps {
+  portalTarget: HTMLElement | null
+  isSidebarOpen: boolean
+  onClose: () => void
+  initialSettingsOpen: boolean
+}
+
+function NotificationSidebarPortal({
+  portalTarget,
+  isSidebarOpen,
+  onClose,
+  initialSettingsOpen,
+}: NotificationSidebarPortalProps): ReactNode {
+  if (!portalTarget) return null
+
+  return ReactDOM.createPortal(
+    <NotificationSidebar isOpen={isSidebarOpen} onClose={onClose} initialSettingsOpen={initialSettingsOpen} />,
+    portalTarget,
+  )
+}
+
 interface AccountElementProps {
   standaloneMode?: boolean
   className?: string
@@ -55,18 +76,28 @@ export function AccountElement({ className, standaloneMode }: AccountElementProp
   const shouldShowPopover =
     areTelegramNotificationsEnabled && !!account && !isDismissed && !hasSubscription && !isLoading
 
+  const shouldRenderBalance =
+    standaloneMode !== false && account && !isChainIdUnsupported && userEthBalance && chainId && !isUpToLarge
+
   const handleEnableAlerts = (): void => {
     setShouldOpenSettings(areTelegramNotificationsEnabled)
     setSidebarOpen(true)
     dismiss()
   }
 
+  const handleBellClick = useCallback(() => {
+    if (shouldShowPopover) {
+      dismiss()
+    }
+    setSidebarOpen(true)
+  }, [shouldShowPopover, dismiss])
+
   const portalTarget = typeof document !== 'undefined' ? document.body : null
 
   return (
     <>
       <Wrapper className={className} active={!!account} ref={wrapperRef}>
-        {standaloneMode !== false && account && !isChainIdUnsupported && userEthBalance && chainId && !isUpToLarge && (
+        {shouldRenderBalance && (
           <BalanceText>
             <TokenAmount amount={userEthBalance} tokenSymbol={{ symbol: nativeTokenSymbol }} />
           </BalanceText>
@@ -84,29 +115,21 @@ export function AccountElement({ className, standaloneMode }: AccountElementProp
               data-click-event={createNotificationClickEventData(
                 unreadNotificationsCount === 0 ? 'click-bell' : 'click-bell-with-pending-notifications',
               )}
-              onClick={() => {
-                if (shouldShowPopover) {
-                  dismiss() // Dismiss popover if shown
-                }
-                setSidebarOpen(true) // Always open sidebar
-              }}
+              onClick={handleBellClick}
             />
           </NotificationAlertPopover>
         )}
       </Wrapper>
 
-      {portalTarget &&
-        ReactDOM.createPortal(
-          <NotificationSidebar
-            isOpen={isSidebarOpen}
-            onClose={() => {
-              setSidebarOpen(false)
-              setShouldOpenSettings(false)
-            }}
-            initialSettingsOpen={shouldOpenSettings}
-          />,
-          portalTarget,
-        )}
+      <NotificationSidebarPortal
+        portalTarget={portalTarget}
+        isSidebarOpen={isSidebarOpen}
+        onClose={() => {
+          setSidebarOpen(false)
+          setShouldOpenSettings(false)
+        }}
+        initialSettingsOpen={shouldOpenSettings}
+      />
     </>
   )
 }
