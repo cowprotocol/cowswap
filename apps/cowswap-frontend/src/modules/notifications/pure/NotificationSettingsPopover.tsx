@@ -49,9 +49,7 @@ const PopoverTitle = styled.h3`
 
 const PopoverBody = styled.p`
   margin: 0;
-  line-height: 1.4;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
-  line-height: 1;
   font-size: 14px;
   line-height: 1.2;
   text-align: center;
