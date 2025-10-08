@@ -18,9 +18,7 @@ import styled from 'styled-components/macro'
 
 import type { PageBackgroundVariant } from '../../contexts/PageBackgroundContext'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function isChristmasTheme(theme?: CowSwapTheme) {
+function isChristmasTheme(theme?: CowSwapTheme): boolean {
   if (!theme) {
     return false
   }
