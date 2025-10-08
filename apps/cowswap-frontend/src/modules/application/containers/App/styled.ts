@@ -72,11 +72,11 @@ export const BodyWrapper = styled.div<{ customTheme?: CowSwapTheme; backgroundVa
   flex: 1 1 auto;
   z-index: 2;
   color: inherit;
-  padding: ${({ theme }) => (theme.isWidget ? '16px 16px 0' : '150px 16px 76px')};
+  padding: ${({ theme }) => (theme.isWidget ? '16px 16px 0' : '150px 16px 176px')};
   margin: ${({ theme }) => (theme.isWidget ? '0' : '-76px auto calc(var(--marginBottomOffset) * -1)')};
   border-bottom-left-radius: ${({ theme }) => (theme.isWidget ? '0' : 'var(--marginBottomOffset)')};
   border-bottom-right-radius: ${({ theme }) => (theme.isWidget ? '0' : 'var(--marginBottomOffset)')};
-  min-height: ${({ theme }) => (theme.isWidget ? 'initial' : 'calc(100vh - 200px)')};
+  min-height: initial;
   background: ${({ theme, customTheme, backgroundVariant }) => {
     if (theme.isWidget) {
       return 'transparent'
@@ -105,7 +105,7 @@ export const BodyWrapper = styled.div<{ customTheme?: CowSwapTheme; backgroundVa
   ${Media.upToMedium()} {
     padding: ${({ theme }) => (theme.isWidget ? '0 0 16px' : '150px 16px 150px')};
     flex: none;
-    min-height: ${({ theme }) => (theme.isWidget ? 'initial' : 'calc(100vh - 200px)')};
+    min-height: initial;
     background-size: auto;
 
     ${({ customTheme, backgroundVariant }) =>
@@ -125,8 +125,8 @@ export const BodyWrapper = styled.div<{ customTheme?: CowSwapTheme; backgroundVa
   }
 
   ${Media.upToSmall()} {
-    padding: ${({ theme }) => (theme.isWidget ? '0 0 16px' : '90px 16px 150px')};
-    min-height: ${({ theme }) => (theme.isWidget ? 'initial' : 'calc(100vh - 100px)')};
+    padding: ${({ theme }) => (theme.isWidget ? '0 0 16px' : '90px 16px 200px')};
+    min-height: ${({ theme }) => (theme.isWidget ? 'initial' : '100vh')};
 
     ${({ customTheme, backgroundVariant }) =>
       backgroundVariant !== 'nocows' &&

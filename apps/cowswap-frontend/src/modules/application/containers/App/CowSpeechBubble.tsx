@@ -138,7 +138,7 @@ const Bubble = styled.div`
 
   ${Media.upToLarge()} {
     right: 49%;
-    top: -34px;
+    top: -54px;
     max-width: 220px;
 
     &::after {
