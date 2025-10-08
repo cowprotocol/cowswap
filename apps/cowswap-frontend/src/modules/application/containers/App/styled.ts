@@ -18,7 +18,7 @@ import styled from 'styled-components/macro'
 
 import type { PageBackgroundVariant } from '../../contexts/PageBackgroundContext'
 
-function isChristmasTheme(theme?: CowSwapTheme): boolean {
+export function isChristmasTheme(theme?: CowSwapTheme): boolean {
   if (!theme) {
     return false
   }

@@ -25,6 +25,7 @@ import { PageBackgroundContext, PageBackgroundVariant } from '../../contexts/Pag
 import { CowSpeechBubble } from '../App/CowSpeechBubble'
 import { ADDITIONAL_FOOTER_CONTENT, PRODUCT_VARIANT } from '../App/menuConsts'
 import * as styledEl from '../App/styled'
+import { isChristmasTheme as isChristmasThemeHelper } from '../App/styled'
 import { AppMenu } from '../AppMenu'
 import { NetworkAndAccountControls } from '../NetworkAndAccountControls'
 
@@ -76,7 +77,7 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
   )
 
   const networkAndAccountControls = <NetworkAndAccountControls />
-  const isChristmasTheme = customTheme === 'darkChristmas' || customTheme === 'lightChristmas'
+  const isChristmasTheme = isChristmasThemeHelper(customTheme)
   const shouldRenderCowSpeechBubble = shouldDisplayCowSpeechBubble({
     isInjectedWidgetMode,
     pageScene,
