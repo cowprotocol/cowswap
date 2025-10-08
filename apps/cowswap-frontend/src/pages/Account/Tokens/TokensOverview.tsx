@@ -64,10 +64,10 @@ export enum PageViewKeys {
 
 const PageView = {
   [PageViewKeys.ALL_TOKENS]: {
-    label: 'All tokens',
+    label: t`All tokens`,
   },
   [PageViewKeys.FAVORITE_TOKENS]: {
-    label: 'Favorite tokens',
+    label: t`Favorite tokens`,
   },
 }
 
@@ -128,7 +128,7 @@ export default function TokensOverview(): ReactNode {
       <Overview>
         <PageTitle title={PAGE_TITLES.TOKENS_OVERVIEW} />
         {isProviderNetworkUnsupported ? (
-          'Unsupported network'
+          <Trans>Unsupported network</Trans>
         ) : (
           <TokensTableContent
             provider={provider}
@@ -184,7 +184,7 @@ function TokensOverviewHeader(props: TokensOverviewHeaderProps): ReactNode {
       <LeftSection>
         <MenuWrapper ref={menuRef}>
           <MenuButton onClick={onToggleMenu}>
-            <Trans>{PageView[selectedView].label}</Trans>
+            {PageView[selectedView].label}
             <StyledChevronDown size={14} />
           </MenuButton>
 
