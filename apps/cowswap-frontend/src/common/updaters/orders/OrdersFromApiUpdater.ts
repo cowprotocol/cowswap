@@ -29,9 +29,8 @@ const statusMapping: Record<OrderTransitionStatus, OrderStatus | undefined> = {
   unknown: undefined,
 }
 
-// TODO: Break down this large function into smaller functions
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, complexity
+// eslint-disable-next-line complexity
 function _transformOrderBookOrderToStoreOrder(
   order: EnrichedOrder,
   chainId: ChainId,
@@ -175,8 +174,8 @@ export function OrdersFromApiUpdater(): null {
 
         // Add orders to redux state
         orders.length && addOrUpdateOrders({ orders, chainId, isSafeWallet })
-      // TODO: Replace any with proper type definitions
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // TODO: Replace any with proper type definitions
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (e: any) {
         console.error(`OrdersFromApiUpdater::Failed to fetch orders`, e)
       }
