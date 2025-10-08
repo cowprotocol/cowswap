@@ -15,13 +15,11 @@ export function OrderFillabilityWarning({
   inputAmount,
   enablePartialApprove,
   enablePartialApproveBySettings,
-  isCustomApproveModalOpen,
 }: {
   fillability: OrderFillability
   inputAmount: CurrencyAmount<Token>
   enablePartialApprove?: boolean
   enablePartialApproveBySettings?: boolean
-  isCustomApproveModalOpen?: boolean
 }): ReactNode {
   const title = (
     <Title>
@@ -50,7 +48,7 @@ export function OrderFillabilityWarning({
               Another order has used up the approval amount. Set a new token approval to proceed with your order.
             </Subtitle>
             <ApproveWrapper>
-              {enablePartialApprove && !isCustomApproveModalOpen && (
+              {enablePartialApprove && (
                 <OrderPartialApprove
                   isPartialApproveEnabledBySettings={enablePartialApproveBySettings}
                   amountToApprove={inputAmount}
