@@ -61,6 +61,8 @@ export function AccountElement({ className, standaloneMode }: AccountElementProp
     dismiss()
   }
 
+  const portalTarget = typeof document !== 'undefined' ? document.body : null
+
   return (
     <>
       <Wrapper className={className} active={!!account} ref={wrapperRef}>
@@ -93,17 +95,18 @@ export function AccountElement({ className, standaloneMode }: AccountElementProp
         )}
       </Wrapper>
 
-      {ReactDOM.createPortal(
-        <NotificationSidebar
-          isOpen={isSidebarOpen}
-          onClose={() => {
-            setSidebarOpen(false)
-            setShouldOpenSettings(false)
-          }}
-          initialSettingsOpen={shouldOpenSettings}
-        />,
-        document.body,
-      )}
+      {portalTarget &&
+        ReactDOM.createPortal(
+          <NotificationSidebar
+            isOpen={isSidebarOpen}
+            onClose={() => {
+              setSidebarOpen(false)
+              setShouldOpenSettings(false)
+            }}
+            initialSettingsOpen={shouldOpenSettings}
+          />,
+          portalTarget,
+        )}
     </>
   )
 }
