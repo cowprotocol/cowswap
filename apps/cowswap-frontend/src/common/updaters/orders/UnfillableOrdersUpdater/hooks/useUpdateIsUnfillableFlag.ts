@@ -1,23 +1,23 @@
-import { useSetAtom } from 'jotai/index'
+import { useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 import { CurrencyAmount, Price } from '@uniswap/sdk-core'
 
-import { Order } from 'legacy/state/orders/actions'
 import { useSetIsOrderUnfillable } from 'legacy/state/orders/hooks'
 import { getEstimatedExecutionPrice, getOrderMarketPrice, isOrderUnfillable } from 'legacy/state/orders/utils'
 
 import { updatePendingOrderPricesAtom } from 'modules/orders/state/pendingOrdersPricesAtom'
 
+import { GenericOrder } from 'common/types'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { usePriceOutOfRangeAnalytics } from './usePriceOutOfRangeAnalytics'
 
 export function useUpdateIsUnfillableFlag(): (
   chainId: SupportedChainId,
-  order: Order,
+  order: GenericOrder,
   priceAmount: string,
   fee: string,
 ) => void {
@@ -26,7 +26,7 @@ export function useUpdateIsUnfillableFlag(): (
   const priceOutOfRangeAnalytics = usePriceOutOfRangeAnalytics()
 
   return useCallback(
-    (chainId: SupportedChainId, order: Order, priceAmount: string, fee: string) => {
+    (chainId: SupportedChainId, order: GenericOrder, priceAmount: string, fee: string) => {
       const orderPrice = new Price(
         order.inputToken,
         order.outputToken,
