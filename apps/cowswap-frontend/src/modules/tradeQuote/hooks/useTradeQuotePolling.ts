@@ -53,7 +53,7 @@ export function useTradeQuotePolling(isConfirmOpen = false, isQuoteUpdatePossibl
     if (isConfirmOpen) return
     if (!tradeQuoteManager) return
 
-    if (!isWindowVisible || !amountStr) {
+    if (!isWindowVisible || !document.hasFocus() || !amountStr) {
       tradeQuoteManager.reset()
       setTradeQuotePolling(0)
     }
