@@ -1,5 +1,5 @@
 import { useAtom } from 'jotai'
-import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { MutableRefObject, ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { getCmsClient } from '@cowprotocol/core'
 import { useAddSnackbar } from '@cowprotocol/snackbars'
@@ -11,7 +11,10 @@ import { TG_DEV_BYPASS, type TelegramData, simulateDevModeApiCall, setDevSubscri
 
 const EMPTY_SUBSCRIPTION_RESPONSE = Promise.resolve({ data: false as const })
 
-function useResetSubscriptionOnAccountChange(account: string | undefined, setTgSubscribed: (value: boolean) => void): void {
+function useResetSubscriptionOnAccountChange(
+  account: string | undefined,
+  setTgSubscribed: (value: boolean) => void,
+): void {
   useEffect(() => {
     if (!account) {
       setTgSubscribed(false)
@@ -28,6 +31,70 @@ const createSubscriptionSuccessContent = (username: string): ReactNode => (
 )
 
 type SubscriptionApiCaller = (method: string, data: TelegramData) => Promise<{ data: boolean }> | undefined
+
+interface SubscriptionCheckParams {
+  callSubscriptionApi: SubscriptionApiCaller
+  errorMessage: string
+  tgData: TelegramData
+  onSuccess: (isSubscribed: boolean) => void
+}
+
+function checkSubscriptionStatus({
+  callSubscriptionApi,
+  errorMessage,
+  tgData,
+  onSuccess,
+}: SubscriptionCheckParams): void {
+  const subscriptionPromise = callSubscriptionApi('/check-tg-subscription', tgData)
+  if (!subscriptionPromise) return
+
+  subscriptionPromise
+    .then(({ data: result }: { data: boolean }) => {
+      onSuccess(result)
+    })
+    .catch((error: unknown) => {
+      console.error(errorMessage, error)
+    })
+}
+
+interface SubscriptionCheckEffectsParams {
+  account: string | undefined
+  callSubscriptionApi: SubscriptionApiCaller
+  setTgSubscribed: (value: boolean) => void
+  skipNextCheckRef: MutableRefObject<boolean>
+  tgData: TelegramData | undefined
+}
+
+function useSubscriptionCheckEffects({
+  account,
+  callSubscriptionApi,
+  setTgSubscribed,
+  skipNextCheckRef,
+  tgData,
+}: SubscriptionCheckEffectsParams): void {
+  useEffect(() => {
+    if (!tgData || skipNextCheckRef.current) {
+      skipNextCheckRef.current = false
+      return
+    }
+    checkSubscriptionStatus({
+      callSubscriptionApi,
+      errorMessage: 'Failed to check Telegram subscription after authorization',
+      tgData,
+      onSuccess: setTgSubscribed,
+    })
+  }, [tgData, callSubscriptionApi, setTgSubscribed, skipNextCheckRef])
+
+  useEffect(() => {
+    if (!account || !tgData || skipNextCheckRef.current) return
+    checkSubscriptionStatus({
+      callSubscriptionApi,
+      errorMessage: 'Failed to check Telegram subscription after account change',
+      tgData,
+      onSuccess: setTgSubscribed,
+    })
+  }, [account, tgData, callSubscriptionApi, setTgSubscribed, skipNextCheckRef])
+}
 
 function useSubscriptionApiCaller(
   account: string | undefined,
@@ -61,6 +128,7 @@ export function useTgSubscription(account: string | undefined, authorization: Tg
   const skipNextCheckRef = useRef(false)
   useResetSubscriptionOnAccountChange(account, setTgSubscribed)
   const callSubscriptionApi = useSubscriptionApiCaller(account, setIsCmsCallInProgress)
+  useSubscriptionCheckEffects({ account, callSubscriptionApi, setTgSubscribed, skipNextCheckRef, tgData })
 
   const addTgSubscription = useCallback(
     async (data: TelegramData): Promise<boolean> => {
@@ -81,7 +149,8 @@ export function useTgSubscription(account: string | undefined, authorization: Tg
 
   const removeSubscription = useCallback(
     async (data: TelegramData): Promise<boolean> => {
-      const { data: result } = await (callSubscriptionApi('/remove-tg-subscription', data) ?? EMPTY_SUBSCRIPTION_RESPONSE)
+      const { data: result } = await (callSubscriptionApi('/remove-tg-subscription', data) ??
+        EMPTY_SUBSCRIPTION_RESPONSE)
       if (!result) {
         return false
       }
@@ -116,25 +185,6 @@ export function useTgSubscription(account: string | undefined, authorization: Tg
     if (!data) return
     await subscribeWithData(data)
   }, [tgData, authorize, subscribeWithData])
-
-  // Check the subscription when Telegram is authorized
-  useEffect(() => {
-    if (!tgData || skipNextCheckRef.current) {
-      skipNextCheckRef.current = false
-      return
-    }
-    callSubscriptionApi('/check-tg-subscription', tgData)?.then(({ data: result }: { data: boolean }) => {
-      setTgSubscribed(result)
-    })
-  }, [tgData, callSubscriptionApi, setTgSubscribed])
-
-  // Re-check subscription when account changes (if authorized already)
-  useEffect(() => {
-    if (!account || !tgData || skipNextCheckRef.current) return
-    callSubscriptionApi('/check-tg-subscription', tgData)?.then(({ data: result }: { data: boolean }) => {
-      setTgSubscribed(result)
-    })
-  }, [account, tgData, callSubscriptionApi, setTgSubscribed])
 
   return useMemo(
     () => ({ isTgSubscribed, isCmsCallInProgress, toggleSubscription, subscribeWithData }),
