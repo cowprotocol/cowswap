@@ -105,7 +105,7 @@ export const BodyWrapper = styled.div<{ customTheme?: CowSwapTheme; backgroundVa
   }};
 
   ${Media.upToMedium()} {
-    padding: ${({ theme }) => (theme.isWidget ? '0 0 16px' : '150px 16px 76px')};
+    padding: ${({ theme }) => (theme.isWidget ? '0 0 16px' : '150px 16px 150px')};
     flex: none;
     min-height: ${({ theme }) => (theme.isWidget ? 'initial' : 'calc(100vh - 200px)')};
     background-size: auto;
@@ -127,7 +127,7 @@ export const BodyWrapper = styled.div<{ customTheme?: CowSwapTheme; backgroundVa
   }
 
   ${Media.upToSmall()} {
-    padding: ${({ theme }) => (theme.isWidget ? '0 0 16px' : '90px 16px 76px')};
+    padding: ${({ theme }) => (theme.isWidget ? '0 0 16px' : '90px 16px 150px')};
     min-height: ${({ theme }) => (theme.isWidget ? 'initial' : 'calc(100vh - 100px)')};
 
     ${({ customTheme, backgroundVariant }) =>

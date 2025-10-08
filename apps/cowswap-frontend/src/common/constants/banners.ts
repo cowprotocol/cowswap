@@ -4,4 +4,5 @@ export const BANNER_IDS = {
   LIMIT_ORDERS_INFO: 'limitOrders_showInfoBanner',
   COW_AMM: 'cow_amm_banner_2024_va',
   ANNOUNCEMENT: 'announcementBannerClosed',
+  HIRING_SPEECH_BUBBLE: 'cow_hiring_speech_bubble_v1',
 } as const

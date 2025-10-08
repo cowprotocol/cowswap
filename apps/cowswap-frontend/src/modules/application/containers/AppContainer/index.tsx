@@ -1,9 +1,9 @@
-import { ReactNode, useMemo, useState } from 'react'
+import { type CSSProperties, ReactNode, useMemo, useState } from 'react'
 
 import { initPixelAnalytics, useAnalyticsReporter, useCowAnalytics, WebVitalsAnalytics } from '@cowprotocol/analytics'
 import { useFeatureFlags, useMediaQuery } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
-import { Footer, Media } from '@cowprotocol/ui'
+import { ClosableBanner, Footer, Media } from '@cowprotocol/ui'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import Snowfall from 'react-snowfall'
@@ -15,12 +15,14 @@ import { OrdersPanel } from 'modules/account'
 import { useInjectedWidgetMetaData } from 'modules/injectedWidget'
 import { useInitializeUtm } from 'modules/utm'
 
+import { BANNER_IDS } from 'common/constants/banners'
 import { CoWAmmBanner } from 'common/containers/CoWAmmBanner'
 import { InvalidLocalTimeWarning } from 'common/containers/InvalidLocalTimeWarning'
 import { useCustomTheme } from 'common/hooks/useCustomTheme'
 import { useGetMarketDimension } from 'common/hooks/useGetMarketDimension'
 
 import { PageBackgroundContext, PageBackgroundVariant } from '../../contexts/PageBackgroundContext'
+import { CowSpeechBubble } from '../App/CowSpeechBubble'
 import { ADDITIONAL_FOOTER_CONTENT, PRODUCT_VARIANT } from '../App/menuConsts'
 import * as styledEl from '../App/styled'
 import { AppMenu } from '../AppMenu'
@@ -28,6 +30,8 @@ import { NetworkAndAccountControls } from '../NetworkAndAccountControls'
 
 // Initialize static analytics instance
 const pixel = initPixelAnalytics()
+
+type CustomThemeKey = ReturnType<typeof useCustomTheme>
 
 interface AppContainerProps {
   children: ReactNode | ReactNode[]
@@ -72,8 +76,15 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
   )
 
   const networkAndAccountControls = <NetworkAndAccountControls />
-
   const isChristmasTheme = customTheme === 'darkChristmas' || customTheme === 'lightChristmas'
+  const shouldRenderCowSpeechBubble = shouldDisplayCowSpeechBubble({
+    isInjectedWidgetMode,
+    pageScene,
+    pageBackgroundVariant,
+    customTheme,
+    isChristmasTheme,
+  })
+  const showSnowfall = !isInjectedWidgetMode && isChristmasTheme
 
   return (
     <PageBackgroundContext.Provider value={pageBackgroundValue}>
@@ -92,34 +103,93 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
           <styledEl.Marginer />
         </styledEl.BodyWrapper>
 
-        {!isInjectedWidgetMode && isChristmasTheme && (
-          <Snowfall
-            style={{
-              position: 'fixed',
-              width: '100vw',
-              height: '100vh',
-              zIndex: 3,
-              pointerEvents: 'none',
-              top: 0,
-              left: 0,
-            }}
-            snowflakeCount={isMobile ? 25 : darkMode ? 75 : 200}
-            radius={[0.5, 2.0]}
-            speed={[0.5, 2.0]}
-            wind={[-0.5, 1.0]}
-          />
-        )}
-
-        {!isInjectedWidgetMode && (
-          <styledEl.FooterSlot>
-            {pageScene && <styledEl.SceneContainer>{pageScene}</styledEl.SceneContainer>}
-            <Footer productVariant={PRODUCT_VARIANT} additionalFooterContent={ADDITIONAL_FOOTER_CONTENT} hasTouchFooter />
-          </styledEl.FooterSlot>
-        )}
+        <SnowfallOverlay show={showSnowfall} isMobile={isMobile} darkMode={darkMode} />
+        <FooterSection
+          show={!isInjectedWidgetMode}
+          showCowSpeechBubble={shouldRenderCowSpeechBubble}
+          pageScene={pageScene}
+        />
 
         {/* Render MobileHeaderControls outside of MenuBar on mobile */}
         {isMobile && !isInjectedWidgetMode && networkAndAccountControls}
       </styledEl.AppWrapper>
     </PageBackgroundContext.Provider>
+  )
+}
+
+interface CowSpeechBubbleVisibilityParams {
+  isInjectedWidgetMode: boolean
+  pageScene: ReactNode | null
+  pageBackgroundVariant: PageBackgroundVariant
+  customTheme: CustomThemeKey
+  isChristmasTheme: boolean
+}
+
+function shouldDisplayCowSpeechBubble({
+  isInjectedWidgetMode,
+  pageScene,
+  pageBackgroundVariant,
+  customTheme,
+  isChristmasTheme,
+}: CowSpeechBubbleVisibilityParams): boolean {
+  return (
+    !isInjectedWidgetMode &&
+    !pageScene &&
+    pageBackgroundVariant !== 'nocows' &&
+    customTheme !== 'darkHalloween' &&
+    !isChristmasTheme
+  )
+}
+
+interface SnowfallOverlayProps {
+  show: boolean
+  isMobile: boolean
+  darkMode: boolean
+}
+
+function SnowfallOverlay({ show, isMobile, darkMode }: SnowfallOverlayProps): ReactNode {
+  if (!show) {
+    return null
+  }
+
+  return (
+    <Snowfall
+      style={SNOWFALL_STYLE}
+      snowflakeCount={isMobile ? 25 : darkMode ? 75 : 200}
+      radius={[0.5, 2.0]}
+      speed={[0.5, 2.0]}
+      wind={[-0.5, 1.0]}
+    />
+  )
+}
+
+const SNOWFALL_STYLE: CSSProperties = {
+  position: 'fixed',
+  width: '100vw',
+  height: '100vh',
+  zIndex: 3,
+  pointerEvents: 'none',
+  top: 0,
+  left: 0,
+}
+
+interface FooterSectionProps {
+  show: boolean
+  showCowSpeechBubble: boolean
+  pageScene: ReactNode | null
+}
+
+function FooterSection({ show, showCowSpeechBubble, pageScene }: FooterSectionProps): ReactNode {
+  if (!show) {
+    return null
+  }
+
+  return (
+    <styledEl.FooterSlot>
+      {showCowSpeechBubble &&
+        ClosableBanner(BANNER_IDS.HIRING_SPEECH_BUBBLE, (close) => <CowSpeechBubble show onClose={close} />)}
+      {pageScene && <styledEl.SceneContainer>{pageScene}</styledEl.SceneContainer>}
+      <Footer productVariant={PRODUCT_VARIANT} additionalFooterContent={ADDITIONAL_FOOTER_CONTENT} hasTouchFooter />
+    </styledEl.FooterSlot>
   )
 }
