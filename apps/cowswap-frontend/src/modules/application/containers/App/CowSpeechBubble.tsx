@@ -168,6 +168,7 @@ const BubbleContent = styled.div`
   gap: 12px;
   font-size: 16px;
   font-weight: 600;
+  padding: 10px;
 
   ${Media.upToSmall()} {
     font-size: 14px;
@@ -224,28 +225,21 @@ const Arrow = styled.span`
 `
 
 const CloseButton = styled.button`
-  --size: 18px;
   position: absolute;
-  top: -2px;
-  left: -2px;
-  width: var(--size);
-  height: var(--size);
-  border-radius: var(--size);
+  top: 2px;
+  right: 8px;
   border: none;
-  background: var(${UI.COLOR_PAPER});
+  background: none;
   color: var(${UI.COLOR_TEXT_OPACITY_50});
-  font-size: 16px;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  font-size: 18px;
+  padding: 0;
+  margin: 0;
   cursor: pointer;
   transition:
-    background 0.2s ease,
+    color 0.2s ease,
     transform 0.2s ease;
 
   &:hover {
-    background: var(${UI.COLOR_PAPER_DARKER});
     color: var(${UI.COLOR_TEXT});
     transform: scale(1.1);
   }
