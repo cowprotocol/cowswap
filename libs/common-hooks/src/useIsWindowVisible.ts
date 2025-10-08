@@ -1,14 +1,11 @@
 import { useCallback, useEffect, useState } from 'react'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function isVisibilityStateSupported() {
-  return 'visibilityState' in document
+function isVisibilityStateSupported(): boolean {
+  return typeof document !== 'undefined' && 'visibilityState' in document
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function isWindowVisible() {
+function isWindowVisible(): boolean {
+  if (typeof document === 'undefined') return false
   return !isVisibilityStateSupported() || document.visibilityState !== 'hidden'
 }
 
@@ -16,7 +13,7 @@ function isWindowVisible() {
  * Returns whether the window is currently visible to the user.
  */
 export function useIsWindowVisible(): boolean {
-  const [focused, setFocused] = useState<boolean>(false)
+  const [focused, setFocused] = useState<boolean>(() => isWindowVisible())
   const listener = useCallback(() => {
     setFocused(isWindowVisible())
   }, [setFocused])
