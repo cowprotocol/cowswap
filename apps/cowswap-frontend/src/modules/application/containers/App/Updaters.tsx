@@ -39,9 +39,9 @@ import {
   ExpiredOrdersUpdater,
   OrdersFromApiUpdater,
   PendingOrdersUpdater,
-  UnfillableOrdersUpdater,
 } from 'common/updaters/orders'
 import { SpotPricesUpdater } from 'common/updaters/orders/SpotPricesUpdater'
+import { LastTimePriceUpdateResetUpdater } from 'common/updaters/orders/UnfillableOrdersUpdater'
 import { SentryUpdater } from 'common/updaters/SentryUpdater'
 import { SolversInfoUpdater } from 'common/updaters/SolversInfoUpdater'
 import { ThemeFromUrlUpdater } from 'common/updaters/ThemeFromUrlUpdater'
@@ -79,7 +79,6 @@ export function Updaters(): ReactNode {
       <PendingOrdersUpdater />
       <CancelledOrdersUpdater />
       <ExpiredOrdersUpdater />
-      <UnfillableOrdersUpdater />
       <OrdersFromApiUpdater />
       <GasUpdater />
       <SentryUpdater />
@@ -118,6 +117,7 @@ export function Updaters(): ReactNode {
       <CorrelatedTokensUpdater />
       <BridgeOrdersCleanUpdater />
       <PendingBridgeOrdersUpdater />
+      <LastTimePriceUpdateResetUpdater />
     </>
   )
 }

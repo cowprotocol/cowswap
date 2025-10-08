@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { isSellOrder, percentToBps } from '@cowprotocol/common-utils'
 
 import { AppDataUpdater } from 'modules/appData'
@@ -8,18 +10,16 @@ import { useIsSmartSlippageApplied } from 'modules/tradeSlippage'
 
 import { QuoteObserverUpdater } from './QuoteObserverUpdater'
 import { SetupSwapAmountsFromUrlUpdater } from './SetupSwapAmountsFromUrlUpdater'
+import { UnfillableSwapOrdersUpdater } from './UnfillableSwapOrdersUpdater'
 
 import { useFillSwapDerivedState, useSwapDerivedState } from '../hooks/useSwapDerivedState'
 import { useSwapDeadlineState } from '../hooks/useSwapSettings'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function SwapUpdaters() {
+export function SwapUpdaters(): ReactNode {
   const { orderKind, inputCurrencyAmount, outputCurrencyAmount, slippage } = useSwapDerivedState()
   const isSmartSlippageApplied = useIsSmartSlippageApplied()
   const swapDeadlineState = useSwapDeadlineState()
-  const isHookTradeType = useIsHooksTradeType()
-  const partiallyFillable = isHookTradeType
+  const partiallyFillable = useIsHooksTradeType()
 
   useFillSwapDerivedState()
   useSetTradeQuoteParams({
@@ -30,6 +30,7 @@ export function SwapUpdaters() {
 
   return (
     <>
+      <UnfillableSwapOrdersUpdater />
       <EthFlowDeadlineUpdater deadlineState={swapDeadlineState} />
       <SetupSwapAmountsFromUrlUpdater />
       <QuoteObserverUpdater />
