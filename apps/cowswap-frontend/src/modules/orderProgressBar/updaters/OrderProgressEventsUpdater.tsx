@@ -3,7 +3,6 @@ import { useCallback, useEffect } from 'react'
 
 import {
   CowWidgetEventListener,
-  CowWidgetEventPayloadMap,
   CowWidgetEvents,
   OnBridgingSuccessPayload,
   OnCancelledOrderPayload,
@@ -33,12 +32,13 @@ export function OrderProgressEventsUpdater(): null {
   )
 
   useEffect(() => {
-    const listeners: CowWidgetEventListener<CowWidgetEventPayloadMap, CowWidgetEvents>[] = [
+    const listeners: CowWidgetEventListener[] = [
       {
         event: CowWidgetEvents.ON_FULFILLED_ORDER,
-        handler: (payload: OnFulfilledOrderPayload) => {
-          const orderUid = payload.order.uid
-          const step = payload.bridgeOrder
+        handler: (payload) => {
+          const typedPayload = payload as OnFulfilledOrderPayload
+          const orderUid = typedPayload.order.uid
+          const step = typedPayload.bridgeOrder
             ? OrderProgressBarStepName.BRIDGING_IN_PROGRESS
             : OrderProgressBarStepName.FINISHED
           finalizeOrderStep(orderUid, step)
@@ -46,22 +46,25 @@ export function OrderProgressEventsUpdater(): null {
       },
       {
         event: CowWidgetEvents.ON_BRIDGING_SUCCESS,
-        handler: (payload: OnBridgingSuccessPayload) => {
-          const orderUid = payload.order.uid
+        handler: (payload) => {
+          const typedPayload = payload as OnBridgingSuccessPayload
+          const orderUid = typedPayload.order.uid
           finalizeOrderStep(orderUid, OrderProgressBarStepName.BRIDGING_FINISHED)
         },
       },
       {
         event: CowWidgetEvents.ON_CANCELLED_ORDER,
-        handler: (payload: OnCancelledOrderPayload) => {
-          const orderUid = payload.order.uid
+        handler: (payload) => {
+          const typedPayload = payload as OnCancelledOrderPayload
+          const orderUid = typedPayload.order.uid
           finalizeOrderStep(orderUid, OrderProgressBarStepName.CANCELLED)
         },
       },
       {
         event: CowWidgetEvents.ON_EXPIRED_ORDER,
-        handler: (payload: OnExpiredOrderPayload) => {
-          const orderUid = payload.order.uid
+        handler: (payload) => {
+          const typedPayload = payload as OnExpiredOrderPayload
+          const orderUid = typedPayload.order.uid
           finalizeOrderStep(orderUid, OrderProgressBarStepName.EXPIRED)
         },
       },
