@@ -39,6 +39,7 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks, partialAmou
 
   const onCurrencySelection = useOnCurrencySelection()
   const { onOpen: openSwapConfirmModal } = useTradeConfirmActions()
+  // todo remove
   const { isPartialApproveEnabled } = useFeatureFlags()
 
   const amountToApprove = isPartialApproveEnabled

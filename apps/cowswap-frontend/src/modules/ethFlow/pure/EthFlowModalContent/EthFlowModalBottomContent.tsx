@@ -2,8 +2,9 @@ import { ReactNode, useCallback, useMemo, useState } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { getWrappedToken } from '@cowprotocol/common-utils'
+import { Nullish } from '@cowprotocol/types'
 import { ButtonSize } from '@cowprotocol/ui'
-import { CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
 
@@ -19,6 +20,12 @@ import { EthFlowActions } from '../../containers/EthFlow/hooks/useEthFlowActions
 import { EthFlowState } from '../../services/ethFlow/types'
 import { EthFlowContext } from '../../state/ethFlowContextAtom'
 import { WrappingPreview, WrappingPreviewProps } from '../WrappingPreview'
+
+function wrapNativeAmount(currencyAmount: Nullish<CurrencyAmount<Currency>>): CurrencyAmount<Currency> | null {
+  const amount = currencyAmount?.quotient.toString() ?? '0'
+  const approveAmount = currencyAmount ? getWrappedToken(currencyAmount.currency) : null
+  return approveAmount ? CurrencyAmount.fromRawAmount(approveAmount, amount) : null
+}
 
 const needApprove = [EthFlowState.ApproveNeeded, EthFlowState.ApproveFailed, EthFlowState.ApproveInsufficient]
 
@@ -83,11 +90,7 @@ export function EthFlowModalBottomContent(params: BottomContentParams): ReactNod
   const [isPartialApproveEnabledBySettings] = useSwapPartialApprovalToggleState(isPartialApproveEnabled)
 
   const showPartialApprovalFunctionality = isPartialApproveEnabled && isApproveNeeded && !wrapInProgress
-
-  // todo move logic to hook
-  const amount = wrappingPreview.amount ? wrappingPreview.amount.quotient.toString() : '0'
-  const approveAmount = wrappingPreview.amount ? getWrappedToken(wrappingPreview.amount.currency) : null
-  const amountToApprove = approveAmount ? CurrencyAmount.fromRawAmount(approveAmount, amount) : null
+  const amountToApprove = wrapNativeAmount(wrappingPreview.amount)
 
   return (
     <>
