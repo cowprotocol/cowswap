@@ -131,7 +131,7 @@ export async function safeBundleFlow(
     )
 
     logTradeFlow(LOG_PREFIX, 'STEP 5: build presign tx')
-    const presignTx = await tradingSdk.getPreSignTransaction({ orderId, account })
+    const presignTx = await tradingSdk.getPreSignTransaction({ orderUid: orderId })
 
     logTradeFlow(LOG_PREFIX, 'STEP 6: send safe tx')
     const safeTransactionData: MetaTransactionData[] = [

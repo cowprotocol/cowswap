@@ -11,7 +11,12 @@ import { TradeWidgetProps } from './types'
 
 export function TradeWidget(props: TradeWidgetProps): JSX.Element {
   const { id, slots, params, confirmModal, genericModal } = props
-  const { disableQuotePolling = false, disableNativeSelling = false, enableSmartSlippage } = params
+  const {
+    disableQuotePolling = false,
+    disableNativeSelling = false,
+    disableSuggestedSlippageApi = false,
+    enableSmartSlippage,
+  } = params
   const modals = TradeWidgetModals({ confirmModal, genericModal, selectTokenWidget: slots.selectTokenWidget })
   const { open: isTokenSelectOpen } = useSelectTokenWidgetState()
 
@@ -26,6 +31,7 @@ export function TradeWidget(props: TradeWidgetProps): JSX.Element {
       <TradeWidgetUpdaters
         disableQuotePolling={disableQuotePolling}
         disableNativeSelling={disableNativeSelling}
+        disableSuggestedSlippageApi={disableSuggestedSlippageApi}
         onChangeRecipient={props.actions.onChangeRecipient}
       >
         {slots.updaters}
