@@ -135,6 +135,7 @@ export class CowAnalyticsGtm implements CowAnalytics {
       userId: account || undefined,
     })
 
+    // Enhanced wallet connection tracking: detect disconnect/connect/switch flows
     if (this.previousAccount && !account) {
       this.handleWalletDisconnection()
     } else if (account) {
@@ -146,6 +147,7 @@ export class CowAnalyticsGtm implements CowAnalytics {
   }
 
   private handleWalletDisconnection(): void {
+    // Wallet disconnection (account transitioned to undefined)
     this.pushToDataLayer({
       event: 'wallet_disconnected',
       eventType: 'wallet_disconnection',
@@ -162,12 +164,14 @@ export class CowAnalyticsGtm implements CowAnalytics {
     }
 
     if (!this.previousAccount) {
+      // First wallet connection for this session
       this.pushToDataLayer({
         event: 'wallet_connected',
         eventType: 'wallet_initial_connection',
         ...commonEventProps,
       })
     } else if (this.previousAccount !== account) {
+      // Wallet switched to a new address
       this.pushToDataLayer({
         event: 'wallet_switched',
         eventType: 'wallet_switch',
@@ -198,6 +202,7 @@ export class CowAnalyticsGtm implements CowAnalytics {
     const gtmEvent = event as GtmEvent<Category>
 
     if (typeof event === 'string') {
+      // Simple events inherit the current global dimensions and pass through untouched
       this.pushToDataLayer({
         event,
         ...this.getDimensions(),
@@ -293,6 +298,7 @@ export class CowAnalyticsGtm implements CowAnalytics {
     if (typeof window !== 'undefined') {
       const dataLayerEvent = { ...data }
 
+      // Preserve a local copy and forward the event for GTM consumption
       this.dataLayer.push(dataLayerEvent)
     }
   }
