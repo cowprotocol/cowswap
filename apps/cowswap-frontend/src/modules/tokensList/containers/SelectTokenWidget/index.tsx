@@ -22,6 +22,7 @@ import { Field } from 'legacy/state/types'
 
 import { useTokensBalancesCombined } from 'modules/combinedBalances'
 import { usePermitCompatibleTokens } from 'modules/permit'
+import { TradeType } from 'modules/trade'
 import { useLpTokensWithBalances } from 'modules/yield/shared'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
@@ -63,7 +64,7 @@ interface SelectTokenWidgetViewModel {
 }
 
 // TODO: Refactor this view model into smaller helpers to satisfy lint rules.
-// eslint-disable-next-line max-lines-per-function
+// eslint-disable-next-line max-lines-per-function, complexity
 function useSelectTokenWidgetViewModel({ displayLpTokenLists, standalone }: SelectTokenWidgetProps): SelectTokenWidgetViewModel {
   const {
     open,
@@ -89,7 +90,7 @@ function useSelectTokenWidgetViewModel({ displayLpTokenLists, standalone }: Sele
   )
 
   const updateSelectTokenWidget = useUpdateSelectTokenWidgetState()
-  const { account } = useWalletInfo()
+  const { account, chainId } = useWalletInfo()
   const theme = useTheme()
 
   const cowAnalytics = useCowAnalytics()
@@ -109,6 +110,12 @@ function useSelectTokenWidgetViewModel({ displayLpTokenLists, standalone }: Sele
     areTokensFromBridge,
     isRouteAvailable,
   } = useTokensToSelect()
+
+  const defaultChainId = chainsToSelect?.defaultChainId
+  const isCrossChainSelection = Boolean(
+    tradeType === TradeType.SWAP &&
+      ((defaultChainId !== undefined && chainId !== undefined && defaultChainId !== chainId) || areTokensFromBridge),
+  )
 
   const userAddedTokens = useUserAddedTokens()
   const allTokenLists = useAllListsList()
@@ -231,6 +238,7 @@ function useSelectTokenWidgetViewModel({ displayLpTokenLists, standalone }: Sele
         tradeType={tradeType}
         field={field}
         isDarkMode={theme.darkMode}
+        isCrossChainSelection={isCrossChainSelection}
       />
     )
   }
