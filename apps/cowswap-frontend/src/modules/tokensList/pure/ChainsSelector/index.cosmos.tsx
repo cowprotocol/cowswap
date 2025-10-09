@@ -27,6 +27,7 @@ const Fixtures = {
         chains={chains}
         isLoading={false}
         onSelectChain={(chainId) => console.log('Chain selected: ', chainId)}
+        isDarkMode={false}
       />
     </Wrapper>
   ),

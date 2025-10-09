@@ -45,6 +45,7 @@ export interface SelectTokenModalProps<T = TokenListCategory[] | null> {
   isRouteAvailable: boolean | undefined
   tradeType?: TradeType
   field?: Field
+  isDarkMode?: boolean
 
   onSelectToken(token: TokenWithLogo): void
   openPoolPage(poolAddress: string): void
@@ -73,6 +74,7 @@ export function SelectTokenModal(props: SelectTokenModalProps): ReactNode {
     isRouteAvailable,
     tradeType,
     field,
+    isDarkMode = false,
   } = props
   const [inputValue, setInputValue] = useState<string>(defaultInputValue)
 
@@ -145,6 +147,7 @@ export function SelectTokenModal(props: SelectTokenModalProps): ReactNode {
                   onSelectChain={onSelectChain}
                   tradeType={tradeType}
                   field={field}
+                  isDarkMode={isDarkMode}
                 />
               </styledEl.ChainsSelectorWrapper>
             </>

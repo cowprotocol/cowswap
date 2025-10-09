@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { useMediaQuery, useTheme } from '@cowprotocol/common-hooks'
+import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { ChainInfo } from '@cowprotocol/cow-sdk'
 import { Media } from '@cowprotocol/ui'
 
@@ -51,6 +51,7 @@ export interface ChainsSelectorProps {
   isLoading: boolean
   tradeType?: TradeType
   field?: Field
+  isDarkMode?: boolean
 }
 
 export function ChainsSelector({
@@ -61,9 +62,9 @@ export function ChainsSelector({
   visibleNetworkIcons = LOADING_ITEMS_COUNT,
   tradeType,
   field,
+  isDarkMode = false,
 }: ChainsSelectorProps): ReactNode {
   const isMobile = useMediaQuery(Media.upToSmall(false))
-  const theme = useTheme()
   const mode = tradeType || 'unknown'
   const isSwapMode = tradeType === TradeType.SWAP
   const contextLabel: 'sell' | 'buy' | 'unknown' =
@@ -88,7 +89,7 @@ export function ChainsSelector({
         buildClickEvent={buildClickEvent}
         isSwapMode={isSwapMode}
         onSelectChain={onSelectChain}
-        isDarkMode={theme.darkMode}
+        isDarkMode={isDarkMode}
       />
       {shouldDisplayMore && (
         <MoreMenuSection
@@ -98,7 +99,7 @@ export function ChainsSelector({
           buildClickEvent={buildClickEvent}
           isSwapMode={isSwapMode}
           onSelectChain={onSelectChain}
-          isDarkMode={theme.darkMode}
+          isDarkMode={isDarkMode}
         />
       )}
     </styledEl.Wrapper>

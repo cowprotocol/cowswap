@@ -2,6 +2,7 @@ import { ReactNode, useCallback, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { useTheme } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import {
   ListState,
@@ -89,6 +90,7 @@ function useSelectTokenWidgetViewModel({ displayLpTokenLists, standalone }: Sele
 
   const updateSelectTokenWidget = useUpdateSelectTokenWidgetState()
   const { account } = useWalletInfo()
+  const theme = useTheme()
 
   const cowAnalytics = useCowAnalytics()
   const addCustomTokenLists = useAddList((source) => {
@@ -228,6 +230,7 @@ function useSelectTokenWidgetViewModel({ displayLpTokenLists, standalone }: Sele
         isRouteAvailable={isRouteAvailable}
         tradeType={tradeType}
         field={field}
+        isDarkMode={theme.darkMode}
       />
     )
   }
