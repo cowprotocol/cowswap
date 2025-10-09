@@ -1,7 +1,9 @@
 import { ReactNode, useCallback, useMemo, useState } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { getWrappedToken } from '@cowprotocol/common-utils'
 import { ButtonSize } from '@cowprotocol/ui'
+import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
 
@@ -18,6 +20,8 @@ import { EthFlowState } from '../../services/ethFlow/types'
 import { EthFlowContext } from '../../state/ethFlowContextAtom'
 import { WrappingPreview, WrappingPreviewProps } from '../WrappingPreview'
 
+const needApprove = [EthFlowState.ApproveNeeded, EthFlowState.ApproveFailed, EthFlowState.ApproveInsufficient]
+
 async function runEthFlowAction(state: EthFlowState, ethFlowActions: EthFlowActions): Promise<void> {
   if (state === EthFlowState.SwapReady) {
     return ethFlowActions.swap()
@@ -25,7 +29,7 @@ async function runEthFlowAction(state: EthFlowState, ethFlowActions: EthFlowActi
   if ([EthFlowState.WrapFailed, EthFlowState.WrapNeeded].includes(state)) {
     return ethFlowActions.wrap()
   }
-  if ([EthFlowState.ApproveNeeded, EthFlowState.ApproveFailed, EthFlowState.ApproveInsufficient].includes(state)) {
+  if (needApprove.includes(state)) {
     return ethFlowActions.approve()
   }
 
@@ -47,7 +51,7 @@ export function EthFlowModalBottomContent(params: BottomContentParams): ReactNod
     wrap: { txStatus: wrapTxStatus, txHash: wrapTxHash },
   } = ethFlowContext
 
-  const isApproveNeeded = state === EthFlowState.ApproveNeeded
+  const isApproveNeeded = needApprove.includes(state)
   const showWrapPreview = ![EthFlowState.SwapReady, EthFlowState.ApproveNeeded].includes(state)
   const [isActionInProgress, setIsActionInProgress] = useState(false)
 
@@ -80,13 +84,18 @@ export function EthFlowModalBottomContent(params: BottomContentParams): ReactNod
 
   const showPartialApprovalFunctionality = isPartialApproveEnabled && isApproveNeeded && !wrapInProgress
 
+  // todo move logic to hook
+  const amount = wrappingPreview.amount ? wrappingPreview.amount.quotient.toString() : '0'
+  const approveAmount = wrappingPreview.amount ? getWrappedToken(wrappingPreview.amount.currency) : null
+  const amountToApprove = approveAmount ? CurrencyAmount.fromRawAmount(approveAmount, amount) : null
+
   return (
     <>
       {showWrapPreview && <WrappingPreview {...wrappingPreview} />}
       <SimpleAccountDetails pendingTransactions={pendingTransactions} confirmedTransactions={[]} $margin="12px 0 0" />
-      {showPartialApprovalFunctionality && wrappingPreview.amount ? (
+      {showPartialApprovalFunctionality && amountToApprove ? (
         <StyledOrderPartialApprove
-          amountToApprove={wrappingPreview.amount}
+          amountToApprove={amountToApprove}
           isPartialApproveEnabledBySettings={!!isPartialApproveEnabledBySettings}
           buttonSize={ButtonSize.BIG}
         />
