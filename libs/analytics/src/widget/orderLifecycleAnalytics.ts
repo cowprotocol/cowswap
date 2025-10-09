@@ -1,5 +1,6 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import type { EnrichedOrder } from '@cowprotocol/cow-sdk'
+import { formatTokenAmount } from '@cowprotocol/common-utils'
+import type { EnrichedOrder, TokenInfo } from '@cowprotocol/cow-sdk'
 import {
   CowWidgetEvents,
   SimpleCowEventEmitter,
@@ -11,7 +12,6 @@ import {
   OnExpiredOrderPayload,
   BaseOrderPayload,
 } from '@cowprotocol/events'
-import type { TokenInfo } from '@cowprotocol/types'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { getCowAnalytics } from '../utils'
@@ -28,8 +28,6 @@ type EnrichedOrderWithTokens = EnrichedOrder & {
   inputToken?: TokenInfo
   outputToken?: TokenInfo
 }
-
-type TokenMetadata = TokenInfo | OnPostedOrderPayload['inputToken'] | OnPostedOrderPayload['outputToken']
 
 export function extractTokenMeta(order: Partial<EnrichedOrderWithTokens> | undefined): {
   inputToken?: TokenInfo
@@ -53,37 +51,67 @@ export function buildBaseFields(payload: BaseOrderPayload): AnalyticsPayload {
   }
 }
 
-const createCurrency = (meta?: TokenMetadata): TokenWithLogo | null => {
-  if (!meta?.address) return null
+type Tokenish = {
+  address?: string
+  chainId?: number
+  decimals?: number
+  logoURI?: string
+  name?: string
+  symbol?: string
+}
 
-  const decimals = meta.decimals
-  if (typeof decimals !== 'number' || !Number.isInteger(decimals) || decimals < 0) return null
+const isValidDecimals = (decimals: number | undefined): decimals is number =>
+  typeof decimals === 'number' && Number.isInteger(decimals) && decimals >= 0
+
+const toTokenWithLogo = (meta?: Tokenish): TokenWithLogo | null => {
+  if (!meta?.address || !isValidDecimals(meta.decimals)) {
+    return null
+  }
 
   try {
-    return TokenWithLogo.fromToken({
-      ...meta,
-      chainId: meta.chainId ?? 0,
-      decimals,
-      symbol: meta.symbol || '',
-      name: meta.name || '',
-    })
+    return TokenWithLogo.fromToken(
+      {
+        chainId: meta.chainId ?? 0,
+        address: meta.address,
+        decimals: meta.decimals,
+        symbol: meta.symbol || '',
+        name: meta.name || '',
+      },
+      meta.logoURI,
+    )
   } catch {
     return null
   }
 }
 
-const toDecimalAmount = (
-  meta: TokenMetadata | undefined,
-  rawAmount: string | number | bigint | null | undefined,
-): string | undefined => {
-  if (rawAmount === null || rawAmount === undefined) return undefined
+type RawAmount = string | number | bigint | null | undefined
 
-  const currency = createCurrency(meta)
-  if (!currency) return undefined
+const normalizeRawAmount = (rawAmount: RawAmount): string | undefined => {
+  if (rawAmount === null || rawAmount === undefined) {
+    return undefined
+  }
+
+  const raw = typeof rawAmount === 'bigint' ? rawAmount.toString() : String(rawAmount)
+  const trimmed = raw.trim()
+
+  return trimmed === '' ? undefined : trimmed
+}
+
+const formatTokenUnits = (meta: Tokenish | undefined, rawAmount: RawAmount): string | undefined => {
+  const normalizedRaw = normalizeRawAmount(rawAmount)
+  if (!normalizedRaw) {
+    return undefined
+  }
+
+  const currency = toTokenWithLogo(meta)
+  if (!currency) {
+    return undefined
+  }
 
   try {
-    const raw = typeof rawAmount === 'bigint' ? rawAmount.toString() : String(rawAmount)
-    return CurrencyAmount.fromRawAmount(currency, raw).toExact() || undefined
+    const amount = CurrencyAmount.fromRawAmount(currency, normalizedRaw)
+    const formatted = formatTokenAmount(amount)
+    return formatted || undefined
   } catch {
     return undefined
   }
@@ -111,8 +139,8 @@ const buildTokenFields = (
     buyTokenSymbol: meta.outputToken?.symbol || '',
     sellTokenDecimals,
     buyTokenDecimals,
-    sellAmountUnits: toDecimalAmount(meta.inputToken, sellAmountAtoms),
-    buyAmountUnits: toDecimalAmount(meta.outputToken, buyAmountAtoms),
+    sellAmountUnits: formatTokenUnits(meta.inputToken, sellAmountAtoms),
+    buyAmountUnits: formatTokenUnits(meta.outputToken, buyAmountAtoms),
   }
 }
 
@@ -166,8 +194,8 @@ export function mapPostedOrder(p: OnPostedOrderPayload): AnalyticsPayload {
     buyTokenSymbol: safeGetString(p.outputToken, 'symbol'),
     sellTokenDecimals: p.inputToken?.decimals,
     buyTokenDecimals: p.outputToken?.decimals,
-    sellAmountUnits: toDecimalAmount(p.inputToken, p.inputAmount),
-    buyAmountUnits: toDecimalAmount(p.outputToken, p.outputAmount),
+    sellAmountUnits: formatTokenUnits(p.inputToken, p.inputAmount),
+    buyAmountUnits: formatTokenUnits(p.outputToken, p.outputAmount),
   }
 
   return {
@@ -196,9 +224,9 @@ export function mapFulfilledOrder(p: OnFulfilledOrderPayload): AnalyticsPayload 
 
   const hasBridgeOrder = Boolean(p.bridgeOrder ?? (p.order as { bridgeOrder?: unknown } | undefined)?.bridgeOrder)
 
-  const executedSellAmountUnits = toDecimalAmount(inputToken, executedSellAmountAtoms)
-  const executedBuyAmountUnits = toDecimalAmount(outputToken, executedBuyAmountAtoms)
-  const executedFeeAmountUnits = toDecimalAmount(inputToken, executedFeeAmountAtoms)
+  const executedSellAmountUnits = formatTokenUnits(inputToken, executedSellAmountAtoms)
+  const executedBuyAmountUnits = formatTokenUnits(outputToken, executedBuyAmountAtoms)
+  const executedFeeAmountUnits = formatTokenUnits(inputToken, executedFeeAmountAtoms)
 
   return {
     ...base,
