@@ -19,6 +19,7 @@ import { Field } from 'legacy/state/types'
 import { useToggleAccountModal } from 'modules/account'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useOpenTokenSelectWidget } from 'modules/tokensList'
+import { useTradeTypeInfo } from 'modules/trade'
 import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternativeOrder'
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 
@@ -44,9 +45,7 @@ import { TradeWarnings } from '../TradeWarnings'
 import { TradeWidgetLinks } from '../TradeWidgetLinks'
 import { WrapFlowActionButton } from '../WrapFlowActionButton'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const scrollToMyOrders = () => {
+const scrollToMyOrders = (): void => {
   const element = document.getElementById(MY_ORDERS_ID)
   if (element) {
     const elementTop = element.getBoundingClientRect().top + window.scrollY - SWAP_HEADER_OFFSET
@@ -54,10 +53,14 @@ const scrollToMyOrders = () => {
   }
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Reduce function complexity by extracting logic
+interface TradeWidgetFormViewModel {
+  formContent: ReactNode
+  outerContent: ReactNode | null
+}
+
+// TODO: Refactor into smaller helpers to satisfy lint rules for max-lines-per-function and complexity.
 // eslint-disable-next-line max-lines-per-function, complexity
-export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
+function useTradeWidgetFormViewModel(props: TradeWidgetProps): TradeWidgetFormViewModel {
   const isInjectedWidgetMode = isInjectedWidget()
   const { standaloneMode, hideOrdersTable } = useInjectedWidgetParams()
   const isMobile = useMediaQuery(Media.upToSmall(false))
@@ -104,6 +107,8 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
   const isSafeWallet = useIsSafeWallet()
   const openTokenSelectWidget = useOpenTokenSelectWidget()
+  const tradeTypeInfo = useTradeTypeInfo()
+  const currentTradeType = tradeTypeInfo?.tradeType
   const tradeStateFromUrl = useTradeStateFromUrl()
   const alternativeOrderModalVisible = useIsAlternativeOrderModalVisible()
   const primaryFormValidation = useGetTradeFormValidation()
@@ -138,7 +143,8 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
     !alternativeOrderModalVisible &&
     (!isInjectedWidgetMode && isConnectedMarketOrderWidget ? isUpToLarge : true) &&
     (isConnectedMarketOrderWidget || !hideOrdersTable) &&
-    ((isConnectedMarketOrderWidget && standaloneMode !== true && !lockScreen) || (!isMarketOrderWidget && isUpToLarge && !lockScreen))
+    ((isConnectedMarketOrderWidget && standaloneMode !== true && !lockScreen) ||
+      (!isMarketOrderWidget && isUpToLarge && !lockScreen))
 
   const showDropdown = shouldShowMyOrdersButton || isInjectedWidgetMode || isMobile
 
@@ -157,16 +163,16 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
 
   const openSellTokenSelect = useCallback(
     (selectedToken: Nullish<Currency>, field: Field | undefined, onSelectToken: (currency: Currency) => void) => {
-      openTokenSelectWidget(selectedToken, field, buyToken || undefined, onSelectToken)
+      openTokenSelectWidget(selectedToken, field, buyToken || undefined, onSelectToken, currentTradeType)
     },
-    [openTokenSelectWidget, buyToken],
+    [openTokenSelectWidget, buyToken, currentTradeType],
   )
 
   const openBuyTokenSelect = useCallback(
     (selectedToken: Nullish<Currency>, field: Field | undefined, onSelectToken: (currency: Currency) => void) => {
-      openTokenSelectWidget(selectedToken, field, sellToken || undefined, onSelectToken)
+      openTokenSelectWidget(selectedToken, field, sellToken || undefined, onSelectToken, currentTradeType)
     },
-    [openTokenSelectWidget, sellToken],
+    [openTokenSelectWidget, sellToken, currentTradeType],
   )
 
   const toggleAccountModal = useToggleAccountModal()
@@ -181,109 +187,120 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
 
   const isOutputTokenUnsupported = !!buyToken && !(buyToken.chainId in SupportedChainId)
 
-  return (
-    <>
-      <styledEl.ContainerBox>
-        <styledEl.Header>
-          {isAlternativeOrderModalVisible ? <div></div> : <TradeWidgetLinks isDropdown={showDropdown} />}
-          {isInjectedWidgetMode && standaloneMode && <AccountElement standaloneMode />}
+  const formContent = (
+    <styledEl.ContainerBox>
+      <styledEl.Header>
+        {isAlternativeOrderModalVisible ? <div></div> : <TradeWidgetLinks isDropdown={showDropdown} />}
+        {isInjectedWidgetMode && standaloneMode && <AccountElement standaloneMode />}
 
-          {shouldShowMyOrdersButton && (
-            <ButtonOutlined margin={'0 16px 0 auto'} onClick={handleMyOrdersClick}>
-              My orders <SVG src={ICON_ORDERS} />
-            </ButtonOutlined>
+        {shouldShowMyOrdersButton && (
+          <ButtonOutlined margin={'0 16px 0 auto'} onClick={handleMyOrdersClick}>
+            My orders <SVG src={ICON_ORDERS} />
+          </ButtonOutlined>
+        )}
+
+        <styledEl.HeaderRight>
+          {!lockScreen && (
+            <>
+              {!isPriceStatic && !showDropdown && isQuoteUpdatePossible && <QuotePolingProgress />}
+              {settingsWidget}
+            </>
+          )}
+        </styledEl.HeaderRight>
+      </styledEl.Header>
+
+      <LimitOrdersPromoBannerWrapper>
+        <>
+          {lockScreen ? (
+            lockScreen
+          ) : (
+            <>
+              {topContent}
+              <div>
+                <CurrencyInputPanel
+                  id="input-currency-input"
+                  currencyInfo={inputCurrencyInfo}
+                  showSetMax={showSetMax}
+                  maxBalance={maxBalance}
+                  topLabel={isWrapOrUnwrap ? undefined : inputCurrencyInfo.label}
+                  topContent={inputCurrencyInfo.topContent}
+                  openTokenSelectWidget={openSellTokenSelect}
+                  customSelectTokenButton={params.customSelectTokenButton}
+                  {...currencyInputCommonProps}
+                />
+              </div>
+              {!isWrapOrUnwrap && middleContent}
+
+              <styledEl.CurrencySeparatorBox compactView={compactView}>
+                <CurrencyArrowSeparator
+                  isCollapsed={compactView}
+                  hasSeparatorLine={!compactView}
+                  onSwitchTokens={isChainIdUnsupported ? () => void 0 : throttledOnSwitchTokens}
+                  isLoading={Boolean(sellToken && outputCurrencyInfo.currency && isTradePriceUpdating)}
+                  disabled={isAlternativeOrderModalVisible || isOutputTokenUnsupported}
+                />
+              </styledEl.CurrencySeparatorBox>
+              <div>
+                <CurrencyInputPanel
+                  id="output-currency-input"
+                  inputDisabled={
+                    (isSellingEthSupported && isEoaEthFlow) ||
+                    isWrapOrUnwrap ||
+                    isCurrentTradeBridging ||
+                    disableOutput
+                  }
+                  inputTooltip={
+                    isSellingEthSupported && isEoaEthFlow
+                      ? t`You cannot edit this field when selling ${inputCurrencyInfo?.currency?.symbol}`
+                      : undefined
+                  }
+                  currencyInfo={outputCurrencyInfo}
+                  priceImpactParams={!disablePriceImpact ? priceImpact : undefined}
+                  topLabel={isWrapOrUnwrap ? undefined : outputCurrencyInfo.label}
+                  topContent={outputCurrencyInfo.topContent}
+                  openTokenSelectWidget={openBuyTokenSelect}
+                  customSelectTokenButton={params.customSelectTokenButton}
+                  {...currencyInputCommonProps}
+                />
+              </div>
+              {withRecipient && <SetRecipient recipient={recipient || ''} onChangeRecipient={onChangeRecipient} />}
+
+              {isWrapOrUnwrap ? (
+                sellToken ? <WrapFlowActionButton sellToken={sellToken} /> : null
+              ) : (
+                bottomContent?.(
+                  hideTradeWarnings ? null : (
+                    <TradeWarnings
+                      enableSmartSlippage={enableSmartSlippage}
+                      isTradePriceUpdating={isTradePriceUpdating}
+                    />
+                  ),
+                )
+              )}
+            </>
           )}
 
-          <styledEl.HeaderRight>
-            {!lockScreen && (
-              <>
-                {!isPriceStatic && !showDropdown && isQuoteUpdatePossible && <QuotePolingProgress />}
-                {settingsWidget}
-              </>
-            )}
-          </styledEl.HeaderRight>
-        </styledEl.Header>
+          {isInjectedWidgetMode && <PoweredFooter />}
+        </>
+      </LimitOrdersPromoBannerWrapper>
+    </styledEl.ContainerBox>
+  )
 
-        <LimitOrdersPromoBannerWrapper>
-          <>
-            {lockScreen ? (
-              lockScreen
-            ) : (
-              <>
-                {topContent}
-                <div>
-                  <CurrencyInputPanel
-                    id="input-currency-input"
-                    currencyInfo={inputCurrencyInfo}
-                    showSetMax={showSetMax}
-                    maxBalance={maxBalance}
-                    topLabel={isWrapOrUnwrap ? undefined : inputCurrencyInfo.label}
-                    topContent={inputCurrencyInfo.topContent}
-                    openTokenSelectWidget={openSellTokenSelect}
-                    customSelectTokenButton={params.customSelectTokenButton}
-                    {...currencyInputCommonProps}
-                  />
-                </div>
-                {!isWrapOrUnwrap && middleContent}
+  const shouldRenderOuterContent = !isLimitOrdersPromoBannerVisible && !isLimitOrdersUpgradeBannerEnabled && outerContent
+  const outerContentNode = shouldRenderOuterContent ? (
+    <styledEl.OuterContentWrapper>{outerContent}</styledEl.OuterContentWrapper>
+  ) : null
 
-                <styledEl.CurrencySeparatorBox compactView={compactView}>
-                  <CurrencyArrowSeparator
-                    isCollapsed={compactView}
-                    hasSeparatorLine={!compactView}
-                    onSwitchTokens={isChainIdUnsupported ? () => void 0 : throttledOnSwitchTokens}
-                    isLoading={Boolean(sellToken && outputCurrencyInfo.currency && isTradePriceUpdating)}
-                    disabled={isAlternativeOrderModalVisible || isOutputTokenUnsupported}
-                  />
-                </styledEl.CurrencySeparatorBox>
-                <div>
-                  <CurrencyInputPanel
-                    id="output-currency-input"
-                    inputDisabled={
-                      (isSellingEthSupported && isEoaEthFlow) ||
-                      isWrapOrUnwrap ||
-                      isCurrentTradeBridging ||
-                      disableOutput
-                    }
-                    inputTooltip={
-                      isSellingEthSupported && isEoaEthFlow
-                        ? t`You cannot edit this field when selling ${inputCurrencyInfo?.currency?.symbol}`
-                        : undefined
-                    }
-                    currencyInfo={outputCurrencyInfo}
-                    priceImpactParams={!disablePriceImpact ? priceImpact : undefined}
-                    topLabel={isWrapOrUnwrap ? undefined : outputCurrencyInfo.label}
-                    topContent={outputCurrencyInfo.topContent}
-                    openTokenSelectWidget={openBuyTokenSelect}
-                    customSelectTokenButton={params.customSelectTokenButton}
-                    {...currencyInputCommonProps}
-                  />
-                </div>
-                {withRecipient && <SetRecipient recipient={recipient || ''} onChangeRecipient={onChangeRecipient} />}
+  return { formContent, outerContent: outerContentNode }
+}
 
-                {isWrapOrUnwrap ? (
-                  sellToken ? (
-                    <WrapFlowActionButton sellToken={sellToken} />
-                  ) : null
-                ) : (
-                  bottomContent?.(
-                    hideTradeWarnings ? null : (
-                      <TradeWarnings
-                        enableSmartSlippage={enableSmartSlippage}
-                        isTradePriceUpdating={isTradePriceUpdating}
-                      />
-                    ),
-                  )
-                )}
-              </>
-            )}
+export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
+  const { formContent, outerContent } = useTradeWidgetFormViewModel(props)
 
-            {isInjectedWidgetMode && <PoweredFooter />}
-          </>
-        </LimitOrdersPromoBannerWrapper>
-      </styledEl.ContainerBox>
-      {!isLimitOrdersPromoBannerVisible && !isLimitOrdersUpgradeBannerEnabled && outerContent && (
-        <styledEl.OuterContentWrapper>{outerContent}</styledEl.OuterContentWrapper>
-      )}
+  return (
+    <>
+      {formContent}
+      {outerContent}
     </>
   )
 }

@@ -15,10 +15,11 @@ interface ConfirmButtonProps {
   hasPendingTrade: boolean
   onConfirm(): Promise<void | boolean>
   signingStep: SigningStepState | null
+  dataClickEvent?: string
 }
 export function ConfirmButton(props: ConfirmButtonProps): ReactNode {
   const [isConfirmClicked, setIsConfirmClicked] = useState(false)
-  const { buttonText, onConfirm, hasPendingTrade, signingStep } = props
+  const { buttonText, onConfirm, hasPendingTrade, signingStep, dataClickEvent } = props
 
   const isButtonDisabled = props.isButtonDisabled || isConfirmClicked
 
@@ -49,7 +50,12 @@ export function ConfirmButton(props: ConfirmButtonProps): ReactNode {
   }, [hasPendingTrade])
 
   return (
-    <ButtonPrimary onClick={handleConfirmClick} disabled={isButtonDisabled} buttonSize={ButtonSize.BIG}>
+    <ButtonPrimary
+      onClick={handleConfirmClick}
+      disabled={isButtonDisabled}
+      buttonSize={ButtonSize.BIG}
+      data-click-event={dataClickEvent}
+    >
       {hasPendingTrade || isConfirmClicked ? (
         <LongLoadText fontSize={15} fontWeight={500}>
           <span>{signingStep ? getPendingText(signingStep) : 'Confirm with your wallet'}</span>

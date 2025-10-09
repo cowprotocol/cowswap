@@ -10,7 +10,10 @@ import { Currency } from '@uniswap/sdk-core'
 import { X } from 'react-feather'
 import { Nullish } from 'types'
 
+import { Field } from 'legacy/state/types'
+
 import { PermitCompatibleTokens } from 'modules/permit'
+import { TradeType } from 'modules/trade'
 
 import { SelectTokenModalContent } from './SelectTokenModalContent'
 import * as styledEl from './styled'
@@ -40,6 +43,8 @@ export interface SelectTokenModalProps<T = TokenListCategory[] | null> {
   standalone?: boolean
   areTokensFromBridge: boolean
   isRouteAvailable: boolean | undefined
+  tradeType?: TradeType
+  field?: Field
 
   onSelectToken(token: TokenWithLogo): void
   openPoolPage(poolAddress: string): void
@@ -49,31 +54,8 @@ export interface SelectTokenModalProps<T = TokenListCategory[] | null> {
   onSelectChain(chain: ChainInfo): void
 }
 
-function useSelectTokenContext(props: SelectTokenModalProps): SelectTokenContext {
-  const {
-    selectedToken,
-    balancesState,
-    unsupportedTokens,
-    permitCompatibleTokens,
-    onSelectToken,
-    account,
-    tokenListTags,
-  } = props
-
-  return useMemo(
-    () => ({
-      balancesState,
-      selectedToken,
-      onSelectToken,
-      unsupportedTokens,
-      permitCompatibleTokens,
-      tokenListTags,
-      isWalletConnected: !!account,
-    }),
-    [balancesState, selectedToken, onSelectToken, unsupportedTokens, permitCompatibleTokens, tokenListTags, account],
-  )
-}
-
+// TODO: Break SelectTokenModal into smaller pieces to satisfy max-lines rule.
+// eslint-disable-next-line max-lines-per-function
 export function SelectTokenModal(props: SelectTokenModalProps): ReactNode {
   const {
     defaultInputValue = '',
@@ -89,10 +71,31 @@ export function SelectTokenModal(props: SelectTokenModalProps): ReactNode {
     onSelectChain,
     areTokensFromBridge,
     isRouteAvailable,
+    tradeType,
+    field,
   } = props
   const [inputValue, setInputValue] = useState<string>(defaultInputValue)
 
-  const selectTokenContext = useSelectTokenContext(props)
+  const selectTokenContext: SelectTokenContext = useMemo(
+    () => ({
+      balancesState: props.balancesState,
+      selectedToken: props.selectedToken,
+      onSelectToken: props.onSelectToken,
+      unsupportedTokens: props.unsupportedTokens,
+      permitCompatibleTokens: props.permitCompatibleTokens,
+      tokenListTags: props.tokenListTags,
+      isWalletConnected: !!props.account,
+    }),
+    [
+      props.account,
+      props.balancesState,
+      props.onSelectToken,
+      props.permitCompatibleTokens,
+      props.selectedToken,
+      props.tokenListTags,
+      props.unsupportedTokens,
+    ],
+  )
 
   const trimmedInputValue = inputValue.trim()
 
@@ -140,6 +143,8 @@ export function SelectTokenModal(props: SelectTokenModalProps): ReactNode {
                   chains={chainsToSelect.chains}
                   defaultChainId={chainsToSelect.defaultChainId}
                   onSelectChain={onSelectChain}
+                  tradeType={tradeType}
+                  field={field}
                 />
               </styledEl.ChainsSelectorWrapper>
             </>

@@ -56,9 +56,14 @@ interface SelectTokenWidgetProps {
   standalone?: boolean
 }
 
-// TODO: Break down this large function into smaller functions
+interface SelectTokenWidgetViewModel {
+  shouldRender: boolean
+  modalContent: ReactNode | null
+}
+
+// TODO: Refactor this view model into smaller helpers to satisfy lint rules.
 // eslint-disable-next-line max-lines-per-function
-export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTokenWidgetProps): ReactNode {
+function useSelectTokenWidgetViewModel({ displayLpTokenLists, standalone }: SelectTokenWidgetProps): SelectTokenWidgetViewModel {
   const {
     open,
     onSelectToken,
@@ -69,6 +74,7 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
     selectedPoolAddress,
     field,
     oppositeToken,
+    tradeType,
   } = useSelectTokenWidgetState()
   const { count: lpTokensWithBalancesCount } = useLpTokensWithBalances()
   const chainsToSelect = useChainsToSelect()
@@ -152,83 +158,89 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
     updateSelectTokenWidget({ listToImport: undefined })
   }
 
-  if (!onSelectToken || !open) return null
+  if (!onSelectToken || !open) {
+    return { shouldRender: false, modalContent: null }
+  }
 
-  return (
-    <Wrapper>
-      {(() => {
-        if (tokenToImport && !standalone) {
-          return (
-            <ImportTokenModal
-              tokens={[tokenToImport]}
-              onDismiss={onDismiss}
-              onBack={resetTokenImport}
-              onImport={importTokenAndClose}
-            />
-          )
-        }
+  let modalContent: ReactNode
 
-        if (listToImport && !standalone) {
-          return (
-            <ImportListModal
-              list={listToImport}
-              onDismiss={onDismiss}
-              onBack={resetTokenImport}
-              onImport={importListAndBack}
-            />
-          )
-        }
+  if (tokenToImport && !standalone) {
+    modalContent = (
+      <ImportTokenModal
+        tokens={[tokenToImport]}
+        onDismiss={onDismiss}
+        onBack={resetTokenImport}
+        onImport={importTokenAndClose}
+      />
+    )
+  } else if (listToImport && !standalone) {
+    modalContent = (
+      <ImportListModal
+        list={listToImport}
+        onDismiss={onDismiss}
+        onBack={resetTokenImport}
+        onImport={importListAndBack}
+      />
+    )
+  } else if (isManageWidgetOpen && !standalone) {
+    modalContent = (
+      <ManageListsAndTokens
+        lists={allTokenLists}
+        customTokens={userAddedTokens}
+        onDismiss={onDismiss}
+        onBack={() => setIsManageWidgetOpen(false)}
+      />
+    )
+  } else if (selectedPoolAddress) {
+    modalContent = (
+      <LpTokenPage
+        poolAddress={selectedPoolAddress}
+        onDismiss={onDismiss}
+        onBack={closePoolPage}
+        onSelectToken={onSelectToken}
+      />
+    )
+  } else {
+    modalContent = (
+      <SelectTokenModal
+        standalone={standalone}
+        displayLpTokenLists={displayLpTokenLists}
+        unsupportedTokens={unsupportedTokens}
+        selectedToken={selectedToken}
+        allTokens={allTokens}
+        favoriteTokens={standalone ? EMPTY_FAV_TOKENS : favoriteTokens}
+        balancesState={balancesState}
+        permitCompatibleTokens={permitCompatibleTokens}
+        onSelectToken={onSelectToken}
+        onInputPressEnter={onInputPressEnter}
+        onDismiss={onDismiss}
+        onOpenManageWidget={() => setIsManageWidgetOpen(true)}
+        hideFavoriteTokensTooltip={isInjectedWidgetMode}
+        openPoolPage={openPoolPage}
+        tokenListCategoryState={tokenListCategoryState}
+        disableErc20={disableErc20}
+        account={account}
+        chainsToSelect={chainsToSelect}
+        onSelectChain={onSelectChain}
+        areTokensLoading={areTokensLoading}
+        tokenListTags={tokenListTags}
+        areTokensFromBridge={areTokensFromBridge}
+        isRouteAvailable={isRouteAvailable}
+        tradeType={tradeType}
+        field={field}
+      />
+    )
+  }
 
-        if (isManageWidgetOpen && !standalone) {
-          return (
-            <ManageListsAndTokens
-              lists={allTokenLists}
-              customTokens={userAddedTokens}
-              onDismiss={onDismiss}
-              onBack={() => setIsManageWidgetOpen(false)}
-            />
-          )
-        }
+  return { shouldRender: true, modalContent }
+}
 
-        if (selectedPoolAddress) {
-          return (
-            <LpTokenPage
-              poolAddress={selectedPoolAddress}
-              onDismiss={onDismiss}
-              onBack={closePoolPage}
-              onSelectToken={onSelectToken}
-            />
-          )
-        }
+export function SelectTokenWidget(props: SelectTokenWidgetProps): ReactNode {
+  const { shouldRender, modalContent } = useSelectTokenWidgetViewModel(props)
 
-        return (
-          <SelectTokenModal
-            standalone={standalone}
-            displayLpTokenLists={displayLpTokenLists}
-            unsupportedTokens={unsupportedTokens}
-            selectedToken={selectedToken}
-            allTokens={allTokens}
-            favoriteTokens={standalone ? EMPTY_FAV_TOKENS : favoriteTokens}
-            balancesState={balancesState}
-            permitCompatibleTokens={permitCompatibleTokens}
-            onSelectToken={onSelectToken}
-            onInputPressEnter={onInputPressEnter}
-            onDismiss={onDismiss}
-            onOpenManageWidget={() => setIsManageWidgetOpen(true)}
-            hideFavoriteTokensTooltip={isInjectedWidgetMode}
-            openPoolPage={openPoolPage}
-            tokenListCategoryState={tokenListCategoryState}
-            disableErc20={disableErc20}
-            account={account}
-            chainsToSelect={chainsToSelect}
-            onSelectChain={onSelectChain}
-            areTokensLoading={areTokensLoading}
-            tokenListTags={tokenListTags}
-            areTokensFromBridge={areTokensFromBridge}
-            isRouteAvailable={isRouteAvailable}
-          />
-        )
-      })()}
-    </Wrapper>
-  )
+  if (!shouldRender || !modalContent) {
+    return null
+  }
+
+  return <Wrapper>{modalContent}</Wrapper>
 }

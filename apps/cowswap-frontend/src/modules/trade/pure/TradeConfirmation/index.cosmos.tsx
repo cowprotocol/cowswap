@@ -1,10 +1,21 @@
+import type { ReactElement } from 'react'
+
 import { inputCurrencyInfoMock, outputCurrencyInfoMock, priceImpactMock } from 'mocks/tradeStateMock'
 
-import { TradeConfirmation } from './index'
+import { TradeConfirmationView } from './index'
+
+function TradeConfirmationSampleContent(restContent: ReactElement): ReactElement {
+  return (
+    <>
+      <span>Trade confirmation</span>
+      {restContent}
+    </>
+  )
+}
 
 const Fixtures = {
   default: () => (
-    <TradeConfirmation
+    <TradeConfirmationView
       title="Review order"
       account={undefined}
       ensName={undefined}
@@ -15,9 +26,12 @@ const Fixtures = {
       isConfirmDisabled={false}
       priceImpact={priceImpactMock}
       recipient={null}
-    >
-      {() => <span>Trade confirmation</span>}
-    </TradeConfirmation>
+      hasPendingTrade={false}
+      signingStep={null}
+      forcePriceConfirmation={false}
+      >
+      {TradeConfirmationSampleContent}
+    </TradeConfirmationView>
   ),
 }
 

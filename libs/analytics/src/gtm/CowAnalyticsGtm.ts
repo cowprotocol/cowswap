@@ -87,9 +87,7 @@ export class CowAnalyticsGtm implements CowAnalytics {
   private dataLayer: DataLayer = []
   private previousAccount: string | undefined = undefined
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  private cleanup = () => {
+  private cleanup = (): void => {
     window.cowAnalyticsInstance = undefined
   }
 
@@ -107,9 +105,7 @@ export class CowAnalyticsGtm implements CowAnalytics {
     }
   }
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  destroy() {
+  destroy(): void {
     if (typeof window !== 'undefined') {
       window.removeEventListener('unload', this.cleanup)
     }
@@ -130,8 +126,6 @@ export class CowAnalyticsGtm implements CowAnalytics {
    * @param account The user's wallet address or undefined if disconnected
    * @param walletName Optional wallet name (e.g., 'MetaMask', 'WalletConnect')
    */
-  // TODO: Reduce function complexity by extracting logic
-  // eslint-disable-next-line complexity
   setUserAccount(account: string | undefined, walletName?: string): void {
     this.setContext(AnalyticsContext.userAddress, account || 'disconnected')
 
@@ -141,48 +135,49 @@ export class CowAnalyticsGtm implements CowAnalytics {
       userId: account || undefined,
     })
 
-    // Enhanced wallet connection tracking
-    // Case 1: Wallet disconnection (account changes from defined to undefined)
     if (this.previousAccount && !account) {
-      this.pushToDataLayer({
-        event: 'wallet_disconnected',
-        eventType: 'wallet_disconnection',
-        previousWalletAddress: this.previousAccount,
-        previousWalletName: this.dimensions[AnalyticsContext.walletName] || 'Unknown',
-      })
-    }
-    // Case 2: Wallet connection/switching (account is defined)
-    else if (account) {
-      // Get wallet name from context if not provided
-      const walletNameToUse = walletName || this.dimensions[AnalyticsContext.walletName] || 'Unknown'
-
-      // Common properties for wallet events
-      const commonEventProps = {
-        walletAddress: account,
-        walletName: walletNameToUse,
-      }
-
-      // Initial connection (account changes from undefined/null to defined)
-      if (!this.previousAccount) {
-        this.pushToDataLayer({
-          event: 'wallet_connected',
-          eventType: 'wallet_initial_connection',
-          ...commonEventProps,
-        })
-      }
-      // Wallet switched (account changes from one defined value to another)
-      else if (this.previousAccount !== account) {
-        this.pushToDataLayer({
-          event: 'wallet_switched',
-          eventType: 'wallet_switch',
-          previousWalletAddress: this.previousAccount,
-          ...commonEventProps,
-        })
-      }
+      this.handleWalletDisconnection()
+    } else if (account) {
+      this.handleWalletConnection(account, walletName)
     }
 
     // Update the previous account reference
     this.previousAccount = account
+  }
+
+  private handleWalletDisconnection(): void {
+    this.pushToDataLayer({
+      event: 'wallet_disconnected',
+      eventType: 'wallet_disconnection',
+      previousWalletAddress: this.previousAccount,
+      previousWalletName: this.dimensions[AnalyticsContext.walletName] || 'Unknown',
+    })
+  }
+
+  private handleWalletConnection(account: string, walletName?: string): void {
+    const walletNameToUse = walletName || this.dimensions[AnalyticsContext.walletName] || 'Unknown'
+    const commonEventProps = {
+      walletAddress: account,
+      walletName: walletNameToUse,
+    }
+
+    if (!this.previousAccount) {
+      this.pushToDataLayer({
+        event: 'wallet_connected',
+        eventType: 'wallet_initial_connection',
+        ...commonEventProps,
+      })
+    } else if (this.previousAccount !== account) {
+      this.pushToDataLayer({
+        event: 'wallet_switched',
+        eventType: 'wallet_switch',
+        previousWalletAddress: this.previousAccount,
+        previousWalletName: this.dimensions[AnalyticsContext.walletName] || 'Unknown',
+        ...commonEventProps,
+      })
+    }
+
+    this.setContext(AnalyticsContext.walletName, walletNameToUse)
   }
 
   sendPageView(path?: string, params?: string[], title?: string): void {
@@ -202,25 +197,54 @@ export class CowAnalyticsGtm implements CowAnalytics {
   sendEvent(event: string | EventOptions, params?: unknown): void {
     const gtmEvent = event as GtmEvent<Category>
 
-    const eventData: DataLayerEvent =
-      typeof event === 'string'
-        ? { event, ...(params as Record<string, unknown>) }
-        : {
-            event: event.action,
-            category: event.category,
-            action: event.action,
-            label: event.label,
-            value: event.value,
-            non_interaction: event.nonInteraction,
-            ...this.getDimensions(),
-            ...(gtmEvent.isBridgeOrder && { isBridgeOrder: gtmEvent.isBridgeOrder }),
-            ...(gtmEvent.orderId && { order_id: gtmEvent.orderId }),
-            ...(gtmEvent.orderType && { order_type: gtmEvent.orderType }),
-            ...(gtmEvent.tokenSymbol && {
-              token_symbol: gtmEvent.tokenSymbol,
-            }),
-            ...(gtmEvent.chainId && { chain_id: gtmEvent.chainId }),
-          }
+    if (typeof event === 'string') {
+      this.pushToDataLayer({
+        event,
+        ...this.getDimensions(),
+        ...(params as Record<string, unknown>),
+      })
+      return
+    }
+
+    const {
+      category,
+      action,
+      label,
+      value,
+      nonInteraction,
+      orderId,
+      orderType,
+      tokenSymbol,
+      chainId,
+      isBridgeOrder,
+      ...additionalParams
+    } = gtmEvent
+
+    const sanitizedAdditionalParams = Object.entries(additionalParams).reduce(
+      (acc, [key, value]) => {
+        if (value !== undefined) {
+          acc[key] = value
+        }
+        return acc
+      },
+      {} as Record<string, unknown>,
+    )
+
+    const eventData: DataLayerEvent = {
+      event: action,
+      category,
+      action,
+      label,
+      value,
+      non_interaction: nonInteraction,
+      ...this.getDimensions(),
+      ...(isBridgeOrder && { isBridgeOrder }),
+      ...(orderId && { order_id: orderId }),
+      ...(orderType && { order_type: orderType }),
+      ...(tokenSymbol && { token_symbol: tokenSymbol }),
+      ...(chainId && { chain_id: chainId }),
+      ...sanitizedAdditionalParams,
+    }
 
     this.pushToDataLayer(eventData)
   }
@@ -268,11 +292,6 @@ export class CowAnalyticsGtm implements CowAnalytics {
   private pushToDataLayer(data: DataLayerEvent): void {
     if (typeof window !== 'undefined') {
       const dataLayerEvent = { ...data }
-
-      // Debug log in development environment
-      if (process.env.NODE_ENV === 'development') {
-        console.debug('[GTM] Pushing to data layer:', dataLayerEvent)
-      }
 
       this.dataLayer.push(dataLayerEvent)
     }
