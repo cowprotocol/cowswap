@@ -1,6 +1,7 @@
 import { useSetAtom } from 'jotai'
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import {
   CowWidgetEventListener,
   CowWidgetEvents,
@@ -9,8 +10,11 @@ import {
   OnExpiredOrderPayload,
   OnFulfilledOrderPayload,
 } from '@cowprotocol/events'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { WIDGET_EVENT_EMITTER } from 'widgetEventEmitter'
+
+import { useOnlyPendingOrders } from 'legacy/state/orders/hooks'
 
 import { OrderProgressBarStepName } from '../constants'
 import { updateOrderProgressBarCountdown, updateOrderProgressBarStepName } from '../state/atoms'
@@ -30,6 +34,22 @@ export function OrderProgressEventsUpdater(): null {
     },
     [setCountdown, setStepName],
   )
+
+  const { chainId, account } = useWalletInfo()
+  const pendingOrders = useOnlyPendingOrders((chainId as SupportedChainId) || SupportedChainId.MAINNET, account)
+
+  const unfillableOrderIds = useMemo(
+    () => pendingOrders.filter((order) => order.isUnfillable).map((order) => order.id),
+    [pendingOrders],
+  )
+
+  useEffect(() => {
+    if (!unfillableOrderIds.length) {
+      return
+    }
+
+    unfillableOrderIds.forEach((orderId) => finalizeOrderStep(orderId, OrderProgressBarStepName.UNFILLABLE))
+  }, [unfillableOrderIds, finalizeOrderStep])
 
   useEffect(() => {
     const listeners: CowWidgetEventListener[] = [
