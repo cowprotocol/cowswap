@@ -118,7 +118,7 @@ export function TradeButtons({
         validation={primaryFormValidation}
         context={tradeFormButtonContext}
         isDisabled={isDisabled}
-        data-click-event={swapBridgeClickEvent}
+        dataClickEvent={swapBridgeClickEvent}
       />
       {addIntermediateTokenSection}
     </>
