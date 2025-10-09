@@ -107,7 +107,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps): Re
 
 interface LimitOrdersConfirmViewModel {
   tradeConfirmationProps: TradeConfirmationProps
-  renderConfirmationChildren: (restContent: ReactElement) => ReactElement
+  renderConfirmationChildren: (restContent: ReactElement) => ReactNode
 }
 
 function useLimitOrdersConfirmViewModel(props: LimitOrdersConfirmModalProps): LimitOrdersConfirmViewModel {
