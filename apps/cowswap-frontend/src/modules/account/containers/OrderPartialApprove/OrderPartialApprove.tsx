@@ -20,6 +20,7 @@ export type OrderPartialApproveProps = {
   isPartialApproveEnabledBySettings?: boolean
   buttonSize?: ButtonSize
   className?: string
+  onApprove?: (txHash?: string) => void
 }
 
 export function OrderPartialApprove({
@@ -27,6 +28,7 @@ export function OrderPartialApprove({
   isPartialApproveEnabledBySettings,
   buttonSize = ButtonSize.SMALL,
   className = '',
+  onApprove,
 }: OrderPartialApproveProps): ReactNode {
   const isPartialApproveSelectedByUser = useIsPartialApproveSelectedByUser()
   const { isModalOpen, amountSetByUser } = usePendingApproveAmountModalState() || {}
@@ -54,6 +56,7 @@ export function OrderPartialApprove({
         amountToApprove={amountToApproveFinal}
         buttonSize={buttonSize}
         label={'Approve ' + amountToApprove.currency.symbol}
+        onApproveConfirm={onApprove}
       />
     </OrderActionsWrapper>
   )

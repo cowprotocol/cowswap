@@ -101,6 +101,7 @@ export function EthFlowModalBottomContent(params: BottomContentParams): ReactNod
           amountToApprove={amountToApprove}
           isPartialApproveEnabledBySettings={!!isPartialApproveEnabledBySettings}
           buttonSize={ButtonSize.BIG}
+          onApprove={ethFlowActions.onApprove}
         />
       ) : (
         <TradeFormBlankButton onClick={onClick} loading={isActionInProgress || showLoader}>

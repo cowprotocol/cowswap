@@ -56,15 +56,12 @@ export function EthFlowModal({
     (nativeInput && currencyAmountToTokenAmount(nativeInput).currency) || undefined,
   )
 
-  const ethFlowActions = useEthFlowActions(
-    {
-      wrap: wrapCallback,
-      approve: approveCallback,
-      dismiss: onDismiss,
-      directSwap: directSwapCallback,
-    },
-    nativeInput ? BigInt(nativeInput?.quotient.toString()) : undefined,
-  )
+  const ethFlowActions = useEthFlowActions({
+    wrap: wrapCallback,
+    approve: approveCallback,
+    dismiss: onDismiss,
+    directSwap: directSwapCallback,
+  })
 
   const approveActivity = useSingleActivityDescriptor({ chainId, id: ethFlowContext.approve.txHash || undefined })
   const wrapActivity = useSingleActivityDescriptor({ chainId, id: ethFlowContext.wrap.txHash || undefined })

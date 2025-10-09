@@ -2,15 +2,14 @@ import { useSetAtom } from 'jotai'
 import { useMemo } from 'react'
 
 import { WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { MaxUint256 } from '@ethersproject/constants'
 
 import { WrapUnwrapCallback } from 'legacy/hooks/useWrapCallback'
 import { Field } from 'legacy/state/types'
 
 import { TradeApproveCallback } from 'modules/erc20Approve'
+import { MAX_APPROVE_AMOUNT } from 'modules/erc20Approve/constants'
 import { useOnCurrencySelection, useTradeConfirmActions } from 'modules/trade'
 
 import { updateEthFlowContextAtom } from '../../../state/ethFlowContextAtom'
@@ -30,21 +29,19 @@ export interface EthFlowActions {
   swap(): Promise<void>
 
   directSwap(): void
+
+  onApprove(txHash?: string): void
 }
 
-export function useEthFlowActions(callbacks: EthFlowActionCallbacks, partialAmountToApprove?: bigint): EthFlowActions {
+export function useEthFlowActions(callbacks: EthFlowActionCallbacks): EthFlowActions {
   const { chainId } = useWalletInfo()
 
   const updateEthFlowContext = useSetAtom(updateEthFlowContextAtom)
 
   const onCurrencySelection = useOnCurrencySelection()
   const { onOpen: openSwapConfirmModal } = useTradeConfirmActions()
-  // todo remove
-  const { isPartialApproveEnabled } = useFeatureFlags()
 
-  const amountToApprove = isPartialApproveEnabled
-    ? partialAmountToApprove || MaxUint256.toBigInt()
-    : MaxUint256.toBigInt()
+  const amountToApprove = MAX_APPROVE_AMOUNT
 
   return useMemo(() => {
     function sendTransaction(type: 'approve' | 'wrap', callback: () => Promise<string | undefined>): Promise<void> {
@@ -78,6 +75,15 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks, partialAmou
       })
     }
 
+    const onApprove = (txHash?: string): void => {
+      if (txHash) {
+        updateEthFlowContext({ approve: { txHash } })
+      } else {
+        // todo handle error case
+        // callbacks.dismiss()
+      }
+    }
+
     const wrap = (useModals?: boolean): Promise<void> => {
       return sendTransaction('wrap', () => {
         if (!callbacks.wrap) return Promise.resolve(undefined)
@@ -97,6 +103,7 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks, partialAmou
       approve,
       wrap,
       directSwap,
+      onApprove,
     }
   }, [callbacks, chainId, updateEthFlowContext, onCurrencySelection, openSwapConfirmModal, amountToApprove])
 }
