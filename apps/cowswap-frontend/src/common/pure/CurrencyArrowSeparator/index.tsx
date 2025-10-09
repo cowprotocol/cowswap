@@ -1,6 +1,5 @@
 import { ReactNode } from 'react'
 
-import { useTheme } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 
 import { CowLoadingIcon } from 'common/pure/CowLoadingIcon'
@@ -12,19 +11,26 @@ export interface CurrencyArrowSeparatorProps {
   disabled?: boolean
   hasSeparatorLine?: boolean
   isCollapsed?: boolean
+  isDarkMode?: boolean
   onSwitchTokens(): void
 }
 
 export function CurrencyArrowSeparator(props: CurrencyArrowSeparatorProps): ReactNode {
-  const { isLoading, onSwitchTokens, isCollapsed = true, hasSeparatorLine, disabled = false } = props
+  const {
+    isLoading,
+    onSwitchTokens,
+    isCollapsed = true,
+    hasSeparatorLine,
+    disabled = false,
+    isDarkMode = false,
+  } = props
   const isInjectedWidgetMode = isInjectedWidget()
-  const { darkMode } = useTheme()
 
   return (
     <styledEl.Box isCollapsed={isCollapsed} hasSeparatorLine={hasSeparatorLine} disabled={disabled}>
       <styledEl.LoadingWrapper isLoading={isLoading} onClick={disabled ? undefined : onSwitchTokens}>
         {!isInjectedWidgetMode && isLoading ? (
-          <CowLoadingIcon size={26} isDarkMode={darkMode} />
+          <CowLoadingIcon size={26} isDarkMode={isDarkMode} />
         ) : (
           <styledEl.ArrowDownIcon disabled={disabled} />
         )}
