@@ -2,6 +2,7 @@ import { useCallback } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { errorToString, isRejectRequestProviderError } from '@cowprotocol/common-utils'
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
 import { Currency } from '@uniswap/sdk-core'
@@ -24,6 +25,7 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
   const spender = useTradeSpenderAddress()
   const symbol = currency?.symbol
   const cowAnalytics = useCowAnalytics()
+  const { isPartialApproveEnabled } = useFeatureFlags()
 
   const approveCallback = useApproveCallback(currency, spender)
 
@@ -50,6 +52,8 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
       return approveCallback(amount)
         .then((response) => {
           approvalAnalytics('Sign', symbol)
+          // if ff is disabled - use old flow, hide modal when tx is sent
+          !isPartialApproveEnabled && updateTradeApproveState({ currency: undefined, approveInProgress: false })
           return response?.wait()
         })
         .finally(() => {
@@ -70,6 +74,6 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
           return undefined
         })
     },
-    [symbol, approveCallback, updateTradeApproveState, currency, approvalAnalytics],
+    [symbol, approveCallback, updateTradeApproveState, currency, approvalAnalytics, isPartialApproveEnabled],
   )
 }
