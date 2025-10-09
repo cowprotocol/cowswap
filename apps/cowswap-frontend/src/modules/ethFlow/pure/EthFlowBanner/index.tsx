@@ -2,7 +2,6 @@ import { ReactNode } from 'react'
 
 import savingsIcon from '@cowprotocol/assets/cow-swap/savings.svg'
 import { MINIMUM_ETH_FLOW_SLIPPAGE, PERCENTAGE_PRECISION } from '@cowprotocol/common-const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Command } from '@cowprotocol/types'
 import { ButtonPrimary } from '@cowprotocol/ui'
 import { Currency, Token } from '@uniswap/sdk-core'
@@ -33,9 +32,6 @@ export function EthFlowBannerContent(props: EthFlowBannerContentProps): ReactNod
     switchCurrencyCallback,
     wrapCallback,
   } = props
-
-  const chainId = native.chainId as SupportedChainId
-  const minEthFlowSlippage = MINIMUM_ETH_FLOW_SLIPPAGE[chainId]
 
   return (
     <styledEl.BannerWrapper onClick={showBannerCallback} id="classic-eth-flow-banner">
@@ -68,7 +64,8 @@ export function EthFlowBannerContent(props: EthFlowBannerContentProps): ReactNod
             <ul>
               <li>Lower overall network costs</li>
               <li>
-                Lower minimal slippage (instead of {minEthFlowSlippage.toSignificant(PERCENTAGE_PRECISION)}% minimum)
+                Lower minimal slippage (instead of {MINIMUM_ETH_FLOW_SLIPPAGE.toSignificant(PERCENTAGE_PRECISION)}%
+                minimum)
               </li>
               <li>No fees for failed transactions</li>
             </ul>

@@ -161,7 +161,7 @@ export async function swapFlow(
 
     if (!orderParams.allowsOffchainSigning) {
       logTradeFlow('SWAP FLOW', 'STEP 5: presign order (optional)')
-      const presignTx = await tradingSdk.getPreSignTransaction({ orderId, account })
+      const presignTx = await tradingSdk.getPreSignTransaction({ orderUid: orderId })
 
       presignTxHash = (
         await orderParams.signer.sendTransaction(presignTx).catch((error) => {
