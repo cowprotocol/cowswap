@@ -418,3 +418,7 @@ export const FiatWrapper = styled.span`
   align-items: center;
   display: flex;
 `
+
+export const DangerText = styled.span`
+  color: var(${UI.COLOR_DANGER});
+`

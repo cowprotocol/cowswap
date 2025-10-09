@@ -51,6 +51,7 @@ import { StatusDetails } from './StatusDetails'
 import {
   ActivityVisual,
   CreationTimeText,
+  DangerText,
   FiatWrapper,
   StyledFiatAmount,
   Summary,
@@ -518,21 +519,23 @@ export function ActivityDetails(props: {
                     </SummaryInnerRow>
                   )}
                   {hooksDetails}
+                  {fillability && showWarning && orderSummary?.inputAmount ? (
+                    <SummaryInnerRow>
+                      <DangerText>Unfillable</DangerText>
+                      <OrderFillabilityWarning
+                        fillability={fillability}
+                        inputAmount={orderSummary.inputAmount}
+                        enablePartialApprove={isPartialApproveEnabled}
+                        enablePartialApproveBySettings={!!isPartialApproveEnabledBySettings}
+                      />
+                    </SummaryInnerRow>
+                  ) : null}
                 </>
               )}
             </>
           ) : (
             (summary ?? id)
           )}
-
-          {fillability && showWarning && orderSummary?.inputAmount ? (
-            <OrderFillabilityWarning
-              fillability={fillability}
-              inputAmount={orderSummary.inputAmount}
-              enablePartialApprove={isPartialApproveEnabled}
-              enablePartialApproveBySettings={!!isPartialApproveEnabledBySettings}
-            />
-          ) : null}
 
           {activityLinkUrl && enhancedTransaction?.replacementType !== 'replaced' && (
             <ActivityLink href={activityLinkUrl} disableMouseActions={disableMouseActions}>

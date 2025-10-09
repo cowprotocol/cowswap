@@ -27,9 +27,12 @@ export function OrderFillabilityWarning({
     </Title>
   )
 
+  const isNotEnoughBalance = fillability?.hasEnoughBalance === false
+  const showIsNotEnoughAllowance = !isNotEnoughBalance && fillability?.hasEnoughAllowance === false
+
   return (
     <Wrapper>
-      {fillability?.hasEnoughBalance === false && (
+      {isNotEnoughBalance && (
         <UnfillableWarning
           padding={'10px'}
           bannerType={StatusColorVariant.Danger}
@@ -41,7 +44,7 @@ export function OrderFillabilityWarning({
         </UnfillableWarning>
       )}
 
-      {fillability?.hasEnoughAllowance === false && (
+      {showIsNotEnoughAllowance && (
         <AccordionBanner title={title} bannerType={StatusColorVariant.Danger} accordionPadding={'10px'}>
           <OrderActionsWrapper>
             <Subtitle>
