@@ -11,7 +11,7 @@ import {
   useState,
 } from 'react'
 
-import { useTokenAllowances, useTokensBalances } from '@cowprotocol/balances-and-allowances'
+import { AllowancesState, useTokenAllowances, useTokensBalances } from '@cowprotocol/balances-and-allowances'
 import { LpToken, PAGE_TITLES, TokenWithLogo } from '@cowprotocol/common-const'
 import { useDebounce, useOnClickOutside, usePrevious, useTheme } from '@cowprotocol/common-hooks'
 import { isAddress, isTruthy } from '@cowprotocol/common-utils'
@@ -54,7 +54,6 @@ const TokensLoader = styled(CardsLoader)`
 `
 
 type TokenBalancesMap = ReturnType<typeof useTokensBalances>['values']
-type AllowancesState = ReturnType<typeof useTokenAllowances>['state']
 type WalletProvider = ReturnType<typeof useWalletProvider>
 
 export enum PageViewKeys {
