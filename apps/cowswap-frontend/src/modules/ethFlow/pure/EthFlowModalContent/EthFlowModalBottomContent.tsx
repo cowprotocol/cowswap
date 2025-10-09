@@ -1,12 +1,18 @@
 import { ReactNode, useCallback, useMemo, useState } from 'react'
 
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { ButtonSize } from '@cowprotocol/ui'
+
 import { Trans } from '@lingui/macro'
 
 import { SimpleAccountDetails } from 'modules/account/containers/SimpleAccountDetails'
-import { TradeFormBlankButton } from 'modules/tradeFormValidation'
 
 import { ActivityStatus } from 'common/types/activity'
 
+import { StyledOrderPartialApprove } from './styled'
+
+import { useSwapPartialApprovalToggleState } from '../../../swap/hooks/useSwapSettings'
+import { TradeFormBlankButton } from '../../../tradeFormValidation'
 import { EthFlowActions } from '../../containers/EthFlow/hooks/useEthFlowActions'
 import { EthFlowState } from '../../services/ethFlow/types'
 import { EthFlowContext } from '../../state/ethFlowContextAtom'
@@ -41,6 +47,7 @@ export function EthFlowModalBottomContent(params: BottomContentParams): ReactNod
     wrap: { txStatus: wrapTxStatus, txHash: wrapTxHash },
   } = ethFlowContext
 
+  const isApproveNeeded = state === EthFlowState.ApproveNeeded
   const showWrapPreview = ![EthFlowState.SwapReady, EthFlowState.ApproveNeeded].includes(state)
   const [isActionInProgress, setIsActionInProgress] = useState(false)
 
@@ -53,12 +60,13 @@ export function EthFlowModalBottomContent(params: BottomContentParams): ReactNod
     }
   }, [state, ethFlowActions])
 
+  const wrapInProgress = wrapTxStatus !== null ? wrapTxStatus === ActivityStatus.PENDING : !!wrapTxHash
+
   const showLoader = useMemo(() => {
     const approveInProgress = approveTxStatus !== null ? approveTxStatus === ActivityStatus.PENDING : !!approveTxHash
-    const wrapInProgress = wrapTxStatus !== null ? wrapTxStatus === ActivityStatus.PENDING : !!wrapTxHash
 
     return approveInProgress || wrapInProgress
-  }, [approveTxStatus, approveTxHash, wrapTxStatus, wrapTxHash])
+  }, [wrapInProgress, approveTxStatus, approveTxHash])
 
   const pendingTransactions = useMemo(() => {
     const hashes = []
@@ -67,13 +75,26 @@ export function EthFlowModalBottomContent(params: BottomContentParams): ReactNod
     return hashes
   }, [approveTxHash, wrapTxHash])
 
+  const { isPartialApproveEnabled } = useFeatureFlags()
+  const [isPartialApproveEnabledBySettings] = useSwapPartialApprovalToggleState(isPartialApproveEnabled)
+
+  const showPartialApprovalFunctionality = isPartialApproveEnabled && isApproveNeeded && !wrapInProgress
+
   return (
     <>
       {showWrapPreview && <WrappingPreview {...wrappingPreview} />}
       <SimpleAccountDetails pendingTransactions={pendingTransactions} confirmedTransactions={[]} $margin="12px 0 0" />
-      <TradeFormBlankButton onClick={onClick} loading={isActionInProgress || showLoader}>
-        <Trans>{buttonText}</Trans>
-      </TradeFormBlankButton>
+      {showPartialApprovalFunctionality && wrappingPreview.amount ? (
+        <StyledOrderPartialApprove
+          amountToApprove={wrappingPreview.amount}
+          isPartialApproveEnabledBySettings={!!isPartialApproveEnabledBySettings}
+          buttonSize={ButtonSize.BIG}
+        />
+      ) : (
+        <TradeFormBlankButton onClick={onClick} loading={isActionInProgress || showLoader}>
+          <Trans>{buttonText}</Trans>
+        </TradeFormBlankButton>
+      )}
     </>
   )
 }
