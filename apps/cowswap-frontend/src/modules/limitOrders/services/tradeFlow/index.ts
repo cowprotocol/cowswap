@@ -123,7 +123,7 @@ export async function tradeFlow(
     let presignTxHash: string | null = null
 
     if (!postOrderParams.allowsOffchainSigning) {
-      const presignTx = await tradingSdk.getPreSignTransaction({ orderId, account })
+      const presignTx = await tradingSdk.getPreSignTransaction({ orderUid: orderId })
 
       presignTxHash = (await signer.sendTransaction(presignTx)).hash
     }
@@ -184,8 +184,8 @@ export async function tradeFlow(
     analytics.sign(swapFlowAnalyticsContext)
 
     return orderId
-  // TODO: Replace any with proper type definitions
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // TODO: Replace any with proper type definitions
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     logTradeFlow('LIMIT ORDER FLOW', 'STEP 9: ERROR: ', error)
     const swapErrorMessage = getSwapErrorMessage(error)

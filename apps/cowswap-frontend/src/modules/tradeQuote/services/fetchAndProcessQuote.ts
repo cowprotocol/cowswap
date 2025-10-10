@@ -15,9 +15,10 @@ import { AppDataInfo } from 'modules/appData'
 
 import { mapOperatorErrorToQuoteError, QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
 import { getIsOrderBookTypedError } from 'api/cowProtocol/getIsOrderBookTypedError'
+import { coWBFFClient } from 'common/services/bff'
 
 import { TradeQuoteManager } from '../hooks/useTradeQuoteManager'
-import { TradeQuoteFetchParams } from '../types'
+import { TradeQuoteFetchParams, TradeQuotePollingParameters } from '../types'
 import { getBridgeQuoteSigner } from '../utils/getBridgeQuoteSigner'
 
 const getQuote = bridgingSdk.getQuote.bind(bridgingSdk)
@@ -29,6 +30,7 @@ const getBestQuote = onlyResolvesLast<MultiQuoteResult | null>(bridgingSdk.getBe
 export async function fetchAndProcessQuote(
   fetchParams: TradeQuoteFetchParams,
   quoteParams: QuoteBridgeRequest,
+  { useSuggestedSlippageApi }: TradeQuotePollingParameters,
   appData: AppDataInfo['doc'] | undefined,
   tradeQuoteManager: TradeQuoteManager,
 ): Promise<void> {
@@ -43,6 +45,7 @@ export async function fetchAndProcessQuote(
     },
     appData,
     quoteSigner: isBridge ? getBridgeQuoteSigner(chainId) : undefined,
+    getSlippageSuggestion: useSuggestedSlippageApi ? coWBFFClient.getSlippageTolerance.bind(coWBFFClient) : undefined,
   }
 
   const processQuoteError = (error: Error): void => {

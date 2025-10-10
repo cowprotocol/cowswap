@@ -5,3 +5,9 @@ export interface TradeQuoteFetchParams {
   priceQuality: PriceQuality
   fetchStartTimestamp: number
 }
+
+export interface TradeQuotePollingParameters {
+  isConfirmOpen: boolean
+  isQuoteUpdatePossible: boolean
+  useSuggestedSlippageApi: boolean
+}
