@@ -31,22 +31,27 @@ function useUnfillableOrderIds(): string[] {
   const pendingOrdersFillability = usePendingOrdersFillability(OrderClass.MARKET)
 
   return useMemo(() => {
+    // `isUnfillable` captures backend price-driven checks, while fillability covers wallet balance/allowance
+    // issues. A given order can appear in both buckets; the final Set union keeps the list unique.
     const priceDerived = marketOrders.filter((order) => order.isUnfillable).map((order) => order.id)
 
-    const fillabilityDerived = Object.entries(pendingOrdersFillability).reduce<string[]>((acc, [orderId, fillability]) => {
-      if (!fillability) {
+    const fillabilityDerived = Object.entries(pendingOrdersFillability).reduce<string[]>(
+      (acc, [orderId, fillability]) => {
+        if (!fillability) {
+          return acc
+        }
+
+        const lacksBalance = fillability.hasEnoughBalance === false
+        const lacksAllowance = fillability.hasEnoughAllowance === false && !fillability.hasPermit
+
+        if (lacksBalance || lacksAllowance) {
+          acc.push(orderId)
+        }
+
         return acc
-      }
-
-      const lacksBalance = fillability.hasEnoughBalance === false
-      const lacksAllowance = fillability.hasEnoughAllowance === false && !fillability.hasPermit
-
-      if (lacksBalance || lacksAllowance) {
-        acc.push(orderId)
-      }
-
-      return acc
-    }, [])
+      },
+      [],
+    )
 
     return Array.from(new Set([...priceDerived, ...fillabilityDerived]))
   }, [marketOrders, pendingOrdersFillability])
