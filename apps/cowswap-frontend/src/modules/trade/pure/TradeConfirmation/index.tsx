@@ -81,6 +81,13 @@ export function TradeConfirmationView(viewProps: TradeConfirmationViewProps): Re
   ) : null
   const isButtonDisabled = isConfirmDisabled || (isPriceChanged && !isPriceStatic) || hasPendingTrade
 
+  const restContent = (
+    <>
+      {hookDetailsElement}
+      <NoImpactWarning withoutAccepting />
+    </>
+  )
+
   return (
     <styledEl.WidgetWrapper onKeyDown={(e) => e.key === 'Escape' && onDismiss()}>
       <styledEl.Header>
@@ -96,12 +103,7 @@ export function TradeConfirmationView(viewProps: TradeConfirmationViewProps): Re
           outputCurrencyInfo={outputCurrencyInfo}
           priceImpact={priceImpact}
         />
-        {children?.(
-          <>
-            {hookDetailsElement}
-            <NoImpactWarning withoutAccepting />
-          </>,
-        )}
+        {children ? children(restContent) : restContent}
         <ConfirmWarnings
           account={account}
           ensName={ensName}
