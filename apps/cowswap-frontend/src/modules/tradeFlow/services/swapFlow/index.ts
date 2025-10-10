@@ -220,6 +220,7 @@ export async function swapFlow(
       outputAmount: bridgeQuoteAmounts?.bridgeMinReceiveAmount || outputAmount,
       owner: account,
       uiOrderType: UiOrderType.SWAP,
+      partiallyFillable: false,
     })
 
     logTradeFlow('SWAP FLOW', 'STEP 6: unhide SC order (optional)')

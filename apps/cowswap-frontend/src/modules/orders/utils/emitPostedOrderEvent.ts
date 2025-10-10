@@ -14,6 +14,7 @@ interface PendingOrderNotificationParams {
   owner: string
   kind: OrderKind
   uiOrderType: UiOrderType
+  partiallyFillable?: boolean
   receiver: Nullish<string>
   inputAmount: CurrencyAmount<Currency>
   outputAmount: CurrencyAmount<Currency>
@@ -46,6 +47,7 @@ export function emitPostedOrderEvent(params: PendingOrderNotificationParams): vo
     owner,
     kind: params.kind,
     orderType: uiOrderType,
+    partiallyFillable: params.partiallyFillable ?? false,
     inputAmount: BigInt(inputAmount.quotient.toString()),
     outputAmount: BigInt(outputAmount.quotient.toString()),
     inputToken: {

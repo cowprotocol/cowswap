@@ -152,6 +152,7 @@ export async function safeBundleApprovalFlow(
       outputAmount,
       owner: account,
       uiOrderType: UiOrderType.SWAP,
+      partiallyFillable: false,
     })
 
     logTradeFlow(LOG_PREFIX, 'STEP 6: add safe tx hash and unhide order')

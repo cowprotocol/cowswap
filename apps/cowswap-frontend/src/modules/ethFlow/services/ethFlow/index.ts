@@ -157,6 +157,7 @@ export async function ethFlow({
       owner: account,
       uiOrderType: UiOrderType.SWAP,
       isEthFlow: true,
+      partiallyFillable: false,
     })
 
     logTradeFlow('ETH FLOW', 'STEP 5: add pending order step')
