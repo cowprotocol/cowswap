@@ -203,11 +203,13 @@ export class CowAnalyticsGtm implements CowAnalytics {
 
     if (typeof event === 'string') {
       // Simple events inherit the current global dimensions and pass through untouched
-      this.pushToDataLayer({
+      const payload = {
         event,
         ...this.getDimensions(),
-        ...(params as Record<string, unknown>),
-      })
+        ...((typeof params === 'object' && params !== null ? params : {}) as Record<string, unknown>),
+      }
+
+      this.pushToDataLayer(payload)
       return
     }
 
