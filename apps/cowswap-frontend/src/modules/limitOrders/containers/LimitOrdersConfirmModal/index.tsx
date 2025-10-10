@@ -66,9 +66,8 @@ function useStableTradeContext(tradeContext: TradeFlowContext): TradeFlowContext
 function resolvePartialFillFlag(
   overrideValue: boolean | undefined,
   tradeContext: TradeFlowContext,
-  settingsState: LimitOrdersDetailsProps['settingsState'],
 ): boolean {
-  return overrideValue ?? tradeContext.postOrderParams.partiallyFillable ?? settingsState.partialFillsEnabled ?? false
+  return overrideValue ?? tradeContext.postOrderParams.partiallyFillable ?? false
 }
 
 type PlaceLimitOrderEventDeps = {
@@ -158,11 +157,7 @@ function useLimitOrdersConfirmViewModel(props: LimitOrdersConfirmModalProps): Li
   const isSafeApprovalBundle = useIsSafeApprovalBundle(inputAmount)
   const buttonText = buildLimitOrderButtonText(isSafeApprovalBundle, inputAmount)
 
-  const partialFillsEnabledForAnalytics = resolvePartialFillFlag(
-    partiallyFillableOverrideValue,
-    tradeContext,
-    settingsState,
-  )
+  const partialFillsEnabledForAnalytics = resolvePartialFillFlag(partiallyFillableOverrideValue, tradeContext)
 
   const placeLimitOrderEvent = usePlaceLimitOrderEvent({
     inputAmount,
