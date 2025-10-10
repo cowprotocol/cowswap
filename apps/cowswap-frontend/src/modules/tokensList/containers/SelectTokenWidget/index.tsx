@@ -1,7 +1,7 @@
 import { ReactNode, useCallback, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { TokenWithLogo } from '@cowprotocol/common-const'
+import { LpToken, TokenWithLogo } from '@cowprotocol/common-const'
 import { useTheme } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import {
@@ -15,6 +15,7 @@ import {
   useUserAddedTokens,
 } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
+import { Currency } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
 
@@ -22,7 +23,6 @@ import { Field } from 'legacy/state/types'
 
 import { useTokensBalancesCombined } from 'modules/combinedBalances'
 import { usePermitCompatibleTokens } from 'modules/permit'
-import { TradeType } from 'modules/trade'
 import { useLpTokensWithBalances } from 'modules/yield/shared'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
@@ -63,9 +63,16 @@ interface SelectTokenWidgetViewModel {
   modalContent: ReactNode | null
 }
 
+function getChainIdFromToken(token: TokenWithLogo | LpToken | Currency | undefined): number | undefined {
+  return token ? token.chainId : undefined
+}
+
 // TODO: Refactor this view model into smaller helpers to satisfy lint rules.
-// eslint-disable-next-line max-lines-per-function, complexity
-function useSelectTokenWidgetViewModel({ displayLpTokenLists, standalone }: SelectTokenWidgetProps): SelectTokenWidgetViewModel {
+// eslint-disable-next-line max-lines-per-function
+function useSelectTokenWidgetViewModel({
+  displayLpTokenLists,
+  standalone,
+}: SelectTokenWidgetProps): SelectTokenWidgetViewModel {
   const {
     open,
     onSelectToken,
@@ -77,6 +84,7 @@ function useSelectTokenWidgetViewModel({ displayLpTokenLists, standalone }: Sele
     field,
     oppositeToken,
     tradeType,
+    selectedTargetChainId,
   } = useSelectTokenWidgetState()
   const { count: lpTokensWithBalancesCount } = useLpTokensWithBalances()
   const chainsToSelect = useChainsToSelect()
@@ -111,11 +119,8 @@ function useSelectTokenWidgetViewModel({ displayLpTokenLists, standalone }: Sele
     isRouteAvailable,
   } = useTokensToSelect()
 
-  const defaultChainId = chainsToSelect?.defaultChainId
-  const isCrossChainSelection = Boolean(
-    tradeType === TradeType.SWAP &&
-      ((defaultChainId !== undefined && chainId !== undefined && defaultChainId !== chainId) || areTokensFromBridge),
-  )
+  const counterChainId =
+    getChainIdFromToken(oppositeToken) ?? (field === Field.INPUT ? (selectedTargetChainId ?? chainId) : chainId)
 
   const userAddedTokens = useUserAddedTokens()
   const allTokenLists = useAllListsList()
@@ -238,7 +243,7 @@ function useSelectTokenWidgetViewModel({ displayLpTokenLists, standalone }: Sele
         tradeType={tradeType}
         field={field}
         isDarkMode={theme.darkMode}
-        isCrossChainSelection={isCrossChainSelection}
+        counterChainId={counterChainId}
       />
     )
   }

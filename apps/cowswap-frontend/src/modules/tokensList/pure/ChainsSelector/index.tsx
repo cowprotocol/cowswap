@@ -31,14 +31,15 @@ export function makeBuildClickEvent(
   defaultChainId: ChainInfo['id'] | undefined,
   contextLabel: 'sell' | 'buy' | 'unknown',
   mode: TradeType | 'unknown',
-  isCrossChain: boolean,
+  counterChainId: ChainInfo['id'] | undefined,
+  isSwapMode: boolean,
 ): BuildClickEvent {
   return (chain: ChainInfo) =>
     toCowSwapGtmEvent({
       category: CowSwapAnalyticsCategory.TRADE,
       action: 'network_selected',
       label: `Chain: ${chain.id}, PreviousChain: ${defaultChainId || 'none'}, Context: ${contextLabel}, Mode: ${mode}, CrossChain: ${
-        isCrossChain
+        isSwapMode && counterChainId !== undefined ? counterChainId !== chain.id : false
       }`,
     })
 }
@@ -51,7 +52,7 @@ export interface ChainsSelectorProps {
   tradeType?: TradeType
   field?: Field
   isDarkMode?: boolean
-  isCrossChain?: boolean
+  counterChainId?: ChainInfo['id']
 }
 
 export function ChainsSelector({
@@ -63,7 +64,7 @@ export function ChainsSelector({
   tradeType,
   field,
   isDarkMode = false,
-  isCrossChain = false,
+  counterChainId,
 }: ChainsSelectorProps): ReactNode {
   const isMobile = useMediaQuery(Media.upToSmall(false))
   const mode = tradeType || 'unknown'
@@ -80,7 +81,7 @@ export function ChainsSelector({
   // Find the selected chain that isn't visible in the main row (so we can display it in the dropdown)
   const selectedMenuChain = !isMobile && chains.find((i) => i.id === defaultChainId && !visibleChains.includes(i))
 
-  const buildClickEvent = makeBuildClickEvent(defaultChainId, contextLabel, mode, isCrossChain)
+  const buildClickEvent = makeBuildClickEvent(defaultChainId, contextLabel, mode, counterChainId, isSwapMode)
 
   return (
     <styledEl.Wrapper>

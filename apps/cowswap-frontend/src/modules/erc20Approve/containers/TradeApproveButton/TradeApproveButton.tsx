@@ -25,10 +25,11 @@ export interface TradeApproveButtonProps {
   confirmSwap?: () => void
   ignorePermit?: boolean
   label: string
+  dataClickEvent?: string
 }
 
 export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
-  const { amountToApprove, children, enablePartialApprove, confirmSwap, label, ignorePermit } = props
+  const { amountToApprove, children, enablePartialApprove, confirmSwap, label, ignorePermit, dataClickEvent } = props
   const isPartialApproveEnabledByUser = useIsPartialApproveSelectedByUser()
   const handleApprove = useApproveCurrency(amountToApprove)
   
@@ -56,6 +57,7 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
           currency={amountToApprove.currency}
           state={approvalState}
           onClick={() => handleApprove(MAX_APPROVE_AMOUNT)}
+          dataClickEvent={dataClickEvent}
         />
         {children}
       </>
@@ -72,6 +74,7 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
       width="100%"
       marginBottom={10}
       altDisabledStyle={isPending}
+      data-click-event={dataClickEvent}
     >
       <styledEl.ButtonLabelWrapper>
         {label}{' '}

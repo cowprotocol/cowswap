@@ -46,7 +46,7 @@ export interface SelectTokenModalProps<T = TokenListCategory[] | null> {
   tradeType?: TradeType
   field?: Field
   isDarkMode?: boolean
-  isCrossChainSelection?: boolean
+  counterChainId?: ChainInfo['id']
 
   onSelectToken(token: TokenWithLogo): void
   openPoolPage(poolAddress: string): void
@@ -76,7 +76,7 @@ export function SelectTokenModal(props: SelectTokenModalProps): ReactNode {
     tradeType,
     field,
     isDarkMode = false,
-    isCrossChainSelection = false,
+    counterChainId,
   } = props
   const [inputValue, setInputValue] = useState<string>(defaultInputValue)
 
@@ -150,7 +150,7 @@ export function SelectTokenModal(props: SelectTokenModalProps): ReactNode {
                   tradeType={tradeType}
                   field={field}
                   isDarkMode={isDarkMode}
-                  isCrossChain={isCrossChainSelection}
+                  counterChainId={counterChainId}
                 />
               </styledEl.ChainsSelectorWrapper>
             </>

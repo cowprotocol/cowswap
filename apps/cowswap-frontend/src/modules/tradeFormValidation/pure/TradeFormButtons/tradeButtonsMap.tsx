@@ -23,7 +23,7 @@ interface ButtonErrorConfig {
 }
 
 interface ButtonCallback {
-  (context: TradeFormButtonContext, isDisabled?: boolean): ReactElement | null
+  (context: TradeFormButtonContext, isDisabled?: boolean, dataClickEvent?: string): ReactElement | null
 }
 
 const CompatibilityIssuesWarningWrapper = styled.div`
@@ -225,12 +225,12 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
       </TradeFormBlankButton>
     )
   },
-  [TradeFormValidation.ApproveAndSwapInBundle]: (context, isDisabled = false) => {
+  [TradeFormValidation.ApproveAndSwapInBundle]: (context, isDisabled = false, dataClickEvent) => {
     const inputCurrency = context.derivedState.inputCurrency
     const tokenToApprove = inputCurrency && getWrappedToken(inputCurrency)
 
     return (
-      <TradeFormBlankButton disabled={isDisabled} onClick={context.confirmTrade}>
+      <TradeFormBlankButton disabled={isDisabled} onClick={context.confirmTrade} dataClickEvent={dataClickEvent}>
         <span>
           <Trans>
             Approve {<TokenSymbol token={tokenToApprove} length={6} />} and {context.defaultText}
@@ -239,7 +239,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
       </TradeFormBlankButton>
     )
   },
-  [TradeFormValidation.ApproveRequired]: (context) => {
+  [TradeFormValidation.ApproveRequired]: (context, _isDisabled, dataClickEvent) => {
     const { amountToApprove, enablePartialApprove, defaultText } = context
     if (!amountToApprove) return null
 
@@ -251,6 +251,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
         enablePartialApprove={enablePartialApprove}
         confirmSwap={context.confirmTrade}
         label={label}
+        dataClickEvent={dataClickEvent}
       >
         <TradeFormBlankButton disabled={!enablePartialApprove}>
           <Trans>{label}</Trans>
