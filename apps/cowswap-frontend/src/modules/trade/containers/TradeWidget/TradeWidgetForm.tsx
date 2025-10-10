@@ -53,6 +53,10 @@ const scrollToMyOrders = (): void => {
   }
 }
 
+const SUPPORTED_CHAIN_IDS = new Set<number>(
+  Object.values(SupportedChainId).filter((value): value is number => typeof value === 'number'),
+)
+
 interface TradeWidgetFormViewModel {
   formContent: ReactNode
   outerContent: ReactNode | null
@@ -110,7 +114,6 @@ function useTradeWidgetFormViewModel(props: TradeWidgetProps): TradeWidgetFormVi
   const tradeTypeInfo = useTradeTypeInfo()
   const currentTradeType = tradeTypeInfo?.tradeType
   const tradeStateFromUrl = useTradeStateFromUrl()
-  const alternativeOrderModalVisible = useIsAlternativeOrderModalVisible()
   const primaryFormValidation = useGetTradeFormValidation()
   const { shouldBeVisible: isLimitOrdersPromoBannerVisible } = useLimitOrdersPromoBanner()
   const isEoaEthFlow = useIsEoaEthFlow()
@@ -140,7 +143,7 @@ function useTradeWidgetFormViewModel(props: TradeWidgetProps): TradeWidgetFormVi
   const isConnectedMarketOrderWidget = !!account && isMarketOrderWidget
 
   const shouldShowMyOrdersButton =
-    !alternativeOrderModalVisible &&
+    !isAlternativeOrderModalVisible &&
     (!isInjectedWidgetMode && isConnectedMarketOrderWidget ? isUpToLarge : true) &&
     (isConnectedMarketOrderWidget || !hideOrdersTable) &&
     ((isConnectedMarketOrderWidget && standaloneMode !== true && !lockScreen) ||
@@ -156,7 +159,7 @@ function useTradeWidgetFormViewModel(props: TradeWidgetProps): TradeWidgetFormVi
     onCurrencySelection,
     onUserInput,
     allowsOffchainSigning,
-    tokenSelectorDisabled: alternativeOrderModalVisible,
+    tokenSelectorDisabled: isAlternativeOrderModalVisible,
     displayTokenName,
     displayChainName,
   }
@@ -185,7 +188,7 @@ function useTradeWidgetFormViewModel(props: TradeWidgetProps): TradeWidgetFormVi
     }
   }, [isMarketOrderWidget, toggleAccountModal])
 
-  const isOutputTokenUnsupported = !!buyToken && !(buyToken.chainId in SupportedChainId)
+  const isOutputTokenUnsupported = !!buyToken && !SUPPORTED_CHAIN_IDS.has(buyToken.chainId)
 
   const formContent = (
     <styledEl.ContainerBox>
