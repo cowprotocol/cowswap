@@ -28,14 +28,13 @@ import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
 import { buildPlaceLimitOrderEvent, ExecutionPriceLike } from './analytics'
 
 import { LOW_RATE_THRESHOLD_PERCENT } from '../../const/trade'
-import { LimitOrdersDetails } from '../../pure/LimitOrdersDetails'
+import { LimitOrdersDetails, type LimitOrdersDetailsProps } from '../../pure/LimitOrdersDetails'
 import { TradeFlowContext } from '../../services/types'
 import { TradeRateDetails } from '../TradeRateDetails'
 
 const CONFIRM_TITLE = 'Limit Order'
 const DEFAULT_BUTTON_TEXT = 'Place limit order'
 
-type LimitOrdersDetailsProps = Parameters<typeof LimitOrdersDetails>[0]
 type PreviewAmount = CurrencyPreviewInfo['amount']
 
 function buildLimitOrderButtonText(isSafeApprovalBundle: boolean, inputAmount: PreviewAmount): ReactNode {

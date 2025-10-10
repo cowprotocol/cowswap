@@ -1,4 +1,4 @@
-import { ReactElement, ReactNode } from 'react'
+import { ReactElement, ReactNode, useMemo } from 'react'
 
 import { BackButton } from '@cowprotocol/ui'
 
@@ -74,11 +74,15 @@ export function TradeConfirmationView(viewProps: TradeConfirmationViewProps): Re
     forcePriceConfirmation,
   )
 
-  const hookDetailsElement = appData ? (
-    <OrderHooksDetails appData={appData} isTradeConfirmation>
-      {(hookChildren) => hookChildren}
-    </OrderHooksDetails>
-  ) : null
+  const hookDetailsElement = useMemo(
+    () =>
+      appData ? (
+        <OrderHooksDetails appData={appData} isTradeConfirmation>
+          {(hookChildren) => hookChildren}
+        </OrderHooksDetails>
+      ) : null,
+    [appData],
+  )
   const isButtonDisabled = isConfirmDisabled || (isPriceChanged && !isPriceStatic) || hasPendingTrade
 
   const restContent = (
