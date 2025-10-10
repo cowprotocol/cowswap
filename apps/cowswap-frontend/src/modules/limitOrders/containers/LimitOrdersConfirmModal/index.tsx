@@ -36,6 +36,23 @@ const CONFIRM_TITLE = 'Limit Order'
 const DEFAULT_BUTTON_TEXT = 'Place limit order'
 
 type LimitOrdersDetailsProps = Parameters<typeof LimitOrdersDetails>[0]
+type PreviewAmount = CurrencyPreviewInfo['amount']
+
+function buildLimitOrderButtonText(isSafeApprovalBundle: boolean, inputAmount: PreviewAmount): ReactNode {
+  if (!isSafeApprovalBundle || !inputAmount) {
+    return DEFAULT_BUTTON_TEXT
+  }
+
+  const wrappedToken = getWrappedToken(inputAmount.currency)
+
+  return (
+    <>
+      Confirm (Approve&nbsp;
+      <TokenSymbol token={wrappedToken} length={6} />
+      &nbsp;& Limit order)
+    </>
+  )
+}
 
 function useStableTradeContext(tradeContext: TradeFlowContext): TradeFlowContext {
   const initialContextRef = useRef<TradeFlowContext | null>(null)
@@ -45,6 +62,14 @@ function useStableTradeContext(tradeContext: TradeFlowContext): TradeFlowContext
   }
 
   return initialContextRef.current
+}
+
+function resolvePartialFillFlag(
+  overrideValue: boolean | undefined,
+  tradeContext: TradeFlowContext,
+  settingsState: LimitOrdersDetailsProps['settingsState'],
+): boolean {
+  return overrideValue ?? tradeContext.postOrderParams.partiallyFillable ?? settingsState.partialFillsEnabled ?? false
 }
 
 type PlaceLimitOrderEventDeps = {
@@ -121,11 +146,6 @@ function useLimitOrdersConfirmViewModel(props: LimitOrdersConfirmModalProps): Li
   const executionPrice = useAtomValue(executionPriceAtom)
   const limitRateState = useAtomValue(limitRateAtom)
   const [partiallyFillableOverrideValue, setPartiallyFillableOverride] = useAtom(partiallyFillableOverrideAtom)
-  const partiallyFillableOverride = useMemo<PartiallyFillableOverrideDispatcherType>(
-    () => [partiallyFillableOverrideValue, setPartiallyFillableOverride],
-    [partiallyFillableOverrideValue, setPartiallyFillableOverride],
-  )
-
   const { amount: inputAmount } = inputCurrencyInfo
   const { amount: outputAmount } = outputCurrencyInfo
 
@@ -137,21 +157,13 @@ function useLimitOrdersConfirmViewModel(props: LimitOrdersConfirmModalProps): Li
   const isConfirmDisabled = isTooLowRate ? !warningsAccepted : false
 
   const isSafeApprovalBundle = useIsSafeApprovalBundle(inputAmount)
-  const buttonText = !isSafeApprovalBundle || !inputAmount ? (
-    DEFAULT_BUTTON_TEXT
-  ) : (
-    <>
-      Confirm (Approve&nbsp;
-      <TokenSymbol token={getWrappedToken(inputAmount.currency)} length={6} />
-      &nbsp;& Limit order)
-    </>
-  )
+  const buttonText = buildLimitOrderButtonText(isSafeApprovalBundle, inputAmount)
 
-  const partialFillsEnabledForAnalytics =
-    partiallyFillableOverrideValue ??
-    tradeContext.postOrderParams.partiallyFillable ??
-    settingsState.partialFillsEnabled ??
-    false
+  const partialFillsEnabledForAnalytics = resolvePartialFillFlag(
+    partiallyFillableOverrideValue,
+    tradeContext,
+    settingsState,
+  )
 
   const placeLimitOrderEvent = usePlaceLimitOrderEvent({
     inputAmount,
@@ -172,10 +184,18 @@ function useLimitOrdersConfirmViewModel(props: LimitOrdersConfirmModalProps): Li
         rateInfoParams,
         settingsState,
         executionPrice,
-        partiallyFillableOverride,
+        partiallyFillableOverride: [partiallyFillableOverrideValue, setPartiallyFillableOverride],
         restContent,
       }),
-    [tradeContext, limitRateState, rateInfoParams, settingsState, executionPrice, partiallyFillableOverride],
+    [
+      tradeContext,
+      limitRateState,
+      rateInfoParams,
+      settingsState,
+      executionPrice,
+      partiallyFillableOverrideValue,
+      setPartiallyFillableOverride,
+    ],
   )
 
   const tradeConfirmationProps: TradeConfirmationProps = {
