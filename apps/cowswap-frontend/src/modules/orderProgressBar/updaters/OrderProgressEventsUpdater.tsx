@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo } from 'react'
 
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { OrderClass, SupportedChainId } from '@cowprotocol/cow-sdk'
 import {
   CowWidgetEventListener,
   CowWidgetEvents,
@@ -16,12 +16,46 @@ import { WIDGET_EVENT_EMITTER } from 'widgetEventEmitter'
 
 import { useOnlyPendingOrders } from 'legacy/state/orders/hooks'
 
+import { usePendingOrdersFillability } from 'common/hooks/usePendingOrdersFillability'
+
 import { OrderProgressBarStepName } from '../constants'
 import { updateOrderProgressBarCountdown, updateOrderProgressBarStepName } from '../state/atoms'
+
+function useUnfillableOrderIds(): string[] {
+  const { chainId, account } = useWalletInfo()
+  const pendingOrders = useOnlyPendingOrders(chainId as SupportedChainId, account)
+  const marketOrders = useMemo(
+    () => pendingOrders.filter((order) => order.class === OrderClass.MARKET),
+    [pendingOrders],
+  )
+  const pendingOrdersFillability = usePendingOrdersFillability(OrderClass.MARKET)
+
+  return useMemo(() => {
+    const priceDerived = marketOrders.filter((order) => order.isUnfillable).map((order) => order.id)
+
+    const fillabilityDerived = Object.entries(pendingOrdersFillability).reduce<string[]>((acc, [orderId, fillability]) => {
+      if (!fillability) {
+        return acc
+      }
+
+      const lacksBalance = fillability.hasEnoughBalance === false
+      const lacksAllowance = fillability.hasEnoughAllowance === false && !fillability.hasPermit
+
+      if (lacksBalance || lacksAllowance) {
+        acc.push(orderId)
+      }
+
+      return acc
+    }, [])
+
+    return Array.from(new Set([...priceDerived, ...fillabilityDerived]))
+  }, [marketOrders, pendingOrdersFillability])
+}
 
 export function OrderProgressEventsUpdater(): null {
   const setCountdown = useSetAtom(updateOrderProgressBarCountdown)
   const setStepName = useSetAtom(updateOrderProgressBarStepName)
+  const unfillableOrderIds = useUnfillableOrderIds()
 
   const finalizeOrderStep = useCallback(
     (orderUid: string | undefined, step: OrderProgressBarStepName) => {
@@ -33,14 +67,6 @@ export function OrderProgressEventsUpdater(): null {
       setCountdown({ orderId: orderUid, value: null })
     },
     [setCountdown, setStepName],
-  )
-
-  const { chainId, account } = useWalletInfo()
-  const pendingOrders = useOnlyPendingOrders((chainId as SupportedChainId) || SupportedChainId.MAINNET, account)
-
-  const unfillableOrderIds = useMemo(
-    () => pendingOrders.filter((order) => order.isUnfillable).map((order) => order.id),
-    [pendingOrders],
   )
 
   useEffect(() => {
