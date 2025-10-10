@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai'
-import { ReactElement, useEffect } from 'react'
+import { ReactElement, ReactNode, useEffect } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { walletInfoAtom } from '@cowprotocol/wallet'
@@ -21,16 +21,15 @@ const defaultTxHash = '0x1e0e4acc2c5316b43240699c74a0f3e10ef2a3228904c981dddfb45
 const inputAmountMock = inputCurrencyInfoMock.amount
 const outputAmountMock = outputCurrencyInfoMock.amount
 
-if (!inputAmountMock || !outputAmountMock) {
-  throw new Error('Trade confirmation cosmos mock requires defined currency amounts')
-}
+const tradeAmounts: TradeAmounts | undefined =
+  inputAmountMock && outputAmountMock
+    ? {
+        inputAmount: inputAmountMock,
+        outputAmount: outputAmountMock,
+      }
+    : undefined
 
-const tradeAmounts: TradeAmounts = {
-  inputAmount: inputAmountMock,
-  outputAmount: outputAmountMock,
-}
-
-function TradeConfirmationContentPreview(restContent: ReactElement): ReactElement {
+function TradeConfirmationContentPreview(restContent: ReactNode): ReactElement {
   return (
     <>
       <span>Some content</span>
@@ -69,7 +68,9 @@ function Custom({ stateValue }: { stateValue: string }): ReactElement {
     }
 
     if (stateValue === 'pending') {
-      actions.onSign(tradeAmounts)
+      if (tradeAmounts) {
+        actions.onSign(tradeAmounts)
+      }
       return
     }
 
@@ -85,7 +86,7 @@ function Custom({ stateValue }: { stateValue: string }): ReactElement {
 
   return (
     <TradeConfirmModal title="Swap">
-      <TradeConfirmation {...confirmationState} onDismiss={() => undefined}>
+      <TradeConfirmation {...confirmationState}>
         {TradeConfirmationContentPreview}
       </TradeConfirmation>
     </TradeConfirmModal>
