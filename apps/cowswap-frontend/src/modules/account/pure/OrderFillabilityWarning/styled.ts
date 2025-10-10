@@ -25,10 +25,6 @@ export const OrderActionsWrapper = styled.div`
   gap: 6px;
 `
 
-export const Wrapper = styled.div`
-  max-width: 450px;
-`
-
 export const Title = styled.div`
   display: flex;
   align-items: center;

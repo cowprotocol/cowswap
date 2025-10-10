@@ -6,7 +6,7 @@ import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { OrderFillability } from 'common/hooks/usePendingOrdersFillability'
 import { AccordionBanner } from 'common/pure/AccordionBanner'
 
-import { ApproveWrapper, OrderActionsWrapper, Subtitle, Title, UnfillableWarning, Wrapper } from './styled'
+import { ApproveWrapper, OrderActionsWrapper, Subtitle, Title, UnfillableWarning } from './styled'
 
 import { OrderPartialApprove } from '../../containers/OrderPartialApprove'
 
@@ -31,7 +31,7 @@ export function OrderFillabilityWarning({
   const showIsNotEnoughAllowance = !isNotEnoughBalance && fillability?.hasEnoughAllowance === false
 
   return (
-    <Wrapper>
+    <>
       {isNotEnoughBalance && (
         <UnfillableWarning
           padding={'10px'}
@@ -61,6 +61,6 @@ export function OrderFillabilityWarning({
           </OrderActionsWrapper>
         </AccordionBanner>
       )}
-    </Wrapper>
+    </>
   )
 }
