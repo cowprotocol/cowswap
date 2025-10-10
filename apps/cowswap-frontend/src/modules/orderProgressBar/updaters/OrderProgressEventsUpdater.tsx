@@ -1,5 +1,5 @@
-import { useSetAtom } from 'jotai'
-import { useCallback, useEffect, useMemo } from 'react'
+import { useAtomValue, useSetAtom } from 'jotai'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 
 import { OrderClass, SupportedChainId } from '@cowprotocol/cow-sdk'
 import {
@@ -16,10 +16,61 @@ import { WIDGET_EVENT_EMITTER } from 'widgetEventEmitter'
 
 import { useOnlyPendingOrders } from 'legacy/state/orders/hooks'
 
-import { usePendingOrdersFillability } from 'common/hooks/usePendingOrdersFillability'
+import { usePendingOrdersFillability, type OrderFillability } from 'common/hooks/usePendingOrdersFillability'
 
 import { OrderProgressBarStepName } from '../constants'
-import { updateOrderProgressBarCountdown, updateOrderProgressBarStepName } from '../state/atoms'
+import {
+  ordersProgressBarStateAtom,
+  updateOrderProgressBarCountdown,
+  updateOrderProgressBarStepName,
+} from '../state/atoms'
+
+type OrderLike = {
+  id: string
+  isUnfillable?: boolean
+}
+
+export function computeUnfillableOrderIds(
+  marketOrders: OrderLike[],
+  pendingOrdersFillability: Record<string, OrderFillability | undefined>,
+): string[] {
+  // `isUnfillable` is set by the backend when price/competition deems the order unfillable.
+  const priceDerived = marketOrders.filter((order) => order.isUnfillable).map((order) => order.id)
+
+  const fillabilityDerived = Object.entries(pendingOrdersFillability).reduce<string[]>(
+    (acc, [orderId, fillability]) => {
+      if (!fillability) {
+        return acc
+      }
+
+      const lacksBalance = fillability.hasEnoughBalance === false
+      const lacksAllowance = fillability.hasEnoughAllowance === false && !fillability.hasPermit
+
+      if (lacksBalance || lacksAllowance) {
+        acc.push(orderId)
+      }
+
+      return acc
+    },
+    [],
+  )
+
+  // An order can be flagged by both mechanisms; the Set keeps the list unique.
+  return Array.from(new Set([...priceDerived, ...fillabilityDerived]))
+}
+
+export function getNewlyFillableOrderIds(previous: Iterable<string>, current: Iterable<string>): string[] {
+  const currentSet = new Set(current)
+  const newlyFillable: string[] = []
+
+  for (const orderId of previous) {
+    if (!currentSet.has(orderId)) {
+      newlyFillable.push(orderId)
+    }
+  }
+
+  return newlyFillable
+}
 
 function useUnfillableOrderIds(): string[] {
   const { chainId, account } = useWalletInfo()
@@ -30,37 +81,18 @@ function useUnfillableOrderIds(): string[] {
   )
   const pendingOrdersFillability = usePendingOrdersFillability(OrderClass.MARKET)
 
-  return useMemo(() => {
-    // `isUnfillable` captures backend price-driven checks, while fillability covers wallet balance/allowance
-    // issues. A given order can appear in both buckets; the final Set union keeps the list unique.
-    const priceDerived = marketOrders.filter((order) => order.isUnfillable).map((order) => order.id)
-
-    const fillabilityDerived = Object.entries(pendingOrdersFillability).reduce<string[]>(
-      (acc, [orderId, fillability]) => {
-        if (!fillability) {
-          return acc
-        }
-
-        const lacksBalance = fillability.hasEnoughBalance === false
-        const lacksAllowance = fillability.hasEnoughAllowance === false && !fillability.hasPermit
-
-        if (lacksBalance || lacksAllowance) {
-          acc.push(orderId)
-        }
-
-        return acc
-      },
-      [],
-    )
-
-    return Array.from(new Set([...priceDerived, ...fillabilityDerived]))
-  }, [marketOrders, pendingOrdersFillability])
+  return useMemo(
+    () => computeUnfillableOrderIds(marketOrders, pendingOrdersFillability),
+    [marketOrders, pendingOrdersFillability],
+  )
 }
 
 export function OrderProgressEventsUpdater(): null {
+  const ordersProgressState = useAtomValue(ordersProgressBarStateAtom)
   const setCountdown = useSetAtom(updateOrderProgressBarCountdown)
   const setStepName = useSetAtom(updateOrderProgressBarStepName)
-  const unfillableOrderIds = useUnfillableOrderIds()
+  const unfillableIds = useUnfillableOrderIds()
+  const previousUnfillableRef = useRef<Set<string>>(new Set())
 
   const finalizeOrderStep = useCallback(
     (orderUid: string, step: OrderProgressBarStepName) => {
@@ -71,12 +103,25 @@ export function OrderProgressEventsUpdater(): null {
   )
 
   useEffect(() => {
-    if (!unfillableOrderIds.length) {
-      return
-    }
+    const previousUnfillable = previousUnfillableRef.current
+    const currentUnfillable = new Set(unfillableIds)
 
-    unfillableOrderIds.forEach((orderId) => finalizeOrderStep(orderId, OrderProgressBarStepName.UNFILLABLE))
-  }, [unfillableOrderIds, finalizeOrderStep])
+    const newlyFillable = getNewlyFillableOrderIds(previousUnfillable, currentUnfillable)
+
+    newlyFillable.forEach((orderId) => {
+      const currentStep = ordersProgressState[orderId]?.progressBarStepName
+
+      if (currentStep && currentStep !== OrderProgressBarStepName.UNFILLABLE) {
+        return
+      }
+
+      finalizeOrderStep(orderId, OrderProgressBarStepName.SOLVING)
+    })
+    currentUnfillable.forEach((orderId) => finalizeOrderStep(orderId, OrderProgressBarStepName.UNFILLABLE))
+
+    // Persist for the next diff so we only reset orders that actually recovered.
+    previousUnfillableRef.current = currentUnfillable
+  }, [unfillableIds, finalizeOrderStep, ordersProgressState])
 
   useEffect(() => {
     const listeners: CowWidgetEventListener[] = [
