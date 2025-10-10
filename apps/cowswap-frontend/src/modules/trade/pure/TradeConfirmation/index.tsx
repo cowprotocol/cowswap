@@ -21,7 +21,7 @@ import { NoImpactWarning } from '../../containers/NoImpactWarning'
 import type { SigningStepState } from 'entities/trade'
 
 export interface TradeConfirmationProps {
-  onConfirm(): Promise<void | false>
+  onConfirm(): Promise<boolean | void>
 
   onDismiss(): void
 

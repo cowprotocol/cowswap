@@ -13,7 +13,7 @@ interface ConfirmButtonProps {
   buttonText: ReactNode
   isButtonDisabled: boolean
   hasPendingTrade: boolean
-  onConfirm(): Promise<void | boolean>
+  onConfirm(): Promise<boolean | void>
   signingStep: SigningStepState | null
   dataClickEvent?: string
 }
@@ -34,7 +34,7 @@ export function ConfirmButton(props: ConfirmButtonProps): ReactNode {
     try {
       const isConfirmed = await onConfirm()
 
-      if (!isConfirmed) {
+      if (isConfirmed === false) {
         setIsConfirmClicked(false)
       }
     } catch (error) {
