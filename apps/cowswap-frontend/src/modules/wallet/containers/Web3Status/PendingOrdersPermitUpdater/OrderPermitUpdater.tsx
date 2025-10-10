@@ -10,7 +10,7 @@ type OrderPermitCheckerProps = {
   order: Order
 }
 
-export function OrderPermitChecker(props: OrderPermitCheckerProps): null {
+export function OrderPermitUpdater(props: OrderPermitCheckerProps): null {
   const { order } = props
   const { updatePendingOrdersPermitValidityState } = usePendingOrdersPermitValidityState()
 
