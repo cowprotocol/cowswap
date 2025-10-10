@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { ReactNode, useMemo } from 'react'
 
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { ChainInfo } from '@cowprotocol/cow-sdk'
@@ -72,6 +72,11 @@ export function ChainsSelector({
   const contextLabel: 'sell' | 'buy' | 'unknown' =
     field === Field.INPUT ? 'sell' : field === Field.OUTPUT ? 'buy' : 'unknown'
 
+  const buildClickEvent = useMemo(
+    () => makeBuildClickEvent(defaultChainId, contextLabel, mode, counterChainId, isSwapMode),
+    [defaultChainId, contextLabel, mode, counterChainId, isSwapMode],
+  )
+
   if (isLoading) {
     return LoadingShimmerElements
   }
@@ -79,9 +84,8 @@ export function ChainsSelector({
   const shouldDisplayMore = !isMobile && chains.length > visibleNetworkIcons
   const visibleChains = isMobile ? chains : chains.slice(0, visibleNetworkIcons)
   // Find the selected chain that isn't visible in the main row (so we can display it in the dropdown)
-  const selectedMenuChain = !isMobile && chains.find((i) => i.id === defaultChainId && !visibleChains.includes(i))
-
-  const buildClickEvent = makeBuildClickEvent(defaultChainId, contextLabel, mode, counterChainId, isSwapMode)
+  const selectedMenuChain =
+    !isMobile && chains.find((i) => i.id === defaultChainId && !visibleChains.some((v) => v.id === i.id))
 
   return (
     <styledEl.Wrapper>
