@@ -63,11 +63,7 @@ export function OrderProgressEventsUpdater(): null {
   const unfillableOrderIds = useUnfillableOrderIds()
 
   const finalizeOrderStep = useCallback(
-    (orderUid: string | undefined, step: OrderProgressBarStepName) => {
-      if (!orderUid) {
-        return
-      }
-
+    (orderUid: string, step: OrderProgressBarStepName) => {
       setStepName({ orderId: orderUid, value: step })
       setCountdown({ orderId: orderUid, value: null })
     },
