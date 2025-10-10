@@ -38,7 +38,7 @@ export function makeBuildClickEvent(
     toCowSwapGtmEvent({
       category: CowSwapAnalyticsCategory.TRADE,
       action: 'network_selected',
-      label: `Chain: ${chain.id}, PreviousChain: ${defaultChainId || 'none'}, Context: ${contextLabel}, Mode: ${mode}, CrossChain: ${
+      label: `Chain: ${chain.id}, PreviousChain: ${defaultChainId ?? 'none'}, Context: ${contextLabel}, Mode: ${mode}, CrossChain: ${
         isSwapMode && counterChainId !== undefined ? counterChainId !== chain.id : false
       }`,
     })
@@ -67,7 +67,7 @@ export function ChainsSelector({
   counterChainId,
 }: ChainsSelectorProps): ReactNode {
   const isMobile = useMediaQuery(Media.upToSmall(false))
-  const mode = tradeType || 'unknown'
+  const mode = tradeType ?? 'unknown'
   const isSwapMode = tradeType === TradeType.SWAP
   const contextLabel: 'sell' | 'buy' | 'unknown' =
     field === Field.INPUT ? 'sell' : field === Field.OUTPUT ? 'buy' : 'unknown'
