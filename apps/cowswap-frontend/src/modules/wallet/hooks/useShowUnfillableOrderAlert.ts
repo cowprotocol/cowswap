@@ -1,14 +1,15 @@
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { OrderClass } from '@cowprotocol/cow-sdk'
 
-import { usePendingOrdersPermitValidityState } from 'modules/ordersTable/state/pendingOrdersPermitValidityState'
+import { useGetPendingOrdersPermitValidityState } from 'modules/ordersTable'
 
 import { usePendingOrdersFillability } from 'common/hooks/usePendingOrdersFillability'
+
 
 export function useShowUnfillableOrderAlert(): boolean {
   const pendingOrdersFillability = usePendingOrdersFillability(OrderClass.MARKET)
   const { isPartialApproveEnabled } = useFeatureFlags()
-  const { pendingOrdersPermitValidityState } = usePendingOrdersPermitValidityState()
+  const pendingOrdersPermitValidityState = useGetPendingOrdersPermitValidityState()
 
   if (!isPartialApproveEnabled) {
     return false

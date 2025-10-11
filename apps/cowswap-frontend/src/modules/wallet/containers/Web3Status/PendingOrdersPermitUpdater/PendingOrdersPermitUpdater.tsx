@@ -2,16 +2,16 @@ import { ReactNode } from 'react'
 
 import { OrderClass } from '@cowprotocol/cow-sdk'
 
-import { usePendingOrdersPermitValidityState } from 'modules/ordersTable'
+import { useGetPendingOrdersPermitValidityState } from 'modules/ordersTable'
 
 import { usePendingOrdersFillability } from 'common/hooks/usePendingOrdersFillability'
 
-import { OrderPermitChecker } from './OrderPermitChecker'
+import { OrderPermitUpdater } from './OrderPermitUpdater'
 
 
-export function PendingOrdersPermitChecker(): ReactNode {
+export function PendingOrdersPermitUpdater(): ReactNode {
   const pendingOrdersFillability = usePendingOrdersFillability(OrderClass.MARKET)
-  const { pendingOrdersPermitValidityState } = usePendingOrdersPermitValidityState()
+  const pendingOrdersPermitValidityState = useGetPendingOrdersPermitValidityState()
 
   return Object.keys(pendingOrdersFillability).map((orderId) => {
     const fillability = pendingOrdersFillability[orderId]
@@ -25,6 +25,6 @@ export function PendingOrdersPermitChecker(): ReactNode {
     const order = pendingOrdersFillability[orderId]?.order
     if (!order) return null
 
-    return <OrderPermitChecker key={order.id} order={order} />
+    return <OrderPermitUpdater key={order.id} order={order} />
   })
 }
