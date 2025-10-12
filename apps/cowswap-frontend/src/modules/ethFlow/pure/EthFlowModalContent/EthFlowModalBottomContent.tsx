@@ -8,6 +8,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { Trans } from '@lingui/macro'
 
 import { SimpleAccountDetails } from 'modules/account/containers/SimpleAccountDetails'
+import { PartialApproveContainer } from 'modules/erc20Approve'
 
 import { ActivityStatus } from 'common/types/activity'
 
@@ -97,10 +98,12 @@ export function EthFlowModalBottomContent(params: BottomContentParams): ReactNod
       {showWrapPreview && <WrappingPreview {...wrappingPreview} />}
       <SimpleAccountDetails pendingTransactions={pendingTransactions} confirmedTransactions={[]} $margin="12px 0 0" />
       {showPartialApprovalFunctionality && amountToApprove ? (
-        <StyledPartialApprove amountToApprove={amountToApprove}>
-          <TradeFormBlankButton onClick={onClick} loading={isActionInProgress || showLoader}>
-            <Trans>{buttonText}</Trans>
-          </TradeFormBlankButton>
+        <StyledPartialApprove>
+          <PartialApproveContainer amountToApprove={amountToApprove}>
+            <TradeFormBlankButton onClick={onClick} loading={isActionInProgress || showLoader}>
+              <Trans>{buttonText}</Trans>
+            </TradeFormBlankButton>
+          </PartialApproveContainer>
         </StyledPartialApprove>
       ) : (
         <TradeFormBlankButton onClick={onClick} loading={isActionInProgress || showLoader}>
