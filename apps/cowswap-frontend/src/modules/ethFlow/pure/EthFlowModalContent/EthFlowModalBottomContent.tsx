@@ -3,7 +3,6 @@ import { ReactNode, useCallback, useMemo, useState } from 'react'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { getWrappedToken } from '@cowprotocol/common-utils'
 import { Nullish } from '@cowprotocol/types'
-import { ButtonSize } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
@@ -12,7 +11,7 @@ import { SimpleAccountDetails } from 'modules/account/containers/SimpleAccountDe
 
 import { ActivityStatus } from 'common/types/activity'
 
-import { StyledOrderPartialApprove } from './styled'
+import { StyledPartialApprove } from './styled'
 
 import { useSwapPartialApprovalToggleState } from '../../../swap/hooks/useSwapSettings'
 import { TradeFormBlankButton } from '../../../tradeFormValidation'
@@ -89,7 +88,8 @@ export function EthFlowModalBottomContent(params: BottomContentParams): ReactNod
   const { isPartialApproveEnabled } = useFeatureFlags()
   const [isPartialApproveEnabledBySettings] = useSwapPartialApprovalToggleState(isPartialApproveEnabled)
 
-  const showPartialApprovalFunctionality = isPartialApproveEnabled && isApproveNeeded && !wrapInProgress
+  const showPartialApprovalFunctionality =
+    isPartialApproveEnabled && isApproveNeeded && !wrapInProgress && isPartialApproveEnabledBySettings
   const amountToApprove = wrapNativeAmount(wrappingPreview.amount)
 
   return (
@@ -97,12 +97,11 @@ export function EthFlowModalBottomContent(params: BottomContentParams): ReactNod
       {showWrapPreview && <WrappingPreview {...wrappingPreview} />}
       <SimpleAccountDetails pendingTransactions={pendingTransactions} confirmedTransactions={[]} $margin="12px 0 0" />
       {showPartialApprovalFunctionality && amountToApprove ? (
-        <StyledOrderPartialApprove
-          amountToApprove={amountToApprove}
-          isPartialApproveEnabledBySettings={!!isPartialApproveEnabledBySettings}
-          buttonSize={ButtonSize.BIG}
-          onApprove={ethFlowActions.onApprove}
-        />
+        <StyledPartialApprove amountToApprove={amountToApprove}>
+          <TradeFormBlankButton onClick={onClick} loading={isActionInProgress || showLoader}>
+            <Trans>{buttonText}</Trans>
+          </TradeFormBlankButton>
+        </StyledPartialApprove>
       ) : (
         <TradeFormBlankButton onClick={onClick} loading={isActionInProgress || showLoader}>
           <Trans>{buttonText}</Trans>

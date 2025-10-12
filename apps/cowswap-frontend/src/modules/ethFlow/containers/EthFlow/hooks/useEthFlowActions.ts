@@ -29,19 +29,15 @@ export interface EthFlowActions {
   swap(): Promise<void>
 
   directSwap(): void
-
-  onApprove(txHash?: string): void
 }
 
-export function useEthFlowActions(callbacks: EthFlowActionCallbacks): EthFlowActions {
+export function useEthFlowActions(callbacks: EthFlowActionCallbacks, amountToApprove?: bigint): EthFlowActions {
   const { chainId } = useWalletInfo()
 
   const updateEthFlowContext = useSetAtom(updateEthFlowContextAtom)
 
   const onCurrencySelection = useOnCurrencySelection()
   const { onOpen: openSwapConfirmModal } = useTradeConfirmActions()
-
-  const amountToApprove = MAX_APPROVE_AMOUNT
 
   return useMemo(() => {
     function sendTransaction(type: 'approve' | 'wrap', callback: () => Promise<string | undefined>): Promise<void> {
@@ -69,19 +65,11 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks): EthFlowAct
       })
     }
 
-    const approve = (useModals?: boolean): Promise<void> => {
+    const approve = (): Promise<void> => {
+      const unitsToApprove = amountToApprove ? amountToApprove : MAX_APPROVE_AMOUNT
       return sendTransaction('approve', () => {
-        return callbacks.approve(amountToApprove, { useModals: !!useModals }).then((res) => res?.transactionHash)
+        return callbacks.approve(unitsToApprove).then((res) => res?.transactionHash)
       })
-    }
-
-    const onApprove = (txHash?: string): void => {
-      if (txHash) {
-        updateEthFlowContext({ approve: { txHash } })
-      } else {
-        // todo handle error case
-        // callbacks.dismiss()
-      }
     }
 
     const wrap = (useModals?: boolean): Promise<void> => {
@@ -103,7 +91,6 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks): EthFlowAct
       approve,
       wrap,
       directSwap,
-      onApprove,
     }
   }, [callbacks, chainId, updateEthFlowContext, onCurrencySelection, openSwapConfirmModal, amountToApprove])
 }

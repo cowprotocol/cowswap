@@ -1,8 +1,8 @@
 import styled from 'styled-components/macro'
 
-import { OrderPartialApprove } from 'modules/account/containers/OrderPartialApprove'
+import { PartialApproveContainer } from 'modules/erc20Approve'
 
-export const StyledOrderPartialApprove = styled(OrderPartialApprove)`
+export const StyledPartialApprove = styled(PartialApproveContainer)`
   flex: 1;
   width: 100%;
 `
