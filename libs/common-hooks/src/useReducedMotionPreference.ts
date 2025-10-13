@@ -32,14 +32,19 @@ export function useReducedMotionPreference(): boolean {
     if (typeof mediaQuery.addEventListener === 'function') {
       mediaQuery.addEventListener('change', handleChange)
 
-      return () => mediaQuery.removeEventListener('change', handleChange)
+      return () => {
+        mediaQuery.removeEventListener('change', handleChange)
+      }
     }
 
-    const legacyHandler = (): void => handleChange()
-    window.addEventListener('resize', legacyHandler)
+    if (typeof mediaQuery.addListener === 'function') {
+      const legacyHandler = (event: MediaQueryListEvent): void => handleChange(event)
+      // Safari <= 13 shipped matchMedia without EventTarget support, so we keep the deprecated API
+      mediaQuery.addListener(legacyHandler)
 
-    return () => {
-      window.removeEventListener('resize', legacyHandler)
+      return () => {
+        mediaQuery.removeListener(legacyHandler)
+      }
     }
   }, [destroyedRef])
 
