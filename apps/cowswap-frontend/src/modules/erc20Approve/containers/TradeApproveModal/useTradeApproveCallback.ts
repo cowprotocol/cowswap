@@ -33,6 +33,10 @@ export interface TradeApproveCallback {
   ): Promise<TransactionReceipt | undefined>
 }
 
+function getErrorCode(error: unknown): number | null {
+  return error && typeof error === 'object' && 'code' in error && typeof error.code === 'number' ? error.code : null
+}
+
 export function useTradeApproveCallback(currency: Currency | undefined): TradeApproveCallback {
   const updateTradeApproveState = useUpdateTradeApproveState()
   const spender = useTradeSpenderAddress()
@@ -61,8 +65,7 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
       if (isRejectRequestProviderError(error)) {
         updateTradeApproveState({ error: 'User rejected approval transaction' })
       } else {
-        const errorCode =
-          error && typeof error === 'object' && 'code' in error && typeof error.code === 'number' ? error.code : null
+        const errorCode = getErrorCode(error)
         approvalAnalytics('Error', symbol, errorCode)
         updateTradeApproveState({ error: errorToString(error) })
       }
@@ -94,7 +97,11 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
 
         approvalAnalytics('Sign', symbol)
         // if ff is disabled - use old flow, hide modal when tx is sent
-        !isPartialApproveEnabled && updateTradeApproveState({ currency: undefined, approveInProgress: false })
+        if (isPartialApproveEnabled) {
+          updateTradeApproveState({ isPendingInProgress: true })
+        } else {
+          updateTradeApproveState({ currency: undefined, approveInProgress: false })
+        }
 
         if (waitForTxConfirmation) {
           // need to wait response to run finally clause after that
@@ -107,7 +114,7 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
         handleApprovalError(error)
         return undefined
       } finally {
-        updateTradeApproveState({ currency: undefined, approveInProgress: false })
+        updateTradeApproveState({ currency: undefined, approveInProgress: false, isPendingInProgress: false })
       }
     },
     [

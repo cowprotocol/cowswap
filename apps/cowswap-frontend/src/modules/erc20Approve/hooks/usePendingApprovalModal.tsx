@@ -9,13 +9,14 @@ interface PendingApprovalModalParams {
   currencySymbol?: string
   onDismiss?: Command
   modalMode?: boolean
+  isPendingInProgress?: boolean
 }
 
 export function usePendingApprovalModal(params?: PendingApprovalModalParams): {
   Modal: ReactNode
   state: ModalState<string>
 } {
-  const { currencySymbol, modalMode, onDismiss } = params || {}
+  const { currencySymbol, modalMode, onDismiss, isPendingInProgress } = params || {}
 
   const state = useModalState<string>()
   const { closeModal, context } = state
@@ -39,9 +40,10 @@ export function usePendingApprovalModal(params?: PendingApprovalModalParams): {
         title={Title}
         description="Approving token"
         operationLabel="token approval"
+        isPendingInProgress={isPendingInProgress}
       />
     )
 
     return { Modal, state }
-  }, [currencySymbol, context, modalMode, onDismissCallback, state])
+  }, [currencySymbol, context, modalMode, onDismissCallback, isPendingInProgress, state])
 }

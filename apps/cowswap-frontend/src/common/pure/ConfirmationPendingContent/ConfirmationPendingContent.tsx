@@ -7,8 +7,7 @@ import { Trans } from '@lingui/macro'
 import { CheckCircle, UserCheck } from 'react-feather'
 
 import { ConfirmationPendingContentShell } from './ConfirmationPendingContentShell'
-import { StepsWrapper } from './styled'
-import { StepsIconWrapper } from './styled'
+import { StepsIconWrapper, StepsWrapper } from './styled'
 
 interface ConfirmationPendingContentProps {
   onDismiss: Command
@@ -16,20 +15,32 @@ interface ConfirmationPendingContentProps {
   description: ReactNode
   operationLabel: string
   modalMode?: boolean
+  isPendingInProgress?: boolean
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function ConfirmationPendingContent({
   title,
   description,
   operationLabel,
   onDismiss,
   modalMode,
-}: ConfirmationPendingContentProps) {
+  isPendingInProgress,
+}: ConfirmationPendingContentProps): ReactNode {
   const walletAddress = useWalletDisplayedAddress()
 
-  const operationSubmittedMessage = `The ${operationLabel} is submitted.`
+  const firstStepLabel = isPendingInProgress ? (
+    <Trans>The {operationLabel} is signed.</Trans>
+  ) : (
+    <Trans>
+      Sign the {operationLabel} with your wallet. {walletAddress && <span>{walletAddress}</span>}{' '}
+    </Trans>
+  )
+
+  const secondStepLabel = isPendingInProgress ? (
+    <Trans>Waiting for confirmation</Trans>
+  ) : (
+    <Trans>The {operationLabel} is submitted.</Trans>
+  )
 
   return (
     <ConfirmationPendingContentShell
@@ -52,9 +63,7 @@ export function ConfirmationPendingContent({
             <UserCheck />
           </StepsIconWrapper>
           <p>
-            <Trans>
-              Sign the {operationLabel} with your wallet. {walletAddress && <span>{walletAddress}</span>}
-            </Trans>
+            <Trans>{firstStepLabel}</Trans>
           </p>
         </div>
         <hr />
@@ -62,7 +71,7 @@ export function ConfirmationPendingContent({
           <StepsIconWrapper>
             <CheckCircle />
           </StepsIconWrapper>
-          <p>{operationSubmittedMessage}</p>
+          <p>{secondStepLabel}</p>
         </div>
       </StepsWrapper>
     </ConfirmationPendingContentShell>
