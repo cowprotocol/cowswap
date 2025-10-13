@@ -69,7 +69,7 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks, amountToApp
     const approve = (): Promise<void> => {
       const unitsToApprove = isPartialApproveEnabled ? amountToApprove || MAX_APPROVE_AMOUNT : MAX_APPROVE_AMOUNT
       return sendTransaction('approve', () => {
-        return callbacks.approve(unitsToApprove).then((res) => res?.transactionHash)
+        return callbacks.approve(unitsToApprove).then((res) => res?.hash)
       })
     }
 
