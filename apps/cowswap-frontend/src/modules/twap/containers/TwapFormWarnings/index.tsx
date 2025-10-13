@@ -1,7 +1,6 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { ReactNode, useCallback } from 'react'
 
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useIsSafeViaWc, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useTradeRouteContext } from 'modules/trade/hooks/useTradeRouteContext'
@@ -28,8 +27,6 @@ import { TwapFormState } from '../../pure/PrimaryActionButton/getTwapFormState'
 import { twapDeadlineAtom } from '../../state/twapOrderAtom'
 import { twapOrdersSettingsAtom, updateTwapOrdersSettingsAtom } from '../../state/twapOrdersSettingsAtom'
 import { isPriceProtectionNotEnough } from '../../utils/isPriceProtectionNotEnough'
-
-const NETWORKS_TO_SHOW_PRICE_DIFF_BANNER = [SupportedChainId.MAINNET, SupportedChainId.SEPOLIA]
 
 interface TwapFormWarningsProps {
   localFormValidation: TwapFormState | null
@@ -64,14 +61,13 @@ export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: T
   // Don't display any warnings while a wallet is not connected
   if (walletIsNotConnected) return null
 
-  const swapPriceDifferenceWarning =
-    swapAmountDifference && NETWORKS_TO_SHOW_PRICE_DIFF_BANNER.includes(chainId) ? (
-      <SwapPriceDifferenceWarning
-        tradeUrlParams={tradeUrlParams}
-        feeFiatAmount={tradeQuoteFeeFiatAmount}
-        swapAmountDifference={swapAmountDifference}
-      />
-    ) : null
+  const swapPriceDifferenceWarning = swapAmountDifference ? (
+    <SwapPriceDifferenceWarning
+      tradeUrlParams={tradeUrlParams}
+      feeFiatAmount={tradeQuoteFeeFiatAmount}
+      swapAmountDifference={swapAmountDifference}
+    />
+  ) : null
 
   return (
     <>
