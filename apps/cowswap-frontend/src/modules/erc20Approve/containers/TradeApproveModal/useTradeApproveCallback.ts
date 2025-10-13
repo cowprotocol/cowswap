@@ -1,13 +1,12 @@
 import { useCallback } from 'react'
 
-import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { errorToString, isRejectRequestProviderError } from '@cowprotocol/common-utils'
 import { TransactionReceipt, TransactionResponse } from '@ethersproject/abstract-provider'
-import { Currency } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { CowSwapAnalyticsCategory } from 'common/analytics/types'
+import { useApproveCowAnalytics } from './useApproveCowAnalytics'
 
 import { useApproveCallback } from '../../hooks'
 import { useUpdateTradeApproveState } from '../../state'
@@ -41,22 +40,10 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
   const updateTradeApproveState = useUpdateTradeApproveState()
   const spender = useTradeSpenderAddress()
   const symbol = currency?.symbol
-  const cowAnalytics = useCowAnalytics()
   const { isPartialApproveEnabled } = useFeatureFlags()
 
   const approveCallback = useApproveCallback(currency, spender)
-
-  const approvalAnalytics = useCallback(
-    (action: string, symbol?: string, errorCode?: number | null) => {
-      cowAnalytics.sendEvent({
-        category: CowSwapAnalyticsCategory.TRADE,
-        action,
-        label: symbol,
-        ...(errorCode && { value: errorCode }),
-      })
-    },
-    [cowAnalytics],
-  )
+  const approvalAnalytics = useApproveCowAnalytics()
 
   const handleApprovalError = useCallback(
     (error: unknown) => {
@@ -82,7 +69,8 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
       },
     ) => {
       if (useModals) {
-        updateTradeApproveState({ currency, approveInProgress: true })
+        const amountToApprove = currency ? CurrencyAmount.fromRawAmount(currency, amount.toString()) : undefined
+        updateTradeApproveState({ currency, approveInProgress: true, amountToApprove })
       }
 
       approvalAnalytics('Send', symbol)
@@ -91,7 +79,7 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
         const response = await approveCallback(amount)
 
         if (!response) {
-          updateTradeApproveState({ currency: undefined, approveInProgress: false })
+          updateTradeApproveState({ currency: undefined, approveInProgress: false, amountToApprove: undefined })
           return undefined
         }
 
@@ -100,7 +88,7 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
         if (isPartialApproveEnabled) {
           updateTradeApproveState({ isPendingInProgress: true })
         } else {
-          updateTradeApproveState({ currency: undefined, approveInProgress: false })
+          updateTradeApproveState({ currency: undefined, approveInProgress: false, amountToApprove: undefined })
         }
 
         if (waitForTxConfirmation) {
@@ -114,7 +102,12 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
         handleApprovalError(error)
         return undefined
       } finally {
-        updateTradeApproveState({ currency: undefined, approveInProgress: false, isPendingInProgress: false })
+        updateTradeApproveState({
+          currency: undefined,
+          approveInProgress: false,
+          isPendingInProgress: false,
+          amountToApprove: undefined,
+        })
       }
     },
     [
