@@ -8,8 +8,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { WrapUnwrapCallback } from 'legacy/hooks/useWrapCallback'
 import { Field } from 'legacy/state/types'
 
-import { TradeApproveCallback } from 'modules/erc20Approve'
-import { MAX_APPROVE_AMOUNT } from 'modules/erc20Approve/constants'
+import { MAX_APPROVE_AMOUNT, TradeApproveCallback } from 'modules/erc20Approve'
 import { useOnCurrencySelection, useTradeConfirmActions } from 'modules/trade'
 
 import { updateEthFlowContextAtom } from '../../../state/ethFlowContextAtom'
