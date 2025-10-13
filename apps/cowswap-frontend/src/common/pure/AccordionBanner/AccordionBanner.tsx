@@ -11,15 +11,16 @@ type AccordionBannerProps = {
   title: ReactNode
   bannerType?: StatusColorVariant
   accordionPadding?: string
+  className?: string
 }
 
 export function AccordionBanner(props: AccordionBannerProps): ReactNode {
-  const { children, title, bannerType = StatusColorVariant.Info, accordionPadding = '0' } = props
+  const { children, title, bannerType = StatusColorVariant.Info, accordionPadding = '0', className } = props
   const colorEnums = getStatusColorEnums(bannerType)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
 
   return (
-    <styledEl.AccordionWrapper accordionPadding={accordionPadding} colorEnums={colorEnums}>
+    <styledEl.AccordionWrapper className={className} accordionPadding={accordionPadding} colorEnums={colorEnums}>
       <styledEl.AccordionHeader
         colorEnums={colorEnums}
         isOpened={isDropdownOpen}
