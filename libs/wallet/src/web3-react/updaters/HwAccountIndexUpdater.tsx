@@ -1,5 +1,5 @@
 import { useAtom } from 'jotai'
-import { useEffect, useMemo, useRef } from 'react'
+import { ReactNode, useEffect, useMemo, useRef } from 'react'
 
 import { useWeb3React } from '@web3-react/core'
 
@@ -10,15 +10,15 @@ import { getWeb3ReactConnection } from '../utils/getWeb3ReactConnection'
 
 const indexChanged = true
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function HwAccountIndexUpdater() {
+export function HwAccountIndexUpdater(): ReactNode {
   const [hwAccountIndex, setHwAccountIndex] = useAtom(hwAccountIndexAtom)
   const { chainId, account } = useWalletInfo()
   const { connector, isActive } = useWeb3React()
   const connectorRef = useRef(connector)
 
-  connectorRef.current = connector
+  useEffect(() => {
+    connectorRef.current = connector
+  }, [connector])
 
   const connectionType = useMemo(() => {
     const connection = getWeb3ReactConnection(connector)

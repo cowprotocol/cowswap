@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`extensibleFallbackSetupTxs - service to generate transactions for ExtensibleFallback setup Should create a bundle of two transactions: setFallbackHandler and setDomainVerifier 1`] = `
 [

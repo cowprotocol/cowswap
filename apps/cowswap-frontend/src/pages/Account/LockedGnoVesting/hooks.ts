@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { MerkleDrop, MerkleDropAbi, TokenDistro, TokenDistroAbi } from '@cowprotocol/abis'
 import {
-  COW_TOKEN_TO_CHAIN,
+  COW_TOKEN_MAINNET,
   LOCKED_GNO_VESTING_DURATION,
   LOCKED_GNO_VESTING_START_TIME,
   MERKLE_DROP_CONTRACT_ADDRESSES,
@@ -18,19 +18,20 @@ import useSWR from 'swr'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
-import { useContract } from 'common/hooks/useContract'
+import { useContract, UseContractResult } from 'common/hooks/useContract'
 
 import { fetchClaim } from './claimData'
 
 // We just generally use the mainnet version. We don't read from the contract anyways so the address doesn't matter
-const _COW = COW_TOKEN_TO_CHAIN[SupportedChainId.MAINNET]
+const _COW = COW_TOKEN_MAINNET!
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const useMerkleDropContract = () => useContract<MerkleDrop>(MERKLE_DROP_CONTRACT_ADDRESSES, MerkleDropAbi, true)
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const useTokenDistroContract = () => useContract<TokenDistro>(TOKEN_DISTRO_CONTRACT_ADDRESSES, TokenDistroAbi, true)
+const initialAllocation = CurrencyAmount.fromRawAmount(_COW, 0)
+
+const useMerkleDropContract = (): UseContractResult<MerkleDrop> =>
+  useContract<MerkleDrop>(MERKLE_DROP_CONTRACT_ADDRESSES, MerkleDropAbi, true)
+
+const useTokenDistroContract = (): UseContractResult<TokenDistro> =>
+  useContract<TokenDistro>(TOKEN_DISTRO_CONTRACT_ADDRESSES, TokenDistroAbi, true)
 
 export const useAllocation = (): CurrencyAmount<Token> => {
   if (!_COW) {
@@ -38,8 +39,8 @@ export const useAllocation = (): CurrencyAmount<Token> => {
   }
 
   const { chainId, account } = useWalletInfo()
-  const initialAllocation = useRef(CurrencyAmount.fromRawAmount(_COW, 0))
-  const [allocation, setAllocation] = useState(initialAllocation.current)
+
+  const [allocation, setAllocation] = useState(initialAllocation)
 
   useEffect(() => {
     let canceled = false
@@ -50,12 +51,12 @@ export const useAllocation = (): CurrencyAmount<Token> => {
         }
       })
     } else {
-      setAllocation(initialAllocation.current)
+      setAllocation(initialAllocation)
     }
     return () => {
       canceled = true
     }
-  }, [chainId, account, initialAllocation])
+  }, [chainId, account])
 
   return allocation
 }
@@ -69,6 +70,7 @@ export const useCowFromLockedGnoBalances = () => {
   const { account } = useWalletInfo()
   const allocated = useAllocation()
   const vested = allocated
+    // eslint-disable-next-line react-hooks/purity
     .multiply(Math.min(Date.now() - LOCKED_GNO_VESTING_START_TIME, LOCKED_GNO_VESTING_DURATION))
     .divide(LOCKED_GNO_VESTING_DURATION)
 

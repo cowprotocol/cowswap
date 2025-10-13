@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState } from 'react'
+import { ReactNode, useEffect, useLayoutEffect, useRef, useState } from 'react'
 
 import { CoWHookDappEvents, hookDappIframeTransport } from '@cowprotocol/hook-dapp-lib'
 import { EthereumProvider, IframeRpcProviderBridge } from '@cowprotocol/iframe-transport'
@@ -53,10 +53,7 @@ interface IframeDappContainerProps {
   dapp: HookDappIframe
   context: HookDappContextType
 }
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
-export function IframeDappContainer({ dapp, context }: IframeDappContainerProps) {
+export function IframeDappContainer({ dapp, context }: IframeDappContainerProps): ReactNode {
   const iframeRef = useRef<HTMLIFrameElement | null>(null)
   const bridgeRef = useRef<IframeRpcProviderBridge | null>(null)
   const addHookRef = useRef(context.addHook)
@@ -69,16 +66,12 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
 
   const walletProvider = useWalletProvider()
 
-  addHookRef.current = context.addHook
-  editHookRef.current = context.editHook
-  setSellTokenRef.current = context.setSellToken
-  setBuyTokenRef.current = context.setBuyToken
-
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const handleIframeLoad = () => {
-    setIsLoading(false)
-  }
+  useEffect(() => {
+    addHookRef.current = context.addHook
+    editHookRef.current = context.editHook
+    setSellTokenRef.current = context.setSellToken
+    setBuyTokenRef.current = context.setBuyToken
+  }, [context])
 
   useLayoutEffect(() => {
     const iframeWindow = iframeRef.current?.contentWindow
@@ -143,7 +136,7 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
         ref={iframeRef}
         src={dapp.url}
         allow="clipboard-read; clipboard-write"
-        onLoad={handleIframeLoad}
+        onLoad={() => setIsLoading(false)}
         $isLoading={isLoading}
       />
     </>
