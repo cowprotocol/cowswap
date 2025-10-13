@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
 
+import { ButtonSize } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import {
@@ -47,6 +48,7 @@ export function OrderPartialApprove({
         enablePartialApprove
         useModals={false}
         amountToApprove={amountToApproveFinal}
+        buttonSize={ButtonSize.SMALL}
         label={'Approve ' + amountToApprove.currency.symbol}
       />
     </OrderActionsWrapper>
