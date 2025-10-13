@@ -1,4 +1,4 @@
-import { createElement, type CSSProperties, type ReactElement, ReactNode, useMemo, useState } from 'react'
+import { type CSSProperties, type ReactNode, useMemo, useState } from 'react'
 
 import { initPixelAnalytics, useAnalyticsReporter, useCowAnalytics, WebVitalsAnalytics } from '@cowprotocol/analytics'
 import { useFeatureFlags, useMediaQuery } from '@cowprotocol/common-hooks'
@@ -175,11 +175,10 @@ const SNOWFALL_STYLE: CSSProperties = {
 }
 
 function CowSpeechBubbleBanner(): ReactNode {
-  return ClosableBanner(BANNER_IDS.HIRING_SPEECH_BUBBLE, CowSpeechBubbleRenderer)
+  return ClosableBanner(BANNER_IDS.HIRING_SPEECH_BUBBLE, (close) => (
+    <CowSpeechBubble show onClose={close} />
+  ))
 }
-
-const CowSpeechBubbleRenderer = (close: () => void): ReactElement =>
-  createElement(CowSpeechBubble, { show: true, onClose: close })
 
 interface FooterSectionProps {
   show: boolean
