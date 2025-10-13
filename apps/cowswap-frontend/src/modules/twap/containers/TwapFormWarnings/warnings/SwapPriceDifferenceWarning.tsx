@@ -42,33 +42,29 @@ export function SwapPriceDifferenceWarning({
   const routePath = parameterizeTradeRoute(tradeUrlParams, Routes.SWAP, true)
   const swapOrderLink = <StyledNavLink to={routePath}>SWAP order</StyledNavLink>
 
-  return (
+  return isTwapBetter ? (
+    +percent.toSignificant(2) > SWAP_PRICE_DIFFERENCE_LIMIT ? (
+      <InlineBanner bannerType={StatusColorVariant.Savings}>
+        <strong>Maximizing Your Gains! </strong>
+        <p>
+          You could gain an extra{' '}
+          <b>
+            <TokenAmount amount={amount} tokenSymbol={amount.currency} />
+          </b>{' '}
+          compared to using a {swapOrderLink}
+        </p>
+      </InlineBanner>
+    ) : null
+  ) : feeFiatAmount && +feeFiatAmount.toSignificant(2) > FEE_AMOUNT_THRESHOLD ? (
     <InlineBanner bannerType={StatusColorVariant.Savings}>
-      {isTwapBetter ? (
-        +percent.toSignificant(2) > SWAP_PRICE_DIFFERENCE_LIMIT ? (
-          <>
-            <strong>Maximizing Your Gains! </strong>
-            <p>
-              You could gain an extra{' '}
-              <b>
-                <TokenAmount amount={amount} tokenSymbol={amount.currency} />
-              </b>{' '}
-              compared to using a {swapOrderLink}
-            </p>
-          </>
-        ) : null
-      ) : feeFiatAmount && +feeFiatAmount.toSignificant(2) > FEE_AMOUNT_THRESHOLD ? (
-        <>
-          <strong>Trade Smart, Save More!</strong>
-          <p>
-            Considering current network costs (
-            <b>
-              <FiatAmount amount={feeFiatAmount} />
-            </b>{' '}
-            per chunk), you could save more by reducing the number of parts or switch to a {swapOrderLink}.
-          </p>
-        </>
-      ) : null}
+      <strong>Trade Smart, Save More!</strong>
+      <p>
+        Considering current network costs (
+        <b>
+          <FiatAmount amount={feeFiatAmount} />
+        </b>{' '}
+        per chunk), you could save more by reducing the number of parts or switch to a {swapOrderLink}.
+      </p>
     </InlineBanner>
-  )
+  ) : null
 }
