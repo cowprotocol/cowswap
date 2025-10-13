@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai'
-import { ReactNode, useMemo } from 'react'
+import { ReactNode, useEffect, useMemo } from 'react'
 
 import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
@@ -14,8 +14,9 @@ import { WrapUnwrapCallback } from 'legacy/hooks/useWrapCallback'
 import {
   useApproveState,
   useIsPartialApproveSelectedByUser,
-  usePendingApproveAmountModalState,
+  usePartialApproveAmountModalState,
   useTradeApproveCallback,
+  useUpdatePartialApproveAmountModalState,
 } from 'modules/erc20Approve'
 import { useWrappedToken } from 'modules/trade'
 
@@ -59,7 +60,8 @@ export function EthFlowModal({
   const ethFlowContext = useAtomValue(ethFlowContextAtom)
 
   const { isPartialApproveEnabled } = useFeatureFlags()
-  const { amountSetByUser } = usePendingApproveAmountModalState() || {}
+  const { amountSetByUser } = usePartialApproveAmountModalState() || {}
+  const updatePartialApproveAmountModalState = useUpdatePartialApproveAmountModalState()
   const isPartialApproveSelectedByUser = useIsPartialApproveSelectedByUser()
   const currencyToApprove =
     isPartialApproveEnabled && isPartialApproveSelectedByUser ? (amountSetByUser ?? wrappedAmount) : undefined
@@ -75,6 +77,13 @@ export function EthFlowModal({
     },
     currencyToApprove ? BigInt(currencyToApprove?.quotient.toString()) : undefined,
   )
+
+  useEffect(() => {
+    return () => {
+      // Reset amount user amount after eth flow is closed
+      updatePartialApproveAmountModalState({ amountSetByUser: undefined })
+    }
+  }, [updatePartialApproveAmountModalState])
 
   const approveActivity = useSingleActivityDescriptor({ chainId, id: ethFlowContext.approve.txHash || undefined })
   const wrapActivity = useSingleActivityDescriptor({ chainId, id: ethFlowContext.wrap.txHash || undefined })

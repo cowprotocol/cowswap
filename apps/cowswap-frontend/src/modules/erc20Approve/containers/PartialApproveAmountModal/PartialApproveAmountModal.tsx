@@ -2,17 +2,15 @@ import { ReactNode } from 'react'
 
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { useUpdatePendingApproveAmountModalState } from '../../state'
+import { useUpdatePartialApproveAmountModalState } from '../../state'
 import { ChangeApproveAmountModal } from '../ChangeApproveAmountModal'
 
 type TradeChangeApproveAmountModalProps = {
   initialAmountToApprove: CurrencyAmount<Currency> | null
 }
 
-export function PendingOrderApproveAmountModal({
-  initialAmountToApprove,
-}: TradeChangeApproveAmountModalProps): ReactNode {
-  const updatePendingApproveAmountModalState = useUpdatePendingApproveAmountModalState()
+export function PartialApproveAmountModal({ initialAmountToApprove }: TradeChangeApproveAmountModalProps): ReactNode {
+  const updatePendingApproveAmountModalState = useUpdatePartialApproveAmountModalState()
 
   return (
     <ChangeApproveAmountModal

@@ -4,8 +4,8 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { PartialApproveWrapper } from './styled'
 
-import { usePendingApproveAmountModalState, useUpdatePendingApproveAmountModalState } from '../../state'
-import { PendingOrderApproveAmountModal } from '../PendingOrderApproveAmountModal'
+import { usePartialApproveAmountModalState, useUpdatePartialApproveAmountModalState } from '../../state'
+import { PartialApproveAmountModal } from '../PartialApproveAmountModal'
 import { TradeApproveToggle } from '../TradeApproveToggle'
 
 type PartialApproveContainerProps = {
@@ -19,13 +19,13 @@ export function PartialApproveContainer({
   className,
   children,
 }: PartialApproveContainerProps): ReactNode {
-  const { isModalOpen, amountSetByUser } = usePendingApproveAmountModalState() || {}
-  const updatePendingApproveAmountModalState = useUpdatePendingApproveAmountModalState()
+  const { isModalOpen, amountSetByUser } = usePartialApproveAmountModalState() || {}
+  const updatePendingApproveAmountModalState = useUpdatePartialApproveAmountModalState()
 
   const amountToApproveFinal = amountSetByUser ?? amountToApprove
 
   if (isModalOpen) {
-    return <PendingOrderApproveAmountModal initialAmountToApprove={amountToApproveFinal} />
+    return <PartialApproveAmountModal initialAmountToApprove={amountToApproveFinal} />
   }
 
   return (
