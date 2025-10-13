@@ -7,7 +7,15 @@ import { useComponentDestroyedRef } from './useComponentDestroyedRef'
  * Persists compatibility with older browsers by falling back to add/removeListener.
  */
 export function useReducedMotionPreference(): boolean {
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
+  const getInitialPreference = (): boolean => {
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
+      return false
+    }
+
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  }
+
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState<boolean>(() => getInitialPreference())
   const destroyedRef = useComponentDestroyedRef()
 
   useEffect(() => {
