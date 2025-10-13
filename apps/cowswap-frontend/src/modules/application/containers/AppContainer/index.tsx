@@ -153,10 +153,12 @@ function SnowfallOverlay({ show, isMobile, darkMode }: SnowfallOverlayProps): Re
     return null
   }
 
+  const snowflakeCount = isMobile ? 25 : darkMode ? 75 : 200
+
   return (
     <Snowfall
       style={SNOWFALL_STYLE}
-      snowflakeCount={isMobile ? 25 : darkMode ? 75 : 200}
+      snowflakeCount={snowflakeCount}
       radius={[0.5, 2.0]}
       speed={[0.5, 2.0]}
       wind={[-0.5, 1.0]}
