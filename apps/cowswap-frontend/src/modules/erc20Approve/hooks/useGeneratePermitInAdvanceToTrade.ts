@@ -5,9 +5,9 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useGeneratePermitHook, usePermitInfo } from 'modules/permit'
+import { TradeType } from 'modules/trade'
 
-import { TradeType } from '../../trade'
-import { useUpdateTradeApproveState } from '../index'
+import { useUpdateTradeApproveState } from '../'
 
 export function useGeneratePermitInAdvanceToTrade(amountToApprove: CurrencyAmount<Currency>): () => Promise<boolean> {
   const generatePermit = useGeneratePermitHook()
