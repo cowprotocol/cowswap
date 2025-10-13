@@ -12,7 +12,7 @@ export function useReducedMotionPreference(): boolean {
 
   useEffect(() => {
     if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
-      return
+      return undefined
     }
 
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
@@ -46,6 +46,7 @@ export function useReducedMotionPreference(): boolean {
         mediaQuery.removeListener(legacyHandler)
       }
     }
+    return undefined
   }, [destroyedRef])
 
   return prefersReducedMotion
