@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 
 import { useReducedMotionPreference } from '@cowprotocol/common-hooks'
 
@@ -61,15 +61,6 @@ export function CowSpeechBubble({ show, onClose }: CowSpeechBubbleProps): ReactN
 
 function useBubbleDelay(show: boolean): boolean {
   const [hasDelayElapsed, setHasDelayElapsed] = useState(false)
-  const isMountedRef = useRef(true)
-
-  useEffect(() => {
-    isMountedRef.current = true
-
-    return () => {
-      isMountedRef.current = false
-    }
-  }, [])
 
   useEffect(() => {
     if (!show) {
@@ -78,9 +69,7 @@ function useBubbleDelay(show: boolean): boolean {
     }
 
     const delayId = setTimeout(() => {
-      if (isMountedRef.current) {
-        setHasDelayElapsed(true)
-      }
+      setHasDelayElapsed(true)
     }, BUBBLE_DELAY_MS)
 
     return () => clearTimeout(delayId)
@@ -98,15 +87,6 @@ interface UseTypingProgressParams {
 
 function useTypingProgress({ show, hasDelayElapsed, prefersReducedMotion, message }: UseTypingProgressParams): number {
   const [charIndex, setCharIndex] = useState(0)
-  const isMountedRef = useRef(true)
-
-  useEffect(() => {
-    isMountedRef.current = true
-
-    return () => {
-      isMountedRef.current = false
-    }
-  }, [])
 
   useEffect(() => {
     if (!hasDelayElapsed || !show) {
@@ -119,7 +99,7 @@ function useTypingProgress({ show, hasDelayElapsed, prefersReducedMotion, messag
       return
     }
 
-    return startTypingAnimation({ isMountedRef, setCharIndex, messageLength: message.length })
+    return startTypingAnimation({ setCharIndex, messageLength: message.length })
   }, [hasDelayElapsed, show, prefersReducedMotion, message])
 
   return charIndex
