@@ -154,7 +154,9 @@ export function OrdersFromApiUpdater(): null {
   // but still use the latest whenever the callback is invoked
   const allTokensRef = useRef(allTokens)
   // Updated on every change
-  allTokensRef.current = allTokens
+  useEffect(() => {
+    allTokensRef.current = allTokens
+  }, [allTokens])
 
   const updateOrders = useCallback(
     async (chainId: ChainId): Promise<void> => {

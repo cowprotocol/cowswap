@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { isTruthy } from '@cowprotocol/common-utils'
@@ -20,14 +20,16 @@ export function useTokensForOrdersList(): (tokensToFetch: string[]) => Promise<T
       if (!provider) return null
       return fetchTokenFromBlockchain(address, chainId, provider).then(TokenWithLogo.fromToken)
     },
-    [chainId, provider]
+    [chainId, provider],
   )
 
   // Using a ref to store allTokens to avoid re-fetching when new tokens are added
   // but still use the latest whenever the callback is invoked
   const allTokensRef = useRef(allTokens)
   // Updated on every change
-  allTokensRef.current = allTokens
+  useEffect(() => {
+    allTokensRef.current = allTokens
+  }, [allTokens])
 
   return useCallback(
     async (_tokensToFetch: string[]) => {
@@ -50,13 +52,13 @@ export function useTokensForOrdersList(): (tokensToFetch: string[]) => Promise<T
       // Merge fetched tokens with what's currently loaded
       return { ...tokens, ...fetchedTokens }
     },
-    [chainId, getToken, addUserTokens]
+    [chainId, getToken, addUserTokens],
   )
 }
 
 async function _fetchTokens(
   tokensToFetch: string[],
-  getToken: (address: string) => Promise<Token | null>
+  getToken: (address: string) => Promise<Token | null>,
 ): Promise<TokensByAddress> {
   if (tokensToFetch.length === 0) {
     return {}

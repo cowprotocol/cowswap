@@ -1,5 +1,5 @@
 import { useAtom, useSetAtom } from 'jotai'
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 
 import { useIsWindowVisible } from '@cowprotocol/common-hooks'
 import { isSellOrder } from '@cowprotocol/common-utils'
@@ -50,7 +50,10 @@ export function UnfillableOrderUpdater({ chainId, order }: UnfillableOrderUpdate
 
   const lastTimePriceUpdate = orderLastTimePriceUpdate[order.id]
   const lastTimePriceUpdateRef = useRef(lastTimePriceUpdate)
-  lastTimePriceUpdateRef.current = lastTimePriceUpdate
+
+  useEffect(() => {
+    lastTimePriceUpdateRef.current = lastTimePriceUpdate
+  }, [lastTimePriceUpdate])
 
   useSWR(
     !isProviderNetworkUnsupported && isWindowVisible

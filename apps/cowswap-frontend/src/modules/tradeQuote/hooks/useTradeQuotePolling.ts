@@ -1,5 +1,5 @@
 import { useAtom, useAtomValue } from 'jotai'
-import { useLayoutEffect, useRef } from 'react'
+import { useEffect, useLayoutEffect, useRef } from 'react'
 
 import { useIsOnline, useIsWindowVisible, usePrevious } from '@cowprotocol/common-hooks'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
@@ -30,7 +30,10 @@ export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParame
   const tradeQuote = useTradeQuote()
   const prevIsConfirmOpen = usePrevious(isConfirmOpen)
   const tradeQuoteRef = useRef(tradeQuote)
-  tradeQuoteRef.current = tradeQuote
+
+  useEffect(() => {
+    tradeQuoteRef.current = tradeQuote
+  }, [tradeQuote])
 
   const amountStr = amount?.quotient.toString()
   const quoteParamsState = useQuoteParams(amountStr, partiallyFillable)
@@ -41,11 +44,17 @@ export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParame
   const isWindowVisible = useIsWindowVisible()
   const isOnline = useIsOnline()
   const isOnlineRef = useRef(isOnline)
-  isOnlineRef.current = isOnline
+
+  useEffect(() => {
+    isOnlineRef.current = isOnline
+  }, [isOnline])
 
   const pollQuote = usePollQuoteCallback(quotePollingParams, quoteParamsState)
   const pollQuoteRef = useRef(pollQuote)
-  pollQuoteRef.current = pollQuote
+
+  useEffect(() => {
+    pollQuoteRef.current = pollQuote
+  }, [pollQuote])
 
   /**
    * Reset quote when window is not visible or sell amount has been cleared

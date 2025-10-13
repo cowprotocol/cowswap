@@ -65,5 +65,7 @@ export function usePriorityTokenAddresses(): Set<string> {
     }
   }, [newSetOfTokens, pending])
 
+  // FIXME: this is a wrong return, it will not rerender when the ref value is changed
+  // eslint-disable-next-line react-hooks/refs
   return setOfTokensRef.current
 }

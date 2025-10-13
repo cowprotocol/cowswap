@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 
 import { FractionUtils } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
@@ -9,16 +9,17 @@ import { Field } from 'legacy/state/types'
 import { useSwapDerivedState } from './useSwapDerivedState'
 import { useUpdateSwapRawState } from './useUpdateSwapRawState'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useUpdateCurrencyAmount() {
+export function useUpdateCurrencyAmount(): (field: Field, value: CurrencyAmount<Currency> | undefined) => void {
   const { inputCurrencyAmount, outputCurrencyAmount } = useSwapDerivedState()
   const updateSwapState = useUpdateSwapRawState()
 
   const inputCurrencyAmountRef = useRef(inputCurrencyAmount)
-  inputCurrencyAmountRef.current = inputCurrencyAmount
   const outputCurrencyAmountRef = useRef(outputCurrencyAmount)
-  outputCurrencyAmountRef.current = outputCurrencyAmount
+
+  useEffect(() => {
+    inputCurrencyAmountRef.current = inputCurrencyAmount
+    outputCurrencyAmountRef.current = outputCurrencyAmount
+  }, [inputCurrencyAmount, outputCurrencyAmount])
 
   return useCallback(
     (field: Field, value: CurrencyAmount<Currency> | undefined) => {

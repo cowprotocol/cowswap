@@ -45,23 +45,16 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
   const signingStep = useSigningStep()
 
   const propsRef = useRef(_props)
-  propsRef.current = _props
+
+  useEffect(() => {
+    propsRef.current = _props
+  }, [_props])
 
   const [frozenProps, setFrozenProps] = useState<TradeConfirmationProps | null>(null)
   const hasPendingTrade = !!pendingTrade
 
   const props = frozenProps || _props
-  const {
-    onConfirm,
-    onDismiss,
-    isConfirmDisabled,
-    title,
-    buttonText = 'Confirm',
-    children,
-    recipient,
-    isPriceStatic,
-    appData,
-  } = props
+  const { onConfirm, onDismiss, isConfirmDisabled, buttonText = 'Confirm', children, isPriceStatic, appData } = props
 
   /**
    * Once user sends a transaction, we keep the confirmation content frozen
@@ -96,7 +89,7 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
     <styledEl.WidgetWrapper onKeyDown={(e) => e.key === 'Escape' && onDismiss()}>
       <styledEl.Header>
         <BackButton onClick={onDismiss} />
-        <styledEl.ConfirmHeaderTitle>{title}</styledEl.ConfirmHeaderTitle>
+        <styledEl.ConfirmHeaderTitle>{props.title}</styledEl.ConfirmHeaderTitle>
 
         <styledEl.HeaderRightContent>
           {hasPendingTrade || isPriceStatic ? null : <QuoteCountdown />}
@@ -118,7 +111,7 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
         <ConfirmWarnings
           account={props.account}
           ensName={props.ensName}
-          recipient={recipient}
+          recipient={props.recipient}
           isPriceChanged={isPriceChanged}
           isPriceStatic={isPriceStatic}
           resetPriceChanged={resetPriceChanged}

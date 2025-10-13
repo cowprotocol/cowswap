@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 
 import { FractionUtils, getIntOrFloat, isFractionFalsy, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
@@ -33,7 +33,6 @@ interface SetupTradeAmountsParams {
  *
  * In case when both sellAmount and buyAmount specified, the price will be automatically calculated
  */
-// TODO: Break down this large function into smaller functions
 export function useSetupTradeAmountsFromUrl({ onAmountsUpdate, onlySell }: SetupTradeAmountsParams): void {
   const navigate = useNavigate()
   const { search, pathname } = useLocation()
@@ -43,7 +42,10 @@ export function useSetupTradeAmountsFromUrl({ onAmountsUpdate, onlySell }: Setup
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount } = state || {}
 
   const isAtLeastOneAmountIsSetRef = useRef(false)
-  isAtLeastOneAmountIsSetRef.current = Boolean(inputCurrencyAmount || outputCurrencyAmount)
+
+  useEffect(() => {
+    isAtLeastOneAmountIsSetRef.current = Boolean(inputCurrencyAmount || outputCurrencyAmount)
+  }, [inputCurrencyAmount, outputCurrencyAmount])
 
   const cleanParams = useCallback(() => {
     if (!search) return
