@@ -4,13 +4,15 @@ import { Media, UI } from '@cowprotocol/ui'
 
 import styled, { keyframes } from 'styled-components/macro'
 
+import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
+
 interface CowSpeechBubbleProps {
   show: boolean
   onClose: () => void
 }
 
 const MESSAGE = "Mooo, we're hiring!"
-const CAREERS_URL = 'https://cow.fi/careers'
+const CAREERS_URL = 'https://jobs.ashbyhq.com/cow-dao?utm_source=laMjao1z57'
 const TYPING_INTERVAL_MS = 140
 const BUBBLE_DELAY_MS = 3000
 
@@ -99,7 +101,17 @@ export function CowSpeechBubble({ show, onClose }: CowSpeechBubbleProps): ReactN
           <span>{displayedText}</span>
           <Cursor $visible={showCursor} />
         </TypingLine>
-        <JobsLink href={CAREERS_URL} target="_blank" rel="noopener noreferrer" $visible={isTypingComplete}>
+        <JobsLink
+          href={CAREERS_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          $visible={isTypingComplete}
+          data-click-event={toCowSwapGtmEvent({
+            category: CowSwapAnalyticsCategory.COWSWAP,
+            action: 'Click speech bubble jobs link',
+            label: CAREERS_URL,
+          })}
+        >
           View jobs
           <Arrow aria-hidden="true">→</Arrow>
         </JobsLink>
