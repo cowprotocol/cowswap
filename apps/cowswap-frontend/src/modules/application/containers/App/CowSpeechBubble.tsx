@@ -1,21 +1,65 @@
-import { ReactNode, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type ReactNode } from 'react'
+
+import { useReducedMotionPreference } from '@cowprotocol/common-hooks'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
 import { Arrow, Bubble, BubbleContent, CloseButton, Cursor, JobsLink, TypingLine } from './CowSpeechBubble.styled'
+import { getTypingMessage, startTypingAnimation } from './utils/cowSpeechBubbleTyping'
 
-interface CowSpeechBubbleProps {
+export interface CowSpeechBubbleProps {
   show: boolean
   onClose: () => void
 }
 
-const MESSAGE = "Mooo, we're hiring!"
 const CAREERS_URL = 'https://jobs.ashbyhq.com/cow-dao?utm_source=laMjao1z57'
-const TYPING_INTERVAL_MS = 140
 const BUBBLE_DELAY_MS = 3000
 
 export function CowSpeechBubble({ show, onClose }: CowSpeechBubbleProps): ReactNode {
-  const [charIndex, setCharIndex] = useState(0)
+  const prefersReducedMotion = useReducedMotionPreference()
+  const hasDelayElapsed = useBubbleDelay(show)
+  const message = getTypingMessage()
+  const charIndex = useTypingProgress({ show, hasDelayElapsed, prefersReducedMotion, message })
+
+  if (!show || !hasDelayElapsed) {
+    return null
+  }
+
+  const isTypingComplete = charIndex >= message.length
+  const displayedText = message.slice(0, charIndex)
+  const showCursor = hasDelayElapsed && show && !isTypingComplete
+
+  return (
+    <Bubble>
+      <CloseButton type="button" aria-label="Dismiss hiring message" onClick={onClose}>
+        ×
+      </CloseButton>
+      <BubbleContent>
+        <TypingLine role="status" aria-live="polite" aria-atomic="true">
+          <span>{displayedText}</span>
+          <Cursor $visible={showCursor} />
+        </TypingLine>
+        <JobsLink
+          href={CAREERS_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          $visible={isTypingComplete}
+          aria-label="View jobs (opens in a new tab)"
+          data-click-event={toCowSwapGtmEvent({
+            category: CowSwapAnalyticsCategory.COWSWAP,
+            action: 'Click speech bubble jobs link',
+            label: CAREERS_URL,
+          })}
+        >
+          View jobs
+          <Arrow aria-hidden="true">→</Arrow>
+        </JobsLink>
+      </BubbleContent>
+    </Bubble>
+  )
+}
+
+function useBubbleDelay(show: boolean): boolean {
   const [hasDelayElapsed, setHasDelayElapsed] = useState(false)
   const isMountedRef = useRef(true)
 
@@ -30,7 +74,6 @@ export function CowSpeechBubble({ show, onClose }: CowSpeechBubbleProps): ReactN
   useEffect(() => {
     if (!show) {
       setHasDelayElapsed(false)
-      setCharIndex(0)
       return
     }
 
@@ -43,60 +86,41 @@ export function CowSpeechBubble({ show, onClose }: CowSpeechBubbleProps): ReactN
     return () => clearTimeout(delayId)
   }, [show])
 
+  return hasDelayElapsed
+}
+
+interface UseTypingProgressParams {
+  show: boolean
+  hasDelayElapsed: boolean
+  prefersReducedMotion: boolean
+  message: string
+}
+
+function useTypingProgress({ show, hasDelayElapsed, prefersReducedMotion, message }: UseTypingProgressParams): number {
+  const [charIndex, setCharIndex] = useState(0)
+  const isMountedRef = useRef(true)
+
+  useEffect(() => {
+    isMountedRef.current = true
+
+    return () => {
+      isMountedRef.current = false
+    }
+  }, [])
+
   useEffect(() => {
     if (!hasDelayElapsed || !show) {
-      setCharIndex(0)
+      setCharIndex(prefersReducedMotion ? message.length : 0)
       return
     }
 
-    let currentIndex = 0
-    const intervalId = setInterval(() => {
-      currentIndex = Math.min(currentIndex + 1, MESSAGE.length)
-      if (isMountedRef.current) {
-        setCharIndex(currentIndex)
-      }
+    if (prefersReducedMotion) {
+      setCharIndex(message.length)
+      return
+    }
 
-      if (currentIndex >= MESSAGE.length) {
-        clearInterval(intervalId)
-      }
-    }, TYPING_INTERVAL_MS)
+    return startTypingAnimation({ isMountedRef, setCharIndex, messageLength: message.length })
+  }, [hasDelayElapsed, show, prefersReducedMotion, message])
 
-    return () => clearInterval(intervalId)
-  }, [hasDelayElapsed, show])
-
-  const isTypingComplete = charIndex >= MESSAGE.length
-  const displayedText = MESSAGE.slice(0, charIndex)
-  const showCursor = hasDelayElapsed && show && !isTypingComplete
-
-  if (!show || !hasDelayElapsed) {
-    return null
-  }
-
-  return (
-    <Bubble>
-      <CloseButton type="button" aria-label="Dismiss hiring message" onClick={onClose}>
-        ×
-      </CloseButton>
-      <BubbleContent>
-        <TypingLine>
-          <span>{displayedText}</span>
-          <Cursor $visible={showCursor} />
-        </TypingLine>
-        <JobsLink
-          href={CAREERS_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          $visible={isTypingComplete}
-          data-click-event={toCowSwapGtmEvent({
-            category: CowSwapAnalyticsCategory.COWSWAP,
-            action: 'Click speech bubble jobs link',
-            label: CAREERS_URL,
-          })}
-        >
-          View jobs
-          <Arrow aria-hidden="true">→</Arrow>
-        </JobsLink>
-      </BubbleContent>
-    </Bubble>
-  )
+  return charIndex
 }

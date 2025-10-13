@@ -40,6 +40,12 @@ export const Bubble = styled.div`
   animation: ${fadeUp} 0.45s ease-out forwards;
   will-change: opacity, transform;
 
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
   &::after {
     content: '';
     position: absolute;
@@ -103,6 +109,10 @@ export const Cursor = styled.span<{ $visible: boolean }>`
   margin-left: 4px;
   background: currentColor;
   animation: ${blink} 1s steps(1, start) infinite;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
 `
 
 export const JobsLink = styled.a<{ $visible: boolean }>`
