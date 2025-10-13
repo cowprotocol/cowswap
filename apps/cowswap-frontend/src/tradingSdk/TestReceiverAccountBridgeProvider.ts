@@ -20,19 +20,18 @@ import { getOrder } from 'api/cowProtocol'
  */
 export class TestReceiverAccountBridgeProvider implements ReceiverAccountBridgeProvider<BridgeQuoteResult> {
   type = 'ReceiverAccountBridgeProvider' as const
-  info: BridgeProviderInfo
+  info: BridgeProviderInfo = {
+    name: 'Receiver Bridge',
+    logoUrl:
+      'https://raw.githubusercontent.com/cowprotocol/cow-sdk/refs/heads/main/packages/bridging/src/providers/mock/mock-logo.webp',
+    dappId: 'test-receiver-bridge',
+    website: 'https://github.com/cowprotocol/cowswap',
+  }
 
   constructor(
     protected receiver: string,
     protected bridgeProvider: BridgeProvider<BridgeQuoteResult>,
-  ) {
-    this.info = {
-      name: 'Test Receiver Account Bridge',
-      logoUrl: bridgeProvider.info.logoUrl,
-      dappId: 'test-receiver-bridge',
-      website: 'https://github.com/cowprotocol/cowswap',
-    }
-  }
+  ) {}
 
   async getNetworks(): Promise<ChainInfo[]> {
     return this.bridgeProvider.getNetworks()
@@ -47,10 +46,19 @@ export class TestReceiverAccountBridgeProvider implements ReceiverAccountBridgeP
   }
 
   async getQuote(request: QuoteBridgeRequest): Promise<BridgeQuoteResult> {
-    return this.bridgeProvider.getQuote(request)
+    console.log('[TestReceiverAccountBridgeProvider] getQuote request', request)
+
+    try {
+      const result = await this.bridgeProvider.getQuote(request)
+      console.log('[TestReceiverAccountBridgeProvider] getQuote result', result)
+      return result
+    } catch (error) {
+      console.error('[TestReceiverAccountBridgeProvider] getQuote error', error)
+      throw error
+    }
   }
 
-  async getBridgeReceiverOverride(): Promise<string> {
+  async getBridgeReceiverOverride(_quoteRequest: QuoteBridgeRequest, _quoteResult: BridgeQuoteResult): Promise<string> {
     return this.receiver
   }
 
