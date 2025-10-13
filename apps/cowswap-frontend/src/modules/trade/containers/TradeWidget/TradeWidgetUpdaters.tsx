@@ -15,6 +15,7 @@ interface TradeWidgetUpdatersProps {
   disableQuotePolling: boolean
   disableNativeSelling: boolean
   enableSmartSlippage?: boolean
+  disableSuggestedSlippageApi?: boolean
   children: ReactNode
   onChangeRecipient: (recipient: string | null) => void
 }
@@ -22,6 +23,7 @@ interface TradeWidgetUpdatersProps {
 export function TradeWidgetUpdaters({
   disableQuotePolling,
   disableNativeSelling,
+  disableSuggestedSlippageApi,
   onChangeRecipient,
   children,
 }: TradeWidgetUpdatersProps): JSX.Element {
@@ -36,6 +38,7 @@ export function TradeWidgetUpdaters({
       <RecipientAddressUpdater />
 
       <TradeQuoteUpdater
+        useSuggestedSlippageApi={!disableSuggestedSlippageApi}
         isConfirmOpen={isConfirmOpen}
         isQuoteUpdatePossible={isQuoteUpdatePossible && !disableQuotePolling}
       />

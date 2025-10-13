@@ -8,6 +8,7 @@ export const ToggleWrapper = styled.div`
   border-radius: 12px;
   background: var(${UI.COLOR_BACKGROUND});
   color: var(${UI.COLOR_TEXT_PAPER});
+  min-height: 58px;
 `
 
 export const OptionWrapper = styled.button<{ isActive?: boolean }>`
