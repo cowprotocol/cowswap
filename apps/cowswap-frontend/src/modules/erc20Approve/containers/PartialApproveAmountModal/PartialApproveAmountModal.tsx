@@ -10,11 +10,11 @@ type TradeChangeApproveAmountModalProps = {
 }
 
 export function PartialApproveAmountModal({ initialAmountToApprove }: TradeChangeApproveAmountModalProps): ReactNode {
-  const updatePendingApproveAmountModalState = useUpdatePartialApproveAmountModalState()
+  const updatePartialApproveAmountModalState = useUpdatePartialApproveAmountModalState()
 
   return (
     <ChangeApproveAmountModal
-      setUserApproveAmountState={updatePendingApproveAmountModalState}
+      setUserApproveAmountState={updatePartialApproveAmountModalState}
       initialAmountToApprove={initialAmountToApprove}
     />
   )

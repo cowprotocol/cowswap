@@ -20,7 +20,7 @@ export function PartialApproveContainer({
   children,
 }: PartialApproveContainerProps): ReactNode {
   const { isModalOpen, amountSetByUser } = usePartialApproveAmountModalState() || {}
-  const updatePendingApproveAmountModalState = useUpdatePartialApproveAmountModalState()
+  const updatePartialApproveAmountModalState = useUpdatePartialApproveAmountModalState()
 
   const amountToApproveFinal = amountSetByUser ?? amountToApprove
 
@@ -32,7 +32,7 @@ export function PartialApproveContainer({
     <PartialApproveWrapper className={className}>
       <TradeApproveToggle
         amountToApprove={amountToApproveFinal}
-        updateModalState={() => updatePendingApproveAmountModalState({ isModalOpen: true })}
+        updateModalState={() => updatePartialApproveAmountModalState({ isModalOpen: true })}
       />
       {children}
     </PartialApproveWrapper>

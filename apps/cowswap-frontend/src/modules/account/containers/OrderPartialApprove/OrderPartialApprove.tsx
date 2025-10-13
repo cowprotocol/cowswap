@@ -26,7 +26,7 @@ export function OrderPartialApprove({
 }: OrderPartialApproveProps): ReactNode {
   const isPartialApproveSelectedByUser = useIsPartialApproveSelectedByUser()
   const { isModalOpen, amountSetByUser } = usePartialApproveAmountModalState() || {}
-  const updatePendingApproveAmountModalState = useUpdatePartialApproveAmountModalState()
+  const updatePartialApproveAmountModalState = useUpdatePartialApproveAmountModalState()
 
   const amountToApproveFinal = amountSetByUser ?? amountToApprove
 
@@ -39,7 +39,7 @@ export function OrderPartialApprove({
       {isPartialApproveEnabledBySettings && (
         <TradeApproveToggle
           amountToApprove={amountToApproveFinal}
-          updateModalState={() => updatePendingApproveAmountModalState({ isModalOpen: true })}
+          updateModalState={() => updatePartialApproveAmountModalState({ isModalOpen: true })}
         />
       )}
       {isPartialApproveSelectedByUser && <ActiveOrdersWithAffectedPermit currency={amountToApprove.currency} />}
