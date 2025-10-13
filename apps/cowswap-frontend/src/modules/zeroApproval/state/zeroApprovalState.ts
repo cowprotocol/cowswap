@@ -2,7 +2,7 @@ import { atom } from 'jotai'
 
 import { Currency } from '@uniswap/sdk-core'
 
-interface ZeroApprovalState {
+export interface ZeroApprovalState {
   isApproving: boolean
   currency?: Currency
 }
