@@ -10,6 +10,7 @@ import { useShouldZeroApprove, useZeroApprove } from 'modules/zeroApproval'
 
 export function useApproveCurrency(
   amountToApprove: CurrencyAmount<Currency> | undefined,
+  useModals = true,
 ): (amount: bigint) => Promise<Nullish<TransactionReceipt | SafeMultisigTransactionResponse>> {
   const currency = amountToApprove?.currency
 
@@ -22,8 +23,8 @@ export function useApproveCurrency(
         await zeroApprove()
       }
 
-      return tradeApproveCallback(amount)
+      return tradeApproveCallback(amount, { useModals })
     },
-    [tradeApproveCallback, zeroApprove, shouldZeroApprove],
+    [useModals, tradeApproveCallback, zeroApprove, shouldZeroApprove],
   )
 }

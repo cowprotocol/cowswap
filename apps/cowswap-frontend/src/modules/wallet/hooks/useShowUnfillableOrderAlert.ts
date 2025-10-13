@@ -1,11 +1,15 @@
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { OrderClass } from '@cowprotocol/cow-sdk'
 
+import { useGetPendingOrdersPermitValidityState } from 'modules/ordersTable'
+
 import { usePendingOrdersFillability } from 'common/hooks/usePendingOrdersFillability'
+
 
 export function useShowUnfillableOrderAlert(): boolean {
   const pendingOrdersFillability = usePendingOrdersFillability(OrderClass.MARKET)
   const { isPartialApproveEnabled } = useFeatureFlags()
+  const pendingOrdersPermitValidityState = useGetPendingOrdersPermitValidityState()
 
   if (!isPartialApproveEnabled) {
     return false
@@ -13,9 +17,9 @@ export function useShowUnfillableOrderAlert(): boolean {
 
   return Object.keys(pendingOrdersFillability).some((orderId) => {
     const fillability = pendingOrdersFillability[orderId]
+    const hasValidPermit = pendingOrdersPermitValidityState[orderId] === true
     if (fillability) {
-      // todo check permit amount and validity further
-      const hasEnoughAllowance = fillability.hasEnoughAllowance || fillability.hasPermit
+      const hasEnoughAllowance = fillability.hasEnoughAllowance || hasValidPermit
       return !hasEnoughAllowance || !fillability.hasEnoughBalance
     }
 

@@ -14,6 +14,8 @@ export type AddPermitTokenParams = {
 
 export type GeneratePermitHookParams = Pick<PermitHookParams, 'inputToken' | 'permitInfo' | 'account' | 'amount'> & {
   customSpender?: string
+  preSignCallback?: () => void
+  postSignCallback?: () => void
 }
 
 export type GeneratePermitHook = (params: GeneratePermitHookParams) => Promise<PermitHookData | undefined>

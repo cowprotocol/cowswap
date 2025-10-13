@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
 
+import { ButtonSize } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import {
@@ -12,11 +13,17 @@ import {
   useUpdatePendingApproveAmountModalState,
 } from 'modules/erc20Approve'
 
+import { OrderActionsWrapper } from './styled'
+
 export type OrderPartialApproveProps = {
   amountToApprove: CurrencyAmount<Currency>
+  isPartialApproveEnabledBySettings?: boolean
 }
 
-export function OrderPartialApprove({ amountToApprove }: OrderPartialApproveProps): ReactNode {
+export function OrderPartialApprove({
+  amountToApprove,
+  isPartialApproveEnabledBySettings,
+}: OrderPartialApproveProps): ReactNode {
   const isPartialApproveSelectedByUser = useIsPartialApproveSelectedByUser()
   const { isModalOpen, amountSetByUser } = usePendingApproveAmountModalState() || {}
   const updatePendingApproveAmountModalState = useUpdatePendingApproveAmountModalState()
@@ -28,18 +35,22 @@ export function OrderPartialApprove({ amountToApprove }: OrderPartialApproveProp
   }
 
   return (
-    <>
-      <TradeApproveToggle
-        amountToApprove={amountToApproveFinal}
-        updateModalState={() => updatePendingApproveAmountModalState({ isModalOpen: true })}
-      />
+    <OrderActionsWrapper>
+      {isPartialApproveEnabledBySettings && (
+        <TradeApproveToggle
+          amountToApprove={amountToApproveFinal}
+          updateModalState={() => updatePendingApproveAmountModalState({ isModalOpen: true })}
+        />
+      )}
       {isPartialApproveSelectedByUser && <ActiveOrdersWithAffectedPermit currency={amountToApprove.currency} />}
       <TradeApproveButton
         ignorePermit
         enablePartialApprove
+        useModals={false}
         amountToApprove={amountToApproveFinal}
+        buttonSize={ButtonSize.SMALL}
         label={'Approve ' + amountToApprove.currency.symbol}
       />
-    </>
+    </OrderActionsWrapper>
   )
 }
