@@ -1,6 +1,5 @@
 import { ReactNode } from 'react'
 
-import { ButtonSize } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import {
@@ -18,17 +17,11 @@ import { OrderActionsWrapper } from './styled'
 export type OrderPartialApproveProps = {
   amountToApprove: CurrencyAmount<Currency>
   isPartialApproveEnabledBySettings?: boolean
-  buttonSize?: ButtonSize
-  className?: string
-  onApprove?: (txHash?: string) => void
 }
 
 export function OrderPartialApprove({
   amountToApprove,
   isPartialApproveEnabledBySettings,
-  buttonSize = ButtonSize.SMALL,
-  className = '',
-  onApprove,
 }: OrderPartialApproveProps): ReactNode {
   const isPartialApproveSelectedByUser = useIsPartialApproveSelectedByUser()
   const { isModalOpen, amountSetByUser } = usePendingApproveAmountModalState() || {}
@@ -41,7 +34,7 @@ export function OrderPartialApprove({
   }
 
   return (
-    <OrderActionsWrapper className={className}>
+    <OrderActionsWrapper>
       {isPartialApproveEnabledBySettings && (
         <TradeApproveToggle
           amountToApprove={amountToApproveFinal}
@@ -54,9 +47,7 @@ export function OrderPartialApprove({
         enablePartialApprove
         useModals={false}
         amountToApprove={amountToApproveFinal}
-        buttonSize={buttonSize}
         label={'Approve ' + amountToApprove.currency.symbol}
-        onApproveConfirm={onApprove}
       />
     </OrderActionsWrapper>
   )
