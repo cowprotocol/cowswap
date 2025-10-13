@@ -2,6 +2,8 @@ import { InlineBanner, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
+import { AccordionBanner } from 'common/pure/AccordionBanner'
+
 export const UnfillableWarning = styled(InlineBanner)`
   margin: 10px 0;
   padding: 10px;
@@ -25,7 +27,12 @@ export const OrderActionsWrapper = styled.div`
   gap: 6px;
 `
 
-export const Title = styled.div`
+export const WrappedAccordionBanner = styled(AccordionBanner)`
+  margin: 10px 0;
+`
+
+export const Title = styled.div<{ marginLeft?: string }>`
+  margin-left: ${({ marginLeft }) => marginLeft || '0'};
   display: flex;
   align-items: center;
   font-weight: 600;

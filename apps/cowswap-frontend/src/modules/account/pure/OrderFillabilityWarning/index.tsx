@@ -4,9 +4,15 @@ import { BannerOrientation, StatusColorVariant } from '@cowprotocol/ui'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { OrderFillability } from 'common/hooks/usePendingOrdersFillability'
-import { AccordionBanner } from 'common/pure/AccordionBanner'
 
-import { ApproveWrapper, OrderActionsWrapper, Subtitle, Title, UnfillableWarning } from './styled'
+import {
+  ApproveWrapper,
+  OrderActionsWrapper,
+  Subtitle,
+  Title,
+  UnfillableWarning,
+  WrappedAccordionBanner,
+} from './styled'
 
 import { OrderPartialApprove } from '../../containers/OrderPartialApprove'
 
@@ -30,6 +36,10 @@ export function OrderFillabilityWarning({
   const isNotEnoughBalance = fillability?.hasEnoughBalance === false
   const showIsNotEnoughAllowance = !isNotEnoughBalance && fillability?.hasEnoughAllowance === false
 
+  const NotEnoughBalanceDescreption = (
+    <Subtitle>Please, top up {inputAmount.currency.symbol} balance or cancel the order.</Subtitle>
+  )
+
   return (
     <>
       {isNotEnoughBalance && (
@@ -37,15 +47,15 @@ export function OrderFillabilityWarning({
           padding={'10px'}
           bannerType={StatusColorVariant.Danger}
           orientation={BannerOrientation.Horizontal}
+          customContent={NotEnoughBalanceDescreption}
+          noWrapContent
         >
-          Order cannot be filled due to insufficient balance on the current account.
-          <br />
-          Please, top up {inputAmount.currency.symbol} balance or cancel the order.
+          <Title marginLeft={'6px'}>Order cannot be filled due to insufficient balance on the current account.</Title>
         </UnfillableWarning>
       )}
 
       {showIsNotEnoughAllowance && (
-        <AccordionBanner title={title} bannerType={StatusColorVariant.Danger} accordionPadding={'10px'}>
+        <WrappedAccordionBanner title={title} bannerType={StatusColorVariant.Danger} accordionPadding={'10px'}>
           <OrderActionsWrapper>
             <Subtitle>
               Another order has used up the approval amount. Set a new token approval to proceed with your order.
@@ -59,7 +69,7 @@ export function OrderFillabilityWarning({
               )}
             </ApproveWrapper>
           </OrderActionsWrapper>
-        </AccordionBanner>
+        </WrappedAccordionBanner>
       )}
     </>
   )
