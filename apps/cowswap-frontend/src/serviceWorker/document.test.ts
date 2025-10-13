@@ -23,7 +23,6 @@ describe('document', () => {
     ] as [RouteMatchCallbackOptions, boolean][]
 
     it.each(TEST_DOCUMENTS)('%j', (document: RouteMatchCallbackOptions, expected: boolean) => {
-      jest.spyOn(window, 'location', 'get').mockReturnValue({ hostname: document.url.hostname } as Location)
       expect(matchDocument(document)).toBe(expected)
     })
   })

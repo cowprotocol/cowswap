@@ -1,14 +1,17 @@
-import { useState } from 'react'
+import { useEffect, useRef } from 'react'
 
-// modified from https://github.com/uidotdev/usehooks/blob/main/index.js#L1017
+// modified from https://usehooks.com/usePrevious/
 export function usePrevious<T>(value: T): T | null {
-  const [current, setCurrent] = useState(value)
-  const [previous, setPrevious] = useState<T | null>(null)
+  // The ref object is a generic container whose current property is mutable ...
+  // ... and can hold any value, similar to an instance property on a class
+  const ref = useRef<T>(value)
 
-  if (value !== current) {
-    setPrevious(current)
-    setCurrent(value)
-  }
+  // Store current value in ref
+  useEffect(() => {
+    ref.current = value
+  }, [value]) // Only re-run if value changes
 
-  return previous
+  // Return previous value (happens before update in useEffect above)
+  // eslint-disable-next-line react-hooks/refs
+  return ref.current
 }
