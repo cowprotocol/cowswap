@@ -347,7 +347,7 @@ function useProgressBarStepNameUpdater(
       setProgressBarStepName(orderId, name || DEFAULT_STEP_NAME)
     }
 
-    let timer: NodeJS.Timeout
+    let timer: NodeJS.Timeout | undefined
 
     const timeSinceLastChange = lastTimeChangedSteps ? Date.now() - lastTimeChangedSteps : 0
 
@@ -371,7 +371,7 @@ function useProgressBarStepNameUpdater(
     }
 
     return () => {
-      clearInterval(timer)
+      if (timer) clearTimeout(timer)
     }
   }, [orderId, stepName, lastTimeChangedSteps, setProgressBarStepName])
 }
