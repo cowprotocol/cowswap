@@ -40,13 +40,7 @@ export function CowSpeechBubble({ show, onClose }: CowSpeechBubbleProps): ReactN
       }
     }, BUBBLE_DELAY_MS)
 
-    return () => {
-      clearTimeout(delayId)
-      if (isMountedRef.current) {
-        setHasDelayElapsed(false)
-        setCharIndex(0)
-      }
-    }
+    return () => clearTimeout(delayId)
   }, [show])
 
   useEffect(() => {
