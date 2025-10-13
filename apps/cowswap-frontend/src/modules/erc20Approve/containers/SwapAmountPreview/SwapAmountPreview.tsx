@@ -30,10 +30,15 @@ export function SwapAmountPreview(): ReactNode {
     [outputToken],
   )
 
+  const srcNetworkName = useMemo(
+    () => CHAIN_INFO[(inputToken?.chainId as SupportedChainId) || SupportedChainId.MAINNET]?.name,
+    [inputToken],
+  )
+
   return (
     <Wrapper>
       <TokenLogo size={16} token={inputToken} />
-      <TokenAmount amount={inputCurrencyAmount} />
+      <TokenAmount amount={inputCurrencyAmount} /> on <CapitalizedFirst>{srcNetworkName}</CapitalizedFirst>
       {' → '}
       <TokenLogo size={16} token={outputToken} />
       <TokenAmount amount={outputCurrencyAmount} /> on <CapitalizedFirst>{dstNetworkName}</CapitalizedFirst>

@@ -3,6 +3,7 @@ import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { OrderClass } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { Order } from 'legacy/state/orders/actions'
 import { useOnlyPendingOrders } from 'legacy/state/orders/hooks'
 
 import { doesOrderHavePermit } from '../utils/doesOrderHavePermit'
@@ -11,6 +12,7 @@ export interface OrderFillability {
   hasEnoughAllowance: boolean | undefined
   hasEnoughBalance: boolean | undefined
   hasPermit?: boolean
+  order: Order
 }
 
 export function usePendingOrdersFillability(orderClass?: OrderClass): Record<string, OrderFillability | undefined> {
@@ -29,6 +31,7 @@ export function usePendingOrdersFillability(orderClass?: OrderClass): Record<str
         hasEnoughBalance: true,
         hasEnoughAllowance: true,
         hasPermit: false,
+        order,
       }
       return acc
     }
@@ -40,6 +43,7 @@ export function usePendingOrdersFillability(orderClass?: OrderClass): Record<str
       hasEnoughBalance: balance ? balance.gte(order.sellAmount) : undefined,
       hasEnoughAllowance: allowance ? allowance.gte(order.sellAmount) : undefined,
       hasPermit: doesOrderHavePermit(order),
+      order,
     }
 
     return acc
