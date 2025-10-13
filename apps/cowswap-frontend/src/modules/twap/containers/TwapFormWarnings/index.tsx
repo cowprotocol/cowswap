@@ -1,5 +1,5 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { useCallback } from 'react'
+import { ReactNode, useCallback } from 'react'
 
 import { useIsSafeViaWc, useWalletInfo } from '@cowprotocol/wallet'
 
@@ -33,10 +33,7 @@ interface TwapFormWarningsProps {
   isConfirmationModal?: boolean
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: TwapFormWarningsProps) {
+export function TwapFormWarnings({ localFormValidation, isConfirmationModal }: TwapFormWarningsProps): ReactNode {
   const { isFallbackHandlerSetupAccepted } = useAtomValue(twapOrdersSettingsAtom)
   const updateTwapOrdersSettings = useSetAtom(updateTwapOrdersSettingsAtom)
   const slippage = useTwapSlippage()
