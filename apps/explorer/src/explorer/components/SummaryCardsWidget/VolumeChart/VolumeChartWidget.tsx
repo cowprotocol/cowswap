@@ -19,7 +19,7 @@ export const volumePeriodTitle = new Map(
   (Object.keys(VolumePeriod) as (keyof typeof VolumePeriod)[]).map((key) => [
     VolumePeriod[key],
     key.toLocaleLowerCase(),
-  ])
+  ]),
 )
 
 /* A lightweight-charts logical range is an object with: 'from' and 'to', which are numbers and represent
@@ -29,8 +29,6 @@ const logicalTimeRange = {
   [VolumePeriod.WEEKLY]: { from: 3.4, to: 9 }, // by the 7 points
 }
 
-// TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
 export function VolumeChartWidget(): React.ReactNode {
   const [periodSelected, setVolumeTimePeriod] = useState(VolumePeriod.DAILY)
   const volumeData = useGetVolumeData(periodSelected)
@@ -38,6 +36,7 @@ export function VolumeChartWidget(): React.ReactNode {
 
   // update the width on a window resize
   const isClient = typeof window === 'object'
+  // eslint-disable-next-line react-hooks/refs
   const [width, setWidth] = useState(containerRef.current?.getBoundingClientRect().width)
   React.useLayoutEffect(() => {
     if (!isClient || containerRef.current === null) return

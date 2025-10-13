@@ -73,6 +73,7 @@ const OrdersTableWidget: React.FC<Props> = ({ ownerAddress, networkId }) => {
     error,
     isThereNext: isThereNextOrder,
   } = useGetAccountOrders(ownerAddress, tableState.pageSize, tableState.pageOffset, tableState.pageIndex)
+  // eslint-disable-next-line react-hooks/immutability
   tableState['hasNextPage'] = isThereNextOrder
   const addressAccountParams = { ownerAddress, networkId }
 
