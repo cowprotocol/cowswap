@@ -34,7 +34,7 @@ export function computeUnfillableOrderIds(
   marketOrders: OrderLike[],
   pendingOrdersFillability: Record<string, OrderFillability | undefined>,
 ): string[] {
-  // `isUnfillable` is set by the backend when price/competition deems the order unfillable.
+  // `isUnfillable` is toggled on the client (see UnfillableOrdersUpdater and OrdersTableList) after comparing quotes and allowances.
   const priceDerived = marketOrders.filter((order) => order.isUnfillable).map((order) => order.id)
 
   const fillabilityDerived = Object.entries(pendingOrdersFillability).reduce<string[]>(
