@@ -41,8 +41,13 @@ jest.mock('../../hooks', () => ({
   useApproveCallback: () => mockApproveCallback,
 }))
 
+const mockResetApproveProgressModalState = jest.fn(() => {
+  mockUpdateTradeApproveState({ currency: undefined, approveInProgress: false })
+})
+
 jest.mock('../../state', () => ({
-  useUpdateTradeApproveState: () => mockUpdateTradeApproveState,
+  useUpdateApproveProgressModalState: () => mockUpdateTradeApproveState,
+  useResetApproveProgressModalState: () => mockResetApproveProgressModalState,
 }))
 
 const mockCurrency = new Token(1, '0x6B175474E89094C44Da98b954EedeAC495271d0F', 6, 'USDC', 'USD Coin')
@@ -80,6 +85,7 @@ describe('useTradeApproveCallback', () => {
       expect(mockUpdateTradeApproveState).toHaveBeenCalledWith({
         currency: mockCurrency,
         approveInProgress: true,
+        amountToApprove: expect.anything(),
       })
     })
 
@@ -159,6 +165,7 @@ describe('useTradeApproveCallback', () => {
       expect(mockUpdateTradeApproveState).toHaveBeenCalledWith({
         currency: mockCurrency,
         approveInProgress: true,
+        amountToApprove: expect.anything(),
       })
     })
   })
@@ -191,6 +198,17 @@ describe('useTradeApproveCallback', () => {
       )
 
       expect(earlyHideCall).toBeUndefined()
+    })
+
+    it('should set isPendingInProgress to true when partial approve is enabled', async () => {
+      mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: true })
+      const { result } = renderHook(() => useTradeApproveCallback(mockCurrency))
+
+      await result.current(BigInt(1000), { useModals: true, waitForTxConfirmation: false })
+
+      expect(mockUpdateTradeApproveState).toHaveBeenCalledWith({
+        isPendingInProgress: true,
+      })
     })
   })
 
