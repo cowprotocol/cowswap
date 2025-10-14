@@ -1,4 +1,4 @@
-import { FancyButton, Media, UI } from '@cowprotocol/ui'
+import { FancyButton, Loader, Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -11,9 +11,12 @@ export const SlippageEmojiContainer = styled.span`
 
 export const Option = styled(FancyButton)<{ active: boolean }>`
   margin-right: 8px;
+  background: var(${({ active }) => (active ? UI.COLOR_PRIMARY : UI.COLOR_PRIMARY_OPACITY_50)});
+  transition: background-color 0.2s;
 
   :hover {
     cursor: pointer;
+    background: var(${UI.COLOR_PRIMARY});
   }
 
   &:disabled {
@@ -72,4 +75,9 @@ export const OptionCustom = styled(FancyButton)<{ active?: boolean; warning?: bo
   background-color: var(${UI.COLOR_PAPER_DARKER});
   color: inherit;
   border: 0;
+  text-align: right;
+`
+
+export const SlippageLoader = styled(Loader)`
+  margin-top: 4px;
 `

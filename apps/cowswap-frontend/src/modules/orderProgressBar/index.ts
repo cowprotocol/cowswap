@@ -1,6 +1,7 @@
 // Updaters
 
 export { ProgressBarExecutingOrdersUpdater } from './updaters/ProgressBarExecutingOrdersUpdater'
+export { OrderProgressEventsUpdater } from './updaters/OrderProgressEventsUpdater'
 
 // Containers
 export { SurplusModalSetup } from './containers/SurplusModalSetup'

@@ -10,10 +10,10 @@ import JSBI from 'jsbi'
 
 import { decodeAppData } from 'modules/appData/utils/decodeAppData'
 
+import { GenericOrder } from 'common/types'
 import { getIsComposableCowParentOrder } from 'utils/orderUtils/getIsComposableCowParentOrder'
 import { getOrderSurplus } from 'utils/orderUtils/getOrderSurplus'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
-import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { Order, updateOrder, UpdateOrderParams as UpdateOrderParamsAction } from './actions'
 import { OUT_OF_MARKET_PRICE_DELTA_PERCENTAGE } from './consts'
@@ -135,7 +135,7 @@ export function classifyOrder(
  * @param executionPrice
  */
 export function isOrderUnfillable(
-  order: Order,
+  order: GenericOrder,
   orderPrice: Price<Currency, Currency>,
   executionPrice: Price<Currency, Currency>,
 ): boolean {
@@ -169,7 +169,11 @@ export function isOrderUnfillable(
  * @param quotedAmount
  * @param feeAmount
  */
-export function getOrderMarketPrice(order: Order, quotedAmount: string, feeAmount: string): Price<Currency, Currency> {
+export function getOrderMarketPrice(
+  order: GenericOrder,
+  quotedAmount: string,
+  feeAmount: string,
+): Price<Currency, Currency> {
   // We get the remainder as the order might have already been partially filled
   const remainingAmount = getRemainderAmount(order.kind, order)
 
@@ -223,7 +227,7 @@ export function getEstimatedExecutionPrice(
  * @param fee Estimated fee in inputToken atoms, as string
  */
 export function getEstimatedExecutionPrice(
-  order: Order | ParsedOrder,
+  order: GenericOrder,
   fillPrice: Price<Currency, Currency>,
   fee: string,
 ): Price<Currency, Currency> | null
@@ -257,9 +261,9 @@ export function getEstimatedExecutionPrice(
  */
 // TODO: Break down this large function into smaller functions
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, complexity
+// eslint-disable-next-line complexity
 export function getEstimatedExecutionPrice(
-  order: Order | ParsedOrder | undefined,
+  order: GenericOrder | undefined,
   fillPrice: Price<Currency, Currency>,
   fee: string,
   inputAmount?: CurrencyAmount<Currency>,
@@ -384,7 +388,7 @@ export function getEstimatedExecutionPrice(
  * In both cases, the sell and buy remainders can be returned in full
  * @param order
  */
-export function getRemainderAmountsWithoutSurplus(order: Order | ParsedOrder): {
+export function getRemainderAmountsWithoutSurplus(order: GenericOrder): {
   buyAmount: string
   sellAmount: string
 } {
@@ -409,7 +413,7 @@ export function getRemainderAmountsWithoutSurplus(order: Order | ParsedOrder): {
   }
 }
 
-function getSurplusAmountBigNumber(order: Order | ParsedOrder): BigNumber {
+function getSurplusAmountBigNumber(order: GenericOrder): BigNumber {
   if ('executionData' in order) {
     // ParsedOrder
     return order.executionData.surplusAmount
@@ -427,7 +431,7 @@ function getSurplusAmountBigNumber(order: Order | ParsedOrder): BigNumber {
  * @param kind The kind of remainder
  * @param order The order object
  */
-export function getRemainderAmount(kind: OrderKind, order: Order | ParsedOrder): string {
+export function getRemainderAmount(kind: OrderKind, order: GenericOrder): string {
   const buyAmount = order.buyAmount.toString()
 
   const { sellAmount, executedSellAmount, executedBuyAmount } = getExecutedAmounts(order)
@@ -445,7 +449,7 @@ export function getRemainderAmount(kind: OrderKind, order: Order | ParsedOrder):
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function getExecutedAmounts(order: Order | ParsedOrder) {
+function getExecutedAmounts(order: GenericOrder) {
   let sellAmount: string
   let executedSellAmount: string | undefined
   let executedBuyAmount: string | undefined

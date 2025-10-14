@@ -19,7 +19,7 @@ import { BalancesCombinedUpdater } from 'modules/combinedBalances/updater/Balanc
 import { InFlightOrderFinalizeUpdater } from 'modules/ethFlow'
 import { CowEventsUpdater, InjectedWidgetUpdater, useInjectedWidgetParams } from 'modules/injectedWidget'
 import { FinalizeTxUpdater } from 'modules/onchainTransactions'
-import { ProgressBarExecutingOrdersUpdater } from 'modules/orderProgressBar'
+import { OrderProgressEventsUpdater, ProgressBarExecutingOrdersUpdater } from 'modules/orderProgressBar'
 import { OrdersNotificationsUpdater } from 'modules/orders'
 import { useSourceChainId } from 'modules/tokensList'
 import { TradeType, useTradeTypeInfo } from 'modules/trade'
@@ -39,14 +39,16 @@ import {
   ExpiredOrdersUpdater,
   OrdersFromApiUpdater,
   PendingOrdersUpdater,
-  UnfillableOrdersUpdater,
 } from 'common/updaters/orders'
 import { SpotPricesUpdater } from 'common/updaters/orders/SpotPricesUpdater'
+import { LastTimePriceUpdateResetUpdater } from 'common/updaters/orders/UnfillableOrdersUpdater'
 import { SentryUpdater } from 'common/updaters/SentryUpdater'
 import { SolversInfoUpdater } from 'common/updaters/SolversInfoUpdater'
 import { ThemeFromUrlUpdater } from 'common/updaters/ThemeFromUrlUpdater'
 import { UserUpdater } from 'common/updaters/UserUpdater'
 import { WidgetTokensUpdater } from 'common/updaters/WidgetTokensUpdater'
+
+import { FaviconAnimationUpdater } from './FaviconAnimationUpdater'
 
 export function Updaters(): ReactNode {
   const { account } = useWalletInfo()
@@ -77,7 +79,6 @@ export function Updaters(): ReactNode {
       <PendingOrdersUpdater />
       <CancelledOrdersUpdater />
       <ExpiredOrdersUpdater />
-      <UnfillableOrdersUpdater />
       <OrdersFromApiUpdater />
       <GasUpdater />
       <SentryUpdater />
@@ -90,9 +91,11 @@ export function Updaters(): ReactNode {
       <UsdPricesUpdater />
       <OrdersNotificationsUpdater />
       <ProgressBarExecutingOrdersUpdater />
+      <OrderProgressEventsUpdater />
       <SolversInfoUpdater />
       <AnnouncementsUpdater />
       <BridgingEnabledUpdater />
+      <FaviconAnimationUpdater />
 
       <TokensListsUpdater
         chainId={sourceChainId}
@@ -115,6 +118,7 @@ export function Updaters(): ReactNode {
       <CorrelatedTokensUpdater />
       <BridgeOrdersCleanUpdater />
       <PendingBridgeOrdersUpdater />
+      <LastTimePriceUpdateResetUpdater />
     </>
   )
 }
