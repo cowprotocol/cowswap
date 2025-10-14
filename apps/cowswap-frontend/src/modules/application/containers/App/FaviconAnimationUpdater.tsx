@@ -263,6 +263,7 @@ const SOLVING_ANIMATION_STEPS = new Set<OrderProgressBarStepName>([
   OrderProgressBarStepName.SOLVED,
   OrderProgressBarStepName.EXECUTING,
   OrderProgressBarStepName.BRIDGING_IN_PROGRESS,
+  OrderProgressBarStepName.DELAYED,
 ])
 
 const SUCCESS_STEPS = new Set<OrderProgressBarStepName>([
@@ -325,3 +326,5 @@ function hasActiveCountdown(countdown: OrderProgressBarState['countdown']): bool
 function isSuccess(step: OrderProgressBarStepName | undefined): step is OrderProgressBarStepName {
   return step !== undefined && SUCCESS_STEPS.has(step)
 }
+
+export { shouldAnimateInProgress }
