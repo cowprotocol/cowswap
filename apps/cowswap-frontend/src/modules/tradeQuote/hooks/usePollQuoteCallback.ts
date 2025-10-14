@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai/index'
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useRef } from 'react'
 
 import { useIsOnline, useIsWindowVisible } from '@cowprotocol/common-hooks'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
@@ -21,10 +21,8 @@ export function usePollQuoteCallback(
   const { fastQuote } = useAtomValue(tradeQuoteInputAtom)
   const tradeQuote = useTradeQuote()
   const tradeQuoteRef = useRef(tradeQuote)
-
-  useEffect(() => {
-    tradeQuoteRef.current = tradeQuote
-  }, [tradeQuote])
+  // eslint-disable-next-line react-hooks/refs
+  tradeQuoteRef.current = tradeQuote
 
   const { quoteParams, appData, inputCurrency } = quoteParamsState || {}
 
@@ -34,10 +32,8 @@ export function usePollQuoteCallback(
   const isWindowVisible = useIsWindowVisible()
   const isOnline = useIsOnline()
   const isOnlineRef = useRef(isOnline)
-
-  useEffect(() => {
-    isOnlineRef.current = isOnline
-  }, [isOnline])
+  // eslint-disable-next-line react-hooks/refs
+  isOnlineRef.current = isOnline
 
   return useCallback(
     (hasParamsChanged: boolean, forceUpdate = false): boolean => {

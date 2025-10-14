@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useRef } from 'react'
 
 import { FractionUtils } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
@@ -14,12 +14,11 @@ export function useUpdateCurrencyAmount(): (field: Field, value: CurrencyAmount<
   const updateSwapState = useUpdateSwapRawState()
 
   const inputCurrencyAmountRef = useRef(inputCurrencyAmount)
+  // eslint-disable-next-line react-hooks/refs
+  inputCurrencyAmountRef.current = inputCurrencyAmount
   const outputCurrencyAmountRef = useRef(outputCurrencyAmount)
-
-  useEffect(() => {
-    inputCurrencyAmountRef.current = inputCurrencyAmount
-    outputCurrencyAmountRef.current = outputCurrencyAmount
-  }, [inputCurrencyAmount, outputCurrencyAmount])
+  // eslint-disable-next-line react-hooks/refs
+  outputCurrencyAmountRef.current = outputCurrencyAmount
 
   return useCallback(
     (field: Field, value: CurrencyAmount<Currency> | undefined) => {

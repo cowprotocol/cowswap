@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai'
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 
 import { usePrevious } from '@cowprotocol/common-hooks'
 
@@ -40,7 +40,7 @@ export function QuoteObserverUpdater(): null {
     return adjustedForParts.quotient.toString()
   }, [isLoading, numberOfPartsValue, buyAmount, prevNumberOfParts])
 
-  useEffect(() => {
+  useMemo(() => {
     if (!outputCurrency || !quote || !quoteBuyAmount) {
       return
     }

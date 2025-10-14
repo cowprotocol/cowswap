@@ -45,10 +45,8 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
   const signingStep = useSigningStep()
 
   const propsRef = useRef(_props)
-
-  useEffect(() => {
-    propsRef.current = _props
-  }, [_props])
+  // eslint-disable-next-line react-hooks/refs
+  propsRef.current = _props
 
   const [frozenProps, setFrozenProps] = useState<TradeConfirmationProps | null>(null)
   const hasPendingTrade = !!pendingTrade

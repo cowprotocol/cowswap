@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { MerkleDrop, MerkleDropAbi, TokenDistro, TokenDistroAbi } from '@cowprotocol/abis'
 import {
-  COW_TOKEN_MAINNET,
+  COW_TOKEN_TO_CHAIN,
   LOCKED_GNO_VESTING_DURATION,
   LOCKED_GNO_VESTING_START_TIME,
   MERKLE_DROP_CONTRACT_ADDRESSES,
@@ -23,9 +23,7 @@ import { useContract, UseContractResult } from 'common/hooks/useContract'
 import { fetchClaim } from './claimData'
 
 // We just generally use the mainnet version. We don't read from the contract anyways so the address doesn't matter
-const _COW = COW_TOKEN_MAINNET!
-
-const initialAllocation = CurrencyAmount.fromRawAmount(_COW, 0)
+const _COW = COW_TOKEN_TO_CHAIN[SupportedChainId.MAINNET]
 
 const useMerkleDropContract = (): UseContractResult<MerkleDrop> =>
   useContract<MerkleDrop>(MERKLE_DROP_CONTRACT_ADDRESSES, MerkleDropAbi, true)
@@ -39,8 +37,9 @@ export const useAllocation = (): CurrencyAmount<Token> => {
   }
 
   const { chainId, account } = useWalletInfo()
-
-  const [allocation, setAllocation] = useState(initialAllocation)
+  const initialAllocation = useRef(CurrencyAmount.fromRawAmount(_COW, 0))
+  // eslint-disable-next-line react-hooks/refs
+  const [allocation, setAllocation] = useState(initialAllocation.current)
 
   useEffect(() => {
     let canceled = false
@@ -51,12 +50,12 @@ export const useAllocation = (): CurrencyAmount<Token> => {
         }
       })
     } else {
-      setAllocation(initialAllocation)
+      setAllocation(initialAllocation.current)
     }
     return () => {
       canceled = true
     }
-  }, [chainId, account])
+  }, [chainId, account, initialAllocation])
 
   return allocation
 }

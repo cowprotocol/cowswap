@@ -1,5 +1,5 @@
 import { useAtom, useAtomValue } from 'jotai'
-import { useEffect, useLayoutEffect, useRef } from 'react'
+import { useLayoutEffect, useRef } from 'react'
 
 import { useIsOnline, useIsWindowVisible, usePrevious } from '@cowprotocol/common-hooks'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
@@ -30,10 +30,8 @@ export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParame
   const tradeQuote = useTradeQuote()
   const prevIsConfirmOpen = usePrevious(isConfirmOpen)
   const tradeQuoteRef = useRef(tradeQuote)
-
-  useEffect(() => {
-    tradeQuoteRef.current = tradeQuote
-  }, [tradeQuote])
+  // eslint-disable-next-line react-hooks/refs
+  tradeQuoteRef.current = tradeQuote
 
   const amountStr = amount?.quotient.toString()
   const quoteParamsState = useQuoteParams(amountStr, partiallyFillable)
@@ -44,17 +42,13 @@ export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParame
   const isWindowVisible = useIsWindowVisible()
   const isOnline = useIsOnline()
   const isOnlineRef = useRef(isOnline)
-
-  useEffect(() => {
-    isOnlineRef.current = isOnline
-  }, [isOnline])
+  // eslint-disable-next-line react-hooks/refs
+  isOnlineRef.current = isOnline
 
   const pollQuote = usePollQuoteCallback(quotePollingParams, quoteParamsState)
   const pollQuoteRef = useRef(pollQuote)
-
-  useEffect(() => {
-    pollQuoteRef.current = pollQuote
-  }, [pollQuote])
+  // eslint-disable-next-line react-hooks/refs
+  pollQuoteRef.current = pollQuote
 
   /**
    * Reset quote when window is not visible or sell amount has been cleared

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useRef } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { isTruthy } from '@cowprotocol/common-utils'
@@ -27,9 +27,8 @@ export function useTokensForOrdersList(): (tokensToFetch: string[]) => Promise<T
   // but still use the latest whenever the callback is invoked
   const allTokensRef = useRef(allTokens)
   // Updated on every change
-  useEffect(() => {
-    allTokensRef.current = allTokens
-  }, [allTokens])
+  // eslint-disable-next-line react-hooks/refs
+  allTokensRef.current = allTokens
 
   return useCallback(
     async (_tokensToFetch: string[]) => {

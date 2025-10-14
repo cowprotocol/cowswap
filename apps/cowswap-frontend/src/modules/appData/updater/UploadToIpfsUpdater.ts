@@ -23,10 +23,8 @@ export function UploadToIpfsUpdater(): null {
 
   // Storing a reference to avoid re-render on every update
   const refToUpload = useRef(toUpload)
-
-  useEffect(() => {
-    refToUpload.current = toUpload
-  }, [toUpload])
+  // eslint-disable-next-line react-hooks/refs
+  refToUpload.current = toUpload
 
   // Filtering only newly created and not yet attempted to upload docs
   const newlyAdded = toUpload.filter(({ uploading, lastAttempt }) => !uploading && !lastAttempt)

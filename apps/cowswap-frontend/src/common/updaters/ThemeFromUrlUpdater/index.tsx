@@ -15,9 +15,8 @@ export function ThemeFromUrlUpdater(): null {
   const dispatch = useAppDispatch()
   const { search } = useLocation()
 
-  useEffect(() => {
-    darkModeRef.current = darkMode
-  }, [darkMode])
+  // eslint-disable-next-line react-hooks/refs
+  darkModeRef.current = darkMode
 
   useEffect(() => {
     const searchParams = new URLSearchParams(search)

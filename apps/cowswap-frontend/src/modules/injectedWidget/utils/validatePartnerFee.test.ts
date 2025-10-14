@@ -55,8 +55,6 @@ describe('validatePartnerFee()', () => {
     })
   })
 
-  // TODO: Break down this large function into smaller functions
-
   describe('When bps is a map', () => {
     it('When one of bps is not a valid, then should return error', () => {
       const result = validatePartnerFee({
@@ -176,8 +174,6 @@ describe('validatePartnerFee()', () => {
       expect(result).toBe(undefined)
     })
   })
-
-  // TODO: Break down this large function into smaller functions
 
   describe('When bps and recipient are maps', () => {
     it('When one of bps is not a valid, then should return error', () => {

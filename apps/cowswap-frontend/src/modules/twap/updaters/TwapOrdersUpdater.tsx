@@ -35,19 +35,15 @@ export function TwapOrdersUpdater(props: {
   const safeNonce = safeInfo?.nonce
 
   const twapOrdersListRef = useRef(twapOrdersList)
-
-  useEffect(() => {
-    twapOrdersListRef.current = twapOrdersList
-  }, [twapOrdersList])
+  // eslint-disable-next-line react-hooks/refs
+  twapOrdersListRef.current = twapOrdersList
 
   const allOrdersInfo = useDebounce(useAllTwapOrdersInfo(ordersSafeData), ORDERS_UPDATE_DEBOUNCE)
 
   const _twapOrderExecutions = useTwapOrdersExecutions(allOrdersInfo)
   const twapOrderExecutions = useRef(_twapOrderExecutions)
-
-  useEffect(() => {
-    twapOrderExecutions.current = _twapOrderExecutions
-  }, [_twapOrderExecutions])
+  // eslint-disable-next-line react-hooks/refs
+  twapOrderExecutions.current = _twapOrderExecutions
 
   // Here we can split all orders in two groups: 1. Not signed + expired, 2. Open + cancelled
   const pendingTwapOrderIds = useMemo(() => {

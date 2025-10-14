@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useLayoutEffect, useRef, useState } from 'react'
+import { ReactNode, useLayoutEffect, useRef, useState } from 'react'
 
 import { CoWHookDappEvents, hookDappIframeTransport } from '@cowprotocol/hook-dapp-lib'
 import { EthereumProvider, IframeRpcProviderBridge } from '@cowprotocol/iframe-transport'
@@ -66,12 +66,20 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
 
   const walletProvider = useWalletProvider()
 
-  useEffect(() => {
-    addHookRef.current = context.addHook
-    editHookRef.current = context.editHook
-    setSellTokenRef.current = context.setSellToken
-    setBuyTokenRef.current = context.setBuyToken
-  }, [context])
+  // eslint-disable-next-line react-hooks/refs
+  addHookRef.current = context.addHook
+  // eslint-disable-next-line react-hooks/refs
+  editHookRef.current = context.editHook
+  // eslint-disable-next-line react-hooks/refs
+  setSellTokenRef.current = context.setSellToken
+  // eslint-disable-next-line react-hooks/refs
+  setBuyTokenRef.current = context.setBuyToken
+
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  const handleIframeLoad = () => {
+    setIsLoading(false)
+  }
 
   useLayoutEffect(() => {
     const iframeWindow = iframeRef.current?.contentWindow
@@ -136,7 +144,7 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
         ref={iframeRef}
         src={dapp.url}
         allow="clipboard-read; clipboard-write"
-        onLoad={() => setIsLoading(false)}
+        onLoad={handleIframeLoad}
         $isLoading={isLoading}
       />
     </>

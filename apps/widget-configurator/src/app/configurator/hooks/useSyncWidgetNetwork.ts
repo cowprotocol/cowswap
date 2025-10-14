@@ -15,11 +15,10 @@ export function useSyncWidgetNetwork(
   const { switchNetwork } = useSwitchNetwork()
   const walletChainIdRef = useRef(walletChainId)
   const currentChainIdRef = useRef(chainId)
-
-  useEffect(() => {
-    walletChainIdRef.current = walletChainId
-    currentChainIdRef.current = chainId
-  }, [walletChainId, chainId])
+  // eslint-disable-next-line react-hooks/refs
+  walletChainIdRef.current = walletChainId
+  // eslint-disable-next-line react-hooks/refs
+  currentChainIdRef.current = chainId
 
   // Bind network control to wallet network
   useEffect(() => {

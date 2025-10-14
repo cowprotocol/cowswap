@@ -16,9 +16,8 @@ export function HwAccountIndexUpdater(): ReactNode {
   const { connector, isActive } = useWeb3React()
   const connectorRef = useRef(connector)
 
-  useEffect(() => {
-    connectorRef.current = connector
-  }, [connector])
+  // eslint-disable-next-line react-hooks/refs
+  connectorRef.current = connector
 
   const connectionType = useMemo(() => {
     const connection = getWeb3ReactConnection(connector)

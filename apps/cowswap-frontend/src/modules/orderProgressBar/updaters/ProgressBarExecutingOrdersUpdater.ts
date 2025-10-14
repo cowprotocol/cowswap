@@ -1,5 +1,5 @@
 import { useAtom } from 'jotai'
-import { useEffect, useLayoutEffect, useRef } from 'react'
+import { useLayoutEffect, useRef } from 'react'
 
 import { ordersProgressBarCountdown } from '../state/atoms'
 import { OrdersProgressBarCountdown } from '../types'
@@ -10,9 +10,8 @@ export function ProgressBarExecutingOrdersUpdater(): null {
   // Use a ref to not restart the updater on every change
   const countdownsRef = useRef(allCountdowns)
   // Important! Update the ref on every re-render
-  useEffect(() => {
-    countdownsRef.current = allCountdowns
-  }, [allCountdowns])
+  // eslint-disable-next-line react-hooks/refs
+  countdownsRef.current = allCountdowns
 
   useLayoutEffect(() => {
     // TODO: Add proper return type annotation

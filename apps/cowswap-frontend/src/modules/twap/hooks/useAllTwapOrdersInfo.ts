@@ -8,9 +8,8 @@ export function useAllTwapOrdersInfo(ordersSafeData: TwapOrdersSafeData[]): Twap
   const [allOrdersInfo, setAllOrdersInfo] = useState<Record<string, TwapOrderInfo>>({})
   const allOrdersInfoRef = useRef(allOrdersInfo)
 
-  useEffect(() => {
-    allOrdersInfoRef.current = allOrdersInfo
-  }, [allOrdersInfo])
+  // eslint-disable-next-line react-hooks/refs
+  allOrdersInfoRef.current = allOrdersInfo
 
   useEffect(() => {
     const parsed = parseOrdersSafeData(ordersSafeData)
