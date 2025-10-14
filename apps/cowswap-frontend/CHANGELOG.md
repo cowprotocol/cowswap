@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.119.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.119.0...cowswap-v1.119.1) (2025-10-03)
+
+
+### Bug Fixes
+
+* **account-modal:** prevent crash with unexpected empty appData.metadata ([#6335](https://github.com/cowprotocol/cowswap/issues/6335)) ([db263c7](https://github.com/cowprotocol/cowswap/commit/db263c7846f999266cecaf1acaea4766c29d73cc))
+* **bridging:** disable Across bridging provider on prod like envs ([#6336](https://github.com/cowprotocol/cowswap/issues/6336)) ([f7e21fe](https://github.com/cowprotocol/cowswap/commit/f7e21fe17fc4ba7937b8a4680cce5bf90c966391))
+
 ## [1.119.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.118.13...cowswap-v1.119.0) (2025-10-02)
 
 
