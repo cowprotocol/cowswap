@@ -65,5 +65,6 @@ export function usePriorityTokenAddresses(): Set<string> {
     }
   }, [newSetOfTokens, pending])
 
+  // eslint-disable-next-line react-hooks/refs
   return setOfTokensRef.current
 }

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useState } from 'react'
 
 import ICON_HOOK from '@cowprotocol/assets/cow-swap/hook.svg'
 import { HookDappWalletCompatibility } from '@cowprotocol/hook-dapp-lib'
@@ -23,10 +23,7 @@ type HookPosition = 'pre' | 'post'
 
 console.log(ICON_HOOK)
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
-export function HooksStoreWidget() {
+export function HooksStoreWidget(): ReactNode {
   const { chainId } = useWalletInfo()
   const [selectedHookPosition, setSelectedHookPosition] = useState<HookPosition | null>(null)
   const [hookToEdit, setHookToEdit] = useState<string | undefined>(undefined)
