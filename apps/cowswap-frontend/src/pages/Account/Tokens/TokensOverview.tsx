@@ -418,8 +418,9 @@ function useAccountTokensData(): AccountTokensData {
     }, [])
   }, [allTokens])
 
-  const { state: allowances } = useTokenAllowances(tokenAddresses)
+  const { state: allowancesState } = useTokenAllowances(tokenAddresses)
   const { values: balances } = useTokensBalances()
+  const allowances: AllowancesState = allowancesState ?? {}
 
   return {
     formattedTokens,
