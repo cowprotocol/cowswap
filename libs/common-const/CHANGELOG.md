@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.27.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.26.0...common-const-v1.27.0) (2025-10-14)
+
+
+### Features
+
+* use suggested slippage from BFF ([#6313](https://github.com/cowprotocol/cowswap/issues/6313)) ([30c5ff6](https://github.com/cowprotocol/cowswap/commit/30c5ff6c118513aad75edf2355282f9097194c1d))
+
 ## [1.26.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.25.0...common-const-v1.26.0) (2025-09-25)
 
 
