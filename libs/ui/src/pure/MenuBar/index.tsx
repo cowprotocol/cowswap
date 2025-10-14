@@ -18,10 +18,12 @@ import IMG_ICON_X from '@cowprotocol/assets/images/x.svg'
 import { useMediaQuery, useOnClickOutside } from '@cowprotocol/common-hooks'
 import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
 
+import { Portal } from '@reach/portal'
 import SVG from 'react-inlinesvg'
 
 import {
   DropdownContent,
+  PortaledDropdownContent,
   DropdownContentItemButton,
   DropdownContentItemDescription,
   DropdownContentItemIcon,
@@ -356,7 +358,6 @@ const NavDaoTrigger: React.FC<{
   rootDomain: string
   LinkComponent: LinkComponentType
   // TODO: Break down this large function into smaller functions
-  // eslint-disable-next-line max-lines-per-function
 }> = ({ isOpen, setIsOpen, mobileMode, rootDomain, LinkComponent }) => {
   const triggerRef = useRef<HTMLDivElement>(null)
   const dropdownRef = useRef<HTMLUListElement>(null)
@@ -518,7 +519,7 @@ const DropdownContentWrapper: React.FC<DropdownContentWrapperProps> = ({
     >
       {/* TODO: Break down this large function into smaller functions */}
       {/* TODO: Reduce function complexity by extracting logic */}
-      {/* eslint-disable-next-line max-lines-per-function, complexity */}
+      {/* eslint-disable-next-line complexity */}
       {content.items?.map((item: DropdownMenuItem, index: number) => {
         const hasChildren = !!item.children
         const Tag = hasChildren ? 'div' : item.isButton ? DropdownContentItemButton : undefined
@@ -628,12 +629,34 @@ interface GlobalSettingsDropdownProps {
   closeDropdown: () => void
   rootDomain: string
   LinkComponent: LinkComponentType
+  buttonRef?: React.RefObject<HTMLButtonElement | null>
 }
 
-// TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+// Custom hook for portal dropdown positioning
+function usePortalPosition(
+  buttonRef: React.RefObject<HTMLElement | null> | undefined,
+  isOpen: boolean,
+  isMobile: boolean,
+  gap: number = 14,
+): { top: number; right: number } {
+  const [position, setPosition] = useState({ top: 0, right: 0 })
+
+  useEffect(() => {
+    if (buttonRef?.current && isOpen && !isMobile) {
+      const rect = buttonRef.current.getBoundingClientRect()
+      setPosition({
+        top: rect.bottom + gap,
+        right: window.innerWidth - rect.right,
+      })
+    }
+  }, [buttonRef, isOpen, isMobile, gap])
+
+  return position
+}
+
 const GlobalSettingsDropdown = forwardRef<HTMLUListElement, GlobalSettingsDropdownProps>((props, ref) => {
-  const { mobileMode, settingsNavItems, isOpen, closeDropdown, rootDomain, LinkComponent } = props
+  const { mobileMode, settingsNavItems, isOpen, closeDropdown, rootDomain, LinkComponent, buttonRef } = props
+  const position = usePortalPosition(buttonRef, isOpen, mobileMode)
 
   if (!settingsNavItems || settingsNavItems.length === 0) {
     return null
@@ -670,7 +693,14 @@ const GlobalSettingsDropdown = forwardRef<HTMLUListElement, GlobalSettingsDropdo
             </DropdownContent>
           </MobileDropdownContainer>
         ) : (
-          <DropdownContent isOpen={true} ref={ref} alignRight={true} mobileMode={mobileMode}>
+          <PortaledDropdownContent
+            isOpen={true}
+            ref={ref}
+            alignRight={true}
+            mobileMode={mobileMode}
+            top={position.top}
+            right={position.right}
+          >
             {settingsNavItems.map((item, index) => {
               const to = item.external
                 ? appendUtmParams(item.href!, item.utmSource, item.utmContent, rootDomain, item.external, item.label)
@@ -691,7 +721,7 @@ const GlobalSettingsDropdown = forwardRef<HTMLUListElement, GlobalSettingsDropdo
                 </StyledDropdownContentItem>
               )
             })}
-          </DropdownContent>
+          </PortaledDropdownContent>
         ))}
     </>
   )
@@ -910,17 +940,32 @@ export const MenuBar = (props: MenuBarProps) => {
               <GlobalSettingsButton ref={settingsButtonRef} mobileMode={isMedium} onClick={handleSettingsToggle}>
                 <SVG src={IMG_ICON_SETTINGS_GLOBAL} />
               </GlobalSettingsButton>
-              {isSettingsOpen && (
-                <GlobalSettingsDropdown
-                  mobileMode={isMedium}
-                  settingsNavItems={settingsNavItems}
-                  isOpen={isSettingsOpen}
-                  closeDropdown={handleSettingsToggle}
-                  ref={settingsDropdownRef}
-                  rootDomain={rootDomain}
-                  LinkComponent={LinkComponent}
-                />
-              )}
+              {isSettingsOpen &&
+                (isMedium ? (
+                  <GlobalSettingsDropdown
+                    mobileMode={isMedium}
+                    settingsNavItems={settingsNavItems}
+                    isOpen={isSettingsOpen}
+                    closeDropdown={handleSettingsToggle}
+                    ref={settingsDropdownRef}
+                    rootDomain={rootDomain}
+                    LinkComponent={LinkComponent}
+                  />
+                ) : (
+                  // Desktop: Use Portal for positioning
+                  <Portal>
+                    <GlobalSettingsDropdown
+                      mobileMode={isMedium}
+                      settingsNavItems={settingsNavItems}
+                      isOpen={isSettingsOpen}
+                      closeDropdown={handleSettingsToggle}
+                      ref={settingsDropdownRef}
+                      rootDomain={rootDomain}
+                      LinkComponent={LinkComponent}
+                      buttonRef={settingsButtonRef}
+                    />
+                  </Portal>
+                ))}
             </>
           )}
         </RightAligned>

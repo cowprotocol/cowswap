@@ -4,7 +4,6 @@ import { useCallback } from 'react'
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { Nullish } from '@cowprotocol/types'
 import { useIsSafeWallet, useIsWalletConnect } from '@cowprotocol/wallet'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
 import SafeApiKit from '@safe-global/api-kit'
 import type { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
@@ -49,7 +48,6 @@ export function useZeroApprove(
   const safeApiKit = useSafeApiKit()
   const isWalletConnect = useIsWalletConnect()
   const isSafeWallet = useIsSafeWallet()
-  const provider = useWalletProvider()
 
   return useCallback(async () => {
     if (!amountToApprove) return
@@ -62,19 +60,10 @@ export function useZeroApprove(
       if (txReceipt && safeApiKit && isSafeWallet && isWalletConnect) {
         return waitForSafeTransactionExecution({ safeApiKit, txHash: txReceipt.hash })
       } else {
-        return provider && txReceipt ? provider.waitForTransaction(txReceipt?.hash) : null
+        return await txReceipt?.wait()
       }
     } finally {
       setZeroApprovalState({ isApproving: false })
     }
-  }, [
-    amountToApprove,
-    setZeroApprovalState,
-    currency,
-    approveCallback,
-    safeApiKit,
-    isSafeWallet,
-    isWalletConnect,
-    provider,
-  ])
+  }, [amountToApprove, setZeroApprovalState, currency, approveCallback, safeApiKit, isSafeWallet, isWalletConnect])
 }

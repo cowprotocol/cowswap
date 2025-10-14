@@ -1,5 +1,6 @@
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { PermitType } from '@cowprotocol/permit-utils'
+import { Nullish } from '@cowprotocol/types'
 
 import { usePermitInfo } from 'modules/permit'
 import { TradeType, useDerivedTradeState } from 'modules/trade'
@@ -19,28 +20,42 @@ export enum ApproveRequiredReason {
 export function useIsApprovalOrPermitRequired(): ApproveRequiredReason {
   const amountToApprove = useGetAmountToSignApprove()
   const { isPartialApproveEnabled } = useFeatureFlags()
-
   const { state: approvalState } = useApproveState(amountToApprove)
   const { inputCurrency, tradeType } = useDerivedTradeState() || {}
-
   const { type } = usePermitInfo(inputCurrency, tradeType) || {}
 
-  const isPermitSupported = type && type !== 'unsupported'
+  if (amountToApprove?.equalTo('0')) {
+    return ApproveRequiredReason.NotRequired
+  }
 
-  if (!isPermitSupported && (approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING)) {
+  const isPermitSupported = type !== 'unsupported'
+
+  if (!isPermitSupported && isApprovalRequired(approvalState)) {
     return ApproveRequiredReason.Required
   }
 
-  // we use new approve/permit flow only for swaps for now
-  if (tradeType !== TradeType.SWAP || !isPartialApproveEnabled) {
+  if (!isNewApproveFlowEnabled(tradeType, isPartialApproveEnabled)) {
     return ApproveRequiredReason.NotRequired
   }
 
   return getPermitRequirements(type)
 }
 
+function isApprovalRequired(approvalState: ApprovalState): boolean {
+  return approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING
+}
+
+function isNewApproveFlowEnabled(tradeType?: Nullish<TradeType>, isPartialApproveEnabled?: boolean): boolean {
+  return tradeType === TradeType.SWAP && isPartialApproveEnabled === true
+}
+
 function getPermitRequirements(type?: PermitType): ApproveRequiredReason {
-  if (type === 'dai-like') return ApproveRequiredReason.DaiLikePermitRequired
-  if (type === 'eip-2612') return ApproveRequiredReason.Eip2612PermitRequired
-  return ApproveRequiredReason.NotRequired
+  switch (type) {
+    case 'dai-like':
+      return ApproveRequiredReason.DaiLikePermitRequired
+    case 'eip-2612':
+      return ApproveRequiredReason.Eip2612PermitRequired
+    default:
+      return ApproveRequiredReason.NotRequired
+  }
 }

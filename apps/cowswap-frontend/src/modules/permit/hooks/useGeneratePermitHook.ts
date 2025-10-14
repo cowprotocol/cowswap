@@ -38,7 +38,15 @@ export function useGeneratePermitHook(): GeneratePermitHook {
 
   return useCallback(
     async (params: GeneratePermitHookParams): Promise<PermitHookData | undefined> => {
-      const { inputToken, account, permitInfo, customSpender, amount: maybeAmount } = params
+      const {
+        inputToken,
+        account,
+        permitInfo,
+        customSpender,
+        amount: maybeAmount,
+        preSignCallback,
+        postSignCallback,
+      } = params
 
       const amount = maybeAmount ?? MAX_APPROVE_AMOUNT
 
@@ -61,17 +69,23 @@ export function useGeneratePermitHook(): GeneratePermitHook {
         return cachedPermit
       }
 
-      const hookData = await generatePermitHook({
-        chainId,
-        inputToken,
-        spender,
-        provider,
-        permitInfo,
-        eip2612Utils,
-        account,
-        nonce,
-        amount,
-      })
+      let hookData: PermitHookData | undefined
+      try {
+        preSignCallback?.()
+        hookData = await generatePermitHook({
+          chainId,
+          inputToken,
+          spender,
+          provider,
+          permitInfo,
+          eip2612Utils,
+          account,
+          nonce,
+          amount,
+        })
+      } finally {
+        postSignCallback?.()
+      }
 
       hookData && storePermit({ ...permitParams, hookData, spender })
 

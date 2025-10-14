@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { FiatAmount, InlineBanner, StatusColorVariant, TokenAmount } from '@cowprotocol/ui'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
@@ -9,7 +11,6 @@ import { parameterizeTradeRoute } from 'modules/trade/utils/parameterizeTradeRou
 import { SwapAmountDifference } from 'modules/twap/hooks/useSwapAmountDifference'
 
 import { Routes } from 'common/constants/routes'
-
 
 export type SwapPriceDifferenceWarningProps = {
   swapAmountDifference: SwapAmountDifference
@@ -28,50 +29,42 @@ const StyledNavLink = styled(NavLink)`
 `
 
 const SWAP_PRICE_DIFFERENCE_LIMIT = 0.5 // 0.5%
+const FEE_AMOUNT_THRESHOLD = 0.5 // 0.5$
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function SwapPriceDifferenceWarning({
   tradeUrlParams,
   swapAmountDifference,
   feeFiatAmount,
-}: SwapPriceDifferenceWarningProps) {
+}: SwapPriceDifferenceWarningProps): ReactNode {
   const { amount, percent } = swapAmountDifference
   const isTwapBetter = amount.greaterThan(0)
-  const diffLessThanLimit = +percent.toSignificant(2) < SWAP_PRICE_DIFFERENCE_LIMIT
-
-  if (!isTwapBetter && !feeFiatAmount) return null
-
-  if (isTwapBetter && diffLessThanLimit) return null
 
   const routePath = parameterizeTradeRoute(tradeUrlParams, Routes.SWAP, true)
   const swapOrderLink = <StyledNavLink to={routePath}>SWAP order</StyledNavLink>
 
-  return (
+  return isTwapBetter ? (
+    +percent.toSignificant(2) > SWAP_PRICE_DIFFERENCE_LIMIT ? (
+      <InlineBanner bannerType={StatusColorVariant.Savings}>
+        <strong>Maximizing Your Gains! </strong>
+        <p>
+          You could gain an extra{' '}
+          <b>
+            <TokenAmount amount={amount} tokenSymbol={amount.currency} />
+          </b>{' '}
+          compared to using a {swapOrderLink}
+        </p>
+      </InlineBanner>
+    ) : null
+  ) : feeFiatAmount && +feeFiatAmount.toSignificant(2) > FEE_AMOUNT_THRESHOLD ? (
     <InlineBanner bannerType={StatusColorVariant.Savings}>
-      {isTwapBetter ? (
-        <>
-          <strong>Maximizing Your Gains! </strong>
-          <p>
-            You could gain an extra{' '}
-            <b>
-              <TokenAmount amount={amount} tokenSymbol={amount.currency} />
-            </b>{' '}
-            compared to using a {swapOrderLink}
-          </p>
-        </>
-      ) : (
-        <>
-          <strong>Trade Smart, Save More!</strong>
-          <p>
-            Considering current network costs (
-            <b>
-              <FiatAmount amount={feeFiatAmount} />
-            </b>{' '}
-            per chunk), you could save more by reducing the number of parts or switch to a {swapOrderLink}.
-          </p>
-        </>
-      )}
+      <strong>Trade Smart, Save More!</strong>
+      <p>
+        Considering current network costs (
+        <b>
+          <FiatAmount amount={feeFiatAmount} />
+        </b>{' '}
+        per chunk), you could save more by reducing the number of parts or switch to a {swapOrderLink}.
+      </p>
     </InlineBanner>
-  )
+  ) : null
 }

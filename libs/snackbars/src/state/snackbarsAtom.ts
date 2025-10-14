@@ -1,15 +1,15 @@
 import { atom } from 'jotai'
 import { atomWithReset } from 'jotai/utils'
-import { ReactElement } from 'react'
+import { ReactNode } from 'react'
 
 export type IconType = 'success' | 'alert' | 'custom'
 
 export interface SnackbarItem {
-  content: ReactElement
+  content: ReactNode
   id: string
   duration?: number
   icon?: IconType
-  customIcon?: ReactElement
+  customIcon?: ReactNode
 }
 
 export const snackbarsAtom = atomWithReset<{ [key: string]: SnackbarItem }>({})
