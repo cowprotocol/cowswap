@@ -1,6 +1,5 @@
+import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances';
 import { BigNumber } from '@ethersproject/bignumber'
-
-import { BalancesAndAllowances } from 'common/types'
 
 import { getOrderParams } from './getOrderParams'
 

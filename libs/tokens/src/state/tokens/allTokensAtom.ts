@@ -11,7 +11,7 @@ import { lowerCaseTokensMap } from '../../utils/lowerCaseTokensMap'
 import { parseTokenInfo } from '../../utils/parseTokenInfo'
 import { tokenMapToListWithLogo } from '../../utils/tokenMapToListWithLogo'
 import { environmentAtom } from '../environmentAtom'
-import { listsEnabledStateAtom, listsStatesListAtom } from '../tokenLists/tokenListsStateAtom'
+import { listsEnabledStateAtom, listsStatesListAtom, tokenListsUpdatingAtom } from '../tokenLists/tokenListsStateAtom'
 
 export interface TokensByAddress {
   [address: string]: TokenWithLogo | undefined
@@ -31,39 +31,47 @@ const tokensStateAtom = atom(async (get) => {
   const listsStatesList = await get(listsStatesListAtom)
   const listsEnabledState = await get(listsEnabledStateAtom)
 
-  return listsStatesList.reduce<TokensState>(
-    (acc, list) => {
-      const isListEnabled = listsEnabledState[list.source]
-      const lpTokenProvider = list.lpTokenProvider
-      list.list.tokens.forEach((token) => {
-        const tokenInfo = parseTokenInfo(chainId, token)
-        const tokenAddressKey = tokenInfo?.address.toLowerCase()
+  return {
+    listsCount: listsStatesList.length,
+    // Always process lists in a deterministic order so that precedence
+    // between lists is stable across sessions/updates. Lower priority
+    // value means higher precedence in our config (e.g. CowSwap list is 1).
+    tokensState: [...listsStatesList]
+      .sort((a, b) => (a.priority ?? Number.MAX_SAFE_INTEGER) - (b.priority ?? Number.MAX_SAFE_INTEGER))
+      .reduce<TokensState>(
+      (acc, list) => {
+        const isListEnabled = listsEnabledState[list.source]
+        const lpTokenProvider = list.lpTokenProvider
+        list.list.tokens.forEach((token) => {
+          const tokenInfo = parseTokenInfo(chainId, token)
+          const tokenAddressKey = tokenInfo?.address.toLowerCase()
 
-        if (!tokenInfo || !tokenAddressKey) return
+          if (!tokenInfo || !tokenAddressKey) return
 
-        if (lpTokenProvider) {
-          tokenInfo.lpTokenProvider = lpTokenProvider
-        }
-
-        if (isListEnabled) {
-          if (!acc.activeTokens[tokenAddressKey]) {
-            acc.activeTokens[tokenAddressKey] = tokenInfo
+          if (lpTokenProvider) {
+            tokenInfo.lpTokenProvider = lpTokenProvider
           }
-        } else {
-          if (!acc.inactiveTokens[tokenAddressKey]) {
-            acc.inactiveTokens[tokenAddressKey] = tokenInfo
-          }
-        }
-      })
 
-      return acc
-    },
-    { activeTokens: {}, inactiveTokens: {} },
-  )
+          if (isListEnabled) {
+            if (!acc.activeTokens[tokenAddressKey]) {
+              acc.activeTokens[tokenAddressKey] = tokenInfo
+            }
+          } else {
+            if (!acc.inactiveTokens[tokenAddressKey]) {
+              acc.inactiveTokens[tokenAddressKey] = tokenInfo
+            }
+          }
+        })
+
+        return acc
+      },
+      { activeTokens: {}, inactiveTokens: {} },
+    ),
+  }
 })
 
 export const activeTokensMapAtom = atom(async (get) => {
-  return (await get(tokensStateAtom)).activeTokens
+  return (await get(tokensStateAtom)).tokensState.activeTokens
 })
 
 /**
@@ -75,9 +83,17 @@ export const allActiveTokensAtom = atom(async (get) => {
   const { chainId, enableLpTokensByDefault } = get(environmentAtom)
   const userAddedTokens = get(userAddedTokensAtom)
   const favoriteTokensState = get(favoriteTokensAtom)
+  const isTokenListsUpdating = get(tokenListsUpdatingAtom)
 
-  const tokensMap = await get(tokensStateAtom)
+  const { tokensState: tokensMap, listsCount } = await get(tokensStateAtom)
   const nativeToken = NATIVE_CURRENCIES[chainId]
+
+  /**
+   * Wait till token lists loaded
+   */
+  if (!isTokenListsUpdating ? false : listsCount === 0) {
+    return { tokens: [], chainId }
+  }
 
   const lpTokens = enableLpTokensByDefault
     ? Object.keys(tokensMap.inactiveTokens).reduce<TokensMap>((acc, key) => {
@@ -112,7 +128,7 @@ export const allActiveTokensAtom = atom(async (get) => {
 
 export const inactiveTokensAtom = atom(async (get) => {
   const { chainId } = get(environmentAtom)
-  const tokensMap = await get(tokensStateAtom)
+  const { tokensState: tokensMap } = await get(tokensStateAtom)
 
   return tokenMapToListWithLogo([tokensMap.inactiveTokens], chainId)
 })

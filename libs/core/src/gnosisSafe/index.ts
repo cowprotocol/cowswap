@@ -8,7 +8,7 @@ import type { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk
 // eslint-disable-next-line no-restricted-imports
 import { ethers } from 'ethers'
 
-const SAFE_TRANSACTION_SERVICE_URL: Record<SupportedChainId, string> = {
+export const SAFE_TRANSACTION_SERVICE_URL: Record<SupportedChainId, string> = {
   [SupportedChainId.MAINNET]: 'https://safe-transaction-mainnet.safe.global',
   [SupportedChainId.GNOSIS_CHAIN]: 'https://safe-transaction-gnosis-chain.safe.global',
   [SupportedChainId.ARBITRUM_ONE]: 'https://safe-transaction-arbitrum.safe.global',
@@ -16,6 +16,8 @@ const SAFE_TRANSACTION_SERVICE_URL: Record<SupportedChainId, string> = {
   [SupportedChainId.SEPOLIA]: 'https://safe-transaction-sepolia.safe.global',
   [SupportedChainId.POLYGON]: 'https://safe-transaction-polygon.safe.global',
   [SupportedChainId.AVALANCHE]: 'https://safe-transaction-avalanche.safe.global',
+  [SupportedChainId.LENS]: 'https://safe-transaction-lens.safe.global',
+  [SupportedChainId.BNB]: 'https://safe-transaction-bsc.safe.global',
 }
 
 const SAFE_BASE_URL = 'https://app.safe.global'

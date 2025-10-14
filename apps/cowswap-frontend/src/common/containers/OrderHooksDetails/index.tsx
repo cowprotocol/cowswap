@@ -1,6 +1,6 @@
 import { ReactElement, useEffect, useMemo, useState } from 'react'
 
-import { latest } from '@cowprotocol/app-data'
+import { cowAppDataLatestScheme } from '@cowprotocol/cow-sdk'
 import { CowHookDetails, HookToDappMatch, matchHooksToDappsRegistry } from '@cowprotocol/hook-dapp-lib'
 import { InfoTooltip } from '@cowprotocol/ui'
 
@@ -42,9 +42,10 @@ export function OrderHooksDetails({ appData, children, margin, isTradeConfirmati
     if (isTradeConfirmation) mutate()
   }, [isTradeConfirmation, mutate])
 
-  if (!appDataDoc) return null
+  // Not all versions of appData have metadata
+  if (!appDataDoc?.metadata) return null
 
-  const metadata = appDataDoc.metadata as latest.Metadata
+  const metadata = appDataDoc.metadata as cowAppDataLatestScheme.Metadata
 
   const hasSomeFailedSimulation = isTradeConfirmation && Object.values(data || {}).some((hook) => !hook.status)
 

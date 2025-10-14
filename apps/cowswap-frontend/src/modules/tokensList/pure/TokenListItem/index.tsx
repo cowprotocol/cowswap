@@ -1,10 +1,10 @@
 import { MouseEventHandler, ReactNode } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { getCurrencyAddress } from '@cowprotocol/common-utils'
+import { areAddressesEqual, getCurrencyAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenListTags } from '@cowprotocol/tokens'
-import { LoadingRows, LoadingRowSmall, TokenAmount } from '@cowprotocol/ui'
+import { FiatAmount, LoadingRows, LoadingRowSmall, TokenAmount } from '@cowprotocol/ui'
 import { BigNumber } from '@ethersproject/bignumber'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -25,25 +25,37 @@ export interface TokenListItemProps {
   token: TokenWithLogo
   selectedToken?: Nullish<Currency>
   balance: BigNumber | undefined
+  usdAmount?: CurrencyAmount<Currency> | null
 
-  onSelectToken(token: TokenWithLogo): void
+  onSelectToken?(token: TokenWithLogo): void
 
-  isUnsupported: boolean
-  isPermitCompatible: boolean
   isWalletConnected: boolean
-  tokenListTags: TokenListTags
+  isUnsupported?: boolean
+  isPermitCompatible?: boolean
+  tokenListTags?: TokenListTags
+  children?: ReactNode
+  className?: string
 }
+
+function getClassName(isTokenSelected: boolean, className = ''): string {
+  return `${className} ${isTokenSelected ? 'token-item-selected' : ''}`
+}
+
+const EMPTY_TAGS = {}
 
 export function TokenListItem(props: TokenListItemProps): ReactNode {
   const {
     token,
     selectedToken,
     balance,
+    usdAmount,
     onSelectToken,
-    isUnsupported,
-    isPermitCompatible,
+    isUnsupported = false,
+    isPermitCompatible = false,
     isWalletConnected,
-    tokenListTags,
+    tokenListTags = EMPTY_TAGS,
+    children,
+    className,
   } = props
 
   const handleClick: MouseEventHandler<HTMLDivElement> = (e) => {
@@ -51,14 +63,15 @@ export function TokenListItem(props: TokenListItemProps): ReactNode {
       e.preventDefault()
       e.stopPropagation()
     } else {
-      onSelectToken(token)
+      onSelectToken?.(token)
     }
   }
 
-  const isTokenSelected =
+  const isTokenSelected = Boolean(
     selectedToken &&
-    token.address.toLowerCase() === getCurrencyAddress(selectedToken).toLowerCase() &&
-    token.chainId === selectedToken.chainId
+      areAddressesEqual(token.address, getCurrencyAddress(selectedToken)) &&
+      token.chainId === selectedToken.chainId,
+  )
 
   const isSupportedChain = token.chainId in SupportedChainId
 
@@ -71,7 +84,7 @@ export function TokenListItem(props: TokenListItemProps): ReactNode {
       data-token-name={token.name || ''}
       data-element-type="token-selection"
       onClick={handleClick}
-      className={isTokenSelected ? 'token-item-selected' : ''}
+      className={getClassName(isTokenSelected, className)}
     >
       <TokenInfo
         token={token}
@@ -86,9 +99,15 @@ export function TokenListItem(props: TokenListItemProps): ReactNode {
       />
       {isWalletConnected && (
         <styledEl.TokenBalance>
-          {isSupportedChain ? balanceAmount ? <TokenAmount amount={balanceAmount} /> : LoadingElement : null}
+          {isSupportedChain ? (
+            <>
+              {balanceAmount ? <TokenAmount amount={balanceAmount} /> : LoadingElement}
+              {usdAmount ? <FiatAmount amount={usdAmount} /> : null}
+            </>
+          ) : null}
         </styledEl.TokenBalance>
       )}
+      {children}
     </styledEl.TokenItem>
   )
 }

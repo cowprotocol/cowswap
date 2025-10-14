@@ -11,6 +11,7 @@ import type { OnChainCancellation } from 'common/hooks/useCancelOrder/onChainCan
 import { useGP2SettlementContract } from 'common/hooks/useContract'
 
 import { cancelTwapOrderTxs, estimateCancelTwapOrderTxs } from '../services/cancelTwapOrderTxs'
+import { processTwapCancellation } from '../services/processTwapCancellation'
 import { setTwapOrderStatusAtom } from '../state/twapOrdersListAtom'
 import { twapPartOrdersAtom } from '../state/twapPartOrdersAtom'
 import { TwapOrderStatus } from '../types'
@@ -35,7 +36,13 @@ export function useCancelTwapOrder(): (twapOrderId: string, order: Order) => Pro
       const partOrder = twapPartOrders[twapOrderId]?.sort((a, b) => a.order.validTo - b.order.validTo)[0]
       const partOrderId = partOrder?.uid
 
-      const context = { composableCowContract, settlementContract, orderId: twapOrderId, partOrderId }
+      const context = {
+        composableCowContract,
+        settlementContract,
+        orderId: twapOrderId,
+        partOrderId,
+        chainId: composableCowChainId,
+      }
 
       return {
         estimatedGas: await estimateCancelTwapOrderTxs(context),
@@ -46,6 +53,10 @@ export function useCancelTwapOrder(): (twapOrderId: string, order: Order) => Pro
 
             setTwapOrderStatus(twapOrderId, TwapOrderStatus.Cancelling)
             processCancelledOrder({ txHash, orderId: twapOrderId, sellTokenAddress, sellTokenSymbol })
+
+            processTwapCancellation(txHash, () => {
+              setTwapOrderStatus(twapOrderId, TwapOrderStatus.Cancelled)
+            })
           })
         },
       }

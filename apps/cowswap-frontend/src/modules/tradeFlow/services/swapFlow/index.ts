@@ -1,10 +1,12 @@
-import { getAddress, reportPermitWithDefaultSigner } from '@cowprotocol/common-utils'
+import { delay, getCurrencyAddress, reportPermitWithDefaultSigner } from '@cowprotocol/common-utils'
 import { SigningScheme, SigningStepManager } from '@cowprotocol/cow-sdk'
 import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
+import { CoWShedEip1271SignatureInvalid } from '@cowprotocol/sdk-cow-shed'
 import { UiOrderType } from '@cowprotocol/types'
 import { Percent } from '@uniswap/sdk-core'
 
 import { SigningSteps } from 'entities/trade'
+import ms from 'ms.macro'
 import { tradingSdk } from 'tradingSdk/tradingSdk'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
@@ -20,6 +22,11 @@ import { TradeFlowAnalytics } from 'modules/trade/utils/tradeFlowAnalytics'
 import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
 
 import { TradeFlowContext } from '../../types/TradeFlowContext'
+
+const DELAY_BETWEEN_SIGNATURES = ms`500ms`
+
+const BridgeInvalidEip1271SignatureError =
+  'Cross-chain swaps are not supported with your current account delegate (EIP-7702). Please ensure the delegate implements the default EIP-1271 standard.'
 
 // TODO: Break down this large function into smaller functions
 // TODO: Reduce function complexity by extracting logic
@@ -48,10 +55,18 @@ export async function swapFlow(
     return false
   }
 
-  const { orderParams, context, permitInfo, generatePermitHook, swapFlowAnalyticsContext, callbacks } = input
+  const {
+    orderParams,
+    context,
+    permitInfo,
+    generatePermitHook,
+    permitAmountToSign,
+    swapFlowAnalyticsContext,
+    callbacks,
+  } = input
   const { chainId } = context
   const inputCurrency = inputAmount.currency
-  const cachedPermit = await getCachedPermit(getAddress(inputCurrency))
+  const cachedPermit = await getCachedPermit(getCurrencyAddress(inputCurrency), permitAmountToSign)
 
   const shouldSignPermit = isSupportedPermitInfo(permitInfo) && !cachedPermit
   const isBridgingOrder = inputAmount.currency.chainId !== outputAmount.currency.chainId
@@ -71,6 +86,7 @@ export async function swapFlow(
       account,
       inputToken: inputCurrency,
       permitInfo,
+      amount: permitAmountToSign,
       generatePermitHook,
     })
 
@@ -85,11 +101,27 @@ export async function swapFlow(
 
     logTradeFlow('SWAP FLOW', 'STEP 4: sign and post order')
 
+    let bridgingSignTimestamp = 0
+
     const signingStepManager: SigningStepManager = {
       beforeBridgingSign() {
         setSigningStep(shouldSignPermit ? '2/3' : '1/2', SigningSteps.BridgingSigning)
       },
-      beforeOrderSign() {
+      afterBridgingSign() {
+        bridgingSignTimestamp = Date.now()
+      },
+      async beforeOrderSign() {
+        const signingDelta = Date.now() - bridgingSignTimestamp
+        const remainingTime = DELAY_BETWEEN_SIGNATURES - signingDelta
+
+        /**
+         * Some wallets (Metamask mobile) cannot work properly if we send another signature request just after previous one
+         * To fix that we wait 0.5 sec before second request
+         */
+        if (remainingTime > 0) {
+          await delay(remainingTime)
+        }
+
         if (isBridgingOrder) {
           setSigningStep(shouldSignPermit ? '3/3' : '2/2', SigningSteps.OrderSigning)
         } else {
@@ -129,7 +161,7 @@ export async function swapFlow(
 
     if (!orderParams.allowsOffchainSigning) {
       logTradeFlow('SWAP FLOW', 'STEP 5: presign order (optional)')
-      const presignTx = await tradingSdk.getPreSignTransaction({ orderId, account })
+      const presignTx = await tradingSdk.getPreSignTransaction({ orderUid: orderId })
 
       presignTxHash = (
         await orderParams.signer.sendTransaction(presignTx).catch((error) => {
@@ -215,7 +247,12 @@ export async function swapFlow(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     logTradeFlow('SWAP FLOW', 'STEP 8: ERROR: ', error)
-    const swapErrorMessage = getSwapErrorMessage(error)
+    const isCoWShedEip1271SignatureError = error instanceof CoWShedEip1271SignatureInvalid
+
+    const swapErrorMessage =
+      isBridgingOrder && isCoWShedEip1271SignatureError
+        ? BridgeInvalidEip1271SignatureError
+        : getSwapErrorMessage(error)
 
     analytics.error(error, swapErrorMessage, swapFlowAnalyticsContext)
 

@@ -12,14 +12,15 @@ import { useCloseModals } from 'legacy/state/application/hooks'
 
 import { useAppData, useAppDataHooks } from 'modules/appData'
 import { useBridgeQuoteAmounts } from 'modules/bridge'
+import { useGetAmountToSignApprove } from 'modules/erc20Approve'
 import { useGeneratePermitHook, useGetCachedPermit, usePermitInfo } from 'modules/permit'
 import {
+  TradeTypeToUiOrderType,
   useDerivedTradeState,
   useGetReceiveAmountInfo,
   useIsHooksTradeType,
   useTradeConfirmActions,
   useTradeTypeInfo,
-  TradeTypeToUiOrderType,
 } from 'modules/trade'
 import { getOrderValidTo, useTradeQuote } from 'modules/tradeQuote'
 
@@ -72,6 +73,8 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
   const typedHooks = useAppDataHooks()
   const addBridgeOrder = useAddBridgeOrder()
   const bridgeQuoteAmounts = useBridgeQuoteAmounts()
+  const amountToSignApprove = useGetAmountToSignApprove()
+  const permitAmountToSign = amountToSignApprove ? BigInt(amountToSignApprove.quotient.toString()) : undefined
 
   const enoughAllowance = useEnoughAllowance(inputAmount)
 
@@ -100,7 +103,8 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
         tradeQuote.fetchParams?.priceQuality === PriceQuality.OPTIMAL &&
         orderKind &&
         settlementContract &&
-        uiOrderType
+        uiOrderType &&
+        validTo > 0
         ? [
             account,
             allowsOffchainSigning,
@@ -113,6 +117,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
             dispatch,
             enoughAllowance,
             generatePermitHook,
+            permitAmountToSign,
             inputAmount,
             networkFee,
             outputAmount,
@@ -147,6 +152,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
         dispatch,
         enoughAllowance,
         generatePermitHook,
+        permitAmountToSign,
         inputAmount,
         networkFee,
         outputAmount,
@@ -198,6 +204,7 @@ export function useTradeFlowContext({ deadline }: TradeFlowParams): TradeFlowCon
           contract: settlementContract,
           permitInfo: !enoughAllowance ? permitInfo : undefined,
           generatePermitHook,
+          permitAmountToSign,
           typedHooks,
           orderParams: {
             account,

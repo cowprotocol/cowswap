@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
 
+import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
 import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
@@ -8,7 +9,7 @@ import { Pocket } from 'react-feather'
 import { Link } from 'react-router'
 import styled from 'styled-components/macro'
 
-import { getShedRouteLink, useCurrentAccountProxyAddress } from 'modules/cowShed'
+import { getProxyAccountUrl, useCurrentAccountProxyAddress } from 'modules/accountProxy'
 
 const ProxyPageLink = styled(Link)`
   display: flex;
@@ -33,12 +34,12 @@ export function CowShedInfo({ className, onClick }: CowShedInfoProps): ReactNode
 
   if (!provider || !proxyAddress) return null
 
-  const cowShedLink = getShedRouteLink(chainId)
+  const accountProxyLink = getProxyAccountUrl(chainId)
 
   return (
-    <ProxyPageLink to={cowShedLink} className={className} onClick={onClick}>
+    <ProxyPageLink to={accountProxyLink} className={className} onClick={onClick}>
       <Pocket size={14} />
-      <span>Account proxy</span>
+      <span>{ACCOUNT_PROXY_LABEL}</span>
     </ProxyPageLink>
   )
 }

@@ -1,24 +1,28 @@
 import { ReactElement, ReactNode, useMemo } from 'react'
 
 import { COW_TOKEN_TO_CHAIN, V_COW, V_COW_CONTRACT_ADDRESS } from '@cowprotocol/common-const'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { areAddressesEqual, ExplorerDataType, getExplorerLink, shortenAddress } from '@cowprotocol/common-utils'
-import { BridgeStatus, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENS } from '@cowprotocol/ens'
+import { BridgeStatus } from '@cowprotocol/sdk-bridging'
 import { TokenLogo, useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
 import { UiOrderType } from '@cowprotocol/types'
 import { BannerOrientation, ExternalLink, Icon, IconType, TokenAmount, UI } from '@cowprotocol/ui'
-import { CurrencyAmount } from '@uniswap/sdk-core'
+import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
-import { useBridgeOrderData, BRIDGING_FINAL_STATUSES } from 'entities/bridgeOrders'
+import { BRIDGING_FINAL_STATUSES, useBridgeOrderData } from 'entities/bridgeOrders'
 import { useAddOrderToSurplusQueue } from 'entities/surplusModal'
 
-import { getActivityState, ActivityState } from 'legacy/hooks/useActivityDerivedState'
+import { ActivityState, getActivityState } from 'legacy/hooks/useActivityDerivedState'
 import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { useToggleAccountModal } from 'modules/account'
 import { BridgeActivitySummary } from 'modules/bridge'
 import { EthFlowStepper } from 'modules/ethFlow'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
+import { useGetPendingOrdersPermitValidityState } from 'modules/ordersTable'
+import { useSwapPartialApprovalToggleState } from 'modules/swap/hooks/useSwapSettings'
 import { ConfirmDetailsItem } from 'modules/trade'
 
 import { OrderHooksDetails } from 'common/containers/OrderHooksDetails'
@@ -26,6 +30,7 @@ import { useCancelOrder } from 'common/hooks/useCancelOrder'
 import { isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { useEnhancedActivityDerivedState } from 'common/hooks/useEnhancedActivityDerivedState'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
+import { OrderFillability } from 'common/hooks/usePendingOrdersFillability'
 import { useSwapAndBridgeContext } from 'common/hooks/useSwapAndBridgeContext'
 import { CurrencyLogoPair } from 'common/pure/CurrencyLogoPair'
 import { CustomRecipientWarningBanner } from 'common/pure/CustomRecipientWarningBanner'
@@ -46,6 +51,7 @@ import { StatusDetails } from './StatusDetails'
 import {
   ActivityVisual,
   CreationTimeText,
+  DangerText,
   FiatWrapper,
   StyledFiatAmount,
   Summary,
@@ -54,6 +60,8 @@ import {
   TextAlert,
   TransactionState as ActivityLink,
 } from './styled'
+
+import { OrderFillabilityWarning } from '../../pure/OrderFillabilityWarning'
 
 const progressBarVisibleStates = [ActivityState.OPEN]
 
@@ -179,6 +187,7 @@ interface OrderSummaryType {
   validTo: string | undefined
   fulfillmentTime?: string | undefined
   kind?: string
+  inputAmount?: CurrencyAmount<Token>
 }
 
 // TODO: Break down this large function into smaller functions
@@ -190,8 +199,9 @@ export function ActivityDetails(props: {
   activityLinkUrl: string | undefined
   disableMouseActions: boolean | undefined
   creationTime?: string | undefined
+  fillability?: OrderFillability
 }): ReactNode | null {
-  const { activityDerivedState, chainId, activityLinkUrl, disableMouseActions, creationTime } = props
+  const { activityDerivedState, chainId, activityLinkUrl, disableMouseActions, creationTime, fillability } = props
   const { id, isOrder, summary, order, enhancedTransaction, isExpired, isCancelled, isFailed, isCancelling } =
     activityDerivedState
   const tokenAddress =
@@ -199,6 +209,8 @@ export function ActivityDetails(props: {
     (enhancedTransaction?.claim && V_COW_CONTRACT_ADDRESS[chainId as SupportedChainId])
   const singleToken = useTokenBySymbolOrAddress(tokenAddress) || null
 
+  const { isPartialApproveEnabled } = useFeatureFlags()
+  const [isPartialApproveEnabledBySettings] = useSwapPartialApprovalToggleState(isPartialApproveEnabled)
   const getShowCancellationModal = useCancelOrder()
 
   const isSwap = order && getUiOrderType(order) === UiOrderType.SWAP
@@ -257,6 +269,9 @@ export function ActivityDetails(props: {
       toggleAccountModal()
     }
   }, [showProgressBar, setShowProgressBar, order?.id, toggleAccountModal])
+
+  const pendingOrdersPermitValidityState = useGetPendingOrdersPermitValidityState()
+  const hasValidPermit = order ? pendingOrdersPermitValidityState[order.id] : true
 
   if (!order && !enhancedTransaction) return null
 
@@ -319,6 +334,7 @@ export function ActivityDetails(props: {
         ? new Date(fulfillmentTime).toLocaleString(undefined, DateFormatOptions)
         : undefined,
       kind: kind.toString(),
+      inputAmount,
     }
   } else {
     orderSummary = DEFAULT_ORDER_SUMMARY
@@ -362,6 +378,11 @@ export function ActivityDetails(props: {
       </ConfirmDetailsItem>
     </>
   )
+
+  const showWarning =
+    isPartialApproveEnabled && fillability
+      ? (!fillability.hasEnoughAllowance && !hasValidPermit) || !fillability.hasEnoughBalance
+      : false
 
   return (
     <>
@@ -498,6 +519,17 @@ export function ActivityDetails(props: {
                     </SummaryInnerRow>
                   )}
                   {hooksDetails}
+                  {fillability && showWarning && orderSummary?.inputAmount ? (
+                    <SummaryInnerRow>
+                      <DangerText>Unfillable</DangerText>
+                      <OrderFillabilityWarning
+                        fillability={fillability}
+                        inputAmount={orderSummary.inputAmount}
+                        enablePartialApprove={isPartialApproveEnabled}
+                        enablePartialApproveBySettings={!!isPartialApproveEnabledBySettings}
+                      />
+                    </SummaryInnerRow>
+                  ) : null}
                 </>
               )}
             </>

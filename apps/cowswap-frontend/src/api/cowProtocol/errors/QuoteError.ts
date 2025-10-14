@@ -121,6 +121,7 @@ export class QuoteApiError extends Error {
         return 'Error fetching quote'
     }
   }
+
   constructor(quoteError: QuoteApiErrorObject) {
     super(quoteError.description)
 
@@ -131,8 +132,6 @@ export class QuoteApiError extends Error {
   }
 }
 
-// TODO: Replace any with proper type definitions
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function isValidQuoteError(error: any): error is QuoteApiError {
+export function isValidQuoteError(error: unknown): error is QuoteApiError {
   return error instanceof QuoteApiError
 }

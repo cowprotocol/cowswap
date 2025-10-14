@@ -29,7 +29,7 @@ import {
   useFulfillOrdersBatch,
   useInvalidateOrdersBatch,
   usePresignOrders,
-  useUpdatePresignGnosisSafeTx,
+  useUpdatePresignGnosisSafeTx
 } from 'legacy/state/orders/hooks'
 import { OrderTransitionStatus } from 'legacy/state/orders/utils'
 
@@ -37,7 +37,7 @@ import {
   emitCancelledOrderEvent,
   emitExpiredOrderEvent,
   emitFulfilledOrderEvent,
-  emitPresignedOrderEvent,
+  emitPresignedOrderEvent
 } from 'modules/orders'
 
 import { getOrder } from 'api/cowProtocol'
@@ -353,8 +353,9 @@ function _triggerNps(pending: Order[], chainId: ChainId, account: string): void 
   for (const order of pending) {
     const { openSince, id: orderId } = order
     const orderType = getUiOrderType(order)
+    const isBridging = getIsBridgeOrder(order) || undefined
     // Check if there's any SWAP pending for more than `PENDING_TOO_LONG_TIME`
-    if (orderType === UiOrderType.SWAP && isOrderInPendingTooLong(openSince)) {
+    if (orderType === UiOrderType.SWAP && isOrderInPendingTooLong(openSince, isBridging)) {
       const explorerUrl = getExplorerOrderLink(chainId, orderId)
       // Trigger NPS display, controlled by Appzi
       triggerAppziSurvey({
@@ -364,6 +365,7 @@ function _triggerNps(pending: Order[], chainId: ChainId, account: string): void 
         chainId,
         orderType,
         account,
+        isBridging,
       })
       // Break the loop, don't need to show more than once
       break

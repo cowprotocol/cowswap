@@ -1,3 +1,5 @@
+import { PERMIT_HOOK_DAPP_ID } from './consts'
+
 export const hookDappsRegistry = {
   BUILD_CUSTOM_HOOK: {
     type: 'INTERNAL',
@@ -25,7 +27,7 @@ export const hookDappsRegistry = {
       position: 'pre',
     },
   },
-  PERMIT_TOKEN: {
+  [PERMIT_HOOK_DAPP_ID]: {
     type: 'INTERNAL',
     name: 'Permit a token',
     descriptionShort: 'Infinite permit an address to spend one token on your behalf.',
@@ -67,6 +69,7 @@ export const hookDappsRegistry = {
     conditions: {
       position: 'pre',
       walletCompatibility: ['EOA'],
+      supportedNetworks: [1, 100, 8453, 42161, 11155111],
     },
   },
   CLAIM_LLAMAPAY_VESTING: {
@@ -129,6 +132,7 @@ export const hookDappsRegistry = {
     conditions: {
       position: 'post',
       walletCompatibility: ['EOA'],
+      supportedNetworks: [1, 100, 8453, 42161, 11155111],
     },
   },
   UNI_V2_DEPOSIT: {
@@ -172,6 +176,20 @@ export const hookDappsRegistry = {
     website: 'https://www.bungee.exchange',
     image:
       'https://raw.githubusercontent.com/cowprotocol/cow-sdk/refs/heads/main/src/bridging/providers/bungee/bungee-logo.png',
+    conditions: {
+      walletCompatibility: ['EOA'],
+    },
+  },
+  'cow-sdk://bridging/providers/across': {
+    name: 'Across',
+    type: 'INTERNAL',
+    descriptionShort: 'Across Protocol - Transfer Assets Between Layer 2s and Mainnet',
+    description:
+      'Across is the fastest, cheapest and most secure cross-chain bridge for Ethereum, Arbitrum, Optimism, Polygon and other Layer 1 and Layer 2 networks. Transfer tokens with Across.',
+    version: '0.0.1',
+    website: 'https://across.to',
+    image:
+      'https://raw.githubusercontent.com/cowprotocol/cow-sdk/refs/heads/main/src/bridging/providers/across/across-logo.png',
     conditions: {
       walletCompatibility: ['EOA'],
     },

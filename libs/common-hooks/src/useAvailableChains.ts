@@ -3,7 +3,6 @@ import { useMemo } from 'react'
 import { getAvailableChains } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { useFeatureFlags } from './useFeatureFlags'
 /**
  * Hook to get a list of SupportedChainId currently available/enabled
  *
@@ -13,24 +12,20 @@ import { useFeatureFlags } from './useFeatureFlags'
  */
 export function useAvailableChains(): SupportedChainId[] {
   // 1. Load feature flag for chain being enabled
-  const { isAvalancheEnabled, isPolygonEnabled } = useFeatureFlags()
+  // const { isBnbEnabled } = useFeatureFlags()
 
   return useMemo(
     // 2. Conditionally build a list of chain ids to exclude
     // () => getAvailableChains(isBaseEnabled ? undefined : [SupportedChainId.BASE]),  <-- example usage, kept for reference
     () => {
-      const chainsToSkip: SupportedChainId[] = []
+      // const chainsToSkip: SupportedChainId[] = []
+      //
+      // if (!isBnbEnabled) {
+      //   chainsToSkip.push(SupportedChainId.BNB)
+      // }
 
-      if (!isAvalancheEnabled) {
-        chainsToSkip.push(SupportedChainId.AVALANCHE)
-      }
-
-      if (!isPolygonEnabled) {
-        chainsToSkip.push(SupportedChainId.POLYGON)
-      }
-
-      return getAvailableChains(chainsToSkip)
+      return getAvailableChains()
     },
-    [isAvalancheEnabled, isPolygonEnabled],
+    [],
   )
 }

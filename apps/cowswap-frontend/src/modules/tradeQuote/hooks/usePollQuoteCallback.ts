@@ -4,7 +4,6 @@ import { useCallback, useRef } from 'react'
 import { useIsOnline, useIsWindowVisible } from '@cowprotocol/common-hooks'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { useAreUnsupportedTokens } from '@cowprotocol/tokens'
-import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { QuoteParams } from './useQuoteParams'
 import { useTradeQuote } from './useTradeQuote'
@@ -13,11 +12,10 @@ import { useTradeQuoteManager } from './useTradeQuoteManager'
 import { doQuotePolling, QuoteUpdateContext } from '../services/doQuotePolling'
 import { fetchAndProcessQuote } from '../services/fetchAndProcessQuote'
 import { tradeQuoteInputAtom } from '../state/tradeQuoteInputAtom'
-import { TradeQuoteFetchParams } from '../types'
+import { TradeQuoteFetchParams, TradeQuotePollingParameters } from '../types'
 
 export function usePollQuoteCallback(
-  isConfirmOpen: boolean,
-  isQuoteUpdatePossible: boolean,
+  quotePollingParams: TradeQuotePollingParameters,
   quoteParamsState: QuoteParams | undefined,
 ): (hasParamsChanged: boolean, forceUpdate?: boolean) => boolean {
   const { fastQuote } = useAtomValue(tradeQuoteInputAtom)
@@ -25,7 +23,6 @@ export function usePollQuoteCallback(
   const tradeQuoteRef = useRef(tradeQuote)
   tradeQuoteRef.current = tradeQuote
 
-  const { chainId } = useWalletInfo()
   const { quoteParams, appData, inputCurrency } = quoteParamsState || {}
 
   const tradeQuoteManager = useTradeQuoteManager(inputCurrency && getCurrencyAddress(inputCurrency))
@@ -38,6 +35,8 @@ export function usePollQuoteCallback(
 
   return useCallback(
     (hasParamsChanged: boolean, forceUpdate = false): boolean => {
+      const { isQuoteUpdatePossible, isConfirmOpen } = quotePollingParams
+
       if (!isQuoteUpdatePossible || !tradeQuoteManager || !quoteParams || getIsUnsupportedTokens(quoteParams)) {
         return false
       }
@@ -48,7 +47,7 @@ export function usePollQuoteCallback(
       }
 
       const fetchQuote = (fetchParams: TradeQuoteFetchParams): Promise<void> =>
-        fetchAndProcessQuote(chainId, fetchParams, quoteParams, appData, tradeQuoteManager)
+        fetchAndProcessQuote(fetchParams, quoteParams, quotePollingParams, appData, tradeQuoteManager)
 
       const context: QuoteUpdateContext = {
         currentQuote: tradeQuoteRef.current,
@@ -67,16 +66,6 @@ export function usePollQuoteCallback(
        */
       return doQuotePolling(context)
     },
-    [
-      chainId,
-      quoteParams,
-      appData,
-      tradeQuoteManager,
-      isWindowVisible,
-      fastQuote,
-      getIsUnsupportedTokens,
-      isConfirmOpen,
-      isQuoteUpdatePossible,
-    ],
+    [quoteParams, appData, tradeQuoteManager, isWindowVisible, fastQuote, getIsUnsupportedTokens, quotePollingParams],
   )
 }

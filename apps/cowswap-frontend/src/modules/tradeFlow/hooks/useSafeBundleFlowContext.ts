@@ -1,15 +1,16 @@
 import { useMemo } from 'react'
 
+import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { useSendBatchTransactions } from '@cowprotocol/wallet'
 
 import useSWR from 'swr'
 
-import { useAmountsToSign } from 'modules/trade'
+import { useAmountsToSignFromQuote } from 'modules/trade'
 
 import { useTokenContract, useWethContract } from 'common/hooks/useContract'
 import { useNeedsApproval } from 'common/hooks/useNeedsApproval'
-import { useTradeSpenderAddress } from 'common/hooks/useTradeSpenderAddress'
 
 import { SafeBundleFlowContext } from '../types/TradeFlowContext'
 
@@ -19,8 +20,10 @@ export function useSafeBundleFlowContext(): SafeBundleFlowContext | null {
   const sendBatchTransactions = useSendBatchTransactions()
   const { contract: wrappedNativeContract } = useWethContract()
 
-  const { maximumSendSellAmount } = useAmountsToSign() || {}
+  // todo check for safe wallet
+  const { maximumSendSellAmount } = useAmountsToSignFromQuote() || {}
 
+  const { isPartialApproveEnabled } = useFeatureFlags()
   const needsApproval = useNeedsApproval(maximumSendSellAmount)
   const inputCurrencyAddress = useMemo(() => {
     return maximumSendSellAmount ? getCurrencyAddress(maximumSendSellAmount.currency) : undefined
@@ -39,6 +42,7 @@ export function useSafeBundleFlowContext(): SafeBundleFlowContext | null {
           wrappedNativeContract,
           needsApproval,
           erc20Contract,
+          isPartialApproveEnabled,
         }
       },
     ).data || null

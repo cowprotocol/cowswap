@@ -1,58 +1,46 @@
 import { EnvironmentName, environmentName } from '@cowprotocol/common-utils'
+import { LATEST_APP_DATA_VERSION, LatestAppDataDocVersion } from '@cowprotocol/cow-sdk'
+
+import { toKeccak256 } from './buildAppData'
 
 import { AppDataInfo } from '../types'
-import { toKeccak256 } from '../utils/buildAppData'
 
-const DEFAULT_FULL_APP_DATA = '{"version":"1.5.0","appCode":"CoW Swap","metadata":{}}'
+const DEFAULT_FULL_APP_DATA_OBJ = { version: LATEST_APP_DATA_VERSION, appCode: 'CoW Swap', metadata: {} }
+const DEFAULT_FULL_APP_DATA = JSON.stringify(DEFAULT_FULL_APP_DATA_OBJ)
+
+const APP_DATA_PER_ENV: Record<EnvironmentName, string> = {
+  production: process.env.REACT_APP_FULL_APP_DATA_PRODUCTION || addEnvToDefaultAppData('production'),
+  ens: process.env.REACT_APP_FULL_APP_DATA_ENS || addEnvToDefaultAppData('ens'),
+  barn: process.env.REACT_APP_FULL_APP_DATA_BARN || addEnvToDefaultAppData('barn'),
+  staging: process.env.REACT_APP_FULL_APP_DATA_STAGING || addEnvToDefaultAppData('staging'),
+  pr: process.env.REACT_APP_FULL_APP_DATA_PR || addEnvToDefaultAppData('pr'),
+  development: process.env.REACT_APP_FULL_APP_DATA_DEVELOPMENT || addEnvToDefaultAppData('development'),
+  local: process.env.REACT_APP_FULL_APP_DATA_LOCAL || addEnvToDefaultAppData('local'),
+}
 
 let appData: AppDataInfo = (() => {
   const fullAppData = getFullAppDataByEnv(environmentName)
   return _fromFullAppData(fullAppData)
 })()
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function getAppData() {
+export function getAppData(): AppDataInfo {
   return appData
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function updateFullAppData(fullAppData: string | undefined) {
+export function updateFullAppData(fullAppData: string | undefined): void {
   if (fullAppData) {
     appData = _fromFullAppData(fullAppData)
   }
 }
 
-// TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line complexity
 export function getFullAppDataByEnv(environmentName: EnvironmentName | undefined): string {
-  switch (environmentName) {
-    case 'production':
-      return process.env.REACT_APP_FULL_APP_DATA_PRODUCTION || DEFAULT_FULL_APP_DATA
+  return (environmentName && APP_DATA_PER_ENV[environmentName]) || DEFAULT_FULL_APP_DATA
+}
 
-    case 'ens':
-      return process.env.REACT_APP_FULL_APP_DATA_ENS || DEFAULT_FULL_APP_DATA
-
-    case 'barn':
-      return process.env.REACT_APP_FULL_APP_DATA_BARN || DEFAULT_FULL_APP_DATA
-
-    case 'staging':
-      return process.env.REACT_APP_FULL_APP_DATA_STAGING || DEFAULT_FULL_APP_DATA
-
-    case 'pr':
-      return process.env.REACT_APP_FULL_APP_DATA_PR || DEFAULT_FULL_APP_DATA
-
-    case 'development':
-      return process.env.REACT_APP_FULL_APP_DATA_DEVELOPMENT || DEFAULT_FULL_APP_DATA
-
-    case 'local':
-      return process.env.REACT_APP_FULL_APP_DATA_LOCAL || DEFAULT_FULL_APP_DATA
-
-    default:
-      break
-  }
-  return DEFAULT_FULL_APP_DATA
+function addEnvToDefaultAppData(env: EnvironmentName): string {
+  const appData: LatestAppDataDocVersion = { ...DEFAULT_FULL_APP_DATA_OBJ }
+  appData.environment = env
+  return JSON.stringify(appData)
 }
 
 function _fromFullAppData(fullAppData: string): AppDataInfo {

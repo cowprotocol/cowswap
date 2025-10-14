@@ -1,5 +1,10 @@
-import type { BigNumber } from '@ethersproject/bignumber'
 import type { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+
+import type { Order } from 'legacy/state/orders/actions'
+
+import type { ParsedOrder } from 'utils/orderUtils/parseOrder'
+
+export type GenericOrder = Order | ParsedOrder
 
 /**
  * https://github.com/rndlabs/composable-cow/blob/main/src/ComposableCoW.sol
@@ -28,10 +33,4 @@ export type SafeTransactionParams = {
 export interface TradeAmounts {
   readonly inputAmount: CurrencyAmount<Currency>
   readonly outputAmount: CurrencyAmount<Currency>
-}
-
-export interface BalancesAndAllowances {
-  balances: Record<string, BigNumber | undefined>
-  allowances?: Record<string, BigNumber | undefined>
-  isLoading: boolean
 }

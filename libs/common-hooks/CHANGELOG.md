@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.10.1](https://github.com/cowprotocol/cowswap/compare/common-hooks-v1.10.0...common-hooks-v1.10.1) (2025-10-02)
+
+
+### Bug Fixes
+
+* remove feature flags ([#6314](https://github.com/cowprotocol/cowswap/issues/6314)) ([5af6323](https://github.com/cowprotocol/cowswap/commit/5af632364742d5d8064d016d019763262d2a9de4))
+
+## [1.10.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v1.9.1...common-hooks-v1.10.0) (2025-08-21)
+
+
+### Features
+
+* **account-proxy:** support all versions of proxy ([#6105](https://github.com/cowprotocol/cowswap/issues/6105)) ([5bcae43](https://github.com/cowprotocol/cowswap/commit/5bcae43625a14933abc4e7a4f40e02b568997118))
+* **new-networks:** lens and bnb ([#5992](https://github.com/cowprotocol/cowswap/issues/5992)) ([19ac060](https://github.com/cowprotocol/cowswap/commit/19ac060f94088e7a1f6a2a891ef11d2c1ded4525))
+
 ## [1.9.1](https://github.com/cowprotocol/cowswap/compare/common-hooks-v1.9.0...common-hooks-v1.9.1) (2025-07-03)
 
 

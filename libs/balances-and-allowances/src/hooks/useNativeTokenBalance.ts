@@ -15,12 +15,16 @@ export function useNativeTokenBalance(
   account: string | undefined,
   chainId: number,
   swrConfig: SWRConfiguration = SWR_CONFIG,
-): SWRResponse<BigNumber> {
+): SWRResponse<BigNumber | undefined> {
   const provider = useMultiCallRpcProvider()
 
   return useSWR(
     account && provider ? [account, provider, chainId, 'useNativeTokenBalance'] : null,
-    async ([account, provider]) => {
+    async ([account, provider, chainId]) => {
+      const providerChainId = (await provider.getNetwork()).chainId
+
+      if (providerChainId !== chainId) return undefined
+
       const contract = getMulticallContract(provider)
 
       return contract.callStatic.getEthBalance(account)

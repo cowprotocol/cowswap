@@ -1,16 +1,58 @@
 import { TelegramConnectionStatus } from './index'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const subscribeAccount = () => {}
+interface TelegramData {
+  auth_date: number
+  first_name: string
+  hash: string
+  id: number
+  photo_url: string
+  username: string
+}
+
+const subscribeAccount = (): void => {}
+const subscribeWithData = async (_data: TelegramData): Promise<void> => {}
+const authorize = (): Promise<TelegramData | null> => Promise.resolve(null)
 
 const Fixtures = {
-  loading: () => <TelegramConnectionStatus isLoading={true} isSubscribed={false} subscribeAccount={subscribeAccount} />,
+  loading: () => (
+    <TelegramConnectionStatus
+      isLoading={true}
+      isSubscribed={false}
+      needsAuthorization={false}
+      authorize={authorize}
+      toggleSubscription={subscribeAccount}
+      subscribeWithData={subscribeWithData}
+    />
+  ),
   subscribed: () => (
-    <TelegramConnectionStatus isLoading={false} isSubscribed={true} subscribeAccount={subscribeAccount} />
+    <TelegramConnectionStatus
+      isLoading={false}
+      isSubscribed={true}
+      needsAuthorization={false}
+      authorize={authorize}
+      toggleSubscription={subscribeAccount}
+      subscribeWithData={subscribeWithData}
+    />
   ),
   needLogin: () => (
-    <TelegramConnectionStatus isLoading={false} isSubscribed={false} subscribeAccount={subscribeAccount} />
+    <TelegramConnectionStatus
+      isLoading={false}
+      isSubscribed={false}
+      needsAuthorization={false}
+      authorize={authorize}
+      toggleSubscription={subscribeAccount}
+      subscribeWithData={subscribeWithData}
+    />
+  ),
+  needsAuthorization: () => (
+    <TelegramConnectionStatus
+      isLoading={false}
+      isSubscribed={false}
+      needsAuthorization={true}
+      authorize={authorize}
+      toggleSubscription={subscribeAccount}
+      subscribeWithData={subscribeWithData}
+    />
   ),
 }
 

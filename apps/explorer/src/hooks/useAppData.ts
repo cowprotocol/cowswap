@@ -1,10 +1,16 @@
-import { AnyAppDataDocVersion } from '@cowprotocol/app-data'
+import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
+import { AnyAppDataDocVersion } from '@cowprotocol/cow-sdk'
 
 import { DEFAULT_IPFS_READ_URI, IPFS_INVALID_APP_IDS } from 'const'
 import { metadataApiSDK, orderBookSDK } from 'cowSdk'
-import useSWR from 'swr'
+import useSWR, { SWRConfiguration } from 'swr'
 
 import { decodeFullAppData } from '../utils/decodeFullAppData'
+
+const SWR_OPTIONS: SWRConfiguration = {
+  ...SWR_NO_REFRESH_OPTIONS,
+  errorRetryCount: 0,
+}
 
 interface AppDataDecodingResult {
   isLoading: boolean
@@ -21,25 +27,33 @@ export const useAppData = (appData: string, fullAppData?: string): AppDataDecodi
     error: ipfsError,
     isLoading: isIpfsLoading,
     data: ipfsUri,
-  } = useSWR(['appDataHexToCid', appData, isLegacyAppDataHex], async ([_, appData, isLegacyAppDataHex]) => {
-    const cid = await appDataHexToCid(appData.toString(), isLegacyAppDataHex)
+  } = useSWR(
+    ['appDataHexToCid', appData, isLegacyAppDataHex],
+    async ([_, appData, isLegacyAppDataHex]) => {
+      const cid = await appDataHexToCid(appData.toString(), isLegacyAppDataHex)
 
-    return `${DEFAULT_IPFS_READ_URI}/${cid}`
-  })
+      return `${DEFAULT_IPFS_READ_URI}/${cid}`
+    },
+    SWR_OPTIONS,
+  )
 
   const {
     error: appDataError,
     isLoading: isAppDataLoading,
     data: appDataDocFromApi,
-  } = useSWR(['appDataFromApi', appData], async ([_, appDataHash]) => {
-    const response = await orderBookSDK.getAppData(appDataHash)
+  } = useSWR(
+    ['appDataFromApi', appData],
+    async ([_, appDataHash]) => {
+      const response = await orderBookSDK.getAppData(appDataHash)
 
-    const { error, decodedAppData } = await getDecodedAppData(appData, isLegacyAppDataHex, response.fullAppData)
+      const { error, decodedAppData } = await getDecodedAppData(appData, isLegacyAppDataHex, response.fullAppData)
 
-    if (error) throw error
+      if (error) throw error
 
-    return decodedAppData
-  })
+      return decodedAppData
+    },
+    SWR_OPTIONS,
+  )
 
   const {
     error,
@@ -54,6 +68,7 @@ export const useAppData = (appData: string, fullAppData?: string): AppDataDecodi
 
       return decodedAppData || undefined
     },
+    SWR_OPTIONS,
   )
 
   return {

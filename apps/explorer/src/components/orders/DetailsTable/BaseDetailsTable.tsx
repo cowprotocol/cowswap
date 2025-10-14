@@ -1,12 +1,11 @@
 import React from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Icon, UI } from '@cowprotocol/ui'
 import { TruncatedText } from '@cowprotocol/ui/pure/TruncatedText'
 
-import { faGroupArrowsRotate, faHistory, faProjectDiagram } from '@fortawesome/free-solid-svg-icons'
+import { faHistory } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { AddressLink } from 'components/common/AddressLink'
 import { DateDisplay } from 'components/common/DateDisplay'
@@ -16,8 +15,6 @@ import Spinner from 'components/common/Spinner'
 import { AmountsDisplay } from 'components/orders/AmountsDisplay'
 import { StatusLabel } from 'components/orders/StatusLabel'
 import { HelpTooltip } from 'components/Tooltip'
-import { TAB_QUERY_PARAM_KEY } from 'explorer/const'
-import { Link } from 'react-router'
 import { capitalize } from 'utils'
 
 import { Order } from 'api/operator'
@@ -25,7 +22,8 @@ import { ExplorerCategory } from 'common/analytics/types'
 import { getUiOrderType } from 'utils/getUiOrderType'
 
 import { DetailsTableTooltips } from './detailsTableTooltips'
-import { LinkButton, Wrapper, WarningRow } from './styled'
+import { TxHashItem } from './items/TxHashItem'
+import { LinkButton, WarningRow, Wrapper } from './styled'
 
 import { UnsignedOrderWarning } from '../UnsignedOrderWarning'
 
@@ -77,6 +75,7 @@ export function BaseDetailsTable({
     })
   }
   const isSigning = status === 'signing'
+  const isBridging = !!order?.bridgeProviderId
 
   return (
     <SimpleTable
@@ -133,7 +132,11 @@ export function BaseDetailsTable({
           <tr>
             <td>
               <span>
-                <HelpTooltip tooltip={DetailsTableTooltips.to} /> To
+                <HelpTooltip
+                  placement="bottom"
+                  tooltip={isBridging ? DetailsTableTooltips.toBridge : DetailsTableTooltips.to}
+                />{' '}
+                To
               </span>
             </td>
             <td>
@@ -150,45 +153,12 @@ export function BaseDetailsTable({
               </Wrapper>
             </td>
           </tr>
-          {(!partiallyFillable || txHash) && (
-            <tr>
-              <td>
-                <span>
-                  <HelpTooltip tooltip={DetailsTableTooltips.hash} /> Transaction hash
-                </span>
-              </td>
-              <td>
-                {areTradesLoading ? (
-                  <Spinner />
-                ) : txHash ? (
-                  <Wrapper>
-                    <RowWithCopyButton
-                      textToCopy={txHash}
-                      onCopy={(): void => onCopy('settlementTx')}
-                      contentsToDisplay={
-                        <Link to={getExplorerLink(chainId, txHash, ExplorerDataType.TRANSACTION)} target="_blank">
-                          {txHash}↗
-                        </Link>
-                      }
-                    />
-
-                    <Wrapper>
-                      <LinkButton to={`/tx/${txHash}`}>
-                        <FontAwesomeIcon icon={faGroupArrowsRotate} />
-                        Batch
-                      </LinkButton>
-
-                      <LinkButton to={`/tx/${txHash}/?${TAB_QUERY_PARAM_KEY}=graph`}>
-                        <FontAwesomeIcon icon={faProjectDiagram} />
-                        Graph
-                      </LinkButton>
-                    </Wrapper>
-                  </Wrapper>
-                ) : (
-                  '-'
-                )}
-              </td>
-            </tr>
+          {(!partiallyFillable || txHash) && areTradesLoading ? (
+            <Spinner />
+          ) : txHash ? (
+            <TxHashItem chainId={chainId} txHash={txHash} onCopy={onCopy} isLoading={areTradesLoading} />
+          ) : (
+            '-'
           )}
           <tr>
             <td>

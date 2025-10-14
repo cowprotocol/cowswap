@@ -1,5 +1,6 @@
 import { SigningScheme } from '@cowprotocol/cow-sdk'
 import { Command, UiOrderType } from '@cowprotocol/types'
+import { MaxUint256 } from '@ethersproject/constants'
 import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { Percent } from '@uniswap/sdk-core'
 
@@ -71,7 +72,7 @@ export async function safeBundleFlow(
     const approveTx = await buildApproveTx({
       erc20Contract,
       spender,
-      amountToApprove: inputAmount,
+      amountToApprove: MaxUint256.toBigInt(),
     })
 
     logTradeFlow(LOG_PREFIX, 'STEP 3: post order')
@@ -130,7 +131,7 @@ export async function safeBundleFlow(
     )
 
     logTradeFlow(LOG_PREFIX, 'STEP 5: build presign tx')
-    const presignTx = await tradingSdk.getPreSignTransaction({ orderId, account })
+    const presignTx = await tradingSdk.getPreSignTransaction({ orderUid: orderId })
 
     logTradeFlow(LOG_PREFIX, 'STEP 6: send safe tx')
     const safeTransactionData: MetaTransactionData[] = [
@@ -142,14 +143,13 @@ export async function safeBundleFlow(
       tokenContract: erc20Contract,
       spender,
       amountToApprove: inputAmount,
-      isBundle: true,
+      forceApprove: true,
     })
 
     if (shouldZeroApprove) {
       const zeroApproveTx = await buildZeroApproveTx({
         erc20Contract,
         spender,
-        currency: inputAmount.currency,
       })
       safeTransactionData.unshift({
         to: zeroApproveTx.to!,

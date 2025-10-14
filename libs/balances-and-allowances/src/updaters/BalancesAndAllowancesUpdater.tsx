@@ -1,4 +1,3 @@
-import { useSetAtom } from 'jotai'
 import { ReactNode, useEffect, useMemo } from 'react'
 
 import { LpToken, NATIVE_CURRENCIES } from '@cowprotocol/common-const'
@@ -8,37 +7,39 @@ import { useAllActiveTokens } from '@cowprotocol/tokens'
 import ms from 'ms.macro'
 import { SWRConfiguration } from 'swr'
 
+import { BalancesBffUpdater } from './BalancesBffUpdater'
 import { BalancesCacheUpdater } from './BalancesCacheUpdater'
 import { BalancesResetUpdater } from './BalancesResetUpdater'
+import { BalancesRpcCallUpdater } from './BalancesRpcCallUpdater'
 
+import { BASIC_MULTICALL_SWR_CONFIG } from '../consts'
 import { useNativeTokenBalance } from '../hooks/useNativeTokenBalance'
-import { usePersistBalancesAndAllowances } from '../hooks/usePersistBalancesAndAllowances'
 import { useSwrConfigWithPauseForNetwork } from '../hooks/useSwrConfigWithPauseForNetwork'
-import { balancesAtom } from '../state/balancesAtom'
+import { useUpdateTokenBalance } from '../hooks/useUpdateTokenBalance'
+
+// A small gap between balances and allowances refresh intervals is needed to avoid high load to the node at the same time
+const RPC_BALANCES_SWR_CONFIG: SWRConfiguration = { ...BASIC_MULTICALL_SWR_CONFIG, refreshInterval: ms`31s` }
 
 const EMPTY_TOKENS: string[] = []
-
-const BASIC_SWR_CONFIG: SWRConfiguration = {
-  refreshWhenHidden: false,
-  refreshWhenOffline: false,
-  revalidateOnFocus: false,
-  revalidateIfStale: false,
-}
-// A small gap between balances and allowances refresh intervals is needed to avoid high load to the node at the same time
-const BALANCES_SWR_CONFIG: SWRConfiguration = { ...BASIC_SWR_CONFIG, refreshInterval: ms`31s` }
 
 export interface BalancesAndAllowancesUpdaterProps {
   account: string | undefined
   chainId: SupportedChainId
+  invalidateCacheTrigger: number
   excludedTokens: Set<string>
+  isBffSwitchedOn: boolean
+  isBffEnabled?: boolean
 }
 
 export function BalancesAndAllowancesUpdater({
   account,
   chainId,
+  invalidateCacheTrigger,
+  isBffSwitchedOn,
   excludedTokens,
+  isBffEnabled,
 }: BalancesAndAllowancesUpdaterProps): ReactNode {
-  const setBalances = useSetAtom(balancesAtom)
+  const updateTokenBalance = useUpdateTokenBalance()
 
   const allTokens = useAllActiveTokens()
   const { data: nativeTokenBalance } = useNativeTokenBalance(account, chainId)
@@ -46,36 +47,49 @@ export function BalancesAndAllowancesUpdater({
   const tokenAddresses = useMemo(() => {
     if (allTokens.chainId !== chainId) return EMPTY_TOKENS
 
-    return allTokens.tokens
-      .filter((token) => {
-        return !(token instanceof LpToken) && !excludedTokens.has(token.address)
-      })
-      .map((token) => token.address)
-  }, [excludedTokens, allTokens, chainId])
+    return allTokens.tokens.reduce<string[]>((acc, token) => {
+      if (!(token instanceof LpToken)) {
+        acc.push(token.address)
+      }
+      return acc
+    }, [])
+  }, [allTokens, chainId])
 
-  const balancesSwrConfig = useSwrConfigWithPauseForNetwork(chainId, account, BALANCES_SWR_CONFIG)
-
-  usePersistBalancesAndAllowances({
-    account,
-    chainId,
-    tokenAddresses,
-    setLoadingState: true,
-    balancesSwrConfig,
-  })
-
+  const rpcBalancesSwrConfig = useSwrConfigWithPauseForNetwork(chainId, account, RPC_BALANCES_SWR_CONFIG)
   // Add native token balance to the store as well
   useEffect(() => {
-    const nativeToken = NATIVE_CURRENCIES[chainId]
-    const nativeBalanceState =
-      nativeToken && nativeTokenBalance ? { [nativeToken.address.toLowerCase()]: nativeTokenBalance } : {}
+    if (isBffSwitchedOn) return
 
-    setBalances((state) => ({ ...state, values: { ...state.values, ...nativeBalanceState } }))
-  }, [nativeTokenBalance, chainId, setBalances])
+    const nativeToken = NATIVE_CURRENCIES[chainId]
+
+    if (nativeToken && nativeTokenBalance) {
+      updateTokenBalance(nativeToken.address, nativeTokenBalance)
+    }
+  }, [isBffSwitchedOn, nativeTokenBalance, chainId, updateTokenBalance])
+
+  const enableRpcFallback = !isBffSwitchedOn || !isBffEnabled
 
   return (
     <>
+      {isBffEnabled && (
+        <BalancesBffUpdater
+          account={account}
+          chainId={chainId}
+          invalidateCacheTrigger={invalidateCacheTrigger}
+          tokenAddresses={tokenAddresses}
+        />
+      )}
+      {enableRpcFallback && (
+        <BalancesRpcCallUpdater
+          account={account}
+          chainId={chainId}
+          tokenAddresses={tokenAddresses}
+          balancesSwrConfig={rpcBalancesSwrConfig}
+          setLoadingState
+        />
+      )}
       <BalancesResetUpdater chainId={chainId} account={account} />
-      <BalancesCacheUpdater chainId={chainId} account={account} />
+      <BalancesCacheUpdater chainId={chainId} account={account} excludedTokens={excludedTokens} />
     </>
   )
 }

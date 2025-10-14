@@ -1,10 +1,10 @@
 import { useAtom } from 'jotai'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useFilterTokens, usePrevious } from '@cowprotocol/common-hooks'
-import { closableBannersStateAtom } from '@cowprotocol/ui'
+import { closableBannersStateAtom, Loader } from '@cowprotocol/ui'
 import { BigNumber } from '@ethersproject/bignumber'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -13,8 +13,9 @@ import { Trans } from '@lingui/macro'
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
+import { usePendingApprovalModal } from 'modules/erc20Approve'
+
 import { BANNER_IDS } from 'common/constants/banners'
-import { usePendingApprovalModal } from 'common/hooks/usePendingApprovalModal'
 import { CowModal } from 'common/pure/Modal'
 
 import { balanceComparator, useTokenComparator } from './sorting'
@@ -22,6 +23,7 @@ import {
   Arrow,
   ArrowButton,
   ClickableText,
+  DelegateRow,
   IndexLabel,
   Label,
   NoResults,
@@ -31,9 +33,9 @@ import {
   Table,
   TableHeader,
   Wrapper,
-  DelegateRow,
 } from './styled'
 import { TokensTableRow } from './TokensTableRow'
+
 
 const MAX_ITEMS = 20
 
@@ -52,13 +54,12 @@ type TokenTableParams = {
   query: string
   prevQuery: string
   debouncedQuery: string
-  children?: React.ReactNode
+  children?: ReactNode
 }
 
 // TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line max-lines-per-function
 export function TokenTable({
   tokensData: rawTokensData = [],
   maxItems = MAX_ITEMS,
@@ -70,7 +71,7 @@ export function TokenTable({
   prevQuery,
   debouncedQuery,
   children,
-}: TokenTableParams) {
+}: TokenTableParams): ReactNode {
   const toggleWalletModal = useToggleWalletModal()
   const tableRef = useRef<HTMLTableElement | null>(null)
   const [bannerState] = useAtom(closableBannersStateAtom)
@@ -247,10 +248,12 @@ export function TokenTable({
               }
               return null
             })
-          ) : (
+          ) : query?.trim() ? (
             <NoResults>
               <h3>No results found ¯\_(ツ)_/¯</h3>
             </NoResults>
+          ) : (
+            <Loader />
           )}
         </Table>
 

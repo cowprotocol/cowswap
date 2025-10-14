@@ -5,8 +5,8 @@ import {
   addPermitHookToHooks,
   AppDataInfo,
   filterPermitSignerPermit,
-  replaceHooksOnAppData,
   removePermitHookFromAppData,
+  replaceHooksOnAppData
 } from 'modules/appData'
 
 import { HandlePermitParams } from '../types'
@@ -22,7 +22,7 @@ import { HandlePermitParams } from '../types'
  * Returns the updated appData
  */
 export async function handlePermit(params: HandlePermitParams): Promise<AppDataInfo> {
-  const { permitInfo, inputToken, account, appData, typedHooks, generatePermitHook } = params
+  const { amount, permitInfo, inputToken, account, appData, typedHooks, generatePermitHook } = params
 
   if (isSupportedPermitInfo(permitInfo) && !getIsNativeToken(inputToken)) {
     // permitInfo will only be set if there's NOT enough allowance
@@ -31,6 +31,7 @@ export async function handlePermit(params: HandlePermitParams): Promise<AppDataI
       inputToken: { address: inputToken.address, name: inputToken.name },
       account,
       permitInfo,
+      amount,
     })
 
     if (!permitData) {

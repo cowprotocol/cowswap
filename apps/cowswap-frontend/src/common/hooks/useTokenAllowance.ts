@@ -1,6 +1,7 @@
 import { atom, useAtom, useSetAtom } from 'jotai'
 import { useCallback, useEffect } from 'react'
 
+import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Token } from '@uniswap/sdk-core'
@@ -10,7 +11,6 @@ import useSWR, { SWRConfiguration, SWRResponse } from 'swr'
 
 import { useTokenContract } from 'common/hooks/useContract'
 
-import { useTradeSpenderAddress } from './useTradeSpenderAddress'
 
 interface LastApproveParams {
   blockNumber: number

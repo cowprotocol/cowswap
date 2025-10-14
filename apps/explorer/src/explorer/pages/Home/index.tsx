@@ -1,13 +1,13 @@
 import React from 'react'
 
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Media } from '@cowprotocol/ui'
 
 import { useFlags } from 'launchdarkly-react-client-sdk'
 import { Helmet } from 'react-helmet'
 import styled from 'styled-components/macro'
 
-import { SUBGRAPH_URLS } from '../../../consts/subgraphUrls'
+import { subgraphApiSDK } from '../../../cowSdk'
 import { useNetworkId } from '../../../state/network'
 import { Search } from '../../components/common/Search'
 import { StatsSummaryCardsWidget } from '../../components/SummaryCardsWidget'
@@ -62,13 +62,8 @@ const SummaryWrapper = styled.section`
 `
 
 const SHOW_TOKENS_TABLE: Record<SupportedChainId, boolean> = {
-  [SupportedChainId.MAINNET]: true,
-  [SupportedChainId.GNOSIS_CHAIN]: false, // Gchain data is not reliable
-  [SupportedChainId.ARBITRUM_ONE]: false, // No data for Arbitrum one
-  [SupportedChainId.BASE]: false, // No data for Base
-  [SupportedChainId.SEPOLIA]: false, // No data for Sepolia
-  [SupportedChainId.POLYGON]: false, // No data for Polygon
-  [SupportedChainId.AVALANCHE]: false, // No data for Avalanche
+  ...mapSupportedNetworks(false), // Default to false for all networks
+  [SupportedChainId.MAINNET]: true, // Only show tokens table for mainnet
 }
 
 export const Home: React.FC = () => {
@@ -76,7 +71,7 @@ export const Home: React.FC = () => {
 
   const { isTheGraphEnabled } = useFlags()
 
-  const showCharts = !!networkId && isTheGraphEnabled && SUBGRAPH_URLS[networkId] !== null
+  const showCharts = !!networkId && isTheGraphEnabled && subgraphApiSDK.SUBGRAPH_PROD_CONFIG[networkId] !== null
   const showTokensTable = !!networkId && isTheGraphEnabled && SHOW_TOKENS_TABLE[networkId]
 
   return (

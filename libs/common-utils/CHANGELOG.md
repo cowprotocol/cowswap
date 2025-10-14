@@ -1,5 +1,42 @@
 # Changelog
 
+## [1.21.1](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.21.0...common-utils-v1.21.1) (2025-09-16)
+
+
+### Bug Fixes
+
+* explorer environments ([#6271](https://github.com/cowprotocol/cowswap/issues/6271)) ([cffe763](https://github.com/cowprotocol/cowswap/commit/cffe763fd99bb2ee2de50146c6a91ad78f8e71e7))
+
+## [1.21.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.20.0...common-utils-v1.21.0) (2025-08-21)
+
+
+### Features
+
+* **new-networks:** lens and bnb ([#5992](https://github.com/cowprotocol/cowswap/issues/5992)) ([19ac060](https://github.com/cowprotocol/cowswap/commit/19ac060f94088e7a1f6a2a891ef11d2c1ded4525))
+
+## [1.20.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.19.0...common-utils-v1.20.0) (2025-08-07)
+
+
+### Features
+
+* respect explorer environment for explorer navigation to Swap's … ([#6060](https://github.com/cowprotocol/cowswap/issues/6060)) ([c1d778a](https://github.com/cowprotocol/cowswap/commit/c1d778a56d1fc5facbc743b649af23f7953ee364))
+
+## [1.19.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.18.1...common-utils-v1.19.0) (2025-08-04)
+
+
+### Features
+
+* update same tokens warning message, address wrapped tokens bug ([#6028](https://github.com/cowprotocol/cowswap/issues/6028)) ([95b9089](https://github.com/cowprotocol/cowswap/commit/95b9089744cd6fd9445e1c2ebd021a86cf3da29a))
+
+## [1.18.1](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.18.0...common-utils-v1.18.1) (2025-07-30)
+
+
+### Bug Fixes
+
+* **bridge:** show correct intermedeate token for surplus ([9182f33](https://github.com/cowprotocol/cowswap/commit/9182f331e0cf74a8045eba53111732b2e0c30aa4))
+* **bridge:** show correct intermediate token for surplus ([0a20c43](https://github.com/cowprotocol/cowswap/commit/0a20c43cc8ec63138c8f7b5c1aec74feba227c1b))
+* do not multicall allowances globally ([#5984](https://github.com/cowprotocol/cowswap/issues/5984)) ([b142199](https://github.com/cowprotocol/cowswap/commit/b14219963baeb2d2fa4a24ded50c6dd74bc58afe))
+
 ## [1.18.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.17.1...common-utils-v1.18.0) (2025-07-10)
 
 

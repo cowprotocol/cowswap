@@ -1,5 +1,4 @@
-import { latest } from '@cowprotocol/app-data'
-import { OrderClass } from '@cowprotocol/cow-sdk'
+import { cowAppDataLatestScheme, OrderClass } from '@cowprotocol/cow-sdk'
 
 import { Order } from 'api/operator'
 import { decodeFullAppData } from 'utils/decodeFullAppData'
@@ -30,8 +29,13 @@ const API_ORDER_CLASS_TO_UI_ORDER_TYPE_MAP: Record<OrderClass, UiOrderType> = {
 export function getUiOrderType({ fullAppData, class: orderClass }: Order): UiOrderType {
   const appData = decodeFullAppData(fullAppData)
 
-  const appDataOrderClass = appData?.metadata?.orderClass as latest.OrderClass | undefined
-  const typeFromAppData = UiOrderType[appDataOrderClass?.orderClass.toUpperCase() || '']
+  const appDataOrderClass = appData?.metadata?.orderClass as cowAppDataLatestScheme.OrderClass | undefined | string
+  const orderClassAsString =
+    typeof appDataOrderClass === 'string'
+      ? appDataOrderClass.toUpperCase()
+      : appDataOrderClass?.orderClass.toUpperCase() || ''
+
+  const typeFromAppData = UiOrderType[orderClassAsString]
 
   // 1. AppData info has priority as it's what's more precise
   if (typeFromAppData) {

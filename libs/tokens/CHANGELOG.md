@@ -1,5 +1,89 @@
 # Changelog
 
+## [1.27.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.26.0...tokens-v1.27.0) (2025-09-25)
+
+
+### Features
+
+* **bnb:** add BNB favorite tokens ([#6291](https://github.com/cowprotocol/cowswap/issues/6291)) ([db3b963](https://github.com/cowprotocol/cowswap/commit/db3b963e0032a13aa60972845c8502d53e0ef539))
+
+## [1.26.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.25.2...tokens-v1.26.0) (2025-09-17)
+
+
+### Features
+
+* remove Ondo tokens from curated token list ([#6276](https://github.com/cowprotocol/cowswap/issues/6276)) ([68b8cbd](https://github.com/cowprotocol/cowswap/commit/68b8cbd64569fdc1f9734fb678b6c19d978b38ab))
+
+## [1.25.2](https://github.com/cowprotocol/cowswap/compare/tokens-v1.25.1...tokens-v1.25.2) (2025-09-12)
+
+
+### Bug Fixes
+
+* **tokens:** remove mismatched network tokens from localStorage ([#6234](https://github.com/cowprotocol/cowswap/issues/6234)) ([ab57ec0](https://github.com/cowprotocol/cowswap/commit/ab57ec0ca185d34167f69b3b2b508e121a0a1deb))
+
+## [1.25.1](https://github.com/cowprotocol/cowswap/compare/tokens-v1.25.0...tokens-v1.25.1) (2025-08-29)
+
+
+### Bug Fixes
+
+* **ondo:** allow ondo token list tag ([#6197](https://github.com/cowprotocol/cowswap/issues/6197)) ([55ebdd8](https://github.com/cowprotocol/cowswap/commit/55ebdd899faf91d2d625ee0b2a78d2b7eee227b8))
+
+## [1.25.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.24.2...tokens-v1.25.0) (2025-08-28)
+
+
+### Features
+
+* add ondo token list for us ([#6185](https://github.com/cowprotocol/cowswap/issues/6185)) ([18e3179](https://github.com/cowprotocol/cowswap/commit/18e31798ec4130b672aa4c5294700c2252cf730f))
+* handle weekend for ondo tokens ([#6183](https://github.com/cowprotocol/cowswap/issues/6183)) ([cb3af07](https://github.com/cowprotocol/cowswap/commit/cb3af077192a24d09e23272fbcbfef69ea0f5812))
+
+
+### Bug Fixes
+
+* **lens:** follow up fixes ([#6176](https://github.com/cowprotocol/cowswap/issues/6176)) ([cd8f3c0](https://github.com/cowprotocol/cowswap/commit/cd8f3c0201b8f04fc31a59588b6d2d05d215e112))
+* **tokens:** check token lists loading state ([#6190](https://github.com/cowprotocol/cowswap/issues/6190)) ([3a0c358](https://github.com/cowprotocol/cowswap/commit/3a0c3585db8375c57af245ed55a272f72a67f4e2))
+
+## [1.24.2](https://github.com/cowprotocol/cowswap/compare/tokens-v1.24.1...tokens-v1.24.2) (2025-08-14)
+
+
+### Bug Fixes
+
+* **token-search:** increase results limit from 10 to 100 ([#6158](https://github.com/cowprotocol/cowswap/issues/6158)) ([b81c459](https://github.com/cowprotocol/cowswap/commit/b81c4598475a0b5097d7ff05046f41c8a3270ed8))
+
+## [1.24.1](https://github.com/cowprotocol/cowswap/compare/tokens-v1.24.0...tokens-v1.24.1) (2025-08-12)
+
+
+### Bug Fixes
+
+* **balances:** skip balances update from old blocks ([#6137](https://github.com/cowprotocol/cowswap/issues/6137)) ([0748151](https://github.com/cowprotocol/cowswap/commit/074815141e2992171cf752ef395a5dc34ecf6176))
+* **tokens:** check lists instead of tokens to prevent flickering ([#6125](https://github.com/cowprotocol/cowswap/issues/6125)) ([2705327](https://github.com/cowprotocol/cowswap/commit/2705327508f29079e6e5b4a8dc11b4dc0c5fb9cc))
+
+## [1.24.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.23.1...tokens-v1.24.0) (2025-08-07)
+
+
+### Features
+
+* **token-lists:** add Ondo tokens list to Mainnet ([#6115](https://github.com/cowprotocol/cowswap/issues/6115)) ([4e43496](https://github.com/cowprotocol/cowswap/commit/4e4349695be807febdcb52aec4b06adf68c950cf))
+
+## [1.23.1](https://github.com/cowprotocol/cowswap/compare/tokens-v1.23.0...tokens-v1.23.1) (2025-08-05)
+
+
+### Bug Fixes
+
+* get relevant provider network for multicall ([#6093](https://github.com/cowprotocol/cowswap/issues/6093)) ([47f4cfb](https://github.com/cowprotocol/cowswap/commit/47f4cfbea5f2a394a0fc10c9b90d313a46613373))
+
+## [1.23.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.22.0...tokens-v1.23.0) (2025-07-30)
+
+
+### Features
+
+* **bridge:** do not search output tokens in selector ([#6017](https://github.com/cowprotocol/cowswap/issues/6017)) ([c6be067](https://github.com/cowprotocol/cowswap/commit/c6be06716820a7257d94639fecb4f6e382858eb3))
+* **bridge:** implement CurrencyLogoPair and styling ([#5995](https://github.com/cowprotocol/cowswap/issues/5995)) ([ced0884](https://github.com/cowprotocol/cowswap/commit/ced0884599b7cf6a62a1a3b3aa983ebca8924763))
+
+
+### Bug Fixes
+
+* migrate tokens store from localStorage to indexedDB ([#6037](https://github.com/cowprotocol/cowswap/issues/6037)) ([99f67eb](https://github.com/cowprotocol/cowswap/commit/99f67eb97d2cb111f00292427ac4c8d40e353464))
+
 ## [1.22.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.21.0...tokens-v1.22.0) (2025-07-03)
 
 

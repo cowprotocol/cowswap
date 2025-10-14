@@ -5,15 +5,16 @@ import { useENSAddress } from '@cowprotocol/ens'
 import { useIsTradeUnsupported } from '@cowprotocol/tokens'
 import { useGnosisSafeInfo, useIsTxBundlingSupported, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
+import { useCurrentAccountProxy } from 'modules/accountProxy'
 import { useTryFindIntermediateToken } from 'modules/bridge'
-import { useCurrentAccountProxy } from 'modules/cowShed'
-import { useTokenSupportsPermit } from 'modules/permit'
-import { TradeType, useAmountsToSign, useDerivedTradeState, useIsWrapOrUnwrap } from 'modules/trade'
+import { useApproveState, useGetAmountToSignApprove, useIsApprovalOrPermitRequired } from 'modules/erc20Approve'
+import { TradeType, useDerivedTradeState, useIsWrapOrUnwrap } from 'modules/trade'
 import { TradeQuoteState, useTradeQuote } from 'modules/tradeQuote'
 
 import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
-import { useApproveState } from 'common/hooks/useApproveState'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
+
+import { useTokenCustomTradeError } from './useTokenCustomTradeError'
 
 import { TradeFormValidationCommonContext } from '../types'
 
@@ -25,8 +26,9 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const isOnline = useIsOnline()
 
   const { inputCurrency, outputCurrency, recipient, tradeType } = derivedTradeState || {}
-  const { maximumSendSellAmount } = useAmountsToSign() || {}
-  const { state: approvalState } = useApproveState(maximumSendSellAmount)
+  const customTokenError = useTokenCustomTradeError(inputCurrency, outputCurrency, tradeQuote.error)
+  const amountToApprove = useGetAmountToSignApprove()
+  const { state: approvalState } = useApproveState(amountToApprove)
   const { address: recipientEnsAddress } = useENSAddress(recipient)
   const isSwapUnsupported =
     useIsTradeUnsupported(inputCurrency, outputCurrency) || isUnsupportedTokenInQuote(tradeQuote)
@@ -39,7 +41,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
 
   const isSafeReadonlyUser = gnosisSafeInfo?.isReadOnly === true
 
-  const isPermitSupported = useTokenSupportsPermit(inputCurrency, tradeType)
+  const isApproveRequired = useIsApprovalOrPermitRequired()
 
   const isInsufficientBalanceOrderAllowed = tradeType === TradeType.LIMIT_ORDER
 
@@ -57,7 +59,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     recipientEnsAddress,
     approvalState,
     tradeQuote,
-    isPermitSupported,
+    isApproveRequired,
     isInsufficientBalanceOrderAllowed,
     isProviderNetworkUnsupported,
     isOnline,
@@ -65,6 +67,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     intermediateTokenToBeImported: !!intermediateBuyToken && toBeImported,
     isAccountProxyLoading: isLoading,
     isProxySetupValid: proxyAccount?.isProxySetupValid,
+    customTokenError,
   }
 
   return useMemo(() => {

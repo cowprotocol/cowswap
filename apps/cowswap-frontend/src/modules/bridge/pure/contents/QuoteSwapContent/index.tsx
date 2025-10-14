@@ -4,7 +4,7 @@ import { isTruthy } from '@cowprotocol/common-utils'
 import { InfoTooltip, PercentDisplay } from '@cowprotocol/ui'
 import { Percent } from '@uniswap/sdk-core'
 
-import { ProxyRecipient } from 'modules/cowShed'
+import { ProxyRecipient } from 'modules/accountProxy'
 import { ReceiveAmountTitle, TradeFeesAndCosts, ConfirmDetailsItem } from 'modules/trade'
 import { BRIDGE_QUOTE_ACCOUNT } from 'modules/tradeQuote'
 import { RowSlippage } from 'modules/tradeWidgetAddons'
@@ -37,8 +37,9 @@ function createExpectedReceiveContent(
         <InfoTooltip
           content={
             <>
-              The estimated amount you\'ll receive after estimated network costs and the max slippage setting (
-              <PercentDisplay percent={slippagePercentDisplay.toFixed(2)}/>).
+              The estimated amount you'll receive after estimated network costs and the max slippage setting (
+              <PercentDisplay percent={slippagePercentDisplay.toFixed(2)} />
+              ).
             </>
           }
           size={14}
@@ -49,14 +50,21 @@ function createExpectedReceiveContent(
   }
 }
 
-function createSlippageContent(slippage: Percent, hideRecommendedSlippage: boolean, isSlippageModified: boolean): ContentItem {
-  const slippageLabel = <>Max. swap slippage{' '}</>
-  const slippagePercentDisplay = <RowSlippage
-    slippageLabel={slippageLabel}
-    allowedSlippage={slippage}
-    isSlippageModified={isSlippageModified}
-    hideRecommendedSlippage={hideRecommendedSlippage}
-    isTradePriceUpdating={false}/>
+function createSlippageContent(
+  slippage: Percent,
+  hideRecommendedSlippage: boolean,
+  isSlippageModified: boolean,
+): ContentItem {
+  const slippageLabel = <>Max. swap slippage </>
+  const slippagePercentDisplay = (
+    <RowSlippage
+      slippageLabel={slippageLabel}
+      allowedSlippage={slippage}
+      isSlippageModified={isSlippageModified}
+      hideRecommendedSlippage={hideRecommendedSlippage}
+      isTradePriceUpdating={false}
+    />
+  )
 
   return {
     withTimelineDot: true,
@@ -104,9 +112,9 @@ export function QuoteSwapContent({
     minReceiveAmount,
     minReceiveUsdValue,
     expectedReceiveUsdValue,
-    isSlippageModified
+    isSlippageModified,
   },
-  hideRecommendedSlippage
+  hideRecommendedSlippage,
 }: QuoteDetailsContentProps): ReactNode {
   const isBridgeQuoteRecipient = recipient === BRIDGE_QUOTE_ACCOUNT
   const contents = [

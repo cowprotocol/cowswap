@@ -1,3 +1,4 @@
+import { PERMIT_HOOK_DAPP_ID } from '@cowprotocol/hook-dapp-lib'
 import { JsonRpcProvider } from '@ethersproject/providers'
 
 import { DEFAULT_PERMIT_GAS_LIMIT, DEFAULT_PERMIT_VALUE, PERMIT_SIGNER } from '../const'
@@ -5,9 +6,6 @@ import { PermitHookData, PermitHookParams } from '../types'
 import { buildDaiLikePermitCallData, buildEip2612PermitCallData } from '../utils/buildPermitCallData'
 import { getPermitDeadline } from '../utils/getPermitDeadline'
 import { isSupportedPermitInfo } from '../utils/isSupportedPermitInfo'
-
-// See hookDappsRegistry.json in @cowprotocol/hook-dapp-lib
-const PERMIT_HOOK_DAPP_ID = 'PERMIT_TOKEN'
 
 const REQUESTS_CACHE: { [permitKey: string]: Promise<PermitHookData | undefined> } = {}
 
@@ -35,8 +33,6 @@ export async function generatePermitHook(params: PermitHookParams): Promise<Perm
   return request
 }
 
-// TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
 async function generatePermitHookRaw(params: PermitHookParams): Promise<PermitHookData> {
   const { inputToken, spender, chainId, permitInfo, provider, account, eip2612Utils, nonce: preFetchedNonce } = params
 
@@ -59,7 +55,7 @@ async function generatePermitHookRaw(params: PermitHookParams): Promise<PermitHo
   const nonce = preFetchedNonce === undefined ? await eip2612Utils.getTokenNonce(tokenAddress, owner) : preFetchedNonce
 
   const deadline = getPermitDeadline()
-  const value = DEFAULT_PERMIT_VALUE
+  const value = params.amount || DEFAULT_PERMIT_VALUE
 
   const callData =
     permitInfo.type === 'eip-2612'
@@ -69,7 +65,7 @@ async function generatePermitHookRaw(params: PermitHookParams): Promise<PermitHo
             {
               owner,
               spender,
-              value,
+              value: value.toString(),
               nonce,
               deadline,
             },
@@ -86,7 +82,7 @@ async function generatePermitHookRaw(params: PermitHookParams): Promise<PermitHo
               holder: owner,
               spender,
               allowed: true,
-              value,
+              value: value.toString(),
               nonce,
               expiry: deadline,
             },
@@ -132,7 +128,6 @@ async function calculateGasLimit(
 }
 
 function getCacheKey(params: PermitHookParams): string {
-  const { inputToken, chainId, account } = params
-
-  return `${inputToken.address.toLowerCase()}-${chainId}${account ? `-${account.toLowerCase()}` : ''}`
+  const { inputToken, chainId, account, amount } = params
+  return `${inputToken.address.toLowerCase()}-${chainId}${account ? `-${account.toLowerCase()}` : ''}${amount ? `-${amount.toString()}` : ''}`
 }

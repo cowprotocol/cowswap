@@ -1,4 +1,4 @@
-import { CrossChainOrder } from '@cowprotocol/cow-sdk'
+import type { CrossChainOrder } from '@cowprotocol/sdk-bridging'
 import type { TokenInfo } from '@uniswap/token-lists'
 
 import { useBridgeProviderBuyTokens } from './useBridgeProviderBuyTokens'

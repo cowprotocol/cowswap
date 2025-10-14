@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { BridgeProviderInfo } from '@cowprotocol/cow-sdk'
+import { BridgeProviderInfo } from '@cowprotocol/sdk-bridging'
 import { InfoTooltip } from '@cowprotocol/ui'
 
 import { BRIDGE_DISCLAIMER_TOOLTIP_CONTENT, COW_PROTOCOL_NAME } from '../../constants'
@@ -45,7 +45,9 @@ export function BridgeRouteTitle({
           secondProtocol={bridgeProvider}
         />
         <span> {protocolName}</span>
-        {protocolName !== COW_PROTOCOL_NAME && <InfoTooltip content={BRIDGE_DISCLAIMER_TOOLTIP_CONTENT} size={14} />}
+        {!protocolName.includes(COW_PROTOCOL_NAME) && (
+          <InfoTooltip content={BRIDGE_DISCLAIMER_TOOLTIP_CONTENT} size={14} />
+        )}
       </b>
     </>
   )

@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.8.1](https://github.com/cowprotocol/cowswap/compare/core-v1.8.0...core-v1.8.1) (2025-09-11)
+
+
+### Bug Fixes
+
+* **twap:** load orders history faster ([#6226](https://github.com/cowprotocol/cowswap/issues/6226)) ([bfba891](https://github.com/cowprotocol/cowswap/commit/bfba89170c63333e3182adb27624cac33106af1d))
+
+## [1.8.0](https://github.com/cowprotocol/cowswap/compare/core-v1.7.4...core-v1.8.0) (2025-08-21)
+
+
+### Features
+
+* **new-networks:** lens and bnb ([#5992](https://github.com/cowprotocol/cowswap/issues/5992)) ([19ac060](https://github.com/cowprotocol/cowswap/commit/19ac060f94088e7a1f6a2a891ef11d2c1ded4525))
+
 ## [1.7.4](https://github.com/cowprotocol/cowswap/compare/core-v1.7.3...core-v1.7.4) (2025-07-03)
 
 

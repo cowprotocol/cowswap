@@ -29,6 +29,20 @@ const StyledTradeSelect = styled(TradeSelect)`
   font-weight: 500;
   color: inherit;
 
+  button[data-reach-menu-button] {
+    width: 100%;
+    height: auto;
+    justify-content: space-between;
+    font-size: 18px;
+    
+    &:hover,
+    &:active,
+    &:focus {
+      background: none;
+      border-radius: 0;
+    }
+  }
+
   > svg {
     color: inherit;
     stroke: currentColor;
@@ -63,7 +77,7 @@ const StyledTradeField = styled(TradeWidgetField)`
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function DeadlineSelector(props: DeadlineSelectorProps) {
   const {
     items,

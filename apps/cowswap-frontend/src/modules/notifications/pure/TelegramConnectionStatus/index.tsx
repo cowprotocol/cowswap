@@ -1,41 +1,73 @@
-import { Loader, UI } from '@cowprotocol/ui'
+import { ReactNode, useCallback, useState } from 'react'
 
-import { CheckCircle } from 'react-feather'
-import styled from 'styled-components/macro'
+import { Loader, UI } from '@cowprotocol/ui'
 
 import { Toggle } from 'legacy/components/Toggle'
 
-const Connected = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  background: var(${UI.COLOR_SUCCESS_BG});
-  color: var(${UI.COLOR_SUCCESS});
-  border-radius: 6px;
-  padding: 4px 8px;
-  font-size: 13px;
-`
+interface TelegramData {
+  auth_date: number
+  first_name: string
+  hash: string
+  id: number
+  photo_url: string
+  username: string
+}
 
 interface TelegramConnectionStatusProps {
   isLoading: boolean
   isSubscribed: boolean
-  subscribeAccount(): void
+  needsAuthorization: boolean
+  toggleSubscription(): void
+  subscribeWithData(data: TelegramData): Promise<void>
+  authorize(): Promise<TelegramData | null>
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function TelegramConnectionStatus({ isLoading, isSubscribed, subscribeAccount }: TelegramConnectionStatusProps) {
-  if (isLoading) {
-    return <Loader />
+export function TelegramConnectionStatus({
+  isLoading,
+  isSubscribed,
+  needsAuthorization,
+  authorize,
+  toggleSubscription,
+  subscribeWithData,
+}: TelegramConnectionStatusProps): ReactNode {
+  const [isAuthorizingInProgress, setIsAuthorizingInProgress] = useState(false)
+
+  const handleToggle = useCallback(async () => {
+    if (needsAuthorization) {
+      // If not authorized, trigger authorization when toggled ON
+      setIsAuthorizingInProgress(true)
+      try {
+        const authData = await authorize()
+        if (authData) {
+          // Pass the auth data directly to avoid race condition
+          await subscribeWithData(authData)
+        }
+      } catch (error) {
+        // If authorization fails, the toggle will revert to OFF automatically
+        console.warn('Telegram authorization failed or was cancelled:', error)
+      } finally {
+        setIsAuthorizingInProgress(false)
+      }
+    } else {
+      // If already authorized, handle normal subscription toggle
+      toggleSubscription()
+    }
+  }, [needsAuthorization, authorize, toggleSubscription, subscribeWithData])
+
+  if (isLoading || isAuthorizingInProgress) {
+    return <Loader size="33px" stroke={`var(${UI.COLOR_TEXT_OPACITY_50})`} />
   }
 
-  if (!isLoading && !isSubscribed) {
-    return <Toggle id="toggle-telegram-notifications" isActive={false} toggle={subscribeAccount} />
-  }
+  const isToggleActive = !needsAuthorization && isSubscribed
 
   return (
-    <Connected>
-      Connected <CheckCircle size={14} />
-    </Connected>
+    <div>
+      <Toggle
+        id="toggle-telegram-notifications"
+        isActive={isToggleActive}
+        toggle={handleToggle}
+        inactiveBgColor={`var(${UI.COLOR_PAPER})`}
+      />
+    </div>
   )
 }

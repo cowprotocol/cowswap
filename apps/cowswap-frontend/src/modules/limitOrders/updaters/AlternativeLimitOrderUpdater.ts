@@ -7,8 +7,6 @@ import { useENS } from '@cowprotocol/ens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Price } from '@uniswap/sdk-core'
 
-import { Order } from 'legacy/state/orders/actions'
-
 import {
   limitOrdersDerivedStateAtom,
   LimitOrdersSettingsState,
@@ -19,7 +17,7 @@ import { LIMIT_ORDERS_DEADLINES } from 'modules/limitOrders/pure/DeadlineSelecto
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
 import { useAlternativeOrder, useHideAlternativeOrderModal } from 'modules/trade/state/alternativeOrder'
 
-import { ParsedOrder } from 'utils/orderUtils/parseOrder'
+import { GenericOrder } from 'common/types'
 
 import { DEFAULT_TRADE_DERIVED_STATE } from '../../trade'
 import { useLimitOrdersDerivedState } from '../hooks/useLimitOrdersDerivedState'
@@ -146,7 +144,7 @@ function useResetAlternativeOnChainOrAccountChange(): null {
 /**
  * Get order creation and expiration times, as Date objs
  */
-function getOrderTimes(order: Order | ParsedOrder): [Date, Date] {
+function getOrderTimes(order: GenericOrder): [Date, Date] {
   if ('validTo' in order) {
     // Order instance, creationTime is a ISO string, validTo is a UNIX timestamp
     return [new Date(order.creationTime), new Date(+order.validTo * 1000)]
@@ -159,7 +157,7 @@ function getOrderTimes(order: Order | ParsedOrder): [Date, Date] {
  * Get order duration in milliseconds
  * @param order
  */
-function getDuration(order: Order | ParsedOrder): number {
+function getDuration(order: GenericOrder): number {
   const [creationTime, expirationTime] = getOrderTimes(order)
   const duration = expirationTime.getTime() - creationTime.getTime()
   return Math.round(duration)
@@ -187,7 +185,7 @@ function getMatchingDeadline(duration: number) {
  *  - `partialFillsEnabled`
  *  - either `deadlineMilliseconds` or `customDeadlineTimestamp`
  */
-function getSettingsState(order: Order | ParsedOrder, hasCustomRecipient: boolean): Partial<LimitOrdersSettingsState> {
+function getSettingsState(order: GenericOrder, hasCustomRecipient: boolean): Partial<LimitOrdersSettingsState> {
   const state: Partial<LimitOrdersSettingsState> = {
     showRecipient: hasCustomRecipient,
     partialFillsEnabled: order.partiallyFillable,

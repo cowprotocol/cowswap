@@ -32,10 +32,18 @@ export const ThemeColorVars = css`
       theme.darkMode ? darken(theme.paper, 0.07) : darken(theme.paper, 0.05)};
     ${UI.COLOR_PAPER_DARKEST}: ${({ theme }) =>
       theme.darkMode ? darken(theme.paper, 0.1) : darken(theme.paper, 0.15)};
+    ${UI.COLOR_PAPER_GRADIENT}: ${({ theme }) =>
+      theme.darkMode
+        ? `linear-gradient(90deg, ${transparentize(theme.text, 0.9)} 0%, ${transparentize(theme.text, 0.8)} 100%)`
+        : `linear-gradient(90deg, ${transparentize(theme.text, 0.92)} 0%, ${transparentize(theme.text, 0.96)} 100%)`};
 
     ${UI.COLOR_BORDER}: var(${UI.COLOR_PAPER_DARKER});
     ${UI.BOX_SHADOW}: 0 12px 12px ${({ theme }) => transparentize(theme.primary, 0.94)};
     ${UI.BOX_SHADOW_2}: 0px 4px 8px ${({ theme }) => transparentize(theme.primary, 0.94)};
+    ${UI.BOX_SHADOW_3}: ${({ theme }) =>
+      theme.darkMode
+        ? `0px 6px 12px -6px ${darken(theme.paper, 0.04)}, 0px 8px 24px -4px ${darken(theme.paper, 0.08)}`
+        : `0px 6px 12px -6px ${transparentize(theme.text, 0.88)}, 0px 8px 24px -4px ${transparentize(theme.text, 0.92)}`};
 
     ${UI.COLOR_TEXT}: ${({ theme }) => theme.text};
     ${UI.COLOR_TEXT_PAPER}: ${({ theme }) => getContrastText(theme.paper, theme.text)};
@@ -92,11 +100,16 @@ export const ThemeColorVars = css`
     // Colors
     ${UI.COLOR_BLUE}: ${({ theme }) => theme.blueDark2};
     ${UI.COLOR_BLUE_100_PRIMARY}: ${({ theme }) => theme.blue100Primary};
+    ${UI.COLOR_BLUE_100_PRIMARY_OPACITY_15}: ${({ theme }) => transparentize(theme.blue100Primary, 0.85)};
     ${UI.COLOR_BLUE_200_PRIMARY}: ${({ theme }) => theme.blue200Primary};
     ${UI.COLOR_BLUE_300_PRIMARY}: ${({ theme }) => theme.blue300Primary};
     ${UI.COLOR_BLUE_400_PRIMARY}: ${({ theme }) => theme.blue400Primary};
     ${UI.COLOR_BLUE_500_PRIMARY}: ${({ theme }) => theme.blue500Primary};
+    ${UI.COLOR_BLUE_700_PRIMARY}: ${({ theme }) => theme.blue700Primary};
+    ${UI.COLOR_BLUE_700_PRIMARY_OPACITY_25}: ${({ theme }) => transparentize(theme.blue700Primary, 0.75)};
     ${UI.COLOR_BLUE_900_PRIMARY}: ${({ theme }) => theme.blue900Primary};
+    ${UI.COLOR_PURPLE_200_PRIMARY}: ${({ theme }) => theme.purple200Primary};
+    ${UI.COLOR_PURPLE_800_PRIMARY}: ${({ theme }) => theme.purple800Primary};
     ${UI.COLOR_LIGHT_BLUE_OPACITY_90}: ${({ theme }) => theme.info};
     ${UI.COLOR_LIGHT_BLUE_OPACITY_80}: ${({ theme }) => transparentize(theme.info, 0.2)}; // 80% opacity
     ${UI.COLOR_YELLOW_LIGHT}: ${({ theme }) => theme.alert2};
@@ -117,6 +130,8 @@ export const ThemeColorVars = css`
     ${UI.COLOR_NEUTRAL_10}: ${({ theme }) => theme.neutral10};
     ${UI.COLOR_NEUTRAL_0}: ${({ theme }) => theme.neutral0};
     ${UI.COLOR_BLACK}: ${({ theme }) => theme.neutral0};
+    ${UI.COLOR_BLACK_OPACITY_70}: ${({ theme }) => transparentize(theme.neutral0, 0.3)};
+    ${UI.COLOR_BLACK_OPACITY_30}: ${({ theme }) => transparentize(theme.neutral0, 0.7)};
 
     // CoW AMM Colors
     ${UI.COLOR_COWAMM_DARK_GREEN}: #194d05;

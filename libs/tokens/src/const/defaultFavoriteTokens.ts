@@ -1,15 +1,17 @@
 import {
   ARB_ARBITRUM_ONE,
+  BTCB_BNB,
+  BUSD_BNB,
   CBBTC_BASE,
   COW_TOKEN_ARBITRUM,
   COW_TOKEN_BASE,
   COW_TOKEN_MAINNET,
-  COW_TOKEN_POLYGON,
   COW_TOKEN_SEPOLIA,
   COW_TOKEN_XDAI,
   DAI,
   DAI_ARBITRUM_ONE,
   DAI_BASE,
+  DAI_BNB,
   DAI_POLYGON,
   EURE_GNOSIS_CHAIN,
   GNO_GNOSIS_CHAIN,
@@ -17,6 +19,8 @@ import {
   USDC_ARBITRUM_ONE,
   USDC_AVALANCHE,
   USDC_BASE,
+  USDC_BNB,
+  USDC_LENS,
   USDC_MAINNET,
   USDC_POLYGON,
   USDC_SEPOLIA,
@@ -25,6 +29,7 @@ import {
   USDT_ARBITRUM_ONE,
   USDT_AVALANCHE,
   USDT_BASE,
+  USDT_BNB,
   USDT_POLYGON,
   WBTC,
   WBTC_ARBITRUM_ONE,
@@ -36,9 +41,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { TokensMap } from '../types'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const tokensListToMap = (list: (TokenWithLogo | null)[]) =>
+const tokensListToMap = (list: (TokenWithLogo | null)[]): TokensMap =>
   list.reduce<TokensMap>((acc, token) => {
     if (!token) {
       return acc
@@ -98,12 +101,21 @@ export const DEFAULT_FAVORITE_TOKENS: Record<SupportedChainId, TokensMap> = {
     USDC_POLYGON,
     USDT_POLYGON,
     DAI_POLYGON,
-    COW_TOKEN_POLYGON,
+    // Cow Token is deployed but there's no liquidity at the moment
     WRAPPED_NATIVE_CURRENCIES[SupportedChainId.POLYGON],
   ]),
   [SupportedChainId.AVALANCHE]: tokensListToMap([
     USDC_AVALANCHE,
     USDT_AVALANCHE,
     WRAPPED_NATIVE_CURRENCIES[SupportedChainId.AVALANCHE],
+  ]),
+  [SupportedChainId.LENS]: tokensListToMap([WRAPPED_NATIVE_CURRENCIES[SupportedChainId.LENS], USDC_LENS]), // TODO: Add Lens tokens when available
+  [SupportedChainId.BNB]: tokensListToMap([
+    WRAPPED_NATIVE_CURRENCIES[SupportedChainId.BNB],
+    USDC_BNB,
+    USDT_BNB,
+    BUSD_BNB,
+    DAI_BNB,
+    BTCB_BNB,
   ]),
 }

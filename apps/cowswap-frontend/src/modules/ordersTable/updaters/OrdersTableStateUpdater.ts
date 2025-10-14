@@ -1,6 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai/index'
 import { ReactNode, useEffect, useMemo } from 'react'
 
+import { useBalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
 import { useIsSafeViaWc, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useLocation } from 'react-router'
@@ -8,7 +9,7 @@ import { useLocation } from 'react-router'
 import { Order } from 'legacy/state/orders/actions'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
-import { usePendingOrdersPrices, useGetSpotPrice } from 'modules/orders'
+import { useGetSpotPrice, usePendingOrdersPrices } from 'modules/orders'
 
 import { ordersToCancelAtom, updateOrdersToCancelAtom } from 'common/hooks/useMultipleOrdersCancellation/state'
 import { useNavigate } from 'common/hooks/useNavigate'
@@ -16,7 +17,6 @@ import { usePendingActivitiesCount } from 'common/hooks/usePendingActivitiesCoun
 
 import { useOrdersTableList } from '../containers/OrdersTableWidget/hooks/useOrdersTableList'
 import { useValidatePageUrlParams } from '../containers/OrdersTableWidget/hooks/useValidatePageUrlParams'
-import { useBalancesAndAllowances } from '../hooks/useBalancesAndAllowances'
 import { useCurrentTab } from '../hooks/useCurrentTab'
 import { useFilteredOrders } from '../hooks/useFilteredOrders'
 import { useOrderActions } from '../hooks/useOrderActions'
@@ -37,14 +37,18 @@ function getOrdersInputTokens(allOrders: Order[]): string[] {
 
 interface OrdersTableStateUpdaterProps extends OrdersTableParams {
   searchTerm?: string
+  syncWithUrl?: boolean
 }
 
+// todo will fix in the next pr
+// eslint-disable-next-line max-lines-per-function
 export function OrdersTableStateUpdater({
   orders: allOrders,
   orderType,
   searchTerm = '',
   isTwapTable = false,
   displayOrdersOnlyForSafeApp = false,
+  syncWithUrl = true,
 }: OrdersTableStateUpdaterProps): ReactNode {
   const { chainId, account } = useWalletInfo()
   const { allowsOffchainSigning } = useWalletDetails()
@@ -120,7 +124,15 @@ export function OrdersTableStateUpdater({
 
   // Set page params initially once
   useEffect(() => {
-    navigate(buildOrdersTableUrl(location, { pageNumber: currentPageNumber, tabId: currentTabId }), { replace: true })
+    // todo - need to divide this logic from updater
+    syncWithUrl &&
+      navigate(
+        buildOrdersTableUrl(location, {
+          pageNumber: currentPageNumber,
+          tabId: currentTabId,
+        }),
+        { replace: true },
+      )
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   useValidatePageUrlParams(orders.length, currentTabId, currentPageNumber)

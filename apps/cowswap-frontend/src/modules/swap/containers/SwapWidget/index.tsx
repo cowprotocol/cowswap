@@ -1,11 +1,14 @@
-import { ReactNode, useCallback, useMemo, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
-import { isSellOrder } from '@cowprotocol/common-utils'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { getIsNativeToken, isInjectedWidget, isSellOrder } from '@cowprotocol/common-utils'
+import { useIsEagerConnectInProgress, useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import { Field } from 'legacy/state/types'
 import { useHooksEnabledManager } from 'legacy/state/user/hooks'
 
 import { useTryFindIntermediateToken } from 'modules/bridge'
+import { TradeApproveWithAffectedOrderList } from 'modules/erc20Approve'
 import { EthFlowModal, EthFlowProps } from 'modules/ethFlow'
 import { AddIntermediateTokenModal } from 'modules/tokensList'
 import {
@@ -13,7 +16,7 @@ import {
   TradeWidgetSlots,
   useGetReceiveAmountInfo,
   useTradePriceImpact,
-  useWrapNativeFlow
+  useWrapNativeFlow,
 } from 'modules/trade'
 import { useHandleSwap } from 'modules/tradeFlow'
 import { useTradeQuote } from 'modules/tradeQuote'
@@ -27,13 +30,21 @@ import { Container } from './styled'
 
 import { useHasEnoughWrappedBalanceForSwap } from '../../hooks/useHasEnoughWrappedBalanceForSwap'
 import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
-import { useSwapDeadlineState, useSwapRecipientToggleState, useSwapSettings } from '../../hooks/useSwapSettings'
+import {
+  useSwapDeadlineState,
+  useSwapPartialApprovalToggleState,
+  useSwapRecipientToggleState,
+  useSwapSettings,
+} from '../../hooks/useSwapSettings'
 import { useSwapWidgetActions } from '../../hooks/useSwapWidgetActions'
+import { useUpdateSwapRawState } from '../../hooks/useUpdateSwapRawState'
+import { CrossChainUnlockScreen } from '../../pure/CrossChainUnlockScreen'
 import { BottomBanners } from '../BottomBanners'
 import { SwapConfirmModal } from '../SwapConfirmModal'
 import { SwapRateDetails } from '../SwapRateDetails'
 import { TradeButtons } from '../TradeButtons'
 import { Warnings } from '../Warnings'
+
 export interface SwapWidgetProps {
   topContent?: ReactNode
   bottomContent?: ReactNode
@@ -41,8 +52,8 @@ export interface SwapWidgetProps {
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
-export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
+// eslint-disable-next-line max-lines-per-function,complexity
+export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps): ReactNode {
   const { showRecipient } = useSwapSettings()
   const deadlineState = useSwapDeadlineState()
   const recipientToggleState = useSwapRecipientToggleState()
@@ -59,6 +70,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
   const dismissNativeWrapModal = useCallback(() => setOpenNativeWrapModal(false), [])
 
   const wrapCallback = useWrapNativeFlow()
+  const updateSwapState = useUpdateSwapRawState()
 
   const {
     inputCurrency,
@@ -70,10 +82,22 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
     inputCurrencyFiatAmount,
     outputCurrencyFiatAmount,
     recipient,
+    recipientAddress,
     orderKind,
+    isUnlocked,
   } = useSwapDerivedState()
   const doTrade = useHandleSwap(useSafeMemoObject({ deadline: deadlineState[0] }), widgetActions)
   const hasEnoughWrappedBalanceForSwap = useHasEnoughWrappedBalanceForSwap()
+  const isSmartContractWallet = useIsSmartContractWallet()
+  const { account } = useWalletInfo()
+  const isEagerConnectInProgress = useIsEagerConnectInProgress()
+  const [isHydrated, setIsHydrated] = useState(false)
+  const handleUnlock = useCallback(() => updateSwapState({ isUnlocked: true }), [updateSwapState])
+
+  useEffect(() => {
+    // Hydration guard: defer lock-screen until persisted state (isUnlocked) loads to prevent initial flash.
+    setIsHydrated(true)
+  }, [])
 
   const isSellTrade = isSellOrder(orderKind)
 
@@ -133,13 +157,29 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
     setShowAddIntermediateTokenModal(false)
   }, [])
 
+  const { isPartialApproveEnabled } = useFeatureFlags()
+  const enablePartialApprovalState = useSwapPartialApprovalToggleState(isPartialApproveEnabled)
+
+  const enablePartialApproval = enablePartialApprovalState[0] && inputCurrency && !getIsNativeToken(inputCurrency)
+
+  const isConnected = Boolean(account)
+
+  // Guarded render: require hydration and no active eager-connect; show only for confirmed EOAs or truly disconnected users.
+  const shouldShowLockScreen =
+    isHydrated &&
+    !isUnlocked &&
+    !isInjectedWidget() &&
+    ((isConnected && isSmartContractWallet === false) || (!isConnected && !isEagerConnectInProgress))
+
   const slots: TradeWidgetSlots = {
     topContent,
+    lockScreen: shouldShowLockScreen ? <CrossChainUnlockScreen handleUnlock={handleUnlock} /> : undefined,
     settingsWidget: (
       <SettingsTab
         recipientToggleState={recipientToggleState}
         hooksEnabledState={hooksEnabledState}
         deadlineState={deadlineState}
+        enablePartialApprovalState={enablePartialApprovalState}
       />
     ),
     bottomContent: useCallback(
@@ -147,6 +187,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
         return (
           <>
             {bottomContent}
+            {enablePartialApproval ? <TradeApproveWithAffectedOrderList /> : null}
             <SwapRateDetails rateInfoParams={rateInfoParams} deadline={deadlineState[0]} />
             <Warnings buyingFiatAmount={buyingFiatAmount} />
             {tradeWarnings}
@@ -171,6 +212,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
         hasEnoughWrappedBalanceForSwap,
         toBeImported,
         intermediateBuyToken,
+        enablePartialApproval,
       ],
     ),
   }
@@ -205,6 +247,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps) {
             <SwapConfirmModal
               doTrade={doTrade.callback}
               recipient={recipient}
+              recipientAddress={recipientAddress}
               priceImpact={priceImpact}
               inputCurrencyInfo={inputCurrencyPreviewInfo}
               outputCurrencyInfo={outputCurrencyPreviewInfo}

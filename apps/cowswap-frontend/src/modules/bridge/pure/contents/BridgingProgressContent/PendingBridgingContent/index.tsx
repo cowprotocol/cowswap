@@ -1,6 +1,8 @@
 import { ReactNode } from 'react'
 
-import { BridgeStatusResult, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { RECEIVED_LABEL } from '@cowprotocol/common-const'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { BridgeStatusResult } from '@cowprotocol/sdk-bridging'
 
 import { ConfirmDetailsItem, ReceiveAmountTitle } from 'modules/trade'
 
@@ -27,7 +29,7 @@ export function PendingBridgingContent({
       <ConfirmDetailsItem
         label={
           <ReceiveAmountTitle>
-            <b>You received</b>
+            <b>{RECEIVED_LABEL}</b>
           </ReceiveAmountTitle>
         }
       >
@@ -38,7 +40,7 @@ export function PendingBridgingContent({
           </StatusAwareText>
         </b>
       </ConfirmDetailsItem>
-      
+
       {explorerUrl ? (
         <BridgeTransactionLink link={explorerUrl} label="Bridge transaction" />
       ) : (

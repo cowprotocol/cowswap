@@ -16,10 +16,10 @@ interface AddressLinkProps {
   address: string
   chainId: number
   className?: string
-  noShorten?: boolean
+  content?: string
 }
 
-export function AddressLink({ address, chainId, className, noShorten }: AddressLinkProps): ReactNode {
+export function AddressLink({ address, chainId, className, content }: AddressLinkProps): ReactNode {
   return isAddress(address) ? (
     <Link
       className={className}
@@ -27,7 +27,7 @@ export function AddressLink({ address, chainId, className, noShorten }: AddressL
       target="_blank"
       rel="noreferrer"
     >
-      {noShorten ? address : shortenAddress(address)} ↗
+      {content ? (isAddress(content) ? shortenAddress(content) : content) : shortenAddress(address)} ↗
     </Link>
   ) : (
     address

@@ -1,5 +1,111 @@
 # Changelog
 
+## [2.55.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.54.3...explorer-v2.55.0) (2025-10-02)
+
+
+### Features
+
+* use bff's socket proxy for local/pr envs ([#6292](https://github.com/cowprotocol/cowswap/issues/6292)) ([610a6cc](https://github.com/cowprotocol/cowswap/commit/610a6cc3ba320e3b88f34cfd8ad28e810cc20ae8))
+
+## [2.54.3](https://github.com/cowprotocol/cowswap/compare/explorer-v2.54.2...explorer-v2.54.3) (2025-09-22)
+
+
+### Bug Fixes
+
+* **explorer:** handle type for order class data ([#6295](https://github.com/cowprotocol/cowswap/issues/6295)) ([60fe5cd](https://github.com/cowprotocol/cowswap/commit/60fe5cd750d065a5210ece2c0101bc1ca7da462b))
+
+## [2.54.2](https://github.com/cowprotocol/cowswap/compare/explorer-v2.54.1...explorer-v2.54.2) (2025-09-16)
+
+
+### Bug Fixes
+
+* explorer environments ([#6271](https://github.com/cowprotocol/cowswap/issues/6271)) ([cffe763](https://github.com/cowprotocol/cowswap/commit/cffe763fd99bb2ee2de50146c6a91ad78f8e71e7))
+
+## [2.54.1](https://github.com/cowprotocol/cowswap/compare/explorer-v2.54.0...explorer-v2.54.1) (2025-09-15)
+
+
+### Bug Fixes
+
+* update CoW Swap and Explorer with bungee changes ([#6265](https://github.com/cowprotocol/cowswap/issues/6265)) ([a38b9d9](https://github.com/cowprotocol/cowswap/commit/a38b9d97ebffd9837ef4d1ea9a946e979d9ed7e4))
+
+## [2.54.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.53.1...explorer-v2.54.0) (2025-09-12)
+
+
+### Features
+
+* restore Gnosis Affiliate header ([#6228](https://github.com/cowprotocol/cowswap/issues/6228)) ([22d0894](https://github.com/cowprotocol/cowswap/commit/22d08941a67032712e6d206ea8579786ed78715f))
+
+## [2.53.1](https://github.com/cowprotocol/cowswap/compare/explorer-v2.53.0...explorer-v2.53.1) (2025-08-28)
+
+
+### Bug Fixes
+
+* **bungee:** remove custom affiliate logic/endpoints ([#6193](https://github.com/cowprotocol/cowswap/issues/6193)) ([d4feb5c](https://github.com/cowprotocol/cowswap/commit/d4feb5cbdedcbd4761498d0ab7c1e055cbc5e545))
+
+## [2.53.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.52.0...explorer-v2.53.0) (2025-08-28)
+
+
+### Features
+
+* **bridging:** enable mainnet-&gt;gnosis bridge ([#6172](https://github.com/cowprotocol/cowswap/issues/6172)) ([d1bb3d5](https://github.com/cowprotocol/cowswap/commit/d1bb3d5376cdd09ce2801a9bbf4a67b8b70f5d1b))
+
+
+### Bug Fixes
+
+* **lens:** follow up fixes ([#6176](https://github.com/cowprotocol/cowswap/issues/6176)) ([cd8f3c0](https://github.com/cowprotocol/cowswap/commit/cd8f3c0201b8f04fc31a59588b6d2d05d215e112))
+
+## [2.52.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.51.0...explorer-v2.52.0) (2025-08-21)
+
+
+### Features
+
+* **new-networks:** lens and bnb ([#5992](https://github.com/cowprotocol/cowswap/issues/5992)) ([19ac060](https://github.com/cowprotocol/cowswap/commit/19ac060f94088e7a1f6a2a891ef11d2c1ded4525))
+
+
+### Bug Fixes
+
+* **lens:** fix lens twap cancellation ([#6170](https://github.com/cowprotocol/cowswap/issues/6170)) ([d04d82e](https://github.com/cowprotocol/cowswap/commit/d04d82ebe4eb7943d8cde4493446cdc5e3344f51))
+
+## [2.51.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.50.0...explorer-v2.51.0) (2025-08-07)
+
+
+### Features
+
+* **explorer:** sort fills tab by execution date, descending ([#6080](https://github.com/cowprotocol/cowswap/issues/6080)) ([3c58f9d](https://github.com/cowprotocol/cowswap/commit/3c58f9d304a755cb4ed9ae8ea1584262bec40917))
+* respect explorer environment for explorer navigation to Swap's … ([#6060](https://github.com/cowprotocol/cowswap/issues/6060)) ([c1d778a](https://github.com/cowprotocol/cowswap/commit/c1d778a56d1fc5facbc743b649af23f7953ee364))
+* use received label constant for consistency in bridging content ([#6071](https://github.com/cowprotocol/cowswap/issues/6071)) ([709d183](https://github.com/cowprotocol/cowswap/commit/709d183bf7d8e41fc6705dc3dda89214c96e6919))
+
+
+### Bug Fixes
+
+* **bridge:** use account proxy label for consistent naming ([#6073](https://github.com/cowprotocol/cowswap/issues/6073)) ([d2d4e39](https://github.com/cowprotocol/cowswap/commit/d2d4e392e1c9f05dae2552aba11f07dacee077f0))
+* **explorer:** add space between native token and chain name ([#6101](https://github.com/cowprotocol/cowswap/issues/6101)) ([304bbdf](https://github.com/cowprotocol/cowswap/commit/304bbdf3c0a5a675615e6e22a6141ef240acc31a))
+* **explorer:** remove flickering from app-data details ([#6083](https://github.com/cowprotocol/cowswap/issues/6083)) ([310f445](https://github.com/cowprotocol/cowswap/commit/310f445444c42440a2c1cf0c7f941ef1f9109fd3))
+* **explorer:** resolve native tokens from hardcode ([#6081](https://github.com/cowprotocol/cowswap/issues/6081)) ([6fdec11](https://github.com/cowprotocol/cowswap/commit/6fdec114b2b060de087c7577654697edc1c1d6fe))
+
+## [2.50.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.49.0...explorer-v2.50.0) (2025-07-31)
+
+
+### Features
+
+* remove from Explorer bridge order `Sender` row ([#6051](https://github.com/cowprotocol/cowswap/issues/6051)) ([bf54034](https://github.com/cowprotocol/cowswap/commit/bf540347234906129496253f0c2c1d51f2fde6f7))
+
+## [2.49.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.48.3...explorer-v2.49.0) (2025-07-30)
+
+
+### Features
+
+* **bridge:** adjust addresses displaying in Explorer ([#6021](https://github.com/cowprotocol/cowswap/issues/6021)) ([37cdaf0](https://github.com/cowprotocol/cowswap/commit/37cdaf07a74c1b9b4357a4e942cc7ddc139f1873))
+
+
+### Bug Fixes
+
+* **bridge:** better destination tokens filtering ([#5965](https://github.com/cowprotocol/cowswap/issues/5965)) ([1e738e3](https://github.com/cowprotocol/cowswap/commit/1e738e3b547584158f8083500926819b1bb2de93))
+* **explorer:** display unknown network token logo ([#6013](https://github.com/cowprotocol/cowswap/issues/6013)) ([095ad7b](https://github.com/cowprotocol/cowswap/commit/095ad7bce0741fe0a45adc3f65b26cdf88e5dd6f))
+* **explorer:** load coingecko tokens for all chains ([#6015](https://github.com/cowprotocol/cowswap/issues/6015)) ([4d57a5c](https://github.com/cowprotocol/cowswap/commit/4d57a5c2caf7b26952a3661c1e6ae76ac5bffb16))
+* **explorer:** update bridge status ([#6041](https://github.com/cowprotocol/cowswap/issues/6041)) ([a548008](https://github.com/cowprotocol/cowswap/commit/a548008ba68355a00a7a1a69b32d1b6434a133af))
+* improve bridge details on cow explorer ([#6042](https://github.com/cowprotocol/cowswap/issues/6042)) ([77b17ca](https://github.com/cowprotocol/cowswap/commit/77b17ca2f5129aa874ba001b436b7299ade82e4a))
+
 ## [2.48.3](https://github.com/cowprotocol/cowswap/compare/explorer-v2.48.2...explorer-v2.48.3) (2025-07-10)
 
 

@@ -1,20 +1,10 @@
 import { Command } from '@cowprotocol/types'
 
-import BigNumber from 'bignumber.js'
-import BN from 'bn.js'
 import { DEFAULT_TIMEOUT, NATIVE_TOKEN_ADDRESS } from 'const'
 import { Network, Unpromise } from 'types'
 import Web3 from 'web3'
 
-import { AssertionError } from 'assert'
-
 const toChecksumAddress = Web3.utils.toChecksumAddress
-
-export function assertNonNull<T>(val: T, message: string): asserts val is NonNullable<T> {
-  if (val === undefined || val === null) {
-    throw new AssertionError({ message })
-  }
-}
 
 // TODO: Replace any with proper type definitions
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -77,6 +67,8 @@ const NetworkImageAddressMap: Record<Network, string> = {
   [Network.POLYGON]: 'pol',
   [Network.AVALANCHE]: 'avax',
   [Network.SEPOLIA]: 'eth',
+  [Network.LENS]: 'lens',
+  [Network.BNB]: 'bnb',
 }
 
 export function getImageAddress(address: string, network: Network): string {
@@ -144,18 +136,6 @@ export async function retry<T extends () => any>(fn: T, options?: RetryOptions):
   }
 }
 
-export function flattenMapOfLists<K, T>(map: Map<K, T[]>): T[] {
-  return Array.from(map.values()).reduce<T[]>((acc, list) => acc.concat(list), [])
-}
-
-export function flattenMapOfSets<K, T>(map: Map<K, Set<T>>): T[] {
-  return Array.from(map.values()).reduce<T[]>((acc, set) => acc.concat(Array.from(set)), [])
-}
-
-export function divideBN(numerator: BN, denominator: BN): BigNumber {
-  return new BigNumber(numerator.toString()).dividedBy(denominator.toString())
-}
-
 export const RequireContextMock = Object.assign(() => '', {
   keys: () => [],
   resolve: () => '',
@@ -165,8 +145,6 @@ export const RequireContextMock = Object.assign(() => '', {
 export function notEmpty<TValue>(value: TValue | null | undefined): value is TValue {
   return value !== null && value !== undefined
 }
-
-export const isNonZeroNumber = (value?: string | number): boolean => !!value && !!+value
 
 export interface TimeoutParams<T> {
   time?: number
@@ -228,6 +206,7 @@ export function cleanNetworkName(networkName: string | undefined): string {
 
   return networkName.replace(/\s+/g, '').toLowerCase()
 }
+
 /**
  * Returns the difference in percentage between two numbers
  *

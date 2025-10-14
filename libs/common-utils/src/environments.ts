@@ -2,11 +2,12 @@ import { registerOnWindow } from './misc'
 
 const DEFAULT_ENVIRONMENTS_REGEX: Record<EnvironmentName, string> = {
   local: '^(:?localhost:\\d{2,5}|(?:127|192)(?:\\.[0-9]{1,3}){3})',
-  pr: '^(swap-dev-git-[\\w\\d-]+|swap-\\w{9}-)cowswap-dev\\.vercel\\.app',
-  development: '^(dev.swap.cow.fi|swap-develop.vercel.app)',
-  staging: '^(staging.swap.cow.fi|swap-staging.vercel.app)',
-  production: '^(swap.cow.fi|swap-prod.vercel.app)$',
-  barn: '^(barn.cow.fi|swap-barn.vercel.app)$',
+  pr: '^((?:explorer|swap)-dev-git-[\\w\\d-]+|swap-\\w{9}-)cowswap-dev\\.vercel\\.app',
+  development: '^(dev.swap.cow.fi|dev.explorer.cow.fi|swap-develop.vercel.app|explorer-dev.vercel.app)',
+  staging: '^(staging.swap.cow.fi|staging.explorer.cow.fi|swap-staging.vercel.app|explorer-staging.vercel.app)',
+  production:
+    '^(swap.cow.fi|explorer.cow.fi|swap-prod.vercel.app|explorer-prod-seven.vercel.app|cow.trade|cowswap.exchange)$',
+  barn: '^(barn.cow.fi|barn.explorer.cow.fi|swap-barn.vercel.app|explorer-barn.vercel.app|barn.cowswap.exchange)$',
   ens: '(:?^cowswap.eth|ipfs)',
 }
 

@@ -1,5 +1,47 @@
 # Changelog
 
+## [1.7.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.6.0...balances-and-allowances-v1.7.0) (2025-10-02)
+
+
+### Features
+
+* load balances via bff API ([#6213](https://github.com/cowprotocol/cowswap/issues/6213)) ([8884a89](https://github.com/cowprotocol/cowswap/commit/8884a89b1cf11b44a9cc92f7d7bb4e7b3415747c))
+
+## [1.6.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.5.5...balances-and-allowances-v1.6.0) (2025-08-28)
+
+
+### Features
+
+* **trade:** implement partial approve ([#6139](https://github.com/cowprotocol/cowswap/issues/6139)) ([6f9d6b0](https://github.com/cowprotocol/cowswap/commit/6f9d6b055323d25705ee88a533f71190944be6e2))
+
+## [1.5.5](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.5.4...balances-and-allowances-v1.5.5) (2025-08-21)
+
+
+### Bug Fixes
+
+* do not poll multicall when document is not focused ([#6146](https://github.com/cowprotocol/cowswap/issues/6146)) ([d7fde7c](https://github.com/cowprotocol/cowswap/commit/d7fde7c2eb21e75d58c97a410653d648f68dfcb9))
+
+## [1.5.4](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.5.3...balances-and-allowances-v1.5.4) (2025-08-12)
+
+
+### Bug Fixes
+
+* **balances:** skip balances update from old blocks ([#6137](https://github.com/cowprotocol/cowswap/issues/6137)) ([0748151](https://github.com/cowprotocol/cowswap/commit/074815141e2992171cf752ef395a5dc34ecf6176))
+
+## [1.5.3](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.5.2...balances-and-allowances-v1.5.3) (2025-08-05)
+
+
+### Bug Fixes
+
+* get relevant provider network for multicall ([#6093](https://github.com/cowprotocol/cowswap/issues/6093)) ([47f4cfb](https://github.com/cowprotocol/cowswap/commit/47f4cfbea5f2a394a0fc10c9b90d313a46613373))
+
+## [1.5.2](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.5.1...balances-and-allowances-v1.5.2) (2025-07-30)
+
+
+### Bug Fixes
+
+* do not multicall allowances globally ([#5984](https://github.com/cowprotocol/cowswap/issues/5984)) ([b142199](https://github.com/cowprotocol/cowswap/commit/b14219963baeb2d2fa4a24ded50c6dd74bc58afe))
+
 ## [1.5.1](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.5.0...balances-and-allowances-v1.5.1) (2025-07-10)
 
 

@@ -8,7 +8,13 @@ import { Field } from 'legacy/state/types'
 import { useAdvancedOrdersActions } from 'modules/advancedOrders/hooks/useAdvancedOrdersActions'
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders/hooks/useAdvancedOrdersDerivedState'
 import { advancedOrdersSettingsAtom } from 'modules/advancedOrders/state/advancedOrdersSettingsAtom'
-import { TradeWidget, TradeWidgetSlots, useTradePriceImpact, useGetReceiveAmountInfo } from 'modules/trade'
+import {
+  TradeWidget,
+  TradeWidgetSlots,
+  useTradePriceImpact,
+  useGetReceiveAmountInfo,
+  TradeWidgetParams,
+} from 'modules/trade'
 import { BulletListItem, UnlockWidgetScreen } from 'modules/trade/pure/UnlockWidgetScreen'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { TWAP_LEARN_MORE_LINK } from 'modules/twap/const'
@@ -29,7 +35,7 @@ const UNLOCK_SCREEN = {
   title: 'Unlock the Power of TWAP Orders',
   subtitle: 'Begin with TWAP Today!',
   orderType: 'TWAP',
-  buttonText: 'Unlock TWAP orders (BETA)',
+  buttonText: 'Unlock TWAP orders',
   // TODO: add actual link before deploy to PROD
   buttonLink: TWAP_LEARN_MORE_LINK,
 }
@@ -120,13 +126,14 @@ export function AdvancedOrdersWidget({
     ),
   }
 
-  const tradeWidgetParams = {
+  const tradeWidgetParams: TradeWidgetParams = {
     recipient,
     compactView: true,
     showRecipient,
     isTradePriceUpdating,
     priceImpact,
     disablePriceImpact,
+    disableSuggestedSlippageApi: true,
   }
 
   return (

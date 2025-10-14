@@ -1,10 +1,30 @@
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
-import { CrossChainOrder, getCrossChainOrder, CowEnv } from '@cowprotocol/cow-sdk'
+import { CowEnv } from '@cowprotocol/cow-sdk'
+import { CrossChainOrder, getCrossChainOrder, BridgeStatus } from '@cowprotocol/sdk-bridging'
 
+import ms from 'ms.macro'
 import { orderBookApi, knownBridgeProviders } from 'sdk/cowSdk'
-import useSWR, { SWRResponse } from 'swr'
+import useSWR, { SWRConfiguration, SWRResponse } from 'swr'
 
 import { useNetworkId } from '../../../state/network'
+
+const UPDATE_INTERVAL = ms`15s`
+
+export const BRIDGING_FINAL_STATUSES = [BridgeStatus.EXECUTED, BridgeStatus.EXPIRED, BridgeStatus.REFUND]
+
+const swrOptions: SWRConfiguration = {
+  ...SWR_NO_REFRESH_OPTIONS,
+  refreshInterval: (data) => {
+    if (data) {
+      const isBridgingFinished = BRIDGING_FINAL_STATUSES.includes(data.statusResult.status)
+
+      if (isBridgingFinished) {
+        return 0
+      }
+    }
+    return UPDATE_INTERVAL
+  },
+}
 
 export function useCrossChainOrder(orderId: string | undefined): SWRResponse<CrossChainOrder | null | undefined> {
   const chainId = useNetworkId()
@@ -26,6 +46,6 @@ export function useCrossChainOrder(orderId: string | undefined): SWRResponse<Cro
 
       return getOrder('prod').catch(() => getOrder('staging'))
     },
-    SWR_NO_REFRESH_OPTIONS,
+    swrOptions,
   )
 }

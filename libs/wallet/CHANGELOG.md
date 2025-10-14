@@ -1,5 +1,42 @@
 # Changelog
 
+## [1.15.2](https://github.com/cowprotocol/cowswap/compare/wallet-v1.15.1...wallet-v1.15.2) (2025-09-22)
+
+
+### Bug Fixes
+
+* **bridge:** disable bridging for EIP7702EOA accounts ([#6249](https://github.com/cowprotocol/cowswap/issues/6249)) ([9eb219f](https://github.com/cowprotocol/cowswap/commit/9eb219f000fc92cb2f76d0ace2a9aaea4cf7110d))
+* **twap:** mark twap as cancelled when tx is mined ([#6262](https://github.com/cowprotocol/cowswap/issues/6262)) ([52d7b66](https://github.com/cowprotocol/cowswap/commit/52d7b6699bef391db7e2045f400e8480b23960ca))
+
+## [1.15.1](https://github.com/cowprotocol/cowswap/compare/wallet-v1.15.0...wallet-v1.15.1) (2025-09-12)
+
+
+### Bug Fixes
+
+* **swap:** improve lock screen logic in SwapWidget to prevent flash ([#6195](https://github.com/cowprotocol/cowswap/issues/6195)) ([159b199](https://github.com/cowprotocol/cowswap/commit/159b199e5e63d13feabe7832c0c8cd877024717a))
+
+## [1.15.0](https://github.com/cowprotocol/cowswap/compare/wallet-v1.14.0...wallet-v1.15.0) (2025-08-21)
+
+
+### Features
+
+* **account-proxy:** support all versions of proxy ([#6105](https://github.com/cowprotocol/cowswap/issues/6105)) ([5bcae43](https://github.com/cowprotocol/cowswap/commit/5bcae43625a14933abc4e7a4f40e02b568997118))
+* **new-networks:** lens and bnb ([#5992](https://github.com/cowprotocol/cowswap/issues/5992)) ([19ac060](https://github.com/cowprotocol/cowswap/commit/19ac060f94088e7a1f6a2a891ef11d2c1ded4525))
+
+## [1.14.0](https://github.com/cowprotocol/cowswap/compare/wallet-v1.13.1...wallet-v1.14.0) (2025-08-07)
+
+
+### Features
+
+* don't use mm sdk if injected provider exists or mobile device is used ([#6094](https://github.com/cowprotocol/cowswap/issues/6094)) ([f77de45](https://github.com/cowprotocol/cowswap/commit/f77de45ccf0b1423e85e0dbee5742e3b8dc6ca17))
+
+## [1.13.1](https://github.com/cowprotocol/cowswap/compare/wallet-v1.13.0...wallet-v1.13.1) (2025-07-31)
+
+
+### Bug Fixes
+
+* **safe:** check provider chainId for multicall provider ([#6057](https://github.com/cowprotocol/cowswap/issues/6057)) ([490436a](https://github.com/cowprotocol/cowswap/commit/490436a6b482f75876e471ba45ff1f7e02017ca0))
+
 ## [1.13.0](https://github.com/cowprotocol/cowswap/compare/wallet-v1.12.4...wallet-v1.13.0) (2025-07-03)
 
 

@@ -1,5 +1,65 @@
 # Changelog
 
+## [1.26.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.25.0...common-const-v1.26.0) (2025-09-25)
+
+
+### Features
+
+* **bnb:** add BNB favorite tokens ([#6291](https://github.com/cowprotocol/cowswap/issues/6291)) ([db3b963](https://github.com/cowprotocol/cowswap/commit/db3b963e0032a13aa60972845c8502d53e0ef539))
+
+## [1.25.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.24.1...common-const-v1.25.0) (2025-09-12)
+
+
+### Features
+
+* restore Gnosis Affiliate header ([#6228](https://github.com/cowprotocol/cowswap/issues/6228)) ([22d0894](https://github.com/cowprotocol/cowswap/commit/22d08941a67032712e6d206ea8579786ed78715f))
+
+## [1.24.1](https://github.com/cowprotocol/cowswap/compare/common-const-v1.24.0...common-const-v1.24.1) (2025-08-28)
+
+
+### Bug Fixes
+
+* **lens:** follow up fixes ([#6176](https://github.com/cowprotocol/cowswap/issues/6176)) ([cd8f3c0](https://github.com/cowprotocol/cowswap/commit/cd8f3c0201b8f04fc31a59588b6d2d05d215e112))
+
+## [1.24.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.23.0...common-const-v1.24.0) (2025-08-21)
+
+
+### Features
+
+* **new-networks:** lens and bnb ([#5992](https://github.com/cowprotocol/cowswap/issues/5992)) ([19ac060](https://github.com/cowprotocol/cowswap/commit/19ac060f94088e7a1f6a2a891ef11d2c1ded4525))
+
+
+### Bug Fixes
+
+* **lens:** lens fee addresses ([#6167](https://github.com/cowprotocol/cowswap/issues/6167)) ([2027ee1](https://github.com/cowprotocol/cowswap/commit/2027ee18324f89342d45219908e3673a91dec972))
+
+## [1.23.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.22.0...common-const-v1.23.0) (2025-08-12)
+
+
+### Features
+
+* rename Permit hook dapp id ([#6138](https://github.com/cowprotocol/cowswap/issues/6138)) ([41b0b18](https://github.com/cowprotocol/cowswap/commit/41b0b182d4a673bb1799a699ea83029ee8c6d73b))
+
+## [1.22.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.21.1...common-const-v1.22.0) (2025-08-07)
+
+
+### Features
+
+* use received label constant for consistency in bridging content ([#6071](https://github.com/cowprotocol/cowswap/issues/6071)) ([709d183](https://github.com/cowprotocol/cowswap/commit/709d183bf7d8e41fc6705dc3dda89214c96e6919))
+
+
+### Bug Fixes
+
+* **bridge:** use account proxy label for consistent naming ([#6073](https://github.com/cowprotocol/cowswap/issues/6073)) ([d2d4e39](https://github.com/cowprotocol/cowswap/commit/d2d4e392e1c9f05dae2552aba11f07dacee077f0))
+
+## [1.21.1](https://github.com/cowprotocol/cowswap/compare/common-const-v1.21.0...common-const-v1.21.1) (2025-07-30)
+
+
+### Bug Fixes
+
+* **bridge:** use proper naming for eth mainnet ([#5915](https://github.com/cowprotocol/cowswap/issues/5915)) ([b83c32a](https://github.com/cowprotocol/cowswap/commit/b83c32a46dd82267741878e465ac24a612339726))
+* **bridging:** enhance account proxy validation ([#5985](https://github.com/cowprotocol/cowswap/issues/5985)) ([4366070](https://github.com/cowprotocol/cowswap/commit/436607005c5c743a4fd96c17b6d1f0b165d5baac))
+
 ## [1.21.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.20.1...common-const-v1.21.0) (2025-07-03)
 
 

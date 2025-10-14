@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react'
 
-import { BridgeStatus, CrossChainOrder } from '@cowprotocol/cow-sdk'
+import { BridgeStatus, CrossChainOrder } from '@cowprotocol/sdk-bridging'
 import { Nullish } from '@cowprotocol/types'
 import { Loader } from '@cowprotocol/ui'
 

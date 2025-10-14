@@ -19,9 +19,11 @@ export enum UI {
   COLOR_PAPER_OPACITY_99 = '--cow-color-paper-opacity-99',
   COLOR_PAPER_DARKER = '--cow-color-paper-darker',
   COLOR_PAPER_DARKEST = '--cow-color-paper-darkest',
+  COLOR_PAPER_GRADIENT = '--cow-color-paper-gradient',
 
   BOX_SHADOW = '--cow-box-shadow',
   BOX_SHADOW_2 = '--cow-box-shadow-2',
+  BOX_SHADOW_3 = '--cow-box-shadow-3',
 
   COLOR_TEXT = '--cow-color-text',
   COLOR_TEXT_PAPER = '--cow-color-text-paper',
@@ -83,11 +85,16 @@ export enum UI {
   // Colors
   COLOR_BLUE = '--cow-color-blue',
   COLOR_BLUE_100_PRIMARY = '--cow-color-blue-100-primary',
+  COLOR_BLUE_100_PRIMARY_OPACITY_15 = '--cow-color-blue-100-primary-opacity-15',
   COLOR_BLUE_200_PRIMARY = '--cow-color-blue-200-primary',
   COLOR_BLUE_300_PRIMARY = '--cow-color-blue-300-primary',
   COLOR_BLUE_400_PRIMARY = '--cow-color-blue-400-primary',
   COLOR_BLUE_500_PRIMARY = '--cow-color-blue-500-primary',
+  COLOR_BLUE_700_PRIMARY = '--cow-color-blue-700-primary',
+  COLOR_BLUE_700_PRIMARY_OPACITY_25 = '--cow-color-blue-700-primary-opacity-25',
   COLOR_BLUE_900_PRIMARY = '--cow-color-blue-900-primary',
+  COLOR_PURPLE_200_PRIMARY = '--cow-color-purple-200-primary',
+  COLOR_PURPLE_800_PRIMARY = '--cow-color-purple-800-primary',
   COLOR_LIGHT_BLUE_OPACITY_90 = '--cow-color-lightBlue-opacity-90',
   COLOR_LIGHT_BLUE_OPACITY_80 = '--cow-color-lightBlue-opacity-80',
   COLOR_YELLOW_LIGHT = '--cow-color-yellow-light',
@@ -110,6 +117,8 @@ export enum UI {
   COLOR_NEUTRAL_10 = '--cow-color-neutral-10',
   COLOR_NEUTRAL_0 = '--cow-color-neutral-0',
   COLOR_BLACK = '--cow-color-neutral-0',
+  COLOR_BLACK_OPACITY_70 = '--cow-color-neutral-0-opacity-70',
+  COLOR_BLACK_OPACITY_30 = '--cow-color-neutral-0-opacity-30',
 
   // Elements
   COLOR_BORDER = '--cow-color-border',

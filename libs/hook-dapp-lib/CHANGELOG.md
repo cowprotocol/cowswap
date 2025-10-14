@@ -1,5 +1,39 @@
 # Changelog
 
+## [1.12.0](https://github.com/cowprotocol/cowswap/compare/hook-dapp-lib-v1.11.0...hook-dapp-lib-v1.12.0) (2025-10-02)
+
+
+### Features
+
+* **bridge:** use best quote among all providers ([#6299](https://github.com/cowprotocol/cowswap/issues/6299)) ([ba90184](https://github.com/cowprotocol/cowswap/commit/ba901842f4f940e30dedda66b0b39273f53713ae))
+
+## [1.11.0](https://github.com/cowprotocol/cowswap/compare/hook-dapp-lib-v1.10.0...hook-dapp-lib-v1.11.0) (2025-08-28)
+
+
+### Features
+
+* **trade:** implement partial approve ([#6139](https://github.com/cowprotocol/cowswap/issues/6139)) ([6f9d6b0](https://github.com/cowprotocol/cowswap/commit/6f9d6b055323d25705ee88a533f71190944be6e2))
+
+
+### Bug Fixes
+
+* **lens:** follow up fixes ([#6176](https://github.com/cowprotocol/cowswap/issues/6176)) ([cd8f3c0](https://github.com/cowprotocol/cowswap/commit/cd8f3c0201b8f04fc31a59588b6d2d05d215e112))
+
+## [1.10.0](https://github.com/cowprotocol/cowswap/compare/hook-dapp-lib-v1.9.0...hook-dapp-lib-v1.10.0) (2025-08-12)
+
+
+### Features
+
+* rename Permit hook dapp id ([#6138](https://github.com/cowprotocol/cowswap/issues/6138)) ([41b0b18](https://github.com/cowprotocol/cowswap/commit/41b0b182d4a673bb1799a699ea83029ee8c6d73b))
+
+## [1.9.0](https://github.com/cowprotocol/cowswap/compare/hook-dapp-lib-v1.8.0...hook-dapp-lib-v1.9.0) (2025-07-30)
+
+
+### Features
+
+* **bridge:** add bungee to hook dapps registry ([#5974](https://github.com/cowprotocol/cowswap/issues/5974)) ([5cc9ee4](https://github.com/cowprotocol/cowswap/commit/5cc9ee4b293c7e662a6723ad37729cbc08296d23))
+* **hooks:** add polygon to morpho and update info ([#5945](https://github.com/cowprotocol/cowswap/issues/5945)) ([6c47e0e](https://github.com/cowprotocol/cowswap/commit/6c47e0eb481ed4ce5af2b2e3c7cf4c61f4ba79e1))
+
 ## [1.8.0](https://github.com/cowprotocol/cowswap/compare/hook-dapp-lib-v1.7.1...hook-dapp-lib-v1.8.0) (2025-07-03)
 
 

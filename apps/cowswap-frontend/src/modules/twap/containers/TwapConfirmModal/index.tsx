@@ -63,6 +63,7 @@ export function TwapConfirmModal() {
     outputCurrencyFiatAmount,
     outputCurrencyBalance,
     recipient,
+    recipientAddress,
   } = useAdvancedOrdersDerivedState()
   // TODO: there's some overlap with what's in each hook (useTwapOrder | useScaledReceiveAmountInfo)
   const twapOrder = useTwapOrder()
@@ -121,6 +122,7 @@ export function TwapConfirmModal() {
                 receiveAmountInfo={receiveAmountInfo}
                 slippage={slippage}
                 recipient={recipient}
+                recipientAddress={recipientAddress}
                 account={account}
                 labelsAndTooltips={{
                   ...CONFIRM_MODAL_CONFIG,

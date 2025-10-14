@@ -1,46 +1,51 @@
-import { Link } from '@/components/Link'
-import IMG_LOGO_SAFE from '@cowprotocol/assets/images/logo-safe.svg'
-import IMG_LOGO_LIDO from '@cowprotocol/assets/images/logo-lido.svg'
-import IMG_LOGO_CURVE_TEXT from '@cowprotocol/assets/images/logo-curve-text.svg'
-import IMG_LOGO_GNOSIS from '@cowprotocol/assets/images/logo-gnosis.svg'
-import IMG_LOGO_BALANCER from '@cowprotocol/assets/images/logo-balancer.svg'
-import IMG_LOGO_AURA from '@cowprotocol/assets/images/logo-aura.svg'
-import IMG_LOGO_KARPATKEY from '@cowprotocol/assets/images/logo-karpatkey.svg'
-import IMG_LOGO_SHAPESHIFT from '@cowprotocol/assets/images/logo-shapeshift.svg'
-import IMG_LOGO_MAKER from '@cowprotocol/assets/images/logo-maker.svg'
-import IMG_LOGO_SYNTHETIX from '@cowprotocol/assets/images/logo-synthetix.svg'
-import IMG_LOGO_ARAGON from '@cowprotocol/assets/images/logo-aragon.svg'
-import IMG_LOGO_PLEASER_DAO from '@cowprotocol/assets/images/logo-pleasrdao.svg'
-import IMG_LOGO_POLYGON from '@cowprotocol/assets/images/logo-polygon.svg'
-import IMG_LOGO_INDEX_COOP from '@cowprotocol/assets/images/logo-index.svg'
-import IMG_LOGO_ALCHEMIX from '@cowprotocol/assets/images/logo-alchemix.svg'
-import IMG_LOGO_STAKE_DAO from '@cowprotocol/assets/images/logo-stakedao.svg'
-import IMG_LOGO_RHINO_FI from '@cowprotocol/assets/images/logo-rhino.svg'
-import IMG_LOGO_TELLER_FINANCE from '@cowprotocol/assets/images/logo-teller.svg'
-import IMG_LOGO_FRAX_FINANCE from '@cowprotocol/assets/images/logo-frax.svg'
-import IMG_GRANT_COLOR from '@cowprotocol/assets/images/image-grant-color.svg'
-import IMG_WIDGET from '@cowprotocol/assets/images/image-widget.svg'
+import { ReactNode } from 'react'
+
+import { useCowAnalytics } from '@cowprotocol/analytics'
 import IMG_DOCS from '@cowprotocol/assets/images/image-docs.svg'
-import IMG_MILKMAN from '@cowprotocol/assets/images/image-milkman.svg'
-import IMG_TWAP from '@cowprotocol/assets/images/image-twap.svg'
-import IMG_SURPLUS from '@cowprotocol/assets/images/image-surplus.svg'
+import IMG_GRANT_COLOR from '@cowprotocol/assets/images/image-grant-color.svg'
 import IMG_HOOKS from '@cowprotocol/assets/images/image-hooks.svg'
+import IMG_MILKMAN from '@cowprotocol/assets/images/image-milkman.svg'
 import IMG_PROGRAMMATIC_ORDERS from '@cowprotocol/assets/images/image-programmatic-orders.svg'
 import IMG_SMARTORDERS from '@cowprotocol/assets/images/image-smartorders.svg'
-import IMG_LOGO_NEXUS from '@cowprotocol/assets/images/logo-nexus-icon.svg'
-import IMG_LOGO_ENS from '@cowprotocol/assets/images/logo-ens-icon.svg'
+import IMG_SURPLUS from '@cowprotocol/assets/images/image-surplus.svg'
+import IMG_TWAP from '@cowprotocol/assets/images/image-twap.svg'
+import IMG_WIDGET from '@cowprotocol/assets/images/image-widget.svg'
 import IMG_LOGO_AAVE from '@cowprotocol/assets/images/logo-aave-icon.svg'
-import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
-import { ReactNode } from 'react'
-import { useCowAnalytics } from '@cowprotocol/analytics'
+import IMG_LOGO_ALCHEMIX from '@cowprotocol/assets/images/logo-alchemix.svg'
+import IMG_LOGO_ARAGON from '@cowprotocol/assets/images/logo-aragon.svg'
+import IMG_LOGO_AURA from '@cowprotocol/assets/images/logo-aura.svg'
+import IMG_LOGO_BALANCER from '@cowprotocol/assets/images/logo-balancer.svg'
+import IMG_LOGO_CURVE_TEXT from '@cowprotocol/assets/images/logo-curve-text.svg'
+import IMG_LOGO_ENS from '@cowprotocol/assets/images/logo-ens-icon.svg'
+import IMG_LOGO_FRAX_FINANCE from '@cowprotocol/assets/images/logo-frax.svg'
+import IMG_LOGO_GNOSIS from '@cowprotocol/assets/images/logo-gnosis.svg'
+import IMG_LOGO_INDEX_COOP from '@cowprotocol/assets/images/logo-index.svg'
+import IMG_LOGO_KARPATKEY from '@cowprotocol/assets/images/logo-karpatkey.svg'
+import IMG_LOGO_LIDO from '@cowprotocol/assets/images/logo-lido.svg'
+import IMG_LOGO_MAKER from '@cowprotocol/assets/images/logo-maker.svg'
+import IMG_LOGO_NEXUS from '@cowprotocol/assets/images/logo-nexus-icon.svg'
+import IMG_LOGO_PLEASER_DAO from '@cowprotocol/assets/images/logo-pleasrdao.svg'
+import IMG_LOGO_POLYGON from '@cowprotocol/assets/images/logo-polygon.svg'
+import IMG_LOGO_RHINO_FI from '@cowprotocol/assets/images/logo-rhino.svg'
+import IMG_LOGO_SAFE from '@cowprotocol/assets/images/logo-safe.svg'
+import IMG_LOGO_SHAPESHIFT from '@cowprotocol/assets/images/logo-shapeshift.svg'
+import IMG_LOGO_STAKE_DAO from '@cowprotocol/assets/images/logo-stakedao.svg'
+import IMG_LOGO_SYNTHETIX from '@cowprotocol/assets/images/logo-synthetix.svg'
+import IMG_LOGO_TELLER_FINANCE from '@cowprotocol/assets/images/logo-teller.svg'
 import { Color } from '@cowprotocol/ui'
+
+import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
+
+import { Link } from '@/components/Link'
 
 export interface FaqItem {
   question: string
   answer: ReactNode
 }
 
+// eslint-disable-next-line max-lines-per-function
 export function useFaqData(): FaqItem[] {
+  // eslint-disable-next-line unused-imports/no-unused-vars
   const analytics = useCowAnalytics()
 
   return [
@@ -119,7 +124,7 @@ export function useFaqData(): FaqItem[] {
       question: 'How does CoW Protocol provide better prices for trades?',
       answer: (
         <>
-          CoW Protocol's unique architecture allows it to give users comprehensive MEV protection as well as better
+          CoW Protocol&#39;s unique architecture allows it to give users comprehensive MEV protection as well as better
           prices for their trades. While most other DEX aggregators simply compare quotes from various DEXs and execute
           orders against whichever DEX is lowest at the time of quoting, CoW Protocol seeks to find the best execution
           price.
@@ -211,7 +216,7 @@ export function useFaqData(): FaqItem[] {
           </Link>{' '}
           is a signed message that a user submits through their wallet which specifies an action they want to take —
           such as trading a token, minting an NFT, entering or exiting a LP position etc. These intents can then be
-          executed by third parties, such as CoW Protocol's{' '}
+          executed by third parties, such as CoW Protocol&#39;s{' '}
           <Link
             href="https://docs.cow.fi/cow-protocol/concepts/introduction/solvers"
             external
@@ -386,7 +391,7 @@ export function useFaqData(): FaqItem[] {
     {
       question: 'What chains does CoW Protocol currently support?',
       answer:
-        'CoW Protocol is currently deployed on Ethereum, Base, Arbitrum One, Avalanche, Gnosis Chain, and Polygon.',
+        'CoW Protocol is currently deployed on Ethereum, BNB, Base, Arbitrum, Polygon, Avalanche, Gnosis, and Lens.',
     },
     {
       question: 'How do I get support?',

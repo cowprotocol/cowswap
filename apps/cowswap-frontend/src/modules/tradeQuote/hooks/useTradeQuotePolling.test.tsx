@@ -31,12 +31,18 @@ jest.mock('@cowprotocol/common-hooks', () => ({
 }))
 jest.mock('@cowprotocol/wallet-provider', () => ({
   ...jest.requireActual('@cowprotocol/wallet-provider'),
-  useWalletProvider: jest.fn().mockReturnValue({ provider: {} }),
+  useWalletProvider: jest.fn().mockReturnValue({
+    provider: {},
+    getSigner() {
+      return {}
+    },
+  }),
 }))
 
 jest.mock('tradingSdk/bridgingSdk', () => ({
   bridgingSdk: {
     getQuote: jest.fn(),
+    getBestQuote: jest.fn(),
   },
 }))
 const useEnoughAllowanceMock = useEnoughAllowance as jest.Mock
@@ -99,7 +105,11 @@ describe('useTradeQuotePolling()', () => {
       // Act
       renderHook(
         () => {
-          return useTradeQuotePolling(false, true)
+          return useTradeQuotePolling({
+            isConfirmOpen: false,
+            isQuoteUpdatePossible: true,
+            useSuggestedSlippageApi: false,
+          })
         },
         { wrapper: Wrapper(mocks) },
       )
@@ -119,7 +129,15 @@ describe('useTradeQuotePolling()', () => {
       const mocks = [...jotaiMock, [walletInfoAtom, { ...walletInfoMock, account: undefined }]]
 
       // Act
-      renderHook(() => useTradeQuotePolling(false, true), { wrapper: Wrapper(mocks) })
+      renderHook(
+        () =>
+          useTradeQuotePolling({
+            isConfirmOpen: false,
+            isQuoteUpdatePossible: true,
+            useSuggestedSlippageApi: false,
+          }),
+        { wrapper: Wrapper(mocks) },
+      )
 
       // Assert
       const { signer: _, ...callParams } = bridgingSdkMock.getQuote.mock.calls[0][0]

@@ -1,5 +1,31 @@
 # Changelog
 
+## [2.0.1](https://github.com/cowprotocol/cowswap/compare/types-v2.0.0...types-v2.0.1) (2025-09-22)
+
+
+### Bug Fixes
+
+* **bridge:** disable bridging for EIP7702EOA accounts ([#6249](https://github.com/cowprotocol/cowswap/issues/6249)) ([9eb219f](https://github.com/cowprotocol/cowswap/commit/9eb219f000fc92cb2f76d0ace2a9aaea4cf7110d))
+
+## [2.0.0](https://github.com/cowprotocol/cowswap/compare/types-v1.9.0...types-v2.0.0) (2025-09-12)
+
+
+### ⚠ BREAKING CHANGES
+
+* add cow-sdk v7 ([#6165](https://github.com/cowprotocol/cowswap/issues/6165))
+
+### Features
+
+* add cow-sdk v7 ([#6165](https://github.com/cowprotocol/cowswap/issues/6165)) ([46d7afe](https://github.com/cowprotocol/cowswap/commit/46d7afeab94c172dbad975f39b25033abd966498))
+
+## [1.9.0](https://github.com/cowprotocol/cowswap/compare/types-v1.8.0...types-v1.9.0) (2025-07-30)
+
+
+### Features
+
+* **bridge:** adjust snackbars for bridge orders ([#5977](https://github.com/cowprotocol/cowswap/issues/5977)) ([4d41d5b](https://github.com/cowprotocol/cowswap/commit/4d41d5baac8fd02481173e533110dc309adee8c3))
+* **bridge:** use stored bridge quotes in order progress bar ([#5961](https://github.com/cowprotocol/cowswap/issues/5961)) ([93825f0](https://github.com/cowprotocol/cowswap/commit/93825f087f501c3d86364c845b23812612b49e34))
+
 ## [1.8.0](https://github.com/cowprotocol/cowswap/compare/types-v1.7.1...types-v1.8.0) (2025-07-03)
 
 

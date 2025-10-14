@@ -1,5 +1,5 @@
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
-import type { CrossChainOrder } from '@cowprotocol/cow-sdk'
+import type { CrossChainOrder } from '@cowprotocol/sdk-bridging'
 import type { TokenInfo } from '@uniswap/token-lists'
 
 import useSWR, { SWRResponse } from 'swr'
@@ -13,9 +13,9 @@ export function useBridgeProviderBuyTokens(
     async ([provider, buyChainId]) => {
       if (!provider) return undefined
 
-      const tokens = await provider.getBuyTokens({ buyChainId })
+      const { tokens } = await provider.getBuyTokens({ buyChainId })
 
-      return tokens.reduce<Record<string, TokenInfo>>((acc, val) => {
+      return tokens?.reduce<Record<string, TokenInfo>>((acc, val) => {
         acc[val.address.toLowerCase()] = {
           ...val,
           name: val.name || '',

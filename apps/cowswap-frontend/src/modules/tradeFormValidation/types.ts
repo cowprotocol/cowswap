@@ -1,11 +1,9 @@
 import { Command } from '@cowprotocol/types'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { ApprovalState, ApproveRequiredReason } from 'modules/erc20Approve'
 import { TradeDerivedState } from 'modules/trade'
 import { TradeQuoteState } from 'modules/tradeQuote'
-
-import { ApprovalState } from 'common/hooks/useApproveState'
-
-import { AmountsToSign } from '../trade/hooks/useAmountsToSign'
 
 export enum TradeFormValidation {
   // Wrap/unwrap
@@ -36,7 +34,7 @@ export enum TradeFormValidation {
   BalanceInsufficient,
 
   // Approve
-  ApproveAndSwap,
+  ApproveAndSwapInBundle,
   ApproveRequired,
 
   // Intermediate token
@@ -48,6 +46,7 @@ export enum TradeFormValidation {
   // Bridging
   ProxyAccountLoading,
   ProxyAccountUnknown,
+  CustomTokenError,
 }
 
 export interface TradeFormValidationCommonContext {
@@ -61,26 +60,31 @@ export interface TradeFormValidationCommonContext {
   isSupportedWallet: boolean
   isSwapUnsupported: boolean
   isSafeReadonlyUser: boolean
-  isPermitSupported: boolean
+  isApproveRequired: ApproveRequiredReason
   isInsufficientBalanceOrderAllowed: boolean
   isProviderNetworkUnsupported: boolean
   isOnline: boolean
   intermediateTokenToBeImported: boolean
   isAccountProxyLoading: boolean
   isProxySetupValid: boolean | null | undefined
+  customTokenError?: string
 }
 
 export interface TradeFormValidationContext extends TradeFormValidationCommonContext {}
 
 export interface TradeFormButtonContext {
   defaultText: string
-  amountsToSign: AmountsToSign | null
+  amountToApprove: CurrencyAmount<Currency> | null
   derivedState: TradeDerivedState
   quote: TradeQuoteState
   isSupportedWallet: boolean
   widgetStandaloneMode?: boolean
+  enablePartialApprove?: boolean
+  customTokenError?: string
 
   confirmTrade(): void
+
   connectWallet: Command
+
   wrapNativeFlow(): void
 }

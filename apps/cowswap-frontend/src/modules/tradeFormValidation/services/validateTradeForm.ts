@@ -4,15 +4,13 @@ import { PriceQuality } from '@cowprotocol/cow-sdk'
 import { TradeType } from 'modules/trade'
 import { isQuoteExpired } from 'modules/tradeQuote'
 
-import { ApprovalState } from 'common/hooks/useApproveState'
-
+import { ApproveRequiredReason } from '../../erc20Approve'
 import { TradeFormValidation, TradeFormValidationContext } from '../types'
 
 // eslint-disable-next-line max-lines-per-function, complexity
 export function validateTradeForm(context: TradeFormValidationContext): TradeFormValidation[] | null {
   const {
     derivedTradeState,
-    approvalState,
     isBundlingSupported,
     isWrapUnwrap,
     isSupportedWallet,
@@ -21,13 +19,14 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     recipientEnsAddress,
     tradeQuote,
     account,
-    isPermitSupported,
+    isApproveRequired,
     isInsufficientBalanceOrderAllowed,
     isProviderNetworkUnsupported,
     isOnline,
     intermediateTokenToBeImported,
     isAccountProxyLoading,
     isProxySetupValid,
+    customTokenError,
   } = context
 
   const {
@@ -45,9 +44,6 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
   const canPlaceOrderWithoutBalance = isBalanceGreaterThan1Atom && isInsufficientBalanceOrderAllowed && !isWrapUnwrap
   const isNativeIn = inputCurrency && getIsNativeToken(inputCurrency) && !isWrapUnwrap
 
-  const approvalRequired =
-    !isPermitSupported && (approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING)
-
   const inputAmountIsNotSet = isSellOrder(orderKind)
     ? !inputCurrencyAmount || isFractionFalsy(inputCurrencyAmount)
     : !outputCurrencyAmount || isFractionFalsy(outputCurrencyAmount)
@@ -62,6 +58,10 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
   // Always check if the browser is online before checking any other conditions
   if (!isOnline) {
     validations.push(TradeFormValidation.BrowserOffline)
+  }
+
+  if (customTokenError) {
+    validations.push(TradeFormValidation.CustomTokenError)
   }
 
   if (!isWrapUnwrap && tradeQuote.error) {
@@ -99,7 +99,14 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
   }
 
   if (!isWrapUnwrap) {
-    if (recipient && !recipientEnsAddress && !isAddress(recipient)) {
+    const isRecipientAddress = Boolean(recipient && isAddress(recipient))
+
+    /**
+     * For bridging, recipient can be only an address (ENS is not supported)
+     */
+    const isRecipientValid = isBridging ? isRecipientAddress : recipientEnsAddress ? true : isRecipientAddress
+
+    if (recipient && !isRecipientValid) {
       validations.push(TradeFormValidation.RecipientInvalid)
     }
 
@@ -145,9 +152,9 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     validations.push(TradeFormValidation.WrapUnwrapFlow)
   }
 
-  if (approvalRequired) {
+  if (isApproveRequired !== ApproveRequiredReason.NotRequired) {
     if (isBundlingSupported) {
-      validations.push(TradeFormValidation.ApproveAndSwap)
+      validations.push(TradeFormValidation.ApproveAndSwapInBundle)
     }
     validations.push(TradeFormValidation.ApproveRequired)
   }

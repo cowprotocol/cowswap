@@ -1,5 +1,49 @@
 # Changelog
 
+## [1.26.3](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.26.2...cow-fi-v1.26.3) (2025-10-02)
+
+
+### Bug Fixes
+
+* linter file errors ([#6318](https://github.com/cowprotocol/cowswap/issues/6318)) ([21fc2d1](https://github.com/cowprotocol/cowswap/commit/21fc2d158524bbf91b0579b4e9ec4a75f7837123))
+
+## [1.26.2](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.26.1...cow-fi-v1.26.2) (2025-09-25)
+
+
+### Bug Fixes
+
+* **cowfi:** update chains info on CoW protocol and CoW Swap pages ([#6159](https://github.com/cowprotocol/cowswap/issues/6159)) ([5ebdd51](https://github.com/cowprotocol/cowswap/commit/5ebdd513b3209495aa05710b05dc863f4b3ef47a))
+
+## [1.26.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.26.0...cow-fi-v1.26.1) (2025-09-22)
+
+
+### Bug Fixes
+
+* **cow-fi:** update description in refer-to-earn layout for clarity ([#6245](https://github.com/cowprotocol/cowswap/issues/6245)) ([b21e160](https://github.com/cowprotocol/cowswap/commit/b21e160f6f6d9f29de7b1424a38e8789b34ed57e))
+
+## [1.26.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.25.0...cow-fi-v1.26.0) (2025-09-11)
+
+
+### Features
+
+* **cow-fi:** add redirect for MEV blocker to external site ([#6220](https://github.com/cowprotocol/cowswap/issues/6220)) ([dbd887a](https://github.com/cowprotocol/cowswap/commit/dbd887a0568cfc0fc09316ff54c2a4ab8c40fe71))
+
+## [1.25.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.24.1...cow-fi-v1.25.0) (2025-08-21)
+
+
+### Features
+
+* **cowfi:** add CMS pages for all legal content ([#6100](https://github.com/cowprotocol/cowswap/issues/6100)) ([7ccfc07](https://github.com/cowprotocol/cowswap/commit/7ccfc07a702fd60d7928586cb95ad924bae03967))
+
+## [1.24.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.24.0...cow-fi-v1.24.1) (2025-08-04)
+
+
+### Bug Fixes
+
+* **cow-fi:** enhance caching strategy and middleware for /learn routes to improve performance ([#6084](https://github.com/cowprotocol/cowswap/issues/6084)) ([f51652a](https://github.com/cowprotocol/cowswap/commit/f51652ac1c979aa8f3fde5a3af1003f9595d7722))
+* **cow-fi:** ISR optimization to prevent cache-busting in learn pages ([#6079](https://github.com/cowprotocol/cowswap/issues/6079)) ([6ace758](https://github.com/cowprotocol/cowswap/commit/6ace75842a7a5b686e3649f002b323309c47874d))
+* **cow-fi:** update articles page with caching strategy and type annotations … ([#6066](https://github.com/cowprotocol/cowswap/issues/6066)) ([a117209](https://github.com/cowprotocol/cowswap/commit/a117209a5dfdfd83aea83c606114211d9d5383c7))
+
 ## [1.24.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.23.0...cow-fi-v1.24.0) (2025-07-03)
 
 

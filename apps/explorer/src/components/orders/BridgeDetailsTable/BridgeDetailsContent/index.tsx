@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react'
 
-import { BridgeStatus, CrossChainOrder } from '@cowprotocol/cow-sdk'
+import { RECEIVED_LABEL } from '@cowprotocol/common-const'
+import { BridgeStatus, CrossChainOrder } from '@cowprotocol/sdk-bridging'
 
 import { AddressLink } from 'components/common/AddressLink'
 import { DetailRow } from 'components/common/DetailRow'
@@ -20,6 +21,8 @@ interface BridgeDetailsContentProps {
   crossChainOrder: CrossChainOrder
 }
 
+// TODO: Break down this large function into smaller functions
+
 export function BridgeDetailsContent({ crossChainOrder }: BridgeDetailsContentProps): ReactNode {
   const {
     statusResult: { status: bridgeStatus, fillTxHash, depositTxHash, fillTimeInSeconds },
@@ -29,9 +32,10 @@ export function BridgeDetailsContent({ crossChainOrder }: BridgeDetailsContentPr
   const bridgeProvider = crossChainOrder.provider
   const { sourceToken, destinationToken } = useCrossChainTokens(crossChainOrder)
 
-  const RecipientAddress = (
+  const RecipientAddress = recipient ? (
     <AddressLink address={recipient} chainId={destinationChainId} bridgeProvider={bridgeProvider} showNetworkName />
-  )
+  ) : null
+
   return (
     <>
       <DetailRow label="Provider" tooltipText={BridgeDetailsTooltips.provider}>
@@ -41,7 +45,7 @@ export function BridgeDetailsContent({ crossChainOrder }: BridgeDetailsContentPr
         </ProviderDisplayWrapper>
       </DetailRow>
 
-      <DetailRow label="From" tooltipText={BridgeDetailsTooltips.ownerAddress}>
+      <DetailRow label="From" tooltipText={BridgeDetailsTooltips.accountFromProxy}>
         <RowWithCopyButton
           textToCopy={owner}
           contentsToDisplay={<AddressLink address={owner} chainId={sourceChainId} showNetworkName />}
@@ -49,7 +53,7 @@ export function BridgeDetailsContent({ crossChainOrder }: BridgeDetailsContentPr
       </DetailRow>
 
       <DetailRow label="To" tooltipText={BridgeDetailsTooltips.receiverAddress}>
-        <RowWithCopyButton textToCopy={recipient} contentsToDisplay={RecipientAddress} />
+        {recipient ? <RowWithCopyButton textToCopy={recipient} contentsToDisplay={RecipientAddress} /> : <span>-</span>}
       </DetailRow>
 
       <DetailRow label="Status" tooltipText={BridgeDetailsTooltips.status}>
@@ -64,7 +68,7 @@ export function BridgeDetailsContent({ crossChainOrder }: BridgeDetailsContentPr
         <AmountSectionWrapper>
           <BridgeAmountDisplay labelPrefix="From:" bridgeToken={sourceToken} amount={inputAmount.toString()} />
           <BridgeAmountDisplay
-            labelPrefix="To at least:"
+            labelPrefix="To:"
             bridgeToken={destinationToken}
             amount={outputAmount?.toString() || '0'}
             bridgeProvider={bridgeProvider}
@@ -72,7 +76,7 @@ export function BridgeDetailsContent({ crossChainOrder }: BridgeDetailsContentPr
         </AmountSectionWrapper>
       </DetailRow>
 
-      <DetailRow label="You received" tooltipText={BridgeDetailsTooltips.youReceived}>
+      <DetailRow label={RECEIVED_LABEL} tooltipText={BridgeDetailsTooltips.youReceived}>
         {outputAmount && destinationToken && bridgeStatus === BridgeStatus.EXECUTED && (
           <BridgeReceiveAmount
             amount={outputAmount}

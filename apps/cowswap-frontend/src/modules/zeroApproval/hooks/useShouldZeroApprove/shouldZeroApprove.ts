@@ -3,35 +3,25 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
-import { ApprovalState } from 'common/hooks/useApproveState'
+import { ApprovalState } from 'modules/erc20Approve'
 
-interface ShouldZeroApproveBaseParams {
+interface ShouldZeroApproveParams {
   tokenContract: Nullish<Erc20>
   spender: Nullish<string>
   amountToApprove: Nullish<CurrencyAmount<Currency>>
+  forceApprove?: boolean
+  approvalState?: ApprovalState
 }
-
-interface ShouldZeroApproveBundleParams extends ShouldZeroApproveBaseParams {
-  isBundle: true
-  approvalState?: undefined
-}
-
-interface ShouldZeroApproveNonBundleParams extends ShouldZeroApproveBaseParams {
-  approvalState: ApprovalState
-  isBundle?: undefined
-}
-
-type ShouldZeroApproveParams = ShouldZeroApproveBundleParams | ShouldZeroApproveNonBundleParams
 
 export async function shouldZeroApprove({
   approvalState,
   tokenContract,
   spender,
   amountToApprove,
-  isBundle,
+  forceApprove,
 }: ShouldZeroApproveParams): Promise<boolean | null> {
   const shouldApprove =
-    isBundle || approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING
+    forceApprove || approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING
 
   if (!tokenContract || !spender || !amountToApprove || !shouldApprove) {
     return null

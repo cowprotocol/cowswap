@@ -1,5 +1,4 @@
-import { ButtonSecondary } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { ButtonSecondary, UI } from '@cowprotocol/ui'
 
 import styled, { css } from 'styled-components/macro'
 
@@ -7,11 +6,11 @@ export const Web3StatusGeneric = styled(ButtonSecondary)``
 
 export const Web3StatusConnect = styled(Web3StatusGeneric)<{ faded?: boolean }>`
   > svg {
-    display: ${({ theme }) => (theme.isInjectedWidgetMode ? '' : 'none')};
+    display: ${({ theme }) => (theme.isWidget ? '' : 'none')};
   }
 
   ${({ theme }) =>
-    theme.isInjectedWidgetMode &&
+    theme.isWidget &&
     css`
       margin: 0;
       padding: 6px 12px;
@@ -68,14 +67,14 @@ export const Text = styled.p`
   text-overflow: ellipsis;
   white-space: nowrap;
   margin: 0;
-  font-size: ${({ theme }) => (theme.isInjectedWidgetMode ? '15px' : '16px')};
+  font-size: ${({ theme }) => (theme.isWidget ? '15px' : '16px')};
   width: fit-content;
   font-weight: 500;
 `
 
 export const Wrapper = styled.div`
   color: inherit;
-  height: ${({ theme }) => (theme.isInjectedWidgetMode ? 'initial' : '100%')};
+  height: ${({ theme }) => (theme.isWidget ? 'initial' : '100%')};
   max-height: 100%;
   display: flex;
   padding: 0;
@@ -110,6 +109,25 @@ export const Wrapper = styled.div`
     > div > svg > path {
       stroke: currentColor;
       opacity: 0.7;
+    }
+  }
+`
+
+export const UnfillableWarning = styled.div`
+  color: var(${UI.COLOR_DANGER});
+  line-height: 0;
+
+  > svg {
+    animation: growShrink 1s ease-in-out infinite;
+  }
+
+  @keyframes growShrink {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.2); /* Change to desired size */
     }
   }
 `

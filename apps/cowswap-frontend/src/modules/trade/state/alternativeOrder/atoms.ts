@@ -1,11 +1,9 @@
 import { atom } from 'jotai'
 
-import { Order } from 'legacy/state/orders/actions'
-
-import { ParsedOrder } from 'utils/orderUtils/parseOrder'
+import { GenericOrder } from 'common/types'
 
 export type AlternativeOrder = {
-  order: Order | ParsedOrder
+  order: GenericOrder
   isEdit: boolean
 } | null
 

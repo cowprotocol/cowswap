@@ -91,20 +91,20 @@ export function QuoteBridgeContent({
 
       <RecipientDetailsItem recipient={recipient} chainId={buyAmount.currency.chainId} />
 
-      {!isFinished && (
+      {(!isFinished || !isQuoteDisplay) && (
         <ConfirmDetailsItem
-          withTimelineDot
+          withTimelineDot={!isQuoteDisplay}
           label={
-            !isQuoteDisplay ? (
-              MIN_RECEIVE_TITLE
-            ) : (
+            isQuoteDisplay ? (
               <ReceiveAmountTitle>
                 <b>{MIN_RECEIVE_TITLE}</b>
               </ReceiveAmountTitle>
+            ) : (
+              MIN_RECEIVE_TITLE
             )
           }
         >
-          {!isQuoteDisplay ? minReceiveAmountEl : <b>{minReceiveAmountEl}</b>}
+          {isQuoteDisplay ? <b>{minReceiveAmountEl}</b> : minReceiveAmountEl}
         </ConfirmDetailsItem>
       )}
 
