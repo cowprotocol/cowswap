@@ -1,3 +1,5 @@
+import type { PrimitiveAtom } from 'jotai'
+
 import { OrderClass } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -9,6 +11,7 @@ import { useOnlyPendingOrders } from 'legacy/state/orders/hooks'
 import { OrderProgressStateUpdater } from './OrderProgressStateUpdater'
 
 import { useOrderProgressBarProps } from '../hooks/useOrderProgressBarProps'
+import { pruneOrdersProgressBarState } from '../state/atoms'
 
 jest.mock('@cowprotocol/wallet', () => ({
   useWalletInfo: jest.fn(),
@@ -21,6 +24,22 @@ jest.mock('legacy/state/orders/hooks', () => ({
 jest.mock('../hooks/useOrderProgressBarProps', () => ({
   useOrderProgressBarProps: jest.fn(),
 }))
+
+const pruneOrdersMock = jest.fn()
+
+jest.mock('jotai', () => {
+  const actual = jest.requireActual('jotai')
+  return {
+    ...actual,
+    useSetAtom: jest.fn((atom: PrimitiveAtom<unknown>) => {
+      if (atom === pruneOrdersProgressBarState) {
+        return pruneOrdersMock
+      }
+
+      return actual.useSetAtom(atom)
+    }),
+  }
+})
 
 const useWalletInfoMock = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
 const useOnlyPendingOrdersMock = useOnlyPendingOrders as jest.MockedFunction<typeof useOnlyPendingOrders>
@@ -40,6 +59,7 @@ describe('OrderProgressStateUpdater', () => {
 
   afterEach(() => {
     jest.clearAllMocks()
+    pruneOrdersMock.mockReset()
   })
 
   it('subscribes to pending market orders even when the progress bar UI is not mounted', () => {
@@ -59,6 +79,7 @@ describe('OrderProgressStateUpdater', () => {
     expect(useOrderProgressBarPropsMock).toHaveBeenCalledTimes(2)
     expect(useOrderProgressBarPropsMock).toHaveBeenNthCalledWith(1, 1, expect.objectContaining({ id: '1' }))
     expect(useOrderProgressBarPropsMock).toHaveBeenNthCalledWith(2, 1, expect.objectContaining({ id: '3' }))
+    expect(pruneOrdersMock).toHaveBeenLastCalledWith(['1', '3'])
   })
 
   it('does nothing when wallet information is missing', () => {
@@ -71,5 +92,6 @@ describe('OrderProgressStateUpdater', () => {
     render(<OrderProgressStateUpdater />)
 
     expect(useOrderProgressBarPropsMock).not.toHaveBeenCalled()
+    expect(pruneOrdersMock).toHaveBeenLastCalledWith([])
   })
 })
