@@ -1,5 +1,7 @@
 import { useState } from 'react'
 
+import { Nullish } from '@cowprotocol/types'
+
 import { useSelect, useValue } from 'react-cosmos/client'
 import styled from 'styled-components/macro'
 
@@ -25,9 +27,7 @@ const ALL_STATES = Object.values(EthFlowState)
 
 const STATE_DESCRIPTIONS = ALL_STATES.map((state) => state)
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function getStateFromDescription(description: string) {
+function getStateFromDescription(description: string): Nullish<EthFlowState> {
   return ALL_STATES.find((state) => state === description)
 }
 
@@ -66,7 +66,7 @@ const txStatusMap: { [key: string]: ActivityStatus } = {
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function Custom() {
   const [opened, setOpened] = useState(true)
   // TODO: Add proper return type annotation
@@ -109,7 +109,7 @@ function Custom() {
   }
 
   const modalProps = getEthFlowModalContentProps({
-    state,
+    state: state || undefined,
     approveAction,
     wrapAction,
     balanceChecks,

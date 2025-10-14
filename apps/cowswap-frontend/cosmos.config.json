@@ -11,6 +11,7 @@
     "react-cosmos-plugin-vite"
   ],
   "vite": {
-    "configPath": "./vite.config.mts"
+    "configPath": "./vite.config.mts",
+    "mainScriptUrl": "src/main.tsx"
   }
 }

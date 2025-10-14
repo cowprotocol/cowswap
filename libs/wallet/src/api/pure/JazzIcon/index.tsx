@@ -21,6 +21,7 @@ export function JazzIcon({ className, size, account }: JazzIconProps): ReactNode
   const ref = useRef<HTMLDivElement>(null)
 
   const icon = useMemo(() => {
+    // eslint-disable-next-line react-hooks/purity
     const defaultSeed = Math.floor(Math.random() * 1000000)
 
     const seed = account ? parseInt(account.slice(2, 10), 16) : defaultSeed

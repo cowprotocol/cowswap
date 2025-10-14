@@ -2,7 +2,8 @@ import { UtmParams } from '@cowprotocol/common-utils'
 import { stringifyDeterministic, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { metadataApiSDK } from 'cowSdk'
-import { keccak256, toUtf8Bytes } from 'ethers/lib/utils'
+
+import { toKeccak256 } from 'common/utils/toKeccak256'
 
 import { filterHooks, HooksFilter } from './appDataFilter'
 import { removePermitHookFromHooks, typedAppDataHooksToAppDataHooks } from './typedHooks'
@@ -82,10 +83,6 @@ export async function buildAppData({
   const { fullAppData, appDataKeccak256 } = await generateAppDataFromDoc(doc)
 
   return { doc, fullAppData, appDataKeccak256 }
-}
-
-export function toKeccak256(fullAppData: string): string {
-  return keccak256(toUtf8Bytes(fullAppData))
 }
 
 export async function replaceHooksOnAppData(

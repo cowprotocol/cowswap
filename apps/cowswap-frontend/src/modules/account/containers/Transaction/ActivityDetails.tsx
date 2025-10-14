@@ -259,6 +259,7 @@ export function ActivityDetails(props: {
 
   const isCustomRecipientWarningBannerVisible = !useIsReceiverWalletBannerHidden(id) && order && isOrderPending
 
+  // eslint-disable-next-line react-hooks/preserve-manual-memoization
   const showProgressBarCallback = useMemo(() => {
     if (!showProgressBar) {
       return null
