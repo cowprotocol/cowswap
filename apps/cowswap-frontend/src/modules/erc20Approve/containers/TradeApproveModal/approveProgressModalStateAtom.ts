@@ -21,3 +21,7 @@ export const updateApproveProgressStateAtom = atom(null, (get, set, nextState: P
     return { ...prevState, ...nextState }
   })
 })
+
+export const resetApproveProgressStateAtom = atom(null, (_, set) => {
+  set(approveProgressModalStateAtom, initialApproveProgressModalState)
+})

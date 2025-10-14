@@ -1,10 +1,7 @@
-import { useCallback } from 'react'
+import { useSetAtom } from 'jotai'
 
-import { useUpdateApproveProgressModalState } from './useUpdateApproveProgressModalState'
-
-import { initialApproveProgressModalState } from '../containers'
+import { resetApproveProgressStateAtom } from '../containers'
 
 export function useResetApproveProgressModalState(): () => void {
-  const updateApproveProgressState = useUpdateApproveProgressModalState()
-  return useCallback(() => updateApproveProgressState(initialApproveProgressModalState), [updateApproveProgressState])
+  return useSetAtom(resetApproveProgressStateAtom)
 }

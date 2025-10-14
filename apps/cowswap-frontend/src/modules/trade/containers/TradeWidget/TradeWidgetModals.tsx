@@ -68,7 +68,7 @@ export function TradeWidgetModals({
 
   const { onDismiss: closeTradeConfirm } = useTradeConfirmActions()
   const updateSelectTokenWidgetState = useUpdateSelectTokenWidgetState()
-  const resetTradeApproveState = useResetApproveProgressModalState()
+  const resetApproveModalState = useResetApproveProgressModalState()
   const updateApproveAmountState = useSetUserApproveAmountModalState()
 
   const resetAllScreens = useCallback(
@@ -78,7 +78,7 @@ export function TradeWidgetModals({
       if (shouldCloseAutoImportModal) closeAutoImportModal()
       if (closeTokenSelectWidget) updateSelectTokenWidgetState({ open: false })
       setWrapNativeScreenState({ isOpen: false })
-      resetTradeApproveState()
+      resetApproveModalState()
       setTokenListAddingError(null)
       updateApproveAmountState({ isModalOpen: false })
     },
@@ -88,7 +88,7 @@ export function TradeWidgetModals({
       closeAutoImportModal,
       updateSelectTokenWidgetState,
       setWrapNativeScreenState,
-      resetTradeApproveState,
+      resetApproveModalState,
       updateApproveAmountState,
       setTokenListAddingError,
     ],
