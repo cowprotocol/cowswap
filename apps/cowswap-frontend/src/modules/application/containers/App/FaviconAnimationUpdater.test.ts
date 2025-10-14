@@ -1,3 +1,33 @@
+jest.mock('common/favicon', () => {
+  const frameSet = {
+    defaultFrame: 'default.ico',
+    completedFrames: [],
+    completedHoldFrame: null,
+    backToDefaultFrames: [],
+    solvingFrames: [],
+  }
+
+  return {
+    FaviconAnimator: class {
+      play(): void {}
+      stop(): void {}
+      resetToDefault(): void {}
+      setDefaultFrame(): void {}
+      isAnimationRunning(): boolean {
+        return false
+      }
+    },
+    frameDurations: {
+      solving: 100,
+      completed: 100,
+      completedHold: 0,
+      backToDefault: 100,
+    },
+    getCurrentFrameSet: () => frameSet,
+    subscribeToPreferredThemeChanges: jest.fn(() => () => {}),
+  }
+})
+
 import { OrderProgressBarStepName } from 'modules/orderProgressBar'
 import { OrderProgressBarState } from 'modules/orderProgressBar/types'
 
