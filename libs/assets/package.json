@@ -8,6 +8,7 @@
       "import": "./index.mjs",
       "require": "./index.js"
     },
-    "./*": "./*"
+    "./cow-swap/*": "./cow-swap/*",
+    "./lottie/*": "./lottie/*"
   }
 }
