@@ -101,9 +101,14 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
         }
       } catch (error) {
         handleApprovalError(error)
-        return undefined
+        throw error
       } finally {
-        resetApproveProgressModalState()
+        updateApproveProgressModalState({
+          currency,
+          approveInProgress: false,
+          amountToApprove: undefined,
+          isPendingInProgress: false,
+        })
       }
     },
     [
