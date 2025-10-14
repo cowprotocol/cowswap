@@ -55,13 +55,13 @@ export function useTradeWidgetSlotsMemo({
   setShowAddIntermediateTokenModal,
 }: TradeWidgetSlotArgs): TradeWidgetSlots {
   const lockScreen = useMemo(
-    () => renderLockScreen({ shouldShowLockScreen, handleUnlock }),
+    () => LockScreenSlot({ shouldShowLockScreen, handleUnlock }),
     [shouldShowLockScreen, handleUnlock],
   )
 
   const settingsWidget = useMemo(
     () =>
-      renderSettingsWidget({
+      SettingsWidgetSlot({
         recipientToggleState,
         hooksEnabledState,
         deadlineState,
@@ -72,9 +72,9 @@ export function useTradeWidgetSlotsMemo({
 
   const bottomContentRenderer = useCallback(
     (tradeWarnings: ReactNode | null) =>
-      renderBottomContent({
-        tradeWarnings,
+      BottomContentSlot({
         bottomContent,
+        tradeWarnings,
         enablePartialApproval,
         rateInfoParams,
         deadline: deadlineState[0],
@@ -82,7 +82,7 @@ export function useTradeWidgetSlotsMemo({
         isTradeContextReady,
         openNativeWrapModal,
         hasEnoughWrappedBalanceForSwap,
-        toBeImported,
+        tokenToBeImported: toBeImported,
         intermediateBuyToken,
         setShowAddIntermediateTokenModal,
       }),
@@ -109,78 +109,5 @@ export function useTradeWidgetSlotsMemo({
       bottomContent: bottomContentRenderer,
     }),
     [topContent, lockScreen, settingsWidget, bottomContentRenderer],
-  )
-}
-
-function renderLockScreen({
-  shouldShowLockScreen,
-  handleUnlock,
-}: Pick<TradeWidgetSlotArgs, 'shouldShowLockScreen' | 'handleUnlock'>): ReactNode {
-  return shouldShowLockScreen ? (
-    <LockScreenSlot shouldShowLockScreen={shouldShowLockScreen} handleUnlock={handleUnlock} />
-  ) : undefined
-}
-
-function renderSettingsWidget({
-  recipientToggleState,
-  hooksEnabledState,
-  deadlineState,
-  enablePartialApprovalState,
-}: Pick<
-  TradeWidgetSlotArgs,
-  'recipientToggleState' | 'hooksEnabledState' | 'deadlineState' | 'enablePartialApprovalState'
->): ReactNode {
-  return (
-    <SettingsWidgetSlot
-      recipientToggleState={recipientToggleState}
-      hooksEnabledState={hooksEnabledState}
-      deadlineState={deadlineState}
-      enablePartialApprovalState={enablePartialApprovalState}
-    />
-  )
-}
-
-function renderBottomContent({
-  tradeWarnings,
-  bottomContent,
-  enablePartialApproval,
-  rateInfoParams,
-  deadline,
-  buyingFiatAmount,
-  isTradeContextReady,
-  openNativeWrapModal,
-  hasEnoughWrappedBalanceForSwap,
-  toBeImported,
-  intermediateBuyToken,
-  setShowAddIntermediateTokenModal,
-}: {
-  tradeWarnings: ReactNode | null
-  bottomContent?: ReactNode
-  enablePartialApproval: boolean
-  rateInfoParams: CurrencyData['rateInfoParams']
-  deadline: ReturnType<typeof useSwapDeadlineState>[0]
-  buyingFiatAmount: CurrencyData['buyingFiatAmount']
-  isTradeContextReady: boolean
-  openNativeWrapModal: () => void
-  hasEnoughWrappedBalanceForSwap: boolean
-  toBeImported: boolean
-  intermediateBuyToken: TokenWithLogo | null
-  setShowAddIntermediateTokenModal: Dispatch<SetStateAction<boolean>>
-}): ReactNode {
-  return (
-    <BottomContentSlot
-      bottomContent={bottomContent}
-      tradeWarnings={tradeWarnings}
-      enablePartialApproval={enablePartialApproval}
-      rateInfoParams={rateInfoParams}
-      deadline={deadline}
-      buyingFiatAmount={buyingFiatAmount}
-      isTradeContextReady={isTradeContextReady}
-      openNativeWrapModal={openNativeWrapModal}
-      hasEnoughWrappedBalanceForSwap={hasEnoughWrappedBalanceForSwap}
-      tokenToBeImported={toBeImported}
-      intermediateBuyToken={intermediateBuyToken}
-      setShowAddIntermediateTokenModal={setShowAddIntermediateTokenModal}
-    />
   )
 }

@@ -1,13 +1,13 @@
-import { ReactNode, useMemo } from 'react'
+import { useMemo } from 'react'
 
-import { EthFlowModal, EthFlowProps } from 'modules/ethFlow'
+import { EthFlowProps } from 'modules/ethFlow'
 import type { TradeWidgetProps as TradeWidgetComponentProps, TradeWidgetSlots } from 'modules/trade'
 import { useTradePriceImpact } from 'modules/trade'
 import { useHandleSwap } from 'modules/tradeFlow'
 
 import { useSwapDerivedState } from '../../../hooks/useSwapDerivedState'
 import { useSwapWidgetActions } from '../../../hooks/useSwapWidgetActions'
-import { SwapConfirmModal } from '../../SwapConfirmModal'
+import { ConfirmModalSlot, GenericModalSlot } from '../SlotComponents'
 
 import type { CurrencyData } from './useWidgetCurrencyData'
 
@@ -36,33 +36,21 @@ export function useTradeWidgetPropsMemo({
   showNativeWrapModal,
   ethFlowProps,
 }: TradeWidgetPropsArgs): TradeWidgetComponentProps {
-  const confirmModal = useMemo(
-    () =>
-      renderConfirmModal({
-        doTradeCallback,
-        recipient,
-        recipientAddress,
-        priceImpact,
-        inputPreviewInfo: currencyData.inputPreviewInfo,
-        outputPreviewInfo: currencyData.outputPreviewInfo,
-      }),
-    [
+  return useMemo(() => {
+    const confirmModal = ConfirmModalSlot({
       doTradeCallback,
       recipient,
       recipientAddress,
       priceImpact,
-      currencyData.inputPreviewInfo,
-      currencyData.outputPreviewInfo,
-    ],
-  )
+      inputPreviewInfo: currencyData.inputPreviewInfo,
+      outputPreviewInfo: currencyData.outputPreviewInfo,
+    })
 
-  const genericModal = useMemo(
-    () => (showNativeWrapModal ? renderGenericModal({ showNativeWrapModal, ethFlowProps }) : undefined),
-    [showNativeWrapModal, ethFlowProps],
-  )
+    const genericModal = showNativeWrapModal
+      ? GenericModalSlot({ showNativeWrapModal, ethFlowProps })
+      : undefined
 
-  return useMemo(
-    () => ({
+    return {
       slots,
       actions: widgetActions,
       params,
@@ -70,57 +58,20 @@ export function useTradeWidgetPropsMemo({
       outputCurrencyInfo: currencyData.outputCurrencyInfo,
       confirmModal,
       genericModal,
-    }),
-    [
-      slots,
-      widgetActions,
-      params,
-      currencyData.inputCurrencyInfo,
-      currencyData.outputCurrencyInfo,
-      confirmModal,
-      genericModal,
-    ],
-  )
-}
-
-interface ConfirmModalProps {
-  doTradeCallback: ReturnType<typeof useHandleSwap>['callback']
-  recipient: ReturnType<typeof useSwapDerivedState>['recipient']
-  recipientAddress: ReturnType<typeof useSwapDerivedState>['recipientAddress']
-  priceImpact: ReturnType<typeof useTradePriceImpact>
-  inputPreviewInfo: CurrencyData['inputPreviewInfo']
-  outputPreviewInfo: CurrencyData['outputPreviewInfo']
-}
-
-function renderConfirmModal({
-  doTradeCallback,
-  recipient,
-  recipientAddress,
-  priceImpact,
-  inputPreviewInfo,
-  outputPreviewInfo,
-}: ConfirmModalProps): ReactNode {
-  return (
-    <SwapConfirmModal
-      doTrade={doTradeCallback}
-      recipient={recipient}
-      recipientAddress={recipientAddress}
-      priceImpact={priceImpact}
-      inputCurrencyInfo={inputPreviewInfo}
-      outputCurrencyInfo={outputPreviewInfo}
-    />
-  )
-}
-
-interface GenericModalProps {
-  showNativeWrapModal: boolean
-  ethFlowProps: EthFlowProps
-}
-
-function renderGenericModal({ showNativeWrapModal, ethFlowProps }: GenericModalProps): ReactNode {
-  if (!showNativeWrapModal) {
-    return null
-  }
-
-  return <EthFlowModal {...ethFlowProps} />
+    }
+  }, [
+    slots,
+    widgetActions,
+    params,
+    currencyData.inputCurrencyInfo,
+    currencyData.outputCurrencyInfo,
+    currencyData.inputPreviewInfo,
+    currencyData.outputPreviewInfo,
+    priceImpact,
+    recipient,
+    recipientAddress,
+    doTradeCallback,
+    showNativeWrapModal,
+    ethFlowProps,
+  ])
 }

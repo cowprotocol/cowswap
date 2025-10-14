@@ -5,16 +5,21 @@ import { TokenWithLogo } from '@cowprotocol/common-const'
 import type { useHooksEnabledManager } from 'legacy/state/user/hooks'
 
 import { TradeApproveWithAffectedOrderList } from 'modules/erc20Approve'
+import { EthFlowModal, EthFlowProps } from 'modules/ethFlow'
+import { useTradePriceImpact } from 'modules/trade'
+import { useHandleSwap } from 'modules/tradeFlow'
 import { SettingsTab } from 'modules/tradeWidgetAddons'
 
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 
+import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
 import {
   useSwapDeadlineState,
   useSwapPartialApprovalToggleState,
   useSwapRecipientToggleState,
 } from '../../hooks/useSwapSettings'
 import { CrossChainUnlockScreen } from '../../pure/CrossChainUnlockScreen'
+import { SwapConfirmModal } from '../SwapConfirmModal'
 import { SwapRateDetails } from '../SwapRateDetails'
 import { TradeButtons } from '../TradeButtons'
 import { Warnings } from '../Warnings'
@@ -103,4 +108,46 @@ export function BottomContentSlot({
       />
     </>
   )
+}
+
+export interface ConfirmModalSlotProps {
+  doTradeCallback: ReturnType<typeof useHandleSwap>['callback']
+  recipient: ReturnType<typeof useSwapDerivedState>['recipient']
+  recipientAddress: ReturnType<typeof useSwapDerivedState>['recipientAddress']
+  priceImpact: ReturnType<typeof useTradePriceImpact>
+  inputPreviewInfo: CurrencyData['inputPreviewInfo']
+  outputPreviewInfo: CurrencyData['outputPreviewInfo']
+}
+
+export function ConfirmModalSlot({
+  doTradeCallback,
+  recipient,
+  recipientAddress,
+  priceImpact,
+  inputPreviewInfo,
+  outputPreviewInfo,
+}: ConfirmModalSlotProps): ReactNode {
+  return (
+    <SwapConfirmModal
+      doTrade={doTradeCallback}
+      recipient={recipient}
+      recipientAddress={recipientAddress}
+      priceImpact={priceImpact}
+      inputCurrencyInfo={inputPreviewInfo}
+      outputCurrencyInfo={outputPreviewInfo}
+    />
+  )
+}
+
+export interface GenericModalSlotProps {
+  showNativeWrapModal: boolean
+  ethFlowProps: EthFlowProps
+}
+
+export function GenericModalSlot({ showNativeWrapModal, ethFlowProps }: GenericModalSlotProps): ReactNode {
+  if (!showNativeWrapModal) {
+    return null
+  }
+
+  return <EthFlowModal {...ethFlowProps} />
 }
