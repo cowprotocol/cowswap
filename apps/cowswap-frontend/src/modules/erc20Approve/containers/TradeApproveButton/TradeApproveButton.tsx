@@ -1,7 +1,7 @@
 import React, { ReactNode, useCallback } from 'react'
 
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
-import { ButtonConfirmed, ButtonSize, HoverTooltip, TokenSymbol } from '@cowprotocol/ui'
+import { ButtonSize, HoverTooltip, TokenSymbol } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
@@ -10,9 +10,10 @@ import { useTokenSupportsPermit } from 'modules/permit'
 import { TradeType } from 'modules/trade'
 
 import * as styledEl from './styled'
+import { ButtonWrapper } from './styled'
 
 import { MAX_APPROVE_AMOUNT } from '../../constants'
-import { useApprovalStateForSpender, useApproveCurrency } from '../../hooks'
+import { useApprovalStateForSpender, useApproveCurrency, useGeneratePermitInAdvanceToTrade } from '../../hooks'
 import { LegacyApproveButton } from '../../pure/LegacyApproveButton'
 import { useIsPartialApproveSelectedByUser } from '../../state'
 import { ApprovalState } from '../../types'
@@ -25,20 +26,37 @@ export interface TradeApproveButtonProps {
   confirmSwap?: () => void
   ignorePermit?: boolean
   label: string
+  buttonSize?: ButtonSize
+  useModals?: boolean
 }
 
 export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
-  const { amountToApprove, children, enablePartialApprove, confirmSwap, label, ignorePermit } = props
+  const {
+    amountToApprove,
+    children,
+    enablePartialApprove,
+    confirmSwap,
+    label,
+    ignorePermit,
+    isDisabled,
+    buttonSize = ButtonSize.DEFAULT,
+    useModals = true,
+  } = props
   const isPartialApproveEnabledByUser = useIsPartialApproveSelectedByUser()
-  const handleApprove = useApproveCurrency(amountToApprove)
-  
+  const handleApprove = useApproveCurrency(amountToApprove, useModals)
+
   const spender = useTradeSpenderAddress()
   const { approvalState } = useApprovalStateForSpender(amountToApprove, spender)
   const isPermitSupported = useTokenSupportsPermit(amountToApprove.currency, TradeType.SWAP) && !ignorePermit
+  const generatePermitToTrade = useGeneratePermitInAdvanceToTrade(amountToApprove)
 
   const approveAndSwap = useCallback(async (): Promise<void> => {
     if (isPermitSupported && confirmSwap) {
-      confirmSwap()
+      const isPermitSigned = await generatePermitToTrade()
+      if (isPermitSigned) {
+        confirmSwap()
+      }
+
       return
     }
 
@@ -47,7 +65,14 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
     if (tx && confirmSwap) {
       confirmSwap()
     }
-  }, [handleApprove, confirmSwap, amountToApprove, isPartialApproveEnabledByUser, isPermitSupported])
+  }, [
+    isPermitSupported,
+    confirmSwap,
+    isPartialApproveEnabledByUser,
+    amountToApprove.quotient,
+    handleApprove,
+    generatePermitToTrade,
+  ])
 
   if (!enablePartialApprove) {
     return (
@@ -55,6 +80,7 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
         <LegacyApproveButton
           currency={amountToApprove.currency}
           state={approvalState}
+          isDisabled={isDisabled}
           onClick={() => handleApprove(MAX_APPROVE_AMOUNT)}
         />
         {children}
@@ -65,15 +91,13 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
   const isPending = approvalState === ApprovalState.PENDING
 
   return (
-    <ButtonConfirmed
-      disabled={isPending}
-      buttonSize={ButtonSize.BIG}
+    <ButtonWrapper
+      disabled={isPending || isDisabled}
+      buttonSize={buttonSize}
       onClick={approveAndSwap}
-      width="100%"
-      marginBottom={10}
       altDisabledStyle={isPending}
     >
-      <styledEl.ButtonLabelWrapper>
+      <styledEl.ButtonLabelWrapper buttonSize={buttonSize}>
         {label}{' '}
         <HoverTooltip
           wrapInContainer
@@ -88,6 +112,6 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
           {isPending ? <styledEl.StyledLoader /> : <styledEl.StyledAlert size={24} />}
         </HoverTooltip>
       </styledEl.ButtonLabelWrapper>
-    </ButtonConfirmed>
+    </ButtonWrapper>
   )
 }

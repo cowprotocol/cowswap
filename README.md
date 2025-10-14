@@ -27,6 +27,11 @@ First install Dependencies:
 yarn
 ```
 
+Or, if you want to use `@cowprotocol/sdk` preview versions like `"@cowprotocol/cow-sdk": "7.0.4-pr-546-c04641f0.0"`, then:
+ - set the versions in `package.json`
+ - run `PACKAGE_READ_AUTH_TOKEN=XXX yarn run install:sdk-preview` instead of just `yarn`
+ - the token must be generated in GitHub with `read:packages` permissions
+
 ## Run
 
 Start CoW Swap on `http://localhost:3000`

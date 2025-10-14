@@ -18,9 +18,11 @@ export function useGetPartialAmountToSignApprove(): CurrencyAmount<Currency> | n
 
   return useMemo(() => {
     if (!maximumSendSellAmount) return null
+    if (!amountSetByUser || amountSetByUser.equalTo('0')) {
+      return maximumSendSellAmount
+    }
 
     const areCurrenciesEqualAndUserAmountIsHigher =
-      amountSetByUser &&
       amountSetByUser.currency.equals(maximumSendSellAmount.currency) &&
       amountSetByUser.greaterThan(maximumSendSellAmount)
 
