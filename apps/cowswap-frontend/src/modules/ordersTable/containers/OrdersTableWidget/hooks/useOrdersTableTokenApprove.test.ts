@@ -8,7 +8,6 @@ import { useApproveCurrency } from 'modules/erc20Approve'
 
 import { useOrdersTableTokenApprove } from './useOrdersTableTokenApprove'
 
-
 jest.mock('modules/erc20Approve')
 
 const mockUseTradeApproveCallback = useApproveCurrency as jest.MockedFunction<typeof useApproveCurrency>
@@ -34,6 +33,6 @@ describe('useOrdersTableTokenApprove()', () => {
     })
 
     // THEN
-    expect(tradeApproveCallbackMock).toBeCalledTimes(1)
+    expect(tradeApproveCallbackMock).toHaveBeenCalledTimes(1)
   })
 })

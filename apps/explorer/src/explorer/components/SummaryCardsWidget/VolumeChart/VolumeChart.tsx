@@ -140,16 +140,9 @@ const PriceTooltip = ({
 }): React.ReactNode | null => {
   const { time, value, coordinates } = crossHairData || {}
   const isTopCoordinateValid = coordinates && coordinates.top > 1
-  const formattedDate = React.useMemo(() => {
-    if (!time) return ''
-
-    let _format = 'MMM d, yyyy'
-    if (period === VolumePeriod.DAILY) {
-      _format = 'MMM d HH:mm, yyyy'
-    }
-
-    return format(fromUnixTime(time), _format)
-  }, [period, time])
+  const formattedDate = time
+    ? format(fromUnixTime(time), period === VolumePeriod.DAILY ? 'MMM d HH:mm, yyyy' : 'MMM d, yyyy')
+    : ''
 
   if (!value || !containerWidth || !coordinates || !isTopCoordinateValid) return null
 

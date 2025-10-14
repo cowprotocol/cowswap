@@ -23,6 +23,7 @@ export function UploadToIpfsUpdater(): null {
 
   // Storing a reference to avoid re-render on every update
   const refToUpload = useRef(toUpload)
+  // eslint-disable-next-line react-hooks/refs
   refToUpload.current = toUpload
 
   // Filtering only newly created and not yet attempted to upload docs
@@ -56,7 +57,7 @@ export function UploadToIpfsUpdater(): null {
 async function _uploadToIpfs(
   appDataRecord: AppDataRecord,
   updatePending: (params: UpdateAppDataOnUploadQueueParams) => void,
-  removePending: (params: AppDataKeyParams) => void
+  removePending: (params: AppDataKeyParams) => void,
 ) {
   const { fullAppData, appDataKeccak256, chainId, orderId, uploading, failedAttempts, lastAttempt } = appDataRecord
 
@@ -93,7 +94,7 @@ function _canUpload(uploading: boolean, attempts: number, lastAttempt?: number):
 async function _actuallyUploadToIpfs(
   appDataRecord: AppDataRecord,
   updatePending: (params: UpdateAppDataOnUploadQueueParams) => void,
-  removePending: (params: AppDataKeyParams) => void
+  removePending: (params: AppDataKeyParams) => void,
 ) {
   const { fullAppData, appDataKeccak256, chainId, orderId, failedAttempts, env } = appDataRecord
 
@@ -105,8 +106,8 @@ async function _actuallyUploadToIpfs(
   try {
     await uploadAppDataDocOrderbookApi({ appDataKeccak256, fullAppData, chainId, env })
     removePending({ chainId, orderId })
-  // TODO: Replace any with proper type definitions
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // TODO: Replace any with proper type definitions
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (e: any) {
     console.error(`[UploadToIpfsUpdater] Failed to upload doc, will try again. Reason: ${e.message}`, e, fullAppData)
     updatePending({ chainId, orderId, uploading: false, failedAttempts: failedAttempts + 1, lastAttempt: Date.now() })

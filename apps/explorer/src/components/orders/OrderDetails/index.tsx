@@ -153,7 +153,9 @@ export const OrderDetails: React.FC<Props> = (props) => {
   const updateQueryString = useUpdateQueryString()
   const crossChainOrderResponse = useCrossChainOrder(order?.uid)
 
+  // eslint-disable-next-line react-hooks/immutability
   tableState['hasNextPage'] = tableState.pageOffset + tableState.pageSize < trades.length
+  // eslint-disable-next-line react-hooks/immutability
   tableState['totalResults'] = trades.length
 
   const ExtraComponentNode: React.ReactNode = (

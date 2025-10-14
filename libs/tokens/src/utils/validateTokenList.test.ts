@@ -33,7 +33,7 @@ const INLINE_TOKEN_LIST = [
 
 describe('validateTokens', () => {
   it('throws on invalid tokens', async () => {
-    await expect(validateTokens([INVALID_TOKEN])).rejects.toThrowError(/^Token list failed validation:.*address/)
+    await expect(validateTokens([INVALID_TOKEN])).rejects.toThrow(/^Token list failed validation:.*address/)
   })
 
   it('validates the passed token info', async () => {

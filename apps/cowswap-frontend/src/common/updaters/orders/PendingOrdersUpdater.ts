@@ -29,7 +29,7 @@ import {
   useFulfillOrdersBatch,
   useInvalidateOrdersBatch,
   usePresignOrders,
-  useUpdatePresignGnosisSafeTx
+  useUpdatePresignGnosisSafeTx,
 } from 'legacy/state/orders/hooks'
 import { OrderTransitionStatus } from 'legacy/state/orders/utils'
 
@@ -37,7 +37,7 @@ import {
   emitCancelledOrderEvent,
   emitExpiredOrderEvent,
   emitFulfilledOrderEvent,
-  emitPresignedOrderEvent
+  emitPresignedOrderEvent,
 } from 'modules/orders'
 
 import { getOrder } from 'api/cowProtocol'
@@ -445,6 +445,7 @@ export function PendingOrdersUpdater(): null {
       const isUpdating = updatersRefMap[uiOrderType]
 
       if (!isUpdating.current) {
+        // eslint-disable-next-line react-hooks/immutability
         isUpdating.current = true
         return _updateOrders({
           account,
