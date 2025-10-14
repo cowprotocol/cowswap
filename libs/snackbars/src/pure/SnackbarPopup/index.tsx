@@ -61,9 +61,7 @@ export interface SnackbarPopupProps {
   onExpire(id: string): void
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function SnackbarPopup(props: SnackbarPopupProps) {
+export function SnackbarPopup(props: SnackbarPopupProps): ReactNode {
   const { id, children, duration, icon, onExpire } = props
 
   const faderStyle = useSpring({
@@ -84,7 +82,13 @@ export function SnackbarPopup(props: SnackbarPopupProps) {
 
   return (
     <Wrapper>
-      <StyledClose onClick={removeSelf} />
+      <StyledClose
+        onMouseDown={(e) => e.stopPropagation()}
+        onClick={(e) => {
+          e.stopPropagation()
+          removeSelf()
+        }}
+      />
       <ContentWrapper>
         {icon && <div>{icon}</div>}
         <div>{children}</div>
