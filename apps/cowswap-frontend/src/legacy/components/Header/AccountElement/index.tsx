@@ -1,7 +1,8 @@
-import { ReactNode, useState } from 'react'
+import { ReactNode, useCallback, useRef, useState } from 'react'
 
 import { useNativeCurrencyAmount } from '@cowprotocol/balances-and-allowances'
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { TokenAmount } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -11,12 +12,15 @@ import { upToLarge, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 
 import { useToggleAccountModal } from 'modules/account'
 import { NotificationBell, NotificationSidebar } from 'modules/notifications'
+import { useHasNotificationSubscription } from 'modules/notifications/hooks/useHasNotificationSubscription'
+import { useNotificationAlertDismissal } from 'modules/notifications/hooks/useNotificationAlertDismissal'
 import { useUnreadNotifications } from 'modules/notifications/hooks/useUnreadNotifications'
 import { Web3Status } from 'modules/wallet/containers/Web3Status'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
+import { NotificationAlertPopover } from './NotificationAlertPopover'
 import { BalanceText, Wrapper } from './styled'
 
 function createNotificationClickEventData(event: string): string {
@@ -24,6 +28,27 @@ function createNotificationClickEventData(event: string): string {
     category: CowSwapAnalyticsCategory.NOTIFICATIONS,
     action: event,
   })
+}
+
+interface NotificationSidebarPortalProps {
+  portalTarget: HTMLElement | null
+  isSidebarOpen: boolean
+  onClose: () => void
+  initialSettingsOpen: boolean
+}
+
+function NotificationSidebarPortal({
+  portalTarget,
+  isSidebarOpen,
+  onClose,
+  initialSettingsOpen,
+}: NotificationSidebarPortalProps): ReactNode {
+  if (!portalTarget) return null
+
+  return ReactDOM.createPortal(
+    <NotificationSidebar isOpen={isSidebarOpen} onClose={onClose} initialSettingsOpen={initialSettingsOpen} />,
+    portalTarget,
+  )
 }
 
 interface AccountElementProps {
@@ -43,31 +68,68 @@ export function AccountElement({ className, standaloneMode }: AccountElementProp
   const unreadNotificationsCount = Object.keys(unreadNotifications).length
 
   const [isSidebarOpen, setSidebarOpen] = useState(false)
+  const [shouldOpenSettings, setShouldOpenSettings] = useState(false)
+  const wrapperRef = useRef<HTMLDivElement>(null)
+  const { isDismissed, dismiss } = useNotificationAlertDismissal()
+  const { areTelegramNotificationsEnabled } = useFeatureFlags()
+  const { hasSubscription, isLoading } = useHasNotificationSubscription()
+  const shouldShowPopover =
+    areTelegramNotificationsEnabled && !!account && !isDismissed && !hasSubscription && !isLoading
+
+  const shouldRenderBalance =
+    standaloneMode !== false && account && !isChainIdUnsupported && userEthBalance && chainId && !isUpToLarge
+
+  const handleEnableAlerts = (): void => {
+    setShouldOpenSettings(areTelegramNotificationsEnabled)
+    setSidebarOpen(true)
+    dismiss()
+  }
+
+  const handleBellClick = useCallback(() => {
+    if (shouldShowPopover) {
+      dismiss()
+    }
+    setSidebarOpen(true)
+  }, [shouldShowPopover, dismiss])
+
+  const portalTarget = typeof document !== 'undefined' ? document.body : null
 
   return (
     <>
-      <Wrapper className={className} active={!!account}>
-        {standaloneMode !== false && account && !isChainIdUnsupported && userEthBalance && chainId && !isUpToLarge && (
+      <Wrapper className={className} active={!!account} ref={wrapperRef}>
+        {shouldRenderBalance && (
           <BalanceText>
             <TokenAmount amount={userEthBalance} tokenSymbol={{ symbol: nativeTokenSymbol }} />
           </BalanceText>
         )}
         <Web3Status onClick={() => account && toggleAccountModal()} />
         {account && (
-          <NotificationBell
-            unreadCount={unreadNotificationsCount}
-            data-click-event={createNotificationClickEventData(
-              unreadNotificationsCount === 0 ? 'click-bell' : 'click-bell-with-pending-notifications',
-            )}
-            onClick={() => setSidebarOpen(true)}
-          />
+          <NotificationAlertPopover
+            show={shouldShowPopover}
+            onEnableAlerts={handleEnableAlerts}
+            onDismiss={dismiss}
+            containerRef={wrapperRef}
+          >
+            <NotificationBell
+              unreadCount={unreadNotificationsCount}
+              data-click-event={createNotificationClickEventData(
+                unreadNotificationsCount === 0 ? 'click-bell' : 'click-bell-with-pending-notifications',
+              )}
+              onClick={handleBellClick}
+            />
+          </NotificationAlertPopover>
         )}
       </Wrapper>
 
-      {ReactDOM.createPortal(
-        <NotificationSidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} />,
-        document.body,
-      )}
+      <NotificationSidebarPortal
+        portalTarget={portalTarget}
+        isSidebarOpen={isSidebarOpen}
+        onClose={() => {
+          setSidebarOpen(false)
+          setShouldOpenSettings(false)
+        }}
+        initialSettingsOpen={shouldOpenSettings}
+      />
     </>
   )
 }
