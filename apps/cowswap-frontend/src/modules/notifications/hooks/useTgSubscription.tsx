@@ -133,7 +133,7 @@ export function useTgSubscription(account: string | undefined, authorization: Tg
     callSubscriptionApi,
     setTgSubscribed,
     skipNextCheckRef,
-    tgData: tgData || undefined,
+    tgData: tgData ?? undefined,
   })
 
   const addTgSubscription = useCallback(
