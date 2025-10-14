@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
 import ICON_HOOK from '@cowprotocol/assets/cow-swap/hook.svg'
 import { HookDappWalletCompatibility } from '@cowprotocol/hook-dapp-lib'
@@ -32,9 +32,8 @@ interface HookStoreModal {
 }
 
 // TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
-export function HookRegistryList({ onDismiss, isPreHook, hookToEdit, walletType }: HookStoreModal) {
+// eslint-disable-next-line max-lines-per-function
+export function HookRegistryList({ onDismiss, isPreHook, hookToEdit, walletType }: HookStoreModal): ReactNode {
   const [selectedDapp, setSelectedDapp] = useState<HookDapp | null>(null)
   const [dappDetails, setDappDetails] = useState<HookDapp | null>(null)
   const [isAllHooksTab, setIsAllHooksTab] = useState<boolean>(true)

@@ -13,9 +13,7 @@ import { useUsdPrice } from 'modules/usdAmount/hooks/useUsdPrice'
 
 import { useSafeEffect } from 'common/hooks/useSafeMemo'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function QuoteObserverUpdater() {
+export function QuoteObserverUpdater(): null {
   const state = useDerivedTradeState()
 
   const updateLimitRateState = useSetAtom(updateLimitRateAtom)
@@ -55,6 +53,7 @@ function useSpotPrice(
   const inputUsdPrice = useUsdPrice(inputCurrency)
   const outputUsdPrice = useUsdPrice(outputCurrency)
 
+  // eslint-disable-next-line react-hooks/preserve-manual-memoization
   return useMemo(() => {
     const isLoading = !!inputUsdPrice?.isLoading || !!outputUsdPrice?.isLoading
 

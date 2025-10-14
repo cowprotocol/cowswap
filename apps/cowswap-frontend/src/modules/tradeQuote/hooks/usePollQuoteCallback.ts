@@ -21,6 +21,7 @@ export function usePollQuoteCallback(
   const { fastQuote } = useAtomValue(tradeQuoteInputAtom)
   const tradeQuote = useTradeQuote()
   const tradeQuoteRef = useRef(tradeQuote)
+  // eslint-disable-next-line react-hooks/refs
   tradeQuoteRef.current = tradeQuote
 
   const { quoteParams, appData, inputCurrency } = quoteParamsState || {}
@@ -31,6 +32,7 @@ export function usePollQuoteCallback(
   const isWindowVisible = useIsWindowVisible()
   const isOnline = useIsOnline()
   const isOnlineRef = useRef(isOnline)
+  // eslint-disable-next-line react-hooks/refs
   isOnlineRef.current = isOnline
 
   return useCallback(
