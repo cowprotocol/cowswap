@@ -9,8 +9,8 @@ import {
   TradeApproveModal,
   TradeChangeApproveAmountModal,
   useGetUserApproveAmountState,
+  useResetApproveProgressModalState,
   useSetUserApproveAmountModalState,
-  useUpdateTradeApproveState,
 } from 'modules/erc20Approve'
 import { useTradeApproveState } from 'modules/erc20Approve/state/useTradeApproveState'
 import {
@@ -55,6 +55,7 @@ export function TradeWidgetModals({
     approveInProgress,
     isPendingInProgress,
     currency: approvingCurrency,
+    amountToApprove,
     error: approveError,
   } = useTradeApproveState()
   const { isModalOpen: changeApproveAmountInProgress } = useGetUserApproveAmountState()
@@ -67,7 +68,7 @@ export function TradeWidgetModals({
 
   const { onDismiss: closeTradeConfirm } = useTradeConfirmActions()
   const updateSelectTokenWidgetState = useUpdateSelectTokenWidgetState()
-  const updateTradeApproveState = useUpdateTradeApproveState()
+  const resetTradeApproveState = useResetApproveProgressModalState()
   const updateApproveAmountState = useSetUserApproveAmountModalState()
 
   const resetAllScreens = useCallback(
@@ -77,7 +78,7 @@ export function TradeWidgetModals({
       if (shouldCloseAutoImportModal) closeAutoImportModal()
       if (closeTokenSelectWidget) updateSelectTokenWidgetState({ open: false })
       setWrapNativeScreenState({ isOpen: false })
-      updateTradeApproveState({ approveInProgress: false, error: undefined, isPendingInProgress: false })
+      resetTradeApproveState()
       setTokenListAddingError(null)
       updateApproveAmountState({ isModalOpen: false })
     },
@@ -87,7 +88,7 @@ export function TradeWidgetModals({
       closeAutoImportModal,
       updateSelectTokenWidgetState,
       setWrapNativeScreenState,
-      updateTradeApproveState,
+      resetTradeApproveState,
       updateApproveAmountState,
       setTokenListAddingError,
     ],
@@ -143,7 +144,13 @@ export function TradeWidgetModals({
   }
 
   if (approveInProgress) {
-    return <TradeApproveModal currency={approvingCurrency} isPendingInProgress={isPendingInProgress} />
+    return (
+      <TradeApproveModal
+        currency={approvingCurrency}
+        isPendingInProgress={isPendingInProgress}
+        amountToApprove={amountToApprove}
+      />
+    )
   }
 
   if (isZeroApprovalModalOpen) {

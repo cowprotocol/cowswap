@@ -4,12 +4,12 @@ import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { renderHook } from '@testing-library/react'
 
-import { useGeneratePermitHook, usePermitInfo, IsTokenPermittableResult } from 'modules/permit'
+import { IsTokenPermittableResult, useGeneratePermitHook, usePermitInfo } from 'modules/permit'
 import { TradeType } from 'modules/trade'
 
 import { useGeneratePermitInAdvanceToTrade } from './useGeneratePermitInAdvanceToTrade'
 
-import { useUpdateTradeApproveState } from '../'
+import { useUpdateApproveProgressModalState } from '../'
 
 jest.mock('@cowprotocol/common-utils', () => ({
   getWrappedToken: jest.fn(),
@@ -38,8 +38,8 @@ const mockGetWrappedToken = getWrappedToken as jest.MockedFunction<typeof getWra
 const mockUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
 const mockUseGeneratePermitHook = useGeneratePermitHook as jest.MockedFunction<typeof useGeneratePermitHook>
 const mockUsePermitInfo = usePermitInfo as jest.MockedFunction<typeof usePermitInfo>
-const mockUseUpdateTradeApproveState = useUpdateTradeApproveState as jest.MockedFunction<
-  typeof useUpdateTradeApproveState
+const mockUseUpdateTradeApproveState = useUpdateApproveProgressModalState as jest.MockedFunction<
+  typeof useUpdateApproveProgressModalState
 >
 
 describe('useGeneratePermitInAdvanceToTrade', () => {

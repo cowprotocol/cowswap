@@ -9,7 +9,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { useApproveCowAnalytics } from './useApproveCowAnalytics'
 
 import { useApproveCallback } from '../../hooks'
-import { useUpdateTradeApproveState } from '../../state'
+import { useResetApproveProgressModalState, useUpdateApproveProgressModalState } from '../../state'
 
 interface TradeApproveCallbackParams {
   useModals: boolean
@@ -37,7 +37,8 @@ function getErrorCode(error: unknown): number | null {
 }
 
 export function useTradeApproveCallback(currency: Currency | undefined): TradeApproveCallback {
-  const updateTradeApproveState = useUpdateTradeApproveState()
+  const updateApproveProgressModalState = useUpdateApproveProgressModalState()
+  const resetApproveProgressModalState = useResetApproveProgressModalState()
   const spender = useTradeSpenderAddress()
   const symbol = currency?.symbol
   const { isPartialApproveEnabled } = useFeatureFlags()
@@ -50,14 +51,14 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
       console.error('Error setting the allowance for token', error)
 
       if (isRejectRequestProviderError(error)) {
-        updateTradeApproveState({ error: 'User rejected approval transaction' })
+        updateApproveProgressModalState({ error: 'User rejected approval transaction' })
       } else {
         const errorCode = getErrorCode(error)
         approvalAnalytics('Error', symbol, errorCode)
-        updateTradeApproveState({ error: errorToString(error) })
+        updateApproveProgressModalState({ error: errorToString(error) })
       }
     },
-    [updateTradeApproveState, approvalAnalytics, symbol],
+    [updateApproveProgressModalState, approvalAnalytics, symbol],
   )
 
   return useCallback(
@@ -70,7 +71,7 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
     ) => {
       if (useModals) {
         const amountToApprove = currency ? CurrencyAmount.fromRawAmount(currency, amount.toString()) : undefined
-        updateTradeApproveState({ currency, approveInProgress: true, amountToApprove })
+        updateApproveProgressModalState({ currency, approveInProgress: true, amountToApprove })
       }
 
       approvalAnalytics('Send', symbol)
@@ -79,16 +80,16 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
         const response = await approveCallback(amount)
 
         if (!response) {
-          updateTradeApproveState({ currency: undefined, approveInProgress: false, amountToApprove: undefined })
+          resetApproveProgressModalState()
           return undefined
         }
 
         approvalAnalytics('Sign', symbol)
         // if ff is disabled - use old flow, hide modal when tx is sent
         if (isPartialApproveEnabled) {
-          updateTradeApproveState({ isPendingInProgress: true })
+          updateApproveProgressModalState({ isPendingInProgress: true })
         } else {
-          updateTradeApproveState({ currency: undefined, approveInProgress: false, amountToApprove: undefined })
+          resetApproveProgressModalState()
         }
 
         if (waitForTxConfirmation) {
@@ -102,21 +103,17 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
         handleApprovalError(error)
         return undefined
       } finally {
-        updateTradeApproveState({
-          currency: undefined,
-          approveInProgress: false,
-          isPendingInProgress: false,
-          amountToApprove: undefined,
-        })
+        resetApproveProgressModalState()
       }
     },
     [
-      symbol,
-      approveCallback,
-      updateTradeApproveState,
-      currency,
       approvalAnalytics,
+      symbol,
+      currency,
+      updateApproveProgressModalState,
+      approveCallback,
       isPartialApproveEnabled,
+      resetApproveProgressModalState,
       handleApprovalError,
     ],
   ) as TradeApproveCallback

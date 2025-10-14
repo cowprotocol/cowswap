@@ -14,14 +14,14 @@ interface PendingApprovalModalParams {
   onDismiss?: Command
   modalMode?: boolean
   isPendingInProgress?: boolean
-  approveAmount?: CurrencyAmount<Currency>
+  amountToApprove?: CurrencyAmount<Currency>
 }
 
 export function usePendingApprovalModal(params?: PendingApprovalModalParams): {
   Modal: ReactNode
   state: ModalState<string>
 } {
-  const { currencySymbol, modalMode, onDismiss, isPendingInProgress, approveAmount } = params || {}
+  const { currencySymbol, modalMode, onDismiss, isPendingInProgress, amountToApprove } = params || {}
 
   const state = useModalState<string>()
   const { closeModal, context } = state
@@ -33,11 +33,11 @@ export function usePendingApprovalModal(params?: PendingApprovalModalParams): {
 
   return useMemo(() => {
     const Title =
-      approveAmount && !isMaxAmountToApprove(approveAmount) ? (
+      amountToApprove && !isMaxAmountToApprove(amountToApprove) ? (
         <>
-          Approving <TokenAmount amount={approveAmount} />
+          Approving <TokenAmount amount={amountToApprove} />{' '}
           <strong>
-            <TokenSymbol token={approveAmount.currency} />
+            <TokenSymbol token={amountToApprove.currency} />
           </strong>{' '}
           for trading
         </>
@@ -59,5 +59,5 @@ export function usePendingApprovalModal(params?: PendingApprovalModalParams): {
     )
 
     return { Modal, state }
-  }, [approveAmount, currencySymbol, context, modalMode, onDismissCallback, isPendingInProgress, state])
+  }, [amountToApprove, currencySymbol, context, modalMode, onDismissCallback, isPendingInProgress, state])
 }

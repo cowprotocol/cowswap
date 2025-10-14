@@ -1,4 +1,4 @@
 export * from './TradeApproveModal'
 export * from './useTradeApproveCallback'
-export * from './tradeApproveStateAtom'
+export * from './approveProgressModalStateAtom'
 export { useApproveCowAnalytics } from './useApproveCowAnalytics'
