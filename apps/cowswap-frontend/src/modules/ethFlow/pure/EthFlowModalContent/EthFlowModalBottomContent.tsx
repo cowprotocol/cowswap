@@ -1,31 +1,24 @@
 import { ReactNode, useCallback, useMemo, useState } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { getWrappedToken } from '@cowprotocol/common-utils'
-import { Nullish } from '@cowprotocol/types'
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { currencyAmountToTokenAmount } from '@cowprotocol/common-utils'
 
 import { Trans } from '@lingui/macro'
 
+
 import { SimpleAccountDetails } from 'modules/account/containers/SimpleAccountDetails'
 import { PartialApproveContainer } from 'modules/erc20Approve'
+import { useSwapPartialApprovalToggleState } from 'modules/swap/hooks/useSwapSettings'
+import { TradeFormBlankButton } from 'modules/tradeFormValidation'
 
 import { ActivityStatus } from 'common/types/activity'
 
 import { StyledPartialApprove } from './styled'
 
-import { useSwapPartialApprovalToggleState } from '../../../swap/hooks/useSwapSettings'
-import { TradeFormBlankButton } from '../../../tradeFormValidation'
 import { EthFlowActions } from '../../containers/EthFlow/hooks/useEthFlowActions'
 import { EthFlowState } from '../../services/ethFlow/types'
 import { EthFlowContext } from '../../state/ethFlowContextAtom'
 import { WrappingPreview, WrappingPreviewProps } from '../WrappingPreview'
-
-function wrapNativeAmount(currencyAmount: Nullish<CurrencyAmount<Currency>>): CurrencyAmount<Currency> | null {
-  const amount = currencyAmount?.quotient.toString() ?? '0'
-  const approveAmount = currencyAmount ? getWrappedToken(currencyAmount.currency) : null
-  return approveAmount ? CurrencyAmount.fromRawAmount(approveAmount, amount) : null
-}
 
 const needApprove = [EthFlowState.ApproveNeeded, EthFlowState.ApproveFailed, EthFlowState.ApproveInsufficient]
 
@@ -91,7 +84,7 @@ export function EthFlowModalBottomContent(params: BottomContentParams): ReactNod
 
   const showPartialApprovalFunctionality =
     isPartialApproveEnabled && isApproveNeeded && !wrapInProgress && isPartialApproveEnabledBySettings
-  const amountToApprove = wrapNativeAmount(wrappingPreview.amount)
+  const amountToApprove = wrappingPreview.amount ? currencyAmountToTokenAmount(wrappingPreview.amount) : null
 
   return (
     <>
