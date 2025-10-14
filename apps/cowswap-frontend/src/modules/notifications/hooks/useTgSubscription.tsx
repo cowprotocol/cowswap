@@ -7,7 +7,7 @@ import { useAddSnackbar } from '@cowprotocol/snackbars'
 import { TgAuthorization } from './useTgAuthorization'
 
 import { tgSubscriptionAtom } from '../atoms/tgSubscriptionAtom'
-import { TG_DEV_BYPASS, type TelegramData, simulateDevModeApiCall, setDevSubscriptionState } from '../utils/devTg'
+import { setDevSubscriptionState, simulateDevModeApiCall, type TelegramData, TG_DEV_BYPASS } from '../utils/devTg'
 
 const EMPTY_SUBSCRIPTION_RESPONSE = Promise.resolve({ data: false as const })
 
@@ -116,7 +116,9 @@ function useSubscriptionApiCaller(
 interface TgSubscriptionContext {
   isTgSubscribed: boolean
   isCmsCallInProgress: boolean
+
   toggleSubscription(): Promise<void>
+
   subscribeWithData(data: TelegramData): Promise<void>
 }
 
@@ -128,7 +130,13 @@ export function useTgSubscription(account: string | undefined, authorization: Tg
   const skipNextCheckRef = useRef(false)
   useResetSubscriptionOnAccountChange(account, setTgSubscribed)
   const callSubscriptionApi = useSubscriptionApiCaller(account, setIsCmsCallInProgress)
-  useSubscriptionCheckEffects({ account, callSubscriptionApi, setTgSubscribed, skipNextCheckRef, tgData })
+  useSubscriptionCheckEffects({
+    account,
+    callSubscriptionApi,
+    setTgSubscribed,
+    skipNextCheckRef,
+    tgData: tgData ?? undefined,
+  })
 
   const addTgSubscription = useCallback(
     async (data: TelegramData): Promise<boolean> => {
