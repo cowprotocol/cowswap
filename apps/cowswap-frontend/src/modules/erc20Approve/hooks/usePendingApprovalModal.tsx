@@ -1,5 +1,6 @@
 import { ReactNode, useCallback, useMemo } from 'react'
 
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { Command } from '@cowprotocol/types'
 import { TokenAmount, TokenSymbol } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
@@ -25,6 +26,10 @@ export function usePendingApprovalModal(params?: PendingApprovalModalParams): {
 
   const state = useModalState<string>()
   const { closeModal, context } = state
+
+  const { isPartialApproveEnabled } = useFeatureFlags()
+
+  const showPendingState = isPartialApproveEnabled && isPendingInProgress
 
   const onDismissCallback = useCallback(() => {
     closeModal()
@@ -54,10 +59,10 @@ export function usePendingApprovalModal(params?: PendingApprovalModalParams): {
         title={Title}
         description="Approving token"
         operationLabel="token approval"
-        isPendingInProgress={isPendingInProgress}
+        isPendingInProgress={showPendingState}
       />
     )
 
     return { Modal, state }
-  }, [amountToApprove, currencySymbol, context, modalMode, onDismissCallback, isPendingInProgress, state])
+  }, [amountToApprove, currencySymbol, context, modalMode, onDismissCallback, showPendingState, state])
 }
