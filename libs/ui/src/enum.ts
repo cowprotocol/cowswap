@@ -85,10 +85,13 @@ export enum UI {
   // Colors
   COLOR_BLUE = '--cow-color-blue',
   COLOR_BLUE_100_PRIMARY = '--cow-color-blue-100-primary',
+  COLOR_BLUE_100_PRIMARY_OPACITY_15 = '--cow-color-blue-100-primary-opacity-15',
   COLOR_BLUE_200_PRIMARY = '--cow-color-blue-200-primary',
   COLOR_BLUE_300_PRIMARY = '--cow-color-blue-300-primary',
   COLOR_BLUE_400_PRIMARY = '--cow-color-blue-400-primary',
   COLOR_BLUE_500_PRIMARY = '--cow-color-blue-500-primary',
+  COLOR_BLUE_700_PRIMARY = '--cow-color-blue-700-primary',
+  COLOR_BLUE_700_PRIMARY_OPACITY_25 = '--cow-color-blue-700-primary-opacity-25',
   COLOR_BLUE_900_PRIMARY = '--cow-color-blue-900-primary',
   COLOR_PURPLE_200_PRIMARY = '--cow-color-purple-200-primary',
   COLOR_PURPLE_800_PRIMARY = '--cow-color-purple-800-primary',
@@ -114,6 +117,8 @@ export enum UI {
   COLOR_NEUTRAL_10 = '--cow-color-neutral-10',
   COLOR_NEUTRAL_0 = '--cow-color-neutral-0',
   COLOR_BLACK = '--cow-color-neutral-0',
+  COLOR_BLACK_OPACITY_70 = '--cow-color-neutral-0-opacity-70',
+  COLOR_BLACK_OPACITY_30 = '--cow-color-neutral-0-opacity-30',
 
   // Elements
   COLOR_BORDER = '--cow-color-border',
