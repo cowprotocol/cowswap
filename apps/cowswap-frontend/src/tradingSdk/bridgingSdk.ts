@@ -44,3 +44,5 @@ function getBungeeApiBase(): string | undefined {
 
   return 'https://bff.barn.cow.fi/proxies/socket'
 }
+
+export { bridgeProviders }
