@@ -36,7 +36,7 @@ export interface TradeConfirmationProps {
   isPriceStatic?: boolean
   recipient?: string | null
   buttonText?: ReactNode
-  children?: (restContent: ReactElement) => ReactNode
+  children?: (restContent: ReactElement) => ReactElement
   confirmClickEvent?: string
 }
 

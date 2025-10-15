@@ -7,5 +7,6 @@ export default function useFirstRender(): boolean {
     firstRender.current = false
   }, [])
 
+  // eslint-disable-next-line react-hooks/refs
   return firstRender.current
 }

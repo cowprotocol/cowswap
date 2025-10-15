@@ -1,5 +1,5 @@
 import { useAtom, useSetAtom } from 'jotai'
-import { useEffect, useRef } from 'react'
+import { ReactNode, useEffect, useRef } from 'react'
 
 import { usePrevious } from '@cowprotocol/common-hooks'
 import { deepEqual } from '@cowprotocol/common-utils'
@@ -23,14 +23,10 @@ import { validateWidgetParams } from '../utils/validateWidgetParams'
 
 const messagesCache: { [method: string]: unknown } = {}
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const getEventMethod = (event: MessageEvent) =>
+const getEventMethod = (event: MessageEvent): string | null =>
   (event.data.key === widgetIframeTransport.key && (event.data.method as string)) || null
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const cacheMessages = (event: MessageEvent) => {
+const cacheMessages = (event: MessageEvent): void => {
   const method = getEventMethod(event)
 
   if (!method) return
@@ -74,10 +70,7 @@ const cacheMessages = (event: MessageEvent) => {
   })
 })()
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
-export function InjectedWidgetUpdater() {
+export function InjectedWidgetUpdater(): ReactNode {
   const [
     {
       errors: validationErrors,
@@ -90,10 +83,6 @@ export function InjectedWidgetUpdater() {
   const prevPartnerFee = usePrevious(partnerFee)
   const navigate = useNavigate()
   const prevData = useRef<UpdateParamsPayload | null>(null)
-
-  // Pathname is updated independently of the widget, thus we need to track it separately
-  const pathNameRef = useRef<string | null>(null)
-  pathNameRef.current = window.location.pathname
 
   useEffect(() => {
     // Stop listening of message outside of React
@@ -110,7 +99,7 @@ export function InjectedWidgetUpdater() {
           deepEqual(prevData.current, data) &&
           // And the pathname is the same as the current widget pathname, do nothing
           // This is needed since the app updates the pathname independently of the widget params
-          pathNameRef.current === data.urlParams.pathname
+          window.location.pathname === data.urlParams.pathname
         ) {
           return
         }

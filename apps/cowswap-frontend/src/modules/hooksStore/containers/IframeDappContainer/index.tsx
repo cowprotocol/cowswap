@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef, useState } from 'react'
+import { ReactNode, useLayoutEffect, useRef, useState } from 'react'
 
 import { CoWHookDappEvents, hookDappIframeTransport } from '@cowprotocol/hook-dapp-lib'
 import { EthereumProvider, IframeRpcProviderBridge } from '@cowprotocol/iframe-transport'
@@ -53,10 +53,7 @@ interface IframeDappContainerProps {
   dapp: HookDappIframe
   context: HookDappContextType
 }
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
-export function IframeDappContainer({ dapp, context }: IframeDappContainerProps) {
+export function IframeDappContainer({ dapp, context }: IframeDappContainerProps): ReactNode {
   const iframeRef = useRef<HTMLIFrameElement | null>(null)
   const bridgeRef = useRef<IframeRpcProviderBridge | null>(null)
   const addHookRef = useRef(context.addHook)
@@ -69,9 +66,13 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
 
   const walletProvider = useWalletProvider()
 
+  // eslint-disable-next-line react-hooks/refs
   addHookRef.current = context.addHook
+  // eslint-disable-next-line react-hooks/refs
   editHookRef.current = context.editHook
+  // eslint-disable-next-line react-hooks/refs
   setSellTokenRef.current = context.setSellToken
+  // eslint-disable-next-line react-hooks/refs
   setBuyTokenRef.current = context.setBuyToken
 
   // TODO: Add proper return type annotation

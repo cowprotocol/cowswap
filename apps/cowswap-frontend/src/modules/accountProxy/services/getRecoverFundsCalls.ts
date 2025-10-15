@@ -1,10 +1,10 @@
 import { ICoWShedCall } from '@cowprotocol/sdk-cow-shed'
 import { defaultAbiCoder } from '@ethersproject/abi'
-import { keccak256 } from '@ethersproject/keccak256'
 import { pack } from '@ethersproject/solidity'
-import { toUtf8Bytes } from '@ethersproject/strings'
 
-const fnSelector = (sig: string): string => keccak256(toUtf8Bytes(sig)).slice(0, 10)
+import { toKeccak256 } from 'common/utils/toKeccak256'
+
+const fnSelector = (sig: string): string => toKeccak256(sig).slice(0, 10)
 
 const fnCalldata = (sig: string, encodedData: string): string =>
   pack(['bytes4', 'bytes'], [fnSelector(sig), encodedData])

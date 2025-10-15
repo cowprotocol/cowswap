@@ -6,14 +6,12 @@ const chainNameToIdMap: { [key: string]: SupportedChainId } = {
   sepolia: SupportedChainId.SEPOLIA,
 }
 
-export function getCurrentChainIdFromUrl(): SupportedChainId {
-  return getRawCurrentChainIdFromUrl() || SupportedChainId.MAINNET
+export function getCurrentChainIdFromUrl(location = window.location): SupportedChainId {
+  return getRawCurrentChainIdFromUrl(location) || SupportedChainId.MAINNET
 }
 
-export function getRawCurrentChainIdFromUrl(): SupportedChainId | null {
-  // Trying to get chainId from URL (#/100/swap)
-
-  const { location } = window
+// Trying to get chainId from URL (#/100/swap)
+export function getRawCurrentChainIdFromUrl(location = window.location): SupportedChainId | null {
   const urlChainIdMatch = location.hash.match(/^#\/(\d{1,9})\D/)
   const searchParams = new URLSearchParams(location.hash.split('?')[1])
   const chainQueryParam = searchParams.get('chain')
