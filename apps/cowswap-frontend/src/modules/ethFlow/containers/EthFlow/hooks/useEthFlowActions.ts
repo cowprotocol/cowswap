@@ -10,6 +10,7 @@ import { WrapUnwrapCallback } from 'legacy/hooks/useWrapCallback'
 import { Field } from 'legacy/state/types'
 
 import { MAX_APPROVE_AMOUNT, TradeApproveCallback } from 'modules/erc20Approve'
+import { useSwapPartialApprovalToggleState } from 'modules/swap/hooks/useSwapSettings'
 import { useOnCurrencySelection, useTradeConfirmActions } from 'modules/trade'
 
 import { updateEthFlowContextAtom } from '../../../state/ethFlowContextAtom'
@@ -39,6 +40,7 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks, amountToApp
 
   const onCurrencySelection = useOnCurrencySelection()
   const { onOpen: openSwapConfirmModal } = useTradeConfirmActions()
+  const [isPartialApproveEnabledBySettings] = useSwapPartialApprovalToggleState()
 
   return useMemo(() => {
     function sendTransaction(type: 'approve' | 'wrap', callback: () => Promise<string | undefined>): Promise<void> {
@@ -67,7 +69,10 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks, amountToApp
     }
 
     const approve = (): Promise<void> => {
-      const unitsToApprove = isPartialApproveEnabled ? amountToApprove || MAX_APPROVE_AMOUNT : MAX_APPROVE_AMOUNT
+      const unitsToApprove =
+        isPartialApproveEnabled && isPartialApproveEnabledBySettings
+          ? amountToApprove || MAX_APPROVE_AMOUNT
+          : MAX_APPROVE_AMOUNT
       return sendTransaction('approve', () => {
         return callbacks.approve(unitsToApprove).then((res) => res?.hash)
       })
@@ -94,12 +99,13 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks, amountToApp
       directSwap,
     }
   }, [
-    callbacks,
-    chainId,
     updateEthFlowContext,
+    callbacks,
     onCurrencySelection,
+    chainId,
     openSwapConfirmModal,
-    amountToApprove,
     isPartialApproveEnabled,
+    isPartialApproveEnabledBySettings,
+    amountToApprove,
   ])
 }
