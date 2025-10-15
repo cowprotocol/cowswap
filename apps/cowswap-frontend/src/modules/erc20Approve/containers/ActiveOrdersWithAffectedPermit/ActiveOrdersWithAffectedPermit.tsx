@@ -13,13 +13,17 @@ import { doesOrderHavePermit } from 'common/utils/doesOrderHavePermit'
 
 import * as styledEl from './styled'
 
-export function ActiveOrdersWithAffectedPermit({ currency }: { currency: Currency }): ReactNode {
+type ActiveOrdersWithAffectedPermitProps = {
+  currency: Currency
+  orderId?: string
+}
+
+export function ActiveOrdersWithAffectedPermit({ currency, orderId }: ActiveOrdersWithAffectedPermitProps): ReactNode {
   const { chainId, account } = useWalletInfo()
   const pendingOrders = useOnlyPendingOrders(chainId, account)
 
   const ordersWithPermit = pendingOrders.filter((order) => {
-    // need to check for buy order
-    return currency.equals(order.inputToken) && doesOrderHavePermit(order)
+    return order.id !== orderId && currency.equals(order.inputToken) && doesOrderHavePermit(order)
   })
 
   if (!ordersWithPermit.length) return null
