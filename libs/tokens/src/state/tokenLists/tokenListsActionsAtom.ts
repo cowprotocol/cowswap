@@ -6,6 +6,7 @@ import {
   listsEnabledStateAtom,
   listsStatesByChainAtom,
   listsStatesMapAtom,
+  removedListsSourcesAtom,
   userAddedListsSourcesAtom,
 } from './tokenListsStateAtom'
 
@@ -37,6 +38,9 @@ export const addListAtom = atom(null, (get, set, state: ListState) => {
   const { chainId, widgetAppCode } = get(environmentAtom)
   const userAddedTokenLists = get(userAddedListsSourcesAtom)
   const userAddedTokenListsForChain = userAddedTokenLists[chainId] || []
+  const removedTokenLists = get(removedListsSourcesAtom)
+  const removedTokenListsForChain = removedTokenLists[chainId] || []
+  const sourceLowerCase = state.source.toLowerCase()
 
   state.isEnabled = true
 
@@ -53,6 +57,13 @@ export const addListAtom = atom(null, (get, set, state: ListState) => {
     }),
   })
 
+  if (removedTokenListsForChain.includes(sourceLowerCase)) {
+    set(removedListsSourcesAtom, {
+      ...removedTokenLists,
+      [chainId]: removedTokenListsForChain.filter((item) => item !== sourceLowerCase),
+    })
+  }
+
   set(upsertListsAtom, chainId, [state])
 })
 
@@ -60,6 +71,10 @@ export const removeListAtom = atom(null, async (get, set, source: string) => {
   const { chainId } = get(environmentAtom)
   const userAddedTokenLists = get(userAddedListsSourcesAtom)
   const userAddedTokenListsForChain = userAddedTokenLists[chainId] || []
+  const removedTokenLists = get(removedListsSourcesAtom)
+  const removedTokenListsForChain = removedTokenLists[chainId] || []
+  const sourceLowerCase = source.toLowerCase()
+  const isUserAddedList = userAddedTokenListsForChain.some((item) => item.source === source)
 
   set(userAddedListsSourcesAtom, {
     ...userAddedTokenLists,
@@ -67,14 +82,35 @@ export const removeListAtom = atom(null, async (get, set, source: string) => {
   })
 
   const stateCopy = { ...(await get(listsStatesByChainAtom)) }
+  const networkState = { ...(stateCopy[chainId] || {}) }
 
-  const networkState = stateCopy[chainId]
+  delete networkState[source]
 
-  if (networkState) {
-    delete networkState[source]
+  if (Object.keys(networkState).length === 0) {
+    delete stateCopy[chainId]
+  } else {
+    stateCopy[chainId] = networkState
   }
 
   set(listsStatesByChainAtom, stateCopy)
+
+  if (isUserAddedList) {
+    if (removedTokenListsForChain.includes(sourceLowerCase)) {
+      set(removedListsSourcesAtom, {
+        ...removedTokenLists,
+        [chainId]: removedTokenListsForChain.filter((item) => item !== sourceLowerCase),
+      })
+    }
+
+    return
+  }
+
+  if (!removedTokenListsForChain.includes(sourceLowerCase)) {
+    set(removedListsSourcesAtom, {
+      ...removedTokenLists,
+      [chainId]: [...removedTokenListsForChain, sourceLowerCase],
+    })
+  }
 })
 
 export const toggleListAtom = atom(null, async (get, set, source: string) => {

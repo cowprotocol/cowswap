@@ -49,18 +49,35 @@ export const userAddedListsSourcesAtom = atomWithStorage<ListsSourcesByNetwork>(
   getJotaiMergerStorage(),
 )
 
+export const removedListsSourcesAtom = atomWithStorage<Record<SupportedChainId, string[]>>(
+  'removedTokenListsSourcesAtom:v1',
+  mapSupportedNetworks<string[]>([]),
+  getJotaiMergerStorage(),
+)
+
 export const allListsSourcesAtom = atom((get) => {
   const { chainId, useCuratedListOnly, isYieldEnabled } = get(environmentAtom)
   const userAddedTokenLists = get(userAddedListsSourcesAtom)
+  const removedListsSources = get(removedListsSourcesAtom)
   const userAddedTokenListsForChain = userAddedTokenLists[chainId] || []
+  const removedListsForChain = removedListsSources[chainId] || []
+  const removedSourcesSet = new Set(removedListsForChain.map((source) => source.toLowerCase()))
 
-  const lpLists = isYieldEnabled ? LP_TOKEN_LISTS : []
-
-  if (useCuratedListOnly) {
-    return [...get(curatedListSourceAtom), ...lpLists, ...userAddedTokenListsForChain]
+  const filterRemovedLists = (list: ListSourceConfig): boolean => {
+    return !removedSourcesSet.has(list.source.toLowerCase())
   }
 
-  return [...(DEFAULT_TOKENS_LISTS[chainId] || []), ...lpLists, ...userAddedTokenListsForChain]
+  const lpLists = (isYieldEnabled ? LP_TOKEN_LISTS : []).filter(filterRemovedLists)
+
+  if (useCuratedListOnly) {
+    const curatedLists = get(curatedListSourceAtom).filter(filterRemovedLists)
+
+    return [...curatedLists, ...lpLists, ...userAddedTokenListsForChain]
+  }
+
+  const defaultLists = (DEFAULT_TOKENS_LISTS[chainId] || []).filter(filterRemovedLists)
+
+  return [...defaultLists, ...lpLists, ...userAddedTokenListsForChain]
 })
 
 // Migrating from localStorage to indexedDB
