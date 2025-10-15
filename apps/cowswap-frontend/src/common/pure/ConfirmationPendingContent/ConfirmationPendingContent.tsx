@@ -62,9 +62,7 @@ export function ConfirmationPendingContent({
           <StepsIconWrapper>
             <UserCheck />
           </StepsIconWrapper>
-          <p>
-            <Trans>{firstStepLabel}</Trans>
-          </p>
+          <p>{firstStepLabel}</p>
         </div>
         <hr />
         <div>
