@@ -12,10 +12,6 @@ const mockSendEvent = jest.fn()
 const mockUseTradeSpenderAddress = jest.fn()
 const mockUseFeatureFlags = jest.fn()
 
-jest.mock('./useApproveCowAnalytics', () => ({
-  useApproveCowAnalytics: () => mockSendEvent,
-}))
-
 jest.mock('@cowprotocol/balances-and-allowances', () => ({
   useTradeSpenderAddress: () => mockUseTradeSpenderAddress(),
 }))
@@ -29,7 +25,6 @@ jest.mock('@cowprotocol/common-utils', () => ({
   isRejectRequestProviderError: (error: unknown) => error === 'reject',
 }))
 
-
 jest.mock('../../hooks', () => ({
   useApproveCallback: () => mockApproveCallback,
 }))
@@ -39,14 +34,18 @@ jest.mock('../../state', () => ({
   useResetApproveProgressModalState: () => mockResetApproveProgressModalState,
 }))
 
+jest.mock('./useApproveCowAnalytics', () => ({
+  useApproveCowAnalytics: () => mockSendEvent,
+}))
+
 const mockCurrency = new Token(1, '0x6B175474E89094C44Da98b954EedeAC495271d0F', 6, 'USDC', 'USD Coin')
 
-const mockTransactionResponse: TransactionResponse = {
+const mockTransactionResponse = {
   hash: '0x123',
   wait: jest.fn(),
 } as unknown as TransactionResponse
 
-const mockTransactionReceipt: TransactionReceipt = {
+const mockTransactionReceipt = {
   transactionHash: '0x123',
   blockNumber: 12345,
 } as unknown as TransactionReceipt
@@ -197,7 +196,8 @@ describe('useTradeApproveCallback', () => {
       mockApproveCallback.mockRejectedValue('reject')
       const { result } = renderHook(() => useTradeApproveCallback(mockCurrency))
 
-      await expect(result.current(BigInt(1000))).rejects.toBe('reject')
+      const response = await result.current(BigInt(1000))
+      expect(response).toBeUndefined()
       expect(mockUpdateApproveProgressModalState).toHaveBeenCalledWith({
         error: 'User rejected approval transaction',
       })
@@ -208,7 +208,8 @@ describe('useTradeApproveCallback', () => {
       mockApproveCallback.mockRejectedValue(errorWithCode)
       const { result } = renderHook(() => useTradeApproveCallback(mockCurrency))
 
-      await expect(result.current(BigInt(1000))).rejects.toBe(errorWithCode)
+      const response = await result.current(BigInt(1000))
+      expect(response).toBeUndefined()
       expect(mockSendEvent).toHaveBeenCalledWith('Error', 'USDC', 4001)
       expect(mockUpdateApproveProgressModalState).toHaveBeenCalledWith({
         error: 'Error: [object Object]',
@@ -220,7 +221,8 @@ describe('useTradeApproveCallback', () => {
       mockApproveCallback.mockRejectedValue(errorWithoutCode)
       const { result } = renderHook(() => useTradeApproveCallback(mockCurrency))
 
-      await expect(result.current(BigInt(1000))).rejects.toBe(errorWithoutCode)
+      const response = await result.current(BigInt(1000))
+      expect(response).toBeUndefined()
       expect(mockSendEvent).toHaveBeenCalledWith('Error', 'USDC', null)
       expect(mockUpdateApproveProgressModalState).toHaveBeenCalledWith({
         error: 'Error: [object Object]',
@@ -231,7 +233,8 @@ describe('useTradeApproveCallback', () => {
       mockTransactionResponse.wait = jest.fn().mockRejectedValue('wait error')
       const { result } = renderHook(() => useTradeApproveCallback(mockCurrency))
 
-      await expect(result.current(BigInt(1000), { useModals: true, waitForTxConfirmation: true })).rejects.toBe('wait error')
+      const response = await result.current(BigInt(1000), { useModals: true, waitForTxConfirmation: true })
+      expect(response).toBeUndefined()
       expect(mockUpdateApproveProgressModalState).toHaveBeenCalledWith({
         error: 'Error: wait error',
       })
@@ -256,7 +259,8 @@ describe('useTradeApproveCallback', () => {
       mockApproveCallback.mockRejectedValue('error')
       const { result } = renderHook(() => useTradeApproveCallback(mockCurrency))
 
-      await expect(result.current(BigInt(1000))).rejects.toBe('error')
+      const response = await result.current(BigInt(1000))
+      expect(response).toBeUndefined()
 
       expect(mockUpdateApproveProgressModalState).toHaveBeenCalledWith({
         currency: mockCurrency,
