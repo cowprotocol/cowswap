@@ -42,6 +42,8 @@ export function ConfirmationPendingContent({
     <Trans>The {operationLabel} is submitted.</Trans>
   )
 
+  const animateSecondStep = isPendingInProgress === true
+
   return (
     <ConfirmationPendingContentShell
       title={title}
@@ -57,7 +59,7 @@ export function ConfirmationPendingContent({
         </>
       }
     >
-      <StepsWrapper>
+      <StepsWrapper animateSecondStep={animateSecondStep}>
         <div>
           <StepsIconWrapper>
             <UserCheck />
