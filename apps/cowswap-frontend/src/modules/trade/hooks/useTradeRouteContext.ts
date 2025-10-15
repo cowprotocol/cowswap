@@ -18,6 +18,7 @@ export function useTradeRouteContext(): TradeUrlParams {
   const sourceChainId = state?.chainId || walletChainId
   const { inputCurrencyId, outputCurrencyId, targetChainId } = state || getDefaultTradeRawState(sourceChainId)
 
+  // eslint-disable-next-line react-hooks/refs
   const prevContext = prevContextRef.current
 
   const inputCurrencyAmountStr = inputCurrencyAmount?.toExact()

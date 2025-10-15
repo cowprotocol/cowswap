@@ -128,7 +128,13 @@ export function useTgSubscription(account: string | undefined, authorization: Tg
   const skipNextCheckRef = useRef(false)
   useResetSubscriptionOnAccountChange(account, setTgSubscribed)
   const callSubscriptionApi = useSubscriptionApiCaller(account, setIsCmsCallInProgress)
-  useSubscriptionCheckEffects({ account, callSubscriptionApi, setTgSubscribed, skipNextCheckRef, tgData })
+  useSubscriptionCheckEffects({
+    account,
+    callSubscriptionApi,
+    setTgSubscribed,
+    skipNextCheckRef,
+    tgData: tgData || undefined,
+  })
 
   const addTgSubscription = useCallback(
     async (data: TelegramData): Promise<boolean> => {

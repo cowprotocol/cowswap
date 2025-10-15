@@ -1,4 +1,4 @@
-import React, { SyntheticEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { ReactNode, SyntheticEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import HTMLIcon from '@cowprotocol/assets/cow-swap/html.svg'
@@ -91,9 +91,8 @@ export interface EmbedDialogProps {
 }
 
 // TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
-export function EmbedDialog({ params, open, handleClose, defaultPalette }: EmbedDialogProps) {
+// eslint-disable-next-line max-lines-per-function
+export function EmbedDialog({ params, open, handleClose, defaultPalette }: EmbedDialogProps): ReactNode {
   const [scroll, setScroll] = useState<DialogProps['scroll']>('paper')
   const [tabInfo, setCurrentTabInfo] = useState<TabInfo>(TABS[0])
   const { id, language, snippetFromParams } = tabInfo
@@ -135,6 +134,7 @@ export function EmbedDialog({ params, open, handleClose, defaultPalette }: Embed
     }
   }, [open, cowAnalytics])
 
+  // eslint-disable-next-line react-hooks/preserve-manual-memoization
   const code = useMemo(() => {
     return snippetFromParams(params, defaultPalette)
   }, [snippetFromParams, params, defaultPalette])

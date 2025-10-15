@@ -6,8 +6,9 @@ import { BigNumber } from '@ethersproject/bignumber'
 import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
+import { toKeccak256 } from 'common/utils/toKeccak256'
+
 import { computeOrderUid } from '../../../utils/orderUtils/computeOrderUid'
-import { toKeccak256 } from '../../appData/utils/buildAppData'
 import { TWAPOrder, TwapOrderItem } from '../types'
 import { buildTwapOrderParamsStruct } from '../utils/buildTwapOrderParamsStruct'
 import { createPartOrderFromParent } from '../utils/buildTwapParts'

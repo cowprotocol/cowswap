@@ -28,8 +28,8 @@ function mockAndFailUntilAttempt(attempt: number) {
   fetchMock.mockImplementation((() => {
     count++
     return count >= attempt ? Promise.resolve(OK_RESPONSE) : Promise.reject(ERROR_MESSAGE)
-  // TODO: Replace any with proper type definitions
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // TODO: Replace any with proper type definitions
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   }) as any)
 }
 
@@ -48,7 +48,7 @@ describe('Fetch with backoff', () => {
     const result = await fetchUrlWithBackoff(10)
 
     // THEN: Only one request is needed (no need to re-attempt)
-    expect(fetchMock).toBeCalledTimes(1)
+    expect(fetchMock).toHaveBeenCalledTimes(1)
 
     // THEN: The result is OK
     expect(result).toBe(OK_RESPONSE)
@@ -62,7 +62,7 @@ describe('Fetch with backoff', () => {
     const result = await fetchUrlWithBackoff(5)
 
     // THEN: Only one request is needed
-    expect(fetchMock).toBeCalledTimes(3)
+    expect(fetchMock).toHaveBeenCalledTimes(3)
 
     // THEN: The result is OK
     expect(result).toBe(OK_RESPONSE)
@@ -76,7 +76,7 @@ describe('Fetch with backoff', () => {
     const result = await fetchUrlWithBackoff(3)
 
     // THEN: We only call fetch 3 times
-    expect(fetchMock).toBeCalledTimes(3)
+    expect(fetchMock).toHaveBeenCalledTimes(3)
 
     // THEN: The result is OK
     expect(result).toBe(OK_RESPONSE)
@@ -93,6 +93,6 @@ describe('Fetch with backoff', () => {
     await expect(fetchPromise).rejects.toBe(ERROR_MESSAGE)
 
     // THEN: We only call fetch 3 times
-    expect(fetchMock).toBeCalledTimes(3)
+    expect(fetchMock).toHaveBeenCalledTimes(3)
   })
 })

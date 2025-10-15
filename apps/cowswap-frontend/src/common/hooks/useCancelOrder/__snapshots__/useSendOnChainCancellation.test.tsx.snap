@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`useSendOnChainCancellation() + useGetOnChainCancellation() When a transaction is sent Then should change an order status, set a tx hash to order and add the transaction to store 1`] = `
 [
