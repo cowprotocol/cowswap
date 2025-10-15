@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Create TWAP order When sell token is NOT approved AND token needs zero approval, then should generate 2 approvals and creation transactions 1`] = `
 [

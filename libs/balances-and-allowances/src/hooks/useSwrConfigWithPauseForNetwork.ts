@@ -19,7 +19,7 @@ export function useSwrConfigWithPauseForNetwork(
   config: SWRConfiguration,
   validityPeriod?: number,
 ): SWRConfiguration {
-  validityPeriod = validityPeriod || BALANCE_VALIDITY_PERIOD
+  const effectiveValidityPeriod = validityPeriod || BALANCE_VALIDITY_PERIOD
   const balances = useAtomValue(balancesAtom)
   const balancesUpdate = useAtomValue(balancesUpdateAtom)
 
@@ -30,6 +30,7 @@ export function useSwrConfigWithPauseForNetwork(
 
   // Update lastUpdateTimestampRef only when balances state chainId in sync with current chainId
   if (!balancesChainId || balancesChainId === chainId) {
+    // eslint-disable-next-line react-hooks/refs
     lastUpdateTimestampRef.current = lastUpdateTimestamp
   }
 
@@ -41,9 +42,9 @@ export function useSwrConfigWithPauseForNetwork(
 
         const lastUpdateTimestamp = lastUpdateTimestampRef.current
 
-        return !!lastUpdateTimestamp && Date.now() - lastUpdateTimestamp < validityPeriod
+        return !!lastUpdateTimestamp && Date.now() - lastUpdateTimestamp < effectiveValidityPeriod
       },
     }),
-    [config, validityPeriod],
+    [config, effectiveValidityPeriod],
   )
 }

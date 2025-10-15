@@ -494,6 +494,7 @@ export function PendingOrdersUpdater(): null {
       const shouldMarkCompletion = uiOrderType === UiOrderType.SWAP
 
       if (!isUpdating.current) {
+        // eslint-disable-next-line react-hooks/immutability
         isUpdating.current = true
         return _updateOrders({
           account,
