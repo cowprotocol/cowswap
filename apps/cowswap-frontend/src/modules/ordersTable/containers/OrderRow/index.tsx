@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances';
+import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
 import { ZERO_FRACTION } from '@cowprotocol/common-const'
 import { useTimeAgo } from '@cowprotocol/common-hooks'
 import { formatDateWithTimezone, getAddress, getIsNativeToken } from '@cowprotocol/common-utils'
@@ -116,6 +116,7 @@ export function OrderRow({
     (status === OrderStatus.PENDING || status === OrderStatus.SCHEDULED)
   const isOrderScheduled = order.status === OrderStatus.SCHEDULED
 
+  // eslint-disable-next-line react-hooks/purity
   const isScheduledCreating = isOrderScheduled && Date.now() > creationTime.getTime()
   const expirationTimeAgo = useTimeAgo(expirationTime, TIME_AGO_UPDATE_INTERVAL)
   const creationTimeAgo = useTimeAgo(creationTime, TIME_AGO_UPDATE_INTERVAL)

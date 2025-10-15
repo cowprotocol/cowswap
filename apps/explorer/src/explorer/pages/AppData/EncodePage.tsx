@@ -126,6 +126,7 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
       })
       .finally(() => {
         setIsLoading(false)
+        // eslint-disable-next-line react-hooks/immutability
         toggleInvalid({ appData: true })
       })
   }, [appDataForm])

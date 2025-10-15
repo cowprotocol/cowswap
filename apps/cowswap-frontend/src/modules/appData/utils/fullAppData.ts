@@ -1,7 +1,7 @@
 import { EnvironmentName, environmentName } from '@cowprotocol/common-utils'
 import { LATEST_APP_DATA_VERSION, LatestAppDataDocVersion } from '@cowprotocol/cow-sdk'
 
-import { toKeccak256 } from './buildAppData'
+import { toKeccak256 } from 'common/utils/toKeccak256'
 
 import { AppDataInfo } from '../types'
 

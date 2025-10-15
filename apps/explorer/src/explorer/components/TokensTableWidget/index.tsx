@@ -97,8 +97,6 @@ const tabItems = (query: string, setQuery: (query: string) => void): TabItemInte
 
 const RESULTS_PER_PAGE = 10
 
-// TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
 export const TokensTableWidget: React.FC<Props> = () => {
   const networkId = useNetworkId() || undefined
   const [query, setQuery] = useState('')
@@ -113,7 +111,9 @@ export const TokensTableWidget: React.FC<Props> = () => {
   const filteredTokens = useFlexSearch(query, tokens, ['name', 'symbol', 'address'])
   const resultsLength = query.length ? filteredTokens.length : tokens.length
 
+  // eslint-disable-next-line react-hooks/immutability
   tableState['hasNextPage'] = tableState.pageOffset + tableState.pageSize < resultsLength
+  // eslint-disable-next-line react-hooks/immutability
   tableState['totalResults'] = resultsLength
 
   useEffect(() => {

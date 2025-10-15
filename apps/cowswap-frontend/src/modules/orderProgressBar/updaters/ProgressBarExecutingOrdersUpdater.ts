@@ -10,6 +10,7 @@ export function ProgressBarExecutingOrdersUpdater(): null {
   // Use a ref to not restart the updater on every change
   const countdownsRef = useRef(allCountdowns)
   // Important! Update the ref on every re-render
+  // eslint-disable-next-line react-hooks/refs
   countdownsRef.current = allCountdowns
 
   useLayoutEffect(() => {

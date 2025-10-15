@@ -34,6 +34,7 @@ export function useNotificationAlertDismissal(): UseNotificationAlertDismissalRe
       return false
     }
 
+    // eslint-disable-next-line react-hooks/purity
     const timeSinceDismissal = Date.now() - state.dismissedAt
     return timeSinceDismissal < NOTIFICATION_SETTINGS_POPOVER_DISMISSAL_PERIOD_MS
   }, [state.dismissedAt])

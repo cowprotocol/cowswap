@@ -6,18 +6,18 @@ import { useWeb3ModalAccount, useSwitchNetwork } from '@web3modal/ethers5/react'
 
 import { getNetworkOption, NetworkOption } from '../controls/NetworkControl'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useSyncWidgetNetwork(
   chainId: SupportedChainId,
   setNetworkControlState: (option: NetworkOption) => void,
-  standaloneMode: boolean
-) {
+  standaloneMode: boolean,
+): void {
   const { chainId: walletChainId, isConnected } = useWeb3ModalAccount()
   const { switchNetwork } = useSwitchNetwork()
   const walletChainIdRef = useRef(walletChainId)
   const currentChainIdRef = useRef(chainId)
+  // eslint-disable-next-line react-hooks/refs
   walletChainIdRef.current = walletChainId
+  // eslint-disable-next-line react-hooks/refs
   currentChainIdRef.current = chainId
 
   // Bind network control to wallet network

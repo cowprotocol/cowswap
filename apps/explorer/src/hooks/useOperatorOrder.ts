@@ -53,7 +53,7 @@ export function useOrderByNetwork(orderId: string, networkId: Network | null, up
       try {
         const { order: rawOrder, errorOrderPresentInNetworkId: errorOrderPresentInNetworkIdRaw } = await _getOrder(
           networkId,
-          orderId
+          orderId,
         )
         console.log({ rawOrder, errorOrderPresentInNetworkIdRaw })
         if (rawOrder) {
@@ -93,7 +93,7 @@ export function useOrderByNetwork(orderId: string, networkId: Network | null, up
 
   return useMemo(
     () => ({ order, isLoading, error, errorOrderPresentInNetworkId, forceUpdate }),
-    [order, isLoading, error, errorOrderPresentInNetworkId, forceUpdate]
+    [order, isLoading, error, errorOrderPresentInNetworkId, forceUpdate],
   )
 }
 
@@ -134,11 +134,14 @@ export function useOrderAndErc20s(orderId: string, updateInterval = 0): UseOrder
   // eslint-disable-next-line complexity
   return useMemo(() => {
     if (orderError) {
+      // eslint-disable-next-line react-hooks/immutability
       errors[orderId] = orderError
     }
 
     if (order && value) {
+      // eslint-disable-next-line react-hooks/immutability
       order.buyToken = value[order?.buyTokenAddress?.toLowerCase() || '']
+      // eslint-disable-next-line react-hooks/immutability
       order.sellToken = value[order?.sellTokenAddress?.toLowerCase() || '']
     }
 

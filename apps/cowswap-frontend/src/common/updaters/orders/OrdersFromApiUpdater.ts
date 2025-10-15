@@ -154,6 +154,7 @@ export function OrdersFromApiUpdater(): null {
   // but still use the latest whenever the callback is invoked
   const allTokensRef = useRef(allTokens)
   // Updated on every change
+  // eslint-disable-next-line react-hooks/refs
   allTokensRef.current = allTokens
 
   const updateOrders = useCallback(
