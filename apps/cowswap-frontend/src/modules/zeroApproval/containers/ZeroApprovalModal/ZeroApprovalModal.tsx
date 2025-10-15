@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 
@@ -9,9 +11,7 @@ interface ZeroApprovalModalProps {
   onDismiss(): void
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function ZeroApprovalModal({ onDismiss }: ZeroApprovalModalProps) {
+export function ZeroApprovalModal({ onDismiss }: ZeroApprovalModalProps): ReactNode {
   const { currency } = useZeroApprovalState()
   const symbol = currency?.symbol?.toUpperCase() ?? t`Unknown Currency` // This should never happen.
 

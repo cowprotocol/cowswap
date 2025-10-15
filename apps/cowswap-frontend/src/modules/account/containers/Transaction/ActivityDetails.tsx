@@ -24,6 +24,7 @@ import { useToggleAccountModal } from 'modules/account'
 import { BridgeActivitySummary } from 'modules/bridge'
 import { EthFlowStepper } from 'modules/ethFlow'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
+import { useGetPendingOrdersPermitValidityState } from 'modules/ordersTable'
 import { useSwapPartialApprovalToggleState } from 'modules/swap/hooks/useSwapSettings'
 import { ConfirmDetailsItem } from 'modules/trade'
 
@@ -45,7 +46,6 @@ import {
   useIsReceiverWalletBannerHidden,
 } from 'common/state/receiverWalletBannerVisibility'
 import { ActivityDerivedState, ActivityStatus } from 'common/types/activity'
-import { doesOrderHavePermit } from 'common/utils/doesOrderHavePermit'
 import { getIsBridgeOrder } from 'common/utils/getIsBridgeOrder'
 import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
@@ -54,6 +54,7 @@ import { StatusDetails } from './StatusDetails'
 import {
   ActivityVisual,
   CreationTimeText,
+  DangerText,
   FiatWrapper,
   StyledFiatAmount,
   Summary,
@@ -290,6 +291,7 @@ export function ActivityDetails(props: {
 
   const isCustomRecipientWarningBannerVisible = !useIsReceiverWalletBannerHidden(id) && order && isOrderPending
 
+  // eslint-disable-next-line react-hooks/preserve-manual-memoization
   const showProgressBarCallback = useMemo(() => {
     if (!showProgressBar) {
       return null
@@ -300,6 +302,9 @@ export function ActivityDetails(props: {
       toggleAccountModal()
     }
   }, [showProgressBar, setShowProgressBar, order?.id, toggleAccountModal])
+
+  const pendingOrdersPermitValidityState = useGetPendingOrdersPermitValidityState()
+  const hasValidPermit = order ? pendingOrdersPermitValidityState[order.id] : true
 
   if (!order && !enhancedTransaction) return null
 
@@ -413,10 +418,9 @@ export function ActivityDetails(props: {
     </>
   )
 
-  const hasPermit = order && doesOrderHavePermit(order)
   const showWarning =
     isPartialApproveEnabled && fillability
-      ? (!fillability.hasEnoughAllowance && !hasPermit) || !fillability.hasEnoughBalance
+      ? (!fillability.hasEnoughAllowance && !hasValidPermit) || !fillability.hasEnoughBalance
       : false
 
   return (
@@ -565,21 +569,23 @@ export function ActivityDetails(props: {
                     </SummaryInnerRow>
                   )}
                   {hooksDetails}
+                  {fillability && showWarning && orderSummary?.inputAmount ? (
+                    <SummaryInnerRow>
+                      <DangerText>Unfillable</DangerText>
+                      <OrderFillabilityWarning
+                        fillability={fillability}
+                        inputAmount={orderSummary.inputAmount}
+                        enablePartialApprove={isPartialApproveEnabled}
+                        enablePartialApproveBySettings={!!isPartialApproveEnabledBySettings}
+                      />
+                    </SummaryInnerRow>
+                  ) : null}
                 </>
               )}
             </>
           ) : (
             (summary ?? id)
           )}
-
-          {fillability && showWarning && orderSummary?.inputAmount ? (
-            <OrderFillabilityWarning
-              fillability={fillability}
-              inputAmount={orderSummary.inputAmount}
-              enablePartialApprove={isPartialApproveEnabled}
-              enablePartialApproveBySettings={!!isPartialApproveEnabledBySettings}
-            />
-          ) : null}
 
           {activityLinkUrl && enhancedTransaction?.replacementType !== 'replaced' && (
             <ActivityLink href={activityLinkUrl} disableMouseActions={disableMouseActions}>

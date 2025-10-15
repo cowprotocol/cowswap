@@ -2,7 +2,7 @@ import { ReactElement, ReactNode, useEffect, useRef, useState } from 'react'
 
 import { BackButton } from '@cowprotocol/ui'
 
-import { t } from '@lingui/core/macro'
+import { useLingui } from '@lingui/react/macro'
 import { useSigningStep } from 'entities/trade'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
@@ -43,17 +43,18 @@ export interface TradeConfirmationProps {
 
 export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
   const { pendingTrade, forcePriceConfirmation } = useTradeConfirmState()
+  const { t } = useLingui()
   const signingStep = useSigningStep()
 
   const propsRef = useRef(_props)
+  // eslint-disable-next-line react-hooks/refs
   propsRef.current = _props
 
   const [frozenProps, setFrozenProps] = useState<TradeConfirmationProps | null>(null)
   const hasPendingTrade = !!pendingTrade
 
   const props = frozenProps || _props
-  const { onConfirm, onDismiss, isConfirmDisabled, title, buttonText, children, recipient, isPriceStatic, appData } =
-    props
+  const { onConfirm, onDismiss, isConfirmDisabled, buttonText, children, isPriceStatic, appData } = props
 
   /**
    * Once user sends a transaction, we keep the confirmation content frozen
@@ -88,7 +89,7 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
     <styledEl.WidgetWrapper onKeyDown={(e) => e.key === 'Escape' && onDismiss()}>
       <styledEl.Header>
         <BackButton onClick={onDismiss} />
-        <styledEl.ConfirmHeaderTitle>{title}</styledEl.ConfirmHeaderTitle>
+        <styledEl.ConfirmHeaderTitle>{props.title}</styledEl.ConfirmHeaderTitle>
 
         <styledEl.HeaderRightContent>
           {hasPendingTrade || isPriceStatic ? null : <QuoteCountdown />}
@@ -110,7 +111,7 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
         <ConfirmWarnings
           account={props.account}
           ensName={props.ensName}
-          recipient={recipient}
+          recipient={props.recipient}
           isPriceChanged={isPriceChanged}
           isPriceStatic={isPriceStatic}
           resetPriceChanged={resetPriceChanged}

@@ -29,7 +29,6 @@ const statusMapping: Record<OrderTransitionStatus, OrderStatus | undefined> = {
   unknown: undefined,
 }
 
-// TODO: Break down this large function into smaller functions
 // TODO: Reduce function complexity by extracting logic
 // eslint-disable-next-line complexity
 function _transformOrderBookOrderToStoreOrder(
@@ -155,6 +154,7 @@ export function OrdersFromApiUpdater(): null {
   // but still use the latest whenever the callback is invoked
   const allTokensRef = useRef(allTokens)
   // Updated on every change
+  // eslint-disable-next-line react-hooks/refs
   allTokensRef.current = allTokens
 
   const updateOrders = useCallback(
@@ -175,8 +175,8 @@ export function OrdersFromApiUpdater(): null {
 
         // Add orders to redux state
         orders.length && addOrUpdateOrders({ orders, chainId, isSafeWallet })
-      // TODO: Replace any with proper type definitions
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // TODO: Replace any with proper type definitions
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (e: any) {
         console.error(`OrdersFromApiUpdater::Failed to fetch orders`, e)
       }

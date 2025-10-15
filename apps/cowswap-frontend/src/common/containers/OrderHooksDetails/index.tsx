@@ -44,7 +44,8 @@ export function OrderHooksDetails({ appData, children, margin, isTradeConfirmati
     if (isTradeConfirmation) mutate()
   }, [isTradeConfirmation, mutate])
 
-  if (!appDataDoc) return null
+  // Not all versions of appData have metadata
+  if (!appDataDoc?.metadata) return null
 
   const metadata = appDataDoc.metadata as cowAppDataLatestScheme.Metadata
 

@@ -2,7 +2,6 @@ import React, {
   ComponentType,
   FC,
   forwardRef,
-  isValidElement,
   PropsWithChildren,
   ReactElement,
   useEffect,
@@ -22,6 +21,7 @@ import { addBodyClass, isLinguiInternationalizationEnabled, removeBodyClass } fr
 
 import { i18n } from '@lingui/core'
 import { t } from '@lingui/core/macro'
+import { Portal } from '@reach/portal'
 import Flag from 'react-country-flag'
 import SVG from 'react-inlinesvg'
 
@@ -42,6 +42,7 @@ import {
   MobileMenuTrigger,
   NavDaoTriggerElement,
   NavItems,
+  PortaledDropdownContent,
   RightAligned,
   RootNavItem,
   StyledDropdownContentItem,
@@ -470,22 +471,20 @@ const GenericDropdown: React.FC<DropdownProps> = ({
         }
   }, [interaction, onTrigger])
 
-  const extractedLabel = item.label
-
   return (
     <DropdownMenu {...interactionProps} mobileMode={mobileMode}>
       <RootNavItem as="button" aria-haspopup="true" aria-expanded={isOpen} isOpen={isOpen} mobileMode={mobileMode}>
-        <span>{extractedLabel}</span>
+        <span>{item.label}</span>
         {(item.badge || item.badgeImage) && (
           <Badge {...(item.badgeType && { type: item.badgeType })}>
-            {item.badgeImage ? <SVG src={item.badgeImage} /> : isValidElement(item.badge) ? item.badge : item.badge}
+            {item.badgeImage ? <SVG src={item.badgeImage} /> : item.badge}
           </Badge>
         )}
         {item.children && <SVG src={IMG_ICON_CARRET_DOWN} />}
       </RootNavItem>
       {isOpen && (
         <DropdownContentWrapper
-          content={{ title: extractedLabel, items: item.children }}
+          content={{ title: item.label, items: item.children }}
           mobileMode={mobileMode}
           isNavItemDropdown={isNavItemDropdown}
           closeDropdown={closeDropdown}
@@ -560,16 +559,10 @@ const DropdownContentWrapper: React.FC<DropdownContentWrapperProps> = ({
             {item.icon && <DropdownContentItemIcon src={item.icon} alt="" />}
             <DropdownContentItemText>
               <DropdownContentItemTitle>
-                <span>{extractedLabel}</span>
+                <span>{item.label}</span>
                 {(item.badge || item.badgeImage) && (
                   <Badge {...(item.badgeType && { type: item.badgeType })}>
-                    {item.badgeImage ? (
-                      <SVG src={item.badgeImage} />
-                    ) : isValidElement(item.badge) ? (
-                      item.badge
-                    ) : (
-                      item.badge
-                    )}
+                    {item.badgeImage ? <SVG src={item.badgeImage} /> : item.badge}
                   </Badge>
                 )}
               </DropdownContentItemTitle>
@@ -724,27 +717,58 @@ const LanguagesDropdownItems: React.FC<LanguagesDropdownItemsProps> = (props) =>
 
 interface GlobalSettingsDropdownProps {
   LinkComponent: LinkComponentType
+  buttonRef?: React.RefObject<HTMLButtonElement | null>
   closeDropdown: () => void
   isOpen: boolean
   languageNavItems?: MenuItem
   mobileMode: boolean
-  navItems?: MenuItem[]
   rootDomain: string
+  settingsNavItems?: MenuItem[]
 }
 
-// TODO: Break down this large function into smaller functions
-const GlobalSettingsDropdown = forwardRef<HTMLUListElement, GlobalSettingsDropdownProps>((props, ref) => {
-  const { mobileMode, navItems, isOpen, closeDropdown, rootDomain, LinkComponent, languageNavItems } = props
+// Custom hook for portal dropdown positioning
+function usePortalPosition(
+  buttonRef: React.RefObject<HTMLElement | null> | undefined,
+  isOpen: boolean,
+  isMobile: boolean,
+  gap: number = 14,
+): { top: number; right: number } {
+  const [position, setPosition] = useState({ top: 0, right: 0 })
 
-  if (!navItems || navItems.length === 0) {
+  useEffect(() => {
+    if (buttonRef?.current && isOpen && !isMobile) {
+      const rect = buttonRef.current.getBoundingClientRect()
+      setPosition({
+        top: rect.bottom + gap,
+        right: window.innerWidth - rect.right,
+      })
+    }
+  }, [buttonRef, isOpen, isMobile, gap])
+
+  return position
+}
+
+const GlobalSettingsDropdown = forwardRef<HTMLUListElement, GlobalSettingsDropdownProps>((props, ref) => {
+  const {
+    mobileMode,
+    settingsNavItems,
+    isOpen,
+    closeDropdown,
+    rootDomain,
+    LinkComponent,
+    languageNavItems,
+    buttonRef,
+  } = props
+  const position = usePortalPosition(buttonRef, isOpen, mobileMode)
+
+  if (!settingsNavItems || settingsNavItems.length === 0) {
     return null
   }
 
-  const settingsItems = navItems.map((item, index) => {
-    const extractedLabel = item.label
+  const settingsItems = settingsNavItems.map((item, index) => {
     const mobileHref = item.href ? `${new URL(item.href, `https://${rootDomain}`).pathname}` : undefined
     const to = item.external
-      ? appendUtmParams(item.href!, item.utmSource, item.utmContent, rootDomain, item.external, extractedLabel)
+      ? appendUtmParams(item.href!, item.utmSource, item.utmContent, rootDomain, item.external, item.label)
       : mobileMode
         ? mobileHref
         : item.href
@@ -752,7 +776,7 @@ const GlobalSettingsDropdown = forwardRef<HTMLUListElement, GlobalSettingsDropdo
     const content = (
       <>
         <DropdownContentItemText>
-          <DropdownContentItemTitle>{extractedLabel}</DropdownContentItemTitle>
+          <DropdownContentItemTitle>{item.label}</DropdownContentItemTitle>
         </DropdownContentItemText>
         <SVG src={IMG_ICON_ARROW_RIGHT} className="arrow-icon-right" />
       </>
@@ -790,9 +814,16 @@ const GlobalSettingsDropdown = forwardRef<HTMLUListElement, GlobalSettingsDropdo
             </DropdownContent>
           </MobileDropdownContainer>
         ) : (
-          <DropdownContent isOpen={true} ref={ref} alignRight={true} mobileMode={mobileMode}>
+          <PortaledDropdownContent
+            isOpen={true}
+            ref={ref}
+            alignRight={true}
+            mobileMode={mobileMode}
+            top={position.top}
+            right={position.right}
+          >
             {allItems}
-          </DropdownContent>
+          </PortaledDropdownContent>
         ))}
     </>
   )
@@ -980,16 +1011,8 @@ export const MenuBar = (props: MenuBarProps) => {
             isLoaded &&
             additionalNavButtons &&
             additionalNavButtons.map((item, index) => {
-              const extractedLabel = item.label
               const href = item.external
-                ? appendUtmParams(
-                    item.href!,
-                    item.utmSource,
-                    item.utmContent,
-                    rootDomain,
-                    item.external,
-                    extractedLabel,
-                  )
+                ? appendUtmParams(item.href!, item.utmSource, item.utmContent, rootDomain, item.external, item.label)
                 : item.href
 
               if (!href) return null
@@ -1006,7 +1029,7 @@ export const MenuBar = (props: MenuBarProps) => {
                 >
                   <LinkComponent href={href}>
                     <DropdownContentItemText>
-                      <DropdownContentItemTitle>{extractedLabel}</DropdownContentItemTitle>
+                      <DropdownContentItemTitle>{item.label}</DropdownContentItemTitle>
                     </DropdownContentItemText>
                     <SVG src={IMG_ICON_ARROW_RIGHT} className={`arrow-icon-right ${item.external ? 'external' : ''}`} />
                   </LinkComponent>
@@ -1018,18 +1041,34 @@ export const MenuBar = (props: MenuBarProps) => {
               <GlobalSettingsButton ref={settingsButtonRef} mobileMode={isMedium} onClick={handleSettingsToggle}>
                 <SVG src={IMG_ICON_SETTINGS_GLOBAL} />
               </GlobalSettingsButton>
-              {isSettingsOpen && (
-                <GlobalSettingsDropdown
-                  LinkComponent={LinkComponent}
-                  closeDropdown={handleSettingsToggle}
-                  isOpen={isSettingsOpen}
-                  languageNavItems={languageNavItems}
-                  mobileMode={isMedium}
-                  navItems={settingsNavItems}
-                  ref={settingsDropdownRef}
-                  rootDomain={rootDomain}
-                />
-              )}
+              {isSettingsOpen &&
+                (isMedium ? (
+                  <GlobalSettingsDropdown
+                    LinkComponent={LinkComponent}
+                    closeDropdown={handleSettingsToggle}
+                    isOpen={isSettingsOpen}
+                    languageNavItems={languageNavItems}
+                    mobileMode={isMedium}
+                    ref={settingsDropdownRef}
+                    rootDomain={rootDomain}
+                    settingsNavItems={settingsNavItems}
+                  />
+                ) : (
+                  // Desktop: Use Portal for positioning
+                  <Portal>
+                    <GlobalSettingsDropdown
+                      LinkComponent={LinkComponent}
+                      buttonRef={settingsButtonRef}
+                      closeDropdown={handleSettingsToggle}
+                      isOpen={isSettingsOpen}
+                      languageNavItems={languageNavItems}
+                      mobileMode={isMedium}
+                      ref={settingsDropdownRef}
+                      rootDomain={rootDomain}
+                      settingsNavItems={settingsNavItems}
+                    />
+                  </Portal>
+                ))}
             </>
           )}
         </RightAligned>
@@ -1063,7 +1102,6 @@ export const MenuBar = (props: MenuBarProps) => {
               {additionalContent} {/* Add additional content here */}
               {additionalNavButtons &&
                 additionalNavButtons.map((item, index) => {
-                  const extractedLabel = item.label
                   return (
                     <DropdownContentItemButton
                       key={index}
@@ -1080,11 +1118,11 @@ export const MenuBar = (props: MenuBarProps) => {
                           item.utmContent,
                           rootDomain,
                           !!item.external,
-                          extractedLabel,
+                          item.label,
                         )}
                       >
                         <DropdownContentItemText>
-                          <DropdownContentItemTitle>{extractedLabel}</DropdownContentItemTitle>
+                          <DropdownContentItemTitle>{item.label}</DropdownContentItemTitle>
                         </DropdownContentItemText>
                         <SVG
                           src={IMG_ICON_ARROW_RIGHT}

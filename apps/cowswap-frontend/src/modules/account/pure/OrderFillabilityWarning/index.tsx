@@ -7,7 +7,14 @@ import { Trans } from '@lingui/react/macro'
 
 import { OrderFillability } from 'common/hooks/usePendingOrdersFillability'
 
-import { ApproveWrapper, UnfillableWarning } from './styled'
+import {
+  ApproveWrapper,
+  OrderActionsWrapper,
+  Subtitle,
+  Title,
+  UnfillableWarning,
+  WrappedAccordionBanner,
+} from './styled'
 
 import { OrderPartialApprove } from '../../containers/OrderPartialApprove'
 
@@ -16,36 +23,64 @@ export function OrderFillabilityWarning({
   inputAmount,
   enablePartialApprove,
   enablePartialApproveBySettings,
-  isCustomApproveModalOpen,
 }: {
   fillability: OrderFillability
   inputAmount: CurrencyAmount<Token>
   enablePartialApprove?: boolean
   enablePartialApproveBySettings?: boolean
-  isCustomApproveModalOpen?: boolean
 }): ReactNode {
-  const inputAmountCurrencySymbol = inputAmount.currency.symbol
+  const title = (
+    <Title>
+      <span>
+        <Trans>Order cannot be filled due to insufficient allowance</Trans>
+      </span>
+    </Title>
+  )
+
+  const isNotEnoughBalance = fillability?.hasEnoughBalance === false
+  const showIsNotEnoughAllowance = !isNotEnoughBalance && fillability?.hasEnoughAllowance === false
+  const symbol = inputAmount.currency.symbol
+
+  const NotEnoughBalanceDescription = (
+    <Subtitle>
+      <Trans>Please, top up {symbol} balance or cancel the order.</Trans>
+    </Subtitle>
+  )
+
   return (
     <>
-      {fillability?.hasEnoughBalance === false && (
-        <UnfillableWarning bannerType={StatusColorVariant.Danger} orientation={BannerOrientation.Horizontal}>
-          <Trans>
-            Order cannot be filled due to insufficient balance on the current account.
-            <br />
-            Please, top up {inputAmountCurrencySymbol} balance or cancel the order.
-          </Trans>
+      {isNotEnoughBalance && (
+        <UnfillableWarning
+          padding={'10px'}
+          bannerType={StatusColorVariant.Danger}
+          orientation={BannerOrientation.Horizontal}
+          customContent={NotEnoughBalanceDescription}
+          noWrapContent
+        >
+          <Title marginLeft={'6px'}>
+            <Trans>Order cannot be filled due to insufficient balance on the current account.</Trans>
+          </Title>
         </UnfillableWarning>
       )}
 
-      {fillability?.hasEnoughAllowance === false && (
-        <UnfillableWarning bannerType={StatusColorVariant.Danger} orientation={BannerOrientation.Horizontal}>
-          <Trans>Order cannot be filled due to insufficient allowance on the current account.</Trans>
-          <ApproveWrapper>
-            {enablePartialApprove && enablePartialApproveBySettings && !isCustomApproveModalOpen && (
-              <OrderPartialApprove amountToApprove={inputAmount} />
-            )}
-          </ApproveWrapper>
-        </UnfillableWarning>
+      {showIsNotEnoughAllowance && (
+        <WrappedAccordionBanner title={title} bannerType={StatusColorVariant.Danger} accordionPadding={'10px'}>
+          <OrderActionsWrapper>
+            <Subtitle>
+              <Trans>
+                Another order has used up the approval amount. Set a new token approval to proceed with your order.
+              </Trans>
+            </Subtitle>
+            <ApproveWrapper>
+              {enablePartialApprove && (
+                <OrderPartialApprove
+                  isPartialApproveEnabledBySettings={enablePartialApproveBySettings}
+                  amountToApprove={inputAmount}
+                />
+              )}
+            </ApproveWrapper>
+          </OrderActionsWrapper>
+        </WrappedAccordionBanner>
       )}
     </>
   )

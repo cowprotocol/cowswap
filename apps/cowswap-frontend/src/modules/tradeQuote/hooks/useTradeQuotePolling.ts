@@ -15,18 +15,22 @@ import { useTradeQuoteManager } from './useTradeQuoteManager'
 import { QUOTE_POLLING_INTERVAL } from '../consts'
 import { tradeQuoteCounterAtom } from '../state/tradeQuoteCounterAtom'
 import { tradeQuoteInputAtom } from '../state/tradeQuoteInputAtom'
+import { TradeQuotePollingParameters } from '../types'
 import { isQuoteExpired } from '../utils/quoteDeadline'
 
 const ONE_SEC = 1000
 const QUOTE_VALIDATION_INTERVAL = ms`2s`
 
-export function useTradeQuotePolling(isConfirmOpen = false, isQuoteUpdatePossible: boolean): null {
+export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParameters): null {
+  const { isConfirmOpen, isQuoteUpdatePossible } = quotePollingParams
+
   const { amount, partiallyFillable } = useAtomValue(tradeQuoteInputAtom)
   const [tradeQuotePolling, setTradeQuotePolling] = useAtom(tradeQuoteCounterAtom)
   const resetQuoteCounter = useResetQuoteCounter()
   const tradeQuote = useTradeQuote()
   const prevIsConfirmOpen = usePrevious(isConfirmOpen)
   const tradeQuoteRef = useRef(tradeQuote)
+  // eslint-disable-next-line react-hooks/refs
   tradeQuoteRef.current = tradeQuote
 
   const amountStr = amount?.quotient.toString()
@@ -38,10 +42,12 @@ export function useTradeQuotePolling(isConfirmOpen = false, isQuoteUpdatePossibl
   const isWindowVisible = useIsWindowVisible()
   const isOnline = useIsOnline()
   const isOnlineRef = useRef(isOnline)
+  // eslint-disable-next-line react-hooks/refs
   isOnlineRef.current = isOnline
 
-  const pollQuote = usePollQuoteCallback(isConfirmOpen, isQuoteUpdatePossible, quoteParamsState)
+  const pollQuote = usePollQuoteCallback(quotePollingParams, quoteParamsState)
   const pollQuoteRef = useRef(pollQuote)
+  // eslint-disable-next-line react-hooks/refs
   pollQuoteRef.current = pollQuote
 
   /**
@@ -53,7 +59,7 @@ export function useTradeQuotePolling(isConfirmOpen = false, isQuoteUpdatePossibl
     if (isConfirmOpen) return
     if (!tradeQuoteManager) return
 
-    if (!isWindowVisible || !amountStr) {
+    if (!isWindowVisible || !document.hasFocus() || !amountStr) {
       tradeQuoteManager.reset()
       setTradeQuotePolling(0)
     }

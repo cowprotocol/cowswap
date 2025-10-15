@@ -19,19 +19,18 @@ import useSWR from 'swr'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
-import { useContract } from 'common/hooks/useContract'
+import { useContract, UseContractResult } from 'common/hooks/useContract'
 
 import { fetchClaim } from './claimData'
 
 // We just generally use the mainnet version. We don't read from the contract anyways so the address doesn't matter
 const _COW = COW_TOKEN_TO_CHAIN[SupportedChainId.MAINNET]
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const useMerkleDropContract = () => useContract<MerkleDrop>(MERKLE_DROP_CONTRACT_ADDRESSES, MerkleDropAbi, true)
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-const useTokenDistroContract = () => useContract<TokenDistro>(TOKEN_DISTRO_CONTRACT_ADDRESSES, TokenDistroAbi, true)
+const useMerkleDropContract = (): UseContractResult<MerkleDrop> =>
+  useContract<MerkleDrop>(MERKLE_DROP_CONTRACT_ADDRESSES, MerkleDropAbi, true)
+
+const useTokenDistroContract = (): UseContractResult<TokenDistro> =>
+  useContract<TokenDistro>(TOKEN_DISTRO_CONTRACT_ADDRESSES, TokenDistroAbi, true)
 
 export const useAllocation = (): CurrencyAmount<Token> => {
   const { t } = useLingui()

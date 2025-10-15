@@ -16,6 +16,7 @@ import { useLimitOrdersWidgetActions } from 'modules/limitOrders/containers/Limi
 import { TradeButtons } from 'modules/limitOrders/containers/TradeButtons'
 import {
   TradeWidget,
+  TradeWidgetParams,
   TradeWidgetSlots,
   useIsWrapOrUnwrap,
   useTradeConfirmState,
@@ -236,7 +237,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     outerContent: <>{isUnlocked && <InfoBanner />}</>,
   }
 
-  const params = {
+  const params: TradeWidgetParams = {
     compactView: true,
     recipient,
     showRecipient,
@@ -244,6 +245,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
     priceImpact,
     disablePriceImpact: localFormValidation === LimitOrdersFormState.FeeExceedsFrom,
     disableQuotePolling: isConfirmOpen,
+    disableSuggestedSlippageApi: true,
     hideTradeWarnings: !!localFormValidation,
     isPriceStatic: true,
   }

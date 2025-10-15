@@ -48,6 +48,7 @@ module.exports = [
     rules: {
       ...reactHooks.configs.recommended.rules,
       'react-hooks/exhaustive-deps': 'error',
+      'react-hooks/set-state-in-effect': 'off',
 
       // TypeScript strict rules
       '@typescript-eslint/explicit-function-return-type': [

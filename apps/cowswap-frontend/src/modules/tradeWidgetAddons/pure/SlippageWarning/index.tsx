@@ -5,16 +5,19 @@ import { RowBetween, UI } from '@cowprotocol/ui'
 import { Trans } from '@lingui/react/macro'
 import { DefaultTheme } from 'styled-components/macro'
 
+import { SlippageWarningParams } from '../../containers/TransactionSlippageInput/hooks/types'
+
 interface WarningProps {
   error: boolean
-  tooLow: boolean
-  tooHigh: boolean
-  min: number
-  max: number
+  slippageWarningParams: SlippageWarningParams
   theme: DefaultTheme
 }
 
-export function SlippageWarningMessage({ error, tooLow, tooHigh, min, max, theme }: WarningProps): ReactNode | null {
+export function SlippageWarningMessage({
+  error,
+  theme,
+  slippageWarningParams: { tooLow, tooHigh, min, max },
+}: WarningProps): ReactNode | null {
   if (!error && !tooLow && !tooHigh) {
     return null
   }

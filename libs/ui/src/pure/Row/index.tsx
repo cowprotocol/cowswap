@@ -8,16 +8,16 @@ export const Row = styled(Box)<{
   padding?: string
   border?: string
   borderRadius?: string
-  gap?: string
+  gap?: string | number
 }>`
   align-items: ${({ align }) => align ?? 'center'};
   border-radius: ${({ borderRadius }) => borderRadius};
   border: ${({ border }) => border};
   display: flex;
-  gap: ${({ gap }) => gap ?? 0};
+  gap: ${({ gap }) => (typeof gap === 'number' ? `${gap}px` : gap) ?? 0};
   justify-content: ${({ justify }) => justify ?? 'flex-start'};
-  padding: ${({ padding }) => padding};
   padding: 0;
+  padding: ${({ padding }) => padding};
   width: ${({ width }) => width ?? '100%'};
 `
 

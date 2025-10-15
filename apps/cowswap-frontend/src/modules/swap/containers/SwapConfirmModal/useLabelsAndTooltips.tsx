@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 
 import { getMinimumReceivedTooltip, isSellOrder } from '@cowprotocol/common-utils'
-import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useLingui } from '@lingui/react/macro'
 
@@ -19,7 +18,6 @@ import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function useLabelsAndTooltips() {
   const { slippage, orderKind } = useSwapDerivedState()
-  const { chainId } = useWalletInfo()
   const shouldPayGas = useShouldPayGas()
   const isEoaEthFlow = useIsEoaEthFlow()
   const nativeCurrency = useNativeCurrency()
@@ -33,7 +31,7 @@ export function useLabelsAndTooltips() {
         ? t`Slippage tolerance` + ` ` + `(` + (isSmartSlippageApplied ? t`dynamic` : t`modified`) + `)`
         : undefined,
       slippageTooltip: isEoaEthFlow
-        ? getNativeSlippageTooltip(chainId, [nativeCurrency.symbol])
+        ? getNativeSlippageTooltip([nativeCurrency.symbol])
         : getNonNativeSlippageTooltip({ isDynamic: isSmartSlippageApplied }),
       expectReceiveLabel: isSell ? t`Expected to receive` : t`Expected to sell`,
       minReceivedLabel: isSell ? t`Minimum receive` : t`Maximum sent`,
@@ -41,6 +39,6 @@ export function useLabelsAndTooltips() {
       networkCostsSuffix: shouldPayGas ? <NetworkCostsSuffix /> : null,
       networkCostsTooltipSuffix: <NetworkCostsTooltipSuffix />,
     }),
-    [chainId, isEoaEthFlow, isSell, isSmartSlippageApplied, nativeCurrency.symbol, shouldPayGas, slippage, t],
+    [slippage, nativeCurrency.symbol, isEoaEthFlow, isSell, shouldPayGas, isSmartSlippageApplied, t],
   )
 }

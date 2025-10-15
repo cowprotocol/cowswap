@@ -12,16 +12,16 @@ import { useTradeQuoteManager } from './useTradeQuoteManager'
 import { doQuotePolling, QuoteUpdateContext } from '../services/doQuotePolling'
 import { fetchAndProcessQuote } from '../services/fetchAndProcessQuote'
 import { tradeQuoteInputAtom } from '../state/tradeQuoteInputAtom'
-import { TradeQuoteFetchParams } from '../types'
+import { TradeQuoteFetchParams, TradeQuotePollingParameters } from '../types'
 
 export function usePollQuoteCallback(
-  isConfirmOpen: boolean,
-  isQuoteUpdatePossible: boolean,
+  quotePollingParams: TradeQuotePollingParameters,
   quoteParamsState: QuoteParams | undefined,
 ): (hasParamsChanged: boolean, forceUpdate?: boolean) => boolean {
   const { fastQuote } = useAtomValue(tradeQuoteInputAtom)
   const tradeQuote = useTradeQuote()
   const tradeQuoteRef = useRef(tradeQuote)
+  // eslint-disable-next-line react-hooks/refs
   tradeQuoteRef.current = tradeQuote
 
   const { quoteParams, appData, inputCurrency } = quoteParamsState || {}
@@ -32,10 +32,13 @@ export function usePollQuoteCallback(
   const isWindowVisible = useIsWindowVisible()
   const isOnline = useIsOnline()
   const isOnlineRef = useRef(isOnline)
+  // eslint-disable-next-line react-hooks/refs
   isOnlineRef.current = isOnline
 
   return useCallback(
     (hasParamsChanged: boolean, forceUpdate = false): boolean => {
+      const { isQuoteUpdatePossible, isConfirmOpen } = quotePollingParams
+
       if (!isQuoteUpdatePossible || !tradeQuoteManager || !quoteParams || getIsUnsupportedTokens(quoteParams)) {
         return false
       }
@@ -46,7 +49,7 @@ export function usePollQuoteCallback(
       }
 
       const fetchQuote = (fetchParams: TradeQuoteFetchParams): Promise<void> =>
-        fetchAndProcessQuote(fetchParams, quoteParams, appData, tradeQuoteManager)
+        fetchAndProcessQuote(fetchParams, quoteParams, quotePollingParams, appData, tradeQuoteManager)
 
       const context: QuoteUpdateContext = {
         currentQuote: tradeQuoteRef.current,
@@ -65,15 +68,6 @@ export function usePollQuoteCallback(
        */
       return doQuotePolling(context)
     },
-    [
-      quoteParams,
-      appData,
-      tradeQuoteManager,
-      isWindowVisible,
-      fastQuote,
-      getIsUnsupportedTokens,
-      isConfirmOpen,
-      isQuoteUpdatePossible,
-    ],
+    [quoteParams, appData, tradeQuoteManager, isWindowVisible, fastQuote, getIsUnsupportedTokens, quotePollingParams],
   )
 }

@@ -347,7 +347,7 @@ function useProgressBarStepNameUpdater(
       setProgressBarStepName(orderId, name || DEFAULT_STEP_NAME)
     }
 
-    let timer: NodeJS.Timeout
+    let timer: NodeJS.Timeout | undefined
 
     const timeSinceLastChange = lastTimeChangedSteps ? Date.now() - lastTimeChangedSteps : 0
 
@@ -371,7 +371,7 @@ function useProgressBarStepNameUpdater(
     }
 
     return () => {
-      clearInterval(timer)
+      if (timer) clearTimeout(timer)
     }
   }, [orderId, stepName, lastTimeChangedSteps, setProgressBarStepName])
 }
@@ -379,7 +379,7 @@ function useProgressBarStepNameUpdater(
 // TODO: Break down this large function into smaller functions
 // TODO: Reduce function complexity by extracting logic
 // eslint-disable-next-line complexity
-function getProgressBarStepName(
+export function getProgressBarStepName(
   isUnfillable: boolean,
   isCancelled: boolean,
   isExpired: boolean,
@@ -438,6 +438,13 @@ function getProgressBarStepName(
   } else if (isUnfillable) {
     // out of market order
     return OrderProgressBarStepName.UNFILLABLE
+  } else if (
+    (backendApiStatus == null || backendApiStatus === 'open' || backendApiStatus === 'scheduled') &&
+    previousStepName === OrderProgressBarStepName.UNFILLABLE
+  ) {
+    // Order just recovered from being unfillable but backend has not progressed yet.
+    // Keep showing the solving animation so the favicon restarts instead of idling.
+    return OrderProgressBarStepName.SOLVING
   } else if (backendApiStatus === 'active' && countdown === 0) {
     // solving, but took longer than stipulated countdown
     return OrderProgressBarStepName.DELAYED

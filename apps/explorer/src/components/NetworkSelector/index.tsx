@@ -51,6 +51,7 @@ export const NetworkSelector: React.FC<networkSelectorProps> = ({ networkId }) =
       <NetworkLabel color={currentNetwork.color}>{currentNetworkName}</NetworkLabel>
       <span className={`arrow ${open && 'open'}`} />
       {open && (
+        // eslint-disable-next-line react-hooks/refs
         <OptionsContainer width={selectContainer.current?.offsetWidth || 0}>
           {availableChains.map((itemNetworkId) => {
             const network = CHAIN_INFO[itemNetworkId]

@@ -1,6 +1,6 @@
 import { useAtom, useAtomValue } from 'jotai'
 import { useSetAtom } from 'jotai'
-import { useCallback, useRef, useState, useMemo } from 'react'
+import { useCallback, useRef, useState, useMemo, ReactNode } from 'react'
 
 import twitterImage from '@cowprotocol/assets/cow-swap/twitter.svg'
 import IMAGE_ICON_FORTUNE_COOKIE from '@cowprotocol/assets/images/icon-fortune-cookie.svg'
@@ -274,9 +274,8 @@ interface FortuneWidgetProps {
 }
 
 // TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
-export function FortuneWidget({ menuTitle, isMobileMenuOpen }: FortuneWidgetProps) {
+// eslint-disable-next-line max-lines-per-function
+export function FortuneWidget({ menuTitle, isMobileMenuOpen }: FortuneWidgetProps): ReactNode {
   const { openFortune } = useAtomValue(fortuneStateAtom)
   const lastCheckedFortune = useAtomValue(lastCheckedFortuneAtom)
   const updateOpenFortune = useSetAtom(updateOpenFortuneAtom)
@@ -337,10 +336,7 @@ export function FortuneWidget({ menuTitle, isMobileMenuOpen }: FortuneWidgetProp
 
   if (isFortunesFeatureDisabled && isDailyFortuneChecked && !openFortune) return null
 
-  // TODO: Extract nested component outside render function
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line react/no-unstable-nested-components, @typescript-eslint/explicit-function-return-type
-  const PortalContent = () => (
+  const PortalContent = (
     <>
       {openFortune && (
         <FortuneBanner>
@@ -401,7 +397,7 @@ export function FortuneWidget({ menuTitle, isMobileMenuOpen }: FortuneWidgetProp
         <SVG src={IMAGE_ICON_FORTUNE_COOKIE} description="Fortune Cookie" />
         {menuTitle && <span>{menuTitle}</span>}
       </FortuneButton>
-      {ReactDOM.createPortal(<PortalContent />, document.body)}
+      {ReactDOM.createPortal(PortalContent, document.body)}
     </>
   )
 }

@@ -6,7 +6,6 @@ import {
   MINIMUM_ETH_FLOW_SLIPPAGE,
   PERCENTAGE_PRECISION,
 } from '@cowprotocol/common-const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { i18n } from '@lingui/core'
 import { t } from '@lingui/core/macro'
@@ -40,11 +39,8 @@ export function getNonNativeOrderDeadlineTooltip(): ReactNode {
   )
 }
 
-export const getNativeSlippageTooltip = (
-  chainId: SupportedChainId,
-  symbols: (string | undefined)[] | undefined,
-): ReactNode => {
-  const minimumETHFlowSlippage = MINIMUM_ETH_FLOW_SLIPPAGE[chainId].toSignificant(PERCENTAGE_PRECISION)
+export const getNativeSlippageTooltip = (symbols: (string | undefined)[] | undefined): ReactNode => {
+  const minimumETHFlowSlippage = MINIMUM_ETH_FLOW_SLIPPAGE.toSignificant(PERCENTAGE_PRECISION)
   const aNativeCurrency = symbols?.[0] || t`a native currency`
   const currencyNameCapitalized = symbols?.[0] || t`Native currency`
   const currencyName = symbols?.[0] || t`native currency`

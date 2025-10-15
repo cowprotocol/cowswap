@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`useTradeQuotePolling() When wallet is NOT connected Then the "receiver" field in the quote request should be undefined 1`] = `
 {
@@ -42,6 +42,7 @@ exports[`useTradeQuotePolling() When wallet is connected Then should put account
   },
   {
     "appData": undefined,
+    "getSlippageSuggestion": undefined,
     "quoteRequest": {
       "priceQuality": "optimal",
     },

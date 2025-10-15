@@ -20,6 +20,7 @@ export const OrderWidget: React.FC = () => {
   const { trades, error, isLoading: areTradesLoading } = useOrderTrades(order)
 
   if (error) {
+    // eslint-disable-next-line react-hooks/immutability
     errors['trades'] = error
   }
 
