@@ -37,7 +37,7 @@ export function ConfirmationPendingContent({
   )
 
   const secondStepLabel = isPendingInProgress ? (
-    <Trans>Waiting for confirmation</Trans>
+    <Trans>Waiting for confirmation.</Trans>
   ) : (
     <Trans>The {operationLabel} is submitted.</Trans>
   )
