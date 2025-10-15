@@ -31,7 +31,9 @@ function readPersistedDarkMode(): boolean | null {
 
 function readSystemDarkMode(): boolean {
   try {
-    return window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false
+    const prefersDarkScheme = window.matchMedia?.('(prefers-color-scheme: dark)')
+
+    return prefersDarkScheme?.matches ?? false
   } catch {
     return false
   }
