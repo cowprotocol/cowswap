@@ -30,6 +30,10 @@ export function shouldAnimateInProgress(state: OrderProgressBarState): boolean {
     return false
   }
 
+  if (step === OrderProgressBarStepName.DELAYED) {
+    return true
+  }
+
   return hasActiveCountdown(state.countdown) || isRecentStateChange(state)
 }
 
