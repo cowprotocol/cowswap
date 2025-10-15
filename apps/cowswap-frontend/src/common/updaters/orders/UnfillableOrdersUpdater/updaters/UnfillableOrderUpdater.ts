@@ -50,6 +50,7 @@ export function UnfillableOrderUpdater({ chainId, order }: UnfillableOrderUpdate
 
   const lastTimePriceUpdate = orderLastTimePriceUpdate[order.id]
   const lastTimePriceUpdateRef = useRef(lastTimePriceUpdate)
+  // eslint-disable-next-line react-hooks/refs
   lastTimePriceUpdateRef.current = lastTimePriceUpdate
 
   useSWR(

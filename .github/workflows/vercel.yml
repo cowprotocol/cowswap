@@ -14,6 +14,8 @@ on:
 
 env:
   VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets[format('VERCEL_PROJECT_ID_{0}', inputs.app)] }}
+  VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
 
 jobs:
   build_and_deploy:
@@ -23,56 +25,50 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set VERCEL_PROJECT_ID env var
-        # It's set in each env's config on https://github.com/cowprotocol/cowswap/settings/environments
-        run: echo "VERCEL_PROJECT_ID=${{ secrets[format('VERCEL_PROJECT_ID_{0}', inputs.app)] }}" >> $GITHUB_ENV
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
 
       - name: Install Vercel CLI
         run: npm install --global vercel@latest
 
       - name: Pull Vercel Environment Information
-        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel pull --yes --environment=production --token=$VERCEL_TOKEN
 
       - name: Build Project Artifacts
-        run: >
-          NX_CONFIGURATION=${{ inputs.env_name == 'prod' && 'production' || inputs.env_name }}
-          REACT_APP_SENTRY_DSN=${{ secrets.SENTRY_DSN }}
-          REACT_APP_PINATA_API_KEY=${{ secrets.REACT_APP_PINATA_API_KEY }}
-          REACT_APP_PINATA_SECRET_API_KEY=${{ secrets.REACT_APP_PINATA_SECRET_API_KEY }}
-          REACT_APP_BLOCKNATIVE_API_KEY=${{ secrets.REACT_APP_BLOCKNATIVE_API_KEY }}
-          REACT_APP_GOOGLE_ANALYTICS_ID=${{ secrets.REACT_APP_GOOGLE_ANALYTICS_ID }}
-          REACT_APP_LAUNCH_DARKLY_KEY=${{ secrets.REACT_APP_LAUNCH_DARKLY_KEY }}
-          REACT_APP_INFURA_KEY=${{ secrets.REACT_APP_INFURA_KEY }}
-          REACT_APP_NETWORK_URL_1=${{ secrets.REACT_APP_NETWORK_URL_1 }}
-          REACT_APP_NETWORK_URL_56=${{ secrets.REACT_APP_NETWORK_URL_56 }}
-          REACT_APP_NETWORK_URL_100=${{ secrets.REACT_APP_NETWORK_URL_100 }}
-          REACT_APP_NETWORK_URL_137=${{ secrets.REACT_APP_NETWORK_URL_137 }}
-          REACT_APP_NETWORK_URL_232=${{ secrets.REACT_APP_NETWORK_URL_232 }}
-          REACT_APP_NETWORK_URL_8453=${{ secrets.REACT_APP_NETWORK_URL_8453 }}
-          REACT_APP_NETWORK_URL_42161=${{ secrets.REACT_APP_NETWORK_URL_42161 }}
-          REACT_APP_NETWORK_URL_43114=${{ secrets.REACT_APP_NETWORK_URL_43114 }}
-          REACT_APP_NETWORK_URL_11155111=${{ secrets.REACT_APP_NETWORK_URL_11155111 }}
-          REACT_APP_WC_PROJECT_ID=${{ secrets.REACT_APP_WC_PROJECT_ID }}
-          REACT_APP_IPFS_READ_URI=${{ secrets.REACT_APP_IPFS_READ_URI }}
-          REACT_APP_EXPLORER_SENTRY_DSN=${{ secrets.EXPLORER_SENTRY_DSN }}
-          REACT_APP_SUBGRAPH_URL_MAINNET=${{ secrets.REACT_APP_SUBGRAPH_URL_MAINNET }}
-          REACT_APP_SUBGRAPH_URL_ARBITRUM_ONE=${{ secrets.REACT_APP_SUBGRAPH_URL_ARBITRUM_ONE }}
-          REACT_APP_SUBGRAPH_URL_BASE=${{ secrets.REACT_APP_SUBGRAPH_URL_BASE }}
-          REACT_APP_SUBGRAPH_URL_GNOSIS_CHAIN=${{ secrets.REACT_APP_SUBGRAPH_URL_GNOSIS_CHAIN }}
-          REACT_APP_BFF_BASE_URL=${{ secrets.BFF_BASE_URL }}
-          REACT_APP_CMS_BASE_URL=${{ secrets.CMS_BASE_URL }}
-          NEXT_PUBLIC_CMS_BASE_URL=${{ secrets.CMS_BASE_URL }}
-          vercel build -t ${{ secrets.VERCEL_TOKEN }} --prod
-
-      - name: Get the version
-        id: get_version
-        run: echo "VERSION=$(echo $GITHUB_REF | cut -d / -f 3)" >> $GITHUB_OUTPUT
+        run: vercel build -t $VERCEL_TOKEN --prod
+        env:
+          NX_CONFIGURATION: ${{ inputs.env_name == 'prod' && 'production' || inputs.env_name }}
+          REACT_APP_SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+          REACT_APP_PINATA_API_KEY: ${{ secrets.REACT_APP_PINATA_API_KEY }}
+          REACT_APP_PINATA_SECRET_API_KEY: ${{ secrets.REACT_APP_PINATA_SECRET_API_KEY }}
+          REACT_APP_BLOCKNATIVE_API_KEY: ${{ secrets.REACT_APP_BLOCKNATIVE_API_KEY }}
+          REACT_APP_GOOGLE_ANALYTICS_ID: ${{ secrets.REACT_APP_GOOGLE_ANALYTICS_ID }}
+          REACT_APP_LAUNCH_DARKLY_KEY: ${{ secrets.REACT_APP_LAUNCH_DARKLY_KEY }}
+          REACT_APP_INFURA_KEY: ${{ secrets.REACT_APP_INFURA_KEY }}
+          REACT_APP_NETWORK_URL_1: ${{ secrets.REACT_APP_NETWORK_URL_1 }}
+          REACT_APP_NETWORK_URL_56: ${{ secrets.REACT_APP_NETWORK_URL_56 }}
+          REACT_APP_NETWORK_URL_100: ${{ secrets.REACT_APP_NETWORK_URL_100 }}
+          REACT_APP_NETWORK_URL_137: ${{ secrets.REACT_APP_NETWORK_URL_137 }}
+          REACT_APP_NETWORK_URL_232: ${{ secrets.REACT_APP_NETWORK_URL_232 }}
+          REACT_APP_NETWORK_URL_8453: ${{ secrets.REACT_APP_NETWORK_URL_8453 }}
+          REACT_APP_NETWORK_URL_42161: ${{ secrets.REACT_APP_NETWORK_URL_42161 }}
+          REACT_APP_NETWORK_URL_43114: ${{ secrets.REACT_APP_NETWORK_URL_43114 }}
+          REACT_APP_NETWORK_URL_11155111: ${{ secrets.REACT_APP_NETWORK_URL_11155111 }}
+          REACT_APP_WC_PROJECT_ID: ${{ secrets.REACT_APP_WC_PROJECT_ID }}
+          REACT_APP_IPFS_READ_URI: ${{ secrets.REACT_APP_IPFS_READ_URI }}
+          REACT_APP_EXPLORER_SENTRY_DSN: ${{ secrets.EXPLORER_SENTRY_DSN }}
+          REACT_APP_SUBGRAPH_URL_MAINNET: ${{ secrets.REACT_APP_SUBGRAPH_URL_MAINNET }}
+          REACT_APP_SUBGRAPH_URL_ARBITRUM_ONE: ${{ secrets.REACT_APP_SUBGRAPH_URL_ARBITRUM_ONE }}
+          REACT_APP_SUBGRAPH_URL_BASE: ${{ secrets.REACT_APP_SUBGRAPH_URL_BASE }}
+          REACT_APP_SUBGRAPH_URL_GNOSIS_CHAIN: ${{ secrets.REACT_APP_SUBGRAPH_URL_GNOSIS_CHAIN }}
+          REACT_APP_BFF_BASE_URL: ${{ secrets.BFF_BASE_URL }}
+          REACT_APP_CMS_BASE_URL: ${{ secrets.CMS_BASE_URL }}
+          NEXT_PUBLIC_CMS_BASE_URL: ${{ secrets.CMS_BASE_URL }}
 
       - name: Deploy Project Artifacts to Vercel
         run: >
           vercel deploy --prebuilt --prod
-          -t ${{ secrets.VERCEL_TOKEN }}
-          -m VERSION=${{ steps.get_version.outputs.VERSION }}
-          -m COMMIT=${{ github.sha }}
+          -t $VERCEL_TOKEN
+          -m VERSION=$(echo $GITHUB_REF | cut -d / -f 3)
+          -m COMMIT=$GITHUB_SHA
