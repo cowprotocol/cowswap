@@ -1,7 +1,7 @@
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 
-import { useIsApprovalOrPermitRequired } from '../../erc20Approve'
-import { useIsCurrentTradeBridging } from '../../trade'
+import { useIsApprovalOrPermitRequired } from 'modules/erc20Approve'
+import { useIsCurrentTradeBridging } from 'modules/trade'
 
 function getSwapLabel(isBridging: boolean): string {
   return isBridging ? 'Swap and Bridge' : 'Swap'
