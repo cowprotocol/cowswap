@@ -78,6 +78,15 @@ export function useTokenAllowance(
     }
   }, [optimisticAllowances, setOptimisticAllowances, swrResponse.data])
 
+  // Trigger SWR revalidation when optimistic allowance is set
+  // This ensures the cache is updated with fresh data from the blockchain
+  useEffect(() => {
+    if (optimisticAllowance) {
+      // Revalidate in the background to get fresh data from blockchain
+      swrResponse.mutate()
+    }
+  }, [optimisticAllowance, swrResponse])
+
   return useMemo(
     () => ({
       ...swrResponse,
