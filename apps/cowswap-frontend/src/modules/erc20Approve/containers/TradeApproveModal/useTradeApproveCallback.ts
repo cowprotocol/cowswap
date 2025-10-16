@@ -21,8 +21,10 @@ interface TradeApproveCallbackParams {
   useModals: boolean
 }
 
+export type TradeApproveResult = { txResponse: TransactionReceipt; approvedAmount: bigint | undefined }
+
 export interface TradeApproveCallback {
-  (amount: bigint, params?: TradeApproveCallbackParams): Promise<TransactionReceipt | undefined>
+  (amount: bigint, params?: TradeApproveCallbackParams): Promise<TradeApproveResult | undefined>
 }
 
 export function useTradeApproveCallback(currency: Currency | undefined): TradeApproveCallback {
@@ -82,7 +84,7 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
               setOptimisticAllowance(approvedAmount)
             }
 
-            return txResponse
+            return { txResponse, approvedAmount: approvedAmount?.amount }
           })
         })
         .finally(() => {

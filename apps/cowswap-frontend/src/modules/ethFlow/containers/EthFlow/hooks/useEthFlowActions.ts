@@ -73,7 +73,9 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks, partialAmou
 
     const approve = (useModals?: boolean): Promise<void> => {
       return sendTransaction('approve', () => {
-        return callbacks.approve(amountToApprove, { useModals: !!useModals }).then((res) => res?.transactionHash)
+        return callbacks
+          .approve(amountToApprove, { useModals: !!useModals })
+          .then((res) => res?.txResponse?.transactionHash)
       })
     }
 

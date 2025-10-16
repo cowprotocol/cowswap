@@ -1,4 +1,4 @@
-import React, { ReactNode, useCallback } from 'react'
+import React, { ReactNode } from 'react'
 
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { ButtonSize, HoverTooltip, TokenSymbol } from '@cowprotocol/ui'
@@ -6,16 +6,13 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
 
-import { useTokenSupportsPermit } from 'modules/permit'
-import { TradeType } from 'modules/trade'
-
 import * as styledEl from './styled'
 import { ButtonWrapper } from './styled'
 
 import { MAX_APPROVE_AMOUNT } from '../../constants'
-import { useApprovalStateForSpender, useApproveCurrency, useGeneratePermitInAdvanceToTrade } from '../../hooks'
+import { useApprovalStateForSpender, useApproveCurrency } from '../../hooks'
+import { useApproveAndSwap } from '../../hooks/useApproveAndSwap'
 import { LegacyApproveButton } from '../../pure/LegacyApproveButton'
-import { useIsPartialApproveSelectedByUser } from '../../state'
 import { ApprovalState } from '../../types'
 
 export interface TradeApproveButtonProps {
@@ -35,44 +32,16 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
     amountToApprove,
     children,
     enablePartialApprove,
-    confirmSwap,
     label,
-    ignorePermit,
     isDisabled,
     buttonSize = ButtonSize.DEFAULT,
     useModals = true,
   } = props
-  const isPartialApproveEnabledByUser = useIsPartialApproveSelectedByUser()
   const handleApprove = useApproveCurrency(amountToApprove, useModals)
 
   const spender = useTradeSpenderAddress()
   const { approvalState } = useApprovalStateForSpender(amountToApprove, spender)
-  const isPermitSupported = useTokenSupportsPermit(amountToApprove.currency, TradeType.SWAP) && !ignorePermit
-  const generatePermitToTrade = useGeneratePermitInAdvanceToTrade(amountToApprove)
-
-  const approveAndSwap = useCallback(async (): Promise<void> => {
-    if (isPermitSupported && confirmSwap) {
-      const isPermitSigned = await generatePermitToTrade()
-      if (isPermitSigned) {
-        confirmSwap()
-      }
-
-      return
-    }
-
-    const toApprove = isPartialApproveEnabledByUser ? BigInt(amountToApprove.quotient.toString()) : MAX_APPROVE_AMOUNT
-    const tx = await handleApprove(toApprove)
-    if (tx && confirmSwap) {
-      confirmSwap()
-    }
-  }, [
-    isPermitSupported,
-    confirmSwap,
-    isPartialApproveEnabledByUser,
-    amountToApprove.quotient,
-    handleApprove,
-    generatePermitToTrade,
-  ])
+  const approveAndSwap = useApproveAndSwap(props)
 
   if (!enablePartialApprove) {
     return (
