@@ -290,9 +290,9 @@ function useCountdownStartUpdater(
   useEffect(() => {
     // Start countdown immediately when backend becomes active to reflect real protocol timing
     // The solver competition genuinely starts when backend is active, regardless of UI delays
-    if (countdown == null && backendApiStatus === 'active') {
+    if (countdown == null && backendApiStatus === CompetitionOrderStatus.type.ACTIVE) {
       setCountdown(orderId, PROGRESS_BAR_TIMER_DURATION)
-    } else if (backendApiStatus !== 'active' && countdown) {
+    } else if (backendApiStatus !== CompetitionOrderStatus.type.ACTIVE && countdown) {
       // Every time backend status is not `active` and countdown is set, reset the countdown
       setCountdown(orderId, null)
     }
@@ -393,7 +393,7 @@ export function getProgressBarStepName(
   bridgingStatus: SwapAndBridgeStatus | undefined,
   isBridgingTrade: boolean,
 ): OrderProgressBarStepName {
-  const isTradedOrConfirmed = backendApiStatus === 'traded' || isConfirmed
+  const isTradedOrConfirmed = backendApiStatus === CompetitionOrderStatus.type.TRADED || isConfirmed
 
   if (bridgingStatus) {
     if (bridgingStatus === SwapAndBridgeStatus.DONE) {
@@ -430,8 +430,10 @@ export function getProgressBarStepName(
     // already traded
     return OrderProgressBarStepName.FINISHED
   } else if (
-    previousBackendApiStatus === 'executing' &&
-    (backendApiStatus === 'active' || backendApiStatus === 'open' || backendApiStatus === 'scheduled')
+    previousBackendApiStatus === CompetitionOrderStatus.type.EXECUTING &&
+    (backendApiStatus === CompetitionOrderStatus.type.ACTIVE ||
+      backendApiStatus === CompetitionOrderStatus.type.OPEN ||
+      backendApiStatus === CompetitionOrderStatus.type.SCHEDULED)
   ) {
     // moved back from executing to active
     return OrderProgressBarStepName.SUBMISSION_FAILED
@@ -439,17 +441,20 @@ export function getProgressBarStepName(
     // out of market order
     return OrderProgressBarStepName.UNFILLABLE
   } else if (
-    (backendApiStatus == null || backendApiStatus === 'open' || backendApiStatus === 'scheduled') &&
+    (backendApiStatus == null ||
+      backendApiStatus === CompetitionOrderStatus.type.OPEN ||
+      backendApiStatus === CompetitionOrderStatus.type.SCHEDULED) &&
     previousStepName === OrderProgressBarStepName.UNFILLABLE
   ) {
     // Order just recovered from being unfillable but backend has not progressed yet.
     // Keep showing the solving animation so the favicon restarts instead of idling.
     return OrderProgressBarStepName.SOLVING
-  } else if (backendApiStatus === 'active' && countdown === 0) {
+  } else if (backendApiStatus === CompetitionOrderStatus.type.ACTIVE && countdown === 0) {
     // solving, but took longer than stipulated countdown
     return OrderProgressBarStepName.DELAYED
   } else if (
-    (backendApiStatus === 'open' || backendApiStatus === 'scheduled') &&
+    (backendApiStatus === CompetitionOrderStatus.type.OPEN ||
+      backendApiStatus === CompetitionOrderStatus.type.SCHEDULED) &&
     previousStepName &&
     previousStepName !== OrderProgressBarStepName.INITIAL
   ) {
@@ -464,13 +469,13 @@ export function getProgressBarStepName(
 }
 
 const BACKEND_TYPE_TO_PROGRESS_BAR_STEP_NAME: Record<CompetitionOrderStatus.type, OrderProgressBarStepName> = {
-  scheduled: OrderProgressBarStepName.INITIAL,
-  open: OrderProgressBarStepName.INITIAL,
-  active: OrderProgressBarStepName.SOLVING,
-  solved: OrderProgressBarStepName.SOLVED,
-  executing: OrderProgressBarStepName.EXECUTING,
-  traded: OrderProgressBarStepName.FINISHED,
-  cancelled: OrderProgressBarStepName.INITIAL, // TODO: maybe add another state for finished with error?
+  [CompetitionOrderStatus.type.SCHEDULED]: OrderProgressBarStepName.INITIAL,
+  [CompetitionOrderStatus.type.OPEN]: OrderProgressBarStepName.INITIAL,
+  [CompetitionOrderStatus.type.ACTIVE]: OrderProgressBarStepName.SOLVING,
+  [CompetitionOrderStatus.type.SOLVED]: OrderProgressBarStepName.SOLVED,
+  [CompetitionOrderStatus.type.EXECUTING]: OrderProgressBarStepName.EXECUTING,
+  [CompetitionOrderStatus.type.TRADED]: OrderProgressBarStepName.FINISHED,
+  [CompetitionOrderStatus.type.CANCELLED]: OrderProgressBarStepName.INITIAL, // TODO: maybe add another state for finished with error?
 }
 
 function useBackendApiStatusUpdater(chainId: SupportedChainId, orderId: string, doNotQuery: boolean): void {

@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.120.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.119.1...cowswap-v1.120.0) (2025-10-14)
+
+
+### Features
+
+* animated favicon ([#6331](https://github.com/cowprotocol/cowswap/issues/6331)) ([0b05e96](https://github.com/cowprotocol/cowswap/commit/0b05e96953e5e78e95762351598abd4b22cdd630))
+* implement partial approve with new ui/ux ([7826f77](https://github.com/cowprotocol/cowswap/commit/7826f772d131055c7ccbb8fd9e1aeb7b4e5ac1b0))
+* use suggested slippage from BFF ([#6313](https://github.com/cowprotocol/cowswap/issues/6313)) ([30c5ff6](https://github.com/cowprotocol/cowswap/commit/30c5ff6c118513aad75edf2355282f9097194c1d))
+
+
+### Bug Fixes
+
+* optimize quote API requests ([#6285](https://github.com/cowprotocol/cowswap/issues/6285)) ([04d9448](https://github.com/cowprotocol/cowswap/commit/04d9448b5f4767283d576f84cd095dc7d7ce65b6))
+* sync order state changes with order progress bar ([#6350](https://github.com/cowprotocol/cowswap/issues/6350)) ([dcea356](https://github.com/cowprotocol/cowswap/commit/dcea356b1d8964b87dabf1749eff8f2719f7f5bb))
+* trade toast intermediary token display ([#6270](https://github.com/cowprotocol/cowswap/issues/6270)) ([a641781](https://github.com/cowprotocol/cowswap/commit/a6417810ff0e06532f4b6b05aaf102e6b499090e))
+* use old approval flow if ff is disabled ([#6344](https://github.com/cowprotocol/cowswap/issues/6344)) ([da31468](https://github.com/cowprotocol/cowswap/commit/da31468b7f41cd742ee7af77b1f5aba680b161c4))
+
 ## [1.119.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.119.0...cowswap-v1.119.1) (2025-10-03)
 
 

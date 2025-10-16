@@ -1,6 +1,7 @@
 // Updaters
 
 export { ProgressBarExecutingOrdersUpdater } from './updaters/ProgressBarExecutingOrdersUpdater'
+export { OrderProgressStateUpdater } from './updaters/OrderProgressStateUpdater'
 export { OrderProgressEventsUpdater } from './updaters/OrderProgressEventsUpdater'
 
 // Containers
