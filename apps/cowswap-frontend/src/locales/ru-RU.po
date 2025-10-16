@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cowswap18n\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-10-16 13:51\n"
+"PO-Revision-Date: 2025-10-16 14:43\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -1281,8 +1281,8 @@ msgid "Solver auction rankings"
 msgstr "Рейтинг по выбору аукциона"
 
 #: apps/cowswap-frontend/src/common/pure/ConfirmationPendingContent/ConfirmationPendingContent.tsx
-msgid "Follow these steps"
-msgstr "Выполните следующие шаги"
+#~ msgid "Follow these steps"
+#~ msgstr "Follow these steps"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/OrderType/index.tsx
 msgid "This order will either be filled completely or not filled."
@@ -1425,6 +1425,10 @@ msgstr "Увеличить значение"
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookListsTabs/index.tsx
 msgid "All Hooks ({allHooksCount})"
 msgstr "Все хуки ({allHooksCount})"
+
+#: apps/cowswap-frontend/src/modules/erc20Approve/hooks/usePendingApprovalModal.tsx
+msgid "Approving <0/> <1><2/></1> for trading"
+msgstr "Утверждение <0/> <1><2/></1> для торговли"
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 msgid "Reduce or withdraw liquidity from a pool before a token swap integrating the process directly into the transaction flow. By adjusting your liquidity ahead of time, you gain more control over your assets without any extra steps. Optimize your position in a pool, all in one seamless action — no need for multiple transactions or added complexity."
@@ -1798,6 +1802,10 @@ msgstr "Одобрение недостаточное для ввода сумм
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappDetails/index.tsx
 msgid "and"
 msgstr "и"
+
+#: apps/cowswap-frontend/src/common/pure/ConfirmationPendingContent/ConfirmationPendingContent.tsx
+msgid "Waiting for confirmation."
+msgstr "Ожидает подтверждения."
 
 #: apps/cowswap-frontend/src/pages/Account/LockedGnoVesting/index.tsx
 msgid "COW token"
@@ -3240,6 +3248,10 @@ msgstr "Начать мостик"
 msgid "Import at your own risk"
 msgstr "Импорт на свой страх и риск"
 
+#: apps/cowswap-frontend/src/modules/erc20Approve/hooks/usePendingApprovalModal.tsx
+msgid "Approving <0>{currencySymbolOrContext}</0> for trading"
+msgstr "Утверждение <0>{currencySymbolOrContext}</0> для торговли"
+
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Couldn't load balances"
 msgstr "Не удалось загрузить балансы"
@@ -3952,6 +3964,10 @@ msgstr "От"
 msgid "Orders not matched after the threshold time are automatically refunded."
 msgstr "Заказы, не совпадающие после порогового времени, автоматически возвращаются."
 
+#: apps/cowswap-frontend/src/common/pure/ConfirmationPendingContent/ConfirmationPendingContent.tsx
+msgid "Follow these steps:"
+msgstr "Выполните следующие шаги:"
+
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/index.tsx
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapWidget/index.tsx
 msgid "Buy exactly"
@@ -4383,8 +4399,8 @@ msgid "New"
 msgstr "Новый"
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/hooks/usePendingApprovalModal.tsx
-msgid "Approving"
-msgstr "Одобрение"
+#~ msgid "Approving"
+#~ msgstr "Approving"
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/ManageListsAndTokens/index.tsx
 msgid "https:// or ipfs:// or ENS name"
@@ -4422,8 +4438,8 @@ msgid "Hooks"
 msgstr "Хуки"
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/hooks/usePendingApprovalModal.tsx
-msgid "for trading"
-msgstr "для торговли"
+#~ msgid "for trading"
+#~ msgstr "for trading"
 
 #: apps/cowswap-frontend/src/legacy/utils/trade.ts
 msgid "at most "
@@ -5741,6 +5757,10 @@ msgstr "Настройте размер заказа, срок действия 
 #: apps/cowswap-frontend/src/modules/swap/containers/NetworkBridgeBanner/NetworkBridgeBanner.tsx
 msgid "{label} token bridge"
 msgstr "{label} токен моста"
+
+#: apps/cowswap-frontend/src/common/pure/ConfirmationPendingContent/ConfirmationPendingContent.tsx
+msgid "The {operationLabel} is signed."
+msgstr "Подписано {operationLabel}."
 
 #: apps/cowswap-frontend/src/modules/swap/pure/TwapSuggestionBanner.tsx
 msgid "The price impact is <0>{formattedPriceImpact}%</0>. Consider breaking up your order using a <1>TWAP order</1> and possibly get a better rate."
