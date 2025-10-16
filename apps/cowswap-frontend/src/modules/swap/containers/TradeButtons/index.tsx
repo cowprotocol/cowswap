@@ -3,15 +3,8 @@ import React, { ReactNode } from 'react'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 
-import { t } from '@lingui/core/macro'
-
 import { AddIntermediateToken } from 'modules/tokensList'
-import {
-  useIsCurrentTradeBridging,
-  useIsNoImpactWarningAccepted,
-  useTradeConfirmActions,
-  useWrappedToken,
-} from 'modules/trade'
+import { useIsNoImpactWarningAccepted, useTradeConfirmActions, useWrappedToken } from 'modules/trade'
 import {
   TradeFormButtons,
   TradeFormValidation,
@@ -24,6 +17,7 @@ import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
 
 import { swapTradeButtonsMap } from './swapTradeButtonsMap'
 
+import { useGetConfirmButtonLabel } from '../../hooks/useGetConfirmButtonLabel'
 import { useOnCurrencySelection } from '../../hooks/useOnCurrencySelection'
 import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
 import { useSwapFormState } from '../../hooks/useSwapFormState'
@@ -56,11 +50,10 @@ export function TradeButtons({
   const localFormValidation = useSwapFormState()
   const wrappedToken = useWrappedToken()
   const onCurrencySelection = useOnCurrencySelection()
-  const isCurrentTradeBridging = useIsCurrentTradeBridging()
 
   const confirmTrade = tradeConfirmActions.onOpen
 
-  const confirmText = isCurrentTradeBridging ? t`Swap and Bridge` : t`Swap`
+  const confirmText = useGetConfirmButtonLabel()
 
   const { isPartialApproveEnabled } = useFeatureFlags()
   // enable partial approve only for swap

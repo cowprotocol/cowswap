@@ -4,7 +4,7 @@ import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { errorToString, isRejectRequestProviderError } from '@cowprotocol/common-utils'
-import { TransactionReceipt } from '@ethersproject/abstract-provider'
+import { TransactionReceipt, TransactionResponse } from '@ethersproject/abstract-provider'
 import { Currency } from '@uniswap/sdk-core'
 
 import { useLingui } from '@lingui/react/macro'
@@ -16,10 +16,23 @@ import { useUpdateTradeApproveState } from '../../state'
 
 interface TradeApproveCallbackParams {
   useModals: boolean
+  waitForTxConfirmation?: boolean
 }
 
 export interface TradeApproveCallback {
-  (amount: bigint, params?: TradeApproveCallbackParams): Promise<TransactionReceipt | undefined>
+  (
+    amount: bigint,
+    params?: TradeApproveCallbackParams & {
+      waitForTxConfirmation?: false
+    },
+  ): Promise<TransactionResponse | undefined>
+
+  (
+    amount: bigint,
+    params: TradeApproveCallbackParams & {
+      waitForTxConfirmation: true
+    },
+  ): Promise<TransactionReceipt | undefined>
 }
 
 export function useTradeApproveCallback(currency: Currency | undefined): TradeApproveCallback {
@@ -44,39 +57,70 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
     [cowAnalytics],
   )
 
+  const handleApprovalError = useCallback(
+    (error: unknown) => {
+      console.error('Error setting the allowance for token', error)
+
+      if (isRejectRequestProviderError(error)) {
+        updateTradeApproveState({ error: t`User rejected approval transaction` })
+      } else {
+        const errorCode =
+          error && typeof error === 'object' && 'code' in error && typeof error.code === 'number' ? error.code : null
+        approvalAnalytics('Error', symbol, errorCode)
+        updateTradeApproveState({ error: errorToString(error) })
+      }
+    },
+    [updateTradeApproveState, approvalAnalytics, symbol, t],
+  )
+
   return useCallback(
-    async (amount, { useModals = true } = { useModals: true }) => {
+    async (
+      amount,
+      { useModals = true, waitForTxConfirmation = false } = {
+        useModals: true,
+        waitForTxConfirmation: false,
+      },
+    ) => {
       if (useModals) {
         updateTradeApproveState({ currency, approveInProgress: true })
       }
 
       approvalAnalytics('Send', symbol)
 
-      return approveCallback(amount)
-        .then((response) => {
-          approvalAnalytics('Sign', symbol)
-          // if ff is disabled - use old flow, hide modal when tx is sent
-          !isPartialApproveEnabled && updateTradeApproveState({ currency: undefined, approveInProgress: false })
-          return response?.wait()
-        })
-        .finally(() => {
+      try {
+        const response = await approveCallback(amount)
+
+        if (!response) {
           updateTradeApproveState({ currency: undefined, approveInProgress: false })
-        })
-        .catch((error) => {
-          console.error('Error setting the allowance for token', error)
-
-          if (isRejectRequestProviderError(error)) {
-            updateTradeApproveState({ error: t`User rejected approval transaction` })
-          } else {
-            const errorCode = error?.code && typeof error.code === 'number' ? error.code : null
-
-            approvalAnalytics('Error', symbol, errorCode)
-            updateTradeApproveState({ error: errorToString(error) })
-          }
-
           return undefined
-        })
+        }
+
+        approvalAnalytics('Sign', symbol)
+        // if ff is disabled - use old flow, hide modal when tx is sent
+        !isPartialApproveEnabled && updateTradeApproveState({ currency: undefined, approveInProgress: false })
+
+        if (waitForTxConfirmation) {
+          // need to wait response to run finally clause after that
+          const resp = await response.wait()
+          return resp
+        } else {
+          return response
+        }
+      } catch (error) {
+        handleApprovalError(error)
+        return undefined
+      } finally {
+        updateTradeApproveState({ currency: undefined, approveInProgress: false })
+      }
     },
-    [approvalAnalytics, symbol, approveCallback, updateTradeApproveState, currency, t, isPartialApproveEnabled],
-  )
+    [
+      symbol,
+      approveCallback,
+      updateTradeApproveState,
+      currency,
+      approvalAnalytics,
+      isPartialApproveEnabled,
+      handleApprovalError,
+    ],
+  ) as TradeApproveCallback
 }

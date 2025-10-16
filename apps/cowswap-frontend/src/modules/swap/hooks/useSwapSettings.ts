@@ -42,7 +42,7 @@ export function useSwapRecipientToggleState(): StatefulValue<boolean> {
 
 const emptyState: [null, null] = [null, null]
 
-export function useSwapPartialApprovalToggleState(isFeatureEnabled = false): StatefulValue<boolean> | [null, null] {
+export function useSwapPartialApprovalToggleState(isFeatureEnabled: boolean): StatefulValue<boolean> | [null, null] {
   const updateState = useSetAtom(updateSwapSettingsAtom)
   const settings = useSwapSettings()
 

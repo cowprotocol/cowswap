@@ -14,10 +14,10 @@ const { atom: pendingApproveAmountModalAtom, updateAtom: updatePendingApproveAmo
   }),
 )
 
-export function usePendingApproveAmountModalState(): PendingOrderApproveModalState {
+export function usePartialApproveAmountModalState(): PendingOrderApproveModalState {
   return useAtomValue(pendingApproveAmountModalAtom)
 }
 
-export function useUpdatePendingApproveAmountModalState(): (state: Partial<PendingOrderApproveModalState>) => void {
+export function useUpdatePartialApproveAmountModalState(): (state: Partial<PendingOrderApproveModalState>) => void {
   return useSetAtom(updatePendingApproveAmountModalAtom)
 }

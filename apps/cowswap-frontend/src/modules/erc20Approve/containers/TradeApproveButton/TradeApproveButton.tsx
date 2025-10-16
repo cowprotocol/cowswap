@@ -23,7 +23,7 @@ export interface TradeApproveButtonProps {
   children?: ReactNode
   isDisabled?: boolean
   enablePartialApprove?: boolean
-  confirmSwap?: () => void
+  onApproveConfirm?: (txHash?: string) => void
   ignorePermit?: boolean
   label: string
   buttonSize?: ButtonSize
@@ -35,7 +35,7 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
     amountToApprove,
     children,
     enablePartialApprove,
-    confirmSwap,
+    onApproveConfirm,
     label,
     ignorePermit,
     isDisabled,
@@ -51,10 +51,10 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
   const generatePermitToTrade = useGeneratePermitInAdvanceToTrade(amountToApprove)
 
   const approveAndSwap = useCallback(async (): Promise<void> => {
-    if (isPermitSupported && confirmSwap) {
+    if (isPermitSupported && onApproveConfirm) {
       const isPermitSigned = await generatePermitToTrade()
       if (isPermitSigned) {
-        confirmSwap()
+        onApproveConfirm()
       }
 
       return
@@ -62,12 +62,12 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
 
     const toApprove = isPartialApproveEnabledByUser ? BigInt(amountToApprove.quotient.toString()) : MAX_APPROVE_AMOUNT
     const tx = await handleApprove(toApprove)
-    if (tx && confirmSwap) {
-      confirmSwap()
+    if (tx && onApproveConfirm) {
+      onApproveConfirm(tx.transactionHash)
     }
   }, [
     isPermitSupported,
-    confirmSwap,
+    onApproveConfirm,
     isPartialApproveEnabledByUser,
     amountToApprove.quotient,
     handleApprove,

@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.56.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.55.0...explorer-v2.56.0) (2025-10-14)
+
+
+### Features
+
+* use suggested slippage from BFF ([#6313](https://github.com/cowprotocol/cowswap/issues/6313)) ([30c5ff6](https://github.com/cowprotocol/cowswap/commit/30c5ff6c118513aad75edf2355282f9097194c1d))
+
 ## [2.55.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.54.3...explorer-v2.55.0) (2025-10-02)
 
 
