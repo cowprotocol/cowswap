@@ -141,10 +141,11 @@ describe('useTradeApproveCallback', () => {
         blockNumber: 123456,
         chainId: mockChainId,
       })
+      mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: true })
 
       const { result } = renderHook(() => useTradeApproveCallback(mockToken))
 
-      await result.current(mockAmount)
+      await result.current(mockAmount, { useModals: true, waitForTxConfirmation: true })
 
       await waitFor(() => {
         expect(mockProcessApprovalTransaction).toHaveBeenCalled()
@@ -171,10 +172,11 @@ describe('useTradeApproveCallback', () => {
         blockNumber: 123456,
         chainId: mockChainId,
       })
+      mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: true })
 
       const { result } = renderHook(() => useTradeApproveCallback(mockToken))
 
-      await result.current(mockAmount) // Request 1 token
+      await result.current(mockAmount, { useModals: true, waitForTxConfirmation: true }) // Request 1 token
 
       await waitFor(() => {
         expect(mockProcessApprovalTransaction).toHaveBeenCalled()
@@ -193,10 +195,11 @@ describe('useTradeApproveCallback', () => {
       const mockTxResponse = createMockTransactionResponse(1)
       mockApproveCallback.mockResolvedValue(mockTxResponse)
       mockProcessApprovalTransaction.mockReturnValue(null) // No approval data found
+      mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: true })
 
       const { result } = renderHook(() => useTradeApproveCallback(mockToken))
 
-      await result.current(mockAmount)
+      await result.current(mockAmount, { useModals: true, waitForTxConfirmation: true })
 
       await waitFor(() => {
         expect(mockProcessApprovalTransaction).toHaveBeenCalled()
@@ -213,10 +216,11 @@ describe('useTradeApproveCallback', () => {
       const mockTxResponse = createMockTransactionResponse(1)
       mockApproveCallback.mockResolvedValue(mockTxResponse)
       mockProcessApprovalTransaction.mockReturnValue(null)
+      mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: true })
 
       const { result } = renderHook(() => useTradeApproveCallback(mockToken))
 
-      await result.current(mockAmount)
+      await result.current(mockAmount, { useModals: true, waitForTxConfirmation: true })
 
       await waitFor(() => {
         expect(mockUpdateTradeApproveState).toHaveBeenCalledWith({
@@ -264,10 +268,11 @@ describe('useTradeApproveCallback', () => {
       mockTxResponse.wait = mockWait
       mockApproveCallback.mockResolvedValue(mockTxResponse)
       mockProcessApprovalTransaction.mockReturnValue(null)
+      mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: true })
 
       const { result } = renderHook(() => useTradeApproveCallback(mockToken))
 
-      await result.current(mockAmount)
+      await result.current(mockAmount, { useModals: true, waitForTxConfirmation: true })
 
       await waitFor(() => {
         expect(mockWait).toHaveBeenCalled()
@@ -283,19 +288,22 @@ describe('useTradeApproveCallback', () => {
       mockProcessApprovalTransaction.mockImplementation(() => {
         throw new Error('Approval transaction failed')
       })
+      mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: true })
 
       const { result } = renderHook(() => useTradeApproveCallback(mockToken))
 
-      const receipt = await result.current(mockAmount)
+      const receipt = await result.current(mockAmount, { useModals: true, waitForTxConfirmation: true })
 
       await waitFor(() => {
         expect(receipt).toBeUndefined()
+        // Error should be set first
+        expect(mockUpdateTradeApproveState).toHaveBeenCalledWith({
+          error: expect.stringContaining('Approval transaction failed'),
+        })
+        // Then cleanup in finally block
         expect(mockUpdateTradeApproveState).toHaveBeenCalledWith({
           currency: undefined,
           approveInProgress: false,
-        })
-        expect(mockUpdateTradeApproveState).toHaveBeenCalledWith({
-          error: expect.stringContaining('Approval transaction failed'),
         })
       })
     })
@@ -373,11 +381,13 @@ describe('useTradeApproveCallback', () => {
       await result.current(mockAmount)
 
       await waitFor(() => {
+        // When feature is disabled, only "Send" event is tracked, not "Sign"
         expect(mockSendEvent).toHaveBeenCalledWith({
           category: CowSwapAnalyticsCategory.TRADE,
-          action: 'Sign',
+          action: 'Send',
           label: mockToken.symbol,
         })
+        // Modal should be hidden immediately after response
         expect(mockUpdateTradeApproveState).toHaveBeenCalledWith({
           currency: undefined,
           approveInProgress: false,
