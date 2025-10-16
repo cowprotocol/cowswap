@@ -1,16 +1,26 @@
 import { ReactNode, useCallback, useMemo, useState } from 'react'
 
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { currencyAmountToTokenAmount } from '@cowprotocol/common-utils'
+
 import { Trans } from '@lingui/macro'
 
+
 import { SimpleAccountDetails } from 'modules/account/containers/SimpleAccountDetails'
+import { PartialApproveContainer } from 'modules/erc20Approve'
+import { useSwapPartialApprovalToggleState } from 'modules/swap/hooks/useSwapSettings'
 import { TradeFormBlankButton } from 'modules/tradeFormValidation'
 
 import { ActivityStatus } from 'common/types/activity'
+
+import { StyledPartialApprove } from './styled'
 
 import { EthFlowActions } from '../../containers/EthFlow/hooks/useEthFlowActions'
 import { EthFlowState } from '../../services/ethFlow/types'
 import { EthFlowContext } from '../../state/ethFlowContextAtom'
 import { WrappingPreview, WrappingPreviewProps } from '../WrappingPreview'
+
+const needApprove = [EthFlowState.ApproveNeeded, EthFlowState.ApproveFailed, EthFlowState.ApproveInsufficient]
 
 async function runEthFlowAction(state: EthFlowState, ethFlowActions: EthFlowActions): Promise<void> {
   if (state === EthFlowState.SwapReady) {
@@ -19,7 +29,7 @@ async function runEthFlowAction(state: EthFlowState, ethFlowActions: EthFlowActi
   if ([EthFlowState.WrapFailed, EthFlowState.WrapNeeded].includes(state)) {
     return ethFlowActions.wrap()
   }
-  if ([EthFlowState.ApproveNeeded, EthFlowState.ApproveFailed, EthFlowState.ApproveInsufficient].includes(state)) {
+  if (needApprove.includes(state)) {
     return ethFlowActions.approve()
   }
 
@@ -41,6 +51,7 @@ export function EthFlowModalBottomContent(params: BottomContentParams): ReactNod
     wrap: { txStatus: wrapTxStatus, txHash: wrapTxHash },
   } = ethFlowContext
 
+  const isApproveNeeded = needApprove.includes(state)
   const showWrapPreview = ![EthFlowState.SwapReady, EthFlowState.ApproveNeeded].includes(state)
   const [isActionInProgress, setIsActionInProgress] = useState(false)
 
@@ -53,12 +64,13 @@ export function EthFlowModalBottomContent(params: BottomContentParams): ReactNod
     }
   }, [state, ethFlowActions])
 
+  const wrapInProgress = wrapTxStatus !== null ? wrapTxStatus === ActivityStatus.PENDING : !!wrapTxHash
+
   const showLoader = useMemo(() => {
     const approveInProgress = approveTxStatus !== null ? approveTxStatus === ActivityStatus.PENDING : !!approveTxHash
-    const wrapInProgress = wrapTxStatus !== null ? wrapTxStatus === ActivityStatus.PENDING : !!wrapTxHash
 
     return approveInProgress || wrapInProgress
-  }, [approveTxStatus, approveTxHash, wrapTxStatus, wrapTxHash])
+  }, [wrapInProgress, approveTxStatus, approveTxHash])
 
   const pendingTransactions = useMemo(() => {
     const hashes = []
@@ -67,13 +79,30 @@ export function EthFlowModalBottomContent(params: BottomContentParams): ReactNod
     return hashes
   }, [approveTxHash, wrapTxHash])
 
+  const { isPartialApproveEnabled } = useFeatureFlags()
+  const [isPartialApproveEnabledBySettings] = useSwapPartialApprovalToggleState(isPartialApproveEnabled)
+
+  const showPartialApprovalFunctionality =
+    isPartialApproveEnabled && isApproveNeeded && !wrapInProgress && isPartialApproveEnabledBySettings
+  const amountToApprove = wrappingPreview.amount ? currencyAmountToTokenAmount(wrappingPreview.amount) : null
+
   return (
     <>
       {showWrapPreview && <WrappingPreview {...wrappingPreview} />}
       <SimpleAccountDetails pendingTransactions={pendingTransactions} confirmedTransactions={[]} $margin="12px 0 0" />
-      <TradeFormBlankButton onClick={onClick} loading={isActionInProgress || showLoader}>
-        <Trans>{buttonText}</Trans>
-      </TradeFormBlankButton>
+      {showPartialApprovalFunctionality && amountToApprove ? (
+        <StyledPartialApprove>
+          <PartialApproveContainer amountToApprove={amountToApprove}>
+            <TradeFormBlankButton onClick={onClick} loading={isActionInProgress || showLoader}>
+              <Trans>{buttonText}</Trans>
+            </TradeFormBlankButton>
+          </PartialApproveContainer>
+        </StyledPartialApprove>
+      ) : (
+        <TradeFormBlankButton onClick={onClick} loading={isActionInProgress || showLoader}>
+          <Trans>{buttonText}</Trans>
+        </TradeFormBlankButton>
+      )}
     </>
   )
 }

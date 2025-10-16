@@ -23,7 +23,7 @@ export function useApproveCurrency(
         await zeroApprove()
       }
 
-      return tradeApproveCallback(amount, { useModals })
+      return tradeApproveCallback(amount, { useModals, waitForTxConfirmation: true })
     },
     [useModals, tradeApproveCallback, zeroApprove, shouldZeroApprove],
   )
