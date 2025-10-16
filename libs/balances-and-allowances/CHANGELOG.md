@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.7.0...balances-and-allowances-v1.8.0) (2025-10-14)
+
+
+### Features
+
+* deprecate sepolia for bff balances api ([#6340](https://github.com/cowprotocol/cowswap/issues/6340)) ([bfefda8](https://github.com/cowprotocol/cowswap/commit/bfefda845825f78bd529aaa78ae68e82c8d7e8ea))
+
 ## [1.7.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.6.0...balances-and-allowances-v1.7.0) (2025-10-02)
 
 

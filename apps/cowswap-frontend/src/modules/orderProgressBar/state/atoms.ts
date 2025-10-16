@@ -15,6 +15,31 @@ import {
 export const ordersProgressBarStateAtom = atom<OrdersProgressBarState>({})
 
 /**
+ * Derived write-only atom for removing state entries no longer tracked
+ */
+export const pruneOrdersProgressBarState = atom(null, (get, set, trackedOrderIds: string[]) => {
+  const fullState = get(ordersProgressBarStateAtom)
+  const trackedIds = new Set(trackedOrderIds)
+
+  let changed = false
+  const nextState = Object.entries(fullState).reduce<OrdersProgressBarState>((acc, [orderId, state]) => {
+    if (trackedIds.has(orderId)) {
+      acc[orderId] = state
+    } else {
+      changed = true
+    }
+
+    return acc
+  }, {})
+
+  if (!changed && trackedOrderIds.every((orderId) => orderId in fullState)) {
+    return
+  }
+
+  set(ordersProgressBarStateAtom, nextState)
+})
+
+/**
  * Derived atom exposing only the countdown
  */
 export const ordersProgressBarCountdown = atom(
