@@ -21,11 +21,13 @@ export function OrderFillabilityWarning({
   inputAmount,
   enablePartialApprove,
   enablePartialApproveBySettings,
+  orderId,
 }: {
   fillability: OrderFillability
   inputAmount: CurrencyAmount<Token>
   enablePartialApprove?: boolean
   enablePartialApproveBySettings?: boolean
+  orderId?: string
 }): ReactNode {
   const title = (
     <Title>
@@ -63,6 +65,7 @@ export function OrderFillabilityWarning({
             <ApproveWrapper>
               {enablePartialApprove && (
                 <OrderPartialApprove
+                  orderId={orderId}
                   isPartialApproveEnabledBySettings={enablePartialApproveBySettings}
                   amountToApprove={inputAmount}
                 />
