@@ -33,6 +33,7 @@ export type PermitCache = Record<string, string>
 export type CachedPermitData = {
   hookData: PermitHookData
   nonce: number | undefined
+  storedAmount?: string
 }
 
 export type PermitCacheKeyParams = {

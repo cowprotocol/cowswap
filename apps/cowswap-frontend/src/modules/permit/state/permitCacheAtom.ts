@@ -41,6 +41,14 @@ export const storePermitCacheAtom = atom(null, (get, set, params: StorePermitCac
   set(atomToUpdate, (permitCache) => ({ ...permitCache, [key]: JSON.stringify(dataToCache) }))
 })
 
+function isAmountIsLessThanStored(inputAmount: bigint | undefined, storedAmount: string | undefined): boolean {
+  if (inputAmount === undefined || storedAmount === undefined) {
+    return false
+  }
+
+  return BigInt(storedAmount) < inputAmount
+}
+
 /**
  * Atom to get the cached permit data.
  *
@@ -61,14 +69,19 @@ export const getPermitCacheAtom = atom(null, (get, set, params: GetPermitCachePa
   }
 
   try {
-    const { hookData, nonce: storedNonce }: CachedPermitData = JSON.parse(cachedData)
+    const { hookData, nonce: storedNonce, storedAmount }: CachedPermitData = JSON.parse(cachedData)
 
     if (params.account !== undefined) {
       // User type permit cache, check the nonce
 
       const inputNonce = params.nonce
 
-      if (storedNonce !== undefined && inputNonce !== undefined && storedNonce < inputNonce) {
+      if (
+        storedNonce !== undefined &&
+        inputNonce !== undefined &&
+        storedNonce < inputNonce &&
+        isAmountIsLessThanStored(params.amount, storedAmount)
+      ) {
         // When both nonces exist and storedNonce < inputNonce, data is outdated
 
         // Remove cache key
@@ -91,11 +104,10 @@ export const getPermitCacheAtom = atom(null, (get, set, params: GetPermitCachePa
   }
 })
 
-function buildKey({ chainId, tokenAddress, account, spender, amount }: PermitCacheKeyParams): string {
+function buildKey({ chainId, tokenAddress, account, spender }: PermitCacheKeyParams): string {
   const base = `${chainId}-${tokenAddress.toLowerCase()}-${spender.toLowerCase()}`
-  const withAmount = amount ? `${base}-${amount.toString()}` : base
 
-  return account ? `${withAmount}-${account.toLowerCase()}` : withAmount
+  return account ? `${base}-${account.toLowerCase()}` : base
 }
 
 const removePermitCacheBuilder = (key: string) => (permitCache: PermitCache) => {
