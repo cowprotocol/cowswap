@@ -2,7 +2,7 @@ import { createStore } from 'jotai/vanilla'
 
 import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { removeListAtom } from './tokenListsActionsAtom'
+import { addListAtom, removeListAtom } from './tokenListsActionsAtom'
 import {
   listsStatesByChainAtom,
   listsStatesMapAtom,
@@ -54,7 +54,7 @@ function setBaseState(store: TestStore = createStore()): TestStore {
   return store
 }
 
-function createListState(source: string): ListState {
+function createListState(source: string, overrides: Partial<ListState> = {}): ListState {
   return {
     source,
     list: {
@@ -66,6 +66,8 @@ function createListState(source: string): ListState {
       tokens: [],
     },
     isEnabled: true,
+    priority: 1,
+    ...overrides,
   }
 }
 
@@ -144,5 +146,65 @@ describe('removeListAtom', () => {
     const listsMap = await store.get(listsStatesMapAtom)
 
     expect(listsMap[defaultListSource]).toBeUndefined()
+  })
+
+  it('re-adding a previously removed default list clears removed state', async () => {
+    const store = setBaseState()
+    const defaultList = DEFAULT_TOKENS_LISTS[chainId]?.[0]
+
+    if (!defaultList) {
+      throw new Error('Expected MAINNET default token list for test setup')
+    }
+
+    const defaultListSource = defaultList.source
+    const defaultListSourceLower = defaultListSource.toLowerCase()
+    const removedState = mapSupportedNetworks<string[]>([])
+
+    removedState[chainId] = [defaultListSourceLower]
+
+    store.set(removedListsSourcesAtom, removedState)
+
+    await store.set(
+      addListAtom,
+      createListState(defaultListSource),
+    )
+
+    const removedLists = store.get(removedListsSourcesAtom)
+
+    expect(removedLists[chainId]).not.toContain(defaultListSourceLower)
+  })
+
+  it('updates metadata for existing user-added lists when re-adding', async () => {
+    const store = setBaseState()
+    const defaultList = DEFAULT_TOKENS_LISTS[chainId]?.[0]
+
+    if (!defaultList) {
+      throw new Error('Expected MAINNET default token list for test setup')
+    }
+
+    const defaultListSource = defaultList.source
+    const existingUserAdded = mapSupportedNetworks<Array<ListSourceConfig>>([])
+
+    existingUserAdded[chainId] = [
+      {
+        source: defaultListSource,
+        widgetAppCode: 'widget-app',
+        priority: 5,
+      },
+    ]
+
+    store.set(userAddedListsSourcesAtom, existingUserAdded)
+
+    await store.set(
+      addListAtom,
+      createListState(defaultListSource, { widgetAppCode: undefined, priority: 10 }),
+    )
+
+    const userAddedLists = store.get(userAddedListsSourcesAtom)
+    const updatedEntry = userAddedLists[chainId]?.[0]
+
+    expect(userAddedLists[chainId]).toHaveLength(1)
+    expect(updatedEntry?.widgetAppCode).toBeUndefined()
+    expect(updatedEntry?.priority).toBe(10)
   })
 })

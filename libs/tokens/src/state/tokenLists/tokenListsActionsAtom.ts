@@ -12,7 +12,7 @@ import {
 } from './tokenListsStateAtom'
 
 import { DEFAULT_TOKENS_LISTS, LP_TOKEN_LISTS } from '../../const/tokensLists'
-import { ListState } from '../../types'
+import { ListState, type ListSourceConfig } from '../../types'
 import { environmentAtom } from '../environmentAtom'
 
 type RemovedListsState = Record<SupportedChainId, string[]>
@@ -47,11 +47,7 @@ function clearRemovedListState(
   })
 }
 
-function isPredefinedListSource(
-  get: Getter,
-  chainId: SupportedChainId,
-  sourceLowerCase: string,
-): boolean {
+function isPredefinedListSource(get: Getter, chainId: SupportedChainId, sourceLowerCase: string): boolean {
   const curatedLists = get(curatedListSourceAtom)
   const defaultListsForChain = DEFAULT_TOKENS_LISTS[chainId] || []
   const allLists = [...defaultListsForChain, ...curatedLists, ...LP_TOKEN_LISTS]
@@ -94,13 +90,20 @@ export const addListAtom = atom(null, (get, set, state: ListState) => {
     state.widgetAppCode = widgetAppCode
   }
 
+  const updatedEntry: ListSourceConfig = {
+    source: state.source,
+    priority: state.priority,
+    widgetAppCode: state.widgetAppCode,
+  }
+
+  const hasExistingEntry = userAddedTokenListsForChain.some((list) => list.source === state.source)
+  const nextUserAddedListsForChain = hasExistingEntry
+    ? userAddedTokenListsForChain.map((list) => (list.source === state.source ? { ...list, ...updatedEntry } : list))
+    : userAddedTokenListsForChain.concat(updatedEntry)
+
   set(userAddedListsSourcesAtom, {
     ...userAddedTokenLists,
-    [chainId]: userAddedTokenListsForChain.concat({
-      widgetAppCode: state.widgetAppCode,
-      priority: state.priority,
-      source: state.source,
-    }),
+    [chainId]: nextUserAddedListsForChain,
   })
 
   if (removedTokenListsForChain.includes(sourceLowerCase)) {
