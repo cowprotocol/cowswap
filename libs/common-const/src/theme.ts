@@ -4,4 +4,4 @@ export enum CustomTheme {
   NONE = 'NONE',
 }
 
-export const ACTIVE_CUSTOM_THEME: CustomTheme = CustomTheme.CHRISTMAS
+export const ACTIVE_CUSTOM_THEME: CustomTheme = CustomTheme.HALLOWEEN

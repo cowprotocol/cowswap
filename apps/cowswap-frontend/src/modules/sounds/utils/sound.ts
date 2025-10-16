@@ -90,7 +90,7 @@ function getThemeBasedSound(type: SoundType): string {
   const featureFlags = jotaiStore.get(featureFlagsAtom) as Record<string, boolean>
   const { isAprilsFoolsEnabled /*isChristmasEnabled, isHalloweenEnabled */ } = featureFlags
   const isChristmasEnabled = false
-  const isHalloweenEnabled = false
+  const isHalloweenEnabled = true
   const isInjectedWidgetMode = isInjectedWidget()
 
   // When in widget mode, always return default sounds

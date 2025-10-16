@@ -7,7 +7,7 @@ import { useDarkModeManager } from '../../legacy/state/user/hooks'
 
 // TODO: load them from feature flags when we want to enable again
 const isChristmasEnabled = false
-const isHalloweenEnabled = false
+const isHalloweenEnabled = true
 
 export function useCustomTheme(): CowSwapTheme | undefined {
   const [darkMode] = useDarkModeManager()
