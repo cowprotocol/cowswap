@@ -1,4 +1,5 @@
 import { atom } from 'jotai'
+import { atomWithReset } from 'jotai/utils'
 
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -12,7 +13,7 @@ export interface ApproveProgressModalState {
 
 export const initialApproveProgressModalState: ApproveProgressModalState = { approveInProgress: false }
 
-export const approveProgressModalStateAtom = atom<ApproveProgressModalState>(initialApproveProgressModalState)
+export const approveProgressModalStateAtom = atomWithReset<ApproveProgressModalState>(initialApproveProgressModalState)
 
 export const updateApproveProgressStateAtom = atom(null, (get, set, nextState: Partial<ApproveProgressModalState>) => {
   set(approveProgressModalStateAtom, () => {
@@ -20,8 +21,4 @@ export const updateApproveProgressStateAtom = atom(null, (get, set, nextState: P
 
     return { ...prevState, ...nextState }
   })
-})
-
-export const resetApproveProgressStateAtom = atom(null, (_, set) => {
-  set(approveProgressModalStateAtom, initialApproveProgressModalState)
 })

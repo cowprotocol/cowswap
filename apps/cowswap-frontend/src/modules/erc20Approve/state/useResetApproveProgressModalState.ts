@@ -1,7 +1,7 @@
-import { useSetAtom } from 'jotai'
+import { useResetAtom } from 'jotai/utils'
 
-import { resetApproveProgressStateAtom } from '../containers'
+import { approveProgressModalStateAtom } from '../containers'
 
 export function useResetApproveProgressModalState(): () => void {
-  return useSetAtom(resetApproveProgressStateAtom)
+  return useResetAtom(approveProgressModalStateAtom)
 }
