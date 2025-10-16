@@ -36,11 +36,7 @@ export function ConfirmationPendingContent({
     </>
   )
 
-  const secondStepLabel = isPendingInProgress ? (
-    t`Waiting for confirmation.`
-  ) : (
-    <Trans>The {operationLabel} is submitted.</Trans>
-  )
+  const secondStepLabel = isPendingInProgress ? t`Waiting for confirmation.` : t`The ${operationLabel} is submitted.`
 
   const animateSecondStep = isPendingInProgress === true
 
@@ -53,9 +49,7 @@ export function ConfirmationPendingContent({
         <>
           <span>{description} </span>
           <br />
-          <span>
-            {t`Follow these steps:`}
-          </span>
+          <Trans>Follow these steps:</Trans>
         </>
       }
     >
