@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cowswap18n\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-10-16 12:44\n"
+"PO-Revision-Date: 2025-10-16 13:51\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -604,6 +604,10 @@ msgstr "Только CoW AMM"
 msgid "Scheduled"
 msgstr "Запланированный"
 
+#: apps/cowswap-frontend/src/modules/swap/hooks/useGetConfirmButtonLabel.ts
+msgid "Approve and Swap"
+msgstr "Одобрить и заменить"
+
 #: apps/cowswap-frontend/src/common/constants/routes.ts
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersConfirmModal/index.tsx
 #: apps/cowswap-frontend/src/utils/orderUtils/getUiOrderType.ts
@@ -1170,8 +1174,8 @@ msgid "Too much time between parts"
 msgstr "Слишком много времени между частями"
 
 #: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/index.tsx
-msgid "Swap and Bridge"
-msgstr "Поменять местами"
+#~ msgid "Swap and Bridge"
+#~ msgstr "Swap and Bridge"
 
 #: apps/cowswap-frontend/src/common/containers/OrderHooksDetails/index.tsx
 msgid "POST"
@@ -1259,6 +1263,10 @@ msgstr "Рыночная цена"
 #: apps/cowswap-frontend/src/common/pure/CurrencyInputPanel/CurrencyInputPanel.tsx
 msgid "Max"
 msgstr "Макс"
+
+#: apps/cowswap-frontend/src/modules/swap/hooks/useGetConfirmButtonLabel.ts
+msgid "Approve, Swap & Bridge"
+msgstr "Утверждение, замена и мост"
 
 #: apps/cowswap-frontend/src/modules/advancedOrders/containers/AdvancedOrdersWidget/index.tsx
 msgid "Get the Time-Weighted Average Price by splitting your large order into parts"
@@ -5043,8 +5051,8 @@ msgid "The output token cannot be transferred. There may be an issue with the ou
 msgstr "Невозможно перенести выходной токен. Возможно проблема с маркером вывода."
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
-msgid "Approve and swap"
-msgstr "Одобрить и заменить"
+#~ msgid "Approve and swap"
+#~ msgstr "Approve and swap"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 msgid "The competition has started"
@@ -5324,7 +5332,6 @@ msgstr "Так как вы используете смарт-кошелек с �
 #: apps/cowswap-frontend/src/modules/bridge/pure/BridgeActivitySummary/SwapStepRow.tsx
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapConfirmModal/index.tsx
-#: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/index.tsx
 #: apps/cowswap-frontend/src/modules/yield/containers/TradeButtons/index.tsx
 #: apps/cowswap-frontend/src/modules/yield/containers/YieldWidget/elements.tsx
 #: apps/cowswap-frontend/src/utils/orderUtils/getUiOrderType.ts

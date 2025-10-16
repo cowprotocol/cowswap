@@ -8,7 +8,7 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: cowswap18n\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-10-16 12:44\n"
+"PO-Revision-Date: 2025-10-16 13:51\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -604,6 +604,10 @@ msgstr "Sólo CoW AMM"
 msgid "Scheduled"
 msgstr "Programado"
 
+#: apps/cowswap-frontend/src/modules/swap/hooks/useGetConfirmButtonLabel.ts
+msgid "Approve and Swap"
+msgstr "Aprobar e intercambiar"
+
 #: apps/cowswap-frontend/src/common/constants/routes.ts
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersConfirmModal/index.tsx
 #: apps/cowswap-frontend/src/utils/orderUtils/getUiOrderType.ts
@@ -1170,8 +1174,8 @@ msgid "Too much time between parts"
 msgstr "Demasiado tiempo entre partes"
 
 #: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/index.tsx
-msgid "Swap and Bridge"
-msgstr "Intercambiar y Puente"
+#~ msgid "Swap and Bridge"
+#~ msgstr "Swap and Bridge"
 
 #: apps/cowswap-frontend/src/common/containers/OrderHooksDetails/index.tsx
 msgid "POST"
@@ -1259,6 +1263,10 @@ msgstr "Precio de mercado"
 #: apps/cowswap-frontend/src/common/pure/CurrencyInputPanel/CurrencyInputPanel.tsx
 msgid "Max"
 msgstr "Máx"
+
+#: apps/cowswap-frontend/src/modules/swap/hooks/useGetConfirmButtonLabel.ts
+msgid "Approve, Swap & Bridge"
+msgstr "Aprobación, intercambio y puente"
 
 #: apps/cowswap-frontend/src/modules/advancedOrders/containers/AdvancedOrdersWidget/index.tsx
 msgid "Get the Time-Weighted Average Price by splitting your large order into parts"
@@ -5043,8 +5051,8 @@ msgid "The output token cannot be transferred. There may be an issue with the ou
 msgstr "El token de salida no puede ser transferido. Puede haber un problema con el token de salida."
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
-msgid "Approve and swap"
-msgstr "Aprobar e intercambiar"
+#~ msgid "Approve and swap"
+#~ msgstr "Approve and swap"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 msgid "The competition has started"
@@ -5324,7 +5332,6 @@ msgstr "Porque está usando una billetera de contratos inteligentes"
 #: apps/cowswap-frontend/src/modules/bridge/pure/BridgeActivitySummary/SwapStepRow.tsx
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapConfirmModal/index.tsx
-#: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/index.tsx
 #: apps/cowswap-frontend/src/modules/yield/containers/TradeButtons/index.tsx
 #: apps/cowswap-frontend/src/modules/yield/containers/YieldWidget/elements.tsx
 #: apps/cowswap-frontend/src/utils/orderUtils/getUiOrderType.ts
