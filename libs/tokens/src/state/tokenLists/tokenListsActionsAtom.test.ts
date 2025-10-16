@@ -3,12 +3,17 @@ import { createStore } from 'jotai/vanilla'
 import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { removeListAtom } from './tokenListsActionsAtom'
-import { listsStatesByChainAtom, removedListsSourcesAtom, userAddedListsSourcesAtom } from './tokenListsStateAtom'
+import {
+  listsStatesByChainAtom,
+  listsStatesMapAtom,
+  removedListsSourcesAtom,
+  userAddedListsSourcesAtom,
+} from './tokenListsStateAtom'
 
 import { DEFAULT_TOKENS_LISTS } from '../../const/tokensLists'
 import { environmentAtom } from '../environmentAtom'
 
-import type { ListSourceConfig, TokenListsState, TokenListsByChainState } from '../../types'
+import type { ListSourceConfig, ListState, TokenListsState, TokenListsByChainState } from '../../types'
 
 jest.mock('localforage', () => {
   const storage: Record<string, string | null> = {}
@@ -47,6 +52,21 @@ function setBaseState(store: TestStore = createStore()): TestStore {
   store.set(listsStatesByChainAtom, listsState)
 
   return store
+}
+
+function createListState(source: string): ListState {
+  return {
+    source,
+    list: {
+      name: 'Test List',
+      logoURI: '',
+      keywords: [],
+      timestamp: '2024-01-01T00:00:00.000Z',
+      version: { major: 1, minor: 0, patch: 0 },
+      tokens: [],
+    },
+    isEnabled: true,
+  }
 }
 
 describe('removeListAtom', () => {
@@ -92,5 +112,37 @@ describe('removeListAtom', () => {
 
     expect(removedLists[chainId]).not.toContain(customSource.toLowerCase())
     expect(userAddedLists[chainId]).toHaveLength(0)
+  })
+
+  it('keeps removed predefined lists hidden in listsStatesMapAtom after refresh', async () => {
+    const store = setBaseState()
+    const defaultList = DEFAULT_TOKENS_LISTS[chainId]?.[0]
+
+    if (!defaultList) {
+      throw new Error('Expected MAINNET default token list for test setup')
+    }
+
+    const defaultListSource = defaultList.source
+    const listState = createListState(defaultListSource)
+
+    const listsState = mapSupportedNetworks(() => ({} as TokenListsState)) as TokenListsByChainState
+    listsState[chainId] = { [defaultListSource]: listState }
+
+    const userAdded = mapSupportedNetworks<Array<ListSourceConfig>>([])
+    userAdded[chainId] = [{ source: defaultListSource }]
+
+    store.set(userAddedListsSourcesAtom, userAdded)
+    store.set(listsStatesByChainAtom, listsState)
+
+    await store.set(removeListAtom, defaultListSource)
+
+    const refreshedState = mapSupportedNetworks(() => ({} as TokenListsState)) as TokenListsByChainState
+    refreshedState[chainId] = { [defaultListSource]: listState }
+
+    store.set(listsStatesByChainAtom, refreshedState)
+
+    const listsMap = await store.get(listsStatesMapAtom)
+
+    expect(listsMap[defaultListSource]).toBeUndefined()
   })
 })

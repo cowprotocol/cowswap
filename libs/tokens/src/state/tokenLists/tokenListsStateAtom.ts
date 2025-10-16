@@ -104,33 +104,56 @@ export const listsStatesMapAtom = atom(async (get) => {
   const allTokenListsInfo = await get(listsStatesByChainAtom)
   const virtualListsState = get(virtualListsStateAtom)
   const userAddedTokenLists = get(userAddedListsSourcesAtom)
+  const removedListsSources = get(removedListsSourcesAtom)
   const useeAddedTokenListsForChain = userAddedTokenLists[chainId] || []
+  const removedListsForChain = removedListsSources[chainId] || []
+  const removedSourcesSet = new Set(removedListsForChain.map((source) => source.toLowerCase()))
 
   const currentNetworkLists = {
-    ...allTokenListsInfo[chainId],
+    ...(allTokenListsInfo[chainId] || {}),
     ...virtualListsState,
-  }
+  } as TokenListsState
+
+  const filteredNetworkLists = Object.entries(currentNetworkLists).reduce<TokenListsState>((acc, [source, list]) => {
+    if (!removedSourcesSet.has(source.toLowerCase())) {
+      acc[source] = list
+    }
+
+    return acc
+  }, {})
 
   const userAddedListSources = useeAddedTokenListsForChain.reduce<{ [key: string]: boolean }>((acc, list) => {
-    acc[list.source] = true
+    const sourceLower = list.source.toLowerCase()
+
+    if (!removedSourcesSet.has(sourceLower)) {
+      acc[list.source] = true
+    }
+
     return acc
   }, {})
 
   const lpTokenListSources = LP_TOKEN_LISTS.reduce<{ [key: string]: boolean }>((acc, list) => {
-    acc[list.source] = true
+    const sourceLower = list.source.toLowerCase()
+
+    if (!removedSourcesSet.has(sourceLower)) {
+      acc[list.source] = true
+    }
+
     return acc
   }, {})
 
-  const listsSources = Object.keys(currentNetworkLists).filter((source) => {
+  const listsSources = Object.keys(filteredNetworkLists).filter((source) => {
     return useCuratedListOnly ? userAddedListSources[source] || lpTokenListSources[source] : true
   })
 
-  const lists = useCuratedListOnly
-    ? [...get(curatedListSourceAtom).map((val) => val.source), ...listsSources]
-    : listsSources
+  const curatedListSources = get(curatedListSourceAtom)
+    .map((val) => val.source)
+    .filter((source) => !removedSourcesSet.has(source.toLowerCase()))
+
+  const lists = useCuratedListOnly ? [...curatedListSources, ...listsSources] : listsSources
 
   return lists.reduce<{ [source: string]: ListState }>((acc, source) => {
-    const list = currentNetworkLists[source]
+    const list = filteredNetworkLists[source]
 
     if (!list) return acc
 
