@@ -4,13 +4,13 @@ import { Nullish } from '@cowprotocol/types'
 import { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { TradeApproveResult, useTradeApproveCallback } from 'modules/erc20Approve'
+import { GenerecTradeApproveResult, useTradeApproveCallback } from 'modules/erc20Approve'
 import { useShouldZeroApprove, useZeroApprove } from 'modules/zeroApproval'
 
 export function useApproveCurrency(
   amountToApprove: CurrencyAmount<Currency> | undefined,
   useModals = true,
-): (amount: bigint) => Promise<Nullish<TradeApproveResult | SafeMultisigTransactionResponse>> {
+): (amount: bigint) => Promise<Nullish<GenerecTradeApproveResult | SafeMultisigTransactionResponse>> {
   const currency = amountToApprove?.currency
 
   const tradeApproveCallback = useTradeApproveCallback(currency)

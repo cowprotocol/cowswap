@@ -1,5 +1,6 @@
 import { useCallback } from 'react'
 
+import { TransactionReceipt, TransactionResponse } from '@ethersproject/abstract-provider'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useApproveCurrency } from './useApproveCurrency'
@@ -13,7 +14,7 @@ import { getIsTradeApproveResult } from '../utils/getIsTradeApproveResult'
 
 export interface ApproveAndSwapProps {
   amountToApprove: CurrencyAmount<Currency>
-  confirmSwap?: () => void
+  onApproveConfirm?: (transactionHash?: string) => void
   ignorePermit?: boolean
   useModals?: boolean
 }
@@ -22,7 +23,7 @@ export function useApproveAndSwap({
   amountToApprove,
   useModals,
   ignorePermit,
-  confirmSwap,
+  onApproveConfirm,
 }: ApproveAndSwapProps): () => Promise<void> {
   const isPartialApproveEnabledByUser = useIsPartialApproveSelectedByUser()
   const handleApprove = useApproveCurrency(amountToApprove, useModals)
@@ -31,13 +32,23 @@ export function useApproveAndSwap({
   const isPermitSupported = useTokenSupportsPermit(amountToApprove.currency, TradeType.SWAP) && !ignorePermit
   const generatePermitToTrade = useGeneratePermitInAdvanceToTrade(amountToApprove)
 
-  return useCallback(async (): Promise<void> => {
-    if (isPermitSupported && confirmSwap) {
+  const handlePermit = useCallback(async () => {
+    if (isPermitSupported && onApproveConfirm) {
       const isPermitSigned = await generatePermitToTrade()
       if (isPermitSigned) {
-        confirmSwap()
+        onApproveConfirm()
       }
 
+      return true
+    }
+
+    return false
+  }, [isPermitSupported, onApproveConfirm, generatePermitToTrade])
+
+  return useCallback(async (): Promise<void> => {
+    const isPermitFlow = await handlePermit()
+
+    if (isPermitFlow) {
       return
     }
 
@@ -45,27 +56,29 @@ export function useApproveAndSwap({
     const toApprove = isPartialApproveEnabledByUser ? amountToApproveBig : MAX_APPROVE_AMOUNT
     const tx = await handleApprove(toApprove)
 
-    if (tx && confirmSwap) {
+    if (tx && onApproveConfirm) {
       if (getIsTradeApproveResult(tx)) {
         const approvedAmount = tx.approvedAmount
         const isApprovedAmountSufficient = Boolean(approvedAmount && approvedAmount >= amountToApproveBig)
 
         if (isApprovedAmountSufficient) {
-          confirmSwap()
+          const hash =
+            (tx.txResponse as TransactionReceipt).transactionHash || (tx.txResponse as TransactionResponse).hash
+
+          onApproveConfirm(hash)
         } else {
           updateTradeApproveState({ error: 'Approved amount is not sufficient!' })
         }
       } else {
-        confirmSwap()
+        onApproveConfirm(tx.transactionHash)
       }
     }
   }, [
-    isPermitSupported,
-    confirmSwap,
+    onApproveConfirm,
     isPartialApproveEnabledByUser,
     amountToApprove.quotient,
     handleApprove,
-    generatePermitToTrade,
     updateTradeApproveState,
+    handlePermit,
   ])
 }
