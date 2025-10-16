@@ -1,5 +1,5 @@
 import { useAtom, useAtomValue } from 'jotai'
-import { ReactElement, ReactNode, useCallback, useMemo, useRef } from 'react'
+import { ReactElement, ReactNode, useCallback, useMemo, useState } from 'react'
 
 import { getWrappedToken } from '@cowprotocol/common-utils'
 import { TokenSymbol } from '@cowprotocol/ui'
@@ -54,13 +54,9 @@ function buildLimitOrderButtonText(isSafeApprovalBundle: boolean, inputAmount: P
 }
 
 function useStableTradeContext(tradeContext: TradeFlowContext): TradeFlowContext {
-  const initialContextRef = useRef<TradeFlowContext | null>(null)
+  const [stableContext] = useState(() => tradeContext)
 
-  if (!initialContextRef.current) {
-    initialContextRef.current = tradeContext
-  }
-
-  return initialContextRef.current
+  return stableContext
 }
 
 function resolvePartialFillFlag(
@@ -130,7 +126,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps): Re
 
 interface LimitOrdersConfirmViewModel {
   tradeConfirmationProps: TradeConfirmationProps
-  renderConfirmationChildren: (restContent: ReactElement) => ReactNode
+  renderConfirmationChildren: (restContent: ReactElement) => ReactElement
 }
 
 function useLimitOrdersConfirmViewModel(props: LimitOrdersConfirmModalProps): LimitOrdersConfirmViewModel {
@@ -171,7 +167,7 @@ function useLimitOrdersConfirmViewModel(props: LimitOrdersConfirmModalProps): Li
   })
 
   const renderConfirmationChildren = useCallback(
-    (restContent: ReactElement) =>
+    (restContent: ReactElement): ReactElement =>
       LimitOrdersConfirmationChildren({
         tradeContext,
         limitRateState,
@@ -230,7 +226,7 @@ function LimitOrdersConfirmationChildren({
   executionPrice,
   partiallyFillableOverride,
   restContent,
-}: LimitOrdersConfirmationChildrenProps): ReactNode {
+}: LimitOrdersConfirmationChildrenProps): ReactElement {
   return (
     <>
       <LimitOrdersDetails
