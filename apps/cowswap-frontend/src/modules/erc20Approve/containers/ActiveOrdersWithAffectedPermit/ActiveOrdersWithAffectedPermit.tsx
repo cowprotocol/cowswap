@@ -4,6 +4,8 @@ import { TokenSymbol } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
 
+import { Trans } from '@lingui/react/macro'
+
 import { useOnlyPendingOrders } from 'legacy/state/orders/hooks'
 
 import { AffectedPermitOrdersTable } from 'modules/ordersTable'
@@ -28,10 +30,12 @@ export function ActiveOrdersWithAffectedPermit({ currency, orderId }: ActiveOrde
 
   if (!ordersWithPermit.length) return null
 
+  const ordersWithPermitLenght = ordersWithPermit.length
+
   const titleContent = (
-    <>
-      Partial approval may block <span className={'font-bold'}>{ordersWithPermit.length}</span> other orders
-    </>
+    <Trans>
+      Partial approval may block <span className={'font-bold'}>{ordersWithPermitLenght}</span> other orders
+    </Trans>
   )
 
   return (
@@ -40,9 +44,11 @@ export function ActiveOrdersWithAffectedPermit({ currency, orderId }: ActiveOrde
         <AffectedPermitOrdersTable orders={ordersWithPermit} />
       </styledEl.DropdownList>
       <styledEl.DropdownFooter>
-        There are <span className={'font-bold'}>{ordersWithPermit.length}</span> existing orders using a{' '}
-        <TokenSymbol className={'font-bold'} token={currency} /> token approval. If you sign a new one, only one order
-        can fill. Continue with current permit amount or choose full approval so all orders can be filled.
+        <Trans>
+          There are <span className={'font-bold'}>{ordersWithPermitLenght}</span> existing orders using a{' '}
+          <TokenSymbol className={'font-bold'} token={currency} /> token approval. If you sign a new one, only one order
+          can fill. Continue with current permit amount or choose full approval so all orders can be filled.
+        </Trans>
       </styledEl.DropdownFooter>
     </AccordionBanner>
   )

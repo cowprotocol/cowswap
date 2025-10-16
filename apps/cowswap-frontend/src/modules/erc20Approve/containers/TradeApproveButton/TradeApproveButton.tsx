@@ -5,7 +5,7 @@ import { usePreventDoubleExecution } from '@cowprotocol/common-hooks'
 import { ButtonSize, HoverTooltip, TokenSymbol } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 
 import { useTokenSupportsPermit } from 'modules/permit'
 import { TradeType } from 'modules/trade'
@@ -78,6 +78,7 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
   }
 
   const isPending = approvalState === ApprovalState.PENDING
+  const amountToApproveCurrency = amountToApprove.currency
 
   return (
     <ButtonWrapper
@@ -93,7 +94,7 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
           content={
             <Trans>
               You must give the CoW Protocol smart contracts permission to use your{' '}
-              <TokenSymbol token={amountToApprove.currency} />. If you approve the default amount, you will only have to
+              <TokenSymbol token={amountToApproveCurrency} />. If you approve the default amount, you will only have to
               do this once per token.
             </Trans>
           }
