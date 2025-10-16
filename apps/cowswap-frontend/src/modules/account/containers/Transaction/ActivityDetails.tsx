@@ -528,6 +528,7 @@ export function ActivityDetails(props: {
                         inputAmount={orderSummary.inputAmount}
                         enablePartialApprove={isPartialApproveEnabled}
                         enablePartialApproveBySettings={!!isPartialApproveEnabledBySettings}
+                        orderId={order?.id}
                       />
                     </SummaryInnerRow>
                   ) : null}
