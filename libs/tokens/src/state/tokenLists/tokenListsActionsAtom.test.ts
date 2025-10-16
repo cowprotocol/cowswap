@@ -1,6 +1,7 @@
 import { createStore } from 'jotai/vanilla'
 
 import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
+import type { LpTokenProvider } from '@cowprotocol/types'
 
 import { addListAtom, removeListAtom } from './tokenListsActionsAtom'
 import {
@@ -41,12 +42,12 @@ const chainId = SupportedChainId.MAINNET
 
 type TestStore = ReturnType<typeof createStore>
 
-function setBaseState(store: TestStore = createStore()): TestStore {
+function setBaseState(store: TestStore = createStore(), envChainId: SupportedChainId = chainId): TestStore {
   const userAddedState = mapSupportedNetworks<Array<ListSourceConfig>>([])
   const removedState = mapSupportedNetworks<string[]>([])
   const listsState = mapSupportedNetworks(() => ({}) as TokenListsState) as TokenListsByChainState
 
-  store.set(environmentAtom, { chainId })
+  store.set(environmentAtom, { chainId: envChainId })
   store.set(userAddedListsSourcesAtom, userAddedState)
   store.set(removedListsSourcesAtom, removedState)
   store.set(listsStatesByChainAtom, listsState)
@@ -195,9 +196,11 @@ describe('removeListAtom', () => {
 
     store.set(userAddedListsSourcesAtom, existingUserAdded)
 
+    const lpProvider = 'CURVE' as LpTokenProvider
+
     await store.set(
       addListAtom,
-      createListState(defaultListSource, { widgetAppCode: undefined, priority: 10 }),
+      createListState(defaultListSource, { widgetAppCode: undefined, priority: 10, lpTokenProvider: lpProvider }),
     )
 
     const userAddedLists = store.get(userAddedListsSourcesAtom)
@@ -206,5 +209,71 @@ describe('removeListAtom', () => {
     expect(userAddedLists[chainId]).toHaveLength(1)
     expect(updatedEntry?.widgetAppCode).toBeUndefined()
     expect(updatedEntry?.priority).toBe(10)
+    expect(updatedEntry?.lpTokenProvider).toBe(lpProvider)
+  })
+
+  it('removes predefined lists that were not user-added and keeps them hidden after refresh', async () => {
+    const store = setBaseState()
+    const defaultList = DEFAULT_TOKENS_LISTS[chainId]?.[0]
+
+    if (!defaultList) {
+      throw new Error('Expected MAINNET default token list for test setup')
+    }
+
+    const defaultListSource = defaultList.source
+    const defaultListSourceLower = defaultListSource.toLowerCase()
+    const listState = createListState(defaultListSource)
+
+    const listsState = mapSupportedNetworks(() => ({} as TokenListsState)) as TokenListsByChainState
+    listsState[chainId] = { [defaultListSource]: listState }
+
+    store.set(listsStatesByChainAtom, listsState)
+
+    await store.set(removeListAtom, defaultListSource)
+
+    const removedLists = store.get(removedListsSourcesAtom)
+    expect(removedLists[chainId]).toContain(defaultListSourceLower)
+
+    const refreshedState = mapSupportedNetworks(() => ({} as TokenListsState)) as TokenListsByChainState
+    refreshedState[chainId] = { [defaultListSource]: listState }
+    store.set(listsStatesByChainAtom, refreshedState)
+
+    const listsMap = await store.get(listsStatesMapAtom)
+
+    expect(listsMap[defaultListSource]).toBeUndefined()
+  })
+
+  it('keeps removals isolated to the active chain', async () => {
+    const otherChainId = SupportedChainId.GNOSIS_CHAIN
+    const store = setBaseState()
+    const mainnetDefault = DEFAULT_TOKENS_LISTS[chainId]?.[0]
+    const otherChainDefault = DEFAULT_TOKENS_LISTS[otherChainId]?.[0]
+
+    if (!mainnetDefault || !otherChainDefault) {
+      throw new Error('Expected default token lists for both chains')
+    }
+
+    const mainnetSource = mainnetDefault.source
+    const mainnetSourceLower = mainnetSource.toLowerCase()
+    const otherChainSource = otherChainDefault.source
+
+    const listsState = mapSupportedNetworks(() => ({} as TokenListsState)) as TokenListsByChainState
+    listsState[chainId] = { [mainnetSource]: createListState(mainnetSource) }
+    listsState[otherChainId] = { [otherChainSource]: createListState(otherChainSource) }
+
+    store.set(listsStatesByChainAtom, listsState)
+
+    await store.set(removeListAtom, mainnetSource)
+
+    const removedLists = store.get(removedListsSourcesAtom)
+    expect(removedLists[chainId]).toContain(mainnetSourceLower)
+    expect(removedLists[otherChainId]).toEqual([])
+
+    store.set(environmentAtom, { chainId: otherChainId })
+
+    const otherChainListsMap = await store.get(listsStatesMapAtom)
+    expect(otherChainListsMap[otherChainSource]).toBeDefined()
+
+    store.set(environmentAtom, { chainId })
   })
 })
