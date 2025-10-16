@@ -10,7 +10,7 @@ import { useGeneratePermitInAdvanceToTrade } from './useGeneratePermitInAdvanceT
 import { useTokenSupportsPermit } from '../../permit'
 import { MAX_APPROVE_AMOUNT } from '../constants'
 import { TradeApproveResult } from '../containers'
-import { useIsPartialApproveSelectedByUser } from '../state'
+import { useIsPartialApproveSelectedByUser, useUpdateTradeApproveState } from '../state'
 
 jest.mock('./useApproveCurrency')
 jest.mock('./useGeneratePermitInAdvanceToTrade')
@@ -24,6 +24,9 @@ const mockUseGeneratePermitInAdvanceToTrade = useGeneratePermitInAdvanceToTrade 
 const mockUseTokenSupportsPermit = useTokenSupportsPermit as jest.MockedFunction<typeof useTokenSupportsPermit>
 const mockUseIsPartialApproveSelectedByUser = useIsPartialApproveSelectedByUser as jest.MockedFunction<
   typeof useIsPartialApproveSelectedByUser
+>
+const mockUseUpdateTradeApproveState = useUpdateTradeApproveState as jest.MockedFunction<
+  typeof useUpdateTradeApproveState
 >
 
 // eslint-disable-next-line max-lines-per-function
@@ -39,6 +42,7 @@ describe('useApproveAndSwap', () => {
   const mockConfirmSwap = jest.fn()
   const mockHandleApprove = jest.fn()
   const mockGeneratePermitToTrade = jest.fn()
+  const mockUpdateTradeApproveState = jest.fn()
 
   const createMockTransactionReceipt = (): TransactionReceipt => {
     return {
@@ -71,6 +75,7 @@ describe('useApproveAndSwap', () => {
     mockUseGeneratePermitInAdvanceToTrade.mockReturnValue(mockGeneratePermitToTrade)
     mockUseTokenSupportsPermit.mockReturnValue(false)
     mockUseIsPartialApproveSelectedByUser.mockReturnValue(false)
+    mockUseUpdateTradeApproveState.mockReturnValue(mockUpdateTradeApproveState)
   })
 
   describe('permit flow', () => {
@@ -218,7 +223,7 @@ describe('useApproveAndSwap', () => {
       })
     })
 
-    it('should throw error when approved amount is insufficient', async () => {
+    it('should set error state when approved amount is insufficient', async () => {
       const mockTxReceipt = createMockTransactionReceipt()
       const mockResult: TradeApproveResult = {
         txResponse: mockTxReceipt,
@@ -235,13 +240,16 @@ describe('useApproveAndSwap', () => {
         }),
       )
 
-      await expect(result.current()).rejects.toThrow('Approved amount is not sufficient!')
+      await result.current()
 
-      expect(mockHandleApprove).toHaveBeenCalledWith(MAX_APPROVE_AMOUNT)
-      expect(mockConfirmSwap).not.toHaveBeenCalled()
+      await waitFor(() => {
+        expect(mockHandleApprove).toHaveBeenCalledWith(MAX_APPROVE_AMOUNT)
+        expect(mockUpdateTradeApproveState).toHaveBeenCalledWith({ error: 'Approved amount is not sufficient!' })
+        expect(mockConfirmSwap).not.toHaveBeenCalled()
+      })
     })
 
-    it('should throw error when approved amount is undefined', async () => {
+    it('should set error state when approved amount is undefined', async () => {
       const mockTxReceipt = createMockTransactionReceipt()
       const mockResult: TradeApproveResult = {
         txResponse: mockTxReceipt,
@@ -258,10 +266,13 @@ describe('useApproveAndSwap', () => {
         }),
       )
 
-      await expect(result.current()).rejects.toThrow('Approved amount is not sufficient!')
+      await result.current()
 
-      expect(mockHandleApprove).toHaveBeenCalledWith(MAX_APPROVE_AMOUNT)
-      expect(mockConfirmSwap).not.toHaveBeenCalled()
+      await waitFor(() => {
+        expect(mockHandleApprove).toHaveBeenCalledWith(MAX_APPROVE_AMOUNT)
+        expect(mockUpdateTradeApproveState).toHaveBeenCalledWith({ error: 'Approved amount is not sufficient!' })
+        expect(mockConfirmSwap).not.toHaveBeenCalled()
+      })
     })
 
     it('should use partial approve amount when user has enabled it', async () => {
