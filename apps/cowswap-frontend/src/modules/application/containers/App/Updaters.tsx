@@ -19,7 +19,11 @@ import { BalancesCombinedUpdater } from 'modules/combinedBalances/updater/Balanc
 import { InFlightOrderFinalizeUpdater } from 'modules/ethFlow'
 import { CowEventsUpdater, InjectedWidgetUpdater, useInjectedWidgetParams } from 'modules/injectedWidget'
 import { FinalizeTxUpdater } from 'modules/onchainTransactions'
-import { OrderProgressEventsUpdater, ProgressBarExecutingOrdersUpdater } from 'modules/orderProgressBar'
+import {
+  OrderProgressEventsUpdater,
+  OrderProgressStateUpdater,
+  ProgressBarExecutingOrdersUpdater,
+} from 'modules/orderProgressBar'
 import { OrdersNotificationsUpdater } from 'modules/orders'
 import { useSourceChainId } from 'modules/tokensList'
 import { TradeType, useTradeTypeInfo } from 'modules/trade'
@@ -90,6 +94,7 @@ export function Updaters(): ReactNode {
       <TotalSurplusUpdater />
       <UsdPricesUpdater />
       <OrdersNotificationsUpdater />
+      <OrderProgressStateUpdater />
       <ProgressBarExecutingOrdersUpdater />
       <OrderProgressEventsUpdater />
       <SolversInfoUpdater />
