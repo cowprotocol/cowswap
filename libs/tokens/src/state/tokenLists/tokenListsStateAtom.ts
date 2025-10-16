@@ -32,7 +32,7 @@ const UNISWAP_TOKEN_LIST_URL: Record<SupportedChainId, string> = {
   [SupportedChainId.BNB]: 'https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/Uniswap.56.json',
 }
 
-const curatedListSourceAtom = atom((get) => {
+export const curatedListSourceAtom = atom((get) => {
   const chainId = get(environmentAtom).chainId
   const UNISWAP_LIST_SOURCE: ListSourceConfig = {
     priority: 1,

@@ -1,8 +1,9 @@
-import { atom } from 'jotai'
+import { atom, type Getter, type Setter } from 'jotai'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import {
+  curatedListSourceAtom,
   listsEnabledStateAtom,
   listsStatesByChainAtom,
   listsStatesMapAtom,
@@ -10,8 +11,53 @@ import {
   userAddedListsSourcesAtom,
 } from './tokenListsStateAtom'
 
+import { DEFAULT_TOKENS_LISTS, LP_TOKEN_LISTS } from '../../const/tokensLists'
 import { ListState } from '../../types'
 import { environmentAtom } from '../environmentAtom'
+
+type RemovedListsState = Record<SupportedChainId, string[]>
+
+function ensureListMarkedAsRemoved(
+  set: Setter,
+  chainId: SupportedChainId,
+  removedLists: RemovedListsState,
+  listsForChain: string[],
+  sourceLowerCase: string,
+): void {
+  if (listsForChain.includes(sourceLowerCase)) return
+
+  set(removedListsSourcesAtom, {
+    ...removedLists,
+    [chainId]: [...listsForChain, sourceLowerCase],
+  })
+}
+
+function clearRemovedListState(
+  set: Setter,
+  chainId: SupportedChainId,
+  removedLists: RemovedListsState,
+  listsForChain: string[],
+  sourceLowerCase: string,
+): void {
+  if (!listsForChain.includes(sourceLowerCase)) return
+
+  set(removedListsSourcesAtom, {
+    ...removedLists,
+    [chainId]: listsForChain.filter((item) => item !== sourceLowerCase),
+  })
+}
+
+function isPredefinedListSource(
+  get: Getter,
+  chainId: SupportedChainId,
+  sourceLowerCase: string,
+): boolean {
+  const curatedLists = get(curatedListSourceAtom)
+  const defaultListsForChain = DEFAULT_TOKENS_LISTS[chainId] || []
+  const allLists = [...defaultListsForChain, ...curatedLists, ...LP_TOKEN_LISTS]
+
+  return allLists.some((list) => list.source.toLowerCase() === sourceLowerCase)
+}
 
 export const upsertListsAtom = atom(null, async (get, set, chainId: SupportedChainId, listsStates: ListState[]) => {
   const globalState = await get(listsStatesByChainAtom)
@@ -95,22 +141,16 @@ export const removeListAtom = atom(null, async (get, set, source: string) => {
   set(listsStatesByChainAtom, stateCopy)
 
   if (isUserAddedList) {
-    if (removedTokenListsForChain.includes(sourceLowerCase)) {
-      set(removedListsSourcesAtom, {
-        ...removedTokenLists,
-        [chainId]: removedTokenListsForChain.filter((item) => item !== sourceLowerCase),
-      })
+    if (isPredefinedListSource(get, chainId, sourceLowerCase)) {
+      ensureListMarkedAsRemoved(set, chainId, removedTokenLists, removedTokenListsForChain, sourceLowerCase)
+    } else {
+      clearRemovedListState(set, chainId, removedTokenLists, removedTokenListsForChain, sourceLowerCase)
     }
 
     return
   }
 
-  if (!removedTokenListsForChain.includes(sourceLowerCase)) {
-    set(removedListsSourcesAtom, {
-      ...removedTokenLists,
-      [chainId]: [...removedTokenListsForChain, sourceLowerCase],
-    })
-  }
+  ensureListMarkedAsRemoved(set, chainId, removedTokenLists, removedTokenListsForChain, sourceLowerCase)
 })
 
 export const toggleListAtom = atom(null, async (get, set, source: string) => {
