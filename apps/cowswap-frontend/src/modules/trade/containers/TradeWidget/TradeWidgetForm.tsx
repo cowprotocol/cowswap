@@ -19,7 +19,8 @@ import { Field } from 'legacy/state/types'
 import { useToggleAccountModal } from 'modules/account'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useOpenTokenSelectWidget } from 'modules/tokensList'
-import { TradeType, useTradeTypeInfo } from 'modules/trade'
+import { TradeType } from 'modules/trade'
+import { useTradeTypeInfoFromUrl } from 'modules/trade/hooks/useTradeTypeInfoFromUrl'
 import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternativeOrder'
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 
@@ -63,7 +64,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
   const { standaloneMode, hideOrdersTable } = useInjectedWidgetParams()
   const isMobile = useMediaQuery(Media.upToSmall(false))
 
-  const tradeTypeInfo = useTradeTypeInfo()
+  const tradeTypeInfo = useTradeTypeInfoFromUrl()
   const isAlternativeOrderModalVisible = useIsAlternativeOrderModalVisible()
   const isLimitOrderTrade = tradeTypeInfo?.tradeType === TradeType.LIMIT_ORDER
   const shouldLockForAlternativeOrder = isAlternativeOrderModalVisible && isLimitOrderTrade

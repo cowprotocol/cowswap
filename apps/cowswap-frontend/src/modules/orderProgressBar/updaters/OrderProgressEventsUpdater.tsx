@@ -97,9 +97,14 @@ export function OrderProgressEventsUpdater(): null {
   const finalizeOrderStep = useCallback(
     (orderUid: string, step: OrderProgressBarStepName) => {
       setStepName({ orderId: orderUid, value: step })
-      setCountdown({ orderId: orderUid, value: null })
+
+      const currentCountdown = ordersProgressState[orderUid]?.countdown
+
+      if (typeof currentCountdown !== 'undefined' && currentCountdown !== null) {
+        setCountdown({ orderId: orderUid, value: null })
+      }
     },
-    [setCountdown, setStepName],
+    [setCountdown, setStepName, ordersProgressState],
   )
 
   useEffect(() => {

@@ -7,10 +7,8 @@ import { useSwitchNetwork, useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
-import { useTradeTypeInfo } from 'modules/trade/hooks/useTradeTypeInfo'
 import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternativeOrder'
 import { getDefaultTradeRawState, TradeRawState } from 'modules/trade/types/TradeRawState'
-import { TradeType } from 'modules/trade/types/TradeType'
 
 import { useResetStateWithSymbolDuplication } from './useResetStateWithSymbolDuplication'
 import { useSetupTradeStateFromUrl } from './useSetupTradeStateFromUrl'
@@ -35,8 +33,6 @@ export function useSetupTradeState(): void {
   const switchNetwork = useSwitchNetwork()
   const tradeStateFromUrl = useTradeStateFromUrl()
   const { state, updateState } = useTradeState()
-  const tradeTypeInfo = useTradeTypeInfo()
-
   // When wallet is connected, and user navigates to the URL with a new chainId
   // We must change chainId in provider, and only then change the trade state
   // Since the network chaning process takes some time, we have to remember the state from URL
@@ -50,8 +46,7 @@ export function useSetupTradeState(): void {
   const currentChainId = !urlChainId ? prevProviderChainId || providerChainId || SupportedChainId.MAINNET : urlChainId
 
   const isAlternativeModalVisible = useIsAlternativeOrderModalVisible()
-  const isLimitOrderRoute = tradeTypeInfo?.tradeType === TradeType.LIMIT_ORDER
-  const shouldPauseAlternativeModal = isAlternativeModalVisible && isLimitOrderRoute
+  const shouldPauseAlternativeModal = isAlternativeModalVisible
 
   const switchNetworkInWallet = useCallback(
     async (targetChainId: SupportedChainId) => {
