@@ -40,7 +40,7 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks, amountToApp
 
   const onCurrencySelection = useOnCurrencySelection()
   const { onOpen: openSwapConfirmModal } = useTradeConfirmActions()
-  const [isPartialApproveEnabledBySettings] = useSwapPartialApprovalToggleState()
+  const [isPartialApproveEnabledBySettings] = useSwapPartialApprovalToggleState(isPartialApproveEnabled)
 
   return useMemo(() => {
     function sendTransaction(type: 'approve' | 'wrap', callback: () => Promise<string | undefined>): Promise<void> {
