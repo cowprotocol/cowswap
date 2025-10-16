@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.28.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.27.0...ui-v1.28.0) (2025-10-14)
+
+
+### Features
+
+* implement partial approve with new ui/ux ([7826f77](https://github.com/cowprotocol/cowswap/commit/7826f772d131055c7ccbb8fd9e1aeb7b4e5ac1b0))
+
 ## [1.27.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.26.1...ui-v1.27.0) (2025-08-21)
 
 
