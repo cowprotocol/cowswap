@@ -154,7 +154,11 @@ export const removeListAtom = atom(null, async (get, set, source: string) => {
   const stateCopy = { ...(await get(listsStatesByChainAtom)) }
   const networkState = { ...(stateCopy[chainId] || {}) }
 
-  delete networkState[source]
+  const networkKeyToRemove = Object.keys(networkState).find((key) => key.toLowerCase() === sourceLowerCase)
+
+  if (networkKeyToRemove) {
+    delete networkState[networkKeyToRemove]
+  }
 
   if (Object.keys(networkState).length === 0) {
     delete stateCopy[chainId]

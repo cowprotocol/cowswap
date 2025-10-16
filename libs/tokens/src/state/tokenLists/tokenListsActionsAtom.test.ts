@@ -98,15 +98,20 @@ describe('removeListAtom', () => {
     const source = 'https://Example.com/List.JSON'
     const sourceLower = source.toLowerCase()
     const userAdded = mapSupportedNetworks<Array<ListSourceConfig>>([])
+    const listsState = mapSupportedNetworks(() => ({} as TokenListsState)) as TokenListsByChainState
 
     userAdded[chainId] = [{ source }]
+    listsState[chainId] = { [source]: createListState(source) }
     store.set(userAddedListsSourcesAtom, userAdded)
+    store.set(listsStatesByChainAtom, listsState)
 
     await store.set(removeListAtom, sourceLower)
 
     const userAddedLists = store.get(userAddedListsSourcesAtom)
+    const updatedListsState = await store.get(listsStatesByChainAtom)
     expect(userAddedLists[chainId]).toHaveLength(0)
     expect(store.get(removedListsSourcesAtom)[chainId]).not.toContain(sourceLower)
+    expect(updatedListsState[chainId]?.[source]).toBeUndefined()
   })
 
   it('removes predefined lists that were not user-added and keeps them hidden after refresh', async () => {
