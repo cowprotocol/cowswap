@@ -16,35 +16,37 @@ import { environmentAtom } from '../environmentAtom'
 
 import type { ListState } from '../../types'
 
-type RemovedListsState = Record<SupportedChainId, string[]>
-
 function ensureListMarkedAsRemoved(
   set: Setter,
   chainId: SupportedChainId,
-  removedLists: RemovedListsState,
-  listsForChain: string[],
   sourceLowerCase: string,
 ): void {
-  if (listsForChain.includes(sourceLowerCase)) return
+  set(removedListsSourcesAtom, (prev) => {
+    const listsForChain = prev[chainId] || []
 
-  set(removedListsSourcesAtom, {
-    ...removedLists,
-    [chainId]: [...listsForChain, sourceLowerCase],
+    if (listsForChain.includes(sourceLowerCase)) return prev
+
+    return {
+      ...prev,
+      [chainId]: [...listsForChain, sourceLowerCase],
+    }
   })
 }
 
 function clearRemovedListState(
   set: Setter,
   chainId: SupportedChainId,
-  removedLists: RemovedListsState,
-  listsForChain: string[],
   sourceLowerCase: string,
 ): void {
-  if (!listsForChain.includes(sourceLowerCase)) return
+  set(removedListsSourcesAtom, (prev) => {
+    const listsForChain = prev[chainId] || []
 
-  set(removedListsSourcesAtom, {
-    ...removedLists,
-    [chainId]: listsForChain.filter((item) => item !== sourceLowerCase),
+    if (!listsForChain.includes(sourceLowerCase)) return prev
+
+    return {
+      ...prev,
+      [chainId]: listsForChain.filter((item) => item !== sourceLowerCase),
+    }
   })
 }
 
@@ -95,10 +97,12 @@ export const addListAtom = atom(null, (get, set, state: ListState) => {
     state.widgetAppCode = widgetAppCode
   }
 
-  const hasExistingEntry = userAddedTokenListsForChain.some((list) => list.source === state.source)
+  const hasExistingEntry = userAddedTokenListsForChain.some(
+    (list) => list.source.toLowerCase() === sourceLowerCase,
+  )
   const nextUserAddedListsForChain = hasExistingEntry
     ? userAddedTokenListsForChain.map((list) =>
-        list.source === state.source
+        list.source.toLowerCase() === sourceLowerCase
           ? {
               ...list,
               priority: state.priority,
@@ -133,14 +137,18 @@ export const removeListAtom = atom(null, async (get, set, source: string) => {
   const { chainId } = get(environmentAtom)
   const userAddedTokenLists = get(userAddedListsSourcesAtom)
   const userAddedTokenListsForChain = userAddedTokenLists[chainId] || []
-  const removedTokenLists = get(removedListsSourcesAtom)
-  const removedTokenListsForChain = removedTokenLists[chainId] || []
   const sourceLowerCase = source.toLowerCase()
-  const isUserAddedList = userAddedTokenListsForChain.some((item) => item.source === source)
+  const isUserAddedList = userAddedTokenListsForChain.some(
+    (item) => item.source.toLowerCase() === sourceLowerCase,
+  )
 
-  set(userAddedListsSourcesAtom, {
-    ...userAddedTokenLists,
-    [chainId]: userAddedTokenListsForChain.filter((item) => item.source !== source),
+  set(userAddedListsSourcesAtom, (prev) => {
+    const currentForChain = prev[chainId] || []
+
+    return {
+      ...prev,
+      [chainId]: currentForChain.filter((item) => item.source.toLowerCase() !== sourceLowerCase),
+    }
   })
 
   const stateCopy = { ...(await get(listsStatesByChainAtom)) }
@@ -158,15 +166,15 @@ export const removeListAtom = atom(null, async (get, set, source: string) => {
 
   if (isUserAddedList) {
     if (isPredefinedListSource(get, chainId, sourceLowerCase)) {
-      ensureListMarkedAsRemoved(set, chainId, removedTokenLists, removedTokenListsForChain, sourceLowerCase)
+      ensureListMarkedAsRemoved(set, chainId, sourceLowerCase)
     } else {
-      clearRemovedListState(set, chainId, removedTokenLists, removedTokenListsForChain, sourceLowerCase)
+      clearRemovedListState(set, chainId, sourceLowerCase)
     }
 
     return
   }
 
-  ensureListMarkedAsRemoved(set, chainId, removedTokenLists, removedTokenListsForChain, sourceLowerCase)
+  ensureListMarkedAsRemoved(set, chainId, sourceLowerCase)
 })
 
 export const toggleListAtom = atom(null, async (get, set, source: string) => {

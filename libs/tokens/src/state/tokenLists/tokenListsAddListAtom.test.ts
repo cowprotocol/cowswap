@@ -30,7 +30,7 @@ describe('addListAtom', () => {
 
     store.set(removedListsSourcesAtom, removedState)
 
-    await store.set(addListAtom, createListState(defaultListSource))
+    store.set(addListAtom, createListState(defaultListSource))
 
     const removedLists = store.get(removedListsSourcesAtom)
 
@@ -62,7 +62,7 @@ describe('addListAtom', () => {
 
     const lpProvider = 'CURVE' as LpTokenProvider
 
-    await store.set(
+    store.set(
       addListAtom,
       createListState(defaultListSource, { widgetAppCode: undefined, priority: 10, lpTokenProvider: lpProvider }),
     )

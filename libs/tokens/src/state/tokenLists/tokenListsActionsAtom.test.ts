@@ -93,6 +93,22 @@ describe('removeListAtom', () => {
     expect(listsMap[defaultListSource]).toBeUndefined()
   })
 
+  it('treats user-added sources case-insensitively when removing', async () => {
+    const store = setBaseState()
+    const source = 'https://Example.com/List.JSON'
+    const sourceLower = source.toLowerCase()
+    const userAdded = mapSupportedNetworks<Array<ListSourceConfig>>([])
+
+    userAdded[chainId] = [{ source }]
+    store.set(userAddedListsSourcesAtom, userAdded)
+
+    await store.set(removeListAtom, sourceLower)
+
+    const userAddedLists = store.get(userAddedListsSourcesAtom)
+    expect(userAddedLists[chainId]).toHaveLength(0)
+    expect(store.get(removedListsSourcesAtom)[chainId]).not.toContain(sourceLower)
+  })
+
   it('removes predefined lists that were not user-added and keeps them hidden after refresh', async () => {
     const store = setBaseState()
     const defaultList = DEFAULT_TOKENS_LISTS[chainId]?.[0]
