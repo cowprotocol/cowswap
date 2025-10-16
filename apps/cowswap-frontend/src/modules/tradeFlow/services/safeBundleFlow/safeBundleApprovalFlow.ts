@@ -52,6 +52,7 @@ export async function safeBundleApprovalFlow(
   analytics.approveAndPresign(swapFlowAnalyticsContext)
   tradeConfirmActions.onSign(tradeAmounts)
 
+  // TODO: bind to useIsPartialApproveSelectedByUser as well
   const amountToApprove = partialApproveEnabled ? BigInt(inputAmount.quotient.toString()) : MaxUint256.toBigInt()
 
   try {
