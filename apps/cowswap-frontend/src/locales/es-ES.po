@@ -8,7 +8,7 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: cowswap18n\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-10-16 14:43\n"
+"PO-Revision-Date: 2025-10-16 18:40\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -68,6 +68,10 @@ msgstr "Su gestor de reserva seguro fue cambiado después de que se realizaron �
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 msgid "Approve operation failed."
 msgstr "Error al aprobar la operación."
+
+#: apps/cowswap-frontend/src/modules/erc20Approve/containers/ApprovalAmountInput/ApprovalAmountInput.tsx
+msgid "Set to trade"
+msgstr "Poner en operación"
 
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
 msgid "To override this, enter your desired slippage amount.<0/><1/>Either way, your slippage is protected from MEV!"
@@ -695,6 +699,10 @@ msgstr "Idioma {locale} no encontrado"
 msgid "I understand"
 msgstr "Entiendo"
 
+#: apps/cowswap-frontend/src/modules/erc20Approve/pure/Toggle/Toggle.tsx
+msgid "Partial approval"
+msgstr "Aprobación parcial"
+
 #: apps/cowswap-frontend/src/modules/tradeFlow/hooks/useHandleSwap.ts
 #: apps/cowswap-frontend/src/modules/tradeFlow/hooks/useHandleSwap.ts
 msgid "Safe bundle flow context is not ready"
@@ -723,6 +731,10 @@ msgstr "Intercambia tus fichas a la perfección por piscinas CoW AMM"
 #: apps/cowswap-frontend/src/pages/Account/Menu.tsx
 msgid "Overview"
 msgstr "Resumen"
+
+#: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
+msgid "There are <0>{ordersWithPermitLenght}</0> existing orders using a <1/> token approval. If you sign a new one, only one order can fill. Continue with current permit amount or choose full approval so all orders can be filled."
+msgstr "Hay <0>{ordersWithPermitLenght}</0> pedidos existentes usando un token de aprobación <1/>. Si firma uno nuevo, sólo puede completar un pedido. Continuar con la cantidad actual del permiso o elegir la aprobación completa para que todos los pedidos puedan ser llenados."
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 msgid "Loading operation"
@@ -891,6 +903,7 @@ msgstr "pools disponibles para obtener rendimiento sobre sus activos!"
 
 #: apps/cowswap-frontend/src/common/containers/ConfirmationModal/index.tsx
 #: apps/cowswap-frontend/src/common/pure/ConfirmationModal/ConfirmationModal.tsx
+#: apps/cowswap-frontend/src/modules/erc20Approve/containers/ChangeApproveAmountModal/ChangeApproveAmountModalPure.tsx
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersConfirmModal/index.tsx
 #: apps/cowswap-frontend/src/modules/trade/pure/TradeConfirmation/index.tsx
 msgid "Confirm"
@@ -972,6 +985,10 @@ msgstr "Personalizado"
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/RateInput/index.tsx
 msgid "Est. partial fill price"
 msgstr "Precio de relleno parcial"
+
+#: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
+msgid "Partial approval may block <0>{ordersWithPermitLenght}</0> other orders"
+msgstr "La aprobación parcial puede bloquear <0>{ordersWithPermitLenght}</0> otros pedidos"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/ImportTokenListItem/index.tsx
 msgid "Loaded"
@@ -1538,6 +1555,10 @@ msgstr "aceptado"
 msgid "TVL"
 msgstr "TVL"
 
+#: apps/cowswap-frontend/src/modules/erc20Approve/pure/Toggle/Toggle.tsx
+msgid "Unlimited one-time"
+msgstr "Una sola vez ilimitada"
+
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/UnsupportedWalletWarning.tsx
 msgid "Use Safe web app"
 msgstr "Usar aplicación web segura"
@@ -1573,6 +1594,8 @@ msgstr "Tu Safe no está conectado con un firmante.<0/> Para realizar una orden,
 #: apps/cowswap-frontend/src/modules/bridge/pure/BridgeActivitySummary/BridgeSummaryHeader.tsx
 #: apps/cowswap-frontend/src/modules/bridge/pure/BridgeActivitySummary/BridgeSummaryHeader.tsx
 #: apps/cowswap-frontend/src/modules/bridge/pure/RouteTitle/index.tsx
+#: apps/cowswap-frontend/src/modules/erc20Approve/containers/SwapAmountPreview/SwapAmountPreview.tsx
+#: apps/cowswap-frontend/src/modules/erc20Approve/containers/SwapAmountPreview/SwapAmountPreview.tsx
 msgid "on"
 msgstr "en"
 
@@ -2348,6 +2371,10 @@ msgstr "Maximice su rendimiento en las posiciones LP existentes"
 msgid "6 Hours"
 msgstr "6 horas"
 
+#: apps/cowswap-frontend/src/modules/erc20Approve/containers/ChangeApproveAmountModal/ChangeApproveAmountModalPure.tsx
+msgid "Amount must be at least trade amount"
+msgstr "Monto debe ser al menos el monto de la operación"
+
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 msgid "Add liquidity to a Uniswap v2 pool after the swap"
 msgstr "Añadir liquidez a una piscina de Uniswap v2 después del intercambio"
@@ -2436,6 +2463,10 @@ msgstr "Cuánta cantidad del pedido se ha cumplido."
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteBridgeContent/index.tsx
 msgid "Bridge costs <0/>"
 msgstr "Puente cuesta <0/>"
+
+#: apps/cowswap-frontend/src/modules/erc20Approve/containers/ApprovalAmountInput/ApprovalAmountInput.tsx
+msgid "Reset"
+msgstr "Resetear"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/PartnerFeeRow/index.tsx
 msgid "No fee for order placement!"
@@ -3555,6 +3586,10 @@ msgstr "No se encontraron pedidos coincidentes"
 msgid "Wallet Unsupported"
 msgstr "Billetera no soportada"
 
+#: apps/cowswap-frontend/src/modules/erc20Approve/pure/Toggle/Toggle.tsx
+msgid "Full approval"
+msgstr "Aprobación completa"
+
 #: apps/cowswap-frontend/src/modules/zeroApproval/containers/ZeroApprovalModal/ZeroApprovalModal.tsx
 msgid "Reset <0>{symbol}</0> allowance"
 msgstr "Restablecer <0>{symbol}</0> permiso"
@@ -3924,6 +3959,10 @@ msgstr "El intercambio de vacas tratará de reducir este coste siempre que sea p
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/index.tsx
 msgid "versions of"
 msgstr "versiones de"
+
+#: apps/cowswap-frontend/src/modules/erc20Approve/containers/ChangeApproveAmountModal/ChangeApproveAmountModalPure.tsx
+msgid "Edit partial approval"
+msgstr "Editar aprobación parcial"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/OrderRow/OrderContextMenu.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
@@ -4786,6 +4825,10 @@ msgstr "Moneda desconocida"
 msgid "Receive {tokenLabel}"
 msgstr "Recibir {tokenLabel}"
 
+#: apps/cowswap-frontend/src/modules/erc20Approve/containers/ChangeApproveAmountModal/ChangeApproveAmountModalPure.tsx
+msgid "Set approval amount"
+msgstr "Establecer cantidad de aprobación"
+
 #: apps/cowswap-frontend/src/modules/fortune/containers/FortuneWidget/index.tsx
 msgid "CoW Fortune of the day"
 msgstr "CoW Fortuna del día"
@@ -4855,6 +4898,10 @@ msgstr "parte"
 #: apps/cowswap-frontend/src/modules/swap/pure/CrossChainUnlockScreen/index.tsx
 msgid "Cross-chain swaps are here"
 msgstr "Los swaps de cadena media están aquí"
+
+#: apps/cowswap-frontend/src/modules/erc20Approve/containers/ApprovalAmountInput/ApprovalAmountInput.tsx
+msgid "Approval amount:"
+msgstr "Monto de aprobación:"
 
 #: apps/cowswap-frontend/src/legacy/components/CowSubsidyModal/SubsidyTable.tsx
 msgid "Fee discount"
