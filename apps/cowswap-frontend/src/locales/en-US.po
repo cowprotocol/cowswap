@@ -3348,7 +3348,7 @@ msgstr "Token symbol, address"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
 msgid "Order Receipt"
-msgstr "Recibo de la orden"
+msgstr "Order Receipt"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "Transaction completed!"
