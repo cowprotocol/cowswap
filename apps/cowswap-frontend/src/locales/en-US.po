@@ -607,6 +607,10 @@ msgstr "CoW AMM only"
 msgid "Scheduled"
 msgstr "Scheduled"
 
+#: apps/cowswap-frontend/src/modules/swap/hooks/useGetConfirmButtonLabel.ts
+msgid "Approve and Swap"
+msgstr "Approve and Swap"
+
 #: apps/cowswap-frontend/src/common/constants/routes.ts
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersConfirmModal/index.tsx
 #: apps/cowswap-frontend/src/utils/orderUtils/getUiOrderType.ts
@@ -1173,8 +1177,8 @@ msgid "Too much time between parts"
 msgstr "Too much time between parts"
 
 #: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/index.tsx
-msgid "Swap and Bridge"
-msgstr "Swap and Bridge"
+#~ msgid "Swap and Bridge"
+#~ msgstr "Swap and Bridge"
 
 #: apps/cowswap-frontend/src/common/containers/OrderHooksDetails/index.tsx
 msgid "POST"
@@ -1262,6 +1266,10 @@ msgstr "Market price"
 #: apps/cowswap-frontend/src/common/pure/CurrencyInputPanel/CurrencyInputPanel.tsx
 msgid "Max"
 msgstr "Max"
+
+#: apps/cowswap-frontend/src/modules/swap/hooks/useGetConfirmButtonLabel.ts
+msgid "Approve, Swap & Bridge"
+msgstr "Approve, Swap & Bridge"
 
 #: apps/cowswap-frontend/src/modules/advancedOrders/containers/AdvancedOrdersWidget/index.tsx
 msgid "Get the Time-Weighted Average Price by splitting your large order into parts"
@@ -5056,8 +5064,8 @@ msgid "The output token cannot be transferred. There may be an issue with the ou
 msgstr "The output token cannot be transferred. There may be an issue with the output token."
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
-msgid "Approve and swap"
-msgstr "Approve and swap"
+#~ msgid "Approve and swap"
+#~ msgstr "Approve and swap"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 msgid "The competition has started"
@@ -5337,7 +5345,6 @@ msgstr "Because you are using a smart contract wallet"
 #: apps/cowswap-frontend/src/modules/bridge/pure/BridgeActivitySummary/SwapStepRow.tsx
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapConfirmModal/index.tsx
-#: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/index.tsx
 #: apps/cowswap-frontend/src/modules/yield/containers/TradeButtons/index.tsx
 #: apps/cowswap-frontend/src/modules/yield/containers/YieldWidget/elements.tsx
 #: apps/cowswap-frontend/src/utils/orderUtils/getUiOrderType.ts
