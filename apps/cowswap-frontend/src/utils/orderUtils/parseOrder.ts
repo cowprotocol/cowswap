@@ -33,7 +33,7 @@ export interface ParsedOrderExecutionData {
   filledPercentDisplay: string
   executedPrice: Price<Currency, Currency> | null
   activityId: string | undefined
-  activityTitle: MessageDescriptor
+  activityTitle: MessageDescriptor | string
 }
 
 export interface ParsedOrder {
