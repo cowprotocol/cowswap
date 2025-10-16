@@ -27,18 +27,22 @@ export function TradeApproveWithAffectedOrderList(): ReactNode {
     isApproveRequired === ApproveRequiredReason.Required ||
     isApproveRequired === ApproveRequiredReason.Eip2612PermitRequired
 
-  const currencyToApprove = partialAmountToApprove?.currency
+  if (!partialAmountToApprove) return null
+
+  const currencyToApprove = partialAmountToApprove.currency
 
   return (
     <>
-      {partialAmountToApprove && isApproveOrPartialPermitRequired && (
-        <TradeApproveToggle
-          updateModalState={() => setUserApproveAmountModalState({ isModalOpen: true })}
-          amountToApprove={partialAmountToApprove}
-        />
-      )}
-      {typeof currentAllowance === 'bigint' && currencyToApprove && (
-        <TradeAllowanceDisplay currentAllowance={currentAllowance} currencyToApprove={currencyToApprove} />
+      {isApproveOrPartialPermitRequired && (
+        <>
+          <TradeApproveToggle
+            updateModalState={() => setUserApproveAmountModalState({ isModalOpen: true })}
+            amountToApprove={partialAmountToApprove}
+          />
+          {typeof currentAllowance === 'bigint' && currencyToApprove && (
+            <TradeAllowanceDisplay currentAllowance={currentAllowance} currencyToApprove={currencyToApprove} />
+          )}
+        </>
       )}
       {showAffectedOrders && currencyToApprove && <ActiveOrdersWithAffectedPermit currency={currencyToApprove} />}
     </>
