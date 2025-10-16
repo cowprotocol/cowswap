@@ -1,8 +1,9 @@
 import { useAtomValue } from 'jotai'
-import { ReactNode, useMemo } from 'react'
+import { ReactNode, useEffect, useMemo } from 'react'
 
 import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
-import { currencyAmountToTokenAmount, getWrappedToken } from '@cowprotocol/common-utils'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { getWrappedToken } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
@@ -10,8 +11,13 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { useSingleActivityDescriptor } from 'legacy/hooks/useRecentActivity'
 import { WrapUnwrapCallback } from 'legacy/hooks/useWrapCallback'
 
-import { useApproveState } from 'modules/erc20Approve'
-import { useTradeApproveCallback } from 'modules/erc20Approve/containers/TradeApproveModal'
+import {
+  useApproveState,
+  useIsPartialApproveSelectedByUser,
+  usePartialApproveAmountModalState,
+  useTradeApproveCallback,
+  useUpdatePartialApproveAmountModalState,
+} from 'modules/erc20Approve'
 import { useWrappedToken } from 'modules/trade'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
@@ -52,9 +58,15 @@ export function EthFlowModal({
   const { state: approvalState } = useApproveState(wrappedAmount)
 
   const ethFlowContext = useAtomValue(ethFlowContextAtom)
-  const approveCallback = useTradeApproveCallback(
-    (nativeInput && currencyAmountToTokenAmount(nativeInput).currency) || undefined,
-  )
+
+  const { isPartialApproveEnabled } = useFeatureFlags()
+  const { amountSetByUser } = usePartialApproveAmountModalState() || {}
+  const updatePartialApproveAmountModalState = useUpdatePartialApproveAmountModalState()
+  const isPartialApproveSelectedByUser = useIsPartialApproveSelectedByUser()
+  const currencyToApprove =
+    isPartialApproveEnabled && isPartialApproveSelectedByUser ? (amountSetByUser ?? wrappedAmount) : undefined
+
+  const approveCallback = useTradeApproveCallback(wrapped)
 
   const ethFlowActions = useEthFlowActions(
     {
@@ -63,8 +75,15 @@ export function EthFlowModal({
       dismiss: onDismiss,
       directSwap: directSwapCallback,
     },
-    nativeInput ? BigInt(nativeInput?.quotient.toString()) : undefined,
+    currencyToApprove ? BigInt(currencyToApprove?.quotient.toString()) : undefined,
   )
+
+  useEffect(() => {
+    return () => {
+      // Reset amount user amount after eth flow is closed
+      updatePartialApproveAmountModalState({ amountSetByUser: undefined })
+    }
+  }, [updatePartialApproveAmountModalState])
 
   const approveActivity = useSingleActivityDescriptor({ chainId, id: ethFlowContext.approve.txHash || undefined })
   const wrapActivity = useSingleActivityDescriptor({ chainId, id: ethFlowContext.wrap.txHash || undefined })

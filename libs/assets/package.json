@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/assets",
-  "version": "1.15.0",
+  "version": "1.16.0",
   "main": "./index.js",
   "types": "./index.d.ts",
   "exports": {
