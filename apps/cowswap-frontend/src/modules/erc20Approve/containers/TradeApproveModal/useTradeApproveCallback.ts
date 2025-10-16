@@ -58,6 +58,8 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
             if (txResponse.status !== 1) {
               throw new Error('Approval transaction failed')
             }
+
+            return txResponse
           })
         })
         .finally(() => {
