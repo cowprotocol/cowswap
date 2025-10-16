@@ -4,12 +4,12 @@ import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { renderHook } from '@testing-library/react'
 
-import { useGeneratePermitHook, usePermitInfo, IsTokenPermittableResult } from 'modules/permit'
+import { IsTokenPermittableResult, useGeneratePermitHook, usePermitInfo } from 'modules/permit'
 import { TradeType } from 'modules/trade'
 
 import { useGeneratePermitInAdvanceToTrade } from './useGeneratePermitInAdvanceToTrade'
 
-import { useUpdateTradeApproveState } from '../'
+import { useResetApproveProgressModalState, useUpdateApproveProgressModalState } from '../'
 
 jest.mock('@cowprotocol/common-utils', () => ({
   getWrappedToken: jest.fn(),
@@ -31,15 +31,19 @@ jest.mock('modules/trade', () => ({
 }))
 
 jest.mock('../', () => ({
-  useUpdateTradeApproveState: jest.fn(),
+  useUpdateApproveProgressModalState: jest.fn(),
+  useResetApproveProgressModalState: jest.fn(),
 }))
 
 const mockGetWrappedToken = getWrappedToken as jest.MockedFunction<typeof getWrappedToken>
 const mockUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
 const mockUseGeneratePermitHook = useGeneratePermitHook as jest.MockedFunction<typeof useGeneratePermitHook>
 const mockUsePermitInfo = usePermitInfo as jest.MockedFunction<typeof usePermitInfo>
-const mockUseUpdateTradeApproveState = useUpdateTradeApproveState as jest.MockedFunction<
-  typeof useUpdateTradeApproveState
+const mockUseUpdateApproveProgressModalState = useUpdateApproveProgressModalState as jest.MockedFunction<
+  typeof useUpdateApproveProgressModalState
+>
+const mockUseResetApproveProgressModalState = useResetApproveProgressModalState as jest.MockedFunction<
+  typeof useResetApproveProgressModalState
 >
 
 describe('useGeneratePermitInAdvanceToTrade', () => {
@@ -48,7 +52,8 @@ describe('useGeneratePermitInAdvanceToTrade', () => {
   const mockAmountToApprove = CurrencyAmount.fromRawAmount(mockToken, '1000000000000000000') // 1 token
   const mockAccount = '0xabcdef1234567890abcdef1234567890abcdef12'
   const mockPermitInfo = { type: 'eip-2612' as const }
-  const mockUpdateTradeApproveState = jest.fn()
+  const mockUpdateApproveProgressModalState = jest.fn()
+  const mockResetApproveProgressModalState = jest.fn()
 
   const mockGeneratePermit = jest.fn()
 
@@ -59,7 +64,8 @@ describe('useGeneratePermitInAdvanceToTrade', () => {
     mockUseWalletInfo.mockReturnValue({ account: mockAccount, chainId: 1 } as WalletInfo)
     mockUseGeneratePermitHook.mockReturnValue(mockGeneratePermit)
     mockUsePermitInfo.mockReturnValue(mockPermitInfo)
-    mockUseUpdateTradeApproveState.mockReturnValue(mockUpdateTradeApproveState)
+    mockUseUpdateApproveProgressModalState.mockReturnValue(mockUpdateApproveProgressModalState)
+    mockUseResetApproveProgressModalState.mockReturnValue(mockResetApproveProgressModalState)
   })
 
   describe('hook initialization', () => {
@@ -191,9 +197,10 @@ describe('useGeneratePermitInAdvanceToTrade', () => {
       // Call the preSignCallback
       preSignCallback()
 
-      expect(mockUpdateTradeApproveState).toHaveBeenCalledWith({
+      expect(mockUpdateApproveProgressModalState).toHaveBeenCalledWith({
         currency: mockAmountToApprove.currency,
         approveInProgress: true,
+        amountToApprove: mockAmountToApprove,
       })
     })
 
@@ -211,10 +218,7 @@ describe('useGeneratePermitInAdvanceToTrade', () => {
 
       postSignCallback()
 
-      expect(mockUpdateTradeApproveState).toHaveBeenCalledWith({
-        currency: undefined,
-        approveInProgress: false,
-      })
+      expect(mockResetApproveProgressModalState).toHaveBeenCalled()
     })
   })
 
@@ -365,6 +369,30 @@ describe('useGeneratePermitInAdvanceToTrade', () => {
 
       expect(firstCallback).not.toBe(secondCallback)
     })
+
+    it('should recreate callback when updateApproveProgressModalState changes', () => {
+      const { result, rerender } = renderHook(() => useGeneratePermitInAdvanceToTrade(mockAmountToApprove))
+      const firstCallback = result.current
+
+      const newUpdateFunction = jest.fn()
+      mockUseUpdateApproveProgressModalState.mockReturnValue(newUpdateFunction)
+      rerender()
+      const secondCallback = result.current
+
+      expect(firstCallback).not.toBe(secondCallback)
+    })
+
+    it('should recreate callback when resetApproveProgressModalState changes', () => {
+      const { result, rerender } = renderHook(() => useGeneratePermitInAdvanceToTrade(mockAmountToApprove))
+      const firstCallback = result.current
+
+      const newResetFunction = jest.fn()
+      mockUseResetApproveProgressModalState.mockReturnValue(newResetFunction)
+      rerender()
+      const secondCallback = result.current
+
+      expect(firstCallback).not.toBe(secondCallback)
+    })
   })
 
   describe('integration scenarios', () => {
@@ -383,7 +411,7 @@ describe('useGeneratePermitInAdvanceToTrade', () => {
 
       expect(result_value).toBe(true)
       expect(mockGeneratePermit).toHaveBeenCalledTimes(1)
-      expect(mockUpdateTradeApproveState).toHaveBeenCalledTimes(0)
+      expect(mockUpdateApproveProgressModalState).toHaveBeenCalledTimes(0)
     })
 
     it('should handle permit generation with callbacks', async () => {
@@ -398,16 +426,14 @@ describe('useGeneratePermitInAdvanceToTrade', () => {
       const generatePermitCall = mockGeneratePermit.mock.calls[0][0]
 
       generatePermitCall.preSignCallback()
-      expect(mockUpdateTradeApproveState).toHaveBeenCalledWith({
+      expect(mockUpdateApproveProgressModalState).toHaveBeenCalledWith({
         currency: mockAmountToApprove.currency,
         approveInProgress: true,
+        amountToApprove: mockAmountToApprove,
       })
 
       generatePermitCall.postSignCallback()
-      expect(mockUpdateTradeApproveState).toHaveBeenCalledWith({
-        currency: undefined,
-        approveInProgress: false,
-      })
+      expect(mockResetApproveProgressModalState).toHaveBeenCalled()
     })
   })
 })

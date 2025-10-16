@@ -7,11 +7,12 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { useGeneratePermitHook, usePermitInfo } from 'modules/permit'
 import { TradeType } from 'modules/trade'
 
-import { useUpdateTradeApproveState } from '../'
+import { useResetApproveProgressModalState, useUpdateApproveProgressModalState } from '../'
 
 export function useGeneratePermitInAdvanceToTrade(amountToApprove: CurrencyAmount<Currency>): () => Promise<boolean> {
   const generatePermit = useGeneratePermitHook()
-  const updateTradeApproveState = useUpdateTradeApproveState()
+  const updateApproveProgressModalState = useUpdateApproveProgressModalState()
+  const resetApproveProgressModalState = useResetApproveProgressModalState()
   const { account } = useWalletInfo()
 
   const token = getWrappedToken(amountToApprove.currency)
@@ -21,11 +22,11 @@ export function useGeneratePermitInAdvanceToTrade(amountToApprove: CurrencyAmoun
     if (!account || !permitInfo) return false
 
     const preSignCallback = (): void =>
-      updateTradeApproveState({
+      updateApproveProgressModalState({
         currency: amountToApprove.currency,
         approveInProgress: true,
+        amountToApprove,
       })
-    const postSignCallback = (): void => updateTradeApproveState({ currency: undefined, approveInProgress: false })
 
     const permitData = await generatePermit({
       inputToken: { name: token.name || '', address: token.address },
@@ -33,9 +34,18 @@ export function useGeneratePermitInAdvanceToTrade(amountToApprove: CurrencyAmoun
       permitInfo,
       amount: BigInt(amountToApprove.quotient.toString()),
       preSignCallback,
-      postSignCallback,
+      postSignCallback: resetApproveProgressModalState,
     })
 
     return !!permitData
-  }, [account, amountToApprove, generatePermit, permitInfo, token, updateTradeApproveState])
+  }, [
+    account,
+    amountToApprove,
+    generatePermit,
+    permitInfo,
+    resetApproveProgressModalState,
+    token.address,
+    token.name,
+    updateApproveProgressModalState,
+  ])
 }
