@@ -6,13 +6,14 @@ import {
   useGetPartialAmountToSignApprove,
   useIsApprovalOrPermitRequired,
 } from '../../hooks'
+import { TradeAllowanceDisplay } from '../../pure/TradeAllowanceDisplay'
 import { useSetUserApproveAmountModalState } from '../../state'
 import { isMaxAmountToApprove } from '../../utils'
 import { ActiveOrdersWithAffectedPermit } from '../ActiveOrdersWithAffectedPermit'
 import { TradeApproveToggle } from '../TradeApproveToggle'
 
 export function TradeApproveWithAffectedOrderList(): ReactNode {
-  const isApproveRequired = useIsApprovalOrPermitRequired()
+  const { reason: isApproveRequired, currentAllowance } = useIsApprovalOrPermitRequired()
 
   const setUserApproveAmountModalState = useSetUserApproveAmountModalState()
 
@@ -26,6 +27,8 @@ export function TradeApproveWithAffectedOrderList(): ReactNode {
     isApproveRequired === ApproveRequiredReason.Required ||
     isApproveRequired === ApproveRequiredReason.Eip2612PermitRequired
 
+  const currencyToApprove = partialAmountToApprove?.currency
+
   return (
     <>
       {partialAmountToApprove && isApproveOrPartialPermitRequired && (
@@ -34,9 +37,10 @@ export function TradeApproveWithAffectedOrderList(): ReactNode {
           amountToApprove={partialAmountToApprove}
         />
       )}
-      {showAffectedOrders && partialAmountToApprove && (
-        <ActiveOrdersWithAffectedPermit currency={partialAmountToApprove?.currency} />
+      {typeof currentAllowance === 'bigint' && currencyToApprove && (
+        <TradeAllowanceDisplay currentAllowance={currentAllowance} currencyToApprove={currencyToApprove} />
       )}
+      {showAffectedOrders && currencyToApprove && <ActiveOrdersWithAffectedPermit currency={currencyToApprove} />}
     </>
   )
 }

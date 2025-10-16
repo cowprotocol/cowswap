@@ -11,7 +11,6 @@ import useSWR, { SWRConfiguration, SWRResponse } from 'swr'
 
 import { useTokenContract } from 'common/hooks/useContract'
 
-
 interface LastApproveParams {
   blockNumber: number
   tokenAddress: string
@@ -46,11 +45,14 @@ export function useTokenAllowance(
     setLastApproveTx({})
   }, [chainId, setLastApproveTx])
 
+  // Important! Do not add erc20Contract to SWR deps, otherwise it will do unwanted node RPC calls!
   return useSWR(
     erc20Contract && targetOwner && targetSpender
-      ? [erc20Contract, targetOwner, targetSpender, chainId, lastApproveBlockNumber, 'useTokenAllowance']
+      ? [targetOwner, targetSpender, chainId, lastApproveBlockNumber, tokenAddress, 'useTokenAllowance']
       : null,
-    ([erc20Contract, targetOwner, targetSpender]) => {
+    ([targetOwner, targetSpender]) => {
+      if (!erc20Contract) return undefined
+
       return erc20Contract.allowance(targetOwner, targetSpender).then((result) => result.toBigInt())
     },
     SWR_OPTIONS,

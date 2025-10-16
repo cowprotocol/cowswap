@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { PermitType } from '@cowprotocol/permit-utils'
 import { Nullish } from '@cowprotocol/types'
@@ -17,28 +19,32 @@ export enum ApproveRequiredReason {
   DaiLikePermitRequired,
 }
 
-export function useIsApprovalOrPermitRequired(): ApproveRequiredReason {
+export function useIsApprovalOrPermitRequired(): { reason: ApproveRequiredReason; currentAllowance: Nullish<bigint> } {
   const amountToApprove = useGetAmountToSignApprove()
   const { isPartialApproveEnabled } = useFeatureFlags()
-  const { state: approvalState } = useApproveState(amountToApprove)
+  const { state: approvalState, currentAllowance } = useApproveState(amountToApprove)
   const { inputCurrency, tradeType } = useDerivedTradeState() || {}
   const { type } = usePermitInfo(inputCurrency, tradeType) || {}
 
-  if (amountToApprove?.equalTo('0')) {
-    return ApproveRequiredReason.NotRequired
-  }
+  const reason = (() => {
+    if (amountToApprove?.equalTo('0')) {
+      return ApproveRequiredReason.NotRequired
+    }
 
-  const isPermitSupported = type !== 'unsupported'
+    const isPermitSupported = type !== 'unsupported'
 
-  if (!isPermitSupported && isApprovalRequired(approvalState)) {
-    return ApproveRequiredReason.Required
-  }
+    if (!isPermitSupported && isApprovalRequired(approvalState)) {
+      return ApproveRequiredReason.Required
+    }
 
-  if (!isNewApproveFlowEnabled(tradeType, isPartialApproveEnabled)) {
-    return ApproveRequiredReason.NotRequired
-  }
+    if (!isNewApproveFlowEnabled(tradeType, isPartialApproveEnabled)) {
+      return ApproveRequiredReason.NotRequired
+    }
 
-  return getPermitRequirements(type)
+    return getPermitRequirements(type)
+  })()
+
+  return useMemo(() => ({ reason, currentAllowance }), [reason, currentAllowance])
 }
 
 function isApprovalRequired(approvalState: ApprovalState): boolean {

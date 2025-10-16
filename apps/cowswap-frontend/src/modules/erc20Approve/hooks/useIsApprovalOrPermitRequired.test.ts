@@ -87,7 +87,7 @@ describe('useIsApprovalOrPermitRequired', () => {
         currentAllowance: BigInt(0),
       })
 
-      const { result } = renderHook(() => useIsApprovalOrPermitRequired())
+      const { result } = renderHook(() => useIsApprovalOrPermitRequired().reason)
 
       expect(result.current).toBe(ApproveRequiredReason.Required)
     })
@@ -98,7 +98,7 @@ describe('useIsApprovalOrPermitRequired', () => {
         currentAllowance: BigInt(0),
       })
 
-      const { result } = renderHook(() => useIsApprovalOrPermitRequired())
+      const { result } = renderHook(() => useIsApprovalOrPermitRequired().reason)
 
       expect(result.current).toBe(ApproveRequiredReason.Required)
     })
@@ -109,7 +109,7 @@ describe('useIsApprovalOrPermitRequired', () => {
         currentAllowance: BigInt(1000000000000000000),
       })
 
-      const { result } = renderHook(() => useIsApprovalOrPermitRequired())
+      const { result } = renderHook(() => useIsApprovalOrPermitRequired().reason)
 
       expect(result.current).toBe(ApproveRequiredReason.NotRequired)
     })
@@ -123,7 +123,7 @@ describe('useIsApprovalOrPermitRequired', () => {
         }),
       )
 
-      const { result } = renderHook(() => useIsApprovalOrPermitRequired())
+      const { result } = renderHook(() => useIsApprovalOrPermitRequired().reason)
 
       expect(result.current).toBe(ApproveRequiredReason.NotRequired)
     })
@@ -135,7 +135,7 @@ describe('useIsApprovalOrPermitRequired', () => {
         }),
       )
 
-      const { result } = renderHook(() => useIsApprovalOrPermitRequired())
+      const { result } = renderHook(() => useIsApprovalOrPermitRequired().reason)
 
       expect(result.current).toBe(ApproveRequiredReason.NotRequired)
     })
@@ -147,7 +147,7 @@ describe('useIsApprovalOrPermitRequired', () => {
         }),
       )
 
-      const { result } = renderHook(() => useIsApprovalOrPermitRequired())
+      const { result } = renderHook(() => useIsApprovalOrPermitRequired().reason)
 
       expect(result.current).toBe(ApproveRequiredReason.NotRequired)
     })
@@ -157,7 +157,7 @@ describe('useIsApprovalOrPermitRequired', () => {
     it('should return NotRequired when isPartialApproveEnabled is false', () => {
       mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: false })
 
-      const { result } = renderHook(() => useIsApprovalOrPermitRequired())
+      const { result } = renderHook(() => useIsApprovalOrPermitRequired().reason)
 
       expect(result.current).toBe(ApproveRequiredReason.NotRequired)
     })
@@ -167,7 +167,7 @@ describe('useIsApprovalOrPermitRequired', () => {
     it('should return Eip2612PermitRequired for eip-2612 permit type', () => {
       mockUsePermitInfo.mockReturnValue({ type: 'eip-2612' })
 
-      const { result } = renderHook(() => useIsApprovalOrPermitRequired())
+      const { result } = renderHook(() => useIsApprovalOrPermitRequired().reason)
 
       expect(result.current).toBe(ApproveRequiredReason.Eip2612PermitRequired)
     })
@@ -175,7 +175,7 @@ describe('useIsApprovalOrPermitRequired', () => {
     it('should return DaiLikePermitRequired for dai-like permit type', () => {
       mockUsePermitInfo.mockReturnValue({ type: 'dai-like' })
 
-      const { result } = renderHook(() => useIsApprovalOrPermitRequired())
+      const { result } = renderHook(() => useIsApprovalOrPermitRequired().reason)
 
       expect(result.current).toBe(ApproveRequiredReason.DaiLikePermitRequired)
     })
@@ -183,7 +183,7 @@ describe('useIsApprovalOrPermitRequired', () => {
     it('should return NotRequired for unsupported permit type', () => {
       mockUsePermitInfo.mockReturnValue({ type: 'unsupported' })
 
-      const { result } = renderHook(() => useIsApprovalOrPermitRequired())
+      const { result } = renderHook(() => useIsApprovalOrPermitRequired().reason)
 
       expect(result.current).toBe(ApproveRequiredReason.NotRequired)
     })
@@ -193,7 +193,7 @@ describe('useIsApprovalOrPermitRequired', () => {
     it('should handle undefined trade state', () => {
       mockUseDerivedTradeState.mockReturnValue(null)
 
-      const { result } = renderHook(() => useIsApprovalOrPermitRequired())
+      const { result } = renderHook(() => useIsApprovalOrPermitRequired().reason)
 
       expect(result.current).toBe(ApproveRequiredReason.NotRequired)
     })
@@ -201,7 +201,7 @@ describe('useIsApprovalOrPermitRequired', () => {
     it('should handle undefined permit info', () => {
       mockUsePermitInfo.mockReturnValue(undefined)
 
-      const { result } = renderHook(() => useIsApprovalOrPermitRequired())
+      const { result } = renderHook(() => useIsApprovalOrPermitRequired().reason)
 
       expect(result.current).toBe(ApproveRequiredReason.NotRequired)
     })
@@ -213,7 +213,7 @@ describe('useIsApprovalOrPermitRequired', () => {
         currentAllowance: BigInt(0),
       })
 
-      const { result } = renderHook(() => useIsApprovalOrPermitRequired())
+      const { result } = renderHook(() => useIsApprovalOrPermitRequired().reason)
 
       expect(result.current).toBe(ApproveRequiredReason.Required)
     })
@@ -225,7 +225,7 @@ describe('useIsApprovalOrPermitRequired', () => {
         currentAllowance: BigInt(0),
       })
 
-      const { result } = renderHook(() => useIsApprovalOrPermitRequired())
+      const { result } = renderHook(() => useIsApprovalOrPermitRequired().reason)
 
       expect(result.current).toBe(ApproveRequiredReason.NotRequired)
     })
@@ -237,7 +237,7 @@ describe('useIsApprovalOrPermitRequired', () => {
         }),
       )
 
-      const { result } = renderHook(() => useIsApprovalOrPermitRequired())
+      const { result } = renderHook(() => useIsApprovalOrPermitRequired().reason)
 
       expect(result.current).toBe(ApproveRequiredReason.NotRequired)
     })
@@ -249,7 +249,7 @@ describe('useIsApprovalOrPermitRequired', () => {
         }),
       )
 
-      const { result } = renderHook(() => useIsApprovalOrPermitRequired())
+      const { result } = renderHook(() => useIsApprovalOrPermitRequired().reason)
 
       expect(result.current).toBe(ApproveRequiredReason.NotRequired)
     })
@@ -263,7 +263,7 @@ describe('useIsApprovalOrPermitRequired', () => {
       })
       mockUsePermitInfo.mockReturnValue({ type: 'eip-2612' })
 
-      const { result } = renderHook(() => useIsApprovalOrPermitRequired())
+      const { result } = renderHook(() => useIsApprovalOrPermitRequired().reason)
 
       expect(result.current).toBe(ApproveRequiredReason.Eip2612PermitRequired)
     })
@@ -275,7 +275,7 @@ describe('useIsApprovalOrPermitRequired', () => {
       })
       mockUsePermitInfo.mockReturnValue({ type: 'unsupported' })
 
-      const { result } = renderHook(() => useIsApprovalOrPermitRequired())
+      const { result } = renderHook(() => useIsApprovalOrPermitRequired().reason)
 
       expect(result.current).toBe(ApproveRequiredReason.Required)
     })
@@ -287,7 +287,7 @@ describe('useIsApprovalOrPermitRequired', () => {
       })
       mockUsePermitInfo.mockReturnValue({ type: 'unsupported' })
 
-      const { result } = renderHook(() => useIsApprovalOrPermitRequired())
+      const { result } = renderHook(() => useIsApprovalOrPermitRequired().reason)
 
       expect(result.current).toBe(ApproveRequiredReason.NotRequired)
     })
@@ -296,19 +296,19 @@ describe('useIsApprovalOrPermitRequired', () => {
   describe('getPermitRequirements function', () => {
     it('should return correct permit requirements for different permit types', () => {
       mockUsePermitInfo.mockReturnValue({ type: 'eip-2612' })
-      const { result: result1 } = renderHook(() => useIsApprovalOrPermitRequired())
+      const { result: result1 } = renderHook(() => useIsApprovalOrPermitRequired().reason)
       expect(result1.current).toBe(ApproveRequiredReason.Eip2612PermitRequired)
 
       mockUsePermitInfo.mockReturnValue({ type: 'dai-like' })
-      const { result: result2 } = renderHook(() => useIsApprovalOrPermitRequired())
+      const { result: result2 } = renderHook(() => useIsApprovalOrPermitRequired().reason)
       expect(result2.current).toBe(ApproveRequiredReason.DaiLikePermitRequired)
 
       mockUsePermitInfo.mockReturnValue({ type: 'unsupported' })
-      const { result: result3 } = renderHook(() => useIsApprovalOrPermitRequired())
+      const { result: result3 } = renderHook(() => useIsApprovalOrPermitRequired().reason)
       expect(result3.current).toBe(ApproveRequiredReason.NotRequired)
 
       mockUsePermitInfo.mockReturnValue(undefined)
-      const { result: result4 } = renderHook(() => useIsApprovalOrPermitRequired())
+      const { result: result4 } = renderHook(() => useIsApprovalOrPermitRequired().reason)
       expect(result4.current).toBe(ApproveRequiredReason.NotRequired)
     })
   })
@@ -324,7 +324,7 @@ describe('useIsApprovalOrPermitRequired', () => {
       )
       mockUsePermitInfo.mockReturnValue({ type: 'eip-2612' })
 
-      const { result } = renderHook(() => useIsApprovalOrPermitRequired())
+      const { result } = renderHook(() => useIsApprovalOrPermitRequired().reason)
 
       expect(result.current).toBe(ApproveRequiredReason.Eip2612PermitRequired)
     })
@@ -339,7 +339,7 @@ describe('useIsApprovalOrPermitRequired', () => {
       )
       mockUsePermitInfo.mockReturnValue({ type: 'eip-2612' })
 
-      const { result } = renderHook(() => useIsApprovalOrPermitRequired())
+      const { result } = renderHook(() => useIsApprovalOrPermitRequired().reason)
 
       expect(result.current).toBe(ApproveRequiredReason.NotRequired)
     })
@@ -354,7 +354,7 @@ describe('useIsApprovalOrPermitRequired', () => {
       )
       mockUsePermitInfo.mockReturnValue({ type: 'eip-2612' })
 
-      const { result } = renderHook(() => useIsApprovalOrPermitRequired())
+      const { result } = renderHook(() => useIsApprovalOrPermitRequired().reason)
 
       expect(result.current).toBe(ApproveRequiredReason.NotRequired)
     })
@@ -366,7 +366,7 @@ describe('useIsApprovalOrPermitRequired', () => {
       })
       mockUsePermitInfo.mockReturnValue({ type: 'unsupported' })
 
-      const { result } = renderHook(() => useIsApprovalOrPermitRequired())
+      const { result } = renderHook(() => useIsApprovalOrPermitRequired().reason)
 
       expect(result.current).toBe(ApproveRequiredReason.NotRequired)
     })
