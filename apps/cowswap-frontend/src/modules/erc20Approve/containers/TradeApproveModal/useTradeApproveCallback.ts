@@ -54,7 +54,11 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
           approvalAnalytics('Sign', symbol)
           // if ff is disabled - use old flow, hide modal when tx is sent
           !isPartialApproveEnabled && updateTradeApproveState({ currency: undefined, approveInProgress: false })
-          return response?.wait()
+          return response?.wait().then((txResponse) => {
+            if (txResponse.status !== 1) {
+              throw new Error('Approval transaction failed')
+            }
+          })
         })
         .finally(() => {
           updateTradeApproveState({ currency: undefined, approveInProgress: false })

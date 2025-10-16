@@ -18,6 +18,8 @@ interface LastApproveParams {
 
 const lastApproveTxBlockNumberAtom = atom<Record<string, number>>({})
 
+const LAST_APPROVE_TX_TIME_THRESHOLD = ms`1s`
+
 const SWR_OPTIONS: SWRConfiguration = {
   ...SWR_NO_REFRESH_OPTIONS,
   revalidateIfStale: false,
@@ -64,10 +66,13 @@ export function useUpdateLastApproveTxBlockNumber(): (params: LastApproveParams)
 
   return useCallback(
     (params: LastApproveParams) => {
-      setState((state) => ({
-        ...state,
-        [params.tokenAddress.toLowerCase()]: params.blockNumber,
-      }))
+      // Wait 1 second before updating value to give some time to node to update the state
+      setTimeout(() => {
+        setState((state) => ({
+          ...state,
+          [params.tokenAddress.toLowerCase()]: params.blockNumber,
+        }))
+      }, LAST_APPROVE_TX_TIME_THRESHOLD)
     },
     [setState],
   )
