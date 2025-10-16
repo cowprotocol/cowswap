@@ -3,7 +3,7 @@ import React, { ReactNode } from 'react'
 import { Command } from '@cowprotocol/types'
 import { useWalletDisplayedAddress } from '@cowprotocol/wallet'
 
-import { Trans } from '@lingui/macro'
+import { t, Trans } from '@lingui/macro'
 import { CheckCircle, UserCheck } from 'react-feather'
 
 import { ConfirmationPendingContentShell } from './ConfirmationPendingContentShell'
@@ -29,15 +29,15 @@ export function ConfirmationPendingContent({
   const walletAddress = useWalletDisplayedAddress()
 
   const firstStepLabel = isPendingInProgress ? (
-    <Trans>The {operationLabel} is signed.</Trans>
+    t`The ${operationLabel} is signed.`
   ) : (
-    <Trans>
-      Sign the {operationLabel} with your wallet. text {walletAddress && <span>{walletAddress}</span>}{' '}
-    </Trans>
+    <>
+      {t`Sign the ${operationLabel} with your wallet.`} {walletAddress && <span>{walletAddress}</span>}{' '}
+    </>
   )
 
   const secondStepLabel = isPendingInProgress ? (
-    <Trans>Waiting for confirmation.</Trans>
+    t`Waiting for confirmation.`
   ) : (
     <Trans>The {operationLabel} is submitted.</Trans>
   )
@@ -54,7 +54,7 @@ export function ConfirmationPendingContent({
           <span>{description} </span>
           <br />
           <span>
-            <Trans>Follow these steps:</Trans>
+            {t`Follow these steps:`}
           </span>
         </>
       }
