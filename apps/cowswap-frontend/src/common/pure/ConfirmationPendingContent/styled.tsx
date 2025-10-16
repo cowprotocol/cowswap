@@ -150,7 +150,7 @@ export const StepsIconWrapper = styled.div`
   }
 `
 
-export const StepsWrapper = styled.div`
+export const StepsWrapper = styled.div<{ animateSecondStep?: boolean }>`
   display: flex;
   flex-flow: row wrap;
   justify-content: space-between;
@@ -171,7 +171,7 @@ export const StepsWrapper = styled.div`
       &::before {
         content: '';
         background: conic-gradient(var(${UI.COLOR_PAPER}) 40grad, 80grad, var(${UI.COLOR_PRIMARY}) 360grad);
-        display: block;
+        display: ${({ animateSecondStep }) => animateSecondStep ? 'none' : 'block'};
         width: var(--circle-size);
         padding: 0;
         position: absolute;
@@ -182,7 +182,28 @@ export const StepsWrapper = styled.div`
         margin: auto;
         border-radius: 100%;
         z-index: -2;
-        animation: spin 1.5s linear infinite;
+        animation: ${({ animateSecondStep }) => animateSecondStep ? 'none' : 'spin 1.5s linear infinite'};
+      }
+    }
+  }
+
+  > div:last-child {
+    ${StepsIconWrapper} {
+      &::before {
+        content: '';
+        background: conic-gradient(var(${UI.COLOR_PAPER}) 40grad, 80grad, var(${UI.COLOR_PRIMARY}) 360grad);
+        display: ${({ animateSecondStep }) => animateSecondStep ? 'block' : 'none'};
+        width: var(--circle-size);
+        padding: 0;
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        margin: auto;
+        border-radius: 100%;
+        z-index: -2;
+        animation: ${({ animateSecondStep }) => animateSecondStep ? 'spin 1.5s linear infinite' : 'none'};
       }
     }
   }

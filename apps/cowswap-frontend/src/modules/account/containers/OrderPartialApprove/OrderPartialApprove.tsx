@@ -5,12 +5,12 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import {
   ActiveOrdersWithAffectedPermit,
-  PendingOrderApproveAmountModal,
+  PartialApproveAmountModal,
   TradeApproveButton,
   TradeApproveToggle,
   useIsPartialApproveSelectedByUser,
-  usePendingApproveAmountModalState,
-  useUpdatePendingApproveAmountModalState,
+  usePartialApproveAmountModalState,
+  useUpdatePartialApproveAmountModalState,
 } from 'modules/erc20Approve'
 
 import { OrderActionsWrapper } from './styled'
@@ -18,20 +18,22 @@ import { OrderActionsWrapper } from './styled'
 export type OrderPartialApproveProps = {
   amountToApprove: CurrencyAmount<Currency>
   isPartialApproveEnabledBySettings?: boolean
+  orderId?: string
 }
 
 export function OrderPartialApprove({
   amountToApprove,
   isPartialApproveEnabledBySettings,
+  orderId,
 }: OrderPartialApproveProps): ReactNode {
   const isPartialApproveSelectedByUser = useIsPartialApproveSelectedByUser()
-  const { isModalOpen, amountSetByUser } = usePendingApproveAmountModalState() || {}
-  const updatePendingApproveAmountModalState = useUpdatePendingApproveAmountModalState()
+  const { isModalOpen, amountSetByUser } = usePartialApproveAmountModalState() || {}
+  const updatePartialApproveAmountModalState = useUpdatePartialApproveAmountModalState()
 
   const amountToApproveFinal = amountSetByUser ?? amountToApprove
 
   if (isModalOpen) {
-    return <PendingOrderApproveAmountModal initialAmountToApprove={amountToApproveFinal} />
+    return <PartialApproveAmountModal initialAmountToApprove={amountToApproveFinal} />
   }
 
   return (
@@ -39,10 +41,12 @@ export function OrderPartialApprove({
       {isPartialApproveEnabledBySettings && (
         <TradeApproveToggle
           amountToApprove={amountToApproveFinal}
-          updateModalState={() => updatePendingApproveAmountModalState({ isModalOpen: true })}
+          updateModalState={() => updatePartialApproveAmountModalState({ isModalOpen: true })}
         />
       )}
-      {isPartialApproveSelectedByUser && <ActiveOrdersWithAffectedPermit currency={amountToApprove.currency} />}
+      {isPartialApproveSelectedByUser && (
+        <ActiveOrdersWithAffectedPermit orderId={orderId} currency={amountToApprove.currency} />
+      )}
       <TradeApproveButton
         ignorePermit
         enablePartialApprove
