@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.27.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.26.3...cow-fi-v1.27.0) (2025-10-14)
+
+
+### Features
+
+* **cowfi:** enhance 404 page with CowSaucer animation and layout adj… ([#6321](https://github.com/cowprotocol/cowswap/issues/6321)) ([40bbf46](https://github.com/cowprotocol/cowswap/commit/40bbf46fcc7634a018b486c2bc49beab9e25a68f))
+
 ## [1.26.3](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.26.2...cow-fi-v1.26.3) (2025-10-02)
 
 
