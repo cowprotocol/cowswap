@@ -1,18 +1,17 @@
 import { useCallback } from 'react'
 
-import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { errorToString, isRejectRequestProviderError } from '@cowprotocol/common-utils'
 import { TransactionReceipt, TransactionResponse } from '@ethersproject/abstract-provider'
-import { Currency } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useLingui } from '@lingui/react/macro'
 
-import { CowSwapAnalyticsCategory } from 'common/analytics/types'
+import { useApproveCowAnalytics } from './useApproveCowAnalytics'
 
 import { useApproveCallback } from '../../hooks'
-import { useUpdateTradeApproveState } from '../../state'
+import { useResetApproveProgressModalState, useUpdateApproveProgressModalState } from '../../state'
 
 interface TradeApproveCallbackParams {
   useModals: boolean
@@ -35,42 +34,34 @@ export interface TradeApproveCallback {
   ): Promise<TransactionReceipt | undefined>
 }
 
+function getErrorCode(error: unknown): number | null {
+  return error && typeof error === 'object' && 'code' in error && typeof error.code === 'number' ? error.code : null
+}
+
 export function useTradeApproveCallback(currency: Currency | undefined): TradeApproveCallback {
-  const updateTradeApproveState = useUpdateTradeApproveState()
+  const updateApproveProgressModalState = useUpdateApproveProgressModalState()
+  const resetApproveProgressModalState = useResetApproveProgressModalState()
   const spender = useTradeSpenderAddress()
   const symbol = currency?.symbol
-  const cowAnalytics = useCowAnalytics()
   const { isPartialApproveEnabled } = useFeatureFlags()
   const { t } = useLingui()
 
   const approveCallback = useApproveCallback(currency, spender)
-
-  const approvalAnalytics = useCallback(
-    (action: string, symbol?: string, errorCode?: number | null) => {
-      cowAnalytics.sendEvent({
-        category: CowSwapAnalyticsCategory.TRADE,
-        action,
-        label: symbol,
-        ...(errorCode && { value: errorCode }),
-      })
-    },
-    [cowAnalytics],
-  )
+  const approvalAnalytics = useApproveCowAnalytics()
 
   const handleApprovalError = useCallback(
     (error: unknown) => {
       console.error('Error setting the allowance for token', error)
 
       if (isRejectRequestProviderError(error)) {
-        updateTradeApproveState({ error: t`User rejected approval transaction` })
+        updateApproveProgressModalState({ error: t`User rejected approval transaction` })
       } else {
-        const errorCode =
-          error && typeof error === 'object' && 'code' in error && typeof error.code === 'number' ? error.code : null
+        const errorCode = getErrorCode(error)
         approvalAnalytics('Error', symbol, errorCode)
-        updateTradeApproveState({ error: errorToString(error) })
+        updateApproveProgressModalState({ error: errorToString(error) })
       }
     },
-    [updateTradeApproveState, approvalAnalytics, symbol, t],
+    [updateApproveProgressModalState, approvalAnalytics, symbol, t],
   )
 
   return useCallback(
@@ -82,7 +73,8 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
       },
     ) => {
       if (useModals) {
-        updateTradeApproveState({ currency, approveInProgress: true })
+        const amountToApprove = currency ? CurrencyAmount.fromRawAmount(currency, amount.toString()) : undefined
+        updateApproveProgressModalState({ currency, approveInProgress: true, amountToApprove })
       }
 
       approvalAnalytics('Send', symbol)
@@ -91,13 +83,17 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
         const response = await approveCallback(amount)
 
         if (!response) {
-          updateTradeApproveState({ currency: undefined, approveInProgress: false })
+          resetApproveProgressModalState()
           return undefined
         }
 
         approvalAnalytics('Sign', symbol)
         // if ff is disabled - use old flow, hide modal when tx is sent
-        !isPartialApproveEnabled && updateTradeApproveState({ currency: undefined, approveInProgress: false })
+        if (isPartialApproveEnabled) {
+          updateApproveProgressModalState({ isPendingInProgress: true })
+        } else {
+          resetApproveProgressModalState()
+        }
 
         if (waitForTxConfirmation) {
           // need to wait response to run finally clause after that
@@ -110,16 +106,22 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
         handleApprovalError(error)
         return undefined
       } finally {
-        updateTradeApproveState({ currency: undefined, approveInProgress: false })
+        updateApproveProgressModalState({
+          currency,
+          approveInProgress: false,
+          amountToApprove: undefined,
+          isPendingInProgress: false,
+        })
       }
     },
     [
-      symbol,
-      approveCallback,
-      updateTradeApproveState,
-      currency,
       approvalAnalytics,
+      symbol,
+      currency,
+      updateApproveProgressModalState,
+      approveCallback,
       isPartialApproveEnabled,
+      resetApproveProgressModalState,
       handleApprovalError,
     ],
   ) as TradeApproveCallback

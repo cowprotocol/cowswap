@@ -1,6 +1,7 @@
-import React, { ReactNode, useCallback } from 'react'
+import React, { ReactNode } from 'react'
 
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
+import { usePreventDoubleExecution } from '@cowprotocol/common-hooks'
 import { ButtonSize, HoverTooltip, TokenSymbol } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -9,6 +10,7 @@ import { Trans } from '@lingui/macro'
 import { useTokenSupportsPermit } from 'modules/permit'
 import { TradeType } from 'modules/trade'
 
+import { useOnApproveClick } from './hooks/useOnApproveClick'
 import * as styledEl from './styled'
 import { ButtonWrapper } from './styled'
 
@@ -50,29 +52,16 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
   const isPermitSupported = useTokenSupportsPermit(amountToApprove.currency, TradeType.SWAP) && !ignorePermit
   const generatePermitToTrade = useGeneratePermitInAdvanceToTrade(amountToApprove)
 
-  const approveAndSwap = useCallback(async (): Promise<void> => {
-    if (isPermitSupported && onApproveConfirm) {
-      const isPermitSigned = await generatePermitToTrade()
-      if (isPermitSigned) {
-        onApproveConfirm()
-      }
-
-      return
-    }
-
-    const toApprove = isPartialApproveEnabledByUser ? BigInt(amountToApprove.quotient.toString()) : MAX_APPROVE_AMOUNT
-    const tx = await handleApprove(toApprove)
-    if (tx && onApproveConfirm) {
-      onApproveConfirm(tx.transactionHash)
-    }
-  }, [
+  const approveAndSwap = useOnApproveClick({
     isPermitSupported,
     onApproveConfirm,
     isPartialApproveEnabledByUser,
-    amountToApprove.quotient,
+    amountToApprove,
     handleApprove,
     generatePermitToTrade,
-  ])
+  })
+
+  const approveWithPreventedDoubleExecution = usePreventDoubleExecution(approveAndSwap)
 
   if (!enablePartialApprove) {
     return (
@@ -94,7 +83,7 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
     <ButtonWrapper
       disabled={isPending || isDisabled}
       buttonSize={buttonSize}
-      onClick={approveAndSwap}
+      onClick={approveWithPreventedDoubleExecution}
       altDisabledStyle={isPending}
     >
       <styledEl.ButtonLabelWrapper buttonSize={buttonSize}>
