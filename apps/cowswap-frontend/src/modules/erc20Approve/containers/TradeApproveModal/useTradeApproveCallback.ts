@@ -64,10 +64,6 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
           // if ff is disabled - use old flow, hide modal when tx is sent
           !isPartialApproveEnabled && updateTradeApproveState({ currency: undefined, approveInProgress: false })
           return response?.wait().then((txResponse) => {
-            if (txResponse.status !== 1) {
-              throw new Error('Approval transaction failed')
-            }
-
             // Set optimistic allowance immediately after transaction is mined
             // Extract the actual approved amount from transaction logs
             const approvedAmount = processApprovalTransaction(
