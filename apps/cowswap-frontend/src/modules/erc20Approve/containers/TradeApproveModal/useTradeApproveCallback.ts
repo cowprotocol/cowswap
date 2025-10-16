@@ -1,105 +1,112 @@
 import { useCallback } from 'react'
 
-import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { errorToString, isRejectRequestProviderError } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { TransactionReceipt } from '@ethersproject/abstract-provider'
+import type { TransactionReceipt, TransactionResponse } from '@ethersproject/abstract-provider'
 import { Currency } from '@uniswap/sdk-core'
 
 import { useSetOptimisticAllowance } from 'entities/optimisticAllowance/useSetOptimisticAllowance'
 
-import { CowSwapAnalyticsCategory } from 'common/analytics/types'
-
 import { processApprovalTransaction } from './approveUtils'
+import { useApprovalAnalytics } from './useApprovalAnalytics'
+import { useHandleApprovalError } from './useHandleApprovalError'
 
 import { useApproveCallback } from '../../hooks'
 import { useUpdateTradeApproveState } from '../../state'
 
 interface TradeApproveCallbackParams {
   useModals: boolean
+  waitForTxConfirmation?: boolean
 }
 
-export type TradeApproveResult = { txResponse: TransactionReceipt; approvedAmount: bigint | undefined }
+const DEFAULT_APPROVE_PARAMS: TradeApproveCallbackParams = {
+  useModals: true,
+  waitForTxConfirmation: false,
+}
+
+export type TradeApproveResult<R> = { txResponse: R; approvedAmount: bigint | undefined }
+
+export type GenerecTradeApproveResult = TradeApproveResult<TransactionResponse> | TradeApproveResult<TransactionReceipt>
 
 export interface TradeApproveCallback {
-  (amount: bigint, params?: TradeApproveCallbackParams): Promise<TradeApproveResult | undefined>
+  (
+    amount: bigint,
+    params?: TradeApproveCallbackParams & {
+      waitForTxConfirmation?: false
+    },
+  ): Promise<TradeApproveResult<TransactionResponse> | undefined>
+
+  (
+    amount: bigint,
+    params: TradeApproveCallbackParams & {
+      waitForTxConfirmation: true
+    },
+  ): Promise<TradeApproveResult<TransactionReceipt> | undefined>
 }
 
 export function useTradeApproveCallback(currency: Currency | undefined): TradeApproveCallback {
+  const symbol = currency?.symbol
+
   const updateTradeApproveState = useUpdateTradeApproveState()
   const spender = useTradeSpenderAddress()
-  const symbol = currency?.symbol
-  const cowAnalytics = useCowAnalytics()
   const { isPartialApproveEnabled } = useFeatureFlags()
   const { chainId, account } = useWalletInfo()
   const setOptimisticAllowance = useSetOptimisticAllowance()
 
   const approveCallback = useApproveCallback(currency, spender)
-
-  const approvalAnalytics = useCallback(
-    (action: string, symbol?: string, errorCode?: number | null) => {
-      cowAnalytics.sendEvent({
-        category: CowSwapAnalyticsCategory.TRADE,
-        action,
-        label: symbol,
-        ...(errorCode && { value: errorCode }),
-      })
-    },
-    [cowAnalytics],
-  )
+  const approvalAnalytics = useApprovalAnalytics()
+  const handleApprovalError = useHandleApprovalError(symbol)
 
   return useCallback(
-    async (amount, { useModals = true } = { useModals: true }) => {
+    async (amount, { useModals = true, waitForTxConfirmation } = DEFAULT_APPROVE_PARAMS) => {
       if (useModals) {
         updateTradeApproveState({ currency, approveInProgress: true })
       }
 
       approvalAnalytics('Send', symbol)
 
-      return approveCallback(amount)
-        .then((response) => {
-          approvalAnalytics('Sign', symbol)
-          // if ff is disabled - use old flow, hide modal when tx is sent
-          !isPartialApproveEnabled && updateTradeApproveState({ currency: undefined, approveInProgress: false })
-          return response?.wait().then((txResponse) => {
-            // Set optimistic allowance immediately after transaction is mined
-            // Extract the actual approved amount from transaction logs
-            const approvedAmount = processApprovalTransaction(
-              {
-                currency,
-                account,
-                spender,
-                chainId,
-              },
-              txResponse,
-            )
+      try {
+        const response = await approveCallback(amount)
 
-            if (approvedAmount) {
-              setOptimisticAllowance(approvedAmount)
-            }
-
-            return { txResponse, approvedAmount: approvedAmount?.amount }
-          })
-        })
-        .finally(() => {
+        // if ff is disabled - use old flow, hide modal when tx is sent
+        if (!response || !isPartialApproveEnabled) {
           updateTradeApproveState({ currency: undefined, approveInProgress: false })
-        })
-        .catch((error) => {
-          console.error('Error setting the allowance for token', error)
+          return undefined
+        }
 
-          if (isRejectRequestProviderError(error)) {
-            updateTradeApproveState({ error: 'User rejected approval transaction' })
-          } else {
-            const errorCode = error?.code && typeof error.code === 'number' ? error.code : null
+        approvalAnalytics('Sign', symbol)
 
-            approvalAnalytics('Error', symbol, errorCode)
-            updateTradeApproveState({ error: errorToString(error) })
+        if (waitForTxConfirmation) {
+          // need to wait response to run finally clause after that
+          const txResponse = await response.wait()
+
+          // Set optimistic allowance immediately after transaction is mined
+          // Extract the actual approved amount from transaction logs
+          const approvedAmount = processApprovalTransaction(
+            {
+              currency,
+              account,
+              spender,
+              chainId,
+            },
+            txResponse,
+          )
+
+          if (approvedAmount) {
+            setOptimisticAllowance(approvedAmount)
           }
 
-          return undefined
-        })
+          return { txResponse, approvedAmount: approvedAmount?.amount }
+        } else {
+          return { txResponse: response, approvedAmount: undefined }
+        }
+      } catch (error) {
+        handleApprovalError(error)
+        return undefined
+      } finally {
+        updateTradeApproveState({ currency: undefined, approveInProgress: false })
+      }
     },
     [
       symbol,
@@ -112,6 +119,7 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
       spender,
       chainId,
       setOptimisticAllowance,
+      handleApprovalError,
     ],
-  )
+  ) as TradeApproveCallback
 }

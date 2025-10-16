@@ -9,7 +9,7 @@ import { useGeneratePermitInAdvanceToTrade } from './useGeneratePermitInAdvanceT
 
 import { useTokenSupportsPermit } from '../../permit'
 import { MAX_APPROVE_AMOUNT } from '../constants'
-import { TradeApproveResult } from '../containers'
+import { TradeApproveResult } from '../containers/TradeApproveModal/useTradeApproveCallback'
 import { useIsPartialApproveSelectedByUser, useUpdateTradeApproveState } from '../state'
 
 jest.mock('./useApproveCurrency')
@@ -39,7 +39,7 @@ describe('useApproveAndSwap', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as any
 
-  const mockConfirmSwap = jest.fn()
+  const mockOnApproveConfirm = jest.fn()
   const mockHandleApprove = jest.fn()
   const mockGeneratePermitToTrade = jest.fn()
   const mockUpdateTradeApproveState = jest.fn()
@@ -79,14 +79,14 @@ describe('useApproveAndSwap', () => {
   })
 
   describe('permit flow', () => {
-    it('should handle successful permit signing and call confirmSwap', async () => {
+    it('should handle successful permit signing and call onApproveConfirm', async () => {
       mockUseTokenSupportsPermit.mockReturnValue(true)
       mockGeneratePermitToTrade.mockResolvedValue(true)
 
       const { result } = renderHook(() =>
         useApproveAndSwap({
           amountToApprove: mockAmountToApprove,
-          confirmSwap: mockConfirmSwap,
+          onApproveConfirm: mockOnApproveConfirm,
           ignorePermit: false,
           useModals: true,
         }),
@@ -96,19 +96,19 @@ describe('useApproveAndSwap', () => {
 
       await waitFor(() => {
         expect(mockGeneratePermitToTrade).toHaveBeenCalled()
-        expect(mockConfirmSwap).toHaveBeenCalled()
+        expect(mockOnApproveConfirm).toHaveBeenCalled()
         expect(mockHandleApprove).not.toHaveBeenCalled()
       })
     })
 
-    it('should not call confirmSwap if permit signing fails', async () => {
+    it('should not call onApproveConfirm if permit signing fails', async () => {
       mockUseTokenSupportsPermit.mockReturnValue(true)
       mockGeneratePermitToTrade.mockResolvedValue(false)
 
       const { result } = renderHook(() =>
         useApproveAndSwap({
           amountToApprove: mockAmountToApprove,
-          confirmSwap: mockConfirmSwap,
+          onApproveConfirm: mockOnApproveConfirm,
           ignorePermit: false,
           useModals: true,
         }),
@@ -118,19 +118,19 @@ describe('useApproveAndSwap', () => {
 
       await waitFor(() => {
         expect(mockGeneratePermitToTrade).toHaveBeenCalled()
-        expect(mockConfirmSwap).not.toHaveBeenCalled()
+        expect(mockOnApproveConfirm).not.toHaveBeenCalled()
         expect(mockHandleApprove).not.toHaveBeenCalled()
       })
     })
 
-    it('should not call confirmSwap if confirmSwap callback is not provided', async () => {
+    it('should not call onApproveConfirm if onApproveConfirm callback is not provided', async () => {
       mockUseTokenSupportsPermit.mockReturnValue(true)
       mockGeneratePermitToTrade.mockResolvedValue(true)
 
       const { result } = renderHook(() =>
         useApproveAndSwap({
           amountToApprove: mockAmountToApprove,
-          confirmSwap: undefined,
+          onApproveConfirm: undefined,
           ignorePermit: false,
           useModals: true,
         }),
@@ -140,14 +140,14 @@ describe('useApproveAndSwap', () => {
 
       await waitFor(() => {
         expect(mockGeneratePermitToTrade).not.toHaveBeenCalled()
-        expect(mockConfirmSwap).not.toHaveBeenCalled()
+        expect(mockOnApproveConfirm).not.toHaveBeenCalled()
       })
     })
 
     it('should skip permit flow when ignorePermit is true', async () => {
       mockUseTokenSupportsPermit.mockReturnValue(true)
       const mockTxReceipt = createMockTransactionReceipt()
-      const mockResult: TradeApproveResult = {
+      const mockResult: TradeApproveResult<TransactionReceipt> = {
         txResponse: mockTxReceipt,
         approvedAmount: BigInt('2000000000000000000'),
       }
@@ -156,7 +156,7 @@ describe('useApproveAndSwap', () => {
       const { result } = renderHook(() =>
         useApproveAndSwap({
           amountToApprove: mockAmountToApprove,
-          confirmSwap: mockConfirmSwap,
+          onApproveConfirm: mockOnApproveConfirm,
           ignorePermit: true,
           useModals: true,
         }),
@@ -167,7 +167,7 @@ describe('useApproveAndSwap', () => {
       await waitFor(() => {
         expect(mockGeneratePermitToTrade).not.toHaveBeenCalled()
         expect(mockHandleApprove).toHaveBeenCalled()
-        expect(mockConfirmSwap).toHaveBeenCalled()
+        expect(mockOnApproveConfirm).toHaveBeenCalled()
       })
     })
   })
@@ -175,7 +175,7 @@ describe('useApproveAndSwap', () => {
   describe('approval flow with TradeApproveResult', () => {
     it('should approve and call confirmSwap when approved amount is sufficient', async () => {
       const mockTxReceipt = createMockTransactionReceipt()
-      const mockResult: TradeApproveResult = {
+      const mockResult: TradeApproveResult<TransactionReceipt> = {
         txResponse: mockTxReceipt,
         approvedAmount: BigInt('2000000000000000000'), // More than required
       }
@@ -184,7 +184,7 @@ describe('useApproveAndSwap', () => {
       const { result } = renderHook(() =>
         useApproveAndSwap({
           amountToApprove: mockAmountToApprove,
-          confirmSwap: mockConfirmSwap,
+          onApproveConfirm: mockOnApproveConfirm,
           ignorePermit: false,
           useModals: true,
         }),
@@ -194,13 +194,13 @@ describe('useApproveAndSwap', () => {
 
       await waitFor(() => {
         expect(mockHandleApprove).toHaveBeenCalledWith(MAX_APPROVE_AMOUNT)
-        expect(mockConfirmSwap).toHaveBeenCalled()
+        expect(mockOnApproveConfirm).toHaveBeenCalled()
       })
     })
 
     it('should approve and call confirmSwap when approved amount equals required amount', async () => {
       const mockTxReceipt = createMockTransactionReceipt()
-      const mockResult: TradeApproveResult = {
+      const mockResult: TradeApproveResult<TransactionReceipt> = {
         txResponse: mockTxReceipt,
         approvedAmount: mockAmount, // Exactly what's required
       }
@@ -209,7 +209,7 @@ describe('useApproveAndSwap', () => {
       const { result } = renderHook(() =>
         useApproveAndSwap({
           amountToApprove: mockAmountToApprove,
-          confirmSwap: mockConfirmSwap,
+          onApproveConfirm: mockOnApproveConfirm,
           ignorePermit: false,
           useModals: true,
         }),
@@ -219,13 +219,13 @@ describe('useApproveAndSwap', () => {
 
       await waitFor(() => {
         expect(mockHandleApprove).toHaveBeenCalledWith(MAX_APPROVE_AMOUNT)
-        expect(mockConfirmSwap).toHaveBeenCalled()
+        expect(mockOnApproveConfirm).toHaveBeenCalled()
       })
     })
 
     it('should set error state when approved amount is insufficient', async () => {
       const mockTxReceipt = createMockTransactionReceipt()
-      const mockResult: TradeApproveResult = {
+      const mockResult: TradeApproveResult<TransactionReceipt> = {
         txResponse: mockTxReceipt,
         approvedAmount: BigInt('500000000000000000'), // Less than required
       }
@@ -234,7 +234,7 @@ describe('useApproveAndSwap', () => {
       const { result } = renderHook(() =>
         useApproveAndSwap({
           amountToApprove: mockAmountToApprove,
-          confirmSwap: mockConfirmSwap,
+          onApproveConfirm: mockOnApproveConfirm,
           ignorePermit: false,
           useModals: true,
         }),
@@ -245,13 +245,13 @@ describe('useApproveAndSwap', () => {
       await waitFor(() => {
         expect(mockHandleApprove).toHaveBeenCalledWith(MAX_APPROVE_AMOUNT)
         expect(mockUpdateTradeApproveState).toHaveBeenCalledWith({ error: 'Approved amount is not sufficient!' })
-        expect(mockConfirmSwap).not.toHaveBeenCalled()
+        expect(mockOnApproveConfirm).not.toHaveBeenCalled()
       })
     })
 
     it('should set error state when approved amount is undefined', async () => {
       const mockTxReceipt = createMockTransactionReceipt()
-      const mockResult: TradeApproveResult = {
+      const mockResult: TradeApproveResult<TransactionReceipt> = {
         txResponse: mockTxReceipt,
         approvedAmount: undefined,
       }
@@ -260,7 +260,7 @@ describe('useApproveAndSwap', () => {
       const { result } = renderHook(() =>
         useApproveAndSwap({
           amountToApprove: mockAmountToApprove,
-          confirmSwap: mockConfirmSwap,
+          onApproveConfirm: mockOnApproveConfirm,
           ignorePermit: false,
           useModals: true,
         }),
@@ -271,14 +271,14 @@ describe('useApproveAndSwap', () => {
       await waitFor(() => {
         expect(mockHandleApprove).toHaveBeenCalledWith(MAX_APPROVE_AMOUNT)
         expect(mockUpdateTradeApproveState).toHaveBeenCalledWith({ error: 'Approved amount is not sufficient!' })
-        expect(mockConfirmSwap).not.toHaveBeenCalled()
+        expect(mockOnApproveConfirm).not.toHaveBeenCalled()
       })
     })
 
     it('should use partial approve amount when user has enabled it', async () => {
       mockUseIsPartialApproveSelectedByUser.mockReturnValue(true)
       const mockTxReceipt = createMockTransactionReceipt()
-      const mockResult: TradeApproveResult = {
+      const mockResult: TradeApproveResult<TransactionReceipt> = {
         txResponse: mockTxReceipt,
         approvedAmount: mockAmount,
       }
@@ -287,7 +287,7 @@ describe('useApproveAndSwap', () => {
       const { result } = renderHook(() =>
         useApproveAndSwap({
           amountToApprove: mockAmountToApprove,
-          confirmSwap: mockConfirmSwap,
+          onApproveConfirm: mockOnApproveConfirm,
           ignorePermit: false,
           useModals: true,
         }),
@@ -297,7 +297,7 @@ describe('useApproveAndSwap', () => {
 
       await waitFor(() => {
         expect(mockHandleApprove).toHaveBeenCalledWith(mockAmount)
-        expect(mockConfirmSwap).toHaveBeenCalled()
+        expect(mockOnApproveConfirm).toHaveBeenCalled()
       })
     })
   })
@@ -309,7 +309,7 @@ describe('useApproveAndSwap', () => {
       const { result } = renderHook(() =>
         useApproveAndSwap({
           amountToApprove: mockAmountToApprove,
-          confirmSwap: mockConfirmSwap,
+          onApproveConfirm: mockOnApproveConfirm,
           ignorePermit: false,
           useModals: true,
         }),
@@ -319,7 +319,7 @@ describe('useApproveAndSwap', () => {
 
       await waitFor(() => {
         expect(mockHandleApprove).toHaveBeenCalledWith(MAX_APPROVE_AMOUNT)
-        expect(mockConfirmSwap).not.toHaveBeenCalled()
+        expect(mockOnApproveConfirm).not.toHaveBeenCalled()
       })
     })
 
@@ -329,7 +329,7 @@ describe('useApproveAndSwap', () => {
       const { result } = renderHook(() =>
         useApproveAndSwap({
           amountToApprove: mockAmountToApprove,
-          confirmSwap: mockConfirmSwap,
+          onApproveConfirm: mockOnApproveConfirm,
           ignorePermit: false,
           useModals: true,
         }),
@@ -339,13 +339,13 @@ describe('useApproveAndSwap', () => {
 
       await waitFor(() => {
         expect(mockHandleApprove).toHaveBeenCalledWith(MAX_APPROVE_AMOUNT)
-        expect(mockConfirmSwap).not.toHaveBeenCalled()
+        expect(mockOnApproveConfirm).not.toHaveBeenCalled()
       })
     })
 
     it('should not call confirmSwap when confirmSwap callback is not provided', async () => {
       const mockTxReceipt = createMockTransactionReceipt()
-      const mockResult: TradeApproveResult = {
+      const mockResult: TradeApproveResult<TransactionReceipt> = {
         txResponse: mockTxReceipt,
         approvedAmount: mockAmount,
       }
@@ -354,7 +354,7 @@ describe('useApproveAndSwap', () => {
       const { result } = renderHook(() =>
         useApproveAndSwap({
           amountToApprove: mockAmountToApprove,
-          confirmSwap: undefined,
+          onApproveConfirm: undefined,
           ignorePermit: false,
           useModals: true,
         }),
@@ -364,7 +364,7 @@ describe('useApproveAndSwap', () => {
 
       await waitFor(() => {
         expect(mockHandleApprove).toHaveBeenCalledWith(MAX_APPROVE_AMOUNT)
-        expect(mockConfirmSwap).not.toHaveBeenCalled()
+        expect(mockOnApproveConfirm).not.toHaveBeenCalled()
       })
     })
   })
@@ -374,7 +374,7 @@ describe('useApproveAndSwap', () => {
       renderHook(() =>
         useApproveAndSwap({
           amountToApprove: mockAmountToApprove,
-          confirmSwap: mockConfirmSwap,
+          onApproveConfirm: mockOnApproveConfirm,
           ignorePermit: false,
           useModals: true,
         }),
@@ -387,7 +387,7 @@ describe('useApproveAndSwap', () => {
       renderHook(() =>
         useApproveAndSwap({
           amountToApprove: mockAmountToApprove,
-          confirmSwap: mockConfirmSwap,
+          onApproveConfirm: mockOnApproveConfirm,
           ignorePermit: false,
           useModals: false,
         }),
@@ -400,7 +400,7 @@ describe('useApproveAndSwap', () => {
       renderHook(() =>
         useApproveAndSwap({
           amountToApprove: mockAmountToApprove,
-          confirmSwap: mockConfirmSwap,
+          onApproveConfirm: mockOnApproveConfirm,
           ignorePermit: false,
         }),
       )
@@ -417,7 +417,7 @@ describe('useApproveAndSwap', () => {
       const { result } = renderHook(() =>
         useApproveAndSwap({
           amountToApprove: mockAmountToApprove,
-          confirmSwap: mockConfirmSwap,
+          onApproveConfirm: mockOnApproveConfirm,
           ignorePermit: false,
           useModals: true,
         }),
@@ -426,7 +426,7 @@ describe('useApproveAndSwap', () => {
       await expect(result.current()).rejects.toThrow('Approval failed')
 
       expect(mockHandleApprove).toHaveBeenCalledWith(MAX_APPROVE_AMOUNT)
-      expect(mockConfirmSwap).not.toHaveBeenCalled()
+      expect(mockOnApproveConfirm).not.toHaveBeenCalled()
     })
 
     it('should propagate errors from generatePermitToTrade', async () => {
@@ -437,7 +437,7 @@ describe('useApproveAndSwap', () => {
       const { result } = renderHook(() =>
         useApproveAndSwap({
           amountToApprove: mockAmountToApprove,
-          confirmSwap: mockConfirmSwap,
+          onApproveConfirm: mockOnApproveConfirm,
           ignorePermit: false,
           useModals: true,
         }),
@@ -447,7 +447,7 @@ describe('useApproveAndSwap', () => {
 
       expect(mockGeneratePermitToTrade).toHaveBeenCalled()
       expect(mockHandleApprove).not.toHaveBeenCalled()
-      expect(mockConfirmSwap).not.toHaveBeenCalled()
+      expect(mockOnApproveConfirm).not.toHaveBeenCalled()
     })
   })
 })
