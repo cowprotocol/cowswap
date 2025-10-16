@@ -29,12 +29,6 @@ export const Title = styled.div`
   width: 100%;
 `
 
-export const HelpLink = styled.a`
-  font-size: 14px;
-  font-weight: normal;
-  color: var(${UI.COLOR_TEXT_OPACITY_70});
-`
-
 export const BtnWrapper = styled.div`
   margin: 15px;
 `
