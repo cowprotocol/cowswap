@@ -1,4 +1,4 @@
-import { ACTIVE_CUSTOM_THEME, CustomTheme } from '@cowprotocol/common-const'
+import { CustomTheme, isCustomThemeActive } from '@cowprotocol/common-const'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
 import { CowSwapWidgetAppParams } from '@cowprotocol/widget-lib'
@@ -67,30 +67,16 @@ function pickRandomAprilsFoolSound(): string {
   return randomPick
 }
 
-function getThemedSounds(params: {
-  type: SoundType
-  activeTheme: CustomTheme
-  isChristmasEnabled: boolean
-  isHalloweenEnabled: boolean
-  isAprilsFoolsEnabled: boolean
-}): Partial<Sounds> {
-  const { activeTheme, isChristmasEnabled, isHalloweenEnabled, isAprilsFoolsEnabled } = params
-  if (activeTheme === CustomTheme.CHRISTMAS && isChristmasEnabled) return WINTER_SOUNDS
-  if (activeTheme === CustomTheme.HALLOWEEN && isHalloweenEnabled && isDarkMode()) return HALLOWEEN_SOUNDS
+function getSeasonalSounds(featureFlags?: Record<string, boolean | number | undefined>): Partial<Sounds> {
+  if (isCustomThemeActive(CustomTheme.CHRISTMAS, featureFlags)) return WINTER_SOUNDS
+  if (isCustomThemeActive(CustomTheme.HALLOWEEN, featureFlags) && isDarkMode()) return HALLOWEEN_SOUNDS
 
-  if (isAprilsFoolsEnabled)
-    return {
-      SEND: pickRandomAprilsFoolSound(),
-    }
   return {}
 }
 
 function getThemeBasedSound(type: SoundType): string {
-  // TODO: load featureFlags when enabling again
-  const featureFlags = jotaiStore.get(featureFlagsAtom) as Record<string, boolean>
-  const { isAprilsFoolsEnabled /*isChristmasEnabled, isHalloweenEnabled */ } = featureFlags
-  const isChristmasEnabled = false
-  const isHalloweenEnabled = true
+  const featureFlags = jotaiStore.get(featureFlagsAtom) as Record<string, boolean | number | undefined>
+  const isAprilsFoolsEnabled = Boolean(featureFlags?.isAprilsFoolsEnabled)
   const isInjectedWidgetMode = isInjectedWidget()
 
   // When in widget mode, always return default sounds
@@ -98,13 +84,11 @@ function getThemeBasedSound(type: SoundType): string {
     return DEFAULT_COW_SOUNDS[type]
   }
 
-  const themedSounds = getThemedSounds({
-    type,
-    activeTheme: ACTIVE_CUSTOM_THEME,
-    isChristmasEnabled,
-    isHalloweenEnabled,
-    isAprilsFoolsEnabled,
-  })
+  if (isAprilsFoolsEnabled && type === 'SEND') {
+    return pickRandomAprilsFoolSound()
+  }
+
+  const themedSounds = getSeasonalSounds(featureFlags)
   return themedSounds[type] || DEFAULT_COW_SOUNDS[type]
 }
 
