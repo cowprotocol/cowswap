@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.16.0](https://github.com/cowprotocol/cowswap/compare/assets-v1.15.0...assets-v1.16.0) (2025-10-14)
+
+
+### Features
+
+* add 404 page moment of delight ([#6327](https://github.com/cowprotocol/cowswap/issues/6327)) ([3d98539](https://github.com/cowprotocol/cowswap/commit/3d985397f9c43a5593e3281263e5f644860059ee))
+* **cowfi:** enhance 404 page with CowSaucer animation and layout adj… ([#6321](https://github.com/cowprotocol/cowswap/issues/6321)) ([40bbf46](https://github.com/cowprotocol/cowswap/commit/40bbf46fcc7634a018b486c2bc49beab9e25a68f))
+* implement partial approve with new ui/ux ([7826f77](https://github.com/cowprotocol/cowswap/commit/7826f772d131055c7ccbb8fd9e1aeb7b4e5ac1b0))
+
 ## [1.15.0](https://github.com/cowprotocol/cowswap/compare/assets-v1.14.0...assets-v1.15.0) (2025-08-28)
 
 
