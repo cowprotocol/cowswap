@@ -1284,8 +1284,8 @@ msgid "Solver auction rankings"
 msgstr "Solver auction rankings"
 
 #: apps/cowswap-frontend/src/common/pure/ConfirmationPendingContent/ConfirmationPendingContent.tsx
-msgid "Follow these steps"
-msgstr "Follow these steps"
+#~ msgid "Follow these steps"
+#~ msgstr "Follow these steps"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/OrderType/index.tsx
 msgid "This order will either be filled completely or not filled."
@@ -1432,6 +1432,10 @@ msgstr "Increase Value"
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookListsTabs/index.tsx
 msgid "All Hooks ({allHooksCount})"
 msgstr "All Hooks ({allHooksCount})"
+
+#: apps/cowswap-frontend/src/modules/erc20Approve/hooks/usePendingApprovalModal.tsx
+msgid "Approving <0/> <1><2/></1> for trading"
+msgstr "Approving <0/> <1><2/></1> for trading"
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 msgid "Reduce or withdraw liquidity from a pool before a token swap integrating the process directly into the transaction flow. By adjusting your liquidity ahead of time, you gain more control over your assets without any extra steps. Optimize your position in a pool, all in one seamless action — no need for multiple transactions or added complexity."
@@ -1805,6 +1809,10 @@ msgstr "Approval amount insufficient for input amount."
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappDetails/index.tsx
 msgid "and"
 msgstr "and"
+
+#: apps/cowswap-frontend/src/common/pure/ConfirmationPendingContent/ConfirmationPendingContent.tsx
+msgid "Waiting for confirmation."
+msgstr "Waiting for confirmation."
 
 #: apps/cowswap-frontend/src/pages/Account/LockedGnoVesting/index.tsx
 msgid "COW token"
@@ -3249,6 +3257,10 @@ msgstr "Start bridging"
 msgid "Import at your own risk"
 msgstr "Import at your own risk"
 
+#: apps/cowswap-frontend/src/modules/erc20Approve/hooks/usePendingApprovalModal.tsx
+msgid "Approving <0>{currencySymbolOrContext}</0> for trading"
+msgstr "Approving <0>{currencySymbolOrContext}</0> for trading"
+
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Couldn't load balances"
 msgstr "Couldn't load balances"
@@ -3961,6 +3973,10 @@ msgstr "From"
 msgid "Orders not matched after the threshold time are automatically refunded."
 msgstr "Orders not matched after the threshold time are automatically refunded."
 
+#: apps/cowswap-frontend/src/common/pure/ConfirmationPendingContent/ConfirmationPendingContent.tsx
+msgid "Follow these steps:"
+msgstr "Follow these steps:"
+
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/index.tsx
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapWidget/index.tsx
 msgid "Buy exactly"
@@ -4396,8 +4412,8 @@ msgid "New"
 msgstr "New"
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/hooks/usePendingApprovalModal.tsx
-msgid "Approving"
-msgstr "Approving"
+#~ msgid "Approving"
+#~ msgstr "Approving"
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/ManageListsAndTokens/index.tsx
 msgid "https:// or ipfs:// or ENS name"
@@ -4435,8 +4451,8 @@ msgid "Hooks"
 msgstr "Hooks"
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/hooks/usePendingApprovalModal.tsx
-msgid "for trading"
-msgstr "for trading"
+#~ msgid "for trading"
+#~ msgstr "for trading"
 
 #: apps/cowswap-frontend/src/legacy/utils/trade.ts
 msgid "at most "
@@ -5754,6 +5770,10 @@ msgstr "Customize your order size, expiration, and number of parts"
 #: apps/cowswap-frontend/src/modules/swap/containers/NetworkBridgeBanner/NetworkBridgeBanner.tsx
 msgid "{label} token bridge"
 msgstr "{label} token bridge"
+
+#: apps/cowswap-frontend/src/common/pure/ConfirmationPendingContent/ConfirmationPendingContent.tsx
+msgid "The {operationLabel} is signed."
+msgstr "The {operationLabel} is signed."
 
 #: apps/cowswap-frontend/src/modules/swap/pure/TwapSuggestionBanner.tsx
 msgid "The price impact is <0>{formattedPriceImpact}%</0>. Consider breaking up your order using a <1>TWAP order</1> and possibly get a better rate."
