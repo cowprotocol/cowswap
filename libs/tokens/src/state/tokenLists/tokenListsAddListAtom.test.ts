@@ -11,10 +11,12 @@ import { removedListsSourcesAtom, userAddedListsSourcesAtom } from './tokenLists
 
 import { DEFAULT_TOKENS_LISTS } from '../../const/tokensLists'
 
+import type { ListSourceConfig } from '../../types'
+
 const chainId = DEFAULT_CHAIN_ID
 
 describe('addListAtom', () => {
-  it('re-adding a previously removed default list clears removed state', async () => {
+  it('re-adding a previously removed default list clears removed state', () => {
     const store = setBaseState()
     const defaultList = DEFAULT_TOKENS_LISTS[chainId]?.[0]
 
@@ -37,7 +39,7 @@ describe('addListAtom', () => {
     expect(removedLists[chainId]).not.toContain(defaultListSourceLower)
   })
 
-  it('updates metadata for existing user-added lists when re-adding', async () => {
+  it('updates metadata for existing user-added lists when re-adding', () => {
     const store = setBaseState()
     const defaultList = DEFAULT_TOKENS_LISTS[chainId]?.[0]
 
@@ -46,9 +48,7 @@ describe('addListAtom', () => {
     }
 
     const defaultListSource = defaultList.source
-    const existingUserAdded = mapSupportedNetworks<Array<{ source: string; widgetAppCode?: string; priority?: number }>>(
-      [],
-    )
+    const existingUserAdded = mapSupportedNetworks<Array<ListSourceConfig>>([])
 
     existingUserAdded[chainId] = [
       {

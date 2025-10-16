@@ -16,6 +16,12 @@ import type { ListSourceConfig, TokenListsState, TokenListsByChainState } from '
 
 const chainId = DEFAULT_CHAIN_ID
 
+afterEach(() => {
+  const { __resetStorage } = require('localforage')
+
+  __resetStorage()
+})
+
 describe('removeListAtom', () => {
   it('keeps default lists hidden when the user removes their user-added counterpart', async () => {
     const store = setBaseState()

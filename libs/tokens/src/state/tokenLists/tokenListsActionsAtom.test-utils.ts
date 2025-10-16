@@ -31,6 +31,9 @@ jest.mock('localforage', () => {
         return Promise.resolve()
       },
     }),
+    __resetStorage: () => {
+      Object.keys(storage).forEach((key) => delete storage[key])
+    },
   }
 })
 
