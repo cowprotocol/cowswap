@@ -4,10 +4,15 @@ import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { errorToString, isRejectRequestProviderError } from '@cowprotocol/common-utils'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
 import { Currency } from '@uniswap/sdk-core'
 
+import { useSetOptimisticAllowance } from 'entities/optimisticAllowance/useSetOptimisticAllowance'
+
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
+
+import { processApprovalTransaction } from './approveUtils'
 
 import { useApproveCallback } from '../../hooks'
 import { useUpdateTradeApproveState } from '../../state'
@@ -26,6 +31,8 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
   const symbol = currency?.symbol
   const cowAnalytics = useCowAnalytics()
   const { isPartialApproveEnabled } = useFeatureFlags()
+  const { chainId, account } = useWalletInfo()
+  const setOptimisticAllowance = useSetOptimisticAllowance()
 
   const approveCallback = useApproveCallback(currency, spender)
 
@@ -59,6 +66,22 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
               throw new Error('Approval transaction failed')
             }
 
+            // Set optimistic allowance immediately after transaction is mined
+            // Extract the actual approved amount from transaction logs
+            const approvedAmount = processApprovalTransaction(
+              {
+                currency,
+                account,
+                spender,
+                chainId,
+              },
+              txResponse,
+            )
+
+            if (approvedAmount) {
+              setOptimisticAllowance(approvedAmount)
+            }
+
             return txResponse
           })
         })
@@ -80,6 +103,17 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
           return undefined
         })
     },
-    [symbol, approveCallback, updateTradeApproveState, currency, approvalAnalytics, isPartialApproveEnabled],
+    [
+      symbol,
+      approveCallback,
+      updateTradeApproveState,
+      currency,
+      approvalAnalytics,
+      isPartialApproveEnabled,
+      account,
+      spender,
+      chainId,
+      setOptimisticAllowance,
+    ],
   )
 }

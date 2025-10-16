@@ -1,24 +1,20 @@
-import { atom, useAtom, useSetAtom } from 'jotai'
-import { useCallback, useEffect } from 'react'
+import { useAtom } from 'jotai'
+import { useEffect, useMemo } from 'react'
 
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Token } from '@uniswap/sdk-core'
 
+import { optimisticAllowancesAtom } from 'entities/optimisticAllowance/optimisticAllowancesAtom'
 import ms from 'ms.macro'
 import useSWR, { SWRConfiguration, SWRResponse } from 'swr'
 
 import { useTokenContract } from 'common/hooks/useContract'
 
-interface LastApproveParams {
-  blockNumber: number
-  tokenAddress: string
-}
+import { getOptimisticAllowanceKey } from '../../entities/optimisticAllowance/getOptimisticAllowanceKey'
 
-const lastApproveTxBlockNumberAtom = atom<Record<string, number>>({})
-
-const LAST_APPROVE_TX_TIME_THRESHOLD = ms`1s`
+const OPTIMISTIC_ALLOWANCE_TTL = ms`30s`
 
 const SWR_OPTIONS: SWRConfiguration = {
   ...SWR_NO_REFRESH_OPTIONS,
@@ -36,21 +32,22 @@ export function useTokenAllowance(
   const { chainId, account } = useWalletInfo()
   const { contract: erc20Contract } = useTokenContract(tokenAddress)
   const tradeSpender = useTradeSpenderAddress()
-  const [lastApproveTx, setLastApproveTx] = useAtom(lastApproveTxBlockNumberAtom)
+  const [optimisticAllowances, setOptimisticAllowances] = useAtom(optimisticAllowancesAtom)
 
   const targetOwner = owner ?? account
   const targetSpender = spender ?? tradeSpender
-  const lastApproveBlockNumber = tokenAddress ? lastApproveTx[tokenAddress.toLowerCase()] : undefined
 
-  // Reset lastApproveTxBlockNumberAtom on network changes
-  useEffect(() => {
-    setLastApproveTx({})
-  }, [chainId, setLastApproveTx])
+  const optimisticAllowanceKey = useMemo(() => {
+    if (!tokenAddress || !targetOwner || !targetSpender) return null
+    return getOptimisticAllowanceKey({ chainId, tokenAddress, owner: targetOwner, spender: targetSpender })
+  }, [chainId, tokenAddress, targetOwner, targetSpender])
+
+  const optimisticAllowance = optimisticAllowanceKey ? optimisticAllowances[optimisticAllowanceKey] : undefined
 
   // Important! Do not add erc20Contract to SWR deps, otherwise it will do unwanted node RPC calls!
-  return useSWR(
+  const swrResponse = useSWR(
     erc20Contract && targetOwner && targetSpender
-      ? [targetOwner, targetSpender, chainId, lastApproveBlockNumber, tokenAddress, 'useTokenAllowance']
+      ? [targetOwner, targetSpender, chainId, tokenAddress, 'useTokenAllowance']
       : null,
     ([targetOwner, targetSpender]) => {
       if (!erc20Contract) return undefined
@@ -59,21 +56,33 @@ export function useTokenAllowance(
     },
     SWR_OPTIONS,
   )
-}
 
-export function useUpdateLastApproveTxBlockNumber(): (params: LastApproveParams) => void {
-  const setState = useSetAtom(lastApproveTxBlockNumberAtom)
+  // Reset state on network changes
+  useEffect(() => {
+    setOptimisticAllowances({})
+  }, [chainId, setOptimisticAllowances])
 
-  return useCallback(
-    (params: LastApproveParams) => {
-      // Wait 1 second before updating value to give some time to node to update the state
-      setTimeout(() => {
-        setState((state) => ({
-          ...state,
-          [params.tokenAddress.toLowerCase()]: params.blockNumber,
-        }))
-      }, LAST_APPROVE_TX_TIME_THRESHOLD)
-    },
-    [setState],
+  // Clean up expired optimistic allowances
+  useEffect(() => {
+    const now = Date.now()
+    const expiredKeys = Object.keys(optimisticAllowances).filter(
+      (key) => now - optimisticAllowances[key].timestamp > OPTIMISTIC_ALLOWANCE_TTL,
+    )
+
+    if (expiredKeys.length > 0) {
+      setOptimisticAllowances((state) => {
+        const newState = { ...state }
+        expiredKeys.forEach((key) => delete newState[key])
+        return newState
+      })
+    }
+  }, [optimisticAllowances, setOptimisticAllowances, swrResponse.data])
+
+  return useMemo(
+    () => ({
+      ...swrResponse,
+      data: optimisticAllowance?.amount ?? swrResponse.data,
+    }),
+    [optimisticAllowance?.amount, swrResponse],
   )
 }

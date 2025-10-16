@@ -16,20 +16,12 @@ export function finalizeEthereumTransaction(
   params: CheckEthereumTransactions,
   safeTransactionHash?: string,
 ): void {
-  const { chainId, dispatch, updateLastApproveTxBlockNumber } = params
+  const { chainId, dispatch } = params
   const { hash } = transaction
 
   console.log(`[FinalizeTxUpdater] Transaction ${receipt.transactionHash} has been mined`, receipt, transaction)
 
   ONCHAIN_TRANSACTIONS_EVENTS.emit(OnchainTxEvents.BEFORE_TX_FINALIZE, { transaction, receipt })
-
-  // Once approval tx is mined, we add the priority allowance to immediately allow the user to place orders
-  if (transaction.approval) {
-    updateLastApproveTxBlockNumber({
-      blockNumber: receipt.blockNumber,
-      tokenAddress: transaction.approval.tokenAddress,
-    })
-  }
 
   dispatch(
     finalizeTransaction({
