@@ -7,6 +7,7 @@ export enum CustomTheme {
 type CustomThemeOverrides = Partial<Record<CustomTheme, boolean>>
 type CustomThemeFlagKeys = Partial<Record<CustomTheme, string>>
 
+// Set the active custom theme here
 export const ACTIVE_CUSTOM_THEME: CustomTheme = CustomTheme.HALLOWEEN
 
 // Manual overrides let us hard-toggle themes without touching LaunchDarkly.
