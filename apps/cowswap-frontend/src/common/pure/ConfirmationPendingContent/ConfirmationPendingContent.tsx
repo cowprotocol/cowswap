@@ -32,7 +32,7 @@ export function ConfirmationPendingContent({
     <Trans>The {operationLabel} is signed.</Trans>
   ) : (
     <Trans>
-      Sign the {operationLabel} with your wallet. {walletAddress && <span>{walletAddress}</span>}{' '}
+      Sign the {operationLabel} with your wallet. text {walletAddress && <span>{walletAddress}</span>}{' '}
     </Trans>
   )
 
