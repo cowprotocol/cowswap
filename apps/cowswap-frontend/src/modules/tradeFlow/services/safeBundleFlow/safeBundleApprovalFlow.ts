@@ -43,7 +43,7 @@ export async function safeBundleApprovalFlow(
     return false
   }
 
-  const { spender, sendBatchTransactions, erc20Contract, isPartialApproveEnabled } = safeBundleContext
+  const { spender, sendBatchTransactions, erc20Contract, partialApproveEnabled } = safeBundleContext
 
   const { chainId } = context
   const { account, isSafeWallet, recipientAddressOrName, inputAmount, outputAmount, kind } = orderParams
@@ -52,7 +52,7 @@ export async function safeBundleApprovalFlow(
   analytics.approveAndPresign(swapFlowAnalyticsContext)
   tradeConfirmActions.onSign(tradeAmounts)
 
-  const amountToApprove = isPartialApproveEnabled ? BigInt(inputAmount.quotient.toString()) : MaxUint256.toBigInt()
+  const amountToApprove = partialApproveEnabled ? BigInt(inputAmount.quotient.toString()) : MaxUint256.toBigInt()
 
   try {
     // For now, bundling ALWAYS includes 2 steps: approve and presign.
