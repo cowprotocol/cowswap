@@ -8,7 +8,7 @@ import { useGeneratePermitInAdvanceToTrade } from './useGeneratePermitInAdvanceT
 import { useTokenSupportsPermit } from '../../permit'
 import { TradeType } from '../../trade'
 import { MAX_APPROVE_AMOUNT } from '../constants'
-import { useIsPartialApproveSelectedByUser } from '../state'
+import { useIsPartialApproveSelectedByUser, useUpdateTradeApproveState } from '../state'
 import { getIsTradeApproveResult } from '../utils/getIsTradeApproveResult'
 
 export interface ApproveAndSwapProps {
@@ -26,6 +26,7 @@ export function useApproveAndSwap({
 }: ApproveAndSwapProps): () => Promise<void> {
   const isPartialApproveEnabledByUser = useIsPartialApproveSelectedByUser()
   const handleApprove = useApproveCurrency(amountToApprove, useModals)
+  const updateTradeApproveState = useUpdateTradeApproveState()
 
   const isPermitSupported = useTokenSupportsPermit(amountToApprove.currency, TradeType.SWAP) && !ignorePermit
   const generatePermitToTrade = useGeneratePermitInAdvanceToTrade(amountToApprove)
@@ -52,7 +53,7 @@ export function useApproveAndSwap({
         if (isApprovedAmountSufficient) {
           confirmSwap()
         } else {
-          throw new Error('Approved amount is not sufficient!')
+          updateTradeApproveState({ error: 'Approved amount is not sufficient!' })
         }
       } else {
         confirmSwap()
@@ -65,5 +66,6 @@ export function useApproveAndSwap({
     amountToApprove.quotient,
     handleApprove,
     generatePermitToTrade,
+    updateTradeApproveState,
   ])
 }
