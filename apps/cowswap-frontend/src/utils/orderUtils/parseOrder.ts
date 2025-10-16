@@ -1,7 +1,7 @@
 import { OrderClass, OrderKind, SigningScheme } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Price, Token } from '@uniswap/sdk-core'
 
-import { t } from '@lingui/core/macro'
+import { msg } from '@lingui/core/macro'
 import BigNumber from 'bignumber.js'
 import JSBI from 'jsbi'
 
@@ -14,6 +14,8 @@ import { getOrderFilledAmount } from './getOrderFilledAmount'
 import { getOrderSurplus } from './getOrderSurplus'
 import { isOrderFilled } from './isOrderFilled'
 import { isPartiallyFilled } from './isPartiallyFilled'
+
+import type { MessageDescriptor } from '@lingui/core'
 
 export interface ParsedOrderExecutionData {
   executedBuyAmount: JSBI
@@ -31,7 +33,7 @@ export interface ParsedOrderExecutionData {
   filledPercentDisplay: string
   executedPrice: Price<Currency, Currency> | null
   activityId: string | undefined
-  activityTitle: string
+  activityTitle: MessageDescriptor
 }
 
 export interface ParsedOrder {
@@ -55,7 +57,6 @@ export interface ParsedOrder {
   composableCowInfo?: ComposableCowInfo
   fullAppData: Order['fullAppData']
   signingScheme: SigningScheme
-
   executionData: ParsedOrderExecutionData
 }
 
@@ -88,7 +89,7 @@ export const parseOrder = (order: Order): ParsedOrder => {
     order.orderCreationHash &&
     !order.apiAdditionalInfo
   const activityId = showCreationTxLink ? order.orderCreationHash : order.id
-  const activityTitle = showCreationTxLink ? t`Creation transaction` : t`Order ID`
+  const activityTitle = showCreationTxLink ? msg`Creation transaction` : msg`Order ID`
 
   const executionData: ParsedOrderExecutionData = {
     executedFeeToken,

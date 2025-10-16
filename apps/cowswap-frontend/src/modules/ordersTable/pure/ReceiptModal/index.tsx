@@ -284,7 +284,13 @@ export function ReceiptModal({
               <styledEl.Field>
                 {order.executionData.activityId && (
                   <>
-                    <FieldLabel label={order.executionData.activityTitle} />
+                    <FieldLabel
+                      label={
+                        typeof order.executionData.activityTitle === 'string'
+                          ? order.executionData.activityTitle
+                          : i18n._(order.executionData.activityTitle)
+                      }
+                    />
                     <IdField id={order.executionData.activityId} chainId={chainId} />
                   </>
                 )}
