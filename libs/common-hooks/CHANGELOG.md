@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.2](https://github.com/cowprotocol/cowswap/compare/common-hooks-v1.10.1...common-hooks-v1.10.2) (2025-10-14)
+
+
+### Bug Fixes
+
+* optimize quote API requests ([#6285](https://github.com/cowprotocol/cowswap/issues/6285)) ([04d9448](https://github.com/cowprotocol/cowswap/commit/04d9448b5f4767283d576f84cd095dc7d7ce65b6))
+
 ## [1.10.1](https://github.com/cowprotocol/cowswap/compare/common-hooks-v1.10.0...common-hooks-v1.10.1) (2025-10-02)
 
 
