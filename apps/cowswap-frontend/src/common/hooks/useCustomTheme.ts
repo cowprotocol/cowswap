@@ -19,7 +19,7 @@ export function resolveCowSwapTheme(
 
     if (theme === CustomTheme.HALLOWEEN) {
       if (!darkMode) {
-        continue
+        return undefined
       }
       return 'darkHalloween'
     }

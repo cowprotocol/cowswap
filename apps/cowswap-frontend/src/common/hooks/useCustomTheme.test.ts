@@ -50,10 +50,10 @@ describe('resolveCowSwapTheme', () => {
       expected: 'lightChristmas',
     },
     {
-      name: 'falls back to Christmas when Halloween is unavailable due to light mode',
+      name: 'does not activate any seasonal theme when Halloween is enabled but dark mode is off',
       darkMode: false,
       featureFlags: buildFlags({ isHalloweenEnabled: true, isChristmasEnabled: true }),
-      expected: 'lightChristmas',
+      expected: undefined,
     },
     {
       name: 'prefers Halloween when both seasonal flags are enabled in dark mode',

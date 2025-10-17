@@ -77,7 +77,7 @@ export function resolveSeasonalTheme(
     }
 
     if (theme === CustomTheme.HALLOWEEN && !isDarkModeEnabled) {
-      continue
+      return undefined
     }
 
     return theme

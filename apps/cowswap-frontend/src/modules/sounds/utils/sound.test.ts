@@ -31,10 +31,10 @@ describe('resolveSeasonalTheme', () => {
     expect(resolveSeasonalTheme(buildFlags({ isChristmasEnabled: true }), false)).toBe(CustomTheme.CHRISTMAS)
   })
 
-  it('falls back to CHRISTMAS when both flags are enabled but dark mode is disabled', () => {
+  it('does not activate any seasonal theme when Halloween is enabled but dark mode is disabled', () => {
     expect(
       resolveSeasonalTheme(buildFlags({ isChristmasEnabled: true, isHalloweenEnabled: true }), false)
-    ).toBe(CustomTheme.CHRISTMAS)
+    ).toBeUndefined()
   })
 
   it('prefers HALLOWEEN when both flags are enabled and dark mode is active', () => {
