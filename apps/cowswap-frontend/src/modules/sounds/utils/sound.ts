@@ -1,4 +1,4 @@
-import { CustomTheme, isCustomThemeActive } from '@cowprotocol/common-const'
+import { CustomTheme, getCustomThemePriority, isCustomThemeEnabled } from '@cowprotocol/common-const'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
 import { CowSwapWidgetAppParams } from '@cowprotocol/widget-lib'
@@ -67,9 +67,30 @@ function pickRandomAprilsFoolSound(): string {
   return randomPick
 }
 
+export function resolveSeasonalTheme(
+  featureFlags: Record<string, boolean | number | undefined> | undefined,
+  isDarkModeEnabled: boolean
+): CustomTheme | undefined {
+  for (const theme of getCustomThemePriority()) {
+    if (!isCustomThemeEnabled(theme, featureFlags)) {
+      continue
+    }
+
+    if (theme === CustomTheme.HALLOWEEN && !isDarkModeEnabled) {
+      continue
+    }
+
+    return theme
+  }
+
+  return undefined
+}
+
 function getSeasonalSounds(featureFlags?: Record<string, boolean | number | undefined>): Partial<Sounds> {
-  if (isCustomThemeActive(CustomTheme.CHRISTMAS, featureFlags)) return WINTER_SOUNDS
-  if (isCustomThemeActive(CustomTheme.HALLOWEEN, featureFlags) && isDarkMode()) return HALLOWEEN_SOUNDS
+  const activeSeasonalTheme = resolveSeasonalTheme(featureFlags, isDarkMode())
+
+  if (activeSeasonalTheme === CustomTheme.HALLOWEEN) return HALLOWEEN_SOUNDS
+  if (activeSeasonalTheme === CustomTheme.CHRISTMAS) return WINTER_SOUNDS
 
   return {}
 }

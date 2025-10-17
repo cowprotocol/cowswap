@@ -12,9 +12,17 @@ export const ACTIVE_CUSTOM_THEME: CustomTheme = CustomTheme.HALLOWEEN
 
 // Manual overrides let us hard-toggle themes without touching LaunchDarkly.
 // Set to `true` to force enable, `false` to force disable, or remove the entry to defer to feature flags.
-const CUSTOM_THEME_OVERRIDES: CustomThemeOverrides = {
-  [CustomTheme.CHRISTMAS]: false,
-  [CustomTheme.HALLOWEEN]: true, // TODO: remove this when we disable Halloween theme
+// No entries means every theme obeys its LaunchDarkly flag and will not appear unless enabled there.
+const CUSTOM_THEME_OVERRIDES: CustomThemeOverrides = {}
+
+const CUSTOM_THEME_PRIORITY: CustomTheme[] = [CustomTheme.HALLOWEEN, CustomTheme.CHRISTMAS]
+
+export function getCustomThemePriority(): CustomTheme[] {
+  if (ACTIVE_CUSTOM_THEME === CustomTheme.NONE) {
+    return CUSTOM_THEME_PRIORITY
+  }
+
+  return [ACTIVE_CUSTOM_THEME, ...CUSTOM_THEME_PRIORITY.filter((theme) => theme !== ACTIVE_CUSTOM_THEME)]
 }
 
 const CUSTOM_THEME_FLAG_KEYS: CustomThemeFlagKeys = {
@@ -43,5 +51,15 @@ export function isCustomThemeEnabled(theme: CustomTheme, featureFlags?: FeatureF
 }
 
 export function isCustomThemeActive(theme: CustomTheme, featureFlags?: FeatureFlags): boolean {
-  return ACTIVE_CUSTOM_THEME === theme && isCustomThemeEnabled(theme, featureFlags)
+  return resolveActiveCustomTheme(featureFlags) === theme
+}
+
+export function resolveActiveCustomTheme(featureFlags?: FeatureFlags): CustomTheme | undefined {
+  for (const theme of getCustomThemePriority()) {
+    if (isCustomThemeEnabled(theme, featureFlags)) {
+      return theme
+    }
+  }
+
+  return undefined
 }
