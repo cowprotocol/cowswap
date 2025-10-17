@@ -1,3 +1,5 @@
 import { atom } from 'jotai'
 
-export const featureFlagsAtom = atom<Record<string, boolean | number>>({})
+import type { FeatureFlags } from '@cowprotocol/common-const'
+
+export const featureFlagsAtom = atom<FeatureFlags>({})
