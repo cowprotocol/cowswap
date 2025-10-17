@@ -39,7 +39,7 @@ export function useIsApprovalOrPermitRequired({
     return ApproveRequiredReason.NotRequired
   }
 
-  const isPermitSupported = type !== 'unsupported'
+  const isPermitSupported = type && type !== 'unsupported'
 
   if (!isPermitSupported && isApprovalRequired(approvalState)) {
     return isBundlingSupportedOrEnabledForContext
