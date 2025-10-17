@@ -1,7 +1,6 @@
 import React, { isValidElement } from 'react'
 
 import { MessageDescriptor } from '@lingui/core'
-import { t } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
 
 import { useLimitOrdersWarningsAccepted } from 'modules/limitOrders/hooks/useLimitOrdersWarningsAccepted'
@@ -30,7 +29,7 @@ interface TradeButtonsProps {
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function TradeButtons({ isTradeContextReady }: TradeButtonsProps) {
-  const { i18n } = useLingui()
+  const { i18n, t } = useLingui()
   const CONFIRM_TEXT = t`Review limit order`
   const localFormValidation = useLimitOrdersFormState()
   const primaryFormValidation = useGetTradeFormValidation()

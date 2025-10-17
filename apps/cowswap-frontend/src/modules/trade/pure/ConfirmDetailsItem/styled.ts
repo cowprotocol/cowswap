@@ -55,14 +55,14 @@ export const Content = styled.div<{ highlighted?: boolean; contentTextColor?: st
 `
 
 export const Label = styled.span<{ labelOpacity?: boolean }>`
+  align-items: center;
   display: flex;
   flex-flow: row;
-  align-items: center;
-  flex: 0 0 auto;
+  flex: 0 1 auto;
   font-weight: 400;
-  text-align: left;
   gap: 4px;
   opacity: ${({ labelOpacity }) => (labelOpacity ? 0.7 : 1)};
+  text-align: left;
   transition:
     color var(${UI.ANIMATION_DURATION}) ease-in-out,
     opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
