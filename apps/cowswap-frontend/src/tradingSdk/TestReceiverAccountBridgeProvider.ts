@@ -15,7 +15,7 @@ import {
 import { getOrder } from 'api/cowProtocol'
 
 /**
- * Tes provider for testing the ReceiverAccountBridgeProvider using an account provided in the constructor.
+ * Test provider for testing the ReceiverAccountBridgeProvider using an account provided in the constructor.
  * It also relies on a bridge provider that will be used to get the quote, tokens, etc. (to implement this mock easily based on other working providers)
  */
 export class TestReceiverAccountBridgeProvider implements ReceiverAccountBridgeProvider<BridgeQuoteResult> {
