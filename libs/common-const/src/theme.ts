@@ -4,16 +4,11 @@ export enum CustomTheme {
   NONE = 'NONE',
 }
 
-type CustomThemeOverrides = Partial<Record<CustomTheme, boolean>>
 type CustomThemeFlagKeys = Partial<Record<CustomTheme, string>>
 
-// Set the active custom theme here
+// Set the active custom theme here. This only changes ordering when multiple seasonal flags are enabled;
+// themes still require their LaunchDarkly flags to be true before they can activate.
 export const ACTIVE_CUSTOM_THEME: CustomTheme = CustomTheme.HALLOWEEN
-
-// Manual overrides let us hard-toggle themes without touching LaunchDarkly.
-// Set to `true` to force enable, `false` to force disable, or remove the entry to defer to feature flags.
-// No entries means every theme obeys its LaunchDarkly flag and will not appear unless enabled there.
-const CUSTOM_THEME_OVERRIDES: CustomThemeOverrides = {}
 
 const CUSTOM_THEME_PRIORITY: CustomTheme[] = [CustomTheme.HALLOWEEN, CustomTheme.CHRISTMAS]
 
@@ -25,21 +20,17 @@ export function getCustomThemePriority(): CustomTheme[] {
   return [ACTIVE_CUSTOM_THEME, ...CUSTOM_THEME_PRIORITY.filter((theme) => theme !== ACTIVE_CUSTOM_THEME)]
 }
 
-const CUSTOM_THEME_FLAG_KEYS: CustomThemeFlagKeys = {
+const CUSTOM_THEME_FLAG_KEYS: Readonly<CustomThemeFlagKeys> = Object.freeze({
   [CustomTheme.CHRISTMAS]: 'isChristmasEnabled',
   [CustomTheme.HALLOWEEN]: 'isHalloweenEnabled',
-}
+})
 
 export type FeatureFlags = Record<string, boolean | number | undefined>
+export const APRILS_FOOLS_FLAG_KEY = 'isAprilsFoolsEnabled'
 
 export function isCustomThemeEnabled(theme: CustomTheme, featureFlags?: FeatureFlags): boolean {
   if (theme === CustomTheme.NONE) {
     return false
-  }
-
-  const manualOverride = CUSTOM_THEME_OVERRIDES[theme]
-  if (manualOverride !== undefined) {
-    return manualOverride
   }
 
   const flagKey = CUSTOM_THEME_FLAG_KEYS[theme]

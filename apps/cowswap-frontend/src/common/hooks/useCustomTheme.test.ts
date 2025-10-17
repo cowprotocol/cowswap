@@ -25,6 +25,12 @@ describe('resolveCowSwapTheme', () => {
       expected: undefined,
     },
     {
+      name: 'returns undefined when feature flags are missing',
+      darkMode: true,
+      featureFlags: undefined,
+      expected: undefined,
+    },
+    {
       name: 'activates Halloween only when dark mode is enabled',
       darkMode: true,
       featureFlags: buildFlags({ isHalloweenEnabled: true }),
@@ -40,6 +46,12 @@ describe('resolveCowSwapTheme', () => {
       name: 'activates Christmas in dark mode',
       darkMode: true,
       featureFlags: buildFlags({ isChristmasEnabled: true }),
+      expected: 'darkChristmas',
+    },
+    {
+      name: 'activates Christmas when LaunchDarkly returns numeric truthy flag',
+      darkMode: true,
+      featureFlags: buildFlags({ isChristmasEnabled: 1 }),
       expected: 'darkChristmas',
     },
     {
