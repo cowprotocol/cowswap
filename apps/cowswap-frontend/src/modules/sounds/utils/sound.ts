@@ -49,20 +49,32 @@ function isDarkMode(): boolean {
 }
 
 function pickRandomAprilsFoolSound(): string {
-  // Check in the local storage for latest selections
-  const lastSelections = localStorage.getItem('lastAprilFoolSoundSelections')
-  const lastSelectionsArray: string[] = lastSelections ? JSON.parse(lastSelections) : []
+  let played: string[] = []
+  try {
+    const raw = localStorage.getItem('lastAprilFoolSoundSelections')
+    const parsed = raw ? JSON.parse(raw) : []
+    if (Array.isArray(parsed)) {
+      played = parsed.filter((value): value is string => typeof value === 'string')
+    }
+  } catch {
+    // Ignore parse errors and reset the cycle
+  }
 
-  // Pick one from the remaining options
-  const remainingOptions = APRIL_FOOL_SOUND_SEND.filter((sound) => !lastSelectionsArray.includes(sound))
-  const randomPick = remainingOptions[Math.floor(Math.random() * remainingOptions.length)]
+  let pool = APRIL_FOOL_SOUND_SEND.filter((sound) => !played.includes(sound))
+  if (pool.length === 0) {
+    played = []
+    pool = [...APRIL_FOOL_SOUND_SEND]
+  }
 
-  // Add the latest selection and reset the selection if all sounds have been played
-  lastSelectionsArray.push(randomPick)
-  const newSelection = lastSelectionsArray.length === APRIL_FOOL_SOUND_SEND.length ? [] : lastSelectionsArray
+  const randomPick = pool[Math.floor(Math.random() * pool.length)]
+  const nextPlayed = [...played, randomPick]
+  const stored = nextPlayed.length === APRIL_FOOL_SOUND_SEND.length ? [] : nextPlayed
 
-  // Persist the selection
-  localStorage.setItem('lastAprilFoolSoundSelections', JSON.stringify(newSelection))
+  try {
+    localStorage.setItem('lastAprilFoolSoundSelections', JSON.stringify(stored))
+  } catch {
+    // Ignore storage quota or availability errors; audio rotation still works in-memory
+  }
 
   return randomPick
 }
@@ -113,8 +125,11 @@ function getThemeBasedSound(type: SoundType): string {
   return themedSounds[type] || DEFAULT_COW_SOUNDS[type]
 }
 
-const EMPTY_SOUND = new Audio('')
 const SOUND_CACHE: Record<string, HTMLAudioElement | undefined> = {}
+
+function getEmptySound(): HTMLAudioElement {
+  return typeof Audio !== 'undefined' ? new Audio('') : ({} as unknown as HTMLAudioElement)
+}
 
 function getWidgetSoundUrl(type: SoundType): string | null | undefined {
   const { params } = jotaiStore.get(injectedWidgetParamsAtom)
@@ -129,7 +144,7 @@ function getAudio(type: SoundType): HTMLAudioElement {
 
   if (isWidgetMode) {
     if (widgetSound === null) {
-      return EMPTY_SOUND
+      return getEmptySound()
     }
     // If in widget mode, use widget sound if provided, otherwise use default sound
     const soundPath = widgetSound || DEFAULT_COW_SOUNDS[type]
