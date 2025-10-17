@@ -1,7 +1,6 @@
 import ShieldImage from '@cowprotocol/assets/cow-swap/protection.svg'
 
-import { t } from '@lingui/core/macro'
-import { Trans } from '@lingui/react/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
@@ -30,6 +29,8 @@ export interface LabelTooltipItems {
 }
 
 export function useLabelsTooltips(): LabelTooltipItems {
+  const { t } = useLingui()
+
   return {
     numberOfParts: {
       label: t`No. of parts`,
