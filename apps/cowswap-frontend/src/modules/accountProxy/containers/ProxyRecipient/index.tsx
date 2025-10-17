@@ -25,18 +25,25 @@ const Wrapper = styled.div`
 
 interface ProxyRecipientProps {
   recipient: string
+  bridgeReceiverOverride: string | null
   chainId: number
   size?: number
 }
 
-export function ProxyRecipient({ recipient, chainId, size = 14 }: ProxyRecipientProps): ReactNode {
+export function ProxyRecipient({
+  recipient,
+  bridgeReceiverOverride,
+  chainId,
+  size = 14,
+}: ProxyRecipientProps): ReactNode {
+  console.log('[ProxyRecipient] recipient', { recipient, bridgeReceiverOverride })
   const proxyAddress = useCurrentAccountProxyAddress()
   const { i18n } = useLingui()
   const accountProxyLabelString = i18n._(ACCOUNT_PROXY_LABEL)
 
-  if (!recipient || !proxyAddress) return null
+  if (!recipient || !(proxyAddress && !bridgeReceiverOverride)) return null
 
-  if (!areAddressesEqual(recipient, proxyAddress)) {
+  if (!bridgeReceiverOverride && !areAddressesEqual(recipient, proxyAddress)) {
     throw new Error(
       t`Provided proxy address does not match ${accountProxyLabelString} address!, recipient=${recipient}, proxyAddress=${proxyAddress}`,
     )
@@ -45,7 +52,7 @@ export function ProxyRecipient({ recipient, chainId, size = 14 }: ProxyRecipient
   return (
     <Wrapper>
       <Pocket size={size} />
-      <AddressLink address={proxyAddress} chainId={chainId} />
+      <AddressLink address={recipient} chainId={chainId} />
     </Wrapper>
   )
 }

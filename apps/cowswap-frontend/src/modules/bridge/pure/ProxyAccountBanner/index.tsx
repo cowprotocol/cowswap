@@ -13,10 +13,13 @@ import { AddressLink } from 'common/pure/AddressLink'
 interface ProxyAccountBannerProps {
   recipient: string
   chainId: number
+  bridgeReceiverOverride: string | null
 }
 
-export function ProxyAccountBanner({ recipient, chainId }: ProxyAccountBannerProps): ReactNode {
-  const { i18n } = useLingui()
+
+export function ProxyAccountBanner({ recipient, bridgeReceiverOverride, chainId }: ProxyAccountBannerProps): ReactNode {
+  const isRecipientOverridden = recipient === bridgeReceiverOverride
+  const { i18n, t } = useLingui()
   const accountProxyLabelString = i18n._(ACCOUNT_PROXY_LABEL)
 
   return (
@@ -26,25 +29,38 @@ export function ProxyAccountBanner({ recipient, chainId }: ProxyAccountBannerPro
       fontSize={13}
       collapsedContent={
         <div>
-          <Trans>
-            Swap bridged via your {accountProxyLabelString}: <AddressLink address={recipient} chainId={chainId} />
-          </Trans>
+          {isRecipientOverridden ? t`Modified recipient address to` : t`Swap bridged via your` + ` ` + ACCOUNT_PROXY_LABEL}
+          : <AddressLink address={recipient} chainId={chainId} />
         </div>
       }
       expandedContent={
-        <div>
-          <Trans>
-            CoW Swap uses a dedicated {accountProxyLabelString}, controlled only by you, to ensure smooooth bridging.
-            Confirm the recipient address above is <AddressLink address={recipient} chainId={chainId} />
-          </Trans>
-          <br />
-          <br />
-          <Link to={getProxyAccountUrl(chainId)} target="_blank">
-            <b style={{ cursor: 'pointer', textDecoration: 'underline' }}>
-              <Trans>View your private {accountProxyLabelString}</Trans> +{' '}
-            </b>
-          </Link>
-        </div>
+        isRecipientOverridden ? (
+          <div>
+            <Trans>
+              The bridge provider modified the recipient address to <AddressLink address={recipient} chainId={chainId} />.
+              This ensure smooooth bridging.
+            </Trans>
+            <br />
+            <br />
+            <Trans>
+              Only proceed if you trust this provider.
+            </Trans>
+          </div>
+        ) : (
+          <div>
+            <Trans>
+              CoW Swap uses a dedicated {ACCOUNT_PROXY_LABEL}, controlled only by you, to ensure smooooth bridging.
+              Confirm the recipient address above is <AddressLink address={recipient} chainId={chainId} />
+            </Trans>
+            <br />
+            <br />
+            <Link to={getProxyAccountUrl(chainId)} target="_blank">
+              <b style={{ cursor: 'pointer', textDecoration: 'underline' }}>
+                <Trans>View your private {accountProxyLabelString}</Trans> + {' '}
+              </b>
+            </Link>
+          </div>
+        )
       }
     />
   )

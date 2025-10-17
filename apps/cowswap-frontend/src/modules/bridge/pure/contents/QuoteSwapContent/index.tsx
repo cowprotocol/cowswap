@@ -75,7 +75,11 @@ function createSlippageContent(
   }
 }
 
-function createRecipientContent(recipient: QuoteSwapContext['recipient'], chainId: number): ContentItem {
+function createRecipientContent(
+  recipient: QuoteSwapContext['recipient'],
+  bridgeReceiverOverride: QuoteSwapContext['bridgeReceiverOverride'],
+  chainId: number,
+): ContentItem {
   return {
     withTimelineDot: true,
     label: (
@@ -83,7 +87,7 @@ function createRecipientContent(recipient: QuoteSwapContext['recipient'], chainI
         {t`Recipient`} <InfoTooltip content={t`The address that will receive the tokens.`} size={14} />
       </>
     ),
-    content: <ProxyRecipient recipient={recipient} chainId={chainId} />,
+    content: <ProxyRecipient recipient={recipient} bridgeReceiverOverride={bridgeReceiverOverride} chainId={chainId} />,
   }
 }
 
@@ -107,25 +111,24 @@ function createMinReceiveContent(
   }
 }
 
-export function QuoteSwapContent({
-  context: {
+export function QuoteSwapContent({ context, hideRecommendedSlippage }: QuoteDetailsContentProps): ReactNode {
+  const {
     receiveAmountInfo,
     sellAmount,
     buyAmount,
     slippage,
     recipient,
+    bridgeReceiverOverride,
     minReceiveAmount,
     minReceiveUsdValue,
     expectedReceiveUsdValue,
     isSlippageModified,
-  },
-  hideRecommendedSlippage,
-}: QuoteDetailsContentProps): ReactNode {
+  } = context
   const isBridgeQuoteRecipient = recipient === BRIDGE_QUOTE_ACCOUNT
   const contents = [
     createExpectedReceiveContent(buyAmount, expectedReceiveUsdValue, slippage),
     createSlippageContent(slippage, !!hideRecommendedSlippage, isSlippageModified),
-    !isBridgeQuoteRecipient && createRecipientContent(recipient, sellAmount.currency.chainId),
+    !isBridgeQuoteRecipient && createRecipientContent(recipient, bridgeReceiverOverride, sellAmount.currency.chainId),
     createMinReceiveContent(minReceiveAmount, minReceiveUsdValue),
   ]
 
@@ -137,7 +140,13 @@ export function QuoteSwapContent({
           {content}
         </ConfirmDetailsItem>
       ))}
-      {!isBridgeQuoteRecipient && <ProxyAccountBanner recipient={recipient} chainId={sellAmount.currency.chainId} />}
+      {!isBridgeQuoteRecipient && (
+        <ProxyAccountBanner
+          recipient={recipient}
+          bridgeReceiverOverride={bridgeReceiverOverride}
+          chainId={sellAmount.currency.chainId}
+        />
+      )}
     </>
   )
 }
