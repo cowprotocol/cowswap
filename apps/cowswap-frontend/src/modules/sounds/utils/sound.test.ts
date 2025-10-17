@@ -1,8 +1,5 @@
-import { CustomTheme } from '@cowprotocol/common-const'
-
-import { resolveSeasonalTheme } from './sound'
-
-type FeatureFlags = Record<string, boolean | number | undefined>
+import { CustomTheme, resolveCustomThemeForContext } from '@cowprotocol/common-const'
+import type { FeatureFlags } from '@cowprotocol/common-const'
 
 function buildFlags(overrides: FeatureFlags = {}): FeatureFlags {
   return {
@@ -12,34 +9,48 @@ function buildFlags(overrides: FeatureFlags = {}): FeatureFlags {
   }
 }
 
-describe('resolveSeasonalTheme', () => {
+describe('resolveCustomThemeForContext', () => {
   it('returns undefined when no seasonal flags are enabled', () => {
-    expect(resolveSeasonalTheme(undefined, true)).toBeUndefined()
-    expect(resolveSeasonalTheme(buildFlags(), false)).toBeUndefined()
+    expect(resolveCustomThemeForContext(undefined, { darkModeEnabled: true })).toBeUndefined()
+    expect(resolveCustomThemeForContext(buildFlags(), { darkModeEnabled: false })).toBeUndefined()
   })
 
   it('returns HALLOWEEN when Halloween is enabled and dark mode is active', () => {
-    expect(resolveSeasonalTheme(buildFlags({ isHalloweenEnabled: true }), true)).toBe(CustomTheme.HALLOWEEN)
+    expect(resolveCustomThemeForContext(buildFlags({ isHalloweenEnabled: true }), { darkModeEnabled: true })).toBe(
+      CustomTheme.HALLOWEEN
+    )
   })
 
   it('does not activate HALLOWEEN when dark mode is disabled', () => {
-    expect(resolveSeasonalTheme(buildFlags({ isHalloweenEnabled: true }), false)).toBeUndefined()
+    expect(resolveCustomThemeForContext(buildFlags({ isHalloweenEnabled: true }), { darkModeEnabled: false })).toBeUndefined()
   })
 
   it('returns CHRISTMAS when only the Christmas flag is enabled', () => {
-    expect(resolveSeasonalTheme(buildFlags({ isChristmasEnabled: true }), true)).toBe(CustomTheme.CHRISTMAS)
-    expect(resolveSeasonalTheme(buildFlags({ isChristmasEnabled: true }), false)).toBe(CustomTheme.CHRISTMAS)
+    expect(resolveCustomThemeForContext(buildFlags({ isChristmasEnabled: true }), { darkModeEnabled: true })).toBe(
+      CustomTheme.CHRISTMAS
+    )
+    expect(resolveCustomThemeForContext(buildFlags({ isChristmasEnabled: true }), { darkModeEnabled: false })).toBe(
+      CustomTheme.CHRISTMAS
+    )
   })
 
   it('does not activate any seasonal theme when Halloween is enabled but dark mode is disabled', () => {
     expect(
-      resolveSeasonalTheme(buildFlags({ isChristmasEnabled: true, isHalloweenEnabled: true }), false)
+      resolveCustomThemeForContext(buildFlags({ isChristmasEnabled: true, isHalloweenEnabled: true }), {
+        darkModeEnabled: false,
+      })
     ).toBeUndefined()
   })
 
   it('prefers HALLOWEEN when both flags are enabled and dark mode is active', () => {
     expect(
-      resolveSeasonalTheme(buildFlags({ isChristmasEnabled: true, isHalloweenEnabled: true }), true)
+      resolveCustomThemeForContext(buildFlags({ isChristmasEnabled: true, isHalloweenEnabled: true }), {
+        darkModeEnabled: true,
+      })
     ).toBe(CustomTheme.HALLOWEEN)
+  })
+
+  it('returns undefined when feature flags object is missing and dark mode is disabled', () => {
+    expect(resolveCustomThemeForContext(undefined, { darkModeEnabled: false })).toBeUndefined()
   })
 })

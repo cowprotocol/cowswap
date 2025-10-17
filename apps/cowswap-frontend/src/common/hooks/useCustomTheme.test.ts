@@ -1,8 +1,7 @@
+import type { FeatureFlags } from '@cowprotocol/common-const'
 import type { CowSwapTheme } from '@cowprotocol/ui'
 
 import { resolveCowSwapTheme } from './useCustomTheme'
-
-type FeatureFlags = Record<string, boolean | number | undefined>
 
 function buildFlags(overrides: FeatureFlags = {}): FeatureFlags {
   return {

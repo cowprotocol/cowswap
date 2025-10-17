@@ -30,7 +30,7 @@ const CUSTOM_THEME_FLAG_KEYS: CustomThemeFlagKeys = {
   [CustomTheme.HALLOWEEN]: 'isHalloweenEnabled',
 }
 
-type FeatureFlags = Record<string, boolean | number | undefined>
+export type FeatureFlags = Record<string, boolean | number | undefined>
 
 export function isCustomThemeEnabled(theme: CustomTheme, featureFlags?: FeatureFlags): boolean {
   if (theme === CustomTheme.NONE) {
@@ -58,6 +58,38 @@ export function resolveActiveCustomTheme(featureFlags?: FeatureFlags): CustomThe
   for (const theme of getCustomThemePriority()) {
     if (isCustomThemeEnabled(theme, featureFlags)) {
       return theme
+    }
+  }
+
+  return undefined
+}
+
+export interface CustomThemeContext {
+  darkModeEnabled: boolean
+}
+
+/**
+ * Resolve the active custom theme for a given UI context. Halloween has global priority but
+ * requires dark mode; if it is enabled by flags yet dark mode is off, no seasonal theme is applied.
+ */
+export function resolveCustomThemeForContext(
+  featureFlags: FeatureFlags | undefined,
+  context: CustomThemeContext
+): CustomTheme | undefined {
+  for (const theme of getCustomThemePriority()) {
+    if (!isCustomThemeEnabled(theme, featureFlags)) {
+      continue
+    }
+
+    if (theme === CustomTheme.HALLOWEEN) {
+      if (!context.darkModeEnabled) {
+        return undefined
+      }
+      return CustomTheme.HALLOWEEN
+    }
+
+    if (theme === CustomTheme.CHRISTMAS) {
+      return CustomTheme.CHRISTMAS
     }
   }
 

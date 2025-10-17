@@ -1,4 +1,5 @@
-import { CustomTheme, getCustomThemePriority, isCustomThemeEnabled } from '@cowprotocol/common-const'
+import { CustomTheme, resolveCustomThemeForContext } from '@cowprotocol/common-const'
+import type { FeatureFlags } from '@cowprotocol/common-const'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
 import { CowSwapWidgetAppParams } from '@cowprotocol/widget-lib'
@@ -34,6 +35,8 @@ const COW_SOUND_TO_WIDGET_KEY: Record<SoundType, WidgetSounds> = {
   SUCCESS: 'orderExecuted',
   ERROR: 'orderError',
 }
+
+const APRILS_FOOLS_FLAG_KEY = 'isAprilsFoolsEnabled'
 
 const APRIL_FOOL_SOUND_SEND = [
   '/audio/cowswap-aprils2025-yoga.mp3',
@@ -79,27 +82,9 @@ function pickRandomAprilsFoolSound(): string {
   return randomPick
 }
 
-export function resolveSeasonalTheme(
-  featureFlags: Record<string, boolean | number | undefined> | undefined,
-  isDarkModeEnabled: boolean
-): CustomTheme | undefined {
-  for (const theme of getCustomThemePriority()) {
-    if (!isCustomThemeEnabled(theme, featureFlags)) {
-      continue
-    }
-
-    if (theme === CustomTheme.HALLOWEEN && !isDarkModeEnabled) {
-      return undefined
-    }
-
-    return theme
-  }
-
-  return undefined
-}
-
-function getSeasonalSounds(featureFlags?: Record<string, boolean | number | undefined>): Partial<Sounds> {
-  const activeSeasonalTheme = resolveSeasonalTheme(featureFlags, isDarkMode())
+function getSeasonalSounds(featureFlags?: FeatureFlags): Partial<Sounds> {
+  const darkModeEnabled = isDarkMode()
+  const activeSeasonalTheme = resolveCustomThemeForContext(featureFlags, { darkModeEnabled })
 
   if (activeSeasonalTheme === CustomTheme.HALLOWEEN) return HALLOWEEN_SOUNDS
   if (activeSeasonalTheme === CustomTheme.CHRISTMAS) return WINTER_SOUNDS
@@ -108,8 +93,8 @@ function getSeasonalSounds(featureFlags?: Record<string, boolean | number | unde
 }
 
 function getThemeBasedSound(type: SoundType): string {
-  const featureFlags = jotaiStore.get(featureFlagsAtom) as Record<string, boolean | number | undefined>
-  const isAprilsFoolsEnabled = Boolean(featureFlags?.isAprilsFoolsEnabled)
+  const featureFlags = jotaiStore.get(featureFlagsAtom) as FeatureFlags
+  const isAprilsFoolsEnabled = Boolean(featureFlags?.[APRILS_FOOLS_FLAG_KEY])
   const isInjectedWidgetMode = isInjectedWidget()
 
   // When in widget mode, always return default sounds
@@ -128,7 +113,18 @@ function getThemeBasedSound(type: SoundType): string {
 const SOUND_CACHE: Record<string, HTMLAudioElement | undefined> = {}
 
 function getEmptySound(): HTMLAudioElement {
-  return typeof Audio !== 'undefined' ? new Audio('') : ({} as unknown as HTMLAudioElement)
+  if (typeof Audio !== 'undefined') {
+    return new Audio('')
+  }
+
+  const stub: Partial<HTMLAudioElement> = {
+    play: () => Promise.resolve(),
+    pause: () => undefined,
+    addEventListener: () => undefined,
+    removeEventListener: () => undefined,
+  }
+
+  return stub as HTMLAudioElement
 }
 
 function getWidgetSoundUrl(type: SoundType): string | null | undefined {
@@ -151,7 +147,7 @@ function getAudio(type: SoundType): HTMLAudioElement {
     let sound = SOUND_CACHE[soundPath]
 
     if (!sound) {
-      sound = new Audio(soundPath)
+      sound = typeof Audio !== 'undefined' ? new Audio(soundPath) : getEmptySound()
       SOUND_CACHE[soundPath] = sound
     }
 
@@ -163,7 +159,7 @@ function getAudio(type: SoundType): HTMLAudioElement {
   let sound = SOUND_CACHE[soundPath]
 
   if (!sound) {
-    sound = new Audio(soundPath)
+    sound = typeof Audio !== 'undefined' ? new Audio(soundPath) : getEmptySound()
     SOUND_CACHE[soundPath] = sound
   }
 
