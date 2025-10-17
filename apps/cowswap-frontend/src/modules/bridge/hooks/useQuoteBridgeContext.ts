@@ -56,6 +56,7 @@ export function useQuoteBridgeContext(): QuoteBridgeContext | null {
       recipient,
       sellAmount: quoteAmounts.swapBuyAmount,
       buyAmount: buyAmount,
+      bridgeReceiverOverride: bridgeQuote?.bridgeReceiverOverride || null,
       bridgeMinDepositAmount: quoteAmounts.swapMinReceiveAmount,
       bridgeMinReceiveAmount: quoteAmounts.bridgeMinReceiveAmount,
       bridgeMinDepositAmountUsd,
@@ -69,5 +70,6 @@ export function useQuoteBridgeContext(): QuoteBridgeContext | null {
     buyAmount,
     buyAmountUsd,
     bridgeMinDepositAmountUsd,
+    bridgeQuote?.bridgeReceiverOverride,
   ])
 }
