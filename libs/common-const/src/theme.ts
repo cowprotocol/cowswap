@@ -1,3 +1,5 @@
+import type { FeatureFlags } from './featureFlags'
+
 export enum CustomTheme {
   CHRISTMAS = 'CHRISTMAS',
   HALLOWEEN = 'HALLOWEEN',
@@ -25,7 +27,6 @@ const CUSTOM_THEME_FLAG_KEYS: Readonly<CustomThemeFlagKeys> = Object.freeze({
   [CustomTheme.HALLOWEEN]: 'isHalloweenEnabled',
 })
 
-export type FeatureFlags = Record<string, boolean | number | undefined>
 export const APRILS_FOOLS_FLAG_KEY = 'isAprilsFoolsEnabled'
 
 export function isCustomThemeEnabled(theme: CustomTheme, featureFlags?: FeatureFlags): boolean {
