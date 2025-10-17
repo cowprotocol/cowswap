@@ -21,9 +21,10 @@ export function useGetReceiveAmountInfo(): ReceiveAmountInfo | null {
   const orderParams = quoteResponse?.quote
   const bridgeFeeRaw = bridgeQuote?.amountsAndCosts.costs.bridgingFee.amountInSellCurrency
 
-  const intermediateCurrency = useTryFindIntermediateToken({
-    bridgeQuote: tradeQuote.bridgeQuote
-  })?.intermediateBuyToken ?? undefined
+  const intermediateCurrency =
+    useTryFindIntermediateToken({
+      bridgeQuote,
+    })?.intermediateBuyToken ?? undefined
 
   return useMemo(() => {
     if (isFractionFalsy(inputCurrencyAmount) && isFractionFalsy(outputCurrencyAmount)) return null

@@ -86,7 +86,13 @@ async function estimateZkSyncCancelTwapOrderTxs(context: CancelTwapOrderContext)
   return cancelComposableCowTxCost.add(cancelPartOrderTx)
 }
 
-const APP_DATA_HASH = toKeccak256(JSON.stringify({ version: '1.6.0', appCode: 'CoW Swap', metadata: {} }))
+let APP_DATA_HASH: string | undefined
+function getAppDataHash(): string {
+  if (!APP_DATA_HASH) {
+    APP_DATA_HASH = toKeccak256(JSON.stringify({ version: '1.6.0', appCode: 'CoW Swap', metadata: {} }))
+  }
+  return APP_DATA_HASH
+}
 
 const FAKE_OWNER = '0x330d9F4906EDA1f73f668660d1946bea71f48827'
 
@@ -100,7 +106,9 @@ const FAKE_TWAP_ORDER: TWAPOrder = {
   startTime: START_TIME,
   timeInterval: 600,
   span: 0,
-  appData: APP_DATA_HASH,
+  get appData() {
+    return getAppDataHash()
+  },
 }
 
 const FAKE_ORDER_IDS_CACHE: Partial<Record<SupportedChainId, string>> = {}
