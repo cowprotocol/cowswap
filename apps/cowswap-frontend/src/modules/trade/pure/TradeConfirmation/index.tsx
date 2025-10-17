@@ -90,7 +90,6 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
       <styledEl.Header>
         <BackButton onClick={onDismiss} />
         <styledEl.ConfirmHeaderTitle>{props.title}</styledEl.ConfirmHeaderTitle>
-
         <styledEl.HeaderRightContent>
           {hasPendingTrade || isPriceStatic ? null : <QuoteCountdown />}
         </styledEl.HeaderRightContent>
