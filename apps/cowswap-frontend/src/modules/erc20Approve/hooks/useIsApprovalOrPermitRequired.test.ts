@@ -1,6 +1,6 @@
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { OrderKind } from '@cowprotocol/cow-sdk'
-import { CurrencyAmount, Token } from '@uniswap/sdk-core'
+import { CurrencyAmount, Token, Ether } from '@uniswap/sdk-core'
 
 import { renderHook } from '@testing-library/react'
 
@@ -17,6 +17,7 @@ import { ApprovalState } from '../types'
 jest.mock('@cowprotocol/common-hooks', () => ({
   useFeatureFlags: jest.fn(),
 }))
+
 
 jest.mock('modules/permit', () => ({
   usePermitInfo: jest.fn(),
@@ -163,6 +164,35 @@ describe('useIsApprovalOrPermitRequired', () => {
     })
   })
 
+  describe('when currency is native token', () => {
+    it('should return NotRequired for native token regardless of amount', () => {
+      const nativeAmount = CurrencyAmount.fromRawAmount(Ether.onChain(1), '1000000000000000000')
+      mockUseGetAmountToSignApprove.mockReturnValue(nativeAmount)
+
+      const { result } = renderHook(() => useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: null }))
+
+      expect(result.current).toBe(ApproveRequiredReason.NotRequired)
+    })
+
+    it('should return NotRequired for native token even with zero amount', () => {
+      const nativeAmount = CurrencyAmount.fromRawAmount(Ether.onChain(1), '0')
+      mockUseGetAmountToSignApprove.mockReturnValue(nativeAmount)
+
+      const { result } = renderHook(() => useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: null }))
+
+      expect(result.current).toBe(ApproveRequiredReason.NotRequired)
+    })
+
+    it('should return NotRequired for native token even when bundling is enabled', () => {
+      const nativeAmount = CurrencyAmount.fromRawAmount(Ether.onChain(1), '1000000000000000000')
+      mockUseGetAmountToSignApprove.mockReturnValue(nativeAmount)
+
+      const { result } = renderHook(() => useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: true }))
+
+      expect(result.current).toBe(ApproveRequiredReason.NotRequired)
+    })
+  })
+
   describe('when bundling is supported', () => {
     it('should return BundleApproveRequired when bundling is enabled and approval is needed', () => {
       mockUseApproveState.mockReturnValue({
@@ -249,7 +279,7 @@ describe('useIsApprovalOrPermitRequired', () => {
 
       const { result } = renderHook(() => useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: null }))
 
-      expect(result.current).toBe(ApproveRequiredReason.Required)
+      expect(result.current).toBe(ApproveRequiredReason.NotRequired)
     })
 
     it('should handle zero amount to approve', () => {

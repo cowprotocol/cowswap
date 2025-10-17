@@ -1,6 +1,8 @@
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { PermitType } from '@cowprotocol/permit-utils'
 import { Nullish } from '@cowprotocol/types'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { usePermitInfo } from 'modules/permit'
 import { TradeType, useDerivedTradeState } from 'modules/trade'
@@ -33,7 +35,7 @@ export function useIsApprovalOrPermitRequired({
   const { inputCurrency, tradeType } = useDerivedTradeState() || {}
   const { type } = usePermitInfo(inputCurrency, tradeType) || {}
 
-  if (amountToApprove?.equalTo('0')) {
+  if (!checkIsAmountAndCurrencyRequireApprove(amountToApprove)) {
     return ApproveRequiredReason.NotRequired
   }
 
@@ -52,6 +54,14 @@ export function useIsApprovalOrPermitRequired({
   }
 
   return getPermitRequirements(type)
+}
+
+function checkIsAmountAndCurrencyRequireApprove(amountToApprove: CurrencyAmount<Currency> | null): boolean {
+  if (!amountToApprove) return false
+
+  if (getIsNativeToken(amountToApprove.currency)) return false
+
+  return !amountToApprove.equalTo('0')
 }
 
 function isApprovalRequired(approvalState: ApprovalState): boolean {
