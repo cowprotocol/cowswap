@@ -77,7 +77,9 @@ function NotificationsHeader({
           })}
         />
       </span>
-      <h3>Notifications</h3>
+      <h3>
+        <Trans>Notifications</Trans>
+      </h3>
       {areTelegramNotificationsEnabled &&
         (hasSubscription ? (
           <NotificationSettingsPopover
