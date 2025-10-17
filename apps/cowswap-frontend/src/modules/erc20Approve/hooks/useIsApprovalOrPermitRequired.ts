@@ -15,9 +15,18 @@ export enum ApproveRequiredReason {
   Required,
   Eip2612PermitRequired,
   DaiLikePermitRequired,
+  BundleApproveRequired,
 }
 
-export function useIsApprovalOrPermitRequired(): ApproveRequiredReason {
+type AdditionalParams = {
+  // null is needed to prevent breaking changes, as this param was optional before
+  // f.e. for approve and swap its allowed, but for just approve - no
+  isBundlingSupportedOrEnabledForContext: boolean | null
+}
+
+export function useIsApprovalOrPermitRequired({
+  isBundlingSupportedOrEnabledForContext,
+}: AdditionalParams): ApproveRequiredReason {
   const amountToApprove = useGetAmountToSignApprove()
   const { isPartialApproveEnabled } = useFeatureFlags()
   const { state: approvalState } = useApproveState(amountToApprove)
@@ -31,8 +40,12 @@ export function useIsApprovalOrPermitRequired(): ApproveRequiredReason {
   const isPermitSupported = type !== 'unsupported'
 
   if (!isPermitSupported && isApprovalRequired(approvalState)) {
-    return ApproveRequiredReason.Required
+    return isBundlingSupportedOrEnabledForContext
+      ? ApproveRequiredReason.BundleApproveRequired
+      : ApproveRequiredReason.Required
   }
+
+  if (isBundlingSupportedOrEnabledForContext) return ApproveRequiredReason.BundleApproveRequired
 
   if (!isNewApproveFlowEnabled(tradeType, isPartialApproveEnabled)) {
     return ApproveRequiredReason.NotRequired
