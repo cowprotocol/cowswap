@@ -5,7 +5,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { useCurrentAccountProxy } from 'modules/accountProxy'
 import { useGetReceiveAmountInfo } from 'modules/trade/hooks/useGetReceiveAmountInfo'
-import { BRIDGE_QUOTE_ACCOUNT } from 'modules/tradeQuote'
+import { BRIDGE_QUOTE_ACCOUNT, useTradeQuote } from 'modules/tradeQuote'
 import { useIsSlippageModified, useTradeSlippage } from 'modules/tradeSlippage'
 import { useUsdAmount } from 'modules/usdAmount'
 
@@ -21,12 +21,15 @@ export function useQuoteSwapContext(): QuoteSwapContext | null {
   const { value: swapExpectedReceiveUsd } = useUsdAmount(quoteAmounts?.swapBuyAmount)
 
   const slippage = useTradeSlippage()
+  const { bridgeQuote } = useTradeQuote()
   const isSlippageModified = useIsSlippageModified()
 
-  const cowShedAddress = useCurrentAccountProxy()?.data?.proxyAddress || BRIDGE_QUOTE_ACCOUNT
+  const cowShedAddress = useCurrentAccountProxy()?.data?.proxyAddress
+  const bridgeReceiverOverride = bridgeQuote?.bridgeReceiverOverride || null
+  const recipient = bridgeReceiverOverride || cowShedAddress || BRIDGE_QUOTE_ACCOUNT
 
   return useMemo(() => {
-    if (!receiveAmountInfo || !quoteAmounts || !cowShedAddress) return null
+    if (!receiveAmountInfo || !quoteAmounts || !recipient) return null
 
     const { sellAmount } = receiveAmountInfo.afterSlippage
     const sellToken = sellAmount.currency
@@ -41,7 +44,8 @@ export function useQuoteSwapContext(): QuoteSwapContext | null {
       buyAmount: quoteAmounts.swapBuyAmount,
       slippage,
       isSlippageModified,
-      recipient: cowShedAddress,
+      recipient,
+      bridgeReceiverOverride,
       minReceiveAmount: quoteAmounts.swapMinReceiveAmount,
       minReceiveUsdValue: swapMinReceiveAmountUsd,
       expectedReceiveUsdValue: swapExpectedReceiveUsd,
@@ -51,8 +55,9 @@ export function useQuoteSwapContext(): QuoteSwapContext | null {
     quoteAmounts,
     slippage,
     isSlippageModified,
-    cowShedAddress,
+    recipient,
     swapMinReceiveAmountUsd,
     swapExpectedReceiveUsd,
+    bridgeReceiverOverride,
   ])
 }
