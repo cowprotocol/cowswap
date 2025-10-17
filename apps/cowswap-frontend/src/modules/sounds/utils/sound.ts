@@ -36,6 +36,8 @@ const COW_SOUND_TO_WIDGET_KEY: Record<SoundType, WidgetSounds> = {
   ERROR: 'orderError',
 }
 
+const APRIL_FOOL_STORAGE_KEY = 'lastAprilFoolSoundSelections' as const
+
 const APRIL_FOOL_SOUND_SEND = [
   '/audio/cowswap-aprils2025-yoga.mp3',
   '/audio/cowswap-aprils2025-epic.mp3',
@@ -51,14 +53,16 @@ function isDarkMode(): boolean {
 
 function pickRandomAprilsFoolSound(): string {
   let played: string[] = []
-  try {
-    const raw = localStorage.getItem('lastAprilFoolSoundSelections')
-    const parsed = raw ? JSON.parse(raw) : []
-    if (Array.isArray(parsed)) {
-      played = parsed.filter((value): value is string => typeof value === 'string')
+  if (typeof localStorage !== 'undefined') {
+    try {
+      const raw = localStorage.getItem(APRIL_FOOL_STORAGE_KEY)
+      const parsed = raw ? JSON.parse(raw) : []
+      if (Array.isArray(parsed)) {
+        played = parsed.filter((value): value is string => typeof value === 'string')
+      }
+    } catch {
+      // Ignore parse errors and reset the cycle
     }
-  } catch {
-    // Ignore parse errors and reset the cycle
   }
 
   let pool = APRIL_FOOL_SOUND_SEND.filter((sound) => !played.includes(sound))
@@ -71,10 +75,12 @@ function pickRandomAprilsFoolSound(): string {
   const nextPlayed = [...played, randomPick]
   const stored = nextPlayed.length === APRIL_FOOL_SOUND_SEND.length ? [] : nextPlayed
 
-  try {
-    localStorage.setItem('lastAprilFoolSoundSelections', JSON.stringify(stored))
-  } catch {
-    // Ignore storage quota or availability errors; audio rotation still works in-memory
+  if (typeof localStorage !== 'undefined') {
+    try {
+      localStorage.setItem(APRIL_FOOL_STORAGE_KEY, JSON.stringify(stored))
+    } catch {
+      // Ignore storage quota or availability errors; audio rotation still works in-memory
+    }
   }
 
   return randomPick
