@@ -15,6 +15,46 @@ import { useHandleApprovalError } from './useHandleApprovalError'
 import { useApproveCallback } from '../../hooks'
 import { useResetApproveProgressModalState, useUpdateApproveProgressModalState } from '../../state'
 
+interface ProcessTransactionConfirmationParams {
+  response: TransactionResponse
+  currency: Currency | undefined
+  account: string | undefined
+  spender: string | undefined
+  chainId: number | undefined
+  setOptimisticAllowance: (data: { tokenAddress: string; owner: string; spender: string; amount: bigint; blockNumber: number; chainId: number }) => void
+}
+
+async function processTransactionConfirmation({
+  response,
+  currency,
+  account,
+  spender,
+  chainId,
+  setOptimisticAllowance,
+}: ProcessTransactionConfirmationParams): Promise<TradeApproveResult<TransactionReceipt>> {
+  const txResponse = await response.wait()
+
+  if (!chainId) {
+    return { txResponse, approvedAmount: undefined }
+  }
+
+  const approvedAmount = processApprovalTransaction(
+    {
+      currency,
+      account,
+      spender,
+      chainId,
+    },
+    txResponse,
+  )
+
+  if (approvedAmount) {
+    setOptimisticAllowance(approvedAmount)
+  }
+
+  return { txResponse, approvedAmount: approvedAmount?.amount }
+}
+
 interface TradeApproveCallbackParams {
   useModals: boolean
   waitForTxConfirmation?: boolean
@@ -60,7 +100,6 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
   const handleApprovalError = useHandleApprovalError(symbol)
 
   return useCallback(
-    // eslint-disable-next-line complexity
     async (amount, { useModals = true, waitForTxConfirmation } = DEFAULT_APPROVE_PARAMS) => {
       if (useModals) {
         const amountToApprove = currency ? CurrencyAmount.fromRawAmount(currency, amount.toString()) : undefined
@@ -83,26 +122,14 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
         approvalAnalytics('Sign', symbol)
 
         if (waitForTxConfirmation) {
-          // need to wait response to run finally clause after that
-          const txResponse = await response.wait()
-
-          // Set optimistic allowance immediately after transaction is mined
-          // Extract the actual approved amount from transaction logs
-          const approvedAmount = processApprovalTransaction(
-            {
-              currency,
-              account,
-              spender,
-              chainId,
-            },
-            txResponse,
-          )
-
-          if (approvedAmount) {
-            setOptimisticAllowance(approvedAmount)
-          }
-
-          return { txResponse, approvedAmount: approvedAmount?.amount }
+          return await processTransactionConfirmation({
+            response,
+            currency,
+            account,
+            spender,
+            chainId,
+            setOptimisticAllowance,
+          })
         } else {
           return { txResponse: response, approvedAmount: undefined }
         }

@@ -9,8 +9,8 @@ import { useGeneratePermitInAdvanceToTrade } from './useGeneratePermitInAdvanceT
 
 import { useTokenSupportsPermit } from '../../permit'
 import { MAX_APPROVE_AMOUNT } from '../constants'
-import { TradeApproveResult } from '../containers/TradeApproveModal/useTradeApproveCallback'
-import { useIsPartialApproveSelectedByUser, useUpdateTradeApproveState } from '../state'
+import { TradeApproveResult } from '../containers'
+import { useIsPartialApproveSelectedByUser, useUpdateApproveProgressModalState } from '../state'
 
 jest.mock('./useApproveCurrency')
 jest.mock('./useGeneratePermitInAdvanceToTrade')
@@ -25,8 +25,8 @@ const mockUseTokenSupportsPermit = useTokenSupportsPermit as jest.MockedFunction
 const mockUseIsPartialApproveSelectedByUser = useIsPartialApproveSelectedByUser as jest.MockedFunction<
   typeof useIsPartialApproveSelectedByUser
 >
-const mockUseUpdateTradeApproveState = useUpdateTradeApproveState as jest.MockedFunction<
-  typeof useUpdateTradeApproveState
+const mockUseUpdateTradeApproveState = useUpdateApproveProgressModalState as jest.MockedFunction<
+  typeof useUpdateApproveProgressModalState
 >
 
 // eslint-disable-next-line max-lines-per-function

@@ -14,7 +14,7 @@ import { processApprovalTransaction } from './approveUtils'
 import { useTradeApproveCallback } from './useTradeApproveCallback'
 
 import { useApproveCallback } from '../../hooks'
-import { useUpdateTradeApproveState } from '../../state'
+import { useResetApproveProgressModalState, useUpdateApproveProgressModalState } from '../../state'
 
 jest.mock('@cowprotocol/analytics', () => ({
   useCowAnalytics: jest.fn(),
@@ -46,15 +46,19 @@ jest.mock('../../hooks', () => ({
 }))
 
 jest.mock('../../state', () => ({
-  useUpdateTradeApproveState: jest.fn(),
+  useUpdateApproveProgressModalState: jest.fn(),
+  useResetApproveProgressModalState: jest.fn(),
 }))
 
 const mockUseCowAnalytics = useCowAnalytics as jest.MockedFunction<typeof useCowAnalytics>
 const mockUseTradeSpenderAddress = useTradeSpenderAddress as jest.MockedFunction<typeof useTradeSpenderAddress>
 const mockUseFeatureFlags = useFeatureFlags as jest.MockedFunction<typeof useFeatureFlags>
 const mockUseApproveCallback = useApproveCallback as jest.MockedFunction<typeof useApproveCallback>
-const mockUseUpdateTradeApproveState = useUpdateTradeApproveState as jest.MockedFunction<
-  typeof useUpdateTradeApproveState
+const mockUseUpdateTradeApproveState = useUpdateApproveProgressModalState as jest.MockedFunction<
+  typeof useUpdateApproveProgressModalState
+>
+const mockUseResetApproveProgressModalState = useResetApproveProgressModalState as jest.MockedFunction<
+  typeof useResetApproveProgressModalState
 >
 const mockUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
 const mockUseSetOptimisticAllowance = useSetOptimisticAllowance as jest.MockedFunction<typeof useSetOptimisticAllowance>
@@ -70,6 +74,7 @@ describe('useTradeApproveCallback', () => {
 
   const mockSendEvent = jest.fn()
   const mockUpdateTradeApproveState = jest.fn()
+  const mockResetApproveProgressModalState = jest.fn()
   const mockApproveCallback = jest.fn()
   const mockSetOptimisticAllowance = jest.fn()
   const mockAccount = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266' // Valid address
@@ -124,6 +129,7 @@ describe('useTradeApproveCallback', () => {
     mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: false })
     mockUseApproveCallback.mockReturnValue(mockApproveCallback)
     mockUseUpdateTradeApproveState.mockReturnValue(mockUpdateTradeApproveState)
+    mockUseResetApproveProgressModalState.mockReturnValue(mockResetApproveProgressModalState)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mockUseWalletInfo.mockReturnValue({ chainId: mockChainId, account: mockAccount } as any)
     mockUseSetOptimisticAllowance.mockReturnValue(mockSetOptimisticAllowance)
@@ -204,8 +210,10 @@ describe('useTradeApproveCallback', () => {
       await waitFor(() => {
         expect(mockProcessApprovalTransaction).toHaveBeenCalled()
         expect(mockUpdateTradeApproveState).toHaveBeenCalledWith({
-          currency: undefined,
+          currency: mockToken,
           approveInProgress: false,
+          amountToApprove: undefined,
+          isPendingInProgress: false,
         })
       })
 
@@ -226,6 +234,7 @@ describe('useTradeApproveCallback', () => {
         expect(mockUpdateTradeApproveState).toHaveBeenCalledWith({
           currency: mockToken,
           approveInProgress: true,
+          amountToApprove: expect.any(Object),
         })
         expect(mockApproveCallback).toHaveBeenCalledWith(mockAmount)
         expect(mockSendEvent).toHaveBeenCalledWith({
@@ -239,8 +248,10 @@ describe('useTradeApproveCallback', () => {
           label: mockToken.symbol,
         })
         expect(mockUpdateTradeApproveState).toHaveBeenCalledWith({
-          currency: undefined,
+          currency: mockToken,
           approveInProgress: false,
+          amountToApprove: undefined,
+          isPendingInProgress: false,
         })
       })
     })
@@ -256,8 +267,10 @@ describe('useTradeApproveCallback', () => {
 
       await waitFor(() => {
         expect(mockUpdateTradeApproveState).toHaveBeenCalledWith({
-          currency: undefined,
+          currency: mockToken,
           approveInProgress: false,
+          amountToApprove: undefined,
+          isPendingInProgress: false,
         })
       })
     })
@@ -302,8 +315,10 @@ describe('useTradeApproveCallback', () => {
         })
         // Then cleanup in finally block
         expect(mockUpdateTradeApproveState).toHaveBeenCalledWith({
-          currency: undefined,
+          currency: mockToken,
           approveInProgress: false,
+          amountToApprove: undefined,
+          isPendingInProgress: false,
         })
       })
     })
@@ -322,8 +337,10 @@ describe('useTradeApproveCallback', () => {
           error: 'User rejected approval transaction',
         })
         expect(mockUpdateTradeApproveState).toHaveBeenCalledWith({
-          currency: undefined,
+          currency: mockToken,
           approveInProgress: false,
+          amountToApprove: undefined,
+          isPendingInProgress: false,
         })
       })
     })
@@ -388,10 +405,7 @@ describe('useTradeApproveCallback', () => {
           label: mockToken.symbol,
         })
         // Modal should be hidden immediately after response
-        expect(mockUpdateTradeApproveState).toHaveBeenCalledWith({
-          currency: undefined,
-          approveInProgress: false,
-        })
+        expect(mockResetApproveProgressModalState).toHaveBeenCalled()
       })
     })
 
@@ -411,10 +425,9 @@ describe('useTradeApproveCallback', () => {
           action: 'Sign',
           label: mockToken.symbol,
         })
-        const callsBeforeFinally = mockUpdateTradeApproveState.mock.calls.filter(
-          (call) => call[0].currency === undefined && call[0].approveInProgress === false,
-        )
-        expect(callsBeforeFinally).toHaveLength(1)
+        expect(mockUpdateTradeApproveState).toHaveBeenCalledWith({
+          isPendingInProgress: true,
+        })
       })
     })
   })
@@ -433,6 +446,7 @@ describe('useTradeApproveCallback', () => {
         expect(mockUpdateTradeApproveState).toHaveBeenCalledWith({
           currency: mockToken,
           approveInProgress: true,
+          amountToApprove: expect.any(Object),
         })
       })
     })
@@ -463,8 +477,10 @@ describe('useTradeApproveCallback', () => {
 
       await waitFor(() => {
         expect(mockUpdateTradeApproveState).toHaveBeenCalledWith({
-          currency: undefined,
+          currency: mockToken,
           approveInProgress: false,
+          amountToApprove: undefined,
+          isPendingInProgress: false,
         })
       })
     })
@@ -482,8 +498,10 @@ describe('useTradeApproveCallback', () => {
 
       await waitFor(() => {
         expect(mockUpdateTradeApproveState).toHaveBeenCalledWith({
-          currency: undefined,
+          currency: mockToken,
           approveInProgress: false,
+          amountToApprove: undefined,
+          isPendingInProgress: false,
         })
       })
     })
@@ -497,8 +515,10 @@ describe('useTradeApproveCallback', () => {
 
       await waitFor(() => {
         expect(mockUpdateTradeApproveState).toHaveBeenCalledWith({
-          currency: undefined,
+          currency: mockToken,
           approveInProgress: false,
+          amountToApprove: undefined,
+          isPendingInProgress: false,
         })
       })
     })
@@ -517,8 +537,10 @@ describe('useTradeApproveCallback', () => {
 
       await waitFor(() => {
         expect(mockUpdateTradeApproveState).toHaveBeenCalledWith({
-          currency: undefined,
+          currency: mockToken,
           approveInProgress: false,
+          amountToApprove: undefined,
+          isPendingInProgress: false,
         })
       })
     })
