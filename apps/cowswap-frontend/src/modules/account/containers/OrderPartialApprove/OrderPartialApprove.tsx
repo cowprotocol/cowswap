@@ -18,11 +18,13 @@ import { OrderActionsWrapper } from './styled'
 export type OrderPartialApproveProps = {
   amountToApprove: CurrencyAmount<Currency>
   isPartialApproveEnabledBySettings?: boolean
+  orderId?: string
 }
 
 export function OrderPartialApprove({
   amountToApprove,
   isPartialApproveEnabledBySettings,
+  orderId,
 }: OrderPartialApproveProps): ReactNode {
   const isPartialApproveSelectedByUser = useIsPartialApproveSelectedByUser()
   const { isModalOpen, amountSetByUser } = usePartialApproveAmountModalState() || {}
@@ -42,7 +44,9 @@ export function OrderPartialApprove({
           updateModalState={() => updatePartialApproveAmountModalState({ isModalOpen: true })}
         />
       )}
-      {isPartialApproveSelectedByUser && <ActiveOrdersWithAffectedPermit currency={amountToApprove.currency} />}
+      {isPartialApproveSelectedByUser && (
+        <ActiveOrdersWithAffectedPermit orderId={orderId} currency={amountToApprove.currency} />
+      )}
       <TradeApproveButton
         ignorePermit
         enablePartialApprove

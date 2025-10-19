@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react'
 
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
+import { usePreventDoubleExecution } from '@cowprotocol/common-hooks'
 import { ButtonSize, HoverTooltip, TokenSymbol } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -42,6 +43,7 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
   const spender = useTradeSpenderAddress()
   const { approvalState } = useApprovalStateForSpender(amountToApprove, spender)
   const approveAndSwap = useApproveAndSwap(props)
+  const approveWithPreventedDoubleExecution = usePreventDoubleExecution(approveAndSwap)
 
   if (!enablePartialApprove) {
     return (
@@ -63,7 +65,7 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
     <ButtonWrapper
       disabled={isPending || isDisabled}
       buttonSize={buttonSize}
-      onClick={approveAndSwap}
+      onClick={approveWithPreventedDoubleExecution}
       altDisabledStyle={isPending}
     >
       <styledEl.ButtonLabelWrapper buttonSize={buttonSize}>

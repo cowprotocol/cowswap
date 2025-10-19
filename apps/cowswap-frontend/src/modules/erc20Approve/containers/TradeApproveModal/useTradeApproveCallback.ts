@@ -4,7 +4,7 @@ import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import type { TransactionReceipt, TransactionResponse } from '@ethersproject/abstract-provider'
-import { Currency } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useSetOptimisticAllowance } from 'entities/optimisticAllowance/useSetOptimisticAllowance'
 
@@ -13,7 +13,7 @@ import { useApprovalAnalytics } from './useApprovalAnalytics'
 import { useHandleApprovalError } from './useHandleApprovalError'
 
 import { useApproveCallback } from '../../hooks'
-import { useUpdateTradeApproveState } from '../../state'
+import { useResetApproveProgressModalState, useUpdateApproveProgressModalState } from '../../state'
 
 interface TradeApproveCallbackParams {
   useModals: boolean
@@ -48,7 +48,8 @@ export interface TradeApproveCallback {
 export function useTradeApproveCallback(currency: Currency | undefined): TradeApproveCallback {
   const symbol = currency?.symbol
 
-  const updateTradeApproveState = useUpdateTradeApproveState()
+  const updateApproveProgressModalState = useUpdateApproveProgressModalState()
+  const resetApproveProgressModalState = useResetApproveProgressModalState()
   const spender = useTradeSpenderAddress()
   const { isPartialApproveEnabled } = useFeatureFlags()
   const { chainId, account } = useWalletInfo()
@@ -59,9 +60,11 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
   const handleApprovalError = useHandleApprovalError(symbol)
 
   return useCallback(
+    // eslint-disable-next-line complexity
     async (amount, { useModals = true, waitForTxConfirmation } = DEFAULT_APPROVE_PARAMS) => {
       if (useModals) {
-        updateTradeApproveState({ currency, approveInProgress: true })
+        const amountToApprove = currency ? CurrencyAmount.fromRawAmount(currency, amount.toString()) : undefined
+        updateApproveProgressModalState({ currency, approveInProgress: true, amountToApprove })
       }
 
       approvalAnalytics('Send', symbol)
@@ -71,8 +74,10 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
 
         // if ff is disabled - use old flow, hide modal when tx is sent
         if (!response || !isPartialApproveEnabled) {
-          updateTradeApproveState({ currency: undefined, approveInProgress: false })
+          resetApproveProgressModalState()
           return undefined
+        } else {
+          updateApproveProgressModalState({ isPendingInProgress: true })
         }
 
         approvalAnalytics('Sign', symbol)
@@ -105,16 +110,22 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
         handleApprovalError(error)
         return undefined
       } finally {
-        updateTradeApproveState({ currency: undefined, approveInProgress: false })
+        updateApproveProgressModalState({
+          currency,
+          approveInProgress: false,
+          amountToApprove: undefined,
+          isPendingInProgress: false,
+        })
       }
     },
     [
-      symbol,
-      approveCallback,
-      updateTradeApproveState,
-      currency,
       approvalAnalytics,
+      symbol,
+      currency,
+      updateApproveProgressModalState,
+      approveCallback,
       isPartialApproveEnabled,
+      resetApproveProgressModalState,
       account,
       spender,
       chainId,

@@ -32,7 +32,6 @@ export function ChangeApproveAmountModalPure({
       <ModalHeader onBack={onBack}>
         <styledEl.Title>
           <div>Edit partial approval</div>
-          <styledEl.HelpLink>Need help?</styledEl.HelpLink>
         </styledEl.Title>
       </ModalHeader>
       <styledEl.SwapInfo>
