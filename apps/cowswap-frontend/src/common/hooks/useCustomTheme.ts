@@ -1,24 +1,30 @@
-import { useMemo } from 'react'
+import { useAtomValue } from 'jotai'
 
-import { ACTIVE_CUSTOM_THEME, CustomTheme } from '@cowprotocol/common-const'
+import { CustomTheme, resolveCustomThemeForContext } from '@cowprotocol/common-const'
+import type { FeatureFlags } from '@cowprotocol/common-const'
 import type { CowSwapTheme } from '@cowprotocol/ui'
+
+import { featureFlagsAtom } from 'common/state/featureFlagsState'
 
 import { useDarkModeManager } from '../../legacy/state/user/hooks'
 
-// TODO: load them from feature flags when we want to enable again
-const isChristmasEnabled = false
-const isHalloweenEnabled = false
+export function resolveCowSwapTheme(darkMode: boolean, featureFlags?: FeatureFlags): CowSwapTheme | undefined {
+  const activeTheme = resolveCustomThemeForContext(featureFlags, { darkModeEnabled: darkMode })
+
+  if (activeTheme === CustomTheme.HALLOWEEN) {
+    return 'darkHalloween'
+  }
+
+  if (activeTheme === CustomTheme.CHRISTMAS) {
+    return darkMode ? 'darkChristmas' : 'lightChristmas'
+  }
+
+  return undefined
+}
 
 export function useCustomTheme(): CowSwapTheme | undefined {
   const [darkMode] = useDarkModeManager()
+  const featureFlags = useAtomValue(featureFlagsAtom)
 
-  return useMemo(() => {
-    if (ACTIVE_CUSTOM_THEME === CustomTheme.HALLOWEEN && darkMode && isHalloweenEnabled) {
-      return 'darkHalloween'
-    }
-    if (ACTIVE_CUSTOM_THEME === CustomTheme.CHRISTMAS && isChristmasEnabled) {
-      return darkMode ? 'darkChristmas' : 'lightChristmas'
-    }
-    return undefined
-  }, [darkMode])
+  return resolveCowSwapTheme(darkMode, featureFlags)
 }

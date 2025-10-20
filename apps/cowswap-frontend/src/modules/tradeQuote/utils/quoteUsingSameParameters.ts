@@ -23,7 +23,7 @@ export function quoteUsingSameParameters(
 
   if (currentQuote.bridgeQuote) {
     const bridgeTradeParams = currentQuote.bridgeQuote.tradeParameters
-    const bridgePostHook = currentQuote.bridgeQuote.bridgeCallDetails.preAuthorizedBridgingHook.postHook
+    const bridgePostHook = currentQuote.bridgeQuote.bridgeCallDetails?.preAuthorizedBridgingHook.postHook
 
     const cases = [
       compareAppDataWithoutQuoteData(
@@ -100,7 +100,7 @@ function removeQuoteMetadata(appData: AppDataInfo['doc']): string {
 
 function removeBridgePostHook(
   appData: AppDataInfo['doc'] | undefined,
-  postHook: CowHook,
+  postHook: CowHook | undefined,
 ): AppDataInfo['doc'] | undefined {
   if (!appData) return appData
 
@@ -125,6 +125,6 @@ function removeBridgePostHook(
   return copy
 }
 
-function areHooksEqual(hookA: CowHook, hookB: CowHook): boolean {
-  return hookA.callData === hookB.callData && hookA.gasLimit === hookB.gasLimit && hookA.target === hookB.target
+function areHooksEqual(hookA: CowHook | undefined, hookB: CowHook | undefined): boolean {
+  return hookA?.callData === hookB?.callData && hookA?.gasLimit === hookB?.gasLimit && hookA?.target === hookB?.target
 }
