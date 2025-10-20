@@ -7,7 +7,7 @@ import { useIsCurrentTradeBridging } from 'modules/trade'
 
 export function useGetConfirmButtonLabel(): string {
   const isCurrentTradeBridging = useIsCurrentTradeBridging()
-  const isPermitOrApproveRequired = useIsApprovalOrPermitRequired()
+  const isPermitOrApproveRequired = useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: false })
   const { isPartialApproveEnabled } = useFeatureFlags()
   const { t } = useLingui()
 
