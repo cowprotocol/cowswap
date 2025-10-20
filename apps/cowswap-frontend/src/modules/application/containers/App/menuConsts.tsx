@@ -60,6 +60,11 @@ export const NAV_ITEMS = (chainId: SupportedChainId): MenuItem[] => {
           external: true,
         },
         {
+          href: 'https://cow.fi/careers',
+          label: 'Careers',
+          external: true,
+        },
+        {
           href: Routes.PLAY_COWRUNNER,
           label: 'CoW Runner',
           // icon: IMG_ICON_COW_RUNNER,
