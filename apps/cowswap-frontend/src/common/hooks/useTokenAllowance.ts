@@ -11,7 +11,6 @@ import useSWR, { SWRConfiguration, SWRResponse } from 'swr'
 
 import { useTokenContract } from 'common/hooks/useContract'
 
-
 interface LastApproveParams {
   blockNumber: number
   tokenAddress: string

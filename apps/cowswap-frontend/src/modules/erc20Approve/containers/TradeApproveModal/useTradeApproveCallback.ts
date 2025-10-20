@@ -3,13 +3,15 @@ import { useCallback } from 'react'
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { errorToString, isRejectRequestProviderError } from '@cowprotocol/common-utils'
-import { TransactionReceipt, TransactionResponse } from '@ethersproject/abstract-provider'
+import type { TransactionReceipt, TransactionResponse } from '@ethersproject/abstract-provider'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useApproveCowAnalytics } from './useApproveCowAnalytics'
 
 import { useApproveCallback } from '../../hooks'
 import { useResetApproveProgressModalState, useUpdateApproveProgressModalState } from '../../state'
+
+const EVM_TX_HASH_LENGTH = 64 + 2
 
 interface TradeApproveCallbackParams {
   useModals: boolean
@@ -92,13 +94,7 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
           resetApproveProgressModalState()
         }
 
-        if (waitForTxConfirmation) {
-          // need to wait response to run finally clause after that
-          const resp = await response.wait()
-          return resp
-        } else {
-          return response
-        }
+        return waitForTransaction(response, waitForTxConfirmation)
       } catch (error) {
         handleApprovalError(error)
         return undefined
@@ -122,4 +118,22 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
       handleApprovalError,
     ],
   ) as TradeApproveCallback
+}
+
+async function waitForTransaction(
+  response: TransactionResponse,
+  waitForTxConfirmation: boolean,
+): Promise<TransactionResponse | TransactionReceipt | undefined> {
+  // Check the length to skip waiting for Safe tx
+  // We have to return undefined in order to avoid jumping into confirm screen after approval tx sending
+  if (response.hash.length !== EVM_TX_HASH_LENGTH) {
+    return undefined
+  }
+
+  if (waitForTxConfirmation) {
+    // need to wait response to run finally clause after that
+    return response.wait()
+  } else {
+    return response
+  }
 }
