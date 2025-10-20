@@ -1,12 +1,10 @@
-import { useTradeFlowContext } from 'modules/tradeFlow'
+import { TradeFlowContext, useTradeFlowContext } from 'modules/tradeFlow'
 
-import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
+import { useSwapDeadlineState, useSwapSettings } from './useSwapSettings'
 
-import { useSwapDeadlineState } from './useSwapSettings'
-
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useSwapFlowContext() {
+export function useSwapFlowContext(): TradeFlowContext | null {
   const [deadline] = useSwapDeadlineState()
-  return useTradeFlowContext(useSafeMemoObject({ deadline }))
+  const { enablePartialApprovalBySettings } = useSwapSettings()
+
+  return useTradeFlowContext({ deadline, partialApproveEnabled: enablePartialApprovalBySettings })
 }
