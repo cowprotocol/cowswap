@@ -156,8 +156,8 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
   const doNotQuery = getDoNotQueryStatusEndpoint(order, apiSolverCompetition, !!disableProgressBar)
 
   const winnerSolver = useMemo(
-    () => apiSolverCompetition?.[0] ? mergeSolverData(apiSolverCompetition[0], solversInfo) : undefined,
-    [apiSolverCompetition, solversInfo]
+    () => (apiSolverCompetition?.[0] ? mergeSolverData(apiSolverCompetition[0], solversInfo) : undefined),
+    [apiSolverCompetition, solversInfo],
   )
   const { swapAndBridgeContext } = useSwapAndBridgeContext(chainId, isBridgingTrade ? order : undefined, winnerSolver)
   const bridgingStatus = swapAndBridgeContext?.bridgingStatus
@@ -181,7 +181,7 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
     isBridgingTrade,
   )
   useCancellingOrderUpdater(orderId, isCancelling)
-  useCountdownStartUpdater(orderId, countdown, backendApiStatus)
+  useCountdownStartUpdater(orderId, countdown, backendApiStatus, isUnfillable || isCancelled || isCancelling || isExpired)
 
   const solverCompetition = useMemo(() => {
     const solversMap = apiSolverCompetition?.reduce(
@@ -284,10 +284,18 @@ function useCountdownStartUpdater(
   orderId: string,
   countdown: OrderProgressBarState['countdown'],
   backendApiStatus: OrderProgressBarState['backendApiStatus'],
+  shouldDisableCountdown: boolean,
 ): void {
   const setCountdown = useSetExecutingOrderCountdownCallback()
 
   useEffect(() => {
+    if (shouldDisableCountdown) {
+      if (countdown) {
+        setCountdown(orderId, null)
+      }
+      return
+    }
+
     // Start countdown immediately when backend becomes active to reflect real protocol timing
     // The solver competition genuinely starts when backend is active, regardless of UI delays
     if (countdown == null && backendApiStatus === CompetitionOrderStatus.type.ACTIVE) {
@@ -296,7 +304,7 @@ function useCountdownStartUpdater(
       // Every time backend status is not `active` and countdown is set, reset the countdown
       setCountdown(orderId, null)
     }
-  }, [backendApiStatus, setCountdown, countdown, orderId])
+  }, [backendApiStatus, setCountdown, countdown, orderId, shouldDisableCountdown])
 }
 
 function useCancellingOrderUpdater(orderId: string, isCancelling: boolean): void {
@@ -440,15 +448,6 @@ export function getProgressBarStepName(
   } else if (isUnfillable) {
     // out of market order
     return OrderProgressBarStepName.UNFILLABLE
-  } else if (
-    (backendApiStatus == null ||
-      backendApiStatus === CompetitionOrderStatus.type.OPEN ||
-      backendApiStatus === CompetitionOrderStatus.type.SCHEDULED) &&
-    previousStepName === OrderProgressBarStepName.UNFILLABLE
-  ) {
-    // Order just recovered from being unfillable but backend has not progressed yet.
-    // Keep showing the solving animation so the favicon restarts instead of idling.
-    return OrderProgressBarStepName.SOLVING
   } else if (backendApiStatus === CompetitionOrderStatus.type.ACTIVE && countdown === 0) {
     // solving, but took longer than stipulated countdown
     return OrderProgressBarStepName.DELAYED
