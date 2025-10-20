@@ -9,8 +9,7 @@ import { ExternalLink, Media } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 import { Confetti } from '@cowprotocol/ui'
 
-import { t } from '@lingui/core/macro'
-import { Trans } from '@lingui/react/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 import ReactDOM from 'react-dom'
 import { X } from 'react-feather'
 import SVG from 'react-inlinesvg'
@@ -42,7 +41,7 @@ const FortuneButton = styled.div<{ isDailyFortuneChecked: boolean }>`
   font-size: 40px;
   line-height: 0;
   color: inherit;
-  z-index: 10;
+  z-index: 9;
 
   &:hover {
     color: var(${UI.COLOR_NEUTRAL_100});
@@ -285,6 +284,7 @@ export function FortuneWidget({ menuTitle, isMobileMenuOpen }: FortuneWidgetProp
   const [isFortunedShared, setIsFortunedShared] = useState(false)
   const checkboxRef = useRef<HTMLInputElement>(null)
   const openFortuneText = openFortune?.text || ''
+  const { t } = useLingui()
 
   const twitterText = openFortune
     ? encodeURIComponent(t`My CoW fortune cookie 🐮💬: "${openFortuneText}" \n\n Get yours at swap.cow.fi @CoWSwap`)
