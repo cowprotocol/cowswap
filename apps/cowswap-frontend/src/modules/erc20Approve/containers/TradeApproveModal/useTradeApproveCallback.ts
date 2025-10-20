@@ -94,7 +94,7 @@ export function useTradeApproveCallback(currency: Currency | undefined): TradeAp
           resetApproveProgressModalState()
         }
 
-        return waitForTransaction(response, waitForTxConfirmation)
+        return await waitForTransaction(response, waitForTxConfirmation)
       } catch (error) {
         handleApprovalError(error)
         return undefined

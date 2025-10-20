@@ -41,7 +41,7 @@ jest.mock('./useApproveCowAnalytics', () => ({
 const mockCurrency = new Token(1, '0x6B175474E89094C44Da98b954EedeAC495271d0F', 6, 'USDC', 'USD Coin')
 
 const mockTransactionResponse = {
-  hash: '0x123',
+  hash: '0x15de6602b39be44ce9e6b57245deb4ee64ad28286c0f9f8094a6af2016e30591',
   wait: jest.fn(),
 } as unknown as TransactionResponse
 
