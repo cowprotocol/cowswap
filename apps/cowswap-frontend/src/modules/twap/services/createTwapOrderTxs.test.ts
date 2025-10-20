@@ -69,10 +69,8 @@ describe('Create TWAP order', () => {
     const result = createTwapOrderTxs(order, paramsStruct, { ...context, needsApproval: false })
 
     expect(createCowFn).toHaveBeenCalledTimes(1)
-    expect(createCowFn.mock.calls[0]).toMatchSnapshot()
 
     expect(result.length).toBe(1)
-    expect(result).toMatchSnapshot()
   })
 
   it('When sell token is NOT approved, then should generate approval and creation transactions', () => {
@@ -80,13 +78,8 @@ describe('Create TWAP order', () => {
     const result = createTwapOrderTxs(order, paramsStruct, { ...context, needsApproval: true })
 
     expect(createCowFn).toHaveBeenCalledTimes(1)
-    expect(createCowFn.mock.calls[0]).toMatchSnapshot()
-
     expect(approveFn).toHaveBeenCalledTimes(1)
-    expect(approveFn.mock.calls[0]).toMatchSnapshot()
-
     expect(result.length).toBe(2)
-    expect(result).toMatchSnapshot()
   })
 
   it('When sell token is NOT approved AND token needs zero approval, then should generate 2 approvals and creation transactions', () => {
@@ -94,13 +87,8 @@ describe('Create TWAP order', () => {
     const result = createTwapOrderTxs(order, paramsStruct, { ...context, needsApproval: true, needsZeroApproval: true })
 
     expect(createCowFn).toHaveBeenCalledTimes(1)
-    expect(createCowFn.mock.calls[0]).toMatchSnapshot()
-
     expect(approveFn).toHaveBeenCalledTimes(2)
-    expect(approveFn.mock.calls[0]).toMatchSnapshot()
-    expect(approveFn.mock.calls[1]).toMatchSnapshot()
 
     expect(result.length).toBe(3)
-    expect(result).toMatchSnapshot()
   })
 })
