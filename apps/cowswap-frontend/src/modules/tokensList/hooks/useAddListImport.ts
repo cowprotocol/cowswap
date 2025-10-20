@@ -4,9 +4,7 @@ import { ListState } from '@cowprotocol/tokens'
 
 import { useUpdateSelectTokenWidgetState } from './useUpdateSelectTokenWidgetState'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useAddListImport() {
+export function useAddListImport(): (listToImport: ListState) => void {
   const updateSelectTokenWidget = useUpdateSelectTokenWidgetState()
 
   return useCallback(
@@ -15,6 +13,6 @@ export function useAddListImport() {
         listToImport,
       })
     },
-    [updateSelectTokenWidget]
+    [updateSelectTokenWidget],
   )
 }

@@ -85,13 +85,17 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
   const { account } = useWalletInfo()
 
   const cowAnalytics = useCowAnalytics()
-  const addCustomTokenLists = useAddList((source) => {
-    cowAnalytics.sendEvent({
-      category: CowSwapAnalyticsCategory.LIST,
-      action: 'Add List Success',
-      label: source,
-    })
-  })
+  const trackAddListAnalytics = useCallback(
+    (source: string) => {
+      cowAnalytics.sendEvent({
+        category: CowSwapAnalyticsCategory.LIST,
+        action: 'Add List Success',
+        label: source,
+      })
+    },
+    [cowAnalytics],
+  )
+  const addCustomTokenLists = useAddList(trackAddListAnalytics)
   const importTokenCallback = useAddUserToken()
 
   const {

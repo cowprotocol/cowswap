@@ -43,7 +43,7 @@ export interface ListState extends Pick<ListSourceConfig, 'source' | 'priority' 
 
 export type TokenListsState = { [source: string]: ListState }
 
-export type TokenListsByChainState = PersistentStateByChain<TokenListsState>
+export type TokenListsByChainState = PersistentStateByChain<{ [source: string]: ListState | 'deleted' }>
 
 export type TagInfo = {
   id: string
