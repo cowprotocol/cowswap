@@ -449,6 +449,15 @@ export function getProgressBarStepName(
   } else if (isUnfillable) {
     // out of market order
     return OrderProgressBarStepName.UNFILLABLE
+  } else if (
+    (backendApiStatus == null ||
+      backendApiStatus === CompetitionOrderStatus.type.OPEN ||
+      backendApiStatus === CompetitionOrderStatus.type.SCHEDULED) &&
+    previousStepName === OrderProgressBarStepName.UNFILLABLE
+  ) {
+    // Order just recovered from being unfillable but backend has not progressed yet.
+    // Keep showing the solving animation so the favicon restarts instead of idling.
+    return OrderProgressBarStepName.SOLVING
   } else if (backendApiStatus === CompetitionOrderStatus.type.ACTIVE && countdown === 0) {
     // solving, but took longer than stipulated countdown
     return OrderProgressBarStepName.DELAYED
