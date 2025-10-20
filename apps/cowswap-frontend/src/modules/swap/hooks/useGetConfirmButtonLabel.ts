@@ -9,7 +9,7 @@ function getSwapLabel(isBridging: boolean): string {
 
 export function useGetConfirmButtonLabel(): string {
   const isCurrentTradeBridging = useIsCurrentTradeBridging()
-  const isPermitOrApproveRequired = useIsApprovalOrPermitRequired()
+  const isPermitOrApproveRequired = useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: false })
   const { isPartialApproveEnabled } = useFeatureFlags()
 
   if (!isPartialApproveEnabled) {

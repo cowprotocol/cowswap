@@ -2,7 +2,7 @@ const fs = require('fs')
 
 const packageJson = require('../../package.json')
 
-const sdkPrVersionRegex = /-pr-\d{3}-/
+const sdkPrVersionRegex = /pr-\d+/
 
 const sdkPrefix = '@cowprotocol/'
 const hasSdkPrVersion = Object.keys(packageJson.dependencies)
