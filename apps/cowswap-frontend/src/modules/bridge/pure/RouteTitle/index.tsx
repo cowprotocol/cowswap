@@ -22,7 +22,7 @@ export function RouteTitle({ chainName, sellAmount, buyAmount, buyAmountUsd }: R
       <TokenFlowContainer>
         <TokenAmountDisplay currencyAmount={sellAmount} displaySymbol />
         <ArrowIcon>→</ArrowIcon>
-        <TokenAmountDisplay currencyAmount={buyAmount} usdValue={buyAmountUsd} displaySymbol /> <Trans>on</Trans>
+        <TokenAmountDisplay currencyAmount={buyAmount} usdValue={buyAmountUsd} displaySymbol /> <Trans>on</Trans>{' '}
         {chainName}
       </TokenFlowContainer>
     </ConfirmDetailsItem>
