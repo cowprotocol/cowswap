@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { PermitType } from '@cowprotocol/permit-utils'
 import { Nullish } from '@cowprotocol/types'
 
@@ -17,9 +18,19 @@ export enum ApproveRequiredReason {
   Required,
   Eip2612PermitRequired,
   DaiLikePermitRequired,
+  BundleApproveRequired,
 }
 
-export function useIsApprovalOrPermitRequired(): { reason: ApproveRequiredReason; currentAllowance: Nullish<bigint> } {
+type AdditionalParams = {
+  // null is needed to prevent breaking changes, as this param was optional before
+  // f.e. for approve and swap its allowed, but for just approve - no
+  isBundlingSupportedOrEnabledForContext: boolean | null
+}
+
+export function useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext }: AdditionalParams): {
+  reason: ApproveRequiredReason
+  currentAllowance: Nullish<bigint>
+} {
   const amountToApprove = useGetAmountToSignApprove()
   const { isPartialApproveEnabled } = useFeatureFlags()
   const { state: approvalState, currentAllowance } = useApproveState(amountToApprove)
@@ -27,15 +38,19 @@ export function useIsApprovalOrPermitRequired(): { reason: ApproveRequiredReason
   const { type } = usePermitInfo(inputCurrency, tradeType) || {}
 
   const reason = (() => {
-    if (amountToApprove?.equalTo('0')) {
+    if (!checkIsAmountAndCurrencyRequireApprove(amountToApprove)) {
       return ApproveRequiredReason.NotRequired
     }
 
-    const isPermitSupported = type !== 'unsupported'
+    const isPermitSupported = type && type !== 'unsupported'
 
     if (!isPermitSupported && isApprovalRequired(approvalState)) {
-      return ApproveRequiredReason.Required
+      return isBundlingSupportedOrEnabledForContext
+        ? ApproveRequiredReason.BundleApproveRequired
+        : ApproveRequiredReason.Required
     }
+
+    if (isBundlingSupportedOrEnabledForContext) return ApproveRequiredReason.BundleApproveRequired
 
     if (!isNewApproveFlowEnabled(tradeType, isPartialApproveEnabled)) {
       return ApproveRequiredReason.NotRequired
@@ -45,6 +60,14 @@ export function useIsApprovalOrPermitRequired(): { reason: ApproveRequiredReason
   })()
 
   return useMemo(() => ({ reason, currentAllowance }), [reason, currentAllowance])
+}
+
+function checkIsAmountAndCurrencyRequireApprove(amountToApprove: CurrencyAmount<Currency> | null): boolean {
+  if (!amountToApprove) return false
+
+  if (getIsNativeToken(amountToApprove.currency)) return false
+
+  return !amountToApprove.equalTo('0')
 }
 
 function isApprovalRequired(approvalState: ApprovalState): boolean {
