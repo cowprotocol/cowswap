@@ -22,6 +22,7 @@ import { useHandleSwap } from 'modules/tradeFlow'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { SettingsTab } from 'modules/tradeWidgetAddons'
 
+import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
@@ -163,11 +164,13 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps): Reac
   const enablePartialApproval = enablePartialApprovalState[0] && inputCurrency && !getIsNativeToken(inputCurrency)
 
   const isConnected = Boolean(account)
+  const isNetworkUnsupported = useIsProviderNetworkUnsupported()
 
   // Guarded render: require hydration and no active eager-connect; show only for confirmed EOAs or truly disconnected users.
   const shouldShowLockScreen =
     isHydrated &&
     !isUnlocked &&
+    !isNetworkUnsupported &&
     !isInjectedWidget() &&
     ((isConnected && isSmartContractWallet === false) || (!isConnected && !isEagerConnectInProgress))
 
