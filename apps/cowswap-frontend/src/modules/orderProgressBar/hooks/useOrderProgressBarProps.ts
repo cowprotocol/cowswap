@@ -290,7 +290,7 @@ function useCountdownStartUpdater(
 
   useEffect(() => {
     if (shouldDisableCountdown) {
-      if (countdown) {
+      if (countdown != null) {
         setCountdown(orderId, null)
       }
       return
@@ -300,7 +300,7 @@ function useCountdownStartUpdater(
     // The solver competition genuinely starts when backend is active, regardless of UI delays
     if (countdown == null && backendApiStatus === CompetitionOrderStatus.type.ACTIVE) {
       setCountdown(orderId, PROGRESS_BAR_TIMER_DURATION)
-    } else if (backendApiStatus !== CompetitionOrderStatus.type.ACTIVE && countdown) {
+    } else if (backendApiStatus !== CompetitionOrderStatus.type.ACTIVE && countdown != null) {
       // Every time backend status is not `active` and countdown is set, reset the countdown
       setCountdown(orderId, null)
     }
