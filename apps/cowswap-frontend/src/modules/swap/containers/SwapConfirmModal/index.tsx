@@ -22,6 +22,7 @@ import {
   TradeConfirmation,
   TradeConfirmModal,
   useGetReceiveAmountInfo,
+  useIsCurrentTradeBridging,
   useTradeConfirmActions,
 } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
@@ -35,6 +36,7 @@ import { useLabelsAndTooltips } from './useLabelsAndTooltips'
 
 import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
 import { useSwapDeadlineState } from '../../hooks/useSwapSettings'
+import { buildSwapBridgeClickEvent } from '../TradeButtons/analytics'
 
 const CONFIRM_TITLE = 'Swap'
 
@@ -53,12 +55,12 @@ export interface SwapConfirmModalProps {
 export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
   const { inputCurrencyInfo, outputCurrencyInfo, priceImpact, recipient, recipientAddress, doTrade } = props
 
-  const { account } = useWalletInfo()
+  const { account, chainId } = useWalletInfo()
   const { ensName } = useWalletDetails()
   const appData = useAppData()
   const receiveAmountInfo = useGetReceiveAmountInfo()
   const tradeConfirmActions = useTradeConfirmActions()
-  const { slippage } = useSwapDerivedState()
+  const { slippage, inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount } = useSwapDerivedState()
   const [deadline] = useSwapDeadlineState()
 
   const shouldDisplayBridgeDetails = useShouldDisplayBridgeDetails()
@@ -74,6 +76,30 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
   const labelsAndTooltips = useLabelsAndTooltips()
 
   const { values: balances } = useTokensBalancesCombined()
+
+  const isCurrentTradeBridging = useIsCurrentTradeBridging()
+
+  const confirmClickEvent = useMemo(
+    () =>
+      buildSwapBridgeClickEvent({
+        isCurrentTradeBridging,
+        inputCurrency,
+        outputCurrency,
+        inputCurrencyAmount,
+        outputCurrencyAmount,
+        chainId,
+        walletAddress: account,
+      }),
+    [
+      account,
+      chainId,
+      inputCurrency,
+      inputCurrencyAmount,
+      isCurrentTradeBridging,
+      outputCurrency,
+      outputCurrencyAmount,
+    ],
+  )
 
   // TODO: Reduce function complexity by extracting logic
   const disableConfirm = useMemo(() => {
@@ -124,6 +150,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
         buttonText={buttonText}
         recipient={recipient}
         appData={appData || undefined}
+        confirmClickEvent={confirmClickEvent}
       >
         {shouldDisplayBridgeDetails && bridgeProvider && swapContext && bridgeContext
           ? (restContent) => (

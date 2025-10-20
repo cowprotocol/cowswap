@@ -5,7 +5,7 @@ import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { AddIntermediateToken } from 'modules/tokensList'
-import { useIsNoImpactWarningAccepted, useTradeConfirmActions, useWrappedToken } from 'modules/trade'
+import { useIsNoImpactWarningAccepted, useIsCurrentTradeBridging, useTradeConfirmActions, useWrappedToken } from 'modules/trade'
 import {
   TradeFormButtons,
   TradeFormValidation,
@@ -45,6 +45,7 @@ export function TradeButtons({
 }: TradeButtonsProps): ReactNode {
   const { chainId, account: walletAddress } = useWalletInfo()
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount } = useSwapDerivedState()
+  const isCurrentTradeBridging = useIsCurrentTradeBridging()
 
   const primaryFormValidation = useGetTradeFormValidation()
   const tradeConfirmActions = useTradeConfirmActions()
