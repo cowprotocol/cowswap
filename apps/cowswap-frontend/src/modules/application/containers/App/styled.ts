@@ -7,7 +7,6 @@ import IMAGE_BACKGROUND_LIGHT_CHRISTMAS from '@cowprotocol/assets/images/backgro
 import IMAGE_BACKGROUND_DARK_NO_COWS from '@cowprotocol/assets/images/background-cowswap-darkmode-nocows.svg'
 import IMAGE_BACKGROUND_DARK from '@cowprotocol/assets/images/background-cowswap-darkmode.svg'
 import IMAGE_BACKGROUND_DARK_HALLOWEEN_MEDIUM from '@cowprotocol/assets/images/background-cowswap-halloween-dark-medium.svg'
-import IMAGE_BACKGROUND_DARK_HALLOWEEN_SMALL from '@cowprotocol/assets/images/background-cowswap-halloween-dark-small.svg'
 import IMAGE_BACKGROUND_DARK_HALLOWEEN from '@cowprotocol/assets/images/background-cowswap-halloween-dark.svg'
 import IMAGE_BACKGROUND_LIGHT_NO_COWS from '@cowprotocol/assets/images/background-cowswap-lightmode-nocows.svg'
 import IMAGE_BACKGROUND_LIGHT from '@cowprotocol/assets/images/background-cowswap-lightmode.svg'
@@ -108,7 +107,7 @@ export const BodyWrapper = styled.div<{ customTheme?: CowSwapTheme; backgroundVa
     padding: ${({ theme }) => (theme.isWidget ? '0 0 16px' : '150px 16px 76px')};
     flex: none;
     min-height: ${({ theme }) => (theme.isWidget ? 'initial' : 'calc(100vh - 200px)')};
-    background-size: auto;
+    background-size: ${({ customTheme }) => (customTheme === 'darkHalloween' ? 'contain' : 'auto')};
 
     ${({ customTheme, backgroundVariant }) =>
       backgroundVariant !== 'nocows' &&
@@ -129,12 +128,13 @@ export const BodyWrapper = styled.div<{ customTheme?: CowSwapTheme; backgroundVa
   ${Media.upToSmall()} {
     padding: ${({ theme }) => (theme.isWidget ? '0 0 16px' : '90px 16px 76px')};
     min-height: ${({ theme }) => (theme.isWidget ? 'initial' : 'calc(100vh - 100px)')};
+    background-size: ${({ customTheme }) => (customTheme === 'darkHalloween' ? 'contain' : 'auto')};
 
     ${({ customTheme, backgroundVariant }) =>
       backgroundVariant !== 'nocows' &&
       customTheme === 'darkHalloween' &&
       `
-        background-image: url(${IMAGE_BACKGROUND_DARK_HALLOWEEN_SMALL});
+        background-image: url(${IMAGE_BACKGROUND_DARK_HALLOWEEN_MEDIUM});
       `}
 
     ${({ customTheme, theme, backgroundVariant }) =>

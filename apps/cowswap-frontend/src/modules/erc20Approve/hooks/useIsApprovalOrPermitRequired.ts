@@ -1,6 +1,8 @@
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { PermitType } from '@cowprotocol/permit-utils'
 import { Nullish } from '@cowprotocol/types'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { usePermitInfo } from 'modules/permit'
 import { TradeType, useDerivedTradeState } from 'modules/trade'
@@ -15,30 +17,51 @@ export enum ApproveRequiredReason {
   Required,
   Eip2612PermitRequired,
   DaiLikePermitRequired,
+  BundleApproveRequired,
 }
 
-export function useIsApprovalOrPermitRequired(): ApproveRequiredReason {
+type AdditionalParams = {
+  // null is needed to prevent breaking changes, as this param was optional before
+  // f.e. for approve and swap its allowed, but for just approve - no
+  isBundlingSupportedOrEnabledForContext: boolean | null
+}
+
+export function useIsApprovalOrPermitRequired({
+  isBundlingSupportedOrEnabledForContext,
+}: AdditionalParams): ApproveRequiredReason {
   const amountToApprove = useGetAmountToSignApprove()
   const { isPartialApproveEnabled } = useFeatureFlags()
   const { state: approvalState } = useApproveState(amountToApprove)
   const { inputCurrency, tradeType } = useDerivedTradeState() || {}
   const { type } = usePermitInfo(inputCurrency, tradeType) || {}
 
-  if (amountToApprove?.equalTo('0')) {
+  if (!checkIsAmountAndCurrencyRequireApprove(amountToApprove)) {
     return ApproveRequiredReason.NotRequired
   }
 
-  const isPermitSupported = type !== 'unsupported'
+  const isPermitSupported = type && type !== 'unsupported'
 
   if (!isPermitSupported && isApprovalRequired(approvalState)) {
-    return ApproveRequiredReason.Required
+    return isBundlingSupportedOrEnabledForContext
+      ? ApproveRequiredReason.BundleApproveRequired
+      : ApproveRequiredReason.Required
   }
+
+  if (isBundlingSupportedOrEnabledForContext) return ApproveRequiredReason.BundleApproveRequired
 
   if (!isNewApproveFlowEnabled(tradeType, isPartialApproveEnabled)) {
     return ApproveRequiredReason.NotRequired
   }
 
   return getPermitRequirements(type)
+}
+
+function checkIsAmountAndCurrencyRequireApprove(amountToApprove: CurrencyAmount<Currency> | null): boolean {
+  if (!amountToApprove) return false
+
+  if (getIsNativeToken(amountToApprove.currency)) return false
+
+  return !amountToApprove.equalTo('0')
 }
 
 function isApprovalRequired(approvalState: ApprovalState): boolean {
