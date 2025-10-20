@@ -1,5 +1,4 @@
 import { ReactNode, useEffect, useRef } from 'react'
-import type { MutableRefObject } from 'react'
 
 import { GtmEvent, useCowAnalytics } from '@cowprotocol/analytics'
 import { TokenWithLogo } from '@cowprotocol/common-const'
@@ -24,6 +23,9 @@ const APPZI_CHECK_INTERVAL = 60_000
 
 type RawAmount = string | number | bigint | null | undefined
 
+type BooleanRef = { current: boolean }
+type BridgeStatusRef = { current: BridgeStatus | undefined }
+
 const formatBridgeAmount = (token: TokenWithLogo | undefined, rawAmount: RawAmount): string | undefined => {
   if (!token || rawAmount === null || rawAmount === undefined) {
     return undefined
@@ -46,7 +48,7 @@ const getBridgeToken = (tokensByAddress: TokensByAddress, address: string | unde
 interface PendingSurveyParams {
   crossChainOrder: CrossChainOrder | null | undefined
   openSince?: number
-  waitingTooLongNpsTriggeredRef: MutableRefObject<boolean>
+  waitingTooLongNpsTriggeredRef: BooleanRef
 }
 
 const usePendingBridgeTooLongSurvey = ({
@@ -90,7 +92,8 @@ interface BridgeAnalyticsParams {
   addOrderToSurplusQueue: ReturnType<typeof useAddOrderToSurplusQueue>
   analytics: ReturnType<typeof useCowAnalytics>
   tokensByAddress: TokensByAddress
-  hasReportedRef: MutableRefObject<boolean>
+  hasReportedRef: BooleanRef
+  lastStatusRef: BridgeStatusRef
 }
 
 const useBridgeStatusAnalytics = ({
@@ -101,6 +104,7 @@ const useBridgeStatusAnalytics = ({
   analytics,
   tokensByAddress,
   hasReportedRef,
+  lastStatusRef,
 }: BridgeAnalyticsParams): void => {
   useEffect(() => {
     if (!crossChainOrder) return
@@ -109,6 +113,7 @@ const useBridgeStatusAnalytics = ({
     const orderStatus = crossChainOrder.statusResult.status
     const isOrderExecuted = orderStatus === BridgeStatus.EXECUTED
     const isOrderFailed = orderStatus === BridgeStatus.REFUND || orderStatus === BridgeStatus.EXPIRED
+    const hasStatusChanged = lastStatusRef.current !== orderStatus
 
     const { sourceChainId, destinationChainId } = crossChainOrder.bridgingParams
 
@@ -116,7 +121,7 @@ const useBridgeStatusAnalytics = ({
 
     const analyticsSummary = `From: ${sourceChainId}, to: ${destinationChainId}`
 
-    if (isOrderExecuted) {
+    if (isOrderExecuted && hasStatusChanged) {
       addOrderToSurplusQueue(orderUid)
       processExecutedBridging(crossChainOrder)
 
@@ -144,7 +149,7 @@ const useBridgeStatusAnalytics = ({
           ...bridgeAliasFields,
         } as GtmEvent<CowSwapAnalyticsCategory.Bridge>)
       }
-    } else if (isOrderFailed) {
+    } else if (isOrderFailed && hasStatusChanged) {
       getCowSoundError().play()
 
       analytics.sendEvent({
@@ -157,6 +162,8 @@ const useBridgeStatusAnalytics = ({
         toChainId: destinationChainId,
       } as GtmEvent<CowSwapAnalyticsCategory.Bridge>)
     }
+
+    lastStatusRef.current = orderStatus
   }, [
     crossChainOrder,
     openSince,
@@ -165,6 +172,7 @@ const useBridgeStatusAnalytics = ({
     analytics,
     tokensByAddress,
     hasReportedRef,
+    lastStatusRef,
   ])
 }
 
@@ -223,6 +231,7 @@ function PendingOrderUpdater({ chainId, orderUid, openSince }: PendingOrderUpdat
   const tokensByAddress = useTokensByAddressMap()
   const waitingTooLongNpsTriggeredRef = useRef(false)
   const hasReportedRef = useRef(false)
+  const lastStatusRef = useRef<BridgeStatus | undefined>(undefined)
 
   usePendingBridgeTooLongSurvey({ crossChainOrder, openSince, waitingTooLongNpsTriggeredRef })
   useBridgeStatusAnalytics({
@@ -233,6 +242,7 @@ function PendingOrderUpdater({ chainId, orderUid, openSince }: PendingOrderUpdat
     analytics,
     tokensByAddress,
     hasReportedRef,
+    lastStatusRef,
   })
 
   return null
