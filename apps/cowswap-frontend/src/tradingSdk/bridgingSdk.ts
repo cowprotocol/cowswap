@@ -1,5 +1,5 @@
 import { bungeeAffiliateCode } from '@cowprotocol/common-const'
-import { isBarn, isDev, isProd, isProdLike, isStaging } from '@cowprotocol/common-utils'
+import { isBarn, isBarnBackendEnv, isDev, isProd, isStaging } from '@cowprotocol/common-utils'
 import {
   AcrossBridgeProvider,
   BridgeProvider,
@@ -27,7 +27,7 @@ const acrossBridgeProvider = new AcrossBridgeProvider()
 export const bridgeProviders: BridgeProvider<BridgeQuoteResult>[] = [bungeeBridgeProvider]
 
 // TODO: Should not enable Across on Prod until it's finalized
-!isProdLike && bridgeProviders.push(acrossBridgeProvider)
+isBarnBackendEnv && bridgeProviders.push(acrossBridgeProvider)
 
 export const bridgingSdk = new BridgingSdk({
   providers: bridgeProviders,
