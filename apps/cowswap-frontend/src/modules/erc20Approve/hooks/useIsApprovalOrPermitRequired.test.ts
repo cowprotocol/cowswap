@@ -175,7 +175,7 @@ describe('useIsApprovalOrPermitRequired', () => {
         useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: null }),
       )
 
-      expect(result.current).toBe(ApproveRequiredReason.NotRequired)
+      expect(result.current.reason).toBe(ApproveRequiredReason.NotRequired)
     })
   })
 
@@ -188,7 +188,7 @@ describe('useIsApprovalOrPermitRequired', () => {
         useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: null }),
       )
 
-      expect(result.current).toBe(ApproveRequiredReason.NotRequired)
+      expect(result.current.reason).toBe(ApproveRequiredReason.NotRequired)
     })
 
     it('should return NotRequired for native token even with zero amount', () => {
@@ -199,7 +199,7 @@ describe('useIsApprovalOrPermitRequired', () => {
         useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: null }),
       )
 
-      expect(result.current).toBe(ApproveRequiredReason.NotRequired)
+      expect(result.current.reason).toBe(ApproveRequiredReason.NotRequired)
     })
 
     it('should return NotRequired for native token even when bundling is enabled', () => {
@@ -226,7 +226,7 @@ describe('useIsApprovalOrPermitRequired', () => {
         useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: true }),
       )
 
-      expect(result.current).toBe(ApproveRequiredReason.BundleApproveRequired)
+      expect(result.current.reason).toBe(ApproveRequiredReason.BundleApproveRequired)
     })
 
     it('should return BundleApproveRequired when bundling is enabled regardless of permit support', () => {
@@ -236,7 +236,7 @@ describe('useIsApprovalOrPermitRequired', () => {
         useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: true }),
       )
 
-      expect(result.current).toBe(ApproveRequiredReason.BundleApproveRequired)
+      expect(result.current.reason).toBe(ApproveRequiredReason.BundleApproveRequired)
     })
 
     it('should return BundleApproveRequired when bundling is enabled and permit is not supported', () => {
@@ -250,7 +250,7 @@ describe('useIsApprovalOrPermitRequired', () => {
         useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: true }),
       )
 
-      expect(result.current).toBe(ApproveRequiredReason.BundleApproveRequired)
+      expect(result.current.reason).toBe(ApproveRequiredReason.BundleApproveRequired)
     })
   })
 
@@ -282,7 +282,7 @@ describe('useIsApprovalOrPermitRequired', () => {
         useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: null }),
       )
 
-      expect(result.current).toBe(ApproveRequiredReason.NotRequired)
+      expect(result.current.reason).toBe(ApproveRequiredReason.NotRequired)
     })
 
     it('should return NotRequired for undefined permit type', () => {
@@ -292,7 +292,7 @@ describe('useIsApprovalOrPermitRequired', () => {
         useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: null }),
       )
 
-      expect(result.current).toBe(ApproveRequiredReason.NotRequired)
+      expect(result.current.reason).toBe(ApproveRequiredReason.NotRequired)
     })
 
     it('should return NotRequired for null permit type', () => {
