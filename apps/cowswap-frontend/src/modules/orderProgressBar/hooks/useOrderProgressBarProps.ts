@@ -290,6 +290,7 @@ function useCountdownStartUpdater(
 
   useEffect(() => {
     if (shouldDisableCountdown) {
+      // Loose `!= null` on purpose: both null and undefined should reset the countdown, but 0 must stay; strict `!== null` would let undefined slip through
       if (countdown != null) {
         setCountdown(orderId, null)
       }
