@@ -78,7 +78,7 @@ const LOGOS: Record<ProductVariant, ThemedLogo> = {
       default: {
         src: LOGO_COWSWAP_HALLOWEEN,
         alt: 'CoW Swap',
-        color: Color.blue300Primary,
+        preserveOriginalColors: true,
       },
     },
     darkChristmas: {
