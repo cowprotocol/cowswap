@@ -1,6 +1,6 @@
 import type { Dispatch, SetStateAction } from 'react'
 
-const MESSAGE = "Mooo, we're hiring!"
+export const TYPING_MESSAGE = "Mooo, we're hiring!"
 const TYPING_INTERVAL_MS = 140
 
 interface StartTypingParams {
@@ -25,8 +25,4 @@ export function startTypingAnimation({
   }, TYPING_INTERVAL_MS)
 
   return () => clearInterval(intervalId)
-}
-
-export function getTypingMessage(): string {
-  return MESSAGE
 }

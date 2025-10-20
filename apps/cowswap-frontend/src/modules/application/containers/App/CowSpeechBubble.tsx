@@ -5,7 +5,7 @@ import { useReducedMotionPreference } from '@cowprotocol/common-hooks'
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
 import { Arrow, Bubble, BubbleContent, CloseButton, Cursor, JobsLink, TypingLine } from './CowSpeechBubble.styled'
-import { getTypingMessage, startTypingAnimation } from './utils/cowSpeechBubbleTyping'
+import { TYPING_MESSAGE, startTypingAnimation } from './utils/cowSpeechBubbleTyping'
 
 export interface CowSpeechBubbleProps {
   show: boolean
@@ -18,15 +18,19 @@ const BUBBLE_DELAY_MS = 3000
 export function CowSpeechBubble({ show, onClose }: CowSpeechBubbleProps): ReactNode {
   const prefersReducedMotion = useReducedMotionPreference()
   const hasDelayElapsed = useBubbleDelay(show)
-  const message = getTypingMessage()
-  const charIndex = useTypingProgress({ show, hasDelayElapsed, prefersReducedMotion, message })
+  const charIndex = useTypingProgress({
+    show,
+    hasDelayElapsed,
+    prefersReducedMotion,
+    message: TYPING_MESSAGE,
+  })
 
   if (!show || !hasDelayElapsed) {
     return null
   }
 
-  const isTypingComplete = charIndex >= message.length
-  const displayedText = message.slice(0, charIndex)
+  const isTypingComplete = charIndex >= TYPING_MESSAGE.length
+  const displayedText = TYPING_MESSAGE.slice(0, charIndex)
   const showCursor = hasDelayElapsed && show && !isTypingComplete
 
   return (
