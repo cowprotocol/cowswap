@@ -120,8 +120,8 @@ export const SummaryInner = styled.div`
 export const SummaryInnerRow = styled.div<{ isExpired?: boolean; isCancelled?: boolean }>`
   color: inherit;
   display: grid;
-  gap: 20px;
-  grid-template-columns: minmax(100px, 0.4fr) 1fr;
+  column-gap: 16px;
+  grid-template-columns: 130px 1fr;
   grid-template-rows: 1fr;
   margin: 0 0 4px;
   width: 100%;
@@ -147,7 +147,6 @@ export const SummaryInnerRow = styled.div<{ isExpired?: boolean; isCancelled?: b
   > b {
     opacity: 0.7;
     padding: 0;
-    white-space: nowrap;
   }
 
   > i {
