@@ -7,6 +7,9 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
 
+import { useHasCachedPermit } from 'modules/permit'
+import { useIsCurrentTradeBridging } from 'modules/trade'
+
 import * as styledEl from './styled'
 import { ButtonWrapper } from './styled'
 
@@ -22,8 +25,7 @@ export interface TradeApproveButtonProps {
   isDisabled?: boolean
   enablePartialApprove?: boolean
   onApproveConfirm?: (txHash?: string) => void
-  ignorePermit?: boolean
-  label: string
+  label?: string
   buttonSize?: ButtonSize
   useModals?: boolean
 }
@@ -33,7 +35,6 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
     amountToApprove,
     children,
     enablePartialApprove,
-    label,
     isDisabled,
     buttonSize = ButtonSize.DEFAULT,
     useModals = true,
@@ -41,9 +42,11 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
   const handleApprove = useApproveCurrency(amountToApprove, useModals)
 
   const spender = useTradeSpenderAddress()
+  const isCurrentTradeBridging = useIsCurrentTradeBridging()
   const { approvalState } = useApprovalStateForSpender(amountToApprove, spender)
   const approveAndSwap = useApproveAndSwap(props)
   const approveWithPreventedDoubleExecution = usePreventDoubleExecution(approveAndSwap)
+  const { data: cachedPermit, isLoading: cachedPermitLoading } = useHasCachedPermit(amountToApprove)
 
   if (!enablePartialApprove) {
     return (
@@ -60,6 +63,10 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
   }
 
   const isPending = approvalState === ApprovalState.PENDING
+  const noCachedPermit = !cachedPermitLoading && !cachedPermit
+
+  const label =
+    props.label || (noCachedPermit ? (isCurrentTradeBridging ? 'Approve, Swap & Bridge' : 'Approve and Swap') : 'Swap')
 
   return (
     <ButtonWrapper
@@ -70,18 +77,20 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
     >
       <styledEl.ButtonLabelWrapper buttonSize={buttonSize}>
         {label}{' '}
-        <HoverTooltip
-          wrapInContainer
-          content={
-            <Trans>
-              You must give the CoW Protocol smart contracts permission to use your{' '}
-              <TokenSymbol token={amountToApprove.currency} />. If you approve the default amount, you will only have to
-              do this once per token.
-            </Trans>
-          }
-        >
-          {isPending ? <styledEl.StyledLoader /> : <styledEl.StyledAlert size={24} />}
-        </HoverTooltip>
+        {noCachedPermit ? (
+          <HoverTooltip
+            wrapInContainer
+            content={
+              <Trans>
+                You must give the CoW Protocol smart contracts permission to use your{' '}
+                <TokenSymbol token={amountToApprove.currency} />. If you approve the default amount, you will only have
+                to do this once per token.
+              </Trans>
+            }
+          >
+            {isPending ? <styledEl.StyledLoader /> : <styledEl.StyledAlert size={24} />}
+          </HoverTooltip>
+        ) : null}
       </styledEl.ButtonLabelWrapper>
     </ButtonWrapper>
   )
