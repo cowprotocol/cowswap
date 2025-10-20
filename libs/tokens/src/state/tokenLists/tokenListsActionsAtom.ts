@@ -17,9 +17,13 @@ export const upsertListsAtom = atom(null, async (get, set, chainId: SupportedCha
   const chainState = globalState[chainId]
 
   const update = listsStates.reduce<{ [listId: string]: ListState }>((acc, list) => {
-    acc[list.source] = {
-      ...list,
-      isEnabled: typeof list.isEnabled === 'boolean' ? list.isEnabled : chainState?.[list.source]?.isEnabled,
+    const listState = chainState?.[list.source]
+
+    if (listState !== 'deleted') {
+      acc[list.source] = {
+        ...list,
+        isEnabled: typeof list.isEnabled === 'boolean' ? list.isEnabled : listState?.isEnabled,
+      }
     }
 
     return acc
@@ -71,7 +75,7 @@ export const removeListAtom = atom(null, async (get, set, source: string) => {
   const networkState = stateCopy[chainId]
 
   if (networkState) {
-    delete networkState[source]
+    networkState[source] = 'deleted'
   }
 
   set(listsStatesByChainAtom, stateCopy)
