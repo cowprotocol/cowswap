@@ -12,7 +12,7 @@ import { ActiveOrdersWithAffectedPermit } from '../ActiveOrdersWithAffectedPermi
 import { TradeApproveToggle } from '../TradeApproveToggle'
 
 export function TradeApproveWithAffectedOrderList(): ReactNode {
-  const isApproveRequired = useIsApprovalOrPermitRequired()
+  const isApproveRequired = useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: false })
 
   const setUserApproveAmountModalState = useSetUserApproveAmountModalState()
 
