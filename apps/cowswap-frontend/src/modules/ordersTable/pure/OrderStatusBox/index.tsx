@@ -31,34 +31,34 @@ const Wrapper = styled.div<{
   isCancelling?: boolean
   isSigning?: boolean
 }>`
-  --height: 26px;
+  --height: 32px;
   --statusColor: ${({ color }) => color};
   --statusBackground: ${({ background }) => background};
 
-  display: flex;
   align-items: center;
-  justify-content: center;
   color: var(--statusColor);
-  padding: 0 10px;
-  position: relative;
-  z-index: 2;
+  cursor: ${({ clickable }) => (clickable ? 'pointer' : '')};
+  display: flex;
   font-size: 12px;
   font-weight: 600;
   height: var(--height);
+  justify-content: center;
+  padding: 0 10px;
+  position: relative;
   width: ${({ widthAuto }) => (widthAuto ? 'auto' : '100%')};
-  cursor: ${({ clickable }) => (clickable ? 'pointer' : '')};
+  z-index: 2;
 
   &::before {
-    content: '';
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    display: block;
-    left: 0;
-    top: 0;
     background: var(--statusBackground);
-    z-index: 1;
     border-radius: 16px;
+    content: '';
+    display: block;
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: 1;
   }
 
   ${({ isCancelling, isSigning }) =>
@@ -83,17 +83,19 @@ const Wrapper = styled.div<{
 `
 
 const StatusContent = styled.div`
-  display: flex;
   align-items: center;
+  display: flex;
   gap: 4px;
+  line-height: 1.1;
   position: relative;
+  text-align: center;
+  word-break: break-word;
   z-index: 2;
-  white-space: nowrap;
 
   svg {
-    width: 14px;
-    height: 14px;
     fill: currentColor;
+    height: 14px;
+    width: 14px;
   }
 
   svg > path {
