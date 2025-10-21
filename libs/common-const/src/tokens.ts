@@ -563,7 +563,7 @@ const COW_TOKEN_SYMBOL = 'COW'
 const COW_TOKEN_NAME = 'CoW Protocol Token'
 const COW_TOKEN_DECIMALS = 18
 
-function getMaybeCowTokenForChain(chain: SupportedChainId, logoURI?: string): TokenWithLogo | null {
+function getCowTokenForChain(chain: SupportedChainId, logoURI?: string): TokenWithLogo | null {
   const address = COW_CONTRACT_ADDRESS[chain]
 
   if (!address) return null
@@ -571,15 +571,17 @@ function getMaybeCowTokenForChain(chain: SupportedChainId, logoURI?: string): To
   return new TokenWithLogo(logoURI, chain, address, COW_TOKEN_DECIMALS, COW_TOKEN_SYMBOL, COW_TOKEN_NAME)
 }
 
-export const COW_TOKEN_MAINNET = getMaybeCowTokenForChain(SupportedChainId.MAINNET)
-export const COW_TOKEN_XDAI = getMaybeCowTokenForChain(SupportedChainId.GNOSIS_CHAIN, COW_TOKEN_MAINNET?.logoURI)
-export const COW_TOKEN_ARBITRUM = getMaybeCowTokenForChain(SupportedChainId.ARBITRUM_ONE, COW_TOKEN_MAINNET?.logoURI)
-export const COW_TOKEN_BASE = getMaybeCowTokenForChain(SupportedChainId.BASE, COW_TOKEN_MAINNET?.logoURI)
-export const COW_TOKEN_SEPOLIA = getMaybeCowTokenForChain(SupportedChainId.SEPOLIA, COW_TOKEN_MAINNET?.logoURI)
-export const COW_TOKEN_POLYGON = getMaybeCowTokenForChain(SupportedChainId.POLYGON, COW_TOKEN_MAINNET?.logoURI)
-export const COW_TOKEN_AVALANCHE = getMaybeCowTokenForChain(SupportedChainId.AVALANCHE, COW_TOKEN_MAINNET?.logoURI)
-export const COW_TOKEN_LENS = getMaybeCowTokenForChain(SupportedChainId.LENS, COW_TOKEN_MAINNET?.logoURI)
-export const COW_TOKEN_BNB = getMaybeCowTokenForChain(SupportedChainId.BNB, COW_TOKEN_MAINNET?.logoURI)
+export const COW_TOKEN_MAINNET = getCowTokenForChain(SupportedChainId.MAINNET)
+export const COW_TOKEN_XDAI = getCowTokenForChain(SupportedChainId.GNOSIS_CHAIN, COW_TOKEN_MAINNET?.logoURI)
+export const COW_TOKEN_ARBITRUM = getCowTokenForChain(SupportedChainId.ARBITRUM_ONE, COW_TOKEN_MAINNET?.logoURI)
+export const COW_TOKEN_BASE = getCowTokenForChain(SupportedChainId.BASE, COW_TOKEN_MAINNET?.logoURI)
+export const COW_TOKEN_SEPOLIA = getCowTokenForChain(SupportedChainId.SEPOLIA, COW_TOKEN_MAINNET?.logoURI)
+export const COW_TOKEN_POLYGON = getCowTokenForChain(SupportedChainId.POLYGON, COW_TOKEN_MAINNET?.logoURI)
+export const COW_TOKEN_AVALANCHE = getCowTokenForChain(SupportedChainId.AVALANCHE, COW_TOKEN_MAINNET?.logoURI)
+export const COW_TOKEN_LENS = getCowTokenForChain(SupportedChainId.LENS, COW_TOKEN_MAINNET?.logoURI)
+export const COW_TOKEN_BNB = getCowTokenForChain(SupportedChainId.BNB, COW_TOKEN_MAINNET?.logoURI)
+export const COW_TOKEN_LINEA = getCowTokenForChain(SupportedChainId.LINEA, COW_TOKEN_MAINNET?.logoURI)
+export const COW_TOKEN_PLASMA = getCowTokenForChain(SupportedChainId.PLASMA, COW_TOKEN_MAINNET?.logoURI)
 
 export const COW_TOKEN_TO_CHAIN: Record<SupportedChainId, TokenWithLogo | null> = {
   [SupportedChainId.MAINNET]: COW_TOKEN_MAINNET,
