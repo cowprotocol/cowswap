@@ -18,6 +18,8 @@ export const SAFE_TRANSACTION_SERVICE_URL: Record<SupportedChainId, string> = {
   [SupportedChainId.AVALANCHE]: 'https://safe-transaction-avalanche.safe.global',
   [SupportedChainId.LENS]: 'https://safe-transaction-lens.safe.global',
   [SupportedChainId.BNB]: 'https://safe-transaction-bsc.safe.global',
+  [SupportedChainId.LINEA]: 'https://safe-transaction-linea.safe.global',
+  [SupportedChainId.PLASMA]: 'https://safe-transaction-plasma.safe.global',
 }
 
 const SAFE_BASE_URL = 'https://app.safe.global'
