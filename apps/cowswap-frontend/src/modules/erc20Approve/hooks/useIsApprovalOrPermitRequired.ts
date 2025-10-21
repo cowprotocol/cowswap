@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { PermitType } from '@cowprotocol/permit-utils'
@@ -26,34 +28,39 @@ type AdditionalParams = {
   isBundlingSupportedOrEnabledForContext: boolean | null
 }
 
-export function useIsApprovalOrPermitRequired({
-  isBundlingSupportedOrEnabledForContext,
-}: AdditionalParams): ApproveRequiredReason {
+export function useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext }: AdditionalParams): {
+  reason: ApproveRequiredReason
+  currentAllowance: Nullish<bigint>
+} {
   const amountToApprove = useGetAmountToSignApprove()
   const { isPartialApproveEnabled } = useFeatureFlags()
-  const { state: approvalState } = useApproveState(amountToApprove)
+  const { state: approvalState, currentAllowance } = useApproveState(amountToApprove)
   const { inputCurrency, tradeType } = useDerivedTradeState() || {}
   const { type } = usePermitInfo(inputCurrency, tradeType) || {}
 
-  if (!checkIsAmountAndCurrencyRequireApprove(amountToApprove)) {
-    return ApproveRequiredReason.NotRequired
-  }
+  const reason = (() => {
+    if (!checkIsAmountAndCurrencyRequireApprove(amountToApprove)) {
+      return ApproveRequiredReason.NotRequired
+    }
 
-  const isPermitSupported = type && type !== 'unsupported'
+    const isPermitSupported = type && type !== 'unsupported'
 
-  if (!isPermitSupported && isApprovalRequired(approvalState)) {
-    return isBundlingSupportedOrEnabledForContext
-      ? ApproveRequiredReason.BundleApproveRequired
-      : ApproveRequiredReason.Required
-  }
+    if (!isPermitSupported && isApprovalRequired(approvalState)) {
+      return isBundlingSupportedOrEnabledForContext
+        ? ApproveRequiredReason.BundleApproveRequired
+        : ApproveRequiredReason.Required
+    }
 
-  if (isBundlingSupportedOrEnabledForContext) return ApproveRequiredReason.BundleApproveRequired
+    if (isBundlingSupportedOrEnabledForContext) return ApproveRequiredReason.BundleApproveRequired
 
-  if (!isNewApproveFlowEnabled(tradeType, isPartialApproveEnabled)) {
-    return ApproveRequiredReason.NotRequired
-  }
+    if (!isNewApproveFlowEnabled(tradeType, isPartialApproveEnabled)) {
+      return ApproveRequiredReason.NotRequired
+    }
 
-  return getPermitRequirements(type)
+    return getPermitRequirements(type)
+  })()
+
+  return useMemo(() => ({ reason, currentAllowance }), [reason, currentAllowance])
 }
 
 function checkIsAmountAndCurrencyRequireApprove(amountToApprove: CurrencyAmount<Currency> | null): boolean {

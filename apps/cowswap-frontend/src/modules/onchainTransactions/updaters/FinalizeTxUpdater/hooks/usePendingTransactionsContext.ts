@@ -11,7 +11,6 @@ import { useGetTwapOrderById } from 'modules/twap/hooks/useGetTwapOrderById'
 
 import { useBlockNumber } from 'common/hooks/useBlockNumber'
 import { useGetReceipt } from 'common/hooks/useGetReceipt'
-import { useUpdateLastApproveTxBlockNumber } from 'common/hooks/useTokenAllowance'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import { CheckEthereumTransactions } from '../types'
@@ -23,7 +22,6 @@ export function usePendingTransactionsContext(): CheckEthereumTransactions | nul
   const isSafeWallet = !!safeInfo
   const lastBlockNumber = useBlockNumber()
 
-  const updateLastApproveTxBlockNumber = useUpdateLastApproveTxBlockNumber()
   const dispatch = useAppDispatch()
   const cancelOrdersBatch = useCancelOrdersBatch()
   const getReceipt = useGetReceipt(chainId)
@@ -50,7 +48,6 @@ export function usePendingTransactionsContext(): CheckEthereumTransactions | nul
         getTwapOrderById,
         transactionsCount,
         safeInfo,
-        updateLastApproveTxBlockNumber,
       }
 
       return params
@@ -68,7 +65,6 @@ export function usePendingTransactionsContext(): CheckEthereumTransactions | nul
       cancelOrdersBatch,
       getTwapOrderById,
       safeInfo,
-      updateLastApproveTxBlockNumber,
     ],
     null,
   )

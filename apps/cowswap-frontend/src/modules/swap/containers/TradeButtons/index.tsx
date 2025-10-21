@@ -4,7 +4,12 @@ import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 
 import { AddIntermediateToken } from 'modules/tokensList'
-import { useIsNoImpactWarningAccepted, useTradeConfirmActions, useWrappedToken } from 'modules/trade'
+import {
+  useIsCurrentTradeBridging,
+  useIsNoImpactWarningAccepted,
+  useTradeConfirmActions,
+  useWrappedToken,
+} from 'modules/trade'
 import {
   TradeFormButtons,
   TradeFormValidation,
@@ -17,7 +22,6 @@ import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
 
 import { swapTradeButtonsMap } from './swapTradeButtonsMap'
 
-import { useGetConfirmButtonLabel } from '../../hooks/useGetConfirmButtonLabel'
 import { useOnCurrencySelection } from '../../hooks/useOnCurrencySelection'
 import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
 import { useSwapFormState } from '../../hooks/useSwapFormState'
@@ -50,10 +54,11 @@ export function TradeButtons({
   const localFormValidation = useSwapFormState()
   const wrappedToken = useWrappedToken()
   const onCurrencySelection = useOnCurrencySelection()
+  const isCurrentTradeBridging = useIsCurrentTradeBridging()
 
   const confirmTrade = tradeConfirmActions.onOpen
 
-  const confirmText = useGetConfirmButtonLabel()
+  const confirmText = isCurrentTradeBridging ? 'Swap and Bridge' : 'Swap'
 
   const { isPartialApproveEnabled } = useFeatureFlags()
   // enable partial approve only for swap

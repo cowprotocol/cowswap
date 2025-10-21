@@ -48,7 +48,6 @@ export function OrderPartialApprove({
         <ActiveOrdersWithAffectedPermit orderId={orderId} currency={amountToApprove.currency} />
       )}
       <TradeApproveButton
-        ignorePermit
         enablePartialApprove
         useModals={false}
         amountToApprove={amountToApproveFinal}

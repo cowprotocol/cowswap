@@ -43,7 +43,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
 
   const isApproveRequired = useIsApprovalOrPermitRequired({
     isBundlingSupportedOrEnabledForContext: isBundlingSupported,
-  })
+  }).reason
 
   const isInsufficientBalanceOrderAllowed = tradeType === TradeType.LIMIT_ORDER
 
