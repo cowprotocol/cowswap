@@ -28,22 +28,31 @@ export function ActiveOrdersWithAffectedPermit({ currency, orderId }: ActiveOrde
 
   if (!ordersWithPermit.length) return null
 
+  const isMultiple = ordersWithPermit.length > 1
   const titleContent = (
     <>
-      Partial approval may block <span className={'font-bold'}>{ordersWithPermit.length}</span> other orders
+     Partial approval may block{' '}
+     <span className="font-bold">
+      {ordersWithPermit.length}
+     </span>{' '}
+     other order{isMultiple ? 's' : ''}.
     </>
   )
 
-  return (
-    <AccordionBanner title={titleContent} accordionPadding={'9px 6px'}>
-      <styledEl.DropdownList>
-        <AffectedPermitOrdersTable orders={ordersWithPermit} />
-      </styledEl.DropdownList>
-      <styledEl.DropdownFooter>
-        There are <span className={'font-bold'}>{ordersWithPermit.length}</span> existing orders using a{' '}
-        <TokenSymbol className={'font-bold'} token={currency} /> token approval. If you sign a new one, only one order
-        can fill. Continue with current permit amount or choose full approval so all orders can be filled.
-      </styledEl.DropdownFooter>
-    </AccordionBanner>
+return (
+  <AccordionBanner title={titleContent} accordionPadding="9px 6px">
+    <styledEl.DropdownList>
+      <AffectedPermitOrdersTable orders={ordersWithPermit} />
+    </styledEl.DropdownList>
+
+    <styledEl.DropdownFooter>
+      There {isMultiple ? 'are' : 'is'}{' '}
+      <span className="font-bold">{ordersWithPermit.length}</span>{' '}
+      existing order{isMultiple ? 's' : ''} using a{' '}
+      <TokenSymbol className="font-bold" token={currency} /> token approval. 
+      If you sign a new one, only one order can fill. Continue with the current 
+      permit amount or choose full approval so all order{isMultiple ? 's' : ''} 
+      can be filled.
+    </styledEl.DropdownFooter>
+  </AccordionBanner>
   )
-}
