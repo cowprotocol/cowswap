@@ -8,7 +8,7 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: cowswap18n\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-10-17 21:25\n"
+"PO-Revision-Date: 2025-10-21 17:13\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -616,7 +616,7 @@ msgstr "Sólo CoW AMM"
 msgid "Scheduled"
 msgstr "Programado"
 
-#: apps/cowswap-frontend/src/modules/swap/hooks/useGetConfirmButtonLabel.ts
+#: apps/cowswap-frontend/src/modules/erc20Approve/containers/TradeApproveButton/TradeApproveButton.tsx
 msgid "Approve and Swap"
 msgstr "Aprobar e intercambiar"
 
@@ -741,8 +741,8 @@ msgid "Overview"
 msgstr "Resumen"
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
-msgid "There are <0>{ordersWithPermitLenght}</0> existing orders using a <1/> token approval. If you sign a new one, only one order can fill. Continue with current permit amount or choose full approval so all orders can be filled."
-msgstr "Hay <0>{ordersWithPermitLenght}</0> pedidos existentes usando un token de aprobación <1/>. Si firma uno nuevo, sólo puede completar un pedido. Continuar con la cantidad actual del permiso o elegir la aprobación completa para que todos los pedidos puedan ser llenados."
+#~ msgid "There are <0>{ordersWithPermitLenght}</0> existing orders using a <1/> token approval. If you sign a new one, only one order can fill. Continue with current permit amount or choose full approval so all orders can be filled."
+#~ msgstr "There are <0>{ordersWithPermitLenght}</0> existing orders using a <1/> token approval. If you sign a new one, only one order can fill. Continue with current permit amount or choose full approval so all orders can be filled."
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 msgid "Loading operation"
@@ -999,8 +999,8 @@ msgid "Est. partial fill price"
 msgstr "Precio de relleno parcial"
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
-msgid "Partial approval may block <0>{ordersWithPermitLenght}</0> other orders"
-msgstr "La aprobación parcial puede bloquear <0>{ordersWithPermitLenght}</0> otros pedidos"
+#~ msgid "Partial approval may block <0>{ordersWithPermitLenght}</0> other orders"
+#~ msgstr "Partial approval may block <0>{ordersWithPermitLenght}</0> other orders"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/ImportTokenListItem/index.tsx
 msgid "Loaded"
@@ -1207,8 +1207,8 @@ msgid "Too much time between parts"
 msgstr "Demasiado tiempo entre partes"
 
 #: apps/cowswap-frontend/src/modules/swap/hooks/useGetConfirmButtonLabel.ts
-msgid "Swap and Bridge"
-msgstr "Intercambiar y Puente"
+#~ msgid "Swap and Bridge"
+#~ msgstr "Swap and Bridge"
 
 #: apps/cowswap-frontend/src/common/containers/OrderHooksDetails/index.tsx
 msgid "POST"
@@ -1297,7 +1297,7 @@ msgstr "Precio de mercado"
 msgid "Max"
 msgstr "Máx"
 
-#: apps/cowswap-frontend/src/modules/swap/hooks/useGetConfirmButtonLabel.ts
+#: apps/cowswap-frontend/src/modules/erc20Approve/containers/TradeApproveButton/TradeApproveButton.tsx
 msgid "Approve, Swap & Bridge"
 msgstr "Aprobación, intercambio y puente"
 
@@ -2009,6 +2009,10 @@ msgstr "Enviado {nativeTokenSymbol}"
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/index.tsx
 msgid "Since TWAP orders consist of multiple parts, prices are expected to fluctuate. However, to protect you against bad prices, CoW Swap will not execute your TWAP if the price dips below this percentage."
 msgstr "Dado que las órdenes de TWAP consisten en múltiples piezas, se espera que los precios fluctúen. Sin embargo, para protegerte de los malos precios, CoW Swap no ejecutará tu TWAP si el precio cae por debajo de este porcentaje."
+
+#: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
+msgid "are"
+msgstr "están"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
 msgid "The time before your total TWAP order ends."
@@ -3088,9 +3092,17 @@ msgstr " o <0/>"
 #~ msgid "ENS recipient not supported for Swap and Bridge — use address instead."
 #~ msgstr "ENS recipient not supported for Swap and Bridge — use address instead."
 
+#: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
+msgid "Careers"
+msgstr "Carreras"
+
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapWidget/index.tsx
 msgid "Expected sell amount"
 msgstr "Cantidad de venta esperada"
+
+#: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
+msgid "orders"
+msgstr "órdenes"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersConfirmModal/index.tsx
 msgid "Limit Order"
@@ -3668,7 +3680,7 @@ msgstr "Expira"
 msgid "Minutes"
 msgstr "Minutos"
 
-#: apps/cowswap-frontend/src/modules/erc20Approve/containers/TradeApproveModal/useTradeApproveCallback.ts
+#: apps/cowswap-frontend/src/modules/erc20Approve/containers/TradeApproveModal/useHandleApprovalError.ts
 msgid "User rejected approval transaction"
 msgstr "Transacción rechazada por el usuario"
 
@@ -3886,6 +3898,7 @@ msgid "Invalid URL format"
 msgstr "Formato de URL inválido"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
+#: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/OrderRow/OrderContextMenu.tsx
 msgid "order"
 msgstr "pedido"
@@ -3950,6 +3963,10 @@ msgstr "antes de ese momento."
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/steps/Step3.tsx
 msgid "View transaction"
 msgstr "Ver transacción"
+
+#: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
+msgid "is"
+msgstr "es"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/steps/Step1.tsx
 msgid "Transaction {errorType}"
@@ -4216,6 +4233,10 @@ msgstr "Tokens Favoritos"
 #: libs/common-const/src/common.ts
 msgid "Limit Orders"
 msgstr "Órdenes límite"
+
+#: apps/cowswap-frontend/src/modules/erc20Approve/hooks/useApproveAndSwap.ts
+msgid "Approved amount is not sufficient!"
+msgstr "¡La cantidad aprobada no es suficiente!"
 
 #: apps/cowswap-frontend/src/modules/accountProxy/containers/WidgetPageTitle/index.tsx
 msgid "funds"
@@ -5129,6 +5150,10 @@ msgstr "Aprender"
 msgid "This price is {displayedPercent}% lower than current market price. You could be selling your <0/> at a loss! Click on \"Market price\" to set your limit price to the current market price."
 msgstr "Este precio es un {displayedPercent}% inferior al precio de mercado actual. ¡Usted podría estar vendiendo su <0/> con pérdida! Haga clic en \"Precio de mercado\" para fijar su precio límite al precio actual de mercado."
 
+#: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
+msgid "There {areIs} <0>{ordersWithPermitLength}</0> existing {orderWord} using a <1/> token approval. If you sign a new one, only one order can fill. Continue with current permit amount or choose full approval so all orders can be filled."
+msgstr "Hay <0>{ordersWithPermitLength}</0> {orderWord} usando una aprobación de token <1/>. Si firma uno nuevo, sólo puede llenar una orden. Continúe con la cantidad actual aprobada o elija la aprobación completa para que todas las órdenes puedan ser llenadas."
+
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 msgid "Continue swap with {wrappedSymbol}"
 msgstr "Continuar el intercambio con {wrappedSymbol}"
@@ -5418,6 +5443,10 @@ msgstr "Orden caducada"
 msgid "Simulation Successful"
 msgstr "Simulación exitosa"
 
+#: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
+msgid "Partial approval may block <0>{ordersWithPermitLength}</0> other {orderWord}"
+msgstr "La aprobación parcial puede bloquear <0>{ordersWithPermitLength}</0> otras {orderWord}"
+
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/BridgingProgressContent/ReceivedBridgingContent/index.tsx
 msgid "Destination transaction"
 msgstr "Transacción de destino"
@@ -5429,9 +5458,9 @@ msgstr "Porque está usando una billetera de contratos inteligentes"
 #: apps/cowswap-frontend/src/common/constants/routes.ts
 #: apps/cowswap-frontend/src/legacy/utils/trade.ts
 #: apps/cowswap-frontend/src/modules/bridge/pure/BridgeActivitySummary/SwapStepRow.tsx
+#: apps/cowswap-frontend/src/modules/erc20Approve/containers/TradeApproveButton/TradeApproveButton.tsx
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapConfirmModal/index.tsx
-#: apps/cowswap-frontend/src/modules/swap/hooks/useGetConfirmButtonLabel.ts
 #: apps/cowswap-frontend/src/modules/yield/containers/TradeButtons/index.tsx
 #: apps/cowswap-frontend/src/modules/yield/containers/YieldWidget/elements.tsx
 #: apps/cowswap-frontend/src/utils/orderUtils/getUiOrderType.ts
