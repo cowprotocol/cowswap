@@ -25,7 +25,7 @@ import {
   useTradeConfirmActions,
 } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
-import { HighFeeWarning, RowDeadline } from 'modules/tradeWidgetAddons'
+import { HighFeeWarning, RowDeadline, RowRewards, useIsRowRewardsVisible } from 'modules/tradeWidgetAddons'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
@@ -72,6 +72,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
   const submittedContent = <OrderSubmittedContent onDismiss={tradeConfirmActions.onDismiss} />
   const labelsAndTooltips = useLabelsAndTooltips()
+  const isRowRewardsVisible = useIsRowRewardsVisible()
 
   const { values: balances } = useTokensBalancesCombined()
 
@@ -155,7 +156,10 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
                     hideUsdValues
                     withTimelineDot={false}
                   >
-                    <RowDeadline deadline={deadline} />
+                    <>
+                      {isRowRewardsVisible && <RowRewards />}
+                      <RowDeadline deadline={deadline} />
+                    </>
                   </TradeBasicConfirmDetails>
                 )}
                 {restContent}

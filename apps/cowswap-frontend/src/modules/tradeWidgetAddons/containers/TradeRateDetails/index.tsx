@@ -91,7 +91,6 @@ export function TradeRateDetails({
         networkCostsSuffix={shouldPayGas ? <NetworkCostsSuffix /> : null}
         networkCostsTooltipSuffix={<NetworkCostsTooltipSuffix />}
       />
-      <RowRewards />
       {slippage && (
         <RowSlippage
           isTradePriceUpdating={isTradePriceUpdating}
@@ -99,6 +98,7 @@ export function TradeRateDetails({
           isSlippageModified={isSlippageModified}
         />
       )}
+      <RowRewards />
       <RowDeadline deadline={deadline} />
     </>
   )
