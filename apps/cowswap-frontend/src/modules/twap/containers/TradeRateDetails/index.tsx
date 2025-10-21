@@ -9,7 +9,7 @@ import {
   useGetReceiveAmountInfo,
   useShouldPayGas,
 } from 'modules/trade'
-import { RowRewards } from 'modules/tradeWidgetAddons/containers/RowRewards'
+import { RowRewards } from 'modules/tradeWidgetAddons'
 import { NetworkCostsTooltipSuffix } from 'modules/tradeWidgetAddons/pure/NetworkCostsTooltipSuffix'
 
 import { NetworkCostsSuffix } from 'common/pure/NetworkCostsSuffix'

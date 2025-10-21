@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react'
 
 import { PartnerFeeRow, TradeTotalCostsDetails } from 'modules/trade'
 import { Box } from 'modules/trade/containers/TradeTotalCostsDetails/styled'
-import { RowRewards } from 'modules/tradeWidgetAddons/containers/RowRewards'
+import { RowRewards } from 'modules/tradeWidgetAddons'
 import { useUsdAmount } from 'modules/usdAmount'
 import { useVolumeFee, useVolumeFeeTooltip } from 'modules/volumeFee'
 
