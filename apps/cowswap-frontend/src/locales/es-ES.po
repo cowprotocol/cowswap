@@ -8,7 +8,7 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: cowswap18n\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-10-21 17:46\n"
+"PO-Revision-Date: 2025-10-21 19:44\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -571,6 +571,10 @@ msgstr "Si su orden no ha sido completada en esta fecha y hora, caducará. No se
 #: apps/cowswap-frontend/src/modules/bridge/pure/ProxyAccountBanner/index.tsx
 msgid "Only proceed if you trust this provider."
 msgstr "Sólo proceda si confía en este proveedor."
+
+#: apps/cowswap-frontend/src/modules/application/containers/App/CowSpeechBubble.tsx
+msgid "View jobs"
+msgstr "Ver trabajos"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/FavoriteTokensList/index.tsx
 msgid "Your favorite saved tokens. Edit this list in the <0>Tokens page</0>."
@@ -1917,6 +1921,10 @@ msgstr "Firma de advertencia. Billetera no soportada"
 msgid "Show progress"
 msgstr "Mostrar progreso"
 
+#: apps/cowswap-frontend/src/modules/application/containers/App/utils/cowSpeechBubbleTyping.ts
+msgid "Mooo, we're hiring!"
+msgstr "¡Mooo, estamos contratando!"
+
 #: apps/cowswap-frontend/src/modules/trade/pure/PartnerFeeRow/index.tsx
 msgid "This fee helps pay for maintenance & improvements to the trade experience.<0/><1/>The fee is {partnerFeeBps} BPS ({feeAsPercent}%), applied only if the trade is executed."
 msgstr "Esta cuota ayuda a pagar por mantenimiento y mejoras en la experiencia de trading. <0/><1/>La comisión es {partnerFeeBps} BPS ({feeAsPercent}%), aplicada solo si la operación se ejecuta."
@@ -2119,6 +2127,10 @@ msgstr "Reclamar investido"
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SettingsTab/index.tsx
 msgid "Transaction Settings"
 msgstr "Ajustes de la transacción"
+
+#: apps/cowswap-frontend/src/modules/application/containers/App/CowSpeechBubble.tsx
+msgid "Dismiss hiring message"
+msgstr "Descartar mensaje de contratación"
 
 #: apps/cowswap-frontend/src/common/pure/Modal/index.tsx
 msgid "dialog content"
