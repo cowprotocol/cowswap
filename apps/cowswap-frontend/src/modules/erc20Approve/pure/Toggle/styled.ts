@@ -29,7 +29,6 @@ export const PartialAmountWrapper = styled.div<{ isActive?: boolean }>`
   font-size: 12px;
   padding: 1px 6px;
   cursor: ${({ isActive }) => (isActive ? 'default' : 'pointer')};
-  background: var(${UI.COLOR_INFO_BG});
 `
 
 export const OptionTitle = styled.div`
