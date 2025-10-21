@@ -8,7 +8,7 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: cowswap18n\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-10-21 17:13\n"
+"PO-Revision-Date: 2025-10-21 17:46\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -5151,8 +5151,8 @@ msgid "This price is {displayedPercent}% lower than current market price. You co
 msgstr "Este precio es un {displayedPercent}% inferior al precio de mercado actual. ¡Usted podría estar vendiendo su <0/> con pérdida! Haga clic en \"Precio de mercado\" para fijar su precio límite al precio actual de mercado."
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
-msgid "There {areIs} <0>{ordersWithPermitLength}</0> existing {orderWord} using a <1/> token approval. If you sign a new one, only one order can fill. Continue with current permit amount or choose full approval so all orders can be filled."
-msgstr "Hay <0>{ordersWithPermitLength}</0> {orderWord} usando una aprobación de token <1/>. Si firma uno nuevo, sólo puede llenar una orden. Continúe con la cantidad actual aprobada o elija la aprobación completa para que todas las órdenes puedan ser llenadas."
+#~ msgid "There {areIs} <0>{ordersWithPermitLength}</0> existing {orderWord} using a <1/> token approval. If you sign a new one, only one order can fill. Continue with current permit amount or choose full approval so all orders can be filled."
+#~ msgstr "There {areIs} <0>{ordersWithPermitLength}</0> existing {orderWord} using a <1/> token approval. If you sign a new one, only one order can fill. Continue with current permit amount or choose full approval so all orders can be filled."
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 msgid "Continue swap with {wrappedSymbol}"
@@ -5938,6 +5938,10 @@ msgstr "Cortador de Mev"
 #: apps/cowswap-frontend/src/utils/orderUtils/parseOrder.ts
 msgid "Creation transaction"
 msgstr "Creación de transacción"
+
+#: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
+msgid "There {areIs} <0>{ordersWithPermitLength}</0> existing {orderWord} using a <1/> token approval.  Partial approval may affect the execution of other orders. Adjust the amount or choose full approval to proceed."
+msgstr "Hay {areIs} <0>{ordersWithPermitLength}</0> existente {orderWord} usando una aprobación de token <1/>. La aprobación parcial puede afectar la ejecución de otras órdenes. Ajuste la cantidad o elija la aprobación completa para continuar."
 
 #: apps/cowswap-frontend/src/modules/wallet/pure/WatchAssetInWallet/index.tsx
 msgid "Add token"

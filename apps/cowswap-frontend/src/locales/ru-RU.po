@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cowswap18n\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-10-21 17:13\n"
+"PO-Revision-Date: 2025-10-21 17:46\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -5151,8 +5151,8 @@ msgid "This price is {displayedPercent}% lower than current market price. You co
 msgstr "Эта цена на {displayedPercent}% ниже текущей рыночной цены. Вы можете продать свой <0/> с убытком! Нажмите «Рыночная цена», чтобы установить лимитную цену равной текущей рыночной цене."
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
-msgid "There {areIs} <0>{ordersWithPermitLength}</0> existing {orderWord} using a <1/> token approval. If you sign a new one, only one order can fill. Continue with current permit amount or choose full approval so all orders can be filled."
-msgstr "Там {areIs} <0>{ordersWithPermitLength}</0> существующий {orderWord} с <1/> одобрением токена. Если вы подписываете новый, может быть только один ордер. Продолжить с текущей суммой разрешения или выбрать полное утверждение, чтобы все заказы могут быть исполнены."
+#~ msgid "There {areIs} <0>{ordersWithPermitLength}</0> existing {orderWord} using a <1/> token approval. If you sign a new one, only one order can fill. Continue with current permit amount or choose full approval so all orders can be filled."
+#~ msgstr "There {areIs} <0>{ordersWithPermitLength}</0> existing {orderWord} using a <1/> token approval. If you sign a new one, only one order can fill. Continue with current permit amount or choose full approval so all orders can be filled."
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 msgid "Continue swap with {wrappedSymbol}"
@@ -5938,6 +5938,10 @@ msgstr "Мевский лицер"
 #: apps/cowswap-frontend/src/utils/orderUtils/parseOrder.ts
 msgid "Creation transaction"
 msgstr "Создание транзакции"
+
+#: apps/cowswap-frontend/src/modules/erc20Approve/containers/ActiveOrdersWithAffectedPermit/ActiveOrdersWithAffectedPermit.tsx
+msgid "There {areIs} <0>{ordersWithPermitLength}</0> existing {orderWord} using a <1/> token approval.  Partial approval may affect the execution of other orders. Adjust the amount or choose full approval to proceed."
+msgstr "Там {areIs} <0>{ordersWithPermitLength}</0> существующий {orderWord} с <1/> одобрением токена. Частичное утверждение может повлиять на исполнение других заказов. Отрегулируйте сумму или выберите полное одобрение для продолжения."
 
 #: apps/cowswap-frontend/src/modules/wallet/pure/WatchAssetInWallet/index.tsx
 msgid "Add token"
