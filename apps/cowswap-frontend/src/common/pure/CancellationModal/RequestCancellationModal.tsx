@@ -81,8 +81,6 @@ const OrderTypeDetails = styled.div`
   }
 `
 
-// TODO: Break down this large function into smaller functions
-
 export function RequestCancellationModal(props: RequestCancellationModalProps): ReactElement {
   const { onDismiss, triggerCancellation, summary, shortId, defaultType, txCost, nativeCurrency } = props
   const isOffChainCancellable = defaultType === 'offChain'
