@@ -33,7 +33,6 @@ import { TradeFlowContext } from '../types/TradeFlowContext'
 
 export interface TradeFlowParams {
   deadline: number
-  partialApproveEnabled?: boolean
 }
 
 // TODO: Break down this large function into smaller functions

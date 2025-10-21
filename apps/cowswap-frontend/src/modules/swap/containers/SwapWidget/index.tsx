@@ -54,7 +54,7 @@ export interface SwapWidgetProps {
 // TODO: Break down this large function into smaller functions
 // eslint-disable-next-line max-lines-per-function,complexity
 export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps): ReactNode {
-  const { showRecipient, enablePartialApprovalBySettings } = useSwapSettings()
+  const { showRecipient } = useSwapSettings()
   const deadlineState = useSwapDeadlineState()
   const recipientToggleState = useSwapRecipientToggleState()
   const hooksEnabledState = useHooksEnabledManager()
@@ -86,10 +86,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps): Reac
     orderKind,
     isUnlocked,
   } = useSwapDerivedState()
-  const doTrade = useHandleSwap(
-    { deadline: deadlineState[0], partialApproveEnabled: enablePartialApprovalBySettings },
-    widgetActions,
-  )
+  const doTrade = useHandleSwap({ deadline: deadlineState[0] }, widgetActions)
   const hasEnoughWrappedBalanceForSwap = useHasEnoughWrappedBalanceForSwap()
   const isSmartContractWallet = useIsSmartContractWallet()
   const { account } = useWalletInfo()

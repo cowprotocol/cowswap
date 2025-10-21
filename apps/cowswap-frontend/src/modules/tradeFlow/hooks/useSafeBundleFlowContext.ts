@@ -4,6 +4,7 @@ import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { useSendBatchTransactions } from '@cowprotocol/wallet'
 
+import { useGetAmountToSignApprove } from 'modules/erc20Approve'
 import { useAmountsToSignFromQuote } from 'modules/trade'
 
 import { useTokenContract, useWethContract } from 'common/hooks/useContract'
@@ -11,9 +12,10 @@ import { useNeedsApproval } from 'common/hooks/useNeedsApproval'
 
 import { SafeBundleFlowContext } from '../types/TradeFlowContext'
 
-export function useSafeBundleFlowContext(partialApproveEnabled = false): SafeBundleFlowContext | null {
+export function useSafeBundleFlowContext(): SafeBundleFlowContext | null {
   const spender = useTradeSpenderAddress()
 
+  const amountToApprove = useGetAmountToSignApprove()
   const sendBatchTransactions = useSendBatchTransactions()
   const { contract: wrappedNativeContract } = useWethContract()
 
@@ -27,7 +29,7 @@ export function useSafeBundleFlowContext(partialApproveEnabled = false): SafeBun
   const { contract: erc20Contract } = useTokenContract(inputCurrencyAddress)
 
   return useMemo(() => {
-    if (!spender || !wrappedNativeContract || !erc20Contract) {
+    if (!spender || !wrappedNativeContract || !erc20Contract || !amountToApprove) {
       return null
     }
 
@@ -37,7 +39,7 @@ export function useSafeBundleFlowContext(partialApproveEnabled = false): SafeBun
       wrappedNativeContract,
       needsApproval,
       erc20Contract,
-      partialApproveEnabled,
+      amountToApprove,
     }
-  }, [spender, sendBatchTransactions, wrappedNativeContract, needsApproval, erc20Contract, partialApproveEnabled])
+  }, [spender, sendBatchTransactions, wrappedNativeContract, needsApproval, erc20Contract, amountToApprove])
 }

@@ -23,7 +23,7 @@ export function useHandleSwap(
 ): { callback(): Promise<false | void>; contextIsReady: boolean } {
   const tradeFlowType = useTradeFlowType()
   const tradeFlowContext = useTradeFlowContext(params)
-  const safeBundleFlowContext = useSafeBundleFlowContext(params.partialApproveEnabled)
+  const safeBundleFlowContext = useSafeBundleFlowContext()
   const { confirmPriceImpactWithoutFee } = useConfirmPriceImpactWithoutFee()
   const priceImpactParams = useTradePriceImpact()
   const ethFlowContext = useEthFlowContext()
