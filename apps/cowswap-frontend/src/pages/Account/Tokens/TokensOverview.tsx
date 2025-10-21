@@ -345,7 +345,7 @@ interface UseTokenSearchResult {
 function useTokenSearch(page: number, setPage: Dispatch<SetStateAction<number>>): UseTokenSearchResult {
   const [query, setQuery] = useState<string>('')
   const debouncedQuery = useDebounce(query, 300)
-  const prevQuery = usePrevious(debouncedQuery)
+  const prevQuery = usePrevious(debouncedQuery) ?? undefined
 
   const handleSearch = useCallback<ChangeEventHandler<HTMLInputElement>>(
     (event) => {
