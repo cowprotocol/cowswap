@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react'
 
 import { PartnerFeeRow, TradeTotalCostsDetails } from 'modules/trade'
 import { Box } from 'modules/trade/containers/TradeTotalCostsDetails/styled'
+import { RowRewards } from 'modules/tradeWidgetAddons/containers/RowRewards'
 import { useUsdAmount } from 'modules/usdAmount'
 import { useVolumeFee, useVolumeFeeTooltip } from 'modules/volumeFee'
 
@@ -40,7 +41,12 @@ export function TradeRateDetails({ rateInfoParams, alwaysExpanded = false }: Tra
   )
 
   if (!rateInfoParams) {
-    return partnerFeeRow
+    return (
+      <Box noMargin>
+        {partnerFeeRow}
+        <RowRewards />
+      </Box>
+    )
   }
 
   if (alwaysExpanded) {
@@ -54,7 +60,10 @@ export function TradeRateDetails({ rateInfoParams, alwaysExpanded = false }: Tra
           fontSize={13}
           fontBold
         />
-        <Box noMargin>{partnerFeeRow}</Box>
+        <Box noMargin>
+          {partnerFeeRow}
+          <RowRewards />
+        </Box>
       </>
     )
   }
@@ -66,7 +75,10 @@ export function TradeRateDetails({ rateInfoParams, alwaysExpanded = false }: Tra
       isFeeDetailsOpen={isFeeDetailsOpen}
       toggleAccordion={toggleAccordion}
     >
-      {partnerFeeRow}
+      <>
+        {partnerFeeRow}
+        <RowRewards />
+      </>
     </TradeTotalCostsDetails>
   )
 }
