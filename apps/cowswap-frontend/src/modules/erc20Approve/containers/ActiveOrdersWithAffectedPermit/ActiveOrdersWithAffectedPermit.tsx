@@ -28,9 +28,12 @@ export function ActiveOrdersWithAffectedPermit({ currency, orderId }: ActiveOrde
 
   if (!ordersWithPermit.length) return null
 
+  const isPlural = ordersWithPermit.length > 1
+  const orderWord = isPlural ? 'orders' : 'order'
+
   const titleContent = (
     <>
-      Partial approval may block <span className={'font-bold'}>{ordersWithPermit.length}</span> other orders
+      Partial approval may block <span className={'font-bold'}>{ordersWithPermit.length}</span> other {orderWord}
     </>
   )
 
@@ -40,9 +43,10 @@ export function ActiveOrdersWithAffectedPermit({ currency, orderId }: ActiveOrde
         <AffectedPermitOrdersTable orders={ordersWithPermit} />
       </styledEl.DropdownList>
       <styledEl.DropdownFooter>
-        There are <span className={'font-bold'}>{ordersWithPermit.length}</span> existing orders using a{' '}
-        <TokenSymbol className={'font-bold'} token={currency} /> token approval. If you sign a new one, only one order
-        can fill. Continue with current permit amount or choose full approval so all orders can be filled.
+        There {isPlural ? 'are' : 'is'} <span className={'font-bold'}>{ordersWithPermit.length}</span> existing{' '}
+        {orderWord} using a <TokenSymbol className={'font-bold'} token={currency} /> token approval. If you sign a new
+        one, only one order can fill. Continue with current permit amount or choose full approval so all orders can be
+        filled.
       </styledEl.DropdownFooter>
     </AccordionBanner>
   )
