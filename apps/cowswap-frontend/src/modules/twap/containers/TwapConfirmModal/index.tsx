@@ -6,6 +6,7 @@ import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
 import { TradeConfirmation, TradeConfirmModal, useTradeConfirmActions, useTradePriceImpact } from 'modules/trade'
 import { TradeBasicConfirmDetails } from 'modules/trade/containers/TradeBasicConfirmDetails'
 import { DividerHorizontal } from 'modules/trade/pure/Row/styled'
+import { RowRewards, useIsRowRewardsVisible } from 'modules/tradeWidgetAddons'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { NetworkCostsSuffix } from 'common/pure/NetworkCostsSuffix'
@@ -77,6 +78,7 @@ export function TwapConfirmModal() {
 
   const priceImpact = useTradePriceImpact()
   const fallbackHandlerIsNotSet = useIsFallbackHandlerRequired()
+  const isRowRewardsVisible = useIsRowRewardsVisible()
 
   const inputCurrencyInfo = {
     amount: inputCurrencyAmount,
@@ -138,6 +140,7 @@ export function TwapConfirmModal() {
                 }}
               />
             )}
+            {isRowRewardsVisible && <RowRewards />}
             <DividerHorizontal />
             <TwapConfirmDetails
               startTime={twapOrder?.startTime}
