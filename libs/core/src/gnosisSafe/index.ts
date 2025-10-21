@@ -2,7 +2,7 @@ import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { JsonRpcFetchFunc, Web3Provider } from '@ethersproject/providers'
 import SafeApiKit, { SafeInfoResponse } from '@safe-global/api-kit'
-import Safe, { EthersAdapter } from '@safe-global/protocol-kit'
+import { EthersAdapter } from '@safe-global/protocol-kit'
 import type { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
 
 // eslint-disable-next-line no-restricted-imports
@@ -56,12 +56,6 @@ export function createSafeApiKitInstance(chainId: number, library: Web3Provider)
 
   const ethAdapter = _createSafeEthAdapter(library)
   return new SafeApiKit({ txServiceUrl: url, ethAdapter })
-}
-
-export async function createSafeSdkInstance(safeAddress: string, library: Web3Provider): Promise<Safe> {
-  const ethAdapter = _createSafeEthAdapter(library)
-
-  return Safe.create({ ethAdapter, safeAddress })
 }
 
 function _getClientOrThrow(chainId: number, library: Web3Provider): SafeApiKit {
