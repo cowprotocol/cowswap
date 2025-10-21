@@ -17,7 +17,7 @@ export const LinkStyledButton = styled.button<LinkStyledButtonProps>`
   background: none;
   cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
   color: ${({ color }) => color ?? 'inherit'};
-  font-weight: 500;
+  font-weight: inherit;
   font-size: ${({ fontSize }) => fontSize ?? 'inherit'};
   opacity: ${({ disabled }) => (disabled ? 0.7 : 1)};
   margin: ${({ margin }) => margin ?? '0'};

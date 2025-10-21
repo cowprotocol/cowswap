@@ -42,10 +42,10 @@ export function TradeRateDetails({ rateInfoParams, alwaysExpanded = false }: Tra
 
   if (!rateInfoParams) {
     return (
-      <Box noMargin>
+      <>
         {partnerFeeRow}
         <RowRewards />
-      </Box>
+      </>
     )
   }
 
@@ -60,10 +60,8 @@ export function TradeRateDetails({ rateInfoParams, alwaysExpanded = false }: Tra
           fontSize={13}
           fontBold
         />
-        <Box noMargin>
-          {partnerFeeRow}
-          <RowRewards />
-        </Box>
+        <Box noMargin>{partnerFeeRow}</Box>
+        <RowRewards />
       </>
     )
   }
