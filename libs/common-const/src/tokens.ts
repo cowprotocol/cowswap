@@ -96,7 +96,6 @@ const sUSD_MAINNET = new TokenWithLogo(
 )
 
 // Gnosis chain
-export const XDAI_SYMBOL = 'XDAI'
 
 export const USDT_GNOSIS_CHAIN = new TokenWithLogo(
   USDT.logoURI,
