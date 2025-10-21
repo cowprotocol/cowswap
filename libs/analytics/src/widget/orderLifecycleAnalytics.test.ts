@@ -144,6 +144,25 @@ describe('order lifecycle analytics mappers', () => {
     )
   })
 
+  it('falls back to raw amounts when token metadata is incomplete', () => {
+    const missingMetaPayload = {
+      ...basePostedPayload,
+      inputToken: { ...basePostedPayload.inputToken, decimals: undefined as unknown as number, symbol: undefined },
+      outputToken: { ...basePostedPayload.outputToken, decimals: undefined as unknown as number, symbol: undefined },
+    } as unknown as OnPostedOrderPayload
+
+    const result = mapPostedOrder(missingMetaPayload)
+
+    expect(result).toEqual(
+      expect.objectContaining({
+        sellAmountUnits: undefined,
+        buyAmountUnits: undefined,
+        from_amount: basePostedPayload.inputAmount.toString(),
+        to_amount: basePostedPayload.outputAmount.toString(),
+      }),
+    )
+  })
+
   it('formats atoms across different decimals', () => {
     const samples: Array<{ value: bigint; decimals: number; expected: string }> = [
       { value: BigInt('1000000000000000000'), decimals: 18, expected: '1' },
@@ -183,5 +202,33 @@ describe('order lifecycle analytics mappers', () => {
     const result = mapFulfilledOrder(nestedBridgePayload)
 
     expect(result.isCrossChain).toBe(true)
+  })
+
+  it('falls back to raw executed amounts when formatting fails', () => {
+    const payload = {
+      ...basePostedPayload,
+      order: {
+        owner: '0xowner',
+        uid: '0xorder',
+        sellToken: '0x0000000000000000000000000000000000000001',
+        buyToken: '0x0000000000000000000000000000000000000002',
+        sellAmount: '1000000000000000000',
+        buyAmount: '2500000',
+        executedSellAmount: '500000000000000000',
+        executedBuyAmount: '1250000',
+        executedFeeAmount: '1000000000000000',
+      },
+    } as unknown as OnFulfilledOrderPayload
+
+    const result = mapFulfilledOrder(payload)
+
+    expect(result).toEqual(
+      expect.objectContaining({
+        executedSellAmountUnits: undefined,
+        executedBuyAmountUnits: undefined,
+        from_amount: '500000000000000000',
+        to_amount: '1250000',
+      }),
+    )
   })
 })

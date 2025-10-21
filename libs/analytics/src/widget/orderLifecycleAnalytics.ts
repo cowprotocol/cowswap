@@ -153,14 +153,16 @@ export function buildAnalyticsCurrencyAliases(fields: AnalyticsPayload): Analyti
 
   const sellAmountUnits = typeof fields.sellAmountUnits === 'string' ? fields.sellAmountUnits : undefined
   const buyAmountUnits = typeof fields.buyAmountUnits === 'string' ? fields.buyAmountUnits : undefined
+  const sellAmountRaw = normalizeRawAmount(fields.sellAmount as RawAmount)
+  const buyAmountRaw = normalizeRawAmount(fields.buyAmount as RawAmount)
 
   return {
     from_currency_address: sellTokenAddress,
     to_currency_address: buyTokenAddress,
     from_currency: String(fields.sellTokenSymbol || ''),
     to_currency: String(fields.buyTokenSymbol || ''),
-    from_amount: sellAmountUnits,
-    to_amount: buyAmountUnits,
+    from_amount: sellAmountUnits ?? sellAmountRaw,
+    to_amount: buyAmountUnits ?? buyAmountRaw,
   }
 }
 
@@ -227,6 +229,8 @@ export function mapFulfilledOrder(p: OnFulfilledOrderPayload): AnalyticsPayload 
   const executedSellAmountUnits = formatTokenUnits(inputToken, executedSellAmountAtoms)
   const executedBuyAmountUnits = formatTokenUnits(outputToken, executedBuyAmountAtoms)
   const executedFeeAmountUnits = formatTokenUnits(inputToken, executedFeeAmountAtoms)
+  const executedSellAmountRaw = normalizeRawAmount(executedSellAmountAtoms)
+  const executedBuyAmountRaw = normalizeRawAmount(executedBuyAmountAtoms)
 
   return {
     ...base,
@@ -241,8 +245,8 @@ export function mapFulfilledOrder(p: OnFulfilledOrderPayload): AnalyticsPayload 
     executedFeeAmountUnits,
 
     // Safary-lexicon style fields (explicit for fulfillment amounts)
-    from_amount: executedSellAmountUnits,
-    to_amount: executedBuyAmountUnits,
+    from_amount: executedSellAmountUnits ?? executedSellAmountRaw,
+    to_amount: executedBuyAmountUnits ?? executedBuyAmountRaw,
 
     isCrossChain: hasBridgeOrder,
   }

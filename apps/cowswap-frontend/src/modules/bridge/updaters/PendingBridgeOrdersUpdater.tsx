@@ -40,6 +40,15 @@ const formatBridgeAmount = (token: TokenWithLogo | undefined, rawAmount: RawAmou
   }
 }
 
+const toBridgeAmountRaw = (rawAmount: RawAmount): string | undefined => {
+  if (rawAmount === null || rawAmount === undefined) return undefined
+
+  if (typeof rawAmount === 'string') return rawAmount
+  if (typeof rawAmount === 'number' || typeof rawAmount === 'bigint') return rawAmount.toString()
+
+  return undefined
+}
+
 const getBridgeToken = (tokensByAddress: TokensByAddress, address: string | undefined): TokenWithLogo | undefined => {
   if (!address) return undefined
   return tokensByAddress[address.toLowerCase()]
@@ -143,7 +152,10 @@ const useBridgeStatusAnalytics = ({
           amountIn: crossChainOrder.order.sellAmount,
           amountOutReceived: crossChainOrder.bridgingParams.outputAmount?.toString(),
           bridgeProvider: crossChainOrder.provider.info.name,
-          txHash: crossChainOrder.statusResult.fillTxHash || crossChainOrder.statusResult.depositTxHash,
+          txHash:
+            crossChainOrder.statusResult.fillTxHash ||
+            crossChainOrder.statusResult.depositTxHash ||
+            crossChainOrder.statusResult.refundTxHash,
           latencyMs,
           page: 'swap',
           ...bridgeAliasFields,
@@ -160,6 +172,12 @@ const useBridgeStatusAnalytics = ({
         chainId: sourceChainId,
         fromChainId: sourceChainId,
         toChainId: destinationChainId,
+        bridgeProvider: crossChainOrder.provider.info.name,
+        txHash:
+          crossChainOrder.statusResult.fillTxHash ||
+          crossChainOrder.statusResult.depositTxHash ||
+          crossChainOrder.statusResult.refundTxHash,
+        page: 'swap',
       } as GtmEvent<CowSwapAnalyticsCategory.Bridge>)
     }
 
@@ -184,14 +202,20 @@ export const buildBridgeSuccessAliasFields = (
 
   const inputToken = getBridgeToken(tokensByAddress, inputTokenAddress)
   const outputToken = getBridgeToken(tokensByAddress, outputTokenAddress)
+  const fromAmountFormatted = formatBridgeAmount(inputToken, inputAmount)
+  const toAmountFormatted = formatBridgeAmount(outputToken, outputAmount)
+  const fromAmountRaw = toBridgeAmountRaw(inputAmount)
+  const toAmountRaw = toBridgeAmountRaw(outputAmount)
+  const fromAmount = fromAmountFormatted ?? fromAmountRaw
+  const toAmount = toAmountFormatted ?? toAmountRaw
 
   return {
     from_currency_address: inputTokenAddress || '',
     to_currency_address: outputTokenAddress || '',
     from_currency: inputToken?.symbol || '',
     to_currency: outputToken?.symbol || '',
-    from_amount: formatBridgeAmount(inputToken, inputAmount),
-    to_amount: formatBridgeAmount(outputToken, outputAmount),
+    from_amount: fromAmount || undefined,
+    to_amount: toAmount || undefined,
   }
 }
 

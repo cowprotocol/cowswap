@@ -19,13 +19,15 @@ const buildToken = (params: { chainId: number; address: string; symbol: string; 
 describe('buildBridgeSuccessAliasFields', () => {
   const inputTokenAddress = '0x1111111111111111111111111111111111111111'
   const outputTokenAddress = '0x2222222222222222222222222222222222222222'
+  const inputAmount = '1000000000000000000'
+  const outputAmount = '2000000'
 
   const baseCrossChainOrder = {
     bridgingParams: {
       inputTokenAddress,
       outputTokenAddress,
-      inputAmount: '1000000000000000000', // 1.0 with 18 decimals
-      outputAmount: '2000000', // 2.0 with 6 decimals
+      inputAmount,
+      outputAmount,
     },
   } as unknown as CrossChainOrder
 
@@ -57,7 +59,7 @@ describe('buildBridgeSuccessAliasFields', () => {
     })
   })
 
-  it('falls back to empty strings when token metadata is missing', () => {
+  it('falls back to raw amounts when token metadata is missing', () => {
     const tokensByAddress: TokensByAddress = {}
 
     const result = buildBridgeSuccessAliasFields(baseCrossChainOrder, tokensByAddress)
@@ -67,8 +69,8 @@ describe('buildBridgeSuccessAliasFields', () => {
       to_currency_address: outputTokenAddress,
       from_currency: '',
       to_currency: '',
-      from_amount: undefined,
-      to_amount: undefined,
+      from_amount: inputAmount,
+      to_amount: outputAmount,
     })
   })
 })
