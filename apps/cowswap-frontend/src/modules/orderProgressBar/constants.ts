@@ -88,8 +88,9 @@ export const COW_SWAP_BENEFITS = [
   "Unlike most other exchanges, CoW Swap doesn't charge you any fees if your trade fails.",
 ]
 
+// TODO: add Plasma once launched
 export const TRADE_ON_NEW_CHAINS_BENEFIT =
-  'CoW Swap is now live on Arbitrum, Base, Polygon, and Avalanche. Switch the network toggle in the nav bar for quick, cheap transactions.'
+  'CoW Swap is now live on Arbitrum, Base, Polygon, Avalanche, Lens, BNB and Linea. Switch the network toggle in the nav bar for quick, cheap transactions.'
 
 export const CHAIN_SPECIFIC_BENEFITS: Record<SupportedChainId, string[]> = {
   [SupportedChainId.MAINNET]: [TRADE_ON_NEW_CHAINS_BENEFIT, ...COW_SWAP_BENEFITS],
@@ -101,6 +102,8 @@ export const CHAIN_SPECIFIC_BENEFITS: Record<SupportedChainId, string[]> = {
   [SupportedChainId.AVALANCHE]: COW_SWAP_BENEFITS,
   [SupportedChainId.LENS]: COW_SWAP_BENEFITS,
   [SupportedChainId.BNB]: COW_SWAP_BENEFITS,
+  [SupportedChainId.LINEA]: COW_SWAP_BENEFITS,
+  [SupportedChainId.PLASMA]: COW_SWAP_BENEFITS,
 }
 
 export const SURPLUS_IMAGES = [
