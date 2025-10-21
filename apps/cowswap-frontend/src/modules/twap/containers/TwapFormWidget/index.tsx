@@ -15,6 +15,7 @@ import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
 import { TradeTextBox } from 'modules/trade/pure/TradeTextBox'
 import { useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { useTradeQuote } from 'modules/tradeQuote'
+import { RowRewards, useIsRowRewardsVisible } from 'modules/tradeWidgetAddons'
 import { TwapFormState } from 'modules/twap/pure/PrimaryActionButton/getTwapFormState'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
@@ -46,7 +47,6 @@ import { twapOrdersSettingsAtom, updateTwapOrdersSettingsAtom } from '../../stat
 import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
 import { ActionButtons } from '../ActionButtons'
 import { AmountParts } from '../AmountParts'
-import { TwapRateDetails } from '../TradeRateDetails'
 import { TwapFormWarnings } from '../TwapFormWarnings'
 
 export type { LabelTooltip, LabelTooltipItems } from './tooltips'
@@ -77,6 +77,7 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget) {
   const localFormValidation = useTwapFormState()
   const primaryFormValidation = useGetTradeFormValidation()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
+  const isRowRewardsVisible = useIsRowRewardsVisible()
 
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
 
@@ -174,18 +175,16 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget) {
     <>
       {!isWrapOrUnwrap && (
         <>
-          <styledEl.Row>
-            <styledEl.RateInfoWrapper>
-              <RateInfo
-                label={LABELS_TOOLTIPS.price.label}
-                rateInfoParams={rateInfoParams}
-                isInvertedState={isInvertedState}
-                fontSize={13}
-                rightAlign
-              />
-            </styledEl.RateInfoWrapper>
-          </styledEl.Row>
-          <TwapRateDetails rateInfoParams={rateInfoParams} />
+          <styledEl.FooterBox>
+            <RateInfo
+              label={LABELS_TOOLTIPS.price.label}
+              rateInfoParams={rateInfoParams}
+              isInvertedState={isInvertedState}
+              fontSize={13}
+              rightAlign
+            />
+            {isRowRewardsVisible && <RowRewards />}
+          </styledEl.FooterBox>
         </>
       )}
       <TradeNumberInput
