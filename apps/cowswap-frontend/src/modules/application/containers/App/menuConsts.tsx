@@ -112,7 +112,7 @@ export const NAV_ITEMS = (chainId: SupportedChainId): MenuItem[] => {
     label: i18n._(_ACCOUNT_ITEM.label),
     children: _ACCOUNT_ITEM.children.map(({ href, label }) => ({
       href,
-      label: typeof label === 'string' ? label : i18n._(label),
+      label: i18n._(label),
     })),
   }
 
