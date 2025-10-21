@@ -3,12 +3,12 @@ import { ReactElement, useCallback, useState } from 'react'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { Command } from '@cowprotocol/types'
 import { ButtonPrimary, TokenAmount, UI } from '@cowprotocol/ui'
+import { LinkStyledButton } from '@cowprotocol/ui'
 import type { BigNumber } from '@ethersproject/bignumber'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { ArrowLeft, ArrowRight } from 'react-feather'
 import styled from 'styled-components/macro'
-import { LinkStyledButton } from 'theme'
 
 import NotificationBanner from 'legacy/components/NotificationBanner'
 import { LegacyConfirmationModalContent } from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationModalContent'
@@ -82,7 +82,7 @@ const OrderTypeDetails = styled.div`
 `
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+
 export function RequestCancellationModal(props: RequestCancellationModalProps): ReactElement {
   const { onDismiss, triggerCancellation, summary, shortId, defaultType, txCost, nativeCurrency } = props
   const isOffChainCancellable = defaultType === 'offChain'

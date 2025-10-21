@@ -1,9 +1,7 @@
 import { PropsWithChildren } from 'react'
 
 import { Command } from '@cowprotocol/types'
-import { UI } from '@cowprotocol/ui'
-
-import { LinkStyledButton } from 'theme'
+import { UI, LinkStyledButton } from '@cowprotocol/ui'
 
 export type CancelButtonProps = {
   onClick: Command
