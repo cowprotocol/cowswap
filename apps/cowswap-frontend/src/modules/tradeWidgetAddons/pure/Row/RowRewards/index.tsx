@@ -6,8 +6,6 @@ import { Trans } from '@lingui/macro'
 
 import { RowStyleProps, StyledInfoIcon, StyledRowBetween, TextWrapper } from '../styled'
 
-const noop = (): void => undefined
-
 export interface RowRewardsContentProps {
   onAddCode?: () => void
   tooltipContent?: ReactNode
@@ -30,7 +28,7 @@ export function RowRewardsContent(props: RowRewardsContentProps): ReactNode {
       </RowFixed>
       <TextWrapper textAlign="right">
         <LinkStyledButton
-          onClick={onAddCode ?? noop}
+          onClick={onAddCode}
           padding="0"
           margin="0"
           fontSize="inherit"
