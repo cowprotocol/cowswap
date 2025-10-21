@@ -22,5 +22,4 @@ export interface CheckEthereumTransactions {
   nativeCurrencySymbol: string
   cancelOrdersBatch: CancelOrdersBatchCallback
   safeInfo: GnosisSafeInfo | undefined
-  updateLastApproveTxBlockNumber: (params: { blockNumber: number; tokenAddress: string }) => void
 }

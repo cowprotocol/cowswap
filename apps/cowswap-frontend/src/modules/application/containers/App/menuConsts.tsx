@@ -89,6 +89,11 @@ const MORE_ITEM = {
       external: true,
     },
     {
+      href: 'https://cow.fi/careers',
+      label: msg`Careers`,
+      external: true,
+    },
+    {
       href: Routes.PLAY_COWRUNNER,
       label: msg`CoW Runner`,
       // icon: IMG_ICON_COW_RUNNER,

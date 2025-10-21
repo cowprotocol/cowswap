@@ -5,19 +5,18 @@ import { usePreventDoubleExecution } from '@cowprotocol/common-hooks'
 import { ButtonSize, HoverTooltip, TokenSymbol } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { Trans } from '@lingui/react/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 
-import { useTokenSupportsPermit } from 'modules/permit'
-import { TradeType } from 'modules/trade'
+import { useHasCachedPermit } from 'modules/permit'
+import { useIsCurrentTradeBridging } from 'modules/trade'
 
-import { useOnApproveClick } from './hooks/useOnApproveClick'
 import * as styledEl from './styled'
 import { ButtonWrapper } from './styled'
 
 import { MAX_APPROVE_AMOUNT } from '../../constants'
-import { useApprovalStateForSpender, useApproveCurrency, useGeneratePermitInAdvanceToTrade } from '../../hooks'
+import { useApprovalStateForSpender, useApproveCurrency } from '../../hooks'
+import { useApproveAndSwap } from '../../hooks/useApproveAndSwap'
 import { LegacyApproveButton } from '../../pure/LegacyApproveButton'
-import { useIsPartialApproveSelectedByUser } from '../../state'
 import { ApprovalState } from '../../types'
 
 export interface TradeApproveButtonProps {
@@ -26,42 +25,29 @@ export interface TradeApproveButtonProps {
   isDisabled?: boolean
   enablePartialApprove?: boolean
   onApproveConfirm?: (txHash?: string) => void
-  ignorePermit?: boolean
-  label: string
+  label?: string
   buttonSize?: ButtonSize
   useModals?: boolean
 }
 
 export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
+  const { t } = useLingui()
   const {
     amountToApprove,
     children,
     enablePartialApprove,
-    onApproveConfirm,
-    label,
-    ignorePermit,
     isDisabled,
     buttonSize = ButtonSize.DEFAULT,
     useModals = true,
   } = props
-  const isPartialApproveEnabledByUser = useIsPartialApproveSelectedByUser()
   const handleApprove = useApproveCurrency(amountToApprove, useModals)
 
   const spender = useTradeSpenderAddress()
+  const isCurrentTradeBridging = useIsCurrentTradeBridging()
   const { approvalState } = useApprovalStateForSpender(amountToApprove, spender)
-  const isPermitSupported = useTokenSupportsPermit(amountToApprove.currency, TradeType.SWAP) && !ignorePermit
-  const generatePermitToTrade = useGeneratePermitInAdvanceToTrade(amountToApprove)
-
-  const approveAndSwap = useOnApproveClick({
-    isPermitSupported,
-    onApproveConfirm,
-    isPartialApproveEnabledByUser,
-    amountToApprove,
-    handleApprove,
-    generatePermitToTrade,
-  })
-
+  const approveAndSwap = useApproveAndSwap(props)
   const approveWithPreventedDoubleExecution = usePreventDoubleExecution(approveAndSwap)
+  const { data: cachedPermit, isLoading: cachedPermitLoading } = useHasCachedPermit(amountToApprove)
 
   if (!enablePartialApprove) {
     return (
@@ -78,6 +64,11 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
   }
 
   const isPending = approvalState === ApprovalState.PENDING
+  const noCachedPermit = !cachedPermitLoading && !cachedPermit
+
+  const label =
+    props.label || (noCachedPermit ? (isCurrentTradeBridging ? t`Approve, Swap & Bridge` : t`Approve and Swap`) : t`Swap`)
+  
   const amountToApproveCurrency = amountToApprove.currency
 
   return (
@@ -89,18 +80,20 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
     >
       <styledEl.ButtonLabelWrapper buttonSize={buttonSize}>
         {label}{' '}
-        <HoverTooltip
-          wrapInContainer
-          content={
-            <Trans>
-              You must give the CoW Protocol smart contracts permission to use your{' '}
-              <TokenSymbol token={amountToApproveCurrency} />. If you approve the default amount, you will only have to
-              do this once per token.
-            </Trans>
-          }
-        >
-          {isPending ? <styledEl.StyledLoader /> : <styledEl.StyledAlert size={24} />}
-        </HoverTooltip>
+        {noCachedPermit ? (
+          <HoverTooltip
+            wrapInContainer
+            content={
+              <Trans>
+                You must give the CoW Protocol smart contracts permission to use your{' '}
+                <TokenSymbol token={amountToApproveCurrency} />. If you approve the default amount, you will only have
+                to do this once per token.
+              </Trans>
+            }
+          >
+            {isPending ? <styledEl.StyledLoader /> : <styledEl.StyledAlert size={24} />}
+          </HoverTooltip>
+        ) : null}
       </styledEl.ButtonLabelWrapper>
     </ButtonWrapper>
   )

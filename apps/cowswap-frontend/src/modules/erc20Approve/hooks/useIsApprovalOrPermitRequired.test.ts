@@ -93,7 +93,7 @@ describe('useIsApprovalOrPermitRequired', () => {
         useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: null }),
       )
 
-      expect(result.current).toBe(ApproveRequiredReason.Required)
+      expect(result.current.reason).toBe(ApproveRequiredReason.Required)
     })
 
     it('should return Required when approval state is PENDING', () => {
@@ -106,7 +106,7 @@ describe('useIsApprovalOrPermitRequired', () => {
         useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: null }),
       )
 
-      expect(result.current).toBe(ApproveRequiredReason.Required)
+      expect(result.current.reason).toBe(ApproveRequiredReason.Required)
     })
 
     it('should return NotRequired when approval state is APPROVED', () => {
@@ -119,7 +119,7 @@ describe('useIsApprovalOrPermitRequired', () => {
         useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: null }),
       )
 
-      expect(result.current).toBe(ApproveRequiredReason.NotRequired)
+      expect(result.current.reason).toBe(ApproveRequiredReason.NotRequired)
     })
   })
 
@@ -135,7 +135,7 @@ describe('useIsApprovalOrPermitRequired', () => {
         useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: null }),
       )
 
-      expect(result.current).toBe(ApproveRequiredReason.NotRequired)
+      expect(result.current.reason).toBe(ApproveRequiredReason.NotRequired)
     })
 
     it('should return NotRequired for ADVANCED_ORDERS', () => {
@@ -149,7 +149,7 @@ describe('useIsApprovalOrPermitRequired', () => {
         useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: null }),
       )
 
-      expect(result.current).toBe(ApproveRequiredReason.NotRequired)
+      expect(result.current.reason).toBe(ApproveRequiredReason.NotRequired)
     })
 
     it('should return NotRequired for YIELD', () => {
@@ -163,7 +163,7 @@ describe('useIsApprovalOrPermitRequired', () => {
         useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: null }),
       )
 
-      expect(result.current).toBe(ApproveRequiredReason.NotRequired)
+      expect(result.current.reason).toBe(ApproveRequiredReason.NotRequired)
     })
   })
 
@@ -175,7 +175,7 @@ describe('useIsApprovalOrPermitRequired', () => {
         useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: null }),
       )
 
-      expect(result.current).toBe(ApproveRequiredReason.NotRequired)
+      expect(result.current.reason).toBe(ApproveRequiredReason.NotRequired)
     })
   })
 
@@ -188,7 +188,7 @@ describe('useIsApprovalOrPermitRequired', () => {
         useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: null }),
       )
 
-      expect(result.current).toBe(ApproveRequiredReason.NotRequired)
+      expect(result.current.reason).toBe(ApproveRequiredReason.NotRequired)
     })
 
     it('should return NotRequired for native token even with zero amount', () => {
@@ -199,7 +199,7 @@ describe('useIsApprovalOrPermitRequired', () => {
         useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: null }),
       )
 
-      expect(result.current).toBe(ApproveRequiredReason.NotRequired)
+      expect(result.current.reason).toBe(ApproveRequiredReason.NotRequired)
     })
 
     it('should return NotRequired for native token even when bundling is enabled', () => {
@@ -210,7 +210,7 @@ describe('useIsApprovalOrPermitRequired', () => {
         useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: true }),
       )
 
-      expect(result.current).toBe(ApproveRequiredReason.NotRequired)
+      expect(result.current.reason).toBe(ApproveRequiredReason.NotRequired)
     })
   })
 
@@ -226,7 +226,7 @@ describe('useIsApprovalOrPermitRequired', () => {
         useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: true }),
       )
 
-      expect(result.current).toBe(ApproveRequiredReason.BundleApproveRequired)
+      expect(result.current.reason).toBe(ApproveRequiredReason.BundleApproveRequired)
     })
 
     it('should return BundleApproveRequired when bundling is enabled regardless of permit support', () => {
@@ -236,7 +236,7 @@ describe('useIsApprovalOrPermitRequired', () => {
         useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: true }),
       )
 
-      expect(result.current).toBe(ApproveRequiredReason.BundleApproveRequired)
+      expect(result.current.reason).toBe(ApproveRequiredReason.BundleApproveRequired)
     })
 
     it('should return BundleApproveRequired when bundling is enabled and permit is not supported', () => {
@@ -250,7 +250,7 @@ describe('useIsApprovalOrPermitRequired', () => {
         useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: true }),
       )
 
-      expect(result.current).toBe(ApproveRequiredReason.BundleApproveRequired)
+      expect(result.current.reason).toBe(ApproveRequiredReason.BundleApproveRequired)
     })
   })
 
@@ -262,7 +262,7 @@ describe('useIsApprovalOrPermitRequired', () => {
         useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: null }),
       )
 
-      expect(result.current).toBe(ApproveRequiredReason.Eip2612PermitRequired)
+      expect(result.current.reason).toBe(ApproveRequiredReason.Eip2612PermitRequired)
     })
 
     it('should return DaiLikePermitRequired for dai-like permit type', () => {
@@ -272,7 +272,7 @@ describe('useIsApprovalOrPermitRequired', () => {
         useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: null }),
       )
 
-      expect(result.current).toBe(ApproveRequiredReason.DaiLikePermitRequired)
+      expect(result.current.reason).toBe(ApproveRequiredReason.DaiLikePermitRequired)
     })
 
     it('should return NotRequired for unsupported permit type', () => {
@@ -282,7 +282,7 @@ describe('useIsApprovalOrPermitRequired', () => {
         useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: null }),
       )
 
-      expect(result.current).toBe(ApproveRequiredReason.NotRequired)
+      expect(result.current.reason).toBe(ApproveRequiredReason.NotRequired)
     })
 
     it('should return NotRequired for undefined permit type', () => {
@@ -292,7 +292,7 @@ describe('useIsApprovalOrPermitRequired', () => {
         useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: null }),
       )
 
-      expect(result.current).toBe(ApproveRequiredReason.NotRequired)
+      expect(result.current.reason).toBe(ApproveRequiredReason.NotRequired)
     })
 
     it('should return NotRequired for null permit type', () => {
@@ -302,7 +302,7 @@ describe('useIsApprovalOrPermitRequired', () => {
         useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: null }),
       )
 
-      expect(result.current).toBe(ApproveRequiredReason.NotRequired)
+      expect(result.current.reason).toBe(ApproveRequiredReason.NotRequired)
     })
   })
 
@@ -314,7 +314,7 @@ describe('useIsApprovalOrPermitRequired', () => {
         useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: null }),
       )
 
-      expect(result.current).toBe(ApproveRequiredReason.NotRequired)
+      expect(result.current.reason).toBe(ApproveRequiredReason.NotRequired)
     })
 
     it('should handle undefined permit info', () => {
@@ -324,7 +324,7 @@ describe('useIsApprovalOrPermitRequired', () => {
         useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: null }),
       )
 
-      expect(result.current).toBe(ApproveRequiredReason.NotRequired)
+      expect(result.current.reason).toBe(ApproveRequiredReason.NotRequired)
     })
 
     it('should handle null amount to approve', () => {
@@ -338,7 +338,7 @@ describe('useIsApprovalOrPermitRequired', () => {
         useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: null }),
       )
 
-      expect(result.current).toBe(ApproveRequiredReason.NotRequired)
+      expect(result.current.reason).toBe(ApproveRequiredReason.NotRequired)
     })
 
     it('should handle zero amount to approve', () => {
@@ -352,7 +352,7 @@ describe('useIsApprovalOrPermitRequired', () => {
         useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: null }),
       )
 
-      expect(result.current).toBe(ApproveRequiredReason.NotRequired)
+      expect(result.current.reason).toBe(ApproveRequiredReason.NotRequired)
     })
 
     it('should handle undefined input currency', () => {
@@ -366,7 +366,7 @@ describe('useIsApprovalOrPermitRequired', () => {
         useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: null }),
       )
 
-      expect(result.current).toBe(ApproveRequiredReason.NotRequired)
+      expect(result.current.reason).toBe(ApproveRequiredReason.NotRequired)
     })
 
     it('should handle undefined trade type', () => {
@@ -380,7 +380,7 @@ describe('useIsApprovalOrPermitRequired', () => {
         useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: null }),
       )
 
-      expect(result.current).toBe(ApproveRequiredReason.NotRequired)
+      expect(result.current.reason).toBe(ApproveRequiredReason.NotRequired)
     })
   })
 
@@ -396,7 +396,7 @@ describe('useIsApprovalOrPermitRequired', () => {
         useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: null }),
       )
 
-      expect(result.current).toBe(ApproveRequiredReason.Eip2612PermitRequired)
+      expect(result.current.reason).toBe(ApproveRequiredReason.Eip2612PermitRequired)
     })
 
     it('should fall back to approval when permit is not supported but approval is needed', () => {
@@ -410,7 +410,7 @@ describe('useIsApprovalOrPermitRequired', () => {
         useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: null }),
       )
 
-      expect(result.current).toBe(ApproveRequiredReason.Required)
+      expect(result.current.reason).toBe(ApproveRequiredReason.Required)
     })
 
     it('should return NotRequired when both permit and approval are not needed', () => {
@@ -424,7 +424,7 @@ describe('useIsApprovalOrPermitRequired', () => {
         useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: null }),
       )
 
-      expect(result.current).toBe(ApproveRequiredReason.NotRequired)
+      expect(result.current.reason).toBe(ApproveRequiredReason.NotRequired)
     })
   })
 
@@ -434,25 +434,25 @@ describe('useIsApprovalOrPermitRequired', () => {
       const { result: result1 } = renderHook(() =>
         useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: null }),
       )
-      expect(result1.current).toBe(ApproveRequiredReason.Eip2612PermitRequired)
+      expect(result1.current.reason).toBe(ApproveRequiredReason.Eip2612PermitRequired)
 
       mockUsePermitInfo.mockReturnValue({ type: 'dai-like' })
       const { result: result2 } = renderHook(() =>
         useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: null }),
       )
-      expect(result2.current).toBe(ApproveRequiredReason.DaiLikePermitRequired)
+      expect(result2.current.reason).toBe(ApproveRequiredReason.DaiLikePermitRequired)
 
       mockUsePermitInfo.mockReturnValue({ type: 'unsupported' })
       const { result: result3 } = renderHook(() =>
         useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: null }),
       )
-      expect(result3.current).toBe(ApproveRequiredReason.NotRequired)
+      expect(result3.current.reason).toBe(ApproveRequiredReason.NotRequired)
 
       mockUsePermitInfo.mockReturnValue(undefined)
       const { result: result4 } = renderHook(() =>
         useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: null }),
       )
-      expect(result4.current).toBe(ApproveRequiredReason.NotRequired)
+      expect(result4.current.reason).toBe(ApproveRequiredReason.NotRequired)
     })
   })
 
@@ -471,7 +471,7 @@ describe('useIsApprovalOrPermitRequired', () => {
         useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: null }),
       )
 
-      expect(result.current).toBe(ApproveRequiredReason.Eip2612PermitRequired)
+      expect(result.current.reason).toBe(ApproveRequiredReason.Eip2612PermitRequired)
     })
 
     it('should handle SWAP trade type with partial approve disabled', () => {
@@ -488,7 +488,7 @@ describe('useIsApprovalOrPermitRequired', () => {
         useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: null }),
       )
 
-      expect(result.current).toBe(ApproveRequiredReason.NotRequired)
+      expect(result.current.reason).toBe(ApproveRequiredReason.NotRequired)
     })
 
     it('should handle non-SWAP trade type with partial approve enabled', () => {
@@ -505,7 +505,7 @@ describe('useIsApprovalOrPermitRequired', () => {
         useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: null }),
       )
 
-      expect(result.current).toBe(ApproveRequiredReason.NotRequired)
+      expect(result.current.reason).toBe(ApproveRequiredReason.NotRequired)
     })
 
     it('should handle approval state UNKNOWN', () => {
@@ -519,7 +519,7 @@ describe('useIsApprovalOrPermitRequired', () => {
         useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: null }),
       )
 
-      expect(result.current).toBe(ApproveRequiredReason.NotRequired)
+      expect(result.current.reason).toBe(ApproveRequiredReason.NotRequired)
     })
   })
 })

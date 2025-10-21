@@ -6,7 +6,7 @@ import {
   GetPermitCacheParams,
   PermitCache,
   PermitCacheKeyParams,
-  StorePermitCacheParams
+  StorePermitCacheParams,
 } from '../types'
 
 /**
@@ -14,14 +14,18 @@ import {
  * Should never change once it has been created.
  * Used exclusively for quote requests
  */
-export const staticPermitCacheAtom = atomWithStorage<PermitCache>('staticPermitCache:v3', {})
+export const staticPermitCacheAtom = atomWithStorage<PermitCache>('staticPermitCache:v3', {}, undefined, {
+  unstable_getOnInit: true,
+})
 
 /**
  * Atom that stores permit data for user permit requests.
  * Should be updated whenever the permit nonce is updated.
  * Used exclusively for order requests
  */
-export const userPermitCacheAtom = atomWithStorage<PermitCache>('userPermitCache:v1', {})
+export const userPermitCacheAtom = atomWithStorage<PermitCache>('userPermitCache:v1', {}, undefined, {
+  unstable_getOnInit: true,
+})
 
 /**
  * Atom to add/update permit cache data
