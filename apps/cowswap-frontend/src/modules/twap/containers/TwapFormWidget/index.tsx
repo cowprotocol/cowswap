@@ -46,6 +46,7 @@ import { twapOrdersSettingsAtom, updateTwapOrdersSettingsAtom } from '../../stat
 import { deadlinePartsDisplay } from '../../utils/deadlinePartsDisplay'
 import { ActionButtons } from '../ActionButtons'
 import { AmountParts } from '../AmountParts'
+import { TwapRateDetails } from '../TradeRateDetails'
 import { TwapFormWarnings } from '../TwapFormWarnings'
 
 export type { LabelTooltip, LabelTooltipItems } from './tooltips'
@@ -172,17 +173,20 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget) {
   return (
     <>
       {!isWrapOrUnwrap && (
-        <styledEl.Row>
-          <styledEl.RateInfoWrapper>
-            <RateInfo
-              label={LABELS_TOOLTIPS.price.label}
-              rateInfoParams={rateInfoParams}
-              isInvertedState={isInvertedState}
-              fontSize={13}
-              rightAlign
-            />
-          </styledEl.RateInfoWrapper>
-        </styledEl.Row>
+        <>
+          <styledEl.Row>
+            <styledEl.RateInfoWrapper>
+              <RateInfo
+                label={LABELS_TOOLTIPS.price.label}
+                rateInfoParams={rateInfoParams}
+                isInvertedState={isInvertedState}
+                fontSize={13}
+                rightAlign
+              />
+            </styledEl.RateInfoWrapper>
+          </styledEl.Row>
+          <TwapRateDetails rateInfoParams={rateInfoParams} />
+        </>
       )}
       <TradeNumberInput
         value={+twapOrderSlippage.toFixed(2)}

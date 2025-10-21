@@ -3,16 +3,10 @@ import { ReactNode } from 'react'
 import { HoverTooltip, LinkStyledButton, RowFixed, UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
-import styled from 'styled-components/macro'
 
 import { RowStyleProps, StyledInfoIcon, StyledRowBetween, TextWrapper } from '../styled'
 
 const noop = (): void => undefined
-
-const RewardsLinkButton = styled(LinkStyledButton)`
-  padding: 0;
-  color: var(${UI.COLOR_PRIMARY_LIGHTER});
-`
 
 export interface RowRewardsContentProps {
   onAddCode?: () => void
@@ -35,9 +29,15 @@ export function RowRewardsContent(props: RowRewardsContentProps): ReactNode {
         </HoverTooltip>
       </RowFixed>
       <TextWrapper textAlign="right">
-        <RewardsLinkButton onClick={onAddCode ?? noop}>
+        <LinkStyledButton
+          onClick={onAddCode ?? noop}
+          padding="0"
+          margin="0"
+          fontSize="inherit"
+          color={`var(${UI.COLOR_PRIMARY_LIGHTER})`}
+        >
           <Trans>Add code</Trans>
-        </RewardsLinkButton>
+        </LinkStyledButton>
       </TextWrapper>
     </StyledRowBetween>
   )
