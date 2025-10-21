@@ -4,7 +4,7 @@ import { GtmEvent, useCowAnalytics } from '@cowprotocol/analytics'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { formatTokenAmount, timeSinceInSeconds } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import { BridgeStatus, CrossChainOrder } from '@cowprotocol/sdk-bridging'
+import { BridgeStatus, BridgeStatusResult, CrossChainOrder } from '@cowprotocol/sdk-bridging'
 import { TokensByAddress, useTokensByAddressMap } from '@cowprotocol/tokens'
 import { UiOrderType } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -22,6 +22,7 @@ import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 const APPZI_CHECK_INTERVAL = 60_000
 
 type RawAmount = string | number | bigint | null | undefined
+type BridgeStatusWithRefund = BridgeStatusResult & { refundTxHash?: string }
 
 type BooleanRef = { current: boolean }
 type BridgeStatusRef = { current: BridgeStatus | undefined }
@@ -52,6 +53,18 @@ const toBridgeAmountRaw = (rawAmount: RawAmount): string | undefined => {
 const getBridgeToken = (tokensByAddress: TokensByAddress, address: string | undefined): TokenWithLogo | undefined => {
   if (!address) return undefined
   return tokensByAddress[address.toLowerCase()]
+}
+
+const getBridgeStatusTxHash = (statusResult: BridgeStatusResult): string | undefined => {
+  if (statusResult.fillTxHash) return statusResult.fillTxHash
+  if (statusResult.depositTxHash) return statusResult.depositTxHash
+
+  if ('refundTxHash' in statusResult) {
+    const { refundTxHash } = statusResult as BridgeStatusWithRefund
+    if (refundTxHash) return refundTxHash
+  }
+
+  return undefined
 }
 
 interface PendingSurveyParams {
@@ -152,10 +165,7 @@ const useBridgeStatusAnalytics = ({
           amountIn: crossChainOrder.order.sellAmount,
           amountOutReceived: crossChainOrder.bridgingParams.outputAmount?.toString(),
           bridgeProvider: crossChainOrder.provider.info.name,
-          txHash:
-            crossChainOrder.statusResult.fillTxHash ||
-            crossChainOrder.statusResult.depositTxHash ||
-            crossChainOrder.statusResult.refundTxHash,
+          txHash: getBridgeStatusTxHash(crossChainOrder.statusResult),
           latencyMs,
           page: 'swap',
           ...bridgeAliasFields,
@@ -173,10 +183,7 @@ const useBridgeStatusAnalytics = ({
         fromChainId: sourceChainId,
         toChainId: destinationChainId,
         bridgeProvider: crossChainOrder.provider.info.name,
-        txHash:
-          crossChainOrder.statusResult.fillTxHash ||
-          crossChainOrder.statusResult.depositTxHash ||
-          crossChainOrder.statusResult.refundTxHash,
+        txHash: getBridgeStatusTxHash(crossChainOrder.statusResult),
         page: 'swap',
       } as GtmEvent<CowSwapAnalyticsCategory.Bridge>)
     }
