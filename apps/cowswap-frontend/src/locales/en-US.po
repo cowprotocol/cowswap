@@ -575,6 +575,10 @@ msgstr "If your order has not been filled by this date & time, it will expire. D
 msgid "Only proceed if you trust this provider."
 msgstr "Only proceed if you trust this provider."
 
+#: apps/cowswap-frontend/src/modules/application/containers/App/CowSpeechBubble.tsx
+msgid "View jobs"
+msgstr "View jobs"
+
 #: apps/cowswap-frontend/src/modules/tokensList/pure/FavoriteTokensList/index.tsx
 msgid "Your favorite saved tokens. Edit this list in the <0>Tokens page</0>."
 msgstr "Your favorite saved tokens. Edit this list in the <0>Tokens page</0>."
@@ -1924,6 +1928,10 @@ msgstr "Warning sign. Wallet not supported"
 msgid "Show progress"
 msgstr "Show progress"
 
+#: apps/cowswap-frontend/src/modules/application/containers/App/utils/cowSpeechBubbleTyping.ts
+msgid "Mooo, we're hiring!"
+msgstr "Mooo, we're hiring!"
+
 #: apps/cowswap-frontend/src/modules/trade/pure/PartnerFeeRow/index.tsx
 msgid "This fee helps pay for maintenance & improvements to the trade experience.<0/><1/>The fee is {partnerFeeBps} BPS ({feeAsPercent}%), applied only if the trade is executed."
 msgstr "This fee helps pay for maintenance & improvements to the trade experience.<0/><1/>The fee is {partnerFeeBps} BPS ({feeAsPercent}%), applied only if the trade is executed."
@@ -2126,6 +2134,10 @@ msgstr "Claim vested"
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SettingsTab/index.tsx
 msgid "Transaction Settings"
 msgstr "Transaction Settings"
+
+#: apps/cowswap-frontend/src/modules/application/containers/App/CowSpeechBubble.tsx
+msgid "Dismiss hiring message"
+msgstr "Dismiss hiring message"
 
 #: apps/cowswap-frontend/src/common/pure/Modal/index.tsx
 msgid "dialog content"
