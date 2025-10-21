@@ -33,7 +33,7 @@ export function ActiveOrdersWithAffectedPermit({ currency, orderId }: ActiveOrde
 
   const titleContent = (
     <>
-      Partial approval may block <span className={'font-bold'}>{ordersWithPermit.length}</span> other {orderWord}
+      Partial approval may block <span className={'font-bold'}>{ordersWithPermit.length}</span> other {orderWord}.
     </>
   )
 
@@ -44,9 +44,8 @@ export function ActiveOrdersWithAffectedPermit({ currency, orderId }: ActiveOrde
       </styledEl.DropdownList>
       <styledEl.DropdownFooter>
         There {isPlural ? 'are' : 'is'} <span className={'font-bold'}>{ordersWithPermit.length}</span> existing{' '}
-        {orderWord} using a <TokenSymbol className={'font-bold'} token={currency} /> token approval. If you sign a new
-        one, only one order can fill. Continue with current permit amount or choose full approval so all orders can be
-        filled.
+        {orderWord} using a <TokenSymbol className={'font-bold'} token={currency} /> token approval. Partial approval  
+        may affect the execution of other orders. Adjust the amount or choose full approval to proceed.
       </styledEl.DropdownFooter>
     </AccordionBanner>
   )
