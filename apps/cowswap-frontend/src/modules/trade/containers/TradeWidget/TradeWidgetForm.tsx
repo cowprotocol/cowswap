@@ -20,6 +20,8 @@ import { Field } from 'legacy/state/types'
 import { useToggleAccountModal } from 'modules/account'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useOpenTokenSelectWidget } from 'modules/tokensList'
+import { TradeType } from 'modules/trade'
+import { useTradeTypeInfoFromUrl } from 'modules/trade/hooks/useTradeTypeInfoFromUrl'
 import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternativeOrder'
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 
@@ -63,7 +65,10 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
   const { standaloneMode, hideOrdersTable } = useInjectedWidgetParams()
   const isMobile = useMediaQuery(Media.upToSmall(false))
 
+  const tradeTypeInfo = useTradeTypeInfoFromUrl()
   const isAlternativeOrderModalVisible = useIsAlternativeOrderModalVisible()
+  const isLimitOrderTrade = tradeTypeInfo?.tradeType === TradeType.LIMIT_ORDER
+  const shouldLockForAlternativeOrder = isAlternativeOrderModalVisible && isLimitOrderTrade
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const { isLimitOrdersUpgradeBannerEnabled, isBridgingEnabled } = useFeatureFlags()
   const isCurrentTradeBridging = useIsCurrentTradeBridging()
@@ -106,7 +111,6 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
   const isSafeWallet = useIsSafeWallet()
   const openTokenSelectWidget = useOpenTokenSelectWidget()
   const tradeStateFromUrl = useTradeStateFromUrl()
-  const alternativeOrderModalVisible = useIsAlternativeOrderModalVisible()
   const primaryFormValidation = useGetTradeFormValidation()
   const { shouldBeVisible: isLimitOrdersPromoBannerVisible } = useLimitOrdersPromoBanner()
   const isEoaEthFlow = useIsEoaEthFlow()
@@ -136,7 +140,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
   const isConnectedMarketOrderWidget = !!account && isMarketOrderWidget
 
   const shouldShowMyOrdersButton =
-    !alternativeOrderModalVisible &&
+    !shouldLockForAlternativeOrder &&
     (!isInjectedWidgetMode && isConnectedMarketOrderWidget ? isUpToLarge : true) &&
     (isConnectedMarketOrderWidget || !hideOrdersTable) &&
     ((isConnectedMarketOrderWidget && standaloneMode !== true && !lockScreen) ||
@@ -152,7 +156,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
     onCurrencySelection,
     onUserInput,
     allowsOffchainSigning,
-    tokenSelectorDisabled: alternativeOrderModalVisible,
+    tokenSelectorDisabled: shouldLockForAlternativeOrder,
     displayTokenName,
     displayChainName,
   }
@@ -187,7 +191,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
     <>
       <styledEl.ContainerBox>
         <styledEl.Header>
-          {isAlternativeOrderModalVisible ? <div></div> : <TradeWidgetLinks isDropdown={showDropdown} />}
+          {shouldLockForAlternativeOrder ? <div></div> : <TradeWidgetLinks isDropdown={showDropdown} />}
           {isInjectedWidgetMode && standaloneMode && <AccountElement standaloneMode />}
 
           {shouldShowMyOrdersButton && (
@@ -236,7 +240,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
                     hasSeparatorLine={!compactView}
                     onSwitchTokens={isChainIdUnsupported ? () => void 0 : throttledOnSwitchTokens}
                     isLoading={Boolean(sellToken && outputCurrencyInfo.currency && isTradePriceUpdating)}
-                    disabled={isAlternativeOrderModalVisible || isOutputTokenUnsupported}
+                    disabled={shouldLockForAlternativeOrder || isOutputTokenUnsupported}
                   />
                 </styledEl.CurrencySeparatorBox>
                 <div>

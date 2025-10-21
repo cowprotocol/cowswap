@@ -93,11 +93,27 @@ export function OrderProgressEventsUpdater(): null {
   const setStepName = useSetAtom(updateOrderProgressBarStepName)
   const unfillableIds = useUnfillableOrderIds()
   const previousUnfillableRef = useRef<Set<string>>(new Set())
+  const ordersProgressStateRef = useRef(ordersProgressState)
+
+  useEffect(() => {
+    ordersProgressStateRef.current = ordersProgressState
+  }, [ordersProgressState])
 
   const finalizeOrderStep = useCallback(
     (orderUid: string, step: OrderProgressBarStepName) => {
+      const currentState = ordersProgressStateRef.current[orderUid]
+
+      if (currentState?.progressBarStepName === step) {
+        return
+      }
+
       setStepName({ orderId: orderUid, value: step })
-      setCountdown({ orderId: orderUid, value: null })
+
+      const currentCountdown = currentState?.countdown
+
+      if (typeof currentCountdown !== 'undefined' && currentCountdown !== null) {
+        setCountdown({ orderId: orderUid, value: null })
+      }
     },
     [setCountdown, setStepName],
   )
@@ -105,11 +121,12 @@ export function OrderProgressEventsUpdater(): null {
   useEffect(() => {
     const previousUnfillable = previousUnfillableRef.current
     const currentUnfillable = new Set(unfillableIds)
+    const currentProgressState = ordersProgressStateRef.current
 
     const newlyFillable = getNewlyFillableOrderIds(previousUnfillable, currentUnfillable)
 
     newlyFillable.forEach((orderId) => {
-      const currentStep = ordersProgressState[orderId]?.progressBarStepName
+      const currentStep = currentProgressState[orderId]?.progressBarStepName
 
       if (currentStep && currentStep !== OrderProgressBarStepName.UNFILLABLE) {
         return
@@ -121,7 +138,7 @@ export function OrderProgressEventsUpdater(): null {
 
     // Persist for the next diff so we only reset orders that actually recovered.
     previousUnfillableRef.current = currentUnfillable
-  }, [unfillableIds, finalizeOrderStep, ordersProgressState])
+  }, [unfillableIds, finalizeOrderStep])
 
   useEffect(() => {
     const listeners: CowWidgetEventListener[] = [

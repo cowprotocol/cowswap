@@ -51,9 +51,8 @@ export function ActiveOrdersWithAffectedPermit({ currency, orderId }: ActiveOrde
       <styledEl.DropdownFooter>
         <Trans>
           There {areIs} <span className={'font-bold'}>{ordersWithPermitLength}</span> existing{' '}
-          {orderWord} using a <TokenSymbol className={'font-bold'} token={currency} /> token approval. If you sign a new
-          one, only one order can fill. Continue with current permit amount or choose full approval so all orders can be
-          filled.
+          {orderWord} using a <TokenSymbol className={'font-bold'} token={currency} /> token approval.  Partial approval  
+        may affect the execution of other orders. Adjust the amount or choose full approval to proceed.
         </Trans>
       </styledEl.DropdownFooter>
     </AccordionBanner>
