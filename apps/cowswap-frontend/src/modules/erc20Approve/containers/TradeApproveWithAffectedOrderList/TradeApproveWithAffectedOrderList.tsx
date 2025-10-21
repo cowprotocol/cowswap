@@ -6,13 +6,17 @@ import {
   useGetPartialAmountToSignApprove,
   useIsApprovalOrPermitRequired,
 } from '../../hooks'
+import { TradeAllowanceDisplay } from '../../pure/TradeAllowanceDisplay'
 import { useSetUserApproveAmountModalState } from '../../state'
 import { isMaxAmountToApprove } from '../../utils'
 import { ActiveOrdersWithAffectedPermit } from '../ActiveOrdersWithAffectedPermit'
 import { TradeApproveToggle } from '../TradeApproveToggle'
 
 export function TradeApproveWithAffectedOrderList(): ReactNode {
-  const isApproveRequired = useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: false })
+  const {
+    reason: isApproveRequired,
+    currentAllowance
+  } = useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: false })
 
   const setUserApproveAmountModalState = useSetUserApproveAmountModalState()
 
@@ -26,17 +30,24 @@ export function TradeApproveWithAffectedOrderList(): ReactNode {
     isApproveRequired === ApproveRequiredReason.Required ||
     isApproveRequired === ApproveRequiredReason.Eip2612PermitRequired
 
+  if (!partialAmountToApprove) return null
+
+  const currencyToApprove = partialAmountToApprove.currency
+
   return (
     <>
-      {partialAmountToApprove && isApproveOrPartialPermitRequired && (
-        <TradeApproveToggle
-          updateModalState={() => setUserApproveAmountModalState({ isModalOpen: true })}
-          amountToApprove={partialAmountToApprove}
-        />
+      {isApproveOrPartialPermitRequired && (
+        <>
+          <TradeApproveToggle
+            updateModalState={() => setUserApproveAmountModalState({ isModalOpen: true })}
+            amountToApprove={partialAmountToApprove}
+          />
+          {typeof currentAllowance === 'bigint' && currencyToApprove && (
+            <TradeAllowanceDisplay currentAllowance={currentAllowance} currencyToApprove={currencyToApprove} />
+          )}
+        </>
       )}
-      {showAffectedOrders && partialAmountToApprove && (
-        <ActiveOrdersWithAffectedPermit currency={partialAmountToApprove?.currency} />
-      )}
+      {showAffectedOrders && currencyToApprove && <ActiveOrdersWithAffectedPermit currency={currencyToApprove} />}
     </>
   )
 }

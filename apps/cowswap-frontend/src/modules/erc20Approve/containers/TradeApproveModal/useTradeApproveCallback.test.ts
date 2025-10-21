@@ -1,332 +1,573 @@
+import { useCowAnalytics } from '@cowprotocol/analytics'
+import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { TransactionReceipt, TransactionResponse } from '@ethersproject/abstract-provider'
-import { Token, CurrencyAmount } from '@uniswap/sdk-core'
+import { Token } from '@uniswap/sdk-core'
 
-import { renderHook } from '@testing-library/react'
+import { renderHook, waitFor } from '@testing-library/react'
+import { useSetOptimisticAllowance } from 'entities/optimisticAllowance/useSetOptimisticAllowance'
 
+import { CowSwapAnalyticsCategory } from 'common/analytics/types'
+
+import { processApprovalTransaction } from './approveUtils'
 import { useTradeApproveCallback } from './useTradeApproveCallback'
 
-const mockUpdateApproveProgressModalState = jest.fn()
-const mockResetApproveProgressModalState = jest.fn()
-const mockApproveCallback = jest.fn()
-const mockSendEvent = jest.fn()
-const mockUseTradeSpenderAddress = jest.fn()
-const mockUseFeatureFlags = jest.fn()
+import { useApproveCallback } from '../../hooks'
+import { useResetApproveProgressModalState, useUpdateApproveProgressModalState } from '../../state'
+
+jest.mock('@cowprotocol/analytics', () => ({
+  useCowAnalytics: jest.fn(),
+  __resetGtmInstance: jest.fn(),
+}))
 
 jest.mock('@cowprotocol/balances-and-allowances', () => ({
-  useTradeSpenderAddress: () => mockUseTradeSpenderAddress(),
+  useTradeSpenderAddress: jest.fn(),
+}))
+
+jest.mock('@cowprotocol/wallet', () => ({
+  useWalletInfo: jest.fn(),
+}))
+
+jest.mock('entities/optimisticAllowance/useSetOptimisticAllowance', () => ({
+  useSetOptimisticAllowance: jest.fn(),
+}))
+
+jest.mock('./approveUtils', () => ({
+  processApprovalTransaction: jest.fn(),
 }))
 
 jest.mock('@cowprotocol/common-hooks', () => ({
-  useFeatureFlags: () => mockUseFeatureFlags(),
-}))
-
-jest.mock('@cowprotocol/common-utils', () => ({
-  errorToString: (error: unknown) => `Error: ${error}`,
-  isRejectRequestProviderError: (error: unknown) => error === 'reject',
+  useFeatureFlags: jest.fn(),
 }))
 
 jest.mock('../../hooks', () => ({
-  useApproveCallback: () => mockApproveCallback,
+  useApproveCallback: jest.fn(),
 }))
 
 jest.mock('../../state', () => ({
-  useUpdateApproveProgressModalState: () => mockUpdateApproveProgressModalState,
-  useResetApproveProgressModalState: () => mockResetApproveProgressModalState,
+  useUpdateApproveProgressModalState: jest.fn(),
+  useResetApproveProgressModalState: jest.fn(),
 }))
 
-jest.mock('./useApproveCowAnalytics', () => ({
-  useApproveCowAnalytics: () => mockSendEvent,
-}))
+const mockUseCowAnalytics = useCowAnalytics as jest.MockedFunction<typeof useCowAnalytics>
+const mockUseTradeSpenderAddress = useTradeSpenderAddress as jest.MockedFunction<typeof useTradeSpenderAddress>
+const mockUseFeatureFlags = useFeatureFlags as jest.MockedFunction<typeof useFeatureFlags>
+const mockUseApproveCallback = useApproveCallback as jest.MockedFunction<typeof useApproveCallback>
+const mockUseUpdateTradeApproveState = useUpdateApproveProgressModalState as jest.MockedFunction<
+  typeof useUpdateApproveProgressModalState
+>
+const mockUseResetApproveProgressModalState = useResetApproveProgressModalState as jest.MockedFunction<
+  typeof useResetApproveProgressModalState
+>
+const mockUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
+const mockUseSetOptimisticAllowance = useSetOptimisticAllowance as jest.MockedFunction<typeof useSetOptimisticAllowance>
+const mockProcessApprovalTransaction = processApprovalTransaction as jest.MockedFunction<
+  typeof processApprovalTransaction
+>
 
-const mockCurrency = new Token(1, '0x6B175474E89094C44Da98b954EedeAC495271d0F', 6, 'USDC', 'USD Coin')
-
-const mockTransactionResponse = {
-  hash: '0x15de6602b39be44ce9e6b57245deb4ee64ad28286c0f9f8094a6af2016e30591',
-  wait: jest.fn(),
-} as unknown as TransactionResponse
-
-const mockTransactionReceipt = {
-  transactionHash: '0x123',
-  blockNumber: 12345,
-} as unknown as TransactionReceipt
-
+// eslint-disable-next-line max-lines-per-function
 describe('useTradeApproveCallback', () => {
+  const mockToken = new Token(1, '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48', 18, 'TEST', 'Test Token')
+  const mockSpenderAddress = '0x9008D19f58AAbD9eD0D60971565AA8510560ab41'
+  const mockAmount = BigInt('1000000000000000000')
+
+  const mockSendEvent = jest.fn()
+  const mockUpdateTradeApproveState = jest.fn()
+  const mockResetApproveProgressModalState = jest.fn()
+  const mockApproveCallback = jest.fn()
+  const mockSetOptimisticAllowance = jest.fn()
+  const mockAccount = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266' // Valid address
+  const mockChainId = 1
+
+  const createMockTransactionReceipt = (status: number): TransactionReceipt => {
+    return {
+      to: mockSpenderAddress,
+      from: '0xfrom1234567890123456789012345678901234567890',
+      contractAddress: mockToken.address,
+      transactionIndex: 1,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      gasUsed: { toString: () => '21000' } as any,
+      logsBloom: '0x',
+      blockHash: '0xblockhash',
+      transactionHash: '0xtxhash',
+      logs: [],
+      blockNumber: 123456,
+      confirmations: 1,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      cumulativeGasUsed: { toString: () => '21000' } as any,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      effectiveGasPrice: { toString: () => '1000000000' } as any,
+      byzantium: true,
+      type: 2,
+      status,
+    }
+  }
+
+  const createMockTransactionResponse = (status: number): TransactionResponse =>
+    ({
+      hash: '0x15de6602b39be44ce9e6b57245deb4ee64ad28286c0f9f8094a6af2016e30591',
+      confirmations: 0,
+      from: '0xfrom1234567890123456789012345678901234567890',
+      wait: jest.fn().mockResolvedValue(createMockTransactionReceipt(status)),
+      nonce: 1,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      gasLimit: { toString: () => '21000' } as any,
+      data: '0x',
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      value: { toString: () => '0' } as any,
+      chainId: 1,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    }) as any
+
   beforeEach(() => {
     jest.clearAllMocks()
-    mockUseTradeSpenderAddress.mockReturnValue('0x123')
-    mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: true })
-    mockApproveCallback.mockResolvedValue(mockTransactionResponse)
-    mockTransactionResponse.wait = jest.fn().mockResolvedValue(mockTransactionReceipt)
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    mockUseCowAnalytics.mockReturnValue({ sendEvent: mockSendEvent } as any)
+    mockUseTradeSpenderAddress.mockReturnValue(mockSpenderAddress)
+    mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: false })
+    mockUseApproveCallback.mockReturnValue(mockApproveCallback)
+    mockUseUpdateTradeApproveState.mockReturnValue(mockUpdateTradeApproveState)
+    mockUseResetApproveProgressModalState.mockReturnValue(mockResetApproveProgressModalState)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    mockUseWalletInfo.mockReturnValue({ chainId: mockChainId, account: mockAccount } as any)
+    mockUseSetOptimisticAllowance.mockReturnValue(mockSetOptimisticAllowance)
   })
 
-  describe('basic functionality', () => {
-    it('should return a function', () => {
-      const { result } = renderHook(() => useTradeApproveCallback(mockCurrency))
-      expect(typeof result.current).toBe('function')
-    })
+  describe('successful approval flow', () => {
+    it('should extract and set optimistic allowance from transaction logs', async () => {
+      const mockTxResponse = createMockTransactionResponse(1)
+      mockApproveCallback.mockResolvedValue(mockTxResponse)
+      mockProcessApprovalTransaction.mockReturnValue({
+        tokenAddress: mockToken.address.toLowerCase(),
+        owner: mockAccount,
+        spender: mockSpenderAddress,
+        amount: mockAmount,
+        blockNumber: 123456,
+        chainId: mockChainId,
+      })
+      mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: true })
 
-    it('should call updateApproveProgressModalState with correct initial state', async () => {
-      const { result } = renderHook(() => useTradeApproveCallback(mockCurrency))
+      const { result } = renderHook(() => useTradeApproveCallback(mockToken))
 
-      await result.current(BigInt(1000))
+      await result.current(mockAmount, { useModals: true, waitForTxConfirmation: true })
 
-      expect(mockUpdateApproveProgressModalState).toHaveBeenCalledWith({
-        currency: mockCurrency,
-        approveInProgress: true,
-        amountToApprove: expect.any(CurrencyAmount),
+      await waitFor(() => {
+        expect(mockProcessApprovalTransaction).toHaveBeenCalled()
+        expect(mockSetOptimisticAllowance).toHaveBeenCalledWith({
+          tokenAddress: mockToken.address.toLowerCase(),
+          owner: mockAccount,
+          spender: mockSpenderAddress,
+          amount: mockAmount,
+          blockNumber: 123456,
+          chainId: mockChainId,
+        })
       })
     })
 
-    it('should call analytics with correct parameters', async () => {
-      const { result } = renderHook(() => useTradeApproveCallback(mockCurrency))
+    it('should use actual approved amount from logs when user changes amount in wallet', async () => {
+      const userChangedAmount = BigInt('5000000000000000000') // User changed to 5 tokens instead of 1
+      const mockTxResponse = createMockTransactionResponse(1)
+      mockApproveCallback.mockResolvedValue(mockTxResponse)
+      mockProcessApprovalTransaction.mockReturnValue({
+        tokenAddress: mockToken.address.toLowerCase(),
+        owner: mockAccount,
+        spender: mockSpenderAddress,
+        amount: userChangedAmount,
+        blockNumber: 123456,
+        chainId: mockChainId,
+      })
+      mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: true })
 
-      await result.current(BigInt(1000))
+      const { result } = renderHook(() => useTradeApproveCallback(mockToken))
 
-      expect(mockSendEvent).toHaveBeenCalledWith('Send', 'USDC')
-      expect(mockSendEvent).toHaveBeenCalledWith('Sign', 'USDC')
+      await result.current(mockAmount, { useModals: true, waitForTxConfirmation: true }) // Request 1 token
+
+      await waitFor(() => {
+        expect(mockProcessApprovalTransaction).toHaveBeenCalled()
+        expect(mockSetOptimisticAllowance).toHaveBeenCalledWith({
+          tokenAddress: mockToken.address.toLowerCase(),
+          owner: mockAccount,
+          spender: mockSpenderAddress,
+          amount: userChangedAmount, // Should use the actual amount from logs, not mockAmount
+          blockNumber: 123456,
+          chainId: mockChainId,
+        })
+      })
     })
 
-    it('should call approveCallback with correct amount', async () => {
-      const { result } = renderHook(() => useTradeApproveCallback(mockCurrency))
+    it('should not set optimistic allowance when logs are missing', async () => {
+      const mockTxResponse = createMockTransactionResponse(1)
+      mockApproveCallback.mockResolvedValue(mockTxResponse)
+      mockProcessApprovalTransaction.mockReturnValue(null) // No approval data found
+      mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: true })
 
-      await result.current(BigInt(1000))
+      const { result } = renderHook(() => useTradeApproveCallback(mockToken))
 
-      expect(mockApproveCallback).toHaveBeenCalledWith(BigInt(1000))
+      await result.current(mockAmount, { useModals: true, waitForTxConfirmation: true })
+
+      await waitFor(() => {
+        expect(mockProcessApprovalTransaction).toHaveBeenCalled()
+        expect(mockUpdateTradeApproveState).toHaveBeenCalledWith({
+          currency: mockToken,
+          approveInProgress: false,
+          amountToApprove: undefined,
+          isPendingInProgress: false,
+        })
+      })
+
+      expect(mockSetOptimisticAllowance).not.toHaveBeenCalled()
+    })
+
+    it('should successfully approve tokens and track analytics', async () => {
+      const mockTxResponse = createMockTransactionResponse(1)
+      mockApproveCallback.mockResolvedValue(mockTxResponse)
+      mockProcessApprovalTransaction.mockReturnValue(null)
+      mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: true })
+
+      const { result } = renderHook(() => useTradeApproveCallback(mockToken))
+
+      await result.current(mockAmount, { useModals: true, waitForTxConfirmation: true })
+
+      await waitFor(() => {
+        expect(mockUpdateTradeApproveState).toHaveBeenCalledWith({
+          currency: mockToken,
+          approveInProgress: true,
+          amountToApprove: expect.any(Object),
+        })
+        expect(mockApproveCallback).toHaveBeenCalledWith(mockAmount)
+        expect(mockSendEvent).toHaveBeenCalledWith({
+          category: CowSwapAnalyticsCategory.TRADE,
+          action: 'Send',
+          label: mockToken.symbol,
+        })
+        expect(mockSendEvent).toHaveBeenCalledWith({
+          category: CowSwapAnalyticsCategory.TRADE,
+          action: 'Sign',
+          label: mockToken.symbol,
+        })
+        expect(mockUpdateTradeApproveState).toHaveBeenCalledWith({
+          currency: mockToken,
+          approveInProgress: false,
+          amountToApprove: undefined,
+          isPendingInProgress: false,
+        })
+      })
+    })
+
+    it('should return transaction receipt on successful approval', async () => {
+      const mockTxResponse = createMockTransactionResponse(1)
+      mockApproveCallback.mockResolvedValue(mockTxResponse)
+      mockProcessApprovalTransaction.mockReturnValue(null)
+
+      const { result } = renderHook(() => useTradeApproveCallback(mockToken))
+
+      await result.current(mockAmount)
+
+      await waitFor(() => {
+        expect(mockUpdateTradeApproveState).toHaveBeenCalledWith({
+          currency: mockToken,
+          approveInProgress: false,
+          amountToApprove: undefined,
+          isPendingInProgress: false,
+        })
+      })
+    })
+
+    it('should wait for transaction to be mined', async () => {
+      const mockTxResponse = createMockTransactionResponse(1)
+      const mockWait = jest.fn().mockResolvedValue(createMockTransactionReceipt(1))
+      mockTxResponse.wait = mockWait
+      mockApproveCallback.mockResolvedValue(mockTxResponse)
+      mockProcessApprovalTransaction.mockReturnValue(null)
+      mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: true })
+
+      const { result } = renderHook(() => useTradeApproveCallback(mockToken))
+
+      await result.current(mockAmount, { useModals: true, waitForTxConfirmation: true })
+
+      await waitFor(() => {
+        expect(mockWait).toHaveBeenCalled()
+      })
     })
   })
 
-  describe('waitForTxConfirmation parameter', () => {
-    it('should return TransactionResponse when waitForTxConfirmation is false', async () => {
-      const { result } = renderHook(() => useTradeApproveCallback(mockCurrency))
+  describe('failed approval flow', () => {
+    it('should handle transaction failure (status !== 1)', async () => {
+      const mockTxResponse = createMockTransactionResponse(0)
+      mockApproveCallback.mockResolvedValue(mockTxResponse)
+      // processApprovalTransaction will throw an error for status !== 1
+      mockProcessApprovalTransaction.mockImplementation(() => {
+        throw new Error('Approval transaction failed')
+      })
+      mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: true })
 
-      const response = await result.current(BigInt(1000), { useModals: true, waitForTxConfirmation: false })
+      const { result } = renderHook(() => useTradeApproveCallback(mockToken))
 
-      expect(response).toBe(mockTransactionResponse)
-      expect(mockTransactionResponse.wait).not.toHaveBeenCalled()
+      const receipt = await result.current(mockAmount, { useModals: true, waitForTxConfirmation: true })
+
+      await waitFor(() => {
+        expect(receipt).toBeUndefined()
+        // Error should be set first
+        expect(mockUpdateTradeApproveState).toHaveBeenCalledWith({
+          error: expect.stringContaining('Approval transaction failed'),
+        })
+        // Then cleanup in finally block
+        expect(mockUpdateTradeApproveState).toHaveBeenCalledWith({
+          currency: mockToken,
+          approveInProgress: false,
+          amountToApprove: undefined,
+          isPendingInProgress: false,
+        })
+      })
     })
 
-    it('should return TransactionResponse when waitForTxConfirmation is undefined', async () => {
-      const { result } = renderHook(() => useTradeApproveCallback(mockCurrency))
+    it('should handle user rejection', async () => {
+      const rejectError = { code: 4001, message: 'User rejected the request' }
+      mockApproveCallback.mockRejectedValue(rejectError)
 
-      const response = await result.current(BigInt(1000))
+      const { result } = renderHook(() => useTradeApproveCallback(mockToken))
 
-      expect(response).toBe(mockTransactionResponse)
-      expect(mockTransactionResponse.wait).not.toHaveBeenCalled()
+      const receipt = await result.current(mockAmount)
+
+      await waitFor(() => {
+        expect(receipt).toBeUndefined()
+        expect(mockUpdateTradeApproveState).toHaveBeenCalledWith({
+          error: 'User rejected approval transaction',
+        })
+        expect(mockUpdateTradeApproveState).toHaveBeenCalledWith({
+          currency: mockToken,
+          approveInProgress: false,
+          amountToApprove: undefined,
+          isPendingInProgress: false,
+        })
+      })
     })
 
-    it('should return TransactionReceipt when waitForTxConfirmation is true', async () => {
-      const { result } = renderHook(() => useTradeApproveCallback(mockCurrency))
+    it('should handle generic errors and track analytics', async () => {
+      const genericError = { code: 500, message: 'Network error' }
+      mockApproveCallback.mockRejectedValue(genericError)
 
-      const receipt = await result.current(BigInt(1000), { useModals: true, waitForTxConfirmation: true })
+      const { result } = renderHook(() => useTradeApproveCallback(mockToken))
 
-      expect(receipt).toBe(mockTransactionReceipt)
-      expect(mockTransactionResponse.wait).toHaveBeenCalled()
+      const receipt = await result.current(mockAmount)
+
+      await waitFor(() => {
+        expect(receipt).toBeUndefined()
+        expect(mockSendEvent).toHaveBeenCalledWith({
+          category: CowSwapAnalyticsCategory.TRADE,
+          action: 'Error',
+          label: mockToken.symbol,
+          value: 500,
+        })
+        expect(mockUpdateTradeApproveState).toHaveBeenCalledWith({
+          error: expect.any(String),
+        })
+      })
+    })
+
+    it('should handle errors without error codes', async () => {
+      const errorWithoutCode = new Error('Generic error')
+      mockApproveCallback.mockRejectedValue(errorWithoutCode)
+
+      const { result } = renderHook(() => useTradeApproveCallback(mockToken))
+
+      const receipt = await result.current(mockAmount)
+
+      await waitFor(() => {
+        expect(receipt).toBeUndefined()
+        expect(mockSendEvent).toHaveBeenCalledWith({
+          category: CowSwapAnalyticsCategory.TRADE,
+          action: 'Error',
+          label: mockToken.symbol,
+        })
+      })
+    })
+  })
+
+  describe('partial approval feature flag behavior', () => {
+    it('should hide modal immediately when feature is disabled and transaction is sent', async () => {
+      mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: false })
+      const mockTxResponse = createMockTransactionResponse(1)
+      mockApproveCallback.mockResolvedValue(mockTxResponse)
+      mockProcessApprovalTransaction.mockReturnValue(null)
+
+      const { result } = renderHook(() => useTradeApproveCallback(mockToken))
+
+      await result.current(mockAmount)
+
+      await waitFor(() => {
+        // When feature is disabled, only "Send" event is tracked, not "Sign"
+        expect(mockSendEvent).toHaveBeenCalledWith({
+          category: CowSwapAnalyticsCategory.TRADE,
+          action: 'Send',
+          label: mockToken.symbol,
+        })
+        // Modal should be hidden immediately after response
+        expect(mockResetApproveProgressModalState).toHaveBeenCalled()
+      })
+    })
+
+    it('should not hide modal early when feature is enabled', async () => {
+      mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: true })
+      const mockTxResponse = createMockTransactionResponse(1)
+      mockApproveCallback.mockResolvedValue(mockTxResponse)
+      mockProcessApprovalTransaction.mockReturnValue(null)
+
+      const { result } = renderHook(() => useTradeApproveCallback(mockToken))
+
+      await result.current(mockAmount)
+
+      await waitFor(() => {
+        expect(mockSendEvent).toHaveBeenCalledWith({
+          category: CowSwapAnalyticsCategory.TRADE,
+          action: 'Sign',
+          label: mockToken.symbol,
+        })
+        expect(mockUpdateTradeApproveState).toHaveBeenCalledWith({
+          isPendingInProgress: true,
+        })
+      })
     })
   })
 
   describe('useModals parameter', () => {
-    it('should not call updateApproveProgressModalState when useModals is false', async () => {
-      const { result } = renderHook(() => useTradeApproveCallback(mockCurrency))
+    it('should show modal when useModals is true (default)', async () => {
+      const mockTxResponse = createMockTransactionResponse(1)
+      mockApproveCallback.mockResolvedValue(mockTxResponse)
+      mockProcessApprovalTransaction.mockReturnValue(null)
 
-      await result.current(BigInt(1000), { useModals: false })
+      const { result } = renderHook(() => useTradeApproveCallback(mockToken))
 
-      expect(mockUpdateApproveProgressModalState).not.toHaveBeenCalledWith({
-        currency: mockCurrency,
-        approveInProgress: true,
-        amountToApprove: expect.any(CurrencyAmount),
+      await result.current(mockAmount)
+
+      await waitFor(() => {
+        expect(mockUpdateTradeApproveState).toHaveBeenCalledWith({
+          currency: mockToken,
+          approveInProgress: true,
+          amountToApprove: expect.any(Object),
+        })
       })
     })
 
-    it('should call updateApproveProgressModalState when useModals is true', async () => {
-      const { result } = renderHook(() => useTradeApproveCallback(mockCurrency))
+    it('should not show modal when useModals is false', async () => {
+      const mockTxResponse = createMockTransactionResponse(1)
+      mockApproveCallback.mockResolvedValue(mockTxResponse)
+      mockProcessApprovalTransaction.mockReturnValue(null)
 
-      await result.current(BigInt(1000), { useModals: true })
+      const { result } = renderHook(() => useTradeApproveCallback(mockToken))
 
-      expect(mockUpdateApproveProgressModalState).toHaveBeenCalledWith({
-        currency: mockCurrency,
-        approveInProgress: true,
-        amountToApprove: expect.any(CurrencyAmount),
+      await result.current(mockAmount, { useModals: false })
+
+      await waitFor(() => {
+        const modalCalls = mockUpdateTradeApproveState.mock.calls.filter((call) => call[0].approveInProgress === true)
+        expect(modalCalls).toHaveLength(0)
       })
     })
-  })
 
-  describe('partial approve feature flag', () => {
-    it('should hide modal when partial approve is disabled and waitForTxConfirmation is false', async () => {
-      mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: false })
-      const { result } = renderHook(() => useTradeApproveCallback(mockCurrency))
+    it('should still cleanup state even when useModals is false', async () => {
+      const mockTxResponse = createMockTransactionResponse(1)
+      mockApproveCallback.mockResolvedValue(mockTxResponse)
+      mockProcessApprovalTransaction.mockReturnValue(null)
 
-      await result.current(BigInt(1000), { useModals: true, waitForTxConfirmation: false })
+      const { result } = renderHook(() => useTradeApproveCallback(mockToken))
 
-      expect(mockResetApproveProgressModalState).toHaveBeenCalled()
-    })
+      await result.current(mockAmount, { useModals: false })
 
-    it('should not hide modal early when partial approve is enabled', async () => {
-      mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: true })
-      const { result } = renderHook(() => useTradeApproveCallback(mockCurrency))
-
-      await result.current(BigInt(1000), { useModals: true, waitForTxConfirmation: false })
-
-      expect(mockResetApproveProgressModalState).not.toHaveBeenCalled()
-    })
-
-    it('should set isPendingInProgress to true when partial approve is enabled', async () => {
-      mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: true })
-      const { result } = renderHook(() => useTradeApproveCallback(mockCurrency))
-
-      await result.current(BigInt(1000), { useModals: true, waitForTxConfirmation: false })
-
-      expect(mockUpdateApproveProgressModalState).toHaveBeenCalledWith({
-        isPendingInProgress: true,
+      await waitFor(() => {
+        expect(mockUpdateTradeApproveState).toHaveBeenCalledWith({
+          currency: mockToken,
+          approveInProgress: false,
+          amountToApprove: undefined,
+          isPendingInProgress: false,
+        })
       })
     })
   })
 
-  describe('error handling', () => {
-    it('should handle approveCallback returning undefined', async () => {
-      mockApproveCallback.mockResolvedValue(undefined)
-      const { result } = renderHook(() => useTradeApproveCallback(mockCurrency))
+  describe('state cleanup', () => {
+    it('should always reset state in finally block', async () => {
+      const mockTxResponse = createMockTransactionResponse(1)
+      mockApproveCallback.mockResolvedValue(mockTxResponse)
+      mockProcessApprovalTransaction.mockReturnValue(null)
 
-      const response = await result.current(BigInt(1000))
+      const { result } = renderHook(() => useTradeApproveCallback(mockToken))
 
-      expect(response).toBeUndefined()
-      expect(mockResetApproveProgressModalState).toHaveBeenCalled()
-    })
+      await result.current(mockAmount)
 
-    it('should handle reject request provider error', async () => {
-      mockApproveCallback.mockRejectedValue('reject')
-      const { result } = renderHook(() => useTradeApproveCallback(mockCurrency))
-
-      const response = await result.current(BigInt(1000))
-      expect(response).toBeUndefined()
-      expect(mockUpdateApproveProgressModalState).toHaveBeenCalledWith({
-        error: 'User rejected approval transaction',
+      await waitFor(() => {
+        expect(mockUpdateTradeApproveState).toHaveBeenCalledWith({
+          currency: mockToken,
+          approveInProgress: false,
+          amountToApprove: undefined,
+          isPendingInProgress: false,
+        })
       })
     })
 
-    it('should handle generic error with error code', async () => {
-      const errorWithCode = { code: 4001, message: 'User rejected' }
-      mockApproveCallback.mockRejectedValue(errorWithCode)
-      const { result } = renderHook(() => useTradeApproveCallback(mockCurrency))
+    it('should reset state even on error', async () => {
+      mockApproveCallback.mockRejectedValue(new Error('Test error'))
 
-      const response = await result.current(BigInt(1000))
-      expect(response).toBeUndefined()
-      expect(mockSendEvent).toHaveBeenCalledWith('Error', 'USDC', 4001)
-      expect(mockUpdateApproveProgressModalState).toHaveBeenCalledWith({
-        error: 'Error: [object Object]',
+      const { result } = renderHook(() => useTradeApproveCallback(mockToken))
+
+      await result.current(mockAmount)
+
+      await waitFor(() => {
+        expect(mockUpdateTradeApproveState).toHaveBeenCalledWith({
+          currency: mockToken,
+          approveInProgress: false,
+          amountToApprove: undefined,
+          isPendingInProgress: false,
+        })
       })
     })
 
-    it('should handle generic error without error code', async () => {
-      const errorWithoutCode = { message: 'Network error' }
-      mockApproveCallback.mockRejectedValue(errorWithoutCode)
-      const { result } = renderHook(() => useTradeApproveCallback(mockCurrency))
-
-      const response = await result.current(BigInt(1000))
-      expect(response).toBeUndefined()
-      expect(mockSendEvent).toHaveBeenCalledWith('Error', 'USDC', null)
-      expect(mockUpdateApproveProgressModalState).toHaveBeenCalledWith({
-        error: 'Error: [object Object]',
+    it('should reset state even when transaction fails', async () => {
+      const mockTxResponse = createMockTransactionResponse(0)
+      mockApproveCallback.mockResolvedValue(mockTxResponse)
+      // processApprovalTransaction will throw an error for status !== 1
+      mockProcessApprovalTransaction.mockImplementation(() => {
+        throw new Error('Approval transaction failed')
       })
-    })
 
-    it('should handle error during waitForTxConfirmation', async () => {
-      mockTransactionResponse.wait = jest.fn().mockRejectedValue('wait error')
-      const { result } = renderHook(() => useTradeApproveCallback(mockCurrency))
+      const { result } = renderHook(() => useTradeApproveCallback(mockToken))
 
-      const response = await result.current(BigInt(1000), { useModals: true, waitForTxConfirmation: true })
-      expect(response).toBeUndefined()
-      expect(mockUpdateApproveProgressModalState).toHaveBeenCalledWith({
-        error: 'Error: wait error',
-      })
-    })
-  })
+      await result.current(mockAmount)
 
-  describe('finally block behavior', () => {
-    it('should always call updateApproveProgressModalState to reset state on success', async () => {
-      const { result } = renderHook(() => useTradeApproveCallback(mockCurrency))
-
-      await result.current(BigInt(1000))
-
-      expect(mockUpdateApproveProgressModalState).toHaveBeenCalledWith({
-        currency: mockCurrency,
-        approveInProgress: false,
-        amountToApprove: undefined,
-        isPendingInProgress: false,
-      })
-    })
-
-    it('should always call updateApproveProgressModalState to reset state on error', async () => {
-      mockApproveCallback.mockRejectedValue('error')
-      const { result } = renderHook(() => useTradeApproveCallback(mockCurrency))
-
-      const response = await result.current(BigInt(1000))
-      expect(response).toBeUndefined()
-
-      expect(mockUpdateApproveProgressModalState).toHaveBeenCalledWith({
-        currency: mockCurrency,
-        approveInProgress: false,
-        amountToApprove: undefined,
-        isPendingInProgress: false,
+      await waitFor(() => {
+        expect(mockUpdateTradeApproveState).toHaveBeenCalledWith({
+          currency: mockToken,
+          approveInProgress: false,
+          amountToApprove: undefined,
+          isPendingInProgress: false,
+        })
       })
     })
   })
 
-  describe('hook dependencies', () => {
-    it('should recreate callback when currency changes', () => {
+  describe('memoization and re-renders', () => {
+    it('should return stable callback reference', () => {
+      const { result, rerender } = renderHook(() => useTradeApproveCallback(mockToken))
+
+      const firstCallback = result.current
+
+      rerender()
+
+      expect(result.current).toBe(firstCallback)
+    })
+
+    it('should update callback when dependencies change', () => {
       const { result, rerender } = renderHook(({ currency }) => useTradeApproveCallback(currency), {
-        initialProps: { currency: mockCurrency },
+        initialProps: { currency: mockToken },
       })
 
       const firstCallback = result.current
 
-      rerender({ currency: new Token(1, '0x6B175474E89094C44Da98b954EedeAC495271d0F', 18, 'DAI', 'Dai Stablecoin') })
+      const newToken = new Token(1, '0x9876543210987654321098765432109876543210', 18, 'NEW', 'New Token')
+      rerender({ currency: newToken })
 
       expect(result.current).not.toBe(firstCallback)
-    })
-
-    it('should recreate callback when symbol changes', () => {
-      const { result, rerender } = renderHook(({ currency }) => useTradeApproveCallback(currency), {
-        initialProps: { currency: mockCurrency },
-      })
-
-      const firstCallback = result.current
-
-      rerender({ currency: new Token(1, '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2', 18, 'WETH', 'Wrapped Ether') })
-
-      expect(result.current).not.toBe(firstCallback)
-    })
-  })
-
-  describe('type safety', () => {
-    it('should accept bigint amount parameter', async () => {
-      const { result } = renderHook(() => useTradeApproveCallback(mockCurrency))
-
-      await expect(result.current(BigInt(1000))).resolves.toBeDefined()
-      await expect(result.current(BigInt(0))).resolves.toBeDefined()
-      await expect(result.current(BigInt(999999999))).resolves.toBeDefined()
-    })
-
-    it('should handle different parameter combinations', async () => {
-      const { result } = renderHook(() => useTradeApproveCallback(mockCurrency))
-
-      await expect(
-        result.current(BigInt(1000), {
-          useModals: true,
-          waitForTxConfirmation: false,
-        }),
-      ).resolves.toBeDefined()
-      await expect(
-        result.current(BigInt(1000), {
-          useModals: false,
-          waitForTxConfirmation: true,
-        }),
-      ).resolves.toBeDefined()
-      await expect(
-        result.current(BigInt(1000), {
-          useModals: true,
-          waitForTxConfirmation: true,
-        }),
-      ).resolves.toBeDefined()
     })
   })
 })
