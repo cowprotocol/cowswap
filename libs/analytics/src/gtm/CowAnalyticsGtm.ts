@@ -128,6 +128,7 @@ export class CowAnalyticsGtm implements CowAnalytics {
 
   destroy(): void {
     if (typeof window !== 'undefined') {
+      this.cleanup()
       window.removeEventListener('unload', this.cleanup)
     }
   }
@@ -172,6 +173,7 @@ export class CowAnalyticsGtm implements CowAnalytics {
         previousWalletAddress: this.previousAccount,
         previousWalletName: this.dimensions[AnalyticsContext.walletName] || 'Unknown',
       })
+      this.setContext(AnalyticsContext.walletName, undefined)
       return
     }
 
@@ -298,7 +300,7 @@ export class CowAnalyticsGtm implements CowAnalytics {
 
   private pushToDataLayer(data: DataLayerEvent): void {
     if (typeof window !== 'undefined') {
-      const dataLayerEvent = { ...data }
+      const dataLayerEvent = sanitizeRecord({ ...data }) as DataLayerEvent
 
       // Debug log in development environment
       if (process.env.NODE_ENV === 'development') {
