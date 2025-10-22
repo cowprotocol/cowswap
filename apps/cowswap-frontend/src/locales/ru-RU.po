@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cowswap18n\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-10-21 19:44\n"
+"PO-Revision-Date: 2025-10-22 16:30\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -676,8 +676,8 @@ msgid "CoW Swap is now live on Arbitrum, Base, Polygon, and Avalanche. Switch th
 msgstr "CoW Swap в настоящее время живет на Арбитраже, Базе, Полигоне и Аваланше. Переключить сеть в Навбаре для быстрых и дешевых сделок"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
-msgid "You don't have any {orderTabState} orders at the moment."
-msgstr "В данный момент у вас нет ордеров {orderTabState}."
+#~ msgid "You don't have any {orderTabState} orders at the moment."
+#~ msgstr "You don't have any {orderTabState} orders at the moment."
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/Settings/index.tsx
 msgid "Limit Price Position"
@@ -977,6 +977,10 @@ msgstr "История заказов"
 msgid "any token into CoW AMM pools to start benefiting from attractive APRs."
 msgstr "любой токен в пулы AMM CoW для того, чтобы начать пользоваться привлекательными APR."
 
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
+msgid "You don't have any {orderStatusText} orders at the moment."
+msgstr "В данный момент у вас нет ордеров {orderStatusText}."
+
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/SolvingStep.tsx
 msgid "Something went wrong. But don't worry! <0>CoW Swap solvers</0> are searching again for the best price for you."
 msgstr "Что-то пошло не так. Но не волнуйтесь! <0>CoW Swap решения</0> снова ищет лучшую цену."
@@ -1210,9 +1214,9 @@ msgstr "CoW AMM"
 msgid "Too much time between parts"
 msgstr "Слишком много времени между частями"
 
-#: apps/cowswap-frontend/src/modules/swap/hooks/useGetConfirmButtonLabel.ts
-#~ msgid "Swap and Bridge"
-#~ msgstr "Swap and Bridge"
+#: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/index.tsx
+msgid "Swap and Bridge"
+msgstr "Поменять местами"
 
 #: apps/cowswap-frontend/src/common/containers/OrderHooksDetails/index.tsx
 msgid "POST"
@@ -1228,8 +1232,8 @@ msgid "Share on Twitter"
 msgstr "Поделиться в Twitter"
 
 #: apps/cowswap-frontend/src/common/pure/CurrencyArrowSeparator/index.tsx
-msgid "loading"
-msgstr "загрузка"
+#~ msgid "loading"
+#~ msgstr "loading"
 
 #: apps/cowswap-frontend/src/modules/advancedOrders/pure/Settings/index.tsx
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/Settings/index.tsx
@@ -1712,8 +1716,8 @@ msgid "Revoke {tokenSymbol} approval"
 msgstr "Отозвать одобрение {tokenSymbol}"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
-msgid "Use the <0/> to see {orderTabLink}"
-msgstr "Используйте <0/> чтобы увидеть {orderTabLink}"
+#~ msgid "Use the <0/> to see {orderTabLink}"
+#~ msgstr "Use the <0/> to see {orderTabLink}"
 
 #: apps/cowswap-frontend/src/legacy/components/AppziButton/index.tsx
 msgid "Provide Feedback"
@@ -2724,6 +2728,10 @@ msgstr "Развернуть"
 msgid "Connect your wallet first"
 msgstr "Сначала подключите ваш кошелёк"
 
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
+msgid "Animated cow reacts to empty order list"
+msgstr "Анимированная корова реагирует на пустой список заказов"
+
 #: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSidebar/index.tsx
 msgid "Trade alerts"
 msgstr "Уведомления о сделках"
@@ -2947,8 +2955,8 @@ msgid "down"
 msgstr "вниз"
 
 #: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/swapTradeButtonsMap.tsx
-msgid "Wrap <0/> and Swap"
-msgstr "Перенос <0/> и замена"
+#~ msgid "Wrap <0/> and Swap"
+#~ msgstr "Wrap <0/> and Swap"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/DepositTxLink/index.tsx
 msgid "Source transaction"
@@ -3157,6 +3165,10 @@ msgstr "Когда вы подкачиваете (продавать) <0/>, ре
 #: apps/cowswap-frontend/src/common/hooks/useBlockNumber.tsx
 msgid "BlockNumber hooks must be wrapped in a"
 msgstr "BlockNumber хуки должны быть завернуты в"
+
+#: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/swapTradeButtonsMap.tsx
+msgid "Wrap <0/> and Swap"
+msgstr "Перенос <0/> и замена"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/BigPartTimeWarning.tsx
 msgid "A maximum of <0>{time}</0> between parts is required. Increase the number of parts or decrease the total duration."
@@ -5008,8 +5020,8 @@ msgid "signing"
 msgstr "подпись"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
-msgid "Cow meditating..."
-msgstr "Пучка размышления..."
+#~ msgid "Cow meditating..."
+#~ msgstr "Cow meditating..."
 
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
 msgid "About CoW Swap"
@@ -5473,6 +5485,7 @@ msgstr "Так как вы используете смарт-кошелек с �
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/TradeApproveButton/TradeApproveButton.tsx
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapConfirmModal/index.tsx
+#: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/index.tsx
 #: apps/cowswap-frontend/src/modules/yield/containers/TradeButtons/index.tsx
 #: apps/cowswap-frontend/src/modules/yield/containers/YieldWidget/elements.tsx
 #: apps/cowswap-frontend/src/utils/orderUtils/getUiOrderType.ts
@@ -5678,6 +5691,10 @@ msgstr "Загрузка данных моста <0/>"
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
 msgid "Sell"
 msgstr "Продать"
+
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
+msgid "Use the <0/> to see {currentTabText}"
+msgstr "Используйте <0/> чтобы увидеть {currentTabText}"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowBanner/index.tsx
 msgid "Lower overall network costs"
