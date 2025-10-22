@@ -19,6 +19,7 @@ import {
   useWrapNativeFlow,
 } from 'modules/trade'
 import { useHandleSwap } from 'modules/tradeFlow'
+import { useIsTradeFormValidationPassed } from 'modules/tradeFormValidation'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { SettingsTab } from 'modules/tradeWidgetAddons'
 
@@ -93,6 +94,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps): Reac
   const isEagerConnectInProgress = useIsEagerConnectInProgress()
   const [isHydrated, setIsHydrated] = useState(false)
   const handleUnlock = useCallback(() => updateSwapState({ isUnlocked: true }), [updateSwapState])
+  const isPrimaryValidationPassed = useIsTradeFormValidationPassed()
 
   useEffect(() => {
     // Hydration guard: defer lock-screen until persisted state (isUnlocked) loads to prevent initial flash.
@@ -187,8 +189,8 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps): Reac
         return (
           <>
             {bottomContent}
-            <TradeApproveWithAffectedOrderList />
             <SwapRateDetails rateInfoParams={rateInfoParams} deadline={deadlineState[0]} />
+            {isPrimaryValidationPassed && <TradeApproveWithAffectedOrderList />}
             <Warnings buyingFiatAmount={buyingFiatAmount} />
             {tradeWarnings}
             <TradeButtons
@@ -212,6 +214,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps): Reac
         hasEnoughWrappedBalanceForSwap,
         toBeImported,
         intermediateBuyToken,
+        isPrimaryValidationPassed,
       ],
     ),
   }
