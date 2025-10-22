@@ -44,9 +44,7 @@ export const swapTradeButtonsMap: Record<SwapFormState, SwapTradeButton> = {
     <ButtonError buttonSize={ButtonSize.BIG} onClick={props.openSwapConfirm} disabled={isDisabled}>
       <div>
         <Trans>
-          Wrap&nbsp;
-          <TokenSymbol token={props.inputCurrency} length={6} />
-          &nbsp;and Swap
+          Wrap <TokenSymbol token={props.inputCurrency} length={6} /> and Swap
         </Trans>
       </div>
     </ButtonError>
