@@ -190,8 +190,8 @@ export function mapPostedOrder(p: OnPostedOrderPayload): AnalyticsPayload {
   const tokenFields: AnalyticsPayload = {
     sellToken: safeGetString(p.inputToken, 'address'),
     buyToken: safeGetString(p.outputToken, 'address'),
-    sellAmount: p.inputAmount.toString() || '',
-    buyAmount: p.outputAmount.toString() || '',
+    sellAmount: p.inputAmount.toString(),
+    buyAmount: p.outputAmount.toString(),
     sellTokenSymbol: safeGetString(p.inputToken, 'symbol'),
     buyTokenSymbol: safeGetString(p.outputToken, 'symbol'),
     sellTokenDecimals: p.inputToken?.decimals,
