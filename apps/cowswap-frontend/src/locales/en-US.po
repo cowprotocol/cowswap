@@ -679,8 +679,8 @@ msgid "CoW Swap is now live on Arbitrum, Base, Polygon, and Avalanche. Switch th
 msgstr "CoW Swap is now live on Arbitrum, Base, Polygon, and Avalanche. Switch the network toggle in the nav bar for quick, cheap transactions"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
-msgid "You don't have any {orderTabState} orders at the moment."
-msgstr "You don't have any {orderTabState} orders at the moment."
+#~ msgid "You don't have any {orderTabState} orders at the moment."
+#~ msgstr "You don't have any {orderTabState} orders at the moment."
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/Settings/index.tsx
 msgid "Limit Price Position"
@@ -980,6 +980,10 @@ msgstr "Orders history"
 msgid "any token into CoW AMM pools to start benefiting from attractive APRs."
 msgstr "any token into CoW AMM pools to start benefiting from attractive APRs."
 
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
+msgid "You don't have any {orderStatusText} orders at the moment."
+msgstr "You don't have any {orderStatusText} orders at the moment."
+
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/SolvingStep.tsx
 msgid "Something went wrong. But don't worry! <0>CoW Swap solvers</0> are searching again for the best price for you."
 msgstr "Something went wrong. But don't worry! <0>CoW Swap solvers</0> are searching again for the best price for you."
@@ -1231,8 +1235,8 @@ msgid "Share on Twitter"
 msgstr "Share on Twitter"
 
 #: apps/cowswap-frontend/src/common/pure/CurrencyArrowSeparator/index.tsx
-msgid "loading"
-msgstr "loading"
+#~ msgid "loading"
+#~ msgstr "loading"
 
 #: apps/cowswap-frontend/src/modules/advancedOrders/pure/Settings/index.tsx
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/Settings/index.tsx
@@ -1719,8 +1723,8 @@ msgid "Revoke {tokenSymbol} approval"
 msgstr "Revoke {tokenSymbol} approval"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
-msgid "Use the <0/> to see {orderTabLink}"
-msgstr "Use the <0/> to see {orderTabLink}"
+#~ msgid "Use the <0/> to see {orderTabLink}"
+#~ msgstr "Use the <0/> to see {orderTabLink}"
 
 #: apps/cowswap-frontend/src/legacy/components/AppziButton/index.tsx
 msgid "Provide Feedback"
@@ -2730,6 +2734,10 @@ msgstr "Unwrap"
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/ClaimGnoHookApp/index.tsx
 msgid "Connect your wallet first"
 msgstr "Connect your wallet first"
+
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
+msgid "Animated cow reacts to empty order list"
+msgstr "Animated cow reacts to empty order list"
 
 #: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSidebar/index.tsx
 msgid "Trade alerts"
@@ -5021,8 +5029,8 @@ msgid "signing"
 msgstr "signing"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
-msgid "Cow meditating..."
-msgstr "Cow meditating..."
+#~ msgid "Cow meditating..."
+#~ msgstr "Cow meditating..."
 
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
 msgid "About CoW Swap"
@@ -5691,6 +5699,10 @@ msgstr "Loading bridge data <0/>"
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
 msgid "Sell"
 msgstr "Sell"
+
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
+msgid "Use the <0/> to see {currentTabText}"
+msgstr "Use the <0/> to see {currentTabText}"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowBanner/index.tsx
 msgid "Lower overall network costs"
