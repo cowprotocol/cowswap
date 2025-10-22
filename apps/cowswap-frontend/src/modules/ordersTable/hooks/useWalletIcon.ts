@@ -1,15 +1,17 @@
 import { useEffect, useState } from 'react'
 
+import { loadWalletPlusIcon } from '@cowprotocol/assets/lazy-loaders'
+
 export function useWalletIcon(): string | null {
   const [walletIcon, setWalletIcon] = useState<string | null>(null)
 
   useEffect(() => {
     let isCancelled = false
 
-    void import('@cowprotocol/assets/cow-swap/wallet-plus.svg')
-      .then((module) => {
+    void loadWalletPlusIcon()
+      .then((icon) => {
         if (!isCancelled) {
-          setWalletIcon(module.default)
+          setWalletIcon(icon)
         }
       })
       .catch((error) => {

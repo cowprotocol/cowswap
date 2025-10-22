@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 
+import { loadSurprisedCowAnimation } from '@cowprotocol/assets/lazy-loaders'
+
 import type { LottieComponentProps } from 'lottie-react'
 
 interface UseNoOrdersAnimationParams {
@@ -25,12 +27,10 @@ export function useNoOrdersAnimation({
 
     async function loadAnimation(): Promise<void> {
       try {
-        const animationModule = isDarkMode
-          ? await import('@cowprotocol/assets/lottie/surprised-cow-dark.json')
-          : await import('@cowprotocol/assets/lottie/surprised-cow.json')
+        const animation = await loadSurprisedCowAnimation({ isDarkMode })
 
         if (!isCancelled) {
-          setAnimationData(animationModule.default)
+          setAnimationData(animation)
         }
       } catch (error) {
         if (!isCancelled) {
