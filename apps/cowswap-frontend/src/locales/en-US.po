@@ -1217,9 +1217,9 @@ msgstr "CoW AMM"
 msgid "Too much time between parts"
 msgstr "Too much time between parts"
 
-#: apps/cowswap-frontend/src/modules/swap/hooks/useGetConfirmButtonLabel.ts
-#~ msgid "Swap and Bridge"
-#~ msgstr "Swap and Bridge"
+#: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/index.tsx
+msgid "Swap and Bridge"
+msgstr "Swap and Bridge"
 
 #: apps/cowswap-frontend/src/common/containers/OrderHooksDetails/index.tsx
 msgid "POST"
@@ -2962,8 +2962,8 @@ msgid "down"
 msgstr "down"
 
 #: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/swapTradeButtonsMap.tsx
-msgid "Wrap <0/> and Swap"
-msgstr "Wrap <0/> and Swap"
+#~ msgid "Wrap <0/> and Swap"
+#~ msgstr "Wrap <0/> and Swap"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/DepositTxLink/index.tsx
 msgid "Source transaction"
@@ -3174,6 +3174,10 @@ msgstr "When you swap (sell) <0/>, solvers handle the transaction by purchasing 
 #: apps/cowswap-frontend/src/common/hooks/useBlockNumber.tsx
 msgid "BlockNumber hooks must be wrapped in a"
 msgstr "BlockNumber hooks must be wrapped in a"
+
+#: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/swapTradeButtonsMap.tsx
+msgid "Wrap <0/> and Swap"
+msgstr "Wrap <0/> and Swap"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/BigPartTimeWarning.tsx
 msgid "A maximum of <0>{time}</0> between parts is required. Increase the number of parts or decrease the total duration."
@@ -5494,6 +5498,7 @@ msgstr "Because you are using a smart contract wallet"
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/TradeApproveButton/TradeApproveButton.tsx
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapConfirmModal/index.tsx
+#: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/index.tsx
 #: apps/cowswap-frontend/src/modules/yield/containers/TradeButtons/index.tsx
 #: apps/cowswap-frontend/src/modules/yield/containers/YieldWidget/elements.tsx
 #: apps/cowswap-frontend/src/utils/orderUtils/getUiOrderType.ts
