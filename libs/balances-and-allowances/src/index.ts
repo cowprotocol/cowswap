@@ -22,6 +22,7 @@ export * from './utils/isBffSupportedNetwork'
 
 // Types
 export type { BalancesState } from './state/balancesAtom'
+export type { AllowancesState } from './hooks/useTokenAllowances'
 
 // Consts
 export { DEFAULT_BALANCES_STATE } from './state/balancesAtom'
