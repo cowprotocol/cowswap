@@ -248,6 +248,7 @@ export function mapFulfilledOrder(p: OnFulfilledOrderPayload): AnalyticsPayload 
     from_amount: executedSellAmountUnits ?? executedSellAmountRaw,
     to_amount: executedBuyAmountUnits ?? executedBuyAmountRaw,
 
+    // Note: bridge providers tag actual widget orders via isBridgeOrder; this flag only captures the token selection being cross-chain.
     isCrossChain: hasBridgeOrder,
   }
 }
