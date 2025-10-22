@@ -1,6 +1,6 @@
 import { FULL_PRICE_PRECISION } from '@cowprotocol/common-const'
 import { Nullish } from '@cowprotocol/types'
-import { BigintIsh, Currency, CurrencyAmount, Fraction, Price, Rounding, Token } from '@uniswap/sdk-core'
+import { BigintIsh, Currency, CurrencyAmount, Fraction, Percent, Price, Rounding, Token } from '@uniswap/sdk-core'
 
 import { BigNumber } from 'bignumber.js'
 import JSBI from 'jsbi'
@@ -178,6 +178,10 @@ export class FractionUtils {
 
   static simplify(fraction: Fraction): Fraction {
     return reduce(trimZeros(fraction))
+  }
+
+  static addPercent<T extends Currency>(amount: CurrencyAmount<T>, percent: Percent): typeof amount {
+    return amount.add(amount.multiply(percent))
   }
 }
 

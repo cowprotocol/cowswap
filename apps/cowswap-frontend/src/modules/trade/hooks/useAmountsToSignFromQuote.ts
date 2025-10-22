@@ -1,9 +1,12 @@
 import { useMemo } from 'react'
 
-import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
+import { FractionUtils } from '@cowprotocol/common-utils'
+import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
 import { useGetReceiveAmountInfo } from './useGetReceiveAmountInfo'
+
+const BUY_ORDER_APPROVE_AMOUNT_THRESHOLD = new Percent(1, 100) // 1%
 
 export interface AmountsToSign {
   maximumSendSellAmount: CurrencyAmount<Currency>
@@ -16,7 +19,7 @@ export interface AmountsToSign {
  */
 export function useAmountsToSignFromQuote(): AmountsToSign | null {
   const { isQuoteBasedOrder, inputCurrencyAmount, outputCurrencyAmount } = useDerivedTradeState() || {}
-  const { afterSlippage } = useGetReceiveAmountInfo() || {}
+  const { isSell, afterSlippage } = useGetReceiveAmountInfo() || {}
 
   return useMemo(() => {
     const maximumSendSellAmount = isQuoteBasedOrder ? afterSlippage?.sellAmount : inputCurrencyAmount
@@ -24,6 +27,12 @@ export function useAmountsToSignFromQuote(): AmountsToSign | null {
 
     if (!maximumSendSellAmount || !minimumReceiveBuyAmount) return null
 
-    return { maximumSendSellAmount, minimumReceiveBuyAmount }
-  }, [isQuoteBasedOrder, inputCurrencyAmount, outputCurrencyAmount, afterSlippage])
+    return {
+      // Add 1% threshold for buy orders to level out price/gas fluctuations
+      maximumSendSellAmount: isSell
+        ? maximumSendSellAmount
+        : FractionUtils.addPercent(maximumSendSellAmount, BUY_ORDER_APPROVE_AMOUNT_THRESHOLD),
+      minimumReceiveBuyAmount,
+    }
+  }, [isSell, isQuoteBasedOrder, inputCurrencyAmount, outputCurrencyAmount, afterSlippage])
 }
