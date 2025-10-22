@@ -8,7 +8,6 @@ import {
   PartialApproveAmountModal,
   TradeApproveButton,
   TradeApproveToggle,
-  useIsPartialApproveSelectedByUser,
   usePartialApproveAmountModalState,
   useUpdatePartialApproveAmountModalState,
 } from 'modules/erc20Approve'
@@ -26,7 +25,6 @@ export function OrderPartialApprove({
   isPartialApproveEnabledBySettings,
   orderId,
 }: OrderPartialApproveProps): ReactNode {
-  const isPartialApproveSelectedByUser = useIsPartialApproveSelectedByUser()
   const { isModalOpen, amountSetByUser } = usePartialApproveAmountModalState() || {}
   const updatePartialApproveAmountModalState = useUpdatePartialApproveAmountModalState()
 
@@ -44,9 +42,7 @@ export function OrderPartialApprove({
           updateModalState={() => updatePartialApproveAmountModalState({ isModalOpen: true })}
         />
       )}
-      {isPartialApproveSelectedByUser && (
-        <ActiveOrdersWithAffectedPermit orderId={orderId} currency={amountToApprove.currency} />
-      )}
+      <ActiveOrdersWithAffectedPermit orderId={orderId} currency={amountToApprove.currency} />
       <TradeApproveButton
         enablePartialApprove
         useModals={false}
