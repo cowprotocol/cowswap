@@ -1,7 +1,7 @@
 import React, { ReactNode, useCallback, useMemo } from 'react'
 
 import ICON_ORDERS from '@cowprotocol/assets/svg/orders.svg'
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { useFeatureFlags, useTheme } from '@cowprotocol/common-hooks'
 import { isInjectedWidget, maxAmountSpend } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ButtonOutlined, Media, MY_ORDERS_ID, SWAP_HEADER_OFFSET } from '@cowprotocol/ui'
@@ -72,6 +72,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const { isLimitOrdersUpgradeBannerEnabled, isBridgingEnabled } = useFeatureFlags()
   const isCurrentTradeBridging = useIsCurrentTradeBridging()
+  const { darkMode } = useTheme()
 
   const { slots, actions, params, disableOutput } = props
   const { settingsWidget, lockScreen, topContent, middleContent, bottomContent, outerContent } = slots
@@ -241,6 +242,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
                     onSwitchTokens={isChainIdUnsupported ? () => void 0 : throttledOnSwitchTokens}
                     isLoading={Boolean(sellToken && outputCurrencyInfo.currency && isTradePriceUpdating)}
                     disabled={shouldLockForAlternativeOrder || isOutputTokenUnsupported}
+                    isDarkMode={darkMode}
                   />
                 </styledEl.CurrencySeparatorBox>
                 <div>

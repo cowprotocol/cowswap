@@ -73,6 +73,7 @@ export interface OrdersTableState {
   chainId: SupportedChainId
   orders: OrderTableItem[]
   filteredOrders: OrderTableItem[]
+  hasHydratedOrders: boolean
   allowsOffchainSigning: boolean
   balancesAndAllowances: BalancesAndAllowances
   orderActions: OrderActions

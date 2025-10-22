@@ -1,9 +1,8 @@
-import React from 'react'
+import { ReactNode } from 'react'
 
-import loadingCowWebp from '@cowprotocol/assets/cow-swap/cow-load.webp'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 
-import { t } from '@lingui/core/macro'
+import { CowLoadingIcon } from 'common/pure/CowLoadingIcon'
 
 import * as styledEl from './styled'
 
@@ -12,20 +11,26 @@ export interface CurrencyArrowSeparatorProps {
   disabled?: boolean
   hasSeparatorLine?: boolean
   isCollapsed?: boolean
+  isDarkMode?: boolean
   onSwitchTokens(): void
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function CurrencyArrowSeparator(props: CurrencyArrowSeparatorProps) {
-  const { isLoading, onSwitchTokens, isCollapsed = true, hasSeparatorLine, disabled = false } = props
+export function CurrencyArrowSeparator(props: CurrencyArrowSeparatorProps): ReactNode {
+  const {
+    isLoading,
+    onSwitchTokens,
+    isCollapsed = true,
+    hasSeparatorLine,
+    disabled = false,
+    isDarkMode = false,
+  } = props
   const isInjectedWidgetMode = isInjectedWidget()
 
   return (
     <styledEl.Box isCollapsed={isCollapsed} hasSeparatorLine={hasSeparatorLine} disabled={disabled}>
       <styledEl.LoadingWrapper isLoading={isLoading} onClick={disabled ? undefined : onSwitchTokens}>
         {!isInjectedWidgetMode && isLoading ? (
-          <styledEl.CowImg src={loadingCowWebp} alt={t`loading`} />
+          <CowLoadingIcon size={26} isDarkMode={isDarkMode} />
         ) : (
           <styledEl.ArrowDownIcon disabled={disabled} />
         )}
