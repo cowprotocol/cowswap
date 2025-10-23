@@ -73,9 +73,3 @@ export const ArrowDownIcon = styled(ArrowDown)<{ disabled: boolean }>`
   cursor: ${({ disabled }) => (disabled ? 'inherit' : 'pointer')};
   color: inherit;
 `
-
-export const CowImg = styled.img`
-  width: 100%;
-  border-radius: 10px;
-  background-color: ${({ theme }) => theme.paperCustom};
-`

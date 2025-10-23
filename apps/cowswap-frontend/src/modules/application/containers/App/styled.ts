@@ -17,9 +17,7 @@ import styled from 'styled-components/macro'
 
 import type { PageBackgroundVariant } from '../../contexts/PageBackgroundContext'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function isChristmasTheme(theme?: CowSwapTheme) {
+export function isChristmasTheme(theme?: CowSwapTheme): boolean {
   if (!theme) {
     return false
   }
@@ -73,11 +71,11 @@ export const BodyWrapper = styled.div<{ customTheme?: CowSwapTheme; backgroundVa
   flex: 1 1 auto;
   z-index: 2;
   color: inherit;
-  padding: ${({ theme }) => (theme.isWidget ? '16px 16px 0' : '150px 16px 76px')};
+  padding: ${({ theme }) => (theme.isWidget ? '16px 16px 0' : '150px 16px 176px')};
   margin: ${({ theme }) => (theme.isWidget ? '0' : '-76px auto calc(var(--marginBottomOffset) * -1)')};
   border-bottom-left-radius: ${({ theme }) => (theme.isWidget ? '0' : 'var(--marginBottomOffset)')};
   border-bottom-right-radius: ${({ theme }) => (theme.isWidget ? '0' : 'var(--marginBottomOffset)')};
-  min-height: ${({ theme }) => (theme.isWidget ? 'initial' : 'calc(100vh - 200px)')};
+  min-height: initial;
   background: ${({ theme, customTheme, backgroundVariant }) => {
     if (theme.isWidget) {
       return 'transparent'
@@ -104,7 +102,7 @@ export const BodyWrapper = styled.div<{ customTheme?: CowSwapTheme; backgroundVa
   }};
 
   ${Media.upToMedium()} {
-    padding: ${({ theme }) => (theme.isWidget ? '0 0 16px' : '150px 16px 76px')};
+    padding: ${({ theme }) => (theme.isWidget ? '0 0 16px' : '150px 16px 150px')};
     flex: none;
     min-height: ${({ theme }) => (theme.isWidget ? 'initial' : 'calc(100vh - 200px)')};
     background-size: ${({ customTheme }) => (customTheme === 'darkHalloween' ? 'contain' : 'auto')};
@@ -126,7 +124,7 @@ export const BodyWrapper = styled.div<{ customTheme?: CowSwapTheme; backgroundVa
   }
 
   ${Media.upToSmall()} {
-    padding: ${({ theme }) => (theme.isWidget ? '0 0 16px' : '90px 16px 76px')};
+    padding: ${({ theme }) => (theme.isWidget ? '0 0 16px' : '90px 16px 200px')};
     min-height: ${({ theme }) => (theme.isWidget ? 'initial' : 'calc(100vh - 100px)')};
     background-size: ${({ customTheme }) => (customTheme === 'darkHalloween' ? 'contain' : 'auto')};
 

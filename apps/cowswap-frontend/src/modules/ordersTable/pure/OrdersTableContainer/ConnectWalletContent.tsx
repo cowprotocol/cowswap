@@ -1,6 +1,5 @@
 import { ReactNode } from 'react'
 
-import imageConnectWallet from '@cowprotocol/assets/cow-swap/wallet-plus.svg'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 
 import { Trans } from '@lingui/macro'
@@ -11,18 +10,22 @@ import { Web3Status } from 'modules/wallet/containers/Web3Status'
 import * as styledEl from './OrdersTableContainer.styled'
 
 import { useOrdersTableState } from '../../hooks/useOrdersTableState'
+import { useWalletIcon } from '../../hooks/useWalletIcon'
 
 export function ConnectWalletContent(): ReactNode {
   const { orderType, pendingActivitiesCount } = useOrdersTableState() || {}
+  const walletIcon = useWalletIcon()
 
   return (
     <styledEl.Content>
-      <span>
-        <SVG src={imageConnectWallet} description="connect wallet" />
-      </span>
-      <h3>
+      {walletIcon ? (
+        <span>
+          <SVG src={walletIcon} description="connect wallet" />
+        </span>
+      ) : null}
+      <h4>
         <Trans>Connect a wallet</Trans>
-      </h3>
+      </h4>
       {!isInjectedWidget && (
         <>
           <p>
