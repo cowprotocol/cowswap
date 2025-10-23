@@ -7,8 +7,10 @@ import { useSwitchNetwork, useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import { useTradeNavigate } from 'modules/trade/hooks/useTradeNavigate'
+import { useTradeTypeInfoFromUrl } from 'modules/trade/hooks/useTradeTypeInfoFromUrl'
 import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternativeOrder'
 import { getDefaultTradeRawState, TradeRawState } from 'modules/trade/types/TradeRawState'
+import { TradeType } from 'modules/trade/types/TradeType'
 
 import { useResetStateWithSymbolDuplication } from './useResetStateWithSymbolDuplication'
 import { useSetupTradeStateFromUrl } from './useSetupTradeStateFromUrl'
@@ -33,6 +35,7 @@ export function useSetupTradeState(): void {
   const switchNetwork = useSwitchNetwork()
   const tradeStateFromUrl = useTradeStateFromUrl()
   const { state, updateState } = useTradeState()
+  const tradeTypeInfo = useTradeTypeInfoFromUrl()
 
   // When wallet is connected, and user navigates to the URL with a new chainId
   // We must change chainId in provider, and only then change the trade state
@@ -47,6 +50,7 @@ export function useSetupTradeState(): void {
   const currentChainId = !urlChainId ? prevProviderChainId || providerChainId || SupportedChainId.MAINNET : urlChainId
 
   const isAlternativeModalVisible = useIsAlternativeOrderModalVisible()
+  const isLimitOrderTrade = tradeTypeInfo?.tradeType === TradeType.LIMIT_ORDER
 
   const switchNetworkInWallet = useCallback(
     async (targetChainId: SupportedChainId) => {
@@ -125,9 +129,9 @@ export function useSetupTradeState(): void {
   // TODO: Reduce function complexity by extracting logic
   // eslint-disable-next-line complexity
   useEffect(() => {
-    // Do nothing when in alternative modal
+    // Do nothing when in alternative modal for limit order routes
     // App should already be loaded by then
-    if (isAlternativeModalVisible) {
+    if (isAlternativeModalVisible && isLimitOrderTrade) {
       return
     }
     // Not loaded yet, ignore
@@ -190,7 +194,7 @@ export function useSetupTradeState(): void {
 
     // Triggering only on changes from URL
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tradeStateFromUrl])
+  }, [tradeStateFromUrl, isAlternativeModalVisible, isLimitOrderTrade])
 
   /**
    * On:
