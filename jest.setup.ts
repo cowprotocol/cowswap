@@ -44,4 +44,4 @@ beforeEach(() => {
   __resetGtmInstance()
 })
 
-jest.mock('lib/localeCatalogLoaders')
+jest.mock('./apps/cowswap-frontend/src/lib/localeCatalogLoaders')
