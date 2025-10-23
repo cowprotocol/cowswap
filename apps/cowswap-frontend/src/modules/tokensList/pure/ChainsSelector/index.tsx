@@ -1,13 +1,20 @@
-import { ReactNode } from 'react'
+import { ReactNode, useMemo } from 'react'
 
-import { useMediaQuery, useTheme } from '@cowprotocol/common-hooks'
+import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { ChainInfo } from '@cowprotocol/cow-sdk'
-import { HoverTooltip, Media } from '@cowprotocol/ui'
+import { Media } from '@cowprotocol/ui'
 
-import { Menu, MenuButton, MenuItem } from '@reach/menu-button'
-import { Check, ChevronDown, ChevronUp } from 'react-feather'
+import { Field } from 'legacy/state/types'
 
+import { TradeType } from 'modules/trade'
+
+import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
+
+import { MoreMenuSection } from './MoreMenuSection'
 import * as styledEl from './styled'
+import { VisibleChainsRow } from './VisibleChainsRow'
+
+type BuildClickEvent = (chain: ChainInfo) => string
 
 // Number of skeleton shimmers to show during loading state
 const LOADING_ITEMS_COUNT = 9
@@ -20,12 +27,33 @@ const LoadingShimmerElements = (
   </styledEl.Wrapper>
 )
 
+export function makeBuildClickEvent(
+  defaultChainId: ChainInfo['id'] | undefined,
+  contextLabel: 'sell' | 'buy' | 'unknown',
+  mode: TradeType | 'unknown',
+  counterChainId: ChainInfo['id'] | undefined,
+  isSwapMode: boolean,
+): BuildClickEvent {
+  return (chain: ChainInfo) =>
+    toCowSwapGtmEvent({
+      category: CowSwapAnalyticsCategory.TRADE,
+      action: 'network_selected',
+      label: `Chain: ${chain.id}, PreviousChain: ${defaultChainId ?? 'none'}, Context: ${contextLabel}, Mode: ${mode}, CrossChain: ${
+        isSwapMode && counterChainId !== undefined ? counterChainId !== chain.id : false
+      }`,
+    })
+}
+
 export interface ChainsSelectorProps {
   chains: ChainInfo[]
-  onSelectChain: (chainId: ChainInfo) => void
+  onSelectChain: (chainInfo: ChainInfo) => void
   defaultChainId?: ChainInfo['id']
-  visibleNetworkIcons?: number // Number of network icons to display before showing "More" dropdown
+  visibleNetworkIcons?: number
   isLoading: boolean
+  tradeType?: TradeType
+  field?: Field
+  isDarkMode?: boolean
+  counterChainId?: ChainInfo['id']
 }
 
 export function ChainsSelector({
@@ -34,10 +62,21 @@ export function ChainsSelector({
   defaultChainId,
   isLoading,
   visibleNetworkIcons = LOADING_ITEMS_COUNT,
+  tradeType,
+  field,
+  isDarkMode = false,
+  counterChainId,
 }: ChainsSelectorProps): ReactNode {
   const isMobile = useMediaQuery(Media.upToSmall(false))
+  const mode = tradeType ?? 'unknown'
+  const isSwapMode = tradeType === TradeType.SWAP
+  const contextLabel: 'sell' | 'buy' | 'unknown' =
+    field === Field.INPUT ? 'sell' : field === Field.OUTPUT ? 'buy' : 'unknown'
 
-  const theme = useTheme()
+  const buildClickEvent = useMemo(
+    () => makeBuildClickEvent(defaultChainId, contextLabel, mode, counterChainId, isSwapMode),
+    [defaultChainId, contextLabel, mode, counterChainId, isSwapMode],
+  )
 
   if (isLoading) {
     return LoadingShimmerElements
@@ -45,62 +84,30 @@ export function ChainsSelector({
 
   const shouldDisplayMore = !isMobile && chains.length > visibleNetworkIcons
   const visibleChains = isMobile ? chains : chains.slice(0, visibleNetworkIcons)
-  // Find the selected chain that isn't visible in the main row (so we can display it in the dropdown)
-  const selectedMenuChain = !isMobile && chains.find((i) => i.id === defaultChainId && !visibleChains.includes(i))
+  const selectedMenuChain = !isMobile
+    ? chains.find((chain) => chain.id === defaultChainId && !visibleChains.some((visible) => visible.id === chain.id))
+    : undefined
 
   return (
     <styledEl.Wrapper>
-      {visibleChains.map((chain) => (
-        <HoverTooltip
-          key={chain.id}
-          tooltipCloseDelay={0}
-          wrapInContainer={true}
-          content={chain.label}
-          placement="bottom"
-        >
-          <styledEl.ChainItem active$={defaultChainId === chain.id} onClick={() => onSelectChain(chain)} iconOnly>
-            <img src={theme.darkMode ? chain.logo.dark : chain.logo.light} alt={chain.label} loading="lazy" />
-          </styledEl.ChainItem>
-        </HoverTooltip>
-      ))}
+      <VisibleChainsRow
+        visibleChains={visibleChains}
+        defaultChainId={defaultChainId}
+        buildClickEvent={buildClickEvent}
+        isSwapMode={isSwapMode}
+        onSelectChain={onSelectChain}
+        isDarkMode={isDarkMode}
+      />
       {shouldDisplayMore && (
-        <Menu as={styledEl.MenuWrapper}>
-          {({ isOpen }) => (
-            <>
-              <MenuButton as={styledEl.ChainItem} active$={!!selectedMenuChain}>
-                {selectedMenuChain ? (
-                  <img
-                    src={theme.darkMode ? selectedMenuChain.logo.dark : selectedMenuChain.logo.light}
-                    alt={selectedMenuChain.label}
-                    loading="lazy"
-                  />
-                ) : isOpen ? (
-                  <span>Less</span>
-                ) : (
-                  <span>More</span>
-                )}
-                {isOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-              </MenuButton>
-              <styledEl.MenuListStyled portal={false}>
-                {chains.map((chain) => (
-                  <MenuItem
-                    key={chain.id}
-                    as={styledEl.ChainItem}
-                    onSelect={() => onSelectChain(chain)}
-                    active$={defaultChainId === chain.id}
-                    iconSize={21}
-                    tabIndex={0}
-                    borderless
-                  >
-                    <img src={theme.darkMode ? chain.logo.dark : chain.logo.light} alt={chain.label} loading="lazy" />
-                    <span>{chain.label}</span>
-                    {chain.id === defaultChainId && <Check size={16} />}
-                  </MenuItem>
-                ))}
-              </styledEl.MenuListStyled>
-            </>
-          )}
-        </Menu>
+        <MoreMenuSection
+          chains={chains}
+          defaultChainId={defaultChainId}
+          selectedMenuChain={selectedMenuChain}
+          buildClickEvent={buildClickEvent}
+          isSwapMode={isSwapMode}
+          onSelectChain={onSelectChain}
+          isDarkMode={isDarkMode}
+        />
       )}
     </styledEl.Wrapper>
   )
