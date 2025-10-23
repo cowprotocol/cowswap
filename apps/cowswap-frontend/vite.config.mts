@@ -1,6 +1,6 @@
 /// <reference types="vitest" />
 import { lingui } from '@lingui/vite-plugin'
-import react from '@vitejs/plugin-react-swc'
+import react from '@vitejs/plugin-react'
 import stdLibBrowser from 'node-stdlib-browser'
 import { visualizer } from 'rollup-plugin-visualizer'
 import { defineConfig, PluginOption, searchForWorkspaceRoot } from 'vite'
@@ -30,7 +30,7 @@ const analyzeBundleTemplate: TemplateType = (process.env.ANALYZE_BUNDLE_TEMPLATE
 export default defineConfig(({ mode }) => {
   const isProduction = mode === 'production'
 
-  const plugins = [
+  const plugins: PluginOption[] = [
     nodePolyfills({
       exclude: allNodeDeps.filter((dep) => !nodeDepsToInclude.includes(dep)),
       globals: {
@@ -41,7 +41,9 @@ export default defineConfig(({ mode }) => {
       protocolImports: true,
     }),
     react({
-      plugins: [['@lingui/swc-plugin', {}]],
+      babel: {
+        plugins: [['babel-plugin-react-compiler']],
+      },
     }),
     viteTsConfigPaths({
       root: '../../',
