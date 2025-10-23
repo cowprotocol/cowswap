@@ -11,12 +11,13 @@ export const Wrapper = styled.div`
 
 export const Content = styled.div`
   display: flex;
-  flex-flow: column wrap;
+  flex-flow: column nowrap;
   align-items: center;
   justify-content: center;
-  color: inherit;
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
   min-height: 490px;
-  padding: 0;
+  padding: 24px 0 0;
+  gap: 32px;
 
   > span {
     --size: 130px;
@@ -28,7 +29,7 @@ export const Content = styled.div`
     align-items: center;
     justify-content: center;
     position: relative;
-    margin: 0 0 16px;
+    margin: 0;
     color: inherit;
     transform: rotate(0);
     transition: transform 5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
@@ -36,11 +37,8 @@ export const Content = styled.div`
     &::before {
       content: '';
       position: absolute;
-      top: 0;
-      left: 0;
+      inset: 0;
       background: var(${UI.COLOR_PAPER_DARKER});
-      width: var(--size);
-      height: var(--size);
       border-radius: var(--size);
       z-index: -1;
     }
@@ -49,8 +47,8 @@ export const Content = styled.div`
       transform: rotate(360deg);
     }
 
-    > img,
-    > svg {
+    > svg,
+    > img {
       max-width: 100%;
       max-height: 100%;
       width: 100%;
@@ -67,25 +65,60 @@ export const Content = styled.div`
   }
 
   > h3 {
-    font-size: 26px;
-    line-height: 1.2;
-    font-weight: 500;
-    margin: 0 auto 16px;
+    font-size: 32px;
+    line-height: 1;
+    font-weight: 600;
+    margin: 0 auto;
     text-align: center;
+    color: inherit;
+  }
+
+  > h4 {
+    font-size: 24px;
+    line-height: 1;
+    font-weight: 600;
+    margin: 0 auto;
+    text-align: center;
+    color: inherit;
   }
 
   > p {
     font-size: 15px;
     line-height: 1.4;
-    margin: 0 auto 21px;
+    margin: 0 auto;
     font-weight: 400;
     text-align: center;
     color: inherit;
   }
 `
 
-export const MeditatingCowImg = styled.img`
-  padding: 16px;
+export const NoOrdersAnimation = styled.div`
+  width: 100%;
+  max-width: 320px;
+  margin: 16px auto 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0;
+
+  > img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+  }
+`
+
+export const NoOrdersLottieFrame = styled.div`
+  position: relative;
+  width: 100%;
+  padding-top: calc(386 / 1099 * 100%);
+
+  > div {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
 `
 
 export const TopContainer = styled.div`
