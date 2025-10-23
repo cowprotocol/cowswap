@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.121.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.121.0...cowswap-v1.121.1) (2025-10-23)
+
+
+### Bug Fixes
+
+* do not log proxy recipient in prod like envs ([#6418](https://github.com/cowprotocol/cowswap/issues/6418)) ([0a9a229](https://github.com/cowprotocol/cowswap/commit/0a9a2298a610bc0cdc9087a489b7137db32ffb16))
+
 ## [1.121.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.120.0...cowswap-v1.121.0) (2025-10-23)
 
 
