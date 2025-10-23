@@ -49,6 +49,7 @@ export function OrderPartialApprove({
 
   return (
     <OrderActionsWrapper>
+      {/*TODO: it quite similar to <PartialApproveContainer>, should it be reused?*/}
       {isPartialApproveEnabledBySettings && (
         <TradeApproveToggle
           amountToApprove={finalAmountToApprove}
