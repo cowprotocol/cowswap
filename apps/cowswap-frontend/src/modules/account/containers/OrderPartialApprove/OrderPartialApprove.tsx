@@ -9,6 +9,7 @@ import {
   PartialApproveAmountModal,
   TradeApproveButton,
   TradeApproveToggle,
+  useIsPartialApprovalModeSelected,
   usePartialApproveAmountModalState,
   useUpdatePartialApproveAmountModalState,
 } from 'modules/erc20Approve'
@@ -28,13 +29,19 @@ export function OrderPartialApprove({
 }: OrderPartialApproveProps): ReactNode {
   const { isModalOpen, amountSetByUser } = usePartialApproveAmountModalState() || {}
   const updatePartialApproveAmountModalState = useUpdatePartialApproveAmountModalState()
+  const isPartialApprovalModeSelected = useIsPartialApprovalModeSelected()
+
+  const currency = amountToApprove.currency
 
   const partialAmountToApproveFinal = amountSetByUser ?? amountToApprove
-  const currency = partialAmountToApproveFinal.currency
 
-  const maxAmountToApprove = useMemo(() => {
+  const finalAmountToApprove = useMemo(() => {
+    if (isPartialApproveEnabledBySettings && isPartialApprovalModeSelected) {
+      return partialAmountToApproveFinal
+    }
+
     return CurrencyAmount.fromRawAmount(currency, MAX_APPROVE_AMOUNT.toString())
-  }, [currency])
+  }, [isPartialApprovalModeSelected, isPartialApproveEnabledBySettings, partialAmountToApproveFinal, currency])
 
   if (isModalOpen) {
     return <PartialApproveAmountModal initialAmountToApprove={partialAmountToApproveFinal} />
@@ -44,7 +51,7 @@ export function OrderPartialApprove({
     <OrderActionsWrapper>
       {isPartialApproveEnabledBySettings && (
         <TradeApproveToggle
-          amountToApprove={partialAmountToApproveFinal}
+          amountToApprove={finalAmountToApprove}
           updateModalState={() => updatePartialApproveAmountModalState({ isModalOpen: true })}
         />
       )}
@@ -52,9 +59,9 @@ export function OrderPartialApprove({
       <TradeApproveButton
         enablePartialApprove
         useModals={false}
-        amountToApprove={maxAmountToApprove}
+        amountToApprove={finalAmountToApprove}
         buttonSize={ButtonSize.SMALL}
-        label={'Approve ' + amountToApprove.currency.symbol}
+        label={'Approve ' + currency.symbol}
       />
     </OrderActionsWrapper>
   )
