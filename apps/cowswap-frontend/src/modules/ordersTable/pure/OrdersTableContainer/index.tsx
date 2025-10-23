@@ -10,9 +10,10 @@ import { useOrdersTableState } from '../../hooks/useOrdersTableState'
 interface OrdersTableContainerProps {
   searchTerm?: string
   children: ReactNode
+  isDarkMode: boolean
 }
 
-export function OrdersTableContainer({ searchTerm, children }: OrdersTableContainerProps): ReactNode {
+export function OrdersTableContainer({ searchTerm, children, isDarkMode }: OrdersTableContainerProps): ReactNode {
   const { tabs, isWalletConnected } = useOrdersTableState() || {}
 
   const currentTab = useMemo(() => {
@@ -28,7 +29,7 @@ export function OrdersTableContainer({ searchTerm, children }: OrdersTableContai
           {children && <styledEl.RightContainer>{children}</styledEl.RightContainer>}
         </styledEl.TabsContainer>
       </styledEl.TopContainer>
-      <OrdersTableContent searchTerm={searchTerm} currentTab={currentTab} />
+      <OrdersTableContent searchTerm={searchTerm} currentTab={currentTab} isDarkMode={isDarkMode} />
     </styledEl.Wrapper>
   )
 }
