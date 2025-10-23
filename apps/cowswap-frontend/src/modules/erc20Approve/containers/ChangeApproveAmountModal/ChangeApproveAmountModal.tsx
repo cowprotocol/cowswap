@@ -18,7 +18,7 @@ export function ChangeApproveAmountModal({
   initialAmountToApprove,
 }: ChangeApproveAmountModalProps): ReactNode {
   const { amount: approveAmountInput, isInvalid } = useCustomApproveAmountInputState() || {}
-  const [_, resetCustomApproveAmountInput] = useUpdateOrResetCustomApproveAmountInputState()
+  const [, resetCustomApproveAmountInput] = useUpdateOrResetCustomApproveAmountInputState()
 
   const onBack = useCallback((): void => {
     setUserApproveAmountState({ isModalOpen: false, amountSetByUser: undefined })
