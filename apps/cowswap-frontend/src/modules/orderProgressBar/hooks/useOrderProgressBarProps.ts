@@ -181,7 +181,7 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
     isBridgingTrade,
   )
   useCancellingOrderUpdater(orderId, isCancelling)
-  useCountdownStartUpdater(orderId, countdown, backendApiStatus)
+  useCountdownStartUpdater(orderId, countdown, backendApiStatus, isUnfillable || isCancelled || isCancelling || isExpired)
 
   const solverCompetition = useMemo(() => {
     const solversMap = apiSolverCompetition?.reduce(
@@ -284,19 +284,28 @@ function useCountdownStartUpdater(
   orderId: string,
   countdown: OrderProgressBarState['countdown'],
   backendApiStatus: OrderProgressBarState['backendApiStatus'],
+  shouldDisableCountdown: boolean,
 ): void {
   const setCountdown = useSetExecutingOrderCountdownCallback()
 
   useEffect(() => {
+    if (shouldDisableCountdown) {
+      // Loose `!= null` on purpose: both null and undefined should reset the countdown, but 0 must stay; strict `!== null` would let undefined slip through
+      if (countdown != null) {
+        setCountdown(orderId, null)
+      }
+      return
+    }
+
     // Start countdown immediately when backend becomes active to reflect real protocol timing
     // The solver competition genuinely starts when backend is active, regardless of UI delays
     if (countdown == null && backendApiStatus === CompetitionOrderStatus.type.ACTIVE) {
       setCountdown(orderId, PROGRESS_BAR_TIMER_DURATION)
-    } else if (backendApiStatus !== CompetitionOrderStatus.type.ACTIVE && countdown) {
+    } else if (backendApiStatus !== CompetitionOrderStatus.type.ACTIVE && countdown != null) {
       // Every time backend status is not `active` and countdown is set, reset the countdown
       setCountdown(orderId, null)
     }
-  }, [backendApiStatus, setCountdown, countdown, orderId])
+  }, [backendApiStatus, setCountdown, countdown, orderId, shouldDisableCountdown])
 }
 
 function useCancellingOrderUpdater(orderId: string, isCancelling: boolean): void {

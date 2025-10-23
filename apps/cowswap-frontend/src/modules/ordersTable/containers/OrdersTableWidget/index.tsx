@@ -1,5 +1,6 @@
 import { ReactNode, useMemo, useState } from 'react'
 
+import { useTheme } from '@cowprotocol/common-hooks'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
@@ -34,6 +35,7 @@ export function OrdersTableWidget(props: OrdersTableWidgetProps): ReactNode {
   const { children, ...stateParams } = props
 
   const { account } = useWalletInfo()
+  const { darkMode } = useTheme()
 
   const [searchTerm, setSearchTerm] = useState('')
 
@@ -60,7 +62,7 @@ export function OrdersTableWidget(props: OrdersTableWidgetProps): ReactNode {
       {!!pendingOrders?.length && <UnfillableOrdersUpdater orders={pendingOrders} />}
       <OrdersTableStateUpdater searchTerm={searchTerm} {...stateParams} />
       {children}
-      <OrdersTableContainer searchTerm={searchTerm}>
+      <OrdersTableContainer searchTerm={searchTerm} isDarkMode={darkMode}>
         {!!pendingOrders?.length && <MultipleCancellationMenu pendingOrders={pendingOrders} />}
 
         {/* If account is not connected, don't show the search input */}
