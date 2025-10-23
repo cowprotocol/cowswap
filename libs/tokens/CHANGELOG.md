@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.28.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.27.0...tokens-v1.28.0) (2025-10-23)
+
+
+### Features
+
+* add ondo token list to bnb ([#6398](https://github.com/cowprotocol/cowswap/issues/6398)) ([ae9d050](https://github.com/cowprotocol/cowswap/commit/ae9d050bddf99c328c512a6dc3c2bda88dfc7271))
+
 ## [1.27.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.26.0...tokens-v1.27.0) (2025-09-25)
 
 
