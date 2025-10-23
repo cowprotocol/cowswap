@@ -11,7 +11,6 @@ import { TradeFormValidation, TradeFormValidationContext } from '../types'
 export function validateTradeForm(context: TradeFormValidationContext): TradeFormValidation[] | null {
   const {
     derivedTradeState,
-    isBundlingSupported,
     isWrapUnwrap,
     isSupportedWallet,
     isSafeReadonlyUser,
@@ -153,7 +152,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
   }
 
   if (isApproveRequired !== ApproveRequiredReason.NotRequired) {
-    if (isBundlingSupported) {
+    if (isApproveRequired === ApproveRequiredReason.BundleApproveRequired) {
       validations.push(TradeFormValidation.ApproveAndSwapInBundle)
     }
     validations.push(TradeFormValidation.ApproveRequired)

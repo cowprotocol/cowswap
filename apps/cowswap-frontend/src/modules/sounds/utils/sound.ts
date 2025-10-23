@@ -1,4 +1,5 @@
-import { ACTIVE_CUSTOM_THEME, CustomTheme } from '@cowprotocol/common-const'
+import { APRILS_FOOLS_FLAG_KEY, CustomTheme, resolveCustomThemeForContext } from '@cowprotocol/common-const'
+import type { FeatureFlags } from '@cowprotocol/common-const'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { jotaiStore } from '@cowprotocol/core'
 import { CowSwapWidgetAppParams } from '@cowprotocol/widget-lib'
@@ -35,6 +36,8 @@ const COW_SOUND_TO_WIDGET_KEY: Record<SoundType, WidgetSounds> = {
   ERROR: 'orderError',
 }
 
+const APRIL_FOOL_STORAGE_KEY = 'lastAprilFoolSoundSelections' as const
+
 const APRIL_FOOL_SOUND_SEND = [
   '/audio/cowswap-aprils2025-yoga.mp3',
   '/audio/cowswap-aprils2025-epic.mp3',
@@ -49,67 +52,82 @@ function isDarkMode(): boolean {
 }
 
 function pickRandomAprilsFoolSound(): string {
-  // Check in the local storage for latest selections
-  const lastSelections = localStorage.getItem('lastAprilFoolSoundSelections')
-  const lastSelectionsArray: string[] = lastSelections ? JSON.parse(lastSelections) : []
+  let played: string[] = []
+  if (typeof localStorage !== 'undefined') {
+    try {
+      const raw = localStorage.getItem(APRIL_FOOL_STORAGE_KEY)
+      const parsed = raw ? JSON.parse(raw) : []
+      if (Array.isArray(parsed)) {
+        played = parsed.filter((value): value is string => typeof value === 'string')
+      }
+    } catch {
+      // Ignore parse errors and reset the cycle
+    }
+  }
 
-  // Pick one from the remaining options
-  const remainingOptions = APRIL_FOOL_SOUND_SEND.filter((sound) => !lastSelectionsArray.includes(sound))
-  const randomPick = remainingOptions[Math.floor(Math.random() * remainingOptions.length)]
+  let pool = APRIL_FOOL_SOUND_SEND.filter((sound) => !played.includes(sound))
+  if (pool.length === 0) {
+    played = []
+    pool = [...APRIL_FOOL_SOUND_SEND]
+  }
 
-  // Add the latest selection and reset the selection if all sounds have been played
-  lastSelectionsArray.push(randomPick)
-  const newSelection = lastSelectionsArray.length === APRIL_FOOL_SOUND_SEND.length ? [] : lastSelectionsArray
+  const randomPick = pool[Math.floor(Math.random() * pool.length)]
+  const nextPlayed = [...played, randomPick]
+  const stored = nextPlayed.length === APRIL_FOOL_SOUND_SEND.length ? [] : nextPlayed
 
-  // Persist the selection
-  localStorage.setItem('lastAprilFoolSoundSelections', JSON.stringify(newSelection))
+  if (typeof localStorage !== 'undefined') {
+    try {
+      localStorage.setItem(APRIL_FOOL_STORAGE_KEY, JSON.stringify(stored))
+    } catch {
+      // Ignore storage quota or availability errors; audio rotation still works in-memory
+    }
+  }
 
   return randomPick
 }
 
-function getThemedSounds(params: {
-  type: SoundType
-  activeTheme: CustomTheme
-  isChristmasEnabled: boolean
-  isHalloweenEnabled: boolean
-  isAprilsFoolsEnabled: boolean
-}): Partial<Sounds> {
-  const { activeTheme, isChristmasEnabled, isHalloweenEnabled, isAprilsFoolsEnabled } = params
-  if (activeTheme === CustomTheme.CHRISTMAS && isChristmasEnabled) return WINTER_SOUNDS
-  if (activeTheme === CustomTheme.HALLOWEEN && isHalloweenEnabled && isDarkMode()) return HALLOWEEN_SOUNDS
+function getSeasonalSounds(featureFlags?: FeatureFlags): Partial<Sounds> {
+  const darkModeEnabled = isDarkMode()
+  const activeSeasonalTheme = resolveCustomThemeForContext(featureFlags, { darkModeEnabled })
 
-  if (isAprilsFoolsEnabled)
-    return {
-      SEND: pickRandomAprilsFoolSound(),
-    }
+  if (activeSeasonalTheme === CustomTheme.HALLOWEEN) return HALLOWEEN_SOUNDS
+  if (activeSeasonalTheme === CustomTheme.CHRISTMAS) return WINTER_SOUNDS
+
   return {}
 }
 
 function getThemeBasedSound(type: SoundType): string {
-  // TODO: load featureFlags when enabling again
-  const featureFlags = jotaiStore.get(featureFlagsAtom) as Record<string, boolean>
-  const { isAprilsFoolsEnabled /*isChristmasEnabled, isHalloweenEnabled */ } = featureFlags
-  const isChristmasEnabled = false
-  const isHalloweenEnabled = false
-  const isInjectedWidgetMode = isInjectedWidget()
+  const featureFlags = jotaiStore.get(featureFlagsAtom) as FeatureFlags
+  const isAprilsFoolsEnabled = Boolean(featureFlags?.[APRILS_FOOLS_FLAG_KEY])
 
-  // When in widget mode, always return default sounds
-  if (isInjectedWidgetMode) {
-    return DEFAULT_COW_SOUNDS[type]
+  if (isAprilsFoolsEnabled && type === 'SEND') {
+    return pickRandomAprilsFoolSound()
   }
 
-  const themedSounds = getThemedSounds({
-    type,
-    activeTheme: ACTIVE_CUSTOM_THEME,
-    isChristmasEnabled,
-    isHalloweenEnabled,
-    isAprilsFoolsEnabled,
-  })
+  const themedSounds = getSeasonalSounds(featureFlags)
   return themedSounds[type] || DEFAULT_COW_SOUNDS[type]
 }
 
-const EMPTY_SOUND = new Audio('')
 const SOUND_CACHE: Record<string, HTMLAudioElement | undefined> = {}
+
+function getEmptySound(): HTMLAudioElement {
+  if (typeof Audio !== 'undefined') {
+    return new Audio('')
+  }
+
+  const stub: Partial<HTMLAudioElement> = {
+    play: () => Promise.resolve(),
+    pause: () => undefined,
+    addEventListener: () => undefined,
+    removeEventListener: () => undefined,
+  }
+
+  return stub as HTMLAudioElement
+}
+
+function createAudioOrEmpty(src: string): HTMLAudioElement {
+  return typeof Audio !== 'undefined' ? new Audio(src) : getEmptySound()
+}
 
 function getWidgetSoundUrl(type: SoundType): string | null | undefined {
   const { params } = jotaiStore.get(injectedWidgetParamsAtom)
@@ -124,14 +142,14 @@ function getAudio(type: SoundType): HTMLAudioElement {
 
   if (isWidgetMode) {
     if (widgetSound === null) {
-      return EMPTY_SOUND
+      return getEmptySound()
     }
     // If in widget mode, use widget sound if provided, otherwise use default sound
     const soundPath = widgetSound || DEFAULT_COW_SOUNDS[type]
     let sound = SOUND_CACHE[soundPath]
 
     if (!sound) {
-      sound = new Audio(soundPath)
+      sound = createAudioOrEmpty(soundPath)
       SOUND_CACHE[soundPath] = sound
     }
 
@@ -143,7 +161,7 @@ function getAudio(type: SoundType): HTMLAudioElement {
   let sound = SOUND_CACHE[soundPath]
 
   if (!sound) {
-    sound = new Audio(soundPath)
+    sound = createAudioOrEmpty(soundPath)
     SOUND_CACHE[soundPath] = sound
   }
 
@@ -161,3 +179,7 @@ export function getCowSoundSuccess(): HTMLAudioElement {
 export function getCowSoundError(): HTMLAudioElement {
   return getAudio('ERROR')
 }
+
+export const __soundTestUtils = {
+  getThemeBasedSound,
+} as const

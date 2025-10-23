@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai'
 
-import { TradeApproveState, tradeApproveStateAtom } from '../index'
+import { ApproveProgressModalState, approveProgressModalStateAtom } from '../index'
 
-export function useTradeApproveState(): TradeApproveState {
-  return useAtomValue(tradeApproveStateAtom)
+export function useTradeApproveState(): ApproveProgressModalState {
+  return useAtomValue(approveProgressModalStateAtom)
 }

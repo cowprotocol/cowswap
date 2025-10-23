@@ -41,7 +41,9 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
 
   const isSafeReadonlyUser = gnosisSafeInfo?.isReadOnly === true
 
-  const isApproveRequired = useIsApprovalOrPermitRequired()
+  const isApproveRequired = useIsApprovalOrPermitRequired({
+    isBundlingSupportedOrEnabledForContext: isBundlingSupported,
+  }).reason
 
   const isInsufficientBalanceOrderAllowed = tradeType === TradeType.LIMIT_ORDER
 

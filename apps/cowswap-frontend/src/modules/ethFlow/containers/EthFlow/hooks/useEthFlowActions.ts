@@ -5,12 +5,12 @@ import { WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { MaxUint256 } from '@ethersproject/constants'
 
 import { WrapUnwrapCallback } from 'legacy/hooks/useWrapCallback'
 import { Field } from 'legacy/state/types'
 
-import { TradeApproveCallback } from 'modules/erc20Approve'
+import { MAX_APPROVE_AMOUNT, TradeApproveCallback } from 'modules/erc20Approve'
+import { useSwapPartialApprovalToggleState } from 'modules/swap/hooks/useSwapSettings'
 import { useOnCurrencySelection, useTradeConfirmActions } from 'modules/trade'
 
 import { updateEthFlowContextAtom } from '../../../state/ethFlowContextAtom'
@@ -32,18 +32,15 @@ export interface EthFlowActions {
   directSwap(): void
 }
 
-export function useEthFlowActions(callbacks: EthFlowActionCallbacks, partialAmountToApprove?: bigint): EthFlowActions {
+export function useEthFlowActions(callbacks: EthFlowActionCallbacks, amountToApprove?: bigint): EthFlowActions {
   const { chainId } = useWalletInfo()
 
   const updateEthFlowContext = useSetAtom(updateEthFlowContextAtom)
+  const { isPartialApproveEnabled } = useFeatureFlags()
 
   const onCurrencySelection = useOnCurrencySelection()
   const { onOpen: openSwapConfirmModal } = useTradeConfirmActions()
-  const { isPartialApproveEnabled } = useFeatureFlags()
-
-  const amountToApprove = isPartialApproveEnabled
-    ? partialAmountToApprove || MaxUint256.toBigInt()
-    : MaxUint256.toBigInt()
+  const [isPartialApproveEnabledBySettings] = useSwapPartialApprovalToggleState(isPartialApproveEnabled)
 
   return useMemo(() => {
     function sendTransaction(type: 'approve' | 'wrap', callback: () => Promise<string | undefined>): Promise<void> {
@@ -71,9 +68,13 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks, partialAmou
       })
     }
 
-    const approve = (useModals?: boolean): Promise<void> => {
+    const approve = (): Promise<void> => {
+      const unitsToApprove =
+        isPartialApproveEnabled && isPartialApproveEnabledBySettings
+          ? amountToApprove || MAX_APPROVE_AMOUNT
+          : MAX_APPROVE_AMOUNT
       return sendTransaction('approve', () => {
-        return callbacks.approve(amountToApprove, { useModals: !!useModals }).then((res) => res?.transactionHash)
+        return callbacks.approve(unitsToApprove).then((res) => res?.txResponse.hash)
       })
     }
 
@@ -97,5 +98,14 @@ export function useEthFlowActions(callbacks: EthFlowActionCallbacks, partialAmou
       wrap,
       directSwap,
     }
-  }, [callbacks, chainId, updateEthFlowContext, onCurrencySelection, openSwapConfirmModal, amountToApprove])
+  }, [
+    updateEthFlowContext,
+    callbacks,
+    onCurrencySelection,
+    chainId,
+    openSwapConfirmModal,
+    isPartialApproveEnabled,
+    isPartialApproveEnabledBySettings,
+    amountToApprove,
+  ])
 }

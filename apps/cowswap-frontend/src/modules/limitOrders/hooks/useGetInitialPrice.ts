@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react'
-
 import { FractionUtils, getWrappedToken } from '@cowprotocol/common-utils'
 import { Fraction } from '@uniswap/sdk-core'
 
@@ -15,16 +13,13 @@ import { useLimitOrdersDerivedState } from './useLimitOrdersDerivedState'
 // When return null it means we failed on price loading
 export function useGetInitialPrice(): { price: Fraction | null; isLoading: boolean } {
   const { inputCurrency, outputCurrency } = useLimitOrdersDerivedState()
-  const [isLoading, setIsLoading] = useState(false)
 
   const inputToken = inputCurrency && getWrappedToken(inputCurrency)
   const outputToken = outputCurrency && getWrappedToken(outputCurrency)
   const inputUsdPrice = useUsdPrice(inputToken)
   const outputUsdPrice = useUsdPrice(outputToken)
 
-  useEffect(() => {
-    setIsLoading(!!inputUsdPrice?.isLoading || !!outputUsdPrice?.isLoading)
-  }, [inputUsdPrice?.isLoading, outputUsdPrice?.isLoading])
+  const isLoading = Boolean(inputUsdPrice?.isLoading || outputUsdPrice?.isLoading)
 
   const price = useAsyncMemo(
     async () => {

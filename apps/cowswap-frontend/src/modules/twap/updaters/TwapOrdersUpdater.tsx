@@ -1,5 +1,5 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { ComposableCoW } from '@cowprotocol/abis'
 import { useDebounce } from '@cowprotocol/common-hooks'
@@ -19,6 +19,8 @@ import { buildTwapOrdersItems } from '../utils/buildTwapOrdersItems'
 import { isTwapOrderExpired } from '../utils/getTwapOrderStatus'
 
 const ORDERS_UPDATE_DEBOUNCE = ms`500ms`
+const TWAP_ORDERS_UPDATE_INTERVAL = ms`3s`
+const AUTH_TIME_THRESHOLD = ms`1m`
 
 export function TwapOrdersUpdater(props: {
   safeAddress: string
@@ -32,19 +34,25 @@ export function TwapOrdersUpdater(props: {
   const deleteTwapOrders = useSetAtom(deleteTwapOrdersFromListAtom)
   const safeInfo = useGnosisSafeInfo()
   const ordersSafeData = useFetchTwapOrdersFromSafe(props)
+
+  const [updateTimestamp, setUpdateTimestamp] = useState(0)
   const safeNonce = safeInfo?.nonce
+  const lastUpdateTimestamp = useRef(0)
 
   const twapOrdersListRef = useRef(twapOrdersList)
+  // eslint-disable-next-line react-hooks/refs
   twapOrdersListRef.current = twapOrdersList
 
   const allOrdersInfo = useDebounce(useAllTwapOrdersInfo(ordersSafeData), ORDERS_UPDATE_DEBOUNCE)
 
   const _twapOrderExecutions = useTwapOrdersExecutions(allOrdersInfo)
   const twapOrderExecutions = useRef(_twapOrderExecutions)
+  // eslint-disable-next-line react-hooks/refs
   twapOrderExecutions.current = _twapOrderExecutions
 
   // Here we can split all orders in two groups: 1. Not signed + expired, 2. Open + cancelled
   const pendingTwapOrderIds = useMemo(() => {
+    // eslint-disable-next-line react-hooks/refs
     return allOrdersInfo.reduce<string[]>((acc, info) => {
       if (shouldCheckOrderAuth(info, twapOrdersListRef.current[info.id])) {
         acc.push(info.id)
@@ -58,7 +66,27 @@ export function TwapOrdersUpdater(props: {
   const ordersAuthResult = useTwapOrdersAuthMulticall(safeAddress, composableCowContract, pendingTwapOrderIds)
 
   useEffect(() => {
+    const interval = setInterval(() => {
+      setUpdateTimestamp(Date.now())
+    }, TWAP_ORDERS_UPDATE_INTERVAL)
+
+    return () => {
+      clearInterval(interval)
+    }
+  }, [])
+
+  useEffect(() => {
     if (!ordersAuthResult) return
+
+    // Do not update more often than once in 3 seconds
+    // At the same time, do updates every 3 seconds
+    if (
+      updateTimestamp &&
+      lastUpdateTimestamp.current &&
+      updateTimestamp - lastUpdateTimestamp.current < TWAP_ORDERS_UPDATE_INTERVAL
+    ) {
+      return
+    }
 
     const items = buildTwapOrdersItems(
       chainId,
@@ -88,14 +116,22 @@ export function TwapOrdersUpdater(props: {
       delete items[id]
     })
 
+    lastUpdateTimestamp.current = Date.now()
     updateTwapOrders(items)
     deleteTwapOrders(ordersToDelete)
-  }, [chainId, safeAddress, safeNonce, allOrdersInfo, ordersAuthResult, updateTwapOrders, deleteTwapOrders])
+  }, [
+    chainId,
+    safeAddress,
+    safeNonce,
+    allOrdersInfo,
+    ordersAuthResult,
+    updateTimestamp,
+    updateTwapOrders,
+    deleteTwapOrders,
+  ])
 
   return null
 }
-
-const AUTH_TIME_THRESHOLD = ms`1m`
 
 function shouldCheckOrderAuth(info: TwapOrderInfo, existingOrder: TwapOrderItem | undefined): boolean {
   const { isExecuted, confirmations, executionDate: _executionDate } = info.safeData.safeTxParams

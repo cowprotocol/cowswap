@@ -33,7 +33,6 @@ interface SetupTradeAmountsParams {
  *
  * In case when both sellAmount and buyAmount specified, the price will be automatically calculated
  */
-// TODO: Break down this large function into smaller functions
 export function useSetupTradeAmountsFromUrl({ onAmountsUpdate, onlySell }: SetupTradeAmountsParams): void {
   const navigate = useNavigate()
   const { search, pathname } = useLocation()
@@ -43,6 +42,7 @@ export function useSetupTradeAmountsFromUrl({ onAmountsUpdate, onlySell }: Setup
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount } = state || {}
 
   const isAtLeastOneAmountIsSetRef = useRef(false)
+  // eslint-disable-next-line react-hooks/refs
   isAtLeastOneAmountIsSetRef.current = Boolean(inputCurrencyAmount || outputCurrencyAmount)
 
   const cleanParams = useCallback(() => {

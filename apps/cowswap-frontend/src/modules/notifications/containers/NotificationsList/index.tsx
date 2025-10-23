@@ -1,23 +1,67 @@
 import { useSetAtom } from 'jotai'
 import React, { ReactNode, useEffect, useMemo } from 'react'
 
+import ICON_MESSAGE_READ from '@cowprotocol/assets/images/icon-message-read.svg'
+
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
-import { ListWrapper, NoNotifications, NotificationCard, NotificationsListWrapper, NotificationThumb } from './styled'
+import {
+  ListWrapper,
+  NoNotifications,
+  NotificationCard,
+  NotificationsListWrapper,
+  NotificationThumb,
+  MessageReadIcon,
+  EnableAlertsLink,
+} from './styled'
 
+import { NOTIFICATION_MARK_READ_DELAY_MS } from '../../constants'
 import { useAccountNotifications } from '../../hooks/useAccountNotifications'
 import { useUnreadNotifications } from '../../hooks/useUnreadNotifications'
 import { markNotificationsAsReadAtom } from '../../state/readNotificationsAtom'
 import { groupNotificationsByDate } from '../../utils/groupNotificationsByDate'
 
+interface EmptyNotificationsProps {
+  hasSubscription: boolean | undefined
+  onToggleSettings: (() => void) | undefined
+}
+
+function EmptyNotifications({ hasSubscription, onToggleSettings }: EmptyNotificationsProps): ReactNode {
+  return (
+    <NoNotifications>
+      <MessageReadIcon src={ICON_MESSAGE_READ} />
+      <h4>You're all caught up</h4>
+      {!hasSubscription && onToggleSettings && (
+        <p>
+          <EnableAlertsLink
+            onClick={onToggleSettings}
+            data-click-event={toCowSwapGtmEvent({
+              category: CowSwapAnalyticsCategory.NOTIFICATIONS,
+              action: 'Enable trade alerts',
+              label: 'empty state link',
+            })}
+          >
+            Enable trade alerts
+          </EnableAlertsLink>{' '}
+          for fills and expiries
+        </p>
+      )}
+    </NoNotifications>
+  )
+}
+
 const DATE_FORMAT_OPTION: Intl.DateTimeFormatOptions = {
   dateStyle: 'long',
 }
 
+interface NotificationsListProps {
+  children: ReactNode
+  hasSubscription: boolean | undefined
+  onToggleSettings: (() => void) | undefined
+}
+
 // TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
-export function NotificationsList({ children }: { children: ReactNode }) {
+export function NotificationsList({ children, hasSubscription, onToggleSettings }: NotificationsListProps): ReactNode {
   const notifications = useAccountNotifications()
   const unreadNotifications = useUnreadNotifications()
   const markNotificationsAsRead = useSetAtom(markNotificationsAsReadAtom)
@@ -27,9 +71,13 @@ export function NotificationsList({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!notifications) return
 
-    setTimeout(() => {
+    const timeoutId = setTimeout(() => {
       markNotificationsAsRead(notifications.map(({ id }) => id) || [])
-    }, 1000)
+    }, NOTIFICATION_MARK_READ_DELAY_MS)
+
+    return () => {
+      clearTimeout(timeoutId)
+    }
   }, [notifications, markNotificationsAsRead])
 
   return (
@@ -79,10 +127,7 @@ export function NotificationsList({ children }: { children: ReactNode }) {
         ))}
 
         {groups?.length === 0 && (
-          <NoNotifications>
-            <h4>Nothing new yet</h4>
-            <p>As soon as anything important or interesting happens, we will definitely let you know.</p>
-          </NoNotifications>
+          <EmptyNotifications hasSubscription={hasSubscription} onToggleSettings={onToggleSettings} />
         )}
       </ListWrapper>
     </>

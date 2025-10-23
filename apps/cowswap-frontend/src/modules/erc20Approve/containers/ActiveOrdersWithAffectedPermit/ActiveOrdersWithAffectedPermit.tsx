@@ -1,54 +1,52 @@
-import { ReactNode, useState } from 'react'
+import { ReactNode } from 'react'
 
 import { TokenSymbol } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
 
-import { AlertCircle } from 'react-feather'
-
 import { useOnlyPendingOrders } from 'legacy/state/orders/hooks'
 
 import { AffectedPermitOrdersTable } from 'modules/ordersTable'
 
-import { ToggleArrow } from 'common/pure/ToggleArrow'
+import { AccordionBanner } from 'common/pure/AccordionBanner'
 import { doesOrderHavePermit } from 'common/utils/doesOrderHavePermit'
 
 import * as styledEl from './styled'
 
-export function ActiveOrdersWithAffectedPermit({ currency }: { currency: Currency }): ReactNode {
+type ActiveOrdersWithAffectedPermitProps = {
+  currency: Currency
+  orderId?: string
+}
+
+export function ActiveOrdersWithAffectedPermit({ currency, orderId }: ActiveOrdersWithAffectedPermitProps): ReactNode {
   const { chainId, account } = useWalletInfo()
   const pendingOrders = useOnlyPendingOrders(chainId, account)
 
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
-
   const ordersWithPermit = pendingOrders.filter((order) => {
-    // need to check for buy order
-    return currency.equals(order.inputToken) && doesOrderHavePermit(order)
+    return order.id !== orderId && currency.equals(order.inputToken) && doesOrderHavePermit(order)
   })
 
   if (!ordersWithPermit.length) return null
 
+  const isPlural = ordersWithPermit.length > 1
+  const orderWord = isPlural ? 'orders' : 'order'
+
+  const titleContent = (
+    <>
+      Partial approval may block <span className={'font-bold'}>{ordersWithPermit.length}</span> other {orderWord}.
+    </>
+  )
+
   return (
-    <styledEl.DropdownWrapper>
-      <styledEl.DropdownHeader isOpened={isDropdownOpen} onClick={(): void => setIsDropdownOpen((prev) => !prev)}>
-        <AlertCircle />
-        Partial approval may block <span className={'font-bold'}>{ordersWithPermit.length}</span> other orders
-        <styledEl.ArrowWrapper>
-          <ToggleArrow size={10} isOpen={isDropdownOpen} />
-        </styledEl.ArrowWrapper>
-      </styledEl.DropdownHeader>
-      {isDropdownOpen ? (
-        <>
-          <styledEl.DropdownList>
-            <AffectedPermitOrdersTable orders={ordersWithPermit} />
-          </styledEl.DropdownList>
-          <styledEl.DropdownFooter>
-            There are <span className={'font-bold'}>{ordersWithPermit.length}</span> existing orders using a{' '}
-            <TokenSymbol className={'font-bold'} token={currency} /> token approval. If you sign a new one, only one
-            order can fill. Continue with current permit amount or choose full approval so all orders can be filled.
-          </styledEl.DropdownFooter>
-        </>
-      ) : null}
-    </styledEl.DropdownWrapper>
+    <AccordionBanner title={titleContent} accordionPadding={'9px 6px'}>
+      <styledEl.DropdownList>
+        <AffectedPermitOrdersTable orders={ordersWithPermit} />
+      </styledEl.DropdownList>
+      <styledEl.DropdownFooter>
+        There {isPlural ? 'are' : 'is'} <span className={'font-bold'}>{ordersWithPermit.length}</span> existing{' '}
+        {orderWord} using a <TokenSymbol className={'font-bold'} token={currency} /> token approval. Partial approval  
+        may affect the execution of other orders. Adjust the amount or choose full approval to proceed.
+      </styledEl.DropdownFooter>
+    </AccordionBanner>
   )
 }

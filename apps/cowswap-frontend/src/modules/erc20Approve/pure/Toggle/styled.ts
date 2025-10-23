@@ -8,6 +8,7 @@ export const ToggleWrapper = styled.div`
   border-radius: 12px;
   background: var(${UI.COLOR_BACKGROUND});
   color: var(${UI.COLOR_TEXT_PAPER});
+  min-height: 58px;
 `
 
 export const OptionWrapper = styled.button<{ isActive?: boolean }>`
@@ -28,7 +29,6 @@ export const PartialAmountWrapper = styled.div<{ isActive?: boolean }>`
   font-size: 12px;
   padding: 1px 6px;
   cursor: ${({ isActive }) => (isActive ? 'default' : 'pointer')};
-  background: var(${UI.COLOR_INFO_BG});
 `
 
 export const OptionTitle = styled.div`

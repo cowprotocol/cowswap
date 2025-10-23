@@ -1,118 +1,158 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 
-import { Command } from '@cowprotocol/types'
+import { useMediaQuery, useInterval, useElementViewportTracking } from '@cowprotocol/common-hooks'
 
-import { Options, Placement } from '@popperjs/core'
+import { Options, Placement, Modifier } from '@popperjs/core'
 import { Portal } from '@reach/portal'
 import { usePopper } from 'react-popper'
 
-import { Arrow, PopoverContainer, ReferenceElement } from './styled'
+import { Arrow, MobileBackdrop, PopoverContainer, ReferenceElement } from './styled'
+
+import { Media } from '../../consts'
+import { calculateAvailableSpaceAbove } from '../../utils/calculateAvailableSpaceAbove'
+
+import type { OffsetsFunction } from '@popperjs/core/lib/modifiers/offset'
+
+export enum PopoverMobileMode {
+  Popper = 'popper',
+  FullWidth = 'fullWidth',
+}
+
+const MOBILE_FULL_WIDTH_STYLES = {
+  width: '100vw',
+  maxWidth: '100vw',
+  boxSizing: 'border-box' as const,
+}
+
+function createMobileModifiers(arrowElement: HTMLDivElement | null): Array<Partial<Modifier<string, Record<string, unknown>>>> {
+  return [
+    {
+      name: 'offset',
+      options: {
+        offset: ({ reference }: Parameters<OffsetsFunction>[0]) => {
+          const refCenterX = reference.x + reference.width / 2
+          const viewportCenterX = window.innerWidth / 2
+          const skidding = viewportCenterX - refCenterX
+          const distance = 8
+          return [skidding, distance]
+        },
+      },
+    },
+    { name: 'preventOverflow', enabled: false },
+    { name: 'flip', enabled: false },
+    { name: 'arrow', options: { element: arrowElement, padding: 8 } },
+  ]
+}
+
+function createDesktopModifiers(arrowElement: HTMLDivElement | null): Array<Partial<Modifier<string, Record<string, unknown>>>> {
+  return [
+    { name: 'offset', options: { offset: [8, 8] } },
+    { name: 'arrow', options: { element: arrowElement } },
+    { name: 'preventOverflow', options: { padding: 8 } },
+  ]
+}
+
 
 export interface PopoverContainerProps {
   show: boolean
   bgColor?: string
   color?: string
+  borderColor?: string
 }
 
 export interface PopoverProps extends PopoverContainerProps, Omit<React.HTMLAttributes<HTMLDivElement>, 'content'> {
   content: React.ReactNode
   children: React.ReactNode
   placement?: Placement
+  mobileMode?: PopoverMobileMode
+  showMobileBackdrop?: boolean
+  mobileBorderRadius?: string
+  zIndex?: number
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
-export default function Popover(props: PopoverProps) {
-  const { content, show, children, placement = 'auto', bgColor, color, className } = props
+export default function Popover(props: PopoverProps): React.JSX.Element {
+  const {
+    content,
+    show,
+    children,
+    placement = 'auto',
+    bgColor,
+    color,
+    borderColor,
+    className,
+    mobileMode = PopoverMobileMode.Popper,
+    showMobileBackdrop = false,
+    mobileBorderRadius,
+    zIndex = 999999,
+  } = props
 
   const [referenceElement, setReferenceElement] = useState<HTMLDivElement | null>(null)
   const [popperElement, setPopperElement] = useState<HTMLDivElement | null>(null)
   const [arrowElement, setArrowElement] = useState<HTMLDivElement | null>(null)
 
+  const isMobile = useMediaQuery(Media.upToSmall(false))
+  const shouldUseFullWidth = isMobile && mobileMode === PopoverMobileMode.FullWidth
+
+  // Use hook for viewport tracking and utility for backdrop height calculation
+  const { rect } = useElementViewportTracking(referenceElement, shouldUseFullWidth && showMobileBackdrop)
+  
+  const backdropHeight = useMemo(() => {
+    if (!shouldUseFullWidth || !showMobileBackdrop) return '100vh'
+    return calculateAvailableSpaceAbove(rect, 8)
+  }, [rect, shouldUseFullWidth, showMobileBackdrop])
+
   const options = useMemo(
     (): Options => ({
-      placement,
+      placement: shouldUseFullWidth ? 'top' : placement,
       strategy: 'fixed',
-      modifiers: [
-        { name: 'offset', options: { offset: [8, 8] } },
-        { name: 'arrow', options: { element: arrowElement } },
-        { name: 'preventOverflow', options: { padding: 8 } },
-      ],
+      modifiers: shouldUseFullWidth
+        ? createMobileModifiers(arrowElement)
+        : createDesktopModifiers(arrowElement),
     }),
-    [arrowElement, placement],
+    [arrowElement, placement, shouldUseFullWidth],
   )
 
   const { styles, update, attributes } = usePopper(referenceElement, popperElement, options)
 
   const updateCallback = useCallback(() => {
-    update && update()
+    update?.()
   }, [update])
-
-  useInterval(updateCallback, show ? 100 : null)
+  const intervalDelay = useMemo(() => (show ? 100 : null), [show])
+  useInterval(updateCallback, intervalDelay)
 
   return (
     <>
-      {/* TODO: Replace any with proper type definitions */}
-      {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-      <ReferenceElement ref={setReferenceElement as any}>{children}</ReferenceElement>
+      <ReferenceElement ref={setReferenceElement}>{children}</ReferenceElement>
       <Portal>
+        {isMobile && showMobileBackdrop && <MobileBackdrop show={show} maxHeight={backdropHeight} />}
         <PopoverContainer
           className={className}
           show={show}
-          /* TODO: Replace any with proper type definitions */
-          /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-          ref={setPopperElement as any}
+          ref={setPopperElement}
           style={{
             ...styles.popper,
-            zIndex: 999999,
+            zIndex,
+            // Add full-width styling for mobile
+            ...(shouldUseFullWidth && MOBILE_FULL_WIDTH_STYLES),
+            // Add mobile border radius if specified
+            ...(shouldUseFullWidth && mobileBorderRadius && { borderRadius: mobileBorderRadius }),
           }}
           {...attributes.popper}
           bgColor={bgColor}
           color={color}
+          borderColor={borderColor}
         >
           {content}
           <Arrow
-            className={`arrow-${attributes.popper?.['data-popper-placement'] ?? ''}`}
-            /* TODO: Replace any with proper type definitions */
-            /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-            ref={setArrowElement as any}
+            className={`arrow-${(attributes.popper?.['data-popper-placement'] as string | undefined)?.split('-')[0] ?? ''}`}
+            ref={setArrowElement}
             style={styles.arrow}
             bgColor={bgColor}
+            borderColor={borderColor}
             {...attributes.arrow}
           />
         </PopoverContainer>
       </Portal>
     </>
   )
-}
-
-// TODO: reuse hook from @cowprotocol/common-hooks
-// Currently it's not possible because of dependency inversion
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function useInterval(callback: Command, delay: null | number, leading = true) {
-  const savedCallback = useRef<Command>(null)
-
-  // Remember the latest callback.
-  useEffect(() => {
-    savedCallback.current = callback
-  }, [callback])
-
-  // Set up the interval.
-  useEffect(() => {
-    // TODO: Add proper return type annotation
-    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-    function tick() {
-      const { current } = savedCallback
-      current && current()
-    }
-
-    if (delay !== null) {
-      if (leading) tick()
-      const id = setInterval(tick, delay)
-      return () => clearInterval(id)
-    }
-    return
-  }, [delay, leading])
 }

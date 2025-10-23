@@ -15,6 +15,31 @@ import {
 export const ordersProgressBarStateAtom = atom<OrdersProgressBarState>({})
 
 /**
+ * Derived write-only atom for removing state entries no longer tracked
+ */
+export const pruneOrdersProgressBarState = atom(null, (get, set, trackedOrderIds: string[]) => {
+  const fullState = get(ordersProgressBarStateAtom)
+  const trackedIds = new Set(trackedOrderIds)
+
+  let changed = false
+  const nextState = Object.entries(fullState).reduce<OrdersProgressBarState>((acc, [orderId, state]) => {
+    if (trackedIds.has(orderId)) {
+      acc[orderId] = state
+    } else {
+      changed = true
+    }
+
+    return acc
+  }, {})
+
+  if (!changed && trackedOrderIds.every((orderId) => orderId in fullState)) {
+    return
+  }
+
+  set(ordersProgressBarStateAtom, nextState)
+})
+
+/**
  * Derived atom exposing only the countdown
  */
 export const ordersProgressBarCountdown = atom(
@@ -51,20 +76,45 @@ export const updateOrderProgressBarCountdown = atom(
   (get, set, { orderId, value }: UpdateOrderProgressBarCountdownParams) => {
     const fullState = get(ordersProgressBarStateAtom)
 
-    const singleOrderState = { ...fullState[orderId] }
-    const currentValue = singleOrderState.countdown
+    const previousOrderState = fullState[orderId]
 
-    if (currentValue === value) {
+    if (!previousOrderState) {
+      if (value === null) {
+        return
+      }
+
+      set(ordersProgressBarStateAtom, {
+        ...fullState,
+        [orderId]: { countdown: value },
+      })
+
       return
     }
 
     if (value === null) {
-      delete singleOrderState.countdown
-    } else {
-      singleOrderState.countdown = value
+      if (previousOrderState.countdown == null) {
+        return
+      }
+
+      const nextOrderState = { ...previousOrderState }
+      delete nextOrderState.countdown
+
+      set(ordersProgressBarStateAtom, { ...fullState, [orderId]: nextOrderState })
+
+      return
     }
 
-    set(ordersProgressBarStateAtom, { ...fullState, [orderId]: singleOrderState })
+    if (previousOrderState.countdown === value) {
+      return
+    }
+
+    set(ordersProgressBarStateAtom, {
+      ...fullState,
+      [orderId]: {
+        ...previousOrderState,
+        countdown: value,
+      },
+    })
   },
 )
 

@@ -1,79 +1,163 @@
 import { useCallback } from 'react'
 
-import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { errorToString, isRejectRequestProviderError } from '@cowprotocol/common-utils'
-import { TransactionReceipt } from '@ethersproject/abstract-provider'
-import { Currency } from '@uniswap/sdk-core'
+import { useWalletInfo } from '@cowprotocol/wallet'
+import type { TransactionReceipt, TransactionResponse } from '@ethersproject/abstract-provider'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { CowSwapAnalyticsCategory } from 'common/analytics/types'
+import { useSetOptimisticAllowance } from 'entities/optimisticAllowance/useSetOptimisticAllowance'
+
+import { processApprovalTransaction } from './approveUtils'
+import { useApprovalAnalytics } from './useApprovalAnalytics'
+import { useHandleApprovalError } from './useHandleApprovalError'
 
 import { useApproveCallback } from '../../hooks'
-import { useUpdateTradeApproveState } from '../../state'
+import { useResetApproveProgressModalState, useUpdateApproveProgressModalState } from '../../state'
+
+interface ProcessTransactionConfirmationParams {
+  response: TransactionResponse
+  currency: Currency | undefined
+  account: string | undefined
+  spender: string | undefined
+  chainId: number | undefined
+  setOptimisticAllowance: (data: { tokenAddress: string; owner: string; spender: string; amount: bigint; blockNumber: number; chainId: number }) => void
+}
+
+async function processTransactionConfirmation({
+  response,
+  currency,
+  account,
+  spender,
+  chainId,
+  setOptimisticAllowance,
+}: ProcessTransactionConfirmationParams): Promise<TradeApproveResult<TransactionReceipt>> {
+  const txResponse = await response.wait()
+
+  if (!chainId) {
+    return { txResponse, approvedAmount: undefined }
+  }
+
+  const approvedAmount = processApprovalTransaction(
+    {
+      currency,
+      account,
+      spender,
+      chainId,
+    },
+    txResponse,
+  )
+
+  if (approvedAmount) {
+    setOptimisticAllowance(approvedAmount)
+  }
+
+  return { txResponse, approvedAmount: approvedAmount?.amount }
+}
 
 interface TradeApproveCallbackParams {
   useModals: boolean
+  waitForTxConfirmation?: boolean
 }
 
+const DEFAULT_APPROVE_PARAMS: TradeApproveCallbackParams = {
+  useModals: true,
+  waitForTxConfirmation: false,
+}
+
+export type TradeApproveResult<R> = { txResponse: R; approvedAmount: bigint | undefined }
+
+export type GenerecTradeApproveResult = TradeApproveResult<TransactionResponse> | TradeApproveResult<TransactionReceipt>
+
 export interface TradeApproveCallback {
-  (amount: bigint, params?: TradeApproveCallbackParams): Promise<TransactionReceipt | undefined>
+  (
+    amount: bigint,
+    params?: TradeApproveCallbackParams & {
+      waitForTxConfirmation?: false
+    },
+  ): Promise<TradeApproveResult<TransactionResponse> | undefined>
+
+  (
+    amount: bigint,
+    params: TradeApproveCallbackParams & {
+      waitForTxConfirmation: true
+    },
+  ): Promise<TradeApproveResult<TransactionReceipt> | undefined>
 }
 
 export function useTradeApproveCallback(currency: Currency | undefined): TradeApproveCallback {
-  const updateTradeApproveState = useUpdateTradeApproveState()
-  const spender = useTradeSpenderAddress()
   const symbol = currency?.symbol
-  const cowAnalytics = useCowAnalytics()
+
+  const updateApproveProgressModalState = useUpdateApproveProgressModalState()
+  const resetApproveProgressModalState = useResetApproveProgressModalState()
+  const spender = useTradeSpenderAddress()
   const { isPartialApproveEnabled } = useFeatureFlags()
+  const { chainId, account } = useWalletInfo()
+  const setOptimisticAllowance = useSetOptimisticAllowance()
 
   const approveCallback = useApproveCallback(currency, spender)
-
-  const approvalAnalytics = useCallback(
-    (action: string, symbol?: string, errorCode?: number | null) => {
-      cowAnalytics.sendEvent({
-        category: CowSwapAnalyticsCategory.TRADE,
-        action,
-        label: symbol,
-        ...(errorCode && { value: errorCode }),
-      })
-    },
-    [cowAnalytics],
-  )
+  const approvalAnalytics = useApprovalAnalytics()
+  const handleApprovalError = useHandleApprovalError(symbol)
 
   return useCallback(
-    async (amount, { useModals = true } = { useModals: true }) => {
+    async (amount, { useModals = true, waitForTxConfirmation } = DEFAULT_APPROVE_PARAMS) => {
       if (useModals) {
-        updateTradeApproveState({ currency, approveInProgress: true })
+        const amountToApprove = currency ? CurrencyAmount.fromRawAmount(currency, amount.toString()) : undefined
+        updateApproveProgressModalState({ currency, approveInProgress: true, amountToApprove })
       }
 
       approvalAnalytics('Send', symbol)
 
-      return approveCallback(amount)
-        .then((response) => {
-          approvalAnalytics('Sign', symbol)
-          // if ff is disabled - use old flow, hide modal when tx is sent
-          !isPartialApproveEnabled && updateTradeApproveState({ currency: undefined, approveInProgress: false })
-          return response?.wait()
-        })
-        .finally(() => {
-          updateTradeApproveState({ currency: undefined, approveInProgress: false })
-        })
-        .catch((error) => {
-          console.error('Error setting the allowance for token', error)
+      try {
+        const response = await approveCallback(amount)
 
-          if (isRejectRequestProviderError(error)) {
-            updateTradeApproveState({ error: 'User rejected approval transaction' })
-          } else {
-            const errorCode = error?.code && typeof error.code === 'number' ? error.code : null
-
-            approvalAnalytics('Error', symbol, errorCode)
-            updateTradeApproveState({ error: errorToString(error) })
-          }
-
+        // if ff is disabled - use old flow, hide modal when tx is sent
+        if (!response || !isPartialApproveEnabled) {
+          resetApproveProgressModalState()
           return undefined
+        } else {
+          updateApproveProgressModalState({ isPendingInProgress: true })
+        }
+
+        approvalAnalytics('Sign', symbol)
+
+        if (waitForTxConfirmation) {
+          return await processTransactionConfirmation({
+            response,
+            currency,
+            account,
+            spender,
+            chainId,
+            setOptimisticAllowance,
+          })
+        } else {
+          return { txResponse: response, approvedAmount: undefined }
+        }
+      } catch (error) {
+        handleApprovalError(error)
+        return undefined
+      } finally {
+        updateApproveProgressModalState({
+          currency,
+          approveInProgress: false,
+          amountToApprove: undefined,
+          isPendingInProgress: false,
         })
+      }
     },
-    [symbol, approveCallback, updateTradeApproveState, currency, approvalAnalytics, isPartialApproveEnabled],
-  )
+    [
+      approvalAnalytics,
+      symbol,
+      currency,
+      updateApproveProgressModalState,
+      approveCallback,
+      isPartialApproveEnabled,
+      resetApproveProgressModalState,
+      account,
+      spender,
+      chainId,
+      setOptimisticAllowance,
+      handleApprovalError,
+    ],
+  ) as TradeApproveCallback
 }

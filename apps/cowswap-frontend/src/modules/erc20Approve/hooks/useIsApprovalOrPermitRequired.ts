@@ -1,5 +1,10 @@
+import { useMemo } from 'react'
+
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { PermitType } from '@cowprotocol/permit-utils'
+import { Nullish } from '@cowprotocol/types'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { usePermitInfo } from 'modules/permit'
 import { TradeType, useDerivedTradeState } from 'modules/trade'
@@ -14,33 +19,73 @@ export enum ApproveRequiredReason {
   Required,
   Eip2612PermitRequired,
   DaiLikePermitRequired,
+  BundleApproveRequired,
 }
 
-export function useIsApprovalOrPermitRequired(): ApproveRequiredReason {
+type AdditionalParams = {
+  // null is needed to prevent breaking changes, as this param was optional before
+  // f.e. for approve and swap its allowed, but for just approve - no
+  isBundlingSupportedOrEnabledForContext: boolean | null
+}
+
+export function useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext }: AdditionalParams): {
+  reason: ApproveRequiredReason
+  currentAllowance: Nullish<bigint>
+} {
   const amountToApprove = useGetAmountToSignApprove()
   const { isPartialApproveEnabled } = useFeatureFlags()
-
-  const { state: approvalState } = useApproveState(amountToApprove)
+  const { state: approvalState, currentAllowance } = useApproveState(amountToApprove)
   const { inputCurrency, tradeType } = useDerivedTradeState() || {}
-
   const { type } = usePermitInfo(inputCurrency, tradeType) || {}
 
-  const isPermitSupported = type && type !== 'unsupported'
+  const reason = (() => {
+    if (!checkIsAmountAndCurrencyRequireApprove(amountToApprove)) {
+      return ApproveRequiredReason.NotRequired
+    }
 
-  if (!isPermitSupported && (approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING)) {
-    return ApproveRequiredReason.Required
-  }
+    const isPermitSupported = type && type !== 'unsupported'
 
-  // we use new approve/permit flow only for swaps for now
-  if (tradeType !== TradeType.SWAP || !isPartialApproveEnabled) {
-    return ApproveRequiredReason.NotRequired
-  }
+    if (!isPermitSupported && isApprovalRequired(approvalState)) {
+      return isBundlingSupportedOrEnabledForContext
+        ? ApproveRequiredReason.BundleApproveRequired
+        : ApproveRequiredReason.Required
+    }
 
-  return getPermitRequirements(type)
+    if (isBundlingSupportedOrEnabledForContext) return ApproveRequiredReason.BundleApproveRequired
+
+    if (!isNewApproveFlowEnabled(tradeType, isPartialApproveEnabled)) {
+      return ApproveRequiredReason.NotRequired
+    }
+
+    return getPermitRequirements(type)
+  })()
+
+  return useMemo(() => ({ reason, currentAllowance }), [reason, currentAllowance])
+}
+
+function checkIsAmountAndCurrencyRequireApprove(amountToApprove: CurrencyAmount<Currency> | null): boolean {
+  if (!amountToApprove) return false
+
+  if (getIsNativeToken(amountToApprove.currency)) return false
+
+  return !amountToApprove.equalTo('0')
+}
+
+function isApprovalRequired(approvalState: ApprovalState): boolean {
+  return approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING
+}
+
+function isNewApproveFlowEnabled(tradeType?: Nullish<TradeType>, isPartialApproveEnabled?: boolean): boolean {
+  return tradeType === TradeType.SWAP && isPartialApproveEnabled === true
 }
 
 function getPermitRequirements(type?: PermitType): ApproveRequiredReason {
-  if (type === 'dai-like') return ApproveRequiredReason.DaiLikePermitRequired
-  if (type === 'eip-2612') return ApproveRequiredReason.Eip2612PermitRequired
-  return ApproveRequiredReason.NotRequired
+  switch (type) {
+    case 'dai-like':
+      return ApproveRequiredReason.DaiLikePermitRequired
+    case 'eip-2612':
+      return ApproveRequiredReason.Eip2612PermitRequired
+    default:
+      return ApproveRequiredReason.NotRequired
+  }
 }

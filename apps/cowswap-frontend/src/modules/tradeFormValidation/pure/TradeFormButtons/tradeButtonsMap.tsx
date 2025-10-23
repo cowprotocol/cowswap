@@ -121,10 +121,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
         <>
           <Trans>Enter a valid recipient</Trans>
           {isBridging && recipient && (
-            <HelpTooltip
-              placement="top"
-              text="ENS recipient not supported for Swap and Bridge. Use address instead."
-            />
+            <HelpTooltip placement="top" text="ENS recipient not supported for Swap and Bridge. Use address instead." />
           )}
         </>
       </TradeFormBlankButton>
@@ -239,21 +236,19 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
       </TradeFormBlankButton>
     )
   },
-  [TradeFormValidation.ApproveRequired]: (context) => {
+  [TradeFormValidation.ApproveRequired]: (context, isDisabled = false) => {
     const { amountToApprove, enablePartialApprove, defaultText } = context
     if (!amountToApprove) return null
 
-    const label = enablePartialApprove ? `Approve and ${defaultText}` : defaultText
-
     return (
       <TradeApproveButton
+        isDisabled={isDisabled}
         amountToApprove={amountToApprove}
         enablePartialApprove={enablePartialApprove}
-        confirmSwap={context.confirmTrade}
-        label={label}
+        onApproveConfirm={context.confirmTrade}
       >
         <TradeFormBlankButton disabled={!enablePartialApprove}>
-          <Trans>{label}</Trans>
+          <Trans>{defaultText}</Trans>
         </TradeFormBlankButton>
       </TradeApproveButton>
     )

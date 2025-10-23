@@ -85,14 +85,20 @@ export function useHandleOrderPlacement(
   }, [tradeContext, tradeConfirmActions])
 
   const tradeFn = useCallback(async () => {
+    const partiallyFillableState =
+      typeof partiallyFillableOverride === 'boolean' ? { partiallyFillable: partiallyFillableOverride } : null
+
     if (isSafeBundle) {
       if (!safeBundleFlowContext) throw new Error('safeBundleFlowContext is not set!')
 
-      safeBundleFlowContext.postOrderParams.partiallyFillable =
-        partiallyFillableOverride ?? safeBundleFlowContext.postOrderParams.partiallyFillable
-
       return safeBundleFlow(
-        safeBundleFlowContext,
+        {
+          ...safeBundleFlowContext,
+          postOrderParams: {
+            ...safeBundleFlowContext.postOrderParams,
+            ...partiallyFillableState,
+          },
+        },
         priceImpact,
         settingsState,
         confirmPriceImpactWithoutFee,
@@ -101,11 +107,14 @@ export function useHandleOrderPlacement(
       )
     }
 
-    tradeContext.postOrderParams.partiallyFillable =
-      partiallyFillableOverride ?? tradeContext.postOrderParams.partiallyFillable
-
     return tradeFlow(
-      tradeContext,
+      {
+        ...tradeContext,
+        postOrderParams: {
+          ...tradeContext.postOrderParams,
+          ...partiallyFillableState,
+        },
+      },
       priceImpact,
       settingsState,
       analytics,

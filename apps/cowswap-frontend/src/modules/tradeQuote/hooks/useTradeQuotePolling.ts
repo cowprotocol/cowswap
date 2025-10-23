@@ -30,6 +30,7 @@ export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParame
   const tradeQuote = useTradeQuote()
   const prevIsConfirmOpen = usePrevious(isConfirmOpen)
   const tradeQuoteRef = useRef(tradeQuote)
+  // eslint-disable-next-line react-hooks/refs
   tradeQuoteRef.current = tradeQuote
 
   const amountStr = amount?.quotient.toString()
@@ -41,10 +42,12 @@ export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParame
   const isWindowVisible = useIsWindowVisible()
   const isOnline = useIsOnline()
   const isOnlineRef = useRef(isOnline)
+  // eslint-disable-next-line react-hooks/refs
   isOnlineRef.current = isOnline
 
   const pollQuote = usePollQuoteCallback(quotePollingParams, quoteParamsState)
   const pollQuoteRef = useRef(pollQuote)
+  // eslint-disable-next-line react-hooks/refs
   pollQuoteRef.current = pollQuote
 
   /**
