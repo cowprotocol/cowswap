@@ -9,10 +9,13 @@ import { GnosisSafeInfo, useGnosisSafeInfo, useWalletInfo } from '@cowprotocol/w
 import { isOrderInPendingTooLong, triggerAppziSurvey } from 'appzi'
 import { useBridgeOrdersSerializedMap } from 'entities/bridgeOrders'
 import { useAddOrderToSurplusQueue } from 'entities/surplusModal'
+import { useDispatch } from 'react-redux'
 
 import { GetSafeTxInfo, useGetSafeTxInfo } from 'legacy/hooks/useGetSafeTxInfo'
+import { AppDispatch } from 'legacy/state'
 import { useAllTransactions } from 'legacy/state/enhancedTransactions/hooks'
 import { CREATING_STATES, FulfillOrdersBatchParams, Order, OrderStatus } from 'legacy/state/orders/actions'
+import { updateLastCheckedBlock } from 'legacy/state/orders/actions'
 import { LIMIT_OPERATOR_API_POLL_INTERVAL, MARKET_OPERATOR_API_POLL_INTERVAL } from 'legacy/state/orders/consts'
 import {
   AddOrUpdateOrdersCallback,
@@ -46,6 +49,7 @@ import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { fetchAndClassifyOrder } from './utils'
 
+import { useBlockNumber } from '../../hooks/useBlockNumber'
 import { removeOrdersToCancelAtom } from '../../hooks/useMultipleOrdersCancellation/state'
 import { useTriggerTotalSurplusUpdateCallback } from '../../state/totalSurplusState'
 
@@ -175,6 +179,52 @@ interface UpdateOrdersParams {
   getSafeTxInfo: GetSafeTxInfo
   safeInfo: GnosisSafeInfo | undefined
   allTransactions: ReturnType<typeof useAllTransactions>
+  markPollComplete?: (chainId: ChainId) => void
+}
+
+interface HandlePresignedParams {
+  presigned: EnrichedOrder[]
+  orders: Order[]
+  chainId: ChainId
+  isSafeWallet: boolean
+  presignOrders: PresignOrdersCallback
+}
+
+function handlePresignedOrders({
+  presigned,
+  orders,
+  chainId,
+  isSafeWallet,
+  presignOrders,
+}: HandlePresignedParams): void {
+  if (presigned.length === 0) {
+    return
+  }
+
+  const presignedMap = presigned.reduce<{ [key: string]: EnrichedOrder }>((acc, order) => {
+    acc[order.uid] = order
+    return acc
+  }, {})
+
+  const presignedIds = presigned.map((order) => order.uid)
+
+  const newlyPreSignedOrders = orders
+    .filter((order) => order.status === OrderStatus.PRESIGNATURE_PENDING && presignedIds.includes(order.id))
+    .map((order) => presignedMap[order.id])
+
+  if (newlyPreSignedOrders.length === 0) {
+    return
+  }
+
+  presignOrders({
+    ids: newlyPreSignedOrders.map((order) => order.uid),
+    chainId,
+    isSafeWallet,
+  })
+
+  newlyPreSignedOrders.forEach((order) => {
+    emitPresignedOrderEvent({ chainId, order })
+  })
 }
 
 // TODO: Break down this large function into smaller functions
@@ -197,6 +247,7 @@ async function _updateOrders({
   getSafeTxInfo,
   safeInfo,
   allTransactions,
+  markPollComplete,
 }: UpdateOrdersParams): Promise<void> {
   // Only check pending orders of current connected account
   const lowerCaseAccount = account.toLowerCase()
@@ -204,6 +255,7 @@ async function _updateOrders({
 
   // Exit early when there are no pending orders
   if (!pending.length) {
+    markPollComplete?.(chainId)
     return
   } else {
     _triggerNps(pending, chainId, account)
@@ -228,32 +280,7 @@ async function _updateOrders({
     { fulfilled: [], expired: [], cancelled: [], unknown: [], presigned: [], pending: [], presignaturePending: [] },
   )
 
-  if (presigned.length > 0) {
-    const presignedMap = presigned.reduce<{ [key: string]: EnrichedOrder }>((acc, order) => {
-      acc[order.uid] = order
-      return acc
-    }, {})
-
-    const presignedIds = presigned.map((order) => order.uid)
-
-    const newlyPreSignedOrders = orders
-      .filter((order) => {
-        return order.status === OrderStatus.PRESIGNATURE_PENDING && presignedIds.includes(order.id)
-      })
-      .map((order) => presignedMap[order.id])
-
-    if (newlyPreSignedOrders.length > 0) {
-      presignOrders({
-        ids: newlyPreSignedOrders.map((order) => order.uid),
-        chainId,
-        isSafeWallet,
-      })
-
-      newlyPreSignedOrders.forEach((order) => {
-        emitPresignedOrderEvent({ chainId, order })
-      })
-    }
-  }
+  handlePresignedOrders({ presigned, orders, chainId, isSafeWallet, presignOrders })
 
   if (expired.length > 0) {
     expireOrdersBatch({
@@ -323,6 +350,8 @@ async function _updateOrders({
   )
   // Update the creating EthFlow orders (if any)
   await _updateCreatingOrders(chainId, orders, isSafeWallet, addOrUpdateOrders)
+
+  markPollComplete?.(chainId)
 }
 
 function getReplacedOrCancelledEthFlowOrders(
@@ -379,7 +408,9 @@ export function PendingOrdersUpdater(): null {
   const safeInfo = useGnosisSafeInfo()
   const isSafeWallet = !!safeInfo
   const { chainId, account } = useWalletInfo()
+  const blockNumber = useBlockNumber()
   const removeOrdersToCancel = useSetAtom(removeOrdersToCancelAtom)
+  const dispatch = useDispatch<AppDispatch>()
 
   const pending = useCombinedPendingOrders({ chainId, account })
   // TODO: Implement using SWR or retry/cancellable promises
@@ -403,6 +434,9 @@ export function PendingOrdersUpdater(): null {
   // Ref, so we don't rerun useEffect
   const pendingRef = useRef(pending)
   pendingRef.current = pending
+  // Keep block number in a ref so markPollComplete doesn't depend on it and re-trigger polling effect each block
+  const blockNumberRef = useRef(blockNumber)
+  blockNumberRef.current = blockNumber
 
   const _fulfillOrdersBatch = useFulfillOrdersBatch()
   const expireOrdersBatch = useExpireOrdersBatch()
@@ -416,6 +450,20 @@ export function PendingOrdersUpdater(): null {
   const allTransactions = useAllTransactions()
   const getSafeTxInfo = useGetSafeTxInfo()
   const bridgeOrdersMap = useBridgeOrdersSerializedMap()
+  const markPollComplete = useCallback(
+    (targetChainId: ChainId) => {
+      if (!chainId || targetChainId !== chainId) {
+        return
+      }
+
+      const latestBlock = blockNumberRef.current
+
+      if (typeof latestBlock === 'number') {
+        dispatch(updateLastCheckedBlock({ chainId: targetChainId, lastCheckedBlock: latestBlock }))
+      }
+    },
+    [chainId, dispatch],
+  )
 
   const fulfillOrdersBatch = useCallback(
     (fulfillOrdersBatchParams: FulfillOrdersBatchParams) => {
@@ -443,6 +491,7 @@ export function PendingOrdersUpdater(): null {
       }
 
       const isUpdating = updatersRefMap[uiOrderType]
+      const shouldMarkCompletion = uiOrderType === UiOrderType.SWAP
 
       if (!isUpdating.current) {
         // eslint-disable-next-line react-hooks/immutability
@@ -464,6 +513,7 @@ export function PendingOrdersUpdater(): null {
           getSafeTxInfo,
           safeInfo,
           allTransactions,
+          markPollComplete: shouldMarkCompletion ? markPollComplete : undefined,
         }).finally(() => {
           isUpdating.current = false
         })
@@ -483,6 +533,7 @@ export function PendingOrdersUpdater(): null {
       getSafeTxInfo,
       safeInfo,
       allTransactions,
+      markPollComplete,
     ],
   )
 
