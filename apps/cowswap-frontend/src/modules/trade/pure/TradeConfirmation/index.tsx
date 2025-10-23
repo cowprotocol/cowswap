@@ -1,9 +1,7 @@
-import { ReactElement, ReactNode, useEffect, useRef, useState } from 'react'
+import { ReactElement, ReactNode, useMemo } from 'react'
 
 import { BackButton } from '@cowprotocol/ui'
-
 import { useLingui } from '@lingui/react/macro'
-import { useSigningStep } from 'entities/trade'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
@@ -19,10 +17,12 @@ import * as styledEl from './styled'
 
 import { NoImpactWarning } from '../../containers/NoImpactWarning'
 import { CommonTradeConfirmContext } from '../../hooks/useCommonTradeConfirmContext'
-import { useTradeConfirmState } from '../../hooks/useTradeConfirmState'
+
+import type { SigningStepState } from 'entities/trade'
 
 export interface TradeConfirmationProps extends CommonTradeConfirmContext {
-  onConfirm(): Promise<void | false>
+  onConfirm(): Promise<boolean | void>
+
   onDismiss(): void
 
   inputCurrencyInfo: CurrencyPreviewInfo
@@ -34,49 +34,60 @@ export interface TradeConfirmationProps extends CommonTradeConfirmContext {
   recipient?: string | null
   buttonText?: ReactNode
   children?: (restContent: ReactElement) => ReactElement
+  confirmClickEvent?: string
 }
 
-export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
-  const { pendingTrade, forcePriceConfirmation } = useTradeConfirmState()
+export interface TradeConfirmationViewProps extends TradeConfirmationProps {
+  hasPendingTrade: boolean
+  signingStep: SigningStepState | null
+  forcePriceConfirmation: boolean
+}
+
+export function TradeConfirmationView(viewProps: TradeConfirmationViewProps): ReactNode {
+  const {
+    onConfirm,
+    onDismiss,
+    isConfirmDisabled,
+    title,
+    buttonText,
+    children,
+    recipient,
+    isPriceStatic,
+    appData,
+    confirmClickEvent,
+    inputCurrencyInfo,
+    outputCurrencyInfo,
+    priceImpact,
+    account,
+    ensName,
+    hasPendingTrade,
+    signingStep,
+    forcePriceConfirmation,
+  } = viewProps
+
   const { t } = useLingui()
-  const signingStep = useSigningStep()
-
-  const propsRef = useRef(_props)
-  // eslint-disable-next-line react-hooks/refs
-  propsRef.current = _props
-
-  const [frozenProps, setFrozenProps] = useState<TradeConfirmationProps | null>(null)
-  const hasPendingTrade = !!pendingTrade
-
-  const props = frozenProps || _props
-  const { onConfirm, onDismiss, isConfirmDisabled, buttonText, children, isPriceStatic, appData } = props
-
-  /**
-   * Once user sends a transaction, we keep the confirmation content frozen
-   */
-  useEffect(() => {
-    setFrozenProps(hasPendingTrade ? propsRef.current : null)
-  }, [hasPendingTrade])
 
   const { isPriceChanged, resetPriceChanged } = useIsPriceChanged(
-    props.inputCurrencyInfo.amount?.toExact(),
-    props.outputCurrencyInfo.amount?.toExact(),
+    inputCurrencyInfo.amount?.toExact(),
+    outputCurrencyInfo.amount?.toExact(),
     forcePriceConfirmation,
   )
 
-  const isButtonDisabled = isConfirmDisabled || (isPriceChanged && !isPriceStatic) || hasPendingTrade
-
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [])
-
-  const hookDetailsElement = (
-    <>
-      {appData && (
+  const hookDetailsElement = useMemo(
+    () =>
+      appData ? (
         <OrderHooksDetails appData={appData} isTradeConfirmation>
           {(hookChildren) => hookChildren}
         </OrderHooksDetails>
-      )}
+      ) : null,
+    [appData],
+  )
+  const isButtonDisabled = isConfirmDisabled || (isPriceChanged && !isPriceStatic) || hasPendingTrade
+
+  const restContent = (
+    <>
+      {hookDetailsElement}
+      <NoImpactWarning withoutAccepting />
     </>
   )
 
@@ -84,39 +95,33 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
     <styledEl.WidgetWrapper onKeyDown={(e) => e.key === 'Escape' && onDismiss()}>
       <styledEl.Header>
         <BackButton onClick={onDismiss} />
-        <styledEl.ConfirmHeaderTitle>{props.title}</styledEl.ConfirmHeaderTitle>
+        <styledEl.ConfirmHeaderTitle>{title}</styledEl.ConfirmHeaderTitle>
         <styledEl.HeaderRightContent>
           {hasPendingTrade || isPriceStatic ? null : <QuoteCountdown />}
         </styledEl.HeaderRightContent>
       </styledEl.Header>
       <styledEl.ContentWrapper id="trade-confirmation">
         <ConfirmAmounts
-          inputCurrencyInfo={props.inputCurrencyInfo}
-          outputCurrencyInfo={props.outputCurrencyInfo}
-          priceImpact={props.priceImpact}
+          inputCurrencyInfo={inputCurrencyInfo}
+          outputCurrencyInfo={outputCurrencyInfo}
+          priceImpact={priceImpact}
         />
-        {children?.(
-          <>
-            {hookDetailsElement}
-            <NoImpactWarning withoutAccepting />
-          </>,
-        )}
-
+        {children ? children(restContent) : restContent}
         <ConfirmWarnings
-          account={props.account}
-          ensName={props.ensName}
-          recipient={props.recipient}
+          account={account}
+          ensName={ensName}
+          recipient={recipient}
           isPriceChanged={isPriceChanged}
           isPriceStatic={isPriceStatic}
           resetPriceChanged={resetPriceChanged}
         />
-
         <ConfirmButton
           onConfirm={onConfirm}
           buttonText={buttonText ? buttonText : t`Confirm`}
           isButtonDisabled={isButtonDisabled}
           hasPendingTrade={hasPendingTrade}
           signingStep={signingStep}
+          dataClickEvent={confirmClickEvent}
         />
       </styledEl.ContentWrapper>
     </styledEl.WidgetWrapper>

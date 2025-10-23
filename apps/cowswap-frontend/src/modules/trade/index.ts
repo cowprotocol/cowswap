@@ -1,5 +1,6 @@
 export * from './containers/TradeWidget'
 export * from './containers/TradeConfirmModal'
+export * from './containers/TradeConfirmation'
 export * from './containers/TradeWidgetLinks'
 export * from './containers/TradeFeesAndCosts'
 export * from './containers/TradeTotalCostsDetails'

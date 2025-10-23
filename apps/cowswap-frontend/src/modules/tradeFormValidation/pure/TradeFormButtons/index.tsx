@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import { ReactNode } from 'react'
 
 import { tradeButtonsMap } from './tradeButtonsMap'
 
@@ -11,10 +11,11 @@ export interface TradeFormButtonsProps {
   confirmText: string
   className?: string
   isDisabled?: boolean
+  dataClickEvent?: string
 }
 
 export function TradeFormButtons(props: TradeFormButtonsProps): ReactNode {
-  const { validation, context, isDisabled, confirmText, className } = props
+  const { validation, context, isDisabled, confirmText, className, dataClickEvent } = props
 
   // When there are no validation errors
   if (validation === null) {
@@ -24,6 +25,7 @@ export function TradeFormButtons(props: TradeFormButtonsProps): ReactNode {
         className={className}
         disabled={isDisabled}
         onClick={() => context.confirmTrade()}
+        dataClickEvent={dataClickEvent}
       >
         {confirmText}
       </TradeFormBlankButton>
@@ -33,7 +35,7 @@ export function TradeFormButtons(props: TradeFormButtonsProps): ReactNode {
   const buttonFactory = tradeButtonsMap[validation]
 
   if (typeof buttonFactory === 'function') {
-    return buttonFactory(context, isDisabled)
+    return buttonFactory(context, isDisabled, dataClickEvent)
   }
 
   return (

@@ -25,7 +25,7 @@ interface ButtonErrorConfig {
 }
 
 interface ButtonCallback {
-  (context: TradeFormButtonContext, isDisabled?: boolean): ReactElement | null
+  (context: TradeFormButtonContext, isDisabled?: boolean, dataClickEvent?: string): ReactElement | null
 }
 
 function getDefaultQuoteError(): string {
@@ -285,13 +285,13 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
       </TradeFormBlankButton>
     )
   },
-  [TradeFormValidation.ApproveAndSwapInBundle]: (context, isDisabled = false) => {
+  [TradeFormValidation.ApproveAndSwapInBundle]: (context, isDisabled = false, dataClickEvent) => {
     const inputCurrency = context.derivedState.inputCurrency
     const tokenToApprove = inputCurrency && getWrappedToken(inputCurrency)
     const contextDefaultText = context.defaultText
 
     return (
-      <TradeFormBlankButton disabled={isDisabled} onClick={context.confirmTrade}>
+      <TradeFormBlankButton disabled={isDisabled} onClick={context.confirmTrade} dataClickEvent={dataClickEvent}>
         <span>
           <Trans>
             Approve {<TokenSymbol token={tokenToApprove} length={6} />} and {contextDefaultText}
@@ -300,9 +300,11 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
       </TradeFormBlankButton>
     )
   },
-  [TradeFormValidation.ApproveRequired]: (context, isDisabled = false) => {
+  [TradeFormValidation.ApproveRequired]: (context, isDisabled = false, dataClickEvent) => {
     const { amountToApprove, enablePartialApprove, defaultText } = context
     if (!amountToApprove) return null
+
+    const label = enablePartialApprove ? 'Approve and swap' : defaultText
 
     return (
       <TradeApproveButton
@@ -310,9 +312,13 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
         amountToApprove={amountToApprove}
         enablePartialApprove={enablePartialApprove}
         onApproveConfirm={context.confirmTrade}
+        label={label}
+        dataClickEvent={dataClickEvent}
         minAmountToSignForSwap={context.minAmountToSignForSwap}
       >
-        <TradeFormBlankButton disabled={!enablePartialApprove}>{defaultText}</TradeFormBlankButton>
+        <TradeFormBlankButton disabled={!enablePartialApprove} dataClickEvent={dataClickEvent}>
+          {enablePartialApprove ? <Trans>Approve and swap</Trans> : <Trans>{defaultText}</Trans>}
+        </TradeFormBlankButton>
       </TradeApproveButton>
     )
   },

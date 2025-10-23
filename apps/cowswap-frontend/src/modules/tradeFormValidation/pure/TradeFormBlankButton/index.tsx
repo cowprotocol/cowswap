@@ -54,6 +54,7 @@ export interface TradeFormPrimaryButtonProps {
   onClick?(): void
 
   className?: string
+  dataClickEvent?: string
 }
 
 // TODO: Break down this large function into smaller functions
@@ -66,6 +67,7 @@ export function TradeFormBlankButton({
   loading,
   id,
   className,
+  dataClickEvent,
 }: TradeFormPrimaryButtonProps) {
   const ref = useRef<HTMLButtonElement>(null)
   const [hasLongText, setHasLongText] = useState(false)
@@ -113,6 +115,7 @@ export function TradeFormBlankButton({
       onClick={handleClick}
       disabled={showLoader || disabled}
       hasLongText$={hasLongText}
+      data-click-event={dataClickEvent}
     >
       {showLoader ? (
         <>
