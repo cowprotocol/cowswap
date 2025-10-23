@@ -20,6 +20,7 @@ import { useValidatePageUrlParams } from '../containers/OrdersTableWidget/hooks/
 import { useCurrentTab } from '../hooks/useCurrentTab'
 import { useFilteredOrders } from '../hooks/useFilteredOrders'
 import { useOrderActions } from '../hooks/useOrderActions'
+import { useOrdersHydrationState } from '../hooks/useOrdersHydrationState'
 import { useTabs } from '../hooks/useTabs'
 import { ordersTableStateAtom } from '../state/ordersTableStateAtom'
 import { OrdersTableParams } from '../types'
@@ -72,6 +73,7 @@ export function OrdersTableStateUpdater({
 
   const orders = ordersList[currentTabId]
   const filteredOrders = useFilteredOrders(orders, searchTerm)
+  const hasHydratedOrders = useOrdersHydrationState({ chainId, orders: allOrders })
 
   const tabs = useTabs(ordersList, currentTabId)
 
@@ -98,6 +100,7 @@ export function OrdersTableStateUpdater({
       isTwapTable,
       pendingActivitiesCount,
       selectedOrders,
+      hasHydratedOrders,
     })
   }, [
     setOrdersTableState,
@@ -120,6 +123,7 @@ export function OrdersTableStateUpdater({
     isTwapTable,
     pendingActivitiesCount,
     selectedOrders,
+    hasHydratedOrders,
   ])
 
   // Set page params initially once

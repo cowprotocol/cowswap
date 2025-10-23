@@ -82,6 +82,7 @@ function Wrapper(): null {
       injectedWidgetParams: {},
       isTwapTable: false,
       currentTabId: OrderTabId.open,
+      hasHydratedOrders: true,
     })
   }, [setOrdersTableState])
 
