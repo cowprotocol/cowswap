@@ -10,8 +10,8 @@ config({ path: __dirname + '/apps/cowswap-frontend/.env' })
 
 if (typeof global.TextEncoder === 'undefined') {
   global.ReadableStream = Readable as unknown as typeof globalThis.ReadableStream
-  global.TextEncoder = TextEncoder
-  global.TextDecoder = TextDecoder as typeof global.TextDecoder
+  global.TextEncoder = TextEncoder as unknown as typeof global.TextEncoder
+  global.TextDecoder = TextDecoder as unknown as typeof global.TextDecoder
 }
 
 fetchMock.dontMock()
@@ -43,3 +43,5 @@ beforeEach(() => {
   const { __resetGtmInstance } = require('@cowprotocol/analytics')
   __resetGtmInstance()
 })
+
+jest.mock('lib/localeCatalogLoaders')
