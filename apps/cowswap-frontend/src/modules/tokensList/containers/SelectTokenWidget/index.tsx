@@ -2,6 +2,7 @@ import { ReactNode, useCallback, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { useTheme } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import {
   ListState,
@@ -69,6 +70,8 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
     selectedPoolAddress,
     field,
     oppositeToken,
+    tradeType,
+    selectedTargetChainId,
   } = useSelectTokenWidgetState()
   const { count: lpTokensWithBalancesCount } = useLpTokensWithBalances()
   const chainsToSelect = useChainsToSelect()
@@ -82,7 +85,8 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
   )
 
   const updateSelectTokenWidget = useUpdateSelectTokenWidgetState()
-  const { account } = useWalletInfo()
+  const { account, chainId } = useWalletInfo()
+  const { darkMode } = useTheme()
 
   const cowAnalytics = useCowAnalytics()
   const addCustomTokenLists = useAddList((source) => {
@@ -153,6 +157,9 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
   }
 
   if (!onSelectToken || !open) return null
+
+  const counterChainId =
+    oppositeToken?.chainId ?? (field === Field.INPUT ? (selectedTargetChainId ?? chainId) : chainId)
 
   return (
     <Wrapper>
@@ -226,6 +233,10 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
             tokenListTags={tokenListTags}
             areTokensFromBridge={areTokensFromBridge}
             isRouteAvailable={isRouteAvailable}
+            tradeType={tradeType}
+            field={field}
+            isDarkMode={darkMode}
+            counterChainId={counterChainId}
           />
         )
       })()}

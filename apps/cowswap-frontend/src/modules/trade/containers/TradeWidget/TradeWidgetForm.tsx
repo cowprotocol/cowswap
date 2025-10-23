@@ -66,7 +66,8 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
 
   const tradeTypeInfo = useTradeTypeInfoFromUrl()
   const isAlternativeOrderModalVisible = useIsAlternativeOrderModalVisible()
-  const isLimitOrderTrade = tradeTypeInfo?.tradeType === TradeType.LIMIT_ORDER
+  const currentTradeType = tradeTypeInfo?.tradeType
+  const isLimitOrderTrade = currentTradeType === TradeType.LIMIT_ORDER
   const shouldLockForAlternativeOrder = isAlternativeOrderModalVisible && isLimitOrderTrade
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const { isLimitOrdersUpgradeBannerEnabled, isBridgingEnabled } = useFeatureFlags()
@@ -163,16 +164,16 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
 
   const openSellTokenSelect = useCallback(
     (selectedToken: Nullish<Currency>, field: Field | undefined, onSelectToken: (currency: Currency) => void) => {
-      openTokenSelectWidget(selectedToken, field, buyToken || undefined, onSelectToken)
+      openTokenSelectWidget(selectedToken, field, buyToken || undefined, onSelectToken, currentTradeType)
     },
-    [openTokenSelectWidget, buyToken],
+    [openTokenSelectWidget, buyToken, currentTradeType],
   )
 
   const openBuyTokenSelect = useCallback(
     (selectedToken: Nullish<Currency>, field: Field | undefined, onSelectToken: (currency: Currency) => void) => {
-      openTokenSelectWidget(selectedToken, field, sellToken || undefined, onSelectToken)
+      openTokenSelectWidget(selectedToken, field, sellToken || undefined, onSelectToken, currentTradeType)
     },
-    [openTokenSelectWidget, sellToken],
+    [openTokenSelectWidget, sellToken, currentTradeType],
   )
 
   const toggleAccountModal = useToggleAccountModal()

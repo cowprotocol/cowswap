@@ -10,7 +10,10 @@ import { Currency } from '@uniswap/sdk-core'
 import { X } from 'react-feather'
 import { Nullish } from 'types'
 
+import { Field } from 'legacy/state/types'
+
 import { PermitCompatibleTokens } from 'modules/permit'
+import { TradeType } from 'modules/trade'
 
 import { SelectTokenModalContent } from './SelectTokenModalContent'
 import * as styledEl from './styled'
@@ -40,6 +43,10 @@ export interface SelectTokenModalProps<T = TokenListCategory[] | null> {
   standalone?: boolean
   areTokensFromBridge: boolean
   isRouteAvailable: boolean | undefined
+  tradeType?: TradeType
+  field?: Field
+  isDarkMode?: boolean
+  counterChainId?: ChainInfo['id']
 
   onSelectToken(token: TokenWithLogo): void
   openPoolPage(poolAddress: string): void
@@ -89,6 +96,10 @@ export function SelectTokenModal(props: SelectTokenModalProps): ReactNode {
     onSelectChain,
     areTokensFromBridge,
     isRouteAvailable,
+    tradeType,
+    field,
+    isDarkMode = false,
+    counterChainId,
   } = props
   const [inputValue, setInputValue] = useState<string>(defaultInputValue)
 
@@ -140,6 +151,10 @@ export function SelectTokenModal(props: SelectTokenModalProps): ReactNode {
                   chains={chainsToSelect.chains}
                   defaultChainId={chainsToSelect.defaultChainId}
                   onSelectChain={onSelectChain}
+                  tradeType={tradeType}
+                  field={field}
+                  isDarkMode={isDarkMode}
+                  counterChainId={counterChainId}
                 />
               </styledEl.ChainsSelectorWrapper>
             </>
