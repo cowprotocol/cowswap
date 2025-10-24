@@ -74,7 +74,7 @@ export default defineConfig(({ mode }) => {
               'babel-plugin-react-compiler',
               {
                 compilationMode: 'infer',
-                panicThreshold: 'none', // Note: use 'throw' for production builds to catch errors early
+                panicThreshold: 'none', // Flip to 'throw' locally/CI to surface new violations
               },
             ],
           ],
