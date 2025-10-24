@@ -13,7 +13,7 @@ import {
   useReceiveAmountInfo,
 } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
-import { useIsSlippageModified, useTradeSlippage } from 'modules/tradeSlippage'
+import { useIsSlippageModified, useShouldShowSlippageProminent, useTradeSlippage } from 'modules/tradeSlippage'
 import { useUsdAmount } from 'modules/usdAmount'
 
 import { QuoteApiError } from 'api/cowProtocol/errors/QuoteError'
@@ -43,6 +43,7 @@ export function TradeRateDetails({
 
   const slippage = useTradeSlippage()
   const isSlippageModified = useIsSlippageModified()
+  const shouldShowSlippageProminent = useShouldShowSlippageProminent()
   // todo replace by useGetReceiveAmountInfo when we decide what to show as bridge total fee
   const receiveAmountInfo = useReceiveAmountInfo()
   const derivedTradeState = useDerivedTradeState()
@@ -82,6 +83,15 @@ export function TradeRateDetails({
 
   const totalCosts = getTotalCosts(receiveAmountInfo, bridgeQuoteAmounts?.bridgeFee)
 
+  // Slippage row component - can be shown outside or inside accordion
+  const slippageRow = slippage ? (
+    <RowSlippage
+      isTradePriceUpdating={isTradePriceUpdating}
+      allowedSlippage={slippage}
+      isSlippageModified={isSlippageModified}
+    />
+  ) : null
+
   // Default expanded content if accordionContent prop is not supplied
   const defaultExpandedContent = (
     <>
@@ -90,26 +100,25 @@ export function TradeRateDetails({
         networkCostsSuffix={shouldPayGas ? <NetworkCostsSuffix /> : null}
         networkCostsTooltipSuffix={<NetworkCostsTooltipSuffix />}
       />
-      {slippage && (
-        <RowSlippage
-          isTradePriceUpdating={isTradePriceUpdating}
-          allowedSlippage={slippage}
-          isSlippageModified={isSlippageModified}
-        />
-      )}
+      {/* Only show slippage inside accordion when it's NOT prominent */}
+      {!shouldShowSlippageProminent && slippageRow}
       <RowDeadline deadline={deadline} />
     </>
   )
 
   return (
-    <TradeTotalCostsDetails
-      totalCosts={totalCosts}
-      rateInfoParams={rateInfoParams}
-      isFeeDetailsOpen={isFeeDetailsOpen}
-      toggleAccordion={toggleAccordion}
-      feeWrapper={feeWrapper}
-    >
-      {accordionContent || defaultExpandedContent}
-    </TradeTotalCostsDetails>
+    <>
+      {/* Show slippage outside accordion when prominent (manually modified or above threshold) */}
+      {shouldShowSlippageProminent && <div style={{ padding: '0 10px' }}>{slippageRow}</div>}
+      <TradeTotalCostsDetails
+        totalCosts={totalCosts}
+        rateInfoParams={rateInfoParams}
+        isFeeDetailsOpen={isFeeDetailsOpen}
+        toggleAccordion={toggleAccordion}
+        feeWrapper={feeWrapper}
+      >
+        {accordionContent || defaultExpandedContent}
+      </TradeTotalCostsDetails>
+    </>
   )
 }
