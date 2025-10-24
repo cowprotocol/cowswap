@@ -113,10 +113,10 @@ export async function wrapUnwrapCallback(
     useModals && closeModals()
 
     const isRejected = isRejectRequestProviderError(error)
-    const action = isRejected ? 'Reject' : 'Error'
+    const action = isRejected ? t`Reject` : t`Error`
     sendWrapEvent(analytics, action as WrapAction, operationMessage, amount)
 
-    const errorMessage = (isRejected ? 'Reject' : 'Error') + ' Signing transaction'
+    const errorMessage = (isRejected ? t`Reject` : t`Error`) + ' ' + t`Signing transaction`
     console.error(errorMessage, error)
 
     if (isRejected) {
@@ -139,7 +139,7 @@ function getWrapDescription(
     ? t`Wrapping ${amountStr} ${native} to ${wrapped}`
     : t`Unwrapping ${amountStr} ${wrapped} to ${native}`
   // Keep analytics label un-translated on purpose
-  const operationMessage = isWrap ? 'Wrapping ' + native : 'Unwrapping ' + wrapped
+  const operationMessage = isWrap ? t`Wrapping` + ' ' + native : t`Unwrapping` + ' ' + wrapped
 
   return {
     summary,
