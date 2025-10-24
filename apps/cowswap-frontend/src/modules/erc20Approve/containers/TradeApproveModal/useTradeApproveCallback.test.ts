@@ -106,7 +106,7 @@ describe('useTradeApproveCallback', () => {
 
   const createMockTransactionResponse = (status: number): TransactionResponse =>
     ({
-      hash: '0xtxhash',
+      hash: '0x15de6602b39be44ce9e6b57245deb4ee64ad28286c0f9f8094a6af2016e30591',
       confirmations: 0,
       from: '0xfrom1234567890123456789012345678901234567890',
       wait: jest.fn().mockResolvedValue(createMockTransactionReceipt(status)),
