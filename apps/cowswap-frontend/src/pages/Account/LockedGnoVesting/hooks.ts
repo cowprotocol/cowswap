@@ -14,6 +14,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { ContractTransaction } from '@ethersproject/contracts'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
+import { useLingui } from '@lingui/react/macro'
 import useSWR from 'swr'
 
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
@@ -32,13 +33,15 @@ const useTokenDistroContract = (): UseContractResult<TokenDistro> =>
   useContract<TokenDistro>(TOKEN_DISTRO_CONTRACT_ADDRESSES, TokenDistroAbi, true)
 
 export const useAllocation = (): CurrencyAmount<Token> => {
+  const { t } = useLingui()
+  const SupportedChainIdMAINNET = SupportedChainId.MAINNET
+
   if (!_COW) {
-    throw new Error(`COW token not found for chain ${SupportedChainId.MAINNET}`)
+    throw new Error(t`COW token not found for chain ${SupportedChainIdMAINNET}`)
   }
 
   const { chainId, account } = useWalletInfo()
   const initialAllocation = useRef(CurrencyAmount.fromRawAmount(_COW, 0))
-  // eslint-disable-next-line react-hooks/refs
   const [allocation, setAllocation] = useState(initialAllocation.current)
 
   useEffect(() => {
@@ -63,13 +66,15 @@ export const useAllocation = (): CurrencyAmount<Token> => {
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const useCowFromLockedGnoBalances = () => {
+  const { t } = useLingui()
+  const SupportedChainIdMAINNET = SupportedChainId.MAINNET
+
   if (!_COW) {
-    throw new Error(`COW token not found for chain ${SupportedChainId.MAINNET}`)
+    throw new Error(t`COW token not found for chain ${SupportedChainIdMAINNET}`)
   }
   const { account } = useWalletInfo()
   const allocated = useAllocation()
   const vested = allocated
-    // eslint-disable-next-line react-hooks/purity
     .multiply(Math.min(Date.now() - LOCKED_GNO_VESTING_START_TIME, LOCKED_GNO_VESTING_DURATION))
     .divide(LOCKED_GNO_VESTING_DURATION)
 
@@ -109,31 +114,32 @@ export function useClaimCowFromLockedGnoCallback({
   const { account } = useWalletInfo()
   const { contract: merkleDrop, chainId: merkleDropChainId } = useMerkleDropContract()
   const { contract: tokenDistro, chainId: tokenDistroChainId } = useTokenDistroContract()
+  const { t } = useLingui()
 
   const addTransaction = useTransactionAdder()
 
   return useCallback(async () => {
     if (!account) {
-      throw new Error('Not connected')
+      throw new Error(t`Not connected`)
     }
 
     if (!merkleDrop || !tokenDistro) {
-      throw new Error('Contract not present or not connected to any supported chain')
+      throw new Error(t`Contract not present or not connected to any supported chain`)
     }
 
     if (merkleDropChainId !== tokenDistroChainId) {
-      throw new Error('Contract and chainId are not on the same chain')
+      throw new Error(t`Contract and chainId are not on the same chain`)
     }
 
     const claim = await fetchClaim(account, tokenDistroChainId)
-    if (!claim) throw new Error('Trying to claim without claim data')
+    if (!claim) throw new Error(t`Trying to claim without claim data`)
 
     const { index, proof, amount } = claim
 
     // On the very first claim we need to provide the merkle proof.
     // Afterwards the allocation will be already in the tokenDistro contract and we can just claim it there.
     const claimPromise = isFirstClaim ? merkleDrop.claim(index, amount, proof) : tokenDistro.claim()
-    const summary = 'Claim vested COW'
+    const summary = t`Claim vested` + ` COW`
     openModal(summary)
 
     return claimPromise
@@ -148,13 +154,14 @@ export function useClaimCowFromLockedGnoCallback({
       .finally(closeModal)
   }, [
     account,
-    addTransaction,
-    closeModal,
-    openModal,
-    isFirstClaim,
     merkleDrop,
     tokenDistro,
     merkleDropChainId,
     tokenDistroChainId,
+    t,
+    isFirstClaim,
+    openModal,
+    closeModal,
+    addTransaction,
   ])
 }

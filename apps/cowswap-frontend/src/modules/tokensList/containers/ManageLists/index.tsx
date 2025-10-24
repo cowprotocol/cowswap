@@ -4,6 +4,8 @@ import { useCowAnalytics } from '@cowprotocol/analytics'
 import { ListSearchResponse, ListState, useListsEnabledState, useRemoveList, useToggleList } from '@cowprotocol/tokens'
 import { Loader } from '@cowprotocol/ui'
 
+import { Trans } from '@lingui/react/macro'
+
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
 import * as styledEl from './styled'
@@ -55,7 +57,9 @@ export function ManageLists(props: ManageListsProps) {
   return (
     <styledEl.Wrapper>
       {isListUrlValid && !listToImport?.list && !loading && (
-        <styledEl.InputError>Error importing token list</styledEl.InputError>
+        <styledEl.InputError>
+          <Trans>Error importing token list</Trans>
+        </styledEl.InputError>
       )}
       {loading && (
         <styledEl.LoaderWrapper>

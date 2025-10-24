@@ -4,7 +4,6 @@ import { Command } from '@cowprotocol/types'
 import { Badge, BadgeTypes, ModalHeader } from '@cowprotocol/ui'
 import type { TradeType } from '@cowprotocol/widget-lib'
 
-import { Trans } from '@lingui/macro'
 import IMAGE_CARET from 'assets/icon/caret.svg'
 import SVG from 'react-inlinesvg'
 import { useLocation } from 'react-router'
@@ -146,20 +145,20 @@ const MenuItem = ({
   onClick,
   isDropdownVisible,
 }: {
-  routePath: string
-  item: MenuItemConfig
   isActive: boolean
-  onClick: Command
   isDropdownVisible: boolean
+  item: MenuItemConfig
+  onClick: Command
+  routePath: string
   // TODO: Add proper return type annotation
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 }) => (
   <styledEl.MenuItem isActive={isActive} onClick={onClick} isDropdownVisible={isDropdownVisible}>
     <styledEl.Link to={routePath}>
-      <Trans>{item.label}</Trans>
+      {item.label}
       {(!isActive && item.badgeImage) || item.badge ? (
         <Badge {...(item.badgeType && { type: item.badgeType })}>
-          {item.badgeImage ? <SVG src={item.badgeImage} /> : <Trans>{item.badge}</Trans>}
+          {item.badgeImage ? <SVG src={item.badgeImage} /> : item.badge}
         </Badge>
       ) : null}
     </styledEl.Link>

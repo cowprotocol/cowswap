@@ -3,6 +3,8 @@ import React, { ReactNode, RefObject } from 'react'
 import { LpTokenProvider } from '@cowprotocol/types'
 import { ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 
+import { Trans } from '@lingui/react/macro'
+
 import { ArrowBackground } from '../../ArrowBackground'
 import { StarIcon, TextFit } from '../Common'
 import { LpEmblems } from '../LpEmblems'
@@ -43,7 +45,9 @@ export function GlobalContent({ context, children, arrowBackgroundRef, comparedP
         <styledEl.Card bgColor={`var(${UI.COLOR_COWAMM_GREEN})`} color={`var(${UI.COLOR_COWAMM_LIGHT_GREEN})`}>
           <span>
             <TextFit mode="multi" minFontSize={10} maxFontSize={30}>
-              One-click convert, <strong>boost yield</strong>
+              <Trans>
+                One-click convert, <strong>boost yield</strong>
+              </Trans>
             </TextFit>
           </span>
           <LpEmblems comparedProviders={comparedProviders} />
@@ -54,7 +58,9 @@ export function GlobalContent({ context, children, arrowBackgroundRef, comparedP
         {ctaText}
       </styledEl.CTAButton>
 
-      <styledEl.SecondaryLink href="https://dune.com/cowprotocol/cow-amms-v2">Pool analytics ↗</styledEl.SecondaryLink>
+      <styledEl.SecondaryLink href="https://dune.com/cowprotocol/cow-amms-v2">
+        <Trans>Pool analytics</Trans> ↗
+      </styledEl.SecondaryLink>
 
       <ArrowBackground ref={arrowBackgroundRef} />
     </styledEl.BannerWrapper>

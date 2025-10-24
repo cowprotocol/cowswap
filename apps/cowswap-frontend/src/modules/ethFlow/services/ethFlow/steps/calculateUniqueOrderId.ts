@@ -5,6 +5,8 @@ import type { ContractsOrder as Order } from '@cowprotocol/cow-sdk'
 import { OrderSigningUtils } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
+import { t } from '@lingui/core/macro'
+
 import { getSignOrderParams, PostOrderParams } from 'legacy/utils/trade'
 
 import { logTradeFlow } from 'modules/trade/utils/logger'
@@ -21,7 +23,7 @@ function adjustAmounts(params: PostOrderParams): PostOrderParams {
   const buyCurrency = params.outputAmount?.currency
 
   if (!nativeCurrency || !buyCurrency) {
-    throw new Error('Missing currency for Eth Flow Fee') // Not a realistic case, just to make TS happy
+    throw new Error(t`Missing currency for Eth Flow Fee`) // Not a realistic case, just to make TS happy
   }
 
   // On fee=0, fee is, well, 0. Thus, we cannot shift amounts around and remain with the exact same price.

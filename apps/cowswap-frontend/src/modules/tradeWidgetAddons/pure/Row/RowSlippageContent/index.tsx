@@ -5,7 +5,8 @@ import { Command } from '@cowprotocol/types'
 import { CenteredDots, HoverTooltip, LinkStyledButton, RowFixed, UI } from '@cowprotocol/ui'
 import { Percent } from '@uniswap/sdk-core'
 
-import { Trans } from '@lingui/macro'
+import { useLingui } from '@lingui/react/macro'
+import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from 'common/utils/tradeSettingsTooltips'
@@ -29,9 +30,6 @@ const DefaultSlippage = styled.span`
   }
 `
 
-const SUGGESTED_SLIPPAGE_TOOLTIP =
-  'This is the recommended slippage tolerance based on current gas prices & trade size. A lower amount may result in slower execution.'
-
 export interface RowSlippageContentProps {
   displaySlippage: string
   isEoaEthFlow: boolean
@@ -51,6 +49,8 @@ export interface RowSlippageContentProps {
 }
 
 export function RowSlippageContent(props: RowSlippageContentProps): ReactNode {
+  const { t } = useLingui()
+  const SUGGESTED_SLIPPAGE_TOOLTIP = t`This is the recommended slippage tolerance based on current gas prices & trade size. A lower amount may result in slower execution.`
   const {
     displaySlippage,
     isEoaEthFlow,
@@ -68,7 +68,6 @@ export function RowSlippageContent(props: RowSlippageContentProps): ReactNode {
   } = props
 
   const setSettingTabState = useSetAtom(settingsTabStateAtom)
-
   const openSettings: () => void = () => setSettingTabState({ open: true })
 
   const tooltipContent =
@@ -88,7 +87,9 @@ export function RowSlippageContent(props: RowSlippageContentProps): ReactNode {
           <CenteredDots />
         ) : (
           <>
-            <LinkStyledButton onClick={setAutoSlippage}>(Recommended: {smartSlippage})</LinkStyledButton>
+            <LinkStyledButton onClick={setAutoSlippage}>
+              (<Trans>Recommended</Trans>: {smartSlippage})
+            </LinkStyledButton>
             <HoverTooltip wrapInContainer content={SUGGESTED_SLIPPAGE_TOOLTIP}>
               <StyledInfoIcon size={16} />
             </HoverTooltip>
@@ -142,11 +143,13 @@ function SlippageTextContents({
   isEoaEthFlow,
   isDefaultSlippageApplied,
 }: SlippageTextContentsProps): ReactNode {
+  const { t } = useLingui()
+  
   return (
     <TransactionText>
-      <Trans>{slippageLabel || 'Slippage tolerance'}</Trans>
-      {isDynamicSlippageSet && !isDefaultSlippageApplied && <i>(dynamic)</i>}
-      {isEoaEthFlow && isDefaultSlippageApplied && <i>(modified)</i>}
+      {slippageLabel || t`Slippage tolerance`}
+      {isDynamicSlippageSet && !isDefaultSlippageApplied && <i><Trans>(dynamic)</Trans></i>}
+      {isEoaEthFlow && isDefaultSlippageApplied && <i><Trans>(modified)</Trans></i>}
     </TransactionText>
   )
 }

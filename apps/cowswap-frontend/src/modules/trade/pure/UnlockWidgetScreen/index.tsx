@@ -3,6 +3,7 @@ import { Command } from '@cowprotocol/types'
 import { ButtonPrimary } from '@cowprotocol/ui'
 import { ExternalLink } from '@cowprotocol/ui'
 
+import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 
 import * as styledEl from './styled'
@@ -58,7 +59,9 @@ export function UnlockWidgetScreen({
       <styledEl.ControlSection>
         {buttonLink && (
           <span>
-            Learn more about <ExternalLink href={buttonLink}>{orderType} orders ↗</ExternalLink>
+            <Trans>
+              Learn more about <ExternalLink href={buttonLink}>{orderType} orders ↗</ExternalLink>
+            </Trans>
           </span>
         )}
         <ButtonPrimary id={`unlock-${id}-btn`} onClick={handleUnlock}>

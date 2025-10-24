@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react'
 
-import { RECEIVED_LABEL } from '@cowprotocol/common-const'
+import { RECEIVED_LABEL_EXPLORER } from '@cowprotocol/common-const'
 import { BridgeStatus, CrossChainOrder } from '@cowprotocol/sdk-bridging'
 
 import { AddressLink } from 'components/common/AddressLink'
@@ -76,7 +76,7 @@ export function BridgeDetailsContent({ crossChainOrder }: BridgeDetailsContentPr
         </AmountSectionWrapper>
       </DetailRow>
 
-      <DetailRow label={RECEIVED_LABEL} tooltipText={BridgeDetailsTooltips.youReceived}>
+      <DetailRow label={RECEIVED_LABEL_EXPLORER} tooltipText={BridgeDetailsTooltips.youReceived}>
         {outputAmount && destinationToken && bridgeStatus === BridgeStatus.EXECUTED && (
           <BridgeReceiveAmount
             amount={outputAmount}

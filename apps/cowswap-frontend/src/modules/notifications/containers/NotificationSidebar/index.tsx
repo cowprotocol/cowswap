@@ -4,6 +4,7 @@ import ICON_NOTIFICATION_SETTINGS from '@cowprotocol/assets/images/icon-notifica
 import { useOnClickOutside } from '@cowprotocol/common-hooks'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 
+import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 
 import { upToSmall, useMediaQuery } from 'legacy/hooks/useMediaQuery'
@@ -34,7 +35,9 @@ function SettingsHeader({ onBack }: SettingsHeaderProps): ReactNode {
           })}
         />
       </span>
-      <h3>Trade alerts</h3>
+      <h3>
+        <Trans>Trade alerts</Trans>
+      </h3>
     </SidebarHeader>
   )
 }
@@ -74,7 +77,9 @@ function NotificationsHeader({
           })}
         />
       </span>
-      <h3>Notifications</h3>
+      <h3>
+        <Trans>Notifications</Trans>
+      </h3>
       {areTelegramNotificationsEnabled &&
         (hasSubscription ? (
           <NotificationSettingsPopover

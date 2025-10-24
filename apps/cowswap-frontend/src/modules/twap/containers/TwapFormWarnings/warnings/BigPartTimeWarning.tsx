@@ -1,5 +1,7 @@
 import { InlineBanner } from '@cowprotocol/ui'
 
+import { Trans } from '@lingui/react/macro'
+
 import { MAX_PART_TIME } from '../../../const'
 import { deadlinePartsDisplay } from '../../../utils/deadlinePartsDisplay'
 
@@ -10,10 +12,14 @@ export function BigPartTimeWarning() {
 
   return (
     <InlineBanner>
-      <strong>Too much time between parts</strong>
+      <strong>
+        <Trans>Too much time between parts</Trans>
+      </strong>
       <p>
-        A maximum of <strong>{time}</strong> between parts is required. Increase the number of parts or decrease the
-        total duration.
+        <Trans>
+          A maximum of <strong>{time}</strong> between parts is required. Increase the number of parts or decrease the
+          total duration.
+        </Trans>
       </p>
     </InlineBanner>
   )

@@ -5,6 +5,8 @@ import { AddressZero } from '@ethersproject/constants'
 import { Contract, ContractInterface } from '@ethersproject/contracts'
 import { JsonRpcProvider, JsonRpcSigner } from '@ethersproject/providers'
 
+import { t } from '@lingui/core/macro'
+
 import { getExplorerOrderLink } from './explorer'
 
 // returns the checksummed address if the address is valid, otherwise returns false
@@ -119,11 +121,9 @@ export function getEtherscanLink(chainId: SupportedChainId, type: BlockExplorerL
 }
 
 export function getExplorerLabel(chainId: SupportedChainId, type: BlockExplorerLinkType, data?: string): string {
-  if (isCowOrder(type, data)) {
-    return 'View on Explorer'
-  }
+  const explorerTitle = CHAIN_INFO[chainId].explorerTitle
 
-  return `View on ${CHAIN_INFO[chainId].explorerTitle}`
+  return isCowOrder(type, data) ? t`View on Explorer` : t`View on` + ` ${explorerTitle}`
 }
 
 export function shortenOrderId(orderId: string): string {

@@ -5,7 +5,7 @@ import { usePreventDoubleExecution } from '@cowprotocol/common-hooks'
 import { ButtonSize, HoverTooltip, TokenSymbol } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { Trans } from '@lingui/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 
 import { useHasCachedPermit } from 'modules/permit'
 import { useIsCurrentTradeBridging } from 'modules/trade'
@@ -31,6 +31,7 @@ export interface TradeApproveButtonProps {
 }
 
 export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
+  const { t } = useLingui()
   const {
     amountToApprove,
     children,
@@ -66,7 +67,9 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
   const noCachedPermit = !cachedPermitLoading && !cachedPermit
 
   const label =
-    props.label || (noCachedPermit ? (isCurrentTradeBridging ? 'Approve, Swap & Bridge' : 'Approve and Swap') : 'Swap')
+    props.label || (noCachedPermit ? (isCurrentTradeBridging ? t`Approve, Swap & Bridge` : t`Approve and Swap`) : t`Swap`)
+  
+  const amountToApproveCurrency = amountToApprove.currency
 
   return (
     <ButtonWrapper
@@ -83,7 +86,7 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
             content={
               <Trans>
                 You must give the CoW Protocol smart contracts permission to use your{' '}
-                <TokenSymbol token={amountToApprove.currency} />. If you approve the default amount, you will only have
+                <TokenSymbol token={amountToApproveCurrency} />. If you approve the default amount, you will only have
                 to do this once per token.
               </Trans>
             }

@@ -39,6 +39,7 @@ export const LinkOutCircle = styled(ArrowDownCircle)`
   transform: rotate(230deg);
   width: 16px;
   height: 16px;
+  flex-shrink: 0;
 `
 export const FlyoutRow = styled.div<{ active: boolean }>`
   align-items: center;

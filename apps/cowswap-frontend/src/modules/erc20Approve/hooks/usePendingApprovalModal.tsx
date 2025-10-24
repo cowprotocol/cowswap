@@ -5,6 +5,8 @@ import { Command } from '@cowprotocol/types'
 import { TokenAmount, TokenSymbol } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { Trans, useLingui } from '@lingui/react/macro'
+
 import { ModalState, useModalState } from 'common/hooks/useModalState'
 import { ConfirmationPendingContent } from 'common/pure/ConfirmationPendingContent'
 
@@ -36,20 +38,23 @@ export function usePendingApprovalModal(params?: PendingApprovalModalParams): {
     onDismiss?.()
   }, [closeModal, onDismiss])
 
+  const { t } = useLingui()
+
   return useMemo(() => {
+    const currencySymbolOrContext = currencySymbol || context
     const Title =
       amountToApprove && !isMaxAmountToApprove(amountToApprove) ? (
-        <>
+        <Trans>
           Approving <TokenAmount amount={amountToApprove} />{' '}
           <strong>
             <TokenSymbol token={amountToApprove.currency} />
           </strong>{' '}
           for trading
-        </>
+        </Trans>
       ) : (
-        <>
-          Approving <strong>{currencySymbol || context}</strong> for trading
-        </>
+        <Trans>
+          Approving <strong>{currencySymbolOrContext}</strong> for trading
+        </Trans>
       )
 
     const Modal = (
@@ -57,12 +62,12 @@ export function usePendingApprovalModal(params?: PendingApprovalModalParams): {
         modalMode={!!modalMode}
         onDismiss={onDismissCallback}
         title={Title}
-        description="Approving token"
-        operationLabel="token approval"
+        description={t`Approving token`}
+        operationLabel={t`token approval`}
         isPendingInProgress={showPendingState}
       />
     )
 
     return { Modal, state }
-  }, [amountToApprove, currencySymbol, context, modalMode, onDismissCallback, showPendingState, state])
+  }, [amountToApprove, currencySymbol, context, modalMode, onDismissCallback, showPendingState, state, t])
 }

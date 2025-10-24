@@ -3,7 +3,7 @@ import React, { ReactNode } from 'react'
 import { ButtonConfirmed, ButtonSize, HoverTooltip, TokenSymbol } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 import { HelpCircle } from 'react-feather'
 
 import * as styledEl from './styled'
@@ -17,6 +17,7 @@ export type SignPermitButtonProps = {
 // todo for new flow only
 export function TradeSignPermitButton(props: SignPermitButtonProps): ReactNode {
   const { amountToApprove, children, confirmSwap } = props
+  const amountToApproveCurrency = amountToApprove.currency
 
   return (
     <ButtonConfirmed buttonSize={ButtonSize.BIG} onClick={confirmSwap} width="100%" marginBottom={10}>
@@ -27,7 +28,7 @@ export function TradeSignPermitButton(props: SignPermitButtonProps): ReactNode {
           content={
             <Trans>
               You must give the CoW Protocol smart contracts permission to use your{' '}
-              <TokenSymbol token={amountToApprove.currency} />. If you approve the default amount, you will only have to
+              <TokenSymbol token={amountToApproveCurrency} />. If you approve the default amount, you will only have to
               do this once per token.
             </Trans>
           }

@@ -3,6 +3,8 @@ import { useCallback } from 'react'
 
 import { useSendBatchTransactions } from '@cowprotocol/wallet'
 
+import { useLingui } from '@lingui/react/macro'
+
 import { Order } from 'legacy/state/orders/actions'
 
 import { useComposableCowContract } from 'modules/advancedOrders/hooks/useComposableCowContract'
@@ -22,15 +24,16 @@ export function useCancelTwapOrder(): (twapOrderId: string, order: Order) => Pro
   const sendBatchTransactions = useSendBatchTransactions()
   const { contract: settlementContract, chainId: settlementChainId } = useGP2SettlementContract()
   const { contract: composableCowContract, chainId: composableCowChainId } = useComposableCowContract()
+  const { t } = useLingui()
 
   return useCallback(
     async (twapOrderId: string, order: Order) => {
       if (!composableCowContract || !settlementContract) {
-        throw new Error('Context is not full to cancel TWAP order')
+        throw new Error(t`Context is not full to cancel TWAP order`)
       }
 
       if (composableCowChainId !== settlementChainId) {
-        throw new Error('Composable Cow and Settlement contracts are not on the same chain')
+        throw new Error(t`Composable Cow and Settlement contracts are not on the same chain`)
       }
 
       const partOrder = twapPartOrders[twapOrderId]?.sort((a, b) => a.order.validTo - b.order.validTo)[0]
@@ -64,11 +67,12 @@ export function useCancelTwapOrder(): (twapOrderId: string, order: Order) => Pro
     [
       composableCowContract,
       settlementContract,
-      sendBatchTransactions,
-      twapPartOrders,
-      setTwapOrderStatus,
       composableCowChainId,
       settlementChainId,
+      twapPartOrders,
+      t,
+      sendBatchTransactions,
+      setTwapOrderStatus,
     ],
   )
 }

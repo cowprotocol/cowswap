@@ -4,8 +4,7 @@ import { DEFAULT_DEADLINE_FROM_NOW } from '@cowprotocol/common-const'
 import { StatefulValue } from '@cowprotocol/types'
 import { HelpTooltip, RowFixed } from '@cowprotocol/ui'
 
-
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 import { ThemedText } from 'theme'
 
 import { useIsEoaEthFlow } from 'modules/trade'
@@ -21,13 +20,7 @@ interface DeadlineSettingsProps {
 }
 
 export function DeadlineTransactionSettings({ deadlineState }: DeadlineSettingsProps): JSX.Element {
-  const {
-    viewValue,
-    parseCustomDeadline,
-    error,
-    isDisabled,
-    onBlur,
-  } = useCustomDeadline(deadlineState)
+  const { viewValue, parseCustomDeadline, error, isDisabled, onBlur } = useCustomDeadline(deadlineState)
   const nativeCurrency = useNativeCurrency()
   const isEoaEthFlow = useIsEoaEthFlow()
 
@@ -39,11 +32,7 @@ export function DeadlineTransactionSettings({ deadlineState }: DeadlineSettingsP
         </ThemedText.Black>
         <HelpTooltip
           text={
-            <Trans>
-              {isEoaEthFlow
-                ? getNativeOrderDeadlineTooltip([nativeCurrency.symbol])
-                : getNonNativeOrderDeadlineTooltip()}
-            </Trans>
+            isEoaEthFlow ? getNativeOrderDeadlineTooltip([nativeCurrency.symbol]) : getNonNativeOrderDeadlineTooltip()
           }
         />
       </RowFixed>

@@ -8,7 +8,8 @@ import { ButtonOutlined, Media, MY_ORDERS_ID, SWAP_HEADER_OFFSET } from '@cowpro
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
 
-import { t } from '@lingui/macro'
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 import { Nullish } from 'types'
 
@@ -196,7 +197,9 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
 
           {shouldShowMyOrdersButton && (
             <ButtonOutlined margin={'0 16px 0 auto'} onClick={handleMyOrdersClick}>
-              My orders <SVG src={ICON_ORDERS} />
+              <Trans>
+                My orders <SVG src={ICON_ORDERS} />
+              </Trans>
             </ButtonOutlined>
           )}
 
@@ -253,7 +256,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
                     }
                     inputTooltip={
                       isSellingEthSupported && isEoaEthFlow
-                        ? t`You cannot edit this field when selling ${inputCurrencyInfo?.currency?.symbol}`
+                        ? t`You cannot edit this field when selling` + ` ${inputCurrencyInfo?.currency?.symbol}`
                         : undefined
                     }
                     currencyInfo={outputCurrencyInfo}
