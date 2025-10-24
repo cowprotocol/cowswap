@@ -52,7 +52,6 @@ export interface SwapWidgetProps {
 }
 
 // TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
 // eslint-disable-next-line max-lines-per-function,complexity
 export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps): ReactNode {
   const { showRecipient } = useSwapSettings()
@@ -87,7 +86,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps): Reac
     orderKind,
     isUnlocked,
   } = useSwapDerivedState()
-  const doTrade = useHandleSwap(useSafeMemoObject({ deadline: deadlineState[0] }), widgetActions)
+  const doTrade = useHandleSwap({ deadline: deadlineState[0] }, widgetActions)
   const hasEnoughWrappedBalanceForSwap = useHasEnoughWrappedBalanceForSwap()
   const isSmartContractWallet = useIsSmartContractWallet()
   const { account } = useWalletInfo()

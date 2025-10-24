@@ -1,3 +1,5 @@
+import { useAtomValue } from 'jotai'
+
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
@@ -8,9 +10,13 @@ import { useNeedsApproval } from 'common/hooks/useNeedsApproval'
 import { useGetAmountToSignApprove } from './useGetAmountToSignApprove'
 import { useGetPartialAmountToSignApprove } from './useGetPartialAmountToSignApprove'
 
-import { useSwapPartialApprovalToggleState } from '../../swap/hooks/useSwapSettings'
 import { MAX_APPROVE_AMOUNT } from '../constants'
 import { useIsPartialApproveSelectedByUser } from '../state'
+
+jest.mock('jotai', () => ({
+  ...jest.requireActual('jotai'),
+  useAtomValue: jest.fn(),
+}))
 
 jest.mock('@cowprotocol/common-hooks', () => ({
   useFeatureFlags: jest.fn(),
@@ -24,21 +30,15 @@ jest.mock('./useGetPartialAmountToSignApprove', () => ({
   useGetPartialAmountToSignApprove: jest.fn(),
 }))
 
-jest.mock('../../swap/hooks/useSwapSettings', () => ({
-  useSwapPartialApprovalToggleState: jest.fn(),
-}))
-
 jest.mock('../state', () => ({
   useIsPartialApproveSelectedByUser: jest.fn(),
 }))
 
+const mockUseAtomValue = useAtomValue as jest.MockedFunction<typeof useAtomValue>
 const mockUseFeatureFlags = useFeatureFlags as jest.MockedFunction<typeof useFeatureFlags>
 const mockUseNeedsApproval = useNeedsApproval as jest.MockedFunction<typeof useNeedsApproval>
 const mockUseGetPartialAmountToSignApprove = useGetPartialAmountToSignApprove as jest.MockedFunction<
   typeof useGetPartialAmountToSignApprove
->
-const mockUseSwapPartialApprovalToggleState = useSwapPartialApprovalToggleState as jest.MockedFunction<
-  typeof useSwapPartialApprovalToggleState
 >
 const mockUseIsPartialApproveSelectedByUser = useIsPartialApproveSelectedByUser as jest.MockedFunction<
   typeof useIsPartialApproveSelectedByUser
@@ -57,7 +57,7 @@ describe('useGetAmountToSignApprove', () => {
     mockUseNeedsApproval.mockReturnValue(true)
     mockUseIsPartialApproveSelectedByUser.mockReturnValue(false)
     mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: true })
-    mockUseSwapPartialApprovalToggleState.mockReturnValue([true, jest.fn()])
+    mockUseAtomValue.mockReturnValue(true)
   })
 
   describe('when partialAmountToSign is null', () => {
@@ -82,7 +82,7 @@ describe('useGetAmountToSignApprove', () => {
     it('should return zero amount when approval is not needed regardless of partial approval settings', () => {
       mockUseNeedsApproval.mockReturnValue(false)
       mockUseIsPartialApproveSelectedByUser.mockReturnValue(true)
-      mockUseSwapPartialApprovalToggleState.mockReturnValue([true, jest.fn()])
+      mockUseAtomValue.mockReturnValue(true)
 
       const { result } = renderHook(() => useGetAmountToSignApprove())
 
@@ -95,7 +95,7 @@ describe('useGetAmountToSignApprove', () => {
       mockUseNeedsApproval.mockReturnValue(true)
       mockUseIsPartialApproveSelectedByUser.mockReturnValue(true)
       mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: true })
-      mockUseSwapPartialApprovalToggleState.mockReturnValue([true, jest.fn()])
+      mockUseAtomValue.mockReturnValue(true)
 
       const { result } = renderHook(() => useGetAmountToSignApprove())
 
@@ -106,7 +106,7 @@ describe('useGetAmountToSignApprove', () => {
       mockUseNeedsApproval.mockReturnValue(true)
       mockUseIsPartialApproveSelectedByUser.mockReturnValue(false)
       mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: true })
-      mockUseSwapPartialApprovalToggleState.mockReturnValue([true, jest.fn()])
+      mockUseAtomValue.mockReturnValue(true)
 
       const { result } = renderHook(() => useGetAmountToSignApprove())
 
@@ -117,7 +117,7 @@ describe('useGetAmountToSignApprove', () => {
       mockUseNeedsApproval.mockReturnValue(true)
       mockUseIsPartialApproveSelectedByUser.mockReturnValue(true)
       mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: true })
-      mockUseSwapPartialApprovalToggleState.mockReturnValue([false, jest.fn()])
+      mockUseAtomValue.mockReturnValue(false)
 
       const { result } = renderHook(() => useGetAmountToSignApprove())
 
@@ -129,7 +129,7 @@ describe('useGetAmountToSignApprove', () => {
     it('should return max amount when isPartialApproveEnabled is false', () => {
       mockUseNeedsApproval.mockReturnValue(true)
       mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: false })
-      mockUseSwapPartialApprovalToggleState.mockReturnValue([null, null])
+      mockUseAtomValue.mockReturnValue(false)
 
       const { result } = renderHook(() => useGetAmountToSignApprove())
 
@@ -140,7 +140,7 @@ describe('useGetAmountToSignApprove', () => {
       mockUseNeedsApproval.mockReturnValue(true)
       mockUseIsPartialApproveSelectedByUser.mockReturnValue(true)
       mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: false })
-      mockUseSwapPartialApprovalToggleState.mockReturnValue([null, null])
+      mockUseAtomValue.mockReturnValue(false)
 
       const { result } = renderHook(() => useGetAmountToSignApprove())
 
@@ -153,7 +153,7 @@ describe('useGetAmountToSignApprove', () => {
       mockUseNeedsApproval.mockReturnValue(true)
       mockUseIsPartialApproveSelectedByUser.mockReturnValue(true)
       mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: false })
-      mockUseSwapPartialApprovalToggleState.mockReturnValue([null, null])
+      mockUseAtomValue.mockReturnValue(false)
 
       const { result } = renderHook(() => useGetAmountToSignApprove())
 
@@ -164,7 +164,7 @@ describe('useGetAmountToSignApprove', () => {
       mockUseNeedsApproval.mockReturnValue(true)
       mockUseIsPartialApproveSelectedByUser.mockReturnValue(true)
       mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: true })
-      mockUseSwapPartialApprovalToggleState.mockReturnValue([false, jest.fn()])
+      mockUseAtomValue.mockReturnValue(false)
 
       const { result } = renderHook(() => useGetAmountToSignApprove())
 
@@ -175,7 +175,7 @@ describe('useGetAmountToSignApprove', () => {
       mockUseNeedsApproval.mockReturnValue(true)
       mockUseIsPartialApproveSelectedByUser.mockReturnValue(false)
       mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: true })
-      mockUseSwapPartialApprovalToggleState.mockReturnValue([true, jest.fn()])
+      mockUseAtomValue.mockReturnValue(true)
 
       const { result } = renderHook(() => useGetAmountToSignApprove())
 
@@ -250,7 +250,7 @@ describe('useGetAmountToSignApprove', () => {
 
       const firstResult = result.current
 
-      mockUseSwapPartialApprovalToggleState.mockReturnValue([false, jest.fn()])
+      mockUseAtomValue.mockReturnValue(false)
       rerender()
 
       expect(result.current).not.toBe(firstResult)
@@ -263,7 +263,7 @@ describe('useGetAmountToSignApprove', () => {
       mockUseNeedsApproval.mockReturnValue(true)
       mockUseIsPartialApproveSelectedByUser.mockReturnValue(true)
       mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: true })
-      mockUseSwapPartialApprovalToggleState.mockReturnValue([true, jest.fn()])
+      mockUseAtomValue.mockReturnValue(true)
 
       const { result } = renderHook(() => useGetAmountToSignApprove())
 
@@ -293,7 +293,7 @@ describe('useGetAmountToSignApprove', () => {
         mockUseNeedsApproval.mockReturnValue(true)
         mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: scenario.isPartialApproveEnabled })
         mockUseIsPartialApproveSelectedByUser.mockReturnValue(scenario.isPartialApprovalSelectedByUser)
-        mockUseSwapPartialApprovalToggleState.mockReturnValue([scenario.isPartialApprovalEnabledInSettings, jest.fn()])
+        mockUseAtomValue.mockReturnValue(scenario.isPartialApprovalEnabledInSettings)
 
         const { result } = renderHook(() => useGetAmountToSignApprove())
 
@@ -305,7 +305,7 @@ describe('useGetAmountToSignApprove', () => {
       mockUseNeedsApproval.mockReturnValue(true)
       mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: true })
       mockUseIsPartialApproveSelectedByUser.mockReturnValue(true)
-      mockUseSwapPartialApprovalToggleState.mockReturnValue([false, jest.fn()])
+      mockUseAtomValue.mockReturnValue(false)
 
       const { result } = renderHook(() => useGetAmountToSignApprove())
 
@@ -337,7 +337,7 @@ describe('useGetAmountToSignApprove', () => {
       mockUseNeedsApproval.mockReturnValue(true)
       mockUseIsPartialApproveSelectedByUser.mockReturnValue(true)
       mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: true })
-      mockUseSwapPartialApprovalToggleState.mockReturnValue([true, jest.fn()])
+      mockUseAtomValue.mockReturnValue(true)
 
       const { result } = renderHook(() => useGetAmountToSignApprove())
 
@@ -351,7 +351,7 @@ describe('useGetAmountToSignApprove', () => {
       mockUseNeedsApproval.mockReturnValue(true)
       mockUseIsPartialApproveSelectedByUser.mockReturnValue(true)
       mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: true })
-      mockUseSwapPartialApprovalToggleState.mockReturnValue([true, jest.fn()])
+      mockUseAtomValue.mockReturnValue(true)
 
       const { result, rerender } = renderHook(() => useGetAmountToSignApprove())
 
@@ -368,7 +368,7 @@ describe('useGetAmountToSignApprove', () => {
       mockUseNeedsApproval.mockReturnValue(true)
       mockUseIsPartialApproveSelectedByUser.mockReturnValue(true)
       mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: true })
-      mockUseSwapPartialApprovalToggleState.mockReturnValue([true, jest.fn()])
+      mockUseAtomValue.mockReturnValue(true)
       rerender()
       expect(result.current).toEqual(mockPartialAmount)
 

@@ -1,6 +1,5 @@
 import { SigningScheme } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
-import { MaxUint256 } from '@ethersproject/constants'
 import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { Percent } from '@uniswap/sdk-core'
 
@@ -43,7 +42,7 @@ export async function safeBundleApprovalFlow(
     return false
   }
 
-  const { spender, sendBatchTransactions, erc20Contract, isPartialApproveEnabled } = safeBundleContext
+  const { spender, sendBatchTransactions, erc20Contract, amountToApprove } = safeBundleContext
 
   const { chainId } = context
   const { account, isSafeWallet, recipientAddressOrName, inputAmount, outputAmount, kind } = orderParams
@@ -52,8 +51,6 @@ export async function safeBundleApprovalFlow(
   analytics.approveAndPresign(swapFlowAnalyticsContext)
   tradeConfirmActions.onSign(tradeAmounts)
 
-  const amountToApprove = isPartialApproveEnabled ? BigInt(inputAmount.quotient.toString()) : MaxUint256.toBigInt()
-
   try {
     // For now, bundling ALWAYS includes 2 steps: approve and presign.
     // In the feature users will be able to sort/add steps as they see fit
@@ -61,7 +58,7 @@ export async function safeBundleApprovalFlow(
     const approveTx = await buildApproveTx({
       erc20Contract,
       spender,
-      amountToApprove,
+      amountToApprove: BigInt(amountToApprove.quotient.toString()),
     })
 
     orderParams.appData = await removePermitHookFromAppData(orderParams.appData, typedHooks)
