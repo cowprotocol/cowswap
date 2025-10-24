@@ -47,16 +47,16 @@ export function SellNativeWarningBanner() {
         <Trans>Selling {nativeSymbol} is only supported on SWAP orders.</Trans>
       </p>
       <p>
-        <Trans>
-          <Button onClick={() => navigateOnCurrencySelection(Field.INPUT, wrapped)}>
-            Switch to {wrappedNativeSymbol}
-          </Button>{' '}
-          or{' '}
-          <Button onClick={() => navigateOnCurrencySelection(Field.OUTPUT, wrapped, undefined, queryParams)}>
+        <Button onClick={() => navigateOnCurrencySelection(Field.INPUT, wrapped)}>
+          <Trans>Switch to {wrappedNativeSymbol}</Trans>
+        </Button>
+        <Trans>or</Trans>
+        <Button onClick={() => navigateOnCurrencySelection(Field.OUTPUT, wrapped, undefined, queryParams)}>
+          <Trans>
             Wrap {nativeSymbol} to {wrappedNativeSymbol}
-          </Button>{' '}
-          first.
-        </Trans>
+          </Trans>
+        </Button>
+        <Trans>first.</Trans>
       </p>
     </InlineBanner>
   )
