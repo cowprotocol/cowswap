@@ -44,7 +44,7 @@ export const Content = styled.div<{ highlighted?: boolean; contentTextColor?: st
   > span {
     display: block;
     text-align: right;
-    word-break: break-all;
+    word-break: normal;
   }
 
   i {
@@ -56,20 +56,22 @@ export const Content = styled.div<{ highlighted?: boolean; contentTextColor?: st
 
 export const Label = styled.span<{ labelOpacity?: boolean }>`
   align-items: center;
+  color: inherit;
   display: flex;
   flex-flow: row;
   flex: 0 1 auto;
   font-weight: 400;
   gap: 4px;
+  hyphens: auto;
+  line-height: 1.2;
   opacity: ${({ labelOpacity }) => (labelOpacity ? 0.7 : 1)};
+  overflow-wrap: normal;
   text-align: left;
+  white-space: normal;
+  word-break: normal;
   transition:
     color var(${UI.ANIMATION_DURATION}) ease-in-out,
     opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
-  color: inherit;
-  white-space: normal;
-  word-break: break-word;
-  line-height: 1.2;
 
   &:hover {
     opacity: 1;
