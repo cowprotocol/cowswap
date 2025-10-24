@@ -8,7 +8,7 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: cowswap18n\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-10-22 16:30\n"
+"PO-Revision-Date: 2025-10-24 21:01\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -384,6 +384,11 @@ msgstr "Fallo al cortar. Reembolso iniciado..."
 #: apps/cowswap-frontend/src/pages/Account/Balances.tsx
 msgid "Buy COW"
 msgstr "Comprar COW"
+
+#: apps/cowswap-frontend/src/legacy/hooks/useWrapCallback.ts
+#: apps/cowswap-frontend/src/legacy/hooks/useWrapCallback.ts
+msgid "Reject"
+msgstr "Rechazar"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
@@ -1073,6 +1078,10 @@ msgstr "Minimizar el impacto del precio con TWAP"
 msgid "Allows you to set partial token approvals instead of full approvals."
 msgstr "Le permite establecer aprobaciones parciales de tokens en lugar de aprobaciones completas."
 
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SellNativeWarningBanner/index.tsx
+msgid "Switch to {wrappedNativeSymbol}"
+msgstr "Cambia a {wrappedNativeSymbol}"
+
 #: apps/cowswap-frontend/src/modules/accountProxy/containers/AccountProxiesPage/index.tsx
 #~ msgid "Select an {ACCOUNT_PROXY_LABEL} to check for available refunds {chain}"
 #~ msgstr "Select an {ACCOUNT_PROXY_LABEL} to check for available refunds {chain}"
@@ -1280,6 +1289,10 @@ msgstr "CoW Swap | La forma más inteligente de operar con criptomonedas"
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
 msgid "this order"
 msgstr "este pedido"
+
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SellNativeWarningBanner/index.tsx
+msgid "or"
+msgstr "o"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SmallPartTimeWarning.tsx
 msgid "A minimum of <0>{time}</0> between parts is required. Decrease the number of parts or increase the total duration."
@@ -2899,6 +2912,8 @@ msgid "View on Explorer"
 msgstr "Ver en el Explorador"
 
 #: apps/cowswap-frontend/src/common/pure/TransactionErrorContent/index.tsx
+#: apps/cowswap-frontend/src/legacy/hooks/useWrapCallback.ts
+#: apps/cowswap-frontend/src/legacy/hooks/useWrapCallback.ts
 msgid "Error"
 msgstr "Error"
 
@@ -2943,6 +2958,10 @@ msgstr "Leer más sobre tokens no soportados"
 #: apps/cowswap-frontend/src/api/cowProtocol/errors/OperatorError.ts
 msgid "cancelling"
 msgstr "cancelando"
+
+#: apps/cowswap-frontend/src/legacy/hooks/useWrapCallback.ts
+msgid "Signing transaction"
+msgstr "Firmando transacción"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/HookRegistryList/index.tsx
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/HookSearchInput/index.tsx
@@ -3535,6 +3554,10 @@ msgstr "Cantidad alta de deslizamiento seleccionada"
 msgid "Place orders for higher than available balance!"
 msgstr "¡Realiza pedidos por encima del saldo disponible!"
 
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SellNativeWarningBanner/index.tsx
+msgid "first."
+msgstr "primero."
+
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "No routes found"
@@ -3804,6 +3827,10 @@ msgstr "Ahora"
 msgid "Mooove between <0/> any chain, hassle-free"
 msgstr "Muuuuevete entre <0/> cualquier cadena, sin problemas"
 
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SellNativeWarningBanner/index.tsx
+msgid "Wrap {nativeSymbol} to {wrappedNativeSymbol}"
+msgstr "Envolver {nativeSymbol} a {wrappedNativeSymbol}"
+
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteSwapContent/index.tsx
 msgid "The address that will receive the tokens."
 msgstr "La dirección que recibirá las fichas."
@@ -3833,8 +3860,8 @@ msgid "Another order has used up the approval amount. Set a new token approval t
 msgstr "Otro pedido ha utilizado la cantidad de aprobación. Establezca una nueva aprobación de token para continuar con su pedido."
 
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/SurplusCard.tsx
-msgid "The total surplus CoW Swap has generated for you in {nativeSymbol} across all your trades since {startDate}."
-msgstr "El sobrante intercambio de CoW te ha generado en {nativeSymbol} a través de todos tus intercambios desde {startDate}."
+#~ msgid "The total surplus CoW Swap has generated for you in {nativeSymbol} across all your trades since {startDate}."
+#~ msgstr "The total surplus CoW Swap has generated for you in {nativeSymbol} across all your trades since {startDate}."
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/ManageListsAndTokens/index.tsx
 msgid "Enter valid token address"
@@ -3890,6 +3917,7 @@ msgstr "Excedente de orden"
 msgid "The \"Total duration\" is the duration it takes to execute all parts of your TWAP order.<0/><1/>For instance, your order consists of <2>{parts} parts</2> placed every <3>{partDurationDisplay}</3>, the total time to complete the order is <4>{totalDurationDisplay}</4>. Each limit order remains open for <5>{partDurationDisplay}</5> until the next part becomes active."
 msgstr "La \"Duración total\" es la duración que se tarda en ejecutar todas las partes de su pedido TWAP. <0/><1/>Por ejemplo, tu pedido consiste en <2>{parts} partes</2> colocado cada <3>{partDurationDisplay}</3>, el tiempo total para completar el pedido es <4>{totalDurationDisplay}</4>. Cada orden de límite permanece abierta para <5>{partDurationDisplay}</5> hasta que la siguiente parte se active."
 
+#: apps/cowswap-frontend/src/common/updaters/orders/utils.ts
 #: apps/cowswap-frontend/src/legacy/utils/trade.ts
 #: apps/cowswap-frontend/src/modules/trade/containers/WrapNativeModal/index.tsx
 msgid "to"
@@ -3946,8 +3974,8 @@ msgid "Open orders"
 msgstr "Pedidos abiertos"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SellNativeWarningBanner/index.tsx
-msgid "<0>Switch to {wrappedNativeSymbol}</0> or <1>Wrap {nativeSymbol} to {wrappedNativeSymbol}</1> first."
-msgstr "<0>Cambiar a {wrappedNativeSymbol}</0> o <1>Envolver {nativeSymbol} a {wrappedNativeSymbol}</1> primero."
+#~ msgid "<0>Switch to {wrappedNativeSymbol}</0> or <1>Wrap {nativeSymbol} to {wrappedNativeSymbol}</1> first."
+#~ msgstr "<0>Switch to {wrappedNativeSymbol}</0> or <1>Wrap {nativeSymbol} to {wrappedNativeSymbol}</1> first."
 
 #: apps/cowswap-frontend/src/pages/LimitOrders/AlternativeLimitOrder.tsx
 msgid "Recreate limit order"
@@ -4097,6 +4125,7 @@ msgid "Easily increase your position in a liquidity pool, adding both tokens in 
 msgstr "Incrementa fácilmente tu posición en un pool de liquidez, agregando ambos tokens en la proporción correcta.\n\n"
 "Ya sea que busques aumentar tu exposición a tokens específicos o maximizar los rendimientos de tus activos, esta herramienta ofrece una forma rápida y eficiente de mejorar tu posición de liquidez después de un intercambio de tokens, todo en un proceso fluido y eficiente."
 
+#: apps/cowswap-frontend/src/legacy/hooks/useWrapCallback.ts
 #: apps/cowswap-frontend/src/modules/trade/containers/WrapNativeModal/index.tsx
 msgid "Unwrapping"
 msgstr "Desenvoltura"
@@ -4291,6 +4320,7 @@ msgstr "Añadir <0/> a {walletName}"
 msgid "Orders on CoW Swap can either be market orders (which fill at the market price within the slippage tolerance you set) or limit orders (which fill at a price you specify)."
 msgstr "Los pedidos de CoW Swap pueden ser órdenes de mercado (que se llenan al precio de mercado dentro de la tolerancia del deslizamiento que ha establecido) o órdenes de límite (que se llenan a un precio que usted especifique)."
 
+#: apps/cowswap-frontend/src/common/updaters/orders/utils.ts
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 msgid "at least"
 msgstr "al menos"
@@ -4861,6 +4891,10 @@ msgstr "la orden se ejecuta en"
 msgid "Information"
 msgstr "Información"
 
+#: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/SurplusCard.tsx
+msgid "The total surplus CoW Swap has generated for you in {nativeSymbol} across all your trades since {startDate}"
+msgstr "El sobrante que CoW Swap te ha generado en {nativeSymbol} a través de todos tus intercambios desde {startDate}"
+
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/OrderRow/EstimatedExecutionPrice.tsx
 msgid "For this order, network costs would be"
 msgstr "Para este pedido, los costos de red serían"
@@ -4985,6 +5019,7 @@ msgstr "Permitir a CoW Swap usar tu <0/>"
 msgid "Safe logo"
 msgstr "Logo seguro"
 
+#: apps/cowswap-frontend/src/legacy/hooks/useWrapCallback.ts
 #: apps/cowswap-frontend/src/modules/trade/containers/WrapNativeModal/index.tsx
 msgid "Wrapping"
 msgstr "Envoltura"
@@ -5222,6 +5257,7 @@ msgstr "Restablecer favoritos"
 msgid "Wrap {nativeSymbol} failed"
 msgstr "No se pudo envolver {nativeSymbol}"
 
+#: apps/cowswap-frontend/src/common/updaters/orders/utils.ts
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 msgid "at most"
 msgstr "como máximo"
@@ -5230,6 +5266,8 @@ msgstr "como máximo"
 msgid "View on explorer"
 msgstr "Ver en explorador"
 
+#: apps/cowswap-frontend/src/common/updaters/orders/utils.ts
+#: apps/cowswap-frontend/src/common/updaters/orders/utils.ts
 #: apps/cowswap-frontend/src/legacy/utils/trade.ts
 msgid "for"
 msgstr "para"
