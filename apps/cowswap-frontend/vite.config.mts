@@ -1,6 +1,6 @@
 /// <reference types="vitest" />
 import { lingui } from '@lingui/vite-plugin'
-import react from '@vitejs/plugin-react'
+import reactPlugin from '@vitejs/plugin-react'
 import stdLibBrowser from 'node-stdlib-browser'
 import { visualizer } from 'rollup-plugin-visualizer'
 import { defineConfig, PluginOption, searchForWorkspaceRoot } from 'vite'
@@ -27,8 +27,19 @@ const nodeDepsToInclude = ['crypto', 'stream']
 const analyzeBundle = process.env.ANALYZE_BUNDLE === 'true'
 const analyzeBundleTemplate: TemplateType = (process.env.ANALYZE_BUNDLE_TEMPLATE as TemplateType) || 'treemap' //  "sunburst" | "treemap" | "network" | "raw-data" | "list";
 
+const normalizePath = (filePath: string) => filePath.split(path.sep).join('/')
+
 export default defineConfig(({ mode }) => {
   const isProduction = mode === 'production'
+
+  // TODO:These are the paths that should not be compiled with the React Compiler
+  // TODO:because they contain historically unstable Hook trees
+  // TODO: Remove this once we have refactored the code to use the new Hooks API
+  const reactCompilerDenyList = [
+    '/src/common/updaters/',
+    '/src/modules/application/containers/App/',
+    '/src/modules/trade/',
+  ]
 
   const plugins: PluginOption[] = [
     nodePolyfills({
@@ -40,9 +51,35 @@ export default defineConfig(({ mode }) => {
       },
       protocolImports: true,
     }),
-    react({
-      babel: {
-        plugins: [['babel-plugin-react-compiler']],
+    // React baseline transformer with targeted compiler opt-in.
+    reactPlugin({
+      babel(id) {
+        const normalizedId = normalizePath(id)
+
+        if (!normalizedId.includes('/src/')) {
+          return {}
+        }
+
+        const shouldSkipCompiler =
+          reactCompilerDenyList.some((deny) => normalizedId.includes(deny)) ||
+          (normalizedId.includes('/src/modules/') && normalizedId.includes('/updaters/'))
+
+        if (shouldSkipCompiler) {
+          return {}
+        }
+
+        return {
+          plugins: [
+            [
+              'babel-plugin-react-compiler',
+              {
+                compilationMode: 'infer',
+                // panicThreshold: 'none',
+                panicThreshold: 'throw',
+              },
+            ],
+          ],
+        }
       },
     }),
     viteTsConfigPaths({
