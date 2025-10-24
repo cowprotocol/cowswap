@@ -1,5 +1,9 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
+/**
+ * Maps chain names used in URL query parameters to SupportedChainId
+ * Those networks are the ones that existed before we started using chain IDs in the URL
+ */
 const chainNameToIdMap: { [key: string]: SupportedChainId } = {
   mainnet: SupportedChainId.MAINNET,
   gnosis_chain: SupportedChainId.GNOSIS_CHAIN,

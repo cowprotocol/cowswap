@@ -1,21 +1,15 @@
 import { EnsAbi, EnsRegistrar } from '@cowprotocol/abis'
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { getContract } from '@cowprotocol/common-utils'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletChainId, useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import useSWR from 'swr'
 
 const ENS_REGISTRAR_ADDRESSES: Record<SupportedChainId, string | null> = {
+  ...mapSupportedNetworks(null),
   [SupportedChainId.MAINNET]: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
-  [SupportedChainId.GNOSIS_CHAIN]: null,
   [SupportedChainId.SEPOLIA]: '0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e',
-  [SupportedChainId.ARBITRUM_ONE]: null,
-  [SupportedChainId.BASE]: null,
-  [SupportedChainId.POLYGON]: null,
-  [SupportedChainId.AVALANCHE]: null,
-  [SupportedChainId.LENS]: null,
-  [SupportedChainId.BNB]: null,
   // TODO: use mainnet registrar for all chains https://docs.ens.domains/learn/deployments, which means being connected to mainnet additionally to the other chain
 }
 

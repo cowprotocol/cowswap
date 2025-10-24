@@ -13,6 +13,8 @@ const RPC_URL_ENVS: Record<SupportedChainId, string | undefined> = {
   [SupportedChainId.AVALANCHE]: process.env.REACT_APP_NETWORK_URL_43114 || undefined,
   [SupportedChainId.LENS]: process.env.REACT_APP_NETWORK_URL_232 || undefined,
   [SupportedChainId.BNB]: process.env.REACT_APP_NETWORK_URL_56 || undefined,
+  [SupportedChainId.LINEA]: process.env.REACT_APP_NETWORK_URL_59144 || undefined,
+  [SupportedChainId.PLASMA]: process.env.REACT_APP_NETWORK_URL_9745 || undefined,
 }
 
 const DEFAULT_RPC_URL: Record<SupportedChainId, { url: string; usesInfura: boolean }> = {
@@ -25,6 +27,8 @@ const DEFAULT_RPC_URL: Record<SupportedChainId, { url: string; usesInfura: boole
   [SupportedChainId.AVALANCHE]: { url: `https://avalanche-mainnet.infura.io/v3/${INFURA_KEY}`, usesInfura: true },
   [SupportedChainId.BNB]: { url: `https://bsc-mainnet.infura.io/v3/${INFURA_KEY}`, usesInfura: true },
   [SupportedChainId.LENS]: { url: `https://rpc.lens.xyz`, usesInfura: false },
+  [SupportedChainId.LINEA]: { url: `https://rpc.linea.build`, usesInfura: false },
+  [SupportedChainId.PLASMA]: { url: `https://rpc.plasma.to`, usesInfura: false },
 }
 
 /**
