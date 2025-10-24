@@ -1,3 +1,4 @@
+import { useAtomValue } from 'jotai'
 import { ReactNode } from 'react'
 
 import {
@@ -8,15 +9,16 @@ import {
 } from '../../hooks'
 import { TradeAllowanceDisplay } from '../../pure/TradeAllowanceDisplay'
 import { useSetUserApproveAmountModalState } from '../../state'
+import { isPartialApproveEnabledAtom } from '../../state/isPartialApproveEnabledAtom'
 import { isMaxAmountToApprove } from '../../utils'
 import { ActiveOrdersWithAffectedPermit } from '../ActiveOrdersWithAffectedPermit'
 import { TradeApproveToggle } from '../TradeApproveToggle'
 
 export function TradeApproveWithAffectedOrderList(): ReactNode {
-  const {
-    reason: isApproveRequired,
-    currentAllowance
-  } = useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: false })
+  const { reason: isApproveRequired, currentAllowance } = useIsApprovalOrPermitRequired({
+    isBundlingSupportedOrEnabledForContext: false,
+  })
+  const isPartialApprovalEnabledInSettings = useAtomValue(isPartialApproveEnabledAtom)
 
   const setUserApproveAmountModalState = useSetUserApproveAmountModalState()
 
@@ -30,7 +32,7 @@ export function TradeApproveWithAffectedOrderList(): ReactNode {
     isApproveRequired === ApproveRequiredReason.Required ||
     isApproveRequired === ApproveRequiredReason.Eip2612PermitRequired
 
-  if (!partialAmountToApprove) return null
+  if (!partialAmountToApprove || !isPartialApprovalEnabledInSettings) return null
 
   const currencyToApprove = partialAmountToApprove.currency
 
