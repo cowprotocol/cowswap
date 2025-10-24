@@ -1,3 +1,4 @@
+import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 export const REFERRAL_STORAGE_KEY = 'cowswap:referral-code:v1'
@@ -14,16 +15,9 @@ export const REFERRAL_SUPPORTED_NETWORKS: SupportedChainId[] = [
   SupportedChainId.SEPOLIA,
 ]
 
-export const REFERRAL_SUPPORTED_NETWORK_NAMES = [
-  'Ethereum',
-  'Base',
-  'Arbitrum',
-  'Polygon',
-  'Avalanche',
-  'Gnosis',
-  'Lens',
-  'Sepolia',
-]
+export const REFERRAL_SUPPORTED_NETWORK_NAMES = REFERRAL_SUPPORTED_NETWORKS.map(
+  (chainId) => CHAIN_INFO[chainId].label,
+)
 
 export const REFERRAL_PROGRAM_RULES_COPY = 'Earn 10 USDC per 50k eligible volume in 90 days.'
 
