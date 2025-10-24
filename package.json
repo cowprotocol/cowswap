@@ -300,6 +300,7 @@
     "@vitest/ui": "~3.2.4",
     "@web3-react/types": "^8.2.3",
     "babel-jest": "^30.2.0",
+    "babel-plugin-react-compiler": "^1.0.0",
     "babel-plugin-styled-components": "2.1.4",
     "babel-plugin-transform-import-meta": "^2.2.0",
     "cypress": "^15.4.0",
