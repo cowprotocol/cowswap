@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai'
-import { ReactNode } from 'react'
+import { ReactNode, useMemo } from 'react'
 
 import { Command } from '@cowprotocol/types'
 import { CenteredDots, HoverTooltip, LinkStyledButton, RowFixed, UI } from '@cowprotocol/ui'
@@ -7,6 +7,11 @@ import { Percent } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
+
+import { useIsCurrentTradeBridging } from 'modules/trade/hooks/useIsCurrentTradeBridging'
+import { useIsHooksTradeType } from 'modules/trade/hooks/useIsHooksTradeType'
+import { useTradeTypeInfo } from 'modules/trade/hooks/useTradeTypeInfo'
+import { TradeType } from 'modules/trade/types/TradeType'
 
 import { getNativeSlippageTooltip, getNonNativeSlippageTooltip } from 'common/utils/tradeSettingsTooltips'
 
@@ -48,6 +53,8 @@ export interface RowSlippageContentProps {
   isSmartSlippageApplied: boolean
   isSmartSlippageLoading: boolean
   hideRecommendedSlippage?: boolean
+  tradeType?: TradeType
+  isBridging?: boolean
 }
 
 export function RowSlippageContent(props: RowSlippageContentProps): ReactNode {
@@ -65,6 +72,8 @@ export function RowSlippageContent(props: RowSlippageContentProps): ReactNode {
     isSmartSlippageLoading,
     isDefaultSlippageApplied,
     hideRecommendedSlippage,
+    tradeType,
+    isBridging,
   } = props
 
   const setSettingTabState = useSetAtom(settingsTabStateAtom)
@@ -116,6 +125,8 @@ export function RowSlippageContent(props: RowSlippageContentProps): ReactNode {
             slippageLabel={slippageLabel}
             isEoaEthFlow={isEoaEthFlow}
             isDynamicSlippageSet={isSmartSlippageApplied}
+            tradeType={tradeType}
+            isBridging={isBridging}
           />
         </TextWrapper>
         <HoverTooltip wrapInContainer content={tooltipContent}>
@@ -134,6 +145,8 @@ type SlippageTextContentsProps = {
   isDefaultSlippageApplied: boolean
   slippageLabel?: React.ReactNode
   isDynamicSlippageSet: boolean
+  tradeType?: TradeType
+  isBridging?: boolean
 }
 
 function SlippageTextContents({
@@ -141,10 +154,32 @@ function SlippageTextContents({
   isDynamicSlippageSet,
   isEoaEthFlow,
   isDefaultSlippageApplied,
+  tradeType,
+  isBridging,
 }: SlippageTextContentsProps): ReactNode {
+  // Use hooks to get dynamic values
+  const tradeTypeInfo = useTradeTypeInfo()
+  const isHooks = useIsHooksTradeType()
+  const isBridgeActive = useIsCurrentTradeBridging()
+
+  // Compute default label based on trade type and bridging status
+  const defaultLabel = useMemo((): string => {
+    // Use hook values if available, fall back to props for backward compatibility
+    const currentTradeType = tradeTypeInfo?.tradeType ?? tradeType
+    const isBridge = isBridgeActive ?? isBridging
+
+    // SWAP (non-hooks) OR BRIDGE → "Max. swap slippage"
+    if ((currentTradeType === TradeType.SWAP && !isHooks) || isBridge) {
+      return 'Max. swap slippage'
+    }
+
+    // LIMIT, TWAP, HOOKS → "Slippage tolerance"
+    return 'Slippage tolerance'
+  }, [tradeTypeInfo, tradeType, isHooks, isBridgeActive, isBridging])
+
   return (
     <TransactionText>
-      <Trans>{slippageLabel || 'Slippage tolerance'}</Trans>
+      <Trans>{slippageLabel || defaultLabel}</Trans>
       {isDynamicSlippageSet && !isDefaultSlippageApplied && <i>(dynamic)</i>}
       {isEoaEthFlow && isDefaultSlippageApplied && <i>(modified)</i>}
     </TransactionText>
