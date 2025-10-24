@@ -106,6 +106,7 @@ export const QuoteCountdownWrapper = styled.div<{ blink?: boolean }>`
 
 export const QuoteCountdownWrapperText = styled.span`
   min-width: 0;
+  text-align: right;
   word-wrap: break-word;
 `
 
