@@ -388,6 +388,11 @@ msgstr "Bridging failed. Refund started..."
 msgid "Buy COW"
 msgstr "Buy COW"
 
+#: apps/cowswap-frontend/src/legacy/hooks/useWrapCallback.ts
+#: apps/cowswap-frontend/src/legacy/hooks/useWrapCallback.ts
+msgid "Reject"
+msgstr "Reject"
+
 #: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
@@ -1076,6 +1081,10 @@ msgstr "Minimize price impact with TWAP"
 msgid "Allows you to set partial token approvals instead of full approvals."
 msgstr "Allows you to set partial token approvals instead of full approvals."
 
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SellNativeWarningBanner/index.tsx
+msgid "Switch to {wrappedNativeSymbol}"
+msgstr "Switch to {wrappedNativeSymbol}"
+
 #: apps/cowswap-frontend/src/modules/accountProxy/containers/AccountProxiesPage/index.tsx
 #~ msgid "Select an {ACCOUNT_PROXY_LABEL} to check for available refunds {chain}"
 #~ msgstr "Select an {ACCOUNT_PROXY_LABEL} to check for available refunds {chain}"
@@ -1283,6 +1292,10 @@ msgstr "CoW Swap | The smartest way to trade cryptocurrencies"
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
 msgid "this order"
 msgstr "this order"
+
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SellNativeWarningBanner/index.tsx
+msgid "or"
+msgstr "or"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/SmallPartTimeWarning.tsx
 msgid "A minimum of <0>{time}</0> between parts is required. Decrease the number of parts or increase the total duration."
@@ -2906,6 +2919,8 @@ msgid "View on Explorer"
 msgstr "View on Explorer"
 
 #: apps/cowswap-frontend/src/common/pure/TransactionErrorContent/index.tsx
+#: apps/cowswap-frontend/src/legacy/hooks/useWrapCallback.ts
+#: apps/cowswap-frontend/src/legacy/hooks/useWrapCallback.ts
 msgid "Error"
 msgstr "Error"
 
@@ -2950,6 +2965,10 @@ msgstr "Read more about unsupported tokens"
 #: apps/cowswap-frontend/src/api/cowProtocol/errors/OperatorError.ts
 msgid "cancelling"
 msgstr "cancelling"
+
+#: apps/cowswap-frontend/src/legacy/hooks/useWrapCallback.ts
+msgid "Signing transaction"
+msgstr "Signing transaction"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/HookRegistryList/index.tsx
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/HookSearchInput/index.tsx
@@ -3544,6 +3563,10 @@ msgstr "High slippage amount selected"
 msgid "Place orders for higher than available balance!"
 msgstr "Place orders for higher than available balance!"
 
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SellNativeWarningBanner/index.tsx
+msgid "first."
+msgstr "first."
+
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "No routes found"
@@ -3813,6 +3836,10 @@ msgstr "Now"
 msgid "Mooove between <0/> any chain, hassle-free"
 msgstr "Mooove between <0/> any chain, hassle-free"
 
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SellNativeWarningBanner/index.tsx
+msgid "Wrap {nativeSymbol} to {wrappedNativeSymbol}"
+msgstr "Wrap {nativeSymbol} to {wrappedNativeSymbol}"
+
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteSwapContent/index.tsx
 msgid "The address that will receive the tokens."
 msgstr "The address that will receive the tokens."
@@ -3842,8 +3869,8 @@ msgid "Another order has used up the approval amount. Set a new token approval t
 msgstr "Another order has used up the approval amount. Set a new token approval to proceed with your order."
 
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/SurplusCard.tsx
-msgid "The total surplus CoW Swap has generated for you in {nativeSymbol} across all your trades since {startDate}."
-msgstr "The total surplus CoW Swap has generated for you in {nativeSymbol} across all your trades since {startDate}."
+#~ msgid "The total surplus CoW Swap has generated for you in {nativeSymbol} across all your trades since {startDate}."
+#~ msgstr "The total surplus CoW Swap has generated for you in {nativeSymbol} across all your trades since {startDate}."
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/ManageListsAndTokens/index.tsx
 msgid "Enter valid token address"
@@ -3899,6 +3926,7 @@ msgstr "Order surplus"
 msgid "The \"Total duration\" is the duration it takes to execute all parts of your TWAP order.<0/><1/>For instance, your order consists of <2>{parts} parts</2> placed every <3>{partDurationDisplay}</3>, the total time to complete the order is <4>{totalDurationDisplay}</4>. Each limit order remains open for <5>{partDurationDisplay}</5> until the next part becomes active."
 msgstr "The \"Total duration\" is the duration it takes to execute all parts of your TWAP order.<0/><1/>For instance, your order consists of <2>{parts} parts</2> placed every <3>{partDurationDisplay}</3>, the total time to complete the order is <4>{totalDurationDisplay}</4>. Each limit order remains open for <5>{partDurationDisplay}</5> until the next part becomes active."
 
+#: apps/cowswap-frontend/src/common/updaters/orders/utils.ts
 #: apps/cowswap-frontend/src/legacy/utils/trade.ts
 #: apps/cowswap-frontend/src/modules/trade/containers/WrapNativeModal/index.tsx
 msgid "to"
@@ -3955,8 +3983,8 @@ msgid "Open orders"
 msgstr "Open orders"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SellNativeWarningBanner/index.tsx
-msgid "<0>Switch to {wrappedNativeSymbol}</0> or <1>Wrap {nativeSymbol} to {wrappedNativeSymbol}</1> first."
-msgstr "<0>Switch to {wrappedNativeSymbol}</0> or <1>Wrap {nativeSymbol} to {wrappedNativeSymbol}</1> first."
+#~ msgid "<0>Switch to {wrappedNativeSymbol}</0> or <1>Wrap {nativeSymbol} to {wrappedNativeSymbol}</1> first."
+#~ msgstr "<0>Switch to {wrappedNativeSymbol}</0> or <1>Wrap {nativeSymbol} to {wrappedNativeSymbol}</1> first."
 
 #: apps/cowswap-frontend/src/pages/LimitOrders/AlternativeLimitOrder.tsx
 msgid "Recreate limit order"
@@ -4110,6 +4138,7 @@ msgstr ""
 "\n"
 " Whether you're seeking to increase your exposure to specific tokens or maximize the returns from your assets, this tool offers a quick and efficient way to enhance your liquidity position after a token swap, all in a smooth, efficient process."
 
+#: apps/cowswap-frontend/src/legacy/hooks/useWrapCallback.ts
 #: apps/cowswap-frontend/src/modules/trade/containers/WrapNativeModal/index.tsx
 msgid "Unwrapping"
 msgstr "Unwrapping"
@@ -4304,6 +4333,7 @@ msgstr "Add <0/> to {walletName}"
 msgid "Orders on CoW Swap can either be market orders (which fill at the market price within the slippage tolerance you set) or limit orders (which fill at a price you specify)."
 msgstr "Orders on CoW Swap can either be market orders (which fill at the market price within the slippage tolerance you set) or limit orders (which fill at a price you specify)."
 
+#: apps/cowswap-frontend/src/common/updaters/orders/utils.ts
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 msgid "at least"
 msgstr "at least"
@@ -4874,6 +4904,10 @@ msgstr "order executes at"
 msgid "Information"
 msgstr "Information"
 
+#: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/SurplusCard.tsx
+msgid "The total surplus CoW Swap has generated for you in {nativeSymbol} across all your trades since {startDate}"
+msgstr "The total surplus CoW Swap has generated for you in {nativeSymbol} across all your trades since {startDate}"
+
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/OrderRow/EstimatedExecutionPrice.tsx
 msgid "For this order, network costs would be"
 msgstr "For this order, network costs would be"
@@ -4998,6 +5032,7 @@ msgstr "Allow CoW Swap to use your <0/>"
 msgid "Safe logo"
 msgstr "Safe logo"
 
+#: apps/cowswap-frontend/src/legacy/hooks/useWrapCallback.ts
 #: apps/cowswap-frontend/src/modules/trade/containers/WrapNativeModal/index.tsx
 msgid "Wrapping"
 msgstr "Wrapping"
@@ -5235,6 +5270,7 @@ msgstr "Reset favorites"
 msgid "Wrap {nativeSymbol} failed"
 msgstr "Wrap {nativeSymbol} failed"
 
+#: apps/cowswap-frontend/src/common/updaters/orders/utils.ts
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 msgid "at most"
 msgstr "at most"
@@ -5243,6 +5279,8 @@ msgstr "at most"
 msgid "View on explorer"
 msgstr "View on explorer"
 
+#: apps/cowswap-frontend/src/common/updaters/orders/utils.ts
+#: apps/cowswap-frontend/src/common/updaters/orders/utils.ts
 #: apps/cowswap-frontend/src/legacy/utils/trade.ts
 msgid "for"
 msgstr "for"
