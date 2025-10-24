@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
 import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
-import { areAddressesEqual } from '@cowprotocol/common-utils'
+import { areAddressesEqual, isProdLike } from '@cowprotocol/common-utils'
 
 import { Pocket } from 'react-feather'
 import styled from 'styled-components/macro'
@@ -34,7 +34,7 @@ export function ProxyRecipient({
   chainId,
   size = 14,
 }: ProxyRecipientProps): ReactNode {
-  console.log('[ProxyRecipient] recipient', { recipient, bridgeReceiverOverride })
+  !isProdLike && console.debug('[ProxyRecipient] recipient', { recipient, bridgeReceiverOverride })
   const proxyAddress = useCurrentAccountProxyAddress()
 
   if (!recipient || !(proxyAddress && !bridgeReceiverOverride)) return null

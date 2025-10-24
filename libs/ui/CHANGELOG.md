@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.29.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.28.0...ui-v1.29.0) (2025-10-23)
+
+
+### Features
+
+* align seasonal theme priority with feature flags and dark mode ([#6378](https://github.com/cowprotocol/cowswap/issues/6378)) ([94e79c6](https://github.com/cowprotocol/cowswap/commit/94e79c6e697237c5f206f94b17065e93deaa6bb0))
+* **notifications:** show trade alerts popover ([#6208](https://github.com/cowprotocol/cowswap/issues/6208)) ([d97c801](https://github.com/cowprotocol/cowswap/commit/d97c801ab43dd6ec208326ba80e145471a53a16d))
+
+
+### Bug Fixes
+
+* update font family to include 'Inter' in UI constants and theme ([#6370](https://github.com/cowprotocol/cowswap/issues/6370)) ([024ffb2](https://github.com/cowprotocol/cowswap/commit/024ffb26984fd1d862fa8143b8bee78e43ce6a50))
+
 ## [1.28.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.27.0...ui-v1.28.0) (2025-10-14)
 
 
