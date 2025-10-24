@@ -83,13 +83,14 @@ const Wrapper = styled.div<{
 `
 
 const StatusContent = styled.div`
-  align-items: center;
   display: flex;
   gap: 4px;
+  hyphens: auto;
   line-height: 1.1;
+  overflow-wrap: normal;
   position: relative;
   text-align: center;
-  word-break: break-word;
+  word-break: normal;
   z-index: 2;
 
   svg {
