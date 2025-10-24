@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.28.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.27.0...common-const-v1.28.0) (2025-10-23)
+
+
+### Features
+
+* align seasonal theme priority with feature flags and dark mode ([#6378](https://github.com/cowprotocol/cowswap/issues/6378)) ([94e79c6](https://github.com/cowprotocol/cowswap/commit/94e79c6e697237c5f206f94b17065e93deaa6bb0))
+
 ## [1.27.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.26.0...common-const-v1.27.0) (2025-10-14)
 
 

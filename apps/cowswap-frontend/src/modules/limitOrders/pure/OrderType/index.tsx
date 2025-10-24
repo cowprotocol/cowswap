@@ -1,8 +1,9 @@
+import { ReactNode } from 'react'
+
 import IMAGE_CARET_DOWN from '@cowprotocol/assets/cow-swap/carret-down.svg'
 import { InfoTooltip, RowFixed } from '@cowprotocol/ui'
 
-import { t } from '@lingui/core/macro'
-import { Trans } from '@lingui/react/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 import { Menu } from '@reach/menu-button'
 
 import { DetailsRow } from 'modules/limitOrders/pure/LimitOrdersDetails/styled'
@@ -16,14 +17,13 @@ export type OrderTypeProps = {
   className?: string
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function OrderType(props: OrderTypeProps) {
+export function OrderType(props: OrderTypeProps): ReactNode {
   const {
     isPartiallyFillable,
     className,
     partiallyFillableOverride: [override],
   } = props
+  const { t } = useLingui()
   const textContent =
     (override ?? isPartiallyFillable)
       ? t`This order can be partially filled`
@@ -42,17 +42,16 @@ export function OrderType(props: OrderTypeProps) {
   )
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function OrderTypePicker({ isPartiallyFillable, partiallyFillableOverride }: OrderTypeProps) {
+function OrderTypePicker({ isPartiallyFillable, partiallyFillableOverride }: OrderTypeProps): ReactNode {
+  const { t } = useLingui()
   const LABELS = [t`Partially fillable`, t`Fill or kill`]
   const [override, setOverride] = partiallyFillableOverride
   const showPartiallyFillable = override ?? isPartiallyFillable
   const [labelText] = showPartiallyFillable ? LABELS : [...LABELS].reverse()
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const onSelect = (label: string) => setOverride(label === LABELS[0])
+  const onSelect = (label: string): void => {
+    setOverride(label === LABELS[0])
+  }
 
   return (
     <Menu>

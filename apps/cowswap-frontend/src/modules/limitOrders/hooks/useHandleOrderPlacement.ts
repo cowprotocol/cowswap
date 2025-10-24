@@ -88,7 +88,8 @@ export function useHandleOrderPlacement(
   }, [tradeContext, tradeConfirmActions])
 
   const tradeFn = useCallback(async () => {
-    const partiallyFillableState = partiallyFillableOverride ? { partiallyFillable: partiallyFillableOverride } : null
+    const partiallyFillableState =
+      typeof partiallyFillableOverride === 'boolean' ? { partiallyFillable: partiallyFillableOverride } : null
 
     if (isSafeBundle) {
       if (!safeBundleFlowContext) throw new Error(t`safeBundleFlowContext is not set!`)
