@@ -81,9 +81,9 @@ export function getOrderSubmitSummary(
 
   const base =
     t`Swap` +
-    ` ${inputQuantifier}${inputAmountValue} ${inputSymbol} ` +
+    ` ${inputQuantifier} ${inputAmountValue} ${inputSymbol} ` +
     t`for` +
-    ` ${outputQuantifier}${outputAmountValue} ${outputSymbol}`
+    ` ${outputQuantifier} ${outputAmountValue} ${outputSymbol}`
 
   if (recipient === account) {
     return base
