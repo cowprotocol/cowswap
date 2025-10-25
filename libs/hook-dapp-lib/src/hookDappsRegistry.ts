@@ -30,7 +30,7 @@ export const hookDappsRegistry = {
   [PERMIT_HOOK_DAPP_ID]: {
     type: 'INTERNAL',
     name: 'Permit a token',
-    descriptionShort: 'Infinite permit an address to spend one token on your behalf.',
+    descriptionShort: 'Permit an address to spend one token on your behalf.',
     description:
       'This hook allows you to permit an address to spend your tokens on your behalf. This is useful for allowing a smart contract to spend your tokens without needing to approve each transaction.',
     image:
