@@ -4,94 +4,11 @@ import { DEFAULT_LOCALE, SupportedLocale } from '@cowprotocol/common-const'
 
 import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
-import {
-  af,
-  ar,
-  ca,
-  cs,
-  da,
-  de,
-  el,
-  en,
-  es,
-  fi,
-  fr,
-  he,
-  hu,
-  id,
-  it,
-  ja,
-  ko,
-  nl,
-  no,
-  pl,
-  pt,
-  ro,
-  ru,
-  sr,
-  sv,
-  sw,
-  tr,
-  uk,
-  vi,
-  zh,
-} from 'make-plural/plurals'
-import { PluralCategory } from 'make-plural/plurals'
 
-type LocalePlural = {
-  [key in SupportedLocale]: (n: number | string, ord?: boolean) => PluralCategory
-}
+import { createDynamicActivate, loadLocalePluralRules } from './i18nActivate'
+import { localeCatalogLoaders } from './localeCatalogLoaders'
 
-const plurals: LocalePlural = {
-  'af-ZA': af,
-  'ar-SA': ar,
-  'ca-ES': ca,
-  'cs-CZ': cs,
-  'da-DK': da,
-  'de-DE': de,
-  'el-GR': el,
-  'en-US': en,
-  'es-ES': es,
-  'fi-FI': fi,
-  'fr-FR': fr,
-  'he-IL': he,
-  'hu-HU': hu,
-  'id-ID': id,
-  'it-IT': it,
-  'ja-JP': ja,
-  'ko-KR': ko,
-  'nl-NL': nl,
-  'no-NO': no,
-  'pl-PL': pl,
-  'pt-BR': pt,
-  'pt-PT': pt,
-  'ro-RO': ro,
-  'ru-RU': ru,
-  'sr-SP': sr,
-  'sv-SE': sv,
-  'sw-TZ': sw,
-  'tr-TR': tr,
-  'uk-UA': uk,
-  'vi-VN': vi,
-  'zh-CN': zh,
-  'zh-TW': zh,
-  pseudo: en,
-}
-
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export async function dynamicActivate(locale: SupportedLocale) {
-  i18n.loadLocaleData(locale, { plurals: plurals[locale] })
-  try {
-    const catalog = await import(`../locales/${locale}.po`)
-    // Bundlers will either export it as default or as a named export named default.
-    i18n.load(locale, catalog.messages || catalog.default.messages)
-    i18n.activate(locale)
-  } catch (error) {
-    // Do nothing
-    console.error('Could not load locale file: ' + locale, error)
-  }
-}
+export const dynamicActivate = createDynamicActivate(localeCatalogLoaders)
 
 interface ProviderProps {
   locale: SupportedLocale
@@ -99,9 +16,7 @@ interface ProviderProps {
   children: ReactNode
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function Provider({ locale, onActivate, children }: ProviderProps) {
+export function Provider({ locale, onActivate, children }: ProviderProps): ReactNode {
   useEffect(() => {
     dynamicActivate(locale)
       .then(() => onActivate?.(locale))
@@ -112,10 +27,10 @@ export function Provider({ locale, onActivate, children }: ProviderProps) {
 
   // Initialize the locale immediately if it is DEFAULT_LOCALE, so that keys are shown while the translation messages load.
   // This renders the translation _keys_, not the translation _messages_, which is only acceptable while loading the DEFAULT_LOCALE,
-  // as [there are no "default" messages](https://github.com/lingui/js-lingui/issues/388#issuecomment-497779030).
+  // as [there are no "default" messages"](https://github.com/lingui/js-lingui/issues/388#issuecomment-497779030).
   // See https://github.com/lingui/js-lingui/issues/1194#issuecomment-1068488619.
   if (i18n.locale === undefined && locale === DEFAULT_LOCALE) {
-    i18n.loadLocaleData(DEFAULT_LOCALE, { plurals: plurals[DEFAULT_LOCALE] })
+    loadLocalePluralRules(DEFAULT_LOCALE)
     i18n.load(DEFAULT_LOCALE, {})
     i18n.activate(DEFAULT_LOCALE)
   }
