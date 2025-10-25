@@ -14,6 +14,7 @@ import {
   TradeFormButtons,
   TradeFormValidation,
   useGetTradeFormValidation,
+  useIsTradeFormValidationPassed,
   useTradeFormButtonContext,
 } from 'modules/tradeFormValidation'
 import { useHighFeeWarning } from 'modules/tradeWidgetAddons'
@@ -48,6 +49,7 @@ export function TradeButtons({
   const { inputCurrency } = useSwapDerivedState()
 
   const primaryFormValidation = useGetTradeFormValidation()
+  const isPrimaryValidationPassed = useIsTradeFormValidationPassed()
   const tradeConfirmActions = useTradeConfirmActions()
   const { feeWarningAccepted } = useHighFeeWarning()
   const isNoImpactWarningAccepted = useIsNoImpactWarningAccepted()
@@ -79,9 +81,6 @@ export function TradeButtons({
     !!intermediateBuyToken &&
     primaryFormValidation === TradeFormValidation.ImportingIntermediateToken
 
-  // Selling ETH is allowed in Swap
-  const isPrimaryValidationPassed =
-    !primaryFormValidation || primaryFormValidation === TradeFormValidation.SellNativeToken
   const isDisabled = !isTradeContextReady || !feeWarningAccepted || !isNoImpactWarningAccepted
 
   if (!tradeFormButtonContext) return null
