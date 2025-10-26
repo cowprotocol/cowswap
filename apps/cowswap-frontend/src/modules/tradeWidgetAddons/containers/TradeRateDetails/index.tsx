@@ -100,16 +100,14 @@ export function TradeRateDetails({
         networkCostsSuffix={shouldPayGas ? <NetworkCostsSuffix /> : null}
         networkCostsTooltipSuffix={<NetworkCostsTooltipSuffix />}
       />
-      {/* Only show slippage inside accordion when it's NOT prominent */}
-      {!shouldShowSlippageProminent && slippageRow}
+      {/* Always show slippage inside accordion */}
+      {slippageRow}
       <RowDeadline deadline={deadline} />
     </>
   )
 
   return (
     <>
-      {/* Show slippage outside accordion when prominent (manually modified or above threshold) */}
-      {shouldShowSlippageProminent && <div style={{ padding: '0 10px' }}>{slippageRow}</div>}
       <TradeTotalCostsDetails
         totalCosts={totalCosts}
         rateInfoParams={rateInfoParams}
@@ -119,6 +117,10 @@ export function TradeRateDetails({
       >
         {accordionContent || defaultExpandedContent}
       </TradeTotalCostsDetails>
+      
+      {/* Show slippage outside accordion when prominent and accordion is closed (to avoid duplication) */}
+      {shouldShowSlippageProminent && !isFeeDetailsOpen && <div style={{ padding: '0 10px' }}>{slippageRow}</div>}
+
     </>
   )
 }
