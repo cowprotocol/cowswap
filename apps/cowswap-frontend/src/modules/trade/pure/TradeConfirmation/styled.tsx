@@ -60,27 +60,36 @@ export const ContentWrapper = styled.div`
 `
 
 export const Header = styled.div`
+  --arrow-size: 19px;
+
   align-items: top;
   background: var(${UI.COLOR_PAPER});
+  column-gap: 4px;
   display: grid;
-  grid-template-columns: 24px auto 1.25fr;
-  column-gap: 8px;
+  grid-template-columns: 18px auto 1.25fr;
   left: 0;
+  line-height: var(--arrow-size);
   margin: 0;
-  padding: 14px 16px;
+  padding: 14px 10px;
   position: sticky;
   top: 0;
   width: 100%;
   z-index: 20;
+
+  > svg {
+    height: var(--arrow-size);
+    margin-right: 0;
+    width: var(--arrow-size);
+  }
 `
 
 export const HeaderRightContent = styled.div`
-  line-height: 22px;
+  line-height: var(--arrow-size);
 `
 
 export const ConfirmHeaderTitle = styled.h3`
-  font-size: 16px;
-  line-height: 22px;
+  font-size: 15px;
+  line-height: var(--arrow-size);
   margin: 0;
   word-wrap: break-word;
 `
@@ -88,9 +97,9 @@ export const ConfirmHeaderTitle = styled.h3`
 export const QuoteCountdownWrapper = styled.div<{ blink?: boolean }>`
   animation: ${({ blink }) => (blink ? `blinkOut 1s ease-out forwards` : 'none')};
   color: var(${UI.COLOR_TEXT_OPACITY_70});
-  column-gap: 8px;
+  column-gap: 3px;
   display: grid;
-  font-size: 14px;
+  font-size: 13px;
   grid-template-columns: 1fr auto;
 
   @keyframes blinkOut {
