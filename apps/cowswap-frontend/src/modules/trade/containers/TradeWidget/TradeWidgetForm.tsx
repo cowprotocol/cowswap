@@ -8,8 +8,7 @@ import { ButtonOutlined, Media, MY_ORDERS_ID, SWAP_HEADER_OFFSET } from '@cowpro
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
 
-import { t } from '@lingui/core/macro'
-import { Trans } from '@lingui/react/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 import { Nullish } from 'types'
 
@@ -187,6 +186,8 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
   }, [isMarketOrderWidget, toggleAccountModal])
 
   const isOutputTokenUnsupported = !!buyToken && !(buyToken.chainId in SupportedChainId)
+
+  const { t } = useLingui()
 
   return (
     <>

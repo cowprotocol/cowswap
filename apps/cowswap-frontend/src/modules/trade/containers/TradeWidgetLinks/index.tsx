@@ -4,6 +4,7 @@ import { Command } from '@cowprotocol/types'
 import { Badge, BadgeTypes, ModalHeader } from '@cowprotocol/ui'
 import type { TradeType } from '@cowprotocol/widget-lib'
 
+import { Trans, useLingui } from '@lingui/react/macro'
 import IMAGE_CARET from 'assets/icon/caret.svg'
 import SVG from 'react-inlinesvg'
 import { useLocation } from 'react-router'
@@ -114,6 +115,8 @@ export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) 
 
   const selectedMenuItem = menuItemsElements.find((item) => item.props.isActive) || menuItemsElements[0]
 
+  const { t } = useLingui()
+
   return isDropdown ? (
     <>
       <styledEl.MenuItem
@@ -122,13 +125,15 @@ export function TradeWidgetLinks({ isDropdown = false }: TradeWidgetLinksProps) 
       >
         <styledEl.DropdownButton>
           {selectedMenuItem.props.item.label}
-          {!singleMenuItem ? <SVG src={IMAGE_CARET} title="select" /> : null}
+          {!singleMenuItem ? <SVG src={IMAGE_CARET} title={t`select`} /> : null}
         </styledEl.DropdownButton>
       </styledEl.MenuItem>
 
       {isDropdownVisible && (
         <styledEl.SelectMenu>
-          <ModalHeader onBack={handleMenuItemClick}>Trading mode</ModalHeader>
+          <ModalHeader onBack={handleMenuItemClick}>
+            <Trans>Trading mode</Trans>
+          </ModalHeader>
           <styledEl.TradeWidgetContent>{menuItemsElements}</styledEl.TradeWidgetContent>
         </styledEl.SelectMenu>
       )}

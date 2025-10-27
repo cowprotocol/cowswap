@@ -122,7 +122,7 @@ export function MultipleCancellationMenu({ pendingOrders }: Props): ReactNode {
       {ordersToCancelCount ? (
         <>
           <ActionButton onClick={cancelSelectedOrders}>
-            <Trash2 size={14} /> <Trans>Cancel</Trans> {ordersToCancelCount} selected
+            <Trash2 size={14} /> <Trans>Cancel</Trans> {ordersToCancelCount} <Trans>selected</Trans>
           </ActionButton>
           <TextButton onClick={clearSelection}>
             <Trans>Clear selection</Trans>
