@@ -13,6 +13,10 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#: apps/cowswap-frontend/src/modules/ordersTable/containers/MultipleCancellationMenu/index.tsx
+msgid "selected"
+msgstr "selected"
+
 #: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTableRow.tsx
 #: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTableRow.tsx
 msgid "View token contract"
@@ -4469,8 +4473,8 @@ msgid "Notifications"
 msgstr "Notifications"
 
 #: apps/cowswap-frontend/src/modules/trade/containers/TradeWidgetLinks/index.tsx
-#~ msgid "Trading mode"
-#~ msgstr "Trading mode"
+msgid "Trading mode"
+msgstr "Trading mode"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/AirdropHookApp/index.tsx
 msgid "Connect your wallet"
@@ -5255,8 +5259,8 @@ msgid "Add Hook"
 msgstr "Add Hook"
 
 #: apps/cowswap-frontend/src/modules/trade/containers/TradeWidgetLinks/index.tsx
-#~ msgid "select"
-#~ msgstr "select"
+msgid "select"
+msgstr "select"
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/pure/ApproveConfirmation/AdvancedApprove.tsx
 msgid "Allow spending"
