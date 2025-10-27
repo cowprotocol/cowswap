@@ -1,7 +1,7 @@
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { getIsNativeToken, isInjectedWidget, isSellOrder } from '@cowprotocol/common-utils'
+import { isInjectedWidget, isSellOrder } from '@cowprotocol/common-utils'
 import { useIsEagerConnectInProgress, useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import { Field } from 'legacy/state/types'
@@ -52,7 +52,6 @@ export interface SwapWidgetProps {
 }
 
 // TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
 // eslint-disable-next-line max-lines-per-function,complexity
 export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps): ReactNode {
   const { showRecipient } = useSwapSettings()
@@ -87,7 +86,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps): Reac
     orderKind,
     isUnlocked,
   } = useSwapDerivedState()
-  const doTrade = useHandleSwap(useSafeMemoObject({ deadline: deadlineState[0] }), widgetActions)
+  const doTrade = useHandleSwap({ deadline: deadlineState[0] }, widgetActions)
   const hasEnoughWrappedBalanceForSwap = useHasEnoughWrappedBalanceForSwap()
   const isSmartContractWallet = useIsSmartContractWallet()
   const { account } = useWalletInfo()
@@ -161,8 +160,6 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps): Reac
   const { isPartialApproveEnabled } = useFeatureFlags()
   const enablePartialApprovalState = useSwapPartialApprovalToggleState(isPartialApproveEnabled)
 
-  const enablePartialApproval = enablePartialApprovalState[0] && inputCurrency && !getIsNativeToken(inputCurrency)
-
   const isConnected = Boolean(account)
   const isNetworkUnsupported = useIsProviderNetworkUnsupported()
 
@@ -190,7 +187,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps): Reac
         return (
           <>
             {bottomContent}
-            {enablePartialApproval ? <TradeApproveWithAffectedOrderList /> : null}
+            <TradeApproveWithAffectedOrderList />
             <SwapRateDetails rateInfoParams={rateInfoParams} deadline={deadlineState[0]} />
             <Warnings buyingFiatAmount={buyingFiatAmount} />
             {tradeWarnings}
@@ -215,7 +212,6 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps): Reac
         hasEnoughWrappedBalanceForSwap,
         toBeImported,
         intermediateBuyToken,
-        enablePartialApproval,
       ],
     ),
   }
