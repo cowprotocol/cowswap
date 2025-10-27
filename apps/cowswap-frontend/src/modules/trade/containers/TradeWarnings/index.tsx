@@ -8,6 +8,7 @@ import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFor
 import { HighSuggestedSlippageWarning } from 'modules/tradeSlippage'
 
 import { useGetReceiveAmountInfo } from '../../hooks/useGetReceiveAmountInfo'
+import { useIsSafeEthFlow } from '../../hooks/useIsSafeEthFlow'
 import { useShouldShowZeroApproveWarning } from '../../hooks/useShouldShowZeroApproveWarning'
 import { ZeroApprovalWarning } from '../../pure/ZeroApprovalWarning'
 import { NoImpactWarning } from '../NoImpactWarning'
@@ -22,8 +23,10 @@ export function TradeWarnings({ isTradePriceUpdating, enableSmartSlippage }: Tra
   const receiveAmountInfo = useGetReceiveAmountInfo()
   const inputAmountWithSlippage = receiveAmountInfo?.afterSlippage.sellAmount
   const shouldZeroApprove = useShouldShowZeroApproveWarning(inputAmountWithSlippage)
+  const isSafeBundleEth = useIsSafeEthFlow()
 
-  const showBundleTxApprovalBanner = primaryFormValidation === TradeFormValidation.ApproveAndSwapInBundle
+  const showBundleTxApprovalBanner =
+    !isSafeBundleEth && primaryFormValidation === TradeFormValidation.ApproveAndSwapInBundle
 
   return (
     <>
