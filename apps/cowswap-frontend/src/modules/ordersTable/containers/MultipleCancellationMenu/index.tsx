@@ -19,10 +19,10 @@ interface Props {
 
 const Wrapper = styled.div<{ hasSelectedItems: boolean }>`
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: row nowrap;
   align-items: center;
   justify-content: space-between;
-  gap: 6px;
+  gap: 4px;
   margin: 0 0 0 ${({ hasSelectedItems }) => (hasSelectedItems ? '' : 'auto')};
 
   ${Media.upToSmall()} {
@@ -38,10 +38,10 @@ const ActionButton = styled.button`
   color: var(${UI.COLOR_DANGER_TEXT});
   font-weight: 600;
   text-decoration: none;
-  font-size: 13px;
-  padding: 7px 12px;
+  font-size: 12px;
+  padding: 6px 8px;
   margin: 0;
-  gap: 5px;
+  gap: 2px;
   border: 0;
   outline: none;
   cursor: pointer;
@@ -66,7 +66,7 @@ const TextButton = styled.button`
   color: var(${UI.COLOR_TEXT_OPACITY_70});
   font-size: 12px;
   font-weight: 500;
-  padding: 5px;
+  padding: 0;
   cursor: pointer;
   background: none;
   outline: none;

@@ -260,9 +260,9 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
                     <b>
                       <TokenAmount
                         amount={marketPrice}
-                        {...rest}
                         round={false}
                         tokenSymbol={marketPrice?.quoteCurrency}
+                        {...rest}
                       />
                     </b>{' '}
                     and needs to go {marketPriceDirection} by{' '}

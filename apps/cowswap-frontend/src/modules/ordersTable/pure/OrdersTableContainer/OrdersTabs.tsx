@@ -17,8 +17,8 @@ import { useGetBuildOrdersTableUrl } from '../../hooks/useGetBuildOrdersTableUrl
 
 const Tabs = styled.div`
   display: flex;
-  flex-flow: row wrap;
-  gap: 4px;
+  flex-flow: row nowrap;
+  gap: 2px;
   margin: 0;
 
   ${Media.upToMedium()} {
@@ -90,7 +90,7 @@ const TabButton = styled(Link)<{
 }>`
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 2px;
   background: ${({ active, $isUnfillable, $isSigning, $isDisabled }) =>
     $isDisabled
       ? 'transparent'
@@ -115,7 +115,7 @@ const TabButton = styled(Link)<{
   border-radius: 14px;
   text-decoration: none;
   font-size: 13px;
-  padding: 10px;
+  padding: 8px;
   border: 0;
   outline: none;
   cursor: ${({ $isDisabled }) => ($isDisabled ? 'default' : 'pointer')};
@@ -123,6 +123,7 @@ const TabButton = styled(Link)<{
     background var(${UI.ANIMATION_DURATION}) ease-in-out,
     color var(${UI.ANIMATION_DURATION}) ease-in-out;
   pointer-events: ${({ $isDisabled }) => ($isDisabled ? 'none' : 'auto')};
+  white-space: nowrap;
 
   ${Media.upToMedium()} {
     text-align: center;
