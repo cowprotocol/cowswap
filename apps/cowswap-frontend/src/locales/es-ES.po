@@ -8,7 +8,7 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: cowswap18n\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-10-24 21:01\n"
+"PO-Revision-Date: 2025-10-27 15:55\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -17,6 +17,10 @@ msgstr ""
 "X-Crowdin-Language: es-ES\n"
 "X-Crowdin-File: /feat.internationalization-setup-for-swap-cow-fi/apps/cowswap-frontend/src/locales/en-US.po\n"
 "X-Crowdin-File-ID: 11\n"
+
+#: apps/cowswap-frontend/src/modules/ordersTable/containers/MultipleCancellationMenu/index.tsx
+msgid "selected"
+msgstr "seleccionado"
 
 #: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTableRow.tsx
 #: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTableRow.tsx
@@ -4456,8 +4460,8 @@ msgid "Notifications"
 msgstr "Notificaciones"
 
 #: apps/cowswap-frontend/src/modules/trade/containers/TradeWidgetLinks/index.tsx
-#~ msgid "Trading mode"
-#~ msgstr "Trading mode"
+msgid "Trading mode"
+msgstr "Modo de intercambio"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/AirdropHookApp/index.tsx
 msgid "Connect your wallet"
@@ -5242,8 +5246,8 @@ msgid "Add Hook"
 msgstr "Añadir Hook"
 
 #: apps/cowswap-frontend/src/modules/trade/containers/TradeWidgetLinks/index.tsx
-#~ msgid "select"
-#~ msgstr "select"
+msgid "select"
+msgstr "seleccionar"
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/pure/ApproveConfirmation/AdvancedApprove.tsx
 msgid "Allow spending"

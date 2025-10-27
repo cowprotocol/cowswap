@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cowswap18n\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-10-24 21:01\n"
+"PO-Revision-Date: 2025-10-27 15:55\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -17,6 +17,10 @@ msgstr ""
 "X-Crowdin-Language: ru\n"
 "X-Crowdin-File: /feat.internationalization-setup-for-swap-cow-fi/apps/cowswap-frontend/src/locales/en-US.po\n"
 "X-Crowdin-File-ID: 11\n"
+
+#: apps/cowswap-frontend/src/modules/ordersTable/containers/MultipleCancellationMenu/index.tsx
+msgid "selected"
+msgstr "выбрано"
 
 #: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTableRow.tsx
 #: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTableRow.tsx
@@ -1152,7 +1156,7 @@ msgstr "смарт-контракты (например, Safe)"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/TradeConfirmation/CountDown.tsx
 msgid "Quote refresh in"
-msgstr "Цитировать обновление через"
+msgstr "Обновление квоты через"
 
 #: apps/cowswap-frontend/src/modules/account/containers/OrdersPanel/index.tsx
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
@@ -4456,8 +4460,8 @@ msgid "Notifications"
 msgstr "Уведомления"
 
 #: apps/cowswap-frontend/src/modules/trade/containers/TradeWidgetLinks/index.tsx
-#~ msgid "Trading mode"
-#~ msgstr "Trading mode"
+msgid "Trading mode"
+msgstr "Режим торговли"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/AirdropHookApp/index.tsx
 msgid "Connect your wallet"
@@ -5242,8 +5246,8 @@ msgid "Add Hook"
 msgstr "Добавить крюк"
 
 #: apps/cowswap-frontend/src/modules/trade/containers/TradeWidgetLinks/index.tsx
-#~ msgid "select"
-#~ msgstr "select"
+msgid "select"
+msgstr "выбрать"
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/pure/ApproveConfirmation/AdvancedApprove.tsx
 msgid "Allow spending"
