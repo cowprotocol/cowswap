@@ -45,6 +45,11 @@ export const CurrencyInputBox = styled.div<{ isInvalid?: boolean }>`
     gap: 8px;
   }
 
+  ${Media.upToTiny()} {
+    grid-template-columns: repeat(1, auto);
+    grid-template-rows: max-content;
+  }
+
   > div {
     display: flex;
     align-items: center;

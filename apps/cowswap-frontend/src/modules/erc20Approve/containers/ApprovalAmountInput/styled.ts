@@ -7,7 +7,7 @@ export const EditWrapper = styled.div`
   flex-direction: column;
   background: var(${UI.COLOR_PAPER_DARKER});
   padding: 14px;
-  margin: 15px;
+  margin: 10px;
   border-radius: 14px;
   border: 2px solid var(${UI.COLOR_PAPER_DARKEST});
 
@@ -21,6 +21,7 @@ export const InputHeader = styled.div`
   display: flex;
   font-size: 13px;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
+  gap: 5px;
 `
 
 export const ResetBtn = styled.button`
@@ -31,6 +32,13 @@ export const ResetBtn = styled.button`
   font-weight: 500;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
   background: var(${UI.COLOR_PAPER});
-  line-height: 100%;
-  margin-left: 5px;
+  line-height: 1;
+  transition:
+    background var(${UI.ANIMATION_DURATION}) ease-in-out,
+    color var(${UI.ANIMATION_DURATION}) ease-in-out;
+
+  &:hover {
+    color: var(${UI.COLOR_PAPER});
+    background: var(${UI.COLOR_PRIMARY_LIGHTER});
+  }
 `
