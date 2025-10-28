@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.121.3](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.121.2...cowswap-v1.121.3) (2025-10-28)
+
+
+### Bug Fixes
+
+* **widget:** consider widget when inside an iframe ([#6447](https://github.com/cowprotocol/cowswap/issues/6447)) ([9817a4e](https://github.com/cowprotocol/cowswap/commit/9817a4e4d4d648d09366d8a33e9a8874a62f6473))
+
 ## [1.121.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.121.1...cowswap-v1.121.2) (2025-10-28)
 
 
