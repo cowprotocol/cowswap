@@ -1,9 +1,13 @@
+import { isIframe } from './isIframe'
+
 /**
  * Detects if the current page is running in widget mode
  * by checking for '/widget' in the URL hash
  */
 export function isInjectedWidget(): boolean {
   if (typeof window === 'undefined') return false
+
+  if (isIframe()) return true
 
   try {
     const hash = new URL(window.location.href).hash
