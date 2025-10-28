@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.121.4](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.121.3...cowswap-v1.121.4) (2025-10-28)
+
+
+### Bug Fixes
+
+* update BodyWrapper to conditionally apply dark Halloween background ([#6450](https://github.com/cowprotocol/cowswap/issues/6450)) ([3f959b1](https://github.com/cowprotocol/cowswap/commit/3f959b14ad88c95e41110063b0ce07459ee182a3))
+
 ## [1.121.3](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.121.2...cowswap-v1.121.3) (2025-10-28)
 
 
