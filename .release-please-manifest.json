@@ -1,5 +1,5 @@
 {
-  "apps/cowswap-frontend": "1.121.4",
+  "apps/cowswap-frontend": "1.121.5",
   "apps/explorer": "2.56.0",
   "libs/permit-utils": "1.0.0",
   "libs/widget-lib": "0.20.0",
@@ -9,7 +9,7 @@
   "libs/assets": "1.17.0",
   "libs/common-const": "1.28.1",
   "libs/common-hooks": "1.11.0",
-  "libs/common-utils": "1.22.1",
+  "libs/common-utils": "1.22.2",
   "libs/core": "1.8.1",
   "libs/ens": "1.5.0",
   "libs/events": "2.0.0",
