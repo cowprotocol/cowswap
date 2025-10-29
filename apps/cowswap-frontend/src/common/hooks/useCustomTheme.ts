@@ -26,9 +26,10 @@ export function resolveCowSwapTheme(darkMode: boolean, featureFlags?: FeatureFla
 export function useCustomTheme(): CowSwapTheme | undefined {
   const [darkMode] = useDarkModeManager()
   const featureFlags = useAtomValue(featureFlagsAtom)
+  const isWidget = isInjectedWidget()
 
   // We don't want to set any custom theme for the widget
-  if (isInjectedWidget()) {
+  if (isWidget) {
     return undefined
   }
 
