@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.22.2](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.22.1...common-utils-v1.22.2) (2025-10-29)
+
+
+### Bug Fixes
+
+* **widget:** revert "fix(widget): consider widget when inside an iframe ([#6447](https://github.com/cowprotocol/cowswap/issues/6447))" ([#6452](https://github.com/cowprotocol/cowswap/issues/6452)) ([aaaec55](https://github.com/cowprotocol/cowswap/commit/aaaec5527cbef9a3a11f6d7a79d9b5b03e5c5f6f))
+
 ## [1.22.1](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.22.0...common-utils-v1.22.1) (2025-10-28)
 
 
