@@ -2,10 +2,10 @@ import React, { ReactNode } from 'react'
 
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { usePreventDoubleExecution } from '@cowprotocol/common-hooks'
-import { ButtonSize, HoverTooltip, TokenSymbol } from '@cowprotocol/ui'
+import { ButtonSize, HoverTooltip } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { Trans, useLingui } from '@lingui/react/macro'
+import { useLingui } from '@lingui/react/macro'
 
 import { useHasCachedPermit } from 'modules/permit'
 import { useIsCurrentTradeBridging } from 'modules/trade'
@@ -16,6 +16,7 @@ import { ButtonWrapper } from './styled'
 import { MAX_APPROVE_AMOUNT } from '../../constants'
 import { useApprovalStateForSpender, useApproveCurrency } from '../../hooks'
 import { useApproveAndSwap } from '../../hooks/useApproveAndSwap'
+import { ApprovalTooltip } from '../../pure/ApprovalTooltip'
 import { LegacyApproveButton } from '../../pure/LegacyApproveButton'
 import { ApprovalState } from '../../types'
 
@@ -67,9 +68,8 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
   const noCachedPermit = !cachedPermitLoading && !cachedPermit
 
   const label =
-    props.label || (noCachedPermit ? (isCurrentTradeBridging ? t`Approve, Swap & Bridge` : t`Approve and Swap`) : t`Swap`)
-  
-  const amountToApproveCurrency = amountToApprove.currency
+    props.label ||
+    (noCachedPermit ? (isCurrentTradeBridging ? t`Approve, Swap & Bridge` : t`Approve and Swap`) : t`Swap`)
 
   return (
     <ButtonWrapper
@@ -81,16 +81,7 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
       <styledEl.ButtonLabelWrapper buttonSize={buttonSize}>
         {label}{' '}
         {noCachedPermit ? (
-          <HoverTooltip
-            wrapInContainer
-            content={
-              <Trans>
-                You must give the CoW Protocol smart contracts permission to use your{' '}
-                <TokenSymbol token={amountToApproveCurrency} />. If you approve the default amount, you will only have
-                to do this once per token.
-              </Trans>
-            }
-          >
+          <HoverTooltip wrapInContainer content={<ApprovalTooltip currency={amountToApprove.currency} />}>
             {isPending ? <styledEl.StyledLoader /> : <styledEl.StyledAlert size={24} />}
           </HoverTooltip>
         ) : null}
