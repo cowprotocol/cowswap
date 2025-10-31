@@ -6,14 +6,14 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: @lingui/cli\n"
 "Language: ru\n"
-"Project-Id-Version: cowswap18n\n"
+"Project-Id-Version: intercambiovaca\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-10-27 15:55\n"
+"PO-Revision-Date: 2025-10-31 18:14\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
-"X-Crowdin-Project: cowswap18n\n"
-"X-Crowdin-Project-ID: 838504\n"
+"X-Crowdin-Project: intercambiovaca\n"
+"X-Crowdin-Project-ID: 842798\n"
 "X-Crowdin-Language: ru\n"
 "X-Crowdin-File: /feat.internationalization-setup-for-swap-cow-fi/apps/cowswap-frontend/src/locales/en-US.po\n"
 "X-Crowdin-File-ID: 11\n"
@@ -513,6 +513,10 @@ msgstr "(изменено)"
 msgid "1 Month"
 msgstr "1 месяц"
 
+#: apps/cowswap-frontend/src/modules/erc20Approve/pure/ApprovalTooltip/index.tsx
+msgid "If you approve the full amount, you will only have to do this once per token."
+msgstr "Если вы подтвердите полную сумму, то это нужно сделать только один раз за токен."
+
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 msgid "Infinite permit an address to spend one token on your behalf."
 msgstr "Бесконечное разрешение на использование одного токена от вашего имени."
@@ -649,7 +653,7 @@ msgstr "Отмена заказа"
 
 #: apps/cowswap-frontend/src/pages/Account/Balances.tsx
 msgid "<0><1>Vested vCOW</1> is the portion of your vCOW token balance, which is fully available to convert to COW token.</0><2>This includes any vCOW received through an <3>airdrop.</3></2><4>When converting your vested vCOW balance to COW, your entire vested balance will be converted.</4>"
-msgstr "<0><1>Вложенный vCOW</1> является частью баланса вашего vCOW токена, который полностью доступен для преобразования в COW токен. /0><2>Это включает в себя любой vCOW полученный через <3>Эирдроп.</3></2><4>При преобразовании оставшегося vCOW баланса в COW, весь вестренный баланс будет преобразован.</4>"
+msgstr "<0><1>Вложенный vCOW</1> является частью баланса вашего vCOW токена, который полностью доступен для преобразования в COW токен. </0><2>Это включает в себя любой vCOW полученный через <3>Эирдроп.</3></2><4>При преобразовании оставшегося vCOW баланса в COW, весь вестренный баланс будет преобразован.</4>"
 
 #: apps/cowswap-frontend/src/common/containers/OrderHooksDetails/HookItem/index.tsx
 msgid "Unknown Hook"
@@ -981,6 +985,10 @@ msgstr "Некоторые заказы не могут быть отменен�
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/index.cosmos.tsx
 msgid "Orders history"
 msgstr "История заказов"
+
+#: apps/cowswap-frontend/src/modules/erc20Approve/pure/ApprovalTooltip/index.tsx
+msgid "You must give the CoW Protocol smart contracts permission to use your <0/>."
+msgstr "Вы должны предоставить разрешение на использование вашего <0/>."
 
 #: apps/cowswap-frontend/src/modules/yield/containers/YieldWidget/elements.tsx
 msgid "any token into CoW AMM pools to start benefiting from attractive APRs."
@@ -2127,7 +2135,7 @@ msgstr "создать новый заказ"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/ConnectWalletContent.tsx
 msgid "To use {orderType} orders, please connect your wallet <0/>to one of our supported networks."
-msgstr "Чтобы использовать заказы {orderType} , подключите ваш кошелек <0/> к одной из поддерживаемых сетей."
+msgstr "Чтобы использовать заказы {orderType}, подключите ваш кошелек <0/> к одной из поддерживаемых сетей."
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/Settings/index.tsx
 msgid "When enabled, the limit price stays fixed when changing the BUY amount. When disabled, the limit price will update based on the BUY amount changes."
@@ -2458,7 +2466,7 @@ msgstr "в цепи"
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 msgid "Across Protocol - Transfer Assets Between Layer 2s and Mainnet"
-msgstr "Трансляция между слоем 2 и Mainnet"
+msgstr "Трансляция между слоем 2и Mainnet"
 
 #: apps/cowswap-frontend/src/pages/Account/index.tsx
 msgid "Tokens overview"
@@ -2935,7 +2943,7 @@ msgstr "Подтверждение токена"
 
 #: apps/cowswap-frontend/src/modules/trade/containers/NoImpactWarning/index.tsx
 msgid "We are unable to calculate the price impact for this order.<0/><1/>You may still move forward but <2>please review carefully that the receive amounts are what you expect.</2>"
-msgstr "Мы не можем рассчитать влияние цены на этот ордер. 0/><1/>Вы все еще можете двигаться вперед, но <2>внимательно проверьте, что Вы ожидаете получить суммы.</2>"
+msgstr "Мы не можем рассчитать влияние цены на этот ордер. <0/><1/>Вы все еще можете двигаться вперед, но <2>внимательно проверьте, что Вы ожидаете получить суммы.</2>"
 
 #: apps/cowswap-frontend/src/common/pure/CancellationModal/RequestCancellationModal.tsx
 msgid "Off-chain cancellations require a signature and are free."
@@ -3058,7 +3066,7 @@ msgstr "Единоразовое одобрение {wrappedSymbol} требуе
 #: apps/cowswap-frontend/src/modules/trade/hooks/setupTradeState/useResetStateWithSymbolDuplication.ts
 msgid "There is more than one token in the list of tokens with the symbol: {doubledSymbol}.\n"
 "Please select the token you need from the UI or use the address of the token instead of the symbol"
-msgstr "В списке токенов с символом {doubledSymbol}есть более одного токена: {doubledSymbol}.\n"
+msgstr "В списке токенов с символом есть более одного токена: {doubledSymbol}.\n"
 "Пожалуйста, выберите необходимый токен из пользовательского интерфейса или используйте адрес токена вместо символа"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
@@ -3428,8 +3436,8 @@ msgstr "2 остановки"
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/TradeApproveButton/TradeApproveButton.tsx
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/TradeSignPermitButton/TradeSignPermitButton.tsx
 #: apps/cowswap-frontend/src/modules/erc20Approve/pure/LegacyApproveButton/index.tsx
-msgid "You must give the CoW Protocol smart contracts permission to use your <0/>. If you approve the default amount, you will only have to do this once per token."
-msgstr "Вы должны предоставить разрешение на использование вашего <0/>. Если вы подтвердите сумму по умолчанию, это необходимо будет сделать только один раз за токен."
+#~ msgid "You must give the CoW Protocol smart contracts permission to use your <0/>. If you approve the default amount, you will only have to do this once per token."
+#~ msgstr "You must give the CoW Protocol smart contracts permission to use your <0/>. If you approve the default amount, you will only have to do this once per token."
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
 msgid "Please enter the base URL of your dapp, not the direct manifest.json path"
@@ -4084,7 +4092,7 @@ msgstr "без беспокойства."
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/BundleTxWrapBanner/index.tsx
 msgid "For your convenience, CoW Swap will bundle all the necessary actions for this trade into a single transaction. This includes the {nativeCurrencySymbol} wrapping and, if needed, {wrappedCurrencySymbol} approval. Even if the trade fails, your wrapping and approval will be done!"
-msgstr "Для вашего удобства CoW Swap будет объединять все необходимые действия для этой сделки в одну транзакцию. Сюда входит обертка{nativeCurrencySymbol}и, при необходимости, одобрение{wrappedCurrencySymbol}. Даже в случае неудачи сделки, ваша упаковка и подтверждение будут сделаны!"
+msgstr "Для вашего удобства CoW Swap будет объединять все необходимые действия для этой сделки в одну транзакцию. Сюда входит обертка {nativeCurrencySymbol} и, при необходимости, одобрение {wrappedCurrencySymbol}. Даже в случае неудачи сделки, ваша упаковка и подтверждение будут сделаны!"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/OrderRow/OrderWarning.tsx
 msgid "Insufficient token balance"
@@ -5829,7 +5837,7 @@ msgstr "Сохранить изменения"
 
 #: apps/cowswap-frontend/src/legacy/components/swap/UnsupportedCurrencyFooter/index.tsx
 msgid "CoW Swap does not support all tokens. Some tokens implement similar, but logically different ERC20 contract methods which do not operate optimally with CoW Protocol.<0>For more information, please refer to the <1>FAQ</1>.</0>"
-msgstr "CoW Swap не поддерживает все токены, некоторые токены реализуют схожие, но логически различные контрактные методы ERC20, которые не работают оптимально с CoW Протоколом. 0>Для получения дополнительной информации обратитесь к <1>Часто задаваемые вопросы</1>.</0>"
+msgstr "CoW Swap не поддерживает все токены, некоторые токены реализуют схожие, но логически различные контрактные методы ERC20, которые не работают оптимально с CoW Протоколом. <0>Для получения дополнительной информации обратитесь к <1>Часто задаваемые вопросы</1>.</0>"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/CancellingStep.tsx
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/index.tsx

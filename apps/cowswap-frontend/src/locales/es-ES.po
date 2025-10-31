@@ -6,14 +6,14 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: @lingui/cli\n"
 "Language: es\n"
-"Project-Id-Version: cowswap18n\n"
+"Project-Id-Version: intercambiovaca\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-10-27 16:58\n"
+"PO-Revision-Date: 2025-10-31 18:14\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Crowdin-Project: cowswap18n\n"
-"X-Crowdin-Project-ID: 838504\n"
+"X-Crowdin-Project: intercambiovaca\n"
+"X-Crowdin-Project-ID: 842798\n"
 "X-Crowdin-Language: es-ES\n"
 "X-Crowdin-File: /feat.internationalization-setup-for-swap-cow-fi/apps/cowswap-frontend/src/locales/en-US.po\n"
 "X-Crowdin-File-ID: 11\n"
@@ -513,6 +513,10 @@ msgstr "(modificado)"
 msgid "1 Month"
 msgstr "1 mes"
 
+#: apps/cowswap-frontend/src/modules/erc20Approve/pure/ApprovalTooltip/index.tsx
+msgid "If you approve the full amount, you will only have to do this once per token."
+msgstr "Si aprueba la cantidad completa, sólo tendrá que hacerlo una vez por token."
+
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 msgid "Infinite permit an address to spend one token on your behalf."
 msgstr "Permita infinito que una dirección gaste un token en su nombre."
@@ -743,7 +747,7 @@ msgstr "Habilitar Hooks"
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 msgid "Claim LlamaPay Vesting Hook"
-msgstr "Claim LlamaPay Vesting Hook"
+msgstr "Reclamar LlamaPay Vesting Hook"
 
 #: apps/cowswap-frontend/src/modules/yield/containers/YieldWidget/index.tsx
 msgid "Seamlessly swap your tokens into CoW AMM pools"
@@ -898,7 +902,7 @@ msgstr "sándwich"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/BridgingStatusHeader/index.tsx
 msgid "Bridging to destination..."
-msgstr "Bridging to destination..."
+msgstr "Puenteando hacia el destino..."
 
 #: libs/common-utils/src/swapErrorToUserReadableMessage.tsx
 msgid "The transaction could not be sent because the deadline has passed. Please check that your transaction deadline is not too low."
@@ -981,6 +985,10 @@ msgstr "¡Algunas órdenes no pueden ser canceladas!"
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/index.cosmos.tsx
 msgid "Orders history"
 msgstr "Hist. de órdenes"
+
+#: apps/cowswap-frontend/src/modules/erc20Approve/pure/ApprovalTooltip/index.tsx
+msgid "You must give the CoW Protocol smart contracts permission to use your <0/>."
+msgstr "Debe dar permiso a los contratos inteligentes del Protocolo CoW para usar su <0/>."
 
 #: apps/cowswap-frontend/src/modules/yield/containers/YieldWidget/elements.tsx
 msgid "any token into CoW AMM pools to start benefiting from attractive APRs."
@@ -2057,7 +2065,7 @@ msgstr "Paso de depuración:"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/InfoBanner/index.tsx
 msgid "Your order may not fill exactly when the market price reaches your limit price."
-msgstr "Su orden podría no rellenarse exactamente cuando el precio de mercado llega al precio límite"
+msgstr "Su orden podría no rellenarse exactamente cuando el precio de mercado llega al precio límite."
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookTooltip/index.tsx
 msgid "BEFORE"
@@ -2935,7 +2943,7 @@ msgstr "Aprobación de token"
 
 #: apps/cowswap-frontend/src/modules/trade/containers/NoImpactWarning/index.tsx
 msgid "We are unable to calculate the price impact for this order.<0/><1/>You may still move forward but <2>please review carefully that the receive amounts are what you expect.</2>"
-msgstr "No podemos calcular el impacto del precio para este pedido. 0/><1/>Todavía puedes avanzar, pero <2>revisa cuidadosamente que las cantidades recibidas son las que esperas. </2>"
+msgstr "No podemos calcular el impacto del precio para este pedido. <0/><1/>Todavía puedes avanzar, pero <2>revisa cuidadosamente que las cantidades recibidas son las que esperas. </2>"
 
 #: apps/cowswap-frontend/src/common/pure/CancellationModal/RequestCancellationModal.tsx
 msgid "Off-chain cancellations require a signature and are free."
@@ -3428,8 +3436,8 @@ msgstr "2 paradas"
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/TradeApproveButton/TradeApproveButton.tsx
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/TradeSignPermitButton/TradeSignPermitButton.tsx
 #: apps/cowswap-frontend/src/modules/erc20Approve/pure/LegacyApproveButton/index.tsx
-msgid "You must give the CoW Protocol smart contracts permission to use your <0/>. If you approve the default amount, you will only have to do this once per token."
-msgstr "Debe dar permiso a los contratos inteligentes del Protocolo CoW para usar su <0/>. Si aprueba la cantidad por defecto, sólo tendrá que hacer esto una vez por token."
+#~ msgid "You must give the CoW Protocol smart contracts permission to use your <0/>. If you approve the default amount, you will only have to do this once per token."
+#~ msgstr "You must give the CoW Protocol smart contracts permission to use your <0/>. If you approve the default amount, you will only have to do this once per token."
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
 msgid "Please enter the base URL of your dapp, not the direct manifest.json path"
@@ -3581,7 +3589,7 @@ msgstr "conectar billetera"
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 msgid "Create LlamaPay Vesting"
-msgstr "Crear Vesting de LlamaPay "
+msgstr "Crear Vesting de LlamaPay"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/pure/Row/RowDeadline/index.tsx
 msgid "Transaction expiration"
@@ -3621,7 +3629,7 @@ msgstr "Error al cancelar el pedido"
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 msgid "Uniswap v2 Deposit"
-msgstr "Deposit de Uniswap v2 "
+msgstr "Deposit de Uniswap v2"
 
 #: apps/cowswap-frontend/src/common/constants/routes.ts
 msgid "Set your own price"
@@ -4084,7 +4092,7 @@ msgstr "sin preocuparse."
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/BundleTxWrapBanner/index.tsx
 msgid "For your convenience, CoW Swap will bundle all the necessary actions for this trade into a single transaction. This includes the {nativeCurrencySymbol} wrapping and, if needed, {wrappedCurrencySymbol} approval. Even if the trade fails, your wrapping and approval will be done!"
-msgstr "Para su comodidad, CoW Swap agrupará todas las acciones necesarias para esta operación en una sola transacción. Esto incluye el envoltorio{nativeCurrencySymbol} y, si es necesario, la aprobación{wrappedCurrencySymbol}. ¡Incluso si la operación falla, su envoltura y aprobación se harán!"
+msgstr "Para su comodidad, CoW Swap agrupará todas las acciones necesarias para esta operación en una sola transacción. Esto incluye el envoltorio {nativeCurrencySymbol} y, si es necesario, la aprobación {wrappedCurrencySymbol}. ¡Incluso si la operación falla, su envoltura y aprobación se harán!"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/OrderRow/OrderWarning.tsx
 msgid "Insufficient token balance"
