@@ -44,7 +44,7 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
   const isCurrentTradeBridging = useIsCurrentTradeBridging()
   const { approvalState } = useApprovalStateForSpender(amountToApprove, spender)
   const approveAndSwap = useApproveAndSwap(props)
-  const approveWithPreventedDoubleExecution = usePreventDoubleExecution(approveAndSwap)
+  const { callback: approveWithPreventedDoubleExecution, isExecuting } = usePreventDoubleExecution(approveAndSwap)
   const { data: cachedPermit, isLoading: cachedPermitLoading } = useHasCachedPermit(amountToApprove)
 
   if (!enablePartialApprove) {
@@ -61,7 +61,7 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
     )
   }
 
-  const isPending = approvalState === ApprovalState.PENDING
+  const isPending = isExecuting || approvalState === ApprovalState.PENDING
   const noCachedPermit = !cachedPermitLoading && !cachedPermit
 
   const label =
