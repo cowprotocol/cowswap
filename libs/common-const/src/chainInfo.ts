@@ -6,7 +6,9 @@ import {
   ChainInfo,
   gnosisChain,
   lens,
+  linea,
   mainnet,
+  plasma,
   polygon,
   sepolia,
   SupportedChainId,
@@ -49,12 +51,20 @@ function mapChainInfoToBaseChainInfo(
   | 'color'
   | 'eip155Label'
 > {
+  // TODO: temporary hack to point to the new logos for Linea and Plasma while the SDK PR is not merged
+  const logo =
+    chainInfo.logo && (chainInfo.id === SupportedChainId.LINEA || chainInfo.id === SupportedChainId.PLASMA)
+      ? {
+          light: chainInfo.logo.light.replace('\/main\/', '/feat/q4-chains/'),
+          dark: chainInfo.logo.dark.replace('\/main\/', '/feat/q4-chains/'),
+        }
+      : chainInfo.logo
   return {
     docs: chainInfo.docs.url,
     bridge: chainInfo.bridges?.[0]?.url,
     explorer: chainInfo.blockExplorer.url ?? '',
     infoLink: chainInfo.website.url,
-    logo: chainInfo.logo,
+    logo,
     addressPrefix: chainInfo.addressPrefix,
     label: chainInfo.label,
     explorerTitle: chainInfo.blockExplorer.name,
@@ -118,6 +128,18 @@ export const CHAIN_INFO: ChainInfoMap = {
     urlAlias: 'lens',
     nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.LENS],
   },
+  [SupportedChainId.LINEA]: {
+    ...mapChainInfoToBaseChainInfo(linea),
+    name: 'linea',
+    urlAlias: 'linea',
+    nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.LINEA],
+  },
+  [SupportedChainId.PLASMA]: {
+    ...mapChainInfoToBaseChainInfo(plasma),
+    name: 'plasma',
+    urlAlias: 'plasma',
+    nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.PLASMA],
+  },
   [SupportedChainId.SEPOLIA]: {
     ...mapChainInfoToBaseChainInfo(sepolia),
     name: 'sepolia',
@@ -136,6 +158,8 @@ export const SORTED_CHAIN_IDS: SupportedChainId[] = [
   SupportedChainId.ARBITRUM_ONE,
   SupportedChainId.POLYGON,
   SupportedChainId.AVALANCHE,
+  SupportedChainId.LINEA, // TODO: decide where to place Linea
+  SupportedChainId.PLASMA, // TODO: decide where to place Plasma
   SupportedChainId.GNOSIS_CHAIN,
   SupportedChainId.LENS,
   SupportedChainId.SEPOLIA,

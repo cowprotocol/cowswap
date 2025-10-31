@@ -3,6 +3,8 @@ import { useMemo } from 'react'
 import { getAvailableChains } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
+import { useFeatureFlags } from './useFeatureFlags'
+
 /**
  * Hook to get a list of SupportedChainId currently available/enabled
  *
@@ -12,20 +14,23 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
  */
 export function useAvailableChains(): SupportedChainId[] {
   // 1. Load feature flag for chain being enabled
-  // const { isBnbEnabled } = useFeatureFlags()
+  const { isLineaEnabled, isPlasmaEnabled } = useFeatureFlags()
 
   return useMemo(
     // 2. Conditionally build a list of chain ids to exclude
     // () => getAvailableChains(isBaseEnabled ? undefined : [SupportedChainId.BASE]),  <-- example usage, kept for reference
     () => {
-      // const chainsToSkip: SupportedChainId[] = []
-      //
-      // if (!isBnbEnabled) {
-      //   chainsToSkip.push(SupportedChainId.BNB)
-      // }
+      const chainsToSkip: SupportedChainId[] = []
 
-      return getAvailableChains()
+      if (!isLineaEnabled) {
+        chainsToSkip.push(SupportedChainId.LINEA)
+      }
+      if (!isPlasmaEnabled) {
+        chainsToSkip.push(SupportedChainId.PLASMA)
+      }
+
+      return getAvailableChains(chainsToSkip)
     },
-    [],
+    [isLineaEnabled, isPlasmaEnabled],
   )
 }

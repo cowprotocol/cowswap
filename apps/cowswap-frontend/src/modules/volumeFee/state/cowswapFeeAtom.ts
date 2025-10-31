@@ -27,6 +27,8 @@ const COWSWAP_VOLUME_FEES: Record<SupportedChainId, VolumeFee | null> = {
   [SupportedChainId.AVALANCHE]: null,
   [SupportedChainId.LENS]: null,
   [SupportedChainId.BNB]: null,
+  [SupportedChainId.LINEA]: null,
+  [SupportedChainId.PLASMA]: null,
 }
 
 // TODO: Reduce function complexity by extracting logic

@@ -2,7 +2,7 @@ import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { JsonRpcFetchFunc, Web3Provider } from '@ethersproject/providers'
 import SafeApiKit, { SafeInfoResponse } from '@safe-global/api-kit'
-import Safe, { EthersAdapter } from '@safe-global/protocol-kit'
+import { EthersAdapter } from '@safe-global/protocol-kit'
 import type { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
 
 // eslint-disable-next-line no-restricted-imports
@@ -18,6 +18,8 @@ export const SAFE_TRANSACTION_SERVICE_URL: Record<SupportedChainId, string> = {
   [SupportedChainId.AVALANCHE]: 'https://safe-transaction-avalanche.safe.global',
   [SupportedChainId.LENS]: 'https://safe-transaction-lens.safe.global',
   [SupportedChainId.BNB]: 'https://safe-transaction-bsc.safe.global',
+  [SupportedChainId.LINEA]: 'https://safe-transaction-linea.safe.global',
+  [SupportedChainId.PLASMA]: 'https://safe-transaction-plasma.safe.global',
 }
 
 const SAFE_BASE_URL = 'https://app.safe.global'
@@ -56,12 +58,6 @@ export function createSafeApiKitInstance(chainId: number, library: Web3Provider)
 
   const ethAdapter = _createSafeEthAdapter(library)
   return new SafeApiKit({ txServiceUrl: url, ethAdapter })
-}
-
-export async function createSafeSdkInstance(safeAddress: string, library: Web3Provider): Promise<Safe> {
-  const ethAdapter = _createSafeEthAdapter(library)
-
-  return Safe.create({ ethAdapter, safeAddress })
 }
 
 function _getClientOrThrow(chainId: number, library: Web3Provider): SafeApiKit {
