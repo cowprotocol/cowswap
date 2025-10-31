@@ -1,5 +1,6 @@
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
 
+import { t } from '@lingui/core/macro'
 import { orderBookApi } from 'cowSdk'
 
 import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
@@ -18,7 +19,7 @@ export function finalizeOnChainCancellation(
   params: CheckEthereumTransactions,
   hash: string,
   orderId: string,
-  sellTokenSymbol: string
+  sellTokenSymbol: string,
 ) {
   const { chainId, isSafeWallet, dispatch, cancelOrdersBatch, getTwapOrderById } = params
 
@@ -53,7 +54,7 @@ export function finalizeOnChainCancellation(
     // 1. Update order state and remove the isCancelling flag and cancellationHash
     partialOrderUpdate(
       { chainId, order: { id: orderId, isCancelling: false, cancellationHash: undefined }, isSafeWallet },
-      dispatch
+      dispatch,
     )
     // 2. Show failure tx pop-up
     emitOnchainTransactionEvent({
@@ -66,7 +67,7 @@ export function finalizeOnChainCancellation(
         status: receipt.status,
         replacementType: transaction.replacementType,
       },
-      summary: `Failed to cancel order selling ${sellTokenSymbol}`,
+      summary: t`Failed to cancel order selling ${sellTokenSymbol}`,
     })
   }
 }

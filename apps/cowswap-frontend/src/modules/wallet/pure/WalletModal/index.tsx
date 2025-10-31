@@ -2,7 +2,7 @@ import { Command } from '@cowprotocol/types'
 import { AutoRow } from '@cowprotocol/ui'
 import { TryActivation } from '@cowprotocol/wallet'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 import { ThemedText } from 'theme'
 
 import { LightCard } from 'legacy/components/Card'

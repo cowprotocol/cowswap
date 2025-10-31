@@ -4,7 +4,7 @@ import { Command } from '@cowprotocol/types'
 import { ButtonError, ButtonSize, TokenSymbol } from '@cowprotocol/ui'
 import { Currency, Token } from '@uniswap/sdk-core'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
 import { Field } from 'legacy/state/types'
@@ -31,26 +31,28 @@ interface SwapTradeButtonsContext {
 type SwapTradeButton = (props: SwapTradeButtonsContext, isDisabled: boolean) => ReactNode | string
 
 export const swapTradeButtonsMap: Record<SwapFormState, SwapTradeButton> = {
-  [SwapFormState.SwapWithWrappedToken]: (props: SwapTradeButtonsContext, isDisabled: boolean) => (
-    <ButtonError buttonSize={ButtonSize.BIG} onClick={props.onEthFlow} disabled={isDisabled}>
-      <div>
-        <Trans>Swap with {props.wrappedToken.symbol}</Trans>
-      </div>
-    </ButtonError>
-  ),
+  [SwapFormState.SwapWithWrappedToken]: (props: SwapTradeButtonsContext, isDisabled: boolean) => {
+    return (
+      <ButtonError buttonSize={ButtonSize.BIG} onClick={props.onEthFlow} disabled={isDisabled}>
+        <div>
+          <Trans>Swap with</Trans> {props.wrappedToken.symbol}
+        </div>
+      </ButtonError>
+    )
+  },
   [SwapFormState.WrapAndSwap]: (props: SwapTradeButtonsContext, isDisabled: boolean) => (
     <ButtonError buttonSize={ButtonSize.BIG} onClick={props.openSwapConfirm} disabled={isDisabled}>
       <div>
-        <Trans>Wrap&nbsp;{<TokenSymbol token={props.inputCurrency} length={6} />}&nbsp;and Swap</Trans>
+        <Trans>
+          Wrap <TokenSymbol token={props.inputCurrency} length={6} /> and Swap
+        </Trans>
       </div>
     </ButtonError>
   ),
   [SwapFormState.RegularEthFlowSwap]: (props: SwapTradeButtonsContext, isDisabled: boolean) => (
     <Wrapper>
       <ButtonError buttonSize={ButtonSize.BIG} onClick={props.openSwapConfirm} disabled={isDisabled}>
-        <div>
-          <Trans>{props.confirmText}</Trans>
-        </div>
+        <div>{props.confirmText}</div>
       </ButtonError>
       <EthFlowBanner
         hasEnoughWrappedBalance={props.hasEnoughWrappedBalanceForSwap}
@@ -61,11 +63,12 @@ export const swapTradeButtonsMap: Record<SwapFormState, SwapTradeButton> = {
   ),
   [SwapFormState.SellNativeInHooks]: (props: SwapTradeButtonsContext) => {
     const currency = props.inputCurrency
+    const symbol = currency?.symbol
 
     return (
       <ButtonError buttonSize={ButtonSize.BIG} disabled={true}>
         <div>
-          <Trans>Selling {currency?.symbol} is not supported</Trans>
+          <Trans>Selling {symbol} is not supported</Trans>
         </div>
       </ButtonError>
     )

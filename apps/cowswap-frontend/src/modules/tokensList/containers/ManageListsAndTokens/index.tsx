@@ -5,6 +5,9 @@ import { isAddress, parseENSAddress, uriToHttp } from '@cowprotocol/common-utils
 import { ListState, useSearchList, useSearchToken } from '@cowprotocol/tokens'
 import { ModalHeader } from '@cowprotocol/ui'
 
+import { msg } from '@lingui/core/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
+
 import * as styledEl from './styled'
 
 import { ManageLists } from '../ManageLists'
@@ -13,16 +16,15 @@ import { ManageTokens } from '../ManageTokens'
 export interface ManageListsAndTokensProps {
   lists: ListState[]
   customTokens: TokenWithLogo[]
-
   onBack(): void
-
   onDismiss(): void
 }
 
 const tokensInputPlaceholder = '0x0000'
-const listsInputPlaceholder = 'https:// or ipfs:// or ENS name'
+const listsInputPlaceholder = msg`https:// or ipfs:// or ENS name`
 
 export function ManageListsAndTokens(props: ManageListsAndTokensProps): ReactNode {
+  const { i18n } = useLingui()
   const { lists, customTokens, onBack, onDismiss } = props
 
   const [currentTab, setCurrentTab] = useState<'tokens' | 'lists'>('lists')
@@ -65,24 +67,32 @@ export function ManageListsAndTokens(props: ManageListsAndTokensProps): ReactNod
   return (
     <styledEl.Wrapper>
       <ModalHeader onBack={onBack} onClose={onDismiss}>
-        Manage
+        <Trans>Manage</Trans>
       </ModalHeader>
       <styledEl.TabsContainer>
         <styledEl.Tab active$={isListsTab} onClick={setListsTab}>
-          Lists
+          <Trans>Lists</Trans>
         </styledEl.Tab>
         <styledEl.Tab active$={!isListsTab} onClick={setTokensTab}>
-          Tokens
+          <Trans>Tokens</Trans>
         </styledEl.Tab>
       </styledEl.TabsContainer>
       <styledEl.PrimaryInputBox>
         <styledEl.PrimaryInput
-          type="text"
           onChange={(e) => setInputValue(e.target.value)}
-          placeholder={isListsTab ? listsInputPlaceholder : tokensInputPlaceholder}
+          placeholder={isListsTab ? i18n._(listsInputPlaceholder) : tokensInputPlaceholder}
+          type="text"
         />
-        {!isListUrlValid && listInput && <styledEl.InputError>Enter valid list location</styledEl.InputError>}
-        {!isTokenAddressValid && <styledEl.InputError>Enter valid token address</styledEl.InputError>}
+        {!isListUrlValid && listInput && (
+          <styledEl.InputError>
+            <Trans>Enter valid list location</Trans>
+          </styledEl.InputError>
+        )}
+        {!isTokenAddressValid && (
+          <styledEl.InputError>
+            <Trans>Enter valid token address</Trans>
+          </styledEl.InputError>
+        )}
       </styledEl.PrimaryInputBox>
       {currentTab === 'lists' ? (
         <ManageLists listSearchResponse={listSearchResponse} lists={lists} isListUrlValid={isListUrlValid} />

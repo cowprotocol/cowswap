@@ -2,6 +2,7 @@ import { ReactElement } from 'react'
 
 import { Command } from '@cowprotocol/types'
 
+import { Trans } from '@lingui/react/macro'
 import { AlertTriangle } from 'react-feather'
 
 import * as styledEl from './styled'
@@ -23,7 +24,9 @@ export function ExternalSourceAlert({ className, onChange, title, children }: Ex
 
       <styledEl.AcceptanceBox>
         <input type="checkbox" onChange={onChange} />
-        <span>I understand</span>
+        <span>
+          <Trans>I understand</Trans>
+        </span>
       </styledEl.AcceptanceBox>
     </styledEl.Contents>
   )

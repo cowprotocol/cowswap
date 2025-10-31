@@ -4,6 +4,7 @@ import { ReactNode, useCallback, useEffect } from 'react'
 import { Media, UI } from '@cowprotocol/ui'
 import { useWalletDetails } from '@cowprotocol/wallet'
 
+import { Trans } from '@lingui/react/macro'
 import { Trash2 } from 'react-feather'
 import styled from 'styled-components/macro'
 
@@ -18,10 +19,10 @@ interface Props {
 
 const Wrapper = styled.div<{ hasSelectedItems: boolean }>`
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: row nowrap;
   align-items: center;
   justify-content: space-between;
-  gap: 6px;
+  gap: 4px;
   margin: 0 0 0 ${({ hasSelectedItems }) => (hasSelectedItems ? '' : 'auto')};
 
   ${Media.upToSmall()} {
@@ -37,10 +38,10 @@ const ActionButton = styled.button`
   color: var(${UI.COLOR_DANGER_TEXT});
   font-weight: 600;
   text-decoration: none;
-  font-size: 13px;
-  padding: 7px 12px;
+  font-size: 12px;
+  padding: 6px 8px;
   margin: 0;
-  gap: 5px;
+  gap: 2px;
   border: 0;
   outline: none;
   cursor: pointer;
@@ -65,7 +66,7 @@ const TextButton = styled.button`
   color: var(${UI.COLOR_TEXT_OPACITY_70});
   font-size: 12px;
   font-weight: 500;
-  padding: 5px;
+  padding: 0;
   cursor: pointer;
   background: none;
   outline: none;
@@ -121,12 +122,16 @@ export function MultipleCancellationMenu({ pendingOrders }: Props): ReactNode {
       {ordersToCancelCount ? (
         <>
           <ActionButton onClick={cancelSelectedOrders}>
-            <Trash2 size={14} /> Cancel {ordersToCancelCount} selected
+            <Trash2 size={14} /> <Trans>Cancel</Trans> {ordersToCancelCount} <Trans>selected</Trans>
           </ActionButton>
-          <TextButton onClick={clearSelection}>Clear selection</TextButton>
+          <TextButton onClick={clearSelection}>
+            <Trans>Clear selection</Trans>
+          </TextButton>
         </>
       ) : (
-        <CancelAllButton onClick={cancelAllPendingOrders}>Cancel all</CancelAllButton>
+        <CancelAllButton onClick={cancelAllPendingOrders}>
+          <Trans>Cancel all</Trans>
+        </CancelAllButton>
       )}
     </Wrapper>
   )

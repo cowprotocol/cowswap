@@ -1,6 +1,8 @@
 import { OrderClass } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
 
+import { t } from '@lingui/core/macro'
+
 import { Order } from 'legacy/state/orders/actions'
 
 import { AppDataMetadataOrderClass } from 'modules/appData/types'
@@ -20,12 +22,14 @@ const API_ORDER_CLASS_TO_UI_ORDER_TYPE_MAP: Record<OrderClass, UiOrderType> = {
   [OrderClass.LIQUIDITY]: UiOrderType.LIMIT,
 }
 
-export const ORDER_UI_TYPE_TITLES: Record<UiOrderType, string> = {
-  [UiOrderType.SWAP]: 'Swap',
-  [UiOrderType.LIMIT]: 'Limit order',
-  [UiOrderType.TWAP]: 'TWAP order',
-  [UiOrderType.HOOKS]: 'Hooks',
-  [UiOrderType.YIELD]: 'Yield',
+export function getUiOrderTypeTitles(): Record<UiOrderType, string> {
+  return {
+    [UiOrderType.SWAP]: t`Swap`,
+    [UiOrderType.LIMIT]: t`Limit order`,
+    [UiOrderType.TWAP]: t`TWAP order`,
+    [UiOrderType.HOOKS]: t`Hooks`,
+    [UiOrderType.YIELD]: t`Yield`,
+  }
 }
 
 export type UiOrderTypeParams = Pick<Order, 'fullAppData' | 'composableCowInfo' | 'class'>

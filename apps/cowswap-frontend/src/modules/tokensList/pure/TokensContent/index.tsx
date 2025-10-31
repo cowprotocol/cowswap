@@ -6,6 +6,7 @@ import { Nullish } from '@cowprotocol/types'
 import { Loader } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
+import { Trans } from '@lingui/react/macro'
 import { Edit } from 'react-feather'
 
 import { TokenSearchResults } from '../../containers/TokenSearchResults'
@@ -86,7 +87,10 @@ export function TokensContent({
           <styledEl.Separator />
           <div>
             <styledEl.ActionButton id="list-token-manage-button" onClick={onOpenManageWidget}>
-              <Edit /> <span>Manage Token Lists</span>
+              <Edit />{' '}
+              <span>
+                <Trans>Manage Token Lists</Trans>
+              </span>
             </styledEl.ActionButton>
           </div>
         </>

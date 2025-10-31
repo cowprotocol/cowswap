@@ -7,6 +7,9 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ButtonPrimary } from '@cowprotocol/ui'
 import { Token } from '@uniswap/sdk-core'
 
+import { i18n } from '@lingui/core'
+import { Trans } from '@lingui/react/macro'
+
 import { HookDappProps } from 'modules/hooksStore/types/hooks'
 
 import { AIRDROP_PREVIEW_ERRORS, useClaimData } from './hooks/useClaimData'
@@ -29,7 +32,7 @@ const COW_AIRDROP = {
 
 // TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, complexity
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function AirdropHookApp({ context }: HookDappProps) {
   const { data: claimData, isValidating, error } = useClaimData(COW_AIRDROP)
   const { data: gasLimit } = useGasLimit({ to: claimData?.contract.address, data: claimData?.callData })
@@ -67,17 +70,22 @@ export function AirdropHookApp({ context }: HookDappProps) {
       <ContentWrapper>
         {messageToUser === null ? (
           <div>
-            <Label>Claimable amount</Label>:<Amount>{claimData?.formattedAmount}</Amount>
+            <Label>
+              <Trans>Claimable amount</Trans>
+            </Label>
+            :<Amount>{claimData?.formattedAmount}</Amount>
           </div>
         ) : (
           messageToUser
         )}
       </ContentWrapper>
       {context.hookToEdit ? (
-        <ButtonPrimary onClick={onEditHook}>Return to Swap</ButtonPrimary>
+        <ButtonPrimary onClick={onEditHook}>
+          <Trans>Return to Swap</Trans>
+        </ButtonPrimary>
       ) : messageToUser === null ? (
         <ButtonPrimary disabled={!canClaim || isValidating} onClick={clickOnAddHook}>
-          Add Hook
+          <Trans>Add Hook</Trans>
         </ButtonPrimary>
       ) : undefined}
     </Wrapper>
@@ -99,23 +107,43 @@ function getMessageToUser({
   isValidating?: boolean
 }) {
   if (!account) {
-    return <span>Connect your wallet</span>
+    return (
+      <span>
+        <Trans>Connect your wallet</Trans>
+      </span>
+    )
   }
 
   if (isValidating) {
-    return <span>Loading...</span>
+    return (
+      <span>
+        <Trans>Loading...</Trans>
+      </span>
+    )
   }
 
   if (error) {
-    if (Object.values(AIRDROP_PREVIEW_ERRORS).includes(error.message)) {
+    if (
+      Object.values(AIRDROP_PREVIEW_ERRORS)
+        .map((item) => i18n._(item))
+        .includes(error.message)
+    ) {
       return <span>{error.message}</span>
     } else {
-      return <span>An unexpected error occurred</span>
+      return (
+        <span>
+          <Trans>An unexpected error occurred</Trans>
+        </span>
+      )
     }
   }
 
   if (claimData?.isClaimed) {
-    return <span>You have already claimed this airdrop</span>
+    return (
+      <span>
+        <Trans>You have already claimed this airdrop</Trans>
+      </span>
+    )
   }
 
   return null

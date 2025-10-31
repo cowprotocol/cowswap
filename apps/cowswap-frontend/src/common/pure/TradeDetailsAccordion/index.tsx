@@ -3,6 +3,8 @@ import { ReactNode, useCallback } from 'react'
 import { FiatAmount, TokenAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { Trans } from '@lingui/react/macro'
+
 import { ToggleArrow } from 'common/pure/ToggleArrow'
 
 import { Details, Summary, SummaryClickable, Wrapper } from './styled'
@@ -31,12 +33,12 @@ function DefaultFeeContent({
   if (feeTotalAmount?.greaterThan(0)) {
     return (
       <>
-        Fee <TokenAmount amount={feeTotalAmount} tokenSymbol={feeTotalAmount?.currency} />
+        <Trans>Fee</Trans> <TokenAmount amount={feeTotalAmount} tokenSymbol={feeTotalAmount?.currency} />
       </>
     )
   }
 
-  return 'Free'
+  return <Trans>Free</Trans>
 }
 
 /**

@@ -3,6 +3,8 @@ import { useCallback } from 'react'
 import { TransactionReceipt, TransactionResponse } from '@ethersproject/abstract-provider'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { useLingui } from '@lingui/react/macro'
+
 import { useApproveCurrency } from './useApproveCurrency'
 import { useGeneratePermitInAdvanceToTrade } from './useGeneratePermitInAdvanceToTrade'
 
@@ -25,6 +27,7 @@ export function useApproveAndSwap({
   ignorePermit,
   onApproveConfirm,
 }: ApproveAndSwapProps): () => Promise<void> {
+  const { t } = useLingui()
   const isPartialApproveEnabledByUser = useIsPartialApproveSelectedByUser()
   const handleApprove = useApproveCurrency(amountToApprove, useModals)
   const updateTradeApproveState = useUpdateApproveProgressModalState()
@@ -67,18 +70,19 @@ export function useApproveAndSwap({
 
           onApproveConfirm(hash)
         } else {
-          updateTradeApproveState({ error: 'Approved amount is not sufficient!' })
+          updateTradeApproveState({ error: t`Approved amount is not sufficient!` })
         }
       } else {
         onApproveConfirm(tx.transactionHash)
       }
     }
   }, [
-    onApproveConfirm,
-    isPartialApproveEnabledByUser,
-    amountToApprove.quotient,
-    handleApprove,
-    updateTradeApproveState,
     handlePermit,
+    amountToApprove.quotient,
+    isPartialApproveEnabledByUser,
+    handleApprove,
+    onApproveConfirm,
+    updateTradeApproveState,
+    t,
   ])
 }

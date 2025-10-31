@@ -2,7 +2,8 @@ import { ReactNode, memo } from 'react'
 
 import { CowSwapSafeAppLink } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/macro'
+import { t } from '@lingui/core/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 import Lottie from 'lottie-react'
 
 import * as styledEl from './OrdersTableContainer.styled'
@@ -27,25 +28,20 @@ const NoOrdersDescription = memo(function NoOrdersDescription({
   isSafeViaWc,
   displayOrdersOnlyForSafeApp,
 }: NoOrdersDescriptionProps): ReactNode {
-  if (displayOrdersOnlyForSafeApp && isSafeViaWc) {
-    return (
-      <Trans>
-        Use the <CowSwapSafeAppLink /> to see {currentTab === OrderTabId.history ? 'orders history' : 'your orders'}
-      </Trans>
-    )
-  }
+  const { t } = useLingui()
+  const currentTabText = currentTab === OrderTabId.history ? t`orders history` : t`your orders`
+  const orderStatusText =
+    currentTab === OrderTabId.unfillable ? t`unfillable` : currentTab === OrderTabId.open ? t`open` : ''
 
-  if (searchTerm) {
-    return <Trans>Try adjusting your search term or clearing the filter</Trans>
-  }
-
-  return (
+  return displayOrdersOnlyForSafeApp && isSafeViaWc ? (
+    <Trans>
+      Use the <CowSwapSafeAppLink /> to see {currentTabText}
+    </Trans>
+  ) : searchTerm ? (
+    <Trans>Try adjusting your search term or clearing the filter</Trans>
+  ) : (
     <>
-      <Trans>
-        You don't have any{' '}
-        {currentTab === OrderTabId.unfillable ? 'unfillable' : currentTab === OrderTabId.open ? 'open' : ''} orders at
-        the moment.
-      </Trans>{' '}
+      <Trans>You don't have any {orderStatusText} orders at the moment.</Trans>{' '}
       {(currentTab === OrderTabId.open || currentTab === OrderTabId.all) && (
         <>
           <br />
@@ -64,12 +60,12 @@ const NoOrdersDescription = memo(function NoOrdersDescription({
 
 function getSectionTitle(currentTab: OrderTabId): string {
   return currentTab === OrderTabId.all
-    ? 'No orders'
+    ? t`No orders`
     : currentTab === OrderTabId.unfillable
-      ? 'No unfillable orders'
+      ? t`No unfillable orders`
       : currentTab === OrderTabId.open
-        ? 'No open orders'
-        : 'No order history'
+        ? t`No open orders`
+        : t`No order history`
 }
 
 interface NoOrdersContentProps {
@@ -79,16 +75,20 @@ interface NoOrdersContentProps {
   isDarkMode: boolean
 }
 
-export function NoOrdersContent({ currentTab, searchTerm, hasHydratedOrders, isDarkMode }: NoOrdersContentProps): ReactNode {
+export function NoOrdersContent({
+  currentTab,
+  searchTerm,
+  hasHydratedOrders,
+  isDarkMode,
+}: NoOrdersContentProps): ReactNode {
   const { orderType, isSafeViaWc, displayOrdersOnlyForSafeApp, injectedWidgetParams } = useOrdersTableState() || {}
   const emptyOrdersImage = injectedWidgetParams?.images?.emptyOrders
   const animationData = useNoOrdersAnimation({ emptyOrdersImage, hasHydratedOrders, isDarkMode })
+  const { t } = useLingui()
 
   return (
     <styledEl.Content>
-      <h3>
-        <Trans>{searchTerm ? 'No matching orders found' : getSectionTitle(currentTab)}</Trans>
-      </h3>
+      <h3>{searchTerm ? t`No matching orders found` : getSectionTitle(currentTab)}</h3>
       <p>
         <NoOrdersDescription
           currentTab={currentTab}
@@ -100,9 +100,9 @@ export function NoOrdersContent({ currentTab, searchTerm, hasHydratedOrders, isD
       </p>
       <styledEl.NoOrdersAnimation>
         {emptyOrdersImage ? (
-          <img src={emptyOrdersImage} alt="There are no orders" />
+          <img src={emptyOrdersImage} alt={t`There are no orders`} />
         ) : animationData ? (
-          <styledEl.NoOrdersLottieFrame aria-label="Animated cow reacts to empty order list">
+          <styledEl.NoOrdersLottieFrame aria-label={t`Animated cow reacts to empty order list`}>
             <Lottie animationData={animationData} loop autoplay />
           </styledEl.NoOrdersLottieFrame>
         ) : (

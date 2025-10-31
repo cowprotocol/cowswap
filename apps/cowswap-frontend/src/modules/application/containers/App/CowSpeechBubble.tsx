@@ -2,6 +2,8 @@ import { useEffect, useState, type ReactNode } from 'react'
 
 import { useReducedMotionPreference } from '@cowprotocol/common-hooks'
 
+import { useLingui, Trans } from '@lingui/react/macro'
+
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
 import { Arrow, Bubble, BubbleContent, CloseButton, Cursor, JobsLink, TypingLine } from './CowSpeechBubble.styled'
@@ -18,24 +20,26 @@ const BUBBLE_DELAY_MS = 3000
 export function CowSpeechBubble({ show, onClose }: CowSpeechBubbleProps): ReactNode {
   const prefersReducedMotion = useReducedMotionPreference()
   const hasDelayElapsed = useBubbleDelay(show)
+  const { t, i18n } = useLingui()
+  const typingMessage = i18n._(TYPING_MESSAGE)
   const charIndex = useTypingProgress({
     show,
     hasDelayElapsed,
     prefersReducedMotion,
-    message: TYPING_MESSAGE,
+    message: typingMessage,
   })
 
   if (!show || !hasDelayElapsed) {
     return null
   }
 
-  const isTypingComplete = charIndex >= TYPING_MESSAGE.length
-  const displayedText = TYPING_MESSAGE.slice(0, charIndex)
+  const isTypingComplete = charIndex >= typingMessage.length
+  const displayedText = typingMessage.slice(0, charIndex)
   const showCursor = hasDelayElapsed && show && !isTypingComplete
 
   return (
     <Bubble>
-      <CloseButton type="button" aria-label="Dismiss hiring message" onClick={onClose}>
+      <CloseButton type="button" aria-label={t`Dismiss hiring message`} onClick={onClose}>
         ×
       </CloseButton>
       <BubbleContent>
@@ -55,13 +59,15 @@ export function CowSpeechBubble({ show, onClose }: CowSpeechBubbleProps): ReactN
             label: CAREERS_URL,
           })}
         >
-          View jobs
+          <Trans>View jobs</Trans>
           <Arrow aria-hidden="true">→</Arrow>
         </JobsLink>
       </BubbleContent>
     </Bubble>
   )
 }
+
+export default CowSpeechBubble
 
 function useBubbleDelay(show: boolean): boolean {
   const [hasDelayElapsed, setHasDelayElapsed] = useState(false)

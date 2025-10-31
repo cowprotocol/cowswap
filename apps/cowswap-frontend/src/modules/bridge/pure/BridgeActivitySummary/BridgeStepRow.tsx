@@ -1,5 +1,7 @@
 import { ReactNode } from 'react'
 
+import { Trans, useLingui } from '@lingui/react/macro'
+
 import { BridgeSummaryRow, StepContent } from './styled'
 
 import { SwapAndBridgeContext, SwapAndBridgeStatus } from '../../types'
@@ -22,12 +24,14 @@ export function BridgeStepRow({ context }: BridgeStepRowProps): ReactNode {
     statusResult,
     explorerUrl,
   } = context
-
+  const { i18n } = useLingui()
   const bridgeStatus = bridgingStatus === SwapAndBridgeStatus.DEFAULT ? SwapAndBridgeStatus.PENDING : bridgingStatus
 
   return (
     <BridgeSummaryRow>
-      <b>Bridge</b>
+      <b>
+        <Trans>Bridge</Trans>
+      </b>
       <StepContent>
         <BridgeDetailsContainer
           isCollapsible
@@ -38,7 +42,7 @@ export function BridgeStepRow({ context }: BridgeStepRowProps): ReactNode {
           protocolIconSize={21}
           circleSize={21}
           titlePrefix=""
-          protocolName={`${BridgeStatusTitlePrefixes[bridgeStatus]} ${bridgeProvider.name}`}
+          protocolName={`${i18n._(BridgeStatusTitlePrefixes[bridgeStatus])} ${bridgeProvider.name}`}
           bridgeProvider={bridgeProvider}
           chainName={targetChainName}
           sellAmount={targetAmounts?.sellAmount}

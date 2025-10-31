@@ -7,7 +7,7 @@ import { CloseIcon } from 'common/pure/CloseIcon'
 
 export const SearchInputContainer = styled.div`
   margin: 0;
-  padding: 0 0 0 16px;
+  padding: 0 0 0 8px;
   position: relative;
 
   ${Media.upToMedium()} {
@@ -17,7 +17,7 @@ export const SearchInputContainer = styled.div`
 
 export const SearchIcon = styled(Search)`
   position: absolute;
-  left: 28px;
+  left: 18px;
   top: 50%;
   transform: translateY(-50%);
   color: var(${UI.COLOR_TEXT_OPACITY_50});
@@ -45,7 +45,7 @@ export const StyledCloseIcon = styled(CloseIcon)`
 
 export const SearchInput = styled.input`
   width: 100%;
-  padding: 8px 36px;
+  padding: 8px 30px;
   border: 1px solid var(${UI.COLOR_TEXT_OPACITY_10});
   background: var(${UI.COLOR_PAPER});
   color: var(${UI.COLOR_TEXT});

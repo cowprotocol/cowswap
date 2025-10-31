@@ -60,38 +60,47 @@ export const ContentWrapper = styled.div`
 `
 
 export const Header = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  position: sticky;
+  --arrow-size: 19px;
+
+  align-items: top;
   background: var(${UI.COLOR_PAPER});
-  top: 0;
+  column-gap: 4px;
+  display: grid;
+  grid-template-columns: 18px auto 1.25fr;
   left: 0;
-  width: 100%;
-  padding: 14px 16px;
-  z-index: 20;
+  line-height: var(--arrow-size);
   margin: 0;
+  padding: 14px 10px;
+  position: sticky;
+  top: 0;
+  width: 100%;
+  z-index: 20;
+
+  > svg {
+    height: var(--arrow-size);
+    margin-right: 0;
+    width: var(--arrow-size);
+  }
 `
 
 export const HeaderRightContent = styled.div`
-  margin: 0 0 0 auto;
-  line-height: 0;
+  line-height: var(--arrow-size);
 `
 
 export const ConfirmHeaderTitle = styled.h3`
+  font-size: 15px;
+  line-height: var(--arrow-size);
   margin: 0;
-  font-size: 16px;
+  word-wrap: break-word;
 `
 
 export const QuoteCountdownWrapper = styled.div<{ blink?: boolean }>`
-  font-size: 14px;
-  color: var(${UI.COLOR_TEXT_OPACITY_70});
   animation: ${({ blink }) => (blink ? `blinkOut 1s ease-out forwards` : 'none')};
-
-  > b {
-    color: var(${UI.COLOR_TEXT});
-    font-weight: normal;
-  }
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
+  column-gap: 3px;
+  display: grid;
+  font-size: 13px;
+  grid-template-columns: 1fr auto;
 
   @keyframes blinkOut {
     0%,
@@ -102,4 +111,15 @@ export const QuoteCountdownWrapper = styled.div<{ blink?: boolean }>`
       opacity: 0;
     }
   }
+`
+
+export const QuoteCountdownWrapperText = styled.span`
+  min-width: 0;
+  text-align: right;
+  word-wrap: break-word;
+`
+
+export const QuoteCountdownWrapperValue = styled.span`
+  color: var(${UI.COLOR_TEXT});
+  font-weight: normal;
 `

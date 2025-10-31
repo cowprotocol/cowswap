@@ -3,6 +3,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenAmount, UI } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
+import { Trans } from '@lingui/react/macro'
 import { lighten, transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 
@@ -76,7 +77,7 @@ const SubsidyTr = styled.tr<{ selected?: boolean; darkMode?: boolean }>`
 
   ${
     /* TODO: Break down this large function into smaller functions */
-    /* eslint-disable-next-line max-lines-per-function */
+
     ({ selected, theme }) =>
       selected &&
       `
@@ -175,8 +176,12 @@ function SubsidyTable({ discount }: CowSubsidy) {
     <StyledSubsidyTable>
       <thead>
         <SubsidyTr>
-          <th>(v)COW balance</th>
-          <th>Fee discount</th>
+          <th>
+            <Trans>(v)COW balance</Trans>
+          </th>
+          <th>
+            <Trans>Fee discount</Trans>
+          </th>
         </SubsidyTr>
       </thead>
       <tbody>
