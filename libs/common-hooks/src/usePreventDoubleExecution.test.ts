@@ -1,4 +1,4 @@
-import { renderHook, act } from '@testing-library/react'
+import { act, renderHook } from '@testing-library/react'
 
 import { usePreventDoubleExecution } from './usePreventDoubleExecution'
 
@@ -42,7 +42,8 @@ describe('usePreventDoubleExecution', () => {
         await Promise.all([promise1, promise2, promise3])
       })
 
-      expect(mockFn).toHaveBeenCalledTimes(3)
+      // Only first call should return the result
+      expect(mockFn).toHaveBeenCalledTimes(1)
     })
 
     it('should return undefined for subsequent calls during execution', async () => {
@@ -63,9 +64,10 @@ describe('usePreventDoubleExecution', () => {
         result3 = (await promise3) as string | undefined
       })
 
+      // only first call should return the result
       expect(result1).toBe('test result')
-      expect(result2).toBe('test result')
-      expect(result3).toBe('test result')
+      expect(result2).toBeUndefined()
+      expect(result3).toBeUndefined()
     })
 
     it('should allow execution after previous execution completes', async () => {
@@ -169,9 +171,10 @@ describe('usePreventDoubleExecution', () => {
         result2 = (await promise2) as string | undefined
       })
 
+      // only first call should be executed
       expect(result1).toBe('async result')
-      expect(result2).toBe('async result')
-      expect(mockFn).toHaveBeenCalledTimes(2)
+      expect(result2).toBeUndefined()
+      expect(mockFn).toHaveBeenCalledTimes(1)
     })
   })
 
@@ -280,7 +283,8 @@ describe('usePreventDoubleExecution', () => {
         await Promise.all(promises)
       })
 
-      expect(mockFn).toHaveBeenCalledTimes(10)
+      // only first call should return the result
+      expect(mockFn).toHaveBeenCalledTimes(1)
     })
 
     it('should handle mixed success and failure scenarios', async () => {
