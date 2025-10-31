@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
 import { useIsTxBundlingSupported, useIsSmartContractWallet } from '@cowprotocol/wallet'
 
@@ -5,9 +7,7 @@ import { useIsHooksTradeType, useIsNativeIn, useWrappedToken } from 'modules/tra
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function BundleTxWrapBanner() {
+export function BundleTxWrapBanner(): ReactNode {
   const nativeCurrencySymbol = useNativeCurrency().symbol || 'ETH'
   const wrappedCurrencySymbol = useWrappedToken().symbol || 'WETH'
 

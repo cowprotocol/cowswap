@@ -3,6 +3,7 @@ import { ReactNode } from 'react'
 import { isSellOrder, percentToBps } from '@cowprotocol/common-utils'
 
 import { AppDataUpdater } from 'modules/appData'
+import { Erc20ApproveWidget } from 'modules/erc20Approve'
 import { EthFlowDeadlineUpdater } from 'modules/ethFlow'
 import { useIsHooksTradeType } from 'modules/trade'
 import { useSetTradeQuoteParams } from 'modules/tradeQuote'
@@ -13,13 +14,14 @@ import { SetupSwapAmountsFromUrlUpdater } from './SetupSwapAmountsFromUrlUpdater
 import { UnfillableSwapOrdersUpdater } from './UnfillableSwapOrdersUpdater'
 
 import { useFillSwapDerivedState, useSwapDerivedState } from '../hooks/useSwapDerivedState'
-import { useSwapDeadlineState } from '../hooks/useSwapSettings'
+import { useSwapDeadlineState, useSwapSettings } from '../hooks/useSwapSettings'
 
 export function SwapUpdaters(): ReactNode {
   const { orderKind, inputCurrencyAmount, outputCurrencyAmount, slippage } = useSwapDerivedState()
   const isSmartSlippageApplied = useIsSmartSlippageApplied()
   const swapDeadlineState = useSwapDeadlineState()
   const partiallyFillable = useIsHooksTradeType()
+  const { enablePartialApprovalBySettings } = useSwapSettings()
 
   useFillSwapDerivedState()
   useSetTradeQuoteParams({
@@ -34,6 +36,7 @@ export function SwapUpdaters(): ReactNode {
       <EthFlowDeadlineUpdater deadlineState={swapDeadlineState} />
       <SetupSwapAmountsFromUrlUpdater />
       <QuoteObserverUpdater />
+      <Erc20ApproveWidget isPartialApprovalEnabled={enablePartialApprovalBySettings} />
       {slippage && (
         <AppDataUpdater
           orderClass="market"
