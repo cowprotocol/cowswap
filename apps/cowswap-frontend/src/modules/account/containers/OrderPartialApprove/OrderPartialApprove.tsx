@@ -44,7 +44,9 @@ export function OrderPartialApprove({
   }, [isPartialApprovalModeSelected, isPartialApproveEnabledBySettings, partialAmountToApproveFinal, currency])
 
   if (isModalOpen) {
-    return <PartialApproveAmountModal initialAmountToApprove={partialAmountToApproveFinal} />
+    return (
+      <PartialApproveAmountModal initialAmountToApprove={partialAmountToApproveFinal} amountToSwap={amountToApprove} />
+    )
   }
 
   return (

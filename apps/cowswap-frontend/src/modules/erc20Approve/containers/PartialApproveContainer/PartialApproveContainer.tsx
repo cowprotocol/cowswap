@@ -38,7 +38,7 @@ export function PartialApproveContainer({
   }, [isPartialApprovalModeSelected, partialAmountToApproveFinal, currency])
 
   if (isModalOpen) {
-    return <PartialApproveAmountModal initialAmountToApprove={amountToApprove} />
+    return <PartialApproveAmountModal initialAmountToApprove={amountToApprove} amountToSwap={amountToApprove} />
   }
 
   return (
