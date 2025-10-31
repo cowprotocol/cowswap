@@ -20,18 +20,13 @@ export function ChangeApproveAmountModal({
   initialAmountToApprove,
   amountToSwap,
 }: ChangeApproveAmountModalProps): ReactNode {
-  const { amount: approveAmountInput, isInvalid, isChanged } = useCustomApproveAmountInputState() || {}
+  const { amount: approveAmountInput, isInvalid } = useCustomApproveAmountInputState() || {}
   const [, resetCustomApproveAmountInput] = useUpdateOrResetCustomApproveAmountInputState()
 
   const onBack = useCallback((): void => {
-    const updatedApproveAmountModalState: Partial<UserApproveModalState> = { isModalOpen: false }
-    if (isChanged) {
-      updatedApproveAmountModalState.amountSetByUser = undefined
-    }
-
-    setUserApproveAmountState(updatedApproveAmountModalState)
+    setUserApproveAmountState({ isModalOpen: false })
     resetCustomApproveAmountInput()
-  }, [isChanged, resetCustomApproveAmountInput, setUserApproveAmountState])
+  }, [resetCustomApproveAmountInput, setUserApproveAmountState])
 
   const onConfirm = useCallback(() => {
     setUserApproveAmountState({ isModalOpen: false, amountSetByUser: approveAmountInput ?? undefined })
