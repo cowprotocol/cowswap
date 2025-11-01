@@ -1,6 +1,7 @@
 import { ReactNode, useCallback, useMemo } from 'react'
 
 import { getWrappedToken } from '@cowprotocol/common-utils'
+import { Nullish } from '@cowprotocol/types'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { ChangeApproveAmountModalPure } from './ChangeApproveAmountModalPure'
@@ -11,19 +12,21 @@ import { useCustomApproveAmountInputState, useUpdateOrResetCustomApproveAmountIn
 interface ChangeApproveAmountModalProps {
   setUserApproveAmountState: (state: Partial<UserApproveModalState>) => void
   initialAmountToApprove: CurrencyAmount<Currency> | null
+  amountToSwap: Nullish<CurrencyAmount<Currency>>
 }
 
 export function ChangeApproveAmountModal({
   setUserApproveAmountState,
   initialAmountToApprove,
+  amountToSwap,
 }: ChangeApproveAmountModalProps): ReactNode {
   const { amount: approveAmountInput, isInvalid } = useCustomApproveAmountInputState() || {}
-  const [_, resetCustomApproveAmountInput] = useUpdateOrResetCustomApproveAmountInputState()
+  const [, resetCustomApproveAmountInput] = useUpdateOrResetCustomApproveAmountInputState()
 
   const onBack = useCallback((): void => {
-    setUserApproveAmountState({ isModalOpen: false, amountSetByUser: undefined })
+    setUserApproveAmountState({ isModalOpen: false })
     resetCustomApproveAmountInput()
-  }, [setUserApproveAmountState, resetCustomApproveAmountInput])
+  }, [resetCustomApproveAmountInput, setUserApproveAmountState])
 
   const onConfirm = useCallback(() => {
     setUserApproveAmountState({ isModalOpen: false, amountSetByUser: approveAmountInput ?? undefined })
@@ -44,6 +47,7 @@ export function ChangeApproveAmountModal({
     <ChangeApproveAmountModalPure
       inputToken={inputToken}
       initialAmount={initialAmountToApprove}
+      amountToSwap={amountToSwap}
       isInvalid={isInvalid}
       onBack={onBack}
       onReset={onReset}

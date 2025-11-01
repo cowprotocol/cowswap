@@ -1,4 +1,3 @@
-import { useAtomValue } from 'jotai'
 import { ReactNode } from 'react'
 
 import {
@@ -6,19 +5,18 @@ import {
   useGetAmountToSignApprove,
   useGetPartialAmountToSignApprove,
   useIsApprovalOrPermitRequired,
+  useIsPartialApprovalModeSelected,
 } from '../../hooks'
-import { TradeAllowanceDisplay } from '../../pure/TradeAllowanceDisplay'
 import { useSetUserApproveAmountModalState } from '../../state'
-import { isPartialApproveEnabledAtom } from '../../state/isPartialApproveEnabledAtom'
 import { isMaxAmountToApprove } from '../../utils'
 import { ActiveOrdersWithAffectedPermit } from '../ActiveOrdersWithAffectedPermit'
 import { TradeApproveToggle } from '../TradeApproveToggle'
 
 export function TradeApproveWithAffectedOrderList(): ReactNode {
-  const { reason: isApproveRequired, currentAllowance } = useIsApprovalOrPermitRequired({
+  const { reason: isApproveRequired } = useIsApprovalOrPermitRequired({
     isBundlingSupportedOrEnabledForContext: false,
   })
-  const isPartialApprovalEnabledInSettings = useAtomValue(isPartialApproveEnabledAtom)
+  const isPartialApprovalEnabledInSettings = useIsPartialApprovalModeSelected()
 
   const setUserApproveAmountModalState = useSetUserApproveAmountModalState()
 
@@ -44,9 +42,6 @@ export function TradeApproveWithAffectedOrderList(): ReactNode {
             updateModalState={() => setUserApproveAmountModalState({ isModalOpen: true })}
             amountToApprove={partialAmountToApprove}
           />
-          {typeof currentAllowance === 'bigint' && currencyToApprove && (
-            <TradeAllowanceDisplay currentAllowance={currentAllowance} currencyToApprove={currencyToApprove} />
-          )}
         </>
       )}
       {showAffectedOrders && currencyToApprove && <ActiveOrdersWithAffectedPermit currency={currencyToApprove} />}

@@ -1,4 +1,3 @@
-import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
@@ -7,10 +6,10 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { useNeedsApproval } from 'common/hooks/useNeedsApproval'
 
 import { useGetPartialAmountToSignApprove } from './useGetPartialAmountToSignApprove'
+import { useIsPartialApprovalModeSelected } from './useIsPartialApprovalModeSelected'
 
 import { MAX_APPROVE_AMOUNT } from '../constants'
 import { useIsPartialApproveSelectedByUser } from '../state'
-import { isPartialApproveEnabledAtom } from '../state/isPartialApproveEnabledAtom'
 
 /**
  * Returns the amount to sign for the approval transaction/permit
@@ -24,7 +23,7 @@ export function useGetAmountToSignApprove(): CurrencyAmount<Currency> | null {
   const isApprovalNeeded = useNeedsApproval(partialAmountToSign)
   const isPartialApprovalSelectedByUser = useIsPartialApproveSelectedByUser()
   const { isPartialApproveEnabled } = useFeatureFlags()
-  const isPartialApprovalEnabledInSettings = useAtomValue(isPartialApproveEnabledAtom)
+  const isPartialApprovalEnabledInSettings = useIsPartialApprovalModeSelected()
 
   return useMemo(() => {
     if (!partialAmountToSign) return null
