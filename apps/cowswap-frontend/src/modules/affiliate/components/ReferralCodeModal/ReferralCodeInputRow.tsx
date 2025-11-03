@@ -8,6 +8,7 @@ import { InlineAction, InputWrapper, StyledInput, TrailingActions, TrailingIcon 
 import { ReferralModalUiState } from '../../hooks/useReferralModalState'
 import { isReferralCodeLengthValid } from '../../utils/code'
 
+
 interface ReferralCodeInputRowProps {
   displayCode: string
   hasError: boolean

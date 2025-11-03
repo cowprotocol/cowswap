@@ -71,8 +71,7 @@ export function ReferralStatusMessages(props: ReferralStatusMessagesProps): Reac
 
       {shouldShowInfo && <InlineAlert bannerType={StatusColorVariant.Success}>{infoMessage}</InlineAlert>}
     </StatusMessage>
-  )
-}
+  )}
 
 export function getModalTitle(uiState: ReferralModalUiState): string {
   switch (uiState) {
