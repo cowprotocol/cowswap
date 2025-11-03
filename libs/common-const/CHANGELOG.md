@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.28.1](https://github.com/cowprotocol/cowswap/compare/common-const-v1.28.0...common-const-v1.28.1) (2025-10-28)
+
+
+### Bug Fixes
+
+* **widget:** no custom themes for widget ([#6445](https://github.com/cowprotocol/cowswap/issues/6445)) ([6ae03b1](https://github.com/cowprotocol/cowswap/commit/6ae03b1149b56323fcc6df8bbd2b8d2f52f447b9))
+
 ## [1.28.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.27.0...common-const-v1.28.0) (2025-10-23)
 
 
