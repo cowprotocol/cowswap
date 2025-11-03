@@ -35,7 +35,7 @@ export function ChangeApproveAmountModalPure({
         </styledEl.Title>
       </ModalHeader>
       <styledEl.SwapInfo>
-        <TokenLogo token={inputToken} size={55} />
+        <TokenLogo token={inputToken} size={54} />
         <styledEl.SetTitle>Set approval amount</styledEl.SetTitle>
         <SwapAmountPreview />
       </styledEl.SwapInfo>
