@@ -1,5 +1,33 @@
 # Changelog
 
+## [1.121.5](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.121.4...cowswap-v1.121.5) (2025-10-29)
+
+
+### Bug Fixes
+
+* **widget:** revert "fix(widget): consider widget when inside an iframe ([#6447](https://github.com/cowprotocol/cowswap/issues/6447))" ([#6452](https://github.com/cowprotocol/cowswap/issues/6452)) ([aaaec55](https://github.com/cowprotocol/cowswap/commit/aaaec5527cbef9a3a11f6d7a79d9b5b03e5c5f6f))
+
+## [1.121.4](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.121.3...cowswap-v1.121.4) (2025-10-28)
+
+
+### Bug Fixes
+
+* update BodyWrapper to conditionally apply dark Halloween background ([#6450](https://github.com/cowprotocol/cowswap/issues/6450)) ([3f959b1](https://github.com/cowprotocol/cowswap/commit/3f959b14ad88c95e41110063b0ce07459ee182a3))
+
+## [1.121.3](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.121.2...cowswap-v1.121.3) (2025-10-28)
+
+
+### Bug Fixes
+
+* **widget:** consider widget when inside an iframe ([#6447](https://github.com/cowprotocol/cowswap/issues/6447)) ([9817a4e](https://github.com/cowprotocol/cowswap/commit/9817a4e4d4d648d09366d8a33e9a8874a62f6473))
+
+## [1.121.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.121.1...cowswap-v1.121.2) (2025-10-28)
+
+
+### Bug Fixes
+
+* **widget:** no custom themes for widget ([#6445](https://github.com/cowprotocol/cowswap/issues/6445)) ([6ae03b1](https://github.com/cowprotocol/cowswap/commit/6ae03b1149b56323fcc6df8bbd2b8d2f52f447b9))
+
 ## [1.121.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.121.0...cowswap-v1.121.1) (2025-10-23)
 
 
