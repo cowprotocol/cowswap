@@ -14,8 +14,8 @@ msgstr ""
 "Plural-Forms: \n"
 
 #: apps/cowswap-frontend/src/common/pure/CurrencySelectButton/index.tsx
-msgid "Selected token: "
-msgstr "Selected token: "
+#~ msgid "Selected token: "
+#~ msgstr "Selected token: "
 
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/MultipleCancellationMenu/index.tsx
 msgid "selected"
@@ -4471,6 +4471,10 @@ msgstr "Interval time too short"
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/steps/Step1.tsx
 msgid "Order Expired"
 msgstr "Order Expired"
+
+#: apps/cowswap-frontend/src/common/pure/CurrencySelectButton/index.tsx
+msgid "Selected token:"
+msgstr "Selected token:"
 
 #: apps/cowswap-frontend/src/legacy/components/Badge/RangeBadge.tsx
 msgid "Out of range"
