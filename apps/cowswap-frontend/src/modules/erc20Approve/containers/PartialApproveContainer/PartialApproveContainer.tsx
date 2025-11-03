@@ -1,9 +1,11 @@
-import { ReactNode } from 'react'
+import { ReactNode, useMemo } from 'react'
 
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { PartialApproveWrapper } from './styled'
 
+import { MAX_APPROVE_AMOUNT } from '../../constants'
+import { useIsPartialApprovalModeSelected } from '../../hooks'
 import { usePartialApproveAmountModalState, useUpdatePartialApproveAmountModalState } from '../../state'
 import { PartialApproveAmountModal } from '../PartialApproveAmountModal'
 import { TradeApproveToggle } from '../TradeApproveToggle'
@@ -21,17 +23,28 @@ export function PartialApproveContainer({
 }: PartialApproveContainerProps): ReactNode {
   const { isModalOpen, amountSetByUser } = usePartialApproveAmountModalState() || {}
   const updatePartialApproveAmountModalState = useUpdatePartialApproveAmountModalState()
+  const isPartialApprovalModeSelected = useIsPartialApprovalModeSelected()
 
-  const amountToApproveFinal = amountSetByUser ?? amountToApprove
+  const currency = amountToApprove.currency
+
+  const partialAmountToApproveFinal = amountSetByUser ?? amountToApprove
+
+  const finalAmountToApprove = useMemo(() => {
+    if (isPartialApprovalModeSelected) {
+      return partialAmountToApproveFinal
+    }
+
+    return CurrencyAmount.fromRawAmount(currency, MAX_APPROVE_AMOUNT.toString())
+  }, [isPartialApprovalModeSelected, partialAmountToApproveFinal, currency])
 
   if (isModalOpen) {
-    return <PartialApproveAmountModal initialAmountToApprove={amountToApproveFinal} />
+    return <PartialApproveAmountModal initialAmountToApprove={amountToApprove} amountToSwap={amountToApprove} />
   }
 
   return (
     <PartialApproveWrapper className={className}>
       <TradeApproveToggle
-        amountToApprove={amountToApproveFinal}
+        amountToApprove={finalAmountToApprove}
         updateModalState={() => updatePartialApproveAmountModalState({ isModalOpen: true })}
       />
       {children}
