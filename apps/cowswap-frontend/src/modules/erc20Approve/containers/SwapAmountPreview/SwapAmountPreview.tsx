@@ -28,12 +28,12 @@ export function SwapAmountPreview(): ReactNode {
   const inputToken = useMemo(() => (inputCurrency ? getWrappedToken(inputCurrency) : null), [inputCurrency])
   const outputToken = useMemo(() => (outputCurrency ? getWrappedToken(outputCurrency) : null), [outputCurrency])
   const dstNetworkName = useMemo(
-    () => CHAIN_INFO[(outputToken?.chainId as SupportedChainId) || SupportedChainId.MAINNET]?.name,
+    () => CHAIN_INFO[(outputToken?.chainId as SupportedChainId) || SupportedChainId.MAINNET]?.label,
     [outputToken],
   )
 
   const srcNetworkName = useMemo(
-    () => CHAIN_INFO[(inputToken?.chainId as SupportedChainId) || SupportedChainId.MAINNET]?.name,
+    () => CHAIN_INFO[(inputToken?.chainId as SupportedChainId) || SupportedChainId.MAINNET]?.label,
     [inputToken],
   )
 

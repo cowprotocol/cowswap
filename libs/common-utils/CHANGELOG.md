@@ -1,5 +1,26 @@
 # Changelog
 
+## [1.22.2](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.22.1...common-utils-v1.22.2) (2025-10-29)
+
+
+### Bug Fixes
+
+* **widget:** revert "fix(widget): consider widget when inside an iframe ([#6447](https://github.com/cowprotocol/cowswap/issues/6447))" ([#6452](https://github.com/cowprotocol/cowswap/issues/6452)) ([aaaec55](https://github.com/cowprotocol/cowswap/commit/aaaec5527cbef9a3a11f6d7a79d9b5b03e5c5f6f))
+
+## [1.22.1](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.22.0...common-utils-v1.22.1) (2025-10-28)
+
+
+### Bug Fixes
+
+* **widget:** consider widget when inside an iframe ([#6447](https://github.com/cowprotocol/cowswap/issues/6447)) ([9817a4e](https://github.com/cowprotocol/cowswap/commit/9817a4e4d4d648d09366d8a33e9a8874a62f6473))
+
+## [1.22.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.21.1...common-utils-v1.22.0) (2025-10-23)
+
+
+### Features
+
+* **approve:** adjust partial approves for buy orders ([#6376](https://github.com/cowprotocol/cowswap/issues/6376)) ([5646eae](https://github.com/cowprotocol/cowswap/commit/5646eae9b913c870e105ee44ee18e7abfb9c06a6))
+
 ## [1.21.1](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.21.0...common-utils-v1.21.1) (2025-09-16)
 
 

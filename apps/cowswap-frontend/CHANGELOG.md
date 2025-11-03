@@ -1,5 +1,73 @@
 # Changelog
 
+## [1.121.5](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.121.4...cowswap-v1.121.5) (2025-10-29)
+
+
+### Bug Fixes
+
+* **widget:** revert "fix(widget): consider widget when inside an iframe ([#6447](https://github.com/cowprotocol/cowswap/issues/6447))" ([#6452](https://github.com/cowprotocol/cowswap/issues/6452)) ([aaaec55](https://github.com/cowprotocol/cowswap/commit/aaaec5527cbef9a3a11f6d7a79d9b5b03e5c5f6f))
+
+## [1.121.4](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.121.3...cowswap-v1.121.4) (2025-10-28)
+
+
+### Bug Fixes
+
+* update BodyWrapper to conditionally apply dark Halloween background ([#6450](https://github.com/cowprotocol/cowswap/issues/6450)) ([3f959b1](https://github.com/cowprotocol/cowswap/commit/3f959b14ad88c95e41110063b0ce07459ee182a3))
+
+## [1.121.3](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.121.2...cowswap-v1.121.3) (2025-10-28)
+
+
+### Bug Fixes
+
+* **widget:** consider widget when inside an iframe ([#6447](https://github.com/cowprotocol/cowswap/issues/6447)) ([9817a4e](https://github.com/cowprotocol/cowswap/commit/9817a4e4d4d648d09366d8a33e9a8874a62f6473))
+
+## [1.121.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.121.1...cowswap-v1.121.2) (2025-10-28)
+
+
+### Bug Fixes
+
+* **widget:** no custom themes for widget ([#6445](https://github.com/cowprotocol/cowswap/issues/6445)) ([6ae03b1](https://github.com/cowprotocol/cowswap/commit/6ae03b1149b56323fcc6df8bbd2b8d2f52f447b9))
+
+## [1.121.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.121.0...cowswap-v1.121.1) (2025-10-23)
+
+
+### Bug Fixes
+
+* do not log proxy recipient in prod like envs ([#6418](https://github.com/cowprotocol/cowswap/issues/6418)) ([0a9a229](https://github.com/cowprotocol/cowswap/commit/0a9a2298a610bc0cdc9087a489b7137db32ffb16))
+
+## [1.121.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.120.0...cowswap-v1.121.0) (2025-10-23)
+
+
+### Features
+
+* add additional step for approval modal + token amount + double click fix ([#6355](https://github.com/cowprotocol/cowswap/issues/6355)) ([7016731](https://github.com/cowprotocol/cowswap/commit/7016731bff3ddac7603803623cdb258563e10ca1))
+* add careers to menu ([#6391](https://github.com/cowprotocol/cowswap/issues/6391)) ([bdae6fe](https://github.com/cowprotocol/cowswap/commit/bdae6fed582ff0557f875e926e880dd076c4d3fe))
+* add cow speech bubble component for hiring announcement ([#6343](https://github.com/cowprotocol/cowswap/issues/6343)) ([8a1f372](https://github.com/cowprotocol/cowswap/commit/8a1f3723baaaa2a436af9fd4af34278ef3b9a534))
+* add support for receiver based bridge providers ([b812a21](https://github.com/cowprotocol/cowswap/commit/b812a21c09e28bdb082a5d1bb8722913695d9dbb))
+* align seasonal theme priority with feature flags and dark mode ([#6378](https://github.com/cowprotocol/cowswap/issues/6378)) ([94e79c6](https://github.com/cowprotocol/cowswap/commit/94e79c6e697237c5f206f94b17065e93deaa6bb0))
+* **approve:** adjust partial approves for buy orders ([#6376](https://github.com/cowprotocol/cowswap/issues/6376)) ([5646eae](https://github.com/cowprotocol/cowswap/commit/5646eae9b913c870e105ee44ee18e7abfb9c06a6))
+* implement a provider to test the new family of providers ([872dabf](https://github.com/cowprotocol/cowswap/commit/872dabf65d62d68551c61902b8c6b41daa293ecd))
+* implement a provider to test the new family of providers in CoW Swap ([1c8147f](https://github.com/cowprotocol/cowswap/commit/1c8147f979677be09b3c1a24e411e9d7a3ad034c))
+* implement a provider to test the new family of providers in CoW Swap ([1c8147f](https://github.com/cowprotocol/cowswap/commit/1c8147f979677be09b3c1a24e411e9d7a3ad034c))
+* implement partial approve wrapped flow ([#6351](https://github.com/cowprotocol/cowswap/issues/6351)) ([590d8ae](https://github.com/cowprotocol/cowswap/commit/590d8ae50a15bb1e6a493cde1f171140400b0763))
+* **notifications:** show trade alerts popover ([#6208](https://github.com/cowprotocol/cowswap/issues/6208)) ([d97c801](https://github.com/cowprotocol/cowswap/commit/d97c801ab43dd6ec208326ba80e145471a53a16d))
+* **trade:** enhance TradeWidgetForm with trade type handling ([#6368](https://github.com/cowprotocol/cowswap/issues/6368)) ([9237f2c](https://github.com/cowprotocol/cowswap/commit/9237f2ca6a1093257f3703a7096fc7f37b2080ab))
+
+
+### Bug Fixes
+
+* **approve:** support safe bundling flow ([#6382](https://github.com/cowprotocol/cowswap/issues/6382)) ([8deff78](https://github.com/cowprotocol/cowswap/commit/8deff7894a2782532a269bae666c42d21d3ffab7))
+* **approve:** update 'edit' icon's color ([#6396](https://github.com/cowprotocol/cowswap/issues/6396)) ([b3281f0](https://github.com/cowprotocol/cowswap/commit/b3281f03a54b07c3c35316b186951d90d054efc6))
+* dependency loop ([a550e81](https://github.com/cowprotocol/cowswap/commit/a550e81d5cb89dc2aba628199291ff6a699a7a88))
+* don't show the approved order in affected list/prevent double approve/remove link ([#6366](https://github.com/cowprotocol/cowswap/issues/6366)) ([cf13320](https://github.com/cowprotocol/cowswap/commit/cf13320a183b5fff6c48116a6451682cf39083ed))
+* favicon update states ([#6358](https://github.com/cowprotocol/cowswap/issues/6358)) ([6efa771](https://github.com/cowprotocol/cowswap/commit/6efa77165917268df062c22c664b9db6b15f81fe))
+* hide unlock banner unsupported network ([#6315](https://github.com/cowprotocol/cowswap/issues/6315)) ([9b25e06](https://github.com/cowprotocol/cowswap/commit/9b25e06769814e76e9fe0b31080f36b96ed3da19))
+* **limit-orders:** fix partialFillability toggle ([#6407](https://github.com/cowprotocol/cowswap/issues/6407)) ([94a18f0](https://github.com/cowprotocol/cowswap/commit/94a18f05df71fd40f2212f3f952e2284cdab0ba4))
+* **partial-approvals:** add plural to partial approvals text ([#6400](https://github.com/cowprotocol/cowswap/issues/6400)) ([09cd7b0](https://github.com/cowprotocol/cowswap/commit/09cd7b00b5bb75bbb93146d1b5f817e6af692c25))
+* **partial-approvals:** change warning message to more generic one ([#6401](https://github.com/cowprotocol/cowswap/issues/6401)) ([13420a4](https://github.com/cowprotocol/cowswap/commit/13420a412f9bf9f8e10a52c152e6e43feafc4d47))
+* theme blink issue ([#6371](https://github.com/cowprotocol/cowswap/issues/6371)) ([e21949e](https://github.com/cowprotocol/cowswap/commit/e21949e646493e2681c7068210a97354b1c854a4))
+* **twap:** update twap status periodically ([#6369](https://github.com/cowprotocol/cowswap/issues/6369)) ([9e97ab6](https://github.com/cowprotocol/cowswap/commit/9e97ab69f56ea5964d72d92d5d188799057705c2))
+
 ## [1.120.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.119.1...cowswap-v1.120.0) (2025-10-14)
 
 
