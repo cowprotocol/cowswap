@@ -67,8 +67,6 @@ export function CowSpeechBubble({ show, onClose }: CowSpeechBubbleProps): ReactN
   )
 }
 
-export default CowSpeechBubble
-
 function useBubbleDelay(show: boolean): boolean {
   const [hasDelayElapsed, setHasDelayElapsed] = useState(false)
 
