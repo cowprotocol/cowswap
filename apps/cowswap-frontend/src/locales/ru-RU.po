@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: intercambiovaca\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-11-03 14:07\n"
+"PO-Revision-Date: 2025-11-03 18:57\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -17,6 +17,10 @@ msgstr ""
 "X-Crowdin-Language: ru\n"
 "X-Crowdin-File: /feat.internationalization-setup-for-swap-cow-fi/apps/cowswap-frontend/src/locales/en-US.po\n"
 "X-Crowdin-File-ID: 11\n"
+
+#: apps/cowswap-frontend/src/common/pure/CurrencySelectButton/index.tsx
+#~ msgid "Selected token: "
+#~ msgstr "Selected token: "
 
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/MultipleCancellationMenu/index.tsx
 msgid "selected"
@@ -198,8 +202,8 @@ msgid "The account address which will/did receive the bought amount."
 msgstr "Адрес счета, который получит/получит купленную сумму."
 
 #: apps/cowswap-frontend/src/common/pure/CurrencySelectButton/index.tsx
-msgid "Selected token: {sym}"
-msgstr "Выбранный токен: {sym}"
+#~ msgid "Selected token: {sym}"
+#~ msgstr "Selected token: {sym}"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/AirdropHookApp/hooks/useClaimData.ts
 msgid "Unexpected error fetching data: wrong format data"
@@ -4454,6 +4458,10 @@ msgstr "Время интервала слишком короткое"
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/steps/Step1.tsx
 msgid "Order Expired"
 msgstr "Заказ просрочен"
+
+#: apps/cowswap-frontend/src/common/pure/CurrencySelectButton/index.tsx
+msgid "Selected token:"
+msgstr "Выбранный токен:"
 
 #: apps/cowswap-frontend/src/legacy/components/Badge/RangeBadge.tsx
 msgid "Out of range"

@@ -8,7 +8,7 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: intercambiovaca\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-11-03 14:06\n"
+"PO-Revision-Date: 2025-11-03 18:57\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -17,6 +17,10 @@ msgstr ""
 "X-Crowdin-Language: es-ES\n"
 "X-Crowdin-File: /feat.internationalization-setup-for-swap-cow-fi/apps/cowswap-frontend/src/locales/en-US.po\n"
 "X-Crowdin-File-ID: 11\n"
+
+#: apps/cowswap-frontend/src/common/pure/CurrencySelectButton/index.tsx
+#~ msgid "Selected token: "
+#~ msgstr "Selected token: "
 
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/MultipleCancellationMenu/index.tsx
 msgid "selected"
@@ -198,8 +202,8 @@ msgid "The account address which will/did receive the bought amount."
 msgstr "La dirección de la cuenta que recibirá el importe comprado."
 
 #: apps/cowswap-frontend/src/common/pure/CurrencySelectButton/index.tsx
-msgid "Selected token: {sym}"
-msgstr "Token seleccionado: {sym}"
+#~ msgid "Selected token: {sym}"
+#~ msgstr "Selected token: {sym}"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/AirdropHookApp/hooks/useClaimData.ts
 msgid "Unexpected error fetching data: wrong format data"
@@ -4454,6 +4458,10 @@ msgstr "Tiempo de intervalo demasiado corto"
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/steps/Step1.tsx
 msgid "Order Expired"
 msgstr "Orden caducada"
+
+#: apps/cowswap-frontend/src/common/pure/CurrencySelectButton/index.tsx
+msgid "Selected token:"
+msgstr "Token seleccionado:"
 
 #: apps/cowswap-frontend/src/legacy/components/Badge/RangeBadge.tsx
 msgid "Out of range"
