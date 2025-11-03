@@ -30,8 +30,9 @@ export const hookDappsRegistry = {
   [PERMIT_HOOK_DAPP_ID]: {
     type: 'INTERNAL',
     name: msg`Permit a token`,
-    descriptionShort: msg`Infinite permit an address to spend one token on your behalf.`,
-    description: msg`This hook allows you to permit an address to spend your tokens on your behalf. This is useful for allowing a smart contract to spend your tokens without needing to approve each transaction.`,
+    descriptionShort: msg`Permit an address to spend one token on your behalf.`,
+    description:
+      msg`This hook allows you to permit an address to spend your tokens on your behalf. This is useful for allowing a smart contract to spend your tokens without needing to approve each transaction.`,
     image:
       'https://raw.githubusercontent.com/cowprotocol/cowswap/refs/heads/develop/apps/cowswap-frontend/src/modules/hooksStore/dapps/PermitHookApp/icon.png',
     version: 'v0.1.0',

@@ -18,19 +18,21 @@ import {
 
 import { OrderPartialApprove } from '../../containers/OrderPartialApprove'
 
+interface OrderFillabilityWarningProps {
+  fillability: OrderFillability
+  inputAmount: CurrencyAmount<Token>
+  enablePartialApprove?: boolean
+  enablePartialApproveBySettings?: boolean
+  orderId?: string
+}
+
 export function OrderFillabilityWarning({
   fillability,
   inputAmount,
   enablePartialApprove,
   enablePartialApproveBySettings,
   orderId,
-}: {
-  fillability: OrderFillability
-  inputAmount: CurrencyAmount<Token>
-  enablePartialApprove?: boolean
-  enablePartialApproveBySettings?: boolean
-  orderId?: string
-}): ReactNode {
+}: OrderFillabilityWarningProps): ReactNode {
   const title = (
     <Title>
       <span>

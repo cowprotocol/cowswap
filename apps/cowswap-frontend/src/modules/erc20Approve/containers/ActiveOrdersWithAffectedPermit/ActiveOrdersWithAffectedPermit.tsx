@@ -15,6 +15,8 @@ import { doesOrderHavePermit } from 'common/utils/doesOrderHavePermit'
 
 import * as styledEl from './styled'
 
+import { useIsPartialApproveSelectedByUser } from '../../state'
+
 type ActiveOrdersWithAffectedPermitProps = {
   currency: Currency
   orderId?: string
@@ -24,12 +26,13 @@ export function ActiveOrdersWithAffectedPermit({ currency, orderId }: ActiveOrde
   const { t } = useLingui()
   const { chainId, account } = useWalletInfo()
   const pendingOrders = useOnlyPendingOrders(chainId, account)
+  const isPartialApproveSelectedByUser = useIsPartialApproveSelectedByUser()
 
   const ordersWithPermit = pendingOrders.filter((order) => {
     return order.id !== orderId && currency.equals(order.inputToken) && doesOrderHavePermit(order)
   })
 
-  if (!ordersWithPermit.length) return null
+  if (!ordersWithPermit.length || !isPartialApproveSelectedByUser) return null
 
   const ordersWithPermitLength = ordersWithPermit.length
   const isPlural = ordersWithPermit.length > 1
