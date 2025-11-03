@@ -8,7 +8,7 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: intercambiovaca\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-10-31 18:14\n"
+"PO-Revision-Date: 2025-11-03 14:06\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -470,6 +470,10 @@ msgstr "Dirección bloqueada"
 msgid "Considering current network costs (<0><1/></0> per chunk), you could save more by reducing the number of parts or switch to a {swapOrderLink}."
 msgstr "Teniendo en cuenta los costos actuales de la red (<0><1/></0> por trozo), puedes ahorrar más reduciendo el número de partes o cambiando a un {swapOrderLink}."
 
+#: libs/hook-dapp-lib/src/hookDappsRegistry.ts
+msgid "Permit an address to spend one token on your behalf."
+msgstr "Permita que una dirección gaste un token en su nombre."
+
 #: apps/cowswap-frontend/src/utils/orderUtils/getFilledAmounts.ts
 msgid "sold"
 msgstr "vendido"
@@ -518,8 +522,8 @@ msgid "If you approve the full amount, you will only have to do this once per to
 msgstr "Si aprueba la cantidad completa, sólo tendrá que hacerlo una vez por token."
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
-msgid "Infinite permit an address to spend one token on your behalf."
-msgstr "Permita infinito que una dirección gaste un token en su nombre."
+#~ msgid "Infinite permit an address to spend one token on your behalf."
+#~ msgstr "Infinite permit an address to spend one token on your behalf."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/BridgingStatusHeader/index.tsx
 msgid "Bridging completed!"

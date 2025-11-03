@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: intercambiovaca\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-10-31 18:14\n"
+"PO-Revision-Date: 2025-11-03 14:07\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -470,6 +470,10 @@ msgstr "Заблокированный адрес"
 msgid "Considering current network costs (<0><1/></0> per chunk), you could save more by reducing the number of parts or switch to a {swapOrderLink}."
 msgstr "Принимая во внимание текущую стоимость сети (<0><1/></0> на чанк), вы можете сэкономить, уменьшив количество частей или переключившись на {swapOrderLink}."
 
+#: libs/hook-dapp-lib/src/hookDappsRegistry.ts
+msgid "Permit an address to spend one token on your behalf."
+msgstr "Разрешите адрес тратить один токен на ваше имя."
+
 #: apps/cowswap-frontend/src/utils/orderUtils/getFilledAmounts.ts
 msgid "sold"
 msgstr "продано"
@@ -518,8 +522,8 @@ msgid "If you approve the full amount, you will only have to do this once per to
 msgstr "Если вы подтвердите полную сумму, то это нужно сделать только один раз за токен."
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
-msgid "Infinite permit an address to spend one token on your behalf."
-msgstr "Бесконечное разрешение на использование одного токена от вашего имени."
+#~ msgid "Infinite permit an address to spend one token on your behalf."
+#~ msgstr "Infinite permit an address to spend one token on your behalf."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/BridgingStatusHeader/index.tsx
 msgid "Bridging completed!"
