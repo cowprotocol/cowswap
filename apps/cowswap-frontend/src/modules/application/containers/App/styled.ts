@@ -107,9 +107,10 @@ export const BodyWrapper = styled.div<{ customTheme?: CowSwapTheme; backgroundVa
     min-height: ${({ theme }) => (theme.isWidget ? 'initial' : 'calc(100vh - 200px)')};
     background-size: ${({ customTheme }) => (customTheme === 'darkHalloween' ? 'contain' : 'auto')};
 
-    ${({ customTheme, backgroundVariant }) =>
+    ${({ customTheme, backgroundVariant, theme }) =>
       backgroundVariant !== 'nocows' &&
       customTheme === 'darkHalloween' &&
+      !theme.isWidget &&
       `
         background-image: url(${IMAGE_BACKGROUND_DARK_HALLOWEEN_MEDIUM});
       `}
@@ -128,9 +129,10 @@ export const BodyWrapper = styled.div<{ customTheme?: CowSwapTheme; backgroundVa
     min-height: ${({ theme }) => (theme.isWidget ? 'initial' : 'calc(100vh - 100px)')};
     background-size: ${({ customTheme }) => (customTheme === 'darkHalloween' ? 'contain' : 'auto')};
 
-    ${({ customTheme, backgroundVariant }) =>
+    ${({ customTheme, backgroundVariant, theme }) =>
       backgroundVariant !== 'nocows' &&
       customTheme === 'darkHalloween' &&
+      !theme.isWidget &&
       `
         background-image: url(${IMAGE_BACKGROUND_DARK_HALLOWEEN_MEDIUM});
       `}
