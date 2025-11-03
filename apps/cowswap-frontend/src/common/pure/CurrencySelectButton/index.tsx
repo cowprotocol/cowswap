@@ -59,7 +59,7 @@ export function CurrencySelectButton(props: CurrencySelectButtonProps): ReactNod
     )
   }
 
-  const selectedToken = t`Selected token: ` + currency?.symbol || ''
+  const selectedToken = t`Selected token:` + ' ' + currency?.symbol || ''
 
   return (
     <styledEl.CurrencySelectWrapper
