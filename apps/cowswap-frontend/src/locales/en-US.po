@@ -13,6 +13,10 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#: apps/cowswap-frontend/src/common/pure/CurrencySelectButton/index.tsx
+msgid "Selected token: "
+msgstr "Selected token: "
+
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/MultipleCancellationMenu/index.tsx
 msgid "selected"
 msgstr "selected"
@@ -197,8 +201,8 @@ msgid "The account address which will/did receive the bought amount."
 msgstr "The account address which will/did receive the bought amount."
 
 #: apps/cowswap-frontend/src/common/pure/CurrencySelectButton/index.tsx
-msgid "Selected token: {sym}"
-msgstr "Selected token: {sym}"
+#~ msgid "Selected token: {sym}"
+#~ msgstr "Selected token: {sym}"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/AirdropHookApp/hooks/useClaimData.ts
 msgid "Unexpected error fetching data: wrong format data"
