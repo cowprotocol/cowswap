@@ -59,6 +59,8 @@ export function CurrencySelectButton(props: CurrencySelectButtonProps): ReactNod
     )
   }
 
+  const selectedToken = t`Selected token: ` + currency?.symbol || ''
+
   return (
     <styledEl.CurrencySelectWrapper
       className="open-currency-select-button"
@@ -70,14 +72,7 @@ export function CurrencySelectButton(props: CurrencySelectButtonProps): ReactNod
       displayTokenName={displayTokenName}
       displayChainName={displayChainName}
       role="button"
-      aria-label={
-        currency
-          ? (() => {
-              const sym = currency.symbol || ''
-              return t`Selected token: ${sym}`
-            })()
-          : t`Select a token`
-      }
+      aria-label={currency ? selectedToken : t`Select a token`}
       tabIndex={readonlyMode ? -1 : 0}
     >
       {currency ? (
