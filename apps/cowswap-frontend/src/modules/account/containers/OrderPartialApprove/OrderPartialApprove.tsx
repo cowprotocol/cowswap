@@ -44,11 +44,14 @@ export function OrderPartialApprove({
   }, [isPartialApprovalModeSelected, isPartialApproveEnabledBySettings, partialAmountToApproveFinal, currency])
 
   if (isModalOpen) {
-    return <PartialApproveAmountModal initialAmountToApprove={partialAmountToApproveFinal} />
+    return (
+      <PartialApproveAmountModal initialAmountToApprove={partialAmountToApproveFinal} amountToSwap={amountToApprove} />
+    )
   }
 
   return (
     <OrderActionsWrapper>
+      {/*TODO: it quite similar to <PartialApproveContainer>, should it be reused?*/}
       {isPartialApproveEnabledBySettings && (
         <TradeApproveToggle
           amountToApprove={finalAmountToApprove}

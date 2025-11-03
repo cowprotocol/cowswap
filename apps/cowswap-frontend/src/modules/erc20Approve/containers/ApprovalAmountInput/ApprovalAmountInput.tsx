@@ -19,17 +19,25 @@ import { useCustomApproveAmountInputState, useUpdateOrResetCustomApproveAmountIn
 
 type ApprovalAmountInputProps = {
   tokenWithLogo: TokenWithLogo | null
-  initialAmount: CurrencyAmount<Currency> | null | undefined
+  // amount that was set by the user or by default (by default, it is equivalent to amountToSwap)
+  initialApproveAmount: CurrencyAmount<Currency> | null | undefined
+  // amount that needed to be swapped
+  amountToSwap: CurrencyAmount<Currency> | null | undefined
   onReset: () => void
 }
 
-export function ApprovalAmountInput({ initialAmount, tokenWithLogo, onReset }: ApprovalAmountInputProps): ReactNode {
+export function ApprovalAmountInput({
+  initialApproveAmount,
+  tokenWithLogo,
+  onReset,
+  amountToSwap,
+}: ApprovalAmountInputProps): ReactNode {
   const [updateCustomApproveAmountInput] = useUpdateOrResetCustomApproveAmountInputState()
   const customAmountValueState = useCustomApproveAmountInputState()
 
   const customAmountValue = useMemo(
-    () => customAmountValueState.amount ?? initialAmount,
-    [customAmountValueState, initialAmount],
+    () => customAmountValueState.amount ?? initialApproveAmount ?? amountToSwap,
+    [customAmountValueState, initialApproveAmount, amountToSwap],
   )
 
   const usdAmount = useUsdAmount(customAmountValue)
@@ -57,11 +65,11 @@ export function ApprovalAmountInput({ initialAmount, tokenWithLogo, onReset }: A
       if (!value) {
         updateCustomApproveAmountInput({ amount: null, isChanged: true, isInvalid: true })
       } else {
-        const isInvalid = initialAmount ? value.lessThan(initialAmount) : false
+        const isInvalid = amountToSwap ? value.lessThan(amountToSwap) : false
         updateCustomApproveAmountInput({ amount: value, isChanged: true, isInvalid })
       }
     },
-    [updateCustomApproveAmountInput, tokenWithLogo, initialAmount],
+    [updateCustomApproveAmountInput, tokenWithLogo, amountToSwap],
   )
 
   const { t } = useLingui()
