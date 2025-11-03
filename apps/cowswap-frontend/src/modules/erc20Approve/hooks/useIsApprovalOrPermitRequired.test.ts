@@ -205,6 +205,11 @@ describe('useIsApprovalOrPermitRequired', () => {
     it('should return NotRequired for native token even when bundling is enabled', () => {
       const nativeAmount = CurrencyAmount.fromRawAmount(Ether.onChain(1), '1000000000000000000')
       mockUseGetAmountToSignApprove.mockReturnValue(nativeAmount)
+      mockUseDerivedTradeState.mockReturnValue(
+        createMockTradeState({
+          inputCurrency: Ether.onChain(1),
+        }),
+      )
 
       const { result } = renderHook(() =>
         useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: true }),

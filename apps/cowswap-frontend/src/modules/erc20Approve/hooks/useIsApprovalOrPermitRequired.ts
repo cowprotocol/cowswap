@@ -39,6 +39,11 @@ export function useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForC
   const { type } = usePermitInfo(inputCurrency, tradeType) || {}
 
   const reason = (() => {
+    // inputCurrency from useDerivedTradeState can be different with amountToApprove currency due to implementation
+    // of useGetAmountToSignApprove (for safe it returns wrapped token, for non-safe it returns native token)
+    // so we need to check if inputCurrency is native token to prevent bundling for safe
+    if (inputCurrency && getIsNativeToken(inputCurrency)) return ApproveRequiredReason.NotRequired
+
     if (!checkIsAmountAndCurrencyRequireApprove(amountToApprove)) {
       return ApproveRequiredReason.NotRequired
     }
@@ -65,9 +70,6 @@ export function useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForC
 
 function checkIsAmountAndCurrencyRequireApprove(amountToApprove: CurrencyAmount<Currency> | null): boolean {
   if (!amountToApprove) return false
-
-  if (getIsNativeToken(amountToApprove.currency)) return false
-
   return !amountToApprove.equalTo('0')
 }
 
