@@ -473,6 +473,10 @@ msgstr "Blocked Address"
 msgid "Considering current network costs (<0><1/></0> per chunk), you could save more by reducing the number of parts or switch to a {swapOrderLink}."
 msgstr "Considering current network costs (<0><1/></0> per chunk), you could save more by reducing the number of parts or switch to a {swapOrderLink}."
 
+#: libs/hook-dapp-lib/src/hookDappsRegistry.ts
+msgid "Permit an address to spend one token on your behalf."
+msgstr "Permit an address to spend one token on your behalf."
+
 #: apps/cowswap-frontend/src/utils/orderUtils/getFilledAmounts.ts
 msgid "sold"
 msgstr "sold"
@@ -521,8 +525,8 @@ msgid "If you approve the full amount, you will only have to do this once per to
 msgstr "If you approve the full amount, you will only have to do this once per token."
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
-msgid "Infinite permit an address to spend one token on your behalf."
-msgstr "Infinite permit an address to spend one token on your behalf."
+#~ msgid "Infinite permit an address to spend one token on your behalf."
+#~ msgstr "Infinite permit an address to spend one token on your behalf."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/BridgingStatusHeader/index.tsx
 msgid "Bridging completed!"
