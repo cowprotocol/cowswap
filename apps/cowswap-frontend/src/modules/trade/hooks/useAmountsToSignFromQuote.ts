@@ -1,11 +1,14 @@
 import { useMemo } from 'react'
 
 import { currencyAmountToTokenAmount, FractionUtils } from '@cowprotocol/common-utils'
+import { Nullish } from '@cowprotocol/types'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
 import { useGetReceiveAmountInfo } from './useGetReceiveAmountInfo'
 import { useIsSafeEthFlow } from './useIsSafeEthFlow'
+
+import { TradeType } from '../types'
 
 const BUY_ORDER_APPROVE_AMOUNT_THRESHOLD = new Percent(1, 100) // 1%
 
@@ -19,7 +22,7 @@ export interface AmountsToSign {
  * It means, those values already include fees and slippage depending on order type
  */
 export function useAmountsToSignFromQuote(): AmountsToSign | null {
-  const { isQuoteBasedOrder, inputCurrencyAmount, outputCurrencyAmount } = useDerivedTradeState() || {}
+  const { isQuoteBasedOrder, inputCurrencyAmount, outputCurrencyAmount, tradeType } = useDerivedTradeState() || {}
   const { isSell, afterSlippage } = useGetReceiveAmountInfo() || {}
   const isSafeBundleEth = useIsSafeEthFlow()
 
@@ -32,7 +35,7 @@ export function useAmountsToSignFromQuote(): AmountsToSign | null {
     // Add 1% threshold for buy orders to level out price/gas fluctuations
     const maximumSendSellAmount = isSell
       ? sellAmountAfterSlippage
-      : FractionUtils.addPercent(sellAmountAfterSlippage, BUY_ORDER_APPROVE_AMOUNT_THRESHOLD)
+      : sellAmountForBuyOrder(sellAmountAfterSlippage, tradeType)
 
     return {
       // Safe ETH bundling uses ETH wrapping, so we should consider WETH as approving token
@@ -41,5 +44,14 @@ export function useAmountsToSignFromQuote(): AmountsToSign | null {
         : maximumSendSellAmount,
       minimumReceiveBuyAmount,
     }
-  }, [isSell, isSafeBundleEth, isQuoteBasedOrder, inputCurrencyAmount, outputCurrencyAmount, afterSlippage])
+  }, [isSell, isSafeBundleEth, isQuoteBasedOrder, inputCurrencyAmount, outputCurrencyAmount, afterSlippage, tradeType])
+}
+
+function sellAmountForBuyOrder(
+  sellAmount: CurrencyAmount<Currency>,
+  tradeType: Nullish<TradeType>,
+): CurrencyAmount<Currency> {
+  return tradeType === TradeType.SWAP
+    ? FractionUtils.addPercent(sellAmount, BUY_ORDER_APPROVE_AMOUNT_THRESHOLD)
+    : sellAmount
 }
