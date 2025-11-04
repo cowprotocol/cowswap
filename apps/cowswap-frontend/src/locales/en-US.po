@@ -862,6 +862,10 @@ msgstr "On CoW Swap, you can set limit orders for balances you don't have yet."
 msgid "1 Day"
 msgstr "1 Day"
 
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderFillsAt/index.tsx
+msgid "Smart contract"
+msgstr "Smart contract"
+
 #: apps/cowswap-frontend/src/legacy/components/Header/NetworkSelector/index.tsx
 msgid "Switch Network"
 msgstr "Switch Network"
@@ -2595,8 +2599,8 @@ msgid "{prefix}-hooks allow you to automatically execute any action {position} y
 msgstr "{prefix}-hooks allow you to automatically execute any action {position} your trade is executed"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderFillsAt/index.tsx
-msgid "Safe"
-msgstr "Safe"
+#~ msgid "Safe"
+#~ msgstr "Safe"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/ExpiredStep.tsx
 msgid "Your order expired. This could be due to gas spikes, volatile prices, or problems with the network."
