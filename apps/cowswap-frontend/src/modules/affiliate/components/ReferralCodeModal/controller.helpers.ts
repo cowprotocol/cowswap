@@ -7,17 +7,19 @@ import { t } from '@lingui/macro'
 import { PrimaryCta, StatusCopyResult } from './types'
 
 import { useReferralModalState, ReferralModalUiState } from '../../hooks/useReferralModalState'
-import { ReferralVerificationStatus } from '../../types'
+import { ReferralVerificationStatus, WalletReferralState } from '../../types'
 
 type VerificationKind = ReturnType<typeof useReferralModalState>['verification']['kind']
+type WalletStatus = WalletReferralState['status']
 
 export function computePrimaryCta(params: {
   uiState: ReferralModalUiState
   hasValidLength: boolean
   hasCode: boolean
   verificationKind: VerificationKind
+  walletStatus: WalletStatus
 }): PrimaryCta {
-  const { uiState, hasValidLength, hasCode, verificationKind } = params
+  const { uiState, hasValidLength, hasCode, verificationKind, walletStatus } = params
 
   switch (uiState) {
     case 'empty':
@@ -35,9 +37,9 @@ export function computePrimaryCta(params: {
     case 'expired':
       return disabledCta(t`Connect to verify code.`)
     case 'error':
-      return verifyCta(hasValidLength, hasCode, verificationKind)
+      return verifyCta(hasValidLength, hasCode, verificationKind, walletStatus)
     default:
-      return verifyCta(hasValidLength, hasCode, verificationKind)
+      return verifyCta(hasValidLength, hasCode, verificationKind, walletStatus)
   }
 }
 
@@ -49,9 +51,12 @@ function verifyCta(
   hasValidLength: boolean,
   hasCode: boolean,
   verificationKind: VerificationKind,
+  walletStatus: WalletStatus,
 ): PrimaryCta {
+  const requiresConnection = walletStatus === 'disconnected' || walletStatus === 'unknown'
+
   return {
-    label: t`Connect to verify code.`,
+    label: requiresConnection ? t`Connect to verify code.` : t`Verify code.`,
     disabled: !hasValidLength || !hasCode || verificationKind === 'checking',
     action: 'verify',
   }
