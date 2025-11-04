@@ -194,7 +194,7 @@ export const hookDappsRegistry = {
       walletCompatibility: ['EOA'],
     },
   },
-  'aave://flashloans/v3/collateral': {
+  'cow-sdk://flashloans/aave/v3/collateral-swap': {
     name: 'Aave',
     type: 'INTERNAL',
     descriptionShort: 'Aave Collateral Swap Flashloan',
@@ -203,7 +203,7 @@ export const hookDappsRegistry = {
     website: 'https://aave.com',
     image: 'https://app.aave.com/icons/tokens/aave.svg',
   },
-  'aave://flashloans/v3/debt': {
+  'cow-sdk://flashloans/aave/v3/debt-swap': {
     name: 'Aave',
     type: 'INTERNAL',
     descriptionShort: 'Aave Debt Swap Flashloan',
@@ -212,7 +212,7 @@ export const hookDappsRegistry = {
     website: 'https://aave.com',
     image: 'https://app.aave.com/icons/tokens/aave.svg',
   },
-  'aave://flashloans/v3/repay': {
+  'cow-sdk://flashloans/aave/v3/repay-with-collateral': {
     name: 'Aave',
     type: 'INTERNAL',
     descriptionShort: 'Aave Repay with Collateral Flashloan',
