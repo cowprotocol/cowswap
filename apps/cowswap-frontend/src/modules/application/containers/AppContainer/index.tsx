@@ -48,6 +48,7 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
   const { walletName } = useWalletDetails()
   const cowAnalytics = useCowAnalytics()
   const webVitals = useMemo(() => new WebVitalsAnalytics(cowAnalytics), [cowAnalytics])
+  const { isYieldEnabled, isAffiliateRewardsEnabled } = useFeatureFlags()
 
   useAnalyticsReporter({
     account,
@@ -61,8 +62,6 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
   })
 
   useInitializeUtm()
-
-  const { isYieldEnabled } = useFeatureFlags()
   const isInjectedWidgetMode = isInjectedWidget()
   const [darkMode] = useDarkModeManager()
   const [pageBackgroundVariant, setPageBackgroundVariant] = useState<PageBackgroundVariant>('default')
@@ -95,9 +94,13 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
   return (
     <ReferralProvider>
       <ReferralDeepLinkHandler />
-      <ReferralController />
-      <ReferralNetworkBanner />
-      <ReferralCodeModal />
+      {isAffiliateRewardsEnabled && (
+        <>
+          <ReferralController />
+          <ReferralNetworkBanner />
+          <ReferralCodeModal />
+        </>
+      )}
       <PageBackgroundContext.Provider value={pageBackgroundValue}>
         <styledEl.AppWrapper>
           <URLWarning />
