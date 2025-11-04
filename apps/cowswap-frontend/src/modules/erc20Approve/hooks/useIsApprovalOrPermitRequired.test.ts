@@ -84,6 +84,14 @@ describe('useIsApprovalOrPermitRequired', () => {
 
   describe('when permit is not supported', () => {
     it('should return Required when approval state is NOT_APPROVED', () => {
+      const nativeAmount = CurrencyAmount.fromRawAmount(Ether.onChain(1), '1000000000000000000')
+      mockUseGetAmountToSignApprove.mockReturnValue(nativeAmount)
+      mockUseDerivedTradeState.mockReturnValue(
+        createMockTradeState({
+          inputCurrency: Ether.onChain(1),
+          tradeType: TradeType.SWAP,
+        }),
+      )
       mockUseApproveState.mockReturnValue({
         state: ApprovalState.NOT_APPROVED,
         currentAllowance: BigInt(0),
@@ -97,6 +105,14 @@ describe('useIsApprovalOrPermitRequired', () => {
     })
 
     it('should return Required when approval state is PENDING', () => {
+      const nativeAmount = CurrencyAmount.fromRawAmount(Ether.onChain(1), '1000000000000000000')
+      mockUseGetAmountToSignApprove.mockReturnValue(nativeAmount)
+      mockUseDerivedTradeState.mockReturnValue(
+        createMockTradeState({
+          inputCurrency: Ether.onChain(1),
+          tradeType: TradeType.SWAP,
+        }),
+      )
       mockUseApproveState.mockReturnValue({
         state: ApprovalState.PENDING,
         currentAllowance: BigInt(0),
@@ -180,34 +196,47 @@ describe('useIsApprovalOrPermitRequired', () => {
   })
 
   describe('when currency is native token', () => {
-    it('should return NotRequired for native token regardless of amount', () => {
-      const nativeAmount = CurrencyAmount.fromRawAmount(Ether.onChain(1), '1000000000000000000')
-      mockUseGetAmountToSignApprove.mockReturnValue(nativeAmount)
-
-      const { result } = renderHook(() =>
-        useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: null }),
-      )
-
-      expect(result.current.reason).toBe(ApproveRequiredReason.NotRequired)
-    })
-
-    it('should return NotRequired for native token even with zero amount', () => {
-      const nativeAmount = CurrencyAmount.fromRawAmount(Ether.onChain(1), '0')
-      mockUseGetAmountToSignApprove.mockReturnValue(nativeAmount)
-
-      const { result } = renderHook(() =>
-        useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: null }),
-      )
-
-      expect(result.current.reason).toBe(ApproveRequiredReason.NotRequired)
-    })
-
-    it('should return NotRequired for native token even when bundling is enabled', () => {
+    it('should return NotRequired for native token when not SWAP', () => {
       const nativeAmount = CurrencyAmount.fromRawAmount(Ether.onChain(1), '1000000000000000000')
       mockUseGetAmountToSignApprove.mockReturnValue(nativeAmount)
       mockUseDerivedTradeState.mockReturnValue(
         createMockTradeState({
           inputCurrency: Ether.onChain(1),
+          tradeType: TradeType.LIMIT_ORDER,
+        }),
+      )
+
+      const { result } = renderHook(() =>
+        useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: null }),
+      )
+
+      expect(result.current.reason).toBe(ApproveRequiredReason.NotRequired)
+    })
+
+    it('should return NotRequired for native token even with zero amount in SWAP', () => {
+      const nativeAmount = CurrencyAmount.fromRawAmount(Ether.onChain(1), '0')
+      mockUseGetAmountToSignApprove.mockReturnValue(nativeAmount)
+      mockUseDerivedTradeState.mockReturnValue(
+        createMockTradeState({
+          inputCurrency: Ether.onChain(1),
+          tradeType: TradeType.SWAP,
+        }),
+      )
+
+      const { result } = renderHook(() =>
+        useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: null }),
+      )
+
+      expect(result.current.reason).toBe(ApproveRequiredReason.NotRequired)
+    })
+
+    it('should return BundleApproveRequired for native token in SWAP when bundling is enabled', () => {
+      const nativeAmount = CurrencyAmount.fromRawAmount(Ether.onChain(1), '1000000000000000000')
+      mockUseGetAmountToSignApprove.mockReturnValue(nativeAmount)
+      mockUseDerivedTradeState.mockReturnValue(
+        createMockTradeState({
+          inputCurrency: Ether.onChain(1),
+          tradeType: TradeType.SWAP,
         }),
       )
 
@@ -215,12 +244,20 @@ describe('useIsApprovalOrPermitRequired', () => {
         useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: true }),
       )
 
-      expect(result.current.reason).toBe(ApproveRequiredReason.NotRequired)
+      expect(result.current.reason).toBe(ApproveRequiredReason.BundleApproveRequired)
     })
   })
 
   describe('when bundling is supported', () => {
     it('should return BundleApproveRequired when bundling is enabled and approval is needed', () => {
+      const nativeAmount = CurrencyAmount.fromRawAmount(Ether.onChain(1), '1000000000000000000')
+      mockUseGetAmountToSignApprove.mockReturnValue(nativeAmount)
+      mockUseDerivedTradeState.mockReturnValue(
+        createMockTradeState({
+          inputCurrency: Ether.onChain(1),
+          tradeType: TradeType.SWAP,
+        }),
+      )
       mockUseApproveState.mockReturnValue({
         state: ApprovalState.NOT_APPROVED,
         currentAllowance: BigInt(0),
@@ -235,6 +272,14 @@ describe('useIsApprovalOrPermitRequired', () => {
     })
 
     it('should return BundleApproveRequired when bundling is enabled regardless of permit support', () => {
+      const nativeAmount = CurrencyAmount.fromRawAmount(Ether.onChain(1), '1000000000000000000')
+      mockUseGetAmountToSignApprove.mockReturnValue(nativeAmount)
+      mockUseDerivedTradeState.mockReturnValue(
+        createMockTradeState({
+          inputCurrency: Ether.onChain(1),
+          tradeType: TradeType.SWAP,
+        }),
+      )
       mockUsePermitInfo.mockReturnValue({ type: 'eip-2612' })
 
       const { result } = renderHook(() =>
@@ -245,6 +290,14 @@ describe('useIsApprovalOrPermitRequired', () => {
     })
 
     it('should return BundleApproveRequired when bundling is enabled and permit is not supported', () => {
+      const nativeAmount = CurrencyAmount.fromRawAmount(Ether.onChain(1), '1000000000000000000')
+      mockUseGetAmountToSignApprove.mockReturnValue(nativeAmount)
+      mockUseDerivedTradeState.mockReturnValue(
+        createMockTradeState({
+          inputCurrency: Ether.onChain(1),
+          tradeType: TradeType.SWAP,
+        }),
+      )
       mockUseApproveState.mockReturnValue({
         state: ApprovalState.APPROVED,
         currentAllowance: BigInt(1000000000000000000),
@@ -261,6 +314,14 @@ describe('useIsApprovalOrPermitRequired', () => {
 
   describe('when permit is supported', () => {
     it('should return Eip2612PermitRequired for eip-2612 permit type', () => {
+      const nativeAmount = CurrencyAmount.fromRawAmount(Ether.onChain(1), '1000000000000000000')
+      mockUseGetAmountToSignApprove.mockReturnValue(nativeAmount)
+      mockUseDerivedTradeState.mockReturnValue(
+        createMockTradeState({
+          inputCurrency: Ether.onChain(1),
+          tradeType: TradeType.SWAP,
+        }),
+      )
       mockUsePermitInfo.mockReturnValue({ type: 'eip-2612' })
 
       const { result } = renderHook(() =>
@@ -271,6 +332,14 @@ describe('useIsApprovalOrPermitRequired', () => {
     })
 
     it('should return DaiLikePermitRequired for dai-like permit type', () => {
+      const nativeAmount = CurrencyAmount.fromRawAmount(Ether.onChain(1), '1000000000000000000')
+      mockUseGetAmountToSignApprove.mockReturnValue(nativeAmount)
+      mockUseDerivedTradeState.mockReturnValue(
+        createMockTradeState({
+          inputCurrency: Ether.onChain(1),
+          tradeType: TradeType.SWAP,
+        }),
+      )
       mockUsePermitInfo.mockReturnValue({ type: 'dai-like' })
 
       const { result } = renderHook(() =>
@@ -391,6 +460,14 @@ describe('useIsApprovalOrPermitRequired', () => {
 
   describe('integration scenarios', () => {
     it('should prioritize permit over approval when both are available', () => {
+      const nativeAmount = CurrencyAmount.fromRawAmount(Ether.onChain(1), '1000000000000000000')
+      mockUseGetAmountToSignApprove.mockReturnValue(nativeAmount)
+      mockUseDerivedTradeState.mockReturnValue(
+        createMockTradeState({
+          inputCurrency: Ether.onChain(1),
+          tradeType: TradeType.SWAP,
+        }),
+      )
       mockUseApproveState.mockReturnValue({
         state: ApprovalState.NOT_APPROVED,
         currentAllowance: BigInt(0),
@@ -405,6 +482,14 @@ describe('useIsApprovalOrPermitRequired', () => {
     })
 
     it('should fall back to approval when permit is not supported but approval is needed', () => {
+      const nativeAmount = CurrencyAmount.fromRawAmount(Ether.onChain(1), '1000000000000000000')
+      mockUseGetAmountToSignApprove.mockReturnValue(nativeAmount)
+      mockUseDerivedTradeState.mockReturnValue(
+        createMockTradeState({
+          inputCurrency: Ether.onChain(1),
+          tradeType: TradeType.SWAP,
+        }),
+      )
       mockUseApproveState.mockReturnValue({
         state: ApprovalState.NOT_APPROVED,
         currentAllowance: BigInt(0),
@@ -435,6 +520,15 @@ describe('useIsApprovalOrPermitRequired', () => {
 
   describe('getPermitRequirements function', () => {
     it('should return correct permit requirements for different permit types', () => {
+      const nativeAmount = CurrencyAmount.fromRawAmount(Ether.onChain(1), '1000000000000000000')
+      mockUseGetAmountToSignApprove.mockReturnValue(nativeAmount)
+      mockUseDerivedTradeState.mockReturnValue(
+        createMockTradeState({
+          inputCurrency: Ether.onChain(1),
+          tradeType: TradeType.SWAP,
+        }),
+      )
+
       mockUsePermitInfo.mockReturnValue({ type: 'eip-2612' })
       const { result: result1 } = renderHook(() =>
         useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: null }),
@@ -463,10 +557,12 @@ describe('useIsApprovalOrPermitRequired', () => {
 
   describe('complex scenarios', () => {
     it('should handle SWAP trade type with partial approve enabled and eip-2612 permit', () => {
+      const nativeAmount = CurrencyAmount.fromRawAmount(Ether.onChain(1), '1000000000000000000')
+      mockUseGetAmountToSignApprove.mockReturnValue(nativeAmount)
       mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: true })
       mockUseDerivedTradeState.mockReturnValue(
         createMockTradeState({
-          inputCurrency: mockToken,
+          inputCurrency: Ether.onChain(1),
           tradeType: TradeType.SWAP,
         }),
       )
