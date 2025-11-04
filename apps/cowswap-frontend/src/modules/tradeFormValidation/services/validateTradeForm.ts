@@ -7,6 +7,8 @@ import { isQuoteExpired } from 'modules/tradeQuote'
 import { ApproveRequiredReason } from '../../erc20Approve'
 import { TradeFormValidation, TradeFormValidationContext } from '../types'
 
+const NOT_REQUIRED_APPROVE_REASONS = [ApproveRequiredReason.Unsupported, ApproveRequiredReason.NotRequired]
+
 // eslint-disable-next-line max-lines-per-function, complexity
 export function validateTradeForm(context: TradeFormValidationContext): TradeFormValidation[] | null {
   const {
@@ -151,7 +153,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     validations.push(TradeFormValidation.WrapUnwrapFlow)
   }
 
-  if (isApproveRequired !== ApproveRequiredReason.NotRequired) {
+  if (!NOT_REQUIRED_APPROVE_REASONS.includes(isApproveRequired)) {
     if (isApproveRequired === ApproveRequiredReason.BundleApproveRequired) {
       validations.push(TradeFormValidation.ApproveAndSwapInBundle)
     }
