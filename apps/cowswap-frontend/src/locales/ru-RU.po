@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: intercambiovaca\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-11-03 18:57\n"
+"PO-Revision-Date: 2025-11-04 14:31\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -858,6 +858,10 @@ msgstr "В CoW Swap, вы можете установить лимит орде�
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/DeadlineSelector/deadlines.ts
 msgid "1 Day"
 msgstr "1 день"
+
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderFillsAt/index.tsx
+msgid "Smart contract"
+msgstr "Умный контракт"
 
 #: apps/cowswap-frontend/src/legacy/components/Header/NetworkSelector/index.tsx
 msgid "Switch Network"
@@ -2588,8 +2592,8 @@ msgid "{prefix}-hooks allow you to automatically execute any action {position} y
 msgstr "{prefix}-хуки позволяют автоматически выполнить любое действие {position} вашей торговли будет выполнена"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderFillsAt/index.tsx
-msgid "Safe"
-msgstr "Безопасный"
+#~ msgid "Safe"
+#~ msgstr "Safe"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/ExpiredStep.tsx
 msgid "Your order expired. This could be due to gas spikes, volatile prices, or problems with the network."

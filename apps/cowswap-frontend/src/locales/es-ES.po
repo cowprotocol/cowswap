@@ -8,7 +8,7 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: intercambiovaca\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-11-03 18:57\n"
+"PO-Revision-Date: 2025-11-04 14:31\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -858,6 +858,10 @@ msgstr "En CoW Swap, puede establecer órdenes de límite para los balances que 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/DeadlineSelector/deadlines.ts
 msgid "1 Day"
 msgstr "1 día"
+
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderFillsAt/index.tsx
+msgid "Smart contract"
+msgstr "Contrato inteligente"
 
 #: apps/cowswap-frontend/src/legacy/components/Header/NetworkSelector/index.tsx
 msgid "Switch Network"
@@ -2588,8 +2592,8 @@ msgid "{prefix}-hooks allow you to automatically execute any action {position} y
 msgstr "Los ganchos {prefix} te permiten ejecutar automáticamente cualquier acción {position} que tu operación sea ejecutada"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderFillsAt/index.tsx
-msgid "Safe"
-msgstr "Seguro"
+#~ msgid "Safe"
+#~ msgstr "Safe"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/ExpiredStep.tsx
 msgid "Your order expired. This could be due to gas spikes, volatile prices, or problems with the network."
