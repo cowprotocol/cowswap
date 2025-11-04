@@ -1,6 +1,7 @@
 import { ReactNode, useEffect, useRef } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 
 import { useLocation } from 'react-router'
 
@@ -10,6 +11,7 @@ import { useReferralActions } from '../hooks/useReferralActions'
 import { isReferralCodeLengthValid, sanitizeReferralCode } from '../utils/code'
 
 export function ReferralDeepLinkHandler(): ReactNode {
+  const { isAffiliateRewardsEnabled } = useFeatureFlags()
   const actions = useReferralActions()
   const location = useLocation()
   const navigate = useNavigate()
@@ -19,8 +21,26 @@ export function ReferralDeepLinkHandler(): ReactNode {
   useEffect(() => {
     const params = new URLSearchParams(location.search)
     const codeParam = params.get('ref')
+    const stripReferralFromUrl = (): void => {
+      params.delete('ref')
+      const nextSearch = params.toString()
+      navigate(
+        {
+          pathname: location.pathname,
+          search: nextSearch ? `?${nextSearch}` : '',
+          hash: location.hash,
+        },
+        { replace: true },
+      )
+    }
 
     if (!codeParam) {
+      lastProcessedRef.current = null
+      return
+    }
+
+    if (!isAffiliateRewardsEnabled) {
+      stripReferralFromUrl()
       lastProcessedRef.current = null
       return
     }
@@ -42,9 +62,8 @@ export function ReferralDeepLinkHandler(): ReactNode {
     actions.openModal('deeplink', { code: sanitized })
     analytics.sendEvent({ category: 'referral', action: 'code_saved', label: 'deeplink', value: sanitized.length })
 
-    params.delete('ref')
-    navigate({ pathname: location.pathname, search: params.toString(), hash: location.hash }, { replace: true })
-  }, [actions, analytics, location.hash, location.pathname, location.search, navigate])
+    stripReferralFromUrl()
+  }, [actions, analytics, isAffiliateRewardsEnabled, location.hash, location.pathname, location.search, navigate])
 
   return null
 }

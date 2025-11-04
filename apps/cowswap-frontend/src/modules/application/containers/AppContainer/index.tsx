@@ -12,6 +12,11 @@ import { URLWarning } from 'legacy/components/Header/URLWarning'
 import { useDarkModeManager } from 'legacy/state/user/hooks'
 
 import { OrdersPanel } from 'modules/account'
+import { ReferralProvider } from 'modules/affiliate'
+import { ReferralCodeModal } from 'modules/affiliate/components/ReferralCodeModal'
+import { ReferralNetworkBanner } from 'modules/affiliate/components/ReferralNetworkBanner'
+import { ReferralController } from 'modules/affiliate/containers/ReferralController'
+import { ReferralDeepLinkHandler } from 'modules/affiliate/containers/ReferralDeepLinkHandler'
 import { useInjectedWidgetMetaData } from 'modules/injectedWidget'
 import { useInitializeUtm } from 'modules/utm'
 
@@ -43,6 +48,7 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
   const { walletName } = useWalletDetails()
   const cowAnalytics = useCowAnalytics()
   const webVitals = useMemo(() => new WebVitalsAnalytics(cowAnalytics), [cowAnalytics])
+  const { isYieldEnabled, isAffiliateRewardsEnabled } = useFeatureFlags()
 
   useAnalyticsReporter({
     account,
@@ -56,8 +62,6 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
   })
 
   useInitializeUtm()
-
-  const { isYieldEnabled } = useFeatureFlags()
   const isInjectedWidgetMode = isInjectedWidget()
   const [darkMode] = useDarkModeManager()
   const [pageBackgroundVariant, setPageBackgroundVariant] = useState<PageBackgroundVariant>('default')
@@ -88,33 +92,43 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
   const showSnowfall = !isInjectedWidgetMode && isChristmasTheme
 
   return (
-    <PageBackgroundContext.Provider value={pageBackgroundValue}>
-      <styledEl.AppWrapper>
-        <URLWarning />
-        <InvalidLocalTimeWarning />
+    <ReferralProvider>
+      <ReferralDeepLinkHandler />
+      {isAffiliateRewardsEnabled && (
+        <>
+          <ReferralController />
+          <ReferralNetworkBanner />
+          <ReferralCodeModal />
+        </>
+      )}
+      <PageBackgroundContext.Provider value={pageBackgroundValue}>
+        <styledEl.AppWrapper>
+          <URLWarning />
+          <InvalidLocalTimeWarning />
 
-        <OrdersPanel />
+          <OrdersPanel />
 
-        <AppMenu>{networkAndAccountControls}</AppMenu>
+          <AppMenu>{networkAndAccountControls}</AppMenu>
 
-        {isYieldEnabled && <CoWAmmBanner />}
+          {isYieldEnabled && <CoWAmmBanner />}
 
-        <styledEl.BodyWrapper customTheme={customTheme} backgroundVariant={pageBackgroundVariant}>
-          {children}
-          <styledEl.Marginer />
-        </styledEl.BodyWrapper>
+          <styledEl.BodyWrapper customTheme={customTheme} backgroundVariant={pageBackgroundVariant}>
+            {children}
+            <styledEl.Marginer />
+          </styledEl.BodyWrapper>
 
-        <SnowfallOverlay show={showSnowfall} isMobile={isMobile} darkMode={darkMode} />
-        <FooterSection
-          show={!isInjectedWidgetMode}
-          showCowSpeechBubble={shouldRenderCowSpeechBubble}
-          pageScene={pageScene}
-        />
+          <SnowfallOverlay show={showSnowfall} isMobile={isMobile} darkMode={darkMode} />
+          <FooterSection
+            show={!isInjectedWidgetMode}
+            showCowSpeechBubble={shouldRenderCowSpeechBubble}
+            pageScene={pageScene}
+          />
 
-        {/* Render MobileHeaderControls outside of MenuBar on mobile */}
-        {isMobile && !isInjectedWidgetMode && networkAndAccountControls}
-      </styledEl.AppWrapper>
-    </PageBackgroundContext.Provider>
+          {/* Render MobileHeaderControls outside of MenuBar on mobile */}
+          {isMobile && !isInjectedWidgetMode && networkAndAccountControls}
+        </styledEl.AppWrapper>
+      </PageBackgroundContext.Provider>
+    </ReferralProvider>
   )
 }
 
@@ -177,9 +191,7 @@ const SNOWFALL_STYLE: CSSProperties = {
 }
 
 function CowSpeechBubbleBanner(): ReactNode {
-  return ClosableBanner(BANNER_IDS.HIRING_SPEECH_BUBBLE, (close) => (
-    <CowSpeechBubble show onClose={close} />
-  ))
+  return ClosableBanner(BANNER_IDS.HIRING_SPEECH_BUBBLE, (close) => <CowSpeechBubble show onClose={close} />)
 }
 
 interface FooterSectionProps {

@@ -54,6 +54,7 @@ function buildReferralModalState(referral: ReferralSnapshot): ReferralModalState
     walletStatus: wallet.status,
     hasCode,
     isEditing,
+    editMode,
   })
 
   return {
@@ -81,8 +82,13 @@ function deriveUiState(params: {
   walletStatus: ReferralWalletStatus
   hasCode: boolean
   isEditing: boolean
+  editMode: boolean
 }): ReferralModalUiState {
-  const { verificationKind, walletStatus, hasCode, isEditing } = params
+  const { verificationKind, walletStatus, hasCode, isEditing, editMode } = params
+
+  if (editMode && hasCode) {
+    return 'editing'
+  }
 
   const orderedConditions: Array<[boolean, ReferralModalUiState]> = [
     [verificationKind === 'checking', 'checking'],
