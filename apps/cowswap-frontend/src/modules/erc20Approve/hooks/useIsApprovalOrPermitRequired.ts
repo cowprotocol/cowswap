@@ -39,12 +39,9 @@ export function useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForC
   const { type } = usePermitInfo(inputCurrency, tradeType) || {}
 
   const reason = (() => {
-    // inputCurrency from useDerivedTradeState can be different with amountToApprove currency due to implementation
-    // of useGetAmountToSignApprove (for safe it returns wrapped token, for non-safe it returns native token)
-    // so we need to check if inputCurrency is native token to prevent bundling for safe
-    if (inputCurrency && getIsNativeToken(inputCurrency)) return ApproveRequiredReason.NotRequired
+    if (!isNativeFlowSwap(inputCurrency, tradeType)) return ApproveRequiredReason.NotRequired
 
-    if (!checkIsAmountAndCurrencyRequireApprove(amountToApprove)) {
+    if (!isErc20TokenAmountApproveRequired(amountToApprove)) {
       return ApproveRequiredReason.NotRequired
     }
 
@@ -68,7 +65,11 @@ export function useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForC
   return useMemo(() => ({ reason, currentAllowance }), [reason, currentAllowance])
 }
 
-function checkIsAmountAndCurrencyRequireApprove(amountToApprove: CurrencyAmount<Currency> | null): boolean {
+function isNativeFlowSwap(inputCurrency: Nullish<Currency>, tradeType: Nullish<TradeType>): boolean {
+  return !!inputCurrency && getIsNativeToken(inputCurrency) && tradeType === TradeType.SWAP
+}
+
+function isErc20TokenAmountApproveRequired(amountToApprove: CurrencyAmount<Currency> | null): boolean {
   if (!amountToApprove) return false
   return !amountToApprove.equalTo('0')
 }
