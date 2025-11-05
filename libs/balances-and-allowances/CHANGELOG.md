@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.8.0...balances-and-allowances-v1.9.0) (2025-11-05)
+
+
+### Features
+
+* add CowLoadingIcon component ([#6330](https://github.com/cowprotocol/cowswap/issues/6330)) ([c143127](https://github.com/cowprotocol/cowswap/commit/c143127a8c92cbfdceba313d9bee09978a418214))
+
 ## [1.8.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.7.0...balances-and-allowances-v1.8.0) (2025-10-14)
 
 
