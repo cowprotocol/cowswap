@@ -4,7 +4,7 @@ import { ETH_FLOW_SLIPPAGE_WARNING_THRESHOLD } from '@cowprotocol/common-const'
 import { percentToBps } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { TradeType, useIsCurrentTradeBridging, useIsEoaEthFlow, useTradeTypeInfo } from 'modules/trade'
+import { useIsCurrentTradeBridging, useIsEoaEthFlow } from 'modules/trade'
 
 import { useIsSlippageModified } from './useIsSlippageModified'
 import { useTradeSlippage } from './useTradeSlippage'
@@ -20,9 +20,9 @@ const REGULAR_ORDER_SLIPPAGE_WARNING_BPS = 200 // 2%
  * 
  * Slippage should be prominent when:
  * 1. User has manually modified the slippage value, OR
- * 2. Slippage exceeds warning thresholds (>2% for all orders)
+ * 2. Slippage exceeds warning thresholds (>2%)
  * 
- * EXCEPT: Never show prominently for Swap or Bridge orders (to avoid duplication)
+ * EXCEPT: Never show prominently for Bridge orders
  * 
  * Note: When accordion is expanded, prominent slippage is hidden to avoid duplication
  * 
@@ -33,13 +33,11 @@ export function useShouldShowSlippageProminent(): boolean {
   const slippage = useTradeSlippage()
   const isSlippageModified = useIsSlippageModified()
   const isEoaEthFlow = useIsEoaEthFlow()
-  const tradeTypeInfo = useTradeTypeInfo()
   const isCurrentTradeBridging = useIsCurrentTradeBridging()
 
   return useMemo(() => {
-    // Never show prominently for Swap or Bridge orders
-    const isSwapOrder = tradeTypeInfo?.tradeType === TradeType.SWAP
-    if (isSwapOrder || isCurrentTradeBridging) {
+    // Never show prominently for Bridge orders
+    if (isCurrentTradeBridging) {
       return false
     }
 
@@ -62,6 +60,6 @@ export function useShouldShowSlippageProminent(): boolean {
     const shouldShowDueToHighSlippage = slippageBps > warningThresholdBps
     
     return isSlippageModified || shouldShowDueToHighSlippage
-  }, [chainId, slippage, isSlippageModified, isEoaEthFlow, tradeTypeInfo, isCurrentTradeBridging])
+  }, [chainId, slippage, isSlippageModified, isEoaEthFlow, isCurrentTradeBridging])
 }
 
