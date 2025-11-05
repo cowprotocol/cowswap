@@ -51,20 +51,12 @@ function mapChainInfoToBaseChainInfo(
   | 'color'
   | 'eip155Label'
 > {
-  // TODO: temporary hack to point to the new logos for Linea and Plasma while the SDK PR is not merged
-  const logo =
-    chainInfo.logo && (chainInfo.id === SupportedChainId.LINEA || chainInfo.id === SupportedChainId.PLASMA)
-      ? {
-          light: chainInfo.logo.light.replace('\/main\/', '/feat/q4-chains/'),
-          dark: chainInfo.logo.dark.replace('\/main\/', '/feat/q4-chains/'),
-        }
-      : chainInfo.logo
   return {
     docs: chainInfo.docs.url,
     bridge: chainInfo.bridges?.[0]?.url,
     explorer: chainInfo.blockExplorer.url ?? '',
     infoLink: chainInfo.website.url,
-    logo,
+    logo: chainInfo.logo,
     addressPrefix: chainInfo.addressPrefix,
     label: chainInfo.label,
     explorerTitle: chainInfo.blockExplorer.name,
