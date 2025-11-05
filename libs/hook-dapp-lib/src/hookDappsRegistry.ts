@@ -31,8 +31,7 @@ export const hookDappsRegistry = {
     type: 'INTERNAL',
     name: msg`Permit a token`,
     descriptionShort: msg`Permit an address to spend one token on your behalf.`,
-    description:
-      msg`This hook allows you to permit an address to spend your tokens on your behalf. This is useful for allowing a smart contract to spend your tokens without needing to approve each transaction.`,
+    description: msg`This hook allows you to permit an address to spend your tokens on your behalf. This is useful for allowing a smart contract to spend your tokens without needing to approve each transaction.`,
     image:
       'https://raw.githubusercontent.com/cowprotocol/cowswap/refs/heads/develop/apps/cowswap-frontend/src/modules/hooksStore/dapps/PermitHookApp/icon.png',
     version: 'v0.1.0',
@@ -185,31 +184,28 @@ export const hookDappsRegistry = {
     },
   },
   'cow-sdk://flashloans/aave/v3/collateral-swap': {
-    name: 'Aave Collateral Swap',
+    name: msg`Aave Collateral Swap`,
     type: 'INTERNAL',
-    descriptionShort: 'Aave Collateral Swap Flashloan',
-    description:
-      'The swap adapter contracts integrate Aave Flash Loans and CoW Swap to facilitate advanced actions like swapping collateral assets when there are borrow positions. Learn more at https://aave.com/docs/developers/smart-contracts/swap-features.',
+    descriptionShort: msg`Aave Collateral Swap Flashloan`,
+    description: msg`The swap adapter contracts integrate Aave Flash Loans and CoW Swap to facilitate advanced actions like swapping collateral assets when there are borrow positions. Learn more at https://aave.com/docs/developers/smart-contracts/swap-features.`,
     version: '0.0.1',
     website: 'https://aave.com',
     image: 'https://app.aave.com/icons/tokens/aave.svg',
   },
   'cow-sdk://flashloans/aave/v3/debt-swap': {
-    name: 'Aave Debt Swap',
+    name: msg`Aave Debt Swap`,
     type: 'INTERNAL',
-    descriptionShort: 'Aave Debt Swap Flashloan',
-    description:
-      'The swap adapter contracts integrate Aave Flash Loans and CoW Swap to facilitate advanced actions like swapping debt assets. Learn more at https://aave.com/docs/developers/smart-contracts/swap-features.',
+    descriptionShort: msg`Aave Debt Swap Flashloan`,
+    description: msg`The swap adapter contracts integrate Aave Flash Loans and CoW Swap to facilitate advanced actions like swapping debt assets. Learn more at https://aave.com/docs/developers/smart-contracts/swap-features.`,
     version: '0.0.1',
     website: 'https://aave.com',
     image: 'https://app.aave.com/icons/tokens/aave.svg',
   },
   'cow-sdk://flashloans/aave/v3/repay-with-collateral': {
-    name: 'Aave Repay',
+    name: msg`Aave Repay`,
     type: 'INTERNAL',
-    descriptionShort: 'Aave Repay with Collateral Flashloan',
-    description:
-      'The swap adapter contracts integrate Aave Flash Loans and CoW Swap to facilitate advanced actions like repaying borrow positions using collateral. Learn more at https://aave.com/docs/developers/smart-contracts/swap-features.',
+    descriptionShort: msg`Aave Repay with Collateral Flashloan`,
+    description: msg`The swap adapter contracts integrate Aave Flash Loans and CoW Swap to facilitate advanced actions like repaying borrow positions using collateral. Learn more at https://aave.com/docs/developers/smart-contracts/swap-features.msg`,
     version: '0.0.1',
     website: 'https://aave.com',
     image: 'https://app.aave.com/icons/tokens/aave.svg',
