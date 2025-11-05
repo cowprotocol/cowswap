@@ -79,7 +79,7 @@ export function ApprovalAmountInput({
   return (
     <styledEl.EditWrapper>
       <styledEl.InputHeader>
-        <Trans>Approval amount:</Trans> <styledEl.ResetBtn onClick={onReset}>{resetLabel}</styledEl.ResetBtn>
+        <Trans>Approval amount</Trans> <styledEl.ResetBtn onClick={onReset}>{resetLabel}</styledEl.ResetBtn>
       </styledEl.InputHeader>
       <CurrencyInputPanel
         className={'custom-input-panel'}

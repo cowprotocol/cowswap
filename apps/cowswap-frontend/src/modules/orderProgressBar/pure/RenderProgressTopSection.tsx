@@ -51,7 +51,7 @@ function ProgressContent({
           width: '100%',
           transition: {
             duration: 0.3,
-            ease: 'cubic-bezier(0.4, 0, 0.2, 1)',
+            ease: [0.4, 0, 0.2, 1],
           },
         }}
         exit={{ opacity: 0, width: '100%' }}

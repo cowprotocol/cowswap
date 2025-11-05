@@ -14,7 +14,9 @@ import { useDerivedTradeState } from 'modules/trade'
 const Wrapper = styled.div`
   display: flex;
   align-items: center;
+  flex-flow: row wrap;
   gap: 4px;
+  padding: 0 10px;
 `
 
 const CapitalizedFirst = styled.span`

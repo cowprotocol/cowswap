@@ -15,6 +15,7 @@ import { useGetAmountToSignApprove } from './useGetAmountToSignApprove'
 import { ApprovalState } from '../types'
 
 export enum ApproveRequiredReason {
+  Unsupported, // f.e. eth flow without bundling or for limit orders
   NotRequired,
   Required,
   Eip2612PermitRequired,
@@ -39,7 +40,11 @@ export function useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForC
   const { type } = usePermitInfo(inputCurrency, tradeType) || {}
 
   const reason = (() => {
-    if (!checkIsAmountAndCurrencyRequireApprove(amountToApprove)) {
+    if (!isApproveSupportedByFlowOrWallet(inputCurrency, tradeType, !!isBundlingSupportedOrEnabledForContext)) {
+      return ApproveRequiredReason.Unsupported
+    }
+
+    if (!isErc20TokenAmountApproveRequired(amountToApprove)) {
       return ApproveRequiredReason.NotRequired
     }
 
@@ -63,11 +68,20 @@ export function useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForC
   return useMemo(() => ({ reason, currentAllowance }), [reason, currentAllowance])
 }
 
-function checkIsAmountAndCurrencyRequireApprove(amountToApprove: CurrencyAmount<Currency> | null): boolean {
+function isApproveSupportedByFlowOrWallet(
+  inputCurrency: Nullish<Currency>,
+  tradeType: Nullish<TradeType>,
+  isBundlingSupportedOrEnabledForContext: boolean,
+): boolean {
+  const isNativeFlow = !!inputCurrency && getIsNativeToken(inputCurrency)
+  if (!isNativeFlow) return true
+
+  const isSwap = tradeType === TradeType.SWAP
+  return isSwap ? isBundlingSupportedOrEnabledForContext : false
+}
+
+function isErc20TokenAmountApproveRequired(amountToApprove: CurrencyAmount<Currency> | null): boolean {
   if (!amountToApprove) return false
-
-  if (getIsNativeToken(amountToApprove.currency)) return false
-
   return !amountToApprove.equalTo('0')
 }
 

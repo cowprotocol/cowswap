@@ -193,7 +193,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps): Reac
           <>
             {bottomContent}
             <SwapRateDetails rateInfoParams={rateInfoParams} deadline={deadlineState[0]} />
-            {isPrimaryValidationPassed && <TradeApproveWithAffectedOrderList />}
+            {isPrimaryValidationPassed && isPartialApproveEnabled && <TradeApproveWithAffectedOrderList />}
             <Warnings buyingFiatAmount={buyingFiatAmount} />
             {tradeWarnings}
             <TradeButtons
@@ -218,6 +218,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps): Reac
         toBeImported,
         intermediateBuyToken,
         isPrimaryValidationPassed,
+        isPartialApproveEnabled,
       ],
     ),
   }
