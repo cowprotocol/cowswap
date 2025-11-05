@@ -1,4 +1,4 @@
-import { ChainInfo, EvmCall, TokenInfo } from '@cowprotocol/cow-sdk'
+import { ChainInfo, EnrichedOrder, EvmCall, TokenInfo } from '@cowprotocol/cow-sdk'
 import {
   BridgeProvider,
   BridgeProviderInfo,
@@ -11,8 +11,6 @@ import {
   QuoteBridgeRequest,
   ReceiverAccountBridgeProvider,
 } from '@cowprotocol/sdk-bridging'
-
-import { getOrder } from 'api/cowProtocol'
 
 /**
  * Test provider for testing the ReceiverAccountBridgeProvider using an account provided in the constructor.
@@ -64,12 +62,12 @@ export class TestReceiverAccountBridgeProvider implements ReceiverAccountBridgeP
 
   async getBridgingParams(
     chainId: number,
-    orderUid: string,
+    order: EnrichedOrder,
     txHash: string,
   ): Promise<{ params: BridgingDepositParams; status: BridgeStatusResult } | null> {
-    console.log('getBridgingParams', chainId, orderUid, txHash)
+    const orderUid = order?.uid
 
-    const order = await getOrder(chainId, orderUid)
+    console.log('getBridgingParams', chainId, orderUid, txHash)
 
     if (!order) {
       return null
