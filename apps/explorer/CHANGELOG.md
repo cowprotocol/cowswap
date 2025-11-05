@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.57.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.56.0...explorer-v2.57.0) (2025-11-05)
+
+
+### Features
+
+* adjust params type to trigger a bumping of version ([#6476](https://github.com/cowprotocol/cowswap/issues/6476)) ([1e08587](https://github.com/cowprotocol/cowswap/commit/1e0858701b909fe2847be325ed2a7287592711b8))
+
 ## [2.56.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.55.0...explorer-v2.56.0) (2025-10-14)
 
 
