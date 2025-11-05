@@ -1,5 +1,7 @@
 import { ReactNode } from 'react'
 
+import { useIsTxBundlingSupported } from '@cowprotocol/wallet'
+
 import {
   ApproveRequiredReason,
   useGetAmountToSignApprove,
@@ -13,8 +15,9 @@ import { ActiveOrdersWithAffectedPermit } from '../ActiveOrdersWithAffectedPermi
 import { TradeApproveToggle } from '../TradeApproveToggle'
 
 export function TradeApproveWithAffectedOrderList(): ReactNode {
+  const isBundlingSupported = useIsTxBundlingSupported()
   const { reason: isApproveRequired } = useIsApprovalOrPermitRequired({
-    isBundlingSupportedOrEnabledForContext: false,
+    isBundlingSupportedOrEnabledForContext: isBundlingSupported,
   })
   const isPartialApprovalEnabledInSettings = useIsPartialApprovalModeSelected()
 
@@ -28,7 +31,8 @@ export function TradeApproveWithAffectedOrderList(): ReactNode {
 
   const isApproveOrPartialPermitRequired =
     isApproveRequired === ApproveRequiredReason.Required ||
-    isApproveRequired === ApproveRequiredReason.Eip2612PermitRequired
+    isApproveRequired === ApproveRequiredReason.Eip2612PermitRequired ||
+    isApproveRequired === ApproveRequiredReason.BundleApproveRequired
 
   if (!partialAmountToApprove || !isPartialApprovalEnabledInSettings) return null
 
