@@ -1902,6 +1902,10 @@ msgstr "and"
 msgid "Waiting for confirmation."
 msgstr "Waiting for confirmation."
 
+#: libs/hook-dapp-lib/src/hookDappsRegistry.ts
+msgid "Aave Debt Swap"
+msgstr "Aave Debt Swap"
+
 #: apps/cowswap-frontend/src/pages/Account/LockedGnoVesting/index.tsx
 msgid "COW token"
 msgstr "COW token"
@@ -2581,6 +2585,10 @@ msgstr "Build your own hook"
 msgid "Estimated amount that you will receive from each part of the order."
 msgstr "Estimated amount that you will receive from each part of the order."
 
+#: libs/hook-dapp-lib/src/hookDappsRegistry.ts
+msgid "The swap adapter contracts integrate Aave Flash Loans and CoW Swap to facilitate advanced actions like repaying borrow positions using collateral. Learn more at https://aave.com/docs/developers/smart-contracts/swap-features.msg"
+msgstr "The swap adapter contracts integrate Aave Flash Loans and CoW Swap to facilitate advanced actions like repaying borrow positions using collateral. Learn more at https://aave.com/docs/developers/smart-contracts/swap-features.msg"
+
 #: apps/cowswap-frontend/src/common/pure/CancellationModal/RequestCancellationModal.tsx
 msgid "Request cancellation"
 msgstr "Request cancellation"
@@ -2714,6 +2722,10 @@ msgstr "Add a custom hook"
 #: apps/cowswap-frontend/src/legacy/components/ErrorBoundary/ChunkLoadError.tsx
 msgid "This page can't be reached"
 msgstr "This page can't be reached"
+
+#: libs/hook-dapp-lib/src/hookDappsRegistry.ts
+msgid "Aave Collateral Swap"
+msgstr "Aave Collateral Swap"
 
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
 msgid "Your swap expires and will not execute if it is pending for longer than the selected duration."
@@ -3116,6 +3128,10 @@ msgstr "Bungee Protocol - Swap tokens across chains"
 msgid "CoW Swap's robust solver competition protects your slippage from being exploited by MEV bots."
 msgstr "CoW Swap's robust solver competition protects your slippage from being exploited by MEV bots."
 
+#: libs/hook-dapp-lib/src/hookDappsRegistry.ts
+msgid "Aave Debt Swap Flashloan"
+msgstr "Aave Debt Swap Flashloan"
+
 #: apps/cowswap-frontend/src/modules/tokensList/pure/LpTokenLists/index.tsx
 #: apps/cowswap-frontend/src/modules/yield/pure/TargetPoolPreviewInfo.tsx
 msgid "Details"
@@ -3480,6 +3496,10 @@ msgstr "Token symbol, address"
 msgid "Order Receipt"
 msgstr "Order Receipt"
 
+#: libs/hook-dapp-lib/src/hookDappsRegistry.ts
+msgid "The swap adapter contracts integrate Aave Flash Loans and CoW Swap to facilitate advanced actions like swapping debt assets. Learn more at https://aave.com/docs/developers/smart-contracts/swap-features."
+msgstr "The swap adapter contracts integrate Aave Flash Loans and CoW Swap to facilitate advanced actions like swapping debt assets. Learn more at https://aave.com/docs/developers/smart-contracts/swap-features."
+
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "Transaction completed!"
 msgstr "Transaction completed!"
@@ -3839,6 +3859,10 @@ msgstr "CoW Swap has dynamically selected this slippage amount to account for cu
 #: apps/cowswap-frontend/src/legacy/components/CowSubsidyModal/index.tsx
 msgid "CoWmunity fees discount"
 msgstr "CoWmunity fees discount"
+
+#: libs/hook-dapp-lib/src/hookDappsRegistry.ts
+msgid "The swap adapter contracts integrate Aave Flash Loans and CoW Swap to facilitate advanced actions like swapping collateral assets when there are borrow positions. Learn more at https://aave.com/docs/developers/smart-contracts/swap-features."
+msgstr "The swap adapter contracts integrate Aave Flash Loans and CoW Swap to facilitate advanced actions like swapping collateral assets when there are borrow positions. Learn more at https://aave.com/docs/developers/smart-contracts/swap-features."
 
 #: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/swapTradeButtonsMap.tsx
 msgid "Swap with"
@@ -4311,6 +4335,10 @@ msgstr "This is the amount that will be sold in each part of the TWAP order."
 msgid "Quote expired. Refreshing..."
 msgstr "Quote expired. Refreshing..."
 
+#: libs/hook-dapp-lib/src/hookDappsRegistry.ts
+msgid "Aave Repay"
+msgstr "Aave Repay"
+
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
 msgid "The URL provided does not return a valid manifest file<0/><1>The server returned an HTML page instead of the expected JSON manifest.json file. Please check if the URL is correct and points to a valid hook dapp.</1>"
 msgstr "The URL provided does not return a valid manifest file<0/><1>The server returned an HTML page instead of the expected JSON manifest.json file. Please check if the URL is correct and points to a valid hook dapp.</1>"
@@ -4610,6 +4638,10 @@ msgstr "Learn more about wallets"
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
 msgid "This is the estimated amount you will receive for each part of the TWAP order."
 msgstr "This is the estimated amount you will receive for each part of the TWAP order."
+
+#: libs/hook-dapp-lib/src/hookDappsRegistry.ts
+msgid "Aave Repay with Collateral Flashloan"
+msgstr "Aave Repay with Collateral Flashloan"
 
 #: apps/cowswap-frontend/src/common/constants/routes.ts
 #: apps/cowswap-frontend/src/common/containers/OrderHooksDetails/index.tsx
@@ -4927,6 +4959,10 @@ msgstr "Executes at"
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmount/index.tsx
 msgid "From (incl. costs)"
 msgstr "From (incl. costs)"
+
+#: libs/hook-dapp-lib/src/hookDappsRegistry.ts
+msgid "Aave Collateral Swap Flashloan"
+msgstr "Aave Collateral Swap Flashloan"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/LimitOrdersDetails/index.tsx
 msgid "order executes at"
