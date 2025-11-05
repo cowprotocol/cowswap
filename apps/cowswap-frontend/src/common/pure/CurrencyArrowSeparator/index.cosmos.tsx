@@ -2,6 +2,7 @@ import { CurrencyArrowSeparator, CurrencyArrowSeparatorProps } from 'common/pure
 
 const defaultProps: CurrencyArrowSeparatorProps = {
   isLoading: false,
+  isDarkMode: false,
   onSwitchTokens() {
     //
   },

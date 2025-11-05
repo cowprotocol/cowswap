@@ -56,7 +56,11 @@ export const LoadingWrapper = styled.div<{ isLoading: boolean }>`
   margin: auto;
 
   &:hover {
-    transform: translateY(-2px);
+    ${({ isLoading }) =>
+      !isLoading &&
+      css`
+        transform: translateY(-2px);
+      `}
   }
 
   ${({ isLoading }) => isLoading && loadingAnimationMixin}
@@ -72,10 +76,4 @@ export const ArrowDownIcon = styled(ArrowDown)<{ disabled: boolean }>`
   width: 20px;
   cursor: ${({ disabled }) => (disabled ? 'inherit' : 'pointer')};
   color: inherit;
-`
-
-export const CowImg = styled.img`
-  width: 100%;
-  border-radius: 10px;
-  background-color: ${({ theme }) => theme.paperCustom};
 `

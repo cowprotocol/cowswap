@@ -68,6 +68,9 @@ apps/cowswap-frontend/public/robots.txt
 CLAUDE.md
 .claude/
 
+# Agents context files (local only)
+.agents/
+
 # Serena project files
 .serena/
 
