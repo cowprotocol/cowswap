@@ -1,5 +1,53 @@
 # Changelog
 
+## [1.122.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.121.5...cowswap-v1.122.0) (2025-11-05)
+
+
+### Features
+
+* **hook-dapps:** register aave flash-loans hooks ([#6470](https://github.com/cowprotocol/cowswap/issues/6470)) ([a033304](https://github.com/cowprotocol/cowswap/commit/a033304a8a6376ccb28319e998c13a7916eebcd5))
+
+
+### Bug Fixes
+
+* **approve:** display partial approve widget only when can swap & adjust tooltip ([#6408](https://github.com/cowprotocol/cowswap/issues/6408)) ([828e005](https://github.com/cowprotocol/cowswap/commit/828e005f3f0c7ed2055fc24d2d97beed792d809a))
+* **approve:** hide "may block" banner when not partial approve ([#6410](https://github.com/cowprotocol/cowswap/issues/6410)) ([479f61b](https://github.com/cowprotocol/cowswap/commit/479f61b7d21b9656caff38d043d9fa540dd83f93))
+* **approve:** reset custom approve amount when trade changes ([#6421](https://github.com/cowprotocol/cowswap/issues/6421)) ([73dbdbc](https://github.com/cowprotocol/cowswap/commit/73dbdbcb2e2504309c0c2e5b442e6f0df7fdbe14))
+* check swap type to calculate amount to approve ([#6463](https://github.com/cowprotocol/cowswap/issues/6463)) ([3abb7d3](https://github.com/cowprotocol/cowswap/commit/3abb7d3492a541cf521072610b6a231e6965dfc2))
+* conditionally apply hover effect based on loading state ([#6461](https://github.com/cowprotocol/cowswap/issues/6461)) ([d7f0c86](https://github.com/cowprotocol/cowswap/commit/d7f0c866273b25c91a671ca8387fbd62ec01a15a))
+* merge conflicts ([cb5e4e3](https://github.com/cowprotocol/cowswap/commit/cb5e4e346f76e34dd78c9aeddb3475afb8fe841b))
+* put correct array for motion ([#6458](https://github.com/cowprotocol/cowswap/issues/6458)) ([c4472b9](https://github.com/cowprotocol/cowswap/commit/c4472b98ede1d7bd33190fd95e85f34fb6d62ffc))
+* show warning in safe for eth in limit orders/twap ([#6464](https://github.com/cowprotocol/cowswap/issues/6464)) ([7f1b5bc](https://github.com/cowprotocol/cowswap/commit/7f1b5bc01443e4445b9905d39a6337d2286dab50))
+* use ff to hide partial approve block ([#6462](https://github.com/cowprotocol/cowswap/issues/6462)) ([4f51b54](https://github.com/cowprotocol/cowswap/commit/4f51b5427b22cb3a01d1e568e9ab94923e25a516))
+
+## [1.121.5](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.121.4...cowswap-v1.121.5) (2025-10-29)
+
+
+### Bug Fixes
+
+* **widget:** revert "fix(widget): consider widget when inside an iframe ([#6447](https://github.com/cowprotocol/cowswap/issues/6447))" ([#6452](https://github.com/cowprotocol/cowswap/issues/6452)) ([aaaec55](https://github.com/cowprotocol/cowswap/commit/aaaec5527cbef9a3a11f6d7a79d9b5b03e5c5f6f))
+
+## [1.121.4](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.121.3...cowswap-v1.121.4) (2025-10-28)
+
+
+### Bug Fixes
+
+* update BodyWrapper to conditionally apply dark Halloween background ([#6450](https://github.com/cowprotocol/cowswap/issues/6450)) ([3f959b1](https://github.com/cowprotocol/cowswap/commit/3f959b14ad88c95e41110063b0ce07459ee182a3))
+
+## [1.121.3](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.121.2...cowswap-v1.121.3) (2025-10-28)
+
+
+### Bug Fixes
+
+* **widget:** consider widget when inside an iframe ([#6447](https://github.com/cowprotocol/cowswap/issues/6447)) ([9817a4e](https://github.com/cowprotocol/cowswap/commit/9817a4e4d4d648d09366d8a33e9a8874a62f6473))
+
+## [1.121.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.121.1...cowswap-v1.121.2) (2025-10-28)
+
+
+### Bug Fixes
+
+* **widget:** no custom themes for widget ([#6445](https://github.com/cowprotocol/cowswap/issues/6445)) ([6ae03b1](https://github.com/cowprotocol/cowswap/commit/6ae03b1149b56323fcc6df8bbd2b8d2f52f447b9))
+
 ## [1.121.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.121.0...cowswap-v1.121.1) (2025-10-23)
 
 

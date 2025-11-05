@@ -30,7 +30,7 @@ export const hookDappsRegistry = {
   [PERMIT_HOOK_DAPP_ID]: {
     type: 'INTERNAL',
     name: 'Permit a token',
-    descriptionShort: 'Infinite permit an address to spend one token on your behalf.',
+    descriptionShort: 'Permit an address to spend one token on your behalf.',
     description:
       'This hook allows you to permit an address to spend your tokens on your behalf. This is useful for allowing a smart contract to spend your tokens without needing to approve each transaction.',
     image:
@@ -193,5 +193,35 @@ export const hookDappsRegistry = {
     conditions: {
       walletCompatibility: ['EOA'],
     },
+  },
+  'cow-sdk://flashloans/aave/v3/collateral-swap': {
+    name: 'Aave Collateral Swap',
+    type: 'INTERNAL',
+    descriptionShort: 'Aave Collateral Swap Flashloan',
+    description:
+      'The swap adapter contracts integrate Aave Flash Loans and CoW Swap to facilitate advanced actions like swapping collateral assets when there are borrow positions. Learn more at https://aave.com/docs/developers/smart-contracts/swap-features.',
+    version: '0.0.1',
+    website: 'https://aave.com',
+    image: 'https://app.aave.com/icons/tokens/aave.svg',
+  },
+  'cow-sdk://flashloans/aave/v3/debt-swap': {
+    name: 'Aave Debt Swap',
+    type: 'INTERNAL',
+    descriptionShort: 'Aave Debt Swap Flashloan',
+    description:
+      'The swap adapter contracts integrate Aave Flash Loans and CoW Swap to facilitate advanced actions like swapping debt assets. Learn more at https://aave.com/docs/developers/smart-contracts/swap-features.',
+    version: '0.0.1',
+    website: 'https://aave.com',
+    image: 'https://app.aave.com/icons/tokens/aave.svg',
+  },
+  'cow-sdk://flashloans/aave/v3/repay-with-collateral': {
+    name: 'Aave Repay',
+    type: 'INTERNAL',
+    descriptionShort: 'Aave Repay with Collateral Flashloan',
+    description:
+      'The swap adapter contracts integrate Aave Flash Loans and CoW Swap to facilitate advanced actions like repaying borrow positions using collateral. Learn more at https://aave.com/docs/developers/smart-contracts/swap-features.',
+    version: '0.0.1',
+    website: 'https://aave.com',
+    image: 'https://app.aave.com/icons/tokens/aave.svg',
   },
 }
