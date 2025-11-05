@@ -26,7 +26,7 @@ import { updateSelectedWallet } from 'legacy/state/user/reducer'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
-import { UnsupportedNetworksText } from 'common/pure/UnuspportedNetworksText'
+import { UnsupportedNetworksText } from 'common/pure/UnsupportedNetworksText'
 
 import { AccountIcon } from './AccountIcon'
 import { ActivitiesList } from './ActivitiesList'

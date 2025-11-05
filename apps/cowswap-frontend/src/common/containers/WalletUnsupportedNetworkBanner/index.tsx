@@ -6,7 +6,7 @@ import { AlertCircle } from 'react-feather'
 import styled from 'styled-components/macro'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
-import { UnsupportedNetworksText } from 'common/pure/UnuspportedNetworksText'
+import { UnsupportedNetworksText } from 'common/pure/UnsupportedNetworksText'
 
 const Wrapper = styled.div`
   position: fixed;
