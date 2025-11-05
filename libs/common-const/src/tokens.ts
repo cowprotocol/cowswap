@@ -509,11 +509,11 @@ export const USDC_LINEA = new TokenWithLogo(
 export const USDT_PLASMA = new TokenWithLogo(
   USDT.logoURI,
   SupportedChainId.PLASMA,
-  // https://plasmascan.build/address/0x7f5c764cbc14f9669b88837ca1490cca17c31607
-  '0x7f5c764cbc14f9669b88837ca1490cca17c31607',
+  // https://plasmascan.to/address/0xB8CE59FC3717ada4C02eaDF9682A9e934F625ebb
+  '0xb8ce59fc3717ada4c02eadf9682a9e934f625ebb',
   6,
-  'USDT',
-  'USDT',
+  'USDT0',
+  'USDT0',
 )
 
 // Optimism
