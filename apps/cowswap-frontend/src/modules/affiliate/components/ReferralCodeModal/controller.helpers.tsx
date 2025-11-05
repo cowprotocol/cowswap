@@ -1,8 +1,8 @@
-import { RefObject, useEffect, useMemo, useRef } from 'react'
+import { ReactNode, RefObject, useEffect, useMemo, useRef } from 'react'
 
 import { CowAnalytics } from '@cowprotocol/analytics'
 
-import { t } from '@lingui/macro'
+import { t, Trans } from '@lingui/macro'
 
 import { PrimaryCta, StatusCopyResult } from './types'
 
@@ -16,10 +16,11 @@ export function computePrimaryCta(params: {
   uiState: ReferralModalUiState
   hasValidLength: boolean
   hasCode: boolean
+  verification: ReferralVerificationStatus
   verificationKind: VerificationKind
   walletStatus: WalletStatus
 }): PrimaryCta {
-  const { uiState, hasValidLength, hasCode, verificationKind, walletStatus } = params
+  const { uiState, hasValidLength, hasCode, verification, verificationKind, walletStatus } = params
 
   if (uiState === 'editing') {
     return disabledCta(
@@ -28,19 +29,24 @@ export function computePrimaryCta(params: {
   }
 
   if (uiState === 'valid' || uiState === 'linked') {
-    return { label: t`View rewards.`, disabled: false, action: 'viewRewards' }
+    return { label: t`View rewards`, disabled: false, action: 'viewRewards' }
   }
 
   if (uiState === 'ineligible') {
-    return { label: t`Go back.`, disabled: false, action: 'goBack' }
+    return { label: t`Go back`, disabled: false, action: 'goBack' }
+  }
+
+  if (uiState === 'error') {
+    const label = verification.kind === 'error' && verification.message ? verification.message : t`Unable to verify code`
+    return disabledCta(label)
   }
 
   const staticDisabledLabels: Partial<Record<ReferralModalUiState, string>> = {
     empty: t`Provide a valid referral code`,
     unsupported: t`Unsupported Network`,
     checking: t`Checking code…`,
-    invalid: t`Connect to verify code`,
-    expired: t`Connect to verify code`,
+    invalid: t`This code is invalid. Try another.`,
+    expired: t`Rewards ended for this code. Try another.`,
   }
 
   const disabledLabel = staticDisabledLabels[uiState]
@@ -79,9 +85,6 @@ export function getStatusCopy(verification: ReferralVerificationStatus): StatusC
   return {
     shouldShowInfo: verification.kind === 'valid' && verification.eligible,
     infoMessage: t`Your wallet is eligible for rewards. After your first trade, the referral code will bind and stay active for 90 days.`,
-    expiredMessage: t`Rewards ended for this code. Try another.`,
-    invalidMessage: t`This code is invalid. Try another.`,
-    errorMessage: verification.kind === 'error' ? verification.message : undefined,
   }
 }
 
@@ -156,18 +159,30 @@ export function useReferralModalAnalytics(
   }, [analytics, referral.modalOpen, referral.modalSource, uiState])
 }
 
-export function useReferralMessages(codeForDisplay?: string): { linkedMessage: string; ineligibleMessage: string } {
+export function useReferralMessages(codeForDisplay?: string): {
+  linkedMessage: ReactNode
+  ineligibleMessage: ReactNode
+} {
   return useMemo(() => {
     if (!codeForDisplay) {
       return {
-        linkedMessage: t`Your wallet is already linked to a referral code.`,
-        ineligibleMessage: t`This wallet has already traded and is not eligible for referral rewards.`,
+        linkedMessage: <Trans>Your wallet is already linked to a referral code.</Trans>,
+        ineligibleMessage: <Trans>This wallet has already traded and is not eligible for referral rewards.</Trans>,
       }
     }
 
     return {
-      linkedMessage: t`The code ${codeForDisplay} from your link wasn’t applied.`,
-      ineligibleMessage: t`The code ${codeForDisplay} from your link wasn’t applied because this wallet has already traded. Referral rewards are for new wallets only.`,
+      linkedMessage: (
+        <Trans>
+          The code <strong>{codeForDisplay}</strong> from your link wasn’t applied.
+        </Trans>
+      ),
+      ineligibleMessage: (
+        <Trans>
+          The code <strong>{codeForDisplay}</strong> from your link wasn’t applied because this wallet has already
+          traded. Referral rewards are for new wallets only.
+        </Trans>
+      ),
     }
   }, [codeForDisplay])
 }

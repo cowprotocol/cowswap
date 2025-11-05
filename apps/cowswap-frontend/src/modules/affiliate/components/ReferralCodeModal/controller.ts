@@ -49,10 +49,11 @@ export function useReferralModalController(params: ReferralModalControllerParams
         uiState,
         hasValidLength,
         hasCode,
+        verification,
         verificationKind: verification.kind,
         walletStatus: wallet.status,
       }),
-    [hasCode, hasValidLength, uiState, verification.kind, wallet.status],
+    [hasCode, hasValidLength, uiState, verification, wallet.status],
   )
 
   useReferralModalFocus(referral.modalOpen, uiState, inputRef, ctaRef)
@@ -96,9 +97,6 @@ export function useReferralModalController(params: ReferralModalControllerParams
       onChange: handlers.onChange,
       helperText,
       primaryCta,
-      errorMessage: statusCopy.errorMessage,
-      invalidMessage: statusCopy.invalidMessage,
-      expiredMessage: statusCopy.expiredMessage,
       linkedMessage,
       ineligibleMessage,
       infoMessage: statusCopy.infoMessage,

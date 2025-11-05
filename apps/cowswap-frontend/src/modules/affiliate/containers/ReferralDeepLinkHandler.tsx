@@ -7,12 +7,14 @@ import { useLocation } from 'react-router'
 
 import { useNavigate } from 'common/hooks/useNavigate'
 
+import { useReferral } from '../hooks/useReferral'
 import { useReferralActions } from '../hooks/useReferralActions'
 import { isReferralCodeLengthValid, sanitizeReferralCode } from '../utils/code'
 
 export function ReferralDeepLinkHandler(): ReactNode {
-  const { isAffiliateRewardsEnabled } = useFeatureFlags()
+  const { isAffiliateRewardsEnabled = true } = useFeatureFlags()
   const actions = useReferralActions()
+  const referral = useReferral()
   const location = useLocation()
   const navigate = useNavigate()
   const lastProcessedRef = useRef<string | null>(null)
@@ -57,13 +59,36 @@ export function ReferralDeepLinkHandler(): ReactNode {
 
     lastProcessedRef.current = sanitized
 
+    const isAlreadyLinked = referral.wallet.status === 'linked' || referral.verification.kind === 'linked'
+
     actions.setIncomingCode(sanitized)
-    actions.setSavedCode(sanitized)
-    actions.openModal('deeplink', { code: sanitized })
-    analytics.sendEvent({ category: 'referral', action: 'code_saved', label: 'deeplink', value: sanitized.length })
+
+    if (isAlreadyLinked) {
+      actions.openModal('deeplink', { code: sanitized })
+      analytics.sendEvent({
+        category: 'referral',
+        action: 'deeplink_discarded',
+        label: 'linked_wallet',
+        value: sanitized.length,
+      })
+    } else {
+      actions.setSavedCode(sanitized)
+      actions.openModal('deeplink', { code: sanitized })
+      analytics.sendEvent({ category: 'referral', action: 'code_saved', label: 'deeplink', value: sanitized.length })
+    }
 
     stripReferralFromUrl()
-  }, [actions, analytics, isAffiliateRewardsEnabled, location.hash, location.pathname, location.search, navigate])
+  }, [
+    actions,
+    analytics,
+    isAffiliateRewardsEnabled,
+    location.hash,
+    location.pathname,
+    location.search,
+    navigate,
+    referral.verification.kind,
+    referral.wallet.status,
+  ])
 
   return null
 }

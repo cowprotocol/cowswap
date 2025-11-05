@@ -77,30 +77,51 @@ function hasAnyCode(savedCode?: string, inputCode?: string): boolean {
   return Boolean(savedCode || inputCode)
 }
 
-function deriveUiState(params: {
+interface DeriveUiStateParams {
   verificationKind: ReferralVerificationKind
   walletStatus: ReferralWalletStatus
   hasCode: boolean
   isEditing: boolean
   editMode: boolean
-}): ReferralModalUiState {
+}
+
+function deriveUiState(params: DeriveUiStateParams): ReferralModalUiState {
   const { verificationKind, walletStatus, hasCode, isEditing, editMode } = params
+
+  if (!isEditing && (verificationKind === 'linked' || walletStatus === 'linked')) {
+    return 'linked'
+  }
 
   if (editMode && hasCode) {
     return 'editing'
   }
 
+  const stateFromVerification = resolveVerificationState(verificationKind, walletStatus, hasCode)
+  if (stateFromVerification) {
+    return stateFromVerification
+  }
+
+  if (isEditing && hasCode) {
+    return 'editing'
+  }
+
+  return 'empty'
+}
+
+function resolveVerificationState(
+  verificationKind: ReferralVerificationKind,
+  walletStatus: ReferralWalletStatus,
+  hasCode: boolean,
+): ReferralModalUiState | null {
   const orderedConditions: Array<[boolean, ReferralModalUiState]> = [
     [verificationKind === 'checking', 'checking'],
     [walletStatus === 'unsupported' && hasCode, 'unsupported'],
     [verificationKind === 'invalid', 'invalid'],
     [verificationKind === 'expired', 'expired'],
     [verificationKind === 'valid', 'valid'],
-    [verificationKind === 'linked' || walletStatus === 'linked', 'linked'],
     [verificationKind === 'ineligible' || walletStatus === 'ineligible', 'ineligible'],
     [verificationKind === 'error', 'error'],
     [verificationKind === 'pending', 'pending'],
-    [isEditing && hasCode, 'editing'],
   ]
 
   for (const [condition, state] of orderedConditions) {
@@ -109,5 +130,5 @@ function deriveUiState(params: {
     }
   }
 
-  return 'empty'
+  return null
 }

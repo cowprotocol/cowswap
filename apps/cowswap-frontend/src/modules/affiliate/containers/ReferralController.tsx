@@ -16,6 +16,8 @@ import {
 } from '../types'
 import { isReferralCodeLengthValid, sanitizeReferralCode } from '../utils/code'
 
+const DEBUG_CODE_PREFIX = 'DEBUG'
+
 export function ReferralController(): ReactNode {
   const referral = useReferral()
   const { account, chainId } = useWalletInfo()
@@ -262,7 +264,10 @@ function handleVerificationResponse(params: {
 
   if (linked) {
     actions.setSavedCode(linked)
-    applyVerificationResult({ kind: 'linked', code: sanitizedCode, linkedCode: linked }, { status: 'linked', code: linked })
+    applyVerificationResult(
+      { kind: 'linked', code: sanitizedCode, linkedCode: linked },
+      { status: 'linked', code: linked },
+    )
     trackVerifyResult('linked', false)
     return
   }
@@ -305,7 +310,6 @@ function handleVerificationResponse(params: {
   trackVerifyResult('valid', true)
 }
 
-
 interface PerformVerificationParams {
   rawCode: string
   account?: string
@@ -339,13 +343,27 @@ async function performVerification({
     return
   }
 
-  if (!account) {
-    toggleWalletModal()
+  if (
+    handleDebugVerification({
+      sanitizedCode,
+      actions,
+      applyVerificationResult,
+      trackVerifyResult,
+      pendingVerificationRef,
+    })
+  ) {
     return
   }
 
-  if (!supportedNetwork || chainId === undefined) {
-    actions.setWalletState({ status: 'unsupported', chainId })
+  if (
+    !ensureVerificationPrerequisites({
+      account,
+      chainId,
+      supportedNetwork,
+      toggleWalletModal,
+      actions,
+    })
+  ) {
     return
   }
 
@@ -360,7 +378,7 @@ async function performVerification({
   })
 
   try {
-    const response = await verifyReferralCode({ code: sanitizedCode, account, chainId })
+    const response = await verifyReferralCode({ code: sanitizedCode, account: account!, chainId: chainId! })
 
     if (pendingVerificationRef.current !== requestId) {
       return
@@ -381,8 +399,7 @@ async function performVerification({
 
     const status = (error as Error & { status?: number }).status
     const errorType = status === 429 ? 'rate-limit' : 'network'
-    const message =
-      errorType === 'rate-limit' ? 'Too many attempts. Try later.' : 'Unable to check code right now.'
+    const message = errorType === 'rate-limit' ? 'Too many attempts. Try later.' : 'Unable to check code right now.'
 
     applyVerificationResult({ kind: 'error', code: sanitizedCode, errorType, message })
     trackVerifyResult('error', false, `type=${errorType}`)
@@ -391,6 +408,134 @@ async function performVerification({
       console.warn('[Referral] Verification failed', error)
     }
   }
+}
+
+function ensureVerificationPrerequisites(params: {
+  account?: string
+  chainId?: number
+  supportedNetwork: boolean
+  toggleWalletModal: () => void
+  actions: ReferralContextValue['actions']
+}): boolean {
+  const { account, chainId, supportedNetwork, toggleWalletModal, actions } = params
+
+  if (!account) {
+    toggleWalletModal()
+    return false
+  }
+
+  if (!supportedNetwork || chainId === undefined) {
+    actions.setWalletState({ status: 'unsupported', chainId })
+    return false
+  }
+
+  return true
+}
+
+interface DebugVerificationContext {
+  code: string
+  actions: ReferralContextValue['actions']
+  applyVerificationResult: (status: ReferralVerificationStatus, walletState?: WalletReferralState) => void
+  track: (result: string, eligible: boolean, extraLabel?: string) => void
+  pendingVerificationRef: MutableRefObject<number | null>
+}
+
+type DebugHandler = (context: DebugVerificationContext) => void
+
+const DEBUG_HANDLERS: Record<string, DebugHandler> = {
+  IDLE: ({ actions, applyVerificationResult, track, pendingVerificationRef }) => {
+    actions.setSavedCode(undefined)
+    actions.setWalletState({ status: 'eligible' })
+    applyVerificationResult({ kind: 'idle' })
+    pendingVerificationRef.current = null
+    track('idle', false)
+  },
+  PENDING: ({ code, actions, applyVerificationResult, track, pendingVerificationRef }) => {
+    actions.setSavedCode(code)
+    actions.setWalletState({ status: 'eligible' })
+    applyVerificationResult({ kind: 'pending', code })
+    pendingVerificationRef.current = null
+    track('pending', false)
+  },
+  CHECKING: ({ code, actions, track, pendingVerificationRef }) => {
+    actions.setSavedCode(code)
+    actions.setWalletState({ status: 'eligible' })
+    pendingVerificationRef.current = Date.now()
+    actions.startVerification(code)
+    track('checking', false)
+  },
+  VALID: ({ code, actions, applyVerificationResult, track, pendingVerificationRef }) => {
+    actions.setSavedCode(code)
+    actions.setWalletState({ status: 'eligible' })
+    applyVerificationResult({ kind: 'valid', code, eligible: true, programActive: true })
+    pendingVerificationRef.current = null
+    track('valid', true)
+  },
+  INVALID: ({ code, actions, applyVerificationResult, track, pendingVerificationRef }) => {
+    actions.setSavedCode(code)
+    actions.setWalletState({ status: 'eligible' })
+    applyVerificationResult({ kind: 'invalid', code })
+    pendingVerificationRef.current = null
+    track('invalid', false)
+  },
+  EXPIRED: ({ code, actions, applyVerificationResult, track, pendingVerificationRef }) => {
+    actions.setSavedCode(code)
+    actions.setWalletState({ status: 'eligible' })
+    applyVerificationResult({ kind: 'expired', code })
+    pendingVerificationRef.current = null
+    track('expired', false)
+  },
+  LINKED: ({ code, actions, applyVerificationResult, track, pendingVerificationRef }) => {
+    actions.setSavedCode(code)
+    applyVerificationResult({ kind: 'linked', code, linkedCode: code }, { status: 'linked', code })
+    pendingVerificationRef.current = null
+    track('linked', false)
+  },
+  INELIGIBLE: ({ code, actions, applyVerificationResult, track, pendingVerificationRef }) => {
+    const reason = 'Debug ineligible wallet'
+    actions.setSavedCode(code)
+    applyVerificationResult({ kind: 'ineligible', code, reason }, { status: 'ineligible', reason })
+    pendingVerificationRef.current = null
+    track('ineligible', false, reason)
+  },
+  ERROR: ({ code, actions, applyVerificationResult, track, pendingVerificationRef }) => {
+    const message = 'Debug referral error'
+    actions.setSavedCode(code)
+    actions.setWalletState({ status: 'eligible' })
+    applyVerificationResult({ kind: 'error', code, errorType: 'network', message })
+    pendingVerificationRef.current = null
+    track('error', false, 'type=network')
+  },
+}
+
+function handleDebugVerification(params: {
+  sanitizedCode: string
+  actions: ReferralContextValue['actions']
+  applyVerificationResult: (status: ReferralVerificationStatus, walletState?: WalletReferralState) => void
+  trackVerifyResult: (result: string, eligible: boolean, extraLabel?: string) => void
+  pendingVerificationRef: MutableRefObject<number | null>
+}): boolean {
+  const { sanitizedCode, actions, applyVerificationResult, trackVerifyResult, pendingVerificationRef } = params
+  if (!sanitizedCode.startsWith(DEBUG_CODE_PREFIX)) {
+    return false
+  }
+
+  const scenario = sanitizedCode.slice(DEBUG_CODE_PREFIX.length).toUpperCase()
+  const handler = DEBUG_HANDLERS[scenario]
+
+  if (!handler) {
+    return false
+  }
+
+  handler({
+    code: sanitizedCode,
+    actions,
+    applyVerificationResult,
+    track: (result, eligible, extraLabel) => trackVerifyResult(`debug_${result}`, eligible, extraLabel),
+    pendingVerificationRef,
+  })
+
+  return true
 }
 function useReferralAutoVerification(params: {
   referral: ReferralContextValue
@@ -404,6 +549,11 @@ function useReferralAutoVerification(params: {
 
   useEffect(() => {
     if (!shouldAutoVerify) {
+      return
+    }
+
+    if (referral.wallet.status === 'linked' || verification.kind === 'linked') {
+      referral.actions.setShouldAutoVerify(false)
       return
     }
 
@@ -423,7 +573,18 @@ function useReferralAutoVerification(params: {
     }
 
     runVerification(sanitized)
-  }, [account, chainId, inputCode, runVerification, savedCode, shouldAutoVerify, supportedNetwork, verification.kind])
+  }, [
+    account,
+    chainId,
+    inputCode,
+    referral.actions,
+    referral.wallet.status,
+    runVerification,
+    savedCode,
+    shouldAutoVerify,
+    supportedNetwork,
+    verification.kind,
+  ])
 }
 
 function usePendingVerificationHandler(params: {

@@ -48,7 +48,7 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
   const { walletName } = useWalletDetails()
   const cowAnalytics = useCowAnalytics()
   const webVitals = useMemo(() => new WebVitalsAnalytics(cowAnalytics), [cowAnalytics])
-  const { isYieldEnabled, isAffiliateRewardsEnabled } = useFeatureFlags()
+  const { isYieldEnabled, isAffiliateRewardsEnabled = true } = useFeatureFlags()
 
   useAnalyticsReporter({
     account,

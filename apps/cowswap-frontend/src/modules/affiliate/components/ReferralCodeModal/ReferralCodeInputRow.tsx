@@ -1,25 +1,24 @@
 import { FormEvent, ReactNode, RefObject } from 'react'
 
+import AlertIcon from '@cowprotocol/assets/cow-swap/alert-circle.svg'
+import LinkedIcon from '@cowprotocol/assets/images/icon-locked-2.svg'
+
 import { t, Trans } from '@lingui/macro'
-import { AlertCircle, Trash2, Lock } from 'react-feather'
+import SVG from 'react-inlinesvg'
 
-import { InlineAction, InputWrapper, StyledInput, TrailingActions, TrailingIcon } from './styles'
-
-import { ReferralModalUiState } from '../../hooks/useReferralModalState'
-import { isReferralCodeLengthValid } from '../../utils/code'
-
+import { InputWrapper, StyledInput, TrailingIcon } from './styles'
 
 interface ReferralCodeInputRowProps {
   displayCode: string
   hasError: boolean
   isInputDisabled: boolean
+  isEditing: boolean
+  isLinked: boolean
   trailingIconKind?: 'error' | 'lock'
-  uiState: ReferralModalUiState
-  savedCode?: string
-  onRemove(): void
-  onSave(): void
+  canSubmitSave: boolean
   onChange(event: FormEvent<HTMLInputElement>): void
   onPrimaryClick(): void
+  onSave(): void
   inputRef: RefObject<HTMLInputElement | null>
 }
 
@@ -28,23 +27,23 @@ export function ReferralCodeInputRow(props: ReferralCodeInputRowProps): ReactNod
     displayCode,
     hasError,
     isInputDisabled,
+    isEditing,
     trailingIconKind,
-    uiState,
-    savedCode,
-    onRemove,
-    onSave,
+    isLinked,
+    canSubmitSave,
     onChange,
     onPrimaryClick,
+    onSave,
     inputRef,
   } = props
 
   return (
-    <InputWrapper hasError={hasError} disabled={isInputDisabled}>
+    <InputWrapper hasError={hasError} disabled={isInputDisabled} isEditing={isEditing} isLinked={isLinked}>
       <StyledInput
         id="referral-code-input"
         ref={inputRef}
         value={displayCode || ''}
-        placeholder={t`ENTER-CODE`}
+        placeholder={t`ENTER CODE`}
         onChange={onChange}
         disabled={isInputDisabled}
         maxLength={16}
@@ -53,65 +52,31 @@ export function ReferralCodeInputRow(props: ReferralCodeInputRowProps): ReactNod
         onKeyDown={(event) => {
           if (event.key === 'Enter') {
             event.preventDefault()
+
+            if (canSubmitSave) {
+              onSave()
+              return
+            }
+
             onPrimaryClick()
           }
         }}
       />
 
-      <ReferralCodeTrailingActions
-        trailingIconKind={trailingIconKind}
-        uiState={uiState}
-        savedCode={savedCode}
-        displayCode={displayCode}
-        onRemove={onRemove}
-        onSave={onSave}
-      />
-    </InputWrapper>
-  )
-}
-
-interface ReferralCodeTrailingActionsProps {
-  trailingIconKind?: 'error' | 'lock'
-  uiState: ReferralModalUiState
-  savedCode?: string
-  displayCode: string
-  onRemove(): void
-  onSave(): void
-}
-
-function ReferralCodeTrailingActions({
-  trailingIconKind,
-  uiState,
-  savedCode,
-  displayCode,
-  onRemove,
-  onSave,
-}: ReferralCodeTrailingActionsProps): ReactNode {
-  const isEditing = uiState === 'editing'
-  const isSaveDisabled = !isReferralCodeLengthValid(displayCode || '')
-
-  return (
-    <TrailingActions>
       {trailingIconKind && (
         <TrailingIcon kind={trailingIconKind}>
-          <AlertCircle size={18} />
+          {trailingIconKind === 'lock' ? (
+            <>
+              <SVG src={LinkedIcon} title={t`Linked`} />
+              <span>
+                <Trans>Linked</Trans>
+              </span>
+            </>
+          ) : (
+            <SVG src={AlertIcon} title={t`Invalid code`} />
+          )}
         </TrailingIcon>
       )}
-
-      {isEditing && (
-        <>
-          {savedCode && (
-            <InlineAction type="button" emphasis="danger" onClick={onRemove}>
-              <Trash2 size={14} />
-              <Trans>Remove</Trans>
-            </InlineAction>
-          )}
-          <InlineAction type="button" onClick={onSave} disabled={isSaveDisabled} aria-label={t`Save code`}>
-            <Lock size={14} />
-            <Trans>Save</Trans>
-          </InlineAction>
-        </>
-      )}
-    </TrailingActions>
+    </InputWrapper>
   )
 }

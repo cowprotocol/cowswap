@@ -1,4 +1,4 @@
-import { FormEvent, RefObject } from 'react'
+import { FormEvent, ReactNode, RefObject } from 'react'
 
 import { ReferralModalUiState } from '../../hooks/useReferralModalState'
 import { ReferralVerificationStatus } from '../../types'
@@ -23,11 +23,8 @@ export interface ReferralModalContentProps {
   onChange(event: FormEvent<HTMLInputElement>): void
   helperText?: string
   primaryCta: PrimaryCta
-  errorMessage?: string
-  invalidMessage: string
-  expiredMessage: string
-  linkedMessage: string
-  ineligibleMessage: string
+  linkedMessage: ReactNode
+  ineligibleMessage: ReactNode
   infoMessage: string
   shouldShowInfo: boolean
   inputRef: RefObject<HTMLInputElement | null>
@@ -38,7 +35,4 @@ export interface ReferralModalContentProps {
 export interface StatusCopyResult {
   shouldShowInfo: boolean
   infoMessage: string
-  expiredMessage: string
-  invalidMessage: string
-  errorMessage?: string
 }
