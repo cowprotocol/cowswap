@@ -2,18 +2,18 @@ import { Fragment, ReactNode } from 'react'
 
 import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { styled } from '@cowprotocol/common-hooks'
-import { getEtherscanLink, getExplorerLabel, shortenAddress, getExplorerAddressLink } from '@cowprotocol/common-utils'
+import { getEtherscanLink, getExplorerAddressLink, getExplorerLabel, shortenAddress } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
 import { ExternalLink } from '@cowprotocol/ui'
 import {
-  useWalletInfo,
-  useWalletDetails,
-  useIsWalletConnect,
-  getIsHardWareWallet,
-  useDisconnectWallet,
-  useConnectionType,
-  getIsInjectedMobileBrowser,
   ConnectionType,
+  getIsHardWareWallet,
+  getIsInjectedMobileBrowser,
+  useConnectionType,
+  useDisconnectWallet,
+  useIsWalletConnect,
+  useWalletDetails,
+  useWalletInfo,
 } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/macro'
@@ -26,7 +26,7 @@ import { updateSelectedWallet } from 'legacy/state/user/reducer'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
-import { useUnsupportedNetworksText } from 'common/hooks/useUnsupportedNetworksText'
+import { UnsupportedNetworksText } from 'common/pure/UnuspportedNetworksText'
 
 import { AccountIcon } from './AccountIcon'
 import { ActivitiesList } from './ActivitiesList'
@@ -43,8 +43,8 @@ import {
   WalletActions,
   WalletName,
   WalletNameAddress,
-  WalletSelector,
   WalletSecondaryActions,
+  WalletSelector,
   WalletWrapper,
   Wrapper,
 } from './styled'
@@ -101,8 +101,6 @@ export function AccountDetails({
 
   const isWalletConnect = useIsWalletConnect()
   const isInjectedMobileBrowser = getIsInjectedMobileBrowser()
-
-  const unsupportedNetworksText = useUnsupportedNetworksText()
 
   // In case the wallet is connected via WalletConnect and has wallet name set, add the suffix to be clear
   // This to avoid confusion for instance when using Metamask mobile
@@ -177,7 +175,9 @@ export function AccountDetails({
       </InfoCard>
 
       {isChainIdUnsupported ? (
-        <UnsupportedWalletBox>{unsupportedNetworksText}</UnsupportedWalletBox>
+        <UnsupportedWalletBox>
+          <UnsupportedNetworksText />
+        </UnsupportedWalletBox>
       ) : (
         <>
           <SurplusCard />
