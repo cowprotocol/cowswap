@@ -1,27 +1,25 @@
-import {
-  ReactNode,
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-  Dispatch,
-  SetStateAction,
-} from 'react'
+import { ReactNode, createContext, useCallback, useContext, useMemo, useState, Dispatch, SetStateAction } from 'react'
 
-import { isProdLike } from '@cowprotocol/common-utils'
-
-import { REFERRAL_STORAGE_KEY } from '../constants'
 import {
-  ReferralActions,
-  ReferralContextValue,
-  ReferralDomainState,
-  ReferralModalSource,
-  ReferralVerificationStatus,
-  WalletReferralState,
-} from '../types'
-import { sanitizeReferralCode } from '../utils/code'
+  reduceClearPendingVerification,
+  reduceCloseModal,
+  reduceCompleteVerification,
+  reduceDisableEditMode,
+  reduceEnableEditMode,
+  reduceOpenModal,
+  reduceRemoveCode,
+  reduceRequestVerification,
+  reduceSaveCode,
+  reduceSetIncomingCode,
+  reduceSetInputCode,
+  reduceSetSavedCode,
+  reduceSetShouldAutoVerify,
+  reduceSetWalletState,
+  reduceStartVerification,
+} from './referralReducers'
+import { useReferralHydration, useReferralPersistence, useReferralStorageSync } from './referralStorage'
+
+import { ReferralActions, ReferralContextValue, ReferralDomainState } from '../types'
 
 export interface ReferralProviderProps {
   children: ReactNode
@@ -89,116 +87,6 @@ function useReferralStore(): ReferralContextValue {
 
 type SetReferralState = Dispatch<SetStateAction<ReferralDomainState>>
 
-function useReferralHydration(setState: SetReferralState): void {
-  useEffect(() => {
-    if (typeof window === 'undefined') {
-      return
-    }
-
-    try {
-      const stored = window.localStorage.getItem(REFERRAL_STORAGE_KEY)
-
-      if (!stored) {
-        return
-      }
-
-      const sanitized = sanitizeReferralCode(stored)
-
-      if (!sanitized) {
-        return
-      }
-
-      setState((prev) => reduceSetSavedCode(prev, sanitized))
-    } catch (error) {
-      if (!isProdLike) {
-        console.warn('[Referral] Failed to read saved code from storage', error)
-      }
-    }
-  }, [setState])
-}
-
-function useReferralPersistence(savedCode?: string): void {
-  useEffect(() => {
-    if (typeof window === 'undefined') {
-      return
-    }
-
-    try {
-      if (!savedCode) {
-        window.localStorage.removeItem(REFERRAL_STORAGE_KEY)
-      } else {
-        window.localStorage.setItem(REFERRAL_STORAGE_KEY, savedCode)
-      }
-    } catch (error) {
-      if (!isProdLike) {
-        console.warn('[Referral] Failed to persist saved code', error)
-      }
-    }
-  }, [savedCode])
-}
-
-function useReferralStorageSync(setState: SetReferralState): void {
-  useEffect(() => {
-    if (typeof window === 'undefined') {
-      return
-    }
-
-    const applyValue = (value: string | null): void => {
-      setState((prev) => {
-        const sanitized = value ? sanitizeReferralCode(value) : undefined
-
-        if (!sanitized) {
-          return prev.savedCode ? reduceRemoveCode(prev) : prev
-        }
-
-        if (prev.savedCode === sanitized) {
-          return prev
-        }
-
-        return reduceSetSavedCode(prev, sanitized)
-      })
-    }
-
-    const handleStorage = (event: StorageEvent): void => {
-      if (event.key !== REFERRAL_STORAGE_KEY) {
-        return
-      }
-
-      applyValue(event.newValue)
-    }
-
-    const handleFocus = (): void => {
-      try {
-        const current = window.localStorage.getItem(REFERRAL_STORAGE_KEY)
-        applyValue(current)
-      } catch (error) {
-        if (!isProdLike) {
-          console.warn('[Referral] Failed to sync saved code from storage on focus', error)
-        }
-      }
-    }
-
-    const handleVisibility = (): void => {
-      if (document.visibilityState === 'visible') {
-        handleFocus()
-      }
-    }
-
-    window.addEventListener('storage', handleStorage)
-    window.addEventListener('focus', handleFocus)
-    document.addEventListener('visibilitychange', handleVisibility)
-
-    // Initial sync, in case storage changed before listener attached.
-    handleFocus()
-
-    return () => {
-      window.removeEventListener('storage', handleStorage)
-      window.removeEventListener('focus', handleFocus)
-      document.removeEventListener('visibilitychange', handleVisibility)
-    }
-  }, [setState])
-}
-
 function useStateReducerAction<A extends unknown[]>(
   setState: SetReferralState,
   reducer: (state: ReferralDomainState, ...args: A) => ReferralDomainState,
@@ -264,190 +152,6 @@ function useReferralStoreActions(setState: SetReferralState): ReferralActions {
       startVerification,
     ],
   )
-}
-
-function reduceOpenModal(
-  prev: ReferralDomainState,
-  source: ReferralModalSource,
-  options?: { code?: string },
-): ReferralDomainState {
-  const sanitizedIncoming = options?.code ? sanitizeReferralCode(options.code) : undefined
-  const isLinked = prev.wallet.status === 'linked' || prev.verification.kind === 'linked'
-  const nextInputCode = isLinked
-    ? prev.savedCode || prev.inputCode || ''
-    : sanitizedIncoming ?? (prev.inputCode || prev.savedCode || '')
-
-  return {
-    ...prev,
-    modalOpen: true,
-    modalSource: source,
-    editMode: false,
-    incomingCode: sanitizedIncoming,
-    inputCode: sanitizeReferralCode(nextInputCode) ?? '',
-    verification:
-      sanitizedIncoming && sanitizedIncoming !== prev.savedCode
-        ? isLinked
-          ? prev.verification
-          : { kind: 'pending', code: sanitizedIncoming }
-        : prev.verification,
-  }
-}
-
-function reduceCloseModal(prev: ReferralDomainState): ReferralDomainState {
-  return {
-    ...prev,
-    modalOpen: false,
-    modalSource: null,
-    editMode: false,
-    incomingCode: undefined,
-    pendingVerificationRequest: undefined,
-  }
-}
-
-function reduceSetInputCode(prev: ReferralDomainState, value: string): ReferralDomainState {
-  const sanitized = sanitizeReferralCode(value)
-
-  return {
-    ...prev,
-    inputCode: sanitized,
-    verification: prev.verification.kind === 'pending' ? prev.verification : { kind: 'idle' },
-  }
-}
-
-function reduceEnableEditMode(prev: ReferralDomainState): ReferralDomainState {
-  return {
-    ...prev,
-    editMode: true,
-  }
-}
-
-function reduceDisableEditMode(prev: ReferralDomainState): ReferralDomainState {
-  return {
-    ...prev,
-    editMode: false,
-  }
-}
-
-function reduceSaveCode(prev: ReferralDomainState, value: string): ReferralDomainState {
-  const sanitized = sanitizeReferralCode(value)
-
-  if (!sanitized) {
-    return {
-      ...prev,
-      savedCode: undefined,
-      inputCode: '',
-      verification: { kind: 'idle' },
-      shouldAutoVerify: false,
-    }
-  }
-
-  return {
-    ...prev,
-    savedCode: sanitized,
-    inputCode: sanitized,
-    verification: { kind: 'pending', code: sanitized },
-    editMode: false,
-    shouldAutoVerify: true,
-  }
-}
-
-function reduceRemoveCode(prev: ReferralDomainState): ReferralDomainState {
-  return {
-    ...prev,
-    savedCode: undefined,
-    inputCode: '',
-    incomingCode: undefined,
-    verification: { kind: 'idle' },
-    shouldAutoVerify: false,
-  }
-}
-
-function reduceSetIncomingCode(prev: ReferralDomainState, code?: string): ReferralDomainState {
-  return {
-    ...prev,
-    incomingCode: code ? sanitizeReferralCode(code) : undefined,
-  }
-}
-
-function reduceSetWalletState(prev: ReferralDomainState, walletState: WalletReferralState): ReferralDomainState {
-  return {
-    ...prev,
-    wallet: walletState,
-  }
-}
-
-function reduceStartVerification(prev: ReferralDomainState, code: string): ReferralDomainState {
-  const sanitized = sanitizeReferralCode(code)
-
-  if (!sanitized) {
-    return prev
-  }
-
-  return {
-    ...prev,
-    verification: { kind: 'checking', code: sanitized },
-    shouldAutoVerify: false,
-    lastVerificationRequest: { code: sanitized, timestamp: Date.now() },
-  }
-}
-
-function reduceCompleteVerification(
-  prev: ReferralDomainState,
-  status: ReferralVerificationStatus,
-): ReferralDomainState {
-  return {
-    ...prev,
-    verification: status,
-    shouldAutoVerify: false,
-  }
-}
-
-function reduceSetShouldAutoVerify(prev: ReferralDomainState, value: boolean): ReferralDomainState {
-  return {
-    ...prev,
-    shouldAutoVerify: value,
-  }
-}
-
-function reduceSetSavedCode(prev: ReferralDomainState, value?: string): ReferralDomainState {
-  const sanitized = value ? sanitizeReferralCode(value) : undefined
-
-  if (!sanitized) {
-    return {
-      ...prev,
-      savedCode: undefined,
-      inputCode: '',
-      verification: { kind: 'idle' },
-      shouldAutoVerify: false,
-    }
-  }
-
-  return {
-    ...prev,
-    savedCode: sanitized,
-    inputCode: sanitized,
-    verification: { kind: 'pending', code: sanitized },
-    shouldAutoVerify: true,
-  }
-}
-
-function reduceRequestVerification(prev: ReferralDomainState, code?: string): ReferralDomainState {
-  return {
-    ...prev,
-    pendingVerificationRequest: { id: Date.now(), code: code ? sanitizeReferralCode(code) : undefined },
-    shouldAutoVerify: false,
-  }
-}
-
-function reduceClearPendingVerification(prev: ReferralDomainState, id: number): ReferralDomainState {
-  if (prev.pendingVerificationRequest?.id !== id) {
-    return prev
-  }
-
-  return {
-    ...prev,
-    pendingVerificationRequest: undefined,
-  }
 }
 
 export function useReferralContext(): ReferralContextValue {

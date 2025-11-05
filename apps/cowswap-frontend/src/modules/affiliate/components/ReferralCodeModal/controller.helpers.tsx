@@ -37,8 +37,9 @@ export function computePrimaryCta(params: {
   }
 
   if (uiState === 'error') {
-    const label = verification.kind === 'error' && verification.message ? verification.message : t`Unable to verify code`
-    return disabledCta(label)
+    const label =
+      verification.kind === 'error' && verification.message ? verification.message : t`Unable to verify code`
+    return { label, disabled: false, action: 'verify' }
   }
 
   const staticDisabledLabels: Partial<Record<ReferralModalUiState, string>> = {
