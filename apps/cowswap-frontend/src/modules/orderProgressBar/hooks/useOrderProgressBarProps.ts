@@ -1,5 +1,5 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { SolverInfo } from '@cowprotocol/core'
@@ -334,6 +334,7 @@ function useProgressBarStepNameUpdater(
   isBridgingTrade: boolean,
 ): void {
   const setProgressBarStepName = useSetExecutingOrderProgressBarStepNameCallback()
+  const previousStepNameRef = useRef<OrderProgressBarStepName | null>(null)
 
   const stepName = getProgressBarStepName(
     isUnfillable,
@@ -353,7 +354,12 @@ function useProgressBarStepNameUpdater(
   // Update state with new step name
   useEffect(() => {
     function updateStepName(name: OrderProgressBarStepName): void {
+      // Prevent updating if the step name hasn't actually changed
+      if (previousStepNameRef.current === name) {
+        return
+      }
       setProgressBarStepName(orderId, name || DEFAULT_STEP_NAME)
+      previousStepNameRef.current = name
     }
 
     let timer: NodeJS.Timeout | undefined
