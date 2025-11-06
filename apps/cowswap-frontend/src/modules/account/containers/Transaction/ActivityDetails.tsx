@@ -21,7 +21,7 @@ import { useToggleAccountModal } from 'modules/account'
 import { BridgeActivitySummary } from 'modules/bridge'
 import { EthFlowStepper } from 'modules/ethFlow'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
-import { useGetPendingOrdersPermitValidityState } from 'modules/ordersTable'
+import { useGetActiveOrdersPermitValidityState } from 'modules/ordersTable'
 import { useSwapPartialApprovalToggleState } from 'modules/swap/hooks/useSwapSettings'
 import { ConfirmDetailsItem } from 'modules/trade'
 
@@ -271,8 +271,8 @@ export function ActivityDetails(props: {
     }
   }, [showProgressBar, setShowProgressBar, order?.id, toggleAccountModal])
 
-  const pendingOrdersPermitValidityState = useGetPendingOrdersPermitValidityState()
-  const hasValidPermit = order ? pendingOrdersPermitValidityState[order.id] : true
+  const activeOrdersPermitValidityState = useGetActiveOrdersPermitValidityState()
+  const hasValidPermit = order ? activeOrdersPermitValidityState[order.id] : true
 
   if (!order && !enhancedTransaction) return null
 

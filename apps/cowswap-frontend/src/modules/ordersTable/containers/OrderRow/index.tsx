@@ -149,6 +149,7 @@ export function OrderRow({
 
   const inputTokenSymbol = order.inputToken.symbol || ''
 
+  // todo add check here for permit
   const warningText =
     hasEnoughBalance === false
       ? 'Insufficient balance'

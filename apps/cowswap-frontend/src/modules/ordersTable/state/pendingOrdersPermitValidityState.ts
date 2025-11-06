@@ -4,9 +4,9 @@ import { atomWithPartialUpdate } from '@cowprotocol/common-utils'
 
 import { Order } from 'legacy/state/orders/actions'
 
-export type PendingOrdersPermitValidityState = Record<Order['id'], boolean | undefined>
+export type ActiveOrdersPermitValidityState = Record<Order['id'], boolean | undefined>
 
-const initialState: PendingOrdersPermitValidityState = {}
+const initialState: ActiveOrdersPermitValidityState = {}
 
-export const { atom: pendingOrdersPermitValidityStateAtom, updateAtom: updatePendingOrdersPermitValidityStateAtom } =
+export const { atom: activeOrdersPermitValidityStateAtom, updateAtom: updateActiveOrdersPermitValidityStateAtom } =
   atomWithPartialUpdate(atom(initialState))

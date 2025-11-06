@@ -1,17 +1,17 @@
 import { useAtomValue, useSetAtom } from 'jotai/index'
 
 import {
-  PendingOrdersPermitValidityState,
-  pendingOrdersPermitValidityStateAtom,
-  updatePendingOrdersPermitValidityStateAtom,
+  ActiveOrdersPermitValidityState,
+  activeOrdersPermitValidityStateAtom,
+  updateActiveOrdersPermitValidityStateAtom,
 } from '../state/pendingOrdersPermitValidityState'
 
-export function useGetPendingOrdersPermitValidityState(): PendingOrdersPermitValidityState {
-  return useAtomValue(pendingOrdersPermitValidityStateAtom)
+export function useGetActiveOrdersPermitValidityState(): ActiveOrdersPermitValidityState {
+  return useAtomValue(activeOrdersPermitValidityStateAtom)
 }
 
-export function useUpdatePendingOrdersPermitValidityState(): ReturnType<
-  typeof useSetAtom<typeof updatePendingOrdersPermitValidityStateAtom>
+export function useUpdateActiveOrdersPermitValidityState(): ReturnType<
+  typeof useSetAtom<typeof updateActiveOrdersPermitValidityStateAtom>
 > {
-  return useSetAtom(updatePendingOrdersPermitValidityStateAtom)
+  return useSetAtom(updateActiveOrdersPermitValidityStateAtom)
 }
