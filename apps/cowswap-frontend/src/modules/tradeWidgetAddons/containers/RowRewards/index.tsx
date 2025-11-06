@@ -36,10 +36,9 @@ export function RowRewards(): ReactNode {
   return (
     <RowRewardsContent
       linkedCode={displayCode}
-      accountLink={hasLinkedCode ? `#${Routes.ACCOUNT}` : undefined}
+      accountLink={displayCode ? `#${Routes.ACCOUNT}` : undefined}
       tooltipContent={tooltipContent}
       onAddCode={!displayCode ? handleOpenModal : undefined}
-      onManageCode={!hasLinkedCode && displayCode ? handleOpenModal : undefined}
     />
   )
 }

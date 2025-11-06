@@ -23,6 +23,7 @@ export interface ReferralModalControllerParams {
   modalState: ReturnType<typeof useReferralModalState>
   actions: ReturnType<typeof useReferralActions>
   account?: string
+  supportedNetwork: boolean
   toggleWalletModal: () => void
   navigate: NavigateFunction
   analytics: CowAnalytics
@@ -36,12 +37,13 @@ export interface ReferralModalControllerResult {
 }
 
 export function useReferralModalController(params: ReferralModalControllerParams): ReferralModalControllerResult {
-  const { modalState, actions, account, toggleWalletModal, navigate, analytics } = params
+  const { modalState, actions, account, supportedNetwork, toggleWalletModal, navigate, analytics } = params
   const { referral, uiState, displayCode, savedCode, hasCode, hasValidLength, verification, incomingCode, wallet } =
     modalState
 
   const inputRef = useRef<HTMLInputElement | null>(null)
   const ctaRef = useRef<HTMLButtonElement | null>(null)
+  const effectiveWalletStatus = supportedNetwork ? wallet.status : 'unsupported'
 
   const primaryCta = useMemo(
     () =>
@@ -51,9 +53,9 @@ export function useReferralModalController(params: ReferralModalControllerParams
         hasCode,
         verification,
         verificationKind: verification.kind,
-        walletStatus: wallet.status,
+        walletStatus: effectiveWalletStatus,
       }),
-    [hasCode, hasValidLength, uiState, verification, wallet.status],
+    [effectiveWalletStatus, hasCode, hasValidLength, uiState, verification],
   )
 
   useReferralModalFocus(referral.modalOpen, uiState, inputRef, ctaRef)

@@ -69,6 +69,10 @@ function verifyCta(
   verificationKind: VerificationKind,
   walletStatus: WalletStatus,
 ): PrimaryCta {
+  if (walletStatus === 'unsupported') {
+    return disabledCta(t`Unsupported Network`)
+  }
+
   const requiresConnection = walletStatus === 'disconnected' || walletStatus === 'unknown'
 
   return {
