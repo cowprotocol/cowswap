@@ -6,7 +6,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { Order } from 'legacy/state/orders/actions'
 import { useOnlyPendingOrders } from 'legacy/state/orders/hooks'
 
-import { doesOrderHavePermit } from '../utils/doesOrderHavePermit'
+import { doesOrderHavePermit } from 'common/utils/doesOrderHavePermit'
 
 export interface OrderFillability {
   hasEnoughAllowance: boolean | undefined

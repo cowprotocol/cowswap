@@ -6,7 +6,7 @@ import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
 import { usePendingActivitiesCount } from 'common/hooks/usePendingActivitiesCount'
 
-import { PendingOrdersPermitUpdater } from './PendingOrdersPermitUpdater/PendingOrdersPermitUpdater'
+import { TradePendingOrdersPermitUpdater } from './PendingOrdersPermitUpdater'
 
 import { useShowUnfillableOrderAlert } from '../../hooks/useShowUnfillableOrderAlert'
 import { Web3StatusInner } from '../../pure/Web3StatusInner'
@@ -30,7 +30,7 @@ export function Web3Status({ className, onClick }: Web3StatusProps): ReactNode {
 
   return (
     <Wrapper className={className} onClick={onClick}>
-      {account && <PendingOrdersPermitUpdater />}
+      {account && <TradePendingOrdersPermitUpdater />}
       <Web3StatusInner
         showUnfillableOrdersAlert={showUnfillableOrdersAlert}
         pendingCount={pendingCount}

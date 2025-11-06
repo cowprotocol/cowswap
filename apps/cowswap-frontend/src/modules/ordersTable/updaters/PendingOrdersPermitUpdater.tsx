@@ -2,14 +2,20 @@ import { ReactNode } from 'react'
 
 import { OrderClass } from '@cowprotocol/cow-sdk'
 
-import { OrderPermitUpdater, useGetActiveOrdersPermitValidityState } from 'modules/ordersTable'
 import { TradeType } from 'modules/trade'
 
-import { usePendingOrdersFillability } from 'common/hooks/usePendingOrdersFillability'
+import { OrderPermitUpdater } from './OrderPermitUpdater'
 
+import { useGetActiveOrdersPermitValidityState } from '../hooks/usePendingOrderPermitValidity'
+import { usePendingOrdersFillability } from '../hooks/usePendingOrdersFillability'
 
-export function PendingOrdersPermitUpdater(): ReactNode {
-  const pendingOrdersFillability = usePendingOrdersFillability(OrderClass.MARKET)
+type PendingOrdersPermitUpdaterProps = {
+  orderClass?: OrderClass
+  tradeType: TradeType
+}
+
+export function PendingOrdersPermitUpdater({ orderClass, tradeType }: PendingOrdersPermitUpdaterProps): ReactNode {
+  const pendingOrdersFillability = usePendingOrdersFillability(orderClass)
   const activeOrdersPermitValidityState = useGetActiveOrdersPermitValidityState()
 
   return Object.keys(pendingOrdersFillability).map((orderId) => {
@@ -24,6 +30,6 @@ export function PendingOrdersPermitUpdater(): ReactNode {
     const order = pendingOrdersFillability[orderId]?.order
     if (!order) return null
 
-    return <OrderPermitUpdater key={order.id} order={order} tradeType={TradeType.SWAP} />
+    return <OrderPermitUpdater key={order.id} order={order} tradeType={tradeType} />
   })
 }
