@@ -4,14 +4,13 @@ import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import ms from 'ms.macro'
 import useSWR, { SWRConfiguration } from 'swr'
 
-import { Order } from 'legacy/state/orders/actions'
-
 import { usePermitInfo } from 'modules/permit'
 import { TradeType } from 'modules/trade'
 
 import { isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { getOrderPermitIfExists } from 'common/utils/doesOrderHavePermit'
 
+import { GenericOrder } from '../../../common/types'
 import { checkPermitNonceAndAmount } from '../utils/checkPermitNonceAndAmount'
 
 const SWR_CONFIG: SWRConfiguration = {
@@ -21,7 +20,7 @@ const SWR_CONFIG: SWRConfiguration = {
   errorRetryInterval: 0,
 }
 
-export function useDoesOrderHaveValidPermit(order?: Order, tradeType?: TradeType): boolean | undefined {
+export function useDoesOrderHaveValidPermit(order?: GenericOrder, tradeType?: TradeType): boolean | undefined {
   const { chainId, account } = useWalletInfo()
   const provider = useWalletProvider()
   const permit = order ? getOrderPermitIfExists(order) : null
@@ -49,4 +48,3 @@ export function useDoesOrderHaveValidPermit(order?: Order, tradeType?: TradeType
 
   return isValid
 }
-

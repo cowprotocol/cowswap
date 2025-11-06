@@ -1,19 +1,20 @@
 import { useEffect } from 'react'
 
-import { Order } from 'legacy/state/orders/actions'
-
 import { useDoesOrderHaveValidPermit, useUpdatePendingOrdersPermitValidityState } from 'modules/ordersTable'
 import { TradeType } from 'modules/trade'
 
+import { GenericOrder } from 'common/types'
+
 type OrderPermitCheckerProps = {
-  order: Order
+  order: GenericOrder
+  tradeType: TradeType
 }
 
 export function OrderPermitUpdater(props: OrderPermitCheckerProps): null {
-  const { order } = props
+  const { order, tradeType } = props
   const updatePendingOrdersPermitValidityState = useUpdatePendingOrdersPermitValidityState()
 
-  const isPermitValid = useDoesOrderHaveValidPermit(order, TradeType.SWAP)
+  const isPermitValid = useDoesOrderHaveValidPermit(order, tradeType)
   // undefined means we don't know yet, so we optimistically assume it's valid
   useEffect(() => {
     updatePendingOrdersPermitValidityState({ [order.id]: isPermitValid === undefined ? true : isPermitValid })
