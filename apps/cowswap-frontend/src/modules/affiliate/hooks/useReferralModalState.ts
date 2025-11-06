@@ -46,6 +46,8 @@ export function useReferralModalState(): ReferralModalState {
 function buildReferralModalState(referral: ReferralSnapshot): ReferralModalState {
   const { inputCode, savedCode, verification, wallet, editMode, incomingCode, shouldAutoVerify } = referral
   const verificationCode = 'code' in verification ? verification.code : undefined
+  // Prefer the code the user is actively verifying (incoming/verification) so the UI
+  // reflects what the backend is checking even if a different value lives in storage.
   const displayCode = editMode ? inputCode : verificationCode ?? savedCode ?? inputCode
   const hasCode = hasAnyCode(verificationCode, incomingCode, savedCode, inputCode)
   const hasValidLength = isReferralCodeLengthValid(displayCode || '')
@@ -95,6 +97,7 @@ function deriveUiState(params: DeriveUiStateParams): ReferralModalUiState {
   const { verificationKind, walletStatus, hasCode, isEditing, editMode } = params
 
   if (walletStatus === 'unsupported') {
+    // Unsupported network trumps every other state so the form/CTA are guaranteed to lock.
     return 'unsupported'
   }
 

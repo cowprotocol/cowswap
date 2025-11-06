@@ -100,6 +100,8 @@ interface ProcessReferralParams {
 }
 
 function processReferralCode(params: ProcessReferralParams): void {
+  // Snapshot-driven flow: we decide up front whether to reuse the existing code,
+  // verify the incoming one, or simply persist it so reducers stay side-effect free.
   const { sanitized, snapshot, actions, analytics } = params
   const isAlreadyLinked = snapshot.walletStatus === 'linked' || snapshot.verificationKind === 'linked'
   const isSameAsSaved = snapshot.savedCode ? snapshot.savedCode === sanitized : false

@@ -33,6 +33,8 @@ function applyPreservedResult(
 }
 
 const DEBUG_HANDLERS: Record<string, DebugHandler> = {
+  // Each handler mirrors the real verification pipeline so debug codes behave exactly like
+  // their backend counterparts (including preserved-code logic and analytics labels).
   IDLE: ({ actions, applyVerificationResult, track, pendingVerificationRef }) => {
     actions.setSavedCode(undefined)
     actions.setWalletState({ status: 'eligible' })

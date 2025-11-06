@@ -82,6 +82,7 @@ export interface WalletReferralStatusResponse {
 }
 
 export interface ReferralContextValue extends ReferralDomainState {
+  cancelVerification: () => void
   actions: ReferralActions
 }
 
@@ -102,4 +103,5 @@ export interface ReferralActions {
   setSavedCode(code?: string): void
   requestVerification(code?: string): void
   clearPendingVerification(id: number): void
+  registerCancelVerification(handler: () => void): void
 }

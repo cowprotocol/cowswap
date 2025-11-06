@@ -59,11 +59,7 @@ export function ReferralModalContent(props: ReferralModalContentProps): ReactNod
           onPrimaryClick={onPrimaryClick}
           inputRef={inputRef}
         />
-        <ReferralStatusMessages
-          verification={props.verification}
-          infoMessage={props.infoMessage}
-          shouldShowInfo={props.shouldShowInfo}
-        />
+        <ReferralStatusMessages infoMessage={props.infoMessage} shouldShowInfo={props.shouldShowInfo} />
       </Body>
 
       <Footer>

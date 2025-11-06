@@ -36,7 +36,7 @@ export function ReferralController(): ReactNode {
     referral,
   })
 
-  const runVerification = useReferralVerification({
+  const { runVerification } = useReferralVerification({
     account,
     chainId,
     supportedNetwork,

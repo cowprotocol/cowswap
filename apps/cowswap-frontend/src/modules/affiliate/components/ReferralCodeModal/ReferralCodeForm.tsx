@@ -63,6 +63,7 @@ export function ReferralCodeForm(props: ReferralCodeFormProps): ReactNode {
   const showValidLabelInInput = verification.kind === 'valid'
   const showPendingTag = verification.kind === 'pending' && !showPendingLabelInInput
   const showValidTag = verification.kind === 'valid' && !showValidLabelInInput
+  const isChecking = verification.kind === 'checking'
   const {
     hasError,
     isEditing,
@@ -112,18 +113,19 @@ export function ReferralCodeForm(props: ReferralCodeFormProps): ReactNode {
       <ReferralCodeInputRow
         displayCode={displayCode}
         hasError={hasError}
-        isInputDisabled={isInputDisabled}
+        isInputDisabled={isInputDisabled || isChecking}
         isEditing={isEditing}
         isLinked={isLinked}
-        trailingIconKind={trailingIconKind}
+        trailingIconKind={isChecking ? 'pending' : trailingIconKind}
         canSubmitSave={canSubmitSave}
         onChange={onChange}
         onPrimaryClick={onPrimaryClick}
         onSave={onSave}
         inputRef={inputRef}
-      />
-    </FormGroup>
-  )
+      isLoading={isChecking}
+    />
+  </FormGroup>
+)
 }
 
 interface DeriveFormFlagsParams {
@@ -149,6 +151,8 @@ interface FormFlags {
 }
 
 function deriveFormFlags(params: DeriveFormFlagsParams): FormFlags {
+  // Split the boolean soup into small helpers so the main render stays readable
+  // and lint-compliant. This also makes the unsupported-network rules explicit.
   const base = computeBaseFlags(params)
   const trailingIconKind = resolveTrailingIconKind({
     isLinked: base.isLinked,
@@ -179,6 +183,7 @@ interface BaseFlags {
 function computeBaseFlags(params: DeriveFormFlagsParams): BaseFlags {
   const { uiState, verification, savedCode, displayCode } = params
 
+  // Unsupported network deliberately hides every edit affordance to avoid no-op buttons.
   const isUnsupported = uiState === 'unsupported'
   const isEditing = uiState === 'editing'
   const isLinked = uiState === 'linked'

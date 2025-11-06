@@ -61,9 +61,14 @@ const noopActions: ReferralActions = {
   setSavedCode: noop,
   requestVerification: noop,
   clearPendingVerification: noop,
+  registerCancelVerification: noop,
 }
 
-const ReferralContext = createContext<ReferralContextValue>({ ...initialState, actions: noopActions })
+const ReferralContext = createContext<ReferralContextValue>({
+  ...initialState,
+  cancelVerification: noop,
+  actions: noopActions,
+})
 
 export function ReferralProvider({ children }: ReferralProviderProps): ReactNode {
   const value = useReferralStore()
@@ -74,19 +79,21 @@ export function ReferralProvider({ children }: ReferralProviderProps): ReactNode
 function useReferralStore(): ReferralContextValue {
   const [state, setState] = useState<ReferralDomainState>(initialState)
   const [hasHydrated, setHasHydrated] = useState(false)
+  const [cancelVerification, setCancelVerification] = useState<() => void>(() => () => undefined)
 
   useReferralHydration(setState, setHasHydrated)
   useReferralPersistence(state.savedCode, hasHydrated)
   useReferralStorageSync(setState)
 
-  const actions = useReferralStoreActions(setState)
+  const actions = useReferralStoreActions(setState, setCancelVerification)
 
   return useMemo(
     () => ({
       ...state,
+      cancelVerification,
       actions,
     }),
-    [actions, state],
+    [actions, cancelVerification, state],
   )
 }
 
@@ -104,7 +111,10 @@ function useStateReducerAction<A extends unknown[]>(
   )
 }
 
-function useReferralStoreActions(setState: SetReferralState): ReferralActions {
+function useReferralStoreActions(
+  setState: SetReferralState,
+  setCancelVerification: Dispatch<SetStateAction<() => void>>,
+): ReferralActions {
   const openModal = useStateReducerAction(setState, reduceOpenModal)
   const closeModal = useStateReducerAction(setState, reduceCloseModal)
   const setInputCode = useStateReducerAction(setState, reduceSetInputCode)
@@ -121,6 +131,12 @@ function useReferralStoreActions(setState: SetReferralState): ReferralActions {
   const setSavedCode = useStateReducerAction(setState, reduceSetSavedCode)
   const requestVerification = useStateReducerAction(setState, reduceRequestVerification)
   const clearPendingVerification = useStateReducerAction(setState, reduceClearPendingVerification)
+  const registerCancelVerification = useCallback(
+    (handler: () => void) => {
+      setCancelVerification(() => handler)
+    },
+    [setCancelVerification],
+  )
 
   return useMemo(
     () => ({
@@ -140,6 +156,7 @@ function useReferralStoreActions(setState: SetReferralState): ReferralActions {
       setSavedCode,
       requestVerification,
       clearPendingVerification,
+      registerCancelVerification,
     }),
     [
       clearPendingVerification,
@@ -154,6 +171,7 @@ function useReferralStoreActions(setState: SetReferralState): ReferralActions {
       setIncomingCode,
       setIncomingCodeReason,
       setInputCode,
+      registerCancelVerification,
       setSavedCode,
       setShouldAutoVerify,
       setWalletState,

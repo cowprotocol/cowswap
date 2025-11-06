@@ -1,6 +1,6 @@
 import { UI, Badge } from '@cowprotocol/ui'
 
-import styled from 'styled-components/macro'
+import styled, { keyframes, css } from 'styled-components/macro'
 
 export const TagGroup = styled.div`
   display: flex;
@@ -76,6 +76,7 @@ export const InputWrapper = styled.div<{
   disabled?: boolean
   isEditing?: boolean
   isLinked?: boolean
+  isLoading?: boolean
 }>`
   display: flex;
   align-items: center;
@@ -95,10 +96,30 @@ export const InputWrapper = styled.div<{
   padding: 12px 14px;
   transition: border 0.2s ease;
   min-height: 58px;
+  position: relative;
+  overflow: hidden;
 
   &:focus-within {
     border-color: ${({ hasError }) => (hasError ? `var(${UI.COLOR_DANGER})` : `var(${UI.COLOR_PRIMARY_LIGHTER})`)};
   }
+
+  ${({ isLoading, theme }) =>
+    isLoading &&
+    css`
+      input {
+        color: transparent;
+        text-shadow: 0 0 0 var(${UI.COLOR_TEXT});
+      }
+
+      &::after {
+        content: '';
+        ${theme.shimmer};
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        pointer-events: none;
+      }
+    `}
 `
 
 export const StyledInput = styled.input<{ disabled?: boolean }>`
@@ -106,6 +127,8 @@ export const StyledInput = styled.input<{ disabled?: boolean }>`
   border: none;
   background: transparent;
   color: inherit;
+  position: relative;
+  z-index: 1;
   font-size: 20px;
   font-weight: 600;
   letter-spacing: 0;
@@ -124,6 +147,17 @@ export const StyledInput = styled.input<{ disabled?: boolean }>`
   &::placeholder {
     color: var(${UI.COLOR_TEXT_OPACITY_50});
   }
+
+  ${({ disabled }) => disabled && 'cursor: not-allowed;'}
+`
+
+const spin = keyframes`
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 `
 
 export const TrailingIcon = styled.div<{ kind: 'error' | 'lock' | 'pending' | 'success' }>`
@@ -131,6 +165,8 @@ export const TrailingIcon = styled.div<{ kind: 'error' | 'lock' | 'pending' | 's
   align-items: center;
   justify-content: center;
   gap: 6px;
+  position: relative;
+  z-index: 1;
   font-size: 14px;
   font-weight: 500;
   color: ${({ kind }) =>
@@ -153,4 +189,12 @@ export const TrailingIcon = styled.div<{ kind: 'error' | 'lock' | 'pending' | 's
   svg > path {
     fill: ${({ kind }) => (kind === 'error' ? `var(${UI.COLOR_DANGER_TEXT})` : 'currentColor')};
   }
+
+  ${({ kind }) =>
+    kind === 'pending' &&
+    css`
+      svg {
+        animation: ${spin} 1.1s linear infinite;
+      }
+    `}
 `

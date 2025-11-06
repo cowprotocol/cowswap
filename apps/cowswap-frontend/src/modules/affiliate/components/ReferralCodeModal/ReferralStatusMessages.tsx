@@ -1,32 +1,23 @@
 import { ReactNode } from 'react'
 
-import { Loader, StatusColorVariant } from '@cowprotocol/ui'
+import { StatusColorVariant } from '@cowprotocol/ui'
 
 import { t, Trans } from '@lingui/macro'
 
-import { InlineAlert, SpinnerRow, StatusMessage, TitleAccent } from './styles'
+import { InlineAlert, StatusMessage, TitleAccent } from './styles'
 
 import { ReferralModalUiState } from '../../hooks/useReferralModalState'
-import { ReferralVerificationStatus } from '../../types'
 
 export interface ReferralStatusMessagesProps {
-  verification: ReferralVerificationStatus
   infoMessage: string
   shouldShowInfo: boolean
 }
 
 export function ReferralStatusMessages(props: ReferralStatusMessagesProps): ReactNode {
-  const { verification, infoMessage, shouldShowInfo } = props
+  const { infoMessage, shouldShowInfo } = props
 
   return (
     <StatusMessage role="status" aria-live="polite">
-      {verification.kind === 'checking' && (
-        <SpinnerRow>
-          <Loader size="16px" />
-          <Trans>Checking code…</Trans>
-        </SpinnerRow>
-      )}
-
       {shouldShowInfo && <InlineAlert bannerType={StatusColorVariant.Success}>{infoMessage}</InlineAlert>}
     </StatusMessage>
   )

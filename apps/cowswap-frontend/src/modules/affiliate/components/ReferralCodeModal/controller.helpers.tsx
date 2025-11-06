@@ -33,13 +33,14 @@ export function computePrimaryCta(params: {
   }
 
   if (uiState === 'ineligible') {
+    // Product copy requests the CTA stay disabled here so users understand they must try a different code.
     return disabledCta(t`Wallet ineligible. Try another code`)
   }
 
   if (uiState === 'error') {
     const label =
       verification.kind === 'error' && verification.message ? verification.message : t`Unable to verify code`
-    return { label, disabled: false, action: 'verify' }
+    return { label, disabled: true, action: 'none' }
   }
 
   const staticDisabledLabels: Partial<Record<ReferralModalUiState, string>> = {

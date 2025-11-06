@@ -22,6 +22,7 @@ interface ReferralCodeInputRowProps {
   onPrimaryClick(): void
   onSave(): void
   inputRef: RefObject<HTMLInputElement | null>
+  isLoading?: boolean
 }
 
 export function ReferralCodeInputRow(props: ReferralCodeInputRowProps): ReactNode {
@@ -37,10 +38,17 @@ export function ReferralCodeInputRow(props: ReferralCodeInputRowProps): ReactNod
     onPrimaryClick,
     onSave,
     inputRef,
+    isLoading = false,
   } = props
 
   return (
-    <InputWrapper hasError={hasError} disabled={isInputDisabled} isEditing={isEditing} isLinked={isLinked}>
+    <InputWrapper
+      hasError={hasError}
+      disabled={isInputDisabled}
+      isEditing={isEditing}
+      isLinked={isLinked}
+      isLoading={isLoading}
+    >
       <StyledInput
         id="referral-code-input"
         ref={inputRef}
@@ -65,7 +73,13 @@ export function ReferralCodeInputRow(props: ReferralCodeInputRowProps): ReactNod
         }}
       />
 
-      {trailingIconKind && <TrailingIcon kind={trailingIconKind}>{renderTrailingIcon(trailingIconKind)}</TrailingIcon>}
+      {isLoading ? (
+        <TrailingIcon kind="pending">
+          {renderIconWithLabel(PendingIcon, t`Checking`, <Trans>Checking</Trans>)}
+        </TrailingIcon>
+      ) : (
+        trailingIconKind && <TrailingIcon kind={trailingIconKind}>{renderTrailingIcon(trailingIconKind)}</TrailingIcon>
+      )}
     </InputWrapper>
   )
 }

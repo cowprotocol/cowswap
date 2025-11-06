@@ -23,6 +23,8 @@ import {
 import { ReferralActions, ReferralDomainState, ReferralVerificationStatus, WalletReferralState } from '../../types'
 import { performVerification } from '../verificationLogic'
 
+// This harness spins the reducers manually so we can assert on the full verification flow
+// without mounting React: it mirrors the controller's store updates and uses a noop analytics client.
 function createInitialState(): ReferralDomainState {
   return {
     modalOpen: false,
@@ -70,6 +72,7 @@ function buildActions(setState: SetState): ReferralActions {
     setSavedCode: wrapReducer(setState, reduceSetSavedCode),
     requestVerification: wrapReducer(setState, reduceRequestVerification),
     clearPendingVerification: wrapReducer(setState, reduceClearPendingVerification),
+    registerCancelVerification: () => undefined,
   }
 }
 

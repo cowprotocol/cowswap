@@ -16,7 +16,12 @@ interface VerificationParams {
   toggleWalletModal: () => void
 }
 
-export function useReferralVerification(params: VerificationParams): (code: string) => Promise<void> {
+export interface ReferralVerificationHandle {
+  runVerification(code: string): Promise<void>
+  cancelVerification(): void
+}
+
+export function useReferralVerification(params: VerificationParams): ReferralVerificationHandle {
   const { referral, account, chainId, supportedNetwork, analytics, toggleWalletModal } = params
   const pendingVerificationRef = useRef<number | null>(null)
 
@@ -44,7 +49,7 @@ export function useReferralVerification(params: VerificationParams): (code: stri
     [analytics],
   )
 
-  return useCallback(
+  const runVerification = useCallback(
     (rawCode: string) =>
       performVerification({
         rawCode,
@@ -77,6 +82,20 @@ export function useReferralVerification(params: VerificationParams): (code: stri
       trackVerifyResult,
     ],
   )
+
+  const cancelVerification = useCallback(() => {
+    pendingVerificationRef.current = null
+  }, [])
+
+  useEffect(() => {
+    referral.actions.registerCancelVerification(cancelVerification)
+
+    return () => {
+      referral.actions.registerCancelVerification(() => undefined)
+    }
+  }, [cancelVerification, referral.actions])
+
+  return { runVerification, cancelVerification }
 }
 
 interface AutoVerificationParams {
@@ -142,6 +161,9 @@ interface ResolveAutoVerificationParams {
 }
 
 function resolveAutoVerification(params: ResolveAutoVerificationParams): { code?: string; shouldDisable: boolean } {
+  // Centralises the auto-verify decision tree so the effect remains declarative.
+  // Return `shouldDisable` when the modal must stop auto-verification (linked wallet),
+  // otherwise surface the next code candidate once all prerequisites are satisfied.
   const { shouldAutoVerify } = params
 
   if (!shouldAutoVerify) {
@@ -167,6 +189,8 @@ function shouldDisableAutoVerification(params: ResolveAutoVerificationParams): b
 
 function pickAutoVerificationCandidate(params: ResolveAutoVerificationParams): string | undefined {
   const { account, supportedNetwork, chainId, verificationKind, incomingCode, savedCode, inputCode } = params
+  // If any prerequisite is missing we keep the modal idle and wait; the caller
+  // will retry once account/network state changes or the current check finishes.
   if (!account || !supportedNetwork || chainId === undefined || verificationKind === 'checking') {
     return undefined
   }

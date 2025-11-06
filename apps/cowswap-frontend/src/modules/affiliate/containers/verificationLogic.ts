@@ -45,6 +45,8 @@ export async function performVerification(params: PerformVerificationParams): Pr
     Boolean(baseParams.incomingCode) &&
     shouldPreserveExistingCode(baseParams.previousVerification ?? baseParams.currentVerification, baseParams.savedCode)
   const restoreExisting = (): void => {
+    // When we have a previously validated code we restore that state instead of
+    // letting the new verification clobber it (invalid deeplinks, transient errors).
     if (!preserveExisting) {
       return
     }
@@ -76,6 +78,9 @@ export async function performVerification(params: PerformVerificationParams): Pr
   const requestId = startVerificationRequest({ sanitizedCode, baseParams })
 
   try {
+    // TODO: remove artificial delay once real referral verification API is wired (simulates network latency).
+    await new Promise((resolve) => setTimeout(resolve, 3000))
+
     const response = await verifyReferralCode({
       code: sanitizedCode,
       account: baseParams.account,
