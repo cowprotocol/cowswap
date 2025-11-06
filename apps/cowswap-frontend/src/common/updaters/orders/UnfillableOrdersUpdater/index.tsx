@@ -2,9 +2,8 @@ import { ReactNode } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-// todo move this component to orders module
+import { OrderPermitUpdater } from 'modules/ordersTable'
 import { TradeType } from 'modules/trade'
-import { OrderPermitUpdater } from 'modules/wallet/containers/Web3Status/PendingOrdersPermitUpdater/OrderPermitUpdater'
 
 import { GenericOrder } from 'common/types'
 

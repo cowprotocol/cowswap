@@ -1,16 +1,18 @@
 import { useEffect } from 'react'
 
-import { useDoesOrderHaveValidPermit, useUpdatePendingOrdersPermitValidityState } from 'modules/ordersTable'
 import { TradeType } from 'modules/trade'
 
 import { GenericOrder } from 'common/types'
 
-type OrderPermitCheckerProps = {
+import { useDoesOrderHaveValidPermit } from '../hooks/useDoesOrderHaveValidPermit'
+import { useUpdatePendingOrdersPermitValidityState } from '../hooks/usePendingOrderPermitValidity'
+
+type OrderPermitUpdaterProps = {
   order: GenericOrder
   tradeType: TradeType
 }
 
-export function OrderPermitUpdater(props: OrderPermitCheckerProps): null {
+export function OrderPermitUpdater(props: OrderPermitUpdaterProps): null {
   const { order, tradeType } = props
   const updatePendingOrdersPermitValidityState = useUpdatePendingOrdersPermitValidityState()
 
@@ -22,3 +24,4 @@ export function OrderPermitUpdater(props: OrderPermitCheckerProps): null {
 
   return null
 }
+
