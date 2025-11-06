@@ -4,10 +4,9 @@ import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import type { ChainInfo } from '@cowprotocol/cow-sdk'
 
 import useSWR, { SWRResponse } from 'swr'
+import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 
 import { useBridgeProvidersIds } from './useBridgeProvidersIds'
-
-import { bridgingSdk } from '../../tradingSdk/bridgingSdk'
 
 export function useBridgeSupportedNetworks(): SWRResponse<ChainInfo[]> {
   const providerIds = useBridgeProvidersIds()

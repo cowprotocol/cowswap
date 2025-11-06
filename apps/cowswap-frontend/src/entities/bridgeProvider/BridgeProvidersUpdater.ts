@@ -4,14 +4,14 @@ import { useEffect } from 'react'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { DefaultBridgeProvider } from '@cowprotocol/sdk-bridging'
 
-import { bridgeProvidersAtom } from './bridgeProvidersAtom'
-
 import {
   acrossBridgeProvider,
   bridgingSdk,
   bungeeBridgeProvider,
   nearIntentsBridgeProvider,
-} from '../../tradingSdk/bridgingSdk'
+} from 'tradingSdk/bridgingSdk'
+
+import { bridgeProvidersAtom } from './bridgeProvidersAtom'
 
 function toggleProvider(providers: Set<DefaultBridgeProvider>, provider: DefaultBridgeProvider, flag: boolean): void {
   if (flag) {

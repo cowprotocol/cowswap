@@ -3,10 +3,9 @@ import { useIsBridgingEnabled } from '@cowprotocol/common-hooks'
 import { BuyTokensParams } from '@cowprotocol/sdk-bridging'
 
 import useSWR, { SWRResponse } from 'swr'
+import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 
 import { useBridgeProvidersIds } from './useBridgeProvidersIds'
-
-import { bridgingSdk } from '../../tradingSdk/bridgingSdk'
 
 export type BridgeSupportedToken = { tokens: TokenWithLogo[]; isRouteAvailable: boolean }
 
