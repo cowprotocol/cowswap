@@ -4,7 +4,9 @@ import { atomWithStorage } from 'jotai/utils'
 import { atomWithIdbStorage, getJotaiMergerStorage } from '@cowprotocol/core'
 import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { DEFAULT_TOKENS_LISTS, LP_TOKEN_LISTS, UNISWAP_TOKENS_LIST } from '../../const/tokensLists'
+import { UNISWAP_TOKEN_LIST_URL } from './uniswapTokenListUrls'
+
+import { DEFAULT_TOKENS_LISTS, LP_TOKEN_LISTS } from '../../const/tokensLists'
 import {
   ListSourceConfig,
   ListsSourcesByNetwork,
@@ -14,25 +16,7 @@ import {
 } from '../../types'
 import { environmentAtom } from '../environmentAtom'
 
-const UNISWAP_TOKEN_LIST_URL: Record<SupportedChainId, string> = {
-  [SupportedChainId.MAINNET]: UNISWAP_TOKENS_LIST,
-  [SupportedChainId.GNOSIS_CHAIN]:
-    'https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/Uniswap.100.json',
-  [SupportedChainId.ARBITRUM_ONE]:
-    'https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/Uniswap.42161.json',
-  [SupportedChainId.BASE]:
-    'https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/Uniswap.8453.json',
-  [SupportedChainId.SEPOLIA]: UNISWAP_TOKENS_LIST,
-  [SupportedChainId.POLYGON]:
-    'https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/Uniswap.137.json',
-  [SupportedChainId.AVALANCHE]:
-    'https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/Uniswap.43114.json',
-  [SupportedChainId.LENS]:
-    'https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/CoinGecko.232.json', // There's no Uniswap list for Lens, using Coingecko as a fallback
-  [SupportedChainId.BNB]: 'https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/Uniswap.56.json',
-}
-
-const curatedListSourceAtom = atom((get) => {
+export const curatedListSourceAtom = atom((get) => {
   const chainId = get(environmentAtom).chainId
   const UNISWAP_LIST_SOURCE: ListSourceConfig = {
     priority: 1,
@@ -49,18 +33,35 @@ export const userAddedListsSourcesAtom = atomWithStorage<ListsSourcesByNetwork>(
   getJotaiMergerStorage(),
 )
 
+export const removedListsSourcesAtom = atomWithStorage<Record<SupportedChainId, string[]>>(
+  'removedTokenListsSourcesAtom:v1',
+  mapSupportedNetworks<string[]>([]),
+  getJotaiMergerStorage(),
+)
+
 export const allListsSourcesAtom = atom((get) => {
   const { chainId, useCuratedListOnly, isYieldEnabled } = get(environmentAtom)
   const userAddedTokenLists = get(userAddedListsSourcesAtom)
+  const removedListsSources = get(removedListsSourcesAtom)
   const userAddedTokenListsForChain = userAddedTokenLists[chainId] || []
+  const removedListsForChain = removedListsSources[chainId] || []
+  const removedSourcesSet = new Set(removedListsForChain.map((source) => source.toLowerCase()))
 
-  const lpLists = isYieldEnabled ? LP_TOKEN_LISTS : []
-
-  if (useCuratedListOnly) {
-    return [...get(curatedListSourceAtom), ...lpLists, ...userAddedTokenListsForChain]
+  const filterRemovedLists = (list: ListSourceConfig): boolean => {
+    return !removedSourcesSet.has(list.source.toLowerCase())
   }
 
-  return [...(DEFAULT_TOKENS_LISTS[chainId] || []), ...lpLists, ...userAddedTokenListsForChain]
+  const lpLists = (isYieldEnabled ? LP_TOKEN_LISTS : []).filter(filterRemovedLists)
+
+  if (useCuratedListOnly) {
+    const curatedLists = get(curatedListSourceAtom).filter(filterRemovedLists)
+
+    return [...curatedLists, ...lpLists, ...userAddedTokenListsForChain]
+  }
+
+  const defaultLists = (DEFAULT_TOKENS_LISTS[chainId] || []).filter(filterRemovedLists)
+
+  return [...defaultLists, ...lpLists, ...userAddedTokenListsForChain]
 })
 
 // Migrating from localStorage to indexedDB
@@ -87,33 +88,56 @@ export const listsStatesMapAtom = atom(async (get) => {
   const allTokenListsInfo = await get(listsStatesByChainAtom)
   const virtualListsState = get(virtualListsStateAtom)
   const userAddedTokenLists = get(userAddedListsSourcesAtom)
+  const removedListsSources = get(removedListsSourcesAtom)
   const useeAddedTokenListsForChain = userAddedTokenLists[chainId] || []
+  const removedListsForChain = removedListsSources[chainId] || []
+  const removedSourcesSet = new Set(removedListsForChain.map((source) => source.toLowerCase()))
 
   const currentNetworkLists = {
-    ...allTokenListsInfo[chainId],
+    ...(allTokenListsInfo[chainId] || {}),
     ...virtualListsState,
-  }
+  } as TokenListsState
+
+  const filteredNetworkLists = Object.entries(currentNetworkLists).reduce<TokenListsState>((acc, [source, list]) => {
+    if (!removedSourcesSet.has(source.toLowerCase())) {
+      acc[source] = list
+    }
+
+    return acc
+  }, {})
 
   const userAddedListSources = useeAddedTokenListsForChain.reduce<{ [key: string]: boolean }>((acc, list) => {
-    acc[list.source] = true
+    const sourceLower = list.source.toLowerCase()
+
+    if (!removedSourcesSet.has(sourceLower)) {
+      acc[list.source] = true
+    }
+
     return acc
   }, {})
 
   const lpTokenListSources = LP_TOKEN_LISTS.reduce<{ [key: string]: boolean }>((acc, list) => {
-    acc[list.source] = true
+    const sourceLower = list.source.toLowerCase()
+
+    if (!removedSourcesSet.has(sourceLower)) {
+      acc[list.source] = true
+    }
+
     return acc
   }, {})
 
-  const listsSources = Object.keys(currentNetworkLists).filter((source) => {
+  const listsSources = Object.keys(filteredNetworkLists).filter((source) => {
     return useCuratedListOnly ? userAddedListSources[source] || lpTokenListSources[source] : true
   })
 
-  const lists = useCuratedListOnly
-    ? [...get(curatedListSourceAtom).map((val) => val.source), ...listsSources]
-    : listsSources
+  const curatedListSources = get(curatedListSourceAtom)
+    .map((val) => val.source)
+    .filter((source) => !removedSourcesSet.has(source.toLowerCase()))
+
+  const lists = useCuratedListOnly ? [...curatedListSources, ...listsSources] : listsSources
 
   return lists.reduce<{ [source: string]: ListState }>((acc, source) => {
-    const list = currentNetworkLists[source]
+    const list = filteredNetworkLists[source]
 
     if (!list) return acc
 
