@@ -10,23 +10,13 @@ import { ReferralModalUiState } from '../../hooks/useReferralModalState'
 import { ReferralVerificationStatus } from '../../types'
 
 export interface ReferralStatusMessagesProps {
-  uiState: ReferralModalUiState
   verification: ReferralVerificationStatus
-  ineligibleMessage: ReactNode
   infoMessage: string
   shouldShowInfo: boolean
-  howItWorksLink: ReactNode
 }
 
 export function ReferralStatusMessages(props: ReferralStatusMessagesProps): ReactNode {
-  const {
-    uiState,
-    verification,
-    ineligibleMessage,
-    infoMessage,
-    shouldShowInfo,
-    howItWorksLink,
-  } = props
+  const { verification, infoMessage, shouldShowInfo } = props
 
   return (
     <StatusMessage role="status" aria-live="polite">
@@ -37,37 +27,36 @@ export function ReferralStatusMessages(props: ReferralStatusMessagesProps): Reac
         </SpinnerRow>
       )}
 
-      {uiState === 'ineligible' && (
-        <InlineAlert bannerType={StatusColorVariant.Alert}>
-          {ineligibleMessage} {howItWorksLink}
-        </InlineAlert>
-      )}
-
       {shouldShowInfo && <InlineAlert bannerType={StatusColorVariant.Success}>{infoMessage}</InlineAlert>}
     </StatusMessage>
   )
 }
 
-export function getModalTitle(uiState: ReferralModalUiState): ReactNode {
-  switch (uiState) {
-    case 'valid':
-      return (
-        <>
-          <Trans>Referral code</Trans>
-          <br />
-          <span>
-            <Trans>successfully</Trans>{' '}
-            <TitleAccent>
-              <Trans>applied!</Trans>
-            </TitleAccent>
-          </span>
-        </>
-      )
-    case 'linked':
-      return t`Already linked to a referral code`
-    case 'ineligible':
-      return t`Your wallet is ineligible`
-    default:
-      return t`Enter referral code`
+export function getModalTitle(uiState: ReferralModalUiState, options: { hasRejection?: boolean } = {}): ReactNode {
+  const { hasRejection = false } = options
+
+  if (uiState === 'linked' || (uiState === 'valid' && hasRejection)) {
+    return t`Already linked to a referral code`
   }
+
+  if (uiState === 'valid') {
+    return (
+      <>
+        <Trans>Referral code</Trans>
+        <br />
+        <span>
+          <Trans>successfully</Trans>{' '}
+          <TitleAccent>
+            <Trans>applied!</Trans>
+          </TitleAccent>
+        </span>
+      </>
+    )
+  }
+
+  if (uiState === 'ineligible') {
+    return t`Your wallet is ineligible`
+  }
+
+  return t`Enter referral code`
 }

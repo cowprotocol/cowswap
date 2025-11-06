@@ -58,6 +58,9 @@ export function useReferralVerification(params: VerificationParams): (code: stri
         applyVerificationResult,
         trackVerifyResult,
         incomingCode: referral.incomingCode,
+        savedCode: referral.savedCode,
+        currentVerification: referral.verification,
+        previousVerification: referral.previousVerification,
       }),
     [
       account,
@@ -66,6 +69,9 @@ export function useReferralVerification(params: VerificationParams): (code: stri
       chainId,
       referral.actions,
       referral.incomingCode,
+      referral.previousVerification,
+      referral.savedCode,
+      referral.verification,
       supportedNetwork,
       toggleWalletModal,
       trackVerifyResult,
@@ -83,38 +89,36 @@ interface AutoVerificationParams {
 
 export function useReferralAutoVerification(params: AutoVerificationParams): void {
   const { referral, account, chainId, supportedNetwork, runVerification } = params
-  const { shouldAutoVerify, savedCode, inputCode, verification } = referral
+  const { shouldAutoVerify, savedCode, inputCode, incomingCode, verification } = referral
 
   useEffect(() => {
-    if (!shouldAutoVerify) {
-      return
-    }
+    const { code, shouldDisable } = resolveAutoVerification({
+      shouldAutoVerify,
+      walletStatus: referral.wallet.status,
+      verificationKind: verification.kind,
+      account,
+      supportedNetwork,
+      chainId,
+      incomingCode,
+      savedCode,
+      inputCode,
+    })
 
-    if (referral.wallet.status === 'linked' || verification.kind === 'linked') {
+    if (shouldDisable) {
       referral.actions.setShouldAutoVerify(false)
       return
     }
 
-    if (!account || !supportedNetwork || chainId === undefined) {
+    if (!code) {
       return
     }
 
-    const codeCandidate = savedCode || inputCode
-    const sanitized = sanitizeReferralCode(codeCandidate)
-
-    if (!isReferralCodeLengthValid(sanitized)) {
-      return
-    }
-
-    if (verification.kind === 'checking') {
-      return
-    }
-
-    runVerification(sanitized)
+    runVerification(code)
   }, [
     account,
     chainId,
     inputCode,
+    incomingCode,
     referral.actions,
     referral.wallet.status,
     runVerification,
@@ -125,6 +129,56 @@ export function useReferralAutoVerification(params: AutoVerificationParams): voi
   ])
 }
 
+interface ResolveAutoVerificationParams {
+  shouldAutoVerify: boolean
+  walletStatus: WalletReferralState['status']
+  verificationKind: ReferralVerificationStatus['kind']
+  account?: string
+  supportedNetwork: boolean
+  chainId?: number
+  incomingCode?: string
+  savedCode?: string
+  inputCode: string
+}
+
+function resolveAutoVerification(params: ResolveAutoVerificationParams): { code?: string; shouldDisable: boolean } {
+  const { shouldAutoVerify } = params
+
+  if (!shouldAutoVerify) {
+    return { shouldDisable: false }
+  }
+
+  if (shouldDisableAutoVerification(params)) {
+    return { shouldDisable: true }
+  }
+
+  const candidate = pickAutoVerificationCandidate(params)
+
+  if (!candidate) {
+    return { shouldDisable: false }
+  }
+
+  return { code: candidate, shouldDisable: false }
+}
+
+function shouldDisableAutoVerification(params: ResolveAutoVerificationParams): boolean {
+  return params.walletStatus === 'linked' || params.verificationKind === 'linked'
+}
+
+function pickAutoVerificationCandidate(params: ResolveAutoVerificationParams): string | undefined {
+  const { account, supportedNetwork, chainId, verificationKind, incomingCode, savedCode, inputCode } = params
+  if (!account || !supportedNetwork || chainId === undefined || verificationKind === 'checking') {
+    return undefined
+  }
+
+  const sanitized = sanitizeReferralCode(incomingCode ?? savedCode ?? inputCode)
+
+  if (!sanitized || !isReferralCodeLengthValid(sanitized)) {
+    return undefined
+  }
+
+  return sanitized
+}
 interface PendingVerificationParams {
   referral: ReferralContextValue
   runVerification: (code: string) => Promise<void>

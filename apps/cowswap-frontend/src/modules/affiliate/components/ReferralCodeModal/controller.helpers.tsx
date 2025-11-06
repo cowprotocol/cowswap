@@ -7,7 +7,7 @@ import { t, Trans } from '@lingui/macro'
 import { PrimaryCta, StatusCopyResult } from './types'
 
 import { useReferralModalState, ReferralModalUiState } from '../../hooks/useReferralModalState'
-import { ReferralVerificationStatus, WalletReferralState } from '../../types'
+import { ReferralIncomingCodeReason, ReferralVerificationStatus, WalletReferralState } from '../../types'
 
 type VerificationKind = ReturnType<typeof useReferralModalState>['verification']['kind']
 type WalletStatus = WalletReferralState['status']
@@ -33,7 +33,7 @@ export function computePrimaryCta(params: {
   }
 
   if (uiState === 'ineligible') {
-    return { label: t`Go back`, disabled: false, action: 'goBack' }
+    return disabledCta(t`Wallet ineligible. Try another code`)
   }
 
   if (uiState === 'error') {
@@ -164,30 +164,57 @@ export function useReferralModalAnalytics(
   }, [analytics, referral.modalOpen, referral.modalSource, uiState])
 }
 
-export function useReferralMessages(codeForDisplay?: string): {
+export function useReferralMessages(codeForDisplay?: string, reason?: ReferralIncomingCodeReason): {
   linkedMessage: ReactNode
-  ineligibleMessage: ReactNode
 } {
   return useMemo(() => {
     if (!codeForDisplay) {
       return {
         linkedMessage: <Trans>Your wallet is already linked to a referral code.</Trans>,
-        ineligibleMessage: <Trans>This wallet has already traded and is not eligible for referral rewards.</Trans>,
       }
     }
 
     return {
       linkedMessage: (
-        <Trans>
-          The code <strong>{codeForDisplay}</strong> from your link wasn’t applied.
-        </Trans>
-      ),
-      ineligibleMessage: (
-        <Trans>
-          The code <strong>{codeForDisplay}</strong> from your link wasn’t applied because this wallet has already
-          traded. Referral rewards are for new wallets only.
-        </Trans>
+        <>
+          <Trans>
+            The code <strong>{codeForDisplay}</strong> from your link wasn’t applied.
+          </Trans>
+          {renderRejectionReason(reason)}
+        </>
       ),
     }
-  }, [codeForDisplay])
+  }, [codeForDisplay, reason])
+}
+
+function renderRejectionReason(reason?: ReferralIncomingCodeReason): ReactNode {
+  if (!reason) {
+    return null
+  }
+
+  switch (reason) {
+    case 'invalid':
+      return (
+        <>
+          {' '}
+          <Trans>It isn’t a valid referral code.</Trans>
+        </>
+      )
+    case 'expired':
+      return (
+        <>
+          {' '}
+          <Trans>Rewards for this code have ended.</Trans>
+        </>
+      )
+    case 'ineligible':
+      return (
+        <>
+          {' '}
+          <Trans>This wallet isn’t eligible for that code.</Trans>
+        </>
+      )
+    default:
+      return null
+  }
 }

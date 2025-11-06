@@ -45,8 +45,9 @@ export function useReferralModalState(): ReferralModalState {
 
 function buildReferralModalState(referral: ReferralSnapshot): ReferralModalState {
   const { inputCode, savedCode, verification, wallet, editMode, incomingCode, shouldAutoVerify } = referral
-  const displayCode = editMode ? inputCode : savedCode || inputCode
-  const hasCode = hasAnyCode(savedCode, inputCode)
+  const verificationCode = 'code' in verification ? verification.code : undefined
+  const displayCode = editMode ? inputCode : verificationCode ?? savedCode ?? inputCode
+  const hasCode = hasAnyCode(verificationCode, incomingCode, savedCode, inputCode)
   const hasValidLength = isReferralCodeLengthValid(displayCode || '')
   const isEditing = editMode || (!savedCode && hasCode)
   const uiState = deriveUiState({
@@ -73,8 +74,13 @@ function buildReferralModalState(referral: ReferralSnapshot): ReferralModalState
   }
 }
 
-function hasAnyCode(savedCode?: string, inputCode?: string): boolean {
-  return Boolean(savedCode || inputCode)
+function hasAnyCode(
+  verificationCode?: string,
+  incomingCode?: string,
+  savedCode?: string,
+  inputCode?: string,
+): boolean {
+  return Boolean(verificationCode || incomingCode || savedCode || inputCode)
 }
 
 interface DeriveUiStateParams {
@@ -87,6 +93,10 @@ interface DeriveUiStateParams {
 
 function deriveUiState(params: DeriveUiStateParams): ReferralModalUiState {
   const { verificationKind, walletStatus, hasCode, isEditing, editMode } = params
+
+  if (walletStatus === 'unsupported') {
+    return 'unsupported'
+  }
 
   if (!isEditing && (verificationKind === 'linked' || walletStatus === 'linked')) {
     return 'linked'

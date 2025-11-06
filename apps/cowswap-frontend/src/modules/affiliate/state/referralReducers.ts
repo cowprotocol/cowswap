@@ -1,4 +1,10 @@
-import { ReferralDomainState, ReferralModalSource, ReferralVerificationStatus, WalletReferralState } from '../types'
+import {
+  ReferralDomainState,
+  ReferralIncomingCodeReason,
+  ReferralModalSource,
+  ReferralVerificationStatus,
+  WalletReferralState,
+} from '../types'
 import { sanitizeReferralCode } from '../utils/code'
 
 export function reduceOpenModal(
@@ -11,6 +17,8 @@ export function reduceOpenModal(
 
   const nextInputCode = resolveInputCode(prev, sanitizedIncoming, isLinked)
   const nextVerification = resolveVerification(prev, sanitizedIncoming, isLinked)
+  const nextPreviousVerification =
+    sanitizedIncoming && !isLinked ? prev.verification : prev.previousVerification
 
   return {
     ...prev,
@@ -18,6 +26,8 @@ export function reduceOpenModal(
     modalSource: source,
     editMode: false,
     incomingCode: sanitizedIncoming,
+    incomingCodeReason: undefined,
+    previousVerification: nextPreviousVerification,
     inputCode: nextInputCode,
     verification: nextVerification,
   }
@@ -50,6 +60,8 @@ export function reduceCloseModal(prev: ReferralDomainState): ReferralDomainState
     modalSource: null,
     editMode: false,
     incomingCode: undefined,
+    incomingCodeReason: undefined,
+    previousVerification: undefined,
     pendingVerificationRequest: undefined,
   }
 }
@@ -94,6 +106,7 @@ export function reduceSaveCode(prev: ReferralDomainState, value: string): Referr
     verification: { kind: 'pending', code: sanitized },
     editMode: false,
     shouldAutoVerify: true,
+    previousVerification: undefined,
   }
 }
 
@@ -102,6 +115,8 @@ export const reduceRemoveCode = (prev: ReferralDomainState): ReferralDomainState
   savedCode: undefined,
   inputCode: '',
   incomingCode: undefined,
+  incomingCodeReason: undefined,
+  previousVerification: undefined,
   verification: { kind: 'idle' },
   shouldAutoVerify: false,
 })
@@ -109,6 +124,15 @@ export const reduceRemoveCode = (prev: ReferralDomainState): ReferralDomainState
 export const reduceSetIncomingCode = (prev: ReferralDomainState, code?: string): ReferralDomainState => ({
   ...prev,
   incomingCode: code ? sanitizeReferralCode(code) : undefined,
+  incomingCodeReason: undefined,
+})
+
+export const reduceSetIncomingCodeReason = (
+  prev: ReferralDomainState,
+  reason?: ReferralIncomingCodeReason,
+): ReferralDomainState => ({
+  ...prev,
+  incomingCodeReason: reason,
 })
 
 export const reduceSetWalletState = (
@@ -140,6 +164,7 @@ export const reduceCompleteVerification = (
 ): ReferralDomainState => ({
   ...prev,
   verification: status,
+  previousVerification: undefined,
   shouldAutoVerify: false,
 })
 
@@ -158,6 +183,7 @@ export function reduceSetSavedCode(prev: ReferralDomainState, value?: string): R
       inputCode: '',
       verification: { kind: 'idle' },
       shouldAutoVerify: false,
+      previousVerification: undefined,
     }
   }
 
@@ -167,6 +193,7 @@ export function reduceSetSavedCode(prev: ReferralDomainState, value?: string): R
     inputCode: sanitized,
     verification: { kind: 'pending', code: sanitized },
     shouldAutoVerify: true,
+    previousVerification: undefined,
   }
 }
 

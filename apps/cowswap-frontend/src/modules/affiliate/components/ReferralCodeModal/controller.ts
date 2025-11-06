@@ -76,7 +76,8 @@ export function useReferralModalController(params: ReferralModalControllerParams
   const statusCopy = getStatusCopy(verification)
   const verificationCode = 'code' in verification ? verification.code : undefined
   const codeForDisplay = incomingCode || verificationCode || savedCode || displayCode
-  const { linkedMessage, ineligibleMessage } = useReferralMessages(codeForDisplay)
+  const { linkedMessage } = useReferralMessages(codeForDisplay, referral.incomingCodeReason)
+  const hasRejection = Boolean(referral.incomingCodeReason)
 
   const initialFocusRef =
     uiState === 'valid' || uiState === 'linked'
@@ -100,7 +101,7 @@ export function useReferralModalController(params: ReferralModalControllerParams
       helperText,
       primaryCta,
       linkedMessage,
-      ineligibleMessage,
+      hasRejection,
       infoMessage: statusCopy.infoMessage,
       shouldShowInfo: statusCopy.shouldShowInfo,
       inputRef,

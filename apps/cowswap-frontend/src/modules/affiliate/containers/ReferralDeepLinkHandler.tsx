@@ -1,6 +1,7 @@
 import { ReactNode, useEffect, useRef } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
+import type { CowAnalytics } from '@cowprotocol/analytics'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 
 import { useLocation } from 'react-router'
@@ -9,6 +10,7 @@ import { useNavigate } from 'common/hooks/useNavigate'
 
 import { useReferral } from '../hooks/useReferral'
 import { useReferralActions } from '../hooks/useReferralActions'
+import { ReferralContextValue } from '../types'
 import { isReferralCodeLengthValid, sanitizeReferralCode } from '../utils/code'
 
 export function ReferralDeepLinkHandler(): ReactNode {
@@ -19,6 +21,9 @@ export function ReferralDeepLinkHandler(): ReactNode {
   const navigate = useNavigate()
   const lastProcessedRef = useRef<string | null>(null)
   const analytics = useCowAnalytics()
+  const savedCode = referral.savedCode
+  const verificationKind = referral.verification.kind
+  const walletStatus = referral.wallet.status
 
   useEffect(() => {
     const params = new URLSearchParams(location.search)
@@ -58,25 +63,12 @@ export function ReferralDeepLinkHandler(): ReactNode {
     }
 
     lastProcessedRef.current = sanitized
-
-    const isAlreadyLinked = referral.wallet.status === 'linked' || referral.verification.kind === 'linked'
-
-    actions.setIncomingCode(sanitized)
-
-    if (isAlreadyLinked) {
-      actions.openModal('deeplink', { code: sanitized })
-      analytics.sendEvent({
-        category: 'referral',
-        action: 'deeplink_discarded',
-        label: 'linked_wallet',
-        value: sanitized.length,
-      })
-    } else {
-      actions.setSavedCode(sanitized)
-      actions.openModal('deeplink', { code: sanitized })
-      analytics.sendEvent({ category: 'referral', action: 'code_saved', label: 'deeplink', value: sanitized.length })
+    const snapshot: ReferralSnapshot = {
+      savedCode,
+      verificationKind,
+      walletStatus,
     }
-
+    processReferralCode({ sanitized, snapshot, actions, analytics })
     stripReferralFromUrl()
   }, [
     actions,
@@ -86,9 +78,70 @@ export function ReferralDeepLinkHandler(): ReactNode {
     location.pathname,
     location.search,
     navigate,
-    referral.verification.kind,
-    referral.wallet.status,
+    savedCode,
+    verificationKind,
+    walletStatus,
   ])
 
   return null
+}
+
+interface ReferralSnapshot {
+  savedCode?: string
+  verificationKind: ReferralContextValue['verification']['kind']
+  walletStatus: ReferralContextValue['wallet']['status']
+}
+
+interface ProcessReferralParams {
+  sanitized: string
+  snapshot: ReferralSnapshot
+  actions: ReferralContextValue['actions']
+  analytics: CowAnalytics
+}
+
+function processReferralCode(params: ProcessReferralParams): void {
+  const { sanitized, snapshot, actions, analytics } = params
+  const isAlreadyLinked = snapshot.walletStatus === 'linked' || snapshot.verificationKind === 'linked'
+  const isSameAsSaved = snapshot.savedCode ? snapshot.savedCode === sanitized : false
+  const hasExistingCode = Boolean(snapshot.savedCode)
+  const verificationKind = snapshot.verificationKind
+  const verificationIsRecoverable = !['invalid', 'expired', 'ineligible'].includes(verificationKind)
+  const hasRestorableCode = hasExistingCode && !isSameAsSaved && verificationIsRecoverable
+
+  actions.setIncomingCode(sanitized)
+  actions.openModal('deeplink', { code: sanitized })
+
+  if (isAlreadyLinked) {
+    analytics.sendEvent({
+      category: 'referral',
+      action: 'deeplink_discarded',
+      label: 'linked_wallet',
+      value: sanitized.length,
+    })
+    return
+  }
+
+  if (hasRestorableCode) {
+    actions.setShouldAutoVerify(true)
+    analytics.sendEvent({
+      category: 'referral',
+      action: 'deeplink_preserved',
+      label: 'preserve_existing',
+      value: sanitized.length,
+    })
+    return
+  }
+
+  if (!isSameAsSaved) {
+    actions.setSavedCode(sanitized)
+    analytics.sendEvent({ category: 'referral', action: 'code_saved', label: 'deeplink', value: sanitized.length })
+    return
+  }
+
+  analytics.sendEvent({
+    category: 'referral',
+    action: 'deeplink_repeat',
+    label: 'existing_code',
+    value: sanitized.length,
+  })
 }

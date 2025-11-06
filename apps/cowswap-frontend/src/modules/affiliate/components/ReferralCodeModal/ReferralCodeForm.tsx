@@ -25,6 +25,13 @@ import { isReferralCodeLengthValid } from '../../utils/code'
 
 type TrailingIconKind = 'error' | 'lock' | 'pending' | 'success'
 
+const VERIFICATION_ERROR_KINDS: ReadonlySet<ReferralVerificationStatus['kind']> = new Set([
+  'invalid',
+  'expired',
+  'error',
+  'ineligible',
+])
+
 export interface ReferralCodeFormProps {
   uiState: ReferralModalUiState
   savedCode?: string
@@ -56,22 +63,25 @@ export function ReferralCodeForm(props: ReferralCodeFormProps): ReactNode {
   const showValidLabelInInput = verification.kind === 'valid'
   const showPendingTag = verification.kind === 'pending' && !showPendingLabelInInput
   const showValidTag = verification.kind === 'valid' && !showValidLabelInInput
-  const hasError = verification.kind === 'invalid' || verification.kind === 'expired' || verification.kind === 'error'
-  const isEditing = uiState === 'editing'
-  const isInputDisabled = uiState !== 'editing' && uiState !== 'empty'
-  const isLinked = uiState === 'linked'
-  const trailingIconKind = resolveTrailingIconKind({
-    isLinked,
+  const {
     hasError,
+    isEditing,
+    isInputDisabled,
+    trailingIconKind,
+    isSaveDisabled,
+    showEdit,
+    showRemove,
+    showSave,
+    canSubmitSave,
+    isLinked,
+  } = deriveFormFlags({
+    uiState,
+    verification,
+    savedCode,
+    displayCode,
     showPendingLabelInInput,
     showValidLabelInInput,
   })
-  const isSaveDisabled = !isReferralCodeLengthValid(displayCode || '')
-  const canEdit = !isEditing && uiState !== 'linked' && uiState !== 'ineligible' && uiState !== 'empty'
-  const showEdit = canEdit && Boolean(savedCode)
-  const showRemove = isEditing && Boolean(savedCode)
-  const showSave = isEditing || uiState === 'empty'
-  const canSubmitSave = showSave && !isSaveDisabled
   const submitAction = canSubmitSave ? onSave : onPrimaryClick
 
   return (
@@ -114,6 +124,85 @@ export function ReferralCodeForm(props: ReferralCodeFormProps): ReactNode {
       />
     </FormGroup>
   )
+}
+
+interface DeriveFormFlagsParams {
+  uiState: ReferralModalUiState
+  verification: ReferralVerificationStatus
+  savedCode?: string
+  displayCode: string
+  showPendingLabelInInput: boolean
+  showValidLabelInInput: boolean
+}
+
+interface FormFlags {
+  hasError: boolean
+  isEditing: boolean
+  isInputDisabled: boolean
+  trailingIconKind: TrailingIconKind | undefined
+  isSaveDisabled: boolean
+  showEdit: boolean
+  showRemove: boolean
+  showSave: boolean
+  canSubmitSave: boolean
+  isLinked: boolean
+}
+
+function deriveFormFlags(params: DeriveFormFlagsParams): FormFlags {
+  const base = computeBaseFlags(params)
+  const trailingIconKind = resolveTrailingIconKind({
+    isLinked: base.isLinked,
+    hasError: base.hasError,
+    showPendingLabelInInput: params.showPendingLabelInInput,
+    showValidLabelInInput: params.showValidLabelInInput,
+  })
+
+  return {
+    ...base,
+    trailingIconKind,
+  }
+}
+
+interface BaseFlags {
+  hasError: boolean
+  isEditing: boolean
+  isInputDisabled: boolean
+  isSaveDisabled: boolean
+  showEdit: boolean
+  showRemove: boolean
+  showSave: boolean
+  canSubmitSave: boolean
+  isLinked: boolean
+  isUnsupported: boolean
+}
+
+function computeBaseFlags(params: DeriveFormFlagsParams): BaseFlags {
+  const { uiState, verification, savedCode, displayCode } = params
+
+  const isUnsupported = uiState === 'unsupported'
+  const isEditing = uiState === 'editing'
+  const isLinked = uiState === 'linked'
+  const hasError = VERIFICATION_ERROR_KINDS.has(verification.kind)
+  const isInputDisabled = isUnsupported || (uiState !== 'editing' && uiState !== 'empty')
+  const isSaveDisabled = !isReferralCodeLengthValid(displayCode || '')
+  const canEdit = !isUnsupported && !isEditing && !isLinked && uiState !== 'empty'
+  const showEdit = canEdit && Boolean(savedCode)
+  const showRemove = !isUnsupported && isEditing && Boolean(savedCode)
+  const showSave = !isUnsupported && (isEditing || uiState === 'empty')
+  const canSubmitSave = showSave && !isSaveDisabled
+
+  return {
+    hasError,
+    isEditing,
+    isInputDisabled,
+    isSaveDisabled,
+    showEdit,
+    showRemove,
+    showSave,
+    canSubmitSave,
+    isLinked,
+    isUnsupported,
+  }
 }
 
 interface ReferralCodeTagsProps {

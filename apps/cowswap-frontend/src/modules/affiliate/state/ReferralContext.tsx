@@ -11,6 +11,7 @@ import {
   reduceRequestVerification,
   reduceSaveCode,
   reduceSetIncomingCode,
+  reduceSetIncomingCodeReason,
   reduceSetInputCode,
   reduceSetSavedCode,
   reduceSetShouldAutoVerify,
@@ -32,6 +33,8 @@ const initialState: ReferralDomainState = {
   inputCode: '',
   savedCode: undefined,
   incomingCode: undefined,
+  incomingCodeReason: undefined,
+  previousVerification: undefined,
   verification: { kind: 'idle' },
   wallet: { status: 'unknown' },
   shouldAutoVerify: false,
@@ -50,6 +53,7 @@ const noopActions: ReferralActions = {
   saveCode: noop,
   removeCode: noop,
   setIncomingCode: noop,
+  setIncomingCodeReason: noop,
   setWalletState: noop,
   startVerification: noop,
   completeVerification: noop,
@@ -109,6 +113,7 @@ function useReferralStoreActions(setState: SetReferralState): ReferralActions {
   const saveCode = useStateReducerAction(setState, reduceSaveCode)
   const removeCode = useStateReducerAction(setState, reduceRemoveCode)
   const setIncomingCode = useStateReducerAction(setState, reduceSetIncomingCode)
+  const setIncomingCodeReason = useStateReducerAction(setState, reduceSetIncomingCodeReason)
   const setWalletState = useStateReducerAction(setState, reduceSetWalletState)
   const startVerification = useStateReducerAction(setState, reduceStartVerification)
   const completeVerification = useStateReducerAction(setState, reduceCompleteVerification)
@@ -127,6 +132,7 @@ function useReferralStoreActions(setState: SetReferralState): ReferralActions {
       saveCode,
       removeCode,
       setIncomingCode,
+      setIncomingCodeReason,
       setWalletState,
       startVerification,
       completeVerification,
@@ -146,6 +152,7 @@ function useReferralStoreActions(setState: SetReferralState): ReferralActions {
       requestVerification,
       saveCode,
       setIncomingCode,
+      setIncomingCodeReason,
       setInputCode,
       setSavedCode,
       setShouldAutoVerify,

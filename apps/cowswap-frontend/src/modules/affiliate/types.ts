@@ -3,6 +3,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 export type ReferralModalSource = 'header' | 'rewards' | 'deeplink'
 
 export type ReferralVerificationErrorType = 'network' | 'rate-limit' | 'unknown'
+export type ReferralIncomingCodeReason = 'invalid' | 'expired' | 'ineligible'
 
 export type ReferralVerificationStatus =
   | { kind: 'idle' }
@@ -30,6 +31,8 @@ export interface ReferralDomainState {
   inputCode: string
   savedCode?: string
   incomingCode?: string
+  incomingCodeReason?: ReferralIncomingCodeReason
+  previousVerification?: ReferralVerificationStatus
   verification: ReferralVerificationStatus
   wallet: WalletReferralState
   shouldAutoVerify: boolean
@@ -91,6 +94,7 @@ export interface ReferralActions {
   saveCode(code: string): void
   removeCode(): void
   setIncomingCode(code?: string): void
+  setIncomingCodeReason(reason?: ReferralIncomingCodeReason): void
   setWalletState(state: WalletReferralState): void
   startVerification(code: string): void
   completeVerification(status: ReferralVerificationStatus): void

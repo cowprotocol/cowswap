@@ -24,7 +24,7 @@ export interface ReferralModalContentProps {
   helperText?: string
   primaryCta: PrimaryCta
   linkedMessage: ReactNode
-  ineligibleMessage: ReactNode
+  hasRejection: boolean
   infoMessage: string
   shouldShowInfo: boolean
   inputRef: RefObject<HTMLInputElement | null>

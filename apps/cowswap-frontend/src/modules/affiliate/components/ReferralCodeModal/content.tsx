@@ -23,6 +23,7 @@ export function ReferralModalContent(props: ReferralModalContentProps): ReactNod
     inputRef,
     ctaRef,
     linkedMessage,
+    hasRejection,
   } = props
 
   const howItWorksLink = (
@@ -39,8 +40,13 @@ export function ReferralModalContent(props: ReferralModalContentProps): ReactNod
 
       <Body>
         <Illustration src={REFERRAL_ILLUSTRATION} alt="" role="presentation" />
-        <Title>{getModalTitle(uiState)}</Title>
-        <ReferralSubtitle uiState={uiState} linkedMessage={linkedMessage} howItWorksLink={howItWorksLink} />
+        <Title>{getModalTitle(uiState, { hasRejection })}</Title>
+        <ReferralSubtitle
+          uiState={uiState}
+          linkedMessage={linkedMessage}
+          howItWorksLink={howItWorksLink}
+          hasRejection={hasRejection}
+        />
         <ReferralCodeForm
           uiState={uiState}
           savedCode={props.savedCode}
@@ -54,12 +60,9 @@ export function ReferralModalContent(props: ReferralModalContentProps): ReactNod
           inputRef={inputRef}
         />
         <ReferralStatusMessages
-          uiState={uiState}
           verification={props.verification}
-          ineligibleMessage={props.ineligibleMessage}
           infoMessage={props.infoMessage}
           shouldShowInfo={props.shouldShowInfo}
-          howItWorksLink={howItWorksLink}
         />
       </Body>
 
@@ -78,10 +81,11 @@ interface ReferralSubtitleProps {
   uiState: ReferralModalUiState
   linkedMessage?: ReactNode
   howItWorksLink: ReactNode
+  hasRejection: boolean
 }
 
-function ReferralSubtitle({ uiState, linkedMessage, howItWorksLink }: ReferralSubtitleProps): ReactNode {
-  if (uiState === 'linked' && linkedMessage) {
+function ReferralSubtitle({ uiState, linkedMessage, howItWorksLink, hasRejection }: ReferralSubtitleProps): ReactNode {
+  if ((uiState === 'linked' || hasRejection) && linkedMessage) {
     return (
       <Subtitle>
         {linkedMessage} {howItWorksLink}
