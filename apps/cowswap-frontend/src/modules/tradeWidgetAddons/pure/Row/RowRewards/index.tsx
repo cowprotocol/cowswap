@@ -8,6 +8,7 @@ import { RowStyleProps, StyledInfoIcon, StyledRowBetween, TextWrapper } from '..
 
 export interface RowRewardsContentProps {
   onAddCode?: () => void
+  onManageCode?: () => void
   tooltipContent?: ReactNode
   linkedCode?: string
   accountLink?: string
@@ -15,8 +16,53 @@ export interface RowRewardsContentProps {
 }
 
 export function RowRewardsContent(props: RowRewardsContentProps): ReactNode {
-  const { onAddCode, tooltipContent, linkedCode, accountLink, styleProps } = props
+  const { onAddCode, onManageCode, tooltipContent, linkedCode, accountLink, styleProps } = props
   const tooltip = tooltipContent ?? <Trans>Add a referral code to earn rewards.</Trans>
+
+  const renderAction = (): ReactNode => {
+    if (!linkedCode) {
+      return (
+        <LinkStyledButton
+          onClick={onAddCode}
+          padding="0"
+          margin="0"
+          fontSize="inherit"
+          color={`var(${UI.COLOR_PRIMARY_LIGHTER})`}
+        >
+          <Trans>Add code</Trans>
+        </LinkStyledButton>
+      )
+    }
+
+    if (onManageCode) {
+      return (
+        <LinkStyledButton
+          as="button"
+          onClick={onManageCode}
+          type="button"
+          padding="0"
+          margin="0"
+          fontSize="inherit"
+          color={`var(${UI.COLOR_PRIMARY_LIGHTER})`}
+        >
+          {linkedCode}
+        </LinkStyledButton>
+      )
+    }
+
+    return (
+      <LinkStyledButton
+        as="a"
+        href={accountLink ?? '/#/account'}
+        padding="0"
+        margin="0"
+        fontSize="inherit"
+        color={`var(${UI.COLOR_PRIMARY_LIGHTER})`}
+      >
+        {linkedCode}
+      </LinkStyledButton>
+    )
+  }
 
   return (
     <StyledRowBetween {...styleProps}>
@@ -28,30 +74,7 @@ export function RowRewardsContent(props: RowRewardsContentProps): ReactNode {
           <StyledInfoIcon size={16} />
         </HoverTooltip>
       </RowFixed>
-      <TextWrapper textAlign="right">
-        {linkedCode ? (
-          <LinkStyledButton
-            as="a"
-            href={accountLink ?? '/#/account'}
-            padding="0"
-            margin="0"
-            fontSize="inherit"
-            color={`var(${UI.COLOR_PRIMARY_LIGHTER})`}
-          >
-            {linkedCode}
-          </LinkStyledButton>
-        ) : (
-          <LinkStyledButton
-            onClick={onAddCode}
-            padding="0"
-            margin="0"
-            fontSize="inherit"
-            color={`var(${UI.COLOR_PRIMARY_LIGHTER})`}
-          >
-            <Trans>Add code</Trans>
-          </LinkStyledButton>
-        )}
-      </TextWrapper>
+      <TextWrapper textAlign="right">{renderAction()}</TextWrapper>
     </StyledRowBetween>
   )
 }

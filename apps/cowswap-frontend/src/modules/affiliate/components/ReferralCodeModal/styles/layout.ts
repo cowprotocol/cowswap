@@ -31,12 +31,16 @@ export const Illustration = styled.img`
 export const Title = styled.h2`
   margin: 0 auto 16px;
   width: 100%;
-  max-width: 260px;
+  max-width: 75%;
   padding: 0 10px;
   font-size: 28px;
   font-weight: 600;
   color: var(${UI.COLOR_TEXT});
   text-align: center;
+`
+
+export const TitleAccent = styled.span`
+  color: var(${UI.COLOR_SUCCESS_TEXT});
 `
 
 export const Subtitle = styled.p`

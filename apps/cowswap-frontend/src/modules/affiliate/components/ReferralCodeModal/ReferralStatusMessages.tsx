@@ -4,7 +4,7 @@ import { Loader, StatusColorVariant } from '@cowprotocol/ui'
 
 import { t, Trans } from '@lingui/macro'
 
-import { InlineAlert, SpinnerRow, StatusMessage } from './styles'
+import { InlineAlert, SpinnerRow, StatusMessage, TitleAccent } from './styles'
 
 import { ReferralModalUiState } from '../../hooks/useReferralModalState'
 import { ReferralVerificationStatus } from '../../types'
@@ -48,8 +48,21 @@ export function ReferralStatusMessages(props: ReferralStatusMessagesProps): Reac
   )
 }
 
-export function getModalTitle(uiState: ReferralModalUiState): string {
+export function getModalTitle(uiState: ReferralModalUiState): ReactNode {
   switch (uiState) {
+    case 'valid':
+      return (
+        <>
+          <Trans>Referral code</Trans>
+          <br />
+          <span>
+            <Trans>successfully</Trans>{' '}
+            <TitleAccent>
+              <Trans>applied!</Trans>
+            </TitleAccent>
+          </span>
+        </>
+      )
     case 'linked':
       return t`Already linked to a referral code`
     case 'ineligible':

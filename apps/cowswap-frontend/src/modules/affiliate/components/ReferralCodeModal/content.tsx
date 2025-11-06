@@ -14,7 +14,16 @@ import { REFERRAL_HOW_IT_WORKS_URL } from '../../constants'
 import { ReferralModalUiState } from '../../hooks/useReferralModalState'
 
 export function ReferralModalContent(props: ReferralModalContentProps): ReactNode {
-  const { uiState, onPrimaryClick, helperText, primaryCta, onDismiss, inputRef, ctaRef, linkedMessage } = props
+  const {
+    uiState,
+    onPrimaryClick,
+    helperText,
+    primaryCta,
+    onDismiss,
+    inputRef,
+    ctaRef,
+    linkedMessage,
+  } = props
 
   const howItWorksLink = (
     <LinkStyledButton as="a" href={REFERRAL_HOW_IT_WORKS_URL} target="_blank" rel="noopener noreferrer">

@@ -1,6 +1,8 @@
 import { FormEvent, ReactNode, RefObject } from 'react'
 
 import AlertIcon from '@cowprotocol/assets/cow-swap/alert-circle.svg'
+import CheckIcon from '@cowprotocol/assets/cow-swap/order-check.svg'
+import PendingIcon from '@cowprotocol/assets/cow-swap/spinner.svg'
 import LinkedIcon from '@cowprotocol/assets/images/icon-locked-2.svg'
 
 import { t, Trans } from '@lingui/macro'
@@ -14,7 +16,7 @@ interface ReferralCodeInputRowProps {
   isInputDisabled: boolean
   isEditing: boolean
   isLinked: boolean
-  trailingIconKind?: 'error' | 'lock'
+  trailingIconKind?: 'error' | 'lock' | 'pending' | 'success'
   canSubmitSave: boolean
   onChange(event: FormEvent<HTMLInputElement>): void
   onPrimaryClick(): void
@@ -63,20 +65,32 @@ export function ReferralCodeInputRow(props: ReferralCodeInputRowProps): ReactNod
         }}
       />
 
-      {trailingIconKind && (
-        <TrailingIcon kind={trailingIconKind}>
-          {trailingIconKind === 'lock' ? (
-            <>
-              <SVG src={LinkedIcon} title={t`Linked`} />
-              <span>
-                <Trans>Linked</Trans>
-              </span>
-            </>
-          ) : (
-            <SVG src={AlertIcon} title={t`Invalid code`} />
-          )}
-        </TrailingIcon>
-      )}
+      {trailingIconKind && <TrailingIcon kind={trailingIconKind}>{renderTrailingIcon(trailingIconKind)}</TrailingIcon>}
     </InputWrapper>
+  )
+}
+
+function renderTrailingIcon(kind: NonNullable<ReferralCodeInputRowProps['trailingIconKind']>): ReactNode {
+  if (kind === 'lock') {
+    return renderIconWithLabel(LinkedIcon, t`Linked`, <Trans>Linked</Trans>)
+  }
+
+  if (kind === 'success') {
+    return renderIconWithLabel(CheckIcon, t`Valid`, <Trans>Valid</Trans>)
+  }
+
+  if (kind === 'pending') {
+    return renderIconWithLabel(PendingIcon, t`Pending`, <Trans>Pending</Trans>)
+  }
+
+  return <SVG src={AlertIcon} title={t`Invalid code`} />
+}
+
+function renderIconWithLabel(src: string, title: string, label: ReactNode): ReactNode {
+  return (
+    <>
+      <SVG src={src} title={title} />
+      <span>{label}</span>
+    </>
   )
 }

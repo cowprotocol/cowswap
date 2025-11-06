@@ -23,6 +23,8 @@ import { ReferralModalUiState } from '../../hooks/useReferralModalState'
 import { ReferralVerificationStatus } from '../../types'
 import { isReferralCodeLengthValid } from '../../utils/code'
 
+type TrailingIconKind = 'error' | 'lock' | 'pending' | 'success'
+
 export interface ReferralCodeFormProps {
   uiState: ReferralModalUiState
   savedCode?: string
@@ -50,31 +52,33 @@ export function ReferralCodeForm(props: ReferralCodeFormProps): ReactNode {
     inputRef,
   } = props
 
-  const showPendingTag = verification.kind === 'pending'
-  const showValidTag = verification.kind === 'valid'
+  const showPendingLabelInInput = shouldShowPendingLabel(verification)
+  const showValidLabelInInput = verification.kind === 'valid'
+  const showPendingTag = verification.kind === 'pending' && !showPendingLabelInInput
+  const showValidTag = verification.kind === 'valid' && !showValidLabelInInput
   const hasError = verification.kind === 'invalid' || verification.kind === 'expired' || verification.kind === 'error'
   const isEditing = uiState === 'editing'
   const isInputDisabled = uiState !== 'editing' && uiState !== 'empty'
   const isLinked = uiState === 'linked'
-  const trailingIconKind = isLinked ? 'lock' : hasError ? 'error' : undefined
+  const trailingIconKind = resolveTrailingIconKind({
+    isLinked,
+    hasError,
+    showPendingLabelInInput,
+    showValidLabelInInput,
+  })
   const isSaveDisabled = !isReferralCodeLengthValid(displayCode || '')
   const canEdit = !isEditing && uiState !== 'linked' && uiState !== 'ineligible' && uiState !== 'empty'
   const showEdit = canEdit && Boolean(savedCode)
   const showRemove = isEditing && Boolean(savedCode)
   const showSave = isEditing || uiState === 'empty'
   const canSubmitSave = showSave && !isSaveDisabled
+  const submitAction = canSubmitSave ? onSave : onPrimaryClick
 
   return (
     <FormGroup
       onSubmit={(event) => {
         event.preventDefault()
-
-        if (canSubmitSave) {
-          onSave()
-          return
-        }
-
-        onPrimaryClick()
+        submitAction()
       }}
     >
       <LabelRow>
@@ -182,4 +186,33 @@ function ReferralCodeActions({
       )}
     </FormActions>
   )
+}
+
+function shouldShowPendingLabel(verification: ReferralVerificationStatus): boolean {
+  return verification.kind === 'pending'
+}
+
+function resolveTrailingIconKind(params: {
+  isLinked: boolean
+  hasError: boolean
+  showPendingLabelInInput: boolean
+  showValidLabelInInput: boolean
+}): TrailingIconKind | undefined {
+  if (params.isLinked) {
+    return 'lock'
+  }
+
+  if (params.hasError) {
+    return 'error'
+  }
+
+  if (params.showPendingLabelInInput) {
+    return 'pending'
+  }
+
+  if (params.showValidLabelInInput) {
+    return 'success'
+  }
+
+  return undefined
 }

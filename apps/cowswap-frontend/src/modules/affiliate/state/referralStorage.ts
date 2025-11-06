@@ -9,38 +9,43 @@ import { ReferralDomainState } from '../types'
 import { sanitizeReferralCode } from '../utils/code'
 
 type SetReferralState = Dispatch<SetStateAction<ReferralDomainState>>
+type SetHydratedState = Dispatch<SetStateAction<boolean>>
 
-export function useReferralHydration(setState: SetReferralState): void {
+export function useReferralHydration(setState: SetReferralState, setHydrated: SetHydratedState): void {
   useEffect(() => {
     if (typeof window === 'undefined') {
+      setHydrated(true)
       return
     }
+
+    let shouldHydrate = true
 
     try {
       const stored = window.localStorage.getItem(REFERRAL_STORAGE_KEY)
 
-      if (!stored) {
-        return
+      if (stored) {
+        const sanitized = sanitizeReferralCode(stored)
+
+        if (sanitized) {
+          setState((prev) => reduceSetSavedCode(prev, sanitized))
+        }
       }
-
-      const sanitized = sanitizeReferralCode(stored)
-
-      if (!sanitized) {
-        return
-      }
-
-      setState((prev) => reduceSetSavedCode(prev, sanitized))
     } catch (error) {
+      shouldHydrate = true
       if (!isProdLike) {
         console.warn('[Referral] Failed to read saved code from storage', error)
       }
     }
-  }, [setState])
+
+    if (shouldHydrate) {
+      setHydrated(true)
+    }
+  }, [setHydrated, setState])
 }
 
-export function useReferralPersistence(savedCode?: string): void {
+export function useReferralPersistence(savedCode: string | undefined, hasHydrated: boolean): void {
   useEffect(() => {
-    if (typeof window === 'undefined') {
+    if (!hasHydrated || typeof window === 'undefined') {
       return
     }
 
@@ -55,7 +60,7 @@ export function useReferralPersistence(savedCode?: string): void {
         console.warn('[Referral] Failed to persist saved code', error)
       }
     }
-  }, [savedCode])
+  }, [hasHydrated, savedCode])
 }
 
 export function useReferralStorageSync(setState: SetReferralState): void {

@@ -69,9 +69,10 @@ export function ReferralProvider({ children }: ReferralProviderProps): ReactNode
 
 function useReferralStore(): ReferralContextValue {
   const [state, setState] = useState<ReferralDomainState>(initialState)
+  const [hasHydrated, setHasHydrated] = useState(false)
 
-  useReferralHydration(setState)
-  useReferralPersistence(state.savedCode)
+  useReferralHydration(setState, setHasHydrated)
+  useReferralPersistence(state.savedCode, hasHydrated)
   useReferralStorageSync(setState)
 
   const actions = useReferralStoreActions(setState)

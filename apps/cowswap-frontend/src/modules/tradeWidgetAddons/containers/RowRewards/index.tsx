@@ -20,15 +20,14 @@ export function RowRewards(): ReactNode {
   const referral = useReferral()
   const referralActions = useReferralActions()
 
-  const linkedCodeFromWallet = referral.wallet.status === 'linked' ? referral.wallet.code : undefined
-  const linkedCodeFromVerification =
-    referral.verification.kind === 'linked' ? referral.verification.linkedCode : undefined
-  const linkedCode = linkedCodeFromWallet || linkedCodeFromVerification || undefined
-  const tooltipContent = linkedCode ? (
-    <Trans>Your wallet is linked to this referral code.</Trans>
-  ) : (
-    <Trans>Earn more by adding a referral code.</Trans>
-  )
+  const linkedCode = getLinkedCode(referral)
+  const hasLinkedCode = Boolean(linkedCode)
+  const hasSavedValidCode = shouldShowSavedCode(referral, hasLinkedCode)
+  const displayCode = linkedCode ?? (hasSavedValidCode ? referral.savedCode : undefined)
+  const tooltipContent = getTooltipContent(hasLinkedCode, hasSavedValidCode)
+  const handleOpenModal = (): void => {
+    referralActions.openModal('rewards')
+  }
 
   if (!isRowRewardsVisible) {
     return null
@@ -36,10 +35,43 @@ export function RowRewards(): ReactNode {
 
   return (
     <RowRewardsContent
-      linkedCode={linkedCode}
-      accountLink={`#${Routes.ACCOUNT}`}
+      linkedCode={displayCode}
+      accountLink={hasLinkedCode ? `#${Routes.ACCOUNT}` : undefined}
       tooltipContent={tooltipContent}
-      onAddCode={() => referralActions.openModal('rewards')}
+      onAddCode={!displayCode ? handleOpenModal : undefined}
+      onManageCode={!hasLinkedCode && displayCode ? handleOpenModal : undefined}
     />
   )
+}
+
+function getLinkedCode(referral: ReturnType<typeof useReferral>): string | undefined {
+  if (referral.wallet.status === 'linked') {
+    return referral.wallet.code
+  }
+
+  if (referral.verification.kind === 'linked') {
+    return referral.verification.linkedCode
+  }
+
+  return undefined
+}
+
+function shouldShowSavedCode(referral: ReturnType<typeof useReferral>, hasLinkedCode: boolean): boolean {
+  if (hasLinkedCode) {
+    return false
+  }
+
+  return referral.verification.kind === 'valid' && Boolean(referral.savedCode)
+}
+
+function getTooltipContent(hasLinkedCode: boolean, hasSavedValidCode: boolean): ReactNode {
+  if (hasLinkedCode) {
+    return <Trans>Your wallet is linked to this referral code.</Trans>
+  }
+
+  if (hasSavedValidCode) {
+    return <Trans>Your referral code is saved. It will link after your first eligible trade.</Trans>
+  }
+
+  return <Trans>Earn more by adding a referral code.</Trans>
 }

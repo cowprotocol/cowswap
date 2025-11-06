@@ -87,8 +87,8 @@ export const InputWrapper = styled.div<{
       : isLinked
         ? `var(${UI.COLOR_INFO_BG})`
         : isEditing
-          ? `var(${UI.COLOR_PAPER_DARKER})`
-          : `var(${UI.COLOR_PAPER})`};
+          ? `var(${UI.COLOR_PAPER})`
+          : `var(${UI.COLOR_PAPER_DARKER})`};
   color: ${({ hasError, isLinked }) =>
     hasError ? `var(${UI.COLOR_DANGER_TEXT})` : isLinked ? `var(${UI.COLOR_INFO_TEXT})` : `var(${UI.COLOR_TEXT})`};
   border-radius: 9px;
@@ -126,18 +126,23 @@ export const StyledInput = styled.input<{ disabled?: boolean }>`
   }
 `
 
-export const TrailingIcon = styled.div<{ kind: 'error' | 'lock' }>`
+export const TrailingIcon = styled.div<{ kind: 'error' | 'lock' | 'pending' | 'success' }>`
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
   font-size: 14px;
+  font-weight: 500;
   color: ${({ kind }) =>
     kind === 'error'
       ? `var(${UI.COLOR_DANGER_TEXT})`
       : kind === 'lock'
         ? `var(${UI.COLOR_INFO_TEXT})`
-        : `var(${UI.COLOR_TEXT_OPACITY_70})`};
+        : kind === 'pending'
+          ? `var(${UI.COLOR_ALERT_TEXT})`
+          : kind === 'success'
+            ? `var(${UI.COLOR_SUCCESS})`
+            : `var(${UI.COLOR_TEXT_OPACITY_70})`};
 
   svg {
     width: 18px;
