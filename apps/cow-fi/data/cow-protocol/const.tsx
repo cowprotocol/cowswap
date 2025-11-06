@@ -391,7 +391,7 @@ export function useFaqData(): FaqItem[] {
     {
       question: 'What chains does CoW Protocol currently support?',
       answer:
-        'CoW Protocol is currently deployed on Ethereum, BNB, Base, Arbitrum, Polygon, Avalanche, Linea, Plasma, Gnosis, and Lens.',
+        'CoW Protocol is currently deployed on Ethereum, BNB, Base, Arbitrum, Polygon, Avalanche, Linea, Gnosis, and Lens.',
     },
     {
       question: 'How do I get support?',
