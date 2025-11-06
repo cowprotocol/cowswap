@@ -15,3 +15,33 @@ index 3c0b8f7..eb55839 100644
      SEPOLIA = 11155111
  }
  /**
+diff --git a/node_modules/@cowprotocol/sdk-config/dist/index.js b/node_modules/@cowprotocol/sdk-config/dist/index.js
+index d986305..106c134 100644
+--- a/node_modules/@cowprotocol/sdk-config/dist/index.js
++++ b/node_modules/@cowprotocol/sdk-config/dist/index.js
+@@ -769,8 +769,8 @@ var ALL_SUPPORTED_CHAINS_MAP = {
+   [137 /* POLYGON */]: polygon,
+   [56 /* BNB */]: bnb,
+   [232 /* LENS */]: lens,
+-  [9745 /* PLASMA */]: plasma,
+-  [59144 /* LINEA */]: linea,
++  // [9745 /* PLASMA */]: plasma,
++  // [59144 /* LINEA */]: linea,
+   [11155111 /* SEPOLIA */]: sepolia
+ };
+ var ALL_SUPPORTED_CHAINS = Object.values(ALL_SUPPORTED_CHAINS_MAP);
+diff --git a/node_modules/@cowprotocol/sdk-config/dist/index.mjs b/node_modules/@cowprotocol/sdk-config/dist/index.mjs
+index fdc23e0..c2b97fb 100644
+--- a/node_modules/@cowprotocol/sdk-config/dist/index.mjs
++++ b/node_modules/@cowprotocol/sdk-config/dist/index.mjs
+@@ -696,8 +696,8 @@ var ALL_SUPPORTED_CHAINS_MAP = {
+   [137 /* POLYGON */]: polygon,
+   [56 /* BNB */]: bnb,
+   [232 /* LENS */]: lens,
+-  [9745 /* PLASMA */]: plasma,
+-  [59144 /* LINEA */]: linea,
++  // [9745 /* PLASMA */]: plasma,
++  // [59144 /* LINEA */]: linea,
+   [11155111 /* SEPOLIA */]: sepolia
+ };
+ var ALL_SUPPORTED_CHAINS = Object.values(ALL_SUPPORTED_CHAINS_MAP);
