@@ -2,10 +2,12 @@ import { ReactNode } from 'react'
 
 import { OrderClass } from '@cowprotocol/cow-sdk'
 
-import { OrderPermitUpdater, useGetPendingOrdersPermitValidityState } from 'modules/ordersTable'
+import {
+  OrderPermitUpdater,
+  useGetPendingOrdersPermitValidityState,
+  usePendingOrdersFillability,
+} from 'modules/ordersTable'
 import { TradeType } from 'modules/trade'
-
-import { usePendingOrdersFillability } from 'common/hooks/usePendingOrdersFillability'
 
 
 export function PendingOrdersPermitUpdater(): ReactNode {

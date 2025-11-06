@@ -1,12 +1,10 @@
 import { useBalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
-import { OrderClass } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Order } from 'legacy/state/orders/actions'
-import { useOnlyPendingOrders } from 'legacy/state/orders/hooks'
 
-import { doesOrderHavePermit } from '../utils/doesOrderHavePermit'
+import { doesOrderHavePermit } from 'common/utils/doesOrderHavePermit'
 
 export interface OrderFillability {
   hasEnoughAllowance: boolean | undefined
@@ -15,17 +13,13 @@ export interface OrderFillability {
   order: Order
 }
 
-export function usePendingOrdersFillability(orderClass?: OrderClass): Record<string, OrderFillability | undefined> {
-  const { chainId, account } = useWalletInfo()
-
-  const pendingOrders = useOnlyPendingOrders(chainId, account)
-  const tokens = pendingOrders.map((order) => order.sellToken.toLowerCase())
+export function useOrdersFillability(orders: Order[]): Record<string, OrderFillability | undefined> {
+  const { chainId } = useWalletInfo()
+  const tokens = orders.map((order) => order.sellToken.toLowerCase())
 
   const { balances, allowances } = useBalancesAndAllowances(tokens)
 
-  return pendingOrders.reduce<Record<string, OrderFillability>>((acc, order) => {
-    if (orderClass && order.class !== orderClass) return acc
-
+  return orders.reduce<Record<string, OrderFillability>>((acc, order) => {
     if (getIsNativeToken(chainId, order.inputToken.address)) {
       acc[order.id] = {
         hasEnoughBalance: true,
@@ -49,3 +43,4 @@ export function usePendingOrdersFillability(orderClass?: OrderClass): Record<str
     return acc
   }, {})
 }
+
