@@ -6,9 +6,7 @@ import {
   bnb,
   gnosisChain,
   lens,
-  linea,
   mainnet,
-  plasma,
   polygon,
   sepolia,
   SupportedChainId,
@@ -37,8 +35,6 @@ const WALLET_RPC_SUGGESTION: Record<SupportedChainId, string | null> = {
   [SupportedChainId.AVALANCHE]: avalanche.rpcUrls.default.http[0],
   [SupportedChainId.LENS]: lens.rpcUrls.default.http[0],
   [SupportedChainId.BNB]: bnb.rpcUrls.default.http[0],
-  [SupportedChainId.LINEA]: linea.rpcUrls.default.http[0],
-  [SupportedChainId.PLASMA]: plasma.rpcUrls.default.http[0],
 }
 
 // TODO: Add proper return type annotation

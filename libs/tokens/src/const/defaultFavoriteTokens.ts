@@ -21,7 +21,6 @@ import {
   USDC_BASE,
   USDC_BNB,
   USDC_LENS,
-  USDC_LINEA,
   USDC_MAINNET,
   USDC_POLYGON,
   USDC_SEPOLIA,
@@ -31,7 +30,6 @@ import {
   USDT_AVALANCHE,
   USDT_BASE,
   USDT_BNB,
-  USDT_PLASMA,
   USDT_POLYGON,
   WBTC,
   WBTC_ARBITRUM_ONE,
@@ -120,6 +118,4 @@ export const DEFAULT_FAVORITE_TOKENS: Record<SupportedChainId, TokensMap> = {
     DAI_BNB,
     BTCB_BNB,
   ]),
-  [SupportedChainId.LINEA]: tokensListToMap([WRAPPED_NATIVE_CURRENCIES[SupportedChainId.LINEA], USDC_LINEA]),
-  [SupportedChainId.PLASMA]: tokensListToMap([WRAPPED_NATIVE_CURRENCIES[SupportedChainId.PLASMA], USDT_PLASMA]),
 }

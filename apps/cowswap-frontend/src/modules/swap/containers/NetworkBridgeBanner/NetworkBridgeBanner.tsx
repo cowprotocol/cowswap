@@ -51,13 +51,9 @@ const RootWrapper = styled.div`
   }
 `
 
-// TODO: remove once network is supported for cross-chain swaps
 const SHOULD_SHOW_ALERT = {
   [SupportedChainId.GNOSIS_CHAIN]: true,
   [SupportedChainId.LENS]: true,
-  [SupportedChainId.BNB]: true,
-  [SupportedChainId.LINEA]: true,
-  [SupportedChainId.PLASMA]: true,
 }
 
 type NetworkAlertChains = keyof typeof SHOULD_SHOW_ALERT
