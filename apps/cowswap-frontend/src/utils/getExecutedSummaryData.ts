@@ -1,4 +1,4 @@
-import { areAddressesEqual, isSellOrder } from '@cowprotocol/common-utils'
+import { areAddressesEqual, FractionUtils, isSellOrder } from '@cowprotocol/common-utils'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { BigNumber } from 'bignumber.js'
@@ -66,9 +66,7 @@ export function getExecutedSummaryDataWithSurplusToken(
   const { surplusAmount: amount, surplusPercentage: percentage } = parsedOrder.executionData
 
   // Guard against missing surplus by falling back to '0' raw amount
-  const rawSurplus = amount
-    ? amount.decimalPlaces(0, BigNumber.ROUND_DOWN).toFixed(0)
-    : '0'
+  const rawSurplus = amount ? amount.decimalPlaces(0, BigNumber.ROUND_DOWN).toFixed(0) : '0'
   const surplusPercent = percentage?.multipliedBy(100)?.toFixed(2)
 
   const { effectiveOutputToken, surplusDisplayToken } = resolveDisplayTokens({
@@ -77,7 +75,14 @@ export function getExecutedSummaryDataWithSurplusToken(
     parsedOutputToken,
     surplusToken,
   })
-  const surplusAmount = CurrencyAmount.fromRawAmount(surplusDisplayToken, rawSurplus)
+  const surplusAmount =
+    surplusDisplayToken.decimals !== surplusToken.decimals
+      ? FractionUtils.adjustDecimalsAtoms(
+          CurrencyAmount.fromRawAmount(surplusDisplayToken, rawSurplus),
+          surplusToken.decimals,
+          surplusDisplayToken.decimals,
+        )
+      : CurrencyAmount.fromRawAmount(surplusDisplayToken, rawSurplus)
 
   const { formattedFilledAmount, formattedSwappedAmount, swappedAmountWithFee } = getFilledAmounts({
     ...parsedOrder,

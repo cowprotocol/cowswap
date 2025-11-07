@@ -2,8 +2,8 @@ import { useMemo } from 'react'
 
 import { ONE_HUNDRED_PERCENT } from '@cowprotocol/common-const'
 import { useDebounce } from '@cowprotocol/common-hooks'
-import { getWrappedToken } from '@cowprotocol/common-utils'
-import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
+import { FractionUtils, getWrappedToken } from '@cowprotocol/common-utils'
+import { Fraction, Percent } from '@uniswap/sdk-core'
 
 import JSBI from 'jsbi'
 import ms from 'ms.macro'
@@ -37,15 +37,18 @@ export function useFiatValuePriceImpact() {
     // Don't calculate price impact if trade is not set up (both trade assets are not set)
     if (!isTradeSetUp) return null
 
-    const priceImpact = computeFiatValuePriceImpact(fiatValueInput, fiatValueOutput)
+    const priceImpact = computeFiatValuePriceImpact(
+      fiatValueInput ? FractionUtils.fractionLikeToFraction(fiatValueInput) : null,
+      fiatValueOutput ? FractionUtils.fractionLikeToFraction(fiatValueOutput) : null,
+    )
 
     return { priceImpact, isLoading }
   }, [isTradeSetUp, fiatValueInput, fiatValueOutput, isLoading])
 }
 
 function computeFiatValuePriceImpact(
-  fiatValueInput: CurrencyAmount<Currency> | undefined | null,
-  fiatValueOutput: CurrencyAmount<Currency> | undefined | null,
+  fiatValueInput: Fraction | null,
+  fiatValueOutput: Fraction | null,
 ): Percent | undefined {
   if (!fiatValueOutput || !fiatValueInput) return undefined
   if (JSBI.equal(fiatValueInput.quotient, JSBI.BigInt(0))) return undefined

@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 
+import { FractionUtils } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -26,10 +27,18 @@ export function useQuoteBridgeContext(): QuoteBridgeContext | null {
   const buyAmount = useMemo(() => {
     if (!quoteAmounts?.bridgeFee) return
 
-    return CurrencyAmount.fromRawAmount(
-      quoteAmounts.bridgeFee.currency,
-      quoteAmounts.swapBuyAmount.quotient.toString(),
-    ).subtract(quoteAmounts.bridgeFee)
+    const swapBuyAmount =
+      quoteAmounts.bridgeFee.currency.decimals !== quoteAmounts.swapBuyAmount.currency.decimals
+        ? FractionUtils.adjustDecimalsAtoms(
+            quoteAmounts.swapBuyAmount,
+            quoteAmounts.swapBuyAmount.currency.decimals,
+            quoteAmounts.bridgeFee.currency.decimals,
+          )
+        : quoteAmounts.swapBuyAmount
+
+    return CurrencyAmount.fromRawAmount(quoteAmounts.bridgeFee.currency, swapBuyAmount.quotient.toString()).subtract(
+      quoteAmounts.bridgeFee,
+    )
   }, [quoteAmounts])
 
   const { value: buyAmountUsd } = useUsdAmount(buyAmount)

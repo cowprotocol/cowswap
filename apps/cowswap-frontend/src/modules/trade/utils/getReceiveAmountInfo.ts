@@ -1,4 +1,4 @@
-import { isSellOrder } from '@cowprotocol/common-utils'
+import { FractionUtils, isSellOrder } from '@cowprotocol/common-utils'
 import { type OrderParameters, getQuoteAmountsAndCosts } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 
@@ -68,13 +68,7 @@ export function getReceiveAmountInfo(
   const beforeNetworkCosts = mapBigIntAmounts(result.beforeNetworkCosts, currenciesWithIntermediate)
   const afterNetworkCosts = mapBigIntAmounts(result.afterNetworkCosts, currenciesWithIntermediate)
 
-  const bridgeFee =
-    typeof bridgeFeeRaw === 'bigint' && intermediateCurrency
-      ? {
-          amountInIntermediateCurrency: CurrencyAmount.fromRawAmount(intermediateCurrency, bridgeFeeRaw.toString()),
-          amountInDestinationCurrency: CurrencyAmount.fromRawAmount(outputCurrency, bridgeFeeRaw.toString()),
-        }
-      : undefined
+  const bridgeFee = calculateBridgeFee(outputCurrency, intermediateCurrency, bridgeFeeRaw)
 
   return {
     ...result,
@@ -106,6 +100,32 @@ export function getReceiveAmountInfo(
     afterNetworkCosts,
     afterPartnerFees: mapBigIntAmounts(result.afterPartnerFees, currenciesWithIntermediate),
     afterSlippage: mapBigIntAmounts(result.afterSlippage, currenciesExcludingIntermediate),
+  }
+}
+
+function calculateBridgeFee(
+  outputCurrency: Currency,
+  intermediateCurrency?: Currency,
+  bridgeFeeRaw?: bigint,
+): ReceiveAmountInfo['costs']['bridgeFee'] | undefined {
+  if (typeof bridgeFeeRaw !== 'bigint' || !intermediateCurrency) return undefined
+
+  const amountInDestinationCurrency = CurrencyAmount.fromRawAmount(outputCurrency, bridgeFeeRaw.toString())
+
+  if (outputCurrency.decimals !== intermediateCurrency?.decimals) {
+    return {
+      amountInIntermediateCurrency: FractionUtils.adjustDecimalsAtoms(
+        CurrencyAmount.fromRawAmount(intermediateCurrency, bridgeFeeRaw.toString()),
+        outputCurrency.decimals,
+        intermediateCurrency.decimals,
+      ),
+      amountInDestinationCurrency,
+    }
+  }
+
+  return {
+    amountInIntermediateCurrency: CurrencyAmount.fromRawAmount(intermediateCurrency, bridgeFeeRaw.toString()),
+    amountInDestinationCurrency,
   }
 }
 
