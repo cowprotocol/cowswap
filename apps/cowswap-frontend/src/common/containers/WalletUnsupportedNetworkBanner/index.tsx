@@ -1,11 +1,12 @@
-import { UI, Media } from '@cowprotocol/ui'
+import { ReactElement } from 'react'
+
+import { Media, UI } from '@cowprotocol/ui'
 
 import { AlertCircle } from 'react-feather'
 import styled from 'styled-components/macro'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
-
-import { useUnsupportedNetworksText } from '../../hooks/useUnsupportedNetworksText'
+import { UnsupportedNetworksText } from 'common/pure/UnsupportedNetworksText'
 
 const Wrapper = styled.div`
   position: fixed;
@@ -37,11 +38,8 @@ const StyledAlertCircle = styled(AlertCircle)`
   color: var(${UI.COLOR_DANGER});
 `
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function WalletUnsupportedNetworkBanner() {
+export function WalletUnsupportedNetworkBanner(): ReactElement {
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
-  const unsupportedNetworksText = useUnsupportedNetworksText()
 
   return (
     <>
@@ -50,7 +48,9 @@ export function WalletUnsupportedNetworkBanner() {
           <div>
             <StyledAlertCircle size={24} />
           </div>
-          <div>{unsupportedNetworksText}</div>
+          <div>
+            <UnsupportedNetworksText />
+          </div>
         </Wrapper>
       )}
     </>

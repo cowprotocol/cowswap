@@ -9,7 +9,7 @@ import { Trans } from '@lingui/react/macro'
 
 import * as styledEl from './styled'
 
-const NEW_NETWORK_IDS = [SupportedChainId.BNB, SupportedChainId.LENS] // BNB, Lens
+const NEW_NETWORK_IDS = [SupportedChainId.LINEA, SupportedChainId.PLASMA]
 
 export interface NetworksListProps {
   currentChainId: SupportedChainId | null

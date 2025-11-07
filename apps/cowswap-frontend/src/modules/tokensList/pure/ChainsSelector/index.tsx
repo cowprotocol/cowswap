@@ -11,7 +11,7 @@ import { Check, ChevronDown, ChevronUp } from 'react-feather'
 import * as styledEl from './styled'
 
 // Number of skeleton shimmers to show during loading state
-const LOADING_ITEMS_COUNT = 9
+const LOADING_ITEMS_COUNT = 10
 
 const LoadingShimmerElements = (
   <styledEl.Wrapper>

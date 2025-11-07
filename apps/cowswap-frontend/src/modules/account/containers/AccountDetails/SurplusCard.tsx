@@ -21,13 +21,15 @@ import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
 import { InfoCard } from './styled'
 
-const DEFAULT_START_DATE = '2023-03-01'
-const ARBITRUM_ONE_START_DATE = '2024-05-01'
-const BASE_START_DATE = '2024-12-01'
-const POLYGON_START_DATE = '2025-06-01'
-const AVALANCHE_START_DATE = '2025-06-01'
-const LENS_START_DATE = '2025-09-01'
-const BNB_START_DATE = '2025-09-01' // TODO: Update when BNB is supported
+const DEFAULT_START_DATE = 'March 2023'
+const ARBITRUM_ONE_START_DATE = 'May 2024'
+const BASE_START_DATE = 'December 2024'
+const POLYGON_START_DATE = 'June 2025'
+const AVALANCHE_START_DATE = 'June 2025'
+const LENS_START_DATE = 'September 2025'
+const BNB_START_DATE = 'September 2025'
+const LINEA_START_DATE = 'November 2025'
+const PLASMA_START_DATE = 'December 2025'
 
 const START_DATE: Record<SupportedChainId, string> = {
   [SupportedChainId.MAINNET]: DEFAULT_START_DATE,
@@ -39,6 +41,8 @@ const START_DATE: Record<SupportedChainId, string> = {
   [SupportedChainId.AVALANCHE]: AVALANCHE_START_DATE,
   [SupportedChainId.LENS]: LENS_START_DATE,
   [SupportedChainId.BNB]: BNB_START_DATE,
+  [SupportedChainId.LINEA]: LINEA_START_DATE,
+  [SupportedChainId.PLASMA]: PLASMA_START_DATE,
 }
 
 const Wrapper = styled.div`
