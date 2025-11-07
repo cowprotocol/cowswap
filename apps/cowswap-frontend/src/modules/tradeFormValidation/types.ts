@@ -81,7 +81,7 @@ export interface TradeFormButtonContext {
   widgetStandaloneMode?: boolean
   enablePartialApprove?: boolean
   customTokenError?: string
-  minSwapAmount?: CurrencyAmount<Currency>
+  minAmountToSignForSwap?: CurrencyAmount<Currency>
 
   confirmTrade(): void
 

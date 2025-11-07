@@ -25,7 +25,7 @@ export function useTradeFormButtonContext(
   const { standaloneMode } = useInjectedWidgetParams()
   const derivedState = useDerivedTradeState()
   const amountToApprove = useGetAmountToSignApprove()
-  const { maximumSendSellAmount: minSwapAmount } = useAmountsToSignFromQuote() || {}
+  const { maximumSendSellAmount: minAmountToSignForSwap } = useAmountsToSignFromQuote() || {}
   const customTokenError = useTokenCustomTradeError(
     derivedState?.inputCurrency,
     derivedState?.outputCurrency,
@@ -47,7 +47,7 @@ export function useTradeFormButtonContext(
       widgetStandaloneMode: standaloneMode,
       enablePartialApprove,
       customTokenError,
-      minSwapAmount,
+      minAmountToSignForSwap,
     }
   }, [
     defaultText,
@@ -61,6 +61,6 @@ export function useTradeFormButtonContext(
     standaloneMode,
     enablePartialApprove,
     customTokenError,
-    minSwapAmount,
+    minAmountToSignForSwap,
   ])
 }

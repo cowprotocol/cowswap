@@ -14,7 +14,7 @@ import { getIsTradeApproveResult } from '../utils/getIsTradeApproveResult'
 
 export interface ApproveAndSwapProps {
   amountToApprove: CurrencyAmount<Currency>
-  minAmountToSwap?: CurrencyAmount<Currency>
+  minAmountToSignForSwap?: CurrencyAmount<Currency>
   onApproveConfirm?: (transactionHash?: string) => void
   ignorePermit?: boolean
   useModals?: boolean
@@ -25,7 +25,7 @@ export function useApproveAndSwap({
   useModals,
   ignorePermit,
   onApproveConfirm,
-  minAmountToSwap,
+  minAmountToSignForSwap,
 }: ApproveAndSwapProps): () => Promise<void> {
   const isPartialApproveEnabledByUser = useIsPartialApproveSelectedByUser()
   const handleApprove = useApproveCurrency(amountToApprove, useModals)
@@ -61,8 +61,8 @@ export function useApproveAndSwap({
     if (tx && onApproveConfirm) {
       if (getIsTradeApproveResult(tx)) {
         const approvedAmount = tx.approvedAmount
-        const minAmountToSwapBig = minAmountToSwap ? BigInt(minAmountToSwap.quotient.toString()) : amountToApproveBig
-        const isApprovedAmountSufficient = Boolean(approvedAmount && approvedAmount >= minAmountToSwapBig)
+        const minAmountToSignForSwapBig = minAmountToSignForSwap ? BigInt(minAmountToSignForSwap.quotient.toString()) : amountToApproveBig
+        const isApprovedAmountSufficient = Boolean(approvedAmount && approvedAmount >= minAmountToSignForSwapBig)
 
         if (isApprovedAmountSufficient) {
           const hash =
@@ -83,6 +83,6 @@ export function useApproveAndSwap({
     handleApprove,
     updateTradeApproveState,
     handlePermit,
-    minAmountToSwap,
+    minAmountToSignForSwap,
   ])
 }
