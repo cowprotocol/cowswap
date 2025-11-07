@@ -340,6 +340,10 @@ msgstr "<0>By adding this list you are implicitly trusting that the data is corr
 msgid "SWAP order"
 msgstr "SWAP order"
 
+#: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
+msgid "y"
+msgstr "y"
+
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "This is the current market price, including the fee."
 msgstr "This is the current market price, including the fee."
@@ -552,6 +556,10 @@ msgstr "Name, symbol or address"
 msgid "No chainId"
 msgstr "No chainId"
 
+#: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
+msgid "h"
+msgstr "h"
+
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
 msgid "When selling {aNativeCurrency}, the minimum slippage tolerance is set to {minimumETHFlowSlippage}% or higher to ensure a high likelihood of order matching, even in volatile market conditions."
 msgstr "When selling {aNativeCurrency}, the minimum slippage tolerance is set to {minimumETHFlowSlippage}% or higher to ensure a high likelihood of order matching, even in volatile market conditions."
@@ -696,8 +704,8 @@ msgid "Signing..."
 msgstr "Signing..."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
-msgid "CoW Swap is now live on Arbitrum, Base, Polygon, and Avalanche. Switch the network toggle in the nav bar for quick, cheap transactions"
-msgstr "CoW Swap is now live on Arbitrum, Base, Polygon, and Avalanche. Switch the network toggle in the nav bar for quick, cheap transactions"
+#~ msgid "CoW Swap is now live on Arbitrum, Base, Polygon, and Avalanche. Switch the network toggle in the nav bar for quick, cheap transactions"
+#~ msgstr "CoW Swap is now live on Arbitrum, Base, Polygon, and Avalanche. Switch the network toggle in the nav bar for quick, cheap transactions"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
 #~ msgid "You don't have any {orderTabState} orders at the moment."
@@ -833,6 +841,10 @@ msgstr "Cancelling order with id {shortId}:<0/><1>{summary}</1>"
 #: apps/cowswap-frontend/src/modules/wallet/containers/AccountSelectorModal/index.tsx
 msgid "Select {walletName} Account"
 msgstr "Select {walletName} Account"
+
+#: apps/cowswap-frontend/src/common/pure/UnsupportedNetworksText/index.tsx
+msgid "Please connect your wallet to one of our supported networks."
+msgstr "Please connect your wallet to one of our supported networks."
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/TokenSearchResults/index.tsx
 msgid "<0>Read our guide</0> on how to add custom tokens."
@@ -1231,6 +1243,10 @@ msgstr "Read more about the tokenomics"
 #: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
 msgid "and got an extra "
 msgstr "and got an extra "
+
+#: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
+msgid "s"
+msgstr "s"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/StatusDetails.tsx
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/steps/Step2.tsx
@@ -1811,8 +1827,8 @@ msgid "Create a pool"
 msgstr "Create a pool"
 
 #: apps/cowswap-frontend/src/common/hooks/useUnsupportedNetworksText.tsx
-msgid "Please connect your wallet to one of our supported networks:<0/>{chainLabels}"
-msgstr "Please connect your wallet to one of our supported networks:<0/>{chainLabels}"
+#~ msgid "Please connect your wallet to one of our supported networks:<0/>{chainLabels}"
+#~ msgstr "Please connect your wallet to one of our supported networks:<0/>{chainLabels}"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 msgid "To continue, click SWAP below to use your existing {wrappedSymbol} balance and trade."
@@ -1877,6 +1893,10 @@ msgstr "Local device time is not accurate, CoW Swap most likely will not work co
 #: apps/cowswap-frontend/src/modules/bridge/pure/StopStatus/index.tsx
 msgid "Bridging via"
 msgstr "Bridging via"
+
+#: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
+msgid "d"
+msgstr "d"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/StatusDetails.tsx
 msgid "Creating..."
@@ -2329,8 +2349,8 @@ msgid "If allowance remains insufficient at creation time, this portion will not
 msgstr "If allowance remains insufficient at creation time, this portion will not be created. Approve the"
 
 #: apps/cowswap-frontend/src/common/utils/getSwapErrorMessage.ts
-msgid "User rejected signing the order"
-msgstr "User rejected signing the order"
+#~ msgid "User rejected signing the order"
+#~ msgstr "User rejected signing the order"
 
 #: libs/common-const/src/common.ts
 msgid "Account Proxy"
@@ -2799,6 +2819,10 @@ msgstr "Auto"
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/pure/NetworkCostsTooltipSuffix.tsx
 msgid "you will pay a separate gas cost for signing the order placement on-chain."
 msgstr "you will pay a separate gas cost for signing the order placement on-chain."
+
+#: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
+msgid "CoW Swap is live on {availableChainsText}. Switch the network toggle in the nav bar for quick, cheap transactions."
+msgstr "CoW Swap is live on {availableChainsText}. Switch the network toggle in the nav bar for quick, cheap transactions."
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/StatusIcon.tsx
 msgid "Status: {label}"
@@ -4390,6 +4414,10 @@ msgstr "Orders on CoW Swap can either be market orders (which fill at the market
 msgid "at least"
 msgstr "at least"
 
+#: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
+msgid "m"
+msgstr "m"
+
 #: apps/cowswap-frontend/src/modules/tokensList/containers/ManageListsAndTokens/index.tsx
 msgid "Lists"
 msgstr "Lists"
@@ -5095,6 +5123,10 @@ msgstr "Fee discount"
 #: apps/cowswap-frontend/src/modules/erc20Approve/pure/LegacyApproveButton/index.tsx
 msgid "Allow CoW Swap to use your <0/>"
 msgstr "Allow CoW Swap to use your <0/>"
+
+#: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
+msgid "mo"
+msgstr "mo"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/fields/SafeTxFields.tsx
 msgid "Safe logo"
