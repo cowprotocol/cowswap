@@ -69,7 +69,7 @@ export function OrdersTableWidget(props: OrdersTableWidgetProps): ReactNode {
       <OrdersTableStateUpdater searchTerm={searchTerm} {...stateParams} />
       {children}
       <OrdersTableContainer searchTerm={searchTerm} isDarkMode={darkMode}>
-        {!!pendingOrders?.length && <MultipleCancellationMenu pendingOrders={pendingOrders} />}
+        {hasPendingOrders && <MultipleCancellationMenu pendingOrders={pendingOrders} />}
 
         {/* If account is not connected, don't show the search input */}
         {!!account && !!orders?.length && (
