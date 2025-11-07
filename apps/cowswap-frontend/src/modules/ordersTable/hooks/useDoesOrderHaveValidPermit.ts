@@ -9,6 +9,7 @@ import { TradeType } from 'modules/trade'
 
 import { isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { getOrderPermitIfExists } from 'common/utils/doesOrderHavePermit'
+import { isPermitDecodedCalldataValid } from 'utils/orderUtils/isPermitValidForOrder'
 
 import { GenericOrder } from '../../../common/types'
 import { checkPermitNonceAndAmount } from '../utils/checkPermitNonceAndAmount'
@@ -27,7 +28,7 @@ export function useDoesOrderHaveValidPermit(order?: GenericOrder, tradeType?: Tr
   const tokenPermitInfo = usePermitInfo(order?.inputToken, tradeType)
 
   const isPendingOrder = order ? isPending(order) : false
-  const checkPermit = account && provider && permit && isPendingOrder && tradeType
+  const checkPermit = isPermitValid(permit, chainId, account) && account && provider && isPendingOrder && tradeType
 
   const { data: isValid } = useSWR(
     checkPermit ? [account, chainId, order?.id, tradeType, permit] : null,
@@ -47,4 +48,8 @@ export function useDoesOrderHaveValidPermit(order?: GenericOrder, tradeType?: Tr
   )
 
   return isValid
+}
+
+function isPermitValid(permit: string | null, chainId: number, account: string | undefined): boolean {
+  return permit && account ? isPermitDecodedCalldataValid(permit, chainId, account).isValid : false
 }

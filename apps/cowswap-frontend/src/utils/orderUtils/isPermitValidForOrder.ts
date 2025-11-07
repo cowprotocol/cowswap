@@ -74,7 +74,7 @@ function validateDaiPermit(
 }
 
 
-export function isPermitValidForOrder(
+export function isPermitDecodedCalldataValid(
   callData: string,
   chainId: SupportedChainId,
   ownerAddress: string,

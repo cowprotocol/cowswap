@@ -2,7 +2,7 @@ import type { LatestAppDataDocVersion } from '@cowprotocol/cow-sdk'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { BigNumber } from '@ethersproject/bignumber'
 
-import { isPermitValidForOrder } from './isPermitValidForOrder'
+import { isPermitDecodedCalldataValid } from './isPermitValidForOrder'
 import { ParsedOrder } from './parseOrder'
 
 export function getOrderPermitAmount(chainId: SupportedChainId, order: ParsedOrder): BigNumber | null {
@@ -15,7 +15,7 @@ export function getOrderPermitAmount(chainId: SupportedChainId, order: ParsedOrd
     if (!preHooks) return null
 
     for (const hook of preHooks) {
-      const validation = isPermitValidForOrder(hook.callData, chainId, order.owner)
+      const validation = isPermitDecodedCalldataValid(hook.callData, chainId, order.owner)
 
       if (validation.isValid && validation.amount) {
         return validation.amount
