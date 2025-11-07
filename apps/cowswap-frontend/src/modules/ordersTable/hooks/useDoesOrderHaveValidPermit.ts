@@ -8,10 +8,10 @@ import { usePermitInfo } from 'modules/permit'
 import { TradeType } from 'modules/trade'
 
 import { isPending } from 'common/hooks/useCategorizeRecentActivity'
+import { GenericOrder } from 'common/types'
 import { getOrderPermitIfExists } from 'common/utils/doesOrderHavePermit'
 import { isPermitDecodedCalldataValid } from 'utils/orderUtils/isPermitValidForOrder'
 
-import { GenericOrder } from '../../../common/types'
 import { checkPermitNonceAndAmount } from '../utils/checkPermitNonceAndAmount'
 
 const SWR_CONFIG: SWRConfiguration = {
