@@ -1,14 +1,10 @@
-import React, { ReactNode } from 'react'
+import React, { ReactNode, useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { getCurrencyAddress } from '@cowprotocol/common-utils'
-import { Nullish } from '@cowprotocol/types'
 import { Loader } from '@cowprotocol/ui'
-import { Currency } from '@uniswap/sdk-core'
 
 import { TokenSearchResults } from '../../containers/TokenSearchResults'
 import { SelectTokenContext } from '../../types'
-import { FavoriteTokensList } from '../FavoriteTokensList'
 import * as styledEl from '../SelectTokenModal/styled'
 import { TokensVirtualList } from '../TokensVirtualList'
 
@@ -16,40 +12,45 @@ export interface TokensContentProps {
   displayLpTokenLists?: boolean
   selectTokenContext: SelectTokenContext
   favoriteTokens: TokenWithLogo[]
-  selectedToken?: Nullish<Currency>
-  hideFavoriteTokensTooltip?: boolean
   areTokensLoading: boolean
   allTokens: TokenWithLogo[]
   searchInput: string
   areTokensFromBridge: boolean
-
-  onSelectToken(token: TokenWithLogo): void
+  hideFavoriteTokensTooltip?: boolean
 }
 
 export function TokensContent({
   selectTokenContext,
-  onSelectToken,
-  selectedToken,
   favoriteTokens,
-  hideFavoriteTokensTooltip,
   areTokensLoading,
   allTokens,
   displayLpTokenLists,
   searchInput,
   areTokensFromBridge,
+  hideFavoriteTokensTooltip,
 }: TokensContentProps): ReactNode {
+  const shouldShowFavoritesInline = !areTokensLoading && !searchInput && favoriteTokens.length > 0
+
+  const favoriteAddresses = useMemo(() => {
+    if (!shouldShowFavoritesInline) {
+      return undefined
+    }
+
+    return new Set(favoriteTokens.map((token) => token.address.toLowerCase()))
+  }, [favoriteTokens, shouldShowFavoritesInline])
+
+  const tokensWithoutFavorites = useMemo(() => {
+    if (!favoriteAddresses) {
+      return allTokens
+    }
+
+    return allTokens.filter((token) => !favoriteAddresses.has(token.address.toLowerCase()))
+  }, [allTokens, favoriteAddresses])
+
+  const favoriteTokensInline = shouldShowFavoritesInline ? favoriteTokens : undefined
+
   return (
     <>
-      {!areTokensLoading && !!favoriteTokens.length && (
-        <>
-          <FavoriteTokensList
-            onSelectToken={onSelectToken}
-            selectedToken={(selectedToken && getCurrencyAddress(selectedToken)) || undefined}
-            tokens={favoriteTokens}
-            hideTooltip={hideFavoriteTokensTooltip}
-          />
-        </>
-      )}
       {areTokensLoading ? (
         <styledEl.TokensLoader>
           <Loader />
@@ -66,8 +67,10 @@ export function TokensContent({
           ) : (
             <TokensVirtualList
               selectTokenContext={selectTokenContext}
-              allTokens={allTokens}
+              allTokens={tokensWithoutFavorites}
               displayLpTokenLists={displayLpTokenLists}
+              favoriteTokens={favoriteTokensInline}
+              hideFavoriteTokensTooltip={hideFavoriteTokensTooltip}
             />
           )}
         </>

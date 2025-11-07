@@ -87,7 +87,7 @@ export const TokenColumn = styled.div`
   min-height: 0;
   display: flex;
   flex-direction: column;
-  padding: 16px 24px 24px;
+  padding: 0 0 14px;
 
   ${Media.upToSmall()} {
     padding: 16px;
@@ -108,6 +108,16 @@ export const Separator = styled.div`
   border-bottom: 1px solid var(${UI.COLOR_BORDER});
   margin: 0 0 16px;
 `
+
+export const ListTitle = styled.div`
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
+  padding: 8px 16px 4px;
+`
+
 
 export const TokensLoader = styled.div`
   width: 100%;

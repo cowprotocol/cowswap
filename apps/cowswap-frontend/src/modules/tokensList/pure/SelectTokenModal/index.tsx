@@ -81,12 +81,10 @@ function useTokensContent(props: SelectTokenModalProps, searchInput: string, con
   const {
     displayLpTokenLists,
     favoriteTokens,
-    selectedToken,
-    hideFavoriteTokensTooltip,
     areTokensLoading,
     allTokens,
     areTokensFromBridge,
-    onSelectToken,
+    hideFavoriteTokensTooltip,
   } = props
 
   return (
@@ -94,13 +92,11 @@ function useTokensContent(props: SelectTokenModalProps, searchInput: string, con
       displayLpTokenLists={displayLpTokenLists}
       selectTokenContext={context}
       favoriteTokens={favoriteTokens}
-      selectedToken={selectedToken}
-      hideFavoriteTokensTooltip={hideFavoriteTokensTooltip}
       areTokensLoading={areTokensLoading}
       allTokens={allTokens}
       searchInput={searchInput}
       areTokensFromBridge={areTokensFromBridge}
-      onSelectToken={onSelectToken}
+      hideFavoriteTokensTooltip={hideFavoriteTokensTooltip}
     />
   )
 }

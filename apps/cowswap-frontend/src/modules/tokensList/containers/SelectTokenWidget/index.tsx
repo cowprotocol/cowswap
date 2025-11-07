@@ -121,8 +121,6 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
   const tokenListTags = useTokenListsTags()
   const onTokenListAddingError = useOnTokenListAddingError()
 
-  const isInjectedWidgetMode = isInjectedWidget()
-
   const closeTokenSelectWidget = useCloseTokenSelectWidget()
   const modalTitle = field === Field.INPUT ? 'Swap from' : field === Field.OUTPUT ? 'Swap to' : 'Select token'
   // TODO: Confirm copy requirements for BUY orders and update titles accordingly.
@@ -167,6 +165,7 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
   }
 
   const isBridgingEnabled = !!chainsToSelect && (chainsToSelect.isLoading || (chainsToSelect.chains?.length ?? 0) > 0)
+  const isInjectedWidgetMode = isInjectedWidget()
 
   if (!onSelectToken || !open) return null
 
@@ -234,7 +233,6 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
                   onInputPressEnter={onInputPressEnter}
                   onDismiss={onDismiss}
                   onOpenManageWidget={() => setIsManageWidgetOpen(true)}
-                  hideFavoriteTokensTooltip={isInjectedWidgetMode}
                   openPoolPage={openPoolPage}
                   tokenListCategoryState={tokenListCategoryState}
                   disableErc20={disableErc20}
@@ -245,6 +243,7 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
                   isRouteAvailable={isRouteAvailable}
                   modalTitle={modalTitle}
                   hasChainPanel={isBridgingEnabled}
+                  hideFavoriteTokensTooltip={isInjectedWidgetMode}
                 />
               </ModalContainer>
               {isBridgingEnabled && chainsToSelect && (
