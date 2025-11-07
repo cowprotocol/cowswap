@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: intercambiovaca\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-11-05 21:31\n"
+"PO-Revision-Date: 2025-11-07 18:59\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -341,6 +341,10 @@ msgstr "<0>Добавляя этот список, вы явно верите, �
 msgid "SWAP order"
 msgstr "Порядок SWAP"
 
+#: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
+msgid "y"
+msgstr "у"
+
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "This is the current market price, including the fee."
 msgstr "Это текущая рыночная цена, включая комиссию."
@@ -549,6 +553,10 @@ msgstr "Имя, символ или адрес"
 msgid "No chainId"
 msgstr "Нет цепочки"
 
+#: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
+msgid "h"
+msgstr "ч"
+
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
 msgid "When selling {aNativeCurrency}, the minimum slippage tolerance is set to {minimumETHFlowSlippage}% or higher to ensure a high likelihood of order matching, even in volatile market conditions."
 msgstr "При продаже {aNativeCurrency} минимальная допустимость проскальзывания установлена в {minimumETHFlowSlippage}% или выше, чтобы обеспечить высокую вероятность соответствия заказа, даже в неустойчивых рыночных условиях."
@@ -693,8 +701,8 @@ msgid "Signing..."
 msgstr "Подпись..."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
-msgid "CoW Swap is now live on Arbitrum, Base, Polygon, and Avalanche. Switch the network toggle in the nav bar for quick, cheap transactions"
-msgstr "CoW Swap в настоящее время живет на Арбитраже, Базе, Полигоне и Аваланше. Переключить сеть в Навбаре для быстрых и дешевых сделок"
+#~ msgid "CoW Swap is now live on Arbitrum, Base, Polygon, and Avalanche. Switch the network toggle in the nav bar for quick, cheap transactions"
+#~ msgstr "CoW Swap is now live on Arbitrum, Base, Polygon, and Avalanche. Switch the network toggle in the nav bar for quick, cheap transactions"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
 #~ msgid "You don't have any {orderTabState} orders at the moment."
@@ -830,6 +838,10 @@ msgstr "Отмена ордера с id {shortId}:<0/><1>{summary}</1>"
 #: apps/cowswap-frontend/src/modules/wallet/containers/AccountSelectorModal/index.tsx
 msgid "Select {walletName} Account"
 msgstr "Выберите аккаунт {walletName}"
+
+#: apps/cowswap-frontend/src/common/pure/UnsupportedNetworksText/index.tsx
+msgid "Please connect your wallet to one of our supported networks."
+msgstr "Пожалуйста, подключите ваш кошелек к одной из поддерживаемых сетей."
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/TokenSearchResults/index.tsx
 msgid "<0>Read our guide</0> on how to add custom tokens."
@@ -1228,6 +1240,10 @@ msgstr "Подробнее о tokenomics"
 #: apps/cowswap-frontend/src/modules/orderProgressBar/helpers.ts
 msgid "and got an extra "
 msgstr "и получил дополнительный "
+
+#: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
+msgid "s"
+msgstr "с"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/StatusDetails.tsx
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/steps/Step2.tsx
@@ -1804,8 +1820,8 @@ msgid "Create a pool"
 msgstr "Создать пул"
 
 #: apps/cowswap-frontend/src/common/hooks/useUnsupportedNetworksText.tsx
-msgid "Please connect your wallet to one of our supported networks:<0/>{chainLabels}"
-msgstr "Пожалуйста, подключите ваш кошелек к одной из поддерживаемых сетей:<0/>{chainLabels}"
+#~ msgid "Please connect your wallet to one of our supported networks:<0/>{chainLabels}"
+#~ msgstr "Please connect your wallet to one of our supported networks:<0/>{chainLabels}"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 msgid "To continue, click SWAP below to use your existing {wrappedSymbol} balance and trade."
@@ -1870,6 +1886,10 @@ msgstr "Локальное время устройства неточно, CoW S
 #: apps/cowswap-frontend/src/modules/bridge/pure/StopStatus/index.tsx
 msgid "Bridging via"
 msgstr "Мост через"
+
+#: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
+msgid "d"
+msgstr "д"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/StatusDetails.tsx
 msgid "Creating..."
@@ -2322,8 +2342,8 @@ msgid "If allowance remains insufficient at creation time, this portion will not
 msgstr "Если пособие остается недостаточным в момент создания, эта часть не будет создана. Утвердите"
 
 #: apps/cowswap-frontend/src/common/utils/getSwapErrorMessage.ts
-msgid "User rejected signing the order"
-msgstr "Пользователь отклонил подписание заказа"
+#~ msgid "User rejected signing the order"
+#~ msgstr "User rejected signing the order"
 
 #: libs/common-const/src/common.ts
 msgid "Account Proxy"
@@ -2792,6 +2812,10 @@ msgstr "Авто"
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/pure/NetworkCostsTooltipSuffix.tsx
 msgid "you will pay a separate gas cost for signing the order placement on-chain."
 msgstr "оплатить отдельную газовую стоимость для подписания заказа по цепочке."
+
+#: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
+msgid "CoW Swap is live on {availableChainsText}. Switch the network toggle in the nav bar for quick, cheap transactions."
+msgstr "CoW Swap живет на {availableChainsText}. Переключить переключатель сети в навбаре для быстрых и дешевых транзакций."
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/StatusIcon.tsx
 msgid "Status: {label}"
@@ -4377,6 +4401,10 @@ msgstr "Ордеры на CoW Swap могут быть либо рыночным
 msgid "at least"
 msgstr "по крайней мере"
 
+#: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
+msgid "m"
+msgstr "м"
+
 #: apps/cowswap-frontend/src/modules/tokensList/containers/ManageListsAndTokens/index.tsx
 msgid "Lists"
 msgstr "Списки"
@@ -5082,6 +5110,10 @@ msgstr "Скидка за оплату"
 #: apps/cowswap-frontend/src/modules/erc20Approve/pure/LegacyApproveButton/index.tsx
 msgid "Allow CoW Swap to use your <0/>"
 msgstr "Разрешить CoW подкачку использовать <0/>"
+
+#: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
+msgid "mo"
+msgstr "мес"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/fields/SafeTxFields.tsx
 msgid "Safe logo"
