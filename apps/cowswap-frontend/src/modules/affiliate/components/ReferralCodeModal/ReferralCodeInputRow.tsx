@@ -1,26 +1,28 @@
 import { FormEvent, ReactNode, RefObject } from 'react'
 
+import AlertIcon from '@cowprotocol/assets/cow-swap/alert-circle.svg'
+import CheckIcon from '@cowprotocol/assets/cow-swap/order-check.svg'
+import PendingIcon from '@cowprotocol/assets/cow-swap/spinner.svg'
+import LinkedIcon from '@cowprotocol/assets/images/icon-locked-2.svg'
+
 import { t, Trans } from '@lingui/macro'
-import { AlertCircle, Trash2, Lock } from 'react-feather'
+import SVG from 'react-inlinesvg'
 
-import { InlineAction, InputWrapper, StyledInput, TrailingActions, TrailingIcon } from './styles'
-
-import { ReferralModalUiState } from '../../hooks/useReferralModalState'
-import { isReferralCodeLengthValid } from '../../utils/code'
-
+import { InputWrapper, StyledInput, TrailingIcon } from './styles'
 
 interface ReferralCodeInputRowProps {
   displayCode: string
   hasError: boolean
   isInputDisabled: boolean
-  trailingIconKind?: 'error' | 'lock'
-  uiState: ReferralModalUiState
-  savedCode?: string
-  onRemove(): void
-  onSave(): void
+  isEditing: boolean
+  isLinked: boolean
+  trailingIconKind?: 'error' | 'lock' | 'pending' | 'success'
+  canSubmitSave: boolean
   onChange(event: FormEvent<HTMLInputElement>): void
   onPrimaryClick(): void
+  onSave(): void
   inputRef: RefObject<HTMLInputElement | null>
+  isLoading?: boolean
 }
 
 export function ReferralCodeInputRow(props: ReferralCodeInputRowProps): ReactNode {
@@ -28,23 +30,30 @@ export function ReferralCodeInputRow(props: ReferralCodeInputRowProps): ReactNod
     displayCode,
     hasError,
     isInputDisabled,
+    isEditing,
     trailingIconKind,
-    uiState,
-    savedCode,
-    onRemove,
-    onSave,
+    isLinked,
+    canSubmitSave,
     onChange,
     onPrimaryClick,
+    onSave,
     inputRef,
+    isLoading = false,
   } = props
 
   return (
-    <InputWrapper hasError={hasError} disabled={isInputDisabled}>
+    <InputWrapper
+      hasError={hasError}
+      disabled={isInputDisabled}
+      isEditing={isEditing}
+      isLinked={isLinked}
+      isLoading={isLoading}
+    >
       <StyledInput
         id="referral-code-input"
         ref={inputRef}
         value={displayCode || ''}
-        placeholder={t`ENTER-CODE`}
+        placeholder={t`ENTER CODE`}
         onChange={onChange}
         disabled={isInputDisabled}
         maxLength={16}
@@ -53,65 +62,51 @@ export function ReferralCodeInputRow(props: ReferralCodeInputRowProps): ReactNod
         onKeyDown={(event) => {
           if (event.key === 'Enter') {
             event.preventDefault()
+
+            if (canSubmitSave) {
+              onSave()
+              return
+            }
+
             onPrimaryClick()
           }
         }}
       />
 
-      <ReferralCodeTrailingActions
-        trailingIconKind={trailingIconKind}
-        uiState={uiState}
-        savedCode={savedCode}
-        displayCode={displayCode}
-        onRemove={onRemove}
-        onSave={onSave}
-      />
+      {isLoading ? (
+        <TrailingIcon kind="pending" isSpinning>
+          {renderIconWithLabel(PendingIcon, t`Checking`, <Trans>Checking</Trans>)}
+        </TrailingIcon>
+      ) : (
+        trailingIconKind && (
+          <TrailingIcon kind={trailingIconKind}>{renderTrailingIcon(trailingIconKind)}</TrailingIcon>
+        )
+      )}
     </InputWrapper>
   )
 }
 
-interface ReferralCodeTrailingActionsProps {
-  trailingIconKind?: 'error' | 'lock'
-  uiState: ReferralModalUiState
-  savedCode?: string
-  displayCode: string
-  onRemove(): void
-  onSave(): void
+function renderTrailingIcon(kind: NonNullable<ReferralCodeInputRowProps['trailingIconKind']>): ReactNode {
+  if (kind === 'lock') {
+    return renderIconWithLabel(LinkedIcon, t`Linked`, <Trans>Linked</Trans>)
+  }
+
+  if (kind === 'success') {
+    return renderIconWithLabel(CheckIcon, t`Valid`, <Trans>Valid</Trans>)
+  }
+
+  if (kind === 'pending') {
+    return renderIconWithLabel(PendingIcon, t`Pending`, <Trans>Pending</Trans>)
+  }
+
+  return <SVG src={AlertIcon} title={t`Invalid code`} />
 }
 
-function ReferralCodeTrailingActions({
-  trailingIconKind,
-  uiState,
-  savedCode,
-  displayCode,
-  onRemove,
-  onSave,
-}: ReferralCodeTrailingActionsProps): ReactNode {
-  const isEditing = uiState === 'editing'
-  const isSaveDisabled = !isReferralCodeLengthValid(displayCode || '')
-
+function renderIconWithLabel(src: string, title: string, label: ReactNode): ReactNode {
   return (
-    <TrailingActions>
-      {trailingIconKind && (
-        <TrailingIcon kind={trailingIconKind}>
-          <AlertCircle size={18} />
-        </TrailingIcon>
-      )}
-
-      {isEditing && (
-        <>
-          {savedCode && (
-            <InlineAction type="button" emphasis="danger" onClick={onRemove}>
-              <Trash2 size={14} />
-              <Trans>Remove</Trans>
-            </InlineAction>
-          )}
-          <InlineAction type="button" onClick={onSave} disabled={isSaveDisabled} aria-label={t`Save code`}>
-            <Lock size={14} />
-            <Trans>Save</Trans>
-          </InlineAction>
-        </>
-      )}
-    </TrailingActions>
+    <>
+      <SVG src={src} title={title} />
+      <span>{label}</span>
+    </>
   )
 }

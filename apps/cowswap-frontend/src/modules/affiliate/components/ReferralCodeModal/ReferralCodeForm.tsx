@@ -1,15 +1,36 @@
 import { FormEvent, ReactNode, RefObject } from 'react'
 
+import SaveIcon from '@cowprotocol/assets/images/icon-save.svg'
 import { Badge } from '@cowprotocol/ui'
 
 import { t, Trans } from '@lingui/macro'
-import { Edit2, Lock } from 'react-feather'
+import { Edit2 } from 'react-feather'
+import SVG from 'react-inlinesvg'
 
 import { ReferralCodeInputRow } from './ReferralCodeInputRow'
-import { FormGroup, Label, LabelRow, TagGroup, EditButton, LinkedLock } from './styles'
+import {
+  FormActions,
+  FormActionButton,
+  FormActionDanger,
+  FormGroup,
+  Label,
+  LabelAffordances,
+  LabelRow,
+  TagGroup,
+} from './styles'
 
 import { ReferralModalUiState } from '../../hooks/useReferralModalState'
 import { ReferralVerificationStatus } from '../../types'
+import { isReferralCodeLengthValid } from '../../utils/code'
+
+type TrailingIconKind = 'error' | 'lock' | 'pending' | 'success'
+
+const VERIFICATION_ERROR_KINDS: ReadonlySet<ReferralVerificationStatus['kind']> = new Set([
+  'invalid',
+  'expired',
+  'error',
+  'ineligible',
+])
 
 export interface ReferralCodeFormProps {
   uiState: ReferralModalUiState
@@ -25,78 +46,267 @@ export interface ReferralCodeFormProps {
 }
 
 export function ReferralCodeForm(props: ReferralCodeFormProps): ReactNode {
-  const { uiState, savedCode, displayCode, verification, onEdit, onRemove, onSave, onChange, onPrimaryClick, inputRef } =
-    props
+  const {
+    uiState,
+    savedCode,
+    displayCode,
+    verification,
+    onEdit,
+    onRemove,
+    onSave,
+    onChange,
+    onPrimaryClick,
+    inputRef,
+  } = props
 
-  const showPendingTag = verification.kind === 'pending'
-  const showValidTag = verification.kind === 'valid'
-  const hasError = verification.kind === 'invalid' || verification.kind === 'expired'
-  const isInputDisabled = uiState !== 'editing' && uiState !== 'empty'
-  const trailingIconKind = hasError ? 'error' : undefined
+  const showPendingLabelInInput = shouldShowPendingLabel(verification)
+  const showValidLabelInInput = verification.kind === 'valid'
+  const showPendingTag = verification.kind === 'pending' && !showPendingLabelInInput
+  const showValidTag = verification.kind === 'valid' && !showValidLabelInInput
+  const isChecking = verification.kind === 'checking'
+  const {
+    hasError,
+    isEditing,
+    isInputDisabled,
+    trailingIconKind,
+    isSaveDisabled,
+    showEdit,
+    showRemove,
+    showSave,
+    canSubmitSave,
+    isLinked,
+  } = deriveFormFlags({
+    uiState,
+    verification,
+    savedCode,
+    displayCode,
+    showPendingLabelInInput,
+    showValidLabelInInput,
+  })
+  const submitAction = canSubmitSave ? onSave : onPrimaryClick
 
   return (
-    <FormGroup onSubmit={(event) => event.preventDefault()}>
+    <FormGroup
+      onSubmit={(event) => {
+        event.preventDefault()
+        submitAction()
+      }}
+    >
       <LabelRow>
         <Label htmlFor="referral-code-input">
           <Trans>Referral code</Trans>
         </Label>
-        <ReferralCodeTags
-          uiState={uiState}
-          savedCode={savedCode}
-          showPendingTag={showPendingTag}
-          showValidTag={showValidTag}
-          onEdit={onEdit}
-        />
+        <LabelAffordances>
+          <ReferralCodeTags showPendingTag={showPendingTag} showValidTag={showValidTag} />
+          <ReferralCodeActions
+            showEdit={showEdit}
+            showRemove={showRemove}
+            showSave={showSave}
+            onEdit={onEdit}
+            onRemove={onRemove}
+            onSave={onSave}
+            isSaveDisabled={isSaveDisabled}
+          />
+        </LabelAffordances>
       </LabelRow>
 
       <ReferralCodeInputRow
         displayCode={displayCode}
         hasError={hasError}
-        isInputDisabled={isInputDisabled}
-        trailingIconKind={trailingIconKind}
-        uiState={uiState}
-        savedCode={savedCode}
-        onRemove={onRemove}
-        onSave={onSave}
+        isInputDisabled={isInputDisabled || isChecking}
+        isEditing={isEditing}
+        isLinked={isLinked}
+        trailingIconKind={isChecking ? 'pending' : trailingIconKind}
+        canSubmitSave={canSubmitSave}
         onChange={onChange}
         onPrimaryClick={onPrimaryClick}
+        onSave={onSave}
         inputRef={inputRef}
-      />
-    </FormGroup>
-  )
+      isLoading={isChecking}
+    />
+  </FormGroup>
+)
+}
+
+interface DeriveFormFlagsParams {
+  uiState: ReferralModalUiState
+  verification: ReferralVerificationStatus
+  savedCode?: string
+  displayCode: string
+  showPendingLabelInInput: boolean
+  showValidLabelInInput: boolean
+}
+
+interface FormFlags {
+  hasError: boolean
+  isEditing: boolean
+  isInputDisabled: boolean
+  trailingIconKind: TrailingIconKind | undefined
+  isSaveDisabled: boolean
+  showEdit: boolean
+  showRemove: boolean
+  showSave: boolean
+  canSubmitSave: boolean
+  isLinked: boolean
+}
+
+function deriveFormFlags(params: DeriveFormFlagsParams): FormFlags {
+  // Split the boolean soup into small helpers so the main render stays readable
+  // and lint-compliant. This also makes the unsupported-network rules explicit.
+  const base = computeBaseFlags(params)
+  const trailingIconKind = resolveTrailingIconKind({
+    isLinked: base.isLinked,
+    hasError: base.hasError,
+    showPendingLabelInInput: params.showPendingLabelInInput,
+    showValidLabelInInput: params.showValidLabelInInput,
+  })
+
+  return {
+    ...base,
+    trailingIconKind,
+  }
+}
+
+interface BaseFlags {
+  hasError: boolean
+  isEditing: boolean
+  isInputDisabled: boolean
+  isSaveDisabled: boolean
+  showEdit: boolean
+  showRemove: boolean
+  showSave: boolean
+  canSubmitSave: boolean
+  isLinked: boolean
+  isUnsupported: boolean
+}
+
+function computeBaseFlags(params: DeriveFormFlagsParams): BaseFlags {
+  const { uiState, verification, savedCode, displayCode } = params
+
+  // Unsupported network deliberately hides every edit affordance to avoid no-op buttons.
+  const isUnsupported = uiState === 'unsupported'
+  const isEditing = uiState === 'editing'
+  const isLinked = uiState === 'linked'
+  const hasError = VERIFICATION_ERROR_KINDS.has(verification.kind)
+  const isInputDisabled = isUnsupported || (uiState !== 'editing' && uiState !== 'empty')
+  const isSaveDisabled = !isReferralCodeLengthValid(displayCode || '')
+  const canEdit = !isUnsupported && !isEditing && !isLinked && uiState !== 'empty'
+  const showEdit = canEdit && Boolean(savedCode)
+  const showRemove = !isUnsupported && isEditing && Boolean(savedCode)
+  const showSave = !isUnsupported && (isEditing || uiState === 'empty')
+  const canSubmitSave = showSave && !isSaveDisabled
+
+  return {
+    hasError,
+    isEditing,
+    isInputDisabled,
+    isSaveDisabled,
+    showEdit,
+    showRemove,
+    showSave,
+    canSubmitSave,
+    isLinked,
+    isUnsupported,
+  }
 }
 
 interface ReferralCodeTagsProps {
-  uiState: ReferralModalUiState
-  savedCode?: string
   showPendingTag: boolean
   showValidTag: boolean
-  onEdit(): void
 }
 
-function ReferralCodeTags({ uiState, savedCode, showPendingTag, showValidTag, onEdit }: ReferralCodeTagsProps): ReactNode {
-  const showLinkedTag = uiState === 'linked'
+function ReferralCodeTags({ showPendingTag, showValidTag }: ReferralCodeTagsProps): ReactNode {
+  const showTags = showPendingTag || showValidTag
+
+  if (!showTags) {
+    return null
+  }
 
   return (
     <TagGroup>
       {showPendingTag && <Badge type="information">{t`Pending`}</Badge>}
       {showValidTag && <Badge type="success">{t`Valid`}</Badge>}
-
-      {showLinkedTag ? (
-        <LinkedLock>
-          <Lock size={14} />
-          <Trans>Linked</Trans>
-        </LinkedLock>
-      ) : (
-        savedCode &&
-        uiState !== 'editing' &&
-        uiState !== 'empty' && (
-          <EditButton type="button" onClick={onEdit} aria-label={t`Edit code`}>
-            <Edit2 size={14} />
-            <Trans>Edit</Trans>
-          </EditButton>
-        )
-      )}
     </TagGroup>
   )
+}
+
+interface ReferralCodeActionsProps {
+  showEdit: boolean
+  showRemove: boolean
+  showSave: boolean
+  onEdit(): void
+  onRemove(): void
+  onSave(): void
+  isSaveDisabled: boolean
+}
+
+function ReferralCodeActions({
+  showEdit,
+  showRemove,
+  showSave,
+  onEdit,
+  onRemove,
+  onSave,
+  isSaveDisabled,
+}: ReferralCodeActionsProps): ReactNode {
+  if (!showEdit && !showRemove && !showSave) {
+    return null
+  }
+
+  return (
+    <FormActions>
+      {showRemove && (
+        <FormActionDanger type="button" onClick={onRemove}>
+          <Trans>Remove</Trans>
+        </FormActionDanger>
+      )}
+      {showSave && (
+        <FormActionButton
+          type="button"
+          variant="filled"
+          onClick={onSave}
+          disabled={isSaveDisabled}
+          aria-label={t`Save code`}
+        >
+          <SVG width={12} height={12} src={SaveIcon} title={t`Save`} />
+          <Trans>Save</Trans>
+        </FormActionButton>
+      )}
+      {showEdit && (
+        <FormActionButton type="button" variant="outline" onClick={onEdit} aria-label={t`Edit code`}>
+          <Edit2 size={14} />
+          <Trans>Edit</Trans>
+        </FormActionButton>
+      )}
+    </FormActions>
+  )
+}
+
+function shouldShowPendingLabel(verification: ReferralVerificationStatus): boolean {
+  return verification.kind === 'pending'
+}
+
+function resolveTrailingIconKind(params: {
+  isLinked: boolean
+  hasError: boolean
+  showPendingLabelInInput: boolean
+  showValidLabelInInput: boolean
+}): TrailingIconKind | undefined {
+  if (params.isLinked) {
+    return 'lock'
+  }
+
+  if (params.hasError) {
+    return 'error'
+  }
+
+  if (params.showPendingLabelInInput) {
+    return 'pending'
+  }
+
+  if (params.showValidLabelInInput) {
+    return 'success'
+  }
+
+  return undefined
 }
