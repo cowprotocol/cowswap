@@ -67,6 +67,8 @@ const NetworkImageAddressMap: Record<Network, string> = {
   [Network.SEPOLIA]: 'eth',
   [Network.LENS]: 'lens',
   [Network.BNB]: 'bnb',
+  [Network.LINEA]: 'eth',
+  [Network.PLASMA]: 'xpl', // TODO: add plasma image
 }
 
 export function getImageAddress(address: string, network: Network): string {
