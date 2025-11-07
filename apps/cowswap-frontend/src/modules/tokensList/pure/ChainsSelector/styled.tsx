@@ -74,6 +74,16 @@ export const ActiveIcon = styled.span`
   align-items: center;
   justify-content: center;
   color: var(${UI.COLOR_PRIMARY});
+
+  > svg {
+    width: 16px;
+    height: 16px;
+    display: block;
+  }
+
+  > svg > path {
+    fill: currentColor;
+  }
 `
 
 export const LoadingRow = styled.div`

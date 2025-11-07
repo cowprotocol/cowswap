@@ -1,9 +1,10 @@
 import { ReactNode } from 'react'
 
+import OrderCheckIcon from '@cowprotocol/assets/cow-swap/order-check.svg'
 import { useTheme } from '@cowprotocol/common-hooks'
 import { ChainInfo } from '@cowprotocol/cow-sdk'
 
-import { Check } from 'react-feather'
+import SVG from 'react-inlinesvg'
 
 import * as styledEl from './styled'
 
@@ -52,8 +53,8 @@ export function ChainsSelector({ chains, onSelectChain, defaultChainId, isLoadin
               <styledEl.ChainText>{chain.label}</styledEl.ChainText>
             </styledEl.ChainInfo>
             {isActive && (
-              <styledEl.ActiveIcon>
-                <Check size={16} />
+              <styledEl.ActiveIcon aria-hidden="true">
+                <SVG src={OrderCheckIcon} />
               </styledEl.ActiveIcon>
             )}
           </styledEl.ChainButton>
