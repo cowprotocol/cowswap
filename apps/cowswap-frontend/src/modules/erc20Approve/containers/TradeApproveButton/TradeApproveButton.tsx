@@ -20,6 +20,7 @@ import { ApprovalState } from '../../types'
 
 export interface TradeApproveButtonProps {
   amountToApprove: CurrencyAmount<Currency>
+  minAmountToSwap?: CurrencyAmount<Currency>
   children?: ReactNode
   isDisabled?: boolean
   enablePartialApprove?: boolean
