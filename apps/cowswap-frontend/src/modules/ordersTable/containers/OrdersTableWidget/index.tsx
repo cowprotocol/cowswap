@@ -58,12 +58,14 @@ export function OrdersTableWidget(props: OrdersTableWidgetProps): ReactNode {
     })
   }, [isTabWithPending, filteredOrders, currentPageNumber])
 
+  const hasPendingOrders = !!pendingOrders?.length
   const isLimitOrdersTable = stateParams.orderType === TabOrderTypes.LIMIT
+  const showLimitOrdersPermitUpdater = isLimitOrdersTable && hasPendingOrders
 
   return (
     <>
-      {!!pendingOrders?.length && <UnfillableOrdersUpdater orders={pendingOrders} />}
-      {isLimitOrdersTable && !!pendingOrders?.length && <LimitOrdersPermitUpdater orders={pendingOrders} />}
+      {hasPendingOrders && <UnfillableOrdersUpdater orders={pendingOrders} />}
+      {showLimitOrdersPermitUpdater && <LimitOrdersPermitUpdater orders={pendingOrders} />}
       <OrdersTableStateUpdater searchTerm={searchTerm} {...stateParams} />
       {children}
       <OrdersTableContainer searchTerm={searchTerm} isDarkMode={darkMode}>
