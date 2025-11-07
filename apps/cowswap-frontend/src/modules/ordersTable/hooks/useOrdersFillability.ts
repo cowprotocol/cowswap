@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 import { useBalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -14,8 +16,8 @@ export interface OrderFillability {
 
 export function useOrdersFillability(orders: GenericOrder[]): Record<string, OrderFillability | undefined> {
   const { chainId } = useWalletInfo()
-  const tokens = orders.map((order) => order.inputToken.address.toLowerCase())
 
+  const tokens = useMemo(() => orders.map((order) => order.inputToken.address.toLowerCase()), [orders])
   const { balances, allowances } = useBalancesAndAllowances(tokens)
 
   return orders.reduce<Record<string, OrderFillability>>((acc, order) => {
@@ -43,4 +45,3 @@ export function useOrdersFillability(orders: GenericOrder[]): Record<string, Ord
     return acc
   }, {})
 }
-
