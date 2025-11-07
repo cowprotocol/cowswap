@@ -45,11 +45,13 @@ export function ChainPanel({ title, chainsState, onSelectChain }: ChainPanelProp
       <styledEl.PanelHeader>
         <styledEl.PanelTitle>{title}</styledEl.PanelTitle>
       </styledEl.PanelHeader>
-      <styledEl.PanelSearchInput
-        value={chainQuery}
-        onChange={(event) => setChainQuery(event.target.value)}
-        placeholder="Search network"
-      />
+      <styledEl.PanelSearchInputWrapper>
+        <styledEl.PanelSearchInput
+          value={chainQuery}
+          onChange={(event) => setChainQuery(event.target.value)}
+          placeholder="Search network"
+        />
+      </styledEl.PanelSearchInputWrapper>
       <styledEl.PanelList>
         <ChainsSelector
           isLoading={isLoading}

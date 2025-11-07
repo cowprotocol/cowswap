@@ -42,14 +42,22 @@ export const PanelTitle = styled.h4`
   color: var(${UI.COLOR_TEXT_OPACITY_70});
 `
 
+export const PanelSearchInputWrapper = styled.div`
+  --min-height: 36px;
+  min-height: var(--min-height);
+  border: 1px solid var(${UI.COLOR_PAPER_DARKEST});
+  background: transparent;
+  border-radius: var(--min-height);
+  padding: 0 10px;
+`
+
 export const PanelSearchInput = styled(UISearchInput)`
   width: 100%;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
-  border: 1px solid var(${UI.COLOR_PAPER_DARKEST});
-  border-radius: 12px;
-  padding: 8px 12px;
-  background: var(${UI.COLOR_PAPER_DARKER});
+  border: none;
+  background: transparent;
   font-size: 14px;
+  font-weight: 500;
 `
 
 export const PanelList = styled.div`

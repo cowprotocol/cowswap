@@ -23,7 +23,7 @@ export const TitleBar = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 24px 12px;
+  padding: 12px 14px;
   gap: 12px;
 
   ${Media.upToSmall()} {
@@ -67,17 +67,8 @@ export const TitleActionButton = styled.button`
 `
 
 export const SearchRow = styled.div`
-  padding: 0 24px 16px;
-  border-bottom: 1px solid var(${UI.COLOR_BORDER});
+  padding: 0 14px 14px;
   display: flex;
-
-  > * {
-    width: 100%;
-  }
-
-  ${Media.upToSmall()} {
-    padding: 0 16px 16px;
-  }
 `
 
 export const Body = styled.div`

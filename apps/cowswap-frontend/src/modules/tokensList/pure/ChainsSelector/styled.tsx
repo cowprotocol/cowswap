@@ -12,6 +12,7 @@ export const List = styled.div`
 `
 
 export const ChainButton = styled.button<{ active$?: boolean }>`
+  --min-height: 46px;
   ${blankButtonMixin};
 
   width: 100%;
@@ -20,7 +21,8 @@ export const ChainButton = styled.button<{ active$?: boolean }>`
   justify-content: space-between;
   gap: 16px;
   padding: 8px 12px;
-  border-radius: 18px;
+  min-height: var(--min-height);
+  border-radius: var(--min-height);
   border: 1px solid ${({ active$ }) => (active$ ? `var(${UI.COLOR_PRIMARY_OPACITY_80})` : 'transparent')};
   background: ${({ active$ }) => (active$ ? `var(${UI.COLOR_PRIMARY_OPACITY_10})` : 'transparent')};
   box-shadow: ${({ active$ }) => (active$ ? `0 0 0 1px var(${UI.COLOR_PRIMARY_OPACITY_10}) inset` : 'none')};
