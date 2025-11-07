@@ -2,25 +2,25 @@ import { useBalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { Order } from 'legacy/state/orders/actions'
-
+import { GenericOrder } from 'common/types'
 import { doesOrderHavePermit } from 'common/utils/doesOrderHavePermit'
 
 export interface OrderFillability {
   hasEnoughAllowance: boolean | undefined
   hasEnoughBalance: boolean | undefined
   hasPermit?: boolean
-  order: Order
+  order: GenericOrder
 }
 
-export function useOrdersFillability(orders: Order[]): Record<string, OrderFillability | undefined> {
+export function useOrdersFillability(orders: GenericOrder[]): Record<string, OrderFillability | undefined> {
   const { chainId } = useWalletInfo()
-  const tokens = orders.map((order) => order.sellToken.toLowerCase())
+  const tokens = orders.map((order) => order.inputToken.address.toLowerCase())
 
   const { balances, allowances } = useBalancesAndAllowances(tokens)
 
   return orders.reduce<Record<string, OrderFillability>>((acc, order) => {
-    if (getIsNativeToken(chainId, order.inputToken.address)) {
+    const inputTokenAddress = order.inputToken.address.toLowerCase()
+    if (getIsNativeToken(chainId, inputTokenAddress)) {
       acc[order.id] = {
         hasEnoughBalance: true,
         hasEnoughAllowance: true,
@@ -30,8 +30,8 @@ export function useOrdersFillability(orders: Order[]): Record<string, OrderFilla
       return acc
     }
 
-    const balance = balances[order.sellToken.toLowerCase()]
-    const allowance = allowances?.[order.sellToken.toLowerCase()]
+    const balance = balances[inputTokenAddress]
+    const allowance = allowances?.[inputTokenAddress]
 
     acc[order.id] = {
       hasEnoughBalance: balance ? balance.gte(order.sellAmount) : undefined,

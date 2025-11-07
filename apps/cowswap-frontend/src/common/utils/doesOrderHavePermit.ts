@@ -1,14 +1,14 @@
 import { doesHookHavePermit } from '@cowprotocol/hook-dapp-lib'
 
-import { Order } from 'legacy/state/orders/actions'
-
 import { getAppDataHooks } from 'modules/appData'
 
-export function doesOrderHavePermit(order: Order): boolean {
+import { GenericOrder } from 'common/types'
+
+export function doesOrderHavePermit(order: GenericOrder): boolean {
   return !!getOrderPermitIfExists(order)
 }
 
-export function getOrderPermitIfExists(order: Order): string | null {
+export function getOrderPermitIfExists(order: GenericOrder): string | null {
   const appData = order.fullAppData
   const hooks = getAppDataHooks(appData)
   if (!hooks?.pre) return null

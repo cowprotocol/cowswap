@@ -2,14 +2,10 @@ import { ReactNode } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { OrderPermitUpdater } from 'modules/ordersTable'
-import { TradeType } from 'modules/trade'
-
 import { GenericOrder } from 'common/types'
 
 import { LastTimePriceUpdateResetUpdater } from './updaters/LastTimePriceUpdateResetUpdater'
 import { UnfillableOrderUpdater } from './updaters/UnfillableOrderUpdater'
-
 
 export { LastTimePriceUpdateResetUpdater }
 
@@ -26,12 +22,7 @@ export function UnfillableOrdersUpdater({ orders }: UnfillableOrdersUpdaterProps
   return (
     <>
       {orders.map((order) => {
-        return (
-          <>
-            <UnfillableOrderUpdater key={order.id} chainId={chainId} order={order} />
-            <OrderPermitUpdater key={order.id} order={order} tradeType={TradeType.LIMIT_ORDER} />
-          </>
-        )
+        return <UnfillableOrderUpdater key={order.id} chainId={chainId} order={order} />
       })}
     </>
   )
