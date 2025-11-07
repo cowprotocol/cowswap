@@ -1,4 +1,4 @@
-import { UI, Badge } from '@cowprotocol/ui'
+import { UI, Badge, Media } from '@cowprotocol/ui'
 
 import styled, { keyframes, css } from 'styled-components/macro'
 
@@ -99,6 +99,12 @@ export const InputWrapper = styled.div<{
   position: relative;
   overflow: hidden;
 
+  ${Media.upToSmall()} {
+    flex-flow: column wrap;
+    padding: 0;
+    gap: 0;
+  }
+
   &:focus-within {
     border-color: ${({ hasError }) => (hasError ? `var(${UI.COLOR_DANGER})` : `var(${UI.COLOR_PRIMARY_LIGHTER})`)};
   }
@@ -139,6 +145,12 @@ export const StyledInput = styled.input<{ disabled?: boolean }>`
   outline: none;
   caret-color: var(${UI.COLOR_PRIMARY});
 
+  ${Media.upToSmall()} {
+    width: 100%;
+    padding: 12px;
+    min-height: 42px;
+  }
+
   &:disabled {
     color: inherit;
     cursor: not-allowed;
@@ -160,7 +172,7 @@ const spin = keyframes`
   }
 `
 
-export const TrailingIcon = styled.div<{ kind: 'error' | 'lock' | 'pending' | 'success' }>`
+export const TrailingIcon = styled.div<{ kind: 'error' | 'lock' | 'pending' | 'success'; isSpinning?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -180,6 +192,12 @@ export const TrailingIcon = styled.div<{ kind: 'error' | 'lock' | 'pending' | 's
             ? `var(${UI.COLOR_SUCCESS})`
             : `var(${UI.COLOR_TEXT_OPACITY_70})`};
 
+  ${Media.upToSmall()} {
+    width: 100%;
+    background: var(${UI.COLOR_PAPER_DARKEST});
+    padding: 10px;
+  }
+
   svg {
     width: 18px;
     height: 18px;
@@ -190,8 +208,9 @@ export const TrailingIcon = styled.div<{ kind: 'error' | 'lock' | 'pending' | 's
     fill: ${({ kind }) => (kind === 'error' ? `var(${UI.COLOR_DANGER_TEXT})` : 'currentColor')};
   }
 
-  ${({ kind }) =>
+  ${({ kind, isSpinning }) =>
     kind === 'pending' &&
+    isSpinning &&
     css`
       svg {
         animation: ${spin} 1.1s linear infinite;

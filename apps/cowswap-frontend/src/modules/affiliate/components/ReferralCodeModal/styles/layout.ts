@@ -1,4 +1,4 @@
-import { UI } from '@cowprotocol/ui'
+import { Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -16,6 +16,7 @@ export const Body = styled.div`
   flex-direction: column;
   padding: 10px 10px 0;
   gap: 10px;
+  overflow-y: auto;
 `
 
 export const Illustration = styled.img`
@@ -26,6 +27,10 @@ export const Illustration = styled.img`
   display: block;
   object-fit: contain;
   margin: 0 0 24px;
+
+  ${Media.upToSmall()} {
+    --size: 80px;
+  }
 `
 
 export const Title = styled.h2`
@@ -37,6 +42,11 @@ export const Title = styled.h2`
   font-weight: 600;
   color: var(${UI.COLOR_TEXT});
   text-align: center;
+
+  ${Media.upToSmall()} {
+    font-size: 24px;
+    max-width: 100%;
+  }
 `
 
 export const TitleAccent = styled.span`
@@ -51,6 +61,11 @@ export const Subtitle = styled.p`
   line-height: 1.5;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
   text-align: center;
+
+  ${Media.upToSmall()} {
+    font-size: 14px;
+    max-width: 90%;
+  }
 
   a {
     color: var(${UI.COLOR_LINK});

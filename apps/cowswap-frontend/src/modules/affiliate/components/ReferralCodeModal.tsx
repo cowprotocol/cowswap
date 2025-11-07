@@ -24,7 +24,7 @@ export function ReferralCodeModal(): ReactNode {
   const chainId = useWalletChainId()
   const navigate = useNavigate()
   const analytics = useCowAnalytics()
-  const supportedNetwork = chainId !== undefined ? isSupportedReferralNetwork(chainId) : false
+  const supportedNetwork = chainId === undefined ? true : isSupportedReferralNetwork(chainId)
 
   const controller = useReferralModalController({
     modalState,

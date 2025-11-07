@@ -74,11 +74,13 @@ export function ReferralCodeInputRow(props: ReferralCodeInputRowProps): ReactNod
       />
 
       {isLoading ? (
-        <TrailingIcon kind="pending">
+        <TrailingIcon kind="pending" isSpinning>
           {renderIconWithLabel(PendingIcon, t`Checking`, <Trans>Checking</Trans>)}
         </TrailingIcon>
       ) : (
-        trailingIconKind && <TrailingIcon kind={trailingIconKind}>{renderTrailingIcon(trailingIconKind)}</TrailingIcon>
+        trailingIconKind && (
+          <TrailingIcon kind={trailingIconKind}>{renderTrailingIcon(trailingIconKind)}</TrailingIcon>
+        )
       )}
     </InputWrapper>
   )
