@@ -23,8 +23,6 @@ const COINGECKO_CHAINS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.AVALANCHE]: 'avalanche',
   [SupportedChainId.LENS]: 'lens',
   [SupportedChainId.BNB]: 'binance-smart-chain',
-  [SupportedChainId.LINEA]: 'linea',
-  [SupportedChainId.PLASMA]: 'plasma',
 }
 
 const EMPTY_TOKENS: TokenListByAddress = {}

@@ -6,9 +6,7 @@ import {
   ChainInfo,
   gnosisChain,
   lens,
-  linea,
   mainnet,
-  plasma,
   polygon,
   sepolia,
   SupportedChainId,
@@ -120,18 +118,6 @@ export const CHAIN_INFO: ChainInfoMap = {
     urlAlias: 'lens',
     nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.LENS],
   },
-  [SupportedChainId.LINEA]: {
-    ...mapChainInfoToBaseChainInfo(linea),
-    name: 'linea',
-    urlAlias: 'linea',
-    nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.LINEA],
-  },
-  [SupportedChainId.PLASMA]: {
-    ...mapChainInfoToBaseChainInfo(plasma),
-    name: 'plasma',
-    urlAlias: 'plasma',
-    nativeCurrency: NATIVE_CURRENCIES[SupportedChainId.PLASMA],
-  },
   [SupportedChainId.SEPOLIA]: {
     ...mapChainInfoToBaseChainInfo(sepolia),
     name: 'sepolia',
@@ -150,8 +136,6 @@ export const SORTED_CHAIN_IDS: SupportedChainId[] = [
   SupportedChainId.ARBITRUM_ONE,
   SupportedChainId.POLYGON,
   SupportedChainId.AVALANCHE,
-  SupportedChainId.LINEA, // TODO: decide where to place Linea
-  SupportedChainId.PLASMA, // TODO: decide where to place Plasma
   SupportedChainId.GNOSIS_CHAIN,
   SupportedChainId.LENS,
   SupportedChainId.SEPOLIA,

@@ -25,8 +25,6 @@ function _getExplorerUrlByEnvironment(): Record<ChainId, string> {
     [ChainId.AVALANCHE]: `${baseUrl}/avax`,
     [ChainId.LENS]: `${baseUrl}/lens`,
     [ChainId.BNB]: `${baseUrl}/bnb`,
-    [ChainId.LINEA]: `${baseUrl}/linea`,
-    [ChainId.PLASMA]: `${baseUrl}/plasma`,
   }
 }
 

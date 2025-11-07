@@ -2,7 +2,6 @@ import PROGRESSBAR_COW_SURPLUS_1 from '@cowprotocol/assets/cow-swap/progressbar-
 import PROGRESSBAR_COW_SURPLUS_2 from '@cowprotocol/assets/cow-swap/progressbar-finished-image-2.svg'
 import PROGRESSBAR_COW_SURPLUS_3 from '@cowprotocol/assets/cow-swap/progressbar-finished-image-3.svg'
 import PROGRESSBAR_COW_SURPLUS_4 from '@cowprotocol/assets/cow-swap/progressbar-finished-image-4.svg'
-import { getAvailableChainsText } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 /**
@@ -89,7 +88,8 @@ export const COW_SWAP_BENEFITS = [
   "Unlike most other exchanges, CoW Swap doesn't charge you any fees if your trade fails.",
 ]
 
-export const TRADE_ON_NEW_CHAINS_BENEFIT = `CoW Swap is live on ${getAvailableChainsText()}. Switch the network toggle in the nav bar for quick, cheap transactions.`
+export const TRADE_ON_NEW_CHAINS_BENEFIT =
+  'CoW Swap is now live on Arbitrum, Base, Polygon, and Avalanche. Switch the network toggle in the nav bar for quick, cheap transactions.'
 
 export const CHAIN_SPECIFIC_BENEFITS: Record<SupportedChainId, string[]> = {
   [SupportedChainId.MAINNET]: [TRADE_ON_NEW_CHAINS_BENEFIT, ...COW_SWAP_BENEFITS],
@@ -101,8 +101,6 @@ export const CHAIN_SPECIFIC_BENEFITS: Record<SupportedChainId, string[]> = {
   [SupportedChainId.AVALANCHE]: COW_SWAP_BENEFITS,
   [SupportedChainId.LENS]: COW_SWAP_BENEFITS,
   [SupportedChainId.BNB]: COW_SWAP_BENEFITS,
-  [SupportedChainId.LINEA]: COW_SWAP_BENEFITS,
-  [SupportedChainId.PLASMA]: COW_SWAP_BENEFITS,
 }
 
 export const SURPLUS_IMAGES = [

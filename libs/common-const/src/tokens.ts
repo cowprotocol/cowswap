@@ -96,6 +96,7 @@ const sUSD_MAINNET = new TokenWithLogo(
 )
 
 // Gnosis chain
+export const XDAI_SYMBOL = 'XDAI'
 
 export const USDT_GNOSIS_CHAIN = new TokenWithLogo(
   USDT.logoURI,
@@ -490,32 +491,6 @@ export const BTCB_BNB = new TokenWithLogo(
   'Binance-Peg BTCB Token',
 )
 
-// Linea
-
-// TODO: verify and add more tokens for Linea
-export const USDC_LINEA = new TokenWithLogo(
-  USDC_MAINNET.logoURI,
-  SupportedChainId.LINEA,
-  // https://lineascan.build/address/0x176211869cA2b568f2A7D4EE941E073a821EE1ff
-  '0x176211869cA2b568f2A7D4EE941E073a821EE1ff',
-  6,
-  'USDC',
-  'USD Coin',
-)
-
-// Plasma
-
-// TODO: Verify and add more tokens for Plasma
-export const USDT_PLASMA = new TokenWithLogo(
-  USDT.logoURI,
-  SupportedChainId.PLASMA,
-  // https://plasmascan.to/address/0xB8CE59FC3717ada4C02eaDF9682A9e934F625ebb
-  '0xb8ce59fc3717ada4c02eadf9682a9e934f625ebb',
-  6,
-  'USDT0',
-  'USDT0',
-)
-
 // Optimism
 
 export const USDC_OPTIMISM = new TokenWithLogo(
@@ -539,12 +514,6 @@ export const USDC: Record<SupportedChainId | AdditionalTargetChainId, TokenWithL
   [AdditionalTargetChainId.OPTIMISM]: USDC_OPTIMISM,
   [SupportedChainId.LENS]: USDC_LENS,
   [SupportedChainId.BNB]: USDC_BNB,
-  [SupportedChainId.LINEA]: USDC_LINEA,
-  /**
-   * Important! There doesn't seem to be a USDC on Plasma yet, so we map USDT here for now
-   * This might break assumptions elsewhere in the code
-   */
-  [SupportedChainId.PLASMA]: USDT_PLASMA,
 }
 
 /**
@@ -595,7 +564,7 @@ const COW_TOKEN_SYMBOL = 'COW'
 const COW_TOKEN_NAME = 'CoW Protocol Token'
 const COW_TOKEN_DECIMALS = 18
 
-function getCowTokenForChain(chain: SupportedChainId, logoURI?: string): TokenWithLogo | null {
+function getMaybeCowTokenForChain(chain: SupportedChainId, logoURI?: string): TokenWithLogo | null {
   const address = COW_CONTRACT_ADDRESS[chain]
 
   if (!address) return null
@@ -603,17 +572,15 @@ function getCowTokenForChain(chain: SupportedChainId, logoURI?: string): TokenWi
   return new TokenWithLogo(logoURI, chain, address, COW_TOKEN_DECIMALS, COW_TOKEN_SYMBOL, COW_TOKEN_NAME)
 }
 
-export const COW_TOKEN_MAINNET = getCowTokenForChain(SupportedChainId.MAINNET)
-export const COW_TOKEN_XDAI = getCowTokenForChain(SupportedChainId.GNOSIS_CHAIN, COW_TOKEN_MAINNET?.logoURI)
-export const COW_TOKEN_ARBITRUM = getCowTokenForChain(SupportedChainId.ARBITRUM_ONE, COW_TOKEN_MAINNET?.logoURI)
-export const COW_TOKEN_BASE = getCowTokenForChain(SupportedChainId.BASE, COW_TOKEN_MAINNET?.logoURI)
-export const COW_TOKEN_SEPOLIA = getCowTokenForChain(SupportedChainId.SEPOLIA, COW_TOKEN_MAINNET?.logoURI)
-export const COW_TOKEN_POLYGON = getCowTokenForChain(SupportedChainId.POLYGON, COW_TOKEN_MAINNET?.logoURI)
-export const COW_TOKEN_AVALANCHE = getCowTokenForChain(SupportedChainId.AVALANCHE, COW_TOKEN_MAINNET?.logoURI)
-export const COW_TOKEN_LENS = getCowTokenForChain(SupportedChainId.LENS, COW_TOKEN_MAINNET?.logoURI)
-export const COW_TOKEN_BNB = getCowTokenForChain(SupportedChainId.BNB, COW_TOKEN_MAINNET?.logoURI)
-export const COW_TOKEN_LINEA = getCowTokenForChain(SupportedChainId.LINEA, COW_TOKEN_MAINNET?.logoURI)
-export const COW_TOKEN_PLASMA = getCowTokenForChain(SupportedChainId.PLASMA, COW_TOKEN_MAINNET?.logoURI)
+export const COW_TOKEN_MAINNET = getMaybeCowTokenForChain(SupportedChainId.MAINNET)
+export const COW_TOKEN_XDAI = getMaybeCowTokenForChain(SupportedChainId.GNOSIS_CHAIN, COW_TOKEN_MAINNET?.logoURI)
+export const COW_TOKEN_ARBITRUM = getMaybeCowTokenForChain(SupportedChainId.ARBITRUM_ONE, COW_TOKEN_MAINNET?.logoURI)
+export const COW_TOKEN_BASE = getMaybeCowTokenForChain(SupportedChainId.BASE, COW_TOKEN_MAINNET?.logoURI)
+export const COW_TOKEN_SEPOLIA = getMaybeCowTokenForChain(SupportedChainId.SEPOLIA, COW_TOKEN_MAINNET?.logoURI)
+export const COW_TOKEN_POLYGON = getMaybeCowTokenForChain(SupportedChainId.POLYGON, COW_TOKEN_MAINNET?.logoURI)
+export const COW_TOKEN_AVALANCHE = getMaybeCowTokenForChain(SupportedChainId.AVALANCHE, COW_TOKEN_MAINNET?.logoURI)
+export const COW_TOKEN_LENS = getMaybeCowTokenForChain(SupportedChainId.LENS, COW_TOKEN_MAINNET?.logoURI)
+export const COW_TOKEN_BNB = getMaybeCowTokenForChain(SupportedChainId.BNB, COW_TOKEN_MAINNET?.logoURI)
 
 export const COW_TOKEN_TO_CHAIN: Record<SupportedChainId, TokenWithLogo | null> = {
   [SupportedChainId.MAINNET]: COW_TOKEN_MAINNET,
@@ -625,8 +592,6 @@ export const COW_TOKEN_TO_CHAIN: Record<SupportedChainId, TokenWithLogo | null> 
   [SupportedChainId.AVALANCHE]: COW_TOKEN_AVALANCHE,
   [SupportedChainId.LENS]: COW_TOKEN_LENS,
   [SupportedChainId.BNB]: COW_TOKEN_BNB,
-  [SupportedChainId.LINEA]: COW_TOKEN_LINEA,
-  [SupportedChainId.PLASMA]: COW_TOKEN_PLASMA,
 }
 
 export const GNO: Record<SupportedChainId, TokenWithLogo | null> = {
@@ -703,10 +668,6 @@ const BNB_STABLECOINS = [USDC_BNB.address, USDT_BNB.address, DAI_BNB.address, BU
   t.toLowerCase(),
 )
 
-const LINEA_STABLECOINS = [USDC_LINEA.address].map((t) => t.toLowerCase())
-
-const PLASMA_STABLECOINS = [USDT_PLASMA.address].map((t) => t.toLowerCase())
-
 const SEPOLIA_STABLECOINS = [USDC_SEPOLIA.address, USDT_SEPOLIA.address].map((t) => t.toLowerCase())
 
 export const STABLECOINS: Record<SupportedChainId, Set<string>> = {
@@ -719,8 +680,6 @@ export const STABLECOINS: Record<SupportedChainId, Set<string>> = {
   [SupportedChainId.AVALANCHE]: new Set(AVALANCHE_STABLECOINS),
   [SupportedChainId.LENS]: new Set(LENS_STABLECOINS),
   [SupportedChainId.BNB]: new Set(BNB_STABLECOINS),
-  [SupportedChainId.LINEA]: new Set(LINEA_STABLECOINS),
-  [SupportedChainId.PLASMA]: new Set(PLASMA_STABLECOINS),
 }
 
 /**
