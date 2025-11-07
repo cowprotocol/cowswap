@@ -34,6 +34,7 @@ import { useOnTokenListAddingError } from '../../hooks/useOnTokenListAddingError
 import { useSelectTokenWidgetState } from '../../hooks/useSelectTokenWidgetState'
 import { useTokensToSelect } from '../../hooks/useTokensToSelect'
 import { useUpdateSelectTokenWidgetState } from '../../hooks/useUpdateSelectTokenWidgetState'
+import { ChainPanel } from '../../pure/ChainPanel'
 import { ImportListModal } from '../../pure/ImportListModal'
 import { ImportTokenModal } from '../../pure/ImportTokenModal'
 import { SelectTokenModal } from '../../pure/SelectTokenModal'
@@ -42,11 +43,21 @@ import { ManageListsAndTokens } from '../ManageListsAndTokens'
 
 const Wrapper = styled.div`
   width: 100%;
+`
 
-  > div {
-    height: calc(100vh - 200px);
-    min-height: 600px;
-  }
+const InnerWrapper = styled.div<{ $hasSidebar: boolean }>`
+  height: calc(100vh - 200px);
+  min-height: 600px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  align-items: stretch;
+`
+
+const ModalContainer = styled.div`
+  flex: 1;
+  min-width: 0;
+  display: flex;
 `
 
 const EMPTY_FAV_TOKENS: TokenWithLogo[] = []
@@ -113,6 +124,9 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
   const isInjectedWidgetMode = isInjectedWidget()
 
   const closeTokenSelectWidget = useCloseTokenSelectWidget()
+  const modalTitle = field === Field.INPUT ? 'Swap from' : field === Field.OUTPUT ? 'Swap to' : 'Select token'
+  // TODO: Confirm copy requirements for BUY orders and update titles accordingly.
+  const chainsPanelTitle = 'Cross chain swap'
 
   const openPoolPage = useCallback(
     (selectedPoolAddress: string) => {
@@ -152,83 +166,94 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
     updateSelectTokenWidget({ listToImport: undefined })
   }
 
+  const isBridgingEnabled = !!chainsToSelect && (chainsToSelect.isLoading || (chainsToSelect.chains?.length ?? 0) > 0)
+
   if (!onSelectToken || !open) return null
 
   return (
     <Wrapper>
-      {(() => {
-        if (tokenToImport && !standalone) {
-          return (
-            <ImportTokenModal
-              tokens={[tokenToImport]}
-              onDismiss={onDismiss}
-              onBack={resetTokenImport}
-              onImport={importTokenAndClose}
-            />
-          )
-        }
+      <InnerWrapper $hasSidebar={isBridgingEnabled}>
+        {(() => {
+          if (tokenToImport && !standalone) {
+            return (
+              <ImportTokenModal
+                tokens={[tokenToImport]}
+                onDismiss={onDismiss}
+                onBack={resetTokenImport}
+                onImport={importTokenAndClose}
+              />
+            )
+          }
 
-        if (listToImport && !standalone) {
-          return (
-            <ImportListModal
-              list={listToImport}
-              onDismiss={onDismiss}
-              onBack={resetTokenImport}
-              onImport={importListAndBack}
-            />
-          )
-        }
+          if (listToImport && !standalone) {
+            return (
+              <ImportListModal
+                list={listToImport}
+                onDismiss={onDismiss}
+                onBack={resetTokenImport}
+                onImport={importListAndBack}
+              />
+            )
+          }
 
-        if (isManageWidgetOpen && !standalone) {
-          return (
-            <ManageListsAndTokens
-              lists={allTokenLists}
-              customTokens={userAddedTokens}
-              onDismiss={onDismiss}
-              onBack={() => setIsManageWidgetOpen(false)}
-            />
-          )
-        }
+          if (isManageWidgetOpen && !standalone) {
+            return (
+              <ManageListsAndTokens
+                lists={allTokenLists}
+                customTokens={userAddedTokens}
+                onDismiss={onDismiss}
+                onBack={() => setIsManageWidgetOpen(false)}
+              />
+            )
+          }
 
-        if (selectedPoolAddress) {
-          return (
-            <LpTokenPage
-              poolAddress={selectedPoolAddress}
-              onDismiss={onDismiss}
-              onBack={closePoolPage}
-              onSelectToken={onSelectToken}
-            />
-          )
-        }
+          if (selectedPoolAddress) {
+            return (
+              <LpTokenPage
+                poolAddress={selectedPoolAddress}
+                onDismiss={onDismiss}
+                onBack={closePoolPage}
+                onSelectToken={onSelectToken}
+              />
+            )
+          }
 
-        return (
-          <SelectTokenModal
-            standalone={standalone}
-            displayLpTokenLists={displayLpTokenLists}
-            unsupportedTokens={unsupportedTokens}
-            selectedToken={selectedToken}
-            allTokens={allTokens}
-            favoriteTokens={standalone ? EMPTY_FAV_TOKENS : favoriteTokens}
-            balancesState={balancesState}
-            permitCompatibleTokens={permitCompatibleTokens}
-            onSelectToken={onSelectToken}
-            onInputPressEnter={onInputPressEnter}
-            onDismiss={onDismiss}
-            onOpenManageWidget={() => setIsManageWidgetOpen(true)}
-            hideFavoriteTokensTooltip={isInjectedWidgetMode}
-            openPoolPage={openPoolPage}
-            tokenListCategoryState={tokenListCategoryState}
-            disableErc20={disableErc20}
-            account={account}
-            chainsToSelect={chainsToSelect}
-            onSelectChain={onSelectChain}
-            areTokensLoading={areTokensLoading}
-            tokenListTags={tokenListTags}
-            areTokensFromBridge={areTokensFromBridge}
-            isRouteAvailable={isRouteAvailable}
-          />
-        )
-      })()}
+          return (
+            <>
+              <ModalContainer>
+                <SelectTokenModal
+                  standalone={standalone}
+                  displayLpTokenLists={displayLpTokenLists}
+                  unsupportedTokens={unsupportedTokens}
+                  selectedToken={selectedToken}
+                  allTokens={allTokens}
+                  favoriteTokens={standalone ? EMPTY_FAV_TOKENS : favoriteTokens}
+                  balancesState={balancesState}
+                  permitCompatibleTokens={permitCompatibleTokens}
+                  onSelectToken={onSelectToken}
+                  onInputPressEnter={onInputPressEnter}
+                  onDismiss={onDismiss}
+                  onOpenManageWidget={() => setIsManageWidgetOpen(true)}
+                  hideFavoriteTokensTooltip={isInjectedWidgetMode}
+                  openPoolPage={openPoolPage}
+                  tokenListCategoryState={tokenListCategoryState}
+                  disableErc20={disableErc20}
+                  account={account}
+                  areTokensLoading={areTokensLoading}
+                  tokenListTags={tokenListTags}
+                  areTokensFromBridge={areTokensFromBridge}
+                  isRouteAvailable={isRouteAvailable}
+                  modalTitle={modalTitle}
+                  hasChainPanel={isBridgingEnabled}
+                />
+              </ModalContainer>
+              {isBridgingEnabled && chainsToSelect && (
+                <ChainPanel title={chainsPanelTitle} chainsState={chainsToSelect} onSelectChain={onSelectChain} />
+              )}
+            </>
+          )
+        })()}
+      </InnerWrapper>
     </Wrapper>
   )
 }

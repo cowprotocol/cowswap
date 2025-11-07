@@ -19,27 +19,24 @@ export const List = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  padding-top: 10px;
 
-  ${Media.upToSmall()} {
-    width: 0;
-    min-width: 100%;
-    flex-wrap: nowrap;
-    overflow-x: scroll;
-    overflow-y: hidden;
+  width: 0;
+  min-width: 100%;
+  flex-wrap: nowrap;
+  overflow-x: scroll;
+  overflow-y: hidden;
 
-    padding: 10px 0;
-    -webkit-overflow-scrolling: touch;
+  padding: 10px 0;
+  -webkit-overflow-scrolling: touch;
 
-    @media (hover: hover) {
-      ${({ theme }) => theme.colorScrollbar};
-    }
+  @media (hover: hover) {
+    ${({ theme }) => theme.colorScrollbar};
+  }
 
-    @media (hover: none) {
-      scrollbar-width: none;
-      &::-webkit-scrollbar {
-        display: none;
-      }
+  @media (hover: none) {
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
     }
   }
 `

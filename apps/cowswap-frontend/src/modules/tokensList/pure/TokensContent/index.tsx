@@ -6,8 +6,6 @@ import { Nullish } from '@cowprotocol/types'
 import { Loader } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
-import { Edit } from 'react-feather'
-
 import { TokenSearchResults } from '../../containers/TokenSearchResults'
 import { SelectTokenContext } from '../../types'
 import { FavoriteTokensList } from '../FavoriteTokensList'
@@ -23,17 +21,14 @@ export interface TokensContentProps {
   areTokensLoading: boolean
   allTokens: TokenWithLogo[]
   searchInput: string
-  standalone?: boolean
   areTokensFromBridge: boolean
 
   onSelectToken(token: TokenWithLogo): void
-  onOpenManageWidget(): void
 }
 
 export function TokensContent({
   selectTokenContext,
   onSelectToken,
-  onOpenManageWidget,
   selectedToken,
   favoriteTokens,
   hideFavoriteTokensTooltip,
@@ -41,22 +36,18 @@ export function TokensContent({
   allTokens,
   displayLpTokenLists,
   searchInput,
-  standalone,
   areTokensFromBridge,
 }: TokensContentProps): ReactNode {
   return (
     <>
       {!areTokensLoading && !!favoriteTokens.length && (
         <>
-          <styledEl.Row>
-            <FavoriteTokensList
-              onSelectToken={onSelectToken}
-              selectedToken={(selectedToken && getCurrencyAddress(selectedToken)) || undefined}
-              tokens={favoriteTokens}
-              hideTooltip={hideFavoriteTokensTooltip}
-            />
-          </styledEl.Row>
-          <styledEl.Separator />
+          <FavoriteTokensList
+            onSelectToken={onSelectToken}
+            selectedToken={(selectedToken && getCurrencyAddress(selectedToken)) || undefined}
+            tokens={favoriteTokens}
+            hideTooltip={hideFavoriteTokensTooltip}
+          />
         </>
       )}
       {areTokensLoading ? (
@@ -79,16 +70,6 @@ export function TokensContent({
               displayLpTokenLists={displayLpTokenLists}
             />
           )}
-        </>
-      )}
-      {!standalone && (
-        <>
-          <styledEl.Separator />
-          <div>
-            <styledEl.ActionButton id="list-token-manage-button" onClick={onOpenManageWidget}>
-              <Edit /> <span>Manage Token Lists</span>
-            </styledEl.ActionButton>
-          </div>
         </>
       )}
     </>
