@@ -38,6 +38,7 @@ export interface SelectTokenModalProps<T = TokenListCategory[] | null> {
   isRouteAvailable: boolean | undefined
   modalTitle?: string
   hasChainPanel?: boolean
+  selectedTargetChainId?: number
 
   onSelectToken(token: TokenWithLogo): void
   openPoolPage(poolAddress: string): void
@@ -77,26 +78,43 @@ function useTokenSearchInput(defaultInputValue = ''): [string, (value: string) =
   return [inputValue, setInputValue, inputValue.trim()]
 }
 
-function useTokensContent(props: SelectTokenModalProps, searchInput: string, context: SelectTokenContext): ReactNode {
-  const {
-    displayLpTokenLists,
-    favoriteTokens,
-    areTokensLoading,
-    allTokens,
-    areTokensFromBridge,
-    hideFavoriteTokensTooltip,
-  } = props
+interface TokensContentSectionProps
+  extends Pick<
+    SelectTokenModalProps,
+    | 'displayLpTokenLists'
+    | 'favoriteTokens'
+    | 'areTokensLoading'
+    | 'allTokens'
+    | 'areTokensFromBridge'
+    | 'hideFavoriteTokensTooltip'
+    | 'selectedTargetChainId'
+  > {
+  searchInput: string
+  selectTokenContext: SelectTokenContext
+}
 
+function TokensContentSection({
+  displayLpTokenLists,
+  favoriteTokens,
+  areTokensLoading,
+  allTokens,
+  searchInput,
+  areTokensFromBridge,
+  hideFavoriteTokensTooltip,
+  selectedTargetChainId,
+  selectTokenContext,
+}: TokensContentSectionProps): ReactNode {
   return (
     <TokensContent
       displayLpTokenLists={displayLpTokenLists}
-      selectTokenContext={context}
+      selectTokenContext={selectTokenContext}
       favoriteTokens={favoriteTokens}
       areTokensLoading={areTokensLoading}
       allTokens={allTokens}
       searchInput={searchInput}
       areTokensFromBridge={areTokensFromBridge}
       hideFavoriteTokensTooltip={hideFavoriteTokensTooltip}
+      selectedTargetChainId={selectedTargetChainId}
     />
   )
 }
@@ -150,11 +168,29 @@ export function SelectTokenModal(props: SelectTokenModalProps): ReactNode {
     hasChainPanel,
     standalone,
     onOpenManageWidget,
+    favoriteTokens,
+    areTokensLoading,
+    allTokens,
+    areTokensFromBridge,
+    hideFavoriteTokensTooltip,
+    selectedTargetChainId,
   } = props
 
   const [inputValue, setInputValue, trimmedInputValue] = useTokenSearchInput(defaultInputValue)
   const selectTokenContext = useSelectTokenContext(props)
-  const allListsContent = useTokensContent(props, trimmedInputValue, selectTokenContext)
+  const allListsContent = (
+    <TokensContentSection
+      displayLpTokenLists={displayLpTokenLists}
+      favoriteTokens={favoriteTokens}
+      areTokensLoading={areTokensLoading}
+      allTokens={allTokens}
+      searchInput={trimmedInputValue}
+      areTokensFromBridge={areTokensFromBridge}
+      hideFavoriteTokensTooltip={hideFavoriteTokensTooltip}
+      selectedTargetChainId={selectedTargetChainId}
+      selectTokenContext={selectTokenContext}
+    />
+  )
   const resolvedModalTitle = modalTitle ?? 'Select token'
 
   return (

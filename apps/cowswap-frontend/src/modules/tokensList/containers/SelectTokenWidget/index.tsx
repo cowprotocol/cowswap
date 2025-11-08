@@ -1,39 +1,13 @@
-import { ReactNode, useCallback, useState } from 'react'
-
-import { useCowAnalytics } from '@cowprotocol/analytics'
-import { TokenWithLogo } from '@cowprotocol/common-const'
-import { isInjectedWidget } from '@cowprotocol/common-utils'
-import {
-  ListState,
-  TokenListCategory,
-  useAddList,
-  useAddUserToken,
-  useAllListsList,
-  useTokenListsTags,
-  useUnsupportedTokens,
-  useUserAddedTokens,
-} from '@cowprotocol/tokens'
-import { useWalletInfo } from '@cowprotocol/wallet'
+import { ReactNode } from 'react'
 
 import styled from 'styled-components/macro'
 
-import { Field } from 'legacy/state/types'
+import {
+  useSelectTokenWidgetController,
+  type SelectTokenWidgetProps,
+  type SelectTokenWidgetViewProps,
+} from './controller'
 
-import { useTokensBalancesCombined } from 'modules/combinedBalances'
-import { usePermitCompatibleTokens } from 'modules/permit'
-import { useLpTokensWithBalances } from 'modules/yield/shared'
-
-import { CowSwapAnalyticsCategory } from 'common/analytics/types'
-
-import { getDefaultTokenListCategories } from './getDefaultTokenListCategories'
-
-import { useChainsToSelect } from '../../hooks/useChainsToSelect'
-import { useCloseTokenSelectWidget } from '../../hooks/useCloseTokenSelectWidget'
-import { useOnSelectChain } from '../../hooks/useOnSelectChain'
-import { useOnTokenListAddingError } from '../../hooks/useOnTokenListAddingError'
-import { useSelectTokenWidgetState } from '../../hooks/useSelectTokenWidgetState'
-import { useTokensToSelect } from '../../hooks/useTokensToSelect'
-import { useUpdateSelectTokenWidgetState } from '../../hooks/useUpdateSelectTokenWidgetState'
 import { ChainPanel } from '../../pure/ChainPanel'
 import { ImportListModal } from '../../pure/ImportListModal'
 import { ImportTokenModal } from '../../pure/ImportTokenModal'
@@ -60,199 +34,92 @@ const ModalContainer = styled.div`
   display: flex;
 `
 
-const EMPTY_FAV_TOKENS: TokenWithLogo[] = []
+export function SelectTokenWidget(props: SelectTokenWidgetProps): ReactNode {
+  const controller = useSelectTokenWidgetController(props)
 
-interface SelectTokenWidgetProps {
-  displayLpTokenLists?: boolean
-  standalone?: boolean
-}
-
-// TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
-export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTokenWidgetProps): ReactNode {
-  const {
-    open,
-    onSelectToken,
-    tokenToImport,
-    listToImport,
-    selectedToken,
-    onInputPressEnter,
-    selectedPoolAddress,
-    field,
-    oppositeToken,
-  } = useSelectTokenWidgetState()
-  const { count: lpTokensWithBalancesCount } = useLpTokensWithBalances()
-  const chainsToSelect = useChainsToSelect()
-  const onSelectChain = useOnSelectChain()
-
-  const [isManageWidgetOpen, setIsManageWidgetOpen] = useState(false)
-  const disableErc20 = field === Field.OUTPUT && !!displayLpTokenLists
-
-  const tokenListCategoryState = useState<TokenListCategory[] | null>(
-    getDefaultTokenListCategories(field, oppositeToken, lpTokensWithBalancesCount),
-  )
-
-  const updateSelectTokenWidget = useUpdateSelectTokenWidgetState()
-  const { account } = useWalletInfo()
-
-  const cowAnalytics = useCowAnalytics()
-  const addCustomTokenLists = useAddList((source) => {
-    cowAnalytics.sendEvent({
-      category: CowSwapAnalyticsCategory.LIST,
-      action: 'Add List Success',
-      label: source,
-    })
-  })
-  const importTokenCallback = useAddUserToken()
-
-  const {
-    tokens: allTokens,
-    isLoading: areTokensLoading,
-    favoriteTokens,
-    areTokensFromBridge,
-    isRouteAvailable,
-  } = useTokensToSelect()
-
-  const userAddedTokens = useUserAddedTokens()
-  const allTokenLists = useAllListsList()
-  const balancesState = useTokensBalancesCombined()
-  const unsupportedTokens = useUnsupportedTokens()
-  const permitCompatibleTokens = usePermitCompatibleTokens()
-  const tokenListTags = useTokenListsTags()
-  const onTokenListAddingError = useOnTokenListAddingError()
-
-  const closeTokenSelectWidget = useCloseTokenSelectWidget()
-  const modalTitle = field === Field.INPUT ? 'Swap from' : field === Field.OUTPUT ? 'Swap to' : 'Select token'
-  // TODO: Confirm copy requirements for BUY orders and update titles accordingly.
-  const chainsPanelTitle = 'Cross chain swap'
-
-  const openPoolPage = useCallback(
-    (selectedPoolAddress: string) => {
-      updateSelectTokenWidget({ selectedPoolAddress })
-    },
-    [updateSelectTokenWidget],
-  )
-
-  const closePoolPage = useCallback(() => {
-    updateSelectTokenWidget({ selectedPoolAddress: undefined })
-  }, [updateSelectTokenWidget])
-
-  const resetTokenImport = useCallback(() => {
-    updateSelectTokenWidget({
-      tokenToImport: undefined,
-    })
-  }, [updateSelectTokenWidget])
-
-  const onDismiss = useCallback(() => {
-    setIsManageWidgetOpen(false)
-    closeTokenSelectWidget()
-  }, [closeTokenSelectWidget])
-
-  const importTokenAndClose = (tokens: TokenWithLogo[]): void => {
-    importTokenCallback(tokens)
-    onSelectToken?.(tokens[0])
-    onDismiss()
+  if (!controller.shouldRender) {
+    return null
   }
-
-  const importListAndBack = (list: ListState): void => {
-    try {
-      addCustomTokenLists(list)
-    } catch (error) {
-      onDismiss()
-      onTokenListAddingError(error)
-    }
-    updateSelectTokenWidget({ listToImport: undefined })
-  }
-
-  const isBridgingEnabled = !!chainsToSelect && (chainsToSelect.isLoading || (chainsToSelect.chains?.length ?? 0) > 0)
-  const isInjectedWidgetMode = isInjectedWidget()
-
-  if (!onSelectToken || !open) return null
 
   return (
     <Wrapper>
-      <InnerWrapper $hasSidebar={isBridgingEnabled}>
-        {(() => {
-          if (tokenToImport && !standalone) {
-            return (
-              <ImportTokenModal
-                tokens={[tokenToImport]}
-                onDismiss={onDismiss}
-                onBack={resetTokenImport}
-                onImport={importTokenAndClose}
-              />
-            )
-          }
-
-          if (listToImport && !standalone) {
-            return (
-              <ImportListModal
-                list={listToImport}
-                onDismiss={onDismiss}
-                onBack={resetTokenImport}
-                onImport={importListAndBack}
-              />
-            )
-          }
-
-          if (isManageWidgetOpen && !standalone) {
-            return (
-              <ManageListsAndTokens
-                lists={allTokenLists}
-                customTokens={userAddedTokens}
-                onDismiss={onDismiss}
-                onBack={() => setIsManageWidgetOpen(false)}
-              />
-            )
-          }
-
-          if (selectedPoolAddress) {
-            return (
-              <LpTokenPage
-                poolAddress={selectedPoolAddress}
-                onDismiss={onDismiss}
-                onBack={closePoolPage}
-                onSelectToken={onSelectToken}
-              />
-            )
-          }
-
-          return (
-            <>
-              <ModalContainer>
-                <SelectTokenModal
-                  standalone={standalone}
-                  displayLpTokenLists={displayLpTokenLists}
-                  unsupportedTokens={unsupportedTokens}
-                  selectedToken={selectedToken}
-                  allTokens={allTokens}
-                  favoriteTokens={standalone ? EMPTY_FAV_TOKENS : favoriteTokens}
-                  balancesState={balancesState}
-                  permitCompatibleTokens={permitCompatibleTokens}
-                  onSelectToken={onSelectToken}
-                  onInputPressEnter={onInputPressEnter}
-                  onDismiss={onDismiss}
-                  onOpenManageWidget={() => setIsManageWidgetOpen(true)}
-                  openPoolPage={openPoolPage}
-                  tokenListCategoryState={tokenListCategoryState}
-                  disableErc20={disableErc20}
-                  account={account}
-                  areTokensLoading={areTokensLoading}
-                  tokenListTags={tokenListTags}
-                  areTokensFromBridge={areTokensFromBridge}
-                  isRouteAvailable={isRouteAvailable}
-                  modalTitle={modalTitle}
-                  hasChainPanel={isBridgingEnabled}
-                  hideFavoriteTokensTooltip={isInjectedWidgetMode}
-                />
-              </ModalContainer>
-              {isBridgingEnabled && chainsToSelect && (
-                <ChainPanel title={chainsPanelTitle} chainsState={chainsToSelect} onSelectChain={onSelectChain} />
-              )}
-            </>
-          )
-        })()}
+      <InnerWrapper $hasSidebar={controller.isBridgingEnabled}>
+        <SelectTokenWidgetView {...controller.viewProps} />
       </InnerWrapper>
     </Wrapper>
+  )
+}
+
+function SelectTokenWidgetView(props: SelectTokenWidgetViewProps): ReactNode {
+  const {
+    standalone,
+    tokenToImport,
+    listToImport,
+    isManageWidgetOpen,
+    selectedPoolAddress,
+    isBridgingEnabled,
+    chainsPanelTitle,
+    chainsToSelect,
+    onSelectChain,
+    onDismiss,
+    onBackFromImport,
+    onImportTokens,
+    onImportList,
+    allTokenLists,
+    userAddedTokens,
+    onCloseManageWidget,
+    onClosePoolPage,
+    selectTokenModalProps,
+    onSelectToken,
+  } = props
+
+  if (tokenToImport && !standalone) {
+    return (
+      <ImportTokenModal
+        tokens={[tokenToImport]}
+        onDismiss={onDismiss}
+        onBack={onBackFromImport}
+        onImport={onImportTokens}
+      />
+    )
+  }
+
+  if (listToImport && !standalone) {
+    return (
+      <ImportListModal list={listToImport} onDismiss={onDismiss} onBack={onBackFromImport} onImport={onImportList} />
+    )
+  }
+
+  if (isManageWidgetOpen && !standalone) {
+    return (
+      <ManageListsAndTokens
+        lists={allTokenLists}
+        customTokens={userAddedTokens}
+        onDismiss={onDismiss}
+        onBack={onCloseManageWidget}
+      />
+    )
+  }
+
+  if (selectedPoolAddress) {
+    return (
+      <LpTokenPage
+        poolAddress={selectedPoolAddress}
+        onDismiss={onDismiss}
+        onBack={onClosePoolPage}
+        onSelectToken={onSelectToken}
+      />
+    )
+  }
+
+  return (
+    <>
+      <ModalContainer>
+        <SelectTokenModal {...selectTokenModalProps} />
+      </ModalContainer>
+      {isBridgingEnabled && chainsToSelect && (
+        <ChainPanel title={chainsPanelTitle} chainsState={chainsToSelect} onSelectChain={onSelectChain} />
+      )}
+    </>
   )
 }

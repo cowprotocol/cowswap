@@ -27,21 +27,38 @@ export function FavoriteTokensList(props: FavoriteTokensListProps): ReactNode {
     <styledEl.Section data-testid="favorite-tokens-section">
       <styledEl.TitleRow>
         <styledEl.Title>Favourite tokens</styledEl.Title>
-        {!hideTooltip && (
-          <HelpTooltip
-            text={
-              <>
-                Your favorite saved tokens. Edit this list in the <Link to="/account/tokens">Tokens page</Link>.
-              </>
-            }
-          />
-        )}
+        {!hideTooltip && <FavoriteTokensTooltip />}
       </styledEl.TitleRow>
       <styledEl.List>
-        {tokens.map((token) => (
-          <TokenListItemContainer key={token.address} token={token} context={selectTokenContext} />
-        ))}
+        <FavoriteTokensItems tokens={tokens} selectTokenContext={selectTokenContext} />
       </styledEl.List>
     </styledEl.Section>
+  )
+}
+
+function FavoriteTokensTooltip(): ReactNode {
+  return (
+    <HelpTooltip
+      text={
+        <>
+          Your favorite saved tokens. Edit this list in the <Link to="/account/tokens">Tokens page</Link>.
+        </>
+      }
+    />
+  )
+}
+
+interface FavoriteTokensItemsProps {
+  tokens: TokenWithLogo[]
+  selectTokenContext: SelectTokenContext
+}
+
+function FavoriteTokensItems({ tokens, selectTokenContext }: FavoriteTokensItemsProps): ReactNode {
+  return (
+    <>
+      {tokens.map((token) => (
+        <TokenListItemContainer key={token.address} token={token} context={selectTokenContext} />
+      ))}
+    </>
   )
 }

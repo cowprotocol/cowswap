@@ -17,6 +17,7 @@ export interface TokensContentProps {
   searchInput: string
   areTokensFromBridge: boolean
   hideFavoriteTokensTooltip?: boolean
+  selectedTargetChainId?: number
 }
 
 export function TokensContent({
@@ -28,6 +29,7 @@ export function TokensContent({
   searchInput,
   areTokensFromBridge,
   hideFavoriteTokensTooltip,
+  selectedTargetChainId,
 }: TokensContentProps): ReactNode {
   const shouldShowFavoritesInline = !areTokensLoading && !searchInput && favoriteTokens.length > 0
 
@@ -71,6 +73,7 @@ export function TokensContent({
               displayLpTokenLists={displayLpTokenLists}
               favoriteTokens={favoriteTokensInline}
               hideFavoriteTokensTooltip={hideFavoriteTokensTooltip}
+              scrollResetKey={selectedTargetChainId}
             />
           )}
         </>

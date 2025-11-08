@@ -3,7 +3,7 @@ import { Media, SearchInput as UISearchInput, UI } from '@cowprotocol/ui'
 import styled from 'styled-components/macro'
 
 export const Panel = styled.div`
-  width: 210px;
+  width: 200px;
   flex-shrink: 0;
   background: var(${UI.COLOR_PAPER_DARKER});
   border-left: 1px solid var(${UI.COLOR_BORDER});

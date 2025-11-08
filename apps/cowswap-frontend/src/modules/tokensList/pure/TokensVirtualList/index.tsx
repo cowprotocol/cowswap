@@ -1,4 +1,4 @@
-import { ReactNode, useCallback, useMemo } from 'react'
+import { ReactNode, useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
@@ -20,6 +20,7 @@ export interface TokensVirtualListProps {
   selectTokenContext: SelectTokenContext
   favoriteTokens?: TokenWithLogo[]
   hideFavoriteTokensTooltip?: boolean
+  scrollResetKey?: number
 }
 
 type TokensVirtualRow =
@@ -28,7 +29,14 @@ type TokensVirtualRow =
   | { type: 'token'; token: TokenWithLogo }
 
 export function TokensVirtualList(props: TokensVirtualListProps): ReactNode {
-  const { allTokens, selectTokenContext, displayLpTokenLists, favoriteTokens, hideFavoriteTokensTooltip } = props
+  const {
+    allTokens,
+    selectTokenContext,
+    displayLpTokenLists,
+    favoriteTokens,
+    hideFavoriteTokensTooltip,
+    scrollResetKey,
+  } = props
   const { values: balances } = selectTokenContext.balancesState
 
   const { isYieldEnabled } = useFeatureFlags()
@@ -52,31 +60,43 @@ export function TokensVirtualList(props: TokensVirtualListProps): ReactNode {
     return tokenRows
   }, [favoriteTokens, hideFavoriteTokensTooltip, sortedTokens])
 
-  const getItemView = useCallback(
-    (rows: TokensVirtualRow[], virtualRow: VirtualItem) => {
-      const row = rows[virtualRow.index]
+  const getItemView = useMemo(() => createTokensVirtualRowRenderer(selectTokenContext), [selectTokenContext])
 
-      switch (row.type) {
-        case 'favorite-section':
-          return (
-            <FavoriteTokensList
-              tokens={row.tokens}
-              selectTokenContext={selectTokenContext}
-              hideTooltip={row.hideTooltip}
-            />
-          )
-        case 'title':
-          return <modalStyled.ListTitle>{row.label}</modalStyled.ListTitle>
-        default:
-          return <TokenListItemContainer token={row.token} context={selectTokenContext} />
-      }
-    },
-    [selectTokenContext],
-  )
+  const virtualListKey = scrollResetKey ?? 'tokens-list'
 
   return (
-    <VirtualList id="tokens-list" items={rows} getItemView={getItemView}>
+    <VirtualList
+      key={virtualListKey}
+      id="tokens-list"
+      items={rows}
+      getItemView={getItemView}
+      scrollResetKey={scrollResetKey}
+    >
       {displayLpTokenLists || !isYieldEnabled ? null : <CoWAmmBanner isTokenSelectorView />}
     </VirtualList>
   )
+}
+
+function createTokensVirtualRowRenderer(selectTokenContext: SelectTokenContext) {
+  return (rows: TokensVirtualRow[], virtualRow: VirtualItem): ReactNode => {
+    const row = rows[virtualRow.index]
+    return renderTokensVirtualRow(row, selectTokenContext)
+  }
+}
+
+function renderTokensVirtualRow(row: TokensVirtualRow, selectTokenContext: SelectTokenContext): ReactNode {
+  switch (row.type) {
+    case 'favorite-section':
+      return (
+        <FavoriteTokensList
+          tokens={row.tokens}
+          selectTokenContext={selectTokenContext}
+          hideTooltip={row.hideTooltip}
+        />
+      )
+    case 'title':
+      return <modalStyled.ListTitle>{row.label}</modalStyled.ListTitle>
+    default:
+      return <TokenListItemContainer token={row.token} context={selectTokenContext} />
+  }
 }
