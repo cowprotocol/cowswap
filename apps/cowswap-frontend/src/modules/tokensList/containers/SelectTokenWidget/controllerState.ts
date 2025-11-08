@@ -217,9 +217,5 @@ export function useTokenSelectionHandler(
 }
 
 export function hasAvailableChains(chainsToSelect: ChainsToSelectState | undefined): boolean {
-  if (!chainsToSelect) {
-    return false
-  }
-
-  return chainsToSelect.isLoading || (chainsToSelect.chains?.length ?? 0) > 0
+  return Boolean(chainsToSelect)
 }

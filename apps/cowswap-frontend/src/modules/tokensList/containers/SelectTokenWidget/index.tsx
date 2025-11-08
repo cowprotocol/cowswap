@@ -1,6 +1,8 @@
 import { ReactNode } from 'react'
 
-import styled from 'styled-components/macro'
+import { Media } from '@cowprotocol/ui'
+
+import styled, { css } from 'styled-components/macro'
 
 import {
   useSelectTokenWidgetController,
@@ -26,6 +28,21 @@ const InnerWrapper = styled.div<{ $hasSidebar: boolean }>`
   margin: 0 auto;
   display: flex;
   align-items: stretch;
+
+  ${({ $hasSidebar }) =>
+    $hasSidebar &&
+    css`
+      /* Stack modal + sidebar vertically on narrow screens so neither pane collapses */
+      ${Media.upToMedium()} {
+        flex-direction: column;
+        height: auto;
+        min-height: 0;
+      }
+
+      ${Media.upToSmall()} {
+        min-height: 0;
+      }
+    `}
 `
 
 const ModalContainer = styled.div`

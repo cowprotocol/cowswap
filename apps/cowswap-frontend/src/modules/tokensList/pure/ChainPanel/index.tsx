@@ -34,11 +34,9 @@ export function ChainPanel({ title, chainsState, onSelectChain }: ChainPanelProp
     })
   }, [chains, normalizedChainQuery])
 
-  if (!isLoading && chains.length === 0) {
-    return null
-  }
-
-  const showEmptyState = !isLoading && filteredChains.length === 0 && !!normalizedChainQuery
+  const showSearchEmptyState = !isLoading && filteredChains.length === 0 && !!normalizedChainQuery
+  // When bridge networks are unavailable we still render the panel but show the fallback copy
+  const showUnavailableState = !isLoading && chains.length === 0 && !normalizedChainQuery
 
   return (
     <styledEl.Panel>
@@ -59,7 +57,8 @@ export function ChainPanel({ title, chainsState, onSelectChain }: ChainPanelProp
           defaultChainId={chainsState?.defaultChainId}
           onSelectChain={onSelectChain}
         />
-        {showEmptyState && <styledEl.EmptyState>No networks match "{chainQuery}".</styledEl.EmptyState>}
+        {showUnavailableState && <styledEl.EmptyState>No networks available for this trade.</styledEl.EmptyState>}
+        {showSearchEmptyState && <styledEl.EmptyState>No networks match "{chainQuery}".</styledEl.EmptyState>}
       </styledEl.PanelList>
     </styledEl.Panel>
   )

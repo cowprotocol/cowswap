@@ -43,19 +43,25 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
   return useMemo(() => {
     if (!field || !isBridgingEnabled) return undefined
 
-    const currentChainInfo = mapChainInfo(chainId, CHAIN_INFO[chainId])
+    const chainInfo = CHAIN_INFO[chainId]
+    if (!chainInfo) return undefined
+
+    const currentChainInfo = mapChainInfo(chainId, chainInfo)
     const isSourceChainSupportedByBridge = Boolean(
       bridgeSupportedNetworks?.find((bridgeChain) => bridgeChain.id === chainId),
     )
 
     // For the sell token selector we only display supported chains
     if (field === Field.INPUT) {
+      // Sell side can only pick among wallet-supported chains
       return {
         defaultChainId: selectedTargetChainId,
         chains: supportedChains,
         isLoading: false,
       }
     }
+
+    const destinationChains = filterDestinationChains(bridgeSupportedNetworks, areUnsupportedChainsEnabled) ?? []
 
     /**
      * When the source chain is not supported by bridge provider
@@ -64,17 +70,15 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
     if (!isSourceChainSupportedByBridge) {
       return {
         defaultChainId: selectedTargetChainId,
-        chains: [],
+        chains: [currentChainInfo],
         isLoading: false,
       }
     }
 
-    const destinationChains = filterDestinationChains(bridgeSupportedNetworks, areUnsupportedChainsEnabled)
-
     return {
       defaultChainId: selectedTargetChainId,
-      // Add the source network to the list if it's not supported by bridge provider
-      chains: [...(isSourceChainSupportedByBridge ? [] : [currentChainInfo]), ...(destinationChains || [])],
+      // Bridge supports this chain, so show the destinations reported by the provider
+      chains: destinationChains,
       isLoading,
     }
   }, [
