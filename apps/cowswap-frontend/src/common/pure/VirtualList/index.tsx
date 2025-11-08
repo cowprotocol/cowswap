@@ -41,6 +41,39 @@ function VirtualListRow<T>({ item, loading, items, getItemView, measureElement }
   )
 }
 
+interface VirtualListRowsProps<T> {
+  virtualItems: VirtualItem[]
+  loading?: boolean
+  items: T[]
+  getItemView(items: T[], item: VirtualItem): ReactNode
+  measureElement(element: Element | null): void
+}
+
+function renderVirtualListRows<T>({
+  virtualItems,
+  loading,
+  items,
+  getItemView,
+  measureElement,
+}: VirtualListRowsProps<T>): ReactNode[] {
+  const elements: ReactNode[] = []
+
+  for (const item of virtualItems) {
+    elements.push(
+      <VirtualListRow
+        key={item.key}
+        item={item}
+        loading={loading}
+        items={items}
+        getItemView={getItemView}
+        measureElement={measureElement}
+      />,
+    )
+  }
+
+  return elements
+}
+
 interface VirtualListProps<T> {
   id?: string
   items: T[]
@@ -105,22 +138,20 @@ export function VirtualList<T>({
   }, [scrollResetKey, virtualizer])
 
   const virtualItems = virtualizer.getVirtualItems()
+  const virtualRows = renderVirtualListRows({
+    virtualItems,
+    loading,
+    items,
+    getItemView,
+    measureElement: virtualizer.measureElement,
+  })
 
   return (
     <ListWrapper id={id} ref={parentRef} onScroll={onScroll}>
       <ListInner ref={wrapperRef} style={{ height: virtualizer.getTotalSize() }}>
         <ListScroller style={{ transform: `translateY(${virtualItems[0]?.start ?? 0}px)` }}>
           {children}
-          {virtualItems.map((item) => (
-            <VirtualListRow
-              key={item.key}
-              item={item}
-              loading={loading}
-              items={items}
-              getItemView={getItemView}
-              measureElement={virtualizer.measureElement}
-            />
-          ))}
+          {virtualRows}
         </ListScroller>
       </ListInner>
     </ListWrapper>

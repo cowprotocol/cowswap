@@ -54,11 +54,15 @@ interface FavoriteTokensItemsProps {
 }
 
 function FavoriteTokensItems({ tokens, selectTokenContext }: FavoriteTokensItemsProps): ReactNode {
-  return (
-    <>
-      {tokens.map((token) => (
-        <TokenListItemContainer key={token.address} token={token} context={selectTokenContext} />
-      ))}
-    </>
-  )
+  return createFavoriteTokenItems(tokens, selectTokenContext)
+}
+
+function createFavoriteTokenItems(tokens: TokenWithLogo[], selectTokenContext: SelectTokenContext): ReactNode[] {
+  const elements: ReactNode[] = []
+
+  for (const token of tokens) {
+    elements.push(<TokenListItemContainer key={token.address} token={token} context={selectTokenContext} />)
+  }
+
+  return elements
 }

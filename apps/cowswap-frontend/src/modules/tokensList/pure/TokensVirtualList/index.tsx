@@ -3,8 +3,6 @@ import { ReactNode, useMemo } from 'react'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 
-import { VirtualItem } from '@tanstack/react-virtual'
-
 import { CoWAmmBanner } from 'common/containers/CoWAmmBanner'
 import { VirtualList } from 'common/pure/VirtualList'
 
@@ -60,16 +58,25 @@ export function TokensVirtualList(props: TokensVirtualListProps): ReactNode {
     return tokenRows
   }, [favoriteTokens, hideFavoriteTokensTooltip, sortedTokens])
 
-  const getItemView = useMemo(() => createTokensVirtualRowRenderer(selectTokenContext), [selectTokenContext])
-
   const virtualListKey = scrollResetKey ?? 'tokens-list'
+  const renderedRows = useMemo(
+    () =>
+      rows.map((row, index) => (
+        <TokensVirtualRowRenderer
+          key={getRowKey(row, index)}
+          row={row}
+          selectTokenContext={selectTokenContext}
+        />
+      )),
+    [rows, selectTokenContext],
+  )
 
   return (
     <VirtualList
       key={virtualListKey}
       id="tokens-list"
       items={rows}
-      getItemView={getItemView}
+      getItemView={(_, virtualRow) => renderedRows[virtualRow.index]}
       scrollResetKey={scrollResetKey}
     >
       {displayLpTokenLists || !isYieldEnabled ? null : <CoWAmmBanner isTokenSelectorView />}
@@ -77,14 +84,12 @@ export function TokensVirtualList(props: TokensVirtualListProps): ReactNode {
   )
 }
 
-function createTokensVirtualRowRenderer(selectTokenContext: SelectTokenContext) {
-  return (rows: TokensVirtualRow[], virtualRow: VirtualItem): ReactNode => {
-    const row = rows[virtualRow.index]
-    return renderTokensVirtualRow(row, selectTokenContext)
-  }
+interface TokensVirtualRowRendererProps {
+  row: TokensVirtualRow
+  selectTokenContext: SelectTokenContext
 }
 
-function renderTokensVirtualRow(row: TokensVirtualRow, selectTokenContext: SelectTokenContext): ReactNode {
+function TokensVirtualRowRenderer({ row, selectTokenContext }: TokensVirtualRowRendererProps): ReactNode {
   switch (row.type) {
     case 'favorite-section':
       return (
@@ -99,4 +104,16 @@ function renderTokensVirtualRow(row: TokensVirtualRow, selectTokenContext: Selec
     default:
       return <TokenListItemContainer token={row.token} context={selectTokenContext} />
   }
+}
+
+function getRowKey(row: TokensVirtualRow, index: number): string {
+  if (row.type === 'favorite-section') {
+    return 'favorite-section'
+  }
+
+  if (row.type === 'title') {
+    return `title-${row.label}`
+  }
+
+  return `token-${row.token.address ?? index}`
 }

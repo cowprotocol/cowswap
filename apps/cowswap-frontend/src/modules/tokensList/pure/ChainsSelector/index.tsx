@@ -9,6 +9,7 @@ import SVG from 'react-inlinesvg'
 import * as styledEl from './styled'
 
 const LOADING_ITEMS_COUNT = 10
+const LOADING_SKELETON_INDICES = Array.from({ length: LOADING_ITEMS_COUNT }, (_, index) => index)
 
 export interface ChainsSelectorProps {
   chains: ChainInfo[]
@@ -35,16 +36,28 @@ export function ChainsSelector({ chains, onSelectChain, defaultChainId, isLoadin
 }
 
 function ChainsLoadingList(): ReactNode {
+  const skeletonRows = renderChainSkeletonRows()
+
   return (
     <styledEl.List>
-      {Array.from({ length: LOADING_ITEMS_COUNT }, (_, index) => (
-        <styledEl.LoadingRow key={`chain-skeleton-${index}`}>
-          <styledEl.LoadingCircle />
-          <styledEl.LoadingBar />
-        </styledEl.LoadingRow>
-      ))}
+      {skeletonRows}
     </styledEl.List>
   )
+}
+
+function renderChainSkeletonRows(): ReactNode[] {
+  const elements: ReactNode[] = []
+
+  for (const index of LOADING_SKELETON_INDICES) {
+    elements.push(
+      <styledEl.LoadingRow key={`chain-skeleton-${index}`}>
+        <styledEl.LoadingCircle />
+        <styledEl.LoadingBar />
+      </styledEl.LoadingRow>,
+    )
+  }
+
+  return elements
 }
 
 interface ChainsListProps {
@@ -55,19 +68,33 @@ interface ChainsListProps {
 }
 
 function ChainsList({ chains, defaultChainId, onSelectChain, isDarkMode }: ChainsListProps): ReactNode {
+  const chainButtons = renderChainButtons({ chains, defaultChainId, onSelectChain, isDarkMode })
+
   return (
     <styledEl.List>
-      {chains.map((chain) => (
-        <ChainButton
-          key={chain.id}
-          chain={chain}
-          isActive={defaultChainId === chain.id}
-          onSelectChain={onSelectChain}
-          isDarkMode={isDarkMode}
-        />
-      ))}
+      {chainButtons}
     </styledEl.List>
   )
+}
+
+interface ChainButtonsRenderProps extends ChainsListProps {}
+
+function renderChainButtons({ chains, defaultChainId, onSelectChain, isDarkMode }: ChainButtonsRenderProps): ReactNode[] {
+  const elements: ReactNode[] = []
+
+  for (const chain of chains) {
+    elements.push(
+      <ChainButton
+        key={chain.id}
+        chain={chain}
+        isActive={defaultChainId === chain.id}
+        onSelectChain={onSelectChain}
+        isDarkMode={isDarkMode}
+      />,
+    )
+  }
+
+  return elements
 }
 
 interface ChainButtonProps {
