@@ -1,7 +1,9 @@
-import { ReactNode, useMemo } from 'react'
+import { ReactNode, useCallback, useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
+
+import { VirtualItem } from '@tanstack/react-virtual'
 
 import { CoWAmmBanner } from 'common/containers/CoWAmmBanner'
 import { VirtualList } from 'common/pure/VirtualList'
@@ -59,16 +61,12 @@ export function TokensVirtualList(props: TokensVirtualListProps): ReactNode {
   }, [favoriteTokens, hideFavoriteTokensTooltip, sortedTokens])
 
   const virtualListKey = scrollResetKey ?? 'tokens-list'
-  const renderedRows = useMemo(
-    () =>
-      rows.map((row, index) => (
-        <TokensVirtualRowRenderer
-          key={getRowKey(row, index)}
-          row={row}
-          selectTokenContext={selectTokenContext}
-        />
-      )),
-    [rows, selectTokenContext],
+
+  const renderVirtualRow = useCallback(
+    (virtualRows: TokensVirtualRow[], virtualItem: VirtualItem) => (
+      <TokensVirtualRowRenderer row={virtualRows[virtualItem.index]} selectTokenContext={selectTokenContext} />
+    ),
+    [selectTokenContext],
   )
 
   return (
@@ -76,7 +74,7 @@ export function TokensVirtualList(props: TokensVirtualListProps): ReactNode {
       key={virtualListKey}
       id="tokens-list"
       items={rows}
-      getItemView={(_, virtualRow) => renderedRows[virtualRow.index]}
+      getItemView={renderVirtualRow}
       scrollResetKey={scrollResetKey}
     >
       {displayLpTokenLists || !isYieldEnabled ? null : <CoWAmmBanner isTokenSelectorView />}
@@ -104,16 +102,4 @@ function TokensVirtualRowRenderer({ row, selectTokenContext }: TokensVirtualRowR
     default:
       return <TokenListItemContainer token={row.token} context={selectTokenContext} />
   }
-}
-
-function getRowKey(row: TokensVirtualRow, index: number): string {
-  if (row.type === 'favorite-section') {
-    return 'favorite-section'
-  }
-
-  if (row.type === 'title') {
-    return `title-${row.label}`
-  }
-
-  return `token-${row.token.address ?? index}`
 }
