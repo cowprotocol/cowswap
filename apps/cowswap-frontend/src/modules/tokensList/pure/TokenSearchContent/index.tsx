@@ -3,7 +3,14 @@ import { ReactNode, useCallback, useMemo } from 'react'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { doesTokenMatchSymbolOrAddress } from '@cowprotocol/common-utils'
 import { TokenSearchResponse } from '@cowprotocol/tokens'
-import { Loader } from '@cowprotocol/ui'
+import {
+  BannerOrientation,
+  ExternalLink,
+  InlineBanner,
+  LINK_GUIDE_ADD_CUSTOM_TOKEN,
+  Loader,
+  StatusColorVariant,
+} from '@cowprotocol/ui'
 
 import { VirtualItem } from '@tanstack/react-virtual'
 
@@ -94,6 +101,7 @@ export function TokenSearchContent({
 type TokenImportSection = 'blockchain' | 'inactive' | 'external'
 
 type TokenSearchRow =
+  | { type: 'banner' }
   | { type: 'token'; token: TokenWithLogo }
   | { type: 'section-title'; text: string; tooltip?: string }
   | {
@@ -130,6 +138,8 @@ function useSearchRows({
     }
 
     const entries: TokenSearchRow[] = []
+
+    entries.push({ type: 'banner' })
 
     for (const token of matchedTokens) {
       // Exact matches stay pinned to the top of the results
@@ -217,6 +227,8 @@ interface TokenSearchRowRendererProps {
 
 function TokenSearchRowRenderer({ row, selectTokenContext, importToken }: TokenSearchRowRendererProps): ReactNode {
   switch (row.type) {
+    case 'banner':
+      return <GuideBanner />
     case 'token':
       return <TokenListItemContainer token={row.token} context={selectTokenContext} />
     case 'section-title': {
@@ -241,4 +253,20 @@ function TokenSearchRowRenderer({ row, selectTokenContext, importToken }: TokenS
     default:
       return null
   }
+}
+
+function GuideBanner(): ReactNode {
+  return (
+    <InlineBanner
+      margin="10px"
+      width="auto"
+      orientation={BannerOrientation.Horizontal}
+      bannerType={StatusColorVariant.Info}
+    >
+      <p>
+        Can't find your token on the list?{' '}
+        <ExternalLink href={LINK_GUIDE_ADD_CUSTOM_TOKEN}>Read our guide</ExternalLink> on how to add custom tokens.
+      </p>
+    </InlineBanner>
+  )
 }

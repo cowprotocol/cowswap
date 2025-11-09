@@ -3,13 +3,6 @@ import { ReactNode, useCallback, useEffect, useMemo } from 'react'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { doesTokenMatchSymbolOrAddress } from '@cowprotocol/common-utils'
 import { getTokenSearchFilter, TokenSearchResponse, useSearchToken } from '@cowprotocol/tokens'
-import {
-  BannerOrientation,
-  ExternalLink,
-  InlineBanner,
-  LINK_GUIDE_ADD_CUSTOM_TOKEN,
-  StatusColorVariant,
-} from '@cowprotocol/ui'
 
 import { useAddTokenImportCallback } from '../../hooks/useAddTokenImportCallback'
 import { useUpdateSelectTokenWidgetState } from '../../hooks/useUpdateSelectTokenWidgetState'
@@ -75,18 +68,6 @@ export function TokenSearchResults({
 
   return (
     <CommonListContainer id="currency-list">
-      <InlineBanner
-        margin={'10px'}
-        width="auto"
-        orientation={BannerOrientation.Horizontal}
-        bannerType={StatusColorVariant.Info}
-      >
-        <p>
-          Can't find your token on the list?{' '}
-          <ExternalLink href={LINK_GUIDE_ADD_CUSTOM_TOKEN}>Read our guide</ExternalLink> on how to add custom tokens.
-        </p>
-      </InlineBanner>
-
       <TokenSearchContent
         importToken={addTokenImportCallback}
         searchInput={searchInput}
