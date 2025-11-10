@@ -268,4 +268,29 @@ describe('getExecutedSummaryDataWithSurplusToken', () => {
     expect(result.surplusAmount.currency.address).toBe(polygonWeth.address)
     expect(result.surplusAmount.toExact()).toBe('0')
   })
+
+  it('handles bridge scenario with USDC (6 decimals) to WETH (18 decimals) correctly', () => {
+    const order = buildParsedOrder({
+      kind: OrderKind.SELL,
+      inputToken: polygonUsdc, // 6 decimals
+      outputToken: baseWeth, // 18 decimals
+      sellAmount: '1000000', // 1 USDC
+      buyAmount: '500000000000000', // 0.0005 WETH
+      executedSellAmount: '1000000',
+      executedBuyAmount: '525000000000000', // 0.000525 WETH (5% surplus)
+      surplusRaw: '25000', // 0.025 USDC worth in 6 decimals
+    })
+
+    // Override token is polygonUsdc (the intermediate token with 6 decimals)
+    const result = getExecutedSummaryDataWithSurplusToken(order, polygonUsdc)
+
+    // The output is baseWeth (18 decimals), but surplus is calculated in intermediate token (6 decimals)
+    expect(result.formattedSwappedAmount.currency.address).toBe(baseWeth.address)
+    expect(result.formattedSwappedAmount.currency.decimals).toBe(18)
+
+    // Surplus should be adjusted from intermediate (6 decimals) to output (18 decimals)
+    expect(result.surplusAmount.currency.address).toBe(baseWeth.address)
+    expect(result.surplusAmount.currency.decimals).toBe(18)
+    expect(result.surplusAmount.toExact()).toBe('0.025')
+  })
 })
