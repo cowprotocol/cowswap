@@ -18,7 +18,7 @@ export interface SelectTokenWidgetViewProps {
   listToImport?: ListState
   isManageWidgetOpen: boolean
   selectedPoolAddress?: string
-  isBridgingEnabled: boolean
+  isChainPanelEnabled: boolean
   chainsPanelTitle: string
   chainsToSelect: ChainsToSelectState | undefined
   onSelectChain(chain: ChainInfo): void
@@ -40,7 +40,7 @@ interface BuildViewPropsArgs {
   listToImport?: ListState
   isManageWidgetOpen: boolean
   selectedPoolAddress?: string
-  isBridgingEnabled: boolean
+  isChainPanelEnabled: boolean
   chainsPanelTitle: string
   chainsToSelect: ChainsToSelectState | undefined
   onSelectChain(chain: ChainInfo): void
@@ -71,7 +71,10 @@ interface BuildModalPropsArgs {
   tokenListCategoryState: TokenListCategoryState
   disableErc20: boolean
   account: string | undefined
-  isBridgingEnabled: boolean
+  hasChainPanel: boolean
+  chainsState?: ChainsToSelectState
+  chainsPanelTitle: string
+  onSelectChain?(chain: ChainInfo): void
   isInjectedWidgetMode: boolean
   modalTitle: string
 }
@@ -82,7 +85,7 @@ export function buildSelectTokenWidgetViewProps({
   listToImport,
   isManageWidgetOpen,
   selectedPoolAddress,
-  isBridgingEnabled,
+  isChainPanelEnabled,
   chainsPanelTitle,
   chainsToSelect,
   onSelectChain,
@@ -103,7 +106,7 @@ export function buildSelectTokenWidgetViewProps({
     listToImport,
     isManageWidgetOpen,
     selectedPoolAddress,
-    isBridgingEnabled,
+    isChainPanelEnabled,
     chainsPanelTitle,
     chainsToSelect,
     onSelectChain,
@@ -135,7 +138,10 @@ export function buildSelectTokenModalPropsInput({
   tokenListCategoryState,
   disableErc20,
   account,
-  isBridgingEnabled,
+  hasChainPanel,
+  chainsState,
+  chainsPanelTitle,
+  onSelectChain,
   isInjectedWidgetMode,
   modalTitle,
 }: BuildModalPropsArgs): SelectTokenModalProps {
@@ -163,9 +169,12 @@ export function buildSelectTokenModalPropsInput({
     areTokensFromBridge: tokenData.areTokensFromBridge,
     isRouteAvailable: tokenData.isRouteAvailable,
     modalTitle,
-    hasChainPanel: isBridgingEnabled,
+    hasChainPanel,
+    mobileChainsLabel: chainsPanelTitle,
     hideFavoriteTokensTooltip: isInjectedWidgetMode,
     selectedTargetChainId: widgetState.selectedTargetChainId,
+    mobileChainsState: chainsState,
+    onSelectChain,
   }
 }
 
@@ -198,6 +207,10 @@ export function useSelectTokenModalPropsMemo(props: SelectTokenModalProps): Sele
       hasChainPanel: props.hasChainPanel,
       hideFavoriteTokensTooltip: props.hideFavoriteTokensTooltip,
       selectedTargetChainId: props.selectedTargetChainId,
+      mobileChainsState: props.mobileChainsState,
+      mobileChainsLabel: props.mobileChainsLabel,
+      onSelectChain: props.onSelectChain,
+      onOpenMobileChainPanel: props.onOpenMobileChainPanel,
     }),
     [
       props.standalone,
@@ -226,6 +239,10 @@ export function useSelectTokenModalPropsMemo(props: SelectTokenModalProps): Sele
       props.hasChainPanel,
       props.hideFavoriteTokensTooltip,
       props.selectedTargetChainId,
+      props.mobileChainsState,
+      props.mobileChainsLabel,
+      props.onSelectChain,
+      props.onOpenMobileChainPanel,
     ],
   )
 }

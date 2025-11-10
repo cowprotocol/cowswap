@@ -4,6 +4,10 @@ import styled from 'styled-components/macro'
 
 export const Section = styled.div`
   padding: 0 14px 14px;
+
+  ${Media.upToSmall()} {
+    padding: 8px 14px 4px;
+  }
 `
 
 export const TitleRow = styled.div`

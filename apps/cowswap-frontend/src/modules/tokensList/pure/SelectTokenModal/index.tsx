@@ -1,9 +1,10 @@
-import { ReactNode } from 'react'
+import { ComponentProps, ReactNode } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { SearchInput } from '@cowprotocol/ui'
 
 import { TokensContentSection, TitleBarActions, useSelectTokenContext, useTokenSearchInput } from './helpers'
+import { MobileChainSelector } from './MobileChainSelector'
 import { SelectTokenModalContent } from './SelectTokenModalContent'
 import * as styledEl from './styled'
 
@@ -25,7 +26,7 @@ export function SelectTokenModal(props: SelectTokenModalProps): ReactNode {
     disableErc20,
     isRouteAvailable,
     modalTitle,
-    hasChainPanel,
+    hasChainPanel = false,
     standalone,
     onOpenManageWidget,
     favoriteTokens,
@@ -35,59 +36,61 @@ export function SelectTokenModal(props: SelectTokenModalProps): ReactNode {
     areTokensFromBridge,
     hideFavoriteTokensTooltip,
     selectedTargetChainId,
+    mobileChainsState,
+    mobileChainsLabel,
+    onSelectChain,
+    onOpenMobileChainPanel,
+    isFullScreenMobile,
   } = props
 
   const [inputValue, setInputValue, trimmedInputValue] = useTokenSearchInput(defaultInputValue)
   const selectTokenContext = useSelectTokenContext(props)
   const resolvedModalTitle = modalTitle ?? 'Select token'
+  const mobileChainSelector = getMobileChainSelectorConfig({
+    hasChainPanel,
+    mobileChainsState,
+    mobileChainsLabel,
+    onSelectChain,
+    onOpenMobileChainPanel,
+  })
 
   return (
-    <styledEl.Wrapper $hasChainPanel={hasChainPanel}>
-      <TitleBarActions
-        showManageButton={!standalone}
-        onDismiss={onDismiss}
-        onOpenManageWidget={onOpenManageWidget}
-        title={resolvedModalTitle}
-      />
-      <styledEl.SearchRow>
-        <styledEl.SearchInputWrapper>
-          <SearchInput
-            id="token-search-input"
-            value={inputValue}
-            onKeyDown={(e) => e.key === 'Enter' && onInputPressEnter?.()}
-            onChange={(e) => setInputValue(e.target.value)}
-            placeholder="Search name or paste address..."
-          />
-        </styledEl.SearchInputWrapper>
-      </styledEl.SearchRow>
-      <styledEl.Body>
-        <styledEl.TokenColumn>
-          <TokenColumnContent
-            displayLpTokenLists={displayLpTokenLists}
-            account={account}
-            inputValue={inputValue}
-            onSelectToken={onSelectToken}
-            openPoolPage={openPoolPage}
-            disableErc20={disableErc20}
-            tokenListCategoryState={tokenListCategoryState}
-            isRouteAvailable={isRouteAvailable}
-          >
-            <TokensContentSection
-              displayLpTokenLists={displayLpTokenLists}
-              favoriteTokens={favoriteTokens}
-              recentTokens={recentTokens}
-              areTokensLoading={areTokensLoading}
-              allTokens={allTokens}
-              searchInput={trimmedInputValue}
-              areTokensFromBridge={areTokensFromBridge}
-              hideFavoriteTokensTooltip={hideFavoriteTokensTooltip}
-              selectedTargetChainId={selectedTargetChainId}
-              selectTokenContext={selectTokenContext}
-            />
-          </TokenColumnContent>
-        </styledEl.TokenColumn>
-      </styledEl.Body>
-    </styledEl.Wrapper>
+    <SelectTokenModalShell
+      hasChainPanel={hasChainPanel}
+      isFullScreenMobile={isFullScreenMobile}
+      title={resolvedModalTitle}
+      showManageButton={!standalone}
+      onDismiss={onDismiss}
+      onOpenManageWidget={onOpenManageWidget}
+      searchValue={inputValue}
+      onSearchChange={setInputValue}
+      onSearchEnter={onInputPressEnter}
+      mobileChainSelector={mobileChainSelector}
+    >
+      <TokenColumnContent
+        displayLpTokenLists={displayLpTokenLists}
+        account={account}
+        inputValue={inputValue}
+        onSelectToken={onSelectToken}
+        openPoolPage={openPoolPage}
+        disableErc20={disableErc20}
+        tokenListCategoryState={tokenListCategoryState}
+        isRouteAvailable={isRouteAvailable}
+      >
+        <TokensContentSection
+          displayLpTokenLists={displayLpTokenLists}
+          favoriteTokens={favoriteTokens}
+          recentTokens={recentTokens}
+          areTokensLoading={areTokensLoading}
+          allTokens={allTokens}
+          searchInput={trimmedInputValue}
+          areTokensFromBridge={areTokensFromBridge}
+          hideFavoriteTokensTooltip={hideFavoriteTokensTooltip}
+          selectedTargetChainId={selectedTargetChainId}
+          selectTokenContext={selectTokenContext}
+        />
+      </TokenColumnContent>
+    </SelectTokenModalShell>
   )
 }
 
@@ -132,4 +135,94 @@ function TokenColumnContent(props: TokenColumnContentProps): ReactNode {
   }
 
   return <SelectTokenModalContent isRouteAvailable={isRouteAvailable}>{children}</SelectTokenModalContent>
+}
+
+interface SelectTokenModalShellProps {
+  children: ReactNode
+  hasChainPanel: boolean
+  isFullScreenMobile?: boolean
+  title: string
+  showManageButton: boolean
+  onDismiss(): void
+  onOpenManageWidget: () => void
+  searchValue: string
+  onSearchChange(value: string): void
+  onSearchEnter?: () => void
+  mobileChainSelector?: ComponentProps<typeof MobileChainSelector>
+}
+
+function SelectTokenModalShell({
+  children,
+  hasChainPanel,
+  isFullScreenMobile,
+  title,
+  showManageButton,
+  onDismiss,
+  onOpenManageWidget,
+  searchValue,
+  onSearchChange,
+  onSearchEnter,
+  mobileChainSelector,
+}: SelectTokenModalShellProps): ReactNode {
+  return (
+    <styledEl.Wrapper $hasChainPanel={hasChainPanel} $isFullScreen={isFullScreenMobile}>
+      <TitleBarActions
+        showManageButton={showManageButton}
+        onDismiss={onDismiss}
+        onOpenManageWidget={onOpenManageWidget}
+        title={title}
+      />
+      <styledEl.SearchRow>
+        <styledEl.SearchInputWrapper>
+          <SearchInput
+            id="token-search-input"
+            value={searchValue}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter') {
+                onSearchEnter?.()
+              }
+            }}
+            onChange={(event) => onSearchChange(event.target.value)}
+            placeholder="Search name or paste address..."
+          />
+        </styledEl.SearchInputWrapper>
+      </styledEl.SearchRow>
+      {mobileChainSelector ? <MobileChainSelector {...mobileChainSelector} /> : null}
+      <styledEl.Body>
+        <styledEl.TokenColumn>{children}</styledEl.TokenColumn>
+      </styledEl.Body>
+    </styledEl.Wrapper>
+  )
+}
+
+function getMobileChainSelectorConfig({
+  hasChainPanel,
+  mobileChainsState,
+  mobileChainsLabel,
+  onSelectChain,
+  onOpenMobileChainPanel,
+}: {
+  hasChainPanel: boolean
+  mobileChainsState: SelectTokenModalProps['mobileChainsState']
+  mobileChainsLabel: SelectTokenModalProps['mobileChainsLabel']
+  onSelectChain: SelectTokenModalProps['onSelectChain']
+  onOpenMobileChainPanel: SelectTokenModalProps['onOpenMobileChainPanel']
+}): ComponentProps<typeof MobileChainSelector> | undefined {
+  const canRender =
+    !hasChainPanel &&
+    mobileChainsState &&
+    onSelectChain &&
+    onOpenMobileChainPanel &&
+    (mobileChainsState.chains?.length ?? 0) > 0
+
+  if (!canRender) {
+    return undefined
+  }
+
+  return {
+    chainsState: mobileChainsState,
+    label: mobileChainsLabel,
+    onSelectChain,
+    onOpenPanel: onOpenMobileChainPanel,
+  }
 }

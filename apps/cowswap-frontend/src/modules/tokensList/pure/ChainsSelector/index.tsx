@@ -139,15 +139,15 @@ function renderChainButtons({
   return elements
 }
 
+export function getChainAccent(chainId: ChainInfo['id']): ChainAccentVars | undefined {
+  return CHAIN_ACCENT_VAR_MAP[chainId as SupportedChainId]
+}
+
 interface ChainButtonProps {
   chain: ChainInfo
   isActive: boolean
   isDarkMode: boolean
   onSelectChain(chain: ChainInfo): void
-}
-
-function getChainAccent(chainId: ChainInfo['id']): ChainAccentVars | undefined {
-  return CHAIN_ACCENT_VAR_MAP[chainId as SupportedChainId]
 }
 
 function ChainButton({ chain, isActive, isDarkMode, onSelectChain }: ChainButtonProps): ReactNode {

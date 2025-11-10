@@ -1,11 +1,14 @@
 import { BalancesState } from '@cowprotocol/balances-and-allowances'
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { ChainInfo } from '@cowprotocol/cow-sdk'
 import { TokenListCategory, TokenListTags, UnsupportedTokensState } from '@cowprotocol/tokens'
 import { Currency } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 
 import { PermitCompatibleTokens } from 'modules/permit'
+
+import { ChainsToSelectState } from '../../types'
 
 export interface SelectTokenModalProps<T = TokenListCategory[] | null> {
   allTokens: TokenWithLogo[]
@@ -29,6 +32,11 @@ export interface SelectTokenModalProps<T = TokenListCategory[] | null> {
   modalTitle?: string
   hasChainPanel?: boolean
   selectedTargetChainId?: number
+  mobileChainsState?: ChainsToSelectState
+  mobileChainsLabel?: string
+  onSelectChain?(chain: ChainInfo): void
+  onOpenMobileChainPanel?(): void
+  isFullScreenMobile?: boolean
 
   onSelectToken(token: TokenWithLogo): void
   onTokenListItemClick?(token: TokenWithLogo): void

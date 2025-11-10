@@ -1,6 +1,7 @@
-import { ReactNode, useEffect, useMemo, useRef, useState } from 'react'
+import { ReactNode, useMemo, useState } from 'react'
 
 import { ChainInfo } from '@cowprotocol/cow-sdk'
+import { BackButton } from '@cowprotocol/ui'
 
 import * as styledEl from './styled'
 
@@ -13,72 +14,37 @@ export interface ChainPanelProps {
   title: string
   chainsState: ChainsToSelectState | undefined
   onSelectChain(chain: ChainInfo): void
+  variant?: 'default' | 'fullscreen'
+  onClose?(): void
 }
 
-export function ChainPanel({ title, chainsState, onSelectChain }: ChainPanelProps): ReactNode {
+export function ChainPanel({
+  title,
+  chainsState,
+  onSelectChain,
+  variant = 'default',
+  onClose,
+}: ChainPanelProps): ReactNode {
   const [chainQuery, setChainQuery] = useState('')
-  const [hasVerticalScroll, setHasVerticalScroll] = useState(false)
-  const listRef = useRef<HTMLDivElement | null>(null)
-  const normalizedChainQuery = chainQuery.trim().toLowerCase()
   const chains = chainsState?.chains ?? EMPTY_CHAINS
   const isLoading = chainsState?.isLoading ?? false
+  const normalizedChainQuery = chainQuery.trim().toLowerCase()
 
-  const filteredChains = useMemo(() => {
-    if (!chains.length || !normalizedChainQuery) {
-      return chains
-    }
+  const filteredChains = useMemo(
+    () => filterChainsByQuery(chains, normalizedChainQuery),
+    [chains, normalizedChainQuery],
+  )
 
-    return chains.filter((chain) => {
-      const labelMatch = chain.label.toLowerCase().includes(normalizedChainQuery)
-      const idMatch = String(chain.id).includes(normalizedChainQuery)
-
-      return labelMatch || idMatch
-    })
-  }, [chains, normalizedChainQuery])
-
-  const showSearchEmptyState = !isLoading && filteredChains.length === 0 && !!normalizedChainQuery
-  // When bridge networks are unavailable we still render the panel but show the fallback copy
-  const showUnavailableState = !isLoading && chains.length === 0 && !normalizedChainQuery
-
-  useEffect(() => {
-    const updateScrollState = (): void => {
-      const element = listRef.current
-
-      if (!element) {
-        return
-      }
-
-      const hasScroll = element.scrollHeight - element.clientHeight > 1
-      setHasVerticalScroll((current) => (current === hasScroll ? current : hasScroll))
-    }
-
-    updateScrollState()
-
-    // ResizeObserver tracks size changes (e.g. viewport height, font scaling) without forcing layout.
-    const resizeObserver =
-      typeof ResizeObserver !== 'undefined' ? new ResizeObserver(() => updateScrollState()) : undefined
-    resizeObserver?.observe(listRef.current as Element)
-
-    // MutationObserver lets us react when rows are added/removed so the gutter toggles immediately.
-    const mutationObserver =
-      typeof MutationObserver !== 'undefined' ? new MutationObserver(() => updateScrollState()) : undefined
-    mutationObserver?.observe(listRef.current as Element, { childList: true, subtree: true })
-
-    // Scroll containers can overflow when the viewport height changes (e.g. window resize, soft keyboard).
-    window.addEventListener('resize', updateScrollState)
-
-    return () => {
-      resizeObserver?.disconnect()
-      mutationObserver?.disconnect()
-      window.removeEventListener('resize', updateScrollState)
-    }
-  }, [filteredChains.length, isLoading, normalizedChainQuery])
+  const { showSearchEmptyState, showUnavailableState } = getEmptyStateFlags({
+    filteredChainsLength: filteredChains.length,
+    isLoading,
+    normalizedChainQuery,
+    totalChains: chains.length,
+  })
 
   return (
-    <styledEl.Panel>
-      <styledEl.PanelHeader>
-        <styledEl.PanelTitle>{title}</styledEl.PanelTitle>
-      </styledEl.PanelHeader>
+    <styledEl.Panel $variant={variant}>
+      <ChainPanelHeader onClose={onClose} title={title} variant={variant} />
       <styledEl.PanelSearchInputWrapper>
         <styledEl.PanelSearchInput
           value={chainQuery}
@@ -86,7 +52,7 @@ export function ChainPanel({ title, chainsState, onSelectChain }: ChainPanelProp
           placeholder="Search network"
         />
       </styledEl.PanelSearchInputWrapper>
-      <styledEl.PanelList ref={listRef} $hasScrollbar={hasVerticalScroll}>
+      <styledEl.PanelList>
         <ChainsSelector
           isLoading={isLoading}
           chains={filteredChains}
@@ -98,4 +64,55 @@ export function ChainPanel({ title, chainsState, onSelectChain }: ChainPanelProp
       </styledEl.PanelList>
     </styledEl.Panel>
   )
+}
+
+interface ChainPanelHeaderProps {
+  title: string
+  variant: 'default' | 'fullscreen'
+  onClose?: () => void
+}
+
+function ChainPanelHeader({ title, variant, onClose }: ChainPanelHeaderProps): ReactNode {
+  const isFullscreen = variant === 'fullscreen'
+
+  return (
+    <styledEl.PanelHeader $isFullscreen={isFullscreen}>
+      {isFullscreen && onClose ? <BackButton onClick={onClose} /> : null}
+      <styledEl.PanelTitle $isFullscreen={isFullscreen}>{title}</styledEl.PanelTitle>
+      {isFullscreen && onClose ? <span /> : null}
+    </styledEl.PanelHeader>
+  )
+}
+
+function filterChainsByQuery(chains: ChainInfo[], normalizedChainQuery: string): ChainInfo[] {
+  if (!chains.length || !normalizedChainQuery) {
+    return chains
+  }
+
+  return chains.filter((chain) => {
+    const labelMatch = chain.label.toLowerCase().includes(normalizedChainQuery)
+    const idMatch = String(chain.id).includes(normalizedChainQuery)
+
+    return labelMatch || idMatch
+  })
+}
+
+function getEmptyStateFlags({
+  filteredChainsLength,
+  isLoading,
+  normalizedChainQuery,
+  totalChains,
+}: {
+  filteredChainsLength: number
+  isLoading: boolean
+  normalizedChainQuery: string
+  totalChains: number
+}): { showSearchEmptyState: boolean; showUnavailableState: boolean } {
+  const hasQuery = Boolean(normalizedChainQuery)
+
+  return {
+    // When bridge networks are unavailable we still render the panel but show the fallback copy
+    showUnavailableState: !isLoading && totalChains === 0 && !hasQuery,
+    showSearchEmptyState: !isLoading && filteredChainsLength === 0 && hasQuery,
+  }
 }

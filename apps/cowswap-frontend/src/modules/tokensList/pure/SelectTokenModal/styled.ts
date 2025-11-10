@@ -4,18 +4,20 @@ import styled from 'styled-components/macro'
 
 import { blankButtonMixin } from '../commonElements'
 
-export const Wrapper = styled.div<{ $hasChainPanel?: boolean }>`
+export const Wrapper = styled.div<{ $hasChainPanel?: boolean; $isFullScreen?: boolean }>`
   display: flex;
   flex-direction: column;
   background: var(${UI.COLOR_PAPER});
-  border-radius: 20px;
+  border-radius: ${({ $isFullScreen }) => ($isFullScreen ? '0' : '20px')};
   width: 100%;
   overflow: hidden;
-  border-top-right-radius: ${({ $hasChainPanel }) => ($hasChainPanel ? '0' : '20px')};
-  border-bottom-right-radius: ${({ $hasChainPanel }) => ($hasChainPanel ? '0' : '20px')};
+  border-top-right-radius: ${({ $hasChainPanel, $isFullScreen }) =>
+    $isFullScreen ? '0' : $hasChainPanel ? '0' : '20px'};
+  border-bottom-right-radius: ${({ $hasChainPanel, $isFullScreen }) =>
+    $isFullScreen ? '0' : $hasChainPanel ? '0' : '20px'};
 
   ${Media.upToMedium()} {
-    border-radius: 20px;
+    border-radius: ${({ $isFullScreen }) => ($isFullScreen ? '0' : '20px')};
   }
 `
 
@@ -27,7 +29,7 @@ export const TitleBar = styled.div`
   gap: 12px;
 
   ${Media.upToSmall()} {
-    padding: 16px 16px 8px;
+    padding: 14px 14px 8px;
   }
 `
 
@@ -110,10 +112,6 @@ export const TokenColumn = styled.div`
   display: flex;
   flex-direction: column;
   padding: 0;
-
-  ${Media.upToSmall()} {
-    padding: 16px;
-  }
 `
 
 export const Row = styled.div`
