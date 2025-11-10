@@ -2,7 +2,6 @@ import { ReactNode } from 'react'
 
 import { OrderClass } from '@cowprotocol/cow-sdk'
 
-
 import { OrdersPermitUpdater, usePendingOrdersFillability } from 'modules/ordersTable'
 import { TradeType } from 'modules/trade'
 

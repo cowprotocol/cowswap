@@ -4,9 +4,10 @@ import { useConnectionType, useWalletDetails, useWalletInfo } from '@cowprotocol
 
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
+import { TradeOrdersPermitUpdater } from 'modules/ordersTable'
+
 import { usePendingActivitiesCount } from 'common/hooks/usePendingActivitiesCount'
 
-import { TradeOrdersPermitUpdater } from './TradeOrdersPermitUpdater'
 
 import { useShowUnfillableOrderAlert } from '../../hooks/useShowUnfillableOrderAlert'
 import { Web3StatusInner } from '../../pure/Web3StatusInner'
