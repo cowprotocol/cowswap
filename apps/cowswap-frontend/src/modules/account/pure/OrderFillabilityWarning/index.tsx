@@ -5,7 +5,7 @@ import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/react/macro'
 
-import { OrderFillability } from 'common/hooks/usePendingOrdersFillability'
+import { OrderFillability } from 'modules/ordersTable'
 
 import {
   ApproveWrapper,

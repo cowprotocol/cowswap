@@ -60,8 +60,6 @@ export interface ParsedOrder {
   executionData: ParsedOrderExecutionData
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Reduce function complexity by extracting logic
 // eslint-disable-next-line complexity
 export const parseOrder = (order: Order): ParsedOrder => {
   const { amount: filledAmount, percentage: filledPercentage } = getOrderFilledAmount(order)

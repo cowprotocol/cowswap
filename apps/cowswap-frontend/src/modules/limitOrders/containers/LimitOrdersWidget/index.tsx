@@ -1,10 +1,9 @@
 import { useAtomValue } from 'jotai'
-import React, { isValidElement, ReactNode, useCallback, useEffect, useMemo } from 'react'
+import React, { ReactElement, useCallback, useEffect, useMemo } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { isSellOrder } from '@cowprotocol/common-utils'
 
-import { MessageDescriptor } from '@lingui/core'
 import { msg, t } from '@lingui/core/macro'
 import { Trans, useLingui } from '@lingui/react/macro'
 import { useLocation } from 'react-router'
@@ -22,7 +21,7 @@ import {
   useTradeConfirmState,
   useTradePriceImpact,
 } from 'modules/trade'
-import { UnlockWidgetScreen } from 'modules/trade/pure/UnlockWidgetScreen'
+import { BulletListItem, UnlockWidgetScreen } from 'modules/trade/pure/UnlockWidgetScreen'
 import { useSetTradeQuoteParams, useTradeQuote } from 'modules/tradeQuote'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
@@ -44,10 +43,7 @@ import { RateInput } from '../RateInput'
 import { SettingsWidget } from '../SettingsWidget'
 import { TradeRateDetails } from '../TradeRateDetails'
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function LimitOrdersWidget() {
+export function LimitOrdersWidget(): ReactElement {
   const {
     inputCurrency,
     outputCurrency,
@@ -120,15 +116,19 @@ export function LimitOrdersWidget() {
   return <LimitOrders {...props} />
 }
 
-const LIMIT_BULLET_LIST_CONTENT: Array<MessageDescriptor | ReactNode> = [
-  msg`Set any limit price and time horizon`,
-  msg`FREE order placement and cancellation`,
-  msg`Place multiple orders using the same balance`,
-  msg`Receive surplus of your order`,
-  msg`Protection from MEV by default`,
-  <span>
-    <Trans>Place orders for higher than available balance!</Trans>
-  </span>,
+export const LIMIT_BULLET_LIST_CONTENT: BulletListItem[] = [
+  { content: msg`Set any limit price and time horizon` },
+  { content: msg`FREE order placement and cancellation` },
+  { content: msg`Place multiple orders using the same balance` },
+  { content: msg`Receive surplus of your order` },
+  { content: msg`Protection from MEV by default` },
+  {
+    content: (
+      <span>
+        <Trans>Place orders for higher than available balance!</Trans>
+      </span>
+    ),
+  },
 ]
 
 const UNLOCK_SCREEN = {
@@ -201,8 +201,8 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
       !isUnlocked && !isLimitOrdersUpgradeBannerEnabled ? (
         <UnlockWidgetScreen
           id="limit-orders"
-          items={LIMIT_BULLET_LIST_CONTENT.map((item) => ({
-            content: isValidElement(item) ? item : i18n._(item as MessageDescriptor),
+          items={LIMIT_BULLET_LIST_CONTENT.map(({ content }) => ({
+            content,
           }))}
           buttonLink={UNLOCK_SCREEN.buttonLink}
           title={i18n._(UNLOCK_SCREEN.title)}
