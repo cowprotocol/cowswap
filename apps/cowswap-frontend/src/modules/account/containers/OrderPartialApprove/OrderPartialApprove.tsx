@@ -53,12 +53,14 @@ export function OrderPartialApprove({
     <OrderActionsWrapper>
       {/*TODO: it quite similar to <PartialApproveContainer>, should it be reused?*/}
       {isPartialApproveEnabledBySettings && (
-        <TradeApproveToggle
-          amountToApprove={finalAmountToApprove}
-          updateModalState={() => updatePartialApproveAmountModalState({ isModalOpen: true })}
-        />
+        <>
+          <TradeApproveToggle
+            amountToApprove={finalAmountToApprove}
+            updateModalState={() => updatePartialApproveAmountModalState({ isModalOpen: true })}
+          />
+          <ActiveOrdersWithAffectedPermit orderId={orderId} currency={currency} />
+        </>
       )}
-      <ActiveOrdersWithAffectedPermit orderId={orderId} currency={currency} />
       <TradeApproveButton
         enablePartialApprove
         useModals={false}

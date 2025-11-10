@@ -168,5 +168,29 @@
       "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/CoinGecko.232.json",
       "enabledByDefault": true
     }
+  ],
+  "59144": [
+    {
+      "priority": 1,
+      "enabledByDefault": true,
+      "source": "https://files.cow.fi/tokens/CowSwap.json"
+    },
+    {
+      "priority": 2,
+      "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/CoinGecko.59144.json",
+      "enabledByDefault": true
+    }
+  ],
+  "9745": [
+    {
+      "priority": 1,
+      "enabledByDefault": true,
+      "source": "https://files.cow.fi/tokens/CowSwap.json"
+    },
+    {
+      "priority": 2,
+      "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/CoinGecko.9745.json",
+      "enabledByDefault": true
+    }
   ]
 }
