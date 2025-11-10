@@ -13,8 +13,7 @@ import { SearchIcon, SearchInput, SearchInputContainer, StyledCloseIcon } from '
 import { ORDERS_TABLE_PAGE_SIZE, OrderTabId } from '../../const/tabs'
 import { useOrdersTableState } from '../../hooks/useOrdersTableState'
 import { OrdersTableContainer } from '../../pure/OrdersTableContainer'
-import { OrdersTableParams, TabOrderTypes } from '../../types'
-import { LimitOrdersPermitUpdater } from '../../updaters/LimitOrdersPermitUpdater'
+import { OrdersTableParams } from '../../types'
 import { OrdersTableStateUpdater } from '../../updaters/OrdersTableStateUpdater'
 import { tableItemsToOrders } from '../../utils/orderTableGroupUtils'
 import { MultipleCancellationMenu } from '../MultipleCancellationMenu'
@@ -59,13 +58,10 @@ export function OrdersTableWidget(props: OrdersTableWidgetProps): ReactNode {
   }, [isTabWithPending, filteredOrders, currentPageNumber])
 
   const hasPendingOrders = !!pendingOrders?.length
-  const isLimitOrdersTable = stateParams.orderType === TabOrderTypes.LIMIT
-  const showLimitOrdersPermitUpdater = isLimitOrdersTable && hasPendingOrders
 
   return (
     <>
       {hasPendingOrders && <UnfillableOrdersUpdater orders={pendingOrders} />}
-      {showLimitOrdersPermitUpdater && <LimitOrdersPermitUpdater orders={pendingOrders} />}
       <OrdersTableStateUpdater searchTerm={searchTerm} {...stateParams} />
       {children}
       <OrdersTableContainer searchTerm={searchTerm} isDarkMode={darkMode}>

@@ -6,8 +6,8 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { useOrders } from 'legacy/state/orders/hooks'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
-import { LimitOrdersWidget, useIsWidgetUnlocked, limitOrdersSettingsAtom } from 'modules/limitOrders'
-import { OrdersTableWidget, TabOrderTypes } from 'modules/ordersTable'
+import { limitOrdersSettingsAtom, LimitOrdersWidget, useIsWidgetUnlocked } from 'modules/limitOrders'
+import { LimitOrdersPermitUpdater, OrdersTableWidget, TabOrderTypes } from 'modules/ordersTable'
 import * as styledEl from 'modules/trade/pure/TradePageLayout'
 
 const LIMIT_ORDERS_MAX_WIDTH = '1800px'
@@ -34,6 +34,7 @@ export function RegularLimitOrders() {
 
       {!hideOrdersTable && (
         <styledEl.SecondaryWrapper>
+          {allLimitOrders.length > 0 && <LimitOrdersPermitUpdater orders={allLimitOrders} />}
           <OrdersTableWidget orderType={TabOrderTypes.LIMIT} orders={allLimitOrders} />
         </styledEl.SecondaryWrapper>
       )}
