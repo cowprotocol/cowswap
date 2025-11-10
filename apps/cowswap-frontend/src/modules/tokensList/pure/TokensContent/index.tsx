@@ -5,6 +5,7 @@ import { Loader } from '@cowprotocol/ui'
 
 import { TokenSearchResults } from '../../containers/TokenSearchResults'
 import { SelectTokenContext } from '../../types'
+import { getTokenUniqueKey } from '../../utils/tokenKey'
 import * as styledEl from '../SelectTokenModal/styled'
 import { TokensVirtualList } from '../TokensVirtualList'
 
@@ -12,6 +13,7 @@ export interface TokensContentProps {
   displayLpTokenLists?: boolean
   selectTokenContext: SelectTokenContext
   favoriteTokens: TokenWithLogo[]
+  recentTokens?: TokenWithLogo[]
   areTokensLoading: boolean
   allTokens: TokenWithLogo[]
   searchInput: string
@@ -23,6 +25,7 @@ export interface TokensContentProps {
 export function TokensContent({
   selectTokenContext,
   favoriteTokens,
+  recentTokens,
   areTokensLoading,
   allTokens,
   displayLpTokenLists,
@@ -32,24 +35,36 @@ export function TokensContent({
   selectedTargetChainId,
 }: TokensContentProps): ReactNode {
   const shouldShowFavoritesInline = !areTokensLoading && !searchInput && favoriteTokens.length > 0
+  const shouldShowRecentsInline = !areTokensLoading && !searchInput && (recentTokens?.length ?? 0) > 0
 
-  const favoriteAddresses = useMemo(() => {
-    if (!shouldShowFavoritesInline) {
+  const pinnedTokenKeys = useMemo(() => {
+    if (!shouldShowFavoritesInline && !shouldShowRecentsInline) {
       return undefined
     }
 
-    return new Set(favoriteTokens.map((token) => token.address.toLowerCase()))
-  }, [favoriteTokens, shouldShowFavoritesInline])
+    const pinned = new Set<string>()
 
-  const tokensWithoutFavorites = useMemo(() => {
-    if (!favoriteAddresses) {
+    if (shouldShowFavoritesInline) {
+      favoriteTokens.forEach((token) => pinned.add(getTokenUniqueKey(token)))
+    }
+
+    if (shouldShowRecentsInline && recentTokens) {
+      recentTokens.forEach((token) => pinned.add(getTokenUniqueKey(token)))
+    }
+
+    return pinned
+  }, [favoriteTokens, recentTokens, shouldShowFavoritesInline, shouldShowRecentsInline])
+
+  const tokensWithoutPinned = useMemo(() => {
+    if (!pinnedTokenKeys) {
       return allTokens
     }
 
-    return allTokens.filter((token) => !favoriteAddresses.has(token.address.toLowerCase()))
-  }, [allTokens, favoriteAddresses])
+    return allTokens.filter((token) => !pinnedTokenKeys.has(getTokenUniqueKey(token)))
+  }, [allTokens, pinnedTokenKeys])
 
   const favoriteTokensInline = shouldShowFavoritesInline ? favoriteTokens : undefined
+  const recentTokensInline = shouldShowRecentsInline ? recentTokens : undefined
 
   return (
     <>
@@ -69,9 +84,10 @@ export function TokensContent({
           ) : (
             <TokensVirtualList
               selectTokenContext={selectTokenContext}
-              allTokens={tokensWithoutFavorites}
+              allTokens={tokensWithoutPinned}
               displayLpTokenLists={displayLpTokenLists}
               favoriteTokens={favoriteTokensInline}
+              recentTokens={recentTokensInline}
               hideFavoriteTokensTooltip={hideFavoriteTokensTooltip}
               scrollResetKey={selectedTargetChainId}
             />

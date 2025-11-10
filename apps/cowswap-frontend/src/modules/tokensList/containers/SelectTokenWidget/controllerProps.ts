@@ -62,7 +62,9 @@ interface BuildModalPropsArgs {
   tokenData: TokenDataSources
   widgetState: WidgetState
   favoriteTokens: TokenWithLogo[]
+  recentTokens: TokenWithLogo[]
   handleSelectToken(token: TokenWithLogo): void
+  onTokenListItemClick(token: TokenWithLogo): void
   onDismiss(): void
   onOpenManageWidget(): void
   openPoolPage(poolAddress: string): void
@@ -124,7 +126,9 @@ export function buildSelectTokenModalPropsInput({
   tokenData,
   widgetState,
   favoriteTokens,
+  recentTokens,
   handleSelectToken,
+  onTokenListItemClick,
   onDismiss,
   onOpenManageWidget,
   openPoolPage,
@@ -142,9 +146,11 @@ export function buildSelectTokenModalPropsInput({
     selectedToken: widgetState.selectedToken,
     allTokens: tokenData.allTokens,
     favoriteTokens,
+    recentTokens,
     balancesState: tokenData.balancesState,
     permitCompatibleTokens: tokenData.permitCompatibleTokens,
     onSelectToken: handleSelectToken,
+    onTokenListItemClick,
     onInputPressEnter: widgetState.onInputPressEnter,
     onDismiss,
     onOpenManageWidget,
@@ -172,9 +178,11 @@ export function useSelectTokenModalPropsMemo(props: SelectTokenModalProps): Sele
       selectedToken: props.selectedToken,
       allTokens: props.allTokens,
       favoriteTokens: props.favoriteTokens,
+      recentTokens: props.recentTokens,
       balancesState: props.balancesState,
       permitCompatibleTokens: props.permitCompatibleTokens,
       onSelectToken: props.onSelectToken,
+      onTokenListItemClick: props.onTokenListItemClick,
       onInputPressEnter: props.onInputPressEnter,
       onDismiss: props.onDismiss,
       onOpenManageWidget: props.onOpenManageWidget,
@@ -198,9 +206,11 @@ export function useSelectTokenModalPropsMemo(props: SelectTokenModalProps): Sele
       props.selectedToken,
       props.allTokens,
       props.favoriteTokens,
+      props.recentTokens,
       props.balancesState,
       props.permitCompatibleTokens,
       props.onSelectToken,
+      props.onTokenListItemClick,
       props.onInputPressEnter,
       props.onDismiss,
       props.onOpenManageWidget,

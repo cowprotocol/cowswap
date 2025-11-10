@@ -22,6 +22,7 @@ import {
   useTokenDataSources,
   useTokenSelectionHandler,
   useWidgetMetadata,
+  useRecentTokenSection,
 } from './controllerState'
 
 import { useChainsToSelect } from '../../hooks/useChainsToSelect'
@@ -30,7 +31,6 @@ import { useOnSelectChain } from '../../hooks/useOnSelectChain'
 import { useOnTokenListAddingError } from '../../hooks/useOnTokenListAddingError'
 import { useSelectTokenWidgetState } from '../../hooks/useSelectTokenWidgetState'
 import { useUpdateSelectTokenWidgetState } from '../../hooks/useUpdateSelectTokenWidgetState'
-
 
 const EMPTY_FAV_TOKENS: TokenWithLogo[] = []
 
@@ -54,50 +54,119 @@ export function useSelectTokenWidgetController({
     resolvedField = widgetState.field ?? Field.INPUT
   const chainsToSelect = useChainsToSelect(),
     onSelectChain = useOnSelectChain()
-  const { isManageWidgetOpen, openManageWidget, closeManageWidget } = useManageWidgetVisibility()
+  const manageWidget = useManageWidgetVisibility()
   const updateSelectTokenWidget = useUpdateSelectTokenWidgetState()
   const { account } = useWalletInfo(),
     closeTokenSelectWidget = useCloseTokenSelectWidget()
-  const tokenData = useTokenDataSources(),
-    onTokenListAddingError = useOnTokenListAddingError(),
-    { addCustomTokenLists, importTokenCallback } = useTokenAdminActions()
-  const { modalTitle, chainsPanelTitle, disableErc20, tokenListCategoryState } = useWidgetMetadata(
+  const tokenData = useTokenDataSources()
+  const onTokenListAddingError = useOnTokenListAddingError()
+  const tokenAdminActions = useTokenAdminActions()
+  const widgetMetadata = useWidgetMetadata(
     resolvedField,
     displayLpTokenLists,
     widgetState.oppositeToken,
     lpTokensWithBalancesCount,
   )
-  const onDismiss = useDismissHandler(closeManageWidget, closeTokenSelectWidget),
-    { openPoolPage, closePoolPage } = usePoolPageHandlers(updateSelectTokenWidget)
+
+  const { isBridgingEnabled, viewProps } = useSelectTokenWidgetViewState({
+    displayLpTokenLists,
+    standalone,
+    widgetState,
+    chainsToSelect,
+    onSelectChain,
+    manageWidget,
+    updateSelectTokenWidget,
+    account,
+    closeTokenSelectWidget,
+    tokenData,
+    onTokenListAddingError,
+    tokenAdminActions,
+    widgetMetadata,
+  })
+
+  return {
+    shouldRender: Boolean(widgetState.onSelectToken && widgetState.open),
+    isBridgingEnabled,
+    viewProps,
+  }
+}
+
+interface ViewStateArgs {
+  displayLpTokenLists?: boolean
+  standalone?: boolean
+  widgetState: ReturnType<typeof useSelectTokenWidgetState>
+  chainsToSelect: ReturnType<typeof useChainsToSelect>
+  onSelectChain: ReturnType<typeof useOnSelectChain>
+  manageWidget: ReturnType<typeof useManageWidgetVisibility>
+  updateSelectTokenWidget: ReturnType<typeof useUpdateSelectTokenWidgetState>
+  account: string | undefined
+  closeTokenSelectWidget: ReturnType<typeof useCloseTokenSelectWidget>
+  tokenData: ReturnType<typeof useTokenDataSources>
+  onTokenListAddingError: ReturnType<typeof useOnTokenListAddingError>
+  tokenAdminActions: ReturnType<typeof useTokenAdminActions>
+  widgetMetadata: ReturnType<typeof useWidgetMetadata>
+}
+
+interface ViewStateResult {
+  isBridgingEnabled: boolean
+  viewProps: SelectTokenWidgetViewProps
+}
+
+function useSelectTokenWidgetViewState(args: ViewStateArgs): ViewStateResult {
+  const {
+    displayLpTokenLists,
+    standalone,
+    widgetState,
+    chainsToSelect,
+    onSelectChain,
+    manageWidget,
+    updateSelectTokenWidget,
+    account,
+    closeTokenSelectWidget,
+    tokenData,
+    onTokenListAddingError,
+    tokenAdminActions,
+    widgetMetadata,
+  } = args
+
+  const { isManageWidgetOpen, openManageWidget, closeManageWidget } = manageWidget
+  const onDismiss = useDismissHandler(closeManageWidget, closeTokenSelectWidget)
+  const { openPoolPage, closePoolPage } = usePoolPageHandlers(updateSelectTokenWidget)
   const importFlows = useImportFlowCallbacks(
-      importTokenCallback,
-      widgetState.onSelectToken,
-      onDismiss,
-      addCustomTokenLists,
-      onTokenListAddingError,
-      updateSelectTokenWidget,
-    ),
-    handleSelectToken = useTokenSelectionHandler(widgetState.onSelectToken),
-    isInjectedWidgetMode = isInjectedWidget(),
-    isBridgingEnabled = hasAvailableChains(chainsToSelect)
+    tokenAdminActions.importTokenCallback,
+    widgetState.onSelectToken,
+    onDismiss,
+    tokenAdminActions.addCustomTokenLists,
+    onTokenListAddingError,
+    updateSelectTokenWidget,
+  )
+  const handleSelectToken = useTokenSelectionHandler(widgetState.onSelectToken)
+  const isBridgingEnabled = hasAvailableChains(chainsToSelect)
+  const { recentTokens, handleTokenListItemClick } = useRecentTokenSection(
+    tokenData.allTokens,
+    tokenData.favoriteTokens,
+  )
   const selectTokenModalPropsInput = buildSelectTokenModalPropsInput({
       standalone,
       displayLpTokenLists,
       tokenData,
       widgetState,
       favoriteTokens: standalone ? EMPTY_FAV_TOKENS : tokenData.favoriteTokens,
+      recentTokens,
       handleSelectToken,
+      onTokenListItemClick: handleTokenListItemClick,
       onDismiss,
       onOpenManageWidget: openManageWidget,
       openPoolPage,
-      tokenListCategoryState,
-      disableErc20,
+      tokenListCategoryState: widgetMetadata.tokenListCategoryState,
+      disableErc20: widgetMetadata.disableErc20,
       account,
       isBridgingEnabled,
-      isInjectedWidgetMode,
-      modalTitle,
+      isInjectedWidgetMode: isInjectedWidget(),
+      modalTitle: widgetMetadata.modalTitle,
     }),
     selectTokenModalProps = useSelectTokenModalPropsMemo(selectTokenModalPropsInput)
+
   const viewProps = buildSelectTokenWidgetViewProps({
     standalone,
     tokenToImport: widgetState.tokenToImport,
@@ -105,7 +174,7 @@ export function useSelectTokenWidgetController({
     isManageWidgetOpen,
     selectedPoolAddress: widgetState.selectedPoolAddress,
     isBridgingEnabled,
-    chainsPanelTitle,
+    chainsPanelTitle: widgetMetadata.chainsPanelTitle,
     chainsToSelect,
     onSelectChain,
     onDismiss,
@@ -120,11 +189,7 @@ export function useSelectTokenWidgetController({
     onSelectToken: handleSelectToken,
   })
 
-  return {
-    shouldRender: Boolean(widgetState.onSelectToken && widgetState.open),
-    isBridgingEnabled,
-    viewProps,
-  }
+  return { isBridgingEnabled, viewProps }
 }
 
 export type { SelectTokenWidgetViewProps } from './controllerProps'

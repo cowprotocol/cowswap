@@ -19,6 +19,7 @@ export interface TokensVirtualListProps {
   displayLpTokenLists?: boolean
   selectTokenContext: SelectTokenContext
   favoriteTokens?: TokenWithLogo[]
+  recentTokens?: TokenWithLogo[]
   hideFavoriteTokensTooltip?: boolean
   scrollResetKey?: number
 }
@@ -34,6 +35,7 @@ export function TokensVirtualList(props: TokensVirtualListProps): ReactNode {
     selectTokenContext,
     displayLpTokenLists,
     favoriteTokens,
+    recentTokens,
     hideFavoriteTokensTooltip,
     scrollResetKey,
   } = props
@@ -48,17 +50,27 @@ export function TokensVirtualList(props: TokensVirtualListProps): ReactNode {
 
   const rows = useMemo<TokensVirtualRow[]>(() => {
     const tokenRows = sortedTokens.map<TokensVirtualRow>((token) => ({ type: 'token', token }))
+    const composedRows: TokensVirtualRow[] = []
 
     if (favoriteTokens?.length) {
-      return [
-        { type: 'favorite-section', tokens: favoriteTokens, hideTooltip: hideFavoriteTokensTooltip },
-        { type: 'title', label: 'All tokens' },
-        ...tokenRows,
-      ]
+      composedRows.push({
+        type: 'favorite-section',
+        tokens: favoriteTokens,
+        hideTooltip: hideFavoriteTokensTooltip,
+      })
     }
 
-    return tokenRows
-  }, [favoriteTokens, hideFavoriteTokensTooltip, sortedTokens])
+    if (recentTokens?.length) {
+      composedRows.push({ type: 'title', label: 'Recent' })
+      recentTokens.forEach((token) => composedRows.push({ type: 'token', token }))
+    }
+
+    if (favoriteTokens?.length || recentTokens?.length) {
+      composedRows.push({ type: 'title', label: 'All tokens' })
+    }
+
+    return [...composedRows, ...tokenRows]
+  }, [favoriteTokens, hideFavoriteTokensTooltip, recentTokens, sortedTokens])
 
   const virtualListKey = scrollResetKey ?? 'tokens-list'
 

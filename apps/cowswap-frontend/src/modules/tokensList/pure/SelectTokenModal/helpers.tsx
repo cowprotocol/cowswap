@@ -18,6 +18,7 @@ export function useSelectTokenContext(props: SelectTokenModalProps): SelectToken
     unsupportedTokens,
     permitCompatibleTokens,
     onSelectToken,
+    onTokenListItemClick,
     account,
     tokenListTags,
   } = props
@@ -27,12 +28,22 @@ export function useSelectTokenContext(props: SelectTokenModalProps): SelectToken
       balancesState,
       selectedToken,
       onSelectToken,
+      onTokenListItemClick,
       unsupportedTokens,
       permitCompatibleTokens,
       tokenListTags,
       isWalletConnected: !!account,
     }),
-    [balancesState, selectedToken, onSelectToken, unsupportedTokens, permitCompatibleTokens, tokenListTags, account],
+    [
+      balancesState,
+      selectedToken,
+      onSelectToken,
+      onTokenListItemClick,
+      unsupportedTokens,
+      permitCompatibleTokens,
+      tokenListTags,
+      account,
+    ],
   )
 }
 
@@ -47,6 +58,7 @@ interface TokensContentSectionProps
     SelectTokenModalProps,
     | 'displayLpTokenLists'
     | 'favoriteTokens'
+    | 'recentTokens'
     | 'areTokensLoading'
     | 'allTokens'
     | 'areTokensFromBridge'
@@ -60,6 +72,7 @@ interface TokensContentSectionProps
 export function TokensContentSection({
   displayLpTokenLists,
   favoriteTokens,
+  recentTokens,
   areTokensLoading,
   allTokens,
   searchInput,
@@ -73,6 +86,7 @@ export function TokensContentSection({
       displayLpTokenLists={displayLpTokenLists}
       selectTokenContext={selectTokenContext}
       favoriteTokens={favoriteTokens}
+      recentTokens={recentTokens}
       areTokensLoading={areTokensLoading}
       allTokens={allTokens}
       searchInput={searchInput}

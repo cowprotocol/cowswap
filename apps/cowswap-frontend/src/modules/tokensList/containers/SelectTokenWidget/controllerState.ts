@@ -15,7 +15,6 @@ import {
 
 import { Field } from 'legacy/state/types'
 
-
 import { useTokensBalancesCombined } from 'modules/combinedBalances'
 import { usePermitCompatibleTokens } from 'modules/permit'
 
@@ -23,6 +22,7 @@ import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 
 import { getDefaultTokenListCategories } from './getDefaultTokenListCategories'
 
+import { useRecentTokens } from '../../hooks/useRecentTokens'
 import { useTokensToSelect } from '../../hooks/useTokensToSelect'
 import { ChainsToSelectState } from '../../types'
 
@@ -30,10 +30,7 @@ import type { useUpdateSelectTokenWidgetState } from '../../hooks/useUpdateSelec
 
 type UpdateSelectTokenWidgetFn = ReturnType<typeof useUpdateSelectTokenWidgetState>
 
-export type TokenListCategoryState = [
-  TokenListCategory[] | null,
-  Dispatch<SetStateAction<TokenListCategory[] | null>>,
-]
+export type TokenListCategoryState = [TokenListCategory[] | null, Dispatch<SetStateAction<TokenListCategory[] | null>>]
 
 interface ManageWidgetVisibility {
   isManageWidgetOpen: boolean
@@ -76,6 +73,11 @@ interface ImportFlowCallbacks {
   importTokenAndClose(tokens: TokenWithLogo[]): void
   importListAndBack(list: ListState): void
   resetTokenImport(): void
+}
+
+interface RecentTokenSection {
+  recentTokens: TokenWithLogo[]
+  handleTokenListItemClick(token: TokenWithLogo): void
 }
 
 export function useManageWidgetVisibility(): ManageWidgetVisibility {
@@ -143,10 +145,7 @@ export function useWidgetMetadata(
   return { disableErc20, tokenListCategoryState, modalTitle, chainsPanelTitle }
 }
 
-export function useDismissHandler(
-  closeManageWidget: () => void,
-  closeTokenSelectWidget: () => void,
-): () => void {
+export function useDismissHandler(closeManageWidget: () => void, closeTokenSelectWidget: () => void): () => void {
   return useCallback(() => {
     closeManageWidget()
     closeTokenSelectWidget()
@@ -203,6 +202,19 @@ export function useImportFlowCallbacks(
   }, [updateSelectTokenWidget])
 
   return { importTokenAndClose, importListAndBack, resetTokenImport }
+}
+
+export function useRecentTokenSection(allTokens: TokenWithLogo[], favoriteTokens: TokenWithLogo[]): RecentTokenSection {
+  const { recentTokens, addRecentToken } = useRecentTokens({ allTokens, favoriteTokens })
+
+  const handleTokenListItemClick = useCallback(
+    (token: TokenWithLogo) => {
+      addRecentToken(token)
+    },
+    [addRecentToken],
+  )
+
+  return { recentTokens, handleTokenListItemClick }
 }
 
 export function useTokenSelectionHandler(

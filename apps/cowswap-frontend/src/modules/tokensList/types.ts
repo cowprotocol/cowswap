@@ -13,6 +13,7 @@ export interface SelectTokenContext {
   selectedToken?: Nullish<Currency>
 
   onSelectToken(token: TokenWithLogo): void
+  onTokenListItemClick?(token: TokenWithLogo): void
 
   unsupportedTokens: { [tokenAddress: string]: { dateAdded: number } }
   permitCompatibleTokens: PermitCompatibleTokens

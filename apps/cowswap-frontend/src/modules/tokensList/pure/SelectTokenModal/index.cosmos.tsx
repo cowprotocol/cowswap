@@ -50,6 +50,9 @@ const chainsMock: ChainInfo[] = [
   return acc
 }, [])
 
+const favoriteTokenAddresses = new Set(favoriteTokensMock.map((token) => token.address.toLowerCase()))
+const recentTokensMock = allTokensMock.filter((token) => !favoriteTokenAddresses.has(token.address.toLowerCase())).slice(0, 3)
+
 const defaultModalProps: SelectTokenModalProps = {
   tokenListTags: {},
   account: undefined,
@@ -57,6 +60,7 @@ const defaultModalProps: SelectTokenModalProps = {
   unsupportedTokens,
   allTokens: allTokensMock,
   favoriteTokens: favoriteTokensMock,
+  recentTokens: recentTokensMock,
   areTokensLoading: false,
   areTokensFromBridge: false,
   tokenListCategoryState: [null, () => void 0],
@@ -71,6 +75,9 @@ const defaultModalProps: SelectTokenModalProps = {
   modalTitle: 'Swap from',
   onSelectToken() {
     console.log('onSelectToken')
+  },
+  onTokenListItemClick(token) {
+    console.log('onTokenListItemClick', token.symbol)
   },
   onOpenManageWidget() {
     console.log('onOpenManageWidget')

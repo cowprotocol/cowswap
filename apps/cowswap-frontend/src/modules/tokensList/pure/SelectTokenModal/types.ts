@@ -10,6 +10,7 @@ import { PermitCompatibleTokens } from 'modules/permit'
 export interface SelectTokenModalProps<T = TokenListCategory[] | null> {
   allTokens: TokenWithLogo[]
   favoriteTokens: TokenWithLogo[]
+  recentTokens?: TokenWithLogo[]
   balancesState: BalancesState
   unsupportedTokens: UnsupportedTokensState
   selectedToken?: Nullish<Currency>
@@ -30,6 +31,7 @@ export interface SelectTokenModalProps<T = TokenListCategory[] | null> {
   selectedTargetChainId?: number
 
   onSelectToken(token: TokenWithLogo): void
+  onTokenListItemClick?(token: TokenWithLogo): void
   openPoolPage(poolAddress: string): void
   onInputPressEnter?(): void
   onOpenManageWidget(): void
