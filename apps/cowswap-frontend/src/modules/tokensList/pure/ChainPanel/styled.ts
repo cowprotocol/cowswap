@@ -60,11 +60,14 @@ export const PanelSearchInput = styled(UISearchInput)`
   font-weight: 500;
 `
 
-export const PanelList = styled.div`
+export const PanelList = styled.div<{ $hasScrollbar: boolean }>`
   flex: 1;
   overflow-y: auto;
-  padding-right: 4px;
+  padding-right: ${({ $hasScrollbar }) => ($hasScrollbar ? '8px' : '0')};
+  margin-right: ${({ $hasScrollbar }) => ($hasScrollbar ? '-8px' : '0')};
+  box-sizing: content-box;
   ${({ theme }) => theme.colorScrollbar};
+  scrollbar-gutter: ${({ $hasScrollbar }) => ($hasScrollbar ? 'stable' : 'auto')};
 `
 
 export const EmptyState = styled.div`

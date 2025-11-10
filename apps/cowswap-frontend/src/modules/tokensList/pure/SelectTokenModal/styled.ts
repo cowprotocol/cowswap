@@ -73,16 +73,18 @@ export const SearchRow = styled.div`
 `
 
 export const SearchInputWrapper = styled.div`
+  --input-height: 46px;
   width: 100%;
 
   > div {
     width: 100%;
-    background: #f2f2f2;
-    border-radius: 46px;
-    padding: 0 14px;
-    height: 46px;
+    background: var(${UI.COLOR_PAPER_DARKER});
+    border-radius: var(--input-height);
+    height: var(--input-height);
     display: flex;
     align-items: center;
+    padding: 0 14px;
+    font-size: 15px;
   }
 
   input {
@@ -107,7 +109,7 @@ export const TokenColumn = styled.div`
   min-height: 0;
   display: flex;
   flex-direction: column;
-  padding: 0 0 14px;
+  padding: 0;
 
   ${Media.upToSmall()} {
     padding: 16px;

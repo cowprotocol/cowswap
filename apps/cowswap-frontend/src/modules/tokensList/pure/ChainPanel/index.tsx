@@ -1,4 +1,4 @@
-import { ReactNode, useMemo, useState } from 'react'
+import { ReactNode, useEffect, useMemo, useRef, useState } from 'react'
 
 import { ChainInfo } from '@cowprotocol/cow-sdk'
 
@@ -17,6 +17,8 @@ export interface ChainPanelProps {
 
 export function ChainPanel({ title, chainsState, onSelectChain }: ChainPanelProps): ReactNode {
   const [chainQuery, setChainQuery] = useState('')
+  const [hasVerticalScroll, setHasVerticalScroll] = useState(false)
+  const listRef = useRef<HTMLDivElement | null>(null)
   const normalizedChainQuery = chainQuery.trim().toLowerCase()
   const chains = chainsState?.chains ?? EMPTY_CHAINS
   const isLoading = chainsState?.isLoading ?? false
@@ -38,6 +40,40 @@ export function ChainPanel({ title, chainsState, onSelectChain }: ChainPanelProp
   // When bridge networks are unavailable we still render the panel but show the fallback copy
   const showUnavailableState = !isLoading && chains.length === 0 && !normalizedChainQuery
 
+  useEffect(() => {
+    const updateScrollState = (): void => {
+      const element = listRef.current
+
+      if (!element) {
+        return
+      }
+
+      const hasScroll = element.scrollHeight - element.clientHeight > 1
+      setHasVerticalScroll((current) => (current === hasScroll ? current : hasScroll))
+    }
+
+    updateScrollState()
+
+    // ResizeObserver tracks size changes (e.g. viewport height, font scaling) without forcing layout.
+    const resizeObserver =
+      typeof ResizeObserver !== 'undefined' ? new ResizeObserver(() => updateScrollState()) : undefined
+    resizeObserver?.observe(listRef.current as Element)
+
+    // MutationObserver lets us react when rows are added/removed so the gutter toggles immediately.
+    const mutationObserver =
+      typeof MutationObserver !== 'undefined' ? new MutationObserver(() => updateScrollState()) : undefined
+    mutationObserver?.observe(listRef.current as Element, { childList: true, subtree: true })
+
+    // Scroll containers can overflow when the viewport height changes (e.g. window resize, soft keyboard).
+    window.addEventListener('resize', updateScrollState)
+
+    return () => {
+      resizeObserver?.disconnect()
+      mutationObserver?.disconnect()
+      window.removeEventListener('resize', updateScrollState)
+    }
+  }, [filteredChains.length, isLoading, normalizedChainQuery])
+
   return (
     <styledEl.Panel>
       <styledEl.PanelHeader>
@@ -50,7 +86,7 @@ export function ChainPanel({ title, chainsState, onSelectChain }: ChainPanelProp
           placeholder="Search network"
         />
       </styledEl.PanelSearchInputWrapper>
-      <styledEl.PanelList>
+      <styledEl.PanelList ref={listRef} $hasScrollbar={hasVerticalScroll}>
         <ChainsSelector
           isLoading={isLoading}
           chains={filteredChains}
