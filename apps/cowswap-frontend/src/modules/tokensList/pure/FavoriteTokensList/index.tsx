@@ -3,7 +3,7 @@ import { ReactNode } from 'react'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { areAddressesEqual, getCurrencyAddress } from '@cowprotocol/common-utils'
 import { TokenLogo } from '@cowprotocol/tokens'
-import { HelpTooltip, TokenSymbol } from '@cowprotocol/ui'
+import { TokenSymbol } from '@cowprotocol/ui'
 
 import { Link } from 'react-router'
 
@@ -37,7 +37,7 @@ export function FavoriteTokensList(props: FavoriteTokensListProps): ReactNode {
 
 function FavoriteTokensTooltip(): ReactNode {
   return (
-    <HelpTooltip
+    <styledEl.FavoriteTooltip
       text={
         <>
           Your favorite saved tokens. Edit this list in the <Link to="/account/tokens">Tokens page</Link>.

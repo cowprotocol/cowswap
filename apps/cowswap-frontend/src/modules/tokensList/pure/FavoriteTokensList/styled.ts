@@ -1,15 +1,14 @@
-import { Media, UI } from '@cowprotocol/ui'
+import { HelpTooltip, Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
 export const Section = styled.div`
-  padding: 12px 16px 16px;
+  padding: 0 14px 14px;
 `
 
 export const TitleRow = styled.div`
   display: flex;
   align-items: center;
-  gap: 6px;
 `
 
 export const Title = styled.h4`
@@ -72,5 +71,14 @@ export const TokenButton = styled.button`
 
   :hover {
     border: 1px solid ${({ disabled }) => (disabled ? `var(${UI.COLOR_PAPER_DARKER})` : `var(${UI.COLOR_PRIMARY})`)};
+  }
+`
+
+export const FavoriteTooltip = styled(HelpTooltip)`
+  color: var(${UI.COLOR_TEXT_OPACITY_50});
+  transition: color 0.2s ease-in-out;
+
+  &:hover {
+    color: var(${UI.COLOR_TEXT});
   }
 `

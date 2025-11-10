@@ -50,13 +50,15 @@ export function SelectTokenModal(props: SelectTokenModalProps): ReactNode {
         title={resolvedModalTitle}
       />
       <styledEl.SearchRow>
-        <SearchInput
-          id="token-search-input"
-          value={inputValue}
-          onKeyDown={(e) => e.key === 'Enter' && onInputPressEnter?.()}
-          onChange={(e) => setInputValue(e.target.value)}
-          placeholder="Search name or paste address..."
-        />
+        <styledEl.SearchInputWrapper>
+          <SearchInput
+            id="token-search-input"
+            value={inputValue}
+            onKeyDown={(e) => e.key === 'Enter' && onInputPressEnter?.()}
+            onChange={(e) => setInputValue(e.target.value)}
+            placeholder="Search name or paste address..."
+          />
+        </styledEl.SearchInputWrapper>
       </styledEl.SearchRow>
       <styledEl.Body>
         <styledEl.TokenColumn>

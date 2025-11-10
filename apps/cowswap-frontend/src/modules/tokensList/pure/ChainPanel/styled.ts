@@ -64,6 +64,7 @@ export const PanelList = styled.div`
   flex: 1;
   overflow-y: auto;
   padding-right: 4px;
+  ${({ theme }) => theme.colorScrollbar};
 `
 
 export const EmptyState = styled.div`

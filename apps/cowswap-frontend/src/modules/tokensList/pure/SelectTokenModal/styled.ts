@@ -69,6 +69,26 @@ export const TitleActionButton = styled.button`
 export const SearchRow = styled.div`
   padding: 0 14px 14px;
   display: flex;
+  align-items: center;
+`
+
+export const SearchInputWrapper = styled.div`
+  width: 100%;
+
+  > div {
+    width: 100%;
+    background: #f2f2f2;
+    border-radius: 46px;
+    padding: 0 14px;
+    height: 46px;
+    display: flex;
+    align-items: center;
+  }
+
+  input {
+    background: transparent;
+    height: 100%;
+  }
 `
 
 export const Body = styled.div`
@@ -110,14 +130,11 @@ export const Separator = styled.div`
 `
 
 export const ListTitle = styled.div`
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  text-transform: uppercase;
+  font-size: 14px;
+  font-weight: 500;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
   padding: 8px 16px 4px;
 `
-
 
 export const TokensLoader = styled.div`
   width: 100%;
