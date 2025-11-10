@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.9.0...balances-and-allowances-v1.10.0) (2025-11-10)
+
+
+### Features
+
+* **new-chains:** add q4 chains ([#6404](https://github.com/cowprotocol/cowswap/issues/6404)) ([ba4edb0](https://github.com/cowprotocol/cowswap/commit/ba4edb0fdc7b4c700dfeae9023da330d74a9faea))
+
 ## [1.9.0](https://github.com/cowprotocol/cowswap/compare/balances-and-allowances-v1.8.0...balances-and-allowances-v1.9.0) (2025-11-05)
 
 
