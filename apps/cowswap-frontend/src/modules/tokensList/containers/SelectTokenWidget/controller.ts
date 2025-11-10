@@ -56,7 +56,7 @@ export function useSelectTokenWidgetController({
     onSelectChain = useOnSelectChain()
   const manageWidget = useManageWidgetVisibility()
   const updateSelectTokenWidget = useUpdateSelectTokenWidgetState()
-  const { account } = useWalletInfo(),
+  const { account, chainId: walletChainId } = useWalletInfo(),
     closeTokenSelectWidget = useCloseTokenSelectWidget()
   const tokenData = useTokenDataSources()
   const onTokenListAddingError = useOnTokenListAddingError()
@@ -82,6 +82,7 @@ export function useSelectTokenWidgetController({
     onTokenListAddingError,
     tokenAdminActions,
     widgetMetadata,
+    walletChainId,
   })
 
   return {
@@ -105,6 +106,7 @@ interface ViewStateArgs {
   onTokenListAddingError: ReturnType<typeof useOnTokenListAddingError>
   tokenAdminActions: ReturnType<typeof useTokenAdminActions>
   widgetMetadata: ReturnType<typeof useWidgetMetadata>
+  walletChainId?: number
 }
 
 interface ViewStateResult {
@@ -127,14 +129,17 @@ function useSelectTokenWidgetViewState(args: ViewStateArgs): ViewStateResult {
     onTokenListAddingError,
     tokenAdminActions,
     widgetMetadata,
+    walletChainId,
   } = args
 
+  const activeChainId = resolveActiveChainId(widgetState, walletChainId)
   const { isManageWidgetOpen, openManageWidget, closeManageWidget } = manageWidget
   const onDismiss = useDismissHandler(closeManageWidget, closeTokenSelectWidget)
   const { openPoolPage, closePoolPage } = usePoolPageHandlers(updateSelectTokenWidget)
   const { recentTokens, handleTokenListItemClick } = useRecentTokenSection(
     tokenData.allTokens,
     tokenData.favoriteTokens,
+    activeChainId,
   )
   const handleSelectToken = useTokenSelectionHandler(widgetState.onSelectToken)
   const importFlows = useImportFlowCallbacks(
@@ -194,3 +199,19 @@ function useSelectTokenWidgetViewState(args: ViewStateArgs): ViewStateResult {
 }
 
 export type { SelectTokenWidgetViewProps } from './controllerProps'
+
+function resolveActiveChainId(
+  widgetState: ReturnType<typeof useSelectTokenWidgetState>,
+  walletChainId?: number,
+): number | undefined {
+  return (
+    widgetState.selectedTargetChainId ??
+    walletChainId ??
+    extractChainId(widgetState.oppositeToken) ??
+    extractChainId(widgetState.selectedToken)
+  )
+}
+
+function extractChainId(token: { chainId?: number } | undefined | null): number | undefined {
+  return typeof token?.chainId === 'number' ? token.chainId : undefined
+}

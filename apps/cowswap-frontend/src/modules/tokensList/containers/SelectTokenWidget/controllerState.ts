@@ -211,8 +211,12 @@ export function useImportFlowCallbacks(
   return { importTokenAndClose, importListAndBack, resetTokenImport }
 }
 
-export function useRecentTokenSection(allTokens: TokenWithLogo[], favoriteTokens: TokenWithLogo[]): RecentTokenSection {
-  const { recentTokens, addRecentToken } = useRecentTokens({ allTokens, favoriteTokens })
+export function useRecentTokenSection(
+  allTokens: TokenWithLogo[],
+  favoriteTokens: TokenWithLogo[],
+  activeChainId?: number,
+): RecentTokenSection {
+  const { recentTokens, addRecentToken } = useRecentTokens({ allTokens, favoriteTokens, activeChainId })
 
   const handleTokenListItemClick = useCallback(
     (token: TokenWithLogo) => {
