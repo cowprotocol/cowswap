@@ -22,7 +22,7 @@ import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 
 import { getDefaultTokenListCategories } from './getDefaultTokenListCategories'
 
-import { useRecentTokens } from '../../hooks/useRecentTokens'
+import { persistRecentTokenSelection, useRecentTokens } from '../../hooks/useRecentTokens'
 import { useTokensToSelect } from '../../hooks/useTokensToSelect'
 import { ChainsToSelectState } from '../../types'
 
@@ -174,14 +174,21 @@ export function useImportFlowCallbacks(
   addCustomTokenLists: (list: ListState) => void,
   onTokenListAddingError: (error: Error) => void,
   updateSelectTokenWidget: UpdateSelectTokenWidgetFn,
+  favoriteTokens: TokenWithLogo[],
 ): ImportFlowCallbacks {
   const importTokenAndClose = useCallback(
     (tokens: TokenWithLogo[]) => {
       importTokenCallback(tokens)
-      onSelectToken?.(tokens[0])
+      const [selectedToken] = tokens
+
+      if (selectedToken) {
+        persistRecentTokenSelection(selectedToken, favoriteTokens)
+        onSelectToken?.(selectedToken)
+      }
+
       onDismiss()
     },
-    [importTokenCallback, onSelectToken, onDismiss],
+    [importTokenCallback, onSelectToken, onDismiss, favoriteTokens],
   )
 
   const importListAndBack = useCallback(

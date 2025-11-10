@@ -4,8 +4,8 @@ import { TokenWithLogo } from '@cowprotocol/common-const'
 
 import { getTokenUniqueKey } from '../utils/tokenKey'
 
-const RECENT_TOKENS_LIMIT = 4
-const RECENT_TOKENS_STORAGE_KEY = 'select-token-widget:recent-tokens:v1'
+export const RECENT_TOKENS_LIMIT = 4
+export const RECENT_TOKENS_STORAGE_KEY = 'select-token-widget:recent-tokens:v1'
 
 interface StoredRecentToken {
   chainId: number
@@ -78,16 +78,12 @@ export function useRecentTokens({
 
   const addRecentToken = useCallback(
     (token: TokenWithLogo) => {
-      const key = getTokenUniqueKey(token)
-
-      if (favoriteKeys.has(key)) {
+      if (favoriteKeys.has(getTokenUniqueKey(token))) {
         return
       }
 
       setStoredTokens((prev) => {
-        const normalized = toStoredToken(token)
-        const withoutToken = prev.filter((entry) => getStoredTokenKey(entry) !== key)
-        const next = [normalized, ...withoutToken].slice(0, maxItems)
+        const next = buildNextStoredTokens(prev, token, maxItems)
 
         persistStoredTokens(next)
 
@@ -98,6 +94,23 @@ export function useRecentTokens({
   )
 
   return { recentTokens, addRecentToken }
+}
+
+export function persistRecentTokenSelection(
+  token: TokenWithLogo,
+  favoriteTokens: TokenWithLogo[],
+  maxItems = RECENT_TOKENS_LIMIT,
+): void {
+  const favoriteKeys = buildFavoriteTokenKeys(favoriteTokens)
+
+  if (favoriteKeys.has(getTokenUniqueKey(token))) {
+    return
+  }
+
+  const current = readStoredTokens(maxItems)
+  const next = buildNextStoredTokens(current, token, maxItems)
+
+  persistStoredTokens(next)
 }
 
 function buildTokensByKey(tokens: TokenWithLogo[]): Map<string, TokenWithLogo> {
@@ -217,6 +230,14 @@ function persistStoredTokens(tokens: StoredRecentToken[]): void {
   } catch {
     // Ignore persistence errors – the feature is best-effort only
   }
+}
+
+function buildNextStoredTokens(prev: StoredRecentToken[], token: TokenWithLogo, maxItems: number): StoredRecentToken[] {
+  const normalized = toStoredToken(token)
+  const key = getStoredTokenKey(normalized)
+  const withoutToken = prev.filter((entry) => getStoredTokenKey(entry) !== key)
+
+  return [normalized, ...withoutToken].slice(0, maxItems)
 }
 
 function canUseLocalStorage(): boolean {

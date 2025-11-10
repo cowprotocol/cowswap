@@ -132,20 +132,21 @@ function useSelectTokenWidgetViewState(args: ViewStateArgs): ViewStateResult {
   const { isManageWidgetOpen, openManageWidget, closeManageWidget } = manageWidget
   const onDismiss = useDismissHandler(closeManageWidget, closeTokenSelectWidget)
   const { openPoolPage, closePoolPage } = usePoolPageHandlers(updateSelectTokenWidget)
-  const importFlows = useImportFlowCallbacks(
-    tokenAdminActions.importTokenCallback,
-    widgetState.onSelectToken,
-    onDismiss,
-    tokenAdminActions.addCustomTokenLists,
-    onTokenListAddingError,
-    updateSelectTokenWidget,
-  )
-  const handleSelectToken = useTokenSelectionHandler(widgetState.onSelectToken)
-  const isBridgingEnabled = hasAvailableChains(chainsToSelect)
   const { recentTokens, handleTokenListItemClick } = useRecentTokenSection(
     tokenData.allTokens,
     tokenData.favoriteTokens,
   )
+  const handleSelectToken = useTokenSelectionHandler(widgetState.onSelectToken)
+  const importFlows = useImportFlowCallbacks(
+    tokenAdminActions.importTokenCallback,
+    handleSelectToken,
+    onDismiss,
+    tokenAdminActions.addCustomTokenLists,
+    onTokenListAddingError,
+    updateSelectTokenWidget,
+    tokenData.favoriteTokens,
+  )
+  const isBridgingEnabled = hasAvailableChains(chainsToSelect)
   const selectTokenModalPropsInput = buildSelectTokenModalPropsInput({
       standalone,
       displayLpTokenLists,
