@@ -5,6 +5,126 @@ import { css } from 'styled-components/macro'
 
 import { UI } from '../enum'
 
+interface ChainAccentConfig {
+  bgVar: UI
+  borderVar: UI
+  lightBg: string
+  darkBg: string
+  lightBorder: string
+  darkBorder: string
+}
+
+interface ChainAccentInput {
+  bgVar: UI
+  borderVar: UI
+  color: string
+  lightColor?: string
+  darkColor?: string
+  lightBgAlpha?: number
+  darkBgAlpha?: number
+  lightBorderAlpha?: number
+  darkBorderAlpha?: number
+}
+
+const CHAIN_LIGHT_BG_ALPHA = 0.22
+const CHAIN_DARK_BG_ALPHA = 0.32
+const CHAIN_LIGHT_BORDER_ALPHA = 0.45
+const CHAIN_DARK_BORDER_ALPHA = 0.65
+
+const chainAlpha = (color: string, alpha: number): string => transparentize(color, 1 - alpha)
+
+function createChainAccent({
+  bgVar,
+  borderVar,
+  color,
+  lightColor = color,
+  darkColor = color,
+  lightBgAlpha = CHAIN_LIGHT_BG_ALPHA,
+  darkBgAlpha = CHAIN_DARK_BG_ALPHA,
+  lightBorderAlpha = CHAIN_LIGHT_BORDER_ALPHA,
+  darkBorderAlpha = CHAIN_DARK_BORDER_ALPHA,
+}: ChainAccentInput): ChainAccentConfig {
+  return {
+    bgVar,
+    borderVar,
+    lightBg: chainAlpha(lightColor, lightBgAlpha),
+    darkBg: chainAlpha(darkColor, darkBgAlpha),
+    lightBorder: chainAlpha(lightColor, lightBorderAlpha),
+    darkBorder: chainAlpha(darkColor, darkBorderAlpha),
+  }
+}
+
+const CHAIN_ACCENT_CONFIG: ChainAccentConfig[] = [
+  createChainAccent({
+    bgVar: UI.COLOR_CHAIN_ETHEREUM_BG,
+    borderVar: UI.COLOR_CHAIN_ETHEREUM_BORDER,
+    color: '#627EEA',
+  }),
+  createChainAccent({
+    bgVar: UI.COLOR_CHAIN_BNB_BG,
+    borderVar: UI.COLOR_CHAIN_BNB_BORDER,
+    color: '#F0B90B',
+  }),
+  createChainAccent({
+    bgVar: UI.COLOR_CHAIN_BASE_BG,
+    borderVar: UI.COLOR_CHAIN_BASE_BORDER,
+    color: '#0052FF',
+  }),
+  createChainAccent({
+    bgVar: UI.COLOR_CHAIN_ARBITRUM_BG,
+    borderVar: UI.COLOR_CHAIN_ARBITRUM_BORDER,
+    color: '#1B4ADD',
+  }),
+  createChainAccent({
+    bgVar: UI.COLOR_CHAIN_POLYGON_BG,
+    borderVar: UI.COLOR_CHAIN_POLYGON_BORDER,
+    color: '#8247E5',
+  }),
+  createChainAccent({
+    bgVar: UI.COLOR_CHAIN_AVALANCHE_BG,
+    borderVar: UI.COLOR_CHAIN_AVALANCHE_BORDER,
+    color: '#FF3944',
+  }),
+  createChainAccent({
+    bgVar: UI.COLOR_CHAIN_GNOSIS_BG,
+    borderVar: UI.COLOR_CHAIN_GNOSIS_BORDER,
+    color: '#07795B',
+  }),
+  createChainAccent({
+    bgVar: UI.COLOR_CHAIN_LENS_BG,
+    borderVar: UI.COLOR_CHAIN_LENS_BORDER,
+    color: '#5A5A5A',
+    darkColor: '#D7D7D7',
+  }),
+  createChainAccent({
+    bgVar: UI.COLOR_CHAIN_SEPOLIA_BG,
+    borderVar: UI.COLOR_CHAIN_SEPOLIA_BORDER,
+    color: '#C12FF2',
+  }),
+  createChainAccent({
+    bgVar: UI.COLOR_CHAIN_LINEA_BG,
+    borderVar: UI.COLOR_CHAIN_LINEA_BORDER,
+    color: '#61DFFF',
+  }),
+  createChainAccent({
+    bgVar: UI.COLOR_CHAIN_PLASMA_BG,
+    borderVar: UI.COLOR_CHAIN_PLASMA_BORDER,
+    color: '#569F8C',
+  }),
+]
+
+const CHAIN_ACCENT_VAR_DECLARATIONS = CHAIN_ACCENT_CONFIG.map(({
+  bgVar,
+  borderVar,
+  lightBg,
+  darkBg,
+  lightBorder,
+  darkBorder,
+}) => css`
+  ${bgVar}: ${({ theme }) => (theme.darkMode ? darkBg : lightBg)};
+  ${borderVar}: ${({ theme }) => (theme.darkMode ? darkBorder : lightBorder)};
+`)
+
 export const ThemeColorVars = css`
   :root {
     // V3
@@ -82,6 +202,8 @@ export const ThemeColorVars = css`
     ${UI.COLOR_ALERT_TEXT}: ${({ theme }) => (theme.darkMode ? lighten(theme.alert, 0.06) : darken(theme.alert, 0.15))};
     ${UI.COLOR_ALERT_TEXT_DARKER}: ${({ theme }) =>
       getContrastText(theme.alert, theme.darkMode ? darken(theme.alert, 0.55) : darken(theme.alert, 0.35))};
+
+    ${CHAIN_ACCENT_VAR_DECLARATIONS}
 
     ${UI.COLOR_WARNING}: ${({ theme }) => theme.warning};
     ${UI.COLOR_WARNING_BG}: ${({ theme }) => transparentize(theme.warning, 0.85)};

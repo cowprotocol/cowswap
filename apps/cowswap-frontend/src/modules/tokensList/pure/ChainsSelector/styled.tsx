@@ -4,6 +4,21 @@ import styled from 'styled-components/macro'
 
 import { blankButtonMixin } from '../commonElements'
 
+export interface ChainAccentVars {
+  backgroundVar: UI
+  borderVar: UI
+}
+
+const fallbackBackground = `var(${UI.COLOR_PRIMARY_OPACITY_10})`
+const fallbackBorder = `var(${UI.COLOR_PRIMARY_OPACITY_80})`
+const fallbackHoverBorder = `var(${UI.COLOR_PRIMARY_OPACITY_70})`
+
+const getBackground = (accent$?: ChainAccentVars, fallback = fallbackBackground): string =>
+  accent$ ? `var(${accent$.backgroundVar})` : fallback
+
+const getBorder = (accent$?: ChainAccentVars, fallback = fallbackBorder): string =>
+  accent$ ? `var(${accent$.borderVar})` : fallback
+
 export const List = styled.div`
   display: flex;
   flex-direction: column;
@@ -11,7 +26,7 @@ export const List = styled.div`
   width: 100%;
 `
 
-export const ChainButton = styled.button<{ active$?: boolean }>`
+export const ChainButton = styled.button<{ active$?: boolean; accent$?: ChainAccentVars }>`
   --min-height: 46px;
   ${blankButtonMixin};
 
@@ -23,9 +38,9 @@ export const ChainButton = styled.button<{ active$?: boolean }>`
   padding: 8px 12px;
   min-height: var(--min-height);
   border-radius: var(--min-height);
-  border: 1px solid ${({ active$ }) => (active$ ? `var(${UI.COLOR_PRIMARY_OPACITY_80})` : 'transparent')};
-  background: ${({ active$ }) => (active$ ? `var(${UI.COLOR_PRIMARY_OPACITY_10})` : 'transparent')};
-  box-shadow: ${({ active$ }) => (active$ ? `0 0 0 1px var(${UI.COLOR_PRIMARY_OPACITY_10}) inset` : 'none')};
+  border: 1px solid ${({ active$, accent$ }) => (active$ ? getBorder(accent$) : 'transparent')};
+  background: ${({ active$, accent$ }) => (active$ ? getBackground(accent$) : 'transparent')};
+  box-shadow: ${({ active$, accent$ }) => (active$ ? `0 0 0 1px ${getBackground(accent$)} inset` : 'none')};
   cursor: pointer;
   transition:
     border 0.2s ease,
@@ -33,7 +48,13 @@ export const ChainButton = styled.button<{ active$?: boolean }>`
     box-shadow 0.2s ease;
 
   &:hover {
-    border-color: var(${UI.COLOR_PRIMARY_OPACITY_70});
+    border-color: ${({ accent$ }) => getBorder(accent$, fallbackHoverBorder)};
+    background: ${({ accent$ }) => getBackground(accent$)};
+  }
+
+  &:focus-visible {
+    outline: none;
+    border-color: ${({ accent$ }) => getBorder(accent$, fallbackHoverBorder)};
   }
 `
 
