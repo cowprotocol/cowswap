@@ -1,4 +1,5 @@
 import { Erc20__factory, type Erc20Interface } from '@cowprotocol/abis'
+import { areAddressesEqual } from '@cowprotocol/common-utils'
 import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Interface } from '@ethersproject/abi'
 import { BigNumber } from '@ethersproject/bignumber'
@@ -30,8 +31,8 @@ function validateEip2612Permit(
 
     if (
       decoded &&
-      decoded.spender?.toLowerCase() === spenderAddress &&
-      decoded.owner?.toLowerCase() === ownerAddress &&
+      areAddressesEqual(decoded.spender, spenderAddress) &&
+      areAddressesEqual(decoded.owner, ownerAddress) &&
       (decoded.deadline as BigNumber)?.toNumber() > Date.now() / 1000
     ) {
       return {
@@ -56,8 +57,8 @@ function validateDaiPermit(
 
     if (
       decoded &&
-      decoded.spender?.toLowerCase() === spenderAddress &&
-      decoded.holder?.toLowerCase() === ownerAddress &&
+      areAddressesEqual(decoded.spender, spenderAddress) &&
+      areAddressesEqual(decoded.holder, ownerAddress) &&
       (decoded.expiry as BigNumber)?.toNumber() > Date.now() / 1000
     ) {
       // DAI permit has no value in the call data, so we assume it's always max approval
@@ -73,12 +74,11 @@ function validateDaiPermit(
   return null
 }
 
-
 export function isPermitDecodedCalldataValid(
   callData: string,
   chainId: SupportedChainId,
   ownerAddress: string,
-  spenderAddress?: string, 
+  spenderAddress?: string,
 ): PermitValidationResult {
   const defaultSpenderAddress = (spenderAddress || COW_PROTOCOL_VAULT_RELAYER_ADDRESS[chainId]).toLowerCase()
   const normalizedOwnerAddress = ownerAddress.toLowerCase()
