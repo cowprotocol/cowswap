@@ -1,14 +1,15 @@
 import { ReactNode } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { HelpTooltip } from '@cowprotocol/ui'
+import { areAddressesEqual, getCurrencyAddress } from '@cowprotocol/common-utils'
+import { TokenLogo } from '@cowprotocol/tokens'
+import { HelpTooltip, TokenSymbol } from '@cowprotocol/ui'
 
 import { Link } from 'react-router'
 
 import * as styledEl from './styled'
 
 import { SelectTokenContext } from '../../types'
-import { TokenListItemContainer } from '../TokenListItemContainer'
 
 export interface FavoriteTokensListProps {
   tokens: TokenWithLogo[]
@@ -26,12 +27,10 @@ export function FavoriteTokensList(props: FavoriteTokensListProps): ReactNode {
   return (
     <styledEl.Section data-testid="favorite-tokens-section">
       <styledEl.TitleRow>
-        <styledEl.Title>Favourite tokens</styledEl.Title>
+        <styledEl.Title>Favorite tokens</styledEl.Title>
         {!hideTooltip && <FavoriteTokensTooltip />}
       </styledEl.TitleRow>
-      <styledEl.List>
-        <FavoriteTokensItems tokens={tokens} selectTokenContext={selectTokenContext} />
-      </styledEl.List>
+      <styledEl.List>{renderFavoriteTokenItems(tokens, selectTokenContext)}</styledEl.List>
     </styledEl.Section>
   )
 }
@@ -48,21 +47,38 @@ function FavoriteTokensTooltip(): ReactNode {
   )
 }
 
-interface FavoriteTokensItemsProps {
-  tokens: TokenWithLogo[]
-  selectTokenContext: SelectTokenContext
-}
+function renderFavoriteTokenItems(tokens: TokenWithLogo[], context: SelectTokenContext): ReactNode[] {
+  const { selectedToken } = context
+  const selectedAddress = selectedToken ? getCurrencyAddress(selectedToken) : undefined
 
-function FavoriteTokensItems({ tokens, selectTokenContext }: FavoriteTokensItemsProps): ReactNode {
-  return createFavoriteTokenItems(tokens, selectTokenContext)
-}
+  return tokens.map((token) => {
+    const isSelected =
+      !!selectedToken &&
+      token.chainId === selectedToken.chainId &&
+      !!selectedAddress &&
+      areAddressesEqual(token.address, selectedAddress)
 
-function createFavoriteTokenItems(tokens: TokenWithLogo[], selectTokenContext: SelectTokenContext): ReactNode[] {
-  const elements: ReactNode[] = []
+    const handleClick = (): void => {
+      if (isSelected) {
+        return
+      }
+      context.onTokenListItemClick?.(token)
+      context.onSelectToken(token)
+    }
 
-  for (const token of tokens) {
-    elements.push(<TokenListItemContainer key={token.address} token={token} context={selectTokenContext} />)
-  }
-
-  return elements
+    return (
+      <styledEl.TokenButton
+        key={`${token.chainId}:${token.address}`}
+        data-address={token.address.toLowerCase()}
+        data-token-symbol={token.symbol || ''}
+        data-token-name={token.name || ''}
+        data-element-type="token-selection"
+        disabled={isSelected}
+        onClick={handleClick}
+      >
+        <TokenLogo token={token} size={24} />
+        <TokenSymbol token={token} />
+      </styledEl.TokenButton>
+    )
+  })
 }
