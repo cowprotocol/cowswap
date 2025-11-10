@@ -151,7 +151,7 @@ describe('getExecutedSummaryDataWithSurplusToken', () => {
     expect(result.surplusToken.address).toBe(baseEth.address)
   })
 
-  it('ignores override token when decimals do not align for sell orders', () => {
+  it('adjusts surplus from override token decimals when decimals do not align for sell orders', () => {
     const order = buildParsedOrder({
       kind: OrderKind.SELL,
       inputToken: polygonAave,
@@ -160,7 +160,7 @@ describe('getExecutedSummaryDataWithSurplusToken', () => {
       buyAmount: '1000000000000000000',
       executedSellAmount: '2000000000000000000',
       executedBuyAmount: '1050000000000000000',
-      surplusRaw: '50000000000000000',
+      surplusRaw: '50000', // 0.05 in 6 decimals (override token's decimals)
     })
 
     const result = getExecutedSummaryDataWithSurplusToken(order, polygonUsdc)
