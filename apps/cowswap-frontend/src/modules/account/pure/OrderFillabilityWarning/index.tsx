@@ -3,7 +3,7 @@ import { ReactNode } from 'react'
 import { BannerOrientation, StatusColorVariant } from '@cowprotocol/ui'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
-import { OrderFillability } from 'common/hooks/usePendingOrdersFillability'
+import { OrderFillability } from 'modules/ordersTable'
 
 import {
   ApproveWrapper,
