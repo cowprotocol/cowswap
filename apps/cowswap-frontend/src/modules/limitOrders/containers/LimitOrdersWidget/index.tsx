@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai'
-import React, { useCallback, useEffect, useMemo } from 'react'
+import React, { ReactElement, useCallback, useEffect, useMemo } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { isSellOrder } from '@cowprotocol/common-utils'
@@ -60,10 +60,7 @@ const UNLOCK_SCREEN = {
   buttonLink: 'https://cow.fi/learn/cow-swap-improves-the-limit-order-experience-with-partially-fillable-limit-orders',
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function LimitOrdersWidget() {
+export function LimitOrdersWidget(): ReactElement {
   const {
     inputCurrency,
     outputCurrency,
