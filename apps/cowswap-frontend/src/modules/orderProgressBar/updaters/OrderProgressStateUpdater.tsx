@@ -4,8 +4,12 @@ import { ReactNode, useEffect, useMemo } from 'react'
 import { OrderClass, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { useSurplusQueueOrderIds } from 'entities/surplusModal'
+
 import { Order } from 'legacy/state/orders/actions'
 import { useOnlyPendingOrders } from 'legacy/state/orders/hooks'
+
+import { useTradeConfirmState } from 'modules/trade'
 
 import { useOrderProgressBarProps } from '../hooks/useOrderProgressBarProps'
 import { pruneOrdersProgressBarState } from '../state/atoms'
@@ -18,6 +22,8 @@ function OrderProgressStateObserver({ chainId, order }: { chainId: SupportedChai
 export function OrderProgressStateUpdater(): ReactNode {
   const { chainId, account } = useWalletInfo()
   const pruneProgressState = useSetAtom(pruneOrdersProgressBarState)
+  const { transactionHash } = useTradeConfirmState()
+  const surplusQueueOrderIds = useSurplusQueueOrderIds()
 
   const pendingOrders = useOnlyPendingOrders(chainId as SupportedChainId, account)
   const marketOrders = useMemo(
@@ -26,9 +32,20 @@ export function OrderProgressStateUpdater(): ReactNode {
   )
 
   useEffect(() => {
-    const trackedIds = account && chainId ? marketOrders.map((order) => order.id) : []
-    pruneProgressState(trackedIds)
-  }, [account, chainId, marketOrders, pruneProgressState])
+    const trackedIdsSet = new Set<string>()
+
+    if (account && chainId) {
+      marketOrders.forEach((order) => trackedIdsSet.add(order.id))
+    }
+
+    surplusQueueOrderIds.forEach((orderId) => trackedIdsSet.add(orderId))
+
+    if (transactionHash) {
+      trackedIdsSet.add(transactionHash)
+    }
+
+    pruneProgressState(Array.from(trackedIdsSet))
+  }, [account, chainId, marketOrders, pruneProgressState, surplusQueueOrderIds, transactionHash])
 
   if (!chainId || !account) {
     return null
