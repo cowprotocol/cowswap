@@ -1,10 +1,6 @@
 import { createStore } from 'jotai'
 
-import {
-  ordersProgressBarStateAtom,
-  pruneOrdersProgressBarState,
-  updateOrderProgressBarCountdown,
-} from './atoms'
+import { ordersProgressBarStateAtom, pruneOrdersProgressBarState, updateOrderProgressBarCountdown } from './atoms'
 
 import { OrderProgressBarStepName, OrdersProgressBarState } from '../types'
 
@@ -49,6 +45,7 @@ describe('pruneOrdersProgressBarState', () => {
 
     expect(store.get(ordersProgressBarStateAtom)).toBe(initialState)
   })
+
 })
 
 describe('updateOrderProgressBarCountdown', () => {
