@@ -7,6 +7,7 @@ import { blankButtonMixin } from '../commonElements'
 export interface ChainAccentVars {
   backgroundVar: UI
   borderVar: UI
+  accentColorVar?: UI
 }
 
 const fallbackBackground = `var(${UI.COLOR_PRIMARY_OPACITY_10})`
@@ -18,6 +19,9 @@ const getBackground = (accent$?: ChainAccentVars, fallback = fallbackBackground)
 
 const getBorder = (accent$?: ChainAccentVars, fallback = fallbackBorder): string =>
   accent$ ? `var(${accent$.borderVar})` : fallback
+
+const getAccentColor = (accent$?: ChainAccentVars): string | undefined =>
+  accent$?.accentColorVar ? `var(${accent$.accentColorVar})` : undefined
 
 export const List = styled.div`
   display: flex;
@@ -88,13 +92,13 @@ export const ChainText = styled.span`
   color: var(${UI.COLOR_TEXT});
 `
 
-export const ActiveIcon = styled.span`
+export const ActiveIcon = styled.span<{ accent$?: ChainAccentVars; color$?: string }>`
   width: 20px;
   height: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(${UI.COLOR_PRIMARY});
+  color: ${({ color$, accent$ }) => getAccentColor(accent$) ?? color$ ?? getBorder(accent$, `var(${UI.COLOR_PRIMARY})`)};
 
   > svg {
     width: 16px;
