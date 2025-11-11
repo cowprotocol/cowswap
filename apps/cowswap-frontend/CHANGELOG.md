@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.123.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.122.0...cowswap-v1.123.0) (2025-11-10)
+
+
+### Features
+
+* **limit-orders:** check permit validity in orders table  ([#6496](https://github.com/cowprotocol/cowswap/issues/6496)) ([0390370](https://github.com/cowprotocol/cowswap/commit/03903702f5fddee093cccde9785d2c49c65aff95))
+* **new-chains:** add q4 chains ([#6404](https://github.com/cowprotocol/cowswap/issues/6404)) ([ba4edb0](https://github.com/cowprotocol/cowswap/commit/ba4edb0fdc7b4c700dfeae9023da330d74a9faea))
+
+
+### Bug Fixes
+
+* hide affected order section user disable partial approve ([#6479](https://github.com/cowprotocol/cowswap/issues/6479)) ([1385188](https://github.com/cowprotocol/cowswap/commit/13851882e8446bb1c822052ccc64c08c52f77b1a))
+* **trade:** compare tx approve amount with min amount to swap ([#6501](https://github.com/cowprotocol/cowswap/issues/6501)) ([6f649ec](https://github.com/cowprotocol/cowswap/commit/6f649ec3a2562b3a65aa8c338041ef34fbe9e8ad))
+
 ## [1.122.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.121.5...cowswap-v1.122.0) (2025-11-05)
 
 

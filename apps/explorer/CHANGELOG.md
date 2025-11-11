@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.58.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.57.0...explorer-v2.58.0) (2025-11-10)
+
+
+### Features
+
+* **new-chains:** add q4 chains ([#6404](https://github.com/cowprotocol/cowswap/issues/6404)) ([ba4edb0](https://github.com/cowprotocol/cowswap/commit/ba4edb0fdc7b4c700dfeae9023da330d74a9faea))
+
+
+### Bug Fixes
+
+* **explorer:** do not add tx row when there's no tx hash ([#6499](https://github.com/cowprotocol/cowswap/issues/6499)) ([3f66a7a](https://github.com/cowprotocol/cowswap/commit/3f66a7adb820fc246fe7b2f9624b157bcb25c5b3))
+
 ## [2.57.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.56.0...explorer-v2.57.0) (2025-11-05)
 
 
