@@ -14,27 +14,27 @@ const getBackground = (accent?: ChainAccentVars): string =>
 const getBorder = (accent?: ChainAccentVars): string => (accent ? `var(${accent.borderVar})` : fallbackBorder)
 
 export const MobileSelectorRow = styled.div`
-  padding: 0 16px 12px;
+  padding: 0 14px 12px;
   display: flex;
   flex-direction: column;
   gap: 8px;
 `
 
 export const MobileSelectorLabel = styled(ListTitle)`
-  padding: 8px 0 4px;
+  padding: 4px 0;
 `
 
 export const ChipsWrapper = styled.div`
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 `
 
 export const ChainChipButton = styled.button<{ $active?: boolean; $accent?: ChainAccentVars }>`
   --size: 44px;
   width: var(--size);
   height: var(--size);
-  border-radius: 50%;
+  border-radius: 10px;
   border: 2px solid ${({ $active, $accent }) => ($active ? getBorder($accent) : 'transparent')};
   background: ${({ $active, $accent }) => ($active ? getBackground($accent) : 'transparent')};
   display: flex;
@@ -46,8 +46,9 @@ export const ChainChipButton = styled.button<{ $active?: boolean; $accent?: Chai
     background 0.2s ease;
 
   > img {
-    width: 70%;
-    height: 70%;
+    --size: 100%;
+    width: var(--size);
+    height: var(--size);
     object-fit: contain;
   }
 `
@@ -55,16 +56,24 @@ export const ChainChipButton = styled.button<{ $active?: boolean; $accent?: Chai
 export const MoreChipButton = styled.button`
   --size: 44px;
   height: var(--size);
-  min-width: var(--size);
-  padding: 0 14px;
+  padding: 0 12px;
   border-radius: var(--size);
-  border: 1px dashed var(${UI.COLOR_BORDER});
+  border: 1px solid var(${UI.COLOR_PAPER_DARKER});
   background: transparent;
   color: var(${UI.COLOR_TEXT});
   font-weight: 600;
   font-size: 13px;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 4px;
   cursor: pointer;
+  white-space: nowrap;
+
+  svg {
+    --size: 18px;
+    stroke: var(${UI.COLOR_TEXT_OPACITY_50});
+    width: var(--size);
+    height: var(--size);
+  }
 `

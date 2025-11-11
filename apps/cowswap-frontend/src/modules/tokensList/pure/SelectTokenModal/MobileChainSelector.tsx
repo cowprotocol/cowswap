@@ -3,6 +3,8 @@ import { ReactNode, useMemo } from 'react'
 import { useTheme } from '@cowprotocol/common-hooks'
 import { ChainInfo } from '@cowprotocol/cow-sdk'
 
+import { ChevronDown } from 'react-feather'
+
 import * as styledEl from './mobileChainSelector.styled'
 
 import { ChainsToSelectState } from '../../types'
@@ -48,11 +50,12 @@ export function MobileChainSelector({
             onSelectChain={onSelectChain}
           />
         ))}
-        {remainingCount > 0 && (
+        {remainingCount > 0 ? (
           <styledEl.MoreChipButton onClick={onOpenPanel} aria-label={`Show all ${totalChains} networks`}>
-            +{remainingCount} more
+            <span>All networks ({remainingCount})</span>
+            <ChevronDown size={14} />
           </styledEl.MoreChipButton>
-        )}
+        ) : null}
       </styledEl.ChipsWrapper>
     </styledEl.MobileSelectorRow>
   )

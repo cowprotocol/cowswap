@@ -40,7 +40,7 @@ export const PanelHeader = styled.div<{ $isFullscreen?: boolean }>`
 `
 
 export const PanelTitle = styled.h4<{ $isFullscreen?: boolean }>`
-  font-size: ${({ $isFullscreen }) => ($isFullscreen ? '20px' : '14px')};
+  font-size: ${({ $isFullscreen }) => ($isFullscreen ? '18px' : '14px')};
   font-weight: ${({ $isFullscreen }) => ($isFullscreen ? 600 : 500)};
   margin: 0;
   flex: 1;
