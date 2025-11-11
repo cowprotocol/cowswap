@@ -64,6 +64,7 @@ interface TokensContentSectionProps
     | 'areTokensFromBridge'
     | 'hideFavoriteTokensTooltip'
     | 'selectedTargetChainId'
+    | 'onClearRecentTokens'
   > {
   searchInput: string
   selectTokenContext: SelectTokenContext
@@ -80,6 +81,7 @@ export function TokensContentSection({
   hideFavoriteTokensTooltip,
   selectedTargetChainId,
   selectTokenContext,
+  onClearRecentTokens,
 }: TokensContentSectionProps): ReactNode {
   return (
     <TokensContent
@@ -93,6 +95,7 @@ export function TokensContentSection({
       areTokensFromBridge={areTokensFromBridge}
       hideFavoriteTokensTooltip={hideFavoriteTokensTooltip}
       selectedTargetChainId={selectedTargetChainId}
+      onClearRecentTokens={onClearRecentTokens}
     />
   )
 }

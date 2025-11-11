@@ -31,6 +31,7 @@ export function SelectTokenModal(props: SelectTokenModalProps): ReactNode {
     onOpenManageWidget,
     favoriteTokens,
     recentTokens,
+    onClearRecentTokens,
     areTokensLoading,
     allTokens,
     areTokensFromBridge,
@@ -81,6 +82,7 @@ export function SelectTokenModal(props: SelectTokenModalProps): ReactNode {
           displayLpTokenLists={displayLpTokenLists}
           favoriteTokens={favoriteTokens}
           recentTokens={recentTokens}
+          onClearRecentTokens={onClearRecentTokens}
           areTokensLoading={areTokensLoading}
           allTokens={allTokens}
           searchInput={trimmedInputValue}

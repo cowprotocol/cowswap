@@ -23,11 +23,12 @@ export interface TokensVirtualListProps {
   recentTokens?: TokenWithLogo[]
   hideFavoriteTokensTooltip?: boolean
   scrollResetKey?: number
+  onClearRecentTokens?: () => void
 }
 
 type TokensVirtualRow =
   | { type: 'favorite-section'; tokens: TokenWithLogo[]; hideTooltip?: boolean }
-  | { type: 'title'; label: string }
+  | { type: 'title'; label: string; actionLabel?: string; onAction?: () => void }
   | { type: 'token'; token: TokenWithLogo }
 
 export function TokensVirtualList(props: TokensVirtualListProps): ReactNode {
@@ -39,6 +40,7 @@ export function TokensVirtualList(props: TokensVirtualListProps): ReactNode {
     recentTokens,
     hideFavoriteTokensTooltip,
     scrollResetKey,
+    onClearRecentTokens,
   } = props
   const { values: balances } = selectTokenContext.balancesState
 
@@ -81,7 +83,12 @@ export function TokensVirtualList(props: TokensVirtualListProps): ReactNode {
     }
 
     if (recentTokens?.length) {
-      composedRows.push({ type: 'title', label: 'Recent' })
+      composedRows.push({
+        type: 'title',
+        label: 'Recent',
+        actionLabel: onClearRecentTokens ? 'Clear' : undefined,
+        onAction: onClearRecentTokens,
+      })
       recentTokens.forEach((token) => composedRows.push({ type: 'token', token }))
     }
 
@@ -90,7 +97,7 @@ export function TokensVirtualList(props: TokensVirtualListProps): ReactNode {
     }
 
     return [...composedRows, ...tokenRows]
-  }, [favoriteTokens, hideFavoriteTokensTooltip, recentTokens, sortedTokens])
+  }, [favoriteTokens, hideFavoriteTokensTooltip, onClearRecentTokens, recentTokens, sortedTokens])
 
   const virtualListKey = scrollResetKey ?? 'tokens-list'
 
@@ -130,7 +137,16 @@ function TokensVirtualRowRenderer({ row, selectTokenContext }: TokensVirtualRowR
         />
       )
     case 'title':
-      return <modalStyled.ListTitle>{row.label}</modalStyled.ListTitle>
+      return (
+        <modalStyled.ListTitle>
+          <span>{row.label}</span>
+          {row.actionLabel && row.onAction ? (
+            <modalStyled.ListTitleActionButton type="button" onClick={row.onAction}>
+              {row.actionLabel}
+            </modalStyled.ListTitleActionButton>
+          ) : null}
+        </modalStyled.ListTitle>
+      )
     default:
       return <TokenListItemContainer token={row.token} context={selectTokenContext} />
   }

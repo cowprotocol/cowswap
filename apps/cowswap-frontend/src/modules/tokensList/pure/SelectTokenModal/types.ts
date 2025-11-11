@@ -40,6 +40,7 @@ export interface SelectTokenModalProps<T = TokenListCategory[] | null> {
 
   onSelectToken(token: TokenWithLogo): void
   onTokenListItemClick?(token: TokenWithLogo): void
+  onClearRecentTokens?(): void
   openPoolPage(poolAddress: string): void
   onInputPressEnter?(): void
   onOpenManageWidget(): void

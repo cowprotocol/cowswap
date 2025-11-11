@@ -78,6 +78,7 @@ interface ImportFlowCallbacks {
 interface RecentTokenSection {
   recentTokens: TokenWithLogo[]
   handleTokenListItemClick(token: TokenWithLogo): void
+  clearRecentTokens(): void
 }
 
 export function useManageWidgetVisibility(): ManageWidgetVisibility {
@@ -216,7 +217,11 @@ export function useRecentTokenSection(
   favoriteTokens: TokenWithLogo[],
   activeChainId?: number,
 ): RecentTokenSection {
-  const { recentTokens, addRecentToken } = useRecentTokens({ allTokens, favoriteTokens, activeChainId })
+  const { recentTokens, addRecentToken, clearRecentTokens } = useRecentTokens({
+    allTokens,
+    favoriteTokens,
+    activeChainId,
+  })
 
   const handleTokenListItemClick = useCallback(
     (token: TokenWithLogo) => {
@@ -225,7 +230,7 @@ export function useRecentTokenSection(
     [addRecentToken],
   )
 
-  return { recentTokens, handleTokenListItemClick }
+  return { recentTokens, handleTokenListItemClick, clearRecentTokens }
 }
 
 export function useTokenSelectionHandler(

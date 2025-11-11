@@ -20,6 +20,7 @@ export interface TokensContentProps {
   areTokensFromBridge: boolean
   hideFavoriteTokensTooltip?: boolean
   selectedTargetChainId?: number
+  onClearRecentTokens?: () => void
 }
 
 export function TokensContent({
@@ -33,6 +34,7 @@ export function TokensContent({
   areTokensFromBridge,
   hideFavoriteTokensTooltip,
   selectedTargetChainId,
+  onClearRecentTokens,
 }: TokensContentProps): ReactNode {
   const shouldShowFavoritesInline = !areTokensLoading && !searchInput && favoriteTokens.length > 0
   const shouldShowRecentsInline = !areTokensLoading && !searchInput && (recentTokens?.length ?? 0) > 0
@@ -90,6 +92,7 @@ export function TokensContent({
               recentTokens={recentTokensInline}
               hideFavoriteTokensTooltip={hideFavoriteTokensTooltip}
               scrollResetKey={selectedTargetChainId}
+              onClearRecentTokens={onClearRecentTokens}
             />
           )}
         </>

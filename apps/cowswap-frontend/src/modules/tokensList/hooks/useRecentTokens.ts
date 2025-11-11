@@ -27,6 +27,7 @@ interface UseRecentTokensParams {
 export interface RecentTokensState {
   recentTokens: TokenWithLogo[]
   addRecentToken(token: TokenWithLogo): void
+  clearRecentTokens(): void
 }
 
 export function useRecentTokens({
@@ -110,7 +111,26 @@ export function useRecentTokens({
     [favoriteKeys, maxItems],
   )
 
-  return { recentTokens, addRecentToken }
+  const clearRecentTokens = useCallback(() => {
+    if (!activeChainId) {
+      return
+    }
+
+    setStoredTokensByChain((prev) => {
+      const chainEntries = prev[activeChainId]
+
+      if (!chainEntries?.length) {
+        return prev
+      }
+
+      const next: StoredRecentTokensByChain = { ...prev, [activeChainId]: [] }
+      persistStoredTokens(next)
+
+      return next
+    })
+  }, [activeChainId])
+
+  return { recentTokens, addRecentToken, clearRecentTokens }
 }
 
 export { persistRecentTokenSelectionInternal as persistRecentTokenSelection }

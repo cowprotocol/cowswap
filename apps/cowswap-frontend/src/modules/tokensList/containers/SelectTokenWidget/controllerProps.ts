@@ -65,6 +65,7 @@ interface BuildModalPropsArgs {
   recentTokens: TokenWithLogo[]
   handleSelectToken(token: TokenWithLogo): void
   onTokenListItemClick(token: TokenWithLogo): void
+  onClearRecentTokens(): void
   onDismiss(): void
   onOpenManageWidget(): void
   openPoolPage(poolAddress: string): void
@@ -132,6 +133,7 @@ export function buildSelectTokenModalPropsInput({
   recentTokens,
   handleSelectToken,
   onTokenListItemClick,
+  onClearRecentTokens,
   onDismiss,
   onOpenManageWidget,
   openPoolPage,
@@ -175,6 +177,7 @@ export function buildSelectTokenModalPropsInput({
     selectedTargetChainId: widgetState.selectedTargetChainId,
     mobileChainsState: chainsState,
     onSelectChain,
+    onClearRecentTokens,
   }
 }
 
@@ -211,6 +214,7 @@ export function useSelectTokenModalPropsMemo(props: SelectTokenModalProps): Sele
       mobileChainsLabel: props.mobileChainsLabel,
       onSelectChain: props.onSelectChain,
       onOpenMobileChainPanel: props.onOpenMobileChainPanel,
+      onClearRecentTokens: props.onClearRecentTokens,
     }),
     [
       props.standalone,
@@ -243,6 +247,7 @@ export function useSelectTokenModalPropsMemo(props: SelectTokenModalProps): Sele
       props.mobileChainsLabel,
       props.onSelectChain,
       props.onOpenMobileChainPanel,
+      props.onClearRecentTokens,
     ],
   )
 }

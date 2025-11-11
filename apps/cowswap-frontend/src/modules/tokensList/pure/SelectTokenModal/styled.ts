@@ -130,10 +130,28 @@ export const Separator = styled.div`
 `
 
 export const ListTitle = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
   font-size: 14px;
   font-weight: 500;
   color: var(${UI.COLOR_TEXT_OPACITY_70});
   padding: 8px 16px 4px;
+`
+
+export const ListTitleActionButton = styled.button`
+  ${blankButtonMixin};
+  font-size: 13px;
+  font-weight: 600;
+  color: var(${UI.COLOR_TEXT});
+  padding: 2px 6px;
+  border-radius: 6px;
+  transition: color var(${UI.ANIMATION_DURATION}) ease-in-out;
+
+  &:hover {
+    color: var(${UI.COLOR_TEXT_OPACITY_70});
+  }
 `
 
 export const TokensLoader = styled.div`
