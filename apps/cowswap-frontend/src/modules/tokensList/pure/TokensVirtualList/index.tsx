@@ -2,6 +2,7 @@ import { ReactNode, useCallback, useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { getIsNativeToken } from '@cowprotocol/common-utils'
 
 import { VirtualItem } from '@tanstack/react-virtual'
 
@@ -44,8 +45,27 @@ export function TokensVirtualList(props: TokensVirtualListProps): ReactNode {
   const { isYieldEnabled } = useFeatureFlags()
 
   const sortedTokens = useMemo(() => {
-    const listToSort = [...allTokens]
-    return balances ? listToSort.sort(tokensListSorter(balances)) : listToSort
+    if (!balances) {
+      return allTokens
+    }
+
+    const prioritized: TokenWithLogo[] = []
+    const remainder: TokenWithLogo[] = []
+
+    for (const token of allTokens) {
+      const hasBalance = Boolean(balances[token.address.toLowerCase()])
+      if (hasBalance || getIsNativeToken(token)) {
+        prioritized.push(token)
+      } else {
+        remainder.push(token)
+      }
+    }
+
+    // Only sort the handful of tokens the user actually holds (plus natives) so large lists stay cheap to render.
+    const sortedPrioritized =
+      prioritized.length > 1 ? [...prioritized].sort(tokensListSorter(balances)) : prioritized
+
+    return [...sortedPrioritized, ...remainder]
   }, [allTokens, balances])
 
   const rows = useMemo<TokensVirtualRow[]>(() => {
