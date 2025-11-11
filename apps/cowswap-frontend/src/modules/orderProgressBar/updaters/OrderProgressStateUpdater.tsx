@@ -12,7 +12,7 @@ import { useOnlyPendingOrders } from 'legacy/state/orders/hooks'
 import { useTradeConfirmState } from 'modules/trade'
 
 import { useOrderProgressBarProps } from '../hooks/useOrderProgressBarProps'
-import { ordersProgressBarStateAtom, pruneOrdersProgressBarState } from '../state/atoms'
+import { cancellationTrackedOrderIdsAtom, pruneOrdersProgressBarState } from '../state/atoms'
 
 function OrderProgressStateObserver({ chainId, order }: { chainId: SupportedChainId; order: Order }): null {
   useOrderProgressBarProps(chainId, order)
@@ -24,7 +24,7 @@ export function OrderProgressStateUpdater(): ReactNode {
   const pruneProgressState = useSetAtom(pruneOrdersProgressBarState)
   const { transactionHash } = useTradeConfirmState()
   const surplusQueueOrderIds = useSurplusQueueOrderIds()
-  const progressState = useAtomValue(ordersProgressBarStateAtom)
+  const cancellationTrackedOrderIds = useAtomValue(cancellationTrackedOrderIdsAtom)
 
   const pendingOrders = useOnlyPendingOrders(chainId as SupportedChainId, account)
   const marketOrders = useMemo(
@@ -45,14 +45,18 @@ export function OrderProgressStateUpdater(): ReactNode {
       trackedIdsSet.add(transactionHash)
     }
 
-    Object.entries(progressState || {}).forEach(([orderId, state]) => {
-      if (state?.cancellationTriggered) {
-        trackedIdsSet.add(orderId)
-      }
-    })
+    cancellationTrackedOrderIds.forEach((orderId) => trackedIdsSet.add(orderId))
 
     pruneProgressState(Array.from(trackedIdsSet))
-  }, [account, chainId, marketOrders, progressState, pruneProgressState, surplusQueueOrderIds, transactionHash])
+  }, [
+    account,
+    cancellationTrackedOrderIds,
+    chainId,
+    marketOrders,
+    pruneProgressState,
+    surplusQueueOrderIds,
+    transactionHash,
+  ])
 
   if (!chainId || !account) {
     return null

@@ -289,6 +289,10 @@ function useCountdownStartUpdater(
   const setCountdown = useSetExecutingOrderCountdownCallback()
 
   useEffect(() => {
+    if (!orderId) {
+      return
+    }
+
     if (shouldDisableCountdown) {
       // Loose `!= null` on purpose: both null and undefined should reset the countdown, but 0 must stay; strict `!== null` would let undefined slip through
       if (countdown != null) {
@@ -312,7 +316,11 @@ function useCancellingOrderUpdater(orderId: string, isCancelling: boolean): void
   const setCancellationTriggered = useSetAtom(setOrderProgressBarCancellationTriggered)
 
   useEffect(() => {
-    if (isCancelling) setCancellationTriggered(orderId)
+    if (!orderId || !isCancelling) {
+      return
+    }
+
+    setCancellationTriggered(orderId)
   }, [orderId, isCancelling, setCancellationTriggered])
 }
 
@@ -352,6 +360,10 @@ function useProgressBarStepNameUpdater(
 
   // Update state with new step name
   useEffect(() => {
+    if (!orderId) {
+      return
+    }
+
     function updateStepName(name: OrderProgressBarStepName): void {
       setProgressBarStepName(orderId, name || DEFAULT_STEP_NAME)
     }

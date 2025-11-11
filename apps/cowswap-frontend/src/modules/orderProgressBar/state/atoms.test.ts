@@ -1,6 +1,11 @@
 import { createStore } from 'jotai'
 
-import { ordersProgressBarStateAtom, pruneOrdersProgressBarState, updateOrderProgressBarCountdown } from './atoms'
+import {
+  cancellationTrackedOrderIdsAtom,
+  ordersProgressBarStateAtom,
+  pruneOrdersProgressBarState,
+  updateOrderProgressBarCountdown,
+} from './atoms'
 
 import { OrderProgressBarStepName, OrdersProgressBarState } from '../types'
 
@@ -119,5 +124,18 @@ describe('updateOrderProgressBarCountdown', () => {
     store.set(updateOrderProgressBarCountdown, { orderId, value: null })
 
     expect(store.get(ordersProgressBarStateAtom)).toEqual({})
+  })
+})
+
+describe('cancellationTrackedOrderIdsAtom', () => {
+  it('returns ids with cancellationTriggered flag set', () => {
+    const store = createStore()
+    store.set(ordersProgressBarStateAtom, {
+      a: { cancellationTriggered: true },
+      b: {},
+      c: { cancellationTriggered: true },
+    })
+
+    expect(store.get(cancellationTrackedOrderIdsAtom)).toEqual(['a', 'c'])
   })
 })

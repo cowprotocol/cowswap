@@ -36,7 +36,7 @@ jest.mock('modules/trade', () => ({
 }))
 
 const mockPruneOrders = jest.fn()
-const mockProgressState = jest.fn()
+const mockCancellationIds = jest.fn()
 
 jest.mock('jotai', () => {
   const actual = jest.requireActual('jotai')
@@ -53,10 +53,10 @@ jest.mock('jotai', () => {
       return actual.useSetAtom(atom)
     }),
     useAtomValue: jest.fn((atom: PrimitiveAtom<unknown>) => {
-      const { ordersProgressBarStateAtom } = jest.requireActual('../state/atoms')
+      const { cancellationTrackedOrderIdsAtom } = jest.requireActual('../state/atoms')
 
-      if (atom === ordersProgressBarStateAtom) {
-        return mockProgressState()
+      if (atom === cancellationTrackedOrderIdsAtom) {
+        return mockCancellationIds()
       }
 
       return actual.useAtomValue(atom)
@@ -82,7 +82,7 @@ describe('OrderProgressStateUpdater', () => {
     })
     useSurplusQueueOrderIdsMock.mockReturnValue([])
     useTradeConfirmStateMock.mockReturnValue({ transactionHash: null } as never)
-    mockProgressState.mockReturnValue({})
+    mockCancellationIds.mockReturnValue([])
   })
 
   afterEach(() => {
@@ -172,10 +172,7 @@ describe('OrderProgressStateUpdater', () => {
       account: undefined,
     } as unknown as WalletInfo)
     useOnlyPendingOrdersMock.mockReturnValue([])
-    mockProgressState.mockReturnValue({
-      'abc': { cancellationTriggered: true },
-      'def': {},
-    })
+    mockCancellationIds.mockReturnValue(['abc'])
 
     render(<OrderProgressStateUpdater />)
 
