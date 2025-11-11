@@ -1,7 +1,8 @@
 import { ReactNode, useMemo } from 'react'
 
-import { useTheme } from '@cowprotocol/common-hooks'
+import { useMediaQuery, useTheme } from '@cowprotocol/common-hooks'
 import { ChainInfo } from '@cowprotocol/cow-sdk'
+import { Media } from '@cowprotocol/ui'
 
 import { ChevronDown } from 'react-feather'
 
@@ -9,8 +10,6 @@ import * as styledEl from './mobileChainSelector.styled'
 
 import { ChainsToSelectState } from '../../types'
 import { getChainAccent } from '../ChainsSelector'
-
-const MAX_VISIBLE_CHAINS = 3
 
 interface MobileChainSelectorProps {
   chainsState: ChainsToSelectState
@@ -25,13 +24,14 @@ export function MobileChainSelector({
   onSelectChain,
   onOpenPanel,
 }: MobileChainSelectorProps): ReactNode {
+  const maxVisibleChains = useMaxVisibleChains()
   const orderedChains = useMemo(
     () => reorderChains(chainsState.chains ?? [], chainsState.defaultChainId),
     [chainsState.chains, chainsState.defaultChainId],
   )
 
   const totalChains = chainsState.chains?.length ?? 0
-  const visibleChains = orderedChains.slice(0, MAX_VISIBLE_CHAINS)
+  const visibleChains = orderedChains.slice(0, maxVisibleChains)
   const remainingCount = Math.max(totalChains - visibleChains.length, 0)
 
   return (
@@ -99,4 +99,19 @@ function reorderChains(chains: ChainInfo[], defaultChainId: ChainInfo['id'] | un
 
   const [current] = sorted.splice(index, 1)
   return [current, ...sorted]
+}
+
+function useMaxVisibleChains(): number {
+  const isUpToTiny = useMediaQuery(Media.upToTiny(false))
+  const isUpToSmall = useMediaQuery(Media.upToSmall(false))
+
+  if (isUpToTiny) {
+    return 3
+  }
+
+  if (isUpToSmall) {
+    return 4
+  }
+
+  return 6
 }
