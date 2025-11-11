@@ -12,6 +12,7 @@ import { Nullish } from 'types'
 
 import * as styledEl from './styled'
 
+import { useDeferredVisibility } from '../../hooks/useDeferredVisibility'
 import { TokenInfo } from '../TokenInfo'
 import { TokenTags } from '../TokenTags'
 
@@ -58,6 +59,12 @@ export function TokenListItem(props: TokenListItemProps): ReactNode {
     className,
   } = props
 
+  const tokenKey = `${token.chainId}:${token.address.toLowerCase()}`
+  const { ref: visibilityRef, isVisible: hasIntersected } = useDeferredVisibility<HTMLDivElement>({
+    resetKey: tokenKey,
+    rootMargin: '200px',
+  })
+
   const handleClick: MouseEventHandler<HTMLDivElement> = (e) => {
     if (isTokenSelected) {
       e.preventDefault()
@@ -79,6 +86,7 @@ export function TokenListItem(props: TokenListItemProps): ReactNode {
 
   return (
     <styledEl.TokenItem
+      ref={visibilityRef}
       data-address={token.address.toLowerCase()}
       data-token-symbol={token.symbol || ''}
       data-token-name={token.name || ''}
@@ -88,13 +96,16 @@ export function TokenListItem(props: TokenListItemProps): ReactNode {
     >
       <TokenInfo
         token={token}
+        showAddress={hasIntersected}
         tags={
-          <TokenTags
-            isUnsupported={isUnsupported}
-            isPermitCompatible={isPermitCompatible}
-            tags={token.tags}
-            tokenListTags={tokenListTags}
-          />
+          hasIntersected ? (
+            <TokenTags
+              isUnsupported={isUnsupported}
+              isPermitCompatible={isPermitCompatible}
+              tags={token.tags}
+              tokenListTags={tokenListTags}
+            />
+          ) : null
         }
       />
       {isWalletConnected && (

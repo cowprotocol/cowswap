@@ -96,8 +96,12 @@ export const PanelSearchInput = styled(UISearchInput)`
   color: inherit;
   border: none;
   background: transparent;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 400;
+
+  ${Media.upToSmall()} {
+    font-size: 16px;
+  }
 `
 
 export const PanelList = styled.div`
