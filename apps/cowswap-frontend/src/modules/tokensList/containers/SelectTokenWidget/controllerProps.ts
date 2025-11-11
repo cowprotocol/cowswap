@@ -11,7 +11,6 @@ import type { useSelectTokenWidgetState } from '../../hooks/useSelectTokenWidget
 import type { SelectTokenModalProps } from '../../pure/SelectTokenModal'
 
 type WidgetState = ReturnType<typeof useSelectTokenWidgetState>
-
 export interface SelectTokenWidgetViewProps {
   standalone?: boolean
   tokenToImport?: TokenWithLogo
