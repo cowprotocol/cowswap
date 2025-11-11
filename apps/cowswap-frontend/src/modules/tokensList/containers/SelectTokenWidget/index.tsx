@@ -1,17 +1,18 @@
-import { ReactNode, useEffect, useState } from 'react'
+import { MouseEvent, ReactNode, useEffect, useState } from 'react'
 
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
 import { Media } from '@cowprotocol/ui'
 
 import { createPortal } from 'react-dom'
-import styled, { css } from 'styled-components/macro'
 
 import {
   useSelectTokenWidgetController,
   type SelectTokenWidgetProps,
   type SelectTokenWidgetViewProps,
 } from './controller'
+import { MobileChainPanelPortal } from './MobileChainPanelPortal'
+import { InnerWrapper, ModalContainer, WidgetCard, WidgetOverlay, Wrapper } from './styled'
 
 import { ChainPanel } from '../../pure/ChainPanel'
 import { ImportListModal } from '../../pure/ImportListModal'
@@ -20,57 +21,11 @@ import { SelectTokenModal } from '../../pure/SelectTokenModal'
 import { LpTokenPage } from '../LpTokenPage'
 import { ManageListsAndTokens } from '../ManageListsAndTokens'
 
-const Wrapper = styled.div<{ $isMobileOverlay?: boolean }>`
-  width: 100%;
-  height: ${({ $isMobileOverlay }) => ($isMobileOverlay ? '100%' : 'auto')};
-`
-
-const InnerWrapper = styled.div<{ $hasSidebar: boolean; $isMobileOverlay?: boolean }>`
-  height: ${({ $isMobileOverlay }) => ($isMobileOverlay ? '100%' : 'calc(100vh - 200px)')};
-  min-height: ${({ $isMobileOverlay }) => ($isMobileOverlay ? '0' : '600px')};
-  width: 100%;
-  margin: 0 auto;
-  display: flex;
-  align-items: stretch;
-
-  ${({ $hasSidebar }) =>
-    $hasSidebar &&
-    css`
-      /* Stack modal + sidebar vertically on narrow screens so neither pane collapses */
-      ${Media.upToMedium()} {
-        flex-direction: column;
-        height: auto;
-        min-height: 0;
-      }
-
-      ${Media.upToSmall()} {
-        min-height: 0;
-      }
-    `}
-
-  ${({ $isMobileOverlay }) =>
-    $isMobileOverlay &&
-    css`
-      flex-direction: column;
-      height: 100%;
-      min-height: 0;
-    `}
-`
-
-const ModalContainer = styled.div<{ $isMobileOverlay?: boolean }>`
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  height: ${({ $isMobileOverlay }) => ($isMobileOverlay ? '100%' : 'auto')};
-`
-
 export function SelectTokenWidget(props: SelectTokenWidgetProps): ReactNode {
-  const controller = useSelectTokenWidgetController(props)
+  const { shouldRender, hasChainPanel, viewProps } = useSelectTokenWidgetController(props)
   const isCompactLayout = useMediaQuery(Media.upToMedium(false))
   const [isMobileChainPanelOpen, setIsMobileChainPanelOpen] = useState(false)
-  const isChainPanelVisible = controller.hasChainPanel && !isCompactLayout
-  const shouldLockScroll = isCompactLayout || isMobileChainPanelOpen
-  const { shouldRender } = controller
+  const isChainPanelVisible = hasChainPanel && !isCompactLayout
 
   useEffect(() => {
     if (!shouldRender) {
@@ -88,24 +43,19 @@ export function SelectTokenWidget(props: SelectTokenWidgetProps): ReactNode {
       return undefined
     }
 
-    if (shouldLockScroll) {
-      addBodyClass('noScroll')
-      return () => removeBodyClass('noScroll')
-    }
-
-    removeBodyClass('noScroll')
-    return undefined
-  }, [shouldLockScroll, shouldRender])
+    addBodyClass('noScroll')
+    return () => removeBodyClass('noScroll')
+  }, [shouldRender])
 
   if (!shouldRender) {
     return null
   }
 
   const widgetContent = (
-    <Wrapper $isMobileOverlay={isCompactLayout}>
+    <Wrapper>
       <InnerWrapper $hasSidebar={isChainPanelVisible} $isMobileOverlay={isCompactLayout}>
         <SelectTokenWidgetView
-          {...controller.viewProps}
+          {...viewProps}
           isChainPanelVisible={isChainPanelVisible}
           isMobileChainPanelOpen={isMobileChainPanelOpen}
           setIsMobileChainPanelOpen={setIsMobileChainPanelOpen}
@@ -115,21 +65,27 @@ export function SelectTokenWidget(props: SelectTokenWidgetProps): ReactNode {
     </Wrapper>
   )
 
-  if (isCompactLayout) {
-    const overlay = (
-      <MobileWidgetOverlay>
-        <MobileWidgetCard>{widgetContent}</MobileWidgetCard>
-      </MobileWidgetOverlay>
-    )
-
-    if (typeof document === 'undefined') {
-      return overlay
+  const handleOverlayClick = (event: MouseEvent<HTMLDivElement>): void => {
+    if (event.target !== event.currentTarget) {
+      return
     }
 
-    return createPortal(overlay, document.body)
+    viewProps.onDismiss()
   }
 
-  return widgetContent
+  const overlay = (
+    <WidgetOverlay onClick={handleOverlayClick}>
+      <WidgetCard $isCompactLayout={isCompactLayout} $hasChainPanel={hasChainPanel}>
+        {widgetContent}
+      </WidgetCard>
+    </WidgetOverlay>
+  )
+
+  if (typeof document === 'undefined') {
+    return overlay
+  }
+
+  return createPortal(overlay, document.body)
 }
 
 function SelectTokenWidgetView(
@@ -158,15 +114,15 @@ function SelectTokenWidgetView(
     return blockingView
   }
 
+  const closeMobileChainPanel = (): void => setIsMobileChainPanelOpen(false)
   const mobileChainsState = !isChainPanelVisible ? chainsToSelect : undefined
   const handleOpenMobileChainPanel = mobileChainsState ? () => setIsMobileChainPanelOpen(true) : undefined
   const showDesktopChainPanel = isChainPanelVisible && isChainPanelEnabled && chainsToSelect
-  const showMobileChainPanel =
-    !isChainPanelVisible && isChainPanelEnabled && chainsToSelect && isMobileChainPanelOpen
+  const showMobileChainPanel = !isChainPanelVisible && isChainPanelEnabled && chainsToSelect && isMobileChainPanelOpen
 
   return (
     <>
-      <ModalContainer $isMobileOverlay={isCompactLayout}>
+      <ModalContainer>
         <SelectTokenModal
           {...selectTokenModalProps}
           hasChainPanel={isChainPanelVisible}
@@ -179,13 +135,14 @@ function SelectTokenWidgetView(
       {showDesktopChainPanel && (
         <ChainPanel title={chainsPanelTitle} chainsState={chainsToSelect} onSelectChain={onSelectChain} />
       )}
-      {showMobileChainPanel &&
-        renderMobileChainPanel({
-          chainsPanelTitle,
-          chainsToSelect,
-          onSelectChain,
-          onClose: () => setIsMobileChainPanelOpen(false),
-        })}
+      {showMobileChainPanel && (
+        <MobileChainPanelPortal
+          chainsPanelTitle={chainsPanelTitle}
+          chainsToSelect={chainsToSelect}
+          onSelectChain={onSelectChain}
+          onClose={closeMobileChainPanel}
+        />
+      )}
     </>
   )
 }
@@ -256,71 +213,3 @@ function getBlockingView(
 
   return null
 }
-
-function renderMobileChainPanel({
-  chainsPanelTitle,
-  chainsToSelect,
-  onSelectChain,
-  onClose,
-}: {
-  chainsPanelTitle: string
-  chainsToSelect: SelectTokenWidgetViewProps['chainsToSelect']
-  onSelectChain: SelectTokenWidgetViewProps['onSelectChain']
-  onClose(): void
-}): ReactNode {
-  if (typeof document === 'undefined') {
-    return null
-  }
-
-  return createPortal(
-    <MobileChainPanelOverlay onClick={onClose}>
-      <MobileChainPanelCard onClick={(event) => event.stopPropagation()}>
-        <ChainPanel
-          title={chainsPanelTitle}
-          chainsState={chainsToSelect}
-          onSelectChain={(chain) => {
-            onSelectChain(chain)
-            onClose()
-          }}
-          variant="fullscreen"
-          onClose={onClose}
-        />
-      </MobileChainPanelCard>
-    </MobileChainPanelOverlay>,
-    document.body,
-  )
-}
-
-const MobileChainPanelOverlay = styled.div`
-  position: fixed;
-  inset: 0;
-  z-index: 1200;
-  background: rgba(0, 0, 0, 0.6);
-  display: flex;
-  align-items: stretch;
-  justify-content: center;
-`
-
-const MobileChainPanelCard = styled.div`
-  flex: 1;
-  max-width: 100%;
-  height: 100%;
-`
-
-const MobileWidgetOverlay = styled.div`
-  position: fixed;
-  inset: 0;
-  z-index: 1000;
-  background: rgba(0, 0, 0, 0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`
-
-const MobileWidgetCard = styled.div`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  padding: 0;
-  box-sizing: border-box;
-`
