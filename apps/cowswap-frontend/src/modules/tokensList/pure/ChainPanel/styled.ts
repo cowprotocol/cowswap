@@ -63,12 +63,14 @@ export const PanelSearchInputWrapper = styled.div`
   background: transparent;
   border-radius: var(--min-height);
   padding: 0 10px;
+  color: var(${UI.COLOR_TEXT});
 
   ${Media.upToSmall()} {
     --min-height: 46px;
     border: none;
     padding: 0;
     background: transparent;
+    color: inherit;
 
     > div {
       width: 100%;
@@ -79,6 +81,7 @@ export const PanelSearchInputWrapper = styled.div`
       align-items: center;
       padding: 0 14px;
       font-size: 15px;
+      color: inherit;
     }
 
     input {
@@ -90,15 +93,11 @@ export const PanelSearchInputWrapper = styled.div`
 
 export const PanelSearchInput = styled(UISearchInput)`
   width: 100%;
-  color: var(${UI.COLOR_TEXT_OPACITY_70});
+  color: inherit;
   border: none;
   background: transparent;
-  font-size: 14px;
-  font-weight: 500;
-
-  &::placeholder {
-    color: var(${UI.COLOR_TEXT_OPACITY_50});
-  }
+  font-size: 16px;
+  font-weight: 400;
 `
 
 export const PanelList = styled.div`
