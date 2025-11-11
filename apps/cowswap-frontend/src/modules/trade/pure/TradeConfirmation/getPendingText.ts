@@ -3,6 +3,7 @@ import { SigningSteps, SigningStepState } from 'entities/trade'
 const SigningStepsTitles: Record<SigningSteps, string> = {
   [SigningSteps.PermitSigning]: 'Confirm approval',
   [SigningSteps.BridgingSigning]: 'Confirm bridging',
+  [SigningSteps.PreparingDepositAddress]: 'Preparing deposit',
   [SigningSteps.OrderSigning]: 'Confirm swap',
 }
 

@@ -56,6 +56,8 @@ const bridgeQuoteErrorTexts: Record<BridgeQuoteErrors, string> = {
   [BridgeQuoteErrors.NO_INTERMEDIATE_TOKENS]: 'No routes found',
   [BridgeQuoteErrors.NO_ROUTES]: 'No routes found',
   [BridgeQuoteErrors.ONLY_SELL_ORDER_SUPPORTED]: 'Only "sell" orders are supported',
+  [BridgeQuoteErrors.QUOTE_DOES_NOT_MATCH_DEPOSIT_ADDRESS]:
+    'Bridging deposit address is not verified! Please contact CoW Swap support!',
 }
 
 const errorTooltipContentForBridges: Partial<Record<QuoteApiErrorCodes, string>> = {

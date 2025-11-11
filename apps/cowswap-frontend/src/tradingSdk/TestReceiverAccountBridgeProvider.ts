@@ -24,6 +24,7 @@ export class TestReceiverAccountBridgeProvider implements ReceiverAccountBridgeP
       'https://raw.githubusercontent.com/cowprotocol/cow-sdk/refs/heads/main/packages/bridging/src/providers/mock/mock-logo.webp',
     dappId: 'test-receiver-bridge',
     website: 'https://github.com/cowprotocol/cowswap',
+    type: 'ReceiverAccountBridgeProvider',
   }
 
   constructor(
