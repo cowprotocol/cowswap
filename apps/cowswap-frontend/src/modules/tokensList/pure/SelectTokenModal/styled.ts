@@ -43,6 +43,10 @@ export const ModalTitle = styled.h3`
   font-size: 20px;
   font-weight: 600;
   margin: 0;
+
+  ${Media.upToSmall()} {
+    font-size: 18px;
+  }
 `
 
 export const TitleActions = styled.div`

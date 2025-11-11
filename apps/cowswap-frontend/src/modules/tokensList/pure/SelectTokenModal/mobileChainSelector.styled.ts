@@ -2,6 +2,8 @@ import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
+import { ListTitle } from './styled'
+
 import type { ChainAccentVars } from '../ChainsSelector/styled'
 
 const fallbackBackground = `var(${UI.COLOR_PRIMARY_OPACITY_10})`
@@ -18,10 +20,8 @@ export const MobileSelectorRow = styled.div`
   gap: 8px;
 `
 
-export const MobileSelectorLabel = styled.span`
-  font-size: 13px;
-  font-weight: 600;
-  color: var(${UI.COLOR_TEXT_OPACITY_70});
+export const MobileSelectorLabel = styled(ListTitle)`
+  padding: 8px 0 4px;
 `
 
 export const ChipsWrapper = styled.div`

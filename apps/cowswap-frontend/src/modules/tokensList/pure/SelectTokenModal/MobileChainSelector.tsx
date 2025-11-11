@@ -34,7 +34,11 @@ export function MobileChainSelector({
 
   return (
     <styledEl.MobileSelectorRow>
-      {label && <styledEl.MobileSelectorLabel>{label}</styledEl.MobileSelectorLabel>}
+      {label ? (
+        <styledEl.MobileSelectorLabel>
+          <span>{label}</span>
+        </styledEl.MobileSelectorLabel>
+      ) : null}
       <styledEl.ChipsWrapper>
         {visibleChains.map((chain) => (
           <ChainChip
