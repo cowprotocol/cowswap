@@ -60,6 +60,7 @@ export function TokenListItem(props: TokenListItemProps): ReactNode {
   } = props
 
   const tokenKey = `${token.chainId}:${token.address.toLowerCase()}`
+  // Defer heavyweight UI (tooltips, formatted numbers) until the row is about to enter the viewport.
   const { ref: visibilityRef, isVisible: hasIntersected } = useDeferredVisibility<HTMLDivElement>({
     resetKey: tokenKey,
     rootMargin: '200px',
@@ -81,8 +82,12 @@ export function TokenListItem(props: TokenListItemProps): ReactNode {
   )
 
   const isSupportedChain = token.chainId in SupportedChainId
+  const shouldShowBalances = isWalletConnected && isSupportedChain
+  // Formatting balances is surprisingly expensive (BigNumber -> CurrencyAmount -> Fiat); only do it once the row is visible.
+  const shouldFormatBalances = shouldShowBalances && hasIntersected
 
-  const balanceAmount = balance ? CurrencyAmount.fromRawAmount(token, balance.toHexString()) : undefined
+  const balanceAmount =
+    shouldFormatBalances && balance ? CurrencyAmount.fromRawAmount(token, balance.toHexString()) : undefined
 
   return (
     <styledEl.TokenItem
@@ -108,17 +113,44 @@ export function TokenListItem(props: TokenListItemProps): ReactNode {
           ) : null
         }
       />
-      {isWalletConnected && (
-        <styledEl.TokenBalance>
-          {isSupportedChain ? (
-            <>
-              {balanceAmount ? <TokenAmount amount={balanceAmount} /> : LoadingElement}
-              {usdAmount ? <FiatAmount amount={usdAmount} /> : null}
-            </>
-          ) : null}
-        </styledEl.TokenBalance>
-      )}
+      <TokenBalanceColumn
+        shouldShow={shouldShowBalances}
+        shouldFormat={shouldFormatBalances}
+        balanceAmount={balanceAmount}
+        usdAmount={usdAmount}
+      />
       {children}
     </styledEl.TokenItem>
+  )
+}
+
+interface TokenBalanceColumnProps {
+  shouldShow: boolean
+  shouldFormat: boolean
+  balanceAmount?: CurrencyAmount<Currency>
+  usdAmount?: CurrencyAmount<Currency> | null
+}
+
+function TokenBalanceColumn({
+  shouldShow,
+  shouldFormat,
+  balanceAmount,
+  usdAmount,
+}: TokenBalanceColumnProps): ReactNode {
+  if (!shouldShow) {
+    return null
+  }
+
+  return (
+    <styledEl.TokenBalance>
+      {shouldFormat ? (
+        <>
+          {balanceAmount ? <TokenAmount amount={balanceAmount} /> : LoadingElement}
+          {usdAmount ? <FiatAmount amount={usdAmount} /> : null}
+        </>
+      ) : (
+        LoadingElement
+      )}
+    </styledEl.TokenBalance>
   )
 }

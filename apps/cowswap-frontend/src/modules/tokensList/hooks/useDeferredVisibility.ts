@@ -20,6 +20,7 @@ interface DeferredVisibilityResult<T extends HTMLElement> {
 
 const DEFAULT_ROOT_MARGIN = '120px'
 
+// Lightweight helper to delay hydration of expensive UI until the row is close to the viewport.
 export function useDeferredVisibility<T extends HTMLElement>(
   options: DeferredVisibilityOptions = {},
 ): DeferredVisibilityResult<T> {
