@@ -33,7 +33,26 @@ export function getTotalCosts(
 
   const fee = networkFeeAmount.add(info.costs.partnerFee.amount)
 
-  return additionalCosts ? fee.add(additionalCosts) : fee
+  if (additionalCosts) {
+    if (!additionalCosts.currency.equals(fee.currency)) {
+      const additionalCostsFixed = CurrencyAmount.fromRawAmount(
+        fee.currency,
+        additionalCosts.currency.decimals !== fee.currency.decimals
+          ? FractionUtils.adjustDecimalsAtoms(
+              additionalCosts,
+              fee.currency.decimals,
+              additionalCosts.currency.decimals,
+            ).quotient.toString()
+          : additionalCosts.quotient.toString(),
+      )
+
+      return fee.add(additionalCostsFixed)
+    }
+
+    return fee.add(additionalCosts)
+  }
+
+  return fee
 }
 
 /**
