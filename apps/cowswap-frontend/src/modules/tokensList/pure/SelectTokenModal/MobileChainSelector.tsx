@@ -52,7 +52,7 @@ export function MobileChainSelector({
         ))}
         {remainingCount > 0 ? (
           <styledEl.MoreChipButton onClick={onOpenPanel} aria-label={`Show all ${totalChains} networks`}>
-            <span>All networks ({remainingCount})</span>
+            <span>All networks ({totalChains})</span>
             <ChevronDown size={14} />
           </styledEl.MoreChipButton>
         ) : null}
