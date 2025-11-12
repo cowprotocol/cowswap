@@ -57,7 +57,7 @@ export function useWidgetViewDependencies({
     tokenData.favoriteTokens,
     activeChainId,
   )
-  const handleSelectToken = useTokenSelectionHandler(widgetState.onSelectToken)
+  const handleSelectToken = useTokenSelectionHandler(widgetState.onSelectToken, widgetState)
   const importFlows = useImportFlowCallbacks(
     tokenAdminActions.importTokenCallback,
     handleSelectToken,

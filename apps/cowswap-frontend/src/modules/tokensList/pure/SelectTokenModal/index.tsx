@@ -1,6 +1,5 @@
 import { ComponentProps, ReactNode } from 'react'
 
-import { TokenWithLogo } from '@cowprotocol/common-const'
 import { SearchInput } from '@cowprotocol/ui'
 
 import { TokensContentSection, TitleBarActions, useSelectTokenContext, useTokenSearchInput } from './helpers'
@@ -11,6 +10,7 @@ import * as styledEl from './styled'
 import { LpTokenListsWidget } from '../../containers/LpTokenListsWidget'
 
 import type { SelectTokenModalProps } from './types'
+import type { TokenSelectionHandler } from '../../types'
 export type { SelectTokenModalProps }
 
 export function SelectTokenModal(props: SelectTokenModalProps): ReactNode {
@@ -100,7 +100,7 @@ interface TokenColumnContentProps {
   displayLpTokenLists?: boolean
   account: string | undefined
   inputValue: string
-  onSelectToken(token: TokenWithLogo): void
+  onSelectToken: TokenSelectionHandler
   openPoolPage(poolAddress: string): void
   disableErc20?: boolean
   tokenListCategoryState: SelectTokenModalProps['tokenListCategoryState']

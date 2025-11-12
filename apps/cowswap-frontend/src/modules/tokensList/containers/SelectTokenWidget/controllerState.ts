@@ -2,6 +2,7 @@ import { Dispatch, SetStateAction, useCallback, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import {
   ListState,
   TokenListCategory,
@@ -12,19 +13,23 @@ import {
   useUnsupportedTokens,
   useUserAddedTokens,
 } from '@cowprotocol/tokens'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { Field } from 'legacy/state/types'
 
 import { useTokensBalancesCombined } from 'modules/combinedBalances'
 import { usePermitCompatibleTokens } from 'modules/permit'
+import { TradeType } from 'modules/trade/types'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
+import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
 
 import { getDefaultTokenListCategories } from './getDefaultTokenListCategories'
 
 import { persistRecentTokenSelection, useRecentTokens } from '../../hooks/useRecentTokens'
+import { useSelectTokenWidgetState } from '../../hooks/useSelectTokenWidgetState'
 import { useTokensToSelect } from '../../hooks/useTokensToSelect'
-import { ChainsToSelectState } from '../../types'
+import { ChainsToSelectState, TokenSelectionHandler } from '../../types'
 
 import type { useUpdateSelectTokenWidgetState } from '../../hooks/useUpdateSelectTokenWidgetState'
 
@@ -146,10 +151,13 @@ export function useWidgetMetadata(
   return { disableErc20, tokenListCategoryState, modalTitle, chainsPanelTitle }
 }
 
-export function useDismissHandler(closeManageWidget: () => void, closeTokenSelectWidget: () => void): () => void {
+export function useDismissHandler(
+  closeManageWidget: () => void,
+  closeTokenSelectWidget: (options?: { overrideForceLock?: boolean }) => void,
+): () => void {
   return useCallback(() => {
     closeManageWidget()
-    closeTokenSelectWidget()
+    closeTokenSelectWidget({ overrideForceLock: true })
   }, [closeManageWidget, closeTokenSelectWidget])
 }
 
@@ -170,7 +178,7 @@ export function usePoolPageHandlers(updateSelectTokenWidget: UpdateSelectTokenWi
 
 export function useImportFlowCallbacks(
   importTokenCallback: ReturnType<typeof useAddUserToken>,
-  onSelectToken: ((token: TokenWithLogo) => void) | undefined,
+  onSelectToken: TokenSelectionHandler | undefined,
   onDismiss: () => void,
   addCustomTokenLists: (list: ListState) => void,
   onTokenListAddingError: (error: Error) => void,
@@ -234,13 +242,41 @@ export function useRecentTokenSection(
 }
 
 export function useTokenSelectionHandler(
-  onSelectToken: ((token: TokenWithLogo) => void) | undefined,
-): (token: TokenWithLogo) => void {
+  onSelectToken: TokenSelectionHandler | undefined,
+  widgetState: ReturnType<typeof useSelectTokenWidgetState>,
+): TokenSelectionHandler {
+  const { chainId: walletChainId } = useWalletInfo()
+  const onSelectNetwork = useOnSelectNetwork()
+
   return useCallback(
-    (token: TokenWithLogo) => {
+    async (token: TokenWithLogo) => {
+      const targetChainId = widgetState.selectedTargetChainId
+      // SELL-side limit/TWAP orders must run on the picked network,
+      // so nudge the wallet onto that chain before finalizing selection.
+      const shouldSwitchWalletNetwork =
+        widgetState.field === Field.INPUT &&
+        (widgetState.tradeType === TradeType.LIMIT_ORDER || widgetState.tradeType === TradeType.ADVANCED_ORDERS) &&
+        typeof targetChainId === 'number' &&
+        targetChainId !== walletChainId
+
+      if (shouldSwitchWalletNetwork && targetChainId in SupportedChainId) {
+        try {
+          await onSelectNetwork(targetChainId as SupportedChainId, true)
+        } catch (error) {
+          console.error('Failed to switch network after token selection', error)
+        }
+      }
+
       onSelectToken?.(token)
     },
-    [onSelectToken],
+    [
+      onSelectToken,
+      widgetState.field,
+      widgetState.tradeType,
+      widgetState.selectedTargetChainId,
+      walletChainId,
+      onSelectNetwork,
+    ],
   )
 }
 

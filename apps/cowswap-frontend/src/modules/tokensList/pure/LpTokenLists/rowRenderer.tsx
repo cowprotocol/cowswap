@@ -1,7 +1,7 @@
 import { MouseEventHandler, ReactNode, useMemo } from 'react'
 
 import { BalancesState } from '@cowprotocol/balances-and-allowances'
-import { LpToken, TokenWithLogo } from '@cowprotocol/common-const'
+import { LpToken } from '@cowprotocol/common-const'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { LoadingRows, LoadingRowSmall, TokenAmount, TokenName, TokenSymbol } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
@@ -24,11 +24,13 @@ import {
   MobileCardValue,
 } from './styled'
 
+import type { TokenSelectionHandler } from '../../types'
+
 interface LpTokenRowRendererParams {
   balances: BalancesState['values']
   poolsInfo: PoolInfoStates | undefined
   openPoolPage(poolAddress: string): void
-  onSelectToken(token: TokenWithLogo): void
+  onSelectToken: TokenSelectionHandler
   isMobile: boolean
   account: string | undefined
 }
@@ -146,7 +148,7 @@ interface LpTokenRowProps {
   balanceDisplay: ReactNode
   apy?: number
   onInfoClick: MouseEventHandler<HTMLDivElement>
-  onSelectToken(token: TokenWithLogo): void
+  onSelectToken: TokenSelectionHandler
 }
 
 interface LpTokenRowRendererProps extends LpTokenRowProps {

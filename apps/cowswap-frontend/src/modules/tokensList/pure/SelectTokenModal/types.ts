@@ -8,7 +8,7 @@ import { Nullish } from 'types'
 
 import { PermitCompatibleTokens } from 'modules/permit'
 
-import { ChainsToSelectState } from '../../types'
+import { ChainsToSelectState, TokenSelectionHandler } from '../../types'
 
 export interface SelectTokenModalProps<T = TokenListCategory[] | null> {
   allTokens: TokenWithLogo[]
@@ -38,7 +38,7 @@ export interface SelectTokenModalProps<T = TokenListCategory[] | null> {
   onOpenMobileChainPanel?(): void
   isFullScreenMobile?: boolean
 
-  onSelectToken(token: TokenWithLogo): void
+  onSelectToken: TokenSelectionHandler
   onTokenListItemClick?(token: TokenWithLogo): void
   onClearRecentTokens?(): void
   openPoolPage(poolAddress: string): void

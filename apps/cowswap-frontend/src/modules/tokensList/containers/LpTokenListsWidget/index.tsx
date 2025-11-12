@@ -1,7 +1,6 @@
 import { ReactNode, useMemo } from 'react'
 
 import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
-import { TokenWithLogo } from '@cowprotocol/common-const'
 import {
   getTokenSearchFilter,
   LP_TOKEN_LIST_CATEGORIES,
@@ -18,12 +17,14 @@ import { TabButton, TabsContainer } from './styled'
 import { LpTokenLists } from '../../pure/LpTokenLists'
 import { tokensListSorter } from '../../utils/tokensListSorter'
 
+import type { TokenSelectionHandler } from '../../types'
+
 interface LpTokenListsProps<T = TokenListCategory[] | null> {
   account: string | undefined
   children: ReactNode
   search: string
   disableErc20?: boolean
-  onSelectToken(token: TokenWithLogo): void
+  onSelectToken: TokenSelectionHandler
   openPoolPage(poolAddress: string): void
   tokenListCategoryState: [T, (category: T) => void]
 }

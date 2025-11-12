@@ -1,7 +1,7 @@
 import { ReactNode } from 'react'
 
 import { BalancesState } from '@cowprotocol/balances-and-allowances'
-import { LpToken, TokenWithLogo } from '@cowprotocol/common-const'
+import { LpToken } from '@cowprotocol/common-const'
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { Media } from '@cowprotocol/ui'
 
@@ -18,13 +18,15 @@ import {
   Wrapper,
 } from './styled'
 
+import type { TokenSelectionHandler } from '../../types'
+
 interface LpTokenListsProps {
   account: string | undefined
   lpTokens: LpToken[]
   balancesState: BalancesState
   displayCreatePoolBanner: boolean
   poolsInfo: PoolInfoStates | undefined
-  onSelectToken(token: TokenWithLogo): void
+  onSelectToken: TokenSelectionHandler
   openPoolPage(poolAddress: string): void
 }
 

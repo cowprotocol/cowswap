@@ -9,6 +9,8 @@ import { useBridgeSupportedNetworks } from 'entities/bridgeProvider'
 
 import { Field } from 'legacy/state/types'
 
+import { TradeType } from 'modules/trade/types'
+
 import { useSelectTokenWidgetState } from './useSelectTokenWidgetState'
 
 import { ChainsToSelectState } from '../types'
@@ -22,11 +24,12 @@ import { mapChainInfo } from '../utils/mapChainInfo'
  */
 export function useChainsToSelect(): ChainsToSelectState | undefined {
   const { chainId } = useWalletInfo()
-  const { field, selectedTargetChainId = chainId } = useSelectTokenWidgetState()
+  const { field, selectedTargetChainId = chainId, tradeType } = useSelectTokenWidgetState()
   const { data: bridgeSupportedNetworks, isLoading } = useBridgeSupportedNetworks()
   const { areUnsupportedChainsEnabled } = useFeatureFlags()
   const isBridgingEnabled = useIsBridgingEnabled()
   const availableChains = useAvailableChains()
+  const isAdvancedTradeType = tradeType === TradeType.LIMIT_ORDER || tradeType === TradeType.ADVANCED_ORDERS
 
   const supportedChains = useMemo(() => {
     return availableChains.reduce((acc, id) => {
@@ -41,46 +44,32 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
   }, [availableChains])
 
   return useMemo(() => {
-    if (!field || !isBridgingEnabled) return undefined
+    if (!field || !chainId) return undefined
 
     const chainInfo = CHAIN_INFO[chainId]
     if (!chainInfo) return undefined
 
     const currentChainInfo = mapChainInfo(chainId, chainInfo)
-    const isSourceChainSupportedByBridge = Boolean(
-      bridgeSupportedNetworks?.find((bridgeChain) => bridgeChain.id === chainId),
-    )
+    const shouldForceSingleChain = isAdvancedTradeType && field === Field.OUTPUT
 
-    // For the sell token selector we only display supported chains
+    if (!isBridgingEnabled && !shouldForceSingleChain) return undefined
+
+    if (shouldForceSingleChain) {
+      return createSingleChainState(chainId, currentChainInfo)
+    }
+
     if (field === Field.INPUT) {
-      // Sell side can only pick among wallet-supported chains
-      return {
-        defaultChainId: selectedTargetChainId,
-        chains: supportedChains,
-        isLoading: false,
-      }
+      return createInputChainsState(selectedTargetChainId, supportedChains)
     }
 
-    const destinationChains = filterDestinationChains(bridgeSupportedNetworks, areUnsupportedChainsEnabled) ?? []
-
-    /**
-     * When the source chain is not supported by bridge provider
-     * We act as non-bridge mode
-     */
-    if (!isSourceChainSupportedByBridge) {
-      return {
-        defaultChainId: selectedTargetChainId,
-        chains: [currentChainInfo],
-        isLoading: false,
-      }
-    }
-
-    return {
-      defaultChainId: selectedTargetChainId,
-      // Bridge supports this chain, so show the destinations reported by the provider
-      chains: destinationChains,
+    return createOutputChainsState({
+      selectedTargetChainId,
+      chainId,
+      currentChainInfo,
+      bridgeSupportedNetworks,
+      areUnsupportedChainsEnabled,
       isLoading,
-    }
+    })
   }, [
     field,
     selectedTargetChainId,
@@ -90,6 +79,7 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
     isBridgingEnabled,
     areUnsupportedChainsEnabled,
     supportedChains,
+    isAdvancedTradeType,
   ])
 }
 
@@ -103,5 +93,65 @@ function filterDestinationChains(
   } else {
     // If unsupported chains are not enabled, we only return the supported networks
     return bridgeSupportedNetworks?.filter((chain) => chain.id in SupportedChainId)
+  }
+}
+
+// Represents the “non-bridge” UX where only the current chain is available.
+function createSingleChainState(
+  defaultChainId: SupportedChainId | number,
+  chain: ChainInfo,
+  isLoading = false,
+): ChainsToSelectState {
+  return {
+    defaultChainId,
+    chains: [chain],
+    isLoading,
+  }
+}
+
+// Sell-side selector only allows wallet-supported networks.
+function createInputChainsState(
+  selectedTargetChainId: SupportedChainId | number,
+  supportedChains: ChainInfo[],
+): ChainsToSelectState {
+  return {
+    defaultChainId: selectedTargetChainId,
+    chains: supportedChains,
+    isLoading: false,
+  }
+}
+
+interface CreateOutputChainsOptions {
+  selectedTargetChainId: SupportedChainId | number
+  chainId: SupportedChainId
+  currentChainInfo: ChainInfo
+  bridgeSupportedNetworks: ChainInfo[] | undefined
+  areUnsupportedChainsEnabled: boolean | undefined
+  isLoading: boolean
+}
+
+function createOutputChainsState({
+  selectedTargetChainId,
+  chainId,
+  currentChainInfo,
+  bridgeSupportedNetworks,
+  areUnsupportedChainsEnabled,
+  isLoading,
+}: CreateOutputChainsOptions): ChainsToSelectState {
+  const destinationChains = filterDestinationChains(bridgeSupportedNetworks, areUnsupportedChainsEnabled) ?? []
+  const isSourceChainSupportedByBridge = Boolean(
+    bridgeSupportedNetworks?.some((bridgeChain) => bridgeChain.id === chainId),
+  )
+
+  if (!isSourceChainSupportedByBridge) {
+    // Source chain is unsupported by the bridge provider; fall back to non-bridge behavior.
+    return createSingleChainState(selectedTargetChainId, currentChainInfo)
+  }
+
+  return {
+    defaultChainId: selectedTargetChainId,
+    // Bridge supports this chain, so expose the provider-supplied destinations.
+    chains: destinationChains,
+    isLoading,
   }
 }

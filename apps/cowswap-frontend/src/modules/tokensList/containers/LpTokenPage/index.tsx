@@ -1,6 +1,5 @@
 import { ReactNode } from 'react'
 
-import { TokenWithLogo } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink, shortenAddress } from '@cowprotocol/common-utils'
 import { TokenLogo, useTokensByAddressMap } from '@cowprotocol/tokens'
 import { ExternalLink, ModalHeader, TokenSymbol } from '@cowprotocol/ui'
@@ -18,6 +17,8 @@ import {
   Wrapper,
 } from './styled'
 
+import type { TokenSelectionHandler } from '../../types'
+
 function renderValue<T>(value: T | undefined, template: (v: T) => string, defaultValue?: string): string | undefined {
   return value ? template(value) : defaultValue
 }
@@ -29,7 +30,7 @@ interface LpTokenPageProps {
 
   onDismiss(): void
 
-  onSelectToken(token: TokenWithLogo): void
+  onSelectToken: TokenSelectionHandler
 }
 
 export function LpTokenPage({ poolAddress, onBack, onDismiss, onSelectToken }: LpTokenPageProps): ReactNode {

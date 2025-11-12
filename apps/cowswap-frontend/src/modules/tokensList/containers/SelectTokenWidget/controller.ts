@@ -75,7 +75,7 @@ export function useSelectTokenWidgetController({
   })
 
   return {
-    shouldRender: Boolean(widgetState.onSelectToken && widgetState.open),
+    shouldRender: Boolean(widgetState.onSelectToken && (widgetState.open || widgetState.forceOpen)),
     hasChainPanel: isChainPanelEnabled,
     viewProps,
   }

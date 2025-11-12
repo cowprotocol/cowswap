@@ -16,6 +16,8 @@ import { useDeferredVisibility } from '../../hooks/useDeferredVisibility'
 import { TokenInfo } from '../TokenInfo'
 import { TokenTags } from '../TokenTags'
 
+import type { TokenSelectionHandler } from '../../types'
+
 const LoadingElement = (
   <LoadingRows>
     <LoadingRowSmall />
@@ -28,7 +30,7 @@ export interface TokenListItemProps {
   balance: BigNumber | undefined
   usdAmount?: CurrencyAmount<Currency> | null
 
-  onSelectToken?(token: TokenWithLogo): void
+  onSelectToken?: TokenSelectionHandler
 
   isWalletConnected: boolean
   isUnsupported?: boolean

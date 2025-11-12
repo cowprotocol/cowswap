@@ -4,7 +4,7 @@ import { TokenWithLogo } from '@cowprotocol/common-const'
 import { ChainInfo } from '@cowprotocol/cow-sdk'
 import { ListState } from '@cowprotocol/tokens'
 
-import { ChainsToSelectState } from '../../types'
+import { ChainsToSelectState, TokenSelectionHandler } from '../../types'
 
 import type { TokenDataSources, TokenListCategoryState } from './controllerState'
 import type { useSelectTokenWidgetState } from '../../hooks/useSelectTokenWidgetState'
@@ -30,7 +30,7 @@ export interface SelectTokenWidgetViewProps {
   onCloseManageWidget(): void
   onClosePoolPage(): void
   selectTokenModalProps: SelectTokenModalProps
-  onSelectToken(token: TokenWithLogo): void
+  onSelectToken: TokenSelectionHandler
 }
 
 interface BuildViewPropsArgs {
@@ -52,7 +52,7 @@ interface BuildViewPropsArgs {
   onCloseManageWidget(): void
   onClosePoolPage(): void
   selectTokenModalProps: SelectTokenModalProps
-  onSelectToken(token: TokenWithLogo): void
+  onSelectToken: TokenSelectionHandler
 }
 
 interface BuildModalPropsArgs {
@@ -62,7 +62,7 @@ interface BuildModalPropsArgs {
   widgetState: WidgetState
   favoriteTokens: TokenWithLogo[]
   recentTokens: TokenWithLogo[]
-  handleSelectToken(token: TokenWithLogo): void
+  handleSelectToken: TokenSelectionHandler
   onTokenListItemClick(token: TokenWithLogo): void
   onClearRecentTokens(): void
   onDismiss(): void
