@@ -16,7 +16,6 @@ export interface OrderFillability {
 
 export function useOrdersFillability(orders: GenericOrder[]): Record<string, OrderFillability | undefined> {
   const { chainId } = useWalletInfo()
-
   const tokens = useMemo(() => orders.map((order) => order.inputToken.address.toLowerCase()), [orders])
   const { balances, allowances } = useBalancesAndAllowances(tokens)
 
