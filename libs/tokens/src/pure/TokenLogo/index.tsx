@@ -107,14 +107,12 @@ export function TokenLogo({
 
   const actualTokenContent = currentUrl ? (
     <Styled.TokenImageWrapper>
-      {token && (
-        <img
-          data-address={address}
-          alt={`${token.symbol || ''} ${token.name ? `(${token.name})` : ''} token logo`}
-          src={currentUrl}
-          onError={onError}
-        />
-      )}
+      <img
+        data-address={address}
+        alt={`${token?.symbol || ''} ${token?.name ? `(${token.name})` : ''} token logo`}
+        src={currentUrl}
+        onError={onError}
+      />
     </Styled.TokenImageWrapper>
   ) : initial ? (
     <Styled.TokenImageWrapper>

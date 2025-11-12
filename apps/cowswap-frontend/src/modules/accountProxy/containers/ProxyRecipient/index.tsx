@@ -41,7 +41,7 @@ export function ProxyRecipient({
 
   if (!targetAddress) return
 
-  if (proxyAddress && recipient && !areAddressesEqual(recipient, proxyAddress)) {
+  if (!bridgeReceiverOverride && proxyAddress && recipient && !areAddressesEqual(recipient, proxyAddress)) {
     throw new Error(
       `Provided proxy address does not match ${ACCOUNT_PROXY_LABEL} address!, recipient=${recipient}, proxyAddress=${proxyAddress}`,
     )
