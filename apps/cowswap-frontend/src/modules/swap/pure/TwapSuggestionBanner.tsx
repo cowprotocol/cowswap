@@ -3,6 +3,7 @@ import { mapSupportedNetworks, OrderKind, SupportedChainId } from '@cowprotocol/
 import { InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
+import { Trans } from '@lingui/react/macro'
 import { NavLink } from 'react-router'
 import styled from 'styled-components/macro'
 
@@ -63,12 +64,18 @@ export function TwapSuggestionBanner({
       kind: OrderKind.SELL,
     })
 
+  const formattedPriceImpact = +priceImpact.toFixed(2)
+
   return (
     <InlineBanner bannerType={StatusColorVariant.Alert} iconSize={32}>
-      <strong>Minimize price impact with TWAP</strong>
+      <strong>
+        <Trans>Minimize price impact with TWAP</Trans>
+      </strong>
       <p>
-        The price impact is <b>{+priceImpact.toFixed(2)}%</b>. Consider breaking up your order using a{' '}
-        <StyledNavLink to={routePath}>TWAP order</StyledNavLink> and possibly get a better rate.
+        <Trans>
+          The price impact is <b>{formattedPriceImpact}%</b>. Consider breaking up your order using a{' '}
+          <StyledNavLink to={routePath}>TWAP order</StyledNavLink> and possibly get a better rate.
+        </Trans>
       </p>
     </InlineBanner>
   )

@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.29.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.28.0...tokens-v1.29.0) (2025-11-10)
+
+
+### Features
+
+* **new-chains:** add q4 chains ([#6404](https://github.com/cowprotocol/cowswap/issues/6404)) ([ba4edb0](https://github.com/cowprotocol/cowswap/commit/ba4edb0fdc7b4c700dfeae9023da330d74a9faea))
+
+
+### Bug Fixes
+
+* **linea:** add USDT as a favourite token ([#6498](https://github.com/cowprotocol/cowswap/issues/6498)) ([5741c7f](https://github.com/cowprotocol/cowswap/commit/5741c7fcd0d916b2206c29e83b27fc21e752e374))
+
 ## [1.28.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.27.0...tokens-v1.28.0) (2025-10-23)
 
 

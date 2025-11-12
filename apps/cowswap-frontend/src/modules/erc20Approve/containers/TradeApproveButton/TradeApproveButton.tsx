@@ -5,6 +5,8 @@ import { usePreventDoubleExecution } from '@cowprotocol/common-hooks'
 import { ButtonSize, HoverTooltip } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { useLingui } from '@lingui/react/macro'
+
 import { useHasCachedPermit } from 'modules/permit'
 import { useIsCurrentTradeBridging } from 'modules/trade'
 
@@ -20,6 +22,7 @@ import { ApprovalState } from '../../types'
 
 export interface TradeApproveButtonProps {
   amountToApprove: CurrencyAmount<Currency>
+  minAmountToSignForSwap?: CurrencyAmount<Currency>
   children?: ReactNode
   isDisabled?: boolean
   enablePartialApprove?: boolean
@@ -30,6 +33,7 @@ export interface TradeApproveButtonProps {
 }
 
 export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
+  const { t } = useLingui()
   const {
     amountToApprove,
     children,
@@ -65,7 +69,8 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
   const noCachedPermit = !cachedPermitLoading && !cachedPermit
 
   const label =
-    props.label || (noCachedPermit ? (isCurrentTradeBridging ? 'Approve, Swap & Bridge' : 'Approve and Swap') : 'Swap')
+    props.label ||
+    (noCachedPermit ? (isCurrentTradeBridging ? t`Approve, Swap & Bridge` : t`Approve and Swap`) : t`Swap`)
 
   return (
     <ButtonWrapper

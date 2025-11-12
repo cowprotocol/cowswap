@@ -4,6 +4,8 @@ import { areAddressesEqual, isAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { InfoTooltip } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 import { Nullish } from 'types'
 
@@ -38,11 +40,11 @@ export function RecipientRow(props: RecipientRowProps): ReactNode {
   return (
     <Row>
       <div>
-        <span>Recipient</span>{' '}
+        <span>
+          <Trans>Recipient</Trans>
+        </span>{' '}
         <InfoTooltip
-          content={
-            'The tokens received from this order will automatically be sent to this address. No need to do a second transaction!'
-          }
+          content={t`The tokens received from this order will automatically be sent to this address. No need to do a second transaction!`}
         />
       </div>
       <div>

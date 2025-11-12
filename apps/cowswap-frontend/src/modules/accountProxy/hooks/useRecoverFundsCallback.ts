@@ -2,6 +2,9 @@ import { useCallback } from 'react'
 
 import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
 
+import { t } from '@lingui/core/macro'
+import { useLingui } from '@lingui/react/macro'
+
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
 import { RecoverFundsContext } from './useRecoverFundsFromProxy'
@@ -11,6 +14,8 @@ export function useRecoverFundsCallback(
   handleSetError: (error: string | undefined) => void,
 ): () => Promise<string | undefined> {
   const addTransaction = useTransactionAdder()
+  const { i18n } = useLingui()
+  const accountProxyLabelString = i18n._(ACCOUNT_PROXY_LABEL)
 
   const { callback: recoverFundsCallback } = recoverFundsContext
 
@@ -19,7 +24,7 @@ export function useRecoverFundsCallback(
       const txHash = await recoverFundsCallback()
 
       if (txHash) {
-        addTransaction({ hash: txHash, summary: `Recover funds from ${ACCOUNT_PROXY_LABEL}` })
+        addTransaction({ hash: txHash, summary: t`Recover funds from ${accountProxyLabelString}` })
       }
 
       return txHash
@@ -28,5 +33,5 @@ export function useRecoverFundsCallback(
       handleSetError(e.message || e.toString())
     }
     return
-  }, [recoverFundsCallback, addTransaction, handleSetError])
+  }, [recoverFundsCallback, addTransaction, accountProxyLabelString, handleSetError])
 }

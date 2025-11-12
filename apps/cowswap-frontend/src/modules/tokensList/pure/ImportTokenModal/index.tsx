@@ -3,6 +3,7 @@ import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { ButtonPrimary, ExternalLink, ModalHeader } from '@cowprotocol/ui'
 
+import { Trans } from '@lingui/react/macro'
 import { AlertCircle } from 'react-feather'
 import styled from 'styled-components/macro'
 
@@ -31,12 +32,14 @@ export function ImportTokenModal(props: ImportTokenModalProps) {
   return (
     <styledEl.Wrapper>
       <ModalHeader onBack={onBack} onClose={onDismiss}>
-        Import token
+        <Trans>Import token</Trans>
       </ModalHeader>
       <styledEl.Contents>
         <styledEl.AlertIcon size={48} strokeWidth={1} />
         <p>
-          This token doesn't appear on the active token list(s). Make sure this is the token that you want to trade.
+          <Trans>
+            This token doesn't appear on the active token list(s). Make sure this is the token that you want to trade.
+          </Trans>
         </p>
         {tokens.map((token) => (
           <styledEl.TokenInfo key={token.address.toLowerCase()}>
@@ -52,11 +55,15 @@ export function ImportTokenModal(props: ImportTokenModalProps) {
             </ExternalLinkStyled>
             <styledEl.UnknownSourceWarning>
               <AlertCircle size={14} />
-              <span>Unknown Source</span>
+              <span>
+                <Trans>Unknown Source</Trans>
+              </span>
             </styledEl.UnknownSourceWarning>
           </styledEl.TokenInfo>
         ))}
-        <ButtonPrimary onClick={() => onImport(tokens)}>Import</ButtonPrimary>
+        <ButtonPrimary onClick={() => onImport(tokens)}>
+          <Trans>Import</Trans>
+        </ButtonPrimary>
       </styledEl.Contents>
     </styledEl.Wrapper>
   )

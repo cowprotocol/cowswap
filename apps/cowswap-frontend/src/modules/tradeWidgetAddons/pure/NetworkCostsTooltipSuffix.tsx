@@ -1,6 +1,8 @@
 import { isTruthy } from '@cowprotocol/common-utils'
 import { useWalletDetails } from '@cowprotocol/wallet'
 
+import { t } from '@lingui/core/macro'
+
 import { useIsEoaEthFlow } from 'modules/trade'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
@@ -13,11 +15,12 @@ export function NetworkCostsTooltipSuffix() {
   const native = useNativeCurrency()
 
   const isPresign = !isEoaEthFlow && !allowsOffchainSigning
+  const nativeSymbol = native.symbol || ''
 
   const addons = [
-    isPresign && 'Because you are using a smart contract wallet',
-    isEoaEthFlow && `Because you are selling ${native.symbol} (native currency)`,
-    (isPresign || isEoaEthFlow) && ', you will pay a separate gas cost for signing the order placement on-chain.',
+    isPresign && t`Because you are using a smart contract wallet`,
+    isEoaEthFlow && t`Because you are selling ${nativeSymbol} (native currency)`,
+    (isPresign || isEoaEthFlow) && `, ` + t`you will pay a separate gas cost for signing the order placement on-chain.`,
   ].filter(isTruthy)
 
   if (!addons.length) return null

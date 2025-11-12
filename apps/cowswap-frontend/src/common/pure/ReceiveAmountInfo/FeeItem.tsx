@@ -4,7 +4,7 @@ import { isFractionFalsy } from '@cowprotocol/common-utils'
 import { TokenAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 
 import * as styledEl from './styled'
 
@@ -19,9 +19,7 @@ export function FeeItem({ title, isSell, feeAmount: feeAmount }: FeeItemProps): 
 
   return (
     <div>
-      <span>
-        <Trans>{title}</Trans>
-      </span>
+      <span>{title}</span>
       {!isFractionFalsy(feeAmount) ? (
         <span>
           {typeString}
