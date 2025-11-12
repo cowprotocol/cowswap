@@ -1,4 +1,4 @@
-import { useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { ReactNode, useEffect, useMemo } from 'react'
 
 import { OrderClass, SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -12,7 +12,7 @@ import { useOnlyPendingOrders } from 'legacy/state/orders/hooks'
 import { useTradeConfirmState } from 'modules/trade'
 
 import { useOrderProgressBarProps } from '../hooks/useOrderProgressBarProps'
-import { pruneOrdersProgressBarState } from '../state/atoms'
+import { cancellationTrackedOrderIdsAtom, pruneOrdersProgressBarState } from '../state/atoms'
 
 function OrderProgressStateObserver({ chainId, order }: { chainId: SupportedChainId; order: Order }): null {
   useOrderProgressBarProps(chainId, order)
@@ -24,6 +24,7 @@ export function OrderProgressStateUpdater(): ReactNode {
   const pruneProgressState = useSetAtom(pruneOrdersProgressBarState)
   const { transactionHash } = useTradeConfirmState()
   const surplusQueueOrderIds = useSurplusQueueOrderIds()
+  const cancellationTrackedOrderIds = useAtomValue(cancellationTrackedOrderIdsAtom)
 
   const pendingOrders = useOnlyPendingOrders(chainId as SupportedChainId, account)
   const marketOrders = useMemo(
@@ -46,8 +47,18 @@ export function OrderProgressStateUpdater(): ReactNode {
       trackedIdsSet.add(transactionHash)
     }
 
+    cancellationTrackedOrderIds.forEach((orderId) => trackedIdsSet.add(orderId))
+
     pruneProgressState(Array.from(trackedIdsSet))
-  }, [account, chainId, marketOrders, pruneProgressState, surplusQueueOrderIds, transactionHash])
+  }, [
+    account,
+    cancellationTrackedOrderIds,
+    chainId,
+    marketOrders,
+    pruneProgressState,
+    surplusQueueOrderIds,
+    transactionHash,
+  ])
 
   if (!chainId || !account) {
     return null
