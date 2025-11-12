@@ -2,7 +2,7 @@ import React from 'react'
 
 import { UI } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/macro'
+import { t } from '@lingui/core/macro'
 import styled from 'styled-components/macro'
 
 import { useIsNoImpactWarningAccepted, useTradeConfirmActions } from 'modules/trade'
@@ -37,7 +37,7 @@ export function TradeButtons({ isTradeContextReady, isOutputLpToken }: TradeButt
   const isNoImpactWarningAccepted = useIsNoImpactWarningAccepted()
   const localFormValidation = useYieldFormState()
 
-  const confirmText = primaryFormValidation ? 'Swap' : 'Deposit'
+  const confirmText = primaryFormValidation ? t`Swap` : t`Deposit`
   const confirmTrade = tradeConfirmActions.onOpen
 
   const tradeFormButtonContext = useTradeFormButtonContext(confirmText, confirmTrade)
@@ -51,7 +51,7 @@ export function TradeButtons({ isTradeContextReady, isOutputLpToken }: TradeButt
 
     return (
       <TradeFormBlankButton id={button.id} disabled={true}>
-        <Trans>{button.text}</Trans>
+        <>{button.text}</>
       </TradeFormBlankButton>
     )
   }

@@ -36,9 +36,14 @@ import { UI } from '../../enum'
 import { MenuItem } from '../../pure/MenuBar'
 import { ProductLogo, ProductVariant } from '../../pure/ProductLogo'
 
+interface NavItemProps extends Omit<MenuItem, 'label' | 'badge'> {
+  label?: string
+  badge?: string
+}
+
 export interface FooterProps {
   description?: string
-  navItems?: MenuItem[]
+  navItems?: Array<NavItemProps>
   productVariant: ProductVariant
   additionalFooterContent?: ReactNode
   expanded?: boolean
@@ -125,7 +130,7 @@ const PRODUCT_LOGO_LINKS: {
 const GLOBAL_FOOTER_DESCRIPTION =
   'CoW DAO is an open collective of developers, market makers, and community contributors on a mission to protect users from the dangers of DeFi.'
 
-const GLOBAL_FOOTER_NAV_ITEMS: MenuItem[] = [
+const GLOBAL_FOOTER_NAV_ITEMS: Array<NavItemProps> = [
   {
     label: 'About',
     children: [
@@ -257,8 +262,8 @@ const appendUtmParams = (
   rootDomain: string,
   isExternal: boolean,
   label: string | undefined,
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 ) => {
   const finalRootDomain = rootDomain || (typeof window !== 'undefined' ? window.location.host : '')
 
@@ -296,8 +301,8 @@ export const Footer = ({
   hasTouchFooter = false,
   maxWidth,
   host,
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 }: FooterProps) => {
   const [isFooterExpanded, setIsFooterExpanded] = useState(expanded)
   const footerRef = useRef<HTMLDivElement>(null)
@@ -351,7 +356,7 @@ export const Footer = ({
                         <FooterLink
                           href={child.href || '#'}
                           external={child.external}
-                          label={child.label}
+                          label={child.label as string}
                           utmSource={child.utmSource}
                           utmContent={child.utmContent}
                           rootDomain={host || window.location.host}

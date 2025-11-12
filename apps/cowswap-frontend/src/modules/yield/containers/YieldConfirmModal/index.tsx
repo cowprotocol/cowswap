@@ -3,6 +3,8 @@ import React, { ReactNode, useMemo } from 'react'
 import { Nullish } from '@cowprotocol/types'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
+import { t } from '@lingui/core/macro'
+
 import type { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { useAppData } from 'modules/appData'
@@ -22,8 +24,6 @@ import { getNonNativeSlippageTooltip } from 'common/utils/tradeSettingsTooltips'
 
 import { useYieldDerivedState } from '../../hooks/useYieldDerivedState'
 
-const CONFIRM_TITLE = 'Confirm order'
-
 const labelsAndTooltips = {
   // TODO: pass parameters
   slippageTooltip: getNonNativeSlippageTooltip(),
@@ -40,6 +40,7 @@ export interface YieldConfirmModalProps {
 }
 
 export function YieldConfirmModal(props: YieldConfirmModalProps): ReactNode {
+  const CONFIRM_TITLE = t`Confirm order`
   const { inputCurrencyInfo, outputCurrencyInfo, priceImpact, recipient, recipientAddress, doTrade: _doTrade } = props
 
   /**
@@ -72,7 +73,7 @@ export function YieldConfirmModal(props: YieldConfirmModalProps): ReactNode {
         onDismiss={tradeConfirmActions.onDismiss}
         isConfirmDisabled={false}
         priceImpact={priceImpact}
-        buttonText="Confirm Swap"
+        buttonText={t`Confirm Swap`}
         recipient={recipient}
         appData={appData || undefined}
       >

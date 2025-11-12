@@ -4,6 +4,7 @@ import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { ExplorerDataType, getExplorerLink, shortenAddress, getIsNativeToken } from '@cowprotocol/common-utils'
 import { Media, ContextMenuTooltip, ContextMenuCopyButton, ContextMenuExternalLink, Opacity, UI } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
 import { useBridgeSupportedNetwork } from 'entities/bridgeProvider'
 import { Info } from 'react-feather'
 import styled from 'styled-components/macro'
@@ -62,7 +63,7 @@ export function ClickableAddress(props: ClickableAddressProps): ReactNode {
           content={
             <>
               <ContextMenuCopyButton address={address} />
-              <ContextMenuExternalLink href={target} label="View details" />
+              <ContextMenuExternalLink href={target} label={t`View details`} />
             </>
           }
           placement="bottom"

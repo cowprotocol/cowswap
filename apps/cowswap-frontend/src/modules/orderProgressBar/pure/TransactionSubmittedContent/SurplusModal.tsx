@@ -5,6 +5,8 @@ import { isSellOrder } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { ExternalLink, FiatAmount, SymbolElement, TokenAmount, UI } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
@@ -12,9 +14,6 @@ import { Order } from 'legacy/state/orders/actions'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
-
-const SELL_SURPLUS_WORD = 'got'
-const BUY_SURPLUS_WORD = 'saved'
 
 export const Wrapper = styled.div`
   --borderRadius: 16px;
@@ -162,17 +161,20 @@ export function SurplusModal(props: SurplusModalProps) {
     return null
   }
 
-  const surplusMsg = `You ${isSellOrder(order.kind) ? SELL_SURPLUS_WORD : BUY_SURPLUS_WORD} an extra`
+  const orderKind = isSellOrder(order.kind) ? t`got` : t`saved`
+  const surplusMsg = t`You ${orderKind} an extra`
 
   return (
     <Wrapper>
       <h2>
-        <SVG src={CheckSingular} title="check" /> Swap completed
+        <SVG src={CheckSingular} title={t`check`} /> <Trans>Swap completed</Trans>
       </h2>
       <span>
-        <img src={SurplusCow} alt="surplus cow" />
+        <img src={SurplusCow} alt={t`surplus cow`} />
       </span>
-      <h3>Great! {surplusMsg}</h3>
+      <h3>
+        <Trans>Great!</Trans> {surplusMsg}
+      </h3>
       <strong>
         <TokenAmount amount={surplusAmount} tokenSymbol={surplusToken} />
         <span>!</span>
@@ -182,7 +184,7 @@ export function SurplusModal(props: SurplusModalProps) {
         <StyledExternalLink
           href={`https://twitter.com/intent/tweet?text=${getTwitterText(
             surplusAmount.toSignificant(),
-            surplusToken.symbol || 'Unknown token',
+            surplusToken.symbol || t`Unknown token`,
             order.kind,
           )}`}
           data-click-event={toCowSwapGtmEvent({
@@ -190,14 +192,16 @@ export function SurplusModal(props: SurplusModalProps) {
             action: 'Share on Twitter',
           })}
         >
-          <SVG src={twitterImage} description="Twitter" />
-          <span>Share this win!</span>
+          <SVG src={twitterImage} description={`Twitter`} />
+          <span>
+            <Trans>Share this win!</Trans>
+          </span>
         </StyledExternalLink>
       )}
       <p>
-        CoW Swap is the only token exchange that gets you extra tokens.{' '}
+        <Trans>CoW Swap is the only token exchange that gets you extra tokens.</Trans>{' '}
         <ExternalLink href={'https://blog.cow.fi/announcing-cow-swap-surplus-notifications-f679c77702ea'}>
-          Learn how ↗
+          <Trans>Learn how</Trans> ↗
         </ExternalLink>
       </p>
     </Wrapper>
@@ -207,9 +211,9 @@ export function SurplusModal(props: SurplusModalProps) {
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function getTwitterText(surplusAmount: string, surplusToken: string, orderKind: OrderKind) {
-  const actionWord = isSellOrder(orderKind) ? SELL_SURPLUS_WORD : BUY_SURPLUS_WORD
+  const actionWord = isSellOrder(orderKind) ? t`got` : t`saved`
   const surplus = `${surplusAmount} ${surplusToken}`
   return encodeURIComponent(
-    `Hey, I just ${actionWord} an extra ${surplus} on @CoWSwap! 🐮💸\n\nStart swapping on swap.cow.fi`,
+    t`Hey, I just ${actionWord} an extra ${surplus} on @CoWSwap! 🐮💸\n\nStart swapping on swap.cow.fi`,
   )
 }

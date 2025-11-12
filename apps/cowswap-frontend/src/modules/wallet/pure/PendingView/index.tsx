@@ -2,7 +2,7 @@ import { Command } from '@cowprotocol/types'
 import { ButtonEmpty, ButtonPrimary, Loader } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 import { ThemedText } from 'theme'
 
@@ -59,7 +59,7 @@ const WalletError = styled.div`
 `
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function PendingView({
   error,
   tryConnection,
