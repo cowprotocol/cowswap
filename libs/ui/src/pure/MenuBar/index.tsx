@@ -33,6 +33,7 @@ import {
   DropdownContentItemImage,
   DropdownContentItemText,
   DropdownContentItemTitle,
+  DropdownContentItemTitleNoWrap,
   DropdownContentLanguages,
   DropdownMenu,
   GlobalSettingsButton,
@@ -1029,7 +1030,7 @@ export const MenuBar = (props: MenuBarProps) => {
                 >
                   <LinkComponent href={href}>
                     <DropdownContentItemText>
-                      <DropdownContentItemTitle>{item.label}</DropdownContentItemTitle>
+                      <DropdownContentItemTitleNoWrap>{item.label}</DropdownContentItemTitleNoWrap>
                     </DropdownContentItemText>
                     <SVG src={IMG_ICON_ARROW_RIGHT} className={`arrow-icon-right ${item.external ? 'external' : ''}`} />
                   </LinkComponent>

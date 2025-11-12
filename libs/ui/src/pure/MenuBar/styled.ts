@@ -564,6 +564,10 @@ export const DropdownContentItemTitle = styled.span`
   word-break: break-word;
 `
 
+export const DropdownContentItemTitleNoWrap = styled(DropdownContentItemTitle)`
+  white-space: nowrap;
+`
+
 export const DropdownContentItemDescription = styled.span`
   font-size: 14px;
   color: var(--defaultFill);
