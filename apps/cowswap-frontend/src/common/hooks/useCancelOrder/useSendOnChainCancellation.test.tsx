@@ -14,6 +14,7 @@ import { useEthFlowContract, useGP2SettlementContract } from 'common/hooks/useCo
 
 import { useSendOnChainCancellation } from './useSendOnChainCancellation'
 
+import { LinguiWrapper } from '../../../../jest.setup'
 import { WithMockedWeb3 } from '../../../test-utils'
 
 const chainId = 1
@@ -82,11 +83,15 @@ const settlementInvalidationMock = jest.fn()
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 const WithProviders = ({ children }: PropsWithChildren) => {
-  return <WithMockedWeb3>{children}</WithMockedWeb3>
+  return (
+    <WithMockedWeb3>
+      <LinguiWrapper>{children}</LinguiWrapper>
+    </WithMockedWeb3>
+  )
 }
 
 // TODO: Break down this large function into smaller functions
- 
+
 describe('useSendOnChainCancellation() + useGetOnChainCancellation()', () => {
   beforeEach(() => {
     jest.clearAllMocks()
