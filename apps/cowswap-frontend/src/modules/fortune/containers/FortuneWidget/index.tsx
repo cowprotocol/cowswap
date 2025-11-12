@@ -9,7 +9,7 @@ import { ExternalLink, Media } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 import { Confetti } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 import ReactDOM from 'react-dom'
 import { X } from 'react-feather'
 import SVG from 'react-inlinesvg'
@@ -41,6 +41,7 @@ const FortuneButton = styled.div<{ isDailyFortuneChecked: boolean }>`
   font-size: 40px;
   line-height: 0;
   color: inherit;
+  z-index: 9;
 
   &:hover {
     color: var(${UI.COLOR_NEUTRAL_100});
@@ -282,9 +283,11 @@ export function FortuneWidget({ menuTitle, isMobileMenuOpen }: FortuneWidgetProp
   const [isNewFortuneOpen, setIsNewFortuneOpen] = useState(false)
   const [isFortunedShared, setIsFortunedShared] = useState(false)
   const checkboxRef = useRef<HTMLInputElement>(null)
+  const openFortuneText = openFortune?.text || ''
+  const { t } = useLingui()
 
   const twitterText = openFortune
-    ? encodeURIComponent(`My CoW fortune cookie 🐮💬: "${openFortune.text}" \n\n Get yours at swap.cow.fi @CoWSwap`)
+    ? encodeURIComponent(t`My CoW fortune cookie 🐮💬: "${openFortuneText}" \n\n Get yours at swap.cow.fi @CoWSwap`)
     : ''
 
   const isDailyFortuneChecked = useMemo(() => {
@@ -343,8 +346,8 @@ export function FortuneWidget({ menuTitle, isMobileMenuOpen }: FortuneWidgetProp
             </HeaderElement>
             <FortuneTitle>
               {isNewFortuneOpen
-                ? 'CoW Fortune of the day'
-                : "Already seen today's fortune? Return tomorrow for a fresh one!"}
+                ? t`CoW Fortune of the day`
+                : t`Already seen today's fortune? Return tomorrow for a fresh one!`}
             </FortuneTitle>
             <FortuneContent>
               <FortuneText>{openFortune.text}</FortuneText>
@@ -354,7 +357,7 @@ export function FortuneWidget({ menuTitle, isMobileMenuOpen }: FortuneWidgetProp
                   href={`https://twitter.com/intent/tweet?text=${twitterText}`}
                   data-click-event={toCowSwapGtmEvent({
                     category: CowSwapAnalyticsCategory.COW_FORTUNE,
-                    action: 'Share on Twitter',
+                    action: t`Share on Twitter`,
                   })}
                 >
                   <SuccessBanner type={'Twitter'}>
@@ -366,7 +369,9 @@ export function FortuneWidget({ menuTitle, isMobileMenuOpen }: FortuneWidgetProp
                   <DontShowAgainBox>
                     <label>
                       <input type="checkbox" ref={checkboxRef} />
-                      <span>Hide today's fortune cookie</span>
+                      <span>
+                        <Trans>Hide today's fortune cookie</Trans>
+                      </span>
                     </label>
                   </DontShowAgainBox>
                 )}

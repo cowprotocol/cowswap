@@ -4,6 +4,8 @@ import { useCowAnalytics } from '@cowprotocol/analytics'
 import { PAGE_TITLES } from '@cowprotocol/common-const'
 import { CowGame } from '@cowprotocol/cow-runner-game'
 
+import { t } from '@lingui/core/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
 import { PageTitle } from 'modules/application/containers/PageTitle'
@@ -40,6 +42,7 @@ const Wrapper = styled(Page)`
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default function CowRunnerPage() {
+  const { i18n } = useLingui()
   const cowAnalytics = useCowAnalytics()
 
   useEffect(() => {
@@ -51,15 +54,14 @@ export default function CowRunnerPage() {
 
   return (
     <Wrapper>
-      <PageTitle title={PAGE_TITLES.COW_RUNNER} />
+      <PageTitle title={i18n._(PAGE_TITLES.COW_RUNNER)} />
       <p>
-        Run! ...and try not getting sandwiched{' '}
-        <span role="img" aria-label="sandwich-icon">
+        <Trans>Run! ...and try not getting sandwiched</Trans>{' '}
+        <span role="img" aria-label={t`Sandwich icon`}>
           🥪
         </span>
-        - MEV is lethal these days!
+        - <Trans>MEV is lethal these days!</Trans>
       </p>
-
       <Content>
         <CowGame />
       </Content>

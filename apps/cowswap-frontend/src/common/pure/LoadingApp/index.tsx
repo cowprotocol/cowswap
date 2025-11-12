@@ -1,6 +1,7 @@
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { Color, ProductLogo, ProductVariant } from '@cowprotocol/ui'
 
+import { Trans } from '@lingui/react/macro'
 import { transparentize } from 'color2k'
 import styled, { keyframes, css } from 'styled-components/macro'
 
@@ -158,7 +159,7 @@ export const LoadingApp = () => {
         </span>
       )}
       <p>
-        Loading
+        <Trans>Loading</Trans>
         <span className="dots">
           <span>.</span>
           <span>.</span>

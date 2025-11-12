@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.123.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.123.0...cowswap-v1.123.1) (2025-11-12)
+
+
+### Bug Fixes
+
+* add useMemo to prevent rerender loop ([#6504](https://github.com/cowprotocol/cowswap/issues/6504)) ([#6513](https://github.com/cowprotocol/cowswap/issues/6513)) ([8e0cd6d](https://github.com/cowprotocol/cowswap/commit/8e0cd6d41eafcd1c619bed7587eafa8b05d439ec))
+
 ## [1.123.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.122.0...cowswap-v1.123.0) (2025-11-10)
 
 

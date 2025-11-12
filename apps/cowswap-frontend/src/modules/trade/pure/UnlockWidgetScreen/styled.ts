@@ -16,17 +16,23 @@ export const TitleSection = styled.div`
   margin: 24px auto 42px;
 
   > h3 {
-    font-weight: 400;
-    font-size: inherit;
-    margin: 0 0 4px;
     color: inherit;
+    font-size: inherit;
+    font-weight: 400;
+    hyphens: auto;
+    margin: 0 0 4px;
     opacity: 0.7;
+    overflow-wrap: normal;
+    word-break: normal;
   }
 
   > strong {
-    font-weight: 800;
     font-size: 22px;
+    font-weight: 800;
+    hyphens: auto;
     margin: 0;
+    overflow-wrap: normal;
+    word-break: normal;
   }
 `
 
@@ -45,16 +51,19 @@ export const List = styled.ul`
   }
 
   > li {
+    align-items: flex-start;
     background: transparent;
+    border-radius: 10px;
     display: grid;
+    gap: 6px;
     grid-template-columns: 20px auto;
     grid-template-rows: max-content;
-    align-items: flex-start;
-    gap: 6px;
+    hyphens: auto;
     margin: 0;
+    overflow-wrap: normal;
     padding: 10px;
-    border-radius: 10px;
     position: relative;
+    word-break: normal;
 
     &[data-is-new='true'] {
       background: ${({ theme }) => transparentize(theme.success, 0.87)};
@@ -100,8 +109,11 @@ export const ControlSection = styled.div`
   color: inherit;
 
   & span {
-    margin: 0 0 1.2rem;
-    display: block;
     color: inherit;
+    display: block;
+    hyphens: auto;
+    margin: 0 0 1.2rem;
+    overflow-wrap: normal;
+    word-break: normal;
   }
 `

@@ -23,7 +23,7 @@ import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { RateInfo } from 'common/pure/RateInfo'
 
 import * as styledEl from './styled'
-import { LABELS_TOOLTIPS } from './tooltips'
+import { useLabelsTooltips } from './tooltips'
 
 import {
   DEFAULT_NUM_OF_PARTS,
@@ -169,13 +169,15 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget) {
     }
   }, [updateSettingsState, updateState])
 
+  const tooltips = useLabelsTooltips()
+
   return (
     <>
       {!isWrapOrUnwrap && (
         <styledEl.Row>
           <styledEl.RateInfoWrapper>
             <RateInfo
-              label={LABELS_TOOLTIPS.price.label}
+              label={tooltips.price.label}
               rateInfoParams={rateInfoParams}
               isInvertedState={isInvertedState}
               fontSize={13}
@@ -191,8 +193,8 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget) {
         placeholder={DEFAULT_TWAP_SLIPPAGE.toFixed(1)}
         min={0}
         max={MAX_TWAP_SLIPPAGE}
-        label={LABELS_TOOLTIPS.slippage.label}
-        tooltip={renderTooltip(LABELS_TOOLTIPS.slippage.tooltip)}
+        label={tooltips.slippage.label}
+        tooltip={renderTooltip(tooltips.slippage.tooltip)}
         showUpDownArrows={true}
         upDownArrowsLeftAlign={true}
         prefixComponent={
@@ -217,8 +219,8 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget) {
           value={numberOfPartsValue}
           onUserInput={onNumOfPartsInput}
           min={DEFAULT_NUM_OF_PARTS}
-          label={LABELS_TOOLTIPS.numberOfParts.label}
-          tooltip={renderTooltip(LABELS_TOOLTIPS.numberOfParts.tooltip)}
+          label={tooltips.numberOfParts.label}
+          tooltip={renderTooltip(tooltips.numberOfParts.tooltip)}
           showUpDownArrows={true}
         />
       </styledEl.Row>
@@ -229,14 +231,14 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget) {
           isDeadlineDisabled={isDeadlineDisabled}
           items={ORDER_DEADLINES}
           setDeadline={updateSettingsState}
-          label={LABELS_TOOLTIPS.totalDuration.label}
-          tooltip={renderTooltip(LABELS_TOOLTIPS.totalDuration.tooltip, {
+          label={tooltips.totalDuration.label}
+          tooltip={renderTooltip(tooltips.totalDuration.tooltip, {
             parts: numberOfPartsValue,
             partDuration: timeInterval,
           })}
         />
 
-        <TradeTextBox label={LABELS_TOOLTIPS.partDuration.label} tooltip={LABELS_TOOLTIPS.partDuration.tooltip}>
+        <TradeTextBox label={tooltips.partDuration.label} tooltip={tooltips.partDuration.tooltip}>
           <>{deadlinePartsDisplay(timeInterval)}</>
         </TradeTextBox>
       </styledEl.Row>

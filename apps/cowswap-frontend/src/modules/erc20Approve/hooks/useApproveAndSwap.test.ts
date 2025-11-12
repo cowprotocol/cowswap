@@ -7,6 +7,7 @@ import { useApproveAndSwap } from './useApproveAndSwap'
 import { useApproveCurrency } from './useApproveCurrency'
 import { useGeneratePermitInAdvanceToTrade } from './useGeneratePermitInAdvanceToTrade'
 
+import { LinguiWrapper } from '../../../../LinguiJestProvider'
 import { useTokenSupportsPermit } from '../../permit'
 import { MAX_APPROVE_AMOUNT } from '../constants'
 import { TradeApproveResult } from '../containers'
@@ -83,13 +84,15 @@ describe('useApproveAndSwap', () => {
       mockUseTokenSupportsPermit.mockReturnValue(true)
       mockGeneratePermitToTrade.mockResolvedValue(true)
 
-      const { result } = renderHook(() =>
-        useApproveAndSwap({
-          amountToApprove: mockAmountToApprove,
-          onApproveConfirm: mockOnApproveConfirm,
-          ignorePermit: false,
-          useModals: true,
-        }),
+      const { result } = renderHook(
+        () =>
+          useApproveAndSwap({
+            amountToApprove: mockAmountToApprove,
+            onApproveConfirm: mockOnApproveConfirm,
+            ignorePermit: false,
+            useModals: true,
+          }),
+        { wrapper: LinguiWrapper },
       )
 
       await result.current()
@@ -105,13 +108,15 @@ describe('useApproveAndSwap', () => {
       mockUseTokenSupportsPermit.mockReturnValue(true)
       mockGeneratePermitToTrade.mockResolvedValue(false)
 
-      const { result } = renderHook(() =>
-        useApproveAndSwap({
-          amountToApprove: mockAmountToApprove,
-          onApproveConfirm: mockOnApproveConfirm,
-          ignorePermit: false,
-          useModals: true,
-        }),
+      const { result } = renderHook(
+        () =>
+          useApproveAndSwap({
+            amountToApprove: mockAmountToApprove,
+            onApproveConfirm: mockOnApproveConfirm,
+            ignorePermit: false,
+            useModals: true,
+          }),
+        { wrapper: LinguiWrapper },
       )
 
       await result.current()
@@ -127,13 +132,15 @@ describe('useApproveAndSwap', () => {
       mockUseTokenSupportsPermit.mockReturnValue(true)
       mockGeneratePermitToTrade.mockResolvedValue(true)
 
-      const { result } = renderHook(() =>
-        useApproveAndSwap({
-          amountToApprove: mockAmountToApprove,
-          onApproveConfirm: undefined,
-          ignorePermit: false,
-          useModals: true,
-        }),
+      const { result } = renderHook(
+        () =>
+          useApproveAndSwap({
+            amountToApprove: mockAmountToApprove,
+            onApproveConfirm: undefined,
+            ignorePermit: false,
+            useModals: true,
+          }),
+        { wrapper: LinguiWrapper },
       )
 
       await result.current()
@@ -153,13 +160,15 @@ describe('useApproveAndSwap', () => {
       }
       mockHandleApprove.mockResolvedValue(mockResult)
 
-      const { result } = renderHook(() =>
-        useApproveAndSwap({
-          amountToApprove: mockAmountToApprove,
-          onApproveConfirm: mockOnApproveConfirm,
-          ignorePermit: true,
-          useModals: true,
-        }),
+      const { result } = renderHook(
+        () =>
+          useApproveAndSwap({
+            amountToApprove: mockAmountToApprove,
+            onApproveConfirm: mockOnApproveConfirm,
+            ignorePermit: true,
+            useModals: true,
+          }),
+        { wrapper: LinguiWrapper },
       )
 
       await result.current()
@@ -181,13 +190,15 @@ describe('useApproveAndSwap', () => {
       }
       mockHandleApprove.mockResolvedValue(mockResult)
 
-      const { result } = renderHook(() =>
-        useApproveAndSwap({
-          amountToApprove: mockAmountToApprove,
-          onApproveConfirm: mockOnApproveConfirm,
-          ignorePermit: false,
-          useModals: true,
-        }),
+      const { result } = renderHook(
+        () =>
+          useApproveAndSwap({
+            amountToApprove: mockAmountToApprove,
+            onApproveConfirm: mockOnApproveConfirm,
+            ignorePermit: false,
+            useModals: true,
+          }),
+        { wrapper: LinguiWrapper },
       )
 
       await result.current()
@@ -206,13 +217,15 @@ describe('useApproveAndSwap', () => {
       }
       mockHandleApprove.mockResolvedValue(mockResult)
 
-      const { result } = renderHook(() =>
-        useApproveAndSwap({
-          amountToApprove: mockAmountToApprove,
-          onApproveConfirm: mockOnApproveConfirm,
-          ignorePermit: false,
-          useModals: true,
-        }),
+      const { result } = renderHook(
+        () =>
+          useApproveAndSwap({
+            amountToApprove: mockAmountToApprove,
+            onApproveConfirm: mockOnApproveConfirm,
+            ignorePermit: false,
+            useModals: true,
+          }),
+        { wrapper: LinguiWrapper },
       )
 
       await result.current()
@@ -231,13 +244,15 @@ describe('useApproveAndSwap', () => {
       }
       mockHandleApprove.mockResolvedValue(mockResult)
 
-      const { result } = renderHook(() =>
-        useApproveAndSwap({
-          amountToApprove: mockAmountToApprove,
-          onApproveConfirm: mockOnApproveConfirm,
-          ignorePermit: false,
-          useModals: true,
-        }),
+      const { result } = renderHook(
+        () =>
+          useApproveAndSwap({
+            amountToApprove: mockAmountToApprove,
+            onApproveConfirm: mockOnApproveConfirm,
+            ignorePermit: false,
+            useModals: true,
+          }),
+        { wrapper: LinguiWrapper },
       )
 
       await result.current()
@@ -257,13 +272,15 @@ describe('useApproveAndSwap', () => {
       }
       mockHandleApprove.mockResolvedValue(mockResult)
 
-      const { result } = renderHook(() =>
-        useApproveAndSwap({
-          amountToApprove: mockAmountToApprove,
-          onApproveConfirm: mockOnApproveConfirm,
-          ignorePermit: false,
-          useModals: true,
-        }),
+      const { result } = renderHook(
+        () =>
+          useApproveAndSwap({
+            amountToApprove: mockAmountToApprove,
+            onApproveConfirm: mockOnApproveConfirm,
+            ignorePermit: false,
+            useModals: true,
+          }),
+        { wrapper: LinguiWrapper },
       )
 
       await result.current()
@@ -284,13 +301,15 @@ describe('useApproveAndSwap', () => {
       }
       mockHandleApprove.mockResolvedValue(mockResult)
 
-      const { result } = renderHook(() =>
-        useApproveAndSwap({
-          amountToApprove: mockAmountToApprove,
-          onApproveConfirm: mockOnApproveConfirm,
-          ignorePermit: false,
-          useModals: true,
-        }),
+      const { result } = renderHook(
+        () =>
+          useApproveAndSwap({
+            amountToApprove: mockAmountToApprove,
+            onApproveConfirm: mockOnApproveConfirm,
+            ignorePermit: false,
+            useModals: true,
+          }),
+        { wrapper: LinguiWrapper },
       )
 
       await result.current()
@@ -306,13 +325,15 @@ describe('useApproveAndSwap', () => {
     it('should not call confirmSwap when transaction is null', async () => {
       mockHandleApprove.mockResolvedValue(null)
 
-      const { result } = renderHook(() =>
-        useApproveAndSwap({
-          amountToApprove: mockAmountToApprove,
-          onApproveConfirm: mockOnApproveConfirm,
-          ignorePermit: false,
-          useModals: true,
-        }),
+      const { result } = renderHook(
+        () =>
+          useApproveAndSwap({
+            amountToApprove: mockAmountToApprove,
+            onApproveConfirm: mockOnApproveConfirm,
+            ignorePermit: false,
+            useModals: true,
+          }),
+        { wrapper: LinguiWrapper },
       )
 
       await result.current()
@@ -326,13 +347,15 @@ describe('useApproveAndSwap', () => {
     it('should not call confirmSwap when transaction is undefined', async () => {
       mockHandleApprove.mockResolvedValue(undefined)
 
-      const { result } = renderHook(() =>
-        useApproveAndSwap({
-          amountToApprove: mockAmountToApprove,
-          onApproveConfirm: mockOnApproveConfirm,
-          ignorePermit: false,
-          useModals: true,
-        }),
+      const { result } = renderHook(
+        () =>
+          useApproveAndSwap({
+            amountToApprove: mockAmountToApprove,
+            onApproveConfirm: mockOnApproveConfirm,
+            ignorePermit: false,
+            useModals: true,
+          }),
+        { wrapper: LinguiWrapper },
       )
 
       await result.current()
@@ -351,13 +374,15 @@ describe('useApproveAndSwap', () => {
       }
       mockHandleApprove.mockResolvedValue(mockResult)
 
-      const { result } = renderHook(() =>
-        useApproveAndSwap({
-          amountToApprove: mockAmountToApprove,
-          onApproveConfirm: undefined,
-          ignorePermit: false,
-          useModals: true,
-        }),
+      const { result } = renderHook(
+        () =>
+          useApproveAndSwap({
+            amountToApprove: mockAmountToApprove,
+            onApproveConfirm: undefined,
+            ignorePermit: false,
+            useModals: true,
+          }),
+        { wrapper: LinguiWrapper },
       )
 
       await result.current()
@@ -371,38 +396,44 @@ describe('useApproveAndSwap', () => {
 
   describe('useModals parameter', () => {
     it('should pass useModals=true to useApproveCurrency', () => {
-      renderHook(() =>
-        useApproveAndSwap({
-          amountToApprove: mockAmountToApprove,
-          onApproveConfirm: mockOnApproveConfirm,
-          ignorePermit: false,
-          useModals: true,
-        }),
+      renderHook(
+        () =>
+          useApproveAndSwap({
+            amountToApprove: mockAmountToApprove,
+            onApproveConfirm: mockOnApproveConfirm,
+            ignorePermit: false,
+            useModals: true,
+          }),
+        { wrapper: LinguiWrapper },
       )
 
       expect(mockUseApproveCurrency).toHaveBeenCalledWith(mockAmountToApprove, true)
     })
 
     it('should pass useModals=false to useApproveCurrency', () => {
-      renderHook(() =>
-        useApproveAndSwap({
-          amountToApprove: mockAmountToApprove,
-          onApproveConfirm: mockOnApproveConfirm,
-          ignorePermit: false,
-          useModals: false,
-        }),
+      renderHook(
+        () =>
+          useApproveAndSwap({
+            amountToApprove: mockAmountToApprove,
+            onApproveConfirm: mockOnApproveConfirm,
+            ignorePermit: false,
+            useModals: false,
+          }),
+        { wrapper: LinguiWrapper },
       )
 
       expect(mockUseApproveCurrency).toHaveBeenCalledWith(mockAmountToApprove, false)
     })
 
     it('should pass useModals=undefined to useApproveCurrency when not specified', () => {
-      renderHook(() =>
-        useApproveAndSwap({
-          amountToApprove: mockAmountToApprove,
-          onApproveConfirm: mockOnApproveConfirm,
-          ignorePermit: false,
-        }),
+      renderHook(
+        () =>
+          useApproveAndSwap({
+            amountToApprove: mockAmountToApprove,
+            onApproveConfirm: mockOnApproveConfirm,
+            ignorePermit: false,
+          }),
+        { wrapper: LinguiWrapper },
       )
 
       expect(mockUseApproveCurrency).toHaveBeenCalledWith(mockAmountToApprove, undefined)
@@ -414,13 +445,15 @@ describe('useApproveAndSwap', () => {
       const mockError = new Error('Approval failed')
       mockHandleApprove.mockRejectedValue(mockError)
 
-      const { result } = renderHook(() =>
-        useApproveAndSwap({
-          amountToApprove: mockAmountToApprove,
-          onApproveConfirm: mockOnApproveConfirm,
-          ignorePermit: false,
-          useModals: true,
-        }),
+      const { result } = renderHook(
+        () =>
+          useApproveAndSwap({
+            amountToApprove: mockAmountToApprove,
+            onApproveConfirm: mockOnApproveConfirm,
+            ignorePermit: false,
+            useModals: true,
+          }),
+        { wrapper: LinguiWrapper },
       )
 
       await expect(result.current()).rejects.toThrow('Approval failed')
@@ -434,13 +467,15 @@ describe('useApproveAndSwap', () => {
       const mockError = new Error('Permit generation failed')
       mockGeneratePermitToTrade.mockRejectedValue(mockError)
 
-      const { result } = renderHook(() =>
-        useApproveAndSwap({
-          amountToApprove: mockAmountToApprove,
-          onApproveConfirm: mockOnApproveConfirm,
-          ignorePermit: false,
-          useModals: true,
-        }),
+      const { result } = renderHook(
+        () =>
+          useApproveAndSwap({
+            amountToApprove: mockAmountToApprove,
+            onApproveConfirm: mockOnApproveConfirm,
+            ignorePermit: false,
+            useModals: true,
+          }),
+        { wrapper: LinguiWrapper },
       )
 
       await expect(result.current()).rejects.toThrow('Permit generation failed')

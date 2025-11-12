@@ -3,6 +3,8 @@ import { ReactNode } from 'react'
 import { BridgeProviderInfo } from '@cowprotocol/sdk-bridging'
 import { InfoTooltip } from '@cowprotocol/ui'
 
+import { Trans } from '@lingui/react/macro'
+
 import { ToggleArrow } from 'common/pure/ToggleArrow'
 
 import { ClickableRouteHeader, CollapsibleStopsInfo, RouteHeader, RouteTitle, StopsInfo } from './styled'
@@ -24,30 +26,31 @@ export function RouteOverviewTitle({
   onClick,
 }: RouteOverviewTitleProps): ReactNode {
   const HeaderComponent = isCollapsible ? ClickableRouteHeader : RouteHeader
+  const providerInfoName = providerInfo.name
 
   return (
     <HeaderComponent onClick={isCollapsible ? onClick : undefined}>
       <RouteTitle>
-        Route{' '}
+        <Trans>Route</Trans>{' '}
         <InfoTooltip
           content={
-            <>
+            <Trans>
               Your trade will be executed in 2 stops. First, you swap on <b>{COW_PROTOCOL_NAME} (Stop 1)</b>, then you
-              bridge via <b>{providerInfo.name} (Stop 2)</b>.
-            </>
+              bridge via <b>{providerInfoName} (Stop 2)</b>.
+            </Trans>
           }
           size={14}
         />
       </RouteTitle>
       {isCollapsible ? (
         <CollapsibleStopsInfo>
-          2 stops
+          <Trans>2 stops</Trans>
           <ProtocolIcons secondProtocol={providerInfo} />
           <ToggleArrow isOpen={isExpanded} />
         </CollapsibleStopsInfo>
       ) : (
         <StopsInfo>
-          2 stops
+          <Trans>2 stops</Trans>
           <ProtocolIcons secondProtocol={providerInfo} />
         </StopsInfo>
       )}

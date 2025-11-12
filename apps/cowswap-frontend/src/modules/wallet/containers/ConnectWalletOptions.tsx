@@ -35,11 +35,13 @@ export function ConnectWalletOptions({ tryActivation, children }: ConnectWalletO
 
   const connectionProps = { darkMode, selectedWallet, tryActivation }
 
-  const hasInjectedMetaMask = multiInjectedProviders.some(providerInfo => providerInfo.info.rdns.startsWith('io.metamask'))
-  const showMetaMaskSdkOption = !hasInjectedMetaMask && !isMobile;
-  const metaMaskSdkOption = showMetaMaskSdkOption
-    ? <MetaMaskSdkOption key="MetaMaskSdkOption" {...connectionProps} />
-    : null
+  const hasInjectedMetaMask = multiInjectedProviders.some((providerInfo) =>
+    providerInfo.info.rdns.startsWith('io.metamask'),
+  )
+  const showMetaMaskSdkOption = !hasInjectedMetaMask && !isMobile
+  const metaMaskSdkOption = showMetaMaskSdkOption ? (
+    <MetaMaskSdkOption key="MetaMaskSdkOption" {...connectionProps} />
+  ) : null
 
   const coinbaseWalletOption =
     (!hasCoinbaseEip6963 && !(isMobile && isWidget) && (
@@ -52,7 +54,7 @@ export function ConnectWalletOptions({ tryActivation, children }: ConnectWalletO
       <WalletConnectV2Option key="WalletConnectV2Option" {...connectionProps} />
     )) ??
     null
-  // TODO: the Trezor connector is not working now and need to be repaired
+  // TODO: the Trezor connector is not working now and needs to be repaired
   // const trezorOption = (!isInjectedMobileBrowser && !isMobile && <TrezorOption {...connectionProps} />) ?? null
   const injectedOption =
     (getIsInjected() && (
@@ -89,18 +91,17 @@ function InjectedOptions({ connectionProps, multiInjectedProviders }: InjectedOp
   if (multiInjectedProviders.length) {
     return (
       <>
-        {multiInjectedProviders
-          .map((providerInfo) => {
-            return (
-              <Eip6963Option
-                key={providerInfo.info.rdns}
-                providers={multiInjectedProviders}
-                selectedWallet={connectionProps.selectedWallet}
-                tryActivation={connectionProps.tryActivation}
-                providerDetails={providerInfo}
-              />
-            )
-          })}
+        {multiInjectedProviders.map((providerInfo) => {
+          return (
+            <Eip6963Option
+              key={providerInfo.info.rdns}
+              providers={multiInjectedProviders}
+              selectedWallet={connectionProps.selectedWallet}
+              tryActivation={connectionProps.tryActivation}
+              providerDetails={providerInfo}
+            />
+          )
+        })}
       </>
     )
   }

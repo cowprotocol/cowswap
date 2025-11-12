@@ -67,7 +67,7 @@ export const HookDappListItem = styled.li<{ isDescriptionView?: boolean; isCompa
   background: ${({ isCompatible }) => (isCompatible ? `var(${UI.COLOR_PAPER})` : `var(${UI.COLOR_PAPER_DARKER})`)};
 
   &::after {
-    content: ${({ isCompatible }) => (isCompatible ? 'none' : '"This hook is not compatible with your wallet"')};
+    content: ${({ isCompatible }) => (isCompatible ? 'none' : 'attr(data-incompatibility-text)')};
     color: var(${UI.COLOR_ALERT_TEXT});
     font-size: 12px;
     background-color: var(${UI.COLOR_ALERT_BG});

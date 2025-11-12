@@ -1,3 +1,4 @@
+import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
 import { WidgetParamsErrors } from '../../state/injectedWidgetParamsAtom'
@@ -25,7 +26,9 @@ export function WidgetParamsErrorsScreen({ errors }: { errors: WidgetParamsError
 
   return (
     <Container>
-      <h3>The are some errors with CoW Swap widget configuration</h3>
+      <h3>
+        <Trans>The are some errors with CoW Swap widget configuration</Trans>
+      </h3>
       <Code value={JSON.stringify(errors, null, 4)}></Code>
     </Container>
   )

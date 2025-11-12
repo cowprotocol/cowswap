@@ -16,32 +16,33 @@ export interface OrderFillability {
 
 export function useOrdersFillability(orders: GenericOrder[]): Record<string, OrderFillability | undefined> {
   const { chainId } = useWalletInfo()
-
   const tokens = useMemo(() => orders.map((order) => order.inputToken.address.toLowerCase()), [orders])
   const { balances, allowances } = useBalancesAndAllowances(tokens)
 
-  return orders.reduce<Record<string, OrderFillability>>((acc, order) => {
-    const inputTokenAddress = order.inputToken.address.toLowerCase()
-    if (getIsNativeToken(chainId, inputTokenAddress)) {
+  return useMemo(() => {
+    return orders.reduce<Record<string, OrderFillability>>((acc, order) => {
+      const inputTokenAddress = order.inputToken.address.toLowerCase()
+      if (getIsNativeToken(chainId, inputTokenAddress)) {
+        acc[order.id] = {
+          hasEnoughBalance: true,
+          hasEnoughAllowance: true,
+          hasPermit: false,
+          order,
+        }
+        return acc
+      }
+
+      const balance = balances[inputTokenAddress]
+      const allowance = allowances?.[inputTokenAddress]
+
       acc[order.id] = {
-        hasEnoughBalance: true,
-        hasEnoughAllowance: true,
-        hasPermit: false,
+        hasEnoughBalance: balance ? balance.gte(order.sellAmount) : undefined,
+        hasEnoughAllowance: allowance ? allowance.gte(order.sellAmount) : undefined,
+        hasPermit: doesOrderHavePermit(order),
         order,
       }
+
       return acc
-    }
-
-    const balance = balances[inputTokenAddress]
-    const allowance = allowances?.[inputTokenAddress]
-
-    acc[order.id] = {
-      hasEnoughBalance: balance ? balance.gte(order.sellAmount) : undefined,
-      hasEnoughAllowance: allowance ? allowance.gte(order.sellAmount) : undefined,
-      hasPermit: doesOrderHavePermit(order),
-      order,
-    }
-
-    return acc
-  }, {})
+    }, {})
+  }, [orders, chainId, balances, allowances])
 }

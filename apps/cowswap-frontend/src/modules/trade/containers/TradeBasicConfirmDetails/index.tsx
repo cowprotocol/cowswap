@@ -3,6 +3,7 @@ import { ReactNode, useMemo, useState } from 'react'
 import { PercentDisplay } from '@cowprotocol/ui'
 import { Percent } from '@uniswap/sdk-core'
 
+import { t } from '@lingui/core/macro'
 import { Nullish } from 'types'
 
 import { useUsdAmount } from 'modules/usdAmount'
@@ -48,12 +49,12 @@ type LabelsAndTooltips = {
 }
 
 function getLabelsAndTooltipsWithDefaults(labelsAndTooltips: LabelsAndTooltips | undefined): LabelsAndTooltips {
-  const priceLabel = labelsAndTooltips?.priceLabel || 'Price'
-  const minReceivedLabel = labelsAndTooltips?.minReceivedLabel || 'Min received (incl. costs)'
-  const expectReceiveLabel = labelsAndTooltips?.expectReceiveLabel || 'Expected to receive'
+  const priceLabel = labelsAndTooltips?.priceLabel || t`Price`
+  const minReceivedLabel = labelsAndTooltips?.minReceivedLabel || t`Min received (incl. costs)`
+  const expectReceiveLabel = labelsAndTooltips?.expectReceiveLabel || t`Expected to receive`
   const minReceivedTooltip =
-    labelsAndTooltips?.minReceivedTooltip || 'This is the minimum amount that you will receive.'
-  const slippageLabel = labelsAndTooltips?.slippageLabel || 'Slippage tolerance'
+    labelsAndTooltips?.minReceivedTooltip || t`This is the minimum amount that you will receive.`
+  const slippageLabel = labelsAndTooltips?.slippageLabel || t`Slippage tolerance`
 
   return {
     ...labelsAndTooltips,
