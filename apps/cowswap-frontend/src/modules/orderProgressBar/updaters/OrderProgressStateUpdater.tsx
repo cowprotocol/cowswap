@@ -34,6 +34,8 @@ export function OrderProgressStateUpdater(): ReactNode {
   useEffect(() => {
     const trackedIdsSet = new Set<string>()
 
+    // Surplus and confirmation modals can stay mounted while the wallet reconnects or is disconnected,
+    // so we still prune based on their IDs even when `account`/`chainId` are temporarily unavailable.
     if (account && chainId) {
       marketOrders.forEach((order) => trackedIdsSet.add(order.id))
     }
