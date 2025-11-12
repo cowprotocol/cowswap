@@ -15,6 +15,7 @@ import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
 import { TradeTextBox } from 'modules/trade/pure/TradeTextBox'
 import { useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { useTradeQuote } from 'modules/tradeQuote'
+import { RowRewards, useIsRowRewardsVisible } from 'modules/tradeWidgetAddons'
 import { TwapFormState } from 'modules/twap/pure/PrimaryActionButton/getTwapFormState'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
@@ -76,6 +77,7 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget) {
   const localFormValidation = useTwapFormState()
   const primaryFormValidation = useGetTradeFormValidation()
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
+  const isRowRewardsVisible = useIsRowRewardsVisible()
 
   const rateInfoParams = useRateInfoParams(inputCurrencyAmount, outputCurrencyAmount)
 
@@ -172,8 +174,8 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget) {
   return (
     <>
       {!isWrapOrUnwrap && (
-        <styledEl.Row>
-          <styledEl.RateInfoWrapper>
+        <>
+          <styledEl.FooterBox>
             <RateInfo
               label={LABELS_TOOLTIPS.price.label}
               rateInfoParams={rateInfoParams}
@@ -181,8 +183,9 @@ export function TwapFormWidget({ tradeWarnings }: TwapFormWidget) {
               fontSize={13}
               rightAlign
             />
-          </styledEl.RateInfoWrapper>
-        </styledEl.Row>
+            {isRowRewardsVisible && <RowRewards />}
+          </styledEl.FooterBox>
+        </>
       )}
       <TradeNumberInput
         value={+twapOrderSlippage.toFixed(2)}
