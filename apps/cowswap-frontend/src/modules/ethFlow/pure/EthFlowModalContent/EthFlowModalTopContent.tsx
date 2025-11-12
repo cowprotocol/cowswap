@@ -1,6 +1,6 @@
 import { Media, UI } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 import { darken, transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 
@@ -51,33 +51,30 @@ export type TopContentParams = {
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function EthFlowModalTopContent({ descriptions, state, balanceChecks, nativeSymbol }: TopContentParams) {
+  const txsRemaining = balanceChecks?.txsRemaining
+  const text = !txsRemaining ? (
+    <Trans>
+      At current gas prices, your remaining {nativeSymbol} balance after confirmation may be{' '}
+      <strong>insufficient for any further on-chain transactions.</strong>
+    </Trans>
+  ) : (
+    <Trans>
+      At current gas prices, your remaining {nativeSymbol} balance after confirmation may be only sufficient for
+      <strong>up to {txsRemaining} wrapping, unwrapping, or approval operation(s).</strong>
+    </Trans>
+  )
+
   return (
     <>
       {!!descriptions?.length && (
         <ModalMessage>
           {descriptions.map((description, index) => (
-            <span key={index}>
-              <Trans>{description}</Trans>
-            </span>
+            <span key={index}>{description}</span>
           ))}
         </ModalMessage>
       )}
       {/* Warn user if native balance low for on-chain operations EXCEPT if state is ready to swap */}
-      {state !== EthFlowState.SwapReady && balanceChecks?.isLowBalance && (
-        <LowBalanceMessage>
-          <Trans>
-            At current gas prices, your remaining {nativeSymbol} balance after confirmation may be{' '}
-            {!balanceChecks.txsRemaining ? (
-              <strong>insufficient for any further on-chain transactions.</strong>
-            ) : (
-              <>
-                only sufficient for{' '}
-                <strong>up to {balanceChecks.txsRemaining} wrapping, unwrapping, or approval operation(s).</strong>
-              </>
-            )}
-          </Trans>
-        </LowBalanceMessage>
-      )}
+      {state !== EthFlowState.SwapReady && balanceChecks?.isLowBalance && <LowBalanceMessage>{text}</LowBalanceMessage>}
     </>
   )
 }

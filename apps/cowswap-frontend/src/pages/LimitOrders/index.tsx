@@ -1,6 +1,8 @@
 import { PAGE_TITLES } from '@cowprotocol/common-const'
 import { percentToBps } from '@cowprotocol/common-utils'
 
+import { useLingui } from '@lingui/react/macro'
+
 import { AppDataUpdater } from 'modules/appData'
 import { PageTitle } from 'modules/application/containers/PageTitle'
 import {
@@ -22,6 +24,7 @@ import { RegularLimitOrders } from './RegularLimitOrders'
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default function LimitOrderPage() {
   const isAlternative = useIsAlternativeOrderModalVisible()
+  const { i18n } = useLingui()
 
   return (
     <>
@@ -43,7 +46,7 @@ export default function LimitOrderPage() {
           <RegularLimitOrders />
         </>
       )}
-      <PageTitle title={PAGE_TITLES.LIMIT_ORDERS} />
+      <PageTitle title={i18n._(PAGE_TITLES.LIMIT_ORDERS)} />
     </>
   )
 }

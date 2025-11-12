@@ -32,9 +32,10 @@ export const ShimmerWrapper = styled.span`
   }
 `
 export const SummaryRow = styled.div`
+  column-gap: 16px;
   display: grid;
   grid-template-rows: 1fr;
-  grid-template-columns: 100px 1fr;
+  grid-template-columns: 130px 1fr;
   width: 100%;
   margin: 0 0 4px;
   color: inherit;

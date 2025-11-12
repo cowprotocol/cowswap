@@ -2,6 +2,8 @@ import ninjaCowImg from '@cowprotocol/assets/cow-swap/ninja-cow.png'
 import { PAGE_TITLES } from '@cowprotocol/common-const'
 import { ButtonPrimary } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
 import { PageTitle } from 'modules/application/containers/PageTitle'
@@ -53,22 +55,26 @@ function openGame() {
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default function MevSlicer() {
+  const { i18n } = useLingui()
+
   return (
     <Wrapper>
-      <PageTitle title={PAGE_TITLES.MEV_SLICER} />
-      <p>This CoW doesn&apos;t run away any more! Not from MEV!</p>
+      <PageTitle title={i18n._(PAGE_TITLES.MEV_SLICER)} />
       <p>
-        Now is the time to take some action! -{' '}
+        <Trans>This CoW doesn&apos;t run away any more! Not from MEV!</Trans>
+      </p>
+      <p>
+        <Trans>Now is the time to take some action!</Trans> -{' '}
         <strong>
-          Let&apos;s slice some{' '}
-          <span role="img" aria-label="sandwich-icon">
+          <Trans>Let&apos;s slice some</Trans>{' '}
+          <span role="img" aria-label={t`sandwich-icon`}>
             🥪
           </span>
           !
         </strong>
       </p>
       <p>
-        <img src={ninjaCowImg} alt="Ninja Cow" />
+        <img src={ninjaCowImg} alt={t`Ninja Cow`} />
       </p>
 
       <ButtonPrimary
@@ -80,7 +86,7 @@ export default function MevSlicer() {
           action: 'Playing MEV Slicer game',
         })}
       >
-        Play MEV Slicer
+        <Trans>Play MEV Slicer</Trans>
       </ButtonPrimary>
 
       <Content></Content>

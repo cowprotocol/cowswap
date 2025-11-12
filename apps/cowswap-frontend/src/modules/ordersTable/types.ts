@@ -4,6 +4,8 @@ import type { Command } from '@cowprotocol/types'
 import type { CowSwapWidgetAppParams } from '@cowprotocol/widget-lib'
 import type { Currency, Price, Token } from '@uniswap/sdk-core'
 
+import { MessageDescriptor } from '@lingui/core'
+
 import type { Order } from 'legacy/state/orders/actions'
 
 import type { PendingOrdersPrices, SpotPricesKeyParams } from 'modules/orders'
@@ -35,7 +37,7 @@ export type AlternativeOrderModalContext = { showAlternativeOrderModal: Command;
 
 export interface TabParams {
   id: OrderTabId
-  title: string
+  title: MessageDescriptor
   count: number
   isActive?: boolean
 }
