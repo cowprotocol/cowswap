@@ -1,5 +1,7 @@
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 
+import { TradeType } from 'modules/trade/types'
+
 import { useWidgetViewDependencies } from './controllerDependencies'
 import { getSelectTokenWidgetViewPropsArgs, useWidgetModalProps } from './controllerModalProps'
 import { SelectTokenWidgetViewProps, buildSelectTokenWidgetViewProps } from './controllerProps'
@@ -41,6 +43,9 @@ interface ViewStateResult {
   viewProps: SelectTokenWidgetViewProps
 }
 
+// TODO: Re-enable once Yield should support cross-network selection in the modal.
+const ENABLE_YIELD_CHAIN_PANEL = false
+
 export function useSelectTokenWidgetViewState(args: SelectTokenWidgetViewStateArgs): ViewStateResult {
   const {
     displayLpTokenLists,
@@ -71,7 +76,9 @@ export function useSelectTokenWidgetViewState(args: SelectTokenWidgetViewStateAr
     widgetState,
     activeChainId,
   })
-  const isChainPanelEnabled = isBridgeFeatureEnabled && hasAvailableChains(chainsToSelect)
+  const shouldDisableChainPanelForYield = widgetState.tradeType === TradeType.YIELD && !ENABLE_YIELD_CHAIN_PANEL
+  const isChainPanelEnabled =
+    isBridgeFeatureEnabled && hasAvailableChains(chainsToSelect) && !shouldDisableChainPanelForYield
   const selectTokenModalProps = useWidgetModalProps({
     account,
     chainsToSelect,

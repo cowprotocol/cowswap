@@ -136,6 +136,7 @@ export function useTokenDataSources(): TokenDataSources {
 
 export function useWidgetMetadata(
   field: Field,
+  tradeType: TradeType | undefined,
   displayLpTokenLists: boolean | undefined,
   oppositeToken: Parameters<typeof getDefaultTokenListCategories>[1],
   lpTokensWithBalancesCount: number,
@@ -144,11 +145,25 @@ export function useWidgetMetadata(
   const tokenListCategoryState: TokenListCategoryState = useState<TokenListCategory[] | null>(
     getDefaultTokenListCategories(field, oppositeToken, lpTokensWithBalancesCount),
   )
-  const modalTitle = field === Field.INPUT ? 'Swap from' : field === Field.OUTPUT ? 'Swap to' : 'Select token'
+  const modalTitle = resolveModalTitle(field, tradeType)
   const chainsPanelTitle =
     field === Field.INPUT ? 'From network' : field === Field.OUTPUT ? 'To network' : 'Select network'
 
   return { disableErc20, tokenListCategoryState, modalTitle, chainsPanelTitle }
+}
+
+function resolveModalTitle(field: Field, tradeType: TradeType | undefined): string {
+  const isSwapTrade = !tradeType || tradeType === TradeType.SWAP
+
+  if (field === Field.INPUT) {
+    return isSwapTrade ? 'Swap from' : 'Sell token'
+  }
+
+  if (field === Field.OUTPUT) {
+    return isSwapTrade ? 'Swap to' : 'Buy token'
+  }
+
+  return 'Select token'
 }
 
 export function useDismissHandler(

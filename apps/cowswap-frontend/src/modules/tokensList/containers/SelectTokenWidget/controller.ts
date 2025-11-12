@@ -51,6 +51,7 @@ export function useSelectTokenWidgetController({
   const tokenAdminActions = useTokenAdminActions()
   const widgetMetadata = useWidgetMetadata(
     resolvedField,
+    widgetState.tradeType,
     displayLpTokenLists,
     widgetState.oppositeToken,
     lpTokensWithBalancesCount,

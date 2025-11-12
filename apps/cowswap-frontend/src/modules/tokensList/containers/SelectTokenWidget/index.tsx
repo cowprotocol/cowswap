@@ -115,7 +115,7 @@ function SelectTokenWidgetView(
   }
 
   const closeMobileChainPanel = (): void => setIsMobileChainPanelOpen(false)
-  const mobileChainsState = !isChainPanelVisible ? chainsToSelect : undefined
+  const mobileChainsState = isChainPanelEnabled && !isChainPanelVisible ? chainsToSelect : undefined
   const handleOpenMobileChainPanel = mobileChainsState ? () => setIsMobileChainPanelOpen(true) : undefined
   const showDesktopChainPanel = isChainPanelVisible && isChainPanelEnabled && chainsToSelect
   const showMobileChainPanel = !isChainPanelVisible && isChainPanelEnabled && chainsToSelect && isMobileChainPanelOpen
