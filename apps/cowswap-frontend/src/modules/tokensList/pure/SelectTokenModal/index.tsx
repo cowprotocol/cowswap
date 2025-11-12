@@ -7,6 +7,7 @@ import { TokenListCategory, TokenListTags, UnsupportedTokensState } from '@cowpr
 import { SearchInput } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
+import { t } from '@lingui/core/macro'
 import { X } from 'react-feather'
 import { Nullish } from 'types'
 
@@ -113,7 +114,7 @@ export function SelectTokenModal(props: SelectTokenModalProps): ReactNode {
           value={inputValue}
           onKeyDown={(e) => e.key === 'Enter' && onInputPressEnter?.()}
           onChange={(e) => setInputValue(e.target.value)}
-          placeholder="Search name or paste address..."
+          placeholder={t`Search name or paste address...`}
         />
         <IconButton onClick={onDismiss}>
           <X size={18} />

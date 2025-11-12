@@ -40,7 +40,10 @@ export function useUserLocale(): SupportedLocale | null {
   return useAppSelector((state) => state.user.userLocale)
 }
 
-export function useUserLocaleManager(): [SupportedLocale | null, (newLocale: SupportedLocale) => void] {
+export function useUserLocaleManager(): {
+  locale: SupportedLocale | null
+  setLocale: (newLocale: SupportedLocale) => void
+} {
   const dispatch = useAppDispatch()
   const locale = useUserLocale()
 
@@ -51,7 +54,7 @@ export function useUserLocaleManager(): [SupportedLocale | null, (newLocale: Sup
     [dispatch],
   )
 
-  return [locale, setLocale]
+  return { locale, setLocale }
 }
 
 export function useHooksEnabled(): boolean {

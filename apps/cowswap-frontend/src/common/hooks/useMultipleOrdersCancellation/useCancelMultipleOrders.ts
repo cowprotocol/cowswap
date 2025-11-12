@@ -4,6 +4,7 @@ import { OrderSigningUtils } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
+import { t } from '@lingui/core/macro'
 import { orderBookApi } from 'cowSdk'
 
 import { CancellableOrder, isOrderCancellable } from 'common/utils/isOrderCancellable'
@@ -20,13 +21,13 @@ export function useCancelMultipleOrders(): (orders: CancellableOrder[]) => Promi
       if (!signer) return
 
       if (notCancellableOrders.length) {
-        throw new Error('Some orders can not be cancelled!')
+        throw new Error(t`Some orders can not be cancelled!`)
       }
 
       const orderUids = ordersToCancel.map((order) => order.id)
       const { signature, signingScheme } = await OrderSigningUtils.signOrderCancellations(orderUids, chainId, signer)
 
-      if (!signature) throw new Error('Signature is undefined!')
+      if (!signature) throw new Error(t`Signature is undefined!`)
 
       await orderBookApi.sendSignedOrderCancellations(
         {
@@ -34,9 +35,9 @@ export function useCancelMultipleOrders(): (orders: CancellableOrder[]) => Promi
           signature,
           signingScheme,
         },
-        { chainId }
+        { chainId },
       )
     },
-    [chainId, provider]
+    [chainId, provider],
   )
 }

@@ -5,6 +5,7 @@ import { ButtonPrimary, UI } from '@cowprotocol/ui'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { BigNumber } from '@ethersproject/bignumber'
 
+import { Trans } from '@lingui/react/macro'
 import { formatUnits } from 'ethers/lib/utils'
 
 import { SBC_DEPOSIT_CONTRACT_ADDRESS, SBCDepositContract } from './const'
@@ -23,7 +24,7 @@ const SbcDepositContractInterface = SBCDepositContract.interface
  */
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function ClaimGnoHookApp({ context }: HookDappProps) {
   const provider = useWalletProvider()
   const [claimable, setClaimable] = useState<BigNumber | undefined>(undefined)
@@ -96,9 +97,9 @@ export function ClaimGnoHookApp({ context }: HookDappProps) {
     <Wrapper>
       <ContentWrapper minHeight={150}>
         {context.chainId !== SupportedChainId.GNOSIS_CHAIN ? (
-          'Unsupported network. Please change to Gnosis Chain'
+          <Trans>Unsupported network. Please change to Gnosis Chain</Trans>
         ) : !account ? (
-          'Connect your wallet first'
+          <Trans>Connect your wallet first</Trans>
         ) : (
           <>
             <ClaimableAmount loading={loading} claimable={claimable} error={error} />
@@ -107,7 +108,7 @@ export function ClaimGnoHookApp({ context }: HookDappProps) {
       </ContentWrapper>
       {claimable && !error && (
         <ButtonPrimary onClick={clickOnAddHook}>
-          {context.hookToEdit ? 'Update Pre-hook' : 'Add Pre-hook'}
+          {context.hookToEdit ? <Trans>Update Pre-hook</Trans> : <Trans>Add Pre-hook</Trans>}
         </ButtonPrimary>
       )}
     </Wrapper>
@@ -119,16 +120,26 @@ export function ClaimGnoHookApp({ context }: HookDappProps) {
 function ClaimableAmount(props: { loading: boolean; error: boolean; claimable: BigNumber | undefined }) {
   const { loading, error, claimable } = props
   if (error) {
-    return <Text color={`var(${UI.COLOR_DANGER})`}>Error loading the claimable amount</Text>
+    return (
+      <Text color={`var(${UI.COLOR_DANGER})`}>
+        <Trans>Error loading the claimable amount</Trans>
+      </Text>
+    )
   }
 
   if (loading || !claimable) {
-    return <LoadingLabel>Loading...</LoadingLabel>
+    return (
+      <LoadingLabel>
+        <Trans>Loading...</Trans>
+      </LoadingLabel>
+    )
   }
 
   return (
     <>
-      <Text color={`var(${UI.COLOR_TEXT_OPACITY_70})`}>Total claimable rewards:</Text>
+      <Text color={`var(${UI.COLOR_TEXT_OPACITY_70})`}>
+        <Trans>Total claimable rewards:</Trans>
+      </Text>
       <Text fontSize="36px" fontWeight="bold">
         {formatUnits(claimable, 18)} GNO
       </Text>

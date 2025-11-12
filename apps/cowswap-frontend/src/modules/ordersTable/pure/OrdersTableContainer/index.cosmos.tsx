@@ -4,6 +4,8 @@ import { useEffect } from 'react'
 import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances';
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
+import { msg } from '@lingui/core/macro'
+
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
 import { ordersMock } from './orders.mock'
@@ -15,12 +17,12 @@ import { OrderActions, TabOrderTypes } from '../../types'
 const tabs: OrderTab[] = [
   {
     id: OrderTabId.open,
-    title: 'Open orders',
+    title: msg`Open orders`,
     count: 5,
   },
   {
     id: OrderTabId.history,
-    title: 'Orders history',
+    title: msg`Orders history`,
     count: 0,
     isActive: false,
   },
