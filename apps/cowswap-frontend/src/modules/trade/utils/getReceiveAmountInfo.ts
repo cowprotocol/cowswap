@@ -66,6 +66,7 @@ export function getReceiveAmountInfo(
   _partnerFeeBps: number | undefined,
   intermediateCurrency?: Currency,
   bridgeFeeRaw?: bigint,
+  bridgeBuyAmount?: bigint,
 ): ReceiveAmountInfo {
   const partnerFeeBps = _partnerFeeBps ?? 0
   const currenciesExcludingIntermediate = { inputCurrency, outputCurrency }
@@ -73,7 +74,17 @@ export function getReceiveAmountInfo(
   const isSell = isSellOrder(orderParams.kind)
 
   const result = getQuoteAmountsAndCosts({
-    orderParams,
+    orderParams:
+      intermediateCurrency && bridgeBuyAmount
+        ? {
+            ...orderParams,
+            buyAmount: FractionUtils.adjustDecimalsAtoms(
+              CurrencyAmount.fromRawAmount(intermediateCurrency, bridgeBuyAmount.toString()),
+              outputCurrency.decimals,
+              intermediateCurrency.decimals,
+            ).quotient.toString(),
+          }
+        : orderParams,
     sellDecimals: inputCurrency.decimals,
     buyDecimals: outputCurrency.decimals,
     slippagePercentBps: Number(slippagePercent.numerator),
