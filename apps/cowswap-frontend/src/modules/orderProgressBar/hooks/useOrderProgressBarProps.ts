@@ -133,7 +133,7 @@ function useOrderBaseProgressBarProps(params: UseOrderProgressBarPropsParams): U
   // Do not build progress bar data when these conditions are set
   const disableProgressBar = widgetDisabled || isCreating || isFailed || isPresignaturePending || featureFlagDisabled
 
-  const orderId = order?.id || ''
+  const orderId = order?.id
 
   const getCancelOrder = useCancelOrder()
   const showCancellationModal = order && getCancelOrder ? getCancelOrder(order) : null
@@ -254,9 +254,9 @@ function getDoNotQueryStatusEndpoint(
 
 const DEFAULT_STATE = {}
 
-function useGetExecutingOrderState(orderId: string): OrderProgressBarState {
+function useGetExecutingOrderState(orderId?: string): OrderProgressBarState {
   const fullState = useAtomValue(ordersProgressBarStateAtom)
-  const singleState = fullState[orderId]
+  const singleState = orderId ? fullState[orderId] : undefined
 
   return useMemo(() => singleState || DEFAULT_STATE, [singleState])
 }
@@ -281,7 +281,7 @@ function useSetExecutingOrderProgressBarStepNameCallback(): (orderId: string, va
 // local updaters
 
 function useCountdownStartUpdater(
-  orderId: string,
+  orderId: string | undefined,
   countdown: OrderProgressBarState['countdown'],
   backendApiStatus: OrderProgressBarState['backendApiStatus'],
   shouldDisableCountdown: boolean,
@@ -312,7 +312,7 @@ function useCountdownStartUpdater(
   }, [backendApiStatus, setCountdown, countdown, orderId, shouldDisableCountdown])
 }
 
-function useCancellingOrderUpdater(orderId: string, isCancelling: boolean): void {
+function useCancellingOrderUpdater(orderId: string | undefined, isCancelling: boolean): void {
   const setCancellationTriggered = useSetAtom(setOrderProgressBarCancellationTriggered)
 
   useEffect(() => {
@@ -326,7 +326,7 @@ function useCancellingOrderUpdater(orderId: string, isCancelling: boolean): void
 
 // TODO: Break down this large function into smaller functions
 function useProgressBarStepNameUpdater(
-  orderId: string,
+  orderId: string | undefined,
   isUnfillable: boolean,
   isCancelled: boolean,
   isExpired: boolean,
@@ -499,7 +499,11 @@ const BACKEND_TYPE_TO_PROGRESS_BAR_STEP_NAME: Record<CompetitionOrderStatus.type
   [CompetitionOrderStatus.type.CANCELLED]: OrderProgressBarStepName.INITIAL, // TODO: maybe add another state for finished with error?
 }
 
-function useBackendApiStatusUpdater(chainId: SupportedChainId, orderId: string, doNotQuery: boolean): void {
+function useBackendApiStatusUpdater(
+  chainId: SupportedChainId,
+  orderId: string | undefined,
+  doNotQuery: boolean,
+): void {
   const setAtom = useSetAtom(updateOrderProgressBarBackendInfo)
   const [stopQuerying, setStopQuerying] = useState(false)
   const { type: backendApiStatus, value } = usePendingOrderStatus(chainId, orderId, stopQuerying) || {}
@@ -537,7 +541,7 @@ const POOLING_SWR_OPTIONS = {
 
 function usePendingOrderStatus(
   chainId: SupportedChainId,
-  orderId: string,
+  orderId: string | undefined,
   doNotQuery?: boolean,
 ): CompetitionOrderStatus | undefined {
   return useSWR(
