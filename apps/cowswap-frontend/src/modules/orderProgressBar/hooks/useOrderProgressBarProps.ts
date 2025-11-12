@@ -364,8 +364,10 @@ function useProgressBarStepNameUpdater(
       return
     }
 
+    const ensuredOrderId = orderId
+
     function updateStepName(name: OrderProgressBarStepName): void {
-      setProgressBarStepName(orderId, name || DEFAULT_STEP_NAME)
+      setProgressBarStepName(ensuredOrderId, name || DEFAULT_STEP_NAME)
     }
 
     let timer: NodeJS.Timeout | undefined
