@@ -2,6 +2,7 @@ import { ReactNode } from 'react'
 
 import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
 import { areAddressesEqual } from '@cowprotocol/common-utils'
+import { InfoTooltip } from '@cowprotocol/ui'
 
 import { Pocket } from 'react-feather'
 import styled from 'styled-components/macro'
@@ -36,9 +37,11 @@ export function ProxyRecipient({
 }: ProxyRecipientProps): ReactNode {
   const proxyAddress = useCurrentAccountProxyAddress()
 
-  if (!recipient || !(proxyAddress && !bridgeReceiverOverride)) return null
+  const targetAddress = bridgeReceiverOverride || proxyAddress
 
-  if (!bridgeReceiverOverride && !areAddressesEqual(recipient, proxyAddress)) {
+  if (!targetAddress) return
+
+  if (proxyAddress && recipient && !areAddressesEqual(recipient, proxyAddress)) {
     throw new Error(
       `Provided proxy address does not match ${ACCOUNT_PROXY_LABEL} address!, recipient=${recipient}, proxyAddress=${proxyAddress}`,
     )
@@ -46,8 +49,16 @@ export function ProxyRecipient({
 
   return (
     <Wrapper>
-      <Pocket size={size} />
-      <AddressLink address={recipient} chainId={chainId} />
+      {bridgeReceiverOverride ? (
+        <InfoTooltip
+          content={
+            'This bridge provider uses special receiver address to bridge funds. This address is deterministic for a quote and has been verified by CoW Swap.'
+          }
+        />
+      ) : (
+        <Pocket size={size} />
+      )}
+      <AddressLink address={targetAddress} chainId={chainId} />
     </Wrapper>
   )
 }
