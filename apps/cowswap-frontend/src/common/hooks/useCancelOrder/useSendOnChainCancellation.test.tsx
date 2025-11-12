@@ -14,7 +14,7 @@ import { useEthFlowContract, useGP2SettlementContract } from 'common/hooks/useCo
 
 import { useSendOnChainCancellation } from './useSendOnChainCancellation'
 
-import { LinguiWrapper } from '../../../../jest.setup'
+import { LinguiWrapper } from '../../../../LinguiJestProvider'
 import { WithMockedWeb3 } from '../../../test-utils'
 
 const chainId = 1

@@ -13,7 +13,7 @@ import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 import { processApprovalTransaction } from './approveUtils'
 import { useTradeApproveCallback } from './useTradeApproveCallback'
 
-import { LinguiWrapper } from '../../../../../jest.setup'
+import { LinguiWrapper } from '../../../../../LinguiJestProvider'
 import { useApproveCallback } from '../../hooks'
 import { useResetApproveProgressModalState, useUpdateApproveProgressModalState } from '../../state'
 

@@ -7,7 +7,7 @@ import { useApproveAndSwap } from './useApproveAndSwap'
 import { useApproveCurrency } from './useApproveCurrency'
 import { useGeneratePermitInAdvanceToTrade } from './useGeneratePermitInAdvanceToTrade'
 
-import { LinguiWrapper } from '../../../../jest.setup'
+import { LinguiWrapper } from '../../../../LinguiJestProvider'
 import { useTokenSupportsPermit } from '../../permit'
 import { MAX_APPROVE_AMOUNT } from '../constants'
 import { TradeApproveResult } from '../containers'

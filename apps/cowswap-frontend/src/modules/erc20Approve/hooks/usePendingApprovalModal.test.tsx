@@ -6,7 +6,7 @@ import { act, renderHook } from '@testing-library/react'
 
 import { usePendingApprovalModal } from './usePendingApprovalModal'
 
-import { LinguiWrapper } from '../../../../jest.setup'
+import { LinguiWrapper } from '../../../../LinguiJestProvider'
 import { MAX_APPROVE_AMOUNT } from '../constants'
 
 interface ConfirmationPendingContentProps {

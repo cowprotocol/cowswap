@@ -7,7 +7,7 @@ import { Provider } from 'react-redux'
 
 import applicationReducer from 'legacy/state/application/reducer'
 
-import { LinguiWrapper } from '../../jest.setup'
+import { LinguiWrapper } from '../../LinguiJestProvider'
 
 const cowAnalytics = initGtm()
 
