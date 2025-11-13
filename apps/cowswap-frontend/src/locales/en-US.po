@@ -455,7 +455,6 @@ msgid "View details"
 msgstr "View details"
 
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
-#: apps/cowswap-frontend/src/modules/tokensList/pure/ChainsSelector/index.tsx
 msgid "More"
 msgstr "More"
 
@@ -827,8 +826,8 @@ msgid "Copied"
 msgstr "Copied"
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/TokenSearchResults/index.tsx
-msgid "Can't find your token on the list?"
-msgstr "Can't find your token on the list?"
+#~ msgid "Can't find your token on the list?"
+#~ msgstr "Can't find your token on the list?"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/ReceiveAmountTitle/index.tsx
 msgid "icon"
@@ -847,8 +846,8 @@ msgid "Please connect your wallet to one of our supported networks."
 msgstr "Please connect your wallet to one of our supported networks."
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/TokenSearchResults/index.tsx
-msgid "<0>Read our guide</0> on how to add custom tokens."
-msgstr "<0>Read our guide</0> on how to add custom tokens."
+#~ msgid "<0>Read our guide</0> on how to add custom tokens."
+#~ msgstr "<0>Read our guide</0> on how to add custom tokens."
 
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/TenderlySimulate/index.tsx
 msgid "Retry"
@@ -1220,8 +1219,8 @@ msgid "Partner fee can not be more than {PARTNER_FEE_MAX_BPS} BPS!"
 msgstr "Partner fee can not be more than {PARTNER_FEE_MAX_BPS} BPS!"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/TokensContent/index.tsx
-msgid "Manage Token Lists"
-msgstr "Manage Token Lists"
+#~ msgid "Manage Token Lists"
+#~ msgstr "Manage Token Lists"
 
 #: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTable.tsx
 msgid "No results found"
@@ -3156,7 +3155,6 @@ msgstr "CoW Swap's robust solver competition protects your slippage from being e
 msgid "Aave Debt Swap Flashloan"
 msgstr "Aave Debt Swap Flashloan"
 
-#: apps/cowswap-frontend/src/modules/tokensList/pure/LpTokenLists/index.tsx
 #: apps/cowswap-frontend/src/modules/yield/pure/TargetPoolPreviewInfo.tsx
 msgid "Details"
 msgstr "Details"
@@ -3812,6 +3810,10 @@ msgstr "User rejected approval transaction"
 msgid "Swap on"
 msgstr "Swap on"
 
+#: apps/cowswap-frontend/src/modules/tokensList/pure/TokenSearchContent/index.tsx
+msgid "Can't find your token on the list? <0>Read our guide</0> on how to add custom tokens."
+msgstr "Can't find your token on the list? <0>Read our guide</0> on how to add custom tokens."
+
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/index.tsx
 msgid "Transaction"
@@ -4322,7 +4324,6 @@ msgstr "Decrease Value"
 #: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTable.tsx
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/WrappingPreview/WrapCard.tsx
 #: apps/cowswap-frontend/src/modules/tokensList/pure/LpTokenLists/index.tsx
-#: apps/cowswap-frontend/src/modules/tokensList/pure/LpTokenLists/index.tsx
 msgid "Balance"
 msgstr "Balance"
 
@@ -4385,8 +4386,8 @@ msgid "funds"
 msgstr "funds"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/LpTokenLists/index.tsx
-msgid "Pool details"
-msgstr "Pool details"
+#~ msgid "Pool details"
+#~ msgstr "Pool details"
 
 #: apps/cowswap-frontend/src/modules/tradeSlippage/containers/HighSuggestedSlippageWarning/index.tsx
 msgid "Slippage adjusted to {slippageBpsPercentage}% to ensure quick execution"
@@ -5894,8 +5895,8 @@ msgid "You sold <0/>"
 msgstr "You sold <0/>"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/ChainsSelector/index.tsx
-msgid "Less"
-msgstr "Less"
+#~ msgid "Less"
+#~ msgstr "Less"
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 msgid "Claim your LlamaPay vesting contract funds"
