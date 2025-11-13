@@ -40,6 +40,7 @@ export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
   tokenSelectorDisabled?: boolean
   displayTokenName?: boolean
   displayChainName?: boolean
+  isCurrentTradeBridging?: boolean
   inputTooltip?: string
   showSetMax?: boolean
   maxBalance?: CurrencyAmount<Currency> | undefined
@@ -79,6 +80,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps): ReactNode {
     tokenSelectorDisabled = false,
     displayTokenName = false,
     displayChainName = false,
+    isCurrentTradeBridging,
     inputTooltip,
     onUserInput,
     allowsOffchainSigning,
@@ -283,6 +285,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps): ReactNode {
           currency={currency}
           receiveAmountInfo={receiveAmountInfo}
           subsidyAndBalance={subsidyAndBalance}
+          hideTooltip={isCurrentTradeBridging}
         />
       )}
     </styledEl.OuterWrapper>

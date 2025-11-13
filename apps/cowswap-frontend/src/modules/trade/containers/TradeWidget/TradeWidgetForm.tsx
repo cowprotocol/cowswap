@@ -249,6 +249,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
                 <div>
                   <CurrencyInputPanel
                     id="output-currency-input"
+                    isCurrentTradeBridging={isCurrentTradeBridging}
                     inputDisabled={
                       (isSellingEthSupported && isEoaEthFlow) ||
                       isWrapOrUnwrap ||
