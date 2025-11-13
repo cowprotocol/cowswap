@@ -1,6 +1,5 @@
 import { useMemo } from 'react'
 
-import { FractionUtils } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -19,30 +18,15 @@ export function useQuoteBridgeContext(): QuoteBridgeContext | null {
   const { bridgeQuote } = useTradeQuote()
 
   const quoteAmounts = useBridgeQuoteAmounts(true)
-  // TODO: it's a fast fix, should be done inside of useBridgeQuoteAmounts
-  const reversedQuoteAmounts = useBridgeQuoteAmounts(false)
-  const intermediateBuyAmount = reversedQuoteAmounts?.swapBuyAmount
 
-  /**
-   * Convert buy amount from intermediate currency to destination currency
-   * After that we substract bridging costs
-   */
   const buyAmount = useMemo(() => {
-    if (!quoteAmounts?.bridgeFee || !intermediateBuyAmount) return
+    if (!bridgeQuote || !quoteAmounts) return null
 
-    const swapBuyAmount =
-      quoteAmounts.bridgeFee.currency.decimals !== intermediateBuyAmount.currency.decimals
-        ? FractionUtils.adjustDecimalsAtoms(
-            intermediateBuyAmount,
-            intermediateBuyAmount.currency.decimals,
-            quoteAmounts.bridgeFee.currency.decimals,
-          )
-        : intermediateBuyAmount
-
-    return CurrencyAmount.fromRawAmount(quoteAmounts.bridgeFee.currency, swapBuyAmount.quotient.toString()).subtract(
-      quoteAmounts.bridgeFee,
+    return CurrencyAmount.fromRawAmount(
+      quoteAmounts.bridgeMinReceiveAmount.currency,
+      bridgeQuote?.amountsAndCosts.beforeFee.buyAmount.toString(),
     )
-  }, [quoteAmounts, intermediateBuyAmount])
+  }, [quoteAmounts, bridgeQuote])
 
   const { value: buyAmountUsd } = useUsdAmount(buyAmount)
   const { value: bridgeMinDepositAmountUsd } = useUsdAmount(quoteAmounts?.swapMinReceiveAmount)
