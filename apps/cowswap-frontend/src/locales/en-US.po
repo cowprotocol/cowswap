@@ -2946,6 +2946,10 @@ msgstr "The time each part of your TWAP order will remain active."
 msgid "Buy per part"
 msgstr "Buy per part"
 
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+msgid "No intermediate tokens found for the route"
+msgstr "No intermediate tokens found for the route"
+
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/ClaimGnoHookApp/index.tsx
 msgid "Total claimable rewards:"
 msgstr "Total claimable rewards:"
