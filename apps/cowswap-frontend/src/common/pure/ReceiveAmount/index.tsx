@@ -18,7 +18,6 @@ export interface ReceiveAmountProps {
   currency: Currency
   subsidyAndBalance: BalanceAndSubsidy
   allowsOffchainSigning: boolean
-  hideTooltip?: boolean
 }
 
 export function ReceiveAmount(props: ReceiveAmountProps): ReactNode {
@@ -31,7 +30,7 @@ export function ReceiveAmount(props: ReceiveAmountProps): ReactNode {
     <styledEl.ReceiveAmountBox>
       <div>
         <span>{!isSell ? t`From (incl. costs)` : t`Receive (incl. costs)`}</span>
-        {!props.hideTooltip && <styledEl.QuestionHelperWrapped text={<ReceiveAmountInfoTooltip {...props} />} />}
+        <styledEl.QuestionHelperWrapped text={<ReceiveAmountInfoTooltip {...props} />} />
       </div>
       <div>
         <styledEl.ReceiveAmountValue title={title}>
