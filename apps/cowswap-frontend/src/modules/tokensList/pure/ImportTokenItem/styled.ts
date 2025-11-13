@@ -2,20 +2,15 @@ import { Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-export const Wrapper = styled.div`
+export const Wrapper = styled.div<{ $isFirst?: boolean; $isLast?: boolean }>`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding: 0 20px;
-  margin-bottom: 20px;
+  padding: ${({ $isFirst, $isLast }) => `${$isFirst ? '20px' : '0'} 20px ${$isLast ? '0' : '20px'} 20px`};
 
   ${Media.upToSmall()} {
-    padding: 0 14px;
-  }
-
-  &:last-child {
-    margin-bottom: 0;
+    padding: ${({ $isFirst, $isLast }) => `${$isFirst ? '20px' : '0'} 14px ${$isLast ? '0' : '20px'} 14px`};
   }
 `
 

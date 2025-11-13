@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { TokenWithLogo } from '@cowprotocol/common-const'
 
 import { Trans } from '@lingui/react/macro'
@@ -13,14 +15,15 @@ export interface ImportTokenItemProps {
   importToken?(token: TokenWithLogo): void
   existing?: true
   shadowed?: boolean
+  wrapperId?: string
+  isFirstInSection?: boolean
+  isLastInSection?: boolean
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function ImportTokenItem(props: ImportTokenItemProps) {
-  const { token, importToken, shadowed, existing } = props
+export function ImportTokenItem(props: ImportTokenItemProps): ReactNode {
+  const { token, importToken, shadowed, existing, wrapperId, isFirstInSection, isLastInSection } = props
   return (
-    <styledEl.Wrapper>
+    <styledEl.Wrapper id={wrapperId} $isFirst={isFirstInSection} $isLast={isLastInSection}>
       <div style={{ opacity: shadowed ? 0.6 : 1 }}>
         <TokenInfo token={token} />
       </div>
