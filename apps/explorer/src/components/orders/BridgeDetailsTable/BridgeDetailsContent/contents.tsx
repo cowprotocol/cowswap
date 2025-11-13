@@ -34,7 +34,7 @@ export function BridgingTime({
   bridgeStatus: BridgeStatus
   fillTimeInSeconds: number | undefined
 }): ReactNode {
-  if (bridgeStatus !== BridgeStatus.IN_PROGRESS || fillTimeInSeconds === undefined) {
+  if (bridgeStatus !== BridgeStatus.IN_PROGRESS || !fillTimeInSeconds) {
     return null
   }
 
