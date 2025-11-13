@@ -5,12 +5,12 @@ import { areAddressesEqual, getCurrencyAddress } from '@cowprotocol/common-utils
 import { TokenLogo } from '@cowprotocol/tokens'
 import { TokenSymbol } from '@cowprotocol/ui'
 
+import { Trans } from '@lingui/react/macro'
 import { Link } from 'react-router'
 
 import * as styledEl from './styled'
 
 import { SelectTokenContext } from '../../types'
-
 export interface FavoriteTokensListProps {
   tokens: TokenWithLogo[]
   selectTokenContext: SelectTokenContext
@@ -27,7 +27,9 @@ export function FavoriteTokensList(props: FavoriteTokensListProps): ReactNode {
   return (
     <styledEl.Section data-testid="favorite-tokens-section">
       <styledEl.TitleRow>
-        <styledEl.Title>Favorite tokens</styledEl.Title>
+        <styledEl.Title>
+          <Trans>Favorite tokens</Trans>
+        </styledEl.Title>
         {!hideTooltip && <FavoriteTokensTooltip />}
       </styledEl.TitleRow>
       <styledEl.List>{renderFavoriteTokenItems(tokens, selectTokenContext)}</styledEl.List>
@@ -39,9 +41,9 @@ function FavoriteTokensTooltip(): ReactNode {
   return (
     <styledEl.FavoriteTooltip
       text={
-        <>
+        <Trans>
           Your favorite saved tokens. Edit this list in the <Link to="/account/tokens">Tokens page</Link>.
-        </>
+        </Trans>
       }
     />
   )

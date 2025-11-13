@@ -2,6 +2,8 @@ import { ReactNode } from 'react'
 
 import { isDevelopmentEnv } from '@cowprotocol/common-utils'
 
+import { i18n } from '@lingui/core'
+
 import { ERROR_MESSAGES } from '../pure/AddCustomHookForm/constants'
 
 interface ValidationResult {
@@ -10,7 +12,7 @@ interface ValidationResult {
 }
 
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line complexity
+
 export function validateHookDappUrl(url: string): ValidationResult {
   if (!url) {
     return { isValid: false, error: null }
@@ -18,7 +20,7 @@ export function validateHookDappUrl(url: string): ValidationResult {
 
   // Check for spaces in the URL (except leading/trailing which we'll trim)
   if (url.trim() !== url.trim().replace(/\s+/g, '')) {
-    return { isValid: false, error: ERROR_MESSAGES.INVALID_URL_SPACES }
+    return { isValid: false, error: i18n._(ERROR_MESSAGES.INVALID_URL_SPACES) }
   }
 
   // Trim the URL to handle trailing spaces
@@ -30,7 +32,7 @@ export function validateHookDappUrl(url: string): ValidationResult {
     // Normalize and validate the pathname
     const normalizedPath = urlObject.pathname.replace(/\/+/g, '/')
     if (normalizedPath !== urlObject.pathname) {
-      return { isValid: false, error: ERROR_MESSAGES.INVALID_URL_SLASHES }
+      return { isValid: false, error: i18n._(ERROR_MESSAGES.INVALID_URL_SLASHES) }
     }
 
     const isLocalhost = urlObject.hostname === 'localhost' || urlObject.hostname === '127.0.0.1'
@@ -43,13 +45,13 @@ export function validateHookDappUrl(url: string): ValidationResult {
 
     // Handle common URL mistakes
     if (urlObject.pathname === '/manifest.json') {
-      return { isValid: false, error: ERROR_MESSAGES.MANIFEST_PATH }
+      return { isValid: false, error: i18n._(ERROR_MESSAGES.MANIFEST_PATH) }
     }
 
     return { isValid: true, error: null }
   } catch (error) {
     if (error instanceof TypeError && error.message === 'Failed to fetch') {
-      return { isValid: false, error: ERROR_MESSAGES.MANIFEST_NOT_FOUND }
+      return { isValid: false, error: i18n._(ERROR_MESSAGES.MANIFEST_NOT_FOUND) }
     }
     return {
       isValid: false,

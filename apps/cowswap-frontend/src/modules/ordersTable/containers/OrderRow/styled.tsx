@@ -194,8 +194,6 @@ export const ExecuteCellWrapper = styled.div`
 `
 
 export const ExecuteInformationTooltip = styled.div`
-  display: flex;
-  flex-flow: row wrap;
   padding: 0;
   margin: 0;
 `

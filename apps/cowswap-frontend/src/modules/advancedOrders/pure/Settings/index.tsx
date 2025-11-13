@@ -1,10 +1,13 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 
+import { t } from '@lingui/core/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
+
 import {
   limitOrdersSettingsAtom,
   updateLimitOrdersSettingsAtom,
 } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
-import { ORDERS_TABLE_SETTINGS } from 'modules/trade/const/common'
+import { getOrdersTableSettings } from 'modules/trade/const/common'
 import { SettingsBox, SettingsContainer, SettingsTitle } from 'modules/trade/pure/Settings'
 
 import { AdvancedOrdersSettingsState } from '../../state/advancedOrdersSettingsAtom'
@@ -21,21 +24,23 @@ export function Settings({ state, onStateChanged }: SettingsProps) {
   // TODO: we should use limit orders settings in Advanced Orders!
   const limitOrdersSettings = useAtomValue(limitOrdersSettingsAtom)
   const updateLimitOrdersSettings = useSetAtom(updateLimitOrdersSettingsAtom)
+  const { LEFT_ALIGNED } = getOrdersTableSettings()
+  const { i18n } = useLingui()
 
   return (
     <SettingsContainer>
-      <SettingsTitle>Advanced Order Settings</SettingsTitle>
-
+      <SettingsTitle>
+        <Trans>Advanced Order Settings</Trans>
+      </SettingsTitle>
       <SettingsBox
-        title="Custom Recipient"
-        tooltip="Allows you to choose a destination address for the swap other than the connected one."
+        title={t`Custom Recipient`}
+        tooltip={t`Allows you to choose a destination address for the swap other than the connected one.`}
         value={showRecipient}
         toggle={() => onStateChanged({ showRecipient: !showRecipient })}
       />
-
       <SettingsBox
-        title={ORDERS_TABLE_SETTINGS.LEFT_ALIGNED.title}
-        tooltip={ORDERS_TABLE_SETTINGS.LEFT_ALIGNED.tooltip}
+        title={i18n._(LEFT_ALIGNED.title)}
+        tooltip={i18n._(LEFT_ALIGNED.tooltip)}
         value={limitOrdersSettings.ordersTableOnLeft}
         toggle={() => updateLimitOrdersSettings({ ordersTableOnLeft: !limitOrdersSettings.ordersTableOnLeft })}
       />

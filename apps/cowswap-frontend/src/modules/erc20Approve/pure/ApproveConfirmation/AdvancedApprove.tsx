@@ -4,7 +4,7 @@ import { tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { HoverTooltip, TokenSymbol } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 import { ChevronDown, ChevronUp, HelpCircle } from 'react-feather'
 
 import * as styledEl from './styledEl'
@@ -70,7 +70,7 @@ export function AdvancedApprove({
     <styledEl.AdvancedWrapper open={isAdvancedOpen} error={!isChangedTextValid}>
       <styledEl.AdvancedDropdown height={isAdvancedOpen ? 500 : 0}>
         <styledEl.TextWrapper>
-          Allow spending:
+          <Trans>Allow spending</Trans>:
           <styledEl.AmountInput
             translate="no"
             invalid={!isChangedTextValid}
@@ -85,7 +85,11 @@ export function AdvancedApprove({
           </styledEl.AmountInput>
           <TokenSymbol token={currency} />
         </styledEl.TextWrapper>
-        {!isChangedTextValid && <styledEl.ValidationText>Entered amount is invalid</styledEl.ValidationText>}
+        {!isChangedTextValid && (
+          <styledEl.ValidationText>
+            <Trans>Entered amount is invalid</Trans>
+          </styledEl.ValidationText>
+        )}
         <styledEl.AdvancedApproveButton
           disabled={isAmountInputFocused || !isChangedTextValid}
           onClick={() =>
@@ -96,15 +100,21 @@ export function AdvancedApprove({
             )
           }
         >
-          <span>Approve</span>
+          <span>
+            <Trans>Approve</Trans>
+          </span>
           <HelpTooltip>
-            In case you want to give allowance only for the trade amount, use the advanced mode. You can also change the
-            amount manually.
+            <Trans>
+              In case you want to give allowance only for the trade amount, use the advanced mode. You can also change
+              the amount manually.
+            </Trans>
           </HelpTooltip>
         </styledEl.AdvancedApproveButton>
       </styledEl.AdvancedDropdown>
       <styledEl.AdvancedDropdownButton onClick={() => setIsAdvancedOpen((s) => !s)}>
-        <span>Advanced</span>
+        <span>
+          <Trans>Advanced</Trans>
+        </span>
         {!isAdvancedOpen ? <ChevronDown size={15} /> : <ChevronUp size={15} />}
       </styledEl.AdvancedDropdownButton>
     </styledEl.AdvancedWrapper>
@@ -132,7 +142,7 @@ function filterAmountInput(e: KeyboardEvent<HTMLDivElement>, inputChangedText: s
 
 export function HelpTooltip({ children }: { children: ReactNode }): ReactNode {
   return (
-    <HoverTooltip wrapInContainer placement="top" content={<Trans>{children}</Trans>}>
+    <HoverTooltip wrapInContainer placement="top" content={children}>
       <HelpCircle size="20" />
     </HoverTooltip>
   )

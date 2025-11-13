@@ -5,18 +5,14 @@ import { LpToken } from '@cowprotocol/common-const'
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { Media } from '@cowprotocol/ui'
 
+import { Trans } from '@lingui/react/macro'
+
 import { PoolInfoStates } from 'modules/yield/shared'
 
 import { VirtualList } from 'common/pure/VirtualList'
 
 import { useLpTokenRowRenderer } from './rowRenderer'
-import {
-  CreatePoolLink,
-  EmptyList,
-  ListHeader,
-  NoPoolWrapper,
-  Wrapper,
-} from './styled'
+import { CreatePoolLink, EmptyList, ListHeader, NoPoolWrapper, Wrapper } from './styled'
 
 import type { TokenSelectionHandler } from '../../types'
 
@@ -56,8 +52,12 @@ export function LpTokenLists({
         <>
           {!isMobile && (
             <ListHeader>
-              <span>Pool</span>
-              <span>Balance</span>
+              <span>
+                <Trans>Pool</Trans>
+              </span>
+              <span>
+                <Trans>Balance</Trans>
+              </span>
               <span>APR</span>
               <span></span>
             </ListHeader>
@@ -65,12 +65,18 @@ export function LpTokenLists({
           <VirtualList items={lpTokens} getItemView={getItemView} />
         </>
       ) : (
-        <EmptyList>No pool tokens available</EmptyList>
+        <EmptyList>
+          <Trans>No pool tokens available</Trans>
+        </EmptyList>
       )}
       {displayCreatePoolBanner && (
         <NoPoolWrapper>
-          <div>Can't find the pool you're looking for?</div>
-          <CreatePoolLink href="https://pool-creator.balancer.fi/cow">Create a pool ↗</CreatePoolLink>
+          <div>
+            <Trans>Can't find the pool you're looking for?</Trans>
+          </div>
+          <CreatePoolLink href="https://pool-creator.balancer.fi/cow">
+            <Trans>Create a pool</Trans> ↗
+          </CreatePoolLink>
         </NoPoolWrapper>
       )}
     </Wrapper>

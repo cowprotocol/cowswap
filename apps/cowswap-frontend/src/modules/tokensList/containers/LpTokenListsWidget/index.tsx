@@ -10,6 +10,9 @@ import {
 } from '@cowprotocol/tokens'
 import { ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
+
 import { usePoolsInfo } from 'modules/yield/shared'
 
 import { TabButton, TabsContainer } from './styled'
@@ -29,10 +32,12 @@ interface LpTokenListsProps<T = TokenListCategory[] | null> {
   tokenListCategoryState: [T, (category: T) => void]
 }
 
-const tabs = [
-  { id: 'all', title: 'All', value: null },
-  { id: 'pool', title: 'Pool tokens', value: LP_TOKEN_LIST_CATEGORIES },
-  { id: 'cow-amm', title: (
+const getTabs = (): { id: string; title: string | ReactNode; value: null | TokenListCategory[] }[] => [
+  { id: 'all', title: t`All`, value: null },
+  { id: 'pool', title: t`Pool tokens`, value: LP_TOKEN_LIST_CATEGORIES },
+  {
+    id: 'cow-amm',
+    title: (
       <>
         <ProductLogo
           variant={ProductVariant.CowAmm}
@@ -41,9 +46,11 @@ const tabs = [
           theme="dark"
           logoIconOnly
         />{' '}
-        CoW AMM only
+        <Trans>CoW AMM only</Trans>
       </>
-    ), value: LP_TOKEN_LIST_COW_AMM_ONLY },
+    ),
+    value: LP_TOKEN_LIST_COW_AMM_ONLY,
+  },
 ]
 
 // TODO: Add proper return type annotation
@@ -57,6 +64,7 @@ export function LpTokenListsWidget({
   tokenListCategoryState,
   disableErc20,
 }: LpTokenListsProps) {
+  const tabs = getTabs()
   const [listsCategories, setListsCategories] = tokenListCategoryState
   const lpTokens = useAllLpTokens(listsCategories)
   const balancesState = useTokensBalances()

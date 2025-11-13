@@ -15,6 +15,8 @@ import {
 } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Fraction, Percent, Price } from '@uniswap/sdk-core'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import { darken } from 'color2k'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
@@ -102,17 +104,17 @@ const ApproveLoaderWrapper = styled.div`
 `
 
 export type EstimatedExecutionPriceProps = TokenAmountProps & {
+  amountDifference?: CurrencyAmount<Currency>
+  amountFee?: CurrencyAmount<Currency>
+  canShowWarning: boolean
+  executesAtPrice?: Nullish<Price<Currency, Currency>>
   isInverted: boolean
   isUnfillable: boolean
-  canShowWarning: boolean
-  percentageDifference?: Percent
-  amountDifference?: CurrencyAmount<Currency>
-  percentageFee?: Percent
-  amountFee?: CurrencyAmount<Currency>
   marketPrice?: Nullish<Price<Currency, Currency>>
-  executesAtPrice?: Nullish<Price<Currency, Currency>>
-  warningText?: string
   onApprove?: Command
+  percentageDifference?: Percent
+  percentageFee?: Percent
+  warningText?: string
 }
 
 // TODO: Break down this large function into smaller functions
@@ -122,18 +124,18 @@ export type EstimatedExecutionPriceProps = TokenAmountProps & {
 export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
   const {
     amount,
-    tokenSymbol,
+    amountDifference,
+    amountFee,
+    canShowWarning,
+    executesAtPrice,
     isInverted,
     isUnfillable,
-    canShowWarning,
-    percentageDifference,
-    amountDifference,
-    percentageFee,
     marketPrice,
-    executesAtPrice,
-    amountFee,
-    warningText,
     onApprove,
+    percentageDifference,
+    percentageFee,
+    tokenSymbol,
+    warningText,
     ...rest
   } = props
 
@@ -178,6 +180,13 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
     return () => clearTimeout(timeout)
   }, [approveClicked])
 
+  const internationalizedWarningText =
+    warningText === 'Insufficient balance'
+      ? t`Insufficient balance`
+      : warningText === 'Insufficient allowance'
+        ? t`Insufficient allowance`
+        : t`Unfillable`
+
   const unfillableLabel = (
     <UnfillableLabel>
       {(warningText === 'Insufficient allowance' || warningText === 'Insufficient balance') && (
@@ -185,11 +194,11 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
           <HoverTooltip
             content={
               <styledEl.WarningContent>
-                <h3>{warningText}</h3>
+                <h3>{internationalizedWarningText}</h3>
                 <p>
                   {warningText === 'Insufficient allowance'
-                    ? 'The order remains open. Execution requires adequate allowance. Approve the token to proceed.'
-                    : 'The order remains open. Execution requires sufficient balance.'}
+                    ? t`The order remains open. Execution requires adequate allowance. Approve the token to proceed.`
+                    : t`The order remains open. Execution requires sufficient balance.`}
                 </p>
                 {warningText === 'Insufficient allowance' && handleApproveClick && (
                   <styledEl.WarningActionBox>
@@ -198,7 +207,9 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
                         <Loader />
                       </ApproveLoaderWrapper>
                     ) : (
-                      <ButtonSecondary onClick={handleApproveClick}>Set approval</ButtonSecondary>
+                      <ButtonSecondary onClick={handleApproveClick}>
+                        <Trans>Set approval</Trans>
+                      </ButtonSecondary>
                     )}
                   </styledEl.WarningActionBox>
                 )}
@@ -209,16 +220,25 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
           >
             <WarningContent>
               <SVG src={allowanceIcon} />
-              {warningText}
+              {internationalizedWarningText}
             </WarningContent>
           </HoverTooltip>
           {warningText === 'Insufficient allowance' &&
             handleApproveClick &&
-            (approveClicked ? <Loader /> : <ApprovalLink onClick={handleApproveClick}>Set approval</ApprovalLink>)}
+            (approveClicked ? (
+              <Loader />
+            ) : (
+              <ApprovalLink onClick={handleApproveClick}>
+                <Trans>Set approval</Trans>
+              </ApprovalLink>
+            ))}
         </>
       )}
     </UnfillableLabel>
   )
+
+  const marketPriceDirection = marketPriceNeedsToGoDown ? t`down` + ` 📉` : t`up` + ` 📈`
+  const percentageDifferenceInvertedFormatted = percentageDifferenceInverted?.toFixed(2)
 
   return (
     <EstimatedExecutionPriceWrapper $hasWarning={!!feeWarning} $showPointerCursor={!isUnfillable}>
@@ -232,38 +252,42 @@ export function EstimatedExecutionPrice(props: EstimatedExecutionPriceProps) {
           content={
             <styledEl.ExecuteInformationTooltip>
               {isNegativeDifference && isMarketPriceReached ? (
-                <>The fill price of this order is close or at the market price and is expected to fill soon</>
+                <Trans>The fill price of this order is close or at the market price and is expected to fill soon</Trans>
               ) : (
                 <>
-                  Current market price is&nbsp;
-                  <b>
-                    <TokenAmount
-                      amount={marketPrice}
-                      {...rest}
-                      round={false}
-                      tokenSymbol={marketPrice?.quoteCurrency}
-                    />
-                  </b>
-                  and needs to go {marketPriceNeedsToGoDown ? 'down 📉' : 'up 📈'} by&nbsp;
-                  <b>
-                    <TokenAmount {...rest} amount={absoluteDifferenceAmount} round={false} />
-                  </b>
-                  &nbsp;
-                  <span>
-                    (<i>{percentageDifferenceInverted?.toFixed(2)}%</i>)
-                  </span>
-                  to execute your order at&nbsp;
-                  <b>
-                    <TokenAmount
-                      amount={executesAtPrice}
-                      {...rest}
-                      round={false}
-                      tokenSymbol={executesAtPrice?.quoteCurrency}
-                    />
-                  </b>
-                  .
-                    <styledEl.ExecuteInformationTooltipWarning>
-                    This price is taken from external sources and may not accurately reflect the current on-chain price.
+                  <Trans>
+                    Current market price is{' '}
+                    <b>
+                      <TokenAmount
+                        amount={marketPrice}
+                        round={false}
+                        tokenSymbol={marketPrice?.quoteCurrency}
+                        {...rest}
+                      />
+                    </b>{' '}
+                    and needs to go {marketPriceDirection} by{' '}
+                    <b>
+                      <TokenAmount {...rest} amount={absoluteDifferenceAmount} round={false} />
+                    </b>{' '}
+                    <span>
+                      (<i>{percentageDifferenceInvertedFormatted}%</i>)
+                    </span>{' '}
+                    to execute your order at{' '}
+                    <b>
+                      <TokenAmount
+                        amount={executesAtPrice}
+                        {...rest}
+                        round={false}
+                        tokenSymbol={executesAtPrice?.quoteCurrency}
+                      />
+                    </b>
+                    .
+                  </Trans>
+                  <styledEl.ExecuteInformationTooltipWarning>
+                    <Trans>
+                      This price is taken from external sources and may not accurately reflect the current on-chain
+                      price.
+                    </Trans>
                   </styledEl.ExecuteInformationTooltipWarning>
                 </>
               )}
@@ -304,18 +328,20 @@ function UnlikelyToExecuteWarning(props: UnlikelyToExecuteWarningProps) {
         color={`var(${UI.COLOR_ALERT_TEXT})`}
         content={
           <styledEl.WarningContent>
-            <h3>Order unlikely to execute</h3>
-            For this order, network costs would be <b>{feePercentage?.toFixed(2)}%</b>{' '}
+            <h3>
+              <Trans>Order unlikely to execute</Trans>
+            </h3>
+            <Trans>For this order, network costs would be</Trans> <b>{feePercentage?.toFixed(2)}%</b>{' '}
             <b>
               <i>
                 (<TokenAmount amount={feeAmount} round={false} tokenSymbol={feeAmount.currency} />)
               </i>
             </b>{' '}
-            of your sell amount! Therefore, your order is unlikely to execute.
+            <Trans>of your sell amount! Therefore, your order is unlikely to execute.</Trans>
           </styledEl.WarningContent>
         }
       >
-        <SVG src={AlertTriangle} description="Alert" width="14" height="13" />
+        <SVG src={AlertTriangle} description={t`Alert`} width="14" height="13" />
       </HoverTooltip>
     </styledEl.WarningIndicator>
   )

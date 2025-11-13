@@ -2,6 +2,8 @@ import { ComponentProps, ReactNode } from 'react'
 
 import { SearchInput } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
+
 import { TokensContentSection, TitleBarActions, useSelectTokenContext, useTokenSearchInput } from './helpers'
 import { MobileChainSelector } from './MobileChainSelector'
 import { SelectTokenModalContent } from './SelectTokenModalContent'
@@ -185,7 +187,7 @@ function SelectTokenModalShell({
               }
             }}
             onChange={(event) => onSearchChange(event.target.value)}
-            placeholder="Search name or paste address..."
+            placeholder={t`Search name or paste address...`}
           />
         </styledEl.SearchInputWrapper>
       </styledEl.SearchRow>

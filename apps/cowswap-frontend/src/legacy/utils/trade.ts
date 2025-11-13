@@ -19,6 +19,7 @@ import type { Signer } from '@ethersproject/abstract-signer'
 import type { JsonRpcSigner } from '@ethersproject/providers'
 import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
+import { t } from '@lingui/core/macro'
 import { orderBookApi } from 'cowSdk'
 
 import { ChangeOrderStatusParams, Order, OrderStatus } from 'legacy/state/orders/actions'
@@ -71,14 +72,18 @@ export function getOrderSubmitSummary(
   const sellToken = inputAmount.currency
   const buyToken = outputAmount.currency
 
-  const [inputQuantifier, outputQuantifier] = isSellOrder(kind) ? ['', 'at least '] : ['at most ', '']
+  const [inputQuantifier, outputQuantifier] = isSellOrder(kind) ? ['', t`at least `] : [t`at most `, '']
   const inputSymbol = formatSymbol(sellToken.symbol)
   const outputSymbol = formatSymbol(buyToken.symbol)
   // this already contains the fee in the fee amount when fee=0
   const inputAmountValue = formatTokenAmount(feeAmount ? inputAmount.add(feeAmount) : inputAmount)
   const outputAmountValue = formatTokenAmount(outputAmount)
 
-  const base = `Swap ${inputQuantifier}${inputAmountValue} ${inputSymbol} for ${outputQuantifier}${outputAmountValue} ${outputSymbol}`
+  const base =
+    t`Swap` +
+    ` ${inputQuantifier} ${inputAmountValue} ${inputSymbol} ` +
+    t`for` +
+    ` ${outputQuantifier} ${outputAmountValue} ${outputSymbol}`
 
   if (recipient === account) {
     return base
@@ -88,7 +93,7 @@ export function getOrderSubmitSummary(
         ? shortenAddress(recipientAddressOrName)
         : recipientAddressOrName
 
-    return `${base} to ${toAddress}`
+    return `${base} ` + t`to` + ` ${toAddress}`
   }
 }
 
@@ -113,9 +118,10 @@ export function getSignOrderParams(params: PostOrderParams): SignOrderParams {
     quoteId,
   } = params
   const sellTokenAddress = sellToken.address
+  const stringifiedJSON = JSON.stringify(sellToken, undefined, 2)
 
   if (!sellTokenAddress) {
-    throw new Error(`Order params invalid sellToken address for token: ${JSON.stringify(sellToken, undefined, 2)}`)
+    throw new Error(t`Order params invalid sellToken address for token: ${stringifiedJSON}`)
   }
 
   const isSellTrade = isSellOrder(kind)
@@ -227,7 +233,7 @@ export async function sendOrderCancellation(params: OrderCancellationParams): Pr
 
   const { signature, signingScheme } = await OrderSigningUtils.signOrderCancellation(orderId, chainId, signer)
 
-  if (!signature) throw new Error('Signature is undefined!')
+  if (!signature) throw new Error(t`Signature is undefined!`)
 
   await wrapErrorInOperatorError(async () => {
     await orderBookApi.sendSignedOrderCancellations(

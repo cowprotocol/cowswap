@@ -3,8 +3,6 @@ import { ReactNode } from 'react'
 import { Command } from '@cowprotocol/types'
 import { HelpTooltip } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/macro'
-
 import { Toggle } from 'legacy/components/Toggle'
 
 import { SettingsBoxTitle, SettingsBoxWrapper } from './styled'
@@ -23,8 +21,8 @@ export function SettingsBox({ title, tooltip, value, toggle, disabled = false }:
   return (
     <SettingsBoxWrapper disabled={disabled}>
       <SettingsBoxTitle>
-        <Trans>{title}</Trans>
-        <HelpTooltip text={<Trans>{tooltip}</Trans>} />
+        {title}
+        <HelpTooltip text={<>{tooltip}</>} />
       </SettingsBoxTitle>
       <Toggle isActive={value} toggle={toggle} />
     </SettingsBoxWrapper>

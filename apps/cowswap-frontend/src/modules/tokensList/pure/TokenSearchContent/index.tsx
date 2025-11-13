@@ -12,9 +12,12 @@ import {
   StatusColorVariant,
 } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import { VirtualItem } from '@tanstack/react-virtual'
 
 import { VirtualList } from 'common/pure/VirtualList'
+
 
 import * as styledEl from '../../containers/TokenSearchResults/styled'
 import { SelectTokenContext } from '../../types'
@@ -31,6 +34,7 @@ interface TokenSearchContentProps {
   importToken: (tokenToImport: TokenWithLogo) => void
 }
 
+// TODO: Add proper return type annotation
 export function TokenSearchContent({
   searchInput,
   searchResults,
@@ -93,7 +97,12 @@ export function TokenSearchContent({
       </styledEl.LoaderWrapper>
     )
 
-  if (isTokenNotFound) return <styledEl.TokenNotFound>No tokens found</styledEl.TokenNotFound>
+  if (isTokenNotFound)
+    return (
+      <styledEl.TokenNotFound>
+        <Trans>No tokens found</Trans>
+      </styledEl.TokenNotFound>
+    )
 
   return <VirtualList id="token-search-results" items={rows} getItemView={renderRow} scrollResetKey={searchInput} />
 }
@@ -164,8 +173,8 @@ function useSearchRows({
       tokens: inactiveListsResult,
       section: 'inactive',
       limit: SEARCH_RESULTS_LIMIT,
-      sectionTitle: 'Expanded results from inactive Token Lists',
-      tooltip: 'Tokens from inactive lists. Import specific tokens below or click Manage to activate more lists.',
+      sectionTitle: t`Expanded results from inactive Token Lists`,
+      tooltip: t`Tokens from inactive lists. Import specific tokens below or click Manage to activate more lists.`,
       shadowed: true,
     })
 
@@ -173,8 +182,8 @@ function useSearchRows({
       tokens: externalApiResult,
       section: 'external',
       limit: SEARCH_RESULTS_LIMIT,
-      sectionTitle: 'Additional Results from External Sources',
-      tooltip: 'Tokens from external sources.',
+      sectionTitle: t`Additional Results from External Sources`,
+      tooltip: t`Tokens from external sources.`,
       shadowed: true,
     })
 
@@ -264,8 +273,10 @@ function GuideBanner(): ReactNode {
       bannerType={StatusColorVariant.Info}
     >
       <p>
-        Can't find your token on the list?{' '}
-        <ExternalLink href={LINK_GUIDE_ADD_CUSTOM_TOKEN}>Read our guide</ExternalLink> on how to add custom tokens.
+        <Trans>
+          Can't find your token on the list? <ExternalLink href={LINK_GUIDE_ADD_CUSTOM_TOKEN}>Read our guide</ExternalLink>{' '}
+          on how to add custom tokens.
+        </Trans>
       </p>
     </InlineBanner>
   )

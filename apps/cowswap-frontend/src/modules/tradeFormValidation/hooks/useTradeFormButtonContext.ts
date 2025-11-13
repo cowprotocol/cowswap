@@ -6,7 +6,7 @@ import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
 import { useGetAmountToSignApprove } from 'modules/erc20Approve'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
-import { useDerivedTradeState, useWrapNativeFlow } from 'modules/trade'
+import { useAmountsToSignFromQuote, useDerivedTradeState, useWrapNativeFlow } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 
 import { useTokenCustomTradeError } from './useTokenCustomTradeError'
@@ -25,6 +25,7 @@ export function useTradeFormButtonContext(
   const { standaloneMode } = useInjectedWidgetParams()
   const derivedState = useDerivedTradeState()
   const amountToApprove = useGetAmountToSignApprove()
+  const { maximumSendSellAmount: minAmountToSignForSwap } = useAmountsToSignFromQuote() || {}
   const customTokenError = useTokenCustomTradeError(
     derivedState?.inputCurrency,
     derivedState?.outputCurrency,
@@ -46,6 +47,7 @@ export function useTradeFormButtonContext(
       widgetStandaloneMode: standaloneMode,
       enablePartialApprove,
       customTokenError,
+      minAmountToSignForSwap,
     }
   }, [
     defaultText,
@@ -59,5 +61,6 @@ export function useTradeFormButtonContext(
     standaloneMode,
     enablePartialApprove,
     customTokenError,
+    minAmountToSignForSwap,
   ])
 }

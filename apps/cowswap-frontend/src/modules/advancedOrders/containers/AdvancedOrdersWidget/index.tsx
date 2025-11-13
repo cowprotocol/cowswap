@@ -3,6 +3,10 @@ import { ReactElement, ReactNode } from 'react'
 
 import { isSellOrder } from '@cowprotocol/common-utils'
 
+import { MessageDescriptor } from '@lingui/core'
+import { msg } from '@lingui/core/macro'
+import { useLingui } from '@lingui/react/macro'
+
 import { Field } from 'legacy/state/types'
 
 import { useAdvancedOrdersActions } from 'modules/advancedOrders/hooks/useAdvancedOrdersActions'
@@ -15,7 +19,7 @@ import {
   useGetReceiveAmountInfo,
   TradeWidgetParams,
 } from 'modules/trade'
-import { BulletListItem, UnlockWidgetScreen } from 'modules/trade/pure/UnlockWidgetScreen'
+import { UnlockWidgetScreen } from 'modules/trade/pure/UnlockWidgetScreen'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { TWAP_LEARN_MORE_LINK } from 'modules/twap/const'
 
@@ -24,18 +28,24 @@ import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 import { useUpdateAdvancedOrdersRawState } from '../../hooks/useAdvancedOrdersRawState'
 import { AdvancedOrdersSettings } from '../AdvancedOrdersSettings'
 
-const TWAP_BULLET_LIST_CONTENT: BulletListItem[] = [
-  { content: 'Get the Time-Weighted Average Price by splitting your large order into parts' },
-  { content: 'Customize your order size, expiration, and number of parts' },
-  { content: 'Receive surplus of your order' },
-  { content: 'Reduce your slippage by breaking big orders into smaller ones' },
+const TWAP_BULLETIN_LIST_CONTENT: MessageDescriptor[] = [
+  msg`Get the Time-Weighted Average Price by splitting your large order into parts`,
+  msg`Customize your order size, expiration, and number of parts`,
+  msg`Receive surplus of your order`,
+  msg`Reduce your slippage by breaking big orders into smaller ones`,
 ]
 
-const UNLOCK_SCREEN = {
-  title: 'Unlock the Power of TWAP Orders',
-  subtitle: 'Begin with TWAP Today!',
-  orderType: 'TWAP',
-  buttonText: 'Unlock TWAP orders',
+const UNLOCK_SCREEN: {
+  buttonLink: string
+  buttonText: MessageDescriptor
+  orderType: MessageDescriptor
+  subtitle: MessageDescriptor
+  title: MessageDescriptor
+} = {
+  title: msg`Unlock the Power of TWAP Orders`,
+  subtitle: msg`Begin with TWAP Today!`,
+  orderType: msg`TWAP`,
+  buttonText: msg`Unlock TWAP orders`,
   // TODO: add actual link before deploy to PROD
   buttonLink: TWAP_LEARN_MORE_LINK,
 }
@@ -62,6 +72,8 @@ export function AdvancedOrdersWidget({
   confirmContent,
   mapCurrencyInfo,
 }: AdvancedOrdersWidgetProps) {
+  const { i18n } = useLingui()
+  const { title, orderType, buttonText, buttonLink, subtitle } = UNLOCK_SCREEN
   const { disablePriceImpact } = params
 
   const {
@@ -96,6 +108,7 @@ export function AdvancedOrdersWidget({
     balance: inputCurrencyBalance,
     fiatAmount: inputCurrencyFiatAmount,
   }
+
   const outputCurrencyInfo: CurrencyInfo = {
     field: Field.OUTPUT,
     currency: outputCurrency,
@@ -115,12 +128,14 @@ export function AdvancedOrdersWidget({
     lockScreen: isUnlocked ? undefined : (
       <UnlockWidgetScreen
         id="advanced-orders"
-        items={TWAP_BULLET_LIST_CONTENT}
-        buttonLink={UNLOCK_SCREEN.buttonLink}
-        title={UNLOCK_SCREEN.title}
-        subtitle={UNLOCK_SCREEN.subtitle}
-        orderType={UNLOCK_SCREEN.orderType}
-        buttonText={UNLOCK_SCREEN.buttonText}
+        items={TWAP_BULLETIN_LIST_CONTENT.map((item) => ({
+          content: i18n._(item),
+        }))}
+        buttonLink={buttonLink}
+        title={i18n._(title)}
+        subtitle={i18n._(subtitle)}
+        orderType={i18n._(orderType)}
+        buttonText={i18n._(buttonText)}
         handleUnlock={() => updateAdvancedOrdersState({ isUnlocked: true })}
       />
     ),

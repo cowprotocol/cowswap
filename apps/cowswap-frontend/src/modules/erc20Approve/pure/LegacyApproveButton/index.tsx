@@ -5,7 +5,7 @@ import { Command } from '@cowprotocol/types'
 import { AutoRow, ButtonConfirmed, ButtonSize, HoverTooltip, Loader, TokenSymbol } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 import { CheckCircle, HelpCircle } from 'react-feather'
 import styled, { ThemeContext } from 'styled-components/macro'
 

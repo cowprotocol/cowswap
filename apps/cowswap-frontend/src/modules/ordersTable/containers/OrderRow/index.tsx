@@ -149,47 +149,48 @@ export function OrderRow({
 
   const inputTokenSymbol = order.inputToken.symbol || ''
 
+  // NOTE: Don't internationalize this, the text is being used as a flag...
   const warningText =
     hasEnoughBalance === false
-      ? 'Insufficient balance'
+      ? `Insufficient balance`
       : hasEnoughAllowance === false
-        ? 'Insufficient allowance'
-        : 'Unfillable'
+        ? `Insufficient allowance`
+        : `Unfillable`
 
   const onApprove = withAllowanceWarning ? () => orderActions.approveOrderToken(order.inputToken) : undefined
 
   const estimatedPriceWarning = withWarning ? (
     <WarningEstimatedPrice
-      order={order}
       approveOrderToken={orderActions.approveOrderToken}
-      isInverted={isInverted}
       balancesAndAllowances={balancesAndAllowances}
       chainId={chainId}
-      withAllowanceWarning={withAllowanceWarning}
-      isChild={isChild}
       childOrders={childOrders}
+      isChild={isChild}
+      isInverted={isInverted}
       isTwapTable={isTwapTable}
+      order={order}
+      withAllowanceWarning={withAllowanceWarning}
     />
   ) : undefined
 
   const orderFillsAt = (
     <OrderFillsAt
-      order={order}
-      withWarning={withWarning}
-      warningText={warningText}
-      onApprove={onApprove}
-      isInverted={isInverted}
-      isUnfillable={isUnfillable}
-      estimatedExecutionPrice={estimatedExecutionPrice}
-      spotPrice={spotPrice}
-      estimatedPriceWarning={estimatedPriceWarning}
-      prices={prices}
-      priceDiffs={priceDiffs}
       childOrders={childOrders}
-      isTwapTable={isTwapTable}
+      estimatedExecutionPrice={estimatedExecutionPrice}
+      estimatedPriceWarning={estimatedPriceWarning}
       isChild={isChild}
+      isInverted={isInverted}
       isSafeWallet={isSafeWallet}
+      isTwapTable={isTwapTable}
+      isUnfillable={isUnfillable}
+      onApprove={onApprove}
+      order={order}
+      priceDiffs={priceDiffs}
+      prices={prices}
       rateInfoParams={rateInfoParams}
+      spotPrice={spotPrice}
+      warningText={warningText}
+      withWarning={withWarning}
     />
   )
 
@@ -241,7 +242,7 @@ export function OrderRow({
       {!isHistoryTab ? (
         <>
           <styledEl.PriceElement onClick={toggleIsInverted}>
-            {/*Special case for PRESIGNATURE_PENDING - return just the signing content*/}
+            {/* Special case for PRESIGNATURE_PENDING - return just the signing content */}
             {order.status === OrderStatus.PRESIGNATURE_PENDING ? (
               orderFillsAt
             ) : (

@@ -2,6 +2,7 @@ import { ReactNode } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 
+import { Trans } from '@lingui/react/macro'
 import { CheckCircle } from 'react-feather'
 
 import * as styledEl from './styled'
@@ -30,10 +31,16 @@ export function ImportTokenItem(props: ImportTokenItemProps): ReactNode {
         {existing && (
           <styledEl.ActiveToken>
             <CheckCircle size={16} strokeWidth={2} />
-            <span>Active</span>
+            <span>
+              <Trans>Active</Trans>
+            </span>
           </styledEl.ActiveToken>
         )}
-        {importToken && <ImportButton onClick={() => importToken(token)}>Import</ImportButton>}
+        {importToken && (
+          <ImportButton onClick={() => importToken(token)}>
+            <Trans>Import</Trans>
+          </ImportButton>
+        )}
       </div>
     </styledEl.Wrapper>
   )

@@ -2,6 +2,7 @@ import { ReactNode, useCallback } from 'react'
 
 import { useCopyClipboard } from '@cowprotocol/common-hooks'
 
+import { Trans } from '@lingui/react/macro'
 import { CheckCircle, Copy } from 'react-feather'
 import styled from 'styled-components/macro'
 
@@ -38,12 +39,16 @@ export function ContextMenuCopyButton({ address }: ContextMenuCopyButtonProps): 
           <CopyFeedbackText isCopied={isCopied}>
             <CheckCircle size={16} />
           </CopyFeedbackText>
-          <CopyFeedbackText isCopied={isCopied}>Copied</CopyFeedbackText>
+          <CopyFeedbackText isCopied={isCopied}>
+            <Trans>Copied</Trans>
+          </CopyFeedbackText>
         </>
       ) : (
         <>
           <Copy size={16} />
-          <span>Copy address</span>
+          <span>
+            <Trans>Copy address</Trans>
+          </span>
         </>
       )}
     </styledEl.ContextMenuItemButton>
