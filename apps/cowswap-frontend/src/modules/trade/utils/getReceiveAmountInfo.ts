@@ -65,17 +65,33 @@ export function getReceiveAmountInfo(
   slippagePercent: Percent,
   _partnerFeeBps: number | undefined,
   intermediateCurrency?: Currency,
-  bridgeFeeRaw?: bigint,
+  bridgeFeeAmounts?: {
+    amountInSellCurrency: bigint
+    amountInBuyCurrency: bigint
+  },
+  bridgeBuyAmount?: bigint,
 ): ReceiveAmountInfo {
   const partnerFeeBps = _partnerFeeBps ?? 0
   const currenciesExcludingIntermediate = { inputCurrency, outputCurrency }
 
   const isSell = isSellOrder(orderParams.kind)
 
+  const buyToken = intermediateCurrency && bridgeBuyAmount ? intermediateCurrency : outputCurrency
+
   const result = getQuoteAmountsAndCosts({
-    orderParams,
+    orderParams:
+      intermediateCurrency && bridgeBuyAmount
+        ? {
+            ...orderParams,
+            buyAmount: FractionUtils.adjustDecimalsAtoms(
+              CurrencyAmount.fromRawAmount(intermediateCurrency, bridgeBuyAmount.toString()),
+              outputCurrency.decimals,
+              intermediateCurrency.decimals,
+            ).quotient.toString(),
+          }
+        : orderParams,
     sellDecimals: inputCurrency.decimals,
-    buyDecimals: outputCurrency.decimals,
+    buyDecimals: buyToken.decimals,
     slippagePercentBps: Number(slippagePercent.numerator),
     partnerFeeBps,
   })
@@ -87,7 +103,7 @@ export function getReceiveAmountInfo(
   const beforeNetworkCosts = mapBigIntAmounts(result.beforeNetworkCosts, currenciesWithIntermediate)
   const afterNetworkCosts = mapBigIntAmounts(result.afterNetworkCosts, currenciesWithIntermediate)
 
-  const bridgeFee = calculateBridgeFee(outputCurrency, intermediateCurrency, bridgeFeeRaw)
+  const bridgeFee = calculateBridgeFee(outputCurrency, intermediateCurrency, bridgeFeeAmounts)
 
   return {
     ...result,
@@ -125,26 +141,22 @@ export function getReceiveAmountInfo(
 function calculateBridgeFee(
   outputCurrency: Currency,
   intermediateCurrency?: Currency,
-  bridgeFeeRaw?: bigint,
+  bridgeFeeAmounts?: {
+    amountInSellCurrency: bigint
+    amountInBuyCurrency: bigint
+  },
 ): ReceiveAmountInfo['costs']['bridgeFee'] | undefined {
-  if (typeof bridgeFeeRaw !== 'bigint' || !intermediateCurrency) return undefined
-
-  const amountInDestinationCurrency = CurrencyAmount.fromRawAmount(outputCurrency, bridgeFeeRaw.toString())
-
-  if (outputCurrency.decimals !== intermediateCurrency?.decimals) {
-    return {
-      amountInIntermediateCurrency: FractionUtils.adjustDecimalsAtoms(
-        CurrencyAmount.fromRawAmount(intermediateCurrency, bridgeFeeRaw.toString()),
-        outputCurrency.decimals,
-        intermediateCurrency.decimals,
-      ),
-      amountInDestinationCurrency,
-    }
-  }
+  if (!bridgeFeeAmounts || !intermediateCurrency) return undefined
 
   return {
-    amountInIntermediateCurrency: CurrencyAmount.fromRawAmount(intermediateCurrency, bridgeFeeRaw.toString()),
-    amountInDestinationCurrency,
+    amountInIntermediateCurrency: CurrencyAmount.fromRawAmount(
+      intermediateCurrency,
+      bridgeFeeAmounts.amountInBuyCurrency.toString(),
+    ),
+    amountInDestinationCurrency: CurrencyAmount.fromRawAmount(
+      outputCurrency,
+      bridgeFeeAmounts.amountInSellCurrency.toString(),
+    ),
   }
 }
 

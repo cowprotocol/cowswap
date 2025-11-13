@@ -43,11 +43,11 @@ export function TradeRateDetails({
 
   const slippage = useTradeSlippage()
   const isSlippageModified = useIsSlippageModified()
-  const receiveAmountInfo = useGetReceiveAmountInfo()
+  const receiveAmountInfo = useGetReceiveAmountInfo(true)
   const derivedTradeState = useDerivedTradeState()
   const tradeQuote = useTradeQuote()
   const shouldPayGas = useShouldPayGas()
-  const bridgeQuoteAmounts = useBridgeQuoteAmounts()
+  const bridgeQuoteAmounts = useBridgeQuoteAmounts(true)
 
   const inputCurrency = derivedTradeState?.inputCurrency
 
@@ -79,7 +79,7 @@ export function TradeRateDetails({
     )
   }
 
-  const totalCosts = getTotalCosts(receiveAmountInfo, bridgeQuoteAmounts?.bridgeFee)
+  const totalCosts = getTotalCosts(receiveAmountInfo, bridgeQuoteAmounts?.bridgeFeeAmounts.amountInIntermediateCurrency)
 
   // Default expanded content if accordionContent prop is not supplied
   const defaultExpandedContent = (
