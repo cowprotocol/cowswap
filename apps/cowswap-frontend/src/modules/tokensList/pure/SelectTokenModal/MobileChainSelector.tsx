@@ -9,6 +9,7 @@ import { ChevronDown } from 'react-feather'
 import * as styledEl from './mobileChainSelector.styled'
 
 import { ChainsToSelectState } from '../../types'
+import { sortChainsByDisplayOrder } from '../../utils/sortChainsByDisplayOrder'
 import { getChainAccent } from '../ChainsSelector'
 
 interface MobileChainSelectorProps {
@@ -26,7 +27,10 @@ export function MobileChainSelector({
 }: MobileChainSelectorProps): ReactNode {
   const maxVisibleChains = useMaxVisibleChains()
   const orderedChains = useMemo(
-    () => reorderChains(chainsState.chains ?? [], chainsState.defaultChainId),
+    () =>
+      sortChainsByDisplayOrder(chainsState.chains ?? [], {
+        pinChainId: chainsState.defaultChainId,
+      }),
     [chainsState.chains, chainsState.defaultChainId],
   )
 
@@ -83,22 +87,6 @@ function ChainChip({ chain, isActive, onSelectChain }: ChainChipProps): ReactNod
       <img src={logoSrc} alt={chain.label} loading="lazy" />
     </styledEl.ChainChipButton>
   )
-}
-
-function reorderChains(chains: ChainInfo[], defaultChainId: ChainInfo['id'] | undefined): ChainInfo[] {
-  if (!defaultChainId) {
-    return [...chains]
-  }
-
-  const sorted = [...chains]
-  const index = sorted.findIndex((chain) => chain.id === defaultChainId)
-
-  if (index <= 0) {
-    return sorted
-  }
-
-  const [current] = sorted.splice(index, 1)
-  return [current, ...sorted]
 }
 
 function useMaxVisibleChains(): number {

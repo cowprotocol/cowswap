@@ -15,6 +15,7 @@ import { useSelectTokenWidgetState } from './useSelectTokenWidgetState'
 
 import { ChainsToSelectState } from '../types'
 import { mapChainInfo } from '../utils/mapChainInfo'
+import { sortChainsByDisplayOrder } from '../utils/sortChainsByDisplayOrder'
 
 /**
  * Returns an array of chains to select in the token selector widget.
@@ -110,13 +111,13 @@ function createSingleChainState(
 }
 
 // Sell-side selector only allows wallet-supported networks.
-function createInputChainsState(
+export function createInputChainsState(
   selectedTargetChainId: SupportedChainId | number,
   supportedChains: ChainInfo[],
 ): ChainsToSelectState {
   return {
     defaultChainId: selectedTargetChainId,
-    chains: supportedChains,
+    chains: sortChainsByDisplayOrder(supportedChains),
     isLoading: false,
   }
 }
@@ -130,7 +131,7 @@ interface CreateOutputChainsOptions {
   isLoading: boolean
 }
 
-function createOutputChainsState({
+export function createOutputChainsState({
   selectedTargetChainId,
   chainId,
   currentChainInfo,
@@ -139,6 +140,7 @@ function createOutputChainsState({
   isLoading,
 }: CreateOutputChainsOptions): ChainsToSelectState {
   const destinationChains = filterDestinationChains(bridgeSupportedNetworks, areUnsupportedChainsEnabled) ?? []
+  const orderedDestinationChains = sortChainsByDisplayOrder(destinationChains)
   const isSourceChainSupportedByBridge = Boolean(
     bridgeSupportedNetworks?.some((bridgeChain) => bridgeChain.id === chainId),
   )
@@ -151,7 +153,7 @@ function createOutputChainsState({
   return {
     defaultChainId: selectedTargetChainId,
     // Bridge supports this chain, so expose the provider-supplied destinations.
-    chains: destinationChains,
+    chains: orderedDestinationChains,
     isLoading,
   }
 }
