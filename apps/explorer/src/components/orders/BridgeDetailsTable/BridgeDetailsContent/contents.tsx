@@ -40,7 +40,7 @@ export function BridgingTime({
 
   return (
     <DetailRow label="Bridging Time" tooltipText={BridgeDetailsTooltips.bridgingTime}>
-      {displayTime(fillTimeInSeconds, true)}
+      {displayTime(fillTimeInSeconds * 1000, true)}
     </DetailRow>
   )
 }
