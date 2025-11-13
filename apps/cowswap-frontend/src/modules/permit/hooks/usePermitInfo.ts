@@ -11,6 +11,7 @@ import { Currency } from '@uniswap/sdk-core'
 import { Nullish } from 'types'
 
 import { TradeType } from 'modules/trade/types'
+import { useTradeQuote } from 'modules/tradeQuote'
 
 import { useIsPermitEnabled } from 'common/hooks/featureFlags/useIsPermitEnabled'
 
@@ -50,6 +51,8 @@ export function usePermitInfo(
 ): IsTokenPermittableResult {
   const { chainId } = useWalletInfo()
   const provider = useWalletProvider()
+  const { bridgeQuote } = useTradeQuote()
+  const isReceiverAccountBridgeProvider = bridgeQuote?.providerInfo.type === 'ReceiverAccountBridgeProvider'
 
   const lowerCaseAddress = token ? getWrappedToken(token).address?.toLowerCase() : undefined
   const isNative = !!token && getIsNativeToken(token)
@@ -111,7 +114,7 @@ export function usePermitInfo(
     spender,
   ])
 
-  if (isNative) {
+  if (isNative || isReceiverAccountBridgeProvider) {
     return UNSUPPORTED
   }
 
