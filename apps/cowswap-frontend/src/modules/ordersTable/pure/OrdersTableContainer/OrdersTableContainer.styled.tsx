@@ -174,7 +174,7 @@ export const ExternalArrow = styled.span`
 
 export const RightContainer = styled.div`
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: row nowrap;
 
   ${Media.upToMedium()} {
     width: 100%;

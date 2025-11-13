@@ -16,7 +16,7 @@ import { WIDGET_EVENT_EMITTER } from 'widgetEventEmitter'
 
 import { useOnlyPendingOrders } from 'legacy/state/orders/hooks'
 
-import { usePendingOrdersFillability, type OrderFillability } from 'common/hooks/usePendingOrdersFillability'
+import { usePendingOrdersFillability, type OrderFillability } from 'modules/ordersTable'
 
 import { OrderProgressBarStepName } from '../constants'
 import {

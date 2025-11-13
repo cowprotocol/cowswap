@@ -1,6 +1,6 @@
 import { Media, TokenAmount } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
 import CowProtocolLogo from 'legacy/components/CowProtocolLogo'
@@ -38,17 +38,14 @@ const CowBalance = ({ balance, title }: CowBalanceProps) => {
     <Wrapper>
       <CowProtocolLogo size={80} />
 
-      {title && (
-        <ClaimSummaryTitle>
-          <Trans>{title}</Trans>
-        </ClaimSummaryTitle>
-      )}
+      {title && <ClaimSummaryTitle>{title}</ClaimSummaryTitle>}
 
       <div>
         <ClaimTotal>
-          <b>Your combined balance</b>
+          <b>
+            <Trans>Your combined balance</Trans>
+          </b>
           <p>
-            {' '}
             <TokenAmount amount={balance} defaultValue="0" tokenSymbol={balance?.currency} />
           </p>
         </ClaimTotal>

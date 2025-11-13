@@ -1,5 +1,7 @@
 import { ReactNode } from 'react'
 
+import { Trans } from '@lingui/react/macro'
+
 import type { Order } from 'legacy/state/orders/actions'
 
 import { ShimmerWrapper, SummaryRow } from 'common/pure/OrderSummaryRow'
@@ -58,7 +60,9 @@ export function BridgeActivitySummary(props: BridgeActivitySummaryProps): ReactN
         <BridgeStepRow context={swapAndBridgeContext} />
       ) : (
         <SummaryRow>
-          <b>Bridge</b>
+          <b>
+            <Trans>Bridge</Trans>
+          </b>
           <i>
             <ShimmerWrapper />
           </i>

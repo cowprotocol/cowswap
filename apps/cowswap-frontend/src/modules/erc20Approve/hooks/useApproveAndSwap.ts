@@ -3,6 +3,8 @@ import { useCallback } from 'react'
 import { TransactionReceipt, TransactionResponse } from '@ethersproject/abstract-provider'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { useLingui } from '@lingui/react/macro'
+
 import { useApproveCurrency } from './useApproveCurrency'
 import { useGeneratePermitInAdvanceToTrade } from './useGeneratePermitInAdvanceToTrade'
 
@@ -14,6 +16,7 @@ import { getIsTradeApproveResult } from '../utils/getIsTradeApproveResult'
 
 export interface ApproveAndSwapProps {
   amountToApprove: CurrencyAmount<Currency>
+  minAmountToSignForSwap?: CurrencyAmount<Currency>
   onApproveConfirm?: (transactionHash?: string) => void
   ignorePermit?: boolean
   useModals?: boolean
@@ -24,7 +27,9 @@ export function useApproveAndSwap({
   useModals,
   ignorePermit,
   onApproveConfirm,
+  minAmountToSignForSwap,
 }: ApproveAndSwapProps): () => Promise<void> {
+  const { t } = useLingui()
   const isPartialApproveEnabledByUser = useIsPartialApproveSelectedByUser()
   const handleApprove = useApproveCurrency(amountToApprove, useModals)
   const updateTradeApproveState = useUpdateApproveProgressModalState()
@@ -59,7 +64,10 @@ export function useApproveAndSwap({
     if (tx && onApproveConfirm) {
       if (getIsTradeApproveResult(tx)) {
         const approvedAmount = tx.approvedAmount
-        const isApprovedAmountSufficient = Boolean(approvedAmount && approvedAmount >= amountToApproveBig)
+        const minAmountToSignForSwapBig = minAmountToSignForSwap
+          ? BigInt(minAmountToSignForSwap.quotient.toString())
+          : amountToApproveBig
+        const isApprovedAmountSufficient = Boolean(approvedAmount && approvedAmount >= minAmountToSignForSwapBig)
 
         if (isApprovedAmountSufficient) {
           const hash =
@@ -67,18 +75,20 @@ export function useApproveAndSwap({
 
           onApproveConfirm(hash)
         } else {
-          updateTradeApproveState({ error: 'Approved amount is not sufficient!' })
+          updateTradeApproveState({ error: t`Approved amount is not sufficient!` })
         }
       } else {
         onApproveConfirm(tx.transactionHash)
       }
     }
   }, [
-    onApproveConfirm,
-    isPartialApproveEnabledByUser,
-    amountToApprove.quotient,
-    handleApprove,
-    updateTradeApproveState,
     handlePermit,
+    amountToApprove.quotient,
+    isPartialApproveEnabledByUser,
+    handleApprove,
+    onApproveConfirm,
+    updateTradeApproveState,
+    minAmountToSignForSwap,
+    t,
   ])
 }

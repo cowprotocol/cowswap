@@ -5,6 +5,9 @@ import { isSupportedPermitInfo } from '@cowprotocol/permit-utils'
 import { useTokenBySymbolOrAddress } from '@cowprotocol/tokens'
 import { ButtonPrimary } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
+
 import { recoverSpenderFromCalldata, useGeneratePermitHook, usePermitInfo } from 'modules/permit'
 import { TradeType } from 'modules/trade'
 
@@ -48,12 +51,13 @@ export function PermitHookApp({ context }: HookDappProps) {
   }, [generatePermitHook, context, permitInfo, token, spenderAddress, hookToEdit])
 
   const buttonProps = useMemo(() => {
-    if (!context.account) return { message: 'Connect wallet', disabled: true }
-    if (!isPermitEnabled) return { message: 'Unsupported Wallet', disabled: true }
-    const confirmMessage = hookToEdit ? 'Save changes' : `Add ${isPreHook ? 'Pre' : 'Post'}-hook`
+    const hookTypeText = isPreHook ? t`Pre` : t`Post`
+    const confirmMessage = hookToEdit ? t`Save changes` : t`Add ${hookTypeText}-hook`
+    if (!context.account) return { message: t`Connect wallet`, disabled: true }
+    if (!isPermitEnabled) return { message: t`Unsupported Wallet`, disabled: true }
     if (!spenderAddress || !tokenAddress) return { message: confirmMessage, disabled: true }
-    if (!token || !isAddress(spenderAddress)) return { message: 'Invalid parameters', disabled: true }
-    if (!isSupportedPermitInfo(permitInfo)) return { message: 'Token not permittable', disabled: true }
+    if (!token || !isAddress(spenderAddress)) return { message: t`Invalid parameters`, disabled: true }
+    if (!isSupportedPermitInfo(permitInfo)) return { message: t`Token not permittable`, disabled: true }
     return { message: confirmMessage, disabled: false }
   }, [hookToEdit, token, permitInfo, context.account, tokenAddress, spenderAddress, isPermitEnabled, isPreHook])
 
@@ -61,13 +65,17 @@ export function PermitHookApp({ context }: HookDappProps) {
     <Wrapper>
       <ContentWrapper>
         <Row>
-          <label>Token</label>
+          <label>
+            <Trans>Token</Trans>
+          </label>
           <div>
             <input name="token" value={tokenAddress} onChange={(e) => setTokenAddress(e.target.value.trim())} />
           </div>
         </Row>
         <Row>
-          <label>Spender</label>
+          <label>
+            <Trans>Spender</Trans>
+          </label>
           <div>
             <input name="spender" value={spenderAddress} onChange={(e) => setSpenderAddress(e.target.value.trim())} />
           </div>

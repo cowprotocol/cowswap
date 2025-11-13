@@ -3,7 +3,9 @@ import { ReactNode } from 'react'
 import { BannerOrientation, StatusColorVariant } from '@cowprotocol/ui'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
-import { OrderFillability } from 'common/hooks/usePendingOrdersFillability'
+import { Trans } from '@lingui/react/macro'
+
+import { OrderFillability } from 'modules/ordersTable'
 
 import {
   ApproveWrapper,
@@ -33,15 +35,20 @@ export function OrderFillabilityWarning({
 }: OrderFillabilityWarningProps): ReactNode {
   const title = (
     <Title>
-      <span>Order cannot be filled due to insufficient allowance</span>
+      <span>
+        <Trans>Order cannot be filled due to insufficient allowance</Trans>
+      </span>
     </Title>
   )
 
   const isNotEnoughBalance = fillability?.hasEnoughBalance === false
   const showIsNotEnoughAllowance = !isNotEnoughBalance && fillability?.hasEnoughAllowance === false
+  const symbol = inputAmount.currency.symbol
 
-  const NotEnoughBalanceDescreption = (
-    <Subtitle>Please, top up {inputAmount.currency.symbol} balance or cancel the order.</Subtitle>
+  const NotEnoughBalanceDescription = (
+    <Subtitle>
+      <Trans>Please, top up {symbol} balance or cancel the order.</Trans>
+    </Subtitle>
   )
 
   return (
@@ -51,10 +58,12 @@ export function OrderFillabilityWarning({
           padding={'10px'}
           bannerType={StatusColorVariant.Danger}
           orientation={BannerOrientation.Horizontal}
-          customContent={NotEnoughBalanceDescreption}
+          customContent={NotEnoughBalanceDescription}
           noWrapContent
         >
-          <Title marginLeft={'6px'}>Order cannot be filled due to insufficient balance on the current account.</Title>
+          <Title marginLeft={'6px'}>
+            <Trans>Order cannot be filled due to insufficient balance on the current account.</Trans>
+          </Title>
         </UnfillableWarning>
       )}
 
@@ -62,7 +71,9 @@ export function OrderFillabilityWarning({
         <WrappedAccordionBanner title={title} bannerType={StatusColorVariant.Danger} accordionPadding={'10px'}>
           <OrderActionsWrapper>
             <Subtitle>
-              Another order has used up the approval amount. Set a new token approval to proceed with your order.
+              <Trans>
+                Another order has used up the approval amount. Set a new token approval to proceed with your order.
+              </Trans>
             </Subtitle>
             <ApproveWrapper>
               {enablePartialApprove && (

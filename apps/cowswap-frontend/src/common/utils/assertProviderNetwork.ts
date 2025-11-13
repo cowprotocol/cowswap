@@ -2,6 +2,8 @@ import { getChainIdImmediately } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { JsonRpcProvider, Provider } from '@ethersproject/providers'
 
+import { t } from '@lingui/core/macro'
+
 export async function assertProviderNetwork(
   chainId: SupportedChainId,
   provider: JsonRpcProvider | Provider,
@@ -13,9 +15,11 @@ export async function assertProviderNetwork(
   if (!ethereumProvider || !ethereumProvider.isMetaMask || ethereumProvider.isRabby) return chainId
 
   const network = await getChainIdImmediately(provider)
+  const networkString = network ? network.toString() : ''
+
   if (network !== chainId) {
     throw new Error(
-      `Wallet chainId differs from app chainId. Wallet: ${network}, App: ${chainId}. Action: ${description}`,
+      t`Wallet chainId differs from app chainId. Wallet: ${networkString}, App: ${chainId}. Action: ${description}`,
     )
   }
 

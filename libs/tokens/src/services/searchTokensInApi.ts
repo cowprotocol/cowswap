@@ -122,6 +122,7 @@ const SEARCH_TOKENS = gql`
 const BASE_URL = `${BFF_BASE_URL}/proxies/tokens`
 const GQL_CLIENT = new GraphQLClient(BASE_URL)
 
+// TODO: remove/replace, no longer working
 const CHAIN_NAMES: Record<SupportedChainId, Chain | null> = {
   [SupportedChainId.MAINNET]: 'ETHEREUM',
   [SupportedChainId.ARBITRUM_ONE]: 'ARBITRUM',
@@ -132,6 +133,8 @@ const CHAIN_NAMES: Record<SupportedChainId, Chain | null> = {
   [SupportedChainId.AVALANCHE]: 'AVALANCHE',
   [SupportedChainId.LENS]: null,
   [SupportedChainId.BNB]: 'BNB',
+  [SupportedChainId.LINEA]: null,
+  [SupportedChainId.PLASMA]: null,
 }
 
 const CHAIN_IDS = Object.entries(CHAIN_NAMES).reduce(

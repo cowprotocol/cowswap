@@ -3,7 +3,8 @@ import React, { ReactNode } from 'react'
 import { isFractionFalsy } from '@cowprotocol/common-utils'
 import { TokenAmount } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/macro'
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 
 import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'
 
@@ -54,17 +55,15 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps): 
 
       <NetworkFeeItem discount={discount} networkFeeAmount={networkFeeAmount} isSell={isSell} hasFee={hasFee} />
 
-      {(isEoaNotEthFlow || hasPartnerFee) && <FeeItem title="Fee" isSell={isSell} feeAmount={partnerFeeAmount} />}
+      {(isEoaNotEthFlow || hasPartnerFee) && <FeeItem title={t`Fee`} isSell={isSell} feeAmount={partnerFeeAmount} />}
 
       {bridgeFee && (
-        <FeeItem title="Bridge costs" isSell={isSell} feeAmount={bridgeFee?.amountInIntermediateCurrency} />
+        <FeeItem title={t`Bridge costs`} isSell={isSell} feeAmount={bridgeFee?.amountInIntermediateCurrency} />
       )}
 
       {!isFractionFalsy(amountAfterFees) && (
         <styledEl.TotalAmount>
-          <span>
-            <Trans>{!isSell ? 'From' : 'To'}</Trans>
-          </span>
+          <span>{!isSell ? t`From` : t`To`}</span>
           <span>
             <TokenAmount amount={amountAfterFees} tokenSymbol={amountAfterFees.currency} defaultValue="0" />
           </span>

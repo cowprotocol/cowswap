@@ -4,6 +4,8 @@ import { shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ArrowIcon } from '@cowprotocol/ui'
 
+import { Trans } from '@lingui/react/macro'
+
 import { Routes } from 'common/constants/routes'
 
 import { AccountIcon } from './AccountIcon'
@@ -39,7 +41,9 @@ export function AccountItem({ chainId, account, version, iconSize = 28 }: Accoun
       </BaseAccountCard>
       <AccountWrapper>
         <h3>{shortenAddress(account)}</h3>
-        <p>Version: {version}</p>
+        <p>
+          <Trans>Version</Trans>: {version}
+        </p>
       </AccountWrapper>
 
       <ArrowIcon />

@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.12.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v1.11.1...common-hooks-v1.12.0) (2025-11-10)
+
+
+### Features
+
+* **new-chains:** add q4 chains ([#6404](https://github.com/cowprotocol/cowswap/issues/6404)) ([ba4edb0](https://github.com/cowprotocol/cowswap/commit/ba4edb0fdc7b4c700dfeae9023da330d74a9faea))
+
+## [1.11.1](https://github.com/cowprotocol/cowswap/compare/common-hooks-v1.11.0...common-hooks-v1.11.1) (2025-11-05)
+
+
+### Bug Fixes
+
+* **approve:** hide "may block" banner when not partial approve ([#6410](https://github.com/cowprotocol/cowswap/issues/6410)) ([479f61b](https://github.com/cowprotocol/cowswap/commit/479f61b7d21b9656caff38d043d9fa540dd83f93))
+
 ## [1.11.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v1.10.2...common-hooks-v1.11.0) (2025-10-23)
 
 
