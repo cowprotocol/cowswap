@@ -10,7 +10,7 @@ import { useVolumeFee } from '../../volumeFee'
 import { ReceiveAmountInfo } from '../types'
 import { getReceiveAmountInfo } from '../utils/getReceiveAmountInfo'
 
-export function useGetReceiveAmountInfo(overrideBridgeBuyAmount?: boolean): ReceiveAmountInfo | null {
+export function useGetReceiveAmountInfo(): ReceiveAmountInfo | null {
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount, slippage, orderKind } =
     useDerivedTradeState() ?? {}
   const tradeQuote = useTradeQuote()
@@ -20,7 +20,6 @@ export function useGetReceiveAmountInfo(overrideBridgeBuyAmount?: boolean): Rece
   const quoteResponse = quote?.quoteResults.quoteResponse
   const orderParams = quoteResponse?.quote
   const bridgeFeeRaw = bridgeQuote?.amountsAndCosts.costs.bridgingFee.amountInSellCurrency
-  const bridgeBuyAmount = !overrideBridgeBuyAmount ? bridgeQuote?.amountsAndCosts.beforeFee.buyAmount : undefined
 
   const intermediateCurrency =
     useTryFindIntermediateToken({
@@ -43,7 +42,6 @@ export function useGetReceiveAmountInfo(overrideBridgeBuyAmount?: boolean): Rece
         volumeFeeBps,
         intermediateCurrency,
         bridgeFeeRaw,
-        bridgeBuyAmount,
       )
     }
 
@@ -59,6 +57,5 @@ export function useGetReceiveAmountInfo(overrideBridgeBuyAmount?: boolean): Rece
     outputCurrencyAmount,
     slippage,
     bridgeFeeRaw,
-    bridgeBuyAmount,
   ])
 }

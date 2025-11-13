@@ -18,29 +18,28 @@ import { QuoteBridgeContext } from '../types'
 export function useQuoteBridgeContext(): QuoteBridgeContext | null {
   const { bridgeQuote } = useTradeQuote()
 
-  const quoteAmounts = useBridgeQuoteAmounts(true)
-  // TODO: it's a fast fix, should be done inside of useBridgeQuoteAmounts
-  const swapBuyAmountReverse = useBridgeQuoteAmounts(false)?.swapBuyAmount
+  const quoteAmounts = useBridgeQuoteAmounts()
+
   /**
    * Convert buy amount from intermediate currency to destination currency
    * After that we substract bridging costs
    */
   const buyAmount = useMemo(() => {
-    if (!quoteAmounts?.bridgeFee || !swapBuyAmountReverse) return
+    if (!quoteAmounts?.bridgeFee) return
 
     const swapBuyAmount =
-      quoteAmounts.bridgeFee.currency.decimals !== swapBuyAmountReverse.currency.decimals
+      quoteAmounts.bridgeFee.currency.decimals !== quoteAmounts.swapBuyAmount.currency.decimals
         ? FractionUtils.adjustDecimalsAtoms(
-            swapBuyAmountReverse,
-            swapBuyAmountReverse.currency.decimals,
+            quoteAmounts.swapBuyAmount,
+            quoteAmounts.swapBuyAmount.currency.decimals,
             quoteAmounts.bridgeFee.currency.decimals,
           )
-        : swapBuyAmountReverse
+        : quoteAmounts.swapBuyAmount
 
     return CurrencyAmount.fromRawAmount(quoteAmounts.bridgeFee.currency, swapBuyAmount.quotient.toString()).subtract(
       quoteAmounts.bridgeFee,
     )
-  }, [quoteAmounts, swapBuyAmountReverse])
+  }, [quoteAmounts])
 
   const { value: buyAmountUsd } = useUsdAmount(buyAmount)
   const { value: bridgeMinDepositAmountUsd } = useUsdAmount(quoteAmounts?.swapMinReceiveAmount)
