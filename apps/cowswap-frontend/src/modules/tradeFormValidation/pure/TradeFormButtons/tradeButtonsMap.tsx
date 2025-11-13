@@ -3,7 +3,7 @@ import { ReactElement, ReactNode } from 'react'
 import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
 import { getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
 import { BridgeProviderQuoteError, BridgeQuoteErrors } from '@cowprotocol/sdk-bridging'
-import { CenteredDots, HelpTooltip, TokenSymbol } from '@cowprotocol/ui'
+import { CenteredDots, HelpTooltip, InfoTooltip, TokenSymbol } from '@cowprotocol/ui'
 
 import { i18n } from '@lingui/core'
 import { t } from '@lingui/core/macro'
@@ -181,7 +181,12 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
 
       return (
         <TradeFormBlankButton disabled={true}>
-          <>{errorText}</>
+          <>
+            {errorText}
+            {errorMessage === BridgeQuoteErrors.NO_INTERMEDIATE_TOKENS && (
+              <InfoTooltip content={t`No intermediate tokens found for the route`} />
+            )}
+          </>
         </TradeFormBlankButton>
       )
     }
