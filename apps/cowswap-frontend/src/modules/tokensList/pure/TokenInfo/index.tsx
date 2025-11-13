@@ -12,10 +12,11 @@ export interface TokenInfoProps {
   token: TokenWithLogo
   className?: string
   tags?: ReactNode
+  showAddress?: boolean
 }
 
 export function TokenInfo(props: TokenInfoProps): ReactNode {
-  const { token, className, tags } = props
+  const { token, className, tags, showAddress = true } = props
 
   return (
     <styledEl.Wrapper className={className}>
@@ -23,7 +24,7 @@ export function TokenInfo(props: TokenInfoProps): ReactNode {
       <styledEl.TokenDetails>
         <styledEl.TokenSymbolWrapper>
           <TokenSymbol token={token} />
-          <ClickableAddress address={token.address} chainId={token.chainId} />
+          {showAddress ? <ClickableAddress address={token.address} chainId={token.chainId} /> : null}
         </styledEl.TokenSymbolWrapper>
         <styledEl.TokenNameRow>
           <TokenName token={token} />

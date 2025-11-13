@@ -12,6 +12,7 @@ import { Nullish } from 'types'
 
 import * as styledEl from './styled'
 
+import { useDeferredVisibility } from '../../hooks/useDeferredVisibility'
 import { TokenInfo } from '../TokenInfo'
 import { TokenTags } from '../TokenTags'
 
@@ -58,6 +59,13 @@ export function TokenListItem(props: TokenListItemProps): ReactNode {
     className,
   } = props
 
+  const tokenKey = `${token.chainId}:${token.address.toLowerCase()}`
+  // Defer heavyweight UI (tooltips, formatted numbers) until the row is about to enter the viewport.
+  const { ref: visibilityRef, isVisible: hasIntersected } = useDeferredVisibility<HTMLDivElement>({
+    resetKey: tokenKey,
+    rootMargin: '200px',
+  })
+
   const handleClick: MouseEventHandler<HTMLDivElement> = (e) => {
     if (isTokenSelected) {
       e.preventDefault()
@@ -74,11 +82,15 @@ export function TokenListItem(props: TokenListItemProps): ReactNode {
   )
 
   const isSupportedChain = token.chainId in SupportedChainId
-
-  const balanceAmount = balance ? CurrencyAmount.fromRawAmount(token, balance.toHexString()) : undefined
+  const shouldShowBalances = isWalletConnected && isSupportedChain
+  // Formatting balances (BigNumber -> CurrencyAmount -> Fiat) is expensive; delay until the row is visible.
+  const shouldFormatBalances = shouldShowBalances && hasIntersected
+  const balanceAmount =
+    shouldFormatBalances && balance ? CurrencyAmount.fromRawAmount(token, balance.toHexString()) : undefined
 
   return (
     <styledEl.TokenItem
+      ref={visibilityRef}
       data-address={token.address.toLowerCase()}
       data-token-symbol={token.symbol || ''}
       data-token-name={token.name || ''}
@@ -88,26 +100,56 @@ export function TokenListItem(props: TokenListItemProps): ReactNode {
     >
       <TokenInfo
         token={token}
+        showAddress={hasIntersected}
         tags={
-          <TokenTags
-            isUnsupported={isUnsupported}
-            isPermitCompatible={isPermitCompatible}
-            tags={token.tags}
-            tokenListTags={tokenListTags}
-          />
+          hasIntersected ? (
+            <TokenTags
+              isUnsupported={isUnsupported}
+              isPermitCompatible={isPermitCompatible}
+              tags={token.tags}
+              tokenListTags={tokenListTags}
+            />
+          ) : null
         }
       />
-      {isWalletConnected && (
-        <styledEl.TokenBalance>
-          {isSupportedChain ? (
-            <>
-              {balanceAmount ? <TokenAmount amount={balanceAmount} /> : LoadingElement}
-              {usdAmount ? <FiatAmount amount={usdAmount} /> : null}
-            </>
-          ) : null}
-        </styledEl.TokenBalance>
-      )}
+      <TokenBalanceColumn
+        shouldShow={shouldShowBalances}
+        shouldFormat={shouldFormatBalances}
+        balanceAmount={balanceAmount}
+        usdAmount={usdAmount}
+      />
       {children}
     </styledEl.TokenItem>
+  )
+}
+
+interface TokenBalanceColumnProps {
+  shouldShow: boolean
+  shouldFormat: boolean
+  balanceAmount?: CurrencyAmount<Currency>
+  usdAmount?: CurrencyAmount<Currency> | null
+}
+
+function TokenBalanceColumn({
+  shouldShow,
+  shouldFormat,
+  balanceAmount,
+  usdAmount,
+}: TokenBalanceColumnProps): ReactNode {
+  if (!shouldShow) {
+    return null
+  }
+
+  return (
+    <styledEl.TokenBalance>
+      {shouldFormat ? (
+        <>
+          {balanceAmount ? <TokenAmount amount={balanceAmount} /> : LoadingElement}
+          {usdAmount ? <FiatAmount amount={usdAmount} /> : null}
+        </>
+      ) : (
+        LoadingElement
+      )}
+    </styledEl.TokenBalance>
   )
 }
