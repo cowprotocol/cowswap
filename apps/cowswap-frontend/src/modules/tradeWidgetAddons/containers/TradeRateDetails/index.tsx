@@ -79,7 +79,10 @@ export function TradeRateDetails({
     )
   }
 
-  const totalCosts = getTotalCosts(receiveAmountInfo, bridgeQuoteAmounts?.bridgeFeeAmounts.amountInIntermediateCurrency)
+  const totalCosts = getTotalCosts(
+    receiveAmountInfo,
+    bridgeQuoteAmounts?.bridgeFeeAmounts?.amountInIntermediateCurrency,
+  )
 
   // Default expanded content if accordionContent prop is not supplied
   const defaultExpandedContent = (
