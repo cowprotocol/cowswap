@@ -5,7 +5,6 @@ import { useDebounce } from '@cowprotocol/common-hooks'
 import { FractionUtils, getWrappedToken } from '@cowprotocol/common-utils'
 import { Fraction, Percent } from '@uniswap/sdk-core'
 
-import JSBI from 'jsbi'
 import ms from 'ms.macro'
 
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
@@ -51,7 +50,8 @@ function computeFiatValuePriceImpact(
   fiatValueOutput: Fraction | null,
 ): Percent | undefined {
   if (!fiatValueOutput || !fiatValueInput) return undefined
-  if (JSBI.equal(fiatValueInput.quotient, JSBI.BigInt(0))) return undefined
+  const fiatValueInputNum = +fiatValueInput.toFixed(6)
+  if (!fiatValueInputNum || fiatValueInputNum <= 0) return undefined
 
   const pct = ONE_HUNDRED_PERCENT.subtract(fiatValueOutput.divide(fiatValueInput))
 
