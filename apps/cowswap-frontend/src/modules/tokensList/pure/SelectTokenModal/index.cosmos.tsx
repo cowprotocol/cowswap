@@ -15,7 +15,7 @@ const Wrapper = styled.div`
   max-height: 90vh;
   margin: 20px auto;
   display: flex;
-  width: 520px;
+  width: 900px;
 `
 
 const unsupportedTokens = {}
@@ -56,6 +56,8 @@ const defaultProps: SelectTokenModalProps = {
     isLoading: false,
     defaultChainId: SupportedChainId.MAINNET,
   },
+  hasChainPanel: true,
+  chainsPanelTitle: 'Cross chain swap',
   onSelectChain(chain: ChainInfo) {
     console.log('onSelectChain', chain)
   },
@@ -95,6 +97,11 @@ const Fixtures = {
   default: () => (
     <Wrapper>
       <SelectTokenModal {...defaultProps} />
+    </Wrapper>
+  ),
+  noChainPanel: () => (
+    <Wrapper>
+      <SelectTokenModal {...defaultProps} hasChainPanel={false} />
     </Wrapper>
   ),
   importByAddress: () => (
