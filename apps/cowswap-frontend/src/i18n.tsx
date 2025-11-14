@@ -2,13 +2,11 @@ import { ReactNode, useCallback } from 'react'
 
 import { DEFAULT_LOCALE, SupportedLocale } from '@cowprotocol/common-const'
 
-import { initialLocale, useActiveLocale } from 'legacy/hooks/useActiveLocale'
+import { useActiveLocale } from 'legacy/hooks/useActiveLocale'
 import { useUserLocaleManager } from 'legacy/state/user/hooks'
 
 import { useIsInternationalizationEnabled } from 'common/hooks/featureFlags/useIsInternationalizationEnabled'
-import { dynamicActivate, Provider } from 'lib/i18n'
-
-void dynamicActivate(initialLocale, false)
+import { Provider } from 'lib/i18n'
 
 export function LanguageProvider({ children }: { children: ReactNode }): ReactNode {
   const locale = useActiveLocale()
@@ -17,8 +15,12 @@ export function LanguageProvider({ children }: { children: ReactNode }): ReactNo
 
   const onActivate = useCallback(
     (locale: SupportedLocale) => {
-      document.documentElement.setAttribute('lang', locale)
-      setLocale(isInternationalizationEnabled ? locale : DEFAULT_LOCALE) // stores the selected locale to persist across sessions
+      const effectiveLocale = isInternationalizationEnabled ? locale : DEFAULT_LOCALE
+      document.documentElement.setAttribute('lang', effectiveLocale)
+      if (isInternationalizationEnabled) {
+        // stores the selected locale to persist across sessions
+        setLocale(effectiveLocale)
+      }
     },
     [setLocale, isInternationalizationEnabled],
   )
