@@ -8,7 +8,7 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-11-14 15:56\n"
+"PO-Revision-Date: 2025-11-14 17:20\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -555,7 +555,7 @@ msgstr "Sin chainId"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
 msgid "h"
-msgstr "h"
+msgstr ""
 
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
 msgid "When selling {aNativeCurrency}, the minimum slippage tolerance is set to {minimumETHFlowSlippage}% or higher to ensure a high likelihood of order matching, even in volatile market conditions."
@@ -1261,7 +1261,7 @@ msgstr "¡Póngase en contacto con soporte de CoW Swap!"
 #: apps/cowswap-frontend/src/common/containers/CoWAmmBanner/index.tsx
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
 msgid "CoW AMM"
-msgstr ""
+msgstr "CoW AMM"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/BigPartTimeWarning.tsx
 msgid "Too much time between parts"
@@ -1316,7 +1316,7 @@ msgstr "Por favor lea más en esto"
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 msgid "Bungee"
-msgstr ""
+msgstr "Bungee"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/FilledField.tsx
 msgid "of"
@@ -1754,7 +1754,7 @@ msgstr "Establecer fecha límite"
 
 #: apps/cowswap-frontend/src/modules/wallet/pure/StatusIcon/index.tsx
 msgid "WalletConnect"
-msgstr ""
+msgstr "WalletConnect"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/ZeroApprovalWarning/ZeroApprovalWarning.tsx
 msgid "<0>Note:</0> {symbol} specifically requires 2 approval transactions. The first resets your spending cap to 0, and the second sets your desired spending cap. To avoid this in the future, set your spending cap to CoW Swap's recommended default amount."
