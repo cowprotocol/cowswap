@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 
+import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { cowAppDataLatestScheme } from '@cowprotocol/cow-sdk'
 import { PermitHookData } from '@cowprotocol/permit-utils'
 import { useIsSmartContractWallet } from '@cowprotocol/wallet'
@@ -49,6 +50,18 @@ export function AppDataHooksUpdater(): null {
   const isNativeSell = useIsSellNative()
 
   const [permitHook, setPermitHook] = useState<TypedCowHook | undefined>(undefined)
+
+  const inputCurrencyAddress = tradeState?.inputCurrency ? getCurrencyAddress(tradeState.inputCurrency) : undefined
+
+  /**
+   * Reset appDataHooks every time sellToken changes
+   */
+  useEffect(() => {
+    if (!inputCurrencyAddress) return
+
+    updateAppDataHooks(undefined)
+    setPermitHook(undefined)
+  }, [inputCurrencyAddress, updateAppDataHooks])
 
   useEffect(() => {
     const preInteractionHooks = (preHooks || []).map<TypedCowHook>((hookDetails) =>
