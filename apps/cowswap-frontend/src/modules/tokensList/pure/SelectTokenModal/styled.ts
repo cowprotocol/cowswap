@@ -103,6 +103,8 @@ export const Body = styled.div`
   display: flex;
   flex: 1;
   min-height: 0;
+  gap: 16px;
+  align-items: stretch;
 
   ${Media.upToMedium()} {
     flex-direction: column;

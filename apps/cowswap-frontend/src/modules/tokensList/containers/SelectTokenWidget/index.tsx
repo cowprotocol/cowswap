@@ -2,6 +2,7 @@ import { ReactNode, useCallback, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { useIsBridgingEnabled } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import {
   ListState,
@@ -15,6 +16,7 @@ import {
 } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { t } from '@lingui/core/macro'
 import styled from 'styled-components/macro'
 
 import { Field } from 'legacy/state/types'
@@ -22,6 +24,7 @@ import { Field } from 'legacy/state/types'
 import { useTokensBalancesCombined } from 'modules/combinedBalances'
 import { usePermitCompatibleTokens } from 'modules/permit'
 import { useLpTokensWithBalances } from 'modules/yield/shared'
+
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 
@@ -74,6 +77,7 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
   } = useSelectTokenWidgetState()
   const { count: lpTokensWithBalancesCount } = useLpTokensWithBalances()
   const chainsToSelect = useChainsToSelect()
+  const isBridgingEnabled = useIsBridgingEnabled()
   const onSelectChain = useOnSelectChain()
 
   const [isManageWidgetOpen, setIsManageWidgetOpen] = useState(false)
@@ -124,6 +128,9 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
   const onTokenListAddingError = useOnTokenListAddingError()
 
   const isInjectedWidgetMode = isInjectedWidget()
+
+  const showChainPanel = isBridgingEnabled && Boolean(chainsToSelect?.chains?.length)
+  const chainsPanelTitle = t`Cross chain swap`
 
   const closeTokenSelectWidget = useCloseTokenSelectWidget()
 
@@ -242,6 +249,8 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
             disableErc20={disableErc20}
             account={account}
             chainsToSelect={chainsToSelect}
+            hasChainPanel={showChainPanel}
+            chainsPanelTitle={chainsPanelTitle}
             onSelectChain={onSelectChain}
             areTokensLoading={areTokensLoading}
             tokenListTags={tokenListTags}

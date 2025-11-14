@@ -33,6 +33,7 @@ export interface SelectTokenModalProps<T = TokenListCategory[] | null> {
   selectedTargetChainId?: number
   modalTitle?: string
   hasChainPanel?: boolean
+  chainsPanelTitle?: string
   isFullScreenMobile?: boolean
 
   onSelectToken: TokenSelectionHandler
