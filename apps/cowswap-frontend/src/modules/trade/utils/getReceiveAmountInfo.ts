@@ -1,5 +1,5 @@
 import { isSellOrder } from '@cowprotocol/common-utils'
-import { type OrderParameters, getQuoteAmountsAndCosts } from '@cowprotocol/cow-sdk'
+import { getQuoteAmountsAndCosts, type OrderParameters } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 
 import { OrderTypeReceiveAmounts, ReceiveAmountInfo } from '../types'
@@ -47,6 +47,7 @@ export function getReceiveAmountInfo(
   _partnerFeeBps: number | undefined,
   intermediateCurrency?: Currency,
   bridgeFeeRaw?: bigint,
+  protocolFeeBps?: number,
 ): ReceiveAmountInfo {
   const partnerFeeBps = _partnerFeeBps ?? 0
   const currenciesExcludingIntermediate = { inputCurrency, outputCurrency }
@@ -59,6 +60,7 @@ export function getReceiveAmountInfo(
     buyDecimals: outputCurrency.decimals,
     slippagePercentBps: Number(slippagePercent.numerator),
     partnerFeeBps,
+    protocolFeeBps,
   })
 
   const currenciesWithIntermediate = {
@@ -100,6 +102,16 @@ export function getReceiveAmountInfo(
         ),
         bps: result.costs.partnerFee.bps,
       },
+      protocolFee:
+        result.costs.protocolFee && result.costs.protocolFee.amount !== 0n
+          ? {
+              amount: CurrencyAmount.fromRawAmount(
+                isSell ? currenciesWithIntermediate.outputCurrency : inputCurrency,
+                result.costs.protocolFee.amount.toString(),
+              ),
+              bps: result.costs.protocolFee.bps,
+            }
+          : undefined,
       bridgeFee,
     },
     beforeNetworkCosts,

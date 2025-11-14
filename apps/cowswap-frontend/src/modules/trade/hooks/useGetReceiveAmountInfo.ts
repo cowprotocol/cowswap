@@ -19,6 +19,7 @@ export function useGetReceiveAmountInfo(): ReceiveAmountInfo | null {
   const { quote, bridgeQuote } = tradeQuote
   const quoteResponse = quote?.quoteResults.quoteResponse
   const orderParams = quoteResponse?.quote
+  const protocolFeeBps = quoteResponse?.protocolFeeBps ? Number(quoteResponse.protocolFeeBps) : undefined
   const bridgeFeeRaw = bridgeQuote?.amountsAndCosts.costs.bridgingFee.amountInSellCurrency
 
   const intermediateCurrency =
@@ -42,6 +43,7 @@ export function useGetReceiveAmountInfo(): ReceiveAmountInfo | null {
         volumeFeeBps,
         intermediateCurrency,
         bridgeFeeRaw,
+        protocolFeeBps,
       )
     }
 
@@ -57,5 +59,6 @@ export function useGetReceiveAmountInfo(): ReceiveAmountInfo | null {
     outputCurrencyAmount,
     slippage,
     bridgeFeeRaw,
+    protocolFeeBps,
   ])
 }

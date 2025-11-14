@@ -24,7 +24,17 @@ export const receiveAmountInfoAtom = atom((get) => {
   if (orderKind !== quoteResponse?.quote.kind) return null
 
   if (quoteResponse && inputCurrency && outputCurrency && slippage) {
-    return getReceiveAmountInfo(quoteResponse.quote, inputCurrency, outputCurrency, slippage, volumeFee?.volumeBps)
+    const protocolFeeBps = quoteResponse.protocolFeeBps ? Number(quoteResponse.protocolFeeBps) : undefined
+    return getReceiveAmountInfo(
+      quoteResponse.quote,
+      inputCurrency,
+      outputCurrency,
+      slippage,
+      volumeFee?.volumeBps,
+      undefined,
+      undefined,
+      protocolFeeBps,
+    )
   }
 
   return null
