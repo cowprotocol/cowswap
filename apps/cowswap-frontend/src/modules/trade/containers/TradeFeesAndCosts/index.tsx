@@ -9,6 +9,7 @@ import { NetworkCostsRow } from '../../pure/NetworkCostsRow'
 import { PartnerFeeRow } from '../../pure/PartnerFeeRow'
 import { ProtocolFeeRow } from '../../pure/ProtocolFeeRow'
 import { ReviewOrderModalAmountRow } from '../../pure/ReviewOrderModalAmountRow'
+import { TotalFeeRow } from '../../pure/TotalFeeRow'
 import { ReceiveAmountInfo } from '../../types'
 import { getOrderTypeReceiveAmounts } from '../../utils/getReceiveAmountInfo'
 import * as styledEl from '../TradeBasicConfirmDetails/styled'
@@ -21,7 +22,7 @@ interface TradeFeesAndCostsProps {
 }
 
 // todo fix it
-// eslint-disable-next-line complexity
+// eslint-disable-next-line complexity,max-lines-per-function
 export function TradeFeesAndCosts(props: TradeFeesAndCostsProps): ReactNode {
   const { receiveAmountInfo, networkCostsSuffix, networkCostsTooltipSuffix, withTimelineDot = true } = props
 
@@ -40,14 +41,51 @@ export function TradeFeesAndCosts(props: TradeFeesAndCostsProps): ReactNode {
   const hasPartnerFee = !!partnerFeeAmount && !!partnerFeeBps && !partnerFeeAmount.equalTo(0)
   const hasProtocolFee = !!protocolFeeAmount && !!protocolFeeBps && !protocolFeeAmount.equalTo(0)
   const hasAnyFee = hasPartnerFee || hasProtocolFee
+  const hasBothFees = hasPartnerFee && hasProtocolFee
+
+  // Calculate total fee (partner + protocol, excluding network costs)
+  const totalFeeAmount = receiveAmountInfo
+    ? (() => {
+        const totalFee = receiveAmountInfo.costs.partnerFee.amount
+        const protocolFee = receiveAmountInfo.costs.protocolFee?.amount
+        if (protocolFee) {
+          totalFee.add(protocolFee)
+        }
+        if (networkFeeAmount) {
+          totalFee.add(networkFeeAmount)
+        }
+        return totalFee
+      })()
+    : null
+  const totalFeeUsd = useUsdAmount(totalFeeAmount).value
 
   const volumeFeeTooltip = useVolumeFeeTooltip(false)
   const { t } = useLingui()
 
   return (
     <>
-      {/*Protocol fee*/}
-      {hasProtocolFee && (
+      {/*If both fees exist: show Total fee first, then individual fees below*/}
+      {hasBothFees && (
+        <>
+          <TotalFeeRow withTimelineDot={withTimelineDot} totalFeeUsd={totalFeeUsd} totalFeeAmount={totalFeeAmount} />
+          <PartnerFeeRow
+            withTimelineDot={withTimelineDot}
+            partnerFeeUsd={partnerFeeUsd}
+            partnerFeeAmount={partnerFeeAmount}
+            partnerFeeBps={partnerFeeBps}
+            volumeFeeTooltip={volumeFeeTooltip}
+          />
+          <ProtocolFeeRow
+            withTimelineDot={withTimelineDot}
+            protocolFeeUsd={protocolFeeUsd}
+            protocolFeeAmount={protocolFeeAmount}
+            protocolFeeBps={protocolFeeBps}
+          />
+        </>
+      )}
+
+      {/*If only protocol fee: show protocol fee row*/}
+      {!hasBothFees && hasProtocolFee && (
         <ProtocolFeeRow
           withTimelineDot={withTimelineDot}
           protocolFeeUsd={protocolFeeUsd}
@@ -56,15 +94,9 @@ export function TradeFeesAndCosts(props: TradeFeesAndCostsProps): ReactNode {
         />
       )}
 
-      {/*Partner fee*/}
-      {hasPartnerFee && (
-        <PartnerFeeRow
-          withTimelineDot={withTimelineDot}
-          partnerFeeUsd={partnerFeeUsd}
-          partnerFeeAmount={partnerFeeAmount}
-          partnerFeeBps={partnerFeeBps}
-          volumeFeeTooltip={volumeFeeTooltip}
-        />
+      {/*If only partner fee: show as Total fee (like before)*/}
+      {!hasBothFees && hasPartnerFee && (
+        <TotalFeeRow withTimelineDot={withTimelineDot} totalFeeUsd={partnerFeeUsd} totalFeeAmount={partnerFeeAmount} />
       )}
 
       {/*FREE - only if no fees at all*/}
