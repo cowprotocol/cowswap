@@ -43,18 +43,18 @@ export function TradeFeesAndCosts(props: TradeFeesAndCostsProps): ReactNode {
   const hasAnyFee = hasPartnerFee || hasProtocolFee
   const hasBothFees = hasPartnerFee && hasProtocolFee
 
-  // Calculate total fee (partner + protocol, excluding network costs)
+  // todo move it to helper and fix calculation
   const totalFeeAmount = receiveAmountInfo
     ? (() => {
-        const totalFee = receiveAmountInfo.costs.partnerFee.amount
+        const partnerFee = receiveAmountInfo.costs.partnerFee.amount
         const protocolFee = receiveAmountInfo.costs.protocolFee?.amount
         if (protocolFee) {
-          totalFee.add(protocolFee)
+          partnerFee.add(protocolFee)
         }
         if (networkFeeAmount) {
-          totalFee.add(networkFeeAmount)
+          partnerFee.add(networkFeeAmount)
         }
-        return totalFee
+        return partnerFee
       })()
     : null
   const totalFeeUsd = useUsdAmount(totalFeeAmount).value
@@ -67,7 +67,7 @@ export function TradeFeesAndCosts(props: TradeFeesAndCostsProps): ReactNode {
       {/*If both fees exist: show Total fee first, then individual fees below*/}
       {hasBothFees && (
         <>
-          <TotalFeeRow withTimelineDot={withTimelineDot} totalFeeUsd={totalFeeUsd} totalFeeAmount={totalFeeAmount} />
+          <TotalFeeRow totalFeeUsd={totalFeeUsd} />
           <PartnerFeeRow
             withTimelineDot={withTimelineDot}
             partnerFeeUsd={partnerFeeUsd}
@@ -96,7 +96,13 @@ export function TradeFeesAndCosts(props: TradeFeesAndCostsProps): ReactNode {
 
       {/*If only partner fee: show as Total fee (like before)*/}
       {!hasBothFees && hasPartnerFee && (
-        <TotalFeeRow withTimelineDot={withTimelineDot} totalFeeUsd={partnerFeeUsd} totalFeeAmount={partnerFeeAmount} />
+        <PartnerFeeRow
+          withTimelineDot={withTimelineDot}
+          partnerFeeUsd={partnerFeeUsd}
+          partnerFeeAmount={partnerFeeAmount}
+          partnerFeeBps={partnerFeeBps}
+          volumeFeeTooltip={volumeFeeTooltip}
+        />
       )}
 
       {/*FREE - only if no fees at all*/}
