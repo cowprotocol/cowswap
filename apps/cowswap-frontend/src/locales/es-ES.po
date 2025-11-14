@@ -8,7 +8,7 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-11-14 10:55\n"
+"PO-Revision-Date: 2025-11-14 15:56\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -905,6 +905,10 @@ msgstr ""
 msgid "CoW Protocol Explorer"
 msgstr "Explorador de CoW Protocol"
 
+#: apps/cowswap-frontend/src/modules/notifications/pure/NotificationSettingsPopover.tsx
+msgid "Got it"
+msgstr ""
+
 #: apps/cowswap-frontend/src/common/pure/CoWAmmBannerContent/index.tsx
 msgid "pools"
 msgstr "piscinas"
@@ -1692,6 +1696,10 @@ msgstr "Esto es un"
 msgid "Something went wrong creating your order"
 msgstr "Algo salió mal al crear su orden"
 
+#: apps/cowswap-frontend/src/legacy/components/Header/AccountElement/NotificationAlertPopover.tsx
+msgid "Enable order alerts"
+msgstr ""
+
 #: libs/common-utils/src/swapErrorToUserReadableMessage.tsx
 msgid "This transaction will not succeed either due to price movement or fee on transfer. Try increasing your slippage tolerance."
 msgstr "Esta transacción no tendrá éxito debido al movimiento del precio o a la comisión de la transferencia. Intenta aumentar la tolerancia del deslizamiento."
@@ -2118,6 +2126,10 @@ msgstr "BFF no devolvió un precio para '{currencyAddress}' en la cadena '{curre
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/index.tsx
 msgid "This tool helps you recover your funds."
 msgstr "Esta herramienta le ayuda a recuperar sus fondos."
+
+#: apps/cowswap-frontend/src/legacy/components/Header/AccountElement/NotificationAlertPopover.tsx
+msgid "Enable trade alerts"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 msgid "Transaction completed"
@@ -2627,6 +2639,10 @@ msgstr "Los ganchos {prefix} te permiten ejecutar automáticamente cualquier acc
 msgid "Your order expired. This could be due to gas spikes, volatile prices, or problems with the network."
 msgstr "Su pedido ha caducado. Esto podría deberse a picos de gas, precios volátiles o problemas con la red."
 
+#: apps/cowswap-frontend/src/legacy/components/Header/AccountElement/NotificationAlertPopover.tsx
+msgid "Not now"
+msgstr ""
+
 #: apps/cowswap-frontend/src/pages/Account/Tokens/TokensOverview.tsx
 msgid "Unsupported network"
 msgstr "Red no soportada"
@@ -2684,6 +2700,10 @@ msgstr "El intercambio de coW es el único intercambio que coincide con Coincide
 #: apps/cowswap-frontend/src/modules/bridge/pure/ProxyAccountBanner/index.tsx
 msgid "CoW Swap uses a dedicated {accountProxyLabelString}, controlled only by you, to ensure smooooth bridging. Confirm the recipient address above is <0/>"
 msgstr "CoW Swap utiliza un {accountProxyLabelString} dedicado, controlado solo por ti, para asegurar un puente liso. Confirma la dirección del destinatario anterior es <0/>"
+
+#: apps/cowswap-frontend/src/modules/notifications/pure/NotificationSettingsPopover.tsx
+msgid "Trade alerts enabled"
+msgstr ""
 
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
 #~ msgid "Your swap expires and will not execute if it is pending for longer than the selected duration.<0/><1/>{INPUT_OUTPUT_EXPLANATION}"
@@ -3388,6 +3408,10 @@ msgstr "El precio de relleno de este pedido está cerrado o al precio de mercado
 msgid "My orders <0/>"
 msgstr "Mis pedidos <0/>"
 
+#: apps/cowswap-frontend/src/modules/notifications/pure/NotificationSettingsPopover.tsx
+msgid "Trade alert settings info"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/twap/pure/CustomDeadlineSelector/index.tsx
 msgid "Define custom total time"
 msgstr "Definir tiempo total personalizado"
@@ -3397,6 +3421,10 @@ msgstr "Definir tiempo total personalizado"
 #: apps/cowswap-frontend/src/modules/trade/containers/TradeBasicConfirmDetails/index.tsx
 msgid "Expected to receive"
 msgstr "Se espera recibir"
+
+#: apps/cowswap-frontend/src/modules/notifications/pure/NotificationSettingsPopover.tsx
+msgid "Change trade alert settings here"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/RateInput/HeadingText.tsx
 msgid "Select input and output"
@@ -3518,6 +3546,10 @@ msgstr "Los contratos de adaptadores de intercambio integran los préstamos Aave
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "Transaction completed!"
 msgstr "¡Transacción completada!"
+
+#: apps/cowswap-frontend/src/legacy/components/Header/AccountElement/NotificationAlertPopover.tsx
+msgid "When orders fill or expire"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/LpTokenLists/index.tsx
 msgid "No pool tokens available"
@@ -4974,6 +5006,10 @@ msgstr "Ejecuta en"
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmount/index.tsx
 msgid "From (incl. costs)"
 msgstr "Desde (incl. costes)"
+
+#: apps/cowswap-frontend/src/legacy/components/Header/AccountElement/NotificationAlertPopover.tsx
+msgid "Get trade alerts"
+msgstr ""
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 msgid "Aave Collateral Swap Flashloan"
