@@ -8,11 +8,14 @@ import { Nullish } from 'types'
 
 import { PermitCompatibleTokens } from 'modules/permit'
 
+export type TokenSelectionHandler = (token: TokenWithLogo) => Promise<void> | void
+
 export interface SelectTokenContext {
   balancesState: BalancesState
   selectedToken?: Nullish<Currency>
 
-  onSelectToken(token: TokenWithLogo): void
+  onSelectToken: TokenSelectionHandler
+  onTokenListItemClick?(token: TokenWithLogo): void
 
   unsupportedTokens: { [tokenAddress: string]: { dateAdded: number } }
   permitCompatibleTokens: PermitCompatibleTokens

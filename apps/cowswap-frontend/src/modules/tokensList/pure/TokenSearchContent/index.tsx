@@ -1,12 +1,23 @@
-import { ReactNode, useMemo } from 'react'
+import { ReactNode, useCallback, useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { doesTokenMatchSymbolOrAddress } from '@cowprotocol/common-utils'
 import { TokenSearchResponse } from '@cowprotocol/tokens'
-import { Loader } from '@cowprotocol/ui'
+import {
+  BannerOrientation,
+  ExternalLink,
+  InlineBanner,
+  LINK_GUIDE_ADD_CUSTOM_TOKEN,
+  Loader,
+  StatusColorVariant,
+} from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
+import { VirtualItem } from '@tanstack/react-virtual'
+
+import { VirtualList } from 'common/pure/VirtualList'
+
 
 import * as styledEl from '../../containers/TokenSearchResults/styled'
 import { SelectTokenContext } from '../../types'
@@ -58,59 +69,215 @@ export function TokenSearchContent({
     return [matched, remaining]
   }, [activeListsResult, searchInput])
 
-  return isLoading ? (
-    <styledEl.LoaderWrapper>
-      <Loader />
-    </styledEl.LoaderWrapper>
-  ) : isTokenNotFound ? (
-    <styledEl.TokenNotFound>
-      <Trans>No tokens found</Trans>
-    </styledEl.TokenNotFound>
-  ) : (
-    <>
-      {/*Matched tokens first, followed by tokens from active lists*/}
-      {matchedTokens.concat(activeList).map((token) => {
-        return <TokenListItemContainer key={token.address} token={token} context={selectTokenContext} />
-      })}
+  const rows = useSearchRows({
+    isLoading,
+    matchedTokens,
+    activeList,
+    blockchainResult,
+    inactiveListsResult,
+    externalApiResult,
+  })
 
-      {/*Tokens from blockchain*/}
-      {blockchainResult?.length ? (
-        <styledEl.ImportTokenWrapper id="currency-import">
-          {blockchainResult.slice(0, SEARCH_RESULTS_LIMIT).map((token) => {
-            return <ImportTokenItem key={token.address} token={token} importToken={importToken} />
-          })}
-        </styledEl.ImportTokenWrapper>
-      ) : null}
+  const renderRow = useCallback(
+    // Let the virtualizer ask for a specific row to keep render cost O(visible rows)
+    (items: TokenSearchRow[], virtualItem: VirtualItem) => (
+      <TokenSearchRowRenderer
+        row={items[virtualItem.index]}
+        selectTokenContext={selectTokenContext}
+        importToken={importToken}
+      />
+    ),
+    [importToken, selectTokenContext],
+  )
 
-      {/*Tokens from inactive lists*/}
-      {inactiveListsResult?.length ? (
-        <div>
-          <TokenSourceTitle
-            tooltip={t`Tokens from inactive lists. Import specific tokens below or click Manage to activate more lists.`}
-          >
-            {t`Expanded results from inactive Token Lists`}
-          </TokenSourceTitle>
-          <div>
-            {inactiveListsResult.slice(0, SEARCH_RESULTS_LIMIT).map((token) => {
-              return <ImportTokenItem key={token.address} token={token} importToken={importToken} shadowed />
-            })}
-          </div>
-        </div>
-      ) : null}
+  if (isLoading)
+    return (
+      <styledEl.LoaderWrapper>
+        <Loader />
+      </styledEl.LoaderWrapper>
+    )
 
-      {/*Tokens from external sources*/}
-      {externalApiResult?.length ? (
-        <div>
-          <TokenSourceTitle tooltip={t`Tokens from external sources.`}>
-            {t`Additional Results from External Sources`}
-          </TokenSourceTitle>
-          <div>
-            {externalApiResult.map((token) => {
-              return <ImportTokenItem key={token.address} token={token} importToken={importToken} shadowed />
-            })}
-          </div>
-        </div>
-      ) : null}
-    </>
+  if (isTokenNotFound)
+    return (
+      <styledEl.TokenNotFound>
+        <Trans>No tokens found</Trans>
+      </styledEl.TokenNotFound>
+    )
+
+  return <VirtualList id="token-search-results" items={rows} getItemView={renderRow} scrollResetKey={searchInput} />
+}
+
+type TokenImportSection = 'blockchain' | 'inactive' | 'external'
+
+type TokenSearchRow =
+  | { type: 'banner' }
+  | { type: 'token'; token: TokenWithLogo }
+  | { type: 'section-title'; text: string; tooltip?: string }
+  | {
+      type: 'import-token'
+      token: TokenWithLogo
+      shadowed?: boolean
+      section: TokenImportSection
+      isFirstInSection: boolean
+      isLastInSection: boolean
+      wrapperId?: string
+    }
+
+interface UseSearchRowsParams {
+  isLoading: boolean
+  matchedTokens: TokenWithLogo[]
+  activeList: TokenWithLogo[]
+  blockchainResult?: TokenWithLogo[]
+  inactiveListsResult?: TokenWithLogo[]
+  externalApiResult?: TokenWithLogo[]
+}
+
+function useSearchRows({
+  isLoading,
+  matchedTokens,
+  activeList,
+  blockchainResult,
+  inactiveListsResult,
+  externalApiResult,
+}: UseSearchRowsParams): TokenSearchRow[] {
+  return useMemo(() => {
+    if (isLoading) {
+      // Keep hook order stable while skipping work during the loading state
+      return []
+    }
+
+    const entries: TokenSearchRow[] = []
+
+    entries.push({ type: 'banner' })
+
+    for (const token of matchedTokens) {
+      // Exact matches stay pinned to the top of the results
+      entries.push({ type: 'token', token })
+    }
+
+    for (const token of activeList) {
+      entries.push({ type: 'token', token })
+    }
+
+    appendImportSection(entries, {
+      tokens: blockchainResult,
+      section: 'blockchain',
+      limit: SEARCH_RESULTS_LIMIT,
+      sectionTitle: undefined,
+      tooltip: undefined,
+      shadowed: false,
+      wrapperId: 'currency-import',
+    })
+
+    appendImportSection(entries, {
+      tokens: inactiveListsResult,
+      section: 'inactive',
+      limit: SEARCH_RESULTS_LIMIT,
+      sectionTitle: t`Expanded results from inactive Token Lists`,
+      tooltip: t`Tokens from inactive lists. Import specific tokens below or click Manage to activate more lists.`,
+      shadowed: true,
+    })
+
+    appendImportSection(entries, {
+      tokens: externalApiResult,
+      section: 'external',
+      limit: SEARCH_RESULTS_LIMIT,
+      sectionTitle: t`Additional Results from External Sources`,
+      tooltip: t`Tokens from external sources.`,
+      shadowed: true,
+    })
+
+    return entries
+  }, [isLoading, matchedTokens, activeList, blockchainResult, inactiveListsResult, externalApiResult])
+}
+
+interface AppendImportSectionParams {
+  tokens?: TokenWithLogo[]
+  section: TokenImportSection
+  limit: number
+  sectionTitle?: string
+  tooltip?: string
+  shadowed?: boolean
+  wrapperId?: string
+}
+
+function appendImportSection(rows: TokenSearchRow[], params: AppendImportSectionParams): void {
+  const { tokens, section, limit, sectionTitle, tooltip, shadowed, wrapperId } = params
+
+  if (!tokens?.length) {
+    return
+  }
+
+  if (sectionTitle) {
+    // Section headers mirror the legacy markup so tooltips/analytics keep working
+    rows.push({ type: 'section-title', text: sectionTitle, tooltip })
+  }
+
+  const limitedTokens = tokens.slice(0, limit)
+
+  limitedTokens.forEach((token, index) => {
+    rows.push({
+      type: 'import-token',
+      token,
+      section,
+      shadowed,
+      isFirstInSection: index === 0,
+      isLastInSection: index === limitedTokens.length - 1,
+      wrapperId: index === 0 ? wrapperId : undefined,
+    })
+  })
+}
+
+interface TokenSearchRowRendererProps {
+  row: TokenSearchRow
+  selectTokenContext: SelectTokenContext
+  importToken(token: TokenWithLogo): void
+}
+
+function TokenSearchRowRenderer({ row, selectTokenContext, importToken }: TokenSearchRowRendererProps): ReactNode {
+  switch (row.type) {
+    case 'banner':
+      return <GuideBanner />
+    case 'token':
+      return <TokenListItemContainer token={row.token} context={selectTokenContext} />
+    case 'section-title': {
+      const tooltip = row.tooltip ?? ''
+      return (
+        <styledEl.SectionTitleRow>
+          <TokenSourceTitle tooltip={tooltip}>{row.text}</TokenSourceTitle>
+        </styledEl.SectionTitleRow>
+      )
+    }
+    case 'import-token':
+      return (
+        <ImportTokenItem
+          token={row.token}
+          importToken={importToken}
+          shadowed={row.shadowed}
+          wrapperId={row.wrapperId}
+          isFirstInSection={row.isFirstInSection}
+          isLastInSection={row.isLastInSection}
+        />
+      )
+    default:
+      return null
+  }
+}
+
+function GuideBanner(): ReactNode {
+  return (
+    <InlineBanner
+      margin="10px"
+      width="auto"
+      orientation={BannerOrientation.Horizontal}
+      bannerType={StatusColorVariant.Info}
+    >
+      <p>
+        <Trans>
+          Can't find your token on the list? <ExternalLink href={LINK_GUIDE_ADD_CUSTOM_TOKEN}>Read our guide</ExternalLink>{' '}
+          on how to add custom tokens.
+        </Trans>
+      </p>
+    </InlineBanner>
   )
 }

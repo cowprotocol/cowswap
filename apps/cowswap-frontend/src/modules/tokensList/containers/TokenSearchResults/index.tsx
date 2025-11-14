@@ -3,15 +3,6 @@ import { ReactNode, useCallback, useEffect, useMemo } from 'react'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { doesTokenMatchSymbolOrAddress } from '@cowprotocol/common-utils'
 import { getTokenSearchFilter, TokenSearchResponse, useSearchToken } from '@cowprotocol/tokens'
-import {
-  BannerOrientation,
-  ExternalLink,
-  InlineBanner,
-  LINK_GUIDE_ADD_CUSTOM_TOKEN,
-  StatusColorVariant,
-} from '@cowprotocol/ui'
-
-import { Trans } from '@lingui/react/macro'
 
 import { useAddTokenImportCallback } from '../../hooks/useAddTokenImportCallback'
 import { useUpdateSelectTokenWidgetState } from '../../hooks/useUpdateSelectTokenWidgetState'
@@ -32,7 +23,7 @@ export function TokenSearchResults({
   areTokensFromBridge,
   allTokens,
 }: TokenSearchResultsProps): ReactNode {
-  const { onSelectToken } = selectTokenContext
+  const { onSelectToken, onTokenListItemClick } = selectTokenContext
 
   // Do not make search when tokens are from bridge
   const defaultSearchResults = useSearchToken(areTokensFromBridge ? null : searchInput)
@@ -65,9 +56,14 @@ export function TokenSearchResults({
     if (!searchInput || !activeListsResult) return
 
     if (activeListsResult.length === 1 || matchedTokens.length === 1) {
-      onSelectToken(matchedTokens[0] || activeListsResult[0])
+      const tokenToSelect = matchedTokens[0] || activeListsResult[0]
+
+      if (tokenToSelect) {
+        onTokenListItemClick?.(tokenToSelect)
+        onSelectToken(tokenToSelect)
+      }
     }
-  }, [searchInput, activeListsResult, matchedTokens, onSelectToken])
+  }, [searchInput, activeListsResult, matchedTokens, onSelectToken, onTokenListItemClick])
 
   useEffect(() => {
     updateSelectTokenWidget({
@@ -77,18 +73,6 @@ export function TokenSearchResults({
 
   return (
     <CommonListContainer id="currency-list">
-      <InlineBanner
-        margin={'10px'}
-        width="auto"
-        orientation={BannerOrientation.Horizontal}
-        bannerType={StatusColorVariant.Info}
-      >
-        <p>
-          <Trans>Can't find your token on the list?</Trans>{' '}
-          <Trans><ExternalLink href={LINK_GUIDE_ADD_CUSTOM_TOKEN}>Read our guide</ExternalLink> on how to add custom tokens.</Trans>
-        </p>
-      </InlineBanner>
-
       <TokenSearchContent
         importToken={addTokenImportCallback}
         searchInput={searchInput}

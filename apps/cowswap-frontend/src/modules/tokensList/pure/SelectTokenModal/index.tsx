@@ -1,79 +1,19 @@
-import React, { ReactNode, useMemo, useState } from 'react'
+import { ComponentProps, ReactNode } from 'react'
 
-import { BalancesState } from '@cowprotocol/balances-and-allowances'
-import { TokenWithLogo } from '@cowprotocol/common-const'
-import { ChainInfo } from '@cowprotocol/cow-sdk'
-import { TokenListCategory, TokenListTags, UnsupportedTokensState } from '@cowprotocol/tokens'
 import { SearchInput } from '@cowprotocol/ui'
-import { Currency } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
-import { X } from 'react-feather'
-import { Nullish } from 'types'
 
-import { PermitCompatibleTokens } from 'modules/permit'
-
+import { TokensContentSection, TitleBarActions, useSelectTokenContext, useTokenSearchInput } from './helpers'
+import { MobileChainSelector } from './MobileChainSelector'
 import { SelectTokenModalContent } from './SelectTokenModalContent'
 import * as styledEl from './styled'
 
 import { LpTokenListsWidget } from '../../containers/LpTokenListsWidget'
-import { ChainsToSelectState, SelectTokenContext } from '../../types'
-import { ChainsSelector } from '../ChainsSelector'
-import { IconButton } from '../commonElements'
-import { TokensContent } from '../TokensContent'
 
-export interface SelectTokenModalProps<T = TokenListCategory[] | null> {
-  allTokens: TokenWithLogo[]
-  favoriteTokens: TokenWithLogo[]
-  balancesState: BalancesState
-  unsupportedTokens: UnsupportedTokensState
-  selectedToken?: Nullish<Currency>
-  permitCompatibleTokens: PermitCompatibleTokens
-  hideFavoriteTokensTooltip?: boolean
-  displayLpTokenLists?: boolean
-  disableErc20?: boolean
-  account: string | undefined
-  chainsToSelect: ChainsToSelectState | undefined
-  tokenListCategoryState: [T, (category: T) => void]
-  defaultInputValue?: string
-  areTokensLoading: boolean
-  tokenListTags: TokenListTags
-  standalone?: boolean
-  areTokensFromBridge: boolean
-  isRouteAvailable: boolean | undefined
-
-  onSelectToken(token: TokenWithLogo): void
-  openPoolPage(poolAddress: string): void
-  onInputPressEnter?(): void
-  onOpenManageWidget(): void
-  onDismiss(): void
-  onSelectChain(chain: ChainInfo): void
-}
-
-function useSelectTokenContext(props: SelectTokenModalProps): SelectTokenContext {
-  const {
-    selectedToken,
-    balancesState,
-    unsupportedTokens,
-    permitCompatibleTokens,
-    onSelectToken,
-    account,
-    tokenListTags,
-  } = props
-
-  return useMemo(
-    () => ({
-      balancesState,
-      selectedToken,
-      onSelectToken,
-      unsupportedTokens,
-      permitCompatibleTokens,
-      tokenListTags,
-      isWalletConnected: !!account,
-    }),
-    [balancesState, selectedToken, onSelectToken, unsupportedTokens, permitCompatibleTokens, tokenListTags, account],
-  )
-}
+import type { SelectTokenModalProps } from './types'
+import type { TokenSelectionHandler } from '../../types'
+export type { SelectTokenModalProps }
 
 export function SelectTokenModal(props: SelectTokenModalProps): ReactNode {
   const {
@@ -86,68 +26,207 @@ export function SelectTokenModal(props: SelectTokenModalProps): ReactNode {
     openPoolPage,
     tokenListCategoryState,
     disableErc20,
-    chainsToSelect,
-    onSelectChain,
-    areTokensFromBridge,
     isRouteAvailable,
+    modalTitle,
+    hasChainPanel = false,
+    standalone,
+    onOpenManageWidget,
+    favoriteTokens,
+    recentTokens,
+    onClearRecentTokens,
+    areTokensLoading,
+    allTokens,
+    areTokensFromBridge,
+    hideFavoriteTokensTooltip,
+    selectedTargetChainId,
+    mobileChainsState,
+    mobileChainsLabel,
+    onSelectChain,
+    onOpenMobileChainPanel,
+    isFullScreenMobile,
   } = props
-  const [inputValue, setInputValue] = useState<string>(defaultInputValue)
 
+  const [inputValue, setInputValue, trimmedInputValue] = useTokenSearchInput(defaultInputValue)
   const selectTokenContext = useSelectTokenContext(props)
-
-  const trimmedInputValue = inputValue.trim()
-
-  const allListsContent = (
-    <TokensContent
-      {...props}
-      selectTokenContext={selectTokenContext}
-      searchInput={trimmedInputValue}
-      areTokensFromBridge={areTokensFromBridge}
-    />
-  )
+  const resolvedModalTitle = modalTitle ?? 'Select token'
+  const mobileChainSelector = getMobileChainSelectorConfig({
+    hasChainPanel,
+    mobileChainsState,
+    mobileChainsLabel,
+    onSelectChain,
+    onOpenMobileChainPanel,
+  })
 
   return (
-    <styledEl.Wrapper>
-      <styledEl.Header>
-        <SearchInput
-          id="token-search-input"
-          value={inputValue}
-          onKeyDown={(e) => e.key === 'Enter' && onInputPressEnter?.()}
-          onChange={(e) => setInputValue(e.target.value)}
-          placeholder={t`Search name or paste address...`}
+    <SelectTokenModalShell
+      hasChainPanel={hasChainPanel}
+      isFullScreenMobile={isFullScreenMobile}
+      title={resolvedModalTitle}
+      showManageButton={!standalone}
+      onDismiss={onDismiss}
+      onOpenManageWidget={onOpenManageWidget}
+      searchValue={inputValue}
+      onSearchChange={setInputValue}
+      onSearchEnter={onInputPressEnter}
+      mobileChainSelector={mobileChainSelector}
+    >
+      <TokenColumnContent
+        displayLpTokenLists={displayLpTokenLists}
+        account={account}
+        inputValue={inputValue}
+        onSelectToken={onSelectToken}
+        openPoolPage={openPoolPage}
+        disableErc20={disableErc20}
+        tokenListCategoryState={tokenListCategoryState}
+        isRouteAvailable={isRouteAvailable}
+      >
+        <TokensContentSection
+          displayLpTokenLists={displayLpTokenLists}
+          favoriteTokens={favoriteTokens}
+          recentTokens={recentTokens}
+          onClearRecentTokens={onClearRecentTokens}
+          areTokensLoading={areTokensLoading}
+          allTokens={allTokens}
+          searchInput={trimmedInputValue}
+          areTokensFromBridge={areTokensFromBridge}
+          hideFavoriteTokensTooltip={hideFavoriteTokensTooltip}
+          selectedTargetChainId={selectedTargetChainId}
+          selectTokenContext={selectTokenContext}
         />
-        <IconButton onClick={onDismiss}>
-          <X size={18} />
-        </IconButton>
-      </styledEl.Header>
-      {displayLpTokenLists ? (
-        <LpTokenListsWidget
-          account={account}
-          search={inputValue}
-          onSelectToken={onSelectToken}
-          openPoolPage={openPoolPage}
-          disableErc20={disableErc20}
-          tokenListCategoryState={tokenListCategoryState}
-        >
-          {allListsContent}
-        </LpTokenListsWidget>
-      ) : (
-        <>
-          {!!chainsToSelect?.chains?.length && (
-            <>
-              <styledEl.ChainsSelectorWrapper>
-                <ChainsSelector
-                  isLoading={chainsToSelect.isLoading || false}
-                  chains={chainsToSelect.chains}
-                  defaultChainId={chainsToSelect.defaultChainId}
-                  onSelectChain={onSelectChain}
-                />
-              </styledEl.ChainsSelectorWrapper>
-            </>
-          )}
-          <SelectTokenModalContent isRouteAvailable={isRouteAvailable}>{allListsContent}</SelectTokenModalContent>
-        </>
-      )}
+      </TokenColumnContent>
+    </SelectTokenModalShell>
+  )
+}
+
+interface TokenColumnContentProps {
+  displayLpTokenLists?: boolean
+  account: string | undefined
+  inputValue: string
+  onSelectToken: TokenSelectionHandler
+  openPoolPage(poolAddress: string): void
+  disableErc20?: boolean
+  tokenListCategoryState: SelectTokenModalProps['tokenListCategoryState']
+  isRouteAvailable: boolean | undefined
+  children: ReactNode
+}
+
+function TokenColumnContent(props: TokenColumnContentProps): ReactNode {
+  const {
+    displayLpTokenLists,
+    account,
+    inputValue,
+    onSelectToken,
+    openPoolPage,
+    disableErc20,
+    tokenListCategoryState,
+    isRouteAvailable,
+    children,
+  } = props
+
+  if (displayLpTokenLists) {
+    return (
+      <LpTokenListsWidget
+        account={account}
+        search={inputValue}
+        onSelectToken={onSelectToken}
+        openPoolPage={openPoolPage}
+        disableErc20={disableErc20}
+        tokenListCategoryState={tokenListCategoryState}
+      >
+        {children}
+      </LpTokenListsWidget>
+    )
+  }
+
+  return <SelectTokenModalContent isRouteAvailable={isRouteAvailable}>{children}</SelectTokenModalContent>
+}
+
+interface SelectTokenModalShellProps {
+  children: ReactNode
+  hasChainPanel: boolean
+  isFullScreenMobile?: boolean
+  title: string
+  showManageButton: boolean
+  onDismiss(): void
+  onOpenManageWidget: () => void
+  searchValue: string
+  onSearchChange(value: string): void
+  onSearchEnter?: () => void
+  mobileChainSelector?: ComponentProps<typeof MobileChainSelector>
+}
+
+function SelectTokenModalShell({
+  children,
+  hasChainPanel,
+  isFullScreenMobile,
+  title,
+  showManageButton,
+  onDismiss,
+  onOpenManageWidget,
+  searchValue,
+  onSearchChange,
+  onSearchEnter,
+  mobileChainSelector,
+}: SelectTokenModalShellProps): ReactNode {
+  return (
+    <styledEl.Wrapper $hasChainPanel={hasChainPanel} $isFullScreen={isFullScreenMobile}>
+      <TitleBarActions
+        showManageButton={showManageButton}
+        onDismiss={onDismiss}
+        onOpenManageWidget={onOpenManageWidget}
+        title={title}
+      />
+      <styledEl.SearchRow>
+        <styledEl.SearchInputWrapper>
+          <SearchInput
+            id="token-search-input"
+            value={searchValue}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter') {
+                onSearchEnter?.()
+              }
+            }}
+            onChange={(event) => onSearchChange(event.target.value)}
+            placeholder={t`Search name or paste address...`}
+          />
+        </styledEl.SearchInputWrapper>
+      </styledEl.SearchRow>
+      {mobileChainSelector ? <MobileChainSelector {...mobileChainSelector} /> : null}
+      <styledEl.Body>
+        <styledEl.TokenColumn>{children}</styledEl.TokenColumn>
+      </styledEl.Body>
     </styledEl.Wrapper>
   )
+}
+
+function getMobileChainSelectorConfig({
+  hasChainPanel,
+  mobileChainsState,
+  mobileChainsLabel,
+  onSelectChain,
+  onOpenMobileChainPanel,
+}: {
+  hasChainPanel: boolean
+  mobileChainsState: SelectTokenModalProps['mobileChainsState']
+  mobileChainsLabel: SelectTokenModalProps['mobileChainsLabel']
+  onSelectChain: SelectTokenModalProps['onSelectChain']
+  onOpenMobileChainPanel: SelectTokenModalProps['onOpenMobileChainPanel']
+}): ComponentProps<typeof MobileChainSelector> | undefined {
+  const canRender =
+    !hasChainPanel &&
+    mobileChainsState &&
+    onSelectChain &&
+    onOpenMobileChainPanel &&
+    (mobileChainsState.chains?.length ?? 0) > 0
+
+  if (!canRender) {
+    return undefined
+  }
+
+  return {
+    chainsState: mobileChainsState,
+    label: mobileChainsLabel,
+    onSelectChain,
+    onOpenPanel: onOpenMobileChainPanel,
+  }
 }

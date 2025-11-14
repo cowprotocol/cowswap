@@ -120,7 +120,7 @@
     "@sentry/tracing": "^7.80.0",
     "@sentry/webpack-plugin": "^2.10.0",
     "@swc/helpers": "~0.5.2",
-    "@tanstack/react-virtual": "^3.0.2",
+    "@tanstack/react-virtual": "^3.13.12",
     "@trezor/connect-plugin-ethereum": "^9.0.1",
     "@trezor/connect-web": "^9.0.11",
     "@types/hdkey": "^2.0.1",

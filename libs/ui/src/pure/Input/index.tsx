@@ -1,4 +1,4 @@
-import { InputHTMLAttributes } from 'react'
+import { InputHTMLAttributes, ReactNode } from 'react'
 
 import { Search } from 'react-feather'
 import styled from 'styled-components/macro'
@@ -31,15 +31,18 @@ const SearchInputEl = styled.input`
   border-radius: 12px;
   border: none;
 
-  ::placeholder {
+  &::placeholder {
     color: inherit;
     opacity: 0.7;
+    transition: color 0.1s ease-in-out;
+  }
+
+  &:focus::placeholder {
+    color: transparent;
   }
 `
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function SearchInput(props: InputHTMLAttributes<HTMLInputElement>) {
+export function SearchInput(props: InputHTMLAttributes<HTMLInputElement>): ReactNode {
   return (
     <Wrapper>
       <SearchIcon size={20} />

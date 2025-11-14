@@ -11,3 +11,4 @@ export { useUpdateSelectTokenWidgetState } from './hooks/useUpdateSelectTokenWid
 export { useOnTokenListAddingError } from './hooks/useOnTokenListAddingError'
 export { useTokenListAddingError } from './hooks/useTokenListAddingError'
 export { useSourceChainId } from './hooks/useSourceChainId'
+export { useChainsToSelect } from './hooks/useChainsToSelect'
