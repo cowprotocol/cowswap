@@ -94,7 +94,7 @@ export function createCowSwapWidget(container: HTMLElement, props: CowSwapWidget
     },
 
     destroy: () => {
-      // Disconnet rpc provider and unsubscribe to events
+      // Disconnect rpc provider and unsubscribe to events
       iframeRpcProviderBridge.disconnect()
       // Stop listening for cow events
       iFrameCowEventEmitter.stopListeningIframe()

@@ -105,7 +105,7 @@ export function useSetupTradeState(): void {
   /**
    * On URL parameter changes
    *
-   * 1. The case, when chainId in URL was changed while wallet is connected (read about it bellow)
+   * 1. The case, when chainId in URL was changed while wallet is connected (read about it below)
    * 2. When chainId in URL is invalid, then redirect to the default chainId
    * 3. When URL contains the same token symbols (USDC/USDC), then redirect to the default state
    * 4. When URL doesn't contain both tokens, then redirect to the default state
