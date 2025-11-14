@@ -25,9 +25,6 @@ interface TradeFeesAndCostsProps {
 export function TradeFeesAndCosts(props: TradeFeesAndCostsProps): ReactNode {
   const { receiveAmountInfo, networkCostsSuffix, networkCostsTooltipSuffix, withTimelineDot = true } = props
 
-  const volumeFeeTooltip = useVolumeFeeTooltip()
-  const { t } = useLingui()
-
   const networkFeeAmount = receiveAmountInfo && getOrderTypeReceiveAmounts(receiveAmountInfo).networkFeeAmount
   const partnerFee = receiveAmountInfo && receiveAmountInfo.costs.partnerFee
   const partnerFeeAmount = partnerFee?.amount
@@ -43,6 +40,9 @@ export function TradeFeesAndCosts(props: TradeFeesAndCostsProps): ReactNode {
   const hasPartnerFee = !!partnerFeeAmount && !!partnerFeeBps && !partnerFeeAmount.equalTo(0)
   const hasProtocolFee = !!protocolFeeAmount && !!protocolFeeBps && !protocolFeeAmount.equalTo(0)
   const hasAnyFee = hasPartnerFee || hasProtocolFee
+
+  const volumeFeeTooltip = useVolumeFeeTooltip(false)
+  const { t } = useLingui()
 
   return (
     <>
