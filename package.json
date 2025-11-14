@@ -99,7 +99,7 @@
     "@material-ui/core": "^4.11.0",
     "@metamask/eth-sig-util": "^5.0.2",
     "@metamask/jazzicon": "^2.0.0",
-    "@metamask/sdk": "^0.31.4",
+    "@metamask/sdk": "^0.33.1",
     "@mui/icons-material": "^5.17.1",
     "@mui/material": "^5.17.1",
     "@popperjs/core": "^2.4.4",
