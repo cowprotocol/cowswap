@@ -7,11 +7,8 @@ import { I18nProvider } from '@lingui/react'
 
 import { useIsInternationalizationEnabled } from 'common/hooks/featureFlags/useIsInternationalizationEnabled'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export async function dynamicActivate(locale: SupportedLocale, isInternationalizationEnabled?: boolean) {
+export async function dynamicActivate(locale: SupportedLocale, isInternationalizationEnabled?: boolean): Promise<void> {
   try {
-    // TODO: how to load the flag without using a hook?
     // Load default (en-US) catalog if internationalization is disabled
     if (!isInternationalizationEnabled) {
       const defaultCatalog = await import(`../locales/${DEFAULT_LOCALE}.po`)
@@ -38,9 +35,7 @@ interface ProviderProps {
   onActivate?: (locale: SupportedLocale) => void
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function Provider({ locale, onActivate, children }: ProviderProps) {
+export function Provider({ locale, onActivate, children }: ProviderProps): ReactNode {
   const isInternationalizationEnabled = useIsInternationalizationEnabled()
 
   useEffect(() => {
