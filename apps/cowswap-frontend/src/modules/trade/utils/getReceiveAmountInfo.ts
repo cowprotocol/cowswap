@@ -31,7 +31,10 @@ export function getTotalCosts(
 ): CurrencyAmount<Currency> {
   const { networkFeeAmount } = getOrderTypeReceiveAmounts(info)
 
-  const fee = networkFeeAmount.add(info.costs.partnerFee.amount)
+  let fee = networkFeeAmount.add(info.costs.partnerFee.amount)
+  if (info.costs.protocolFee?.amount) {
+    fee = fee.add(info.costs.protocolFee.amount)
+  }
 
   return additionalCosts ? fee.add(additionalCosts) : fee
 }
