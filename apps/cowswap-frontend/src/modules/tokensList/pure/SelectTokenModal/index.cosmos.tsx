@@ -48,8 +48,16 @@ const defaultProps: SelectTokenModalProps = {
   },
   selectedToken,
   isRouteAvailable: true,
+  recentTokens: favoriteTokensMock.slice(0, 2),
+  selectedTargetChainId: SupportedChainId.SEPOLIA,
   onSelectToken() {
     console.log('onSelectToken')
+  },
+  onTokenListItemClick(token) {
+    console.log('onTokenListItemClick', token.symbol)
+  },
+  onClearRecentTokens() {
+    console.log('onClearRecentTokens')
   },
   onOpenManageWidget() {
     console.log('onOpenManageWidget')

@@ -31,6 +31,7 @@ import { useChainsToSelect } from '../../hooks/useChainsToSelect'
 import { useCloseTokenSelectWidget } from '../../hooks/useCloseTokenSelectWidget'
 import { useOnSelectChain } from '../../hooks/useOnSelectChain'
 import { useOnTokenListAddingError } from '../../hooks/useOnTokenListAddingError'
+import { useRecentTokens } from '../../hooks/useRecentTokens'
 import { useSelectTokenWidgetState } from '../../hooks/useSelectTokenWidgetState'
 import { useTokensToSelect } from '../../hooks/useTokensToSelect'
 import { useUpdateSelectTokenWidgetState } from '../../hooks/useUpdateSelectTokenWidgetState'
@@ -69,6 +70,7 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
     selectedPoolAddress,
     field,
     oppositeToken,
+    selectedTargetChainId,
   } = useSelectTokenWidgetState()
   const { count: lpTokensWithBalancesCount } = useLpTokensWithBalances()
   const chainsToSelect = useChainsToSelect()
@@ -82,7 +84,7 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
   )
 
   const updateSelectTokenWidget = useUpdateSelectTokenWidgetState()
-  const { account } = useWalletInfo()
+  const { account, chainId: walletChainId } = useWalletInfo()
 
   const cowAnalytics = useCowAnalytics()
   const addCustomTokenLists = useAddList((source) => {
@@ -101,6 +103,17 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
     areTokensFromBridge,
     isRouteAvailable,
   } = useTokensToSelect()
+  const { recentTokens, addRecentToken, clearRecentTokens } = useRecentTokens({
+    allTokens,
+    favoriteTokens,
+    activeChainId: selectedTargetChainId ?? walletChainId,
+  })
+  const handleTokenListItemClick = useCallback(
+    (token: TokenWithLogo) => {
+      addRecentToken(token)
+    },
+    [addRecentToken],
+  )
 
   const userAddedTokens = useUserAddedTokens()
   const allTokenLists = useAllListsList()
@@ -138,7 +151,13 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
 
   const importTokenAndClose = (tokens: TokenWithLogo[]): void => {
     importTokenCallback(tokens)
-    onSelectToken?.(tokens[0])
+    const [tokenToSelect] = tokens
+
+    if (tokenToSelect) {
+      handleTokenListItemClick(tokenToSelect)
+      onSelectToken?.(tokenToSelect)
+    }
+
     onDismiss()
   }
 
@@ -209,9 +228,11 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
             selectedToken={selectedToken}
             allTokens={allTokens}
             favoriteTokens={standalone ? EMPTY_FAV_TOKENS : favoriteTokens}
+            recentTokens={standalone ? undefined : recentTokens}
             balancesState={balancesState}
             permitCompatibleTokens={permitCompatibleTokens}
             onSelectToken={onSelectToken}
+            onTokenListItemClick={handleTokenListItemClick}
             onInputPressEnter={onInputPressEnter}
             onDismiss={onDismiss}
             onOpenManageWidget={() => setIsManageWidgetOpen(true)}
@@ -226,6 +247,8 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
             tokenListTags={tokenListTags}
             areTokensFromBridge={areTokensFromBridge}
             isRouteAvailable={isRouteAvailable}
+            onClearRecentTokens={clearRecentTokens}
+            selectedTargetChainId={selectedTargetChainId}
           />
         )
       })()}

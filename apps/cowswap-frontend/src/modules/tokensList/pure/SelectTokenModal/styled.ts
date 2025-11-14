@@ -80,3 +80,28 @@ export const RouteNotAvailable = styled.div`
   padding: 20px 0;
   text-align: center;
 `
+
+export const ListTitle = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(${UI.COLOR_TEXT_OPACITY_50});
+  padding: 12px 20px 4px;
+`
+
+export const ListTitleActionButton = styled.button`
+  ${blankButtonMixin};
+  font-size: 12px;
+  font-weight: 600;
+  color: var(${UI.COLOR_PRIMARY});
+  cursor: pointer;
+  transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
+
+  &:hover {
+    opacity: 0.75;
+  }
+`

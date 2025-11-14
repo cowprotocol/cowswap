@@ -17,7 +17,7 @@ import { SelectTokenModalContent } from './SelectTokenModalContent'
 import * as styledEl from './styled'
 
 import { LpTokenListsWidget } from '../../containers/LpTokenListsWidget'
-import { ChainsToSelectState, SelectTokenContext } from '../../types'
+import { ChainsToSelectState, SelectTokenContext, TokenSelectionHandler } from '../../types'
 import { ChainsSelector } from '../ChainsSelector'
 import { IconButton } from '../commonElements'
 import { TokensContent } from '../TokensContent'
@@ -25,6 +25,7 @@ import { TokensContent } from '../TokensContent'
 export interface SelectTokenModalProps<T = TokenListCategory[] | null> {
   allTokens: TokenWithLogo[]
   favoriteTokens: TokenWithLogo[]
+  recentTokens?: TokenWithLogo[]
   balancesState: BalancesState
   unsupportedTokens: UnsupportedTokensState
   selectedToken?: Nullish<Currency>
@@ -41,13 +42,16 @@ export interface SelectTokenModalProps<T = TokenListCategory[] | null> {
   standalone?: boolean
   areTokensFromBridge: boolean
   isRouteAvailable: boolean | undefined
+  selectedTargetChainId?: number
 
-  onSelectToken(token: TokenWithLogo): void
+  onSelectToken: TokenSelectionHandler
+  onTokenListItemClick?(token: TokenWithLogo): void
   openPoolPage(poolAddress: string): void
   onInputPressEnter?(): void
   onOpenManageWidget(): void
   onDismiss(): void
   onSelectChain(chain: ChainInfo): void
+  onClearRecentTokens?(): void
 }
 
 function useSelectTokenContext(props: SelectTokenModalProps): SelectTokenContext {
@@ -57,6 +61,7 @@ function useSelectTokenContext(props: SelectTokenModalProps): SelectTokenContext
     unsupportedTokens,
     permitCompatibleTokens,
     onSelectToken,
+    onTokenListItemClick,
     account,
     tokenListTags,
   } = props
@@ -66,12 +71,22 @@ function useSelectTokenContext(props: SelectTokenModalProps): SelectTokenContext
       balancesState,
       selectedToken,
       onSelectToken,
+      onTokenListItemClick,
       unsupportedTokens,
       permitCompatibleTokens,
       tokenListTags,
       isWalletConnected: !!account,
     }),
-    [balancesState, selectedToken, onSelectToken, unsupportedTokens, permitCompatibleTokens, tokenListTags, account],
+    [
+      balancesState,
+      selectedToken,
+      onSelectToken,
+      onTokenListItemClick,
+      unsupportedTokens,
+      permitCompatibleTokens,
+      tokenListTags,
+      account,
+    ],
   )
 }
 
