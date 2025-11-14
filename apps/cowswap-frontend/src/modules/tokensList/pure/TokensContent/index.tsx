@@ -1,17 +1,14 @@
-import React, { ReactNode } from 'react'
+import React, { ReactNode, useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { getCurrencyAddress } from '@cowprotocol/common-utils'
-import { Nullish } from '@cowprotocol/types'
 import { Loader } from '@cowprotocol/ui'
-import { Currency } from '@uniswap/sdk-core'
 
 import { Trans } from '@lingui/react/macro'
 import { Edit } from 'react-feather'
 
 import { TokenSearchResults } from '../../containers/TokenSearchResults'
 import { SelectTokenContext } from '../../types'
-import { FavoriteTokensList } from '../FavoriteTokensList'
+import { getTokenUniqueKey } from '../../utils/tokenKey'
 import * as styledEl from '../SelectTokenModal/styled'
 import { TokensVirtualList } from '../TokensVirtualList'
 
@@ -19,24 +16,22 @@ export interface TokensContentProps {
   displayLpTokenLists?: boolean
   selectTokenContext: SelectTokenContext
   favoriteTokens: TokenWithLogo[]
-  selectedToken?: Nullish<Currency>
+  recentTokens?: TokenWithLogo[]
   hideFavoriteTokensTooltip?: boolean
   areTokensLoading: boolean
   allTokens: TokenWithLogo[]
   searchInput: string
   standalone?: boolean
   areTokensFromBridge: boolean
-
-  onSelectToken(token: TokenWithLogo): void
+  selectedTargetChainId?: number
   onOpenManageWidget(): void
+  onClearRecentTokens?: () => void
 }
 
 export function TokensContent({
   selectTokenContext,
-  onSelectToken,
-  onOpenManageWidget,
-  selectedToken,
   favoriteTokens,
+  recentTokens,
   hideFavoriteTokensTooltip,
   areTokensLoading,
   allTokens,
@@ -44,44 +39,60 @@ export function TokensContent({
   searchInput,
   standalone,
   areTokensFromBridge,
+  selectedTargetChainId,
+  onOpenManageWidget,
+  onClearRecentTokens,
 }: TokensContentProps): ReactNode {
+  const shouldShowFavoritesInline = !areTokensLoading && !searchInput && favoriteTokens.length > 0
+  const shouldShowRecentsInline = !areTokensLoading && !searchInput && (recentTokens?.length ?? 0) > 0
+
+  const pinnedTokenKeys = useMemo(() => {
+    if (!shouldShowFavoritesInline && !shouldShowRecentsInline) {
+      return undefined
+    }
+
+    const pinned = new Set<string>()
+
+    if (shouldShowFavoritesInline) {
+      favoriteTokens.forEach((token) => pinned.add(getTokenUniqueKey(token)))
+    }
+
+    if (shouldShowRecentsInline && recentTokens) {
+      recentTokens.forEach((token) => pinned.add(getTokenUniqueKey(token)))
+    }
+
+    return pinned
+  }, [favoriteTokens, recentTokens, shouldShowFavoritesInline, shouldShowRecentsInline])
+
+  const tokensWithoutPinned = useMemo(() => {
+    if (!pinnedTokenKeys) {
+      return allTokens
+    }
+
+    return allTokens.filter((token) => !pinnedTokenKeys.has(getTokenUniqueKey(token)))
+  }, [allTokens, pinnedTokenKeys])
+
+  const favoriteTokensInline = shouldShowFavoritesInline ? favoriteTokens : undefined
+  const recentTokensInline = shouldShowRecentsInline ? recentTokens : undefined
+
+  const tokensView = renderTokensView({
+    areTokensLoading,
+    searchInput,
+    selectTokenContext,
+    areTokensFromBridge,
+    allTokens,
+    tokensWithoutPinned,
+    displayLpTokenLists,
+    favoriteTokens: favoriteTokensInline,
+    recentTokens: recentTokensInline,
+    hideFavoriteTokensTooltip,
+    selectedTargetChainId,
+    onClearRecentTokens,
+  })
+
   return (
     <>
-      {!areTokensLoading && !!favoriteTokens.length && (
-        <>
-          <styledEl.Row>
-            <FavoriteTokensList
-              onSelectToken={onSelectToken}
-              selectedToken={(selectedToken && getCurrencyAddress(selectedToken)) || undefined}
-              tokens={favoriteTokens}
-              hideTooltip={hideFavoriteTokensTooltip}
-            />
-          </styledEl.Row>
-          <styledEl.Separator />
-        </>
-      )}
-      {areTokensLoading ? (
-        <styledEl.TokensLoader>
-          <Loader />
-        </styledEl.TokensLoader>
-      ) : (
-        <>
-          {searchInput ? (
-            <TokenSearchResults
-              searchInput={searchInput}
-              selectTokenContext={selectTokenContext}
-              areTokensFromBridge={areTokensFromBridge}
-              allTokens={allTokens}
-            />
-          ) : (
-            <TokensVirtualList
-              selectTokenContext={selectTokenContext}
-              allTokens={allTokens}
-              displayLpTokenLists={displayLpTokenLists}
-            />
-          )}
-        </>
-      )}
+      {tokensView}
       {!standalone && (
         <>
           <styledEl.Separator />
@@ -96,5 +107,67 @@ export function TokensContent({
         </>
       )}
     </>
+  )
+}
+
+interface TokensViewProps {
+  areTokensLoading: boolean
+  searchInput: string
+  selectTokenContext: SelectTokenContext
+  areTokensFromBridge: boolean
+  allTokens: TokenWithLogo[]
+  tokensWithoutPinned: TokenWithLogo[]
+  displayLpTokenLists?: boolean
+  favoriteTokens?: TokenWithLogo[]
+  recentTokens?: TokenWithLogo[]
+  hideFavoriteTokensTooltip?: boolean
+  selectedTargetChainId?: number
+  onClearRecentTokens?: () => void
+}
+
+function renderTokensView({
+  areTokensLoading,
+  searchInput,
+  selectTokenContext,
+  areTokensFromBridge,
+  allTokens,
+  tokensWithoutPinned,
+  displayLpTokenLists,
+  favoriteTokens,
+  recentTokens,
+  hideFavoriteTokensTooltip,
+  selectedTargetChainId,
+  onClearRecentTokens,
+}: TokensViewProps): ReactNode {
+  if (areTokensLoading) {
+    return (
+      <styledEl.TokensLoader>
+        <Loader />
+      </styledEl.TokensLoader>
+    )
+  }
+
+  if (searchInput) {
+    return (
+      <TokenSearchResults
+        searchInput={searchInput}
+        selectTokenContext={selectTokenContext}
+        areTokensFromBridge={areTokensFromBridge}
+        allTokens={allTokens}
+      />
+    )
+  }
+
+  return (
+    <TokensVirtualList
+      selectTokenContext={selectTokenContext}
+      allTokens={tokensWithoutPinned}
+      displayLpTokenLists={displayLpTokenLists}
+      favoriteTokens={favoriteTokens}
+      recentTokens={recentTokens}
+      hideFavoriteTokensTooltip={hideFavoriteTokensTooltip}
+      scrollResetKey={selectedTargetChainId}
+      onClearRecentTokens={onClearRecentTokens}
+    />
   )
 }
