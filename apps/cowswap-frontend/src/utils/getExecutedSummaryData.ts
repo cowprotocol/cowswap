@@ -1,4 +1,4 @@
-import { areAddressesEqual, isSellOrder } from '@cowprotocol/common-utils'
+import { areAddressesEqual, FractionUtils, isSellOrder } from '@cowprotocol/common-utils'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { BigNumber } from 'bignumber.js'
@@ -66,18 +66,16 @@ export function getExecutedSummaryDataWithSurplusToken(
   const { surplusAmount: amount, surplusPercentage: percentage } = parsedOrder.executionData
 
   // Guard against missing surplus by falling back to '0' raw amount
-  const rawSurplus = amount
-    ? amount.decimalPlaces(0, BigNumber.ROUND_DOWN).toFixed(0)
-    : '0'
+  const rawSurplus = amount ? amount.decimalPlaces(0, BigNumber.ROUND_DOWN).toFixed(0) : '0'
   const surplusPercent = percentage?.multipliedBy(100)?.toFixed(2)
 
-  const { effectiveOutputToken, surplusDisplayToken } = resolveDisplayTokens({
+  const { effectiveOutputToken, surplusDisplayToken, surplusAmount } = resolveDisplayTokens({
     parsedOrder,
     parsedInputToken,
     parsedOutputToken,
     surplusToken,
+    rawSurplus,
   })
-  const surplusAmount = CurrencyAmount.fromRawAmount(surplusDisplayToken, rawSurplus)
 
   const { formattedFilledAmount, formattedSwappedAmount, swappedAmountWithFee } = getFilledAmounts({
     ...parsedOrder,
@@ -100,6 +98,13 @@ interface ResolveDisplayTokensParams {
   parsedInputToken: Token
   parsedOutputToken: Token
   surplusToken: Token
+  rawSurplus: string
+}
+
+interface DisplayTokenDetails {
+  effectiveOutputToken: Token
+  surplusDisplayToken: Token
+  surplusAmount: CurrencyAmount<Token>
 }
 
 function resolveDisplayTokens({
@@ -107,7 +112,8 @@ function resolveDisplayTokens({
   parsedInputToken,
   parsedOutputToken,
   surplusToken,
-}: ResolveDisplayTokensParams): { effectiveOutputToken: Token; surplusDisplayToken: Token } {
+  rawSurplus,
+}: ResolveDisplayTokensParams): DisplayTokenDetails {
   const isSell = isSellOrder(parsedOrder.kind)
   const defaultSurplusToken = isSell ? parsedOutputToken : parsedInputToken
 
@@ -115,6 +121,7 @@ function resolveDisplayTokens({
     return {
       effectiveOutputToken: parsedOutputToken,
       surplusDisplayToken: defaultSurplusToken,
+      surplusAmount: CurrencyAmount.fromRawAmount(defaultSurplusToken, rawSurplus),
     }
   }
 
@@ -130,11 +137,17 @@ function resolveDisplayTokens({
     return {
       effectiveOutputToken: surplusToken,
       surplusDisplayToken: surplusToken,
+      surplusAmount: CurrencyAmount.fromRawAmount(surplusToken, rawSurplus),
     }
   }
 
   return {
     effectiveOutputToken: parsedOutputToken,
     surplusDisplayToken: defaultSurplusToken,
+    surplusAmount: FractionUtils.adjustDecimalsAtoms(
+      CurrencyAmount.fromRawAmount(defaultSurplusToken, rawSurplus),
+      surplusToken.decimals,
+      defaultSurplusToken.decimals,
+    ),
   }
 }

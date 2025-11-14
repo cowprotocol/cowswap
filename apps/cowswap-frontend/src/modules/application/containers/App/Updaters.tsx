@@ -8,7 +8,7 @@ import { HwAccountIndexUpdater, useWalletInfo, WalletUpdater } from '@cowprotoco
 import { CowSdkUpdater } from 'cowSdk'
 import { useBalancesContext } from 'entities/balancesContext/useBalancesContext'
 import { BridgeOrdersCleanUpdater } from 'entities/bridgeOrders'
-import { useBridgeSupportedNetworks } from 'entities/bridgeProvider'
+import { BridgeProvidersUpdater, useBridgeSupportedNetworks } from 'entities/bridgeProvider'
 import { ThemeConfigUpdater } from 'theme/ThemeConfigUpdater'
 import { TradingSdkUpdater } from 'tradingSdk/TradingSdkUpdater'
 
@@ -68,6 +68,8 @@ export function Updaters(): ReactNode {
   return (
     <>
       <CowSdkUpdater />
+      <FeatureFlagsUpdater />
+      <BridgeProvidersUpdater />
       <ThemeConfigUpdater />
       <ThemeFromUrlUpdater />
       <ConnectionStatusUpdater />
@@ -75,7 +77,6 @@ export function Updaters(): ReactNode {
       {/*Set custom chainId only when it differs from the wallet chainId*/}
       {/*MultiCallUpdater will use wallet network by default if custom chainId is not provided*/}
       <MultiCallUpdater chainId={sourceChainSource === 'wallet' ? undefined : sourceChainId} />
-      <FeatureFlagsUpdater />
       <WalletUpdater standaloneMode={standaloneMode} />
       <HwAccountIndexUpdater />
       <UserUpdater />

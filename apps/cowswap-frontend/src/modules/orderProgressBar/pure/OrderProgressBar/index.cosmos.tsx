@@ -42,6 +42,7 @@ const swapAndBridgeContextMock: SwapAndBridgeContext = {
     name: 'Across',
     dappId: 'cow-sdk://bridging/providers/across',
     website: 'https://across.to',
+    type: 'HookBridgeProvider',
   },
   overview: {
     sourceChainName: 'Ethereum',

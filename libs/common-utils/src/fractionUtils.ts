@@ -125,17 +125,17 @@ export class FractionUtils {
    * For example, a fraction like 1.1/1 representing the price of USDC, DAI in units, will be turned into
    * 1.1/1000000000000 in atoms
    */
-  static adjustDecimalsAtoms(
-    value: CurrencyAmount<Currency>,
+  static adjustDecimalsAtoms<R extends Currency>(
+    value: CurrencyAmount<R>,
     decimalsA: number,
     decimalsB: number,
-  ): CurrencyAmount<Currency>
-  static adjustDecimalsAtoms(value: Fraction, decimalsA: number, decimalsB: number): Fraction
-  static adjustDecimalsAtoms(
-    value: Fraction | CurrencyAmount<Currency>,
+  ): typeof value
+  static adjustDecimalsAtoms(value: Fraction, decimalsA: number, decimalsB: number): typeof value
+  static adjustDecimalsAtoms<R extends Currency>(
+    value: Fraction | CurrencyAmount<R>,
     decimalsA: number,
     decimalsB: number,
-  ): Fraction | CurrencyAmount<Currency> {
+  ): typeof value {
     if (decimalsA === decimalsB) {
       return value
     }

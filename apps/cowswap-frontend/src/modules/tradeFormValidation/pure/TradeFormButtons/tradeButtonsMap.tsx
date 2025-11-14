@@ -3,7 +3,7 @@ import { ReactElement, ReactNode } from 'react'
 import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
 import { getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
 import { BridgeProviderQuoteError, BridgeQuoteErrors } from '@cowprotocol/sdk-bridging'
-import { CenteredDots, HelpTooltip, TokenSymbol } from '@cowprotocol/ui'
+import { CenteredDots, HelpTooltip, InfoTooltip, TokenSymbol } from '@cowprotocol/ui'
 
 import { i18n } from '@lingui/core'
 import { t } from '@lingui/core/macro'
@@ -26,6 +26,38 @@ interface ButtonErrorConfig {
 
 interface ButtonCallback {
   (context: TradeFormButtonContext, isDisabled?: boolean): ReactElement | null
+}
+
+function getDefaultQuoteError(): string {
+  return t`Error loading price. Try again later.`
+}
+
+function getQuoteErrorTexts(): Record<QuoteApiErrorCodes, string> {
+  return {
+    [QuoteApiErrorCodes.UNHANDLED_ERROR]: getDefaultQuoteError(),
+    [QuoteApiErrorCodes.TransferEthToContract]: t`Buying native currency with smart contract wallets is not currently supported`,
+    [QuoteApiErrorCodes.UnsupportedToken]: t`Unsupported token`,
+    [QuoteApiErrorCodes.InsufficientLiquidity]: t`Insufficient liquidity for this trade.`,
+    [QuoteApiErrorCodes.FeeExceedsFrom]: t`Sell amount is too small`,
+    [QuoteApiErrorCodes.ZeroPrice]: t`Invalid price. Try increasing input/output amount.`,
+    [QuoteApiErrorCodes.SameBuyAndSellToken]: t`Tokens must be different`,
+  }
+}
+
+function getBridgeQuoteErrorTexts(): Record<BridgeQuoteErrors, string> {
+  const DEFAULT_QUOTE_ERROR = getDefaultQuoteError()
+
+  return {
+    [BridgeQuoteErrors.API_ERROR]: DEFAULT_QUOTE_ERROR,
+    [BridgeQuoteErrors.INVALID_BRIDGE]: DEFAULT_QUOTE_ERROR,
+    [BridgeQuoteErrors.TX_BUILD_ERROR]: DEFAULT_QUOTE_ERROR,
+    [BridgeQuoteErrors.QUOTE_ERROR]: DEFAULT_QUOTE_ERROR,
+    [BridgeQuoteErrors.INVALID_API_JSON_RESPONSE]: DEFAULT_QUOTE_ERROR,
+    [BridgeQuoteErrors.NO_INTERMEDIATE_TOKENS]: t`No routes found`,
+    [BridgeQuoteErrors.NO_ROUTES]: t`No routes found`,
+    [BridgeQuoteErrors.ONLY_SELL_ORDER_SUPPORTED]: t`Only "sell" orders are supported`,
+    [BridgeQuoteErrors.QUOTE_DOES_NOT_MATCH_DEPOSIT_ADDRESS]: t`Bridging deposit address is not verified! Please contact CoW Swap support!`,
+  }
 }
 
 const CompatibilityIssuesWarningWrapper = styled.div`
@@ -120,30 +152,13 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   [TradeFormValidation.QuoteErrors]: (context) => {
     const DEFAULT_QUOTE_ERROR = t`Error loading price. Try again later.`
 
-    const quoteErrorTexts: Record<QuoteApiErrorCodes, string> = {
-      [QuoteApiErrorCodes.UNHANDLED_ERROR]: DEFAULT_QUOTE_ERROR,
-      [QuoteApiErrorCodes.TransferEthToContract]: t`Buying native currency with smart contract wallets is not currently supported`,
-      [QuoteApiErrorCodes.UnsupportedToken]: t`Unsupported token`,
-      [QuoteApiErrorCodes.InsufficientLiquidity]: t`Insufficient liquidity for this trade.`,
-      [QuoteApiErrorCodes.FeeExceedsFrom]: t`Sell amount is too small`,
-      [QuoteApiErrorCodes.ZeroPrice]: t`Invalid price. Try increasing input/output amount.`,
-      [QuoteApiErrorCodes.SameBuyAndSellToken]: t`Tokens must be different`,
-    }
+    const quoteErrorTexts = getQuoteErrorTexts()
 
     const quoteErrorTextsForBridges: Partial<Record<QuoteApiErrorCodes, string>> = {
       [QuoteApiErrorCodes.SameBuyAndSellToken]: t`Not yet supported`,
     }
 
-    const bridgeQuoteErrorTexts: Record<BridgeQuoteErrors, string> = {
-      [BridgeQuoteErrors.API_ERROR]: DEFAULT_QUOTE_ERROR,
-      [BridgeQuoteErrors.INVALID_BRIDGE]: DEFAULT_QUOTE_ERROR,
-      [BridgeQuoteErrors.TX_BUILD_ERROR]: DEFAULT_QUOTE_ERROR,
-      [BridgeQuoteErrors.QUOTE_ERROR]: DEFAULT_QUOTE_ERROR,
-      [BridgeQuoteErrors.INVALID_API_JSON_RESPONSE]: DEFAULT_QUOTE_ERROR,
-      [BridgeQuoteErrors.NO_INTERMEDIATE_TOKENS]: t`No routes found`,
-      [BridgeQuoteErrors.NO_ROUTES]: t`No routes found`,
-      [BridgeQuoteErrors.ONLY_SELL_ORDER_SUPPORTED]: t`Only "sell" orders are supported`,
-    }
+    const bridgeQuoteErrorTexts = getBridgeQuoteErrorTexts()
 
     const errorTooltipContentForBridges: Partial<Record<QuoteApiErrorCodes, string>> = {
       [QuoteApiErrorCodes.SameBuyAndSellToken]: t`Bridging without swapping is not yet supported. Let us know if you want this feature!`,
@@ -159,8 +174,28 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
       }
 
       const isBridge = quote.isBridgeQuote
-      const errorText =
-        (isBridge && quoteErrorTextsForBridges[errorType]) || quoteErrorTexts[errorType] || DEFAULT_QUOTE_ERROR
+      const errorText = (() => {
+        const quoteErrorText = quoteErrorTexts[errorType]
+        const bridgeQuoteErrorText = quoteErrorTextsForBridges[errorType]
+
+        if (isBridge && bridgeQuoteErrorText) {
+          // Do not display "Not yet supported" when sell and intermediate tokens are the same
+          // Because user doesn't see intermediate token
+          if (errorType === QuoteApiErrorCodes.SameBuyAndSellToken) {
+            const areSwapAssetsDifferent =
+              context.derivedState.inputCurrency?.symbol?.toLowerCase() !==
+              context.derivedState.outputCurrency?.symbol?.toLowerCase()
+
+            if (areSwapAssetsDifferent) {
+              return bridgeQuoteErrorTexts[BridgeQuoteErrors.NO_ROUTES]
+            }
+          }
+
+          return bridgeQuoteErrorText
+        }
+
+        return quoteErrorText || DEFAULT_QUOTE_ERROR
+      })()
 
       const errorTooltipText = isBridge && errorTooltipContentForBridges[errorType]
 
@@ -180,7 +215,12 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
 
       return (
         <TradeFormBlankButton disabled={true}>
-          <>{errorText}</>
+          <>
+            {errorText}
+            {errorMessage === BridgeQuoteErrors.NO_INTERMEDIATE_TOKENS && (
+              <InfoTooltip content={t`No intermediate tokens found for the route`} />
+            )}
+          </>
         </TradeFormBlankButton>
       )
     }
@@ -271,9 +311,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
         onApproveConfirm={context.confirmTrade}
         minAmountToSignForSwap={context.minAmountToSignForSwap}
       >
-        <TradeFormBlankButton disabled={!enablePartialApprove}>
-          {defaultText}
-        </TradeFormBlankButton>
+        <TradeFormBlankButton disabled={!enablePartialApprove}>{defaultText}</TradeFormBlankButton>
       </TradeApproveButton>
     )
   },

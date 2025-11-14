@@ -8,6 +8,10 @@ export function getOrderBridgeProviderId(order: EnrichedOrder): string | undefin
   try {
     const appData = JSON.parse(order.fullAppData) as cowAppDataLatestScheme.AppDataRootSchema
 
+    const bridgeProviderId = appData.metadata.bridging?.providerId
+
+    if (bridgeProviderId) return bridgeProviderId
+
     const postHooks = appData.metadata.hooks?.post || []
     const bridgeHooks = postHooks.filter((hook) => hook.dappId?.startsWith(HOOK_DAPP_BRIDGE_PROVIDER_PREFIX))
 

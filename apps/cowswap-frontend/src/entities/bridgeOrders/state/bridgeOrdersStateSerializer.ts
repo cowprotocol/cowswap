@@ -38,6 +38,12 @@ export function serializeQuoteAmounts(amounts: BridgeQuoteAmounts): BridgeQuoteA
     swapMinReceiveAmount: serializeAmount(amounts.swapMinReceiveAmount),
     bridgeMinReceiveAmount: serializeAmount(amounts.bridgeMinReceiveAmount),
     bridgeFee: serializeAmount(amounts.bridgeFee),
+    bridgeFeeAmounts: amounts.bridgeFeeAmounts
+      ? {
+          amountInDestinationCurrency: serializeAmount(amounts.bridgeFeeAmounts.amountInDestinationCurrency),
+          amountInIntermediateCurrency: serializeAmount(amounts.bridgeFeeAmounts.amountInIntermediateCurrency),
+        }
+      : undefined,
   }
 }
 
@@ -48,6 +54,12 @@ export function deserializeQuoteAmounts(amounts: BridgeQuoteAmounts<SerializedAm
     swapMinReceiveAmount: deserializeAmount(amounts.swapMinReceiveAmount),
     bridgeMinReceiveAmount: deserializeAmount(amounts.bridgeMinReceiveAmount),
     bridgeFee: deserializeAmount(amounts.bridgeFee),
+    bridgeFeeAmounts: amounts.bridgeFeeAmounts
+      ? {
+          amountInDestinationCurrency: deserializeAmount(amounts.bridgeFeeAmounts.amountInDestinationCurrency),
+          amountInIntermediateCurrency: deserializeAmount(amounts.bridgeFeeAmounts.amountInIntermediateCurrency),
+        }
+      : undefined,
   }
 }
 
