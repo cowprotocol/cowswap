@@ -1,6 +1,6 @@
 import { JSX, useEffect } from 'react'
 
-import { useSelectTokenWidgetState } from 'modules/tokensList'
+import { SelectTokenWidget, useChainsToSelect, useSelectTokenWidgetState } from 'modules/tokensList'
 import { useSetShouldUseAutoSlippage } from 'modules/tradeSlippage'
 
 import * as styledEl from './styled'
@@ -17,8 +17,13 @@ export function TradeWidget(props: TradeWidgetProps): JSX.Element {
     disableSuggestedSlippageApi = false,
     enableSmartSlippage,
   } = params
-  const modals = TradeWidgetModals({ confirmModal, genericModal, selectTokenWidget: slots.selectTokenWidget })
+  const modals = TradeWidgetModals({ confirmModal, genericModal })
   const { open: isTokenSelectOpen } = useSelectTokenWidgetState()
+  const chainsToSelect = useChainsToSelect()
+  const isTokenSelectWide =
+    isTokenSelectOpen && !!chainsToSelect && (chainsToSelect.isLoading || (chainsToSelect.chains?.length ?? 0) > 0)
+
+  const selectTokenWidgetNode = slots.selectTokenWidget ?? <SelectTokenWidget />
 
   const setShouldUseAutoSlippage = useSetShouldUseAutoSlippage()
 
@@ -27,17 +32,21 @@ export function TradeWidget(props: TradeWidgetProps): JSX.Element {
   }, [enableSmartSlippage, setShouldUseAutoSlippage])
 
   return (
-    <styledEl.Container id={id} isTokenSelectOpen={isTokenSelectOpen}>
-      <TradeWidgetUpdaters
-        disableQuotePolling={disableQuotePolling}
-        disableNativeSelling={disableNativeSelling}
-        disableSuggestedSlippageApi={disableSuggestedSlippageApi}
-        onChangeRecipient={props.actions.onChangeRecipient}
-      >
-        {slots.updaters}
-      </TradeWidgetUpdaters>
+    <>
+      <styledEl.Container id={id} isTokenSelectOpen={isTokenSelectOpen} isTokenSelectWide={isTokenSelectWide}>
+        <TradeWidgetUpdaters
+          disableQuotePolling={disableQuotePolling}
+          disableNativeSelling={disableNativeSelling}
+          disableSuggestedSlippageApi={disableSuggestedSlippageApi}
+          onChangeRecipient={props.actions.onChangeRecipient}
+        >
+          {slots.updaters}
+        </TradeWidgetUpdaters>
 
-      {modals || <TradeWidgetForm {...props} />}
-    </styledEl.Container>
+        {modals || <TradeWidgetForm {...props} />}
+      </styledEl.Container>
+
+      {selectTokenWidgetNode}
+    </>
   )
 }
