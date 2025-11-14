@@ -11,7 +11,7 @@ import { ProtocolFeeRow } from '../../pure/ProtocolFeeRow'
 import { ReviewOrderModalAmountRow } from '../../pure/ReviewOrderModalAmountRow'
 import { TotalFeeRow } from '../../pure/TotalFeeRow'
 import { ReceiveAmountInfo } from '../../types'
-import { getOrderTypeReceiveAmounts } from '../../utils/getReceiveAmountInfo'
+import { getOrderTypeReceiveAmounts, getTotalCosts } from '../../utils/getReceiveAmountInfo'
 import * as styledEl from '../TradeBasicConfirmDetails/styled'
 
 interface TradeFeesAndCostsProps {
@@ -43,20 +43,7 @@ export function TradeFeesAndCosts(props: TradeFeesAndCostsProps): ReactNode {
   const hasAnyFee = hasPartnerFee || hasProtocolFee
   const hasBothFees = hasPartnerFee && hasProtocolFee
 
-  // todo move it to helper and fix calculation
-  const totalFeeAmount = receiveAmountInfo
-    ? (() => {
-        const partnerFee = receiveAmountInfo.costs.partnerFee.amount
-        const protocolFee = receiveAmountInfo.costs.protocolFee?.amount
-        if (protocolFee) {
-          partnerFee.add(protocolFee)
-        }
-        if (networkFeeAmount) {
-          partnerFee.add(networkFeeAmount)
-        }
-        return partnerFee
-      })()
-    : null
+  const totalFeeAmount = receiveAmountInfo ? getTotalCosts(receiveAmountInfo) : null
   const totalFeeUsd = useUsdAmount(totalFeeAmount).value
 
   const volumeFeeTooltip = useVolumeFeeTooltip(false)
