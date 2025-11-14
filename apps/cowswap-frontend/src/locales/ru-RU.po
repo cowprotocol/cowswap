@@ -6,17 +6,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: @lingui/cli\n"
 "Language: ru\n"
-"Project-Id-Version: intercambiovaca\n"
+"Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-11-07 18:59\n"
+"PO-Revision-Date: 2025-11-14 10:55\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
-"X-Crowdin-Project: intercambiovaca\n"
-"X-Crowdin-Project-ID: 842798\n"
+"X-Crowdin-Project: cow-swap\n"
+"X-Crowdin-Project-ID: 846238\n"
 "X-Crowdin-Language: ru\n"
-"X-Crowdin-File: /feat.internationalization-setup-for-swap-cow-fi/apps/cowswap-frontend/src/locales/en-US.po\n"
-"X-Crowdin-File-ID: 11\n"
+"X-Crowdin-File: /develop/apps/cowswap-frontend/src/locales/en-US.po\n"
+"X-Crowdin-File-ID: 12\n"
 
 #: apps/cowswap-frontend/src/common/pure/CurrencySelectButton/index.tsx
 #~ msgid "Selected token: "
@@ -899,7 +899,7 @@ msgstr "Возможно, у вас есть другие вещи, но не Ai
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/LpTokenPage/index.tsx
 msgid "APR"
-msgstr "APR"
+msgstr ""
 
 #: apps/cowswap-frontend/src/common/pure/NetworksList/index.tsx
 msgid "CoW Protocol Explorer"
@@ -1257,7 +1257,7 @@ msgstr "Обратитесь в службу поддержки CoW Swap!"
 #: apps/cowswap-frontend/src/common/containers/CoWAmmBanner/index.tsx
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
 msgid "CoW AMM"
-msgstr "CoW AMM"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/BigPartTimeWarning.tsx
 msgid "Too much time between parts"
@@ -1312,7 +1312,7 @@ msgstr "Подробнее в этом"
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 msgid "Bungee"
-msgstr "Bungee"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/FilledField.tsx
 msgid "of"
@@ -1630,7 +1630,7 @@ msgstr "принят"
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/LpTokenPage/index.tsx
 msgid "TVL"
-msgstr "TVL"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/pure/Toggle/Toggle.tsx
 msgid "Unlimited one-time"
@@ -2454,7 +2454,7 @@ msgstr "Ликвидность пулов на CoW AMM растет быстре
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/OrderTypeField.tsx
 #: libs/common-const/src/common.ts
 msgid "TWAP"
-msgstr "TWAP"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/BridgingProgressContent/RefundedBridgingContent/index.tsx
 msgid "Refunded to"
