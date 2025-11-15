@@ -604,7 +604,12 @@ const COW_TOKEN_SYMBOL = 'COW'
 const COW_TOKEN_NAME = 'CoW Protocol Token'
 const COW_TOKEN_DECIMALS = 18
 
-function getCowTokenForChain(chain: SupportedChainId, logoURI?: string): TokenWithLogo | null {
+const DEFAULT_LOGO_URI = cowprotocolTokenLogoUrl(
+  COW_CONTRACT_ADDRESS[SupportedChainId.MAINNET]!.toLowerCase(),
+  SupportedChainId.MAINNET,
+)
+
+function getCowTokenForChain(chain: SupportedChainId, logoURI: string = DEFAULT_LOGO_URI): TokenWithLogo | null {
   const address = COW_CONTRACT_ADDRESS[chain]
 
   if (!address) return null
