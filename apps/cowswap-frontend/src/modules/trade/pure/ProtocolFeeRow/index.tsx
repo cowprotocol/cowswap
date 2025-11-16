@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { bpsToPercent, formatPercent, FractionUtils } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -13,14 +15,12 @@ interface ProtocolFeeRowProps {
   withTimelineDot: boolean
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function ProtocolFeeRow({
   protocolFeeAmount,
   protocolFeeUsd,
   protocolFeeBps,
   withTimelineDot,
-}: ProtocolFeeRowProps) {
+}: ProtocolFeeRowProps): ReactNode {
   const protocolFeeAsPercent = protocolFeeBps ? formatPercent(bpsToPercent(protocolFeeBps)) : null
   const minProtocolFeeAmount = FractionUtils.amountToAtLeastOneWei(protocolFeeAmount)
   const { t } = useLingui()
@@ -46,4 +46,3 @@ export function ProtocolFeeRow({
     />
   )
 }
-
