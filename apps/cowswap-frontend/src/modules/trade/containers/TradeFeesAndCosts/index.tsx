@@ -3,11 +3,8 @@ import { ReactNode } from 'react'
 import { useUsdAmount } from 'modules/usdAmount'
 import { useVolumeFeeTooltip } from 'modules/volumeFee'
 
-import { FreeFeeRow } from '../../pure/FreeFeeRow'
 import { NetworkCostsRow } from '../../pure/NetworkCostsRow'
-import { PartnerFeeRow } from '../../pure/PartnerFeeRow'
-import { ProtocolFeeRow } from '../../pure/ProtocolFeeRow'
-import { TotalFeeRow } from '../../pure/TotalFeeRow'
+import { TradeFees } from '../../pure/TradeFees'
 import { ReceiveAmountInfo } from '../../types'
 import { getOrderTypeReceiveAmounts, getTotalCosts } from '../../utils/getReceiveAmountInfo'
 
@@ -18,7 +15,6 @@ interface TradeFeesAndCostsProps {
   withTimelineDot?: boolean
 }
 
-// eslint-disable-next-line complexity
 export function TradeFeesAndCosts(props: TradeFeesAndCostsProps): ReactNode {
   const { receiveAmountInfo, networkCostsSuffix, networkCostsTooltipSuffix, withTimelineDot = true } = props
 
@@ -34,54 +30,24 @@ export function TradeFeesAndCosts(props: TradeFeesAndCostsProps): ReactNode {
   const protocolFeeUsd = useUsdAmount(protocolFeeAmount).value
   const networkFeeAmountUsd = useUsdAmount(networkFeeAmount).value
 
-  const hasPartnerFee = !!partnerFeeAmount && !!partnerFeeBps && !partnerFeeAmount.equalTo(0)
-  const hasProtocolFee = !!protocolFeeAmount && !!protocolFeeBps && !protocolFeeAmount.equalTo(0)
-  const hasAnyFee = hasPartnerFee || hasProtocolFee
-  const hasBothFees = hasPartnerFee && hasProtocolFee
-
   const totalFeeAmount = receiveAmountInfo ? getTotalCosts(receiveAmountInfo) : null
   const totalFeeUsd = useUsdAmount(totalFeeAmount).value
 
   const volumeFeeTooltip = useVolumeFeeTooltip(false)
 
-  const partnerFeeRow = (
-    <PartnerFeeRow
-      withTimelineDot={withTimelineDot}
-      partnerFeeUsd={partnerFeeUsd}
-      partnerFeeAmount={partnerFeeAmount}
-      partnerFeeBps={partnerFeeBps}
-      volumeFeeTooltip={volumeFeeTooltip}
-    />
-  )
-
-  const protocolFeeRow = (
-    <ProtocolFeeRow
-      withTimelineDot={withTimelineDot}
-      protocolFeeUsd={protocolFeeUsd}
-      protocolFeeAmount={protocolFeeAmount}
-      protocolFeeBps={protocolFeeBps}
-    />
-  )
-
   return (
     <>
-      {/*If both fees exist: show Total fee first, then individual fees below*/}
-      {hasBothFees && (
-        <>
-          <TotalFeeRow totalFeeUsd={totalFeeUsd} />
-          {partnerFeeRow}
-          {protocolFeeRow}
-        </>
-      )}
-
-      {/*If only protocol fee: show protocol fee row*/}
-      {!hasBothFees && hasProtocolFee && protocolFeeRow}
-
-      {/*If only partner fee: show as Total fee (like before)*/}
-      {!hasBothFees && hasPartnerFee && partnerFeeRow}
-
-      {/*FREE - only if no fees at all*/}
-      {!hasAnyFee && <FreeFeeRow withTimelineDot={withTimelineDot} />}
+      <TradeFees
+        partnerFeeAmount={partnerFeeAmount}
+        partnerFeeUsd={partnerFeeUsd}
+        partnerFeeBps={partnerFeeBps}
+        protocolFeeAmount={protocolFeeAmount}
+        protocolFeeUsd={protocolFeeUsd}
+        protocolFeeBps={protocolFeeBps}
+        totalFeeUsd={totalFeeUsd}
+        volumeFeeTooltip={volumeFeeTooltip}
+        withTimelineDot={withTimelineDot}
+      />
 
       {/*Network cost*/}
       {networkFeeAmount?.greaterThan(0) && (

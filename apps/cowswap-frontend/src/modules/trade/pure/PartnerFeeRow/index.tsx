@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { bpsToPercent, formatPercent, FractionUtils } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
@@ -17,15 +19,13 @@ interface PartnerFeeRowProps {
   volumeFeeTooltip: VolumeFeeTooltip
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function PartnerFeeRow({
   partnerFeeAmount,
   partnerFeeUsd,
   partnerFeeBps,
   withTimelineDot,
   volumeFeeTooltip,
-}: PartnerFeeRowProps) {
+}: PartnerFeeRowProps): ReactNode {
   const feeAsPercent = partnerFeeBps ? formatPercent(bpsToPercent(partnerFeeBps)) : null
   const minPartnerFeeAmount = FractionUtils.amountToAtLeastOneWei(partnerFeeAmount)
 
@@ -52,6 +52,6 @@ export function PartnerFeeRow({
     )
   }
 
-  // Return null if partnerFee is not available - FREE will be shown by parent if no fees at all
+  // todo handle it
   return null
 }
