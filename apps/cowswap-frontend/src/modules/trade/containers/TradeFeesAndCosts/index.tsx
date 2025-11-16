@@ -1,18 +1,15 @@
 import { ReactNode } from 'react'
 
-import { Trans, useLingui } from '@lingui/react/macro'
-
 import { useUsdAmount } from 'modules/usdAmount'
 import { useVolumeFeeTooltip } from 'modules/volumeFee'
 
+import { FreeFeeRow } from '../../pure/FreeFeeRow'
 import { NetworkCostsRow } from '../../pure/NetworkCostsRow'
 import { PartnerFeeRow } from '../../pure/PartnerFeeRow'
 import { ProtocolFeeRow } from '../../pure/ProtocolFeeRow'
-import { ReviewOrderModalAmountRow } from '../../pure/ReviewOrderModalAmountRow'
 import { TotalFeeRow } from '../../pure/TotalFeeRow'
 import { ReceiveAmountInfo } from '../../types'
 import { getOrderTypeReceiveAmounts, getTotalCosts } from '../../utils/getReceiveAmountInfo'
-import * as styledEl from '../TradeBasicConfirmDetails/styled'
 
 interface TradeFeesAndCostsProps {
   receiveAmountInfo: ReceiveAmountInfo | null
@@ -46,7 +43,6 @@ export function TradeFeesAndCosts(props: TradeFeesAndCostsProps): ReactNode {
   const totalFeeUsd = useUsdAmount(totalFeeAmount).value
 
   const volumeFeeTooltip = useVolumeFeeTooltip(false)
-  const { t } = useLingui()
 
   const partnerFeeRow = (
     <PartnerFeeRow
@@ -85,17 +81,7 @@ export function TradeFeesAndCosts(props: TradeFeesAndCostsProps): ReactNode {
       {!hasBothFees && hasPartnerFee && partnerFeeRow}
 
       {/*FREE - only if no fees at all*/}
-      {!hasAnyFee && (
-        <ReviewOrderModalAmountRow
-          withTimelineDot={withTimelineDot}
-          tooltip={t`No fee for order placement!`}
-          label={t`Fee`}
-        >
-          <styledEl.GreenText>
-            <Trans>FREE</Trans>
-          </styledEl.GreenText>
-        </ReviewOrderModalAmountRow>
-      )}
+      {!hasAnyFee && <FreeFeeRow withTimelineDot={withTimelineDot} />}
 
       {/*Network cost*/}
       {networkFeeAmount?.greaterThan(0) && (
