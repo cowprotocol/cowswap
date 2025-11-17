@@ -2,6 +2,7 @@ import React, { ReactNode } from 'react'
 
 import { isFractionFalsy } from '@cowprotocol/common-utils'
 import { TokenAmount } from '@cowprotocol/ui'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
@@ -21,7 +22,7 @@ export interface ReceiveAmountInfoTooltipProps {
   allowsOffchainSigning: boolean
 }
 
-function hasValidFee(amount: React.ComponentProps<typeof FeeItem>['feeAmount'], bps: number | undefined): boolean {
+function hasValidFee(amount: CurrencyAmount<Currency> | undefined, bps: number | undefined): boolean {
   return !!amount && !!bps && !amount.equalTo(0)
 }
 
