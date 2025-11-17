@@ -73,9 +73,9 @@ interface BuildModalPropsArgs {
   account: string | undefined
   hasChainPanel: boolean
   chainsState?: ChainsToSelectState
+  chainsPanelTitle: string
   onSelectChain?(chain: ChainInfo): void
   isInjectedWidgetMode: boolean
-  chainsPanelTitle: string
   modalTitle: string
 }
 
@@ -136,15 +136,15 @@ export function buildSelectTokenModalPropsInput({
   onDismiss,
   onOpenManageWidget,
   openPoolPage,
-    tokenListCategoryState,
-    disableErc20,
-    account,
-    hasChainPanel,
-    chainsState,
-    onSelectChain,
-    isInjectedWidgetMode,
-    chainsPanelTitle,
-    modalTitle,
+  tokenListCategoryState,
+  disableErc20,
+  account,
+  hasChainPanel,
+  chainsState,
+  chainsPanelTitle,
+  onSelectChain,
+  isInjectedWidgetMode,
+  modalTitle,
 }: BuildModalPropsArgs): SelectTokenModalProps {
   return {
     standalone,
@@ -171,10 +171,10 @@ export function buildSelectTokenModalPropsInput({
     isRouteAvailable: tokenData.isRouteAvailable,
     modalTitle,
     hasChainPanel,
-    chainsToSelect: chainsState,
-    chainsPanelTitle,
+    mobileChainsLabel: chainsPanelTitle,
     hideFavoriteTokensTooltip: isInjectedWidgetMode,
     selectedTargetChainId: widgetState.selectedTargetChainId,
+    mobileChainsState: chainsState,
     onSelectChain,
     onClearRecentTokens,
   }
@@ -208,9 +208,11 @@ export function useSelectTokenModalPropsMemo(props: SelectTokenModalProps): Sele
       modalTitle: props.modalTitle,
       hasChainPanel: props.hasChainPanel,
       hideFavoriteTokensTooltip: props.hideFavoriteTokensTooltip,
-      chainsPanelTitle: props.chainsPanelTitle,
       selectedTargetChainId: props.selectedTargetChainId,
+      mobileChainsState: props.mobileChainsState,
+      mobileChainsLabel: props.mobileChainsLabel,
       onSelectChain: props.onSelectChain,
+      onOpenMobileChainPanel: props.onOpenMobileChainPanel,
       onClearRecentTokens: props.onClearRecentTokens,
     }),
     [
@@ -238,10 +240,12 @@ export function useSelectTokenModalPropsMemo(props: SelectTokenModalProps): Sele
       props.isRouteAvailable,
       props.modalTitle,
       props.hasChainPanel,
-      props.chainsPanelTitle,
       props.hideFavoriteTokensTooltip,
       props.selectedTargetChainId,
+      props.mobileChainsState,
+      props.mobileChainsLabel,
       props.onSelectChain,
+      props.onOpenMobileChainPanel,
       props.onClearRecentTokens,
     ],
   )

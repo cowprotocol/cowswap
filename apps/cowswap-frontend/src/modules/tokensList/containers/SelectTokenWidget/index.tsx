@@ -1,11 +1,18 @@
-import { ReactNode } from 'react'
+import { MouseEvent, ReactNode, useEffect, useState } from 'react'
+
+import { useMediaQuery } from '@cowprotocol/common-hooks'
+import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
+import { Media } from '@cowprotocol/ui'
+
+import { createPortal } from 'react-dom'
 
 import {
   useSelectTokenWidgetController,
   type SelectTokenWidgetProps,
   type SelectTokenWidgetViewProps,
 } from './controller'
-import { InnerWrapper, ModalContainer, Wrapper } from './styled'
+import { MobileChainPanelPortal } from './MobileChainPanelPortal'
+import { InnerWrapper, ModalContainer, WidgetCard, WidgetOverlay, Wrapper } from './styled'
 
 import { ChainPanel } from '../../pure/ChainPanel'
 import { ImportListModal } from '../../pure/ImportListModal'
@@ -16,27 +23,90 @@ import { ManageListsAndTokens } from '../ManageListsAndTokens'
 
 export function SelectTokenWidget(props: SelectTokenWidgetProps): ReactNode {
   const { shouldRender, hasChainPanel, viewProps } = useSelectTokenWidgetController(props)
+  const isCompactLayout = useMediaQuery(Media.upToMedium(false))
+  const [isMobileChainPanelOpen, setIsMobileChainPanelOpen] = useState(false)
+  const isChainPanelVisible = hasChainPanel && !isCompactLayout
+
+  useEffect(() => {
+    if (!shouldRender) {
+      return
+    }
+
+    if (isChainPanelVisible) {
+      setIsMobileChainPanelOpen(false)
+    }
+  }, [isChainPanelVisible, shouldRender])
+
+  useEffect(() => {
+    if (!shouldRender) {
+      removeBodyClass('noScroll')
+      return undefined
+    }
+
+    addBodyClass('noScroll')
+    return () => removeBodyClass('noScroll')
+  }, [shouldRender])
 
   if (!shouldRender) {
     return null
   }
 
-  return (
+  const widgetContent = (
     <Wrapper>
-      <InnerWrapper $hasSidebar={hasChainPanel}>
-        <SelectTokenWidgetView {...viewProps} isChainPanelVisible={hasChainPanel} />
+      <InnerWrapper $hasSidebar={isChainPanelVisible} $isMobileOverlay={isCompactLayout}>
+        <SelectTokenWidgetView
+          {...viewProps}
+          isChainPanelVisible={isChainPanelVisible}
+          isMobileChainPanelOpen={isMobileChainPanelOpen}
+          setIsMobileChainPanelOpen={setIsMobileChainPanelOpen}
+          isCompactLayout={isCompactLayout}
+        />
       </InnerWrapper>
     </Wrapper>
   )
+
+  const handleOverlayClick = (event: MouseEvent<HTMLDivElement>): void => {
+    if (event.target !== event.currentTarget) {
+      return
+    }
+
+    viewProps.onDismiss()
+  }
+
+  const overlay = (
+    <WidgetOverlay onClick={handleOverlayClick}>
+      <WidgetCard $isCompactLayout={isCompactLayout} $hasChainPanel={hasChainPanel}>
+        {widgetContent}
+      </WidgetCard>
+    </WidgetOverlay>
+  )
+
+  if (typeof document === 'undefined') {
+    return overlay
+  }
+
+  return createPortal(overlay, document.body)
 }
 
 function SelectTokenWidgetView(
   props: SelectTokenWidgetViewProps & {
     isChainPanelVisible: boolean
+    isCompactLayout: boolean
+    isMobileChainPanelOpen: boolean
+    setIsMobileChainPanelOpen(value: boolean): void
   },
 ): ReactNode {
-  const { isChainPanelVisible, isChainPanelEnabled, chainsPanelTitle, chainsToSelect, onSelectChain, selectTokenModalProps } =
-    props
+  const {
+    isChainPanelVisible,
+    isCompactLayout,
+    isMobileChainPanelOpen,
+    setIsMobileChainPanelOpen,
+    isChainPanelEnabled,
+    chainsPanelTitle,
+    chainsToSelect,
+    onSelectChain,
+    selectTokenModalProps,
+  } = props
 
   const blockingView = getBlockingView(props)
 
@@ -44,21 +114,47 @@ function SelectTokenWidgetView(
     return blockingView
   }
 
+  const closeMobileChainPanel = (): void => setIsMobileChainPanelOpen(false)
+  const mobileChainsState = isChainPanelEnabled && !isChainPanelVisible ? chainsToSelect : undefined
+  const handleOpenMobileChainPanel = mobileChainsState ? () => setIsMobileChainPanelOpen(true) : undefined
   const showDesktopChainPanel = isChainPanelVisible && isChainPanelEnabled && chainsToSelect
+  const showMobileChainPanel = !isChainPanelVisible && isChainPanelEnabled && chainsToSelect && isMobileChainPanelOpen
 
   return (
     <>
       <ModalContainer>
-        <SelectTokenModal {...selectTokenModalProps} hasChainPanel={isChainPanelVisible} />
+        <SelectTokenModal
+          {...selectTokenModalProps}
+          hasChainPanel={isChainPanelVisible}
+          mobileChainsState={mobileChainsState}
+          onSelectChain={mobileChainsState ? onSelectChain : undefined}
+          isFullScreenMobile={isCompactLayout}
+          onOpenMobileChainPanel={handleOpenMobileChainPanel}
+        />
       </ModalContainer>
       {showDesktopChainPanel && (
         <ChainPanel title={chainsPanelTitle} chainsState={chainsToSelect} onSelectChain={onSelectChain} />
+      )}
+      {showMobileChainPanel && (
+        <MobileChainPanelPortal
+          chainsPanelTitle={chainsPanelTitle}
+          chainsToSelect={chainsToSelect}
+          onSelectChain={onSelectChain}
+          onClose={closeMobileChainPanel}
+        />
       )}
     </>
   )
 }
 
-function getBlockingView(props: SelectTokenWidgetViewProps): ReactNode | null {
+function getBlockingView(
+  props: SelectTokenWidgetViewProps & {
+    isChainPanelVisible: boolean
+    isCompactLayout: boolean
+    isMobileChainPanelOpen: boolean
+    setIsMobileChainPanelOpen(value: boolean): void
+  },
+): ReactNode | null {
   const {
     standalone,
     tokenToImport,

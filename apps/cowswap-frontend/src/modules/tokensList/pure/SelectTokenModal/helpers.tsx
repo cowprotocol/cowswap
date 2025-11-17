@@ -65,8 +65,6 @@ interface TokensContentSectionProps
     | 'hideFavoriteTokensTooltip'
     | 'selectedTargetChainId'
     | 'onClearRecentTokens'
-    | 'onOpenManageWidget'
-    | 'standalone'
   > {
   searchInput: string
   selectTokenContext: SelectTokenContext
@@ -84,8 +82,6 @@ export function TokensContentSection({
   selectedTargetChainId,
   selectTokenContext,
   onClearRecentTokens,
-  onOpenManageWidget,
-  standalone,
 }: TokensContentSectionProps): ReactNode {
   return (
     <TokensContent
@@ -100,8 +96,6 @@ export function TokensContentSection({
       hideFavoriteTokensTooltip={hideFavoriteTokensTooltip}
       selectedTargetChainId={selectedTargetChainId}
       onClearRecentTokens={onClearRecentTokens}
-      onOpenManageWidget={onOpenManageWidget}
-      standalone={standalone}
     />
   )
 }
@@ -128,7 +122,7 @@ export function TitleBarActions({
       {showManageButton && (
         <styledEl.TitleActions>
           <styledEl.TitleActionButton
-            id="token-selector-title-manage-button"
+            id="list-token-manage-button"
             onClick={onOpenManageWidget}
             aria-label="Manage token lists"
             title="Manage token lists"

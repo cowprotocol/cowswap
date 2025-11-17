@@ -8,6 +8,7 @@ import styled from 'styled-components/macro'
 
 import { allTokensMock, favoriteTokensMock } from '../../mocks'
 import { mapChainInfo } from '../../utils/mapChainInfo'
+import { ChainPanel } from '../ChainPanel'
 
 import { SelectTokenModal, SelectTokenModalProps } from './index'
 
@@ -15,7 +16,11 @@ const Wrapper = styled.div`
   max-height: 90vh;
   margin: 20px auto;
   display: flex;
-  width: 900px;
+  gap: 0;
+  width: 960px;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.05);
 `
 
 const unsupportedTokens = {}
@@ -32,6 +37,9 @@ const chainsMock: ChainInfo[] = [
   SupportedChainId.MAINNET,
   SupportedChainId.BASE,
   SupportedChainId.ARBITRUM_ONE,
+  SupportedChainId.POLYGON,
+  SupportedChainId.AVALANCHE,
+  SupportedChainId.GNOSIS_CHAIN,
 ].reduce<ChainInfo[]>((acc, id) => {
   const info = CHAIN_INFO[id]
 
@@ -42,25 +50,19 @@ const chainsMock: ChainInfo[] = [
   return acc
 }, [])
 
-const defaultProps: SelectTokenModalProps = {
+const favoriteTokenAddresses = new Set(favoriteTokensMock.map((token) => token.address.toLowerCase()))
+const recentTokensMock = allTokensMock.filter((token) => !favoriteTokenAddresses.has(token.address.toLowerCase())).slice(0, 3)
+
+const defaultModalProps: SelectTokenModalProps = {
   tokenListTags: {},
   account: undefined,
   permitCompatibleTokens: {},
   unsupportedTokens,
   allTokens: allTokensMock,
   favoriteTokens: favoriteTokensMock,
+  recentTokens: recentTokensMock,
   areTokensLoading: false,
   areTokensFromBridge: false,
-  chainsToSelect: {
-    chains: chainsMock,
-    isLoading: false,
-    defaultChainId: SupportedChainId.MAINNET,
-  },
-  hasChainPanel: true,
-  chainsPanelTitle: 'Cross chain swap',
-  onSelectChain(chain: ChainInfo) {
-    console.log('onSelectChain', chain)
-  },
   tokenListCategoryState: [null, () => void 0],
   balancesState: {
     values: balances,
@@ -71,16 +73,11 @@ const defaultProps: SelectTokenModalProps = {
   selectedToken,
   isRouteAvailable: true,
   modalTitle: 'Swap from',
-  recentTokens: favoriteTokensMock.slice(0, 2),
-  selectedTargetChainId: SupportedChainId.SEPOLIA,
   onSelectToken() {
     console.log('onSelectToken')
   },
   onTokenListItemClick(token) {
     console.log('onTokenListItemClick', token.symbol)
-  },
-  onClearRecentTokens() {
-    console.log('onClearRecentTokens')
   },
   onOpenManageWidget() {
     console.log('onOpenManageWidget')
@@ -93,35 +90,57 @@ const defaultProps: SelectTokenModalProps = {
   },
 }
 
+const defaultChainPanelProps = {
+  title: 'Cross chain swap',
+  chainsState: {
+    defaultChainId: SupportedChainId.MAINNET,
+    chains: chainsMock,
+    isLoading: false,
+  },
+  onSelectChain(chain: ChainInfo) {
+    console.log('onSelectChain', chain)
+  },
+}
+
 const Fixtures = {
   default: () => (
     <Wrapper>
-      <SelectTokenModal {...defaultProps} />
+      <SelectTokenModal {...defaultModalProps} hasChainPanel />
+      <ChainPanel {...defaultChainPanelProps} />
     </Wrapper>
   ),
-  noChainPanel: () => (
+  loadingSidebar: () => (
     <Wrapper>
-      <SelectTokenModal {...defaultProps} hasChainPanel={false} />
+      <SelectTokenModal {...defaultModalProps} hasChainPanel />
+      <ChainPanel
+        {...defaultChainPanelProps}
+        chainsState={{ chains: [], isLoading: true, defaultChainId: SupportedChainId.MAINNET }}
+      />
+    </Wrapper>
+  ),
+  noSidebar: () => (
+    <Wrapper>
+      <SelectTokenModal {...defaultModalProps} />
     </Wrapper>
   ),
   importByAddress: () => (
     <Wrapper>
-      <SelectTokenModal defaultInputValue={'0x252d98fab648203aa33310721bbbddfa8f1b6587'} {...defaultProps} />
+      <SelectTokenModal defaultInputValue={'0x252d98fab648203aa33310721bbbddfa8f1b6587'} {...defaultModalProps} />
     </Wrapper>
   ),
   NoTokenFound: () => (
     <Wrapper>
-      <SelectTokenModal defaultInputValue={'0x543ff227f64aa17ea132bf9886cab5db55dcaddd'} {...defaultProps} />
+      <SelectTokenModal defaultInputValue={'0x543ff227f64aa17ea132bf9886cab5db55dcaddd'} {...defaultModalProps} />
     </Wrapper>
   ),
   searchFromInactiveLists: () => (
     <Wrapper>
-      <SelectTokenModal defaultInputValue={'cDAI'} {...defaultProps} />
+      <SelectTokenModal defaultInputValue={'cDAI'} {...defaultModalProps} />
     </Wrapper>
   ),
   searchFromExternalSources: () => (
     <Wrapper>
-      <SelectTokenModal defaultInputValue={'Coo'} {...defaultProps} />
+      <SelectTokenModal defaultInputValue={'Coo'} {...defaultModalProps} />
     </Wrapper>
   ),
 }

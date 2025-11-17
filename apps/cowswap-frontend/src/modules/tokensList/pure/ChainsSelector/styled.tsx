@@ -72,9 +72,8 @@ export const ChainLogo = styled.div`
   --size: 28px;
   width: var(--size);
   height: var(--size);
-  border-radius: var(--size);
   overflow: hidden;
-  background: var(${UI.COLOR_PAPER});
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -82,7 +81,7 @@ export const ChainLogo = styled.div`
   > img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
   }
 `
 
@@ -98,7 +97,8 @@ export const ActiveIcon = styled.span<{ accent$?: ChainAccentVars; color$?: stri
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${({ color$, accent$ }) => getAccentColor(accent$) ?? color$ ?? getBorder(accent$, `var(${UI.COLOR_PRIMARY})`)};
+  color: ${({ color$, accent$ }) =>
+    getAccentColor(accent$) ?? color$ ?? getBorder(accent$, `var(${UI.COLOR_PRIMARY})`)};
 
   > svg {
     width: 16px;

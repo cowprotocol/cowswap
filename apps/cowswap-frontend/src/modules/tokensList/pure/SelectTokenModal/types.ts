@@ -22,7 +22,6 @@ export interface SelectTokenModalProps<T = TokenListCategory[] | null> {
   displayLpTokenLists?: boolean
   disableErc20?: boolean
   account: string | undefined
-  chainsToSelect?: ChainsToSelectState
   tokenListCategoryState: [T, (category: T) => void]
   defaultInputValue?: string
   areTokensLoading: boolean
@@ -30,10 +29,13 @@ export interface SelectTokenModalProps<T = TokenListCategory[] | null> {
   standalone?: boolean
   areTokensFromBridge: boolean
   isRouteAvailable: boolean | undefined
-  selectedTargetChainId?: number
   modalTitle?: string
   hasChainPanel?: boolean
-  chainsPanelTitle?: string
+  selectedTargetChainId?: number
+  mobileChainsState?: ChainsToSelectState
+  mobileChainsLabel?: string
+  onSelectChain?(chain: ChainInfo): void
+  onOpenMobileChainPanel?(): void
   isFullScreenMobile?: boolean
 
   onSelectToken: TokenSelectionHandler
