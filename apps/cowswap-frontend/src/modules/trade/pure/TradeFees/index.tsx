@@ -18,7 +18,7 @@ interface TradeFeesProps {
   protocolFeeAmount: Nullish<CurrencyAmount<Currency>>
   protocolFeeUsd: Nullish<CurrencyAmount<Currency>>
   protocolFeeBps: number | undefined
-  totalFeeUsd: Nullish<CurrencyAmount<Currency>>
+  totalFeeUsd?: Nullish<CurrencyAmount<Currency>>
   volumeFeeTooltip: VolumeFeeTooltip
   withTimelineDot?: boolean
 }
@@ -60,7 +60,7 @@ export function TradeFees({
   if (hasBothFees) {
     return (
       <>
-        <TotalFeeRow totalFeeUsd={totalFeeUsd} />
+        {totalFeeUsd ? <TotalFeeRow totalFeeUsd={totalFeeUsd} /> : null}
         {protocolFeeRow}
         {partnerFeeRow}
       </>

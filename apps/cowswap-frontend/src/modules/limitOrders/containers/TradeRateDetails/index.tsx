@@ -2,14 +2,16 @@ import { ReactElement, useCallback, useState } from 'react'
 
 import { t } from '@lingui/core/macro'
 
-import { PartnerFeeRow, TradeTotalCostsDetails } from 'modules/trade'
+import { TradeFees, TradeTotalCostsDetails } from 'modules/trade'
 import { Box } from 'modules/trade/containers/TradeTotalCostsDetails/styled'
+import { useTradeQuote } from 'modules/tradeQuote'
 import { useUsdAmount } from 'modules/usdAmount'
 import { useVolumeFee, useVolumeFeeTooltip } from 'modules/volumeFee'
 
 import { RateInfo, RateInfoParams } from 'common/pure/RateInfo'
 
 import { useLimitOrderPartnerFeeAmount } from '../../hooks/useLimitOrderPartnerFeeAmount'
+import { useLimitOrderProtocolFeeAmount } from '../../hooks/useLimitOrderProtocolFeeAmount'
 
 interface TradeRateDetailsProps {
   rateInfoParams?: RateInfoParams
@@ -20,26 +22,35 @@ export function TradeRateDetails({ rateInfoParams, alwaysExpanded = false }: Tra
   const [isFeeDetailsOpen, setFeeDetailsOpen] = useState(alwaysExpanded)
   const { volumeBps: partnerFeeBps } = useVolumeFee() || {}
   const partnerFeeAmount = useLimitOrderPartnerFeeAmount()
+  const protocolFeeAmount = useLimitOrderProtocolFeeAmount()
   const volumeFeeTooltip = useVolumeFeeTooltip()
   const partnerFeeUsd = useUsdAmount(partnerFeeAmount).value
+  const protocolFeeUsd = useUsdAmount(protocolFeeAmount).value
+
+  const { quote } = useTradeQuote()
+  const quoteResponse = quote?.quoteResults.quoteResponse
+  const protocolFeeBps = quoteResponse?.protocolFeeBps ? Number(quoteResponse.protocolFeeBps) : undefined
 
   const toggleAccordion = useCallback(() => {
     if (alwaysExpanded) return
     setFeeDetailsOpen((prev) => !prev)
   }, [alwaysExpanded])
 
-  const partnerFeeRow = (
-    <PartnerFeeRow
-      withTimelineDot={false}
-      partnerFeeUsd={partnerFeeUsd}
+  const tradeFees = (
+    <TradeFees
       partnerFeeAmount={partnerFeeAmount}
+      partnerFeeUsd={partnerFeeUsd}
       partnerFeeBps={partnerFeeBps}
+      protocolFeeAmount={protocolFeeAmount}
+      protocolFeeUsd={protocolFeeUsd}
+      protocolFeeBps={protocolFeeBps}
+      withTimelineDot={false}
       volumeFeeTooltip={volumeFeeTooltip}
     />
   )
 
   if (!rateInfoParams) {
-    return partnerFeeRow
+    return tradeFees
   }
 
   if (alwaysExpanded) {
@@ -53,7 +64,7 @@ export function TradeRateDetails({ rateInfoParams, alwaysExpanded = false }: Tra
           fontSize={13}
           fontBold
         />
-        <Box noMargin>{partnerFeeRow}</Box>
+        <Box noMargin>{tradeFees}</Box>
       </>
     )
   }
@@ -65,7 +76,7 @@ export function TradeRateDetails({ rateInfoParams, alwaysExpanded = false }: Tra
       isFeeDetailsOpen={isFeeDetailsOpen}
       toggleAccordion={toggleAccordion}
     >
-      {partnerFeeRow}
+      {tradeFees}
     </TradeTotalCostsDetails>
   )
 }
