@@ -21,7 +21,10 @@ export interface ReceiveAmountInfoTooltipProps {
   allowsOffchainSigning: boolean
 }
 
-// eslint-disable-next-line complexity
+function hasValidFee(amount: React.ComponentProps<typeof FeeItem>['feeAmount'], bps: number | undefined): boolean {
+  return !!amount && !!bps && !amount.equalTo(0)
+}
+
 export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps): ReactNode {
   const isEoaEthFlow = useIsEoaEthFlow()
 
@@ -29,7 +32,7 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps): 
   const {
     isSell,
     costs: {
-      partnerFee: { amount: partnerFeeAmount },
+      partnerFee: { amount: partnerFeeAmount, bps: partnerFeeBps },
       protocolFee,
       bridgeFee,
     },
@@ -40,10 +43,9 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps): 
 
   const protocolFeeAmount = protocolFee?.amount
   const protocolFeeBps = protocolFee?.bps
-  const partnerFeeBps = receiveAmountInfo.costs.partnerFee.bps
 
-  const hasPartnerFee = !!partnerFeeAmount && !!partnerFeeBps && !partnerFeeAmount.equalTo(0)
-  const hasProtocolFee = !!protocolFeeAmount && !!protocolFeeBps && !protocolFeeAmount.equalTo(0)
+  const hasPartnerFee = hasValidFee(partnerFeeAmount, partnerFeeBps)
+  const hasProtocolFee = hasValidFee(protocolFeeAmount, protocolFeeBps)
   const hasAnyFee = hasPartnerFee || hasProtocolFee
   const hasNetworkFee = !isFractionFalsy(networkFeeAmount)
   const hasFee = hasNetworkFee || hasAnyFee
@@ -67,9 +69,7 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps): 
 
       {hasPartnerFee && <FeeItem title={t`Fee`} isSell={isSell} feeAmount={partnerFeeAmount} />}
 
-      {!hasAnyFee && !isEoaNotEthFlow && (
-        <FeeItem title={t`Fee`} isSell={isSell} feeAmount={undefined} />
-      )}
+      {!hasAnyFee && !isEoaNotEthFlow && <FeeItem title={t`Fee`} isSell={isSell} feeAmount={undefined} />}
 
       {bridgeFee && (
         <FeeItem title={t`Bridge costs`} isSell={isSell} feeAmount={bridgeFee?.amountInIntermediateCurrency} />
