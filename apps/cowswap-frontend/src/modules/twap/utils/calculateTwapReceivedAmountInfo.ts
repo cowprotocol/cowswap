@@ -28,6 +28,12 @@ export function calculateTwapReceivedAmountInfo(
         amount: scaleAmount(costs.partnerFee.amount),
         bps: costs.partnerFee.bps,
       },
+      protocolFee: costs.protocolFee
+        ? {
+            amount: scaleAmount(costs.protocolFee.amount),
+            bps: costs.protocolFee.bps,
+          }
+        : undefined,
     },
     beforeNetworkCosts: {
       sellAmount: scaleAmount(beforeNetworkCosts.sellAmount),
