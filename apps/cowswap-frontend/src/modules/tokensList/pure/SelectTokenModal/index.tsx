@@ -152,7 +152,7 @@ function renderLegacyChainSelector(
   chainsToSelect: SelectTokenModalProps['chainsToSelect'],
   onSelectChain: SelectTokenModalProps['onSelectChain'],
 ): ReactNode {
-  if (!chainsToSelect?.chains?.length) {
+  if (!chainsToSelect?.chains?.length || !onSelectChain) {
     return null
   }
 
@@ -168,6 +168,33 @@ function renderLegacyChainSelector(
   )
 }
 
+interface ChainPanelLayout {
+  showChainPanel: boolean
+  legacyChainsState: SelectTokenModalProps['chainsToSelect']
+  chainPanel: ReactNode
+  resolvedTitle: string
+}
+
+function getChainPanelLayout({
+  hasChainPanel,
+  chainsToSelect,
+  onSelectChain,
+  chainsPanelTitle,
+}: Pick<SelectTokenModalProps, 'hasChainPanel' | 'chainsToSelect' | 'onSelectChain' | 'chainsPanelTitle'>): ChainPanelLayout {
+  const resolvedTitle = chainsPanelTitle ?? t`Cross chain swap`
+  if (!chainsToSelect?.chains?.length || !onSelectChain) {
+    return { showChainPanel: false, legacyChainsState: undefined, chainPanel: null, resolvedTitle }
+  }
+
+  const showChainPanel = Boolean(hasChainPanel)
+  const legacyChainsState = showChainPanel ? undefined : chainsToSelect
+  const chainPanel = showChainPanel ? (
+    <ChainPanel title={resolvedTitle} chainsState={chainsToSelect} onSelectChain={onSelectChain} />
+  ) : null
+
+  return { showChainPanel, legacyChainsState, chainPanel, resolvedTitle }
+}
+
 function useSelectTokenModalLayout(props: SelectTokenModalProps): {
   inputValue: string
   setInputValue: (value: string) => void
@@ -178,26 +205,17 @@ function useSelectTokenModalLayout(props: SelectTokenModalProps): {
   chainPanel: ReactNode
   resolvedModalTitle: string
 } {
-  const {
-    defaultInputValue = '',
-    chainsToSelect,
-    onSelectChain,
-    modalTitle,
-    hasChainPanel = false,
-    chainsPanelTitle,
-  } = props
+  const { defaultInputValue = '', chainsToSelect, onSelectChain, modalTitle, hasChainPanel = false, chainsPanelTitle } = props
 
   const [inputValue, setInputValue, trimmedInputValue] = useTokenSearchInput(defaultInputValue)
   const selectTokenContext = useSelectTokenContext(props)
   const resolvedModalTitle = modalTitle ?? t`Select token`
-  const showChainPanel = hasChainPanel && Boolean(chainsToSelect?.chains?.length)
-  const legacyChainsState =
-    !showChainPanel && chainsToSelect && (chainsToSelect.chains?.length ?? 0) > 0 ? chainsToSelect : undefined
-  const resolvedChainPanelTitle = chainsPanelTitle ?? t`Cross chain swap`
-  const chainPanel =
-    showChainPanel && chainsToSelect ? (
-      <ChainPanel title={resolvedChainPanelTitle} chainsState={chainsToSelect} onSelectChain={onSelectChain} />
-    ) : null
+  const { showChainPanel, legacyChainsState, chainPanel } = getChainPanelLayout({
+    hasChainPanel,
+    chainsToSelect,
+    onSelectChain,
+    chainsPanelTitle,
+  })
 
   return {
     inputValue,
