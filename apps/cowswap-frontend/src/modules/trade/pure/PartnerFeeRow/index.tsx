@@ -9,6 +9,7 @@ import { Nullish } from 'types'
 import { WidgetMarkdownContent } from 'modules/injectedWidget'
 import { VolumeFeeTooltip } from 'modules/volumeFee'
 
+import { FreeFeeRow } from '../FreeFeeRow'
 import { ReviewOrderModalAmountRow } from '../ReviewOrderModalAmountRow'
 
 interface PartnerFeeRowProps {
@@ -29,29 +30,28 @@ export function PartnerFeeRow({
   const feeAsPercent = partnerFeeBps ? formatPercent(bpsToPercent(partnerFeeBps)) : null
   const minPartnerFeeAmount = FractionUtils.amountToAtLeastOneWei(partnerFeeAmount)
 
-  if (partnerFeeAmount && partnerFeeBps && !partnerFeeAmount.equalTo(0)) {
-    return (
-      <ReviewOrderModalAmountRow
-        withTimelineDot={withTimelineDot}
-        amount={minPartnerFeeAmount}
-        fiatAmount={partnerFeeUsd}
-        tooltip={
-          volumeFeeTooltip.content ? (
-            <WidgetMarkdownContent>{volumeFeeTooltip.content}</WidgetMarkdownContent>
-          ) : (
-            <Trans>
-              This fee helps pay for maintenance & improvements to the trade experience.
-              <br />
-              <br />
-              The fee is {partnerFeeBps} BPS ({feeAsPercent}%), applied only if the trade is executed.
-            </Trans>
-          )
-        }
-        label={`${volumeFeeTooltip.label} (${feeAsPercent}%)`}
-      />
-    )
+  if (!partnerFeeAmount || !partnerFeeBps || partnerFeeAmount.equalTo(0)) {
+    return <FreeFeeRow withTimelineDot={false} />
   }
 
-  // todo handle it
-  return null
+  return (
+    <ReviewOrderModalAmountRow
+      withTimelineDot={withTimelineDot}
+      amount={minPartnerFeeAmount}
+      fiatAmount={partnerFeeUsd}
+      tooltip={
+        volumeFeeTooltip.content ? (
+          <WidgetMarkdownContent>{volumeFeeTooltip.content}</WidgetMarkdownContent>
+        ) : (
+          <Trans>
+            This fee helps pay for maintenance & improvements to the trade experience.
+            <br />
+            <br />
+            The fee is {partnerFeeBps} BPS ({feeAsPercent}%), applied only if the trade is executed.
+          </Trans>
+        )
+      }
+      label={`${volumeFeeTooltip.label} (${feeAsPercent}%)`}
+    />
+  )
 }

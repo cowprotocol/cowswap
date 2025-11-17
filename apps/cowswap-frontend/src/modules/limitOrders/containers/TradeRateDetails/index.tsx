@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react'
+import { ReactElement, useCallback, useState } from 'react'
 
 import { t } from '@lingui/core/macro'
 
@@ -7,8 +7,7 @@ import { Box } from 'modules/trade/containers/TradeTotalCostsDetails/styled'
 import { useUsdAmount } from 'modules/usdAmount'
 import { useVolumeFee, useVolumeFeeTooltip } from 'modules/volumeFee'
 
-import { RateInfo } from 'common/pure/RateInfo'
-import { RateInfoParams } from 'common/pure/RateInfo'
+import { RateInfo, RateInfoParams } from 'common/pure/RateInfo'
 
 import { useLimitOrderPartnerFeeAmount } from '../../hooks/useLimitOrderPartnerFeeAmount'
 
@@ -17,9 +16,7 @@ interface TradeRateDetailsProps {
   alwaysExpanded?: boolean
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function TradeRateDetails({ rateInfoParams, alwaysExpanded = false }: TradeRateDetailsProps) {
+export function TradeRateDetails({ rateInfoParams, alwaysExpanded = false }: TradeRateDetailsProps): ReactElement {
   const [isFeeDetailsOpen, setFeeDetailsOpen] = useState(alwaysExpanded)
   const { volumeBps: partnerFeeBps } = useVolumeFee() || {}
   const partnerFeeAmount = useLimitOrderPartnerFeeAmount()

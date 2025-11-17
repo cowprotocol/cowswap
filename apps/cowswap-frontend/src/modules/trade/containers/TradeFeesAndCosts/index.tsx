@@ -49,7 +49,6 @@ export function TradeFeesAndCosts(props: TradeFeesAndCostsProps): ReactNode {
         withTimelineDot={withTimelineDot}
       />
 
-      {/*Network cost*/}
       {networkFeeAmount?.greaterThan(0) && (
         <NetworkCostsRow
           networkFeeAmount={networkFeeAmount}
