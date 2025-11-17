@@ -17,11 +17,15 @@ const NETWORK_FEE_AMOUNT = '1000000000000' // 1_000_000 tokens (0.1% of 1_000_00
 // Partner fee: 3 bps = 0.03% of base amount = 300_000 tokens
 const PARTNER_FEE_AMOUNT = '300000000000' // 300_000 tokens (3 bps of 1_000_000_000)
 
+// Protocol fee: 2 bps = 0.02% of base amount = 200_000 tokens
+const PROTOCOL_FEE_AMOUNT = '200000000000' // 200_000 tokens (2 bps of 1_000_000_000)
+
 function createReceiveAmountInfo(params: {
   isSell: boolean
   hasPartnerFee: boolean
+  hasProtocolFee?: boolean
 }): ReceiveAmountInfo {
-  const { isSell, hasPartnerFee } = params
+  const { isSell, hasPartnerFee, hasProtocolFee = false } = params
 
   // Base amounts - 1:1 exchange rate
   const sellAmount = CurrencyAmount.fromRawAmount(TOKEN_A, BASE_AMOUNT) // 1_000_000_000 TOKEN_A
@@ -38,16 +42,32 @@ function createReceiveAmountInfo(params: {
     ? CurrencyAmount.fromRawAmount(isSell ? TOKEN_B : TOKEN_A, PARTNER_FEE_AMOUNT)
     : CurrencyAmount.fromRawAmount(isSell ? TOKEN_B : TOKEN_A, '0')
 
+  // Protocol fee: 2 bps = 0.02%
+  // For sell orders: fee is deducted from buy amount (TOKEN_B)
+  // For buy orders: fee is deducted from sell amount (TOKEN_A)
+  const protocolFeeAmount = hasProtocolFee
+    ? CurrencyAmount.fromRawAmount(isSell ? TOKEN_B : TOKEN_A, PROTOCOL_FEE_AMOUNT)
+    : undefined
+
   // After partner fees amounts
+  // Note: protocolFee is also deducted from the same amounts as partnerFee
+  let totalFeeAmount = CurrencyAmount.fromRawAmount(isSell ? TOKEN_B : TOKEN_A, '0')
+  if (hasPartnerFee) {
+    totalFeeAmount = totalFeeAmount.add(partnerFeeAmount)
+  }
+  if (hasProtocolFee && protocolFeeAmount) {
+    totalFeeAmount = totalFeeAmount.add(protocolFeeAmount)
+  }
+
   const afterPartnerFeesSell = isSell
     ? sellAmount // For sell orders, sell amount doesn't change
-    : hasPartnerFee
-      ? sellAmount.subtract(partnerFeeAmount) // For buy orders, partner fee is deducted from sell amount
+    : hasPartnerFee || hasProtocolFee
+      ? sellAmount.subtract(totalFeeAmount) // For buy orders, fees are deducted from sell amount
       : sellAmount
 
   const afterPartnerFeesBuy = isSell
-    ? hasPartnerFee
-      ? buyAmount.subtract(partnerFeeAmount) // For sell orders, partner fee is deducted from buy amount
+    ? hasPartnerFee || hasProtocolFee
+      ? buyAmount.subtract(totalFeeAmount) // For sell orders, fees are deducted from buy amount
       : buyAmount
     : buyAmount // For buy orders, buy amount doesn't change
 
@@ -81,6 +101,12 @@ function createReceiveAmountInfo(params: {
         amount: partnerFeeAmount,
         bps: hasPartnerFee ? 3 : 0, // 3 bps
       },
+      protocolFee: hasProtocolFee && protocolFeeAmount
+        ? {
+            amount: protocolFeeAmount,
+            bps: 2, // 2 bps
+          }
+        : undefined,
       bridgeFee: undefined,
     },
     beforeNetworkCosts: {
@@ -187,6 +213,106 @@ describe('getOrderTypeReceiveAmounts', () => {
         // amountAfterFees: sellAmount from afterPartnerFees = 1_000_000_000 TOKEN_A (no fee deducted)
         expect(result.amountAfterFees.currency).toEqual(TOKEN_A)
         expect(result.amountAfterFees.toExact()).toEqual('1000000000')
+
+        // amountAfterSlippage: sellAmount from afterSlippage = 1_000_000_000 TOKEN_A
+        expect(result.amountAfterSlippage.currency).toEqual(TOKEN_A)
+        expect(result.amountAfterSlippage.toExact()).toEqual('1000000000')
+
+        // networkFeeAmount: amountInSellCurrency = 1_000_000 TOKEN_A
+        expect(result.networkFeeAmount.currency).toEqual(TOKEN_A)
+        expect(result.networkFeeAmount.toExact()).toEqual('1000000')
+      })
+    })
+  })
+
+  describe('Sell orders with 2 bps protocolFee', () => {
+    describe('with 3 bps partnerFee', () => {
+      it('should return correct amounts', () => {
+        const info = createReceiveAmountInfo({ isSell: true, hasPartnerFee: true, hasProtocolFee: true })
+        const result = getOrderTypeReceiveAmounts(info)
+
+        // amountBeforeFees: amountAfterFees + protocolFee + partnerFee + networkFee
+        // = 999_500_000 + 200_000 + 300_000 + 1_000_000 = 1_001_000_000 TOKEN_B
+        expect(result.amountBeforeFees.currency).toEqual(TOKEN_B)
+        expect(result.amountBeforeFees.toExact()).toEqual('1001000000')
+
+        // amountAfterFees: buyAmount from afterPartnerFees = 1_000_000_000 - 200_000 - 300_000 = 999_500_000 TOKEN_B
+        expect(result.amountAfterFees.currency).toEqual(TOKEN_B)
+        expect(result.amountAfterFees.toExact()).toEqual('999500000')
+
+        // amountAfterSlippage: buyAmount from afterSlippage = 1_000_000_000 TOKEN_B
+        expect(result.amountAfterSlippage.currency).toEqual(TOKEN_B)
+        expect(result.amountAfterSlippage.toExact()).toEqual('1000000000')
+
+        // networkFeeAmount: amountInBuyCurrency = 1_000_000 TOKEN_B
+        expect(result.networkFeeAmount.currency).toEqual(TOKEN_B)
+        expect(result.networkFeeAmount.toExact()).toEqual('1000000')
+      })
+    })
+
+    describe('without partnerFee', () => {
+      it('should return correct amounts', () => {
+        const info = createReceiveAmountInfo({ isSell: true, hasPartnerFee: false, hasProtocolFee: true })
+        const result = getOrderTypeReceiveAmounts(info)
+
+        // amountBeforeFees: amountAfterFees + protocolFee + networkFee
+        // = 999_800_000 + 200_000 + 1_000_000 = 1_001_000_000 TOKEN_B
+        expect(result.amountBeforeFees.currency).toEqual(TOKEN_B)
+        expect(result.amountBeforeFees.toExact()).toEqual('1001000000')
+
+        // amountAfterFees: buyAmount from afterPartnerFees = 1_000_000_000 - 200_000 = 999_800_000 TOKEN_B
+        expect(result.amountAfterFees.currency).toEqual(TOKEN_B)
+        expect(result.amountAfterFees.toExact()).toEqual('999800000')
+
+        // amountAfterSlippage: buyAmount from afterSlippage = 1_000_000_000 TOKEN_B
+        expect(result.amountAfterSlippage.currency).toEqual(TOKEN_B)
+        expect(result.amountAfterSlippage.toExact()).toEqual('1000000000')
+
+        // networkFeeAmount: amountInBuyCurrency = 1_000_000 TOKEN_B
+        expect(result.networkFeeAmount.currency).toEqual(TOKEN_B)
+        expect(result.networkFeeAmount.toExact()).toEqual('1000000')
+      })
+    })
+  })
+
+  describe('Buy orders with 2 bps protocolFee', () => {
+    describe('with 3 bps partnerFee', () => {
+      it('should return correct amounts', () => {
+        const info = createReceiveAmountInfo({ isSell: false, hasPartnerFee: true, hasProtocolFee: true })
+        const result = getOrderTypeReceiveAmounts(info)
+
+        // amountBeforeFees: amountAfterFees + protocolFee + partnerFee + networkFee
+        // = 999_500_000 + 200_000 + 300_000 + 1_000_000 = 1_001_000_000 TOKEN_A
+        expect(result.amountBeforeFees.currency).toEqual(TOKEN_A)
+        expect(result.amountBeforeFees.toExact()).toEqual('1001000000')
+
+        // amountAfterFees: sellAmount from afterPartnerFees = 1_000_000_000 - 200_000 - 300_000 = 999_500_000 TOKEN_A
+        expect(result.amountAfterFees.currency).toEqual(TOKEN_A)
+        expect(result.amountAfterFees.toExact()).toEqual('999500000')
+
+        // amountAfterSlippage: sellAmount from afterSlippage = 1_000_000_000 TOKEN_A
+        expect(result.amountAfterSlippage.currency).toEqual(TOKEN_A)
+        expect(result.amountAfterSlippage.toExact()).toEqual('1000000000')
+
+        // networkFeeAmount: amountInSellCurrency = 1_000_000 TOKEN_A
+        expect(result.networkFeeAmount.currency).toEqual(TOKEN_A)
+        expect(result.networkFeeAmount.toExact()).toEqual('1000000')
+      })
+    })
+
+    describe('without partnerFee', () => {
+      it('should return correct amounts', () => {
+        const info = createReceiveAmountInfo({ isSell: false, hasPartnerFee: false, hasProtocolFee: true })
+        const result = getOrderTypeReceiveAmounts(info)
+
+        // amountBeforeFees: amountAfterFees + protocolFee + networkFee
+        // = 999_800_000 + 200_000 + 1_000_000 = 1_001_000_000 TOKEN_A
+        expect(result.amountBeforeFees.currency).toEqual(TOKEN_A)
+        expect(result.amountBeforeFees.toExact()).toEqual('1001000000')
+
+        // amountAfterFees: sellAmount from afterPartnerFees = 1_000_000_000 - 200_000 = 999_800_000 TOKEN_A
+        expect(result.amountAfterFees.currency).toEqual(TOKEN_A)
+        expect(result.amountAfterFees.toExact()).toEqual('999800000')
 
         // amountAfterSlippage: sellAmount from afterSlippage = 1_000_000_000 TOKEN_A
         expect(result.amountAfterSlippage.currency).toEqual(TOKEN_A)
