@@ -1,28 +1,98 @@
 import { isSellOrder } from '@cowprotocol/common-utils'
-import { type OrderParameters, getQuoteAmountsAndCosts } from '@cowprotocol/cow-sdk'
+import { getQuoteAmountsAndCosts, type OrderParameters } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 
 import { OrderTypeReceiveAmounts, ReceiveAmountInfo } from '../types'
 
+function calculateAmountAfterFees(
+  isSell: boolean,
+  afterPartnerFees: { sellAmount: CurrencyAmount<Currency>; buyAmount: CurrencyAmount<Currency> },
+  bridgeFee?: { amountInIntermediateCurrency: CurrencyAmount<Currency> },
+): CurrencyAmount<Currency> {
+  if (isSell) {
+    return bridgeFee
+      ? afterPartnerFees.buyAmount.subtract(bridgeFee.amountInIntermediateCurrency)
+      : afterPartnerFees.buyAmount
+  }
+  return afterPartnerFees.sellAmount
+}
+
+function getOrderTypeReceiveAmountsWithoutProtocolFee(
+  isSell: boolean,
+  beforeNetworkCosts: { sellAmount: CurrencyAmount<Currency>; buyAmount: CurrencyAmount<Currency> },
+  afterPartnerFees: { sellAmount: CurrencyAmount<Currency>; buyAmount: CurrencyAmount<Currency> },
+  afterSlippage: { sellAmount: CurrencyAmount<Currency>; buyAmount: CurrencyAmount<Currency> },
+  networkFeeAmount: CurrencyAmount<Currency>,
+  bridgeFee?: { amountInIntermediateCurrency: CurrencyAmount<Currency> },
+): OrderTypeReceiveAmounts {
+  const amountBeforeFees = isSell ? beforeNetworkCosts.buyAmount : beforeNetworkCosts.sellAmount
+  const amountAfterFees = calculateAmountAfterFees(isSell, afterPartnerFees, bridgeFee)
+  const amountAfterSlippage = isSell ? afterSlippage.buyAmount : afterSlippage.sellAmount
+
+  return {
+    amountBeforeFees,
+    amountAfterFees,
+    amountAfterSlippage,
+    networkFeeAmount,
+  }
+}
+
+function getOrderTypeReceiveAmountsWithProtocolFee(
+  isSell: boolean,
+  afterPartnerFees: { sellAmount: CurrencyAmount<Currency>; buyAmount: CurrencyAmount<Currency> },
+  afterSlippage: { sellAmount: CurrencyAmount<Currency>; buyAmount: CurrencyAmount<Currency> },
+  networkFeeAmount: CurrencyAmount<Currency>,
+  protocolFee: { amount: CurrencyAmount<Currency> },
+  partnerFee: { amount: CurrencyAmount<Currency> },
+  bridgeFee?: { amountInIntermediateCurrency: CurrencyAmount<Currency> },
+): OrderTypeReceiveAmounts {
+  const amountAfterFees = calculateAmountAfterFees(isSell, afterPartnerFees, bridgeFee)
+  const protocolFeeAmount = protocolFee.amount
+  const partnerFeeAmount = partnerFee.amount
+
+  const amountBeforeFees = amountAfterFees.add(protocolFeeAmount).add(partnerFeeAmount).add(networkFeeAmount)
+  const amountAfterSlippage = isSell ? afterSlippage.buyAmount : afterSlippage.sellAmount
+
+  return {
+    amountBeforeFees,
+    amountAfterFees,
+    amountAfterSlippage,
+    networkFeeAmount,
+  }
+}
+
 export function getOrderTypeReceiveAmounts(info: ReceiveAmountInfo): OrderTypeReceiveAmounts {
   const {
     isSell,
-    costs: { networkFee, bridgeFee },
+    costs: { networkFee, bridgeFee, protocolFee, partnerFee },
+    beforeNetworkCosts,
     afterPartnerFees,
     afterSlippage,
-    beforeNetworkCosts,
   } = info
 
-  return {
-    amountBeforeFees: isSell ? beforeNetworkCosts.buyAmount : beforeNetworkCosts.sellAmount,
-    amountAfterFees: isSell
-      ? bridgeFee
-        ? afterPartnerFees.buyAmount.subtract(bridgeFee.amountInIntermediateCurrency)
-        : afterPartnerFees.buyAmount
-      : afterPartnerFees.sellAmount,
-    amountAfterSlippage: isSell ? afterSlippage.buyAmount : afterSlippage.sellAmount,
-    networkFeeAmount: isSell ? networkFee.amountInBuyCurrency : networkFee.amountInSellCurrency,
+  const hasProtocolFee = (protocolFee?.bps ?? 0) > 0
+  const networkFeeAmount = isSell ? networkFee.amountInBuyCurrency : networkFee.amountInSellCurrency
+
+  if (!hasProtocolFee || !protocolFee) {
+    return getOrderTypeReceiveAmountsWithoutProtocolFee(
+      isSell,
+      beforeNetworkCosts,
+      afterPartnerFees,
+      afterSlippage,
+      networkFeeAmount,
+      bridgeFee,
+    )
   }
+
+  return getOrderTypeReceiveAmountsWithProtocolFee(
+    isSell,
+    afterPartnerFees,
+    afterSlippage,
+    networkFeeAmount,
+    protocolFee,
+    partnerFee,
+    bridgeFee,
+  )
 }
 
 export function getTotalCosts(
@@ -30,8 +100,10 @@ export function getTotalCosts(
   additionalCosts?: CurrencyAmount<Currency>,
 ): CurrencyAmount<Currency> {
   const { networkFeeAmount } = getOrderTypeReceiveAmounts(info)
-
-  const fee = networkFeeAmount.add(info.costs.partnerFee.amount)
+  let fee = networkFeeAmount.add(info.costs.partnerFee.amount)
+  if (info.costs.protocolFee?.amount) {
+    fee = fee.add(info.costs.protocolFee.amount)
+  }
 
   return additionalCosts ? fee.add(additionalCosts) : fee
 }
@@ -47,6 +119,7 @@ export function getReceiveAmountInfo(
   _partnerFeeBps: number | undefined,
   intermediateCurrency?: Currency,
   bridgeFeeRaw?: bigint,
+  protocolFeeBps?: number,
 ): ReceiveAmountInfo {
   const partnerFeeBps = _partnerFeeBps ?? 0
   const currenciesExcludingIntermediate = { inputCurrency, outputCurrency }
@@ -59,6 +132,7 @@ export function getReceiveAmountInfo(
     buyDecimals: outputCurrency.decimals,
     slippagePercentBps: Number(slippagePercent.numerator),
     partnerFeeBps,
+    protocolFeeBps,
   })
 
   const currenciesWithIntermediate = {
@@ -100,6 +174,16 @@ export function getReceiveAmountInfo(
         ),
         bps: result.costs.partnerFee.bps,
       },
+      protocolFee:
+        result.costs.protocolFee && result.costs.protocolFee.amount !== 0n
+          ? {
+              amount: CurrencyAmount.fromRawAmount(
+                isSell ? currenciesWithIntermediate.outputCurrency : inputCurrency,
+                result.costs.protocolFee.amount.toString(),
+              ),
+              bps: result.costs.protocolFee.bps,
+            }
+          : undefined,
       bridgeFee,
     },
     beforeNetworkCosts,

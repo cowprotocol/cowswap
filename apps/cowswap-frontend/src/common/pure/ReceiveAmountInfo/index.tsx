@@ -2,8 +2,9 @@ import React, { ReactNode } from 'react'
 
 import { isFractionFalsy } from '@cowprotocol/common-utils'
 import { TokenAmount } from '@cowprotocol/ui'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { Trans } from '@lingui/macro'
+import { t, Trans } from '@lingui/macro'
 
 import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'
 
@@ -20,6 +21,10 @@ export interface ReceiveAmountInfoTooltipProps {
   allowsOffchainSigning: boolean
 }
 
+function hasValidFee(amount: CurrencyAmount<Currency> | undefined, bps: number | undefined): boolean {
+  return !!amount && !!bps && !amount.equalTo(0)
+}
+
 export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps): ReactNode {
   const isEoaEthFlow = useIsEoaEthFlow()
 
@@ -27,7 +32,8 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps): 
   const {
     isSell,
     costs: {
-      partnerFee: { amount: partnerFeeAmount },
+      partnerFee: { amount: partnerFeeAmount, bps: partnerFeeBps },
+      protocolFee,
       bridgeFee,
     },
   } = receiveAmountInfo
@@ -35,9 +41,14 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps): 
   const { subsidy } = subsidyAndBalance
   const { discount } = subsidy
 
-  const hasPartnerFee = !isFractionFalsy(partnerFeeAmount)
+  const protocolFeeAmount = protocolFee?.amount
+  const protocolFeeBps = protocolFee?.bps
+
+  const hasPartnerFee = hasValidFee(partnerFeeAmount, partnerFeeBps)
+  const hasProtocolFee = hasValidFee(protocolFeeAmount, protocolFeeBps)
+  const hasAnyFee = hasPartnerFee || hasProtocolFee
   const hasNetworkFee = !isFractionFalsy(networkFeeAmount)
-  const hasFee = hasNetworkFee || hasPartnerFee
+  const hasFee = hasNetworkFee || hasAnyFee
 
   const isEoaNotEthFlow = allowsOffchainSigning && !isEoaEthFlow
 
@@ -54,17 +65,19 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps): 
 
       <NetworkFeeItem discount={discount} networkFeeAmount={networkFeeAmount} isSell={isSell} hasFee={hasFee} />
 
-      {(isEoaNotEthFlow || hasPartnerFee) && <FeeItem title="Fee" isSell={isSell} feeAmount={partnerFeeAmount} />}
+      {hasProtocolFee && <FeeItem title={t`Protocol fee`} isSell={isSell} feeAmount={protocolFeeAmount} />}
+
+      {hasPartnerFee && <FeeItem title={t`Fee`} isSell={isSell} feeAmount={partnerFeeAmount} />}
+
+      {!hasAnyFee && !isEoaNotEthFlow && <FeeItem title={t`Fee`} isSell={isSell} feeAmount={undefined} />}
 
       {bridgeFee && (
-        <FeeItem title="Bridge costs" isSell={isSell} feeAmount={bridgeFee?.amountInIntermediateCurrency} />
+        <FeeItem title={t`Bridge costs`} isSell={isSell} feeAmount={bridgeFee?.amountInIntermediateCurrency} />
       )}
 
       {!isFractionFalsy(amountAfterFees) && (
         <styledEl.TotalAmount>
-          <span>
-            <Trans>{!isSell ? 'From' : 'To'}</Trans>
-          </span>
+          <span>{!isSell ? t`From` : t`To`}</span>
           <span>
             <TokenAmount amount={amountAfterFees} tokenSymbol={amountAfterFees.currency} defaultValue="0" />
           </span>
