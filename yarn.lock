@@ -1812,19 +1812,6 @@
   resolved "https://registry.yarnpkg.com/@cowprotocol/cow-runner-game/-/cow-runner-game-0.2.9.tgz#3f94b3f370bd114f77db8b1d238cba3ef4e9d644"
   integrity sha512-rX7HnoV+HYEEkBaqVUsAkGGo0oBrExi+d6Io+8nQZYwZk+IYLmS9jdcIObsLviM2h4YX8+iin6NuKl35AaiHmg==
 
-"@cowprotocol/cow-sdk@npm:@cowprotocol/cow-sdk@pr-675":
-  version "7.1.1-pr-675-62c2bc63.0"
-  resolved "https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/7.1.1-pr-675-62c2bc63.0/8748c8ead153706906ece291de7d6bd43f7a2f5e#8748c8ead153706906ece291de7d6bd43f7a2f5e"
-  integrity sha512-2zsANTljgn6d7QPvxXuSP5ZfMy0xTUq/b/Qi/WAtDjg8WFZDtyuf0s38ZHUT67I7r8x7Oi6ScpMvxb3vkAqaRQ==
-  dependencies:
-    "@cowprotocol/sdk-app-data" "4.1.6-pr-675-62c2bc63.0"
-    "@cowprotocol/sdk-common" "0.3.0-pr-675-62c2bc63.0"
-    "@cowprotocol/sdk-config" "0.3.0-pr-675-62c2bc63.0"
-    "@cowprotocol/sdk-contracts-ts" "0.5.0-pr-675-62c2bc63.0"
-    "@cowprotocol/sdk-order-book" "0.2.1-pr-675-62c2bc63.0"
-    "@cowprotocol/sdk-order-signing" "0.1.11-pr-675-62c2bc63.0"
-    "@cowprotocol/sdk-trading" "0.4.6-pr-675-62c2bc63.0"
-
 "@cowprotocol/cow-sdk@npm:@cowprotocol/cow-sdk@pr-689":
   version "7.1.1-pr-689-fff0936f.0"
   resolved "https://npm.pkg.github.com/download/@cowprotocol/cow-sdk/7.1.1-pr-689-fff0936f.0/660402e9b19a006b8833f374fb2e38dcb4f2a799#660402e9b19a006b8833f374fb2e38dcb4f2a799"
@@ -1844,18 +1831,6 @@
   integrity sha512-wPy0p1HibKKBjGrH9iRYDGGYIzIJQORRAdy/IB+PRojBLTeBEkTp9HKvNHwDaPhdAlV19e/U5p65WM4b5sKW5A==
   dependencies:
     "@cowprotocol/sdk-common" "0.3.0"
-    ajv "^8.11.0"
-    cross-fetch "^3.1.5"
-    ipfs-only-hash "^4.0.0"
-    json-stringify-deterministic "^1.0.8"
-    multiformats "^9.6.4"
-
-"@cowprotocol/sdk-app-data@4.1.6-pr-675-62c2bc63.0":
-  version "4.1.6-pr-675-62c2bc63.0"
-  resolved "https://npm.pkg.github.com/download/@cowprotocol/sdk-app-data/4.1.6-pr-675-62c2bc63.0/f01e0f57817331a457f26f888b0140f63cc717fd#f01e0f57817331a457f26f888b0140f63cc717fd"
-  integrity sha512-xma224wHEOVp/xoUIlz3NmxJlvbMS/Yo43niIdYuSUVjfTa3MdDzPiCY9BWbc4P1sVCGGPM+8aY+/XGoLTfj1g==
-  dependencies:
-    "@cowprotocol/sdk-common" "0.3.0-pr-675-62c2bc63.0"
     ajv "^8.11.0"
     cross-fetch "^3.1.5"
     ipfs-only-hash "^4.0.0"
@@ -1893,11 +1868,6 @@
   resolved "https://registry.yarnpkg.com/@cowprotocol/sdk-common/-/sdk-common-0.3.0.tgz#f03a5e36d67d0c5cdb6be5bd7ceda879b751542d"
   integrity sha512-xk2VUjO4+XI5968r1pYFbqUxM2nmBcVPvGIw0pcqDpx4OLef0Flr3tuHtZY42RYYa6nNsNKOBV9Jd4RauYUOgQ==
 
-"@cowprotocol/sdk-common@0.3.0-pr-675-62c2bc63.0":
-  version "0.3.0-pr-675-62c2bc63.0"
-  resolved "https://npm.pkg.github.com/download/@cowprotocol/sdk-common/0.3.0-pr-675-62c2bc63.0/f879ed0eaa559a50ce8edddd80a6d94887dd5739#f879ed0eaa559a50ce8edddd80a6d94887dd5739"
-  integrity sha512-RRWTqZvMDVoax0I7fwGwhAbnE/MJi1xfipEmdqIh63efmnXC1tnJnxVPHn2luLHbH7FjpEmRy7yno96mPYaGqg==
-
 "@cowprotocol/sdk-common@0.3.0-pr-689-fff0936f.0":
   version "0.3.0-pr-689-fff0936f.0"
   resolved "https://npm.pkg.github.com/download/@cowprotocol/sdk-common/0.3.0-pr-689-fff0936f.0/0efc079a8f4d620242c6ec35b27e5d17c26762ca#0efc079a8f4d620242c6ec35b27e5d17c26762ca"
@@ -1923,14 +1893,6 @@
     exponential-backoff "^3.1.1"
     limiter "^2.1.0"
 
-"@cowprotocol/sdk-config@0.3.0-pr-675-62c2bc63.0":
-  version "0.3.0-pr-675-62c2bc63.0"
-  resolved "https://npm.pkg.github.com/download/@cowprotocol/sdk-config/0.3.0-pr-675-62c2bc63.0/90951558252df463fcd3ba434f249f24dd1998cb#90951558252df463fcd3ba434f249f24dd1998cb"
-  integrity sha512-Za1Wea6GsbGBQux4A/n5EYxiJy2f4gBzbejXB5SitF1/S+caDUTI2MmVLGbK2oiYZsAmQz1PzvkpJ4QEWf5A3Q==
-  dependencies:
-    exponential-backoff "^3.1.1"
-    limiter "^2.1.0"
-
 "@cowprotocol/sdk-config@0.3.0-pr-689-fff0936f.0":
   version "0.3.0-pr-689-fff0936f.0"
   resolved "https://npm.pkg.github.com/download/@cowprotocol/sdk-config/0.3.0-pr-689-fff0936f.0/14eacfcc52b2b74bc27873b882eaf3b16ce98dfc#14eacfcc52b2b74bc27873b882eaf3b16ce98dfc"
@@ -1946,14 +1908,6 @@
   dependencies:
     "@cowprotocol/sdk-common" "0.3.0"
     "@cowprotocol/sdk-config" "0.3.0"
-
-"@cowprotocol/sdk-contracts-ts@0.5.0-pr-675-62c2bc63.0":
-  version "0.5.0-pr-675-62c2bc63.0"
-  resolved "https://npm.pkg.github.com/download/@cowprotocol/sdk-contracts-ts/0.5.0-pr-675-62c2bc63.0/b945ccaff3590157adea747f9956a136252a27bd#b945ccaff3590157adea747f9956a136252a27bd"
-  integrity sha512-Ff1AFAz3hRmnVgsEZsPT7BI7vm8EJ1NMewJeERSgit0da5S5pTb1LaBsb1KP3xQS+5mIw/8xZqz7Wk3Dlqnqbg==
-  dependencies:
-    "@cowprotocol/sdk-common" "0.3.0-pr-675-62c2bc63.0"
-    "@cowprotocol/sdk-config" "0.3.0-pr-675-62c2bc63.0"
 
 "@cowprotocol/sdk-contracts-ts@0.5.0-pr-689-fff0936f.0":
   version "0.5.0-pr-689-fff0936f.0"
@@ -1990,17 +1944,6 @@
     exponential-backoff "^3.1.2"
     limiter "^3.0.0"
 
-"@cowprotocol/sdk-order-book@0.2.1-pr-675-62c2bc63.0":
-  version "0.2.1-pr-675-62c2bc63.0"
-  resolved "https://npm.pkg.github.com/download/@cowprotocol/sdk-order-book/0.2.1-pr-675-62c2bc63.0/0838c39160d54a2768f64e7b89529f2c106dfd02#0838c39160d54a2768f64e7b89529f2c106dfd02"
-  integrity sha512-LVIRKCBAxbQucXCnWa0B5MC/00ROaGulZ67gjWcAv6EzsZYkaSVNq40UL2BX8BqZwkO7ci2O4pcYnBxJL4qQXg==
-  dependencies:
-    "@cowprotocol/sdk-common" "0.3.0-pr-675-62c2bc63.0"
-    "@cowprotocol/sdk-config" "0.3.0-pr-675-62c2bc63.0"
-    cross-fetch "^3.2.0"
-    exponential-backoff "^3.1.2"
-    limiter "^3.0.0"
-
 "@cowprotocol/sdk-order-book@0.2.1-pr-689-fff0936f.0":
   version "0.2.1-pr-689-fff0936f.0"
   resolved "https://npm.pkg.github.com/download/@cowprotocol/sdk-order-book/0.2.1-pr-689-fff0936f.0/79f69222602d106ef092a73ccaa0a1bffbae07b5#79f69222602d106ef092a73ccaa0a1bffbae07b5"
@@ -2021,16 +1964,6 @@
     "@cowprotocol/sdk-config" "0.3.0"
     "@cowprotocol/sdk-contracts-ts" "0.4.4"
     "@cowprotocol/sdk-order-book" "0.2.0"
-
-"@cowprotocol/sdk-order-signing@0.1.11-pr-675-62c2bc63.0":
-  version "0.1.11-pr-675-62c2bc63.0"
-  resolved "https://npm.pkg.github.com/download/@cowprotocol/sdk-order-signing/0.1.11-pr-675-62c2bc63.0/17780e469e7718e0c047fc80ee141877b00f81e6#17780e469e7718e0c047fc80ee141877b00f81e6"
-  integrity sha512-F0WOB/dVMOWUgqq0xK6E/tUGOWlLiFckmwoSQ02eZ5jKLsZFeMrSLZ72y1nJNN76YOx+OxdrKz6T9ddXT34ksw==
-  dependencies:
-    "@cowprotocol/sdk-common" "0.3.0-pr-675-62c2bc63.0"
-    "@cowprotocol/sdk-config" "0.3.0-pr-675-62c2bc63.0"
-    "@cowprotocol/sdk-contracts-ts" "0.5.0-pr-675-62c2bc63.0"
-    "@cowprotocol/sdk-order-book" "0.2.1-pr-675-62c2bc63.0"
 
 "@cowprotocol/sdk-order-signing@0.1.11-pr-689-fff0936f.0":
   version "0.1.11-pr-689-fff0936f.0"
@@ -2063,19 +1996,6 @@
     "@cowprotocol/sdk-contracts-ts" "0.4.4"
     "@cowprotocol/sdk-order-book" "0.2.0"
     "@cowprotocol/sdk-order-signing" "0.1.10"
-    deepmerge "^4.3.1"
-
-"@cowprotocol/sdk-trading@0.4.6-pr-675-62c2bc63.0":
-  version "0.4.6-pr-675-62c2bc63.0"
-  resolved "https://npm.pkg.github.com/download/@cowprotocol/sdk-trading/0.4.6-pr-675-62c2bc63.0/a5dc3c2dae958262b89221bfa3999b408b967bb1#a5dc3c2dae958262b89221bfa3999b408b967bb1"
-  integrity sha512-piGRxDNV8BwTxlw1FZy6rbNJ4omegZQPP3dTxDrXcniCtnjm257OEyBz2zCEPoW6D0NApnerHdvUo5B4UfuXaQ==
-  dependencies:
-    "@cowprotocol/sdk-app-data" "4.1.6-pr-675-62c2bc63.0"
-    "@cowprotocol/sdk-common" "0.3.0-pr-675-62c2bc63.0"
-    "@cowprotocol/sdk-config" "0.3.0-pr-675-62c2bc63.0"
-    "@cowprotocol/sdk-contracts-ts" "0.5.0-pr-675-62c2bc63.0"
-    "@cowprotocol/sdk-order-book" "0.2.1-pr-675-62c2bc63.0"
-    "@cowprotocol/sdk-order-signing" "0.1.11-pr-675-62c2bc63.0"
     deepmerge "^4.3.1"
 
 "@cowprotocol/sdk-trading@0.4.6-pr-689-fff0936f.0":

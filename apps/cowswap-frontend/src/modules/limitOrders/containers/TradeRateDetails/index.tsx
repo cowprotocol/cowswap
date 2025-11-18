@@ -1,6 +1,6 @@
 import { ReactElement, useCallback, useState } from 'react'
 
-import { t } from '@lingui/core/macro'
+import { t } from '@lingui/macro'
 
 import { TradeFees, TradeTotalCostsDetails } from 'modules/trade'
 import { Box } from 'modules/trade/containers/TradeTotalCostsDetails/styled'

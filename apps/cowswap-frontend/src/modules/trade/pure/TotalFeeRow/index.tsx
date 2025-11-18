@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { useLingui } from '@lingui/react/macro'
+import { t } from '@lingui/macro'
 import { Nullish } from 'types'
 
 import { ReviewOrderModalAmountRow } from '../ReviewOrderModalAmountRow'
@@ -12,6 +12,5 @@ interface TotalFeeRowProps {
 }
 
 export function TotalFeeRow({ totalFeeUsd }: TotalFeeRowProps): ReactNode {
-  const { t } = useLingui()
   return <ReviewOrderModalAmountRow fiatAmount={totalFeeUsd} label={t`Total fee`} />
 }

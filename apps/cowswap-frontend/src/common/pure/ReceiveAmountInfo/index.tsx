@@ -4,8 +4,7 @@ import { isFractionFalsy } from '@cowprotocol/common-utils'
 import { TokenAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { t } from '@lingui/core/macro'
-import { Trans } from '@lingui/react/macro'
+import { t, Trans } from '@lingui/macro'
 
 import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'
 

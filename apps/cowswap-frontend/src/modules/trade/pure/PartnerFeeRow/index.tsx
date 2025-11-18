@@ -3,7 +3,7 @@ import { ReactNode } from 'react'
 import { bpsToPercent, formatPercent, FractionUtils } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { Trans } from '@lingui/react/macro'
+import { Trans } from '@lingui/macro'
 import { Nullish } from 'types'
 
 import { WidgetMarkdownContent } from 'modules/injectedWidget'

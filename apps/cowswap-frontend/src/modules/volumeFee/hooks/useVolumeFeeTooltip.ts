@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
-import { t } from '@lingui/core/macro'
+import { t } from '@lingui/macro'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 

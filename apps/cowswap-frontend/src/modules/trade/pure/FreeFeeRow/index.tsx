@@ -2,7 +2,7 @@ import { ReactElement } from 'react'
 
 import { UI } from '@cowprotocol/ui'
 
-import { Trans, useLingui } from '@lingui/react/macro'
+import { t, Trans } from '@lingui/macro'
 import styled from 'styled-components/macro'
 
 import { ReviewOrderModalAmountRow } from '../ReviewOrderModalAmountRow'
@@ -16,7 +16,6 @@ interface FreeFeeRowProps {
 }
 
 export function FreeFeeRow({ withTimelineDot = true }: FreeFeeRowProps): ReactElement {
-  const { t } = useLingui()
 
   return (
     <ReviewOrderModalAmountRow
