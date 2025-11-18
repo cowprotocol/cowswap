@@ -27,5 +27,3 @@ export const useExtractText = (): {
 
   return { extractTextFromStringOrI18nDescriptor }
 }
-
-export const isLinguiInternationalizationEnabled = !!process.env.REACT_APP_LINGUI_INTERNATIONALIZATION
