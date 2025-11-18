@@ -15,6 +15,7 @@ import { useDarkModeManager, useUserLocaleManager } from 'legacy/state/user/hook
 import { parameterizeTradeRoute, useGetTradeUrlParams } from 'modules/trade'
 
 import { APP_HEADER_ELEMENT_ID } from 'common/constants/common'
+import { useIsInternationalizationEnabled } from 'common/hooks/featureFlags/useIsInternationalizationEnabled'
 import { useCustomTheme } from 'common/hooks/useCustomTheme'
 import { useMenuItems } from 'common/hooks/useMenuItems'
 
@@ -44,6 +45,7 @@ export function AppMenu({ children }: AppMenuProps): ReactNode {
   const customTheme = useCustomTheme()
   const getTradeUrlParams = useGetTradeUrlParams()
   const { t } = useLingui()
+  const isInternationalizationEnabled = useIsInternationalizationEnabled()
 
   const settingsNavItems = useMemo(
     () => [
@@ -110,6 +112,7 @@ export function AppMenu({ children }: AppMenuProps): ReactNode {
       productVariant={PRODUCT_VARIANT}
       settingsNavItems={settingsNavItems}
       showGlobalSettings
+      isInternationalizationEnabled={isInternationalizationEnabled}
     />
   )
 }

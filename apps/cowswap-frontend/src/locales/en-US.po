@@ -911,6 +911,10 @@ msgstr "APR"
 msgid "CoW Protocol Explorer"
 msgstr "CoW Protocol Explorer"
 
+#: apps/cowswap-frontend/src/modules/notifications/pure/NotificationSettingsPopover.tsx
+msgid "Got it"
+msgstr "Got it"
+
 #: apps/cowswap-frontend/src/common/pure/CoWAmmBannerContent/index.tsx
 msgid "pools"
 msgstr "pools"
@@ -1702,6 +1706,10 @@ msgstr "This is an"
 msgid "Something went wrong creating your order"
 msgstr "Something went wrong creating your order"
 
+#: apps/cowswap-frontend/src/legacy/components/Header/AccountElement/NotificationAlertPopover.tsx
+msgid "Enable order alerts"
+msgstr "Enable order alerts"
+
 #: libs/common-utils/src/swapErrorToUserReadableMessage.tsx
 msgid "This transaction will not succeed either due to price movement or fee on transfer. Try increasing your slippage tolerance."
 msgstr "This transaction will not succeed either due to price movement or fee on transfer. Try increasing your slippage tolerance."
@@ -2128,6 +2136,10 @@ msgstr "BFF did not return a price for '{currencyAddress}' on chain '{currencyCh
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/index.tsx
 msgid "This tool helps you recover your funds."
 msgstr "This tool helps you recover your funds."
+
+#: apps/cowswap-frontend/src/legacy/components/Header/AccountElement/NotificationAlertPopover.tsx
+msgid "Enable trade alerts"
+msgstr "Enable trade alerts"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 msgid "Transaction completed"
@@ -2642,6 +2654,10 @@ msgstr "{prefix}-hooks allow you to automatically execute any action {position} 
 msgid "Your order expired. This could be due to gas spikes, volatile prices, or problems with the network."
 msgstr "Your order expired. This could be due to gas spikes, volatile prices, or problems with the network."
 
+#: apps/cowswap-frontend/src/legacy/components/Header/AccountElement/NotificationAlertPopover.tsx
+msgid "Not now"
+msgstr "Not now"
+
 #: apps/cowswap-frontend/src/pages/Account/Tokens/TokensOverview.tsx
 msgid "Unsupported network"
 msgstr "Unsupported network"
@@ -2699,6 +2715,10 @@ msgstr "CoW Swap is the only exchange that matches Coincidences of Wants (CoWs):
 #: apps/cowswap-frontend/src/modules/bridge/pure/ProxyAccountBanner/index.tsx
 msgid "CoW Swap uses a dedicated {accountProxyLabelString}, controlled only by you, to ensure smooooth bridging. Confirm the recipient address above is <0/>"
 msgstr "CoW Swap uses a dedicated {accountProxyLabelString}, controlled only by you, to ensure smooooth bridging. Confirm the recipient address above is <0/>"
+
+#: apps/cowswap-frontend/src/modules/notifications/pure/NotificationSettingsPopover.tsx
+msgid "Trade alerts enabled"
+msgstr "Trade alerts enabled"
 
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
 #~ msgid "Your swap expires and will not execute if it is pending for longer than the selected duration.<0/><1/>{INPUT_OUTPUT_EXPLANATION}"
@@ -3405,6 +3425,10 @@ msgstr "The fill price of this order is close or at the market price and is expe
 msgid "My orders <0/>"
 msgstr "My orders <0/>"
 
+#: apps/cowswap-frontend/src/modules/notifications/pure/NotificationSettingsPopover.tsx
+msgid "Trade alert settings info"
+msgstr "Trade alert settings info"
+
 #: apps/cowswap-frontend/src/modules/twap/pure/CustomDeadlineSelector/index.tsx
 msgid "Define custom total time"
 msgstr "Define custom total time"
@@ -3414,6 +3438,10 @@ msgstr "Define custom total time"
 #: apps/cowswap-frontend/src/modules/trade/containers/TradeBasicConfirmDetails/index.tsx
 msgid "Expected to receive"
 msgstr "Expected to receive"
+
+#: apps/cowswap-frontend/src/modules/notifications/pure/NotificationSettingsPopover.tsx
+msgid "Change trade alert settings here"
+msgstr "Change trade alert settings here"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/RateInput/HeadingText.tsx
 msgid "Select input and output"
@@ -3535,6 +3563,10 @@ msgstr "The swap adapter contracts integrate Aave Flash Loans and CoW Swap to fa
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "Transaction completed!"
 msgstr "Transaction completed!"
+
+#: apps/cowswap-frontend/src/legacy/components/Header/AccountElement/NotificationAlertPopover.tsx
+msgid "When orders fill or expire"
+msgstr "When orders fill or expire"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/LpTokenLists/index.tsx
 msgid "No pool tokens available"
@@ -5011,6 +5043,10 @@ msgstr "Executes at"
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmount/index.tsx
 msgid "From (incl. costs)"
 msgstr "From (incl. costs)"
+
+#: apps/cowswap-frontend/src/legacy/components/Header/AccountElement/NotificationAlertPopover.tsx
+msgid "Get trade alerts"
+msgstr "Get trade alerts"
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 msgid "Aave Collateral Swap Flashloan"
