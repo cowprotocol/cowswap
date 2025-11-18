@@ -72,9 +72,18 @@ describe('FaviconAnimationController', () => {
     return mockPlay.mock.calls.filter(([frames]) => frames === frameSet.completedFrames).length
   }
 
+  it('does not queue completion for already finished orders on first update', () => {
+    const controller = new FaviconAnimationController(frameSet)
+
+    controller.update({ orderA: successState() })
+
+    expect(countCompletionPlays()).toBe(0)
+  })
+
   it('only queues a completion animation once for the same finished state', () => {
     const controller = new FaviconAnimationController(frameSet)
 
+    controller.update({ orderA: solvingState() })
     controller.update({ orderA: successState() })
     controller.update({}) // state pruned temporarily
     controller.update({ orderA: successState() }) // re-added while still success
@@ -85,6 +94,7 @@ describe('FaviconAnimationController', () => {
   it('queues another completion when an order returns to solving and finishes again', () => {
     const controller = new FaviconAnimationController(frameSet)
 
+    controller.update({ orderA: solvingState() })
     controller.update({ orderA: successState() })
     controller.update({ orderA: solvingState() })
     controller.update({ orderA: successState() })

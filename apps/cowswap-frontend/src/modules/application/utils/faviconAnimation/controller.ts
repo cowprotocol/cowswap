@@ -46,6 +46,9 @@ export class FaviconAnimationController {
     this.completionQueue = []
     this.currentCompletion = null
     this.isInitialized = false
+    this.previousSteps = {}
+    this.completedOrders.clear()
+    this.hasInProgress = false
     this.animator.stop()
   }
 
@@ -83,18 +86,15 @@ export class FaviconAnimationController {
 
   private enqueueCompleted(entries: Array<[string, OrderProgressBarState]>, suppressQueue: boolean): void {
     const nextSteps: Record<string, OrderProgressBarStepName | undefined> = {}
-    const seenOrderIds = new Set<string>()
 
     for (const [orderId, state] of entries) {
       const currentStep = state.progressBarStepName
       nextSteps[orderId] = currentStep
-      seenOrderIds.add(orderId)
 
       this.updateCompletionCache(orderId, currentStep)
       this.tryQueueCompletion(orderId, state, currentStep, suppressQueue)
     }
 
-    this.cleanupCompletedOrders(seenOrderIds)
     this.previousSteps = nextSteps
   }
 
@@ -123,14 +123,6 @@ export class FaviconAnimationController {
 
     if (!this.completionQueue.includes(orderId)) this.completionQueue.push(orderId)
     this.completedOrders.add(orderId)
-  }
-
-  private cleanupCompletedOrders(seenOrderIds: Set<string>): void {
-    for (const orderId of Array.from(this.completedOrders)) {
-      if (!seenOrderIds.has(orderId)) {
-        this.completedOrders.delete(orderId)
-      }
-    }
   }
 
   private handleInProgress(): void {
