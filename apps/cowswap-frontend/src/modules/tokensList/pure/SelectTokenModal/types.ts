@@ -45,5 +45,4 @@ export interface SelectTokenModalProps<T = TokenListCategory[] | null> {
   onInputPressEnter?(): void
   onOpenManageWidget(): void
   onDismiss(): void
-  onSelectChain?(chain: ChainInfo): void
 }
