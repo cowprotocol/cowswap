@@ -17,7 +17,7 @@ import IMG_ICON_MENU_HAMBURGER from '@cowprotocol/assets/images/menu-hamburger.s
 import IMG_ICON_SETTINGS_GLOBAL from '@cowprotocol/assets/images/settings-global.svg'
 import IMG_ICON_X from '@cowprotocol/assets/images/x.svg'
 import { useMediaQuery, useOnClickOutside } from '@cowprotocol/common-hooks'
-import { addBodyClass, isLinguiInternationalizationEnabled, removeBodyClass } from '@cowprotocol/common-utils'
+import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
 
 import { i18n } from '@lingui/core'
 import { t } from '@lingui/core/macro'
@@ -725,6 +725,7 @@ interface GlobalSettingsDropdownProps {
   mobileMode: boolean
   rootDomain: string
   settingsNavItems?: MenuItem[]
+  isInternationalizationEnabled?: boolean
 }
 
 // Custom hook for portal dropdown positioning
@@ -759,6 +760,7 @@ const GlobalSettingsDropdown = forwardRef<HTMLUListElement, GlobalSettingsDropdo
     LinkComponent,
     languageNavItems,
     buttonRef,
+    isInternationalizationEnabled,
   } = props
   const position = usePortalPosition(buttonRef, isOpen, mobileMode)
 
@@ -794,7 +796,7 @@ const GlobalSettingsDropdown = forwardRef<HTMLUListElement, GlobalSettingsDropdo
     )
   })
 
-  const languageItems = languageNavItems && isLinguiInternationalizationEnabled && (
+  const languageItems = languageNavItems && isInternationalizationEnabled && (
     <LanguagesDropdownItems closeDropdown={closeDropdown} languageNavItems={languageNavItems} mobileMode={mobileMode} />
   )
 
@@ -867,6 +869,7 @@ interface MenuBarProps {
   productVariant: ProductVariant
   settingsNavItems?: MenuItem[]
   showGlobalSettings?: boolean
+  isInternationalizationEnabled?: boolean
 }
 
 // TODO: Break down this large function into smaller functions
@@ -902,6 +905,7 @@ export const MenuBar = (props: MenuBarProps) => {
     productVariant,
     settingsNavItems,
     showGlobalSettings,
+    isInternationalizationEnabled,
   } = props
 
   const [isDaoOpen, setIsDaoOpen] = useState(false)
@@ -1053,6 +1057,7 @@ export const MenuBar = (props: MenuBarProps) => {
                     ref={settingsDropdownRef}
                     rootDomain={rootDomain}
                     settingsNavItems={settingsNavItems}
+                    isInternationalizationEnabled={isInternationalizationEnabled}
                   />
                 ) : (
                   // Desktop: Use Portal for positioning
@@ -1067,6 +1072,7 @@ export const MenuBar = (props: MenuBarProps) => {
                       ref={settingsDropdownRef}
                       rootDomain={rootDomain}
                       settingsNavItems={settingsNavItems}
+                      isInternationalizationEnabled={isInternationalizationEnabled}
                     />
                   </Portal>
                 ))}
