@@ -148,7 +148,7 @@ export function createOutputChainsState({
 
   if (!isSourceChainSupportedByBridge) {
     // Source chain is unsupported by the bridge provider; fall back to non-bridge behavior.
-    return createSingleChainState(selectedTargetChainId, currentChainInfo)
+    return createSingleChainState(chainId, currentChainInfo)
   }
 
   return {

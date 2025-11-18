@@ -45,4 +45,21 @@ describe('useChainsToSelect state builders', () => {
       SupportedChainId.AVALANCHE,
     ])
   })
+
+  it('falls back to wallet chain when bridge does not support the source chain', () => {
+    const state = createOutputChainsState({
+      selectedTargetChainId: SupportedChainId.BASE,
+      chainId: SupportedChainId.SEPOLIA,
+      currentChainInfo: createChainInfoForTests(SupportedChainId.SEPOLIA),
+      bridgeSupportedNetworks: [
+        createChainInfoForTests(SupportedChainId.MAINNET),
+        createChainInfoForTests(SupportedChainId.ARBITRUM_ONE),
+      ],
+      areUnsupportedChainsEnabled: true,
+      isLoading: false,
+    })
+
+    expect(state.defaultChainId).toBe(SupportedChainId.SEPOLIA)
+    expect(state.chains?.map((chain) => chain.id)).toEqual([SupportedChainId.SEPOLIA])
+  })
 })
