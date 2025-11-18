@@ -43,6 +43,11 @@ export function useBridgeSupportedTokens(
 
             if (isRouteAvailable) {
               tokens.forEach((token) => {
+                if (!token || !token.address || token.chainId === undefined) {
+                  console.warn('[bridgeTokens] Ignoring malformed token', token)
+                  return
+                }
+
                 const address = token.address.toLowerCase()
 
                 if (!acc.tokens[address]) {
@@ -65,9 +70,12 @@ export function useBridgeSupportedTokens(
         },
         { isRouteAvailable: false, tokens: {} },
       )
+      const tokens = Object.values(state.tokens)
+      const isRouteAvailable = tokens.length > 0 ? state.isRouteAvailable : false
+
       return {
-        isRouteAvailable: state.isRouteAvailable,
-        tokens: Object.values(state.tokens),
+        isRouteAvailable,
+        tokens,
       }
     },
     SWR_NO_REFRESH_OPTIONS,
