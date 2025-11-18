@@ -233,7 +233,7 @@ function TokenSearchRowRenderer({ row, selectTokenContext, importToken }: TokenS
     case 'token':
       return <TokenListItemContainer token={row.token} context={selectTokenContext} />
     case 'section-title': {
-      const tooltip = row.tooltip ?? ''
+      const tooltip = row.tooltip?.trim() || undefined
       return (
         <styledEl.SectionTitleRow>
           <TokenSourceTitle tooltip={tooltip}>{row.text}</TokenSourceTitle>
