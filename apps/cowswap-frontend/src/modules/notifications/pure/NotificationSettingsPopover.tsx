@@ -3,6 +3,8 @@ import { ReactNode, RefObject, useEffect, useRef } from 'react'
 import { Command } from '@cowprotocol/types'
 import { ButtonPrimary, Media, PopoverMobileMode, Tooltip, UI } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
 const PopoverContent = styled.div`
@@ -124,11 +126,15 @@ export function NotificationSettingsPopover({
   const popoverContent = (
     <PopoverContent
       role="dialog"
-      aria-label="Trade alert settings info"
+      aria-label={t`Trade alert settings info`}
       aria-describedby="notification-settings-description"
     >
-      <PopoverTitle>Trade alerts enabled</PopoverTitle>
-      <PopoverBody id="notification-settings-description">Change trade alert settings here</PopoverBody>
+      <PopoverTitle>
+        <Trans>Trade alerts enabled</Trans>
+      </PopoverTitle>
+      <PopoverBody id="notification-settings-description">
+        <Trans>Change trade alert settings here</Trans>
+      </PopoverBody>
       <PopoverActions>
         <PrimaryButton
           ref={primaryButtonRef}
@@ -139,7 +145,7 @@ export function NotificationSettingsPopover({
             onDismiss()
           }}
         >
-          Got it
+          <Trans>Got it</Trans>
         </PrimaryButton>
       </PopoverActions>
     </PopoverContent>
