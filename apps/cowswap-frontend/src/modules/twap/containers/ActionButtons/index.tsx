@@ -1,6 +1,7 @@
 import { useCallback } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 
 import { t } from '@lingui/core/macro'
 
@@ -49,6 +50,7 @@ export function ActionButtons({
   }, [tradeConfirmActions, twapConversionAnalytics, fallbackHandlerIsNotSet])
 
   const areWarningsAccepted = useAreWarningsAccepted()
+  const { isLimitOrdersProtocolFeeBannerEnabled } = useFeatureFlags()
 
   const primaryActionContext = {
     confirmTrade,
@@ -73,7 +75,7 @@ export function ActionButtons({
 
   return (
     <>
-      <ProtocolFeeInfoBanner />
+      {isLimitOrdersProtocolFeeBannerEnabled && <ProtocolFeeInfoBanner />}
       {buttons}
     </>
   )
