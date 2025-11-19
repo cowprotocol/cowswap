@@ -14,6 +14,8 @@ export class FaviconAnimationController {
   private currentCompletion: string | null = null
   private isInitialized = false
   private frameSet: FrameSet
+  private completedOrders = new Set<string>()
+  private hasInProgress = false
 
   constructor(frameSet: FrameSet) {
     this.frameSet = frameSet
@@ -24,6 +26,7 @@ export class FaviconAnimationController {
     const entries = Object.entries(state)
     const suppressQueue = !this.isInitialized
     const hasInProgress = entries.some(([, value]) => shouldAnimateInProgress(value))
+    this.hasInProgress = hasInProgress
     this.enqueueCompleted(entries, suppressQueue)
     this.isInitialized = true
     if (hasInProgress) {
@@ -43,6 +46,9 @@ export class FaviconAnimationController {
     this.completionQueue = []
     this.currentCompletion = null
     this.isInitialized = false
+    this.previousSteps = {}
+    this.completedOrders.clear()
+    this.hasInProgress = false
     this.animator.stop()
   }
 
@@ -85,16 +91,38 @@ export class FaviconAnimationController {
       const currentStep = state.progressBarStepName
       nextSteps[orderId] = currentStep
 
-      if (
-        !suppressQueue &&
-        isSuccess(currentStep) &&
-        this.previousSteps[orderId] !== currentStep &&
-        isRecentStateChange(state)
-      ) {
-        if (!this.completionQueue.includes(orderId)) this.completionQueue.push(orderId)
-      }
+      this.updateCompletionCache(orderId, currentStep)
+      this.tryQueueCompletion(orderId, state, currentStep, suppressQueue)
     }
+
     this.previousSteps = nextSteps
+  }
+
+  private updateCompletionCache(orderId: string, currentStep: OrderProgressBarStepName | undefined): void {
+    if (!isSuccess(currentStep)) {
+      this.completedOrders.delete(orderId)
+    }
+  }
+
+  private tryQueueCompletion(
+    orderId: string,
+    state: OrderProgressBarState,
+    currentStep: OrderProgressBarStepName | undefined,
+    suppressQueue: boolean,
+  ): void {
+    if (
+      suppressQueue ||
+      !isSuccess(currentStep) ||
+      this.completedOrders.has(orderId) ||
+      this.previousSteps[orderId] === currentStep ||
+      this.hasInProgress ||
+      !isRecentStateChange(state)
+    ) {
+      return
+    }
+
+    if (!this.completionQueue.includes(orderId)) this.completionQueue.push(orderId)
+    this.completedOrders.add(orderId)
   }
 
   private handleInProgress(): void {
