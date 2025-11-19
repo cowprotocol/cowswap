@@ -163,7 +163,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
   const { isOpen: isConfirmOpen } = useTradeConfirmState()
   const { search } = useLocation()
   const handleUnlock = useCallback(() => updateLimitOrdersState({ isUnlocked: true }), [updateLimitOrdersState])
-  const { isLimitOrdersUpgradeBannerEnabled } = useFeatureFlags()
+  const { isLimitOrdersUpgradeBannerEnabled, isLimitOrdersProtocolFeeBannerEnabled } = useFeatureFlags()
   const isWrapUnwrap = useIsWrapOrUnwrap()
 
   useEffect(() => {
@@ -230,7 +230,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
           {warnings}
 
           <styledEl.TradeButtonBox>
-            {isUnlocked && <ProtocolFeeInfoBanner />}
+            {isUnlocked && isLimitOrdersProtocolFeeBannerEnabled && <ProtocolFeeInfoBanner />}
             <TradeButtons isTradeContextReady={isTradeContextReady} />
           </styledEl.TradeButtonBox>
         </>
