@@ -40,22 +40,21 @@ export function TokensContent({
   const shouldShowRecentsInline = !areTokensLoading && !searchInput && (recentTokens?.length ?? 0) > 0
 
   const pinnedTokenKeys = useMemo(() => {
-    if (!shouldShowFavoritesInline && !shouldShowRecentsInline) {
+    // Only hide "Recent" tokens from the main list.
+    // Favorite tokens should still appear in "All tokens" so they participate
+    // in balance-based sorting and show their balances.
+    if (!shouldShowRecentsInline) {
       return undefined
     }
 
     const pinned = new Set<string>()
-
-    if (shouldShowFavoritesInline) {
-      favoriteTokens.forEach((token) => pinned.add(getTokenUniqueKey(token)))
-    }
 
     if (shouldShowRecentsInline && recentTokens) {
       recentTokens.forEach((token) => pinned.add(getTokenUniqueKey(token)))
     }
 
     return pinned
-  }, [favoriteTokens, recentTokens, shouldShowFavoritesInline, shouldShowRecentsInline])
+  }, [recentTokens, shouldShowRecentsInline])
 
   const tokensWithoutPinned = useMemo(() => {
     if (!pinnedTokenKeys) {
