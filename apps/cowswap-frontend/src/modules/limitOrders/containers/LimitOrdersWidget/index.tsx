@@ -35,6 +35,7 @@ import { LimitOrdersFormState, useLimitOrdersFormState } from '../../hooks/useLi
 import { useUpdateLimitOrdersRawState } from '../../hooks/useLimitOrdersRawState'
 import { useTradeFlowContext } from '../../hooks/useTradeFlowContext'
 import { InfoBanner } from '../../pure/InfoBanner'
+import { ProtocolFeeInfoBanner } from '../../pure/ProtocolFeeInfoBanner'
 import { limitOrdersSettingsAtom } from '../../state/limitOrdersSettingsAtom'
 import { limitRateAtom } from '../../state/limitRateAtom'
 import { DeadlineInput } from '../DeadlineInput'
@@ -229,6 +230,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
           {warnings}
 
           <styledEl.TradeButtonBox>
+            {isUnlocked && <ProtocolFeeInfoBanner />}
             <TradeButtons isTradeContextReady={isTradeContextReady} />
           </styledEl.TradeButtonBox>
         </>
