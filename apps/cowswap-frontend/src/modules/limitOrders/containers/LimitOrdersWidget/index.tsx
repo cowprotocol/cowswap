@@ -2,7 +2,7 @@ import { useAtomValue } from 'jotai'
 import React, { ReactElement, useCallback, useEffect, useMemo } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { isSellOrder } from '@cowprotocol/common-utils'
+import { isInjectedWidget, isSellOrder } from '@cowprotocol/common-utils'
 
 import { msg, t } from '@lingui/core/macro'
 import { Trans, useLingui } from '@lingui/react/macro'
@@ -165,6 +165,7 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
   const handleUnlock = useCallback(() => updateLimitOrdersState({ isUnlocked: true }), [updateLimitOrdersState])
   const { isLimitOrdersUpgradeBannerEnabled, isLimitOrdersProtocolFeeBannerEnabled } = useFeatureFlags()
   const isWrapUnwrap = useIsWrapOrUnwrap()
+  const isInjectedWidgetMode = isInjectedWidget()
 
   useEffect(() => {
     const skipLockScreen = search.includes('skipLockScreen')
@@ -230,7 +231,9 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
           {warnings}
 
           <styledEl.TradeButtonBox>
-            {isUnlocked && isLimitOrdersProtocolFeeBannerEnabled && <ProtocolFeeInfoBanner />}
+            {isUnlocked && !isInjectedWidgetMode && isLimitOrdersProtocolFeeBannerEnabled && (
+              <ProtocolFeeInfoBanner />
+            )}
             <TradeButtons isTradeContextReady={isTradeContextReady} />
           </styledEl.TradeButtonBox>
         </>

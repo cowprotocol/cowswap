@@ -2,6 +2,7 @@ import { useCallback } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { isInjectedWidget } from '@cowprotocol/common-utils'
 
 import { t } from '@lingui/core/macro'
 
@@ -51,6 +52,7 @@ export function ActionButtons({
 
   const areWarningsAccepted = useAreWarningsAccepted()
   const { isLimitOrdersProtocolFeeBannerEnabled } = useFeatureFlags()
+  const isInjectedWidgetMode = isInjectedWidget()
 
   const primaryActionContext = {
     confirmTrade,
@@ -75,7 +77,7 @@ export function ActionButtons({
 
   return (
     <>
-      {isLimitOrdersProtocolFeeBannerEnabled && <ProtocolFeeInfoBanner />}
+      {!isInjectedWidgetMode && isLimitOrdersProtocolFeeBannerEnabled && <ProtocolFeeInfoBanner />}
       {buttons}
     </>
   )
