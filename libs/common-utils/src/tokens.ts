@@ -14,3 +14,16 @@ export function isNativeAddress(tokenAddress: string, chainId: ChainId): boolean
 
   return native && doesTokenMatchSymbolOrAddress(native, tokenAddressLower)
 }
+
+export function getTokenAddressKey(address: string): string {
+  return address.toLowerCase()
+}
+
+export interface TokenIdentifier {
+  address: string
+  chainId: number
+}
+
+export function getTokenId(token: TokenIdentifier): string {
+  return `${token.chainId}:${getTokenAddressKey(token.address)}`
+}

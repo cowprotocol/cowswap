@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 
+import { getTokenId } from '@cowprotocol/common-utils'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { getUsdPriceStateKey, useUsdPrices } from 'modules/usdAmount'
@@ -25,7 +26,7 @@ export function useRefundAmounts(): TokenUsdAmounts | null {
     return tokensToRefund.reduce<TokenUsdAmounts>((acc, { token, balance }) => {
       const usdPrice = usdPrices[getUsdPriceStateKey(token)]
 
-      const tokenKey = token.address.toLowerCase()
+      const tokenKey = getTokenId(token)
 
       acc[tokenKey] = {
         token,
