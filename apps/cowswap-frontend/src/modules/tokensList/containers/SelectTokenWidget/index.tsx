@@ -1,4 +1,4 @@
-import { MouseEvent, ReactNode, useEffect, useState } from 'react'
+import { MouseEvent, ReactNode, useEffect, useRef, useState } from 'react'
 
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
@@ -14,6 +14,7 @@ import {
 import { MobileChainPanelPortal } from './MobileChainPanelPortal'
 import { InnerWrapper, ModalContainer, WidgetCard, WidgetOverlay, Wrapper } from './styled'
 
+import { useCloseTokenSelectWidget } from '../../hooks/useCloseTokenSelectWidget'
 import { ChainPanel } from '../../pure/ChainPanel'
 import { ImportListModal } from '../../pure/ImportListModal'
 import { ImportTokenModal } from '../../pure/ImportTokenModal'
@@ -26,6 +27,20 @@ export function SelectTokenWidget(props: SelectTokenWidgetProps): ReactNode {
   const isCompactLayout = useMediaQuery(Media.upToMedium(false))
   const [isMobileChainPanelOpen, setIsMobileChainPanelOpen] = useState(false)
   const isChainPanelVisible = hasChainPanel && !isCompactLayout
+  const closeTokenSelectWidget = useCloseTokenSelectWidget()
+
+  const closeTokenSelectWidgetRef =
+    useRef<ReturnType<typeof useCloseTokenSelectWidget>>(closeTokenSelectWidget)
+
+  useEffect(() => {
+    closeTokenSelectWidgetRef.current = closeTokenSelectWidget
+  }, [closeTokenSelectWidget])
+
+  useEffect(() => {
+    return () => {
+      closeTokenSelectWidgetRef.current?.({ overrideForceLock: true })
+    }
+  }, [])
 
   useEffect(() => {
     if (!shouldRender) {
