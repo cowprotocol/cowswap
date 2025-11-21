@@ -39,18 +39,15 @@ function getOrderTypeReceiveAmountsWithoutProtocolFee(
 
 function getOrderTypeReceiveAmountsWithProtocolFee(
   isSell: boolean,
+  beforeAllFees: ReceiveAmountInfo['beforeAllFees'],
   afterPartnerFees: { sellAmount: CurrencyAmount<Currency>; buyAmount: CurrencyAmount<Currency> },
   afterSlippage: { sellAmount: CurrencyAmount<Currency>; buyAmount: CurrencyAmount<Currency> },
   networkFeeAmount: CurrencyAmount<Currency>,
-  protocolFee: { amount: CurrencyAmount<Currency> },
-  partnerFee: { amount: CurrencyAmount<Currency> },
   bridgeFee?: { amountInIntermediateCurrency: CurrencyAmount<Currency> },
 ): OrderTypeReceiveAmounts {
   const amountAfterFees = calculateAmountAfterFees(isSell, afterPartnerFees, bridgeFee)
-  const protocolFeeAmount = protocolFee.amount
-  const partnerFeeAmount = partnerFee.amount
 
-  const amountBeforeFees = amountAfterFees.add(protocolFeeAmount).add(partnerFeeAmount).add(networkFeeAmount)
+  const amountBeforeFees = isSell ? beforeAllFees.buyAmount : beforeAllFees.sellAmount
   const amountAfterSlippage = isSell ? afterSlippage.buyAmount : afterSlippage.sellAmount
 
   return {
@@ -64,10 +61,11 @@ function getOrderTypeReceiveAmountsWithProtocolFee(
 export function getOrderTypeReceiveAmounts(info: ReceiveAmountInfo): OrderTypeReceiveAmounts {
   const {
     isSell,
-    costs: { networkFee, bridgeFee, protocolFee, partnerFee },
+    costs: { networkFee, bridgeFee, protocolFee },
     beforeNetworkCosts,
     afterPartnerFees,
     afterSlippage,
+    beforeAllFees,
   } = info
 
   const hasProtocolFee = (protocolFee?.bps ?? 0) > 0
@@ -86,11 +84,10 @@ export function getOrderTypeReceiveAmounts(info: ReceiveAmountInfo): OrderTypeRe
 
   return getOrderTypeReceiveAmountsWithProtocolFee(
     isSell,
+    beforeAllFees,
     afterPartnerFees,
     afterSlippage,
     networkFeeAmount,
-    protocolFee,
-    partnerFee,
     bridgeFee,
   )
 }
@@ -112,6 +109,7 @@ export function getTotalCosts(
 /**
  * Map native bigint amounts to CurrencyAmounts
  */
+// eslint-disable-next-line max-lines-per-function
 export function getReceiveAmountInfo(
   orderParams: OrderParameters,
   inputCurrency: Currency,
@@ -186,6 +184,16 @@ export function getReceiveAmountInfo(
             }
           : undefined,
       bridgeFee,
+    },
+    beforeAllFees: {
+      sellAmount: CurrencyAmount.fromRawAmount(
+        currenciesWithIntermediate.inputCurrency,
+        result.beforeAllFees.sellAmount.toString(),
+      ),
+      buyAmount: CurrencyAmount.fromRawAmount(
+        currenciesWithIntermediate.outputCurrency,
+        result.beforeAllFees.buyAmount.toString(),
+      ),
     },
     beforeNetworkCosts,
     afterNetworkCosts,

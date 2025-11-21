@@ -31,6 +31,11 @@ export interface ReceiveAmountInfo {
     }
   }
 
+  beforeAllFees: {
+    sellAmount: CurrencyAmount<Currency>
+    buyAmount: CurrencyAmount<Currency>
+  }
+
   beforeNetworkCosts: {
     sellAmount: CurrencyAmount<Currency>
     buyAmount: CurrencyAmount<Currency>

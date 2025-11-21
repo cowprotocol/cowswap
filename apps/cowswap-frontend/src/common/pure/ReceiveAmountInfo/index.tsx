@@ -36,8 +36,9 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps): 
       protocolFee,
       bridgeFee,
     },
+    beforeAllFees,
   } = receiveAmountInfo
-  const { amountAfterFees, amountBeforeFees, networkFeeAmount } = getOrderTypeReceiveAmounts(receiveAmountInfo)
+  const { amountAfterFees, networkFeeAmount } = getOrderTypeReceiveAmounts(receiveAmountInfo)
   const { subsidy } = subsidyAndBalance
   const { discount } = subsidy
 
@@ -52,6 +53,8 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps): 
 
   const isEoaNotEthFlow = allowsOffchainSigning && !isEoaEthFlow
 
+  const beforeAllFeesAmount = isSell ? beforeAllFees.buyAmount : beforeAllFees.sellAmount
+
   return (
     <styledEl.Box>
       <div>
@@ -59,7 +62,7 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps): 
           <Trans>Before costs</Trans>
         </span>
         <span>
-          <TokenAmount amount={amountBeforeFees} tokenSymbol={amountBeforeFees?.currency} defaultValue="0" />
+          <TokenAmount amount={beforeAllFeesAmount} tokenSymbol={beforeAllFeesAmount.currency} defaultValue="0" />
         </span>
       </div>
 

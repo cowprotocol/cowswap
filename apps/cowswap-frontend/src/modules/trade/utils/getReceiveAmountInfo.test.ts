@@ -83,6 +83,18 @@ function createReceiveAmountInfo(params: {
   const afterSlippageSell = sellAmount
   const afterSlippageBuy = buyAmount
 
+  const networkFeeAmount = isSell ? networkFeeInBuyCurrency : networkFeeInSellCurrency
+  let beforeAllFeesSell = beforeNetworkCostsSell
+  let beforeAllFeesBuy = beforeNetworkCostsBuy
+
+  if (hasProtocolFee && protocolFeeAmount) {
+    if (isSell) {
+      beforeAllFeesBuy = afterPartnerFeesBuy.add(protocolFeeAmount).add(partnerFeeAmount).add(networkFeeAmount)
+    } else {
+      beforeAllFeesSell = afterPartnerFeesSell.add(protocolFeeAmount).add(partnerFeeAmount).add(networkFeeAmount)
+    }
+  }
+
   // Quote price: 1:1 exchange rate
   const quotePrice = new Price({
     baseAmount: beforeNetworkCostsSell,
@@ -101,13 +113,18 @@ function createReceiveAmountInfo(params: {
         amount: partnerFeeAmount,
         bps: hasPartnerFee ? 3 : 0, // 3 bps
       },
-      protocolFee: hasProtocolFee && protocolFeeAmount
-        ? {
-            amount: protocolFeeAmount,
-            bps: 2, // 2 bps
-          }
-        : undefined,
+      protocolFee:
+        hasProtocolFee && protocolFeeAmount
+          ? {
+              amount: protocolFeeAmount,
+              bps: 2, // 2 bps
+            }
+          : undefined,
       bridgeFee: undefined,
+    },
+    beforeAllFees: {
+      sellAmount: beforeAllFeesSell,
+      buyAmount: beforeAllFeesBuy,
     },
     beforeNetworkCosts: {
       sellAmount: beforeNetworkCostsSell,
