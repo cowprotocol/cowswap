@@ -1,4 +1,5 @@
 import { useAtomValue } from 'jotai'
+import { loadable } from 'jotai/utils'
 import { useMemo } from 'react'
 
 import useSWR, { SWRResponse } from 'swr'
@@ -6,6 +7,8 @@ import useSWR, { SWRResponse } from 'swr'
 import { fetchTokenList } from '../../services/fetchTokenList'
 import { allListsSourcesAtom, listsStatesMapAtom } from '../../state/tokenLists/tokenListsStateAtom'
 import { ListState } from '../../types'
+
+const loadableListsStatesMapAtom = loadable(listsStatesMapAtom)
 
 export type ListSearchResponse =
   | {
@@ -19,15 +22,20 @@ export type ListSearchResponse =
 
 export function useSearchList(input: string | null): ListSearchResponse {
   const allTokensLists = useAtomValue(allListsSourcesAtom)
-  const listsStatesMap = useAtomValue(listsStatesMapAtom)
+  const result = useAtomValue(loadableListsStatesMapAtom)
 
   const existingList = useMemo(() => {
+    if (result.state !== 'hasData') {
+      return undefined
+    }
+
+    const listsStatesMap = result.data
     const inputLowerCase = input?.toLowerCase()
 
     const list = allTokensLists.find((list) => list.source === inputLowerCase)
 
     return list ? listsStatesMap[list.source] : undefined
-  }, [allTokensLists, listsStatesMap, input])
+  }, [allTokensLists, result, input])
 
   const response = useSWR<ListState | null>(
     ['useSearchList', input, existingList],

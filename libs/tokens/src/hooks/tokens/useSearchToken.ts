@@ -1,4 +1,5 @@
 import { useAtomValue } from 'jotai'
+import { loadable } from 'jotai/utils'
 import { useEffect, useMemo, useState } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
@@ -9,12 +10,12 @@ import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import ms from 'ms.macro'
 import useSWR, { SWRResponse } from 'swr'
 
-import { searchTokensInApi } from '../../services/searchTokensInApi'
+import { useAllActiveTokens } from './useAllActiveTokens'
+
 import { environmentAtom } from '../../state/environmentAtom'
-import { allActiveTokensAtom, inactiveTokensAtom } from '../../state/tokens/allTokensAtom'
+import { inactiveTokensAtom } from '../../state/tokens/allTokensAtom'
 import { fetchTokenFromBlockchain } from '../../utils/fetchTokenFromBlockchain'
 import { getTokenSearchFilter } from '../../utils/getTokenSearchFilter'
-import { parseTokensFromApi } from '../../utils/parseTokensFromApi'
 
 const IN_LISTS_DEBOUNCE_TIME = ms`100ms`
 const IN_EXTERNALS_DEBOUNCE_TIME = ms`1s`
@@ -134,8 +135,10 @@ export function useSearchToken(input: string | null): TokenSearchResponse {
 }
 
 function useSearchTokensInLists(input: string | undefined): FromListsResult {
-  const activeTokens = useAtomValue(allActiveTokensAtom).tokens
-  const inactiveTokens = useAtomValue(inactiveTokensAtom)
+  const activeTokens = useAllActiveTokens().tokens
+  const loadableInactiveTokensAtom = useMemo(() => loadable(inactiveTokensAtom), [])
+  const inactiveResult = useAtomValue(loadableInactiveTokensAtom)
+  const inactiveTokens = inactiveResult.state === 'hasData' ? inactiveResult.data : []
 
   const { data: inListsResult } = useSWR<FromListsResult>(
     ['searchTokensInLists', input, activeTokens, inactiveTokens],
@@ -151,22 +154,6 @@ function useSearchTokensInLists(input: string | undefined): FromListsResult {
   )
 
   return inListsResult || emptyFromListsResult
-}
-
-// eslint-disable-next-line unused-imports/no-unused-vars
-function useSearchTokensInApi(
-  input: string | undefined,
-  isTokenAlreadyFoundByAddress: boolean,
-): SWRResponse<TokenWithLogo[] | null> {
-  const { chainId } = useAtomValue(environmentAtom)
-
-  return useSWR<TokenWithLogo[] | null>(['searchTokensInApi', input], () => {
-    if (isTokenAlreadyFoundByAddress || !input) {
-      return null
-    }
-
-    return searchTokensInApi(chainId, input).then((result) => parseTokensFromApi(result, chainId))
-  })
 }
 
 function useFetchTokenFromBlockchain(

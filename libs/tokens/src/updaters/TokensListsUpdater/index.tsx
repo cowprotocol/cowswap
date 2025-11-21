@@ -17,7 +17,6 @@ import { environmentAtom, updateEnvironmentAtom } from '../../state/environmentA
 import { upsertListsAtom } from '../../state/tokenLists/tokenListsActionsAtom'
 import { allListsSourcesAtom, tokenListsUpdatingAtom } from '../../state/tokenLists/tokenListsStateAtom'
 import { ListState } from '../../types'
-import { UserAddedTokensUpdater } from '../UserAddedTokensUpdater'
 
 const LAST_UPDATE_TIME_DEFAULT = 0
 
@@ -135,5 +134,16 @@ export function TokensListsUpdater({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chainId, isGeoBlockEnabled])
 
-  return <UserAddedTokensUpdater />
+  // NOTE:
+  // We previously returned <UserAddedTokensUpdater /> here.
+  // That component automatically removed user-added tokens from local storage
+  // whenever the same token also appeared in an active list. This caused a
+  // regression in the trade auto-import flow: after importing a token once,
+  // enabling a list containing that token would silently delete it from
+  // userAddedTokens, so disabling the list again re-triggered the import modal.
+  //
+  // To keep auto-import behavior predictable, user-added tokens must persist
+  // until the user explicitly removes them. The updater has therefore been
+  // removed; see tokens changelog entry "remove UserAddedTokensUpdater" (#5744).
+  return null
 }

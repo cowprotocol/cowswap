@@ -1,6 +1,5 @@
-import { ReactNode, useState } from 'react'
+import { ReactNode } from 'react'
 
-import { useCowAnalytics } from '@cowprotocol/analytics'
 import { getTokenListViewLink, ListState } from '@cowprotocol/tokens'
 import {
   ContextMenuTooltip,
@@ -9,7 +8,7 @@ import {
   ContextMenuItemText,
 } from '@cowprotocol/ui'
 
-import { Trans, useLingui } from '@lingui/react/macro'
+import { Trans } from '@lingui/react/macro'
 import { Settings, Trash2 } from 'react-feather'
 
 import { Toggle } from 'legacy/components/Toggle'
@@ -25,24 +24,14 @@ export interface TokenListItemProps {
   enabled: boolean
   toggleList(list: ListState, enabled: boolean): void
   removeList(list: ListState): void
+  viewListLabel: string
 }
 
 export function ListItem(props: TokenListItemProps): ReactNode {
-  const { list, removeList, toggleList, enabled } = props
-  const [isActive, setIsActive] = useState(enabled)
-  const cowAnalytics = useCowAnalytics()
-  const { t } = useLingui()
+  const { list, removeList, toggleList, enabled, viewListLabel } = props
 
   const toggle = (): void => {
     toggleList(list, enabled)
-    setIsActive((state) => !state)
-
-    const newState = !enabled
-    cowAnalytics.sendEvent({
-      category: CowSwapAnalyticsCategory.LIST,
-      action: `List ${newState ? 'Enabled' : 'Disabled'}`,
-      label: list.source,
-    })
   }
 
   const handleRemove = (): void => {
@@ -52,7 +41,7 @@ export function ListItem(props: TokenListItemProps): ReactNode {
   const { major, minor, patch } = list.list.version
 
   return (
-    <styledEl.Wrapper $enabled={isActive}>
+    <styledEl.Wrapper $enabled={enabled}>
       <TokenListDetails list={list.list}>
         <ContextMenuTooltip
           content={
@@ -62,7 +51,7 @@ export function ListItem(props: TokenListItemProps): ReactNode {
               </ContextMenuItemText>
               <ContextMenuExternalLink
                 href={getTokenListViewLink(list.source)}
-                label={t`View List`}
+                label={viewListLabel}
                 data-click-event={toCowSwapGtmEvent({
                   category: CowSwapAnalyticsCategory.LIST,
                   action: 'View List',
@@ -93,7 +82,7 @@ export function ListItem(props: TokenListItemProps): ReactNode {
       </TokenListDetails>
       <div>
         <Toggle
-          isActive={isActive}
+          isActive={enabled}
           toggle={toggle}
           data-click-event={toCowSwapGtmEvent({
             category: CowSwapAnalyticsCategory.LIST,
