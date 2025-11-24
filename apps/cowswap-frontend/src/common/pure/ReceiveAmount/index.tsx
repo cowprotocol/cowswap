@@ -18,6 +18,7 @@ export interface ReceiveAmountProps {
   currency: Currency
   subsidyAndBalance: BalanceAndSubsidy
   allowsOffchainSigning: boolean
+  loading?: boolean
 }
 
 export function ReceiveAmount(props: ReceiveAmountProps): ReactNode {
