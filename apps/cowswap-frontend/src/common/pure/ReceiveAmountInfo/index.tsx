@@ -67,11 +67,11 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps): 
         </span>
       </div>
 
-      <NetworkFeeItem discount={discount} networkFeeAmount={networkFeeAmount} isSell={isSell} hasFee={hasFee} />
-
       {hasProtocolFee && <FeeItem title={t`Protocol fee`} isSell={isSell} feeAmount={protocolFeeAmount} />}
 
       {hasPartnerFee && <FeeItem title={t`Partner fee`} isSell={isSell} feeAmount={partnerFeeAmount} />}
+
+      <NetworkFeeItem discount={discount} networkFeeAmount={networkFeeAmount} isSell={isSell} hasFee={hasFee} />
 
       {!hasAnyFee && !isEoaNotEthFlow && <FeeItem title={t`Fee`} isSell={isSell} feeAmount={undefined} />}
 
