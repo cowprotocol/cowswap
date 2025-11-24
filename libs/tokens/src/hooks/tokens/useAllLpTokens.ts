@@ -1,23 +1,18 @@
-import { useAtomValue } from 'jotai'
-import { loadable } from 'jotai/utils'
+import { useAtomValue } from 'jotai/index'
 
 import { LpToken, SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { LpTokenProvider } from '@cowprotocol/types'
 
 import useSWR from 'swr'
 
-import { useAllActiveTokens } from './useAllActiveTokens'
-
-import { inactiveTokensAtom } from '../../state/tokens/allTokensAtom'
+import { allActiveTokensAtom, inactiveTokensAtom } from '../../state/tokens/allTokensAtom'
 import { TokenListCategory } from '../../types'
 
 const fallbackData: LpToken[] = []
-const loadableInactiveTokensAtom = loadable(inactiveTokensAtom)
 
 export function useAllLpTokens(categories: TokenListCategory[] | null): LpToken[] {
-  const activeTokens = useAllActiveTokens().tokens
-  const inactiveResult = useAtomValue(loadableInactiveTokensAtom)
-  const inactiveTokens = inactiveResult.state === 'hasData' ? inactiveResult.data : []
+  const activeTokens = useAtomValue(allActiveTokensAtom).tokens
+  const inactiveTokens = useAtomValue(inactiveTokensAtom)
 
   return useSWR(
     categories ? [activeTokens, inactiveTokens, categories] : null,

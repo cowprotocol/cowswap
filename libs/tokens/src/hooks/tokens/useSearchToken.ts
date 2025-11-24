@@ -1,5 +1,4 @@
 import { useAtomValue } from 'jotai'
-import { loadable } from 'jotai/utils'
 import { useEffect, useMemo, useState } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
@@ -10,12 +9,12 @@ import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import ms from 'ms.macro'
 import useSWR, { SWRResponse } from 'swr'
 
-import { useAllActiveTokens } from './useAllActiveTokens'
-
+import { searchTokensInApi } from '../../services/searchTokensInApi'
 import { environmentAtom } from '../../state/environmentAtom'
-import { inactiveTokensAtom } from '../../state/tokens/allTokensAtom'
+import { allActiveTokensAtom, inactiveTokensAtom } from '../../state/tokens/allTokensAtom'
 import { fetchTokenFromBlockchain } from '../../utils/fetchTokenFromBlockchain'
 import { getTokenSearchFilter } from '../../utils/getTokenSearchFilter'
+import { parseTokensFromApi } from '../../utils/parseTokensFromApi'
 
 const IN_LISTS_DEBOUNCE_TIME = ms`100ms`
 const IN_EXTERNALS_DEBOUNCE_TIME = ms`1s`
@@ -50,7 +49,6 @@ const emptyFromListsResult: FromListsResult = { tokensFromActiveLists: [], token
 export function useSearchToken(input: string | null): TokenSearchResponse {
   const inputLowerCase = input?.toLowerCase()
   const [isLoading, setIsLoading] = useState(false)
-  const { chainId } = useAtomValue(environmentAtom)
 
   const debouncedInputInList = useDebounce(inputLowerCase, IN_LISTS_DEBOUNCE_TIME)
   const debouncedInputInExternals = useDebounce(inputLowerCase, IN_EXTERNALS_DEBOUNCE_TIME)
@@ -58,10 +56,7 @@ export function useSearchToken(input: string | null): TokenSearchResponse {
   const isInputStale = debouncedInputInExternals !== inputLowerCase
 
   // Search in active and inactive lists
-  const { tokensFromActiveLists, tokensFromInactiveLists, listsLoading } = useSearchTokensInLists(
-    debouncedInputInList,
-    chainId,
-  )
+  const { tokensFromActiveLists, tokensFromInactiveLists } = useSearchTokensInLists(debouncedInputInList)
 
   const isTokenAlreadyFoundByAddress = useMemo(() => {
     return [...tokensFromActiveLists, ...tokensFromInactiveLists].some(
@@ -97,10 +92,10 @@ export function useSearchToken(input: string | null): TokenSearchResponse {
     if (isInputStale) return
 
     // Loading is finished when all sources are loaded
-    if (!apiIsLoading && !blockchainIsLoading && !listsLoading) {
+    if (!apiIsLoading && !blockchainIsLoading) {
       setIsLoading(false)
     }
-  }, [isInputStale, apiIsLoading, blockchainIsLoading, tokensFromActiveLists, tokensFromInactiveLists, listsLoading])
+  }, [isInputStale, apiIsLoading, blockchainIsLoading, tokensFromActiveLists, tokensFromInactiveLists])
 
   return useMemo(() => {
     if (!debouncedInputInList) {
@@ -138,20 +133,10 @@ export function useSearchToken(input: string | null): TokenSearchResponse {
   ])
 }
 
-type SearchTokensInListsResult = FromListsResult & { listsLoading: boolean }
+function useSearchTokensInLists(input: string | undefined): FromListsResult {
+  const activeTokens = useAtomValue(allActiveTokensAtom).tokens
+  const inactiveTokens = useAtomValue(inactiveTokensAtom)
 
-function useSearchTokensInLists(input: string | undefined, chainId: number): SearchTokensInListsResult {
-  const allActiveTokens = useAllActiveTokens()
-  const activeTokensReady = allActiveTokens.chainId === chainId
-  const activeTokens = activeTokensReady ? allActiveTokens.tokens : []
-
-  const loadableInactiveTokensAtom = useMemo(() => loadable(inactiveTokensAtom), [])
-  const inactiveResult = useAtomValue(loadableInactiveTokensAtom)
-  const inactiveTokensReady = inactiveResult.state === 'hasData'
-  const inactiveTokens =
-    inactiveResult.state === 'hasData' ? inactiveResult.data.filter((token) => token.chainId === chainId) : []
-
-  const listsLoading = !activeTokensReady || !inactiveTokensReady
   const { data: inListsResult } = useSWR<FromListsResult>(
     ['searchTokensInLists', input, activeTokens, inactiveTokens],
     () => {
@@ -165,7 +150,23 @@ function useSearchTokensInLists(input: string | undefined, chainId: number): Sea
     },
   )
 
-  return { ...(inListsResult || emptyFromListsResult), listsLoading }
+  return inListsResult || emptyFromListsResult
+}
+
+// eslint-disable-next-line unused-imports/no-unused-vars
+function useSearchTokensInApi(
+  input: string | undefined,
+  isTokenAlreadyFoundByAddress: boolean,
+): SWRResponse<TokenWithLogo[] | null> {
+  const { chainId } = useAtomValue(environmentAtom)
+
+  return useSWR<TokenWithLogo[] | null>(['searchTokensInApi', input], () => {
+    if (isTokenAlreadyFoundByAddress || !input) {
+      return null
+    }
+
+    return searchTokensInApi(chainId, input).then((result) => parseTokensFromApi(result, chainId))
+  })
 }
 
 function useFetchTokenFromBlockchain(

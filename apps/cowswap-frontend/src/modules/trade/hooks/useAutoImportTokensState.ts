@@ -1,14 +1,11 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { useMemo } from 'react'
 
 import { LpToken, TokenWithLogo } from '@cowprotocol/common-const'
 import { isTruthy } from '@cowprotocol/common-utils'
-import { useSearchNonExistentToken, useTokenBySymbolOrAddress, useUserAddedTokens } from '@cowprotocol/tokens'
+import { useSearchNonExistentToken } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { Currency } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
-
-import { useSelectTokenWidgetState } from 'modules/tokensList'
 
 import { ModalState, useModalState } from 'common/hooks/useModalState'
 
@@ -18,56 +15,14 @@ interface AutoImportTokensState {
   tokensToImport: Array<TokenWithLogo>
   modalState: ModalState<void>
 }
-
-function hasCurrencyNetworkMismatch(
-  chainId: number | null | undefined,
-  inputCurrency: Currency | null,
-  outputCurrency: Currency | null,
-): boolean {
-  const inputCurrencyNetworkMismatch = Boolean(inputCurrency && inputCurrency.chainId !== chainId)
-  const outputCurrencyNetworkMismatch = Boolean(outputCurrency && outputCurrency.chainId !== chainId)
-
-  return inputCurrencyNetworkMismatch || outputCurrencyNetworkMismatch
-}
-
-function getTokenSearchValue(rawToken: Nullish<string>, currencyNetworkMismatch: boolean): string | null {
-  if (currencyNetworkMismatch) {
-    return null
-  }
-
-  return rawToken || null
-}
-
-function useAutoImportModalFromTrigger(shouldTriggerModal: boolean): ModalState<void> {
-  const modalState = useModalState<void>()
-  const prevShouldTriggerRef = useRef(false)
-
-  useEffect(() => {
-    const prev = prevShouldTriggerRef.current
-    const { isModalOpen, openModal, closeModal } = modalState
-
-    if (shouldTriggerModal && !prev && !isModalOpen) {
-      openModal()
-    } else if (!shouldTriggerModal && isModalOpen) {
-      closeModal()
-    }
-
-    prevShouldTriggerRef.current = shouldTriggerModal
-  }, [shouldTriggerModal, modalState])
-
-  return modalState
-}
-
+// TODO: Reduce function complexity by extracting logic
+// eslint-disable-next-line complexity
 export function useAutoImportTokensState(
   inputToken: Nullish<string>,
   outputToken: Nullish<string>,
 ): AutoImportTokensState {
-  const derivedState = useDerivedTradeState()
-  const inputCurrency = derivedState?.inputCurrency ?? null
-  const outputCurrency = derivedState?.outputCurrency ?? null
+  const { inputCurrency, outputCurrency } = useDerivedTradeState() || {}
   const { chainId } = useWalletInfo()
-  const { open: isTokenSelectOpen } = useSelectTokenWidgetState()
-  const userAddedTokens = useUserAddedTokens()
 
   /**
    * If sell or buy token is already derived, and it doesn't match current network
@@ -76,35 +31,22 @@ export function useAutoImportTokensState(
    * 2. For buy token. Same as previous OR the token is from bridge
    * In both cases we shouldn't make auto search
    */
-  const currencyNetworkMismatch = hasCurrencyNetworkMismatch(chainId, inputCurrency, outputCurrency)
-  const foundInputToken = useSearchNonExistentToken(getTokenSearchValue(inputToken, currencyNetworkMismatch))
-  const foundOutputToken = useSearchNonExistentToken(getTokenSearchValue(outputToken, currencyNetworkMismatch))
+  const inputCurrencyNetworkMismatch = !!inputCurrency && inputCurrency?.chainId !== chainId
+  const outputCurrencyNetworkMismatch = !!outputCurrency && outputCurrency?.chainId !== chainId
+  const currencyNetworkMismatch = inputCurrencyNetworkMismatch || outputCurrencyNetworkMismatch
 
-  const existingInputToken = useTokenBySymbolOrAddress(inputToken || null)
-  const existingOutputToken = useTokenBySymbolOrAddress(outputToken || null)
+  const foundInputToken = useSearchNonExistentToken(currencyNetworkMismatch ? null : inputToken || null)
+  const foundOutputToken = useSearchNonExistentToken(currencyNetworkMismatch ? null : outputToken || null)
 
   const tokensToImport = useMemo(() => {
-    const existingAddresses = new Set(
-      [existingInputToken, existingOutputToken].filter(isTruthy).map((token) => token.address.toLowerCase()),
-    )
-
-    // Also treat user-added tokens as "existing" to avoid re-triggering
-    // auto-import while token maps are recomputing after an import.
-    userAddedTokens.forEach((token) => {
-      existingAddresses.add(token.address.toLowerCase())
-    })
-
     return [foundInputToken, foundOutputToken].filter(isTruthy).filter((token) => {
-      return (
-        token.chainId === chainId && !(token instanceof LpToken) && !existingAddresses.has(token.address.toLowerCase())
-      )
+      return token.chainId === chainId && !(token instanceof LpToken)
     })
-  }, [foundInputToken, foundOutputToken, existingInputToken, existingOutputToken, userAddedTokens, chainId])
+  }, [foundInputToken, foundOutputToken, chainId])
 
   const tokensToImportCount = tokensToImport.length
 
-  const shouldTriggerModal = !isTokenSelectOpen && tokensToImportCount > 0
-  const modalState = useAutoImportModalFromTrigger(shouldTriggerModal)
+  const modalState = useModalState<void>(tokensToImportCount > 0)
 
   return useMemo(() => ({ tokensToImport, modalState }), [tokensToImport, modalState])
 }

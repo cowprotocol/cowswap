@@ -7,9 +7,7 @@ export function useToggleList(callback: (enabled: boolean, source: string) => vo
   const toggleList = useSetAtom(toggleListAtom)
 
   return (list: ListState, enabled: boolean) => {
-    const newEnabledState = !enabled
-
     toggleList(list.source)
-    callback(newEnabledState, list.source)
+    callback(enabled, list.source)
   }
 }

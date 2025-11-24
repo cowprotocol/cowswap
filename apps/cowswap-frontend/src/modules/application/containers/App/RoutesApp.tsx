@@ -9,10 +9,10 @@ import {
   DUNE_DASHBOARD_LINK,
   TWITTER_LINK,
 } from '@cowprotocol/common-const'
-import { Loader } from '@cowprotocol/ui'
 
 import { Navigate, Route, Routes } from 'react-router'
 
+import { Loading } from 'legacy/components/FlashingLoading'
 import { RedirectPathToSwapOnly, RedirectToPath } from 'legacy/pages/Swap/redirects'
 
 import {
@@ -55,7 +55,7 @@ function ExternalRedirect({ url }: { url: string }): null {
 type LazyRouteProps = { route: RoutesValues; element: ReactNode; key?: number }
 
 function LazyRoute({ route, element, key }: LazyRouteProps): ReactNode {
-  return <Route key={key} path={route} element={<Suspense fallback={<Loader />}>{element}</Suspense>} />
+  return <Route key={key} path={route} element={<Suspense fallback={<Loading />}>{element}</Suspense>} />
 }
 
 const lazyRoutes: LazyRouteProps[] = [
@@ -95,6 +95,7 @@ export function RoutesApp(): ReactNode {
       <Route path="claim" element={<Navigate to={RoutesEnum.ACCOUNT} />} />
       <Route path="profile" element={<Navigate to={RoutesEnum.ACCOUNT} />} />
 
+      {/*Swap*/}
       <Route path={RoutesEnum.SWAP} element={<SwapPage />} />
       <Route path={RoutesEnum.LIMIT_ORDER} element={<LimitOrderPage />} />
       <Route path={RoutesEnum.ADVANCED_ORDERS} element={<AdvancedOrdersPage />} />
@@ -113,7 +114,7 @@ export function RoutesApp(): ReactNode {
       <Route
         path="*"
         element={
-          <Suspense fallback={<Loader />}>
+          <Suspense fallback={<Loading />}>
             <NotFound />
           </Suspense>
         }

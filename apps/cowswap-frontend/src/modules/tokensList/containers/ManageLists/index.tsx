@@ -1,10 +1,10 @@
-import { ReactNode, useMemo } from 'react'
+import { useMemo } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { ListSearchResponse, ListState, useListsEnabledState, useRemoveList, useToggleList } from '@cowprotocol/tokens'
 import { Loader } from '@cowprotocol/ui'
 
-import { Trans, useLingui } from '@lingui/react/macro'
+import { Trans } from '@lingui/react/macro'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
@@ -26,10 +26,11 @@ export interface ManageListsProps {
   isListUrlValid?: boolean
 }
 
-export function ManageLists(props: ManageListsProps): ReactNode {
+// TODO: Break down this large function into smaller functions
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+export function ManageLists(props: ManageListsProps) {
   const { lists, listSearchResponse, isListUrlValid } = props
-  const { t } = useLingui()
-  const viewListLabel = t`View List`
 
   const activeTokenListsIds = useListsEnabledState()
   const addListImport = useAddListImport()
@@ -86,15 +87,15 @@ export function ManageLists(props: ManageListsProps): ReactNode {
       <styledEl.ListsContainer id="tokens-lists-table">
         {lists
           .sort((a, b) => (a.priority || 0) - (b.priority || 0))
-          .map((list) =>
-            ListItemRow({
-              list,
-              enabledMap: activeTokenListsIds,
-              removeList,
-              toggleList,
-              viewListLabel,
-            }),
-          )}
+          .map((list) => (
+            <ListItem
+              key={list.source}
+              list={list}
+              enabled={!!activeTokenListsIds[list.source]}
+              removeList={removeList}
+              toggleList={toggleList}
+            />
+          ))}
       </styledEl.ListsContainer>
     </styledEl.Wrapper>
   )
@@ -124,27 +125,4 @@ function useListSearchResponse(listSearchResponse: ListSearchResponse): ListSear
       listToImport: data || null,
     }
   }, [listSearchResponse])
-}
-
-interface ListItemRowProps {
-  list: ListState
-  enabledMap: { [listId: string]: boolean | undefined }
-  removeList(list: ListState): void
-  toggleList(list: ListState, enabled: boolean): void
-  viewListLabel: string
-}
-
-function ListItemRow(props: ListItemRowProps): ReactNode {
-  const { list, enabledMap, removeList, toggleList, viewListLabel } = props
-
-  return (
-    <ListItem
-      key={list.source}
-      list={list}
-      enabled={!!enabledMap[list.source]}
-      removeList={removeList}
-      toggleList={toggleList}
-      viewListLabel={viewListLabel}
-    />
-  )
 }

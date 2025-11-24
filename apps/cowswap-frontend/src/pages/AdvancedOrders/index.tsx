@@ -2,10 +2,10 @@ import { useAtomValue } from 'jotai'
 import { ReactNode, Suspense } from 'react'
 
 import { PAGE_TITLES } from '@cowprotocol/common-const'
-import { Loader } from '@cowprotocol/ui'
 
 import { useLingui } from '@lingui/react/macro'
 
+import { Loading } from 'legacy/components/FlashingLoading'
 import { OrderStatus } from 'legacy/state/orders/actions'
 
 import {
@@ -81,7 +81,7 @@ export default function AdvancedOrdersPage(): ReactNode {
 
         {!hideOrdersTable && (
           <styledEl.SecondaryWrapper>
-            <Suspense fallback={<Loader />}>
+            <Suspense fallback={<Loading />}>
               <OrdersTableWidget
                 isTwapTable
                 displayOrdersOnlyForSafeApp

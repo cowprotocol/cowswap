@@ -79,25 +79,14 @@ export const removeListAtom = atom(null, async (get, set, source: string) => {
 
 export const toggleListAtom = atom(null, async (get, set, source: string) => {
   const { chainId } = get(environmentAtom)
-  const listsEnabledStateBefore = await get(listsEnabledStateAtom)
+  const listsEnabledState = await get(listsEnabledStateAtom)
   const states = await get(listsStatesMapAtom)
 
   if (!states[source]) return
 
   const list = { ...states[source] }
 
-  list.isEnabled = !listsEnabledStateBefore[source]
+  list.isEnabled = !listsEnabledState[source]
 
   set(upsertListsAtom, chainId, [list])
-
-  if (process.env.NODE_ENV !== 'production') {
-    const listsEnabledStateAfter = await get(listsEnabledStateAtom)
-
-     
-    console.debug('[tokens:list] toggleListAtom', {
-      source,
-      before: listsEnabledStateBefore,
-      after: listsEnabledStateAfter,
-    })
-  }
 })

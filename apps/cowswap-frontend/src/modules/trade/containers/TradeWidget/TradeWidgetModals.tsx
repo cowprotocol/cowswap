@@ -37,158 +37,8 @@ interface TradeWidgetModalsProps {
   selectTokenWidget: ReactNode | undefined
 }
 
-interface TradeWidgetModalsResetArgs {
-  account: string | null | undefined
-  chainId: number | undefined
-  isOutputTokenSelector: boolean
-  closeTradeConfirm: () => void
-  closeZeroApprovalModal: () => void
-  closeAutoImportModal: () => void
-  updateSelectTokenWidgetState: (state: { open: boolean }) => void
-  setWrapNativeScreenState: (state: { isOpen: boolean }) => void
-  resetApproveModalState: () => void
-  setTokenListAddingError: (error: string | null) => void
-  updateApproveAmountState: (state: { isModalOpen: boolean }) => void
-}
-
-type ModalConfig = {
-  show: boolean
-  node: ReactNode
-}
-
-function useTradeWidgetModalsReset(
-  args: TradeWidgetModalsResetArgs,
-): (closeTokenSelectWidget?: boolean, shouldCloseAutoImportModal?: boolean) => void {
-  const {
-    account,
-    chainId,
-    isOutputTokenSelector,
-    closeTradeConfirm,
-    closeZeroApprovalModal,
-    closeAutoImportModal,
-    updateSelectTokenWidgetState,
-    setWrapNativeScreenState,
-    resetApproveModalState,
-    setTokenListAddingError,
-    updateApproveAmountState,
-  } = args
-
-  const isOutputTokenSelectorRef = useRef(isOutputTokenSelector)
-
-  useEffect(() => {
-    isOutputTokenSelectorRef.current = isOutputTokenSelector
-  }, [isOutputTokenSelector])
-
-  const resetAllScreens = useCallback(
-    (closeTokenSelectWidget = true, shouldCloseAutoImportModal = true) => {
-      closeTradeConfirm()
-      closeZeroApprovalModal()
-      if (shouldCloseAutoImportModal) closeAutoImportModal()
-      if (closeTokenSelectWidget) {
-        updateSelectTokenWidgetState({ open: false })
-      }
-      setWrapNativeScreenState({ isOpen: false })
-      resetApproveModalState()
-      setTokenListAddingError(null)
-      updateApproveAmountState({ isModalOpen: false })
-    },
-    [
-      closeTradeConfirm,
-      closeZeroApprovalModal,
-      closeAutoImportModal,
-      updateSelectTokenWidgetState,
-      setWrapNativeScreenState,
-      resetApproveModalState,
-      updateApproveAmountState,
-      setTokenListAddingError,
-    ],
-  )
-
-  useEffect(() => {
-    resetAllScreens(true, false)
-  }, [account, resetAllScreens])
-
-  useEffect(() => {
-    resetAllScreens(isOutputTokenSelectorRef.current)
-  }, [chainId, resetAllScreens])
-
-  return resetAllScreens
-}
-
-function getModalConfigs(params: {
-  genericModal: ReactNode | undefined
-  confirmModal: ReactNode | undefined
-  selectTokenWidget: ReactNode
-  isTradeReviewOpen: boolean
-  pendingTrade: unknown
-  changeApproveAmountInProgress: boolean
-  isTokenSelectOpen: boolean
-  isAutoImportModalOpen: boolean
-  tokensToImport: Parameters<typeof ImportTokenModal>[0]['tokens']
-  closeAutoImportModal: () => void
-  importTokenCallback: Parameters<typeof ImportTokenModal>[0]['onImport']
-  isWrapNativeOpen: boolean
-  error: string | null
-  resetAllScreens: (closeTokenSelectWidget?: boolean, shouldCloseAutoImportModal?: boolean) => void
-  approveInProgress: boolean
-  approvingCurrency: Parameters<typeof TradeApproveModal>[0]['currency']
-  isPendingInProgress: Parameters<typeof TradeApproveModal>[0]['isPendingInProgress']
-  amountToApprove: Parameters<typeof TradeApproveModal>[0]['amountToApprove']
-  isZeroApprovalModalOpen: boolean
-  closeZeroApprovalModal: () => void
-}): ModalConfig[] {
-  return [
-    {
-      show: !!params.genericModal,
-      node: params.genericModal as ReactNode,
-    },
-    {
-      show: params.isTradeReviewOpen || Boolean(params.pendingTrade),
-      node: params.confirmModal as ReactNode,
-    },
-    {
-      show: params.changeApproveAmountInProgress,
-      node: <TradeChangeApproveAmountModal />,
-    },
-    {
-      show: params.isTokenSelectOpen,
-      node: params.selectTokenWidget,
-    },
-    {
-      show: params.isAutoImportModalOpen,
-      node: (
-        <ImportTokenModal
-          tokens={params.tokensToImport}
-          onDismiss={params.closeAutoImportModal}
-          onImport={params.importTokenCallback}
-        />
-      ),
-    },
-    {
-      show: params.isWrapNativeOpen,
-      node: <WrapNativeModal />,
-    },
-    {
-      show: Boolean(params.error),
-      node: <TransactionErrorContent message={params.error ?? ''} onDismiss={params.resetAllScreens} />,
-    },
-    {
-      show: params.approveInProgress,
-      node: (
-        <TradeApproveModal
-          currency={params.approvingCurrency}
-          isPendingInProgress={params.isPendingInProgress}
-          amountToApprove={params.amountToApprove}
-        />
-      ),
-    },
-    {
-      show: params.isZeroApprovalModalOpen,
-      node: <ZeroApprovalModal onDismiss={params.closeZeroApprovalModal} />,
-    },
-  ]
-}
-
+// todo refactor it
+// eslint-disable-next-line complexity,max-lines-per-function
 export function TradeWidgetModals({
   confirmModal,
   genericModal,
@@ -221,47 +71,91 @@ export function TradeWidgetModals({
   const resetApproveModalState = useResetApproveProgressModalState()
   const updateApproveAmountState = useSetUserApproveAmountModalState()
 
+  const resetAllScreens = useCallback(
+    (closeTokenSelectWidget = true, shouldCloseAutoImportModal = true) => {
+      closeTradeConfirm()
+      closeZeroApprovalModal()
+      if (shouldCloseAutoImportModal) closeAutoImportModal()
+      if (closeTokenSelectWidget) updateSelectTokenWidgetState({ open: false })
+      setWrapNativeScreenState({ isOpen: false })
+      resetApproveModalState()
+      setTokenListAddingError(null)
+      updateApproveAmountState({ isModalOpen: false })
+    },
+    [
+      closeTradeConfirm,
+      closeZeroApprovalModal,
+      closeAutoImportModal,
+      updateSelectTokenWidgetState,
+      setWrapNativeScreenState,
+      resetApproveModalState,
+      updateApproveAmountState,
+      setTokenListAddingError,
+    ],
+  )
+
   const isOutputTokenSelector = field === Field.OUTPUT
-  const error = (tokenListAddingError || approveError || confirmError) ?? null
+  const isOutputTokenSelectorRef = useRef(isOutputTokenSelector)
+  isOutputTokenSelectorRef.current = isOutputTokenSelector
 
-  const resetAllScreens = useTradeWidgetModalsReset({
-    account,
-    chainId,
-    isOutputTokenSelector,
-    closeTradeConfirm,
-    closeZeroApprovalModal,
-    closeAutoImportModal,
-    updateSelectTokenWidgetState,
-    setWrapNativeScreenState,
-    resetApproveModalState,
-    setTokenListAddingError,
-    updateApproveAmountState,
-  })
+  const error = tokenListAddingError || approveError || confirmError
 
-  const modalConfigs = getModalConfigs({
-    genericModal,
-    confirmModal,
-    selectTokenWidget,
-    isTradeReviewOpen,
-    pendingTrade,
-    changeApproveAmountInProgress,
-    isTokenSelectOpen,
-    isAutoImportModalOpen,
-    tokensToImport,
-    closeAutoImportModal,
-    importTokenCallback,
-    isWrapNativeOpen,
-    error,
-    resetAllScreens,
-    approveInProgress,
-    approvingCurrency,
-    isPendingInProgress,
-    amountToApprove,
-    isZeroApprovalModalOpen,
-    closeZeroApprovalModal,
-  })
+  /**
+   * Close all modals besides auto-import on account change
+   */
+  useEffect(() => {
+    resetAllScreens(true, false)
+  }, [account, resetAllScreens])
 
-  const firstMatchingModal = modalConfigs.find((config) => config.show)
+  /**
+   * Close all modals besides token select widget on chain change
+   * Because network might be changed from the widget inside
+   */
+  useEffect(() => {
+    resetAllScreens(isOutputTokenSelectorRef.current)
+  }, [chainId, resetAllScreens])
 
-  return firstMatchingModal ? firstMatchingModal.node : null
+  if (genericModal) {
+    return genericModal
+  }
+
+  if (isTradeReviewOpen || pendingTrade) {
+    return confirmModal
+  }
+
+  if (changeApproveAmountInProgress) {
+    return <TradeChangeApproveAmountModal />
+  }
+
+  if (isTokenSelectOpen) {
+    return selectTokenWidget
+  }
+
+  if (isAutoImportModalOpen) {
+    return <ImportTokenModal tokens={tokensToImport} onDismiss={closeAutoImportModal} onImport={importTokenCallback} />
+  }
+
+  if (isWrapNativeOpen) {
+    return <WrapNativeModal />
+  }
+
+  if (error) {
+    return <TransactionErrorContent message={error} onDismiss={resetAllScreens} />
+  }
+
+  if (approveInProgress) {
+    return (
+      <TradeApproveModal
+        currency={approvingCurrency}
+        isPendingInProgress={isPendingInProgress}
+        amountToApprove={amountToApprove}
+      />
+    )
+  }
+
+  if (isZeroApprovalModalOpen) {
+    return <ZeroApprovalModal onDismiss={closeZeroApprovalModal} />
+  }
+
+  return null
 }
