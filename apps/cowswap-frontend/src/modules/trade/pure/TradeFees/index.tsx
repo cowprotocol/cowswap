@@ -21,6 +21,7 @@ interface TradeFeesProps {
   totalFeeUsd?: Nullish<CurrencyAmount<Currency>>
   volumeFeeTooltip: VolumeFeeTooltip
   withTimelineDot?: boolean
+  loading?: boolean
 }
 
 export function TradeFees({
@@ -33,6 +34,7 @@ export function TradeFees({
   totalFeeUsd,
   volumeFeeTooltip,
   withTimelineDot = true,
+  loading,
 }: TradeFeesProps): ReactElement | null {
   const hasPartnerFee = !!partnerFeeAmount && !!partnerFeeBps && !partnerFeeAmount.equalTo(0)
   const hasProtocolFee = !!protocolFeeAmount && !!protocolFeeBps && !protocolFeeAmount.equalTo(0)
@@ -71,5 +73,5 @@ export function TradeFees({
 
   if (hasPartnerFee) return partnerFeeRow
 
-  return <FreeFeeRow withTimelineDot={withTimelineDot} />
+  return <FreeFeeRow withTimelineDot={withTimelineDot} loading={loading} />
 }
