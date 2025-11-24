@@ -10,6 +10,7 @@ import { useVolumeFee } from '../../volumeFee'
 import { ReceiveAmountInfo } from '../types'
 import { getReceiveAmountInfo } from '../utils/getReceiveAmountInfo'
 
+// eslint-disable-next-line complexity
 export function useGetReceiveAmountInfo(overrideBridgeBuyAmount?: boolean): ReceiveAmountInfo | null {
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount, slippage, orderKind } =
     useDerivedTradeState() ?? {}
@@ -19,6 +20,7 @@ export function useGetReceiveAmountInfo(overrideBridgeBuyAmount?: boolean): Rece
   const { quote, bridgeQuote } = tradeQuote
   const quoteResponse = quote?.quoteResults.quoteResponse
   const orderParams = quoteResponse?.quote
+  const protocolFeeBps = quoteResponse?.protocolFeeBps ? Number(quoteResponse.protocolFeeBps) : undefined
   const bridgeFeeAmounts = bridgeQuote?.amountsAndCosts.costs.bridgingFee
   const bridgeBuyAmount = !overrideBridgeBuyAmount ? bridgeQuote?.amountsAndCosts.beforeFee.buyAmount : undefined
 
@@ -44,6 +46,7 @@ export function useGetReceiveAmountInfo(overrideBridgeBuyAmount?: boolean): Rece
         intermediateCurrency,
         bridgeFeeAmounts,
         bridgeBuyAmount,
+        protocolFeeBps,
       )
     }
 
@@ -60,5 +63,6 @@ export function useGetReceiveAmountInfo(overrideBridgeBuyAmount?: boolean): Rece
     slippage,
     bridgeFeeAmounts,
     bridgeBuyAmount,
+    protocolFeeBps,
   ])
 }
