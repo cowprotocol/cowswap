@@ -71,7 +71,7 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps): 
 
       {hasProtocolFee && <FeeItem title={t`Protocol fee`} isSell={isSell} feeAmount={protocolFeeAmount} />}
 
-      {hasPartnerFee && <FeeItem title={t`Fee`} isSell={isSell} feeAmount={partnerFeeAmount} />}
+      {hasPartnerFee && <FeeItem title={t`Partner fee`} isSell={isSell} feeAmount={partnerFeeAmount} />}
 
       {!hasAnyFee && !isEoaNotEthFlow && <FeeItem title={t`Fee`} isSell={isSell} feeAmount={undefined} />}
 
