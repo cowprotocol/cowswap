@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.30.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.29.0...ui-v1.30.0) (2025-11-24)
+
+
+### Features
+
+* **i18n:** finish internationalization setup ([#6526](https://github.com/cowprotocol/cowswap/issues/6526)) ([7b596e4](https://github.com/cowprotocol/cowswap/commit/7b596e49b132179152c6b8c5436dc5dd199f7aa8))
+* **internationalization:** add internationalization to CoW Swap ([#6198](https://github.com/cowprotocol/cowswap/issues/6198)) ([bec1e54](https://github.com/cowprotocol/cowswap/commit/bec1e54643d9b20a8b6517eae188993e364fed90))
+
 ## [1.29.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.28.0...ui-v1.29.0) (2025-10-23)
 
 

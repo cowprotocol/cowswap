@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.0](https://github.com/cowprotocol/cowswap/compare/ens-v1.6.0...ens-v1.7.0) (2025-11-24)
+
+
+### Features
+
+* **internationalization:** add internationalization to CoW Swap ([#6198](https://github.com/cowprotocol/cowswap/issues/6198)) ([bec1e54](https://github.com/cowprotocol/cowswap/commit/bec1e54643d9b20a8b6517eae188993e364fed90))
+
 ## [1.6.0](https://github.com/cowprotocol/cowswap/compare/ens-v1.5.0...ens-v1.6.0) (2025-11-10)
 
 

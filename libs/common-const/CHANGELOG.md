@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.30.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.29.0...common-const-v1.30.0) (2025-11-24)
+
+
+### Features
+
+* **internationalization:** add internationalization to CoW Swap ([#6198](https://github.com/cowprotocol/cowswap/issues/6198)) ([bec1e54](https://github.com/cowprotocol/cowswap/commit/bec1e54643d9b20a8b6517eae188993e364fed90))
+
+
+### Bug Fixes
+
+* sort chains according to the rest of the UI ([#6517](https://github.com/cowprotocol/cowswap/issues/6517)) ([5982866](https://github.com/cowprotocol/cowswap/commit/598286694f8cda9e5ee45a11f52df982ad7a0da4))
+
 ## [1.29.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.28.1...common-const-v1.29.0) (2025-11-10)
 
 

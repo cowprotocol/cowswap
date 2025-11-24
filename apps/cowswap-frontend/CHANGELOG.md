@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.124.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.123.1...cowswap-v1.124.0) (2025-11-24)
+
+
+### Features
+
+* add protocol fee ([#6537](https://github.com/cowprotocol/cowswap/issues/6537)) ([d367945](https://github.com/cowprotocol/cowswap/commit/d3679456bacc772750781b587cb4755def39198e))
+* add ProtocolFeeInfoBanner to limit orders and TWAP action buttons ([#6541](https://github.com/cowprotocol/cowswap/issues/6541)) ([cc5237e](https://github.com/cowprotocol/cowswap/commit/cc5237e8fa74bd5bd2f27fecfddd0b909954dd1e))
+* **bridge:** add Near provider and provider feature-flags ([#6466](https://github.com/cowprotocol/cowswap/issues/6466)) ([c91b17f](https://github.com/cowprotocol/cowswap/commit/c91b17f9c24fef516eee904e51268264b6adff25))
+* **i18n:** finish internationalization setup ([#6526](https://github.com/cowprotocol/cowswap/issues/6526)) ([7b596e4](https://github.com/cowprotocol/cowswap/commit/7b596e49b132179152c6b8c5436dc5dd199f7aa8))
+* **internationalization:** add internationalization to CoW Swap ([#6198](https://github.com/cowprotocol/cowswap/issues/6198)) ([bec1e54](https://github.com/cowprotocol/cowswap/commit/bec1e54643d9b20a8b6517eae188993e364fed90))
+
+
+### Bug Fixes
+
+* keep displayed orders in progress state and dedupe favicon completions ([#6510](https://github.com/cowprotocol/cowswap/issues/6510)) ([71df046](https://github.com/cowprotocol/cowswap/commit/71df046d8c286491f75ce59af74c4e466803582d))
+* reset appData hooks when sell token changes ([#6524](https://github.com/cowprotocol/cowswap/issues/6524)) ([94cdbc0](https://github.com/cowprotocol/cowswap/commit/94cdbc01e4390197ed416af5ecdd222eafeada72))
+
 ## [1.123.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.123.0...cowswap-v1.123.1) (2025-11-12)
 
 
