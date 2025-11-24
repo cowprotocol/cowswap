@@ -1,7 +1,7 @@
 import { atom } from 'jotai'
 
-import { isProd } from '@cowprotocol/common-utils'
+import { DefaultBridgeProvider } from '@cowprotocol/sdk-bridging'
 
-import { bridgeProviders } from 'tradingSdk/bridgingSdk'
+import { bungeeBridgeProvider } from 'tradingSdk/bridgingSdk'
 
-export const bridgeProvidersAtom = atom(isProd ? [bridgeProviders[0]] : bridgeProviders)
+export const bridgeProvidersAtom = atom(new Set<DefaultBridgeProvider>([bungeeBridgeProvider]))
