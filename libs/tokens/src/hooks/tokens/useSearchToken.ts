@@ -50,6 +50,7 @@ const emptyFromListsResult: FromListsResult = { tokensFromActiveLists: [], token
 export function useSearchToken(input: string | null): TokenSearchResponse {
   const inputLowerCase = input?.toLowerCase()
   const [isLoading, setIsLoading] = useState(false)
+  const { chainId } = useAtomValue(environmentAtom)
 
   const debouncedInputInList = useDebounce(inputLowerCase, IN_LISTS_DEBOUNCE_TIME)
   const debouncedInputInExternals = useDebounce(inputLowerCase, IN_EXTERNALS_DEBOUNCE_TIME)
@@ -57,7 +58,10 @@ export function useSearchToken(input: string | null): TokenSearchResponse {
   const isInputStale = debouncedInputInExternals !== inputLowerCase
 
   // Search in active and inactive lists
-  const { tokensFromActiveLists, tokensFromInactiveLists } = useSearchTokensInLists(debouncedInputInList)
+  const { tokensFromActiveLists, tokensFromInactiveLists, listsLoading } = useSearchTokensInLists(
+    debouncedInputInList,
+    chainId,
+  )
 
   const isTokenAlreadyFoundByAddress = useMemo(() => {
     return [...tokensFromActiveLists, ...tokensFromInactiveLists].some(
@@ -93,10 +97,10 @@ export function useSearchToken(input: string | null): TokenSearchResponse {
     if (isInputStale) return
 
     // Loading is finished when all sources are loaded
-    if (!apiIsLoading && !blockchainIsLoading) {
+    if (!apiIsLoading && !blockchainIsLoading && !listsLoading) {
       setIsLoading(false)
     }
-  }, [isInputStale, apiIsLoading, blockchainIsLoading, tokensFromActiveLists, tokensFromInactiveLists])
+  }, [isInputStale, apiIsLoading, blockchainIsLoading, tokensFromActiveLists, tokensFromInactiveLists, listsLoading])
 
   return useMemo(() => {
     if (!debouncedInputInList) {
@@ -134,12 +138,20 @@ export function useSearchToken(input: string | null): TokenSearchResponse {
   ])
 }
 
-function useSearchTokensInLists(input: string | undefined): FromListsResult {
-  const activeTokens = useAllActiveTokens().tokens
+type SearchTokensInListsResult = FromListsResult & { listsLoading: boolean }
+
+function useSearchTokensInLists(input: string | undefined, chainId: number): SearchTokensInListsResult {
+  const allActiveTokens = useAllActiveTokens()
+  const activeTokensReady = allActiveTokens.chainId === chainId
+  const activeTokens = activeTokensReady ? allActiveTokens.tokens : []
+
   const loadableInactiveTokensAtom = useMemo(() => loadable(inactiveTokensAtom), [])
   const inactiveResult = useAtomValue(loadableInactiveTokensAtom)
-  const inactiveTokens = inactiveResult.state === 'hasData' ? inactiveResult.data : []
+  const inactiveTokensReady = inactiveResult.state === 'hasData'
+  const inactiveTokens =
+    inactiveResult.state === 'hasData' ? inactiveResult.data.filter((token) => token.chainId === chainId) : []
 
+  const listsLoading = !activeTokensReady || !inactiveTokensReady
   const { data: inListsResult } = useSWR<FromListsResult>(
     ['searchTokensInLists', input, activeTokens, inactiveTokens],
     () => {
@@ -153,7 +165,7 @@ function useSearchTokensInLists(input: string | undefined): FromListsResult {
     },
   )
 
-  return inListsResult || emptyFromListsResult
+  return { ...(inListsResult || emptyFromListsResult), listsLoading }
 }
 
 function useFetchTokenFromBlockchain(

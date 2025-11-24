@@ -1,7 +1,8 @@
 import { useAtomValue } from 'jotai'
-import { ReactNode } from 'react'
+import { ReactNode, Suspense } from 'react'
 
 import { PAGE_TITLES } from '@cowprotocol/common-const'
+import { Loader } from '@cowprotocol/ui'
 
 import { useLingui } from '@lingui/react/macro'
 
@@ -80,12 +81,14 @@ export default function AdvancedOrdersPage(): ReactNode {
 
         {!hideOrdersTable && (
           <styledEl.SecondaryWrapper>
-            <OrdersTableWidget
-              isTwapTable
-              displayOrdersOnlyForSafeApp
-              orderType={TabOrderTypes.ADVANCED}
-              orders={allEmulatedOrders}
-            />
+            <Suspense fallback={<Loader />}>
+              <OrdersTableWidget
+                isTwapTable
+                displayOrdersOnlyForSafeApp
+                orderType={TabOrderTypes.ADVANCED}
+                orders={allEmulatedOrders}
+              />
+            </Suspense>
           </styledEl.SecondaryWrapper>
         )}
       </styledEl.PageWrapper>

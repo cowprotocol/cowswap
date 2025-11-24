@@ -9,10 +9,10 @@ import {
   DUNE_DASHBOARD_LINK,
   TWITTER_LINK,
 } from '@cowprotocol/common-const'
+import { Loader } from '@cowprotocol/ui'
 
 import { Navigate, Route, Routes } from 'react-router'
 
-import { Loading } from 'legacy/components/FlashingLoading'
 import { RedirectPathToSwapOnly, RedirectToPath } from 'legacy/pages/Swap/redirects'
 
 import {
@@ -55,14 +55,12 @@ function ExternalRedirect({ url }: { url: string }): null {
 type LazyRouteProps = { route: RoutesValues; element: ReactNode; key?: number }
 
 function LazyRoute({ route, element, key }: LazyRouteProps): ReactNode {
-  return <Route key={key} path={route} element={<Suspense fallback={<Loading />}>{element}</Suspense>} />
+  return <Route key={key} path={route} element={<Suspense fallback={<Loader />}>{element}</Suspense>} />
 }
 
 const lazyRoutes: LazyRouteProps[] = [
-  { route: RoutesEnum.LIMIT_ORDER, element: <LimitOrderPage /> },
   { route: RoutesEnum.YIELD, element: <YieldPage /> },
   { route: RoutesEnum.LONG_LIMIT_ORDER, element: <RedirectToPath path={'/limit'} /> },
-  { route: RoutesEnum.ADVANCED_ORDERS, element: <AdvancedOrdersPage /> },
   { route: RoutesEnum.LONG_ADVANCED_ORDERS, element: <RedirectToPath path={'/advanced'} /> },
   { route: RoutesEnum.ABOUT, element: <ExternalRedirect url={COWDAO_COWSWAP_ABOUT_LINK} /> },
   { route: RoutesEnum.FAQ, element: <ExternalRedirect url={COWDAO_KNOWLEDGE_BASE_LINK} /> },
@@ -97,8 +95,9 @@ export function RoutesApp(): ReactNode {
       <Route path="claim" element={<Navigate to={RoutesEnum.ACCOUNT} />} />
       <Route path="profile" element={<Navigate to={RoutesEnum.ACCOUNT} />} />
 
-      {/*Swap*/}
       <Route path={RoutesEnum.SWAP} element={<SwapPage />} />
+      <Route path={RoutesEnum.LIMIT_ORDER} element={<LimitOrderPage />} />
+      <Route path={RoutesEnum.ADVANCED_ORDERS} element={<AdvancedOrdersPage />} />
       <Route path={RoutesEnum.HOOKS} element={<HooksPage />} />
       <Route path={RoutesEnum.SEND} element={<RedirectPathToSwapOnly />} />
 
@@ -114,7 +113,7 @@ export function RoutesApp(): ReactNode {
       <Route
         path="*"
         element={
-          <Suspense fallback={<Loading />}>
+          <Suspense fallback={<Loader />}>
             <NotFound />
           </Suspense>
         }

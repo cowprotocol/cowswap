@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { BuyTokensParams } from '@cowprotocol/sdk-bridging'
@@ -28,6 +28,7 @@ export function useTokensToSelect(): TokensToSelectContext {
   const allTokens = useAllActiveTokens().tokens
 
   const areTokensFromBridge = field === Field.OUTPUT && selectedTargetChainId !== chainId
+  const [cachedBridgeTokens, setCachedBridgeTokens] = useState<Record<number, TokenWithLogo[]>>({})
 
   const params: BuyTokensParams | undefined = useMemo(() => {
     if (!areTokensFromBridge) return undefined
@@ -36,6 +37,15 @@ export function useTokensToSelect(): TokensToSelectContext {
   }, [areTokensFromBridge, chainId, selectedTargetChainId])
 
   const { data: result, isLoading } = useBridgeSupportedTokens(params)
+
+  useEffect(() => {
+    if (areTokensFromBridge && result?.tokens?.length) {
+      setCachedBridgeTokens((prev) => {
+        if (prev[selectedTargetChainId] === result.tokens) return prev
+        return { ...prev, [selectedTargetChainId]: result.tokens }
+      })
+    }
+  }, [areTokensFromBridge, result, selectedTargetChainId])
 
   const bridgeSupportedTokensMap = useMemo(() => {
     const tokens = result?.tokens
@@ -48,17 +58,31 @@ export function useTokensToSelect(): TokensToSelectContext {
     }, {})
   }, [result])
 
+  // eslint-disable-next-line complexity
   return useMemo(() => {
+    const bridgeTokens = areTokensFromBridge ? result?.tokens || cachedBridgeTokens[selectedTargetChainId] : undefined
+    // Only show the loader while the initial bridge-token request is pending and we have no cached tokens
+    const bridgeLoading = areTokensFromBridge ? isLoading && !bridgeTokens : false
+
     const favoriteTokensToSelect = bridgeSupportedTokensMap
       ? favoriteTokens.filter((token) => bridgeSupportedTokensMap[token.address.toLowerCase()])
       : favoriteTokens
 
     return {
-      isLoading: areTokensFromBridge ? isLoading : false,
-      tokens: (areTokensFromBridge ? result?.tokens : allTokens) || EMPTY_TOKENS,
+      isLoading: areTokensFromBridge ? bridgeLoading || isLoading : false,
+      tokens: (areTokensFromBridge ? bridgeTokens : allTokens) || EMPTY_TOKENS,
       favoriteTokens: favoriteTokensToSelect,
       areTokensFromBridge,
       isRouteAvailable: result?.isRouteAvailable,
     }
-  }, [allTokens, bridgeSupportedTokensMap, isLoading, areTokensFromBridge, favoriteTokens, result])
+  }, [
+    allTokens,
+    bridgeSupportedTokensMap,
+    isLoading,
+    areTokensFromBridge,
+    favoriteTokens,
+    result,
+    selectedTargetChainId,
+    cachedBridgeTokens,
+  ])
 }

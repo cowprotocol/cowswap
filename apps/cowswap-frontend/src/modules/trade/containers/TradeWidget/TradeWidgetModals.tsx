@@ -40,7 +40,6 @@ interface TradeWidgetModalsProps {
 interface TradeWidgetModalsResetArgs {
   account: string | null | undefined
   chainId: number | undefined
-  isTokenSelectOpen: boolean
   isOutputTokenSelector: boolean
   closeTradeConfirm: () => void
   closeZeroApprovalModal: () => void
@@ -63,7 +62,6 @@ function useTradeWidgetModalsReset(
   const {
     account,
     chainId,
-    isTokenSelectOpen,
     isOutputTokenSelector,
     closeTradeConfirm,
     closeZeroApprovalModal,
@@ -107,12 +105,8 @@ function useTradeWidgetModalsReset(
   )
 
   useEffect(() => {
-    if (isTokenSelectOpen) {
-      return
-    }
-
     resetAllScreens(true, false)
-  }, [account, resetAllScreens, isTokenSelectOpen])
+  }, [account, resetAllScreens])
 
   useEffect(() => {
     resetAllScreens(isOutputTokenSelectorRef.current)
@@ -233,7 +227,6 @@ export function TradeWidgetModals({
   const resetAllScreens = useTradeWidgetModalsReset({
     account,
     chainId,
-    isTokenSelectOpen,
     isOutputTokenSelector,
     closeTradeConfirm,
     closeZeroApprovalModal,

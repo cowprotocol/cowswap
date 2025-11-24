@@ -1,7 +1,8 @@
 import { useAtomValue } from 'jotai'
-import { ReactNode, useMemo } from 'react'
+import { ReactNode, Suspense, useMemo } from 'react'
 
 import { UiOrderType } from '@cowprotocol/types'
+import { Loader } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
@@ -39,7 +40,9 @@ export function RegularLimitOrders(): ReactNode {
       {!hideOrdersTable && (
         <styledEl.SecondaryWrapper>
           {pendingLimitOrders.length > 0 && <LimitOrdersPermitUpdater orders={pendingLimitOrders} />}
-          <OrdersTableWidget orderType={TabOrderTypes.LIMIT} orders={allLimitOrders} />
+          <Suspense fallback={<Loader />}>
+            <OrdersTableWidget orderType={TabOrderTypes.LIMIT} orders={allLimitOrders} />
+          </Suspense>
         </styledEl.SecondaryWrapper>
       )}
     </styledEl.PageWrapper>
