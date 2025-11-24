@@ -1,6 +1,6 @@
 import { DEFAULT_APP_CODE } from '@cowprotocol/common-const'
 import { useDebounce } from '@cowprotocol/common-hooks'
-import { getCurrencyAddress, isAddress } from '@cowprotocol/common-utils'
+import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { QuoteBridgeRequest } from '@cowprotocol/sdk-bridging'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
@@ -17,6 +17,8 @@ import { useVolumeFee } from 'modules/volumeFee'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
+
+import { useQuoteParamsRecipient } from './useQuoteParamsRecipient'
 
 import { BRIDGE_QUOTE_ACCOUNT, getBridgeQuoteSigner } from '../utils/getBridgeQuoteSigner'
 
@@ -41,9 +43,9 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
   const tradeSlippage = useTradeSlippageValueAndType()
   const slippageBps = tradeSlippage.type === 'user' ? tradeSlippage.value : undefined
 
-  const { inputCurrency, outputCurrency, orderKind, recipientAddress } = state || {}
+  const { inputCurrency, outputCurrency, orderKind } = state || {}
 
-  const receiver = recipientAddress && isAddress(recipientAddress) ? recipientAddress : account
+  const receiver = useQuoteParamsRecipient()
 
   // eslint-disable-next-line complexity
   const params = useSafeMemo(() => {

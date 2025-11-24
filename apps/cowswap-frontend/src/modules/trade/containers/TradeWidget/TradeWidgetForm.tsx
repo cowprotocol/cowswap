@@ -23,6 +23,7 @@ import { TradeType } from 'modules/trade'
 import { useTradeTypeInfoFromUrl } from 'modules/trade/hooks/useTradeTypeInfoFromUrl'
 import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternativeOrder'
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
+import { useTradeQuote } from 'modules/tradeQuote'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useThrottleFn } from 'common/hooks/useThrottleFn'
@@ -104,6 +105,9 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
         : props.outputCurrencyInfo,
     [isWrapOrUnwrap, props.outputCurrencyInfo, props.inputCurrencyInfo.amount],
   )
+
+  const { bridgeQuote } = useTradeQuote()
+  const isReceiverAccountBridgeProvider = bridgeQuote?.providerInfo.type === 'ReceiverAccountBridgeProvider'
 
   const { chainId, account } = useWalletInfo()
   const { allowsOffchainSigning } = useWalletDetails()
@@ -249,6 +253,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
                 <div>
                   <CurrencyInputPanel
                     id="output-currency-input"
+                    hideReceiveAmounts={isReceiverAccountBridgeProvider}
                     inputDisabled={
                       (isSellingEthSupported && isEoaEthFlow) ||
                       isWrapOrUnwrap ||
