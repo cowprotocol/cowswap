@@ -8,7 +8,7 @@ msgstr ""
 "Language: pt\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-11-14 19:20\n"
+"PO-Revision-Date: 2025-11-24 12:51\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese, Brazilian\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -226,6 +226,10 @@ msgstr "Tem certeza que deseja cancelar a ordem <0>{shortId}</0>?"
 msgid "My Custom Hooks ({customHooksCount})"
 msgstr ""
 
+#: apps/cowswap-frontend/src/modules/trade/pure/PartnerFeeRow/index.tsx
+msgid "{label} ({feeAsPercent}%)"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "Your TWAP order won't execute and is protected if the market price dips more than your set price protection."
 msgstr ""
@@ -322,6 +326,10 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/modules/wallet/pure/WalletModal/index.tsx
 msgid "By connecting a wallet, you acknowledge that you have read, understood and agree to the interface’s <0>Terms & Conditions</0>."
+msgstr ""
+
+#: apps/cowswap-frontend/src/modules/volumeFee/hooks/useVolumeFeeTooltip.ts
+msgid "Partner fee"
 msgstr ""
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/ImportListModal/index.tsx
@@ -1456,11 +1464,16 @@ msgstr ""
 msgid "Price Updated"
 msgstr ""
 
+#: apps/cowswap-frontend/src/modules/limitOrders/pure/ProtocolFeeInfoBanner/index.tsx
+msgid "From {PROTOCOL_FEE_START_DATETIME_UTC}, and pursuant to <0>CIP-74</0>, a 2 bps (0.02%) protocol fee will apply to all executed orders, including any limit and TWAP orders executed after this time, even if they were created earlier."
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/index.tsx
 msgid "Enter a hook dapp URL"
 msgstr ""
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
+#: apps/cowswap-frontend/src/modules/trade/pure/TotalFeeRow/index.tsx
 #: apps/cowswap-frontend/src/modules/volumeFee/hooks/useVolumeFeeTooltip.ts
 msgid "Total fee"
 msgstr ""
@@ -1941,6 +1954,7 @@ msgid "<0>Select an {accountProxyLabelString}</0> and then select a token you wa
 msgstr ""
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Error loading price. Try again later."
 msgstr ""
 
@@ -2147,6 +2161,10 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapConfirmModal/useLabelsAndTooltips.tsx
 msgid "modified"
+msgstr ""
+
+#: apps/cowswap-frontend/src/modules/trade/pure/TradeConfirmation/getPendingText.ts
+msgid "Preparing deposit"
 msgstr ""
 
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
@@ -2465,6 +2483,10 @@ msgstr ""
 msgid "TWAP"
 msgstr ""
 
+#: apps/cowswap-frontend/src/modules/trade/pure/ProtocolFeeRow/index.tsx
+msgid "Protocol fee ({protocolFeeAsPercent}%)"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/BridgingProgressContent/RefundedBridgingContent/index.tsx
 msgid "Refunded to"
 msgstr ""
@@ -2578,7 +2600,7 @@ msgstr ""
 msgid "Reset"
 msgstr ""
 
-#: apps/cowswap-frontend/src/modules/trade/pure/PartnerFeeRow/index.tsx
+#: apps/cowswap-frontend/src/modules/trade/pure/FreeFeeRow/index.tsx
 msgid "No fee for order placement!"
 msgstr ""
 
@@ -2661,8 +2683,9 @@ msgid "You're all caught up"
 msgstr ""
 
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmountInfo/index.tsx
+#: apps/cowswap-frontend/src/common/pure/ReceiveAmountInfo/index.tsx
 #: apps/cowswap-frontend/src/common/pure/TradeDetailsAccordion/index.tsx
-#: apps/cowswap-frontend/src/modules/trade/pure/PartnerFeeRow/index.tsx
+#: apps/cowswap-frontend/src/modules/trade/pure/FreeFeeRow/index.tsx
 msgid "Fee"
 msgstr ""
 
@@ -2676,6 +2699,10 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SettingsTab/index.tsx
 msgid "<0><1/> Experimental:</0> Add DeFI interactions before and after your trade."
+msgstr ""
+
+#: apps/cowswap-frontend/src/common/pure/ReceiveAmountInfo/index.tsx
+msgid "Protocol fee"
 msgstr ""
 
 #: apps/cowswap-frontend/src/common/constants/routes.ts
@@ -2950,6 +2977,10 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "Buy per part"
+msgstr ""
+
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+msgid "No intermediate tokens found for the route"
 msgstr ""
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/ClaimGnoHookApp/index.tsx
@@ -4673,6 +4704,10 @@ msgstr ""
 msgid "Vested"
 msgstr ""
 
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+msgid "Bridging deposit address is not verified! Please contact CoW Swap support!"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/wallet/pure/WalletModal/styled.tsx
 msgid "Learn more about wallets"
 msgstr ""
@@ -5020,6 +5055,10 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/SurplusCard.tsx
 msgid "The total surplus CoW Swap has generated for you in {nativeSymbol} across all your trades since {startDate}"
+msgstr ""
+
+#: apps/cowswap-frontend/src/modules/trade/pure/ProtocolFeeRow/index.tsx
+msgid "Protocol fee applied to this trade.<0/><1/>The fee is {protocolFeeBps} BPS ({protocolFeeAsPercent}%), applied only if the trade is executed."
 msgstr ""
 
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/OrderRow/EstimatedExecutionPrice.tsx
@@ -5699,7 +5738,7 @@ msgid "MEV is lethal these days!"
 msgstr ""
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteBridgeContent/index.tsx
-#: apps/cowswap-frontend/src/modules/trade/pure/PartnerFeeRow/index.tsx
+#: apps/cowswap-frontend/src/modules/trade/pure/FreeFeeRow/index.tsx
 #: apps/cowswap-frontend/src/modules/trade/pure/RowFeeContent/index.tsx
 msgid "FREE"
 msgstr ""
@@ -5992,8 +6031,8 @@ msgid "Dark mode"
 msgstr ""
 
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmountInfo/index.tsx
-msgid "Bridge costs"
-msgstr ""
+#~ msgid "Bridge costs"
+#~ msgstr "Bridge costs"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/StatusDetails.tsx
 msgid "View cancellation"
