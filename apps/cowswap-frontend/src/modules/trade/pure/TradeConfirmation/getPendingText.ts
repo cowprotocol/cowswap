@@ -5,6 +5,7 @@ import { SigningSteps, SigningStepState } from 'entities/trade'
 const SIGNING_STEPS_TITLE: Record<SigningSteps, MessageDescriptor> = {
   [SigningSteps.PermitSigning]: msg`Confirm approval`,
   [SigningSteps.BridgingSigning]: msg`Confirm bridging`,
+  [SigningSteps.PreparingDepositAddress]: msg`Preparing deposit`,
   [SigningSteps.OrderSigning]: msg`Confirm swap`,
 }
 

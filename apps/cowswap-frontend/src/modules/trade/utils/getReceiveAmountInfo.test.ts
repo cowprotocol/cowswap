@@ -1,6 +1,7 @@
-import { CurrencyAmount, Price, Token } from '@uniswap/sdk-core'
+import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { CurrencyAmount, Percent, Price, Token } from '@uniswap/sdk-core'
 
-import { getOrderTypeReceiveAmounts } from './getReceiveAmountInfo'
+import { getOrderTypeReceiveAmounts, getReceiveAmountInfo } from './getReceiveAmountInfo'
 
 import { ReceiveAmountInfo } from '../types'
 
@@ -19,6 +20,13 @@ const PARTNER_FEE_AMOUNT = '300000000000' // 300_000 tokens (3 bps of 1_000_000_
 
 // Protocol fee: 2 bps = 0.02% of base amount = 200_000 tokens
 const PROTOCOL_FEE_AMOUNT = '200000000000' // 200_000 tokens (2 bps of 1_000_000_000)
+
+const toAddress = (suffix: string): string => `0x${suffix.padStart(40, '0')}`
+
+const mainnetUsdc = new Token(SupportedChainId.MAINNET, toAddress('1'), 6, 'USDC', 'USD Coin')
+const mainnetWeth = new Token(SupportedChainId.MAINNET, toAddress('2'), 18, 'WETH', 'Wrapped Ether')
+const baseUsdc = new Token(SupportedChainId.BASE, toAddress('3'), 6, 'USDC', 'USD Coin')
+const baseWeth = new Token(SupportedChainId.BASE, toAddress('4'), 18, 'WETH', 'Wrapped Ether')
 
 function createReceiveAmountInfo(params: {
   isSell: boolean
@@ -145,200 +153,378 @@ function createReceiveAmountInfo(params: {
   }
 }
 
-describe('getOrderTypeReceiveAmounts', () => {
-  describe('Sell orders (selling TOKEN_A to receive TOKEN_B)', () => {
-    describe('with 3 bps partnerFee', () => {
-      it('should return correct amounts', () => {
-        const info = createReceiveAmountInfo({ isSell: true, hasPartnerFee: true })
-        const result = getOrderTypeReceiveAmounts(info)
+describe('getReceiveAmountInfo', () => {
+  describe('getOrderTypeReceiveAmounts', () => {
+    describe('Sell orders (selling TOKEN_A to receive TOKEN_B)', () => {
+      describe('with 3 bps partnerFee', () => {
+        it('should return correct amounts', () => {
+          const info = createReceiveAmountInfo({ isSell: true, hasPartnerFee: true })
+          const result = getOrderTypeReceiveAmounts(info)
 
-        // amountBeforeFees: buyAmount from beforeNetworkCosts = 1_000_000_000 TOKEN_B
-        expect(result.amountBeforeFees.currency).toEqual(TOKEN_B)
-        expect(result.amountBeforeFees.toExact()).toEqual('1000000000')
+          // amountBeforeFees: buyAmount from beforeNetworkCosts = 1_000_000_000 TOKEN_B
+          expect(result.amountBeforeFees.currency).toEqual(TOKEN_B)
+          expect(result.amountBeforeFees.toExact()).toEqual('1000000000')
 
-        // amountAfterFees: buyAmount from afterPartnerFees = 1_000_000_000 - 300_000 = 999_700_000 TOKEN_B
-        expect(result.amountAfterFees.currency).toEqual(TOKEN_B)
-        expect(result.amountAfterFees.toExact()).toEqual('999700000')
+          // amountAfterFees: buyAmount from afterPartnerFees = 1_000_000_000 - 300_000 = 999_700_000 TOKEN_B
+          expect(result.amountAfterFees.currency).toEqual(TOKEN_B)
+          expect(result.amountAfterFees.toExact()).toEqual('999700000')
 
-        // amountAfterSlippage: buyAmount from afterSlippage = 1_000_000_000 TOKEN_B
-        expect(result.amountAfterSlippage.currency).toEqual(TOKEN_B)
-        expect(result.amountAfterSlippage.toExact()).toEqual('1000000000')
+          // amountAfterSlippage: buyAmount from afterSlippage = 1_000_000_000 TOKEN_B
+          expect(result.amountAfterSlippage.currency).toEqual(TOKEN_B)
+          expect(result.amountAfterSlippage.toExact()).toEqual('1000000000')
 
-        // networkFeeAmount: amountInBuyCurrency = 1_000_000 TOKEN_B
-        expect(result.networkFeeAmount.currency).toEqual(TOKEN_B)
-        expect(result.networkFeeAmount.toExact()).toEqual('1000000')
+          // networkFeeAmount: amountInBuyCurrency = 1_000_000 TOKEN_B
+          expect(result.networkFeeAmount.currency).toEqual(TOKEN_B)
+          expect(result.networkFeeAmount.toExact()).toEqual('1000000')
+        })
+      })
+
+      describe('without partnerFee', () => {
+        it('should return correct amounts', () => {
+          const info = createReceiveAmountInfo({ isSell: true, hasPartnerFee: false })
+          const result = getOrderTypeReceiveAmounts(info)
+
+          // amountBeforeFees: buyAmount from beforeNetworkCosts = 1_000_000_000 TOKEN_B
+          expect(result.amountBeforeFees.currency).toEqual(TOKEN_B)
+          expect(result.amountBeforeFees.toExact()).toEqual('1000000000')
+
+          // amountAfterFees: buyAmount from afterPartnerFees = 1_000_000_000 TOKEN_B (no fee deducted)
+          expect(result.amountAfterFees.currency).toEqual(TOKEN_B)
+          expect(result.amountAfterFees.toExact()).toEqual('1000000000')
+
+          // amountAfterSlippage: buyAmount from afterSlippage = 1_000_000_000 TOKEN_B
+          expect(result.amountAfterSlippage.currency).toEqual(TOKEN_B)
+          expect(result.amountAfterSlippage.toExact()).toEqual('1000000000')
+
+          // networkFeeAmount: amountInBuyCurrency = 1_000_000 TOKEN_B
+          expect(result.networkFeeAmount.currency).toEqual(TOKEN_B)
+          expect(result.networkFeeAmount.toExact()).toEqual('1000000')
+        })
       })
     })
 
-    describe('without partnerFee', () => {
-      it('should return correct amounts', () => {
-        const info = createReceiveAmountInfo({ isSell: true, hasPartnerFee: false })
-        const result = getOrderTypeReceiveAmounts(info)
+    describe('Buy orders (buying TOKEN_B by selling TOKEN_A)', () => {
+      describe('with 3 bps partnerFee', () => {
+        it('should return correct amounts', () => {
+          const info = createReceiveAmountInfo({ isSell: false, hasPartnerFee: true })
+          const result = getOrderTypeReceiveAmounts(info)
 
-        // amountBeforeFees: buyAmount from beforeNetworkCosts = 1_000_000_000 TOKEN_B
-        expect(result.amountBeforeFees.currency).toEqual(TOKEN_B)
-        expect(result.amountBeforeFees.toExact()).toEqual('1000000000')
+          // amountBeforeFees: sellAmount from beforeNetworkCosts = 1_000_000_000 TOKEN_A
+          expect(result.amountBeforeFees.currency).toEqual(TOKEN_A)
+          expect(result.amountBeforeFees.toExact()).toEqual('1000000000')
 
-        // amountAfterFees: buyAmount from afterPartnerFees = 1_000_000_000 TOKEN_B (no fee deducted)
-        expect(result.amountAfterFees.currency).toEqual(TOKEN_B)
-        expect(result.amountAfterFees.toExact()).toEqual('1000000000')
+          // amountAfterFees: sellAmount from afterPartnerFees = 1_000_000_000 - 300_000 = 999_700_000 TOKEN_A
+          expect(result.amountAfterFees.currency).toEqual(TOKEN_A)
+          expect(result.amountAfterFees.toExact()).toEqual('999700000')
 
-        // amountAfterSlippage: buyAmount from afterSlippage = 1_000_000_000 TOKEN_B
-        expect(result.amountAfterSlippage.currency).toEqual(TOKEN_B)
-        expect(result.amountAfterSlippage.toExact()).toEqual('1000000000')
+          // amountAfterSlippage: sellAmount from afterSlippage = 1_000_000_000 TOKEN_A
+          expect(result.amountAfterSlippage.currency).toEqual(TOKEN_A)
+          expect(result.amountAfterSlippage.toExact()).toEqual('1000000000')
 
-        // networkFeeAmount: amountInBuyCurrency = 1_000_000 TOKEN_B
-        expect(result.networkFeeAmount.currency).toEqual(TOKEN_B)
-        expect(result.networkFeeAmount.toExact()).toEqual('1000000')
+          // networkFeeAmount: amountInSellCurrency = 1_000_000 TOKEN_A
+          expect(result.networkFeeAmount.currency).toEqual(TOKEN_A)
+          expect(result.networkFeeAmount.toExact()).toEqual('1000000')
+        })
+      })
+
+      describe('without partnerFee', () => {
+        it('should return correct amounts', () => {
+          const info = createReceiveAmountInfo({ isSell: false, hasPartnerFee: false })
+          const result = getOrderTypeReceiveAmounts(info)
+
+          // amountBeforeFees: sellAmount from beforeNetworkCosts = 1_000_000_000 TOKEN_A
+          expect(result.amountBeforeFees.currency).toEqual(TOKEN_A)
+          expect(result.amountBeforeFees.toExact()).toEqual('1000000000')
+
+          // amountAfterFees: sellAmount from afterPartnerFees = 1_000_000_000 TOKEN_A (no fee deducted)
+          expect(result.amountAfterFees.currency).toEqual(TOKEN_A)
+          expect(result.amountAfterFees.toExact()).toEqual('1000000000')
+
+          // amountAfterSlippage: sellAmount from afterSlippage = 1_000_000_000 TOKEN_A
+          expect(result.amountAfterSlippage.currency).toEqual(TOKEN_A)
+          expect(result.amountAfterSlippage.toExact()).toEqual('1000000000')
+
+          // networkFeeAmount: amountInSellCurrency = 1_000_000 TOKEN_A
+          expect(result.networkFeeAmount.currency).toEqual(TOKEN_A)
+          expect(result.networkFeeAmount.toExact()).toEqual('1000000')
+        })
+      })
+    })
+
+    describe('Sell orders with 2 bps protocolFee', () => {
+      describe('with 3 bps partnerFee', () => {
+        it('should return correct amounts', () => {
+          const info = createReceiveAmountInfo({ isSell: true, hasPartnerFee: true, hasProtocolFee: true })
+          const result = getOrderTypeReceiveAmounts(info)
+
+          // amountBeforeFees: amountAfterFees + protocolFee + partnerFee + networkFee
+          // = 999_500_000 + 200_000 + 300_000 + 1_000_000 = 1_001_000_000 TOKEN_B
+          expect(result.amountBeforeFees.currency).toEqual(TOKEN_B)
+          expect(result.amountBeforeFees.toExact()).toEqual('1001000000')
+
+          // amountAfterFees: buyAmount from afterPartnerFees = 1_000_000_000 - 200_000 - 300_000 = 999_500_000 TOKEN_B
+          expect(result.amountAfterFees.currency).toEqual(TOKEN_B)
+          expect(result.amountAfterFees.toExact()).toEqual('999500000')
+
+          // amountAfterSlippage: buyAmount from afterSlippage = 1_000_000_000 TOKEN_B
+          expect(result.amountAfterSlippage.currency).toEqual(TOKEN_B)
+          expect(result.amountAfterSlippage.toExact()).toEqual('1000000000')
+
+          // networkFeeAmount: amountInBuyCurrency = 1_000_000 TOKEN_B
+          expect(result.networkFeeAmount.currency).toEqual(TOKEN_B)
+          expect(result.networkFeeAmount.toExact()).toEqual('1000000')
+        })
+      })
+
+      describe('without partnerFee', () => {
+        it('should return correct amounts', () => {
+          const info = createReceiveAmountInfo({ isSell: true, hasPartnerFee: false, hasProtocolFee: true })
+          const result = getOrderTypeReceiveAmounts(info)
+
+          // amountBeforeFees: amountAfterFees + protocolFee + networkFee
+          // = 999_800_000 + 200_000 + 1_000_000 = 1_001_000_000 TOKEN_B
+          expect(result.amountBeforeFees.currency).toEqual(TOKEN_B)
+          expect(result.amountBeforeFees.toExact()).toEqual('1001000000')
+
+          // amountAfterFees: buyAmount from afterPartnerFees = 1_000_000_000 - 200_000 = 999_800_000 TOKEN_B
+          expect(result.amountAfterFees.currency).toEqual(TOKEN_B)
+          expect(result.amountAfterFees.toExact()).toEqual('999800000')
+
+          // amountAfterSlippage: buyAmount from afterSlippage = 1_000_000_000 TOKEN_B
+          expect(result.amountAfterSlippage.currency).toEqual(TOKEN_B)
+          expect(result.amountAfterSlippage.toExact()).toEqual('1000000000')
+
+          // networkFeeAmount: amountInBuyCurrency = 1_000_000 TOKEN_B
+          expect(result.networkFeeAmount.currency).toEqual(TOKEN_B)
+          expect(result.networkFeeAmount.toExact()).toEqual('1000000')
+        })
+      })
+    })
+
+    describe('Buy orders with 2 bps protocolFee', () => {
+      describe('with 3 bps partnerFee', () => {
+        it('should return correct amounts', () => {
+          const info = createReceiveAmountInfo({ isSell: false, hasPartnerFee: true, hasProtocolFee: true })
+          const result = getOrderTypeReceiveAmounts(info)
+
+          // amountBeforeFees: amountAfterFees + protocolFee + partnerFee + networkFee
+          // = 999_500_000 + 200_000 + 300_000 + 1_000_000 = 1_001_000_000 TOKEN_A
+          expect(result.amountBeforeFees.currency).toEqual(TOKEN_A)
+          expect(result.amountBeforeFees.toExact()).toEqual('1001000000')
+
+          // amountAfterFees: sellAmount from afterPartnerFees = 1_000_000_000 - 200_000 - 300_000 = 999_500_000 TOKEN_A
+          expect(result.amountAfterFees.currency).toEqual(TOKEN_A)
+          expect(result.amountAfterFees.toExact()).toEqual('999500000')
+
+          // amountAfterSlippage: sellAmount from afterSlippage = 1_000_000_000 TOKEN_A
+          expect(result.amountAfterSlippage.currency).toEqual(TOKEN_A)
+          expect(result.amountAfterSlippage.toExact()).toEqual('1000000000')
+
+          // networkFeeAmount: amountInSellCurrency = 1_000_000 TOKEN_A
+          expect(result.networkFeeAmount.currency).toEqual(TOKEN_A)
+          expect(result.networkFeeAmount.toExact()).toEqual('1000000')
+        })
+      })
+
+      describe('without partnerFee', () => {
+        it('should return correct amounts', () => {
+          const info = createReceiveAmountInfo({ isSell: false, hasPartnerFee: false, hasProtocolFee: true })
+          const result = getOrderTypeReceiveAmounts(info)
+
+          // amountBeforeFees: amountAfterFees + protocolFee + networkFee
+          // = 999_800_000 + 200_000 + 1_000_000 = 1_001_000_000 TOKEN_A
+          expect(result.amountBeforeFees.currency).toEqual(TOKEN_A)
+          expect(result.amountBeforeFees.toExact()).toEqual('1001000000')
+
+          // amountAfterFees: sellAmount from afterPartnerFees = 1_000_000_000 - 200_000 = 999_800_000 TOKEN_A
+          expect(result.amountAfterFees.currency).toEqual(TOKEN_A)
+          expect(result.amountAfterFees.toExact()).toEqual('999800000')
+
+          // amountAfterSlippage: sellAmount from afterSlippage = 1_000_000_000 TOKEN_A
+          expect(result.amountAfterSlippage.currency).toEqual(TOKEN_A)
+          expect(result.amountAfterSlippage.toExact()).toEqual('1000000000')
+
+          // networkFeeAmount: amountInSellCurrency = 1_000_000 TOKEN_A
+          expect(result.networkFeeAmount.currency).toEqual(TOKEN_A)
+          expect(result.networkFeeAmount.toExact()).toEqual('1000000')
+        })
       })
     })
   })
 
-  describe('Buy orders (buying TOKEN_B by selling TOKEN_A)', () => {
-    describe('with 3 bps partnerFee', () => {
-      it('should return correct amounts', () => {
-        const info = createReceiveAmountInfo({ isSell: false, hasPartnerFee: true })
-        const result = getOrderTypeReceiveAmounts(info)
+  describe('bridge fee calculation with different decimals', () => {
+    it('calculates bridge fee correctly when intermediate and destination have same decimals', () => {
+      const orderParams = {
+        kind: OrderKind.SELL,
+        sellToken: mainnetUsdc.address,
+        buyToken: baseUsdc.address,
+        sellAmount: '1000000', // 1 USDC (6 decimals)
+        buyAmount: '950000', // 0.95 USDC (6 decimals)
+        validTo: Math.floor(Date.now() / 1000) + 3600,
+        appData: '0x0000000000000000000000000000000000000000000000000000000000000000',
+        feeAmount: '10000', // 0.01 USDC
+        partiallyFillable: false,
+      }
 
-        // amountBeforeFees: sellAmount from beforeNetworkCosts = 1_000_000_000 TOKEN_A
-        expect(result.amountBeforeFees.currency).toEqual(TOKEN_A)
-        expect(result.amountBeforeFees.toExact()).toEqual('1000000000')
+      const slippagePercent = new Percent(50, 10000) // 0.5%
+      const bridgeFeeAmounts = {
+        amountInSellCurrency: BigInt('5000'), // 0.005 USDC in destination decimals (6)
+        amountInBuyCurrency: BigInt('5000'), // 0.005 USDC in intermediate decimals (6)
+      }
 
-        // amountAfterFees: sellAmount from afterPartnerFees = 1_000_000_000 - 300_000 = 999_700_000 TOKEN_A
-        expect(result.amountAfterFees.currency).toEqual(TOKEN_A)
-        expect(result.amountAfterFees.toExact()).toEqual('999700000')
+      const result = getReceiveAmountInfo(
+        orderParams,
+        mainnetUsdc,
+        baseUsdc,
+        slippagePercent,
+        undefined,
+        mainnetUsdc, // intermediate currency
+        bridgeFeeAmounts,
+      )
 
-        // amountAfterSlippage: sellAmount from afterSlippage = 1_000_000_000 TOKEN_A
-        expect(result.amountAfterSlippage.currency).toEqual(TOKEN_A)
-        expect(result.amountAfterSlippage.toExact()).toEqual('1000000000')
-
-        // networkFeeAmount: amountInSellCurrency = 1_000_000 TOKEN_A
-        expect(result.networkFeeAmount.currency).toEqual(TOKEN_A)
-        expect(result.networkFeeAmount.toExact()).toEqual('1000000')
-      })
+      expect(result.costs.bridgeFee).toBeDefined()
+      expect(result.costs.bridgeFee?.amountInDestinationCurrency.toExact()).toBe('0.005')
+      expect(result.costs.bridgeFee?.amountInIntermediateCurrency.toExact()).toBe('0.005')
+      expect(result.costs.bridgeFee?.amountInDestinationCurrency.currency.decimals).toBe(6)
+      expect(result.costs.bridgeFee?.amountInIntermediateCurrency.currency.decimals).toBe(6)
     })
 
-    describe('without partnerFee', () => {
-      it('should return correct amounts', () => {
-        const info = createReceiveAmountInfo({ isSell: false, hasPartnerFee: false })
-        const result = getOrderTypeReceiveAmounts(info)
+    it('adjusts bridge fee decimals when intermediate has 18 decimals and destination has 6', () => {
+      const orderParams = {
+        kind: OrderKind.SELL,
+        sellToken: mainnetWeth.address,
+        buyToken: baseUsdc.address,
+        sellAmount: '1000000000000000000', // 1 WETH (18 decimals)
+        buyAmount: '2000000', // 2 USDC (6 decimals)
+        validTo: Math.floor(Date.now() / 1000) + 3600,
+        appData: '0x0000000000000000000000000000000000000000000000000000000000000000',
+        feeAmount: '10000000000000000', // 0.01 WETH
+        partiallyFillable: false,
+      }
 
-        // amountBeforeFees: sellAmount from beforeNetworkCosts = 1_000_000_000 TOKEN_A
-        expect(result.amountBeforeFees.currency).toEqual(TOKEN_A)
-        expect(result.amountBeforeFees.toExact()).toEqual('1000000000')
+      const slippagePercent = new Percent(50, 10000) // 0.5%
+      const bridgeFeeAmounts = {
+        amountInSellCurrency: BigInt('50000'), // 0.05 USDC in destination decimals (6)
+        amountInBuyCurrency: BigInt('50000000000000000'), // 0.05 in intermediate decimals (18)
+      }
 
-        // amountAfterFees: sellAmount from afterPartnerFees = 1_000_000_000 TOKEN_A (no fee deducted)
-        expect(result.amountAfterFees.currency).toEqual(TOKEN_A)
-        expect(result.amountAfterFees.toExact()).toEqual('1000000000')
+      const result = getReceiveAmountInfo(
+        orderParams,
+        mainnetWeth,
+        baseUsdc,
+        slippagePercent,
+        undefined,
+        mainnetWeth, // intermediate currency with 18 decimals
+        bridgeFeeAmounts,
+      )
 
-        // amountAfterSlippage: sellAmount from afterSlippage = 1_000_000_000 TOKEN_A
-        expect(result.amountAfterSlippage.currency).toEqual(TOKEN_A)
-        expect(result.amountAfterSlippage.toExact()).toEqual('1000000000')
+      expect(result.costs.bridgeFee).toBeDefined()
+      // Destination currency amount should be 0.05 USDC (6 decimals)
+      expect(result.costs.bridgeFee?.amountInDestinationCurrency.toExact()).toBe('0.05')
+      expect(result.costs.bridgeFee?.amountInDestinationCurrency.currency.decimals).toBe(6)
 
-        // networkFeeAmount: amountInSellCurrency = 1_000_000 TOKEN_A
-        expect(result.networkFeeAmount.currency).toEqual(TOKEN_A)
-        expect(result.networkFeeAmount.toExact()).toEqual('1000000')
-      })
-    })
-  })
-
-  describe('Sell orders with 2 bps protocolFee', () => {
-    describe('with 3 bps partnerFee', () => {
-      it('should return correct amounts', () => {
-        const info = createReceiveAmountInfo({ isSell: true, hasPartnerFee: true, hasProtocolFee: true })
-        const result = getOrderTypeReceiveAmounts(info)
-
-        // amountBeforeFees: amountAfterFees + protocolFee + partnerFee + networkFee
-        // = 999_500_000 + 200_000 + 300_000 + 1_000_000 = 1_001_000_000 TOKEN_B
-        expect(result.amountBeforeFees.currency).toEqual(TOKEN_B)
-        expect(result.amountBeforeFees.toExact()).toEqual('1001000000')
-
-        // amountAfterFees: buyAmount from afterPartnerFees = 1_000_000_000 - 200_000 - 300_000 = 999_500_000 TOKEN_B
-        expect(result.amountAfterFees.currency).toEqual(TOKEN_B)
-        expect(result.amountAfterFees.toExact()).toEqual('999500000')
-
-        // amountAfterSlippage: buyAmount from afterSlippage = 1_000_000_000 TOKEN_B
-        expect(result.amountAfterSlippage.currency).toEqual(TOKEN_B)
-        expect(result.amountAfterSlippage.toExact()).toEqual('1000000000')
-
-        // networkFeeAmount: amountInBuyCurrency = 1_000_000 TOKEN_B
-        expect(result.networkFeeAmount.currency).toEqual(TOKEN_B)
-        expect(result.networkFeeAmount.toExact()).toEqual('1000000')
-      })
+      // Intermediate currency amount is in WETH (18 decimals)
+      expect(result.costs.bridgeFee?.amountInIntermediateCurrency.toExact()).toBe('0.05')
+      expect(result.costs.bridgeFee?.amountInIntermediateCurrency.currency.decimals).toBe(18)
     })
 
-    describe('without partnerFee', () => {
-      it('should return correct amounts', () => {
-        const info = createReceiveAmountInfo({ isSell: true, hasPartnerFee: false, hasProtocolFee: true })
-        const result = getOrderTypeReceiveAmounts(info)
+    it('adjusts bridge fee decimals when intermediate has 6 decimals and destination has 18', () => {
+      const orderParams = {
+        kind: OrderKind.SELL,
+        sellToken: mainnetUsdc.address,
+        buyToken: baseWeth.address,
+        sellAmount: '2000000', // 2 USDC (6 decimals)
+        buyAmount: '1000000000000000000', // 1 WETH (18 decimals)
+        validTo: Math.floor(Date.now() / 1000) + 3600,
+        appData: '0x0000000000000000000000000000000000000000000000000000000000000000',
+        feeAmount: '10000', // 0.01 USDC
+        partiallyFillable: false,
+      }
 
-        // amountBeforeFees: amountAfterFees + protocolFee + networkFee
-        // = 999_800_000 + 200_000 + 1_000_000 = 1_001_000_000 TOKEN_B
-        expect(result.amountBeforeFees.currency).toEqual(TOKEN_B)
-        expect(result.amountBeforeFees.toExact()).toEqual('1001000000')
+      const slippagePercent = new Percent(50, 10000) // 0.5%
+      const bridgeFeeAmounts = {
+        amountInSellCurrency: BigInt('50000000000000000'), // 0.05 WETH in destination decimals (18)
+        amountInBuyCurrency: BigInt('50000'), // 0.05 in intermediate decimals (6)
+      }
 
-        // amountAfterFees: buyAmount from afterPartnerFees = 1_000_000_000 - 200_000 = 999_800_000 TOKEN_B
-        expect(result.amountAfterFees.currency).toEqual(TOKEN_B)
-        expect(result.amountAfterFees.toExact()).toEqual('999800000')
+      const result = getReceiveAmountInfo(
+        orderParams,
+        mainnetUsdc,
+        baseWeth,
+        slippagePercent,
+        undefined,
+        mainnetUsdc, // intermediate currency with 6 decimals
+        bridgeFeeAmounts,
+      )
 
-        // amountAfterSlippage: buyAmount from afterSlippage = 1_000_000_000 TOKEN_B
-        expect(result.amountAfterSlippage.currency).toEqual(TOKEN_B)
-        expect(result.amountAfterSlippage.toExact()).toEqual('1000000000')
+      expect(result.costs.bridgeFee).toBeDefined()
+      // Destination currency amount should be 0.05 WETH (18 decimals)
+      expect(result.costs.bridgeFee?.amountInDestinationCurrency.toExact()).toBe('0.05')
+      expect(result.costs.bridgeFee?.amountInDestinationCurrency.currency.decimals).toBe(18)
 
-        // networkFeeAmount: amountInBuyCurrency = 1_000_000 TOKEN_B
-        expect(result.networkFeeAmount.currency).toEqual(TOKEN_B)
-        expect(result.networkFeeAmount.toExact()).toEqual('1000000')
-      })
-    })
-  })
-
-  describe('Buy orders with 2 bps protocolFee', () => {
-    describe('with 3 bps partnerFee', () => {
-      it('should return correct amounts', () => {
-        const info = createReceiveAmountInfo({ isSell: false, hasPartnerFee: true, hasProtocolFee: true })
-        const result = getOrderTypeReceiveAmounts(info)
-
-        // amountBeforeFees: amountAfterFees + protocolFee + partnerFee + networkFee
-        // = 999_500_000 + 200_000 + 300_000 + 1_000_000 = 1_001_000_000 TOKEN_A
-        expect(result.amountBeforeFees.currency).toEqual(TOKEN_A)
-        expect(result.amountBeforeFees.toExact()).toEqual('1001000000')
-
-        // amountAfterFees: sellAmount from afterPartnerFees = 1_000_000_000 - 200_000 - 300_000 = 999_500_000 TOKEN_A
-        expect(result.amountAfterFees.currency).toEqual(TOKEN_A)
-        expect(result.amountAfterFees.toExact()).toEqual('999500000')
-
-        // amountAfterSlippage: sellAmount from afterSlippage = 1_000_000_000 TOKEN_A
-        expect(result.amountAfterSlippage.currency).toEqual(TOKEN_A)
-        expect(result.amountAfterSlippage.toExact()).toEqual('1000000000')
-
-        // networkFeeAmount: amountInSellCurrency = 1_000_000 TOKEN_A
-        expect(result.networkFeeAmount.currency).toEqual(TOKEN_A)
-        expect(result.networkFeeAmount.toExact()).toEqual('1000000')
-      })
+      // Intermediate currency amount is in USDC (6 decimals)
+      expect(result.costs.bridgeFee?.amountInIntermediateCurrency.toExact()).toBe('0.05')
+      expect(result.costs.bridgeFee?.amountInIntermediateCurrency.currency.decimals).toBe(6)
     })
 
-    describe('without partnerFee', () => {
-      it('should return correct amounts', () => {
-        const info = createReceiveAmountInfo({ isSell: false, hasPartnerFee: false, hasProtocolFee: true })
-        const result = getOrderTypeReceiveAmounts(info)
+    it('returns undefined bridge fee when bridgeFeeAmounts is not provided', () => {
+      const orderParams = {
+        kind: OrderKind.SELL,
+        sellToken: mainnetUsdc.address,
+        buyToken: baseUsdc.address,
+        sellAmount: '1000000',
+        buyAmount: '950000',
+        validTo: Math.floor(Date.now() / 1000) + 3600,
+        appData: '0x0000000000000000000000000000000000000000000000000000000000000000',
+        feeAmount: '10000',
+        partiallyFillable: false,
+      }
 
-        // amountBeforeFees: amountAfterFees + protocolFee + networkFee
-        // = 999_800_000 + 200_000 + 1_000_000 = 1_001_000_000 TOKEN_A
-        expect(result.amountBeforeFees.currency).toEqual(TOKEN_A)
-        expect(result.amountBeforeFees.toExact()).toEqual('1001000000')
+      const slippagePercent = new Percent(50, 10000) // 0.5%
 
-        // amountAfterFees: sellAmount from afterPartnerFees = 1_000_000_000 - 200_000 = 999_800_000 TOKEN_A
-        expect(result.amountAfterFees.currency).toEqual(TOKEN_A)
-        expect(result.amountAfterFees.toExact()).toEqual('999800000')
+      const result = getReceiveAmountInfo(
+        orderParams,
+        mainnetUsdc,
+        baseUsdc,
+        slippagePercent,
+        undefined,
+        mainnetUsdc,
+        undefined, // no bridge fee amounts
+      )
 
-        // amountAfterSlippage: sellAmount from afterSlippage = 1_000_000_000 TOKEN_A
-        expect(result.amountAfterSlippage.currency).toEqual(TOKEN_A)
-        expect(result.amountAfterSlippage.toExact()).toEqual('1000000000')
+      expect(result.costs.bridgeFee).toBeUndefined()
+    })
 
-        // networkFeeAmount: amountInSellCurrency = 1_000_000 TOKEN_A
-        expect(result.networkFeeAmount.currency).toEqual(TOKEN_A)
-        expect(result.networkFeeAmount.toExact()).toEqual('1000000')
-      })
+    it('returns undefined bridge fee when intermediate currency is not provided', () => {
+      const orderParams = {
+        kind: OrderKind.SELL,
+        sellToken: mainnetUsdc.address,
+        buyToken: baseUsdc.address,
+        sellAmount: '1000000',
+        buyAmount: '950000',
+        validTo: Math.floor(Date.now() / 1000) + 3600,
+        appData: '0x0000000000000000000000000000000000000000000000000000000000000000',
+        feeAmount: '10000',
+        partiallyFillable: false,
+      }
+
+      const slippagePercent = new Percent(50, 10000) // 0.5%
+      const bridgeFeeAmounts = {
+        amountInSellCurrency: BigInt('5000'),
+        amountInBuyCurrency: BigInt('5000'),
+      }
+
+      const result = getReceiveAmountInfo(
+        orderParams,
+        mainnetUsdc,
+        baseUsdc,
+        slippagePercent,
+        undefined,
+        undefined, // no intermediate currency
+        bridgeFeeAmounts,
+      )
+
+      expect(result.costs.bridgeFee).toBeUndefined()
     })
   })
 })

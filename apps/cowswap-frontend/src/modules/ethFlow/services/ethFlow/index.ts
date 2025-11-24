@@ -95,7 +95,13 @@ export async function ethFlow({
 
     const signingStepManager: SigningStepManager = {
       beforeBridgingSign() {
-        setSigningStep('1/2', SigningSteps.BridgingSigning)
+        const isReceiverAccountBridgeProvider =
+          tradeQuoteState.bridgeQuote?.providerInfo.type === 'ReceiverAccountBridgeProvider'
+
+        setSigningStep(
+          '1/2',
+          isReceiverAccountBridgeProvider ? SigningSteps.PreparingDepositAddress : SigningSteps.BridgingSigning,
+        )
       },
       beforeOrderSign() {
         setSigningStep('2/2', SigningSteps.OrderSigning)
