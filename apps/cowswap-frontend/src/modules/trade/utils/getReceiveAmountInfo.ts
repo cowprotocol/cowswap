@@ -94,6 +94,7 @@ export function getReceiveAmountInfo(
     buyDecimals: buyToken.decimals,
     slippagePercentBps: Number(slippagePercent.numerator),
     partnerFeeBps,
+    protocolFeeBps: undefined,
   })
 
   const currenciesWithIntermediate = {
