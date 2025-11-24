@@ -3,7 +3,8 @@ import { ReactNode } from 'react'
 import { bpsToPercent, formatPercent, FractionUtils } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { t, Trans } from '@lingui/macro'
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import { Nullish } from 'types'
 
 import { ReviewOrderModalAmountRow } from '../ReviewOrderModalAmountRow'
@@ -27,6 +28,8 @@ export function ProtocolFeeRow({
   if (!protocolFeeAmount || !protocolFeeBps || protocolFeeAmount.equalTo(0)) {
     return null
   }
+
+  if (!protocolFeeAsPercent) return null
 
   return (
     <ReviewOrderModalAmountRow

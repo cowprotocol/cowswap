@@ -2,6 +2,8 @@ import { ReactNode } from 'react'
 
 import { Fraction } from '@uniswap/sdk-core'
 
+import { Trans } from '@lingui/react/macro'
+
 interface HighFeeWarningTooltipContentProps {
   isHighFee?: boolean
   feePercentage?: Fraction
@@ -19,38 +21,41 @@ const Wrapper = ({ children }: { children: ReactNode }): ReactNode => {
 
 const CommonContent = (): ReactNode => {
   return (
-    <>
+    <Trans>
       <br />
       <br />
       Consider waiting for lower network costs.
       <br />
       <br />
       You may still move forward with this swap but a high percentage of it will be consumed by network costs.
-    </>
+    </Trans>
   )
 }
 
 const NetworkCostsContent = ({ feePercentage }: { feePercentage: Fraction }): ReactNode => {
+  const formattedFeePercentage = feePercentage?.toFixed(2)
+
   return (
-    <>
+    <Trans>
       Current network costs make up{' '}
       <u>
-        <strong>{feePercentage?.toFixed(2)}%</strong>
+        <strong>{formattedFeePercentage}%</strong>
       </u>{' '}
       of your swap amount.
-    </>
+    </Trans>
   )
 }
 
 const BridgeCostsContent = ({ bridgeFeePercentage }: { bridgeFeePercentage: Fraction }): ReactNode => {
+  const formattedBridgeFeePercentage = bridgeFeePercentage?.toFixed(2)
   return (
-    <>
+    <Trans>
       Current bridge costs make up{' '}
       <u>
-        <strong>{bridgeFeePercentage?.toFixed(2)}%</strong>
+        <strong>{formattedBridgeFeePercentage}%</strong>
       </u>{' '}
       of your swap amount.
-    </>
+    </Trans>
   )
 }
 

@@ -11,6 +11,8 @@ import {
   StatusColorVariant,
 } from '@cowprotocol/ui'
 
+import { Trans } from '@lingui/react/macro'
+
 import { useAddTokenImportCallback } from '../../hooks/useAddTokenImportCallback'
 import { useUpdateSelectTokenWidgetState } from '../../hooks/useUpdateSelectTokenWidgetState'
 import { CommonListContainer } from '../../pure/commonElements'
@@ -82,8 +84,8 @@ export function TokenSearchResults({
         bannerType={StatusColorVariant.Info}
       >
         <p>
-          Can't find your token on the list?{' '}
-          <ExternalLink href={LINK_GUIDE_ADD_CUSTOM_TOKEN}>Read our guide</ExternalLink> on how to add custom tokens.
+          <Trans>Can't find your token on the list?</Trans>{' '}
+          <Trans><ExternalLink href={LINK_GUIDE_ADD_CUSTOM_TOKEN}>Read our guide</ExternalLink> on how to add custom tokens.</Trans>
         </p>
       </InlineBanner>
 

@@ -19,7 +19,9 @@ import { useFavoriteTokens, useResetFavoriteTokens, useTokensByAddressMap } from
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
-import { t, Trans } from '@lingui/macro'
+import { MessageDescriptor } from '@lingui/core'
+import { msg } from '@lingui/core/macro'
+import { useLingui, Trans } from '@lingui/react/macro'
 import { Check } from 'react-feather'
 import styled from 'styled-components/macro'
 import { CloseIcon } from 'theme'
@@ -63,16 +65,16 @@ export enum PageViewKeys {
 
 const PageView = {
   [PageViewKeys.ALL_TOKENS]: {
-    label: t`All tokens`,
+    label: msg`All tokens`,
   },
   [PageViewKeys.FAVORITE_TOKENS]: {
-    label: t`Favorite tokens`,
+    label: msg`Favorite tokens`,
   },
 }
 
 interface PageViewItem {
   key: PageViewKeys
-  label: string
+  label: MessageDescriptor
 }
 
 const PAGE_VIEW_ITEMS: PageViewItem[] = Object.entries(PageView).map(([key, value]) => ({
@@ -88,13 +90,7 @@ export default function TokensOverview(): ReactNode {
   const { selectedView, isMenuOpen, toggleMenu, selectView, menuRef } = useTokensView()
   const [page, setPage] = useState<number>(1)
 
-  const {
-    formattedTokens,
-    favoriteTokens,
-    balances,
-    allowances,
-    removeAllFavoriteTokens,
-  } = useAccountTokensData()
+  const { formattedTokens, favoriteTokens, balances, allowances, removeAllFavoriteTokens } = useAccountTokensData()
 
   const { query, debouncedQuery, prevQuery, handleSearch, clearSearch } = useTokenSearch(page, setPage)
   const theme = useTheme()
@@ -106,6 +102,8 @@ export default function TokensOverview(): ReactNode {
   }, [removeAllFavoriteTokens, setPage])
 
   useResetPageOnContextChange({ account, chainId, selectedView, setPage })
+
+  const { i18n } = useLingui()
 
   return (
     <>
@@ -125,7 +123,7 @@ export default function TokensOverview(): ReactNode {
         />
       )}
       <Overview>
-        <PageTitle title={PAGE_TITLES.TOKENS_OVERVIEW} />
+        <PageTitle title={i18n._(PAGE_TITLES.TOKENS_OVERVIEW)} />
         {isProviderNetworkUnsupported ? (
           <Trans>Unsupported network</Trans>
         ) : (
@@ -178,12 +176,14 @@ function TokensOverviewHeader(props: TokensOverviewHeaderProps): ReactNode {
     checkColor,
   } = props
 
+  const { t, i18n } = useLingui()
+
   return (
     <AccountHeading>
       <LeftSection>
         <MenuWrapper ref={menuRef}>
           <MenuButton onClick={onToggleMenu}>
-            {PageView[selectedView].label}
+            {i18n._(PageView[selectedView].label)}
             <StyledChevronDown size={14} />
           </MenuButton>
 
@@ -295,12 +295,14 @@ function TokensOverviewMenuItems(props: TokensOverviewMenuItemsProps): ReactNode
 
   const menuItems: ReactNode[] = []
 
+  const { i18n } = useLingui()
+
   for (const { key, label } of PAGE_VIEW_ITEMS) {
     const isActive = selectedView === key
 
     menuItems.push(
       <MenuItem key={key} active={isActive} onClick={() => onSelectView(key)}>
-        <span>{label}</span>
+        <span>{i18n._(label)}</span>
         {isActive ? <Check size={20} color={checkColor} /> : null}
       </MenuItem>,
     )

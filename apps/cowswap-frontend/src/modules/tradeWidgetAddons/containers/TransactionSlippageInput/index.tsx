@@ -2,7 +2,8 @@ import { JSX, useContext } from 'react'
 
 import { HelpTooltip, RowBetween, RowFixed } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/macro'
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import { ThemeContext } from 'styled-components/macro'
 
 import { useSmartSlippageFromQuote, useTradeQuote } from 'modules/tradeQuote'
@@ -55,7 +56,7 @@ export function TransactionSlippageInput(): JSX.Element {
               !isQuoteLoading &&
               (slippageWarningParams.tooLow || slippageWarningParams?.tooHigh) ? (
                 <styledEl.SlippageEmojiContainer>
-                  <span role="img" aria-label="warning">
+                  <span role="img" aria-label={t`warning`}>
                     ⚠️
                   </span>
                 </styledEl.SlippageEmojiContainer>
@@ -85,7 +86,9 @@ export function TransactionSlippageInput(): JSX.Element {
                 </Trans>
               }
             />
-            <span>Dynamic</span>
+            <span>
+              <Trans>Dynamic</Trans>
+            </span>
           </styledEl.SmartSlippageInfo>
         </RowBetween>
       )}

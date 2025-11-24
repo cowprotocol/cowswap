@@ -3,7 +3,7 @@ import { ReactNode } from 'react'
 import { bpsToPercent, formatPercent, FractionUtils } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { Trans } from '@lingui/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 import { Nullish } from 'types'
 
 import { WidgetMarkdownContent } from 'modules/injectedWidget'
@@ -29,10 +29,13 @@ export function PartnerFeeRow({
 }: PartnerFeeRowProps): ReactNode {
   const feeAsPercent = partnerFeeBps ? formatPercent(bpsToPercent(partnerFeeBps)) : null
   const minPartnerFeeAmount = FractionUtils.amountToAtLeastOneWei(partnerFeeAmount)
+  const { t } = useLingui()
 
   if (!partnerFeeAmount || !partnerFeeBps || partnerFeeAmount.equalTo(0)) {
     return <FreeFeeRow withTimelineDot={false} />
   }
+
+  const label = volumeFeeTooltip.label
 
   return (
     <ReviewOrderModalAmountRow
@@ -51,7 +54,7 @@ export function PartnerFeeRow({
           </Trans>
         )
       }
-      label={`${volumeFeeTooltip.label} (${feeAsPercent}%)`}
+      label={t`${label} (${feeAsPercent}%)`}
     />
   )
 }

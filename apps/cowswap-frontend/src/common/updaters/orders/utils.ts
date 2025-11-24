@@ -2,6 +2,7 @@ import { formatSymbol, formatTokenAmount, isSellOrder, shortenAddress } from '@c
 import { EnrichedOrder, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { t } from '@lingui/core/macro'
 import JSBI from 'jsbi'
 
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
@@ -9,7 +10,7 @@ import { classifyOrder, OrderTransitionStatus } from 'legacy/state/orders/utils'
 
 import { getOrder } from 'api/cowProtocol'
 import { getIsComposableCowChildOrder } from 'utils/orderUtils/getIsComposableCowChildOrder'
-import { getUiOrderType, ORDER_UI_TYPE_TITLES, UiOrderTypeParams } from 'utils/orderUtils/getUiOrderType'
+import { getUiOrderType, getUiOrderTypeTitles, UiOrderTypeParams } from 'utils/orderUtils/getUiOrderType'
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -42,7 +43,7 @@ export function computeOrderSummary({
   const receiver = orderFromApi?.receiver || orderFromStore?.receiver
 
   const uiOrderType = getUiOrderType((orderFromStore || orderFromApi) as UiOrderTypeParams)
-  const orderTitle = ORDER_UI_TYPE_TITLES[uiOrderType]
+  const orderTitle = getUiOrderTypeTitles()[uiOrderType]
 
   let summary: string | undefined = undefined
 
@@ -61,19 +62,20 @@ export function computeOrderSummary({
 
     const isSell = isSellOrder(kind)
 
-    const inputPrefix = !isFulfilled && !isSell ? 'at most ' : ''
-    const outputPrefix = !isFulfilled && isSell ? 'at least ' : ''
+    const inputPrefix = !isFulfilled && !isSell ? t`at most` + ` ` : ''
+    const outputPrefix = !isFulfilled && isSell ? t`at least` + ` ` : ''
 
-    summary = `${orderTitle} ${inputPrefix}${formatTokenAmount(inputAmount)} ${formatSymbol(
-      inputAmount.currency.symbol,
-    )} for ${outputPrefix}${formatTokenAmount(outputAmount)} ${formatSymbol(outputAmount.currency.symbol)}`
+    summary =
+      `${orderTitle} ${inputPrefix}${formatTokenAmount(inputAmount)} ${formatSymbol(inputAmount.currency.symbol)} ` +
+      t`for` +
+      ` ${outputPrefix}${formatTokenAmount(outputAmount)} ${formatSymbol(outputAmount.currency.symbol)}`
   } else {
     // We only have the API order info, let's at least use that
-    summary = `${orderTitle} ${sellToken} for ${buyToken}`
+    summary = `${orderTitle} ${sellToken} ` + t`for` + ` ${buyToken}`
   }
 
   if (owner && receiver && receiver !== owner) {
-    summary += ` to ${shortenAddress(receiver)}`
+    summary += ` ` + t`to` + ` ${shortenAddress(receiver)}`
   }
 
   return summary

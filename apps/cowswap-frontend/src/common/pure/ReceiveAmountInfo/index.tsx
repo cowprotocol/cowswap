@@ -4,7 +4,8 @@ import { isFractionFalsy } from '@cowprotocol/common-utils'
 import { TokenAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { t, Trans } from '@lingui/macro'
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 
 import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'
 
@@ -75,7 +76,7 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps): 
       {!hasAnyFee && !isEoaNotEthFlow && <FeeItem title={t`Fee`} isSell={isSell} feeAmount={undefined} />}
 
       {bridgeFee && (
-        <FeeItem title={t`Bridge costs`} isSell={isSell} feeAmount={bridgeFee?.amountInIntermediateCurrency} />
+        <FeeItem title="Bridge costs" isSell={isSell} feeAmount={bridgeFee?.amountInIntermediateCurrency} />
       )}
 
       {!isFractionFalsy(amountAfterFees) && (
