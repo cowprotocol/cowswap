@@ -2,8 +2,10 @@ import { useAtomValue } from 'jotai'
 import React, { ReactElement, useCallback, useEffect, useMemo } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { isSellOrder } from '@cowprotocol/common-utils'
+import { isInjectedWidget, isSellOrder } from '@cowprotocol/common-utils'
 
+import { msg, t } from '@lingui/core/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 import { useLocation } from 'react-router'
 
 import { Field } from 'legacy/state/types'
@@ -33,6 +35,7 @@ import { LimitOrdersFormState, useLimitOrdersFormState } from '../../hooks/useLi
 import { useUpdateLimitOrdersRawState } from '../../hooks/useLimitOrdersRawState'
 import { useTradeFlowContext } from '../../hooks/useTradeFlowContext'
 import { InfoBanner } from '../../pure/InfoBanner'
+import { ProtocolFeeInfoBanner } from '../../pure/ProtocolFeeInfoBanner'
 import { limitOrdersSettingsAtom } from '../../state/limitOrdersSettingsAtom'
 import { limitRateAtom } from '../../state/limitRateAtom'
 import { DeadlineInput } from '../DeadlineInput'
@@ -40,25 +43,6 @@ import { LimitOrdersConfirmModal } from '../LimitOrdersConfirmModal'
 import { RateInput } from '../RateInput'
 import { SettingsWidget } from '../SettingsWidget'
 import { TradeRateDetails } from '../TradeRateDetails'
-
-export const LIMIT_BULLET_LIST_CONTENT: BulletListItem[] = [
-  { content: 'Set any limit price and time horizon' },
-  { content: 'FREE order placement and cancellation' },
-  { content: 'Place multiple orders using the same balance' },
-  { content: 'Receive surplus of your order' },
-  { content: 'Protection from MEV by default' },
-  {
-    content: <span>Place orders for higher than available balance!</span>,
-  },
-]
-
-const UNLOCK_SCREEN = {
-  title: 'Want to try out limit orders?',
-  subtitle: 'Get started!',
-  orderType: 'partially fillable',
-  buttonText: 'Get started with limit orders',
-  buttonLink: 'https://cow.fi/learn/cow-swap-improves-the-limit-order-experience-with-partially-fillable-limit-orders',
-}
 
 export function LimitOrdersWidget(): ReactElement {
   const {
@@ -94,7 +78,7 @@ export function LimitOrdersWidget(): ReactElement {
 
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
-    label: isSell ? 'Sell' : 'You sell at most',
+    label: isSell ? t`Sell` : t`You sell at most`,
     currency: inputCurrency,
     amount: inputCurrencyAmount,
     isIndependent: isSell,
@@ -103,9 +87,10 @@ export function LimitOrdersWidget(): ReactElement {
     receiveAmountInfo: null,
     isUsdValuesMode,
   }
+
   const outputCurrencyInfo: CurrencyInfo = {
     field: Field.OUTPUT,
-    label: isSell ? 'Receive at least' : 'Buy exactly',
+    label: isSell ? t`Receive at least` : t`Buy exactly`,
     currency: outputCurrency,
     amount: outputCurrencyAmount,
     isIndependent: !isSell,
@@ -132,9 +117,33 @@ export function LimitOrdersWidget(): ReactElement {
   return <LimitOrders {...props} />
 }
 
+export const LIMIT_BULLET_LIST_CONTENT: BulletListItem[] = [
+  { content: msg`Set any limit price and time horizon` },
+  { content: msg`FREE order placement and cancellation` },
+  { content: msg`Place multiple orders using the same balance` },
+  { content: msg`Receive surplus of your order` },
+  { content: msg`Protection from MEV by default` },
+  {
+    content: (
+      <span>
+        <Trans>Place orders for higher than available balance!</Trans>
+      </span>
+    ),
+  },
+]
+
+const UNLOCK_SCREEN = {
+  title: msg`Want to try out limit orders?`,
+  subtitle: msg`Get started!`,
+  orderType: msg`partially fillable`,
+  buttonText: msg`Get started with limit orders`,
+  buttonLink: 'https://cow.fi/learn/cow-swap-improves-the-limit-order-experience-with-partially-fillable-limit-orders',
+}
+
 // TODO: Break down this large function into smaller functions
 // eslint-disable-next-line max-lines-per-function
 const LimitOrders = React.memo((props: LimitOrdersProps) => {
+  const { i18n } = useLingui()
   const {
     inputCurrencyInfo,
     outputCurrencyInfo,
@@ -154,8 +163,9 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
   const { isOpen: isConfirmOpen } = useTradeConfirmState()
   const { search } = useLocation()
   const handleUnlock = useCallback(() => updateLimitOrdersState({ isUnlocked: true }), [updateLimitOrdersState])
-  const { isLimitOrdersUpgradeBannerEnabled } = useFeatureFlags()
+  const { isLimitOrdersUpgradeBannerEnabled, isLimitOrdersProtocolFeeBannerEnabled } = useFeatureFlags()
   const isWrapUnwrap = useIsWrapOrUnwrap()
+  const isInjectedWidgetMode = isInjectedWidget()
 
   useEffect(() => {
     const skipLockScreen = search.includes('skipLockScreen')
@@ -193,12 +203,14 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
       !isUnlocked && !isLimitOrdersUpgradeBannerEnabled ? (
         <UnlockWidgetScreen
           id="limit-orders"
-          items={LIMIT_BULLET_LIST_CONTENT}
+          items={LIMIT_BULLET_LIST_CONTENT.map(({ content }) => ({
+            content,
+          }))}
           buttonLink={UNLOCK_SCREEN.buttonLink}
-          title={UNLOCK_SCREEN.title}
-          subtitle={UNLOCK_SCREEN.subtitle}
-          orderType={UNLOCK_SCREEN.orderType}
-          buttonText={UNLOCK_SCREEN.buttonText}
+          title={i18n._(UNLOCK_SCREEN.title)}
+          subtitle={i18n._(UNLOCK_SCREEN.subtitle)}
+          orderType={i18n._(UNLOCK_SCREEN.orderType)}
+          buttonText={i18n._(UNLOCK_SCREEN.buttonText)}
           handleUnlock={handleUnlock}
         />
       ) : undefined,
@@ -219,6 +231,9 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
           {warnings}
 
           <styledEl.TradeButtonBox>
+            {isUnlocked && !isInjectedWidgetMode && isLimitOrdersProtocolFeeBannerEnabled && (
+              <ProtocolFeeInfoBanner />
+            )}
             <TradeButtons isTradeContextReady={isTradeContextReady} />
           </styledEl.TradeButtonBox>
         </>

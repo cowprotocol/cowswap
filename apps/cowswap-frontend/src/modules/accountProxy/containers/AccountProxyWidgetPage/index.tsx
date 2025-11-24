@@ -4,6 +4,7 @@ import { useOnClickOutside } from '@cowprotocol/common-hooks'
 import { isAddress } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { useLingui } from '@lingui/react/macro'
 import { Outlet, useLocation, useParams } from 'react-router'
 
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
@@ -36,10 +37,9 @@ export function AccountProxyWidgetPage({
   modalMode = false,
   onDismiss: modalOnDismiss,
 }: AccountProxiesPageProps): ReactNode {
+  const { i18n } = useLingui()
   const widgetRef = useRef(null)
-
   const Wrapper = modalMode ? ModalWrapper : EmptyWrapper
-
   const { chainId, account } = useWalletInfo()
   const tradeNavigate = useTradeNavigate()
   const { inputCurrencyId, outputCurrencyId } = useSwapRawState()
@@ -93,9 +93,9 @@ export function AccountProxyWidgetPage({
                 <WidgetPageTitle />
               </span>
               {!isHelpPage && (
-                <HelpLink
-                  to={parameterizeRoute(Routes.ACCOUNT_PROXY_HELP, { chainId })}
-                >{`${NEED_HELP_LABEL}?`}</HelpLink>
+                <HelpLink to={parameterizeRoute(Routes.ACCOUNT_PROXY_HELP, { chainId })}>
+                  {i18n._(NEED_HELP_LABEL)}?
+                </HelpLink>
               )}
             </TitleWrapper>
           }

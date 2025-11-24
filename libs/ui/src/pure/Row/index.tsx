@@ -10,15 +10,15 @@ export const Row = styled(Box)<{
   borderRadius?: string
   gap?: string | number
 }>`
-  width: ${({ width }) => width ?? '100%'};
-  display: flex;
-  padding: 0;
   align-items: ${({ align }) => align ?? 'center'};
-  justify-content: ${({ justify }) => justify ?? 'flex-start'};
-  padding: ${({ padding }) => padding};
-  border: ${({ border }) => border};
   border-radius: ${({ borderRadius }) => borderRadius};
+  border: ${({ border }) => border};
+  display: flex;
   gap: ${({ gap }) => (typeof gap === 'number' ? `${gap}px` : gap) ?? 0};
+  justify-content: ${({ justify }) => justify ?? 'flex-start'};
+  padding: 0;
+  padding: ${({ padding }) => padding};
+  width: ${({ width }) => width ?? '100%'};
 `
 
 export const RowBetween = styled(Row)`
@@ -27,8 +27,9 @@ export const RowBetween = styled(Row)`
 
 export const AutoRow = styled(Row)<{ gap?: string; justify?: string }>`
   flex-wrap: wrap;
-  margin: ${({ gap }) => gap && `-${gap}`};
+  gap: ${({ gap }) => gap ?? 0};
   justify-content: ${({ justify }) => justify && justify};
+  margin: ${({ gap }) => gap && `-${gap}`};
 
   & > * {
     margin: ${({ gap }) => gap} !important;
@@ -36,9 +37,9 @@ export const AutoRow = styled(Row)<{ gap?: string; justify?: string }>`
 `
 
 export const RowFixed = styled(Row)<{ gap?: number; justify?: string }>`
-  width: fit-content;
-  min-width: initial;
-  gap: ${({ gap = 4 }) => gap}px;
   align-items: center;
-  justify-content: center;
+  gap: ${({ gap = 4 }) => gap}px;
+  justify-content: flex-start;
+  min-width: initial;
+  width: fit-content;
 `

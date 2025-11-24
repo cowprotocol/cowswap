@@ -4,6 +4,8 @@ import { getChainInfo } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { HOOK_DAPP_ID_LENGTH, HookDappBase, HookDappWalletCompatibility } from '@cowprotocol/hook-dapp-lib'
 
+import { i18n } from '@lingui/core'
+
 import { ERROR_MESSAGES } from './pure/AddCustomHookForm/constants'
 
 type HookDappBaseInfo = Omit<HookDappBase, 'type' | 'conditions'>
@@ -25,7 +27,7 @@ export function validateHookDappManifest(
   const { conditions = {}, ...dapp } = data
 
   if (!dapp) {
-    return ERROR_MESSAGES.INVALID_MANIFEST
+    return i18n._(ERROR_MESSAGES.INVALID_MANIFEST)
   }
 
   const emptyFields = MANDATORY_DAPP_FIELDS.filter((field) => typeof dapp[field] === 'undefined')
@@ -38,11 +40,11 @@ export function validateHookDappManifest(
     typeof conditions.walletCompatibility !== 'undefined' &&
     !conditions.walletCompatibility.includes(HookDappWalletCompatibility.SMART_CONTRACT)
   ) {
-    return ERROR_MESSAGES.SMART_CONTRACT_INCOMPATIBLE
+    return i18n._(ERROR_MESSAGES.SMART_CONTRACT_INCOMPATIBLE)
   }
 
   if (!isHex(dapp.id) || dapp.id.length !== HOOK_DAPP_ID_LENGTH) {
-    return ERROR_MESSAGES.INVALID_HOOK_ID
+    return i18n._(ERROR_MESSAGES.INVALID_HOOK_ID)
   }
 
   if (chainId && conditions.supportedNetworks && !conditions.supportedNetworks.includes(chainId)) {

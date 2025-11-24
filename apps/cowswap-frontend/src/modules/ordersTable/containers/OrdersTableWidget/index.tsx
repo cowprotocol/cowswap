@@ -3,6 +3,8 @@ import { ReactNode, useMemo, useState } from 'react'
 import { useTheme } from '@cowprotocol/common-hooks'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { t } from '@lingui/core/macro'
+
 import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { UnfillableOrdersUpdater } from 'common/updaters/orders/UnfillableOrdersUpdater'
@@ -73,7 +75,7 @@ export function OrdersTableWidget(props: OrdersTableWidgetProps): ReactNode {
             <SearchIcon />
             <SearchInput
               type="text"
-              placeholder="Token symbol, address"
+              placeholder={t`Token symbol, address`}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />

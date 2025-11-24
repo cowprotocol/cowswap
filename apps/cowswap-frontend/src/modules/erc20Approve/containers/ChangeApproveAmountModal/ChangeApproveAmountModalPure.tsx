@@ -5,6 +5,8 @@ import { TokenLogo } from '@cowprotocol/tokens'
 import { ModalHeader } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { Trans, useLingui } from '@lingui/react/macro'
+
 import * as styledEl from './styled'
 
 import { ApprovalAmountInput } from '../ApprovalAmountInput/ApprovalAmountInput'
@@ -31,16 +33,22 @@ export function ChangeApproveAmountModalPure({
   onConfirm,
   onReset,
 }: ChangeApproveAmountModalPureProps): ReactNode {
+  const { t } = useLingui()
+
   return (
     <styledEl.Wrapper>
       <ModalHeader onBack={onBack}>
         <styledEl.Title>
-          <div>Edit partial approval</div>
+          <div>
+            <Trans>Edit partial approval</Trans>
+          </div>
         </styledEl.Title>
       </ModalHeader>
       <styledEl.SwapInfo>
         <TokenLogo token={inputToken} size={54} />
-        <styledEl.SetTitle>Set approval amount</styledEl.SetTitle>
+        <styledEl.SetTitle>
+          <Trans>Set approval amount</Trans>
+        </styledEl.SetTitle>
         <SwapAmountPreview />
       </styledEl.SwapInfo>
       <ApprovalAmountInput
@@ -51,7 +59,7 @@ export function ChangeApproveAmountModalPure({
       />
       <styledEl.BtnWrapper>
         <styledEl.ActionButton disabled={isInvalid} onClick={onConfirm}>
-          {isInvalid ? 'Amount must be at least trade amount' : 'Confirm'}
+          {isInvalid ? t`Amount must be at least trade amount` : t`Confirm`}
         </styledEl.ActionButton>
       </styledEl.BtnWrapper>
     </styledEl.Wrapper>

@@ -1,6 +1,7 @@
 import { isSellOrder } from '@cowprotocol/common-utils'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
+import { t } from '@lingui/core/macro'
 import { BigNumber } from 'bignumber.js'
 import JSBI from 'jsbi'
 
@@ -31,7 +32,7 @@ export function getFilledAmounts(order: ParsedOrder) {
   let filledAmountWithFee: BigNumber
   let swappedAmountWithFee: BigNumber
   if (isSellOrder(kind)) {
-    action = 'sold'
+    action = t`sold`
 
     mainToken = inputToken
     mainAmount = sellAmountCurrency.add(CurrencyAmount.fromRawAmount(mainToken, feeAmount.toString()))
@@ -43,7 +44,7 @@ export function getFilledAmounts(order: ParsedOrder) {
     filledAmountWithFee = filledAmount?.plus(executedFeeAmount || '0')
     swappedAmountWithFee = new BigNumber(swappedAmount?.toString() || '0')
   } else {
-    action = 'bought'
+    action = t`bought`
 
     mainToken = outputToken
     mainAmount = buyAmountCurrency
