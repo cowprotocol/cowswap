@@ -32,7 +32,7 @@ export const pruneOrdersProgressBarState = atom(null, (get, set, trackedOrderIds
     return acc
   }, {})
 
-  if (!changed && trackedOrderIds.every((orderId) => orderId in fullState)) {
+  if (!changed) {
     return
   }
 
@@ -212,4 +212,12 @@ export const setOrderProgressBarCancellationTriggered = atom(null, (get, set, or
   singleState.cancellationTriggered = true
 
   set(ordersProgressBarStateAtom, { ...fullState, [orderId]: singleState })
+})
+
+export const cancellationTrackedOrderIdsAtom = atom((get) => {
+  const fullState = get(ordersProgressBarStateAtom)
+
+  return Object.entries(fullState)
+    .filter(([, state]) => state?.cancellationTriggered)
+    .map(([orderId]) => orderId)
 })

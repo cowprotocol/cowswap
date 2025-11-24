@@ -1,9 +1,12 @@
 import { useCallback } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { isInjectedWidget } from '@cowprotocol/common-utils'
 
 import { t } from '@lingui/core/macro'
 
+import { ProtocolFeeInfoBanner } from 'modules/limitOrders/pure/ProtocolFeeInfoBanner'
 import { useTradeConfirmActions } from 'modules/trade'
 import { TradeFormButtons, TradeFormValidation, useTradeFormButtonContext } from 'modules/tradeFormValidation'
 
@@ -48,6 +51,8 @@ export function ActionButtons({
   }, [tradeConfirmActions, twapConversionAnalytics, fallbackHandlerIsNotSet])
 
   const areWarningsAccepted = useAreWarningsAccepted()
+  const { isLimitOrdersProtocolFeeBannerEnabled } = useFeatureFlags()
+  const isInjectedWidgetMode = isInjectedWidget()
 
   const primaryActionContext = {
     confirmTrade,
@@ -58,16 +63,22 @@ export function ActionButtons({
   if (!tradeFormButtonContext) return null
 
   // Show local form validation errors only when wallet is connected
-  if (localFormValidation && !walletIsNotConnected) {
-    return <PrimaryActionButton state={localFormValidation} context={primaryActionContext} />
-  }
+  const buttons =
+    localFormValidation && !walletIsNotConnected ? (
+      <PrimaryActionButton state={localFormValidation} context={primaryActionContext} />
+    ) : (
+      <TradeFormButtons
+        confirmText={t`Review TWAP order`}
+        validation={primaryFormValidation}
+        context={tradeFormButtonContext}
+        isDisabled={!areWarningsAccepted}
+      />
+    )
 
   return (
-    <TradeFormButtons
-      confirmText={t`Review TWAP order`}
-      validation={primaryFormValidation}
-      context={tradeFormButtonContext}
-      isDisabled={!areWarningsAccepted}
-    />
+    <>
+      {!isInjectedWidgetMode && isLimitOrdersProtocolFeeBannerEnabled && <ProtocolFeeInfoBanner />}
+      {buttons}
+    </>
   )
 }

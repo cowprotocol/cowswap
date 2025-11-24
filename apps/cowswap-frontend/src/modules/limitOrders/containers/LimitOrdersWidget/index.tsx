@@ -2,7 +2,7 @@ import { useAtomValue } from 'jotai'
 import React, { ReactElement, useCallback, useEffect, useMemo } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { isSellOrder } from '@cowprotocol/common-utils'
+import { isInjectedWidget, isSellOrder } from '@cowprotocol/common-utils'
 
 import { msg, t } from '@lingui/core/macro'
 import { Trans, useLingui } from '@lingui/react/macro'
@@ -35,6 +35,7 @@ import { LimitOrdersFormState, useLimitOrdersFormState } from '../../hooks/useLi
 import { useUpdateLimitOrdersRawState } from '../../hooks/useLimitOrdersRawState'
 import { useTradeFlowContext } from '../../hooks/useTradeFlowContext'
 import { InfoBanner } from '../../pure/InfoBanner'
+import { ProtocolFeeInfoBanner } from '../../pure/ProtocolFeeInfoBanner'
 import { limitOrdersSettingsAtom } from '../../state/limitOrdersSettingsAtom'
 import { limitRateAtom } from '../../state/limitRateAtom'
 import { DeadlineInput } from '../DeadlineInput'
@@ -162,8 +163,9 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
   const { isOpen: isConfirmOpen } = useTradeConfirmState()
   const { search } = useLocation()
   const handleUnlock = useCallback(() => updateLimitOrdersState({ isUnlocked: true }), [updateLimitOrdersState])
-  const { isLimitOrdersUpgradeBannerEnabled } = useFeatureFlags()
+  const { isLimitOrdersUpgradeBannerEnabled, isLimitOrdersProtocolFeeBannerEnabled } = useFeatureFlags()
   const isWrapUnwrap = useIsWrapOrUnwrap()
+  const isInjectedWidgetMode = isInjectedWidget()
 
   useEffect(() => {
     const skipLockScreen = search.includes('skipLockScreen')
@@ -229,6 +231,9 @@ const LimitOrders = React.memo((props: LimitOrdersProps) => {
           {warnings}
 
           <styledEl.TradeButtonBox>
+            {isUnlocked && !isInjectedWidgetMode && isLimitOrdersProtocolFeeBannerEnabled && (
+              <ProtocolFeeInfoBanner />
+            )}
             <TradeButtons isTradeContextReady={isTradeContextReady} />
           </styledEl.TradeButtonBox>
         </>
