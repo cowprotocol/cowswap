@@ -1879,6 +1879,10 @@ msgstr "Replaced"
 msgid "MEV Slicer"
 msgstr "MEV Slicer"
 
+#: apps/cowswap-frontend/src/common/pure/ReceiveAmount/index.tsx
+msgid "From (incl. fees)"
+msgstr "From (incl. fees)"
+
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/StatusDetails.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderStatusBox/getOrderStatusTitleAndColor.ts
 msgid "Cancelling..."
@@ -2101,8 +2105,8 @@ msgid "Context is not full to cancel TWAP order"
 msgstr "Context is not full to cancel TWAP order"
 
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmount/index.tsx
-msgid "Receive (incl. costs)"
-msgstr "Receive (incl. costs)"
+#~ msgid "Receive (incl. costs)"
+#~ msgstr "Receive (incl. costs)"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/steps/Step1.tsx
 msgid "Sent {nativeTokenSymbol}"
@@ -5055,8 +5059,8 @@ msgid "Executes at"
 msgstr "Executes at"
 
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmount/index.tsx
-msgid "From (incl. costs)"
-msgstr "From (incl. costs)"
+#~ msgid "From (incl. costs)"
+#~ msgstr "From (incl. costs)"
 
 #: apps/cowswap-frontend/src/legacy/components/Header/AccountElement/NotificationAlertPopover.tsx
 msgid "Get trade alerts"
@@ -6136,6 +6140,10 @@ msgstr "The {operationLabel} is signed."
 #: apps/cowswap-frontend/src/modules/swap/pure/TwapSuggestionBanner.tsx
 msgid "The price impact is <0>{formattedPriceImpact}%</0>. Consider breaking up your order using a <1>TWAP order</1> and possibly get a better rate."
 msgstr "The price impact is <0>{formattedPriceImpact}%</0>. Consider breaking up your order using a <1>TWAP order</1> and possibly get a better rate."
+
+#: apps/cowswap-frontend/src/common/pure/ReceiveAmount/index.tsx
+msgid "Receive (incl. fees)"
+msgstr "Receive (incl. fees)"
 
 #: apps/cowswap-frontend/src/common/containers/ConfirmationModal/index.tsx
 #: apps/cowswap-frontend/src/common/hooks/useConfirmPriceImpactWithoutFee.ts

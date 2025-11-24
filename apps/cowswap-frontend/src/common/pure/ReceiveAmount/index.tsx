@@ -13,6 +13,7 @@ import { ReceiveAmountInfo } from 'modules/trade/types'
 import * as styledEl from './styled'
 
 import { ReceiveAmountInfoTooltip } from '../ReceiveAmountInfo'
+
 export interface ReceiveAmountProps {
   receiveAmountInfo: ReceiveAmountInfo
   currency: Currency
@@ -30,7 +31,7 @@ export function ReceiveAmount(props: ReceiveAmountProps): ReactNode {
   return (
     <styledEl.ReceiveAmountBox>
       <div>
-        <span>{!isSell ? t`From (incl. costs)` : t`Receive (incl. costs)`}</span>
+        <span>{!isSell ? t`From (incl. fees)` : t`Receive (incl. fees)`}</span>
         <styledEl.QuestionHelperWrapped text={<ReceiveAmountInfoTooltip {...props} />} />
       </div>
       <div>
