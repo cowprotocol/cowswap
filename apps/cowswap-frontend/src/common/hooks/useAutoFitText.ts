@@ -24,9 +24,10 @@ export function useAutoFitText<T extends HTMLElement = HTMLElement>(options: Aut
     const parent = node?.parentElement
     if (!node || !parent) return
 
+    const whiteSpace = mode === 'single' ? 'nowrap' : 'normal'
     const setSize = (val: number): void => {
       node.style.fontSize = `${val}px`
-      node.style.whiteSpace = mode === 'single' ? 'nowrap' : 'normal'
+      node.style.whiteSpace = whiteSpace
     }
 
     const fits = (): boolean => {
@@ -56,6 +57,7 @@ export function useAutoFitText<T extends HTMLElement = HTMLElement>(options: Aut
     }
 
     const rafRef = { id: 0 }
+    const teardowns: Array<() => void> = []
     const scheduleFit = (): void => {
       cancelAnimationFrame(rafRef.id)
       rafRef.id = requestAnimationFrame(() => {
@@ -69,17 +71,16 @@ export function useAutoFitText<T extends HTMLElement = HTMLElement>(options: Aut
       const ro = new ResizeObserver(scheduleFit)
       ro.observe(parent)
       ro.observe(node)
-      return () => {
-        cancelAnimationFrame(rafRef.id)
-        ro.disconnect()
-      }
+      teardowns.push(() => ro.disconnect())
+    } else {
+      const handler = (): void => scheduleFit()
+      window.addEventListener('resize', handler)
+      teardowns.push(() => window.removeEventListener('resize', handler))
     }
 
-    const handler = (): void => scheduleFit()
-    window.addEventListener('resize', handler)
     return () => {
       cancelAnimationFrame(rafRef.id)
-      window.removeEventListener('resize', handler)
+      teardowns.forEach((fn) => fn())
     }
     // depsKey is a stable array for spread; hook lint wants literal arrays
   }, [depsKey, max, min, mode, step])
