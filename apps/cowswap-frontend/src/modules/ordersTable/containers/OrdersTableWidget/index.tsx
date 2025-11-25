@@ -7,8 +7,6 @@ import { t } from '@lingui/core/macro'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 
-import { ProtocolFeeInfoBanner } from 'modules/limitOrders/pure/ProtocolFeeInfoBanner'
-
 import { UnfillableOrdersUpdater } from 'common/updaters/orders/UnfillableOrdersUpdater'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
@@ -16,7 +14,6 @@ import { SearchIcon, SearchInput, SearchInputContainer, StyledCloseIcon } from '
 
 import { ORDERS_TABLE_PAGE_SIZE, OrderTabId } from '../../const/tabs'
 import { useOrdersTableState } from '../../hooks/useOrdersTableState'
-import { useShouldDisplayProtocolFeeBanner } from '../../hooks/useShouldDisplayProtocolFeeBanner'
 import { OrdersTableContainer } from '../../pure/OrdersTableContainer'
 import { OrdersTableParams } from '../../types'
 import { OrdersTableStateUpdater } from '../../updaters/OrdersTableStateUpdater'
@@ -64,14 +61,11 @@ export function OrdersTableWidget(props: OrdersTableWidgetProps): ReactNode {
 
   const hasPendingOrders = !!pendingOrders?.length
 
-  const shouldDisplayProtocolFeeBanner = useShouldDisplayProtocolFeeBanner()
-
   return (
     <>
       {hasPendingOrders && <UnfillableOrdersUpdater orders={pendingOrders} />}
       <OrdersTableStateUpdater searchTerm={searchTerm} {...stateParams} />
       {children}
-      {shouldDisplayProtocolFeeBanner && <ProtocolFeeInfoBanner margin="0 0 10px 0" />}
       <OrdersTableContainer searchTerm={searchTerm} isDarkMode={darkMode}>
         {hasPendingOrders && <MultipleCancellationMenu pendingOrders={pendingOrders} />}
 
