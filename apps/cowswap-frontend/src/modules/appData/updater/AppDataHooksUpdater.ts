@@ -60,6 +60,7 @@ export function AppDataHooksUpdater(): null {
     if (!inputCurrencyAddress) return
 
     updateAppDataHooks(undefined)
+    setPermitHook(undefined)
   }, [inputCurrencyAddress, updateAppDataHooks])
 
   useEffect(() => {
