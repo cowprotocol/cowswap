@@ -1,12 +1,9 @@
 import { useCallback } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { isInjectedWidget } from '@cowprotocol/common-utils'
 
 import { t } from '@lingui/core/macro'
 
-import { ProtocolFeeInfoBanner } from 'modules/limitOrders/pure/ProtocolFeeInfoBanner'
 import { useTradeConfirmActions } from 'modules/trade'
 import { TradeFormButtons, TradeFormValidation, useTradeFormButtonContext } from 'modules/tradeFormValidation'
 
@@ -51,8 +48,6 @@ export function ActionButtons({
   }, [tradeConfirmActions, twapConversionAnalytics, fallbackHandlerIsNotSet])
 
   const areWarningsAccepted = useAreWarningsAccepted()
-  const { isLimitOrdersProtocolFeeBannerEnabled } = useFeatureFlags()
-  const isInjectedWidgetMode = isInjectedWidget()
 
   const primaryActionContext = {
     confirmTrade,
@@ -75,10 +70,5 @@ export function ActionButtons({
       />
     )
 
-  return (
-    <>
-      {!isInjectedWidgetMode && isLimitOrdersProtocolFeeBannerEnabled && <ProtocolFeeInfoBanner />}
-      {buttons}
-    </>
-  )
+  return buttons
 }
