@@ -71,7 +71,7 @@ export function OrdersTableWidget(props: OrdersTableWidgetProps): ReactNode {
       {hasPendingOrders && <UnfillableOrdersUpdater orders={pendingOrders} />}
       <OrdersTableStateUpdater searchTerm={searchTerm} {...stateParams} />
       {children}
-      {hasActiveOrdersBeforeProtocolFee && <ProtocolFeeInfoBanner />}
+      {hasActiveOrdersBeforeProtocolFee && <ProtocolFeeInfoBanner margin="0 0 10px 0" />}
       <OrdersTableContainer searchTerm={searchTerm} isDarkMode={darkMode}>
         {hasPendingOrders && <MultipleCancellationMenu pendingOrders={pendingOrders} />}
 
