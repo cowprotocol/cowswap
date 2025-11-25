@@ -18,7 +18,7 @@
   "libs/types": "2.1.0",
   "libs/ui": "1.30.0",
   "libs/wallet": "1.16.0",
-  "apps/cow-fi": "1.28.0",
+  "apps/cow-fi": "1.28.1",
   "libs/wallet-provider": "1.0.1",
   "libs/ui-utils": "1.1.1",
   "libs/abis": "1.2.3",
