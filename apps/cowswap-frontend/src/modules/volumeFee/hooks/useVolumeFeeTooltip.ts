@@ -12,7 +12,7 @@ export interface VolumeFeeTooltip {
   label: string
 }
 
-export function useVolumeFeeTooltip(showTotalFeeLabel = true): VolumeFeeTooltip {
+export function useVolumeFeeTooltip(): VolumeFeeTooltip {
   const safeAppFee = useAtomValue(safeAppFeeAtom)
   const widgetParams = useInjectedWidgetParams()
 
@@ -25,7 +25,7 @@ export function useVolumeFeeTooltip(showTotalFeeLabel = true): VolumeFeeTooltip 
 
     return {
       content: widgetParams.content?.feeTooltipMarkdown,
-      label: widgetParams.content?.feeLabel || showTotalFeeLabel ? t`Total fee` : t`Partner fee`,
+      label: widgetParams.content?.feeLabel || t`Partner fee`,
     }
-  }, [safeAppFee, widgetParams, showTotalFeeLabel])
+  }, [safeAppFee, widgetParams])
 }

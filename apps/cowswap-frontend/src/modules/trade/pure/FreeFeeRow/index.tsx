@@ -1,8 +1,9 @@
 import { ReactElement } from 'react'
 
-import { UI } from '@cowprotocol/ui'
+import { CenteredDots, UI } from '@cowprotocol/ui'
 
-import { t, Trans } from '@lingui/macro'
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
 import { ReviewOrderModalAmountRow } from '../ReviewOrderModalAmountRow'
@@ -13,19 +14,23 @@ const GreenText = styled.span`
 
 interface FreeFeeRowProps {
   withTimelineDot?: boolean
+  loading?: boolean
 }
 
-export function FreeFeeRow({ withTimelineDot = true }: FreeFeeRowProps): ReactElement {
-
+export function FreeFeeRow({ withTimelineDot = true, loading }: FreeFeeRowProps): ReactElement {
   return (
     <ReviewOrderModalAmountRow
       withTimelineDot={withTimelineDot}
       tooltip={t`No fee for order placement!`}
       label={t`Fee`}
     >
-      <GreenText>
-        <Trans>FREE</Trans>
-      </GreenText>
+      {loading ? (
+        <CenteredDots />
+      ) : (
+        <GreenText>
+          <Trans>FREE</Trans>
+        </GreenText>
+      )}
     </ReviewOrderModalAmountRow>
   )
 }
