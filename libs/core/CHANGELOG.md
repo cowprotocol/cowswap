@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.0](https://github.com/cowprotocol/cowswap/compare/core-v1.9.0...core-v1.10.0) (2025-11-24)
+
+
+### Features
+
+* **internationalization:** add internationalization to CoW Swap ([#6198](https://github.com/cowprotocol/cowswap/issues/6198)) ([bec1e54](https://github.com/cowprotocol/cowswap/commit/bec1e54643d9b20a8b6517eae188993e364fed90))
+
 ## [1.9.0](https://github.com/cowprotocol/cowswap/compare/core-v1.8.1...core-v1.9.0) (2025-11-10)
 
 
