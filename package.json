@@ -171,7 +171,7 @@
     "fraction.js": "^4.2.0",
     "framer-motion": "^11.3.29",
     "graphql": "^16.8.0",
-    "graphql-request": "4.3.0",
+    "graphql-request": "7.3.5",
     "hdkey": "^2.1.0",
     "html-react-parser": "^5.1.10",
     "immer": "^10.0.2",
