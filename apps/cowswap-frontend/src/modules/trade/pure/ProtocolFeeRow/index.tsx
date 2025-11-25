@@ -38,7 +38,7 @@ export function ProtocolFeeRow({
       fiatAmount={protocolFeeUsd}
       tooltip={
         <Trans>
-          The fee is {protocolFeeAsPercent}%, applied only if the trade is executed, in order to incentivize a strong
+          The fee, applied only if the trade is executed, in order to incentivize a strong
           solver competition that provides ecosystem leading prices.
         </Trans>
       }
