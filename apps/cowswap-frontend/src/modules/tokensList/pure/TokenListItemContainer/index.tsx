@@ -37,7 +37,7 @@ export function TokenListItemContainer({ token, context }: TokenListItemContaine
       isPermitCompatible={permitCompatibleTokens[addressLowerCase]}
       selectedToken={selectedToken}
       token={token}
-      balance={balances ? balances[token.address.toLowerCase()] : undefined}
+      balance={balances ? balances[addressLowerCase] : undefined}
       onSelectToken={handleSelectToken}
       isWalletConnected={isWalletConnected}
       tokenListTags={tokenListTags}
