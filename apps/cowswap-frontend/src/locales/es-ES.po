@@ -8,7 +8,7 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-11-24 12:51\n"
+"PO-Revision-Date: 2025-11-25 18:06\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -329,6 +329,7 @@ msgstr "vender"
 msgid "By connecting a wallet, you acknowledge that you have read, understood and agree to the interface’s <0>Terms & Conditions</0>."
 msgstr "Al conectar una billetera, usted reconoce que ha leído, entendido y está de acuerdo con los <0>Términos y condiciones de la interfaz</0>."
 
+#: apps/cowswap-frontend/src/common/pure/ReceiveAmountInfo/index.tsx
 #: apps/cowswap-frontend/src/modules/volumeFee/hooks/useVolumeFeeTooltip.ts
 msgid "Partner fee"
 msgstr ""
@@ -1477,7 +1478,6 @@ msgstr "Introduzca una URL dapp de hook"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
 #: apps/cowswap-frontend/src/modules/trade/pure/TotalFeeRow/index.tsx
-#: apps/cowswap-frontend/src/modules/volumeFee/hooks/useVolumeFeeTooltip.ts
 msgid "Total fee"
 msgstr "Cargo total"
 
@@ -1628,6 +1628,10 @@ msgstr "Cruzar"
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
 msgid "Order type"
 msgstr "Tipo de orden"
+
+#: apps/cowswap-frontend/src/modules/trade/pure/ProtocolFeeRow/index.tsx
+msgid "The fee is {protocolFeeAsPercent}%, applied only if the trade is executed, in order to incentivize a strong solver competition that provides ecosystem leading prices."
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/HooksStoreWidget/index.tsx
 msgid "Learn more."
@@ -1872,6 +1876,10 @@ msgstr "Reemplazado"
 msgid "MEV Slicer"
 msgstr "Cortador MEV"
 
+#: apps/cowswap-frontend/src/common/pure/ReceiveAmount/index.tsx
+msgid "From (incl. fees)"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/StatusDetails.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderStatusBox/getOrderStatusTitleAndColor.ts
 msgid "Cancelling..."
@@ -2094,8 +2102,8 @@ msgid "Context is not full to cancel TWAP order"
 msgstr "El contexto no está completo para cancelar el pedido TWAP"
 
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmount/index.tsx
-msgid "Receive (incl. costs)"
-msgstr "Recibir (incluyendo costos)"
+#~ msgid "Receive (incl. costs)"
+#~ msgstr "Receive (incl. costs)"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/steps/Step1.tsx
 msgid "Sent {nativeTokenSymbol}"
@@ -2685,7 +2693,6 @@ msgstr "Seleccionar paso de depuración"
 msgid "You're all caught up"
 msgstr "Estás al día"
 
-#: apps/cowswap-frontend/src/common/pure/ReceiveAmountInfo/index.tsx
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmountInfo/index.tsx
 #: apps/cowswap-frontend/src/common/pure/TradeDetailsAccordion/index.tsx
 #: apps/cowswap-frontend/src/modules/trade/pure/FreeFeeRow/index.tsx
@@ -3787,6 +3794,10 @@ msgstr "Su transacción puede expirar"
 msgid "<0>CoW Swap solvers</0> are scanning liquidity sources across DeFi. The one that finds you the best price wins!"
 msgstr "<0>CoW Swap solvers</0> están escaneando fuentes de liquidez a través de DeFi. ¡El que te encuentre el mejor precio gana!"
 
+#: apps/cowswap-frontend/src/modules/trade/pure/ProtocolFeeRow/index.tsx
+#~ msgid "The fee is {protocolFeeAsPercent}%, applied only if the trade is executed, in order to incentivize a strong solver competition that provides ecosystem leading prices"
+#~ msgstr "The fee is {protocolFeeAsPercent}%, applied only if the trade is executed, in order to incentivize a strong solver competition that provides ecosystem leading prices"
+
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/index.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
 msgid "You sell at most"
@@ -3865,6 +3876,10 @@ msgstr "Transacción rechazada por el usuario"
 #: apps/cowswap-frontend/src/modules/bridge/pure/StopStatus/index.tsx
 msgid "Swap on"
 msgstr "Intercambiar en"
+
+#: apps/cowswap-frontend/src/modules/trade/pure/ProtocolFeeRow/index.tsx
+#~ msgid "The fee is {protocolFeeBps} BPS ({protocolFeeAsPercent}%), applied only if the trade is executed.<0/><1/>Solver rewards are taken from this fee amount."
+#~ msgstr "The fee is {protocolFeeBps} BPS ({protocolFeeAsPercent}%), applied only if the trade is executed.<0/><1/>Solver rewards are taken from this fee amount."
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/index.tsx
@@ -5039,8 +5054,8 @@ msgid "Executes at"
 msgstr "Ejecuta en"
 
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmount/index.tsx
-msgid "From (incl. costs)"
-msgstr "Desde (incl. costes)"
+#~ msgid "From (incl. costs)"
+#~ msgstr "From (incl. costs)"
 
 #: apps/cowswap-frontend/src/legacy/components/Header/AccountElement/NotificationAlertPopover.tsx
 msgid "Get trade alerts"
@@ -5063,8 +5078,8 @@ msgid "The total surplus CoW Swap has generated for you in {nativeSymbol} across
 msgstr "El sobrante que CoW Swap te ha generado en {nativeSymbol} a través de todos tus intercambios desde {startDate}"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/ProtocolFeeRow/index.tsx
-msgid "Protocol fee applied to this trade.<0/><1/>The fee is {protocolFeeBps} BPS ({protocolFeeAsPercent}%), applied only if the trade is executed."
-msgstr ""
+#~ msgid "Protocol fee applied to this trade.<0/><1/>The fee is {protocolFeeBps} BPS ({protocolFeeAsPercent}%), applied only if the trade is executed."
+#~ msgstr "Protocol fee applied to this trade.<0/><1/>The fee is {protocolFeeBps} BPS ({protocolFeeAsPercent}%), applied only if the trade is executed."
 
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/OrderRow/EstimatedExecutionPrice.tsx
 msgid "For this order, network costs would be"
@@ -6120,6 +6135,10 @@ msgstr "El {operationLabel} está firmado."
 #: apps/cowswap-frontend/src/modules/swap/pure/TwapSuggestionBanner.tsx
 msgid "The price impact is <0>{formattedPriceImpact}%</0>. Consider breaking up your order using a <1>TWAP order</1> and possibly get a better rate."
 msgstr "El impacto de los precios es <0>{formattedPriceImpact}%</0>. Considere dividir su pedido usando un <1>TWAP order</1> y posiblemente obtener una mejor tarifa."
+
+#: apps/cowswap-frontend/src/common/pure/ReceiveAmount/index.tsx
+msgid "Receive (incl. fees)"
+msgstr ""
 
 #: apps/cowswap-frontend/src/common/containers/ConfirmationModal/index.tsx
 #: apps/cowswap-frontend/src/common/hooks/useConfirmPriceImpactWithoutFee.ts
