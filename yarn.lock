@@ -9779,13 +9779,13 @@
     "@visx/point" "3.3.0"
 
 "@visx/glyph@^3.3.0":
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/@visx/glyph/-/glyph-3.3.0.tgz#bea3519d6094e96ea5fd1935030273bcdd8cb32f"
-  integrity sha512-U2r1rFLpim3afKuuAmrbxXGSDCaLwXHmjXxWN8PiIQPMxpS7eaa/V5g2TRd/+x0KCkaf3Ismk4VKMl8ZlrmxIQ==
+  version "3.12.0"
+  resolved "https://registry.yarnpkg.com/@visx/glyph/-/glyph-3.12.0.tgz#5d018d9dcc9e2a7a4f97d2c34cccab8d4fcb9574"
+  integrity sha512-E9ST9MoPNyXQzjZxYYAGXT4CbBpnB90Qhx8UvUUM2/n/SZUNeH+m6UiB/CzT0jGK2b0lPHF91mlOiQ8JXBRhYg==
   dependencies:
     "@types/d3-shape" "^1.3.1"
     "@types/react" "*"
-    "@visx/group" "3.3.0"
+    "@visx/group" "3.12.0"
     classnames "^2.3.1"
     d3-shape "^1.2.0"
     prop-types "^15.6.2"
@@ -9794,15 +9794,6 @@
   version "3.12.0"
   resolved "https://registry.yarnpkg.com/@visx/group/-/group-3.12.0.tgz#2c69b810b52f1c1e69bf6f2fe923d184e32078c7"
   integrity sha512-Dye8iS1alVXPv7nj/7M37gJe6sSKqJLH7x6sEWAsRQ9clI0kFvjbKcKgF+U3aAVQr0NCohheFV+DtR8trfK/Ag==
-  dependencies:
-    "@types/react" "*"
-    classnames "^2.3.1"
-    prop-types "^15.6.2"
-
-"@visx/group@3.3.0":
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/@visx/group/-/group-3.3.0.tgz#20c1b75c1ab31798c3c702b6f58c412c688a6373"
-  integrity sha512-yKepDKwJqlzvnvPS0yDuW13XNrYJE4xzT6xM7J++441nu6IybWWwextyap8ey+kU651cYDb+q1Oi6aHvQwyEyw==
   dependencies:
     "@types/react" "*"
     classnames "^2.3.1"
