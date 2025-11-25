@@ -5,8 +5,8 @@ import { Trans } from '@lingui/react/macro'
 
 import * as styledEl from './styled'
 
+import { useAutoFitText } from '../../../common/hooks/useAutoFitText'
 import { truncateWithEllipsis } from '../helpers'
-import { useAutoFitText } from '../hooks/useAutoFitText'
 import { OrderProgressBarProps } from '../types'
 
 export function ShowSurplus({
