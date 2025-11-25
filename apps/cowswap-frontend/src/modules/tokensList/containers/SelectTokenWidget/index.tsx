@@ -156,17 +156,20 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
     closeTokenSelectWidget({ overrideForceLock: true })
   }, [closeTokenSelectWidget])
 
-  const importTokenAndClose = (tokens: TokenWithLogo[]): void => {
-    importTokenCallback(tokens)
-    const [tokenToSelect] = tokens
+  const importTokenAndClose = useCallback(
+    (tokens: TokenWithLogo[]): void => {
+      importTokenCallback(tokens)
+      const [tokenToSelect] = tokens
 
-    if (tokenToSelect) {
-      handleTokenListItemClick(tokenToSelect)
-      onSelectToken?.(tokenToSelect)
-    }
+      if (tokenToSelect) {
+        handleTokenListItemClick(tokenToSelect)
+        onSelectToken?.(tokenToSelect)
+      }
 
-    onDismiss()
-  }
+      onDismiss()
+    },
+    [handleTokenListItemClick, importTokenCallback, onDismiss, onSelectToken],
+  )
 
   const importListAndBack = (list: ListState): void => {
     try {
