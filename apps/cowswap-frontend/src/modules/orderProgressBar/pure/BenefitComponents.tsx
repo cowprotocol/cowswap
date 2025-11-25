@@ -1,4 +1,7 @@
-import { ReactNode, useEffect, useState } from 'react'
+import { ReactNode } from 'react'
+
+import { useMediaQuery } from '@cowprotocol/common-hooks'
+import { Media } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
@@ -39,31 +42,7 @@ export function ShowSurplus({
 }
 
 export function NoSurplus({ randomBenefit }: { randomBenefit: string }): ReactNode {
-  const [isSmallScreen, setIsSmallScreen] = useState(false)
-
-  useEffect(() => {
-    const query = '(max-width: 640px)'
-    const mediaQueryList = typeof window !== 'undefined' ? window.matchMedia(query) : null
-    if (!mediaQueryList) return
-
-    const handler = (event: MediaQueryListEvent): void => setIsSmallScreen(event.matches)
-    setIsSmallScreen(mediaQueryList.matches)
-
-    if (mediaQueryList.addEventListener) {
-      mediaQueryList.addEventListener('change', handler)
-    } else {
-      // Safari fallback
-      mediaQueryList.addListener(handler)
-    }
-
-    return () => {
-      if (mediaQueryList.removeEventListener) {
-        mediaQueryList.removeEventListener('change', handler)
-      } else {
-        mediaQueryList.removeListener(handler)
-      }
-    }
-  }, [])
+  const isSmallScreen = useMediaQuery(Media.upToSmall(false))
 
   const benefitRef = useAutoFitText<HTMLDivElement>({
     min: 12,
