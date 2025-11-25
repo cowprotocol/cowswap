@@ -39,7 +39,7 @@ export function ProtocolFeeRow({
       tooltip={
         <Trans>
           The fee is {protocolFeeAsPercent}%, applied only if the trade is executed, in order to incentivize a strong
-          solver competition that provides ecosystem leading prices
+          solver competition that provides ecosystem leading prices.
         </Trans>
       }
       label={t`Protocol fee (${protocolFeeAsPercent}%)`}
