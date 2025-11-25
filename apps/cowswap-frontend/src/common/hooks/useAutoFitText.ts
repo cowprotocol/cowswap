@@ -25,6 +25,7 @@ export function useAutoFitText<T extends HTMLElement = HTMLElement>(options: Aut
     const parent = node?.parentElement
     if (!node || !parent) return
 
+    const stepSize = step > 0 ? step : 1
     const whiteSpace = mode === 'single' ? 'nowrap' : 'normal'
     const setSize = (val: number): void => {
       node.style.fontSize = `${val}px`
@@ -48,13 +49,16 @@ export function useAutoFitText<T extends HTMLElement = HTMLElement>(options: Aut
 
         if (fits()) {
           best = mid
-          low = mid + step
+          low = mid + 1
         } else {
-          high = mid - step
+          high = mid - 1
         }
       }
 
-      setSize(Math.max(min, Math.min(best, max)))
+      // Quantize downward so we never exceed the measured best-fit size
+      const quantized = Math.floor(best / stepSize) * stepSize
+      const clamped = Math.max(min, Math.min(quantized, best, max))
+      setSize(clamped)
     }
 
     const rafRef = { id: 0 }
