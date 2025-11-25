@@ -1,4 +1,4 @@
-import { DependencyList, RefObject, useLayoutEffect, useMemo, useRef } from 'react'
+import { DependencyList, RefObject, useLayoutEffect, useRef } from 'react'
 
 type FitMode = 'single' | 'multi'
 
@@ -10,14 +10,15 @@ interface AutoFitOptions {
   deps?: DependencyList
 }
 
+const EMPTY_DEPS: DependencyList = []
+
 /**
  * Lightweight auto-fit hook to scale text so it fits its parent box.
  * It uses binary search over font sizes and ResizeObserver to re-apply on layout changes.
  */
 export function useAutoFitText<T extends HTMLElement = HTMLElement>(options: AutoFitOptions = {}): RefObject<T | null> {
-  const { min = 12, max = 48, step = 1, mode = 'multi', deps = [] } = options
+  const { min = 12, max = 48, step = 1, mode = 'multi', deps = EMPTY_DEPS } = options
   const ref = useRef<T | null>(null)
-  const depsKey = useMemo(() => deps, [deps])
 
   useLayoutEffect(() => {
     const node = ref.current
@@ -82,8 +83,7 @@ export function useAutoFitText<T extends HTMLElement = HTMLElement>(options: Aut
       cancelAnimationFrame(rafRef.id)
       teardowns.forEach((fn) => fn())
     }
-    // depsKey is a stable array for spread; hook lint wants literal arrays
-  }, [depsKey, max, min, mode, step])
+  }, [deps, max, min, mode, step])
 
   return ref
 }
