@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.125.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.124.1...cowswap-v1.125.0) (2025-11-26)
+
+
+### Features
+
+* update protocol fee description ([#6559](https://github.com/cowprotocol/cowswap/issues/6559)) ([4ddfb57](https://github.com/cowprotocol/cowswap/commit/4ddfb57275c5a4d4664a24cbf20a25e9153e4c6f))
+
 ## [1.124.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.124.0...cowswap-v1.124.1) (2025-11-25)
 
 
