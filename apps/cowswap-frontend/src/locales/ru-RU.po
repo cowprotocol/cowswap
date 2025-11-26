@@ -6211,3 +6211,16 @@ msgstr "Узнать больше"
 msgid "Swap and bridge costs are at least {formattedFeePercentage}% of the swap amount"
 msgstr "Затраты на замену и мост составляют не менее {formattedFeePercentage}% от суммы замены"
 
+# Receive amount labels
+# Notifications / jobs aria labels
+msgid "Trade alert settings"
+msgstr "Настройки уведомлений о сделках"
+
+msgid "Trade alerts enabled"
+msgstr "Уведомления о сделках включены"
+
+msgid "gas"
+msgstr "газ"
+
+msgid "View jobs (opens in a new tab)"
+msgstr "Вакансии (откроется в новой вкладке)"
