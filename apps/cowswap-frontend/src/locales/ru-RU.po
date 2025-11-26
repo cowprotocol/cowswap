@@ -2524,6 +2524,10 @@ msgstr "Обзор токенов"
 msgid "Enter slippage percentage between {min}% and {max}%"
 msgstr "Введите процент проскальзывания между {min}% и {max}%"
 
+#: apps/cowswap-frontend/src/modules/trade/pure/ProtocolFeeRow/index.tsx
+msgid "Protocol fee ({protocolFeeAsPercent}%)"
+msgstr "Комиссия протокола ({protocolFeeAsPercent}%)"
+
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
 msgid "Learn how"
 msgstr "Узнайте как"
@@ -2713,6 +2717,10 @@ msgstr ""
 #: apps/cowswap-frontend/src/modules/trade/pure/RowFeeContent/index.tsx
 msgid "gas"
 msgstr "газ"
+
+#: apps/cowswap-frontend/src/common/pure/ReceiveAmountInfo/index.tsx
+msgid "Protocol fee"
+msgstr "Комиссия протокола"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookListItem/index.tsx
 msgid "details"
@@ -3248,6 +3256,10 @@ msgstr "Подключить кошелек"
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/OrderRow/OrderWarning.tsx
 msgid "Approve the token to proceed."
 msgstr "Утвердите токен, чтобы продолжить."
+
+#: apps/cowswap-frontend/src/modules/trade/pure/ProtocolFeeRow/index.tsx
+msgid "This {protocolFeeBps} BPS fee incentivizes solvers to find better prices for users. It is only applied if the trade is executed."
+msgstr "Комиссия {protocolFeeBps} б.п. стимулирует солверов находить лучшие цены для пользователей. Она взимается только при выполнении сделки."
 
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/AccountCard/DefaultAccountContent.tsx
 msgid "Recoverable value"
@@ -6210,16 +6222,3 @@ msgstr "Узнать больше"
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/HighFeeWarning/highFeeWarningHelpers.ts
 msgid "Swap and bridge costs are at least {formattedFeePercentage}% of the swap amount"
 msgstr "Затраты на замену и мост составляют не менее {formattedFeePercentage}% от суммы замены"
-
-msgid ""
-"The fee, applied only if the trade is executed, in order to incentivize a "
-"strong solver competition that provides ecosystem leading prices."
-msgstr ""
-"Комиссия взимается только при выполнении сделки, чтобы стимулировать "
-"конкуренцию солверов и обеспечивать лучшие цены в экосистеме."
-
-msgid "Protocol fee ({protocolFeeAsPercent}%)"
-msgstr "Комиссия протокола ({protocolFeeAsPercent}%)"
-
-msgid "Protocol fee"
-msgstr "Комиссия протокола"

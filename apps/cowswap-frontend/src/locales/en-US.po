@@ -6285,10 +6285,3 @@ msgstr "Learn more"
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/HighFeeWarning/highFeeWarningHelpers.ts
 msgid "Swap and bridge costs are at least {formattedFeePercentage}% of the swap amount"
 msgstr "Swap and bridge costs are at least {formattedFeePercentage}% of the swap amount"
-
-msgid ""
-"The fee, applied only if the trade is executed, in order to incentivize a "
-"strong solver competition that provides ecosystem leading prices."
-msgstr ""
-"The fee, applied only if the trade is executed, in order to incentivize a "
-"strong solver competition that provides ecosystem leading prices."
