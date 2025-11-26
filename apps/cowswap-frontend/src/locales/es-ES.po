@@ -6209,14 +6209,14 @@ msgstr "Aprende más"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/HighFeeWarning/highFeeWarningHelpers.ts
 msgid "Swap and bridge costs are at least {formattedFeePercentage}% of the swap amount"
-msgstr "Los costos de intercambio y puente son por lo menos {formattedFeePercentage}% del monto de intercambio"
+msgstr "Los costos de Swap y Bridge serán por lo menos {formattedFeePercentage}% del monto de intercambio"
 
 msgid ""
 "The fee, applied only if the trade is executed, in order to incentivize a "
 "strong solver competition that provides ecosystem leading prices."
 msgstr ""
-"Comisión aplicada solo si se ejecuta la operación, para incentivar una "
-"competencia sólida de solvers que ofrezca precios líderes en el ecosistema."
+"Comisión aplicada solo en el caso de que se ejecute la operación, para incentivar una "
+"competencia sólida de solvers la cual ofrece los precios líderes del ecosistema."
 
 msgid "Protocol fee ({protocolFeeAsPercent}%)"
 msgstr "Comisión del protocolo ({protocolFeeAsPercent}%)"
