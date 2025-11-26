@@ -2703,7 +2703,7 @@ msgstr "CoW Swap использует выделенный {accountProxyLabelStr
 
 #: apps/cowswap-frontend/src/modules/notifications/pure/NotificationSettingsPopover.tsx
 msgid "Trade alerts enabled"
-msgstr ""
+msgstr "Уведомления о сделках включены"
 
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
 #~ msgid "Your swap expires and will not execute if it is pending for longer than the selected duration.<0/><1/>{INPUT_OUTPUT_EXPLANATION}"
@@ -6216,11 +6216,5 @@ msgstr "Затраты на замену и мост составляют не �
 msgid "Trade alert settings"
 msgstr "Настройки уведомлений о сделках"
 
-msgid "Trade alerts enabled"
-msgstr "Уведомления о сделках включены"
-
-msgid "gas"
-msgstr "газ"
-
 msgid "View jobs (opens in a new tab)"
-msgstr "Вакансии (откроется в новой вкладке)"
+msgstr "Просмотр заданий (откроется в новой вкладке)"
