@@ -5,6 +5,8 @@ import { HookDappWalletCompatibility } from '@cowprotocol/hook-dapp-lib'
 import { BannerOrientation, DismissableInlineBanner } from '@cowprotocol/ui'
 import { useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
 
+import { Trans } from '@lingui/react/macro'
+
 import { SwapWidget } from 'modules/swap'
 import { useIsSellNative, useIsWrapOrUnwrap } from 'modules/trade'
 
@@ -71,9 +73,11 @@ export function HooksStoreWidget(): ReactNode {
         bannerId="hooks-store-banner-tradeContainer"
       >
         <p>
-          With hooks you can add specific actions <b>before</b> and <b>after</b> your swap.{' '}
+          <Trans>
+            With hooks you can add specific actions <b>before</b> and <b>after</b> your swap.
+          </Trans>{' '}
           <a href="https://cow.fi/learn/cow-hooks-you-are-in-control" target="_blank" rel="noopener noreferrer">
-            Learn more.
+            <Trans>Learn more.</Trans>
           </a>
         </p>
       </DismissableInlineBanner>

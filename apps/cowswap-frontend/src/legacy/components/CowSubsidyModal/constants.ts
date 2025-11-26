@@ -1,5 +1,9 @@
+import { t } from '@lingui/core/macro'
+
+const getSubsidyInfoMessage = (): string => t`(v)COW token holders are eligible for a fee discount`
+
 // used in modal and popover
-export const SUBSIDY_INFO_MESSAGE = '(v)COW token holders are eligible for a fee discount'
+export const SUBSIDY_INFO_MESSAGE = getSubsidyInfoMessage()
 export const COW_SUBSIDY_DATA: [string, number][] = [
   ['0', 0],
 

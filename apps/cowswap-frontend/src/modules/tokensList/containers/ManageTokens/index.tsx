@@ -5,6 +5,7 @@ import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { TokenLogo, TokenSearchResponse, useRemoveUserToken, useResetUserTokens } from '@cowprotocol/tokens'
 import { TokenSymbol } from '@cowprotocol/ui'
 
+import { Trans } from '@lingui/react/macro'
 import { ExternalLink, Trash } from 'react-feather'
 
 import * as styledEl from './styled'
@@ -29,7 +30,7 @@ export interface ManageTokensProps {
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function ManageTokens(props: ManageTokensProps) {
   const { tokens, tokenSearchResponse } = props
 
@@ -63,8 +64,14 @@ export function ManageTokens(props: ManageTokensProps) {
         </styledEl.SearchResults>
       )}
       <styledEl.Header>
-        <styledEl.Title>{tokens.length} Custom Tokens</styledEl.Title>
-        {tokens.length > 0 && <styledEl.LinkButton onClick={resetUserTokensCallback}>Clear all</styledEl.LinkButton>}
+        <styledEl.Title>
+          {tokens.length} <Trans>Custom Tokens</Trans>
+        </styledEl.Title>
+        {tokens.length > 0 && (
+          <styledEl.LinkButton onClick={resetUserTokensCallback}>
+            <Trans>Clear all</Trans>
+          </styledEl.LinkButton>
+        )}
       </styledEl.Header>
       <CommonListContainer>
         {tokens.map((token) => {
@@ -92,7 +99,9 @@ export function ManageTokens(props: ManageTokensProps) {
           )
         })}
       </CommonListContainer>
-      <styledEl.TipText>Tip: Custom tokens are stored locally in your browser</styledEl.TipText>
+      <styledEl.TipText>
+        <Trans>Tip: Custom tokens are stored locally in your browser</Trans>
+      </styledEl.TipText>
     </>
   )
 }

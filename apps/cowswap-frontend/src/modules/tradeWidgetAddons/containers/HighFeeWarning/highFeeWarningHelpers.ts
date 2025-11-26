@@ -1,5 +1,7 @@
 import { Fraction, Rounding } from '@uniswap/sdk-core'
 
+import { t } from '@lingui/core/macro'
+
 import { HIGH_TIER_FEE, LOW_TIER_FEE, MEDIUM_TIER_FEE } from './consts'
 
 type FeePercentage = typeof HIGH_TIER_FEE | typeof MEDIUM_TIER_FEE | typeof LOW_TIER_FEE | undefined
@@ -32,18 +34,21 @@ export const getHighFeeWarningMessageContent = ({
   feePercentage?: Fraction
   bridgeFeePercentage?: Fraction
 }): string | null => {
+  const formattedFeePercentage = formatFeePercentage(feePercentage) || ''
+  const formattedBridgeFeePercentage = formatFeePercentage(bridgeFeePercentage) || ''
+
   if (isHighFee && isHighBridgeFee) {
     return feePercentage === bridgeFeePercentage
-      ? `Swap and bridge costs are at least ${formatFeePercentage(feePercentage)}% of the swap amount`
-      : `Swap costs are at least ${formatFeePercentage(feePercentage)}% of the swap amount and bridge costs are at least ${formatFeePercentage(bridgeFeePercentage)}% of the swap amount`
+      ? t`Swap and bridge costs are at least ${formattedFeePercentage}% of the swap amount`
+      : t`Swap costs are at least ${formattedFeePercentage}% of the swap amount and bridge costs are at least ${formattedBridgeFeePercentage}% of the swap amount`
   }
 
   if (isHighFee) {
-    return `Swap costs are at least ${formatFeePercentage(feePercentage)}% of the swap amount`
+    return t`Swap costs are at least ${formattedFeePercentage}% of the swap amount`
   }
 
   if (isHighBridgeFee) {
-    return `Bridge costs are at least ${formatFeePercentage(bridgeFeePercentage)}% of the swap amount`
+    return t`Bridge costs are at least ${formattedBridgeFeePercentage}% of the swap amount`
   }
 
   return null

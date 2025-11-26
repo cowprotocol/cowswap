@@ -3,10 +3,9 @@ import { ReactNode } from 'react'
 import { UI } from '@cowprotocol/ui'
 import { InfoTooltip } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/macro'
+import { t } from '@lingui/core/macro'
 import { AlertTriangle } from 'react-feather'
 import styled from 'styled-components/macro'
-
 
 export enum TradeWarningType {
   LOW = 'LOW',
@@ -101,7 +100,7 @@ const StyledInfoIcon = styled(InfoTooltip)`
 export function TradeWarning(props: TradeWarningProps) {
   const {
     type = TradeWarningType.LOW,
-    acceptLabel = 'Swap anyway',
+    acceptLabel,
     text,
     tooltipContent,
     withoutAccepting,
@@ -127,9 +126,7 @@ export function TradeWarning(props: TradeWarningProps) {
                 acceptCallback?.(event.target.checked)
               }}
             />
-            <span>
-              <Trans>{acceptLabel}</Trans>
-            </span>
+            <span>{acceptLabel ? acceptLabel : t`Swap anyway`}</span>
           </AcceptBox>
         </div>
       )}

@@ -14,7 +14,7 @@ import { useBridgeQuoteAmounts } from './useBridgeQuoteAmounts'
 import { QuoteSwapContext } from '../types'
 
 export function useQuoteSwapContext(): QuoteSwapContext | null {
-  const receiveAmountInfo = useGetReceiveAmountInfo()
+  const receiveAmountInfo = useGetReceiveAmountInfo(true)
 
   const quoteAmounts = useBridgeQuoteAmounts()
   const { value: swapMinReceiveAmountUsd } = useUsdAmount(quoteAmounts?.swapMinReceiveAmount)

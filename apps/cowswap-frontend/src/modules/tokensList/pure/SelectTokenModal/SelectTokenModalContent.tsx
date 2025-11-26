@@ -1,5 +1,7 @@
 import { ReactNode } from 'react'
 
+import { Trans } from '@lingui/react/macro'
+
 import * as styledEl from './styled'
 
 interface SelectTokenModalContentProps {
@@ -11,7 +13,9 @@ export function SelectTokenModalContent({ isRouteAvailable, children }: SelectTo
   return (
     <>
       {isRouteAvailable === false ? (
-        <styledEl.RouteNotAvailable>This route is not yet supported.</styledEl.RouteNotAvailable>
+        <styledEl.RouteNotAvailable>
+          <Trans>This route is not yet supported.</Trans>
+        </styledEl.RouteNotAvailable>
       ) : (
         children
       )}

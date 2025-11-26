@@ -2,6 +2,8 @@ import React from 'react'
 
 import type { Token } from '@uniswap/sdk-core'
 
+import { Trans } from '@lingui/react/macro'
+
 import { OrderStatus } from 'legacy/state/orders/actions'
 
 import type { ParsedOrder } from 'utils/orderUtils/parseOrder'
@@ -75,7 +77,7 @@ export function TwapStatusAndToggle({
       <styledEl.ToggleExpandButton onClick={onToggle} isCollapsed={isCollapsed}>
         {childrenLength && (
           <i>
-            {childrenLength} part{childrenLength > 1 && 's'}
+            {childrenLength} {childrenLength > 1 ? <Trans>part</Trans> : <Trans>parts</Trans>}
           </i>
         )}
         <button />

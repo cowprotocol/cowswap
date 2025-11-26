@@ -1,50 +1,62 @@
-import { useCallback, useState } from 'react'
+import { ReactElement, useCallback, useState } from 'react'
 
-import { PartnerFeeRow, TradeTotalCostsDetails } from 'modules/trade'
+import { t } from '@lingui/core/macro'
+
+import { TradeFees, TradeTotalCostsDetails } from 'modules/trade'
 import { Box } from 'modules/trade/containers/TradeTotalCostsDetails/styled'
+import { useTradeQuote } from 'modules/tradeQuote'
 import { RowRewards } from 'modules/tradeWidgetAddons'
 import { useUsdAmount } from 'modules/usdAmount'
 import { useVolumeFee, useVolumeFeeTooltip } from 'modules/volumeFee'
 
-import { RateInfo } from 'common/pure/RateInfo'
-import { RateInfoParams } from 'common/pure/RateInfo'
+import { RateInfo, RateInfoParams } from 'common/pure/RateInfo'
 
 import { useLimitOrderPartnerFeeAmount } from '../../hooks/useLimitOrderPartnerFeeAmount'
+import { useLimitOrderProtocolFeeAmount } from '../../hooks/useLimitOrderProtocolFeeAmount'
 
 interface TradeRateDetailsProps {
   rateInfoParams?: RateInfoParams
   alwaysExpanded?: boolean
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function TradeRateDetails({ rateInfoParams, alwaysExpanded = false }: TradeRateDetailsProps) {
+export function TradeRateDetails({ rateInfoParams, alwaysExpanded = false }: TradeRateDetailsProps): ReactElement {
   const [isFeeDetailsOpen, setFeeDetailsOpen] = useState(alwaysExpanded)
   const { volumeBps: partnerFeeBps } = useVolumeFee() || {}
   const partnerFeeAmount = useLimitOrderPartnerFeeAmount()
+  const protocolFeeAmount = useLimitOrderProtocolFeeAmount()
   const volumeFeeTooltip = useVolumeFeeTooltip()
   const partnerFeeUsd = useUsdAmount(partnerFeeAmount).value
+  const protocolFeeUsd = useUsdAmount(protocolFeeAmount).value
+
+  const { quote, isLoading } = useTradeQuote()
+  const quoteResponse = quote?.quoteResults.quoteResponse
+  const protocolFeeBps = quoteResponse?.protocolFeeBps ? Number(quoteResponse.protocolFeeBps) : undefined
 
   const toggleAccordion = useCallback(() => {
     if (alwaysExpanded) return
     setFeeDetailsOpen((prev) => !prev)
   }, [alwaysExpanded])
 
-  const partnerFeeRow = (
-    <PartnerFeeRow
-      withTimelineDot={false}
-      partnerFeeUsd={partnerFeeUsd}
+  const tradeFees = (
+    <TradeFees
       partnerFeeAmount={partnerFeeAmount}
+      partnerFeeUsd={partnerFeeUsd}
       partnerFeeBps={partnerFeeBps}
+      protocolFeeAmount={protocolFeeAmount}
+      protocolFeeUsd={protocolFeeUsd}
+      protocolFeeBps={protocolFeeBps}
+      withTimelineDot={false}
       volumeFeeTooltip={volumeFeeTooltip}
+      loading={isLoading}
     />
   )
+  const rewardsRow = <RowRewards />
 
   if (!rateInfoParams) {
     return (
       <>
-        {partnerFeeRow}
-        <RowRewards />
+        {tradeFees}
+        {rewardsRow}
       </>
     )
   }
@@ -53,15 +65,15 @@ export function TradeRateDetails({ rateInfoParams, alwaysExpanded = false }: Tra
     return (
       <>
         <RateInfo
-          label="Limit price"
+          label={t`Limit price`}
           stylized={true}
           rateInfoParams={rateInfoParams}
           rightAlign
           fontSize={13}
           fontBold
         />
-        <Box noMargin>{partnerFeeRow}</Box>
-        <RowRewards />
+        <Box noMargin>{tradeFees}</Box>
+        {rewardsRow}
       </>
     )
   }
@@ -74,8 +86,8 @@ export function TradeRateDetails({ rateInfoParams, alwaysExpanded = false }: Tra
       toggleAccordion={toggleAccordion}
     >
       <>
-        {partnerFeeRow}
-        <RowRewards />
+        {tradeFees}
+        {rewardsRow}
       </>
     </TradeTotalCostsDetails>
   )

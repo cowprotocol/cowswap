@@ -8,5 +8,5 @@ export {
   verifyReferralCode,
   getWalletReferralStatus,
   isSupportedReferralNetwork,
-  getReferralApiConfig,
+  REFERRAL_API_CONFIG,
 } from './services/referralApi'

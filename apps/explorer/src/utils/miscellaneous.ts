@@ -27,9 +27,7 @@ window.toggleDebug = (): boolean => {
   return debugEnabled
 }
 
-// TODO: Replace any with proper type definitions
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const logDebug = (...args: any[]): void => {
+export const logDebug = (...args: unknown[]): void => {
   if (debugEnabled) {
     console.log(...args)
   }
@@ -69,6 +67,8 @@ const NetworkImageAddressMap: Record<Network, string> = {
   [Network.SEPOLIA]: 'eth',
   [Network.LENS]: 'lens',
   [Network.BNB]: 'bnb',
+  [Network.LINEA]: 'eth',
+  [Network.PLASMA]: 'xpl', // TODO: add plasma image
 }
 
 export function getImageAddress(address: string, network: Network): string {

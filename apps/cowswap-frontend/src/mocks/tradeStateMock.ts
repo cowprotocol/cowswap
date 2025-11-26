@@ -36,6 +36,10 @@ export const inputCurrencyInfoMock: CurrencyInfo = {
         bps: 0,
       },
     },
+    beforeAllFees: {
+      sellAmount: tryParseCurrencyAmount('120', inputCurrency),
+      buyAmount: tryParseCurrencyAmount('600', outputCurrency),
+    },
     beforeNetworkCosts: {
       sellAmount: tryParseCurrencyAmount('120', inputCurrency),
       buyAmount: tryParseCurrencyAmount('600', outputCurrency),

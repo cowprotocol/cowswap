@@ -1,4 +1,4 @@
-import type { OrderFillability } from 'common/hooks/usePendingOrdersFillability'
+import type { OrderFillability } from 'modules/ordersTable'
 
 import { computeUnfillableOrderIds, getNewlyFillableOrderIds } from './OrderProgressEventsUpdater'
 

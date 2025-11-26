@@ -5,7 +5,7 @@ import { Order, OrderStatus } from 'legacy/state/orders/actions'
 import { isOrderCancellable } from './isOrderCancellable'
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+ 
 describe('isOrderCancellable', () => {
   it('When order cancellation in progress, the it cannot be cancelled', () => {
     const order = {
