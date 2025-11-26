@@ -3259,7 +3259,7 @@ msgstr "Утвердите токен, чтобы продолжить."
 
 #: apps/cowswap-frontend/src/modules/trade/pure/ProtocolFeeRow/index.tsx
 msgid "This {protocolFeeBps} BPS fee incentivizes solvers to find better prices for users. It is only applied if the trade is executed."
-msgstr "Комиссия {protocolFeeBps} б.п. стимулирует солверов находить лучшие цены для пользователей. Она взимается только при выполнении сделки."
+msgstr "Комиссия в размере {protocolFeeBps} BPS стимулирует солверов находить лучшие цены для пользователей. Она взимается только при выполнении сделки."
 
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/AccountCard/DefaultAccountContent.tsx
 msgid "Recoverable value"
