@@ -1,6 +1,6 @@
 import { AFFILIATE_SUPPORTED_CHAIN_IDS, CHAIN_INFO } from '@cowprotocol/common-const'
 
-import { defineMessage } from '@lingui/macro'
+import { defineMessage } from '@lingui/core/macro'
 
 export const REFERRAL_STORAGE_KEY = 'cowswap:referral-code:v1'
 export const REFERRAL_SOURCE_STORAGE_KEY = 'cowswap:referral-source:v1'
