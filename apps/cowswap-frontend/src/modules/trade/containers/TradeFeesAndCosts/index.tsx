@@ -33,7 +33,7 @@ export function TradeFeesAndCosts(props: TradeFeesAndCostsProps): ReactNode {
   const totalFeeAmount = receiveAmountInfo ? getTotalCosts(receiveAmountInfo) : null
   const totalFeeUsd = useUsdAmount(totalFeeAmount).value
 
-  const volumeFeeTooltip = useVolumeFeeTooltip(false)
+  const volumeFeeTooltip = useVolumeFeeTooltip()
 
   return (
     <>

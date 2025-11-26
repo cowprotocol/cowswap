@@ -27,7 +27,7 @@ export function TradeRateDetails({ rateInfoParams, alwaysExpanded = false }: Tra
   const partnerFeeUsd = useUsdAmount(partnerFeeAmount).value
   const protocolFeeUsd = useUsdAmount(protocolFeeAmount).value
 
-  const { quote } = useTradeQuote()
+  const { quote, isLoading } = useTradeQuote()
   const quoteResponse = quote?.quoteResults.quoteResponse
   const protocolFeeBps = quoteResponse?.protocolFeeBps ? Number(quoteResponse.protocolFeeBps) : undefined
 
@@ -46,6 +46,7 @@ export function TradeRateDetails({ rateInfoParams, alwaysExpanded = false }: Tra
       protocolFeeBps={protocolFeeBps}
       withTimelineDot={false}
       volumeFeeTooltip={volumeFeeTooltip}
+      loading={isLoading}
     />
   )
 
