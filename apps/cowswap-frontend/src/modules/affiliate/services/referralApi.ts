@@ -1,4 +1,4 @@
-import { withTimeout as withTimeoutHelper } from '@cowprotocol/common-utils'
+import { withTimeout } from '@cowprotocol/common-utils'
 
 import { DEFAULT_REFERRAL_API_URL, REFERRAL_API_TIMEOUT_MS, REFERRAL_SUPPORTED_NETWORKS } from '../constants'
 import {
@@ -15,7 +15,7 @@ export const REFERRAL_API_CONFIG: ReferralApiConfig = {
 }
 
 async function fetchJson<T>(input: RequestInfo, init: RequestInit, timeout?: number): Promise<T> {
-  const response = await withTimeoutHelper(
+  const response = await withTimeout(
     fetch(input, init),
     timeout ?? REFERRAL_API_TIMEOUT_MS,
     'Unable to reach referral service',
