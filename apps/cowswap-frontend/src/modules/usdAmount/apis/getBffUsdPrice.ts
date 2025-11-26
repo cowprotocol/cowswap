@@ -2,6 +2,7 @@ import { BFF_BASE_URL } from '@cowprotocol/common-const'
 import { FractionUtils } from '@cowprotocol/common-utils'
 import { Fraction, Token } from '@uniswap/sdk-core'
 
+import { t } from '@lingui/core/macro'
 import ms from 'ms.macro'
 
 import { fetchWithRateLimit } from 'common/utils/fetch'
@@ -35,19 +36,26 @@ export async function getBffUsdPrice(currency: Token): Promise<Fraction | null> 
 
     // Token not found
     if (res.status === 404) {
+      const currencyAddress = currency.address
+      const currencyChainId = currency.chainId
+
       throw new UnknownCurrencyError({
-        cause: `BFF did not return a price for '${currency.address}' on chain '${currency.chainId}'`,
+        cause: t`BFF did not return a price for '${currencyAddress}' on chain '${currencyChainId}'`,
       })
       // Unknown error case
     } else if (res.status !== 200) {
-      throw new Error(`Unexpected response from BFF: ${res.status}`)
+      const resStatus = res.status
+
+      throw new Error(t`Unexpected response from BFF: ${resStatus}`)
     }
 
     const data: BffResponse = await res.json()
 
     // 200 response with error message
     if (isErrorResponse(data)) {
-      throw new Error(`Unexpected response from BFF: ${JSON.stringify(data)}`)
+      const stringifiedData = JSON.stringify(data)
+
+      throw new Error(t`Unexpected response from BFF: ${stringifiedData}`)
     }
 
     // Happy path

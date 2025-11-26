@@ -4,6 +4,8 @@ import { LpToken } from '@cowprotocol/common-const'
 import { TokenLogo, TokensByAddress } from '@cowprotocol/tokens'
 import { TokenSymbol, UI } from '@cowprotocol/ui'
 
+import { Trans } from '@lingui/react/macro'
+
 import { LP_PROVIDER_NAMES } from '../const'
 import * as styledEl from '../styled'
 
@@ -16,7 +18,7 @@ interface PoolInfoProps {
 
 // TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, complexity
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function PoolInfo({ token, tokensByAddress, isTokenSelectorView, isDarkMode }: PoolInfoProps) {
   const poolName = token.lpTokenProvider ? LP_PROVIDER_NAMES[token.lpTokenProvider] : null
   const token0 = tokensByAddress[token.tokens[0]]
@@ -50,7 +52,8 @@ export function PoolInfo({ token, tokensByAddress, isTokenSelectorView, isDarkMo
           : undefined
       }
     >
-      higher APR available for your {poolName} pool:
+      {/* Split to avoid applying macros to acronyms/brands like APR */}
+      <Trans>higher</Trans> APR <Trans>available for your {poolName} pool</Trans>:
       <i>
         <div>
           <TokenLogo token={token0} /> <TokenLogo token={token1} />

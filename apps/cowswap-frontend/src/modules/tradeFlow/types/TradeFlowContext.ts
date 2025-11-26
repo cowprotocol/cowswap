@@ -58,5 +58,5 @@ export interface SafeBundleFlowContext {
   wrappedNativeContract: Weth
   needsApproval: boolean
   erc20Contract: Erc20
-  isPartialApproveEnabled?: boolean
+  amountToApprove: CurrencyAmount<Currency>
 }

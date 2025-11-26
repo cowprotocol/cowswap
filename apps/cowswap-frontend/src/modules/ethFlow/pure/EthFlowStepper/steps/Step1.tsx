@@ -5,6 +5,8 @@ import Exclamation from '@cowprotocol/assets/cow-swap/exclamation.svg'
 import Send from '@cowprotocol/assets/cow-swap/send.svg'
 import X from '@cowprotocol/assets/cow-swap/x.svg'
 
+import { t } from '@lingui/core/macro'
+
 import { EthFlowStepperProps, SmartOrderStatus } from '../index'
 import { StatusIconState } from '../StatusIcon'
 import { ExplorerLinkStyled, Step } from '../Step'
@@ -24,7 +26,7 @@ export function Step1(props: EthFlowStepperProps): ReactNode {
 
   return (
     <Step state={state} icon={icon} label={label}>
-      {hash && !replaced && <ExplorerLinkStyled type="transaction" label="View transaction" id={hash} />}
+      {hash && !replaced && <ExplorerLinkStyled type="transaction" label={t`View transaction`} id={hash} />}
     </Step>
   )
 }
@@ -39,11 +41,11 @@ function getStepConfig({ order, creation, nativeTokenSymbol }: EthFlowStepperPro
 
   // Error states
   if (hasTransactionError) {
-    const errorType = failed ? 'failed' : cancelled ? 'cancelled' : 'replaced'
+    const errorType = failed ? t`failed` : cancelled ? t`cancelled` : t`replaced`
     return {
       icon: X,
       state: 'error',
-      label: `Transaction ${errorType}`,
+      label: t`Transaction ${errorType}`,
     }
   }
 
@@ -51,7 +53,7 @@ function getStepConfig({ order, creation, nativeTokenSymbol }: EthFlowStepperPro
     return {
       icon: Exclamation,
       state: 'error',
-      label: 'Order Expired',
+      label: t`Order Expired`,
     }
   }
 
@@ -60,7 +62,7 @@ function getStepConfig({ order, creation, nativeTokenSymbol }: EthFlowStepperPro
     return {
       icon: Send,
       state: 'pending',
-      label: `Sending ${nativeTokenSymbol}`,
+      label: t`Sending ${nativeTokenSymbol}`,
     }
   }
 
@@ -68,6 +70,6 @@ function getStepConfig({ order, creation, nativeTokenSymbol }: EthFlowStepperPro
   return {
     icon: Checkmark,
     state: 'success',
-    label: `Sent ${nativeTokenSymbol}`,
+    label: t`Sent ${nativeTokenSymbol}`,
   }
 }

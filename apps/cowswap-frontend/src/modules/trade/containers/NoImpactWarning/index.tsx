@@ -3,6 +3,8 @@ import { useEffect } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { Trans } from '@lingui/react/macro'
+
 import { useTradePriceImpact } from 'modules/trade'
 import { TradeWarning, TradeWarningType } from 'modules/trade/pure/TradeWarning'
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
@@ -13,11 +15,13 @@ const noImpactWarningAcceptedAtom = atom(false)
 const NoImpactWarningMessage = (
   <div>
     <small>
-      We are unable to calculate the price impact for this order.
-      <br />
-      <br />
-      You may still move forward but{' '}
-      <strong>please review carefully that the receive amounts are what you expect.</strong>
+      <Trans>
+        We are unable to calculate the price impact for this order.
+        <br />
+        <br />
+        You may still move forward but{' '}
+        <strong>please review carefully that the receive amounts are what you expect.</strong>
+      </Trans>
     </small>
   </div>
 )
@@ -71,7 +75,9 @@ export function NoImpactWarning(props: NoImpactWarningProps) {
       acceptCallback={acceptCallback}
       text={
         <span>
-          Price impact <strong>unknown</strong> - trade carefully
+          <Trans>
+            Price impact <strong>unknown</strong> - trade carefully
+          </Trans>
         </span>
       }
     />

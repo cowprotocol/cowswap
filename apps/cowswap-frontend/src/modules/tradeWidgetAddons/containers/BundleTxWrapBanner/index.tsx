@@ -1,13 +1,15 @@
+import { ReactNode } from 'react'
+
 import { InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
 import { useIsTxBundlingSupported, useIsSmartContractWallet } from '@cowprotocol/wallet'
+
+import { Trans } from '@lingui/react/macro'
 
 import { useIsHooksTradeType, useIsNativeIn, useWrappedToken } from 'modules/trade'
 
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function BundleTxWrapBanner() {
+export function BundleTxWrapBanner(): ReactNode {
   const nativeCurrencySymbol = useNativeCurrency().symbol || 'ETH'
   const wrappedCurrencySymbol = useWrappedToken().symbol || 'WETH'
 
@@ -21,11 +23,15 @@ export function BundleTxWrapBanner() {
 
   return (
     <InlineBanner bannerType={StatusColorVariant.Info} iconSize={32}>
-      <strong>Token wrapping bundling</strong>
+      <strong>
+        <Trans>Token wrapping bundling</Trans>
+      </strong>
       <p>
-        For your convenience, CoW Swap will bundle all the necessary actions for this trade into a single transaction.
-        This includes the&nbsp;{nativeCurrencySymbol}&nbsp;wrapping and, if needed,&nbsp;{wrappedCurrencySymbol}
-        &nbsp;approval. Even if the trade fails, your wrapping and approval will be done!
+        <Trans>
+          For your convenience, CoW Swap will bundle all the necessary actions for this trade into a single transaction.
+          This includes the&nbsp;{nativeCurrencySymbol}&nbsp;wrapping and, if needed,&nbsp;{wrappedCurrencySymbol}
+          &nbsp;approval. Even if the trade fails, your wrapping and approval will be done!
+        </Trans>
       </p>
     </InlineBanner>
   )

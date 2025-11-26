@@ -4,7 +4,7 @@ import { addTransaction, checkedTransaction, clearAllTransactions, finalizeTrans
 import reducer, { HashType, initialState, EnhancedTransactionState } from './reducer'
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+ 
 describe('transaction reducer', () => {
   let store: Store<EnhancedTransactionState>
 
@@ -41,7 +41,7 @@ describe('transaction reducer', () => {
   })
 
   // TODO: Break down this large function into smaller functions
-  // eslint-disable-next-line max-lines-per-function
+   
   describe('finalizeTransaction', () => {
     it('no op if not valid transaction', () => {
       store.dispatch(
@@ -107,7 +107,7 @@ describe('transaction reducer', () => {
   })
 
   // TODO: Break down this large function into smaller functions
-  // eslint-disable-next-line max-lines-per-function
+   
   describe('checkedTransaction', () => {
     it('no op if not valid transaction', () => {
       store.dispatch(

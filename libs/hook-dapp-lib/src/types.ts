@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { MessageDescriptor } from '@lingui/core'
 
 import { HookDappType, HookDappWalletCompatibility } from './consts'
 
@@ -132,9 +132,9 @@ export interface HookDappContext {
 
 export interface HookDappBase {
   id: string
-  name: string
-  descriptionShort?: string
-  description?: ReactNode | string
+  name: MessageDescriptor
+  descriptionShort?: MessageDescriptor
+  description?: MessageDescriptor
   type: HookDappType
   version: string
   website: string

@@ -6,6 +6,8 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ExternalLink } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { t } from '@lingui/core/macro'
+
 interface PropsBase extends PropsWithChildren {
   // type?: BlockExplorerLinkType
   label?: string
@@ -41,6 +43,7 @@ export function ExplorerLink(props: Props): ReactNode {
   const { className } = props
 
   const linkContent = getContent(chainId, props)
+
   return (
     <ExternalLink className={className} href={url}>
       {linkContent}
@@ -70,7 +73,7 @@ function getContent(chainId: SupportedChainId, props: Props): ReactNode {
     return props.children
   }
 
-  const linkLabel = props.type === 'composable-order' ? 'View on Safe' : getLabel(chainId, props)
+  const linkLabel = props.type === 'composable-order' ? t`View on Safe` : getLabel(chainId, props)
 
   return (
     <>

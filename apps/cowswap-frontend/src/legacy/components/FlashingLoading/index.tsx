@@ -1,5 +1,6 @@
 import { useTheme } from '@cowprotocol/common-hooks'
 
+import { Trans } from '@lingui/react/macro'
 import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 
@@ -36,7 +37,7 @@ export const Loading: React.FC = () => {
   return (
     <LoadingWrapper>
       <CowLoadingIcon size={120} isDarkMode={darkMode} />
-      <span>Loading...</span>
+      <span><Trans>Loading...</Trans></span>
     </LoadingWrapper>
   )
 }

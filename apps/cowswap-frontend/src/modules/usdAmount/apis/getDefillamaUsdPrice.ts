@@ -26,6 +26,8 @@ export const DEFILLAMA_PLATFORMS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.AVALANCHE]: 'avalanche',
   [SupportedChainId.LENS]: 'lens',
   [SupportedChainId.BNB]: 'bsc', // BNB Chain is called BSC in Defillama
+  [SupportedChainId.LINEA]: 'linea',
+  [SupportedChainId.PLASMA]: 'plasma',
 }
 
 const BASE_URL = 'https://coins.llama.fi/prices/current'

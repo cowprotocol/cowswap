@@ -1,7 +1,8 @@
 import { useAtomValue } from 'jotai'
 
-import { CustomTheme, resolveCustomThemeForContext } from '@cowprotocol/common-const'
 import type { FeatureFlags } from '@cowprotocol/common-const'
+import { CustomTheme, resolveCustomThemeForContext } from '@cowprotocol/common-const'
+import { isInjectedWidget } from '@cowprotocol/common-utils'
 import type { CowSwapTheme } from '@cowprotocol/ui'
 
 import { featureFlagsAtom } from 'common/state/featureFlagsState'
@@ -25,6 +26,12 @@ export function resolveCowSwapTheme(darkMode: boolean, featureFlags?: FeatureFla
 export function useCustomTheme(): CowSwapTheme | undefined {
   const [darkMode] = useDarkModeManager()
   const featureFlags = useAtomValue(featureFlagsAtom)
+  const isWidget = isInjectedWidget()
+
+  // We don't want to set any custom theme for the widget
+  if (isWidget) {
+    return undefined
+  }
 
   return resolveCowSwapTheme(darkMode, featureFlags)
 }

@@ -1,14 +1,18 @@
+import { isValidElement } from 'react'
+
 import iconCompleted from '@cowprotocol/assets/cow-swap/check.svg'
 import { Command } from '@cowprotocol/types'
 import { ButtonPrimary } from '@cowprotocol/ui'
 import { ExternalLink } from '@cowprotocol/ui'
 
+import { MessageDescriptor } from '@lingui/core'
+import { Trans, useLingui } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 
 import * as styledEl from './styled'
 
 export type BulletListItem = {
-  content: string | React.ReactNode
+  content: MessageDescriptor | React.ReactNode
   isNew?: boolean
 }
 
@@ -35,6 +39,8 @@ export function UnlockWidgetScreen({
   title,
   subtitle,
 }: UnlockWidgetProps) {
+  const { i18n } = useLingui()
+
   return (
     <styledEl.Container>
       <styledEl.TitleSection>
@@ -49,7 +55,7 @@ export function UnlockWidgetScreen({
               <span>
                 <SVG src={iconCompleted} />
               </span>{' '}
-              {content}
+              {isValidElement(content) ? content : i18n._(content as MessageDescriptor)}
             </li>
           ))}
         </styledEl.List>
@@ -58,7 +64,9 @@ export function UnlockWidgetScreen({
       <styledEl.ControlSection>
         {buttonLink && (
           <span>
-            Learn more about <ExternalLink href={buttonLink}>{orderType} orders ↗</ExternalLink>
+            <Trans>
+              Learn more about <ExternalLink href={buttonLink}>{orderType} orders ↗</ExternalLink>
+            </Trans>
           </span>
         )}
         <ButtonPrimary id={`unlock-${id}-btn`} onClick={handleUnlock}>
