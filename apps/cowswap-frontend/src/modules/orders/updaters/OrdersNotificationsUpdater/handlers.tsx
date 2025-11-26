@@ -13,6 +13,8 @@ import {
 } from '@cowprotocol/events'
 import { IconType } from '@cowprotocol/snackbars'
 
+import { t } from '@lingui/core/macro'
+
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { BridgingSuccessNotification } from '../../containers/BridgingSuccessNotification'
@@ -32,7 +34,7 @@ export const ORDERS_NOTIFICATION_HANDLERS: Record<CowWidgetEvents, OrdersNotific
 
       return (
         <OrderNotification
-          title="Order submitted"
+          title={t`Order submitted`}
           chainId={chainId}
           orderType={orderType}
           orderUid={orderUid}
@@ -51,7 +53,7 @@ export const ORDERS_NOTIFICATION_HANDLERS: Record<CowWidgetEvents, OrdersNotific
 
       return (
         <OrderNotification
-          title={bridgeOrder ? 'Swap order filled' : 'Order filled'}
+          title={bridgeOrder ? t`Swap order filled` : t`Order filled`}
           chainId={chainId}
           orderType={getUiOrderType(order)}
           orderUid={order.uid}
@@ -70,7 +72,7 @@ export const ORDERS_NOTIFICATION_HANDLERS: Record<CowWidgetEvents, OrdersNotific
 
       return (
         <OrderNotification
-          title="Order cancelled"
+          title={t`Order cancelled`}
           chainId={chainId}
           orderInfo={order}
           orderType={getUiOrderType(order)}
@@ -88,7 +90,7 @@ export const ORDERS_NOTIFICATION_HANDLERS: Record<CowWidgetEvents, OrdersNotific
 
       return (
         <OrderNotification
-          title="Order expired"
+          title={t`Order expired`}
           chainId={chainId}
           orderType={getUiOrderType(order)}
           orderUid={order.uid}
@@ -104,7 +106,7 @@ export const ORDERS_NOTIFICATION_HANDLERS: Record<CowWidgetEvents, OrdersNotific
 
       return (
         <OrderNotification
-          title="Order presigned"
+          title={t`Order presigned`}
           chainId={chainId}
           orderType={getUiOrderType(order)}
           orderUid={order.uid}

@@ -2,9 +2,10 @@ import { atom, useAtom } from 'jotai'
 import { SetStateAction, useMemo } from 'react'
 
 import { FEE_SIZE_THRESHOLD } from '@cowprotocol/common-const'
-import { Fraction } from '@uniswap/sdk-core'
+import { FractionUtils } from '@cowprotocol/common-utils'
+import { Currency, CurrencyAmount, Fraction } from '@uniswap/sdk-core'
 
-import { useGetReceiveAmountInfo } from 'modules/trade'
+import { ReceiveAmountInfo, useGetReceiveAmountInfo } from 'modules/trade'
 
 import { useSafeEffect, useSafeMemo } from 'common/hooks/useSafeMemo'
 
@@ -38,15 +39,15 @@ export function useHighFeeWarning(): UseHighFeeWarningReturn {
 
     const {
       isSell,
-      beforeNetworkCosts,
+      beforeAllFees,
       afterNetworkCosts,
       costs: { networkFee, partnerFee, bridgeFee },
       quotePrice,
     } = receiveAmountInfo
 
-    const outputAmountWithoutFee = isSell ? beforeNetworkCosts.buyAmount : afterNetworkCosts.buyAmount
+    const outputAmountWithoutFee = isSell ? beforeAllFees.buyAmount : afterNetworkCosts.buyAmount
 
-    const inputAmountAfterFees = isSell ? beforeNetworkCosts.sellAmount : afterNetworkCosts.sellAmount
+    const inputAmountAfterFees = isSell ? beforeAllFees.sellAmount : afterNetworkCosts.sellAmount
 
     const feeAsCurrency = isSell ? quotePrice.quote(networkFee.amountInSellCurrency) : networkFee.amountInSellCurrency
 
@@ -59,7 +60,7 @@ export function useHighFeeWarning(): UseHighFeeWarningReturn {
 
     const feePercentage = totalFeeAmount.divide(targetAmount).multiply(100).asFraction
 
-    const bridgeFeePercentage = bridgeFee?.amountInDestinationCurrency.divide(targetAmount).multiply(100).asFraction
+    const bridgeFeePercentage = getBridgeFeePercentage(bridgeFee, targetAmount)
 
     const isHighBridgeFee = Boolean(bridgeFeePercentage?.greaterThan(FEE_SIZE_THRESHOLD))
 
@@ -87,6 +88,27 @@ export function useHighFeeWarning(): UseHighFeeWarningReturn {
     }),
     [isHighFee, feePercentage, isHighBridgeFee, bridgeFeePercentage, feeWarningAccepted, setFeeWarningAccepted],
   )
+}
+
+function getBridgeFeePercentage(
+  bridgeFee: ReceiveAmountInfo['costs']['bridgeFee'],
+  targetAmount: CurrencyAmount<Currency>,
+): Fraction | undefined {
+  if (!bridgeFee) return undefined
+
+  if (bridgeFee.amountInDestinationCurrency.currency.decimals !== targetAmount.currency.decimals) {
+    return bridgeFee.amountInDestinationCurrency
+      .divide(
+        FractionUtils.adjustDecimalsAtoms(
+          targetAmount,
+          targetAmount.currency.decimals,
+          bridgeFee.amountInDestinationCurrency.currency.decimals,
+        ),
+      )
+      .multiply(100).asFraction
+  }
+
+  return bridgeFee.amountInDestinationCurrency.divide(targetAmount).multiply(100).asFraction
 }
 
 function _computeFeeWarningAcceptedState({

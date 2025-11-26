@@ -3,6 +3,9 @@ import React, { ReactNode, useEffect, useMemo } from 'react'
 
 import ICON_MESSAGE_READ from '@cowprotocol/assets/images/icon-message-read.svg'
 
+import { i18n } from '@lingui/core'
+import { Trans } from '@lingui/react/macro'
+
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
 import {
@@ -30,20 +33,24 @@ function EmptyNotifications({ hasSubscription, onToggleSettings }: EmptyNotifica
   return (
     <NoNotifications>
       <MessageReadIcon src={ICON_MESSAGE_READ} />
-      <h4>You're all caught up</h4>
+      <h4>
+        <Trans>You're all caught up</Trans>
+      </h4>
       {!hasSubscription && onToggleSettings && (
         <p>
-          <EnableAlertsLink
-            onClick={onToggleSettings}
-            data-click-event={toCowSwapGtmEvent({
-              category: CowSwapAnalyticsCategory.NOTIFICATIONS,
-              action: 'Enable trade alerts',
-              label: 'empty state link',
-            })}
-          >
-            Enable trade alerts
-          </EnableAlertsLink>{' '}
-          for fills and expiries
+          <Trans>
+            <EnableAlertsLink
+              onClick={onToggleSettings}
+              data-click-event={toCowSwapGtmEvent({
+                category: CowSwapAnalyticsCategory.NOTIFICATIONS,
+                action: 'Enable trade alerts',
+                label: 'empty state link',
+              })}
+            >
+              Enable trade alerts
+            </EnableAlertsLink>{' '}
+            for fills and expiries
+          </Trans>
         </p>
       )}
     </NoNotifications>
@@ -86,7 +93,7 @@ export function NotificationsList({ children, hasSubscription, onToggleSettings 
       <ListWrapper>
         {groups?.map((group) => (
           <>
-            <h4>{group.date.toLocaleString(undefined, DATE_FORMAT_OPTION)}</h4>
+            <h4>{group.date.toLocaleString(i18n.locale, DATE_FORMAT_OPTION)}</h4>
             <NotificationsListWrapper key={group.date.getTime()}>
               {group.notifications.map(({ id, thumbnail, title, description, url }) => {
                 const target = url
@@ -125,7 +132,6 @@ export function NotificationsList({ children, hasSubscription, onToggleSettings 
             </NotificationsListWrapper>
           </>
         ))}
-
         {groups?.length === 0 && (
           <EmptyNotifications hasSubscription={hasSubscription} onToggleSettings={onToggleSettings} />
         )}

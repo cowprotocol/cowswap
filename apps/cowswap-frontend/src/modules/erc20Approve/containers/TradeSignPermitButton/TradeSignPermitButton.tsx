@@ -1,12 +1,13 @@
 import React, { ReactNode } from 'react'
 
-import { ButtonConfirmed, ButtonSize, HoverTooltip, TokenSymbol } from '@cowprotocol/ui'
+import { ButtonConfirmed, ButtonSize, HoverTooltip } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { Trans } from '@lingui/macro'
 import { HelpCircle } from 'react-feather'
 
 import * as styledEl from './styled'
+
+import { ApprovalTooltip } from '../../pure/ApprovalTooltip'
 
 export type SignPermitButtonProps = {
   amountToApprove: CurrencyAmount<Currency>
@@ -22,16 +23,7 @@ export function TradeSignPermitButton(props: SignPermitButtonProps): ReactNode {
     <ButtonConfirmed buttonSize={ButtonSize.BIG} onClick={confirmSwap} width="100%" marginBottom={10}>
       <styledEl.ButtonLabelWrapper>
         {children}{' '}
-        <HoverTooltip
-          wrapInContainer
-          content={
-            <Trans>
-              You must give the CoW Protocol smart contracts permission to use your{' '}
-              <TokenSymbol token={amountToApprove.currency} />. If you approve the default amount, you will only have to
-              do this once per token.
-            </Trans>
-          }
-        >
+        <HoverTooltip wrapInContainer content={<ApprovalTooltip currency={amountToApprove.currency} />}>
           <HelpCircle size="24" />
         </HoverTooltip>
       </styledEl.ButtonLabelWrapper>

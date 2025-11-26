@@ -1,13 +1,12 @@
 # See https://help.github.com/ignore-files/ for more about ignoring files.
 
-# generated contract types
+# generated language types
 /src/lib/locales/**/*.js
 /src/lib/locales/**/en-US.po
 /src/lib/locales/**/pseudo.po
 /src/locales/**/*.js
 /src/locales/**/*.ts
 /src/locales/**/*.json
-/src/locales/**/en-US.po
 /src/locales/**/pseudo.po
 
 # dependencies
