@@ -2,6 +2,8 @@ import { lazy, ReactNode } from 'react'
 
 import { PAGE_TITLES } from '@cowprotocol/common-const'
 
+import { t } from '@lingui/core/macro'
+import { useLingui } from '@lingui/react/macro'
 import { Outlet, useLocation } from 'react-router'
 
 import { PageTitle } from 'modules/application/containers/PageTitle'
@@ -21,11 +23,11 @@ const Delegate = lazy(() => import(/* webpackChunkName: "delegate" */ 'pages/Acc
 function _getPropsFromRoute(route: string): string[] {
   switch (route) {
     case RoutesEnum.ACCOUNT:
-      return ['account-overview', 'Account overview']
+      return ['account-overview', t`Account overview`]
     case RoutesEnum.ACCOUNT_GOVERNANCE:
-      return ['account-governance', 'Governance']
+      return ['account-governance', t`Governance`]
     case RoutesEnum.ACCOUNT_TOKENS:
-      return ['account-tokens', 'Tokens overview']
+      return ['account-tokens', t`Tokens overview`]
     default:
       return []
   }
@@ -33,10 +35,12 @@ function _getPropsFromRoute(route: string): string[] {
 
 // Note: As we build these single pages, we will remove this component in the future
 export const AccountOverview = (): ReactNode => {
+  const { i18n } = useLingui()
+
   return (
     <>
       <Container>
-        <PageTitle title={PAGE_TITLES.ACCOUNT_OVERVIEW} />
+        <PageTitle title={i18n._(PAGE_TITLES.ACCOUNT_OVERVIEW)} />
         <CardsWrapper>
           <Balances />
           <Governance />

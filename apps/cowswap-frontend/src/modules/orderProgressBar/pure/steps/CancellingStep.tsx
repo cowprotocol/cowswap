@@ -2,6 +2,9 @@ import React from 'react'
 
 import { UI } from '@cowprotocol/ui'
 
+import { msg } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
+
 import * as styledEl from './styled'
 
 import { Description } from '../../sharedStyled'
@@ -18,9 +21,13 @@ export function CancellingStep({ children }: CancellingStepProps) {
     <styledEl.ProgressContainer>
       {children}
       <StepsWrapper
-        steps={[{ title: 'Cancelling' }]}
+        steps={[{ title: msg`Cancelling` }]}
         currentStep={0}
-        extraContent={<Description>Your order is being cancelled.</Description>}
+        extraContent={
+          <Description>
+            <Trans>Your order is being cancelled.</Trans>
+          </Description>
+        }
         customColor={`var(${UI.COLOR_DANGER_TEXT})`}
         isCancelling={true}
       />

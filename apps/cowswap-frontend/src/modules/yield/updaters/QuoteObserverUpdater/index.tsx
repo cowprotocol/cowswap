@@ -11,7 +11,7 @@ import { useUpdateCurrencyAmount } from '../../hooks/useUpdateCurrencyAmount'
 export function QuoteObserverUpdater(): null {
   const state = useDerivedTradeState()
   const receiveAmountInfo = useGetReceiveAmountInfo()
-  const { beforeNetworkCosts } = receiveAmountInfo || {}
+  const { beforeAllFees } = receiveAmountInfo || {}
 
   const updateCurrencyAmount = useUpdateCurrencyAmount()
 
@@ -20,12 +20,12 @@ export function QuoteObserverUpdater(): null {
 
   // Set the output amount from quote response (receiveAmountInfo is a derived state from tradeQuote state)
   useLayoutEffect(() => {
-    if (!outputCurrency || !inputCurrency || !beforeNetworkCosts?.buyAmount) {
+    if (!outputCurrency || !inputCurrency || !beforeAllFees?.buyAmount) {
       return
     }
 
-    updateCurrencyAmount(Field.OUTPUT, beforeNetworkCosts.buyAmount)
-  }, [beforeNetworkCosts, inputCurrency, outputCurrency, updateCurrencyAmount])
+    updateCurrencyAmount(Field.OUTPUT, beforeAllFees.buyAmount)
+  }, [beforeAllFees, inputCurrency, outputCurrency, updateCurrencyAmount])
 
   // Reset the output amount when the input amount changes
   useEffect(() => {

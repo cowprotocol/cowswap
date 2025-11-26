@@ -1,8 +1,6 @@
-import {
-  DEFAULT_REFERRAL_API_URL,
-  REFERRAL_API_TIMEOUT_MS,
-  REFERRAL_SUPPORTED_NETWORKS,
-} from '../constants'
+import { fetchWithTimeout } from '@cowprotocol/common-utils'
+
+import { DEFAULT_REFERRAL_API_URL, REFERRAL_API_TIMEOUT_MS, REFERRAL_SUPPORTED_NETWORKS } from '../constants'
 import {
   ReferralApiConfig,
   ReferralVerificationApiResponse,
@@ -11,33 +9,17 @@ import {
   WalletReferralStatusResponse,
 } from '../types'
 
-export function getReferralApiConfig(): ReferralApiConfig {
-  return {
-    baseUrl: DEFAULT_REFERRAL_API_URL,
-    timeoutMs: REFERRAL_API_TIMEOUT_MS,
-  }
+export const REFERRAL_API_CONFIG: ReferralApiConfig = {
+  baseUrl: DEFAULT_REFERRAL_API_URL,
+  timeoutMs: REFERRAL_API_TIMEOUT_MS,
 }
 
-function withTimeout<T>(promise: Promise<T>, timeout: number, errorMessage: string): Promise<T> {
-  if (!timeout) {
-    return promise
-  }
-
-  let timeoutId: ReturnType<typeof setTimeout>
-
-  const timeoutPromise = new Promise<never>((_, reject) => {
-    timeoutId = setTimeout(() => reject(new Error(errorMessage)), timeout)
+async function fetchJson<T>(input: string, init: RequestInit, timeout?: number): Promise<T> {
+  const response = await fetchWithTimeout(input, {
+    ...init,
+    timeout: timeout ?? REFERRAL_API_TIMEOUT_MS,
+    timeoutMessage: 'Unable to reach referral service',
   })
-
-  return Promise.race([promise, timeoutPromise]).finally(() => clearTimeout(timeoutId))
-}
-
-async function fetchJson<T>(input: RequestInfo, init: RequestInit, timeout?: number): Promise<T> {
-  const response = await withTimeout(
-    fetch(input, init),
-    timeout ?? REFERRAL_API_TIMEOUT_MS,
-    'Unable to reach referral service',
-  )
 
   if (!response.ok) {
     const text = await response.text().catch(() => '')
@@ -51,7 +33,7 @@ async function fetchJson<T>(input: RequestInfo, init: RequestInit, timeout?: num
 
 export async function verifyReferralCode(
   request: ReferralVerificationRequest,
-  config = getReferralApiConfig(),
+  config = REFERRAL_API_CONFIG,
 ): Promise<ReferralVerificationApiResponse> {
   const url = `${config.baseUrl.replace(/\/$/, '')}/api/v1/referrals/verify`
   const body = JSON.stringify(request)
@@ -71,7 +53,7 @@ export async function verifyReferralCode(
 
 export async function getWalletReferralStatus(
   request: WalletReferralStatusRequest,
-  config = getReferralApiConfig(),
+  config = REFERRAL_API_CONFIG,
 ): Promise<WalletReferralStatusResponse> {
   const { account } = request
   const url = `${config.baseUrl.replace(/\/$/, '')}/api/v1/referrals/wallets/${account}`

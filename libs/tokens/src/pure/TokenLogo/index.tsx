@@ -1,5 +1,5 @@
 import { atom, useAtom } from 'jotai'
-import { useCallback, useMemo } from 'react'
+import { ReactNode, useCallback, useMemo } from 'react'
 
 import {
   BaseChainInfo,
@@ -42,9 +42,8 @@ export interface TokenLogoProps {
 }
 
 // TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type, complexity, max-lines-per-function
+// eslint-disable-next-line complexity, max-lines-per-function
 export function TokenLogo({
   logoURI,
   token,
@@ -53,7 +52,7 @@ export function TokenLogo({
   sizeMobile,
   noWrap,
   hideNetworkBadge,
-}: TokenLogoProps) {
+}: TokenLogoProps): ReactNode {
   const tokensByAddress = useTokensByAddressMap()
 
   const [invalidUrls, setInvalidUrls] = useAtom(invalidUrlsAtom)
@@ -78,9 +77,8 @@ export function TokenLogo({
 
   const currentUrl = validUrls?.[0]
 
-
-  const logoUrl = useNetworkLogo(token?.chainId)
-  const showNetworkBadge = logoUrl && !hideNetworkBadge
+  const networkLogoUrl = useNetworkLogo(token?.chainId)
+  const showNetworkBadge = networkLogoUrl && !hideNetworkBadge
 
   const onError = useCallback(() => {
     if (!currentUrl) return
@@ -105,17 +103,20 @@ export function TokenLogo({
     )
   }
 
+  const address = token && 'address' in token ? token.address : ''
+
   const actualTokenContent = currentUrl ? (
     <Styled.TokenImageWrapper>
       <img
-        alt={`${token?.symbol || ''} ${token?.name ? `(${token?.name})` : ''} token logo`}
+        data-address={address}
+        alt={`${token?.symbol || ''} ${token?.name ? `(${token.name})` : ''} token logo`}
         src={currentUrl}
         onError={onError}
       />
     </Styled.TokenImageWrapper>
   ) : initial ? (
     <Styled.TokenImageWrapper>
-      <SingleLetterLogo initial={initial} />
+      <SingleLetterLogo address={address} initial={initial} />
     </Styled.TokenImageWrapper>
   ) : (
     <Styled.TokenImageWrapper>
@@ -137,7 +138,12 @@ export function TokenLogo({
   const cutThicknessForCalc = getBorderWidth(chainLogoSizeForCalc)
 
   return (
-    <Styled.TokenLogoWrapper className={className} size={size} sizeMobile={sizeMobile} $hasNetworkBadge={!!showNetworkBadge}>
+    <Styled.TokenLogoWrapper
+      className={className}
+      size={size}
+      sizeMobile={sizeMobile}
+      $hasNetworkBadge={!!showNetworkBadge}
+    >
       <>
         {showNetworkBadge ? (
           <Styled.ClippedTokenContentWrapper
@@ -153,7 +159,7 @@ export function TokenLogo({
         )}
         {showNetworkBadge && (
           <Styled.ChainLogoWrapper size={chainLogoSizeForCalc}>
-            <img src={logoUrl} alt={`${chainName} network logo`} />
+            <img src={networkLogoUrl} alt={`${chainName} network logo`} />
           </Styled.ChainLogoWrapper>
         )}
       </>

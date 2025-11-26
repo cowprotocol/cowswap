@@ -13,7 +13,8 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import { Trans } from '@lingui/macro'
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 import { Link } from 'react-router'
 
@@ -138,13 +139,17 @@ export default function Profile() {
     balanceBreakdown: (
       <VestingBreakdown>
         <span>
-          <i>Unvested</i>{' '}
+          <i>
+            <Trans>Unvested</Trans>
+          </i>{' '}
           <p>
             <TokenAmount amount={unvested} defaultValue="0" tokenSymbol={vCowToken} />
           </p>
         </span>
         <span>
-          <i>Vested</i>{' '}
+          <i>
+            <Trans>Vested</Trans>
+          </i>{' '}
           <p>
             <TokenAmount amount={shouldUpdate ? undefined : vested} defaultValue="0" tokenSymbol={vCowToken} />
           </p>
@@ -153,14 +158,16 @@ export default function Profile() {
     ),
     vested: (
       <div>
-        <p>
-          <strong>Vested vCOW</strong> is the portion of your vCOW token balance, which is fully available to convert to
-          COW token.
-        </p>
-        <p>
-          This includes any vCOW received through an <strong>airdrop.</strong>
-        </p>
-        <p>When converting your vested vCOW balance to COW, your entire vested balance will be converted.</p>
+        <Trans>
+          <p>
+            <strong>Vested vCOW</strong> is the portion of your vCOW token balance, which is fully available to convert
+            to COW token.
+          </p>
+          <p>
+            This includes any vCOW received through an <strong>airdrop.</strong>
+          </p>
+          <p>When converting your vested vCOW balance to COW, your entire vested balance will be converted.</p>
+        </Trans>
       </div>
     ),
   }
@@ -169,14 +176,22 @@ export default function Profile() {
     let content = null
 
     if (isSwapPending) {
-      content = <span>Converting vCOW...</span>
+      content = (
+        <span>
+          <Trans>Converting vCOW...</Trans>
+        </span>
+      )
     } else if (isSwapConfirmed) {
-      content = <span>Successfully converted!</span>
+      content = (
+        <span>
+          <Trans>Successfully converted!</Trans>
+        </span>
+      )
     } else {
       content = (
-        <>
+        <Trans>
           Convert to COW <SVG src={ArrowIcon} />
-        </>
+        </Trans>
       )
     }
 
@@ -215,9 +230,9 @@ export default function Profile() {
         <ConfirmationPendingContent
           modalMode
           onDismiss={closeModal}
-          title="Convert vCOW to COW"
-          description="Converting vCOW to COW"
-          operationLabel="vCOW conversion"
+          title={t`Convert vCOW to COW`}
+          description={t`Converting vCOW to COW`}
+          operationLabel={t`vCOW conversion`}
         />
       </CowModal>
 
@@ -234,7 +249,7 @@ export default function Profile() {
           {hasVCowBalance && vCowToken && (
             <Card showLoader={isVCowLoading || isSwapPending}>
               <BalanceDisplay hAlign="left">
-                <SVG src={vCOWImage} title="vCOW token" width="56" height="56" />
+                <SVG src={vCOWImage} title={t`vCOW token`} width="56" height="56" />
                 <span>
                   <i>
                     <Trans>Total vCOW balance</Trans>
@@ -250,7 +265,7 @@ export default function Profile() {
               <ConvertWrapper>
                 <BalanceDisplay titleSize={18} altColor={true}>
                   <i>
-                    Vested{' '}
+                    <Trans>Vested</Trans>{' '}
                     <HoverTooltip content={tooltipText.vested} wrapInContainer>
                       <HelpCircle size={14} />
                     </HoverTooltip>
@@ -265,9 +280,13 @@ export default function Profile() {
               </ConvertWrapper>
 
               <CardActions>
-                <ExtLink href={getBlockExplorerUrl(chainId, 'token', vCowToken.address)}>View contract ↗</ExtLink>
+                <ExtLink href={getBlockExplorerUrl(chainId, 'token', vCowToken.address)}>
+                  <Trans>View contract</Trans> ↗
+                </ExtLink>
                 <CopyHelper toCopy={vCowToken.address}>
-                  <div title="Click to copy token contract address">Copy contract</div>
+                  <div title={t`Click to copy token contract address`}>
+                    <Trans>Copy contract</Trans>
+                  </div>
                 </CopyHelper>
               </CardActions>
             </Card>
@@ -276,9 +295,11 @@ export default function Profile() {
           {cowContractAddress && (
             <Card>
               <BalanceDisplay titleSize={26}>
-                <img src={CowImage} alt="Cow Balance" height="80" width="80" />
+                <img src={CowImage} alt={t`Cow Balance`} height="80" width="80" />
                 <span>
-                  <i>Available COW balance</i>
+                  <i>
+                    <Trans>Available COW balance</Trans>
+                  </i>
                   <b>
                     {!isProviderNetworkUnsupported && (
                       <TokenAmount amount={cowBalance} defaultValue="0" tokenSymbol={cowToken} />
@@ -287,8 +308,8 @@ export default function Profile() {
                 </span>
               </BalanceDisplay>
               <CardActions>
-                <ExtLink title="View contract" href={getBlockExplorerUrl(chainId, 'token', cowContractAddress)}>
-                  View contract ↗
+                <ExtLink title={t`View contract`} href={getBlockExplorerUrl(chainId, 'token', cowContractAddress)}>
+                  <Trans>View contract</Trans> ↗
                 </ExtLink>
 
                 <StyledWatchAssetInWallet
@@ -296,12 +317,16 @@ export default function Profile() {
                   currency={cowToken}
                   fallback={
                     <CopyHelper toCopy={cowContractAddress}>
-                      <div title="Click to copy token contract address">Copy contract</div>
+                      <div title={t`Click to copy token contract address`}>
+                        <Trans>Copy contract</Trans>
+                      </div>
                     </CopyHelper>
                   }
                 />
 
-                <Link to={`/${chainId}/swap/${nativeWrappedToken.address}/${COW_CONTRACT_ADDRESS[chainId]}`}>Buy COW</Link>
+                <Link to={`/${chainId}/swap/${nativeWrappedToken.address}/${COW_CONTRACT_ADDRESS[chainId]}`}>
+                  <Trans>Buy COW</Trans>
+                </Link>
               </CardActions>
             </Card>
           )}

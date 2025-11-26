@@ -8,7 +8,7 @@ import { ButtonOutlined, Media, MY_ORDERS_ID, SWAP_HEADER_OFFSET } from '@cowpro
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
 
-import { t } from '@lingui/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 import { Nullish } from 'types'
 
@@ -23,6 +23,7 @@ import { TradeType } from 'modules/trade'
 import { useTradeTypeInfoFromUrl } from 'modules/trade/hooks/useTradeTypeInfoFromUrl'
 import { useIsAlternativeOrderModalVisible } from 'modules/trade/state/alternativeOrder'
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
+import { useTradeQuote } from 'modules/tradeQuote'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useThrottleFn } from 'common/hooks/useThrottleFn'
@@ -104,6 +105,9 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
         : props.outputCurrencyInfo,
     [isWrapOrUnwrap, props.outputCurrencyInfo, props.inputCurrencyInfo.amount],
   )
+
+  const { bridgeQuote } = useTradeQuote()
+  const isReceiverAccountBridgeProvider = bridgeQuote?.providerInfo.type === 'ReceiverAccountBridgeProvider'
 
   const { chainId, account } = useWalletInfo()
   const { allowsOffchainSigning } = useWalletDetails()
@@ -187,6 +191,8 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
 
   const isOutputTokenUnsupported = !!buyToken && !(buyToken.chainId in SupportedChainId)
 
+  const { t } = useLingui()
+
   return (
     <>
       <styledEl.ContainerBox>
@@ -196,7 +202,9 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
 
           {shouldShowMyOrdersButton && (
             <ButtonOutlined margin={'0 16px 0 auto'} onClick={handleMyOrdersClick}>
-              My orders <SVG src={ICON_ORDERS} />
+              <Trans>
+                My orders <SVG src={ICON_ORDERS} />
+              </Trans>
             </ButtonOutlined>
           )}
 
@@ -245,6 +253,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
                 <div>
                   <CurrencyInputPanel
                     id="output-currency-input"
+                    hideReceiveAmounts={isReceiverAccountBridgeProvider}
                     inputDisabled={
                       (isSellingEthSupported && isEoaEthFlow) ||
                       isWrapOrUnwrap ||
@@ -253,7 +262,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
                     }
                     inputTooltip={
                       isSellingEthSupported && isEoaEthFlow
-                        ? t`You cannot edit this field when selling ${inputCurrencyInfo?.currency?.symbol}`
+                        ? t`You cannot edit this field when selling` + ` ${inputCurrencyInfo?.currency?.symbol}`
                         : undefined
                     }
                     currencyInfo={outputCurrencyInfo}

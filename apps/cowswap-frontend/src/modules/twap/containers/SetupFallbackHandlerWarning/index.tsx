@@ -6,6 +6,7 @@ import { usePrevious } from '@cowprotocol/common-hooks'
 import { ButtonPrimary, InlineBanner, Loader, BannerOrientation, UI, StatusColorVariant } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
 import { useAllTransactions } from 'legacy/state/enhancedTransactions/hooks'
@@ -65,7 +66,7 @@ const pendingTxHashAtom = atom<string | null>(null)
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function SetupFallbackHandlerWarning() {
   const [pendingTxHash, setPendingTxHash] = useAtom(pendingTxHashAtom)
   const [fbHandlerCheckInProgress, setFbHandlerCheckInProgress] = useState(false)
@@ -149,11 +150,13 @@ export function SetupFallbackHandlerWarning() {
       >
         <span>
           <p>
-            Your Safe fallback handler was changed after TWAP orders were placed. All open TWAP orders are not getting
-            created because of that. Please, update the fallback handler in order to make the orders work again.
+            <Trans>
+              Your Safe fallback handler was changed after TWAP orders were placed. All open TWAP orders are not getting
+              created because of that. Please, update the fallback handler in order to make the orders work again.
+            </Trans>
           </p>
           <ActionButton disabled={isTransactionPending} onClick={handleUpdateClick}>
-            {isTransactionPending ? <Loader /> : 'Update fallback handler'}
+            {isTransactionPending ? <Loader /> : <Trans>Update fallback handler</Trans>}
           </ActionButton>
         </span>
       </Banner>
