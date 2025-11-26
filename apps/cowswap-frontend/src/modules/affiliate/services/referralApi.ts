@@ -1,5 +1,3 @@
-import { isProdLike } from '@cowprotocol/common-utils'
-
 import {
   DEFAULT_REFERRAL_API_URL,
   REFERRAL_API_TIMEOUT_MS,
@@ -13,26 +11,9 @@ import {
   WalletReferralStatusResponse,
 } from '../types'
 
-function resolveBaseUrl(): string {
-  const envUrl = process.env.REACT_APP_REFERRAL_API_URL
-
-  if (envUrl) {
-    return envUrl
-  }
-
-  if (!isProdLike) {
-    const previewUrl = process.env.REACT_APP_REFERRAL_API_URL_STAGING
-    if (previewUrl) {
-      return previewUrl
-    }
-  }
-
-  return DEFAULT_REFERRAL_API_URL
-}
-
 export function getReferralApiConfig(): ReferralApiConfig {
   return {
-    baseUrl: resolveBaseUrl(),
+    baseUrl: DEFAULT_REFERRAL_API_URL,
     timeoutMs: REFERRAL_API_TIMEOUT_MS,
   }
 }
