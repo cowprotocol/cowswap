@@ -6,6 +6,8 @@ import { UI } from '@cowprotocol/ui'
 import { RowFixed, TokenSymbol } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import { CheckCircle } from 'react-feather'
 import styled from 'styled-components/macro'
 
@@ -88,18 +90,21 @@ export function WatchAssetInWallet(props: WatchAssetInWalletProps) {
         <RowFixed>
           <StyledIcon src={walletIcon} />{' '}
           {shortLabel ? (
-            'Add token'
+            t`Add token`
           ) : (
             <>
-              Add <TokenSymbol token={currency} /> to {walletName}
+              <Trans>
+                Add <TokenSymbol token={currency} /> to {walletName}
+              </Trans>
             </>
           )}
         </RowFixed>
       ) : (
         <RowFixed>
           <CheckCircleCustom size={'16px'} stroke={theme.green1} />
-          Added &nbsp;
-          <TokenSymbol token={currency} />
+          <Trans>
+            Added <TokenSymbol token={currency} />
+          </Trans>
         </RowFixed>
       )}
     </ButtonCustom>

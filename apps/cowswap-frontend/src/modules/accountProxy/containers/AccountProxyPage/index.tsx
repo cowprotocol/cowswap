@@ -5,6 +5,8 @@ import { isAddress } from '@cowprotocol/common-utils'
 import { ArrowIcon } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import { useParams } from 'react-router'
 
 import { Routes } from 'common/constants/routes'
@@ -39,13 +41,10 @@ export function AccountProxyPage(): ReactNode {
     return (
       <Wrapper>
         <AccountCardContainer>
-          <BaseAccountCard
-            width="95%"
-            margin="12px auto 34px"
-            minHeight={218}
-            ariaLabel="Invalid proxy address"
-          >
-            <ErrorMessage>Invalid proxy address</ErrorMessage>
+          <BaseAccountCard width="95%" margin="12px auto 34px" minHeight={218} ariaLabel={t`Invalid proxy address`}>
+            <ErrorMessage>
+              <Trans>Invalid proxy address</Trans>
+            </ErrorMessage>
           </BaseAccountCard>
         </AccountCardContainer>
       </Wrapper>
@@ -66,7 +65,9 @@ export function AccountProxyPage(): ReactNode {
           showWatermark
         />
       </AccountCardContainer>
-      <Title>Recoverable tokens · {tokensToRefund?.length || 0}</Title>
+      <Title>
+        <Trans>Recoverable tokens</Trans> · {tokensToRefund?.length || 0}
+      </Title>
       {refundValues &&
         refundValues.map(({ token, balance, usdAmount }) => {
           return (

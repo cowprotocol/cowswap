@@ -2,6 +2,8 @@ import CowImage from '@cowprotocol/assets/cow-swap/cow_token.svg'
 import DelegateCowIcon from '@cowprotocol/assets/cow-swap/delegate-cow.svg'
 import { ClosableBanner, ButtonPrimary } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 
 import { BANNER_IDS } from 'common/constants/banners'
@@ -23,18 +25,21 @@ export default function Delegate({ dismissable = false, rowOnMobile }: DelegateP
     <BannerCard rowOnMobile={rowOnMobile}>
       {dismissable && onClose && <CloseButton onClick={onClose} />}
       <BannerCardIcon width={159}>
-        <SVG src={DelegateCowIcon} title="Delegate" />
+        <SVG src={DelegateCowIcon} title={t`Delegate`} />
       </BannerCardIcon>
       <BannerCardContent>
         <BannerCardTitle>
-          Too <i>busy</i> <br />
-          to vote?
+          <Trans>
+            Too <i>busy</i> <br />
+            to vote?
+          </Trans>
         </BannerCardTitle>
         <small>
-          Delegate your <img src={CowImage} alt="Cow Balance" height="16" width="16" /> (v)COW
+          <Trans>Delegate your</Trans>
+          <img src={CowImage} alt={t`Cow Balance`} height="16" width="16" /> (v)COW
         </small>
         <ButtonPrimary as="a" href={DELEGATE_URL} target="_blank" rel="noopener nofollow">
-          Delegate Now ↗
+          <Trans>Delegate Now</Trans> ↗
         </ButtonPrimary>
       </BannerCardContent>
     </BannerCard>

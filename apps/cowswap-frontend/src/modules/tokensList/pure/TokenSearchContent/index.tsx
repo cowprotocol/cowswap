@@ -5,6 +5,9 @@ import { doesTokenMatchSymbolOrAddress } from '@cowprotocol/common-utils'
 import { TokenSearchResponse } from '@cowprotocol/tokens'
 import { Loader } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
+
 import * as styledEl from '../../containers/TokenSearchResults/styled'
 import { SelectTokenContext } from '../../types'
 import { ImportTokenItem } from '../ImportTokenItem'
@@ -20,6 +23,7 @@ interface TokenSearchContentProps {
   importToken: (tokenToImport: TokenWithLogo) => void
 }
 
+// TODO: Add proper return type annotation
 export function TokenSearchContent({
   searchInput,
   searchResults,
@@ -54,16 +58,15 @@ export function TokenSearchContent({
     return [matched, remaining]
   }, [activeListsResult, searchInput])
 
-  if (isLoading)
-    return (
-      <styledEl.LoaderWrapper>
-        <Loader />
-      </styledEl.LoaderWrapper>
-    )
-
-  if (isTokenNotFound) return <styledEl.TokenNotFound>No tokens found</styledEl.TokenNotFound>
-
-  return (
+  return isLoading ? (
+    <styledEl.LoaderWrapper>
+      <Loader />
+    </styledEl.LoaderWrapper>
+  ) : isTokenNotFound ? (
+    <styledEl.TokenNotFound>
+      <Trans>No tokens found</Trans>
+    </styledEl.TokenNotFound>
+  ) : (
     <>
       {/*Matched tokens first, followed by tokens from active lists*/}
       {matchedTokens.concat(activeList).map((token) => {
@@ -82,8 +85,10 @@ export function TokenSearchContent({
       {/*Tokens from inactive lists*/}
       {inactiveListsResult?.length ? (
         <div>
-          <TokenSourceTitle tooltip="Tokens from inactive lists. Import specific tokens below or click Manage to activate more lists.">
-            Expanded results from inactive Token Lists
+          <TokenSourceTitle
+            tooltip={t`Tokens from inactive lists. Import specific tokens below or click Manage to activate more lists.`}
+          >
+            {t`Expanded results from inactive Token Lists`}
           </TokenSourceTitle>
           <div>
             {inactiveListsResult.slice(0, SEARCH_RESULTS_LIMIT).map((token) => {
@@ -96,8 +101,8 @@ export function TokenSearchContent({
       {/*Tokens from external sources*/}
       {externalApiResult?.length ? (
         <div>
-          <TokenSourceTitle tooltip="Tokens from external sources.">
-            Additional Results from External Sources
+          <TokenSourceTitle tooltip={t`Tokens from external sources.`}>
+            {t`Additional Results from External Sources`}
           </TokenSourceTitle>
           <div>
             {externalApiResult.map((token) => {

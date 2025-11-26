@@ -4,6 +4,8 @@ import alertCircle from '@cowprotocol/assets/cow-swap/alert-circle.svg'
 import { Command } from '@cowprotocol/types'
 import { ButtonSecondary, TokenSymbol, UI } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 
 import * as styledEl from './styled'
@@ -22,30 +24,34 @@ interface AllowanceWarningProps extends WarningProps {
 function BalanceWarning({ symbol, isScheduled }: WarningProps) {
   return (
     <styledEl.WarningParagraph>
-      <h3>Insufficient token balance</h3>
+      <h3>
+        <Trans>Insufficient token balance</Trans>
+      </h3>
       <p>
-        Insufficient{' '}
+        <Trans>Insufficient</Trans>{' '}
         <strong>
           <TokenSymbol token={{ symbol }} />
         </strong>{' '}
-        balance detected.
+        <Trans>balance detected.</Trans>
         <br />
         <br />
         {isScheduled ? (
           <>
-            If the balance remains insufficient at creation time, this order portion will not be created. Add more{' '}
+            <Trans>
+              If the balance remains insufficient at creation time, this order portion will not be created. Add more
+            </Trans>{' '}
             <strong>
               <TokenSymbol token={{ symbol }} />
             </strong>{' '}
-            before that time.
+            <Trans>before that time.</Trans>
           </>
         ) : (
           <>
-            The order remains open. Execution requires sufficient{' '}
+            <Trans>The order remains open. Execution requires sufficient</Trans>{' '}
             <strong>
               <TokenSymbol token={{ symbol }} />
             </strong>{' '}
-            balance.
+            <Trans>balance.</Trans>
           </>
         )}
       </p>
@@ -58,32 +64,39 @@ function BalanceWarning({ symbol, isScheduled }: WarningProps) {
 function AllowanceWarning({ symbol, isScheduled, approve }: AllowanceWarningProps) {
   return (
     <styledEl.WarningParagraph>
-      <h3>Insufficient token allowance</h3>
+      <h3>
+        <Trans>Insufficient token allowance</Trans>
+      </h3>
       <p>
         {isScheduled ? (
           <>
-            Insufficient allowance granted for{' '}
+            <Trans>Insufficient allowance granted for</Trans>{' '}
             <strong>
               <TokenSymbol token={{ symbol }} />
             </strong>
-            . If allowance remains insufficient at creation time, this portion will not be created. Approve the{' '}
+            .{' '}
+            <Trans>
+              If allowance remains insufficient at creation time, this portion will not be created. Approve the
+            </Trans>{' '}
             <strong>
               <TokenSymbol token={{ symbol }} />
             </strong>{' '}
-            token before creation.
+            <Trans>token before creation.</Trans>
           </>
         ) : (
           <>
-            The order remains open. Execution requires adequate allowance for{' '}
+            <Trans>The order remains open. Execution requires adequate allowance for</Trans>{' '}
             <strong>
               <TokenSymbol token={{ symbol }} />
             </strong>
-            . Approve the token to proceed.
+            . <Trans>Approve the token to proceed.</Trans>
           </>
         )}
       </p>
       <styledEl.WarningActionBox>
-        <ButtonSecondary onClick={approve}>Set approval</ButtonSecondary>
+        <ButtonSecondary onClick={approve}>
+          <Trans>Set approval</Trans>
+        </ButtonSecondary>
       </styledEl.WarningActionBox>
     </styledEl.WarningParagraph>
   )
@@ -126,7 +139,7 @@ export function WarningTooltip({
         placement="bottom"
         bgColor={`var(${UI.COLOR_DANGER_BG})`}
         color={`var(${UI.COLOR_DANGER_TEXT})`}
-        Icon={<SVG src={alertCircle} description="warning" width="14" height="14" />}
+        Icon={<SVG src={alertCircle} description={t`warning`} width="14" height="14" />}
       />
       {children}
     </styledEl.WarningIndicator>

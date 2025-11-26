@@ -4,6 +4,7 @@ import { DISCORD_LINK } from '@cowprotocol/common-const'
 import { ExternalLink, InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
 import { useCurrentAccountProxy } from '../../hooks/useCurrentAccountProxy'
@@ -35,9 +36,13 @@ export function InvalidCoWShedSetup(): ReactNode {
     <Wrapper>
       <InlineBanner bannerType={StatusColorVariant.Danger}>
         <div>
-          <div>CoW Shed setup is invalid!</div>
           <div>
-            <ExternalLink href={DISCORD_LINK}>Please contact CoW Swap support!</ExternalLink>
+            <Trans>CoW Shed setup is invalid!</Trans>
+          </div>
+          <div>
+            <ExternalLink href={DISCORD_LINK}>
+              <Trans>Please contact CoW Swap support!</Trans>
+            </ExternalLink>
           </div>
         </div>
       </InlineBanner>

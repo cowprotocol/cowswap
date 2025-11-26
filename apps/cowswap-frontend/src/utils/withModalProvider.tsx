@@ -7,6 +7,8 @@ import { Provider } from 'react-redux'
 
 import applicationReducer from 'legacy/state/application/reducer'
 
+import { LinguiWrapper } from '../../LinguiJestProvider'
+
 const cowAnalytics = initGtm()
 
 const combinedReducers = combineReducers({
@@ -20,7 +22,9 @@ const modalStore = configureStore({
 export const WithModalProvider = ({ children }: PropsWithChildren) => {
   return (
     <Provider store={modalStore}>
-      <CowAnalyticsProvider cowAnalytics={cowAnalytics}>{children}</CowAnalyticsProvider>
+      <LinguiWrapper>
+        <CowAnalyticsProvider cowAnalytics={cowAnalytics}>{children}</CowAnalyticsProvider>
+      </LinguiWrapper>
     </Provider>
   )
 }

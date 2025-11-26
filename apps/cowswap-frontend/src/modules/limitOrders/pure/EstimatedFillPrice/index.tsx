@@ -3,6 +3,7 @@ import { TokenAmount, HoverTooltip } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 import { Currency, Price, CurrencyAmount, Fraction } from '@uniswap/sdk-core'
 
+import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
 import { ExecutionPriceTooltip } from '../ExecutionPriceTooltip'
@@ -59,7 +60,7 @@ export function EstimatedFillPrice({
   return (
     <EstimatedFillPriceBox>
       <Label>
-        Estimated fill price
+        <Trans>Estimated fill price</Trans>
         <QuestionWrapper>
           <HoverTooltip
             content={

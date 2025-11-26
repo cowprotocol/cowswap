@@ -33,7 +33,7 @@ describe('calculateAmountForRate', () => {
     expect(price.denominator.toString()).toBe('1000000000000000000')
 
     /**
-     * The code bellow is the same if we multiply CurrencyAmount to Price
+     * The code below is the same if we multiply CurrencyAmount to Price
      * I just revealed it to demonstrate a problem
      * When we do this multiplication, we get a new Fraction where numerator and denominator have different length
      */
@@ -46,7 +46,7 @@ describe('calculateAmountForRate', () => {
     )
 
     /**
-     * This is still valid fraction, and it does make sense, but let's see what we get bellow
+     * This is still valid fraction, and it does make sense, but let's see what we get below
      */
     expect(multiplied.toFixed(10)).toBe('0.0032089407')
 

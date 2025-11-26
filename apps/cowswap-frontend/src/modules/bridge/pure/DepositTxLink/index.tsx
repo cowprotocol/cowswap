@@ -3,6 +3,8 @@ import { ReactNode } from 'react'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
+import { t } from '@lingui/core/macro'
+
 import { TransactionLinkItem } from '../TransactionLink'
 
 interface DepositTxLinkProps {
@@ -15,5 +17,5 @@ export function DepositTxLink({ depositTxHash, sourceChainId }: DepositTxLinkPro
 
   if (!depositLink) return null
 
-  return <TransactionLinkItem link={depositLink} label="Source transaction" chainId={sourceChainId} />
+  return <TransactionLinkItem link={depositLink} label={t`Source transaction`} chainId={sourceChainId} />
 }
