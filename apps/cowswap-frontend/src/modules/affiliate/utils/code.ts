@@ -15,6 +15,7 @@ export function sanitizeReferralCode(raw: string): string {
   return next.slice(0, 16)
 }
 
+// TODO: Derive actual length limits from the referral API response schema
 export function isReferralCodeLengthValid(code: string): boolean {
   return code.length >= 4 && code.length <= 16
 }
