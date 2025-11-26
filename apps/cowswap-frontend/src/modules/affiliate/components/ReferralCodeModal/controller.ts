@@ -37,14 +37,22 @@ export interface ReferralModalControllerResult {
 
 export function useReferralModalController(params: ReferralModalControllerParams): ReferralModalControllerResult {
   const { modalState, actions, account, toggleWalletModal, navigate, analytics } = params
-  const { referral, uiState, displayCode, savedCode, hasCode, hasValidLength, verification, incomingCode } = modalState
+  const { referral, uiState, displayCode, savedCode, hasCode, hasValidLength, verification, incomingCode, wallet } =
+    modalState
 
   const inputRef = useRef<HTMLInputElement | null>(null)
   const ctaRef = useRef<HTMLButtonElement | null>(null)
 
   const primaryCta = useMemo(
-    () => computePrimaryCta({ uiState, hasValidLength, hasCode, verificationKind: verification.kind }),
-    [hasCode, hasValidLength, uiState, verification.kind],
+    () =>
+      computePrimaryCta({
+        uiState,
+        hasValidLength,
+        hasCode,
+        verificationKind: verification.kind,
+        walletStatus: wallet.status,
+      }),
+    [hasCode, hasValidLength, uiState, verification.kind, wallet.status],
   )
 
   useReferralModalFocus(referral.modalOpen, uiState, inputRef, ctaRef)

@@ -7,38 +7,49 @@ import { t } from '@lingui/macro'
 import { PrimaryCta, StatusCopyResult } from './types'
 
 import { useReferralModalState, ReferralModalUiState } from '../../hooks/useReferralModalState'
-import { ReferralVerificationStatus } from '../../types'
+import { ReferralVerificationStatus, WalletReferralState } from '../../types'
 
 type VerificationKind = ReturnType<typeof useReferralModalState>['verification']['kind']
+type WalletStatus = WalletReferralState['status']
 
 export function computePrimaryCta(params: {
   uiState: ReferralModalUiState
   hasValidLength: boolean
   hasCode: boolean
   verificationKind: VerificationKind
+  walletStatus: WalletStatus
 }): PrimaryCta {
-  const { uiState, hasValidLength, hasCode, verificationKind } = params
+  const { uiState, hasValidLength, hasCode, verificationKind, walletStatus } = params
 
-  switch (uiState) {
-    case 'empty':
-      return disabledCta(t`Provide a valid referral code.`)
-    case 'unsupported':
-      return disabledCta(t`Unsupported Network.`)
-    case 'checking':
-      return disabledCta(t`Checking code…`)
-    case 'valid':
-    case 'linked':
-      return { label: t`View rewards.`, disabled: false, action: 'viewRewards' }
-    case 'ineligible':
-      return { label: t`Go back.`, disabled: false, action: 'goBack' }
-    case 'invalid':
-    case 'expired':
-      return disabledCta(t`Connect to verify code.`)
-    case 'error':
-      return verifyCta(hasValidLength, hasCode, verificationKind)
-    default:
-      return verifyCta(hasValidLength, hasCode, verificationKind)
+  if (uiState === 'editing') {
+    return disabledCta(
+      hasValidLength && hasCode ? t`Save to verify code` : t`Enter a referral code with 4 to 16 characters`,
+    )
   }
+
+  if (uiState === 'valid' || uiState === 'linked') {
+    return { label: t`View rewards.`, disabled: false, action: 'viewRewards' }
+  }
+
+  if (uiState === 'ineligible') {
+    return { label: t`Go back.`, disabled: false, action: 'goBack' }
+  }
+
+  const staticDisabledLabels: Partial<Record<ReferralModalUiState, string>> = {
+    empty: t`Provide a valid referral code`,
+    unsupported: t`Unsupported Network`,
+    checking: t`Checking code…`,
+    invalid: t`Connect to verify code`,
+    expired: t`Connect to verify code`,
+  }
+
+  const disabledLabel = staticDisabledLabels[uiState]
+
+  if (disabledLabel) {
+    return disabledCta(disabledLabel)
+  }
+
+  return verifyCta(hasValidLength, hasCode, verificationKind, walletStatus)
 }
 
 function disabledCta(label: string): PrimaryCta {
@@ -49,16 +60,19 @@ function verifyCta(
   hasValidLength: boolean,
   hasCode: boolean,
   verificationKind: VerificationKind,
+  walletStatus: WalletStatus,
 ): PrimaryCta {
+  const requiresConnection = walletStatus === 'disconnected' || walletStatus === 'unknown'
+
   return {
-    label: t`Connect to verify code.`,
+    label: requiresConnection ? t`Connect to verify code` : t`Verify code`,
     disabled: !hasValidLength || !hasCode || verificationKind === 'checking',
     action: 'verify',
   }
 }
 
 export function getHelperText(uiState: ReferralModalUiState): string | undefined {
-  return uiState === 'empty' ? t`Provide a valid referral code.` : undefined
+  return uiState === 'empty' ? t`Referral codes contain 4-16 letters or numbers` : undefined
 }
 
 export function getStatusCopy(verification: ReferralVerificationStatus): StatusCopyResult {
