@@ -1,19 +1,30 @@
 import { ReactNode } from 'react'
 
+import REFERRAL_ILLUSTRATION from '@cowprotocol/assets/images/image-profit.svg'
 import { ButtonPrimary, LinkStyledButton, ModalHeader } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
 
 import { ReferralCodeForm } from './ReferralCodeForm'
 import { ReferralStatusMessages, getModalTitle } from './ReferralStatusMessages'
-import { Body, Footer, HelperText, Illustration, ModalContainer, Subtitle } from './styles'
+import { Body, Footer, HelperText, Illustration, ModalContainer, Subtitle, Title } from './styles'
 import { ReferralModalContentProps } from './types'
 
 import { REFERRAL_HOW_IT_WORKS_URL } from '../../constants'
 import { ReferralModalUiState } from '../../hooks/useReferralModalState'
 
 export function ReferralModalContent(props: ReferralModalContentProps): ReactNode {
-  const { uiState, onPrimaryClick, helperText, primaryCta, onDismiss, inputRef, ctaRef } = props
+  const {
+    uiState,
+    onPrimaryClick,
+    helperText,
+    primaryCta,
+    onDismiss,
+    inputRef,
+    ctaRef,
+    linkedMessage,
+    hasRejection,
+  } = props
 
   const howItWorksLink = (
     <LinkStyledButton as="a" href={REFERRAL_HOW_IT_WORKS_URL} target="_blank" rel="noopener noreferrer">
@@ -24,12 +35,18 @@ export function ReferralModalContent(props: ReferralModalContentProps): ReactNod
   return (
     <ModalContainer>
       <ModalHeader onBack={onDismiss} onClose={onDismiss}>
-        {getModalTitle(uiState)}
+        {null}
       </ModalHeader>
 
       <Body>
-        <Illustration>&lt; illustration &gt;</Illustration>
-        <ReferralSubtitle uiState={uiState} howItWorksLink={howItWorksLink} />
+        <Illustration src={REFERRAL_ILLUSTRATION} alt="" role="presentation" />
+        <Title>{getModalTitle(uiState, { hasRejection })}</Title>
+        <ReferralSubtitle
+          uiState={uiState}
+          linkedMessage={linkedMessage}
+          howItWorksLink={howItWorksLink}
+          hasRejection={hasRejection}
+        />
         <ReferralCodeForm
           uiState={uiState}
           savedCode={props.savedCode}
@@ -42,18 +59,7 @@ export function ReferralModalContent(props: ReferralModalContentProps): ReactNod
           onPrimaryClick={onPrimaryClick}
           inputRef={inputRef}
         />
-        <ReferralStatusMessages
-          uiState={uiState}
-          verification={props.verification}
-          invalidMessage={props.invalidMessage}
-          expiredMessage={props.expiredMessage}
-          errorMessage={props.errorMessage}
-          linkedMessage={props.linkedMessage}
-          ineligibleMessage={props.ineligibleMessage}
-          infoMessage={props.infoMessage}
-          shouldShowInfo={props.shouldShowInfo}
-          howItWorksLink={howItWorksLink}
-        />
+        <ReferralStatusMessages infoMessage={props.infoMessage} shouldShowInfo={props.shouldShowInfo} />
       </Body>
 
       <Footer>
@@ -69,11 +75,21 @@ export function ReferralModalContent(props: ReferralModalContentProps): ReactNod
 
 interface ReferralSubtitleProps {
   uiState: ReferralModalUiState
+  linkedMessage?: ReactNode
   howItWorksLink: ReactNode
+  hasRejection: boolean
 }
 
-function ReferralSubtitle({ uiState, howItWorksLink }: ReferralSubtitleProps): ReactNode {
-  const isPostValidation = uiState === 'valid' || uiState === 'linked'
+function ReferralSubtitle({ uiState, linkedMessage, howItWorksLink, hasRejection }: ReferralSubtitleProps): ReactNode {
+  if ((uiState === 'linked' || hasRejection) && linkedMessage) {
+    return (
+      <Subtitle>
+        {linkedMessage} {howItWorksLink}
+      </Subtitle>
+    )
+  }
+
+  const isPostValidation = uiState === 'valid'
 
   return (
     <Subtitle>

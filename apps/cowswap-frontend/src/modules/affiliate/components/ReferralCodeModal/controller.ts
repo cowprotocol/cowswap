@@ -17,12 +17,14 @@ import { FocusableElement, PrimaryCta, ReferralModalContentProps } from './types
 
 import { useReferralActions } from '../../hooks/useReferralActions'
 import { useReferralModalState } from '../../hooks/useReferralModalState'
+import { ReferralVerificationStatus } from '../../types'
 import { isReferralCodeLengthValid } from '../../utils/code'
 
 export interface ReferralModalControllerParams {
   modalState: ReturnType<typeof useReferralModalState>
   actions: ReturnType<typeof useReferralActions>
   account?: string
+  supportedNetwork: boolean
   toggleWalletModal: () => void
   navigate: NavigateFunction
   analytics: CowAnalytics
@@ -36,12 +38,13 @@ export interface ReferralModalControllerResult {
 }
 
 export function useReferralModalController(params: ReferralModalControllerParams): ReferralModalControllerResult {
-  const { modalState, actions, account, toggleWalletModal, navigate, analytics } = params
+  const { modalState, actions, account, supportedNetwork, toggleWalletModal, navigate, analytics } = params
   const { referral, uiState, displayCode, savedCode, hasCode, hasValidLength, verification, incomingCode, wallet } =
     modalState
 
   const inputRef = useRef<HTMLInputElement | null>(null)
   const ctaRef = useRef<HTMLButtonElement | null>(null)
+  const effectiveWalletStatus = supportedNetwork ? wallet.status : 'unsupported'
 
   const primaryCta = useMemo(
     () =>
@@ -49,10 +52,11 @@ export function useReferralModalController(params: ReferralModalControllerParams
         uiState,
         hasValidLength,
         hasCode,
+        verification,
         verificationKind: verification.kind,
-        walletStatus: wallet.status,
+        walletStatus: effectiveWalletStatus,
       }),
-    [hasCode, hasValidLength, uiState, verification.kind, wallet.status],
+    [effectiveWalletStatus, hasCode, hasValidLength, uiState, verification],
   )
 
   useReferralModalFocus(referral.modalOpen, uiState, inputRef, ctaRef)
@@ -67,13 +71,17 @@ export function useReferralModalController(params: ReferralModalControllerParams
     toggleWalletModal,
     navigate,
     inputRef,
+    cancelVerification: referral.cancelVerification,
+    verificationKind: verification.kind,
+    pendingVerificationId: referral.pendingVerificationRequest?.id,
   })
 
   const helperText = getHelperText(uiState)
   const statusCopy = getStatusCopy(verification)
   const verificationCode = 'code' in verification ? verification.code : undefined
   const codeForDisplay = incomingCode || verificationCode || savedCode || displayCode
-  const { linkedMessage, ineligibleMessage } = useReferralMessages(codeForDisplay)
+  const { linkedMessage } = useReferralMessages(codeForDisplay, referral.incomingCodeReason)
+  const hasRejection = Boolean(referral.incomingCodeReason)
 
   const initialFocusRef =
     uiState === 'valid' || uiState === 'linked'
@@ -96,11 +104,8 @@ export function useReferralModalController(params: ReferralModalControllerParams
       onChange: handlers.onChange,
       helperText,
       primaryCta,
-      errorMessage: statusCopy.errorMessage,
-      invalidMessage: statusCopy.invalidMessage,
-      expiredMessage: statusCopy.expiredMessage,
       linkedMessage,
-      ineligibleMessage,
+      hasRejection,
       infoMessage: statusCopy.infoMessage,
       shouldShowInfo: statusCopy.shouldShowInfo,
       inputRef,
@@ -118,6 +123,9 @@ interface ReferralModalHandlersParams {
   toggleWalletModal: () => void
   navigate: NavigateFunction
   inputRef: RefObject<HTMLInputElement | null>
+  cancelVerification: () => void
+  verificationKind: ReferralVerificationStatus['kind']
+  pendingVerificationId?: number
 }
 
 interface ReferralModalHandlers {
@@ -130,32 +138,52 @@ interface ReferralModalHandlers {
 }
 
 function useReferralModalHandlers(params: ReferralModalHandlersParams): ReferralModalHandlers {
-  const { actions, analytics, account, displayCode, primaryCta, toggleWalletModal, navigate, inputRef } = params
+  const {
+    actions,
+    analytics,
+    account,
+    displayCode,
+    primaryCta,
+    toggleWalletModal,
+    navigate,
+    inputRef,
+    cancelVerification,
+    verificationKind,
+    pendingVerificationId,
+  } = params
 
-  const focusInput = useCallback(() => {
-    setTimeout(() => inputRef.current?.focus(), 0)
-  }, [inputRef])
+  const focusInput = useFocusInputRef(inputRef)
+  const cancelInFlightVerification = useCancelVerificationHandler({
+    actions,
+    cancelVerification,
+    pendingVerificationId,
+    verificationKind,
+  })
 
   const onClose = useCallback(() => {
+    cancelInFlightVerification()
     actions.disableEditMode()
     actions.closeModal()
-  }, [actions])
+  }, [actions, cancelInFlightVerification])
 
   const onEdit = useCallback(() => {
+    cancelInFlightVerification()
     actions.enableEditMode()
     focusInput()
-  }, [actions, focusInput])
+  }, [actions, cancelInFlightVerification, focusInput])
 
   const onRemove = useCallback(() => {
+    cancelInFlightVerification()
     actions.removeCode()
     focusInput()
-  }, [actions, focusInput])
+  }, [actions, cancelInFlightVerification, focusInput])
 
   const onSave = useCallback(() => {
     if (!displayCode || !isReferralCodeLengthValid(displayCode)) {
       return
     }
 
+    cancelInFlightVerification()
     actions.saveCode(displayCode)
     analytics.sendEvent({
       category: 'referral',
@@ -163,9 +191,79 @@ function useReferralModalHandlers(params: ReferralModalHandlersParams): Referral
       label: 'manual',
       value: displayCode.length,
     })
-  }, [actions, analytics, displayCode])
+  }, [actions, analytics, cancelInFlightVerification, displayCode])
 
-  const onPrimaryClick = useCallback(() => {
+  const onPrimaryClick = usePrimaryClickHandler({
+    primaryCta,
+    account,
+    toggleWalletModal,
+    analytics,
+    actions,
+    displayCode,
+    navigate,
+    onClose,
+  })
+
+  const onChange = useCallback(
+    (event: FormEvent<HTMLInputElement>) => {
+      actions.setInputCode(event.currentTarget.value)
+    },
+    [actions],
+  )
+
+  return {
+    onClose,
+    onEdit,
+    onRemove,
+    onSave,
+    onPrimaryClick,
+    onChange,
+  }
+}
+
+function useFocusInputRef(inputRef: RefObject<HTMLInputElement | null>): () => void {
+  return useCallback(() => {
+    setTimeout(() => inputRef.current?.focus(), 0)
+  }, [inputRef])
+}
+
+function useCancelVerificationHandler(params: {
+  actions: ReturnType<typeof useReferralActions>
+  cancelVerification: () => void
+  pendingVerificationId?: number
+  verificationKind: ReferralVerificationStatus['kind']
+}): () => void {
+  const { actions, cancelVerification, pendingVerificationId, verificationKind } = params
+
+  return useCallback(() => {
+    cancelVerification()
+    actions.setShouldAutoVerify(false)
+
+    if (pendingVerificationId !== undefined) {
+      actions.clearPendingVerification(pendingVerificationId)
+    }
+
+    if (verificationKind === 'checking') {
+      actions.completeVerification({ kind: 'idle' })
+    }
+
+    actions.setIncomingCodeReason(undefined)
+  }, [actions, cancelVerification, pendingVerificationId, verificationKind])
+}
+
+function usePrimaryClickHandler(params: {
+  primaryCta: PrimaryCta
+  account?: string
+  toggleWalletModal: () => void
+  analytics: CowAnalytics
+  actions: ReturnType<typeof useReferralActions>
+  displayCode: string
+  navigate: NavigateFunction
+  onClose: () => void
+}): () => void {
+  const { primaryCta, account, toggleWalletModal, analytics, actions, displayCode, navigate, onClose } = params
+
+  return useCallback(() => {
     if (primaryCta.disabled) {
       return
     }
@@ -193,31 +291,5 @@ function useReferralModalHandlers(params: ReferralModalHandlersParams): Referral
       analytics.sendEvent({ category: 'referral', action: 'cta_clicked', label: 'go_back' })
       onClose()
     }
-  }, [
-    account,
-    actions,
-    analytics,
-    displayCode,
-    navigate,
-    onClose,
-    primaryCta.action,
-    primaryCta.disabled,
-    toggleWalletModal,
-  ])
-
-  const onChange = useCallback(
-    (event: FormEvent<HTMLInputElement>) => {
-      actions.setInputCode(event.currentTarget.value)
-    },
-    [actions],
-  )
-
-  return {
-    onClose,
-    onEdit,
-    onRemove,
-    onSave,
-    onPrimaryClick,
-    onChange,
-  }
+  }, [account, actions, analytics, displayCode, navigate, onClose, primaryCta.action, primaryCta.disabled, toggleWalletModal])
 }

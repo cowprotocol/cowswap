@@ -1,13 +1,13 @@
-import { RefObject, useEffect, useMemo, useRef } from 'react'
+import { ReactNode, RefObject, useEffect, useMemo, useRef } from 'react'
 
 import { CowAnalytics } from '@cowprotocol/analytics'
 
-import { t } from '@lingui/macro'
+import { t, Trans } from '@lingui/macro'
 
 import { PrimaryCta, StatusCopyResult } from './types'
 
 import { useReferralModalState, ReferralModalUiState } from '../../hooks/useReferralModalState'
-import { ReferralVerificationStatus, WalletReferralState } from '../../types'
+import { ReferralIncomingCodeReason, ReferralVerificationStatus, WalletReferralState } from '../../types'
 
 type VerificationKind = ReturnType<typeof useReferralModalState>['verification']['kind']
 type WalletStatus = WalletReferralState['status']
@@ -16,10 +16,11 @@ export function computePrimaryCta(params: {
   uiState: ReferralModalUiState
   hasValidLength: boolean
   hasCode: boolean
+  verification: ReferralVerificationStatus
   verificationKind: VerificationKind
   walletStatus: WalletStatus
 }): PrimaryCta {
-  const { uiState, hasValidLength, hasCode, verificationKind, walletStatus } = params
+  const { uiState, hasValidLength, hasCode, verification, verificationKind, walletStatus } = params
 
   if (uiState === 'editing') {
     return disabledCta(
@@ -28,19 +29,26 @@ export function computePrimaryCta(params: {
   }
 
   if (uiState === 'valid' || uiState === 'linked') {
-    return { label: t`View rewards.`, disabled: false, action: 'viewRewards' }
+    return { label: t`View rewards`, disabled: false, action: 'viewRewards' }
   }
 
   if (uiState === 'ineligible') {
-    return { label: t`Go back.`, disabled: false, action: 'goBack' }
+    // Product copy requests the CTA stay disabled here so users understand they must try a different code.
+    return disabledCta(t`Wallet ineligible. Try another code`)
+  }
+
+  if (uiState === 'error') {
+    const label =
+      verification.kind === 'error' && verification.message ? verification.message : t`Unable to verify code`
+    return { label, disabled: true, action: 'none' }
   }
 
   const staticDisabledLabels: Partial<Record<ReferralModalUiState, string>> = {
     empty: t`Provide a valid referral code`,
     unsupported: t`Unsupported Network`,
     checking: t`Checking code…`,
-    invalid: t`Connect to verify code`,
-    expired: t`Connect to verify code`,
+    invalid: t`This code is invalid. Try another.`,
+    expired: t`Rewards ended for this code. Try another.`,
   }
 
   const disabledLabel = staticDisabledLabels[uiState]
@@ -62,6 +70,10 @@ function verifyCta(
   verificationKind: VerificationKind,
   walletStatus: WalletStatus,
 ): PrimaryCta {
+  if (walletStatus === 'unsupported') {
+    return disabledCta(t`Unsupported Network`)
+  }
+
   const requiresConnection = walletStatus === 'disconnected' || walletStatus === 'unknown'
 
   return {
@@ -79,9 +91,6 @@ export function getStatusCopy(verification: ReferralVerificationStatus): StatusC
   return {
     shouldShowInfo: verification.kind === 'valid' && verification.eligible,
     infoMessage: t`Your wallet is eligible for rewards. After your first trade, the referral code will bind and stay active for 90 days.`,
-    expiredMessage: t`Rewards ended for this code. Try another.`,
-    invalidMessage: t`This code is invalid. Try another.`,
-    errorMessage: verification.kind === 'error' ? verification.message : undefined,
   }
 }
 
@@ -156,18 +165,57 @@ export function useReferralModalAnalytics(
   }, [analytics, referral.modalOpen, referral.modalSource, uiState])
 }
 
-export function useReferralMessages(codeForDisplay?: string): { linkedMessage: string; ineligibleMessage: string } {
+export function useReferralMessages(codeForDisplay?: string, reason?: ReferralIncomingCodeReason): {
+  linkedMessage: ReactNode
+} {
   return useMemo(() => {
     if (!codeForDisplay) {
       return {
-        linkedMessage: t`Your wallet is already linked to a referral code.`,
-        ineligibleMessage: t`This wallet has already traded and is not eligible for referral rewards.`,
+        linkedMessage: <Trans>Your wallet is already linked to a referral code.</Trans>,
       }
     }
 
     return {
-      linkedMessage: t`The code ${codeForDisplay} from your link wasn’t applied.`,
-      ineligibleMessage: t`The code ${codeForDisplay} from your link wasn’t applied because this wallet has already traded. Referral rewards are for new wallets only.`,
+      linkedMessage: (
+        <>
+          <Trans>
+            The code <strong>{codeForDisplay}</strong> from your link wasn’t applied.
+          </Trans>
+          {renderRejectionReason(reason)}
+        </>
+      ),
     }
-  }, [codeForDisplay])
+  }, [codeForDisplay, reason])
+}
+
+function renderRejectionReason(reason?: ReferralIncomingCodeReason): ReactNode {
+  if (!reason) {
+    return null
+  }
+
+  switch (reason) {
+    case 'invalid':
+      return (
+        <>
+          {' '}
+          <Trans>It isn’t a valid referral code.</Trans>
+        </>
+      )
+    case 'expired':
+      return (
+        <>
+          {' '}
+          <Trans>Rewards for this code have ended.</Trans>
+        </>
+      )
+    case 'ineligible':
+      return (
+        <>
+          {' '}
+          <Trans>This wallet isn’t eligible for that code.</Trans>
+        </>
+      )
+    default:
+      return null
+  }
 }

@@ -8,25 +8,20 @@ import { RowStyleProps, StyledInfoIcon, StyledRowBetween, TextWrapper } from '..
 
 export interface RowRewardsContentProps {
   onAddCode?: () => void
+  onManageCode?: () => void
   tooltipContent?: ReactNode
+  linkedCode?: string
+  accountLink?: string
   styleProps?: RowStyleProps
 }
 
 export function RowRewardsContent(props: RowRewardsContentProps): ReactNode {
-  const { onAddCode, tooltipContent, styleProps } = props
+  const { onAddCode, onManageCode, tooltipContent, linkedCode, accountLink, styleProps } = props
   const tooltip = tooltipContent ?? <Trans>Add a referral code to earn rewards.</Trans>
 
-  return (
-    <StyledRowBetween {...styleProps}>
-      <RowFixed>
-        <TextWrapper>
-          <Trans>Rewards</Trans>
-        </TextWrapper>
-        <HoverTooltip wrapInContainer content={tooltip}>
-          <StyledInfoIcon size={16} />
-        </HoverTooltip>
-      </RowFixed>
-      <TextWrapper textAlign="right">
+  const renderAction = (): ReactNode => {
+    if (!linkedCode) {
+      return (
         <LinkStyledButton
           onClick={onAddCode}
           padding="0"
@@ -36,7 +31,50 @@ export function RowRewardsContent(props: RowRewardsContentProps): ReactNode {
         >
           <Trans>Add code</Trans>
         </LinkStyledButton>
-      </TextWrapper>
+      )
+    }
+
+    if (onManageCode) {
+      return (
+        <LinkStyledButton
+          as="button"
+          onClick={onManageCode}
+          type="button"
+          padding="0"
+          margin="0"
+          fontSize="inherit"
+          color={`var(${UI.COLOR_PRIMARY_LIGHTER})`}
+        >
+          {linkedCode}
+        </LinkStyledButton>
+      )
+    }
+
+    return (
+      <LinkStyledButton
+        as="a"
+        href={accountLink ?? '/#/account'}
+        padding="0"
+        margin="0"
+        fontSize="inherit"
+        color={`var(${UI.COLOR_PRIMARY_LIGHTER})`}
+      >
+        {linkedCode}
+      </LinkStyledButton>
+    )
+  }
+
+  return (
+    <StyledRowBetween {...styleProps}>
+      <RowFixed>
+        <TextWrapper>
+          <Trans>Rewards code</Trans>
+        </TextWrapper>
+        <HoverTooltip wrapInContainer content={tooltip}>
+          <StyledInfoIcon size={16} />
+        </HoverTooltip>
+      </RowFixed>
+      <TextWrapper textAlign="right">{renderAction()}</TextWrapper>
     </StyledRowBetween>
   )
 }
