@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/common-hooks",
-  "version": "1.10.2",
+  "version": "1.13.0",
   "main": "./index.js",
   "types": "./index.d.ts",
   "exports": {

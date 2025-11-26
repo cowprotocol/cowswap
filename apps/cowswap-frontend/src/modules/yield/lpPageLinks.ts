@@ -11,6 +11,8 @@ const COW_AMM_CHAINS = {
   [SupportedChainId.AVALANCHE]: 'avalanche',
   [SupportedChainId.LENS]: '',
   [SupportedChainId.BNB]: '',
+  [SupportedChainId.LINEA]: '', // TODO: confirm
+  [SupportedChainId.PLASMA]: '', // TODO: confirm
 }
 
 const UNI_CHAINS = {
@@ -23,6 +25,8 @@ const UNI_CHAINS = {
   [SupportedChainId.AVALANCHE]: 'avalanche',
   [SupportedChainId.LENS]: '',
   [SupportedChainId.BNB]: 'bnb',
+  [SupportedChainId.LINEA]: '', // TODO: confirm
+  [SupportedChainId.PLASMA]: '', // TODO: confirm
 }
 
 const SUSHI_CHAINS = {
@@ -35,6 +39,8 @@ const SUSHI_CHAINS = {
   [SupportedChainId.AVALANCHE]: 'avalanche',
   [SupportedChainId.LENS]: '',
   [SupportedChainId.BNB]: 'bsc',
+  [SupportedChainId.LINEA]: '', // TODO: confirm
+  [SupportedChainId.PLASMA]: '', // TODO: confirm
 }
 
 const PANCAKE_CHAINS = {
@@ -47,6 +53,8 @@ const PANCAKE_CHAINS = {
   [SupportedChainId.AVALANCHE]: '',
   [SupportedChainId.LENS]: '',
   [SupportedChainId.BNB]: 'bsc',
+  [SupportedChainId.LINEA]: '', // TODO: confirm
+  [SupportedChainId.PLASMA]: '', // TODO: confirm
 }
 
 export const LP_PAGE_LINKS: Record<LpTokenProvider, (chainId: SupportedChainId, address: string) => string | null> = {

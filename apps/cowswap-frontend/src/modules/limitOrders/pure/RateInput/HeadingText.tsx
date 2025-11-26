@@ -2,6 +2,7 @@ import { TokenLogo } from '@cowprotocol/tokens'
 import { TokenSymbol, UI } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
+import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
 import { RateImpactIndicator } from 'modules/limitOrders/pure/RateImpactIndicator'
@@ -58,20 +59,24 @@ const TextWrapper = styled.span<{ clickable: boolean }>`
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function HeadingText({ inputCurrency, currency, rateImpact, toggleIcon, onToggle }: Props) {
   if (!currency) {
-    return <Wrapper>Select input and output</Wrapper>
+    return (
+      <Wrapper>
+        <Trans>Select input and output</Trans>
+      </Wrapper>
+    )
   }
 
   return (
     <Wrapper>
       {toggleIcon}
       <TextWrapper clickable={!!onToggle} onClick={onToggle}>
-        When
+        <Trans>When</Trans>
         <TokenWrapper>
           1
           <TokenLogo token={currency} size={16} />
           <TokenSymbol token={currency} />
         </TokenWrapper>
-        is worth
+        <Trans>is worth</Trans>
         {<RateImpactIndicator inputCurrency={inputCurrency} rateImpact={rateImpact} />}
       </TextWrapper>
     </Wrapper>

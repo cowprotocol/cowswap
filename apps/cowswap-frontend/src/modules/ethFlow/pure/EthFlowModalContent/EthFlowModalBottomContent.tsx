@@ -3,9 +3,6 @@ import { ReactNode, useCallback, useMemo, useState } from 'react'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { currencyAmountToTokenAmount } from '@cowprotocol/common-utils'
 
-import { Trans } from '@lingui/macro'
-
-
 import { SimpleAccountDetails } from 'modules/account/containers/SimpleAccountDetails'
 import { PartialApproveContainer } from 'modules/erc20Approve'
 import { useSwapPartialApprovalToggleState } from 'modules/swap/hooks/useSwapSettings'
@@ -94,13 +91,13 @@ export function EthFlowModalBottomContent(params: BottomContentParams): ReactNod
         <StyledPartialApprove>
           <PartialApproveContainer amountToApprove={amountToApprove}>
             <TradeFormBlankButton onClick={onClick} loading={isActionInProgress || showLoader}>
-              <Trans>{buttonText}</Trans>
+              {buttonText}
             </TradeFormBlankButton>
           </PartialApproveContainer>
         </StyledPartialApprove>
       ) : (
         <TradeFormBlankButton onClick={onClick} loading={isActionInProgress || showLoader}>
-          <Trans>{buttonText}</Trans>
+          {buttonText}
         </TradeFormBlankButton>
       )}
     </>

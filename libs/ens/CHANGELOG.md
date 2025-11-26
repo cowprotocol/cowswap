@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.7.0](https://github.com/cowprotocol/cowswap/compare/ens-v1.6.0...ens-v1.7.0) (2025-11-24)
+
+
+### Features
+
+* **internationalization:** add internationalization to CoW Swap ([#6198](https://github.com/cowprotocol/cowswap/issues/6198)) ([bec1e54](https://github.com/cowprotocol/cowswap/commit/bec1e54643d9b20a8b6517eae188993e364fed90))
+
+## [1.6.0](https://github.com/cowprotocol/cowswap/compare/ens-v1.5.0...ens-v1.6.0) (2025-11-10)
+
+
+### Features
+
+* **new-chains:** add q4 chains ([#6404](https://github.com/cowprotocol/cowswap/issues/6404)) ([ba4edb0](https://github.com/cowprotocol/cowswap/commit/ba4edb0fdc7b4c700dfeae9023da330d74a9faea))
+
 ## [1.5.0](https://github.com/cowprotocol/cowswap/compare/ens-v1.4.0...ens-v1.5.0) (2025-08-21)
 
 

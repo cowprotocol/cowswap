@@ -3,8 +3,10 @@ import { joinPathFragments } from '@nx/devkit'
 import { defineConfig } from 'vite'
 import dts from 'vite-plugin-dts'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
+import { lingui } from '@lingui/vite-plugin'
 
 import * as path from 'path'
+import react from '@vitejs/plugin-react-swc'
 
 export default defineConfig(({ command }) => {
   if (command === 'serve') {
@@ -40,6 +42,12 @@ export default defineConfig(({ command }) => {
       }),
       viteTsConfigPaths({
         root: '../../../',
+      }),
+      react({
+        plugins: [['@lingui/swc-plugin', {}]],
+      }),
+      lingui({
+        cwd: 'apps/cowswap-frontend',
       }),
     ],
 

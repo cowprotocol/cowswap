@@ -21,7 +21,8 @@ import { ButtonPrimary, ButtonSize, HoverTooltip, TokenAmount } from '@cowprotoc
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { Trans } from '@lingui/macro'
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 
 import CopyHelper from 'legacy/components/Copy'
@@ -118,7 +119,7 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
         let errorMessage
         const isRejected = isRejectRequestProviderError(error)
         if (isRejected) {
-          errorMessage = 'User rejected signing COW claim transaction'
+          errorMessage = t`User rejected signing COW claim transaction`
         } else {
           errorMessage = getProviderErrorMessage(error)
           console.error('Error Signing locked GNO COW claiming', error)
@@ -146,9 +147,11 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
     <>
       <Card showLoader={loading || isClaimPending}>
         <BalanceDisplay hAlign="left">
-          <img src={cowImage} alt="COW token" width="56" height="56" />
+          <img src={cowImage} alt={t`COW token`} width="56" height="56" />
           <span>
-            <i>COW vesting from locked GNO</i>
+            <i>
+              <Trans>COW vesting from locked GNO</Trans>
+            </i>
             <b>
               <TokenAmount amount={allocated} defaultValue="0" tokenSymbol={allocated.currency} />
               <HoverTooltip
@@ -156,13 +159,17 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
                 content={
                   <VestingBreakdown>
                     <span>
-                      <i>Unvested</i>{' '}
+                      <i>
+                        <Trans>Unvested</Trans>
+                      </i>{' '}
                       <p>
                         <TokenAmount amount={unvested} defaultValue="0" tokenSymbol={unvested.currency} />
                       </p>
                     </span>
                     <span>
-                      <i>Vested</i>{' '}
+                      <i>
+                        <Trans>Vested</Trans>
+                      </i>{' '}
                       <p>
                         <TokenAmount amount={vested} defaultValue="0" tokenSymbol={vested.currency} />
                       </p>
@@ -178,16 +185,20 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
         <ConvertWrapper>
           <BalanceDisplay titleSize={18} altColor={true}>
             <i>
-              Claimable{' '}
+              <Trans>Claimable</Trans>{' '}
               <HoverTooltip
                 wrapInContainer
                 content={
                   <div>
                     <p>
-                      <strong>COW vesting from the GNO lock</strong> is vested linearly over four years, starting on{' '}
+                      <Trans>
+                        <strong>COW vesting from the GNO lock</strong> is vested linearly over four years, starting on
+                      </Trans>{' '}
                       {formatDateWithTimezone(LOCKED_GNO_VESTING_START_DATE)}.
                     </p>
-                    <p>Each time you claim, you will receive the entire claimable amount.</p>
+                    <p>
+                      <Trans>Each time you claim, you will receive the entire claimable amount.</Trans>
+                    </p>
                   </div>
                 }
               >
@@ -205,20 +216,24 @@ const LockedGnoVesting: React.FC<Props> = ({ openModal, closeModal, vested, allo
           ) : (
             <ButtonPrimary buttonSize={ButtonSize.SMALL} onClick={handleClaim} disabled={!canClaim}>
               {isClaimPending ? (
-                'Claiming COW...'
+                <Trans>Claiming COW...</Trans>
               ) : (
-                <>
+                <Trans>
                   Claim COW <SVG src={ArrowIcon} />
-                </>
+                </Trans>
               )}
             </ButtonPrimary>
           )}
         </ConvertWrapper>
 
         <CardActions>
-          <ExtLink href={getBlockExplorerUrl(chainId, 'address', contractAddress)}>View contract ↗</ExtLink>
+          <ExtLink href={getBlockExplorerUrl(chainId, 'address', contractAddress)}>
+            <Trans>View contract</Trans> ↗
+          </ExtLink>
           <CopyHelper toCopy={contractAddress}>
-            <div title="Click to copy contract address">Copy contract</div>
+            <div title={t`Click to copy contract address`}>
+              <Trans>Copy contract</Trans>
+            </div>
           </CopyHelper>
         </CardActions>
       </Card>

@@ -6,6 +6,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { HoverTooltip, TokenAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { Trans } from '@lingui/react/macro'
 import { Nullish } from 'types'
 
 import { BalanceAndSubsidy } from 'legacy/hooks/useCowBalanceAndSubsidy'
@@ -39,6 +40,7 @@ export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
   tokenSelectorDisabled?: boolean
   displayTokenName?: boolean
   displayChainName?: boolean
+  hideReceiveAmounts?: boolean
   inputTooltip?: string
   showSetMax?: boolean
   maxBalance?: CurrencyAmount<Currency> | undefined
@@ -78,6 +80,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps): ReactNode {
     tokenSelectorDisabled = false,
     displayTokenName = false,
     displayChainName = false,
+    hideReceiveAmounts,
     inputTooltip,
     onUserInput,
     allowsOffchainSigning,
@@ -197,7 +200,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps): ReactNode {
               })}
               onClick={handleMaxInput}
             >
-              Max
+              <Trans>Max</Trans>
             </styledEl.SetMaxBtn>
           )}
         </styledEl.BalanceText>
@@ -276,7 +279,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps): ReactNode {
         </styledEl.CurrencyInputBox>
       </styledEl.Wrapper>
 
-      {receiveAmountInfo && currency && (
+      {receiveAmountInfo && currency && !hideReceiveAmounts && (
         <ReceiveAmount
           allowsOffchainSigning={allowsOffchainSigning}
           currency={currency}

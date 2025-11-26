@@ -1,5 +1,35 @@
 # Changelog
 
+## [1.13.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v1.12.0...common-hooks-v1.13.0) (2025-11-24)
+
+
+### Features
+
+* **internationalization:** add internationalization to CoW Swap ([#6198](https://github.com/cowprotocol/cowswap/issues/6198)) ([bec1e54](https://github.com/cowprotocol/cowswap/commit/bec1e54643d9b20a8b6517eae188993e364fed90))
+
+## [1.12.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v1.11.1...common-hooks-v1.12.0) (2025-11-10)
+
+
+### Features
+
+* **new-chains:** add q4 chains ([#6404](https://github.com/cowprotocol/cowswap/issues/6404)) ([ba4edb0](https://github.com/cowprotocol/cowswap/commit/ba4edb0fdc7b4c700dfeae9023da330d74a9faea))
+
+## [1.11.1](https://github.com/cowprotocol/cowswap/compare/common-hooks-v1.11.0...common-hooks-v1.11.1) (2025-11-05)
+
+
+### Bug Fixes
+
+* **approve:** hide "may block" banner when not partial approve ([#6410](https://github.com/cowprotocol/cowswap/issues/6410)) ([479f61b](https://github.com/cowprotocol/cowswap/commit/479f61b7d21b9656caff38d043d9fa540dd83f93))
+
+## [1.11.0](https://github.com/cowprotocol/cowswap/compare/common-hooks-v1.10.2...common-hooks-v1.11.0) (2025-10-23)
+
+
+### Features
+
+* add additional step for approval modal + token amount + double click fix ([#6355](https://github.com/cowprotocol/cowswap/issues/6355)) ([7016731](https://github.com/cowprotocol/cowswap/commit/7016731bff3ddac7603803623cdb258563e10ca1))
+* add cow speech bubble component for hiring announcement ([#6343](https://github.com/cowprotocol/cowswap/issues/6343)) ([8a1f372](https://github.com/cowprotocol/cowswap/commit/8a1f3723baaaa2a436af9fd4af34278ef3b9a534))
+* **notifications:** show trade alerts popover ([#6208](https://github.com/cowprotocol/cowswap/issues/6208)) ([d97c801](https://github.com/cowprotocol/cowswap/commit/d97c801ab43dd6ec208326ba80e145471a53a16d))
+
 ## [1.10.2](https://github.com/cowprotocol/cowswap/compare/common-hooks-v1.10.1...common-hooks-v1.10.2) (2025-10-14)
 
 

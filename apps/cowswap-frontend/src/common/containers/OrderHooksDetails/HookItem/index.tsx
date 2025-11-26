@@ -2,6 +2,8 @@ import { useState } from 'react'
 
 import { CowHookDetails, HookToDappMatch } from '@cowprotocol/hook-dapp-lib'
 
+import { t } from '@lingui/core/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 import { ChevronDown, ChevronUp } from 'react-feather'
 
 import { useSimulationData } from 'modules/tenderly/hooks/useSimulationData'
@@ -13,12 +15,13 @@ import * as styledEl from './styled'
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function HookItem({ details, item, index }: { details?: CowHookDetails; item: HookToDappMatch; index: number }) {
   const [isOpen, setIsOpen] = useState(false)
   const simulationData = useSimulationData(details?.uuid)
+  const { i18n } = useLingui()
 
-  const dappName = item.dapp?.name || 'Unknown Hook'
+  const dappName = item.dapp?.name || t`Unknown Hook`
 
   return (
     <styledEl.HookItemWrapper as="li">
@@ -34,11 +37,13 @@ export function HookItem({ details, item, index }: { details?: CowHookDetails; i
           <styledEl.HookNumber>{index + 1}</styledEl.HookNumber>
           {item.dapp ? (
             <>
-              <img src={item.dapp.image} alt={item.dapp.name} />
-              <span>{item.dapp.name}</span>
+              <img src={item.dapp.image} alt={i18n._(item.dapp.name)} />
+              <span>{i18n._(item.dapp.name)}</span>
             </>
           ) : (
-            <span>Unknown hook dapp</span>
+            <span>
+              <Trans>Unknown hook dapp</Trans>
+            </span>
           )}
         </styledEl.HookItemInfo>
         <styledEl.ToggleIcon isOpen={isOpen}>
@@ -51,7 +56,9 @@ export function HookItem({ details, item, index }: { details?: CowHookDetails; i
             <>
               {simulationData && (
                 <p>
-                  <b>Simulation:</b>
+                  <b>
+                    <Trans>Simulation:</Trans>
+                  </b>
                   <styledEl.SimulationLink status={simulationData.status}>
                     <a
                       href={simulationData.link}
@@ -63,19 +70,27 @@ export function HookItem({ details, item, index }: { details?: CowHookDetails; i
                         label: `${dappName} - ${simulationData.status ? 'Success' : 'Failed'}`,
                       })}
                     >
-                      {simulationData.status ? 'Simulation successful' : 'Simulation failed'}
+                      {simulationData.status ? <Trans>Simulation successful</Trans> : <Trans>Simulation failed</Trans>}
                     </a>
                   </styledEl.SimulationLink>
                 </p>
               )}
               <p>
-                <b>Description:</b> {item.dapp.descriptionShort}
+                <b>
+                  <Trans>Description</Trans>:
+                </b>{' '}
+                {item.dapp?.descriptionShort ? i18n._(item.dapp.descriptionShort) : ''}
               </p>
               <p>
-                <b>Version:</b> {item.dapp.version}
+                <b>
+                  <Trans>Version</Trans>:
+                </b>{' '}
+                {item.dapp.version}
               </p>
               <p>
-                <b>Website:</b>{' '}
+                <b>
+                  <Trans>Website</Trans>:
+                </b>{' '}
                 <a
                   href={item.dapp.website}
                   target="_blank"

@@ -7,6 +7,7 @@ import type { BigNumber } from '@ethersproject/bignumber'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { useLingui } from '@lingui/react/macro'
 import useSWR from 'swr'
 
 import { GAS_LIMIT_DEFAULT } from 'common/constants/common'
@@ -97,22 +98,23 @@ export function useVCowData(): VCowData {
 export function useSwapVCowCallback({ openModal, closeModal }: SwapVCowCallbackParams) {
   const { account } = useWalletInfo()
   const { contract: vCowContract, chainId } = useVCowContract()
+  const { t } = useLingui()
 
   const addTransaction = useTransactionAdder()
   const vCowToken = chainId ? V_COW[chainId] : undefined
 
   return useCallback(async () => {
     if (!account) {
-      throw new Error('Not connected')
+      throw new Error(t`Not connected`)
     }
     if (!chainId) {
-      throw new Error('No chainId')
+      throw new Error(t`No chainId`)
     }
     if (!vCowContract) {
-      throw new Error('vCOW contract not present')
+      throw new Error(t`vCOW contract not present`)
     }
     if (!vCowToken) {
-      throw new Error('vCOW token not present')
+      throw new Error(t`vCOW token not present`)
     }
 
     const estimatedGas = await vCowContract.estimateGas.swapAll({ from: account }).catch(() => {
@@ -140,7 +142,7 @@ export function useSwapVCowCallback({ openModal, closeModal }: SwapVCowCallbackP
         })
       })
       .finally(closeModal)
-  }, [account, addTransaction, chainId, closeModal, openModal, vCowContract, vCowToken])
+  }, [account, addTransaction, chainId, closeModal, openModal, t, vCowContract, vCowToken])
 }
 
 /**

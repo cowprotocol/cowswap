@@ -1,5 +1,7 @@
 import { useCallback } from 'react'
 
+import { useLingui } from '@lingui/react/macro'
+
 import { Field } from 'legacy/state/types'
 
 import { ethFlow, useEthFlowContext } from 'modules/ethFlow'
@@ -17,10 +19,10 @@ import { safeBundleApprovalFlow, safeBundleEthFlow } from '../services/safeBundl
 import { swapFlow } from '../services/swapFlow'
 import { FlowType } from '../types/TradeFlowContext'
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
-export function useHandleSwap(params: TradeFlowParams, actions: TradeWidgetActions) {
+export function useHandleSwap(
+  params: TradeFlowParams,
+  actions: TradeWidgetActions,
+): { callback(): Promise<false | void>; contextIsReady: boolean } {
   const tradeFlowType = useTradeFlowType()
   const tradeFlowContext = useTradeFlowContext(params)
   const safeBundleFlowContext = useSafeBundleFlowContext()
@@ -29,6 +31,7 @@ export function useHandleSwap(params: TradeFlowParams, actions: TradeWidgetActio
   const ethFlowContext = useEthFlowContext()
   const { onUserInput, onChangeRecipient } = actions
   const analytics = useTradeFlowAnalytics()
+  const { t } = useLingui()
 
   const contextIsReady =
     Boolean(
@@ -42,7 +45,7 @@ export function useHandleSwap(params: TradeFlowParams, actions: TradeWidgetActio
 
     const result = await (() => {
       if (tradeFlowType === FlowType.EOA_ETH_FLOW) {
-        if (!ethFlowContext) throw new Error('Eth flow context is not ready')
+        if (!ethFlowContext) throw new Error(t`Eth flow context is not ready`)
 
         logTradeFlow('ETH FLOW', 'Start eth flow')
         return ethFlow({
@@ -55,7 +58,7 @@ export function useHandleSwap(params: TradeFlowParams, actions: TradeWidgetActio
       }
 
       if (tradeFlowType === FlowType.SAFE_BUNDLE_APPROVAL) {
-        if (!safeBundleFlowContext) throw new Error('Safe bundle flow context is not ready')
+        if (!safeBundleFlowContext) throw new Error(t`Safe bundle flow context is not ready`)
 
         logTradeFlow('SAFE BUNDLE APPROVAL FLOW', 'Start safe bundle approval flow')
         return safeBundleApprovalFlow(
@@ -67,7 +70,7 @@ export function useHandleSwap(params: TradeFlowParams, actions: TradeWidgetActio
         )
       }
       if (tradeFlowType === FlowType.SAFE_BUNDLE_ETH) {
-        if (!safeBundleFlowContext) throw new Error('Safe bundle flow context is not ready')
+        if (!safeBundleFlowContext) throw new Error(t`Safe bundle flow context is not ready`)
 
         logTradeFlow('SAFE BUNDLE ETH FLOW', 'Start safe bundle eth flow')
         return safeBundleEthFlow(
@@ -89,15 +92,16 @@ export function useHandleSwap(params: TradeFlowParams, actions: TradeWidgetActio
       onUserInput(Field.INPUT, '')
     }
   }, [
-    tradeFlowType,
     tradeFlowContext,
-    safeBundleFlowContext,
+    tradeFlowType,
     priceImpactParams,
     confirmPriceImpactWithoutFee,
-    onChangeRecipient,
-    onUserInput,
     analytics,
     ethFlowContext,
+    t,
+    safeBundleFlowContext,
+    onChangeRecipient,
+    onUserInput,
   ])
 
   return { callback, contextIsReady }

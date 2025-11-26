@@ -155,10 +155,8 @@ export function BaseDetailsTable({
           </tr>
           {(!partiallyFillable || txHash) && areTradesLoading ? (
             <Spinner />
-          ) : txHash ? (
-            <TxHashItem chainId={chainId} txHash={txHash} onCopy={onCopy} isLoading={areTradesLoading} />
           ) : (
-            '-'
+            <TxHashItem chainId={chainId} txHash={txHash} onCopy={onCopy} isLoading={areTradesLoading} />
           )}
           <tr>
             <td>

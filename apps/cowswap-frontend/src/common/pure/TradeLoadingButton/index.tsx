@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { LONG_LOAD_THRESHOLD } from '@cowprotocol/common-const'
 import { CenteredDots, LongLoadText } from '@cowprotocol/ui'
 
+import { Trans } from '@lingui/react/macro'
 import { Text } from 'rebass'
 import { ThemedText } from 'theme'
 
@@ -21,7 +22,11 @@ export const TradeLoadingButton = () => {
   return (
     <ThemedText.Main display="flex" alignItems="center" maxHeight={20}>
       <Text fontSize={isLongLoad ? 14 : 40} fontWeight={500}>
-        {isLongLoad && <LongLoadText>Hang in there. Calculating best price </LongLoadText>}
+        {isLongLoad && (
+          <LongLoadText>
+            <Trans>Hang in there. Calculating best price</Trans>{' '}
+          </LongLoadText>
+        )}
         <CenteredDots smaller={isLongLoad} />
       </Text>
     </ThemedText.Main>
