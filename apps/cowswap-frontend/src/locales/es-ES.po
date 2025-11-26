@@ -6211,3 +6211,15 @@ msgstr "Aprende más"
 msgid "Swap and bridge costs are at least {formattedFeePercentage}% of the swap amount"
 msgstr "Los costos de intercambio y puente son por lo menos {formattedFeePercentage}% del monto de intercambio"
 
+msgid ""
+"The fee, applied only if the trade is executed, in order to incentivize a "
+"strong solver competition that provides ecosystem leading prices."
+msgstr ""
+"Comisión aplicada solo si se ejecuta la operación, para incentivar una "
+"competencia sólida de solvers que ofrezca precios líderes en el ecosistema."
+
+msgid "Protocol fee ({protocolFeeAsPercent}%)"
+msgstr "Comisión del protocolo ({protocolFeeAsPercent}%)"
+
+msgid "Protocol fee"
+msgstr "Comisión del protocolo"
