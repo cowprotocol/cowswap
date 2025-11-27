@@ -10,6 +10,7 @@ import { PermitCompatibleTokens } from 'modules/permit'
 
 import { ChainsToSelectState, TokenSelectionHandler } from '../../types'
 
+// TODO: Refactor to reduce prop count
 export interface TokenListContentProps<T = TokenListCategory[] | null> {
   allTokens: TokenWithLogo[]
   favoriteTokens: TokenWithLogo[]
