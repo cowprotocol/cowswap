@@ -42,7 +42,7 @@ export function Provider({ locale, onActivate, children }: ProviderProps): React
     dynamicActivate(locale, isInternationalizationEnabled)
       .then(() => onActivate?.(locale))
       .catch((error) => {
-        console.error('Failed to activate locale', locale, error)
+        console.error('Failed to activate locale: ', locale, error)
       })
   }, [locale, onActivate, isInternationalizationEnabled])
 
