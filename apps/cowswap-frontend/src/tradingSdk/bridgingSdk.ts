@@ -21,7 +21,9 @@ export const bungeeBridgeProvider = new BungeeBridgeProvider({
     affiliate: bungeeApiBase ? bungeeAffiliateCode : undefined,
   },
 })
+
 export const acrossBridgeProvider = new AcrossBridgeProvider()
+
 export const nearIntentsBridgeProvider = new NearIntentsBridgeProvider()
 
 export const bridgingSdk = new BridgingSdk({
