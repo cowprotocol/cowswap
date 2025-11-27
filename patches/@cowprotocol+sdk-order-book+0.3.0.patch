@@ -1,0 +1,26 @@
+diff --git a/node_modules/@cowprotocol/sdk-order-book/dist/index.js b/node_modules/@cowprotocol/sdk-order-book/dist/index.js
+index 1086bd1..56130c5 100644
+--- a/node_modules/@cowprotocol/sdk-order-book/dist/index.js
++++ b/node_modules/@cowprotocol/sdk-order-book/dist/index.js
+@@ -787,7 +787,7 @@ function getQuoteAmountsAndCosts(params) {
+   };
+   const beforeAllFees = isSell ? {
+     sellAmount: sellAmountBeforeNetworkCosts.big,
+-    buyAmount: buyAmountBeforeNetworkCosts.big + protocolFeeAmount
++    buyAmount: buyAmountBeforeNetworkCosts.big
+   } : {
+     sellAmount: sellAmountBeforeNetworkCosts.big - protocolFeeAmount,
+     buyAmount: buyAmountBeforeNetworkCosts.big
+diff --git a/node_modules/@cowprotocol/sdk-order-book/dist/index.mjs b/node_modules/@cowprotocol/sdk-order-book/dist/index.mjs
+index 945fe75..adaf6bc 100644
+--- a/node_modules/@cowprotocol/sdk-order-book/dist/index.mjs
++++ b/node_modules/@cowprotocol/sdk-order-book/dist/index.mjs
+@@ -741,7 +741,7 @@ function getQuoteAmountsAndCosts(params) {
+   };
+   const beforeAllFees = isSell ? {
+     sellAmount: sellAmountBeforeNetworkCosts.big,
+-    buyAmount: buyAmountBeforeNetworkCosts.big + protocolFeeAmount
++    buyAmount: buyAmountBeforeNetworkCosts.big
+   } : {
+     sellAmount: sellAmountBeforeNetworkCosts.big - protocolFeeAmount,
+     buyAmount: buyAmountBeforeNetworkCosts.big
