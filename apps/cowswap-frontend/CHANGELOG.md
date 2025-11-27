@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.125.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.125.1...cowswap-v1.125.2) (2025-11-27)
+
+
+### Bug Fixes
+
+* bogus change to trigger release-please ([#6588](https://github.com/cowprotocol/cowswap/issues/6588)) ([9197ffa](https://github.com/cowprotocol/cowswap/commit/9197ffa29fca0c38cb4a2596d8beca72d5c4aa6a))
+
 ## [1.125.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.125.0...cowswap-v1.125.1) (2025-11-27)
 
 
