@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.125.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.125.0...cowswap-v1.125.1) (2025-11-27)
+
+
+### Bug Fixes
+
+* **bridge:** capture surplus by Near intents provider ([#6582](https://github.com/cowprotocol/cowswap/issues/6582)) ([3f8bf6b](https://github.com/cowprotocol/cowswap/commit/3f8bf6b911ee40a7759796faedf2297a42d8b3eb))
+
 ## [1.125.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.124.1...cowswap-v1.125.0) (2025-11-26)
 
 
