@@ -5,15 +5,10 @@ import { SearchInput } from '@cowprotocol/ui'
 import { t } from '@lingui/core/macro'
 
 import { TokensContentSection, TitleBarActions, useSelectTokenContext, useTokenSearchInput } from './helpers'
-import { SelectTokenModalContent } from './SelectTokenModalContent'
 import * as styledEl from './styled'
-
-
-import { LpTokenListsWidget } from '../../containers/LpTokenListsWidget'
-import { ChainsSelector } from '../ChainsSelector'
+import { TokenColumnContent } from './TokenColumnContent'
 
 import type { SelectTokenModalProps } from './types'
-import type { TokenSelectionHandler } from '../../types'
 
 export type { SelectTokenModalProps }
 
@@ -93,76 +88,6 @@ export function SelectTokenModal(props: SelectTokenModalProps): ReactNode {
         />
       </TokenColumnContent>
     </SelectTokenModalShell>
-  )
-}
-
-interface TokenColumnContentProps {
-  displayLpTokenLists?: boolean
-  account: string | undefined
-  inputValue: string
-  onSelectToken: TokenSelectionHandler
-  openPoolPage(poolAddress: string): void
-  disableErc20?: boolean
-  tokenListCategoryState: SelectTokenModalProps['tokenListCategoryState']
-  isRouteAvailable: boolean | undefined
-  chainsToSelect?: SelectTokenModalProps['chainsToSelect']
-  onSelectChain: SelectTokenModalProps['onSelectChain']
-  children: ReactNode
-}
-
-function TokenColumnContent({
-  displayLpTokenLists,
-  account,
-  inputValue,
-  onSelectToken,
-  openPoolPage,
-  disableErc20,
-  tokenListCategoryState,
-  isRouteAvailable,
-  chainsToSelect,
-  onSelectChain,
-  children,
-}: TokenColumnContentProps): ReactNode {
-  if (displayLpTokenLists) {
-    return (
-      <LpTokenListsWidget
-        account={account}
-        search={inputValue}
-        onSelectToken={onSelectToken}
-        openPoolPage={openPoolPage}
-        disableErc20={disableErc20}
-        tokenListCategoryState={tokenListCategoryState}
-      >
-        {children}
-      </LpTokenListsWidget>
-    )
-  }
-
-  return (
-    <>
-      {renderLegacyChainSelector(chainsToSelect, onSelectChain)}
-      <SelectTokenModalContent isRouteAvailable={isRouteAvailable}>{children}</SelectTokenModalContent>
-    </>
-  )
-}
-
-function renderLegacyChainSelector(
-  chainsToSelect: SelectTokenModalProps['chainsToSelect'],
-  onSelectChain: SelectTokenModalProps['onSelectChain'],
-): ReactNode {
-  if (!chainsToSelect?.chains?.length) {
-    return null
-  }
-
-  return (
-    <styledEl.LegacyChainsWrapper>
-      <ChainsSelector
-        isLoading={chainsToSelect.isLoading || false}
-        chains={chainsToSelect.chains}
-        defaultChainId={chainsToSelect.defaultChainId}
-        onSelectChain={onSelectChain}
-      />
-    </styledEl.LegacyChainsWrapper>
   )
 }
 
