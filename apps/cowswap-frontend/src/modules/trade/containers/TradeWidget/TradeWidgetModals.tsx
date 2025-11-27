@@ -1,5 +1,6 @@
 import { ReactNode, useCallback, useEffect, useRef } from 'react'
 
+import { usePrevious } from '@cowprotocol/common-hooks'
 import { useAddUserToken } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -85,11 +86,9 @@ export function TradeWidgetModals({ confirmModal, genericModal }: TradeWidgetMod
   )
 
   const isOutputTokenSelector = field === Field.OUTPUT
-  const isOutputTokenSelectorRef = useRef(isOutputTokenSelector)
-
-  useEffect(() => {
-    isOutputTokenSelectorRef.current = isOutputTokenSelector
-  }, [isOutputTokenSelector])
+  const previousIsOutputTokenSelector = usePrevious(isOutputTokenSelector)
+  const previousChainId = usePrevious(chainId)
+  const isInitialRenderRef = useRef(true)
 
   const error = tokenListAddingError || approveError || confirmError
 
@@ -105,8 +104,19 @@ export function TradeWidgetModals({ confirmModal, genericModal }: TradeWidgetMod
    * Because network might be changed from the widget inside
    */
   useEffect(() => {
-    resetAllScreens(isOutputTokenSelectorRef.current)
-  }, [chainId, resetAllScreens])
+    const chainChanged = previousChainId !== chainId
+
+    if (!chainChanged && !isInitialRenderRef.current) {
+      return
+    }
+
+    isInitialRenderRef.current = false
+
+    const shouldCloseTokenSelectWidget =
+      chainChanged ? isOutputTokenSelector : previousIsOutputTokenSelector ?? isOutputTokenSelector
+
+    resetAllScreens(shouldCloseTokenSelectWidget)
+  }, [chainId, isOutputTokenSelector, previousChainId, previousIsOutputTokenSelector, resetAllScreens])
 
   if (genericModal) {
     return genericModal
