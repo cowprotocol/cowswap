@@ -3,6 +3,7 @@ import { Dispatch, SetStateAction, useCallback, useState } from 'react'
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { log } from '@cowprotocol/sdk-common'
 import {
   ListState,
   TokenListCategory,
@@ -278,7 +279,8 @@ export function useTokenSelectionHandler(
         try {
           await onSelectNetwork(targetChainId as SupportedChainId, true)
         } catch (error) {
-          console.error('Failed to switch network after token selection', error)
+          const message = error instanceof Error ? error.message : String(error)
+          log(`Failed to switch network after token selection: ${message}`)
         }
       }
 

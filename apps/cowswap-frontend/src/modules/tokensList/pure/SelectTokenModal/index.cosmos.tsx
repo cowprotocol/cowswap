@@ -73,6 +73,7 @@ const defaultModalProps: SelectTokenModalProps = {
   selectedToken,
   isRouteAvailable: true,
   modalTitle: 'Swap from',
+  onSelectChain: () => undefined,
   onSelectToken() {
     console.log('onSelectToken')
   },

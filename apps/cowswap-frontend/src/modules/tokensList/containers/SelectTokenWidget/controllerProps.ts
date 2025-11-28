@@ -141,11 +141,13 @@ export function buildSelectTokenModalPropsInput({
   account,
   hasChainPanel,
   chainsState,
-  chainsPanelTitle,
   onSelectChain,
   isInjectedWidgetMode,
+  chainsPanelTitle,
   modalTitle,
 }: BuildModalPropsArgs): SelectTokenModalProps {
+  const selectChainHandler: (chain: ChainInfo) => void = onSelectChain ?? (() => undefined)
+
   return {
     standalone,
     displayLpTokenLists,
@@ -171,11 +173,13 @@ export function buildSelectTokenModalPropsInput({
     isRouteAvailable: tokenData.isRouteAvailable,
     modalTitle,
     hasChainPanel,
+    chainsToSelect: chainsState,
+    chainsPanelTitle,
+    mobileChainsState: chainsState,
     mobileChainsLabel: chainsPanelTitle,
     hideFavoriteTokensTooltip: isInjectedWidgetMode,
     selectedTargetChainId: widgetState.selectedTargetChainId,
-    mobileChainsState: chainsState,
-    onSelectChain,
+    onSelectChain: selectChainHandler,
     onClearRecentTokens,
   }
 }
@@ -207,8 +211,10 @@ export function useSelectTokenModalPropsMemo(props: SelectTokenModalProps): Sele
       isRouteAvailable: props.isRouteAvailable,
       modalTitle: props.modalTitle,
       hasChainPanel: props.hasChainPanel,
+      chainsPanelTitle: props.chainsPanelTitle,
       hideFavoriteTokensTooltip: props.hideFavoriteTokensTooltip,
       selectedTargetChainId: props.selectedTargetChainId,
+      chainsToSelect: props.chainsToSelect,
       mobileChainsState: props.mobileChainsState,
       mobileChainsLabel: props.mobileChainsLabel,
       onSelectChain: props.onSelectChain,
@@ -240,8 +246,10 @@ export function useSelectTokenModalPropsMemo(props: SelectTokenModalProps): Sele
       props.isRouteAvailable,
       props.modalTitle,
       props.hasChainPanel,
+      props.chainsPanelTitle,
       props.hideFavoriteTokensTooltip,
       props.selectedTargetChainId,
+      props.chainsToSelect,
       props.mobileChainsState,
       props.mobileChainsLabel,
       props.onSelectChain,
