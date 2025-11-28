@@ -231,8 +231,8 @@ function getMobileChainSelectorConfig({
   showChainPanel: boolean
   mobileChainsState: SelectTokenModalProps['mobileChainsState']
   mobileChainsLabel: SelectTokenModalProps['mobileChainsLabel']
-  onSelectChain: SelectTokenModalProps['onSelectChain']
-  onOpenMobileChainPanel: SelectTokenModalProps['onOpenMobileChainPanel']
+  onSelectChain?: SelectTokenModalProps['onSelectChain']
+  onOpenMobileChainPanel?: SelectTokenModalProps['onOpenMobileChainPanel']
 }): ComponentProps<typeof MobileChainSelector> | undefined {
   const canRender =
     !showChainPanel &&
