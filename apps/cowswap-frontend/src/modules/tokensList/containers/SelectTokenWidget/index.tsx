@@ -119,6 +119,7 @@ function SelectTokenWidgetView(
   const handleOpenMobileChainPanel = mobileChainsState ? () => setIsMobileChainPanelOpen(true) : undefined
   const showDesktopChainPanel = isChainPanelVisible && isChainPanelEnabled && chainsToSelect
   const showMobileChainPanel = !isChainPanelVisible && isChainPanelEnabled && chainsToSelect && isMobileChainPanelOpen
+  const modalChainsToSelect = isChainPanelVisible ? undefined : chainsToSelect
 
   return (
     <>
@@ -126,6 +127,7 @@ function SelectTokenWidgetView(
         <SelectTokenModal
           {...selectTokenModalProps}
           hasChainPanel={isChainPanelVisible}
+          chainsToSelect={modalChainsToSelect}
           mobileChainsState={mobileChainsState}
           onSelectChain={onSelectChain}
           isFullScreenMobile={isCompactLayout}

@@ -70,6 +70,7 @@ export function SelectTokenModal(props: SelectTokenModalProps): ReactNode {
     onSelectChain,
     onOpenMobileChainPanel,
   })
+  const chainsForTokenColumn = mobileChainSelector ? undefined : legacyChainsState
 
   return (
     <SelectTokenModalShell
@@ -94,7 +95,7 @@ export function SelectTokenModal(props: SelectTokenModalProps): ReactNode {
         disableErc20={disableErc20}
         tokenListCategoryState={tokenListCategoryState}
         isRouteAvailable={isRouteAvailable}
-        chainsToSelect={legacyChainsState}
+        chainsToSelect={chainsForTokenColumn}
         onSelectChain={onSelectChain}
       >
         <TokensContentSection
@@ -198,7 +199,7 @@ function useSelectTokenModalLayout(props: SelectTokenModalProps): {
   const [inputValue, setInputValue, trimmedInputValue] = useTokenSearchInput(defaultInputValue)
   const selectTokenContext = useSelectTokenContext(props)
   const resolvedModalTitle = modalTitle ?? t`Select token`
-  const showChainPanel = hasChainPanel && Boolean(chainsToSelect?.chains?.length)
+  const showChainPanel = hasChainPanel
   const legacyChainsState =
     !showChainPanel && chainsToSelect && (chainsToSelect.chains?.length ?? 0) > 0 ? chainsToSelect : undefined
   const resolvedChainPanelTitle = chainsPanelTitle ?? t`Cross chain swap`
