@@ -14,7 +14,7 @@ import {
 } from '../../types'
 import { environmentAtom } from '../environmentAtom'
 
-const TOKEN_LIST_SRC = 'https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public'
+const TOKEN_LIST_SRC = 'https://files.cow.fi/token-lists'
 
 const UNISWAP_TOKEN_LIST_URL: Record<SupportedChainId, string> = {
   [SupportedChainId.MAINNET]: UNISWAP_TOKENS_LIST,
