@@ -6,9 +6,10 @@ import { Media } from '@cowprotocol/ui'
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 
+import { useAutoFitText } from 'common/hooks/useAutoFitText'
+
 import * as styledEl from './styled'
 
-import { useAutoFitText } from '../../../common/hooks/useAutoFitText'
 import { truncateWithEllipsis } from '../helpers'
 import { OrderProgressBarProps } from '../types'
 
