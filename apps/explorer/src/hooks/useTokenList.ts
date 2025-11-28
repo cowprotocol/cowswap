@@ -33,7 +33,7 @@ export function useTokenList(chainId: SupportedChainId | undefined): { data: Tok
   const { data: cowSwapList, isLoading: isCowListLoading } = useTokenListByUrl(
     chainId !== SupportedChainId.SEPOLIA
       ? 'https://files.cow.fi/tokens/CowSwap.json'
-      : 'https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/CowSwapSepolia.json',
+      : 'https://files.cow.fi/token-lists/CowSwapSepolia.json',
   )
   const { data: coingeckoUniswapList, isLoading: isCoingeckoUniswapLoading } = useTokenListByUrl(
     chainId === SupportedChainId.MAINNET ? 'https://tokens.coingecko.com/uniswap/all.json' : '',

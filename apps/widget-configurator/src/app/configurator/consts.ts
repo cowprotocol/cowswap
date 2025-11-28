@@ -10,7 +10,7 @@ export const TRADE_MODES = [TradeType.SWAP, TradeType.LIMIT, TradeType.ADVANCED,
 // Sourced from https://tokenlists.org/
 export const DEFAULT_TOKEN_LISTS: TokenListItem[] = [
   { url: 'https://files.cow.fi/tokens/CowSwap.json', enabled: true },
-  { url: 'https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/CoinGecko.1.json', enabled: true },
+  { url: 'https://files.cow.fi/token-lists/CoinGecko.1.json', enabled: true },
   { url: 'https://www.gemini.com/uniswap/manifest.json', enabled: false },
   { url: 'https://messari.io/tokenlist/messari-verified', enabled: false },
   { url: 'https://static.optimism.io/optimism.tokenlist.json', enabled: false },

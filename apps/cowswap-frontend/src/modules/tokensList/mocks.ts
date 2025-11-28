@@ -101,7 +101,7 @@ export const customTokensMock: TokenWithLogo[] = [
 export const listsMock: ListState[] = [
   {
     source:
-      'https://tokenlists.org/token-list?url=https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/CowSwapSepolia.json',
+      'https://tokenlists.org/token-list?url=https://files.cow.fi/token-lists/CowSwapSepolia.json',
     list: {
       name: 'CowSwap Sepolia',
       logoURI: 'https://gnosis.mypinata.cloud/ipfs/Qme9B6jRpGtZsRFcPjHvA5T4ugFuL4c3SzWfxyMPa59AMo',
@@ -131,7 +131,7 @@ export const importListsMock: ListState = {
   source: 'https://files.cow.fi/tokens/CowSwap.json',
   list: {
     name: 'CoW Swap',
-    logoURI: 'https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/images/list-logo.png',
+    logoURI: 'https://files.cow.fi/token-lists/images/list-logo.png',
     // TODO: Replace any with proper type definitions
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     tokens: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13] as any[],
