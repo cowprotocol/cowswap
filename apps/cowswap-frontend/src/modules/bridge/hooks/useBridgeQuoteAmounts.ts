@@ -8,8 +8,8 @@ import { useTradeQuote } from 'modules/tradeQuote'
 
 import { useTryFindIntermediateToken } from './useTryFindIntermediateToken'
 
-export function useBridgeQuoteAmounts(): BridgeQuoteAmounts | null {
-  const receiveAmountInfo = useGetReceiveAmountInfo()
+export function useBridgeQuoteAmounts(overrideBridgeBuyAmount = true): BridgeQuoteAmounts | null {
+  const receiveAmountInfo = useGetReceiveAmountInfo(overrideBridgeBuyAmount)
   const { bridgeQuote } = useTradeQuote()
   const { intermediateBuyToken } = useTryFindIntermediateToken({ bridgeQuote })
 
@@ -42,6 +42,7 @@ export function useBridgeQuoteAmounts(): BridgeQuoteAmounts | null {
       swapMinReceiveAmount,
       bridgeMinReceiveAmount,
       bridgeFee: receiveAmountInfo.costs.bridgeFee.amountInDestinationCurrency,
+      bridgeFeeAmounts: receiveAmountInfo.costs.bridgeFee,
     }
   }, [receiveAmountInfo, bridgeQuote, intermediateBuyToken])
 }
