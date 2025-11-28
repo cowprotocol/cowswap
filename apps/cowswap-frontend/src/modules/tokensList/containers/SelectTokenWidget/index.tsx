@@ -127,7 +127,7 @@ function SelectTokenWidgetView(
           {...selectTokenModalProps}
           hasChainPanel={isChainPanelVisible}
           mobileChainsState={mobileChainsState}
-          onSelectChain={mobileChainsState ? onSelectChain : undefined}
+          onSelectChain={onSelectChain}
           isFullScreenMobile={isCompactLayout}
           onOpenMobileChainPanel={handleOpenMobileChainPanel}
         />

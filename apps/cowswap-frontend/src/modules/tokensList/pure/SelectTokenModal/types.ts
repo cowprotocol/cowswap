@@ -10,7 +10,8 @@ import { PermitCompatibleTokens } from 'modules/permit'
 
 import { ChainsToSelectState, TokenSelectionHandler } from '../../types'
 
-export interface SelectTokenModalProps<T = TokenListCategory[] | null> {
+// TODO: Refactor to reduce prop count
+export interface TokenListContentProps<T = TokenListCategory[] | null> {
   allTokens: TokenWithLogo[]
   favoriteTokens: TokenWithLogo[]
   recentTokens?: TokenWithLogo[]
@@ -31,13 +32,20 @@ export interface SelectTokenModalProps<T = TokenListCategory[] | null> {
   isRouteAvailable: boolean | undefined
   modalTitle?: string
   hasChainPanel?: boolean
+  chainsPanelTitle?: string
+  isFullScreenMobile?: boolean
   selectedTargetChainId?: number
   mobileChainsState?: ChainsToSelectState
   mobileChainsLabel?: string
-  onSelectChain?(chain: ChainInfo): void
   onOpenMobileChainPanel?(): void
-  isFullScreenMobile?: boolean
+}
 
+export interface ChainSelectionProps {
+  chainsToSelect?: ChainsToSelectState
+  onSelectChain(chain: ChainInfo): void
+}
+
+export interface ModalCallbackProps {
   onSelectToken: TokenSelectionHandler
   onTokenListItemClick?(token: TokenWithLogo): void
   onClearRecentTokens?(): void
@@ -46,3 +54,7 @@ export interface SelectTokenModalProps<T = TokenListCategory[] | null> {
   onOpenManageWidget(): void
   onDismiss(): void
 }
+
+export type SelectTokenModalProps<T = TokenListCategory[] | null> = TokenListContentProps<T> &
+  ChainSelectionProps &
+  ModalCallbackProps
