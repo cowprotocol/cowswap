@@ -4,7 +4,6 @@ import { ChainInfo } from '@cowprotocol/cow-sdk'
 import { TokenListCategory } from '@cowprotocol/tokens'
 
 import { SelectTokenModalContent } from './SelectTokenModalContent'
-import * as styledEl from './styled'
 
 import { LpTokenListsWidget } from '../../containers/LpTokenListsWidget'
 import { ChainsToSelectState, TokenSelectionHandler } from '../../types'
@@ -71,13 +70,11 @@ function renderLegacyChainSelector(
   }
 
   return (
-    <styledEl.LegacyChainsWrapper>
-      <ChainsSelector
-        isLoading={chainsToSelect.isLoading || false}
-        chains={chainsToSelect.chains}
-        defaultChainId={chainsToSelect.defaultChainId}
-        onSelectChain={onSelectChain}
-      />
-    </styledEl.LegacyChainsWrapper>
+    <ChainsSelector
+      isLoading={chainsToSelect.isLoading || false}
+      chains={chainsToSelect.chains}
+      defaultChainId={chainsToSelect.defaultChainId}
+      onSelectChain={onSelectChain}
+    />
   )
 }

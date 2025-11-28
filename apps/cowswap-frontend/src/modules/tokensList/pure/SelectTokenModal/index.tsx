@@ -99,16 +99,14 @@ export function SelectTokenModal(props: SelectTokenModalProps): ReactNode {
       >
         <TokensContentSection
           displayLpTokenLists={displayLpTokenLists}
-          favoriteTokens={favoriteTokens}
-          recentTokens={recentTokens}
-          onClearRecentTokens={onClearRecentTokens}
-          onOpenManageWidget={onOpenManageWidget}
-          standalone={standalone}
-          areTokensLoading={areTokensLoading}
-          allTokens={allTokens}
-          searchInput={trimmedInputValue}
-          areTokensFromBridge={areTokensFromBridge}
-          hideFavoriteTokensTooltip={hideFavoriteTokensTooltip}
+        favoriteTokens={favoriteTokens}
+        recentTokens={recentTokens}
+        onClearRecentTokens={onClearRecentTokens}
+        areTokensLoading={areTokensLoading}
+        allTokens={allTokens}
+        searchInput={trimmedInputValue}
+        areTokensFromBridge={areTokensFromBridge}
+        hideFavoriteTokensTooltip={hideFavoriteTokensTooltip}
           selectedTargetChainId={selectedTargetChainId}
           selectTokenContext={selectTokenContext}
         />
