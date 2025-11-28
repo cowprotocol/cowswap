@@ -139,13 +139,15 @@ export function buildSelectTokenModalPropsInput({
     tokenListCategoryState,
     disableErc20,
     account,
-    hasChainPanel,
-    chainsState,
-    onSelectChain,
-    isInjectedWidgetMode,
-    chainsPanelTitle,
-    modalTitle,
+  hasChainPanel,
+  chainsState,
+  onSelectChain,
+  isInjectedWidgetMode,
+  chainsPanelTitle,
+  modalTitle,
 }: BuildModalPropsArgs): SelectTokenModalProps {
+  const selectChainHandler: (chain: ChainInfo) => void = onSelectChain ?? (() => undefined)
+
   return {
     standalone,
     displayLpTokenLists,
@@ -175,7 +177,7 @@ export function buildSelectTokenModalPropsInput({
     chainsPanelTitle,
     hideFavoriteTokensTooltip: isInjectedWidgetMode,
     selectedTargetChainId: widgetState.selectedTargetChainId,
-    onSelectChain,
+    onSelectChain: selectChainHandler,
     onClearRecentTokens,
   }
 }
