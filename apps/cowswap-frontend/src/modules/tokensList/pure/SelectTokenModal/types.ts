@@ -10,7 +10,8 @@ import { PermitCompatibleTokens } from 'modules/permit'
 
 import { ChainsToSelectState, TokenSelectionHandler } from '../../types'
 
-export interface SelectTokenModalProps<T = TokenListCategory[] | null> {
+// TODO: Refactor to reduce prop count
+export interface TokenListContentProps<T = TokenListCategory[] | null> {
   allTokens: TokenWithLogo[]
   favoriteTokens: TokenWithLogo[]
   recentTokens?: TokenWithLogo[]
@@ -22,7 +23,6 @@ export interface SelectTokenModalProps<T = TokenListCategory[] | null> {
   displayLpTokenLists?: boolean
   disableErc20?: boolean
   account: string | undefined
-  chainsToSelect?: ChainsToSelectState
   tokenListCategoryState: [T, (category: T) => void]
   defaultInputValue?: string
   areTokensLoading: boolean
@@ -30,12 +30,19 @@ export interface SelectTokenModalProps<T = TokenListCategory[] | null> {
   standalone?: boolean
   areTokensFromBridge: boolean
   isRouteAvailable: boolean | undefined
-  selectedTargetChainId?: number
   modalTitle?: string
   hasChainPanel?: boolean
   chainsPanelTitle?: string
   isFullScreenMobile?: boolean
+  selectedTargetChainId?: number
+}
 
+export interface ChainSelectionProps {
+  chainsToSelect?: ChainsToSelectState
+  onSelectChain(chain: ChainInfo): void
+}
+
+export interface ModalCallbackProps {
   onSelectToken: TokenSelectionHandler
   onTokenListItemClick?(token: TokenWithLogo): void
   onClearRecentTokens?(): void
@@ -43,5 +50,8 @@ export interface SelectTokenModalProps<T = TokenListCategory[] | null> {
   onInputPressEnter?(): void
   onOpenManageWidget(): void
   onDismiss(): void
-  onSelectChain?(chain: ChainInfo): void
 }
+
+export type SelectTokenModalProps<T = TokenListCategory[] | null> = TokenListContentProps<T> &
+  ChainSelectionProps &
+  ModalCallbackProps
