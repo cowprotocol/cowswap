@@ -13,22 +13,24 @@ const hasSdkPrVersion = Object.keys(packageJson.dependencies)
     return sdkPrVersionRegex.test(version)
   })
 
-if (!hasSdkPrVersion) {
-  console.log('[install-sdk-preview.js] no SDK PR version set, skipping')
-  return
-}
+run()
 
-const PACKAGE_READ_AUTH_TOKEN = process.env.PACKAGE_READ_AUTH_TOKEN
+function run() {
+  if (!hasSdkPrVersion) {
+    console.log('[install-sdk-preview.js] no SDK PR version set, skipping')
+    return
+  }
 
-if (!PACKAGE_READ_AUTH_TOKEN) {
-  console.error(
-    '[install-sdk-preview.js] PACKAGE_READ_AUTH_TOKEN env var is not set but expected by install-sdk-preview.js',
-  )
-  process.exit(1)
-  return
-}
+  const PACKAGE_READ_AUTH_TOKEN = process.env.PACKAGE_READ_AUTH_TOKEN
 
-const npmrc = `
+  if (!PACKAGE_READ_AUTH_TOKEN) {
+    console.error(
+      '[install-sdk-preview.js] PACKAGE_READ_AUTH_TOKEN env var is not set but expected by install-sdk-preview.js',
+    )
+    process.exit(1)
+  }
+
+  const npmrc = `
 # Default: install everything else from public npm
 registry=https://registry.npmjs.org/
 
@@ -39,4 +41,5 @@ registry=https://registry.npmjs.org/
 //npm.pkg.github.com/:_authToken=${PACKAGE_READ_AUTH_TOKEN}
 `
 
-fs.writeFileSync('.npmrc', npmrc)
+  fs.writeFileSync('.npmrc', npmrc)
+}
