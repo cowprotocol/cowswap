@@ -1,21 +1,16 @@
 import { isSellOrder } from '@cowprotocol/common-utils'
-import { getQuoteAmountsAndCosts, type OrderParameters } from '@cowprotocol/cow-sdk'
-import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
+import { getQuoteAmountsAndCosts } from '@cowprotocol/cow-sdk'
+import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
+
+import { ReceiveAmountInfoParams } from './types'
 
 import { ReceiveAmountInfo } from '../types'
 
 /**
  * This function only does convert `bigint` values from `getQuoteAmountsAndCosts` into `CurrencyAmount<Currency>`
  */
-export function getReceiveAmountInfo(
-  orderParams: OrderParameters,
-  inputCurrency: Currency,
-  outputCurrency: Currency,
-  slippagePercent: Percent,
-  _partnerFeeBps: number | undefined,
-  protocolFeeBps?: number,
-): ReceiveAmountInfo {
-  const partnerFeeBps = _partnerFeeBps ?? 0
+export function getReceiveAmountInfo(params: ReceiveAmountInfoParams): ReceiveAmountInfo {
+  const { orderParams, inputCurrency, outputCurrency, slippagePercent, partnerFeeBps = 0, protocolFeeBps } = params
   const currencies = { inputCurrency, outputCurrency }
   const isSell = isSellOrder(orderParams.kind)
 

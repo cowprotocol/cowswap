@@ -9,20 +9,16 @@ import { useTradeQuote } from '../../tradeQuote'
 import { useVolumeFee } from '../../volumeFee'
 import { ReceiveAmountInfo } from '../types'
 import { getCrossChainReceiveAmountInfo } from '../utils/getCrossChainReceiveAmountInfo'
+import { getReceiveAmountInfo } from '../utils/getReceiveAmountInfo'
+import { ReceiveAmountInfoParams } from '../utils/types'
 
-// eslint-disable-next-line complexity
 export function useGetReceiveAmountInfo(): ReceiveAmountInfo | null {
-  const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount, slippage, orderKind } =
-    useDerivedTradeState() ?? {}
   const tradeQuote = useTradeQuote()
-  const volumeFeeBps = useVolumeFee()?.volumeBps
-
-  const { quote, bridgeQuote } = tradeQuote
-  const quoteResponse = quote?.quoteResults.quoteResponse
-  const orderParams = quoteResponse?.quote
-  const protocolFeeBps = quoteResponse?.protocolFeeBps ? Number(quoteResponse.protocolFeeBps) : undefined
+  const { bridgeQuote } = tradeQuote
   const bridgeFeeAmounts = bridgeQuote?.amountsAndCosts.costs.bridgingFee
   const bridgeBuyAmount = bridgeQuote?.amountsAndCosts.beforeFee.buyAmount
+
+  const params = useReceiveAmountInfoParams()
 
   const intermediateCurrency =
     useTryFindIntermediateToken({
@@ -30,30 +26,48 @@ export function useGetReceiveAmountInfo(): ReceiveAmountInfo | null {
     })?.intermediateBuyToken ?? undefined
 
   return useMemo(() => {
+    if (!params) return null
+
+    if (intermediateCurrency && bridgeFeeAmounts && bridgeBuyAmount) {
+      return getCrossChainReceiveAmountInfo({
+        ...params,
+        intermediateCurrency,
+        bridgeFeeAmounts,
+        bridgeBuyAmount,
+      })
+    }
+
+    return getReceiveAmountInfo(params)
+  }, [params, intermediateCurrency, bridgeFeeAmounts, bridgeBuyAmount])
+}
+
+function useReceiveAmountInfoParams(): ReceiveAmountInfoParams | null {
+  const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount, slippage, orderKind } =
+    useDerivedTradeState() ?? {}
+  const tradeQuote = useTradeQuote()
+  const volumeFeeBps = useVolumeFee()?.volumeBps
+
+  const quoteResponse = tradeQuote?.quote?.quoteResults.quoteResponse
+  const orderParams = quoteResponse?.quote
+  const protocolFeeBps = quoteResponse?.protocolFeeBps ? Number(quoteResponse.protocolFeeBps) : undefined
+
+  return useMemo(() => {
     if (isFractionFalsy(inputCurrencyAmount) && isFractionFalsy(outputCurrencyAmount)) return null
     // Avoid states mismatch
     if (orderKind !== orderParams?.kind) return null
 
-    if (!inputCurrency || !outputCurrency) return null
+    if (!inputCurrency || !outputCurrency || !orderParams || !slippage) return null
 
-    if (orderParams && slippage) {
-      return getCrossChainReceiveAmountInfo(
-        orderParams,
-        inputCurrency,
-        outputCurrency,
-        slippage,
-        volumeFeeBps,
-        intermediateCurrency,
-        bridgeFeeAmounts,
-        bridgeBuyAmount,
-        protocolFeeBps,
-      )
+    return {
+      orderParams,
+      inputCurrency,
+      outputCurrency,
+      slippagePercent: slippage,
+      partnerFeeBps: volumeFeeBps,
+      protocolFeeBps,
     }
-
-    return null
   }, [
     orderParams,
-    intermediateCurrency,
     volumeFeeBps,
     inputCurrencyAmount,
     outputCurrency,
@@ -61,8 +75,6 @@ export function useGetReceiveAmountInfo(): ReceiveAmountInfo | null {
     inputCurrency,
     outputCurrencyAmount,
     slippage,
-    bridgeFeeAmounts,
-    bridgeBuyAmount,
     protocolFeeBps,
   ])
 }

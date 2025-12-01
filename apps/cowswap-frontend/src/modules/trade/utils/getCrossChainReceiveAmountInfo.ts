@@ -1,25 +1,24 @@
 import { FractionUtils, isSellOrder } from '@cowprotocol/common-utils'
-import { getQuoteAmountsAndCosts, type OrderParameters } from '@cowprotocol/cow-sdk'
-import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
+import { getQuoteAmountsAndCosts } from '@cowprotocol/cow-sdk'
+import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
+
+import { BridgeFeeAmounts, CrossChainReceiveAmountInfoParams } from './types'
 
 import { ReceiveAmountInfo } from '../types'
 
 // eslint-disable-next-line max-lines-per-function, complexity
-export function getCrossChainReceiveAmountInfo(
-  orderParams: OrderParameters,
-  inputCurrency: Currency,
-  outputCurrency: Currency,
-  slippagePercent: Percent,
-  _partnerFeeBps: number | undefined,
-  intermediateCurrency?: Currency,
-  bridgeFeeAmounts?: {
-    amountInSellCurrency: bigint
-    amountInBuyCurrency: bigint
-  },
-  bridgeBuyAmount?: bigint,
-  protocolFeeBps?: number,
-): ReceiveAmountInfo {
-  const partnerFeeBps = _partnerFeeBps ?? 0
+export function getCrossChainReceiveAmountInfo(params: CrossChainReceiveAmountInfoParams): ReceiveAmountInfo {
+  const {
+    orderParams,
+    inputCurrency,
+    outputCurrency,
+    slippagePercent,
+    partnerFeeBps = 0,
+    protocolFeeBps,
+    intermediateCurrency,
+    bridgeFeeAmounts,
+    bridgeBuyAmount,
+  } = params
   const currenciesExcludingIntermediate = { inputCurrency, outputCurrency }
 
   const isSell = isSellOrder(orderParams.kind)
@@ -110,10 +109,7 @@ export function getCrossChainReceiveAmountInfo(
 function calculateBridgeFee(
   outputCurrency: Currency,
   intermediateCurrency?: Currency,
-  bridgeFeeAmounts?: {
-    amountInSellCurrency: bigint
-    amountInBuyCurrency: bigint
-  },
+  bridgeFeeAmounts?: BridgeFeeAmounts,
 ): ReceiveAmountInfo['costs']['bridgeFee'] | undefined {
   if (!bridgeFeeAmounts || !intermediateCurrency) return undefined
 
