@@ -8,8 +8,8 @@ import { useTradeQuote } from 'modules/tradeQuote'
 
 import { useTryFindIntermediateToken } from './useTryFindIntermediateToken'
 
-export function useBridgeQuoteAmounts(overrideBridgeBuyAmount = true): BridgeQuoteAmounts | null {
-  const receiveAmountInfo = useGetReceiveAmountInfo(overrideBridgeBuyAmount)
+export function useBridgeQuoteAmounts(): BridgeQuoteAmounts | null {
+  const receiveAmountInfo = useGetReceiveAmountInfo()
   const { bridgeQuote } = useTradeQuote()
   const { intermediateBuyToken } = useTryFindIntermediateToken({ bridgeQuote })
 

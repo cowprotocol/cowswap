@@ -11,7 +11,7 @@ import { ReceiveAmountInfo } from '../types'
 import { getReceiveAmountInfo } from '../utils/getReceiveAmountInfo'
 
 // eslint-disable-next-line complexity
-export function useGetReceiveAmountInfo(overrideBridgeBuyAmount?: boolean): ReceiveAmountInfo | null {
+export function useGetReceiveAmountInfo(): ReceiveAmountInfo | null {
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount, slippage, orderKind } =
     useDerivedTradeState() ?? {}
   const tradeQuote = useTradeQuote()
@@ -22,7 +22,7 @@ export function useGetReceiveAmountInfo(overrideBridgeBuyAmount?: boolean): Rece
   const orderParams = quoteResponse?.quote
   const protocolFeeBps = quoteResponse?.protocolFeeBps ? Number(quoteResponse.protocolFeeBps) : undefined
   const bridgeFeeAmounts = bridgeQuote?.amountsAndCosts.costs.bridgingFee
-  const bridgeBuyAmount = !overrideBridgeBuyAmount ? bridgeQuote?.amountsAndCosts.beforeFee.buyAmount : undefined
+  const bridgeBuyAmount = bridgeQuote?.amountsAndCosts.beforeFee.buyAmount
 
   const intermediateCurrency =
     useTryFindIntermediateToken({

@@ -43,11 +43,11 @@ export function TradeRateDetails({
 
   const slippage = useTradeSlippage()
   const isSlippageModified = useIsSlippageModified()
-  const receiveAmountInfo = useGetReceiveAmountInfo(true)
+  const receiveAmountInfo = useGetReceiveAmountInfo()
   const derivedTradeState = useDerivedTradeState()
   const tradeQuote = useTradeQuote()
   const shouldPayGas = useShouldPayGas()
-  const bridgeQuoteAmounts = useBridgeQuoteAmounts(true)
+  const bridgeQuoteAmounts = useBridgeQuoteAmounts()
 
   const inputCurrency = derivedTradeState?.inputCurrency
 
