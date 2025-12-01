@@ -270,6 +270,7 @@
     "@swc/plugin-styled-components": "^9.1.0",
     "@testing-library/dom": "^10.4.0",
     "@testing-library/react": "16.3.0",
+    "@trivago/prettier-plugin-sort-imports": "^6.0.0",
     "@typechain/ethers-v5": "^11.1.2",
     "@types/clone-deep": "^4.0.1",
     "@types/cytoscape": "^3.21.9",
