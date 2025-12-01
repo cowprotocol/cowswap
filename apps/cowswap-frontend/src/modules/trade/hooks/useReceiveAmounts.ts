@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { useGetReceiveAmountInfo } from './useGetReceiveAmountInfo'
 
 import { OrderTypeReceiveAmounts } from '../types'
-import { getOrderTypeReceiveAmounts } from '../utils/getCrossChainReceiveAmountInfo'
+import { getOrderTypeReceiveAmounts } from '../utils/getOrderTypeReceiveAmounts'
 
 export function useReceiveAmounts(): OrderTypeReceiveAmounts | null {
   const info = useGetReceiveAmountInfo()

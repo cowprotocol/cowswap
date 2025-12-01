@@ -17,8 +17,8 @@ import { RecipientRow } from '../../pure/RecipientRow'
 import { ReviewOrderModalAmountRow } from '../../pure/ReviewOrderModalAmountRow'
 import { DividerHorizontal } from '../../pure/Row/styled'
 import { ReceiveAmountInfo } from '../../types'
-import { getOrderTypeReceiveAmounts } from '../../utils/getCrossChainReceiveAmountInfo'
 import { getLimitPriceFromReceiveAmount } from '../../utils/getLimitPriceFromReceiveAmount'
+import { getOrderTypeReceiveAmounts } from '../../utils/getOrderTypeReceiveAmounts'
 import { TradeFeesAndCosts } from '../TradeFeesAndCosts'
 
 type Props = {
