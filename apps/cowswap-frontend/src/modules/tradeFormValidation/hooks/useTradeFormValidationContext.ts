@@ -47,9 +47,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
 
   const isInsufficientBalanceOrderAllowed = tradeType === TradeType.LIMIT_ORDER
 
-  const { intermediateBuyToken, toBeImported } = useTryFindIntermediateToken({
-    bridgeQuote: tradeQuote.bridgeQuote,
-  })
+  const { intermediateBuyToken, toBeImported } = useTryFindIntermediateToken(tradeQuote.bridgeQuote)
 
   const commonContext = {
     account,

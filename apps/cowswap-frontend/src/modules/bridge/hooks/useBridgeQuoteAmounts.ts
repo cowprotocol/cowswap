@@ -11,7 +11,7 @@ import { useTryFindIntermediateToken } from './useTryFindIntermediateToken'
 export function useBridgeQuoteAmounts(): BridgeQuoteAmounts | null {
   const receiveAmountInfo = useGetReceiveAmountInfo()
   const { bridgeQuote } = useTradeQuote()
-  const { intermediateBuyToken } = useTryFindIntermediateToken({ bridgeQuote })
+  const { intermediateBuyToken } = useTryFindIntermediateToken(bridgeQuote)
 
   return useMemo(() => {
     if (!receiveAmountInfo?.costs.bridgeFee || !bridgeQuote) return null

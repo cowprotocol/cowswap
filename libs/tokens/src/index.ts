@@ -42,6 +42,7 @@ export { useResetFavoriteTokens } from './hooks/tokens/favorite/useResetFavorite
 export { useToggleFavoriteToken } from './hooks/tokens/favorite/useToggleFavoriteToken'
 export { useTokensByAddressMap } from './hooks/tokens/useTokensByAddressMap'
 export { useTokenBySymbolOrAddress } from './hooks/tokens/useTokenBySymbolOrAddress'
+export { useTokenByAddress } from './hooks/tokens/useTokenByAddress'
 export { useAreThereTokensWithSameSymbol } from './hooks/tokens/useAreThereTokensWithSameSymbol'
 export { useSearchList } from './hooks/lists/useSearchList'
 export { useSearchToken } from './hooks/tokens/useSearchToken'

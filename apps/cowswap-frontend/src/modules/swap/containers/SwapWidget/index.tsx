@@ -65,7 +65,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps): Reac
   const priceImpact = useTradePriceImpact()
   const widgetActions = useSwapWidgetActions()
   const receiveAmountInfo = useGetReceiveAmountInfo()
-  const { intermediateBuyToken, toBeImported } = useTryFindIntermediateToken({ bridgeQuote })
+  const { intermediateBuyToken, toBeImported } = useTryFindIntermediateToken(bridgeQuote)
   const [showNativeWrapModal, setOpenNativeWrapModal] = useState(false)
   const [showAddIntermediateTokenModal, setShowAddIntermediateTokenModal] = useState(false)
 
