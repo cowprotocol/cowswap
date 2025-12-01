@@ -1,11 +1,11 @@
-import { Provider } from 'jotai'
+import { Provider, useAtomValue } from 'jotai'
 import { useHydrateAtoms } from 'jotai/utils'
 import React, { ReactNode } from 'react'
 
 import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { PersistentStateByChain } from '@cowprotocol/types'
 
-import { renderHook } from '@testing-library/react'
+import { renderHook, waitFor } from '@testing-library/react'
 import fetchMock from 'jest-fetch-mock'
 import useSWR from 'swr'
 
@@ -14,16 +14,13 @@ import { PersistBalancesFromBffParams, usePersistBalancesFromBff } from './usePe
 
 import { BFF_BALANCES_SWR_CONFIG } from '../constants/bff-balances-swr-config'
 import { balancesAtom, BalancesState, balancesUpdateAtom } from '../state/balancesAtom'
-import * as isBffFailedAtom from '../state/isBffFailedAtom'
-import * as bffUtils from '../utils/isBffSupportedNetwork'
+import { bffUnsupportedChainsAtom } from '../state/isBffFailedAtom'
 
 // Enable fetch mocking
 fetchMock.enableMocks()
 
 // Mock modules
 jest.mock('swr')
-jest.mock('../utils/isBffSupportedNetwork')
-jest.mock('../state/isBffFailedAtom')
 
 // Create mock for useWalletInfo
 const mockUseWalletInfo = jest.fn()
@@ -34,7 +31,6 @@ jest.mock('@cowprotocol/wallet', () => ({
 }))
 
 describe('usePersistBalancesFromBff - invalidateCacheTrigger', () => {
-  const mockSetIsBffFailed = jest.fn()
   const mockWalletInfo = {
     chainId: SupportedChainId.MAINNET,
     account: '0x1234567890123456789012345678901234567890',
@@ -67,6 +63,7 @@ describe('usePersistBalancesFromBff - invalidateCacheTrigger', () => {
           } as BalancesState,
         ],
         [balancesUpdateAtom, mockBalancesUpdate],
+        [bffUnsupportedChainsAtom, new Set<SupportedChainId>()],
       ])
       return <>{children}</>
     }
@@ -82,8 +79,6 @@ describe('usePersistBalancesFromBff - invalidateCacheTrigger', () => {
     jest.clearAllMocks()
     fetchMock.resetMocks()
     mockUseWalletInfo.mockReturnValue(mockWalletInfo)
-    ;(isBffFailedAtom.useSetIsBffFailed as jest.Mock).mockReturnValue(mockSetIsBffFailed)
-    ;(bffUtils.isBffSupportedNetwork as jest.Mock).mockReturnValue(true)
   })
 
   describe('hardcoded SWR config', () => {
@@ -189,4 +184,104 @@ describe('usePersistBalancesFromBff - invalidateCacheTrigger', () => {
     })
   })
 
+  describe('unsupported chain handling', () => {
+    it('should not make requests for unsupported chains', () => {
+      const mockUseSWR = useSWR as jest.MockedFunction<typeof useSWR>
+      mockUseSWR.mockReturnValue({
+        data: undefined,
+        error: undefined,
+        isLoading: false,
+        isValidating: false,
+        mutate: jest.fn(),
+      } as ReturnType<typeof useSWR>)
+
+      const unsupportedChainParams: PersistBalancesFromBffParams = {
+        ...defaultParams,
+        chainId: SupportedChainId.SEPOLIA, // Unsupported network
+      }
+
+      renderHook(() => usePersistBalancesFromBff(unsupportedChainParams), { wrapper })
+
+      // Should not make SWR call for unsupported network
+      expect(mockUseSWR).toHaveBeenCalledWith(
+        null, // Key should be null for unsupported network
+        expect.any(Function),
+        BFF_BALANCES_SWR_CONFIG,
+      )
+    })
+
+    it('should add chain to unsupported list when "Unsupported chain" error occurs', async () => {
+      const mockUseSWR = useSWR as jest.MockedFunction<typeof useSWR>
+      const unsupportedChainError = new Error('Unsupported chain')
+
+      mockUseSWR.mockReturnValue({
+        data: undefined,
+        error: unsupportedChainError,
+        isLoading: false,
+        isValidating: false,
+        mutate: jest.fn(),
+      } as ReturnType<typeof useSWR>)
+
+      const useUnsupportedChains = (): Set<SupportedChainId> => {
+        usePersistBalancesFromBff(defaultParams)
+        return useAtomValue(bffUnsupportedChainsAtom)
+      }
+
+      const { result } = renderHook(() => useUnsupportedChains(), { wrapper })
+
+      // Wait for effect to run and add chain to unsupported list
+      await waitFor(
+        () => {
+          expect(result.current.has(defaultParams.chainId)).toBe(true)
+        },
+        { timeout: 3000 },
+      )
+    })
+
+    it('should stop making requests after chain is added to unsupported list', () => {
+      const mockUseSWR = useSWR as jest.MockedFunction<typeof useSWR>
+
+      const wrapperWithUnsupportedChain = ({ children }: { children: ReactNode }): ReactNode => {
+        const HydrateAtoms = ({ children }: { children: ReactNode }): ReactNode => {
+          useHydrateAtoms([
+            [
+              balancesAtom,
+              {
+                isLoading: false,
+                chainId: SupportedChainId.MAINNET,
+                values: {},
+                fromCache: false,
+              } as BalancesState,
+            ],
+            [balancesUpdateAtom, mockBalancesUpdate],
+            [bffUnsupportedChainsAtom, new Set([SupportedChainId.MAINNET])], // Chain is in unsupported list
+          ])
+          return <>{children}</>
+        }
+
+        return (
+          <Provider>
+            <HydrateAtoms>{children}</HydrateAtoms>
+          </Provider>
+        )
+      }
+
+      mockUseSWR.mockReturnValue({
+        data: undefined,
+        error: undefined,
+        isLoading: false,
+        isValidating: false,
+        mutate: jest.fn(),
+      } as ReturnType<typeof useSWR>)
+
+      renderHook(() => usePersistBalancesFromBff(defaultParams), { wrapper: wrapperWithUnsupportedChain })
+
+      // Should not make SWR call because chain is in unsupported list
+      expect(mockUseSWR).toHaveBeenCalledWith(
+        null, // Key should be null
+        expect.any(Function),
+        BFF_BALANCES_SWR_CONFIG,
+      )
+    })
+  })
 })
