@@ -96,7 +96,7 @@ export function getOrderTypeReceiveAmounts(info: ReceiveAmountInfo): OrderTypeRe
  * Map native bigint amounts to CurrencyAmounts
  */
 // eslint-disable-next-line max-lines-per-function, complexity
-export function getReceiveAmountInfo(
+export function getCrossChainReceiveAmountInfo(
   orderParams: OrderParameters,
   inputCurrency: Currency,
   outputCurrency: Currency,

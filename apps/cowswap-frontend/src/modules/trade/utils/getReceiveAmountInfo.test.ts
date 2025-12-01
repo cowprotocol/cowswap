@@ -1,7 +1,7 @@
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Percent, Price, Token } from '@uniswap/sdk-core'
 
-import { getOrderTypeReceiveAmounts, getReceiveAmountInfo } from './getReceiveAmountInfo'
+import { getOrderTypeReceiveAmounts, getCrossChainReceiveAmountInfo } from './getCrossChainReceiveAmountInfo'
 
 import { ReceiveAmountInfo } from '../types'
 
@@ -372,7 +372,7 @@ describe('getReceiveAmountInfo', () => {
         amountInBuyCurrency: BigInt('5000'), // 0.005 USDC in intermediate decimals (6)
       }
 
-      const result = getReceiveAmountInfo(
+      const result = getCrossChainReceiveAmountInfo(
         orderParams,
         mainnetUsdc,
         baseUsdc,
@@ -408,7 +408,7 @@ describe('getReceiveAmountInfo', () => {
         amountInBuyCurrency: BigInt('50000000000000000'), // 0.05 in intermediate decimals (18)
       }
 
-      const result = getReceiveAmountInfo(
+      const result = getCrossChainReceiveAmountInfo(
         orderParams,
         mainnetWeth,
         baseUsdc,
@@ -447,7 +447,7 @@ describe('getReceiveAmountInfo', () => {
         amountInBuyCurrency: BigInt('50000'), // 0.05 in intermediate decimals (6)
       }
 
-      const result = getReceiveAmountInfo(
+      const result = getCrossChainReceiveAmountInfo(
         orderParams,
         mainnetUsdc,
         baseWeth,
@@ -482,7 +482,7 @@ describe('getReceiveAmountInfo', () => {
 
       const slippagePercent = new Percent(50, 10000) // 0.5%
 
-      const result = getReceiveAmountInfo(
+      const result = getCrossChainReceiveAmountInfo(
         orderParams,
         mainnetUsdc,
         baseUsdc,
@@ -514,7 +514,7 @@ describe('getReceiveAmountInfo', () => {
         amountInBuyCurrency: BigInt('5000'),
       }
 
-      const result = getReceiveAmountInfo(
+      const result = getCrossChainReceiveAmountInfo(
         orderParams,
         mainnetUsdc,
         baseUsdc,

@@ -8,7 +8,7 @@ import { useTryFindIntermediateToken } from '../../bridge'
 import { useTradeQuote } from '../../tradeQuote'
 import { useVolumeFee } from '../../volumeFee'
 import { ReceiveAmountInfo } from '../types'
-import { getReceiveAmountInfo } from '../utils/getReceiveAmountInfo'
+import { getCrossChainReceiveAmountInfo } from '../utils/getCrossChainReceiveAmountInfo'
 
 // eslint-disable-next-line complexity
 export function useGetReceiveAmountInfo(): ReceiveAmountInfo | null {
@@ -37,7 +37,7 @@ export function useGetReceiveAmountInfo(): ReceiveAmountInfo | null {
     if (!inputCurrency || !outputCurrency) return null
 
     if (orderParams && slippage) {
-      return getReceiveAmountInfo(
+      return getCrossChainReceiveAmountInfo(
         orderParams,
         inputCurrency,
         outputCurrency,
