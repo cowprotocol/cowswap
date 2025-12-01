@@ -4,9 +4,6 @@ import { Currency, CurrencyAmount, Percent, Price } from '@uniswap/sdk-core'
 
 import { ReceiveAmountInfo } from '../types'
 
-/**
- * Map native bigint amounts to CurrencyAmounts
- */
 // eslint-disable-next-line max-lines-per-function, complexity
 export function getCrossChainReceiveAmountInfo(
   orderParams: OrderParameters,
