@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-11-26 16:02\n"
+"PO-Revision-Date: 2025-12-01 10:42\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -2737,7 +2737,7 @@ msgstr "CoW Swap использует выделенный {accountProxyLabelStr
 
 #: apps/cowswap-frontend/src/modules/notifications/pure/NotificationSettingsPopover.tsx
 msgid "Trade alerts enabled"
-msgstr ""
+msgstr "Уведомления о сделках включены"
 
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
 #~ msgid "Your swap expires and will not execute if it is pending for longer than the selected duration.<0/><1/>{INPUT_OUTPUT_EXPLANATION}"
@@ -6272,4 +6272,11 @@ msgstr "Узнать больше"
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/HighFeeWarning/highFeeWarningHelpers.ts
 msgid "Swap and bridge costs are at least {formattedFeePercentage}% of the swap amount"
 msgstr "Затраты на замену и мост составляют не менее {formattedFeePercentage}% от суммы замены"
+
+# Notifications / jobs aria labels
+msgid "Trade alert settings"
+msgstr "Настройки уведомлений о сделках"
+
+msgid "View jobs (opens in a new tab)"
+msgstr "Просмотр заданий (откроется в новой вкладке)"
 
