@@ -13,12 +13,7 @@ export function useSetIsBffFailed(): (value: boolean) => void {
   return useSetAtom(isBffFailedAtom)
 }
 
-// Store chains that returned "Unsupported chain" error to prevent retries (runtime only, not persisted)
 export const bffUnsupportedChainsAtom = atom(new Set<SupportedChainId>())
-
-export function useBffUnsupportedChains(): Set<SupportedChainId> {
-  return useAtomValue(bffUnsupportedChainsAtom)
-}
 
 export function useAddUnsupportedChainId(): (chainId: SupportedChainId) => void {
   const setAtom = useSetAtom(bffUnsupportedChainsAtom)

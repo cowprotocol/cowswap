@@ -158,7 +158,6 @@ export async function getBffBalances(
       handleBffError(res, data)
     }
 
-    // Type guard to ensure data has balances property
     if (!('balances' in data) || !data.balances) {
       return null
     }
