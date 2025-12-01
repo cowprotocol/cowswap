@@ -1,4 +1,3 @@
-import { FractionUtils } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { getReceiveAmountInfo } from './getReceiveAmountInfo'
@@ -13,13 +12,9 @@ import { ReceiveAmountInfo } from '../types'
 export function getCrossChainReceiveAmountInfo(params: CrossChainReceiveAmountInfoParams): ReceiveAmountInfo {
   const { outputCurrency, intermediateCurrency, bridgeFeeAmounts, bridgeBuyAmount } = params
 
-  const intermediateAmount = FractionUtils.adjustDecimalsAtoms(
-    CurrencyAmount.fromRawAmount(intermediateCurrency, bridgeBuyAmount.toString()),
-    outputCurrency.decimals,
-    intermediateCurrency.decimals,
-  )
+  const bridgeOutputAmount = CurrencyAmount.fromRawAmount(outputCurrency, bridgeBuyAmount.toString())
 
-  const data = getReceiveAmountInfo(params, intermediateAmount)
+  const data = getReceiveAmountInfo(params, bridgeOutputAmount)
   const bridgeFee = calculateBridgeFee(outputCurrency, intermediateCurrency, bridgeFeeAmounts)
 
   return {
