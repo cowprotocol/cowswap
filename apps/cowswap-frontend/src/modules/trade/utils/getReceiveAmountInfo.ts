@@ -1,21 +1,33 @@
 import { isSellOrder } from '@cowprotocol/common-utils'
 import { getQuoteAmountsAndCosts } from '@cowprotocol/cow-sdk'
+import { QuoteAmountsAndCosts } from '@cowprotocol/sdk-order-book'
 import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 
 import { ReceiveAmountInfoParams } from './types'
 
 import { ReceiveAmountInfo } from '../types'
 
+interface Currencies {
+  inputCurrency: Currency
+  outputCurrency: Currency
+}
+
 /**
  * This function only does convert `bigint` values from `getQuoteAmountsAndCosts` into `CurrencyAmount<Currency>`
  */
-export function getReceiveAmountInfo(params: ReceiveAmountInfoParams): ReceiveAmountInfo {
+export function getReceiveAmountInfo(
+  params: ReceiveAmountInfoParams,
+  buyAmountOverride?: CurrencyAmount<Currency>,
+): ReceiveAmountInfo {
   const { orderParams, inputCurrency, outputCurrency, slippagePercent, partnerFeeBps = 0, protocolFeeBps } = params
-  const currencies = { inputCurrency, outputCurrency }
+  const currencies = { inputCurrency, outputCurrency: buyAmountOverride?.currency ?? outputCurrency }
   const isSell = isSellOrder(orderParams.kind)
 
   const result = getQuoteAmountsAndCosts({
-    orderParams,
+    orderParams: {
+      ...orderParams,
+      buyAmount: buyAmountOverride ? buyAmountOverride.quotient.toString() : orderParams.buyAmount,
+    },
     sellDecimals: inputCurrency.decimals,
     buyDecimals: outputCurrency.decimals,
     slippagePercentBps: Number(slippagePercent.numerator),
@@ -29,22 +41,13 @@ export function getReceiveAmountInfo(params: ReceiveAmountInfoParams): ReceiveAm
   const bridgeFee = undefined
 
   return {
-    ...result,
+    isSell,
     quotePrice: new Price<Currency, Currency>({
       baseAmount: beforeNetworkCosts.sellAmount,
       quoteAmount: afterNetworkCosts.buyAmount,
     }),
     costs: {
-      networkFee: {
-        amountInSellCurrency: CurrencyAmount.fromRawAmount(
-          inputCurrency,
-          result.costs.networkFee.amountInSellCurrency.toString(),
-        ),
-        amountInBuyCurrency: CurrencyAmount.fromRawAmount(
-          outputCurrency,
-          result.costs.networkFee.amountInBuyCurrency.toString(),
-        ),
-      },
+      networkFee: calculateNetworkFee(result.costs.networkFee, currencies),
       partnerFee: mapFeeAmounts(isSell, result.costs.partnerFee, currencies),
       protocolFee: !!result.costs.protocolFee ? mapFeeAmounts(isSell, result.costs.protocolFee, currencies) : undefined,
       bridgeFee,
@@ -57,9 +60,25 @@ export function getReceiveAmountInfo(params: ReceiveAmountInfoParams): ReceiveAm
   }
 }
 
+function calculateNetworkFee(
+  networkFee: QuoteAmountsAndCosts['costs']['networkFee'],
+  currencies: Currencies,
+): ReceiveAmountInfo['costs']['networkFee'] {
+  return {
+    amountInSellCurrency: CurrencyAmount.fromRawAmount(
+      currencies.inputCurrency,
+      networkFee.amountInSellCurrency.toString(),
+    ),
+    amountInBuyCurrency: CurrencyAmount.fromRawAmount(
+      currencies.outputCurrency,
+      networkFee.amountInBuyCurrency.toString(),
+    ),
+  }
+}
+
 function mapSellBuyAmounts(
   amounts: { sellAmount: bigint; buyAmount: bigint },
-  currencies: { inputCurrency: Currency; outputCurrency: Currency },
+  currencies: Currencies,
 ): {
   sellAmount: CurrencyAmount<Currency>
   buyAmount: CurrencyAmount<Currency>
@@ -76,7 +95,7 @@ function mapFeeAmounts(
     amount: bigint
     bps: number
   },
-  currencies: { inputCurrency: Currency; outputCurrency: Currency },
+  currencies: Currencies,
 ): {
   amount: CurrencyAmount<Currency>
   bps: number
