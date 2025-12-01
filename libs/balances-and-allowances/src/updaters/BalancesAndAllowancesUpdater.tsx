@@ -16,6 +16,7 @@ import { BASIC_MULTICALL_SWR_CONFIG } from '../consts'
 import { useNativeTokenBalance } from '../hooks/useNativeTokenBalance'
 import { useSwrConfigWithPauseForNetwork } from '../hooks/useSwrConfigWithPauseForNetwork'
 import { useUpdateTokenBalance } from '../hooks/useUpdateTokenBalance'
+import { useIsBffSupportedNetwork } from '../utils/isBffSupportedNetwork'
 
 // A small gap between balances and allowances refresh intervals is needed to avoid high load to the node at the same time
 const RPC_BALANCES_SWR_CONFIG: SWRConfiguration = { ...BASIC_MULTICALL_SWR_CONFIG, refreshInterval: ms`31s` }
@@ -40,6 +41,7 @@ export function BalancesAndAllowancesUpdater({
   isBffEnabled,
 }: BalancesAndAllowancesUpdaterProps): ReactNode {
   const updateTokenBalance = useUpdateTokenBalance()
+  const isBffSupported = useIsBffSupportedNetwork(chainId)
 
   const allTokens = useAllActiveTokens()
   const { data: nativeTokenBalance } = useNativeTokenBalance(account, chainId)
@@ -71,7 +73,7 @@ export function BalancesAndAllowancesUpdater({
 
   return (
     <>
-      {isBffEnabled && (
+      {isBffEnabled && isBffSupported && (
         <BalancesBffUpdater
           account={account}
           chainId={chainId}

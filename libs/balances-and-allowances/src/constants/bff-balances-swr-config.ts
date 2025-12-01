@@ -46,7 +46,12 @@ export const BFF_BALANCES_SWR_CONFIG: SWRConfiguration = {
     // Pause only if focus has been lost for more than ${FOCUS_HIDDEN_DELAY} seconds
     return Date.now() - focusLostTimestamp > FOCUS_HIDDEN_DELAY
   },
-  onErrorRetry: (_: unknown, __key, config, revalidate, { retryCount }) => {
+  onErrorRetry: (error: unknown, _key, config, revalidate, { retryCount }) => {
+    // Don't retry if error is "Unsupported chain"
+    if (error instanceof Error && error.message.toLowerCase().includes('unsupported chain')) {
+      return
+    }
+
     const timeout = config.errorRetryInterval * Math.pow(2, retryCount - 1)
 
     setTimeout(() => revalidate({ retryCount }), timeout)
