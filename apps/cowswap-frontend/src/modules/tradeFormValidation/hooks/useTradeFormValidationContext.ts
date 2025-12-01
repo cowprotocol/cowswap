@@ -2,17 +2,17 @@ import { useMemo } from 'react'
 
 import { useIsOnline } from '@cowprotocol/common-hooks'
 import { useENSAddress } from '@cowprotocol/ens'
-import { useIsTradeUnsupported } from '@cowprotocol/tokens'
+import { useIsTradeUnsupported, useTryFindToken } from '@cowprotocol/tokens'
 import { useGnosisSafeInfo, useIsTxBundlingSupported, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { useCurrentAccountProxy } from 'modules/accountProxy'
-import { useTryFindIntermediateToken } from 'modules/bridge'
 import { useApproveState, useGetAmountToSignApprove, useIsApprovalOrPermitRequired } from 'modules/erc20Approve'
 import { TradeType, useDerivedTradeState, useIsWrapOrUnwrap } from 'modules/trade'
 import { TradeQuoteState, useTradeQuote } from 'modules/tradeQuote'
 
 import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
+import { getBridgeIntermediateTokenAddress } from 'common/utils/getBridgeIntermediateTokenAddress'
 
 import { useTokenCustomTradeError } from './useTokenCustomTradeError'
 
@@ -47,7 +47,9 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
 
   const isInsufficientBalanceOrderAllowed = tradeType === TradeType.LIMIT_ORDER
 
-  const { intermediateBuyToken, toBeImported } = useTryFindIntermediateToken(tradeQuote.bridgeQuote)
+  const { token: intermediateBuyToken, toBeImported } = useTryFindToken(
+    getBridgeIntermediateTokenAddress(tradeQuote.bridgeQuote),
+  )
 
   const commonContext = {
     account,

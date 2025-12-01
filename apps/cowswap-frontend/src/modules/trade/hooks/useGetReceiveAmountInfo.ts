@@ -1,11 +1,12 @@
 import { useMemo } from 'react'
 
 import { isFractionFalsy } from '@cowprotocol/common-utils'
+import { useTryFindToken } from '@cowprotocol/tokens'
 
-// FIXME: modules trade should not depend on modules/bridge
-import { useTryFindIntermediateToken } from 'modules/bridge'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { useVolumeFee } from 'modules/volumeFee'
+
+import { getBridgeIntermediateTokenAddress } from 'common/utils/getBridgeIntermediateTokenAddress'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
 
@@ -22,7 +23,7 @@ export function useGetReceiveAmountInfo(): ReceiveAmountInfo | null {
 
   const params = useReceiveAmountInfoParams()
 
-  const intermediateCurrency = useTryFindIntermediateToken(bridgeQuote)?.intermediateBuyToken ?? undefined
+  const intermediateCurrency = useTryFindToken(getBridgeIntermediateTokenAddress(bridgeQuote))?.token ?? undefined
 
   return useMemo(() => {
     if (!params) return null
