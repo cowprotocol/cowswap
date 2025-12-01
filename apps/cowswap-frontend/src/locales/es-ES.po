@@ -2737,7 +2737,7 @@ msgstr "CoW Swap utiliza un {accountProxyLabelString} dedicado, controlado solo 
 
 #: apps/cowswap-frontend/src/modules/notifications/pure/NotificationSettingsPopover.tsx
 msgid "Trade alerts enabled"
-msgstr ""
+msgstr "Alertas de trading activadas"
 
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
 #~ msgid "Your swap expires and will not execute if it is pending for longer than the selected duration.<0/><1/>{INPUT_OUTPUT_EXPLANATION}"
@@ -2746,7 +2746,7 @@ msgstr ""
 #: apps/cowswap-frontend/src/common/pure/NetworkCostsSuffix/index.tsx
 #: apps/cowswap-frontend/src/modules/trade/pure/RowFeeContent/index.tsx
 msgid "gas"
-msgstr ""
+msgstr "gas"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookListItem/index.tsx
 msgid "details"
@@ -6273,3 +6273,10 @@ msgstr "Aprende más"
 msgid "Swap and bridge costs are at least {formattedFeePercentage}% of the swap amount"
 msgstr "Los costos de intercambio y puente son por lo menos {formattedFeePercentage}% del monto de intercambio"
 
+# Receive amount labels
+# Notifications / jobs aria labels
+msgid "Trade alert settings"
+msgstr "Configuración de alertas de trading"
+
+msgid "View jobs (opens in a new tab)"
+msgstr "Ver trabajos (se abre en una pestaña nueva)"
