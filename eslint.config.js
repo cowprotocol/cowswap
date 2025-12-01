@@ -173,7 +173,7 @@ module.exports = [
               position: 'after',
             },
             {
-              pattern: '{api,abis,common,constants,legacy,lib,pages,types,utils}/**',
+              pattern: '{api,abis,common,constants,lib,pages,types,utils}/**',
               group: 'internal',
               position: 'before',
             },

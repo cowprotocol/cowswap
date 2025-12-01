@@ -31,7 +31,7 @@ module.exports = {
     '^modules/.*$',
 
     // internal project folders: api, abis, common, constants, etc.
-    '^(api|abis|common|constants|legacy|lib|pages|types|utils)/.*$',
+    '^(api|abis|common|constants|lib|pages|types|utils)/.*$',
 
     // sibling imports (without index)
     '^\\./(?!index$).+$',
