@@ -6,7 +6,8 @@ import { useVolumeFeeTooltip } from 'modules/volumeFee'
 import { NetworkCostsRow } from '../../pure/NetworkCostsRow'
 import { TradeFees } from '../../pure/TradeFees'
 import { ReceiveAmountInfo } from '../../types'
-import { getOrderTypeReceiveAmounts, getTotalCosts } from '../../utils/getReceiveAmountInfo'
+import { getOrderTypeReceiveAmounts } from '../../utils/getReceiveAmountInfo'
+import { getTotalCosts } from '../../utils/getTotalCosts'
 
 interface TradeFeesAndCostsProps {
   receiveAmountInfo: ReceiveAmountInfo | null
