@@ -9,7 +9,7 @@ module.exports = {
    *
    * duplicates eslint's import/order rules
    *
-   * @see esling.config.js
+   * @see eslint.config.js
    */
   importOrder: [
     // react / jotai first
@@ -18,7 +18,7 @@ module.exports = {
     // scope packages like @cowprotocol, @uniswap, @safe-global, etc.
     '^@(cowprotocol|uniswap|safe-global|ethersproject|web3-react)(/.*)?$',
 
-    // thirs parties (analogous to group: external)
+    // third parties (analogous to group: external)
     '<THIRD_PARTY_MODULES>',
 
     // legacy/**

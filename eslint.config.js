@@ -144,7 +144,7 @@ module.exports = [
       /**
        * import/order rules
        *
-       * (!) if you change these rules, you should accordingly update prettier.config.js `importOder` settings
+       * (!) if you change these rules, you should accordingly update prettier.config.js `importOrder` settings
        *
        * @see prettier.config.js
        */
