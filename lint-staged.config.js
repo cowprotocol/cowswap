@@ -7,7 +7,7 @@ module.exports = {
       .join(' ')
     return [
       `prettier --write ${prettierList}`,
-      eslintList.length > 0 && `eslint --fix --max-warnings=0 ${eslintList}`,
+      eslintList.length > 0 && `eslint --fix --concurrency auto --max-warnings=0 ${eslintList}`,
     ].filter(Boolean)
   },
   // lint-staged runs `git add` automatically
