@@ -7,7 +7,7 @@ peer-to-peer among its users or into any on-chain liquidity source while
 providing MEV protection.
 
 | **Platform**          | **Link**                                                                                                      |
-|-----------------------|---------------------------------------------------------------------------------------------------------------|
+| --------------------- | ------------------------------------------------------------------------------------------------------------- |
 | 🐮 **CoW Swap** 🐮    | [swap.cow.fi](https://swap.cow.fi/)                                                                           |
 | CoW Swap (IPFS)       | Every release is deployed automatically to IPFS ([Releases](https://github.com/cowprotocol/cowswap/releases)) |
 | CoW Swap (ENS)        | [ens://cowswap.eth](ens://cowswap.eth) or ([cowswap.eth.limo](https://cowswap.eth.limo))                      |
@@ -28,9 +28,10 @@ yarn
 ```
 
 Or, if you want to use `@cowprotocol/sdk` preview versions like `"@cowprotocol/cow-sdk": "7.0.4-pr-546-c04641f0.0"`, then:
- - set the versions in `package.json`
- - run `PACKAGE_READ_AUTH_TOKEN=XXX yarn run install:sdk-preview` instead of just `yarn`
- - the token must be generated in GitHub with `read:packages` permissions
+
+- set the versions in `package.json`
+- run `PACKAGE_READ_AUTH_TOKEN=XXX yarn run install:sdk-preview` instead of just `yarn`
+- the token must be generated in GitHub with `read:packages` permissions
 
 ## Run
 
@@ -90,7 +91,7 @@ yarn build:cowfi
 
 # 🖼️ Widget Configurator
 
-Start the Widget Configurator on <http://127.0.0.1:4200/widget-configurator>
+Start the Widget Configurator on <http://localhost:4200/widget-configurator>
 
 ```bash
 # Start
@@ -122,14 +123,7 @@ To launch it with our development server (so you have live-reloading):
 
 ```bash
 yarn start
-yarn cypress
-```
-
-Alternatively, you can build the project and launch the integration test.
-
-```bash
-yarn build
-yarn integration-test
+yarn e2e
 ```
 
 If we want to use the Cypress UI:
@@ -137,23 +131,10 @@ If we want to use the Cypress UI:
 ```bash
 yarn build
 yarn serve
-yarn cypress
+yarn e2e:open
 ```
 
-## Build/test UI Library
-
-CoW Swap has a library of reusable components.
-
-```bash
-yarn ui:build
-yarn ui:test
-```
-
-## Build
-
-```bash
-yarn build
-```
+## Analyze build
 
 Analyze CoW Swap bundle:
 
@@ -250,7 +231,7 @@ All price feeds are enabled by default, but they can be individually disabled by
 using an environment variable:
 
 | Name      | Environment variable                 | Type                         | Description                                                                          |
-|-----------|--------------------------------------|------------------------------|--------------------------------------------------------------------------------------|
+| --------- | ------------------------------------ | ---------------------------- | ------------------------------------------------------------------------------------ |
 | **1inch** | `REACT_APP_PRICE_FEED_1INCH_ENABLED` | `boolean` (default = `true`) | [Paraswap](https://1inch.exchange) price estimation. Used for all price estimations. |
 | **0x**    | `REACT_APP_PRICE_FEED_0X_ENABLED`    | `boolean` (default = `true`) | [0x](https://0x.org/) price estimation. Used for all price estimation.               |
 
@@ -264,7 +245,7 @@ metadata JSON containing some information about the trade (using `keccak256` on
 the `UTF-8` bytes).
 
 The format of the JSON follows the format defined in
-[@cowprotocol/app-data](https://github.com/cowprotocol/app-data).
+[@cowprotocol/sdk-app-data](https://github.com/cowprotocol/cow-sdk/tree/main/packages/app-data).
 
 To set your own `AppData`, change `REACT_APP_FULL_APP_DATA_<environment>`
 environment variable. For more details, check out the environment file (<.env>)
@@ -273,13 +254,9 @@ environment variable. For more details, check out the environment file (<.env>)
 
 ## Sitemap
 
-The sitemap can be found in <./public/sitemap.xml>
+`yarn build:cowfi` also generates `./sitemap.xml` file.
 
-To update its content:
-
-1. Edit the list of pages in <./src/sitemap.js>
-2. Run `yarn sitemap`
-3. Commit the changes to git
+See [next-sitemap.config.js](apps/cow-fi/next-sitemap.config.js)
 
 # 🔫 Troubleshooting
 
@@ -313,5 +290,5 @@ List of applications and their labels:
 # 📚 Technical Documentation
 
 1. [Oveall Architecture](docs/architecture-overview.md)
-2. [Amounts formatting](apps/cowswap-frontend/src/utils/amountFormat/README.md)
+2. [Amounts formatting](libs/common-utils/src/amountFormat/README.md)
 3. [ABIs](libs/abis/README.md)
