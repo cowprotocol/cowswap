@@ -11,7 +11,7 @@ import { Notification } from 'components/Notification'
 import { FullDetailsTable } from 'components/orders/DetailsTable/FullDetailsTable'
 import RedirectToSearch from 'components/RedirectToSearch'
 import TablePagination from 'explorer/components/common/TablePagination'
-import { useTable } from 'explorer/components/TokensTableWidget/useTable'
+import { TableState } from 'explorer/components/TokensTableWidget/useTable'
 import { TAB_QUERY_PARAM_KEY } from 'explorer/const'
 import { useQuery, useUpdateQueryString } from 'hooks/useQuery'
 import { useLocation } from 'react-router'
@@ -38,6 +38,11 @@ type Props = {
   isOrderLoading: boolean
   areTradesLoading: boolean
   errors: Errors
+  tableState: TableState
+  setPageSize: (pageSize: number) => void
+  setPageOffset: (pageOffset: number) => void
+  handleNextPage: () => void
+  handlePreviousPage: () => void
 }
 
 const DEFAULT_TAB = TabView[1]
@@ -136,33 +141,31 @@ function getOrderWithTxHash(order: Order | null, trades: Trade[]): Order | null 
   return order
 }
 
-const RESULTS_PER_PAGE = 10
-
 // TODO: Break down this large function into smaller functions
 // eslint-disable-next-line max-lines-per-function
 export const OrderDetails: React.FC<Props> = (props) => {
-  const { order, isOrderLoading, areTradesLoading, errors, trades } = props
-  const chainId = useNetworkId()
-  const tab = useQueryViewParams()
-  const [tabViewSelected, setTabViewSelected] = useState<TabView>(TabView[tab] || TabView[DEFAULT_TAB]) // use DEFAULT when URL param is outside the enum
   const {
-    state: tableState,
+    order,
+    isOrderLoading,
+    areTradesLoading,
+    errors,
+    trades,
+    tableState,
     setPageSize,
     setPageOffset,
     handleNextPage,
     handlePreviousPage,
-  } = useTable({ initialState: { pageOffset: 0, pageSize: RESULTS_PER_PAGE } })
+  } = props
+  const chainId = useNetworkId()
+  const tab = useQueryViewParams()
+  const [tabViewSelected, setTabViewSelected] = useState<TabView>(TabView[tab] || TabView[DEFAULT_TAB]) // use DEFAULT when URL param is outside the enum
+
   const [isPriceInverted, setIsPriceInverted] = useState(false)
   const invertPrice = useCallback((): void => setIsPriceInverted((prev) => !prev), [])
 
   const [redirectTo, setRedirectTo] = useState(false)
   const updateQueryString = useUpdateQueryString()
   const crossChainOrderResponse = useCrossChainOrder(order?.uid)
-
-  // eslint-disable-next-line react-hooks/immutability
-  tableState['hasNextPage'] = tableState.pageOffset + tableState.pageSize < trades.length
-  // eslint-disable-next-line react-hooks/immutability
-  tableState['totalResults'] = trades.length
 
   const ExtraComponentNode: React.ReactNode = (
     <WrapperExtraComponents>
