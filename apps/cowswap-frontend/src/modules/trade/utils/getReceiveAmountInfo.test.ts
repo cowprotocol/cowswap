@@ -455,7 +455,7 @@ describe('getReceiveAmountInfo', () => {
       const result = getCrossChainReceiveAmountInfo({
         orderParams,
         inputCurrency: mainnetUsdc,
-        outputCurrency: baseUsdc,
+        outputCurrency: baseWeth, // Use baseWeth since that's the buy token in orderParams
         slippagePercent,
         partnerFeeBps: undefined,
         intermediateCurrency: mainnetUsdc, // intermediate currency with 6 decimals
@@ -466,7 +466,6 @@ describe('getReceiveAmountInfo', () => {
 
       expect(result.costs.bridgeFee).toBeDefined()
       // Destination currency amount should be 0.05 WETH (18 decimals)
-      // FIXME: now it's USDC
       expect(result.costs.bridgeFee?.amountInDestinationCurrency.toExact()).toBe('0.05')
       expect(result.costs.bridgeFee?.amountInDestinationCurrency.currency.decimals).toBe(18)
 
