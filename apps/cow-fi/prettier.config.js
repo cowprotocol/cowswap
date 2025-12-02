@@ -2,7 +2,7 @@ const config = {
   ...require('../../prettier.config'),
 }
 
-// cow-fi eslint config ignores import/order rules, so we disable prettier import order rules
+// cow-fi eslint config has been ignoring import/order rules, so we disable prettier import order rules
 config.plugins = [...config.plugins].filter((p) => !p.includes('@trivago/prettier-plugin-sort-imports'))
 
 Object.keys(config)

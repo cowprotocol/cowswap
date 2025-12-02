@@ -7,9 +7,7 @@ module.exports = {
   /**
    * importOrder settings
    *
-   * duplicates eslint's import/order rules
-   *
-   * @see eslint.config.js
+   * migrated from eslint's import/order rules
    */
   importOrder: [
     // react / jotai first
