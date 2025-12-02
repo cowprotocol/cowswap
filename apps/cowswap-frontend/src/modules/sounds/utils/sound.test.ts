@@ -1,3 +1,5 @@
+// sort-imports-ignore // disabled for tests
+
 jest.mock('@cowprotocol/core', () => ({
   jotaiStore: { get: jest.fn() },
 }))
