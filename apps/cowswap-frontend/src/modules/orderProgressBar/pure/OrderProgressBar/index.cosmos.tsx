@@ -38,7 +38,7 @@ const account = '0xfb3c7eb936cAA12B5A884d612393969A557d4307'
 const swapAndBridgeContextMock: SwapAndBridgeContext = {
   bridgeProvider: {
     logoUrl:
-      'https://raw.githubusercontent.com/cowprotocol/cow-sdk/refs/heads/main/src/bridging/providers/across/across-logo.png',
+      'https://files.cow.fi/cow-sdk/bridging/providers/across/across-logo.png',
     name: 'Across',
     dappId: 'cow-sdk://bridging/providers/across',
     website: 'https://across.to',
