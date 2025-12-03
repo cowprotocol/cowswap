@@ -22,7 +22,7 @@ export function QuoteObserverUpdater(): null {
   const receiveAmountInfo = useGetReceiveAmountInfo()
 
   const outputCurrency = state?.outputCurrency
-  const buyAmount = receiveAmountInfo?.beforeNetworkCosts.buyAmount
+  const buyAmount = receiveAmountInfo?.beforeAllFees.buyAmount
 
   const quoteBuyAmount = useMemo(() => {
     const numOfPartsChanged = numberOfPartsValue !== prevNumberOfParts

@@ -49,29 +49,27 @@ interface VirtualListRowsProps<T> {
   measureElement(element: Element | null): void
 }
 
-function renderVirtualListRows<T>({
+function VirtualListRows<T>({
   virtualItems,
   loading,
   items,
   getItemView,
   measureElement,
-}: VirtualListRowsProps<T>): ReactNode[] {
-  const elements: ReactNode[] = []
-
-  for (const item of virtualItems) {
-    elements.push(
-      <VirtualListRow
-        key={item.key}
-        item={item}
-        loading={loading}
-        items={items}
-        getItemView={getItemView}
-        measureElement={measureElement}
-      />,
-    )
-  }
-
-  return elements
+}: VirtualListRowsProps<T>): ReactNode {
+  return (
+    <>
+      {virtualItems.map((item) => (
+        <VirtualListRow
+          key={item.key}
+          item={item}
+          loading={loading}
+          items={items}
+          getItemView={getItemView}
+          measureElement={measureElement}
+        />
+      ))}
+    </>
+  )
 }
 
 interface VirtualListProps<T> {
@@ -83,7 +81,7 @@ interface VirtualListProps<T> {
   loading?: boolean
   estimateSize?: () => number
   children?: ReactNode
-  scrollResetKey?: string | number | boolean
+  scrollResetKey?: number | string
 }
 
 export function VirtualList<T>({
@@ -138,20 +136,19 @@ export function VirtualList<T>({
   }, [scrollResetKey, virtualizer])
 
   const virtualItems = virtualizer.getVirtualItems()
-  const virtualRows = renderVirtualListRows({
-    virtualItems,
-    loading,
-    items,
-    getItemView,
-    measureElement: virtualizer.measureElement,
-  })
 
   return (
     <ListWrapper id={id} ref={parentRef} onScroll={onScroll}>
       <ListInner ref={wrapperRef} style={{ height: virtualizer.getTotalSize() }}>
         <ListScroller style={{ transform: `translateY(${virtualItems[0]?.start ?? 0}px)` }}>
           {children}
-          {virtualRows}
+          <VirtualListRows
+            virtualItems={virtualItems}
+            loading={loading}
+            items={items}
+            getItemView={getItemView}
+            measureElement={virtualizer.measureElement}
+          />
         </ListScroller>
       </ListInner>
     </ListWrapper>
