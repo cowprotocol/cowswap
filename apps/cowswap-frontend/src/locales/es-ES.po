@@ -2554,6 +2554,10 @@ msgstr "Resumen de tokens"
 msgid "Enter slippage percentage between {min}% and {max}%"
 msgstr "Introduzca el porcentaje de deslizamiento entre {min}% y {max}%"
 
+#: apps/cowswap-frontend/src/modules/trade/pure/ProtocolFeeRow/index.tsx
+msgid "Protocol fee ({protocolFeeAsPercent}%)"
+msgstr "Comisión del protocolo ({protocolFeeAsPercent}%)"
+
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
 msgid "Learn how"
 msgstr "Aprende cómo"
@@ -2747,6 +2751,10 @@ msgstr "Alertas de trading activadas"
 #: apps/cowswap-frontend/src/modules/trade/pure/RowFeeContent/index.tsx
 msgid "gas"
 msgstr "gas"
+
+#: apps/cowswap-frontend/src/common/pure/ReceiveAmountInfo/index.tsx
+msgid "Protocol fee"
+msgstr "Comisión del protocolo"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookListItem/index.tsx
 msgid "details"
@@ -3289,7 +3297,7 @@ msgstr "Aprobar el token para continuar."
 
 #: apps/cowswap-frontend/src/modules/trade/pure/ProtocolFeeRow/index.tsx
 msgid "This {protocolFeeBps} BPS fee incentivizes solvers to find better prices for users. It is only applied if the trade is executed."
-msgstr ""
+msgstr "Esta comisión de {protocolFeeBps} BPS incentiva a los solvers a encontrar mejores precios para los usuarios. Solo se aplica si se ejecuta la operación."
 
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/AccountCard/DefaultAccountContent.tsx
 msgid "Recoverable value"
@@ -6271,7 +6279,7 @@ msgstr "Aprende más"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/HighFeeWarning/highFeeWarningHelpers.ts
 msgid "Swap and bridge costs are at least {formattedFeePercentage}% of the swap amount"
-msgstr "Los costos de intercambio y puente son por lo menos {formattedFeePercentage}% del monto de intercambio"
+msgstr "Los costos de Swap y Bridge serán por lo menos {formattedFeePercentage}% del monto de intercambio"
 
 # Receive amount labels
 msgid "Receive (incl. fees)"
