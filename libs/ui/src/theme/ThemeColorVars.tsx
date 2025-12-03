@@ -58,6 +58,9 @@ interface ChainAccentInput {
   darkBorderAlpha?: number
 }
 
+// Override type excludes chainId since the Record key is the single source of truth
+type ChainAccentOverride = Partial<Omit<ChainAccentInput, 'chainId'>>
+
 const CHAIN_LIGHT_BG_ALPHA = 0.22
 const CHAIN_DARK_BG_ALPHA = 0.32
 const CHAIN_LIGHT_BORDER_ALPHA = 0.45
@@ -114,7 +117,7 @@ function createChainAccent({
  */
 
 // Color overrides for chains where CHAIN_INFO color differs from original design
-const CHAIN_ACCENT_OVERRIDES: Partial<Record<SupportedChainId, Partial<ChainAccentInput>>> = {
+const CHAIN_ACCENT_OVERRIDES: Partial<Record<SupportedChainId, ChainAccentOverride>> = {
   [SupportedChainId.MAINNET]: {
     // Override: Original color #627EEA differs from SDK's #62688F
     color: '#627EEA',

@@ -119,6 +119,24 @@ describe('Chain Accent Colors', () => {
       expect(colors?.lightColor).toBe(sdkColor)
       expect(colors?.darkColor).toBe(sdkColor)
     })
+
+    it('should always use Record key as chainId source of truth', () => {
+      // This test verifies that chainId always comes from the Record key,
+      // not from override objects. The type system (ChainAccentOverride) prevents
+      // chainId from being set in overrides, but this test documents the runtime behavior.
+      const mainnetColors = getChainAccentColors(SupportedChainId.MAINNET)
+      const lensColors = getChainAccentColors(SupportedChainId.LENS)
+
+      // Even though MAINNET and LENS have overrides, chainId should match the Record key
+      expect(mainnetColors.chainId).toBe(SupportedChainId.MAINNET)
+      expect(lensColors.chainId).toBe(SupportedChainId.LENS)
+
+      // Verify this holds for all chains with overrides
+      Object.entries(CHAIN_ACCENT_CONFIG).forEach(([key, config]) => {
+        const chainId = Number(key) as SupportedChainId
+        expect(config.chainId).toBe(chainId)
+      })
+    })
   })
 
   describe('ChainAccentConfig structure', () => {
