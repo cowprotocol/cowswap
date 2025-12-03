@@ -76,7 +76,7 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps): 
       {!hasAnyFee && !isEoaNotEthFlow && <FeeItem title={t`Fee`} isSell={isSell} feeAmount={undefined} />}
 
       {bridgeFee && (
-        <FeeItem title="Bridge costs" isSell={isSell} feeAmount={bridgeFee?.amountInIntermediateCurrency} />
+        <FeeItem title={t`Bridge costs`} isSell={isSell} feeAmount={bridgeFee?.amountInIntermediateCurrency} />
       )}
 
       {!isFractionFalsy(amountAfterFees) && (

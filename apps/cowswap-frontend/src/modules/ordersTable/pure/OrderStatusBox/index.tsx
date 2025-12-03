@@ -84,6 +84,7 @@ const Wrapper = styled.div<{
 
 const StatusContent = styled.div`
   display: flex;
+  align-items: center;
   gap: 4px;
   hyphens: auto;
   line-height: 1.1;
