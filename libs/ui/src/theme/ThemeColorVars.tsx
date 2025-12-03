@@ -38,7 +38,7 @@ export interface ChainAccentConfig {
   chainId: SupportedChainId
   bgVar: string
   borderVar: string
-  accentVar?: string
+  accentVar: string
   lightBg: string
   darkBg: string
   lightBorder: string
@@ -57,6 +57,9 @@ interface ChainAccentInput {
   lightBorderAlpha?: number
   darkBorderAlpha?: number
 }
+
+// Override type excludes chainId since the Record key is the single source of truth
+type ChainAccentOverride = Partial<Omit<ChainAccentInput, 'chainId'>>
 
 const CHAIN_LIGHT_BG_ALPHA = 0.22
 const CHAIN_DARK_BG_ALPHA = 0.32
@@ -114,7 +117,7 @@ function createChainAccent({
  */
 
 // Color overrides for chains where CHAIN_INFO color differs from original design
-const CHAIN_ACCENT_OVERRIDES: Partial<Record<SupportedChainId, Partial<ChainAccentInput>>> = {
+const CHAIN_ACCENT_OVERRIDES: Partial<Record<SupportedChainId, ChainAccentOverride>> = {
   [SupportedChainId.MAINNET]: {
     // Override: Original color #627EEA differs from SDK's #62688F
     color: '#627EEA',
@@ -191,11 +194,7 @@ const CHAIN_ACCENT_VAR_DECLARATIONS = CHAIN_ACCENT_CONFIG_ARRAY.map(
   ({ bgVar, borderVar, accentVar, lightBg, darkBg, lightBorder, darkBorder, lightColor, darkColor }) => css`
     ${bgVar}: ${({ theme }) => (theme.darkMode ? darkBg : lightBg)};
     ${borderVar}: ${({ theme }) => (theme.darkMode ? darkBorder : lightBorder)};
-    ${accentVar
-      ? css`
-          ${accentVar}: ${({ theme }) => (theme.darkMode ? darkColor : lightColor)};
-        `
-      : ''}
+    ${accentVar}: ${({ theme }) => (theme.darkMode ? darkColor : lightColor)};
   `,
 )
 
