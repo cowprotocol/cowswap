@@ -81,7 +81,7 @@ interface VirtualListProps<T> {
   loading?: boolean
   estimateSize?: () => number
   children?: ReactNode
-  scrollResetKey?: number
+  scrollResetKey?: number | string
 }
 
 export function VirtualList<T>({
