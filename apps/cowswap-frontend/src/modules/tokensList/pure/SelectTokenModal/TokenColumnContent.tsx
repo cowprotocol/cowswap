@@ -56,16 +56,18 @@ export function TokenColumnContent({
 
   return (
     <>
-      {renderLegacyChainSelector(chainsToSelect, onSelectChain)}
+      <LegacyChainSelector chainsToSelect={chainsToSelect} onSelectChain={onSelectChain} />
       <SelectTokenModalContent isRouteAvailable={isRouteAvailable}>{children}</SelectTokenModalContent>
     </>
   )
 }
 
-function renderLegacyChainSelector(
-  chainsToSelect: ChainsToSelectState | undefined,
-  onSelectChain: (chain: ChainInfo) => void,
-): ReactNode {
+interface LegacyChainSelectorProps {
+  chainsToSelect: ChainsToSelectState | undefined
+  onSelectChain: (chain: ChainInfo) => void
+}
+
+function LegacyChainSelector({ chainsToSelect, onSelectChain }: LegacyChainSelectorProps): ReactNode {
   if (!chainsToSelect?.chains?.length) {
     return null
   }
