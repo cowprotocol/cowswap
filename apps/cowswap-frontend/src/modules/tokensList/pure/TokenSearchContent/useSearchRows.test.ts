@@ -5,30 +5,22 @@ import { renderHook } from '@testing-library/react'
 
 import { useSearchRows } from './useSearchRows'
 
-// Helper to create test tokens with valid Ethereum addresses
+// Helper to create valid Ethereum addresses
+const toAddress = (suffix: string | number): string => `0x${suffix.toString().padStart(40, '0')}`
+
+// Helper to create test tokens
 function createToken(
   symbol: string,
-  address: string,
+  addressSuffix: string | number,
   name: string,
   chainId: SupportedChainId = SupportedChainId.SEPOLIA,
 ): TokenWithLogo {
-  // Ensure address is valid (42 chars: 0x + 40 hex chars)
-  // If address is too short, pad it with zeros
-  let validAddress = address
-  if (address.length < 42) {
-    const hexPart = address.startsWith('0x') ? address.slice(2) : address
-    validAddress = `0x${hexPart.padStart(40, '0')}`
-  }
-  return new TokenWithLogo(undefined, chainId, validAddress, 18, symbol, name)
+  return new TokenWithLogo(undefined, chainId, toAddress(addressSuffix), 18, symbol, name)
 }
 
 // Helper to create multiple tokens
 function createTokens(count: number, prefix = 'TOKEN'): TokenWithLogo[] {
-  return Array.from({ length: count }, (_, i) => {
-    // Generate valid 40-char hex address by padding the index
-    const hexIndex = i.toString(16).padStart(40, '0')
-    return createToken(`${prefix}${i}`, `0x${hexIndex}`, `${prefix} ${i}`)
-  })
+  return Array.from({ length: count }, (_, i) => createToken(`${prefix}${i}`, i, `${prefix} ${i}`))
 }
 
 // eslint-disable-next-line max-lines-per-function
@@ -38,11 +30,11 @@ describe('useSearchRows', () => {
       const { result } = renderHook(() =>
         useSearchRows({
           isLoading: true,
-          matchedTokens: [createToken('TOKEN', '0x1', 'Test Token')],
-          activeList: [createToken('TOKEN2', '0x2', 'Test Token 2')],
-          blockchainResult: [createToken('TOKEN3', '0x3', 'Test Token 3')],
-          inactiveListsResult: [createToken('TOKEN4', '0x4', 'Test Token 4')],
-          externalApiResult: [createToken('TOKEN5', '0x5', 'Test Token 5')],
+          matchedTokens: [createToken('TOKEN', 1, 'Test Token')],
+          activeList: [createToken('TOKEN2', 2, 'Test Token 2')],
+          blockchainResult: [createToken('TOKEN3', 3, 'Test Token 3')],
+          inactiveListsResult: [createToken('TOKEN4', 4, 'Test Token 4')],
+          externalApiResult: [createToken('TOKEN5', 5, 'Test Token 5')],
         }),
       )
 
@@ -50,17 +42,17 @@ describe('useSearchRows', () => {
     })
 
     it('should ignore all token arrays when loading', () => {
-      const matchedTokens = [createToken('MATCHED', '0x1', 'Matched Token')]
-      const activeList = [createToken('ACTIVE', '0x2', 'Active Token')]
+      const matchedTokens = [createToken('MATCHED', 1, 'Matched Token')]
+      const activeList = [createToken('ACTIVE', 2, 'Active Token')]
 
       const { result: loadingResult } = renderHook(() =>
         useSearchRows({
           isLoading: true,
           matchedTokens,
           activeList,
-          blockchainResult: [createToken('BLOCKCHAIN', '0x3', 'Blockchain Token')],
-          inactiveListsResult: [createToken('INACTIVE', '0x4', 'Inactive Token')],
-          externalApiResult: [createToken('EXTERNAL', '0x5', 'External Token')],
+          blockchainResult: [createToken('BLOCKCHAIN', 3, 'Blockchain Token')],
+          inactiveListsResult: [createToken('INACTIVE', 4, 'Inactive Token')],
+          externalApiResult: [createToken('EXTERNAL', 5, 'External Token')],
         }),
       )
 
@@ -108,8 +100,8 @@ describe('useSearchRows', () => {
 
   describe('Matched Tokens', () => {
     it('should add matched tokens with correct structure', () => {
-      const token1 = createToken('TOKEN1', '0x1', 'Token 1')
-      const token2 = createToken('TOKEN2', '0x2', 'Token 2')
+      const token1 = createToken('TOKEN1', 1, 'Token 1')
+      const token2 = createToken('TOKEN2', 2, 'Token 2')
 
       const { result } = renderHook(() =>
         useSearchRows({
@@ -125,9 +117,9 @@ describe('useSearchRows', () => {
     })
 
     it('should preserve order of matched tokens', () => {
-      const token1 = createToken('TOKEN1', '0x1', 'Token 1')
-      const token2 = createToken('TOKEN2', '0x2', 'Token 2')
-      const token3 = createToken('TOKEN3', '0x3', 'Token 3')
+      const token1 = createToken('TOKEN1', 1, 'Token 1')
+      const token2 = createToken('TOKEN2', 2, 'Token 2')
+      const token3 = createToken('TOKEN3', 3, 'Token 3')
 
       const { result } = renderHook(() =>
         useSearchRows({
@@ -163,8 +155,8 @@ describe('useSearchRows', () => {
 
   describe('Active List Tokens', () => {
     it('should add active list tokens after matched tokens', () => {
-      const matchedToken = createToken('MATCHED', '0x1', 'Matched Token')
-      const activeToken = createToken('ACTIVE', '0x2', 'Active Token')
+      const matchedToken = createToken('MATCHED', 1, 'Matched Token')
+      const activeToken = createToken('ACTIVE', 2, 'Active Token')
 
       const { result } = renderHook(() =>
         useSearchRows({
@@ -180,7 +172,7 @@ describe('useSearchRows', () => {
     })
 
     it('should have correct structure for active list tokens', () => {
-      const activeToken = createToken('ACTIVE', '0x1', 'Active Token')
+      const activeToken = createToken('ACTIVE', 1, 'Active Token')
 
       const { result } = renderHook(() =>
         useSearchRows({
@@ -195,7 +187,7 @@ describe('useSearchRows', () => {
     })
 
     it('should handle empty active list', () => {
-      const matchedToken = createToken('MATCHED', '0x1', 'Matched Token')
+      const matchedToken = createToken('MATCHED', 1, 'Matched Token')
 
       const { result } = renderHook(() =>
         useSearchRows({
@@ -213,7 +205,7 @@ describe('useSearchRows', () => {
 
   describe('Blockchain Import Section', () => {
     it('should add blockchain tokens when provided', () => {
-      const blockchainToken = createToken('BLOCKCHAIN', '0x1', 'Blockchain Token')
+      const blockchainToken = createToken('BLOCKCHAIN', 1, 'Blockchain Token')
 
       const { result } = renderHook(() =>
         useSearchRows({
@@ -238,7 +230,7 @@ describe('useSearchRows', () => {
     })
 
     it('should not add section title for blockchain section', () => {
-      const blockchainToken = createToken('BLOCKCHAIN', '0x1', 'Blockchain Token')
+      const blockchainToken = createToken('BLOCKCHAIN', 1, 'Blockchain Token')
 
       const { result } = renderHook(() =>
         useSearchRows({
@@ -254,7 +246,7 @@ describe('useSearchRows', () => {
     })
 
     it('should have shadowed false for blockchain tokens', () => {
-      const blockchainToken = createToken('BLOCKCHAIN', '0x1', 'Blockchain Token')
+      const blockchainToken = createToken('BLOCKCHAIN', 1, 'Blockchain Token')
 
       const { result } = renderHook(() =>
         useSearchRows({
@@ -274,7 +266,7 @@ describe('useSearchRows', () => {
     })
 
     it('should have wrapperId currency-import on first blockchain token', () => {
-      const blockchainToken = createToken('BLOCKCHAIN', '0x1', 'Blockchain Token')
+      const blockchainToken = createToken('BLOCKCHAIN', 1, 'Blockchain Token')
 
       const { result } = renderHook(() =>
         useSearchRows({
@@ -312,7 +304,7 @@ describe('useSearchRows', () => {
 
   describe('Inactive Lists Import Section', () => {
     it('should add section title for inactive lists', () => {
-      const inactiveToken = createToken('INACTIVE', '0x1', 'Inactive Token')
+      const inactiveToken = createToken('INACTIVE', 1, 'Inactive Token')
 
       const { result } = renderHook(() =>
         useSearchRows({
@@ -334,7 +326,7 @@ describe('useSearchRows', () => {
     })
 
     it('should include tooltip text for inactive lists', () => {
-      const inactiveToken = createToken('INACTIVE', '0x1', 'Inactive Token')
+      const inactiveToken = createToken('INACTIVE', 1, 'Inactive Token')
 
       const { result } = renderHook(() =>
         useSearchRows({
@@ -356,7 +348,7 @@ describe('useSearchRows', () => {
     })
 
     it('should have shadowed true for inactive tokens', () => {
-      const inactiveToken = createToken('INACTIVE', '0x1', 'Inactive Token')
+      const inactiveToken = createToken('INACTIVE', 1, 'Inactive Token')
 
       const { result } = renderHook(() =>
         useSearchRows({
@@ -376,7 +368,7 @@ describe('useSearchRows', () => {
     })
 
     it('should have correct section type inactive', () => {
-      const inactiveToken = createToken('INACTIVE', '0x1', 'Inactive Token')
+      const inactiveToken = createToken('INACTIVE', 1, 'Inactive Token')
 
       const { result } = renderHook(() =>
         useSearchRows({
@@ -414,7 +406,7 @@ describe('useSearchRows', () => {
 
   describe('External API Import Section', () => {
     it('should add section title for external API results', () => {
-      const externalToken = createToken('EXTERNAL', '0x1', 'External Token')
+      const externalToken = createToken('EXTERNAL', 1, 'External Token')
 
       const { result } = renderHook(() =>
         useSearchRows({
@@ -435,7 +427,7 @@ describe('useSearchRows', () => {
     })
 
     it('should include tooltip text for external API results', () => {
-      const externalToken = createToken('EXTERNAL', '0x1', 'External Token')
+      const externalToken = createToken('EXTERNAL', 1, 'External Token')
 
       const { result } = renderHook(() =>
         useSearchRows({
@@ -455,7 +447,7 @@ describe('useSearchRows', () => {
     })
 
     it('should have shadowed true for external tokens', () => {
-      const externalToken = createToken('EXTERNAL', '0x1', 'External Token')
+      const externalToken = createToken('EXTERNAL', 1, 'External Token')
 
       const { result } = renderHook(() =>
         useSearchRows({
@@ -475,7 +467,7 @@ describe('useSearchRows', () => {
     })
 
     it('should have correct section type external', () => {
-      const externalToken = createToken('EXTERNAL', '0x1', 'External Token')
+      const externalToken = createToken('EXTERNAL', 1, 'External Token')
 
       const { result } = renderHook(() =>
         useSearchRows({
@@ -513,7 +505,7 @@ describe('useSearchRows', () => {
 
   describe('Import Section Structure', () => {
     it('should have isFirstInSection true on first token', () => {
-      const tokens = [createToken('TOKEN1', '0x1', 'Token 1'), createToken('TOKEN2', '0x2', 'Token 2')]
+      const tokens = [createToken('TOKEN1', 1, 'Token 1'), createToken('TOKEN2', 2, 'Token 2')]
 
       const { result } = renderHook(() =>
         useSearchRows({
@@ -534,7 +526,7 @@ describe('useSearchRows', () => {
     })
 
     it('should have isLastInSection true on last token', () => {
-      const tokens = [createToken('TOKEN1', '0x1', 'Token 1'), createToken('TOKEN2', '0x2', 'Token 2')]
+      const tokens = [createToken('TOKEN1', 1, 'Token 1'), createToken('TOKEN2', 2, 'Token 2')]
 
       const { result } = renderHook(() =>
         useSearchRows({
@@ -556,9 +548,9 @@ describe('useSearchRows', () => {
 
     it('should have both flags false on middle tokens', () => {
       const tokens = [
-        createToken('TOKEN1', '0x1', 'Token 1'),
-        createToken('TOKEN2', '0x2', 'Token 2'),
-        createToken('TOKEN3', '0x3', 'Token 3'),
+        createToken('TOKEN1', 1, 'Token 1'),
+        createToken('TOKEN2', 2, 'Token 2'),
+        createToken('TOKEN3', 3, 'Token 3'),
       ]
 
       const { result } = renderHook(() =>
@@ -581,7 +573,7 @@ describe('useSearchRows', () => {
     })
 
     it('should have wrapperId only on first token', () => {
-      const tokens = [createToken('TOKEN1', '0x1', 'Token 1'), createToken('TOKEN2', '0x2', 'Token 2')]
+      const tokens = [createToken('TOKEN1', 1, 'Token 1'), createToken('TOKEN2', 2, 'Token 2')]
 
       const { result } = renderHook(() =>
         useSearchRows({
@@ -602,9 +594,9 @@ describe('useSearchRows', () => {
     })
 
     it('should have correct section type on each import token', () => {
-      const blockchainToken = createToken('BLOCKCHAIN', '0x1', 'Blockchain Token')
-      const inactiveToken = createToken('INACTIVE', '0x2', 'Inactive Token')
-      const externalToken = createToken('EXTERNAL', '0x3', 'External Token')
+      const blockchainToken = createToken('BLOCKCHAIN', 1, 'Blockchain Token')
+      const inactiveToken = createToken('INACTIVE', 2, 'Inactive Token')
+      const externalToken = createToken('EXTERNAL', 3, 'External Token')
 
       const { result } = renderHook(() =>
         useSearchRows({
@@ -680,7 +672,7 @@ describe('useSearchRows', () => {
     })
 
     it('should handle single token in section with both first and last flags true', () => {
-      const singleToken = createToken('SINGLE', '0x1', 'Single Token')
+      const singleToken = createToken('SINGLE', 1, 'Single Token')
 
       const { result } = renderHook(() =>
         useSearchRows({
@@ -704,8 +696,8 @@ describe('useSearchRows', () => {
 
   describe('Memoization', () => {
     it('should return same reference when dependencies do not change', () => {
-      const matchedTokens = [createToken('TOKEN1', '0x1', 'Token 1')]
-      const activeList = [createToken('TOKEN2', '0x2', 'Token 2')]
+      const matchedTokens = [createToken('TOKEN1', 1, 'Token 1')]
+      const activeList = [createToken('TOKEN2', 2, 'Token 2')]
 
       const { result, rerender } = renderHook(
         ({ matchedTokens, activeList }) =>
@@ -727,9 +719,9 @@ describe('useSearchRows', () => {
     })
 
     it('should return new reference when dependencies change', () => {
-      const matchedTokens1 = [createToken('TOKEN1', '0x1', 'Token 1')]
-      const matchedTokens2 = [createToken('TOKEN2', '0x2', 'Token 2')]
-      const activeList = [createToken('TOKEN3', '0x3', 'Token 3')]
+      const matchedTokens1 = [createToken('TOKEN1', 1, 'Token 1')]
+      const matchedTokens2 = [createToken('TOKEN2', 2, 'Token 2')]
+      const activeList = [createToken('TOKEN3', 3, 'Token 3')]
 
       const { result, rerender } = renderHook(
         ({ matchedTokens, activeList }) =>
@@ -752,8 +744,8 @@ describe('useSearchRows', () => {
     })
 
     it('should return new reference when isLoading changes', () => {
-      const matchedTokens = [createToken('TOKEN1', '0x1', 'Token 1')]
-      const activeList = [createToken('TOKEN2', '0x2', 'Token 2')]
+      const matchedTokens = [createToken('TOKEN1', 1, 'Token 1')]
+      const activeList = [createToken('TOKEN2', 2, 'Token 2')]
 
       const { result, rerender } = renderHook(
         ({ isLoading, matchedTokens, activeList }) =>
