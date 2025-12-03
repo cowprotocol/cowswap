@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
@@ -17,10 +19,9 @@ export const SingleLetterLogoWrapper = styled.div`
 
 type SingleLetterLogoProps = {
   initial: string
+  address?: string
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function SingleLetterLogo({ initial }: SingleLetterLogoProps) {
-  return <SingleLetterLogoWrapper>{initial}</SingleLetterLogoWrapper>
+export function SingleLetterLogo({ initial, address }: SingleLetterLogoProps): ReactNode {
+  return <SingleLetterLogoWrapper data-address={address}>{initial}</SingleLetterLogoWrapper>
 }
