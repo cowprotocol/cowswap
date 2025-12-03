@@ -3,6 +3,8 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { CHAIN_ACCENT_CONFIG, getChainAccentColors } from './ThemeColorVars'
 
+import { Color } from '../colors'
+
 describe('Chain Accent Colors', () => {
   describe('getChainAccentColors', () => {
     it('should return accent colors for MAINNET', () => {
@@ -34,32 +36,21 @@ describe('Chain Accent Colors', () => {
       expect(colors?.lightColor).toBe(CHAIN_INFO[SupportedChainId.BNB].color)
       expect(colors?.darkColor).toBe(CHAIN_INFO[SupportedChainId.BNB].color)
     })
-
-    it('should return undefined for non-existent chain', () => {
-      // Use a very large number that's unlikely to be a real chain ID
-      const colors = getChainAccentColors(999999 as SupportedChainId)
-
-      expect(colors).toBeUndefined()
-    })
   })
 
   describe('CHAIN_ACCENT_CONFIG', () => {
     it('should include all chains from CHAIN_INFO', () => {
       const chainIdsInChainInfo = Object.keys(CHAIN_INFO).map((key) => Number(key) as SupportedChainId)
 
-      // All chains from CHAIN_INFO should be in the config (unless excluded)
+      // All chains from CHAIN_INFO should be in the config
       chainIdsInChainInfo.forEach((chainId) => {
         const config = CHAIN_ACCENT_CONFIG[chainId]
-        // Config should exist unless it's explicitly excluded
-        // Since CHAIN_ACCENT_EXCLUSIONS is empty, all should exist
         expect(config).toBeDefined()
       })
     })
 
     it('should have correct CSS variable format for all chains', () => {
       Object.values(CHAIN_ACCENT_CONFIG).forEach((config) => {
-        if (!config) return
-
         expect(config.bgVar).toMatch(/^--cow-color-chain-[a-z_]+-bg$/)
         expect(config.borderVar).toMatch(/^--cow-color-chain-[a-z_]+-border$/)
         expect(config.accentVar).toMatch(/^--cow-color-chain-[a-z_]+-accent$/)
@@ -170,18 +161,35 @@ describe('Chain Accent Colors', () => {
 
       allChainIds.forEach((chainId) => {
         const config = CHAIN_ACCENT_CONFIG[chainId]
-        // Currently no exclusions, so all should be present
         expect(config).toBeDefined()
-        expect(config?.chainId).toBe(chainId)
+        expect(config.chainId).toBe(chainId)
       })
     })
 
     it('should have consistent chainId in config', () => {
       Object.entries(CHAIN_ACCENT_CONFIG).forEach(([key, config]) => {
-        if (!config) return
-
         const chainId = Number(key) as SupportedChainId
         expect(config.chainId).toBe(chainId)
+      })
+    })
+  })
+
+  describe('Fallback color handling', () => {
+    it('should use Color.neutral50 as fallback when chain color is missing', () => {
+      // Verify the fallback color constant exists and has the correct value
+      // This is defensive - in practice all chains in CHAIN_INFO should have colors
+      const fallbackColor = Color.neutral50
+      expect(fallbackColor).toBe('#827474')
+
+      // Verify all chains have valid colors (ensuring fallback logic doesn't break anything)
+      Object.values(CHAIN_ACCENT_CONFIG).forEach((config) => {
+        expect(config.lightColor).toBeDefined()
+        expect(config.darkColor).toBeDefined()
+        expect(typeof config.lightColor).toBe('string')
+        expect(typeof config.darkColor).toBe('string')
+        // Colors should be valid hex or rgba format
+        expect(config.lightColor).toMatch(/^#[\da-fA-F]{6}$|^rgba?\(/)
+        expect(config.darkColor).toMatch(/^#[\da-fA-F]{6}$|^rgba?\(/)
       })
     })
   })

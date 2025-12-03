@@ -5,6 +5,7 @@ import { getContrastText } from '@cowprotocol/ui-utils'
 import { darken, lighten, transparentize } from 'color2k'
 import { css } from 'styled-components/macro'
 
+import { Color } from '../colors'
 import { UI } from '../enum'
 
 /**
@@ -62,6 +63,9 @@ const CHAIN_DARK_BG_ALPHA = 0.32
 const CHAIN_LIGHT_BORDER_ALPHA = 0.45
 const CHAIN_DARK_BORDER_ALPHA = 0.65
 
+// Fallback color if chain color is missing (uses neutral50 as approximation of UI.COLOR_TEXT)
+const FALLBACK_CHAIN_COLOR = Color.neutral50
+
 const chainAlpha = (color: string, alpha: number): string => transparentize(color, 1 - alpha)
 
 function createChainAccent({
@@ -75,7 +79,8 @@ function createChainAccent({
   darkBorderAlpha = CHAIN_DARK_BORDER_ALPHA,
 }: ChainAccentInput): ChainAccentConfig {
   // Use CHAIN_INFO.color as the single source of truth, allow override if needed
-  const baseColor = color ?? CHAIN_INFO[chainId].color
+  // Fallback to neutral gray if color is missing
+  const baseColor = color ?? CHAIN_INFO[chainId]?.color ?? FALLBACK_CHAIN_COLOR
   const finalLightColor = lightColor ?? baseColor
   const finalDarkColor = darkColor ?? baseColor
 
@@ -105,15 +110,8 @@ function createChainAccent({
  * - Chain names and CSS variables are generated automatically from CHAIN_INFO
  *
  * CUSTOMIZATION:
- * - Exclude chains from accent colors by adding them to CHAIN_ACCENT_EXCLUSIONS
  * - Override colors in CHAIN_ACCENT_OVERRIDES if CHAIN_INFO color differs from design (e.g., MAINNET, LENS)
  */
-
-// Chains to exclude from accent color configuration (e.g., testnets that don't need accent colors)
-const CHAIN_ACCENT_EXCLUSIONS: Set<SupportedChainId> = new Set([
-  // Add chain IDs here if they shouldn't have accent colors
-  // Example: SupportedChainId.SOME_TESTNET,
-])
 
 // Color overrides for chains where CHAIN_INFO color differs from original design
 const CHAIN_ACCENT_OVERRIDES: Partial<Record<SupportedChainId, Partial<ChainAccentInput>>> = {
@@ -128,12 +126,12 @@ const CHAIN_ACCENT_OVERRIDES: Partial<Record<SupportedChainId, Partial<ChainAcce
   },
 }
 
-// Automatically generate accent colors for all chains in CHAIN_INFO, excluding those in CHAIN_ACCENT_EXCLUSIONS
+// Automatically generate accent colors for all chains in CHAIN_INFO
 const CHAIN_ACCENT_CONFIG_ARRAY: ChainAccentConfig[] = Object.keys(CHAIN_INFO)
   .map((key) => Number(key) as SupportedChainId)
   .filter((chainId) => {
-    // Type guard: ensure chainId exists in CHAIN_INFO and is not excluded
-    return CHAIN_INFO[chainId] && !CHAIN_ACCENT_EXCLUSIONS.has(chainId)
+    // Type guard: ensure chainId exists in CHAIN_INFO
+    return CHAIN_INFO[chainId]
   })
   .map((chainId) =>
     createChainAccent({
@@ -154,30 +152,27 @@ const CHAIN_ACCENT_CONFIG_ARRAY: ChainAccentConfig[] = Object.keys(CHAIN_INFO)
  * // colors.bgVar, colors.borderVar, colors.lightBg, colors.darkBg, etc.
  * ```
  */
-export const CHAIN_ACCENT_CONFIG: Record<SupportedChainId, ChainAccentConfig | undefined> =
-  CHAIN_ACCENT_CONFIG_ARRAY.reduce(
-    (acc, config) => {
-      acc[config.chainId] = config
-      return acc
-    },
-    {} as Record<SupportedChainId, ChainAccentConfig | undefined>,
-  )
+export const CHAIN_ACCENT_CONFIG: Record<SupportedChainId, ChainAccentConfig> = CHAIN_ACCENT_CONFIG_ARRAY.reduce(
+  (acc, config) => {
+    acc[config.chainId] = config
+    return acc
+  },
+  {} as Record<SupportedChainId, ChainAccentConfig>,
+)
 
 /**
  * Helper function to get chain accent colors for a given chainId.
- * Returns undefined if the chain doesn't have accent colors configured.
+ * All chains have accent colors configured.
  *
  * @example
  * ```tsx
  * import { getChainAccentColors } from '@cowprotocol/ui'
  *
  * const colors = getChainAccentColors(SupportedChainId.MAINNET)
- * if (colors) {
- *   // Use colors.lightBg, colors.darkBg, etc.
- * }
+ * // Use colors.lightBg, colors.darkBg, etc.
  * ```
  */
-export function getChainAccentColors(chainId: SupportedChainId): ChainAccentConfig | undefined {
+export function getChainAccentColors(chainId: SupportedChainId): ChainAccentConfig {
   return CHAIN_ACCENT_CONFIG[chainId]
 }
 
