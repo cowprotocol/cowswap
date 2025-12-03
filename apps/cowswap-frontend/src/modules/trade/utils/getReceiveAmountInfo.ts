@@ -38,8 +38,6 @@ export function getReceiveAmountInfo(
   const beforeNetworkCosts = mapSellBuyAmounts(result.beforeNetworkCosts, currencies)
   const afterNetworkCosts = mapSellBuyAmounts(result.afterNetworkCosts, currencies)
 
-  const bridgeFee = undefined
-
   return {
     isSell,
     quotePrice: new Price<Currency, Currency>({
@@ -50,7 +48,6 @@ export function getReceiveAmountInfo(
       networkFee: calculateNetworkFee(result.costs.networkFee, currencies),
       partnerFee: mapFeeAmounts(isSell, result.costs.partnerFee, currencies),
       protocolFee: !!result.costs.protocolFee ? mapFeeAmounts(isSell, result.costs.protocolFee, currencies) : undefined,
-      bridgeFee,
     },
     beforeAllFees: mapSellBuyAmounts(result.beforeAllFees, currencies),
     beforeNetworkCosts,
