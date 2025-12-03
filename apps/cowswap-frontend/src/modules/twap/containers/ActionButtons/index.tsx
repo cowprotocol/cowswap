@@ -58,16 +58,17 @@ export function ActionButtons({
   if (!tradeFormButtonContext) return null
 
   // Show local form validation errors only when wallet is connected
-  if (localFormValidation && !walletIsNotConnected) {
-    return <PrimaryActionButton state={localFormValidation} context={primaryActionContext} />
-  }
+  const buttons =
+    localFormValidation && !walletIsNotConnected ? (
+      <PrimaryActionButton state={localFormValidation} context={primaryActionContext} />
+    ) : (
+      <TradeFormButtons
+        confirmText={t`Review TWAP order`}
+        validation={primaryFormValidation}
+        context={tradeFormButtonContext}
+        isDisabled={!areWarningsAccepted}
+      />
+    )
 
-  return (
-    <TradeFormButtons
-      confirmText={t`Review TWAP order`}
-      validation={primaryFormValidation}
-      context={tradeFormButtonContext}
-      isDisabled={!areWarningsAccepted}
-    />
-  )
+  return buttons
 }

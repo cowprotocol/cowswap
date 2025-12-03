@@ -19,7 +19,7 @@ window.addEventListener('eip6963:announceProvider', (event: Event) => {
 })
 
 /**
- * Handles JSON-RPC request comming from an iFrame by delegating to a given Ethereum provider.
+ * Handles JSON-RPC request coming from an iFrame by delegating to a given Ethereum provider.
  * The result will be passed back to the iFrame.
  *
  * Additionally, it will forward some special events from the wallet, to the iFrame window, for example connect/disconnect/chainChanged

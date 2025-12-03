@@ -11,7 +11,7 @@ const localForageJotai = createInstance({
 })
 
 /**
- * atomWithStorage() has build-in feature to persist state between all tabs
+ * atomWithStorage() has built-in feature to persist state between all tabs
  * To disable this feature we pass our own instance of storage
  * https://github.com/pmndrs/jotai/pull/1004/files
  *
