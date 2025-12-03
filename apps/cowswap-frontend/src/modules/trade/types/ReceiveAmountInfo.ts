@@ -21,10 +21,19 @@ export interface ReceiveAmountInfo {
       amount: CurrencyAmount<Currency>
       bps: number
     }
+    protocolFee?: {
+      amount: CurrencyAmount<Currency>
+      bps: number
+    }
     bridgeFee?: {
       amountInIntermediateCurrency: CurrencyAmount<Currency>
       amountInDestinationCurrency: CurrencyAmount<Currency>
     }
+  }
+
+  beforeAllFees: {
+    sellAmount: CurrencyAmount<Currency>
+    buyAmount: CurrencyAmount<Currency>
   }
 
   beforeNetworkCosts: {
