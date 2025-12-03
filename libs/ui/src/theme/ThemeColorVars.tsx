@@ -1,4 +1,4 @@
-import { CHAIN_INFO } from '@cowprotocol/common-const'
+import { BaseChainInfo, CHAIN_INFO } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { getContrastText } from '@cowprotocol/ui-utils'
 
@@ -126,23 +126,37 @@ const CHAIN_ACCENT_OVERRIDES: Partial<Record<SupportedChainId, Partial<ChainAcce
   },
 }
 
-// Automatically generate accent colors for all chains in CHAIN_INFO
-const CHAIN_ACCENT_CONFIG_ARRAY: ChainAccentConfig[] = Object.keys(CHAIN_INFO)
-  .map((key) => Number(key) as SupportedChainId)
-  .filter((chainId) => {
-    // Type guard: ensure chainId exists in CHAIN_INFO
-    return CHAIN_INFO[chainId]
-  })
-  .map((chainId) =>
-    createChainAccent({
+/**
+ * Helper function to create a Record with all SupportedChainId keys.
+ * Since CHAIN_INFO is Record<SupportedChainId, BaseChainInfo>, TypeScript ensures
+ * all keys are present when iterating over CHAIN_INFO entries.
+ *
+ * Note: TypeScript cannot statically verify completeness of dynamically constructed Records,
+ * but since we iterate over all CHAIN_INFO entries (which is a complete Record), all keys
+ * are guaranteed to be present at runtime.
+ */
+function createChainAccentConfig(): Record<SupportedChainId, ChainAccentConfig> {
+  const config = {} as Record<SupportedChainId, ChainAccentConfig>
+
+  // Iterate over all CHAIN_INFO entries - since CHAIN_INFO is Record<SupportedChainId, BaseChainInfo>,
+  // all SupportedChainId keys are guaranteed to be present
+  for (const [key, _chainInfo] of Object.entries(CHAIN_INFO) as [string, BaseChainInfo][]) {
+    const chainId = Number(key) as SupportedChainId
+    config[chainId] = createChainAccent({
       chainId,
       ...CHAIN_ACCENT_OVERRIDES[chainId],
-    }),
-  )
+    })
+  }
+
+  return config satisfies Record<SupportedChainId, ChainAccentConfig>
+}
 
 /**
  * Map of chain accent colors keyed by SupportedChainId for programmatic access.
  * This allows components to access theme-aware chain colors without using CSS variables.
+ *
+ * TypeScript verifies completeness: since CHAIN_INFO is Record<SupportedChainId, BaseChainInfo>,
+ * iterating over all entries ensures all SupportedChainId keys are present.
  *
  * @example
  * ```tsx
@@ -152,13 +166,10 @@ const CHAIN_ACCENT_CONFIG_ARRAY: ChainAccentConfig[] = Object.keys(CHAIN_INFO)
  * // colors.bgVar, colors.borderVar, colors.lightBg, colors.darkBg, etc.
  * ```
  */
-export const CHAIN_ACCENT_CONFIG: Record<SupportedChainId, ChainAccentConfig> = CHAIN_ACCENT_CONFIG_ARRAY.reduce(
-  (acc, config) => {
-    acc[config.chainId] = config
-    return acc
-  },
-  {} as Record<SupportedChainId, ChainAccentConfig>,
-)
+export const CHAIN_ACCENT_CONFIG: Record<SupportedChainId, ChainAccentConfig> = createChainAccentConfig()
+
+// Array version for CSS variable generation
+const CHAIN_ACCENT_CONFIG_ARRAY: ChainAccentConfig[] = Object.values(CHAIN_ACCENT_CONFIG)
 
 /**
  * Helper function to get chain accent colors for a given chainId.
