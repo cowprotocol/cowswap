@@ -6285,3 +6285,10 @@ msgstr "Learn more"
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/HighFeeWarning/highFeeWarningHelpers.ts
 msgid "Swap and bridge costs are at least {formattedFeePercentage}% of the swap amount"
 msgstr "Swap and bridge costs are at least {formattedFeePercentage}% of the swap amount"
+
+# Notifications / jobs aria labels
+msgid "Trade alert settings"
+msgstr "Trade alert settings"
+
+msgid "View jobs (opens in a new tab)"
+msgstr "View jobs (opens in a new tab)"
