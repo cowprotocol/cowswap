@@ -53,6 +53,9 @@ describe('Chain Accent Colors', () => {
       Object.values(CHAIN_ACCENT_CONFIG).forEach((config) => {
         expect(config.bgVar).toMatch(/^--cow-color-chain-[a-z_]+-bg$/)
         expect(config.borderVar).toMatch(/^--cow-color-chain-[a-z_]+-border$/)
+        expect(config.accentVar).toBeDefined()
+        expect(config.accentVar).not.toBeUndefined()
+        expect(typeof config.accentVar).toBe('string')
         expect(config.accentVar).toMatch(/^--cow-color-chain-[a-z_]+-accent$/)
       })
     })

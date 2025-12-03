@@ -38,7 +38,7 @@ export interface ChainAccentConfig {
   chainId: SupportedChainId
   bgVar: string
   borderVar: string
-  accentVar?: string
+  accentVar: string
   lightBg: string
   darkBg: string
   lightBorder: string
@@ -191,11 +191,7 @@ const CHAIN_ACCENT_VAR_DECLARATIONS = CHAIN_ACCENT_CONFIG_ARRAY.map(
   ({ bgVar, borderVar, accentVar, lightBg, darkBg, lightBorder, darkBorder, lightColor, darkColor }) => css`
     ${bgVar}: ${({ theme }) => (theme.darkMode ? darkBg : lightBg)};
     ${borderVar}: ${({ theme }) => (theme.darkMode ? darkBorder : lightBorder)};
-    ${accentVar
-      ? css`
-          ${accentVar}: ${({ theme }) => (theme.darkMode ? darkColor : lightColor)};
-        `
-      : ''}
+    ${accentVar}: ${({ theme }) => (theme.darkMode ? darkColor : lightColor)};
   `,
 )
 
