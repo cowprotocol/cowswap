@@ -274,10 +274,6 @@ msgstr "replaced"
 msgid "Bridge via"
 msgstr "Bridge via"
 
-#: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/index.tsx
-msgid "Select token"
-msgstr "Select token"
-
 #: apps/cowswap-frontend/src/modules/trade/pure/LimitOrdersPromoBanner/index.tsx
 msgid "Trade your way - personalize the interface and customize your limit orders"
 msgstr "Trade your way - personalize the interface and customize your limit orders"
@@ -468,6 +464,7 @@ msgid "View details"
 msgstr "View details"
 
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
+#: apps/cowswap-frontend/src/modules/tokensList/pure/ChainsSelector/index.tsx
 msgid "More"
 msgstr "More"
 
@@ -2249,11 +2246,6 @@ msgstr "Dismiss hiring message"
 msgid "dialog content"
 msgstr "dialog content"
 
-#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/index.tsx
-#: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/index.tsx
-msgid "Cross chain swap"
-msgstr "Cross chain swap"
-
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/index.tsx
 msgid "Since {accountProxyLabelString} is not an upgradeable smart-contract, it can be versioned and there are"
 msgstr "Since {accountProxyLabelString} is not an upgradeable smart-contract, it can be versioned and there are"
@@ -3742,10 +3734,6 @@ msgstr "Create LlamaPay Vesting"
 msgid "Transaction expiration"
 msgstr "Transaction expiration"
 
-#: apps/cowswap-frontend/src/modules/tokensList/pure/ChainPanel/index.tsx
-msgid "Search network"
-msgstr "Search network"
-
 #: apps/cowswap-frontend/src/legacy/components/ErrorBoundary/ChunkLoadError.tsx
 msgid "CowSwap no connection"
 msgstr "CowSwap no connection"
@@ -4819,10 +4807,6 @@ msgstr "Execution price"
 msgid "No tokens found"
 msgstr "No tokens found"
 
-#: apps/cowswap-frontend/src/modules/tokensList/pure/ChainPanel/index.tsx
-msgid "No networks available for this trade."
-msgstr "No networks available for this trade."
-
 #: apps/cowswap-frontend/src/modules/tokensList/pure/TokenTags/index.tsx
 msgid "Unsupported"
 msgstr "Unsupported"
@@ -4862,10 +4846,6 @@ msgstr "<0/><1/>Consider waiting for lower network costs.<2/><3/>You may still m
 #: apps/cowswap-frontend/src/modules/bridge/pure/StopStatus/index.tsx
 msgid "Swapping on"
 msgstr "Swapping on"
-
-#: apps/cowswap-frontend/src/modules/tokensList/pure/ChainPanel/index.tsx
-msgid "No networks match \"{chainQuery}\"."
-msgstr "No networks match \"{chainQuery}\"."
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/OrderTypeField.tsx
 msgid "(Fill or Kill)"
@@ -6008,8 +5988,8 @@ msgid "You sold <0/>"
 msgstr "You sold <0/>"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/ChainsSelector/index.tsx
-#~ msgid "Less"
-#~ msgstr "Less"
+msgid "Less"
+msgstr "Less"
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 msgid "Claim your LlamaPay vesting contract funds"
