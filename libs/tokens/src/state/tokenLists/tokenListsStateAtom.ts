@@ -1,6 +1,7 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
+import { COW_CDN } from '@cowprotocol/common-const'
 import { atomWithIdbStorage, getJotaiMergerStorage } from '@cowprotocol/core'
 import { mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 
@@ -14,7 +15,7 @@ import {
 } from '../../types'
 import { environmentAtom } from '../environmentAtom'
 
-const TOKEN_LIST_SRC = 'https://files.cow.fi/token-lists'
+const TOKEN_LIST_SRC = `${COW_CDN}/token-lists`
 
 const UNISWAP_TOKEN_LIST_URL: Record<SupportedChainId, string> = {
   [SupportedChainId.MAINNET]: UNISWAP_TOKENS_LIST,

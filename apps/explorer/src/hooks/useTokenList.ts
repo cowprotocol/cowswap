@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
+import { COW_CDN, SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { ALL_SUPPORTED_CHAIN_IDS, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { TokenInfo, TokenList } from '@uniswap/token-lists'
 
@@ -32,8 +32,8 @@ const EMPTY_TOKENS: TokenListByAddress = {}
 export function useTokenList(chainId: SupportedChainId | undefined): { data: TokenListByAddress; isLoading: boolean } {
   const { data: cowSwapList, isLoading: isCowListLoading } = useTokenListByUrl(
     chainId !== SupportedChainId.SEPOLIA
-      ? 'https://files.cow.fi/tokens/CowSwap.json'
-      : 'https://files.cow.fi/token-lists/CowSwapSepolia.json',
+      ? `${COW_CDN}/tokens/CowSwap.json`
+      : `${COW_CDN}/token-lists/CowSwapSepolia.json`,
   )
   const { data: coingeckoUniswapList, isLoading: isCoingeckoUniswapLoading } = useTokenListByUrl(
     chainId === SupportedChainId.MAINNET ? 'https://tokens.coingecko.com/uniswap/all.json' : '',

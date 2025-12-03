@@ -1,3 +1,4 @@
+import { COW_CDN } from '@cowprotocol/common-const'
 import { ChainInfo, EnrichedOrder, EvmCall, TokenInfo } from '@cowprotocol/cow-sdk'
 import {
   BridgeProvider,
@@ -21,7 +22,7 @@ export class TestReceiverAccountBridgeProvider implements ReceiverAccountBridgeP
   info: BridgeProviderInfo = {
     name: 'Receiver Bridge',
     logoUrl:
-      'https://files.cow.fi/cow-sdk/bridging/providers/mock/mock-logo.webp',
+      `${COW_CDN}/cow-sdk/bridging/providers/mock/mock-logo.webp`,
     dappId: 'test-receiver-bridge',
     website: 'https://github.com/cowprotocol/cowswap',
     type: 'ReceiverAccountBridgeProvider',
