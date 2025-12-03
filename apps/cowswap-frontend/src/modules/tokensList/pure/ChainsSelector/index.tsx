@@ -91,13 +91,11 @@ function ChainsButtonsList({ chains, defaultChainId, onSelectChain, isDarkMode }
 }
 
 export function getChainAccent(chainId: ChainInfo['id']): ChainAccentVars | undefined {
- 
   const accentConfig = getChainAccentColors(chainId as SupportedChainId)
   if (!accentConfig) {
     return undefined
   }
 
- 
   return {
     backgroundVar: accentConfig.bgVar,
     borderVar: accentConfig.borderVar,
