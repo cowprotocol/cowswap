@@ -6274,6 +6274,12 @@ msgid "Swap and bridge costs are at least {formattedFeePercentage}% of the swap 
 msgstr "Затраты на замену и мост составляют не менее {formattedFeePercentage}% от суммы замены"
 
 # Receive amount labels
+msgid "Receive (incl. fees)"
+msgstr "К получению (с комиссиями)"
+
+msgid "From (incl. fees)"
+msgstr "Отправить (с комиссиями)"
+
 # Notifications / jobs aria labels
 msgid "Trade alert settings"
 msgstr "Настройки уведомлений о сделках"
