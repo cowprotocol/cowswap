@@ -1,6 +1,7 @@
 import { createStore } from 'jotai'
 
 import {
+  cancellationTrackedOrderIdsAtom,
   ordersProgressBarStateAtom,
   pruneOrdersProgressBarState,
   updateOrderProgressBarCountdown,
@@ -49,6 +50,7 @@ describe('pruneOrdersProgressBarState', () => {
 
     expect(store.get(ordersProgressBarStateAtom)).toBe(initialState)
   })
+
 })
 
 describe('updateOrderProgressBarCountdown', () => {
@@ -122,5 +124,18 @@ describe('updateOrderProgressBarCountdown', () => {
     store.set(updateOrderProgressBarCountdown, { orderId, value: null })
 
     expect(store.get(ordersProgressBarStateAtom)).toEqual({})
+  })
+})
+
+describe('cancellationTrackedOrderIdsAtom', () => {
+  it('returns ids with cancellationTriggered flag set', () => {
+    const store = createStore()
+    store.set(ordersProgressBarStateAtom, {
+      a: { cancellationTriggered: true },
+      b: {},
+      c: { cancellationTriggered: true },
+    })
+
+    expect(store.get(cancellationTrackedOrderIdsAtom)).toEqual(['a', 'c'])
   })
 })

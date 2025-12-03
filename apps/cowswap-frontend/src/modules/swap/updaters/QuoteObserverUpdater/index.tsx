@@ -22,9 +22,9 @@ export function QuoteObserverUpdater() {
    */
   const hasQuoteError = !!tradeQuote.error
   const isQuoteUpdating = tradeQuote.isLoading && tradeQuote.hasParamsChanged
-  const { beforeNetworkCosts, isSell } = receiveAmountInfo || {}
+  const { beforeAllFees, isSell } = receiveAmountInfo || {}
 
-  const amountToUpdate = isSell ? beforeNetworkCosts?.buyAmount : beforeNetworkCosts?.sellAmount
+  const amountToUpdate = isSell ? beforeAllFees?.buyAmount : beforeAllFees?.sellAmount
 
   const orderKind = state?.orderKind
 
