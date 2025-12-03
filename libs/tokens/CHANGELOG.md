@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.30.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.29.0...tokens-v1.30.0) (2025-11-24)
+
+
+### Features
+
+* **bridge:** add Near provider and provider feature-flags ([#6466](https://github.com/cowprotocol/cowswap/issues/6466)) ([c91b17f](https://github.com/cowprotocol/cowswap/commit/c91b17f9c24fef516eee904e51268264b6adff25))
+* **internationalization:** add internationalization to CoW Swap ([#6198](https://github.com/cowprotocol/cowswap/issues/6198)) ([bec1e54](https://github.com/cowprotocol/cowswap/commit/bec1e54643d9b20a8b6517eae188993e364fed90))
+
 ## [1.29.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.28.0...tokens-v1.29.0) (2025-11-10)
 
 

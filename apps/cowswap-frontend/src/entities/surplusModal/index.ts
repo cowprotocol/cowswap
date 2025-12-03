@@ -11,6 +11,8 @@ const initialState: OrdersToDisplayModal = {
 
 const surplusModalAtom = atom<OrdersToDisplayModal>(initialState)
 
+const surplusModalOrderIdsAtom = atom((get) => get(surplusModalAtom).orderIds)
+
 const addSurplusOrderAtom = atom(null, (get, set, orderId: string) =>
   set(surplusModalAtom, () => {
     const state = get(surplusModalAtom)
@@ -51,4 +53,8 @@ export function useOrderIdForSurplusModal(): string | undefined {
 
 export function useRemoveOrderFromSurplusQueue(): (orderId: string) => void {
   return useSetAtom(removeSurplusOrderAtom)
+}
+
+export function useSurplusQueueOrderIds(): string[] {
+  return useAtomValue(surplusModalOrderIdsAtom)
 }

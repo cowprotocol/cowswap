@@ -25,7 +25,7 @@ export function useVolumeFeeTooltip(): VolumeFeeTooltip {
 
     return {
       content: widgetParams.content?.feeTooltipMarkdown,
-      label: widgetParams.content?.feeLabel || t`Total fee`,
+      label: widgetParams.content?.feeLabel || t`Partner fee`,
     }
   }, [safeAppFee, widgetParams])
 }

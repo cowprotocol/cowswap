@@ -59,10 +59,8 @@ function LazyRoute({ route, element, key }: LazyRouteProps): ReactNode {
 }
 
 const lazyRoutes: LazyRouteProps[] = [
-  { route: RoutesEnum.LIMIT_ORDER, element: <LimitOrderPage /> },
   { route: RoutesEnum.YIELD, element: <YieldPage /> },
   { route: RoutesEnum.LONG_LIMIT_ORDER, element: <RedirectToPath path={'/limit'} /> },
-  { route: RoutesEnum.ADVANCED_ORDERS, element: <AdvancedOrdersPage /> },
   { route: RoutesEnum.LONG_ADVANCED_ORDERS, element: <RedirectToPath path={'/advanced'} /> },
   { route: RoutesEnum.ABOUT, element: <ExternalRedirect url={COWDAO_COWSWAP_ABOUT_LINK} /> },
   { route: RoutesEnum.FAQ, element: <ExternalRedirect url={COWDAO_KNOWLEDGE_BASE_LINK} /> },
@@ -99,6 +97,8 @@ export function RoutesApp(): ReactNode {
 
       {/*Swap*/}
       <Route path={RoutesEnum.SWAP} element={<SwapPage />} />
+      <Route path={RoutesEnum.LIMIT_ORDER} element={<LimitOrderPage />} />
+      <Route path={RoutesEnum.ADVANCED_ORDERS} element={<AdvancedOrdersPage />} />
       <Route path={RoutesEnum.HOOKS} element={<HooksPage />} />
       <Route path={RoutesEnum.SEND} element={<RedirectPathToSwapOnly />} />
 
