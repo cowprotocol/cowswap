@@ -4199,6 +4199,10 @@ msgstr "Включить частичные утверждения"
 msgid "Version"
 msgstr "Версии"
 
+#: apps/cowswap-frontend/src/modules/tokensList/pure/TokensVirtualList/index.tsx
+msgid "Recent"
+msgstr "Недавние"
+
 #: apps/cowswap-frontend/src/pages/Account/Tokens/TokensOverview.tsx
 msgid "All tokens"
 msgstr "Все токены"

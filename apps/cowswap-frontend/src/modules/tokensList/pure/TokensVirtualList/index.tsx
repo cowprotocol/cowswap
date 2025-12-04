@@ -4,6 +4,7 @@ import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 
+import { t } from '@lingui/core/macro'
 import { VirtualItem } from '@tanstack/react-virtual'
 
 import { CoWAmmBanner } from 'common/containers/CoWAmmBanner'
@@ -63,8 +64,7 @@ export function TokensVirtualList(props: TokensVirtualListProps): ReactNode {
       }
     }
 
-    const sortedPrioritized =
-      prioritized.length > 1 ? [...prioritized].sort(tokensListSorter(balances)) : prioritized
+    const sortedPrioritized = prioritized.length > 1 ? [...prioritized].sort(tokensListSorter(balances)) : prioritized
 
     return [...sortedPrioritized, ...remainder]
   }, [allTokens, balances])
@@ -84,7 +84,7 @@ export function TokensVirtualList(props: TokensVirtualListProps): ReactNode {
     if (recentTokens?.length) {
       composedRows.push({
         type: 'title',
-        label: 'Recent',
+        label: t`Recent`,
         actionLabel: onClearRecentTokens ? 'Clear' : undefined,
         onAction: onClearRecentTokens,
       })
@@ -92,7 +92,7 @@ export function TokensVirtualList(props: TokensVirtualListProps): ReactNode {
     }
 
     if (favoriteTokens?.length || recentTokens?.length) {
-      composedRows.push({ type: 'title', label: 'All tokens' })
+      composedRows.push({ type: 'title', label: t`All tokens` })
     }
 
     return [...composedRows, ...tokenRows]
@@ -129,11 +129,7 @@ function TokensVirtualRowRenderer({ row, selectTokenContext }: TokensVirtualRowR
   switch (row.type) {
     case 'favorite-section':
       return (
-        <FavoriteTokensList
-          tokens={row.tokens}
-          selectTokenContext={selectTokenContext}
-          hideTooltip={row.hideTooltip}
-        />
+        <FavoriteTokensList tokens={row.tokens} selectTokenContext={selectTokenContext} hideTooltip={row.hideTooltip} />
       )
     case 'title':
       return (
