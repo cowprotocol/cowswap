@@ -5198,7 +5198,7 @@ msgstr "часть"
 
 #: apps/cowswap-frontend/src/modules/swap/pure/CrossChainUnlockScreen/index.tsx
 msgid "Cross-chain swaps are here"
-msgstr "Перекрестные цепочки здесь"
+msgstr "Межсетевые обмены здесь"
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/ApprovalAmountInput/ApprovalAmountInput.tsx
 #~ msgid "Approval amount:"
@@ -6321,7 +6321,7 @@ msgstr "Обмен между сетями"
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/controllerState.ts
 msgid "Swap from"
-msgstr "Обменять из"
+msgstr "Обменять с"
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/controllerState.ts
 msgid "Swap to"

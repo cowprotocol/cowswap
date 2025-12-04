@@ -5198,7 +5198,7 @@ msgstr "parte"
 
 #: apps/cowswap-frontend/src/modules/swap/pure/CrossChainUnlockScreen/index.tsx
 msgid "Cross-chain swaps are here"
-msgstr "Los swaps de cadena media están aquí"
+msgstr "Los swaps entre cadenas están aquí"
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/ApprovalAmountInput/ApprovalAmountInput.tsx
 #~ msgid "Approval amount:"
@@ -6317,15 +6317,15 @@ msgstr "Seleccionar red"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/index.tsx
 msgid "Cross chain swap"
-msgstr "Intercambio entre cadenas"
+msgstr "Swap entre cadenas"
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/controllerState.ts
 msgid "Swap from"
-msgstr "Intercambiar desde"
+msgstr "Swap desde"
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/controllerState.ts
 msgid "Swap to"
-msgstr "Intercambiar a"
+msgstr "Swap a"
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/controllerState.ts
 msgid "Sell token"
