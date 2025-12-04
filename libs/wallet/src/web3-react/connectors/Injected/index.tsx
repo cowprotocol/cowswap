@@ -289,6 +289,12 @@ export class InjectedWallet extends Connector {
 
     const run = async (): Promise<string | number> => {
       for (let attempt = 0; attempt < maxRetries; attempt++) {
+        const metaChainId = readMetaChainId(provider)
+        if (metaChainId !== null) {
+          debugInfo.push(`attempt ${attempt + 1}: meta -> ${describeValue(metaChainId)}`)
+          return metaChainId
+        }
+
         let chainId: unknown
 
         try {
@@ -331,6 +337,33 @@ function normalizeChainId(chainId: unknown): string | number | null {
   if (Array.isArray(chainId) && chainId.length === 0) return null
 
   throw new Error(`Invalid chainId: expected string or number, got ${typeof chainId}. Value: ${JSON.stringify(chainId)}`)
+}
+
+function readMetaChainId(provider: EIP1193Provider): string | number | null {
+  const candidates = [
+    // Common fields on injected providers
+    (provider as { chainId?: unknown }).chainId,
+    (provider as { networkVersion?: unknown }).networkVersion,
+    // Some providers nest the underlying provider
+    (provider as { provider?: { chainId?: unknown } }).provider?.chainId,
+    // Internal state fields used by some wallets
+    (provider as { _state?: { chainId?: unknown; network?: { chainId?: unknown } } })._state?.chainId,
+    (provider as { _state?: { chainId?: unknown; network?: { chainId?: unknown } } })._state?.network?.chainId,
+    // Session-based implementations
+    (provider as { session?: { chainId?: unknown } }).session?.chainId,
+  ]
+
+  for (const candidate of candidates) {
+    if (candidate === undefined) continue
+    try {
+      const normalized = normalizeChainId(candidate)
+      if (normalized !== null) return normalized
+    } catch {
+      // ignore and keep checking candidates
+    }
+  }
+
+  return null
 }
 
 async function getFromWalletState(
