@@ -60,6 +60,10 @@ export class InjectedWallet extends Connector {
           await new Promise((resolve) => setTimeout(resolve, 500))
           chainId = await this.provider.request({ method: 'eth_chainId' })
         }
+        // Validate chainId is a string or number before parsing
+        if (typeof chainId !== 'string' && typeof chainId !== 'number') {
+          throw new Error(`Invalid chainId: expected string or number, got ${typeof chainId}. Value: ${JSON.stringify(chainId)}`)
+        }
         const receivedChainId = parseChainId(chainId as string | number)
         const desiredChainId =
           typeof desiredChainIdOrChainParameters === 'number' ? undefined : desiredChainIdOrChainParameters?.chainId
@@ -130,7 +134,11 @@ export class InjectedWallet extends Connector {
         await new Promise((resolve) => setTimeout(resolve, 500))
         chainId = (await this.provider.request({ method: 'eth_chainId' })) as string
       }
-      this.actions.update({ chainId: parseChainId(chainId), accounts })
+      // Validate chainId is a string or number before parsing
+      if (typeof chainId !== 'string' && typeof chainId !== 'number') {
+        throw new Error(`Invalid chainId: expected string or number, got ${typeof chainId}. Value: ${JSON.stringify(chainId)}`)
+      }
+      this.actions.update({ chainId: parseChainId(chainId as string | number), accounts })
     } catch (error) {
       console.debug('Could not connect eagerly', error)
       // we should be able to use `cancelActivation` here, but on mobile, metamask emits a 'connect'
@@ -285,6 +293,11 @@ export class InjectedWallet extends Connector {
 
 function parseChainId(chainId: string | number): number {
   if (typeof chainId === 'number') return chainId
+
+  // Validate chainId is a string before calling string methods
+  if (typeof chainId !== 'string') {
+    throw new Error(`Invalid chainId: expected string or number, got ${typeof chainId}. Value: ${JSON.stringify(chainId)}`)
+  }
 
   if (!chainId.startsWith('0x')) {
     return Number(chainId)
