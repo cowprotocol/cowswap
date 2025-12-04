@@ -35,8 +35,14 @@ function SelectTokenWidgetView(
     isChainPanelVisible: boolean
   },
 ): ReactNode {
-  const { isChainPanelVisible, isChainPanelEnabled, chainsPanelTitle, chainsToSelect, onSelectChain, selectTokenModalProps } =
-    props
+  const {
+    isChainPanelVisible,
+    isChainPanelEnabled,
+    chainsPanelTitle,
+    chainsToSelect,
+    onSelectChain,
+    selectTokenModalProps,
+  } = props
 
   const blockingView = getBlockingView(props)
 
