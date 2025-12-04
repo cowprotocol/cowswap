@@ -1,8 +1,12 @@
 import { ReactNode } from 'react'
 
+import { useMediaQuery } from '@cowprotocol/common-hooks'
+import { Media } from '@cowprotocol/ui'
+
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
-import { Textfit } from 'react-textfit'
+
+import { useAutoFitText } from 'common/hooks/useAutoFitText'
 
 import * as styledEl from './styled'
 
@@ -18,55 +22,42 @@ export function ShowSurplus({
   shouldShowSurplus: boolean | undefined | null
   surplusPercentValue: string
 }): ReactNode {
+  const surplusText = shouldShowSurplus && surplusPercentValue !== 'N/A' ? `+${surplusPercentValue}%` : t`N/A`
+  const surplusRef = useAutoFitText<HTMLSpanElement>({ min: 14, max: 50, mode: 'single', deps: [surplusText] })
+  const taglineRef = useAutoFitText<HTMLSpanElement>({ min: 16, max: 22, mode: 'single' })
+  const pairRef = useAutoFitText<HTMLSpanElement>({ min: 14, max: 22, mode: 'multi' })
+
   return (
     <styledEl.BenefitSurplusContainer>
-      <Trans>I just received surplus on</Trans>
-      <styledEl.TokenPairTitle title={`${order?.inputToken.symbol} / ${order?.outputToken.symbol}`}>
+      <styledEl.TaglineText ref={taglineRef}>
+        <Trans>I received surplus on</Trans>
+      </styledEl.TaglineText>
+      <styledEl.TokenPairTitle ref={pairRef} title={`${order?.inputToken.symbol} / ${order?.outputToken.symbol}`}>
         {truncateWithEllipsis(`${order?.inputToken.symbol} / ${order?.outputToken.symbol}`, 30)}
       </styledEl.TokenPairTitle>{' '}
       <styledEl.Surplus>
-        <Textfit
-          mode="multi"
-          min={14}
-          max={60}
-          style={{
-            width: '100%',
-            height: '100%',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            lineHeight: 1.2,
-          }}
-        >
-          {shouldShowSurplus && surplusPercentValue !== 'N/A' ? `+${surplusPercentValue}%` : t`N/A`}
-        </Textfit>
+        <styledEl.SurplusValue ref={surplusRef}>{surplusText}</styledEl.SurplusValue>
       </styledEl.Surplus>
     </styledEl.BenefitSurplusContainer>
   )
 }
 
 export function NoSurplus({ randomBenefit }: { randomBenefit: string }): ReactNode {
+  const isSmallScreen = useMediaQuery(Media.upToSmall(false))
+
+  const benefitRef = useAutoFitText<HTMLDivElement>({
+    min: 12,
+    max: isSmallScreen ? 28 : 36,
+    deps: [randomBenefit, isSmallScreen],
+  })
+
   return (
     <styledEl.BenefitSurplusContainer>
       <styledEl.BenefitTagLine>
         <Trans>Did you know?</Trans>
       </styledEl.BenefitTagLine>
       <styledEl.BenefitText>
-        <Textfit
-          mode="multi"
-          min={12}
-          max={50}
-          style={{
-            width: '100%',
-            height: '100%',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center',
-            lineHeight: 1.2,
-          }}
-        >
-          {randomBenefit}
-        </Textfit>
+        <styledEl.BenefitResponsiveText ref={benefitRef}>{randomBenefit}</styledEl.BenefitResponsiveText>
       </styledEl.BenefitText>
     </styledEl.BenefitSurplusContainer>
   )

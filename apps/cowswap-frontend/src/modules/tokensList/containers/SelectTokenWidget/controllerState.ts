@@ -16,6 +16,8 @@ import {
 } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { t } from '@lingui/core/macro'
+
 import { Field } from 'legacy/state/types'
 
 import { useTokensBalancesCombined } from 'modules/combinedBalances'
@@ -148,7 +150,7 @@ export function useWidgetMetadata(
   )
   const modalTitle = resolveModalTitle(field, tradeType)
   const chainsPanelTitle =
-    field === Field.INPUT ? 'From network' : field === Field.OUTPUT ? 'To network' : 'Select network'
+    field === Field.INPUT ? t`From network` : field === Field.OUTPUT ? t`To network` : t`Select network`
 
   return { disableErc20, tokenListCategoryState, modalTitle, chainsPanelTitle }
 }

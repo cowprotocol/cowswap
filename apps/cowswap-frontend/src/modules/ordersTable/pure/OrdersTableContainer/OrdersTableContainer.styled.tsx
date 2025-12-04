@@ -182,3 +182,7 @@ export const RightContainer = styled.div`
     flex-flow: column-reverse wrap;
   }
 `
+
+export const BannerContainer = styled.div`
+  width: 100%;
+`

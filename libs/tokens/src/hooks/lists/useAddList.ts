@@ -24,16 +24,16 @@ Tokens in update: ${updateCount}.
   `
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useAddList(onAddList: (source: string) => void) {
+export function useAddList(onAddList: (source: string) => void): (state: ListState) => void {
   const { chainId } = useAtomValue(environmentAtom)
   const listsStatesByChain = useAtomValue(listsStatesByChainAtom)
   const addList = useSetAtom(addListAtom)
 
   return useCallback(
     (state: ListState) => {
-      const currentStateCount = getTokenListsStateCount(Object.values(listsStatesByChain[chainId] || {}))
+      const currentStateCount = getTokenListsStateCount(
+        Object.values(listsStatesByChain[chainId] || {}).filter((value) => value !== 'deleted'),
+      )
       const updateCount = getTokenListsStateCount([state])
       const totalCount = currentStateCount + updateCount
 

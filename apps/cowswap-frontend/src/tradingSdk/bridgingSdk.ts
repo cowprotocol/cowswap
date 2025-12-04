@@ -1,11 +1,10 @@
 import { bungeeAffiliateCode } from '@cowprotocol/common-const'
-import { isBarn, isDev, isProd, isProdLike, isStaging } from '@cowprotocol/common-utils'
+import { isBarn, isDev, isProd, isStaging } from '@cowprotocol/common-utils'
 import {
-  AcrossBridgeProvider,
-  BridgeProvider,
-  BridgeQuoteResult,
+  NearIntentsBridgeProvider,
   BridgingSdk,
   BungeeBridgeProvider,
+  AcrossBridgeProvider,
 } from '@cowprotocol/sdk-bridging'
 
 import { orderBookApi } from 'cowSdk'
@@ -14,7 +13,7 @@ import { tradingSdk } from './tradingSdk'
 
 const bungeeApiBase = getBungeeApiBase()
 
-const bungeeBridgeProvider = new BungeeBridgeProvider({
+export const bungeeBridgeProvider = new BungeeBridgeProvider({
   apiOptions: {
     includeBridges: ['across', 'cctp', 'gnosis-native-bridge'],
     apiBaseUrl: bungeeApiBase ? `${bungeeApiBase}/api/v1/bungee` : undefined,
@@ -23,18 +22,19 @@ const bungeeBridgeProvider = new BungeeBridgeProvider({
   },
 })
 
-const acrossBridgeProvider = new AcrossBridgeProvider()
-export const bridgeProviders: BridgeProvider<BridgeQuoteResult>[] = [bungeeBridgeProvider]
+export const acrossBridgeProvider = new AcrossBridgeProvider()
 
-// TODO: Should not enable Across on Prod until it's finalized
-!isProdLike && bridgeProviders.push(acrossBridgeProvider)
+export const nearIntentsBridgeProvider = new NearIntentsBridgeProvider()
 
 export const bridgingSdk = new BridgingSdk({
-  providers: bridgeProviders,
+  providers: [bungeeBridgeProvider, acrossBridgeProvider, nearIntentsBridgeProvider],
   enableLogging: false,
   tradingSdk,
   orderBookApi,
 })
+
+// Enable only Bungee by default
+bridgingSdk.setAvailableProviders([bungeeBridgeProvider.info.dappId])
 
 function getBungeeApiBase(): string | undefined {
   if (isProd || isDev || isStaging || isBarn) {
