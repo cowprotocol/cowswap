@@ -29,7 +29,7 @@ export const NAV_ITEMS: MenuItem[] = [
         external: true,
       },
       {
-        label: 'Bug bounty',
+        label: 'Bug Bounty',
         href: 'https://immunefi.com/bug-bounty/cowprotocol/information/',
         external: true,
       },
