@@ -55,9 +55,11 @@ export class InjectedWallet extends Connector {
 
         // Get chain ID from the wallet
         const chainId = await this.provider.request({ method: 'eth_chainId' })
-        // Log for debugging Brave wallet issues
+        // Log for debugging Brave wallet issues - log full structure as string for mobile debugging
         if (typeof chainId === 'object' && chainId !== null) {
-          console.debug('[InjectedWallet] Received chainId as object:', chainId)
+          const chainIdString = JSON.stringify(chainId, null, 2)
+          console.debug('[InjectedWallet] Received chainId as object:', chainIdString)
+          console.error('[InjectedWallet] Full chainId object structure:', chainIdString)
         }
         const receivedChainId = parseChainId(
           chainId as string | number | null | undefined | { chainId?: string | number },
@@ -125,9 +127,11 @@ export class InjectedWallet extends Connector {
       const accounts = await this.getAccounts()
       if (!accounts.length) throw new Error('No accounts returned')
       const chainId = await this.provider.request({ method: 'eth_chainId' })
-      // Log for debugging Brave wallet issues
+      // Log for debugging Brave wallet issues - log full structure as string for mobile debugging
       if (typeof chainId === 'object' && chainId !== null) {
-        console.debug('[InjectedWallet] Received chainId as object (eagerly):', chainId)
+        const chainIdString = JSON.stringify(chainId, null, 2)
+        console.debug('[InjectedWallet] Received chainId as object (eagerly):', chainIdString)
+        console.error('[InjectedWallet] Full chainId object structure (eagerly):', chainIdString)
       }
       this.actions.update({
         chainId: parseChainId(chainId as string | number | null | undefined | { chainId?: string | number }),
@@ -285,7 +289,22 @@ export class InjectedWallet extends Connector {
   }
 }
 
-// Extract chainId from various object formats (Brave wallet and others)
+// Extract chainId from array (Brave wallet sometimes returns arrays)
+function extractChainIdFromArray(arr: unknown[]): string | number | null {
+  if (arr.length === 0) {
+    return null
+  }
+  const firstElement = arr[0]
+  if (typeof firstElement === 'string' || typeof firstElement === 'number') {
+    return firstElement
+  }
+  if (typeof firstElement === 'object' && firstElement !== null) {
+    return extractChainIdFromObject(firstElement as Record<string, unknown>)
+  }
+  return null
+}
+
+// Extract chainId from object properties
 function extractChainIdFromObject(obj: Record<string, unknown>): string | number | null {
   // Try common object patterns
   if ('chainId' in obj && obj.chainId != null) {
@@ -309,7 +328,15 @@ function extractChainIdFromObject(obj: Record<string, unknown>): string | number
   return null
 }
 
-function parseChainId(chainId: string | number | null | undefined | { chainId?: string | number }): number {
+// Extract chainId from various object/array formats (Brave wallet and others)
+function extractChainIdFromValue(value: Record<string, unknown> | unknown[]): string | number | null {
+  if (Array.isArray(value)) {
+    return extractChainIdFromArray(value)
+  }
+  return extractChainIdFromObject(value)
+}
+
+function parseChainId(chainId: string | number | null | undefined | { chainId?: string | number } | unknown[]): number {
   if (typeof chainId === 'number') return chainId
 
   // Handle null/undefined
@@ -317,15 +344,23 @@ function parseChainId(chainId: string | number | null | undefined | { chainId?: 
     throw new Error(`Invalid chainId: expected string or number, got ${typeof chainId}`)
   }
 
-  // Handle object (some wallets like Brave return objects with various structures)
+  // Handle object or array (some wallets like Brave return objects/arrays with various structures)
   if (typeof chainId === 'object') {
-    const extracted = extractChainIdFromObject(chainId as Record<string, unknown>)
+    const chainIdString = JSON.stringify(chainId, null, 2)
+    // Handle empty array (Brave wallet sometimes returns [] when chainId is not available)
+    if (Array.isArray(chainId) && chainId.length === 0) {
+      console.error('[parseChainId] Empty array received. Full structure:', chainIdString)
+      throw new Error(
+        `Invalid chainId: received empty array. Wallet may not be properly initialized. Full object: ${chainIdString}`,
+      )
+    }
+    const extracted = extractChainIdFromValue(chainId as Record<string, unknown> | unknown[])
     if (extracted != null) {
       return parseChainId(extracted)
     }
-    // Log the object structure for debugging
-    console.error('[parseChainId] Received unexpected object format:', chainId)
-    throw new Error(`Invalid chainId: object format not recognized. Received: ${JSON.stringify(chainId)}`)
+    // Log the object structure for debugging - include full stringified version
+    console.error('[parseChainId] Received unexpected object/array format. Full structure:', chainIdString)
+    throw new Error(`Invalid chainId: object/array format not recognized. Full object structure: ${chainIdString}`)
   }
 
   // Handle string
