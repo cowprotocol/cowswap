@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-12-03 12:10\n"
+"PO-Revision-Date: 2025-12-04 11:16\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -37,8 +37,8 @@ msgid "Signature is undefined!"
 msgstr "Подпись не определена!"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/BenefitComponents.tsx
-msgid "I just received surplus on"
-msgstr "Я только что получил излишки"
+#~ msgid "I just received surplus on"
+#~ msgstr "I just received surplus on"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
 msgid "years"
@@ -609,6 +609,10 @@ msgstr "Если ваш заказ не был исполнен к этой да
 #: apps/cowswap-frontend/src/modules/bridge/pure/ProxyAccountBanner/index.tsx
 msgid "Only proceed if you trust this provider."
 msgstr "Продолжайте только если доверяете этому поставщику."
+
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/BenefitComponents.tsx
+msgid "I received surplus on"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/application/containers/App/CowSpeechBubble.tsx
 msgid "View jobs"
@@ -2195,6 +2199,10 @@ msgstr "Не удалось получить манифест от {manifestUrl}
 msgid "Order executes at"
 msgstr "Заказ выполняется в"
 
+#: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSidebar/index.tsx
+msgid "Trade alert settings"
+msgstr "Настройки уведомлений о сделках"
+
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/SolvingStep.tsx
 msgid "There may be a network issue (such as a gas spike) that is delaying your order. You can wait for the issue to resolve{cancellationModal}"
 msgstr "Возможно проблема с сетью (например, газовая шпилька), которая задерживает ваш заказ. Вы можете дождаться, пока проблема будет решена{cancellationModal}"
@@ -2554,10 +2562,6 @@ msgstr "Обзор токенов"
 msgid "Enter slippage percentage between {min}% and {max}%"
 msgstr "Введите процент проскальзывания между {min}% и {max}%"
 
-#: apps/cowswap-frontend/src/modules/trade/pure/ProtocolFeeRow/index.tsx
-msgid "Protocol fee ({protocolFeeAsPercent}%)"
-msgstr "Комиссия протокола ({protocolFeeAsPercent}%)"
-
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
 msgid "Learn how"
 msgstr "Узнайте как"
@@ -2751,10 +2755,6 @@ msgstr "Уведомления о сделках включены"
 #: apps/cowswap-frontend/src/modules/trade/pure/RowFeeContent/index.tsx
 msgid "gas"
 msgstr "газ"
-
-#: apps/cowswap-frontend/src/common/pure/ReceiveAmountInfo/index.tsx
-msgid "Protocol fee"
-msgstr "Комиссия протокола"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookListItem/index.tsx
 msgid "details"
@@ -3736,6 +3736,10 @@ msgstr "Срок действия транзакции"
 #: apps/cowswap-frontend/src/legacy/components/ErrorBoundary/ChunkLoadError.tsx
 msgid "CowSwap no connection"
 msgstr "CowSwap нет соединения"
+
+#: apps/cowswap-frontend/src/modules/application/containers/App/CowSpeechBubble.tsx
+msgid "View jobs (opens in a new tab)"
+msgstr "Просмотр вакансий (откроется в новой вкладке)"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 #: apps/cowswap-frontend/src/modules/bridge/pure/BridgeActivitySummary/BridgeSummaryHeader.tsx
@@ -6063,8 +6067,8 @@ msgid "Dark mode"
 msgstr "Темный режим"
 
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmountInfo/index.tsx
-#~ msgid "Bridge costs"
-#~ msgstr "Bridge costs"
+msgid "Bridge costs"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/StatusDetails.tsx
 msgid "View cancellation"
@@ -6281,16 +6285,10 @@ msgstr "Узнать больше"
 msgid "Swap and bridge costs are at least {formattedFeePercentage}% of the swap amount"
 msgstr "Затраты на замену и мост составляют не менее {formattedFeePercentage}% от суммы замены"
 
-# Receive amount labels
-msgid "Receive (incl. fees)"
-msgstr "К получению (с комиссиями)"
-
-msgid "From (incl. fees)"
-msgstr "Отправить (с комиссиями)"
-
 # Notifications / jobs aria labels
 msgid "Trade alert settings"
-msgstr "Настройки уведомлений о сделках"
+msgstr ""
 
 msgid "View jobs (opens in a new tab)"
-msgstr "Просмотр вакансий (откроется в новой вкладке)"
+msgstr ""
+
