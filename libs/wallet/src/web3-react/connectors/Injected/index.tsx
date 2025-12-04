@@ -313,7 +313,7 @@ export class InjectedWallet extends Connector {
       }
 
       throw new Error(
-        `Failed to get chainId after ${maxRetries} attempts. Brave wallet returned empty array and may still be initializing.`,
+        `Failed to get chainId after ${maxRetries} attempts. Provider did not return a usable chainId.`,
       )
     }
 
@@ -332,6 +332,7 @@ function normalizeChainId(chainId: unknown): string | number | null {
   throw new Error(`Invalid chainId: expected string or number, got ${typeof chainId}. Value: ${JSON.stringify(chainId)}`)
 }
 
+// Some injected providers stash the chainId in non-standard fields; check a few common spots before making RPC calls.
 function readMetaChainId(provider: EIP1193Provider): string | number | null {
   const candidates = [
     (provider as { chainId?: unknown }).chainId,
@@ -365,9 +366,5 @@ function parseChainId(chainId: string | number): number {
     )
   }
 
-  if (!chainId.startsWith('0x')) {
-    return Number(chainId)
-  }
-
-  return Number.parseInt(chainId, 16)
+  return Number.parseInt(chainId, chainId.startsWith('0x') ? 16 : 10)
 }
