@@ -75,7 +75,9 @@ function StandardTokenLogo({
     setInvalidUrls((state) => ({ ...state, [currentUrl]: true }))
   }, [currentUrl, setInvalidUrls])
 
-  const actualTokenContent = renderTokenLogoContent({ currentUrl, onError, token, initial })
+  const actualTokenContent = (
+    <TokenLogoContent currentUrl={currentUrl} onError={onError} token={token} initial={initial} />
+  )
 
   if (noWrap) {
     return actualTokenContent
@@ -172,14 +174,14 @@ function useTokenLogoUrl({ token, logoURI, invalidUrls }: TokenLogoUrlOptions): 
   return { currentUrl, initial }
 }
 
-interface TokenLogoContentOptions {
+interface TokenLogoContentProps {
   currentUrl?: string
   onError: () => void
   token?: TokenWithLogo | Currency | null
   initial?: string
 }
 
-function renderTokenLogoContent({ currentUrl, onError, token, initial }: TokenLogoContentOptions): ReactNode {
+function TokenLogoContent({ currentUrl, onError, token, initial }: TokenLogoContentProps): ReactNode {
   const address = token && 'address' in token ? token.address : ''
 
   if (currentUrl) {
