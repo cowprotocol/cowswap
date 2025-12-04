@@ -17,6 +17,7 @@ export class InjectedWallet extends Connector {
   walletUrl: string
   searchKeywords: string[]
   eagerConnection?: boolean
+  private chainIdRequest?: Promise<string | number>
 
   onConnect?(provider: EIP1193Provider): void
 
@@ -273,49 +274,124 @@ export class InjectedWallet extends Connector {
   }
 
   // Mod: Added custom method
-  // Get chainId with retry logic for Brave wallet which may return empty array during initialization
-  // Retries up to 5 times with exponential backoff (500ms, 1000ms, 2000ms, 4000ms, 8000ms)
+  // Get chainId with retry logic for Brave wallet which may return empty array during initialization.
+  // Uses provider events and wallet_getProviderState as fallbacks instead of only timing out.
   private async getChainIdWithRetry(maxRetries = 5): Promise<string | number> {
+    if (this.chainIdRequest) return this.chainIdRequest
+
     const { provider } = this
 
     if (!provider) {
       throw new Error('No provider')
     }
 
-    for (let attempt = 0; attempt < maxRetries; attempt++) {
-      const chainId = await provider.request({ method: 'eth_chainId' })
+    const run = async (): Promise<string | number> => {
+      for (let attempt = 0; attempt < maxRetries; attempt++) {
+        let chainId: unknown
 
-      // If we got a valid chainId (string or number), return it
-      if (typeof chainId === 'string' || typeof chainId === 'number') {
-        return chainId
-      }
-
-      // If it's an empty array (Brave wallet initialization issue), retry with exponential backoff
-      if (Array.isArray(chainId) && chainId.length === 0) {
-        if (attempt < maxRetries - 1) {
-          const delay = 500 * Math.pow(2, attempt)
-          console.debug(
-            `Brave wallet returned empty chainId array, retrying in ${delay}ms (attempt ${attempt + 1}/${maxRetries})`,
-          )
-          await new Promise((resolve) => setTimeout(resolve, delay))
-          continue
-        } else {
-          // Last attempt failed with empty array
-          throw new Error(
-            `Failed to get chainId after ${maxRetries} attempts. Brave wallet returned empty array and may still be initializing.`,
-          )
+        try {
+          chainId = await provider.request({ method: 'eth_chainId' })
+        } catch (error) {
+          console.debug('eth_chainId failed, waiting for provider events', error)
         }
+
+        if (chainId !== undefined) {
+          const normalized = normalizeChainId(chainId)
+          if (normalized !== null) return normalized
+        }
+
+        const stateChainId = await getFromWalletState(provider)
+        if (stateChainId !== null) return stateChainId
+
+        const eventChainId = await waitForChainIdEvent(provider, 2000 * (attempt + 1))
+        if (eventChainId !== null) return eventChainId
       }
 
-      // If we get here, chainId is neither string/number nor empty array - throw error
       throw new Error(
-        `Invalid chainId: expected string or number, got ${typeof chainId}. Value: ${JSON.stringify(chainId)}`,
+        `Failed to get chainId after ${maxRetries} attempts. Brave wallet returned empty array and may still be initializing.`,
       )
     }
 
-    // This should never be reached, but TypeScript requires it
-    throw new Error(`Failed to get chainId after ${maxRetries} attempts.`)
+    this.chainIdRequest = run().finally(() => {
+      this.chainIdRequest = undefined
+    })
+
+    return this.chainIdRequest
   }
+}
+
+function normalizeChainId(chainId: unknown): string | number | null {
+  if (typeof chainId === 'string' || typeof chainId === 'number') return chainId
+  if (Array.isArray(chainId) && chainId.length === 0) return null
+
+  throw new Error(`Invalid chainId: expected string or number, got ${typeof chainId}. Value: ${JSON.stringify(chainId)}`)
+}
+
+async function getFromWalletState(provider: EIP1193Provider): Promise<string | number | null> {
+  try {
+    const state = (await provider.request?.({ method: 'wallet_getProviderState' })) as { chainId?: unknown }
+    if (state?.chainId !== undefined) {
+      return normalizeChainId(state.chainId)
+    }
+  } catch (error) {
+    console.debug('wallet_getProviderState not available or failed', error)
+  }
+
+  return null
+}
+
+function waitForChainIdEvent(provider: EIP1193Provider, timeoutMs: number): Promise<string | number | null> {
+  return new Promise((resolve) => {
+    let finished = false
+    const timer = setTimeout(() => resolveWith(null), timeoutMs)
+    const cleanup = (): void => {
+      if (finished) return
+      finished = true
+      clearTimeout(timer)
+      provider.removeListener?.('connect', onConnect)
+      provider.removeListener?.('chainChanged', onChainChanged)
+    }
+
+    const resolveWith = (value: string | number | null): void => {
+      cleanup()
+      resolve(value)
+    }
+
+    const onConnect = (data: ProviderConnectInfo): void => {
+      try {
+        const normalized = normalizeChainId(data?.chainId)
+        if (normalized !== null) {
+          resolveWith(normalized)
+        }
+      } catch (error) {
+        console.debug('Ignored invalid connect payload', error)
+      }
+    }
+
+    const onChainChanged = (chainId: unknown): void => {
+      try {
+        const normalized = normalizeChainId(chainId)
+        if (normalized !== null) {
+          resolveWith(normalized)
+        }
+      } catch (error) {
+        console.debug('Ignored invalid chainChanged payload', error)
+      }
+    }
+
+    provider.on?.('connect', onConnect)
+    provider.on?.('chainChanged', onChainChanged)
+
+    provider
+      .request({ method: 'eth_chainId' })
+      .then((result) => {
+        const normalized = normalizeChainId(result)
+        if (normalized !== null) {
+          resolveWith(normalized)
+        }
+      })
+      .catch((error) => console.debug('eth_chainId failed during waitForEvent', error))
+  })
 }
 
 function parseChainId(chainId: string | number): number {
