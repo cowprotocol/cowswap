@@ -54,7 +54,7 @@ export class InjectedWallet extends Connector {
         const accounts = await this.getAccounts()
         if (!accounts.length) throw new Error('No accounts returned')
 
-        // Get chain ID from the wallet (retry on empty array for Brave wallet)
+        // Get chain ID from the wallet (retry on empty array from some providers during init)
         const chainId = await this.getChainIdWithRetry()
         const receivedChainId = parseChainId(chainId)
         const desiredChainId =
@@ -119,7 +119,7 @@ export class InjectedWallet extends Connector {
       // chains; they should be requested serially, with accounts first, so that the chainId can settle.
       const accounts = await this.getAccounts()
       if (!accounts.length) throw new Error('No accounts returned')
-      // Get chain ID from the wallet (retry on empty array for Brave wallet)
+      // Get chain ID from the wallet (retry on empty array from some providers during init)
       const chainId = await this.getChainIdWithRetry()
       this.actions.update({ chainId: parseChainId(chainId), accounts })
     } catch (error) {
@@ -274,7 +274,7 @@ export class InjectedWallet extends Connector {
   }
 
   // Mod: Added custom method
-  // Get chainId with retry logic for Brave wallet which may return empty array during initialization.
+  // Get chainId with retry logic for providers that may return empty array during initialization.
   // Uses provider events and wallet_getProviderState as fallbacks instead of only timing out.
   private async getChainIdWithRetry(maxRetries = 5): Promise<string | number> {
     if (this.chainIdRequest) return this.chainIdRequest
