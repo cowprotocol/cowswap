@@ -1,5 +1,6 @@
-import { MenuItem, ProductVariant, Color, UI } from '@cowprotocol/ui'
 import { initGtm } from '@cowprotocol/analytics'
+import { MenuItem, ProductVariant, Color, UI } from '@cowprotocol/ui'
+
 import { CowFiCategory } from 'src/common/analytics/types'
 
 const analytics = initGtm()
@@ -25,6 +26,11 @@ export const NAV_ITEMS: MenuItem[] = [
       {
         label: 'Grants',
         href: 'https://grants.cow.fi/',
+        external: true,
+      },
+      {
+        label: 'Bug bounty',
+        href: 'https://immunefi.com/bug-bounty/cowprotocol/information/',
         external: true,
       },
       { label: 'Careers', href: '/careers' },
