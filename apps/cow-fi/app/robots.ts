@@ -7,10 +7,10 @@ import { checkEnvironment } from '@/util/environment'
 export default async function robots(): Promise<MetadataRoute.Robots> {
   const headersList = await headers()
   const host = headersList.get('host') || ''
-  const { isDev } = checkEnvironment(host, '')
+  const { isDev, isPr } = checkEnvironment(host, '')
 
-  // Block all indexing on develop.cow.fi
-  if (isDev) {
+  // Block all indexing on develop.cow.fi and PR preview environments
+  if (isDev || isPr) {
     return {
       rules: {
         userAgent: '*',

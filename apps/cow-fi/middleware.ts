@@ -27,12 +27,12 @@ export function middleware(request: NextRequest): NextResponse {
   const pathname = request.nextUrl.pathname
   const host = request.headers.get('host') || ''
 
-  // Check if we're on develop.cow.fi and add noindex header
-  const { isDev } = checkEnvironment(host, pathname)
+  // Check if we're on develop.cow.fi or PR preview environments and add noindex header
+  const { isDev, isPr } = checkEnvironment(host, pathname)
   const response = NextResponse.next()
 
-  if (isDev) {
-    // Add X-Robots-Tag header to prevent indexing of develop subdomain
+  if (isDev || isPr) {
+    // Add X-Robots-Tag header to prevent indexing of develop subdomain and PR previews
     response.headers.set('X-Robots-Tag', 'noindex, nofollow, noarchive, nosnippet')
   }
 
@@ -69,8 +69,8 @@ export function middleware(request: NextRequest): NextResponse {
   // If we removed any params, redirect to clean URL with 308 (permanent)
   if (hasTracking) {
     const redirectResponse = NextResponse.redirect(url, 308)
-    // Preserve noindex header if on develop
-    if (isDev) {
+    // Preserve noindex header if on develop or PR preview
+    if (isDev || isPr) {
       redirectResponse.headers.set('X-Robots-Tag', 'noindex, nofollow, noarchive, nosnippet')
     }
     return redirectResponse

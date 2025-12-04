@@ -21,24 +21,25 @@ const defaultMetadata = getPageMetadata({ description: CONFIG.description })
 export async function generateMetadata(): Promise<Metadata> {
   const headersList = await headers()
   const host = headersList.get('host') || ''
-  const { isDev } = checkEnvironment(host, '')
+  const { isDev, isPr } = checkEnvironment(host, '')
 
   return {
     ...defaultMetadata,
     metadataBase: new URL(CONFIG.url.root),
     alternates: { canonical: './' },
-    // Add noindex for develop.cow.fi to prevent search engine indexing
-    robots: isDev
-      ? {
-          index: false,
-          follow: false,
-          noarchive: true,
-          nosnippet: true,
-        }
-      : {
-          index: true,
-          follow: true,
-        },
+    // Add noindex for develop.cow.fi and PR preview environments to prevent search engine indexing
+    robots:
+      isDev || isPr
+        ? {
+            index: false,
+            follow: false,
+            noarchive: true,
+            nosnippet: true,
+          }
+        : {
+            index: true,
+            follow: true,
+          },
     icons: {
       icon: [
         { url: '/favicon-light-mode.png', type: 'image/png', media: '(prefers-color-scheme: light)' },
