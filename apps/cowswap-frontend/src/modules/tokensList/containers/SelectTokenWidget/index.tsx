@@ -211,6 +211,7 @@ function getBlockingView(
       <ManageListsAndTokens
         lists={allTokenLists}
         customTokens={userAddedTokens}
+        onDismiss={onDismiss}
         onBack={onCloseManageWidget}
       />
     )

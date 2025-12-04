@@ -8,13 +8,11 @@ import { injectedWidgetPartnerFeeAtom } from 'modules/injectedWidget'
 import { derivedTradeStateAtom, tradeTypeAtom, TradeTypeToWidgetTradeTypeMap } from 'modules/trade'
 
 import { correlatedTokensAtom } from './correlatedTokensAtom'
-import { cowSwapFeeAtom } from './cowswapFeeAtom'
 import { safeAppFeeAtom } from './safeAppFeeAtom'
 
 import { VolumeFee } from '../types'
 
 export const volumeFeeAtom = atom<VolumeFee | undefined>((get) => {
-  const cowSwapFee = get(cowSwapFeeAtom)
   const widgetPartnerFee = get(widgetPartnerFeeAtom)
   const safeAppFee = get(safeAppFeeAtom)
   const shouldSkipFee = get(shouldSkipFeeAtom)
@@ -24,7 +22,7 @@ export const volumeFeeAtom = atom<VolumeFee | undefined>((get) => {
   }
 
   // CoW Swap Fee won't be enabled when in Widget mode, thus it takes precedence here
-  return safeAppFee || cowSwapFee || widgetPartnerFee
+  return safeAppFee || widgetPartnerFee
 })
 
 const shouldSkipFeeAtom = atom<boolean>((get) => {
@@ -76,4 +74,3 @@ const widgetPartnerFeeAtom = atom<VolumeFee | undefined>((get) => {
     recipient,
   }
 })
-

@@ -68,34 +68,81 @@ export function TokensContent({
   const recentTokensInline = shouldShowRecentsInline ? recentTokens : undefined
 
   return (
-    <>
-      {areTokensLoading ? (
-        <styledEl.TokensLoader>
-          <Loader />
-        </styledEl.TokensLoader>
-      ) : (
-        <>
-          {searchInput ? (
-            <TokenSearchResults
-              searchInput={searchInput}
-              selectTokenContext={selectTokenContext}
-              areTokensFromBridge={areTokensFromBridge}
-              allTokens={allTokens}
-            />
-          ) : (
-            <TokensVirtualList
-              selectTokenContext={selectTokenContext}
-              allTokens={tokensWithoutPinned}
-              displayLpTokenLists={displayLpTokenLists}
-              favoriteTokens={favoriteTokensInline}
-              recentTokens={recentTokensInline}
-              hideFavoriteTokensTooltip={hideFavoriteTokensTooltip}
-              scrollResetKey={selectedTargetChainId}
-              onClearRecentTokens={onClearRecentTokens}
-            />
-          )}
-        </>
-      )}
-    </>
+    <TokensView
+      areTokensLoading={areTokensLoading}
+      searchInput={searchInput}
+      selectTokenContext={selectTokenContext}
+      areTokensFromBridge={areTokensFromBridge}
+      allTokens={allTokens}
+      tokensWithoutPinned={tokensWithoutPinned}
+      displayLpTokenLists={displayLpTokenLists}
+      favoriteTokens={favoriteTokensInline}
+      recentTokens={recentTokensInline}
+      hideFavoriteTokensTooltip={hideFavoriteTokensTooltip}
+      selectedTargetChainId={selectedTargetChainId}
+      onClearRecentTokens={onClearRecentTokens}
+    />
+  )
+}
+
+interface TokensViewProps {
+  areTokensLoading: boolean
+  searchInput: string
+  selectTokenContext: SelectTokenContext
+  areTokensFromBridge: boolean
+  allTokens: TokenWithLogo[]
+  tokensWithoutPinned: TokenWithLogo[]
+  displayLpTokenLists?: boolean
+  favoriteTokens?: TokenWithLogo[]
+  recentTokens?: TokenWithLogo[]
+  hideFavoriteTokensTooltip?: boolean
+  selectedTargetChainId?: number
+  onClearRecentTokens?: () => void
+}
+
+function TokensView({
+  areTokensLoading,
+  searchInput,
+  selectTokenContext,
+  areTokensFromBridge,
+  allTokens,
+  tokensWithoutPinned,
+  displayLpTokenLists,
+  favoriteTokens,
+  recentTokens,
+  hideFavoriteTokensTooltip,
+  selectedTargetChainId,
+  onClearRecentTokens,
+}: TokensViewProps): ReactNode {
+  if (areTokensLoading) {
+    return (
+      <styledEl.TokensLoader>
+        <Loader />
+      </styledEl.TokensLoader>
+    )
+  }
+
+  if (searchInput) {
+    return (
+      <TokenSearchResults
+        searchInput={searchInput}
+        selectTokenContext={selectTokenContext}
+        areTokensFromBridge={areTokensFromBridge}
+        allTokens={allTokens}
+      />
+    )
+  }
+
+  return (
+    <TokensVirtualList
+      selectTokenContext={selectTokenContext}
+      allTokens={tokensWithoutPinned}
+      displayLpTokenLists={displayLpTokenLists}
+      favoriteTokens={favoriteTokens}
+      recentTokens={recentTokens}
+      hideFavoriteTokensTooltip={hideFavoriteTokensTooltip}
+      scrollResetKey={selectedTargetChainId}
+      onClearRecentTokens={onClearRecentTokens}
+    />
   )
 }
