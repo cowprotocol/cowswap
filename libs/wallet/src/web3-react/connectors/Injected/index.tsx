@@ -295,19 +295,21 @@ export class InjectedWallet extends Connector {
         try {
           chainId = await provider.request({ method: 'eth_chainId' })
         } catch (error) {
-          console.debug('eth_chainId failed, waiting for provider events', error)
+          console.debug('eth_chainId failed, retrying', error)
+        }
+
+        if (typeof chainId === 'string' || typeof chainId === 'number') return chainId
+
+        if (Array.isArray(chainId) && chainId.length === 0 && attempt < maxRetries - 1) {
+          await new Promise((resolve) => setTimeout(resolve, 500 * (attempt + 1)))
+          continue
         }
 
         if (chainId !== undefined) {
-          const normalized = normalizeChainId(chainId)
-          if (normalized !== null) return normalized
+          throw new Error(
+            `Invalid chainId: expected string or number, got ${typeof chainId}. Value: ${JSON.stringify(chainId)}`,
+          )
         }
-
-        const stateChainId = await getFromWalletState(provider)
-        if (stateChainId !== null) return stateChainId
-
-        const eventChainId = await waitForChainIdEvent(provider, 2000 * (attempt + 1))
-        if (eventChainId !== null) return eventChainId
       }
 
       throw new Error(
@@ -351,73 +353,6 @@ function readMetaChainId(provider: EIP1193Provider): string | number | null {
   }
 
   return null
-}
-
-async function getFromWalletState(provider: EIP1193Provider): Promise<string | number | null> {
-  try {
-    const state = (await provider.request?.({ method: 'wallet_getProviderState' })) as { chainId?: unknown }
-    if (state?.chainId !== undefined) {
-      return normalizeChainId(state.chainId)
-    }
-  } catch (error) {
-    console.debug('wallet_getProviderState not available or failed', error)
-  }
-
-  return null
-}
-
-function waitForChainIdEvent(provider: EIP1193Provider, timeoutMs: number): Promise<string | number | null> {
-  return new Promise((resolve) => {
-    let finished = false
-    const timer = setTimeout(() => resolveWith(null), timeoutMs)
-    const cleanup = (): void => {
-      if (finished) return
-      finished = true
-      clearTimeout(timer)
-      provider.removeListener?.('connect', onConnect)
-      provider.removeListener?.('chainChanged', onChainChanged)
-    }
-
-    const resolveWith = (value: string | number | null): void => {
-      cleanup()
-      resolve(value)
-    }
-
-    const onConnect = (data: ProviderConnectInfo): void => {
-      try {
-        const normalized = normalizeChainId(data?.chainId)
-        if (normalized !== null) {
-          resolveWith(normalized)
-        }
-      } catch (error) {
-        console.debug('Ignored invalid connect payload', error)
-      }
-    }
-
-    const onChainChanged = (chainId: unknown): void => {
-      try {
-        const normalized = normalizeChainId(chainId)
-        if (normalized !== null) {
-          resolveWith(normalized)
-        }
-      } catch (error) {
-        console.debug('Ignored invalid chainChanged payload', error)
-      }
-    }
-
-    provider.on?.('connect', onConnect)
-    provider.on?.('chainChanged', onChainChanged)
-
-    provider
-      .request({ method: 'eth_chainId' })
-      .then((result) => {
-        const normalized = normalizeChainId(result)
-        if (normalized !== null) {
-          resolveWith(normalized)
-        }
-      })
-      .catch((error) => console.debug('eth_chainId failed during waitForEvent', error))
-  })
 }
 
 function parseChainId(chainId: string | number): number {
