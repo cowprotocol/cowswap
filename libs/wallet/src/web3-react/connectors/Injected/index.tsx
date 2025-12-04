@@ -4,6 +4,8 @@ import { Command } from '@cowprotocol/types'
 import type { EIP1193Provider } from '@cowprotocol/types'
 import { Actions, AddEthereumChainParameter, Connector, ProviderConnectInfo, ProviderRpcError } from '@web3-react/types'
 
+import { parseChainId } from '../../utils/parseChainId'
+
 interface injectedWalletConstructorArgs {
   actions: Actions
   onError?: Command
@@ -312,9 +314,7 @@ export class InjectedWallet extends Connector {
         }
       }
 
-      throw new Error(
-        `Failed to get chainId after ${maxRetries} attempts. Provider did not return a usable chainId.`,
-      )
+      throw new Error(`Failed to get chainId after ${maxRetries} attempts. Provider did not return a usable chainId.`)
     }
 
     this.chainIdRequest = run().finally(() => {
@@ -329,7 +329,9 @@ function normalizeChainId(chainId: unknown): string | number | null {
   if (typeof chainId === 'string' || typeof chainId === 'number') return chainId
   if (Array.isArray(chainId) && chainId.length === 0) return null
 
-  throw new Error(`Invalid chainId: expected string or number, got ${typeof chainId}. Value: ${JSON.stringify(chainId)}`)
+  throw new Error(
+    `Invalid chainId: expected string or number, got ${typeof chainId}. Value: ${JSON.stringify(chainId)}`,
+  )
 }
 
 // Some injected providers stash the chainId in non-standard fields; check a few common spots before making RPC calls.
@@ -354,17 +356,4 @@ function readMetaChainId(provider: EIP1193Provider): string | number | null {
   }
 
   return null
-}
-
-function parseChainId(chainId: string | number): number {
-  if (typeof chainId === 'number') return chainId
-
-  // Validate chainId is a string before calling string methods
-  if (typeof chainId !== 'string') {
-    throw new Error(
-      `Invalid chainId: expected string or number, got ${typeof chainId}. Value: ${JSON.stringify(chainId)}`,
-    )
-  }
-
-  return Number.parseInt(chainId, chainId.startsWith('0x') ? 16 : 10)
 }
