@@ -33,7 +33,9 @@ export function FavoriteTokensList(props: FavoriteTokensListProps): ReactNode {
         </styledEl.Title>
         {!hideTooltip && <FavoriteTokensTooltip />}
       </styledEl.TitleRow>
-      <styledEl.List>{renderFavoriteTokenItems(tokens, selectTokenContext)}</styledEl.List>
+      <styledEl.List>
+        <FavoriteTokenItems tokens={tokens} selectTokenContext={selectTokenContext} />
+      </styledEl.List>
     </styledEl.Section>
   )
 }
@@ -50,38 +52,59 @@ function FavoriteTokensTooltip(): ReactNode {
   )
 }
 
-function renderFavoriteTokenItems(tokens: TokenWithLogo[], context: SelectTokenContext): ReactNode[] {
-  const { selectedToken } = context
+interface FavoriteTokenItemProps {
+  token: TokenWithLogo
+  selectTokenContext: SelectTokenContext
+}
+
+function FavoriteTokenItem({ token, selectTokenContext }: FavoriteTokenItemProps): ReactNode {
+  const { selectedToken, onTokenListItemClick, onSelectToken } = selectTokenContext
   const selectedAddress = selectedToken ? getCurrencyAddress(selectedToken) : undefined
 
-  return tokens.map((token) => {
-    const isSelected =
-      !!selectedToken &&
-      token.chainId === selectedToken.chainId &&
-      !!selectedAddress &&
-      areAddressesEqual(token.address, selectedAddress)
+  const isSelected =
+    !!selectedToken &&
+    token.chainId === selectedToken.chainId &&
+    !!selectedAddress &&
+    areAddressesEqual(token.address, selectedAddress)
 
-    const handleClick = (): void => {
-      if (isSelected) {
-        return
-      }
-      context.onTokenListItemClick?.(token)
-      context.onSelectToken(token)
+  const handleClick = (): void => {
+    if (isSelected) {
+      return
     }
+    onTokenListItemClick?.(token)
+    onSelectToken(token)
+  }
 
-    return (
-      <styledEl.TokenButton
-        key={`${token.chainId}:${token.address}`}
-        data-address={token.address.toLowerCase()}
-        data-token-symbol={token.symbol || ''}
-        data-token-name={token.name || ''}
-        data-element-type="token-selection"
-        disabled={isSelected}
-        onClick={handleClick}
-      >
-        <TokenLogo token={token} size={24} />
-        <TokenSymbol token={token} />
-      </styledEl.TokenButton>
-    )
-  })
+  return (
+    <styledEl.TokenButton
+      data-address={token.address.toLowerCase()}
+      data-token-symbol={token.symbol || ''}
+      data-token-name={token.name || ''}
+      data-element-type="token-selection"
+      disabled={isSelected}
+      onClick={handleClick}
+    >
+      <TokenLogo token={token} size={24} />
+      <TokenSymbol token={token} />
+    </styledEl.TokenButton>
+  )
+}
+
+interface FavoriteTokenItemsProps {
+  tokens: TokenWithLogo[]
+  selectTokenContext: SelectTokenContext
+}
+
+function FavoriteTokenItems({ tokens, selectTokenContext }: FavoriteTokenItemsProps): ReactNode {
+  return (
+    <>
+      {tokens.map((token) => (
+        <FavoriteTokenItem
+          key={`${token.chainId}:${token.address}`}
+          token={token}
+          selectTokenContext={selectTokenContext}
+        />
+      ))}
+    </>
+  )
 }
