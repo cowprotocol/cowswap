@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-11-26 16:02\n"
+"PO-Revision-Date: 2025-12-03 12:10\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -612,7 +612,7 @@ msgstr "Продолжайте только если доверяете этом
 
 #: apps/cowswap-frontend/src/modules/application/containers/App/CowSpeechBubble.tsx
 msgid "View jobs"
-msgstr "Просмотр заданий"
+msgstr "Просмотр вакансий"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/FavoriteTokensList/index.tsx
 msgid "Your favorite saved tokens. Edit this list in the <0>Tokens page</0>."
@@ -1878,7 +1878,7 @@ msgstr "Слизень MEV"
 
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmount/index.tsx
 msgid "From (incl. fees)"
-msgstr ""
+msgstr "Отправить (с комиссиями)"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/StatusDetails.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderStatusBox/getOrderStatusTitleAndColor.ts
@@ -2496,7 +2496,7 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/modules/trade/pure/ProtocolFeeRow/index.tsx
 msgid "Protocol fee ({protocolFeeAsPercent}%)"
-msgstr ""
+msgstr "Комиссия протокола ({protocolFeeAsPercent}%)"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/BridgingProgressContent/RefundedBridgingContent/index.tsx
 msgid "Refunded to"
@@ -2553,6 +2553,10 @@ msgstr "Обзор токенов"
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/pure/SlippageWarning/index.tsx
 msgid "Enter slippage percentage between {min}% and {max}%"
 msgstr "Введите процент проскальзывания между {min}% и {max}%"
+
+#: apps/cowswap-frontend/src/modules/trade/pure/ProtocolFeeRow/index.tsx
+msgid "Protocol fee ({protocolFeeAsPercent}%)"
+msgstr "Комиссия протокола ({protocolFeeAsPercent}%)"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
 msgid "Learn how"
@@ -2713,7 +2717,7 @@ msgstr "<0><1/> Эксперименталь:</0> Добавить взаимо�
 
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmountInfo/index.tsx
 msgid "Protocol fee"
-msgstr ""
+msgstr "Комиссия протокола"
 
 #: apps/cowswap-frontend/src/common/constants/routes.ts
 msgid "Powerful tool to generate pre/post interaction for CoW Protocol"
@@ -2747,6 +2751,10 @@ msgstr "Уведомления о сделках включены"
 #: apps/cowswap-frontend/src/modules/trade/pure/RowFeeContent/index.tsx
 msgid "gas"
 msgstr "газ"
+
+#: apps/cowswap-frontend/src/common/pure/ReceiveAmountInfo/index.tsx
+msgid "Protocol fee"
+msgstr "Комиссия протокола"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookListItem/index.tsx
 msgid "details"
@@ -3289,7 +3297,7 @@ msgstr "Утвердите токен, чтобы продолжить."
 
 #: apps/cowswap-frontend/src/modules/trade/pure/ProtocolFeeRow/index.tsx
 msgid "This {protocolFeeBps} BPS fee incentivizes solvers to find better prices for users. It is only applied if the trade is executed."
-msgstr ""
+msgstr "Комиссия в размере {protocolFeeBps} BPS стимулирует солверов находить лучшие цены для пользователей. Она взимается только при выполнении сделки."
 
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/AccountCard/DefaultAccountContent.tsx
 msgid "Recoverable value"
@@ -6142,7 +6150,7 @@ msgstr "Влияние цены <0>{formattedPriceImpact}%</0>. Подумайт
 
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmount/index.tsx
 msgid "Receive (incl. fees)"
-msgstr ""
+msgstr "К получению (с комиссиями)"
 
 #: apps/cowswap-frontend/src/common/containers/ConfirmationModal/index.tsx
 #: apps/cowswap-frontend/src/common/hooks/useConfirmPriceImpactWithoutFee.ts
@@ -6274,9 +6282,15 @@ msgid "Swap and bridge costs are at least {formattedFeePercentage}% of the swap 
 msgstr "Затраты на замену и мост составляют не менее {formattedFeePercentage}% от суммы замены"
 
 # Receive amount labels
+msgid "Receive (incl. fees)"
+msgstr "К получению (с комиссиями)"
+
+msgid "From (incl. fees)"
+msgstr "Отправить (с комиссиями)"
+
 # Notifications / jobs aria labels
 msgid "Trade alert settings"
 msgstr "Настройки уведомлений о сделках"
 
 msgid "View jobs (opens in a new tab)"
-msgstr "Просмотр заданий (откроется в новой вкладке)"
+msgstr "Просмотр вакансий (откроется в новой вкладке)"
