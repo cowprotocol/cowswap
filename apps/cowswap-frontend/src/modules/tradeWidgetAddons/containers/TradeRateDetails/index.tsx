@@ -10,7 +10,7 @@ import {
   useDerivedTradeState,
   NetworkCostsRow,
   useShouldPayGas,
-  useReceiveAmountInfo,
+  useGetReceiveAmountInfo,
 } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { useIsSlippageModified, useTradeSlippage } from 'modules/tradeSlippage'
@@ -43,12 +43,11 @@ export function TradeRateDetails({
 
   const slippage = useTradeSlippage()
   const isSlippageModified = useIsSlippageModified()
-  // todo replace by useGetReceiveAmountInfo when we decide what to show as bridge total fee
-  const receiveAmountInfo = useReceiveAmountInfo()
+  const receiveAmountInfo = useGetReceiveAmountInfo(true)
   const derivedTradeState = useDerivedTradeState()
   const tradeQuote = useTradeQuote()
   const shouldPayGas = useShouldPayGas()
-  const bridgeQuoteAmounts = useBridgeQuoteAmounts()
+  const bridgeQuoteAmounts = useBridgeQuoteAmounts(true)
 
   const inputCurrency = derivedTradeState?.inputCurrency
 
@@ -80,7 +79,10 @@ export function TradeRateDetails({
     )
   }
 
-  const totalCosts = getTotalCosts(receiveAmountInfo, bridgeQuoteAmounts?.bridgeFee)
+  const totalCosts = getTotalCosts(
+    receiveAmountInfo,
+    bridgeQuoteAmounts?.bridgeFeeAmounts?.amountInIntermediateCurrency,
+  )
 
   // Default expanded content if accordionContent prop is not supplied
   const defaultExpandedContent = (

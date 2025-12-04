@@ -192,13 +192,7 @@ function getBlockingView(
   }
 
   if (isManageWidgetOpen && !standalone) {
-    return (
-      <ManageListsAndTokens
-        lists={allTokenLists}
-        customTokens={userAddedTokens}
-        onBack={onCloseManageWidget}
-      />
-    )
+    return <ManageListsAndTokens lists={allTokenLists} customTokens={userAddedTokens} onBack={onCloseManageWidget} />
   }
 
   if (selectedPoolAddress) {
