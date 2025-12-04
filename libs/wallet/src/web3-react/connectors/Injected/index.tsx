@@ -285,13 +285,17 @@ export class InjectedWallet extends Connector {
       throw new Error('No provider')
     }
 
+    const debugInfo: string[] = []
+
     const run = async (): Promise<string | number> => {
       for (let attempt = 0; attempt < maxRetries; attempt++) {
         let chainId: unknown
 
         try {
           chainId = await provider.request({ method: 'eth_chainId' })
+          debugInfo.push(`attempt ${attempt + 1}: eth_chainId -> ${describeValue(chainId)}`)
         } catch (error) {
+          debugInfo.push(`attempt ${attempt + 1}: eth_chainId threw ${String(error)}`)
           console.debug('eth_chainId failed, waiting for provider events', error)
         }
 
@@ -300,15 +304,17 @@ export class InjectedWallet extends Connector {
           if (normalized !== null) return normalized
         }
 
-        const stateChainId = await getFromWalletState(provider)
+        const stateChainId = await getFromWalletState(provider, debugInfo, attempt + 1)
         if (stateChainId !== null) return stateChainId
 
-        const eventChainId = await waitForChainIdEvent(provider, 2000 * (attempt + 1))
+        const eventChainId = await waitForChainIdEvent(provider, 2000 * (attempt + 1), debugInfo, attempt + 1)
         if (eventChainId !== null) return eventChainId
       }
 
       throw new Error(
-        `Failed to get chainId after ${maxRetries} attempts. Brave wallet returned empty array and may still be initializing.`,
+        `Failed to get chainId after ${maxRetries} attempts. Brave wallet returned empty array and may still be initializing. Details: ${debugInfo.join(
+          ' | ',
+        )}`,
       )
     }
 
@@ -327,20 +333,31 @@ function normalizeChainId(chainId: unknown): string | number | null {
   throw new Error(`Invalid chainId: expected string or number, got ${typeof chainId}. Value: ${JSON.stringify(chainId)}`)
 }
 
-async function getFromWalletState(provider: EIP1193Provider): Promise<string | number | null> {
+async function getFromWalletState(
+  provider: EIP1193Provider,
+  debugInfo: string[],
+  attempt: number,
+): Promise<string | number | null> {
   try {
     const state = (await provider.request?.({ method: 'wallet_getProviderState' })) as { chainId?: unknown }
     if (state?.chainId !== undefined) {
+      debugInfo.push(`attempt ${attempt}: wallet_getProviderState -> ${describeValue(state.chainId)}`)
       return normalizeChainId(state.chainId)
     }
   } catch (error) {
+    debugInfo.push(`attempt ${attempt}: wallet_getProviderState threw ${String(error)}`)
     console.debug('wallet_getProviderState not available or failed', error)
   }
 
   return null
 }
 
-function waitForChainIdEvent(provider: EIP1193Provider, timeoutMs: number): Promise<string | number | null> {
+function waitForChainIdEvent(
+  provider: EIP1193Provider,
+  timeoutMs: number,
+  debugInfo: string[],
+  attempt: number,
+): Promise<string | number | null> {
   return new Promise((resolve) => {
     let finished = false
     const timer = setTimeout(() => resolveWith(null), timeoutMs)
@@ -361,6 +378,7 @@ function waitForChainIdEvent(provider: EIP1193Provider, timeoutMs: number): Prom
       try {
         const normalized = normalizeChainId(data?.chainId)
         if (normalized !== null) {
+          debugInfo.push(`attempt ${attempt}: connect event -> ${describeValue(data?.chainId)}`)
           resolveWith(normalized)
         }
       } catch (error) {
@@ -372,6 +390,7 @@ function waitForChainIdEvent(provider: EIP1193Provider, timeoutMs: number): Prom
       try {
         const normalized = normalizeChainId(chainId)
         if (normalized !== null) {
+          debugInfo.push(`attempt ${attempt}: chainChanged event -> ${describeValue(chainId)}`)
           resolveWith(normalized)
         }
       } catch (error) {
@@ -387,11 +406,16 @@ function waitForChainIdEvent(provider: EIP1193Provider, timeoutMs: number): Prom
       .then((result) => {
         const normalized = normalizeChainId(result)
         if (normalized !== null) {
+          debugInfo.push(`attempt ${attempt}: eth_chainId (event wait) -> ${describeValue(result)}`)
           resolveWith(normalized)
         }
       })
       .catch((error) => console.debug('eth_chainId failed during waitForEvent', error))
   })
+}
+
+function describeValue(value: unknown): string {
+  return `${typeof value}: ${JSON.stringify(value)}`
 }
 
 function parseChainId(chainId: string | number): number {
