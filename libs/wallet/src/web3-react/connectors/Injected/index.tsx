@@ -54,8 +54,14 @@ export class InjectedWallet extends Connector {
         if (!accounts.length) throw new Error('No accounts returned')
 
         // Get chain ID from the wallet
-        const chainId = (await this.provider.request({ method: 'eth_chainId' })) as string
-        const receivedChainId = parseChainId(chainId)
+        const chainId = await this.provider.request({ method: 'eth_chainId' })
+        // Log for debugging Brave wallet issues
+        if (typeof chainId === 'object' && chainId !== null) {
+          console.debug('[InjectedWallet] Received chainId as object:', chainId)
+        }
+        const receivedChainId = parseChainId(
+          chainId as string | number | null | undefined | { chainId?: string | number },
+        )
         const desiredChainId =
           typeof desiredChainIdOrChainParameters === 'number' ? undefined : desiredChainIdOrChainParameters?.chainId
 
@@ -118,8 +124,15 @@ export class InjectedWallet extends Connector {
       // chains; they should be requested serially, with accounts first, so that the chainId can settle.
       const accounts = await this.getAccounts()
       if (!accounts.length) throw new Error('No accounts returned')
-      const chainId = (await this.provider.request({ method: 'eth_chainId' })) as string
-      this.actions.update({ chainId: parseChainId(chainId), accounts })
+      const chainId = await this.provider.request({ method: 'eth_chainId' })
+      // Log for debugging Brave wallet issues
+      if (typeof chainId === 'object' && chainId !== null) {
+        console.debug('[InjectedWallet] Received chainId as object (eagerly):', chainId)
+      }
+      this.actions.update({
+        chainId: parseChainId(chainId as string | number | null | undefined | { chainId?: string | number }),
+        accounts,
+      })
     } catch (error) {
       console.debug('Could not connect eagerly', error)
       // we should be able to use `cancelActivation` here, but on mobile, metamask emits a 'connect'
@@ -272,6 +285,30 @@ export class InjectedWallet extends Connector {
   }
 }
 
+// Extract chainId from various object formats (Brave wallet and others)
+function extractChainIdFromObject(obj: Record<string, unknown>): string | number | null {
+  // Try common object patterns
+  if ('chainId' in obj && obj.chainId != null) {
+    return obj.chainId as string | number
+  }
+  // Some wallets wrap it in a 'result' property (JSON-RPC response format)
+  if ('result' in obj && obj.result != null) {
+    return obj.result as string | number
+  }
+  // Some wallets use 'data' property
+  if ('data' in obj && obj.data != null) {
+    return obj.data as string | number
+  }
+  // Try to find any string or number property that looks like a chainId
+  for (const key in obj) {
+    const value = obj[key]
+    if (typeof value === 'string' || typeof value === 'number') {
+      return value
+    }
+  }
+  return null
+}
+
 function parseChainId(chainId: string | number | null | undefined | { chainId?: string | number }): number {
   if (typeof chainId === 'number') return chainId
 
@@ -280,9 +317,15 @@ function parseChainId(chainId: string | number | null | undefined | { chainId?: 
     throw new Error(`Invalid chainId: expected string or number, got ${typeof chainId}`)
   }
 
-  // Handle object with chainId property (some wallets return objects)
-  if (typeof chainId === 'object' && 'chainId' in chainId) {
-    return parseChainId(chainId.chainId)
+  // Handle object (some wallets like Brave return objects with various structures)
+  if (typeof chainId === 'object') {
+    const extracted = extractChainIdFromObject(chainId as Record<string, unknown>)
+    if (extracted != null) {
+      return parseChainId(extracted)
+    }
+    // Log the object structure for debugging
+    console.error('[parseChainId] Received unexpected object format:', chainId)
+    throw new Error(`Invalid chainId: object format not recognized. Received: ${JSON.stringify(chainId)}`)
   }
 
   // Handle string
