@@ -6317,15 +6317,15 @@ msgstr "Выбрать сеть"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/index.tsx
 msgid "Cross chain swap"
-msgstr "Обмен между сетями"
+msgstr "Свап между сетями"
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/controllerState.ts
 msgid "Swap from"
-msgstr "Обменять с"
+msgstr "Свап из сети"
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/controllerState.ts
 msgid "Swap to"
-msgstr "Обменять на"
+msgstr "Свап в сеть"
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/controllerState.ts
 msgid "Sell token"
@@ -6353,7 +6353,7 @@ msgstr "Показать все ({totalChains})"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/MobileChainSelector.tsx
 msgid "View all {totalChains} networks"
-msgstr "Показать все {totalChains} сетей"
+msgstr "Показать все сети ({totalChains})"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/MobileChainSelector.tsx
 msgid "Selected network {activeChainLabel}"
