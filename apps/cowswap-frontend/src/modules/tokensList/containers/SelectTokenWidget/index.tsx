@@ -26,6 +26,7 @@ import { useLpTokensWithBalances } from 'modules/yield/shared'
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 
 import { getDefaultTokenListCategories } from './getDefaultTokenListCategories'
+import { getSelectTokenWidgetContent } from './helpers'
 
 import { useChainsToSelect } from '../../hooks/useChainsToSelect'
 import { useCloseTokenSelectWidget } from '../../hooks/useCloseTokenSelectWidget'
@@ -35,11 +36,6 @@ import { useRecentTokens } from '../../hooks/useRecentTokens'
 import { useSelectTokenWidgetState } from '../../hooks/useSelectTokenWidgetState'
 import { useTokensToSelect } from '../../hooks/useTokensToSelect'
 import { useUpdateSelectTokenWidgetState } from '../../hooks/useUpdateSelectTokenWidgetState'
-import { ImportListModal } from '../../pure/ImportListModal'
-import { ImportTokenModal } from '../../pure/ImportTokenModal'
-import { SelectTokenModal } from '../../pure/SelectTokenModal'
-import { LpTokenPage } from '../LpTokenPage'
-import { ManageListsAndTokens } from '../ManageListsAndTokens'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -49,8 +45,6 @@ const Wrapper = styled.div`
     min-height: 600px;
   }
 `
-
-const EMPTY_FAV_TOKENS: TokenWithLogo[] = []
 
 interface SelectTokenWidgetProps {
   displayLpTokenLists?: boolean
@@ -182,83 +176,45 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
 
   return (
     <Wrapper>
-      {(() => {
-        if (tokenToImport && !standalone) {
-          return (
-            <ImportTokenModal
-              tokens={[tokenToImport]}
-              onDismiss={onDismiss}
-              onBack={resetTokenImport}
-              onImport={importTokenAndClose}
-            />
-          )
-        }
-
-        if (listToImport && !standalone) {
-          return (
-            <ImportListModal
-              list={listToImport}
-              onDismiss={onDismiss}
-              onBack={resetTokenImport}
-              onImport={importListAndBack}
-            />
-          )
-        }
-
-        if (isManageWidgetOpen && !standalone) {
-          return (
-            <ManageListsAndTokens
-              lists={allTokenLists}
-              customTokens={userAddedTokens}
-              onDismiss={onDismiss}
-              onBack={() => setIsManageWidgetOpen(false)}
-            />
-          )
-        }
-
-        if (selectedPoolAddress) {
-          return (
-            <LpTokenPage
-              poolAddress={selectedPoolAddress}
-              onDismiss={onDismiss}
-              onBack={closePoolPage}
-              onSelectToken={onSelectToken}
-            />
-          )
-        }
-
-        return (
-          <SelectTokenModal
-            standalone={standalone}
-            displayLpTokenLists={displayLpTokenLists}
-            unsupportedTokens={unsupportedTokens}
-            selectedToken={selectedToken}
-            allTokens={allTokens}
-            favoriteTokens={standalone ? EMPTY_FAV_TOKENS : favoriteTokens}
-            recentTokens={standalone ? undefined : recentTokens}
-            balancesState={balancesState}
-            permitCompatibleTokens={permitCompatibleTokens}
-            onSelectToken={onSelectToken}
-            onTokenListItemClick={handleTokenListItemClick}
-            onInputPressEnter={onInputPressEnter}
-            onDismiss={onDismiss}
-            onOpenManageWidget={() => setIsManageWidgetOpen(true)}
-            hideFavoriteTokensTooltip={isInjectedWidgetMode}
-            openPoolPage={openPoolPage}
-            tokenListCategoryState={tokenListCategoryState}
-            disableErc20={disableErc20}
-            account={account}
-            chainsToSelect={chainsToSelect}
-            onSelectChain={onSelectChain}
-            areTokensLoading={areTokensLoading}
-            tokenListTags={tokenListTags}
-            areTokensFromBridge={areTokensFromBridge}
-            isRouteAvailable={isRouteAvailable}
-            onClearRecentTokens={clearRecentTokens}
-            selectedTargetChainId={selectedTargetChainId}
-          />
-        )
-      })()}
+      {getSelectTokenWidgetContent({
+        standalone,
+        tokenToImport,
+        listToImport,
+        isManageWidgetOpen,
+        selectedPoolAddress,
+        displayLpTokenLists,
+        unsupportedTokens,
+        selectedToken,
+        allTokens,
+        favoriteTokens,
+        recentTokens,
+        balancesState,
+        permitCompatibleTokens,
+        onSelectToken,
+        handleTokenListItemClick,
+        onInputPressEnter,
+        onDismiss,
+        setIsManageWidgetOpen,
+        resetTokenImport,
+        importTokenAndClose,
+        closePoolPage,
+        importListAndBack,
+        isInjectedWidgetMode,
+        openPoolPage,
+        tokenListCategoryState,
+        disableErc20,
+        account,
+        chainsToSelect,
+        onSelectChain,
+        areTokensLoading,
+        tokenListTags,
+        areTokensFromBridge,
+        isRouteAvailable,
+        clearRecentTokens,
+        selectedTargetChainId,
+        allTokenLists,
+        userAddedTokens,
+      })}
     </Wrapper>
   )
 }
