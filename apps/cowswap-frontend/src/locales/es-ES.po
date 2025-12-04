@@ -4203,6 +4203,10 @@ msgstr "Versión"
 msgid "Recent"
 msgstr "Recientes"
 
+#: apps/cowswap-frontend/src/modules/tokensList/pure/TokensVirtualList/index.tsx
+msgid "Clear"
+msgstr "Borrar"
+
 #: apps/cowswap-frontend/src/pages/Account/Tokens/TokensOverview.tsx
 msgid "All tokens"
 msgstr "Todos los tokens"

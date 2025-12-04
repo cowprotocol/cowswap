@@ -85,7 +85,7 @@ export function TokensVirtualList(props: TokensVirtualListProps): ReactNode {
       composedRows.push({
         type: 'title',
         label: t`Recent`,
-        actionLabel: onClearRecentTokens ? 'Clear' : undefined,
+        actionLabel: onClearRecentTokens ? t`Clear` : undefined,
         onAction: onClearRecentTokens,
       })
       recentTokens.forEach((token) => composedRows.push({ type: 'token', token }))
