@@ -75,24 +75,22 @@ export function TokensContent({
   const favoriteTokensInline = shouldShowFavoritesInline ? favoriteTokens : undefined
   const recentTokensInline = shouldShowRecentsInline ? recentTokens : undefined
 
-  const tokensView = renderTokensView({
-    areTokensLoading,
-    searchInput,
-    selectTokenContext,
-    areTokensFromBridge,
-    allTokens,
-    tokensWithoutPinned,
-    displayLpTokenLists,
-    favoriteTokens: favoriteTokensInline,
-    recentTokens: recentTokensInline,
-    hideFavoriteTokensTooltip,
-    selectedTargetChainId,
-    onClearRecentTokens,
-  })
-
   return (
     <>
-      {tokensView}
+      <TokensView
+        areTokensLoading={areTokensLoading}
+        searchInput={searchInput}
+        selectTokenContext={selectTokenContext}
+        areTokensFromBridge={areTokensFromBridge}
+        allTokens={allTokens}
+        tokensWithoutPinned={tokensWithoutPinned}
+        displayLpTokenLists={displayLpTokenLists}
+        favoriteTokens={favoriteTokensInline}
+        recentTokens={recentTokensInline}
+        hideFavoriteTokensTooltip={hideFavoriteTokensTooltip}
+        selectedTargetChainId={selectedTargetChainId}
+        onClearRecentTokens={onClearRecentTokens}
+      />
       {!standalone && (
         <>
           <styledEl.Separator />
@@ -125,7 +123,7 @@ interface TokensViewProps {
   onClearRecentTokens?: () => void
 }
 
-function renderTokensView({
+function TokensView({
   areTokensLoading,
   searchInput,
   selectTokenContext,
