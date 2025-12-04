@@ -450,6 +450,7 @@ export const StyledDropdownContentItem = styled.li<{
 
   &.hasDivider {
     margin: 0 0 12px;
+    position: relative;
 
     &::after {
       content: '';
