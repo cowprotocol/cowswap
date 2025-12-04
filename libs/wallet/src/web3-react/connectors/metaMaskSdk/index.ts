@@ -39,7 +39,14 @@ export class NoMetaMaskSDKError extends Error {
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function parseChainId(chainId: string | number) {
-  return typeof chainId === 'number' ? chainId : Number.parseInt(chainId, chainId.startsWith('0x') ? 16 : 10)
+  if (typeof chainId === 'number') return chainId
+
+  // Handle null/undefined or non-string values
+  if (!chainId || typeof chainId !== 'string') {
+    throw new Error(`Invalid chainId: expected string or number, got ${typeof chainId}`)
+  }
+
+  return Number.parseInt(chainId, chainId.startsWith('0x') ? 16 : 10)
 }
 
 /**

@@ -275,6 +275,11 @@ export class InjectedWallet extends Connector {
 function parseChainId(chainId: string | number): number {
   if (typeof chainId === 'number') return chainId
 
+  // Handle null/undefined or non-string values
+  if (!chainId || typeof chainId !== 'string') {
+    throw new Error(`Invalid chainId: expected string or number, got ${typeof chainId}`)
+  }
+
   if (!chainId.startsWith('0x')) {
     return Number(chainId)
   }
