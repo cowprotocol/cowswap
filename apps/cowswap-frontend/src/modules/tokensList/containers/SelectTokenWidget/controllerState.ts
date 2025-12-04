@@ -159,14 +159,14 @@ function resolveModalTitle(field: Field, tradeType: TradeType | undefined): stri
   const isSwapTrade = !tradeType || tradeType === TradeType.SWAP
 
   if (field === Field.INPUT) {
-    return isSwapTrade ? 'Swap from' : 'Sell token'
+    return isSwapTrade ? t`Swap from` : t`Sell token`
   }
 
   if (field === Field.OUTPUT) {
-    return isSwapTrade ? 'Swap to' : 'Buy token'
+    return isSwapTrade ? t`Swap to` : t`Buy token`
   }
 
-  return 'Select token'
+  return t`Select token`
 }
 
 export function useDismissHandler(

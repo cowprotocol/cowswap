@@ -6294,3 +6294,67 @@ msgstr "Настройки уведомлений о сделках"
 
 msgid "View jobs (opens in a new tab)"
 msgstr "Просмотр вакансий (откроется в новой вкладке)"
+
+#: apps/cowswap-frontend/src/modules/tokensList/pure/ChainPanel/index.tsx
+msgid "Search network"
+msgstr "Поиск сети"
+
+#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/controllerState.ts
+msgid "Select token"
+msgstr "Выбрать токен"
+
+#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/controllerState.ts
+msgid "From network"
+msgstr "Исходная сеть"
+
+#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/controllerState.ts
+msgid "To network"
+msgstr "Целевая сеть"
+
+#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/controllerState.ts
+msgid "Select network"
+msgstr "Выбрать сеть"
+
+#: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/index.tsx
+msgid "Cross chain swap"
+msgstr "Обмен между сетями"
+
+#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/controllerState.ts
+msgid "Swap from"
+msgstr "Обменять из"
+
+#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/controllerState.ts
+msgid "Swap to"
+msgstr "Обменять на"
+
+#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/controllerState.ts
+msgid "Sell token"
+msgstr "Продать токен"
+
+#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/controllerState.ts
+msgid "Buy token"
+msgstr "Купить токен"
+
+#: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/helpers.tsx
+msgid "Manage token lists"
+msgstr "Управление списками токенов"
+
+#: apps/cowswap-frontend/src/modules/tokensList/pure/ChainPanel/index.tsx
+msgid "No networks available for this trade."
+msgstr "Нет доступных сетей для этой сделки."
+
+#: apps/cowswap-frontend/src/modules/tokensList/pure/ChainPanel/index.tsx
+msgid "No networks match {chainQuery}."
+msgstr "Нет сетей, соответствующих {chainQuery}."
+
+#: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/MobileChainSelector.tsx
+msgid "View all ({totalChains})"
+msgstr "Показать все ({totalChains})"
+
+#: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/MobileChainSelector.tsx
+msgid "View all {totalChains} networks"
+msgstr "Показать все {totalChains} сетей"
+
+#: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/MobileChainSelector.tsx
+msgid "Selected network {activeChainLabel}"
+msgstr "Выбранная сеть {activeChainLabel}"
