@@ -3,6 +3,7 @@ import { useEffect } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { DefaultBridgeProvider } from '@cowprotocol/sdk-bridging'
+import { useIsSmartContractWallet } from '@cowprotocol/wallet'
 
 import {
   acrossBridgeProvider,
@@ -25,6 +26,7 @@ export function BridgeProvidersUpdater(): null {
   const setBridgeProviders = useSetAtom(bridgeProvidersAtom)
   const { isNearIntentsBridgeProviderEnabled, isAcrossBridgeProviderEnabled, isBungeeBridgeProviderEnabled } =
     useFeatureFlags()
+  const isSmartContractWallet = useIsSmartContractWallet()
 
   useEffect(() => {
     // Skip updating till all flags are loaded
@@ -39,9 +41,16 @@ export function BridgeProvidersUpdater(): null {
     setBridgeProviders((providers) => {
       const newProviders = new Set(providers)
 
-      toggleProvider(newProviders, bungeeBridgeProvider, isBungeeBridgeProviderEnabled)
       toggleProvider(newProviders, nearIntentsBridgeProvider, isNearIntentsBridgeProviderEnabled)
-      toggleProvider(newProviders, acrossBridgeProvider, isAcrossBridgeProviderEnabled)
+
+      // Only Near intents provider should be available for smart-contract wallets
+      if (isSmartContractWallet) {
+        toggleProvider(newProviders, bungeeBridgeProvider, false)
+        toggleProvider(newProviders, acrossBridgeProvider, false)
+      } else {
+        toggleProvider(newProviders, bungeeBridgeProvider, isBungeeBridgeProviderEnabled)
+        toggleProvider(newProviders, acrossBridgeProvider, isAcrossBridgeProviderEnabled)
+      }
 
       bridgingSdk.setAvailableProviders([...newProviders].map((p) => p.info.dappId))
 
@@ -51,6 +60,7 @@ export function BridgeProvidersUpdater(): null {
     isNearIntentsBridgeProviderEnabled,
     isAcrossBridgeProviderEnabled,
     isBungeeBridgeProviderEnabled,
+    isSmartContractWallet,
     setBridgeProviders,
   ])
 
