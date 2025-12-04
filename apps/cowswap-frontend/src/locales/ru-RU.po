@@ -612,7 +612,7 @@ msgstr "Продолжайте только если доверяете этом
 
 #: apps/cowswap-frontend/src/modules/application/containers/App/CowSpeechBubble.tsx
 msgid "View jobs"
-msgstr "Просмотр заданий"
+msgstr "Просмотр вакансий"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/FavoriteTokensList/index.tsx
 msgid "Your favorite saved tokens. Edit this list in the <0>Tokens page</0>."
