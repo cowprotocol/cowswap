@@ -1,4 +1,4 @@
-import { useState, ReactNode, useRef } from 'react'
+import { ReactNode, useRef, useState } from 'react'
 
 import { Category, toGtmEvent } from '@cowprotocol/analytics'
 import IMG_ICON_ARROW_RIGHT_CIRCULAR from '@cowprotocol/assets/images/arrow-right-circular.svg'
@@ -13,22 +13,22 @@ import SVG from 'react-inlinesvg'
 
 import { FooterAnimation } from './footerAnimation'
 import {
+  BottomRight,
+  BottomText,
+  Description,
+  FooterBottom,
+  FooterBottomLogos,
   FooterContainer,
   FooterContent,
-  FooterLogo,
   FooterDescriptionSection,
-  Description,
-  SocialIconsWrapper,
-  SocialIconLink,
-  SectionTitle,
-  LinkListWrapper,
-  LinkListGroup,
-  LinkList,
+  FooterLogo,
   Link,
-  FooterBottom,
-  BottomText,
-  FooterBottomLogos,
-  BottomRight,
+  LinkList,
+  LinkListGroup,
+  LinkListWrapper,
+  SectionTitle,
+  SocialIconLink,
+  SocialIconsWrapper,
   ToggleFooterButton,
 } from './styled'
 
@@ -155,6 +155,12 @@ const GLOBAL_FOOTER_NAV_ITEMS: Array<NavItemProps> = [
         utmContent: 'footer-about-brand-kit',
       },
       { href: 'https://cow.fi/legal', label: 'Legal', external: true, utmContent: 'footer-about-legal' },
+      {
+        label: 'Bug Bounty',
+        href: 'https://immunefi.com/bug-bounty/cowprotocol/information/',
+        external: true,
+        utmContent: 'footer-misc-bug-bounty',
+      },
     ],
   },
   {
