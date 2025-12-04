@@ -33,94 +33,13 @@ export class NoMetaMaskSDKError extends Error {
   }
 }
 
-// Extract chainId from array (Brave wallet sometimes returns arrays)
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function extractChainIdFromArray(arr: unknown[]) {
-  if (arr.length === 0) {
-    return null
-  }
-  const firstElement = arr[0]
-  if (typeof firstElement === 'string' || typeof firstElement === 'number') {
-    return firstElement
-  }
-  if (typeof firstElement === 'object' && firstElement !== null) {
-    return extractChainIdFromObject(firstElement as Record<string, unknown>)
-  }
-  return null
-}
-
-// Extract chainId from object properties
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function extractChainIdFromObject(obj: Record<string, unknown>) {
-  // Try common object patterns
-  if ('chainId' in obj && obj.chainId != null) {
-    return obj.chainId as string | number
-  }
-  // Some wallets wrap it in a 'result' property (JSON-RPC response format)
-  if ('result' in obj && obj.result != null) {
-    return obj.result as string | number
-  }
-  // Some wallets use 'data' property
-  if ('data' in obj && obj.data != null) {
-    return obj.data as string | number
-  }
-  // Try to find any string or number property that looks like a chainId
-  for (const key in obj) {
-    const value = obj[key]
-    if (typeof value === 'string' || typeof value === 'number') {
-      return value
-    }
-  }
-  return null
-}
-
-// Extract chainId from various object/array formats (Brave wallet and others)
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function extractChainIdFromValue(value: Record<string, unknown> | unknown[]) {
-  if (Array.isArray(value)) {
-    return extractChainIdFromArray(value)
-  }
-  return extractChainIdFromObject(value)
-}
-
 /**
  * Parses a chainId from a string or number.
  */
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function parseChainId(chainId: string | number | null | undefined | { chainId?: string | number } | unknown[]) {
-  if (typeof chainId === 'number') return chainId
-
-  // Handle null/undefined
-  if (!chainId) {
-    throw new Error(`Invalid chainId: expected string or number, got ${typeof chainId}`)
-  }
-
-  // Handle object or array (some wallets like Brave return objects/arrays with various structures)
-  if (typeof chainId === 'object') {
-    const chainIdString = JSON.stringify(chainId, null, 2)
-    // Handle empty array (Brave wallet sometimes returns [] when chainId is not available)
-    if (Array.isArray(chainId) && chainId.length === 0) {
-      console.error('[parseChainId] Empty array received. Full structure:', chainIdString)
-      throw new Error(
-        `Invalid chainId: received empty array. Wallet may not be properly initialized. Full object: ${chainIdString}`,
-      )
-    }
-    const extracted = extractChainIdFromValue(chainId as Record<string, unknown> | unknown[])
-    if (extracted != null) {
-      return parseChainId(extracted)
-    }
-    // Log the object structure for debugging - include full stringified version
-    console.error('[parseChainId] Received unexpected object/array format. Full structure:', chainIdString)
-    throw new Error(`Invalid chainId: object/array format not recognized. Full object structure: ${chainIdString}`)
-  }
-
-  // Handle string
-  if (typeof chainId === 'string') {
-    return Number.parseInt(chainId, chainId.startsWith('0x') ? 16 : 10)
-  }
-
-  throw new Error(`Invalid chainId: expected string or number, got ${typeof chainId}`)
+function parseChainId(chainId: string | number) {
+  return typeof chainId === 'number' ? chainId : Number.parseInt(chainId, chainId.startsWith('0x') ? 16 : 10)
 }
 
 /**

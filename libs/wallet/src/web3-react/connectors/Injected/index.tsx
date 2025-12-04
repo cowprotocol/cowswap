@@ -53,11 +53,14 @@ export class InjectedWallet extends Connector {
         const accounts = await this.getAccounts()
         if (!accounts.length) throw new Error('No accounts returned')
 
-        // Get chain ID from the wallet with retry for Brave wallet empty array issue
-        const chainId = await this.getChainIdWithRetry()
-        const receivedChainId = parseChainId(
-          chainId as string | number | null | undefined | { chainId?: string | number },
-        )
+        // Get chain ID from the wallet (retry on empty array for Brave wallet)
+        let chainId = await this.provider.request({ method: 'eth_chainId' })
+        // Retry if Brave wallet returns empty array (initialization timing issue)
+        if (Array.isArray(chainId) && chainId.length === 0) {
+          await new Promise((resolve) => setTimeout(resolve, 500))
+          chainId = await this.provider.request({ method: 'eth_chainId' })
+        }
+        const receivedChainId = parseChainId(chainId as string | number)
         const desiredChainId =
           typeof desiredChainIdOrChainParameters === 'number' ? undefined : desiredChainIdOrChainParameters?.chainId
 
@@ -120,12 +123,14 @@ export class InjectedWallet extends Connector {
       // chains; they should be requested serially, with accounts first, so that the chainId can settle.
       const accounts = await this.getAccounts()
       if (!accounts.length) throw new Error('No accounts returned')
-      // Get chain ID from the wallet with retry for Brave wallet empty array issue
-      const chainId = await this.getChainIdWithRetry()
-      this.actions.update({
-        chainId: parseChainId(chainId as string | number | null | undefined | { chainId?: string | number }),
-        accounts,
-      })
+      // Get chain ID from the wallet (retry on empty array for Brave wallet)
+      let chainId = (await this.provider.request({ method: 'eth_chainId' })) as string
+      // Retry if Brave wallet returns empty array (initialization timing issue)
+      if (Array.isArray(chainId) && chainId.length === 0) {
+        await new Promise((resolve) => setTimeout(resolve, 500))
+        chainId = (await this.provider.request({ method: 'eth_chainId' })) as string
+      }
+      this.actions.update({ chainId: parseChainId(chainId), accounts })
     } catch (error) {
       console.debug('Could not connect eagerly', error)
       // we should be able to use `cancelActivation` here, but on mobile, metamask emits a 'connect'
@@ -249,108 +254,6 @@ export class InjectedWallet extends Connector {
     return provider ? ethereum : null
   }
 
-  // Try to get chainId from provider properties (some wallets expose it directly)
-  private getChainIdFromProviderProperties(): string | number | null {
-    if (!this.provider) return null
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const providerAny = this.provider as any
-    if (typeof providerAny.chainId === 'string' || typeof providerAny.chainId === 'number') {
-      console.debug('[InjectedWallet] Got chainId from provider property:', providerAny.chainId)
-      return providerAny.chainId
-    }
-    if (providerAny.network?.chainId != null) {
-      console.debug('[InjectedWallet] Got chainId from provider.network.chainId:', providerAny.network.chainId)
-      return providerAny.network.chainId
-    }
-    return null
-  }
-
-  // Handle empty array response from Brave wallet with retry logic
-  private async handleEmptyArrayResponse(
-    chainId: unknown,
-    attempt: number,
-    maxRetries: number,
-    delayMs: number,
-  ): Promise<boolean> {
-    if (Array.isArray(chainId) && chainId.length === 0) {
-      const chainIdString = JSON.stringify(chainId, null, 2)
-      if (attempt < maxRetries - 1) {
-        console.debug(`[InjectedWallet] Empty array received, retrying in ${delayMs}ms...`)
-        await new Promise((resolve) => setTimeout(resolve, delayMs))
-        return true // Indicates we should retry
-      }
-      // Last attempt failed
-      console.error('[InjectedWallet] Empty array received after all retries. Full structure:', chainIdString)
-      throw new Error(
-        `Invalid chainId: received empty array after ${maxRetries} attempts. Wallet may not be properly initialized. Full object: ${chainIdString}`,
-      )
-    }
-    return false // No retry needed
-  }
-
-  // Try single RPC request for chainId
-  private async tryGetChainIdFromRpc(attempt: number): Promise<string | number | null> {
-    if (!this.provider) {
-      throw new Error('No provider')
-    }
-
-    const chainId = await this.provider.request({ method: 'eth_chainId' })
-
-    // Log for debugging Brave wallet issues
-    if (typeof chainId === 'object' && chainId !== null) {
-      const chainIdString = JSON.stringify(chainId, null, 2)
-      console.debug(`[InjectedWallet] Received chainId as object (attempt ${attempt}):`, chainIdString)
-    }
-
-    // If we got a valid response, return it
-    if (chainId != null && !(Array.isArray(chainId) && chainId.length === 0)) {
-      return chainId as string | number
-    }
-
-    return null
-  }
-
-  // Mod: Added custom method to handle Brave wallet empty array issue
-  // Retries getting chainId with delay if empty array is returned (Brave wallet initialization issue)
-  // Also tries to get chainId from provider properties as fallback
-  private async getChainIdWithRetry(maxRetries = 3, delayMs = 500): Promise<string | number | null | undefined> {
-    if (!this.provider) {
-      throw new Error('No provider')
-    }
-
-    // Try to get chainId from provider properties first
-    const providerChainId = this.getChainIdFromProviderProperties()
-    if (providerChainId != null) {
-      return providerChainId
-    }
-
-    // Try RPC request with retries
-    for (let attempt = 1; attempt <= maxRetries; attempt++) {
-      try {
-        const chainId = await this.tryGetChainIdFromRpc(attempt)
-        if (chainId != null) {
-          return chainId
-        }
-
-        // Handle empty array with retry
-        const shouldRetry = await this.handleEmptyArrayResponse([], attempt, maxRetries, delayMs)
-        if (!shouldRetry) {
-          break
-        }
-      } catch (error) {
-        // If it's not the last attempt and not an empty array error, retry
-        if (attempt < maxRetries && !(error instanceof Error && error.message.includes('empty array'))) {
-          console.debug(`[InjectedWallet] Error getting chainId (attempt ${attempt}), retrying...`, error)
-          await new Promise((resolve) => setTimeout(resolve, delayMs))
-          continue
-        }
-        throw error
-      }
-    }
-
-    throw new Error(`Failed to get chainId after ${maxRetries} attempts`)
-  }
 
   // Mod: Added custom method
   // Try 2 different RPC methods to get accounts first with eth_requestAccounts and if it fails, try eth_accounts
@@ -381,87 +284,12 @@ export class InjectedWallet extends Connector {
   }
 }
 
-// Extract chainId from array (Brave wallet sometimes returns arrays)
-function extractChainIdFromArray(arr: unknown[]): string | number | null {
-  if (arr.length === 0) {
-    return null
-  }
-  const firstElement = arr[0]
-  if (typeof firstElement === 'string' || typeof firstElement === 'number') {
-    return firstElement
-  }
-  if (typeof firstElement === 'object' && firstElement !== null) {
-    return extractChainIdFromObject(firstElement as Record<string, unknown>)
-  }
-  return null
-}
-
-// Extract chainId from object properties
-function extractChainIdFromObject(obj: Record<string, unknown>): string | number | null {
-  // Try common object patterns
-  if ('chainId' in obj && obj.chainId != null) {
-    return obj.chainId as string | number
-  }
-  // Some wallets wrap it in a 'result' property (JSON-RPC response format)
-  if ('result' in obj && obj.result != null) {
-    return obj.result as string | number
-  }
-  // Some wallets use 'data' property
-  if ('data' in obj && obj.data != null) {
-    return obj.data as string | number
-  }
-  // Try to find any string or number property that looks like a chainId
-  for (const key in obj) {
-    const value = obj[key]
-    if (typeof value === 'string' || typeof value === 'number') {
-      return value
-    }
-  }
-  return null
-}
-
-// Extract chainId from various object/array formats (Brave wallet and others)
-function extractChainIdFromValue(value: Record<string, unknown> | unknown[]): string | number | null {
-  if (Array.isArray(value)) {
-    return extractChainIdFromArray(value)
-  }
-  return extractChainIdFromObject(value)
-}
-
-function parseChainId(chainId: string | number | null | undefined | { chainId?: string | number } | unknown[]): number {
+function parseChainId(chainId: string | number): number {
   if (typeof chainId === 'number') return chainId
 
-  // Handle null/undefined
-  if (!chainId) {
-    throw new Error(`Invalid chainId: expected string or number, got ${typeof chainId}`)
+  if (!chainId.startsWith('0x')) {
+    return Number(chainId)
   }
 
-  // Handle object or array (some wallets like Brave return objects/arrays with various structures)
-  if (typeof chainId === 'object') {
-    const chainIdString = JSON.stringify(chainId, null, 2)
-    // Handle empty array (Brave wallet sometimes returns [] when chainId is not available)
-    if (Array.isArray(chainId) && chainId.length === 0) {
-      console.error('[parseChainId] Empty array received. Full structure:', chainIdString)
-      throw new Error(
-        `Invalid chainId: received empty array. Wallet may not be properly initialized. Full object: ${chainIdString}`,
-      )
-    }
-    const extracted = extractChainIdFromValue(chainId as Record<string, unknown> | unknown[])
-    if (extracted != null) {
-      return parseChainId(extracted)
-    }
-    // Log the object structure for debugging - include full stringified version
-    console.error('[parseChainId] Received unexpected object/array format. Full structure:', chainIdString)
-    throw new Error(`Invalid chainId: object/array format not recognized. Full object structure: ${chainIdString}`)
-  }
-
-  // Handle string
-  if (typeof chainId === 'string') {
-    if (!chainId.startsWith('0x')) {
-      return Number(chainId)
-    }
-    return Number.parseInt(chainId, 16)
-  }
-
-  throw new Error(`Invalid chainId: expected string or number, got ${typeof chainId}`)
+  return Number.parseInt(chainId, 16)
 }
