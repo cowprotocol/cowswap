@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { mapSupportedNetworks, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
@@ -36,16 +38,13 @@ const AMOUNT_LIMIT: Record<SupportedChainId, number> = {
   [SupportedChainId.MAINNET]: 50_000, // $50,000 for mainnet
 }
 
-// TODO: Add proper return type annotation
-// TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function TwapSuggestionBanner({
   priceImpact,
   buyingFiatAmount,
   tradeUrlParams,
   chainId,
   sellAmount,
-}: TwapSuggestionBannerProps) {
+}: TwapSuggestionBannerProps): ReactNode {
   if (!priceImpact || priceImpact.lessThan(0)) return null
 
   const isSellNative = !!sellAmount?.currency && getIsNativeToken(sellAmount?.currency)
