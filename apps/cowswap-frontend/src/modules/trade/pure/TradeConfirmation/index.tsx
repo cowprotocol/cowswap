@@ -7,8 +7,6 @@ import { useSigningStep } from 'entities/trade'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
-import type { AppDataInfo } from 'modules/appData'
-
 import { OrderHooksDetails } from 'common/containers/OrderHooksDetails'
 import { CurrencyPreviewInfo } from 'common/pure/CurrencyInputPanel'
 
@@ -17,19 +15,17 @@ import { ConfirmButton } from './ConfirmButton'
 import { ConfirmWarnings } from './ConfirmWarnings'
 import { QuoteCountdown } from './CountDown'
 import { useIsPriceChanged } from './hooks/useIsPriceChanged'
+import { useSmartContractRecipientConfirm } from './hooks/useSmartContractRecipientConfirm'
 import * as styledEl from './styled'
 
 import { NoImpactWarning } from '../../containers/NoImpactWarning'
+import { CommonTradeConfirmContext } from '../../hooks/useCommonTradeConfirmContext'
 import { useTradeConfirmState } from '../../hooks/useTradeConfirmState'
 
-export interface TradeConfirmationProps {
+export interface TradeConfirmationProps extends CommonTradeConfirmContext {
   onConfirm(): Promise<void | false>
-
   onDismiss(): void
 
-  account: string | undefined
-  ensName: string | undefined
-  appData?: string | AppDataInfo
   inputCurrencyInfo: CurrencyPreviewInfo
   outputCurrencyInfo: CurrencyPreviewInfo
   isConfirmDisabled: boolean
@@ -68,8 +64,12 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
     props.outputCurrencyInfo.amount?.toExact(),
     forcePriceConfirmation,
   )
+  const { isConfirmed: isSmartContractRecipientConfirmed, state: smartContractRecipientConfirmState } =
+    useSmartContractRecipientConfirm(props)
+  const outputChainId = props.outputCurrencyInfo.amount?.currency.chainId
 
-  const isButtonDisabled = isConfirmDisabled || (isPriceChanged && !isPriceStatic) || hasPendingTrade
+  const isButtonDisabled =
+    isConfirmDisabled || (isPriceChanged && !isPriceStatic) || hasPendingTrade || !isSmartContractRecipientConfirmed
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -113,6 +113,8 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
           recipient={props.recipient}
           isPriceChanged={isPriceChanged}
           isPriceStatic={isPriceStatic}
+          outputChainId={outputChainId}
+          smartContractRecipientConfirmState={smartContractRecipientConfirmState}
           resetPriceChanged={resetPriceChanged}
         />
 
