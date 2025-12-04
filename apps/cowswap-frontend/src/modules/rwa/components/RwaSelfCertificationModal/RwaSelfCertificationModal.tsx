@@ -4,32 +4,11 @@ import { Command } from '@cowprotocol/types'
 import { ButtonPrimary, ButtonOutlined } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/macro'
-import styled from 'styled-components/macro'
 
 import { ConfirmationModalHeader } from 'common/pure/ConfirmationModal/ConfirmationModalHeader'
-import { ContentWrapper, Modal } from 'common/pure/Modal'
+import { Modal } from 'common/pure/Modal'
 
-const ModalContentWrapper = styled(ContentWrapper)`
-  flex: 1;
-  padding: 1.5rem;
-  color: inherit;
-  border-radius: 1.5rem;
-`
-
-const Description = styled.p`
-  line-height: 1.4;
-  margin: 0 0 1.5rem;
-`
-
-const Warning = styled.strong`
-  color: inherit;
-`
-
-const ButtonContainer = styled.div`
-  display: flex;
-  gap: 12px;
-  margin-top: 24px;
-`
+import { ButtonContainer, Description, ModalContentWrapper, Warning } from './styled'
 
 export interface RwaSelfCertificationModalProps {
   isOpen: boolean
