@@ -8,11 +8,12 @@ import path from 'path'
 import { DATA_CACHE_TIME_SECONDS } from '@/const/meta'
 import { Network } from '@/const/networkMap'
 import { PlatformData, Platforms, TokenDetails, TokenInfo } from 'types'
+import { COW_CDN } from '@cowprotocol/common-const'
 
 const NETWORKS: Network[] = ['ethereum', 'base', 'arbitrum-one', 'avalanche', 'polygon-pos', 'xdai']
 const COW_TOKEN_ID = 'cow-protocol'
 
-const TOKEN_LISTS_URL = 'https://files.cow.fi/tokens/cowFi-tokens.json'
+const TOKEN_LISTS_URL = `${COW_CDN}/tokens/cowFi-tokens.json`
 const DESCRIPTIONS_DIR_PATH = path.join(process.cwd(), 'data', 'descriptions')
 
 /**
