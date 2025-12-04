@@ -1,4 +1,4 @@
-import { ComponentProps, ReactNode } from 'react'
+import { ComponentProps, ReactNode, useMemo } from 'react'
 
 import { SearchInput } from '@cowprotocol/ui'
 
@@ -203,10 +203,13 @@ function useSelectTokenModalLayout(props: SelectTokenModalProps): {
   const legacyChainsState =
     !showChainPanel && chainsToSelect && (chainsToSelect.chains?.length ?? 0) > 0 ? chainsToSelect : undefined
   const resolvedChainPanelTitle = chainsPanelTitle ?? t`Cross chain swap`
-  const chainPanel =
-    showChainPanel && chainsToSelect ? (
-      <ChainPanel title={resolvedChainPanelTitle} chainsState={chainsToSelect} onSelectChain={onSelectChain} />
-    ) : null
+  const chainPanel = useMemo(
+    () =>
+      showChainPanel && chainsToSelect ? (
+        <ChainPanel title={resolvedChainPanelTitle} chainsState={chainsToSelect} onSelectChain={onSelectChain} />
+      ) : null,
+    [chainsToSelect, onSelectChain, resolvedChainPanelTitle, showChainPanel],
+  )
 
   return {
     inputValue,

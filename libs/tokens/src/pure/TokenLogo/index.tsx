@@ -66,8 +66,8 @@ function StandardTokenLogo({
 
   const { currentUrl, initial } = useTokenLogoUrl({ token, logoURI, invalidUrls })
 
-  const logoUrl = useNetworkLogo(token?.chainId)
-  const showNetworkBadge = logoUrl && !hideNetworkBadge
+  const networkLogoUrl = useNetworkLogo(token?.chainId)
+  const showNetworkBadge = networkLogoUrl && !hideNetworkBadge
 
   const onError = useCallback(() => {
     if (!currentUrl) return
@@ -75,7 +75,9 @@ function StandardTokenLogo({
     setInvalidUrls((state) => ({ ...state, [currentUrl]: true }))
   }, [currentUrl, setInvalidUrls])
 
-  const actualTokenContent = renderTokenLogoContent({ currentUrl, onError, token, initial })
+  const actualTokenContent = (
+    <TokenLogoContent currentUrl={currentUrl} onError={onError} token={token} initial={initial} />
+  )
 
   if (noWrap) {
     return actualTokenContent
@@ -112,7 +114,7 @@ function StandardTokenLogo({
         )}
         {showNetworkBadge && (
           <Styled.ChainLogoWrapper size={chainLogoSizeForCalc}>
-            <img src={logoUrl} alt={`${chainName} network logo`} />
+            <img src={networkLogoUrl} alt={`${chainName} network logo`} />
           </Styled.ChainLogoWrapper>
         )}
       </>
@@ -172,19 +174,22 @@ function useTokenLogoUrl({ token, logoURI, invalidUrls }: TokenLogoUrlOptions): 
   return { currentUrl, initial }
 }
 
-interface TokenLogoContentOptions {
+interface TokenLogoContentProps {
   currentUrl?: string
   onError: () => void
   token?: TokenWithLogo | Currency | null
   initial?: string
 }
 
-function renderTokenLogoContent({ currentUrl, onError, token, initial }: TokenLogoContentOptions): ReactNode {
+function TokenLogoContent({ currentUrl, onError, token, initial }: TokenLogoContentProps): ReactNode {
+  const address = token && 'address' in token ? token.address : ''
+
   if (currentUrl) {
     return (
       <Styled.TokenImageWrapper>
         <img
-          alt={`${token?.symbol || ''} ${token?.name ? `(${token?.name})` : ''} token logo`}
+          data-address={address}
+          alt={`${token?.symbol || ''} ${token?.name ? `(${token.name})` : ''} token logo`}
           src={currentUrl}
           onError={onError}
         />
@@ -195,7 +200,7 @@ function renderTokenLogoContent({ currentUrl, onError, token, initial }: TokenLo
   if (initial) {
     return (
       <Styled.TokenImageWrapper>
-        <SingleLetterLogo initial={initial} />
+        <SingleLetterLogo address={address} initial={initial} />
       </Styled.TokenImageWrapper>
     )
   }

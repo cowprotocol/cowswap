@@ -23,7 +23,7 @@ export function quoteUsingSameParameters(
 
   if (currentQuote.bridgeQuote) {
     const bridgeTradeParams = currentQuote.bridgeQuote.tradeParameters
-    const bridgePostHook = currentQuote.bridgeQuote.bridgeCallDetails?.preAuthorizedBridgingHook.postHook
+    const bridgePostHook = currentQuote.bridgeQuote.bridgeCallDetails?.preAuthorizedBridgingHook?.postHook
 
     const cases = [
       compareAppDataWithoutQuoteData(

@@ -2,6 +2,8 @@ import { ReactNode, useMemo, useState } from 'react'
 
 import { BackButton } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
+
 import { SettingsIcon } from 'modules/trade/pure/Settings'
 
 import * as styledEl from './styled'
@@ -124,8 +126,8 @@ export function TitleBarActions({
           <styledEl.TitleActionButton
             id="list-token-manage-button"
             onClick={onOpenManageWidget}
-            aria-label="Manage token lists"
-            title="Manage token lists"
+            aria-label={t`Manage token lists`}
+            title={t`Manage token lists`}
           >
             <SettingsIcon />
           </styledEl.TitleActionButton>

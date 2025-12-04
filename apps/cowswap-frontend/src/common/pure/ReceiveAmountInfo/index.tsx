@@ -2,6 +2,7 @@ import React, { ReactNode } from 'react'
 
 import { isFractionFalsy } from '@cowprotocol/common-utils'
 import { TokenAmount } from '@cowprotocol/ui'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
@@ -21,6 +22,10 @@ export interface ReceiveAmountInfoTooltipProps {
   allowsOffchainSigning: boolean
 }
 
+function hasValidFee(amount: CurrencyAmount<Currency> | undefined, bps: number | undefined): boolean {
+  return !!amount && !!bps && !amount.equalTo(0)
+}
+
 export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps): ReactNode {
   const isEoaEthFlow = useIsEoaEthFlow()
 
@@ -28,19 +33,28 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps): 
   const {
     isSell,
     costs: {
-      partnerFee: { amount: partnerFeeAmount },
+      partnerFee: { amount: partnerFeeAmount, bps: partnerFeeBps },
+      protocolFee,
       bridgeFee,
     },
+    beforeAllFees,
   } = receiveAmountInfo
-  const { amountAfterFees, amountBeforeFees, networkFeeAmount } = getOrderTypeReceiveAmounts(receiveAmountInfo)
+  const { amountAfterFees, networkFeeAmount } = getOrderTypeReceiveAmounts(receiveAmountInfo)
   const { subsidy } = subsidyAndBalance
   const { discount } = subsidy
 
-  const hasPartnerFee = !isFractionFalsy(partnerFeeAmount)
+  const protocolFeeAmount = protocolFee?.amount
+  const protocolFeeBps = protocolFee?.bps
+
+  const hasPartnerFee = hasValidFee(partnerFeeAmount, partnerFeeBps)
+  const hasProtocolFee = hasValidFee(protocolFeeAmount, protocolFeeBps)
+  const hasAnyFee = hasPartnerFee || hasProtocolFee
   const hasNetworkFee = !isFractionFalsy(networkFeeAmount)
-  const hasFee = hasNetworkFee || hasPartnerFee
+  const hasFee = hasNetworkFee || hasAnyFee
 
   const isEoaNotEthFlow = allowsOffchainSigning && !isEoaEthFlow
+
+  const beforeAllFeesAmount = isSell ? beforeAllFees.buyAmount : beforeAllFees.sellAmount
 
   return (
     <styledEl.Box>
@@ -49,13 +63,17 @@ export function ReceiveAmountInfoTooltip(props: ReceiveAmountInfoTooltipProps): 
           <Trans>Before costs</Trans>
         </span>
         <span>
-          <TokenAmount amount={amountBeforeFees} tokenSymbol={amountBeforeFees?.currency} defaultValue="0" />
+          <TokenAmount amount={beforeAllFeesAmount} tokenSymbol={beforeAllFeesAmount.currency} defaultValue="0" />
         </span>
       </div>
 
+      {hasProtocolFee && <FeeItem title={t`Protocol fee`} isSell={isSell} feeAmount={protocolFeeAmount} />}
+
+      {hasPartnerFee && <FeeItem title={t`Partner fee`} isSell={isSell} feeAmount={partnerFeeAmount} />}
+
       <NetworkFeeItem discount={discount} networkFeeAmount={networkFeeAmount} isSell={isSell} hasFee={hasFee} />
 
-      {(isEoaNotEthFlow || hasPartnerFee) && <FeeItem title={t`Fee`} isSell={isSell} feeAmount={partnerFeeAmount} />}
+      {!hasAnyFee && !isEoaNotEthFlow && <FeeItem title={t`Fee`} isSell={isSell} feeAmount={undefined} />}
 
       {bridgeFee && (
         <FeeItem title={t`Bridge costs`} isSell={isSell} feeAmount={bridgeFee?.amountInIntermediateCurrency} />

@@ -3,7 +3,7 @@ import { ReactNode } from 'react'
 import OrderCheckIcon from '@cowprotocol/assets/cow-swap/order-check.svg'
 import { useTheme } from '@cowprotocol/common-hooks'
 import { ChainInfo, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { UI } from '@cowprotocol/ui'
+import { getChainAccentColors } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
 
@@ -13,64 +13,6 @@ import type { ChainAccentVars } from './styled'
 
 const LOADING_ITEMS_COUNT = 10
 const LOADING_SKELETON_INDICES = Array.from({ length: LOADING_ITEMS_COUNT }, (_, index) => index)
-
-const CHAIN_ACCENT_VAR_MAP: Record<SupportedChainId, ChainAccentVars> = {
-  [SupportedChainId.MAINNET]: {
-    backgroundVar: UI.COLOR_CHAIN_ETHEREUM_BG,
-    borderVar: UI.COLOR_CHAIN_ETHEREUM_BORDER,
-    accentColorVar: UI.COLOR_CHAIN_ETHEREUM_ACCENT,
-  },
-  [SupportedChainId.BNB]: {
-    backgroundVar: UI.COLOR_CHAIN_BNB_BG,
-    borderVar: UI.COLOR_CHAIN_BNB_BORDER,
-    accentColorVar: UI.COLOR_CHAIN_BNB_ACCENT,
-  },
-  [SupportedChainId.BASE]: {
-    backgroundVar: UI.COLOR_CHAIN_BASE_BG,
-    borderVar: UI.COLOR_CHAIN_BASE_BORDER,
-    accentColorVar: UI.COLOR_CHAIN_BASE_ACCENT,
-  },
-  [SupportedChainId.ARBITRUM_ONE]: {
-    backgroundVar: UI.COLOR_CHAIN_ARBITRUM_BG,
-    borderVar: UI.COLOR_CHAIN_ARBITRUM_BORDER,
-    accentColorVar: UI.COLOR_CHAIN_ARBITRUM_ACCENT,
-  },
-  [SupportedChainId.POLYGON]: {
-    backgroundVar: UI.COLOR_CHAIN_POLYGON_BG,
-    borderVar: UI.COLOR_CHAIN_POLYGON_BORDER,
-    accentColorVar: UI.COLOR_CHAIN_POLYGON_ACCENT,
-  },
-  [SupportedChainId.AVALANCHE]: {
-    backgroundVar: UI.COLOR_CHAIN_AVALANCHE_BG,
-    borderVar: UI.COLOR_CHAIN_AVALANCHE_BORDER,
-    accentColorVar: UI.COLOR_CHAIN_AVALANCHE_ACCENT,
-  },
-  [SupportedChainId.GNOSIS_CHAIN]: {
-    backgroundVar: UI.COLOR_CHAIN_GNOSIS_BG,
-    borderVar: UI.COLOR_CHAIN_GNOSIS_BORDER,
-    accentColorVar: UI.COLOR_CHAIN_GNOSIS_ACCENT,
-  },
-  [SupportedChainId.LENS]: {
-    backgroundVar: UI.COLOR_CHAIN_LENS_BG,
-    borderVar: UI.COLOR_CHAIN_LENS_BORDER,
-    accentColorVar: UI.COLOR_CHAIN_LENS_ACCENT,
-  },
-  [SupportedChainId.SEPOLIA]: {
-    backgroundVar: UI.COLOR_CHAIN_SEPOLIA_BG,
-    borderVar: UI.COLOR_CHAIN_SEPOLIA_BORDER,
-    accentColorVar: UI.COLOR_CHAIN_SEPOLIA_ACCENT,
-  },
-  [SupportedChainId.LINEA]: {
-    backgroundVar: UI.COLOR_CHAIN_LINEA_BG,
-    borderVar: UI.COLOR_CHAIN_LINEA_BORDER,
-    accentColorVar: UI.COLOR_CHAIN_LINEA_ACCENT,
-  },
-  [SupportedChainId.PLASMA]: {
-    backgroundVar: UI.COLOR_CHAIN_PLASMA_BG,
-    borderVar: UI.COLOR_CHAIN_PLASMA_BORDER,
-    accentColorVar: UI.COLOR_CHAIN_PLASMA_ACCENT,
-  },
-}
 
 export interface ChainsSelectorProps {
   chains: ChainInfo[]
@@ -92,24 +34,24 @@ export function ChainsSelector({ chains, onSelectChain, defaultChainId, isLoadin
 }
 
 function ChainsLoadingList(): ReactNode {
-  const skeletonRows = renderChainSkeletonRows()
-
-  return <styledEl.List>{skeletonRows}</styledEl.List>
+  return (
+    <styledEl.List>
+      <ChainsSkeletonList />
+    </styledEl.List>
+  )
 }
 
-function renderChainSkeletonRows(): ReactNode[] {
-  const elements: ReactNode[] = []
-
-  for (const index of LOADING_SKELETON_INDICES) {
-    elements.push(
-      <styledEl.LoadingRow key={`chain-skeleton-${index}`}>
-        <styledEl.LoadingCircle />
-        <styledEl.LoadingBar />
-      </styledEl.LoadingRow>,
-    )
-  }
-
-  return elements
+function ChainsSkeletonList(): ReactNode {
+  return (
+    <>
+      {LOADING_SKELETON_INDICES.map((index) => (
+        <styledEl.LoadingRow key={`chain-skeleton-${index}`}>
+          <styledEl.LoadingCircle />
+          <styledEl.LoadingBar />
+        </styledEl.LoadingRow>
+      ))}
+    </>
+  )
 }
 
 interface ChainsListProps {
@@ -120,38 +62,45 @@ interface ChainsListProps {
 }
 
 function ChainsList({ chains, defaultChainId, onSelectChain, isDarkMode }: ChainsListProps): ReactNode {
-  const chainButtons = renderChainButtons({ chains, defaultChainId, onSelectChain, isDarkMode })
-
-  return <styledEl.List>{chainButtons}</styledEl.List>
-}
-
-interface ChainButtonsRenderProps extends ChainsListProps {}
-
-function renderChainButtons({
-  chains,
-  defaultChainId,
-  onSelectChain,
-  isDarkMode,
-}: ChainButtonsRenderProps): ReactNode[] {
-  const elements: ReactNode[] = []
-
-  for (const chain of chains) {
-    elements.push(
-      <ChainButton
-        key={chain.id}
-        chain={chain}
-        isActive={defaultChainId === chain.id}
+  return (
+    <styledEl.List>
+      <ChainsButtonsList
+        chains={chains}
+        defaultChainId={defaultChainId}
         onSelectChain={onSelectChain}
         isDarkMode={isDarkMode}
-      />,
-    )
-  }
+      />
+    </styledEl.List>
+  )
+}
 
-  return elements
+function ChainsButtonsList({ chains, defaultChainId, onSelectChain, isDarkMode }: ChainsListProps): ReactNode {
+  return (
+    <>
+      {chains.map((chain) => (
+        <ChainButton
+          key={chain.id}
+          chain={chain}
+          isActive={defaultChainId === chain.id}
+          onSelectChain={onSelectChain}
+          isDarkMode={isDarkMode}
+        />
+      ))}
+    </>
+  )
 }
 
 export function getChainAccent(chainId: ChainInfo['id']): ChainAccentVars | undefined {
-  return CHAIN_ACCENT_VAR_MAP[chainId as SupportedChainId]
+  const accentConfig = getChainAccentColors(chainId as SupportedChainId)
+  if (!accentConfig) {
+    return undefined
+  }
+
+  return {
+    backgroundVar: accentConfig.bgVar,
+    borderVar: accentConfig.borderVar,
+    accentColorVar: accentConfig.accentVar,
+  }
 }
 
 interface ChainButtonProps {

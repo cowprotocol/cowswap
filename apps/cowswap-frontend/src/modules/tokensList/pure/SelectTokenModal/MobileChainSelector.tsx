@@ -3,6 +3,8 @@ import { ReactNode, useEffect, useMemo, useRef } from 'react'
 import { useTheme } from '@cowprotocol/common-hooks'
 import { ChainInfo } from '@cowprotocol/cow-sdk'
 
+import { msg } from '@lingui/core/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 import { ChevronDown } from 'react-feather'
 
 import * as styledEl from './mobileChainSelector.styled'
@@ -24,6 +26,7 @@ export function MobileChainSelector({
   onSelectChain,
   onOpenPanel,
 }: MobileChainSelectorProps): ReactNode {
+  const { i18n } = useLingui()
   const scrollRef = useRef<HTMLDivElement | null>(null)
   const orderedChains = useMemo(
     () =>
@@ -51,7 +54,7 @@ export function MobileChainSelector({
         <styledEl.MobileSelectorLabel>
           <span>{label}</span>
           {activeChainLabel ? (
-            <styledEl.ActiveChainLabel aria-label={`Selected network ${activeChainLabel}`}>
+            <styledEl.ActiveChainLabel aria-label={i18n._(msg`Selected network ${activeChainLabel}`)}>
               {activeChainLabel}
             </styledEl.ActiveChainLabel>
           ) : null}
@@ -72,8 +75,10 @@ export function MobileChainSelector({
         ) : null}
         {totalChains > 0 ? (
           <styledEl.FixedAllNetworks>
-            <styledEl.MoreChipButton onClick={onOpenPanel} aria-label={`View all ${totalChains} networks`}>
-              <span>View all ({totalChains})</span>
+            <styledEl.MoreChipButton onClick={onOpenPanel} aria-label={i18n._(msg`View all ${totalChains} networks`)}>
+              <span>
+                <Trans>View all ({totalChains})</Trans>
+              </span>
               <ChevronDown size={14} />
             </styledEl.MoreChipButton>
           </styledEl.FixedAllNetworks>
