@@ -108,6 +108,8 @@ export function VirtualList<T>({
     }, scrollDelay)
   }, [])
 
+  // @tanstack/react-virtual's useVirtualizer hook doesn't fully comply with React hooks rules
+  // (e.g., it may call hooks conditionally or in a different order), so we need to disable the lint rule
   // eslint-disable-next-line react-hooks/incompatible-library
   const virtualizer = useVirtualizer({
     getScrollElement: () => parentRef.current,
