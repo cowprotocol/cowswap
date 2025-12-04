@@ -54,17 +54,8 @@ export class InjectedWallet extends Connector {
         if (!accounts.length) throw new Error('No accounts returned')
 
         // Get chain ID from the wallet (retry on empty array for Brave wallet)
-        let chainId = await this.provider.request({ method: 'eth_chainId' })
-        // Retry if Brave wallet returns empty array (initialization timing issue)
-        if (Array.isArray(chainId) && chainId.length === 0) {
-          await new Promise((resolve) => setTimeout(resolve, 500))
-          chainId = await this.provider.request({ method: 'eth_chainId' })
-        }
-        // Validate chainId is a string or number before parsing
-        if (typeof chainId !== 'string' && typeof chainId !== 'number') {
-          throw new Error(`Invalid chainId: expected string or number, got ${typeof chainId}. Value: ${JSON.stringify(chainId)}`)
-        }
-        const receivedChainId = parseChainId(chainId as string | number)
+        const chainId = await this.getChainIdWithRetry()
+        const receivedChainId = parseChainId(chainId)
         const desiredChainId =
           typeof desiredChainIdOrChainParameters === 'number' ? undefined : desiredChainIdOrChainParameters?.chainId
 
@@ -128,17 +119,8 @@ export class InjectedWallet extends Connector {
       const accounts = await this.getAccounts()
       if (!accounts.length) throw new Error('No accounts returned')
       // Get chain ID from the wallet (retry on empty array for Brave wallet)
-      let chainId = (await this.provider.request({ method: 'eth_chainId' })) as string
-      // Retry if Brave wallet returns empty array (initialization timing issue)
-      if (Array.isArray(chainId) && chainId.length === 0) {
-        await new Promise((resolve) => setTimeout(resolve, 500))
-        chainId = (await this.provider.request({ method: 'eth_chainId' })) as string
-      }
-      // Validate chainId is a string or number before parsing
-      if (typeof chainId !== 'string' && typeof chainId !== 'number') {
-        throw new Error(`Invalid chainId: expected string or number, got ${typeof chainId}. Value: ${JSON.stringify(chainId)}`)
-      }
-      this.actions.update({ chainId: parseChainId(chainId as string | number), accounts })
+      const chainId = await this.getChainIdWithRetry()
+      this.actions.update({ chainId: parseChainId(chainId), accounts })
     } catch (error) {
       console.debug('Could not connect eagerly', error)
       // we should be able to use `cancelActivation` here, but on mobile, metamask emits a 'connect'
@@ -288,6 +270,47 @@ export class InjectedWallet extends Connector {
 
       return provider.request({ method: 'eth_accounts' }) as Promise<string[]>
     }
+  }
+
+  // Mod: Added custom method
+  // Get chainId with retry logic for Brave wallet which may return empty array during initialization
+  // Retries up to 5 times with exponential backoff (500ms, 1000ms, 2000ms, 4000ms, 8000ms)
+  // TODO: Add proper return type annotation
+   
+  private async getChainIdWithRetry(maxRetries = 5): Promise<string | number> {
+    const { provider } = this
+
+    if (!provider) {
+      throw new Error('No provider')
+    }
+
+    for (let attempt = 0; attempt < maxRetries; attempt++) {
+      const chainId = await provider.request({ method: 'eth_chainId' })
+
+      // If we got a valid chainId (string or number), return it
+      if (typeof chainId === 'string' || typeof chainId === 'number') {
+        return chainId
+      }
+
+      // If it's an empty array (Brave wallet initialization issue), retry with exponential backoff
+      if (Array.isArray(chainId) && chainId.length === 0) {
+        if (attempt < maxRetries - 1) {
+          const delay = 500 * Math.pow(2, attempt)
+          console.debug(`Brave wallet returned empty chainId array, retrying in ${delay}ms (attempt ${attempt + 1}/${maxRetries})`)
+          await new Promise((resolve) => setTimeout(resolve, delay))
+          continue
+        } else {
+          // Last attempt failed with empty array
+          throw new Error(`Failed to get chainId after ${maxRetries} attempts. Brave wallet returned empty array and may still be initializing.`)
+        }
+      }
+
+      // If we get here, chainId is neither string/number nor empty array - throw error
+      throw new Error(`Invalid chainId: expected string or number, got ${typeof chainId}. Value: ${JSON.stringify(chainId)}`)
+    }
+
+    // This should never be reached, but TypeScript requires it
+    throw new Error(`Failed to get chainId after ${maxRetries} attempts.`)
   }
 }
 
