@@ -276,7 +276,7 @@ export class InjectedWallet extends Connector {
   // Get chainId with retry logic for Brave wallet which may return empty array during initialization
   // Retries up to 5 times with exponential backoff (500ms, 1000ms, 2000ms, 4000ms, 8000ms)
   // TODO: Add proper return type annotation
-   
+
   private async getChainIdWithRetry(maxRetries = 5): Promise<string | number> {
     const { provider } = this
 
@@ -296,17 +296,23 @@ export class InjectedWallet extends Connector {
       if (Array.isArray(chainId) && chainId.length === 0) {
         if (attempt < maxRetries - 1) {
           const delay = 500 * Math.pow(2, attempt)
-          console.debug(`Brave wallet returned empty chainId array, retrying in ${delay}ms (attempt ${attempt + 1}/${maxRetries})`)
+          console.debug(
+            `Brave wallet returned empty chainId array, retrying in ${delay}ms (attempt ${attempt + 1}/${maxRetries})`,
+          )
           await new Promise((resolve) => setTimeout(resolve, delay))
           continue
         } else {
           // Last attempt failed with empty array
-          throw new Error(`Failed to get chainId after ${maxRetries} attempts. Brave wallet returned empty array and may still be initializing.`)
+          throw new Error(
+            `Failed to get chainId after ${maxRetries} attempts. Brave wallet returned empty array and may still be initializing.`,
+          )
         }
       }
 
       // If we get here, chainId is neither string/number nor empty array - throw error
-      throw new Error(`Invalid chainId: expected string or number, got ${typeof chainId}. Value: ${JSON.stringify(chainId)}`)
+      throw new Error(
+        `Invalid chainId: expected string or number, got ${typeof chainId}. Value: ${JSON.stringify(chainId)}`,
+      )
     }
 
     // This should never be reached, but TypeScript requires it
@@ -319,7 +325,9 @@ function parseChainId(chainId: string | number): number {
 
   // Validate chainId is a string before calling string methods
   if (typeof chainId !== 'string') {
-    throw new Error(`Invalid chainId: expected string or number, got ${typeof chainId}. Value: ${JSON.stringify(chainId)}`)
+    throw new Error(
+      `Invalid chainId: expected string or number, got ${typeof chainId}. Value: ${JSON.stringify(chainId)}`,
+    )
   }
 
   if (!chainId.startsWith('0x')) {
