@@ -3,18 +3,19 @@ import { ReactNode } from 'react'
 import { Command } from '@cowprotocol/types'
 import { ButtonPrimary, ButtonOutlined } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/macro'
+import { t, Trans } from '@lingui/macro'
 
 import { ConfirmationModalHeader } from 'common/pure/ConfirmationModal/ConfirmationModalHeader'
 import { Modal } from 'common/pure/Modal'
 
 import { ButtonContainer, Description, ModalContentWrapper, Warning } from './styled'
 
+const TITLE = t`RWA Token Self-Certification Required`
+const DESCRIPTION = t`Your IP address could not be determined (VPN, privacy settings, etc.). To trade RWA-restricted tokens, you must confirm that you are not a US person, EU resident, or resident in a sanctioned country.`
+const WARNING_TEXT = t`By confirming, you acknowledge that you meet the eligibility requirements for trading RWA tokens.`
+
 export interface RwaSelfCertificationModalProps {
   isOpen: boolean
-  title: string
-  description: string
-  warning?: string
   issuerName?: string
   tosVersion?: string
   onDismiss: Command
@@ -23,32 +24,25 @@ export interface RwaSelfCertificationModalProps {
 
 export function RwaSelfCertificationModal({
   isOpen,
-  title,
-  description,
-  warning,
   issuerName,
   tosVersion,
   onDismiss,
   onConfirm,
 }: RwaSelfCertificationModalProps): ReactNode {
-  const shouldShowWarning = !!warning
-
   return (
     <Modal isOpen={isOpen} onDismiss={onDismiss} maxHeight={100}>
       <ModalContentWrapper>
         <ConfirmationModalHeader onCloseClick={onDismiss}>
-          <Trans>{title}</Trans>
+          <Trans>{TITLE}</Trans>
         </ConfirmationModalHeader>
         <Description>
-          <Trans>{description}</Trans>
+          <Trans>{DESCRIPTION}</Trans>
         </Description>
-        {shouldShowWarning && (
-          <Description>
-            <Warning>
-              <Trans>{warning}</Trans>
-            </Warning>
-          </Description>
-        )}
+        <Description>
+          <Warning>
+            <Trans>{WARNING_TEXT}</Trans>
+          </Warning>
+        </Description>
         {issuerName && (
           <Description>
             <Trans>Issuer: {issuerName}</Trans>

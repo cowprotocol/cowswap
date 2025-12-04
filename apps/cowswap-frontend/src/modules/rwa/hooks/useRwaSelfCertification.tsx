@@ -1,19 +1,17 @@
-import { useCallback, useMemo, useState, useRef, ReactNode } from 'react'
+import { ReactNode, useCallback, useMemo } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useRwaConsentStatus } from './useRwaConsentStatus'
 
-import { RwaSelfCertificationModal } from '../components/RwaSelfCertificationModal/RwaSelfCertificationModal'
+import { RwaSelfCertificationModal } from '../components/RwaSelfCertificationModal'
 import { GeoMode, RwaConsentKey } from '../types/rwaConsent'
+import { usePromiseModal } from '../utils/usePromiseModal'
 
 export interface UseRwaSelfCertificationParams {
   issuer: string
   tosVersion: string
   geoMode: GeoMode
-  title?: string
-  description?: string
-  warning?: string
   issuerName?: string
 }
 
@@ -22,95 +20,58 @@ export interface UseRwaSelfCertificationReturn {
   ModalComponent: () => ReactNode
 }
 
-const DEFAULT_TITLE = 'RWA Token Self-Certification Required'
-const DEFAULT_DESCRIPTION =
-  'Your IP address could not be determined (VPN, privacy settings, etc.). To trade RWA-restricted tokens, you must confirm that you are not a US person, EU resident, or resident in a sanctioned country.'
-const DEFAULT_WARNING = 'By confirming, you acknowledge that you meet the eligibility requirements for trading RWA tokens.'
+function createConsentKey(account: string | undefined, issuer: string, tosVersion: string): RwaConsentKey {
+  return account ? { wallet: account, issuer, tosVersion } : { wallet: '', issuer, tosVersion }
+}
 
 export function useRwaSelfCertification({
   issuer,
   tosVersion,
   geoMode,
-  title = DEFAULT_TITLE,
-  description = DEFAULT_DESCRIPTION,
-  warning = DEFAULT_WARNING,
   issuerName,
 }: UseRwaSelfCertificationParams): UseRwaSelfCertificationReturn {
   const { account } = useWalletInfo()
-  const [isOpen, setIsOpen] = useState(false)
-  const resolvePromiseRef = useRef<((value: boolean) => void) | null>(null)
+  const { isOpen, openModal, onAcceptOrReject, closeModal } = usePromiseModal()
 
-  const consentKey: RwaConsentKey | null = useMemo(() => {
-    if (!account) {
-      return null
-    }
-    return {
-      wallet: account,
-      issuer,
-      tosVersion,
-    }
-  }, [account, issuer, tosVersion])
+  const consentKey = useMemo(() => createConsentKey(account, issuer, tosVersion), [account, issuer, tosVersion])
 
-  const { consentStatus, confirmConsent } = useRwaConsentStatus(
-    consentKey || { wallet: '', issuer, tosVersion }
-  )
-
-  const showModal = useCallback((): Promise<boolean> => {
-    if (!account || !consentKey) {
-      return Promise.resolve(false)
-    }
-
-    if (consentStatus === 'valid') {
-      return Promise.resolve(true)
-    }
-
-    return new Promise((resolve) => {
-      resolvePromiseRef.current = resolve
-      setIsOpen(true)
-    })
-  }, [account, consentKey, consentStatus])
+  const { consentStatus, confirmConsent } = useRwaConsentStatus(consentKey)
 
   const handleConfirm = useCallback(() => {
     if (!consentKey) {
       return
     }
     confirmConsent(geoMode)
-    setIsOpen(false)
-    if (resolvePromiseRef.current) {
-      resolvePromiseRef.current(true)
-      resolvePromiseRef.current = null
-    }
-  }, [confirmConsent, geoMode, consentKey])
-
-  const handleDismiss = useCallback(() => {
-    setIsOpen(false)
-    if (resolvePromiseRef.current) {
-      resolvePromiseRef.current(false)
-      resolvePromiseRef.current = null
-    }
-  }, [])
+    onAcceptOrReject(true)
+  }, [confirmConsent, geoMode, consentKey, onAcceptOrReject])
 
   const ModalComponent = useCallback(
     () => (
       <RwaSelfCertificationModal
         isOpen={isOpen}
-        title={title}
-        description={description}
-        warning={warning}
         issuerName={issuerName}
         tosVersion={tosVersion}
-        onDismiss={handleDismiss}
+        onDismiss={closeModal}
         onConfirm={handleConfirm}
       />
     ),
-    [isOpen, title, description, warning, issuerName, tosVersion, handleDismiss, handleConfirm]
+    [isOpen, issuerName, tosVersion, closeModal, handleConfirm],
   )
 
-  return useMemo(
-    () => ({
-      showModal,
-      ModalComponent,
-    }),
-    [showModal, ModalComponent]
-  )
+  const showModal = useCallback(async (): Promise<boolean> => {
+    if (!account || !consentKey) {
+      return false
+    }
+
+    if (consentStatus === 'valid') {
+      return true
+    }
+
+    return openModal()
+  }, [account, consentKey, consentStatus, openModal])
+
+  return {
+    showModal,
+    ModalComponent,
+  }
 }
