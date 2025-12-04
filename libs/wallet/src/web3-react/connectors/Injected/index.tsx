@@ -275,8 +275,6 @@ export class InjectedWallet extends Connector {
   // Mod: Added custom method
   // Get chainId with retry logic for Brave wallet which may return empty array during initialization
   // Retries up to 5 times with exponential backoff (500ms, 1000ms, 2000ms, 4000ms, 8000ms)
-  // TODO: Add proper return type annotation
-
   private async getChainIdWithRetry(maxRetries = 5): Promise<string | number> {
     const { provider } = this
 
