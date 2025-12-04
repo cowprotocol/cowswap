@@ -254,7 +254,6 @@ export class InjectedWallet extends Connector {
     return provider ? ethereum : null
   }
 
-
   // Mod: Added custom method
   // Try 2 different RPC methods to get accounts first with eth_requestAccounts and if it fails, try eth_accounts
   // TODO: Add proper return type annotation
