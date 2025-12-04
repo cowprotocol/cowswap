@@ -38,15 +38,25 @@ export class NoMetaMaskSDKError extends Error {
  */
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function parseChainId(chainId: string | number) {
+function parseChainId(chainId: string | number | null | undefined | { chainId?: string | number }) {
   if (typeof chainId === 'number') return chainId
 
-  // Handle null/undefined or non-string values
-  if (!chainId || typeof chainId !== 'string') {
+  // Handle null/undefined
+  if (!chainId) {
     throw new Error(`Invalid chainId: expected string or number, got ${typeof chainId}`)
   }
 
-  return Number.parseInt(chainId, chainId.startsWith('0x') ? 16 : 10)
+  // Handle object with chainId property (some wallets return objects)
+  if (typeof chainId === 'object' && 'chainId' in chainId) {
+    return parseChainId(chainId.chainId)
+  }
+
+  // Handle string
+  if (typeof chainId === 'string') {
+    return Number.parseInt(chainId, chainId.startsWith('0x') ? 16 : 10)
+  }
+
+  throw new Error(`Invalid chainId: expected string or number, got ${typeof chainId}`)
 }
 
 /**
