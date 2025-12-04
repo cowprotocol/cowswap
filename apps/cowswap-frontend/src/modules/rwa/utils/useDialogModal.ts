@@ -1,13 +1,13 @@
 import { useCallback, useRef, useState } from 'react'
 
-export interface UsePromiseModalReturn {
+export interface useDialogModalActions {
   isOpen: boolean
   openModal: () => Promise<boolean>
-  onAcceptOrReject: (value: boolean) => void
+  onAccept: () => void
   closeModal: () => void
 }
 
-export function usePromiseModal(): UsePromiseModalReturn {
+export function useDialogModal(): useDialogModalActions {
   const [isOpen, setIsOpen] = useState(false)
   const resolveRef = useRef<((value: boolean) => void) | null>(null)
 
@@ -18,9 +18,9 @@ export function usePromiseModal(): UsePromiseModalReturn {
     })
   }, [])
 
-  const onAcceptOrReject = useCallback((isAccepted: boolean) => {
+  const onAccept = useCallback(() => {
     if (resolveRef.current) {
-      resolveRef.current(isAccepted)
+      resolveRef.current(true)
       resolveRef.current = null
     }
     setIsOpen(false)
@@ -37,7 +37,7 @@ export function usePromiseModal(): UsePromiseModalReturn {
   return {
     isOpen,
     openModal,
-    onAcceptOrReject,
+    onAccept,
     closeModal,
   }
 }

@@ -6,7 +6,7 @@ import { useRwaConsentStatus } from './useRwaConsentStatus'
 
 import { RwaSelfCertificationModal } from '../components/RwaSelfCertificationModal'
 import { GeoMode, RwaConsentKey } from '../types/rwaConsent'
-import { usePromiseModal } from '../utils/usePromiseModal'
+import { useDialogModal } from '../utils/useDialogModal'
 
 export interface UseRwaSelfCertificationParams {
   issuer: string
@@ -31,7 +31,7 @@ export function useRwaSelfCertification({
   issuerName,
 }: UseRwaSelfCertificationParams): UseRwaSelfCertificationReturn {
   const { account } = useWalletInfo()
-  const { isOpen, openModal, onAcceptOrReject, closeModal } = usePromiseModal()
+  const { isOpen, openModal, onAccept, closeModal } = useDialogModal()
 
   const consentKey = useMemo(() => createConsentKey(account, issuer, tosVersion), [account, issuer, tosVersion])
 
@@ -42,8 +42,8 @@ export function useRwaSelfCertification({
       return
     }
     confirmConsent(geoMode)
-    onAcceptOrReject(true)
-  }, [confirmConsent, geoMode, consentKey, onAcceptOrReject])
+    onAccept()
+  }, [confirmConsent, geoMode, consentKey, onAccept])
 
   const ModalComponent = useCallback(
     () => (
