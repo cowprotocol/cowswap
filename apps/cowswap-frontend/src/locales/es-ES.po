@@ -8,7 +8,7 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-12-03 12:10\n"
+"PO-Revision-Date: 2025-12-04 11:16\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -37,8 +37,8 @@ msgid "Signature is undefined!"
 msgstr "¡La firma no está definida!"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/BenefitComponents.tsx
-msgid "I just received surplus on"
-msgstr "Acabo de recibir excedentes en"
+#~ msgid "I just received surplus on"
+#~ msgstr "I just received surplus on"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
 msgid "years"
@@ -609,6 +609,10 @@ msgstr "Si su orden no ha sido completada en esta fecha y hora, caducará. No se
 #: apps/cowswap-frontend/src/modules/bridge/pure/ProxyAccountBanner/index.tsx
 msgid "Only proceed if you trust this provider."
 msgstr "Sólo proceda si confía en este proveedor."
+
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/BenefitComponents.tsx
+msgid "I received surplus on"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/application/containers/App/CowSpeechBubble.tsx
 msgid "View jobs"
@@ -2195,6 +2199,10 @@ msgstr "No se pudo obtener el manifiesto de {manifestUrl}. Por favor, comprueba 
 msgid "Order executes at"
 msgstr "La orden se ejecuta en"
 
+#: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSidebar/index.tsx
+msgid "Trade alert settings"
+msgstr "Configuración de alertas de trading"
+
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/SolvingStep.tsx
 msgid "There may be a network issue (such as a gas spike) that is delaying your order. You can wait for the issue to resolve{cancellationModal}"
 msgstr "Puede haber un problema de red (como un pico de gas) que está retrasando su orden. Puede esperar a que el problema resuelva {cancellationModal}"
@@ -2554,10 +2562,6 @@ msgstr "Resumen de tokens"
 msgid "Enter slippage percentage between {min}% and {max}%"
 msgstr "Introduzca el porcentaje de deslizamiento entre {min}% y {max}%"
 
-#: apps/cowswap-frontend/src/modules/trade/pure/ProtocolFeeRow/index.tsx
-msgid "Protocol fee ({protocolFeeAsPercent}%)"
-msgstr "Comisión del protocolo ({protocolFeeAsPercent}%)"
-
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/SurplusModal.tsx
 msgid "Learn how"
 msgstr "Aprende cómo"
@@ -2750,11 +2754,7 @@ msgstr "Alertas de trading activadas"
 #: apps/cowswap-frontend/src/common/pure/NetworkCostsSuffix/index.tsx
 #: apps/cowswap-frontend/src/modules/trade/pure/RowFeeContent/index.tsx
 msgid "gas"
-msgstr "gas"
-
-#: apps/cowswap-frontend/src/common/pure/ReceiveAmountInfo/index.tsx
-msgid "Protocol fee"
-msgstr "Comisión del protocolo"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookListItem/index.tsx
 msgid "details"
@@ -3736,6 +3736,10 @@ msgstr "Expiración de la transacción"
 #: apps/cowswap-frontend/src/legacy/components/ErrorBoundary/ChunkLoadError.tsx
 msgid "CowSwap no connection"
 msgstr "Cowswap sin conexión"
+
+#: apps/cowswap-frontend/src/modules/application/containers/App/CowSpeechBubble.tsx
+msgid "View jobs (opens in a new tab)"
+msgstr "Ver trabajos (se abre en una pestaña nueva)"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 #: apps/cowswap-frontend/src/modules/bridge/pure/BridgeActivitySummary/BridgeSummaryHeader.tsx
@@ -6063,8 +6067,8 @@ msgid "Dark mode"
 msgstr "Modo oscuro"
 
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmountInfo/index.tsx
-#~ msgid "Bridge costs"
-#~ msgstr "Bridge costs"
+msgid "Bridge costs"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/StatusDetails.tsx
 msgid "View cancellation"
@@ -6279,18 +6283,12 @@ msgstr "Aprende más"
 
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/HighFeeWarning/highFeeWarningHelpers.ts
 msgid "Swap and bridge costs are at least {formattedFeePercentage}% of the swap amount"
-msgstr "Los costos de Swap y Bridge serán por lo menos {formattedFeePercentage}% del monto de intercambio"
-
-# Receive amount labels
-msgid "Receive (incl. fees)"
-msgstr "Recibir (incl. comisiones)"
-
-msgid "From (incl. fees)"
-msgstr "De (incl. comisiones)"
+msgstr "Los costos de intercambio y puente son por lo menos {formattedFeePercentage}% del monto de intercambio"
 
 # Notifications / jobs aria labels
 msgid "Trade alert settings"
-msgstr "Configuración de alertas de trading"
+msgstr ""
 
 msgid "View jobs (opens in a new tab)"
-msgstr "Ver trabajos (se abre en una pestaña nueva)"
+msgstr ""
+
