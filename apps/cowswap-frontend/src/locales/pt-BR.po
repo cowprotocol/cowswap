@@ -8,7 +8,7 @@ msgstr ""
 "Language: pt\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-12-01 10:42\n"
+"PO-Revision-Date: 2025-12-04 11:16\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese, Brazilian\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -37,8 +37,8 @@ msgid "Signature is undefined!"
 msgstr ""
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/BenefitComponents.tsx
-msgid "I just received surplus on"
-msgstr ""
+#~ msgid "I just received surplus on"
+#~ msgstr "I just received surplus on"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
 msgid "years"
@@ -606,6 +606,10 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/ProxyAccountBanner/index.tsx
 msgid "Only proceed if you trust this provider."
+msgstr ""
+
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/BenefitComponents.tsx
+msgid "I received surplus on"
 msgstr ""
 
 #: apps/cowswap-frontend/src/modules/application/containers/App/CowSpeechBubble.tsx
@@ -2192,6 +2196,10 @@ msgstr ""
 msgid "Order executes at"
 msgstr ""
 
+#: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSidebar/index.tsx
+msgid "Trade alert settings"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/SolvingStep.tsx
 msgid "There may be a network issue (such as a gas spike) that is delaying your order. You can wait for the issue to resolve{cancellationModal}"
 msgstr ""
@@ -3723,6 +3731,10 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/legacy/components/ErrorBoundary/ChunkLoadError.tsx
 msgid "CowSwap no connection"
+msgstr ""
+
+#: apps/cowswap-frontend/src/modules/application/containers/App/CowSpeechBubble.tsx
+msgid "View jobs (opens in a new tab)"
 msgstr ""
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
@@ -6050,8 +6062,8 @@ msgid "Dark mode"
 msgstr ""
 
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmountInfo/index.tsx
-#~ msgid "Bridge costs"
-#~ msgstr "Bridge costs"
+msgid "Bridge costs"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/StatusDetails.tsx
 msgid "View cancellation"
