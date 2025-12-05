@@ -8,6 +8,6 @@ const prodBaseUrls = process.env.REACT_APP_ORDER_BOOK_URLS
 
 export const metadataApiSDK = new MetadataApi()
 export const orderBookApi = new OrderBookApi({
-  env: isBarnBackendEnv ? 'staging' : 'prod',
+  env: 'staging',
   ...(prodBaseUrls ? { baseUrls: prodBaseUrls } : undefined),
 })
