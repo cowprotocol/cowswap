@@ -1,7 +1,8 @@
-import { ReactNode, useEffect, useMemo, useRef } from 'react'
+import { ReactNode, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { useTheme } from '@cowprotocol/common-hooks'
 import { ChainInfo } from '@cowprotocol/cow-sdk'
+import { Tooltip } from '@cowprotocol/ui'
 
 import { msg } from '@lingui/core/macro'
 import { Trans, useLingui } from '@lingui/react/macro'
@@ -12,6 +13,53 @@ import * as styledEl from './mobileChainSelector.styled'
 import { ChainsToSelectState } from '../../types'
 import { sortChainsByDisplayOrder } from '../../utils/sortChainsByDisplayOrder'
 import { getChainAccent } from '../ChainsSelector'
+
+const DISABLED_CHAIN_TOOLTIP_DURATION_MS = 2500
+
+function useDisabledChainTooltip(durationMs: number): {
+  activeTooltipChainId: number | null
+  toggleTooltip(chainId: number): void
+  hideTooltip(): void
+} {
+  const [activeTooltipChainId, setActiveTooltipChainId] = useState<number | null>(null)
+  const hideTimerRef = useRef<number | null>(null)
+
+  const hideTooltip = useCallback((): void => {
+    if (hideTimerRef.current) {
+      window.clearTimeout(hideTimerRef.current)
+      hideTimerRef.current = null
+    }
+    setActiveTooltipChainId(null)
+  }, [])
+
+  const toggleTooltip = useCallback(
+    (chainId: number): void => {
+      setActiveTooltipChainId((prev) => {
+        if (hideTimerRef.current) {
+          window.clearTimeout(hideTimerRef.current)
+          hideTimerRef.current = null
+        }
+
+        const next = prev === chainId ? null : chainId
+        if (next !== null) {
+          hideTimerRef.current = window.setTimeout(() => {
+            setActiveTooltipChainId(null)
+            hideTimerRef.current = null
+          }, durationMs)
+        }
+
+        return next
+      })
+    },
+    [durationMs],
+  )
+
+  useEffect(() => {
+    return hideTooltip
+  }, [hideTooltip])
+
+  return { activeTooltipChainId, toggleTooltip, hideTooltip }
+}
 
 interface MobileChainSelectorProps {
   chainsState: ChainsToSelectState
@@ -28,6 +76,9 @@ export function MobileChainSelector({
 }: MobileChainSelectorProps): ReactNode {
   const { i18n } = useLingui()
   const scrollRef = useRef<HTMLDivElement | null>(null)
+  const { activeTooltipChainId, toggleTooltip, hideTooltip } = useDisabledChainTooltip(
+    DISABLED_CHAIN_TOOLTIP_DURATION_MS,
+  )
   const orderedChains = useMemo(
     () =>
       sortChainsByDisplayOrder(chainsState.chains ?? [], {
@@ -70,6 +121,9 @@ export function MobileChainSelector({
                 isActive={chainsState.defaultChainId === chain.id}
                 onSelectChain={onSelectChain}
                 isDisabled={chainsState.disabledChainIds?.has(chain.id) ?? false}
+                isTooltipVisible={activeTooltipChainId === chain.id}
+                onDisabledClick={toggleTooltip}
+                onHideTooltip={hideTooltip}
               />
             ))}
           </styledEl.ScrollArea>
@@ -94,22 +148,40 @@ interface ChainChipProps {
   isActive: boolean
   onSelectChain(chain: ChainInfo): void
   isDisabled: boolean
+  isTooltipVisible: boolean
+  onDisabledClick(chainId: number): void
+  onHideTooltip(): void
 }
 
-function ChainChip({ chain, isActive, onSelectChain, isDisabled }: ChainChipProps): ReactNode {
+function ChainChip({
+  chain,
+  isActive,
+  onSelectChain,
+  isDisabled,
+  isTooltipVisible,
+  onDisabledClick,
+  onHideTooltip,
+}: ChainChipProps): ReactNode {
   const { i18n } = useLingui()
   const { darkMode } = useTheme()
   const accent = getChainAccent(chain.id)
   const logoSrc = darkMode ? chain.logo.dark : chain.logo.light
+  const disabledTooltip = i18n._(msg`This destination is not supported for this source chain`)
+  const chipRef = useRef<HTMLButtonElement | null>(null)
 
   const handleClick = (): void => {
     if (!isDisabled) {
+      onHideTooltip()
       onSelectChain(chain)
+      return
     }
+
+    onDisabledClick(chain.id)
   }
 
-  return (
+  const chipButton = (
     <styledEl.ChainChipButton
+      ref={chipRef}
       type="button"
       onClick={handleClick}
       $active={isActive}
@@ -117,9 +189,23 @@ function ChainChip({ chain, isActive, onSelectChain, isDisabled }: ChainChipProp
       $disabled={isDisabled}
       aria-pressed={isActive}
       aria-disabled={isDisabled}
-      title={isDisabled ? i18n._(msg`This destination is not supported for this source chain`) : undefined}
+      title={isDisabled ? disabledTooltip : undefined}
     >
       <img src={logoSrc} alt={chain.label} loading="lazy" />
     </styledEl.ChainChipButton>
+  )
+
+  return isDisabled ? (
+    <Tooltip
+      show={isTooltipVisible}
+      wrapInContainer
+      content={disabledTooltip}
+      containerRef={chipRef}
+      placement="bottom"
+    >
+      {chipButton}
+    </Tooltip>
+  ) : (
+    chipButton
   )
 }
