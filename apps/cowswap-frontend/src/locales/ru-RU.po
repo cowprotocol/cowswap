@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-12-05 12:13\n"
+"PO-Revision-Date: 2025-12-05 13:39\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -604,7 +604,7 @@ msgstr "Подпишитесь (бесплатно!) в вашем кошель�
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/LimitOrdersDetails/index.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
 msgid "If your order has not been filled by this date & time, it will expire. Don't worry - expirations and order placement are free on CoW Swap!"
-msgstr "Если ваш заказ не был исполнен к этой дате и времени, срок его действия истечет. Не волнуйтесь - срок действия и размещение заказов бесплатны на CoW Swap!"
+msgstr "Если ваш ордер не был выполнен к этому сроку, он истечет. Не волнуйтесь - срок действия и размещение заказов бесплатны на CoW Swap!"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/ProxyAccountBanner/index.tsx
 msgid "Only proceed if you trust this provider."
@@ -1282,7 +1282,7 @@ msgstr "Слишком много времени между частями"
 
 #: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/index.tsx
 msgid "Swap and Bridge"
-msgstr "Поменять местами"
+msgstr "Поменять и запустить бридж"
 
 #: apps/cowswap-frontend/src/common/containers/OrderHooksDetails/index.tsx
 msgid "POST"
@@ -1428,7 +1428,7 @@ msgstr "Просмотреть вашу личную {accountProxyLabelString}"
 msgid "Hey, I just {actionWord} an extra {surplus} on @CoWSwap! 🐮💸\n\n"
 "Start swapping on swap.cow.fi"
 msgstr "Эй, я просто {actionWord} еще {surplus} на @CoWSwap! 🐮💸\n\n"
-"Начать смену swap.cow.fi"
+"Начать обмен swap.cow.fi"
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Connect Wallet"
@@ -1735,7 +1735,7 @@ msgstr "Частично заполненный заказ"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrdersTableContainer/NoOrdersContent.tsx
 msgid "Time to create a new one!"
-msgstr "Пришло время создать новый!"
+msgstr "Время создать новый!"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/BridgeTransactionLink/index.tsx
 msgid "View on bridge explorer"
@@ -1918,7 +1918,7 @@ msgstr "Локальное время устройства неточно, CoW S
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/StopStatus/index.tsx
 msgid "Bridging via"
-msgstr "Мост через"
+msgstr "Бридж через"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
 msgid "d"
@@ -2077,7 +2077,7 @@ msgstr "Этот хук совместим с {compatibleWith}."
 #: apps/cowswap-frontend/src/modules/bridge/pure/BridgeActivitySummary/index.tsx
 #: apps/cowswap-frontend/src/modules/orders/containers/BridgingSuccessNotification/index.tsx
 msgid "Bridge"
-msgstr "Мост"
+msgstr "Бридж"
 
 #: apps/cowswap-frontend/src/modules/wallet/pure/PendingView/index.tsx
 msgid "Connecting..."
@@ -2675,7 +2675,7 @@ msgstr "{prefix}-хуки позволяют автоматически выпо
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/ExpiredStep.tsx
 msgid "Your order expired. This could be due to gas spikes, volatile prices, or problems with the network."
-msgstr "Ваш заказ истек. Это может быть вызвано газовыми шипами, изменчивыми ценами или проблемами с сетью."
+msgstr "Ваш ордер истек. Это может быть вызвано спайками газа, изменением цен или проблемами с сетью."
 
 #: apps/cowswap-frontend/src/legacy/components/Header/AccountElement/NotificationAlertPopover.tsx
 msgid "Not now"
@@ -3361,7 +3361,7 @@ msgstr "Этот контракт используется для каждого
 
 #: apps/cowswap-frontend/src/api/cowProtocol/errors/OperatorError.ts
 msgid "The order cannot be {msg}. Please, retry in a minute"
-msgstr "Заказ не может быть {msg}. Пожалуйста, повторите попытку через минуту"
+msgstr "Ордер не может быть {msg}. Пожалуйста, повторите попытку через минуту"
 
 #: apps/cowswap-frontend/src/common/containers/MultipleOrdersCancellationModal/index.tsx
 msgid "Request cancellations"
@@ -3979,7 +3979,7 @@ msgstr "Поменять на"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/ExecutionPriceTooltip/index.tsx
 msgid "Current network fees"
-msgstr "Текущие сетевые сборы"
+msgstr "Текущие сетевые комиссии"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/DeadlineSelector/deadlines.ts
 msgid "3 Days"
@@ -4509,7 +4509,7 @@ msgstr "Неожиданный ответ от BFF: {stringifiedData}"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/TwapStatusAndToggle/index.tsx
 msgid "parts"
-msgstr "запчасти"
+msgstr "части"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/NetworkCostsRow/index.tsx
 msgid "This is the cost of settling your order on-chain, including gas and any LP fees."
@@ -5193,7 +5193,7 @@ msgstr "НОВЫЙ"
 #: apps/cowswap-frontend/src/common/containers/OrderHooksDetails/HookItem/index.tsx
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AppliedHookItem/index.tsx
 msgid "Simulation successful"
-msgstr "Моделирование завершено"
+msgstr "Симуляция завершена"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/TwapStatusAndToggle/index.tsx
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/TwapConfirmDetails.tsx
@@ -5828,7 +5828,7 @@ msgstr "Неверные параметры"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/SmallVolumeWarningBanner/index.tsx
 msgid "Small orders are unlikely to be executed"
-msgstr "Маленькие заказы вряд ли будут выполнены"
+msgstr "Маленькие ордеры маловероятно будут выполнены"
 
 #: apps/cowswap-frontend/src/utils/orderUtils/getFilledAmounts.ts
 msgid "bought"
@@ -6267,7 +6267,7 @@ msgstr "Недопустимый тип содержимого: ожидался
 
 #: apps/cowswap-frontend/src/common/hooks/useOnSelectNetwork.tsx
 msgid "Failed to switch networks from the CoW Swap Interface. In order to use CoW Swap on {chainInfoLabel}, you must change the network in your wallet."
-msgstr "Не удалось переключить сети из интерфейса подкачки CoW. Чтобы использовать CoW Swap на {chainInfoLabel}, вы должны изменить сеть в вашем кошельке."
+msgstr "Не удалось переключить сети из интерфейса CoW Swap. Чтобы использовать CoW Swap на {chainInfoLabel}, вы должны изменить сеть в вашем кошельке."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 #~ msgid "out of"
