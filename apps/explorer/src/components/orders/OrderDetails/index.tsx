@@ -72,12 +72,13 @@ const tabItems = (
   onChangeTab: (tab: TabView) => void,
   isPriceInverted: boolean,
   invertPrice: Command,
+  hasMultipleTrades: boolean,
 ): TabItemInterface[] => {
-  const order = getOrderWithTxHash(_order, trades)
+  const order = getOrderWithTxHash(_order, trades, hasMultipleTrades)
   const areTokensLoaded = Boolean(order?.buyToken && order?.sellToken)
   const isLoadingForTheFirstTime = isOrderLoading && !areTokensLoaded
   const filledPercentage = order?.filledPercentage && formatPercentage(order.filledPercentage)
-  const showFills = order?.partiallyFillable && !order.txHash && trades.length > 1
+  const showFills = order?.partiallyFillable && !order.txHash && hasMultipleTrades
 
   const { data: crossChainOrder, isLoading: crossChainOrderLoading } = crossChainOrderResponse
 
@@ -128,8 +129,8 @@ const tabItems = (
  *
  * That is the case for any filled fill or kill or a partial fill that has a single trade
  */
-function getOrderWithTxHash(order: Order | null, trades: Trade[]): Order | null {
-  if (order && trades.length === 1) {
+function getOrderWithTxHash(order: Order | null, trades: Trade[], hasMultipleTrades: boolean): Order | null {
+  if (order && trades.length === 1 && !hasMultipleTrades) {
     return { ...order, txHash: trades[0].txHash || undefined, executionDate: trades[0].executionTime || undefined }
   }
   return order
@@ -236,6 +237,7 @@ export const OrderDetails: React.FC<Props> = (props) => {
             onChangeTab,
             isPriceInverted,
             invertPrice,
+            trades.length > 1 || (!!tableState.pageIndex && tableState.pageIndex > 1),
           )}
           selectedTab={tabViewSelected}
           updateSelectedTab={(key: number): void => onChangeTab(key)}
