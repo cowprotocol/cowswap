@@ -1,5 +1,5 @@
-import { useAtom, useAtomValue } from 'jotai'
-import { useCallback, useMemo } from 'react'
+import { useAtomValue, useSetAtom } from 'jotai'
+import { useCallback } from 'react'
 
 import { createRwaConsentStatusAtom, getRwaConsentAtom } from '../state/rwaConsentAtom'
 import { GeoMode, RwaConsentKey } from '../types/rwaConsent'
@@ -14,9 +14,9 @@ export interface UseRwaConsentStatusReturn {
 
 export function useRwaConsentStatus(key: RwaConsentKey): UseRwaConsentStatusReturn {
   const consentAtom = getRwaConsentAtom(key)
-  const statusAtom = useMemo(() => createRwaConsentStatusAtom(key), [key])
+  const statusAtom = createRwaConsentStatusAtom(key)
   
-  const [, setConsent] = useAtom(consentAtom)
+  const setConsent = useSetAtom(consentAtom)
   const consentStatus = useAtomValue(statusAtom)
 
   const confirmConsent = useCallback(
@@ -27,7 +27,7 @@ export function useRwaConsentStatus(key: RwaConsentKey): UseRwaConsentStatusRetu
         confirmedAt: Date.now(),
       })
     },
-    [setConsent]
+    [setConsent],
   )
 
   const resetConsent = useCallback(() => {
@@ -38,13 +38,10 @@ export function useRwaConsentStatus(key: RwaConsentKey): UseRwaConsentStatusRetu
     })
   }, [setConsent])
 
-  return useMemo(
-    () => ({
-      consentStatus,
-      confirmConsent,
-      resetConsent,
-    }),
-    [consentStatus, confirmConsent, resetConsent]
-  )
+  return {
+    consentStatus,
+    confirmConsent,
+    resetConsent,
+  }
 }
 

@@ -1,8 +1,13 @@
-import React, { ReactNode } from 'react'
+import React, { ReactNode, useCallback, useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { useGeoStatus } from 'modules/rwa/hooks/useGeoStatus'
+import { useRwaConsentModalState } from 'modules/rwa/hooks/useRwaConsentModalState'
+import { useRwaConsentStatus } from 'modules/rwa/hooks/useRwaConsentStatus'
+import { getRwaTokenInfo } from 'modules/rwa/utils/getRwaTokenInfo'
 import { AddIntermediateToken } from 'modules/tokensList'
 import {
   useIsCurrentTradeBridging,
@@ -38,6 +43,7 @@ interface TradeButtonsProps {
   setShowAddIntermediateTokenModal: (show: boolean) => void
 }
 
+// eslint-disable-next-line max-lines-per-function
 export function TradeButtons({
   isTradeContextReady,
   openNativeWrapModal,
@@ -46,7 +52,10 @@ export function TradeButtons({
   intermediateBuyToken,
   setShowAddIntermediateTokenModal,
 }: TradeButtonsProps): ReactNode {
-  const { inputCurrency } = useSwapDerivedState()
+  const { inputCurrency, outputCurrency } = useSwapDerivedState()
+  const { account } = useWalletInfo()
+  const geoStatus = useGeoStatus()
+  const { openModal: openRwaConsentModal } = useRwaConsentModalState()
 
   const primaryFormValidation = useGetTradeFormValidation()
   const isPrimaryValidationPassed = useIsTradeFormValidationPassed()
@@ -58,7 +67,49 @@ export function TradeButtons({
   const onCurrencySelection = useOnCurrencySelection()
   const isCurrentTradeBridging = useIsCurrentTradeBridging()
 
-  const confirmTrade = tradeConfirmActions.onOpen
+  const rwaTokenInfo = useMemo(() => {
+    const inputRwaInfo = getRwaTokenInfo(inputCurrency)
+    const outputRwaInfo = getRwaTokenInfo(outputCurrency)
+    return inputRwaInfo || outputRwaInfo
+  }, [inputCurrency, outputCurrency])
+
+  const rwaConsentKey = useMemo(
+    () =>
+      rwaTokenInfo && account
+        ? {
+            wallet: account,
+            issuer: rwaTokenInfo.issuer,
+            tosVersion: rwaTokenInfo.tosVersion,
+          }
+        : { wallet: '', issuer: '', tosVersion: '' },
+    [rwaTokenInfo, account],
+  )
+
+  const rwaConsentStatus = useRwaConsentStatus(rwaConsentKey)
+  const consentStatus = rwaConsentStatus.consentStatus
+
+  const confirmTrade = useCallback(
+    (forcePriceConfirmation?: boolean) => {
+      // Check if RWA consent modal should be shown
+      const needsRwaConsent =
+        rwaTokenInfo &&
+        geoStatus === 'UNKNOWN' &&
+        consentStatus !== 'valid'
+
+      if (needsRwaConsent) {
+        openRwaConsentModal({
+          issuer: rwaTokenInfo.issuer,
+          tosVersion: rwaTokenInfo.tosVersion,
+          issuerName: rwaTokenInfo.issuerName,
+        })
+        return
+      }
+
+      // Otherwise, open normal confirmation modal
+      tradeConfirmActions.onOpen(forcePriceConfirmation)
+    },
+    [rwaTokenInfo, geoStatus, consentStatus, openRwaConsentModal, tradeConfirmActions],
+  )
 
   const confirmText = isCurrentTradeBridging ? 'Swap and Bridge' : 'Swap'
 

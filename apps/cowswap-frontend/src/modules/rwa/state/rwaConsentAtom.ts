@@ -30,13 +30,26 @@ export function getRwaConsentAtom(key: RwaConsentKey) {
   return rwaConsentAtomsMap.get(storageKey)!
 }
 
+const rwaConsentStatusAtomsMap = new Map<string, ReturnType<typeof createRwaConsentStatusAtomInternal>>()
+
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function createRwaConsentStatusAtom(key: RwaConsentKey) {
+function createRwaConsentStatusAtomInternal(key: RwaConsentKey) {
   const consentAtom = getRwaConsentAtom(key)
   
   return atom((get) => {
     const consent = get(consentAtom)
     return consent.confirmed ? 'valid' as const : 'none' as const
   })
+}
+
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+export function createRwaConsentStatusAtom(key: RwaConsentKey) {
+  const storageKey = getRwaConsentStorageKey(key)
+  
+  if (!rwaConsentStatusAtomsMap.has(storageKey)) {
+    rwaConsentStatusAtomsMap.set(storageKey, createRwaConsentStatusAtomInternal(key))
+  }
+  
+  return rwaConsentStatusAtomsMap.get(storageKey)!
 }
 
