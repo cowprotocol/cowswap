@@ -12,11 +12,13 @@ import { useHooksEnabledManager } from 'legacy/state/user/hooks'
 import { useTryFindIntermediateToken } from 'modules/bridge'
 import { TradeApproveWithAffectedOrderList } from 'modules/erc20Approve'
 import { EthFlowModal, EthFlowProps } from 'modules/ethFlow'
+import { SELL_ETH_RESET_STATE } from 'modules/swap/consts'
 import { AddIntermediateTokenModal } from 'modules/tokensList'
 import {
   TradeWidget,
   TradeWidgetSlots,
   useGetReceiveAmountInfo,
+  useIsEoaEthFlow,
   useTradePriceImpact,
   useWrapNativeFlow,
 } from 'modules/trade'
@@ -97,11 +99,18 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps): Reac
   const [isHydrated, setIsHydrated] = useState(false)
   const handleUnlock = useCallback(() => updateSwapState({ isUnlocked: true }), [updateSwapState])
   const isPrimaryValidationPassed = useIsTradeFormValidationPassed()
+  const isEoaEthFlow = useIsEoaEthFlow()
 
   useEffect(() => {
     // Hydration guard: defer lock-screen until persisted state (isUnlocked) loads to prevent initial flash.
     setIsHydrated(true)
   }, [])
+
+  useEffect(() => {
+    if (isEoaEthFlow && !isSellOrder(orderKind)) {
+      updateSwapState(SELL_ETH_RESET_STATE)
+    }
+  }, [isEoaEthFlow, orderKind, updateSwapState])
 
   const isSellTrade = isSellOrder(orderKind)
 
