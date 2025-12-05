@@ -70,9 +70,7 @@ describe('getChainIdWithRetry', () => {
   it('retries on empty array responses before succeeding', async () => {
     jest.useFakeTimers()
 
-    const provider = createProvider(jest.fn().mockResolvedValueOnce([]).mockResolvedValueOnce('0x7a69'), {
-      chainId: '0x1',
-    })
+    const provider = createProvider(jest.fn().mockResolvedValueOnce([]).mockResolvedValueOnce('0x7a69'))
     const wallet = createWallet(provider)
 
     const chainIdPromise = getChainIdWithRetry(wallet, 2)
@@ -82,5 +80,15 @@ describe('getChainIdWithRetry', () => {
 
     expect(chainId).toBe('0x7a69')
     expect(provider.request).toHaveBeenCalledTimes(2)
+  })
+
+  it('uses metadata immediately when RPC returns empty array', async () => {
+    const provider = createProvider(jest.fn().mockResolvedValue([]), { chainId: '0x64' })
+    const wallet = createWallet(provider)
+
+    const chainId = await getChainIdWithRetry(wallet, 3)
+
+    expect(chainId).toBe('0x64')
+    expect(provider.request).toHaveBeenCalledTimes(1)
   })
 })

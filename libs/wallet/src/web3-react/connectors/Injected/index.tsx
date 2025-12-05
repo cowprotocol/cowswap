@@ -302,13 +302,13 @@ export class InjectedWallet extends Connector {
 
         if (typeof chainId === 'string' || typeof chainId === 'number') return chainId
 
+        const metaChainId = readMetaChainId(provider)
+        if (metaChainId !== null) return metaChainId
+
         if (Array.isArray(chainId) && chainId.length === 0 && attempt < maxRetries - 1) {
           await new Promise((resolve) => setTimeout(resolve, 500 * (attempt + 1)))
           continue
         }
-
-        const metaChainId = readMetaChainId(provider)
-        if (metaChainId !== null) return metaChainId
 
         if (chainId !== undefined) {
           lastError = new Error(
