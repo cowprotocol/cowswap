@@ -243,6 +243,10 @@ msgstr "La orden no puede ser {statusText}. Su cuenta está en la lista negada."
 msgid "The bridge provider modified the recipient address to <0/>. This ensure smooooth bridging."
 msgstr "El proveedor del puente modificó la dirección del destinatario a <0/>. Esto asegura un puente liso."
 
+#: apps/cowswap-frontend/src/modules/trade/pure/SmartContractReceiverWarning/index.tsx
+msgid "Recipient"
+msgstr "Destinatario"
+
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AppliedHookItem/index.tsx
 msgid "The Tenderly simulation was successful. Your transaction is expected to succeed."
 msgstr "La simulación de Tenderly fue exitosa. Se espera que tu transacción tenga éxito."
@@ -254,6 +258,10 @@ msgstr "Son algunos errores con la configuración del widget de intercambio de C
 #: apps/cowswap-frontend/src/common/constants/routes.ts
 msgid "Provide liquidity"
 msgstr "Proporcionar liquidez"
+
+#: apps/cowswap-frontend/src/modules/trade/pure/SmartContractReceiverWarning/index.tsx
+msgid "Confirm this is the correct address and that it exists on this chain."
+msgstr "Confirma que esta es la dirección correcta y que existe en esta red."
 
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/PostHookButton/index.tsx
 msgid "Add Post-Hook Action"
