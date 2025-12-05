@@ -11,6 +11,16 @@
         "testingType": "e2e"
       }
     },
+    "e2e:open": {
+      "executor": "@nx/cypress:cypress",
+      "options": {
+        "cypressConfig": "apps/cowswap-frontend-e2e/cypress.config.ts",
+        "testingType": "e2e",
+        "watch": true,
+        "headed": true,
+        "openMode": true
+      }
+    },
     "lint": {
       "executor": "@nx/eslint:lint",
       "outputs": ["{options.outputFile}"],
