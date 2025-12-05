@@ -50,15 +50,15 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
     const chainInfo = CHAIN_INFO[chainId]
     if (!chainInfo) return undefined
 
-    const currentChainInfo = mapChainInfo(chainId, chainInfo)
-    // Limit/TWAP buys must stay on the wallet chain, so skip bridge wiring entirely.
-    const shouldForceSingleChain = isAdvancedTradeType && field === Field.OUTPUT
-
-    if (!isBridgingEnabled && !shouldForceSingleChain) return undefined
-
-    if (shouldForceSingleChain) {
-      return createSingleChainState(chainId, currentChainInfo)
+    // Limit/TWAP orders don't support chain selection - return undefined for both SELL and BUY
+    // These trade types rely on wallet/header network switcher instead
+    if (isAdvancedTradeType) {
+      return undefined
     }
+
+    const currentChainInfo = mapChainInfo(chainId, chainInfo)
+
+    if (!isBridgingEnabled) return undefined
 
     if (field === Field.INPUT) {
       return createInputChainsState(selectedTargetChainId, supportedChains)
