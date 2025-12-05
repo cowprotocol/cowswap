@@ -63,8 +63,7 @@ export function TokensVirtualList(props: TokensVirtualListProps): ReactNode {
       }
     }
 
-    const sortedPrioritized =
-      prioritized.length > 1 ? [...prioritized].sort(tokensListSorter(balances)) : prioritized
+    const sortedPrioritized = prioritized.length > 1 ? [...prioritized].sort(tokensListSorter(balances)) : prioritized
 
     return [...sortedPrioritized, ...remainder]
   }, [allTokens, balances])
@@ -100,7 +99,7 @@ export function TokensVirtualList(props: TokensVirtualListProps): ReactNode {
 
   const virtualListKey = scrollResetKey ?? 'tokens-list'
 
-  const renderVirtualRow = useCallback(
+  const getItemView = useCallback(
     (virtualRows: TokensVirtualRow[], virtualItem: VirtualItem) => (
       <TokensVirtualRowRenderer row={virtualRows[virtualItem.index]} selectTokenContext={selectTokenContext} />
     ),
@@ -112,7 +111,7 @@ export function TokensVirtualList(props: TokensVirtualListProps): ReactNode {
       key={virtualListKey}
       id="tokens-list"
       items={rows}
-      getItemView={renderVirtualRow}
+      getItemView={getItemView}
       scrollResetKey={scrollResetKey}
     >
       {displayLpTokenLists || !isYieldEnabled ? null : <CoWAmmBanner isTokenSelectorView />}
@@ -129,11 +128,7 @@ function TokensVirtualRowRenderer({ row, selectTokenContext }: TokensVirtualRowR
   switch (row.type) {
     case 'favorite-section':
       return (
-        <FavoriteTokensList
-          tokens={row.tokens}
-          selectTokenContext={selectTokenContext}
-          hideTooltip={row.hideTooltip}
-        />
+        <FavoriteTokensList tokens={row.tokens} selectTokenContext={selectTokenContext} hideTooltip={row.hideTooltip} />
       )
     case 'title':
       return (
