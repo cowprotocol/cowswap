@@ -28,7 +28,7 @@ import { useLpTokensWithBalances } from 'modules/yield/shared'
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 
 import { getDefaultTokenListCategories } from './getDefaultTokenListCategories'
-import { getSelectTokenWidgetContent } from './helpers'
+import { SelectTokenWidgetContent } from './helpers'
 
 import { useChainsToSelect } from '../../hooks/useChainsToSelect'
 import { useCloseTokenSelectWidget } from '../../hooks/useCloseTokenSelectWidget'
@@ -182,47 +182,47 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
 
   return (
     <Wrapper>
-      {getSelectTokenWidgetContent({
-        standalone,
-        tokenToImport,
-        listToImport,
-        isManageWidgetOpen,
-        selectedPoolAddress,
-        displayLpTokenLists,
-        unsupportedTokens,
-        selectedToken,
-        allTokens,
-        favoriteTokens,
-        recentTokens,
-        balancesState,
-        permitCompatibleTokens,
-        onSelectToken,
-        handleTokenListItemClick,
-        onInputPressEnter,
-        onDismiss,
-        setIsManageWidgetOpen,
-        resetTokenImport,
-        importTokenAndClose,
-        closePoolPage,
-        importListAndBack,
-        isInjectedWidgetMode,
-        openPoolPage,
-        tokenListCategoryState,
-        disableErc20,
-        account,
-        chainsToSelect,
-        onSelectChain,
-        areTokensLoading,
-        tokenListTags,
-        areTokensFromBridge,
-        isRouteAvailable,
-        clearRecentTokens,
-        selectedTargetChainId,
-        allTokenLists,
-        userAddedTokens,
-        hasChainPanel: showChainPanel,
-        chainsPanelTitle,
-      })}
+      <SelectTokenWidgetContent
+        standalone={standalone}
+        tokenToImport={tokenToImport}
+        listToImport={listToImport}
+        isManageWidgetOpen={isManageWidgetOpen}
+        selectedPoolAddress={selectedPoolAddress}
+        displayLpTokenLists={displayLpTokenLists}
+        unsupportedTokens={unsupportedTokens}
+        selectedToken={selectedToken}
+        allTokens={allTokens}
+        favoriteTokens={favoriteTokens}
+        recentTokens={recentTokens}
+        balancesState={balancesState}
+        permitCompatibleTokens={permitCompatibleTokens}
+        onSelectToken={onSelectToken}
+        handleTokenListItemClick={handleTokenListItemClick}
+        onInputPressEnter={onInputPressEnter}
+        onDismiss={onDismiss}
+        setIsManageWidgetOpen={setIsManageWidgetOpen}
+        resetTokenImport={resetTokenImport}
+        importTokenAndClose={importTokenAndClose}
+        closePoolPage={closePoolPage}
+        importListAndBack={importListAndBack}
+        isInjectedWidgetMode={isInjectedWidgetMode}
+        openPoolPage={openPoolPage}
+        tokenListCategoryState={tokenListCategoryState}
+        disableErc20={disableErc20}
+        account={account}
+        chainsToSelect={chainsToSelect}
+        onSelectChain={onSelectChain}
+        areTokensLoading={areTokensLoading}
+        tokenListTags={tokenListTags}
+        areTokensFromBridge={areTokensFromBridge}
+        isRouteAvailable={isRouteAvailable}
+        clearRecentTokens={clearRecentTokens}
+        selectedTargetChainId={selectedTargetChainId}
+        allTokenLists={allTokenLists}
+        userAddedTokens={userAddedTokens}
+        hasChainPanel={showChainPanel}
+        chainsPanelTitle={chainsPanelTitle}
+      />
     </Wrapper>
   )
 }

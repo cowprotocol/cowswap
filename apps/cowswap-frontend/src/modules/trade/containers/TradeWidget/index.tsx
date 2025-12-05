@@ -23,7 +23,7 @@ export function TradeWidget(props: TradeWidgetProps): JSX.Element {
   const isTokenSelectWide =
     isTokenSelectOpen && !!chainsToSelect && (chainsToSelect.isLoading || (chainsToSelect.chains?.length ?? 0) > 0)
 
-  const selectTokenWidgetNode = slots.selectTokenWidget ?? <SelectTokenWidget />
+  const selectTokenWidgetNode = isTokenSelectOpen ? (slots.selectTokenWidget ?? <SelectTokenWidget />) : null
 
   const setShouldUseAutoSlippage = useSetShouldUseAutoSlippage()
 

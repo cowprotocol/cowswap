@@ -16,7 +16,7 @@ import { PermitCompatibleTokens } from 'modules/permit'
 
 import { ChainsToSelectState } from '../../types'
 
-export interface GetSelectTokenWidgetContentProps {
+export interface SelectTokenWidgetContentProps {
   standalone?: boolean
   tokenToImport?: TokenWithLogo
   listToImport?: ListState
@@ -58,35 +58,35 @@ export interface GetSelectTokenWidgetContentProps {
   chainsPanelTitle?: string
 }
 
-export interface RenderImportTokenModalProps {
+export interface ImportTokenModalContentProps {
   tokenToImport: TokenWithLogo
   onDismiss: () => void
   resetTokenImport: () => void
   importTokenAndClose: (tokens: TokenWithLogo[]) => void
 }
 
-export interface RenderImportListModalProps {
+export interface ImportListModalContentProps {
   listToImport: ListState
   onDismiss: () => void
   resetTokenImport: () => void
   importListAndBack: (list: ListState) => void
 }
 
-export interface RenderManageListsAndTokensProps {
+export interface ManageListsAndTokensContentProps {
   allTokenLists: ReturnType<typeof useAllListsList>
   userAddedTokens: TokenWithLogo[]
   onDismiss: () => void
   setIsManageWidgetOpen: (open: boolean) => void
 }
 
-export interface RenderLpTokenPageProps {
+export interface LpTokenPageContentProps {
   selectedPoolAddress: string
   onDismiss: () => void
   closePoolPage: () => void
   onSelectToken: (token: TokenWithLogo) => void
 }
 
-export interface RenderSelectTokenModalProps {
+export interface SelectTokenModalContentProps {
   standalone?: boolean
   displayLpTokenLists?: boolean
   unsupportedTokens: UnsupportedTokensState
