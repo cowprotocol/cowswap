@@ -302,6 +302,7 @@ export class InjectedWallet extends Connector {
 
         if (typeof chainId === 'string' || typeof chainId === 'number') return chainId
 
+        // Some providers surface chainId via metadata while returning empty arrays during init; use it first to avoid needless backoff when chainId is already known.
         const metaChainId = readMetaChainId(provider)
         if (metaChainId !== null) return metaChainId
 
