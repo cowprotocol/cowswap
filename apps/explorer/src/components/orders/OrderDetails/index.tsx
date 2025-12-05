@@ -243,7 +243,7 @@ export const OrderDetails: React.FC<Props> = (props) => {
             onChangeTab,
             isPriceInverted,
             invertPrice,
-            trades.length > 1 || (!!tableState.pageIndex && tableState.pageIndex > 1),
+            trades.length > 1 || (!!tableState.pageIndex && tableState.pageIndex > 1) || !!tableState.hasNextPage,
           )}
           selectedTab={tabViewSelected}
           updateSelectedTab={(key: number): void => onChangeTab(key)}
