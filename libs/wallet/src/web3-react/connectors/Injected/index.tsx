@@ -288,16 +288,16 @@ export class InjectedWallet extends Connector {
     }
 
     const run = async (): Promise<string | number> => {
-      for (let attempt = 0; attempt < maxRetries; attempt++) {
-        const metaChainId = readMetaChainId(provider)
-        if (metaChainId !== null) return metaChainId
+      let lastError: unknown
 
+      for (let attempt = 0; attempt < maxRetries; attempt++) {
         let chainId: unknown
 
         try {
           chainId = await provider.request({ method: 'eth_chainId' })
         } catch (error) {
-          console.debug('eth_chainId failed, retrying', error)
+          console.debug('eth_chainId failed, falling back to provider metadata', error)
+          lastError = error
         }
 
         if (typeof chainId === 'string' || typeof chainId === 'number') return chainId
@@ -307,11 +307,23 @@ export class InjectedWallet extends Connector {
           continue
         }
 
+        const metaChainId = readMetaChainId(provider)
+        if (metaChainId !== null) return metaChainId
+
         if (chainId !== undefined) {
-          throw new Error(
+          lastError = new Error(
             `Invalid chainId: expected string or number, got ${typeof chainId}. Value: ${JSON.stringify(chainId)}`,
           )
         }
+
+        if (attempt < maxRetries - 1) {
+          await new Promise((resolve) => setTimeout(resolve, 500 * (attempt + 1)))
+          continue
+        }
+      }
+
+      if (lastError instanceof Error) {
+        throw lastError
       }
 
       throw new Error(`Failed to get chainId after ${maxRetries} attempts. Provider did not return a usable chainId.`)
