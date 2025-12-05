@@ -6366,3 +6366,7 @@ msgstr "Ver todas las {totalChains} redes"
 #: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/MobileChainSelector.tsx
 msgid "Selected network {activeChainLabel}"
 msgstr "Red seleccionada {activeChainLabel}"
+
+#: apps/cowswap-frontend/src/modules/tokensList/pure/ChainsSelector/index.tsx
+msgid "This destination is not supported for this source chain"
+msgstr "Este destino no es compatible con esta red de origen"
