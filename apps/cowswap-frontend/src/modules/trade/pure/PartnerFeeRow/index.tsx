@@ -18,6 +18,7 @@ interface PartnerFeeRowProps {
   partnerFeeBps: number | undefined
   withTimelineDot: boolean
   volumeFeeTooltip: VolumeFeeTooltip
+  isLast?: boolean
 }
 
 export function PartnerFeeRow({
@@ -26,6 +27,7 @@ export function PartnerFeeRow({
   partnerFeeBps,
   withTimelineDot,
   volumeFeeTooltip,
+  isLast = false,
 }: PartnerFeeRowProps): ReactNode {
   const feeAsPercent = partnerFeeBps ? formatPercent(bpsToPercent(partnerFeeBps)) : null
   const minPartnerFeeAmount = FractionUtils.amountToAtLeastOneWei(partnerFeeAmount)
@@ -55,6 +57,7 @@ export function PartnerFeeRow({
         )
       }
       label={t`${label} (${feeAsPercent}%)`}
+      isLast={isLast}
     />
   )
 }
