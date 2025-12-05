@@ -3,12 +3,12 @@ import { ReactNode } from 'react'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 
 import {
-  GetSelectTokenWidgetContentProps,
-  RenderImportListModalProps,
-  RenderImportTokenModalProps,
-  RenderLpTokenPageProps,
-  RenderManageListsAndTokensProps,
-  RenderSelectTokenModalProps,
+  ImportListModalContentProps,
+  ImportTokenModalContentProps,
+  LpTokenPageContentProps,
+  ManageListsAndTokensContentProps,
+  SelectTokenModalContentProps,
+  SelectTokenWidgetContentProps,
 } from './types'
 
 import { ImportListModal } from '../../pure/ImportListModal'
@@ -19,12 +19,12 @@ import { ManageListsAndTokens } from '../ManageListsAndTokens'
 
 const EMPTY_FAV_TOKENS: TokenWithLogo[] = []
 
-function renderImportTokenModal({
+export function ImportTokenModalContent({
   tokenToImport,
   onDismiss,
   resetTokenImport,
   importTokenAndClose,
-}: RenderImportTokenModalProps): ReactNode {
+}: ImportTokenModalContentProps): ReactNode {
   return (
     <ImportTokenModal
       tokens={[tokenToImport]}
@@ -35,23 +35,23 @@ function renderImportTokenModal({
   )
 }
 
-function renderImportListModal({
+export function ImportListModalContent({
   listToImport,
   onDismiss,
   resetTokenImport,
   importListAndBack,
-}: RenderImportListModalProps): ReactNode {
+}: ImportListModalContentProps): ReactNode {
   return (
     <ImportListModal list={listToImport} onDismiss={onDismiss} onBack={resetTokenImport} onImport={importListAndBack} />
   )
 }
 
-function renderManageListsAndTokens({
+export function ManageListsAndTokensContent({
   allTokenLists,
   userAddedTokens,
   onDismiss,
   setIsManageWidgetOpen,
-}: RenderManageListsAndTokensProps): ReactNode {
+}: ManageListsAndTokensContentProps): ReactNode {
   return (
     <ManageListsAndTokens
       lists={allTokenLists}
@@ -62,12 +62,12 @@ function renderManageListsAndTokens({
   )
 }
 
-function renderLpTokenPage({
+export function LpTokenPageContent({
   selectedPoolAddress,
   onDismiss,
   closePoolPage,
   onSelectToken,
-}: RenderLpTokenPageProps): ReactNode {
+}: LpTokenPageContentProps): ReactNode {
   return (
     <LpTokenPage
       poolAddress={selectedPoolAddress}
@@ -78,7 +78,7 @@ function renderLpTokenPage({
   )
 }
 
-function renderSelectTokenModal(props: RenderSelectTokenModalProps): ReactNode {
+export function SelectTokenModalContent(props: SelectTokenModalContentProps): ReactNode {
   const {
     standalone,
     displayLpTokenLists,
@@ -146,74 +146,84 @@ function renderSelectTokenModal(props: RenderSelectTokenModalProps): ReactNode {
   )
 }
 
-export function getSelectTokenWidgetContent(props: GetSelectTokenWidgetContentProps): ReactNode {
+export function SelectTokenWidgetContent(props: SelectTokenWidgetContentProps): ReactNode {
   const { standalone, tokenToImport, listToImport, isManageWidgetOpen, selectedPoolAddress } = props
 
   if (tokenToImport && !standalone) {
-    return renderImportTokenModal({
-      tokenToImport,
-      onDismiss: props.onDismiss,
-      resetTokenImport: props.resetTokenImport,
-      importTokenAndClose: props.importTokenAndClose,
-    })
+    return (
+      <ImportTokenModalContent
+        tokenToImport={tokenToImport}
+        onDismiss={props.onDismiss}
+        resetTokenImport={props.resetTokenImport}
+        importTokenAndClose={props.importTokenAndClose}
+      />
+    )
   }
 
   if (listToImport && !standalone) {
-    return renderImportListModal({
-      listToImport,
-      onDismiss: props.onDismiss,
-      resetTokenImport: props.resetTokenImport,
-      importListAndBack: props.importListAndBack,
-    })
+    return (
+      <ImportListModalContent
+        listToImport={listToImport}
+        onDismiss={props.onDismiss}
+        resetTokenImport={props.resetTokenImport}
+        importListAndBack={props.importListAndBack}
+      />
+    )
   }
 
   if (isManageWidgetOpen && !standalone) {
-    return renderManageListsAndTokens({
-      allTokenLists: props.allTokenLists,
-      userAddedTokens: props.userAddedTokens,
-      onDismiss: props.onDismiss,
-      setIsManageWidgetOpen: props.setIsManageWidgetOpen,
-    })
+    return (
+      <ManageListsAndTokensContent
+        allTokenLists={props.allTokenLists}
+        userAddedTokens={props.userAddedTokens}
+        onDismiss={props.onDismiss}
+        setIsManageWidgetOpen={props.setIsManageWidgetOpen}
+      />
+    )
   }
 
   if (selectedPoolAddress) {
-    return renderLpTokenPage({
-      selectedPoolAddress,
-      onDismiss: props.onDismiss,
-      closePoolPage: props.closePoolPage,
-      onSelectToken: props.onSelectToken,
-    })
+    return (
+      <LpTokenPageContent
+        selectedPoolAddress={selectedPoolAddress}
+        onDismiss={props.onDismiss}
+        closePoolPage={props.closePoolPage}
+        onSelectToken={props.onSelectToken}
+      />
+    )
   }
 
-  return renderSelectTokenModal({
-    standalone: props.standalone,
-    displayLpTokenLists: props.displayLpTokenLists,
-    unsupportedTokens: props.unsupportedTokens,
-    selectedToken: props.selectedToken,
-    allTokens: props.allTokens,
-    favoriteTokens: props.favoriteTokens,
-    recentTokens: props.recentTokens,
-    balancesState: props.balancesState,
-    permitCompatibleTokens: props.permitCompatibleTokens,
-    onSelectToken: props.onSelectToken,
-    handleTokenListItemClick: props.handleTokenListItemClick,
-    onInputPressEnter: props.onInputPressEnter,
-    onDismiss: props.onDismiss,
-    setIsManageWidgetOpen: props.setIsManageWidgetOpen,
-    isInjectedWidgetMode: props.isInjectedWidgetMode,
-    openPoolPage: props.openPoolPage,
-    tokenListCategoryState: props.tokenListCategoryState,
-    disableErc20: props.disableErc20,
-    account: props.account,
-    chainsToSelect: props.chainsToSelect,
-    onSelectChain: props.onSelectChain,
-    areTokensLoading: props.areTokensLoading,
-    tokenListTags: props.tokenListTags,
-    areTokensFromBridge: props.areTokensFromBridge,
-    isRouteAvailable: props.isRouteAvailable,
-    clearRecentTokens: props.clearRecentTokens,
-    selectedTargetChainId: props.selectedTargetChainId,
-    hasChainPanel: props.hasChainPanel,
-    chainsPanelTitle: props.chainsPanelTitle,
-  })
+  return (
+    <SelectTokenModalContent
+      standalone={props.standalone}
+      displayLpTokenLists={props.displayLpTokenLists}
+      unsupportedTokens={props.unsupportedTokens}
+      selectedToken={props.selectedToken}
+      allTokens={props.allTokens}
+      favoriteTokens={props.favoriteTokens}
+      recentTokens={props.recentTokens}
+      balancesState={props.balancesState}
+      permitCompatibleTokens={props.permitCompatibleTokens}
+      onSelectToken={props.onSelectToken}
+      handleTokenListItemClick={props.handleTokenListItemClick}
+      onInputPressEnter={props.onInputPressEnter}
+      onDismiss={props.onDismiss}
+      setIsManageWidgetOpen={props.setIsManageWidgetOpen}
+      isInjectedWidgetMode={props.isInjectedWidgetMode}
+      openPoolPage={props.openPoolPage}
+      tokenListCategoryState={props.tokenListCategoryState}
+      disableErc20={props.disableErc20}
+      account={props.account}
+      chainsToSelect={props.chainsToSelect}
+      onSelectChain={props.onSelectChain}
+      areTokensLoading={props.areTokensLoading}
+      tokenListTags={props.tokenListTags}
+      areTokensFromBridge={props.areTokensFromBridge}
+      isRouteAvailable={props.isRouteAvailable}
+      clearRecentTokens={props.clearRecentTokens}
+      selectedTargetChainId={props.selectedTargetChainId}
+      hasChainPanel={props.hasChainPanel}
+      chainsPanelTitle={props.chainsPanelTitle}
+    />
+  )
 }
