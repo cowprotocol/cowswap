@@ -100,7 +100,7 @@ export function TokensVirtualList(props: TokensVirtualListProps): ReactNode {
 
   const virtualListKey = scrollResetKey ?? 'tokens-list'
 
-  const renderVirtualRow = useCallback(
+  const getItemView = useCallback(
     (virtualRows: TokensVirtualRow[], virtualItem: VirtualItem) => (
       <TokensVirtualRowRenderer row={virtualRows[virtualItem.index]} selectTokenContext={selectTokenContext} />
     ),
@@ -112,7 +112,7 @@ export function TokensVirtualList(props: TokensVirtualListProps): ReactNode {
       key={virtualListKey}
       id="tokens-list"
       items={rows}
-      getItemView={renderVirtualRow}
+      getItemView={getItemView}
       scrollResetKey={scrollResetKey}
     >
       {displayLpTokenLists || !isYieldEnabled ? null : <CoWAmmBanner isTokenSelectorView />}
