@@ -151,19 +151,6 @@ export function createOutputChainsState({
   const destinationChains = filterDestinationChains(bridgeSupportedNetworks) ?? []
   const isSourceChainSupportedByBridge = Boolean(destinationChains.some((chain) => chain.id === chainId))
 
-  if (process.env.NODE_ENV !== 'production') {
-    const destinationIds = destinationChains.map((c) => c.id)
-    const bridgeIds = bridgeSupportedNetworks?.map((c) => c.id)
-
-    console.debug('[useChainsToSelect] output chains', {
-      sourceChainId: chainId,
-      selectedTargetChainId,
-      bridgeSupportedNetworkIds: bridgeIds,
-      filteredDestinationIds: destinationIds,
-      isSourceChainSupportedByBridge,
-    })
-  }
-
   // Always include the current chain for same-chain swaps (no bridging required)
   const chainSet = new Set(destinationChains.map((chain) => chain.id))
   const chainsWithCurrent = chainSet.has(chainId) ? destinationChains : [currentChainInfo, ...destinationChains]
