@@ -86,7 +86,6 @@ describe('useChainsToSelect state builders', () => {
       chainId: SupportedChainId.MAINNET,
       currentChainInfo: createChainInfoForTests(SupportedChainId.MAINNET),
       bridgeSupportedNetworks: bridgeChains,
-      areUnsupportedChainsEnabled: true,
       isLoading: false,
     })
 
@@ -98,7 +97,7 @@ describe('useChainsToSelect state builders', () => {
     ])
   })
 
-  it('falls back to wallet chain when bridge does not support the source chain', () => {
+  it('returns all bridge destinations even when source chain is not supported by bridge', () => {
     const state = createOutputChainsState({
       selectedTargetChainId: SupportedChainId.BASE,
       chainId: SupportedChainId.SEPOLIA,
@@ -107,12 +106,20 @@ describe('useChainsToSelect state builders', () => {
         createChainInfoForTests(SupportedChainId.MAINNET),
         createChainInfoForTests(SupportedChainId.ARBITRUM_ONE),
       ],
-      areUnsupportedChainsEnabled: true,
       isLoading: false,
     })
 
+    // Default to source chain when the selected target isn't available
     expect(state.defaultChainId).toBe(SupportedChainId.SEPOLIA)
-    expect(state.chains?.map((chain) => chain.id)).toEqual([SupportedChainId.SEPOLIA])
+    // Should show all destinations plus source, but destinations disabled when source not supported
+    expect(state.chains?.map((chain) => chain.id)).toEqual([
+      SupportedChainId.MAINNET,
+      SupportedChainId.ARBITRUM_ONE,
+      SupportedChainId.SEPOLIA,
+    ])
+    expect(state.disabledChainIds?.has(SupportedChainId.MAINNET)).toBe(true)
+    expect(state.disabledChainIds?.has(SupportedChainId.ARBITRUM_ONE)).toBe(true)
+    expect(state.disabledChainIds?.has(SupportedChainId.SEPOLIA)).toBe(false)
   })
 })
 

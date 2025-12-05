@@ -69,6 +69,7 @@ export function MobileChainSelector({
                 chain={chain}
                 isActive={chainsState.defaultChainId === chain.id}
                 onSelectChain={onSelectChain}
+                isDisabled={chainsState.disabledChainIds?.has(chain.id) ?? false}
               />
             ))}
           </styledEl.ScrollArea>
@@ -92,20 +93,31 @@ interface ChainChipProps {
   chain: ChainInfo
   isActive: boolean
   onSelectChain(chain: ChainInfo): void
+  isDisabled: boolean
 }
 
-function ChainChip({ chain, isActive, onSelectChain }: ChainChipProps): ReactNode {
+function ChainChip({ chain, isActive, onSelectChain, isDisabled }: ChainChipProps): ReactNode {
+  const { i18n } = useLingui()
   const { darkMode } = useTheme()
   const accent = getChainAccent(chain.id)
   const logoSrc = darkMode ? chain.logo.dark : chain.logo.light
 
+  const handleClick = (): void => {
+    if (!isDisabled) {
+      onSelectChain(chain)
+    }
+  }
+
   return (
     <styledEl.ChainChipButton
       type="button"
-      onClick={() => onSelectChain(chain)}
+      onClick={handleClick}
       $active={isActive}
       $accent={accent}
+      $disabled={isDisabled}
       aria-pressed={isActive}
+      aria-disabled={isDisabled}
+      title={isDisabled ? i18n._(msg`This destination is not supported for this source chain`) : undefined}
     >
       <img src={logoSrc} alt={chain.label} loading="lazy" />
     </styledEl.ChainChipButton>

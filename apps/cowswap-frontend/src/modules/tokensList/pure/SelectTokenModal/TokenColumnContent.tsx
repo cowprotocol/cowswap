@@ -77,6 +77,7 @@ function LegacyChainSelector({ chainsToSelect, onSelectChain }: LegacyChainSelec
       chains={chainsToSelect.chains}
       defaultChainId={chainsToSelect.defaultChainId}
       onSelectChain={onSelectChain}
+      disabledChainIds={chainsToSelect.disabledChainIds}
     />
   )
 }

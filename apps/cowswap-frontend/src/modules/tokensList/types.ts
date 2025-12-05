@@ -27,4 +27,5 @@ export interface ChainsToSelectState {
   chains: ChainInfo[] | undefined
   defaultChainId?: number
   isLoading?: boolean
+  disabledChainIds?: Set<number>
 }

@@ -93,7 +93,7 @@ export const FixedAllNetworks = styled.div`
   }
 `
 
-export const ChainChipButton = styled.button<{ $active?: boolean; $accent?: ChainAccentVars }>`
+export const ChainChipButton = styled.button<{ $active?: boolean; $accent?: ChainAccentVars; $disabled?: boolean }>`
   --size: 44px;
   width: var(--size);
   height: var(--size);
@@ -103,10 +103,12 @@ export const ChainChipButton = styled.button<{ $active?: boolean; $accent?: Chai
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
+  cursor: ${({ $disabled }) => ($disabled ? 'not-allowed' : 'pointer')};
+  opacity: ${({ $disabled }) => ($disabled ? 0.5 : 1)};
   transition:
     border 0.2s ease,
-    background 0.2s ease;
+    background 0.2s ease,
+    opacity 0.2s ease;
   flex-shrink: 0;
   scroll-snap-align: start;
 

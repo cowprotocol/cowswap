@@ -30,7 +30,7 @@ export const List = styled.div`
   width: 100%;
 `
 
-export const ChainButton = styled.button<{ active$?: boolean; accent$?: ChainAccentVars }>`
+export const ChainButton = styled.button<{ active$?: boolean; accent$?: ChainAccentVars; disabled$?: boolean }>`
   --min-height: 46px;
   ${blankButtonMixin};
 
@@ -45,20 +45,22 @@ export const ChainButton = styled.button<{ active$?: boolean; accent$?: ChainAcc
   border: 1px solid ${({ active$, accent$ }) => (active$ ? getBorder(accent$) : 'transparent')};
   background: ${({ active$, accent$ }) => (active$ ? getBackground(accent$) : 'transparent')};
   box-shadow: ${({ active$, accent$ }) => (active$ ? `0 0 0 1px ${getBackground(accent$)} inset` : 'none')};
-  cursor: pointer;
+  cursor: ${({ disabled$ }) => (disabled$ ? 'not-allowed' : 'pointer')};
+  opacity: ${({ disabled$ }) => (disabled$ ? 0.5 : 1)};
   transition:
     border 0.2s ease,
     background 0.2s ease,
-    box-shadow 0.2s ease;
+    box-shadow 0.2s ease,
+    opacity 0.2s ease;
 
   &:hover {
-    border-color: ${({ accent$ }) => getBorder(accent$, fallbackHoverBorder)};
-    background: ${({ accent$ }) => getBackground(accent$)};
+    border-color: ${({ accent$, disabled$ }) => (disabled$ ? 'transparent' : getBorder(accent$, fallbackHoverBorder))};
+    background: ${({ accent$, disabled$ }) => (disabled$ ? 'transparent' : getBackground(accent$))};
   }
 
   &:focus-visible {
     outline: none;
-    border-color: ${({ accent$ }) => getBorder(accent$, fallbackHoverBorder)};
+    border-color: ${({ accent$, disabled$ }) => (disabled$ ? 'transparent' : getBorder(accent$, fallbackHoverBorder))};
   }
 `
 
@@ -85,10 +87,10 @@ export const ChainLogo = styled.div`
   }
 `
 
-export const ChainText = styled.span`
+export const ChainText = styled.span<{ disabled$?: boolean }>`
   font-weight: 500;
   font-size: 15px;
-  color: var(${UI.COLOR_TEXT});
+  color: ${({ disabled$ }) => (disabled$ ? `var(${UI.COLOR_TEXT_OPACITY_50})` : `var(${UI.COLOR_TEXT})`)};
 `
 
 export const ActiveIcon = styled.span<{ accent$?: ChainAccentVars; color$?: string }>`
