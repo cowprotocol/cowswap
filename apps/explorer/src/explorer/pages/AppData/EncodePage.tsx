@@ -115,7 +115,6 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
 
         // Get the IPFS hash
         const appDataInfo = await metadataApiSDK.getAppDataInfo(fullAppData.fullAppData)
-        console.log('appDataInfo', appDataInfo)
 
         // Update CID
         setAppDataInfo(appDataInfo)
