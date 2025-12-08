@@ -62,7 +62,7 @@ export function TradeFees({
   if (hasBothFees) {
     return (
       <>
-        {totalFeeUsd ? <TotalFeeRow totalFeeUsd={totalFeeUsd} /> : null}
+        {totalFeeUsd ? <TotalFeeRow withTimelineDot={withTimelineDot} totalFeeUsd={totalFeeUsd} /> : null}
         {protocolFeeRow}
         {partnerFeeRow}
       </>

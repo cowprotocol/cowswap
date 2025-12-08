@@ -9,8 +9,9 @@ import { ReviewOrderModalAmountRow } from '../ReviewOrderModalAmountRow'
 
 interface TotalFeeRowProps {
   totalFeeUsd: Nullish<CurrencyAmount<Currency>>
+  withTimelineDot?: boolean
 }
 
-export function TotalFeeRow({ totalFeeUsd }: TotalFeeRowProps): ReactNode {
-  return <ReviewOrderModalAmountRow fiatAmount={totalFeeUsd} label={t`Total fee`} />
+export function TotalFeeRow({ totalFeeUsd, withTimelineDot }: TotalFeeRowProps): ReactNode {
+  return <ReviewOrderModalAmountRow withTimelineDot={withTimelineDot} fiatAmount={totalFeeUsd} label={t`Total fee`} />
 }
