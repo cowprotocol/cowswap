@@ -37,6 +37,8 @@
     "e2e": "nx run-many -t e2e",
     "e2e:open": "nx run-many -t e2e:open",
     "lint": "nx run-many -t lint",
+    "lint:fix": "yarn lint --fix --skip-nx-cache",
+    "lint:verbose": "yarn lint --output-style=stream --parallel=1 --skip-nx-cache",
     "lint-staged": "lint-staged --verbose -c lint-staged.config.js",
     "prebuild:cowswap": "yarn i18n",
     "prepare": "husky",
