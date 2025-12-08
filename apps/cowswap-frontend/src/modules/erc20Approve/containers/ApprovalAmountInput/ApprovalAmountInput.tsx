@@ -4,6 +4,8 @@ import { TokenWithLogo } from '@cowprotocol/common-const'
 import { tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { Trans, useLingui } from '@lingui/react/macro'
+
 import { Field } from 'legacy/state/types'
 
 import { useUsdAmount } from 'modules/usdAmount'
@@ -70,12 +72,14 @@ export function ApprovalAmountInput({
     [updateCustomApproveAmountInput, tokenWithLogo, amountToSwap],
   )
 
-  const resetLabel = customAmountValueState.isInvalid ? 'Set to trade' : 'Reset'
+  const { t } = useLingui()
+
+  const resetLabel = customAmountValueState.isInvalid ? t`Set to trade` : t`Reset`
 
   return (
     <styledEl.EditWrapper>
       <styledEl.InputHeader>
-        Approval amount <styledEl.ResetBtn onClick={onReset}>{resetLabel}</styledEl.ResetBtn>
+        <Trans>Approval amount</Trans> <styledEl.ResetBtn onClick={onReset}>{resetLabel}</styledEl.ResetBtn>
       </styledEl.InputHeader>
       <CurrencyInputPanel
         className={'custom-input-panel'}

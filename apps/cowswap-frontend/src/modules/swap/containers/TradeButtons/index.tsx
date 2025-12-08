@@ -8,6 +8,8 @@ import { useGeoStatus } from 'modules/rwa/hooks/useGeoStatus'
 import { useRwaConsentModalState } from 'modules/rwa/hooks/useRwaConsentModalState'
 import { useRwaConsentStatus } from 'modules/rwa/hooks/useRwaConsentStatus'
 import { getRwaTokenInfo } from 'modules/rwa/utils/getRwaTokenInfo'
+import { useLingui } from '@lingui/react/macro'
+
 import { AddIntermediateToken } from 'modules/tokensList'
 import {
   useIsCurrentTradeBridging,
@@ -67,6 +69,8 @@ export function TradeButtons({
   const onCurrencySelection = useOnCurrencySelection()
   const isCurrentTradeBridging = useIsCurrentTradeBridging()
 
+  const { t } = useLingui()
+
   const rwaTokenInfo = useMemo(() => {
     const inputRwaInfo = getRwaTokenInfo(inputCurrency)
     const outputRwaInfo = getRwaTokenInfo(outputCurrency)
@@ -90,7 +94,6 @@ export function TradeButtons({
 
   const confirmTrade = useCallback(
     (forcePriceConfirmation?: boolean) => {
-      // Check if RWA consent modal should be shown
       const needsRwaConsent =
         rwaTokenInfo &&
         geoStatus === 'UNKNOWN' &&
@@ -105,13 +108,12 @@ export function TradeButtons({
         return
       }
 
-      // Otherwise, open normal confirmation modal
       tradeConfirmActions.onOpen(forcePriceConfirmation)
     },
     [rwaTokenInfo, geoStatus, consentStatus, openRwaConsentModal, tradeConfirmActions],
   )
 
-  const confirmText = isCurrentTradeBridging ? 'Swap and Bridge' : 'Swap'
+  const confirmText = isCurrentTradeBridging ? t`Swap and Bridge` : t`Swap`
 
   const { isPartialApproveEnabled } = useFeatureFlags()
   // enable partial approve only for swap

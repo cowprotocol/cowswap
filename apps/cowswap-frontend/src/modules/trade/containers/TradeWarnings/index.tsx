@@ -2,6 +2,8 @@ import React, { ReactNode } from 'react'
 
 import { InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
 
+import { Trans } from '@lingui/react/macro'
+
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { HighSuggestedSlippageWarning } from 'modules/tradeSlippage'
 
@@ -39,10 +41,14 @@ export function TradeWarnings({ isTradePriceUpdating, enableSmartSlippage }: Tra
 function BundleTxApprovalBanner(): ReactNode {
   return (
     <InlineBanner bannerType={StatusColorVariant.Info} iconSize={32}>
-      <strong>Token approval bundling</strong>
+      <strong>
+        <Trans>Token approval bundling</Trans>
+      </strong>
       <p>
-        For your convenience, token approval and order placement will be bundled into a single transaction, streamlining
-        your experience!
+        <Trans>
+          For your convenience, token approval and order placement will be bundled into a single transaction,
+          streamlining your experience!
+        </Trans>
       </p>
     </InlineBanner>
   )

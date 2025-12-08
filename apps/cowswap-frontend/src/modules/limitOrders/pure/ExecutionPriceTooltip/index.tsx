@@ -1,6 +1,8 @@
 import { FiatAmount, TokenAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Fraction, Price } from '@uniswap/sdk-core'
 
+import { Trans } from '@lingui/react/macro'
+
 import { useUsdAmount } from 'modules/usdAmount'
 
 import { ExecutionPrice } from 'common/pure/ExecutionPrice'
@@ -48,7 +50,9 @@ export function ExecutionPriceTooltip(props: ExecutionPriceTooltipProps) {
     <styledEl.FeeTooltipWrapper>
       <styledEl.FeeItem borderTop>
         <span>
-          <p>Limit price</p>
+          <p>
+            <Trans>Limit price</Trans>
+          </p>
           <b>
             {displayedRate} {currentCurrency?.symbol}
           </b>
@@ -56,13 +60,18 @@ export function ExecutionPriceTooltip(props: ExecutionPriceTooltipProps) {
       </styledEl.FeeItem>
 
       <styledEl.FeeItem>
-        <i>Included in the estimated execution price</i>
+        <i>
+          <Trans>Included in the estimated execution price</Trans>
+        </i>
         {formattedFeeAmount && (
           <span>
-            <p>Current network fees</p>
+            <p>
+              <Trans>Current network fees</Trans>
+            </p>
             <span>
               <b>
-                ≈ <TokenAmount amount={formattedFeeAmount} tokenSymbol={formattedFeeAmount?.currency} />
+                {'\u2248 '}
+                <TokenAmount amount={formattedFeeAmount} tokenSymbol={formattedFeeAmount?.currency} />
               </b>
               <br />
               {feeUsdValue && (
@@ -76,7 +85,9 @@ export function ExecutionPriceTooltip(props: ExecutionPriceTooltipProps) {
       </styledEl.FeeItem>
 
       <styledEl.FeeItem highlighted>
-        <b>Order executes at</b>
+        <b>
+          <Trans>Order executes at</Trans>
+        </b>
         <span>
           <b>{executionPrice && <ExecutionPrice executionPrice={executionPrice} isInverted={isInverted} />}</b>
         </span>

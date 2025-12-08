@@ -2,6 +2,9 @@ import EXPERIMENT_ICON from '@cowprotocol/assets/cow-swap/experiment.svg'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { BadgeTypes } from '@cowprotocol/ui'
 
+import { MessageDescriptor } from '@lingui/core'
+import { msg } from '@lingui/core/macro'
+
 export const TRADE_WIDGET_PREFIX = isInjectedWidget() ? '/widget' : ''
 
 export const Routes = {
@@ -54,25 +57,45 @@ export interface IMenuItem {
   badgeType?: (typeof BadgeTypes)[keyof typeof BadgeTypes]
 }
 
-export const MENU_ITEMS: IMenuItem[] = [
-  { route: Routes.SWAP, label: 'Swap', description: 'Trade tokens' },
-  { route: Routes.LIMIT_ORDER, label: 'Limit', fullLabel: 'Limit order', description: 'Set your own price' },
-  { route: Routes.ADVANCED_ORDERS, label: 'TWAP', description: 'Place orders with a time-weighted average price' },
+export interface I18nIMenuItem extends Omit<IMenuItem, 'label' | 'fullLabel' | 'description' | 'badge'> {
+  label: MessageDescriptor
+  fullLabel?: MessageDescriptor
+  description: MessageDescriptor
+  badge?: MessageDescriptor
+}
+
+export const MENU_ITEMS: I18nIMenuItem[] = [
+  {
+    route: Routes.SWAP,
+    label: msg`Swap`,
+    description: msg`Trade tokens`,
+  },
+  {
+    route: Routes.LIMIT_ORDER,
+    label: msg`Limit`,
+    fullLabel: msg`Limit order`,
+    description: msg`Set your own price`,
+  },
+  {
+    route: Routes.ADVANCED_ORDERS,
+    label: msg`TWAP`,
+    description: msg`Place orders with a time-weighted average price`,
+  },
 ]
 
-export const HOOKS_STORE_MENU_ITEM: IMenuItem = {
+export const HOOKS_STORE_MENU_ITEM: I18nIMenuItem = {
   route: Routes.HOOKS,
-  label: 'Hooks',
-  description: 'Powerful tool to generate pre/post interaction for CoW Protocol',
+  label: msg`Hooks`,
+  description: msg`Powerful tool to generate pre/post interaction for CoW Protocol`,
   badgeImage: EXPERIMENT_ICON,
   badgeType: BadgeTypes.INFORMATION,
 }
 
-export const YIELD_MENU_ITEM: IMenuItem = {
+export const YIELD_MENU_ITEM: I18nIMenuItem = {
   route: Routes.YIELD,
-  label: 'Yield',
-  fullLabel: 'Yield',
-  description: 'Provide liquidity',
-  badge: 'New',
+  label: msg`Yield`,
+  fullLabel: msg`Yield`,
+  description: msg`Provide liquidity`,
+  badge: msg`New`,
   badgeType: BadgeTypes.ALERT,
 }

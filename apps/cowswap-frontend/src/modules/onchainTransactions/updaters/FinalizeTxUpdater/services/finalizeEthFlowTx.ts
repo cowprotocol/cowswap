@@ -1,5 +1,7 @@
 import { TransactionReceipt } from '@ethersproject/abstract-provider'
 
+import { t } from '@lingui/core/macro'
+
 import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/reducer'
 import { invalidateOrdersBatch } from 'legacy/state/orders/actions'
 
@@ -35,7 +37,7 @@ export function finalizeEthFlowTx(
           status: receipt.status,
           replacementType: transaction.replacementType,
         },
-        summary: `Failed to place order selling ${nativeCurrencySymbol}`,
+        summary: t`Failed to place order selling ${nativeCurrencySymbol}`,
       })
     }
   }

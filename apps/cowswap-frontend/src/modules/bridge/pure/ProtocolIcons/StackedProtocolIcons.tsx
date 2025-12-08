@@ -3,6 +3,8 @@ import { useState, useMemo, ReactNode } from 'react'
 import { BridgeProviderInfo } from '@cowprotocol/sdk-bridging'
 import { ProductVariant, ProductLogo, UI } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
+
 import { ProtocolIcon, ProtocolIconsContainer, getBorderWidth } from './styled'
 
 const STACKED_ICON_OVERLAP_RATIO = 0.4 // This drives both visual overlap and mask calculation
@@ -144,7 +146,7 @@ export function StackedProtocolIcons({
     <ProtocolIconsContainer iconSize={currentDisplaySize} overlapRatio={STACKED_ICON_OVERLAP_RATIO}>
       <ProtocolIcon
         key="first"
-        title="CoW Protocol"
+        title={t`CoW Protocol`}
         bgColor={cowProtocolBgColor}
         style={{ zIndex: firstIconZIndex }}
         maskConfig={firstMaskConfig}

@@ -3,10 +3,12 @@ import { useCallback } from 'react'
 import { isCowOrder } from '@cowprotocol/common-utils'
 import { OnPostedOrderPayload } from '@cowprotocol/events'
 
+import { Trans } from '@lingui/react/macro'
+
 import { EnhancedTransactionLink } from 'legacy/components/EnhancedTransactionLink'
 import { HashType } from 'legacy/state/enhancedTransactions/reducer'
 
-import { ORDER_UI_TYPE_TITLES } from 'utils/orderUtils/getUiOrderType'
+import { getUiOrderTypeTitles } from 'utils/orderUtils/getUiOrderType'
 
 import { OrderLinkWrapper } from '../commonStyled'
 import { OrderSummary } from '../OrderSummary'
@@ -20,7 +22,7 @@ export interface PendingOrderNotificationProps {
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function PendingOrderNotification(props: PendingOrderNotificationProps) {
   const { payload, isSafeWallet, onToastMessage } = props
 
@@ -52,13 +54,15 @@ export function PendingOrderNotification(props: PendingOrderNotificationProps) {
     (node: HTMLDivElement) => {
       if (node) onToastMessage(node.innerText)
     },
-    [onToastMessage]
+    [onToastMessage],
   )
 
   return (
     <>
       <div ref={ref}>
-        <strong>{ORDER_UI_TYPE_TITLES[orderType]} submitted</strong>
+        <strong>
+          {getUiOrderTypeTitles()[orderType]} <Trans>submitted</Trans>
+        </strong>
         <br />
         {inputToken && outputToken && (
           <OrderSummary

@@ -3,11 +3,9 @@ import { ReactNode } from 'react'
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { Media } from '@cowprotocol/ui'
 
-import { TransactionLinkDisplay } from '../TransactionLink/TransactionLinkDisplay'
+import { useLingui } from '@lingui/react/macro'
 
-function getBridgeTransactionLinkText(isMobile: boolean): string {
-  return isMobile ? 'Bridge explorer ↗' : 'View on bridge explorer ↗'
-}
+import { TransactionLinkDisplay } from '../TransactionLink/TransactionLinkDisplay'
 
 interface BridgeTransactionLinkProps {
   link: string
@@ -16,7 +14,11 @@ interface BridgeTransactionLinkProps {
 
 export function BridgeTransactionLink({ link, label }: BridgeTransactionLinkProps): ReactNode {
   const isMobile = useMediaQuery(Media.upToSmall(false))
-  const linkText = getBridgeTransactionLinkText(isMobile)
+  const { t } = useLingui()
 
-  return <TransactionLinkDisplay link={link} label={label} linkText={linkText} />
+  const getBridgeTransactionLinkText = (isMobile: boolean): string => {
+    return (isMobile ? t`Bridge explorer` : t`View on bridge explorer`) + `  ↗`
+  }
+
+  return <TransactionLinkDisplay link={link} label={label} linkText={getBridgeTransactionLinkText(isMobile)} />
 }

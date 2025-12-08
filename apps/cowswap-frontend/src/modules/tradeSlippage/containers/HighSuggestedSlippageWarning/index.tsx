@@ -5,6 +5,8 @@ import { isFractionFalsy, percentToBps } from '@cowprotocol/common-utils'
 import { BannerOrientation, InfoTooltip, InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
 import { useDerivedTradeState, useIsEoaEthFlow } from 'modules/trade'
@@ -34,19 +36,23 @@ export function HighSuggestedSlippageWarning(props: HighSuggestedSlippageWarning
   const isEoaEthFlow = useIsEoaEthFlow()
   const { defaultValue } = useSlippageConfig()
 
-  const minimalSlippageAppBps = isEoaEthFlow ? ETH_FLOW_SLIPPAGE_WARNING_THRESHOLD[chainId] : MINIMAL_ERC20_FLOW_SLIPPAGE_BPS
+  const minimalSlippageAppBps = isEoaEthFlow
+    ? ETH_FLOW_SLIPPAGE_WARNING_THRESHOLD[chainId]
+    : MINIMAL_ERC20_FLOW_SLIPPAGE_BPS
   const minimalSlippageBps = Math.max(defaultValue, minimalSlippageAppBps)
 
   if (!isSuggestedSlippage || !slippageBps || slippageBps <= minimalSlippageBps || !amountsAreSet) {
     return null
   }
 
+  const slippageBpsPercentage = slippageBps / 100
+
   return (
     <StyledInlineBanner bannerType={StatusColorVariant.Alert} orientation={BannerOrientation.Horizontal} noWrapContent>
-      Slippage adjusted to {`${slippageBps / 100}`}% to ensure quick execution
+      <Trans>Slippage adjusted to {slippageBpsPercentage}% to ensure quick execution</Trans>
       <InfoTooltip
         size={24}
-        content="CoW Swap dynamically adjusts your slippage tolerance based on current gas prices and trade size. You can set a custom slippage using the settings icon above."
+        content={t`CoW Swap dynamically adjusts your slippage tolerance based on current gas prices and trade size. You can set a custom slippage using the settings icon above.`}
       />
     </StyledInlineBanner>
   )

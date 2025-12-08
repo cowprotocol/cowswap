@@ -6,11 +6,20 @@ import { ReceiveAmountInfo } from 'modules/trade'
 
 export function calculateTwapReceivedAmountInfo(
   info: ReceiveAmountInfo | null,
-  numOfParts: Nullish<number>
+  numOfParts: Nullish<number>,
 ): typeof info {
   if (!info || !numOfParts) return null
 
-  const { isSell, quotePrice, costs, beforeNetworkCosts, afterNetworkCosts, afterPartnerFees, afterSlippage } = info
+  const {
+    isSell,
+    quotePrice,
+    costs,
+    beforeNetworkCosts,
+    afterNetworkCosts,
+    afterPartnerFees,
+    afterSlippage,
+    beforeAllFees,
+  } = info
 
   // TODO: Add proper return type annotation
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -28,6 +37,16 @@ export function calculateTwapReceivedAmountInfo(
         amount: scaleAmount(costs.partnerFee.amount),
         bps: costs.partnerFee.bps,
       },
+      protocolFee: costs.protocolFee
+        ? {
+            amount: scaleAmount(costs.protocolFee.amount),
+            bps: costs.protocolFee.bps,
+          }
+        : undefined,
+    },
+    beforeAllFees: {
+      sellAmount: scaleAmount(beforeAllFees.sellAmount),
+      buyAmount: scaleAmount(beforeAllFees.buyAmount),
     },
     beforeNetworkCosts: {
       sellAmount: scaleAmount(beforeNetworkCosts.sellAmount),

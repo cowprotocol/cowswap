@@ -2,6 +2,8 @@ import { TokenLogo } from '@cowprotocol/tokens'
 import { TokenAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { Trans } from '@lingui/react/macro'
+
 import * as styledEl from './styled'
 
 interface WrapCardProps {
@@ -27,7 +29,7 @@ export function WrapCard(props: WrapCardProps) {
       </styledEl.BalanceLabel>
       {/* user balance */}
       <styledEl.BalanceLabel>
-        Balance:&nbsp;
+        <Trans>Balance</Trans>:&nbsp;
         <TokenAmount amount={balance} />
       </styledEl.BalanceLabel>
     </styledEl.WrapCardWrapper>

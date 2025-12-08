@@ -16,7 +16,9 @@ import {
   useWalletInfo,
 } from '@cowprotocol/wallet'
 
-import { Trans } from '@lingui/macro'
+import { i18n } from '@lingui/core'
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 
 import Copy from 'legacy/components/Copy'
 import { groupActivitiesByDay, useMultipleActivityDescriptors } from 'legacy/hooks/useRecentActivity'
@@ -105,7 +107,7 @@ export function AccountDetails({
   // In case the wallet is connected via WalletConnect and has wallet name set, add the suffix to be clear
   // This to avoid confusion for instance when using Metamask mobile
   // When name is not set, it defaults to WalletConnect already
-  const walletConnectSuffix = isWalletConnect && walletDetails?.walletName ? ' (via WalletConnect)' : ''
+  const walletConnectSuffix = isWalletConnect && walletDetails?.walletName ? ` ` + t`(via WalletConnect)` : ''
 
   const handleDisconnectClick = (): void => {
     disconnectWallet()
@@ -187,26 +189,36 @@ export function AccountDetails({
               <span>
                 {' '}
                 <h5>
-                  Recent Activity <span>{`(${activityTotalCount})`}</span>
+                  <Trans>Recent Activity</Trans> <span>{`(${activityTotalCount})`}</span>
                 </h5>
-                {explorerOrdersLink && <ExternalLink href={explorerOrdersLink}>View all orders ↗</ExternalLink>}
+                {explorerOrdersLink && (
+                  <ExternalLink href={explorerOrdersLink}>
+                    <Trans>View all orders</Trans> ↗
+                  </ExternalLink>
+                )}
               </span>
 
               <div>
                 {activitiesGroupedByDate.map(({ date, activities }) => (
                   <Fragment key={date.getTime()}>
                     {/* TODO: style me! */}
-                    <CreationDateText>{date.toLocaleString(undefined, DATE_FORMAT_OPTION)}</CreationDateText>
+                    <CreationDateText>{date.toLocaleString(i18n.locale, DATE_FORMAT_OPTION)}</CreationDateText>
                     <ActivitiesList activities={activities} />
                   </Fragment>
                 ))}
-                {explorerOrdersLink && <ExternalLink href={explorerOrdersLink}>View all orders ↗</ExternalLink>}
+                {explorerOrdersLink && (
+                  <ExternalLink href={explorerOrdersLink}>
+                    <Trans>View all orders</Trans> ↗
+                  </ExternalLink>
+                )}
               </div>
             </LowerSection>
           ) : (
             <LowerSection>
               <NoActivityMessage>
-                <span>Your activity will appear here...</span>
+                <span>
+                  <Trans>Your activity will appear here...</Trans>
+                </span>
               </NoActivityMessage>
             </LowerSection>
           )}

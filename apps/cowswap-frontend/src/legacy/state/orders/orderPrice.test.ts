@@ -58,7 +58,7 @@ describe('getEstimatedExecutionPrice()', () => {
 })
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+ 
 describe('getRemainderAmountsWithoutSurplus()', () => {
   it('Should return the remainder amounts without the surplus', () => {
     const fee = new BigNumber(0.00016).times(10 ** WETH_MAINNET.decimals).toString()

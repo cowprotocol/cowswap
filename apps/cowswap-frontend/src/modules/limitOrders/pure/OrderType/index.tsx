@@ -3,6 +3,7 @@ import { ReactNode } from 'react'
 import IMAGE_CARET_DOWN from '@cowprotocol/assets/cow-swap/carret-down.svg'
 import { InfoTooltip, RowFixed } from '@cowprotocol/ui'
 
+import { Trans, useLingui } from '@lingui/react/macro'
 import { Menu } from '@reach/menu-button'
 
 import { DetailsRow } from 'modules/limitOrders/pure/LimitOrdersDetails/styled'
@@ -22,15 +23,18 @@ export function OrderType(props: OrderTypeProps): ReactNode {
     className,
     partiallyFillableOverride: [override],
   } = props
+  const { t } = useLingui()
   const textContent =
     (override ?? isPartiallyFillable)
-      ? 'This order can be partially filled'
-      : 'This order will either be filled completely or not filled.'
+      ? t`This order can be partially filled`
+      : t`This order will either be filled completely or not filled.`
 
   return (
     <DetailsRow className={className}>
       <RowFixed>
-        <p>Order type</p>
+        <p>
+          <Trans>Order type</Trans>
+        </p>
         <InfoTooltip content={textContent} />
       </RowFixed>
       <OrderTypePicker {...props} />
@@ -38,13 +42,11 @@ export function OrderType(props: OrderTypeProps): ReactNode {
   )
 }
 
-const LABELS = ['Partially fillable', 'Fill or kill']
-
 function OrderTypePicker({ isPartiallyFillable, partiallyFillableOverride }: OrderTypeProps): ReactNode {
+  const { t } = useLingui()
+  const LABELS = [t`Partially fillable`, t`Fill or kill`]
   const [override, setOverride] = partiallyFillableOverride
-
   const showPartiallyFillable = override ?? isPartiallyFillable
-
   const [labelText] = showPartiallyFillable ? LABELS : [...LABELS].reverse()
 
   const onSelect = (label: string): void => {
@@ -59,7 +61,7 @@ function OrderTypePicker({ isPartiallyFillable, partiallyFillableOverride }: Ord
             <styledEl.LabelText>{labelText}</styledEl.LabelText>
             <styledEl.StyledSVG
               src={IMAGE_CARET_DOWN}
-              description="dropdown icon"
+              description={t`dropdown icon`}
               className={isExpanded ? 'expanded' : ''}
             />
           </styledEl.StyledMenuButton>

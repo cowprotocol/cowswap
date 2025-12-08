@@ -7,6 +7,7 @@ import { useTokensByAddressMap } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
+import { t } from '@lingui/core/macro'
 import { useBridgeOrderData, useCrossChainOrder } from 'entities/bridgeOrders'
 import { useBridgeSupportedNetwork } from 'entities/bridgeProvider'
 import { bridgingSdk } from 'tradingSdk/bridgingSdk'
@@ -74,8 +75,8 @@ export function useSwapAndBridgeContext(
       chainId: order.inputToken.chainId, // Intermediate token is on same chain as input
       address: order.buyToken,
       decimals: order.outputToken.decimals, // Use output token decimals as approximation
-      symbol: 'Loading...', // Placeholder until tokens are loaded
-      name: 'Loading...', // Placeholder until tokens are loaded
+      symbol: t`Loading...`, // Placeholder until tokens are loaded
+      name: t`Loading...`, // Placeholder until tokens are loaded
     })
   }, [order, tokensByAddress])
 

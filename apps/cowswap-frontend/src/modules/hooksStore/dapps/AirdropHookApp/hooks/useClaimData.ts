@@ -5,6 +5,10 @@ import { formatTokenAmount } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Fraction } from '@uniswap/sdk-core'
 
+import { MessageDescriptor } from '@lingui/core'
+import { i18n } from '@lingui/core'
+import { msg, t } from '@lingui/core/macro'
+import { useLingui } from '@lingui/react/macro'
 import useSWR from 'swr'
 
 import { useContract } from 'common/hooks/useContract'
@@ -20,11 +24,11 @@ export interface PreviewClaimableTokensParams {
   address: string
 }
 
-export const AIRDROP_PREVIEW_ERRORS = {
-  NO_CLAIMABLE_TOKENS: 'You are not eligible for this airdrop',
-  ERROR_FETCHING_DATA: 'There was an error trying to load claimable tokens',
-  NO_CLAIMABLE_AIRDROPS: 'You possibly have other items to claim, but not Airdrops',
-  UNEXPECTED_WRONG_FORMAT_DATA: 'Unexpected error fetching data: wrong format data',
+export const AIRDROP_PREVIEW_ERRORS: Record<string, MessageDescriptor> = {
+  NO_CLAIMABLE_TOKENS: msg`You are not eligible for this airdrop`,
+  ERROR_FETCHING_DATA: msg`There was an error trying to load claimable tokens`,
+  NO_CLAIMABLE_AIRDROPS: msg`You possibly have other items to claim, but not Airdrops`,
+  UNEXPECTED_WRONG_FORMAT_DATA: msg`Unexpected error fetching data: wrong format data`,
 }
 
 /*
@@ -87,18 +91,18 @@ const fetchAddressIsEligible = async ({
   const intervalKey = findIntervalKey(address, intervals)
 
   // Interval key is undefined (user address is not in intervals)
-  if (!intervalKey) throw new Error(AIRDROP_PREVIEW_ERRORS.NO_CLAIMABLE_TOKENS)
+  if (!intervalKey) throw new Error(i18n._(AIRDROP_PREVIEW_ERRORS.NO_CLAIMABLE_TOKENS))
 
   const chunkData = await fetchChunk(dataBaseUrl, intervalKey)
 
   const addressLowerCase = address.toLowerCase()
 
   // The user address is not listed in chunk
-  if (!(addressLowerCase in chunkData)) throw new Error(AIRDROP_PREVIEW_ERRORS.NO_CLAIMABLE_TOKENS)
+  if (!(addressLowerCase in chunkData)) throw new Error(i18n._(AIRDROP_PREVIEW_ERRORS.NO_CLAIMABLE_TOKENS))
 
   const airDropData = chunkData[addressLowerCase]
   // The user has other kind of tokens, but not airdrops
-  if (airDropData.length < 1) throw new Error(AIRDROP_PREVIEW_ERRORS.NO_CLAIMABLE_AIRDROPS)
+  if (airDropData.length < 1) throw new Error(i18n._(AIRDROP_PREVIEW_ERRORS.NO_CLAIMABLE_TOKENS))
 
   return airDropData[0]
 }
@@ -107,6 +111,7 @@ const fetchAddressIsEligible = async ({
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const useClaimData = (tokenToClaimData?: IAirdrop) => {
   const { account } = useWalletInfo()
+  const { i18n } = useLingui()
   const { contract: airdropContract, chainId: airdropChainId } = useContract<Airdrop>(
     tokenToClaimData?.address,
     AirdropAbi,
@@ -116,13 +121,13 @@ export const useClaimData = (tokenToClaimData?: IAirdrop) => {
     async ({ dataBaseUrl, address }: PreviewClaimableTokensParams): Promise<IClaimData> => {
       const isEligibleData = await fetchAddressIsEligible({ dataBaseUrl, address })
       if (!isEligibleData || !airdropContract || !isEligibleData.index || !tokenToClaimData || !account) {
-        throw new Error(AIRDROP_PREVIEW_ERRORS.ERROR_FETCHING_DATA)
+        throw new Error(i18n._(AIRDROP_PREVIEW_ERRORS.ERROR_FETCHING_DATA))
       }
 
       const { chainId: tokenToClaimChainId, token: tokenToClaim } = tokenToClaimData
       if (airdropChainId !== tokenToClaimChainId) {
         throw new Error(
-          `Airdrop token chain (${tokenToClaimChainId}) and airdrop contract chain (${airdropChainId}) should match`,
+          t`Airdrop token chain (${tokenToClaimChainId}) and airdrop contract chain (${airdropChainId}) should match`,
         )
       }
 
@@ -148,7 +153,7 @@ export const useClaimData = (tokenToClaimData?: IAirdrop) => {
         formattedAmount,
       }
     },
-    [account, airdropContract, tokenToClaimData, airdropChainId],
+    [airdropContract, tokenToClaimData, account, airdropChainId, i18n],
   )
 
   return useSWR<IClaimData | undefined, Error>(

@@ -4,6 +4,7 @@ import { TokenLogo } from '@cowprotocol/tokens'
 import { UI } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
+import { t } from '@lingui/core/macro'
 import styled from 'styled-components/macro'
 
 interface IconSpinnerProps {
@@ -83,7 +84,7 @@ export function IconSpinner({
         if (currency) {
           return <TokenLogo token={currency} size={size} />
         } else if (image) {
-          return <img src={image} alt="Spinning icon" width={size} height={size} />
+          return <img src={image} alt={t`Spinning icon`} width={size} height={size} />
         } else if (children) {
           return <span>{children}</span>
         }

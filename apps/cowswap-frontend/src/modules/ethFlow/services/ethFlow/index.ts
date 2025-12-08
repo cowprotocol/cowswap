@@ -4,6 +4,7 @@ import { OrderClass, SigningScheme, SigningStepManager } from '@cowprotocol/cow-
 import { UiOrderType } from '@cowprotocol/types'
 import { Percent } from '@uniswap/sdk-core'
 
+import { t } from '@lingui/core/macro'
 import { SigningSteps } from 'entities/trade'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
@@ -52,7 +53,6 @@ export async function ethFlow({
   } = tradeContext
   const { contract, appData, uploadAppData, addTransaction, checkEthFlowOrderExists, addInFlightOrderId } =
     ethFlowContext
-
   const { chainId, inputAmount, outputAmount } = context
   const tradeAmounts = { inputAmount, outputAmount }
   const { account, recipientAddressOrName, kind } = orderParams
@@ -78,15 +78,16 @@ export async function ethFlow({
         ...orderParams,
         fee: tradeQuote.quoteResults.quoteResponse.quote.feeAmount,
       })
-      throw new Error('Quote expired. Please refresh.')
+      throw new Error(t`Quote expired. Please refresh.`)
     }
 
     // Last check before signing the order of the actual eth flow contract address (sending ETH to the wrong contract could lead to loss of funds)
     const actualContractAddress = contract.address.toLowerCase()
     const expectedContractAddress = getEthFlowContractAddresses(ethFlowEnv, chainId).toLowerCase()
+
     if (actualContractAddress !== expectedContractAddress) {
       throw new Error(
-        `EthFlow contract (${actualContractAddress}) address don't match the expected address for chain ${chainId} (${expectedContractAddress}). Please refresh the page and try again.`,
+        t`EthFlow contract (${actualContractAddress}) address don't match the expected address for chain ${chainId} (${expectedContractAddress}). Please refresh the page and try again.`,
       )
     }
 
@@ -94,7 +95,13 @@ export async function ethFlow({
 
     const signingStepManager: SigningStepManager = {
       beforeBridgingSign() {
-        setSigningStep('1/2', SigningSteps.BridgingSigning)
+        const isReceiverAccountBridgeProvider =
+          tradeQuoteState.bridgeQuote?.providerInfo.type === 'ReceiverAccountBridgeProvider'
+
+        setSigningStep(
+          '1/2',
+          isReceiverAccountBridgeProvider ? SigningSteps.PreparingDepositAddress : SigningSteps.BridgingSigning,
+        )
       },
       beforeOrderSign() {
         setSigningStep('2/2', SigningSteps.OrderSigning)

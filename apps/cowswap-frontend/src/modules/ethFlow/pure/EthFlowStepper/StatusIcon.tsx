@@ -2,6 +2,7 @@ import React from 'react'
 
 import { UI } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
 import { transparentize } from 'color2k'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
@@ -166,7 +167,7 @@ export function StatusIcon({ children, state, icon, label, crossOut = false, err
   return (
     <>
       <StepIcon status={state}>
-        <SVG src={icon} description={`Status: ${label}`} />
+        <SVG src={icon} description={t`Status: ${label}`} />
       </StepIcon>
       <Content>
         <Label status={state} crossOut={crossOut}>

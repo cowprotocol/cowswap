@@ -5,7 +5,8 @@ import { CODE_LINK, DISCORD_LINK } from '@cowprotocol/common-const'
 import { userAgent } from '@cowprotocol/common-utils'
 import { AutoRow, MEDIA_WIDTHS, ExternalLink, UI, Media } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/macro'
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 import { ThemedText } from 'theme'
 
@@ -74,7 +75,7 @@ export const ErrorWithStackTrace = ({ error }: { error: Error }) => {
         <StyledTitle>
           <Trans>Something went wrong</Trans>
         </StyledTitle>
-        <img src={CowError} alt="CowSwap Error" height="125" />
+        <img src={CowError} alt={t`CowSwap Error`} height="125" />
       </FlexContainer>
       <AutoColumn gap={'md'}>
         <CodeBlockWrapper>

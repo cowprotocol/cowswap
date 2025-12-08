@@ -6,7 +6,7 @@ import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { StatefulValue } from '@cowprotocol/types'
 import { HelpTooltip, RowBetween, RowFixed } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 import { Menu, useMenuButtonContext } from '@reach/menu-button'
 import SVG from 'react-inlinesvg'
 import { Text } from 'rebass'
@@ -92,7 +92,7 @@ export function SettingsTab({
                 <Trans>Interface Settings</Trans>
               </Text>
 
-              <RowBetween>
+              <RowBetween gap={'4px'}>
                 <RowFixed>
                   <ThemedText.Black fontWeight={400} fontSize={14}>
                     <Trans>Custom Recipient</Trans>

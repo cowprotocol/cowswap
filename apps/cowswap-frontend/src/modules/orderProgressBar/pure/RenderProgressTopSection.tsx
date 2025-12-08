@@ -2,6 +2,7 @@ import { ReactNode, useMemo } from 'react'
 
 import { getRandomInt } from '@cowprotocol/common-utils'
 
+import { useLingui } from '@lingui/react/macro'
 import { AnimatePresence, motion } from 'framer-motion'
 
 import { FinishedStepContentSection } from './FinishedStepContentSection'
@@ -82,6 +83,7 @@ export function RenderProgressTopSection({
 }: Pick<OrderProgressBarProps, 'stepName' | 'order' | 'countdown' | 'chainId' | 'surplusData'> & {
   debugForceShowSurplus?: boolean
 }): ReactNode {
+  const { t } = useLingui()
   const { cssVariables, isLayoutReady } = useProgressBarLayout()
   const hideIntent =
     stepName === OrderProgressBarStepName.FINISHED || stepName === OrderProgressBarStepName.CANCELLATION_FAILED
@@ -91,13 +93,13 @@ export function RenderProgressTopSection({
 
     return {
       randomImage: SURPLUS_IMAGES[getRandomInt(0, SURPLUS_IMAGES.length - 1)],
-      randomBenefit: benefits[getRandomInt(0, benefits.length - 1)],
+      randomBenefit: t(benefits[getRandomInt(0, benefits.length - 1)]),
     }
-  }, [chainId])
+  }, [chainId, t])
 
   const { surplusPercent, showSurplus } = surplusData || {}
   const shouldShowSurplus = debugForceShowSurplus || Boolean(showSurplus)
-  const surplusPercentValue = surplusPercent ? parseFloat(surplusPercent).toFixed(2) : 'N/A'
+  const surplusPercentValue = surplusPercent ? parseFloat(surplusPercent).toFixed(2) : t`N/A`
 
   const isFinishedStep =
     stepName === OrderProgressBarStepName.FINISHED || stepName === OrderProgressBarStepName.CANCELLATION_FAILED

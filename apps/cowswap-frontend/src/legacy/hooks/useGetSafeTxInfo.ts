@@ -6,6 +6,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import type { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
 
+import { t } from '@lingui/core/macro'
 import { RetryResult } from 'types'
 
 const DEFAULT_RETRY_OPTIONS: RetryOptions = { n: 3, minWait: 1000, maxWait: 3000 }
@@ -20,7 +21,7 @@ export function useGetSafeTxInfo(): GetSafeTxInfo {
     (hash) => {
       return retry(() => {
         if (!provider) {
-          throw new Error('There is no provider to get Gnosis safe info')
+          throw new Error(t`There is no provider to get Gnosis safe info`)
         }
 
         return getSafeTransaction(chainId, hash, provider)

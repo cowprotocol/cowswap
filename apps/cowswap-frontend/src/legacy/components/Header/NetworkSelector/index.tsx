@@ -9,7 +9,7 @@ import { Media } from '@cowprotocol/ui'
 import { useIsRabbyWallet, useIsSmartContractWallet, useWalletInfo, useIsSafeViaWc } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 import { darken, transparentize } from 'color2k'
 import { AlertTriangle, ChevronDown } from 'react-feather'
 import styled from 'styled-components/macro'
@@ -159,6 +159,7 @@ export function NetworkSelector(): ReactNode {
   const { chainId } = useWalletInfo()
   const node = useRef<HTMLDivElement>(null)
   const nodeMobile = useRef<HTMLDivElement>(null)
+  const nodeSelector = useRef<HTMLDivElement>(null)
   const isOpen = useModalIsOpen(ApplicationModal.NETWORK_SELECTOR)
   const toggleModal = useToggleModal(ApplicationModal.NETWORK_SELECTOR)
 
@@ -169,7 +170,7 @@ export function NetworkSelector(): ReactNode {
   const info = getChainInfo(chainId)
   const isUpToMedium = useMediaQuery(Media.upToMedium(false))
 
-  useOnClickOutside(isUpToMedium ? [nodeMobile] : [node], () => {
+  useOnClickOutside(isUpToMedium ? [nodeMobile, nodeSelector] : [node], () => {
     if (isOpen) {
       toggleModal()
     }
@@ -187,7 +188,7 @@ export function NetworkSelector(): ReactNode {
 
   return (
     <SelectorWrapper ref={node} onClick={toggleModal}>
-      <SelectorControls isChainIdUnsupported={isChainIdUnsupported}>
+      <SelectorControls ref={nodeSelector} isChainIdUnsupported={isChainIdUnsupported}>
         {!isChainIdUnsupported ? (
           <>
             <SelectorLogo src={logoUrl} />
@@ -198,7 +199,7 @@ export function NetworkSelector(): ReactNode {
           <>
             <NetworkIcon />
             <NetworkAlertLabel>
-              <span>Switch</span> Network
+              <Trans>Switch Network</Trans>
             </NetworkAlertLabel>
             <StyledChevronDown />
           </>

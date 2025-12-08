@@ -128,6 +128,7 @@ export function formatPercentage(percentage: BigNumber): string {
       precision: 0,
       thousandSeparator: false,
       decimals: 2,
+      isLocaleAware: false, // force "." decimal symbol for any locale
     }) + '%'
   )
 }

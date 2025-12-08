@@ -8,6 +8,8 @@ import { ClosableBanner } from '@cowprotocol/ui'
 import { useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
+import { t } from '@lingui/core/macro'
+
 import { useIsDarkMode } from 'legacy/state/user/hooks'
 
 import { useTradeNavigate } from 'modules/trade'
@@ -80,8 +82,8 @@ export function CoWAmmBanner({ isTokenSelectorView }: BannerProps) {
     <CoWAmmBannerContent
       id={bannerId}
       isDarkMode={isDarkMode}
-      title="CoW AMM"
-      ctaText={isSmartContractWallet ? 'Booooost APR!' : 'Booooost APR gas-free!'}
+      title={t`CoW AMM`}
+      ctaText={isSmartContractWallet ? t`Booooost APR!` : t`Booooost APR gas-free!`}
       isTokenSelectorView={!!isTokenSelectorView}
       vampireAttackContext={vampireAttackContext}
       tokensByAddress={tokensByAddress}

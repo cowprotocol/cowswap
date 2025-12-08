@@ -3,7 +3,7 @@ import { ReactNode } from 'react'
 import { TokenSymbol } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 
 import { useIsPartialApproveSelectedByUser } from '../../state'
 

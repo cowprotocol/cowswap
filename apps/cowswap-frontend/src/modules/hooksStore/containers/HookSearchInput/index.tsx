@@ -1,6 +1,7 @@
 import IMG_CLOSE_ICON from '@cowprotocol/assets/cow-swap/x.svg'
 import { SearchInput } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
@@ -65,24 +66,18 @@ const ClearButton = styled(ButtonIcon)`
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function HookSearchInput({
-  value,
-  onChange,
-  placeholder = 'Search hooks...',
-  ariaLabel = 'Search hooks',
-  onClear,
-}: HookSearchInputProps) {
+export function HookSearchInput({ value, onChange, placeholder, ariaLabel, onClear }: HookSearchInputProps) {
   return (
     <SearchContainer>
       <SearchInput
-        placeholder={placeholder}
+        placeholder={placeholder ? placeholder : t`Search hooks...`}
         value={value}
         onChange={onChange}
-        aria-label={ariaLabel}
+        aria-label={ariaLabel ? ariaLabel : t`Search hooks`}
         style={{ paddingRight: '38px' }}
       />
       {value && (
-        <ClearButton onClick={onClear} aria-label="Clear search input">
+        <ClearButton onClick={onClear} aria-label={t`Clear search input`}>
           <SVG src={IMG_CLOSE_ICON} />
         </ClearButton>
       )}

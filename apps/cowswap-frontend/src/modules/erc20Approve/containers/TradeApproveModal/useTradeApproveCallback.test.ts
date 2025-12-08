@@ -13,6 +13,7 @@ import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 import { processApprovalTransaction } from './approveUtils'
 import { useTradeApproveCallback } from './useTradeApproveCallback'
 
+import { LinguiWrapper } from '../../../../../LinguiJestProvider'
 import { useApproveCallback } from '../../hooks'
 import { useResetApproveProgressModalState, useUpdateApproveProgressModalState } from '../../state'
 
@@ -149,7 +150,7 @@ describe('useTradeApproveCallback', () => {
       })
       mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: true })
 
-      const { result } = renderHook(() => useTradeApproveCallback(mockToken))
+      const { result } = renderHook(() => useTradeApproveCallback(mockToken), { wrapper: LinguiWrapper })
 
       await result.current(mockAmount, { useModals: true, waitForTxConfirmation: true })
 
@@ -180,7 +181,7 @@ describe('useTradeApproveCallback', () => {
       })
       mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: true })
 
-      const { result } = renderHook(() => useTradeApproveCallback(mockToken))
+      const { result } = renderHook(() => useTradeApproveCallback(mockToken), { wrapper: LinguiWrapper })
 
       await result.current(mockAmount, { useModals: true, waitForTxConfirmation: true }) // Request 1 token
 
@@ -203,7 +204,7 @@ describe('useTradeApproveCallback', () => {
       mockProcessApprovalTransaction.mockReturnValue(null) // No approval data found
       mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: true })
 
-      const { result } = renderHook(() => useTradeApproveCallback(mockToken))
+      const { result } = renderHook(() => useTradeApproveCallback(mockToken), { wrapper: LinguiWrapper })
 
       await result.current(mockAmount, { useModals: true, waitForTxConfirmation: true })
 
@@ -226,7 +227,7 @@ describe('useTradeApproveCallback', () => {
       mockProcessApprovalTransaction.mockReturnValue(null)
       mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: true })
 
-      const { result } = renderHook(() => useTradeApproveCallback(mockToken))
+      const { result } = renderHook(() => useTradeApproveCallback(mockToken), { wrapper: LinguiWrapper })
 
       await result.current(mockAmount, { useModals: true, waitForTxConfirmation: true })
 
@@ -261,7 +262,7 @@ describe('useTradeApproveCallback', () => {
       mockApproveCallback.mockResolvedValue(mockTxResponse)
       mockProcessApprovalTransaction.mockReturnValue(null)
 
-      const { result } = renderHook(() => useTradeApproveCallback(mockToken))
+      const { result } = renderHook(() => useTradeApproveCallback(mockToken), { wrapper: LinguiWrapper })
 
       await result.current(mockAmount)
 
@@ -283,7 +284,7 @@ describe('useTradeApproveCallback', () => {
       mockProcessApprovalTransaction.mockReturnValue(null)
       mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: true })
 
-      const { result } = renderHook(() => useTradeApproveCallback(mockToken))
+      const { result } = renderHook(() => useTradeApproveCallback(mockToken), { wrapper: LinguiWrapper })
 
       await result.current(mockAmount, { useModals: true, waitForTxConfirmation: true })
 
@@ -303,7 +304,7 @@ describe('useTradeApproveCallback', () => {
       })
       mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: true })
 
-      const { result } = renderHook(() => useTradeApproveCallback(mockToken))
+      const { result } = renderHook(() => useTradeApproveCallback(mockToken), { wrapper: LinguiWrapper })
 
       const receipt = await result.current(mockAmount, { useModals: true, waitForTxConfirmation: true })
 
@@ -327,7 +328,7 @@ describe('useTradeApproveCallback', () => {
       const rejectError = { code: 4001, message: 'User rejected the request' }
       mockApproveCallback.mockRejectedValue(rejectError)
 
-      const { result } = renderHook(() => useTradeApproveCallback(mockToken))
+      const { result } = renderHook(() => useTradeApproveCallback(mockToken), { wrapper: LinguiWrapper })
 
       const receipt = await result.current(mockAmount)
 
@@ -349,7 +350,7 @@ describe('useTradeApproveCallback', () => {
       const genericError = { code: 500, message: 'Network error' }
       mockApproveCallback.mockRejectedValue(genericError)
 
-      const { result } = renderHook(() => useTradeApproveCallback(mockToken))
+      const { result } = renderHook(() => useTradeApproveCallback(mockToken), { wrapper: LinguiWrapper })
 
       const receipt = await result.current(mockAmount)
 
@@ -371,7 +372,7 @@ describe('useTradeApproveCallback', () => {
       const errorWithoutCode = new Error('Generic error')
       mockApproveCallback.mockRejectedValue(errorWithoutCode)
 
-      const { result } = renderHook(() => useTradeApproveCallback(mockToken))
+      const { result } = renderHook(() => useTradeApproveCallback(mockToken), { wrapper: LinguiWrapper })
 
       const receipt = await result.current(mockAmount)
 
@@ -393,7 +394,7 @@ describe('useTradeApproveCallback', () => {
       mockApproveCallback.mockResolvedValue(mockTxResponse)
       mockProcessApprovalTransaction.mockReturnValue(null)
 
-      const { result } = renderHook(() => useTradeApproveCallback(mockToken))
+      const { result } = renderHook(() => useTradeApproveCallback(mockToken), { wrapper: LinguiWrapper })
 
       await result.current(mockAmount)
 
@@ -415,7 +416,7 @@ describe('useTradeApproveCallback', () => {
       mockApproveCallback.mockResolvedValue(mockTxResponse)
       mockProcessApprovalTransaction.mockReturnValue(null)
 
-      const { result } = renderHook(() => useTradeApproveCallback(mockToken))
+      const { result } = renderHook(() => useTradeApproveCallback(mockToken), { wrapper: LinguiWrapper })
 
       await result.current(mockAmount)
 
@@ -438,7 +439,7 @@ describe('useTradeApproveCallback', () => {
       mockApproveCallback.mockResolvedValue(mockTxResponse)
       mockProcessApprovalTransaction.mockReturnValue(null)
 
-      const { result } = renderHook(() => useTradeApproveCallback(mockToken))
+      const { result } = renderHook(() => useTradeApproveCallback(mockToken), { wrapper: LinguiWrapper })
 
       await result.current(mockAmount)
 
@@ -456,7 +457,7 @@ describe('useTradeApproveCallback', () => {
       mockApproveCallback.mockResolvedValue(mockTxResponse)
       mockProcessApprovalTransaction.mockReturnValue(null)
 
-      const { result } = renderHook(() => useTradeApproveCallback(mockToken))
+      const { result } = renderHook(() => useTradeApproveCallback(mockToken), { wrapper: LinguiWrapper })
 
       await result.current(mockAmount, { useModals: false })
 
@@ -471,7 +472,7 @@ describe('useTradeApproveCallback', () => {
       mockApproveCallback.mockResolvedValue(mockTxResponse)
       mockProcessApprovalTransaction.mockReturnValue(null)
 
-      const { result } = renderHook(() => useTradeApproveCallback(mockToken))
+      const { result } = renderHook(() => useTradeApproveCallback(mockToken), { wrapper: LinguiWrapper })
 
       await result.current(mockAmount, { useModals: false })
 
@@ -492,7 +493,7 @@ describe('useTradeApproveCallback', () => {
       mockApproveCallback.mockResolvedValue(mockTxResponse)
       mockProcessApprovalTransaction.mockReturnValue(null)
 
-      const { result } = renderHook(() => useTradeApproveCallback(mockToken))
+      const { result } = renderHook(() => useTradeApproveCallback(mockToken), { wrapper: LinguiWrapper })
 
       await result.current(mockAmount)
 
@@ -509,7 +510,7 @@ describe('useTradeApproveCallback', () => {
     it('should reset state even on error', async () => {
       mockApproveCallback.mockRejectedValue(new Error('Test error'))
 
-      const { result } = renderHook(() => useTradeApproveCallback(mockToken))
+      const { result } = renderHook(() => useTradeApproveCallback(mockToken), { wrapper: LinguiWrapper })
 
       await result.current(mockAmount)
 
@@ -531,7 +532,7 @@ describe('useTradeApproveCallback', () => {
         throw new Error('Approval transaction failed')
       })
 
-      const { result } = renderHook(() => useTradeApproveCallback(mockToken))
+      const { result } = renderHook(() => useTradeApproveCallback(mockToken), { wrapper: LinguiWrapper })
 
       await result.current(mockAmount)
 
@@ -548,7 +549,7 @@ describe('useTradeApproveCallback', () => {
 
   describe('memoization and re-renders', () => {
     it('should return stable callback reference', () => {
-      const { result, rerender } = renderHook(() => useTradeApproveCallback(mockToken))
+      const { result, rerender } = renderHook(() => useTradeApproveCallback(mockToken), { wrapper: LinguiWrapper })
 
       const firstCallback = result.current
 
@@ -560,6 +561,7 @@ describe('useTradeApproveCallback', () => {
     it('should update callback when dependencies change', () => {
       const { result, rerender } = renderHook(({ currency }) => useTradeApproveCallback(currency), {
         initialProps: { currency: mockToken },
+        wrapper: LinguiWrapper,
       })
 
       const firstCallback = result.current
