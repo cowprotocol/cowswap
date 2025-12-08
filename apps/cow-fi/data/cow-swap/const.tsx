@@ -174,7 +174,8 @@ export const FAQ_DATA = [
           Coincidences of Wants
         </Link>{' '}
         (CoWs) to settle the order. CoW Swap is the leader among intent-based trading protocols by transaction volume
-        and currently operates on  + getAvailableChainsText().
+        and currently operates on   {getAvailableChainsText()
+        }.
       </>
     ),
   },
