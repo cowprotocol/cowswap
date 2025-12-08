@@ -13,18 +13,47 @@ import { AddressLink } from 'common/pure/AddressLink'
 const ChainInfo = styled.div`
   display: inline-flex;
   gap: 4px;
-  font-weight: 600;
-  align-items: baseline;
+  align-items: center;
+  margin: 0 0 8px;
+`
+
+const ChainLink = styled(AddressLink)`
+  && {
+    color: var(${UI.COLOR_TEXT});
+    text-decoration-color: var(${UI.COLOR_TEXT});
+  }
+
+  &&:visited,
+  &&:hover,
+  &&:active {
+    color: var(${UI.COLOR_TEXT});
+    text-decoration-color: var(${UI.COLOR_TEXT});
+  }
 `
 
 const ConfirmCheckbox = styled.label`
-  display: block;
-  border: 1px solid var(${UI.COLOR_ALERT_TEXT});
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(${UI.COLOR_ALERT_BG});
   cursor: pointer;
-  padding: 10px;
-  margin-top: 10px;
-  border-radius: 8px;
+  padding: 14px;
+  margin: 16px 0 0;
+  border-radius: 12px;
   font-weight: 600;
+  font-size: 16px;
+  transition: all 0.2s ease-in-out;
+  background: var(${UI.COLOR_ALERT_BG});
+  color: var(${UI.COLOR_ALERT_TEXT});
+
+  &:hover {
+    border-color: var(${UI.COLOR_ALERT_TEXT});
+  }
+
+  input {
+    accent-color: var(${UI.COLOR_ALERT_TEXT});
+    color: var(${UI.COLOR_ALERT_TEXT});
+  }
 `
 
 interface SmartContractReceiverWarningProps {
@@ -43,20 +72,18 @@ export function SmartContractReceiverWarning({
   const [isConfirmed, setIsConfirmed] = state
   const chainName = CHAIN_INFO[chainId].label
 
-  const ChainElement = (
-    <ChainInfo>
-      <NetworkLogo chainId={chainId} size={16} />
-      <span>{chainName}</span>
-      network
-    </ChainInfo>
-  )
-
   return (
-    <InlineBanner bannerType={StatusColorVariant.Alert} orientation={BannerOrientation.Horizontal}>
+    <InlineBanner bannerType={StatusColorVariant.Alert} orientation={BannerOrientation.Horizontal} breakWord>
       <div>
-        The recipient address is <AddressLink address={recipient ?? account} chainId={chainId} /> on {ChainElement}.
-        <br />
-        Please make sure it is a correct one and already exists on {ChainElement}.
+        <ChainInfo>
+          <Trans>Recipient</Trans>
+          <NetworkLogo chainId={chainId} size={16} />
+          <ChainLink address={recipient ?? account} chainId={chainId} />
+          <span>is on {chainName} network.</span>
+        </ChainInfo>
+        <div>
+          <Trans>Confirm this is the correct address and that it exists on this chain.</Trans>
+        </div>
         <ConfirmCheckbox>
           <input type="checkbox" checked={isConfirmed} onChange={(event) => setIsConfirmed(event.target.checked)} />{' '}
           <Trans>Confirm</Trans>
