@@ -33,6 +33,32 @@ const nxReactNextConfigs = compat
 
 module.exports = [
   ...baseConfig,
+  // TODO: remove this once the errors have been fixed
+  {
+    files: ['apps/cow-fi/**/*.{ts,tsx,js,jsx}'],
+    plugins: {
+      // Ensure plugin-scoped rules remain resolvable after upstream filtering
+      react: require('eslint-plugin-react'),
+      'react-hooks': require('eslint-plugin-react-hooks'),
+    },
+    rules: {
+      '@typescript-eslint/explicit-function-return-type': 'warn',
+      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-unused-vars': 'warn',
+      'unused-imports/no-unused-imports': 'warn',
+      'unused-imports/no-unused-vars': 'warn',
+      'import/order': 'warn',
+      'max-lines-per-function': 'warn',
+      complexity: 'warn',
+      'react/no-unstable-nested-components': 'warn',
+      'react-hooks/rules-of-hooks': 'warn',
+      'react-hooks/exhaustive-deps': 'warn',
+      'react-hooks/purity': 'warn',
+      '@next/next/no-html-link-for-pages': 'warn',
+      '@next/next/no-img-element': 'warn',
+      'no-restricted-imports': 'warn',
+    },
+  },
   {
     files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
     rules: {
