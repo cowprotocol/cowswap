@@ -26,7 +26,6 @@ export function RwaConsentModalContainer(): ReactNode {
     }
   }, [context, account])
 
-  // Only call useRwaConsentStatus when we have a valid consentKey
   const { confirmConsent } = useRwaConsentStatus(
     consentKey || { wallet: '', issuer: '', tosVersion: '' },
   )
@@ -49,6 +48,12 @@ export function RwaConsentModalContainer(): ReactNode {
     return null
   }
 
-  return <RwaConsentModal onDismiss={onDismiss} onConfirm={onConfirm} />
+  return (
+    <RwaConsentModal
+      onDismiss={onDismiss}
+      onConfirm={onConfirm}
+      token={context.token}
+    />
+  )
 }
 

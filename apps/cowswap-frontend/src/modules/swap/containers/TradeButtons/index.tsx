@@ -4,12 +4,12 @@ import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { useLingui } from '@lingui/react/macro'
+
 import { useGeoStatus } from 'modules/rwa/hooks/useGeoStatus'
 import { useRwaConsentModalState } from 'modules/rwa/hooks/useRwaConsentModalState'
 import { useRwaConsentStatus } from 'modules/rwa/hooks/useRwaConsentStatus'
 import { getRwaTokenInfo } from 'modules/rwa/utils/getRwaTokenInfo'
-import { useLingui } from '@lingui/react/macro'
-
 import { AddIntermediateToken } from 'modules/tokensList'
 import {
   useIsCurrentTradeBridging,
@@ -104,6 +104,7 @@ export function TradeButtons({
           issuer: rwaTokenInfo.issuer,
           tosVersion: rwaTokenInfo.tosVersion,
           issuerName: rwaTokenInfo.issuerName,
+          token: rwaTokenInfo.token,
         })
         return
       }

@@ -1,38 +1,54 @@
 import { ReactNode } from 'react'
 
+import { TokenWithLogo } from '@cowprotocol/common-const'
+import { TokenLogo } from '@cowprotocol/tokens'
 import { ButtonPrimary, ButtonOutlined, ModalHeader } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 
 import * as styledEl from './styled'
 
 export interface RwaConsentModalProps {
   onDismiss(): void
   onConfirm(): void
+  token?: TokenWithLogo
 }
 
-// TODO: Add proper return type annotation
- 
 export function RwaConsentModal(props: RwaConsentModalProps): ReactNode {
-  const { onDismiss, onConfirm } = props
+  const { onDismiss, onConfirm, token } = props
+
+  const displaySymbol = token?.symbol || 'this token'
 
   return (
     <styledEl.Wrapper>
       <ModalHeader onClose={onDismiss}>
-        <Trans>Additional verification required</Trans>
+        <Trans>Additional confirmation required for this token</Trans>
       </ModalHeader>
       <styledEl.Contents>
+        {token && (
+          <styledEl.TokenBlock>
+            <TokenLogo token={token} size={48} />
+            <styledEl.TokenSymbolName>
+              <styledEl.TokenSymbol>{token.symbol}</styledEl.TokenSymbol>
+              {token.name && (
+                <>
+                  <styledEl.TokenNameDivider>—</styledEl.TokenNameDivider>
+                  <styledEl.TokenName>{token.name}</styledEl.TokenName>
+                </>
+              )}
+            </styledEl.TokenSymbolName>
+          </styledEl.TokenBlock>
+        )}
         <styledEl.Body>
           <p>
             <Trans>
-              Access to certain tokens on this interface is subject to regulatory and location-based restrictions.
+              Access to {displaySymbol} through this interface is subject to regulatory and location-based restrictions.
             </Trans>
           </p>
           <p>
             <Trans>
               We could not reliably determine your location (for example due to VPN or privacy settings). Before you can
-              interact with these tokens, you must confirm that you are allowed to do so under the laws that apply to
-              you.
+              proceed with {displaySymbol}, you need to confirm that you are allowed to interact with this token.
             </Trans>
           </p>
           <styledEl.AcknowledgementSection>
@@ -42,13 +58,13 @@ export function RwaConsentModal(props: RwaConsentModalProps): ReactNode {
             <styledEl.BulletList>
               <li>
                 <Trans>
-                  You are not accessing this interface from a country or region where these tokens are restricted or
+                  You are not accessing this interface from a country or region where this token is restricted or
                   prohibited.
                 </Trans>
               </li>
               <li>
                 <Trans>
-                  You are eligible under your local laws and any applicable terms to view and trade these tokens.
+                  You are eligible under your local laws and any applicable terms to view and trade this token.
                 </Trans>
               </li>
               <li>
@@ -78,4 +94,3 @@ export function RwaConsentModal(props: RwaConsentModalProps): ReactNode {
     </styledEl.Wrapper>
   )
 }
-

@@ -1,6 +1,8 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useCallback } from 'react'
 
+import { TokenWithLogo } from '@cowprotocol/common-const'
+
 import {
   rwaConsentModalStateAtom,
   updateRwaConsentModalStateAtom,
@@ -11,6 +13,7 @@ export interface RwaConsentModalContext {
   issuer: string
   tosVersion: string
   issuerName?: string
+  token?: TokenWithLogo
 }
 
 export function useRwaConsentModalState(): {
@@ -24,7 +27,6 @@ export function useRwaConsentModalState(): {
 
   const openModal = useCallback(
     (context: RwaConsentModalContext): void => {
-      // Prevent opening if already open with the same context
       if (state.isModalOpen) {
         return
       }

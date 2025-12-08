@@ -17,6 +17,39 @@ export const Contents = styled.div`
   padding: 20px;
 `
 
+export const TokenBlock = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 20px;
+  background: var(${UI.COLOR_PAPER_DARKER});
+  border-radius: 16px;
+  text-align: center;
+`
+
+export const TokenSymbolName = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  color: inherit;
+`
+
+export const TokenSymbol = styled.span`
+  font-weight: 700;
+`
+
+export const TokenNameDivider = styled.span`
+  color: var(${UI.COLOR_TEXT_OPACITY_50});
+`
+
+export const TokenName = styled.span`
+  color: var(${UI.COLOR_TEXT_OPACITY_70});
+  font-weight: 400;
+`
+
 export const Body = styled.div`
   display: flex;
   flex-direction: column;
@@ -61,4 +94,3 @@ export const ButtonContainer = styled.div`
   gap: 12px;
   margin-top: 8px;
 `
-
