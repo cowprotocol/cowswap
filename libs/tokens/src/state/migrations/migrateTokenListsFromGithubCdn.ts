@@ -25,7 +25,7 @@ const GITHUB_RAW_PREFIXES = [
  *
  * This migration:
  * 1. Reads the v6 data from IndexedDB
- * 2. Marks old GitHub-hosted lists as 'deleted' so they are no longer used
+ * 2. Copies over only the lists that are not from GitHub CDN
  * 3. The new lists will be loaded from the default configuration
  * 4. Saves as v7
  */
@@ -49,11 +49,9 @@ export async function migrateTokenListsFromGithubCdn(): Promise<void> {
 
       for (const [source, listState] of Object.entries(chainState)) {
         const isGithubTokenListUrl = GITHUB_RAW_PREFIXES.some((prefix) => source.startsWith(prefix));
-        if (isGithubTokenListUrl) {
-          newChainState[source] = 'deleted';
-        } else {
-          newChainState[source] = listState;
-        }
+          if (!isGithubTokenListUrl) {
+            newChainState[source] = listState;
+          }
       }
 
       v7Data[chainId] = newChainState
