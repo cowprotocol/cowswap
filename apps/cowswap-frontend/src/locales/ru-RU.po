@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-12-05 13:39\n"
+"PO-Revision-Date: 2025-12-08 09:12\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -1719,7 +1719,7 @@ msgstr "Что-то пошло не так при создании заказа"
 
 #: apps/cowswap-frontend/src/legacy/components/Header/AccountElement/NotificationAlertPopover.tsx
 msgid "Enable order alerts"
-msgstr ""
+msgstr "Включить уведомления об ордерах"
 
 #: libs/common-utils/src/swapErrorToUserReadableMessage.tsx
 msgid "This transaction will not succeed either due to price movement or fee on transfer. Try increasing your slippage tolerance."
@@ -4700,7 +4700,7 @@ msgstr "на {chainLabel}"
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/TradeButtons/limitOrdersTradeButtonsMap.tsx
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Invalid price. Try increasing input/output amount."
-msgstr "Неправильная цена. Попробуйте увеличить ввод/вывод."
+msgstr "Некорректная цена. Попробуйте другое число."
 
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/FAQContent/index.tsx
 #~ msgid "Since {ACCOUNT_PROXY_LABEL} is not an upgradeable smart-contract, it can be versioned and there are"
@@ -5010,7 +5010,7 @@ msgstr "Стоимость замены по крайней мере {formattedF
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 msgid "Limit orders on CoW Swap capture surplus - so if the price moves in your favor, you're likely to get more than you asked for."
-msgstr "Лимит ордера на покупку заменителя - поэтому, если цена движется в вашем любимом стиле, вы получите больше, чем вы запросили его."
+msgstr "Лимитные ордера предусматривают бонусы - поэтому, если цена окажется более привлекательной, вы получите больше, чем вы запросили."
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
 msgid "Avg. execution price"
@@ -5673,7 +5673,7 @@ msgstr "выше"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/RateInput/index.tsx
 msgid "When locked, the limit price stays fixed when changing the amounts. When unlocked, the limit price will update based on the amount changes."
-msgstr "При блокировке лимитная цена остается фиксированной при изменении сумм. При разблокировке лимитная цена обновится на основании изменений суммы."
+msgstr "При блокировке предельная цена остается фиксированной при изменении сумм. При разблокировке лимитная цена обновится на основании изменений суммы."
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/SmallVolumeWarningBanner/index.tsx
 msgid "For this order, network costs would be <0>{formattedFeePercentage}% (<1/>)</0> of your sell amount! Therefore, your order is unlikely to execute."
