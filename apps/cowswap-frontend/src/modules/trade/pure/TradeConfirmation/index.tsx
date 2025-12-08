@@ -15,7 +15,6 @@ import { ConfirmButton } from './ConfirmButton'
 import { ConfirmWarnings } from './ConfirmWarnings'
 import { QuoteCountdown } from './CountDown'
 import { useIsPriceChanged } from './hooks/useIsPriceChanged'
-import { useSmartContractRecipientConfirm } from './hooks/useSmartContractRecipientConfirm'
 import * as styledEl from './styled'
 
 import { NoImpactWarning } from '../../containers/NoImpactWarning'
@@ -64,12 +63,8 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
     props.outputCurrencyInfo.amount?.toExact(),
     forcePriceConfirmation,
   )
-  const { isConfirmed: isSmartContractRecipientConfirmed, state: smartContractRecipientConfirmState } =
-    useSmartContractRecipientConfirm(props)
-  const outputChainId = props.outputCurrencyInfo.amount?.currency.chainId
 
-  const isButtonDisabled =
-    isConfirmDisabled || (isPriceChanged && !isPriceStatic) || hasPendingTrade || !isSmartContractRecipientConfirmed
+  const isButtonDisabled = isConfirmDisabled || (isPriceChanged && !isPriceStatic) || hasPendingTrade
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -113,8 +108,6 @@ export function TradeConfirmation(_props: TradeConfirmationProps): ReactNode {
           recipient={props.recipient}
           isPriceChanged={isPriceChanged}
           isPriceStatic={isPriceStatic}
-          outputChainId={outputChainId}
-          smartContractRecipientConfirmState={smartContractRecipientConfirmState}
           resetPriceChanged={resetPriceChanged}
         />
 

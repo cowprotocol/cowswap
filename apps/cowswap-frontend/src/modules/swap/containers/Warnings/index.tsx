@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import React, { ReactNode, useEffect } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { TradeType } from '@cowprotocol/widget-lib'
@@ -9,8 +9,14 @@ import { useIsCurrentTradeBridging, useTradePriceImpact, useTradeRouteContext } 
 import { BundleTxWrapBanner, HighFeeWarning, MetamaskTransactionWarning } from 'modules/tradeWidgetAddons'
 import { SellNativeWarningBanner } from 'modules/tradeWidgetAddons'
 
+import {
+  useShouldCheckBridgingRecipient,
+  useSmartContractRecipientConfirmed,
+  useToggleSmartContractRecipientConfirmed,
+} from '../../hooks/useSmartContractRecipientConfirmed'
 import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
 import { SwapFormState, useSwapFormState } from '../../hooks/useSwapFormState'
+import { SmartContractReceiverWarning } from '../../pure/SmartContractReceiverWarning'
 import { TwapSuggestionBanner } from '../../pure/TwapSuggestionBanner'
 
 interface WarningsProps {
@@ -18,24 +24,46 @@ interface WarningsProps {
 }
 
 export function Warnings({ buyingFiatAmount }: WarningsProps): ReactNode {
-  const { chainId } = useWalletInfo()
-  const { inputCurrency, inputCurrencyAmount } = useSwapDerivedState()
+  const { chainId, account } = useWalletInfo()
+  const { inputCurrency, outputCurrency, inputCurrencyAmount, recipient } = useSwapDerivedState()
   const formState = useSwapFormState()
   const tradeUrlParams = useTradeRouteContext()
   const isCurrentTradeBridging = useIsCurrentTradeBridging()
+  const toggleSmartContractRecipientConfirmed = useToggleSmartContractRecipientConfirmed()
+  const smartContractRecipientConfirmed = useSmartContractRecipientConfirmed()
+  const shouldCheckBridgingRecipient = useShouldCheckBridgingRecipient()
+  const outputChainId = outputCurrency?.chainId
+
   const isNativeSellInHooksStore = formState === SwapFormState.SellNativeInHooks
 
   const priceImpactParams = useTradePriceImpact()
   const widgetParams = useInjectedWidgetParams()
+
   const { enabledTradeTypes } = widgetParams
   const showTwapSuggestionBanner =
     (!enabledTradeTypes || enabledTradeTypes.includes(TradeType.ADVANCED)) && !isCurrentTradeBridging
+
+  // Reset SmartContractRecipientConfirmed when trade params are changed
+  useEffect(() => {
+    if (!outputChainId) return
+
+    toggleSmartContractRecipientConfirmed(false)
+  }, [recipient, chainId, account, outputChainId, toggleSmartContractRecipientConfirmed])
 
   return (
     <>
       {inputCurrency && !isNativeSellInHooksStore && <MetamaskTransactionWarning sellToken={inputCurrency} />}
       {isNativeSellInHooksStore && <SellNativeWarningBanner />}
       <HighFeeWarning />
+      {shouldCheckBridgingRecipient && account && outputChainId && (
+        <SmartContractReceiverWarning
+          account={account}
+          recipient={recipient}
+          chainId={outputChainId}
+          checked={smartContractRecipientConfirmed}
+          toggle={toggleSmartContractRecipientConfirmed}
+        />
+      )}
       <BundleTxWrapBanner />
       {showTwapSuggestionBanner && (
         <TwapSuggestionBanner

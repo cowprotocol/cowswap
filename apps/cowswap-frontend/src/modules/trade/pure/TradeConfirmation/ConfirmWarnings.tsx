@@ -1,13 +1,11 @@
-import { Dispatch, ReactNode, SetStateAction } from 'react'
+import { ReactNode } from 'react'
 
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Nullish } from '@cowprotocol/types'
 import { BannerOrientation } from '@cowprotocol/ui'
 
 import { CustomRecipientWarningBanner } from 'common/pure/CustomRecipientWarningBanner'
 
 import { PriceUpdatedBanner } from '../PriceUpdatedBanner'
-import { SmartContractReceiverWarning } from '../SmartContractReceiverWarning'
 
 interface ConfirmWarningsProps {
   resetPriceChanged(): void
@@ -16,8 +14,6 @@ interface ConfirmWarningsProps {
   ensName: string | undefined
   isPriceChanged: boolean
   isPriceStatic: boolean | undefined
-  outputChainId: SupportedChainId | undefined
-  smartContractRecipientConfirmState: [boolean, Dispatch<SetStateAction<boolean>>] | undefined
 }
 
 export function ConfirmWarnings({
@@ -27,8 +23,6 @@ export function ConfirmWarnings({
   ensName,
   isPriceChanged,
   isPriceStatic,
-  outputChainId,
-  smartContractRecipientConfirmState,
 }: ConfirmWarningsProps): ReactNode {
   const showRecipientWarning =
     recipient &&
@@ -38,14 +32,6 @@ export function ConfirmWarnings({
   return (
     <>
       {showRecipientWarning && <CustomRecipientWarningBanner orientation={BannerOrientation.Horizontal} />}
-      {smartContractRecipientConfirmState && account && outputChainId && (
-        <SmartContractReceiverWarning
-          account={account}
-          recipient={recipient}
-          chainId={outputChainId}
-          state={smartContractRecipientConfirmState}
-        />
-      )}
       {isPriceChanged && !isPriceStatic && <PriceUpdatedBanner onClick={resetPriceChanged} />}
     </>
   )

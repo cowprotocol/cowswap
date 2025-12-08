@@ -1,4 +1,4 @@
-import { Dispatch, ReactNode, SetStateAction } from 'react'
+import { ReactNode } from 'react'
 
 import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -60,16 +60,17 @@ interface SmartContractReceiverWarningProps {
   account: string
   recipient: Nullish<string>
   chainId: SupportedChainId
-  state: [boolean, Dispatch<SetStateAction<boolean>>]
+  checked: boolean
+  toggle(state: boolean): void
 }
 
 export function SmartContractReceiverWarning({
-  state,
+  checked,
+  toggle,
   account,
   recipient,
   chainId,
 }: SmartContractReceiverWarningProps): ReactNode {
-  const [isConfirmed, setIsConfirmed] = state
   const chainName = CHAIN_INFO[chainId].label
 
   return (
@@ -85,7 +86,7 @@ export function SmartContractReceiverWarning({
           <Trans>Confirm this is the correct address and that it exists on this chain.</Trans>
         </div>
         <ConfirmCheckbox>
-          <input type="checkbox" checked={isConfirmed} onChange={(event) => setIsConfirmed(event.target.checked)} />{' '}
+          <input type="checkbox" checked={checked} onChange={(event) => toggle(event.target.checked)} />{' '}
           <Trans>Confirm</Trans>
         </ConfirmCheckbox>
       </div>
