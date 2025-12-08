@@ -15,8 +15,8 @@ export function useSmartContractRecipientConfirm(props: {
   const state = useState(false)
   const inputChainId = props.inputCurrencyInfo.amount?.currency.chainId
   const outputChainId = props.outputCurrencyInfo.amount?.currency.chainId
-  const isBridgingTrade = inputChainId !== outputChainId
-  const shouldCheckBridgingRecipient = props.isSmartContractWallet && isBridgingTrade
+  const isBridgingTrade = Boolean(inputChainId && outputChainId && inputChainId !== outputChainId)
+  const shouldCheckBridgingRecipient = !!props.isSmartContractWallet && isBridgingTrade
 
   const isConfirmed = shouldCheckBridgingRecipient ? state[0] : true
 
