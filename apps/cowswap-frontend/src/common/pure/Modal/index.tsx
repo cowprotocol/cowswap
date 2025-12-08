@@ -5,7 +5,7 @@ import { isMobile } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
 import { Media, UI } from '@cowprotocol/ui'
 
-import { t } from '@lingui/core'
+import { t } from '@lingui/core/macro'
 import { useSpringValue, useTransition } from '@react-spring/web'
 import { useGesture } from '@use-gesture/react'
 import styled from 'styled-components/macro'
