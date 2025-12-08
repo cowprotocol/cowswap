@@ -1,3 +1,5 @@
+import { t } from '@lingui/core/macro'
+
 type ApiActionType = 'get' | 'create' | 'delete'
 
 export interface ApiErrorObject {
@@ -108,7 +110,7 @@ function _mapActionToErrorDetail(action?: ApiActionType) {
       console.error(
         '[OperatorError::_mapActionToErrorDetails] Uncaught error mapping error action type to server error. Please try again later.',
       )
-      return 'Something failed. Please try again later.'
+      return `Something failed. Please try again later.`
   }
 }
 
@@ -144,23 +146,33 @@ export default class OperatorError extends Error {
       case 404:
         return this.getErrorMessage(errorObject, action)
 
-      case 403:
-        return `The order cannot be ${action === 'create' ? 'accepted' : 'cancelled'}. Your account is deny-listed.`
+      case 403: {
+        const acceptedText = t`accepted`
+        const cancelledText = t`cancelled`
+        const statusText = action === 'create' ? acceptedText : cancelledText
+        return t`The order cannot be ${statusText}. Your account is deny-listed.`
+      }
 
-      case 429:
-        return `The order cannot be ${
-          action === 'create' ? 'accepted. Too many order placements' : 'cancelled. Too many order cancellations'
-        }. Please, retry in a minute`
+      case 429: {
+        const placementsText = t`accepted. Too many order placements`
+        const cancellationsText = t`cancelled. Too many order cancellations`
+        const msg = action === 'create' ? placementsText : cancellationsText
+        return t`The order cannot be ${msg}. Please, retry in a minute`
+      }
 
       case 500:
-      default:
+      default: {
         console.error(
           `[OperatorError::getErrorFromStatusCode] Error ${
             action === 'create' ? 'creating' : 'cancelling'
           } the order, status code:`,
           statusCode || 'unknown',
         )
-        return `Error ${action === 'create' ? 'creating' : 'cancelling'} the order`
+        const creatingText = t`creating`
+        const cancellingText = t`cancelling`
+        const verb = action === 'create' ? creatingText : cancellingText
+        return t`Error ${verb} the order`
+      }
     }
   }
   constructor(apiError: ApiErrorObject) {

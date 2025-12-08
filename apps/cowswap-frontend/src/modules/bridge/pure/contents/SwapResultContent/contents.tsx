@@ -3,6 +3,8 @@ import { ReactNode } from 'react'
 import PlusIcon from '@cowprotocol/assets/cow-swap/plus.svg'
 import type { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
 import { AMM_LOGOS } from 'legacy/components/AMMsLogo'
@@ -32,7 +34,9 @@ export function ReceivedContent({
     <ConfirmDetailsItem
       label={
         <ReceiveAmountTitle>
-          <b>Received</b>
+          <b>
+            <Trans>Received</Trans>
+          </b>
         </ReceiveAmountTitle>
       }
     >
@@ -45,7 +49,14 @@ export function ReceivedContent({
 
 export function ExecPriceContent({ rateInfoParams }: { rateInfoParams: RateInfoParams }): ReactNode {
   return (
-    <ConfirmDetailsItem withTimelineDot label={<span>Exec. price</span>}>
+    <ConfirmDetailsItem
+      withTimelineDot
+      label={
+        <span>
+          <Trans>Exec. price</Trans>
+        </span>
+      }
+    >
       <span>
         <RateInfo noLabel rateInfoParams={rateInfoParams} />
       </span>
@@ -54,13 +65,14 @@ export function ExecPriceContent({ rateInfoParams }: { rateInfoParams: RateInfoP
 }
 
 export function SolverContent({ winningSolver }: { winningSolver: SolverCompetition }): ReactNode {
+  const solver = winningSolver.solver
   return (
-    <ConfirmDetailsItem withTimelineDot label="Winning solver">
+    <ConfirmDetailsItem withTimelineDot label={t`Winning solver`}>
       <WinningSolverContainer>
         <b>{winningSolver.displayName || winningSolver.solver}</b>
         <img
           src={winningSolver.image || AMM_LOGOS[winningSolver.solver]?.src || AMM_LOGOS.default.src}
-          alt={`${winningSolver.solver} logo`}
+          alt={t`${solver} logo`}
           width="16"
           height="16"
         />
@@ -86,7 +98,9 @@ export function SurplusConfig({
             </TimelineIconCircleWrapper>
           }
         >
-          <SuccessTextBold>Surplus received</SuccessTextBold>
+          <SuccessTextBold>
+            <Trans>Surplus received</Trans>
+          </SuccessTextBold>
         </ReceiveAmountTitle>
       }
     >

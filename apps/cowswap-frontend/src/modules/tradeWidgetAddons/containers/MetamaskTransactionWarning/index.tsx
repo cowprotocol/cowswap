@@ -9,6 +9,7 @@ import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { ExternalProvider } from '@ethersproject/providers'
 import { Currency } from '@uniswap/sdk-core'
 
+import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
@@ -44,14 +45,16 @@ export function MetamaskTransactionWarning({ sellToken }: { sellToken: Currency 
   return (
     <Banner bannerType={StatusColorVariant.Danger} iconSize={32}>
       {currentVersion && (
-        <>
+        <Trans>
           Your Metamask extension (<b>v{currentVersion}</b>) is out of date.{' '}
-        </>
+        </Trans>
       )}
       <br />
-      Issues have been reported with Metamask sending transactions to the wrong chain on versions prior to{' '}
-      <b>v{VERSION_WHERE_BUG_WAS_FIXED}</b>. Before you sign, please check in your wallet that the transaction is being
-      sent to the network:{' '}
+      <Trans>
+        Issues have been reported with Metamask sending transactions to the wrong chain on versions prior to{' '}
+        <b>v{VERSION_WHERE_BUG_WAS_FIXED}</b>. Before you sign, please check in your wallet that the transaction is
+        being sent to the network:
+      </Trans>{' '}
       <NetworkInfo>
         <SVG src={chainInfo.logo.light} height={24} width={24} /> <span>{chainInfo.label}</span>
       </NetworkInfo>

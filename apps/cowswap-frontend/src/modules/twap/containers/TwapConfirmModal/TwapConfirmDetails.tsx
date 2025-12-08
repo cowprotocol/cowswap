@@ -2,6 +2,8 @@ import React from 'react'
 
 import { Media } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
 import { useGetReceiveAmountInfo } from 'modules/trade'
@@ -51,8 +53,8 @@ export type TwapConfirmDetailsProps = {
 export const TwapConfirmDetails = React.memo(function TwapConfirmDetails(props: TwapConfirmDetailsProps) {
   const { partDuration, totalDuration, numOfParts } = props
 
-  const partsSuffix = ` part (1/${numOfParts})`
-  const amountLabelSuffix = ' amount per' + partsSuffix
+  const partsSuffix = ' ' + t`part` + ` (1/'${numOfParts})`
+  const amountLabelSuffix = ' ' + t`amount per` + partsSuffix
 
   const partDurationDisplay = partDuration ? deadlinePartsDisplay(partDuration, true) : ''
   const totalDurationDisplay = totalDuration ? deadlinePartsDisplay(totalDuration, true) : ''
@@ -67,15 +69,17 @@ export const TwapConfirmDetails = React.memo(function TwapConfirmDetails(props: 
   return (
     <Wrapper>
       <TWAPSplitTitle>
-        TWAP order split in <b>{numOfParts} equal parts</b>
+        <Trans>
+          TWAP order split in <b>{numOfParts} equal parts</b>
+        </Trans>
       </TWAPSplitTitle>
 
       {/* Sell amount per part */}
       <ReviewOrderModalAmountRow
         amount={inputPartAfterSlippageAmount}
         fiatAmount={inputPartAmountUsd}
-        tooltip="This is the amount that will be sold in each part of the TWAP order."
-        label={'Sell' + amountLabelSuffix}
+        tooltip={t`This is the amount that will be sold in each part of the TWAP order.`}
+        label={t`Sell` + amountLabelSuffix}
         withTimelineDot={true}
       />
 
@@ -83,25 +87,25 @@ export const TwapConfirmDetails = React.memo(function TwapConfirmDetails(props: 
       <ReviewOrderModalAmountRow
         amount={outputPartAfterSlippageAmount}
         fiatAmount={outputPartAmountUsd}
-        tooltip="This is the estimated amount you will receive for each part of the TWAP order."
-        label={'Buy' + amountLabelSuffix}
+        tooltip={t`This is the estimated amount you will receive for each part of the TWAP order.`}
+        label={t`Buy` + amountLabelSuffix}
         isAmountAccurate={false}
         withTimelineDot={true}
       />
 
       {/* Start time */}
       <ConfirmDetailsItem
-        tooltip="The first part of your TWAP order will become active as soon as you confirm the order below."
-        label={'Start time first' + partsSuffix}
+        tooltip={t`The first part of your TWAP order will become active as soon as you confirm the order below.`}
+        label={t`Start time first` + partsSuffix}
         withArrow={false}
       >
-        Now
+        <Trans>Now</Trans>
       </ConfirmDetailsItem>
 
       {/* Part duration */}
       <ConfirmDetailsItem
-        tooltip="The time each part of your TWAP order will remain active."
-        label="Part duration"
+        tooltip={t`The time each part of your TWAP order will remain active.`}
+        label={t`Part duration`}
         withArrow={false}
       >
         {partDurationDisplay}
@@ -109,8 +113,8 @@ export const TwapConfirmDetails = React.memo(function TwapConfirmDetails(props: 
 
       {/* Total duration */}
       <ConfirmDetailsItem
-        tooltip="The time before your total TWAP order ends."
-        label="Total duration"
+        tooltip={t`The time before your total TWAP order ends.`}
+        label={t`Total duration`}
         withArrow={false}
       >
         {totalDurationDisplay}

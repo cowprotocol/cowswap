@@ -2,7 +2,7 @@ import { ReactNode, useEffect, useState } from 'react'
 
 import { ButtonPrimary, ButtonSize, CenteredDots, LongLoadText } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/macro'
+import { t } from '@lingui/core/macro'
 import { SigningStepState } from 'entities/trade'
 
 import { upToMedium, useMediaQuery } from 'legacy/hooks/useMediaQuery'
@@ -52,11 +52,11 @@ export function ConfirmButton(props: ConfirmButtonProps): ReactNode {
     <ButtonPrimary onClick={handleConfirmClick} disabled={isButtonDisabled} buttonSize={ButtonSize.BIG}>
       {hasPendingTrade || isConfirmClicked ? (
         <LongLoadText fontSize={15} fontWeight={500}>
-          <span>{signingStep ? getPendingText(signingStep) : 'Confirm with your wallet'}</span>
+          <span>{signingStep ? getPendingText(signingStep) : t`Confirm with your wallet`}</span>
           <CenteredDots smaller />
         </LongLoadText>
       ) : (
-        <Trans>{buttonText}</Trans>
+        <>{buttonText}</>
       )}
     </ButtonPrimary>
   )

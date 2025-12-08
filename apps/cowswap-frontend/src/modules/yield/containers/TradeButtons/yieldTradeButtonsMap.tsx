@@ -2,6 +2,7 @@ import { ReactNode } from 'react'
 
 import { InfoTooltip } from '@cowprotocol/ui'
 
+import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
 import { YieldFormState } from '../../hooks/useYieldFormState'
@@ -21,9 +22,11 @@ export const yieldTradeButtonsMap: Record<YieldFormState, YieldTradeButton> = {
   [YieldFormState.Erc20BuyIsNotAllowed]: {
     text: (
       <Wrapper>
-        Swaps not supported{' '}
+        <Trans>Swaps not supported</Trans>{' '}
         <InfoTooltip>
-          <div>Use the Swap tab for trades that don't involve an LP token.</div>
+          <div>
+            <Trans>Use the Swap tab for trades that don't involve an LP token.</Trans>
+          </div>
         </InfoTooltip>
       </Wrapper>
     ),

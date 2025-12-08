@@ -10,6 +10,9 @@ import {
 import { TokenLogo } from '@cowprotocol/tokens'
 import { ExternalLink, Icon, IconType, TokenAmount, UI } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
+
 import type { Order } from 'legacy/state/orders/actions'
 
 import { ShimmerWrapper, SummaryRow } from 'common/pure/OrderSummaryRow'
@@ -38,23 +41,25 @@ export function BridgeSummaryHeader({
   return (
     <>
       <SummaryRow>
-        <b>From</b>
+        <b>
+          <Trans>From</Trans>
+        </b>
         <i>
           <TokenLogo token={sourceAmounts.sellAmount.currency} size={20} />
-          <TokenAmount amount={sourceAmounts.sellAmount} tokenSymbol={sourceAmounts.sellAmount.currency} />
-          {` on ${capitalizeFirstLetter(sourceChainName)}`}
+          <TokenAmount amount={sourceAmounts.sellAmount} tokenSymbol={sourceAmounts.sellAmount.currency} />{' '}
+          <Trans>on</Trans> {capitalizeFirstLetter(sourceChainName)}
         </i>
       </SummaryRow>
 
       <SummaryRow>
-        <b>{isFinished ? 'To' : 'To at least'}</b>
+        <b>{isFinished ? <Trans>To</Trans> : <Trans>To at least</Trans>}</b>
 
         <i>
           {targetAmount ? (
             <>
               <TokenLogo token={targetAmount.currency} size={20} />
-              <TokenAmount amount={targetAmount} tokenSymbol={targetAmount.currency} />
-              {` on ${capitalizeFirstLetter(targetChainName)}`}
+              <TokenAmount amount={targetAmount} tokenSymbol={targetAmount.currency} /> <Trans>on</Trans>{' '}
+              {capitalizeFirstLetter(targetChainName)}
             </>
           ) : (
             <ShimmerWrapper />
@@ -64,10 +69,12 @@ export function BridgeSummaryHeader({
 
       {isCustomRecipient && targetRecipient && targetAmount && (
         <SummaryRow>
-          <b>Recipient:</b>
+          <b>
+            <Trans>Recipient</Trans>:
+          </b>
           <i>
             {isCustomRecipientWarning && (
-              <Icon image={IconType.ALERT} color={UI.COLOR_ALERT} description="Alert" size={18} />
+              <Icon image={IconType.ALERT} color={UI.COLOR_ALERT} description={t`Alert`} size={18} />
             )}
             <ExternalLink
               href={getExplorerLink(targetAmount.currency.chainId, targetRecipient, ExplorerDataType.ADDRESS)}

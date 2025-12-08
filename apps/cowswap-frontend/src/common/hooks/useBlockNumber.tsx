@@ -3,6 +3,7 @@ import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, 
 import { useIsWindowVisible } from '@cowprotocol/common-hooks'
 import { useWalletChainId, useWalletProvider } from '@cowprotocol/wallet-provider'
 
+import { useLingui } from '@lingui/react/macro'
 
 const MISSING_PROVIDER = Symbol()
 const BlockNumberContext = createContext<
@@ -16,8 +17,10 @@ const BlockNumberContext = createContext<
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function useBlockNumberContext() {
   const blockNumber = useContext(BlockNumberContext)
+  const { t } = useLingui()
+
   if (blockNumber === MISSING_PROVIDER) {
-    throw new Error('BlockNumber hooks must be wrapped in a <BlockNumberProvider>')
+    throw new Error(t`BlockNumber hooks must be wrapped in a` + ` <BlockNumberProvider>`)
   }
   return blockNumber
 }
@@ -46,7 +49,7 @@ export function BlockNumberProvider({ children }: { children: ReactNode }) {
         return chainBlock
       })
     },
-    [activeChainId, setChainBlock]
+    [activeChainId, setChainBlock],
   )
 
   const windowVisible = useIsWindowVisible()
@@ -81,7 +84,7 @@ export function BlockNumberProvider({ children }: { children: ReactNode }) {
     () => ({
       value: chainId === activeChainId ? block : undefined,
     }),
-    [activeChainId, block, chainId]
+    [activeChainId, block, chainId],
   )
   return <BlockNumberContext.Provider value={value}>{children}</BlockNumberContext.Provider>
 }

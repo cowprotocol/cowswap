@@ -6,6 +6,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { TokenAmount } from '@cowprotocol/ui'
 
+import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
 import { useDerivedTradeState } from 'modules/trade'
@@ -40,10 +41,12 @@ export function SwapAmountPreview(): ReactNode {
   return (
     <Wrapper>
       <TokenLogo size={16} token={inputToken} />
-      <TokenAmount amount={inputCurrencyAmount} /> on <CapitalizedFirst>{srcNetworkName}</CapitalizedFirst>
+      <TokenAmount amount={inputCurrencyAmount} /> <Trans>on</Trans>{' '}
+      <CapitalizedFirst>{srcNetworkName}</CapitalizedFirst>
       {' → '}
       <TokenLogo size={16} token={outputToken} />
-      <TokenAmount amount={outputCurrencyAmount} /> on <CapitalizedFirst>{dstNetworkName}</CapitalizedFirst>
+      <TokenAmount amount={outputCurrencyAmount} /> <Trans>on</Trans>{' '}
+      <CapitalizedFirst>{dstNetworkName}</CapitalizedFirst>
     </Wrapper>
   )
 }

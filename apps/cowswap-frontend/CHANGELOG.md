@@ -1,5 +1,71 @@
 # Changelog
 
+## [1.125.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.125.1...cowswap-v1.125.2) (2025-11-27)
+
+
+### Bug Fixes
+
+* bogus change to trigger release-please ([#6588](https://github.com/cowprotocol/cowswap/issues/6588)) ([9197ffa](https://github.com/cowprotocol/cowswap/commit/9197ffa29fca0c38cb4a2596d8beca72d5c4aa6a))
+
+## [1.125.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.125.0...cowswap-v1.125.1) (2025-11-27)
+
+
+### Bug Fixes
+
+* **bridge:** capture surplus by Near intents provider ([#6582](https://github.com/cowprotocol/cowswap/issues/6582)) ([3f8bf6b](https://github.com/cowprotocol/cowswap/commit/3f8bf6b911ee40a7759796faedf2297a42d8b3eb))
+
+## [1.125.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.124.1...cowswap-v1.125.0) (2025-11-26)
+
+
+### Features
+
+* update protocol fee description ([#6559](https://github.com/cowprotocol/cowswap/issues/6559)) ([4ddfb57](https://github.com/cowprotocol/cowswap/commit/4ddfb57275c5a4d4664a24cbf20a25e9153e4c6f))
+
+## [1.124.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.124.0...cowswap-v1.124.1) (2025-11-25)
+
+
+### Bug Fixes
+
+* protocol fee tooltips/descriptions improvements  ([#6548](https://github.com/cowprotocol/cowswap/issues/6548)) ([0b88709](https://github.com/cowprotocol/cowswap/commit/0b88709e2a294fcfdecaaf6684460db37569907a))
+
+## [1.124.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.123.1...cowswap-v1.124.0) (2025-11-24)
+
+
+### Features
+
+* add protocol fee ([#6537](https://github.com/cowprotocol/cowswap/issues/6537)) ([d367945](https://github.com/cowprotocol/cowswap/commit/d3679456bacc772750781b587cb4755def39198e))
+* add ProtocolFeeInfoBanner to limit orders and TWAP action buttons ([#6541](https://github.com/cowprotocol/cowswap/issues/6541)) ([cc5237e](https://github.com/cowprotocol/cowswap/commit/cc5237e8fa74bd5bd2f27fecfddd0b909954dd1e))
+* **bridge:** add Near provider and provider feature-flags ([#6466](https://github.com/cowprotocol/cowswap/issues/6466)) ([c91b17f](https://github.com/cowprotocol/cowswap/commit/c91b17f9c24fef516eee904e51268264b6adff25))
+* **i18n:** finish internationalization setup ([#6526](https://github.com/cowprotocol/cowswap/issues/6526)) ([7b596e4](https://github.com/cowprotocol/cowswap/commit/7b596e49b132179152c6b8c5436dc5dd199f7aa8))
+* **internationalization:** add internationalization to CoW Swap ([#6198](https://github.com/cowprotocol/cowswap/issues/6198)) ([bec1e54](https://github.com/cowprotocol/cowswap/commit/bec1e54643d9b20a8b6517eae188993e364fed90))
+
+
+### Bug Fixes
+
+* keep displayed orders in progress state and dedupe favicon completions ([#6510](https://github.com/cowprotocol/cowswap/issues/6510)) ([71df046](https://github.com/cowprotocol/cowswap/commit/71df046d8c286491f75ce59af74c4e466803582d))
+* reset appData hooks when sell token changes ([#6524](https://github.com/cowprotocol/cowswap/issues/6524)) ([94cdbc0](https://github.com/cowprotocol/cowswap/commit/94cdbc01e4390197ed416af5ecdd222eafeada72))
+
+## [1.123.1](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.123.0...cowswap-v1.123.1) (2025-11-12)
+
+
+### Bug Fixes
+
+* add useMemo to prevent rerender loop ([#6504](https://github.com/cowprotocol/cowswap/issues/6504)) ([#6513](https://github.com/cowprotocol/cowswap/issues/6513)) ([8e0cd6d](https://github.com/cowprotocol/cowswap/commit/8e0cd6d41eafcd1c619bed7587eafa8b05d439ec))
+
+## [1.123.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.122.0...cowswap-v1.123.0) (2025-11-10)
+
+
+### Features
+
+* **limit-orders:** check permit validity in orders table  ([#6496](https://github.com/cowprotocol/cowswap/issues/6496)) ([0390370](https://github.com/cowprotocol/cowswap/commit/03903702f5fddee093cccde9785d2c49c65aff95))
+* **new-chains:** add q4 chains ([#6404](https://github.com/cowprotocol/cowswap/issues/6404)) ([ba4edb0](https://github.com/cowprotocol/cowswap/commit/ba4edb0fdc7b4c700dfeae9023da330d74a9faea))
+
+
+### Bug Fixes
+
+* hide affected order section user disable partial approve ([#6479](https://github.com/cowprotocol/cowswap/issues/6479)) ([1385188](https://github.com/cowprotocol/cowswap/commit/13851882e8446bb1c822052ccc64c08c52f77b1a))
+* **trade:** compare tx approve amount with min amount to swap ([#6501](https://github.com/cowprotocol/cowswap/issues/6501)) ([6f649ec](https://github.com/cowprotocol/cowswap/commit/6f649ec3a2562b3a65aa8c338041ef34fbe9e8ad))
+
 ## [1.122.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.121.5...cowswap-v1.122.0) (2025-11-05)
 
 

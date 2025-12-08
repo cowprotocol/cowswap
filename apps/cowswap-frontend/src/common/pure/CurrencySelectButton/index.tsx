@@ -6,7 +6,8 @@ import { TokenLogo } from '@cowprotocol/tokens'
 import { TokenName } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
-import { Trans } from '@lingui/macro'
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import { useBridgeSupportedNetwork } from 'entities/bridgeProvider'
 import { Nullish } from 'types'
 
@@ -52,11 +53,13 @@ export function CurrencySelectButton(props: CurrencySelectButtonProps): ReactNod
 
   if (!currency && customSelectTokenButton) {
     return (
-      <div onClick={onClick} role="button" aria-label="Select custom token" tabIndex={0}>
+      <div onClick={onClick} role="button" aria-label={t`Select custom token`} tabIndex={0}>
         {customSelectTokenButton}
       </div>
     )
   }
+
+  const selectedToken = t`Selected token:` + ' ' + currency?.symbol || ''
 
   return (
     <styledEl.CurrencySelectWrapper
@@ -69,7 +72,7 @@ export function CurrencySelectButton(props: CurrencySelectButtonProps): ReactNod
       displayTokenName={displayTokenName}
       displayChainName={displayChainName}
       role="button"
-      aria-label={currency ? `Selected token: ${currency.symbol}` : 'Select a token'}
+      aria-label={currency ? selectedToken : t`Select a token`}
       tabIndex={readonlyMode ? -1 : 0}
     >
       {currency ? (

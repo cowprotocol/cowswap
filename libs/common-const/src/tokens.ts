@@ -492,7 +492,6 @@ export const BTCB_BNB = new TokenWithLogo(
 
 // Linea
 
-// TODO: verify and add more tokens for Linea
 export const USDC_LINEA = new TokenWithLogo(
   USDC_MAINNET.logoURI,
   SupportedChainId.LINEA,
@@ -501,6 +500,16 @@ export const USDC_LINEA = new TokenWithLogo(
   6,
   'USDC',
   'USD Coin',
+)
+
+export const USDT_LINEA = new TokenWithLogo(
+  USDT.logoURI,
+  SupportedChainId.LINEA,
+  // https://lineascan.build/address/0xA219439258ca9da29E9Cc4cE5596924745e12B93
+  '0xa219439258ca9da29e9cc4ce5596924745e12b93',
+  6,
+  'USDT',
+  'Tether USD',
 )
 
 // Plasma

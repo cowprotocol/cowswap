@@ -8,6 +8,8 @@ import { ButtonSize, CenteredDots, FiatAmount, Loader, TokenSymbol } from '@cowp
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { BigNumber } from '@ethersproject/bignumber'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import { useParams } from 'react-router'
 
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
@@ -78,7 +80,9 @@ export function AccountProxyRecoverPage(): ReactNode {
     <Wrapper>
       <ErrorModal />
       <TokenWrapper>
-        <span>Recoverable balance</span>
+        <span>
+          <Trans>Recoverable balance</Trans>
+        </span>
         <BalanceWrapper>
           {balance ? (
             <>
@@ -107,12 +111,12 @@ export function AccountProxyRecoverPage(): ReactNode {
         {txInProgress && <Loader />}
         {txSigningStep && !txInProgress && (
           <>
-            {txSigningStep === RecoverSigningStep.SIGN_RECOVER_FUNDS && '1/2 Confirm funds recovering'}
-            {txSigningStep === RecoverSigningStep.SIGN_TRANSACTION && '2/2 Sign transaction'}
+            {txSigningStep === RecoverSigningStep.SIGN_RECOVER_FUNDS && t`1/2 Confirm funds recovering`}
+            {txSigningStep === RecoverSigningStep.SIGN_TRANSACTION && t`2/2 Sign transaction`}
             <CenteredDots smaller />
           </>
         )}
-        {!txSigningStep && !txInProgress && 'Recover funds'}
+        {!txSigningStep && !txInProgress && t`Recover funds`}
       </ButtonPrimaryStyled>
     </Wrapper>
   )

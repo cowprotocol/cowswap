@@ -4,6 +4,8 @@ import { LpTokenProvider, PersistentStateByChain, TokenInfo } from '@cowprotocol
 import { StatusColorVariant } from '@cowprotocol/ui'
 import type { TokenList as UniTokenList } from '@uniswap/token-lists'
 
+import { MessageDescriptor } from '@lingui/core'
+
 import { TokensBySymbol } from './state/tokens/allTokensAtom'
 
 export enum TokenListCategory {
@@ -41,12 +43,12 @@ export interface ListState extends Pick<ListSourceConfig, 'source' | 'priority' 
 
 export type TokenListsState = { [source: string]: ListState }
 
-export type TokenListsByChainState = PersistentStateByChain<TokenListsState>
+export type TokenListsByChainState = PersistentStateByChain<{ [source: string]: ListState | 'deleted' }>
 
 export type TagInfo = {
   id: string
-  name: string
-  description: string
+  name: string | MessageDescriptor
+  description: string | MessageDescriptor
   icon?: string
   color?: StatusColorVariant
 }

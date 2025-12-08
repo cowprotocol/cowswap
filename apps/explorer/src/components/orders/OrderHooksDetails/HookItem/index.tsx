@@ -20,7 +20,8 @@ export function HookItem({ item, number }: { item: HookToDappMatch; number: numb
           #{number} -{' '}
           {item.dapp ? (
             <>
-              <img src={item.dapp.image} alt={item.dapp.name} /> <strong>{item.dapp.name}</strong>{' '}
+              {/* Note: use MessageDescriptor.message, it contains the original not localized string. */}
+              <img src={item.dapp.image} alt={item.dapp.name.message} /> <strong>{item.dapp.name.message}</strong>{' '}
             </>
           ) : (
             'Unknown hook dapp'
@@ -36,7 +37,7 @@ export function HookItem({ item, number }: { item: HookToDappMatch; number: numb
                   <i>Version:</i> {item.dapp.version}
                 </p>
                 <p>
-                  <i>Description:</i> {item.dapp.descriptionShort}
+                  <i>Description:</i> {item.dapp.descriptionShort?.message}
                 </p>
                 <p>
                   <i>Website: </i>

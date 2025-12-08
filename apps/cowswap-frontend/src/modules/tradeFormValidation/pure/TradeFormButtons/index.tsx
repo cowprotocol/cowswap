@@ -1,7 +1,5 @@
 import React, { ReactNode } from 'react'
 
-import { Trans } from '@lingui/macro'
-
 import { tradeButtonsMap } from './tradeButtonsMap'
 
 import { TradeFormButtonContext, TradeFormValidation } from '../../types'
@@ -40,7 +38,7 @@ export function TradeFormButtons(props: TradeFormButtonsProps): ReactNode {
 
   return (
     <TradeFormBlankButton id={buttonFactory.id} className={className} disabled={true}>
-      <Trans>{buttonFactory.text}</Trans>
+      <>{buttonFactory.text}</>
     </TradeFormBlankButton>
   )
 }

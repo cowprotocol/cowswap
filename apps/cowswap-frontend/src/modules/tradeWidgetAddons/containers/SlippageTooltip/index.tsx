@@ -3,7 +3,7 @@ import { JSX } from 'react'
 import { getWrappedToken } from '@cowprotocol/common-utils'
 import { HelpTooltip } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 import { ThemedText } from 'theme'
 
 import { useIsEoaEthFlow } from 'modules/trade'

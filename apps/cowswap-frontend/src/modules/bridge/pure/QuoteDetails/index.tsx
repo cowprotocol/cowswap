@@ -2,6 +2,8 @@ import { ReactNode } from 'react'
 
 import { BridgeProviderInfo } from '@cowprotocol/sdk-bridging'
 
+import { useLingui } from '@lingui/react/macro'
+
 import { COW_PROTOCOL_NAME } from '../../constants'
 import { DividerHorizontal } from '../../styles'
 import { QuoteBridgeContext, QuoteSwapContext, SwapAndBridgeStatus } from '../../types'
@@ -15,11 +17,9 @@ interface QuoteDetailsProps {
   isCollapsible?: boolean
   stepsCollapsible?: boolean
   hideRecommendedSlippage?: boolean
-
   bridgeProvider: BridgeProviderInfo
   swapContext: QuoteSwapContext
   bridgeContext: QuoteBridgeContext
-
   collapsedDefault?: ReactNode
 }
 
@@ -43,6 +43,7 @@ function SwapStep({
   swapContext,
   hideRecommendedSlippage,
 }: SwapStepProps): ReactNode {
+  const { i18n } = useLingui()
   const status = SwapAndBridgeStatus.DEFAULT
 
   return (
@@ -54,7 +55,7 @@ function SwapStep({
       statusIcon={null}
       protocolIconShowOnly="first"
       protocolIconSize={21}
-      titlePrefix={SwapStatusTitlePrefixes[status]}
+      titlePrefix={i18n._(SwapStatusTitlePrefixes[status])}
       protocolName={COW_PROTOCOL_NAME}
       bridgeProvider={bridgeProvider}
       chainName={swapContext.chainName}
@@ -67,6 +68,7 @@ function SwapStep({
 }
 
 function BridgeStep({ stepsCollapsible, bridgeProvider, bridgeContext }: BridgeStepProps): ReactNode {
+  const { i18n } = useLingui()
   const status = SwapAndBridgeStatus.DEFAULT
 
   return (
@@ -77,7 +79,7 @@ function BridgeStep({ stepsCollapsible, bridgeProvider, bridgeContext }: BridgeS
       stopNumber={2}
       statusIcon={null}
       protocolIconShowOnly="second"
-      titlePrefix={BridgeStatusTitlePrefixes[status]}
+      titlePrefix={i18n._(BridgeStatusTitlePrefixes[status])}
       protocolName={bridgeProvider.name}
       bridgeProvider={bridgeProvider}
       chainName={bridgeContext.chainName}

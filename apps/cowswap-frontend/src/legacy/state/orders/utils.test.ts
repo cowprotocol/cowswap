@@ -20,7 +20,7 @@ ORDER.sellAmountBeforeFee = '1000'
 ORDER.buyAmount = '1000'
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+ 
 describe('isOrderUnfillable', () => {
   describe('sell order', () => {
     const order = { ...ORDER, kind: OrderKind.SELL }
@@ -125,7 +125,7 @@ describe('isOrderUnfillable', () => {
 })
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+ 
 describe('classifyOrder', () => {
   const BASE_ORDER: Parameters<typeof classifyOrder>[0] = {
     uid: '0x0000000000...',

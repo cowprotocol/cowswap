@@ -1,6 +1,8 @@
 import { useAtomValue } from 'jotai'
 
-import { confirmationModalContextAtom } from 'common/hooks/useConfirmationRequest'
+import { t } from '@lingui/core/macro'
+
+import { confirmationModalContextAtom, DEFAULT_CONFIRMATION_MODAL_CONTEXT } from 'common/hooks/useConfirmationRequest'
 import { ConfirmationModal as Pure, ConfirmationModalProps } from 'common/pure/ConfirmationModal'
 
 // TODO: Add proper return type annotation
@@ -13,12 +15,12 @@ export function ConfirmationModal({ isOpen, onDismiss }: Pick<ConfirmationModalP
     <Pure
       isOpen={isOpen}
       onDismiss={onDismiss}
-      title={title}
-      callToAction={callToAction}
+      title={title === DEFAULT_CONFIRMATION_MODAL_CONTEXT.title ? t`Confirm Action` : title}
+      callToAction={callToAction === DEFAULT_CONFIRMATION_MODAL_CONTEXT.callToAction ? t`Confirm` : callToAction}
       description={description}
       onEnable={onEnable}
       warning={warning}
-      confirmWord={confirmWord}
+      confirmWord={confirmWord === DEFAULT_CONFIRMATION_MODAL_CONTEXT.confirmWord ? t`confirm` : confirmWord}
       action={action}
       skipInput={skipInput}
     />

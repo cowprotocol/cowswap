@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.28.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.28.0...cow-fi-v1.28.1) (2025-11-25)
+
+
+### Bug Fixes
+
+* **cow-fi:** add Linea to chains list ([#6472](https://github.com/cowprotocol/cowswap/issues/6472)) ([b09aded](https://github.com/cowprotocol/cowswap/commit/b09adedc60cabef8d41d9471a884b06cb689c066))
+
+## [1.28.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.27.0...cow-fi-v1.28.0) (2025-11-10)
+
+
+### Features
+
+* **new-chains:** add q4 chains ([#6404](https://github.com/cowprotocol/cowswap/issues/6404)) ([ba4edb0](https://github.com/cowprotocol/cowswap/commit/ba4edb0fdc7b4c700dfeae9023da330d74a9faea))
+
 ## [1.27.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.26.3...cow-fi-v1.27.0) (2025-10-14)
 
 

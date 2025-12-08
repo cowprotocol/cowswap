@@ -32,6 +32,7 @@ import {
   USDT_AVALANCHE,
   USDT_BASE,
   USDT_BNB,
+  USDT_LINEA,
   USDT_PLASMA,
   USDT_POLYGON,
   WBTC,
@@ -122,6 +123,10 @@ export const DEFAULT_FAVORITE_TOKENS: Record<SupportedChainId, TokensMap> = {
     BTCB_BNB,
     COW_TOKEN_BNB,
   ]),
-  [SupportedChainId.LINEA]: tokensListToMap([WRAPPED_NATIVE_CURRENCIES[SupportedChainId.LINEA], USDC_LINEA]),
+  [SupportedChainId.LINEA]: tokensListToMap([
+    WRAPPED_NATIVE_CURRENCIES[SupportedChainId.LINEA],
+    USDC_LINEA,
+    USDT_LINEA,
+  ]),
   [SupportedChainId.PLASMA]: tokensListToMap([WRAPPED_NATIVE_CURRENCIES[SupportedChainId.PLASMA], USDT_PLASMA]),
 }

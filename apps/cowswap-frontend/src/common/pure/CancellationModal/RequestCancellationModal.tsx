@@ -6,6 +6,8 @@ import { ButtonPrimary, TokenAmount, UI } from '@cowprotocol/ui'
 import type { BigNumber } from '@ethersproject/bignumber'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import { ArrowLeft, ArrowRight } from 'react-feather'
 import styled from 'styled-components/macro'
 import { LinkStyledButton } from 'theme'
@@ -82,7 +84,7 @@ const OrderTypeDetails = styled.div`
 `
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+
 export function RequestCancellationModal(props: RequestCancellationModalProps): ReactElement {
   const { onDismiss, triggerCancellation, summary, shortId, defaultType, txCost, nativeCurrency } = props
   const isOffChainCancellable = defaultType === 'offChain'
@@ -106,49 +108,55 @@ export function RequestCancellationModal(props: RequestCancellationModalProps): 
   }, [type])
 
   const isOnChainType = type === 'onChain'
-  const typeLabel = isOnChainType ? 'on-chain' : 'off-chain'
+  const typeLabel = isOnChainType ? t`on-chain` : t`off-chain`
 
   const txCostAmount = txCost && !txCost.isZero() ? CurrencyAmount.fromRawAmount(nativeCurrency, txCost.toString()) : ''
 
   return (
     <LegacyConfirmationModalContent
-      title={`Cancel order ${shortId}`}
+      title={t`Cancel order ${shortId}`}
       onDismiss={onDismiss}
       // TODO: Extract nested component outside render function
       // eslint-disable-next-line react/no-unstable-nested-components
       topContent={() => (
         <Wrapper>
           <p>
-            Are you sure you want to cancel order <strong>{shortId}</strong>?
+            <Trans>
+              Are you sure you want to cancel order <strong>{shortId}</strong>?
+            </Trans>
           </p>
           <CancellationSummary>{summary}</CancellationSummary>
           <p>
-            {'This is an '}
+            <Trans>This is an</Trans>{' '}
             {isOffChainCancellable ? (
               <TypeButton isOnChain$={isOnChainType} onClick={toggleType}>
                 <span>{typeLabel}</span> {isOnChainType ? <ArrowLeft size="15" /> : <ArrowRight size="15" />}
               </TypeButton>
             ) : (
               typeLabel
-            )}
-            {' cancellation '}
-            <LinkStyledButton onClick={toggleShowMore}>[{showMore ? '- less' : '+ more'}]</LinkStyledButton>
+            )}{' '}
+            <Trans>cancellation</Trans>{' '}
+            <LinkStyledButton onClick={toggleShowMore}>[{showMore ? `- ` + t`less` : `+ ` + t`more`}]</LinkStyledButton>
           </p>
           {showMore && (
             <OrderTypeDetails>
               <p>
-                {type === 'onChain'
-                  ? 'On-chain cancellations require a regular on-chain transaction and cost gas.'
-                  : 'Off-chain cancellations require a signature and are free.'}
+                {type === 'onChain' ? (
+                  <Trans>On-chain cancellations require a regular on-chain transaction and cost gas.</Trans>
+                ) : (
+                  <Trans>Off-chain cancellations require a signature and are free.</Trans>
+                )}
               </p>
               <p>
-                Keep in mind a solver might already have included the order in a solution even if this cancellation is
-                successful.
+                <Trans>
+                  Keep in mind a solver might already have included the order in a solution even if this cancellation is
+                  successful.
+                </Trans>
                 {isOnChainType && (
                   <StyledNotificationBanner isVisible={true} canClose={false} level="INFO">
                     <div>
-                      Tx cost:{' '}
-                      {txCostAmount ? <TokenAmount amount={txCostAmount} tokenSymbol={nativeCurrency} /> : 'Unknown'}
+                      <Trans>Tx cost:</Trans>{' '}
+                      {txCostAmount ? <TokenAmount amount={txCostAmount} tokenSymbol={nativeCurrency} /> : t`Unknown`}
                     </div>
                   </StyledNotificationBanner>
                 )}
@@ -160,7 +168,9 @@ export function RequestCancellationModal(props: RequestCancellationModalProps): 
       // TODO: Extract nested component outside render function
       // eslint-disable-next-line react/no-unstable-nested-components
       bottomContent={() => (
-        <ButtonPrimary onClick={() => triggerCancellation(type)}>Request cancellation</ButtonPrimary>
+        <ButtonPrimary onClick={() => triggerCancellation(type)}>
+          <Trans>Request cancellation</Trans>
+        </ButtonPrimary>
       )}
     />
   )

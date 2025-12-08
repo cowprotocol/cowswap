@@ -5,6 +5,9 @@ import { getWrappedToken } from '@cowprotocol/common-utils'
 import { TokenSymbol } from '@cowprotocol/ui'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
+
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { LimitOrdersWarnings } from 'modules/limitOrders/containers/LimitOrdersWarnings'
@@ -26,8 +29,6 @@ import { LimitOrdersDetails } from '../../pure/LimitOrdersDetails'
 import { TradeFlowContext } from '../../services/types'
 import { TradeRateDetails } from '../TradeRateDetails'
 
-const CONFIRM_TITLE = 'Limit Order'
-
 export interface LimitOrdersConfirmModalProps {
   tradeContext: TradeFlowContext
   inputCurrencyInfo: CurrencyPreviewInfo
@@ -40,6 +41,7 @@ export interface LimitOrdersConfirmModalProps {
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
+  const CONFIRM_TITLE = t`Limit Order`
   const { inputCurrencyInfo, outputCurrencyInfo, tradeContext: tradeContextInitial, priceImpact, recipient } = props
 
   /**
@@ -73,12 +75,12 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
   const isSafeApprovalBundle = useIsSafeApprovalBundle(inputAmount)
   const buttonText = isSafeApprovalBundle ? (
     <>
-      Confirm (Approve&nbsp;
+      <Trans>Confirm</Trans> (<Trans>Approve</Trans>&nbsp;
       <TokenSymbol token={inputAmount && getWrappedToken(inputAmount.currency)} length={6} />
-      &nbsp;& Limit order)
+      &nbsp;& <Trans>Limit order</Trans>)
     </>
   ) : (
-    'Place limit order'
+    <Trans>Place limit order</Trans>
   )
 
   return (

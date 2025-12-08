@@ -45,16 +45,20 @@ export const Content = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
+  min-width: 0;
   position: relative;
   z-index: 1;
 `
 
 export const Title = styled.h2`
-  margin: 0;
   color: inherit;
   font-size: 34px;
   font-weight: 800;
+  hyphens: auto;
   line-height: 1.2;
+  margin: 0;
+  overflow-wrap: normal;
+  word-break: normal;
 
   ${Media.upToMedium()} {
     font-size: 28px;
@@ -66,12 +70,15 @@ export const Title = styled.h2`
 `
 
 export const Subtitle = styled.h3`
-  margin: 0;
   color: inherit;
   font-size: 21px;
   font-weight: 400;
-  opacity: 0.8;
+  hyphens: auto;
   line-height: 1.4;
+  margin: 0;
+  opacity: 0.8;
+  overflow-wrap: normal;
+  word-break: normal;
 
   ${Media.upToMedium()} {
     font-size: 18px;

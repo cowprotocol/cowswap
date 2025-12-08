@@ -1,11 +1,11 @@
-import React, { ReactNode } from 'react'
+import { ReactNode } from 'react'
 
 import ICON_STAR from '@cowprotocol/assets/cow-swap/star-shine.svg'
 import { UI } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
-import { Textfit as ReactTextFit } from 'react-textfit'
 
+import { useAutoFitText } from '../../../hooks/useAutoFitText'
 import * as styledEl from '../styled'
 
 interface TextFitProps {
@@ -15,13 +15,26 @@ interface TextFitProps {
   maxFontSize: number
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function TextFit({ mode, children, minFontSize, maxFontSize }: TextFitProps) {
+export function TextFit({ mode, children, minFontSize, maxFontSize }: TextFitProps): ReactNode {
+  const textRef = useAutoFitText<HTMLDivElement>({ min: minFontSize, max: maxFontSize, mode })
+
   return (
-    <ReactTextFit mode={mode} forceSingleModeWidth={false} min={minFontSize} max={maxFontSize}>
+    <div
+      ref={textRef}
+      style={{
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        alignItems: mode === 'single' ? 'center' : 'flex-start',
+        justifyContent: 'center',
+        overflow: 'hidden',
+        textAlign: 'center',
+        lineHeight: 1.2,
+        whiteSpace: mode === 'single' ? 'nowrap' : 'normal',
+      }}
+    >
       {children}
-    </ReactTextFit>
+    </div>
   )
 }
 
@@ -32,9 +45,8 @@ interface StarIconProps {
   right: number
   color?: UI
 }
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function StarIcon({ size, top, bottom, right, color }: StarIconProps) {
+
+export function StarIcon({ size, top, bottom, right, color }: StarIconProps): ReactNode {
   return (
     <styledEl.StarIcon {...{ size, top, bottom, right, color: color ? `var(${color})` : undefined }}>
       <SVG src={ICON_STAR} />

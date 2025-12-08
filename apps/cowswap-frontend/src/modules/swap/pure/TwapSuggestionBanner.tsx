@@ -1,8 +1,11 @@
+import { ReactNode } from 'react'
+
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { mapSupportedNetworks, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
+import { Trans } from '@lingui/react/macro'
 import { NavLink } from 'react-router'
 import styled from 'styled-components/macro'
 
@@ -35,16 +38,13 @@ const AMOUNT_LIMIT: Record<SupportedChainId, number> = {
   [SupportedChainId.MAINNET]: 50_000, // $50,000 for mainnet
 }
 
-// TODO: Add proper return type annotation
-// TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function TwapSuggestionBanner({
   priceImpact,
   buyingFiatAmount,
   tradeUrlParams,
   chainId,
   sellAmount,
-}: TwapSuggestionBannerProps) {
+}: TwapSuggestionBannerProps): ReactNode {
   if (!priceImpact || priceImpact.lessThan(0)) return null
 
   const isSellNative = !!sellAmount?.currency && getIsNativeToken(sellAmount?.currency)
@@ -63,12 +63,18 @@ export function TwapSuggestionBanner({
       kind: OrderKind.SELL,
     })
 
+  const formattedPriceImpact = +priceImpact.toFixed(2)
+
   return (
     <InlineBanner bannerType={StatusColorVariant.Alert} iconSize={32}>
-      <strong>Minimize price impact with TWAP</strong>
+      <strong>
+        <Trans>Minimize price impact with TWAP</Trans>
+      </strong>
       <p>
-        The price impact is <b>{+priceImpact.toFixed(2)}%</b>. Consider breaking up your order using a{' '}
-        <StyledNavLink to={routePath}>TWAP order</StyledNavLink> and possibly get a better rate.
+        <Trans>
+          The price impact is <b>{formattedPriceImpact}%</b>. Consider breaking up your order using a{' '}
+          <StyledNavLink to={routePath}>TWAP order</StyledNavLink> and possibly get a better rate.
+        </Trans>
       </p>
     </InlineBanner>
   )

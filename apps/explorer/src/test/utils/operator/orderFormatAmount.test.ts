@@ -1,7 +1,9 @@
-import { TokenErc20 } from '@gnosis.pm/dex-js'
 import BigNumber from 'bignumber.js'
-import { isTokenErc20, formattedAmount } from 'utils'
+import { isTokenErc20 } from 'utils'
 
+import { mockNumberLocale } from '../../mockNumberLocale'
+
+import type { TokenErc20 } from '@gnosis.pm/dex-js'
 
 const WEthToken: TokenErc20 = {
   symbol: 'WETH',
@@ -23,13 +25,24 @@ describe('Is token an ERC20', () => {
 })
 
 describe('format amount', () => {
-  test('should return a string when input is a erc20 and amount', () => {
+  beforeEach(() => {
+    jest.resetModules()
+    mockNumberLocale('en-US')
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
+  test('should return a string when input is a erc20 and amount', async () => {
+    const { formattedAmount } = await import('utils') // should import after locale mock
     const amount = formattedAmount(WEthToken, new BigNumber('1'))
 
     expect(amount).toEqual('0.01')
   })
 
-  test('should return dash(-) when erc20 is null', () => {
+  test('should return dash (-) when erc20 is null', async () => {
+    const { formattedAmount } = await import('utils')
     const amount = formattedAmount(null, new BigNumber('0.1'))
 
     expect(amount).toEqual('-')

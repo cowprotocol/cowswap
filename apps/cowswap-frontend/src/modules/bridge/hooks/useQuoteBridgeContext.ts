@@ -19,18 +19,14 @@ export function useQuoteBridgeContext(): QuoteBridgeContext | null {
 
   const quoteAmounts = useBridgeQuoteAmounts()
 
-  /**
-   * Convert buy amount from intermediate currency to destination currency
-   * After that we substract bridging costs
-   */
   const buyAmount = useMemo(() => {
-    if (!quoteAmounts?.bridgeFee) return
+    if (!bridgeQuote || !quoteAmounts) return null
 
     return CurrencyAmount.fromRawAmount(
-      quoteAmounts.bridgeFee.currency,
-      quoteAmounts.swapBuyAmount.quotient.toString(),
-    ).subtract(quoteAmounts.bridgeFee)
-  }, [quoteAmounts])
+      quoteAmounts.bridgeMinReceiveAmount.currency,
+      bridgeQuote?.amountsAndCosts.beforeFee.buyAmount.toString(),
+    )
+  }, [quoteAmounts, bridgeQuote])
 
   const { value: buyAmountUsd } = useUsdAmount(buyAmount)
   const { value: bridgeMinDepositAmountUsd } = useUsdAmount(quoteAmounts?.swapMinReceiveAmount)
