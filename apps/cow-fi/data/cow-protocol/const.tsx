@@ -391,7 +391,7 @@ export function useFaqData(): FaqItem[] {
     },
     {
       question: 'What chains does CoW Protocol currently support?',
-      answer: 'CoW Protocol is currently deployed on: ' + getAvailableChainsText(),
+      answer: 'CoW Protocol is currently deployed on: ' + getAvailableChainsText().,
     },
     {
       question: 'How do I get support?',
