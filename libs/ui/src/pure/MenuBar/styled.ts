@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components/macro'
 
-import { Font } from '../../consts'
+import { Font, Media } from '../../consts'
 import { UI } from '../../enum'
 import { CowSwapTheme } from '../../types'
 import { ProductLogoWrapper } from '../ProductLogo'
@@ -768,5 +768,13 @@ export const GlobalSettingsButton = styled.button<{ mobileMode?: boolean }>`
     > svg {
       color: var(--activeFill);
     }
+  }
+`
+
+export const isMobileQuery = Media.upToLarge
+
+export const HideMobile = styled.div`
+  ${isMobileQuery(true)} {
+    display: none;
   }
 `
