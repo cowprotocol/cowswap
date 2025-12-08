@@ -1,11 +1,35 @@
 const { FlatCompat } = require('@eslint/eslintrc')
 const js = require('@eslint/js')
+
 const baseConfig = require('../../eslint.config.js')
 
 const compat = new FlatCompat({
   baseDirectory: __dirname,
   recommendedConfig: js.configs.recommended,
 })
+
+// Nx/Next configs already add react/react-hooks plugins, which the base config
+// defines too. Strip duplicates to avoid "Cannot redefine plugin" errors while
+// keeping other plugins (e.g. @next/next) intact.
+const nxReactNextConfigs = compat
+  .extends('plugin:@nx/react-typescript', 'next', 'next/core-web-vitals')
+  .map((config) => {
+    if (!config.plugins) return config
+
+    const { plugins, rules = {}, ...restConfig } = config
+    const { react: _react, 'react-hooks': _reactHooks, ...filteredPlugins } = plugins
+
+    const filteredRules = Object.fromEntries(
+      Object.entries(rules).filter(
+        ([ruleName]) => !ruleName.startsWith('react/') && !ruleName.startsWith('react-hooks/')
+      )
+    )
+
+    const nextConfig =
+      Object.keys(filteredPlugins).length > 0 ? { ...restConfig, plugins: filteredPlugins } : restConfig
+
+    return Object.keys(filteredRules).length > 0 ? { ...nextConfig, rules: filteredRules } : nextConfig
+  })
 
 module.exports = [
   ...baseConfig,
@@ -23,7 +47,7 @@ module.exports = [
     files: ['**/*.js', '**/*.jsx'],
     rules: {},
   },
-  ...compat.extends('plugin:@nx/react-typescript', 'next', 'next/core-web-vitals'),
+  ...nxReactNextConfigs,
   ...compat.config({ env: { jest: true } }).map((config) => ({
     ...config,
     files: ['**/*.spec.ts', '**/*.spec.tsx', '**/*.spec.js', '**/*.spec.jsx'],

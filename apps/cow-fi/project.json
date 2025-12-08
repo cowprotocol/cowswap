@@ -11,6 +11,17 @@
       "options": {
         "jestConfig": "apps/cow-fi/jest.config.ts"
       }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": [
+        "{options.outputFile}"
+      ],
+      "options": {
+        "lintFilePatterns": [
+          "apps/cow-fi/**/*.{ts,tsx,js,jsx}"
+        ]
+      }
     }
   }
 }
