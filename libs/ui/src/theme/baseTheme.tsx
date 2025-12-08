@@ -79,7 +79,7 @@ function utils(darkMode: boolean) {
       }
     `,
     colorScrollbar: css`
-      scrollbar-color: var(${UI.COLOR_PAPER_DARKEST}), var(${UI.COLOR_TEXT_OPACITY_10});
+      scrollbar-color: var(${UI.COLOR_PAPER_DARKEST}) var(${UI.COLOR_TEXT_OPACITY_10});
       scroll-behavior: smooth;
 
       &::-webkit-scrollbar {
