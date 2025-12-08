@@ -1,9 +1,9 @@
-import { useState } from 'react'
+import { ReactNode, useState } from 'react'
 
 import { CowHookDetails, HookToDappMatch } from '@cowprotocol/hook-dapp-lib'
 
 import { t } from '@lingui/core/macro'
-import { Trans, useLingui } from '@lingui/react/macro'
+import { Trans } from '@lingui/react/macro'
 import { ChevronDown, ChevronUp } from 'react-feather'
 
 import { useSimulationData } from 'modules/tenderly/hooks/useSimulationData'
@@ -13,13 +13,18 @@ import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/ty
 import * as styledEl from './styled'
 
 // TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
-export function HookItem({ details, item, index }: { details?: CowHookDetails; item: HookToDappMatch; index: number }) {
+// eslint-disable-next-line max-lines-per-function
+export function HookItem({
+  details,
+  item,
+  index,
+}: {
+  details?: CowHookDetails
+  item: HookToDappMatch
+  index: number
+}): ReactNode {
   const [isOpen, setIsOpen] = useState(false)
   const simulationData = useSimulationData(details?.uuid)
-  const { i18n } = useLingui()
 
   const dappName = item.dapp?.name || t`Unknown Hook`
 
@@ -37,8 +42,8 @@ export function HookItem({ details, item, index }: { details?: CowHookDetails; i
           <styledEl.HookNumber>{index + 1}</styledEl.HookNumber>
           {item.dapp ? (
             <>
-              <img src={item.dapp.image} alt={i18n._(item.dapp.name)} />
-              <span>{i18n._(item.dapp.name)}</span>
+              <img src={item.dapp.image} alt={item.dapp.name} />
+              <span>{item.dapp.name}</span>
             </>
           ) : (
             <span>
@@ -79,7 +84,7 @@ export function HookItem({ details, item, index }: { details?: CowHookDetails; i
                 <b>
                   <Trans>Description</Trans>:
                 </b>{' '}
-                {item.dapp?.descriptionShort ? i18n._(item.dapp.descriptionShort) : ''}
+                {item.dapp?.descriptionShort}
               </p>
               <p>
                 <b>
