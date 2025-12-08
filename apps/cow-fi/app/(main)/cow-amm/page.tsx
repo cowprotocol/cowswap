@@ -10,6 +10,8 @@ import IMG_COWAMM_RAISING from '@cowprotocol/assets/images/image-cowamm-raising.
 import IMG_COWAMM_REKT from '@cowprotocol/assets/images/image-cowamm-rekt.svg'
 import { Color, ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 
+import { CowFiCategory } from 'src/common/analytics/types'
+
 import FAQ from '@/components/FAQ'
 import LazySVG from '@/components/LazySVG'
 import { Link, LinkType } from '@/components/Link'
@@ -37,7 +39,6 @@ import {
   TopicList,
   TopicTitle,
 } from '@/styles/styled'
-import { CowFiCategory } from 'src/common/analytics/types'
 
 export default function Page() {
   const analytics = useCowAnalytics()

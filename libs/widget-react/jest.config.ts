@@ -1,4 +1,4 @@
-/* eslint-disable */
+ 
 export default {
   displayName: 'widget-react',
   preset: '../../jest.preset.js',

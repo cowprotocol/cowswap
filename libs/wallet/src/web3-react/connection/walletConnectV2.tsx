@@ -67,7 +67,7 @@ function createWalletConnectV2Connector(chainId: SupportedChainId): [AsyncConnec
  * To overcome this problem we proxy WC2 connection and change it's implementation on flight on network changes.
  */
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+ 
 function createWc2Connection(chainId = getCurrentChainIdFromUrl()): Web3ReactConnection {
   let [web3WalletConnectV2, web3WalletConnectV2Hooks] = createWalletConnectV2Connector(chainId)
 

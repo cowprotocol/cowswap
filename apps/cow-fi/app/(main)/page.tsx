@@ -7,6 +7,8 @@ import IMG_ICON_GRANTS_CARTON from '@cowprotocol/assets/images/icon-grants-carto
 import VIDEO_HERO_HOME from '@cowprotocol/assets/video/cow-dao-hero-animation.mp4'
 import { Font, UI } from '@cowprotocol/ui'
 
+import { CowFiCategory } from 'src/common/analytics/types'
+
 import LazySVG from '@/components/LazySVG'
 import { Link, LinkType } from '@/components/Link'
 import { CHANNEL_LIST, PRODUCT_CONTAINERS } from '@/data/home/const'
@@ -27,7 +29,6 @@ import {
   TopicList,
   TopicTitle,
 } from '@/styles/styled'
-import { CowFiCategory } from 'src/common/analytics/types'
 
 export default function Page() {
   const cowAnalytics = useCowAnalytics()

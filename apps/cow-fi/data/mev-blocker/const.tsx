@@ -17,8 +17,9 @@ import IMG_LOGO_SAFE from '@cowprotocol/assets/images/logo-safe.svg'
 import IMG_LOGO_UNISWAP from '@cowprotocol/assets/images/logo-uniswap.svg'
 import { Color, ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 
-import { Link } from '@/components/Link'
 import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
+
+import { Link } from '@/components/Link'
 
 export const MEV_BLOCKER_LIST = [
   {

@@ -10,6 +10,8 @@ import IMG_ICON_UNICORN from '@cowprotocol/assets/images/icon-unicorn.svg'
 import IMG_COWSWAP_HERO from '@cowprotocol/assets/images/image-cowswap-hero.svg'
 import { Color, ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 
+import { CowFiCategory } from 'src/common/analytics/types'
+
 import FAQ from '@/components/FAQ'
 import LazyLoadTweet from '@/components/LazyLoadTweet'
 import LazySVG from '@/components/LazySVG'
@@ -38,7 +40,6 @@ import {
   TopicList,
   TopicTitle,
 } from '@/styles/styled'
-import { CowFiCategory } from 'src/common/analytics/types'
 
 export default function Page() {
   const analytics = useCowAnalytics()

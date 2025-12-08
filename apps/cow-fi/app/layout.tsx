@@ -1,6 +1,8 @@
 import { Metadata, Viewport } from 'next'
-import { CONFIG } from '@/const/meta'
+
 import { Providers } from './providers'
+
+import { CONFIG } from '@/const/meta'
 import { getPageMetadata } from '@/util/getPageMetadata'
 
 export const viewport: Viewport = {

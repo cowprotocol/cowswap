@@ -43,7 +43,7 @@ class CustomizedBridge extends Eip1193Bridge {
   // TODO: Add proper return type annotation
   // TODO: Reduce function complexity by extracting logic
   // TODO: Replace any with proper type definitions
-  // eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity, @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, complexity, @typescript-eslint/no-explicit-any
   async send(...args: any[]) {
     console.debug('send called', ...args)
     const isCallbackForm = typeof args[0] === 'object' && typeof args[1] === 'function'

@@ -282,7 +282,7 @@ function isRoutingTrade(contractTrade: ContractTrade): boolean {
 }
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+ 
 export function getNotesAndEdges(
   userTrades: Trade[],
   contractTrades: ContractTrade[],

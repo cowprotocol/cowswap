@@ -1,13 +1,17 @@
-import { LoadingChart } from '../Chart/LoadingChart'
-import { ChartContainer } from '../Chart/LoadingChart'
-import { Chart, TimePeriod } from '../Chart'
-import { ParentSize } from '@visx/responsive'
 import { useMemo } from 'react'
-import { useQuery, OperationVariables } from '@apollo/client'
+
+import { useQuery } from '@apollo/client'
+import { ParentSize } from '@visx/responsive'
 import { tokenPriceQuery, HistoryDuration, Chain } from 'services/uniswap-price/queries'
-import { usePriceHistory } from 'lib/hooks/usePriceHistory'
-import { fixChart } from 'util/fixChart'
 import { Platforms } from 'types'
+
+import { fixChart } from 'util/fixChart'
+
+import { usePriceHistory } from 'lib/hooks/usePriceHistory'
+
+import { Chart, TimePeriod } from '../Chart'
+import { ChartContainer } from '../Chart/LoadingChart'
+import { LoadingChart } from '../Chart/LoadingChart'
 
 type ChartSectionProps = {
   platforms: Platforms

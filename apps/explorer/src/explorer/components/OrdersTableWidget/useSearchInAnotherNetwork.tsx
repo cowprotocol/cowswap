@@ -88,7 +88,7 @@ const _buildInternalNetworkUrl = (networkId: number, ownerAddress: string): stri
 }
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+ 
 export const EmptyOrdersMessage = ({
   isLoading,
   networkId,

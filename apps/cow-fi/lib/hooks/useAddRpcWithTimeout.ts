@@ -1,9 +1,12 @@
 import { useCallback } from 'react'
-import { ERROR_ADD_MANUALLY_MESSAGE } from '@/util/handleRpcError'
-import { useAddRpcEndpoint } from './useAddRpcEndpoint'
+
 import { WalletClient } from 'viem'
 
+import { useAddRpcEndpoint } from './useAddRpcEndpoint'
+
 import { AddToWalletStateValues } from '../../types/addToWalletState'
+
+import { ERROR_ADD_MANUALLY_MESSAGE } from '@/util/handleRpcError'
 
 const TAKING_TOO_LONG_TIME = 15000 // 15s
 const TIMEOUT_TIME = 90000 // 1.5min
