@@ -15,14 +15,16 @@ const GreenText = styled.span`
 interface FreeFeeRowProps {
   withTimelineDot?: boolean
   loading?: boolean
+  isLast?: boolean
 }
 
-export function FreeFeeRow({ withTimelineDot = true, loading }: FreeFeeRowProps): ReactElement {
+export function FreeFeeRow({ withTimelineDot = true, loading, isLast = false }: FreeFeeRowProps): ReactElement {
   return (
     <ReviewOrderModalAmountRow
       withTimelineDot={withTimelineDot}
       tooltip={t`No fee for order placement!`}
       label={t`Fee`}
+      isLast={isLast}
     >
       {loading ? (
         <CenteredDots />

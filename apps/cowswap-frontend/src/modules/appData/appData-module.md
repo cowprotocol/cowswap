@@ -15,7 +15,7 @@ This module will facilitate to get this information, both in a object format, an
 
 ## App-data project
 
-This module depends on the library https://github.com/cowprotocol/app-data
+This module depends on the library https://www.npmjs.com/package/@cowprotocol/sdk-app-data
 
 # Details
 

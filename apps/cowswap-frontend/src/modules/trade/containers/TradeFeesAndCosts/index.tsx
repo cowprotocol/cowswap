@@ -36,6 +36,8 @@ export function TradeFeesAndCosts(props: TradeFeesAndCostsProps): ReactNode {
 
   const volumeFeeTooltip = useVolumeFeeTooltip()
 
+  const hasNetworkCosts = networkFeeAmount?.greaterThan(0)
+
   return (
     <>
       <TradeFees
@@ -48,15 +50,17 @@ export function TradeFeesAndCosts(props: TradeFeesAndCostsProps): ReactNode {
         totalFeeUsd={totalFeeUsd}
         volumeFeeTooltip={volumeFeeTooltip}
         withTimelineDot={withTimelineDot}
+        isLast={!hasNetworkCosts}
       />
 
-      {networkFeeAmount?.greaterThan(0) && (
+      {hasNetworkCosts && networkFeeAmount && (
         <NetworkCostsRow
           networkFeeAmount={networkFeeAmount}
           networkFeeAmountUsd={networkFeeAmountUsd}
           withTimelineDot={withTimelineDot}
           amountSuffix={networkCostsSuffix}
           tooltipSuffix={networkCostsTooltipSuffix}
+          isLast
         />
       )}
     </>

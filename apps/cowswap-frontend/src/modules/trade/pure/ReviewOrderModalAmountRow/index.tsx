@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { ReactElement, ReactNode } from 'react'
 
 import { FiatAmount, InfoTooltip, TokenAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
@@ -20,10 +20,9 @@ export type ReviewOrderAmountRowProps = {
   isAmountAccurate?: boolean
   withTimelineDot?: boolean
   highlighted?: boolean
+  isLast?: boolean
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function ReviewOrderModalAmountRow({
   amount,
   fiatAmount,
@@ -34,7 +33,8 @@ export function ReviewOrderModalAmountRow({
   isAmountAccurate = true,
   withTimelineDot = false,
   highlighted = false,
-}: ReviewOrderAmountRowProps) {
+  isLast = false,
+}: ReviewOrderAmountRowProps): ReactElement {
   const Amount = (
     <Content highlighted={highlighted}>
       {children}
@@ -51,7 +51,12 @@ export function ReviewOrderModalAmountRow({
   )
 
   return (
-    <ConfirmDetailsItem tooltip={tooltip} label={highlighted ? undefined : label} withTimelineDot={withTimelineDot}>
+    <ConfirmDetailsItem
+      tooltip={tooltip}
+      label={highlighted ? undefined : label}
+      withTimelineDot={withTimelineDot}
+      isLast={isLast}
+    >
       {highlighted ? (
         <>
           <ReceiveAmountTitle>

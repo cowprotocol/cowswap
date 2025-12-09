@@ -5,6 +5,7 @@ import {
   CBBTC_BASE,
   COW_TOKEN_ARBITRUM,
   COW_TOKEN_BASE,
+  COW_TOKEN_BNB,
   COW_TOKEN_MAINNET,
   COW_TOKEN_SEPOLIA,
   COW_TOKEN_XDAI,
@@ -120,6 +121,7 @@ export const DEFAULT_FAVORITE_TOKENS: Record<SupportedChainId, TokensMap> = {
     BUSD_BNB,
     DAI_BNB,
     BTCB_BNB,
+    COW_TOKEN_BNB,
   ]),
   [SupportedChainId.LINEA]: tokensListToMap([
     WRAPPED_NATIVE_CURRENCIES[SupportedChainId.LINEA],
