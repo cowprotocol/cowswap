@@ -30,10 +30,17 @@ export const List = styled.div`
   width: 100%;
 `
 
-export const ChainButton = styled.button<{ active$?: boolean; accent$?: ChainAccentVars; disabled$?: boolean }>`
+export const ChainButton = styled.button<{
+  active$?: boolean
+  accent$?: ChainAccentVars
+  disabled$?: boolean
+  loading$?: boolean
+}>`
   --min-height: 46px;
   ${blankButtonMixin};
 
+  position: relative;
+  overflow: hidden;
   width: 100%;
   display: flex;
   align-items: center;
@@ -45,7 +52,7 @@ export const ChainButton = styled.button<{ active$?: boolean; accent$?: ChainAcc
   border: 1px solid ${({ active$, accent$ }) => (active$ ? getBorder(accent$) : 'transparent')};
   background: ${({ active$, accent$ }) => (active$ ? getBackground(accent$) : 'transparent')};
   box-shadow: ${({ active$, accent$ }) => (active$ ? `0 0 0 1px ${getBackground(accent$)} inset` : 'none')};
-  cursor: ${({ disabled$ }) => (disabled$ ? 'not-allowed' : 'pointer')};
+  cursor: ${({ disabled$, loading$ }) => (disabled$ || loading$ ? 'not-allowed' : 'pointer')};
   opacity: ${({ disabled$ }) => (disabled$ ? 0.5 : 1)};
   transition:
     border 0.2s ease,
@@ -54,13 +61,41 @@ export const ChainButton = styled.button<{ active$?: boolean; accent$?: ChainAcc
     opacity 0.2s ease;
 
   &:hover {
-    border-color: ${({ accent$, disabled$ }) => (disabled$ ? 'transparent' : getBorder(accent$, fallbackHoverBorder))};
-    background: ${({ accent$, disabled$ }) => (disabled$ ? 'transparent' : getBackground(accent$))};
+    border-color: ${({ accent$, disabled$, loading$ }) =>
+      disabled$ || loading$ ? 'transparent' : getBorder(accent$, fallbackHoverBorder)};
+    background: ${({ accent$, disabled$, loading$ }) =>
+      disabled$ || loading$ ? 'transparent' : getBackground(accent$)};
   }
 
   &:focus-visible {
     outline: none;
-    border-color: ${({ accent$, disabled$ }) => (disabled$ ? 'transparent' : getBorder(accent$, fallbackHoverBorder))};
+    border-color: ${({ accent$, disabled$, loading$ }) =>
+      disabled$ || loading$ ? 'transparent' : getBorder(accent$, fallbackHoverBorder)};
+  }
+
+  /* Shimmer overlay for loading state - aligned with theme.shimmer */
+  &::after {
+    content: ${({ loading$ }) => (loading$ ? '""' : 'none')};
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: linear-gradient(
+      90deg,
+      transparent 0,
+      var(${UI.COLOR_PAPER_DARKER}) 20%,
+      var(${UI.COLOR_PAPER_DARKER}) 60%,
+      transparent
+    );
+    animation: shimmer 2s infinite;
+    pointer-events: none;
+  }
+
+  @keyframes shimmer {
+    100% {
+      transform: translateX(100%);
+    }
   }
 `
 
@@ -87,10 +122,11 @@ export const ChainLogo = styled.div`
   }
 `
 
-export const ChainText = styled.span<{ disabled$?: boolean }>`
+export const ChainText = styled.span<{ disabled$?: boolean; loading$?: boolean }>`
   font-weight: 500;
   font-size: 15px;
-  color: ${({ disabled$ }) => (disabled$ ? `var(${UI.COLOR_TEXT_OPACITY_50})` : `var(${UI.COLOR_TEXT})`)};
+  color: ${({ disabled$, loading$ }) =>
+    disabled$ || loading$ ? `var(${UI.COLOR_TEXT_OPACITY_50})` : `var(${UI.COLOR_TEXT})`};
 `
 
 export const ActiveIcon = styled.span<{ accent$?: ChainAccentVars; color$?: string }>`

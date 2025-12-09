@@ -13,6 +13,13 @@ import { useSelectTokenWidgetState } from './useSelectTokenWidgetState'
 import { DEFAULT_SELECT_TOKEN_WIDGET_STATE } from '../state/selectTokenWidgetAtom'
 import { createChainInfoForTests } from '../test-utils/createChainInfoForTests'
 
+// Default routes availability for tests (no unavailable routes, not loading)
+const DEFAULT_ROUTES_AVAILABILITY = {
+  unavailableChainIds: new Set<number>(),
+  loadingChainIds: new Set<number>(),
+  isLoading: false,
+}
+
 jest.mock('@cowprotocol/wallet', () => ({
   ...jest.requireActual('@cowprotocol/wallet'),
   useWalletInfo: jest.fn(),
@@ -28,6 +35,7 @@ jest.mock('@cowprotocol/common-hooks', () => ({
 jest.mock('entities/bridgeProvider', () => ({
   ...jest.requireActual('entities/bridgeProvider'),
   useBridgeSupportedNetworks: jest.fn(),
+  useRoutesAvailability: jest.fn(),
 }))
 
 jest.mock('./useSelectTokenWidgetState', () => ({
@@ -43,10 +51,11 @@ const mockUseIsBridgingEnabled = useIsBridgingEnabled as jest.MockedFunction<typ
 const mockUseAvailableChains = useAvailableChains as jest.MockedFunction<typeof useAvailableChains>
 const mockUseFeatureFlags = useFeatureFlags as jest.MockedFunction<typeof useFeatureFlags>
 
-const { useBridgeSupportedNetworks } = require('entities/bridgeProvider')
+const { useBridgeSupportedNetworks, useRoutesAvailability } = require('entities/bridgeProvider')
 const mockUseBridgeSupportedNetworks = useBridgeSupportedNetworks as jest.MockedFunction<
   typeof useBridgeSupportedNetworks
 >
+const mockUseRoutesAvailability = useRoutesAvailability as jest.MockedFunction<typeof useRoutesAvailability>
 
 type WidgetState = ReturnType<typeof useSelectTokenWidgetState>
 const createWidgetState = (override: Partial<typeof DEFAULT_SELECT_TOKEN_WIDGET_STATE>): WidgetState => {
@@ -73,22 +82,29 @@ describe('useChainsToSelect state builders', () => {
     ])
   })
 
-  it('sorts bridge destination chains to match the canonical order', () => {
-    const bridgeChains = [
+  it('sorts BUY chains using the canonical order and returns all supportedChains', () => {
+    const supportedChains = [
       createChainInfoForTests(SupportedChainId.AVALANCHE),
       createChainInfoForTests(SupportedChainId.BASE),
       createChainInfoForTests(SupportedChainId.ARBITRUM_ONE),
       createChainInfoForTests(SupportedChainId.MAINNET),
     ]
+    const bridgeChains = [
+      createChainInfoForTests(SupportedChainId.MAINNET),
+      createChainInfoForTests(SupportedChainId.BASE),
+    ]
 
     const state = createOutputChainsState({
-      selectedTargetChainId: SupportedChainId.POLYGON,
+      selectedTargetChainId: SupportedChainId.BASE,
       chainId: SupportedChainId.MAINNET,
       currentChainInfo: createChainInfoForTests(SupportedChainId.MAINNET),
       bridgeSupportedNetworks: bridgeChains,
+      supportedChains,
       isLoading: false,
+      routesAvailability: DEFAULT_ROUTES_AVAILABILITY,
     })
 
+    // Should return all supportedChains, sorted by canonical order
     expect((state.chains ?? []).map((chain) => chain.id)).toEqual([
       SupportedChainId.MAINNET,
       SupportedChainId.BASE,
@@ -97,29 +113,172 @@ describe('useChainsToSelect state builders', () => {
     ])
   })
 
-  it('returns all bridge destinations even when source chain is not supported by bridge', () => {
+  it('disables chains not in bridge destinations when source is bridge-supported', () => {
+    const supportedChains = [
+      createChainInfoForTests(SupportedChainId.MAINNET),
+      createChainInfoForTests(SupportedChainId.BASE),
+      createChainInfoForTests(SupportedChainId.ARBITRUM_ONE),
+      createChainInfoForTests(SupportedChainId.AVALANCHE),
+    ]
+    const bridgeChains = [
+      createChainInfoForTests(SupportedChainId.MAINNET),
+      createChainInfoForTests(SupportedChainId.BASE),
+    ]
+
     const state = createOutputChainsState({
       selectedTargetChainId: SupportedChainId.BASE,
-      chainId: SupportedChainId.SEPOLIA,
-      currentChainInfo: createChainInfoForTests(SupportedChainId.SEPOLIA),
-      bridgeSupportedNetworks: [
-        createChainInfoForTests(SupportedChainId.MAINNET),
-        createChainInfoForTests(SupportedChainId.ARBITRUM_ONE),
-      ],
+      chainId: SupportedChainId.MAINNET,
+      currentChainInfo: createChainInfoForTests(SupportedChainId.MAINNET),
+      bridgeSupportedNetworks: bridgeChains,
+      supportedChains,
       isLoading: false,
+      routesAvailability: DEFAULT_ROUTES_AVAILABILITY,
+    })
+
+    // Source (Mainnet) and Base are bridge-supported, others should be disabled
+    expect(state.disabledChainIds?.has(SupportedChainId.MAINNET)).toBeFalsy()
+    expect(state.disabledChainIds?.has(SupportedChainId.BASE)).toBeFalsy()
+    expect(state.disabledChainIds?.has(SupportedChainId.ARBITRUM_ONE)).toBe(true)
+    expect(state.disabledChainIds?.has(SupportedChainId.AVALANCHE)).toBe(true)
+  })
+
+  it('disables all chains except source when source is not bridge-supported', () => {
+    const supportedChains = [
+      createChainInfoForTests(SupportedChainId.MAINNET),
+      createChainInfoForTests(SupportedChainId.ARBITRUM_ONE),
+      createChainInfoForTests(SupportedChainId.SEPOLIA),
+    ]
+    const bridgeChains = [
+      createChainInfoForTests(SupportedChainId.MAINNET),
+      createChainInfoForTests(SupportedChainId.ARBITRUM_ONE),
+    ]
+
+    const state = createOutputChainsState({
+      selectedTargetChainId: SupportedChainId.BASE,
+      chainId: SupportedChainId.SEPOLIA, // Sepolia not in bridge destinations
+      currentChainInfo: createChainInfoForTests(SupportedChainId.SEPOLIA),
+      bridgeSupportedNetworks: bridgeChains,
+      supportedChains,
+      isLoading: false,
+      routesAvailability: DEFAULT_ROUTES_AVAILABILITY,
     })
 
     // Default to source chain when the selected target isn't available
     expect(state.defaultChainId).toBe(SupportedChainId.SEPOLIA)
-    // Should show all destinations plus source, but destinations disabled when source not supported
+    // Should return all supportedChains
     expect(state.chains?.map((chain) => chain.id)).toEqual([
       SupportedChainId.MAINNET,
       SupportedChainId.ARBITRUM_ONE,
       SupportedChainId.SEPOLIA,
     ])
+    // All chains except source should be disabled
     expect(state.disabledChainIds?.has(SupportedChainId.MAINNET)).toBe(true)
     expect(state.disabledChainIds?.has(SupportedChainId.ARBITRUM_ONE)).toBe(true)
-    expect(state.disabledChainIds?.has(SupportedChainId.SEPOLIA)).toBe(false)
+    expect(state.disabledChainIds?.has(SupportedChainId.SEPOLIA)).toBeFalsy()
+  })
+
+  it('falls back to source when selected target is disabled', () => {
+    const supportedChains = [
+      createChainInfoForTests(SupportedChainId.MAINNET),
+      createChainInfoForTests(SupportedChainId.BASE),
+      createChainInfoForTests(SupportedChainId.AVALANCHE),
+    ]
+    const bridgeChains = [
+      createChainInfoForTests(SupportedChainId.MAINNET),
+      createChainInfoForTests(SupportedChainId.BASE),
+    ]
+
+    const state = createOutputChainsState({
+      selectedTargetChainId: SupportedChainId.AVALANCHE, // Not in bridge destinations
+      chainId: SupportedChainId.MAINNET,
+      currentChainInfo: createChainInfoForTests(SupportedChainId.MAINNET),
+      bridgeSupportedNetworks: bridgeChains,
+      supportedChains,
+      isLoading: false,
+      routesAvailability: DEFAULT_ROUTES_AVAILABILITY,
+    })
+
+    // Avalanche is disabled, so should fallback to source (Mainnet)
+    expect(state.defaultChainId).toBe(SupportedChainId.MAINNET)
+  })
+
+  it('does not apply disabled state while loading bridge data', () => {
+    const supportedChains = [
+      createChainInfoForTests(SupportedChainId.MAINNET),
+      createChainInfoForTests(SupportedChainId.BASE),
+      createChainInfoForTests(SupportedChainId.GNOSIS_CHAIN),
+    ]
+
+    const state = createOutputChainsState({
+      selectedTargetChainId: SupportedChainId.BASE,
+      chainId: SupportedChainId.MAINNET,
+      currentChainInfo: createChainInfoForTests(SupportedChainId.MAINNET),
+      bridgeSupportedNetworks: undefined,
+      supportedChains,
+      isLoading: true, // Still loading
+      routesAvailability: DEFAULT_ROUTES_AVAILABILITY,
+    })
+
+    // Should render all supportedChains
+    expect(state.chains?.length).toBe(3)
+    // No chains should be disabled while loading
+    expect(state.disabledChainIds).toBeUndefined()
+    // Selected target should be valid since nothing is disabled
+    expect(state.defaultChainId).toBe(SupportedChainId.BASE)
+  })
+
+  it('disables all except source when bridge data fails to load', () => {
+    const supportedChains = [
+      createChainInfoForTests(SupportedChainId.MAINNET),
+      createChainInfoForTests(SupportedChainId.BASE),
+      createChainInfoForTests(SupportedChainId.GNOSIS_CHAIN),
+    ]
+
+    const state = createOutputChainsState({
+      selectedTargetChainId: SupportedChainId.BASE,
+      chainId: SupportedChainId.MAINNET,
+      currentChainInfo: createChainInfoForTests(SupportedChainId.MAINNET),
+      bridgeSupportedNetworks: undefined,
+      supportedChains,
+      isLoading: false, // Finished loading, but no data
+      routesAvailability: DEFAULT_ROUTES_AVAILABILITY,
+    })
+
+    // Should render all supportedChains
+    expect(state.chains?.length).toBe(3)
+    // All chains except source should be disabled when bridge data failed
+    expect(state.disabledChainIds?.has(SupportedChainId.MAINNET)).toBeFalsy()
+    expect(state.disabledChainIds?.has(SupportedChainId.BASE)).toBe(true)
+    expect(state.disabledChainIds?.has(SupportedChainId.GNOSIS_CHAIN)).toBe(true)
+    // Default should fallback to source since selected target is disabled
+    expect(state.defaultChainId).toBe(SupportedChainId.MAINNET)
+  })
+
+  it('injects current chain when not in supportedChains (feature-flagged chain)', () => {
+    // Simulate a scenario where wallet is on a feature-flagged chain not in supportedChains
+    const supportedChains = [
+      createChainInfoForTests(SupportedChainId.MAINNET),
+      createChainInfoForTests(SupportedChainId.BASE),
+    ]
+    const bridgeChains = [
+      createChainInfoForTests(SupportedChainId.MAINNET),
+      createChainInfoForTests(SupportedChainId.BASE),
+    ]
+
+    const state = createOutputChainsState({
+      selectedTargetChainId: SupportedChainId.BASE,
+      chainId: SupportedChainId.GNOSIS_CHAIN, // Not in supportedChains
+      currentChainInfo: createChainInfoForTests(SupportedChainId.GNOSIS_CHAIN),
+      bridgeSupportedNetworks: bridgeChains,
+      supportedChains,
+      isLoading: false,
+      routesAvailability: DEFAULT_ROUTES_AVAILABILITY,
+    })
+
+    // Current chain should be injected into the list
+    expect(state.chains?.some((c) => c.id === SupportedChainId.GNOSIS_CHAIN)).toBe(true)
+    // Should have 3 chains: Mainnet, Base, and injected Gnosis
+    expect(state.chains?.length).toBe(3)
   })
 })
 
@@ -134,6 +293,7 @@ describe('useChainsToSelect hook', () => {
       data: [createChainInfoForTests(SupportedChainId.GNOSIS_CHAIN)],
       isLoading: false,
     })
+    mockUseRoutesAvailability.mockReturnValue(DEFAULT_ROUTES_AVAILABILITY)
   })
 
   it('returns undefined for LIMIT_ORDER + OUTPUT (buy token)', () => {

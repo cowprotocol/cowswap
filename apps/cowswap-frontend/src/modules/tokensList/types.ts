@@ -28,4 +28,5 @@ export interface ChainsToSelectState {
   defaultChainId?: number
   isLoading?: boolean
   disabledChainIds?: Set<number>
+  loadingChainIds?: Set<number>
 }

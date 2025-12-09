@@ -93,8 +93,15 @@ export const FixedAllNetworks = styled.div`
   }
 `
 
-export const ChainChipButton = styled.button<{ $active?: boolean; $accent?: ChainAccentVars; $disabled?: boolean }>`
+export const ChainChipButton = styled.button<{
+  $active?: boolean
+  $accent?: ChainAccentVars
+  $disabled?: boolean
+  $loading?: boolean
+}>`
   --size: 44px;
+  position: relative;
+  overflow: hidden;
   width: var(--size);
   height: var(--size);
   border-radius: 10px;
@@ -103,8 +110,8 @@ export const ChainChipButton = styled.button<{ $active?: boolean; $accent?: Chai
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: ${({ $disabled }) => ($disabled ? 'not-allowed' : 'pointer')};
-  opacity: ${({ $disabled }) => ($disabled ? 0.5 : 1)};
+  cursor: ${({ $disabled, $loading }) => ($disabled || $loading ? 'not-allowed' : 'pointer')};
+  opacity: ${({ $disabled, $loading }) => ($disabled || $loading ? 0.5 : 1)};
   transition:
     border 0.2s ease,
     background 0.2s ease,
@@ -117,6 +124,31 @@ export const ChainChipButton = styled.button<{ $active?: boolean; $accent?: Chai
     width: var(--size);
     height: var(--size);
     object-fit: contain;
+  }
+
+  /* Shimmer overlay for loading state - aligned with theme.shimmer */
+  &::after {
+    content: ${({ $loading }) => ($loading ? '""' : 'none')};
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: linear-gradient(
+      90deg,
+      transparent 0,
+      var(${UI.COLOR_PAPER_DARKER}) 20%,
+      var(${UI.COLOR_PAPER_DARKER}) 60%,
+      transparent
+    );
+    animation: chipShimmer 2s infinite;
+    pointer-events: none;
+  }
+
+  @keyframes chipShimmer {
+    100% {
+      transform: translateX(100%);
+    }
   }
 `
 

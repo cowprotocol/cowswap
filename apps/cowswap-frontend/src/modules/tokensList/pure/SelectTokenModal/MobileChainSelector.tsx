@@ -121,6 +121,7 @@ export function MobileChainSelector({
                 isActive={chainsState.defaultChainId === chain.id}
                 onSelectChain={onSelectChain}
                 isDisabled={chainsState.disabledChainIds?.has(chain.id) ?? false}
+                isLoading={chainsState.loadingChainIds?.has(chain.id) ?? false}
                 isTooltipVisible={activeTooltipChainId === chain.id}
                 onDisabledClick={toggleTooltip}
                 onHideTooltip={hideTooltip}
@@ -148,6 +149,7 @@ interface ChainChipProps {
   isActive: boolean
   onSelectChain(chain: ChainInfo): void
   isDisabled: boolean
+  isLoading: boolean
   isTooltipVisible: boolean
   onDisabledClick(chainId: number): void
   onHideTooltip(): void
@@ -158,6 +160,7 @@ function ChainChip({
   isActive,
   onSelectChain,
   isDisabled,
+  isLoading,
   isTooltipVisible,
   onDisabledClick,
   onHideTooltip,
@@ -167,9 +170,14 @@ function ChainChip({
   const accent = getChainAccent(chain.id)
   const logoSrc = darkMode ? chain.logo.dark : chain.logo.light
   const disabledTooltip = i18n._(msg`This destination is not supported for this source chain`)
+  const loadingTooltip = i18n._(msg`Checking route availability...`)
   const chipRef = useRef<HTMLButtonElement | null>(null)
 
   const handleClick = (): void => {
+    if (isLoading) {
+      return
+    }
+
     if (!isDisabled) {
       onHideTooltip()
       onSelectChain(chain)
@@ -179,6 +187,8 @@ function ChainChip({
     onDisabledClick(chain.id)
   }
 
+  const tooltip = isLoading ? loadingTooltip : disabledTooltip
+
   const chipButton = (
     <styledEl.ChainChipButton
       ref={chipRef}
@@ -187,9 +197,10 @@ function ChainChip({
       $active={isActive}
       $accent={accent}
       $disabled={isDisabled}
+      $loading={isLoading}
       aria-pressed={isActive}
-      aria-disabled={isDisabled}
-      title={isDisabled ? disabledTooltip : undefined}
+      aria-disabled={isDisabled || isLoading}
+      title={isDisabled || isLoading ? tooltip : undefined}
     >
       <img src={logoSrc} alt={chain.label} loading="lazy" />
     </styledEl.ChainChipButton>

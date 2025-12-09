@@ -22,6 +22,7 @@ export interface ChainsSelectorProps {
   defaultChainId?: ChainInfo['id']
   isLoading: boolean
   disabledChainIds?: Set<number>
+  loadingChainIds?: Set<number>
 }
 
 export function ChainsSelector({
@@ -30,6 +31,7 @@ export function ChainsSelector({
   defaultChainId,
   isLoading,
   disabledChainIds,
+  loadingChainIds,
 }: ChainsSelectorProps): ReactNode {
   const { darkMode } = useTheme()
 
@@ -44,6 +46,7 @@ export function ChainsSelector({
       onSelectChain={onSelectChain}
       isDarkMode={darkMode}
       disabledChainIds={disabledChainIds}
+      loadingChainIds={loadingChainIds}
     />
   )
 }
@@ -75,6 +78,7 @@ interface ChainsListProps {
   onSelectChain(chain: ChainInfo): void
   isDarkMode: boolean
   disabledChainIds?: Set<number>
+  loadingChainIds?: Set<number>
 }
 
 function ChainsList({
@@ -83,6 +87,7 @@ function ChainsList({
   onSelectChain,
   isDarkMode,
   disabledChainIds,
+  loadingChainIds,
 }: ChainsListProps): ReactNode {
   return (
     <styledEl.List>
@@ -92,6 +97,7 @@ function ChainsList({
         onSelectChain={onSelectChain}
         isDarkMode={isDarkMode}
         disabledChainIds={disabledChainIds}
+        loadingChainIds={loadingChainIds}
       />
     </styledEl.List>
   )
@@ -103,6 +109,7 @@ function ChainsButtonsList({
   onSelectChain,
   isDarkMode,
   disabledChainIds,
+  loadingChainIds,
 }: ChainsListProps): ReactNode {
   return (
     <>
@@ -114,6 +121,7 @@ function ChainsButtonsList({
           onSelectChain={onSelectChain}
           isDarkMode={isDarkMode}
           isDisabled={disabledChainIds?.has(chain.id) ?? false}
+          isLoading={loadingChainIds?.has(chain.id) ?? false}
         />
       ))}
     </>
@@ -139,19 +147,30 @@ interface ChainButtonProps {
   isDarkMode: boolean
   onSelectChain(chain: ChainInfo): void
   isDisabled: boolean
+  isLoading: boolean
 }
 
-function ChainButton({ chain, isActive, isDarkMode, onSelectChain, isDisabled }: ChainButtonProps): ReactNode {
+function ChainButton({
+  chain,
+  isActive,
+  isDarkMode,
+  onSelectChain,
+  isDisabled,
+  isLoading,
+}: ChainButtonProps): ReactNode {
   const { i18n } = useLingui()
   const logoSrc = isDarkMode ? chain.logo.dark : chain.logo.light
   const accent = getChainAccent(chain.id)
   const disabledTooltip = i18n._(msg`This destination is not supported for this source chain`)
+  const loadingTooltip = i18n._(msg`Checking route availability...`)
 
   const handleClick = (): void => {
-    if (!isDisabled) {
+    if (!isDisabled && !isLoading) {
       onSelectChain(chain)
     }
   }
+
+  const tooltip = isLoading ? loadingTooltip : isDisabled ? disabledTooltip : undefined
 
   return (
     <styledEl.ChainButton
@@ -159,17 +178,20 @@ function ChainButton({ chain, isActive, isDarkMode, onSelectChain, isDisabled }:
       active$={isActive}
       accent$={accent}
       aria-pressed={isActive}
-      aria-disabled={isDisabled}
+      aria-disabled={isDisabled || isLoading}
       disabled$={isDisabled}
-      title={isDisabled ? disabledTooltip : undefined}
+      loading$={isLoading}
+      title={tooltip}
     >
       <styledEl.ChainInfo>
         <styledEl.ChainLogo>
           <img src={logoSrc} alt={chain.label} loading="lazy" />
         </styledEl.ChainLogo>
-        <styledEl.ChainText disabled$={isDisabled}>{chain.label}</styledEl.ChainText>
+        <styledEl.ChainText disabled$={isDisabled} loading$={isLoading}>
+          {chain.label}
+        </styledEl.ChainText>
       </styledEl.ChainInfo>
-      {isActive && (
+      {isActive && !isLoading && (
         <styledEl.ActiveIcon aria-hidden="true" accent$={accent} color$={chain.color}>
           <SVG src={OrderCheckIcon} />
         </styledEl.ActiveIcon>
