@@ -701,6 +701,11 @@ msgstr "Token no soportado"
 #~ msgid "Limit price (incl. costs)"
 #~ msgstr "Limit price (incl. costs)"
 
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/index.tsx
+msgid "Limit price (incl. fees)"
+msgstr "Precio límite (incl. comisiones)"
+
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/OrderRow/OrderContextMenu.tsx
 msgid "Order receipt"
 msgstr "Recibo de la orden"
@@ -1670,8 +1675,12 @@ msgid "Receiver"
 msgstr "Receptor"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
-#~ msgid "An order’s actual execution price will vary based on the market price and network costs."
-#~ msgstr "An order’s actual execution price will vary based on the market price and network costs."
+msgid "An order's actual execution price will vary based on the market price and network costs."
+msgstr "El precio de ejecución real de una orden variará en función del precio de mercado y los costos de la red."
+
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
+msgid "An order's actual execution price will vary based on the market price and network fees and costs."
+msgstr "El precio de ejecución real de una orden variará según el precio de mercado y las tarifas y costos de red."
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/AirdropHookApp/index.tsx
 msgid "You have already claimed this airdrop"

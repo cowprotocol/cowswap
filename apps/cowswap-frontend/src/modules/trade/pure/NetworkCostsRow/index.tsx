@@ -12,16 +12,17 @@ interface NetworkCostsRowProps {
   withTimelineDot?: boolean
   amountSuffix?: ReactNode
   tooltipSuffix?: ReactNode
+  isLast?: boolean
 }
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+
 export function NetworkCostsRow({
   withTimelineDot,
   networkFeeAmount,
   networkFeeAmountUsd,
   amountSuffix,
   tooltipSuffix,
-}: NetworkCostsRowProps) {
+  isLast = false,
+}: NetworkCostsRowProps): ReactNode {
   const { t } = useLingui()
 
   return (
@@ -40,6 +41,7 @@ export function NetworkCostsRow({
         </>
       }
       label={t`Network costs (est.)`}
+      isLast={isLast}
     />
   )
 }
