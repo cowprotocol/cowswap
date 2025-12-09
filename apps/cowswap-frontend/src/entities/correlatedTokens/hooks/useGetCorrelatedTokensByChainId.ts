@@ -14,7 +14,7 @@ export function useGetCorrelatedTokensByChainId(): (chainId: SupportedChainId) =
 
       if (!tokens) return []
 
-      return Object.keys(tokens)
+      return tokens.flatMap((token) => Object.keys(token))
     },
     [correlatedTokensByChain],
   )
