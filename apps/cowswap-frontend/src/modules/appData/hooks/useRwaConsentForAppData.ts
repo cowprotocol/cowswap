@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { getRwaConsentAtom } from 'modules/rwa/state/rwaConsentAtom'
+import { getConsentFromCache, rwaConsentCacheAtom } from 'modules/rwa/state/rwaConsentAtom'
 import { RwaConsentKey } from 'modules/rwa/types/rwaConsent'
 import { getRwaTokenInfo } from 'modules/rwa/utils/getRwaTokenInfo'
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
@@ -13,6 +13,7 @@ import { AppDataRwaConsent } from '../types'
 export function useRwaConsentForAppData(): AppDataRwaConsent | undefined {
   const { account } = useWalletInfo()
   const derivedState = useDerivedTradeState()
+  const consentCache = useAtomValue(rwaConsentCacheAtom)
 
   const inputCurrency = derivedState?.inputCurrency ?? null
   const outputCurrency = derivedState?.outputCurrency ?? null
@@ -23,7 +24,6 @@ export function useRwaConsentForAppData(): AppDataRwaConsent | undefined {
     return inputRwaInfo || outputRwaInfo
   }, [inputCurrency, outputCurrency])
 
-  // Build consent key
   const consentKey: RwaConsentKey | null = useMemo(() => {
     if (!rwaTokenInfo || !account) {
       return null
@@ -35,14 +35,14 @@ export function useRwaConsentForAppData(): AppDataRwaConsent | undefined {
     }
   }, [rwaTokenInfo, account])
 
-  // Get consent record from storage
-  const defaultConsentAtom = getRwaConsentAtom({ wallet: '', issuer: '', tosVersion: '' })
-  const consentAtom = consentKey ? getRwaConsentAtom(consentKey) : defaultConsentAtom
-  const consentRecord = useAtomValue(consentAtom)
-
-  // Build rwaConsent payload only if consent is confirmed
   return useMemo(() => {
-    if (!consentKey || !account || !rwaTokenInfo || !consentRecord.confirmed) {
+    if (!consentKey || !account || !rwaTokenInfo) {
+      return undefined
+    }
+
+    const consentRecord = getConsentFromCache(consentCache, consentKey)
+
+    if (!consentRecord?.confirmed) {
       return undefined
     }
 
@@ -61,5 +61,5 @@ export function useRwaConsentForAppData(): AppDataRwaConsent | undefined {
         acceptedTosVersion: rwaTokenInfo.tosVersion,
       },
     }
-  }, [consentKey, account, rwaTokenInfo, consentRecord])
+  }, [consentKey, account, rwaTokenInfo, consentCache])
 }

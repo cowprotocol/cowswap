@@ -1,55 +1,63 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
-import { getJotaiMergerStorage } from '@cowprotocol/core'
+import { RwaConsentKey, RwaConsentRecord, GeoMode } from '../types/rwaConsent'
 
-import { RwaConsentKey, RwaConsentRecord, getRwaConsentStorageKey } from '../types/rwaConsent'
+type RwaConsentCache = Record<string, string>
 
-const DEFAULT_CONSENT: RwaConsentRecord = {
-  confirmed: false,
-  geoMode: 'UNKNOWN',
-  confirmedAt: 0,
+export const rwaConsentCacheAtom = atomWithStorage<RwaConsentCache>('rwaConsentCache:v1', {}, undefined, {
+  unstable_getOnInit: true,
+})
+
+export interface StoreRwaConsentParams extends RwaConsentKey {
+  geoMode: GeoMode
 }
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function createRwaConsentAtom(key: RwaConsentKey) {
-  const storageKey = getRwaConsentStorageKey(key)
-  return atomWithStorage<RwaConsentRecord>(storageKey, DEFAULT_CONSENT, getJotaiMergerStorage())
-}
+export const storeRwaConsentAtom = atom(null, (get, set, params: StoreRwaConsentParams) => {
+  const key = buildRwaConsentKey(params)
 
-const rwaConsentAtomsMap = new Map<string, ReturnType<typeof createRwaConsentAtom>>()
-
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function getRwaConsentAtom(key: RwaConsentKey) {
-  const storageKey = getRwaConsentStorageKey(key)
-  
-  if (!rwaConsentAtomsMap.has(storageKey)) {
-    rwaConsentAtomsMap.set(storageKey, createRwaConsentAtom(key))
+  const dataToCache: RwaConsentRecord = {
+    confirmed: true,
+    geoMode: params.geoMode,
+    confirmedAt: Date.now(),
   }
-  
-  return rwaConsentAtomsMap.get(storageKey)!
-}
 
-const rwaConsentStatusAtomsMap = new Map<string, ReturnType<typeof createRwaConsentStatusAtomInternal>>()
+  set(rwaConsentCacheAtom, (cache) => ({ ...cache, [key]: JSON.stringify(dataToCache) }))
+})
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function createRwaConsentStatusAtomInternal(key: RwaConsentKey) {
-  const consentAtom = getRwaConsentAtom(key)
-  
-  return atom((get) => {
-    const consent = get(consentAtom)
-    return consent.confirmed ? 'valid' as const : 'none' as const
+export const getRwaConsentAtom = atom(null, (get, _set, params: RwaConsentKey): RwaConsentRecord | undefined => {
+  const cache = get(rwaConsentCacheAtom)
+  return getConsentFromCache(cache, params)
+})
+
+export const removeRwaConsentAtom = atom(null, (get, set, params: RwaConsentKey) => {
+  const key = buildRwaConsentKey(params)
+
+  set(rwaConsentCacheAtom, (cache) => {
+    const newCache = { ...cache }
+    delete newCache[key]
+    return newCache
   })
+})
+
+export function buildRwaConsentKey({ wallet, issuer, tosVersion }: RwaConsentKey): string {
+  return `${wallet.toLowerCase()}-${issuer.toLowerCase()}-${tosVersion}`
 }
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function createRwaConsentStatusAtom(key: RwaConsentKey) {
-  const storageKey = getRwaConsentStorageKey(key)
-  
-  if (!rwaConsentStatusAtomsMap.has(storageKey)) {
-    rwaConsentStatusAtomsMap.set(storageKey, createRwaConsentStatusAtomInternal(key))
+export function getConsentFromCache(
+  cache: RwaConsentCache,
+  key: RwaConsentKey,
+): RwaConsentRecord | undefined {
+  const cacheKey = buildRwaConsentKey(key)
+  const cachedData = cache[cacheKey]
+
+  if (!cachedData) {
+    return undefined
   }
-  
-  return rwaConsentStatusAtomsMap.get(storageKey)!
-}
 
+  try {
+    return JSON.parse(cachedData) as RwaConsentRecord
+  } catch {
+    return undefined
+  }
+}

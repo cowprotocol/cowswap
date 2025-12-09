@@ -9,13 +9,13 @@ export interface RwaTokenInfo {
   token?: TokenWithLogo
 }
 
-// TODO: Implement actual RWA token detection
+// todo: Implement actual RWA token detection
 export function getRwaTokenInfo(currency: Currency | null): RwaTokenInfo | null {
   if (!currency) {
     return null
   }
 
-  // TODO: add Check if currency is RWA-restricted
+  // todo for test purposes only
   return {
     issuer: 'TEST',
     tosVersion: 'rwa-tos-2025-01-01',

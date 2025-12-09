@@ -1,47 +1,58 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 
-import { createRwaConsentStatusAtom, getRwaConsentAtom } from '../state/rwaConsentAtom'
-import { GeoMode, RwaConsentKey } from '../types/rwaConsent'
+import {
+  getConsentFromCache,
+  removeRwaConsentAtom,
+  rwaConsentCacheAtom,
+  storeRwaConsentAtom,
+} from '../state/rwaConsentAtom'
+import { GeoMode, RwaConsentKey, RwaConsentRecord } from '../types/rwaConsent'
 
 export type RwaConsentStatus = 'none' | 'valid'
 
 export interface UseRwaConsentStatusReturn {
   consentStatus: RwaConsentStatus
+  consentRecord: RwaConsentRecord | undefined
   confirmConsent: (geoMode: GeoMode) => void
   resetConsent: () => void
 }
 
 export function useRwaConsentStatus(key: RwaConsentKey): UseRwaConsentStatusReturn {
-  const consentAtom = getRwaConsentAtom(key)
-  const statusAtom = createRwaConsentStatusAtom(key)
-  
-  const setConsent = useSetAtom(consentAtom)
-  const consentStatus = useAtomValue(statusAtom)
+  const consentCache = useAtomValue(rwaConsentCacheAtom)
+  const storeConsent = useSetAtom(storeRwaConsentAtom)
+  const removeConsent = useSetAtom(removeRwaConsentAtom)
+
+  const consentRecord = useMemo(() => {
+    if (!key.wallet || !key.issuer || !key.tosVersion) {
+      return undefined
+    }
+    return getConsentFromCache(consentCache, key)
+  }, [consentCache, key])
+
+  const consentStatus: RwaConsentStatus = consentRecord?.confirmed ? 'valid' : 'none'
 
   const confirmConsent = useCallback(
     (geoMode: GeoMode) => {
-      setConsent({
-        confirmed: true,
-        geoMode,
-        confirmedAt: Date.now(),
-      })
+      if (!key.wallet || !key.issuer || !key.tosVersion) {
+        return
+      }
+      storeConsent({ ...key, geoMode })
     },
-    [setConsent],
+    [storeConsent, key],
   )
 
   const resetConsent = useCallback(() => {
-    setConsent({
-      confirmed: false,
-      geoMode: 'UNKNOWN',
-      confirmedAt: 0,
-    })
-  }, [setConsent])
+    if (!key.wallet || !key.issuer || !key.tosVersion) {
+      return
+    }
+    removeConsent(key)
+  }, [removeConsent, key])
 
   return {
     consentStatus,
+    consentRecord,
     confirmConsent,
     resetConsent,
   }
 }
-
