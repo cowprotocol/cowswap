@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-12-09 12:54\n"
+"PO-Revision-Date: 2025-12-09 17:47\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -700,11 +700,6 @@ msgstr "Неподдерживаемый токен"
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/index.tsx
 #~ msgid "Limit price (incl. costs)"
 #~ msgstr "Limit price (incl. costs)"
-
-#: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
-#: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/index.tsx
-msgid "Limit price (incl. fees)"
-msgstr "Лимитная цена (включая комиссии)"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/OrderRow/OrderContextMenu.tsx
 msgid "Order receipt"
@@ -1675,12 +1670,8 @@ msgid "Receiver"
 msgstr "Приемник"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
-msgid "An order's actual execution price will vary based on the market price and network costs."
-msgstr "Фактическая цена ордера будет варьироваться в зависимости от рыночной цены и сетевых затрат."
-
-#: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
-msgid "An order's actual execution price will vary based on the market price and network fees and costs."
-msgstr "Фактическая цена исполнения ордера будет варьироваться в зависимости от рыночной цены, сетевых комиссий и затрат."
+#~ msgid "An order’s actual execution price will vary based on the market price and network costs."
+#~ msgstr "An order’s actual execution price will vary based on the market price and network costs."
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/AirdropHookApp/index.tsx
 msgid "You have already claimed this airdrop"
