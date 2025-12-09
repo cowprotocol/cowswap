@@ -3,8 +3,6 @@ import { Media, UI } from '@cowprotocol/ui'
 import { darken, transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 
-import { EthFlowState } from '../../services/ethFlow/types'
-
 const ModalMessage = styled.div`
   display: flex;
   flex-flow: row wrap;
