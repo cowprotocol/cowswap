@@ -697,6 +697,11 @@ msgstr "Неподдерживаемый токен"
 msgid "Limit price (incl. costs)"
 msgstr "Ограниченная цена (включая стоимость)"
 
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/index.tsx
+msgid "Limit price (incl. fees)"
+msgstr "Лимитная цена (включая комиссии)"
+
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/OrderRow/OrderContextMenu.tsx
 msgid "Order receipt"
 msgstr "Получение заказа"
@@ -1666,8 +1671,12 @@ msgid "Receiver"
 msgstr "Приемник"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
-msgid "An order’s actual execution price will vary based on the market price and network costs."
+msgid "An order's actual execution price will vary based on the market price and network costs."
 msgstr "Фактическая цена ордера будет варьироваться в зависимости от рыночной цены и сетевых затрат."
+
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
+msgid "An order's actual execution price will vary based on the market price and network fees and costs."
+msgstr "Фактическая цена исполнения ордера будет варьироваться в зависимости от рыночной цены, сетевых комиссий и затрат."
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/AirdropHookApp/index.tsx
 msgid "You have already claimed this airdrop"
