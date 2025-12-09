@@ -60,7 +60,7 @@ export function TradeFeesAndCosts(props: TradeFeesAndCostsProps): ReactNode {
           withTimelineDot={withTimelineDot}
           amountSuffix={networkCostsSuffix}
           tooltipSuffix={networkCostsTooltipSuffix}
-          isLast={true}
+          isLast
         />
       )}
     </>
