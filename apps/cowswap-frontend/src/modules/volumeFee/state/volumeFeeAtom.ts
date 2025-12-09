@@ -4,10 +4,11 @@ import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { walletInfoAtom } from '@cowprotocol/wallet'
 import { resolveFlexibleConfig } from '@cowprotocol/widget-lib'
 
+import { correlatedTokensAtom } from 'entities/correlatedTokens/state/correlatedTokensAtom'
+
 import { injectedWidgetPartnerFeeAtom } from 'modules/injectedWidget'
 import { derivedTradeStateAtom, tradeTypeAtom, TradeTypeToWidgetTradeTypeMap } from 'modules/trade'
 
-import { correlatedTokensAtom } from './correlatedTokensAtom'
 import { safeAppFeeAtom } from './safeAppFeeAtom'
 
 import { VolumeFee } from '../types'
