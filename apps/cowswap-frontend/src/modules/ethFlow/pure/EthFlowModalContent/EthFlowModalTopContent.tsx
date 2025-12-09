@@ -1,8 +1,5 @@
 import { Media, UI } from '@cowprotocol/ui'
 
-import { darken, transparentize } from 'color2k'
-import styled from 'styled-components/macro'
-
 const ModalMessage = styled.div`
   display: flex;
   flex-flow: row wrap;
@@ -20,3 +17,28 @@ const ModalMessage = styled.div`
     margin: 0 0 8px;
   }
 `
+
+
+
+export type TopContentParams = {
+  descriptions: string[] | null
+  nativeSymbol: string
+}
+
+// TODO: Add proper return type annotation
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+export function EthFlowModalTopContent({ descriptions }: TopContentParams) {
+  
+  return (
+    <>
+      {!!descriptions?.length && (
+        <ModalMessage>
+          {descriptions.map((description, index) => (
+            <span key={index}>{description}</span>
+          ))}
+        </ModalMessage>
+      )}
+     
+    </>
+  )
+}
