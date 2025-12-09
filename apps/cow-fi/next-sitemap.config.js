@@ -22,7 +22,7 @@ module.exports = {
     if (url.startsWith('/learn/')) {
       try {
         console.log(`Transforming learn page: ${url}`)
-        const articles = await getAllArticleSlugsWithDates()
+        const articles = await getAllArticleSlugsWithDatesCached()
         const article = articles.find(({ slug }) => `/learn/${slug}` === url)
 
         if (article) {
@@ -50,6 +50,25 @@ module.exports = {
     }
   },
 }
+
+function cacheAsyncFunction(fn) {
+  const EMPTY = Symbol()
+  let result = EMPTY
+
+  return async function (...args) {
+    if (result !== EMPTY) return result
+
+    result = fn(...args).catch((err) => {
+      result = EMPTY
+      throw err
+    })
+
+    return result
+  }
+}
+
+/** @type {typeof getAllArticleSlugsWithDates} */
+const getAllArticleSlugsWithDatesCached = cacheAsyncFunction(getAllArticleSlugsWithDates)
 
 /**
  * Function to fetch all article slugs with lastModified dates from the CMS API
