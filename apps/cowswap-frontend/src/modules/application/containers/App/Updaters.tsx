@@ -9,7 +9,7 @@ import { CowSdkUpdater } from 'cowSdk'
 import { useBalancesContext } from 'entities/balancesContext/useBalancesContext'
 import { BridgeOrdersCleanUpdater } from 'entities/bridgeOrders'
 import { BridgeProvidersUpdater, useBridgeSupportedNetworks } from 'entities/bridgeProvider'
-import { CorrelatedTokensUpdater } from 'entities/correlatedTokens/updaters/CorrelatedTokensUpdater'
+import { CorrelatedTokensUpdater } from 'entities/correlatedTokens'
 import { ThemeConfigUpdater } from 'theme/ThemeConfigUpdater'
 import { TradingSdkUpdater } from 'tradingSdk/TradingSdkUpdater'
 
