@@ -16,8 +16,6 @@ const nativeInput = CurrencyAmount.fromRawAmount(native, 5.987654 * 10 ** 18)
 const nativeBalance = CurrencyAmount.fromRawAmount(native, 15.12123 * 10 ** 18)
 const wrappedBalance = CurrencyAmount.fromRawAmount(wrapped, 15.12123 * 10 ** 18)
 
-const balanceChecks = undefined
-
 export const wrappingPreviewProps: WrappingPreviewProps = {
   native,
   nativeBalance,
@@ -48,8 +46,7 @@ const ethFlowActionsMock: EthFlowActions = {
 export interface EthParamsCaseParams {
   state?: EthFlowState
   approveAction?: EthFlowActionContext
-  wrapAction?: EthFlowActionContext
-  balanceChecks?: BalanceChecks
+  wrapAction?: EthFlowActionContext  
 }
 
 export function getEthFlowModalContentProps(params: EthParamsCaseParams = {}): EthFlowModalContentProps {
