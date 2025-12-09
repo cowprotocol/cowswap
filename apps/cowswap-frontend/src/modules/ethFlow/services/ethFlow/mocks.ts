@@ -6,7 +6,7 @@ import { EthFlowState } from './types'
 
 import { EthFlowActions } from '../../containers/EthFlow/hooks/useEthFlowActions'
 import { EthFlowModalContentProps } from '../../pure/EthFlowModalContent'
-import { BalanceChecks } from '../../pure/EthFlowModalContent/EthFlowModalTopContent'
+
 import { WrappingPreviewProps } from '../../pure/WrappingPreview'
 import { defaultEthFlowContext, EthFlowActionContext } from '../../state/ethFlowContextAtom'
 
@@ -16,7 +16,7 @@ const nativeInput = CurrencyAmount.fromRawAmount(native, 5.987654 * 10 ** 18)
 const nativeBalance = CurrencyAmount.fromRawAmount(native, 15.12123 * 10 ** 18)
 const wrappedBalance = CurrencyAmount.fromRawAmount(wrapped, 15.12123 * 10 ** 18)
 
-const balanceChecks = { isLowBalance: false, txsRemaining: null }
+const balanceChecks = undefined
 
 export const wrappingPreviewProps: WrappingPreviewProps = {
   native,
