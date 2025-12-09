@@ -701,8 +701,8 @@ msgid "Unsupported Token"
 msgstr "Unsupported Token"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/index.tsx
-msgid "Limit price (incl. costs)"
-msgstr "Limit price (incl. costs)"
+#~ msgid "Limit price (incl. costs)"
+#~ msgstr "Limit price (incl. costs)"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/OrderRow/OrderContextMenu.tsx
 msgid "Order receipt"
@@ -1319,8 +1319,8 @@ msgid "COW vesting from locked GNO"
 msgstr "COW vesting from locked GNO"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
-msgid "Limit price (incl.costs)"
-msgstr "Limit price (incl.costs)"
+#~ msgid "Limit price (incl.costs)"
+#~ msgstr "Limit price (incl.costs)"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/SetupFallbackHandlerWarning/index.tsx
 msgid "Update fallback handler"
@@ -1677,8 +1677,8 @@ msgid "Receiver"
 msgstr "Receiver"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
-msgid "An order’s actual execution price will vary based on the market price and network costs."
-msgstr "An order’s actual execution price will vary based on the market price and network costs."
+#~ msgid "An order’s actual execution price will vary based on the market price and network costs."
+#~ msgstr "An order’s actual execution price will vary based on the market price and network costs."
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/AirdropHookApp/index.tsx
 msgid "You have already claimed this airdrop"
@@ -1867,6 +1867,10 @@ msgstr "To continue, click SWAP below to use your existing {wrappedSymbol} balan
 msgid "Effortless Airdrop Claims! The Claim COW Airdrop feature simplifies the process of collecting free COW tokens before or after your swap, seamlessly integrating into the CoW Swap platform. Whether you're claiming new airdrops or exploring CoW on a new network, this tool ensures you get your rewards quickly and easily."
 msgstr "Effortless Airdrop Claims! The Claim COW Airdrop feature simplifies the process of collecting free COW tokens before or after your swap, seamlessly integrating into the CoW Swap platform. Whether you're claiming new airdrops or exploring CoW on a new network, this tool ensures you get your rewards quickly and easily."
 
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
+msgid "An order's actual execution price will vary based on the market price and network fees and costs."
+msgstr "An order's actual execution price will vary based on the market price and network fees and costs."
+
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
@@ -1922,6 +1926,11 @@ msgstr "minutes"
 #: apps/cowswap-frontend/src/common/containers/InvalidLocalTimeWarning/index.tsx
 msgid "Local device time is not accurate, CoW Swap most likely will not work correctly. Please adjust your device's time."
 msgstr "Local device time is not accurate, CoW Swap most likely will not work correctly. Please adjust your device's time."
+
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/index.tsx
+msgid "Limit price (incl. fees)"
+msgstr "Limit price (incl. fees)"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/StopStatus/index.tsx
 msgid "Bridging via"
@@ -3615,8 +3624,8 @@ msgid "No pool tokens available"
 msgstr "No pool tokens available"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/RateImpactWarning/index.tsx
-#~ msgid "Your limit price is {percent}% lower than current market price. You could be selling your<0/> at a loss (although CoW Swap will always try to give you the best price regardless)."
-#~ msgstr "Your limit price is {percent}% lower than current market price. You could be selling your<0/> at a loss (although CoW Swap will always try to give you the best price regardless)."
+#~ msgid "Your limit price is {percent}% lower than current market price. You could be selling your <0/> at a loss (although CoW Swap will always try to give you the best price regardless)."
+#~ msgstr "Your limit price is {percent}% lower than current market price. You could be selling your <0/> at a loss (although CoW Swap will always try to give you the best price regardless)."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/SolvingStep.tsx
 msgid "Still searching"
@@ -4339,8 +4348,8 @@ msgid "CoW Protocol covers the costs by executing your order at a slightly bette
 msgstr "CoW Protocol covers the costs by executing your order at a slightly better price than your limit price."
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/RateImpactWarning/index.tsx
-msgid "Your limit price is {absoluteRateImpact}% lower than current market price. You could be selling your<0/> at a loss (although CoW Swap will always try to give you the best price regardless)."
-msgstr "Your limit price is {absoluteRateImpact}% lower than current market price. You could be selling your<0/> at a loss (although CoW Swap will always try to give you the best price regardless)."
+msgid "Your limit price is {absoluteRateImpact}% lower than current market price. You could be selling your <0/> at a loss (although CoW Swap will always try to give you the best price regardless)."
+msgstr "Your limit price is {absoluteRateImpact}% lower than current market price. You could be selling your <0/> at a loss (although CoW Swap will always try to give you the best price regardless)."
 
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/HookSearchInput/index.tsx
 msgid "Clear search input"
@@ -6297,10 +6306,3 @@ msgstr "Learn more"
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/HighFeeWarning/highFeeWarningHelpers.ts
 msgid "Swap and bridge costs are at least {formattedFeePercentage}% of the swap amount"
 msgstr "Swap and bridge costs are at least {formattedFeePercentage}% of the swap amount"
-
-# Notifications / jobs aria labels
-msgid "Trade alert settings"
-msgstr "Trade alert settings"
-
-msgid "View jobs (opens in a new tab)"
-msgstr "View jobs (opens in a new tab)"
