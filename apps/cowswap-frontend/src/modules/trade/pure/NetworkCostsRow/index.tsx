@@ -12,6 +12,7 @@ interface NetworkCostsRowProps {
   withTimelineDot?: boolean
   amountSuffix?: ReactNode
   tooltipSuffix?: ReactNode
+  isLast?: boolean
 }
 
 export function NetworkCostsRow({
@@ -20,6 +21,7 @@ export function NetworkCostsRow({
   networkFeeAmountUsd,
   amountSuffix,
   tooltipSuffix,
+  isLast = false,
 }: NetworkCostsRowProps): ReactNode {
   const { t } = useLingui()
 
@@ -39,6 +41,7 @@ export function NetworkCostsRow({
         </>
       }
       label={t`Network costs (est.)`}
+      isLast={isLast}
     />
   )
 }
