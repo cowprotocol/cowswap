@@ -129,7 +129,7 @@ function SolverRow({
   solvers: SolverCompetition[]
 }): ReactNode {
   return (
-    <styledEl.SolverTableRow key={`${solver.solver}-${index}`} isWinner={index === 0}>
+    <styledEl.SolverTableRow isWinner={index === 0}>
       {solvers.length > 1 && <styledEl.SolverRank>{index + 1}</styledEl.SolverRank>}
       <styledEl.SolverTableCell>
         <styledEl.SolverInfo>
@@ -296,7 +296,7 @@ export function FinishedStep({
             <styledEl.SolverTable>
               <tbody>
                 {visibleSolvers?.map((solver, index) => (
-                  <SolverRow solver={solver} index={index} solvers={solvers} />
+                  <SolverRow key={`${solver.solver}-${index}`} solver={solver} index={index} solvers={solvers} />
                 ))}
               </tbody>
             </styledEl.SolverTable>
