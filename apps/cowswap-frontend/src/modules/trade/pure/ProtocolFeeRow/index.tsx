@@ -14,6 +14,7 @@ interface ProtocolFeeRowProps {
   protocolFeeUsd: Nullish<CurrencyAmount<Currency>>
   protocolFeeBps: number | undefined
   withTimelineDot: boolean
+  isLast?: boolean
 }
 
 export function ProtocolFeeRow({
@@ -21,6 +22,7 @@ export function ProtocolFeeRow({
   protocolFeeUsd,
   protocolFeeBps,
   withTimelineDot,
+  isLast = false,
 }: ProtocolFeeRowProps): ReactNode {
   const protocolFeeAsPercent = protocolFeeBps ? formatPercent(bpsToPercent(protocolFeeBps)) : null
   const minProtocolFeeAmount = FractionUtils.amountToAtLeastOneWei(protocolFeeAmount)
@@ -43,6 +45,7 @@ export function ProtocolFeeRow({
         </Trans>
       }
       label={t`Protocol fee (${protocolFeeAsPercent}%)`}
+      isLast={isLast}
     />
   )
 }
