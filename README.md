@@ -264,7 +264,7 @@ metadata JSON containing some information about the trade (using `keccak256` on
 the `UTF-8` bytes).
 
 The format of the JSON follows the format defined in
-[@cowprotocol/app-data](https://github.com/cowprotocol/app-data).
+[@cowprotocol/sdk-app-data](https://www.npmjs.com/package/@cowprotocol/sdk-app-data).
 
 To set your own `AppData`, change `REACT_APP_FULL_APP_DATA_<environment>`
 environment variable. For more details, check out the environment file (<.env>)
