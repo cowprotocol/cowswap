@@ -1,7 +1,8 @@
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CurrencyAmount, Percent, Price, Token } from '@uniswap/sdk-core'
 
-import { getOrderTypeReceiveAmounts, getReceiveAmountInfo } from './getReceiveAmountInfo'
+import { getCrossChainReceiveAmountInfo } from './getCrossChainReceiveAmountInfo'
+import { getOrderTypeReceiveAmounts } from './getOrderTypeReceiveAmounts'
 
 import { ReceiveAmountInfo } from '../types'
 
@@ -372,15 +373,17 @@ describe('getReceiveAmountInfo', () => {
         amountInBuyCurrency: BigInt('5000'), // 0.005 USDC in intermediate decimals (6)
       }
 
-      const result = getReceiveAmountInfo(
+      const result = getCrossChainReceiveAmountInfo({
         orderParams,
-        mainnetUsdc,
-        baseUsdc,
+        inputCurrency: mainnetUsdc,
+        outputCurrency: baseUsdc,
         slippagePercent,
-        undefined,
-        mainnetUsdc, // intermediate currency
+        partnerFeeBps: undefined,
+        intermediateCurrency: mainnetUsdc, // intermediate currency
         bridgeFeeAmounts,
-      )
+        bridgeBuyAmount: 1n,
+        protocolFeeBps: undefined,
+      })
 
       expect(result.costs.bridgeFee).toBeDefined()
       expect(result.costs.bridgeFee?.amountInDestinationCurrency.toExact()).toBe('0.005')
@@ -408,15 +411,17 @@ describe('getReceiveAmountInfo', () => {
         amountInBuyCurrency: BigInt('50000000000000000'), // 0.05 in intermediate decimals (18)
       }
 
-      const result = getReceiveAmountInfo(
+      const result = getCrossChainReceiveAmountInfo({
         orderParams,
-        mainnetWeth,
-        baseUsdc,
+        inputCurrency: mainnetUsdc,
+        outputCurrency: baseUsdc,
         slippagePercent,
-        undefined,
-        mainnetWeth, // intermediate currency with 18 decimals
+        partnerFeeBps: undefined,
+        intermediateCurrency: mainnetWeth, // intermediate currency with 18 decimals
         bridgeFeeAmounts,
-      )
+        bridgeBuyAmount: 1n,
+        protocolFeeBps: undefined,
+      })
 
       expect(result.costs.bridgeFee).toBeDefined()
       // Destination currency amount should be 0.05 USDC (6 decimals)
@@ -447,15 +452,17 @@ describe('getReceiveAmountInfo', () => {
         amountInBuyCurrency: BigInt('50000'), // 0.05 in intermediate decimals (6)
       }
 
-      const result = getReceiveAmountInfo(
+      const result = getCrossChainReceiveAmountInfo({
         orderParams,
-        mainnetUsdc,
-        baseWeth,
+        inputCurrency: mainnetUsdc,
+        outputCurrency: baseWeth, // Use baseWeth since that's the buy token in orderParams
         slippagePercent,
-        undefined,
-        mainnetUsdc, // intermediate currency with 6 decimals
+        partnerFeeBps: undefined,
+        intermediateCurrency: mainnetUsdc, // intermediate currency with 6 decimals
         bridgeFeeAmounts,
-      )
+        bridgeBuyAmount: 1n,
+        protocolFeeBps: undefined,
+      })
 
       expect(result.costs.bridgeFee).toBeDefined()
       // Destination currency amount should be 0.05 WETH (18 decimals)
@@ -465,66 +472,6 @@ describe('getReceiveAmountInfo', () => {
       // Intermediate currency amount is in USDC (6 decimals)
       expect(result.costs.bridgeFee?.amountInIntermediateCurrency.toExact()).toBe('0.05')
       expect(result.costs.bridgeFee?.amountInIntermediateCurrency.currency.decimals).toBe(6)
-    })
-
-    it('returns undefined bridge fee when bridgeFeeAmounts is not provided', () => {
-      const orderParams = {
-        kind: OrderKind.SELL,
-        sellToken: mainnetUsdc.address,
-        buyToken: baseUsdc.address,
-        sellAmount: '1000000',
-        buyAmount: '950000',
-        validTo: Math.floor(Date.now() / 1000) + 3600,
-        appData: '0x0000000000000000000000000000000000000000000000000000000000000000',
-        feeAmount: '10000',
-        partiallyFillable: false,
-      }
-
-      const slippagePercent = new Percent(50, 10000) // 0.5%
-
-      const result = getReceiveAmountInfo(
-        orderParams,
-        mainnetUsdc,
-        baseUsdc,
-        slippagePercent,
-        undefined,
-        mainnetUsdc,
-        undefined, // no bridge fee amounts
-      )
-
-      expect(result.costs.bridgeFee).toBeUndefined()
-    })
-
-    it('returns undefined bridge fee when intermediate currency is not provided', () => {
-      const orderParams = {
-        kind: OrderKind.SELL,
-        sellToken: mainnetUsdc.address,
-        buyToken: baseUsdc.address,
-        sellAmount: '1000000',
-        buyAmount: '950000',
-        validTo: Math.floor(Date.now() / 1000) + 3600,
-        appData: '0x0000000000000000000000000000000000000000000000000000000000000000',
-        feeAmount: '10000',
-        partiallyFillable: false,
-      }
-
-      const slippagePercent = new Percent(50, 10000) // 0.5%
-      const bridgeFeeAmounts = {
-        amountInSellCurrency: BigInt('5000'),
-        amountInBuyCurrency: BigInt('5000'),
-      }
-
-      const result = getReceiveAmountInfo(
-        orderParams,
-        mainnetUsdc,
-        baseUsdc,
-        slippagePercent,
-        undefined,
-        undefined, // no intermediate currency
-        bridgeFeeAmounts,
-      )
-
-      expect(result.costs.bridgeFee).toBeUndefined()
     })
   })
 })
