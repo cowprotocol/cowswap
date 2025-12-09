@@ -52,7 +52,7 @@ const getConfirmModalConfig = (): {
       </p>
     </>
   ),
-  limitPriceLabel: t`Limit price (incl. costs)`,
+  limitPriceLabel: t`Limit price (incl. fees)`,
   limitPriceTooltip: (
     <Trans>
       If CoW Swap cannot get this price or better (taking into account fees and price protection tolerance), your TWAP
