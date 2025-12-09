@@ -8,7 +8,7 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-12-04 11:16\n"
+"PO-Revision-Date: 2025-12-09 10:47\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -698,8 +698,8 @@ msgid "Unsupported Token"
 msgstr "Token no soportado"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/index.tsx
-msgid "Limit price (incl. costs)"
-msgstr "Precio límite (incl. costos)"
+#~ msgid "Limit price (incl. costs)"
+#~ msgstr "Limit price (incl. costs)"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/OrderRow/OrderContextMenu.tsx
 msgid "Order receipt"
@@ -1316,8 +1316,8 @@ msgid "COW vesting from locked GNO"
 msgstr "Adquisición de COW de GNO bloqueado"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
-msgid "Limit price (incl.costs)"
-msgstr "Limitar precio (incl. costos)"
+#~ msgid "Limit price (incl.costs)"
+#~ msgstr "Limit price (incl.costs)"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/SetupFallbackHandlerWarning/index.tsx
 msgid "Update fallback handler"
@@ -1670,8 +1670,8 @@ msgid "Receiver"
 msgstr "Receptor"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
-msgid "An order’s actual execution price will vary based on the market price and network costs."
-msgstr "El precio de ejecución real de una orden variará en función del precio de mercado y los costos de la red."
+#~ msgid "An order’s actual execution price will vary based on the market price and network costs."
+#~ msgstr "An order’s actual execution price will vary based on the market price and network costs."
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/AirdropHookApp/index.tsx
 msgid "You have already claimed this airdrop"
@@ -1860,6 +1860,10 @@ msgstr "Para continuar, haz clic en SWAP abajo para usar tu saldo y comercio {wr
 msgid "Effortless Airdrop Claims! The Claim COW Airdrop feature simplifies the process of collecting free COW tokens before or after your swap, seamlessly integrating into the CoW Swap platform. Whether you're claiming new airdrops or exploring CoW on a new network, this tool ensures you get your rewards quickly and easily."
 msgstr "¡Effortless reclamaciones de aeródromo! La función de Reclamar COW Airdrop simplifica el proceso de recogida de fichas COW gratuitas antes o después de su intercambio, integrándose perfectamente en la plataforma de intercambio de CoW. Ya sea que esté reclamando nuevos aviones o explorando CoW en una nueva red, esta herramienta le asegura que obtenga sus recompensas rápida y fácilmente."
 
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
+msgid "An order's actual execution price will vary based on the market price and network fees and costs."
+msgstr "El precio de ejecución real de una orden variará según el precio de mercado y las tarifas y costos de red."
+
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
@@ -1915,6 +1919,11 @@ msgstr "minutos"
 #: apps/cowswap-frontend/src/common/containers/InvalidLocalTimeWarning/index.tsx
 msgid "Local device time is not accurate, CoW Swap most likely will not work correctly. Please adjust your device's time."
 msgstr "La hora del dispositivo local no es exacta, es probable que el intercambio de CoW no funcione correctamente. Por favor, ajuste la hora del dispositivo."
+
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/index.tsx
+msgid "Limit price (incl. fees)"
+msgstr "Precio límite (incl. comisiones)"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/StopStatus/index.tsx
 msgid "Bridging via"
@@ -6284,11 +6293,4 @@ msgstr "Aprende más"
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/HighFeeWarning/highFeeWarningHelpers.ts
 msgid "Swap and bridge costs are at least {formattedFeePercentage}% of the swap amount"
 msgstr "Los costos de intercambio y puente son por lo menos {formattedFeePercentage}% del monto de intercambio"
-
-# Notifications / jobs aria labels
-msgid "Trade alert settings"
-msgstr ""
-
-msgid "View jobs (opens in a new tab)"
-msgstr ""
 
