@@ -79,8 +79,14 @@ function utils(darkMode: boolean) {
       }
     `,
     colorScrollbar: css`
-      scrollbar-color: var(${UI.COLOR_PAPER_DARKEST}) var(${UI.COLOR_TEXT_OPACITY_10});
       scroll-behavior: smooth;
+
+      /* Firefox-only styles */
+      @supports (-moz-appearance: none) {
+        /* another browsers support ::-webkit-scrollbar, so we need "scrollbar-color" only for Firefox */
+        /* see https://caniuse.com/mdn-css_selectors_-webkit-scrollbar */
+        scrollbar-color: var(${UI.COLOR_PAPER_DARKEST}) var(${UI.COLOR_TEXT_OPACITY_10});
+      }
 
       &::-webkit-scrollbar {
         background: var(${UI.COLOR_PAPER_DARKER});
