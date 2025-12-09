@@ -54,8 +54,11 @@ export function Modal({
   const bind = useGesture({
     onDrag: (state) => {
       y.set(state.down ? state.movement[1] : 0)
+    },
+    onDragEnd: (state) => {
       if (state.movement[1] > 300 || (state.velocity[1] > 3 && state.direction[1] > 0)) {
         onDismiss()
+        y.set(0)
       }
     },
   })
@@ -85,7 +88,7 @@ export function Modal({
                 {...(isMobile
                   ? {
                       ...bind(),
-                      style: { transform: y.interpolate((y) => `translateY(${(y as number) > 0 ? y : 0}px)`) },
+                      style: { transform: y.to((y) => `translateY(${y > 0 ? y : 0}px)`) },
                     }
                   : {})}
                 aria-label={t`dialog content`}
