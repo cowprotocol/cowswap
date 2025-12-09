@@ -62,7 +62,7 @@ interface ReceiptProps {
 
 const TOOLTIPS_MSG: Record<string, MessageDescriptor> = {
   LIMIT_PRICE: msg`You will receive this price or better for your tokens.`,
-  EXECUTION_PRICE: msg`An order’s actual execution price will vary based on the market price and network costs.`,
+  EXECUTION_PRICE: msg`An order's actual execution price will vary based on the market price and network fees and costs.`,
   EXECUTES_AT: msg`Network costs (incl. gas) are covered by filling your order when the market price is better than your limit price.`,
   FILLED_TWAP: msg`How much of the order has been filled.`,
   SURPLUS: msg`The amount of extra tokens you get on top of your limit price.`,
@@ -210,7 +210,7 @@ export function ReceiptModal({
             )}
 
             <styledEl.Field>
-              <FieldLabel label={t`Limit price (incl.costs)`} tooltip={i18n._(TOOLTIPS_MSG.LIMIT_PRICE)} />
+              <FieldLabel label={t`Limit price (incl. fees)`} tooltip={i18n._(TOOLTIPS_MSG.LIMIT_PRICE)} />
               <PriceField order={order} price={limitPrice} />
             </styledEl.Field>
 
