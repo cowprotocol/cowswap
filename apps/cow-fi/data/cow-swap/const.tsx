@@ -8,6 +8,7 @@ import IMG_COWSWAP_NOFEES from '@cowprotocol/assets/images/image-cowswap-nofees.
 import IMG_COWSWAP_SWAPS from '@cowprotocol/assets/images/image-cowswap-swaps.svg'
 import IMG_COWSWAP_TWAP from '@cowprotocol/assets/images/image-cowswap-twap.svg'
 import IMG_COWSWAP_UX from '@cowprotocol/assets/images/image-cowswap-ux.svg'
+import { getAvailableChainsText } from '@cowprotocol/common-const'
 import { Color, UI } from '@cowprotocol/ui'
 
 import { CowFiCategory } from 'src/common/analytics/types'
@@ -174,7 +175,7 @@ export const FAQ_DATA = [
           Coincidences of Wants
         </Link>{' '}
         (CoWs) to settle the order. CoW Swap is the leader among intent-based trading protocols by transaction volume
-        and currently operates on Ethereum, BNB, Base, Arbitrum, Polygon, Avalanche, Linea, Gnosis, and Lens.
+        and currently operates on {getAvailableChainsText()}.
       </>
     ),
   },
