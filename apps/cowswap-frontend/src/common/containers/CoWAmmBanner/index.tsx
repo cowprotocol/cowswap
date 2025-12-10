@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-imports */ // TODO: Don't use 'modules' import
 import { useCallback } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
