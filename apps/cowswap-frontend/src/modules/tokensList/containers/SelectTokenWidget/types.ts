@@ -57,35 +57,3 @@ export interface SelectTokenWidgetContentProps {
   hasChainPanel?: boolean
   chainsPanelTitle?: string
 }
-
-export interface SelectTokenModalContentProps {
-  standalone?: boolean
-  displayLpTokenLists?: boolean
-  unsupportedTokens: UnsupportedTokensState
-  selectedToken?: Nullish<Currency>
-  allTokens: TokenWithLogo[]
-  favoriteTokens: TokenWithLogo[]
-  recentTokens?: TokenWithLogo[]
-  balancesState: BalancesState
-  permitCompatibleTokens: PermitCompatibleTokens
-  onSelectToken: (token: TokenWithLogo) => void
-  handleTokenListItemClick: (token: TokenWithLogo) => void
-  onInputPressEnter?: () => void
-  onDismiss: () => void
-  setIsManageWidgetOpen: (open: boolean) => void
-  isInjectedWidgetMode: boolean
-  openPoolPage: (poolAddress: string) => void
-  tokenListCategoryState: [TokenListCategory[] | null, (category: TokenListCategory[] | null) => void]
-  disableErc20: boolean
-  account: string | undefined
-  chainsToSelect: ChainsToSelectState | undefined
-  onSelectChain: (chain: ChainInfo) => void
-  areTokensLoading: boolean
-  tokenListTags: TokenListTags
-  areTokensFromBridge: boolean
-  isRouteAvailable: boolean | undefined
-  clearRecentTokens: () => void
-  selectedTargetChainId?: number
-  hasChainPanel?: boolean
-  chainsPanelTitle?: string
-}
