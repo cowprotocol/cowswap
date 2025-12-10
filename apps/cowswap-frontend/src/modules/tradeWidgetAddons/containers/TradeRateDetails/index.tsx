@@ -11,6 +11,7 @@ import {
   NetworkCostsRow,
   useShouldPayGas,
   useGetReceiveAmountInfo,
+  useGetSwapReceiveAmountInfo,
 } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { useIsSlippageModified, useTradeSlippage } from 'modules/tradeSlippage'
@@ -44,11 +45,12 @@ export function TradeRateDetails({
 
   const slippage = useTradeSlippage()
   const isSlippageModified = useIsSlippageModified()
-  const receiveAmountInfo = useGetReceiveAmountInfo(true)
+  const receiveAmountInfo = useGetReceiveAmountInfo()
+  const swapReceiveAmountInfo = useGetSwapReceiveAmountInfo()
   const derivedTradeState = useDerivedTradeState()
   const tradeQuote = useTradeQuote()
   const shouldPayGas = useShouldPayGas()
-  const bridgeQuoteAmounts = useBridgeQuoteAmounts(true)
+  const bridgeQuoteAmounts = useBridgeQuoteAmounts()
 
   const inputCurrency = derivedTradeState?.inputCurrency
 
@@ -65,7 +67,7 @@ export function TradeRateDetails({
     setFeeDetailsOpen((prev) => !prev)
   }, [])
 
-  if (!receiveAmountInfo) {
+  if (!receiveAmountInfo || !swapReceiveAmountInfo) {
     if (!networkFeeAmount) return null
 
     return (
@@ -81,7 +83,7 @@ export function TradeRateDetails({
   }
 
   const totalCosts = getTotalCosts(
-    receiveAmountInfo,
+    swapReceiveAmountInfo,
     bridgeQuoteAmounts?.bridgeFeeAmounts?.amountInIntermediateCurrency,
   )
 
