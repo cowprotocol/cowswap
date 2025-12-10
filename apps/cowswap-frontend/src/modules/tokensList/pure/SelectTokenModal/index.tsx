@@ -4,9 +4,11 @@ import { SearchInput } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 
-import { TokensContentSection, TitleBarActions, useSelectTokenContext, useTokenSearchInput } from './helpers'
+import { TitleBarActions, useSelectTokenContext, useTokenSearchInput } from './helpers'
 import * as styledEl from './styled'
 import { TokenColumnContent } from './TokenColumnContent'
+
+import { TokensContent } from '../TokensContent'
 
 import type { SelectTokenModalProps } from './types'
 
@@ -71,20 +73,20 @@ export function SelectTokenModal(props: SelectTokenModalProps): ReactNode {
         chainsToSelect={legacyChainsState}
         onSelectChain={onSelectChain}
       >
-        <TokensContentSection
+        <TokensContent
           displayLpTokenLists={displayLpTokenLists}
+          selectTokenContext={selectTokenContext}
           favoriteTokens={favoriteTokens}
           recentTokens={recentTokens}
-          onClearRecentTokens={onClearRecentTokens}
-          onOpenManageWidget={onOpenManageWidget}
-          standalone={standalone}
           areTokensLoading={areTokensLoading}
           allTokens={allTokens}
           searchInput={trimmedInputValue}
           areTokensFromBridge={areTokensFromBridge}
           hideFavoriteTokensTooltip={hideFavoriteTokensTooltip}
           selectedTargetChainId={selectedTargetChainId}
-          selectTokenContext={selectTokenContext}
+          onClearRecentTokens={onClearRecentTokens}
+          onOpenManageWidget={onOpenManageWidget}
+          standalone={standalone}
         />
       </TokenColumnContent>
     </SelectTokenModalShell>
