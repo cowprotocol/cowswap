@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-imports */ // TODO: Don't use 'modules' import
 import { LpToken } from '@cowprotocol/common-const'
 import { LpTokenProvider } from '@cowprotocol/types'
 import { BigNumber } from '@ethersproject/bignumber'
