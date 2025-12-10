@@ -9,7 +9,6 @@ import { SettingsIcon } from 'modules/trade/pure/Settings'
 import * as styledEl from './styled'
 
 import { SelectTokenContext } from '../../types'
-import { TokensContent } from '../TokensContent'
 
 import type { SelectTokenModalProps } from './types'
 
@@ -53,53 +52,6 @@ export function useTokenSearchInput(defaultInputValue = ''): [string, (value: st
   const [inputValue, setInputValue] = useState<string>(defaultInputValue)
 
   return [inputValue, setInputValue, inputValue.trim()]
-}
-
-interface TokensContentSectionProps
-  extends Pick<
-    SelectTokenModalProps,
-    | 'displayLpTokenLists'
-    | 'favoriteTokens'
-    | 'recentTokens'
-    | 'areTokensLoading'
-    | 'allTokens'
-    | 'areTokensFromBridge'
-    | 'hideFavoriteTokensTooltip'
-    | 'selectedTargetChainId'
-    | 'onClearRecentTokens'
-  > {
-  searchInput: string
-  selectTokenContext: SelectTokenContext
-}
-
-export function TokensContentSection({
-  displayLpTokenLists,
-  favoriteTokens,
-  recentTokens,
-  areTokensLoading,
-  allTokens,
-  searchInput,
-  areTokensFromBridge,
-  hideFavoriteTokensTooltip,
-  selectedTargetChainId,
-  selectTokenContext,
-  onClearRecentTokens,
-}: TokensContentSectionProps): ReactNode {
-  return (
-    <TokensContent
-      displayLpTokenLists={displayLpTokenLists}
-      selectTokenContext={selectTokenContext}
-      favoriteTokens={favoriteTokens}
-      recentTokens={recentTokens}
-      areTokensLoading={areTokensLoading}
-      allTokens={allTokens}
-      searchInput={searchInput}
-      areTokensFromBridge={areTokensFromBridge}
-      hideFavoriteTokensTooltip={hideFavoriteTokensTooltip}
-      selectedTargetChainId={selectedTargetChainId}
-      onClearRecentTokens={onClearRecentTokens}
-    />
-  )
 }
 
 interface TitleBarActionsProps {
