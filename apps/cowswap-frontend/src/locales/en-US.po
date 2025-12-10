@@ -311,7 +311,7 @@ msgstr "Easily set and manage your orders in USD"
 msgid "Click \"Wrap {nativeSymbol}\" to try again."
 msgstr "Click \"Wrap {nativeSymbol}\" to try again."
 
-#: apps/cowswap-frontend/src/modules/tokensList/pure/TokenSearchContent/index.tsx
+#: apps/cowswap-frontend/src/modules/tokensList/pure/TokenSearchContent/useSearchRows.ts
 msgid "Tokens from inactive lists. Import specific tokens below or click Manage to activate more lists."
 msgstr "Tokens from inactive lists. Import specific tokens below or click Manage to activate more lists."
 
@@ -840,8 +840,8 @@ msgid "Copied"
 msgstr "Copied"
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/TokenSearchResults/index.tsx
-msgid "Can't find your token on the list?"
-msgstr "Can't find your token on the list?"
+#~ msgid "Can't find your token on the list?"
+#~ msgstr "Can't find your token on the list?"
 
 #: apps/cowswap-frontend/src/modules/trade/pure/ReceiveAmountTitle/index.tsx
 msgid "icon"
@@ -860,8 +860,8 @@ msgid "Please connect your wallet to one of our supported networks."
 msgstr "Please connect your wallet to one of our supported networks."
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/TokenSearchResults/index.tsx
-msgid "<0>Read our guide</0> on how to add custom tokens."
-msgstr "<0>Read our guide</0> on how to add custom tokens."
+#~ msgid "<0>Read our guide</0> on how to add custom tokens."
+#~ msgstr "<0>Read our guide</0> on how to add custom tokens."
 
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/TenderlySimulate/index.tsx
 msgid "Retry"
@@ -1166,7 +1166,7 @@ msgstr "Select an {accountProxyLabelString} to check for available refunds {chai
 msgid "Unsupported wallet"
 msgstr "Unsupported wallet"
 
-#: apps/cowswap-frontend/src/modules/tokensList/pure/TokenSearchContent/index.tsx
+#: apps/cowswap-frontend/src/modules/tokensList/pure/TokenSearchContent/useSearchRows.ts
 msgid "Expanded results from inactive Token Lists"
 msgstr "Expanded results from inactive Token Lists"
 
@@ -2961,7 +2961,7 @@ msgstr "Safe confirmed signatures"
 msgid "Winning solver"
 msgstr "Winning solver"
 
-#: apps/cowswap-frontend/src/modules/tokensList/pure/TokenSearchContent/index.tsx
+#: apps/cowswap-frontend/src/modules/tokensList/pure/TokenSearchContent/useSearchRows.ts
 msgid "Tokens from external sources."
 msgstr "Tokens from external sources."
 
@@ -3911,6 +3911,10 @@ msgstr "User rejected approval transaction"
 msgid "Swap on"
 msgstr "Swap on"
 
+#: apps/cowswap-frontend/src/modules/tokensList/pure/TokenSearchContent/GuideBanner.tsx
+msgid "Can't find your token on the list? <0>Read our guide</0> on how to add custom tokens."
+msgstr "Can't find your token on the list? <0>Read our guide</0> on how to add custom tokens."
+
 #: apps/cowswap-frontend/src/modules/trade/pure/ProtocolFeeRow/index.tsx
 #~ msgid "The fee is {protocolFeeBps} BPS ({protocolFeeAsPercent}%), applied only if the trade is executed.<0/><1/>Solver rewards are taken from this fee amount."
 #~ msgstr "The fee is {protocolFeeBps} BPS ({protocolFeeAsPercent}%), applied only if the trade is executed.<0/><1/>Solver rewards are taken from this fee amount."
@@ -4225,7 +4229,7 @@ msgstr "Version"
 msgid "All tokens"
 msgstr "All tokens"
 
-#: apps/cowswap-frontend/src/modules/tokensList/pure/TokenSearchContent/index.tsx
+#: apps/cowswap-frontend/src/modules/tokensList/pure/TokenSearchContent/useSearchRows.ts
 msgid "Additional Results from External Sources"
 msgstr "Additional Results from External Sources"
 

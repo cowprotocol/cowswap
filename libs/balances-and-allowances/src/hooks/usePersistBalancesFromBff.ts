@@ -10,8 +10,9 @@ import useSWR, { SWRConfiguration } from 'swr'
 
 import { BFF_BALANCES_SWR_CONFIG } from '../constants/bff-balances-swr-config'
 import { balancesAtom, BalancesState, balancesUpdateAtom } from '../state/balancesAtom'
-import { useSetIsBffFailed, useAddUnsupportedChainId } from '../state/isBffFailedAtom'
+import { useAddUnsupportedChainId, useSetIsBffFailed } from '../state/isBffFailedAtom'
 import { useIsBffSupportedNetwork } from '../utils/isBffSupportedNetwork'
+import { UnsupportedChainError, isUnsupportedChainError } from '../utils/UnsupportedChainError'
 
 type BalanceResponse = {
   balances: Record<string, string> | null
@@ -26,7 +27,7 @@ export interface PersistBalancesFromBffParams {
   tokenAddresses: string[]
 }
 
-function isUnsupportedChainError(errorMessage: string): boolean {
+function isUnsupportedChainMessage(errorMessage: string): boolean {
   return errorMessage.toLowerCase().includes('unsupported chain')
 }
 
@@ -47,11 +48,11 @@ async function parseBffResponse(res: Response): Promise<BalanceResponse | { mess
 
 function handleBffError(res: Response, data: BalanceResponse | { message?: string }): never {
   const errorMessage = parseErrorResponse(data, res.statusText)
-  
-  if (isUnsupportedChainError(errorMessage)) {
-    throw new Error('Unsupported chain')
+
+  if (isUnsupportedChainMessage(errorMessage)) {
+    throw new UnsupportedChainError()
   }
-  
+
   throw new Error(`BFF error: ${res.status} ${res.statusText}`)
 }
 
@@ -90,13 +91,12 @@ export function usePersistBalancesFromBff(params: PersistBalancesFromBffParams):
   }, [setBalances, isBalancesLoading, targetChainId, targetAccount])
 
   useEffect(() => {
-    const hasUnsupportedChainError = error instanceof Error && 
-      isUnsupportedChainError(error.message)
-    
+    const hasUnsupportedChainError = isUnsupportedChainError(error)
+
     if (hasUnsupportedChainError) {
       addUnsupportedChainId(targetChainId)
     }
-    
+
     setIsBffFailed(!!error)
   }, [error, setIsBffFailed, addUnsupportedChainId, targetChainId])
 
@@ -164,8 +164,8 @@ export async function getBffBalances(
 
     return data.balances
   } catch (error) {
-    if (error instanceof Error && isUnsupportedChainError(error.message)) {
-      throw new Error('Unsupported chain')
+    if (isUnsupportedChainError(error)) {
+      throw new UnsupportedChainError()
     }
     throw error
   }
