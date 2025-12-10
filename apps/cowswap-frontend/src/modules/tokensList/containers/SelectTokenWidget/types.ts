@@ -56,20 +56,6 @@ export interface SelectTokenWidgetContentProps {
   userAddedTokens: TokenWithLogo[]
 }
 
-export interface ManageListsAndTokensContentProps {
-  allTokenLists: ReturnType<typeof useAllListsList>
-  userAddedTokens: TokenWithLogo[]
-  onDismiss: () => void
-  setIsManageWidgetOpen: (open: boolean) => void
-}
-
-export interface LpTokenPageContentProps {
-  selectedPoolAddress: string
-  onDismiss: () => void
-  closePoolPage: () => void
-  onSelectToken: (token: TokenWithLogo) => void
-}
-
 export interface SelectTokenModalContentProps {
   standalone?: boolean
   displayLpTokenLists?: boolean

@@ -2,12 +2,7 @@ import { ReactNode } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 
-import {
-  LpTokenPageContentProps,
-  ManageListsAndTokensContentProps,
-  SelectTokenModalContentProps,
-  SelectTokenWidgetContentProps,
-} from './types'
+import { SelectTokenModalContentProps, SelectTokenWidgetContentProps } from './types'
 
 import { ImportListModal } from '../../pure/ImportListModal'
 import { ImportTokenModal } from '../../pure/ImportTokenModal'
@@ -16,38 +11,6 @@ import { LpTokenPage } from '../LpTokenPage'
 import { ManageListsAndTokens } from '../ManageListsAndTokens'
 
 const EMPTY_FAV_TOKENS: TokenWithLogo[] = []
-
-export function ManageListsAndTokensContent({
-  allTokenLists,
-  userAddedTokens,
-  onDismiss,
-  setIsManageWidgetOpen,
-}: ManageListsAndTokensContentProps): ReactNode {
-  return (
-    <ManageListsAndTokens
-      lists={allTokenLists}
-      customTokens={userAddedTokens}
-      onDismiss={onDismiss}
-      onBack={() => setIsManageWidgetOpen(false)}
-    />
-  )
-}
-
-export function LpTokenPageContent({
-  selectedPoolAddress,
-  onDismiss,
-  closePoolPage,
-  onSelectToken,
-}: LpTokenPageContentProps): ReactNode {
-  return (
-    <LpTokenPage
-      poolAddress={selectedPoolAddress}
-      onDismiss={onDismiss}
-      onBack={closePoolPage}
-      onSelectToken={onSelectToken}
-    />
-  )
-}
 
 export function SelectTokenModalContent(props: SelectTokenModalContentProps): ReactNode {
   const {
@@ -140,21 +103,21 @@ export function SelectTokenWidgetContent(props: SelectTokenWidgetContentProps): 
 
   if (isManageWidgetOpen && !standalone) {
     return (
-      <ManageListsAndTokensContent
-        allTokenLists={props.allTokenLists}
-        userAddedTokens={props.userAddedTokens}
+      <ManageListsAndTokens
+        lists={props.allTokenLists}
+        customTokens={props.userAddedTokens}
         onDismiss={props.onDismiss}
-        setIsManageWidgetOpen={props.setIsManageWidgetOpen}
+        onBack={() => props.setIsManageWidgetOpen(false)}
       />
     )
   }
 
   if (selectedPoolAddress) {
     return (
-      <LpTokenPageContent
-        selectedPoolAddress={selectedPoolAddress}
+      <LpTokenPage
+        poolAddress={selectedPoolAddress}
         onDismiss={props.onDismiss}
-        closePoolPage={props.closePoolPage}
+        onBack={props.closePoolPage}
         onSelectToken={props.onSelectToken}
       />
     )
