@@ -111,8 +111,6 @@ export function SelectTokenModal(props: SelectTokenModalProps): ReactNode {
           hideFavoriteTokensTooltip={hideFavoriteTokensTooltip}
           selectedTargetChainId={selectedTargetChainId}
           onClearRecentTokens={onClearRecentTokens}
-          onOpenManageWidget={onOpenManageWidget}
-          standalone={standalone}
         />
       </TokenColumnContent>
     </SelectTokenModalShell>
