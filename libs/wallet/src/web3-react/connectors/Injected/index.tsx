@@ -277,7 +277,6 @@ export class InjectedWallet extends Connector {
 
   // Mod: Added custom method
   // Get chainId with retry logic for providers that may return empty array during initialization.
-  // Uses provider events and wallet_getProviderState as fallbacks instead of only timing out.
   private async getChainIdWithRetry(maxRetries = 5): Promise<string | number> {
     if (this.chainIdRequest) return this.chainIdRequest
 
@@ -296,15 +295,11 @@ export class InjectedWallet extends Connector {
         try {
           chainId = await provider.request({ method: 'eth_chainId' })
         } catch (error) {
-          console.debug('eth_chainId failed, falling back to provider metadata', error)
+          console.debug('eth_chainId failed, will retry', error)
           lastError = error
         }
 
         if (typeof chainId === 'string' || typeof chainId === 'number') return chainId
-
-        // Some providers surface chainId via metadata while returning empty arrays during init; use it first to avoid needless backoff when chainId is already known.
-        const metaChainId = readMetaChainId(provider)
-        if (metaChainId !== null) return metaChainId
 
         if (Array.isArray(chainId) && chainId.length === 0 && attempt < maxRetries - 1) {
           await new Promise((resolve) => setTimeout(resolve, 500 * (attempt + 1)))
@@ -336,37 +331,4 @@ export class InjectedWallet extends Connector {
 
     return this.chainIdRequest
   }
-}
-
-function normalizeChainId(chainId: unknown): string | number | null {
-  if (typeof chainId === 'string' || typeof chainId === 'number') return chainId
-  if (Array.isArray(chainId) && chainId.length === 0) return null
-
-  throw new Error(
-    `Invalid chainId: expected string or number, got ${typeof chainId}. Value: ${JSON.stringify(chainId)}`,
-  )
-}
-
-// Some injected providers stash the chainId in non-standard fields; check a few common spots before making RPC calls.
-function readMetaChainId(provider: EIP1193Provider): string | number | null {
-  const candidates = [
-    (provider as { chainId?: unknown }).chainId,
-    (provider as { networkVersion?: unknown }).networkVersion,
-    (provider as { provider?: { chainId?: unknown } }).provider?.chainId,
-    (provider as { _state?: { chainId?: unknown; network?: { chainId?: unknown } } })._state?.chainId,
-    (provider as { _state?: { chainId?: unknown; network?: { chainId?: unknown } } })._state?.network?.chainId,
-    (provider as { session?: { chainId?: unknown } }).session?.chainId,
-  ]
-
-  for (const candidate of candidates) {
-    if (candidate === undefined) continue
-    try {
-      const normalized = normalizeChainId(candidate)
-      if (normalized !== null) return normalized
-    } catch {
-      // ignore and keep checking candidates
-    }
-  }
-
-  return null
 }
