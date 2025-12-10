@@ -1,7 +1,7 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { getChainAccentColors } from '@cowprotocol/ui'
 
-import { getChainAccent } from './index'
+import { getChainAccent } from './getChainAccent'
 
 jest.mock('@cowprotocol/ui', () => ({
   ...jest.requireActual('@cowprotocol/ui'),

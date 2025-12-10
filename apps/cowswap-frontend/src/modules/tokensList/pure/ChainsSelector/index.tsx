@@ -2,16 +2,16 @@ import { ReactNode } from 'react'
 
 import OrderCheckIcon from '@cowprotocol/assets/cow-swap/order-check.svg'
 import { useTheme } from '@cowprotocol/common-hooks'
-import { ChainInfo, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { getChainAccentColors } from '@cowprotocol/ui'
+import { ChainInfo } from '@cowprotocol/cow-sdk'
 
 import { msg } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 
+import { getChainAccent } from './getChainAccent'
 import * as styledEl from './styled'
 
-import type { ChainAccentVars } from './styled'
+export { getChainAccent } from './getChainAccent'
 
 const LOADING_ITEMS_COUNT = 10
 const LOADING_SKELETON_INDICES = Array.from({ length: LOADING_ITEMS_COUNT }, (_, index) => index)
@@ -126,19 +126,6 @@ function ChainsButtonsList({
       ))}
     </>
   )
-}
-
-export function getChainAccent(chainId: ChainInfo['id']): ChainAccentVars | undefined {
-  const accentConfig = getChainAccentColors(chainId as SupportedChainId)
-  if (!accentConfig) {
-    return undefined
-  }
-
-  return {
-    backgroundVar: accentConfig.bgVar,
-    borderVar: accentConfig.borderVar,
-    accentColorVar: accentConfig.accentVar,
-  }
 }
 
 interface ChainButtonProps {
