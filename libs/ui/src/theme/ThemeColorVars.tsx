@@ -381,7 +381,8 @@ export const ThemeColorVars = css`
   }
 
   body {
-    scrollbar-color: ${({ theme }) => theme.colorScrollbar};
+    ${({ theme }) => theme.colorScrollbar}
+
     color: var(${UI.COLOR_TEXT_PAPER});
   }
 `
