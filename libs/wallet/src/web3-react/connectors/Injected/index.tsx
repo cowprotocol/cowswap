@@ -289,7 +289,6 @@ export class InjectedWallet extends Connector {
     const run = async (): Promise<string | number> => {
       let lastError: unknown
 
-      // First, try the standard RPC approach with retries
       for (let attempt = 0; attempt < maxRetries; attempt++) {
         let chainId: unknown
 
@@ -300,8 +299,14 @@ export class InjectedWallet extends Connector {
           lastError = error
         }
 
-        // If we get a valid chainId from RPC, return it immediately
+        // If we get a valid chainId from RPC, return it immediately (prioritize fresh response)
         if (typeof chainId === 'string' || typeof chainId === 'number') return chainId
+
+        // Empty array means provider is initializing - check metadata immediately (retrying won't help)
+        if (Array.isArray(chainId) && chainId.length === 0) {
+          const metaChainId = readMetaChainId(provider)
+          if (metaChainId !== null) return metaChainId
+        }
 
         if (chainId !== undefined && !Array.isArray(chainId)) {
           lastError = new Error(
@@ -313,11 +318,6 @@ export class InjectedWallet extends Connector {
           await new Promise((resolve) => setTimeout(resolve, 500 * (attempt + 1)))
         }
       }
-
-      // After all retries exhausted, try reading from provider metadata as last resort.
-      // Some providers (e.g., Brave) surface chainId via metadata while returning empty arrays during init.
-      const metaChainId = readMetaChainId(provider)
-      if (metaChainId !== null) return metaChainId
 
       if (lastError instanceof Error) {
         throw lastError
