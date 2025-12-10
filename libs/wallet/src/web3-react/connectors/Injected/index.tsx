@@ -302,7 +302,9 @@ export class InjectedWallet extends Connector {
         // If we get a valid chainId from RPC, return it immediately (prioritize fresh response)
         if (typeof chainId === 'string' || typeof chainId === 'number') return chainId
 
-        // Empty array means provider is initializing - check metadata immediately (retrying won't help)
+        // Empty array means provider is initializing - check metadata immediately (retrying won't help).
+        // Note: This is the only case where we use cached metadata. Required for Brave wallet which
+        // returns empty arrays during initialization but has the correct chainId in provider metadata.
         if (Array.isArray(chainId) && chainId.length === 0) {
           const metaChainId = readMetaChainId(provider)
           if (metaChainId !== null) return metaChainId
