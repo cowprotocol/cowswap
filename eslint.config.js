@@ -1,8 +1,10 @@
 const { FlatCompat } = require('@eslint/eslintrc')
 const js = require('@eslint/js')
 const nxEslintPlugin = require('@nx/eslint-plugin')
+const prettierConfig = require('eslint-config-prettier')
 const eslintImport = require('eslint-plugin-import')
 const pluginLingui = require('eslint-plugin-lingui')
+const prettier = require('eslint-plugin-prettier')
 const react = require('eslint-plugin-react')
 const reactHooks = require('eslint-plugin-react-hooks')
 const unusedImports = require('eslint-plugin-unused-imports')
@@ -13,6 +15,7 @@ const compat = new FlatCompat({
 })
 
 module.exports = [
+  prettierConfig,
   pluginLingui.configs['flat/recommended'],
   {
     ignores: ['static-files/'],
@@ -22,6 +25,7 @@ module.exports = [
       '@nx': nxEslintPlugin,
       'unused-imports': unusedImports,
       import: eslintImport,
+      prettier: prettier,
     },
   },
 
@@ -195,6 +199,7 @@ module.exports = [
       'prefer-const': 'error',
       'no-unneeded-ternary': 'error',
       'no-var': 'error',
+      'prettier/prettier': 'warn',
     },
   },
 
