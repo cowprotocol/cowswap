@@ -3,8 +3,6 @@ import { ReactNode } from 'react'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 
 import {
-  ImportListModalContentProps,
-  ImportTokenModalContentProps,
   LpTokenPageContentProps,
   ManageListsAndTokensContentProps,
   SelectTokenModalContentProps,
@@ -18,33 +16,6 @@ import { LpTokenPage } from '../LpTokenPage'
 import { ManageListsAndTokens } from '../ManageListsAndTokens'
 
 const EMPTY_FAV_TOKENS: TokenWithLogo[] = []
-
-export function ImportTokenModalContent({
-  tokenToImport,
-  onDismiss,
-  resetTokenImport,
-  importTokenAndClose,
-}: ImportTokenModalContentProps): ReactNode {
-  return (
-    <ImportTokenModal
-      tokens={[tokenToImport]}
-      onDismiss={onDismiss}
-      onBack={resetTokenImport}
-      onImport={importTokenAndClose}
-    />
-  )
-}
-
-export function ImportListModalContent({
-  listToImport,
-  onDismiss,
-  resetTokenImport,
-  importListAndBack,
-}: ImportListModalContentProps): ReactNode {
-  return (
-    <ImportListModal list={listToImport} onDismiss={onDismiss} onBack={resetTokenImport} onImport={importListAndBack} />
-  )
-}
 
 export function ManageListsAndTokensContent({
   allTokenLists,
@@ -147,22 +118,22 @@ export function SelectTokenWidgetContent(props: SelectTokenWidgetContentProps): 
 
   if (tokenToImport && !standalone) {
     return (
-      <ImportTokenModalContent
-        tokenToImport={tokenToImport}
+      <ImportTokenModal
+        tokens={[tokenToImport]}
         onDismiss={props.onDismiss}
-        resetTokenImport={props.resetTokenImport}
-        importTokenAndClose={props.importTokenAndClose}
+        onBack={props.resetTokenImport}
+        onImport={props.importTokenAndClose}
       />
     )
   }
 
   if (listToImport && !standalone) {
     return (
-      <ImportListModalContent
-        listToImport={listToImport}
+      <ImportListModal
+        list={listToImport}
         onDismiss={props.onDismiss}
-        resetTokenImport={props.resetTokenImport}
-        importListAndBack={props.importListAndBack}
+        onBack={props.resetTokenImport}
+        onImport={props.importListAndBack}
       />
     )
   }
