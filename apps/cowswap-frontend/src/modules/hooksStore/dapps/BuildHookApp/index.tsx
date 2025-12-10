@@ -99,7 +99,7 @@ export function BuildHookApp({ context }: HookDappProps) {
         })}
       </ContentWrapper>
       <ButtonPrimary onClick={handleSubmit}>
-        {hookToEdit ? t`Save changes` : t`Add ` + (isPreHook ? t`Pre` : t`Post`) + `-hook`}
+        {hookToEdit ? t`Save changes` : t`Add` + ` ` + (isPreHook ? t`Pre` : t`Post`) + ` ` + t`-hook`}
       </ButtonPrimary>
     </Wrapper>
   )
