@@ -201,7 +201,7 @@ export const hookDappsRegistry = {
     description: 'The swap adapter contracts integrate Aave Flash Loans and CoW Swap to facilitate advanced actions like swapping collateral assets when there are borrow positions. Learn more at https://aave.com/docs/developers/smart-contracts/swap-features.',
     version: '0.0.1',
     website: 'https://aave.com',
-    image: 'https://app.aave.com/icons/tokens/aave.svg',
+    image: 'https://raw.githubusercontent.com/aave/interface/refs/heads/main/public/icons/tokens/aave.svg',
     conditions: {
       supportedNetworks: [11155111],
     },
@@ -213,7 +213,7 @@ export const hookDappsRegistry = {
     description: 'The swap adapter contracts integrate Aave Flash Loans and CoW Swap to facilitate advanced actions like swapping debt assets. Learn more at https://aave.com/docs/developers/smart-contracts/swap-features.',
     version: '0.0.1',
     website: 'https://aave.com',
-    image: 'https://app.aave.com/icons/tokens/aave.svg',
+    image: 'https://raw.githubusercontent.com/aave/interface/refs/heads/main/public/icons/tokens/aave.svg',
     conditions: {
       supportedNetworks: [11155111],
     },
@@ -225,7 +225,7 @@ export const hookDappsRegistry = {
     description: 'The swap adapter contracts integrate Aave Flash Loans and CoW Swap to facilitate advanced actions like repaying borrow positions using collateral. Learn more at https://aave.com/docs/developers/smart-contracts/swap-features.',
     version: '0.0.1',
     website: 'https://aave.com',
-    image: 'https://app.aave.com/icons/tokens/aave.svg',
+    image: 'https://raw.githubusercontent.com/aave/interface/refs/heads/main/public/icons/tokens/aave.svg',
     conditions: {
       supportedNetworks: [11155111],
     },
