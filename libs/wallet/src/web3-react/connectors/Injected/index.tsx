@@ -289,6 +289,7 @@ export class InjectedWallet extends Connector {
     const run = async (): Promise<string | number> => {
       let lastError: unknown
 
+      // First, try the standard RPC approach with retries
       for (let attempt = 0; attempt < maxRetries; attempt++) {
         let chainId: unknown
 
@@ -299,14 +300,10 @@ export class InjectedWallet extends Connector {
           lastError = error
         }
 
+        // If we get a valid chainId from RPC, return it immediately
         if (typeof chainId === 'string' || typeof chainId === 'number') return chainId
 
-        if (Array.isArray(chainId) && chainId.length === 0 && attempt < maxRetries - 1) {
-          await new Promise((resolve) => setTimeout(resolve, 500 * (attempt + 1)))
-          continue
-        }
-
-        if (chainId !== undefined) {
+        if (chainId !== undefined && !Array.isArray(chainId)) {
           lastError = new Error(
             `Invalid chainId: expected string or number, got ${typeof chainId}. Value: ${JSON.stringify(chainId)}`,
           )
@@ -314,9 +311,13 @@ export class InjectedWallet extends Connector {
 
         if (attempt < maxRetries - 1) {
           await new Promise((resolve) => setTimeout(resolve, 500 * (attempt + 1)))
-          continue
         }
       }
+
+      // After all retries exhausted, try reading from provider metadata as last resort.
+      // Some providers (e.g., Brave) surface chainId via metadata while returning empty arrays during init.
+      const metaChainId = readMetaChainId(provider)
+      if (metaChainId !== null) return metaChainId
 
       if (lastError instanceof Error) {
         throw lastError
@@ -331,4 +332,23 @@ export class InjectedWallet extends Connector {
 
     return this.chainIdRequest
   }
+}
+
+// Some injected providers stash the chainId in non-standard fields; check common spots as a last resort fallback.
+function readMetaChainId(provider: EIP1193Provider): string | number | null {
+  const candidates = [
+    (provider as { chainId?: unknown }).chainId,
+    (provider as { networkVersion?: unknown }).networkVersion,
+    (provider as { provider?: { chainId?: unknown } }).provider?.chainId,
+    (provider as { _state?: { chainId?: unknown; network?: { chainId?: unknown } } })._state?.chainId,
+    (provider as { _state?: { chainId?: unknown; network?: { chainId?: unknown } } })._state?.network?.chainId,
+    (provider as { session?: { chainId?: unknown } }).session?.chainId,
+  ]
+
+  for (const candidate of candidates) {
+    if (candidate === undefined) continue
+    if (typeof candidate === 'string' || typeof candidate === 'number') return candidate
+  }
+
+  return null
 }
