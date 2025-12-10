@@ -2,14 +2,14 @@ import { ReactNode } from 'react'
 
 import OrderCheckIcon from '@cowprotocol/assets/cow-swap/order-check.svg'
 import { useTheme } from '@cowprotocol/common-hooks'
-import { ChainInfo, SupportedChainId } from '@cowprotocol/cow-sdk'
-import { getChainAccentColors } from '@cowprotocol/ui'
+import { ChainInfo } from '@cowprotocol/cow-sdk'
 
 import SVG from 'react-inlinesvg'
 
+import { getChainAccent } from './getChainAccent'
 import * as styledEl from './styled'
 
-import type { ChainAccentVars } from './styled'
+export { getChainAccent } from './getChainAccent'
 
 const LOADING_ITEMS_COUNT = 10
 const LOADING_SKELETON_INDICES = Array.from({ length: LOADING_ITEMS_COUNT }, (_, index) => index)
@@ -24,19 +24,18 @@ export interface ChainsSelectorProps {
 export function ChainsSelector({ chains, onSelectChain, defaultChainId, isLoading }: ChainsSelectorProps): ReactNode {
   const { darkMode } = useTheme()
 
-  if (isLoading) {
-    return <ChainsLoadingList />
-  }
-
-  return (
-    <ChainsList chains={chains} defaultChainId={defaultChainId} onSelectChain={onSelectChain} isDarkMode={darkMode} />
-  )
-}
-
-function ChainsLoadingList(): ReactNode {
   return (
     <styledEl.List>
-      <ChainsSkeletonList />
+      {isLoading ? (
+        <ChainsSkeletonList />
+      ) : (
+        <ChainsButtonsList
+          chains={chains}
+          defaultChainId={defaultChainId}
+          onSelectChain={onSelectChain}
+          isDarkMode={darkMode}
+        />
+      )}
     </styledEl.List>
   )
 }
@@ -54,27 +53,14 @@ function ChainsSkeletonList(): ReactNode {
   )
 }
 
-interface ChainsListProps {
+interface ChainsButtonsListProps {
   chains: ChainInfo[]
   defaultChainId?: ChainInfo['id']
   onSelectChain(chain: ChainInfo): void
   isDarkMode: boolean
 }
 
-function ChainsList({ chains, defaultChainId, onSelectChain, isDarkMode }: ChainsListProps): ReactNode {
-  return (
-    <styledEl.List>
-      <ChainsButtonsList
-        chains={chains}
-        defaultChainId={defaultChainId}
-        onSelectChain={onSelectChain}
-        isDarkMode={isDarkMode}
-      />
-    </styledEl.List>
-  )
-}
-
-function ChainsButtonsList({ chains, defaultChainId, onSelectChain, isDarkMode }: ChainsListProps): ReactNode {
+function ChainsButtonsList({ chains, defaultChainId, onSelectChain, isDarkMode }: ChainsButtonsListProps): ReactNode {
   return (
     <>
       {chains.map((chain) => (
@@ -88,19 +74,6 @@ function ChainsButtonsList({ chains, defaultChainId, onSelectChain, isDarkMode }
       ))}
     </>
   )
-}
-
-export function getChainAccent(chainId: ChainInfo['id']): ChainAccentVars | undefined {
-  const accentConfig = getChainAccentColors(chainId as SupportedChainId)
-  if (!accentConfig) {
-    return undefined
-  }
-
-  return {
-    backgroundVar: accentConfig.bgVar,
-    borderVar: accentConfig.borderVar,
-    accentColorVar: accentConfig.accentVar,
-  }
 }
 
 interface ChainButtonProps {
