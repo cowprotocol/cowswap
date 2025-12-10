@@ -1,9 +1,9 @@
 /* eslint-disable no-restricted-imports */ // TODO: Don't use 'modules' import
 import { useMemo } from 'react'
 
-import { Order } from 'legacy/state/orders/actions'
+import { useTokenByAddress } from '@cowprotocol/tokens'
 
-import { useTryFindIntermediateTokenInTokensMap } from 'modules/trade'
+import { Order } from 'legacy/state/orders/actions'
 
 import {
   ExecutedSummaryData,
@@ -12,7 +12,7 @@ import {
 } from 'utils/getExecutedSummaryData'
 
 export function useGetExecutedBridgeSummary(order: Order | undefined): ExecutedSummaryData | undefined {
-  const intermediateToken = useTryFindIntermediateTokenInTokensMap(order)
+  const intermediateToken = useTokenByAddress(order?.buyToken)
 
   return useMemo(() => {
     if (!order) return undefined

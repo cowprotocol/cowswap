@@ -16,6 +16,7 @@ import IMG_ICON_MENU_DOTS from '@cowprotocol/assets/images/menu-grid-dots.svg'
 import IMG_ICON_MENU_HAMBURGER from '@cowprotocol/assets/images/menu-hamburger.svg'
 import IMG_ICON_SETTINGS_GLOBAL from '@cowprotocol/assets/images/settings-global.svg'
 import IMG_ICON_X from '@cowprotocol/assets/images/x.svg'
+import { LOCALE_DISPLAY_NAMES } from '@cowprotocol/common-const'
 import { useMediaQuery, useOnClickOutside } from '@cowprotocol/common-hooks'
 import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
 
@@ -47,6 +48,8 @@ import {
   RightAligned,
   RootNavItem,
   StyledDropdownContentItem,
+  HideMobile,
+  isMobileQuery,
 } from './styled'
 
 import { Media } from '../../consts'
@@ -102,6 +105,11 @@ const DAO_NAV_ITEMS: MenuItem[] = [
 ]
 
 const getLanguageName = (locale: string): string => {
+  const override = LOCALE_DISPLAY_NAMES[locale as keyof typeof LOCALE_DISPLAY_NAMES]
+  if (override) {
+    return override
+  }
+
   const display = new Intl.DisplayNames([locale], { type: 'language' })
   const languageName = display.of(locale)
 
@@ -927,7 +935,7 @@ export const MenuBar = (props: MenuBarProps) => {
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleSettingsToggle = () => setIsSettingsOpen((prev) => !prev)
 
-  const isMobile = useMediaQuery(Media.upToLarge(false))
+  const isMobile = useMediaQuery(isMobileQuery(false))
   const isMedium = useMediaQuery(Media.upToMedium(false))
 
   useOnClickOutside([menuRef], () => setIsDaoOpen(false))
@@ -993,20 +1001,22 @@ export const MenuBar = (props: MenuBarProps) => {
         <ProductLogo variant={productVariant} logoIconOnly={isMobile} height={30} href="/" theme={customTheme} />
 
         {!isMobile && (
-          <NavItems ref={navItemsRef}>
-            {navItems.map((item, index) => (
-              <NavItem
-                key={index}
-                item={item}
-                LinkComponent={LinkComponent}
-                mobileMode={isMobile}
-                openDropdown={openDropdown}
-                closeDropdown={() => setOpenDropdown(null)}
-                setOpenDropdown={setOpenDropdown}
-                rootDomain={rootDomain}
-              />
-            ))}
-          </NavItems>
+          <HideMobile>
+            <NavItems ref={navItemsRef}>
+              {navItems.map((item, index) => (
+                <NavItem
+                  key={index}
+                  item={item}
+                  LinkComponent={LinkComponent}
+                  mobileMode={isMobile}
+                  openDropdown={openDropdown}
+                  closeDropdown={() => setOpenDropdown(null)}
+                  setOpenDropdown={setOpenDropdown}
+                  rootDomain={rootDomain}
+                />
+              ))}
+            </NavItems>
+          </HideMobile>
         )}
 
         <RightAligned mobileMode={isMedium} flexFlowMobile="row wrap">

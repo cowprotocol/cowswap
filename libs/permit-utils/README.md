@@ -111,7 +111,7 @@ const hookData = await generatePermitHook({
 })
 
 // Add the hookData to the order's appData
-// See the full reference on https://github.com/cowprotocol/app-data/
+// See the full reference on https://www.npmjs.com/package/@cowprotocol/sdk-app-data?activeTab=code
 const appData = { version: '0.10.0', metadata: { hooks: { pre: [hookData] } } }
 
 // The order expects the stringified JSON doc

@@ -42,6 +42,7 @@ export const delay = <T = void>(ms = 100, result?: T): Promise<T> =>
 
 /**
  * Uses images from https://github.com/trustwallet/tokens
+ * @deprecated TODO5(daniel)
  */
 export function getImageUrl(tokenAddress?: string): string | undefined {
   if (!tokenAddress) return undefined
