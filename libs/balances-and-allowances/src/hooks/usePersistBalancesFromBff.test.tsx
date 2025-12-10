@@ -15,6 +15,7 @@ import { PersistBalancesFromBffParams, usePersistBalancesFromBff } from './usePe
 import { BFF_BALANCES_SWR_CONFIG } from '../constants/bff-balances-swr-config'
 import { balancesAtom, BalancesState, balancesUpdateAtom } from '../state/balancesAtom'
 import { bffUnsupportedChainsAtom } from '../state/isBffFailedAtom'
+import { UnsupportedChainError } from '../utils/UnsupportedChainError'
 
 // Enable fetch mocking
 fetchMock.enableMocks()
@@ -212,7 +213,7 @@ describe('usePersistBalancesFromBff - invalidateCacheTrigger', () => {
 
     it('should add chain to unsupported list when "Unsupported chain" error occurs', async () => {
       const mockUseSWR = useSWR as jest.MockedFunction<typeof useSWR>
-      const unsupportedChainError = new Error('Unsupported chain')
+      const unsupportedChainError = new UnsupportedChainError()
 
       mockUseSWR.mockReturnValue({
         data: undefined,

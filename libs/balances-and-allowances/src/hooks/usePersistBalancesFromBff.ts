@@ -12,7 +12,7 @@ import { BFF_BALANCES_SWR_CONFIG } from '../constants/bff-balances-swr-config'
 import { balancesAtom, BalancesState, balancesUpdateAtom } from '../state/balancesAtom'
 import { useAddUnsupportedChainId, useSetIsBffFailed } from '../state/isBffFailedAtom'
 import { useIsBffSupportedNetwork } from '../utils/isBffSupportedNetwork'
-import { UnsupportedChainError, isUnsupportedChainError } from '../utils/UnsupportedChainError'
+import { isUnsupportedChainError, UnsupportedChainError } from '../utils/UnsupportedChainError'
 
 type BalanceResponse = {
   balances: Record<string, string> | null
@@ -150,23 +150,16 @@ export async function getBffBalances(
   const queryParams = skipCache ? '?ignoreCache=true' : ''
   const fullUrl = url + queryParams
 
-  try {
-    const res = await fetch(fullUrl)
-    const data = await parseBffResponse(res)
+  const res = await fetch(fullUrl)
+  const data = await parseBffResponse(res)
 
-    if (!res.ok) {
-      handleBffError(res, data)
-    }
-
-    if (!('balances' in data) || !data.balances) {
-      return null
-    }
-
-    return data.balances
-  } catch (error) {
-    if (isUnsupportedChainError(error)) {
-      throw new UnsupportedChainError()
-    }
-    throw error
+  if (!res.ok) {
+    handleBffError(res, data)
   }
+
+  if (!('balances' in data) || !data.balances) {
+    return null
+  }
+
+  return data.balances
 }
