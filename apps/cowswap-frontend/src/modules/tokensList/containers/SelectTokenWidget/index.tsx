@@ -1,4 +1,4 @@
-import { MouseEvent, ReactNode, useEffect, useRef, useState } from 'react'
+import { MouseEvent, ReactNode, useEffect, useState } from 'react'
 
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
@@ -29,18 +29,12 @@ export function SelectTokenWidget(props: SelectTokenWidgetProps): ReactNode {
   const isChainPanelVisible = hasChainPanel && !isCompactLayout
   const closeTokenSelectWidget = useCloseTokenSelectWidget()
 
-  const closeTokenSelectWidgetRef =
-    useRef<ReturnType<typeof useCloseTokenSelectWidget>>(closeTokenSelectWidget)
-
-  useEffect(() => {
-    closeTokenSelectWidgetRef.current = closeTokenSelectWidget
-  }, [closeTokenSelectWidget])
-
+  // Cleanup: reset widget state on unmount
   useEffect(() => {
     return () => {
-      closeTokenSelectWidgetRef.current?.({ overrideForceLock: true })
+      closeTokenSelectWidget({ overrideForceLock: true })
     }
-  }, [])
+  }, [closeTokenSelectWidget])
 
   useEffect(() => {
     if (!shouldRender) {
