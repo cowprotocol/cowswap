@@ -1,4 +1,5 @@
 export * from './bff'
+export * from './affiliate'
 export * from './chainInfo'
 export * from './cdn'
 export * from './common'
