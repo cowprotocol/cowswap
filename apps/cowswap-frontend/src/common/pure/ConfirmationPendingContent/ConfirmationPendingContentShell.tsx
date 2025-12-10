@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-imports */ // TODO: Don't use 'modules' import
 import React, { ReactNode } from 'react'
 
 import { Command } from '@cowprotocol/types'

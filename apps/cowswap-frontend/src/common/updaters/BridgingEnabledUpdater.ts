@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-imports */ // TODO: Don't use 'modules' import
 import { useEffect } from 'react'
 
 import { useSetIsBridgingEnabled } from '@cowprotocol/common-hooks'
