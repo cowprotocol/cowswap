@@ -14,8 +14,12 @@ import {
   useSetUserApproveAmountModalState,
 } from 'modules/erc20Approve'
 import { useTradeApproveState } from 'modules/erc20Approve/state/useTradeApproveState'
-import { ImportTokenModal, useSelectTokenWidgetState, useTokenListAddingError } from 'modules/tokensList'
-import { useCloseTokenSelectWidget } from 'modules/tokensList/hooks/useCloseTokenSelectWidget'
+import {
+  ImportTokenModal,
+  useCloseTokenSelectWidget,
+  useSelectTokenWidgetState,
+  useTokenListAddingError,
+} from 'modules/tokensList'
 import { useZeroApproveModalState, ZeroApprovalModal } from 'modules/zeroApproval'
 
 import { TransactionErrorContent } from 'common/pure/TransactionErrorContent'
@@ -112,8 +116,9 @@ export function TradeWidgetModals({ confirmModal, genericModal }: TradeWidgetMod
 
     isInitialRenderRef.current = false
 
-    const shouldCloseTokenSelectWidget =
-      chainChanged ? isOutputTokenSelector : previousIsOutputTokenSelector ?? isOutputTokenSelector
+    const shouldCloseTokenSelectWidget = chainChanged
+      ? isOutputTokenSelector
+      : (previousIsOutputTokenSelector ?? isOutputTokenSelector)
 
     resetAllScreens(shouldCloseTokenSelectWidget)
   }, [chainId, isOutputTokenSelector, previousChainId, previousIsOutputTokenSelector, resetAllScreens])
