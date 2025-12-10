@@ -31,8 +31,6 @@ import { SwapLinkCard } from '@/components/SwapLinkCard'
 import { SwapWidget } from '@/components/SwapWidget'
 import { Network, NETWORK_MAP } from '@/const/networkMap'
 
-
-
 function TokenDetailsHeading(props: { token: TokenDetailsType }): JSX.Element {
   const { token } = props
   const { name, symbol, image } = token

@@ -1,7 +1,5 @@
 import { atom } from 'jotai'
 
-
-
 import { twapOrdersSettingsAtom } from './twapOrdersSettingsAtom'
 
 import { customDeadlineToSeconds } from '../utils/deadlinePartsDisplay'

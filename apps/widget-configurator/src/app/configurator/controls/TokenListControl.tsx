@@ -53,10 +53,10 @@ export const TokenListControl = ({ tokenListUrlsState, customTokensState }: Toke
         prev.map((list) => ({
           ...list,
           enabled: selected.includes(list.url),
-        }))
+        })),
       )
     },
-    [setTokenListUrls]
+    [setTokenListUrls],
   )
 
   const handleAddListUrl = useCallback(
@@ -67,14 +67,14 @@ export const TokenListControl = ({ tokenListUrlsState, customTokensState }: Toke
 
       setTokenListUrls((prev) => [...prev, { url: newListUrl, enabled: true }])
     },
-    [tokenListUrls, setTokenListUrls]
+    [tokenListUrls, setTokenListUrls],
   )
 
   const handleAddCustomTokens = useCallback(
     (tokens: TokenInfo[]) => {
       setCustomTokens(tokens)
     },
-    [setCustomTokens]
+    [setCustomTokens],
   )
 
   const tokenListOptions = useMemo(
@@ -99,7 +99,7 @@ export const TokenListControl = ({ tokenListUrlsState, customTokensState }: Toke
             />
           </MenuItem>
         )),
-    [tokenListUrls]
+    [tokenListUrls],
   )
 
   return (

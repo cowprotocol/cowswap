@@ -71,7 +71,7 @@ beforeEach(() => {
 const p = 'parameter'
 
 // TODO: Break down this large function into smaller functions
- 
+
 describe('With cache', () => {
   it('calls original api when parameters are different', async () => {
     const spy = jest.spyOn(instance, 'echo')

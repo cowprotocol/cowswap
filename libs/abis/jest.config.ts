@@ -1,4 +1,3 @@
- 
 export default {
   displayName: 'abis',
   preset: '../../jest.preset.js',

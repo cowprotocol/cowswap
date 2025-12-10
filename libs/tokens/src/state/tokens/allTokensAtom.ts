@@ -39,34 +39,34 @@ const tokensStateAtom = atom(async (get) => {
     tokensState: [...listsStatesList]
       .sort((a, b) => (a.priority ?? Number.MAX_SAFE_INTEGER) - (b.priority ?? Number.MAX_SAFE_INTEGER))
       .reduce<TokensState>(
-      (acc, list) => {
-        const isListEnabled = listsEnabledState[list.source]
-        const lpTokenProvider = list.lpTokenProvider
-        list.list.tokens.forEach((token) => {
-          const tokenInfo = parseTokenInfo(chainId, token)
-          const tokenAddressKey = tokenInfo?.address.toLowerCase()
+        (acc, list) => {
+          const isListEnabled = listsEnabledState[list.source]
+          const lpTokenProvider = list.lpTokenProvider
+          list.list.tokens.forEach((token) => {
+            const tokenInfo = parseTokenInfo(chainId, token)
+            const tokenAddressKey = tokenInfo?.address.toLowerCase()
 
-          if (!tokenInfo || !tokenAddressKey) return
+            if (!tokenInfo || !tokenAddressKey) return
 
-          if (lpTokenProvider) {
-            tokenInfo.lpTokenProvider = lpTokenProvider
-          }
-
-          if (isListEnabled) {
-            if (!acc.activeTokens[tokenAddressKey]) {
-              acc.activeTokens[tokenAddressKey] = tokenInfo
+            if (lpTokenProvider) {
+              tokenInfo.lpTokenProvider = lpTokenProvider
             }
-          } else {
-            if (!acc.inactiveTokens[tokenAddressKey]) {
-              acc.inactiveTokens[tokenAddressKey] = tokenInfo
-            }
-          }
-        })
 
-        return acc
-      },
-      { activeTokens: {}, inactiveTokens: {} },
-    ),
+            if (isListEnabled) {
+              if (!acc.activeTokens[tokenAddressKey]) {
+                acc.activeTokens[tokenAddressKey] = tokenInfo
+              }
+            } else {
+              if (!acc.inactiveTokens[tokenAddressKey]) {
+                acc.inactiveTokens[tokenAddressKey] = tokenInfo
+              }
+            }
+          })
+
+          return acc
+        },
+        { activeTokens: {}, inactiveTokens: {} },
+      ),
   }
 })
 

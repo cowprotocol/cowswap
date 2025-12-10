@@ -39,7 +39,6 @@ import {
 import { formatDate } from '@/util/formatDate'
 import { stripHtmlTags } from '@/util/stripHTMLTags'
 
-
 interface ArticlePageProps {
   article: Article
   randomArticles: Article[]

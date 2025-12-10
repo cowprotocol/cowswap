@@ -8,7 +8,6 @@ import { ThemeProvider as StyledComponentsThemeProvider } from 'styled-component
 
 import { THEME_MODE } from '@/components/Layout/const'
 
-
 function getCowfiTheme() {
   return baseTheme(THEME_MODE)
 }

@@ -30,7 +30,7 @@ const LazyLoadTweet: React.FC<LazyLoadTweetProps> = ({ tweetUrl }) => {
       },
       {
         threshold: 0.1, // Load the tweet when 10% of it is visible
-      }
+      },
     )
 
     if (tweetRef.current) {

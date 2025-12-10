@@ -38,7 +38,6 @@ import {
   TopicTitle,
 } from '@/styles/styled'
 
-
 const PODCASTS = [
   {
     title: 'How CoWs Will Save DeFi Swaps (0xResearch) ',

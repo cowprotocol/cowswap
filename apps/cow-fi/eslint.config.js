@@ -21,8 +21,8 @@ const nxReactNextConfigs = compat
 
     const filteredRules = Object.fromEntries(
       Object.entries(rules).filter(
-        ([ruleName]) => !ruleName.startsWith('react/') && !ruleName.startsWith('react-hooks/')
-      )
+        ([ruleName]) => !ruleName.startsWith('react/') && !ruleName.startsWith('react-hooks/'),
+      ),
     )
 
     const nextConfig =
@@ -47,7 +47,6 @@ module.exports = [
       '@typescript-eslint/no-unused-vars': 'warn',
       'unused-imports/no-unused-imports': 'warn',
       'unused-imports/no-unused-vars': 'warn',
-      'import/order': 'warn',
       'max-lines-per-function': 'warn',
       complexity: 'warn',
       'react/no-unstable-nested-components': 'warn',

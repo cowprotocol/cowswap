@@ -12,7 +12,7 @@ export function useIsNativeIn(): boolean {
 
   return useMemo(
     () => Boolean(inputCurrencyId && getIsNativeToken(chainId, inputCurrencyId)),
-    [chainId, inputCurrencyId]
+    [chainId, inputCurrencyId],
   )
 }
 
@@ -23,6 +23,6 @@ export function useIsNativeOut(): boolean {
 
   return useMemo(
     () => Boolean(outputCurrencyId && getIsNativeToken(chainId, outputCurrencyId)),
-    [chainId, outputCurrencyId]
+    [chainId, outputCurrencyId],
   )
 }

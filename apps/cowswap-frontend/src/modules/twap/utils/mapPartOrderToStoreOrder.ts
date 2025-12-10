@@ -16,7 +16,7 @@ export function mapPartOrderToStoreOrder(
   enrichedOrder: EnrichedOrder,
   isVirtualPart: boolean,
   parent: TwapOrderItem,
-  tokensByAddress: TokensByAddress
+  tokensByAddress: TokensByAddress,
 ): Order | null {
   const isCancelling = item.isCancelling || parent.status === TwapOrderStatus.Cancelling
   const status = getPartOrderStatus(enrichedOrder, parent, isVirtualPart)

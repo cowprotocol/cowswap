@@ -32,7 +32,6 @@ import {
   TokenPriceWrapper,
 } from './styled'
 
-
 import LineChart from '@/components/Chart/LineChart'
 
 export type PricePoint = { timestamp: number; value: number }

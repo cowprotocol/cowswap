@@ -115,10 +115,10 @@ export const TokensTableRow = ({
     // TODO: make a separate hook out of this and add GA
     try {
       openApproveModal(tokenData?.symbol)
-      
+
       const symbol = tokenData?.symbol || t`token`
       await approveCallback(amountToApprove, t`Approve ${symbol}`)
-      
+
       // TODO: Replace any with proper type definitions
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {

@@ -25,7 +25,7 @@ export interface OnChainCancellation {
 
 export async function getEthFlowCancellation(
   ethFlowContract: CoWSwapEthFlow,
-  order: Order
+  order: Order,
 ): Promise<OnChainCancellation> {
   const cancelOrderParams = {
     buyToken: order.buyToken,
@@ -43,7 +43,7 @@ export async function getEthFlowCancellation(
     logTradeFlowError(
       LOG_LABEL,
       `Error estimating invalidateOrder gas. Using default ${CANCELLATION_GAS_LIMIT_DEFAULT}`,
-      error
+      error,
     )
     return CANCELLATION_GAS_LIMIT_DEFAULT
   })
@@ -72,7 +72,7 @@ export async function getOnChainCancellation(contract: GPv2Settlement, order: Or
     logTradeFlowError(
       LOG_LABEL,
       `Error estimating invalidateOrder gas. Using default ${CANCELLATION_GAS_LIMIT_DEFAULT}`,
-      error
+      error,
     )
     return CANCELLATION_GAS_LIMIT_DEFAULT
   })

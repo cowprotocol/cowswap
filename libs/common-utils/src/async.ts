@@ -51,7 +51,7 @@ export function createImperativePromise<T>(promiseArg?: Promise<T> | null | unde
       },
       (error) => {
         reject && reject(error)
-      }
+      },
     )
 
   return {
@@ -85,7 +85,7 @@ type AsyncFunction<T> = (...args: any[]) => Promise<T>
 
 // see https://stackoverflow.com/a/54825370/82609
 export function onlyResolvesLast<R>(
-  asyncFunction: AsyncFunction<R>
+  asyncFunction: AsyncFunction<R>,
 ): (...args: ArgumentsType<AsyncFunction<R>>) => Promise<CancelableResult<R>> {
   let cancelPrevious: CancelCallback | null = null
 

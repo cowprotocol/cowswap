@@ -164,8 +164,7 @@ export const hookDappsRegistry = {
     description: msg`Bungee is a liquidity marketplace that lets you swap into any token on any chain in a fully abstracted manner. Trade any token with the best quotes and a gasless UX!`,
     version: '0.0.1',
     website: 'https://www.bungee.exchange',
-    image:
-      'https://files.cow.fi/cow-sdk/bridging/providers/bungee/bungee-logo.png',
+    image: 'https://files.cow.fi/cow-sdk/bridging/providers/bungee/bungee-logo.png',
     conditions: {
       walletCompatibility: ['EOA'],
     },
@@ -177,8 +176,7 @@ export const hookDappsRegistry = {
     description: msg`Across is the fastest, cheapest and most secure cross-chain bridge for Ethereum, Arbitrum, Optimism, Polygon and other Layer 1 and Layer 2 networks. Transfer tokens with Across.`,
     version: '0.0.1',
     website: 'https://across.to',
-    image:
-      'https://files.cow.fi/cow-sdk/bridging/providers/across/across-logo.png',
+    image: 'https://files.cow.fi/cow-sdk/bridging/providers/across/across-logo.png',
     conditions: {
       walletCompatibility: ['EOA'],
     },

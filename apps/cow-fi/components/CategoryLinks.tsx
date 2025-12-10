@@ -7,7 +7,6 @@ import Link from 'next/link'
 import { CowFiCategory } from 'src/common/analytics/types'
 import styled from 'styled-components/macro'
 
-
 interface CategoryItem {
   name: string
   slug: string

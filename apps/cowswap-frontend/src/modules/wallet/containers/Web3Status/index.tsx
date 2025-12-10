@@ -8,7 +8,6 @@ import { TradeOrdersPermitUpdater } from 'modules/ordersTable'
 
 import { usePendingActivitiesCount } from 'common/hooks/usePendingActivitiesCount'
 
-
 import { useShowUnfillableOrderAlert } from '../../hooks/useShowUnfillableOrderAlert'
 import { Web3StatusInner } from '../../pure/Web3StatusInner'
 import { Wrapper } from '../../pure/Web3StatusInner/styled'

@@ -4,7 +4,6 @@ import { shortenAddress } from '@cowprotocol/common-utils'
 import { ButtonPrimary, Loader, SelectDropdown, TokenAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-
 import * as styledEl from './styled'
 
 export interface AccountIndexSelectProps {

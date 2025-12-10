@@ -15,8 +15,6 @@ import { ThemeProvider } from '../theme'
 import { WithLDProvider } from '@/components/WithLDProvider'
 import GlobalStyles from '@/styles/global.styles'
 
-
-
 const cowAnalytics = initGtm()
 
 export function Providers({ children }: { children: React.ReactNode }) {

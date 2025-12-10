@@ -12,7 +12,8 @@ const Wrapper = styled.div<{
   heightMobile?: number
   positionOffsetMobile?: number
 }>`
-  --positionBottomRight: ${({ positionOffset }) => (positionOffset !== undefined ? `${positionOffset}px` : `${DEFAULT_POSITION_OFFSET}px`)};
+  --positionBottomRight: ${({ positionOffset }) =>
+    positionOffset !== undefined ? `${positionOffset}px` : `${DEFAULT_POSITION_OFFSET}px`};
   --mask-start: var(--cowprotocol-mask-start, 0%);
   --mask-end: var(--cowprotocol-mask-end, 40%);
 

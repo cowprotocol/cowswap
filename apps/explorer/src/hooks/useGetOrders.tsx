@@ -22,7 +22,6 @@ import { web3 } from '../explorer/api'
 import { ORDERS_QUERY_INTERVAL } from '../explorer/const'
 
 function isObjectEmpty(object: Record<string, unknown>): boolean {
-
   for (const key in object) {
     if (key) return false
   }
@@ -68,7 +67,7 @@ interface UseOrdersWithTokenInfo {
 
 export function getTxOrderOnEveryNetworkAndEnvironment(
   networkId: Network,
-  txHash: string
+  txHash: string,
 ): Promise<GetOrderResult<MultipleOrders>> {
   const defaultParams: GetTxOrdersParams = { networkId, txHash }
   const getOrderApi: GetOrderApi<GetTxOrdersParams, MultipleOrders> = {
@@ -107,7 +106,10 @@ function useOrdersWithTokenInfo(networkId: Network | undefined): UseOrdersWithTo
     setErc20Addresses([])
   }, [valueErc20s, networkId, areErc20Loading, mountNewOrders, orders])
 
-  return useMemo(() => ({ orders, areErc20Loading, setOrders, setMountNewOrders, setErc20Addresses }), [orders, areErc20Loading, setOrders, setMountNewOrders, setErc20Addresses])
+  return useMemo(
+    () => ({ orders, areErc20Loading, setOrders, setMountNewOrders, setErc20Addresses }),
+    [orders, areErc20Loading, setOrders, setMountNewOrders, setErc20Addresses],
+  )
 }
 
 export function useGetTxOrders(txHash: string): GetTxOrdersResult {
@@ -145,7 +147,7 @@ export function useGetTxOrders(txHash: string): GetTxOrdersResult {
         setIsLoading(false)
       }
     },
-    [setErc20Addresses, setMountNewOrders, setOrders]
+    [setErc20Addresses, setMountNewOrders, setOrders],
   )
 
   useEffect(() => {
@@ -156,12 +158,15 @@ export function useGetTxOrders(txHash: string): GetTxOrdersResult {
     fetchOrders(networkId, txHash)
   }, [fetchOrders, networkId, txHash])
 
-  return useMemo(() => ({ orders, error, isLoading: isLoading || areErc20Loading, errorTxPresentInNetworkId }), [orders, error, isLoading, areErc20Loading, errorTxPresentInNetworkId])
+  return useMemo(
+    () => ({ orders, error, isLoading: isLoading || areErc20Loading, errorTxPresentInNetworkId }),
+    [orders, error, isLoading, areErc20Loading, errorTxPresentInNetworkId],
+  )
 }
 
 export function useTxOrderExplorerLink(
   txHash: string,
-  isZeroOrders: boolean
+  isZeroOrders: boolean,
 ): ExplorerLinkProps | Record<string, unknown> | undefined {
   const networkId = useNetworkId() || undefined
   const [explorerLink, setExplorerLink] = useState<ExplorerLinkProps | Record<string, unknown> | undefined>()
@@ -196,7 +201,7 @@ export function useGetAccountOrders(
   ownerAddress: string,
   limit = 1000,
   offset = 0,
-  pageIndex?: number
+  pageIndex?: number,
 ): GetAccountOrdersResult {
   const networkId = useNetworkId() || undefined
   const [isLoading, setIsLoading] = useState(false)
@@ -225,7 +230,7 @@ export function useGetAccountOrders(
         setIsLoading(false)
       }
     },
-    [limit, offset, setErc20Addresses, setMountNewOrders, setOrders]
+    [limit, offset, setErc20Addresses, setMountNewOrders, setOrders],
   )
 
   useEffect(() => {

@@ -81,7 +81,7 @@ function calculatePriceDifferenceAux({
   const differenceInQuoteToken = CurrencyAmount.fromFractionalAmount(
     referencePrice.quoteCurrency,
     difference.numerator,
-    difference.denominator
+    difference.denominator,
   )
 
   return { percentage, amount: differenceInQuoteToken }
@@ -93,6 +93,6 @@ function assertSameMarket(price1: Price<Currency, Currency>, price2: Price<Curre
   // Assert I'm comparing apples with apples (prices should refer to market)
   invariant(
     price1.baseCurrency.equals(price2.baseCurrency) && price1.quoteCurrency.equals(price2.quoteCurrency),
-    'Prices are not from the same market'
+    'Prices are not from the same market',
   )
 }

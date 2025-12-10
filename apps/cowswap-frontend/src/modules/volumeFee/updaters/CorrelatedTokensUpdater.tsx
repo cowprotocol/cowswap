@@ -39,7 +39,7 @@ export function CorrelatedTokensUpdater() {
   useSWR(
     ['/correlated-tokens', correlatedTokens],
     // TODO: Break down this large function into smaller functions
-     
+
     async ([method, setCorrelatedTokens]) => {
       const lastUpdateTime = localStorage.getItem(UPDATE_TIME_KEY)
 

@@ -36,7 +36,7 @@ export function useTwapOrdersExecutions(allOrdersInfo: TwapOrderInfo[]): TwapOrd
 
         return acc
       },
-      { sets: {}, ids: [] }
+      { sets: {}, ids: [] },
     )
   }, [twapPartOrders])
 
@@ -122,7 +122,7 @@ function getConfirmedPartsCount(twapOrderInfo: TwapOrderInfo, discreteOrders: Or
   const finalizedDiscreteOrders = discreteOrders.filter((order) => getIsFinalizedOrder(order))
   const lastOrderValidTo = finalizedDiscreteOrders.reduce(
     (maxValidTo, { validTo }) => (validTo > maxValidTo ? validTo : maxValidTo),
-    0
+    0,
   )
 
   if (!lastOrderValidTo) return partsPassed

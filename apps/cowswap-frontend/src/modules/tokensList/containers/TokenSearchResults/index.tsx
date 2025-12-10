@@ -85,7 +85,9 @@ export function TokenSearchResults({
       >
         <p>
           <Trans>Can't find your token on the list?</Trans>{' '}
-          <Trans><ExternalLink href={LINK_GUIDE_ADD_CUSTOM_TOKEN}>Read our guide</ExternalLink> on how to add custom tokens.</Trans>
+          <Trans>
+            <ExternalLink href={LINK_GUIDE_ADD_CUSTOM_TOKEN}>Read our guide</ExternalLink> on how to add custom tokens.
+          </Trans>
         </p>
       </InlineBanner>
 

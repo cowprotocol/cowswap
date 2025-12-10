@@ -231,7 +231,7 @@ function useUpdateVisQuery(): (vis: string) => void {
 }
 
 // TODO: Break down this large function into smaller functions
- 
+
 export function useTxBatchData(
   networkId: Network | undefined,
   orders: Order[] | undefined,

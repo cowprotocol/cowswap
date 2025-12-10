@@ -6,5 +6,5 @@ export interface AccountModalState {
   isOpen: boolean
 }
 export const { atom: accountModalStateAtom, updateAtom: updateAccountModalStateAtom } = atomWithPartialUpdate(
-  atom<AccountModalState>({ isOpen: false })
+  atom<AccountModalState>({ isOpen: false }),
 )

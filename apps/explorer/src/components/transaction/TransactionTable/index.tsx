@@ -40,7 +40,7 @@ interface RowProps {
 
 // TODO: Break down this large function into smaller functions
 // TODO: Reduce function complexity by extracting logic
- 
+
 const RowTransaction: React.FC<RowProps> = ({ order, isPriceInverted }) => {
   const {
     buyToken,
@@ -113,7 +113,7 @@ const RowTransaction: React.FC<RowProps> = ({ order, isPriceInverted }) => {
 }
 
 // TODO: Break down this large function into smaller functions
- 
+
 const TransactionTable: React.FC<Props> = (props) => {
   const { orders } = props
   const [isPriceInverted, setIsPriceInverted] = useState(false)

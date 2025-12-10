@@ -1,5 +1,3 @@
- 
-
 import { Command } from '@cowprotocol/types'
 
 // Type declaration to module augmentation

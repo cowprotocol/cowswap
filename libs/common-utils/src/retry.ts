@@ -45,10 +45,10 @@ export function retry<T>(
 ): { promise: Promise<T>; cancel: Command } {
   let completed = false
   let rejectCancelled: (error: Error) => void
-   
+
   const promise = new Promise<T>(async (resolve, reject) => {
     rejectCancelled = reject
-     
+
     while (true) {
       let result: T
       try {

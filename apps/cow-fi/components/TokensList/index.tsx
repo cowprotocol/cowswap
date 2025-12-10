@@ -18,7 +18,6 @@ import {
   NoTokensText,
 } from './index.style'
 
-
 import { TokenLink } from '@/components/TokenDetails/index.styles'
 
 // Utility function for consistent value formatting

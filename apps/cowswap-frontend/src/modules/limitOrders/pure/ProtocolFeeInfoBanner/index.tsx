@@ -24,10 +24,9 @@ export function ProtocolFeeInfoBanner({ margin = 'auto' }: ProtocolFeeInfoBanner
     >
       <p>
         <Trans>
-          From {PROTOCOL_FEE_START_DATETIME_UTC}, and pursuant to{' '}
-          <ExternalLink href={CIP_74_URL}>CIP-74</ExternalLink>, a 2 bps (0.02%) protocol fee will apply to all
-          executed orders, including any limit and TWAP orders executed after this time, even if they were created
-          earlier.
+          From {PROTOCOL_FEE_START_DATETIME_UTC}, and pursuant to <ExternalLink href={CIP_74_URL}>CIP-74</ExternalLink>,
+          a 2 bps (0.02%) protocol fee will apply to all executed orders, including any limit and TWAP orders executed
+          after this time, even if they were created earlier.
         </Trans>
       </p>
     </DismissableInlineBanner>

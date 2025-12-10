@@ -76,8 +76,8 @@ export function WalletModal() {
           setWalletConnectionError(errorToString(error))
         },
       }),
-      [isWalletChangingFlow, closeWalletModal, dispatch, setWalletConnectionError, toggleAccountSelectorModal]
-    )
+      [isWalletChangingFlow, closeWalletModal, dispatch, setWalletConnectionError, toggleAccountSelectorModal],
+    ),
   )
 
   return (

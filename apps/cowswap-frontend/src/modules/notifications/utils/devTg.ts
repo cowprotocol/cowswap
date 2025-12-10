@@ -74,4 +74,3 @@ export const simulateDevModeApiCall = (
     }, 300)
   })
 }
-

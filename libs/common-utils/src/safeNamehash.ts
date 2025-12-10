@@ -5,8 +5,8 @@ export function safeNamehash(name?: string): string | undefined {
 
   try {
     return namehash(name)
-  // TODO: Replace any with proper type definitions
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // TODO: Replace any with proper type definitions
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     console.debug(error)
     return undefined

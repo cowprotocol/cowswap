@@ -23,7 +23,6 @@ import {
   LinkSection,
 } from '@/styles/styled'
 
-
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;

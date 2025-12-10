@@ -46,4 +46,3 @@ export const AMM_LOGOS: Record<string, typeof SushiImage> = {
   zerox: ZeroXImage,
   default: { src: Gno, alt: 'Default unknown AMM' },
 }
-

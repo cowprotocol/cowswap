@@ -24,7 +24,6 @@ import {
 } from '@/styles/styled'
 import { calculateTotalPages, calculatePageRange, createPaginationArray } from '@/util/paginationUtils'
 
-
 const LEARN_PATH = '/learn'
 const ARTICLES_PATH = `${LEARN_PATH}/articles`
 

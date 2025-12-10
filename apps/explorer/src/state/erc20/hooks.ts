@@ -51,6 +51,6 @@ export function useSaveErc20s(networkId?: Network): (erc20s: TokenErc20[]) => vo
     (erc20s: TokenErc20[]): void => {
       networkId && addLoadedTokensToChain({ chainId: networkId, tokens: erc20s })
     },
-    [addLoadedTokensToChain, networkId]
+    [addLoadedTokensToChain, networkId],
   )
 }

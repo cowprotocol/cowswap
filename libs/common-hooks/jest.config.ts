@@ -1,4 +1,3 @@
- 
 export default {
   displayName: 'common-hooks',
   preset: '../../jest.preset.js',

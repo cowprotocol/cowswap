@@ -1,4 +1,3 @@
- 
 export default {
   displayName: 'tokens',
   preset: '../../jest.preset.js',

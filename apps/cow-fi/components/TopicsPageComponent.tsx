@@ -22,7 +22,6 @@ import {
   TopicTitle,
 } from '@/styles/styled'
 
-
 interface PageProps {
   categories: {
     name: string

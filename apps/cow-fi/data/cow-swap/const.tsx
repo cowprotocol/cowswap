@@ -181,15 +181,15 @@ export const FAQ_DATA = [
   },
   {
     question: 'What is a "meta" DEX aggregator?',
-  answer: (
-    <>
-      A "meta" DEX aggregator is an aggregator of aggregators, meaning that it's a single trading venue that sources
-      liquidity from other aggregators as well as from individual DEXs. CoW Swap is a meta DEX aggregator because
-      solvers source liquidity for users from AMMs like Uniswap, DEX aggregators like 1inch, private market makers,
-      and directly from users via Coincidence of Wants.
-    </>
-  ),
-},
+    answer: (
+      <>
+        A "meta" DEX aggregator is an aggregator of aggregators, meaning that it's a single trading venue that sources
+        liquidity from other aggregators as well as from individual DEXs. CoW Swap is a meta DEX aggregator because
+        solvers source liquidity for users from AMMs like Uniswap, DEX aggregators like 1inch, private market makers,
+        and directly from users via Coincidence of Wants.
+      </>
+    ),
+  },
   {
     question: 'What is a "CoW"?',
     answer: (

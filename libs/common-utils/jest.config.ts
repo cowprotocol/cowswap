@@ -1,4 +1,3 @@
- 
 export default {
   displayName: 'common-utils',
   preset: '../../jest.preset.js',

@@ -6,7 +6,6 @@ import { Nullish } from 'types'
 
 import { useTokenAllowance } from './useTokenAllowance'
 
-
 /**
  * Hook to check if a token needs approval
  *

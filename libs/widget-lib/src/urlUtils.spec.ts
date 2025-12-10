@@ -6,7 +6,7 @@ const tradeType = TradeType.SWAP
 
 // TODO: fix these tests! uncommenting to unblock a hotfix
 // TODO: Break down this large function into smaller functions
- 
+
 describe.skip('buildWidgetUrl', () => {
   describe('env', () => {
     it('local', () => {

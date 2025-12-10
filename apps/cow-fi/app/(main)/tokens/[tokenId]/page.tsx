@@ -9,7 +9,6 @@ import { TokenPageComponent } from '@/components/TokenPageComponent'
 import { CONFIG } from '@/const/meta'
 import { getPageMetadata } from '@/util/getPageMetadata'
 
-
 type Props = {
   params: Promise<{ tokenId: string }>
 }

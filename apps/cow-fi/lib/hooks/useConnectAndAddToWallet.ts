@@ -12,10 +12,6 @@ import { AddToWalletState, AddToWalletStateValues } from '../../types/addToWalle
 
 import { handleRpcError } from '@/util/handleRpcError'
 
-
-
-
-
 const DEFAULT_STATE: AddToWalletState = { state: 'unknown', autoConnect: false }
 const ADDING_STATE: AddToWalletState = { state: 'adding', autoConnect: false }
 const ADDED_STATE: AddToWalletState = { state: 'added', autoConnect: false }

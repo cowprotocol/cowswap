@@ -14,7 +14,6 @@ import { useNeedsZeroApproval } from 'modules/zeroApproval'
 import { useTokenContract } from 'common/hooks/useContract'
 import { useNeedsApproval } from 'common/hooks/useNeedsApproval'
 
-
 export interface TwapOrderCreationContext {
   composableCowContract: ComposableCoW
   needsApproval: boolean

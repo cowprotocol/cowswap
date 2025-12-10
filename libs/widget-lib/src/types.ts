@@ -177,7 +177,7 @@ export interface SlippageConfig {
   defaultValue?: number
 }
 
-export type FlexibleSlippageConfig = FlexibleConfig<SlippageConfig>;
+export type FlexibleSlippageConfig = FlexibleConfig<SlippageConfig>
 
 export interface CowSwapWidgetParams {
   /**

@@ -188,5 +188,4 @@ describe('usePersistBalancesFromBff - invalidateCacheTrigger', () => {
       )
     })
   })
-
 })

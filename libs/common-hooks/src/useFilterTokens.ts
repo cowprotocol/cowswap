@@ -25,7 +25,7 @@ export function useFilterTokens(tokens: TokenWithLogo[], query: string): TokenWi
       } else {
         // else search by symbol or name
         return [token.name?.toLowerCase(), token.symbol?.toLowerCase()].some((tokenPart: string | undefined) =>
-          queryParts.some((queryPart: string) => tokenPart?.includes(queryPart))
+          queryParts.some((queryPart: string) => tokenPart?.includes(queryPart)),
         )
       }
     })

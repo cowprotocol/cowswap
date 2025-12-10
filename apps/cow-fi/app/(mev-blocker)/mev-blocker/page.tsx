@@ -52,7 +52,6 @@ import {
   TopicTable,
 } from '@/styles/styled'
 
-
 const isClient = typeof window === 'object'
 
 // Configure chains and providers

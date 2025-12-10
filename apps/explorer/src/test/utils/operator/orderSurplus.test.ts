@@ -12,10 +12,10 @@ const TWENTY = new BigNumber('20')
 const TWENTY_FIVE = new BigNumber('25')
 
 // TODO: Break down this large function into smaller functions
- 
+
 describe('getOrderSurplus', () => {
   // TODO: Break down this large function into smaller functions
-   
+
   describe('Buy order', () => {
     describe('fillOrKill', () => {
       test('No surplus', () => {
@@ -107,7 +107,7 @@ describe('getOrderSurplus', () => {
   })
 
   // TODO: Break down this large function into smaller functions
-   
+
   describe('Sell order', () => {
     describe('fillOrKill', () => {
       test('No surplus', () => {

@@ -1,4 +1,3 @@
-
 import { initGtm } from '@cowprotocol/analytics'
 import IMG_COWAMM_LP_1 from '@cowprotocol/assets/images/image-cowamm-lp-1.svg'
 import IMG_COWAMM_LP_2 from '@cowprotocol/assets/images/image-cowamm-lp-2.svg'

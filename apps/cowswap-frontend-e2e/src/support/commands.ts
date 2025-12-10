@@ -8,9 +8,7 @@
 // https://on.cypress.io/custom-commands
 // ***********************************************
 
- 
 declare namespace Cypress {
-   
   interface Chainable<Subject> {
     /**
      * Select token output in the swap page

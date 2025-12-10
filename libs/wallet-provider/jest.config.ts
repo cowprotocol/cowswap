@@ -1,4 +1,3 @@
- 
 export default {
   displayName: 'wallet-provider',
   preset: '../../jest.preset.js',

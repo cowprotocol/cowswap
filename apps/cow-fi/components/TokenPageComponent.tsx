@@ -8,7 +8,6 @@ import { type TokenDetails } from '../types'
 
 import { TokenDetails as TokenDetailsPure } from '@/components/TokenDetails'
 
-
 const Wrapper = styled.div`
   display: flex;
   flex-flow: column wrap;

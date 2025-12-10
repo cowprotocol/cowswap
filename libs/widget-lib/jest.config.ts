@@ -1,4 +1,3 @@
- 
 export default {
   displayName: 'widget-lib',
   preset: '../../jest.preset.js',
