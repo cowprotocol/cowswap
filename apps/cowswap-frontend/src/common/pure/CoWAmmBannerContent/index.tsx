@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-imports */ // TODO: Don't use 'modules' import
 import React, { useCallback, useMemo, useRef } from 'react'
 
 import { isTruthy } from '@cowprotocol/common-utils'

@@ -1,6 +1,6 @@
 # CoW Swap Abis
 
-Exports relevant ABIs )types and JSON)
+Exports relevant ABIs (types and JSON)
 
 ## Building
 

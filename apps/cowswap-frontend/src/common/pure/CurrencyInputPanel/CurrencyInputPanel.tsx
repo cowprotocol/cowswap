@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-imports */ // TODO: Don't use 'modules' import
 import React, { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
@@ -40,7 +41,6 @@ export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
   tokenSelectorDisabled?: boolean
   displayTokenName?: boolean
   displayChainName?: boolean
-  hideReceiveAmounts?: boolean
   inputTooltip?: string
   showSetMax?: boolean
   maxBalance?: CurrencyAmount<Currency> | undefined
@@ -80,7 +80,6 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps): ReactNode {
     tokenSelectorDisabled = false,
     displayTokenName = false,
     displayChainName = false,
-    hideReceiveAmounts,
     inputTooltip,
     onUserInput,
     allowsOffchainSigning,
@@ -279,7 +278,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps): ReactNode {
         </styledEl.CurrencyInputBox>
       </styledEl.Wrapper>
 
-      {receiveAmountInfo && currency && !hideReceiveAmounts && (
+      {receiveAmountInfo && currency && (
         <ReceiveAmount
           allowsOffchainSigning={allowsOffchainSigning}
           currency={currency}
