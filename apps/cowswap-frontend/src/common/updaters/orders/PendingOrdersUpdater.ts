@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-imports */ // TODO: Don't use 'modules' import
 import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 
