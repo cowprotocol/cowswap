@@ -1,6 +1,6 @@
 {
-  "apps/cowswap-frontend": "1.125.2",
-  "apps/explorer": "2.59.0",
+  "apps/cowswap-frontend": "1.125.3",
+  "apps/explorer": "2.59.1",
   "libs/permit-utils": "1.0.0",
   "libs/widget-lib": "0.21.0",
   "libs/widget-react": "0.14.1",
@@ -24,6 +24,6 @@
   "libs/abis": "1.2.3",
   "libs/balances-and-allowances": "1.10.0",
   "libs/iframe-transport": "1.1.0",
-  "libs/hook-dapp-lib": "1.14.0",
+  "libs/hook-dapp-lib": "1.14.1",
   "libs/multicall": "1.3.0"
 }
