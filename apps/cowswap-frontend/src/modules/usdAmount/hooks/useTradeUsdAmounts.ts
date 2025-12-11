@@ -30,7 +30,7 @@ export function useTradeUsdAmounts(
   outputAmount: Nullish<CurrencyAmount<Currency>>,
   inputCurrency?: Nullish<TokenWithLogo>,
   outputCurrency?: Nullish<TokenWithLogo>,
-  dontWaitBothAmounts?: boolean
+  dontWaitBothAmounts?: boolean,
 ): TradeUSDAmounts {
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
   const areAmountsReady = !isFractionFalsy(inputAmount) && !isFractionFalsy(outputAmount)
@@ -52,6 +52,6 @@ export function useTradeUsdAmounts(
 
   return useMemo(
     () => ({ inputAmount: usdInputAmount, outputAmount: usdOutputAmount }),
-    [usdInputAmount, usdOutputAmount]
+    [usdInputAmount, usdOutputAmount],
   )
 }

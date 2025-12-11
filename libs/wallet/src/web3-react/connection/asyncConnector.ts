@@ -27,7 +27,11 @@ function initCustomProvider(self: AsyncConnector, connector: Connector, chainId:
 export class AsyncConnector extends Connector {
   readonly events = new EventEmitter()
 
-  constructor(private loader: () => Promise<Connector>, actions: Actions, onError?: (error: Error) => void) {
+  constructor(
+    private loader: () => Promise<Connector>,
+    actions: Actions,
+    onError?: (error: Error) => void,
+  ) {
     super(actions, onError)
   }
 

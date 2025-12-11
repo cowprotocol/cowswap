@@ -14,7 +14,14 @@ import { GlobalStyles, ThemeToggler, Router } from 'storybook/decorators'
 
 import { MenuItemKind, MenuTreeItem } from './types'
 
-import { DOCS_LINK, DISCORD_LINK, PROTOCOL_LINK, COWSWAP_LINK, DUNE_DASHBOARD_LINK, Routes } from '../../../explorer/const'
+import {
+  DOCS_LINK,
+  DISCORD_LINK,
+  PROTOCOL_LINK,
+  COWSWAP_LINK,
+  DUNE_DASHBOARD_LINK,
+  Routes,
+} from '../../../explorer/const'
 
 export default {
   title: 'Common/Menu',

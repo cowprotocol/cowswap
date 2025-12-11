@@ -14,8 +14,6 @@ import { Order } from 'legacy/state/orders/actions'
 import { usePermitInfo } from 'modules/permit'
 import { TradeType } from 'modules/trade'
 
-
-
 import { isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { getOrderPermitIfExists } from 'common/utils/doesOrderHavePermit'
 

@@ -171,7 +171,7 @@ export const StepsWrapper = styled.div<{ animateSecondStep?: boolean }>`
       &::before {
         content: '';
         background: conic-gradient(var(${UI.COLOR_PAPER}) 40grad, 80grad, var(${UI.COLOR_PRIMARY}) 360grad);
-        display: ${({ animateSecondStep }) => animateSecondStep ? 'none' : 'block'};
+        display: ${({ animateSecondStep }) => (animateSecondStep ? 'none' : 'block')};
         width: var(--circle-size);
         padding: 0;
         position: absolute;
@@ -182,7 +182,7 @@ export const StepsWrapper = styled.div<{ animateSecondStep?: boolean }>`
         margin: auto;
         border-radius: 100%;
         z-index: -2;
-        animation: ${({ animateSecondStep }) => animateSecondStep ? 'none' : 'spin 1.5s linear infinite'};
+        animation: ${({ animateSecondStep }) => (animateSecondStep ? 'none' : 'spin 1.5s linear infinite')};
       }
     }
   }
@@ -192,7 +192,7 @@ export const StepsWrapper = styled.div<{ animateSecondStep?: boolean }>`
       &::before {
         content: '';
         background: conic-gradient(var(${UI.COLOR_PAPER}) 40grad, 80grad, var(${UI.COLOR_PRIMARY}) 360grad);
-        display: ${({ animateSecondStep }) => animateSecondStep ? 'block' : 'none'};
+        display: ${({ animateSecondStep }) => (animateSecondStep ? 'block' : 'none')};
         width: var(--circle-size);
         padding: 0;
         position: absolute;
@@ -203,7 +203,7 @@ export const StepsWrapper = styled.div<{ animateSecondStep?: boolean }>`
         margin: auto;
         border-radius: 100%;
         z-index: -2;
-        animation: ${({ animateSecondStep }) => animateSecondStep ? 'spin 1.5s linear infinite' : 'none'};
+        animation: ${({ animateSecondStep }) => (animateSecondStep ? 'spin 1.5s linear infinite' : 'none')};
       }
     }
   }

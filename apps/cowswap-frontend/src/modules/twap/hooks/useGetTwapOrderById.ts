@@ -14,6 +14,6 @@ export function useGetTwapOrderById(): (orderId: string) => EnrichedOrder | null
       const item = twapOrdersList[orderId]
       return item ? emulateTwapAsOrder(item) : null
     },
-    [twapOrdersList]
+    [twapOrdersList],
   )
 }

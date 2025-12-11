@@ -48,7 +48,7 @@ export function debounce<F extends (...args: any) => any>(func: F, wait = 200) {
 }
 
 export function isPromiseFulfilled<T>(
-  promiseResult: PromiseSettledResult<T>
+  promiseResult: PromiseSettledResult<T>,
 ): promiseResult is PromiseFulfilledResult<T> {
   return promiseResult.status === 'fulfilled'
 }
@@ -58,7 +58,7 @@ export function isPromiseFulfilled<T>(
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function getPromiseFulfilledValue<T, E = undefined>(
   promiseResult: PromiseSettledResult<T>,
-  nonFulfilledReturn: E
+  nonFulfilledReturn: E,
 ) {
   return isPromiseFulfilled(promiseResult) ? promiseResult.value : nonFulfilledReturn
 }
@@ -176,7 +176,7 @@ export function isRejectRequestProviderError(error: any) {
     const message = getProviderErrorMessage(error)
     if (
       PROVIDER_REJECT_REQUEST_ERROR_MESSAGES.some(
-        (rejectMessage) => message && rejectMessage && message.toLowerCase().includes(rejectMessage.toLowerCase())
+        (rejectMessage) => message && rejectMessage && message.toLowerCase().includes(rejectMessage.toLowerCase()),
       )
     ) {
       return true

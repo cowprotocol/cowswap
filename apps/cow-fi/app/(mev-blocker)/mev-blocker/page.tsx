@@ -12,8 +12,11 @@ import { Color, ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 
 import { RainbowKitProvider, getDefaultWallets } from '@rainbow-me/rainbowkit'
 import Script from 'next/script'
+import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
 import { WagmiConfig, createConfig, configureChains, mainnet } from 'wagmi'
 import { publicProvider } from 'wagmi/providers/public'
+
+import useWebShare from '../../../hooks/useWebShare'
 
 import { AddRpcButton } from '@/components/AddRpcButton'
 import FAQ from '@/components/FAQ'
@@ -48,9 +51,6 @@ import {
   ColorTableContainer,
   TopicTable,
 } from '@/styles/styled'
-import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
-
-import useWebShare from '../../../hooks/useWebShare'
 
 const isClient = typeof window === 'object'
 

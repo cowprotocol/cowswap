@@ -22,18 +22,10 @@ export function CurrencyLogoPair({
   tokenSize = 28,
   children,
 }: CurrencyLogoPairProps): ReactNode {
-
   return (
     <styledEl.CurrencyLogoPairWrapper clickable={clickable} onClick={onClick} tokenSize={tokenSize}>
-      <TokenLogo
-        token={sellToken}
-        size={tokenSize}
-        hideNetworkBadge
-      />
-      <TokenLogo
-        token={buyToken}
-        size={tokenSize}
-      />
+      <TokenLogo token={sellToken} size={tokenSize} hideNetworkBadge />
+      <TokenLogo token={buyToken} size={tokenSize} />
       {children}
     </styledEl.CurrencyLogoPairWrapper>
   )

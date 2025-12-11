@@ -15,6 +15,6 @@ export function useSetWalletConnectionError() {
         connectionError: error,
       }))
     },
-    [setWalletConnectionState]
+    [setWalletConnectionState],
   )
 }

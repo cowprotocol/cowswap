@@ -34,7 +34,10 @@ export function useConnectTelegram(): ConnectTelegramController {
   const telegramWrapperRef = useRef<HTMLDivElement | null>(null)
 
   const authorization = useTgAuthorization()
-  const { isTgSubscribed, isCmsCallInProgress, toggleSubscription, subscribeWithData } = useTgSubscription(account, authorization)
+  const { isTgSubscribed, isCmsCallInProgress, toggleSubscription, subscribeWithData } = useTgSubscription(
+    account,
+    authorization,
+  )
 
   const { authorize, authenticate, tgData, isLoginInProgress, isAuthChecked } = authorization
 
@@ -77,15 +80,7 @@ export function useConnectTelegram(): ConnectTelegramController {
       subscribeWithData,
       username: tgData?.username,
     }),
-    [
-      authorize,
-      isLoading,
-      isTgSubscribed,
-      needsAuthorization,
-      subscribeWithData,
-      toggleSubscription,
-      tgData?.username,
-    ],
+    [authorize, isLoading, isTgSubscribed, needsAuthorization, subscribeWithData, toggleSubscription, tgData?.username],
   )
 }
 
@@ -94,15 +89,8 @@ interface ConnectTelegramProps {
 }
 
 export function ConnectTelegram({ controller }: ConnectTelegramProps): ReactElement {
-  const {
-    wrapperRef,
-    isLoading,
-    isSubscribed,
-    needsAuthorization,
-    authorize,
-    toggleSubscription,
-    subscribeWithData,
-  } = controller
+  const { wrapperRef, isLoading, isSubscribed, needsAuthorization, authorize, toggleSubscription, subscribeWithData } =
+    controller
 
   return (
     <Wrapper ref={wrapperRef}>

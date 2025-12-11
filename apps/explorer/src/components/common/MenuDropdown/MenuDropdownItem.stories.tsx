@@ -13,8 +13,6 @@ import { DOCS_LINK, DISCORD_LINK, PROTOCOL_LINK, COWSWAP_LINK, Routes } from '..
 
 import MenuDropdown, { DropdownProps } from '.'
 
-
-
 export default {
   title: 'Common/MenuDropdownItem',
   component: MenuDropdown,

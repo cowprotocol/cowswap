@@ -59,7 +59,7 @@ export async function getTrades(
   params: {
     owner?: Address
     orderId?: UID
-  } & WithNetworkId
+  } & WithNetworkId,
 ): Promise<RawTrade[]> {
   const { networkId, owner, orderId: orderUid } = params
   console.log(`[getTrades] Fetching trades on network ${networkId} with filters`, { owner, orderUid })

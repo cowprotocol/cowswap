@@ -21,4 +21,3 @@ export function useLimitOrderProtocolFeeAmount(): CurrencyAmount<Currency> | nul
       : CurrencyAmount.fromRawAmount(outputCurrencyAmount.currency, 0)
   }, [outputCurrencyAmount, protocolFeeBps])
 }
-

@@ -8,7 +8,7 @@ import type { JsonRpcProvider } from '@ethersproject/providers'
 export async function fetchTokenFromBlockchain(
   tokenAddress: string,
   chainId: SupportedChainId,
-  provider: JsonRpcProvider
+  provider: JsonRpcProvider,
 ): Promise<TokenInfo> {
   const formattedAddress = getAddress(tokenAddress)
   const erc20Contract = getContract(formattedAddress, Erc20Abi, provider) as Erc20

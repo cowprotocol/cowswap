@@ -5,7 +5,6 @@ import { GenericOrder } from 'common/types'
 
 import { extractPermitData } from './extractPermitData'
 
-
 export async function checkPermitNonceAndAmount(
   account: string,
   chainId: number,

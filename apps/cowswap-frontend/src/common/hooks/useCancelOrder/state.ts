@@ -44,5 +44,5 @@ export const updateCancellationModalContextAtom = atom(
 
       return { ...prevState, ...nextState }
     })
-  }
+  },
 )

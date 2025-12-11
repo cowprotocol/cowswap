@@ -9,6 +9,7 @@ import IMG_TUBE from '@cowprotocol/assets/images/image-tube.svg'
 import { Color, ProductVariant, UI } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
+import { CowFiCategory } from 'src/common/analytics/types'
 
 import { Link, LinkType } from '@/components/Link'
 import {
@@ -23,7 +24,6 @@ import {
   TopicList,
   TopicTitle,
 } from '@/styles/styled'
-import { CowFiCategory } from 'src/common/analytics/types'
 
 const analytics = initGtm()
 

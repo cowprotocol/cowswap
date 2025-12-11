@@ -14,7 +14,7 @@ export function useENSResolverContract(address: string | undefined): EnsPublicRe
     ([, _provider, , _address]) => {
       return getContract(_address, EnsPublicResolverAbi, _provider) as EnsPublicResolver
     },
-    SWR_NO_REFRESH_OPTIONS
+    SWR_NO_REFRESH_OPTIONS,
   )
 
   return data

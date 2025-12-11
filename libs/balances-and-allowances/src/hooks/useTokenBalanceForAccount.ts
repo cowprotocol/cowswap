@@ -8,7 +8,7 @@ import useSWR, { SWRResponse } from 'swr'
 
 export function useTokenBalanceForAccount(
   token: TokenWithLogo | undefined,
-  account: string | undefined
+  account: string | undefined,
 ): SWRResponse<BigNumber | undefined> {
   const provider = useWalletProvider()
 

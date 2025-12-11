@@ -8,7 +8,7 @@ import { GAS_LIMIT_DEFAULT } from 'common/constants/common'
 
 export async function presignOrderStep(
   orderId: string,
-  settlementContract: GPv2Settlement
+  settlementContract: GPv2Settlement,
 ): Promise<ContractTransaction | null> {
   logTradeFlow('SWAP FLOW', 'Pre-signing order', orderId)
 

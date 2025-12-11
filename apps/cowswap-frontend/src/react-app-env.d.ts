@@ -3,7 +3,7 @@
 declare module '*.md'
 
 declare module '@metamask/jazzicon' {
-  export default function(diameter: number, seed: number): HTMLElement
+  export default function (diameter: number, seed: number): HTMLElement
 }
 
 interface TelegramData {
@@ -38,11 +38,14 @@ interface Window {
   web3?: Record<string, unknown>
   Telegram?: {
     Login: {
-      auth(options: {
-        bot_id: number,
-        lang?: string,
-        request_access?: string
-      }, callback: (data: TelegramData | false) => void): void
+      auth(
+        options: {
+          bot_id: number
+          lang?: string
+          request_access?: string
+        },
+        callback: (data: TelegramData | false) => void,
+      ): void
     }
   }
 }

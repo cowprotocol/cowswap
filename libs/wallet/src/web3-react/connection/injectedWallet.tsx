@@ -10,7 +10,7 @@ const [web3Injected, web3InjectedHooks] = initializeConnector<InjectedWallet>(
       actions,
       walletUrl: '',
       searchKeywords: [],
-    })
+    }),
 )
 export const injectedWalletConnection: Web3ReactConnection<InjectedWallet> = {
   connector: web3Injected,
