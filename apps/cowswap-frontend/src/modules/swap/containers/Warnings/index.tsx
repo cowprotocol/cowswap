@@ -6,7 +6,7 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useIsCurrentTradeBridging, useTradePriceImpact, useTradeRouteContext } from 'modules/trade'
-import { BundleTxWrapBanner, HighFeeWarning, MetamaskTransactionWarning } from 'modules/tradeWidgetAddons'
+import { HighFeeWarning, MetamaskTransactionWarning } from 'modules/tradeWidgetAddons'
 import { SellNativeWarningBanner } from 'modules/tradeWidgetAddons'
 
 import {
@@ -64,7 +64,6 @@ export function Warnings({ buyingFiatAmount }: WarningsProps): ReactNode {
           toggle={toggleSmartContractRecipientConfirmed}
         />
       )}
-      <BundleTxWrapBanner />
       {showTwapSuggestionBanner && (
         <TwapSuggestionBanner
           chainId={chainId}
