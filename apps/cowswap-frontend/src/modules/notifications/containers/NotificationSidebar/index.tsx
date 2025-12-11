@@ -1,6 +1,7 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 
 import ICON_NOTIFICATION_SETTINGS from '@cowprotocol/assets/images/icon-notification-settings.svg'
+import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { useOnClickOutside } from '@cowprotocol/common-hooks'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 
@@ -8,7 +9,7 @@ import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 
-import { upToSmall, useMediaQuery } from 'legacy/hooks/useMediaQuery'
+import { upToSmall } from 'legacy/hooks/useMediaQuery'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 

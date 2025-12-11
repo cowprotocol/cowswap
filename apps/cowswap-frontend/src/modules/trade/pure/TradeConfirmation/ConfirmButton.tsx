@@ -1,11 +1,12 @@
 import { ReactNode, useEffect, useState } from 'react'
 
+import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { ButtonPrimary, ButtonSize, CenteredDots, LongLoadText } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { SigningStepState } from 'entities/trade'
 
-import { upToMedium, useMediaQuery } from 'legacy/hooks/useMediaQuery'
+import { upToMedium } from 'legacy/hooks/useMediaQuery'
 
 import { getPendingText } from './getPendingText'
 

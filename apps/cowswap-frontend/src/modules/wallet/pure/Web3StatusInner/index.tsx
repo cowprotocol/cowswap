@@ -1,5 +1,6 @@
 import { ReactNode, useMemo } from 'react'
 
+import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { shortenAddress } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
 import { Loader, RowBetween } from '@cowprotocol/ui'
@@ -11,7 +12,7 @@ import ICON_WALLET from 'assets/icon/wallet.svg'
 import { AlertCircle } from 'react-feather'
 import SVG from 'react-inlinesvg'
 
-import { upToExtraSmall, upToTiny, useMediaQuery } from 'legacy/hooks/useMediaQuery'
+import { upToExtraSmall, upToTiny } from 'legacy/hooks/useMediaQuery'
 
 import { CowSwapAnalyticsCategory, CowSwapGtmEvent, toCowSwapGtmEvent } from 'common/analytics/types'
 

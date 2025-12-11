@@ -1,12 +1,13 @@
 import { ReactElement, useEffect, useRef, useState } from 'react'
 
+import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { CenteredDots, LongLoadText, UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 import ms from 'ms.macro'
 import styled from 'styled-components/macro'
 
-import { upToMedium, useMediaQuery } from 'legacy/hooks/useMediaQuery'
+import { upToMedium } from 'legacy/hooks/useMediaQuery'
 
 const JUST_CLICKED_TIMEOUT = ms`1s`
 const LONG_TEXT_LENGTH = 20

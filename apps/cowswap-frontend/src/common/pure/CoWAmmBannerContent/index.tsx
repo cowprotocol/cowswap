@@ -1,6 +1,7 @@
 /* eslint-disable no-restricted-imports */ // TODO: Don't use 'modules' import
 import React, { useCallback, useMemo, useRef } from 'react'
 
+import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { isTruthy } from '@cowprotocol/common-utils'
 import { TokensByAddress } from '@cowprotocol/tokens'
 import { LpTokenProvider } from '@cowprotocol/types'
@@ -8,7 +9,7 @@ import { LpTokenProvider } from '@cowprotocol/types'
 import { t } from '@lingui/core/macro'
 import styled from 'styled-components/macro'
 
-import { upToSmall, useMediaQuery } from 'legacy/hooks/useMediaQuery'
+import { upToSmall } from 'legacy/hooks/useMediaQuery'
 
 import { VampireAttackContext } from 'modules/yield/types'
 
