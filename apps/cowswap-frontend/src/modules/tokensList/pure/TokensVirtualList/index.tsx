@@ -10,6 +10,7 @@ import { VirtualItem } from '@tanstack/react-virtual'
 import { CoWAmmBanner } from 'common/containers/CoWAmmBanner'
 import { VirtualList } from 'common/pure/VirtualList'
 
+import { useTokenListViewState } from '../../hooks/useTokenListViewState'
 import { SelectTokenContext } from '../../types'
 import { tokensListSorter } from '../../utils/tokensListSorter'
 import { FavoriteTokensList } from '../FavoriteTokensList'
@@ -17,14 +18,9 @@ import * as modalStyled from '../SelectTokenModal/styled'
 import { TokenListItemContainer } from '../TokenListItemContainer'
 
 export interface TokensVirtualListProps {
-  allTokens: TokenWithLogo[]
-  displayLpTokenLists?: boolean
-  selectTokenContext: SelectTokenContext
+  tokensToDisplay: TokenWithLogo[] // Pre-filtered by parent
   favoriteTokens?: TokenWithLogo[]
   recentTokens?: TokenWithLogo[]
-  hideFavoriteTokensTooltip?: boolean
-  scrollResetKey?: number
-  onClearRecentTokens?: () => void
 }
 
 type TokensVirtualRow =
@@ -32,30 +28,32 @@ type TokensVirtualRow =
   | { type: 'title'; label: string; actionLabel?: string; onAction?: () => void }
   | { type: 'token'; token: TokenWithLogo }
 
-export function TokensVirtualList(props: TokensVirtualListProps): ReactNode {
+export function TokensVirtualList({
+  tokensToDisplay,
+  favoriteTokens,
+  recentTokens,
+}: TokensVirtualListProps): ReactNode {
   const {
-    allTokens,
     selectTokenContext,
     displayLpTokenLists,
-    favoriteTokens,
-    recentTokens,
     hideFavoriteTokensTooltip,
-    scrollResetKey,
+    selectedTargetChainId,
     onClearRecentTokens,
-  } = props
+  } = useTokenListViewState()
+
   const { values: balances } = selectTokenContext.balancesState
 
   const { isYieldEnabled } = useFeatureFlags()
 
   const sortedTokens = useMemo(() => {
     if (!balances) {
-      return allTokens
+      return tokensToDisplay
     }
 
     const prioritized: TokenWithLogo[] = []
     const remainder: TokenWithLogo[] = []
 
-    for (const token of allTokens) {
+    for (const token of tokensToDisplay) {
       const hasBalance = Boolean(balances[token.address.toLowerCase()])
       if (hasBalance || getIsNativeToken(token)) {
         prioritized.push(token)
@@ -67,7 +65,7 @@ export function TokensVirtualList(props: TokensVirtualListProps): ReactNode {
     const sortedPrioritized = prioritized.length > 1 ? [...prioritized].sort(tokensListSorter(balances)) : prioritized
 
     return [...sortedPrioritized, ...remainder]
-  }, [allTokens, balances])
+  }, [tokensToDisplay, balances])
 
   const rows = useMemo<TokensVirtualRow[]>(() => {
     const tokenRows = sortedTokens.map<TokensVirtualRow>((token) => ({ type: 'token', token }))
@@ -98,7 +96,7 @@ export function TokensVirtualList(props: TokensVirtualListProps): ReactNode {
     return [...composedRows, ...tokenRows]
   }, [favoriteTokens, hideFavoriteTokensTooltip, onClearRecentTokens, recentTokens, sortedTokens])
 
-  const virtualListKey = scrollResetKey ?? 'tokens-list'
+  const virtualListKey = selectedTargetChainId ?? 'tokens-list'
 
   const getItemView = useCallback(
     (virtualRows: TokensVirtualRow[], virtualItem: VirtualItem) => (
@@ -113,7 +111,7 @@ export function TokensVirtualList(props: TokensVirtualListProps): ReactNode {
       id="tokens-list"
       items={rows}
       getItemView={getItemView}
-      scrollResetKey={scrollResetKey}
+      scrollResetKey={selectedTargetChainId}
     >
       {displayLpTokenLists || !isYieldEnabled ? null : <CoWAmmBanner isTokenSelectorView />}
     </VirtualList>
