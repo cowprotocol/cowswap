@@ -55,7 +55,7 @@ describe('Fetch with backoff', () => {
   })
 
   it('3 re-attempts if FAILS 3 times and then SUCCEED', async () => {
-    // GIVEN: An API which fails 3 tiems, and then succeeds
+    // GIVEN: An API which fails 3 times, and then succeeds
     mockAndFailUntilAttempt(3)
 
     // WHEN: Fetch url (backoff up to 5 attempts)
