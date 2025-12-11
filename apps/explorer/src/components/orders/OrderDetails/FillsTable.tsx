@@ -22,22 +22,18 @@ type FillsTableProps = SimpleTableProps & {
 }
 
 export function FillsTable(props: FillsTableProps): ReactNode {
-  const { trades, order, tableState, isPriceInverted, invertPrice } = props
+  const { trades, order, isPriceInverted, invertPrice } = props
 
   const invertButton = useMemo(() => <Icon icon={faExchangeAlt} onClick={invertPrice} />, [invertPrice])
 
-  const currentPageTrades = useMemo(() => {
-    return trades?.slice(tableState.pageOffset, tableState.pageOffset + tableState.pageSize)
-  }, [tableState.pageOffset, tableState.pageSize, trades])
-
-  const tradeItems = !currentPageTrades?.length ? (
+  const tradeItems = !trades?.length ? (
     <tr className="row-empty">
       <td className="row-td-empty">
         No results found. <br /> Please try another search.
       </td>
     </tr>
   ) : (
-    currentPageTrades.map((item) => <FillsTableRow key={item.txHash} trade={item} isPriceInverted={isPriceInverted} />)
+    trades.map((item) => <FillsTableRow key={item.txHash} trade={item} isPriceInverted={isPriceInverted} />)
   )
 
   return (

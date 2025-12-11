@@ -125,4 +125,6 @@ export type GetTxOrdersParams = WithNetworkId & {
 export type GetTradesParams = WithNetworkId & {
   owner?: string
   orderId?: string
+  offset?: number
+  limit?: number
 }

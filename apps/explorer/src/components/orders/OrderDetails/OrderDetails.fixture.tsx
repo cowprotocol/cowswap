@@ -390,6 +390,20 @@ const WithProviders = ({ children }: { children: React.ReactNode }) => (
   <GlobalStateContext.Provider value={mockGlobalStateContextValue}>{children}</GlobalStateContext.Provider>
 )
 
+const mockTableProps = {
+  tableState: {
+    pageSize: 10,
+    pageOffset: 0,
+    pageIndex: 0,
+    hasNextPage: false,
+    totalResults: 0,
+  },
+  setPageSize: (): void => {},
+  setPageOffset: (): void => {},
+  handleNextPage: (): void => {},
+  handlePreviousPage: (): void => {},
+}
+
 // --- Fixture Definitions ---
 const noErrors: Errors = {}
 const defaultTrades: Trade[] = []
@@ -403,6 +417,7 @@ export default {
         isOrderLoading={false}
         areTradesLoading={false}
         errors={noErrors}
+        {...mockTableProps}
       />
     </WithProviders>
   ),
@@ -414,6 +429,7 @@ export default {
         isOrderLoading={false}
         areTradesLoading={false}
         errors={noErrors}
+        {...mockTableProps}
       />
     </WithProviders>
   ),
@@ -427,6 +443,7 @@ export default {
         isOrderLoading={false}
         areTradesLoading={false}
         errors={noErrors}
+        {...mockTableProps}
       />
     </WithProviders>
   ),
@@ -438,6 +455,7 @@ export default {
         isOrderLoading={false}
         areTradesLoading={false}
         errors={noErrors}
+        {...mockTableProps}
       />
     </WithProviders>
   ),
@@ -449,6 +467,7 @@ export default {
         isOrderLoading={false}
         areTradesLoading={false}
         errors={noErrors}
+        {...mockTableProps}
       />
     </WithProviders>
   ),
@@ -460,6 +479,7 @@ export default {
         isOrderLoading={false}
         areTradesLoading={false}
         errors={noErrors}
+        {...mockTableProps}
       />
     </WithProviders>
   ),
@@ -477,6 +497,7 @@ export default {
         isOrderLoading={false}
         areTradesLoading={false}
         errors={noErrors}
+        {...mockTableProps}
       />
     </WithProviders>
   ),
@@ -489,6 +510,7 @@ export default {
         isOrderLoading={false}
         areTradesLoading={false}
         errors={noErrors}
+        {...mockTableProps}
       />
     </WithProviders>
   ),
@@ -500,6 +522,7 @@ export default {
         isOrderLoading={true}
         areTradesLoading={false}
         errors={noErrors}
+        {...mockTableProps}
       />
     </WithProviders>
   ),
@@ -511,6 +534,7 @@ export default {
         isOrderLoading={false}
         areTradesLoading={true}
         errors={noErrors}
+        {...mockTableProps}
       />
     </WithProviders>
   ),
@@ -522,6 +546,7 @@ export default {
         isOrderLoading={false}
         areTradesLoading={false}
         errors={noErrors}
+        {...mockTableProps}
       />
     </WithProviders>
   ),
@@ -533,6 +558,7 @@ export default {
         isOrderLoading={false}
         areTradesLoading={false}
         errors={noErrors}
+        {...mockTableProps}
       />
     </WithProviders>
   ),
@@ -547,6 +573,7 @@ export default {
           error1: { message: 'Failed something something', type: 'error' },
           error2: { message: 'Something else failed', type: 'error' },
         }}
+        {...mockTableProps}
       />
     </WithProviders>
   ),
@@ -559,6 +586,7 @@ export default {
         isOrderLoading={false}
         areTradesLoading={false}
         errors={noErrors}
+        {...mockTableProps}
       />
     </WithProviders>
   ),
@@ -571,6 +599,7 @@ export default {
         isOrderLoading={false}
         areTradesLoading={false}
         errors={noErrors}
+        {...mockTableProps}
       />
     </WithProviders>
   ),
@@ -582,6 +611,7 @@ export default {
         isOrderLoading={false}
         areTradesLoading={false}
         errors={noErrors}
+        {...mockTableProps}
       />
     </WithProviders>
   ),
@@ -593,6 +623,7 @@ export default {
         isOrderLoading={false}
         areTradesLoading={false}
         errors={noErrors}
+        {...mockTableProps}
       />
     </WithProviders>
   ),
@@ -604,6 +635,7 @@ export default {
         isOrderLoading={false}
         areTradesLoading={false}
         errors={noErrors}
+        {...mockTableProps}
       />
     </WithProviders>
   ),
@@ -615,6 +647,7 @@ export default {
         isOrderLoading={false}
         areTradesLoading={false}
         errors={noErrors}
+        {...mockTableProps}
       />
     </WithProviders>
   ),
@@ -626,6 +659,7 @@ export default {
         isOrderLoading={false}
         areTradesLoading={false}
         errors={noErrors}
+        {...mockTableProps}
       />
     </WithProviders>
   ),
@@ -638,6 +672,7 @@ export default {
         isOrderLoading={false}
         areTradesLoading={false}
         errors={noErrors}
+        {...mockTableProps}
       />
     </WithProviders>
   ),
@@ -649,6 +684,7 @@ export default {
         isOrderLoading={false}
         areTradesLoading={false}
         errors={noErrors}
+        {...mockTableProps}
       />
     </WithProviders>
   ),
@@ -660,6 +696,7 @@ export default {
         isOrderLoading={false}
         areTradesLoading={false}
         errors={noErrors}
+        {...mockTableProps}
       />
     </WithProviders>
   ),
@@ -671,6 +708,7 @@ export default {
         isOrderLoading={false}
         areTradesLoading={false}
         errors={noErrors}
+        {...mockTableProps}
       />
     </WithProviders>
   ),
@@ -683,6 +721,7 @@ export default {
         isOrderLoading={false}
         areTradesLoading={false}
         errors={noErrors}
+        {...mockTableProps}
       />
     </WithProviders>
   ),
