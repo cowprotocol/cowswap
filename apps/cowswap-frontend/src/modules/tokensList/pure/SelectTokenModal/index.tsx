@@ -1,14 +1,15 @@
-import { ComponentProps, ReactNode, useMemo } from 'react'
-
-import { SearchInput } from '@cowprotocol/ui'
+import { useHydrateAtoms } from 'jotai/utils'
+import { ReactNode, useEffect, useLayoutEffect, useMemo } from 'react'
 
 import { t } from '@lingui/core/macro'
 
-import { TitleBarActions, useSelectTokenContext, useTokenSearchInput } from './helpers'
-import { MobileChainSelector } from './MobileChainSelector'
-import * as styledEl from './styled'
+import { getMobileChainSelectorConfig, useSelectTokenContext, useTokenSearchInput } from './helpers'
+import { SelectTokenModalShell } from './SelectTokenModalShell'
 import { TokenColumnContent } from './TokenColumnContent'
 
+import { useResetTokenListViewState } from '../../hooks/useResetTokenListViewState'
+import { useUpdateTokenListViewState } from '../../hooks/useUpdateTokenListViewState'
+import { tokenListViewAtom, TokenListViewState } from '../../state/tokenListViewAtom'
 import { ChainPanel } from '../ChainPanel'
 import { TokensContent } from '../TokensContent'
 
@@ -64,6 +65,53 @@ export function SelectTokenModal(props: SelectTokenModalProps): ReactNode {
     chainsPanelTitle,
   })
 
+  // Compute the view state to hydrate the atom
+  const initialViewState: TokenListViewState = useMemo(
+    () => ({
+      allTokens,
+      favoriteTokens,
+      recentTokens,
+      searchInput: trimmedInputValue,
+      areTokensLoading,
+      areTokensFromBridge,
+      hideFavoriteTokensTooltip: hideFavoriteTokensTooltip ?? false,
+      displayLpTokenLists: displayLpTokenLists ?? false,
+      selectedTargetChainId,
+      selectTokenContext,
+      onClearRecentTokens,
+    }),
+    [
+      allTokens,
+      favoriteTokens,
+      recentTokens,
+      trimmedInputValue,
+      areTokensLoading,
+      areTokensFromBridge,
+      hideFavoriteTokensTooltip,
+      displayLpTokenLists,
+      selectedTargetChainId,
+      selectTokenContext,
+      onClearRecentTokens,
+    ],
+  )
+
+  // Hydrate atom SYNCHRONOUSLY on first render (no useEffect!)
+  useHydrateAtoms([[tokenListViewAtom, initialViewState]])
+
+  // Keep atom in sync when props change (after initial render)
+  // Using useLayoutEffect to ensure atom is updated before paint, avoiding flicker
+  // Note: Always pass the full state object; partial updates may leave stale fields
+  const updateTokenListView = useUpdateTokenListViewState()
+  useLayoutEffect(() => {
+    updateTokenListView(initialViewState)
+  }, [initialViewState, updateTokenListView])
+
+  // Reset atom on unmount to avoid stale state on reopen (full replace, not partial merge)
+  const resetTokenListView = useResetTokenListViewState()
+  useEffect(() => {
+    return () => resetTokenListView()
+  }, [resetTokenListView])
+
   const mobileChainSelector = getMobileChainSelectorConfig({
     showChainPanel,
     mobileChainsState,
@@ -99,82 +147,9 @@ export function SelectTokenModal(props: SelectTokenModalProps): ReactNode {
         chainsToSelect={chainsForTokenColumn}
         onSelectChain={onSelectChain}
       >
-        <TokensContent
-          displayLpTokenLists={displayLpTokenLists}
-          selectTokenContext={selectTokenContext}
-          favoriteTokens={favoriteTokens}
-          recentTokens={recentTokens}
-          areTokensLoading={areTokensLoading}
-          allTokens={allTokens}
-          searchInput={trimmedInputValue}
-          areTokensFromBridge={areTokensFromBridge}
-          hideFavoriteTokensTooltip={hideFavoriteTokensTooltip}
-          selectedTargetChainId={selectedTargetChainId}
-          onClearRecentTokens={onClearRecentTokens}
-        />
+        <TokensContent />
       </TokenColumnContent>
     </SelectTokenModalShell>
-  )
-}
-
-interface SelectTokenModalShellProps {
-  children: ReactNode
-  hasChainPanel: boolean
-  isFullScreenMobile?: boolean
-  title: string
-  showManageButton: boolean
-  onDismiss(): void
-  onOpenManageWidget: () => void
-  searchValue: string
-  onSearchChange(value: string): void
-  onSearchEnter?: () => void
-  mobileChainSelector?: ComponentProps<typeof MobileChainSelector>
-  sideContent?: ReactNode
-}
-
-function SelectTokenModalShell({
-  children,
-  hasChainPanel,
-  isFullScreenMobile,
-  title,
-  showManageButton,
-  onDismiss,
-  onOpenManageWidget,
-  searchValue,
-  onSearchChange,
-  onSearchEnter,
-  mobileChainSelector,
-  sideContent,
-}: SelectTokenModalShellProps): ReactNode {
-  return (
-    <styledEl.Wrapper $hasChainPanel={hasChainPanel} $isFullScreen={isFullScreenMobile}>
-      <TitleBarActions
-        showManageButton={showManageButton}
-        onDismiss={onDismiss}
-        onOpenManageWidget={onOpenManageWidget}
-        title={title}
-      />
-      <styledEl.SearchRow>
-        <styledEl.SearchInputWrapper>
-          <SearchInput
-            id="token-search-input"
-            value={searchValue}
-            onKeyDown={(event) => {
-              if (event.key === 'Enter') {
-                onSearchEnter?.()
-              }
-            }}
-            onChange={(event) => onSearchChange(event.target.value)}
-            placeholder={t`Search name or paste address...`}
-          />
-        </styledEl.SearchInputWrapper>
-      </styledEl.SearchRow>
-      {mobileChainSelector ? <MobileChainSelector {...mobileChainSelector} /> : null}
-      <styledEl.Body>
-        <styledEl.TokenColumn>{children}</styledEl.TokenColumn>
-        {sideContent}
-      </styledEl.Body>
-    </styledEl.Wrapper>
   )
 }
 
@@ -221,37 +196,5 @@ function useSelectTokenModalLayout(props: SelectTokenModalProps): {
     legacyChainsState,
     chainPanel,
     resolvedModalTitle,
-  }
-}
-
-function getMobileChainSelectorConfig({
-  showChainPanel,
-  mobileChainsState,
-  mobileChainsLabel,
-  onSelectChain,
-  onOpenMobileChainPanel,
-}: {
-  showChainPanel: boolean
-  mobileChainsState: SelectTokenModalProps['mobileChainsState']
-  mobileChainsLabel: SelectTokenModalProps['mobileChainsLabel']
-  onSelectChain?: SelectTokenModalProps['onSelectChain']
-  onOpenMobileChainPanel?: SelectTokenModalProps['onOpenMobileChainPanel']
-}): ComponentProps<typeof MobileChainSelector> | undefined {
-  const canRender =
-    !showChainPanel &&
-    mobileChainsState &&
-    onSelectChain &&
-    onOpenMobileChainPanel &&
-    (mobileChainsState.chains?.length ?? 0) > 0
-
-  if (!canRender) {
-    return undefined
-  }
-
-  return {
-    chainsState: mobileChainsState,
-    label: mobileChainsLabel,
-    onSelectChain,
-    onOpenPanel: onOpenMobileChainPanel,
   }
 }

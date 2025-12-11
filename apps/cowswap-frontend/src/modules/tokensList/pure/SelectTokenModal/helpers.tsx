@@ -1,4 +1,4 @@
-import { ReactNode, useMemo, useState } from 'react'
+import { ComponentProps, ReactNode, useMemo, useState } from 'react'
 
 import { BackButton } from '@cowprotocol/ui'
 
@@ -6,6 +6,7 @@ import { t } from '@lingui/core/macro'
 
 import { SettingsIcon } from 'modules/trade/pure/Settings'
 
+import { MobileChainSelector } from './MobileChainSelector'
 import * as styledEl from './styled'
 
 import { SelectTokenContext } from '../../types'
@@ -52,6 +53,38 @@ export function useTokenSearchInput(defaultInputValue = ''): [string, (value: st
   const [inputValue, setInputValue] = useState<string>(defaultInputValue)
 
   return [inputValue, setInputValue, inputValue.trim()]
+}
+
+export function getMobileChainSelectorConfig({
+  showChainPanel,
+  mobileChainsState,
+  mobileChainsLabel,
+  onSelectChain,
+  onOpenMobileChainPanel,
+}: {
+  showChainPanel: boolean
+  mobileChainsState: SelectTokenModalProps['mobileChainsState']
+  mobileChainsLabel: SelectTokenModalProps['mobileChainsLabel']
+  onSelectChain?: SelectTokenModalProps['onSelectChain']
+  onOpenMobileChainPanel?: SelectTokenModalProps['onOpenMobileChainPanel']
+}): ComponentProps<typeof MobileChainSelector> | undefined {
+  const canRender =
+    !showChainPanel &&
+    mobileChainsState &&
+    onSelectChain &&
+    onOpenMobileChainPanel &&
+    (mobileChainsState.chains?.length ?? 0) > 0
+
+  if (!canRender) {
+    return undefined
+  }
+
+  return {
+    chainsState: mobileChainsState,
+    label: mobileChainsLabel,
+    onSelectChain,
+    onOpenPanel: onOpenMobileChainPanel,
+  }
 }
 
 interface TitleBarActionsProps {
