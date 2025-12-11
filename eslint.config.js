@@ -15,7 +15,7 @@ const compat = new FlatCompat({
 module.exports = [
   pluginLingui.configs['flat/recommended'],
   {
-    ignores: ['static-files/'],
+    ignores: ['static-files/', '.nx/', '**/.next/', 'build/', 'dist/'],
   },
   {
     plugins: {
@@ -141,45 +141,12 @@ module.exports = [
           argsIgnorePattern: '^_',
         },
       ],
-      'import/order': [
-        'error',
-        {
-          pathGroups: [
-            {
-              pattern: '{react,jotai,jotai/*}',
-              group: 'external',
-              position: 'before',
-            },
-            {
-              pattern: '{@cowprotocol,@cowprotocol,@uniswap,@safe-global,@ethersproject,@web3-react}/**',
-              group: 'external',
-              position: 'before',
-            },
-            {
-              pattern: 'legacy/**',
-              group: 'external',
-              position: 'after',
-            },
-            {
-              pattern: 'modules/**',
-              group: 'builtin',
-              position: 'after',
-            },
-            {
-              pattern: '{api,abis,common,constants,legacy,lib,pages,types,utils}/**',
-              group: 'internal',
-              position: 'before',
-            },
-          ],
-          pathGroupsExcludedImportTypes: ['react'],
-          groups: ['external', 'builtin', 'internal', 'sibling', 'parent', 'object', 'index', 'type'],
-          alphabetize: {
-            order: 'asc',
-            caseInsensitive: true,
-          },
-          'newlines-between': 'always',
-        },
-      ],
+      /**
+       * import/order rules are implemented via prettier.config.js
+       *
+       * @see prettier.config.js
+       */
+      'import/order': ['off'],
       'no-restricted-globals': [
         'error',
         'event',
