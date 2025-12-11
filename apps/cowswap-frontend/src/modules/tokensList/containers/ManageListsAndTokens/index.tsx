@@ -17,7 +17,7 @@ export interface ManageListsAndTokensProps {
   lists: ListState[]
   customTokens: TokenWithLogo[]
   onBack(): void
-  onDismiss(): void
+  onDismiss?(): void
 }
 
 const tokensInputPlaceholder = '0x0000'
@@ -50,20 +50,15 @@ export function ManageListsAndTokens(props: ManageListsAndTokensProps): ReactNod
   const tokenSearchResponse = useSearchToken(isTokenAddressValid ? tokenInput : null)
   const listSearchResponse = useSearchList(isListUrlValid ? listInput : null)
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const setListsTab = () => {
+  const setListsTab = (): void => {
     setCurrentTab('lists')
     setInputValue('')
   }
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const setTokensTab = () => {
+  const setTokensTab = (): void => {
     setCurrentTab('tokens')
     setInputValue('')
   }
-
   return (
     <styledEl.Wrapper>
       <ModalHeader onBack={onBack} onClose={onDismiss}>

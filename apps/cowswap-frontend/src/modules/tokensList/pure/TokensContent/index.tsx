@@ -3,9 +3,6 @@ import React, { ReactNode, useMemo } from 'react'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { Loader } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/react/macro'
-import { Edit } from 'react-feather'
-
 import { TokenSearchResults } from '../../containers/TokenSearchResults'
 import { SelectTokenContext } from '../../types'
 import { getTokenUniqueKey } from '../../utils/tokenKey'
@@ -17,14 +14,12 @@ export interface TokensContentProps {
   selectTokenContext: SelectTokenContext
   favoriteTokens: TokenWithLogo[]
   recentTokens?: TokenWithLogo[]
-  hideFavoriteTokensTooltip?: boolean
   areTokensLoading: boolean
   allTokens: TokenWithLogo[]
   searchInput: string
-  standalone?: boolean
   areTokensFromBridge: boolean
+  hideFavoriteTokensTooltip?: boolean
   selectedTargetChainId?: number
-  onOpenManageWidget(): void
   onClearRecentTokens?: () => void
 }
 
@@ -32,37 +27,34 @@ export function TokensContent({
   selectTokenContext,
   favoriteTokens,
   recentTokens,
-  hideFavoriteTokensTooltip,
   areTokensLoading,
   allTokens,
   displayLpTokenLists,
   searchInput,
-  standalone,
   areTokensFromBridge,
+  hideFavoriteTokensTooltip,
   selectedTargetChainId,
-  onOpenManageWidget,
   onClearRecentTokens,
 }: TokensContentProps): ReactNode {
   const shouldShowFavoritesInline = !areTokensLoading && !searchInput && favoriteTokens.length > 0
   const shouldShowRecentsInline = !areTokensLoading && !searchInput && (recentTokens?.length ?? 0) > 0
 
   const pinnedTokenKeys = useMemo(() => {
-    if (!shouldShowFavoritesInline && !shouldShowRecentsInline) {
+    // Only hide "Recent" tokens from the main list.
+    // Favorite tokens should still appear in "All tokens" so they participate
+    // in balance-based sorting and show their balances.
+    if (!shouldShowRecentsInline) {
       return undefined
     }
 
     const pinned = new Set<string>()
-
-    if (shouldShowFavoritesInline) {
-      favoriteTokens.forEach((token) => pinned.add(getTokenUniqueKey(token)))
-    }
 
     if (shouldShowRecentsInline && recentTokens) {
       recentTokens.forEach((token) => pinned.add(getTokenUniqueKey(token)))
     }
 
     return pinned
-  }, [favoriteTokens, recentTokens, shouldShowFavoritesInline, shouldShowRecentsInline])
+  }, [recentTokens, shouldShowRecentsInline])
 
   const tokensWithoutPinned = useMemo(() => {
     if (!pinnedTokenKeys) {
@@ -76,35 +68,20 @@ export function TokensContent({
   const recentTokensInline = shouldShowRecentsInline ? recentTokens : undefined
 
   return (
-    <>
-      <TokensView
-        areTokensLoading={areTokensLoading}
-        searchInput={searchInput}
-        selectTokenContext={selectTokenContext}
-        areTokensFromBridge={areTokensFromBridge}
-        allTokens={allTokens}
-        tokensWithoutPinned={tokensWithoutPinned}
-        displayLpTokenLists={displayLpTokenLists}
-        favoriteTokens={favoriteTokensInline}
-        recentTokens={recentTokensInline}
-        hideFavoriteTokensTooltip={hideFavoriteTokensTooltip}
-        selectedTargetChainId={selectedTargetChainId}
-        onClearRecentTokens={onClearRecentTokens}
-      />
-      {!standalone && (
-        <>
-          <styledEl.Separator />
-          <div>
-            <styledEl.ActionButton id="list-token-manage-button" onClick={onOpenManageWidget}>
-              <Edit />{' '}
-              <span>
-                <Trans>Manage Token Lists</Trans>
-              </span>
-            </styledEl.ActionButton>
-          </div>
-        </>
-      )}
-    </>
+    <TokensView
+      areTokensLoading={areTokensLoading}
+      searchInput={searchInput}
+      selectTokenContext={selectTokenContext}
+      areTokensFromBridge={areTokensFromBridge}
+      allTokens={allTokens}
+      tokensWithoutPinned={tokensWithoutPinned}
+      displayLpTokenLists={displayLpTokenLists}
+      favoriteTokens={favoriteTokensInline}
+      recentTokens={recentTokensInline}
+      hideFavoriteTokensTooltip={hideFavoriteTokensTooltip}
+      selectedTargetChainId={selectedTargetChainId}
+      onClearRecentTokens={onClearRecentTokens}
+    />
   )
 }
 

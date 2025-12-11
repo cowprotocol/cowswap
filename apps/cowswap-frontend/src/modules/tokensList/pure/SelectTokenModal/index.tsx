@@ -1,10 +1,11 @@
-import { ReactNode, useMemo } from 'react'
+import { ComponentProps, ReactNode, useMemo } from 'react'
 
 import { SearchInput } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 
 import { TitleBarActions, useSelectTokenContext, useTokenSearchInput } from './helpers'
+import { MobileChainSelector } from './MobileChainSelector'
 import * as styledEl from './styled'
 import { TokenColumnContent } from './TokenColumnContent'
 
@@ -41,6 +42,9 @@ export function SelectTokenModal(props: SelectTokenModalProps): ReactNode {
     selectedTargetChainId,
     hasChainPanel = false,
     chainsPanelTitle,
+    mobileChainsState,
+    mobileChainsLabel,
+    onOpenMobileChainPanel,
     isFullScreenMobile,
   } = props
 
@@ -60,6 +64,15 @@ export function SelectTokenModal(props: SelectTokenModalProps): ReactNode {
     chainsPanelTitle,
   })
 
+  const mobileChainSelector = getMobileChainSelectorConfig({
+    showChainPanel,
+    mobileChainsState,
+    mobileChainsLabel,
+    onSelectChain,
+    onOpenMobileChainPanel,
+  })
+  const chainsForTokenColumn = mobileChainSelector ? undefined : legacyChainsState
+
   return (
     <SelectTokenModalShell
       hasChainPanel={showChainPanel}
@@ -72,6 +85,7 @@ export function SelectTokenModal(props: SelectTokenModalProps): ReactNode {
       onSearchChange={setInputValue}
       onSearchEnter={onInputPressEnter}
       sideContent={chainPanel}
+      mobileChainSelector={mobileChainSelector}
     >
       <TokenColumnContent
         displayLpTokenLists={displayLpTokenLists}
@@ -82,7 +96,7 @@ export function SelectTokenModal(props: SelectTokenModalProps): ReactNode {
         disableErc20={disableErc20}
         tokenListCategoryState={tokenListCategoryState}
         isRouteAvailable={isRouteAvailable}
-        chainsToSelect={legacyChainsState}
+        chainsToSelect={chainsForTokenColumn}
         onSelectChain={onSelectChain}
       >
         <TokensContent
@@ -97,8 +111,6 @@ export function SelectTokenModal(props: SelectTokenModalProps): ReactNode {
           hideFavoriteTokensTooltip={hideFavoriteTokensTooltip}
           selectedTargetChainId={selectedTargetChainId}
           onClearRecentTokens={onClearRecentTokens}
-          onOpenManageWidget={onOpenManageWidget}
-          standalone={standalone}
         />
       </TokenColumnContent>
     </SelectTokenModalShell>
@@ -116,6 +128,7 @@ interface SelectTokenModalShellProps {
   searchValue: string
   onSearchChange(value: string): void
   onSearchEnter?: () => void
+  mobileChainSelector?: ComponentProps<typeof MobileChainSelector>
   sideContent?: ReactNode
 }
 
@@ -130,6 +143,7 @@ function SelectTokenModalShell({
   searchValue,
   onSearchChange,
   onSearchEnter,
+  mobileChainSelector,
   sideContent,
 }: SelectTokenModalShellProps): ReactNode {
   return (
@@ -155,6 +169,7 @@ function SelectTokenModalShell({
           />
         </styledEl.SearchInputWrapper>
       </styledEl.SearchRow>
+      {mobileChainSelector ? <MobileChainSelector {...mobileChainSelector} /> : null}
       <styledEl.Body>
         <styledEl.TokenColumn>{children}</styledEl.TokenColumn>
         {sideContent}
@@ -185,7 +200,7 @@ function useSelectTokenModalLayout(props: SelectTokenModalProps): {
   const [inputValue, setInputValue, trimmedInputValue] = useTokenSearchInput(defaultInputValue)
   const selectTokenContext = useSelectTokenContext(props)
   const resolvedModalTitle = modalTitle ?? t`Select token`
-  const showChainPanel = hasChainPanel && Boolean(chainsToSelect?.chains?.length)
+  const showChainPanel = hasChainPanel
   const legacyChainsState =
     !showChainPanel && chainsToSelect && (chainsToSelect.chains?.length ?? 0) > 0 ? chainsToSelect : undefined
   const resolvedChainPanelTitle = chainsPanelTitle ?? t`Cross chain swap`
@@ -206,5 +221,37 @@ function useSelectTokenModalLayout(props: SelectTokenModalProps): {
     legacyChainsState,
     chainPanel,
     resolvedModalTitle,
+  }
+}
+
+function getMobileChainSelectorConfig({
+  showChainPanel,
+  mobileChainsState,
+  mobileChainsLabel,
+  onSelectChain,
+  onOpenMobileChainPanel,
+}: {
+  showChainPanel: boolean
+  mobileChainsState: SelectTokenModalProps['mobileChainsState']
+  mobileChainsLabel: SelectTokenModalProps['mobileChainsLabel']
+  onSelectChain?: SelectTokenModalProps['onSelectChain']
+  onOpenMobileChainPanel?: SelectTokenModalProps['onOpenMobileChainPanel']
+}): ComponentProps<typeof MobileChainSelector> | undefined {
+  const canRender =
+    !showChainPanel &&
+    mobileChainsState &&
+    onSelectChain &&
+    onOpenMobileChainPanel &&
+    (mobileChainsState.chains?.length ?? 0) > 0
+
+  if (!canRender) {
+    return undefined
+  }
+
+  return {
+    chainsState: mobileChainsState,
+    label: mobileChainsLabel,
+    onSelectChain,
+    onOpenPanel: onOpenMobileChainPanel,
   }
 }
