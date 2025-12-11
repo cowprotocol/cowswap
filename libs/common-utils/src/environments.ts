@@ -47,7 +47,7 @@ export function checkEnvironment(host: string, path: string): EnvironmentChecks 
 }
 
 // A hack to test against prod API
-const forceProdApi = !!localStorage.getItem('forceProdApi')
+const forceProdApi = typeof window !== 'undefined' && !!window.localStorage.getItem('forceProdApi')
 
 // Default values for environments
 let isLocal = false
