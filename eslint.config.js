@@ -1,8 +1,11 @@
 const { FlatCompat } = require('@eslint/eslintrc')
 const js = require('@eslint/js')
+const nextPlugin = require('@next/eslint-plugin-next')
 const nxEslintPlugin = require('@nx/eslint-plugin')
+const prettierConfig = require('eslint-config-prettier')
 const eslintImport = require('eslint-plugin-import')
 const pluginLingui = require('eslint-plugin-lingui')
+const prettier = require('eslint-plugin-prettier')
 const react = require('eslint-plugin-react')
 const reactHooks = require('eslint-plugin-react-hooks')
 const unusedImports = require('eslint-plugin-unused-imports')
@@ -22,6 +25,7 @@ module.exports = [
       '@nx': nxEslintPlugin,
       'unused-imports': unusedImports,
       import: eslintImport,
+      prettier: prettier,
     },
   },
 
@@ -195,6 +199,7 @@ module.exports = [
       'prefer-const': 'error',
       'no-unneeded-ternary': 'error',
       'no-var': 'error',
+      'prettier/prettier': 'warn',
     },
   },
 
@@ -257,6 +262,43 @@ module.exports = [
     },
   },
 
+  // cow-fi Next.js config
+  {
+    files: ['apps/cow-fi/**/*.{ts,tsx,js,jsx}'],
+    plugins: {
+      '@next/next': nextPlugin,
+    },
+    rules: {
+      ...nextPlugin.configs.recommended.rules,
+      ...nextPlugin.configs['core-web-vitals'].rules,
+      '@next/next/no-html-link-for-pages': ['error', 'apps/cow-fi/pages'],
+    },
+  },
+  // TODO: remove this once the errors have been fixed
+  {
+    files: ['apps/cow-fi/**/*.{ts,tsx,js,jsx}'],
+    plugins: {
+      // Ensure plugin-scoped rules remain resolvable after upstream filtering
+      react: react,
+      'react-hooks': reactHooks,
+    },
+    rules: {
+      '@typescript-eslint/explicit-function-return-type': 'warn',
+      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-unused-vars': 'warn',
+      'unused-imports/no-unused-imports': 'warn',
+      'unused-imports/no-unused-vars': 'warn',
+      'import/order': 'warn',
+      'max-lines-per-function': 'warn',
+      complexity: 'warn',
+      'react/no-unstable-nested-components': 'warn',
+      'react-hooks/rules-of-hooks': 'warn',
+      'react-hooks/exhaustive-deps': 'warn',
+      'react-hooks/purity': 'warn',
+      '@next/next/no-img-element': 'warn',
+      'no-restricted-imports': 'warn',
+    },
+  },
   ...compat.config({ extends: ['plugin:@nx/typescript'] }).map((config) => ({
     ...config,
     files: ['**/*.ts', '**/*.tsx'],
@@ -267,4 +309,10 @@ module.exports = [
     files: ['**/*.js', '**/*.jsx'],
     rules: {},
   })),
+  ...compat.config({ env: { jest: true } }).map((config) => ({
+    ...config,
+    files: ['**/*.spec.ts', '**/*.spec.tsx', '**/*.spec.js', '**/*.spec.jsx'],
+  })),
+  { ignores: ['.next/**/*'] },
+  prettierConfig,
 ]
