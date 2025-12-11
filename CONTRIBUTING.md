@@ -106,7 +106,7 @@ Start with issues labeled **Help Wanted**.
 - Abide by the structure of the respective projects
 - Use Storybook when coding UI in a project that uses Storybook, Cosmos where Cosmos is used
 - Code should be auto-formatted with rules defined in the project (ESLint)
-- You are free to use whatever editor you fancy (VSCode, Intellij, vim, emacs), preferably with format on save (Prettier plugin)
+- You are free to use whatever editor you fancy (VSCode, Intellij, vim, emacs), preferably with format on save (ESLint plugin)
 
 **Keep functions small & prevent unnecessary re-renders.**
 
@@ -134,7 +134,7 @@ Additional Guidelines:
 
 ## 7. Styling & Formatting
 
-- ESLint + Prettier must pass; camelCase everywhere
+- ESLint must pass; camelCase everywhere
 - Import order:
   1. Core (react, jotai…)
   2. External (@cowprotocol/_, @uniswap/_, …)
