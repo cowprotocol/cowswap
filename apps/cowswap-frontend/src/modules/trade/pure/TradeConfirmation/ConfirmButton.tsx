@@ -1,12 +1,10 @@
 import { ReactNode, useEffect, useState } from 'react'
 
 import { useMediaQuery } from '@cowprotocol/common-hooks'
-import { ButtonPrimary, ButtonSize, CenteredDots, LongLoadText } from '@cowprotocol/ui'
+import { ButtonPrimary, ButtonSize, CenteredDots, LongLoadText, Media } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { SigningStepState } from 'entities/trade'
-
-import { upToMedium } from 'legacy/hooks/useMediaQuery'
 
 import { getPendingText } from './getPendingText'
 
@@ -23,7 +21,7 @@ export function ConfirmButton(props: ConfirmButtonProps): ReactNode {
 
   const isButtonDisabled = props.isButtonDisabled || isConfirmClicked
 
-  const isUpToMedium = useMediaQuery(upToMedium)
+  const isUpToMedium = useMediaQuery(Media.upToMedium(false))
 
   const handleConfirmClick = async (): Promise<void> => {
     if (isUpToMedium) {

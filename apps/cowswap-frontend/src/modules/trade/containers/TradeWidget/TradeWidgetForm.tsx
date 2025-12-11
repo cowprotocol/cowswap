@@ -13,7 +13,6 @@ import SVG from 'react-inlinesvg'
 import { Nullish } from 'types'
 
 import { AccountElement } from 'legacy/components/Header/AccountElement'
-import { upToLarge } from 'legacy/hooks/useMediaQuery'
 import { Field } from 'legacy/state/types'
 
 import { useToggleAccountModal } from 'modules/account'
@@ -135,7 +134,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
   // Disable too frequent tokens switching
   const throttledOnSwitchTokens = useThrottleFn(onSwitchTokens, 500)
 
-  const isUpToLarge = useMediaQuery(upToLarge)
+  const isUpToLarge = useMediaQuery(Media.upToLarge(false))
 
   const isConnectedMarketOrderWidget = !!account && isMarketOrderWidget
 
