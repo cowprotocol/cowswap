@@ -9,7 +9,6 @@ import { Routes } from '../constants/routes'
 jest.mock('@cowprotocol/common-hooks', () => ({
   ...jest.requireActual('@cowprotocol/common-hooks'),
   useSetIsBridgingEnabled: jest.fn(),
-  useFeatureFlags: jest.fn(),
 }))
 
 jest.mock('@cowprotocol/wallet', () => ({
@@ -23,9 +22,8 @@ jest.mock('modules/trade', () => ({
   useTradeTypeInfo: jest.fn(),
 }))
 
-const { useSetIsBridgingEnabled, useFeatureFlags } = require('@cowprotocol/common-hooks')
+const { useSetIsBridgingEnabled } = require('@cowprotocol/common-hooks')
 const mockUseSetIsBridgingEnabled = useSetIsBridgingEnabled as jest.MockedFunction<typeof useSetIsBridgingEnabled>
-const mockUseFeatureFlags = useFeatureFlags as jest.MockedFunction<typeof useFeatureFlags>
 const { useWalletInfo, useAccountType } = require('@cowprotocol/wallet')
 
 const mockUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
@@ -39,25 +37,30 @@ describe('BridgingEnabledUpdater', () => {
   beforeEach(() => {
     jest.clearAllMocks()
     mockUseSetIsBridgingEnabled.mockReturnValue(setIsBridgingEnabled)
-    mockUseFeatureFlags.mockReturnValue({})
     mockUseWalletInfo.mockReturnValue({ account: '0x123' })
     mockUseAccountType.mockReturnValue(AccountType.EOA)
     mockUseTradeTypeInfo.mockReturnValue({ route: Routes.SWAP })
   })
 
-  it('disables bridging when the feature flag is false', () => {
-    mockUseFeatureFlags.mockReturnValue({ isBridgingEnabled: false })
+  it('enables bridging on swap route for compatible wallet', () => {
+    render(<BridgingEnabledUpdater />)
+
+    expect(setIsBridgingEnabled).toHaveBeenCalledWith(true)
+  })
+
+  it('disables bridging for smart contract wallets', () => {
+    mockUseAccountType.mockReturnValue(AccountType.SMART_CONTRACT)
 
     render(<BridgingEnabledUpdater />)
 
     expect(setIsBridgingEnabled).toHaveBeenCalledWith(false)
   })
 
-  it('enables bridging on swap route when the feature flag is true or undefined', () => {
-    mockUseFeatureFlags.mockReturnValue({ isBridgingEnabled: true })
+  it('disables bridging on non-swap routes', () => {
+    mockUseTradeTypeInfo.mockReturnValue({ route: Routes.LIMIT_ORDER })
 
     render(<BridgingEnabledUpdater />)
 
-    expect(setIsBridgingEnabled).toHaveBeenCalledWith(true)
+    expect(setIsBridgingEnabled).toHaveBeenCalledWith(false)
   })
 })

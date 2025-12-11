@@ -29,7 +29,6 @@ jest.mock('@cowprotocol/common-hooks', () => ({
   ...jest.requireActual('@cowprotocol/common-hooks'),
   useIsBridgingEnabled: jest.fn(),
   useAvailableChains: jest.fn(),
-  useFeatureFlags: jest.fn(),
 }))
 
 jest.mock('entities/bridgeProvider', () => ({
@@ -46,10 +45,9 @@ jest.mock('./useSelectTokenWidgetState', () => ({
 const mockUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
 const mockUseSelectTokenWidgetState = useSelectTokenWidgetState as jest.MockedFunction<typeof useSelectTokenWidgetState>
 
-const { useIsBridgingEnabled, useAvailableChains, useFeatureFlags } = require('@cowprotocol/common-hooks')
+const { useIsBridgingEnabled, useAvailableChains } = require('@cowprotocol/common-hooks')
 const mockUseIsBridgingEnabled = useIsBridgingEnabled as jest.MockedFunction<typeof useIsBridgingEnabled>
 const mockUseAvailableChains = useAvailableChains as jest.MockedFunction<typeof useAvailableChains>
-const mockUseFeatureFlags = useFeatureFlags as jest.MockedFunction<typeof useFeatureFlags>
 
 const { useBridgeSupportedNetworks, useRoutesAvailability } = require('entities/bridgeProvider')
 const mockUseBridgeSupportedNetworks = useBridgeSupportedNetworks as jest.MockedFunction<
@@ -288,7 +286,6 @@ describe('useChainsToSelect hook', () => {
     mockUseWalletInfo.mockReturnValue({ chainId: SupportedChainId.MAINNET } as WalletInfo)
     mockUseIsBridgingEnabled.mockReturnValue(true)
     mockUseAvailableChains.mockReturnValue([SupportedChainId.MAINNET, SupportedChainId.GNOSIS_CHAIN])
-    mockUseFeatureFlags.mockReturnValue({ areUnsupportedChainsEnabled: false })
     mockUseBridgeSupportedNetworks.mockReturnValue({
       data: [createChainInfoForTests(SupportedChainId.GNOSIS_CHAIN)],
       isLoading: false,
