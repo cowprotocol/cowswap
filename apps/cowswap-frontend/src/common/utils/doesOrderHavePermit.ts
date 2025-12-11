@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-imports */ // TODO: Don't use 'modules' import
 import { doesHookHavePermit } from '@cowprotocol/hook-dapp-lib'
 
 import { getAppDataHooks } from 'modules/appData'

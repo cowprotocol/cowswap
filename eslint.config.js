@@ -226,6 +226,28 @@ module.exports = [
       ],
     },
   },
+  /**
+   * Restrict modules/** imports inside common/** dir
+   * @see CONTRIBUTING.md
+   */
+  {
+    files: ['apps/cowswap-frontend/src/common/**/*.{ts,tsx,js,jsx}'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: 'cowswap-frontend/modules',
+              message: 'Do not import from modules inside common dir.',
+            },
+          ],
+          patterns: ['modules/*'],
+        },
+      ],
+    },
+  },
+
   // Tests
   {
     files: ['**/*.test.{ts,tsx,js,jsx}'],
