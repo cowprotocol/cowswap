@@ -10,14 +10,9 @@ import styled from 'styled-components/macro'
 
 import { AddressLink } from 'common/pure/AddressLink'
 
-const ChainInfo = styled.div`
-  display: inline-flex;
-  gap: 4px;
-  align-items: center;
-  margin: 0 0 8px;
-`
-
 const ChainLink = styled(AddressLink)`
+  margin: 0 6px;
+
   && {
     color: var(${UI.COLOR_TEXT});
     text-decoration-color: var(${UI.COLOR_TEXT});
@@ -56,6 +51,12 @@ const ConfirmCheckbox = styled.label`
   }
 `
 
+const NetworkLogoStyled = styled(NetworkLogo)`
+  margin-left: 6px;
+  top: 3px;
+  position: relative;
+`
+
 interface SmartContractReceiverWarningProps {
   account: string
   recipient: Nullish<string>
@@ -76,12 +77,12 @@ export function SmartContractReceiverWarning({
   return (
     <InlineBanner bannerType={StatusColorVariant.Alert} orientation={BannerOrientation.Horizontal} breakWord>
       <div>
-        <ChainInfo>
+        <div>
           <Trans>Recipient</Trans>
-          <NetworkLogo chainId={chainId} size={16} />
+          <NetworkLogoStyled chainId={chainId} size={16} />
           <ChainLink address={recipient ?? account} chainId={chainId} />
           <span>is on {chainName} network.</span>
-        </ChainInfo>
+        </div>
         <div>
           <Trans>Confirm this is the correct address and that it exists on this chain.</Trans>
         </div>
