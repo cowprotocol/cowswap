@@ -24,6 +24,9 @@ interface HydrateTokenListViewAtomArgs {
   displayLpTokenLists: boolean
 }
 
+// Concrete tuple type for useHydrateAtoms to ensure TypeScript picks the correct overload
+type HydrationEntry = readonly [typeof tokenListViewAtom, TokenListViewState]
+
 /**
  * Hydrates the tokenListViewAtom at the controller level.
  * This moves hydration responsibility from SelectTokenModal to the controller,
@@ -99,8 +102,6 @@ export function useHydrateTokenListViewAtom({
   )
 
   // Memoize hydration values to ensure stable type inference
-  // Define concrete tuple type so TypeScript can pick the correct useHydrateAtoms overload
-  type HydrationEntry = readonly [typeof tokenListViewAtom, TokenListViewState]
   const hydrationValues = useMemo<HydrationEntry[]>(
     () => (shouldRender ? [[tokenListViewAtom, { ...viewState, searchInput: '' }]] : []),
     [shouldRender, viewState],
