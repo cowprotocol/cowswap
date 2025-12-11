@@ -98,8 +98,16 @@ export function useHydrateTokenListViewAtom({
     ],
   )
 
+  // Memoize hydration values to ensure stable type inference
+  // Define concrete tuple type so TypeScript can pick the correct useHydrateAtoms overload
+  type HydrationEntry = readonly [typeof tokenListViewAtom, TokenListViewState]
+  const hydrationValues = useMemo<HydrationEntry[]>(
+    () => (shouldRender ? [[tokenListViewAtom, { ...viewState, searchInput: '' }]] : []),
+    [shouldRender, viewState],
+  )
+
   // Hydrate atom SYNCHRONOUSLY on first render (only when modal should render)
-  useHydrateAtoms(shouldRender ? [[tokenListViewAtom, { ...viewState, searchInput: '' }]] : [])
+  useHydrateAtoms(hydrationValues)
 
   // Keep atom in sync when data changes (after initial render)
   // Using useLayoutEffect to ensure atom is updated before paint, avoiding flicker
