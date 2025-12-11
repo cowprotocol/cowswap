@@ -46,12 +46,15 @@ export function checkEnvironment(host: string, path: string): EnvironmentChecks 
   }
 }
 
+// A hack to test against prod API
+const forceProdApi = !!localStorage.getItem('forceProdApi')
+
 // Default values for environments
 let isLocal = false
 let isDev = false
 let isPr = false
 let isStaging = false
-let isProd = false
+let isProd = forceProdApi
 let isEns = false
 let isBarn = false
 
@@ -98,7 +101,7 @@ export const environmentName: EnvironmentName | undefined = (function () {
 })()
 
 const isProdLike = isProd || isEns || isStaging || isBarn
-const isBarnBackendEnv = isLocal || isDev || isPr || isBarn
+const isBarnBackendEnv = forceProdApi ? false : isLocal || isDev || isPr || isBarn
 
 if (typeof window !== 'undefined') {
   registerOnWindow({ environment: environmentName })
