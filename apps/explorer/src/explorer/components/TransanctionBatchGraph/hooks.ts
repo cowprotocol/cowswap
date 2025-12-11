@@ -1,5 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
+import { useWindowSize } from '@cowprotocol/common-hooks'
+
 import Cytoscape, { EdgeDataDefinition, ElementDefinition, NodeDataDefinition, StylesheetCSS } from 'cytoscape'
 
 import { LAYOUTS } from './layouts'
@@ -14,7 +16,6 @@ import UnknownToken from '../../../assets/img/question1.svg'
 import { useMultipleErc20 } from '../../../hooks/useErc20'
 import { useQuery, useUpdateQueryString } from '../../../hooks/useQuery'
 import { useTransactionData } from '../../../hooks/useTransactionData'
-import useWindowSizes from '../../../hooks/useWindowSizes'
 import { Network } from '../../../types'
 import { getImageUrl } from '../../../utils'
 import { HEIGHT_HEADER_FOOTER } from '../../const'
@@ -50,8 +51,8 @@ export function useCytoscape(params: UseCytoscapeParams): UseCytoscapeReturn {
   const cyPopperRef = useRef<PopperInstance | null>(null)
   const [resetZoom, setResetZoom] = useState<boolean | null>(null)
   const [layout, setLayout] = useState(LAYOUTS.grid)
-  const { innerHeight } = useWindowSizes()
-  const heightSize = innerHeight && innerHeight - HEIGHT_HEADER_FOOTER
+  const { height } = useWindowSize()
+  const heightSize = height && height - HEIGHT_HEADER_FOOTER
   const [failedToLoadGraph, setFailedToLoadGraph] = useState(false)
   const [tokensStylesheets, setTokensStylesheets] = useState<StylesheetCSS[]>([])
 
@@ -231,7 +232,7 @@ function useUpdateVisQuery(): (vis: string) => void {
 }
 
 // TODO: Break down this large function into smaller functions
- 
+
 export function useTxBatchData(
   networkId: Network | undefined,
   orders: Order[] | undefined,
