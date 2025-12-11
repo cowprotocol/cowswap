@@ -1,5 +1,6 @@
 import React, { ReactNode, useEffect } from 'react'
 
+import { isFractionFalsy } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { TradeType } from '@cowprotocol/widget-lib'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
@@ -25,7 +26,7 @@ interface WarningsProps {
 
 export function Warnings({ buyingFiatAmount }: WarningsProps): ReactNode {
   const { chainId, account } = useWalletInfo()
-  const { inputCurrency, outputCurrency, inputCurrencyAmount, recipient } = useSwapDerivedState()
+  const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount, recipient } = useSwapDerivedState()
   const formState = useSwapFormState()
   const tradeUrlParams = useTradeRouteContext()
   const isCurrentTradeBridging = useIsCurrentTradeBridging()
@@ -55,7 +56,7 @@ export function Warnings({ buyingFiatAmount }: WarningsProps): ReactNode {
       {inputCurrency && !isNativeSellInHooksStore && <MetamaskTransactionWarning sellToken={inputCurrency} />}
       {isNativeSellInHooksStore && <SellNativeWarningBanner />}
       <HighFeeWarning />
-      {shouldCheckBridgingRecipient && account && outputChainId && (
+      {shouldCheckBridgingRecipient && account && outputChainId && !isFractionFalsy(outputCurrencyAmount) && (
         <SmartContractReceiverWarning
           account={account}
           recipient={recipient}
