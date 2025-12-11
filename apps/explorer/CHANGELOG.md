@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.59.1](https://github.com/cowprotocol/cowswap/compare/explorer-v2.59.0...explorer-v2.59.1) (2025-12-09)
+
+
+### Bug Fixes
+
+* avoid using i18n in hookDappsRegistry ([#6633](https://github.com/cowprotocol/cowswap/issues/6633)) ([9cfeae0](https://github.com/cowprotocol/cowswap/commit/9cfeae0c107a632e78176c004aa3614fad12f68b))
+
 ## [2.59.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.58.0...explorer-v2.59.0) (2025-11-24)
 
 
