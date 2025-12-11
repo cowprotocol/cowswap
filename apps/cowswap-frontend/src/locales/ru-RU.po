@@ -535,8 +535,8 @@ msgid "1 Month"
 msgstr "1 месяц"
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/pure/ApprovalTooltip/index.tsx
-msgid "If you approve the full amount, you will only have to do this once per token."
-msgstr "Если вы подтвердите полную сумму, то это нужно сделать только один раз за токен."
+msgid "If you approve an unlimited amount, you will only have to do this once per token."
+msgstr "Если вы подтвердите неограниченную сумму, то это нужно сделать только один раз за токен."
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Infinite permit an address to spend one token on your behalf."
