@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-imports */ // TODO: Don't use 'modules' import
 import { rawToTokenAmount } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
 
@@ -8,13 +9,13 @@ function getPriceQuoteAmount(price: Price<Currency, Currency>, isInverted: boole
 
   return CurrencyAmount.fromRawAmount(
     executionPrice.baseCurrency,
-    rawToTokenAmount(1, executionPrice.baseCurrency.decimals)
+    rawToTokenAmount(1, executionPrice.baseCurrency.decimals),
   )
 }
 
 export function useExecutionPriceFiat(
   executionPrice: Price<Currency, Currency> | null,
-  isInverted: boolean
+  isInverted: boolean,
 ): CurrencyAmount<Currency> | null {
   const amount = executionPrice ? getPriceQuoteAmount(executionPrice, isInverted) : undefined
 

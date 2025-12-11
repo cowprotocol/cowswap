@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-imports */ // TODO: Don't use 'modules' import
 import { useCallback, useEffect, useRef } from 'react'
 
 import { CANCELLED_ORDERS_PENDING_TIME } from '@cowprotocol/common-const'

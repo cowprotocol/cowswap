@@ -1,17 +1,16 @@
 import { ReactNode, useEffect } from 'react'
 
 import { DEFAULT_LOCALE, SupportedLocale } from '@cowprotocol/common-const'
-import { isLinguiInternationalizationEnabled } from '@cowprotocol/common-utils'
 
 import { i18n } from '@lingui/core'
 import { I18nProvider } from '@lingui/react'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export async function dynamicActivate(locale: SupportedLocale) {
+import { useIsInternationalizationEnabled } from 'common/hooks/featureFlags/useIsInternationalizationEnabled'
+
+export async function dynamicActivate(locale: SupportedLocale, isInternationalizationEnabled?: boolean): Promise<void> {
   try {
     // Load default (en-US) catalog if internationalization is disabled
-    if (!isLinguiInternationalizationEnabled) {
+    if (!isInternationalizationEnabled) {
       const defaultCatalog = await import(`../locales/${DEFAULT_LOCALE}.po`)
 
       i18n.load(DEFAULT_LOCALE, defaultCatalog.messages || defaultCatalog.default.messages)
@@ -36,16 +35,16 @@ interface ProviderProps {
   onActivate?: (locale: SupportedLocale) => void
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function Provider({ locale, onActivate, children }: ProviderProps) {
+export function Provider({ locale, onActivate, children }: ProviderProps): ReactNode {
+  const isInternationalizationEnabled = useIsInternationalizationEnabled()
+
   useEffect(() => {
-    dynamicActivate(locale)
+    dynamicActivate(locale, isInternationalizationEnabled)
       .then(() => onActivate?.(locale))
       .catch((error) => {
-        console.error('Failed to activate locale', locale, error)
+        console.error('Failed to activate locale: ', locale, error)
       })
-  }, [locale, onActivate])
+  }, [locale, onActivate, isInternationalizationEnabled])
 
   // Initialize the locale immediately if it is DEFAULT_LOCALE, so that keys are shown while the translation messages load.
   // This renders the translation _keys_, not the translation _messages_, which is only acceptable while loading the DEFAULT_LOCALE,

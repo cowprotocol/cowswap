@@ -4,6 +4,7 @@ import ICON_NOTIFICATION_SETTINGS from '@cowprotocol/assets/images/icon-notifica
 import { useOnClickOutside } from '@cowprotocol/common-hooks'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 
+import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 
@@ -89,7 +90,7 @@ function NotificationsHeader({
           >
             <NotificationSettingsIcon
               onClick={onToggleSettings}
-              aria-label="Trade alert settings"
+              aria-label={t`Trade alert settings`}
               data-click-event={toCowSwapGtmEvent({
                 category: CowSwapAnalyticsCategory.NOTIFICATIONS,
                 action: 'Open notification settings',

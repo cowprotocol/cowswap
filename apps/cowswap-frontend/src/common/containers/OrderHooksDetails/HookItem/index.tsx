@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-imports */ // TODO: Don't use 'modules' import
 import { useState } from 'react'
 
 import { CowHookDetails, HookToDappMatch } from '@cowprotocol/hook-dapp-lib'

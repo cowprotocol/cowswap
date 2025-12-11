@@ -16,8 +16,9 @@ import IMG_ICON_MENU_DOTS from '@cowprotocol/assets/images/menu-grid-dots.svg'
 import IMG_ICON_MENU_HAMBURGER from '@cowprotocol/assets/images/menu-hamburger.svg'
 import IMG_ICON_SETTINGS_GLOBAL from '@cowprotocol/assets/images/settings-global.svg'
 import IMG_ICON_X from '@cowprotocol/assets/images/x.svg'
+import { LOCALE_DISPLAY_NAMES } from '@cowprotocol/common-const'
 import { useMediaQuery, useOnClickOutside } from '@cowprotocol/common-hooks'
-import { addBodyClass, isLinguiInternationalizationEnabled, removeBodyClass } from '@cowprotocol/common-utils'
+import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
 
 import { i18n } from '@lingui/core'
 import { t } from '@lingui/core/macro'
@@ -47,6 +48,8 @@ import {
   RightAligned,
   RootNavItem,
   StyledDropdownContentItem,
+  HideMobile,
+  isMobileQuery,
 } from './styled'
 
 import { Media } from '../../consts'
@@ -102,6 +105,11 @@ const DAO_NAV_ITEMS: MenuItem[] = [
 ]
 
 const getLanguageName = (locale: string): string => {
+  const override = LOCALE_DISPLAY_NAMES[locale as keyof typeof LOCALE_DISPLAY_NAMES]
+  if (override) {
+    return override
+  }
+
   const display = new Intl.DisplayNames([locale], { type: 'language' })
   const languageName = display.of(locale)
 
@@ -725,6 +733,7 @@ interface GlobalSettingsDropdownProps {
   mobileMode: boolean
   rootDomain: string
   settingsNavItems?: MenuItem[]
+  isInternationalizationEnabled?: boolean
 }
 
 // Custom hook for portal dropdown positioning
@@ -759,6 +768,7 @@ const GlobalSettingsDropdown = forwardRef<HTMLUListElement, GlobalSettingsDropdo
     LinkComponent,
     languageNavItems,
     buttonRef,
+    isInternationalizationEnabled,
   } = props
   const position = usePortalPosition(buttonRef, isOpen, mobileMode)
 
@@ -794,7 +804,7 @@ const GlobalSettingsDropdown = forwardRef<HTMLUListElement, GlobalSettingsDropdo
     )
   })
 
-  const languageItems = languageNavItems && isLinguiInternationalizationEnabled && (
+  const languageItems = languageNavItems && isInternationalizationEnabled && (
     <LanguagesDropdownItems closeDropdown={closeDropdown} languageNavItems={languageNavItems} mobileMode={mobileMode} />
   )
 
@@ -867,6 +877,7 @@ interface MenuBarProps {
   productVariant: ProductVariant
   settingsNavItems?: MenuItem[]
   showGlobalSettings?: boolean
+  isInternationalizationEnabled?: boolean
 }
 
 // TODO: Break down this large function into smaller functions
@@ -902,6 +913,7 @@ export const MenuBar = (props: MenuBarProps) => {
     productVariant,
     settingsNavItems,
     showGlobalSettings,
+    isInternationalizationEnabled,
   } = props
 
   const [isDaoOpen, setIsDaoOpen] = useState(false)
@@ -923,7 +935,7 @@ export const MenuBar = (props: MenuBarProps) => {
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleSettingsToggle = () => setIsSettingsOpen((prev) => !prev)
 
-  const isMobile = useMediaQuery(Media.upToLarge(false))
+  const isMobile = useMediaQuery(isMobileQuery(false))
   const isMedium = useMediaQuery(Media.upToMedium(false))
 
   useOnClickOutside([menuRef], () => setIsDaoOpen(false))
@@ -989,20 +1001,22 @@ export const MenuBar = (props: MenuBarProps) => {
         <ProductLogo variant={productVariant} logoIconOnly={isMobile} height={30} href="/" theme={customTheme} />
 
         {!isMobile && (
-          <NavItems ref={navItemsRef}>
-            {navItems.map((item, index) => (
-              <NavItem
-                key={index}
-                item={item}
-                LinkComponent={LinkComponent}
-                mobileMode={isMobile}
-                openDropdown={openDropdown}
-                closeDropdown={() => setOpenDropdown(null)}
-                setOpenDropdown={setOpenDropdown}
-                rootDomain={rootDomain}
-              />
-            ))}
-          </NavItems>
+          <HideMobile>
+            <NavItems ref={navItemsRef}>
+              {navItems.map((item, index) => (
+                <NavItem
+                  key={index}
+                  item={item}
+                  LinkComponent={LinkComponent}
+                  mobileMode={isMobile}
+                  openDropdown={openDropdown}
+                  closeDropdown={() => setOpenDropdown(null)}
+                  setOpenDropdown={setOpenDropdown}
+                  rootDomain={rootDomain}
+                />
+              ))}
+            </NavItems>
+          </HideMobile>
         )}
 
         <RightAligned mobileMode={isMedium} flexFlowMobile="row wrap">
@@ -1053,6 +1067,7 @@ export const MenuBar = (props: MenuBarProps) => {
                     ref={settingsDropdownRef}
                     rootDomain={rootDomain}
                     settingsNavItems={settingsNavItems}
+                    isInternationalizationEnabled={isInternationalizationEnabled}
                   />
                 ) : (
                   // Desktop: Use Portal for positioning
@@ -1067,6 +1082,7 @@ export const MenuBar = (props: MenuBarProps) => {
                       ref={settingsDropdownRef}
                       rootDomain={rootDomain}
                       settingsNavItems={settingsNavItems}
+                      isInternationalizationEnabled={isInternationalizationEnabled}
                     />
                   </Portal>
                 ))}

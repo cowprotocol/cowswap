@@ -2,10 +2,10 @@
 
 ## Enable localization
 
-A feature flag / environment variable was added for disabling or enabling the loading of locales and the languages dropdown menu. Remember to add it to your local and production environments:
+A feature flag controls whether the loading of locales and the languages dropdown menu is shown.
 
 ```
-REACT_APP_LINGUI_INTERNATIONALIZATION=true
+isInternationalizationEnabled
 ```
 
 ## Lingui
@@ -49,6 +49,7 @@ Documentation:
 2. Create a `CROWDIN_PERSONAL_TOKEN`: *Account Settings → API → Personal Access Tokens → New Token*.
 
 * For testing, use "All scopes". For production, you can restrict permissions.
+
 3. Create a project in Crowdin:
 
 * Add the project id to `cowswap/crowdin.yml`:

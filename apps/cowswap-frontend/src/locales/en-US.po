@@ -32,8 +32,8 @@ msgid "Signature is undefined!"
 msgstr "Signature is undefined!"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/BenefitComponents.tsx
-msgid "I just received surplus on"
-msgstr "I just received surplus on"
+#~ msgid "I just received surplus on"
+#~ msgstr "I just received surplus on"
 
 #: apps/cowswap-frontend/src/modules/twap/utils/deadlinePartsDisplay.ts
 msgid "years"
@@ -226,6 +226,10 @@ msgstr "Are you sure you want to cancel order <0>{shortId}</0>?"
 msgid "My Custom Hooks ({customHooksCount})"
 msgstr "My Custom Hooks ({customHooksCount})"
 
+#: apps/cowswap-frontend/src/modules/trade/pure/PartnerFeeRow/index.tsx
+msgid "{label} ({feeAsPercent}%)"
+msgstr "{label} ({feeAsPercent}%)"
+
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "Your TWAP order won't execute and is protected if the market price dips more than your set price protection."
 msgstr "Your TWAP order won't execute and is protected if the market price dips more than your set price protection."
@@ -323,6 +327,11 @@ msgstr "sell"
 #: apps/cowswap-frontend/src/modules/wallet/pure/WalletModal/index.tsx
 msgid "By connecting a wallet, you acknowledge that you have read, understood and agree to the interface’s <0>Terms & Conditions</0>."
 msgstr "By connecting a wallet, you acknowledge that you have read, understood and agree to the interface’s <0>Terms & Conditions</0>."
+
+#: apps/cowswap-frontend/src/common/pure/ReceiveAmountInfo/index.tsx
+#: apps/cowswap-frontend/src/modules/volumeFee/hooks/useVolumeFeeTooltip.ts
+msgid "Partner fee"
+msgstr "Partner fee"
 
 #: apps/cowswap-frontend/src/modules/tokensList/pure/ImportListModal/index.tsx
 msgid "<0>By adding this list you are implicitly trusting that the data is correct. Anyone can create a list, including creating fake versions of existing lists and lists that claim to represent projects that do not have one.</0><1><2>If you purchase a token from this list, you may not be able to sell it back.</2></1>"
@@ -604,6 +613,10 @@ msgstr "If your order has not been filled by this date & time, it will expire. D
 msgid "Only proceed if you trust this provider."
 msgstr "Only proceed if you trust this provider."
 
+#: apps/cowswap-frontend/src/modules/orderProgressBar/pure/BenefitComponents.tsx
+msgid "I received surplus on"
+msgstr "I received surplus on"
+
 #: apps/cowswap-frontend/src/modules/application/containers/App/CowSpeechBubble.tsx
 msgid "View jobs"
 msgstr "View jobs"
@@ -688,8 +701,8 @@ msgid "Unsupported Token"
 msgstr "Unsupported Token"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/index.tsx
-msgid "Limit price (incl. costs)"
-msgstr "Limit price (incl. costs)"
+#~ msgid "Limit price (incl. costs)"
+#~ msgstr "Limit price (incl. costs)"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/OrderRow/OrderContextMenu.tsx
 msgid "Order receipt"
@@ -907,6 +920,10 @@ msgstr "APR"
 #: apps/cowswap-frontend/src/common/pure/NetworksList/index.tsx
 msgid "CoW Protocol Explorer"
 msgstr "CoW Protocol Explorer"
+
+#: apps/cowswap-frontend/src/modules/notifications/pure/NotificationSettingsPopover.tsx
+msgid "Got it"
+msgstr "Got it"
 
 #: apps/cowswap-frontend/src/common/pure/CoWAmmBannerContent/index.tsx
 msgid "pools"
@@ -1302,8 +1319,8 @@ msgid "COW vesting from locked GNO"
 msgstr "COW vesting from locked GNO"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
-msgid "Limit price (incl.costs)"
-msgstr "Limit price (incl.costs)"
+#~ msgid "Limit price (incl.costs)"
+#~ msgstr "Limit price (incl.costs)"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/SetupFallbackHandlerWarning/index.tsx
 msgid "Update fallback handler"
@@ -1462,18 +1479,26 @@ msgstr "Apply"
 msgid "Price Updated"
 msgstr "Price Updated"
 
+#: apps/cowswap-frontend/src/modules/limitOrders/pure/ProtocolFeeInfoBanner/index.tsx
+msgid "From {PROTOCOL_FEE_START_DATETIME_UTC}, and pursuant to <0>CIP-74</0>, a 2 bps (0.02%) protocol fee will apply to all executed orders, including any limit and TWAP orders executed after this time, even if they were created earlier."
+msgstr "From {PROTOCOL_FEE_START_DATETIME_UTC}, and pursuant to <0>CIP-74</0>, a 2 bps (0.02%) protocol fee will apply to all executed orders, including any limit and TWAP orders executed after this time, even if they were created earlier."
+
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/index.tsx
 msgid "Enter a hook dapp URL"
 msgstr "Enter a hook dapp URL"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
-#: apps/cowswap-frontend/src/modules/volumeFee/hooks/useVolumeFeeTooltip.ts
+#: apps/cowswap-frontend/src/modules/trade/pure/TotalFeeRow/index.tsx
 msgid "Total fee"
 msgstr "Total fee"
 
 #: apps/cowswap-frontend/src/modules/accountProxy/containers/AccountProxyRecoverPage/index.tsx
 msgid "Recoverable balance"
 msgstr "Recoverable balance"
+
+#: apps/cowswap-frontend/src/modules/limitOrders/pure/RateImpactWarning/index.tsx
+msgid "Your limit price is {absoluteRateImpact}% lower than current market price. You could be selling your <0/> at a loss (although CoW Swap will always try to give you the best price regardless)."
+msgstr "Your limit price is {absoluteRateImpact}% lower than current market price. You could be selling your <0/> at a loss (although CoW Swap will always try to give you the best price regardless)."
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
 msgid "Invalid hook dapp ID format. The ID must be a 64-character hexadecimal string."
@@ -1619,6 +1644,10 @@ msgstr "Across"
 msgid "Order type"
 msgstr "Order type"
 
+#: apps/cowswap-frontend/src/modules/trade/pure/ProtocolFeeRow/index.tsx
+#~ msgid "The fee is {protocolFeeAsPercent}%, applied only if the trade is executed, in order to incentivize a strong solver competition that provides ecosystem leading prices."
+#~ msgstr "The fee is {protocolFeeAsPercent}%, applied only if the trade is executed, in order to incentivize a strong solver competition that provides ecosystem leading prices."
+
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/HooksStoreWidget/index.tsx
 msgid "Learn more."
 msgstr "Learn more."
@@ -1652,8 +1681,8 @@ msgid "Receiver"
 msgstr "Receiver"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
-msgid "An order’s actual execution price will vary based on the market price and network costs."
-msgstr "An order’s actual execution price will vary based on the market price and network costs."
+#~ msgid "An order’s actual execution price will vary based on the market price and network costs."
+#~ msgstr "An order’s actual execution price will vary based on the market price and network costs."
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/AirdropHookApp/index.tsx
 msgid "You have already claimed this airdrop"
@@ -1698,6 +1727,10 @@ msgstr "This is an"
 #: apps/cowswap-frontend/src/modules/twap/utils/parseTwapError.ts
 msgid "Something went wrong creating your order"
 msgstr "Something went wrong creating your order"
+
+#: apps/cowswap-frontend/src/legacy/components/Header/AccountElement/NotificationAlertPopover.tsx
+msgid "Enable order alerts"
+msgstr "Enable order alerts"
 
 #: libs/common-utils/src/swapErrorToUserReadableMessage.tsx
 msgid "This transaction will not succeed either due to price movement or fee on transfer. Try increasing your slippage tolerance."
@@ -1838,6 +1871,10 @@ msgstr "To continue, click SWAP below to use your existing {wrappedSymbol} balan
 msgid "Effortless Airdrop Claims! The Claim COW Airdrop feature simplifies the process of collecting free COW tokens before or after your swap, seamlessly integrating into the CoW Swap platform. Whether you're claiming new airdrops or exploring CoW on a new network, this tool ensures you get your rewards quickly and easily."
 msgstr "Effortless Airdrop Claims! The Claim COW Airdrop feature simplifies the process of collecting free COW tokens before or after your swap, seamlessly integrating into the CoW Swap platform. Whether you're claiming new airdrops or exploring CoW on a new network, this tool ensures you get your rewards quickly and easily."
 
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
+msgid "An order's actual execution price will vary based on the market price and network fees and costs."
+msgstr "An order's actual execution price will vary based on the market price and network fees and costs."
+
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
@@ -1857,6 +1894,10 @@ msgstr "Replaced"
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
 msgid "MEV Slicer"
 msgstr "MEV Slicer"
+
+#: apps/cowswap-frontend/src/common/pure/ReceiveAmount/index.tsx
+msgid "From (incl. fees)"
+msgstr "From (incl. fees)"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/StatusDetails.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/OrderStatusBox/getOrderStatusTitleAndColor.ts
@@ -1889,6 +1930,11 @@ msgstr "minutes"
 #: apps/cowswap-frontend/src/common/containers/InvalidLocalTimeWarning/index.tsx
 msgid "Local device time is not accurate, CoW Swap most likely will not work correctly. Please adjust your device's time."
 msgstr "Local device time is not accurate, CoW Swap most likely will not work correctly. Please adjust your device's time."
+
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
+#: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/index.tsx
+msgid "Limit price (incl. fees)"
+msgstr "Limit price (incl. fees)"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/StopStatus/index.tsx
 msgid "Bridging via"
@@ -1942,6 +1988,7 @@ msgstr "(via WalletConnect)"
 msgid "<0>Select an {accountProxyLabelString}</0> and then select a token you want to recover from CoW Shed."
 msgstr "<0>Select an {accountProxyLabelString}</0> and then select a token you want to recover from CoW Shed."
 
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Error loading price. Try again later."
 msgstr "Error loading price. Try again later."
@@ -2079,8 +2126,8 @@ msgid "Context is not full to cancel TWAP order"
 msgstr "Context is not full to cancel TWAP order"
 
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmount/index.tsx
-msgid "Receive (incl. costs)"
-msgstr "Receive (incl. costs)"
+#~ msgid "Receive (incl. costs)"
+#~ msgstr "Receive (incl. costs)"
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowStepper/steps/Step1.tsx
 msgid "Sent {nativeTokenSymbol}"
@@ -2126,6 +2173,10 @@ msgstr "BFF did not return a price for '{currencyAddress}' on chain '{currencyCh
 msgid "This tool helps you recover your funds."
 msgstr "This tool helps you recover your funds."
 
+#: apps/cowswap-frontend/src/legacy/components/Header/AccountElement/NotificationAlertPopover.tsx
+msgid "Enable trade alerts"
+msgstr "Enable trade alerts"
+
 #: apps/cowswap-frontend/src/modules/orderProgressBar/constants.ts
 msgid "Transaction completed"
 msgstr "Transaction completed"
@@ -2147,6 +2198,10 @@ msgstr "View on Safe"
 msgid "modified"
 msgstr "modified"
 
+#: apps/cowswap-frontend/src/modules/trade/pure/TradeConfirmation/getPendingText.ts
+msgid "Preparing deposit"
+msgstr "Preparing deposit"
+
 #: apps/cowswap-frontend/src/modules/application/containers/App/menuConsts.tsx
 #: apps/cowswap-frontend/src/modules/bridge/pure/ProtocolIcons/StackedProtocolIcons.tsx
 msgid "CoW Protocol"
@@ -2163,6 +2218,10 @@ msgstr "Failed to fetch manifest from {manifestUrl}. Please verify the URL and t
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/ExecutionPriceTooltip/index.tsx
 msgid "Order executes at"
 msgstr "Order executes at"
+
+#: apps/cowswap-frontend/src/modules/notifications/containers/NotificationSidebar/index.tsx
+msgid "Trade alert settings"
+msgstr "Trade alert settings"
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/SolvingStep.tsx
 msgid "There may be a network issue (such as a gas spike) that is delaying your order. You can wait for the issue to resolve{cancellationModal}"
@@ -2463,6 +2522,10 @@ msgstr "Liquidity pools on CoW AMM grow faster than on other AMMs because they d
 msgid "TWAP"
 msgstr "TWAP"
 
+#: apps/cowswap-frontend/src/modules/trade/pure/ProtocolFeeRow/index.tsx
+msgid "Protocol fee ({protocolFeeAsPercent}%)"
+msgstr "Protocol fee ({protocolFeeAsPercent}%)"
+
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/BridgingProgressContent/RefundedBridgingContent/index.tsx
 msgid "Refunded to"
 msgstr "Refunded to"
@@ -2576,7 +2639,7 @@ msgstr "Bridge costs <0/>"
 msgid "Reset"
 msgstr "Reset"
 
-#: apps/cowswap-frontend/src/modules/trade/pure/PartnerFeeRow/index.tsx
+#: apps/cowswap-frontend/src/modules/trade/pure/FreeFeeRow/index.tsx
 msgid "No fee for order placement!"
 msgstr "No fee for order placement!"
 
@@ -2634,6 +2697,10 @@ msgstr "{prefix}-hooks allow you to automatically execute any action {position} 
 msgid "Your order expired. This could be due to gas spikes, volatile prices, or problems with the network."
 msgstr "Your order expired. This could be due to gas spikes, volatile prices, or problems with the network."
 
+#: apps/cowswap-frontend/src/legacy/components/Header/AccountElement/NotificationAlertPopover.tsx
+msgid "Not now"
+msgstr "Not now"
+
 #: apps/cowswap-frontend/src/pages/Account/Tokens/TokensOverview.tsx
 msgid "Unsupported network"
 msgstr "Unsupported network"
@@ -2656,7 +2723,7 @@ msgstr "You're all caught up"
 
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmountInfo/index.tsx
 #: apps/cowswap-frontend/src/common/pure/TradeDetailsAccordion/index.tsx
-#: apps/cowswap-frontend/src/modules/trade/pure/PartnerFeeRow/index.tsx
+#: apps/cowswap-frontend/src/modules/trade/pure/FreeFeeRow/index.tsx
 msgid "Fee"
 msgstr "Fee"
 
@@ -2671,6 +2738,10 @@ msgstr "Native currency (e.g ETH)"
 #: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/SettingsTab/index.tsx
 msgid "<0><1/> Experimental:</0> Add DeFI interactions before and after your trade."
 msgstr "<0><1/> Experimental:</0> Add DeFI interactions before and after your trade."
+
+#: apps/cowswap-frontend/src/common/pure/ReceiveAmountInfo/index.tsx
+msgid "Protocol fee"
+msgstr "Protocol fee"
 
 #: apps/cowswap-frontend/src/common/constants/routes.ts
 msgid "Powerful tool to generate pre/post interaction for CoW Protocol"
@@ -2691,6 +2762,10 @@ msgstr "CoW Swap is the only exchange that matches Coincidences of Wants (CoWs):
 #: apps/cowswap-frontend/src/modules/bridge/pure/ProxyAccountBanner/index.tsx
 msgid "CoW Swap uses a dedicated {accountProxyLabelString}, controlled only by you, to ensure smooooth bridging. Confirm the recipient address above is <0/>"
 msgstr "CoW Swap uses a dedicated {accountProxyLabelString}, controlled only by you, to ensure smooooth bridging. Confirm the recipient address above is <0/>"
+
+#: apps/cowswap-frontend/src/modules/notifications/pure/NotificationSettingsPopover.tsx
+msgid "Trade alerts enabled"
+msgstr "Trade alerts enabled"
 
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
 #~ msgid "Your swap expires and will not execute if it is pending for longer than the selected duration.<0/><1/>{INPUT_OUTPUT_EXPLANATION}"
@@ -2941,6 +3016,10 @@ msgstr "The time each part of your TWAP order will remain active."
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "Buy per part"
 msgstr "Buy per part"
+
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+msgid "No intermediate tokens found for the route"
+msgstr "No intermediate tokens found for the route"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/ClaimGnoHookApp/index.tsx
 msgid "Total claimable rewards:"
@@ -3238,6 +3317,10 @@ msgstr "Connect wallet"
 msgid "Approve the token to proceed."
 msgstr "Approve the token to proceed."
 
+#: apps/cowswap-frontend/src/modules/trade/pure/ProtocolFeeRow/index.tsx
+msgid "This {protocolFeeBps} BPS fee incentivizes solvers to find better prices for users. It is only applied if the trade is executed."
+msgstr "This {protocolFeeBps} BPS fee incentivizes solvers to find better prices for users. It is only applied if the trade is executed."
+
 #: apps/cowswap-frontend/src/modules/accountProxy/pure/AccountCard/DefaultAccountContent.tsx
 msgid "Recoverable value"
 msgstr "Recoverable value"
@@ -3397,6 +3480,10 @@ msgstr "The fill price of this order is close or at the market price and is expe
 msgid "My orders <0/>"
 msgstr "My orders <0/>"
 
+#: apps/cowswap-frontend/src/modules/notifications/pure/NotificationSettingsPopover.tsx
+msgid "Trade alert settings info"
+msgstr "Trade alert settings info"
+
 #: apps/cowswap-frontend/src/modules/twap/pure/CustomDeadlineSelector/index.tsx
 msgid "Define custom total time"
 msgstr "Define custom total time"
@@ -3406,6 +3493,10 @@ msgstr "Define custom total time"
 #: apps/cowswap-frontend/src/modules/trade/containers/TradeBasicConfirmDetails/index.tsx
 msgid "Expected to receive"
 msgstr "Expected to receive"
+
+#: apps/cowswap-frontend/src/modules/notifications/pure/NotificationSettingsPopover.tsx
+msgid "Change trade alert settings here"
+msgstr "Change trade alert settings here"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/RateInput/HeadingText.tsx
 msgid "Select input and output"
@@ -3528,13 +3619,13 @@ msgstr "The swap adapter contracts integrate Aave Flash Loans and CoW Swap to fa
 msgid "Transaction completed!"
 msgstr "Transaction completed!"
 
+#: apps/cowswap-frontend/src/legacy/components/Header/AccountElement/NotificationAlertPopover.tsx
+msgid "When orders fill or expire"
+msgstr "When orders fill or expire"
+
 #: apps/cowswap-frontend/src/modules/tokensList/pure/LpTokenLists/index.tsx
 msgid "No pool tokens available"
 msgstr "No pool tokens available"
-
-#: apps/cowswap-frontend/src/modules/limitOrders/pure/RateImpactWarning/index.tsx
-#~ msgid "Your limit price is {percent}% lower than current market price. You could be selling your<0/> at a loss (although CoW Swap will always try to give you the best price regardless)."
-#~ msgstr "Your limit price is {percent}% lower than current market price. You could be selling your<0/> at a loss (although CoW Swap will always try to give you the best price regardless)."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/SolvingStep.tsx
 msgid "Still searching"
@@ -3664,6 +3755,10 @@ msgstr "Transaction expiration"
 msgid "CowSwap no connection"
 msgstr "CowSwap no connection"
 
+#: apps/cowswap-frontend/src/modules/application/containers/App/CowSpeechBubble.tsx
+msgid "View jobs (opens in a new tab)"
+msgstr "View jobs (opens in a new tab)"
+
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 #: apps/cowswap-frontend/src/modules/bridge/pure/BridgeActivitySummary/BridgeSummaryHeader.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/OrderRow/EstimatedExecutionPrice.tsx
@@ -3732,6 +3827,10 @@ msgstr "Your transaction may expire"
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/SolvingStep.tsx
 msgid "<0>CoW Swap solvers</0> are scanning liquidity sources across DeFi. The one that finds you the best price wins!"
 msgstr "<0>CoW Swap solvers</0> are scanning liquidity sources across DeFi. The one that finds you the best price wins!"
+
+#: apps/cowswap-frontend/src/modules/trade/pure/ProtocolFeeRow/index.tsx
+#~ msgid "The fee is {protocolFeeAsPercent}%, applied only if the trade is executed, in order to incentivize a strong solver competition that provides ecosystem leading prices"
+#~ msgstr "The fee is {protocolFeeAsPercent}%, applied only if the trade is executed, in order to incentivize a strong solver competition that provides ecosystem leading prices"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/index.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
@@ -3811,6 +3910,10 @@ msgstr "User rejected approval transaction"
 #: apps/cowswap-frontend/src/modules/bridge/pure/StopStatus/index.tsx
 msgid "Swap on"
 msgstr "Swap on"
+
+#: apps/cowswap-frontend/src/modules/trade/pure/ProtocolFeeRow/index.tsx
+#~ msgid "The fee is {protocolFeeBps} BPS ({protocolFeeAsPercent}%), applied only if the trade is executed.<0/><1/>Solver rewards are taken from this fee amount."
+#~ msgstr "The fee is {protocolFeeBps} BPS ({protocolFeeAsPercent}%), applied only if the trade is executed.<0/><1/>Solver rewards are taken from this fee amount."
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/index.tsx
@@ -4244,10 +4347,6 @@ msgstr "more"
 msgid "CoW Protocol covers the costs by executing your order at a slightly better price than your limit price."
 msgstr "CoW Protocol covers the costs by executing your order at a slightly better price than your limit price."
 
-#: apps/cowswap-frontend/src/modules/limitOrders/pure/RateImpactWarning/index.tsx
-msgid "Your limit price is {absoluteRateImpact}% lower than current market price. You could be selling your<0/> at a loss (although CoW Swap will always try to give you the best price regardless)."
-msgstr "Your limit price is {absoluteRateImpact}% lower than current market price. You could be selling your<0/> at a loss (although CoW Swap will always try to give you the best price regardless)."
-
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/HookSearchInput/index.tsx
 msgid "Clear search input"
 msgstr "Clear search input"
@@ -4659,6 +4758,10 @@ msgstr "Boost Your Yield with One-Click Conversion"
 msgid "Vested"
 msgstr "Vested"
 
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+msgid "Bridging deposit address is not verified! Please contact CoW Swap support!"
+msgstr "Bridging deposit address is not verified! Please contact CoW Swap support!"
+
 #: apps/cowswap-frontend/src/modules/wallet/pure/WalletModal/styled.tsx
 msgid "Learn more about wallets"
 msgstr "Learn more about wallets"
@@ -4985,8 +5088,12 @@ msgid "Executes at"
 msgstr "Executes at"
 
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmount/index.tsx
-msgid "From (incl. costs)"
-msgstr "From (incl. costs)"
+#~ msgid "From (incl. costs)"
+#~ msgstr "From (incl. costs)"
+
+#: apps/cowswap-frontend/src/legacy/components/Header/AccountElement/NotificationAlertPopover.tsx
+msgid "Get trade alerts"
+msgstr "Get trade alerts"
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 msgid "Aave Collateral Swap Flashloan"
@@ -5000,9 +5107,17 @@ msgstr "order executes at"
 msgid "Information"
 msgstr "Information"
 
+#: apps/cowswap-frontend/src/modules/limitOrders/pure/RateImpactWarning/index.tsx
+#~ msgid "Your limit price is {percent}% lower than current market price. You could be selling your <0/> at a loss (although CoW Swap will always try to give you the best price regardless)."
+#~ msgstr "Your limit price is {percent}% lower than current market price. You could be selling your <0/> at a loss (although CoW Swap will always try to give you the best price regardless)."
+
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/SurplusCard.tsx
 msgid "The total surplus CoW Swap has generated for you in {nativeSymbol} across all your trades since {startDate}"
 msgstr "The total surplus CoW Swap has generated for you in {nativeSymbol} across all your trades since {startDate}"
+
+#: apps/cowswap-frontend/src/modules/trade/pure/ProtocolFeeRow/index.tsx
+#~ msgid "Protocol fee applied to this trade.<0/><1/>The fee is {protocolFeeBps} BPS ({protocolFeeAsPercent}%), applied only if the trade is executed."
+#~ msgstr "Protocol fee applied to this trade.<0/><1/>The fee is {protocolFeeBps} BPS ({protocolFeeAsPercent}%), applied only if the trade is executed."
 
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/OrderRow/EstimatedExecutionPrice.tsx
 msgid "For this order, network costs would be"
@@ -5681,7 +5796,7 @@ msgid "MEV is lethal these days!"
 msgstr "MEV is lethal these days!"
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteBridgeContent/index.tsx
-#: apps/cowswap-frontend/src/modules/trade/pure/PartnerFeeRow/index.tsx
+#: apps/cowswap-frontend/src/modules/trade/pure/FreeFeeRow/index.tsx
 #: apps/cowswap-frontend/src/modules/trade/pure/RowFeeContent/index.tsx
 msgid "FREE"
 msgstr "FREE"
@@ -6058,6 +6173,10 @@ msgstr "The {operationLabel} is signed."
 #: apps/cowswap-frontend/src/modules/swap/pure/TwapSuggestionBanner.tsx
 msgid "The price impact is <0>{formattedPriceImpact}%</0>. Consider breaking up your order using a <1>TWAP order</1> and possibly get a better rate."
 msgstr "The price impact is <0>{formattedPriceImpact}%</0>. Consider breaking up your order using a <1>TWAP order</1> and possibly get a better rate."
+
+#: apps/cowswap-frontend/src/common/pure/ReceiveAmount/index.tsx
+msgid "Receive (incl. fees)"
+msgstr "Receive (incl. fees)"
 
 #: apps/cowswap-frontend/src/common/containers/ConfirmationModal/index.tsx
 #: apps/cowswap-frontend/src/common/hooks/useConfirmPriceImpactWithoutFee.ts

@@ -126,17 +126,31 @@ export const TokenPairTitle = styled.span`
   border-radius: 12px;
   padding: 0 6px;
   word-break: break-word;
-  line-height: 1;
+  line-height: 1.2;
+  max-width: 100%;
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  hyphens: auto;
+  font-size: 1em;
+`
+
+export const TaglineText = styled.span`
+  display: block;
+  white-space: nowrap;
+  font-size: 1em;
 `
 
 export const Surplus = styled.div`
-  font-weight: bold;
-  color: inherit;
   width: 100%;
   height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
   text-align: right;
-  line-height: 1.2;
   margin: 0;
+  overflow: hidden;
+  min-height: 48px;
 `
 
 export const FinishedTagLine = styled.div`
@@ -147,12 +161,12 @@ export const FinishedTagLine = styled.div`
   font-size: 22px;
   width: 100%;
   text-align: right;
-  height: 100%;
   display: flex;
   align-items: center;
-  overflow: hidden;
   padding: 0;
-  flex: 1 1 0;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: visible;
 
   ${Media.upToSmall()} {
     flex: 0 0 auto;
@@ -245,7 +259,7 @@ export const ClockAnimation = styled.div`
 
 export const FinishedImageContent = styled.div`
   display: flex;
-  flex-flow: column wrap;
+  flex-flow: column;
   align-items: center;
   justify-content: space-between;
   height: 100%;
@@ -253,13 +267,12 @@ export const FinishedImageContent = styled.div`
   position: relative;
   border: 2px solid var(${UI.COLOR_BLUE_900_PRIMARY});
   border-radius: 21px;
-  padding: 12px;
-  gap: 14px;
+  padding: 14px 12px 16px;
+  gap: 12px;
   color: var(${UI.COLOR_BLUE_900_PRIMARY});
 
   ${Media.upToSmall()} {
     width: 100%;
-    max-height: 290px;
   }
 `
 
@@ -271,9 +284,9 @@ export const BenefitSurplusContainer = styled.div`
   align-items: flex-end;
   text-align: right;
   justify-content: flex-start;
-  gap: 0;
+  gap: 4px;
   font-size: 20px;
-  line-height: 1.4;
+  line-height: 1.25;
 `
 
 export const BenefitText = styled.div`
@@ -283,15 +296,8 @@ export const BenefitText = styled.div`
   padding: 6px 0 0;
   margin: 0;
   box-sizing: border-box;
-
-  > span {
-    display: inline-block;
-    line-height: 1.2;
-    text-align: left;
-    word-break: break-word;
-    hyphens: auto;
-    width: 100%;
-  }
+  display: flex;
+  align-items: flex-start;
 `
 
 export const BenefitTagLine = styled.div`
@@ -302,4 +308,29 @@ export const BenefitTagLine = styled.div`
   padding: 2px 10px;
   background-color: var(${UI.COLOR_BLUE_400_PRIMARY});
   color: var(${UI.COLOR_TEXT});
+`
+
+export const SurplusValue = styled.span`
+  font-weight: 700;
+  color: inherit;
+  line-height: 1.1;
+  font-size: 1em;
+  word-break: normal;
+  hyphens: none;
+  white-space: nowrap;
+  display: inline-block;
+  text-align: right;
+  width: auto;
+`
+
+export const BenefitResponsiveText = styled.div`
+  display: block;
+  width: 100%;
+  line-height: 1.2;
+  text-align: left;
+  word-break: break-word;
+  hyphens: auto;
+  font-size: 1em;
+  overflow: hidden;
+  white-space: normal;
 `
