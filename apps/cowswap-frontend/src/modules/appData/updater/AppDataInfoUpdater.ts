@@ -7,7 +7,7 @@ import { CowEnv, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { AppCodeWithWidgetMetadata } from 'modules/injectedWidget/hooks/useAppCodeWidgetAware'
 
 import { appDataInfoAtom } from '../state/atoms'
-import { AppDataOrderClass, AppDataPartnerFee, TypedAppDataHooks } from '../types'
+import { AppDataOrderClass, AppDataPartnerFee, AppDataRwaConsent, TypedAppDataHooks } from '../types'
 import { buildAppData, BuildAppDataParams } from '../utils/buildAppData'
 import { getAppData } from '../utils/fullAppData'
 
@@ -21,6 +21,7 @@ export type UseAppDataParams = {
   typedHooks?: TypedAppDataHooks
   volumeFee?: AppDataPartnerFee
   replacedOrderUid?: string
+  rwaConsent?: AppDataRwaConsent
 }
 
 /**
@@ -39,6 +40,7 @@ export function AppDataInfoUpdater({
   typedHooks,
   volumeFee,
   replacedOrderUid,
+  rwaConsent,
 }: UseAppDataParams): void {
   // AppDataInfo, from Jotai
   const setAppDataInfo = useSetAtom(appDataInfoAtom)
@@ -65,6 +67,7 @@ export function AppDataInfoUpdater({
       partnerFee: volumeFee,
       widget,
       replacedOrderUid,
+      rwaConsent,
     }
 
     const updateAppData = async (): Promise<void> => {
@@ -93,6 +96,7 @@ export function AppDataInfoUpdater({
     volumeFee,
     replacedOrderUid,
     isSmartSlippage,
+    rwaConsent,
   ])
 }
 

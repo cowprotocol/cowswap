@@ -16,6 +16,7 @@ import {
   AppDataRootSchema,
   AppDataWidget,
   TypedAppDataHooks,
+  AppDataRwaConsent,
 } from '../types'
 
 export type BuildAppDataParams = {
@@ -31,6 +32,7 @@ export type BuildAppDataParams = {
   widget?: AppDataWidget
   partnerFee?: AppDataPartnerFee
   replacedOrderUid?: string
+  rwaConsent?: AppDataRwaConsent
 }
 
 async function generateAppDataFromDoc(
@@ -54,6 +56,7 @@ export async function buildAppData({
   widget,
   partnerFee,
   replacedOrderUid,
+  rwaConsent,
 }: BuildAppDataParams): Promise<AppDataInfo> {
   const referrerParams =
     referrerAccount && chainId === SupportedChainId.MAINNET ? { address: referrerAccount } : undefined
@@ -77,6 +80,7 @@ export async function buildAppData({
       widget,
       partnerFee,
       ...{ replacedOrder },
+      ...(rwaConsent ? { rwaConsent } : {}),
     },
   })
 

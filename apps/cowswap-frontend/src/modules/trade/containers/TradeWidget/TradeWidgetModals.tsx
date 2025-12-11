@@ -13,6 +13,7 @@ import {
   useSetUserApproveAmountModalState,
 } from 'modules/erc20Approve'
 import { useTradeApproveState } from 'modules/erc20Approve/state/useTradeApproveState'
+import { RwaConsentModalContainer, useRwaConsentModalState } from 'modules/rwa'
 import {
   ImportTokenModal,
   SelectTokenWidget,
@@ -61,6 +62,7 @@ export function TradeWidgetModals({
   const { isModalOpen: changeApproveAmountInProgress } = useGetUserApproveAmountState()
   const [tokenListAddingError, setTokenListAddingError] = useTokenListAddingError()
   const { isModalOpen: isZeroApprovalModalOpen, closeModal: closeZeroApprovalModal } = useZeroApproveModalState()
+  const { isModalOpen: isRwaConsentModalOpen, closeModal: closeRwaConsentModal } = useRwaConsentModalState()
   const {
     tokensToImport,
     modalState: { isModalOpen: isAutoImportModalOpen, closeModal: closeAutoImportModal },
@@ -75,6 +77,7 @@ export function TradeWidgetModals({
     (closeTokenSelectWidget = true, shouldCloseAutoImportModal = true) => {
       closeTradeConfirm()
       closeZeroApprovalModal()
+      closeRwaConsentModal()
       if (shouldCloseAutoImportModal) closeAutoImportModal()
       if (closeTokenSelectWidget) updateSelectTokenWidgetState({ open: false })
       setWrapNativeScreenState({ isOpen: false })
@@ -85,6 +88,7 @@ export function TradeWidgetModals({
     [
       closeTradeConfirm,
       closeZeroApprovalModal,
+      closeRwaConsentModal,
       closeAutoImportModal,
       updateSelectTokenWidgetState,
       setWrapNativeScreenState,
@@ -117,6 +121,10 @@ export function TradeWidgetModals({
 
   if (genericModal) {
     return genericModal
+  }
+
+  if (isRwaConsentModalOpen) {
+    return <RwaConsentModalContainer />
   }
 
   if (isTradeReviewOpen || pendingTrade) {
