@@ -5,5 +5,5 @@ export function useShouldHideNetworkSelector(): boolean {
   const isSmartContractWallet = useIsSmartContractWallet()
   const isRabbyWallet = useIsRabbyWallet()
 
-  return !!isSmartContractWallet && !isRabbyWallet && !isSafeViaWc
+  return (!!isSmartContractWallet && !isRabbyWallet) || isSafeViaWc
 }
