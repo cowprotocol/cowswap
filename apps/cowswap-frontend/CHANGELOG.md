@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.125.3](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.125.2...cowswap-v1.125.3) (2025-12-09)
+
+
+### Bug Fixes
+
+* avoid using i18n in hookDappsRegistry ([#6633](https://github.com/cowprotocol/cowswap/issues/6633)) ([9cfeae0](https://github.com/cowprotocol/cowswap/commit/9cfeae0c107a632e78176c004aa3614fad12f68b))
+
 ## [1.125.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.125.1...cowswap-v1.125.2) (2025-11-27)
 
 
