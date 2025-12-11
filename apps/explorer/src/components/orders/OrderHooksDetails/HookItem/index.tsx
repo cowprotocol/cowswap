@@ -1,12 +1,10 @@
-import { useState } from 'react'
+import { ReactNode, useState } from 'react'
 
 import { HookToDappMatch } from '@cowprotocol/hook-dapp-lib'
 
 import { Item, Wrapper, ToggleButton, Details } from './styled'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function HookItem({ item, number }: { item: HookToDappMatch; number: number }) {
+export function HookItem({ item, number }: { item: HookToDappMatch; number: number }): ReactNode {
   const [showDetails, setShowDetails] = useState(false)
 
   // TODO: Add proper return type annotation
@@ -20,8 +18,7 @@ export function HookItem({ item, number }: { item: HookToDappMatch; number: numb
           #{number} -{' '}
           {item.dapp ? (
             <>
-              {/* Note: use MessageDescriptor.message, it contains the original not localized string. */}
-              <img src={item.dapp.image} alt={item.dapp.name.message} /> <strong>{item.dapp.name.message}</strong>{' '}
+              <img src={item.dapp.image} alt={item.dapp.name} /> <strong>{item.dapp.name}</strong>{' '}
             </>
           ) : (
             'Unknown hook dapp'
@@ -37,7 +34,7 @@ export function HookItem({ item, number }: { item: HookToDappMatch; number: numb
                   <i>Version:</i> {item.dapp.version}
                 </p>
                 <p>
-                  <i>Description:</i> {item.dapp.descriptionShort?.message}
+                  <i>Description:</i> {item.dapp.descriptionShort}
                 </p>
                 <p>
                   <i>Website: </i>
