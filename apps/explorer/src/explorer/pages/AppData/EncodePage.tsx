@@ -115,7 +115,6 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
 
         // Get the IPFS hash
         const appDataInfo = await metadataApiSDK.getAppDataInfo(fullAppData.fullAppData)
-        console.log('appDataInfo', appDataInfo)
 
         // Update CID
         setAppDataInfo(appDataInfo)
@@ -182,7 +181,7 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
             JSON schema
           </a>
           defined on app-data
-          <a target="_blank" href="https://github.com/cowprotocol/app-data" rel="noreferrer">
+          <a target="_blank" href="https://www.npmjs.com/package/@cowprotocol/sdk-app-data" rel="noreferrer">
             repo.
           </a>
         </p>
@@ -285,7 +284,7 @@ const EncodePage: React.FC<EncodeProps> = ({ tabData, setTabData /* handleTabCha
                 <p>
                   This CID is derived from the <strong>AppData hex</strong> (
                   <a
-                    href="https://github.com/cowprotocol/app-data/blob/main/src/api/appDataHexToCid.ts#L30"
+                    href="https://github.com/cowprotocol/cow-sdk/blob/main/packages/app-data/src/api/appDataHexToCid.ts"
                     target="_blank"
                     rel="noreferrer"
                   >
