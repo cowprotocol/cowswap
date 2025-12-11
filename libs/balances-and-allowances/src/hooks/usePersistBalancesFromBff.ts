@@ -12,7 +12,11 @@ import { BFF_BALANCES_SWR_CONFIG } from '../constants/bff-balances-swr-config'
 import { balancesAtom, BalancesState, balancesUpdateAtom } from '../state/balancesAtom'
 import { useAddUnsupportedChainId, useSetIsBffFailed } from '../state/isBffFailedAtom'
 import { useIsBffSupportedNetwork } from '../utils/isBffSupportedNetwork'
-import { isUnsupportedChainError, UnsupportedChainError } from '../utils/UnsupportedChainError'
+import {
+  isUnsupportedChainError,
+  isUnsupportedChainMessage,
+  UnsupportedChainError,
+} from '../utils/UnsupportedChainError'
 
 type BalanceResponse = {
   balances: Record<string, string> | null
@@ -25,10 +29,6 @@ export interface PersistBalancesFromBffParams {
   balancesSwrConfig?: SWRConfiguration
   invalidateCacheTrigger?: number
   tokenAddresses: string[]
-}
-
-function isUnsupportedChainMessage(errorMessage: string): boolean {
-  return errorMessage.toLowerCase().includes('unsupported chain')
 }
 
 function parseErrorResponse(data: unknown, statusText: string): string {

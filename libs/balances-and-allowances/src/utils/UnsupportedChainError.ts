@@ -8,3 +8,7 @@ export class UnsupportedChainError extends Error {
 export function isUnsupportedChainError(error: unknown): error is UnsupportedChainError {
   return error instanceof Error && error instanceof UnsupportedChainError
 }
+
+export function isUnsupportedChainMessage(errorMessage: string): boolean {
+  return errorMessage.toLowerCase().includes('unsupported chain')
+}
