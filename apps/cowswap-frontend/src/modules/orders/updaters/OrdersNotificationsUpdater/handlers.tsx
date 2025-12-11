@@ -57,7 +57,7 @@ export const ORDERS_NOTIFICATION_HANDLERS: Record<CowWidgetEvents, OrdersNotific
           chainId={chainId}
           orderType={getUiOrderType(order)}
           orderUid={order.uid}
-          receiver={bridgeOrder?.recipient}
+          hideReceiver={!!bridgeOrder}
           messageType={ToastMessageType.ORDER_FULFILLED}
         >
           <FulfilledOrderInfo chainId={chainId} orderUid={order.uid} />
