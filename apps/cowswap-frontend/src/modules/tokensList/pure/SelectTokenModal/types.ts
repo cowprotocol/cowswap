@@ -1,59 +1,54 @@
-import { BalancesState } from '@cowprotocol/balances-and-allowances'
-import { TokenWithLogo } from '@cowprotocol/common-const'
 import { ChainInfo } from '@cowprotocol/cow-sdk'
-import { TokenListCategory, TokenListTags, UnsupportedTokensState } from '@cowprotocol/tokens'
-import { Currency } from '@uniswap/sdk-core'
-
-import { Nullish } from 'types'
-
-import { PermitCompatibleTokens } from 'modules/permit'
+import { TokenListCategory } from '@cowprotocol/tokens'
 
 import { ChainsToSelectState, TokenSelectionHandler } from '../../types'
 
-export interface TokenListContentProps<T = TokenListCategory[] | null> {
-  allTokens: TokenWithLogo[]
-  favoriteTokens: TokenWithLogo[]
-  recentTokens?: TokenWithLogo[]
-  balancesState: BalancesState
-  unsupportedTokens: UnsupportedTokensState
-  selectedToken?: Nullish<Currency>
-  permitCompatibleTokens: PermitCompatibleTokens
-  hideFavoriteTokensTooltip?: boolean
-  displayLpTokenLists?: boolean
-  disableErc20?: boolean
-  account: string | undefined
-  tokenListCategoryState: [T, (category: T) => void]
-  defaultInputValue?: string
-  areTokensLoading: boolean
-  tokenListTags: TokenListTags
+/**
+ * Props that remain on SelectTokenModal after moving data to atom.
+ * Children read token data, context, and callbacks from tokenListViewAtom.
+ *
+ * Props categories:
+ * - Callbacks: onDismiss, onOpenManageWidget, onInputPressEnter, onSelectToken, onSelectChain, openPoolPage
+ * - Layout: standalone, hasChainPanel, isFullScreenMobile
+ * - Strings: modalTitle, chainsPanelTitle, defaultInputValue
+ * - Chain panel: chainsToSelect, mobileChainsState, mobileChainsLabel, onOpenMobileChainPanel
+ * - Widget config: tokenListCategoryState, disableErc20, isRouteAvailable, account, displayLpTokenLists
+ */
+
+export interface ModalLayoutProps {
   standalone?: boolean
-  areTokensFromBridge: boolean
-  isRouteAvailable: boolean | undefined
-  modalTitle?: string
   hasChainPanel?: boolean
-  chainsPanelTitle?: string
   isFullScreenMobile?: boolean
-  selectedTargetChainId?: number
-  mobileChainsState?: ChainsToSelectState
-  mobileChainsLabel?: string
-  onOpenMobileChainPanel?(): void
+  modalTitle?: string
+  chainsPanelTitle?: string
+  defaultInputValue?: string
 }
 
 export interface ChainSelectionProps {
   chainsToSelect?: ChainsToSelectState
   onSelectChain(chain: ChainInfo): void
+  mobileChainsState?: ChainsToSelectState
+  mobileChainsLabel?: string
+  onOpenMobileChainPanel?(): void
+}
+
+export interface WidgetConfigProps<T = TokenListCategory[] | null> {
+  tokenListCategoryState: [T, (category: T) => void]
+  disableErc20?: boolean
+  isRouteAvailable: boolean | undefined
+  account: string | undefined
+  displayLpTokenLists?: boolean
 }
 
 export interface ModalCallbackProps {
   onSelectToken: TokenSelectionHandler
-  onTokenListItemClick?(token: TokenWithLogo): void
-  onClearRecentTokens?(): void
   openPoolPage(poolAddress: string): void
   onInputPressEnter?(): void
   onOpenManageWidget(): void
   onDismiss(): void
 }
 
-export type SelectTokenModalProps<T = TokenListCategory[] | null> = TokenListContentProps<T> &
+export type SelectTokenModalProps<T = TokenListCategory[] | null> = ModalLayoutProps &
   ChainSelectionProps &
+  WidgetConfigProps<T> &
   ModalCallbackProps

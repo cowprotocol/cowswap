@@ -1,15 +1,12 @@
-import { useHydrateAtoms } from 'jotai/utils'
-import { ReactNode, useEffect, useLayoutEffect, useMemo } from 'react'
+import { ReactNode, useLayoutEffect, useMemo } from 'react'
 
 import { t } from '@lingui/core/macro'
 
-import { getMobileChainSelectorConfig, useSelectTokenContext, useTokenSearchInput } from './helpers'
+import { getMobileChainSelectorConfig, useTokenSearchInput } from './helpers'
 import { SelectTokenModalShell } from './SelectTokenModalShell'
 import { TokenColumnContent } from './TokenColumnContent'
 
-import { useResetTokenListViewState } from '../../hooks/useResetTokenListViewState'
 import { useUpdateTokenListViewState } from '../../hooks/useUpdateTokenListViewState'
-import { tokenListViewAtom, TokenListViewState } from '../../state/tokenListViewAtom'
 import { ChainPanel } from '../ChainPanel'
 import { TokensContent } from '../TokensContent'
 
@@ -17,101 +14,70 @@ import type { SelectTokenModalProps } from './types'
 
 export type { SelectTokenModalProps }
 
-// eslint-disable-next-line max-lines-per-function
+/**
+ * SelectTokenModal - Token selection modal component.
+ *
+ * Data flow:
+ * - Controller hydrates tokenListViewAtom with token data, context, and callbacks
+ * - This modal receives only UI/callback props
+ * - Children (TokensContent, TokensVirtualList, etc.) read from atom
+ * - searchInput is local state, synced to atom for children to read
+ */
 export function SelectTokenModal(props: SelectTokenModalProps): ReactNode {
   const {
-    defaultInputValue = '',
-    onSelectToken,
-    onDismiss,
-    onInputPressEnter,
-    account,
-    displayLpTokenLists,
-    openPoolPage,
-    tokenListCategoryState,
-    disableErc20,
-    onSelectChain,
-    areTokensFromBridge,
-    isRouteAvailable,
+    // Layout
     standalone,
-    onOpenManageWidget,
-    favoriteTokens,
-    recentTokens,
-    onClearRecentTokens,
-    areTokensLoading,
-    allTokens,
-    hideFavoriteTokensTooltip,
-    selectedTargetChainId,
     hasChainPanel = false,
+    isFullScreenMobile,
+    modalTitle,
     chainsPanelTitle,
+    defaultInputValue = '',
+    // Chain panel
+    chainsToSelect,
+    onSelectChain,
     mobileChainsState,
     mobileChainsLabel,
     onOpenMobileChainPanel,
-    isFullScreenMobile,
+    // Widget config
+    tokenListCategoryState,
+    disableErc20,
+    isRouteAvailable,
+    account,
+    displayLpTokenLists,
+    // Callbacks
+    onSelectToken,
+    openPoolPage,
+    onInputPressEnter,
+    onOpenManageWidget,
+    onDismiss,
   } = props
 
-  const {
-    inputValue,
-    setInputValue,
-    trimmedInputValue,
-    selectTokenContext,
-    showChainPanel,
-    legacyChainsState,
-    chainPanel,
-    resolvedModalTitle,
-  } = useSelectTokenModalLayout({
-    ...props,
-    defaultInputValue,
-    hasChainPanel,
-    chainsPanelTitle,
-  })
+  // Local search state - synced to atom for children to read
+  const [inputValue, setInputValue, trimmedInputValue] = useTokenSearchInput(defaultInputValue)
 
-  // Compute the view state to hydrate the atom
-  const initialViewState: TokenListViewState = useMemo(
-    () => ({
-      allTokens,
-      favoriteTokens,
-      recentTokens,
-      searchInput: trimmedInputValue,
-      areTokensLoading,
-      areTokensFromBridge,
-      hideFavoriteTokensTooltip: hideFavoriteTokensTooltip ?? false,
-      displayLpTokenLists: displayLpTokenLists ?? false,
-      selectedTargetChainId,
-      selectTokenContext,
-      onClearRecentTokens,
-    }),
-    [
-      allTokens,
-      favoriteTokens,
-      recentTokens,
-      trimmedInputValue,
-      areTokensLoading,
-      areTokensFromBridge,
-      hideFavoriteTokensTooltip,
-      displayLpTokenLists,
-      selectedTargetChainId,
-      selectTokenContext,
-      onClearRecentTokens,
-    ],
-  )
-
-  // Hydrate atom SYNCHRONOUSLY on first render (no useEffect!)
-  useHydrateAtoms([[tokenListViewAtom, initialViewState]])
-
-  // Keep atom in sync when props change (after initial render)
-  // Using useLayoutEffect to ensure atom is updated before paint, avoiding flicker
-  // Note: Always pass the full state object; partial updates may leave stale fields
+  // Sync ONLY searchInput to atom (controller handles all other hydration)
   const updateTokenListView = useUpdateTokenListViewState()
   useLayoutEffect(() => {
-    updateTokenListView(initialViewState)
-  }, [initialViewState, updateTokenListView])
+    updateTokenListView({ searchInput: trimmedInputValue })
+  }, [trimmedInputValue, updateTokenListView])
 
-  // Reset atom on unmount to avoid stale state on reopen (full replace, not partial merge)
-  const resetTokenListView = useResetTokenListViewState()
-  useEffect(() => {
-    return () => resetTokenListView()
-  }, [resetTokenListView])
+  // Resolve layout state
+  const showChainPanel = hasChainPanel
+  const resolvedModalTitle = modalTitle ?? t`Select token`
+  const legacyChainsState =
+    !showChainPanel && chainsToSelect && (chainsToSelect.chains?.length ?? 0) > 0 ? chainsToSelect : undefined
+  const resolvedChainPanelTitle = chainsPanelTitle ?? t`Cross chain swap`
 
+  // Build chain panel component
+  const chainPanel = useMemo(
+    () =>
+      showChainPanel && chainsToSelect ? (
+        <ChainPanel title={resolvedChainPanelTitle} chainsState={chainsToSelect} onSelectChain={onSelectChain} />
+      ) : null,
+    [chainsToSelect, onSelectChain, resolvedChainPanelTitle, showChainPanel],
+  )
+
+  // Build mobile chain selector config
   const mobileChainSelector = getMobileChainSelectorConfig({
     showChainPanel,
     mobileChainsState,
@@ -151,50 +117,4 @@ export function SelectTokenModal(props: SelectTokenModalProps): ReactNode {
       </TokenColumnContent>
     </SelectTokenModalShell>
   )
-}
-
-function useSelectTokenModalLayout(props: SelectTokenModalProps): {
-  inputValue: string
-  setInputValue: (value: string) => void
-  trimmedInputValue: string
-  selectTokenContext: ReturnType<typeof useSelectTokenContext>
-  showChainPanel: boolean
-  legacyChainsState: SelectTokenModalProps['chainsToSelect']
-  chainPanel: ReactNode
-  resolvedModalTitle: string
-} {
-  const {
-    defaultInputValue = '',
-    chainsToSelect,
-    onSelectChain,
-    modalTitle,
-    hasChainPanel = false,
-    chainsPanelTitle,
-  } = props
-
-  const [inputValue, setInputValue, trimmedInputValue] = useTokenSearchInput(defaultInputValue)
-  const selectTokenContext = useSelectTokenContext(props)
-  const resolvedModalTitle = modalTitle ?? t`Select token`
-  const showChainPanel = hasChainPanel
-  const legacyChainsState =
-    !showChainPanel && chainsToSelect && (chainsToSelect.chains?.length ?? 0) > 0 ? chainsToSelect : undefined
-  const resolvedChainPanelTitle = chainsPanelTitle ?? t`Cross chain swap`
-  const chainPanel = useMemo(
-    () =>
-      showChainPanel && chainsToSelect ? (
-        <ChainPanel title={resolvedChainPanelTitle} chainsState={chainsToSelect} onSelectChain={onSelectChain} />
-      ) : null,
-    [chainsToSelect, onSelectChain, resolvedChainPanelTitle, showChainPanel],
-  )
-
-  return {
-    inputValue,
-    setInputValue,
-    trimmedInputValue,
-    selectTokenContext,
-    showChainPanel,
-    legacyChainsState,
-    chainPanel,
-    resolvedModalTitle,
-  }
 }

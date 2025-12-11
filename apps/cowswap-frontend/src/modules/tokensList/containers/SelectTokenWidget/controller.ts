@@ -1,3 +1,5 @@
+import { useEffect, useRef } from 'react'
+
 import { useIsBridgingEnabled } from '@cowprotocol/common-hooks'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
@@ -18,6 +20,7 @@ import { useChainsToSelect } from '../../hooks/useChainsToSelect'
 import { useCloseTokenSelectWidget } from '../../hooks/useCloseTokenSelectWidget'
 import { useOnSelectChain } from '../../hooks/useOnSelectChain'
 import { useOnTokenListAddingError } from '../../hooks/useOnTokenListAddingError'
+import { useResetTokenListViewState } from '../../hooks/useResetTokenListViewState'
 import { useSelectTokenWidgetState } from '../../hooks/useSelectTokenWidgetState'
 import { useUpdateSelectTokenWidgetState } from '../../hooks/useUpdateSelectTokenWidgetState'
 
@@ -75,8 +78,22 @@ export function useSelectTokenWidgetController({
     isBridgeFeatureEnabled,
   })
 
+  const shouldRender = Boolean(widgetState.onSelectToken && (widgetState.open || widgetState.forceOpen))
+
+  // Reset atom when modal closes (shouldRender becomes false)
+  const resetTokenListView = useResetTokenListViewState()
+  const prevShouldRenderRef = useRef(shouldRender)
+
+  useEffect(() => {
+    // Only reset when transitioning from true to false
+    if (prevShouldRenderRef.current && !shouldRender) {
+      resetTokenListView()
+    }
+    prevShouldRenderRef.current = shouldRender
+  }, [shouldRender, resetTokenListView])
+
   return {
-    shouldRender: Boolean(widgetState.onSelectToken && (widgetState.open || widgetState.forceOpen)),
+    shouldRender,
     hasChainPanel: isChainPanelEnabled,
     viewProps,
   }

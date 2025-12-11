@@ -1,4 +1,4 @@
-import { ComponentProps, ReactNode, useMemo, useState } from 'react'
+import { ComponentProps, ReactNode, useState } from 'react'
 
 import { BackButton } from '@cowprotocol/ui'
 
@@ -9,45 +9,7 @@ import { SettingsIcon } from 'modules/trade/pure/Settings'
 import { MobileChainSelector } from './MobileChainSelector'
 import * as styledEl from './styled'
 
-import { SelectTokenContext } from '../../types'
-
 import type { SelectTokenModalProps } from './types'
-
-export function useSelectTokenContext(props: SelectTokenModalProps): SelectTokenContext {
-  const {
-    selectedToken,
-    balancesState,
-    unsupportedTokens,
-    permitCompatibleTokens,
-    onSelectToken,
-    onTokenListItemClick,
-    account,
-    tokenListTags,
-  } = props
-
-  return useMemo(
-    () => ({
-      balancesState,
-      selectedToken,
-      onSelectToken,
-      onTokenListItemClick,
-      unsupportedTokens,
-      permitCompatibleTokens,
-      tokenListTags,
-      isWalletConnected: !!account,
-    }),
-    [
-      balancesState,
-      selectedToken,
-      onSelectToken,
-      onTokenListItemClick,
-      unsupportedTokens,
-      permitCompatibleTokens,
-      tokenListTags,
-      account,
-    ],
-  )
-}
 
 export function useTokenSearchInput(defaultInputValue = ''): [string, (value: string) => void, string] {
   const [inputValue, setInputValue] = useState<string>(defaultInputValue)
