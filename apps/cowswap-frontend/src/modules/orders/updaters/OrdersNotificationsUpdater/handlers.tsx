@@ -15,7 +15,6 @@ import { IconType } from '@cowprotocol/snackbars'
 
 import { t } from '@lingui/core/macro'
 
-import { getIsBridgeOrder } from 'common/utils/getIsBridgeOrder'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { BridgingSuccessNotification } from '../../containers/BridgingSuccessNotification'
@@ -58,7 +57,7 @@ export const ORDERS_NOTIFICATION_HANDLERS: Record<CowWidgetEvents, OrdersNotific
           chainId={chainId}
           orderType={getUiOrderType(order)}
           orderUid={order.uid}
-          hideReceiver={!!bridgeOrder}
+          receiver={bridgeOrder?.recipient}
           messageType={ToastMessageType.ORDER_FULFILLED}
         >
           <FulfilledOrderInfo chainId={chainId} orderUid={order.uid} />
@@ -103,8 +102,7 @@ export const ORDERS_NOTIFICATION_HANDLERS: Record<CowWidgetEvents, OrdersNotific
   [CowWidgetEvents.ON_PRESIGNED_ORDER]: {
     icon: 'success',
     handler: (payload: OnPresignedOrderPayload) => {
-      const { chainId, order } = payload
-      const isBridgeOrder = getIsBridgeOrder(order)
+      const { chainId, order, bridgeOrder } = payload
 
       return (
         <OrderNotification
@@ -113,7 +111,7 @@ export const ORDERS_NOTIFICATION_HANDLERS: Record<CowWidgetEvents, OrdersNotific
           orderType={getUiOrderType(order)}
           orderUid={order.uid}
           messageType={ToastMessageType.ORDER_PRESIGNED}
-          hideReceiver={isBridgeOrder}
+          receiver={bridgeOrder?.recipient}
         />
       )
     },

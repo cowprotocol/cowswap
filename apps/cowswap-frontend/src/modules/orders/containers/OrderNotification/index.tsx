@@ -56,6 +56,7 @@ export function OrderNotification(props: BaseOrderNotificationProps): ReactNode 
     isEthFlow,
     skipExplorerLink,
     hideReceiver,
+    receiver,
   } = props
   const allTokens = useTokensByAddressMap()
 
@@ -112,7 +113,7 @@ export function OrderNotification(props: BaseOrderNotificationProps): ReactNode 
             srcChainData={srcChainData}
           />
         ) : null)}
-      {!hideReceiver && <ReceiverInfo receiver={order.receiver} owner={order.owner} />}
+      {!hideReceiver && <ReceiverInfo receiver={receiver ?? order.receiver} owner={order.owner} />}
       {props.bottomContent}
     </div>
   )
