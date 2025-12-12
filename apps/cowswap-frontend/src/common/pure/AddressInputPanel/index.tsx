@@ -6,6 +6,7 @@ import {
   isPrefixedAddress,
   parsePrefixedAddress,
 } from '@cowprotocol/common-utils'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENS } from '@cowprotocol/ens'
 import { ExternalLink, RowBetween, UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -95,6 +96,7 @@ export function AddressInputPanel({
   placeholder,
   value,
   onChange,
+  targetChainId,
 }: {
   id?: string
   className?: string
@@ -102,9 +104,12 @@ export function AddressInputPanel({
   placeholder?: string
   value: string
   onChange: (value: string) => void
+  targetChainId?: SupportedChainId
 }) {
   const { t } = useLingui()
-  const { chainId } = useWalletInfo()
+  const { chainId: walletChainId } = useWalletInfo()
+  // Use targetChainId if provided (for cross-chain), otherwise fall back to wallet's chain
+  const chainId = targetChainId ?? walletChainId
   const chainInfo = getChainInfo(chainId)
   const addressPrefix = chainInfo?.addressPrefix
   const { address, loading, name } = useENS(value)
@@ -134,12 +139,12 @@ export function AddressInputPanel({
     [onChange, addressPrefix],
   )
 
-  // clear warning if chainId changes and we are now on the right network
+  //clear warning if target chainId changes and we are now on the right network
   useEffect(() => {
     if (chainPrefixWarning && chainPrefixWarning === addressPrefix) {
       setChainPrefixWarning('')
     }
-  }, [chainId, chainPrefixWarning, addressPrefix])
+  }, [chainPrefixWarning, addressPrefix])
 
   const error = Boolean(value.length > 0 && !loading && !address)
 
