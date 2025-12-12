@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react'
 
 import { RECEIVED_LABEL_EXPLORER } from '@cowprotocol/common-const'
-import { BridgeStatus, CrossChainOrder } from '@cowprotocol/sdk-bridging'
+import { BridgeStatus, CrossChainOrder, isHookBridgeProvider } from '@cowprotocol/sdk-bridging'
 
 import { AddressLink } from 'components/common/AddressLink'
 import { DetailRow } from 'components/common/DetailRow'
@@ -25,25 +25,26 @@ export function BridgeDetailsContent({ crossChainOrder }: BridgeDetailsContentPr
   const {
     statusResult: { status: bridgeStatus, fillTxHash, depositTxHash, fillTimeInSeconds },
     bridgingParams: { inputAmount, outputAmount, owner, sourceChainId, destinationChainId, recipient },
-    provider: { info: providerInfo },
+    provider,
   } = crossChainOrder
-  const bridgeProvider = crossChainOrder.provider
   const { sourceToken, destinationToken } = useCrossChainTokens(crossChainOrder)
-  const fromTooltipText =
-    bridgeProvider.type === 'HookBridgeProvider'
-      ? BridgeDetailsTooltips.accountFromProxy
-      : BridgeDetailsTooltips.accountOrderSigner
+  const fromTooltipText = isHookBridgeProvider(provider)
+    ? BridgeDetailsTooltips.accountFromProxy
+    : BridgeDetailsTooltips.accountOrderSigner
 
   const RecipientAddress = recipient ? (
-    <AddressLink address={recipient} chainId={destinationChainId} bridgeProvider={bridgeProvider} showNetworkName />
+    <AddressLink address={recipient} chainId={destinationChainId} bridgeProvider={provider} showNetworkName />
   ) : null
+
+  const depositAmount =
+    bridgeStatus === BridgeStatus.EXECUTED ? crossChainOrder.order.executedBuyAmount : inputAmount.toString()
 
   return (
     <>
       <DetailRow label="Provider" tooltipText={BridgeDetailsTooltips.provider}>
         <ProviderDisplayWrapper>
-          {providerInfo.logoUrl && <ProviderLogo src={providerInfo.logoUrl} alt={`${providerInfo.name} logo`} />}
-          <span>{providerInfo.name}</span>
+          {provider.info.logoUrl && <ProviderLogo src={provider.info.logoUrl} alt={`${provider.info.name} logo`} />}
+          <span>{provider.info.name}</span>
         </ProviderDisplayWrapper>
       </DetailRow>
 
@@ -68,23 +69,19 @@ export function BridgeDetailsContent({ crossChainOrder }: BridgeDetailsContentPr
 
       <DetailRow label="Amounts" tooltipText={BridgeDetailsTooltips.amounts}>
         <AmountSectionWrapper>
-          <BridgeAmountDisplay labelPrefix="From:" bridgeToken={sourceToken} amount={inputAmount.toString()} />
+          <BridgeAmountDisplay labelPrefix="From:" bridgeToken={sourceToken} amount={depositAmount} />
           <BridgeAmountDisplay
             labelPrefix="To:"
             bridgeToken={destinationToken}
             amount={outputAmount?.toString() || '0'}
-            bridgeProvider={bridgeProvider}
+            bridgeProvider={provider}
           />
         </AmountSectionWrapper>
       </DetailRow>
 
       <DetailRow label={RECEIVED_LABEL_EXPLORER} tooltipText={BridgeDetailsTooltips.youReceived}>
         {outputAmount && destinationToken && bridgeStatus === BridgeStatus.EXECUTED && (
-          <BridgeReceiveAmount
-            amount={outputAmount}
-            destinationToken={destinationToken}
-            bridgeProvider={bridgeProvider}
-          />
+          <BridgeReceiveAmount amount={outputAmount} destinationToken={destinationToken} bridgeProvider={provider} />
         )}
       </DetailRow>
 
