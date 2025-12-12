@@ -7,14 +7,14 @@ import {
   rwaConsentCacheAtom,
   storeRwaConsentAtom,
 } from '../state/rwaConsentAtom'
-import { GeoMode, RwaConsentKey, RwaConsentRecord } from '../types/rwaConsent'
+import { RwaConsentKey, RwaConsentRecord } from '../types/rwaConsent'
 
 export type RwaConsentStatus = 'none' | 'valid'
 
 export interface UseRwaConsentStatusReturn {
   consentStatus: RwaConsentStatus
   consentRecord: RwaConsentRecord | undefined
-  confirmConsent: (geoMode: GeoMode) => void
+  confirmConsent: () => void
   resetConsent: () => void
 }
 
@@ -24,26 +24,23 @@ export function useRwaConsentStatus(key: RwaConsentKey): UseRwaConsentStatusRetu
   const removeConsent = useSetAtom(removeRwaConsentAtom)
 
   const consentRecord = useMemo(() => {
-    if (!key.wallet || !key.issuer || !key.tosVersion) {
+    if (!key.wallet || !key.tosVersion) {
       return undefined
     }
     return getConsentFromCache(consentCache, key)
   }, [consentCache, key])
 
-  const consentStatus: RwaConsentStatus = consentRecord?.confirmed ? 'valid' : 'none'
+  const consentStatus: RwaConsentStatus = consentRecord?.acceptedAt ? 'valid' : 'none'
 
-  const confirmConsent = useCallback(
-    (geoMode: GeoMode) => {
-      if (!key.wallet || !key.issuer || !key.tosVersion) {
-        return
-      }
-      storeConsent({ ...key, geoMode })
-    },
-    [storeConsent, key],
-  )
+  const confirmConsent = useCallback(() => {
+    if (!key.wallet || !key.tosVersion) {
+      return
+    }
+    storeConsent(key)
+  }, [storeConsent, key])
 
   const resetConsent = useCallback(() => {
-    if (!key.wallet || !key.issuer || !key.tosVersion) {
+    if (!key.wallet || !key.tosVersion) {
       return
     }
     removeConsent(key)

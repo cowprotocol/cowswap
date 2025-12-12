@@ -1,7 +1,7 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
-import { RwaConsentKey, RwaConsentRecord, GeoMode } from '../types/rwaConsent'
+import { RwaConsentKey, RwaConsentRecord } from '../types/rwaConsent'
 
 type RwaConsentCache = Record<string, string>
 
@@ -9,17 +9,11 @@ export const rwaConsentCacheAtom = atomWithStorage<RwaConsentCache>('rwaConsentC
   unstable_getOnInit: true,
 })
 
-export interface StoreRwaConsentParams extends RwaConsentKey {
-  geoMode: GeoMode
-}
-
-export const storeRwaConsentAtom = atom(null, (get, set, params: StoreRwaConsentParams) => {
+export const storeRwaConsentAtom = atom(null, (get, set, params: RwaConsentKey) => {
   const key = buildRwaConsentKey(params)
 
   const dataToCache: RwaConsentRecord = {
-    confirmed: true,
-    geoMode: params.geoMode,
-    confirmedAt: Date.now(),
+    acceptedAt: Date.now(),
   }
 
   set(rwaConsentCacheAtom, (cache) => ({ ...cache, [key]: JSON.stringify(dataToCache) }))
@@ -40,8 +34,8 @@ export const removeRwaConsentAtom = atom(null, (get, set, params: RwaConsentKey)
   })
 })
 
-export function buildRwaConsentKey({ wallet, issuer, tosVersion }: RwaConsentKey): string {
-  return `${wallet.toLowerCase()}-${issuer.toLowerCase()}-${tosVersion}`
+export function buildRwaConsentKey({ wallet, tosVersion }: RwaConsentKey): string {
+  return `${wallet.toLowerCase()}-${tosVersion}`
 }
 
 export function getConsentFromCache(

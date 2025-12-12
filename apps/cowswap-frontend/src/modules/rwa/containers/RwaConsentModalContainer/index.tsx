@@ -2,7 +2,6 @@ import { ReactNode, useCallback, useMemo } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { geoStatusToGeoMode, useGeoStatus } from 'modules/rwa/hooks/useGeoStatus'
 import { useRwaConsentModalState } from 'modules/rwa/hooks/useRwaConsentModalState'
 import { useRwaConsentStatus } from 'modules/rwa/hooks/useRwaConsentStatus'
 import { RwaConsentModal } from 'modules/rwa/pure/RwaConsentModal'
@@ -11,7 +10,6 @@ import { useTradeConfirmActions } from 'modules/trade'
 
 export function RwaConsentModalContainer(): ReactNode {
   const { account } = useWalletInfo()
-  const geoStatus = useGeoStatus()
   const { isModalOpen, closeModal, context } = useRwaConsentModalState()
   const tradeConfirmActions = useTradeConfirmActions()
 
@@ -21,14 +19,11 @@ export function RwaConsentModalContainer(): ReactNode {
     }
     return {
       wallet: account,
-      issuer: context.issuer,
       tosVersion: context.tosVersion,
     }
   }, [context, account])
 
-  const { confirmConsent } = useRwaConsentStatus(
-    consentKey || { wallet: '', issuer: '', tosVersion: '' },
-  )
+  const { confirmConsent } = useRwaConsentStatus(consentKey || { wallet: '', tosVersion: '' })
 
   const onDismiss = useCallback(() => {
     closeModal()
@@ -39,21 +34,15 @@ export function RwaConsentModalContainer(): ReactNode {
       return
     }
 
-    confirmConsent(geoStatusToGeoMode(geoStatus))
+    confirmConsent()
     closeModal()
     tradeConfirmActions.onOpen()
-  }, [account, context, consentKey, confirmConsent, geoStatus, closeModal, tradeConfirmActions])
+  }, [account, context, consentKey, confirmConsent, closeModal, tradeConfirmActions])
 
   if (!isModalOpen || !context) {
     return null
   }
 
-  return (
-    <RwaConsentModal
-      onDismiss={onDismiss}
-      onConfirm={onConfirm}
-      token={context.token}
-    />
-  )
+  return <RwaConsentModal onDismiss={onDismiss} onConfirm={onConfirm} token={context.token} />
 }
 

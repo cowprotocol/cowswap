@@ -1,5 +1,4 @@
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { Currency } from '@uniswap/sdk-core'
 
 export interface RwaTokenInfo {
   issuer: string
@@ -9,18 +8,12 @@ export interface RwaTokenInfo {
   token?: TokenWithLogo
 }
 
-// todo: Implement actual RWA token detection
-export function getRwaTokenInfo(currency: Currency | null): RwaTokenInfo | null {
-  if (!currency) {
-    return null
-  }
-
-  // todo for test purposes only
-  return {
-    issuer: 'TEST',
-    tosVersion: 'rwa-tos-2025-01-01',
-    issuerName: 'Test Issuer',
-    assetGroup: 'tokenized_securities',
-    token: currency.isToken ? (currency as TokenWithLogo) : undefined,
-  }
+/**
+ * @deprecated Use useRwaTokenStatus hook instead.
+ * This function was used for testing purposes only.
+ */
+export function getRwaTokenInfo(): RwaTokenInfo | null {
+  // This function is deprecated - use useRwaTokenStatus hook instead
+  // The hook checks tokens against the Ondo token list
+  return null
 }

@@ -1,15 +1,12 @@
-import React, { ReactNode, useCallback, useMemo } from 'react'
+import React, { ReactNode, useCallback } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useLingui } from '@lingui/react/macro'
 
-import { useGeoStatus } from 'modules/rwa/hooks/useGeoStatus'
 import { useRwaConsentModalState } from 'modules/rwa/hooks/useRwaConsentModalState'
-import { useRwaConsentStatus } from 'modules/rwa/hooks/useRwaConsentStatus'
-import { getRwaTokenInfo } from 'modules/rwa/utils/getRwaTokenInfo'
+import { RwaTokenStatus, useRwaTokenStatus } from 'modules/rwa/hooks/useRwaTokenStatus'
 import { AddIntermediateToken } from 'modules/tokensList'
 import {
   useIsCurrentTradeBridging,
@@ -55,8 +52,6 @@ export function TradeButtons({
   setShowAddIntermediateTokenModal,
 }: TradeButtonsProps): ReactNode {
   const { inputCurrency, outputCurrency } = useSwapDerivedState()
-  const { account } = useWalletInfo()
-  const geoStatus = useGeoStatus()
   const { openModal: openRwaConsentModal } = useRwaConsentModalState()
 
   const primaryFormValidation = useGetTradeFormValidation()
@@ -71,47 +66,35 @@ export function TradeButtons({
 
   const { t } = useLingui()
 
-  const rwaTokenInfo = useMemo(() => {
-    const inputRwaInfo = getRwaTokenInfo(inputCurrency)
-    const outputRwaInfo = getRwaTokenInfo(outputCurrency)
-    return inputRwaInfo || outputRwaInfo
-  }, [inputCurrency, outputCurrency])
+  // Check RWA token status for geo restrictions and consent
+  const { status: rwaStatus, rwaTokenInfo } = useRwaTokenStatus({
+    inputToken: inputCurrency?.isToken ? inputCurrency : undefined,
+    outputToken: outputCurrency?.isToken ? outputCurrency : undefined,
+  })
 
-  const rwaConsentKey = useMemo(
-    () =>
-      rwaTokenInfo && account
-        ? {
-            wallet: account,
-            issuer: rwaTokenInfo.issuer,
-            tosVersion: rwaTokenInfo.tosVersion,
-          }
-        : { wallet: '', issuer: '', tosVersion: '' },
-    [rwaTokenInfo, account],
-  )
-
-  const rwaConsentStatus = useRwaConsentStatus(rwaConsentKey)
-  const consentStatus = rwaConsentStatus.consentStatus
+  const isRwaRestricted = rwaStatus === RwaTokenStatus.Restricted
 
   const confirmTrade = useCallback(
     (forcePriceConfirmation?: boolean) => {
-      const needsRwaConsent =
-        rwaTokenInfo &&
-        geoStatus === 'UNKNOWN' &&
-        consentStatus !== 'valid'
+      // Don't proceed if user is from a restricted country
+      if (isRwaRestricted) {
+        return
+      }
 
-      if (needsRwaConsent) {
+      // Show consent modal if country unknown and consent not given
+      if (rwaStatus === RwaTokenStatus.RequiredConsent && rwaTokenInfo) {
         openRwaConsentModal({
           issuer: rwaTokenInfo.issuer,
           tosVersion: rwaTokenInfo.tosVersion,
           issuerName: rwaTokenInfo.issuerName,
-          token: rwaTokenInfo.token,
+          token: rwaTokenInfo.token as TokenWithLogo,
         })
         return
       }
 
       tradeConfirmActions.onOpen(forcePriceConfirmation)
     },
-    [rwaTokenInfo, geoStatus, consentStatus, openRwaConsentModal, tradeConfirmActions],
+    [rwaStatus, rwaTokenInfo, isRwaRestricted, openRwaConsentModal, tradeConfirmActions],
   )
 
   const confirmText = isCurrentTradeBridging ? t`Swap and Bridge` : t`Swap`
@@ -135,7 +118,7 @@ export function TradeButtons({
     !!intermediateBuyToken &&
     primaryFormValidation === TradeFormValidation.ImportingIntermediateToken
 
-  const isDisabled = !isTradeContextReady || !feeWarningAccepted || !isNoImpactWarningAccepted
+  const isDisabled = !isTradeContextReady || !feeWarningAccepted || !isNoImpactWarningAccepted || isRwaRestricted
 
   if (!tradeFormButtonContext) return null
 
