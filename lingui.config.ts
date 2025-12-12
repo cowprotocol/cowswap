@@ -3,6 +3,12 @@ const linguiConfig = {
     {
       path: '<rootDir>/apps/cowswap-frontend/src/locales/{locale}',
       include: ['<rootDir>/apps', '<rootDir>/libs'],
+      exclude: [
+        '<rootDir>/apps/**/dist/**',
+        '<rootDir>/apps/**/build/**',
+        '<rootDir>/libs/**/dist/**',
+        '<rootDir>/libs/**/build/**',
+      ],
     },
   ],
   fallbackLocales: {
