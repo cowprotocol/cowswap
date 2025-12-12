@@ -23,23 +23,15 @@ const UPDATE_TIME_KEY = 'correlatedTokensUpdateTime'
 
 const cmsClient = getCmsClient()
 
-// TODO: Replace any with proper type definitions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/explicit-function-return-type
-const querySerializer = (params: any) => {
+const querySerializer = (params: unknown): string => {
   return qs.stringify(params, { encodeValuesOnly: true, arrayFormat: 'brackets' })
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function CorrelatedTokensUpdater() {
+export function CorrelatedTokensUpdater(): null {
   const correlatedTokens = useSetAtom(correlatedTokensAtom)
 
   useSWR(
     ['/correlated-tokens', correlatedTokens],
-    // TODO: Break down this large function into smaller functions
-     
     async ([method, setCorrelatedTokens]) => {
       const lastUpdateTime = localStorage.getItem(UPDATE_TIME_KEY)
 

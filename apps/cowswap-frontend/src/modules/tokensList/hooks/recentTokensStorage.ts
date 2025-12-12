@@ -3,7 +3,7 @@ import { TokenWithLogo } from '@cowprotocol/common-const'
 import { getTokenUniqueKey } from '../utils/tokenKey'
 
 export const RECENT_TOKENS_LIMIT = 4
-export const RECENT_TOKENS_STORAGE_KEY = 'select-token-widget:recent-tokens:v1'
+export const RECENT_TOKENS_STORAGE_KEY = 'selectTokenWidget:recentTokens:v0'
 
 export interface StoredRecentToken {
   chainId: number
