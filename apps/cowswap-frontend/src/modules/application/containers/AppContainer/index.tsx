@@ -95,7 +95,7 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
 
         <OrdersPanel />
 
-        <AppMenu>{networkAndAccountControls}</AppMenu>
+        <AppMenu customTheme={customTheme}>{networkAndAccountControls}</AppMenu>
 
         {isYieldEnabled && <CoWAmmBanner />}
 
@@ -177,9 +177,7 @@ const SNOWFALL_STYLE: CSSProperties = {
 }
 
 function CowSpeechBubbleBanner(): ReactNode {
-  return ClosableBanner(BANNER_IDS.HIRING_SPEECH_BUBBLE, (close) => (
-    <CowSpeechBubble show onClose={close} />
-  ))
+  return ClosableBanner(BANNER_IDS.HIRING_SPEECH_BUBBLE, (close) => <CowSpeechBubble show onClose={close} />)
 }
 
 interface FooterSectionProps {
