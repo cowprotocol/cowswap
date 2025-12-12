@@ -56,6 +56,16 @@ function cacheTheme(theme: CowSwapTheme): void {
   }
 }
 
+function clearCachedTheme(): void {
+  if (typeof window === 'undefined') return
+
+  try {
+    window.localStorage.removeItem(LOCAL_STORAGE_KEY)
+  } catch {
+    // Ignore storage failures
+  }
+}
+
 export function resolveCowSwapTheme(darkMode: boolean, featureFlags?: FeatureFlags): CowSwapTheme | undefined {
   const activeTheme = resolveCustomThemeForContext(featureFlags, { darkModeEnabled: darkMode })
 
@@ -77,7 +87,10 @@ export function useCustomTheme(): CowSwapTheme | undefined {
   const featureFlagsFromLaunchDarkly = useFeatureFlags()
   const isWidget = isInjectedWidget()
 
-  const cachedTheme = useMemo(() => readCachedTheme(darkMode), [darkMode])
+  const cachedTheme = useMemo(
+    () => (!featureFlagsHydrated ? readCachedTheme(darkMode) : undefined),
+    [featureFlagsHydrated, darkMode],
+  )
 
   // Use LD flags until Jotai hydration completes to keep theme consistent on first render
   const effectiveFeatureFlags = useMemo(
@@ -93,13 +106,24 @@ export function useCustomTheme(): CowSwapTheme | undefined {
   useEffect(() => {
     if (resolvedTheme) {
       cacheTheme(resolvedTheme)
+    } else if (featureFlagsHydrated) {
+      clearCachedTheme()
     }
-  }, [resolvedTheme])
+  }, [resolvedTheme, featureFlagsHydrated])
 
   // We don't want to set any custom theme for the widget
   if (isWidget) {
     return undefined
   }
 
-  return resolvedTheme ?? cachedTheme
+  if (resolvedTheme) {
+    return resolvedTheme
+  }
+
+  // Only use cache before hydration completes; once hydrated with no theme, fall back to default
+  if (!featureFlagsHydrated) {
+    return cachedTheme
+  }
+
+  return undefined
 }
