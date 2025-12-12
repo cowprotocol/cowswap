@@ -201,6 +201,8 @@ export function useSwapAndBridgeContext(
       bridgeMinReceiveAmount,
       bridgeMinDepositAmount: null,
       bridgeMinDepositAmountUsd: null,
+      expectedToReceive: null,
+      expectedToReceiveUsd: null,
     }
 
     return {
