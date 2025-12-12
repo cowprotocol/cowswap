@@ -19,4 +19,6 @@ export const BadgeTypes = {
 
 export type BadgeType = (typeof BadgeTypes)[keyof typeof BadgeTypes]
 
-export type CowSwapTheme = 'dark' | 'light' | 'darkHalloween' | 'lightChristmas' | 'darkChristmas'
+export const COW_SWAP_THEMES = ['dark', 'light', 'darkHalloween', 'lightChristmas', 'darkChristmas'] as const
+
+export type CowSwapTheme = (typeof COW_SWAP_THEMES)[number]

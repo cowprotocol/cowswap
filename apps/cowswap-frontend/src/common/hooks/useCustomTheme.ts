@@ -5,7 +5,7 @@ import type { FeatureFlags } from '@cowprotocol/common-const'
 import { CustomTheme, resolveCustomThemeForContext } from '@cowprotocol/common-const'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
-import type { CowSwapTheme } from '@cowprotocol/ui'
+import { COW_SWAP_THEMES, type CowSwapTheme } from '@cowprotocol/ui'
 
 import { featureFlagsAtom, featureFlagsHydratedAtom } from 'common/state/featureFlagsState'
 
@@ -33,10 +33,14 @@ function readCachedTheme(darkMode: boolean): CowSwapTheme | undefined {
     const raw = window.localStorage.getItem(LOCAL_STORAGE_KEY)
     if (!raw) return undefined
 
-    const parsed = JSON.parse(raw) as CowSwapTheme
-    if (!parsed) return undefined
+    const parsed = JSON.parse(raw) as string
+    if (!parsed || !COW_SWAP_THEMES.includes(parsed as CowSwapTheme)) {
+      return undefined
+    }
 
-    return isThemeCompatibleWithMode(parsed, darkMode) ? parsed : undefined
+    const theme = parsed as CowSwapTheme
+
+    return isThemeCompatibleWithMode(theme, darkMode) ? theme : undefined
   } catch {
     return undefined
   }
