@@ -93,6 +93,7 @@ export function TradeRateDetails({
         receiveAmountInfo={receiveAmountInfo}
         networkCostsSuffix={shouldPayGas ? <NetworkCostsSuffix /> : null}
         networkCostsTooltipSuffix={<NetworkCostsTooltipSuffix />}
+        showTotalRow
       />
       {slippage && (
         <RowSlippage
