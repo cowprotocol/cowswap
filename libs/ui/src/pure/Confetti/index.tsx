@@ -1,10 +1,10 @@
+import type { ReactNode } from 'react'
+
 import { useWindowSize } from '@cowprotocol/common-hooks'
 
 import ReactConfetti from 'react-confetti'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function Confetti({ start, variant }: { start: boolean; variant?: string }) {
+export function Confetti({ start, variant }: { start: boolean; variant?: string }): ReactNode {
   const { width, height } = useWindowSize()
 
   const _variant = variant ? variant : height && width && height > 1.5 * width ? 'bottom' : variant
