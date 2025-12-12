@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 
 import {
-  recentTokensLimit,
+  RECENT_TOKENS_LIMIT,
   buildFavoriteTokenKeys,
   buildNextStoredTokens,
   buildTokensByKey,
@@ -34,7 +34,7 @@ export function useRecentTokens({
   allTokens,
   favoriteTokens,
   activeChainId,
-  maxItems = recentTokensLimit,
+  maxItems = RECENT_TOKENS_LIMIT,
 }: UseRecentTokensParams): RecentTokensState {
   const [storedTokensByChain, setStoredTokensByChain] = useState<StoredRecentTokensByChain>(() =>
     readStoredTokens(maxItems),
