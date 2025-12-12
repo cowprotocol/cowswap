@@ -6,7 +6,7 @@ import JSBI from 'jsbi'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
 
-import { getExecutedSummaryDataWithSurplusToken } from '../getExecutedSummaryData'
+import { getExecutedSummaryData } from '../getExecutedSummaryData'
 
 import type { ParsedOrder } from '../orderUtils/parseOrder'
 
@@ -89,7 +89,7 @@ function buildParsedOrder({
   }
 }
 
-describe('getExecutedSummaryDataWithSurplusToken', () => {
+describe('getExecutedSummaryData', () => {
   it('uses the provided surplus token for sell bridge orders when safe', () => {
     const order = buildParsedOrder({
       kind: OrderKind.SELL,
@@ -102,7 +102,7 @@ describe('getExecutedSummaryDataWithSurplusToken', () => {
       surplusRaw: '50000000000000000',
     })
 
-    const result = getExecutedSummaryDataWithSurplusToken(order, polygonWeth)
+    const result = getExecutedSummaryData(order, polygonWeth)
 
     expect(result.formattedSwappedAmount.currency.address).toBe(polygonWeth.address)
     expect(result.formattedSwappedAmount.currency.chainId).toBe(polygonWeth.chainId)
@@ -122,7 +122,7 @@ describe('getExecutedSummaryDataWithSurplusToken', () => {
       surplusRaw: '20000000000000000', // 0.02 surplus
     })
 
-    const result = getExecutedSummaryDataWithSurplusToken(order, mainnetWeth)
+    const result = getExecutedSummaryData(order, mainnetWeth)
 
     expect(result.formattedSwappedAmount.currency.address).toBe(mainnetWeth.address)
     expect(result.formattedSwappedAmount.currency.chainId).toBe(mainnetWeth.chainId)
@@ -143,31 +143,12 @@ describe('getExecutedSummaryDataWithSurplusToken', () => {
       surplusRaw: '50000000000000000',
     })
 
-    const result = getExecutedSummaryDataWithSurplusToken(order, baseEth)
+    const result = getExecutedSummaryData(order, baseEth)
 
     expect(result.formattedSwappedAmount.currency.address).toBe(baseEth.address)
     expect(result.formattedSwappedAmount.currency.chainId).toBe(baseEth.chainId)
     expect(result.surplusAmount.currency.address).toBe(baseEth.address)
     expect(result.surplusToken.address).toBe(baseEth.address)
-  })
-
-  it('adjusts surplus from override token decimals when decimals do not align for sell orders', () => {
-    const order = buildParsedOrder({
-      kind: OrderKind.SELL,
-      inputToken: polygonAave,
-      outputToken: baseEth,
-      sellAmount: '2000000000000000000',
-      buyAmount: '1000000000000000000',
-      executedSellAmount: '2000000000000000000',
-      executedBuyAmount: '1050000000000000000',
-      surplusRaw: '50000', // 0.05 in 6 decimals (override token's decimals)
-    })
-
-    const result = getExecutedSummaryDataWithSurplusToken(order, polygonUsdc)
-
-    expect(result.formattedSwappedAmount.currency.address).toBe(baseEth.address)
-    expect(result.surplusAmount.currency.address).toBe(baseEth.address)
-    expect(result.surplusAmount.toExact()).toBe('0.05')
   })
 
   it('keeps sell order summary unchanged when override equals default surplus token', () => {
@@ -182,7 +163,7 @@ describe('getExecutedSummaryDataWithSurplusToken', () => {
       surplusRaw: '50000000000000000',
     })
 
-    const result = getExecutedSummaryDataWithSurplusToken(order, baseEth)
+    const result = getExecutedSummaryData(order, baseEth)
 
     expect(result.formattedSwappedAmount.currency.address).toBe(baseEth.address)
     expect(result.surplusAmount.currency.address).toBe(baseEth.address)
@@ -201,10 +182,10 @@ describe('getExecutedSummaryDataWithSurplusToken', () => {
       surplusRaw: '500000',
     })
 
-    const result = getExecutedSummaryDataWithSurplusToken(order, polygonWeth)
+    const result = getExecutedSummaryData(order, polygonWeth)
 
-    expect(result.formattedFilledAmount.currency.address).toBe(baseWeth.address)
-    expect(result.formattedFilledAmount.currency.chainId).toBe(baseWeth.chainId)
+    expect(result.formattedFilledAmount.currency.address).toBe(polygonUsdc.address)
+    expect(result.formattedFilledAmount.currency.chainId).toBe(polygonUsdc.chainId)
     expect(result.surplusAmount.currency.address).toBe(polygonUsdc.address)
     expect(result.surplusToken.address).toBe(polygonUsdc.address)
     expect(result.surplusAmount.toExact()).toBe('0.5')
@@ -222,10 +203,10 @@ describe('getExecutedSummaryDataWithSurplusToken', () => {
       surplusRaw: '500000',
     })
 
-    const result = getExecutedSummaryDataWithSurplusToken(order, baseUsdc)
+    const result = getExecutedSummaryData(order, baseUsdc)
 
-    expect(result.formattedFilledAmount.currency.address).toBe(baseWeth.address)
-    expect(result.formattedFilledAmount.currency.chainId).toBe(baseWeth.chainId)
+    expect(result.formattedFilledAmount.currency.address).toBe(polygonUsdc.address)
+    expect(result.formattedFilledAmount.currency.chainId).toBe(polygonUsdc.chainId)
     expect(result.surplusAmount.currency.address).toBe(polygonUsdc.address)
     expect(result.surplusToken.address).toBe(polygonUsdc.address)
     expect(result.surplusAmount.toExact()).toBe('0.5')
@@ -243,9 +224,9 @@ describe('getExecutedSummaryDataWithSurplusToken', () => {
       surplusRaw: '500000',
     })
 
-    const result = getExecutedSummaryDataWithSurplusToken(order, polygonUsdc)
+    const result = getExecutedSummaryData(order, polygonUsdc)
 
-    expect(result.formattedFilledAmount.currency.address).toBe(baseWeth.address)
+    expect(result.formattedFilledAmount.currency.address).toBe(polygonUsdc.address)
     expect(result.surplusAmount.currency.address).toBe(polygonUsdc.address)
     expect(result.surplusAmount.toExact()).toBe('0.5')
   })
@@ -263,7 +244,7 @@ describe('getExecutedSummaryDataWithSurplusToken', () => {
 
     order.executionData.surplusAmount = undefined as unknown as BigNumber
 
-    const result = getExecutedSummaryDataWithSurplusToken(order, polygonWeth)
+    const result = getExecutedSummaryData(order, polygonWeth)
 
     expect(result.surplusAmount.currency.address).toBe(polygonWeth.address)
     expect(result.surplusAmount.toExact()).toBe('0')
@@ -281,16 +262,15 @@ describe('getExecutedSummaryDataWithSurplusToken', () => {
       surplusRaw: '25000', // 0.025 USDC worth in 6 decimals
     })
 
-    // Override token is polygonUsdc (the intermediate token with 6 decimals)
-    const result = getExecutedSummaryDataWithSurplusToken(order, polygonUsdc)
+    // Intermediate token is polygonWeth with 18 decimals
+    const result = getExecutedSummaryData(order, polygonWeth)
 
-    // The output is baseWeth (18 decimals), but surplus is calculated in intermediate token (6 decimals)
-    expect(result.formattedSwappedAmount.currency.address).toBe(baseWeth.address)
-    expect(result.formattedSwappedAmount.currency.decimals).toBe(18)
+    // The output should be the same as surplusAmount (polygonWeth)
+    expect(result.formattedSwappedAmount.currency.address).toBe(polygonWeth.address)
+    expect(result.formattedSwappedAmount.currency.decimals).toBe(polygonWeth.decimals)
 
-    // Surplus should be adjusted from intermediate (6 decimals) to output (18 decimals)
-    expect(result.surplusAmount.currency.address).toBe(baseWeth.address)
+    expect(result.surplusAmount.currency.address).toBe(polygonWeth.address)
     expect(result.surplusAmount.currency.decimals).toBe(18)
-    expect(result.surplusAmount.toExact()).toBe('0.025')
+    expect(result.surplusAmount.toExact()).toBe('0.000000000000025')
   })
 })

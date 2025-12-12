@@ -68,7 +68,7 @@ export function useRecentTokens({
   }, [favoriteKeys])
 
   const recentTokens = useMemo(() => {
-    const chainEntries = activeChainId ? storedTokensByChain[activeChainId] ?? [] : []
+    const chainEntries = activeChainId ? (storedTokensByChain[activeChainId] ?? []) : []
     const seenKeys = new Set<string>()
     const result: TokenWithLogo[] = []
 
