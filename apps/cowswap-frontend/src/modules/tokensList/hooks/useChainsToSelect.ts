@@ -52,6 +52,7 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
 
     const currentChainInfo = mapChainInfo(chainId, chainInfo)
     // Limit/TWAP buys must stay on the wallet chain, so skip bridge wiring entirely.
+    // TODO: Revisit when SC wallet bridging supports advanced trades, so TWAPs can bridge.
     const shouldForceSingleChain = isAdvancedTradeType && field === Field.OUTPUT
 
     if (!isBridgingEnabled && !shouldForceSingleChain) return undefined
