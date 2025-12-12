@@ -335,6 +335,8 @@ export const ProductLogo = ({
       themeMode: themeMode.darkMode ? 'dark' : 'light',
       selectedTheme,
       availableThemes: Object.keys(LOGOS[variant] || {}),
+      hasSelectedTheme: Boolean(LOGOS[variant][selectedTheme]),
+      usingFallback: !LOGOS[variant][selectedTheme],
       logoSrc: logoInfo?.src,
       logoPreserveOriginal: logoInfo?.preserveOriginalColors,
     })
