@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai'
-import { useEffect } from 'react'
+import { useLayoutEffect } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 
@@ -9,7 +9,7 @@ export function FeatureFlagsUpdater(): null {
   const setFeatureFlags = useSetAtom(featureFlagsAtom)
   const flags = useFeatureFlags()
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     setFeatureFlags(flags)
   }, [setFeatureFlags, flags])
 
