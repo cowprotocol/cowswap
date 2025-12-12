@@ -11,6 +11,11 @@ import { featureFlagsAtom, featureFlagsHydratedAtom } from 'common/state/feature
 
 import { useDarkModeManager } from '../../legacy/state/user/hooks'
 
+// FORCE CHRISTMAS THEME FOR LOCALHOST TESTING
+const FORCE_CHRISTMAS_THEME =
+  typeof window !== 'undefined' &&
+  (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+
 export function resolveCowSwapTheme(darkMode: boolean, featureFlags?: FeatureFlags): CowSwapTheme | undefined {
   const activeTheme = resolveCustomThemeForContext(featureFlags, { darkModeEnabled: darkMode })
 
@@ -38,10 +43,34 @@ export function useCustomTheme(): CowSwapTheme | undefined {
     [featureFlagsHydrated, featureFlagsFromAtom, featureFlagsFromLaunchDarkly],
   )
 
+  // FORCE CHRISTMAS FOR LOCALHOST
+  if (FORCE_CHRISTMAS_THEME) {
+    const forcedTheme = darkMode ? 'darkChristmas' : 'lightChristmas'
+    console.log('🎄 [useCustomTheme] FORCING CHRISTMAS THEME:', {
+      darkMode,
+      forcedTheme,
+      stack: new Error().stack,
+    })
+    return forcedTheme
+  }
+
   // We don't want to set any custom theme for the widget
   if (isWidget) {
+    console.log('🚫 [useCustomTheme] Widget mode - no custom theme')
     return undefined
   }
 
-  return resolveCowSwapTheme(darkMode, effectiveFeatureFlags)
+  const resolvedTheme = resolveCowSwapTheme(darkMode, effectiveFeatureFlags)
+
+  console.log('🎨 [useCustomTheme] Theme resolution:', {
+    darkMode,
+    featureFlagsHydrated,
+    featureFlagsFromAtom: JSON.stringify(featureFlagsFromAtom),
+    featureFlagsFromLD: JSON.stringify(featureFlagsFromLaunchDarkly),
+    effectiveFeatureFlags: JSON.stringify(effectiveFeatureFlags),
+    resolvedTheme,
+    isWidget,
+  })
+
+  return resolvedTheme
 }

@@ -327,6 +327,19 @@ export const ProductLogo = ({
   const selectedTheme = customThemeMode || (themeMode.darkMode ? 'dark' : 'light')
   const logoForTheme = LOGOS[variant][selectedTheme] || LOGOS[variant]['light'] // Fallback to light theme if selected theme is not available
   const logoInfo = logoIconOnly && logoForTheme.logoIconOnly ? logoForTheme.logoIconOnly : logoForTheme.default
+
+  console.log('🖼️ [ProductLogo] Render:', {
+    variant,
+    customThemeMode,
+    themeModeDarkMode: themeMode.darkMode,
+    selectedTheme,
+    availableThemes: Object.keys(LOGOS[variant] || {}),
+    logoForTheme: logoForTheme ? 'exists' : 'missing',
+    logoInfoSrc: logoInfo?.src,
+    logoInfoAlt: logoInfo?.alt,
+    stack: new Error().stack?.split('\n').slice(0, 3).join('\n'),
+  })
+
   const initialColor = logoInfo.preserveOriginalColors ? undefined : overrideColor || logoInfo.color
 
   // First use logoInfo height, then prop height, then default
