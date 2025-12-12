@@ -990,7 +990,14 @@ export const MenuBar = (props: MenuBarProps) => {
           rootDomain={rootDomain}
           LinkComponent={LinkComponent}
         />
-        <ProductLogo variant={productVariant} logoIconOnly={isMobile} height={30} href="/" theme={customTheme} />
+        <ProductLogo
+          key={customTheme ?? 'default'}
+          variant={productVariant}
+          logoIconOnly={isMobile}
+          height={30}
+          href="/"
+          theme={customTheme}
+        />
 
         {!isMobile && (
           <NavItems ref={navItemsRef}>
