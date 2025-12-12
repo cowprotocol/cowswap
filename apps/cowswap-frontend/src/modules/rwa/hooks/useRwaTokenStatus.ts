@@ -25,6 +25,7 @@ export interface RwaTokenInfo {
   tosVersion: string
   issuerName?: string
   blockedCountries: Set<string>
+  termsIpfsHash: string
 }
 
 export interface RwaTokenStatusResult {
@@ -53,7 +54,8 @@ function getRwaTokenFromList(inputToken: Token | undefined, outputToken: Token |
     issuer: 'test-issuer',
     tosVersion: 'rwa-tos-v1',
     issuerName: 'Test RWA Issuer',
-    blockedCountries: new Set(['US']), // Block US for testing
+    blockedCountries: new Set(['US']),
+    termsIpfsHash: '', // TODO: add IPFS hash
   }
 }
 

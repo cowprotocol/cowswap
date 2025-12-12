@@ -6,8 +6,9 @@ import { CowEnv, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { AppCodeWithWidgetMetadata } from 'modules/injectedWidget/hooks/useAppCodeWidgetAware'
 
+import { RwaUserConsentsMetadata } from '../hooks/useRwaConsentForAppData'
 import { appDataInfoAtom } from '../state/atoms'
-import { AppDataOrderClass, AppDataPartnerFee, AppDataRwaConsent, TypedAppDataHooks } from '../types'
+import { AppDataOrderClass, AppDataPartnerFee, TypedAppDataHooks } from '../types'
 import { buildAppData, BuildAppDataParams } from '../utils/buildAppData'
 import { getAppData } from '../utils/fullAppData'
 
@@ -21,7 +22,7 @@ export type UseAppDataParams = {
   typedHooks?: TypedAppDataHooks
   volumeFee?: AppDataPartnerFee
   replacedOrderUid?: string
-  rwaConsent?: AppDataRwaConsent
+  rwaConsent?: RwaUserConsentsMetadata
 }
 
 /**

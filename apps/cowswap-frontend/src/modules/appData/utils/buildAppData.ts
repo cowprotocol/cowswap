@@ -8,6 +8,7 @@ import { toKeccak256 } from 'common/utils/toKeccak256'
 import { filterHooks, HooksFilter } from './appDataFilter'
 import { removePermitHookFromHooks, typedAppDataHooksToAppDataHooks } from './typedHooks'
 
+import { RwaUserConsentsMetadata } from '../hooks/useRwaConsentForAppData'
 import {
   AppDataHooks,
   AppDataInfo,
@@ -16,7 +17,6 @@ import {
   AppDataRootSchema,
   AppDataWidget,
   TypedAppDataHooks,
-  AppDataRwaConsent,
 } from '../types'
 
 export type BuildAppDataParams = {
@@ -32,7 +32,7 @@ export type BuildAppDataParams = {
   widget?: AppDataWidget
   partnerFee?: AppDataPartnerFee
   replacedOrderUid?: string
-  rwaConsent?: AppDataRwaConsent
+  rwaConsent?: RwaUserConsentsMetadata
 }
 
 async function generateAppDataFromDoc(
@@ -80,7 +80,7 @@ export async function buildAppData({
       widget,
       partnerFee,
       ...{ replacedOrder },
-      ...(rwaConsent ? { rwaConsent } : {}),
+      ...(rwaConsent ? rwaConsent : {}),
     },
   })
 
