@@ -57,6 +57,7 @@ function getBridgeQuoteErrorTexts(): Record<BridgeQuoteErrors, string> {
     [BridgeQuoteErrors.NO_ROUTES]: t`No routes found`,
     [BridgeQuoteErrors.ONLY_SELL_ORDER_SUPPORTED]: t`Only "sell" orders are supported`,
     [BridgeQuoteErrors.QUOTE_DOES_NOT_MATCH_DEPOSIT_ADDRESS]: t`Bridging deposit address is not verified! Please contact CoW Swap support!`,
+    [BridgeQuoteErrors.SELL_AMOUNT_TOO_SMALL]: t`Sell amount too small to bridge`,
   }
 }
 
