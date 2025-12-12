@@ -328,6 +328,18 @@ export const ProductLogo = ({
   const logoForTheme = LOGOS[variant][selectedTheme] || LOGOS[variant]['light'] // Fallback to light theme if selected theme is not available
   const logoInfo = logoIconOnly && logoForTheme.logoIconOnly ? logoForTheme.logoIconOnly : logoForTheme.default
 
+  // Scoped debug: header logo only (CoW Swap main logo)
+  if (typeof window !== 'undefined' && variant === ProductVariant.CowSwap && href === '/') {
+    console.debug('[HeaderLogoDebug]', {
+      customThemeMode,
+      themeMode: themeMode.darkMode ? 'dark' : 'light',
+      selectedTheme,
+      availableThemes: Object.keys(LOGOS[variant] || {}),
+      logoSrc: logoInfo?.src,
+      logoPreserveOriginal: logoInfo?.preserveOriginalColors,
+    })
+  }
+
   const initialColor = logoInfo.preserveOriginalColors ? undefined : overrideColor || logoInfo.color
 
   // First use logoInfo height, then prop height, then default
