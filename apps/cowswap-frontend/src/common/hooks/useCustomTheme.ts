@@ -1,5 +1,5 @@
 import { useAtomValue } from 'jotai'
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 
 import type { FeatureFlags } from '@cowprotocol/common-const'
 import { CustomTheme, resolveCustomThemeForContext } from '@cowprotocol/common-const'
@@ -11,10 +11,45 @@ import { featureFlagsAtom, featureFlagsHydratedAtom } from 'common/state/feature
 
 import { useDarkModeManager } from '../../legacy/state/user/hooks'
 
-// FORCE CHRISTMAS THEME FOR LOCALHOST TESTING
-const FORCE_CHRISTMAS_THEME =
-  typeof window !== 'undefined' &&
-  (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+const LOCAL_STORAGE_KEY = 'cow:resolvedCustomTheme'
+
+function isThemeCompatibleWithMode(theme: CowSwapTheme, darkMode: boolean): boolean {
+  if (theme === 'darkHalloween' || theme === 'darkChristmas' || theme === 'dark') {
+    return darkMode
+  }
+
+  if (theme === 'lightChristmas' || theme === 'light') {
+    return !darkMode
+  }
+
+  return true
+}
+
+function readCachedTheme(darkMode: boolean): CowSwapTheme | undefined {
+  if (typeof window === 'undefined') return undefined
+
+  try {
+    const raw = window.localStorage.getItem(LOCAL_STORAGE_KEY)
+    if (!raw) return undefined
+
+    const parsed = JSON.parse(raw) as CowSwapTheme
+    if (!parsed) return undefined
+
+    return isThemeCompatibleWithMode(parsed, darkMode) ? parsed : undefined
+  } catch {
+    return undefined
+  }
+}
+
+function cacheTheme(theme: CowSwapTheme): void {
+  if (typeof window === 'undefined') return
+
+  try {
+    window.localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(theme))
+  } catch {
+    // Ignore storage failures
+  }
+}
 
 export function resolveCowSwapTheme(darkMode: boolean, featureFlags?: FeatureFlags): CowSwapTheme | undefined {
   const activeTheme = resolveCustomThemeForContext(featureFlags, { darkModeEnabled: darkMode })
@@ -37,40 +72,29 @@ export function useCustomTheme(): CowSwapTheme | undefined {
   const featureFlagsFromLaunchDarkly = useFeatureFlags()
   const isWidget = isInjectedWidget()
 
+  const cachedTheme = useMemo(() => readCachedTheme(darkMode), [darkMode])
+
   // Use LD flags until Jotai hydration completes to keep theme consistent on first render
   const effectiveFeatureFlags = useMemo(
     () => (featureFlagsHydrated ? featureFlagsFromAtom : featureFlagsFromLaunchDarkly),
     [featureFlagsHydrated, featureFlagsFromAtom, featureFlagsFromLaunchDarkly],
   )
 
-  // FORCE CHRISTMAS FOR LOCALHOST
-  if (FORCE_CHRISTMAS_THEME) {
-    const forcedTheme = darkMode ? 'darkChristmas' : 'lightChristmas'
-    console.log('🎄 [useCustomTheme] FORCING CHRISTMAS THEME:', {
-      darkMode,
-      forcedTheme,
-      stack: new Error().stack,
-    })
-    return forcedTheme
-  }
+  const resolvedTheme = useMemo(
+    () => resolveCowSwapTheme(darkMode, effectiveFeatureFlags),
+    [darkMode, effectiveFeatureFlags],
+  )
+
+  useEffect(() => {
+    if (resolvedTheme) {
+      cacheTheme(resolvedTheme)
+    }
+  }, [resolvedTheme])
 
   // We don't want to set any custom theme for the widget
   if (isWidget) {
-    console.log('🚫 [useCustomTheme] Widget mode - no custom theme')
     return undefined
   }
 
-  const resolvedTheme = resolveCowSwapTheme(darkMode, effectiveFeatureFlags)
-
-  console.log('🎨 [useCustomTheme] Theme resolution:', {
-    darkMode,
-    featureFlagsHydrated,
-    featureFlagsFromAtom: JSON.stringify(featureFlagsFromAtom),
-    featureFlagsFromLD: JSON.stringify(featureFlagsFromLaunchDarkly),
-    effectiveFeatureFlags: JSON.stringify(effectiveFeatureFlags),
-    resolvedTheme,
-    isWidget,
-  })
-
-  return resolvedTheme
+  return resolvedTheme ?? cachedTheme
 }
