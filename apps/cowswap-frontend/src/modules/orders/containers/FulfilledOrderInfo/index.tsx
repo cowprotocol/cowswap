@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
 
+import { isSellOrder } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenInfo } from '@cowprotocol/types'
 
@@ -40,13 +41,16 @@ export function FulfilledOrderInfo({ chainId, orderUid }: ExecutedSummaryProps):
 
   if (!order) return null
 
+  const inputToken = isSellOrder(order.kind) ? order.inputToken : order.outputToken
+  const outputToken = isSellOrder(order.kind) ? order.outputToken : order.inputToken
+
   return (
     <>
       {formattedFilledAmount?.currency && formattedSwappedAmount?.currency && (
         <OrderSummary
           kind={order.kind}
-          inputToken={formattedFilledAmount.currency as TokenInfo}
-          outputToken={formattedSwappedAmount.currency as TokenInfo}
+          inputToken={inputToken as TokenInfo}
+          outputToken={outputToken as TokenInfo}
           sellAmount={formattedFilledAmount.quotient.toString()}
           buyAmount={formattedSwappedAmount.quotient.toString()}
           customTemplate={FulfilledSummaryTemplate}
