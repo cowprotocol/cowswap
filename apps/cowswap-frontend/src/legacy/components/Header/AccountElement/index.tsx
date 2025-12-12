@@ -2,13 +2,12 @@ import { ReactNode, useCallback, useRef, useState } from 'react'
 
 import { useNativeCurrencyAmount } from '@cowprotocol/balances-and-allowances'
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
+import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { TokenAmount } from '@cowprotocol/ui'
+import { TokenAmount, Media } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import ReactDOM from 'react-dom'
-
-import { upToLarge, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 
 import { useToggleAccountModal } from 'modules/account'
 import { NotificationBell, NotificationSidebar } from 'modules/notifications'
@@ -62,7 +61,7 @@ export function AccountElement({ className, standaloneMode }: AccountElementProp
   const userEthBalance = useNativeCurrencyAmount(chainId, account)
   const toggleAccountModal = useToggleAccountModal()
   const nativeTokenSymbol = NATIVE_CURRENCIES[chainId].symbol
-  const isUpToLarge = useMediaQuery(upToLarge)
+  const isUpToLarge = useMediaQuery(Media.upToLarge(false))
 
   const unreadNotifications = useUnreadNotifications()
   const unreadNotificationsCount = Object.keys(unreadNotifications).length
