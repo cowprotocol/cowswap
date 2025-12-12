@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai'
-import { useMemo } from 'react'
+import { useEffect } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 
@@ -11,7 +11,7 @@ export function FeatureFlagsUpdater() {
   const setFeatureFlags = useSetAtom(featureFlagsAtom)
   const flags = useFeatureFlags()
 
-  useMemo(() => {
+  useEffect(() => {
     setFeatureFlags(flags)
   }, [setFeatureFlags, flags])
 

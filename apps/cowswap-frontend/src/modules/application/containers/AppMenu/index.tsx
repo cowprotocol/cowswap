@@ -3,7 +3,7 @@ import { PropsWithChildren, ReactNode, useMemo } from 'react'
 import { SUPPORTED_LOCALES } from '@cowprotocol/common-const'
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
-import { Color, Media, MenuBar } from '@cowprotocol/ui'
+import { Color, MenuBar, type CowSwapTheme } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useLingui } from '@lingui/react/macro'
@@ -19,6 +19,8 @@ import { useIsInternationalizationEnabled } from 'common/hooks/featureFlags/useI
 import { useCustomTheme } from 'common/hooks/useCustomTheme'
 import { useMenuItems } from 'common/hooks/useMenuItems'
 
+import { HideMobile, isMobileQuery } from './styled'
+
 import { NAV_ITEMS, PRODUCT_VARIANT } from '../App/menuConsts'
 
 const LinkComponent = ({ href, children }: PropsWithChildren<{ href: string }>): ReactNode => {
@@ -33,16 +35,18 @@ const LinkComponent = ({ href, children }: PropsWithChildren<{ href: string }>):
 
 interface AppMenuProps {
   children: ReactNode
+  customTheme?: CowSwapTheme
 }
 
-export function AppMenu({ children }: AppMenuProps): ReactNode {
+export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMenuProps): ReactNode {
   const { chainId } = useWalletInfo()
   const isInjectedWidgetMode = isInjectedWidget()
   const menuItems = useMenuItems()
   const [darkMode, toggleDarkMode] = useDarkModeManager()
   const { setLocale } = useUserLocaleManager()
-  const isMobile = useMediaQuery(Media.upToMedium(false))
-  const customTheme = useCustomTheme()
+  const isMobile = useMediaQuery(isMobileQuery(false))
+  const resolvedCustomTheme = useCustomTheme()
+  const customTheme = overriddenCustomTheme ?? resolvedCustomTheme
   const getTradeUrlParams = useGetTradeUrlParams()
   const { t } = useLingui()
   const isInternationalizationEnabled = useIsInternationalizationEnabled()
@@ -108,7 +112,7 @@ export function AppMenu({ children }: AppMenuProps): ReactNode {
       id={APP_HEADER_ELEMENT_ID}
       languageNavItems={languageNavItems}
       navItems={navItems}
-      persistentAdditionalContent={isMobile ? null : children} // This will stay at its original location
+      persistentAdditionalContent={isMobile ? null : <HideMobile>{children}</HideMobile>} // This will stay at its original location
       productVariant={PRODUCT_VARIANT}
       settingsNavItems={settingsNavItems}
       showGlobalSettings
