@@ -1,4 +1,5 @@
 import { BalancesState } from '@cowprotocol/balances-and-allowances'
+import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { getRandomInt } from '@cowprotocol/common-utils'
 import { SupportedChainId, ChainInfo } from '@cowprotocol/cow-sdk'
 import { BigNumber } from '@ethersproject/bignumber'
@@ -6,6 +7,7 @@ import { BigNumber } from '@ethersproject/bignumber'
 import styled from 'styled-components/macro'
 
 import { allTokensMock, favoriteTokensMock } from '../../mocks'
+import { mapChainInfo } from '../../utils/mapChainInfo'
 
 import { SelectTokenModal, SelectTokenModalProps } from './index'
 
@@ -13,7 +15,7 @@ const Wrapper = styled.div`
   max-height: 90vh;
   margin: 20px auto;
   display: flex;
-  width: 450px;
+  width: 520px;
 `
 
 const unsupportedTokens = {}
@@ -26,6 +28,20 @@ const balances = allTokensMock.reduce<BalancesState['values']>((acc, token) => {
   return acc
 }, {})
 
+const chainsMock: ChainInfo[] = [
+  SupportedChainId.MAINNET,
+  SupportedChainId.BASE,
+  SupportedChainId.ARBITRUM_ONE,
+].reduce<ChainInfo[]>((acc, id) => {
+  const info = CHAIN_INFO[id]
+
+  if (info) {
+    acc.push(mapChainInfo(id, info))
+  }
+
+  return acc
+}, [])
+
 const defaultProps: SelectTokenModalProps = {
   tokenListTags: {},
   account: undefined,
@@ -35,7 +51,11 @@ const defaultProps: SelectTokenModalProps = {
   favoriteTokens: favoriteTokensMock,
   areTokensLoading: false,
   areTokensFromBridge: false,
-  chainsToSelect: undefined,
+  chainsToSelect: {
+    chains: chainsMock,
+    isLoading: false,
+    defaultChainId: SupportedChainId.MAINNET,
+  },
   onSelectChain(chain: ChainInfo) {
     console.log('onSelectChain', chain)
   },
@@ -48,6 +68,7 @@ const defaultProps: SelectTokenModalProps = {
   },
   selectedToken,
   isRouteAvailable: true,
+  modalTitle: 'Swap from',
   recentTokens: favoriteTokensMock.slice(0, 2),
   selectedTargetChainId: SupportedChainId.SEPOLIA,
   onSelectToken() {
