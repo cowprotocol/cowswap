@@ -46,12 +46,10 @@ export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMen
   const { setLocale } = useUserLocaleManager()
   const isMobile = useMediaQuery(isMobileQuery(false))
   const resolvedCustomTheme = useCustomTheme()
-  const customTheme = overriddenCustomTheme ?? resolvedCustomTheme
+  const customTheme = overriddenCustomTheme ?? resolvedCustomTheme ?? (darkMode ? 'dark' : 'light')
   const getTradeUrlParams = useGetTradeUrlParams()
   const { t } = useLingui()
   const isInternationalizationEnabled = useIsInternationalizationEnabled()
-
-  console.log('🍔 [AppMenu] Render:', { overriddenCustomTheme, resolvedCustomTheme, customTheme, darkMode })
 
   const settingsNavItems = useMemo(
     () => [
