@@ -31,7 +31,7 @@ export interface QuoteSwapContext {
   isSlippageModified: boolean
 
   bridgeReceiverOverride: string | null
-  expectedReceive: CurrencyAmount<Currency>
+  expectedReceive: CurrencyAmount<Currency> | null
   minReceiveAmount: CurrencyAmount<Currency>
   minReceiveUsdValue: CurrencyAmount<Token> | null
   expectedReceiveUsdValue: CurrencyAmount<Token> | null
