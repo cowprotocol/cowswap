@@ -1,4 +1,3 @@
-  // TODO: Don't use 'modules' import
 import { useMemo } from 'react'
 
 import { useTokenByAddress } from '@cowprotocol/tokens'
