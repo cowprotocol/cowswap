@@ -43,6 +43,7 @@ export interface SwapAndBridgeContexts {
   swapAndBridgeContext: SwapAndBridgeContext | undefined
   swapResultContext: SwapResultContext | undefined
   swapAndBridgeOverview: SwapAndBridgeOverview | undefined
+  intermediateToken: TokenWithLogo | undefined
   isLoading: boolean
 }
 
@@ -229,7 +230,7 @@ export function useSwapAndBridgeContext(
   const isLoading = isCrossChainOrderLoading
 
   return useMemo(
-    () => ({ swapAndBridgeContext, swapResultContext, swapAndBridgeOverview, isLoading }),
-    [swapAndBridgeContext, swapResultContext, swapAndBridgeOverview, isLoading],
+    () => ({ swapAndBridgeContext, swapResultContext, swapAndBridgeOverview, intermediateToken, isLoading }),
+    [swapAndBridgeContext, swapResultContext, swapAndBridgeOverview, intermediateToken, isLoading],
   )
 }

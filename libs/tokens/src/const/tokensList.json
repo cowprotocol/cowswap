@@ -8,7 +8,7 @@
     {
       "priority": 2,
       "enabledByDefault": true,
-      "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/CoinGecko.1.json"
+      "source": "https://files.cow.fi/token-lists/CoinGecko.1.json"
     },
     {
       "priority": 3,
@@ -33,12 +33,12 @@
     {
       "priority": 3,
       "enabledByDefault": true,
-      "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/Uniswap.100.json"
+      "source": "https://files.cow.fi/token-lists/Uniswap.100.json"
     },
     {
       "priority": 4,
       "enabledByDefault": true,
-      "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/CoinGecko.100.json"
+      "source": "https://files.cow.fi/token-lists/CoinGecko.100.json"
     },
     {
       "priority": 5,
@@ -54,12 +54,12 @@
     {
       "priority": 2,
       "enabledByDefault": true,
-      "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/Uniswap.42161.json"
+      "source": "https://files.cow.fi/token-lists/Uniswap.42161.json"
     },
     {
       "priority": 3,
       "enabledByDefault": true,
-      "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/CoinGecko.42161.json"
+      "source": "https://files.cow.fi/token-lists/CoinGecko.42161.json"
     },
     {
       "priority": 4,
@@ -74,7 +74,7 @@
     {
       "priority": 1,
       "enabledByDefault": true,
-      "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/CowSwapSepolia.json"
+      "source": "https://files.cow.fi/token-lists/CowSwapSepolia.json"
     }
   ],
   "8453": [
@@ -85,13 +85,13 @@
     },
     {
       "priority": 2,
-      "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/CoinGecko.8453.json",
+      "source": "https://files.cow.fi/token-lists/CoinGecko.8453.json",
       "enabledByDefault": true
     },
     {
       "priority": 3,
       "enabledByDefault": true,
-      "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/Uniswap.8453.json"
+      "source": "https://files.cow.fi/token-lists/Uniswap.8453.json"
     },
     {
       "priority": 4,
@@ -110,13 +110,13 @@
     },
     {
       "priority": 2,
-      "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/CoinGecko.137.json",
+      "source": "https://files.cow.fi/token-lists/CoinGecko.137.json",
       "enabledByDefault": true
     },
     {
       "priority": 3,
       "enabledByDefault": true,
-      "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/Uniswap.137.json"
+      "source": "https://files.cow.fi/token-lists/Uniswap.137.json"
     }
   ],
   "43114": [
@@ -127,13 +127,13 @@
     },
     {
       "priority": 2,
-      "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/CoinGecko.43114.json",
+      "source": "https://files.cow.fi/token-lists/CoinGecko.43114.json",
       "enabledByDefault": true
     },
     {
       "priority": 3,
       "enabledByDefault": true,
-      "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/Uniswap.43114.json"
+      "source": "https://files.cow.fi/token-lists/Uniswap.43114.json"
     }
   ],
   "56": [
@@ -144,13 +144,13 @@
     },
     {
       "priority": 2,
-      "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/CoinGecko.56.json",
+      "source": "https://files.cow.fi/token-lists/CoinGecko.56.json",
       "enabledByDefault": true
     },
     {
       "priority": 3,
       "enabledByDefault": true,
-      "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/Uniswap.56.json"
+      "source": "https://files.cow.fi/token-lists/Uniswap.56.json"
     },
     {
       "priority": 4,
@@ -165,7 +165,7 @@
     },
     {
       "priority": 2,
-      "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/CoinGecko.232.json",
+      "source": "https://files.cow.fi/token-lists/CoinGecko.232.json",
       "enabledByDefault": true
     }
   ],
@@ -177,7 +177,7 @@
     },
     {
       "priority": 2,
-      "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/CoinGecko.59144.json",
+      "source": "https://files.cow.fi/token-lists/CoinGecko.59144.json",
       "enabledByDefault": true
     }
   ],
@@ -189,7 +189,7 @@
     },
     {
       "priority": 2,
-      "source": "https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/CoinGecko.9745.json",
+      "source": "https://files.cow.fi/token-lists/CoinGecko.9745.json",
       "enabledByDefault": true
     }
   ]

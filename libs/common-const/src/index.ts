@@ -1,5 +1,6 @@
 export * from './bff'
 export * from './chainInfo'
+export * from './cdn'
 export * from './common'
 export * from './cowprotocolTokenLogoUrl'
 export * from './feeRecipient'

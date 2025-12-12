@@ -159,6 +159,7 @@ export function NetworkSelector(): ReactNode {
   const { chainId } = useWalletInfo()
   const node = useRef<HTMLDivElement>(null)
   const nodeMobile = useRef<HTMLDivElement>(null)
+  const nodeSelector = useRef<HTMLDivElement>(null)
   const isOpen = useModalIsOpen(ApplicationModal.NETWORK_SELECTOR)
   const toggleModal = useToggleModal(ApplicationModal.NETWORK_SELECTOR)
 
@@ -169,7 +170,7 @@ export function NetworkSelector(): ReactNode {
   const info = getChainInfo(chainId)
   const isUpToMedium = useMediaQuery(Media.upToMedium(false))
 
-  useOnClickOutside(isUpToMedium ? [nodeMobile] : [node], () => {
+  useOnClickOutside(isUpToMedium ? [nodeMobile, nodeSelector] : [node], () => {
     if (isOpen) {
       toggleModal()
     }
@@ -187,7 +188,7 @@ export function NetworkSelector(): ReactNode {
 
   return (
     <SelectorWrapper ref={node} onClick={toggleModal}>
-      <SelectorControls isChainIdUnsupported={isChainIdUnsupported}>
+      <SelectorControls ref={nodeSelector} isChainIdUnsupported={isChainIdUnsupported}>
         {!isChainIdUnsupported ? (
           <>
             <SelectorLogo src={logoUrl} />

@@ -52,7 +52,7 @@ export function CowSpeechBubble({ show, onClose }: CowSpeechBubbleProps): ReactN
           target="_blank"
           rel="noopener noreferrer"
           $visible={isTypingComplete}
-          aria-label="View jobs (opens in a new tab)"
+          aria-label={t`View jobs (opens in a new tab)`}
           data-click-event={toCowSwapGtmEvent({
             category: CowSwapAnalyticsCategory.COWSWAP,
             action: 'Click speech bubble jobs link',

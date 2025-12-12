@@ -80,7 +80,13 @@ const tabItems = (
 
   const defaultDetails =
     order && areTokensLoaded ? (
-      <FullDetailsTable chainId={chainId} order={order} showFillsButton={showFills} areTradesLoading={areTradesLoading}>
+      <FullDetailsTable
+        chainId={chainId}
+        order={order}
+        showFillsButton={showFills}
+        areTradesLoading={areTradesLoading}
+        bridgeProviderType={crossChainOrder?.provider.type}
+      >
         <VerboseDetails
           order={order}
           showFillsButton={showFills}

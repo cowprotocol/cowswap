@@ -1,68 +1,43 @@
 import { useMemo } from 'react'
 
-import { isFractionFalsy } from '@cowprotocol/common-utils'
+import { useTryFindToken } from '@cowprotocol/tokens'
+
+import { useTradeQuote } from 'modules/tradeQuote'
+
+import { getBridgeIntermediateTokenAddress } from 'common/utils/getBridgeIntermediateTokenAddress'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
+import { useSwapReceiveAmountInfoParams } from './useGetSwapReceiveAmountInfo'
 
-import { useTryFindIntermediateToken } from '../../bridge'
-import { useTradeQuote } from '../../tradeQuote'
-import { useVolumeFee } from '../../volumeFee'
 import { ReceiveAmountInfo } from '../types'
+import { getCrossChainReceiveAmountInfo } from '../utils/getCrossChainReceiveAmountInfo'
 import { getReceiveAmountInfo } from '../utils/getReceiveAmountInfo'
 
-// eslint-disable-next-line complexity
-export function useGetReceiveAmountInfo(overrideBridgeBuyAmount?: boolean): ReceiveAmountInfo | null {
-  const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount, slippage, orderKind } =
-    useDerivedTradeState() ?? {}
+export function useGetReceiveAmountInfo(): ReceiveAmountInfo | null {
+  const { inputCurrency, outputCurrency } = useDerivedTradeState() ?? {}
   const tradeQuote = useTradeQuote()
-  const volumeFeeBps = useVolumeFee()?.volumeBps
-
-  const { quote, bridgeQuote } = tradeQuote
-  const quoteResponse = quote?.quoteResults.quoteResponse
-  const orderParams = quoteResponse?.quote
-  const protocolFeeBps = quoteResponse?.protocolFeeBps ? Number(quoteResponse.protocolFeeBps) : undefined
+  const { bridgeQuote } = tradeQuote
   const bridgeFeeAmounts = bridgeQuote?.amountsAndCosts.costs.bridgingFee
-  const bridgeBuyAmount = !overrideBridgeBuyAmount ? bridgeQuote?.amountsAndCosts.beforeFee.buyAmount : undefined
+  const bridgeBuyAmount = bridgeQuote?.amountsAndCosts.beforeFee.buyAmount
 
-  const intermediateCurrency =
-    useTryFindIntermediateToken({
-      bridgeQuote,
-    })?.intermediateBuyToken ?? undefined
+  const params = useSwapReceiveAmountInfoParams()
+  const intermediateCurrency = useTryFindToken(getBridgeIntermediateTokenAddress(bridgeQuote))?.token ?? undefined
 
   return useMemo(() => {
-    if (isFractionFalsy(inputCurrencyAmount) && isFractionFalsy(outputCurrencyAmount)) return null
-    // Avoid states mismatch
-    if (orderKind !== orderParams?.kind) return null
+    if (!params || !inputCurrency || !outputCurrency) return null
 
-    if (!inputCurrency || !outputCurrency) return null
-
-    if (orderParams && slippage) {
-      return getReceiveAmountInfo(
-        orderParams,
+    if (intermediateCurrency && bridgeFeeAmounts && bridgeBuyAmount) {
+      return getCrossChainReceiveAmountInfo({
+        ...params,
+        // Important! Override currencies in case of cross-chain swap
         inputCurrency,
         outputCurrency,
-        slippage,
-        volumeFeeBps,
         intermediateCurrency,
         bridgeFeeAmounts,
         bridgeBuyAmount,
-        protocolFeeBps,
-      )
+      })
     }
 
-    return null
-  }, [
-    orderParams,
-    intermediateCurrency,
-    volumeFeeBps,
-    inputCurrencyAmount,
-    outputCurrency,
-    orderKind,
-    inputCurrency,
-    outputCurrencyAmount,
-    slippage,
-    bridgeFeeAmounts,
-    bridgeBuyAmount,
-    protocolFeeBps,
-  ])
+    return getReceiveAmountInfo(params)
+  }, [params, inputCurrency, outputCurrency, intermediateCurrency, bridgeFeeAmounts, bridgeBuyAmount])
 }

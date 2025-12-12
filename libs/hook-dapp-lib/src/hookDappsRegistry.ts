@@ -163,7 +163,7 @@ export const hookDappsRegistry = {
     version: '0.0.1',
     website: 'https://www.bungee.exchange',
     image:
-      'https://raw.githubusercontent.com/cowprotocol/cow-sdk/refs/heads/main/src/bridging/providers/bungee/bungee-logo.png',
+      'https://files.cow.fi/cow-sdk/bridging/providers/bungee/bungee-logo.png',
     conditions: {
       walletCompatibility: ['EOA'],
     },
@@ -176,7 +176,7 @@ export const hookDappsRegistry = {
     version: '0.0.1',
     website: 'https://across.to',
     image:
-      'https://raw.githubusercontent.com/cowprotocol/cow-sdk/refs/heads/main/src/bridging/providers/across/across-logo.png',
+      'https://files.cow.fi/cow-sdk/bridging/providers/across/across-logo.png',
     conditions: {
       walletCompatibility: ['EOA'],
     },

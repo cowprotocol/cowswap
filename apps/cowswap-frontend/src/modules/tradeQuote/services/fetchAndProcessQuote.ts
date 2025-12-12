@@ -34,6 +34,7 @@ export async function fetchAndProcessQuote(
   appData: AppDataInfo['doc'] | undefined,
   tradeQuoteManager: TradeQuoteManager,
   timings: QuotePollingUpdateTimings,
+  getCorrelatedTokens?: SwapAdvancedSettings['getCorrelatedTokens'],
 ): Promise<void> {
   const { hasParamsChanged, priceQuality } = fetchParams
 
@@ -47,6 +48,7 @@ export async function fetchAndProcessQuote(
     appData,
     quoteSigner: isBridge ? getBridgeQuoteSigner(chainId) : undefined,
     getSlippageSuggestion: useSuggestedSlippageApi ? coWBFFClient.getSlippageTolerance.bind(coWBFFClient) : undefined,
+    getCorrelatedTokens,
   }
 
   const processQuoteError = (error: Error): void => {

@@ -6,17 +6,25 @@ import { useVolumeFeeTooltip } from 'modules/volumeFee'
 import { NetworkCostsRow } from '../../pure/NetworkCostsRow'
 import { TradeFees } from '../../pure/TradeFees'
 import { ReceiveAmountInfo } from '../../types'
-import { getOrderTypeReceiveAmounts, getTotalCosts } from '../../utils/getReceiveAmountInfo'
+import { getOrderTypeReceiveAmounts } from '../../utils/getOrderTypeReceiveAmounts'
+import { getTotalCosts } from '../../utils/getTotalCosts'
 
 interface TradeFeesAndCostsProps {
   receiveAmountInfo: ReceiveAmountInfo | null
   networkCostsSuffix?: ReactNode
   networkCostsTooltipSuffix?: ReactNode
   withTimelineDot?: boolean
+  showTotalRow?: boolean
 }
 
 export function TradeFeesAndCosts(props: TradeFeesAndCostsProps): ReactNode {
-  const { receiveAmountInfo, networkCostsSuffix, networkCostsTooltipSuffix, withTimelineDot = true } = props
+  const {
+    receiveAmountInfo,
+    networkCostsSuffix,
+    networkCostsTooltipSuffix,
+    withTimelineDot = true,
+    showTotalRow = false,
+  } = props
 
   const networkFeeAmount = receiveAmountInfo && getOrderTypeReceiveAmounts(receiveAmountInfo).networkFeeAmount
   const partnerFee = receiveAmountInfo && receiveAmountInfo.costs.partnerFee
@@ -35,6 +43,8 @@ export function TradeFeesAndCosts(props: TradeFeesAndCostsProps): ReactNode {
 
   const volumeFeeTooltip = useVolumeFeeTooltip()
 
+  const hasNetworkCosts = networkFeeAmount?.greaterThan(0)
+
   return (
     <>
       <TradeFees
@@ -47,15 +57,18 @@ export function TradeFeesAndCosts(props: TradeFeesAndCostsProps): ReactNode {
         totalFeeUsd={totalFeeUsd}
         volumeFeeTooltip={volumeFeeTooltip}
         withTimelineDot={withTimelineDot}
+        isLast={!hasNetworkCosts}
+        showTotalRow={showTotalRow}
       />
 
-      {networkFeeAmount?.greaterThan(0) && (
+      {hasNetworkCosts && networkFeeAmount && (
         <NetworkCostsRow
           networkFeeAmount={networkFeeAmount}
           networkFeeAmountUsd={networkFeeAmountUsd}
           withTimelineDot={withTimelineDot}
           amountSuffix={networkCostsSuffix}
           tooltipSuffix={networkCostsTooltipSuffix}
+          isLast
         />
       )}
     </>

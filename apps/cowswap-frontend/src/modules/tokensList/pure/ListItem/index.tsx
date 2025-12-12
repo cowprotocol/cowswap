@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { getTokenListViewLink, ListState } from '@cowprotocol/tokens'
@@ -32,6 +32,11 @@ export function ListItem(props: TokenListItemProps): ReactNode {
   const [isActive, setIsActive] = useState(enabled)
   const cowAnalytics = useCowAnalytics()
   const { t } = useLingui()
+
+  // this is to keep isActive in sync with enabled, we use isActive for immediate UI feedback
+  useEffect(() => {
+    setIsActive(enabled)
+  }, [enabled])
 
   const toggle = (): void => {
     toggleList(list, enabled)

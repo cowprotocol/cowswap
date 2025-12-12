@@ -17,7 +17,7 @@ import { QuoteBridgeContext } from '../types'
 export function useQuoteBridgeContext(): QuoteBridgeContext | null {
   const { bridgeQuote } = useTradeQuote()
 
-  const quoteAmounts = useBridgeQuoteAmounts(true)
+  const quoteAmounts = useBridgeQuoteAmounts()
 
   const buyAmount = useMemo(() => {
     if (!bridgeQuote || !quoteAmounts) return null

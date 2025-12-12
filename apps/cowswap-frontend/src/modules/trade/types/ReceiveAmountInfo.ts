@@ -7,6 +7,16 @@ export interface OrderTypeReceiveAmounts {
   networkFeeAmount: CurrencyAmount<Currency>
 }
 
+export interface Currencies {
+  sellAmount: CurrencyAmount<Currency>
+  buyAmount: CurrencyAmount<Currency>
+}
+
+export interface BridgeFeeAmounts {
+  amountInIntermediateCurrency: CurrencyAmount<Currency>
+  amountInDestinationCurrency: CurrencyAmount<Currency>
+}
+
 export interface ReceiveAmountInfo {
   isSell: boolean
 
@@ -25,31 +35,13 @@ export interface ReceiveAmountInfo {
       amount: CurrencyAmount<Currency>
       bps: number
     }
-    bridgeFee?: {
-      amountInIntermediateCurrency: CurrencyAmount<Currency>
-      amountInDestinationCurrency: CurrencyAmount<Currency>
-    }
+    bridgeFee?: BridgeFeeAmounts
   }
 
-  beforeAllFees: {
-    sellAmount: CurrencyAmount<Currency>
-    buyAmount: CurrencyAmount<Currency>
-  }
+  beforeAllFees: Currencies
 
-  beforeNetworkCosts: {
-    sellAmount: CurrencyAmount<Currency>
-    buyAmount: CurrencyAmount<Currency>
-  }
-  afterNetworkCosts: {
-    sellAmount: CurrencyAmount<Currency>
-    buyAmount: CurrencyAmount<Currency>
-  }
-  afterPartnerFees: {
-    sellAmount: CurrencyAmount<Currency>
-    buyAmount: CurrencyAmount<Currency>
-  }
-  afterSlippage: {
-    sellAmount: CurrencyAmount<Currency>
-    buyAmount: CurrencyAmount<Currency>
-  }
+  beforeNetworkCosts: Currencies
+  afterNetworkCosts: Currencies
+  afterPartnerFees: Currencies
+  afterSlippage: Currencies
 }

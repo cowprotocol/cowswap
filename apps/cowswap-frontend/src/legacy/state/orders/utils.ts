@@ -1,4 +1,4 @@
-import { ONE_HUNDRED_PERCENT, PENDING_ORDERS_BUFFER, ZERO_FRACTION } from '@cowprotocol/common-const'
+import { ONE_HUNDRED_PERCENT, PENDING_ORDERS_BUFFER, ZERO, ZERO_FRACTION } from '@cowprotocol/common-const'
 import { bpsToPercent, buildPriceFromCurrencyAmounts, getWrappedToken, isSellOrder } from '@cowprotocol/common-utils'
 import type { LatestAppDataDocVersion } from '@cowprotocol/cow-sdk'
 import { EnrichedOrder, getPartnerFeeBps, OrderKind, OrderStatus } from '@cowprotocol/cow-sdk'
@@ -351,7 +351,7 @@ export function getEstimatedExecutionPrice(
     const denominator = remainingSellAmount.subtract(feeWithMargin)
 
     // Just in case when the denominator is <= 0 after subtracting the fee
-    if (!denominator.greaterThan(ZERO_FRACTION)) {
+    if (denominator.quotient <= ZERO) {
       // numerator and denominator are inverted!!!
       // https://github.com/Uniswap/sdk-core/blob/9997e88/src/entities/fractions/price.ts#L26
       return new Price(inputToken, outputToken, '1', '0')

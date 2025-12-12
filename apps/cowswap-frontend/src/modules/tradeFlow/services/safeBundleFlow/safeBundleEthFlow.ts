@@ -168,6 +168,7 @@ export async function safeBundleEthFlow(
       outputAmount,
       owner: account,
       uiOrderType: UiOrderType.SWAP,
+      isEthFlow: true,
     })
 
     logTradeFlow(LOG_PREFIX, 'STEP 7: add safe tx hash and unhide order')

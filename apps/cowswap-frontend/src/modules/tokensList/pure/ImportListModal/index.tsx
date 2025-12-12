@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { ReactNode, useState } from 'react'
 
 import { getTokenListViewLink, ListState, TokenLogo } from '@cowprotocol/tokens'
 import { ButtonPrimary, ModalHeader } from '@cowprotocol/ui'
@@ -18,9 +18,7 @@ export interface ImportListModalProps {
   onDismiss(): void
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function ImportListModal(props: ImportListModalProps) {
+export function ImportListModal(props: ImportListModalProps): ReactNode {
   const { list, onBack, onDismiss, onImport } = props
 
   const [isAccepted, setIsAccepted] = useState(false)

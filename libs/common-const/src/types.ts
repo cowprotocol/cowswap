@@ -5,6 +5,10 @@ const emptyTokens = [] as string[]
 
 export class TokenWithLogo extends Token {
   static fromToken(token: Token | TokenInfo, logoURI?: string): TokenWithLogo {
+    if (!token || token.chainId === undefined || !token.address) {
+      throw new Error('TokenWithLogo.fromToken requires a token with chainId and address')
+    }
+
     return new TokenWithLogo(
       logoURI,
       token.chainId,

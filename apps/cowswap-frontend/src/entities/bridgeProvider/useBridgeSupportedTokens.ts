@@ -24,9 +24,13 @@ export function useBridgeSupportedTokens(
       if (typeof params === 'undefined') return null
 
       return bridgingSdk.getBuyTokens(params).then((result) => {
-        return {
-          isRouteAvailable: result.isRouteAvailable,
-          tokens: result.tokens.map((token) =>
+        const tokens = result.tokens.reduce<TokenWithLogo[]>((acc, token) => {
+          if (!token || token.chainId === undefined || !token.address) {
+            console.warn('[bridgeTokens] Ignoring malformed token', token)
+            return acc
+          }
+
+          acc.push(
             TokenWithLogo.fromToken(
               {
                 ...token,
@@ -35,7 +39,15 @@ export function useBridgeSupportedTokens(
               },
               token.logoUrl,
             ),
-          ),
+          )
+
+          return acc
+        }, [])
+        const isRouteAvailable = tokens.length > 0 ? result.isRouteAvailable : false
+
+        return {
+          isRouteAvailable,
+          tokens,
         }
       })
     },

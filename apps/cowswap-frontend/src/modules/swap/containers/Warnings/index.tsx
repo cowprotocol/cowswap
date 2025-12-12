@@ -1,11 +1,11 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { TradeType } from '@cowprotocol/widget-lib'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
-import { useTradePriceImpact, useTradeRouteContext } from 'modules/trade'
+import { useIsCurrentTradeBridging, useTradePriceImpact, useTradeRouteContext } from 'modules/trade'
 import { BundleTxWrapBanner, HighFeeWarning, MetamaskTransactionWarning } from 'modules/tradeWidgetAddons'
 import { SellNativeWarningBanner } from 'modules/tradeWidgetAddons'
 
@@ -17,19 +17,19 @@ interface WarningsProps {
   buyingFiatAmount: CurrencyAmount<Currency> | null
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function Warnings({ buyingFiatAmount }: WarningsProps) {
+export function Warnings({ buyingFiatAmount }: WarningsProps): ReactNode {
   const { chainId } = useWalletInfo()
   const { inputCurrency, inputCurrencyAmount } = useSwapDerivedState()
   const formState = useSwapFormState()
   const tradeUrlParams = useTradeRouteContext()
+  const isCurrentTradeBridging = useIsCurrentTradeBridging()
   const isNativeSellInHooksStore = formState === SwapFormState.SellNativeInHooks
 
   const priceImpactParams = useTradePriceImpact()
   const widgetParams = useInjectedWidgetParams()
   const { enabledTradeTypes } = widgetParams
-  const showTwapSuggestionBanner = !enabledTradeTypes || enabledTradeTypes.includes(TradeType.ADVANCED)
+  const showTwapSuggestionBanner =
+    (!enabledTradeTypes || enabledTradeTypes.includes(TradeType.ADVANCED)) && !isCurrentTradeBridging
 
   return (
     <>
