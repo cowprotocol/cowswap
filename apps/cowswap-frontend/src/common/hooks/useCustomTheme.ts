@@ -11,6 +11,7 @@ import { featureFlagsAtom, featureFlagsHydratedAtom } from 'common/state/feature
 
 import { useDarkModeManager } from '../../legacy/state/user/hooks'
 
+// Keep track of the resolved custom theme in local storage
 const LOCAL_STORAGE_KEY = 'cow:resolvedCustomTheme'
 
 function isThemeCompatibleWithMode(theme: CowSwapTheme, darkMode: boolean): boolean {
