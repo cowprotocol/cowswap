@@ -29,8 +29,8 @@ export function ReceiveAmount(props: ReceiveAmountProps): ReactNode {
 
   const { amountAfterFees } = getOrderTypeReceiveAmounts(props.receiveAmountInfo)
 
-  const expectedToReceiveAmount = bridgeEstimatedAmounts?.expectedToReceiveAmount ?? amountAfterFees
-  const title = expectedToReceiveAmount.toExact() + ' ' + expectedToReceiveAmount.currency.symbol
+  const minToReceiveAmount = bridgeEstimatedAmounts?.minToReceiveAmount ?? amountAfterFees
+  const title = minToReceiveAmount.toExact() + ' ' + minToReceiveAmount.currency.symbol
 
   return (
     <styledEl.ReceiveAmountBox>
@@ -48,7 +48,7 @@ export function ReceiveAmount(props: ReceiveAmountProps): ReactNode {
       </div>
       <div>
         <styledEl.ReceiveAmountValue title={title}>
-          <TokenAmount amount={expectedToReceiveAmount} defaultValue="0" />
+          <TokenAmount amount={minToReceiveAmount} defaultValue="0" />
         </styledEl.ReceiveAmountValue>
       </div>
     </styledEl.ReceiveAmountBox>
