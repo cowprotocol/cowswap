@@ -243,6 +243,10 @@ msgstr "Заказ не может быть {statusText}. Ваша учетна�
 msgid "The bridge provider modified the recipient address to <0/>. This ensure smooooth bridging."
 msgstr "Провайдер мостов изменил адрес получателя на <0/>. Это обеспечивает плавный мостик."
 
+#: apps/cowswap-frontend/src/modules/trade/pure/SmartContractReceiverWarning/index.tsx
+msgid "Recipient"
+msgstr "Получатель"
+
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AppliedHookItem/index.tsx
 msgid "The Tenderly simulation was successful. Your transaction is expected to succeed."
 msgstr "Тендерная симуляция прошла успешно. Ожидается, что Ваша транзакция будет успешной."
@@ -254,6 +258,10 @@ msgstr "Это некоторые ошибки с конфигурацией в�
 #: apps/cowswap-frontend/src/common/constants/routes.ts
 msgid "Provide liquidity"
 msgstr "Обеспечение ликвидности"
+
+#: apps/cowswap-frontend/src/modules/trade/pure/SmartContractReceiverWarning/index.tsx
+msgid "Confirm this is the correct address and that it exists on this chain."
+msgstr "Убедитесь, что адрес корректный и что он существует в этой сети."
 
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/PostHookButton/index.tsx
 msgid "Add Post-Hook Action"

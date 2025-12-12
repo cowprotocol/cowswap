@@ -9,6 +9,8 @@ import { useBridgeSupportedNetworks } from 'entities/bridgeProvider'
 
 import { Field } from 'legacy/state/types'
 
+import { useShouldHideNetworkSelector } from 'common/hooks/useShouldHideNetworkSelector'
+
 import { useSelectTokenWidgetState } from './useSelectTokenWidgetState'
 
 import { ChainsToSelectState } from '../types'
@@ -27,6 +29,7 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
   const { areUnsupportedChainsEnabled } = useFeatureFlags()
   const isBridgingEnabled = useIsBridgingEnabled()
   const availableChains = useAvailableChains()
+  const shouldHideNetworkSelector = useShouldHideNetworkSelector()
 
   const supportedChains = useMemo(() => {
     return availableChains.reduce((acc, id) => {
@@ -52,7 +55,7 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
     if (field === Field.INPUT) {
       return {
         defaultChainId: selectedTargetChainId,
-        chains: supportedChains,
+        chains: shouldHideNetworkSelector ? [] : supportedChains,
         isLoading: false,
       }
     }
@@ -86,6 +89,7 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
     isBridgingEnabled,
     areUnsupportedChainsEnabled,
     supportedChains,
+    shouldHideNetworkSelector,
   ])
 }
 

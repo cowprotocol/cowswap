@@ -1,9 +1,8 @@
 import { useAtom, useAtomValue } from 'jotai'
-import React, { useMemo } from 'react'
+import React, { ReactNode, useMemo } from 'react'
 
 import { getWrappedToken } from '@cowprotocol/common-utils'
 import { TokenSymbol } from '@cowprotocol/ui'
-import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
@@ -18,7 +17,12 @@ import { executionPriceAtom } from 'modules/limitOrders/state/executionPriceAtom
 import { limitOrdersSettingsAtom } from 'modules/limitOrders/state/limitOrdersSettingsAtom'
 import { limitRateAtom } from 'modules/limitOrders/state/limitRateAtom'
 import { partiallyFillableOverrideAtom } from 'modules/limitOrders/state/partiallyFillableOverride'
-import { TradeConfirmation, TradeConfirmModal, useTradeConfirmActions } from 'modules/trade'
+import {
+  TradeConfirmation,
+  TradeConfirmModal,
+  useTradeConfirmActions,
+  useCommonTradeConfirmContext,
+} from 'modules/trade'
 
 import { useIsSafeApprovalBundle } from 'common/hooks/useIsSafeApprovalBundle'
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
@@ -37,10 +41,7 @@ export interface LimitOrdersConfirmModalProps {
   recipient?: string | null
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
+export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps): ReactNode {
   const CONFIRM_TITLE = t`Limit Order`
   const { inputCurrencyInfo, outputCurrencyInfo, tradeContext: tradeContextInitial, priceImpact, recipient } = props
 
@@ -52,8 +53,7 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const tradeContext = useMemo(() => tradeContextInitial, [])
 
-  const { account } = useWalletInfo()
-  const { ensName } = useWalletDetails()
+  const commonTradeConfirmContext = useCommonTradeConfirmContext()
   const warningsAccepted = useLimitOrdersWarningsAccepted(true)
   const settingsState = useAtomValue(limitOrdersSettingsAtom)
   const executionPrice = useAtomValue(executionPriceAtom)
@@ -86,9 +86,8 @@ export function LimitOrdersConfirmModal(props: LimitOrdersConfirmModalProps) {
   return (
     <TradeConfirmModal title={CONFIRM_TITLE}>
       <TradeConfirmation
+        {...commonTradeConfirmContext}
         title={CONFIRM_TITLE}
-        account={account}
-        ensName={ensName}
         inputCurrencyInfo={inputCurrencyInfo}
         outputCurrencyInfo={outputCurrencyInfo}
         onConfirm={doTrade}

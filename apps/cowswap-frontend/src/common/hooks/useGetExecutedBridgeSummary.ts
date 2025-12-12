@@ -1,4 +1,4 @@
-/* eslint-disable no-restricted-imports */ // TODO: Don't use 'modules' import
+  // TODO: Don't use 'modules' import
 import { useMemo } from 'react'
 
 import { useTokenByAddress } from '@cowprotocol/tokens'

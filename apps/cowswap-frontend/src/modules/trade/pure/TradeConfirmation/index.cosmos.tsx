@@ -6,6 +6,8 @@ const Fixtures = {
   default: () => (
     <TradeConfirmation
       title="Review order"
+      appData={null}
+      isSmartContractWallet={false}
       account={undefined}
       ensName={undefined}
       inputCurrencyInfo={inputCurrencyInfoMock}

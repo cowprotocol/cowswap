@@ -39,7 +39,15 @@ export async function safeBundleEthFlow(
   confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>,
   analytics: TradeFlowAnalytics,
 ): Promise<void | boolean> {
-  const { context, callbacks, swapFlowAnalyticsContext, tradeConfirmActions, typedHooks, tradeQuote } = tradeContext
+  const {
+    context,
+    callbacks,
+    swapFlowAnalyticsContext,
+    tradeConfirmActions,
+    typedHooks,
+    tradeQuote,
+    bridgeQuoteAmounts,
+  } = tradeContext
 
   logTradeFlow(LOG_PREFIX, 'STEP 1: confirm price impact')
 
@@ -129,6 +137,15 @@ export async function safeBundleEthFlow(
         signingScheme,
       },
     })
+
+    if (bridgeQuoteAmounts) {
+      tradeContext.callbacks.addBridgeOrder({
+        orderUid: orderId,
+        quoteAmounts: bridgeQuoteAmounts,
+        creationTimestamp: Date.now(),
+        recipient: orderParams.recipient,
+      })
+    }
 
     const { isSafeWallet } = orderParams
     addPendingOrderStep(

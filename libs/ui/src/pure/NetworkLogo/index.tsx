@@ -25,12 +25,19 @@ const NetworkLogoWrapper = styled.div<{ size: number; margin?: string }>`
 
 export interface NetworkLogoProps {
   chainId: SupportedChainId
+  className?: string
   size?: number
   margin?: string
   logoUrl?: string
 }
 
-export function NetworkLogo({ chainId, size = 16, margin, logoUrl: defaultLogoUrl }: NetworkLogoProps): ReactNode {
+export function NetworkLogo({
+  chainId,
+  size = 16,
+  margin,
+  className,
+  logoUrl: defaultLogoUrl,
+}: NetworkLogoProps): ReactNode {
   const theme = useTheme()
   const chainInfo = getChainInfo(chainId)
 
@@ -43,7 +50,7 @@ export function NetworkLogo({ chainId, size = 16, margin, logoUrl: defaultLogoUr
   }
 
   return (
-    <NetworkLogoWrapper size={size} margin={margin}>
+    <NetworkLogoWrapper size={size} margin={margin} className={className}>
       <img src={logoUrl} alt={`${chainInfo?.label} network logo`} />
     </NetworkLogoWrapper>
   )

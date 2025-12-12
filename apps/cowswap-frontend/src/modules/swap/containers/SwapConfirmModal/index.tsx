@@ -2,7 +2,7 @@ import { ReactNode, useMemo } from 'react'
 
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { Nullish } from '@cowprotocol/types'
-import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useLingui } from '@lingui/react/macro'
@@ -25,6 +25,7 @@ import {
   TradeConfirmModal,
   useGetReceiveAmountInfo,
   useTradeConfirmActions,
+  useCommonTradeConfirmContext,
 } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { HighFeeWarning, RowDeadline } from 'modules/tradeWidgetAddons'
@@ -56,12 +57,12 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
   const { inputCurrencyInfo, outputCurrencyInfo, priceImpact, recipient, recipientAddress, doTrade } = props
 
   const { account } = useWalletInfo()
-  const { ensName } = useWalletDetails()
   const appData = useAppData()
   const receiveAmountInfo = useGetReceiveAmountInfo()
   const tradeConfirmActions = useTradeConfirmActions()
   const { slippage } = useSwapDerivedState()
   const [deadline] = useSwapDeadlineState()
+  const commonTradeConfirmContext = useCommonTradeConfirmContext()
 
   const shouldDisplayBridgeDetails = useShouldDisplayBridgeDetails()
   const { bridgeQuote } = useTradeQuote()
@@ -116,9 +117,8 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
   return (
     <TradeConfirmModal title={CONFIRM_TITLE} submittedContent={submittedContent}>
       <TradeConfirmation
+        {...commonTradeConfirmContext}
         title={CONFIRM_TITLE}
-        account={account}
-        ensName={ensName}
         inputCurrencyInfo={inputCurrencyInfo}
         outputCurrencyInfo={outputCurrencyInfo}
         onConfirm={doTrade}
@@ -127,7 +127,7 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
         priceImpact={priceImpact}
         buttonText={buttonText}
         recipient={recipient}
-        appData={appData || undefined}
+        appData={appData}
       >
         {shouldDisplayBridgeDetails && bridgeProvider && swapContext && bridgeContext
           ? (restContent) => (
