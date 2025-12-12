@@ -14,7 +14,7 @@ export const Contents = styled.div`
   display: flex;
   flex-direction: column;
   gap: 24px;
-  padding: 20px;
+  padding: 0 20px 20px;
 `
 
 export const TokenBlock = styled.div`

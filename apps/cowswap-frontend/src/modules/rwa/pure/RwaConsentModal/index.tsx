@@ -42,44 +42,37 @@ export function RwaConsentModal(props: RwaConsentModalProps): ReactNode {
         <styledEl.Body>
           <p>
             <Trans>
-              Access to {displaySymbol} through this interface is subject to regulatory and location-based restrictions.
-            </Trans>
-          </p>
-          <p>
-            <Trans>
-              We could not reliably determine your location (for example due to VPN or privacy settings). Before you can
-              proceed with {displaySymbol}, you need to confirm that you are allowed to interact with this token.
+              We could not reliably determine your location (e.g., due to VPN or privacy settings). Access to{' '}
+              {displaySymbol} is strictly limited to specific regions.
             </Trans>
           </p>
           <styledEl.AcknowledgementSection>
             <p>
-              <Trans>By clicking Confirm, you acknowledge that:</Trans>
+              <Trans>By clicking Confirm, you expressly represent and warrant that you are NOT:</Trans>
             </p>
             <styledEl.BulletList>
               <li>
-                <Trans>
-                  You are not accessing this interface from a country or region where this token is restricted or
-                  prohibited.
-                </Trans>
+                <Trans>A U.S. Person or resident of the United States.</Trans>
+              </li>
+              <li>
+                <Trans>A resident of the EU or EEA.</Trans>
+              </li>
+              <li>
+                <Trans>A resident of any country subject to international sanctions (e.g., OFAC, UN lists).</Trans>
               </li>
               <li>
                 <Trans>
-                  You are eligible under your local laws and any applicable terms to view and trade this token.
-                </Trans>
-              </li>
-              <li>
-                <Trans>
-                  You understand that it is your responsibility to comply with all laws and restrictions that apply to
-                  you.
+                  A resident of any jurisdiction where trading securities or cryptographic tokens is regulated or
+                  prohibited by applicable laws.
                 </Trans>
               </li>
             </styledEl.BulletList>
           </styledEl.AcknowledgementSection>
           <p>
-            <Trans>
-              If any of the above is not true, you must select Cancel and you will not be able to proceed with this
-              asset through this interface.
-            </Trans>
+            <Trans>If you fall into any of these categories, select Cancel.</Trans>
+          </p>
+          <p>
+            <Trans>You are solely responsible for complying with your local laws.</Trans>
           </p>
         </styledEl.Body>
         <styledEl.ButtonContainer>
@@ -87,7 +80,7 @@ export function RwaConsentModal(props: RwaConsentModalProps): ReactNode {
             <Trans>Cancel</Trans>
           </ButtonOutlined>
           <ButtonPrimary onClick={onConfirm}>
-            <Trans>Confirm and continue</Trans>
+            <Trans>I Confirm</Trans>
           </ButtonPrimary>
         </styledEl.ButtonContainer>
       </styledEl.Contents>
