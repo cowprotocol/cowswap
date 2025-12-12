@@ -20,6 +20,7 @@ import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 import { BridgingSuccessNotification } from '../../containers/BridgingSuccessNotification'
 import { FulfilledOrderInfo } from '../../containers/FulfilledOrderInfo'
 import { OrderNotification } from '../../containers/OrderNotification'
+import { OrderInfo } from '../../containers/OrderNotification/utils'
 
 type OrdersNotificationsHandler = {
   icon: IconType
@@ -104,14 +105,26 @@ export const ORDERS_NOTIFICATION_HANDLERS: Record<CowWidgetEvents, OrdersNotific
     handler: (payload: OnPresignedOrderPayload) => {
       const { chainId, order, bridgeOrder } = payload
 
+      const orderInfo: OrderInfo | undefined = bridgeOrder
+        ? {
+            owner: order.owner,
+            kind: order.kind,
+            receiver: bridgeOrder.recipient,
+            inputAmount: BigInt(bridgeOrder.quoteAmounts.swapSellAmount.amount),
+            outputAmount: BigInt(bridgeOrder.quoteAmounts.bridgeMinReceiveAmount.amount),
+            inputToken: bridgeOrder.quoteAmounts.swapSellAmount.token,
+            outputToken: bridgeOrder.quoteAmounts.bridgeMinReceiveAmount.token,
+          }
+        : undefined
+
       return (
         <OrderNotification
           title={t`Order presigned`}
           chainId={chainId}
           orderType={getUiOrderType(order)}
           orderUid={order.uid}
+          orderInfo={orderInfo}
           messageType={ToastMessageType.ORDER_PRESIGNED}
-          receiver={bridgeOrder?.recipient}
         />
       )
     },
