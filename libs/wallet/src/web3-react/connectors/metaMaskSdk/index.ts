@@ -8,6 +8,8 @@ import type {
 } from '@web3-react/types'
 import { Connector } from '@web3-react/types'
 
+import { parseChainId } from '../../utils/parseChainId'
+
 import type { MetaMaskSDK as _MetaMaskSDK, MetaMaskSDKOptions as _MetaMaskSDKOptions, SDKProvider } from '@metamask/sdk'
 
 /**
@@ -31,15 +33,6 @@ export class NoMetaMaskSDKError extends Error {
     this.name = NoMetaMaskSDKError.name
     Object.setPrototypeOf(this, NoMetaMaskSDKError.prototype)
   }
-}
-
-/**
- * Parses a chainId from a string or number.
- */
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function parseChainId(chainId: string | number) {
-  return typeof chainId === 'number' ? chainId : Number.parseInt(chainId, chainId.startsWith('0x') ? 16 : 10)
 }
 
 /**

@@ -4,6 +4,8 @@ import { Command } from '@cowprotocol/types'
 import type { EIP1193Provider } from '@cowprotocol/types'
 import { Actions, AddEthereumChainParameter, Connector, ProviderConnectInfo, ProviderRpcError } from '@web3-react/types'
 
+import { parseChainId } from '../../utils/parseChainId'
+
 interface injectedWalletConstructorArgs {
   actions: Actions
   onError?: Command
@@ -17,6 +19,7 @@ export class InjectedWallet extends Connector {
   walletUrl: string
   searchKeywords: string[]
   eagerConnection?: boolean
+  private chainIdRequest?: Promise<string | number>
 
   onConnect?(provider: EIP1193Provider): void
 
@@ -53,8 +56,8 @@ export class InjectedWallet extends Connector {
         const accounts = await this.getAccounts()
         if (!accounts.length) throw new Error('No accounts returned')
 
-        // Get chain ID from the wallet
-        const chainId = (await this.provider.request({ method: 'eth_chainId' })) as string
+        // Get chain ID from the wallet (retry on empty array from some providers during init)
+        const chainId = await this.getChainIdWithRetry()
         const receivedChainId = parseChainId(chainId)
         const desiredChainId =
           typeof desiredChainIdOrChainParameters === 'number' ? undefined : desiredChainIdOrChainParameters?.chainId
@@ -118,7 +121,8 @@ export class InjectedWallet extends Connector {
       // chains; they should be requested serially, with accounts first, so that the chainId can settle.
       const accounts = await this.getAccounts()
       if (!accounts.length) throw new Error('No accounts returned')
-      const chainId = (await this.provider.request({ method: 'eth_chainId' })) as string
+      // Get chain ID from the wallet (retry on empty array from some providers during init)
+      const chainId = await this.getChainIdWithRetry()
       this.actions.update({ chainId: parseChainId(chainId), accounts })
     } catch (error) {
       console.debug('Could not connect eagerly', error)
@@ -270,14 +274,83 @@ export class InjectedWallet extends Connector {
       return provider.request({ method: 'eth_accounts' }) as Promise<string[]>
     }
   }
+
+  // Mod: Added custom method
+  // Get chainId with retry logic for providers that may return empty array during initialization.
+  private async getChainIdWithRetry(maxRetries = 5): Promise<string | number> {
+    if (this.chainIdRequest) return this.chainIdRequest
+
+    const { provider } = this
+
+    if (!provider) {
+      throw new Error('No provider')
+    }
+
+    const run = async (): Promise<string | number> => {
+      let lastError: unknown
+
+      for (let attempt = 0; attempt < maxRetries; attempt++) {
+        let chainId: unknown
+
+        try {
+          chainId = await provider.request({ method: 'eth_chainId' })
+        } catch (error) {
+          console.debug('eth_chainId failed, will retry', error)
+          lastError = error
+        }
+
+        // If we get a valid chainId from RPC, return it immediately (prioritize fresh response)
+        if (typeof chainId === 'string' || typeof chainId === 'number') return chainId
+
+        // Empty array means provider is initializing - check metadata immediately (retrying won't help).
+        // Note: This is the only case where we use cached metadata. Required for Brave wallet which
+        // returns empty arrays during initialization but has the correct chainId in provider metadata.
+        if (Array.isArray(chainId) && chainId.length === 0) {
+          const metaChainId = readMetaChainId(provider)
+          if (metaChainId !== null) return metaChainId
+        }
+
+        if (chainId !== undefined && !Array.isArray(chainId)) {
+          lastError = new Error(
+            `Invalid chainId: expected string or number, got ${typeof chainId}. Value: ${JSON.stringify(chainId)}`,
+          )
+        }
+
+        if (attempt < maxRetries - 1) {
+          await new Promise((resolve) => setTimeout(resolve, 500 * (attempt + 1)))
+        }
+      }
+
+      if (lastError instanceof Error) {
+        throw lastError
+      }
+
+      throw new Error(`Failed to get chainId after ${maxRetries} attempts. Provider did not return a usable chainId.`)
+    }
+
+    this.chainIdRequest = run().finally(() => {
+      this.chainIdRequest = undefined
+    })
+
+    return this.chainIdRequest
+  }
 }
 
-function parseChainId(chainId: string | number): number {
-  if (typeof chainId === 'number') return chainId
+// Some injected providers stash the chainId in non-standard fields; check common spots as a last resort fallback.
+function readMetaChainId(provider: EIP1193Provider): string | number | null {
+  const candidates = [
+    (provider as { chainId?: unknown }).chainId,
+    (provider as { networkVersion?: unknown }).networkVersion,
+    (provider as { provider?: { chainId?: unknown } }).provider?.chainId,
+    (provider as { _state?: { chainId?: unknown; network?: { chainId?: unknown } } })._state?.chainId,
+    (provider as { _state?: { chainId?: unknown; network?: { chainId?: unknown } } })._state?.network?.chainId,
+    (provider as { session?: { chainId?: unknown } }).session?.chainId,
+  ]
 
-  if (!chainId.startsWith('0x')) {
-    return Number(chainId)
+  for (const candidate of candidates) {
+    if (candidate === undefined) continue
+    if (typeof candidate === 'string' || typeof candidate === 'number') return candidate
   }
 
-  return Number.parseInt(chainId, 16)
+  return null
 }
