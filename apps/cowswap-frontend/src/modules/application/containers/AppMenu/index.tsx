@@ -51,6 +51,8 @@ export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMen
   const { t } = useLingui()
   const isInternationalizationEnabled = useIsInternationalizationEnabled()
 
+  console.log('🍔 [AppMenu] Render:', { overriddenCustomTheme, resolvedCustomTheme, customTheme, darkMode })
+
   const settingsNavItems = useMemo(
     () => [
       {
