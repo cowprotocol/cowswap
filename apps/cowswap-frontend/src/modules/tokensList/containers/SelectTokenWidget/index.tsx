@@ -2,6 +2,7 @@ import { ReactNode, useCallback, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { useIsBridgingEnabled } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import {
   ListState,
@@ -15,6 +16,7 @@ import {
 } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { t } from '@lingui/core/macro'
 import styled from 'styled-components/macro'
 
 import { Field } from 'legacy/state/types'
@@ -68,6 +70,7 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
   } = useSelectTokenWidgetState()
   const { count: lpTokensWithBalancesCount } = useLpTokensWithBalances()
   const chainsToSelect = useChainsToSelect()
+  const isBridgingEnabled = useIsBridgingEnabled()
   const onSelectChain = useOnSelectChain()
 
   const [isManageWidgetOpen, setIsManageWidgetOpen] = useState(false)
@@ -122,6 +125,9 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
   const onTokenListAddingError = useOnTokenListAddingError()
 
   const isInjectedWidgetMode = isInjectedWidget()
+
+  const showChainPanel = isBridgingEnabled && Boolean(chainsToSelect?.chains?.length)
+  const chainsPanelTitle = t`Cross chain swap`
 
   const closeTokenSelectWidget = useCloseTokenSelectWidget()
 
@@ -214,6 +220,8 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
         selectedTargetChainId={selectedTargetChainId}
         allTokenLists={allTokenLists}
         userAddedTokens={userAddedTokens}
+        hasChainPanel={showChainPanel}
+        chainsPanelTitle={chainsPanelTitle}
       />
     </Wrapper>
   )

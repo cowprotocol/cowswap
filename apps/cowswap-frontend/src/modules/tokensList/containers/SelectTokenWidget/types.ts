@@ -54,4 +54,6 @@ export interface SelectTokenWidgetContentProps {
   selectedTargetChainId?: number
   allTokenLists: ReturnType<typeof useAllListsList>
   userAddedTokens: TokenWithLogo[]
+  hasChainPanel?: boolean
+  chainsPanelTitle?: string
 }

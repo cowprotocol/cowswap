@@ -88,6 +88,8 @@ export function SelectTokenWidgetContent(props: SelectTokenWidgetContentProps): 
       isRouteAvailable={props.isRouteAvailable}
       onClearRecentTokens={props.clearRecentTokens}
       selectedTargetChainId={props.selectedTargetChainId}
+      hasChainPanel={props.hasChainPanel}
+      chainsPanelTitle={props.chainsPanelTitle}
     />
   )
 }

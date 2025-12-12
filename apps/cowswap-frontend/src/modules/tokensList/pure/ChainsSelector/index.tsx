@@ -1,112 +1,110 @@
 import { ReactNode } from 'react'
 
-import { useMediaQuery, useTheme } from '@cowprotocol/common-hooks'
+import OrderCheckIcon from '@cowprotocol/assets/cow-swap/order-check.svg'
+import { useTheme } from '@cowprotocol/common-hooks'
 import { ChainInfo } from '@cowprotocol/cow-sdk'
-import { HoverTooltip, Media } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/react/macro'
-import { Menu, MenuButton, MenuItem } from '@reach/menu-button'
-import { Check, ChevronDown, ChevronUp } from 'react-feather'
+import SVG from 'react-inlinesvg'
 
+import { getChainAccent } from './getChainAccent'
 import * as styledEl from './styled'
 
-// Number of skeleton shimmers to show during loading state
-const LOADING_ITEMS_COUNT = 10
+export { getChainAccent } from './getChainAccent'
 
-const LoadingShimmerElements = (
-  <styledEl.Wrapper>
-    {Array.from({ length: LOADING_ITEMS_COUNT }, (_, index) => (
-      <styledEl.ChainItem key={index} iconOnly isLoading />
-    ))}
-  </styledEl.Wrapper>
-)
+const LOADING_ITEMS_COUNT = 10
+const LOADING_SKELETON_INDICES = Array.from({ length: LOADING_ITEMS_COUNT }, (_, index) => index)
 
 export interface ChainsSelectorProps {
   chains: ChainInfo[]
   onSelectChain: (chainId: ChainInfo) => void
   defaultChainId?: ChainInfo['id']
-  visibleNetworkIcons?: number // Number of network icons to display before showing "More" dropdown
   isLoading: boolean
 }
 
-export function ChainsSelector({
-  chains,
-  onSelectChain,
-  defaultChainId,
-  isLoading,
-  visibleNetworkIcons = LOADING_ITEMS_COUNT,
-}: ChainsSelectorProps): ReactNode {
-  const isMobile = useMediaQuery(Media.upToSmall(false))
-
-  const theme = useTheme()
-
-  if (isLoading) {
-    return LoadingShimmerElements
-  }
-
-  const shouldDisplayMore = !isMobile && chains.length > visibleNetworkIcons
-  const visibleChains = isMobile ? chains : chains.slice(0, visibleNetworkIcons)
-  // Find the selected chain that isn't visible in the main row (so we can display it in the dropdown)
-  const selectedMenuChain = !isMobile && chains.find((i) => i.id === defaultChainId && !visibleChains.includes(i))
+export function ChainsSelector({ chains, onSelectChain, defaultChainId, isLoading }: ChainsSelectorProps): ReactNode {
+  const { darkMode } = useTheme()
 
   return (
-    <styledEl.Wrapper>
-      {visibleChains.map((chain) => (
-        <HoverTooltip
-          key={chain.id}
-          tooltipCloseDelay={0}
-          wrapInContainer={true}
-          content={chain.label}
-          placement="bottom"
-        >
-          <styledEl.ChainItem active$={defaultChainId === chain.id} onClick={() => onSelectChain(chain)} iconOnly>
-            <img src={theme.darkMode ? chain.logo.dark : chain.logo.light} alt={chain.label} loading="lazy" />
-          </styledEl.ChainItem>
-        </HoverTooltip>
-      ))}
-      {shouldDisplayMore && (
-        <Menu as={styledEl.MenuWrapper}>
-          {({ isOpen }) => (
-            <>
-              <MenuButton as={styledEl.ChainItem} active$={!!selectedMenuChain}>
-                {selectedMenuChain ? (
-                  <img
-                    src={theme.darkMode ? selectedMenuChain.logo.dark : selectedMenuChain.logo.light}
-                    alt={selectedMenuChain.label}
-                    loading="lazy"
-                  />
-                ) : isOpen ? (
-                  <span>
-                    <Trans>Less</Trans>
-                  </span>
-                ) : (
-                  <span>
-                    <Trans>More</Trans>
-                  </span>
-                )}
-                {isOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-              </MenuButton>
-              <styledEl.MenuListStyled portal={false}>
-                {chains.map((chain) => (
-                  <MenuItem
-                    key={chain.id}
-                    as={styledEl.ChainItem}
-                    onSelect={() => onSelectChain(chain)}
-                    active$={defaultChainId === chain.id}
-                    iconSize={21}
-                    tabIndex={0}
-                    borderless
-                  >
-                    <img src={theme.darkMode ? chain.logo.dark : chain.logo.light} alt={chain.label} loading="lazy" />
-                    <span>{chain.label}</span>
-                    {chain.id === defaultChainId && <Check size={16} />}
-                  </MenuItem>
-                ))}
-              </styledEl.MenuListStyled>
-            </>
-          )}
-        </Menu>
+    <styledEl.List>
+      {isLoading ? (
+        <ChainsSkeletonList />
+      ) : (
+        <ChainsButtonsList
+          chains={chains}
+          defaultChainId={defaultChainId}
+          onSelectChain={onSelectChain}
+          isDarkMode={darkMode}
+        />
       )}
-    </styledEl.Wrapper>
+    </styledEl.List>
+  )
+}
+
+function ChainsSkeletonList(): ReactNode {
+  return (
+    <>
+      {LOADING_SKELETON_INDICES.map((index) => (
+        <styledEl.LoadingRow key={`chain-skeleton-${index}`}>
+          <styledEl.LoadingCircle />
+          <styledEl.LoadingBar />
+        </styledEl.LoadingRow>
+      ))}
+    </>
+  )
+}
+
+interface ChainsButtonsListProps {
+  chains: ChainInfo[]
+  defaultChainId?: ChainInfo['id']
+  onSelectChain(chain: ChainInfo): void
+  isDarkMode: boolean
+}
+
+function ChainsButtonsList({ chains, defaultChainId, onSelectChain, isDarkMode }: ChainsButtonsListProps): ReactNode {
+  return (
+    <>
+      {chains.map((chain) => (
+        <ChainButton
+          key={chain.id}
+          chain={chain}
+          isActive={defaultChainId === chain.id}
+          onSelectChain={onSelectChain}
+          isDarkMode={isDarkMode}
+        />
+      ))}
+    </>
+  )
+}
+
+interface ChainButtonProps {
+  chain: ChainInfo
+  isActive: boolean
+  isDarkMode: boolean
+  onSelectChain(chain: ChainInfo): void
+}
+
+function ChainButton({ chain, isActive, isDarkMode, onSelectChain }: ChainButtonProps): ReactNode {
+  const logoSrc = isDarkMode ? chain.logo.dark : chain.logo.light
+  const accent = getChainAccent(chain.id)
+
+  return (
+    <styledEl.ChainButton
+      onClick={() => onSelectChain(chain)}
+      active$={isActive}
+      accent$={accent}
+      aria-pressed={isActive}
+    >
+      <styledEl.ChainInfo>
+        <styledEl.ChainLogo>
+          <img src={logoSrc} alt={chain.label} loading="lazy" />
+        </styledEl.ChainLogo>
+        <styledEl.ChainText>{chain.label}</styledEl.ChainText>
+      </styledEl.ChainInfo>
+      {isActive && (
+        <styledEl.ActiveIcon aria-hidden accent$={accent} color$={chain.color}>
+          <SVG src={OrderCheckIcon} />
+        </styledEl.ActiveIcon>
+      )}
+    </styledEl.ChainButton>
   )
 }

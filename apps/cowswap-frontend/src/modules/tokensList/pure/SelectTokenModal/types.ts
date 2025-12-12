@@ -32,6 +32,7 @@ export interface TokenListContentProps<T = TokenListCategory[] | null> {
   isRouteAvailable: boolean | undefined
   modalTitle?: string
   hasChainPanel?: boolean
+  chainsPanelTitle?: string
   isFullScreenMobile?: boolean
   selectedTargetChainId?: number
 }
