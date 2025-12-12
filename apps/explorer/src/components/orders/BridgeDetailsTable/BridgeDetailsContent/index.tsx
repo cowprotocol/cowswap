@@ -21,8 +21,6 @@ interface BridgeDetailsContentProps {
   crossChainOrder: CrossChainOrder
 }
 
-// TODO: Break down this large function into smaller functions
-
 export function BridgeDetailsContent({ crossChainOrder }: BridgeDetailsContentProps): ReactNode {
   const {
     statusResult: { status: bridgeStatus, fillTxHash, depositTxHash, fillTimeInSeconds },

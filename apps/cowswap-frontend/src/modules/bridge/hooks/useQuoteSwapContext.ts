@@ -18,7 +18,7 @@ export function useQuoteSwapContext(): QuoteSwapContext | null {
 
   const quoteAmounts = useBridgeQuoteAmounts()
   const { value: swapMinReceiveAmountUsd } = useUsdAmount(quoteAmounts?.swapMinReceiveAmount)
-  const { value: swapExpectedReceiveUsd } = useUsdAmount(quoteAmounts?.swapBuyAmount)
+  const { value: swapExpectedReceiveUsd } = useUsdAmount(quoteAmounts?.swapExpectedReceive)
 
   const slippage = useTradeSlippage()
   const { bridgeQuote } = useTradeQuote()
@@ -46,6 +46,7 @@ export function useQuoteSwapContext(): QuoteSwapContext | null {
       isSlippageModified,
       recipient,
       bridgeReceiverOverride,
+      expectedReceive: quoteAmounts.swapExpectedReceive,
       minReceiveAmount: quoteAmounts.swapMinReceiveAmount,
       minReceiveUsdValue: swapMinReceiveAmountUsd,
       expectedReceiveUsdValue: swapExpectedReceiveUsd,

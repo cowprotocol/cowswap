@@ -14,13 +14,15 @@ export function useBridgeQuoteAmounts(): BridgeQuoteAmounts | null {
     if (!receiveAmountInfo?.costs.bridgeFee || !bridgeQuote || !swapReceiveAmountInfo) return null
 
     const swapSellAmount = receiveAmountInfo.afterSlippage.sellAmount
-    const swapBuyAmount = swapReceiveAmountInfo.afterNetworkCosts.buyAmount
+    const swapBuyAmount = swapReceiveAmountInfo.beforeAllFees.buyAmount
+    const swapExpectedReceive = swapReceiveAmountInfo.afterPartnerFees.buyAmount
     const swapMinReceiveAmount = swapReceiveAmountInfo.afterSlippage.buyAmount
     const bridgeMinReceiveAmount = receiveAmountInfo.afterSlippage.buyAmount
 
     return {
       swapSellAmount,
       swapBuyAmount,
+      swapExpectedReceive,
       swapMinReceiveAmount,
       bridgeMinReceiveAmount,
       bridgeFee: receiveAmountInfo.costs.bridgeFee.amountInDestinationCurrency,

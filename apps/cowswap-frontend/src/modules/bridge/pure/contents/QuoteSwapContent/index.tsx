@@ -28,7 +28,7 @@ interface ContentItem {
 }
 
 function createExpectedReceiveContent(
-  buyAmount: QuoteSwapContext['buyAmount'],
+  expectedReceive: QuoteSwapContext['expectedReceive'],
   expectedReceiveUsdValue: QuoteSwapContext['expectedReceiveUsdValue'],
   slippagePercentDisplay: Percent,
 ): ContentItem {
@@ -49,7 +49,7 @@ function createExpectedReceiveContent(
         />
       </>
     ),
-    content: <TokenAmountDisplay displaySymbol currencyAmount={buyAmount} usdValue={expectedReceiveUsdValue} />,
+    content: <TokenAmountDisplay displaySymbol currencyAmount={expectedReceive} usdValue={expectedReceiveUsdValue} />,
   }
 }
 
@@ -115,7 +115,7 @@ export function QuoteSwapContent({ context, hideRecommendedSlippage }: QuoteDeta
   const {
     receiveAmountInfo,
     sellAmount,
-    buyAmount,
+    expectedReceive,
     slippage,
     recipient,
     bridgeReceiverOverride,
@@ -126,7 +126,7 @@ export function QuoteSwapContent({ context, hideRecommendedSlippage }: QuoteDeta
   } = context
   const isBridgeQuoteRecipient = recipient === BRIDGE_QUOTE_ACCOUNT
   const contents = [
-    createExpectedReceiveContent(buyAmount, expectedReceiveUsdValue, slippage),
+    createExpectedReceiveContent(expectedReceive, expectedReceiveUsdValue, slippage),
     createSlippageContent(slippage, !!hideRecommendedSlippage, isSlippageModified),
     !isBridgeQuoteRecipient && createRecipientContent(recipient, bridgeReceiverOverride, sellAmount.currency.chainId),
     createMinReceiveContent(minReceiveAmount, minReceiveUsdValue),

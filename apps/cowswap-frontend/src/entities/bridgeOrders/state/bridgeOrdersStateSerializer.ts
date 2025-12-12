@@ -35,6 +35,7 @@ export function serializeQuoteAmounts(amounts: BridgeQuoteAmounts): BridgeQuoteA
   return {
     swapSellAmount: serializeAmount(amounts.swapSellAmount),
     swapBuyAmount: serializeAmount(amounts.swapBuyAmount),
+    swapExpectedReceive: amounts.swapExpectedReceive ? serializeAmount(amounts.swapExpectedReceive) : null,
     swapMinReceiveAmount: serializeAmount(amounts.swapMinReceiveAmount),
     bridgeMinReceiveAmount: serializeAmount(amounts.bridgeMinReceiveAmount),
     bridgeFee: serializeAmount(amounts.bridgeFee),
@@ -51,6 +52,7 @@ export function deserializeQuoteAmounts(amounts: BridgeQuoteAmounts<SerializedAm
   return {
     swapSellAmount: deserializeAmount(amounts.swapSellAmount),
     swapBuyAmount: deserializeAmount(amounts.swapBuyAmount),
+    swapExpectedReceive: amounts.swapExpectedReceive ? deserializeAmount(amounts.swapExpectedReceive) : null,
     swapMinReceiveAmount: deserializeAmount(amounts.swapMinReceiveAmount),
     bridgeMinReceiveAmount: deserializeAmount(amounts.bridgeMinReceiveAmount),
     bridgeFee: deserializeAmount(amounts.bridgeFee),

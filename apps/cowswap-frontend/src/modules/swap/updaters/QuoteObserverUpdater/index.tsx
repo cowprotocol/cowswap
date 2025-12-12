@@ -3,19 +3,19 @@ import { useEffect } from 'react'
 import { FractionUtils, isSellOrder } from '@cowprotocol/common-utils'
 
 import { useDerivedTradeState, useGetReceiveAmountInfo } from 'modules/trade'
+import { useEstimatedBridgeBuyAmount } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 
 import { useSafeEffect } from 'common/hooks/useSafeMemo'
 
 import { useUpdateSwapRawState } from '../../hooks/useUpdateSwapRawState'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function QuoteObserverUpdater() {
+export function QuoteObserverUpdater(): null {
   const state = useDerivedTradeState()
   const receiveAmountInfo = useGetReceiveAmountInfo()
   const updateSwapState = useUpdateSwapRawState()
   const tradeQuote = useTradeQuote()
+  const { expectedToReceiveAmount } = useEstimatedBridgeBuyAmount() || {}
 
   /**
    * Only when quote update because some params (input amount) changed
@@ -24,7 +24,7 @@ export function QuoteObserverUpdater() {
   const isQuoteUpdating = tradeQuote.isLoading && tradeQuote.hasParamsChanged
   const { beforeAllFees, isSell } = receiveAmountInfo || {}
 
-  const amountToUpdate = isSell ? beforeAllFees?.buyAmount : beforeAllFees?.sellAmount
+  const amountToUpdate = expectedToReceiveAmount ?? (isSell ? beforeAllFees?.buyAmount : beforeAllFees?.sellAmount)
 
   const orderKind = state?.orderKind
 
