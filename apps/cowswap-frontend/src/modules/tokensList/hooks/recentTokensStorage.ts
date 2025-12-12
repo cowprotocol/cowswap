@@ -2,8 +2,8 @@ import { TokenWithLogo } from '@cowprotocol/common-const'
 
 import { getTokenUniqueKey } from '../utils/tokenKey'
 
-export const RECENT_TOKENS_LIMIT = 4
-export const RECENT_TOKENS_STORAGE_KEY = 'select-token-widget:recent-tokens:v1'
+export const recentTokensLimit = 4
+export const recentTokensStorageKey = 'select-token-widget:recent-tokens:v0'
 
 export interface StoredRecentToken {
   chainId: number
@@ -68,7 +68,7 @@ export function readStoredTokens(limit: number): StoredRecentTokensByChain {
   }
 
   try {
-    const rawValue = window.localStorage.getItem(RECENT_TOKENS_STORAGE_KEY)
+    const rawValue = window.localStorage.getItem(recentTokensStorageKey)
 
     if (!rawValue) {
       return {}
@@ -96,7 +96,7 @@ export function persistStoredTokens(tokens: StoredRecentTokensByChain): void {
   }
 
   try {
-    window.localStorage.setItem(RECENT_TOKENS_STORAGE_KEY, JSON.stringify(tokens))
+    window.localStorage.setItem(recentTokensStorageKey, JSON.stringify(tokens))
   } catch {
     // Best effort persistence
   }
@@ -121,7 +121,7 @@ export function buildNextStoredTokens(
 export function persistRecentTokenSelection(
   token: TokenWithLogo,
   favoriteTokens: TokenWithLogo[],
-  maxItems = RECENT_TOKENS_LIMIT,
+  maxItems = recentTokensLimit,
 ): void {
   const favoriteKeys = buildFavoriteTokenKeys(favoriteTokens)
 

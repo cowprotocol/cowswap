@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 
 import {
-  RECENT_TOKENS_LIMIT,
+  recentTokensLimit,
   buildFavoriteTokenKeys,
   buildNextStoredTokens,
   buildTokensByKey,
@@ -34,7 +34,7 @@ export function useRecentTokens({
   allTokens,
   favoriteTokens,
   activeChainId,
-  maxItems = RECENT_TOKENS_LIMIT,
+  maxItems = recentTokensLimit,
 }: UseRecentTokensParams): RecentTokensState {
   const [storedTokensByChain, setStoredTokensByChain] = useState<StoredRecentTokensByChain>(() =>
     readStoredTokens(maxItems),
@@ -68,7 +68,7 @@ export function useRecentTokens({
   }, [favoriteKeys])
 
   const recentTokens = useMemo(() => {
-    const chainEntries = activeChainId ? storedTokensByChain[activeChainId] ?? [] : []
+    const chainEntries = activeChainId ? (storedTokensByChain[activeChainId] ?? []) : []
     const seenKeys = new Set<string>()
     const result: TokenWithLogo[] = []
 
