@@ -145,17 +145,24 @@ module.exports = [
           argsIgnorePattern: '^_',
         },
       ],
+      /**
+       * import/order rules
+       *
+       * (!) if you change these rules, you should accordingly update prettier.config.js `importOrder` settings
+       *
+       * @see prettier.config.js
+       */
       'import/order': [
         'error',
         {
           pathGroups: [
             {
-              pattern: '{react,jotai,jotai/*}',
+              pattern: '{react,jotai,jotai/**}',
               group: 'external',
               position: 'before',
             },
             {
-              pattern: '{@cowprotocol,@cowprotocol,@uniswap,@safe-global,@ethersproject,@web3-react}/**',
+              pattern: '{@cowprotocol,@uniswap,@safe-global,@ethersproject,@web3-react}/**',
               group: 'external',
               position: 'before',
             },
@@ -170,7 +177,7 @@ module.exports = [
               position: 'after',
             },
             {
-              pattern: '{api,abis,common,constants,legacy,lib,pages,types,utils}/**',
+              pattern: '{api,abis,common,constants,lib,pages,types,utils}/**',
               group: 'internal',
               position: 'before',
             },

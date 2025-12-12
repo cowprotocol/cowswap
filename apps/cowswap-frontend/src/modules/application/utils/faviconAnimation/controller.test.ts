@@ -1,3 +1,5 @@
+// sort-imports-ignore // disabled for tests
+
 jest.mock('common/favicon', () => {
   const mockPlay = jest.fn()
 

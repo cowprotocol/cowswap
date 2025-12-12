@@ -1,3 +1,4 @@
+// sort-imports-ignore // disabled for tests
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 // Mock modules that require window before imports

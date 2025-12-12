@@ -5,19 +5,19 @@ import stdLibBrowser from 'node-stdlib-browser'
 import { visualizer } from 'rollup-plugin-visualizer'
 import { defineConfig, PluginOption, searchForWorkspaceRoot } from 'vite'
 import macrosPlugin from 'vite-plugin-babel-macros'
+import { meta } from 'vite-plugin-meta-tags'
 import { ModuleNameWithoutNodePrefix, nodePolyfills } from 'vite-plugin-node-polyfills'
 import { VitePWA } from 'vite-plugin-pwa'
 import svgr from 'vite-plugin-svgr'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
-import { meta } from 'vite-plugin-meta-tags'
 
 import * as path from 'path'
 
 import { getReactProcessEnv } from '../../tools/getReactProcessEnv'
+import { robotsPlugin } from '../../tools/vite-plugins/robotsPlugin'
 
 // eslint-disable-next-line no-restricted-imports
 import type { TemplateType } from 'rollup-plugin-visualizer/dist/plugin/template-types'
-import { robotsPlugin } from '../../tools/vite-plugins/robotsPlugin'
 
 const allNodeDeps = Object.keys(stdLibBrowser).map((key) => key.replace('node:', '')) as ModuleNameWithoutNodePrefix[]
 

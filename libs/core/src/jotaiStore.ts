@@ -1,7 +1,7 @@
 import { atomWithStorage, createJSONStorage } from 'jotai/utils'
 import { createStore } from 'jotai/vanilla'
-
 import { AsyncStringStorage } from 'jotai/vanilla/utils/atomWithStorage'
+
 import { createInstance } from 'localforage'
 
 export const jotaiStore = createStore()
