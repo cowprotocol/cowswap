@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-12-09 12:54\n"
+"PO-Revision-Date: 2025-12-11 09:07\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -700,11 +700,6 @@ msgstr "Неподдерживаемый токен"
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/index.tsx
 #~ msgid "Limit price (incl. costs)"
 #~ msgstr "Limit price (incl. costs)"
-
-#: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
-#: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/index.tsx
-msgid "Limit price (incl. fees)"
-msgstr "Лимитная цена (включая комиссии)"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/OrderRow/OrderContextMenu.tsx
 msgid "Order receipt"
@@ -1494,6 +1489,10 @@ msgstr "Общая сумма"
 msgid "Recoverable balance"
 msgstr "Восстановленный баланс"
 
+#: apps/cowswap-frontend/src/modules/limitOrders/pure/RateImpactWarning/index.tsx
+msgid "Your limit price is {absoluteRateImpact}% lower than current market price. You could be selling your <0/> at a loss (although CoW Swap will always try to give you the best price regardless)."
+msgstr "Ваша лимитная цена на {absoluteRateImpact}% ниже текущей рыночной цены. Вы можете продать свой <0/> с убытком (хотя CoW Swap всегда будет пытаться дать вам лучшую цену независимо от этого)."
+
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
 msgid "Invalid hook dapp ID format. The ID must be a 64-character hexadecimal string."
 msgstr "Недопустимый формат идентификатора hook dapp. Идентификатор должен быть 64-символьной шестнадцатеричной строкой."
@@ -1675,12 +1674,8 @@ msgid "Receiver"
 msgstr "Приемник"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
-msgid "An order's actual execution price will vary based on the market price and network costs."
-msgstr "Фактическая цена ордера будет варьироваться в зависимости от рыночной цены и сетевых затрат."
-
-#: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
-msgid "An order's actual execution price will vary based on the market price and network fees and costs."
-msgstr "Фактическая цена исполнения ордера будет варьироваться в зависимости от рыночной цены, сетевых комиссий и затрат."
+#~ msgid "An order’s actual execution price will vary based on the market price and network costs."
+#~ msgstr "An order’s actual execution price will vary based on the market price and network costs."
 
 #: apps/cowswap-frontend/src/modules/hooksStore/dapps/AirdropHookApp/index.tsx
 msgid "You have already claimed this airdrop"
@@ -3623,10 +3618,6 @@ msgstr ""
 msgid "No pool tokens available"
 msgstr "Нет доступных маркеров пула"
 
-#: apps/cowswap-frontend/src/modules/limitOrders/pure/RateImpactWarning/index.tsx
-#~ msgid "Your limit price is {percent}% lower than current market price. You could be selling your <0/> at a loss (although CoW Swap will always try to give you the best price regardless)."
-#~ msgstr "Your limit price is {percent}% lower than current market price. You could be selling your <0/> at a loss (although CoW Swap will always try to give you the best price regardless)."
-
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/SolvingStep.tsx
 msgid "Still searching"
 msgstr "Искать все еще"
@@ -4342,10 +4333,6 @@ msgstr "больше"
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
 msgid "CoW Protocol covers the costs by executing your order at a slightly better price than your limit price."
 msgstr "Протокол CoW покрывает расходы, выполняя ваш ордер по несколько более высокой цене, чем лимитная цена."
-
-#: apps/cowswap-frontend/src/modules/limitOrders/pure/RateImpactWarning/index.tsx
-msgid "Your limit price is {absoluteRateImpact}% lower than current market price. You could be selling your <0/> at a loss (although CoW Swap will always try to give you the best price regardless)."
-msgstr "Ваша лимитная цена на {absoluteRateImpact}% ниже текущей рыночной цены. Вы можете продать свой <0/> с убытком (хотя CoW Swap всегда будет пытаться дать вам лучшую цену независимо от этого)."
 
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/HookSearchInput/index.tsx
 msgid "Clear search input"
@@ -5106,6 +5093,10 @@ msgstr "ордер исполняется в"
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappDetails/index.tsx
 msgid "Information"
 msgstr "Информация"
+
+#: apps/cowswap-frontend/src/modules/limitOrders/pure/RateImpactWarning/index.tsx
+#~ msgid "Your limit price is {percent}% lower than current market price. You could be selling your <0/> at a loss (although CoW Swap will always try to give you the best price regardless)."
+#~ msgstr "Your limit price is {percent}% lower than current market price. You could be selling your <0/> at a loss (although CoW Swap will always try to give you the best price regardless)."
 
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/SurplusCard.tsx
 msgid "The total surplus CoW Swap has generated for you in {nativeSymbol} across all your trades since {startDate}"
