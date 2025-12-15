@@ -327,6 +327,7 @@ export const ProductLogo = ({
   const selectedTheme = customThemeMode || (themeMode.darkMode ? 'dark' : 'light')
   const logoForTheme = LOGOS[variant][selectedTheme] || LOGOS[variant]['light'] // Fallback to light theme if selected theme is not available
   const logoInfo = logoIconOnly && logoForTheme.logoIconOnly ? logoForTheme.logoIconOnly : logoForTheme.default
+
   const initialColor = logoInfo.preserveOriginalColors ? undefined : overrideColor || logoInfo.color
 
   // First use logoInfo height, then prop height, then default
