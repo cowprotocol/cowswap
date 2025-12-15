@@ -1,7 +1,7 @@
 import React, { ReactNode, useCallback, useMemo } from 'react'
 
 import ICON_ORDERS from '@cowprotocol/assets/svg/orders.svg'
-import { useFeatureFlags, useTheme } from '@cowprotocol/common-hooks'
+import { useFeatureFlags, useIsBridgingEnabled, useTheme } from '@cowprotocol/common-hooks'
 import { isInjectedWidget, maxAmountSpend } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ButtonOutlined, Media, MY_ORDERS_ID, SWAP_HEADER_OFFSET } from '@cowprotocol/ui'
@@ -69,7 +69,8 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
   const isLimitOrderTrade = tradeTypeInfo?.tradeType === TradeType.LIMIT_ORDER
   const shouldLockForAlternativeOrder = isAlternativeOrderModalVisible && isLimitOrderTrade
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
-  const { isLimitOrdersUpgradeBannerEnabled, isBridgingEnabled } = useFeatureFlags()
+  const { isLimitOrdersUpgradeBannerEnabled } = useFeatureFlags()
+  const isBridgingEnabled = useIsBridgingEnabled()
   const isCurrentTradeBridging = useIsCurrentTradeBridging()
   const { darkMode } = useTheme()
 

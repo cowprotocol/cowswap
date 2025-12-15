@@ -50,9 +50,17 @@ describe('BridgingEnabledUpdater', () => {
     expect(setIsBridgingEnabled).toHaveBeenCalledWith(false)
   })
 
-  it('enables bridging on swap route when the wallet is compatible', () => {
+  it('enables bridging on swap route for a compatible wallet', () => {
     render(<BridgingEnabledUpdater />)
 
     expect(setIsBridgingEnabled).toHaveBeenCalledWith(true)
+  })
+
+  it('disables bridging on non-swap routes', () => {
+    mockUseTradeTypeInfo.mockReturnValue({ route: Routes.LIMIT_ORDER })
+
+    render(<BridgingEnabledUpdater />)
+
+    expect(setIsBridgingEnabled).toHaveBeenCalledWith(false)
   })
 })

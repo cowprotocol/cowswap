@@ -14,6 +14,7 @@ import {
 import { MobileChainPanelPortal } from './MobileChainPanelPortal'
 import { InnerWrapper, ModalContainer, WidgetCard, WidgetOverlay, Wrapper } from './styled'
 
+import { useCloseTokenSelectWidget } from '../../hooks/useCloseTokenSelectWidget'
 import { ChainPanel } from '../../pure/ChainPanel'
 import { ImportListModal } from '../../pure/ImportListModal'
 import { ImportTokenModal } from '../../pure/ImportTokenModal'
@@ -26,6 +27,14 @@ export function SelectTokenWidget(props: SelectTokenWidgetProps): ReactNode {
   const isCompactLayout = useMediaQuery(Media.upToMedium(false))
   const [isMobileChainPanelOpen, setIsMobileChainPanelOpen] = useState(false)
   const isChainPanelVisible = hasChainPanel && !isCompactLayout
+  const closeTokenSelectWidget = useCloseTokenSelectWidget()
+
+  // Cleanup: reset widget state on unmount
+  useEffect(() => {
+    return () => {
+      closeTokenSelectWidget({ overrideForceLock: true })
+    }
+  }, [closeTokenSelectWidget])
 
   useEffect(() => {
     if (!shouldRender) {
