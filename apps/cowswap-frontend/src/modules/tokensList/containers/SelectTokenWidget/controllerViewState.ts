@@ -1,10 +1,9 @@
-import { isInjectedWidget } from '@cowprotocol/common-utils'
-
 import { TradeType } from 'modules/trade/types'
 
+import { useHydrateTokenListViewAtom } from './controllerAtomHydration'
 import { useWidgetViewDependencies } from './controllerDependencies'
 import { getSelectTokenWidgetViewPropsArgs, useWidgetModalProps } from './controllerModalProps'
-import { SelectTokenWidgetViewProps, buildSelectTokenWidgetViewProps } from './controllerProps'
+import { SelectTokenWidgetViewProps } from './controllerProps'
 import {
   hasAvailableChains,
   useManageWidgetVisibility,
@@ -76,6 +75,28 @@ export function useSelectTokenWidgetViewState(args: SelectTokenWidgetViewStateAr
     widgetState,
     activeChainId,
   })
+
+  // Determine if modal should render (same logic as controller.ts)
+  const shouldRender = Boolean(widgetState.onSelectToken && (widgetState.open || widgetState.forceOpen))
+
+  // Determine favorite tokens (empty for standalone mode)
+  const favoriteTokens = standalone ? [] : tokenData.favoriteTokens
+
+  // Hydrate the tokenListViewAtom at controller level (only when modal should render)
+  // This allows children to read from atom instead of receiving props
+  useHydrateTokenListViewAtom({
+    shouldRender,
+    tokenData,
+    widgetState,
+    favoriteTokens,
+    recentTokens: widgetDeps.recentTokens,
+    onClearRecentTokens: widgetDeps.clearRecentTokens,
+    onTokenListItemClick: widgetDeps.handleTokenListItemClick,
+    handleSelectToken: widgetDeps.handleSelectToken,
+    account,
+    displayLpTokenLists: displayLpTokenLists ?? false,
+  })
+
   const shouldDisableChainPanelForYield = widgetState.tradeType === TradeType.YIELD && !ENABLE_YIELD_CHAIN_PANEL
   const isChainPanelEnabled =
     isBridgeFeatureEnabled && hasAvailableChains(chainsToSelect) && !shouldDisableChainPanelForYield
@@ -86,35 +107,31 @@ export function useSelectTokenWidgetViewState(args: SelectTokenWidgetViewStateAr
     widgetDeps,
     hasChainPanel: isChainPanelEnabled,
     onSelectChain,
-    recentTokens: widgetDeps.recentTokens,
     standalone,
-    tokenData,
     widgetMetadata,
     widgetState,
-    isInjectedWidgetMode: isInjectedWidget(),
+    isRouteAvailable: tokenData.isRouteAvailable,
   })
 
-  const viewProps = buildSelectTokenWidgetViewProps(
-    getSelectTokenWidgetViewPropsArgs({
-      allTokenLists: tokenData.allTokenLists,
-      chainsPanelTitle: widgetMetadata.chainsPanelTitle,
-      chainsToSelect,
-      closeManageWidget: widgetDeps.closeManageWidget,
-      closePoolPage: widgetDeps.closePoolPage,
-      importFlows: widgetDeps.importFlows,
-      isChainPanelEnabled,
-      onDismiss: widgetDeps.onDismiss,
-      onSelectChain,
-      selectTokenModalProps,
-      selectedPoolAddress: widgetState.selectedPoolAddress,
-      standalone,
-      tokenToImport: widgetState.tokenToImport,
-      listToImport: widgetState.listToImport,
-      isManageWidgetOpen: widgetDeps.isManageWidgetOpen,
-      userAddedTokens: tokenData.userAddedTokens,
-      handleSelectToken: widgetDeps.handleSelectToken,
-    }),
-  )
+  const viewProps = getSelectTokenWidgetViewPropsArgs({
+    allTokenLists: tokenData.allTokenLists,
+    chainsPanelTitle: widgetMetadata.chainsPanelTitle,
+    chainsToSelect,
+    closeManageWidget: widgetDeps.closeManageWidget,
+    closePoolPage: widgetDeps.closePoolPage,
+    importFlows: widgetDeps.importFlows,
+    isChainPanelEnabled,
+    onDismiss: widgetDeps.onDismiss,
+    onSelectChain,
+    selectTokenModalProps,
+    selectedPoolAddress: widgetState.selectedPoolAddress,
+    standalone,
+    tokenToImport: widgetState.tokenToImport,
+    listToImport: widgetState.listToImport,
+    isManageWidgetOpen: widgetDeps.isManageWidgetOpen,
+    userAddedTokens: tokenData.userAddedTokens,
+    handleSelectToken: widgetDeps.handleSelectToken,
+  })
 
   return { isChainPanelEnabled, viewProps }
 }
