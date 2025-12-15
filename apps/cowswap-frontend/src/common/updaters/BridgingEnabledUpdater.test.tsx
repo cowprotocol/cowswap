@@ -42,18 +42,18 @@ describe('BridgingEnabledUpdater', () => {
     mockUseTradeTypeInfo.mockReturnValue({ route: Routes.SWAP })
   })
 
-  it('enables bridging on swap route for compatible wallet', () => {
-    render(<BridgingEnabledUpdater />)
-
-    expect(setIsBridgingEnabled).toHaveBeenCalledWith(true)
-  })
-
   it('disables bridging for smart contract wallets', () => {
     mockUseAccountType.mockReturnValue(AccountType.SMART_CONTRACT)
 
     render(<BridgingEnabledUpdater />)
 
     expect(setIsBridgingEnabled).toHaveBeenCalledWith(false)
+  })
+
+  it('enables bridging on swap route for a compatible wallet', () => {
+    render(<BridgingEnabledUpdater />)
+
+    expect(setIsBridgingEnabled).toHaveBeenCalledWith(true)
   })
 
   it('disables bridging on non-swap routes', () => {

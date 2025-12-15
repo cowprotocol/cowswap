@@ -179,7 +179,7 @@ function ChainButton({
         </styledEl.ChainText>
       </styledEl.ChainInfo>
       {isActive && !isLoading && (
-        <styledEl.ActiveIcon aria-hidden="true" accent$={accent} color$={chain.color}>
+        <styledEl.ActiveIcon aria-hidden accent$={accent} color$={chain.color}>
           <SVG src={OrderCheckIcon} />
         </styledEl.ActiveIcon>
       )}
