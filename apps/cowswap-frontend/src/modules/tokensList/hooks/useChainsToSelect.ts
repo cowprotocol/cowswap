@@ -55,10 +55,10 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
 
     // Limit/TWAP orders don't support chain selection - return undefined for both SELL and BUY
     // These trade types rely on wallet/header network switcher instead
+    // TODO: Revisit when SC wallet bridging supports advanced trades, so TWAPs can bridge.
     if (isAdvancedTradeType) {
       return undefined
     }
-
     const currentChainInfo = mapChainInfo(chainId, chainInfo)
 
     if (!isBridgingEnabled) return undefined

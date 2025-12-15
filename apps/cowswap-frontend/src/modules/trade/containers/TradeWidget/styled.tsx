@@ -10,9 +10,7 @@ const getContainerMaxWidth = ({ isTokenSelectOpen, isTokenSelectWide }: Containe
     return WIDGET_MAX_WIDTH.swap
   }
 
-  const openedWidth = isTokenSelectWide ? WIDGET_MAX_WIDTH.tokenSelectSidebar : WIDGET_MAX_WIDTH.tokenSelect
-
-  return openedWidth
+  return isTokenSelectWide ? WIDGET_MAX_WIDTH.tokenSelectSidebar : WIDGET_MAX_WIDTH.tokenSelect
 }
 
 export const Container = styled.div<ContainerSizeProps>`
