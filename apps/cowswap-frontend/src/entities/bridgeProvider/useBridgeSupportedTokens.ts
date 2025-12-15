@@ -20,10 +20,11 @@ export function useBridgeSupportedTokens(
 
   // Get token map from token lists for the destination chain to fallback for missing logos
   const tokensByAddress = useTokensByAddressMapForChain(params?.buyChainId as SupportedChainId | undefined)
+  const tokenListSize = Object.keys(tokensByAddress).length
 
   return useSWR(
     isBridgingEnabled
-      ? [params, params?.sellChainId, params?.buyChainId, params?.sellTokenAddress, key, 'useBridgeSupportedTokens']
+      ? [params, params?.sellChainId, params?.buyChainId, params?.sellTokenAddress, key, tokenListSize, 'useBridgeSupportedTokens']
       : null,
     async ([params]) => {
       if (typeof params === 'undefined') return null
