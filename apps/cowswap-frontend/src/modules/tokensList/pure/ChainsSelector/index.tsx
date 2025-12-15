@@ -101,7 +101,7 @@ function ChainButton({ chain, isActive, isDarkMode, onSelectChain }: ChainButton
         <styledEl.ChainText>{chain.label}</styledEl.ChainText>
       </styledEl.ChainInfo>
       {isActive && (
-        <styledEl.ActiveIcon aria-hidden="true" accent$={accent} color$={chain.color}>
+        <styledEl.ActiveIcon aria-hidden accent$={accent} color$={chain.color}>
           <SVG src={OrderCheckIcon} />
         </styledEl.ActiveIcon>
       )}
