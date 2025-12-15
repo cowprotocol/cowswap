@@ -50,6 +50,7 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
   )
 
   return useMemo(() => {
+    // TODO: Limit/TWAP orders currently disable chain selection; revisit when SC wallet bridging supports advanced trades.
     if (!field || !chainId || !isBridgingEnabled || isAdvancedTradeType) return undefined
 
     const chainInfo = CHAIN_INFO[chainId]
