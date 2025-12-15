@@ -5,6 +5,8 @@ import { useENSAddress } from '@cowprotocol/ens'
 import { useIsTradeUnsupported, useTryFindToken } from '@cowprotocol/tokens'
 import { useGnosisSafeInfo, useIsTxBundlingSupported, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
+import { useHasHookBridgeProvidersEnabled } from 'entities/bridgeProvider'
+
 import { useCurrentAccountProxy } from 'modules/accountProxy'
 import { useApproveState, useGetAmountToSignApprove, useIsApprovalOrPermitRequired } from 'modules/erc20Approve'
 import { TradeType, useDerivedTradeState, useIsWrapOrUnwrap } from 'modules/trade'
@@ -37,7 +39,9 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const isWrapUnwrap = useIsWrapOrUnwrap()
   const { isSupportedWallet } = useWalletDetails()
   const gnosisSafeInfo = useGnosisSafeInfo()
+  const hasHookBridgeProvidersEnabled = useHasHookBridgeProvidersEnabled()
   const { isLoading, data: proxyAccount } = useCurrentAccountProxy()
+  const isAccountProxyLoading = hasHookBridgeProvidersEnabled ? isLoading : false
 
   const isSafeReadonlyUser = gnosisSafeInfo?.isReadOnly === true
 
@@ -67,7 +71,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     isOnline,
     derivedTradeState,
     intermediateTokenToBeImported: !!intermediateBuyToken && toBeImported,
-    isAccountProxyLoading: isLoading,
+    isAccountProxyLoading,
     isProxySetupValid: proxyAccount?.isProxySetupValid,
     customTokenError,
   }
