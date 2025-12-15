@@ -62,46 +62,6 @@ export function getStoredTokenKey(token: StoredRecentToken): string {
   return getTokenUniqueKey(token)
 }
 
-export function readStoredTokens(limit: number): StoredRecentTokensByChain {
-  if (!canUseLocalStorage()) {
-    return {}
-  }
-
-  try {
-    const rawValue = window.localStorage.getItem(RECENT_TOKENS_STORAGE_KEY)
-
-    if (!rawValue) {
-      return {}
-    }
-
-    const parsed: unknown = JSON.parse(rawValue)
-
-    if (Array.isArray(parsed)) {
-      return migrateLegacyStoredTokens(parsed, limit)
-    }
-
-    if (parsed && typeof parsed === 'object') {
-      return sanitizeStoredTokensMap(parsed as Record<string, unknown>, limit)
-    }
-
-    return {}
-  } catch {
-    return {}
-  }
-}
-
-export function persistStoredTokens(tokens: StoredRecentTokensByChain): void {
-  if (!canUseLocalStorage()) {
-    return
-  }
-
-  try {
-    window.localStorage.setItem(RECENT_TOKENS_STORAGE_KEY, JSON.stringify(tokens))
-  } catch {
-    // Best effort persistence
-  }
-}
-
 export function buildNextStoredTokens(
   prev: StoredRecentTokensByChain,
   token: TokenWithLogo,
@@ -118,24 +78,7 @@ export function buildNextStoredTokens(
   }
 }
 
-export function persistRecentTokenSelection(
-  token: TokenWithLogo,
-  favoriteTokens: TokenWithLogo[],
-  maxItems = RECENT_TOKENS_LIMIT,
-): void {
-  const favoriteKeys = buildFavoriteTokenKeys(favoriteTokens)
-
-  if (favoriteKeys.has(getTokenUniqueKey(token))) {
-    return
-  }
-
-  const current = readStoredTokens(maxItems)
-  const next = buildNextStoredTokens(current, token, maxItems)
-
-  persistStoredTokens(next)
-}
-
-function sanitizeStoredTokensMap(record: Record<string, unknown>, limit: number): StoredRecentTokensByChain {
+export function sanitizeStoredTokensMap(record: Record<string, unknown>, limit: number): StoredRecentTokensByChain {
   const entries: StoredRecentTokensByChain = {}
 
   for (const [chainKey, tokens] of Object.entries(record)) {
@@ -155,21 +98,6 @@ function sanitizeStoredTokensMap(record: Record<string, unknown>, limit: number)
   }
 
   return entries
-}
-
-function migrateLegacyStoredTokens(entries: unknown[], limit: number): StoredRecentTokensByChain {
-  return entries
-    .map((entry) => sanitizeStoredToken(entry))
-    .filter((entry): entry is StoredRecentToken => Boolean(entry))
-    .reverse()
-    .reduce<StoredRecentTokensByChain>((acc, sanitized) => {
-      const chainId = sanitized.chainId
-      const chain = acc[chainId] ?? []
-
-      acc[chainId] = insertToken(chain, sanitized, limit)
-
-      return acc
-    }, {})
 }
 
 function sanitizeStoredToken(token: unknown): StoredRecentToken | null {
@@ -213,6 +141,10 @@ function toStoredToken(token: TokenWithLogo): StoredRecentToken {
   }
 }
 
-function canUseLocalStorage(): boolean {
-  return typeof window !== 'undefined' && typeof window.localStorage !== 'undefined'
+export function normalizeStoredRecentTokens(stored: unknown, limit: number): StoredRecentTokensByChain {
+  if (stored && typeof stored === 'object') {
+    return sanitizeStoredTokensMap(stored as Record<string, unknown>, limit)
+  }
+
+  return {}
 }

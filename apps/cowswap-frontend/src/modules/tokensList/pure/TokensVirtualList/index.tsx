@@ -15,6 +15,8 @@ import { FavoriteTokensList } from '../FavoriteTokensList'
 import * as modalStyled from '../SelectTokenModal/styled'
 import { TokenListItemContainer } from '../TokenListItemContainer'
 
+const VIRTUAL_LIST_KEY = 'tokens-list'
+
 export interface TokensVirtualListProps {
   allTokens: TokenWithLogo[]
   displayLpTokenLists?: boolean
@@ -97,7 +99,7 @@ export function TokensVirtualList(props: TokensVirtualListProps): ReactNode {
     return [...composedRows, ...tokenRows]
   }, [favoriteTokens, hideFavoriteTokensTooltip, onClearRecentTokens, recentTokens, sortedTokens])
 
-  const virtualListKey = scrollResetKey ?? 'tokens-list'
+  const virtualListKey = scrollResetKey ?? VIRTUAL_LIST_KEY
 
   const getItemView = useCallback(
     (virtualRows: TokensVirtualRow[], virtualItem: VirtualItem) => (
@@ -109,7 +111,7 @@ export function TokensVirtualList(props: TokensVirtualListProps): ReactNode {
   return (
     <VirtualList
       key={virtualListKey}
-      id="tokens-list"
+      id={VIRTUAL_LIST_KEY}
       items={rows}
       getItemView={getItemView}
       scrollResetKey={scrollResetKey}

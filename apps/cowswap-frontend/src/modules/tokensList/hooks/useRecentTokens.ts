@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useAtomValue, useSetAtom } from 'jotai'
+import { useCallback, useEffect, useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 
@@ -9,12 +10,10 @@ import {
   buildTokensByKey,
   getStoredTokenKey,
   hydrateStoredToken,
-  persistRecentTokenSelection as persistRecentTokenSelectionInternal,
-  persistStoredTokens,
-  readStoredTokens,
   type StoredRecentTokensByChain,
 } from './recentTokensStorage'
 
+import { recentTokensAtom } from '../state/recentTokensAtom'
 import { getTokenUniqueKey } from '../utils/tokenKey'
 
 interface UseRecentTokensParams {
@@ -36,17 +35,13 @@ export function useRecentTokens({
   activeChainId,
   maxItems = RECENT_TOKENS_LIMIT,
 }: UseRecentTokensParams): RecentTokensState {
-  const [storedTokensByChain, setStoredTokensByChain] = useState<StoredRecentTokensByChain>(() =>
-    readStoredTokens(maxItems),
-  )
-
-  useEffect(() => {
-    persistStoredTokens(storedTokensByChain)
-  }, [storedTokensByChain])
+  const storedTokensByChain = useAtomValue(recentTokensAtom)
+  const setStoredTokensByChain = useSetAtom(recentTokensAtom)
 
   const tokensByKey = useMemo(() => buildTokensByKey(allTokens), [allTokens])
   const favoriteKeys = useMemo(() => buildFavoriteTokenKeys(favoriteTokens), [favoriteTokens])
 
+  // Filter out favorite tokens from stored tokens
   useEffect(() => {
     setStoredTokensByChain((prev) => {
       const nextEntries: StoredRecentTokensByChain = {}
@@ -65,7 +60,7 @@ export function useRecentTokens({
 
       return didChange ? nextEntries : prev
     })
-  }, [favoriteKeys])
+  }, [favoriteKeys, setStoredTokensByChain])
 
   const recentTokens = useMemo(() => {
     const chainEntries = activeChainId ? (storedTokensByChain[activeChainId] ?? []) : []
@@ -101,14 +96,10 @@ export function useRecentTokens({
       }
 
       setStoredTokensByChain((prev) => {
-        const next = buildNextStoredTokens(prev, token, maxItems)
-
-        persistStoredTokens(next)
-
-        return next
+        return buildNextStoredTokens(prev, token, maxItems)
       })
     },
-    [favoriteKeys, maxItems],
+    [favoriteKeys, maxItems, setStoredTokensByChain],
   )
 
   const clearRecentTokens = useCallback(() => {
@@ -123,14 +114,9 @@ export function useRecentTokens({
         return prev
       }
 
-      const next: StoredRecentTokensByChain = { ...prev, [activeChainId]: [] }
-      persistStoredTokens(next)
-
-      return next
+      return { ...prev, [activeChainId]: [] }
     })
-  }, [activeChainId])
+  }, [activeChainId, setStoredTokensByChain])
 
   return { recentTokens, addRecentToken, clearRecentTokens }
 }
-
-export { persistRecentTokenSelectionInternal as persistRecentTokenSelection }
