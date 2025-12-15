@@ -2,10 +2,10 @@ import { Media, SearchInput as UISearchInput, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
+import { IconButton } from '../commonElements'
+
 export const Panel = styled.div<{ $variant: 'default' | 'fullscreen' }>`
-  width: ${({ $variant }) => ($variant === 'fullscreen' ? '100%' : '240px')};
-  min-width: ${({ $variant }) => ($variant === 'fullscreen' ? '0' : '220px')};
-  max-width: ${({ $variant }) => ($variant === 'fullscreen' ? '100%' : '280px')};
+  width: ${({ $variant }) => ($variant === 'fullscreen' ? '100%' : '200px')};
   height: ${({ $variant }) => ($variant === 'fullscreen' ? '100%' : 'auto')};
   flex-shrink: 0;
   background: var(${UI.COLOR_PAPER_DARKER});
@@ -20,7 +20,6 @@ export const Panel = styled.div<{ $variant: 'default' | 'fullscreen' }>`
 
   ${Media.upToMedium()} {
     width: 100%;
-    min-width: 0;
     border-left: none;
     border-top: 1px solid var(${UI.COLOR_BORDER});
     border-radius: ${({ $variant }) => ($variant === 'fullscreen' ? '0' : '0 0 20px 20px')};
@@ -47,6 +46,14 @@ export const PanelTitle = styled.h4<{ $isFullscreen?: boolean }>`
   flex: 1;
   text-align: ${({ $isFullscreen }) => ($isFullscreen ? 'left' : 'center')};
   color: ${({ $isFullscreen }) => ($isFullscreen ? `var(${UI.COLOR_TEXT})` : `var(${UI.COLOR_TEXT_OPACITY_70})`)};
+`
+
+export const PanelCloseButton = styled(IconButton)`
+  flex-shrink: 0;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  background: var(${UI.COLOR_PAPER});
 `
 
 export const PanelSearchInputWrapper = styled.div`

@@ -16,7 +16,6 @@ export function BridgingEnabledUpdater(): null {
   const setIsBridgingEnabled = useSetIsBridgingEnabled()
 
   const isSwapRoute = tradeTypeInfo?.route === Routes.SWAP
-
   const isWalletCompatible = Boolean(account ? accountType !== AccountType.SMART_CONTRACT : true)
   const shouldEnableBridging = isWalletCompatible && isSwapRoute
 

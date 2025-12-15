@@ -35,6 +35,9 @@ export interface TokenListContentProps<T = TokenListCategory[] | null> {
   chainsPanelTitle?: string
   isFullScreenMobile?: boolean
   selectedTargetChainId?: number
+  mobileChainsState?: ChainsToSelectState
+  mobileChainsLabel?: string
+  onOpenMobileChainPanel?(): void
 }
 
 export interface ChainSelectionProps {

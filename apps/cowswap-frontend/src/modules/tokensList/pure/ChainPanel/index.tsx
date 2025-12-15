@@ -4,6 +4,7 @@ import { ChainInfo } from '@cowprotocol/cow-sdk'
 import { BackButton } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 
 import * as styledEl from './styled'
 
@@ -62,7 +63,11 @@ export function ChainPanel({
           onSelectChain={onSelectChain}
         />
         {showUnavailableState && <styledEl.EmptyState>{t`No networks available for this trade.`}</styledEl.EmptyState>}
-        {showSearchEmptyState && <styledEl.EmptyState>{t`No networks match "${chainQuery}".`}</styledEl.EmptyState>}
+        {showSearchEmptyState && (
+          <styledEl.EmptyState>
+            <Trans>No networks match {chainQuery}.</Trans>
+          </styledEl.EmptyState>
+        )}
       </styledEl.PanelList>
     </styledEl.Panel>
   )

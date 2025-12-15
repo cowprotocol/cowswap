@@ -72,9 +72,8 @@ export const ChainLogo = styled.div`
   --size: 28px;
   width: var(--size);
   height: var(--size);
-  border-radius: var(--size);
   overflow: hidden;
-  background: var(${UI.COLOR_PAPER});
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -82,7 +81,7 @@ export const ChainLogo = styled.div`
   > img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
   }
 `
 

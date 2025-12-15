@@ -73,9 +73,9 @@ interface BuildModalPropsArgs {
   account: string | undefined
   hasChainPanel: boolean
   chainsState?: ChainsToSelectState
+  chainsPanelTitle: string
   onSelectChain?(chain: ChainInfo): void
   isInjectedWidgetMode: boolean
-  chainsPanelTitle: string
   modalTitle: string
 }
 
@@ -136,9 +136,9 @@ export function buildSelectTokenModalPropsInput({
   onDismiss,
   onOpenManageWidget,
   openPoolPage,
-    tokenListCategoryState,
-    disableErc20,
-    account,
+  tokenListCategoryState,
+  disableErc20,
+  account,
   hasChainPanel,
   chainsState,
   onSelectChain,
@@ -175,6 +175,8 @@ export function buildSelectTokenModalPropsInput({
     hasChainPanel,
     chainsToSelect: chainsState,
     chainsPanelTitle,
+    mobileChainsState: chainsState,
+    mobileChainsLabel: chainsPanelTitle,
     hideFavoriteTokensTooltip: isInjectedWidgetMode,
     selectedTargetChainId: widgetState.selectedTargetChainId,
     onSelectChain: selectChainHandler,
@@ -209,10 +211,14 @@ export function useSelectTokenModalPropsMemo(props: SelectTokenModalProps): Sele
       isRouteAvailable: props.isRouteAvailable,
       modalTitle: props.modalTitle,
       hasChainPanel: props.hasChainPanel,
-      hideFavoriteTokensTooltip: props.hideFavoriteTokensTooltip,
       chainsPanelTitle: props.chainsPanelTitle,
+      hideFavoriteTokensTooltip: props.hideFavoriteTokensTooltip,
       selectedTargetChainId: props.selectedTargetChainId,
+      chainsToSelect: props.chainsToSelect,
+      mobileChainsState: props.mobileChainsState,
+      mobileChainsLabel: props.mobileChainsLabel,
       onSelectChain: props.onSelectChain,
+      onOpenMobileChainPanel: props.onOpenMobileChainPanel,
       onClearRecentTokens: props.onClearRecentTokens,
     }),
     [
@@ -243,7 +249,11 @@ export function useSelectTokenModalPropsMemo(props: SelectTokenModalProps): Sele
       props.chainsPanelTitle,
       props.hideFavoriteTokensTooltip,
       props.selectedTargetChainId,
+      props.chainsToSelect,
+      props.mobileChainsState,
+      props.mobileChainsLabel,
       props.onSelectChain,
+      props.onOpenMobileChainPanel,
       props.onClearRecentTokens,
     ],
   )
