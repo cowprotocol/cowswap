@@ -1,5 +1,3 @@
-import { MessageDescriptor } from '@lingui/core'
-
 import { HookDappType, HookDappWalletCompatibility } from './consts'
 
 export interface CowHook {
@@ -132,9 +130,9 @@ export interface HookDappContext {
 
 export interface HookDappBase {
   id: string
-  name: MessageDescriptor
-  descriptionShort?: MessageDescriptor
-  description?: MessageDescriptor
+  name: string
+  descriptionShort?: string
+  description?: string
   type: HookDappType
   version: string
   website: string

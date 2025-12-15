@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.14.1](https://github.com/cowprotocol/cowswap/compare/hook-dapp-lib-v1.14.0...hook-dapp-lib-v1.14.1) (2025-12-09)
+
+
+### Bug Fixes
+
+* avoid using i18n in hookDappsRegistry ([#6633](https://github.com/cowprotocol/cowswap/issues/6633)) ([9cfeae0](https://github.com/cowprotocol/cowswap/commit/9cfeae0c107a632e78176c004aa3614fad12f68b))
+
 ## [1.14.0](https://github.com/cowprotocol/cowswap/compare/hook-dapp-lib-v1.13.0...hook-dapp-lib-v1.14.0) (2025-11-24)
 
 
