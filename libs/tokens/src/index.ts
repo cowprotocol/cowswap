@@ -1,6 +1,8 @@
 import { migrateNetworkMismatchUserAddedTokens } from './state/migrations/migrateNetworkMismatchUserAddedTokens'
+import { migrateTokenListsFromGithubCdn } from './state/migrations/migrateTokenListsFromGithubCdn'
 
 migrateNetworkMismatchUserAddedTokens()
+migrateTokenListsFromGithubCdn()
 
 // Updaters
 export { TokensListsUpdater } from './updaters/TokensListsUpdater'
