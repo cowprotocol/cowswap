@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useBridgeSupportedNetwork } from 'entities/bridgeProvider'
 
@@ -31,7 +30,7 @@ export function useQuoteBridgeContext(): QuoteBridgeContext | null {
   const { value: bridgeMinDepositAmountUsd } = useUsdAmount(quoteAmounts?.swapMinReceiveAmount)
   const { value: expectedToReceiveUsd } = useUsdAmount(expectedToReceive)
 
-  const targetChainId = buyAmount?.currency.chainId
+  const targetChainId = quoteAmounts?.bridgeMinReceiveAmount.currency.chainId
   const destChainData = useBridgeSupportedNetwork(targetChainId)
 
   const { account } = useWalletInfo()
@@ -45,10 +44,6 @@ export function useQuoteBridgeContext(): QuoteBridgeContext | null {
 
     if (!destChainData) return null
 
-    const bridgeMinReceiveAmount = bridgeQuote
-      ? CurrencyAmount.fromRawAmount(buyAmount.currency, bridgeQuote.amountsAndCosts.afterSlippage.buyAmount.toString())
-      : null
-
     return {
       chainName: destChainData.label,
       bridgeFee: quoteAmounts.bridgeFee,
@@ -58,7 +53,7 @@ export function useQuoteBridgeContext(): QuoteBridgeContext | null {
       buyAmount: buyAmount,
       bridgeReceiverOverride: bridgeQuote?.bridgeReceiverOverride || null,
       bridgeMinDepositAmount: quoteAmounts.swapMinReceiveAmount,
-      bridgeMinReceiveAmount,
+      bridgeMinReceiveAmount: quoteAmounts.bridgeMinReceiveAmount,
       bridgeMinDepositAmountUsd,
       buyAmountUsd,
       expectedToReceive,
@@ -72,7 +67,7 @@ export function useQuoteBridgeContext(): QuoteBridgeContext | null {
     buyAmount,
     buyAmountUsd,
     bridgeMinDepositAmountUsd,
-    bridgeQuote,
+    bridgeQuote?.bridgeReceiverOverride,
     expectedToReceive,
     expectedToReceiveUsd,
   ])
