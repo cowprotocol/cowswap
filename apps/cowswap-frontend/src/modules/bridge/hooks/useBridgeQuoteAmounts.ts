@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 
 import { BridgeQuoteAmounts } from '@cowprotocol/types'
-import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useGetReceiveAmountInfo, useGetSwapReceiveAmountInfo } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
@@ -18,10 +17,7 @@ export function useBridgeQuoteAmounts(): BridgeQuoteAmounts | null {
     const swapBuyAmount = swapReceiveAmountInfo.beforeAllFees.buyAmount
     const swapExpectedReceive = swapReceiveAmountInfo.afterPartnerFees.buyAmount
     const swapMinReceiveAmount = swapReceiveAmountInfo.afterSlippage.buyAmount
-    const bridgeMinReceiveAmount = CurrencyAmount.fromRawAmount(
-      receiveAmountInfo.afterSlippage.buyAmount.currency,
-      bridgeQuote.amountsAndCosts.afterSlippage.buyAmount.toString(),
-    )
+    const bridgeMinReceiveAmount = receiveAmountInfo.afterSlippage.buyAmount
 
     return {
       swapSellAmount,
