@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/cowprotocol/cowswap/compare/permit-utils-v1.0.0...permit-utils-v1.0.1) (2025-12-16)
+
+
+### Bug Fixes
+
+* update schema reference for app data ([#6626](https://github.com/cowprotocol/cowswap/issues/6626)) ([93e78e6](https://github.com/cowprotocol/cowswap/commit/93e78e69454039fc89eeeb170f076a7957db604f))
+
 ## [1.0.0](https://github.com/cowprotocol/cowswap/compare/permit-utils-v0.10.0...permit-utils-v1.0.0) (2025-09-12)
 
 
