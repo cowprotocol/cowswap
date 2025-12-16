@@ -1,8 +1,9 @@
 import { ReactNode, useMemo } from 'react'
 
+import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { shortenAddress } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
-import { Loader, RowBetween } from '@cowprotocol/ui'
+import { Loader, RowBetween, Media } from '@cowprotocol/ui'
 import { ConnectionType } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
@@ -10,8 +11,6 @@ import { Trans } from '@lingui/react/macro'
 import ICON_WALLET from 'assets/icon/wallet.svg'
 import { AlertCircle } from 'react-feather'
 import SVG from 'react-inlinesvg'
-
-import { upToExtraSmall, upToTiny, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 
 import { CowSwapAnalyticsCategory, CowSwapGtmEvent, toCowSwapGtmEvent } from 'common/analytics/types'
 
@@ -32,8 +31,8 @@ export function Web3StatusInner(props: Web3StatusInnerProps): ReactNode {
   const { account, pendingCount, ensName, connectionType, connectWallet, showUnfillableOrdersAlert } = props
 
   const hasPendingTransactions = !!pendingCount
-  const isUpToExtraSmall = useMediaQuery(upToExtraSmall)
-  const isUpToTiny = useMediaQuery(upToTiny)
+  const isUpToExtraSmall = useMediaQuery(Media.upToExtraSmall(false))
+  const isUpToTiny = useMediaQuery(Media.upToTiny(false))
 
   const connectWalletEvent = useMemo(
     (): CowSwapGtmEvent => ({
