@@ -21,7 +21,8 @@ export * from './web3-react/hooks/useSwitchNetwork'
 export * from './web3-react/hooks/useConnectionType'
 
 // Updater
-export * from './web3-react/updater'
+export { WalletUpdater } from './wagmi/updater'
+export { WalletUpdater as LegacyWalletUpdater } from './web3-react/updater'
 export * from './web3-react/updaters/HwAccountIndexUpdater'
 
 // Components

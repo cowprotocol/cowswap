@@ -1,6 +1,8 @@
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { SafeInfoResponse } from '@safe-global/api-kit'
 
+import { Address } from 'viem'
+
 export enum ConnectionType {
   NETWORK = 'NETWORK',
   INJECTED = 'INJECTED',
@@ -13,7 +15,7 @@ export enum ConnectionType {
 
 export interface WalletInfo {
   chainId: SupportedChainId
-  account?: string
+  account?: Address
   active?: boolean
 }
 

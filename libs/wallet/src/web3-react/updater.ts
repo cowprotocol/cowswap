@@ -1,6 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useEffect, useMemo, useState } from 'react'
 
+import { LAUNCH_DARKLY_VIEM_MIGRATION } from '@cowprotocol/common-const'
 import { getCurrentChainIdFromUrl } from '@cowprotocol/common-utils'
 import { getSafeInfo } from '@cowprotocol/core'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -8,6 +9,7 @@ import { useENSName } from '@cowprotocol/ens'
 import { useWeb3React } from '@web3-react/core'
 
 import ms from 'ms.macro'
+import { Address } from 'viem'
 
 import { useIsSmartContractWallet } from './hooks/useIsSmartContractWallet'
 import { useSafeAppsSdk } from './hooks/useSafeAppsSdk'
@@ -40,7 +42,7 @@ function useWalletInfo(): WalletInfo {
     () => ({
       chainId: isChainIdUnsupported || !chainId ? getCurrentChainIdFromUrl() : chainId,
       active,
-      account,
+      account: account as Address,
     }),
     [chainId, active, account, isChainIdUnsupported],
   )
@@ -69,7 +71,7 @@ function useWalletDetails(account?: string, standaloneMode?: boolean): WalletDet
 }
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+
 function useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
   const { provider } = useWeb3React()
   const { account, chainId } = walletInfo
@@ -77,7 +79,7 @@ function useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
   const safeAppsSdk = useSafeAppsSdk()
 
   // TODO: Break down this large function into smaller functions
-  // eslint-disable-next-line max-lines-per-function
+
   useEffect(() => {
     // TODO: Add proper return type annotation
     // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -169,11 +171,17 @@ export function WalletUpdater({ standaloneMode }: WalletUpdaterProps) {
 
   // Update wallet info
   useEffect(() => {
+    if (LAUNCH_DARKLY_VIEM_MIGRATION) {
+      return
+    }
     setWalletInfo(walletInfo)
   }, [walletInfo, setWalletInfo])
 
   // Update wallet details
   useEffect(() => {
+    if (LAUNCH_DARKLY_VIEM_MIGRATION) {
+      return
+    }
     const walletType = getWalletType({ gnosisSafeInfo, isSmartContractWallet: walletDetails.isSmartContractWallet })
     setWalletDetails({
       walletName: getWalletTypeLabel(walletType), // Fallback wallet name, will be overridden by below line if something exists.
@@ -183,6 +191,9 @@ export function WalletUpdater({ standaloneMode }: WalletUpdaterProps) {
 
   // Update Gnosis Safe info
   useEffect(() => {
+    if (LAUNCH_DARKLY_VIEM_MIGRATION) {
+      return
+    }
     setGnosisSafeInfo(gnosisSafeInfo)
   }, [gnosisSafeInfo, setGnosisSafeInfo])
 
