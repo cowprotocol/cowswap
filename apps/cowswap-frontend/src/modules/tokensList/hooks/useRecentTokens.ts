@@ -9,7 +9,6 @@ import {
   buildFavoriteTokenKeys,
   buildTokensByKey,
   getStoredTokenKey,
-  hydrateStoredToken,
   insertToken,
   type StoredRecentTokensByChain,
   toStoredToken,
@@ -55,9 +54,9 @@ export function useRecentTokens({
         continue
       }
 
-      const hydrated = hydrateStoredToken(entry, tokensByKey.get(key))
+      const hydrated = tokensByKey.get(key)
 
-      // Skip malformed persisted entries to avoid crashes if storage is corrupted
+      // Only surface recents that still exist in the current token set
       if (hydrated) {
         result.push(hydrated)
         seenKeys.add(key)

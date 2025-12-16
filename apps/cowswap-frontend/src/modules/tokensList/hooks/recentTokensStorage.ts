@@ -47,27 +47,6 @@ export function buildFavoriteTokenKeys(tokens: TokenWithLogo[]): Set<string> {
   return set
 }
 
-export function hydrateStoredToken(entry: StoredRecentToken, canonical?: TokenWithLogo): TokenWithLogo | null {
-  if (canonical) {
-    return canonical
-  }
-
-  try {
-    return new TokenWithLogo(
-      entry.logoURI,
-      entry.chainId,
-      entry.address,
-      entry.decimals,
-      entry.symbol,
-      entry.name,
-      undefined,
-      entry.tags ?? [],
-    )
-  } catch {
-    return null
-  }
-}
-
 export function getStoredTokenKey(token: StoredRecentToken): string {
   return getTokenUniqueKey(token)
 }
