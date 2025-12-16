@@ -212,6 +212,7 @@ msgstr "Unexpected error fetching data: wrong format data"
 msgid "is a helper contract that improves the user experience within CoW Swap for features like"
 msgstr "is a helper contract that improves the user experience within CoW Swap for features like"
 
+#: apps/cowswap-frontend/src/common/pure/BridgeReceiveAmountInfo/index.tsx
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmountInfo/index.tsx
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 #: apps/cowswap-frontend/src/modules/bridge/pure/BridgeActivitySummary/BridgeSummaryHeader.tsx
@@ -538,8 +539,8 @@ msgid "1 Month"
 msgstr "1 Month"
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/pure/ApprovalTooltip/index.tsx
-msgid "If you approve the full amount, you will only have to do this once per token."
-msgstr "If you approve the full amount, you will only have to do this once per token."
+msgid "If you approve an unlimited amount, you will only have to do this once per token."
+msgstr "If you approve an unlimited amount, you will only have to do this once per token."
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Infinite permit an address to spend one token on your behalf."
@@ -1496,6 +1497,10 @@ msgstr "Total fee"
 msgid "Recoverable balance"
 msgstr "Recoverable balance"
 
+#: apps/cowswap-frontend/src/modules/limitOrders/pure/RateImpactWarning/index.tsx
+msgid "Your limit price is {absoluteRateImpact}% lower than current market price. You could be selling your <0/> at a loss (although CoW Swap will always try to give you the best price regardless)."
+msgstr "Your limit price is {absoluteRateImpact}% lower than current market price. You could be selling your <0/> at a loss (although CoW Swap will always try to give you the best price regardless)."
+
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/constants.tsx
 msgid "Invalid hook dapp ID format. The ID must be a 64-character hexadecimal string."
 msgstr "Invalid hook dapp ID format. The ID must be a 64-character hexadecimal string."
@@ -2183,7 +2188,7 @@ msgstr "Your Safe needs a modification"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/OrderTypeField.tsx
 msgid "{orderType} {orderKind} order"
-msgstr "Orden {orderType} {orderKind}"
+msgstr "{orderType} {orderKind} order"
 
 #: apps/cowswap-frontend/src/common/pure/SafeWalletLink/index.tsx
 #: apps/cowswap-frontend/src/legacy/components/ExplorerLink/index.tsx
@@ -2561,6 +2566,10 @@ msgstr "Fill or kill"
 #: apps/cowswap-frontend/src/common/containers/OrderHooksDetails/HookItem/index.tsx
 msgid "Description"
 msgstr "Description"
+
+#: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteBridgeContent/index.tsx
+msgid "The estimated amount you'll receive after bridge costs."
+msgstr "The estimated amount you'll receive after bridge costs."
 
 #: apps/cowswap-frontend/src/common/pure/CancellationModal/RequestCancellationModal.tsx
 msgid "on-chain"
@@ -3484,6 +3493,7 @@ msgstr "Trade alert settings info"
 msgid "Define custom total time"
 msgstr "Define custom total time"
 
+#: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteBridgeContent/index.tsx
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteSwapContent/index.tsx
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapConfirmModal/useLabelsAndTooltips.tsx
 #: apps/cowswap-frontend/src/modules/trade/containers/TradeBasicConfirmDetails/index.tsx
@@ -3622,10 +3632,6 @@ msgstr "When orders fill or expire"
 #: apps/cowswap-frontend/src/modules/tokensList/pure/LpTokenLists/index.tsx
 msgid "No pool tokens available"
 msgstr "No pool tokens available"
-
-#: apps/cowswap-frontend/src/modules/limitOrders/pure/RateImpactWarning/index.tsx
-#~ msgid "Your limit price is {percent}% lower than current market price. You could be selling your <0/> at a loss (although CoW Swap will always try to give you the best price regardless)."
-#~ msgstr "Your limit price is {percent}% lower than current market price. You could be selling your <0/> at a loss (although CoW Swap will always try to give you the best price regardless)."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/SolvingStep.tsx
 msgid "Still searching"
@@ -3931,7 +3937,7 @@ msgstr "This is the recommended slippage tolerance based on current gas prices &
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/OrderTypeField.tsx
 msgid "buy"
-msgstr "comprar"
+msgstr "buy"
 
 #: apps/cowswap-frontend/src/pages/Account/Balances.tsx
 msgid "Converting vCOW to COW"
@@ -4347,10 +4353,6 @@ msgstr "more"
 msgid "CoW Protocol covers the costs by executing your order at a slightly better price than your limit price."
 msgstr "CoW Protocol covers the costs by executing your order at a slightly better price than your limit price."
 
-#: apps/cowswap-frontend/src/modules/limitOrders/pure/RateImpactWarning/index.tsx
-msgid "Your limit price is {absoluteRateImpact}% lower than current market price. You could be selling your <0/> at a loss (although CoW Swap will always try to give you the best price regardless)."
-msgstr "Your limit price is {absoluteRateImpact}% lower than current market price. You could be selling your <0/> at a loss (although CoW Swap will always try to give you the best price regardless)."
-
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/HookSearchInput/index.tsx
 msgid "Clear search input"
 msgstr "Clear search input"
@@ -4400,6 +4402,10 @@ msgstr "N/A"
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AppliedHookItem/index.tsx
 msgid "This transaction can be simulated before execution to ensure that it will be succeed, generating a detailed report of the transaction execution."
 msgstr "This transaction can be simulated before execution to ensure that it will be succeed, generating a detailed report of the transaction execution."
+
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+msgid "Sell amount too small to bridge"
+msgstr "Sell amount too small to bridge"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/DeadlineSelector/deadlines.ts
 msgid "1 Year (max)"
@@ -5111,6 +5117,10 @@ msgstr "order executes at"
 msgid "Information"
 msgstr "Information"
 
+#: apps/cowswap-frontend/src/modules/limitOrders/pure/RateImpactWarning/index.tsx
+#~ msgid "Your limit price is {percent}% lower than current market price. You could be selling your <0/> at a loss (although CoW Swap will always try to give you the best price regardless)."
+#~ msgstr "Your limit price is {percent}% lower than current market price. You could be selling your <0/> at a loss (although CoW Swap will always try to give you the best price regardless)."
+
 #: apps/cowswap-frontend/src/modules/account/containers/AccountDetails/SurplusCard.tsx
 msgid "The total surplus CoW Swap has generated for you in {nativeSymbol} across all your trades since {startDate}"
 msgstr "The total surplus CoW Swap has generated for you in {nativeSymbol} across all your trades since {startDate}"
@@ -5517,6 +5527,7 @@ msgstr "required"
 msgid "Wallet"
 msgstr "Wallet"
 
+#: apps/cowswap-frontend/src/common/pure/BridgeReceiveAmountInfo/index.tsx
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmountInfo/index.tsx
 msgid "Before costs"
 msgstr "Before costs"
@@ -6088,6 +6099,7 @@ msgstr "Quote will be updated in {time}"
 msgid "Dark mode"
 msgstr "Dark mode"
 
+#: apps/cowswap-frontend/src/common/pure/BridgeReceiveAmountInfo/index.tsx
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmountInfo/index.tsx
 msgid "Bridge costs"
 msgstr "Bridge costs"

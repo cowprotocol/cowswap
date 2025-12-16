@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-imports */ // TODO: Don't use 'modules' import
 import { useCallback } from 'react'
 
 import { tryParseCurrencyAmount } from '@cowprotocol/common-utils'
@@ -14,7 +15,7 @@ import { RateInfoParams } from 'common/pure/RateInfo'
 
 export function useRateInfoParams(
   inputCurrencyAmount: Nullish<CurrencyAmount<Currency>>,
-  outputCurrencyAmount: Nullish<CurrencyAmount<Currency>>
+  outputCurrencyAmount: Nullish<CurrencyAmount<Currency>>,
 ): RateInfoParams {
   const { chainId } = useWalletInfo()
 
@@ -26,7 +27,7 @@ export function useRateInfoParams(
 
       return (invert ? activeRate.invert() : activeRate).toSignificant(18)
     },
-    [activeRate]
+    [activeRate],
   )
 
   const {
@@ -34,7 +35,7 @@ export function useRateInfoParams(
     outputAmount: { value: activeRateFiatAmount },
   } = useTradeUsdAmounts(
     tryParseCurrencyAmount(parseRate(true), inputCurrencyAmount?.currency || undefined),
-    tryParseCurrencyAmount(parseRate(false), outputCurrencyAmount?.currency || undefined)
+    tryParseCurrencyAmount(parseRate(false), outputCurrencyAmount?.currency || undefined),
   )
 
   return useSafeMemoObject({

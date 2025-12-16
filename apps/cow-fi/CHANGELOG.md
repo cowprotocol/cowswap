@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.29.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.28.1...cow-fi-v1.29.0) (2025-12-16)
+
+
+### Features
+
+* add link to bug bounty program ([#6612](https://github.com/cowprotocol/cowswap/issues/6612)) ([3cf7a8d](https://github.com/cowprotocol/cowswap/commit/3cf7a8dbb04bc512da0494701d70555239d0d473))
+* move from gh cdn to aws ([#6591](https://github.com/cowprotocol/cowswap/issues/6591)) ([79a1581](https://github.com/cowprotocol/cowswap/commit/79a158129c7e81a4ed9df2414e6ec835cdab25e9))
+
 ## [1.28.1](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.28.0...cow-fi-v1.28.1) (2025-11-25)
 
 

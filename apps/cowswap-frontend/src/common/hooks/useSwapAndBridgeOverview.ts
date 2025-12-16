@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-imports */ // TODO: Don't use 'modules' import
 import { useMemo } from 'react'
 
 import { getChainInfo, TokenWithLogo } from '@cowprotocol/common-const'
