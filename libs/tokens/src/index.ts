@@ -43,6 +43,7 @@ export { useAreUnsupportedTokens } from './hooks/tokens/unsupported/useAreUnsupp
 export { useResetFavoriteTokens } from './hooks/tokens/favorite/useResetFavoriteTokens'
 export { useToggleFavoriteToken } from './hooks/tokens/favorite/useToggleFavoriteToken'
 export { useTokensByAddressMap } from './hooks/tokens/useTokensByAddressMap'
+export { useTokensByAddressMapForChain } from './hooks/tokens/useTokensByAddressMapForChain'
 export { useTokenBySymbolOrAddress } from './hooks/tokens/useTokenBySymbolOrAddress'
 export { useTokenByAddress } from './hooks/tokens/useTokenByAddress'
 export { useTryFindToken } from './hooks/tokens/useTryFindToken'

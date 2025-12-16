@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.17.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.16.1...widget-configurator-v1.17.0) (2025-12-16)
+
+
+### Features
+
+* move from gh cdn to aws ([#6591](https://github.com/cowprotocol/cowswap/issues/6591)) ([79a1581](https://github.com/cowprotocol/cowswap/commit/79a158129c7e81a4ed9df2414e6ec835cdab25e9))
+
 ## [1.16.1](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.16.0...widget-configurator-v1.16.1) (2025-08-21)
 
 

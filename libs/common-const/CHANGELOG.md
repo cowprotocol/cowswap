@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.31.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.30.0...common-const-v1.31.0) (2025-12-16)
+
+
+### Features
+
+* add locale display names in selector ([#6561](https://github.com/cowprotocol/cowswap/issues/6561)) ([b4f5319](https://github.com/cowprotocol/cowswap/commit/b4f53198397109ca2c7b426b7c104656d604bb54))
+* move from gh cdn to aws ([#6591](https://github.com/cowprotocol/cowswap/issues/6591)) ([79a1581](https://github.com/cowprotocol/cowswap/commit/79a158129c7e81a4ed9df2414e6ec835cdab25e9))
+
+
+### Bug Fixes
+
+* page crash when sell token has 0 decimals ([#6673](https://github.com/cowprotocol/cowswap/issues/6673)) ([d26b4fe](https://github.com/cowprotocol/cowswap/commit/d26b4fec6399490e058963d151a1263278554459))
+* validate token structure in useBridgeSupportedTokens and TokenWithLogo ([#6539](https://github.com/cowprotocol/cowswap/issues/6539)) ([d3d14b2](https://github.com/cowprotocol/cowswap/commit/d3d14b2fd5f386d1b87f1b7d011dc16eef0fb7a6))
+
 ## [1.30.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.29.0...common-const-v1.30.0) (2025-11-24)
 
 
