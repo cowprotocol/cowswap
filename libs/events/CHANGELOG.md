@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.0.2](https://github.com/cowprotocol/cowswap/compare/events-v2.0.1...events-v2.0.2) (2025-12-16)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/types bumped from ^2.1.0 to ^2.1.1
+
 ## [2.0.1](https://github.com/cowprotocol/cowswap/compare/events-v2.0.0...events-v2.0.1) (2025-11-24)
 
 
