@@ -8,7 +8,7 @@ msgstr ""
 "Language: pt\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-12-11 09:07\n"
+"PO-Revision-Date: 2025-12-16 11:08\n"
 "Last-Translator: \n"
 "Language-Team: Portuguese, Brazilian\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -212,6 +212,7 @@ msgstr ""
 msgid "is a helper contract that improves the user experience within CoW Swap for features like"
 msgstr ""
 
+#: apps/cowswap-frontend/src/common/pure/BridgeReceiveAmountInfo/index.tsx
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmountInfo/index.tsx
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 #: apps/cowswap-frontend/src/modules/bridge/pure/BridgeActivitySummary/BridgeSummaryHeader.tsx
@@ -2556,6 +2557,10 @@ msgstr ""
 msgid "Description"
 msgstr ""
 
+#: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteBridgeContent/index.tsx
+msgid "The estimated amount you'll receive after bridge costs."
+msgstr ""
+
 #: apps/cowswap-frontend/src/common/pure/CancellationModal/RequestCancellationModal.tsx
 msgid "on-chain"
 msgstr ""
@@ -3475,6 +3480,7 @@ msgstr ""
 msgid "Define custom total time"
 msgstr ""
 
+#: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteBridgeContent/index.tsx
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteSwapContent/index.tsx
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapConfirmModal/useLabelsAndTooltips.tsx
 #: apps/cowswap-frontend/src/modules/trade/containers/TradeBasicConfirmDetails/index.tsx
@@ -4377,6 +4383,10 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AppliedHookItem/index.tsx
 msgid "This transaction can be simulated before execution to ensure that it will be succeed, generating a detailed report of the transaction execution."
+msgstr ""
+
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+msgid "Sell amount too small to bridge"
 msgstr ""
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/DeadlineSelector/deadlines.ts
@@ -5499,6 +5509,7 @@ msgstr ""
 msgid "Wallet"
 msgstr ""
 
+#: apps/cowswap-frontend/src/common/pure/BridgeReceiveAmountInfo/index.tsx
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmountInfo/index.tsx
 msgid "Before costs"
 msgstr ""
@@ -6070,6 +6081,7 @@ msgstr ""
 msgid "Dark mode"
 msgstr ""
 
+#: apps/cowswap-frontend/src/common/pure/BridgeReceiveAmountInfo/index.tsx
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmountInfo/index.tsx
 msgid "Bridge costs"
 msgstr ""
