@@ -8,7 +8,7 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-12-11 09:07\n"
+"PO-Revision-Date: 2025-12-16 11:08\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -213,6 +213,7 @@ msgstr "Error inesperado obteniendo datos: datos de formato incorrecto"
 msgid "is a helper contract that improves the user experience within CoW Swap for features like"
 msgstr "es un contrato de ayuda que mejora la experiencia del usuario dentro de CoW Swap para funciones como"
 
+#: apps/cowswap-frontend/src/common/pure/BridgeReceiveAmountInfo/index.tsx
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmountInfo/index.tsx
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 #: apps/cowswap-frontend/src/modules/bridge/pure/BridgeActivitySummary/BridgeSummaryHeader.tsx
@@ -2559,6 +2560,10 @@ msgstr "Rellenar o matar"
 msgid "Description"
 msgstr "Descripción"
 
+#: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteBridgeContent/index.tsx
+msgid "The estimated amount you'll receive after bridge costs."
+msgstr ""
+
 #: apps/cowswap-frontend/src/common/pure/CancellationModal/RequestCancellationModal.tsx
 msgid "on-chain"
 msgstr "en cadena"
@@ -3479,6 +3484,7 @@ msgstr ""
 msgid "Define custom total time"
 msgstr "Definir tiempo total personalizado"
 
+#: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteBridgeContent/index.tsx
 #: apps/cowswap-frontend/src/modules/bridge/pure/contents/QuoteSwapContent/index.tsx
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapConfirmModal/useLabelsAndTooltips.tsx
 #: apps/cowswap-frontend/src/modules/trade/containers/TradeBasicConfirmDetails/index.tsx
@@ -4383,6 +4389,10 @@ msgstr ""
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AppliedHookItem/index.tsx
 msgid "This transaction can be simulated before execution to ensure that it will be succeed, generating a detailed report of the transaction execution."
 msgstr "Esta transacción se puede simular antes de la ejecución para asegurarse de que tendrá éxito, generando un informe detallado de la ejecución de la transacción."
+
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+msgid "Sell amount too small to bridge"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/DeadlineSelector/deadlines.ts
 msgid "1 Year (max)"
@@ -5504,6 +5514,7 @@ msgstr "requerido"
 msgid "Wallet"
 msgstr "Billetera"
 
+#: apps/cowswap-frontend/src/common/pure/BridgeReceiveAmountInfo/index.tsx
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmountInfo/index.tsx
 msgid "Before costs"
 msgstr "Antes de costes"
@@ -6075,6 +6086,7 @@ msgstr "La cotización se actualizará en {time}"
 msgid "Dark mode"
 msgstr "Modo oscuro"
 
+#: apps/cowswap-frontend/src/common/pure/BridgeReceiveAmountInfo/index.tsx
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmountInfo/index.tsx
 msgid "Bridge costs"
 msgstr ""
