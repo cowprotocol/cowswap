@@ -42,6 +42,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const hasHookBridgeProvidersEnabled = useHasHookBridgeProvidersEnabled()
   const { isLoading, data: proxyAccount } = useCurrentAccountProxy()
   const isAccountProxyLoading = hasHookBridgeProvidersEnabled ? isLoading : false
+  const isProxySetupValid = hasHookBridgeProvidersEnabled ? !!proxyAccount?.isProxySetupValid : true
 
   const isSafeReadonlyUser = gnosisSafeInfo?.isReadOnly === true
 
@@ -55,36 +56,50 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     getBridgeIntermediateTokenAddress(tradeQuote.bridgeQuote),
   )
 
-  const commonContext = {
-    account,
-    isWrapUnwrap,
-    isBundlingSupported: !!isBundlingSupported,
-    isSupportedWallet,
-    isSwapUnsupported,
-    isSafeReadonlyUser,
-    recipientEnsAddress,
-    approvalState,
-    tradeQuote,
-    isApproveRequired,
-    isInsufficientBalanceOrderAllowed,
-    isProviderNetworkUnsupported,
-    isOnline,
-    derivedTradeState,
-    intermediateTokenToBeImported: !!intermediateBuyToken && toBeImported,
-    isAccountProxyLoading,
-    isProxySetupValid: proxyAccount?.isProxySetupValid,
-    customTokenError,
-  }
-
   return useMemo(() => {
     if (!derivedTradeState) return null
 
     return {
-      ...commonContext,
+      account,
+      isWrapUnwrap,
+      isBundlingSupported: !!isBundlingSupported,
+      isSupportedWallet,
+      isSwapUnsupported,
+      isSafeReadonlyUser,
+      recipientEnsAddress,
+      approvalState,
+      tradeQuote,
+      isApproveRequired,
+      isInsufficientBalanceOrderAllowed,
+      isProviderNetworkUnsupported,
+      isOnline,
       derivedTradeState,
+      intermediateTokenToBeImported: !!intermediateBuyToken && toBeImported,
+      isAccountProxyLoading,
+      isProxySetupValid,
+      customTokenError,
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [...Object.values(commonContext), derivedTradeState])
+  }, [
+    account,
+    approvalState,
+    customTokenError,
+    derivedTradeState,
+    intermediateBuyToken,
+    isAccountProxyLoading,
+    isApproveRequired,
+    isBundlingSupported,
+    isInsufficientBalanceOrderAllowed,
+    isOnline,
+    isProviderNetworkUnsupported,
+    isSafeReadonlyUser,
+    isSupportedWallet,
+    isSwapUnsupported,
+    isWrapUnwrap,
+    isProxySetupValid,
+    recipientEnsAddress,
+    toBeImported,
+    tradeQuote,
+  ])
 }
 
 function isUnsupportedTokenInQuote(state: TradeQuoteState): boolean {
