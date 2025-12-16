@@ -329,7 +329,9 @@ export class InjectedWallet extends Connector {
 
         // If we get a valid chainId from RPC, return it immediately (prioritize fresh response)
         if (typeof chainId === 'string' || typeof chainId === 'number') {
-          // RPC succeeded, clear metadata flag
+          // RPC succeeded; set custom provider so getNetwork() doesn't rely on further eth_chainId calls
+          const parsed = parseChainId(chainId)
+          this.setCustomProvider(parsed)
           return { chainId, usedMetadata: false }
         }
 
