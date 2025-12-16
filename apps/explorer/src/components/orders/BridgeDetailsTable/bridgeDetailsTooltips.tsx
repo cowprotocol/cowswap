@@ -17,5 +17,6 @@ export const BridgeDetailsTooltips = {
       amount of the Swap before the bridge is initiated.
     </span>
   ),
+  accountOrderSigner: 'The account address which signed the order.',
   receiverAddress: 'The account address to which the tokens are bridged on the destination chain.',
 }
