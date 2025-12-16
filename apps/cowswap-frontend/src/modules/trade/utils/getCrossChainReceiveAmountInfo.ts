@@ -6,11 +6,9 @@ import { BridgeFeeAmounts, CrossChainReceiveAmountInfoParams } from './types'
 import { ReceiveAmountInfo } from '../types'
 
 export function getCrossChainReceiveAmountInfo(params: CrossChainReceiveAmountInfoParams): ReceiveAmountInfo {
-  const { outputCurrency, intermediateCurrency, bridgeFeeAmounts, bridgeBuyAmount } = params
+  const { outputCurrency, intermediateCurrency, bridgeFeeAmounts, expectedToReceiveAmount } = params
 
-  const bridgeOutputAmount = CurrencyAmount.fromRawAmount(outputCurrency, bridgeBuyAmount.toString())
-
-  const data = getReceiveAmountInfo(params, bridgeOutputAmount)
+  const data = getReceiveAmountInfo(params, expectedToReceiveAmount)
   const bridgeFee = calculateBridgeFee(outputCurrency, intermediateCurrency, bridgeFeeAmounts)
 
   return {

@@ -6,7 +6,7 @@ import { createInstance } from 'localforage'
 
 export const jotaiStore = createStore()
 
-const localForageJotai = createInstance({
+export const localForageJotai = createInstance({
   name: 'cowswap_jotai',
 })
 
