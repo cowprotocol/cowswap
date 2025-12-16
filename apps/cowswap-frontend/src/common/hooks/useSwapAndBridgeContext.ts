@@ -29,8 +29,6 @@ import { useBridgeOrderOutputToken } from './useBridgeOrderOutputToken'
 import { useSwapAndBridgeOverview } from './useSwapAndBridgeOverview'
 import { useSwapResultsContext } from './useSwapResultsContext'
 
-import { calculateTargetAmountsBeforeBridging } from '../utils/calculateTargetAmountsBeforeBridging'
-
 const bridgeStatusMap: Record<BridgeStatus, SwapAndBridgeStatus> = {
   [BridgeStatus.IN_PROGRESS]: SwapAndBridgeStatus.PENDING,
   [BridgeStatus.EXECUTED]: SwapAndBridgeStatus.DONE,
@@ -43,6 +41,7 @@ export interface SwapAndBridgeContexts {
   swapAndBridgeContext: SwapAndBridgeContext | undefined
   swapResultContext: SwapResultContext | undefined
   swapAndBridgeOverview: SwapAndBridgeOverview | undefined
+  intermediateToken: TokenWithLogo | undefined
   isLoading: boolean
 }
 
@@ -125,16 +124,18 @@ export function useSwapAndBridgeContext(
 
     if (crossChainOrder && bridgeReceiveAmount) {
       return {
-        sellAmount: CurrencyAmount.fromRawAmount(
-          intermediateToken,
-          crossChainOrder.bridgingParams.inputAmount.toString(),
-        ),
+        sellAmount:
+          receivedAmount ??
+          CurrencyAmount.fromRawAmount(intermediateToken, crossChainOrder.bridgingParams.inputAmount.toString()),
         buyAmount: bridgeReceiveAmount,
       }
     }
 
     if (bridgeQuoteAmounts && !bridgeOutputAmount) {
-      return calculateTargetAmountsBeforeBridging(bridgeQuoteAmounts, receivedAmount)
+      return {
+        sellAmount: receivedAmount ?? bridgeQuoteAmounts.swapMinReceiveAmount,
+        buyAmount: bridgeQuoteAmounts.bridgeMinReceiveAmount,
+      }
     }
 
     return undefined
@@ -200,6 +201,8 @@ export function useSwapAndBridgeContext(
       bridgeMinReceiveAmount,
       bridgeMinDepositAmount: null,
       bridgeMinDepositAmountUsd: null,
+      expectedToReceive: null,
+      expectedToReceiveUsd: null,
     }
 
     return {
@@ -229,7 +232,7 @@ export function useSwapAndBridgeContext(
   const isLoading = isCrossChainOrderLoading
 
   return useMemo(
-    () => ({ swapAndBridgeContext, swapResultContext, swapAndBridgeOverview, isLoading }),
-    [swapAndBridgeContext, swapResultContext, swapAndBridgeOverview, isLoading],
+    () => ({ swapAndBridgeContext, swapResultContext, swapAndBridgeOverview, intermediateToken, isLoading }),
+    [swapAndBridgeContext, swapResultContext, swapAndBridgeOverview, intermediateToken, isLoading],
   )
 }

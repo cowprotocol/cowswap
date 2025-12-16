@@ -6,12 +6,12 @@ import { createInstance } from 'localforage'
 
 export const jotaiStore = createStore()
 
-const localForageJotai = createInstance({
+export const localForageJotai = createInstance({
   name: 'cowswap_jotai',
 })
 
 /**
- * atomWithStorage() has build-in feature to persist state between all tabs
+ * atomWithStorage() has built-in feature to persist state between all tabs
  * To disable this feature we pass our own instance of storage
  * https://github.com/pmndrs/jotai/pull/1004/files
  *

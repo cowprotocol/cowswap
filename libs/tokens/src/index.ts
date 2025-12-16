@@ -1,6 +1,8 @@
 import { migrateNetworkMismatchUserAddedTokens } from './state/migrations/migrateNetworkMismatchUserAddedTokens'
+import { migrateTokenListsFromGithubCdn } from './state/migrations/migrateTokenListsFromGithubCdn'
 
 migrateNetworkMismatchUserAddedTokens()
+migrateTokenListsFromGithubCdn()
 
 // Updaters
 export { TokensListsUpdater } from './updaters/TokensListsUpdater'
@@ -41,7 +43,10 @@ export { useAreUnsupportedTokens } from './hooks/tokens/unsupported/useAreUnsupp
 export { useResetFavoriteTokens } from './hooks/tokens/favorite/useResetFavoriteTokens'
 export { useToggleFavoriteToken } from './hooks/tokens/favorite/useToggleFavoriteToken'
 export { useTokensByAddressMap } from './hooks/tokens/useTokensByAddressMap'
+export { useTokensByAddressMapForChain } from './hooks/tokens/useTokensByAddressMapForChain'
 export { useTokenBySymbolOrAddress } from './hooks/tokens/useTokenBySymbolOrAddress'
+export { useTokenByAddress } from './hooks/tokens/useTokenByAddress'
+export { useTryFindToken } from './hooks/tokens/useTryFindToken'
 export { useAreThereTokensWithSameSymbol } from './hooks/tokens/useAreThereTokensWithSameSymbol'
 export { useSearchList } from './hooks/lists/useSearchList'
 export { useSearchToken } from './hooks/tokens/useSearchToken'

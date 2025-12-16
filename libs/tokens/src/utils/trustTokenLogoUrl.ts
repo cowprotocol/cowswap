@@ -14,6 +14,9 @@ const chainIdToName: Record<SupportedChainId, string | null> = {
   [SupportedChainId.PLASMA]: 'plasma',
 }
 
+/**
+ * @deprecated TODO5(daniel)
+ */
 export function trustTokenLogoUrl(address: string, chainId: SupportedChainId): string | null {
   const trustChainName = chainIdToName[chainId]
 
