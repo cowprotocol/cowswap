@@ -110,17 +110,21 @@ export const SearchBar: React.FC<SearchBarProps> = () => {
     startTransition(async () => {
       try {
         const result = await searchArticlesAction({ searchTerm: trimmedQuery, page: 0, pageSize: PAGE_SIZE })
-        if (result.success && result.data) {
-          setFilteredArticles(result.data.data)
-          setTotalResults(result.data.meta.pagination.total)
-          setHasMoreResults(result.data.meta.pagination.pageCount > 1)
-        } else {
-          console.error('Search failed:', result.error)
-          resetSearchResults('Unable to complete search. Please try again.')
-        }
+        startTransition(() => {
+          if (result.success && result.data) {
+            setFilteredArticles(result.data.data)
+            setTotalResults(result.data.meta.pagination.total)
+            setHasMoreResults(result.data.meta.pagination.pageCount > 1)
+          } else {
+            console.error('Search failed:', result.error)
+            resetSearchResults('Unable to complete search. Please try again.')
+          }
+        })
       } catch (error) {
-        console.error('Error searching articles:', error)
-        resetSearchResults('An error occurred while searching. Please try again.')
+        startTransition(() => {
+          console.error('Error searching articles:', error)
+          resetSearchResults('An error occurred while searching. Please try again.')
+        })
       }
     })
   }, [debouncedQuery])
