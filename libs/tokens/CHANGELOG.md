@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.31.1](https://github.com/cowprotocol/cowswap/compare/tokens-v1.31.0...tokens-v1.31.1) (2025-12-16)
+
+
+### Bug Fixes
+
+* token lists missing after migration ([#6704](https://github.com/cowprotocol/cowswap/issues/6704)) ([8b78d0a](https://github.com/cowprotocol/cowswap/commit/8b78d0a0b595497f41fb55a3c69b095efe08a978))
+
 ## [1.31.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.30.0...tokens-v1.31.0) (2025-12-16)
 
 
