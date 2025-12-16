@@ -295,8 +295,11 @@ export class InjectedWallet extends Connector {
         try {
           chainId = await provider.request({ method: 'eth_chainId' })
         } catch (error) {
-          console.debug('eth_chainId failed, will retry', error)
+          console.debug('eth_chainId failed, checking metadata (will retry if unavailable)', error)
           lastError = error
+          // When RPC throws an error, check metadata first; only retry if nothing usable is found
+          const metaChainId = readMetaChainId(provider)
+          if (metaChainId !== null) return metaChainId
         }
 
         // If we get a valid chainId from RPC, return it immediately (prioritize fresh response)
@@ -320,6 +323,10 @@ export class InjectedWallet extends Connector {
           await new Promise((resolve) => setTimeout(resolve, 500 * (attempt + 1)))
         }
       }
+
+      // After all retries failed, fall back to provider metadata as last resort
+      const metaChainId = readMetaChainId(provider)
+      if (metaChainId !== null) return metaChainId
 
       if (lastError instanceof Error) {
         throw lastError
