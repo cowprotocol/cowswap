@@ -38,7 +38,8 @@ export { getWeb3ReactConnection } from './web3-react/utils/getWeb3ReactConnectio
 export { switchChain } from './web3-react/utils/switchChain'
 
 // Connectors
-export { Web3Provider } from './web3-react/Web3Provider'
+export { Web3Provider } from './wagmi/Web3Provider'
+export { Web3Provider as LegacyWeb3Provider } from './web3-react/Web3Provider'
 export { injectedWalletConnection } from './web3-react/connection/injectedWallet'
 export { networkConnection } from './web3-react/connection/network'
 export { gnosisSafeConnection } from './web3-react/connection/safe'
