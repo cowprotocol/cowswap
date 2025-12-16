@@ -1,14 +1,14 @@
+import React, { useCallback, useEffect, useMemo, useRef, useState, useTransition } from 'react'
+
 import IMG_ICON_SEARCH from '@cowprotocol/assets/images/icon-search.svg'
 import IMG_ICON_X from '@cowprotocol/assets/images/x.svg'
 import { useDebounce, useMediaQuery, useOnClickOutside } from '@cowprotocol/common-hooks'
 import { Media } from '@cowprotocol/ui'
+
 import { useRouter } from 'next/navigation'
-import React, { useCallback, useEffect, useMemo, useRef, useState, useTransition } from 'react'
 import SVG from 'react-inlinesvg'
 import { Article } from 'services/cms'
-import { searchArticlesAction } from '../../app/actions'
-import { useKeyboardNavigation } from '../../hooks/useKeyboardNavigation'
-import { highlightQuery } from '@/util/textHighlighting'
+
 import { DEBOUNCE_DELAY, MIN_SEARCH_LENGTH, PAGE_SIZE } from './const'
 import {
   CloseIcon,
@@ -26,8 +26,14 @@ import {
   SearchResultsInner,
 } from './styled'
 
+import { searchArticlesAction } from '../../app/actions'
+import { useKeyboardNavigation } from '../../hooks/useKeyboardNavigation'
+
+import { highlightQuery } from '@/util/textHighlighting'
+
 interface SearchBarProps {}
 
+// eslint-disable-next-line max-lines-per-function
 export const SearchBar: React.FC<SearchBarProps> = () => {
   const [query, setQuery] = useState('')
   const [filteredArticles, setFilteredArticles] = useState<Article[]>([])
@@ -49,7 +55,7 @@ export const SearchBar: React.FC<SearchBarProps> = () => {
   const debouncedQuery = useDebounce(query, DEBOUNCE_DELAY)
 
   // Function to reset search results state
-  const resetSearchResults = (errorMessage: string | null = null) => {
+  const resetSearchResults = (errorMessage: string | null = null): void => {
     setFilteredArticles([])
     setTotalResults(0)
     setHasMoreResults(false)
@@ -57,7 +63,7 @@ export const SearchBar: React.FC<SearchBarProps> = () => {
   }
 
   // Handle selection for keyboard navigation
-  const handleSelect = (index: number) => {
+  const handleSelect = (index: number): void => {
     if (index >= 0 && index < filteredArticles.length) {
       const selectedArticle = filteredArticles[index]
       router.push(`/learn/${selectedArticle.attributes?.slug}?ref=learn_search`)
@@ -65,7 +71,7 @@ export const SearchBar: React.FC<SearchBarProps> = () => {
   }
 
   // Handle escape key
-  const handleEscape = () => {
+  const handleEscape = (): void => {
     setIsFocused(false)
     setQuery('')
     resetSearchResults(null)
