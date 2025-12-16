@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import React, { ReactNode, useEffect } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
@@ -31,6 +31,34 @@ export interface TokensContentProps {
   onOpenManageWidget(): void
 }
 
+function BalancesDebugBlock({ selectTokenContext }: { selectTokenContext: SelectTokenContext }): ReactNode {
+  const {
+    balancesState: { isLoading, values, chainId, fromCache },
+    selectedToken,
+  } = selectTokenContext
+
+  const valueKeys = Object.keys(values || {})
+  const sample = valueKeys.slice(0, 3).reduce<Record<string, string>>((acc, key) => {
+    const value = values?.[key]
+    acc[key] = value?.toString?.() ?? String(value)
+    return acc
+  }, {})
+  const sampleJson = JSON.stringify(sample)
+
+  useEffect(() => {
+    console.log('[TokenSelector][BalancesDebug]', {
+      chainId,
+      isLoading,
+      fromCache,
+      total: valueKeys.length,
+      sample,
+      selectedToken: selectedToken?.wrapped?.address,
+    })
+  }, [chainId, isLoading, fromCache, valueKeys.length, sampleJson, sample, selectedToken?.wrapped?.address])
+
+  return <div style={{ display: 'none' }} data-testid="token-selector-balance-debug" aria-hidden="true" />
+}
+
 export function TokensContent({
   selectTokenContext,
   onSelectToken,
@@ -47,6 +75,7 @@ export function TokensContent({
 }: TokensContentProps): ReactNode {
   return (
     <>
+      <BalancesDebugBlock selectTokenContext={selectTokenContext} />
       {!areTokensLoading && !!favoriteTokens.length && (
         <>
           <styledEl.Row>
