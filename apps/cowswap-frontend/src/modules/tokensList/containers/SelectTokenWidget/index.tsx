@@ -106,12 +106,7 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
     favoriteTokens,
     activeChainId: selectedTargetChainId ?? walletChainId,
   })
-  const handleTokenListItemClick = useCallback(
-    (token: TokenWithLogo) => {
-      addRecentToken(token)
-    },
-    [addRecentToken],
-  )
+  const handleTokenListItemClick = addRecentToken
 
   const userAddedTokens = useUserAddedTokens()
   const allTokenLists = useAllListsList()
@@ -153,13 +148,13 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
       const [tokenToSelect] = tokens
 
       if (tokenToSelect) {
-        handleTokenListItemClick(tokenToSelect)
+        addRecentToken(tokenToSelect)
         onSelectToken?.(tokenToSelect)
       }
 
       onDismiss()
     },
-    [handleTokenListItemClick, importTokenCallback, onDismiss, onSelectToken],
+    [addRecentToken, importTokenCallback, onDismiss, onSelectToken],
   )
 
   const importListAndBack = (list: ListState): void => {

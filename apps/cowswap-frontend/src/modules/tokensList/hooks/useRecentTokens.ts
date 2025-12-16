@@ -1,26 +1,26 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useAtomValue, useSetAtom } from 'jotai'
+import { useCallback, useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import {
   RECENT_TOKENS_LIMIT,
   buildFavoriteTokenKeys,
-  buildNextStoredTokens,
   buildTokensByKey,
   getStoredTokenKey,
-  hydrateStoredToken,
-  persistRecentTokenSelection as persistRecentTokenSelectionInternal,
-  persistStoredTokens,
-  readStoredTokens,
+  insertToken,
   type StoredRecentTokensByChain,
+  toStoredToken,
 } from './recentTokensStorage'
 
+import { recentTokensAtom } from '../state/recentTokensAtom'
 import { getTokenUniqueKey } from '../utils/tokenKey'
 
 interface UseRecentTokensParams {
   allTokens: TokenWithLogo[]
   favoriteTokens: TokenWithLogo[]
-  activeChainId?: number
+  activeChainId?: SupportedChainId
   maxItems?: number
 }
 
@@ -36,36 +36,11 @@ export function useRecentTokens({
   activeChainId,
   maxItems = RECENT_TOKENS_LIMIT,
 }: UseRecentTokensParams): RecentTokensState {
-  const [storedTokensByChain, setStoredTokensByChain] = useState<StoredRecentTokensByChain>(() =>
-    readStoredTokens(maxItems),
-  )
-
-  useEffect(() => {
-    persistStoredTokens(storedTokensByChain)
-  }, [storedTokensByChain])
+  const storedTokensByChain = useAtomValue<StoredRecentTokensByChain>(recentTokensAtom)
+  const setStoredTokensByChain = useSetAtom(recentTokensAtom)
 
   const tokensByKey = useMemo(() => buildTokensByKey(allTokens), [allTokens])
   const favoriteKeys = useMemo(() => buildFavoriteTokenKeys(favoriteTokens), [favoriteTokens])
-
-  useEffect(() => {
-    setStoredTokensByChain((prev) => {
-      const nextEntries: StoredRecentTokensByChain = {}
-      let didChange = false
-
-      for (const [chainKey, tokens] of Object.entries(prev)) {
-        const chainId = Number(chainKey)
-        const filtered = tokens.filter((token) => !favoriteKeys.has(getStoredTokenKey(token)))
-
-        if (filtered.length) {
-          nextEntries[chainId] = filtered
-        }
-
-        didChange = didChange || filtered.length !== tokens.length
-      }
-
-      return didChange ? nextEntries : prev
-    })
-  }, [favoriteKeys])
 
   const recentTokens = useMemo(() => {
     const chainEntries = activeChainId ? (storedTokensByChain[activeChainId] ?? []) : []
@@ -79,8 +54,9 @@ export function useRecentTokens({
         continue
       }
 
-      const hydrated = hydrateStoredToken(entry, tokensByKey.get(key))
+      const hydrated = tokensByKey.get(key)
 
+      // Only surface recents that still exist in the current token set
       if (hydrated) {
         result.push(hydrated)
         seenKeys.add(key)
@@ -100,15 +76,15 @@ export function useRecentTokens({
         return
       }
 
-      setStoredTokensByChain((prev) => {
-        const next = buildNextStoredTokens(prev, token, maxItems)
+      setStoredTokensByChain((prev: StoredRecentTokensByChain) => {
+        const chainId = token.chainId as SupportedChainId
+        const chainEntries = prev[chainId] ?? []
+        const updatedChain = insertToken(chainEntries, toStoredToken(token), maxItems)
 
-        persistStoredTokens(next)
-
-        return next
+        return { ...prev, [chainId]: updatedChain }
       })
     },
-    [favoriteKeys, maxItems],
+    [favoriteKeys, maxItems, setStoredTokensByChain],
   )
 
   const clearRecentTokens = useCallback(() => {
@@ -116,21 +92,16 @@ export function useRecentTokens({
       return
     }
 
-    setStoredTokensByChain((prev) => {
+    setStoredTokensByChain((prev: StoredRecentTokensByChain) => {
       const chainEntries = prev[activeChainId]
 
       if (!chainEntries?.length) {
         return prev
       }
 
-      const next: StoredRecentTokensByChain = { ...prev, [activeChainId]: [] }
-      persistStoredTokens(next)
-
-      return next
+      return { ...prev, [activeChainId]: [] }
     })
-  }, [activeChainId])
+  }, [activeChainId, setStoredTokensByChain])
 
   return { recentTokens, addRecentToken, clearRecentTokens }
 }
-
-export { persistRecentTokenSelectionInternal as persistRecentTokenSelection }

@@ -46,6 +46,9 @@ export function TokensContent({
   const shouldShowFavoritesInline = !areTokensLoading && !searchInput && favoriteTokens.length > 0
   const shouldShowRecentsInline = !areTokensLoading && !searchInput && (recentTokens?.length ?? 0) > 0
 
+  const favoriteTokensInline = shouldShowFavoritesInline ? favoriteTokens : undefined
+  const recentTokensInline = shouldShowRecentsInline ? recentTokens : undefined
+
   const pinnedTokenKeys = useMemo(() => {
     if (!shouldShowFavoritesInline && !shouldShowRecentsInline) {
       return undefined
@@ -57,12 +60,12 @@ export function TokensContent({
       favoriteTokens.forEach((token) => pinned.add(getTokenUniqueKey(token)))
     }
 
-    if (shouldShowRecentsInline && recentTokens) {
-      recentTokens.forEach((token) => pinned.add(getTokenUniqueKey(token)))
+    if (shouldShowRecentsInline && recentTokensInline) {
+      recentTokensInline.forEach((token) => pinned.add(getTokenUniqueKey(token)))
     }
 
     return pinned
-  }, [favoriteTokens, recentTokens, shouldShowFavoritesInline, shouldShowRecentsInline])
+  }, [favoriteTokens, recentTokensInline, shouldShowFavoritesInline, shouldShowRecentsInline])
 
   const tokensWithoutPinned = useMemo(() => {
     if (!pinnedTokenKeys) {
@@ -71,9 +74,6 @@ export function TokensContent({
 
     return allTokens.filter((token) => !pinnedTokenKeys.has(getTokenUniqueKey(token)))
   }, [allTokens, pinnedTokenKeys])
-
-  const favoriteTokensInline = shouldShowFavoritesInline ? favoriteTokens : undefined
-  const recentTokensInline = shouldShowRecentsInline ? recentTokens : undefined
 
   return (
     <>
