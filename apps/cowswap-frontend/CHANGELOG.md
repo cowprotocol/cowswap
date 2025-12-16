@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.125.5](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.125.4...cowswap-v1.125.5) (2025-12-16)
+
+
+### Bug Fixes
+
+* **bridge:** fix cross-chain swaps amounts ([aec4bf6](https://github.com/cowprotocol/cowswap/commit/aec4bf690855e435322e9787db3c281b20f070ef))
+
 ## [1.125.4](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.125.3...cowswap-v1.125.4) (2025-12-15)
 
 
