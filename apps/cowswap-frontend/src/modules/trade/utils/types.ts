@@ -1,5 +1,5 @@
 import type { OrderParameters } from '@cowprotocol/cow-sdk'
-import { Currency, Percent } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
 export interface BridgeFeeAmounts {
   amountInSellCurrency: bigint
@@ -18,5 +18,5 @@ export interface ReceiveAmountInfoParams {
 export interface CrossChainReceiveAmountInfoParams extends ReceiveAmountInfoParams {
   intermediateCurrency: Currency
   bridgeFeeAmounts: BridgeFeeAmounts
-  bridgeBuyAmount: bigint
+  expectedToReceiveAmount: CurrencyAmount<Currency>
 }
