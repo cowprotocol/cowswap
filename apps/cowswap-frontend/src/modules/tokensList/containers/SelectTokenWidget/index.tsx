@@ -139,7 +139,7 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
 
   const onDismiss = useCallback(() => {
     setIsManageWidgetOpen(false)
-    closeTokenSelectWidget()
+    closeTokenSelectWidget({ overrideForceLock: true })
   }, [closeTokenSelectWidget])
 
   const importTokenAndClose = useCallback(

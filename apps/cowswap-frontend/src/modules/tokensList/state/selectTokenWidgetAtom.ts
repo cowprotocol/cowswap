@@ -21,6 +21,8 @@ interface SelectTokenWidgetState {
   onSelectToken?: (currency: Currency) => void
   onInputPressEnter?: Command
   selectedTargetChainId?: number
+  isAdvancedTradeType: boolean
+  forceOpen?: boolean
 }
 
 export const DEFAULT_SELECT_TOKEN_WIDGET_STATE: SelectTokenWidgetState = {
@@ -32,6 +34,8 @@ export const DEFAULT_SELECT_TOKEN_WIDGET_STATE: SelectTokenWidgetState = {
   listToImport: undefined,
   selectedPoolAddress: undefined,
   selectedTargetChainId: undefined,
+  isAdvancedTradeType: false,
+  forceOpen: false,
 }
 
 export const { atom: selectTokenWidgetAtom, updateAtom: updateSelectTokenWidgetAtom } = atomWithPartialUpdate(
