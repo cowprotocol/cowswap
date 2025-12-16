@@ -23,6 +23,7 @@ export function useEstimatedBridgeBuyAmount(): BridgeEstimatedAmounts | null {
   const tradeQuote = useTradeQuote()
   const { bridgeQuote } = tradeQuote
   const quoteResults = tradeQuote.quote?.quoteResults
+
   const intermediateCurrency = useTryFindToken(getBridgeIntermediateTokenAddress(bridgeQuote))?.token ?? undefined
 
   const swapBuyAmountRaw = quoteResults?.amountsAndCosts.beforeAllFees.buyAmount
