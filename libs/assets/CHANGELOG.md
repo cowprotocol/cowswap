@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.17.1](https://github.com/cowprotocol/cowswap/compare/assets-v1.17.0...assets-v1.17.1) (2025-12-15)
+
+
+### Bug Fixes
+
+* theme logo and Christmas background assets ([c2cd43a](https://github.com/cowprotocol/cowswap/commit/c2cd43a1e71062636dd5d18f246d7a41dc79388b))
+* update SVG assets for desktop and medium Christmas backgrounds ([#6681](https://github.com/cowprotocol/cowswap/issues/6681)) ([d9775cb](https://github.com/cowprotocol/cowswap/commit/d9775cbd2487d706cf0fb20cc018543c4d339f0a))
+
 ## [1.17.0](https://github.com/cowprotocol/cowswap/compare/assets-v1.16.0...assets-v1.17.0) (2025-10-23)
 
 
