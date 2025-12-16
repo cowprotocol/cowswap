@@ -64,7 +64,7 @@ export function QuoteBridgeContent(props: QuoteBridgeContentProps): ReactNode {
               <Trans>FREE</Trans>
             </SuccessTextBold>
           ) : (
-            <TokenAmountDisplay currencyAmount={bridgeFee} usdValue={bridgeFeeUsd} />
+            <TokenAmountDisplay displaySymbol currencyAmount={bridgeFee} usdValue={bridgeFeeUsd} />
           )}
         </ConfirmDetailsItem>
       )}
