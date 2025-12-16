@@ -9,8 +9,6 @@ import { useBridgeSupportedNetworks } from 'entities/bridgeProvider'
 
 import { Field } from 'legacy/state/types'
 
-import { TradeType } from 'modules/trade/types'
-
 import { useSelectTokenWidgetState } from './useSelectTokenWidgetState'
 
 import { ChainsToSelectState } from '../types'
@@ -25,12 +23,11 @@ import { sortChainsByDisplayOrder } from '../utils/sortChainsByDisplayOrder'
  */
 export function useChainsToSelect(): ChainsToSelectState | undefined {
   const { chainId } = useWalletInfo()
-  const { field, selectedTargetChainId = chainId, tradeType } = useSelectTokenWidgetState()
+  const { field, selectedTargetChainId = chainId, isAdvancedTradeType } = useSelectTokenWidgetState()
   const { data: bridgeSupportedNetworks, isLoading } = useBridgeSupportedNetworks()
   const { areUnsupportedChainsEnabled } = useFeatureFlags()
   const isBridgingEnabled = useIsBridgingEnabled()
   const availableChains = useAvailableChains()
-  const isAdvancedTradeType = tradeType === TradeType.LIMIT_ORDER || tradeType === TradeType.ADVANCED_ORDERS
 
   const supportedChains = useMemo(() => {
     return availableChains.reduce((acc, id) => {

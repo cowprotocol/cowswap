@@ -46,7 +46,7 @@ export function useOpenTokenSelectWidget(): (
         open: true,
         forceOpen: false,
         selectedTargetChainId: nextSelectedTargetChainId,
-        tradeType,
+        isAdvancedTradeType: shouldLockTargetChain,
         onSelectToken: (currency) => {
           // Keep selector UX consistent with #6251: always close after a selection, even if a chain switch follows.
           closeTokenSelectWidget({ overrideForceLock: true })
@@ -54,12 +54,6 @@ export function useOpenTokenSelectWidget(): (
         },
       })
     },
-    [
-      closeTokenSelectWidget,
-      updateSelectTokenWidget,
-      isBridgingEnabled,
-      shouldLockTargetChain,
-      tradeType,
-    ],
+    [closeTokenSelectWidget, updateSelectTokenWidget, isBridgingEnabled, shouldLockTargetChain],
   )
 }
