@@ -56,7 +56,16 @@ function BalancesDebugBlock({ selectTokenContext }: { selectTokenContext: Select
     })
   }, [chainId, isLoading, fromCache, valueKeys.length, sampleJson, sample, selectedToken?.wrapped?.address])
 
-  return <div style={{ display: 'none' }} data-testid="token-selector-balance-debug" aria-hidden="true" />
+  return (
+    <div
+      data-testid="token-selector-balance-debug"
+      aria-hidden="true"
+      style={{ fontSize: 10, color: '#8a8a8a', marginBottom: 6, wordBreak: 'break-all' }}
+    >
+      [TokenSelector][BalancesDebug] chainId={chainId ?? 'none'} loading={String(isLoading)} fromCache=
+      {String(fromCache)} total={valueKeys.length} sample={sampleJson}
+    </div>
+  )
 }
 
 export function TokensContent({
