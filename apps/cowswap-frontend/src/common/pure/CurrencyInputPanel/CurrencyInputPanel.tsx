@@ -281,7 +281,6 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps): ReactNode {
       {receiveAmountInfo && currency && (
         <ReceiveAmount
           allowsOffchainSigning={allowsOffchainSigning}
-          currency={currency}
           receiveAmountInfo={receiveAmountInfo}
           subsidyAndBalance={subsidyAndBalance}
         />
