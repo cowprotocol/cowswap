@@ -1,4 +1,3 @@
-import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
 import { getJotaiIsolatedStorage } from '@cowprotocol/core'
@@ -10,34 +9,21 @@ import {
   type StoredRecentTokensByChain,
 } from '../hooks/recentTokensStorage'
 
-export const recentTokensStoreAtom = atomWithStorage<StoredRecentTokensByChain>(
-  RECENT_TOKENS_STORAGE_KEY,
-  {},
-  getJotaiIsolatedStorage(),
-)
+function getRecentTokensStorage(): ReturnType<typeof getJotaiIsolatedStorage<StoredRecentTokensByChain>> {
+  const storage = getJotaiIsolatedStorage<StoredRecentTokensByChain>()
+  const originalGetItem = storage.getItem.bind(storage)
 
-function migrateIfNeeded(stored: unknown): StoredRecentTokensByChain {
-  return normalizeStoredRecentTokens(stored, RECENT_TOKENS_LIMIT)
+  const getItem = (key: string, initialValue: StoredRecentTokensByChain): StoredRecentTokensByChain => {
+    const stored = originalGetItem(key, initialValue)
+    return normalizeStoredRecentTokens(stored, RECENT_TOKENS_LIMIT)
+  }
+
+  return { ...storage, getItem }
 }
 
-/**
- * Recent tokens atom that handles serialization/deserialization and migration.
- * The store atom handles persistence automatically via jotai's atomWithStorage.
- */
-export const recentTokensAtom = atom(
-  (get) => {
-    const stored = get(recentTokensStoreAtom)
-    return migrateIfNeeded(stored)
-  },
-  (
-    get,
-    set,
-    updater: StoredRecentTokensByChain | ((state: StoredRecentTokensByChain) => StoredRecentTokensByChain),
-  ) => {
-    const current = get(recentTokensStoreAtom)
-    const migrated = migrateIfNeeded(current)
-    const update = typeof updater === 'function' ? updater(migrated) : updater
-    set(recentTokensStoreAtom, update)
-    return update
-  },
+export const recentTokensAtom = atomWithStorage<StoredRecentTokensByChain>(
+  RECENT_TOKENS_STORAGE_KEY,
+  {} as StoredRecentTokensByChain,
+  getRecentTokensStorage(),
+  { unstable_getOnInit: true },
 )

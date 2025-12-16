@@ -1,16 +1,18 @@
 import { useAtomValue, useSetAtom } from 'jotai'
-import { useCallback, useEffect, useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import {
   RECENT_TOKENS_LIMIT,
   buildFavoriteTokenKeys,
-  buildNextStoredTokens,
   buildTokensByKey,
   getStoredTokenKey,
   hydrateStoredToken,
+  insertToken,
   type StoredRecentTokensByChain,
+  toStoredToken,
 } from './recentTokensStorage'
 
 import { recentTokensAtom } from '../state/recentTokensAtom'
@@ -19,7 +21,7 @@ import { getTokenUniqueKey } from '../utils/tokenKey'
 interface UseRecentTokensParams {
   allTokens: TokenWithLogo[]
   favoriteTokens: TokenWithLogo[]
-  activeChainId?: number
+  activeChainId?: SupportedChainId
   maxItems?: number
 }
 
@@ -35,32 +37,11 @@ export function useRecentTokens({
   activeChainId,
   maxItems = RECENT_TOKENS_LIMIT,
 }: UseRecentTokensParams): RecentTokensState {
-  const storedTokensByChain = useAtomValue(recentTokensAtom)
+  const storedTokensByChain = useAtomValue<StoredRecentTokensByChain>(recentTokensAtom)
   const setStoredTokensByChain = useSetAtom(recentTokensAtom)
 
   const tokensByKey = useMemo(() => buildTokensByKey(allTokens), [allTokens])
   const favoriteKeys = useMemo(() => buildFavoriteTokenKeys(favoriteTokens), [favoriteTokens])
-
-  // Filter out favorite tokens from stored tokens
-  useEffect(() => {
-    setStoredTokensByChain((prev) => {
-      const nextEntries: StoredRecentTokensByChain = {}
-      let didChange = false
-
-      for (const [chainKey, tokens] of Object.entries(prev)) {
-        const chainId = Number(chainKey)
-        const filtered = tokens.filter((token) => !favoriteKeys.has(getStoredTokenKey(token)))
-
-        if (filtered.length) {
-          nextEntries[chainId] = filtered
-        }
-
-        didChange = didChange || filtered.length !== tokens.length
-      }
-
-      return didChange ? nextEntries : prev
-    })
-  }, [favoriteKeys, setStoredTokensByChain])
 
   const recentTokens = useMemo(() => {
     const chainEntries = activeChainId ? (storedTokensByChain[activeChainId] ?? []) : []
@@ -76,6 +57,7 @@ export function useRecentTokens({
 
       const hydrated = hydrateStoredToken(entry, tokensByKey.get(key))
 
+      // Skip malformed persisted entries to avoid crashes if storage is corrupted
       if (hydrated) {
         result.push(hydrated)
         seenKeys.add(key)
@@ -95,8 +77,12 @@ export function useRecentTokens({
         return
       }
 
-      setStoredTokensByChain((prev) => {
-        return buildNextStoredTokens(prev, token, maxItems)
+      setStoredTokensByChain((prev: StoredRecentTokensByChain) => {
+        const chainId = token.chainId as SupportedChainId
+        const chainEntries = prev[chainId] ?? []
+        const updatedChain = insertToken(chainEntries, toStoredToken(token), maxItems)
+
+        return { ...prev, [chainId]: updatedChain }
       })
     },
     [favoriteKeys, maxItems, setStoredTokensByChain],
@@ -107,7 +93,7 @@ export function useRecentTokens({
       return
     }
 
-    setStoredTokensByChain((prev) => {
+    setStoredTokensByChain((prev: StoredRecentTokensByChain) => {
       const chainEntries = prev[activeChainId]
 
       if (!chainEntries?.length) {
