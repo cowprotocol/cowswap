@@ -1,5 +1,28 @@
 # Changelog
 
+## [1.125.5](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.125.4...cowswap-v1.125.5) (2025-12-16)
+
+
+### Bug Fixes
+
+* **bridge:** fix cross-chain swaps amounts ([aec4bf6](https://github.com/cowprotocol/cowswap/commit/aec4bf690855e435322e9787db3c281b20f070ef))
+
+## [1.125.4](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.125.3...cowswap-v1.125.4) (2025-12-15)
+
+
+### Bug Fixes
+
+* menu theme logo ([#6672](https://github.com/cowprotocol/cowswap/issues/6672)) ([8eab3c9](https://github.com/cowprotocol/cowswap/commit/8eab3c994f0caf3ad62b51b8136f1202b42fdcf6))
+* theme logo and Christmas background assets ([c2cd43a](https://github.com/cowprotocol/cowswap/commit/c2cd43a1e71062636dd5d18f246d7a41dc79388b))
+* update SVG assets for desktop and medium Christmas backgrounds ([#6681](https://github.com/cowprotocol/cowswap/issues/6681)) ([d9775cb](https://github.com/cowprotocol/cowswap/commit/d9775cbd2487d706cf0fb20cc018543c4d339f0a))
+
+## [1.125.3](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.125.2...cowswap-v1.125.3) (2025-12-09)
+
+
+### Bug Fixes
+
+* avoid using i18n in hookDappsRegistry ([#6633](https://github.com/cowprotocol/cowswap/issues/6633)) ([9cfeae0](https://github.com/cowprotocol/cowswap/commit/9cfeae0c107a632e78176c004aa3614fad12f68b))
+
 ## [1.125.2](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.125.1...cowswap-v1.125.2) (2025-11-27)
 
 

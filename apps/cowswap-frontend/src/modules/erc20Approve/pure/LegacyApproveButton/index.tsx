@@ -60,7 +60,7 @@ export function LegacyApproveButton(props: ApproveButtonProps): ReactNode {
               Allow CoW Swap to use your <TokenSymbol token={currency} />
             </Trans>
           </ApproveButtonContentWrapper>
-          <HoverTooltip wrapInContainer content={<ApprovalTooltip currency={currency} />}>
+          <HoverTooltip wrapInContainer content={<ApprovalTooltip currency={currency} isLegacyApproval={true} />}>
             {isPending ? <Loader stroke={theme.text1} /> : <HelpCircle size="24" />}
           </HoverTooltip>
         </>
