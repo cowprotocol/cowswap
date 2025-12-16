@@ -16,17 +16,15 @@ export function useMultiCallRpcProvider(): Nullish<JsonRpcProvider> {
   const contextChainId = context?.chainId
 
   return useMemo(() => {
-    // Use RPC node provider instead of wallet provider only when there is a custom chainId in the context
-    // AND the context chainId differs from wallet chainId
-    if (contextChainId && contextChainId !== walletChainId) {
+    // Prefer RPC provider when a chainId is known (context overrides wallet)
+    if (contextChainId) {
       return getRpcProvider(contextChainId)
     }
-
-    // If wallet provider is unavailable or cannot report network, fall back to RPC for the wallet chain
-    if (!provider && walletChainId) {
+    if (walletChainId) {
       return getRpcProvider(walletChainId)
     }
 
+    // Fallback to wallet provider if no chainId is available yet
     return provider
   }, [contextChainId, walletChainId, provider])
 }
