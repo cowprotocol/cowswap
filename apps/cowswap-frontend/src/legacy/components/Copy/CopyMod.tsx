@@ -3,7 +3,7 @@ import React, { MouseEvent } from 'react'
 import { useCopyClipboard } from '@cowprotocol/common-hooks'
 import { UI } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 import { CheckCircle, Copy } from 'react-feather'
 import styled, { DefaultTheme, StyledComponentProps } from 'styled-components/macro'
 import { LinkStyledButton } from 'theme'

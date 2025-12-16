@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 
 import { RowBetween, UI } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 import { DefaultTheme } from 'styled-components/macro'
 
 import { SlippageWarningParams } from '../../containers/TransactionSlippageInput/hooks/types'

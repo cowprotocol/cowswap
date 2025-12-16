@@ -12,6 +12,8 @@ import {
 } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import { MoreHorizontal } from 'react-feather'
 
 import { safeShortenAddress } from 'utils/address'
@@ -39,7 +41,9 @@ export function DefaultAccountContent({
   return (
     <>
       <LeftTop>
-        <ValueLabel>Recoverable value</ValueLabel>
+        <ValueLabel>
+          <Trans>Recoverable value</Trans>
+        </ValueLabel>
         <ValueAmount aria-live="polite">
           {loading ? <Loader size="24px" /> : <FiatAmount amount={totalUsdAmount} />}
         </ValueAmount>
@@ -50,7 +54,7 @@ export function DefaultAccountContent({
           content={
             <>
               <ContextMenuCopyButton address={account} />
-              <ContextMenuExternalLink href={addressLink} label="View details" />
+              <ContextMenuExternalLink href={addressLink} label={t`View details`} />
             </>
           }
         >
@@ -60,7 +64,7 @@ export function DefaultAccountContent({
       <LeftBottom>
         <ExternalLink
           href={addressLink}
-          aria-label={`View account ${safeShortenAddress(account)} on explorer`}
+          aria-label={t`View account` + ` ${safeShortenAddress(account)} ` + t`on explorer`}
           rel="noopener noreferrer"
         >
           <AddressLinkWrapper>

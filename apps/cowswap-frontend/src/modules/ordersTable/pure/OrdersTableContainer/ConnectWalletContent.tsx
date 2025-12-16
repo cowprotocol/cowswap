@@ -2,7 +2,8 @@ import { ReactNode } from 'react'
 
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 
-import { Trans } from '@lingui/macro'
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 
 import { Web3Status } from 'modules/wallet/containers/Web3Status'
@@ -20,7 +21,7 @@ export function ConnectWalletContent(): ReactNode {
     <styledEl.Content>
       {walletIcon ? (
         <span>
-          <SVG src={walletIcon} description="connect wallet" />
+          <SVG src={walletIcon} description={t`connect wallet`} />
         </span>
       ) : null}
       <h4>
@@ -34,7 +35,6 @@ export function ConnectWalletContent(): ReactNode {
               to one of our supported networks.
             </Trans>
           </p>
-
           {pendingActivitiesCount && <Web3Status />}
         </>
       )}

@@ -2,10 +2,13 @@ import React, { ReactNode } from 'react'
 
 import { InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
 
+import { Trans } from '@lingui/react/macro'
+
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { HighSuggestedSlippageWarning } from 'modules/tradeSlippage'
 
 import { useGetReceiveAmountInfo } from '../../hooks/useGetReceiveAmountInfo'
+import { useIsSafeEthFlow } from '../../hooks/useIsSafeEthFlow'
 import { useShouldShowZeroApproveWarning } from '../../hooks/useShouldShowZeroApproveWarning'
 import { ZeroApprovalWarning } from '../../pure/ZeroApprovalWarning'
 import { NoImpactWarning } from '../NoImpactWarning'
@@ -20,8 +23,10 @@ export function TradeWarnings({ isTradePriceUpdating, enableSmartSlippage }: Tra
   const receiveAmountInfo = useGetReceiveAmountInfo()
   const inputAmountWithSlippage = receiveAmountInfo?.afterSlippage.sellAmount
   const shouldZeroApprove = useShouldShowZeroApproveWarning(inputAmountWithSlippage)
+  const isSafeBundleEth = useIsSafeEthFlow()
 
-  const showBundleTxApprovalBanner = primaryFormValidation === TradeFormValidation.ApproveAndSwapInBundle
+  const showBundleTxApprovalBanner =
+    !isSafeBundleEth && primaryFormValidation === TradeFormValidation.ApproveAndSwapInBundle
 
   return (
     <>
@@ -36,10 +41,14 @@ export function TradeWarnings({ isTradePriceUpdating, enableSmartSlippage }: Tra
 function BundleTxApprovalBanner(): ReactNode {
   return (
     <InlineBanner bannerType={StatusColorVariant.Info} iconSize={32}>
-      <strong>Token approval bundling</strong>
+      <strong>
+        <Trans>Token approval bundling</Trans>
+      </strong>
       <p>
-        For your convenience, token approval and order placement will be bundled into a single transaction, streamlining
-        your experience!
+        <Trans>
+          For your convenience, token approval and order placement will be bundled into a single transaction,
+          streamlining your experience!
+        </Trans>
       </p>
     </InlineBanner>
   )

@@ -1,61 +1,40 @@
 import { useMemo } from 'react'
 
-import { isFractionFalsy } from '@cowprotocol/common-utils'
+import { useTradeQuote } from 'modules/tradeQuote'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
+import { useEstimatedBridgeBuyAmount } from './useEstimatedBridgeBuyAmount'
+import { useSwapReceiveAmountInfoParams } from './useGetSwapReceiveAmountInfo'
 
-import { useTryFindIntermediateToken } from '../../bridge'
-import { useTradeQuote } from '../../tradeQuote'
-import { useVolumeFee } from '../../volumeFee'
 import { ReceiveAmountInfo } from '../types'
+import { getCrossChainReceiveAmountInfo } from '../utils/getCrossChainReceiveAmountInfo'
 import { getReceiveAmountInfo } from '../utils/getReceiveAmountInfo'
 
 export function useGetReceiveAmountInfo(): ReceiveAmountInfo | null {
-  const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount, slippage, orderKind } =
-    useDerivedTradeState() ?? {}
+  const { inputCurrency, outputCurrency } = useDerivedTradeState() ?? {}
   const tradeQuote = useTradeQuote()
-  const volumeFeeBps = useVolumeFee()?.volumeBps
+  const { bridgeQuote } = tradeQuote
 
-  const { quote, bridgeQuote } = tradeQuote
-  const quoteResponse = quote?.quoteResults.quoteResponse
-  const orderParams = quoteResponse?.quote
-  const bridgeFeeRaw = bridgeQuote?.amountsAndCosts.costs.bridgingFee.amountInSellCurrency
+  const bridgeFeeAmounts = bridgeQuote?.amountsAndCosts.costs.bridgingFee
 
-  const intermediateCurrency =
-    useTryFindIntermediateToken({
-      bridgeQuote,
-    })?.intermediateBuyToken ?? undefined
+  const params = useSwapReceiveAmountInfoParams()
+  const { expectedToReceiveAmount, intermediateCurrency } = useEstimatedBridgeBuyAmount() || {}
 
   return useMemo(() => {
-    if (isFractionFalsy(inputCurrencyAmount) && isFractionFalsy(outputCurrencyAmount)) return null
-    // Avoid states mismatch
-    if (orderKind !== orderParams?.kind) return null
+    if (!params || !inputCurrency || !outputCurrency) return null
 
-    if (!inputCurrency || !outputCurrency) return null
-
-    if (orderParams && slippage) {
-      return getReceiveAmountInfo(
-        orderParams,
+    if (intermediateCurrency && bridgeFeeAmounts && expectedToReceiveAmount) {
+      return getCrossChainReceiveAmountInfo({
+        ...params,
+        // Important! Override currencies in case of cross-chain swap
         inputCurrency,
         outputCurrency,
-        slippage,
-        volumeFeeBps,
         intermediateCurrency,
-        bridgeFeeRaw,
-      )
+        bridgeFeeAmounts,
+        expectedToReceiveAmount,
+      })
     }
 
-    return null
-  }, [
-    orderParams,
-    intermediateCurrency,
-    volumeFeeBps,
-    inputCurrencyAmount,
-    outputCurrency,
-    orderKind,
-    inputCurrency,
-    outputCurrencyAmount,
-    slippage,
-    bridgeFeeRaw,
-  ])
+    return getReceiveAmountInfo(params)
+  }, [params, inputCurrency, outputCurrency, intermediateCurrency, bridgeFeeAmounts, expectedToReceiveAmount])
 }

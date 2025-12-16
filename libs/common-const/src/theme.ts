@@ -42,25 +42,6 @@ export function isCustomThemeEnabled(theme: CustomTheme, featureFlags?: FeatureF
   return false
 }
 
-export function isCustomThemeActive(theme: CustomTheme, featureFlags?: FeatureFlags): boolean {
-  return resolveActiveCustomTheme(featureFlags) === theme
-}
-
-export function resolveActiveCustomTheme(featureFlags?: FeatureFlags): CustomTheme | undefined {
-  /**
-   * Context-free resolver: returns the first enabled seasonal theme by priority.
-   * It does not consider UI constraints (such as the dark-mode requirement for Halloween),
-   * so prefer resolveCustomThemeForContext(...) when selecting themes for rendering or sounds.
-   */
-  for (const theme of getCustomThemePriority()) {
-    if (isCustomThemeEnabled(theme, featureFlags)) {
-      return theme
-    }
-  }
-
-  return undefined
-}
-
 export interface CustomThemeContext {
   darkModeEnabled: boolean
 }
@@ -71,7 +52,7 @@ export interface CustomThemeContext {
  */
 export function resolveCustomThemeForContext(
   featureFlags: FeatureFlags | undefined,
-  context: CustomThemeContext
+  context: CustomThemeContext,
 ): CustomTheme | undefined {
   for (const theme of getCustomThemePriority()) {
     if (!isCustomThemeEnabled(theme, featureFlags)) {

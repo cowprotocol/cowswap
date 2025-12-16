@@ -1,5 +1,7 @@
 import { InlineBanner } from '@cowprotocol/ui'
 
+import { Trans } from '@lingui/react/macro'
+
 import { MINIMUM_PART_TIME } from '../../../const'
 import { deadlinePartsDisplay } from '../../../utils/deadlinePartsDisplay'
 
@@ -10,10 +12,14 @@ export function SmallPartTimeWarning() {
 
   return (
     <InlineBanner>
-      <strong>Insufficient time between parts</strong>
+      <strong>
+        <Trans>Insufficient time between parts</Trans>
+      </strong>
       <p>
-        A minimum of <strong>{time}</strong> between parts is required. Decrease the number of parts or increase the
-        total duration.
+        <Trans>
+          A minimum of <strong>{time}</strong> between parts is required. Decrease the number of parts or increase the
+          total duration.
+        </Trans>
       </p>
     </InlineBanner>
   )

@@ -3,6 +3,8 @@ import { HoverTooltip } from '@cowprotocol/ui'
 import { UI } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import { AlertTriangle } from 'react-feather'
 import styled from 'styled-components/macro'
 
@@ -43,13 +45,13 @@ export function RateImpactIndicator({ rateImpact, inputCurrency }: RateImpactPro
   const tooltipContent = (
     <ImpactTooltip>
       {isPositive &&
-        `Your order will execute when the market price is ${displayedPercent}% better than the current market price.`}
+        t`Your order will execute when the market price is ${displayedPercent}% better than the current market price.`}
       {!isPositive && (
-        <>
+        <Trans>
           This price is {displayedPercent}% lower than current market price. You could be selling your{' '}
           <TokenSymbol token={inputCurrency} /> at a loss! Click on "Market price" to set your limit price to the
           current market price.
-        </>
+        </Trans>
       )}
     </ImpactTooltip>
   )

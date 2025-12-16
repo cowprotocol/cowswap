@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components/macro'
 
-import { Font } from '../../consts'
+import { Font, Media } from '../../consts'
 import { UI } from '../../enum'
 import { CowSwapTheme } from '../../types'
 import { ProductLogoWrapper } from '../ProductLogo'
@@ -304,7 +304,7 @@ export const DropdownContent = styled.ul<DropdownContentProps>`
   z-index: 1000;
   padding: ${({ isThirdLevel }) => (isThirdLevel ? '6px' : '6px')};
   margin: 0;
-  width: ${({ isThirdLevel }) => (isThirdLevel ? '100%' : '320px')};
+  width: ${({ isThirdLevel }) => (isThirdLevel ? '100%' : '340px')};
   height: auto;
   border-radius: 28px;
   position: ${({ isThirdLevel }) => (isThirdLevel ? 'relative' : 'absolute')};
@@ -422,19 +422,24 @@ export const StyledDropdownContentItem = styled.li<{
 
   > a,
   > div {
-    min-height: 56px;
+    align-items: center;
+    color: inherit;
     display: flex;
     flex-flow: row wrap;
-    align-items: center;
+    gap: 12px;
+    min-height: 56px;
     padding: 16px;
+    position: relative;
     text-decoration: none;
-    color: inherit;
     transition:
       background 0.2s ease-in-out,
       color 0.2s ease-in-out;
-    gap: 20px;
-    position: relative;
     width: 100%;
+  }
+
+  > a > ul > li > a,
+  > div > ul > li > a {
+    flex-flow: row nowrap;
   }
 
   ${({ mobileMode }) =>
@@ -445,6 +450,7 @@ export const StyledDropdownContentItem = styled.li<{
 
   &.hasDivider {
     margin: 0 0 12px;
+    position: relative;
 
     &::after {
       content: '';
@@ -515,6 +521,15 @@ export const StyledDropdownContentItem = styled.li<{
   }
 `
 
+export const DropdownContentLanguages = styled(DropdownContent)`
+  max-height: 200px;
+  overflow-y: auto;
+
+  ${StyledDropdownContentItem} {
+    text-transform: capitalize;
+  }
+`
+
 export const DropdownContentItemIcon = styled.img`
   width: 56px;
   height: 56px;
@@ -533,18 +548,25 @@ export const DropdownContentItemImage = styled.div`
 export const DropdownContentItemText = styled.div`
   display: flex;
   flex-flow: column wrap;
-  gap: 4px;
-  white-space: nowrap;
   flex: 1 1 0;
+  gap: 4px;
+  max-width: calc(100% - 20px);
+  white-space: normal;
 `
 
 export const DropdownContentItemTitle = styled.span`
-  font-weight: bold;
-  font-size: 18px;
-  line-height: 1.2;
-  display: flex;
   align-items: center;
+  display: flex;
+  font-size: 18px;
+  font-weight: bold;
   gap: 8px;
+  line-height: 1.2;
+  white-space: normal;
+  word-break: break-word;
+`
+
+export const DropdownContentItemTitleNoWrap = styled(DropdownContentItemTitle)`
+  white-space: nowrap;
 `
 
 export const DropdownContentItemDescription = styled.span`
@@ -746,5 +768,13 @@ export const GlobalSettingsButton = styled.button<{ mobileMode?: boolean }>`
     > svg {
       color: var(--activeFill);
     }
+  }
+`
+
+export const isMobileQuery = Media.upToLarge
+
+export const HideMobile = styled.div`
+  ${isMobileQuery(true)} {
+    display: none;
   }
 `

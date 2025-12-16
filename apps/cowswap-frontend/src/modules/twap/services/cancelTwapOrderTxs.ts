@@ -1,6 +1,6 @@
 import { ComposableCoW, GPv2Settlement } from '@cowprotocol/abis'
 import { USDC_LENS, WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
-import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { isZkSyncChain, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ContractsOrder } from '@cowprotocol/sdk-contracts-ts'
 import { BigNumber } from '@ethersproject/bignumber'
 import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
@@ -44,8 +44,9 @@ export function cancelTwapOrderTxs(context: CancelTwapOrderContext): MetaTransac
   return [cancelTwapOrderTx, cancelTwapPartOrderTx]
 }
 
+// TODO: we might need a custom method for estimating gas on Linea
 export async function estimateCancelTwapOrderTxs(context: CancelTwapOrderContext): Promise<BigNumber> {
-  if (context.chainId === SupportedChainId.LENS) {
+  if (isZkSyncChain(context.chainId)) {
     // Lens is a zkSync chain, so we need to use a different estimation method
     // See the function estimateZkSyncCancelTwapOrderTxs for details
     return estimateZkSyncCancelTwapOrderTxs(context)
@@ -87,6 +88,7 @@ async function estimateZkSyncCancelTwapOrderTxs(context: CancelTwapOrderContext)
 }
 
 let APP_DATA_HASH: string | undefined
+
 function getAppDataHash(): string {
   if (!APP_DATA_HASH) {
     APP_DATA_HASH = toKeccak256(JSON.stringify({ version: '1.6.0', appCode: 'CoW Swap', metadata: {} }))

@@ -5,6 +5,8 @@ import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
 import { Order, OrderStatus, PENDING_STATES } from 'legacy/state/orders/actions'
 import { useSetIsOrderUnfillable } from 'legacy/state/orders/hooks'
 
+import { useGetPendingOrdersPermitValidityState } from 'modules/ordersTable'
+
 import { getIsComposableCowOrder } from 'utils/orderUtils/getIsComposableCowOrder'
 import { getIsNotComposableCowOrder } from 'utils/orderUtils/getIsNotComposableCowOrder'
 
@@ -34,6 +36,8 @@ export function useOrdersTableList(
     return groupOrdersTable(allOrders).sort(ordersSorter)
   }, [allOrders])
 
+  const pendingOrdersPermitValidityState = useGetPendingOrdersPermitValidityState()
+
   // Then, categorize orders into their respective lists
   return useMemo(
     () =>
@@ -58,13 +62,18 @@ export function useOrdersTableList(
           const isSigning = order.status === OrderStatus.PRESIGNATURE_PENDING
 
           // Check if order is unfillable (insufficient balance or allowance)
-          const params = getOrderParams(chainId, balancesAndAllowances, order)
+          const params = getOrderParams(chainId, balancesAndAllowances, order, pendingOrdersPermitValidityState)
           let isUnfillable = params.hasEnoughBalance === false || params.hasEnoughAllowance === false
 
           // For TWAP orders, also check child orders
           if (!isParsedOrder(item) && item.children) {
             const hasUnfillableChild = item.children.some((childOrder) => {
-              const childParams = getOrderParams(chainId, balancesAndAllowances, childOrder)
+              const childParams = getOrderParams(
+                chainId,
+                balancesAndAllowances,
+                childOrder,
+                pendingOrdersPermitValidityState,
+              )
               return (
                 childOrder.status !== OrderStatus.FULFILLED &&
                 (childOrder.status === OrderStatus.SCHEDULED || childOrder.status === OrderStatus.PENDING) &&
@@ -103,6 +112,14 @@ export function useOrdersTableList(
         },
         { open: [], history: [], unfillable: [], signing: [], all: [] },
       ),
-    [allSortedOrders, chainId, balancesAndAllowances, orderType, setIsOrderUnfillable, orderLimit],
+    [
+      allSortedOrders,
+      chainId,
+      balancesAndAllowances,
+      orderType,
+      setIsOrderUnfillable,
+      orderLimit,
+      pendingOrdersPermitValidityState,
+    ],
   )
 }

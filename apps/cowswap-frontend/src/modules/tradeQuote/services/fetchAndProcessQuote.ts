@@ -18,7 +18,7 @@ import { getIsOrderBookTypedError } from 'api/cowProtocol/getIsOrderBookTypedErr
 import { coWBFFClient } from 'common/services/bff'
 
 import { TradeQuoteManager } from '../hooks/useTradeQuoteManager'
-import { TradeQuoteFetchParams, TradeQuotePollingParameters } from '../types'
+import { QuotePollingUpdateTimings, TradeQuoteFetchParams, TradeQuotePollingParameters } from '../types'
 import { getBridgeQuoteSigner } from '../utils/getBridgeQuoteSigner'
 
 const getQuote = bridgingSdk.getQuote.bind(bridgingSdk)
@@ -33,6 +33,8 @@ export async function fetchAndProcessQuote(
   { useSuggestedSlippageApi }: TradeQuotePollingParameters,
   appData: AppDataInfo['doc'] | undefined,
   tradeQuoteManager: TradeQuoteManager,
+  timings: QuotePollingUpdateTimings,
+  getCorrelatedTokens?: SwapAdvancedSettings['getCorrelatedTokens'],
 ): Promise<void> {
   const { hasParamsChanged, priceQuality } = fetchParams
 
@@ -46,9 +48,13 @@ export async function fetchAndProcessQuote(
     appData,
     quoteSigner: isBridge ? getBridgeQuoteSigner(chainId) : undefined,
     getSlippageSuggestion: useSuggestedSlippageApi ? coWBFFClient.getSlippageTolerance.bind(coWBFFClient) : undefined,
+    getCorrelatedTokens,
   }
 
   const processQuoteError = (error: Error): void => {
+    // Skip state update when another quote already started
+    if (timings.ref.current && timings.now !== timings.ref.current) return
+
     const parsedError = parseError(error)
 
     console.error('[fetchAndProcessQuote]:: fetchQuote error', parsedError)
@@ -71,7 +77,7 @@ export async function fetchAndProcessQuote(
   tradeQuoteManager.setLoading(hasParamsChanged)
 
   if (isBridge) {
-    await fetchBridgingQuote(fetchParams, quoteParams, advancedSettings, tradeQuoteManager, processQuoteError)
+    await fetchBridgingQuote(fetchParams, quoteParams, advancedSettings, tradeQuoteManager, processQuoteError, timings)
   } else {
     await fetchSwapQuote(fetchParams, quoteParams, advancedSettings, tradeQuoteManager, processQuoteError)
   }
@@ -112,6 +118,7 @@ async function fetchBridgingQuote(
   advancedSettings: SwapAdvancedSettings,
   tradeQuoteManager: TradeQuoteManager,
   processQuoteError: (error: Error) => void,
+  timings: QuotePollingUpdateTimings,
 ): Promise<void> {
   let isRequestCancelled = false
 
@@ -143,6 +150,9 @@ async function fetchBridgingQuote(
     const error = data?.error
 
     if (error) {
+      // Skip state update when another quote already started
+      if (timings.ref.current && timings.now !== timings.ref.current) return
+
       if (error instanceof BridgeProviderQuoteError) {
         tradeQuoteManager.onError(error, quoteParams.sellTokenChainId, quoteParams, fetchParams)
         return

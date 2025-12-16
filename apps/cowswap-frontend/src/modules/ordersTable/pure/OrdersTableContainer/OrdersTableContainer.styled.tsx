@@ -174,11 +174,15 @@ export const ExternalArrow = styled.span`
 
 export const RightContainer = styled.div`
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: row nowrap;
 
   ${Media.upToMedium()} {
     width: 100%;
     gap: 10px;
     flex-flow: column-reverse wrap;
   }
+`
+
+export const BannerContainer = styled.div`
+  width: 100%;
 `

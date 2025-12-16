@@ -2,6 +2,8 @@ import cow404IMG from '@cowprotocol/assets/cow-swap/cow-404.png'
 import { ButtonPrimary, Media } from '@cowprotocol/ui'
 import { ExternalLink as ExternalLinkTheme } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
 import { Page, Title, Content, GdocsListStyle } from 'modules/application/pure/Page'
@@ -84,20 +86,28 @@ const Container = styled.div`
 export default function AnySwapAffectedUsers() {
   return (
     <Wrapper>
-      <Title>Your account is affected by the AnySwap Hack</Title>
+      <Title>
+        <Trans>Your account is affected by the AnySwap Hack</Trans>
+      </Title>
       <Content>
         <Container>
-          <img src={cow404IMG} alt="CoW Swap 404 not found" />
-          <h2>Read how to prevent losing funds</h2>
+          <img src={cow404IMG} alt={t`CoW Swap 404 not found`} />
+          <h2>
+            <Trans>Read how to prevent losing funds</Trans>
+          </h2>
         </Container>
         <p>
-          You have given an allowance to <pre>AnyswapV4Router</pre> which is affected by a critical vulnerability.
+          <Trans>
+            You have given an allowance to <pre>AnyswapV4Router</pre> which is affected by a critical vulnerability.
+          </Trans>
         </p>
-        <p>In order to protect your funds, you will need to remove the approval on this contract.</p>
         <p>
-          Please read more in this{' '}
+          <Trans>In order to protect your funds, you will need to remove the approval on this contract.</Trans>
+        </p>
+        <p>
+          <Trans>Please read more in this</Trans>{' '}
           <ExternalLink href="https://cointelegraph.com/news/multichain-asks-users-to-revoke-approvals-amid-critical-vulnerability">
-            link
+            <Trans>link</Trans>
           </ExternalLink>
           .
         </p>

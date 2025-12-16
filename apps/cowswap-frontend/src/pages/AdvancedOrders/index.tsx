@@ -1,8 +1,11 @@
 import { useAtomValue } from 'jotai'
-import { ReactNode } from 'react'
+import { ReactNode, Suspense } from 'react'
 
 import { PAGE_TITLES } from '@cowprotocol/common-const'
 
+import { useLingui } from '@lingui/react/macro'
+
+import { Loading } from 'legacy/components/FlashingLoading'
 import { OrderStatus } from 'legacy/state/orders/actions'
 
 import {
@@ -32,6 +35,7 @@ import { TwapFormState } from 'modules/twap/pure/PrimaryActionButton/getTwapForm
 const ADVANCED_ORDERS_MAX_WIDTH = '1800px'
 
 export default function AdvancedOrdersPage(): ReactNode {
+  const { i18n } = useLingui()
   const { isUnlocked } = useAtomValue(advancedOrdersAtom)
   const { ordersTableOnLeft } = useAtomValue(limitOrdersSettingsAtom)
 
@@ -49,7 +53,7 @@ export default function AdvancedOrdersPage(): ReactNode {
 
   return (
     <>
-      <PageTitle title={PAGE_TITLES.ADVANCED} />
+      <PageTitle title={i18n._(PAGE_TITLES.ADVANCED)} />
       <FillAdvancedOrdersDerivedStateUpdater slippage={twapSlippage} />
       <SetupAdvancedOrderAmountsFromUrlUpdater />
       <styledEl.PageWrapper
@@ -77,12 +81,14 @@ export default function AdvancedOrdersPage(): ReactNode {
 
         {!hideOrdersTable && (
           <styledEl.SecondaryWrapper>
-            <OrdersTableWidget
-              isTwapTable
-              displayOrdersOnlyForSafeApp
-              orderType={TabOrderTypes.ADVANCED}
-              orders={allEmulatedOrders}
-            />
+            <Suspense fallback={<Loading />}>
+              <OrdersTableWidget
+                isTwapTable
+                displayOrdersOnlyForSafeApp
+                orderType={TabOrderTypes.ADVANCED}
+                orders={allEmulatedOrders}
+              />
+            </Suspense>
           </styledEl.SecondaryWrapper>
         )}
       </styledEl.PageWrapper>

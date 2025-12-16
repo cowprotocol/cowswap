@@ -1,11 +1,11 @@
 import { useMemo } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useBridgeSupportedNetwork } from 'entities/bridgeProvider'
 
 import { useDerivedTradeState } from 'modules/trade'
+import { useEstimatedBridgeBuyAmount } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { BRIDGE_QUOTE_ACCOUNT } from 'modules/tradeQuote'
 import { useUsdAmount } from 'modules/usdAmount'
@@ -19,21 +19,16 @@ export function useQuoteBridgeContext(): QuoteBridgeContext | null {
 
   const quoteAmounts = useBridgeQuoteAmounts()
 
-  /**
-   * Convert buy amount from intermediate currency to destination currency
-   * After that we substract bridging costs
-   */
-  const buyAmount = useMemo(() => {
-    if (!quoteAmounts?.bridgeFee) return
+  const { expectedToReceiveAmount: buyAmount } = useEstimatedBridgeBuyAmount() || {}
+  const bridgeFee = quoteAmounts?.bridgeFee
 
-    return CurrencyAmount.fromRawAmount(
-      quoteAmounts.bridgeFee.currency,
-      quoteAmounts.swapBuyAmount.quotient.toString(),
-    ).subtract(quoteAmounts.bridgeFee)
-  }, [quoteAmounts])
+  const expectedToReceive = useMemo(() => {
+    return buyAmount && bridgeFee ? buyAmount.subtract(bridgeFee) : null
+  }, [buyAmount, bridgeFee])
 
   const { value: buyAmountUsd } = useUsdAmount(buyAmount)
   const { value: bridgeMinDepositAmountUsd } = useUsdAmount(quoteAmounts?.swapMinReceiveAmount)
+  const { value: expectedToReceiveUsd } = useUsdAmount(expectedToReceive)
 
   const targetChainId = quoteAmounts?.bridgeMinReceiveAmount.currency.chainId
   const destChainData = useBridgeSupportedNetwork(targetChainId)
@@ -61,6 +56,8 @@ export function useQuoteBridgeContext(): QuoteBridgeContext | null {
       bridgeMinReceiveAmount: quoteAmounts.bridgeMinReceiveAmount,
       bridgeMinDepositAmountUsd,
       buyAmountUsd,
+      expectedToReceive,
+      expectedToReceiveUsd,
     }
   }, [
     quoteAmounts,
@@ -71,5 +68,7 @@ export function useQuoteBridgeContext(): QuoteBridgeContext | null {
     buyAmountUsd,
     bridgeMinDepositAmountUsd,
     bridgeQuote?.bridgeReceiverOverride,
+    expectedToReceive,
+    expectedToReceiveUsd,
   ])
 }

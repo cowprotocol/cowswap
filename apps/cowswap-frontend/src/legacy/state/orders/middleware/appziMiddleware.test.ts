@@ -41,7 +41,7 @@ const BASE_ORDER = {
 }
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+ 
 describe('appziMiddleware', () => {
   beforeEach(() => {
     jest.clearAllMocks()

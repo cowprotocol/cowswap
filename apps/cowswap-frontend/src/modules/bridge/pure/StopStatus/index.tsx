@@ -5,6 +5,8 @@ import RefundIcon from '@cowprotocol/assets/cow-swap/icon-refund.svg'
 import SpinnerIcon from '@cowprotocol/assets/cow-swap/spinner.svg'
 import CLOSE_ICON_X from '@cowprotocol/assets/cow-swap/x.svg'
 
+import { MessageDescriptor } from '@lingui/core'
+import { msg } from '@lingui/core/macro'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
@@ -50,22 +52,22 @@ export const SwapStatusIcons: Record<SwapAndBridgeStatus, ReactNode> = {
 export const BridgeStatusIcons = CommonStatusIcons
 
 // Title text used for different swap states
-export const SwapStatusTitlePrefixes: Record<SwapAndBridgeStatus, string> = {
-  [SwapAndBridgeStatus.DONE]: 'Swapped on',
-  [SwapAndBridgeStatus.PENDING]: 'Swapping on',
-  [SwapAndBridgeStatus.FAILED]: 'Swap failed',
-  [SwapAndBridgeStatus.REFUND_COMPLETE]: 'Swap refunded',
-  [SwapAndBridgeStatus.DEFAULT]: 'Swap on',
+export const SwapStatusTitlePrefixes: Record<SwapAndBridgeStatus, MessageDescriptor> = {
+  [SwapAndBridgeStatus.DONE]: msg`Swapped on`,
+  [SwapAndBridgeStatus.PENDING]: msg`Swapping on`,
+  [SwapAndBridgeStatus.FAILED]: msg`Swap failed`,
+  [SwapAndBridgeStatus.REFUND_COMPLETE]: msg`Swap refunded`,
+  [SwapAndBridgeStatus.DEFAULT]: msg`Swap on`,
 }
 
 // Reusable text for different states
-export const bridgeFailedTitle = 'Bridge failed on'
+export const bridgeFailedTitle: MessageDescriptor = msg`Bridge failed on`
 
 // Title text used for different bridge states
-export const BridgeStatusTitlePrefixes: Record<SwapAndBridgeStatus, string> = {
-  [SwapAndBridgeStatus.DONE]: 'Bridged via',
-  [SwapAndBridgeStatus.PENDING]: 'Bridging via',
+export const BridgeStatusTitlePrefixes: Record<SwapAndBridgeStatus, MessageDescriptor> = {
+  [SwapAndBridgeStatus.DONE]: msg`Bridged via`,
+  [SwapAndBridgeStatus.PENDING]: msg`Bridging via`,
   [SwapAndBridgeStatus.FAILED]: bridgeFailedTitle,
   [SwapAndBridgeStatus.REFUND_COMPLETE]: bridgeFailedTitle,
-  [SwapAndBridgeStatus.DEFAULT]: 'Bridge via',
+  [SwapAndBridgeStatus.DEFAULT]: msg`Bridge via`,
 }

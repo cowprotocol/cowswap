@@ -5,7 +5,7 @@ import { Command } from '@cowprotocol/types'
 import { ButtonPrimary, TokenSymbol } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 
 import * as styledEl from './styledEl'
 

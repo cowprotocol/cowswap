@@ -3,6 +3,7 @@ import { ReactNode } from 'react'
 import { PAGE_TITLES, WRAPPED_NATIVE_CURRENCIES as WETH } from '@cowprotocol/common-const'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { useLingui } from '@lingui/react/macro'
 import { Navigate, useLocation, useParams } from 'react-router'
 
 import { PageTitle } from 'modules/application/containers/PageTitle'
@@ -14,6 +15,7 @@ import { Routes } from 'common/constants/routes'
 
 export function SwapPage(): ReactNode {
   const params = useParams()
+  const { i18n } = useLingui()
 
   if (!params.chainId) {
     return <SwapPageRedirect />
@@ -21,7 +23,7 @@ export function SwapPage(): ReactNode {
 
   return (
     <>
-      <PageTitle title={PAGE_TITLES.SWAP} />
+      <PageTitle title={i18n._(PAGE_TITLES.SWAP)} />
       <SwapUpdaters />
       <SwapWidget />
     </>

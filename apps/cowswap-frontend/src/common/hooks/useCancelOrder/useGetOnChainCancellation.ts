@@ -1,6 +1,9 @@
+/* eslint-disable no-restricted-imports */ // TODO: Don't use 'modules' import
 import { useCallback } from 'react'
 
 import { getIsNativeToken } from '@cowprotocol/common-utils'
+
+import { useLingui } from '@lingui/react/macro'
 
 import { Order } from 'legacy/state/orders/actions'
 
@@ -21,12 +24,13 @@ export function useGetOnChainCancellation(): (order: Order) => Promise<OnChainCa
   } = useEthFlowContract()
   const { contract: settlementContract, chainId: settlementChainId } = useGP2SettlementContract()
   const cancelTwapOrder = useCancelTwapOrder()
+  const { t } = useLingui()
 
   return useCallback(
     (order: Order) => {
       if (ethFlowChainId !== settlementChainId) {
         throw new Error(
-          `Chain Id from contracts should match (ethFlow=${ethFlowChainId}, settlement=${settlementChainId})`,
+          t`Chain Id from contracts should match (ethFlow=${ethFlowChainId}, settlement=${settlementChainId})`,
         )
       }
 
@@ -46,6 +50,6 @@ export function useGetOnChainCancellation(): (order: Order) => Promise<OnChainCa
 
       return getOnChainCancellation(settlementContract!, order)
     },
-    [ethFlowContract, settlementContract, cancelTwapOrder, ethFlowChainId, settlementChainId],
+    [ethFlowChainId, settlementChainId, settlementContract, t, cancelTwapOrder, ethFlowContract],
   )
 }

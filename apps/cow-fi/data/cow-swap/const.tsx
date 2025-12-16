@@ -1,17 +1,18 @@
-import { Link } from '@/components/Link'
 import { initGtm } from '@cowprotocol/analytics'
-import { CowFiCategory } from 'src/common/analytics/types'
-import { Color, UI } from '@cowprotocol/ui'
-
 import IMG_COWSWAP_COINS from '@cowprotocol/assets/images/image-coins.svg'
-import IMG_COWSWAP_MEV from '@cowprotocol/assets/images/image-cowswap-mev.svg'
-import IMG_COWSWAP_UX from '@cowprotocol/assets/images/image-cowswap-ux.svg'
-import IMG_COWSWAP_SWAPS from '@cowprotocol/assets/images/image-cowswap-swaps.svg'
-import IMG_COWSWAP_LIMIT from '@cowprotocol/assets/images/image-cowswap-limit.svg'
-import IMG_COWSWAP_TWAP from '@cowprotocol/assets/images/image-cowswap-twap.svg'
 import IMG_COWSWAP_GASLESS from '@cowprotocol/assets/images/image-cowswap-gasless.svg'
-import IMG_COWSWAP_NOFEES from '@cowprotocol/assets/images/image-cowswap-nofees.svg'
+import IMG_COWSWAP_LIMIT from '@cowprotocol/assets/images/image-cowswap-limit.svg'
+import IMG_COWSWAP_MEV from '@cowprotocol/assets/images/image-cowswap-mev.svg'
 import IMG_COWSWAP_MULTIPLE from '@cowprotocol/assets/images/image-cowswap-multiple.svg'
+import IMG_COWSWAP_NOFEES from '@cowprotocol/assets/images/image-cowswap-nofees.svg'
+import IMG_COWSWAP_SWAPS from '@cowprotocol/assets/images/image-cowswap-swaps.svg'
+import IMG_COWSWAP_TWAP from '@cowprotocol/assets/images/image-cowswap-twap.svg'
+import IMG_COWSWAP_UX from '@cowprotocol/assets/images/image-cowswap-ux.svg'
+import { Color, UI } from '@cowprotocol/ui'
+import { getAvailableChainsText } from '@cowprotocol/common-const'
+import { CowFiCategory } from 'src/common/analytics/types'
+
+import { Link } from '@/components/Link'
 
 const analytics = initGtm()
 
@@ -173,7 +174,7 @@ export const FAQ_DATA = [
           Coincidences of Wants
         </Link>{' '}
         (CoWs) to settle the order. CoW Swap is the leader among intent-based trading protocols by transaction volume
-        and currently operates on Ethereum, BNB, Base, Arbitrum, Polygon, Avalanche, Gnosis, and Lens.
+        and currently operates on {getAvailableChainsText()}.
       </>
     ),
   },

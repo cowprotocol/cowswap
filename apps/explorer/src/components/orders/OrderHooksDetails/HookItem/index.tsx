@@ -1,12 +1,10 @@
-import { useState } from 'react'
+import { ReactNode, useState } from 'react'
 
 import { HookToDappMatch } from '@cowprotocol/hook-dapp-lib'
 
 import { Item, Wrapper, ToggleButton, Details } from './styled'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function HookItem({ item, number }: { item: HookToDappMatch; number: number }) {
+export function HookItem({ item, number }: { item: HookToDappMatch; number: number }): ReactNode {
   const [showDetails, setShowDetails] = useState(false)
 
   // TODO: Add proper return type annotation

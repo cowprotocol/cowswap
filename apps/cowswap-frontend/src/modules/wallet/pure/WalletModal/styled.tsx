@@ -1,7 +1,7 @@
 import Close from '@cowprotocol/assets/images/x.svg?react'
-import { ExternalLink, Media } from '@cowprotocol/ui'
-import { UI } from '@cowprotocol/ui'
+import { ExternalLink, Media, UI } from '@cowprotocol/ui'
 
+import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
 export const TermsWrapper = styled.div`
@@ -33,8 +33,12 @@ export const Blurb = styled.div`
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export const NewToEthereum = () => (
   <Blurb>
-    <div>New to decentralised applications?</div>{' '}
-    <ExternalLink href="https://ethereum.org/wallets/">Learn more about wallets</ExternalLink>
+    <div>
+      <Trans>New to decentralised applications?</Trans>
+    </div>{' '}
+    <ExternalLink href="https://ethereum.org/wallets/">
+      <Trans>Learn more about wallets</Trans>
+    </ExternalLink>
   </Blurb>
 )
 

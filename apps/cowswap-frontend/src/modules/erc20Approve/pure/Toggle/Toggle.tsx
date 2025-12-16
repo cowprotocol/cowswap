@@ -1,9 +1,10 @@
-import React, { ReactNode } from 'react'
+import { ReactNode } from 'react'
 
 import EDIT from '@cowprotocol/assets/cow-swap/edit.svg'
 import { TokenAmount, TokenSymbol } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { Trans, useLingui } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 
 import { Option } from './Option'
@@ -20,9 +21,11 @@ export function Toggle({
   amountToApprove: CurrencyAmount<Currency>
   changeApproveAmount?: () => void
 }): ReactNode {
+  const { t } = useLingui()
+
   return (
     <styledEl.ToggleWrapper>
-      <Option isActive={isPartialApproveEnabled} onClick={() => enablePartialApprove(true)} title={'Partial approval'}>
+      <Option isActive={isPartialApproveEnabled} onClick={() => enablePartialApprove(true)} title={t`Partial approval`}>
         <styledEl.PartialAmountWrapper
           onClick={() => {
             if (isPartialApproveEnabled && changeApproveAmount) {
@@ -30,11 +33,14 @@ export function Toggle({
             }
           }}
         >
-          <TokenAmount amount={amountToApprove} /> <TokenSymbol token={amountToApprove.currency} /> <SVG src={EDIT} />
+          <TokenAmount amount={amountToApprove} /> <TokenSymbol token={amountToApprove.currency} />{' '}
+          <styledEl.EditIcon>
+            <SVG src={EDIT} description="Edit" />
+          </styledEl.EditIcon>
         </styledEl.PartialAmountWrapper>
       </Option>
-      <Option isActive={!isPartialApproveEnabled} onClick={() => enablePartialApprove(false)} title={'Full approval'}>
-        Unlimited one-time
+      <Option isActive={!isPartialApproveEnabled} onClick={() => enablePartialApprove(false)} title={t`Full approval`}>
+        <Trans>Unlimited one-time</Trans>
       </Option>
     </styledEl.ToggleWrapper>
   )

@@ -15,7 +15,7 @@ import {
 } from '@cowprotocol/wallet'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 
 import { CowModal } from 'common/pure/Modal'
 

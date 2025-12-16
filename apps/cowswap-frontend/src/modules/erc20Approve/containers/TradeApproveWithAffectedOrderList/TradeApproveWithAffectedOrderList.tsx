@@ -1,22 +1,25 @@
 import { ReactNode } from 'react'
 
+import { useIsTxBundlingSupported } from '@cowprotocol/wallet'
+
 import {
   ApproveRequiredReason,
   useGetAmountToSignApprove,
   useGetPartialAmountToSignApprove,
   useIsApprovalOrPermitRequired,
+  useIsPartialApprovalModeSelected,
 } from '../../hooks'
-import { TradeAllowanceDisplay } from '../../pure/TradeAllowanceDisplay'
 import { useSetUserApproveAmountModalState } from '../../state'
 import { isMaxAmountToApprove } from '../../utils'
 import { ActiveOrdersWithAffectedPermit } from '../ActiveOrdersWithAffectedPermit'
 import { TradeApproveToggle } from '../TradeApproveToggle'
 
 export function TradeApproveWithAffectedOrderList(): ReactNode {
-  const {
-    reason: isApproveRequired,
-    currentAllowance
-  } = useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: false })
+  const isBundlingSupported = useIsTxBundlingSupported()
+  const { reason: isApproveRequired } = useIsApprovalOrPermitRequired({
+    isBundlingSupportedOrEnabledForContext: isBundlingSupported,
+  })
+  const isPartialApprovalEnabledInSettings = useIsPartialApprovalModeSelected()
 
   const setUserApproveAmountModalState = useSetUserApproveAmountModalState()
 
@@ -28,9 +31,10 @@ export function TradeApproveWithAffectedOrderList(): ReactNode {
 
   const isApproveOrPartialPermitRequired =
     isApproveRequired === ApproveRequiredReason.Required ||
-    isApproveRequired === ApproveRequiredReason.Eip2612PermitRequired
+    isApproveRequired === ApproveRequiredReason.Eip2612PermitRequired ||
+    isApproveRequired === ApproveRequiredReason.BundleApproveRequired
 
-  if (!partialAmountToApprove) return null
+  if (!partialAmountToApprove || !isPartialApprovalEnabledInSettings) return null
 
   const currencyToApprove = partialAmountToApprove.currency
 
@@ -42,9 +46,6 @@ export function TradeApproveWithAffectedOrderList(): ReactNode {
             updateModalState={() => setUserApproveAmountModalState({ isModalOpen: true })}
             amountToApprove={partialAmountToApprove}
           />
-          {typeof currentAllowance === 'bigint' && currencyToApprove && (
-            <TradeAllowanceDisplay currentAllowance={currentAllowance} currencyToApprove={currencyToApprove} />
-          )}
         </>
       )}
       {showAffectedOrders && currencyToApprove && <ActiveOrdersWithAffectedPermit currency={currencyToApprove} />}

@@ -3,6 +3,8 @@ import { ReactNode } from 'react'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { TokenList as UniTokenList } from '@uniswap/token-lists'
 
+import { Trans } from '@lingui/react/macro'
+
 import * as styledEl from './styled'
 
 export interface TokenListItemProps {
@@ -24,7 +26,7 @@ export function TokenListDetails(props: TokenListItemProps) {
       <div>
         <styledEl.ListName>{list.name}</styledEl.ListName>
         <styledEl.TokensInfo>
-          {list.tokens.length} tokens {children}
+          {list.tokens.length} <Trans>tokens</Trans> {children}
         </styledEl.TokensInfo>
       </div>
     </styledEl.ListInfo>

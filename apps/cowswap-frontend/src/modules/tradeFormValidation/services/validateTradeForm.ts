@@ -151,7 +151,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     validations.push(TradeFormValidation.WrapUnwrapFlow)
   }
 
-  if (isApproveRequired !== ApproveRequiredReason.NotRequired) {
+  if (![ApproveRequiredReason.Unsupported, ApproveRequiredReason.NotRequired].includes(isApproveRequired)) {
     if (isApproveRequired === ApproveRequiredReason.BundleApproveRequired) {
       validations.push(TradeFormValidation.ApproveAndSwapInBundle)
     }

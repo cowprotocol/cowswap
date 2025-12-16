@@ -42,6 +42,7 @@ exports[`useTradeQuotePolling() When wallet is connected Then should put account
   },
   {
     "appData": undefined,
+    "getCorrelatedTokens": [Function],
     "getSlippageSuggestion": undefined,
     "quoteRequest": {
       "priceQuality": "optimal",

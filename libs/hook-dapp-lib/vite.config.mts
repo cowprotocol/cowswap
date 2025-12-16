@@ -5,6 +5,8 @@ import dts from 'vite-plugin-dts'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
 
 import * as path from 'path'
+import react from '@vitejs/plugin-react-swc'
+import { lingui } from '@lingui/vite-plugin'
 
 export default defineConfig(({ command }) => {
   if (command === 'serve') {
@@ -40,6 +42,12 @@ export default defineConfig(({ command }) => {
       }),
       viteTsConfigPaths({
         root: '../../../',
+      }),
+      react({
+        plugins: [['@lingui/swc-plugin', {}]],
+      }),
+      lingui({
+        cwd: 'apps/cowswap-frontend',
       }),
     ],
 

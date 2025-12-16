@@ -1,5 +1,7 @@
 import { PercentDisplay, TokenAmount } from '@cowprotocol/ui'
 
+import { Trans } from '@lingui/react/macro'
+
 import { getFilledAmounts } from 'utils/orderUtils/getFilledAmounts'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
@@ -41,7 +43,7 @@ export function FilledField({ order }: Props) {
           {!fullyFilled && (
             // Show the total amount to buy/sell. Only for orders that are not 100% executed
             <>
-              of{' '}
+              <Trans>of</Trans>{' '}
               <b>
                 <TokenAmount amount={mainAmount} tokenSymbol={mainAmount?.currency} />
               </b>{' '}
@@ -53,7 +55,7 @@ export function FilledField({ order }: Props) {
             //    Total buy tokens you receive (for sell orders)
             //    Total sell tokens you pay (for buy orders)
             <>
-              for a total of{' '}
+              <Trans>for a total of</Trans>{' '}
               <b>
                 <TokenAmount amount={formattedSwappedAmount} tokenSymbol={formattedSwappedAmount.currency} />
               </b>

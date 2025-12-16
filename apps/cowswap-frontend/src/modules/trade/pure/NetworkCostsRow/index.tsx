@@ -2,6 +2,8 @@ import { ReactNode } from 'react'
 
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { Trans, useLingui } from '@lingui/react/macro'
+
 import { ReviewOrderModalAmountRow } from '../ReviewOrderModalAmountRow'
 
 interface NetworkCostsRowProps {
@@ -10,17 +12,19 @@ interface NetworkCostsRowProps {
   withTimelineDot?: boolean
   amountSuffix?: ReactNode
   tooltipSuffix?: ReactNode
+  isLast?: boolean
 }
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+
 export function NetworkCostsRow({
   withTimelineDot,
-
   networkFeeAmount,
   networkFeeAmountUsd,
   amountSuffix,
   tooltipSuffix,
-}: NetworkCostsRowProps) {
+  isLast = false,
+}: NetworkCostsRowProps): ReactNode {
+  const { t } = useLingui()
+
   return (
     <ReviewOrderModalAmountRow
       withTimelineDot={withTimelineDot}
@@ -29,14 +33,15 @@ export function NetworkCostsRow({
       amountSuffix={amountSuffix}
       tooltip={
         <>
-          This is the cost of settling your order on-chain, including gas and any LP fees.
+          <Trans>This is the cost of settling your order on-chain, including gas and any LP fees.</Trans>
           <br />
           <br />
-          CoW Swap will try to lower this cost where possible.
+          <Trans>CoW Swap will try to lower this cost where possible.</Trans>
           {tooltipSuffix}
         </>
       }
-      label="Network costs (est.)"
+      label={t`Network costs (est.)`}
+      isLast={isLast}
     />
   )
 }

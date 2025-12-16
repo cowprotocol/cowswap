@@ -1,5 +1,34 @@
 # Changelog
 
+## [1.30.1](https://github.com/cowprotocol/cowswap/compare/ui-v1.30.0...ui-v1.30.1) (2025-12-15)
+
+
+### Bug Fixes
+
+* menu theme logo ([#6672](https://github.com/cowprotocol/cowswap/issues/6672)) ([8eab3c9](https://github.com/cowprotocol/cowswap/commit/8eab3c994f0caf3ad62b51b8136f1202b42fdcf6))
+* theme logo and Christmas background assets ([c2cd43a](https://github.com/cowprotocol/cowswap/commit/c2cd43a1e71062636dd5d18f246d7a41dc79388b))
+
+## [1.30.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.29.0...ui-v1.30.0) (2025-11-24)
+
+
+### Features
+
+* **i18n:** finish internationalization setup ([#6526](https://github.com/cowprotocol/cowswap/issues/6526)) ([7b596e4](https://github.com/cowprotocol/cowswap/commit/7b596e49b132179152c6b8c5436dc5dd199f7aa8))
+* **internationalization:** add internationalization to CoW Swap ([#6198](https://github.com/cowprotocol/cowswap/issues/6198)) ([bec1e54](https://github.com/cowprotocol/cowswap/commit/bec1e54643d9b20a8b6517eae188993e364fed90))
+
+## [1.29.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.28.0...ui-v1.29.0) (2025-10-23)
+
+
+### Features
+
+* align seasonal theme priority with feature flags and dark mode ([#6378](https://github.com/cowprotocol/cowswap/issues/6378)) ([94e79c6](https://github.com/cowprotocol/cowswap/commit/94e79c6e697237c5f206f94b17065e93deaa6bb0))
+* **notifications:** show trade alerts popover ([#6208](https://github.com/cowprotocol/cowswap/issues/6208)) ([d97c801](https://github.com/cowprotocol/cowswap/commit/d97c801ab43dd6ec208326ba80e145471a53a16d))
+
+
+### Bug Fixes
+
+* update font family to include 'Inter' in UI constants and theme ([#6370](https://github.com/cowprotocol/cowswap/issues/6370)) ([024ffb2](https://github.com/cowprotocol/cowswap/commit/024ffb26984fd1d862fa8143b8bee78e43ce6a50))
+
 ## [1.28.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.27.0...ui-v1.28.0) (2025-10-14)
 
 

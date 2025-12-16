@@ -1,6 +1,7 @@
 import { useEffect, useState, ReactNode, useRef } from 'react'
 
 import {
+  COW_CDN,
   USDC_BASE,
   USDC_GNOSIS_CHAIN,
   USDC_MAINNET,
@@ -12,7 +13,7 @@ import {
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { BridgeStatus } from '@cowprotocol/sdk-bridging'
 import { UI } from '@cowprotocol/ui'
-import { CurrencyAmount } from '@uniswap/sdk-core'
+import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import styled from 'styled-components/macro'
 
@@ -37,11 +38,11 @@ const receiveAmountInfo = inputCurrencyInfoMock.receiveAmountInfo!
 const account = '0xfb3c7eb936cAA12B5A884d612393969A557d4307'
 const swapAndBridgeContextMock: SwapAndBridgeContext = {
   bridgeProvider: {
-    logoUrl:
-      'https://raw.githubusercontent.com/cowprotocol/cow-sdk/refs/heads/main/src/bridging/providers/across/across-logo.png',
+    logoUrl: `${COW_CDN}/cow-sdk/bridging/providers/across/across-logo.png`,
     name: 'Across',
     dappId: 'cow-sdk://bridging/providers/across',
     website: 'https://across.to',
+    type: 'HookBridgeProvider',
   },
   overview: {
     sourceChainName: 'Ethereum',
@@ -67,6 +68,8 @@ const swapAndBridgeContextMock: SwapAndBridgeContext = {
     bridgeMinReceiveAmount: null,
     bridgeMinDepositAmount: null,
     bridgeMinDepositAmountUsd: null,
+    expectedToReceive: null,
+    expectedToReceiveUsd: null,
   },
   bridgingProgressContext: {
     account,
@@ -126,6 +129,33 @@ const Wrapper = styled.div`
   margin: 0 auto;
   background: var(${UI.COLOR_PAPER});
 `
+
+const NarrowWrapper = styled(Wrapper)`
+  width: 375px;
+`
+
+const WideWrapper = styled(Wrapper)`
+  width: 720px;
+`
+
+const cloneTokenWithSymbol = (token: Token | TokenWithLogo, symbol: string): TokenWithLogo => {
+  const cloned = new Token(token.chainId, token.address, token.decimals, symbol, token.name) as TokenWithLogo
+  const source = token as TokenWithLogo
+
+  if (source.logoURI) {
+    cloned.logoURI = source.logoURI
+  }
+  if (source.tags) {
+    cloned.tags = source.tags
+  }
+  return cloned
+}
+
+const orderWithLongSymbols: Order = {
+  ...order,
+  inputToken: cloneTokenWithSymbol(order.inputToken, 'VERY-LONG-ALGO-TOKEN-SYMBOL'),
+  outputToken: cloneTokenWithSymbol(order.outputToken, 'WRAPPED-SUPER-STABLECOIN-WITH-AN-EXTRA-SUFFIX'),
+}
 
 function SolvingFixture(): ReactNode {
   const [countdown, setCountdown] = useState(15)
@@ -305,6 +335,44 @@ const Fixtures = {
         stepName={OrderProgressBarStepName.FINISHED}
       />
     </Wrapper>
+  ),
+  '4-finished-surplus-large-percent': () => (
+    <WideWrapper>
+      <OrderProgressBar
+        {...defaultProps}
+        surplusData={{ ...defaultProps.surplusData!, surplusPercent: '123.4567', showSurplus: true }}
+        stepName={OrderProgressBarStepName.FINISHED}
+      />
+    </WideWrapper>
+  ),
+  '4-finished-surplus-narrow-with-long-symbols': () => (
+    <NarrowWrapper>
+      <OrderProgressBar
+        {...defaultProps}
+        order={orderWithLongSymbols}
+        surplusData={{ ...defaultProps.surplusData!, surplusPercent: '5.4321', showSurplus: true }}
+        stepName={OrderProgressBarStepName.FINISHED}
+      />
+    </NarrowWrapper>
+  ),
+  '4-finished-benefit-text': () => (
+    <Wrapper>
+      <OrderProgressBar
+        {...defaultProps}
+        surplusData={{ ...defaultProps.surplusData!, showSurplus: false }}
+        stepName={OrderProgressBarStepName.FINISHED}
+      />
+    </Wrapper>
+  ),
+  '4-finished-benefit-text-narrow': () => (
+    <NarrowWrapper>
+      <OrderProgressBar
+        {...defaultProps}
+        chainId={SupportedChainId.MAINNET}
+        surplusData={{ ...defaultProps.surplusData!, showSurplus: false }}
+        stepName={OrderProgressBarStepName.FINISHED}
+      />
+    </NarrowWrapper>
   ),
   '4-finished-customReceiver-ensName': () => (
     <Wrapper>

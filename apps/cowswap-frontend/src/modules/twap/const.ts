@@ -2,6 +2,8 @@ import { USDC } from '@cowprotocol/common-const'
 import { mapAddressToSupportedNetworks, mapSupportedNetworks, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Currency, CurrencyAmount, Percent } from '@uniswap/sdk-core'
 
+import { MessageDescriptor } from '@lingui/core'
+import { msg } from '@lingui/core/macro'
 import ms from 'ms.macro'
 
 import { MAX_ORDER_DEADLINE } from 'common/constants/common'
@@ -12,19 +14,19 @@ export const DEFAULT_TWAP_SLIPPAGE = new Percent(10, 100) // 10%
 
 export const MAX_TWAP_SLIPPAGE = 99.99 // 99.99%
 
-export type OrderDeadline = { label: string; value: number }
+export type OrderDeadline = { label: MessageDescriptor; value: number }
 
 export const DEFAULT_NUM_OF_PARTS = 2
 
-export const DEFAULT_ORDER_DEADLINE: OrderDeadline = { label: '1 Hour', value: ms`1 hour` }
+export const DEFAULT_ORDER_DEADLINE: OrderDeadline = { label: msg`1 Hour`, value: ms`1 hour` }
 
 export const ORDER_DEADLINES: OrderDeadline[] = [
   DEFAULT_ORDER_DEADLINE,
-  { label: '6 Hours', value: ms`6 hour` },
-  { label: '12 Hours', value: ms`12 hour` },
-  { label: '24 Hours', value: ms`1d` },
-  { label: '1 Week', value: ms`1d` * 7 },
-  { label: '1 Month', value: ms`1d` * 30 },
+  { label: msg`6 Hours`, value: ms`6 hour` },
+  { label: msg`12 Hours`, value: ms`12 hour` },
+  { label: msg`24 Hours`, value: ms`1d` },
+  { label: msg`1 Week`, value: ms`1d` * 7 },
+  { label: msg`1 Month`, value: ms`1d` * 30 },
 ]
 
 export const TWAP_ORDER_STRUCT =
