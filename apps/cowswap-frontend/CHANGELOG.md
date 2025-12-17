@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.125.6](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.125.5...cowswap-v1.125.6) (2025-12-16)
+
+
+### Bug Fixes
+
+* **bridge:** resolve recipient for bridge quote ([#6703](https://github.com/cowprotocol/cowswap/issues/6703)) ([d1caee6](https://github.com/cowprotocol/cowswap/commit/d1caee6e74b45ab14b57e163027848cdf1919e14))
+
 ## [1.125.5](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.125.4...cowswap-v1.125.5) (2025-12-16)
 
 
