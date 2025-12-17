@@ -33,12 +33,14 @@ export function makeBuildClickEvent(
   mode: TradeType,
   counterChainId: ChainInfo['id'] | undefined,
 ): BuildClickEvent {
+  const isSwapMode = mode === TradeType.SWAP
+
   return (chain: ChainInfo) =>
     toCowSwapGtmEvent({
       category: CowSwapAnalyticsCategory.TRADE,
       action: 'network_selected',
       label: `Chain: ${chain.id}, PreviousChain: ${defaultChainId ?? 'none'}, Context: ${contextLabel}, Mode: ${mode}, CrossChain: ${
-        mode === TradeType.SWAP && counterChainId !== undefined && counterChainId !== chain.id
+        isSwapMode && counterChainId !== undefined && counterChainId !== chain.id
       }`,
     })
 }
