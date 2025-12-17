@@ -2,6 +2,7 @@ const { FlatCompat } = require('@eslint/eslintrc')
 const js = require('@eslint/js')
 const nextPlugin = require('@next/eslint-plugin-next')
 const nxEslintPlugin = require('@nx/eslint-plugin')
+const tseslint = require('@typescript-eslint/eslint-plugin')
 const prettierConfig = require('eslint-config-prettier')
 const eslintImport = require('eslint-plugin-import')
 const pluginLingui = require('eslint-plugin-lingui')
@@ -32,7 +33,7 @@ module.exports = [
   // All Project's rules
   {
     ...js.configs.recommended,
-    files: ['**/*.ts', '**/*.tsx'],
+    files: ['**/*.ts', '**/*.tsx', '**/*.mts'],
     languageOptions: {
       parser: require('@typescript-eslint/parser'),
       parserOptions: {
@@ -41,6 +42,7 @@ module.exports = [
       },
     },
     plugins: {
+      '@typescript-eslint': tseslint, // register @typescript-eslint rules
       react: react,
       'react-hooks': reactHooks,
     },
@@ -85,7 +87,7 @@ module.exports = [
     },
   },
   {
-    files: ['**/*.{ts,tsx,js,jsx}'],
+    files: ['**/*.{ts,tsx,js,jsx,mts}'],
     rules: {
       '@nx/enforce-module-boundaries': [
         'error',
