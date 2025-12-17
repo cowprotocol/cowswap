@@ -2,7 +2,6 @@ import { ReactNode, useCallback, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { useTheme } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import {
   ListState,
@@ -86,7 +85,6 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
 
   const updateSelectTokenWidget = useUpdateSelectTokenWidgetState()
   const { account, chainId } = useWalletInfo()
-  const { darkMode } = useTheme()
 
   const cowAnalytics = useCowAnalytics()
   const addCustomTokenLists = useAddList((source) => {
@@ -235,7 +233,6 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
             isRouteAvailable={isRouteAvailable}
             tradeType={tradeType}
             field={field}
-            isDarkMode={darkMode}
             counterChainId={counterChainId}
           />
         )

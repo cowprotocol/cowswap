@@ -45,7 +45,6 @@ export interface SelectTokenModalProps<T = TokenListCategory[] | null> {
   isRouteAvailable: boolean | undefined
   tradeType?: TradeType
   field?: Field
-  isDarkMode?: boolean
   counterChainId?: ChainInfo['id']
 
   onSelectToken(token: TokenWithLogo): void
@@ -98,7 +97,6 @@ export function SelectTokenModal(props: SelectTokenModalProps): ReactNode {
     isRouteAvailable,
     tradeType,
     field,
-    isDarkMode = false,
     counterChainId,
   } = props
   const [inputValue, setInputValue] = useState<string>(defaultInputValue)
@@ -143,7 +141,7 @@ export function SelectTokenModal(props: SelectTokenModalProps): ReactNode {
         </LpTokenListsWidget>
       ) : (
         <>
-          {!!chainsToSelect?.chains?.length && (
+          {!!chainsToSelect?.chains?.length && tradeType && field && (
             <>
               <styledEl.ChainsSelectorWrapper>
                 <ChainsSelector
@@ -153,7 +151,6 @@ export function SelectTokenModal(props: SelectTokenModalProps): ReactNode {
                   onSelectChain={onSelectChain}
                   tradeType={tradeType}
                   field={field}
-                  isDarkMode={isDarkMode}
                   counterChainId={counterChainId}
                 />
               </styledEl.ChainsSelectorWrapper>

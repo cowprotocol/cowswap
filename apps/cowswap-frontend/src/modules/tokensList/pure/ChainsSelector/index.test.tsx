@@ -6,7 +6,7 @@ import { makeBuildClickEvent } from './index'
 
 describe('ChainsSelector analytics', () => {
   it('produces network_selected event with contextual label', () => {
-    const buildEvent = makeBuildClickEvent(1, 'sell', TradeType.SWAP, 137, true)
+    const buildEvent = makeBuildClickEvent(1, 'sell', TradeType.SWAP, 137)
     const event = buildEvent({
       id: 100,
       label: 'Gnosis',
@@ -28,8 +28,8 @@ describe('ChainsSelector analytics', () => {
     expect(parsed.event_label).toContain('CrossChain: true')
   })
 
-  it('marks non-swap contexts as unknown mode', () => {
-    const buildEvent = makeBuildClickEvent(undefined, 'unknown', TradeType.LIMIT_ORDER, undefined, false)
+  it('marks non-cross selections when counter chain is undefined', () => {
+    const buildEvent = makeBuildClickEvent(undefined, 'sell', TradeType.LIMIT_ORDER, undefined)
     const parsed = JSON.parse(
       buildEvent({ id: 1, label: 'Ethereum', logo: { dark: '', light: '' } } as ChainInfo),
     ) as Record<string, unknown>
@@ -40,7 +40,7 @@ describe('ChainsSelector analytics', () => {
   })
 
   it('marks swap selections as non-cross-chain when choosing the same network', () => {
-    const buildEvent = makeBuildClickEvent(1, 'buy', TradeType.SWAP, 1, true)
+    const buildEvent = makeBuildClickEvent(1, 'buy', TradeType.SWAP, 1)
     const parsed = JSON.parse(
       buildEvent({ id: 1, label: 'Ethereum', logo: { dark: '', light: '' } } as ChainInfo),
     ) as Record<string, unknown>

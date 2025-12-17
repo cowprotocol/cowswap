@@ -12,7 +12,6 @@ export interface VisibleChainsRowProps {
   buildClickEvent: (chain: ChainInfo) => string
   isSwapMode: boolean
   onSelectChain: (chain: ChainInfo) => void
-  isDarkMode: boolean
 }
 
 export function VisibleChainsRow({
@@ -21,20 +20,22 @@ export function VisibleChainsRow({
   buildClickEvent,
   isSwapMode,
   onSelectChain,
-  isDarkMode,
 }: VisibleChainsRowProps): ReactNode {
   return visibleChains.map((chain) => {
     const clickEvent = buildClickEvent(chain)
+    const handleClick = (): void => {
+      onSelectChain(chain)
+    }
 
     return (
       <HoverTooltip key={chain.id} tooltipCloseDelay={0} wrapInContainer content={chain.label} placement="bottom">
         <styledEl.ChainItem
           active$={defaultChainId === chain.id}
-          onClick={() => onSelectChain(chain)}
+          onClick={handleClick}
           iconOnly
           data-click-event={isSwapMode ? clickEvent : undefined}
         >
-          <ChainLogo chain={chain} isDarkMode={isDarkMode} alt={chain.label} />
+          <ChainLogo chain={chain} alt={chain.label} />
         </styledEl.ChainItem>
       </HoverTooltip>
     )

@@ -29,17 +29,16 @@ const LoadingShimmerElements = (
 
 export function makeBuildClickEvent(
   defaultChainId: ChainInfo['id'] | undefined,
-  contextLabel: 'sell' | 'buy' | 'unknown',
-  mode: TradeType | 'unknown',
+  contextLabel: 'sell' | 'buy',
+  mode: TradeType,
   counterChainId: ChainInfo['id'] | undefined,
-  isSwapMode: boolean,
 ): BuildClickEvent {
   return (chain: ChainInfo) =>
     toCowSwapGtmEvent({
       category: CowSwapAnalyticsCategory.TRADE,
       action: 'network_selected',
       label: `Chain: ${chain.id}, PreviousChain: ${defaultChainId ?? 'none'}, Context: ${contextLabel}, Mode: ${mode}, CrossChain: ${
-        isSwapMode && counterChainId !== undefined ? counterChainId !== chain.id : false
+        mode === TradeType.SWAP && counterChainId !== undefined && counterChainId !== chain.id
       }`,
     })
 }
@@ -50,9 +49,8 @@ export interface ChainsSelectorProps {
   defaultChainId?: ChainInfo['id']
   visibleNetworkIcons?: number
   isLoading: boolean
-  tradeType?: TradeType
-  field?: Field
-  isDarkMode?: boolean
+  tradeType: TradeType
+  field: Field
   counterChainId?: ChainInfo['id']
 }
 
@@ -64,18 +62,16 @@ export function ChainsSelector({
   visibleNetworkIcons = LOADING_ITEMS_COUNT,
   tradeType,
   field,
-  isDarkMode = false,
   counterChainId,
 }: ChainsSelectorProps): ReactNode {
   const isMobile = useMediaQuery(Media.upToSmall(false))
-  const mode = tradeType ?? 'unknown'
+  const mode = tradeType
   const isSwapMode = tradeType === TradeType.SWAP
-  const contextLabel: 'sell' | 'buy' | 'unknown' =
-    field === Field.INPUT ? 'sell' : field === Field.OUTPUT ? 'buy' : 'unknown'
+  const contextLabel: 'sell' | 'buy' = field === Field.INPUT ? 'sell' : 'buy'
 
   const buildClickEvent = useMemo(
-    () => makeBuildClickEvent(defaultChainId, contextLabel, mode, counterChainId, isSwapMode),
-    [defaultChainId, contextLabel, mode, counterChainId, isSwapMode],
+    () => makeBuildClickEvent(defaultChainId, contextLabel, mode, counterChainId),
+    [defaultChainId, contextLabel, mode, counterChainId],
   )
 
   if (isLoading) {
@@ -96,7 +92,6 @@ export function ChainsSelector({
         buildClickEvent={buildClickEvent}
         isSwapMode={isSwapMode}
         onSelectChain={onSelectChain}
-        isDarkMode={isDarkMode}
       />
       {shouldDisplayMore && (
         <MoreMenuSection
@@ -106,7 +101,6 @@ export function ChainsSelector({
           buildClickEvent={buildClickEvent}
           isSwapMode={isSwapMode}
           onSelectChain={onSelectChain}
-          isDarkMode={isDarkMode}
         />
       )}
     </styledEl.Wrapper>

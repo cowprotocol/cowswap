@@ -15,7 +15,6 @@ export interface MoreMenuSectionProps {
   buildClickEvent: (chain: ChainInfo) => string
   isSwapMode: boolean
   onSelectChain: (chain: ChainInfo) => void
-  isDarkMode: boolean
 }
 
 export function MoreMenuSection({
@@ -25,10 +24,9 @@ export function MoreMenuSection({
   buildClickEvent,
   isSwapMode,
   onSelectChain,
-  isDarkMode,
 }: MoreMenuSectionProps): ReactNode {
   const buttonContent = selectedMenuChain ? (
-    <ChainLogo chain={selectedMenuChain} isDarkMode={isDarkMode} alt={selectedMenuChain.label} />
+    <ChainLogo chain={selectedMenuChain} alt={selectedMenuChain.label} />
   ) : (
     <span>More</span>
   )
@@ -42,22 +40,25 @@ export function MoreMenuSection({
       <styledEl.MenuListStyled portal={false}>
         {chains.map((chain) => {
           const clickEvent = buildClickEvent(chain)
+          const handleSelect = (): void => {
+            onSelectChain(chain)
+          }
 
-          return (
-            <MenuItem
-              key={chain.id}
-              as={styledEl.ChainItem}
-              onSelect={() => onSelectChain(chain)}
-              active$={defaultChainId === chain.id}
-              iconSize={21}
-              tabIndex={0}
-              borderless
-              data-click-event={isSwapMode ? clickEvent : undefined}
-            >
-              <ChainLogo chain={chain} isDarkMode={isDarkMode} alt={chain.label} />
-              <span>{chain.label}</span>
-              {chain.id === defaultChainId && <Check size={16} />}
-            </MenuItem>
+            return (
+              <MenuItem
+                key={chain.id}
+                as={styledEl.ChainItem}
+                onSelect={handleSelect}
+                active$={defaultChainId === chain.id}
+                iconSize={21}
+                tabIndex={0}
+                borderless
+                data-click-event={isSwapMode ? clickEvent : undefined}
+              >
+                <ChainLogo chain={chain} alt={chain.label} />
+                <span>{chain.label}</span>
+                {chain.id === defaultChainId && <Check size={16} />}
+              </MenuItem>
           )
         })}
       </styledEl.MenuListStyled>
