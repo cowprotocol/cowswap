@@ -17,7 +17,7 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 import { getCowAnalytics } from '../utils'
 
 // Specialized helper function for string properties to ensure we always return a string
-export const safeGetString = <T, K extends keyof T>(obj: T | undefined, key: K, fallback: string = ''): string => {
+export function safeGetString<T, K extends keyof T>(obj: T | undefined, key: K, fallback: string = ''): string {
   const value = obj && obj[key] != null ? obj[key] : fallback
   return String(value)
 }
@@ -60,10 +60,11 @@ type Tokenish = {
   symbol?: string
 }
 
-const isValidDecimals = (decimals: number | undefined): decimals is number =>
-  typeof decimals === 'number' && Number.isInteger(decimals) && decimals >= 0
+function isValidDecimals(decimals: number | undefined): decimals is number {
+  return typeof decimals === 'number' && Number.isInteger(decimals) && decimals >= 0
+}
 
-const toTokenWithLogo = (meta?: Tokenish): TokenWithLogo | null => {
+function toTokenWithLogo(meta?: Tokenish): TokenWithLogo | null {
   if (!meta?.address || !isValidDecimals(meta.decimals)) {
     return null
   }
@@ -86,7 +87,7 @@ const toTokenWithLogo = (meta?: Tokenish): TokenWithLogo | null => {
 
 type RawAmount = string | number | bigint | null | undefined
 
-const normalizeRawAmount = (rawAmount: RawAmount): string | undefined => {
+function normalizeRawAmount(rawAmount: RawAmount): string | undefined {
   if (rawAmount === null || rawAmount === undefined) {
     return undefined
   }
@@ -97,7 +98,7 @@ const normalizeRawAmount = (rawAmount: RawAmount): string | undefined => {
   return trimmed === '' ? undefined : trimmed
 }
 
-const formatTokenUnits = (meta: Tokenish | undefined, rawAmount: RawAmount): string | undefined => {
+function formatTokenUnits(meta: Tokenish | undefined, rawAmount: RawAmount): string | undefined {
   const normalizedRaw = normalizeRawAmount(rawAmount)
   if (!normalizedRaw) {
     return undefined
@@ -117,10 +118,10 @@ const formatTokenUnits = (meta: Tokenish | undefined, rawAmount: RawAmount): str
   }
 }
 
-const buildTokenFields = (
+function buildTokenFields(
   payload: BaseOrderPayload,
   meta: { inputToken?: TokenInfo; outputToken?: TokenInfo },
-): AnalyticsPayload => {
+): AnalyticsPayload {
   const sellTokenAddress = safeGetString(payload.order, 'sellToken')
   const buyTokenAddress = safeGetString(payload.order, 'buyToken')
 
@@ -175,16 +176,20 @@ export function getOrderPayload(payload: BaseOrderPayload): AnalyticsPayload {
   return { ...base, ...tokenFields, ...aliases }
 }
 
-const mapCancelledOrder = (p: OnCancelledOrderPayload): AnalyticsPayload => ({
-  ...getOrderPayload(p),
-  reason: 'cancelled',
-  transactionHash: p.transactionHash || '',
-})
+export function mapCancelledOrder(p: OnCancelledOrderPayload): AnalyticsPayload {
+  return {
+    ...getOrderPayload(p),
+    reason: 'cancelled',
+    transactionHash: p.transactionHash || '',
+  }
+}
 
-const mapExpiredOrder = (p: OnExpiredOrderPayload): AnalyticsPayload => ({
-  ...getOrderPayload(p),
-  reason: 'expired',
-})
+export function mapExpiredOrder(p: OnExpiredOrderPayload): AnalyticsPayload {
+  return {
+    ...getOrderPayload(p),
+    reason: 'expired',
+  }
+}
 
 export function mapPostedOrder(p: OnPostedOrderPayload): AnalyticsPayload {
   const tokenFields: AnalyticsPayload = {
@@ -253,10 +258,10 @@ export function mapFulfilledOrder(p: OnFulfilledOrderPayload): AnalyticsPayload 
   }
 }
 
-const createAnalyticsHandler = <K extends CowWidgetEvents>(
+function createAnalyticsHandler<K extends CowWidgetEvents>(
   analyticsEvent: string,
   mapper: (payload: CowWidgetEventPayloadMap[K]) => AnalyticsPayload,
-): CowEventHandler<CowWidgetEventPayloadMap, K> => {
+): CowEventHandler<CowWidgetEventPayloadMap, K> {
   return (payload: CowWidgetEventPayloadMap[K]): void => {
     const analytics = getCowAnalytics()
 

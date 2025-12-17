@@ -1,4 +1,4 @@
-import { debounce } from '@cowprotocol/common-utils'
+import { debounce, areAddressesEqual } from '@cowprotocol/common-utils'
 
 import { AnalyticsContext, CowAnalytics, EventOptions, OutboundLinkParams } from '../CowAnalytics'
 import { GtmEvent, Category } from '../types'
@@ -200,7 +200,7 @@ export class CowAnalyticsGtm implements CowAnalytics {
       })
     }
     // Wallet switched (account changes from one defined value to another)
-    else if (this.previousAccount !== account) {
+    else if (!areAddressesEqual(this.previousAccount, account)) {
       this.pushToDataLayer({
         event: 'wallet_switched',
         eventType: 'wallet_switch',
