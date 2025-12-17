@@ -1,8 +1,7 @@
-import React, { ReactNode, useEffect, useState } from 'react'
+import React, { ReactNode } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
-import { useMultiCallRpcProvider } from '@cowprotocol/multicall'
 import { Nullish } from '@cowprotocol/types'
 import { Loader } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
@@ -32,71 +31,6 @@ export interface TokensContentProps {
   onOpenManageWidget(): void
 }
 
-function BalancesDebugBlock({ selectTokenContext }: { selectTokenContext: SelectTokenContext }): ReactNode {
-  const {
-    balancesState: { isLoading, values, chainId, fromCache },
-    selectedToken,
-  } = selectTokenContext
-  const multiCallProvider = useMultiCallRpcProvider()
-  const [multiCallChainId, setMultiCallChainId] = useState<number | null>(null)
-
-  const valueKeys = Object.keys(values || {})
-  const sample = valueKeys.slice(0, 3).reduce<Record<string, string>>((acc, key) => {
-    const value = values?.[key]
-    acc[key] = value?.toString?.() ?? String(value)
-    return acc
-  }, {})
-  const sampleJson = JSON.stringify(sample)
-
-  useEffect(() => {
-    console.log('[TokenSelector][BalancesDebug]', {
-      chainId,
-      isLoading,
-      fromCache,
-      total: valueKeys.length,
-      sample,
-      selectedToken: selectedToken?.wrapped?.address,
-    })
-  }, [chainId, isLoading, fromCache, valueKeys.length, sampleJson, sample, selectedToken?.wrapped?.address])
-
-  useEffect(() => {
-    let stale = false
-
-    async function loadNetwork(): Promise<void> {
-      if (!multiCallProvider) {
-        setMultiCallChainId(null)
-        return
-      }
-
-      try {
-        const net = await multiCallProvider.getNetwork()
-        if (!stale) setMultiCallChainId(net.chainId)
-      } catch (err) {
-        console.debug('[TokenSelector][BalancesDebug] multicall getNetwork failed', err)
-        if (!stale) setMultiCallChainId(null)
-      }
-    }
-
-    void loadNetwork()
-
-    return () => {
-      stale = true
-    }
-  }, [multiCallProvider])
-
-  return (
-    <div
-      data-testid="token-selector-balance-debug"
-      aria-hidden="true"
-      style={{ fontSize: 10, color: '#8a8a8a', marginBottom: 6, wordBreak: 'break-all' }}
-    >
-      [TokenSelector][BalancesDebug] chainId={chainId ?? 'none'} loading={String(isLoading)} fromCache=
-      {String(fromCache)} total={valueKeys.length} sample={sampleJson} mcProviderChainId=
-      {multiCallChainId ?? 'none'}
-    </div>
-  )
-}
-
 export function TokensContent({
   selectTokenContext,
   onSelectToken,
@@ -113,7 +47,6 @@ export function TokensContent({
 }: TokensContentProps): ReactNode {
   return (
     <>
-      <BalancesDebugBlock selectTokenContext={selectTokenContext} />
       {!areTokensLoading && !!favoriteTokens.length && (
         <>
           <styledEl.Row>

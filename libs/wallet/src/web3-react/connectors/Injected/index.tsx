@@ -225,7 +225,6 @@ export class InjectedWallet extends Connector {
     this.actions.resetState()
   }
 
-  // Mod: Added custom method
   // Method to target a specific provider on window.ethereum or window.ethereum.providers if it exists
   private detectProvider(): EIP1193Provider | void {
     if (this.provider) return this.provider
@@ -240,7 +239,6 @@ export class InjectedWallet extends Connector {
     return this.provider
   }
 
-  // Mod: Added custom method
   // Some wallets such as Tally will inject custom providers array on window.ethereum
   // This array will contain all injected providers and we can select the one we want based on keywords passed to constructor
   // For example to select tally we would search for isTally or isTallyWallet property keys
@@ -254,7 +252,6 @@ export class InjectedWallet extends Connector {
     return providers.find((provider: any) => this.searchKeywords.some((keyword) => provider[keyword]))
   }
 
-  // Mod: Added custom method
   // Here we check for specific provider directly on window.ethereum
   // TODO: Add proper return type annotation
   // TODO: Replace any with proper type definitions
@@ -268,7 +265,6 @@ export class InjectedWallet extends Connector {
     return provider ? ethereum : null
   }
 
-  // Mod: Added custom method
   // Try 2 different RPC methods to get accounts first with eth_requestAccounts and if it fails, try eth_accounts
   // TODO: Add proper return type annotation
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -296,7 +292,6 @@ export class InjectedWallet extends Connector {
     }
   }
 
-  // Mod: Added custom method
   // Get chainId with retry logic for providers that may return empty array during initialization.
   private async getChainIdWithRetry(maxRetries = 5): Promise<string | number> {
     if (this.chainIdRequest) return this.chainIdRequest
