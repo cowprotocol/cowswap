@@ -65,8 +65,12 @@ export const allListsSourcesAtom = atom((get) => {
 // Migrating from localStorage to indexedDB
 localStorage.removeItem('allTokenListsInfoAtom:v5')
 
-// Lists states
-// Note: v6 -> v7 migration is handled by migrateTokenListsFromGithubToCdn()
+/**
+ * Lists states (user preferences)
+ * Note: v6 -> v7 migration is handled by migrateTokenListsFromGithubToCdn()
+ *
+ * @warning any migration or changes to this atom should be accompanied by a reset in tokens:lastUpdateTimeAtom:v6
+ */
 export const listsStatesByChainAtom = atomWithIdbStorage<TokenListsByChainState>(
   'allTokenListsInfoAtom:v7',
   mapSupportedNetworks({}),
