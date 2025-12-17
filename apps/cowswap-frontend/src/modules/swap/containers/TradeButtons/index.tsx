@@ -26,6 +26,10 @@ import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
 import { swapTradeButtonsMap } from './swapTradeButtonsMap'
 
 import { useOnCurrencySelection } from '../../hooks/useOnCurrencySelection'
+import {
+  useShouldCheckBridgingRecipient,
+  useSmartContractRecipientConfirmed,
+} from '../../hooks/useSmartContractRecipientConfirmed'
 import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
 import { useSwapFormState } from '../../hooks/useSwapFormState'
 
@@ -59,6 +63,8 @@ export function TradeButtons({
   const wrappedToken = useWrappedToken()
   const onCurrencySelection = useOnCurrencySelection()
   const isCurrentTradeBridging = useIsCurrentTradeBridging()
+  const shouldCheckBridgingRecipient = useShouldCheckBridgingRecipient()
+  const smartContractRecipientConfirmed = useSmartContractRecipientConfirmed()
 
   const { t } = useLingui()
 
@@ -85,7 +91,11 @@ export function TradeButtons({
     !!intermediateBuyToken &&
     primaryFormValidation === TradeFormValidation.ImportingIntermediateToken
 
-  const isDisabled = !isTradeContextReady || !feeWarningAccepted || !isNoImpactWarningAccepted
+  const isDisabled =
+    !isTradeContextReady ||
+    !feeWarningAccepted ||
+    !isNoImpactWarningAccepted ||
+    (shouldCheckBridgingRecipient ? !smartContractRecipientConfirmed : false)
 
   if (!tradeFormButtonContext) return null
 
