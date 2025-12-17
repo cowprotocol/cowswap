@@ -17,6 +17,7 @@ interface injectedWalletConstructorArgs {
 export class InjectedWallet extends Connector {
   provider?: EIP1193Provider = undefined
   prevProvider?: EIP1193Provider = undefined
+  customProvider?: Web3Provider = undefined
   walletUrl: string
   searchKeywords: string[]
   eagerConnection?: boolean
