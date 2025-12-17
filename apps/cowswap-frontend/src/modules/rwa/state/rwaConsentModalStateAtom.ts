@@ -6,9 +6,8 @@ import { atomWithPartialUpdate } from '@cowprotocol/common-utils'
 export interface RwaConsentModalState {
   isModalOpen: boolean
   context?: {
-    issuer: string
-    tosVersion: string
-    issuerName?: string
+    issuerName: string
+    tosHash: string
     token?: TokenWithLogo
   }
 }

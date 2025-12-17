@@ -1,5 +1,7 @@
 import { useMemo } from 'react'
 
+import { areTokensEqual } from '@cowprotocol/common-utils'
+import { useAnyRestrictedToken, RestrictedTokenInfo } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Token } from '@uniswap/sdk-core'
 
@@ -21,11 +23,9 @@ export enum RwaTokenStatus {
 
 export interface RwaTokenInfo {
   token: Token
-  issuer: string
-  tosVersion: string
-  issuerName?: string
+  issuerName: string
   blockedCountries: Set<string>
-  termsIpfsHash: string
+  tosHash: string
 }
 
 export interface RwaTokenStatusResult {
@@ -38,24 +38,12 @@ export interface UseRwaTokenStatusParams {
   outputToken: Token | undefined
 }
 
-/**
- * TODO: Implement actual RWA token detection from token list
- */
-function getRwaTokenFromList(inputToken: Token | undefined, outputToken: Token | undefined): RwaTokenInfo | null {
-  // TODO: Replace with actual token list check
-  // For now, treat ALL tokens as RWA for testing purposes
-  const token = inputToken || outputToken
-  if (!token) {
-    return null
-  }
-
+function convertToRwaTokenInfo(restrictedInfo: RestrictedTokenInfo, originalToken: Token): RwaTokenInfo {
   return {
-    token,
-    issuer: 'test-issuer',
-    tosVersion: 'rwa-tos-v1',
-    issuerName: 'Test RWA Issuer',
-    blockedCountries: new Set(['US']),
-    termsIpfsHash: '', // TODO: add IPFS hash
+    token: originalToken,
+    issuerName: restrictedInfo.issuerName,
+    blockedCountries: new Set(restrictedInfo.restrictedCountries),
+    tosHash: restrictedInfo.tosHash,
   }
 }
 
@@ -63,10 +51,17 @@ export function useRwaTokenStatus({ inputToken, outputToken }: UseRwaTokenStatus
   const { account } = useWalletInfo()
   const geoCountry = useGeoCountry()
 
-  // Check if any of the tokens is an RWA token
-  const rwaTokenInfo = useMemo(() => {
-    return getRwaTokenFromList(inputToken, outputToken)
-  }, [inputToken, outputToken])
+  const restrictedTokenInfo = useAnyRestrictedToken(inputToken, outputToken)
+
+  const rwaTokenInfo = useMemo((): RwaTokenInfo | null => {
+    if (!restrictedTokenInfo) return null
+
+    const matchedToken = areTokensEqual(inputToken, restrictedTokenInfo.token) ? inputToken : outputToken
+
+    if (!matchedToken) return null
+
+    return convertToRwaTokenInfo(restrictedTokenInfo, matchedToken)
+  }, [restrictedTokenInfo, inputToken, outputToken])
 
   const consentKey: RwaConsentKey = useMemo(() => {
     if (!rwaTokenInfo || !account) {
@@ -74,7 +69,7 @@ export function useRwaTokenStatus({ inputToken, outputToken }: UseRwaTokenStatus
     }
     return {
       wallet: account,
-      tosVersion: rwaTokenInfo.tosVersion,
+      tosVersion: rwaTokenInfo.tosHash,
     }
   }, [rwaTokenInfo, account])
 

@@ -42,7 +42,7 @@ interface TradeButtonsProps {
   setShowAddIntermediateTokenModal: (show: boolean) => void
 }
 
-// eslint-disable-next-line max-lines-per-function
+ 
 export function TradeButtons({
   isTradeContextReady,
   openNativeWrapModal,
@@ -84,9 +84,8 @@ export function TradeButtons({
       // Show consent modal if country unknown and consent not given
       if (rwaStatus === RwaTokenStatus.RequiredConsent && rwaTokenInfo) {
         openRwaConsentModal({
-          issuer: rwaTokenInfo.issuer,
-          tosVersion: rwaTokenInfo.tosVersion,
           issuerName: rwaTokenInfo.issuerName,
+          tosHash: rwaTokenInfo.tosHash,
           token: rwaTokenInfo.token as TokenWithLogo,
         })
         return

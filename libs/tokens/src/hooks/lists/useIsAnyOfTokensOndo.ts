@@ -1,22 +1,27 @@
 import { useAtomValue } from 'jotai'
+import { useMemo } from 'react'
 
-import { areAddressesEqual } from '@cowprotocol/common-utils'
 import { Token } from '@uniswap/sdk-core'
 
-import { ONDO_TOKENS_LIST_SOURCE } from '../../const/tokensLists'
-import { listsStatesMapAtom } from '../../state/tokenLists/tokenListsStateAtom'
+import { getTokenId, restrictedTokensAtom } from '../../state/restrictedTokens/restrictedTokensAtom'
 
 export function useIsAnyOfTokensOndo(firstToken: Token | undefined, secondToken: Token | undefined): Token | undefined {
-  const listStatesMapAtom = useAtomValue(listsStatesMapAtom)
-  if (!firstToken && !secondToken) return undefined
+  const restrictedList = useAtomValue(restrictedTokensAtom)
 
-  const ondoList = listStatesMapAtom[ONDO_TOKENS_LIST_SOURCE]
-  if (!ondoList) return undefined
+  return useMemo(() => {
+    if (!firstToken && !secondToken) return undefined
+    if (!restrictedList.isLoaded) return undefined
 
-  for (const token of ondoList.list.tokens) {
-    if (areAddressesEqual(token.address, firstToken?.address)) return firstToken
-    if (areAddressesEqual(token.address, secondToken?.address)) return secondToken
-  }
+    if (firstToken) {
+      const tokenId = getTokenId(firstToken.chainId, firstToken.address)
+      if (restrictedList.tokensMap[tokenId]) return firstToken
+    }
 
-  return undefined
+    if (secondToken) {
+      const tokenId = getTokenId(secondToken.chainId, secondToken.address)
+      if (restrictedList.tokensMap[tokenId]) return secondToken
+    }
+
+    return undefined
+  }, [firstToken, secondToken, restrictedList])
 }

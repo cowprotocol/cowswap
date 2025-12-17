@@ -10,9 +10,8 @@ import {
 } from '../state/rwaConsentModalStateAtom'
 
 export interface RwaConsentModalContext {
-  issuer: string
-  tosVersion: string
-  issuerName?: string
+  issuerName: string
+  tosHash: string
   token?: TokenWithLogo
 }
 

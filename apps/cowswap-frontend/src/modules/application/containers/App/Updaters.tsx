@@ -2,7 +2,12 @@ import { ReactNode } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { MultiCallUpdater } from '@cowprotocol/multicall'
-import { TokensListsTagsUpdater, TokensListsUpdater, UnsupportedTokensUpdater } from '@cowprotocol/tokens'
+import {
+  RestrictedTokensListUpdater,
+  TokensListsTagsUpdater,
+  TokensListsUpdater,
+  UnsupportedTokensUpdater,
+} from '@cowprotocol/tokens'
 import { HwAccountIndexUpdater, useWalletInfo, WalletUpdater } from '@cowprotocol/wallet'
 
 import { CowSdkUpdater } from 'cowSdk'
@@ -110,6 +115,7 @@ export function Updaters(): ReactNode {
         isYieldEnabled={isYieldEnabled}
         bridgeNetworkInfo={bridgeNetworkInfo?.data}
       />
+      <RestrictedTokensListUpdater />
       <TokensListsTagsUpdater />
 
       <WidgetTokensUpdater />

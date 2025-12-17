@@ -7,6 +7,7 @@ export { TokensListsUpdater } from './updaters/TokensListsUpdater'
 export { TokensListsTagsUpdater } from './updaters/TokensListsTagsUpdater'
 export { UnsupportedTokensUpdater } from './updaters/UnsupportedTokensUpdater'
 export { WidgetTokensListsUpdater } from './updaters/WidgetTokensListsUpdater'
+export { RestrictedTokensListUpdater } from './updaters/RestrictedTokensListUpdater'
 
 // Pure components
 export { TokenLogo, TokenLogoWrapper } from './pure/TokenLogo'
@@ -17,6 +18,9 @@ export * from './types'
 export type { TokensByAddress, TokensBySymbol } from './state/tokens/allTokensAtom'
 export type { ListSearchResponse } from './hooks/lists/useSearchList'
 export type { TokenSearchResponse } from './hooks/tokens/useSearchToken'
+export { getTokenId } from './state/restrictedTokens/restrictedTokensAtom'
+export type { RestrictedTokenListState, TokenId } from './state/restrictedTokens/restrictedTokensAtom'
+export type { RestrictedTokenInfo } from './hooks/tokens/useRestrictedToken'
 
 // Hooks
 export { useAllListsList } from './hooks/lists/useAllListsList'
@@ -63,3 +67,5 @@ export { fetchTokenList } from './services/fetchTokenList'
 // Consts
 export { DEFAULT_TOKENS_LISTS } from './const/tokensLists'
 export { useIsAnyOfTokensOndo } from './hooks/lists/useIsAnyOfTokensOndo'
+
+export { useRestrictedToken, useAnyRestrictedToken } from './hooks/tokens/useRestrictedToken'

@@ -19,7 +19,7 @@ export function RwaConsentModalContainer(): ReactNode {
     }
     return {
       wallet: account,
-      tosVersion: context.tosVersion,
+      tosVersion: context.tosHash,
     }
   }, [context, account])
 
