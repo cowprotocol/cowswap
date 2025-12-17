@@ -220,7 +220,7 @@ export class InjectedWallet extends Connector {
 
     this.provider = undefined
     this.usedMetadataFallback = false
-    ;(this as { customProvider?: Web3Provider }).customProvider = undefined
+    this.customProvider = undefined
     this.onDisconnect?.()
     this.actions.resetState()
   }
@@ -441,7 +441,7 @@ export class InjectedWallet extends Connector {
 
   private setCustomProvider(chainId: number): void {
     if (!this.provider) return
-    ;(this as { customProvider?: Web3Provider }).customProvider = new Web3Provider(this.provider, chainId)
+    this.customProvider = new Web3Provider(this.provider, chainId)
   }
 }
 
