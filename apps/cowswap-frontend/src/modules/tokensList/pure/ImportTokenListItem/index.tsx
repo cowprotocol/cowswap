@@ -1,5 +1,6 @@
 import { ListState } from '@cowprotocol/tokens'
 
+import { Trans } from '@lingui/react/macro'
 import { CheckCircle } from 'react-feather'
 
 import * as styledEl from './styled'
@@ -24,11 +25,15 @@ export function ImportTokenListItem(props: ImportTokenListItemProps) {
       {source === 'existing' ? (
         <styledEl.LoadedInfo>
           <CheckCircle size={16} strokeWidth={2} />
-          <span>Loaded</span>
+          <span>
+            <Trans>Loaded</Trans>
+          </span>
         </styledEl.LoadedInfo>
       ) : (
         <div>
-          <ImportButton onClick={() => importList(list)}>Import</ImportButton>
+          <ImportButton onClick={() => importList(list)}>
+            <Trans>Import</Trans>
+          </ImportButton>
         </div>
       )}
     </styledEl.Wrapper>

@@ -3,6 +3,7 @@ import React, { ReactNode, useMemo } from 'react'
 import { OrderTabId } from '../../../const/tabs'
 import { OrderRow } from '../../../containers/OrderRow'
 import { useOrdersTableState } from '../../../hooks/useOrdersTableState'
+import { useGetPendingOrdersPermitValidityState } from '../../../hooks/usePendingOrderPermitValidity'
 import { OrderTableItem } from '../../../types'
 import { getOrderParams } from '../../../utils/getOrderParams'
 import { getParsedOrderFromTableItem, isParsedOrder } from '../../../utils/orderTableGroupUtils'
@@ -16,7 +17,7 @@ interface OrderTableRowProps {
 export function OrderTableRow({ item, currentTab }: OrderTableRowProps): ReactNode {
   const tableState = useOrdersTableState()
   const selectedOrders = tableState?.selectedOrders
-
+  const pendingOrdersPermitValidityState = useGetPendingOrdersPermitValidityState()
   const selectedOrdersMap = useMemo(() => {
     if (!selectedOrders) return {}
 
@@ -63,7 +64,7 @@ export function OrderTableRow({ item, currentTab }: OrderTableRowProps): ReactNo
         spotPrice={spotPrice}
         prices={pendingOrdersPrices[order.id]}
         isRateInverted={false}
-        orderParams={getOrderParams(chainId, balancesAndAllowances, order)}
+        orderParams={getOrderParams(chainId, balancesAndAllowances, order, pendingOrdersPermitValidityState)}
         onClick={() => orderActions.selectReceiptOrder(order)}
         orderActions={orderActions}
         isTwapTable={isTwapTable}

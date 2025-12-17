@@ -1,5 +1,6 @@
 import React, { ReactNode } from 'react'
 
+import { Trans } from '@lingui/react/macro'
 import { Check, Clock, X } from 'react-feather'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
@@ -17,7 +18,7 @@ export interface FillsAtStatusProps {
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function TwapOrderStatus({ childOrders, orderStatus, children }: FillsAtStatusProps) {
   if (!childOrders) return null
 
@@ -30,7 +31,7 @@ export function TwapOrderStatus({ childOrders, orderStatus, children }: FillsAtS
         <b>
           <styledEl.CancelledDisplay>
             <X size={14} strokeWidth={2.5} />
-            Order cancelled
+            <Trans>Order cancelled</Trans>
           </styledEl.CancelledDisplay>
         </b>
         <i></i>
@@ -62,7 +63,7 @@ export function TwapOrderStatus({ childOrders, orderStatus, children }: FillsAtS
         <b>
           <styledEl.FilledDisplay>
             <Check size={14} strokeWidth={3.5} />
-            Order filled
+            <Trans>Order filled</Trans>
           </styledEl.FilledDisplay>
         </b>
         <i></i>
@@ -81,7 +82,7 @@ export function TwapOrderStatus({ childOrders, orderStatus, children }: FillsAtS
         <b>
           <styledEl.FilledDisplay>
             <Check size={14} strokeWidth={3.5} />
-            Order partially filled
+            <Trans>Order partially filled</Trans>
           </styledEl.FilledDisplay>
         </b>
         <i></i>
@@ -98,7 +99,7 @@ export function TwapOrderStatus({ childOrders, orderStatus, children }: FillsAtS
         <b>
           <styledEl.ExpiredDisplay>
             <Clock size={14} strokeWidth={2.5} />
-            Order expired
+            <Trans>Order expired</Trans>
           </styledEl.ExpiredDisplay>
         </b>
         <i></i>

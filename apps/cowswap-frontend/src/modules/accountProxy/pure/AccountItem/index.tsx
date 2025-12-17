@@ -4,6 +4,8 @@ import { shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ArrowIcon } from '@cowprotocol/ui'
 
+import { Trans } from '@lingui/react/macro'
+
 import { Routes } from 'common/constants/routes'
 
 import { AccountIcon } from './AccountIcon'
@@ -23,14 +25,7 @@ interface AccountItemProps {
 export function AccountItem({ chainId, account, version, iconSize = 28 }: AccountItemProps): ReactNode {
   return (
     <Wrapper to={parameterizeRoute(Routes.ACCOUNT_PROXY, { chainId, proxyAddress: account })}>
-      <BaseAccountCard
-        width={90}
-        height={56}
-        borderRadius={8}
-        padding={8}
-        enableParentHover
-        enableScale
-      >
+      <BaseAccountCard width={90} height={56} borderRadius={8} padding={8} enableParentHover enableScale>
         <MiniContent>
           <AccountIcon account={account} size={iconSize} />
           <SkeletonLines skeletonHeight={2} />
@@ -39,7 +34,9 @@ export function AccountItem({ chainId, account, version, iconSize = 28 }: Accoun
       </BaseAccountCard>
       <AccountWrapper>
         <h3>{shortenAddress(account)}</h3>
-        <p>Version: {version}</p>
+        <p>
+          <Trans>Version</Trans>: {version}
+        </p>
       </AccountWrapper>
 
       <ArrowIcon />

@@ -10,8 +10,13 @@ const chainIdToName: Record<SupportedChainId, string | null> = {
   [SupportedChainId.AVALANCHE]: 'avalanche',
   [SupportedChainId.LENS]: null, // As of now (2025/07/16), Lens is not on Trust Wallet assets repo
   [SupportedChainId.BNB]: 'smartchain',
+  [SupportedChainId.LINEA]: 'linea',
+  [SupportedChainId.PLASMA]: 'plasma',
 }
 
+/**
+ * @deprecated TODO5(daniel)
+ */
 export function trustTokenLogoUrl(address: string, chainId: SupportedChainId): string | null {
   const trustChainName = chainIdToName[chainId]
 

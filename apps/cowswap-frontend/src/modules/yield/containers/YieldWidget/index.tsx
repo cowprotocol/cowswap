@@ -5,6 +5,10 @@ import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { LpTokenProvider } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { MessageDescriptor } from '@lingui/core'
+import { msg, t } from '@lingui/core/macro'
+import { useLingui } from '@lingui/react/macro'
+
 import { Field } from 'legacy/state/types'
 
 import { SelectTokenWidget } from 'modules/tokensList'
@@ -36,19 +40,25 @@ import { TradeButtons } from '../TradeButtons'
 import { Warnings } from '../Warnings'
 import { YieldConfirmModal } from '../YieldConfirmModal'
 
-const YIELD_BULLET_LIST_CONTENT: BulletListItem[] = [
-  { content: 'Maximize your yield on existing LP positions' },
-  { content: 'Seamlessly swap your tokens into CoW AMM pools' },
-  { content: 'Earn higher returns with reduced impermanent loss' },
-  { content: 'Leverage advanced strategies for optimal growth' },
+const YIELD_BULLET_LIST_CONTENT_MSG: Array<{ content: MessageDescriptor }> = [
+  { content: msg`Maximize your yield on existing LP positions` },
+  { content: msg`Seamlessly swap your tokens into CoW AMM pools` },
+  { content: msg`Earn higher returns with reduced impermanent loss` },
+  { content: msg`Leverage advanced strategies for optimal growth` },
 ]
 
-const YIELD_UNLOCK_SCREEN = {
-  id: 'yield-widget',
-  title: 'Unlock Enhanced Yield Features',
-  subtitle: 'Boooost your current LP positions with CoW AMM’s pools.',
-  orderType: 'yield',
-  buttonText: 'Start boooosting your yield!',
+const YIELD_UNLOCK_SCREEN: {
+  id: string
+  title: MessageDescriptor
+  subtitle: MessageDescriptor
+  orderType: MessageDescriptor
+  buttonText: MessageDescriptor
+} = {
+  id: `yield-widget`,
+  title: msg`Unlock Enhanced Yield Features`,
+  subtitle: msg`Boooost your current LP positions with CoW AMM’s pools.`,
+  orderType: msg`yield`,
+  buttonText: msg`Start boooosting your yield!`,
 }
 
 // TODO: Break down this large function into smaller functions
@@ -56,6 +66,7 @@ const YIELD_UNLOCK_SCREEN = {
 // TODO: Reduce function complexity by extracting logic
 // eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
 export function YieldWidget() {
+  const { i18n } = useLingui()
   const { chainId, account } = useWalletInfo()
   const { showRecipient } = useYieldSettings()
   const deadlineState = useYieldDeadlineState()
@@ -104,6 +115,10 @@ export function YieldWidget() {
     outputCurrency instanceof LpToken &&
     inputCurrency.tokens.every((token) => outputCurrency.tokens.includes(token))
 
+  const YIELD_BULLET_LIST_CONTENT = YIELD_BULLET_LIST_CONTENT_MSG.map(
+    ({ content }) => ({ content: i18n._(content) }) as BulletListItem,
+  )
+
   const inputCurrencyInfo: CurrencyInfo = {
     field: Field.INPUT,
     currency: inputCurrency,
@@ -151,18 +166,17 @@ export function YieldWidget() {
     amount: inputCurrencyInfo.amount,
     fiatAmount: inputCurrencyInfo.fiatAmount,
     balance: inputCurrencyInfo.balance,
-    label: 'Sell amount',
+    label: t`Sell amount`,
   }
 
   const outputCurrencyPreviewInfo = {
     amount: outputCurrencyInfo.amount,
     fiatAmount: outputCurrencyInfo.fiatAmount,
     balance: outputCurrencyInfo.balance,
-    label: 'Receive (before fees)',
+    label: t`Receive (before fees)`,
   }
 
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
-
   const slots: TradeWidgetSlots = {
     topContent: vampireAttackContext ? (
       <CoWAmmInlineBanner token={vampireAttackTarget?.target.token} apyDiff={vampireAttackTarget?.apyDiff} />
@@ -194,10 +208,10 @@ export function YieldWidget() {
         id={YIELD_UNLOCK_SCREEN.id}
         items={YIELD_BULLET_LIST_CONTENT}
         handleUnlock={() => setIsUnlocked(true)}
-        title={YIELD_UNLOCK_SCREEN.title}
-        subtitle={YIELD_UNLOCK_SCREEN.subtitle}
-        orderType={YIELD_UNLOCK_SCREEN.orderType}
-        buttonText={YIELD_UNLOCK_SCREEN.buttonText}
+        title={i18n._(YIELD_UNLOCK_SCREEN.title)}
+        subtitle={i18n._(YIELD_UNLOCK_SCREEN.subtitle)}
+        orderType={i18n._(YIELD_UNLOCK_SCREEN.orderType)}
+        buttonText={i18n._(YIELD_UNLOCK_SCREEN.buttonText)}
       />
     ) : undefined,
   }

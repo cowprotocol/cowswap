@@ -1,23 +1,28 @@
 import { useAtomValue } from 'jotai'
+import { ReactNode, Suspense, useMemo } from 'react'
 
 import { UiOrderType } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { Loading } from 'legacy/components/FlashingLoading'
+import { OrderStatus } from 'legacy/state/orders/actions'
 import { useOrders } from 'legacy/state/orders/hooks'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
-import { LimitOrdersWidget, useIsWidgetUnlocked, limitOrdersSettingsAtom } from 'modules/limitOrders'
-import { OrdersTableWidget, TabOrderTypes } from 'modules/ordersTable'
+import { limitOrdersSettingsAtom, LimitOrdersWidget, useIsWidgetUnlocked } from 'modules/limitOrders'
+import { LimitOrdersPermitUpdater, OrdersTableWidget, TabOrderTypes } from 'modules/ordersTable'
 import * as styledEl from 'modules/trade/pure/TradePageLayout'
 
 const LIMIT_ORDERS_MAX_WIDTH = '1800px'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function RegularLimitOrders() {
+export function RegularLimitOrders(): ReactNode {
   const isUnlocked = useIsWidgetUnlocked()
   const { chainId, account } = useWalletInfo()
   const allLimitOrders = useOrders(chainId, account, UiOrderType.LIMIT)
+  const pendingLimitOrders = useMemo(
+    () => allLimitOrders.filter((order) => order.status === OrderStatus.PENDING),
+    [allLimitOrders],
+  )
   const { hideOrdersTable } = useInjectedWidgetParams()
   const { ordersTableOnLeft } = useAtomValue(limitOrdersSettingsAtom)
 
@@ -34,7 +39,10 @@ export function RegularLimitOrders() {
 
       {!hideOrdersTable && (
         <styledEl.SecondaryWrapper>
-          <OrdersTableWidget orderType={TabOrderTypes.LIMIT} orders={allLimitOrders} />
+          {pendingLimitOrders.length > 0 && <LimitOrdersPermitUpdater orders={pendingLimitOrders} />}
+          <Suspense fallback={<Loading />}>
+            <OrdersTableWidget orderType={TabOrderTypes.LIMIT} orders={allLimitOrders} />
+          </Suspense>
         </styledEl.SecondaryWrapper>
       )}
     </styledEl.PageWrapper>

@@ -6,8 +6,8 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 import { useNeedsApproval } from 'common/hooks/useNeedsApproval'
 
 import { useGetPartialAmountToSignApprove } from './useGetPartialAmountToSignApprove'
+import { useIsPartialApprovalModeSelected } from './useIsPartialApprovalModeSelected'
 
-import { useSwapPartialApprovalToggleState } from '../../swap/hooks/useSwapSettings'
 import { MAX_APPROVE_AMOUNT } from '../constants'
 import { useIsPartialApproveSelectedByUser } from '../state'
 
@@ -23,7 +23,7 @@ export function useGetAmountToSignApprove(): CurrencyAmount<Currency> | null {
   const isApprovalNeeded = useNeedsApproval(partialAmountToSign)
   const isPartialApprovalSelectedByUser = useIsPartialApproveSelectedByUser()
   const { isPartialApproveEnabled } = useFeatureFlags()
-  const [isPartialApprovalEnabledInSettings] = useSwapPartialApprovalToggleState(isPartialApproveEnabled)
+  const isPartialApprovalEnabledInSettings = useIsPartialApprovalModeSelected()
 
   return useMemo(() => {
     if (!partialAmountToSign) return null

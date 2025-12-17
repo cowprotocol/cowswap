@@ -1,9 +1,11 @@
-import { useAtomValue } from 'jotai/index'
+import { useAtomValue } from 'jotai'
 import { useCallback, useRef } from 'react'
 
 import { useIsOnline, useIsWindowVisible } from '@cowprotocol/common-hooks'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { useAreUnsupportedTokens } from '@cowprotocol/tokens'
+
+import { useGetCorrelatedTokensByChainId } from 'entities/correlatedTokens'
 
 import { QuoteParams } from './useQuoteParams'
 import { useTradeQuote } from './useTradeQuote'
@@ -19,6 +21,7 @@ export function usePollQuoteCallback(
   quoteParamsState: QuoteParams | undefined,
 ): (hasParamsChanged: boolean, forceUpdate?: boolean) => boolean {
   const { fastQuote } = useAtomValue(tradeQuoteInputAtom)
+  const getCorrelatedTokensByChainId = useGetCorrelatedTokensByChainId()
   const tradeQuote = useTradeQuote()
   const tradeQuoteRef = useRef(tradeQuote)
   // eslint-disable-next-line react-hooks/refs
@@ -35,6 +38,8 @@ export function usePollQuoteCallback(
   // eslint-disable-next-line react-hooks/refs
   isOnlineRef.current = isOnline
 
+  const updatingStartTimestamp = useRef<null | number>(null)
+
   return useCallback(
     (hasParamsChanged: boolean, forceUpdate = false): boolean => {
       const { isQuoteUpdatePossible, isConfirmOpen } = quotePollingParams
@@ -48,8 +53,23 @@ export function usePollQuoteCallback(
         return false
       }
 
-      const fetchQuote = (fetchParams: TradeQuoteFetchParams): Promise<void> =>
-        fetchAndProcessQuote(fetchParams, quoteParams, quotePollingParams, appData, tradeQuoteManager)
+      const fetchQuote = (fetchParams: TradeQuoteFetchParams): Promise<void> => {
+        const now = Date.now()
+        updatingStartTimestamp.current = now
+
+        return fetchAndProcessQuote(
+          fetchParams,
+          quoteParams,
+          quotePollingParams,
+          appData,
+          tradeQuoteManager,
+          {
+            now,
+            ref: updatingStartTimestamp,
+          },
+          getCorrelatedTokensByChainId,
+        )
+      }
 
       const context: QuoteUpdateContext = {
         currentQuote: tradeQuoteRef.current,
@@ -68,6 +88,15 @@ export function usePollQuoteCallback(
        */
       return doQuotePolling(context)
     },
-    [quoteParams, appData, tradeQuoteManager, isWindowVisible, fastQuote, getIsUnsupportedTokens, quotePollingParams],
+    [
+      quoteParams,
+      appData,
+      tradeQuoteManager,
+      isWindowVisible,
+      fastQuote,
+      getIsUnsupportedTokens,
+      quotePollingParams,
+      getCorrelatedTokensByChainId,
+    ],
   )
 }

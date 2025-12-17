@@ -1,9 +1,12 @@
+/* eslint-disable no-restricted-imports */ // TODO: Don't use 'modules' import
 import { ReactElement, useEffect, useMemo, useState } from 'react'
 
 import { cowAppDataLatestScheme } from '@cowprotocol/cow-sdk'
 import { CowHookDetails, HookToDappMatch, matchHooksToDappsRegistry } from '@cowprotocol/hook-dapp-lib'
 import { InfoTooltip } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import { useHooksStateWithSimulatedGas } from 'entities/orderHooks/useHooksStateWithSimulatedGas'
 import { ChevronDown, ChevronUp } from 'react-feather'
 
@@ -58,20 +61,24 @@ export function OrderHooksDetails({ appData, children, margin, isTradeConfirmati
     <styledEl.Wrapper isOpen={isOpen} margin={margin}>
       <styledEl.Summary>
         <styledEl.Label>
-          Hooks
-          <InfoTooltip content="Hooks are interactions before/after order execution." />
-          {hasSomeFailedSimulation && <styledEl.ErrorLabel>Simulation failed</styledEl.ErrorLabel>}
+          <Trans>Hooks</Trans>
+          <InfoTooltip content={<Trans>Hooks are interactions before/after order execution.</Trans>} />
+          {hasSomeFailedSimulation && (
+            <styledEl.ErrorLabel>
+              <Trans>Simulation failed</Trans>
+            </styledEl.ErrorLabel>
+          )}
           {isValidating && <styledEl.Spinner />}
         </styledEl.Label>
         <styledEl.Content onClick={() => setOpen(!isOpen)}>
           {preHooksToDapp.length > 0 && (
             <styledEl.HookTag addSeparator={postHooksToDapp.length > 0}>
-              PRE <b>{preHooksToDapp.length}</b>
+              <Trans>PRE</Trans> <b>{preHooksToDapp.length}</b>
             </styledEl.HookTag>
           )}
           {postHooksToDapp.length > 0 && (
             <styledEl.HookTag isPost>
-              POST <b>{postHooksToDapp.length}</b>
+              <Trans>POST</Trans> <b>{postHooksToDapp.length}</b>
             </styledEl.HookTag>
           )}
         </styledEl.Content>
@@ -83,8 +90,8 @@ export function OrderHooksDetails({ appData, children, margin, isTradeConfirmati
       </styledEl.Summary>
       {isOpen && (
         <styledEl.Details>
-          <HooksInfo data={preHooksToDapp} hooks={isTradeConfirmation ? hooks.preHooks : []} title="Pre Hooks" />
-          <HooksInfo data={postHooksToDapp} hooks={isTradeConfirmation ? hooks.postHooks : []} title="Post Hooks" />
+          <HooksInfo data={preHooksToDapp} hooks={isTradeConfirmation ? hooks.preHooks : []} title={t`Pre Hooks`} />
+          <HooksInfo data={postHooksToDapp} hooks={isTradeConfirmation ? hooks.postHooks : []} title={t`Post Hooks`} />
         </styledEl.Details>
       )}
     </styledEl.Wrapper>,

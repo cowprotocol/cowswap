@@ -1,5 +1,26 @@
 # Changelog
 
+## [1.10.1](https://github.com/cowprotocol/cowswap/compare/core-v1.10.0...core-v1.10.1) (2025-12-16)
+
+
+### Bug Fixes
+
+* remove duplicates in token lists by migrating the state ([#6636](https://github.com/cowprotocol/cowswap/issues/6636)) ([8ea5005](https://github.com/cowprotocol/cowswap/commit/8ea5005d9a32ba360c3e846f6a75e4a9fca193b5))
+
+## [1.10.0](https://github.com/cowprotocol/cowswap/compare/core-v1.9.0...core-v1.10.0) (2025-11-24)
+
+
+### Features
+
+* **internationalization:** add internationalization to CoW Swap ([#6198](https://github.com/cowprotocol/cowswap/issues/6198)) ([bec1e54](https://github.com/cowprotocol/cowswap/commit/bec1e54643d9b20a8b6517eae188993e364fed90))
+
+## [1.9.0](https://github.com/cowprotocol/cowswap/compare/core-v1.8.1...core-v1.9.0) (2025-11-10)
+
+
+### Features
+
+* **new-chains:** add q4 chains ([#6404](https://github.com/cowprotocol/cowswap/issues/6404)) ([ba4edb0](https://github.com/cowprotocol/cowswap/commit/ba4edb0fdc7b4c700dfeae9023da330d74a9faea))
+
 ## [1.8.1](https://github.com/cowprotocol/cowswap/compare/core-v1.8.0...core-v1.8.1) (2025-09-11)
 
 

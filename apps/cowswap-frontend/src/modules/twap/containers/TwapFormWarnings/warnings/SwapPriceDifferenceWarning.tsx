@@ -3,6 +3,7 @@ import { ReactNode } from 'react'
 import { FiatAmount, InlineBanner, StatusColorVariant, TokenAmount } from '@cowprotocol/ui'
 import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 
+import { Trans } from '@lingui/react/macro'
 import { NavLink } from 'react-router'
 import styled from 'styled-components/macro'
 
@@ -40,30 +41,42 @@ export function SwapPriceDifferenceWarning({
   const isTwapBetter = amount.greaterThan(0)
 
   const routePath = parameterizeTradeRoute(tradeUrlParams, Routes.SWAP, true)
-  const swapOrderLink = <StyledNavLink to={routePath}>SWAP order</StyledNavLink>
+  const swapOrderLink = (
+    <StyledNavLink to={routePath}>
+      <Trans>SWAP order</Trans>
+    </StyledNavLink>
+  )
 
   return isTwapBetter ? (
     +percent.toSignificant(2) > SWAP_PRICE_DIFFERENCE_LIMIT ? (
       <InlineBanner bannerType={StatusColorVariant.Savings}>
-        <strong>Maximizing Your Gains! </strong>
+        <strong>
+          <Trans>Maximizing Your Gains!</Trans>
+        </strong>
         <p>
-          You could gain an extra{' '}
-          <b>
-            <TokenAmount amount={amount} tokenSymbol={amount.currency} />
-          </b>{' '}
-          compared to using a {swapOrderLink}
+          <Trans>
+            You could gain an extra{' '}
+            <b>
+              <TokenAmount amount={amount} tokenSymbol={amount.currency} />
+            </b>{' '}
+            compared to using a {swapOrderLink}
+          </Trans>
         </p>
       </InlineBanner>
     ) : null
   ) : feeFiatAmount && +feeFiatAmount.toSignificant(2) > FEE_AMOUNT_THRESHOLD ? (
     <InlineBanner bannerType={StatusColorVariant.Savings}>
-      <strong>Trade Smart, Save More!</strong>
+      <strong>
+        <Trans>Trade Smart, Save More!</Trans>
+      </strong>
       <p>
-        Considering current network costs (
-        <b>
-          <FiatAmount amount={feeFiatAmount} />
-        </b>{' '}
-        per chunk), you could save more by reducing the number of parts or switch to a {swapOrderLink}.
+        <Trans>
+          Considering current network costs (
+          <b>
+            <FiatAmount amount={feeFiatAmount} />
+          </b>{' '}
+          per chunk), you could save more by reducing the number of parts or switch to a {swapOrderLink}.
+        </Trans>
       </p>
     </InlineBanner>
   ) : null

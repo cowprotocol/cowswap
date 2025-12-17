@@ -1,5 +1,47 @@
 # Changelog
 
+## [1.31.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.30.0...tokens-v1.31.0) (2025-12-16)
+
+
+### Features
+
+* move from gh cdn to aws ([#6591](https://github.com/cowprotocol/cowswap/issues/6591)) ([79a1581](https://github.com/cowprotocol/cowswap/commit/79a158129c7e81a4ed9df2414e6ec835cdab25e9))
+
+
+### Bug Fixes
+
+* **bridge:** fix cross-chain swap quote details ([#6597](https://github.com/cowprotocol/cowswap/issues/6597)) ([f0b5e54](https://github.com/cowprotocol/cowswap/commit/f0b5e542daca20585fc0c5ec989697cd9e202a90))
+* remember deleted token lists ([#6580](https://github.com/cowprotocol/cowswap/issues/6580)) ([66c6d07](https://github.com/cowprotocol/cowswap/commit/66c6d07edee7ec03ea763b1feaaa1b688df1e8b8))
+* remove duplicates in token lists by migrating the state ([#6636](https://github.com/cowprotocol/cowswap/issues/6636)) ([8ea5005](https://github.com/cowprotocol/cowswap/commit/8ea5005d9a32ba360c3e846f6a75e4a9fca193b5))
+* token images missing from bridge response ([#6680](https://github.com/cowprotocol/cowswap/issues/6680)) ([d20800f](https://github.com/cowprotocol/cowswap/commit/d20800f4a79f354d11ab4070ce3ac656fe817220))
+
+## [1.30.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.29.0...tokens-v1.30.0) (2025-11-24)
+
+
+### Features
+
+* **bridge:** add Near provider and provider feature-flags ([#6466](https://github.com/cowprotocol/cowswap/issues/6466)) ([c91b17f](https://github.com/cowprotocol/cowswap/commit/c91b17f9c24fef516eee904e51268264b6adff25))
+* **internationalization:** add internationalization to CoW Swap ([#6198](https://github.com/cowprotocol/cowswap/issues/6198)) ([bec1e54](https://github.com/cowprotocol/cowswap/commit/bec1e54643d9b20a8b6517eae188993e364fed90))
+
+## [1.29.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.28.0...tokens-v1.29.0) (2025-11-10)
+
+
+### Features
+
+* **new-chains:** add q4 chains ([#6404](https://github.com/cowprotocol/cowswap/issues/6404)) ([ba4edb0](https://github.com/cowprotocol/cowswap/commit/ba4edb0fdc7b4c700dfeae9023da330d74a9faea))
+
+
+### Bug Fixes
+
+* **linea:** add USDT as a favourite token ([#6498](https://github.com/cowprotocol/cowswap/issues/6498)) ([5741c7f](https://github.com/cowprotocol/cowswap/commit/5741c7fcd0d916b2206c29e83b27fc21e752e374))
+
+## [1.28.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.27.0...tokens-v1.28.0) (2025-10-23)
+
+
+### Features
+
+* add ondo token list to bnb ([#6398](https://github.com/cowprotocol/cowswap/issues/6398)) ([ae9d050](https://github.com/cowprotocol/cowswap/commit/ae9d050bddf99c328c512a6dc3c2bda88dfc7271))
+
 ## [1.27.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.26.0...tokens-v1.27.0) (2025-09-25)
 
 

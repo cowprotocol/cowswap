@@ -1,5 +1,3 @@
-import type { ReactNode } from 'react'
-
 import { HookDappType, HookDappWalletCompatibility } from './consts'
 
 export interface CowHook {
@@ -134,7 +132,7 @@ export interface HookDappBase {
   id: string
   name: string
   descriptionShort?: string
-  description?: ReactNode | string
+  description?: string
   type: HookDappType
   version: string
   website: string

@@ -1,14 +1,15 @@
-import { ReactNode } from 'react'
+import { ReactNode, useMemo } from 'react'
 
 import { ButtonSize } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import {
   ActiveOrdersWithAffectedPermit,
+  MAX_APPROVE_AMOUNT,
   PartialApproveAmountModal,
   TradeApproveButton,
   TradeApproveToggle,
-  useIsPartialApproveSelectedByUser,
+  useIsPartialApprovalModeSelected,
   usePartialApproveAmountModalState,
   useUpdatePartialApproveAmountModalState,
 } from 'modules/erc20Approve'
@@ -26,33 +27,46 @@ export function OrderPartialApprove({
   isPartialApproveEnabledBySettings,
   orderId,
 }: OrderPartialApproveProps): ReactNode {
-  const isPartialApproveSelectedByUser = useIsPartialApproveSelectedByUser()
   const { isModalOpen, amountSetByUser } = usePartialApproveAmountModalState() || {}
   const updatePartialApproveAmountModalState = useUpdatePartialApproveAmountModalState()
+  const isPartialApprovalModeSelected = useIsPartialApprovalModeSelected()
 
-  const amountToApproveFinal = amountSetByUser ?? amountToApprove
+  const currency = amountToApprove.currency
+
+  const partialAmountToApproveFinal = amountSetByUser ?? amountToApprove
+
+  const finalAmountToApprove = useMemo(() => {
+    if (isPartialApproveEnabledBySettings && isPartialApprovalModeSelected) {
+      return partialAmountToApproveFinal
+    }
+
+    return CurrencyAmount.fromRawAmount(currency, MAX_APPROVE_AMOUNT.toString())
+  }, [isPartialApprovalModeSelected, isPartialApproveEnabledBySettings, partialAmountToApproveFinal, currency])
 
   if (isModalOpen) {
-    return <PartialApproveAmountModal initialAmountToApprove={amountToApproveFinal} />
+    return (
+      <PartialApproveAmountModal initialAmountToApprove={partialAmountToApproveFinal} amountToSwap={amountToApprove} />
+    )
   }
 
   return (
     <OrderActionsWrapper>
+      {/*TODO: it quite similar to <PartialApproveContainer>, should it be reused?*/}
       {isPartialApproveEnabledBySettings && (
-        <TradeApproveToggle
-          amountToApprove={amountToApproveFinal}
-          updateModalState={() => updatePartialApproveAmountModalState({ isModalOpen: true })}
-        />
-      )}
-      {isPartialApproveSelectedByUser && (
-        <ActiveOrdersWithAffectedPermit orderId={orderId} currency={amountToApprove.currency} />
+        <>
+          <TradeApproveToggle
+            amountToApprove={finalAmountToApprove}
+            updateModalState={() => updatePartialApproveAmountModalState({ isModalOpen: true })}
+          />
+          <ActiveOrdersWithAffectedPermit orderId={orderId} currency={currency} />
+        </>
       )}
       <TradeApproveButton
         enablePartialApprove
         useModals={false}
-        amountToApprove={amountToApproveFinal}
+        amountToApprove={finalAmountToApprove}
         buttonSize={ButtonSize.SMALL}
-        label={'Approve ' + amountToApprove.currency.symbol}
+        label={'Approve ' + currency.symbol}
       />
     </OrderActionsWrapper>
   )

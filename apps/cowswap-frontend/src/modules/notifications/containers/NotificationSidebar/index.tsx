@@ -1,12 +1,14 @@
 import { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 
 import ICON_NOTIFICATION_SETTINGS from '@cowprotocol/assets/images/icon-notification-settings.svg'
+import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { useOnClickOutside } from '@cowprotocol/common-hooks'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { Media } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
-
-import { upToSmall, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
@@ -34,7 +36,9 @@ function SettingsHeader({ onBack }: SettingsHeaderProps): ReactNode {
           })}
         />
       </span>
-      <h3>Trade alerts</h3>
+      <h3>
+        <Trans>Trade alerts</Trans>
+      </h3>
     </SidebarHeader>
   )
 }
@@ -74,7 +78,9 @@ function NotificationsHeader({
           })}
         />
       </span>
-      <h3>Notifications</h3>
+      <h3>
+        <Trans>Notifications</Trans>
+      </h3>
       {areTelegramNotificationsEnabled &&
         (hasSubscription ? (
           <NotificationSettingsPopover
@@ -84,7 +90,7 @@ function NotificationsHeader({
           >
             <NotificationSettingsIcon
               onClick={onToggleSettings}
-              aria-label="Trade alert settings"
+              aria-label={t`Trade alert settings`}
               data-click-event={toCowSwapGtmEvent({
                 category: CowSwapAnalyticsCategory.NOTIFICATIONS,
                 action: 'Open notification settings',
@@ -122,7 +128,7 @@ export function NotificationSidebar({
   const [isSettingsOpen, setIsSettingsOpen] = useState(initialSettingsOpen)
   const sidebarRef = useRef<HTMLDivElement>(null)
   const headerRef = useRef<HTMLDivElement>(null)
-  const isMobile = useMediaQuery(upToSmall)
+  const isMobile = useMediaQuery(Media.upToSmall(false))
 
   const { areTelegramNotificationsEnabled } = useFeatureFlags()
   const { hasSubscription } = useHasNotificationSubscription()

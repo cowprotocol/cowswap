@@ -1,5 +1,6 @@
 import { ExternalLink, InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
 
+import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
 import { UNSUPPORTED_SAFE_LINK } from 'modules/twap/const'
@@ -75,7 +76,9 @@ export function FallbackHandlerWarning({
           label: isFallbackHandlerSetupAccepted ? 'enabled' : 'disabled',
         })}
       />
-      <span>Make the modification when placing order</span>
+      <span>
+        <Trans>Make the modification when placing order</Trans>
+      </span>
     </WarningCheckbox>
   )
 
@@ -91,11 +94,18 @@ export function FallbackHandlerWarning({
     return (
       <Wrapper>
         <InlineBannerWithCheckbox bannerType={StatusColorVariant.Alert}>
-          <strong>Your Safe needs a modification</strong>
+          <strong>
+            <Trans>Your Safe needs a modification</Trans>
+          </strong>
           <p>
-            TWAP orders require a one-time update to your Safe to enable automated execution of scheduled transactions.
+            <Trans>
+              TWAP orders require a one-time update to your Safe to enable automated execution of scheduled
+              transactions.
+            </Trans>
           </p>
-          <ExternalLink href={UNSUPPORTED_SAFE_LINK}>Learn more</ExternalLink>
+          <ExternalLink href={UNSUPPORTED_SAFE_LINK}>
+            <Trans>Learn more</Trans>
+          </ExternalLink>
           <WarningCheckboxWrapper>{fallbackHandlerCheckbox}</WarningCheckboxWrapper>
         </InlineBannerWithCheckbox>
       </Wrapper>

@@ -1,5 +1,50 @@
 # Changelog
 
+## [2.59.2](https://github.com/cowprotocol/cowswap/compare/explorer-v2.59.1...explorer-v2.59.2) (2025-12-16)
+
+
+### Bug Fixes
+
+* bnb coin image missing in explorer ([#6643](https://github.com/cowprotocol/cowswap/issues/6643)) ([5d05589](https://github.com/cowprotocol/cowswap/commit/5d05589377722ed3b16f652e944a414f1d32435c))
+* **bridge:** display executed amount in bridge details ([#6671](https://github.com/cowprotocol/cowswap/issues/6671)) ([8c5772c](https://github.com/cowprotocol/cowswap/commit/8c5772cba710c43007c9ac925eb28b5d5c3c3d20))
+* **bridge:** fix displayed bridge quote amounts ([#6670](https://github.com/cowprotocol/cowswap/issues/6670)) ([623e0e5](https://github.com/cowprotocol/cowswap/commit/623e0e5b09c33132debdfd06493c357c0af8aa80))
+* from & to labels for near bridging ([#6653](https://github.com/cowprotocol/cowswap/issues/6653)) ([7a2cfa8](https://github.com/cowprotocol/cowswap/commit/7a2cfa8477936222e019373971111a919e54c85f))
+* update schema reference for app data ([#6626](https://github.com/cowprotocol/cowswap/issues/6626)) ([93e78e6](https://github.com/cowprotocol/cowswap/commit/93e78e69454039fc89eeeb170f076a7957db604f))
+
+## [2.59.1](https://github.com/cowprotocol/cowswap/compare/explorer-v2.59.0...explorer-v2.59.1) (2025-12-09)
+
+
+### Bug Fixes
+
+* avoid using i18n in hookDappsRegistry ([#6633](https://github.com/cowprotocol/cowswap/issues/6633)) ([9cfeae0](https://github.com/cowprotocol/cowswap/commit/9cfeae0c107a632e78176c004aa3614fad12f68b))
+
+## [2.59.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.58.0...explorer-v2.59.0) (2025-11-24)
+
+
+### Features
+
+* **bridge:** add Near provider and provider feature-flags ([#6466](https://github.com/cowprotocol/cowswap/issues/6466)) ([c91b17f](https://github.com/cowprotocol/cowswap/commit/c91b17f9c24fef516eee904e51268264b6adff25))
+* **internationalization:** add internationalization to CoW Swap ([#6198](https://github.com/cowprotocol/cowswap/issues/6198)) ([bec1e54](https://github.com/cowprotocol/cowswap/commit/bec1e54643d9b20a8b6517eae188993e364fed90))
+
+## [2.58.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.57.0...explorer-v2.58.0) (2025-11-10)
+
+
+### Features
+
+* **new-chains:** add q4 chains ([#6404](https://github.com/cowprotocol/cowswap/issues/6404)) ([ba4edb0](https://github.com/cowprotocol/cowswap/commit/ba4edb0fdc7b4c700dfeae9023da330d74a9faea))
+
+
+### Bug Fixes
+
+* **explorer:** do not add tx row when there's no tx hash ([#6499](https://github.com/cowprotocol/cowswap/issues/6499)) ([3f66a7a](https://github.com/cowprotocol/cowswap/commit/3f66a7adb820fc246fe7b2f9624b157bcb25c5b3))
+
+## [2.57.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.56.0...explorer-v2.57.0) (2025-11-05)
+
+
+### Features
+
+* adjust params type to trigger a bumping of version ([#6476](https://github.com/cowprotocol/cowswap/issues/6476)) ([1e08587](https://github.com/cowprotocol/cowswap/commit/1e0858701b909fe2847be325ed2a7287592711b8))
+
 ## [2.56.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.55.0...explorer-v2.56.0) (2025-10-14)
 
 

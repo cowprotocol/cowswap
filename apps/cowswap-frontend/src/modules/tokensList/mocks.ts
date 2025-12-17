@@ -1,4 +1,4 @@
-import { TokenWithLogo } from '@cowprotocol/common-const'
+import { COW_CDN, TokenWithLogo } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ListState } from '@cowprotocol/tokens'
 
@@ -100,8 +100,7 @@ export const customTokensMock: TokenWithLogo[] = [
 
 export const listsMock: ListState[] = [
   {
-    source:
-      'https://tokenlists.org/token-list?url=https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/CowSwapSepolia.json',
+    source: `https://tokenlists.org/token-list?url=${COW_CDN}/token-lists/CowSwapSepolia.json`,
     list: {
       name: 'CowSwap Sepolia',
       logoURI: 'https://gnosis.mypinata.cloud/ipfs/Qme9B6jRpGtZsRFcPjHvA5T4ugFuL4c3SzWfxyMPa59AMo',
@@ -128,10 +127,10 @@ export const listsMock: ListState[] = [
 ]
 
 export const importListsMock: ListState = {
-  source: 'https://files.cow.fi/tokens/CowSwap.json',
+  source: `${COW_CDN}/tokens/CowSwap.json`,
   list: {
     name: 'CoW Swap',
-    logoURI: 'https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/images/list-logo.png',
+    logoURI: `${COW_CDN}/token-lists/images/list-logo.png`,
     // TODO: Replace any with proper type definitions
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     tokens: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13] as any[],

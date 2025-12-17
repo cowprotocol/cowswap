@@ -11,7 +11,8 @@ import { EnhancedTransactionDetails } from 'legacy/state/enhancedTransactions/re
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 import { useOrder, useOrders, useOrdersById } from 'legacy/state/orders/hooks'
 
-import { OrderFillability, usePendingOrdersFillability } from 'common/hooks/usePendingOrdersFillability'
+import { OrderFillability, usePendingOrdersFillability } from 'modules/ordersTable'
+
 import { ActivityStatus, ActivityType } from 'common/types/activity'
 
 /**

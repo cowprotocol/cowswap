@@ -1,3 +1,4 @@
+import { COW_CDN } from '@cowprotocol/common-const'
 import type { CrossChainOrder } from '@cowprotocol/sdk-bridging'
 
 export const crossChainOrderMock = {
@@ -7,8 +8,7 @@ export const crossChainOrderMock = {
     cowShedSdk: { options: {}, hooksCache: {} },
     info: {
       name: 'Bungee',
-      logoUrl:
-        'https://raw.githubusercontent.com/cowprotocol/cow-sdk/refs/heads/main/src/bridging/providers/bungee/bungee-logo.png',
+      logoUrl: `${COW_CDN}/cow-sdk/bridging/providers/bungee/bungee-logo.png`,
       dappId: 'cow-sdk://bridging/providers/bungee',
       website: 'https://www.bungee.exchange',
     },

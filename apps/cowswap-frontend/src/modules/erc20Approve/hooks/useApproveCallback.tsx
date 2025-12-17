@@ -6,6 +6,8 @@ import { BigNumber } from '@ethersproject/bignumber'
 import { TransactionResponse } from '@ethersproject/providers'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { useLingui } from '@lingui/react/macro'
+
 import { useTransactionAdder } from 'legacy/state/enhancedTransactions/hooks'
 
 import { GAS_LIMIT_DEFAULT } from 'common/constants/common'
@@ -47,12 +49,14 @@ export function useApproveCallback(
   const token = currency && !getIsNativeToken(currency) ? currency : undefined
   const { contract: tokenContract, chainId: tokenChainId } = useTokenContract(token?.address)
   const addTransaction = useTransactionAdder()
+  const { t } = useLingui()
 
   return useCallback(
     async (amount: CurrencyAmount<Currency> | bigint) => {
       const amountToApprove = amount instanceof CurrencyAmount ? BigInt(amount.quotient.toString()) : amount
+      const tokenSymbol = token?.symbol
 
-      const summary = amountToApprove > 0n ? `Approve ${token?.symbol}` : `Revoke ${token?.symbol} approval`
+      const summary = amountToApprove > 0n ? t`Approve ${tokenSymbol}` : t`Revoke ${tokenSymbol} approval`
       const amountToApproveStr = '0x' + amountToApprove.toString(16)
 
       if (!tokenChainId || !token || !tokenContract || !spender) {
@@ -74,6 +78,6 @@ export function useApproveCallback(
           return response
         })
     },
-    [tokenChainId, token, tokenContract, spender, addTransaction],
+    [token, t, tokenChainId, tokenContract, spender, addTransaction],
   )
 }

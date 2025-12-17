@@ -3,6 +3,8 @@ import { useCallback, useMemo } from 'react'
 import { BannerOrientation, InfoTooltip, InlineBanner, StatusColorVariant } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { Trans } from '@lingui/react/macro'
+
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
 import { HIGH_TIER_FEE, LOW_TIER_FEE, MEDIUM_TIER_FEE } from './consts'
@@ -65,7 +67,7 @@ export function HighFeeWarning({ readonlyMode }: HighFeeWarningProps): React.Rea
               onChange={toggleSwapFeeWarningAccepted}
               checked={feeWarningAccepted}
             />{' '}
-            Swap anyway
+            <Trans>Swap anyway</Trans>
           </InlineWarningCheckboxContainer>
         )
       }

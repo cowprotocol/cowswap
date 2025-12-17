@@ -8,6 +8,8 @@ import { RateInfoParams } from 'common/pure/RateInfo'
 import { getOrderPermitAmount } from 'utils/orderUtils/getOrderPermitAmount'
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 
+import { PendingOrdersPermitValidityState } from '../state/pendingOrdersPermitValidityState'
+
 export interface OrderParams {
   chainId: SupportedChainId | undefined
   sellAmount: CurrencyAmount<Currency>
@@ -23,11 +25,15 @@ export function getOrderParams(
   chainId: SupportedChainId,
   balancesAndAllowances: BalancesAndAllowances,
   order: ParsedOrder,
+  pendingOrdersPermitValidityState?: PendingOrdersPermitValidityState,
 ): OrderParams {
   const isOrderAtLeastOnceFilled = order.executionData.filledAmount.gt(0)
   const sellAmount = CurrencyAmount.fromRawAmount(order.inputToken, order.sellAmount)
   const buyAmount = CurrencyAmount.fromRawAmount(order.outputToken, order.buyAmount)
-  const permitAmount = getOrderPermitAmount(chainId, order) || undefined
+  const isPermitInvalid = pendingOrdersPermitValidityState
+    ? pendingOrdersPermitValidityState[order.id] === false
+    : false
+  const permitAmount = isPermitInvalid ? undefined : getOrderPermitAmount(chainId, order) || undefined
 
   const rateInfoParams: RateInfoParams = {
     chainId,

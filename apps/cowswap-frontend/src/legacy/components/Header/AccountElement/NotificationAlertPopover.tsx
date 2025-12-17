@@ -4,6 +4,8 @@ import ICON_BELL_ALERT from '@cowprotocol/assets/images/icon-bell-alert.svg?url'
 import { Command } from '@cowprotocol/types'
 import { ButtonPrimary, Media, PopoverMobileMode, Tooltip, UI } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
@@ -148,16 +150,20 @@ export function NotificationAlertPopover({
   }, [show, onDismiss])
 
   const popoverContent = (
-    <PopoverContent role="dialog" aria-label="Enable order alerts" aria-describedby="notification-alert-description">
+    <PopoverContent role="dialog" aria-label={t`Enable order alerts`} aria-describedby="notification-alert-description">
       <PopoverTitle>
-        <SVG src={ICON_BELL_ALERT} /> Get trade alerts
+        <SVG src={ICON_BELL_ALERT} /> <Trans>Get trade alerts</Trans>
       </PopoverTitle>
-      <PopoverBody id="notification-alert-description">When orders fill or expire</PopoverBody>
+      <PopoverBody id="notification-alert-description">
+        <Trans>When orders fill or expire</Trans>
+      </PopoverBody>
       <PopoverActions>
         <PrimaryButton ref={primaryButtonRef} onClick={onEnableAlerts}>
-          Enable trade alerts
+          <Trans>Enable trade alerts</Trans>
         </PrimaryButton>
-        <SecondaryButton onClick={onDismiss}>Not now</SecondaryButton>
+        <SecondaryButton onClick={onDismiss}>
+          <Trans>Not now</Trans>
+        </SecondaryButton>
       </PopoverActions>
     </PopoverContent>
   )

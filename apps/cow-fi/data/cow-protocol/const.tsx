@@ -32,6 +32,7 @@ import IMG_LOGO_SHAPESHIFT from '@cowprotocol/assets/images/logo-shapeshift.svg'
 import IMG_LOGO_STAKE_DAO from '@cowprotocol/assets/images/logo-stakedao.svg'
 import IMG_LOGO_SYNTHETIX from '@cowprotocol/assets/images/logo-synthetix.svg'
 import IMG_LOGO_TELLER_FINANCE from '@cowprotocol/assets/images/logo-teller.svg'
+import { getAvailableChainsText } from '@cowprotocol/common-const'
 import { Color } from '@cowprotocol/ui'
 
 import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
@@ -390,8 +391,7 @@ export function useFaqData(): FaqItem[] {
     },
     {
       question: 'What chains does CoW Protocol currently support?',
-      answer:
-        'CoW Protocol is currently deployed on Ethereum, BNB, Base, Arbitrum, Polygon, Avalanche, Gnosis, and Lens.',
+      answer: 'CoW Protocol is currently deployed on: ' + getAvailableChainsText() + '.',
     },
     {
       question: 'How do I get support?',

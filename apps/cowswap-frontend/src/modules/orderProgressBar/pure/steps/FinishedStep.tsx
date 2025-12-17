@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { ReactNode, useCallback, useMemo, useState } from 'react'
 
 import ICON_SOCIAL_X from '@cowprotocol/assets/images/icon-social-x.svg'
 import LOTTIE_GREEN_CHECKMARK_DARK from '@cowprotocol/assets/lottie/green-checkmark-dark.json'
@@ -10,6 +10,8 @@ import { TokenLogo } from '@cowprotocol/tokens'
 import { Confetti, ExternalLink, InfoTooltip, TokenAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { i18n } from '@lingui/core'
+import { Trans, useLingui } from '@lingui/react/macro'
 import Lottie from 'lottie-react'
 import { PiCaretDown, PiCaretUp, PiTrophyFill } from 'react-icons/pi'
 import SVG from 'react-inlinesvg'
@@ -30,9 +32,7 @@ import { getSurplusText, getTwitterShareUrl, getTwitterShareUrlForBenefit } from
 import { useWithConfetti } from '../../hooks/useWithConfetti'
 import { OrderProgressBarStepName } from '../../types'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function getTransactionStatus(isDarkMode: boolean) {
+function TransactionStatus({ isDarkMode }: { isDarkMode: boolean }): ReactNode {
   return (
     <styledEl.TransactionStatus margin={'0 auto 24px'}>
       <Lottie
@@ -41,17 +41,17 @@ function getTransactionStatus(isDarkMode: boolean) {
         autoplay
         style={{ width: '36px', height: '36px' }}
       />
-      Transaction completed!
+      <Trans>Transaction completed!</Trans>
     </styledEl.TransactionStatus>
   )
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function getSoldAmount(order: Order) {
+function SoldAmount({ order }: { order: Order }): ReactNode {
   return (
     <styledEl.SoldAmount>
-      You sold <TokenLogo token={order.inputToken} size={20} />
+      <Trans>
+        You sold <TokenLogo token={order.inputToken} size={20} />
+      </Trans>
       <b>
         <TokenAmount
           amount={CurrencyAmount.fromRawAmount(order.inputToken, order.apiAdditionalInfo?.executedSellAmount || 0)}
@@ -62,18 +62,22 @@ function getSoldAmount(order: Order) {
   )
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function getReceivedAmount(
-  order: Order,
-  chainId: SupportedChainId,
-  isCustomRecipient?: boolean,
-  receiver?: string | null,
-  receiverEnsName?: string | null,
-) {
+function ReceivedAmount({
+  order,
+  chainId,
+  isCustomRecipient,
+  receiver,
+  receiverEnsName,
+}: {
+  order: Order
+  chainId: SupportedChainId
+  isCustomRecipient?: boolean
+  receiver?: string | null
+  receiverEnsName?: string | null
+}): ReactNode {
   return (
     <styledEl.ReceivedAmount>
-      {!isCustomRecipient && `${RECEIVED_LABEL} `}
+      {!isCustomRecipient && i18n._(RECEIVED_LABEL)}
       <TokenLogo token={order.outputToken} size={20} />
       <b>
         <TokenAmount
@@ -83,7 +87,7 @@ function getReceivedAmount(
       </b>{' '}
       {isCustomRecipient && receiver && (
         <>
-          was sent to
+          <Trans>was sent to</Trans>
           <ExternalLink href={getExplorerLink(chainId, receiver, ExplorerDataType.ADDRESS)}>
             {receiverEnsName || shortenAddress(receiver)} ↗
           </ExternalLink>
@@ -93,14 +97,17 @@ function getReceivedAmount(
   )
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function getExtraAmount(
-  surplusAmount?: CurrencyAmount<Currency> | null,
-  surplusFiatValue?: CurrencyAmount<Currency> | null,
-  isCustomRecipient?: boolean,
-  isSell?: boolean,
-) {
+function ExtraAmount({
+  surplusAmount,
+  surplusFiatValue,
+  isCustomRecipient,
+  isSell,
+}: {
+  surplusAmount?: CurrencyAmount<Currency> | null
+  surplusFiatValue?: CurrencyAmount<Currency> | null
+  isCustomRecipient?: boolean
+  isSell?: boolean
+}): ReactNode {
   return (
     <styledEl.ExtraAmount>
       {getSurplusText(isSell, isCustomRecipient)}
@@ -112,11 +119,17 @@ function getExtraAmount(
   )
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function getSolverRow(solver: SolverCompetition, index: number, solvers: SolverCompetition[]) {
+function SolverRow({
+  solver,
+  index,
+  solvers,
+}: {
+  solver: SolverCompetition
+  index: number
+  solvers: SolverCompetition[]
+}): ReactNode {
   return (
-    <styledEl.SolverTableRow key={`${solver.solver}-${index}`} isWinner={index === 0}>
+    <styledEl.SolverTableRow isWinner={index === 0}>
       {solvers.length > 1 && <styledEl.SolverRank>{index + 1}</styledEl.SolverRank>}
       <styledEl.SolverTableCell>
         <styledEl.SolverInfo>
@@ -144,13 +157,16 @@ function getSolverRow(solver: SolverCompetition, index: number, solvers: SolverC
             <styledEl.TrophyIcon>
               <PiTrophyFill />
             </styledEl.TrophyIcon>
-            <span>Winning solver</span>
+            <span>
+              <Trans>Winning solver</Trans>
+            </span>
           </styledEl.WinningBadge>
         )}
       </styledEl.SolverTableCell>
     </styledEl.SolverTableRow>
   )
 }
+
 interface FinishedStepProps {
   children: React.ReactNode
   stepName?: OrderProgressBarStepName
@@ -164,9 +180,8 @@ interface FinishedStepProps {
 }
 
 // TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
+// eslint-disable-next-line max-lines-per-function, complexity
 export function FinishedStep({
   children,
   stepName,
@@ -177,10 +192,10 @@ export function FinishedStep({
   receiverEnsName,
   totalSolvers,
   debugForceShowSurplus,
-}: FinishedStepProps) {
+}: FinishedStepProps): ReactNode {
+  const { t } = useLingui()
   const [showAllSolvers, setShowAllSolvers] = useState(false)
   const cancellationFailed = stepName === 'cancellationFailed'
-
   const { surplusFiatValue, surplusAmount, showSurplus } = surplusData || {}
   const shouldShowSurplus = debugForceShowSurplus || showSurplus
 
@@ -205,9 +220,9 @@ export function FinishedStep({
 
     return {
       randomImage: SURPLUS_IMAGES[getRandomInt(0, SURPLUS_IMAGES.length - 1)],
-      randomBenefit: benefits[getRandomInt(0, benefits.length - 1)],
+      randomBenefit: t(benefits[getRandomInt(0, benefits.length - 1)]),
     }
-  }, [chainId])
+  }, [chainId, t])
 
   const shareOnTwitter = useCallback(() => {
     const twitterUrl = shouldShowSurplus
@@ -220,44 +235,73 @@ export function FinishedStep({
   if (!order) {
     return null
   }
+  const solversLength = solvers?.length || 0
 
   return (
     <styledEl.FinishedStepContainer>
       {showConfetti && <Confetti start={true} />}
       {cancellationFailed && (
         <styledEl.CancellationFailedBanner>
-          <b>Cancellation failed:</b> The order was executed before it could be cancelled.
+          <b>
+            <Trans>Cancellation failed</Trans>:
+          </b>{' '}
+          <Trans>The order was executed before it could be cancelled.</Trans>
         </styledEl.CancellationFailedBanner>
       )}
 
       <styledEl.ConclusionContent>
-        {getTransactionStatus(isDarkMode)}
+        <TransactionStatus isDarkMode={isDarkMode} />
 
-        {order?.apiAdditionalInfo?.executedSellAmount && getSoldAmount(order)}
+        {order?.apiAdditionalInfo?.executedSellAmount && <SoldAmount order={order} />}
 
-        {order?.apiAdditionalInfo?.executedBuyAmount &&
-          getReceivedAmount(order, chainId, isCustomRecipient, receiver, receiverEnsName)}
+        {order?.apiAdditionalInfo?.executedBuyAmount && (
+          <ReceivedAmount
+            order={order}
+            chainId={chainId}
+            isCustomRecipient={isCustomRecipient}
+            receiver={receiver}
+            receiverEnsName={receiverEnsName}
+          />
+        )}
 
-        {shouldShowSurplus ? getExtraAmount(surplusAmount, surplusFiatValue, isCustomRecipient, isSell) : null}
+        {shouldShowSurplus ? (
+          <ExtraAmount
+            surplusAmount={surplusAmount}
+            surplusFiatValue={surplusFiatValue}
+            isCustomRecipient={isCustomRecipient}
+            isSell={isSell}
+          />
+        ) : null}
 
-        {solvers && solvers.length > 0 && (
+        {solvers && solversLength > 0 && (
           <styledEl.SolverRankings>
-            <h3>Solver auction rankings</h3>
-            {solvers.length > 1 && (
+            <h3>
+              <Trans>Solver auction rankings</Trans>
+            </h3>
+            {solversLength > 1 && (
               <p>
                 <b>
-                  {solvers.length}
-                  {totalSolvers ? ` out of ${totalSolvers}` : ''} solvers
+                  {totalSolvers ? (
+                    <Trans>
+                      {solversLength} out of {totalSolvers} solvers
+                    </Trans>
+                  ) : (
+                    <Trans>{solversLength} solvers</Trans>
+                  )}
                 </b>{' '}
-                submitted a solution
+                <Trans>submitted a solution</Trans>
               </p>
             )}
 
             <styledEl.SolverTable>
-              <tbody>{visibleSolvers?.map((solver, index) => getSolverRow(solver, index, solvers))}</tbody>
+              <tbody>
+                {visibleSolvers?.map((solver, index) => (
+                  <SolverRow key={`${solver.solver}-${index}`} solver={solver} index={index} solvers={solvers} />
+                ))}
+              </tbody>
             </styledEl.SolverTable>
 
-            {solvers.length > 3 && (
+            {solversLength > 3 && (
               <styledEl.ViewMoreButton
                 data-click-event={toCowSwapGtmEvent({
                   category: CowSwapAnalyticsCategory.PROGRESS_BAR,
@@ -268,11 +312,11 @@ export function FinishedStep({
               >
                 {showAllSolvers ? (
                   <>
-                    Collapse <PiCaretUp />
+                    <Trans>Collapse</Trans> <PiCaretUp />
                   </>
                 ) : (
                   <>
-                    View {solvers.length - 3} more <PiCaretDown />
+                    <Trans>View</Trans> {solversLength - 3} <Trans>more</Trans> <PiCaretDown />
                   </>
                 )}
               </styledEl.ViewMoreButton>
@@ -291,7 +335,9 @@ export function FinishedStep({
         onClick={shareOnTwitter}
       >
         <SVG src={ICON_SOCIAL_X} />
-        <span>Share this {shouldShowSurplus ? 'win' : 'tip'}!</span>
+        <span>
+          <Trans>Share this</Trans> {shouldShowSurplus ? <Trans>win</Trans> : <Trans>tip</Trans>}!
+        </span>
       </styledEl.ShareButton>
     </styledEl.FinishedStepContainer>
   )

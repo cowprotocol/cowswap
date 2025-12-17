@@ -8,7 +8,8 @@ import { closableBannersStateAtom, Loader } from '@cowprotocol/ui'
 import { BigNumber } from '@ethersproject/bignumber'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
-import { Trans } from '@lingui/macro'
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 
 import { useErrorModal } from 'legacy/hooks/useErrorMessageAndModal'
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
@@ -35,7 +36,6 @@ import {
   Wrapper,
 } from './styled'
 import { TokensTableRow } from './TokensTableRow'
-
 
 const MAX_ITEMS = 20
 
@@ -209,13 +209,17 @@ export function TokenTable({
           <TableHeader>
             <IndexLabel>#</IndexLabel>
             <ClickableText onClick={() => handleSort(SORT_FIELD.NAME)}>
-              <Trans>Token {arrow(SORT_FIELD.NAME)}</Trans>
+              <Trans>Token</Trans> {arrow(SORT_FIELD.NAME)}
             </ClickableText>
             <ClickableText disabled={true} /* onClick={() => (account ? handleSort(SORT_FIELD.BALANCE) : false)} */>
-              <Trans>Balance {arrow(SORT_FIELD.BALANCE)}</Trans>
+              <Trans>Balance</Trans> {arrow(SORT_FIELD.BALANCE)}
             </ClickableText>
-            <Label>Value</Label>
-            <Label>Actions</Label>
+            <Label>
+              <Trans>Value</Trans>
+            </Label>
+            <Label>
+              <Trans>Actions</Trans>
+            </Label>
           </TableHeader>
 
           {children && !isDelegateBannerDismissed && <DelegateRow>{children}</DelegateRow>}
@@ -250,7 +254,9 @@ export function TokenTable({
             })
           ) : query?.trim() ? (
             <NoResults>
-              <h3>No results found ¯\_(ツ)_/¯</h3>
+              <h3>
+                <Trans>No results found</Trans> ¯\_(ツ)_/¯
+              </h3>
             </NoResults>
           ) : (
             <Loader />
@@ -267,9 +273,7 @@ export function TokenTable({
               <Arrow faded={page === 1}>←</Arrow>
             </ArrowButton>
 
-            <PaginationText>
-              <Trans>{'Page ' + page + ' of ' + maxPage}</Trans>
-            </PaginationText>
+            <PaginationText>{t`Page ${page} of ${maxPage}`}</PaginationText>
 
             <ArrowButton onClick={() => setPage(nextPage)}>
               <Arrow faded={page === maxPage}>→</Arrow>

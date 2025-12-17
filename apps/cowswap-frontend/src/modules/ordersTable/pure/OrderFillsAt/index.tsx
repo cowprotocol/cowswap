@@ -6,6 +6,7 @@ import { Command, UiOrderType } from '@cowprotocol/types'
 import { HoverTooltip, TokenAmount, percentIsAlmostHundred } from '@cowprotocol/ui'
 import { Currency, Price } from '@uniswap/sdk-core'
 
+import { Trans, useLingui } from '@lingui/react/macro'
 import { Check, Clock, X, Zap } from 'react-feather'
 import SVG from 'react-inlinesvg'
 import { Nullish } from 'types'
@@ -68,12 +69,13 @@ export function OrderFillsAt({
   onApprove,
 }: OrderFillsAtProps) {
   const { filledPercentDisplay } = order.executionData
-
+  const { t } = useLingui()
   const executionPriceInverted = isInverted ? estimatedExecutionPrice?.invert() : estimatedExecutionPrice
   const spotPriceInverted = isInverted ? spotPrice?.invert() : spotPrice
   const { feeAmount } = prices || {}
 
   const feeDifference = useFeeAmountDifference(rateInfoParams, prices)
+  const walletType = isSafeWallet ? `Safe` : t`Smart contract`
 
   // Check for signing state first, regardless of order type
   if (order.status === OrderStatus.PRESIGNATURE_PENDING) {
@@ -83,13 +85,13 @@ export function OrderFillsAt({
           wrapInContainer={true}
           content={
             <div>
-              This order needs to be signed and executed with your {isSafeWallet ? 'Safe' : 'Smart contract'} wallet
+              <Trans>This order needs to be signed and executed with your {walletType} wallet</Trans>
             </div>
           }
         >
           <styledEl.SigningDisplay>
-            <SVG src={orderPresignaturePendingIcon} description="signing" />
-            Please sign order
+            <SVG src={orderPresignaturePendingIcon} description={t`signing`} />
+            <Trans>Please sign order</Trans>
           </styledEl.SigningDisplay>
         </HoverTooltip>
       </styledEl.ExecuteCellWrapper>
@@ -113,10 +115,12 @@ export function OrderFillsAt({
   if (getIsFinalizedOrder(order)) {
     // Check filled status first
     if (Number(filledPercentDisplay) > 0) {
+      const value = Number(filledPercentDisplay) < 100 ? t`partially` : ''
+
       return (
         <styledEl.FilledDisplay>
           <Check size={14} strokeWidth={3.5} />
-          Order {Number(filledPercentDisplay) < 100 ? 'partially ' : ''}filled
+          <Trans>Order {value} filled</Trans>
         </styledEl.FilledDisplay>
       )
     }
@@ -126,7 +130,7 @@ export function OrderFillsAt({
       return (
         <styledEl.CancelledDisplay>
           <X size={14} strokeWidth={2.5} />
-          Order cancelled
+          <Trans>Order cancelled</Trans>
         </styledEl.CancelledDisplay>
       )
     }
@@ -135,7 +139,7 @@ export function OrderFillsAt({
       return (
         <styledEl.ExpiredDisplay>
           <Clock size={14} strokeWidth={2.5} />
-          Order expired
+          <Trans>Order expired</Trans>
         </styledEl.ExpiredDisplay>
       )
     }
@@ -148,6 +152,9 @@ export function OrderFillsAt({
   }
 
   if (estimatedExecutionPrice && !estimatedExecutionPrice.equalTo(ZERO_FRACTION)) {
+    const priceDiff = priceDiffs?.percentage.toFixed(2)
+    const filledValue = !percentIsAlmostHundred(filledPercentDisplay) ? t`partially` : ''
+
     return (
       <styledEl.ExecuteCellWrapper>
         {!isUnfillable &&
@@ -157,22 +164,25 @@ export function OrderFillsAt({
             wrapInContainer={true}
             content={
               <div>
-                The fill price of this order is close or at the market price (
-                <b>
-                  fills at{' '}
-                  <TokenAmount amount={executionPriceInverted} tokenSymbol={executionPriceInverted?.quoteCurrency} />
-                </b>
-                , {priceDiffs.percentage.toFixed(2)}% from market) and is expected to{' '}
-                {!percentIsAlmostHundred(filledPercentDisplay) ? 'partially' : ''} fill soon.
+                <Trans>
+                  The fill price of this order is close or at the market price (
+                  <b>
+                    fills at{' '}
+                    <TokenAmount amount={executionPriceInverted} tokenSymbol={executionPriceInverted?.quoteCurrency} />
+                  </b>
+                  , {priceDiff}% from market) and is expected to {filledValue} fill soon.
+                </Trans>
                 <styledEl.ExecuteInformationTooltipWarning>
-                  This price is taken from external sources and may not accurately reflect the current on-chain price.
+                  <Trans>
+                    This price is taken from external sources and may not accurately reflect the current on-chain price.
+                  </Trans>
                 </styledEl.ExecuteInformationTooltipWarning>
               </div>
             }
           >
             <styledEl.PendingExecutionDisplay>
               <Zap size={14} strokeWidth={2.5} />
-              Pending execution
+              <Trans>Pending execution</Trans>
             </styledEl.PendingExecutionDisplay>
           </HoverTooltip>
         ) : (

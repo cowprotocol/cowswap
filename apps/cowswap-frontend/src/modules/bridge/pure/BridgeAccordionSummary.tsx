@@ -9,6 +9,7 @@ import { displayTime } from '@cowprotocol/common-utils'
 import { BridgeProviderInfo } from '@cowprotocol/sdk-bridging'
 import { UI } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
 import styled from 'styled-components/macro'
 
 import { ProtocolIcons } from './ProtocolIcons'
@@ -54,7 +55,7 @@ export function BridgeAccordionSummary({
         {children}
         {bridgeEstimatedTime !== undefined && (
           <EstimatedTimeSpan
-            title={`Estimated bridge transaction time: ${bridgeEstimatedTime} minutes`}
+            title={t`Estimated bridge transaction time: ${bridgeEstimatedTime} minutes`}
             isOpen={isOpen}
           >
             / {displayTime(bridgeEstimatedTime * 1000, true)}

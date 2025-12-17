@@ -2,6 +2,7 @@ import { Dispatch, ReactNode, SetStateAction } from 'react'
 
 import { Currency, Price } from '@uniswap/sdk-core'
 
+import { t } from '@lingui/core/macro'
 import { Nullish } from 'types'
 
 import { ConfirmDetailsItem } from 'modules/trade/pure/ConfirmDetailsItem'
@@ -17,23 +18,29 @@ type Props = {
 }
 
 export function LimitPriceRow(props: Props): ReactNode {
-  const { price, isInvertedState, limitPriceLabel = 'Limit price', limitPriceTooltip = 'The limit price' } = props
+  const { price, isInvertedState, limitPriceLabel, limitPriceTooltip } = props
   const [isInverted, setIsInverted] = isInvertedState
 
   return (
     <RateWrapper onClick={() => setIsInverted((curr) => !curr)}>
-      <ConfirmDetailsItem withTimelineDot label={limitPriceLabel} tooltip={limitPriceTooltip}>
-        {price ? (
-          <ExecutionPrice
-            executionPrice={price}
-            isInverted={isInverted}
-            hideFiat
-            showBaseCurrency
-            separatorSymbol="="
-          />
-        ) : (
-          '-'
-        )}
+      <ConfirmDetailsItem
+        withTimelineDot
+        label={limitPriceLabel ? limitPriceLabel : t`Limit price`}
+        tooltip={limitPriceTooltip ? limitPriceTooltip : t`The limit price`}
+      >
+        <>
+          {price ? (
+            <ExecutionPrice
+              executionPrice={price}
+              isInverted={isInverted}
+              hideFiat
+              showBaseCurrency
+              separatorSymbol="="
+            />
+          ) : (
+            '-'
+          )}
+        </>
       </ConfirmDetailsItem>
     </RateWrapper>
   )

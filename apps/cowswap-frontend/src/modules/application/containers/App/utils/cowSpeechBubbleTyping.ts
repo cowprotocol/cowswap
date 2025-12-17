@@ -1,6 +1,8 @@
 import type { Dispatch, SetStateAction } from 'react'
 
-export const TYPING_MESSAGE = "Mooo, we're hiring!"
+import { msg } from '@lingui/core/macro'
+
+export const TYPING_MESSAGE = msg`Mooo, we're hiring!`
 const TYPING_INTERVAL_MS = 140
 
 interface StartTypingParams {
@@ -8,10 +10,7 @@ interface StartTypingParams {
   messageLength: number
 }
 
-export function startTypingAnimation({
-  setCharIndex,
-  messageLength,
-}: StartTypingParams): () => void {
+export function startTypingAnimation({ setCharIndex, messageLength }: StartTypingParams): () => void {
   let currentIndex = 0
 
   const intervalId = setInterval(() => {

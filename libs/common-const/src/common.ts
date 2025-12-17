@@ -7,9 +7,12 @@ import {
 } from '@cowprotocol/cow-sdk'
 import { Fraction, Percent } from '@uniswap/sdk-core'
 
+import { msg } from '@lingui/core/macro'
+import JSBI from 'jsbi'
 import ms from 'ms.macro'
 
 export const ZERO_FRACTION = new Fraction(0)
+export const ZERO = JSBI.BigInt(0)
 
 export const DEFAULT_SLIPPAGE_BPS = 50 // 0.5%
 export const MAX_SLIPPAGE_BPS = 5000 // 50%
@@ -32,18 +35,18 @@ export const AVG_APPROVE_COST_GWEI = '50000'
 export const DEFAULT_APP_CODE = 'CoW Swap'
 export const SAFE_APP_CODE = `${DEFAULT_APP_CODE}-SafeApp`
 
-export const APP_TITLE = 'CoW Swap | The smartest way to trade cryptocurrencies'
+export const APP_TITLE = msg`CoW Swap | The smartest way to trade cryptocurrencies`
 
 export const PAGE_TITLES = {
-  SWAP: 'Swap',
-  LIMIT_ORDERS: 'Limit Orders',
-  YIELD: 'Yield',
-  ADVANCED: 'TWAP',
-  ACCOUNT_OVERVIEW: 'Account Overview',
-  TOKENS_OVERVIEW: 'Tokens Overview',
-  COW_RUNNER: 'CoW Runner',
-  MEV_SLICER: 'Mev Slicer',
-  HOOKS: 'Hooks',
+  SWAP: msg`Swap`,
+  LIMIT_ORDERS: msg`Limit Orders`,
+  YIELD: msg`Yield`,
+  ADVANCED: msg`TWAP`,
+  ACCOUNT_OVERVIEW: msg`Account Overview`,
+  TOKENS_OVERVIEW: msg`Tokens Overview`,
+  COW_RUNNER: msg`CoW Runner`,
+  MEV_SLICER: msg`Mev Slicer`,
+  HOOKS: msg`Hooks`,
 }
 
 export function getEthFlowContractAddresses(env: CowEnv, chainId: SupportedChainId): string {
@@ -67,12 +70,20 @@ export const COW_CONTRACT_ADDRESS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.POLYGON]: '0x2f4efd3aa42e15a1ec6114547151b63ee5d39958',
   [SupportedChainId.AVALANCHE]: null,
   [SupportedChainId.LENS]: null,
-  [SupportedChainId.BNB]: null, // TODO: add BNB COW token address when available
+  [SupportedChainId.BNB]: '0x5bfdaa3f7c28b9994b56135403bf1acea02595b0',
+  [SupportedChainId.LINEA]: null,
+  [SupportedChainId.PLASMA]: null,
 }
 
-export const RECEIVED_LABEL = 'Received'
-export const ACCOUNT_PROXY_LABEL = 'Account Proxy'
-export const INPUT_OUTPUT_EXPLANATION = 'Only executed swaps incur fees.'
+// Explorer (TODO: reuse the CowSwap msg`` strings below when the explorer is localized
+export const RECEIVED_LABEL_EXPLORER = 'Received'
+export const ACCOUNT_PROXY_LABEL_EXPLORER = 'Account Proxy'
+
+// CowSwap
+export const RECEIVED_LABEL = msg`Received`
+export const ACCOUNT_PROXY_LABEL = msg`Account Proxy`
+export const INPUT_OUTPUT_EXPLANATION = msg`Only executed swaps incur fees.`
+
 export const PENDING_ORDERS_BUFFER = ms`60s` // 60s
 export const CANCELLED_ORDERS_PENDING_TIME = ms`5min` // 5min
 export const PRICE_API_TIMEOUT_MS = ms`10s` // 10s
@@ -116,6 +127,8 @@ export const GAS_FEE_ENDPOINTS: Record<SupportedChainId, string> = {
   [SupportedChainId.AVALANCHE]: 'https://api.blocknative.com/gasprices/blockprices?chainid=43114',
   [SupportedChainId.LENS]: 'https://api.blocknative.com/gasprices/blockprices?chainid=232',
   [SupportedChainId.BNB]: 'https://api.blocknative.com/gasprices/blockprices?chainid=56',
+  [SupportedChainId.LINEA]: 'https://api.blocknative.com/gasprices/blockprices?chainid=59144',
+  [SupportedChainId.PLASMA]: '', // TODO: currently (2025/10/20) unsupported by Blocknative nor blockscont
 }
 export const GAS_API_KEYS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.MAINNET]: process.env.REACT_APP_BLOCKNATIVE_API_KEY || null,
@@ -127,6 +140,8 @@ export const GAS_API_KEYS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.AVALANCHE]: process.env.REACT_APP_BLOCKNATIVE_API_KEY || null,
   [SupportedChainId.LENS]: process.env.REACT_APP_BLOCKNATIVE_API_KEY || null,
   [SupportedChainId.BNB]: process.env.REACT_APP_BLOCKNATIVE_API_KEY || null,
+  [SupportedChainId.LINEA]: process.env.REACT_APP_BLOCKNATIVE_API_KEY || null,
+  [SupportedChainId.PLASMA]: null,
 }
 
 export const UNSUPPORTED_TOKENS_FAQ_URL = 'https://docs.cow.fi/cow-protocol/reference/core/tokens'

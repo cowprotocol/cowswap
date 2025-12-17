@@ -9,6 +9,7 @@ import STEP_LOTTIE_NEXTBATCH from '@cowprotocol/assets/lottie/progressbar-step-n
 import LOTTIE_TIME_EXPIRED_DARK from '@cowprotocol/assets/lottie/time-expired-dark.json'
 import { ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
 import SVG from 'react-inlinesvg'
 
 import { NoSurplus, ShowSurplus } from './BenefitComponents'
@@ -40,7 +41,7 @@ export function UnfillableTopSection(): ReactNode {
   return (
     <img
       src={STEP_IMAGE_UNFILLABLE}
-      alt="Order out of market"
+      alt={t`Order out of market`}
       style={{ width: '100%', height: '100%', objectFit: 'cover' }}
     />
   )
@@ -72,9 +73,9 @@ export function SolvingTopSection({ countdown }: SolvingTopSectionProps): ReactN
         src={STEP_IMAGE_SOLVING}
         style={{ width: '100%', height: '100%', maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
       />
-      <CircularCountdown 
-        countdown={countdown || 0} 
-        isDelayed={countdown === 0} 
+      <CircularCountdown
+        countdown={countdown || 0}
+        isDelayed={countdown === 0}
         bgColor={PROCESS_IMAGE_WRAPPER_BG_COLOR.solving}
       />
     </div>
@@ -142,7 +143,7 @@ export function CancelledCancellingTopSection({ stepName }: BaseTopSectionProps)
     <ProgressImageWrapper stepName={stepName}>
       <img
         src={STEP_IMAGE_CANCELLED}
-        alt="Cancelling order"
+        alt={t`Cancelling order`}
         style={{ width: '100%', height: '100%', objectFit: 'contain' }}
       />
     </ProgressImageWrapper>
@@ -164,7 +165,7 @@ export function ExpiredTopSection({ stepName }: BaseTopSectionProps): ReactNode 
       >
         <img
           src={STEP_IMAGE_EXPIRED}
-          alt="Order expired"
+          alt={t`Order expired`}
           style={{ width: '100%', height: '100%', maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
         />
         <styledEl.ClockAnimation>

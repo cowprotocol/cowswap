@@ -17,7 +17,7 @@ import { VisibleChainsRow } from './VisibleChainsRow'
 type BuildClickEvent = (chain: ChainInfo) => string
 
 // Number of skeleton shimmers to show during loading state
-const LOADING_ITEMS_COUNT = 9
+const LOADING_ITEMS_COUNT = 10
 
 const LoadingShimmerElements = (
   <styledEl.Wrapper>

@@ -4,13 +4,13 @@ import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import ms from 'ms.macro'
 import useSWR, { SWRConfiguration } from 'swr'
 
-import { Order } from 'legacy/state/orders/actions'
-
 import { usePermitInfo } from 'modules/permit'
 import { TradeType } from 'modules/trade'
 
 import { isPending } from 'common/hooks/useCategorizeRecentActivity'
+import { GenericOrder } from 'common/types'
 import { getOrderPermitIfExists } from 'common/utils/doesOrderHavePermit'
+import { isPermitDecodedCalldataValid } from 'utils/orderUtils/isPermitValidForOrder'
 
 import { checkPermitNonceAndAmount } from '../utils/checkPermitNonceAndAmount'
 
@@ -21,14 +21,14 @@ const SWR_CONFIG: SWRConfiguration = {
   errorRetryInterval: 0,
 }
 
-export function useDoesOrderHaveValidPermit(order?: Order, tradeType?: TradeType): boolean | undefined {
+export function useDoesOrderHaveValidPermit(order?: GenericOrder, tradeType?: TradeType): boolean | undefined {
   const { chainId, account } = useWalletInfo()
   const provider = useWalletProvider()
   const permit = order ? getOrderPermitIfExists(order) : null
   const tokenPermitInfo = usePermitInfo(order?.inputToken, tradeType)
 
   const isPendingOrder = order ? isPending(order) : false
-  const checkPermit = account && provider && permit && isPendingOrder && tradeType
+  const checkPermit = isPermitValid(permit, chainId, account) && account && provider && isPendingOrder && tradeType
 
   const { data: isValid } = useSWR(
     checkPermit ? [account, chainId, order?.id, tradeType, permit] : null,
@@ -50,3 +50,6 @@ export function useDoesOrderHaveValidPermit(order?: Order, tradeType?: TradeType
   return isValid
 }
 
+function isPermitValid(permit: string | null, chainId: number, account: string | undefined): boolean {
+  return permit && account ? isPermitDecodedCalldataValid(permit, chainId, account).isValid : false
+}

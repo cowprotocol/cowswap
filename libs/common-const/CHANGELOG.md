@@ -1,5 +1,57 @@
 # Changelog
 
+## [1.31.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.30.0...common-const-v1.31.0) (2025-12-16)
+
+
+### Features
+
+* add locale display names in selector ([#6561](https://github.com/cowprotocol/cowswap/issues/6561)) ([b4f5319](https://github.com/cowprotocol/cowswap/commit/b4f53198397109ca2c7b426b7c104656d604bb54))
+* move from gh cdn to aws ([#6591](https://github.com/cowprotocol/cowswap/issues/6591)) ([79a1581](https://github.com/cowprotocol/cowswap/commit/79a158129c7e81a4ed9df2414e6ec835cdab25e9))
+
+
+### Bug Fixes
+
+* page crash when sell token has 0 decimals ([#6673](https://github.com/cowprotocol/cowswap/issues/6673)) ([d26b4fe](https://github.com/cowprotocol/cowswap/commit/d26b4fec6399490e058963d151a1263278554459))
+* validate token structure in useBridgeSupportedTokens and TokenWithLogo ([#6539](https://github.com/cowprotocol/cowswap/issues/6539)) ([d3d14b2](https://github.com/cowprotocol/cowswap/commit/d3d14b2fd5f386d1b87f1b7d011dc16eef0fb7a6))
+
+## [1.30.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.29.0...common-const-v1.30.0) (2025-11-24)
+
+
+### Features
+
+* **internationalization:** add internationalization to CoW Swap ([#6198](https://github.com/cowprotocol/cowswap/issues/6198)) ([bec1e54](https://github.com/cowprotocol/cowswap/commit/bec1e54643d9b20a8b6517eae188993e364fed90))
+
+
+### Bug Fixes
+
+* sort chains according to the rest of the UI ([#6517](https://github.com/cowprotocol/cowswap/issues/6517)) ([5982866](https://github.com/cowprotocol/cowswap/commit/598286694f8cda9e5ee45a11f52df982ad7a0da4))
+
+## [1.29.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.28.1...common-const-v1.29.0) (2025-11-10)
+
+
+### Features
+
+* **new-chains:** add q4 chains ([#6404](https://github.com/cowprotocol/cowswap/issues/6404)) ([ba4edb0](https://github.com/cowprotocol/cowswap/commit/ba4edb0fdc7b4c700dfeae9023da330d74a9faea))
+
+
+### Bug Fixes
+
+* **linea:** add USDT as a favourite token ([#6498](https://github.com/cowprotocol/cowswap/issues/6498)) ([5741c7f](https://github.com/cowprotocol/cowswap/commit/5741c7fcd0d916b2206c29e83b27fc21e752e374))
+
+## [1.28.1](https://github.com/cowprotocol/cowswap/compare/common-const-v1.28.0...common-const-v1.28.1) (2025-10-28)
+
+
+### Bug Fixes
+
+* **widget:** no custom themes for widget ([#6445](https://github.com/cowprotocol/cowswap/issues/6445)) ([6ae03b1](https://github.com/cowprotocol/cowswap/commit/6ae03b1149b56323fcc6df8bbd2b8d2f52f447b9))
+
+## [1.28.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.27.0...common-const-v1.28.0) (2025-10-23)
+
+
+### Features
+
+* align seasonal theme priority with feature flags and dark mode ([#6378](https://github.com/cowprotocol/cowswap/issues/6378)) ([94e79c6](https://github.com/cowprotocol/cowswap/commit/94e79c6e697237c5f206f94b17065e93deaa6bb0))
+
 ## [1.27.0](https://github.com/cowprotocol/cowswap/compare/common-const-v1.26.0...common-const-v1.27.0) (2025-10-14)
 
 

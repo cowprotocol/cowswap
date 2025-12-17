@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js'
 
-import { formatPercentage } from '../../../utils'
+import { mockNumberLocale } from '../../mockNumberLocale'
 
 const CASES = [
   { given: '0', result: '0%' },
@@ -21,11 +21,25 @@ const CASES = [
   { given: '0.999999999999999', result: '>99.99%' },
 ]
 
+const LOCALES = ['de-DE', 'ru-RU', 'fr-FR', 'en-US', 'ar-SA']
+
 describe('formatPercentage', () => {
+  beforeEach(() => {
+    jest.resetModules()
+  })
+
+  afterEach(() => {
+    jest.restoreAllMocks()
+  })
+
   CASES.forEach(({ given, result }) => {
-    it(`Given ${given}, when formats percentage, then expect ${result}`, async () => {
-      const percentage = formatPercentage(new BigNumber(given))
-      expect(percentage).toEqual(result)
+    LOCALES.forEach((locale) => {
+      it(`Given ${given} (${locale}), when formats percentage, then expect ${result}`, async () => {
+        mockNumberLocale(locale)
+        const { formatPercentage } = await import('../../../utils') // should import after locale mock
+        const percentage = formatPercentage(new BigNumber(given))
+        expect(percentage).toEqual(result)
+      })
     })
   })
 })

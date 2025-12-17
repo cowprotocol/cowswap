@@ -2,6 +2,7 @@ import { ReactNode, useEffect, useMemo } from 'react'
 
 import { ButtonPrimary, Media, UI } from '@cowprotocol/ui'
 
+import { Trans } from '@lingui/react/macro'
 import { Link } from 'react-router'
 import styled from 'styled-components/macro'
 
@@ -75,12 +76,16 @@ export default function NotFound(): ReactNode {
 
   return (
     <Wrapper>
-      <Title>Page not found!</Title>
+      <Title>
+        <Trans>Page not found!</Trans>
+      </Title>
       <Content>
         <Container>
-          <h2>The page you are looking for does not exist. </h2>
+          <h2>
+            <Trans>The page you are looking for does not exist.</Trans>
+          </h2>
           <ButtonPrimary as={Link} to={'/'}>
-            Back home
+            <Trans>Back home</Trans>
           </ButtonPrimary>
         </Container>
       </Content>

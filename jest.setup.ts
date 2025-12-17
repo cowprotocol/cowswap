@@ -1,3 +1,4 @@
+import { i18n } from '@lingui/core'
 import { config } from 'dotenv'
 import 'jest-styled-components' // include style rules in snapshots
 import fetchMock from 'jest-fetch-mock' // Mocks `fetch` calls in unittests
@@ -43,3 +44,8 @@ beforeEach(() => {
   const { __resetGtmInstance } = require('@cowprotocol/analytics')
   __resetGtmInstance()
 })
+
+i18n.load('en-US', {})
+i18n.activate('en-US')
+
+export { i18n }

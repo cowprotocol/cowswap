@@ -1,7 +1,8 @@
 import React, { ReactNode, useMemo } from 'react'
 
 import { Nullish } from '@cowprotocol/types'
-import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
+
+import { t } from '@lingui/core/macro'
 
 import type { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
@@ -11,6 +12,7 @@ import {
   TradeBasicConfirmDetails,
   TradeConfirmation,
   TradeConfirmModal,
+  useCommonTradeConfirmContext,
   useGetReceiveAmountInfo,
   useTradeConfirmActions,
 } from 'modules/trade'
@@ -21,8 +23,6 @@ import { CurrencyPreviewInfo } from 'common/pure/CurrencyAmountPreview'
 import { getNonNativeSlippageTooltip } from 'common/utils/tradeSettingsTooltips'
 
 import { useYieldDerivedState } from '../../hooks/useYieldDerivedState'
-
-const CONFIRM_TITLE = 'Confirm order'
 
 const labelsAndTooltips = {
   // TODO: pass parameters
@@ -40,6 +40,7 @@ export interface YieldConfirmModalProps {
 }
 
 export function YieldConfirmModal(props: YieldConfirmModalProps): ReactNode {
+  const CONFIRM_TITLE = t`Confirm order`
   const { inputCurrencyInfo, outputCurrencyInfo, priceImpact, recipient, recipientAddress, doTrade: _doTrade } = props
 
   /**
@@ -50,8 +51,7 @@ export function YieldConfirmModal(props: YieldConfirmModalProps): ReactNode {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const doTrade = useMemo(() => _doTrade, [])
 
-  const { account } = useWalletInfo()
-  const { ensName } = useWalletDetails()
+  const commonTradeConfirmContext = useCommonTradeConfirmContext()
   const appData = useAppData()
   const receiveAmountInfo = useGetReceiveAmountInfo()
   const tradeConfirmActions = useTradeConfirmActions()
@@ -63,18 +63,17 @@ export function YieldConfirmModal(props: YieldConfirmModalProps): ReactNode {
   return (
     <TradeConfirmModal title={CONFIRM_TITLE} submittedContent={submittedContent}>
       <TradeConfirmation
+        {...commonTradeConfirmContext}
         title={CONFIRM_TITLE}
-        account={account}
-        ensName={ensName}
         inputCurrencyInfo={inputCurrencyInfo}
         outputCurrencyInfo={outputCurrencyInfo}
         onConfirm={doTrade}
         onDismiss={tradeConfirmActions.onDismiss}
         isConfirmDisabled={false}
         priceImpact={priceImpact}
-        buttonText="Confirm Swap"
+        buttonText={t`Confirm Swap`}
         recipient={recipient}
-        appData={appData || undefined}
+        appData={appData}
       >
         {(restContent) => (
           <>
@@ -85,7 +84,7 @@ export function YieldConfirmModal(props: YieldConfirmModalProps): ReactNode {
                 receiveAmountInfo={receiveAmountInfo}
                 recipient={recipient}
                 recipientAddress={recipientAddress}
-                account={account}
+                account={commonTradeConfirmContext.account}
                 labelsAndTooltips={labelsAndTooltips}
                 hideLimitPrice
                 hideUsdValues

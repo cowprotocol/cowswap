@@ -2,8 +2,10 @@ import { ReactNode, useMemo } from 'react'
 
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { Nullish } from '@cowprotocol/types'
-import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
+import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
+
+import { useLingui } from '@lingui/react/macro'
 
 import type { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
@@ -23,6 +25,7 @@ import {
   TradeConfirmModal,
   useGetReceiveAmountInfo,
   useTradeConfirmActions,
+  useCommonTradeConfirmContext,
 } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { HighFeeWarning, RowDeadline } from 'modules/tradeWidgetAddons'
@@ -35,8 +38,6 @@ import { useLabelsAndTooltips } from './useLabelsAndTooltips'
 
 import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
 import { useSwapDeadlineState } from '../../hooks/useSwapSettings'
-
-const CONFIRM_TITLE = 'Swap'
 
 export interface SwapConfirmModalProps {
   doTrade(): Promise<false | void>
@@ -51,15 +52,17 @@ export interface SwapConfirmModalProps {
 // TODO: Break down this large function into smaller functions
 // eslint-disable-next-line max-lines-per-function
 export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
+  const { t } = useLingui()
+  const CONFIRM_TITLE = t`Swap`
   const { inputCurrencyInfo, outputCurrencyInfo, priceImpact, recipient, recipientAddress, doTrade } = props
 
   const { account } = useWalletInfo()
-  const { ensName } = useWalletDetails()
   const appData = useAppData()
   const receiveAmountInfo = useGetReceiveAmountInfo()
   const tradeConfirmActions = useTradeConfirmActions()
   const { slippage } = useSwapDerivedState()
   const [deadline] = useSwapDeadlineState()
+  const commonTradeConfirmContext = useCommonTradeConfirmContext()
 
   const shouldDisplayBridgeDetails = useShouldDisplayBridgeDetails()
   const { bridgeQuote } = useTradeQuote()
@@ -99,22 +102,23 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
     return true
   }, [balances, inputCurrencyInfo, shouldDisplayBridgeDetails, bridgeQuoteAmounts])
 
-  const confirmText = shouldDisplayBridgeDetails ? 'Confirm Swap and Bridge' : 'Confirm Swap'
+  const confirmText = shouldDisplayBridgeDetails ? t`Confirm Swap and Bridge` : t`Confirm Swap`
 
   const buttonText = useMemo(() => {
+    const { amount } = inputCurrencyInfo
+    const symbol = amount?.currency?.symbol || t`token`
+
     if (disableConfirm) {
-      const { amount } = inputCurrencyInfo
-      return `Insufficient ${amount?.currency?.symbol || 'token'} balance`
+      return t`Insufficient ${symbol} balance`
     }
     return confirmText
-  }, [confirmText, disableConfirm, inputCurrencyInfo])
+  }, [confirmText, disableConfirm, inputCurrencyInfo, t])
 
   return (
     <TradeConfirmModal title={CONFIRM_TITLE} submittedContent={submittedContent}>
       <TradeConfirmation
+        {...commonTradeConfirmContext}
         title={CONFIRM_TITLE}
-        account={account}
-        ensName={ensName}
         inputCurrencyInfo={inputCurrencyInfo}
         outputCurrencyInfo={outputCurrencyInfo}
         onConfirm={doTrade}
@@ -123,12 +127,12 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
         priceImpact={priceImpact}
         buttonText={buttonText}
         recipient={recipient}
-        appData={appData || undefined}
+        appData={appData}
       >
         {shouldDisplayBridgeDetails && bridgeProvider && swapContext && bridgeContext
           ? (restContent) => (
               <>
-                <RateInfo label="Price" rateInfoParams={rateInfoParams} fontSize={13} fontBold labelBold />
+                <RateInfo label={t`Price`} rateInfoParams={rateInfoParams} fontSize={13} fontBold labelBold />
                 <QuoteDetails
                   isCollapsible
                   bridgeProvider={bridgeProvider}

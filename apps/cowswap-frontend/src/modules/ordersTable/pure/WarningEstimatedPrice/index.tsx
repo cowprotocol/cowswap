@@ -4,6 +4,8 @@ import { BalancesAndAllowances } from '@cowprotocol/balances-and-allowances'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { Token } from '@uniswap/sdk-core'
 
+import { useLingui } from '@lingui/react/macro'
+
 import { OrderStatus } from 'legacy/state/orders/actions'
 
 import { ParsedOrder } from 'utils/orderUtils/parseOrder'
@@ -29,6 +31,7 @@ interface WarningEstimatedPriceProps {
 export function WarningEstimatedPrice(props: WarningEstimatedPriceProps) {
   const { order, isInverted, withAllowanceWarning, approveOrderToken } = props
   const warningChildWithParams = findWarningChildWithParams(props)
+  const { t } = useLingui()
 
   if (!warningChildWithParams?.params) return null
 
@@ -41,10 +44,10 @@ export function WarningEstimatedPrice(props: WarningEstimatedPriceProps) {
       canShowWarning={true}
       warningText={
         warningChildWithParams.params.hasEnoughAllowance === false
-          ? 'Insufficient allowance'
+          ? t`Insufficient allowance`
           : warningChildWithParams.params.hasEnoughBalance === false
-            ? 'Insufficient balance'
-            : 'Unfillable'
+            ? t`Insufficient balance`
+            : t`Unfillable`
       }
       onApprove={
         warningChildWithParams.params.hasEnoughAllowance === false

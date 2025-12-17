@@ -13,11 +13,14 @@ import {
 } from '@cowprotocol/events'
 import { IconType } from '@cowprotocol/snackbars'
 
+import { t } from '@lingui/core/macro'
+
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { BridgingSuccessNotification } from '../../containers/BridgingSuccessNotification'
 import { FulfilledOrderInfo } from '../../containers/FulfilledOrderInfo'
 import { OrderNotification } from '../../containers/OrderNotification'
+import { OrderInfo } from '../../containers/OrderNotification/utils'
 
 type OrdersNotificationsHandler = {
   icon: IconType
@@ -32,7 +35,7 @@ export const ORDERS_NOTIFICATION_HANDLERS: Record<CowWidgetEvents, OrdersNotific
 
       return (
         <OrderNotification
-          title="Order submitted"
+          title={t`Order submitted`}
           chainId={chainId}
           orderType={orderType}
           orderUid={orderUid}
@@ -51,7 +54,7 @@ export const ORDERS_NOTIFICATION_HANDLERS: Record<CowWidgetEvents, OrdersNotific
 
       return (
         <OrderNotification
-          title={bridgeOrder ? 'Swap order filled' : 'Order filled'}
+          title={bridgeOrder ? t`Swap order filled` : t`Order filled`}
           chainId={chainId}
           orderType={getUiOrderType(order)}
           orderUid={order.uid}
@@ -70,7 +73,7 @@ export const ORDERS_NOTIFICATION_HANDLERS: Record<CowWidgetEvents, OrdersNotific
 
       return (
         <OrderNotification
-          title="Order cancelled"
+          title={t`Order cancelled`}
           chainId={chainId}
           orderInfo={order}
           orderType={getUiOrderType(order)}
@@ -88,7 +91,7 @@ export const ORDERS_NOTIFICATION_HANDLERS: Record<CowWidgetEvents, OrdersNotific
 
       return (
         <OrderNotification
-          title="Order expired"
+          title={t`Order expired`}
           chainId={chainId}
           orderType={getUiOrderType(order)}
           orderUid={order.uid}
@@ -100,14 +103,27 @@ export const ORDERS_NOTIFICATION_HANDLERS: Record<CowWidgetEvents, OrdersNotific
   [CowWidgetEvents.ON_PRESIGNED_ORDER]: {
     icon: 'success',
     handler: (payload: OnPresignedOrderPayload) => {
-      const { chainId, order } = payload
+      const { chainId, order, bridgeOrder } = payload
+
+      const orderInfo: OrderInfo | undefined = bridgeOrder
+        ? {
+            owner: order.owner,
+            kind: order.kind,
+            receiver: bridgeOrder.recipient,
+            inputAmount: BigInt(bridgeOrder.quoteAmounts.swapSellAmount.amount),
+            outputAmount: BigInt(bridgeOrder.quoteAmounts.bridgeMinReceiveAmount.amount),
+            inputToken: bridgeOrder.quoteAmounts.swapSellAmount.token,
+            outputToken: bridgeOrder.quoteAmounts.bridgeMinReceiveAmount.token,
+          }
+        : undefined
 
       return (
         <OrderNotification
-          title="Order presigned"
+          title={t`Order presigned`}
           chainId={chainId}
           orderType={getUiOrderType(order)}
           orderUid={order.uid}
+          orderInfo={orderInfo}
           messageType={ToastMessageType.ORDER_PRESIGNED}
         />
       )

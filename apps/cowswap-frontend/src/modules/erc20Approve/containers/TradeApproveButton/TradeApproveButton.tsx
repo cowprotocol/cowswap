@@ -2,10 +2,10 @@ import React, { ReactNode } from 'react'
 
 import { useTradeSpenderAddress } from '@cowprotocol/balances-and-allowances'
 import { usePreventDoubleExecution } from '@cowprotocol/common-hooks'
-import { ButtonSize, HoverTooltip, TokenSymbol } from '@cowprotocol/ui'
+import { ButtonSize, HoverTooltip } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { Trans } from '@lingui/macro'
+import { useLingui } from '@lingui/react/macro'
 
 import { useHasCachedPermit } from 'modules/permit'
 import { useIsCurrentTradeBridging } from 'modules/trade'
@@ -16,11 +16,13 @@ import { ButtonWrapper } from './styled'
 import { MAX_APPROVE_AMOUNT } from '../../constants'
 import { useApprovalStateForSpender, useApproveCurrency } from '../../hooks'
 import { useApproveAndSwap } from '../../hooks/useApproveAndSwap'
+import { ApprovalTooltip } from '../../pure/ApprovalTooltip'
 import { LegacyApproveButton } from '../../pure/LegacyApproveButton'
 import { ApprovalState } from '../../types'
 
 export interface TradeApproveButtonProps {
   amountToApprove: CurrencyAmount<Currency>
+  minAmountToSignForSwap?: CurrencyAmount<Currency>
   children?: ReactNode
   isDisabled?: boolean
   enablePartialApprove?: boolean
@@ -31,6 +33,7 @@ export interface TradeApproveButtonProps {
 }
 
 export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
+  const { t } = useLingui()
   const {
     amountToApprove,
     children,
@@ -45,7 +48,7 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
   const isCurrentTradeBridging = useIsCurrentTradeBridging()
   const { approvalState } = useApprovalStateForSpender(amountToApprove, spender)
   const approveAndSwap = useApproveAndSwap(props)
-  const approveWithPreventedDoubleExecution = usePreventDoubleExecution(approveAndSwap)
+  const { callback: approveWithPreventedDoubleExecution, isExecuting } = usePreventDoubleExecution(approveAndSwap)
   const { data: cachedPermit, isLoading: cachedPermitLoading } = useHasCachedPermit(amountToApprove)
 
   if (!enablePartialApprove) {
@@ -62,11 +65,12 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
     )
   }
 
-  const isPending = approvalState === ApprovalState.PENDING
+  const isPending = isExecuting || approvalState === ApprovalState.PENDING
   const noCachedPermit = !cachedPermitLoading && !cachedPermit
 
   const label =
-    props.label || (noCachedPermit ? (isCurrentTradeBridging ? 'Approve, Swap & Bridge' : 'Approve and Swap') : 'Swap')
+    props.label ||
+    (noCachedPermit ? (isCurrentTradeBridging ? t`Approve, Swap & Bridge` : t`Approve and Swap`) : t`Swap`)
 
   return (
     <ButtonWrapper
@@ -78,16 +82,7 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
       <styledEl.ButtonLabelWrapper buttonSize={buttonSize}>
         {label}{' '}
         {noCachedPermit ? (
-          <HoverTooltip
-            wrapInContainer
-            content={
-              <Trans>
-                You must give the CoW Protocol smart contracts permission to use your{' '}
-                <TokenSymbol token={amountToApprove.currency} />. If you approve the default amount, you will only have
-                to do this once per token.
-              </Trans>
-            }
-          >
+          <HoverTooltip wrapInContainer content={<ApprovalTooltip currency={amountToApprove.currency} />}>
             {isPending ? <styledEl.StyledLoader /> : <styledEl.StyledAlert size={24} />}
           </HoverTooltip>
         ) : null}

@@ -1,4 +1,4 @@
-import { Media, RowFixed, UI } from '@cowprotocol/ui'
+import { RowFixed, UI } from '@cowprotocol/ui'
 
 import { MenuButton, MenuList } from '@reach/menu-button'
 import { transparentize } from 'color2k'
@@ -68,8 +68,4 @@ export const MenuFlyout = styled(MenuList)`
   top: 36px;
   right: 0;
   width: 280px;
-
-  ${Media.upToMedium()} {
-    min-width: 18.125rem;
-  }
 `

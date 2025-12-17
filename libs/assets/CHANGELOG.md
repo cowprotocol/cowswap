@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.17.1](https://github.com/cowprotocol/cowswap/compare/assets-v1.17.0...assets-v1.17.1) (2025-12-15)
+
+
+### Bug Fixes
+
+* theme logo and Christmas background assets ([c2cd43a](https://github.com/cowprotocol/cowswap/commit/c2cd43a1e71062636dd5d18f246d7a41dc79388b))
+* update SVG assets for desktop and medium Christmas backgrounds ([#6681](https://github.com/cowprotocol/cowswap/issues/6681)) ([d9775cb](https://github.com/cowprotocol/cowswap/commit/d9775cbd2487d706cf0fb20cc018543c4d339f0a))
+
+## [1.17.0](https://github.com/cowprotocol/cowswap/compare/assets-v1.16.0...assets-v1.17.0) (2025-10-23)
+
+
+### Features
+
+* align seasonal theme priority with feature flags and dark mode ([#6378](https://github.com/cowprotocol/cowswap/issues/6378)) ([94e79c6](https://github.com/cowprotocol/cowswap/commit/94e79c6e697237c5f206f94b17065e93deaa6bb0))
+* **notifications:** show trade alerts popover ([#6208](https://github.com/cowprotocol/cowswap/issues/6208)) ([d97c801](https://github.com/cowprotocol/cowswap/commit/d97c801ab43dd6ec208326ba80e145471a53a16d))
+* update Halloween-themed SVG assets for consistency and clarity ([#6390](https://github.com/cowprotocol/cowswap/issues/6390)) ([6f83858](https://github.com/cowprotocol/cowswap/commit/6f838585a5455b82c9101343b629a3fdc3d89c57))
+
+
+### Bug Fixes
+
+* **approve:** update 'edit' icon's color ([#6396](https://github.com/cowprotocol/cowswap/issues/6396)) ([b3281f0](https://github.com/cowprotocol/cowswap/commit/b3281f03a54b07c3c35316b186951d90d054efc6))
+
 ## [1.16.0](https://github.com/cowprotocol/cowswap/compare/assets-v1.15.0...assets-v1.16.0) (2025-10-14)
 
 

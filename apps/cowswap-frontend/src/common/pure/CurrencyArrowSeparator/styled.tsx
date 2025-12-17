@@ -56,7 +56,11 @@ export const LoadingWrapper = styled.div<{ isLoading: boolean }>`
   margin: auto;
 
   &:hover {
-    transform: translateY(-2px);
+    ${({ isLoading }) =>
+      !isLoading &&
+      css`
+        transform: translateY(-2px);
+      `}
   }
 
   ${({ isLoading }) => isLoading && loadingAnimationMixin}

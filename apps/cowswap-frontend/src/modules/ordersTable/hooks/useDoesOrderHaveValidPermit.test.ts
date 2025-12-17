@@ -1,7 +1,11 @@
+import { Erc20__factory } from '@cowprotocol/abis'
+import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
+import { BigNumber as EthersBigNumber } from '@ethersproject/bignumber'
 import type { Web3Provider } from '@ethersproject/providers'
 
+import { EIP_2612_PERMIT_SELECTOR } from '@1inch/permit-signed-approvals-utils'
 import { renderHook } from '@testing-library/react'
 import useSWR from 'swr'
 
@@ -53,6 +57,8 @@ jest.mock('../utils/checkPermitNonceAndAmount', () => ({
   checkPermitNonceAndAmount: jest.fn(),
 }))
 
+const erc20Interface = Erc20__factory.createInterface()
+
 const mockUseWalletInfo = useWalletInfo as jest.MockedFunction<typeof useWalletInfo>
 const mockUseWalletProvider = useWalletProvider as jest.MockedFunction<typeof useWalletProvider>
 const mockUsePermitInfo = usePermitInfo as jest.MockedFunction<typeof usePermitInfo>
@@ -60,9 +66,23 @@ const mockIsPending = isPending as jest.MockedFunction<typeof isPending>
 const mockGetOrderPermitIfExists = getOrderPermitIfExists as jest.MockedFunction<typeof getOrderPermitIfExists>
 const mockUseSWR = useSWR as jest.MockedFunction<typeof useSWR>
 
+function createEip2612PermitCallData(owner: string, spender: string, value: EthersBigNumber, deadline: number): string {
+  const permitData = erc20Interface.encodeFunctionData('permit', [
+    owner,
+    spender,
+    value,
+    deadline,
+    0, // v
+    '0x0000000000000000000000000000000000000000000000000000000000000000', // r
+    '0x0000000000000000000000000000000000000000000000000000000000000000', // s
+  ])
+  // Replace standard permit selector (first 10 chars: 0x + 4 bytes) with EIP_2612_PERMIT_SELECTOR
+  return EIP_2612_PERMIT_SELECTOR + permitData.slice(10)
+}
+
 describe('useDoesOrderHaveValidPermit', () => {
   const mockAccount = '0x1234567890123456789012345678901234567890'
-  const mockChainId = 1
+  const mockChainId = SupportedChainId.MAINNET
   const mockProvider = {} as Web3Provider
   const mockOrder = {
     id: 'test-order-id',
@@ -78,7 +98,10 @@ describe('useDoesOrderHaveValidPermit', () => {
       isToken: true,
     },
   } as Order
-  const mockPermit = '0xd505accf' + '0'.repeat(512)
+  const spenderAddress = COW_PROTOCOL_VAULT_RELAYER_ADDRESS[mockChainId]
+  const futureDeadline = Math.floor(Date.now() / 1000) + 86400 // 24 hours from now
+  const permitValue = EthersBigNumber.from('1000000000000000000') // 1 token
+  const mockPermit = createEip2612PermitCallData(mockAccount, spenderAddress, permitValue, futureDeadline)
   const mockPermitInfo = { type: 'eip-2612' as const }
 
   beforeEach(() => {

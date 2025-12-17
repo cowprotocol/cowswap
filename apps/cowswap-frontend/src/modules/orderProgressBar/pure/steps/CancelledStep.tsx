@@ -1,3 +1,5 @@
+import { Trans } from '@lingui/react/macro'
+
 import * as styledEl from './styled'
 
 import { Description } from '../../sharedStyled'
@@ -14,12 +16,12 @@ export function CancelledStep({ children }: CancelledStepProps) {
       {children}
       <styledEl.ConclusionContent>
         <styledEl.TransactionStatus status={'cancelled'} flexFlow="column" margin={'14px auto 24px'}>
-          Your order was cancelled
+          <Trans>Your order was cancelled</Trans>
         </styledEl.TransactionStatus>
       </styledEl.ConclusionContent>
 
       <Description center margin="10px auto 40px">
-        Your order was successfully cancelled.
+        <Trans>Your order was successfully cancelled.</Trans>
       </Description>
     </styledEl.ProgressContainer>
   )

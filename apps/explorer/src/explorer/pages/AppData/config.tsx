@@ -42,17 +42,39 @@ export const transformErrors = (errors: AjvError[]): AjvError[] => {
       // Disable the non-required fields (it validates the required fields on un-required fields)
       // error.message = ERROR_MESSAGES.REQUIRED
       return errorsList
-    } else {
-      if (error.property === '.metadata.referrer.address') {
-        error.message = ERROR_MESSAGES.INVALID_ADDRESS
+    }
+
+    // Filter out confusing oneOf errors from partnerFee
+    if (error.property.includes('.metadata.partnerFee')) {
+      // Only show oneOf errors if there's actually data in the field
+      if (error.name === 'oneOf') {
+        return errorsList
+      }
+      // Filter out "additionalProperties" errors from nested oneOf schemas
+      if (error.name === 'additionalProperties') {
+        return errorsList
       }
 
-      if (error.property === '.metadata.quote.slippageBips') {
-        error.message = ERROR_MESSAGES.ONLY_DIGITS
+      // Filter out type errors from nested oneOf schemas
+      if (error.name === 'type') {
+        return errorsList
       }
-      if (error.property === '.appData') {
-        error.message = ERROR_MESSAGES.INVALID_APPDATA
-      }
+    }
+
+    if (error.property === '.metadata.referrer.address') {
+      error.message = ERROR_MESSAGES.INVALID_ADDRESS
+    }
+
+    if (error.property === '.metadata.quote.slippageBips') {
+      error.message = ERROR_MESSAGES.ONLY_DIGITS
+    }
+
+    if (error.property === '.appData') {
+      error.message = ERROR_MESSAGES.INVALID_APPDATA
+    }
+
+    if (errorsList.some((e) => e.property === error.property)) {
+      return errorsList
     }
 
     return [...errorsList, error]

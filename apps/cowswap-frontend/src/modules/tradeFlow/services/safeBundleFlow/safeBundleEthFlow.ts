@@ -2,7 +2,6 @@ import { Erc20 } from '@cowprotocol/abis'
 import { WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { SigningScheme, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
-import { MaxUint256 } from '@ethersproject/constants'
 import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { Percent } from '@uniswap/sdk-core'
 
@@ -40,7 +39,15 @@ export async function safeBundleEthFlow(
   confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>,
   analytics: TradeFlowAnalytics,
 ): Promise<void | boolean> {
-  const { context, callbacks, swapFlowAnalyticsContext, tradeConfirmActions, typedHooks, tradeQuote } = tradeContext
+  const {
+    context,
+    callbacks,
+    swapFlowAnalyticsContext,
+    tradeConfirmActions,
+    typedHooks,
+    tradeQuote,
+    bridgeQuoteAmounts,
+  } = tradeContext
 
   logTradeFlow(LOG_PREFIX, 'STEP 1: confirm price impact')
 
@@ -48,8 +55,7 @@ export async function safeBundleEthFlow(
     return false
   }
 
-  const { spender, sendBatchTransactions, needsApproval, wrappedNativeContract, isPartialApproveEnabled } =
-    safeBundleContext
+  const { spender, sendBatchTransactions, needsApproval, wrappedNativeContract, amountToApprove } = safeBundleContext
 
   const { chainId, inputAmount, outputAmount } = context
 
@@ -80,13 +86,11 @@ export async function safeBundleEthFlow(
 
     logTradeFlow(LOG_PREFIX, 'STEP 3: [optional] build approval tx')
 
-    const amountToApprove = isPartialApproveEnabled ? BigInt(inputAmount.quotient.toString()) : MaxUint256.toBigInt()
-
     if (needsApproval) {
       const approveTx = await buildApproveTx({
         erc20Contract: wrappedNativeContract as unknown as Erc20,
         spender,
-        amountToApprove,
+        amountToApprove: BigInt(amountToApprove.quotient.toString()),
       })
 
       txs.push({
@@ -134,6 +138,15 @@ export async function safeBundleEthFlow(
       },
     })
 
+    if (bridgeQuoteAmounts) {
+      tradeContext.callbacks.addBridgeOrder({
+        orderUid: orderId,
+        quoteAmounts: bridgeQuoteAmounts,
+        creationTimestamp: Date.now(),
+        recipient: orderParams.recipient,
+      })
+    }
+
     const { isSafeWallet } = orderParams
     addPendingOrderStep(
       {
@@ -172,6 +185,7 @@ export async function safeBundleEthFlow(
       outputAmount,
       owner: account,
       uiOrderType: UiOrderType.SWAP,
+      isEthFlow: true,
     })
 
     logTradeFlow(LOG_PREFIX, 'STEP 7: add safe tx hash and unhide order')

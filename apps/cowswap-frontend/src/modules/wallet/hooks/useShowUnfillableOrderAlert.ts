@@ -1,10 +1,7 @@
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { OrderClass } from '@cowprotocol/cow-sdk'
 
-import { useGetPendingOrdersPermitValidityState } from 'modules/ordersTable'
-
-import { usePendingOrdersFillability } from 'common/hooks/usePendingOrdersFillability'
-
+import { useGetPendingOrdersPermitValidityState, usePendingOrdersFillability } from 'modules/ordersTable'
 
 export function useShowUnfillableOrderAlert(): boolean {
   const pendingOrdersFillability = usePendingOrdersFillability(OrderClass.MARKET)

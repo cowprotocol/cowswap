@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/cowprotocol/cowswap/compare/snackbars-v1.1.4...snackbars-v1.2.0) (2025-10-23)
+
+
+### Features
+
+* **notifications:** show trade alerts popover ([#6208](https://github.com/cowprotocol/cowswap/issues/6208)) ([d97c801](https://github.com/cowprotocol/cowswap/commit/d97c801ab43dd6ec208326ba80e145471a53a16d))
+
 ## [1.1.4](https://github.com/cowprotocol/cowswap/compare/snackbars-v1.1.3...snackbars-v1.1.4) (2025-08-21)
 
 

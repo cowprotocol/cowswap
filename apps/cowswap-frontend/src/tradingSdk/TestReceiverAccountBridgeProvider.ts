@@ -1,4 +1,5 @@
-import { ChainInfo, EvmCall, TokenInfo } from '@cowprotocol/cow-sdk'
+import { COW_CDN } from '@cowprotocol/common-const'
+import { ChainInfo, EnrichedOrder, EvmCall, TokenInfo } from '@cowprotocol/cow-sdk'
 import {
   BridgeProvider,
   BridgeProviderInfo,
@@ -12,8 +13,6 @@ import {
   ReceiverAccountBridgeProvider,
 } from '@cowprotocol/sdk-bridging'
 
-import { getOrder } from 'api/cowProtocol'
-
 /**
  * Test provider for testing the ReceiverAccountBridgeProvider using an account provided in the constructor.
  * It also relies on a bridge provider that will be used to get the quote, tokens, etc. (to implement this mock easily based on other working providers)
@@ -22,10 +21,10 @@ export class TestReceiverAccountBridgeProvider implements ReceiverAccountBridgeP
   type = 'ReceiverAccountBridgeProvider' as const
   info: BridgeProviderInfo = {
     name: 'Receiver Bridge',
-    logoUrl:
-      'https://raw.githubusercontent.com/cowprotocol/cow-sdk/refs/heads/main/packages/bridging/src/providers/mock/mock-logo.webp',
+    logoUrl: `${COW_CDN}/cow-sdk/bridging/providers/mock/mock-logo.webp`,
     dappId: 'test-receiver-bridge',
     website: 'https://github.com/cowprotocol/cowswap',
+    type: 'ReceiverAccountBridgeProvider',
   }
 
   constructor(
@@ -64,12 +63,12 @@ export class TestReceiverAccountBridgeProvider implements ReceiverAccountBridgeP
 
   async getBridgingParams(
     chainId: number,
-    orderUid: string,
+    order: EnrichedOrder,
     txHash: string,
   ): Promise<{ params: BridgingDepositParams; status: BridgeStatusResult } | null> {
-    console.log('getBridgingParams', chainId, orderUid, txHash)
+    const orderUid = order?.uid
 
-    const order = await getOrder(chainId, orderUid)
+    console.log('getBridgingParams', chainId, orderUid, txHash)
 
     if (!order) {
       return null

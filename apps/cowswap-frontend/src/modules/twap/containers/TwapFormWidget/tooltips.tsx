@@ -1,5 +1,6 @@
 import ShieldImage from '@cowprotocol/assets/cow-swap/protection.svg'
 
+import { Trans, useLingui } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
@@ -27,70 +28,81 @@ export interface LabelTooltipItems {
   [key: string]: LabelTooltip
 }
 
-export const LABELS_TOOLTIPS: LabelTooltipItems = {
-  numberOfParts: {
-    label: 'No. of parts',
-    tooltip: 'Your TWAP order will be split into this many parts, which will execute one by one.',
-  },
-  totalDuration: {
-    label: 'Total duration',
-    tooltip: ({ parts, partDuration }: { parts: number; partDuration: number }) => (
-      <>
-        {/* TODO: Add time units */}
-        The "Total duration" is the duration it takes to execute all parts of your TWAP order.
-        <br />
-        <br />
-        For instance, your order consists of <b>{parts} parts</b> placed every{' '}
-        <b>{deadlinePartsDisplay(partDuration)}</b>, the total time to complete the order is{' '}
-        <b>{deadlinePartsDisplay(parts * partDuration)}</b>. Each limit order remains open for{' '}
-        <b>{deadlinePartsDisplay(partDuration)}</b> until the next part becomes active.
-      </>
-    ),
-  },
-  partDuration: {
-    label: 'Part duration',
-    tooltip: (
-      <>
-        The "Part duration" refers to the duration between each part of your TWAP order.
-        <br />
-        <br />
-        Choosing a shorter time allows for faster execution of each part, potentially reducing price fluctuations.
-        Striking the right balance is crucial for optimal execution.
-      </>
-    ),
-  },
-  slippage: {
-    label: (
-      <>
-        <IconImage>
-          <SVG src={ShieldImage} width="16" height="16" title="Price protection" />
-        </IconImage>{' '}
-        Price protection
-      </>
-    ),
-    tooltip: (
-      <>Your TWAP order won't execute and is protected if the market price dips more than your set price protection.</>
-    ),
-  },
-  price: {
-    label: 'Rate',
-    tooltip: 'This is the current market price, including the fee.',
-  },
-  sellAmount: {
-    label: 'Sell per part',
-    tooltip: 'Estimated amount that will be sold in each part of the order.',
-  },
-  buyAmount: {
-    label: 'Buy per part',
-    tooltip: 'Estimated amount that you will receive from each part of the order.',
-  },
-  startTime: {
-    label: 'Start time',
-    tooltip: 'The order will start when it is validated and executed in your Safe.',
-  },
+export function useLabelsTooltips(): LabelTooltipItems {
+  const { t } = useLingui()
+
+  return {
+    numberOfParts: {
+      label: t`No. of parts`,
+      tooltip: t`Your TWAP order will be split into this many parts, which will execute one by one.`,
+    },
+    totalDuration: {
+      label: t`Total duration`,
+      tooltip: ({ parts, partDuration }: { parts: number; partDuration: number }) => {
+        const partDurationDisplay = deadlinePartsDisplay(partDuration)
+        const totalDurationDisplay = deadlinePartsDisplay(parts * partDuration)
+        return (
+          <Trans>
+            The "Total duration" is the duration it takes to execute all parts of your TWAP order.
+            <br />
+            <br />
+            For instance, your order consists of <b>{parts} parts</b> placed every <b>{partDurationDisplay}</b>, the
+            total time to complete the order is <b>{totalDurationDisplay}</b>. Each limit order remains open for{' '}
+            <b>{partDurationDisplay}</b> until the next part becomes active.
+          </Trans>
+        )
+      },
+    },
+    partDuration: {
+      label: t`Part duration`,
+      tooltip: (
+        <Trans>
+          The "Part duration" refers to the duration between each part of your TWAP order.
+          <br />
+          <br />
+          Choosing a shorter time allows for faster execution of each part, potentially reducing price fluctuations.
+          Striking the right balance is crucial for optimal execution.
+        </Trans>
+      ),
+    },
+    slippage: {
+      label: (
+        <>
+          <IconImage>
+            <SVG src={ShieldImage} width="16" height="16" title={t`Price protection`} />
+          </IconImage>{' '}
+          <Trans>Price protection</Trans>
+        </>
+      ),
+      tooltip: (
+        <Trans>
+          Your TWAP order won't execute and is protected if the market price dips more than your set price protection.
+        </Trans>
+      ),
+    },
+    price: {
+      label: t`Rate`,
+      tooltip: t`This is the current market price, including the fee.`,
+    },
+    sellAmount: {
+      label: t`Sell per part`,
+      tooltip: t`Estimated amount that will be sold in each part of the order.`,
+    },
+    buyAmount: {
+      label: t`Buy per part`,
+      tooltip: t`Estimated amount that you will receive from each part of the order.`,
+    },
+    startTime: {
+      label: t`Start time`,
+      tooltip: t`The order will start when it is validated and executed in your Safe.`,
+    },
+  }
 }
 
-export const AMOUNT_PARTS_LABELS = {
-  sellAmount: LABELS_TOOLTIPS.sellAmount,
-  buyAmount: LABELS_TOOLTIPS.buyAmount,
+export function useAmountPartsLabels(): Pick<LabelTooltipItems, 'sellAmount' | 'buyAmount'> {
+  const tooltips = useLabelsTooltips()
+  return {
+    sellAmount: tooltips.sellAmount,
+    buyAmount: tooltips.buyAmount,
+  }
 }
