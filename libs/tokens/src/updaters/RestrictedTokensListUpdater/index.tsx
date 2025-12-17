@@ -106,7 +106,6 @@ export function RestrictedTokensListUpdater(): null {
         const issuerPerToken: Record<TokenId, string> = {}
         const tosHashPerToken: Record<TokenId, string> = {}
 
-        // Process each restricted list
         await Promise.all(
           restrictedLists.map(async (list) => {
             try {
