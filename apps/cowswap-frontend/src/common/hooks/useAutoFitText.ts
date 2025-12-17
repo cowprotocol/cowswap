@@ -100,7 +100,9 @@ export function useAutoFitText<T extends HTMLElement = HTMLElement>(options: Aut
     const teardowns: Array<() => void> = []
     const scheduleFit = (): void => {
       cancelAnimationFrame(rafRef.id)
-      rafRef.id = requestAnimationFrame(() => fitText({ node, parent, minBound, maxBound, stepSize, whiteSpace }))
+      rafRef.id = requestAnimationFrame(() =>
+        fitText({ node, parent, minBound, maxBound, stepSize, whiteSpace })
+      )
     }
 
     scheduleFit()

@@ -35,7 +35,7 @@ export type UseCancelOrderReturn = Command | null
  * In case the order is not eligible, it returns null. This should be used to control whether a cancel button should be displayed
  */
 // TODO: Break down this large function into smaller functions
-
+ 
 export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
   const { chainId } = useWalletInfo()
   const { allowsOffchainSigning } = useWalletDetails()
@@ -84,8 +84,8 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
           await cancelFn(order)
           onDismiss()
           // When done, dismiss the modal
-          // TODO: Replace any with proper type definitions
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // TODO: Replace any with proper type definitions
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (e: any) {
           onDismiss()
           if (!isPendingSignature) return

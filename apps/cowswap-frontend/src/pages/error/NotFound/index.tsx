@@ -81,9 +81,7 @@ export default function NotFound(): ReactNode {
       </Title>
       <Content>
         <Container>
-          <h2>
-            <Trans>The page you are looking for does not exist.</Trans>
-          </h2>
+          <h2><Trans>The page you are looking for does not exist.</Trans></h2>
           <ButtonPrimary as={Link} to={'/'}>
             <Trans>Back home</Trans>
           </ButtonPrimary>

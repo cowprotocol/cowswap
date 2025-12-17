@@ -43,7 +43,11 @@ export interface BridgingStatusHeaderProps {
   stepName: BridgingFlowStep
 }
 
-export function BridgingStatusHeader({ stepName, sellToken, buyToken }: BridgingStatusHeaderProps): ReactNode {
+export function BridgingStatusHeader({
+  stepName,
+  sellToken,
+  buyToken,
+}: BridgingStatusHeaderProps): ReactNode {
   const { i18n } = useLingui()
   const isBridgingFailed = stepName === 'bridgingFailed'
   const sellTokenEl = createTokenLogo(sellToken, stepName)

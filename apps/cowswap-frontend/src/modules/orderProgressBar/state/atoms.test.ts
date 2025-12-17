@@ -50,6 +50,7 @@ describe('pruneOrdersProgressBarState', () => {
 
     expect(store.get(ordersProgressBarStateAtom)).toBe(initialState)
   })
+
 })
 
 describe('updateOrderProgressBarCountdown', () => {

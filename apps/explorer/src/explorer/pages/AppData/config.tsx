@@ -43,7 +43,7 @@ export const transformErrors = (errors: AjvError[]): AjvError[] => {
       // error.message = ERROR_MESSAGES.REQUIRED
       return errorsList
     }
-
+    
     // Filter out confusing oneOf errors from partnerFee
     if (error.property.includes('.metadata.partnerFee')) {
       // Only show oneOf errors if there's actually data in the field
@@ -60,7 +60,7 @@ export const transformErrors = (errors: AjvError[]): AjvError[] => {
         return errorsList
       }
     }
-
+    
     if (error.property === '.metadata.referrer.address') {
       error.message = ERROR_MESSAGES.INVALID_ADDRESS
     }
@@ -68,7 +68,7 @@ export const transformErrors = (errors: AjvError[]): AjvError[] => {
     if (error.property === '.metadata.quote.slippageBips') {
       error.message = ERROR_MESSAGES.ONLY_DIGITS
     }
-
+    
     if (error.property === '.appData') {
       error.message = ERROR_MESSAGES.INVALID_APPDATA
     }

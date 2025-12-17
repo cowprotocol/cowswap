@@ -30,3 +30,4 @@ export function OrdersPermitUpdater({ orders, tradeType }: OrdersPermitUpdaterPr
     return <OrderPermitUpdater key={order.id} order={order} tradeType={tradeType} />
   })
 }
+

@@ -29,7 +29,7 @@ export function VampireAttackUpdater(): null {
 
     const result = Object.keys(lpTokensWithBalances).reduce(
       // TODO: Reduce function complexity by extracting logic
-
+       
       (acc, tokenAddress) => {
         const { token: lpToken, balance: tokenBalance } = lpTokensWithBalances[tokenAddress]
         const alternative = cowAmmLpTokens.find((cowAmmLpToken) => {

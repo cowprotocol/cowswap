@@ -53,9 +53,9 @@ export function ActiveOrdersWithAffectedPermit({ currency, orderId }: ActiveOrde
       </styledEl.DropdownList>
       <styledEl.DropdownFooter>
         <Trans>
-          There {areIs} <span className={'font-bold'}>{ordersWithPermitLength}</span> existing {orderWord} using a{' '}
-          <TokenSymbol className={'font-bold'} token={currency} /> token approval. Partial approval may affect the
-          execution of other orders. Adjust the amount or choose full approval to proceed.
+          There {areIs} <span className={'font-bold'}>{ordersWithPermitLength}</span> existing{' '}
+          {orderWord} using a <TokenSymbol className={'font-bold'} token={currency} /> token approval.  Partial approval  
+        may affect the execution of other orders. Adjust the amount or choose full approval to proceed.
         </Trans>
       </styledEl.DropdownFooter>
     </AccordionBanner>

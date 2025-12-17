@@ -25,7 +25,14 @@ interface AccountItemProps {
 export function AccountItem({ chainId, account, version, iconSize = 28 }: AccountItemProps): ReactNode {
   return (
     <Wrapper to={parameterizeRoute(Routes.ACCOUNT_PROXY, { chainId, proxyAddress: account })}>
-      <BaseAccountCard width={90} height={56} borderRadius={8} padding={8} enableParentHover enableScale>
+      <BaseAccountCard
+        width={90}
+        height={56}
+        borderRadius={8}
+        padding={8}
+        enableParentHover
+        enableScale
+      >
         <MiniContent>
           <AccountIcon account={account} size={iconSize} />
           <SkeletonLines skeletonHeight={2} />

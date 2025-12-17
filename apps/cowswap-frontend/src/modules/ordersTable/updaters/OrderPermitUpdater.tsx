@@ -24,3 +24,4 @@ export function OrderPermitUpdater(props: OrderPermitUpdaterProps): null {
 
   return null
 }
+
