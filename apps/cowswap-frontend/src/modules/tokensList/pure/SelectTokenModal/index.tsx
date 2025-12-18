@@ -11,7 +11,10 @@ import { t } from '@lingui/core/macro'
 import { X } from 'react-feather'
 import { Nullish } from 'types'
 
+import { Field } from 'legacy/state/types'
+
 import { PermitCompatibleTokens } from 'modules/permit'
+import { TradeType } from 'modules/trade'
 
 import { SelectTokenModalContent } from './SelectTokenModalContent'
 import * as styledEl from './styled'
@@ -41,6 +44,9 @@ export interface SelectTokenModalProps<T = TokenListCategory[] | null> {
   standalone?: boolean
   areTokensFromBridge: boolean
   isRouteAvailable: boolean | undefined
+  tradeType?: TradeType
+  field?: Field
+  counterChainId?: ChainInfo['id']
 
   onSelectToken(token: TokenWithLogo): void
   openPoolPage(poolAddress: string): void
@@ -90,6 +96,9 @@ export function SelectTokenModal(props: SelectTokenModalProps): ReactNode {
     onSelectChain,
     areTokensFromBridge,
     isRouteAvailable,
+    tradeType,
+    field,
+    counterChainId,
   } = props
   const [inputValue, setInputValue] = useState<string>(defaultInputValue)
 
@@ -133,7 +142,7 @@ export function SelectTokenModal(props: SelectTokenModalProps): ReactNode {
         </LpTokenListsWidget>
       ) : (
         <>
-          {!!chainsToSelect?.chains?.length && (
+          {!!chainsToSelect?.chains?.length && tradeType && field && (
             <>
               <styledEl.ChainsSelectorWrapper>
                 <ChainsSelector
@@ -141,6 +150,9 @@ export function SelectTokenModal(props: SelectTokenModalProps): ReactNode {
                   chains={chainsToSelect.chains}
                   defaultChainId={chainsToSelect.defaultChainId}
                   onSelectChain={onSelectChain}
+                  tradeType={tradeType}
+                  field={field}
+                  counterChainId={counterChainId}
                 />
               </styledEl.ChainsSelectorWrapper>
             </>
