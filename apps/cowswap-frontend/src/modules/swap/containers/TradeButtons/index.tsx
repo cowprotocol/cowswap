@@ -47,7 +47,7 @@ interface TradeButtonsProps {
 }
 
 // todo -fix
-// eslint-disable-next-line complexity,max-lines-per-function
+// eslint-disable-next-line max-lines-per-function
 export function TradeButtons({
   isTradeContextReady,
   openNativeWrapModal,
@@ -75,8 +75,8 @@ export function TradeButtons({
 
   // Check RWA token status for consent modal
   const { status: rwaStatus, rwaTokenInfo } = useRwaTokenStatus({
-    inputToken: inputCurrency?.isToken ? inputCurrency : undefined,
-    outputToken: outputCurrency?.isToken ? outputCurrency : undefined,
+    inputCurrency,
+    outputCurrency,
   })
 
   const confirmTrade = useCallback(

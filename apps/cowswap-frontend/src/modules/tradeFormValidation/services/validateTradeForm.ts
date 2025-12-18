@@ -64,7 +64,6 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     validations.push(TradeFormValidation.CustomTokenError)
   }
 
-  // Check geo restrictions for RWA tokens - this should block trading entirely
   if (isRestrictedForCountry) {
     validations.push(TradeFormValidation.RestrictedForCountry)
   }

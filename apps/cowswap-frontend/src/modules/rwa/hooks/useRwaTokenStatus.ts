@@ -2,8 +2,9 @@ import { useMemo } from 'react'
 
 import { areTokensEqual } from '@cowprotocol/common-utils'
 import { useAnyRestrictedToken, RestrictedTokenInfo } from '@cowprotocol/tokens'
+import { Nullish } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { Token } from '@uniswap/sdk-core'
+import { Currency, Token } from '@uniswap/sdk-core'
 
 import { useGeoCountry } from './useGeoCountry'
 import { useRwaConsentStatus } from './useRwaConsentStatus'
@@ -33,8 +34,8 @@ export interface RwaTokenStatusResult {
 }
 
 export interface UseRwaTokenStatusParams {
-  inputToken: Token | undefined
-  outputToken: Token | undefined
+  inputCurrency: Nullish<Currency>
+  outputCurrency: Nullish<Currency>
 }
 
 function convertToRwaTokenInfo(restrictedInfo: RestrictedTokenInfo, originalToken: Token): RwaTokenInfo {
@@ -45,9 +46,12 @@ function convertToRwaTokenInfo(restrictedInfo: RestrictedTokenInfo, originalToke
   }
 }
 
-export function useRwaTokenStatus({ inputToken, outputToken }: UseRwaTokenStatusParams): RwaTokenStatusResult {
+export function useRwaTokenStatus({ inputCurrency, outputCurrency }: UseRwaTokenStatusParams): RwaTokenStatusResult {
   const { account } = useWalletInfo()
   const geoCountry = useGeoCountry()
+
+  const inputToken = inputCurrency?.isToken ? inputCurrency : undefined
+  const outputToken = outputCurrency?.isToken ? outputCurrency : undefined
 
   const restrictedTokenInfo = useAnyRestrictedToken(inputToken, outputToken)
 

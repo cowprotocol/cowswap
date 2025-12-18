@@ -21,7 +21,6 @@ import { useTokenCustomTradeError } from './useTokenCustomTradeError'
 
 import { TradeFormValidationCommonContext } from '../types'
 
-// eslint-disable-next-line complexity
 export function useTradeFormValidationContext(): TradeFormValidationCommonContext | null {
   const { account } = useWalletInfo()
   const derivedTradeState = useDerivedTradeState()
@@ -60,8 +59,8 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
 
   // Check RWA geo restrictions
   const { status: rwaStatus } = useRwaTokenStatus({
-    inputToken: inputCurrency?.isToken ? inputCurrency : undefined,
-    outputToken: outputCurrency?.isToken ? outputCurrency : undefined,
+    inputCurrency,
+    outputCurrency,
   })
   const isRestrictedForCountry = rwaStatus === RwaTokenStatus.Restricted
 

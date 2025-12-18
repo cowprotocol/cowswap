@@ -14,11 +14,7 @@ export function useRwaConsentForAppData(): UserConsentsMetadata | undefined {
   const inputCurrency = derivedState?.inputCurrency ?? undefined
   const outputCurrency = derivedState?.outputCurrency ?? undefined
 
-  // todo replace with wrap
-  const inputToken = inputCurrency?.isToken ? inputCurrency : undefined
-  const outputToken = outputCurrency?.isToken ? outputCurrency : undefined
-
-  const { status, rwaTokenInfo } = useRwaTokenStatus({ inputToken, outputToken })
+  const { status, rwaTokenInfo } = useRwaTokenStatus({ inputCurrency, outputCurrency })
 
   return useMemo(() => {
     if (status !== RwaTokenStatus.ConsentIsSigned || !rwaTokenInfo) {
