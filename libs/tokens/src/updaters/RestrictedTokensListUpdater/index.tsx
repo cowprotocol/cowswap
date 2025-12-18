@@ -11,7 +11,7 @@ import {
 } from '../../state/restrictedTokens/restrictedTokensAtom'
 
 // Hardcoded IPFS hash of the consent terms - shared across all restricted token issuers
-const TERMS_OF_SERVICE_HASH = 'QmTODO' // TODO: Replace with actual IPFS hash
+const TERMS_OF_SERVICE_HASH = 'bafkreidcn4bhj44nnethx6clfspkapahshqyq44adz674y7je5wyfiazsq'
 
 interface RestrictedListMetadata {
   name: string
@@ -121,7 +121,7 @@ export function RestrictedTokensListUpdater(): null {
             } catch (error) {
               console.error(`Failed to fetch token list for ${list.name}:`, error)
             }
-          })
+          }),
         )
 
         const listState: RestrictedTokenListState = {
