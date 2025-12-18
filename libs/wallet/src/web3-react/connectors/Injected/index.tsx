@@ -161,7 +161,10 @@ export class InjectedWallet extends Connector {
         if (!data || !doesProviderMatches()) return
 
         const { chainId } = data
-        this.actions.update({ chainId: parseChainId(chainId) })
+        const parsedChainId = parseChainId(chainId)
+        // Recreate ethers provider on connect to avoid "underlying network changed" errors
+        this.setCustomProvider(parsedChainId)
+        this.actions.update({ chainId: parsedChainId })
       })
 
       const onDisconnect = (error: ProviderRpcError): void => {
@@ -181,7 +184,10 @@ export class InjectedWallet extends Connector {
       provider.on('chainChanged', (chainId: string): void => {
         if (!doesProviderMatches()) return
 
-        this.actions.update({ chainId: parseChainId(chainId) })
+        const parsedChainId = parseChainId(chainId)
+        // Recreate ethers provider on connect to avoid "underlying network changed" errors
+        this.setCustomProvider(parsedChainId)
+        this.actions.update({ chainId: parsedChainId })
       })
 
       provider.on('accountsChanged', (accounts: string[]): void => {
