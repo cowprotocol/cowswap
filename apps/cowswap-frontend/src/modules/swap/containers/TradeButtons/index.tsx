@@ -1,10 +1,8 @@
-import { ReactNode } from 'react'
+import { ReactNode, useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { useWalletInfo } from '@cowprotocol/wallet'
-
-import { useLingui } from '@lingui/react/macro'
 
 import { AddIntermediateToken } from 'modules/tokensList'
 import {
@@ -24,7 +22,7 @@ import { useHighFeeWarning } from 'modules/tradeWidgetAddons'
 
 import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
 
-import { buildSwapBridgeClickEvent } from './analytics'
+import { buildSwapBridgeClickEvent, type TradeButtonsAnalyticsParams } from './analytics'
 import { swapTradeButtonsMap } from './swapTradeButtonsMap'
 
 import { useGetConfirmButtonLabel } from '../../hooks/useGetConfirmButtonLabel'
@@ -47,6 +45,82 @@ interface TradeButtonsProps {
   setShowAddIntermediateTokenModal: (show: boolean) => void
 }
 
+function getAddIntermediateTokenSection(
+  shouldShow: boolean,
+  intermediateBuyToken: TokenWithLogo | null,
+  setShowAddIntermediateTokenModal: (show: boolean) => void,
+): ReactNode {
+  if (!shouldShow || !intermediateBuyToken) return null
+
+  return (
+    <AddIntermediateToken
+      intermediateBuyToken={intermediateBuyToken}
+      onImport={() => setShowAddIntermediateTokenModal(true)}
+    />
+  )
+}
+
+function shouldShowAddIntermediateTokenSection(
+  tokenToBeImported: boolean,
+  intermediateBuyToken: TokenWithLogo | null,
+  primaryFormValidation: TradeFormValidation | null,
+): boolean {
+  return (
+    tokenToBeImported &&
+    !!intermediateBuyToken &&
+    primaryFormValidation === TradeFormValidation.ImportingIntermediateToken
+  )
+}
+
+function getIsDisabled(
+  isTradeContextReady: boolean,
+  feeWarningAccepted: boolean,
+  isNoImpactWarningAccepted: boolean,
+  shouldCheckBridgingRecipient: boolean,
+  smartContractRecipientConfirmed: boolean,
+): boolean {
+  return (
+    !isTradeContextReady ||
+    !feeWarningAccepted ||
+    !isNoImpactWarningAccepted ||
+    (shouldCheckBridgingRecipient ? !smartContractRecipientConfirmed : false)
+  )
+}
+
+function useSwapBridgeClickEvent(params: TradeButtonsAnalyticsParams & { walletAddress?: string }): string | undefined {
+  const {
+    isCurrentTradeBridging,
+    inputCurrency,
+    outputCurrency,
+    inputCurrencyAmount,
+    outputCurrencyAmount,
+    chainId,
+    walletAddress,
+  } = params
+
+  return useMemo(
+    () =>
+      buildSwapBridgeClickEvent({
+        isCurrentTradeBridging,
+        inputCurrency,
+        outputCurrency,
+        inputCurrencyAmount,
+        outputCurrencyAmount,
+        chainId,
+        walletAddress,
+      }),
+    [
+      chainId,
+      inputCurrency,
+      inputCurrencyAmount,
+      isCurrentTradeBridging,
+      outputCurrency,
+      outputCurrencyAmount,
+      walletAddress,
+    ],
+  )
+}
+
 export function TradeButtons({
   isTradeContextReady,
   openNativeWrapModal,
@@ -57,7 +131,6 @@ export function TradeButtons({
 }: TradeButtonsProps): ReactNode {
   const { chainId, account: walletAddress } = useWalletInfo()
   const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount } = useSwapDerivedState()
-
   const primaryFormValidation = useGetTradeFormValidation()
   const isPrimaryValidationPassed = useIsTradeFormValidationPassed()
   const tradeConfirmActions = useTradeConfirmActions()
@@ -69,19 +142,17 @@ export function TradeButtons({
   const isCurrentTradeBridging = useIsCurrentTradeBridging()
   const shouldCheckBridgingRecipient = useShouldCheckBridgingRecipient()
   const smartContractRecipientConfirmed = useSmartContractRecipientConfirmed()
-
-  const { t } = useLingui()
-
-  const confirmTrade = tradeConfirmActions.onOpen
-
   const confirmText = useGetConfirmButtonLabel()
-
   const { isPartialApproveEnabled } = useFeatureFlags()
   // enable partial approve only for swap
-  const tradeFormButtonContext = useTradeFormButtonContext(confirmText, confirmTrade, !!isPartialApproveEnabled)
+  const tradeFormButtonContext = useTradeFormButtonContext(
+    confirmText,
+    tradeConfirmActions.onOpen,
+    !!isPartialApproveEnabled,
+  )
 
   // Analytics event for bridge transactions
-  const swapBridgeClickEvent = buildSwapBridgeClickEvent({
+  const swapBridgeClickEvent = useSwapBridgeClickEvent({
     isCurrentTradeBridging,
     inputCurrency,
     outputCurrency,
@@ -94,31 +165,26 @@ export function TradeButtons({
   const context = useSafeMemoObject({
     wrappedToken,
     onEthFlow: openNativeWrapModal,
-    openSwapConfirm: confirmTrade,
+    openSwapConfirm: tradeConfirmActions.onOpen,
     inputCurrency,
     hasEnoughWrappedBalanceForSwap,
     onCurrencySelection,
     confirmText,
   })
 
-  const shouldShowAddIntermediateToken =
-    tokenToBeImported &&
-    !!intermediateBuyToken &&
-    primaryFormValidation === TradeFormValidation.ImportingIntermediateToken
+  const shouldShowAddIntermediateToken = shouldShowAddIntermediateTokenSection(
+    tokenToBeImported,
+    intermediateBuyToken,
+    primaryFormValidation,
+  )
 
-  const addIntermediateTokenSection =
-    shouldShowAddIntermediateToken && intermediateBuyToken ? (
-      <AddIntermediateToken
-        intermediateBuyToken={intermediateBuyToken}
-        onImport={() => setShowAddIntermediateTokenModal(true)}
-      />
-    ) : null
-
-  const isDisabled =
-    !isTradeContextReady ||
-    !feeWarningAccepted ||
-    !isNoImpactWarningAccepted ||
-    (shouldCheckBridgingRecipient ? !smartContractRecipientConfirmed : false)
+  const isDisabled = getIsDisabled(
+    isTradeContextReady,
+    feeWarningAccepted,
+    isNoImpactWarningAccepted,
+    shouldCheckBridgingRecipient,
+    smartContractRecipientConfirmed,
+  )
 
   if (!tradeFormButtonContext) return null
 
@@ -135,7 +201,11 @@ export function TradeButtons({
         isDisabled={isDisabled}
         dataClickEvent={swapBridgeClickEvent}
       />
-      {addIntermediateTokenSection}
+      {getAddIntermediateTokenSection(
+        shouldShowAddIntermediateToken,
+        intermediateBuyToken,
+        setShowAddIntermediateTokenModal,
+      )}
     </>
   )
 }
