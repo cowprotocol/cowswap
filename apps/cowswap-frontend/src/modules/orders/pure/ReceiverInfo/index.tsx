@@ -17,7 +17,7 @@ export function ReceiverInfo({ receiver, owner }: ReceiverInfoProps) {
 
   return (
     <>
-      {toAddress && receiver && areAddressesEqual(receiver, owner) && (
+      {toAddress && receiver && !areAddressesEqual(receiver, owner) && (
         <div>
           <Trans>Receiver</Trans>: <ExplorerLink id={receiver} label={toAddress} type="address" />
         </div>
