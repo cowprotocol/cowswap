@@ -80,8 +80,10 @@ export function BridgeDetailsContent({ crossChainOrder }: BridgeDetailsContentPr
       </DetailRow>
 
       <DetailRow label={RECEIVED_LABEL_EXPLORER} tooltipText={BridgeDetailsTooltips.youReceived}>
-        {outputAmount && destinationToken && bridgeStatus === BridgeStatus.EXECUTED && (
+        {outputAmount && destinationToken && bridgeStatus === BridgeStatus.EXECUTED ? (
           <BridgeReceiveAmount amount={outputAmount} destinationToken={destinationToken} bridgeProvider={provider} />
+        ) : (
+          <span>-</span>
         )}
       </DetailRow>
 
