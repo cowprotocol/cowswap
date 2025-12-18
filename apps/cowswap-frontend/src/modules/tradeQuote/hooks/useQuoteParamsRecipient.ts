@@ -20,6 +20,7 @@ export function useQuoteParamsRecipient(): string | undefined {
   const { account } = useWalletInfo()
 
   const { recipient, recipientAddress } = state || {}
+
   const isReceiverAccountBridgeProvider = bridgeQuote?.providerInfo.type === 'ReceiverAccountBridgeProvider'
 
   return useMemo(() => {
@@ -29,6 +30,6 @@ export function useQuoteParamsRecipient(): string | undefined {
       }
     }
 
-    return recipientAddress && isAddress(recipientAddress) ? recipientAddress : account
+    return (isAddress(recipientAddress) ? recipientAddress : isAddress(recipient) ? recipient : null) || account
   }, [isReceiverAccountBridgeProvider, account, recipient, recipientAddress])
 }

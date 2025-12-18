@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.31.1](https://github.com/cowprotocol/cowswap/compare/tokens-v1.31.0...tokens-v1.31.1) (2025-12-16)
+
+
+### Bug Fixes
+
+* token lists missing after migration ([#6704](https://github.com/cowprotocol/cowswap/issues/6704)) ([8b78d0a](https://github.com/cowprotocol/cowswap/commit/8b78d0a0b595497f41fb55a3c69b095efe08a978))
+
+## [1.31.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.30.0...tokens-v1.31.0) (2025-12-16)
+
+
+### Features
+
+* move from gh cdn to aws ([#6591](https://github.com/cowprotocol/cowswap/issues/6591)) ([79a1581](https://github.com/cowprotocol/cowswap/commit/79a158129c7e81a4ed9df2414e6ec835cdab25e9))
+
+
+### Bug Fixes
+
+* **bridge:** fix cross-chain swap quote details ([#6597](https://github.com/cowprotocol/cowswap/issues/6597)) ([f0b5e54](https://github.com/cowprotocol/cowswap/commit/f0b5e542daca20585fc0c5ec989697cd9e202a90))
+* remember deleted token lists ([#6580](https://github.com/cowprotocol/cowswap/issues/6580)) ([66c6d07](https://github.com/cowprotocol/cowswap/commit/66c6d07edee7ec03ea763b1feaaa1b688df1e8b8))
+* remove duplicates in token lists by migrating the state ([#6636](https://github.com/cowprotocol/cowswap/issues/6636)) ([8ea5005](https://github.com/cowprotocol/cowswap/commit/8ea5005d9a32ba360c3e846f6a75e4a9fca193b5))
+* token images missing from bridge response ([#6680](https://github.com/cowprotocol/cowswap/issues/6680)) ([d20800f](https://github.com/cowprotocol/cowswap/commit/d20800f4a79f354d11ab4070ce3ac656fe817220))
+
 ## [1.30.0](https://github.com/cowprotocol/cowswap/compare/tokens-v1.29.0...tokens-v1.30.0) (2025-11-24)
 
 
