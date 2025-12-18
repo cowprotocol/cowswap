@@ -23,7 +23,7 @@ export function RwaConsentModalContainer(): ReactNode {
     }
   }, [context, account])
 
-  const { confirmConsent } = useRwaConsentStatus(consentKey || { wallet: '', tosVersion: '' })
+  const { confirmConsent } = useRwaConsentStatus(consentKey)
 
   const onDismiss = useCallback(() => {
     closeModal()

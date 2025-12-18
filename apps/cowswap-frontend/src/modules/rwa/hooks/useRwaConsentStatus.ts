@@ -18,13 +18,13 @@ export interface UseRwaConsentStatusReturn {
   resetConsent: () => void
 }
 
-export function useRwaConsentStatus(key: RwaConsentKey): UseRwaConsentStatusReturn {
+export function useRwaConsentStatus(key: RwaConsentKey | null): UseRwaConsentStatusReturn {
   const consentCache = useAtomValue(rwaConsentCacheAtom)
   const storeConsent = useSetAtom(storeRwaConsentAtom)
   const removeConsent = useSetAtom(removeRwaConsentAtom)
 
   const consentRecord = useMemo(() => {
-    if (!key.wallet || !key.tosVersion) {
+    if (!key) {
       return undefined
     }
     return getConsentFromCache(consentCache, key)
@@ -33,14 +33,14 @@ export function useRwaConsentStatus(key: RwaConsentKey): UseRwaConsentStatusRetu
   const consentStatus: RwaConsentStatus = consentRecord?.acceptedAt ? 'valid' : 'none'
 
   const confirmConsent = useCallback(() => {
-    if (!key.wallet || !key.tosVersion) {
+    if (!key) {
       return
     }
     storeConsent(key)
   }, [storeConsent, key])
 
   const resetConsent = useCallback(() => {
-    if (!key.wallet || !key.tosVersion) {
+    if (!key) {
       return
     }
     removeConsent(key)
