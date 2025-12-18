@@ -99,7 +99,7 @@ export const Row = styled.div`
   label {
     position: absolute;
     left: 12px;
-    top: 50%;
+    top: 24px;
     transform: translateY(-50%);
     font-size: 16px;
     color: inherit;
@@ -130,7 +130,7 @@ export const LoadingLabel = styled.div`
 export const ErrorText = styled.span`
   color: var(${UI.COLOR_DANGER});
   font-size: inherit;
-  margin: -12px 0 16px 0;
+  margin: -4px 0 8px 0;
   text-align: left;
   width: 100%;
   font-size: inherit;
