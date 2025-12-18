@@ -3,21 +3,22 @@ import { lingui } from '@lingui/vite-plugin'
 import react from '@vitejs/plugin-react-swc'
 import stdLibBrowser from 'node-stdlib-browser'
 import { visualizer } from 'rollup-plugin-visualizer'
-import { defineConfig, PluginOption, searchForWorkspaceRoot } from 'vite'
+import { defineConfig, searchForWorkspaceRoot } from 'vite'
 import macrosPlugin from 'vite-plugin-babel-macros'
+import { meta } from 'vite-plugin-meta-tags'
 import { ModuleNameWithoutNodePrefix, nodePolyfills } from 'vite-plugin-node-polyfills'
 import { VitePWA } from 'vite-plugin-pwa'
 import svgr from 'vite-plugin-svgr'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
-import { meta } from 'vite-plugin-meta-tags'
 
 import * as path from 'path'
 
 import { getReactProcessEnv } from '../../tools/getReactProcessEnv'
+import { robotsPlugin } from '../../tools/vite-plugins/robotsPlugin'
 
 // eslint-disable-next-line no-restricted-imports
 import type { TemplateType } from 'rollup-plugin-visualizer/dist/plugin/template-types'
-import { robotsPlugin } from '../../tools/vite-plugins/robotsPlugin'
+import type { Plugin } from 'vite'
 
 const allNodeDeps = Object.keys(stdLibBrowser).map((key) => key.replace('node:', '')) as ModuleNameWithoutNodePrefix[]
 
@@ -27,6 +28,7 @@ const nodeDepsToInclude = ['crypto', 'stream']
 const analyzeBundle = process.env.ANALYZE_BUNDLE === 'true'
 const analyzeBundleTemplate: TemplateType = (process.env.ANALYZE_BUNDLE_TEMPLATE as TemplateType) || 'treemap' //  "sunburst" | "treemap" | "network" | "raw-data" | "list";
 
+// eslint-disable-next-line max-lines-per-function
 export default defineConfig(({ mode }) => {
   const isProduction = mode === 'production'
 
@@ -76,7 +78,7 @@ export default defineConfig(({ mode }) => {
         gzipSize: true,
         brotliSize: true,
         filename: 'analyse.html', // will be saved in project's root
-      }) as PluginOption,
+      }) as Plugin,
     )
   }
 

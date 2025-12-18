@@ -29,7 +29,7 @@ const AVALANCHE_START_DATE = 'June 2025'
 const LENS_START_DATE = 'September 2025'
 const BNB_START_DATE = 'September 2025'
 const LINEA_START_DATE = 'November 2025'
-const PLASMA_START_DATE = 'December 2025'
+const PLASMA_START_DATE = 'January 2026'
 
 const START_DATE: Record<SupportedChainId, string> = {
   [SupportedChainId.MAINNET]: DEFAULT_START_DATE,
