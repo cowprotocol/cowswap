@@ -12,12 +12,16 @@ export interface RwaConsentModalProps {
   onDismiss(): void
   onConfirm(): void
   token?: TokenWithLogo
+  tosHash: string
 }
 
+const IPFS_GATEWAY = 'https://ipfs.io/ipfs'
+
 export function RwaConsentModal(props: RwaConsentModalProps): ReactNode {
-  const { onDismiss, onConfirm, token } = props
+  const { onDismiss, onConfirm, token, tosHash } = props
 
   const displaySymbol = token?.symbol || 'this token'
+  const consentUrl = `${IPFS_GATEWAY}/${tosHash}`
 
   return (
     <styledEl.Wrapper>
@@ -74,6 +78,9 @@ export function RwaConsentModal(props: RwaConsentModalProps): ReactNode {
           <p>
             <Trans>You are solely responsible for complying with your local laws.</Trans>
           </p>
+          <styledEl.ConsentLink href={consentUrl} target="_blank" rel="noopener noreferrer">
+            <Trans>View full consent terms ↗</Trans>
+          </styledEl.ConsentLink>
         </styledEl.Body>
         <styledEl.ButtonContainer>
           <ButtonPrimary onClick={onConfirm}>
