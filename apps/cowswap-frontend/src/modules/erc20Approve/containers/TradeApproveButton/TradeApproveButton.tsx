@@ -60,13 +60,7 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
           currency={amountToApprove.currency}
           state={approvalState}
           isDisabled={isDisabled}
-          onClick={() => {
-            if (dataClickEvent) {
-              console.info('[analytics][cta][approve-legacy]', dataClickEvent)
-            }
-
-            handleApprove(MAX_APPROVE_AMOUNT)
-          }}
+          onClick={() => handleApprove(MAX_APPROVE_AMOUNT)}
           dataClickEvent={dataClickEvent}
         />
         {children}
@@ -81,19 +75,11 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
     props.label ||
     (noCachedPermit ? (isCurrentTradeBridging ? t`Approve, Swap & Bridge` : t`Approve and Swap`) : t`Swap`)
 
-  const handleApproveClick = (): void => {
-    if (dataClickEvent) {
-      console.info('[analytics][cta][approve]', dataClickEvent)
-    }
-
-    approveWithPreventedDoubleExecution()
-  }
-
   return (
     <ButtonWrapper
       disabled={isPending || isDisabled}
       buttonSize={buttonSize}
-      onClick={handleApproveClick}
+      onClick={approveWithPreventedDoubleExecution}
       altDisabledStyle={isPending}
       data-click-event={dataClickEvent}
     >

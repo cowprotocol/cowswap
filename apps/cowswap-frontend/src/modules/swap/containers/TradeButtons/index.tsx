@@ -46,10 +46,16 @@ interface TradeButtonsProps {
 }
 
 function getAddIntermediateTokenSection(
-  shouldShow: boolean,
+  tokenToBeImported: boolean,
   intermediateBuyToken: TokenWithLogo | null,
+  primaryFormValidation: TradeFormValidation | null,
   setShowAddIntermediateTokenModal: (show: boolean) => void,
 ): ReactNode {
+  const shouldShow =
+    tokenToBeImported &&
+    !!intermediateBuyToken &&
+    primaryFormValidation === TradeFormValidation.ImportingIntermediateToken
+
   if (!shouldShow || !intermediateBuyToken) return null
 
   return (
@@ -57,18 +63,6 @@ function getAddIntermediateTokenSection(
       intermediateBuyToken={intermediateBuyToken}
       onImport={() => setShowAddIntermediateTokenModal(true)}
     />
-  )
-}
-
-function shouldShowAddIntermediateTokenSection(
-  tokenToBeImported: boolean,
-  intermediateBuyToken: TokenWithLogo | null,
-  primaryFormValidation: TradeFormValidation | null,
-): boolean {
-  return (
-    tokenToBeImported &&
-    !!intermediateBuyToken &&
-    primaryFormValidation === TradeFormValidation.ImportingIntermediateToken
   )
 }
 
@@ -87,7 +81,11 @@ function getIsDisabled(
   )
 }
 
-function useSwapBridgeClickEvent(params: TradeButtonsAnalyticsParams & { walletAddress?: string }): string | undefined {
+type TradeButtonsAnalyticsStage = 'approve' | 'confirm'
+
+function useSwapBridgeClickEvent(
+  params: TradeButtonsAnalyticsParams & { walletAddress?: string; stage: TradeButtonsAnalyticsStage },
+): string | undefined {
   const {
     isCurrentTradeBridging,
     inputCurrency,
@@ -96,6 +94,7 @@ function useSwapBridgeClickEvent(params: TradeButtonsAnalyticsParams & { walletA
     outputCurrencyAmount,
     chainId,
     walletAddress,
+    stage,
   } = params
 
   return useMemo(
@@ -107,6 +106,7 @@ function useSwapBridgeClickEvent(params: TradeButtonsAnalyticsParams & { walletA
         inputCurrencyAmount,
         outputCurrencyAmount,
         chainId,
+        action: stage === 'approve' ? 'swap_bridge_click_approve' : 'swap_bridge_click_confirm',
         walletAddress,
       }),
     [
@@ -117,7 +117,62 @@ function useSwapBridgeClickEvent(params: TradeButtonsAnalyticsParams & { walletA
       outputCurrency,
       outputCurrencyAmount,
       walletAddress,
+      stage,
     ],
+  )
+}
+
+function renderTradeButtonsContent(params: {
+  tradeFormButtonContext: ReturnType<typeof useTradeFormButtonContext> | null
+  localFormValidation: ReturnType<typeof useSwapFormState>
+  isPrimaryValidationPassed: boolean
+  context: ReturnType<typeof useSafeMemoObject>
+  isDisabled: boolean
+  confirmText: string
+  primaryFormValidation: ReturnType<typeof useGetTradeFormValidation>
+  tokenToBeImported: boolean
+  intermediateBuyToken: TokenWithLogo | null
+  setShowAddIntermediateTokenModal: (show: boolean) => void
+  swapBridgeClickEventApprove: string | undefined
+}): ReactNode {
+  const {
+    tradeFormButtonContext,
+    localFormValidation,
+    isPrimaryValidationPassed,
+    context,
+    isDisabled,
+    confirmText,
+    primaryFormValidation,
+    tokenToBeImported,
+    intermediateBuyToken,
+    setShowAddIntermediateTokenModal,
+    swapBridgeClickEventApprove,
+  } = params
+
+  if (!tradeFormButtonContext) return null
+
+  if (localFormValidation && isPrimaryValidationPassed) {
+    return swapTradeButtonsMap[localFormValidation](context, isDisabled)
+  }
+
+  const addIntermediateTokenSection = getAddIntermediateTokenSection(
+    tokenToBeImported,
+    intermediateBuyToken,
+    primaryFormValidation,
+    setShowAddIntermediateTokenModal,
+  )
+
+  return (
+    <>
+      <TradeFormButtons
+        confirmText={confirmText}
+        validation={primaryFormValidation}
+        context={tradeFormButtonContext}
+        isDisabled={isDisabled}
+        dataClickEvent={swapBridgeClickEventApprove}
+      />
+      {addIntermediateTokenSection}
+    </>
   )
 }
 
@@ -151,8 +206,8 @@ export function TradeButtons({
     !!isPartialApproveEnabled,
   )
 
-  // Analytics event for bridge transactions
-  const swapBridgeClickEvent = useSwapBridgeClickEvent({
+  // Analytics event for bridge transactions (approve stage only)
+  const swapBridgeClickEventApprove = useSwapBridgeClickEvent({
     isCurrentTradeBridging,
     inputCurrency,
     outputCurrency,
@@ -160,6 +215,7 @@ export function TradeButtons({
     outputCurrencyAmount,
     chainId,
     walletAddress,
+    stage: 'approve',
   })
 
   const context = useSafeMemoObject({
@@ -172,12 +228,6 @@ export function TradeButtons({
     confirmText,
   })
 
-  const shouldShowAddIntermediateToken = shouldShowAddIntermediateTokenSection(
-    tokenToBeImported,
-    intermediateBuyToken,
-    primaryFormValidation,
-  )
-
   const isDisabled = getIsDisabled(
     isTradeContextReady,
     feeWarningAccepted,
@@ -186,26 +236,17 @@ export function TradeButtons({
     smartContractRecipientConfirmed,
   )
 
-  if (!tradeFormButtonContext) return null
-
-  if (localFormValidation && isPrimaryValidationPassed) {
-    return swapTradeButtonsMap[localFormValidation](context, isDisabled)
-  }
-
-  return (
-    <>
-      <TradeFormButtons
-        confirmText={confirmText}
-        validation={primaryFormValidation}
-        context={tradeFormButtonContext}
-        isDisabled={isDisabled}
-        dataClickEvent={swapBridgeClickEvent}
-      />
-      {getAddIntermediateTokenSection(
-        shouldShowAddIntermediateToken,
-        intermediateBuyToken,
-        setShowAddIntermediateTokenModal,
-      )}
-    </>
-  )
+  return renderTradeButtonsContent({
+    tradeFormButtonContext,
+    localFormValidation,
+    isPrimaryValidationPassed,
+    context,
+    isDisabled,
+    confirmText,
+    primaryFormValidation,
+    tokenToBeImported,
+    intermediateBuyToken,
+    setShowAddIntermediateTokenModal,
+    swapBridgeClickEventApprove,
+  })
 }

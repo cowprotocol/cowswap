@@ -20,6 +20,7 @@ interface SwapDerivedStateLike {
 interface BuildEventParams extends SwapDerivedStateLike {
   isCurrentTradeBridging: boolean
   walletAddress?: string
+  action?: string
 }
 
 function isBridgeEventBuildable(params: BuildEventParams): params is BuildEventParams & {
@@ -78,11 +79,13 @@ function buildBuyFields(params: {
 export function buildSwapBridgeClickEvent(params: BuildEventParams): string | undefined {
   if (!isBridgeEventBuildable(params)) return undefined
 
-  const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount, walletAddress } = params
+  const { inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount, walletAddress, action } = params
   const { sellTokenChainId, buyTokenChainId, toChainId } = getChainIds(params)
+  const eventAction = action ?? BRIDGE_ANALYTICS_EVENT.action
 
   const baseEvent: Omit<CowSwapGtmEvent, 'category'> & { category: CowSwapAnalyticsCategory } = {
     ...BRIDGE_ANALYTICS_EVENT,
+    action: eventAction,
     label: buildBridgeLabel(
       sellTokenChainId,
       toChainId,

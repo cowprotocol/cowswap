@@ -92,10 +92,6 @@ export function TradeFormBlankButton({
       window.scrollTo({ top: 0, left: 0 })
     }
 
-    if (dataClickEvent) {
-      console.info('[analytics][cta][blank]', dataClickEvent)
-    }
-
     if (onClick) {
       onClick()
       setJustClicked(true)

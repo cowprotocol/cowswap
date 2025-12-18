@@ -29,10 +29,6 @@ export function ConfirmButton(props: ConfirmButtonProps): ReactNode {
       window.scrollTo({ top: 0, left: 0 })
     }
 
-    if (dataClickEvent) {
-      console.info('[analytics][cta][confirm]', dataClickEvent)
-    }
-
     setIsConfirmClicked(true)
     try {
       const isConfirmed = await onConfirm()
