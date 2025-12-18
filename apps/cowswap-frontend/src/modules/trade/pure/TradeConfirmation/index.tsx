@@ -1,7 +1,8 @@
 import { ReactElement, ReactNode, useMemo } from 'react'
 
 import { BackButton } from '@cowprotocol/ui'
-import { useLingui } from '@lingui/react/macro'
+
+import { t } from '@lingui/core/macro'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
@@ -64,8 +65,6 @@ export function TradeConfirmationView(viewProps: TradeConfirmationViewProps): Re
     signingStep,
     forcePriceConfirmation,
   } = viewProps
-
-  const { t } = useLingui()
 
   const { isPriceChanged, resetPriceChanged } = useIsPriceChanged(
     inputCurrencyInfo.amount?.toExact(),

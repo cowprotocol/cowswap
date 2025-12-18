@@ -1,10 +1,12 @@
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 
+import { t } from '@lingui/core/macro'
+
 import { useIsApprovalOrPermitRequired } from 'modules/erc20Approve'
 import { useIsCurrentTradeBridging } from 'modules/trade'
 
 function getSwapLabel(isBridging: boolean): string {
-  return isBridging ? 'Swap and Bridge' : 'Swap'
+  return isBridging ? t`Swap and Bridge` : t`Swap`
 }
 
 export function useGetConfirmButtonLabel(): string {
@@ -17,7 +19,7 @@ export function useGetConfirmButtonLabel(): string {
   }
 
   if (isPermitOrApproveRequired) {
-    return isCurrentTradeBridging ? 'Approve, Swap & Bridge' : 'Approve and Swap'
+    return isCurrentTradeBridging ? t`Approve, Swap & Bridge` : t`Approve and Swap`
   }
 
   return getSwapLabel(isCurrentTradeBridging)
