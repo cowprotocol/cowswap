@@ -3,6 +3,7 @@ import { useMemo } from 'react'
 
 import { getRpcProvider } from '@cowprotocol/common-const'
 import { Nullish } from '@cowprotocol/types'
+import { useIsBraveWallet } from '@cowprotocol/wallet'
 import { useWalletChainId, useWalletProvider } from '@cowprotocol/wallet-provider'
 import { JsonRpcProvider } from '@ethersproject/providers'
 
@@ -12,6 +13,7 @@ export function useMultiCallRpcProvider(): Nullish<JsonRpcProvider> {
   const provider = useWalletProvider()
   const walletChainId = useWalletChainId()
   const context = useAtomValue(multiCallContextAtom)
+  const isBraveWallet = useIsBraveWallet()
 
   const contextChainId = context?.chainId
 
@@ -24,6 +26,11 @@ export function useMultiCallRpcProvider(): Nullish<JsonRpcProvider> {
       return getRpcProvider(contextChainId)
     }
 
+    // Brave Wallet has issues with RPC calls, so we use our own RPC provider
+    if (isBraveWallet && walletChainId) {
+      return getRpcProvider(walletChainId)
+    }
+
     return provider
-  }, [contextChainId, walletChainId, provider])
+  }, [contextChainId, walletChainId, provider, isBraveWallet])
 }
