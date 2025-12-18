@@ -26,7 +26,6 @@ export interface SwapTradeButtonsContext {
   hasEnoughWrappedBalanceForSwap: boolean
   onCurrencySelection: (field: Field, currency: Currency) => void
   confirmText: string
-  [key: string]: unknown
 }
 
 type SwapTradeButton = (props: SwapTradeButtonsContext, isDisabled: boolean) => ReactNode | string

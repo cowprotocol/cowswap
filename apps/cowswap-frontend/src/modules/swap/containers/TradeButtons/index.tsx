@@ -1,7 +1,8 @@
-import { ReactNode, useMemo } from 'react'
+import { ReactNode } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { AddIntermediateToken } from 'modules/tokensList'
@@ -20,7 +21,7 @@ import {
 } from 'modules/tradeFormValidation'
 import { useHighFeeWarning } from 'modules/tradeWidgetAddons'
 
-import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
+import { useSafeMemo, useSafeMemoObject } from 'common/hooks/useSafeMemo'
 
 import { buildSwapBridgeClickEvent, type TradeButtonsAnalyticsParams } from './analytics'
 import { swapTradeButtonsMap, type SwapTradeButtonsContext } from './swapTradeButtonsMap'
@@ -97,7 +98,16 @@ function useSwapBridgeClickEvent(
     stage,
   } = params
 
-  return useMemo(
+  const inputCurrencyKey = inputCurrency
+    ? `${getCurrencyAddress(inputCurrency)}:${inputCurrency.chainId ?? ''}`
+    : 'none'
+  const outputCurrencyKey = outputCurrency
+    ? `${getCurrencyAddress(outputCurrency)}:${outputCurrency.chainId ?? ''}`
+    : 'none'
+  const inputAmountKey = inputCurrencyAmount?.quotient.toString() ?? 'none'
+  const outputAmountKey = outputCurrencyAmount?.quotient.toString() ?? 'none'
+
+  return useSafeMemo(
     () =>
       buildSwapBridgeClickEvent({
         isCurrentTradeBridging,
@@ -111,13 +121,13 @@ function useSwapBridgeClickEvent(
       }),
     [
       chainId,
-      inputCurrency,
-      inputCurrencyAmount,
+      inputAmountKey,
+      inputCurrencyKey,
       isCurrentTradeBridging,
-      outputCurrency,
-      outputCurrencyAmount,
-      walletAddress,
+      outputAmountKey,
+      outputCurrencyKey,
       stage,
+      walletAddress,
     ],
   )
 }
@@ -218,7 +228,7 @@ export function TradeButtons({
     stage: 'approve',
   })
 
-  const context = useSafeMemoObject<SwapTradeButtonsContext>({
+  const context: SwapTradeButtonsContext = {
     wrappedToken,
     onEthFlow: openNativeWrapModal,
     openSwapConfirm: tradeConfirmActions.onOpen,
@@ -226,7 +236,11 @@ export function TradeButtons({
     hasEnoughWrappedBalanceForSwap,
     onCurrencySelection,
     confirmText,
-  })
+  }
+
+  const memoizedContext = useSafeMemoObject(
+    context as unknown as Record<string, unknown>,
+  ) as unknown as SwapTradeButtonsContext
 
   const isDisabled = getIsDisabled(
     isTradeContextReady,
@@ -240,7 +254,7 @@ export function TradeButtons({
     tradeFormButtonContext,
     localFormValidation,
     isPrimaryValidationPassed,
-    context,
+    context: memoizedContext,
     isDisabled,
     confirmText,
     primaryFormValidation,
