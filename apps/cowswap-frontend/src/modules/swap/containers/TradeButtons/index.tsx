@@ -23,7 +23,7 @@ import { useHighFeeWarning } from 'modules/tradeWidgetAddons'
 import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
 
 import { buildSwapBridgeClickEvent, type TradeButtonsAnalyticsParams } from './analytics'
-import { swapTradeButtonsMap } from './swapTradeButtonsMap'
+import { swapTradeButtonsMap, type SwapTradeButtonsContext } from './swapTradeButtonsMap'
 
 import { useGetConfirmButtonLabel } from '../../hooks/useGetConfirmButtonLabel'
 import { useOnCurrencySelection } from '../../hooks/useOnCurrencySelection'
@@ -122,11 +122,11 @@ function useSwapBridgeClickEvent(
   )
 }
 
-function renderTradeButtonsContent(params: {
+function getTradeButtonsContent(params: {
   tradeFormButtonContext: ReturnType<typeof useTradeFormButtonContext> | null
   localFormValidation: ReturnType<typeof useSwapFormState>
   isPrimaryValidationPassed: boolean
-  context: ReturnType<typeof useSafeMemoObject>
+  context: SwapTradeButtonsContext
   isDisabled: boolean
   confirmText: string
   primaryFormValidation: ReturnType<typeof useGetTradeFormValidation>
@@ -218,7 +218,7 @@ export function TradeButtons({
     stage: 'approve',
   })
 
-  const context = useSafeMemoObject({
+  const context = useSafeMemoObject<SwapTradeButtonsContext>({
     wrappedToken,
     onEthFlow: openNativeWrapModal,
     openSwapConfirm: tradeConfirmActions.onOpen,
@@ -236,7 +236,7 @@ export function TradeButtons({
     smartContractRecipientConfirmed,
   )
 
-  return renderTradeButtonsContent({
+  return getTradeButtonsContent({
     tradeFormButtonContext,
     localFormValidation,
     isPrimaryValidationPassed,

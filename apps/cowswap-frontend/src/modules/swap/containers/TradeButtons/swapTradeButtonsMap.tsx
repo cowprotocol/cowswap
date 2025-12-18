@@ -18,7 +18,7 @@ const Wrapper = styled.div`
   flex-direction: column;
 `
 
-interface SwapTradeButtonsContext {
+export interface SwapTradeButtonsContext {
   wrappedToken: Token
   inputCurrency: Currency | null
   onEthFlow: Command
@@ -26,6 +26,7 @@ interface SwapTradeButtonsContext {
   hasEnoughWrappedBalanceForSwap: boolean
   onCurrencySelection: (field: Field, currency: Currency) => void
   confirmText: string
+  [key: string]: unknown
 }
 
 type SwapTradeButton = (props: SwapTradeButtonsContext, isDisabled: boolean) => ReactNode | string
