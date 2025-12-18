@@ -6,7 +6,7 @@ import { CowEnv, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { AppCodeWithWidgetMetadata } from 'modules/injectedWidget/hooks/useAppCodeWidgetAware'
 
-import { RwaUserConsentsMetadata } from '../hooks/useRwaConsentForAppData'
+import { UserConsentsMetadata } from '../hooks/useRwaConsentForAppData'
 import { appDataInfoAtom } from '../state/atoms'
 import { AppDataOrderClass, AppDataPartnerFee, TypedAppDataHooks } from '../types'
 import { buildAppData, BuildAppDataParams } from '../utils/buildAppData'
@@ -22,7 +22,7 @@ export type UseAppDataParams = {
   typedHooks?: TypedAppDataHooks
   volumeFee?: AppDataPartnerFee
   replacedOrderUid?: string
-  rwaConsent?: RwaUserConsentsMetadata
+  userConsent?: UserConsentsMetadata
 }
 
 /**
@@ -30,7 +30,7 @@ export type UseAppDataParams = {
  * The hook can be called only from an updater
  */
 // TODO: Break down this large function into smaller functions
- 
+
 export function AppDataInfoUpdater({
   appCodeWithWidgetMetadata,
   chainId,
@@ -41,7 +41,7 @@ export function AppDataInfoUpdater({
   typedHooks,
   volumeFee,
   replacedOrderUid,
-  rwaConsent,
+  userConsent,
 }: UseAppDataParams): void {
   // AppDataInfo, from Jotai
   const setAppDataInfo = useSetAtom(appDataInfoAtom)
@@ -68,7 +68,7 @@ export function AppDataInfoUpdater({
       partnerFee: volumeFee,
       widget,
       replacedOrderUid,
-      rwaConsent,
+      userConsent,
     }
 
     const updateAppData = async (): Promise<void> => {
@@ -76,8 +76,8 @@ export function AppDataInfoUpdater({
         const { doc, fullAppData, appDataKeccak256 } = await buildAppData(params)
 
         setAppDataInfo({ doc, fullAppData, appDataKeccak256, env: getEnvByClass(orderClass) })
-      // TODO: Replace any with proper type definitions
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        // TODO: Replace any with proper type definitions
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (e: any) {
         console.error(`[useAppData] failed to build appData, falling back to default`, params, e)
         setAppDataInfo(getAppData())
@@ -97,7 +97,7 @@ export function AppDataInfoUpdater({
     volumeFee,
     replacedOrderUid,
     isSmartSlippage,
-    rwaConsent,
+    userConsent,
   ])
 }
 

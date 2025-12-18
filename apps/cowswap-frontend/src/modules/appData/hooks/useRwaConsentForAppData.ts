@@ -1,19 +1,20 @@
 import { useMemo } from 'react'
 
 import { RwaTokenStatus, useRwaTokenStatus } from 'modules/rwa/hooks/useRwaTokenStatus'
-import { RwaUserConsent, buildRwaUserConsent } from 'modules/rwa/types/rwaConsent'
+import { UserConsent, buildUserConsent } from 'modules/rwa/types/rwaConsent'
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 
-export interface RwaUserConsentsMetadata {
-  rwaUserConsents: RwaUserConsent[]
+export interface UserConsentsMetadata {
+  userConsents: UserConsent[]
 }
 
-export function useRwaConsentForAppData(): RwaUserConsentsMetadata | undefined {
+export function useRwaConsentForAppData(): UserConsentsMetadata | undefined {
   const derivedState = useDerivedTradeState()
 
   const inputCurrency = derivedState?.inputCurrency ?? undefined
   const outputCurrency = derivedState?.outputCurrency ?? undefined
 
+  // todo replace with wrap
   const inputToken = inputCurrency?.isToken ? inputCurrency : undefined
   const outputToken = outputCurrency?.isToken ? outputCurrency : undefined
 
@@ -25,7 +26,7 @@ export function useRwaConsentForAppData(): RwaUserConsentsMetadata | undefined {
     }
 
     return {
-      rwaUserConsents: [buildRwaUserConsent(rwaTokenInfo.termsIpfsHash)],
+      userConsents: [buildUserConsent(rwaTokenInfo.tosHash)],
     }
   }, [status, rwaTokenInfo])
 }

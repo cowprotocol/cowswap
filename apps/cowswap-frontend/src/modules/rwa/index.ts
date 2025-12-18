@@ -8,5 +8,3 @@ export * from './hooks/useGeoCountry'
 export * from './hooks/useRwaTokenStatus'
 export * from './pure/RwaConsentModal'
 export * from './containers/RwaConsentModalContainer'
-export * from './utils/getRwaTokenInfo'
-

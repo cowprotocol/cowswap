@@ -29,7 +29,7 @@ export const AppDataUpdater = React.memo(({ slippageBips, isSmartSlippage, order
   const appCodeWithWidgetMetadata = useAppCodeWidgetAware(appCode)
   const volumeFee = useVolumeFee()
   const replacedOrderUid = useReplacedOrderUid()
-  const rwaConsent = useRwaConsentForAppData()
+  const userConsent = useRwaConsentForAppData()
 
   if (!chainId) return null
 
@@ -44,7 +44,7 @@ export const AppDataUpdater = React.memo(({ slippageBips, isSmartSlippage, order
       typedHooks={typedHooks}
       volumeFee={volumeFee}
       replacedOrderUid={replacedOrderUid}
-      rwaConsent={rwaConsent}
+      userConsent={userConsent}
     />
   )
 })

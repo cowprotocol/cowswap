@@ -55,5 +55,3 @@ export type AppDataWidget = cowAppDataLatestScheme.Widget
 export type AppDataPartnerFee = cowAppDataLatestScheme.PartnerFee
 
 export type OrderInteractionHooks = cowAppDataLatestScheme.OrderInteractionHooks
-
-export type AppDataRwaConsent = cowAppDataLatestScheme.RWAConsent

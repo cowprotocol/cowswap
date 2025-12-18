@@ -1,4 +1,4 @@
-export interface RwaUserConsent {
+export interface UserConsent {
   terms: string
   acceptedDate: string
 }
@@ -16,10 +16,9 @@ export function getRwaConsentStorageKey({ wallet, tosVersion }: RwaConsentKey): 
   return `rwaConsent:${wallet}:${tosVersion}`
 }
 
-export function buildRwaUserConsent(termsIpfsHash: string): RwaUserConsent {
+export function buildUserConsent(termsIpfsHash: string): UserConsent {
   return {
     terms: termsIpfsHash,
     acceptedDate: new Date().toISOString(),
   }
 }
-
