@@ -91,6 +91,12 @@ export const BulletList = styled.ul`
 
 export const ButtonContainer = styled.div`
   display: flex;
+  flex-direction: column;
   gap: 12px;
   margin-top: 8px;
+
+  > button {
+    width: 100%;
+    min-height: 56px;
+  }
 `

@@ -76,12 +76,12 @@ export function RwaConsentModal(props: RwaConsentModalProps): ReactNode {
           </p>
         </styledEl.Body>
         <styledEl.ButtonContainer>
-          <ButtonOutlined onClick={onDismiss}>
-            <Trans>Cancel</Trans>
-          </ButtonOutlined>
           <ButtonPrimary onClick={onConfirm}>
             <Trans>I Confirm</Trans>
           </ButtonPrimary>
+          <ButtonOutlined onClick={onDismiss}>
+            <Trans>Cancel</Trans>
+          </ButtonOutlined>
         </styledEl.ButtonContainer>
       </styledEl.Contents>
     </styledEl.Wrapper>
