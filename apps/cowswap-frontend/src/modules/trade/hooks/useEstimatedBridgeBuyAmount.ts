@@ -18,7 +18,7 @@ export function useEstimatedBridgeBuyAmount(): BridgeEstimatedAmounts | null {
 
   const intermediateCurrency = useTryFindToken(getBridgeIntermediateTokenAddress(bridgeQuote))?.token ?? undefined
 
-  const swapBuyAmountRaw = quoteResults?.amountsAndCosts.beforeAllFees.buyAmount
+  const swapBuyAmountRaw = quoteResults?.amountsAndCosts.afterPartnerFees.buyAmount
   const bridgeSellAmountRaw = bridgeQuote?.amountsAndCosts.beforeFee.sellAmount
   const bridgeBuyAmountRaw = bridgeQuote?.amountsAndCosts.beforeFee.buyAmount
   const feeAmountRaw = bridgeQuote?.amountsAndCosts.costs.bridgingFee.amountInSellCurrency
@@ -43,6 +43,7 @@ export function useEstimatedBridgeBuyAmount(): BridgeEstimatedAmounts | null {
     })
 
     const expectedToReceiveAmount = bridgePrice.quote(swapBuyAmount)
+
     const feeAmount = CurrencyAmount.fromRawAmount(expectedToReceiveAmount.currency, feeAmountRaw.toString())
     const minToReceiveAmount = expectedToReceiveAmount.subtract(feeAmount)
 

@@ -18,17 +18,18 @@ export function useQuoteBridgeContext(): QuoteBridgeContext | null {
   const { bridgeQuote } = useTradeQuote()
 
   const quoteAmounts = useBridgeQuoteAmounts()
-
-  const { expectedToReceiveAmount: buyAmount } = useEstimatedBridgeBuyAmount() || {}
   const bridgeFee = quoteAmounts?.bridgeFee
+  const estimatedAmounts = useEstimatedBridgeBuyAmount()
+  const buyAmount = estimatedAmounts?.expectedToReceiveAmount
+  const expectedToReceiveAmount = useMemo(() => {
+    if (!buyAmount || !bridgeFee) return null
 
-  const expectedToReceive = useMemo(() => {
-    return buyAmount && bridgeFee ? buyAmount.subtract(bridgeFee) : null
+    return buyAmount.subtract(bridgeFee)
   }, [buyAmount, bridgeFee])
 
   const { value: buyAmountUsd } = useUsdAmount(buyAmount)
-  const { value: bridgeMinDepositAmountUsd } = useUsdAmount(quoteAmounts?.swapMinReceiveAmount)
-  const { value: expectedToReceiveUsd } = useUsdAmount(expectedToReceive)
+  const { value: bridgeMinDepositAmountUsd } = useUsdAmount(quoteAmounts?.bridgeMinReceiveAmount)
+  const { value: expectedToReceiveUsd } = useUsdAmount(expectedToReceiveAmount)
 
   const targetChainId = quoteAmounts?.bridgeMinReceiveAmount.currency.chainId
   const destChainData = useBridgeSupportedNetwork(targetChainId)
@@ -40,7 +41,7 @@ export function useQuoteBridgeContext(): QuoteBridgeContext | null {
   const recipient = tradeState?.recipient || account || BRIDGE_QUOTE_ACCOUNT
 
   return useMemo(() => {
-    if (!quoteAmounts || !recipient || !buyAmount) return null
+    if (!quoteAmounts?.swapExpectedReceive || !recipient || !buyAmount) return null
 
     if (!destChainData) return null
 
@@ -49,14 +50,14 @@ export function useQuoteBridgeContext(): QuoteBridgeContext | null {
       bridgeFee: quoteAmounts.bridgeFee,
       estimatedTime: expectedFillTimeSeconds || null,
       recipient,
-      sellAmount: quoteAmounts.swapBuyAmount,
+      sellAmount: quoteAmounts.swapExpectedReceive,
       buyAmount: buyAmount,
       bridgeReceiverOverride: bridgeQuote?.bridgeReceiverOverride || null,
       bridgeMinDepositAmount: quoteAmounts.swapMinReceiveAmount,
       bridgeMinReceiveAmount: quoteAmounts.bridgeMinReceiveAmount,
       bridgeMinDepositAmountUsd,
       buyAmountUsd,
-      expectedToReceive,
+      expectedToReceive: expectedToReceiveAmount,
       expectedToReceiveUsd,
     }
   }, [
@@ -68,7 +69,7 @@ export function useQuoteBridgeContext(): QuoteBridgeContext | null {
     buyAmountUsd,
     bridgeMinDepositAmountUsd,
     bridgeQuote?.bridgeReceiverOverride,
-    expectedToReceive,
+    expectedToReceiveAmount,
     expectedToReceiveUsd,
   ])
 }
