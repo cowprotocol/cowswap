@@ -23,7 +23,6 @@ export enum RwaTokenStatus {
 
 export interface RwaTokenInfo {
   token: Token
-  issuerName: string
   blockedCountries: Set<string>
   tosHash: string
 }
@@ -41,7 +40,6 @@ export interface UseRwaTokenStatusParams {
 function convertToRwaTokenInfo(restrictedInfo: RestrictedTokenInfo, originalToken: Token): RwaTokenInfo {
   return {
     token: originalToken,
-    issuerName: restrictedInfo.issuerName,
     blockedCountries: new Set(restrictedInfo.restrictedCountries),
     tosHash: restrictedInfo.tosHash,
   }

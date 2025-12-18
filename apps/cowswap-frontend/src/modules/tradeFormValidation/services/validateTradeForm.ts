@@ -26,6 +26,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     isAccountProxyLoading,
     isProxySetupValid,
     customTokenError,
+    isRestrictedForCountry,
   } = context
 
   const {
@@ -61,6 +62,11 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
 
   if (customTokenError) {
     validations.push(TradeFormValidation.CustomTokenError)
+  }
+
+  // Check geo restrictions for RWA tokens - this should block trading entirely
+  if (isRestrictedForCountry) {
+    validations.push(TradeFormValidation.RestrictedForCountry)
   }
 
   if (!isWrapUnwrap && tradeQuote.error) {

@@ -13,13 +13,12 @@ import {
 export interface RestrictedTokenInfo {
   token: TokenInfo
   restrictedCountries: string[]
-  issuerName: string
   tosHash: string
 }
 
 function findRestrictedToken(
   token: Token | undefined,
-  restrictedList: RestrictedTokenListState
+  restrictedList: RestrictedTokenListState,
 ): RestrictedTokenInfo | undefined {
   if (!token) return undefined
 
@@ -31,7 +30,6 @@ function findRestrictedToken(
   return {
     token: foundToken,
     restrictedCountries: restrictedList.countriesPerToken[tokenId] ?? [],
-    issuerName: restrictedList.issuerPerToken[tokenId] ?? '',
     tosHash: restrictedList.tosHashPerToken[tokenId] ?? '',
   }
 }
@@ -48,7 +46,7 @@ export function useRestrictedToken(token: Token | undefined): RestrictedTokenInf
 
 export function useAnyRestrictedToken(
   inputToken: Token | undefined,
-  outputToken: Token | undefined
+  outputToken: Token | undefined,
 ): RestrictedTokenInfo | undefined {
   const restrictedList = useAtomValue(restrictedTokensAtom)
 

@@ -73,25 +73,17 @@ export function TradeButtons({
 
   const { t } = useLingui()
 
-  // Check RWA token status for geo restrictions and consent
+  // Check RWA token status for consent modal
   const { status: rwaStatus, rwaTokenInfo } = useRwaTokenStatus({
     inputToken: inputCurrency?.isToken ? inputCurrency : undefined,
     outputToken: outputCurrency?.isToken ? outputCurrency : undefined,
   })
 
-  const isRwaRestricted = rwaStatus === RwaTokenStatus.Restricted
-
   const confirmTrade = useCallback(
     (forcePriceConfirmation?: boolean) => {
-      // Don't proceed if user is from a restricted country
-      if (isRwaRestricted) {
-        return
-      }
-
       // Show consent modal if country unknown and consent not given
       if (rwaStatus === RwaTokenStatus.RequiredConsent && rwaTokenInfo) {
         openRwaConsentModal({
-          issuerName: rwaTokenInfo.issuerName,
           tosHash: rwaTokenInfo.tosHash,
           token: rwaTokenInfo.token as TokenWithLogo,
         })
@@ -100,7 +92,7 @@ export function TradeButtons({
 
       tradeConfirmActions.onOpen(forcePriceConfirmation)
     },
-    [rwaStatus, rwaTokenInfo, isRwaRestricted, openRwaConsentModal, tradeConfirmActions],
+    [rwaStatus, rwaTokenInfo, openRwaConsentModal, tradeConfirmActions],
   )
 
   const confirmText = isCurrentTradeBridging ? t`Swap and Bridge` : t`Swap`
@@ -128,8 +120,7 @@ export function TradeButtons({
     !isTradeContextReady ||
     !feeWarningAccepted ||
     !isNoImpactWarningAccepted ||
-    (shouldCheckBridgingRecipient ? !smartContractRecipientConfirmed : false) ||
-    isRwaRestricted
+    (shouldCheckBridgingRecipient ? !smartContractRecipientConfirmed : false)
 
   if (!tradeFormButtonContext) return null
 

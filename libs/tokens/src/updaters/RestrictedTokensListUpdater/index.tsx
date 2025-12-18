@@ -103,7 +103,6 @@ export function RestrictedTokensListUpdater(): null {
 
         const tokensMap: Record<TokenId, TokenInfo> = {}
         const countriesPerToken: Record<TokenId, string[]> = {}
-        const issuerPerToken: Record<TokenId, string> = {}
         const tosHashPerToken: Record<TokenId, string> = {}
 
         await Promise.all(
@@ -115,7 +114,6 @@ export function RestrictedTokensListUpdater(): null {
                 const tokenId = getTokenId(token.chainId, token.address)
                 tokensMap[tokenId] = token
                 countriesPerToken[tokenId] = list.restrictedCountries
-                issuerPerToken[tokenId] = list.name
                 tosHashPerToken[tokenId] = TERMS_OF_SERVICE_HASH
               }
             } catch (error) {
@@ -127,7 +125,6 @@ export function RestrictedTokensListUpdater(): null {
         const listState: RestrictedTokenListState = {
           tokensMap,
           countriesPerToken,
-          issuerPerToken,
           tosHashPerToken,
           isLoaded: true,
         }
