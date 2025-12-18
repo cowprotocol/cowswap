@@ -1,5 +1,5 @@
 import { useSetAtom } from 'jotai'
-import { useEffect } from 'react'
+import { ReactElement, ReactNode, useEffect } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { walletInfoAtom } from '@cowprotocol/wallet'
@@ -9,7 +9,8 @@ import { inputCurrencyInfoMock, outputCurrencyInfoMock, priceImpactMock } from '
 import { TradeAmounts } from 'common/types'
 
 import { useTradeConfirmActions } from '../../hooks/useTradeConfirmActions'
-import { TradeConfirmation, TradeConfirmationProps } from '../../pure/TradeConfirmation'
+import { TradeConfirmationProps } from '../../pure/TradeConfirmation'
+import { TradeConfirmation } from '../TradeConfirmation'
 
 import { TradeConfirmModal } from './index'
 
@@ -17,9 +18,24 @@ const chainId = SupportedChainId.MAINNET
 const account = '0xbd3afb0bb76683ecb4225f9dbc91f998713c3b01'
 const defaultTxHash = '0x1e0e4acc2c5316b43240699c74a0f3e10ef2a3228904c981dddfb451d32ee8f4'
 
-const tradeAmounts: TradeAmounts = {
-  inputAmount: inputCurrencyInfoMock.amount!,
-  outputAmount: outputCurrencyInfoMock.amount!,
+const inputAmountMock = inputCurrencyInfoMock.amount
+const outputAmountMock = outputCurrencyInfoMock.amount
+
+const tradeAmounts: TradeAmounts | undefined =
+  inputAmountMock && outputAmountMock
+    ? {
+        inputAmount: inputAmountMock,
+        outputAmount: outputAmountMock,
+      }
+    : undefined
+
+function TradeConfirmationContentPreview(restContent: ReactNode): ReactElement {
+  return (
+    <>
+      <span>Some content</span>
+      {restContent}
+    </>
+  )
 }
 
 const confirmationState: TradeConfirmationProps = {
@@ -31,13 +47,14 @@ const confirmationState: TradeConfirmationProps = {
   priceImpact: priceImpactMock,
   isConfirmDisabled: false,
   isSmartContractWallet: false,
+  isCurrentTradeBridging: false,
   appData: null,
   recipient: null,
   async onConfirm() {
-    console.log('onConfirm')
+    return undefined
   },
   onDismiss() {
-    console.log('onDismiss')
+    return undefined
   },
 }
 
@@ -56,7 +73,9 @@ function Custom({ stateValue }: { stateValue: string }) {
     }
 
     if (stateValue === 'pending') {
-      actions.onSign(tradeAmounts)
+      if (tradeAmounts) {
+        actions.onSign(tradeAmounts)
+      }
       return
     }
 
@@ -72,8 +91,8 @@ function Custom({ stateValue }: { stateValue: string }) {
 
   return (
     <TradeConfirmModal title="Swap">
-      <TradeConfirmation {...confirmationState} onDismiss={console.log}>
-        {() => <span>Some content</span>}
+      <TradeConfirmation {...confirmationState}>
+        {TradeConfirmationContentPreview}
       </TradeConfirmation>
     </TradeConfirmModal>
   )

@@ -18,7 +18,7 @@ const Wrapper = styled.div`
   flex-direction: column;
 `
 
-interface SwapTradeButtonsContext {
+export interface SwapTradeButtonsContext {
   wrappedToken: Token
   inputCurrency: Currency | null
   onEthFlow: Command

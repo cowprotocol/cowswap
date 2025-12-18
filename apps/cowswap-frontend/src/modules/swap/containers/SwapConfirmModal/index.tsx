@@ -1,15 +1,16 @@
-import { ReactNode, useMemo } from 'react'
+import { ReactNode, useCallback, useMemo } from 'react'
 
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
+import { BridgeProviderInfo } from '@cowprotocol/sdk-bridging'
 import { Nullish } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
+import { t } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
 
 import type { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
-import { useAppData } from 'modules/appData'
 import {
   QuoteDetails,
   useQuoteBridgeContext,
@@ -17,6 +18,7 @@ import {
   useShouldDisplayBridgeDetails,
   useBridgeQuoteAmounts,
 } from 'modules/bridge'
+import { QuoteBridgeContext, QuoteSwapContext } from 'modules/bridge/types'
 import { useTokensBalancesCombined } from 'modules/combinedBalances/hooks/useTokensBalancesCombined'
 import { OrderSubmittedContent } from 'modules/orderProgressBar'
 import {
@@ -38,6 +40,7 @@ import { useLabelsAndTooltips } from './useLabelsAndTooltips'
 
 import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
 import { useSwapDeadlineState } from '../../hooks/useSwapSettings'
+import { buildSwapBridgeClickEvent } from '../TradeButtons/analytics'
 
 export interface SwapConfirmModalProps {
   doTrade(): Promise<false | void>
@@ -49,6 +52,84 @@ export interface SwapConfirmModalProps {
   recipientAddress: Nullish<string>
 }
 
+interface BridgeConfirmContentProps {
+  rateInfoParams: ReturnType<typeof useRateInfoParams>
+  bridgeProvider: BridgeProviderInfo
+  swapContext: QuoteSwapContext
+  bridgeContext: QuoteBridgeContext
+  restContent: ReactNode
+}
+
+function BridgeConfirmContent({
+  rateInfoParams,
+  bridgeProvider,
+  swapContext,
+  bridgeContext,
+  restContent,
+}: BridgeConfirmContentProps): ReactNode {
+  return (
+    <>
+      <RateInfo label={t`Price`} rateInfoParams={rateInfoParams} fontSize={13} fontBold labelBold />
+      <QuoteDetails
+        isCollapsible
+        bridgeProvider={bridgeProvider}
+        swapContext={swapContext}
+        bridgeContext={bridgeContext}
+        hideRecommendedSlippage
+      />
+      {restContent}
+      <HighFeeWarning readonlyMode />
+    </>
+  )
+}
+
+interface RegularConfirmContentProps {
+  rateInfoParams: ReturnType<typeof useRateInfoParams>
+  slippage: ReturnType<typeof useSwapDerivedState>['slippage']
+  receiveAmountInfo: ReturnType<typeof useGetReceiveAmountInfo>
+  recipient: Nullish<string>
+  recipientAddress: Nullish<string>
+  account: Nullish<string>
+  labelsAndTooltips: ReturnType<typeof useLabelsAndTooltips>
+  deadline: ReturnType<typeof useSwapDeadlineState>[0]
+  restContent: ReactNode
+}
+
+function RegularConfirmContent({
+  rateInfoParams,
+  slippage,
+  receiveAmountInfo,
+  recipient,
+  recipientAddress,
+  account,
+  labelsAndTooltips,
+  deadline,
+  restContent,
+}: RegularConfirmContentProps): ReactNode {
+  return (
+    <>
+      {receiveAmountInfo && slippage && (
+        <TradeBasicConfirmDetails
+          rateInfoParams={rateInfoParams}
+          slippage={slippage}
+          receiveAmountInfo={receiveAmountInfo}
+          recipient={recipient}
+          recipientAddress={recipientAddress}
+          account={account}
+          labelsAndTooltips={labelsAndTooltips}
+          hideLimitPrice
+          hideUsdValues
+          withTimelineDot={false}
+        >
+          <RowDeadline deadline={deadline} />
+        </TradeBasicConfirmDetails>
+      )}
+      {restContent}
+      <HighFeeWarning readonlyMode />
+    </>
+  )
+}
+
 // TODO: Break down this large function into smaller functions
 // eslint-disable-next-line max-lines-per-function
 export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
@@ -56,13 +137,13 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
   const CONFIRM_TITLE = t`Swap`
   const { inputCurrencyInfo, outputCurrencyInfo, priceImpact, recipient, recipientAddress, doTrade } = props
 
-  const { account } = useWalletInfo()
-  const appData = useAppData()
+  const { chainId } = useWalletInfo()
+  const commonTradeConfirmContext = useCommonTradeConfirmContext()
+  const { account, isCurrentTradeBridging } = commonTradeConfirmContext
   const receiveAmountInfo = useGetReceiveAmountInfo()
   const tradeConfirmActions = useTradeConfirmActions()
-  const { slippage } = useSwapDerivedState()
+  const { slippage, inputCurrency, outputCurrency, inputCurrencyAmount, outputCurrencyAmount } = useSwapDerivedState()
   const [deadline] = useSwapDeadlineState()
-  const commonTradeConfirmContext = useCommonTradeConfirmContext()
 
   const shouldDisplayBridgeDetails = useShouldDisplayBridgeDetails()
   const { bridgeQuote } = useTradeQuote()
@@ -77,6 +158,57 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
   const labelsAndTooltips = useLabelsAndTooltips()
 
   const { values: balances } = useTokensBalancesCombined()
+  const confirmClickEvent = useMemo(
+    () =>
+      buildSwapBridgeClickEvent({
+        isCurrentTradeBridging,
+        inputCurrency,
+        outputCurrency,
+        inputCurrencyAmount,
+        outputCurrencyAmount,
+        chainId,
+        walletAddress: account,
+      }),
+    [
+      account,
+      chainId,
+      inputCurrency,
+      inputCurrencyAmount,
+      isCurrentTradeBridging,
+      outputCurrency,
+      outputCurrencyAmount,
+    ],
+  )
+
+  const bridgeConfirmChildren = useCallback(
+    (restContent: ReactNode) => (
+      <BridgeConfirmContent
+        rateInfoParams={rateInfoParams}
+        bridgeProvider={bridgeProvider as BridgeProviderInfo}
+        swapContext={swapContext as QuoteSwapContext}
+        bridgeContext={bridgeContext as QuoteBridgeContext}
+        restContent={restContent}
+      />
+    ),
+    [bridgeContext, bridgeProvider, rateInfoParams, swapContext],
+  )
+
+  const regularConfirmChildren = useCallback(
+    (restContent: ReactNode) => (
+      <RegularConfirmContent
+        rateInfoParams={rateInfoParams}
+        slippage={slippage}
+        receiveAmountInfo={receiveAmountInfo}
+        recipient={recipient}
+        recipientAddress={recipientAddress}
+        account={account}
+        labelsAndTooltips={labelsAndTooltips}
+        deadline={deadline}
+        restContent={restContent}
+      />
+    ),
+    [account, deadline, labelsAndTooltips, rateInfoParams, receiveAmountInfo, recipient, recipientAddress, slippage],
+  )
 
   // TODO: Reduce function complexity by extracting logic
   const disableConfirm = useMemo(() => {
@@ -127,45 +259,11 @@ export function SwapConfirmModal(props: SwapConfirmModalProps): ReactNode {
         priceImpact={priceImpact}
         buttonText={buttonText}
         recipient={recipient}
-        appData={appData}
+        confirmClickEvent={confirmClickEvent}
       >
         {shouldDisplayBridgeDetails && bridgeProvider && swapContext && bridgeContext
-          ? (restContent) => (
-              <>
-                <RateInfo label={t`Price`} rateInfoParams={rateInfoParams} fontSize={13} fontBold labelBold />
-                <QuoteDetails
-                  isCollapsible
-                  bridgeProvider={bridgeProvider}
-                  swapContext={swapContext}
-                  bridgeContext={bridgeContext}
-                  hideRecommendedSlippage
-                />
-                {restContent}
-                <HighFeeWarning readonlyMode />
-              </>
-            )
-          : (restContent) => (
-              <>
-                {receiveAmountInfo && slippage && (
-                  <TradeBasicConfirmDetails
-                    rateInfoParams={rateInfoParams}
-                    slippage={slippage}
-                    receiveAmountInfo={receiveAmountInfo}
-                    recipient={recipient}
-                    recipientAddress={recipientAddress}
-                    account={account}
-                    labelsAndTooltips={labelsAndTooltips}
-                    hideLimitPrice
-                    hideUsdValues
-                    withTimelineDot={false}
-                  >
-                    <RowDeadline deadline={deadline} />
-                  </TradeBasicConfirmDetails>
-                )}
-                {restContent}
-                <HighFeeWarning readonlyMode />
-              </>
-            )}
+          ? bridgeConfirmChildren
+          : regularConfirmChildren}
       </TradeConfirmation>
     </TradeConfirmModal>
   )

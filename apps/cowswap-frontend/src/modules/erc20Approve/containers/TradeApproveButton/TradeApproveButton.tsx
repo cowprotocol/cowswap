@@ -28,6 +28,7 @@ export interface TradeApproveButtonProps {
   enablePartialApprove?: boolean
   onApproveConfirm?: (txHash?: string) => void
   label?: string
+  dataClickEvent?: string
   buttonSize?: ButtonSize
   useModals?: boolean
 }
@@ -39,6 +40,7 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
     children,
     enablePartialApprove,
     isDisabled,
+    dataClickEvent,
     buttonSize = ButtonSize.DEFAULT,
     useModals = true,
   } = props
@@ -59,6 +61,7 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
           state={approvalState}
           isDisabled={isDisabled}
           onClick={() => handleApprove(MAX_APPROVE_AMOUNT)}
+          dataClickEvent={dataClickEvent}
         />
         {children}
       </>
@@ -78,6 +81,7 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
       buttonSize={buttonSize}
       onClick={approveWithPreventedDoubleExecution}
       altDisabledStyle={isPending}
+      data-click-event={dataClickEvent}
     >
       <styledEl.ButtonLabelWrapper buttonSize={buttonSize}>
         {label}{' '}
