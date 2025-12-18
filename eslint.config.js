@@ -1,8 +1,12 @@
 const { FlatCompat } = require('@eslint/eslintrc')
 const js = require('@eslint/js')
+const nextPlugin = require('@next/eslint-plugin-next')
 const nxEslintPlugin = require('@nx/eslint-plugin')
+const tseslint = require('@typescript-eslint/eslint-plugin')
+const prettierConfig = require('eslint-config-prettier')
 const eslintImport = require('eslint-plugin-import')
 const pluginLingui = require('eslint-plugin-lingui')
+const prettier = require('eslint-plugin-prettier')
 const react = require('eslint-plugin-react')
 const reactHooks = require('eslint-plugin-react-hooks')
 const unusedImports = require('eslint-plugin-unused-imports')
@@ -15,20 +19,21 @@ const compat = new FlatCompat({
 module.exports = [
   pluginLingui.configs['flat/recommended'],
   {
-    ignores: ['static-files/'],
+    ignores: ['static-files/', '.nx/', '**/.next/', 'build/', 'dist/'],
   },
   {
     plugins: {
       '@nx': nxEslintPlugin,
       'unused-imports': unusedImports,
       import: eslintImport,
+      prettier: prettier,
     },
   },
 
   // All Project's rules
   {
     ...js.configs.recommended,
-    files: ['**/*.ts', '**/*.tsx'],
+    files: ['**/*.ts', '**/*.tsx', '**/*.mts'],
     languageOptions: {
       parser: require('@typescript-eslint/parser'),
       parserOptions: {
@@ -37,6 +42,7 @@ module.exports = [
       },
     },
     plugins: {
+      '@typescript-eslint': tseslint, // register @typescript-eslint rules
       react: react,
       'react-hooks': reactHooks,
     },
@@ -81,7 +87,7 @@ module.exports = [
     },
   },
   {
-    files: ['**/*.{ts,tsx,js,jsx}'],
+    files: ['**/*.{ts,tsx,js,jsx,mts}'],
     rules: {
       '@nx/enforce-module-boundaries': [
         'error',
@@ -151,7 +157,7 @@ module.exports = [
               position: 'before',
             },
             {
-              pattern: '{@cowprotocol,@cowprotocol,@uniswap,@safe-global,@ethersproject,@web3-react}/**',
+              pattern: '{@cowprotocol,@uniswap,@safe-global,@ethersproject,@web3-react}/**',
               group: 'external',
               position: 'before',
             },
@@ -166,7 +172,7 @@ module.exports = [
               position: 'after',
             },
             {
-              pattern: '{api,abis,common,constants,legacy,lib,pages,types,utils}/**',
+              pattern: '{api,abis,common,constants,lib,pages,types,utils}/**',
               group: 'internal',
               position: 'before',
             },
@@ -195,6 +201,7 @@ module.exports = [
       'prefer-const': 'error',
       'no-unneeded-ternary': 'error',
       'no-var': 'error',
+      'prettier/prettier': 'warn',
     },
   },
 
@@ -226,6 +233,28 @@ module.exports = [
       ],
     },
   },
+  /**
+   * Restrict modules/** imports inside common/** dir
+   * @see CONTRIBUTING.md
+   */
+  {
+    files: ['apps/cowswap-frontend/src/common/**/*.{ts,tsx,js,jsx}'],
+    rules: {
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: 'cowswap-frontend/modules',
+              message: 'Do not import from modules inside common dir.',
+            },
+          ],
+          patterns: ['modules/*'],
+        },
+      ],
+    },
+  },
+
   // Tests
   {
     files: ['**/*.test.{ts,tsx,js,jsx}'],
@@ -235,6 +264,43 @@ module.exports = [
     },
   },
 
+  // cow-fi Next.js config
+  {
+    files: ['apps/cow-fi/**/*.{ts,tsx,js,jsx}'],
+    plugins: {
+      '@next/next': nextPlugin,
+    },
+    rules: {
+      ...nextPlugin.configs.recommended.rules,
+      ...nextPlugin.configs['core-web-vitals'].rules,
+      '@next/next/no-html-link-for-pages': ['error', 'apps/cow-fi/pages'],
+    },
+  },
+  // TODO: remove this once the errors have been fixed
+  {
+    files: ['apps/cow-fi/**/*.{ts,tsx,js,jsx}'],
+    plugins: {
+      // Ensure plugin-scoped rules remain resolvable after upstream filtering
+      react: react,
+      'react-hooks': reactHooks,
+    },
+    rules: {
+      '@typescript-eslint/explicit-function-return-type': 'warn',
+      '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-unused-vars': 'warn',
+      'unused-imports/no-unused-imports': 'warn',
+      'unused-imports/no-unused-vars': 'warn',
+      'import/order': 'warn',
+      'max-lines-per-function': 'warn',
+      complexity: 'warn',
+      'react/no-unstable-nested-components': 'warn',
+      'react-hooks/rules-of-hooks': 'warn',
+      'react-hooks/exhaustive-deps': 'warn',
+      'react-hooks/purity': 'warn',
+      '@next/next/no-img-element': 'warn',
+      'no-restricted-imports': 'warn',
+    },
+  },
   ...compat.config({ extends: ['plugin:@nx/typescript'] }).map((config) => ({
     ...config,
     files: ['**/*.ts', '**/*.tsx'],
@@ -245,4 +311,10 @@ module.exports = [
     files: ['**/*.js', '**/*.jsx'],
     rules: {},
   })),
+  ...compat.config({ env: { jest: true } }).map((config) => ({
+    ...config,
+    files: ['**/*.spec.ts', '**/*.spec.tsx', '**/*.spec.js', '**/*.spec.jsx'],
+  })),
+  { ignores: ['.next/**/*'] },
+  prettierConfig,
 ]

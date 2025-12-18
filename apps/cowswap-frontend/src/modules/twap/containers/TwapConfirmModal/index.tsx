@@ -6,7 +6,13 @@ import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
-import { TradeConfirmation, TradeConfirmModal, useTradeConfirmActions, useTradePriceImpact } from 'modules/trade'
+import {
+  TradeConfirmation,
+  TradeConfirmModal,
+  useCommonTradeConfirmContext,
+  useTradeConfirmActions,
+  useTradePriceImpact,
+} from 'modules/trade'
 import { TradeBasicConfirmDetails } from 'modules/trade/containers/TradeBasicConfirmDetails'
 import { DividerHorizontal } from 'modules/trade/pure/Row/styled'
 
@@ -52,7 +58,7 @@ const getConfirmModalConfig = (): {
       </p>
     </>
   ),
-  limitPriceLabel: t`Limit price (incl. costs)`,
+  limitPriceLabel: t`Limit price (incl. fees)`,
   limitPriceTooltip: (
     <Trans>
       If CoW Swap cannot get this price or better (taking into account fees and price protection tolerance), your TWAP
@@ -69,7 +75,8 @@ const getConfirmModalConfig = (): {
 export function TwapConfirmModal() {
   const confirmModalConfig = getConfirmModalConfig()
   const { account } = useWalletInfo()
-  const { ensName, allowsOffchainSigning } = useWalletDetails()
+  const { allowsOffchainSigning } = useWalletDetails()
+  const commonTradeConfirmContext = useCommonTradeConfirmContext()
   const {
     inputCurrencyAmount,
     inputCurrencyFiatAmount,
@@ -117,9 +124,8 @@ export function TwapConfirmModal() {
   return (
     <TradeConfirmModal title={CONFIRM_TITLE}>
       <TradeConfirmation
+        {...commonTradeConfirmContext}
         title={CONFIRM_TITLE}
-        account={account}
-        ensName={ensName}
         inputCurrencyInfo={inputCurrencyInfo}
         outputCurrencyInfo={outputCurrencyInfo}
         onConfirm={() => createTwapOrder(fallbackHandlerIsNotSet)}

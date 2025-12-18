@@ -274,7 +274,7 @@ export function ActivityDetails(props: {
 
   const fullAppData = order?.apiAdditionalInfo?.fullAppData || order?.fullAppData
 
-  const { swapAndBridgeContext, swapResultContext, swapAndBridgeOverview } = useSwapAndBridgeContext(
+  const { swapAndBridgeContext, swapResultContext, swapAndBridgeOverview, intermediateToken } = useSwapAndBridgeContext(
     chainId,
     isBridgeOrder ? order : undefined,
     undefined,
@@ -331,8 +331,9 @@ export function ActivityDetails(props: {
       fulfillmentTime,
     } = order
 
+    const effectiveOutputToken = intermediateToken ?? outputToken
     const inputAmount = CurrencyAmount.fromRawAmount(inputToken, sellAmount.toString())
-    const outputAmount = CurrencyAmount.fromRawAmount(outputToken, buyAmount.toString())
+    const outputAmount = CurrencyAmount.fromRawAmount(effectiveOutputToken, buyAmount.toString())
     const feeAmount = CurrencyAmount.fromRawAmount(inputToken, feeAmountRaw.toString())
 
     isOrderFulfilled = !!order.apiAdditionalInfo && order.status === OrderStatus.FULFILLED
@@ -341,8 +342,9 @@ export function ActivityDetails(props: {
     const rateInputCurrencyAmount = isOrderFulfilled
       ? CurrencyAmount.fromRawAmount(inputToken, executedSellAmountBeforeFees?.toString() || '0')
       : inputAmount
+
     const rateOutputCurrencyAmount = isOrderFulfilled
-      ? CurrencyAmount.fromRawAmount(outputToken, executedBuyAmount?.toString() || '0')
+      ? CurrencyAmount.fromRawAmount(effectiveOutputToken, executedBuyAmount?.toString() || '0')
       : outputAmount
 
     rateInfoParams = {

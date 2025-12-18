@@ -8,9 +8,11 @@ import {
 import { Fraction, Percent } from '@uniswap/sdk-core'
 
 import { msg } from '@lingui/core/macro'
+import JSBI from 'jsbi'
 import ms from 'ms.macro'
 
 export const ZERO_FRACTION = new Fraction(0)
+export const ZERO = JSBI.BigInt(0)
 
 export const DEFAULT_SLIPPAGE_BPS = 50 // 0.5%
 export const MAX_SLIPPAGE_BPS = 5000 // 50%
@@ -68,7 +70,7 @@ export const COW_CONTRACT_ADDRESS: Record<SupportedChainId, string | null> = {
   [SupportedChainId.POLYGON]: '0x2f4efd3aa42e15a1ec6114547151b63ee5d39958',
   [SupportedChainId.AVALANCHE]: null,
   [SupportedChainId.LENS]: null,
-  [SupportedChainId.BNB]: null, // TODO: add BNB COW token address when available
+  [SupportedChainId.BNB]: '0x5bfdaa3f7c28b9994b56135403bf1acea02595b0',
   [SupportedChainId.LINEA]: null,
   [SupportedChainId.PLASMA]: null,
 }

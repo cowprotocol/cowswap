@@ -60,7 +60,13 @@ export function useResetRecipient(onChangeRecipient: (recipient: string | null) 
    * Remove recipient when going out from hooks-store page
    */
   useEffect(() => {
-    if (!isHooksTradeType || (isHooksTradeType && isNativeIn)) {
+    if (!isHooksTradeType) {
+      onChangeRecipient(null)
+    }
+  }, [isHooksTradeType, onChangeRecipient])
+
+  useEffect(() => {
+    if (isHooksTradeType && isNativeIn) {
       onChangeRecipient(null)
     }
   }, [isHooksTradeType, isNativeIn, onChangeRecipient])

@@ -1,4 +1,4 @@
-import { TokenWithLogo } from '@cowprotocol/common-const'
+import { NATIVE_CURRENCIES, TokenWithLogo } from '@cowprotocol/common-const'
 import { currencyAmountToTokenAmount } from '@cowprotocol/common-utils'
 import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CowWidgetEvents, OnPostedOrderPayload } from '@cowprotocol/events'
@@ -39,6 +39,9 @@ export function emitPostedOrderEvent(params: PendingOrderNotificationParams): vo
   const inputToken = inputAmount.currency
   const outputToken = outputAmount.currency
 
+  const nativeCurrency = NATIVE_CURRENCIES[chainId]
+  const displayInputCurrency = isEthFlow ? nativeCurrency : inputToken
+
   const postedOrderPayload: OnPostedOrderPayload = {
     orderUid: id,
     orderCreationHash,
@@ -50,8 +53,8 @@ export function emitPostedOrderEvent(params: PendingOrderNotificationParams): vo
     outputAmount: BigInt(outputAmount.quotient.toString()),
     inputToken: {
       ...inputToken,
-      symbol: inputToken.symbol || '',
-      name: inputToken.name || '',
+      symbol: displayInputCurrency.symbol || '',
+      name: displayInputCurrency.name || '',
     },
     outputToken: {
       ...outputToken,

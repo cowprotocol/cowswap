@@ -28,6 +28,10 @@ import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
 import { swapTradeButtonsMap } from './swapTradeButtonsMap'
 
 import { useOnCurrencySelection } from '../../hooks/useOnCurrencySelection'
+import {
+  useShouldCheckBridgingRecipient,
+  useSmartContractRecipientConfirmed,
+} from '../../hooks/useSmartContractRecipientConfirmed'
 import { useSwapDerivedState } from '../../hooks/useSwapDerivedState'
 import { useSwapFormState } from '../../hooks/useSwapFormState'
 
@@ -42,7 +46,8 @@ interface TradeButtonsProps {
   setShowAddIntermediateTokenModal: (show: boolean) => void
 }
 
- 
+// todo -fix
+// eslint-disable-next-line complexity,max-lines-per-function
 export function TradeButtons({
   isTradeContextReady,
   openNativeWrapModal,
@@ -63,6 +68,8 @@ export function TradeButtons({
   const wrappedToken = useWrappedToken()
   const onCurrencySelection = useOnCurrencySelection()
   const isCurrentTradeBridging = useIsCurrentTradeBridging()
+  const shouldCheckBridgingRecipient = useShouldCheckBridgingRecipient()
+  const smartContractRecipientConfirmed = useSmartContractRecipientConfirmed()
 
   const { t } = useLingui()
 
@@ -117,7 +124,12 @@ export function TradeButtons({
     !!intermediateBuyToken &&
     primaryFormValidation === TradeFormValidation.ImportingIntermediateToken
 
-  const isDisabled = !isTradeContextReady || !feeWarningAccepted || !isNoImpactWarningAccepted || isRwaRestricted
+  const isDisabled =
+    !isTradeContextReady ||
+    !feeWarningAccepted ||
+    !isNoImpactWarningAccepted ||
+    (shouldCheckBridgingRecipient ? !smartContractRecipientConfirmed : false) ||
+    isRwaRestricted
 
   if (!tradeFormButtonContext) return null
 

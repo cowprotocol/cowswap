@@ -257,6 +257,40 @@ describe('fetchAndProcessQuote', () => {
         quoteSigner: undefined,
       })
     })
+
+    it('should pass getCorrelatedTokens to advancedSettings', async () => {
+      const mockCorrelatedTokens = [{ '0xTokenAddress': 'TOKEN' }]
+      const mockGetCorrelatedTokens = jest.fn().mockReturnValue(mockCorrelatedTokens)
+
+      const mockQuoteAndPost: QuoteAndPost = {
+        quoteResults: {} as any,
+        postSwapOrderFromQuote: jest.fn(),
+      }
+
+      mockBridgingSdk.getQuote.mockResolvedValue({
+        cancelled: false,
+        data: mockQuoteAndPost,
+      } as any)
+
+      await fetchAndProcessQuote(
+        mockFetchParams,
+        mockQuoteParams,
+        tradeQuotePollingParameters,
+        mockAppData,
+        mockTradeQuoteManager,
+        mockTimings,
+        mockGetCorrelatedTokens,
+      )
+
+      expect(mockBridgingSdk.getQuote).toHaveBeenCalledWith(mockQuoteParams, {
+        quoteRequest: {
+          priceQuality: PriceQuality.FAST,
+        },
+        appData: mockAppData,
+        quoteSigner: undefined,
+        getCorrelatedTokens: mockGetCorrelatedTokens,
+      })
+    })
   })
 
   describe('fetchSwapQuote', () => {
