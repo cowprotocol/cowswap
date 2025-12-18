@@ -35,7 +35,8 @@ export function quoteUsingSameParameters(
       currentParams.amount === nextParams.amount.toString(),
       bridgeTradeParams.validFor === nextParams.validFor,
       bridgeTradeParams.receiver === nextParams.receiver,
-      compareSlippage(bridgeTradeParams.slippageBps, nextParams.slippageBps),
+      // Use currentParams.slippageBps since bridgeTradeParams doesn't preserve slippageBps when auto-slippage is enabled
+      compareSlippage(currentParams.slippageBps, nextParams.slippageBps),
       currentParams.sellToken.toLowerCase() === nextParams.sellTokenAddress.toLowerCase(),
       bridgeTradeParams.sellTokenChainId === nextParams.sellTokenChainId,
       bridgeTradeParams.buyTokenAddress.toLowerCase() === nextParams.buyTokenAddress.toLowerCase(),
