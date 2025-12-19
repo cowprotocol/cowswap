@@ -1,6 +1,11 @@
 name: CI
 
 on:
+  # main and develop branches
+  push:
+    branches:
+      - main
+      - develop
   # build on PR creation/updates
   pull_request:
     types: [opened, synchronize]
