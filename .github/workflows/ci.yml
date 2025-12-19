@@ -215,3 +215,16 @@ jobs:
 #      - name: Setup tmate session
 #        uses: mxschmitt/action-tmate@v3
 #        if: ${{ failure() }}
+
+  notify-failure:
+    name: Notify Slack on Failure
+    needs: [setup, test, lint, integration-tests]
+    runs-on: ubuntu-latest
+    if: failure() && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+
+    steps:
+      - name: Notify Failure
+        run: |
+          curl -X POST -H "Content-type: application/json" --data "{\"text\": \"❌ CI failed on ${{ github.ref_name }}. Check the build at ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}" "$SLACK_WEBHOOK_URL"
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
