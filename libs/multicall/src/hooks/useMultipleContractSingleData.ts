@@ -12,6 +12,7 @@ import { useMultiCallRpcProvider } from './useMultiCallRpcProvider'
 import { multiCall, MultiCallOptions } from '../multicall'
 import { MulticallResponseOptional } from '../types'
 
+// eslint-disable-next-line max-lines-per-function
 export function useMultipleContractSingleData<T = Result>(
   chainId: SupportedChainId,
   addresses: string[],
@@ -67,7 +68,16 @@ export function useMultipleContractSingleData<T = Result>(
     ]) => {
       const providerChainId = (await provider.getNetwork()).chainId
 
-      if (providerChainId !== chainId) return null
+      if (providerChainId !== chainId) {
+        console.debug('[Multicall] Provider chain mismatch, skipping', {
+          expected: chainId,
+          providerChainId,
+          cacheKey,
+          methodName,
+          callsCount,
+        })
+        return null
+      }
 
       console.debug('[Multicall] MultipleContractSingleData', {
         chainId,

@@ -5,16 +5,16 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: @lingui/cli\n"
-"Language: pt\n"
+"Language: el\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-12-17 07:37\n"
+"PO-Revision-Date: 2025-12-17 14:52\n"
 "Last-Translator: \n"
-"Language-Team: Portuguese, Brazilian\n"
+"Language-Team: Greek\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Crowdin-Project: cow-swap\n"
 "X-Crowdin-Project-ID: 846238\n"
-"X-Crowdin-Language: pt-BR\n"
+"X-Crowdin-Language: el\n"
 "X-Crowdin-File: /develop/apps/cowswap-frontend/src/locales/en-US.po\n"
 "X-Crowdin-File-ID: 12\n"
 
@@ -221,7 +221,7 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/common/pure/CancellationModal/RequestCancellationModal.tsx
 msgid "Are you sure you want to cancel order <0>{shortId}</0>?"
-msgstr "Tem certeza que deseja cancelar a ordem <0>{shortId}</0>?"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookListsTabs/index.tsx
 msgid "My Custom Hooks ({customHooksCount})"
@@ -1861,7 +1861,7 @@ msgstr ""
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
 msgid "An order's actual execution price will vary based on the market price and network fees and costs."
-msgstr "O preço de execução real de uma ordem variará com base no preço de mercado e nas taxas e custos de rede."
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
 #: apps/cowswap-frontend/src/modules/ethFlow/pure/EthFlowModalContent/configs.ts
@@ -1922,7 +1922,7 @@ msgstr ""
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapConfirmModal/index.tsx
 msgid "Limit price (incl. fees)"
-msgstr "Preço limite (incl. taxas)"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/bridge/pure/StopStatus/index.tsx
 msgid "Bridging via"
