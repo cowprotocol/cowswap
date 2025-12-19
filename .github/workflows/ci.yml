@@ -225,6 +225,10 @@ jobs:
     steps:
       - name: Notify Failure
         run: |
-          curl -X POST -H "Content-type: application/json" --data "{\"text\": \"❌ CI failed on ${{ github.ref_name }}. Check the build at ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\"}" "$SLACK_WEBHOOK_URL"
+          curl -X POST -H "Content-type: application/json" --data "{\"text\": \"❌ CI failed on $REF_NAME. Check the build at $SERVER_URL/$REPOSITORY/actions/runs/$RUN_ID\"}" "$SLACK_WEBHOOK_URL"
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          REF_NAME: ${{ github.ref_name }}
+          SERVER_URL: ${{ github.server_url }}
+          REPOSITORY: ${{ github.repository }}
+          RUN_ID: ${{ github.run_id }}
