@@ -3,7 +3,7 @@ import { PropsWithChildren, ReactNode, useMemo } from 'react'
 import { SUPPORTED_LOCALES } from '@cowprotocol/common-const'
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
-import { Color, MenuBar } from '@cowprotocol/ui'
+import { Color, MenuBar, type CowSwapTheme } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useLingui } from '@lingui/react/macro'
@@ -35,16 +35,18 @@ const LinkComponent = ({ href, children }: PropsWithChildren<{ href: string }>):
 
 interface AppMenuProps {
   children: ReactNode
+  customTheme?: CowSwapTheme
 }
 
-export function AppMenu({ children }: AppMenuProps): ReactNode {
+export function AppMenu({ children, customTheme: overriddenCustomTheme }: AppMenuProps): ReactNode {
   const { chainId } = useWalletInfo()
   const isInjectedWidgetMode = isInjectedWidget()
   const menuItems = useMenuItems()
   const [darkMode, toggleDarkMode] = useDarkModeManager()
   const { setLocale } = useUserLocaleManager()
   const isMobile = useMediaQuery(isMobileQuery(false))
-  const customTheme = useCustomTheme()
+  const resolvedCustomTheme = useCustomTheme()
+  const customTheme = overriddenCustomTheme ?? resolvedCustomTheme ?? (darkMode ? 'dark' : 'light')
   const getTradeUrlParams = useGetTradeUrlParams()
   const { t } = useLingui()
   const isInternationalizationEnabled = useIsInternationalizationEnabled()

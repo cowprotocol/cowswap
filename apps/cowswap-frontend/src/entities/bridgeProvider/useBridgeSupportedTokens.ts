@@ -1,6 +1,8 @@
 import { SWR_NO_REFRESH_OPTIONS, TokenWithLogo } from '@cowprotocol/common-const'
 import { useIsBridgingEnabled } from '@cowprotocol/common-hooks'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { BuyTokensParams } from '@cowprotocol/sdk-bridging'
+import { useTokensByAddressMapForChain } from '@cowprotocol/tokens'
 
 import useSWR, { SWRResponse } from 'swr'
 import { bridgingSdk } from 'tradingSdk/bridgingSdk'
@@ -16,9 +18,21 @@ export function useBridgeSupportedTokens(
   const providerIds = useBridgeProvidersIds()
   const key = providerIds.join('|')
 
+  // Get token map from token lists for the destination chain to fallback for missing logos
+  const tokensByAddress = useTokensByAddressMapForChain(params?.buyChainId as SupportedChainId | undefined)
+  const tokenListSize = Object.keys(tokensByAddress).length
+
   return useSWR(
     isBridgingEnabled
-      ? [params, params?.sellChainId, params?.buyChainId, params?.sellTokenAddress, key, 'useBridgeSupportedTokens']
+      ? [
+          params,
+          params?.sellChainId,
+          params?.buyChainId,
+          params?.sellTokenAddress,
+          key,
+          tokenListSize,
+          'useBridgeSupportedTokens',
+        ]
       : null,
     async ([params]) => {
       if (typeof params === 'undefined') return null
@@ -30,6 +44,10 @@ export function useBridgeSupportedTokens(
             return acc
           }
 
+          // Fallback to token list logo if bridge doesn't provide one
+          const listToken = tokensByAddress[token.address.toLowerCase()]
+          const logoUrl = listToken?.logoURI || token.logoUrl
+
           acc.push(
             TokenWithLogo.fromToken(
               {
@@ -37,7 +55,7 @@ export function useBridgeSupportedTokens(
                 name: token.name || '',
                 symbol: token.symbol || '',
               },
-              token.logoUrl,
+              logoUrl,
             ),
           )
 

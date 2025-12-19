@@ -23,6 +23,7 @@ interface TradeFeesProps {
   withTimelineDot?: boolean
   loading?: boolean
   isLast?: boolean
+  showTotalRow?: boolean
 }
 
 export function TradeFees({
@@ -37,6 +38,7 @@ export function TradeFees({
   withTimelineDot = true,
   loading,
   isLast = false,
+  showTotalRow = false,
 }: TradeFeesProps): ReactElement | null {
   const hasPartnerFee = !!partnerFeeAmount && !!partnerFeeBps && !partnerFeeAmount.equalTo(0)
   const hasProtocolFee = !!protocolFeeAmount && !!protocolFeeBps && !protocolFeeAmount.equalTo(0)
@@ -66,7 +68,7 @@ export function TradeFees({
   if (hasBothFees) {
     return (
       <>
-        {totalFeeUsd ? <TotalFeeRow totalFeeUsd={totalFeeUsd} /> : null}
+        {showTotalRow && totalFeeUsd ? <TotalFeeRow withTimelineDot={withTimelineDot} totalFeeUsd={totalFeeUsd} /> : null}
         <ProtocolFeeRow
           withTimelineDot={withTimelineDot}
           protocolFeeUsd={protocolFeeUsd}

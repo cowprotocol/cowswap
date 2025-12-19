@@ -1,7 +1,7 @@
 import React, { ReactNode, useCallback, useMemo } from 'react'
 
 import ICON_ORDERS from '@cowprotocol/assets/svg/orders.svg'
-import { useFeatureFlags, useTheme } from '@cowprotocol/common-hooks'
+import { useFeatureFlags, useTheme, useMediaQuery } from '@cowprotocol/common-hooks'
 import { isInjectedWidget, maxAmountSpend } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ButtonOutlined, Media, MY_ORDERS_ID, SWAP_HEADER_OFFSET } from '@cowprotocol/ui'
@@ -13,7 +13,6 @@ import SVG from 'react-inlinesvg'
 import { Nullish } from 'types'
 
 import { AccountElement } from 'legacy/components/Header/AccountElement'
-import { upToLarge, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 import { Field } from 'legacy/state/types'
 
 import { useToggleAccountModal } from 'modules/account'
@@ -69,7 +68,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
   const isLimitOrderTrade = tradeTypeInfo?.tradeType === TradeType.LIMIT_ORDER
   const shouldLockForAlternativeOrder = isAlternativeOrderModalVisible && isLimitOrderTrade
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
-  const { isLimitOrdersUpgradeBannerEnabled, isBridgingEnabled } = useFeatureFlags()
+  const { isLimitOrdersUpgradeBannerEnabled } = useFeatureFlags()
   const isCurrentTradeBridging = useIsCurrentTradeBridging()
   const { darkMode } = useTheme()
 
@@ -86,7 +85,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
     hideTradeWarnings,
     enableSmartSlippage,
     displayTokenName = false,
-    displayChainName = isBridgingEnabled && isCurrentTradeBridging,
+    displayChainName = isCurrentTradeBridging,
     isMarketOrderWidget = false,
     isSellingEthSupported = false,
     isPriceStatic = false,
@@ -135,7 +134,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
   // Disable too frequent tokens switching
   const throttledOnSwitchTokens = useThrottleFn(onSwitchTokens, 500)
 
-  const isUpToLarge = useMediaQuery(upToLarge)
+  const isUpToLarge = useMediaQuery(Media.upToLarge(false))
 
   const isConnectedMarketOrderWidget = !!account && isMarketOrderWidget
 
