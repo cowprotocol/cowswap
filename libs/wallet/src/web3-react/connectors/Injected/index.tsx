@@ -2,7 +2,10 @@ import { isInjectedWidget, isRejectRequestProviderError } from '@cowprotocol/com
 import { WidgetEthereumProvider } from '@cowprotocol/iframe-transport'
 import { Command } from '@cowprotocol/types'
 import type { EIP1193Provider } from '@cowprotocol/types'
+import { Web3Provider } from '@ethersproject/providers'
 import { Actions, AddEthereumChainParameter, Connector, ProviderConnectInfo, ProviderRpcError } from '@web3-react/types'
+
+import { parseChainId } from '../../utils/parseChainId'
 
 interface injectedWalletConstructorArgs {
   actions: Actions
@@ -14,9 +17,13 @@ interface injectedWalletConstructorArgs {
 export class InjectedWallet extends Connector {
   provider?: EIP1193Provider = undefined
   prevProvider?: EIP1193Provider = undefined
+  customProvider?: Web3Provider = undefined
   walletUrl: string
   searchKeywords: string[]
   eagerConnection?: boolean
+  private chainIdRequest?: Promise<string | number>
+  private usedMetadataFallback = false
+  private syncIntervalId?: ReturnType<typeof setInterval>
 
   onConnect?(provider: EIP1193Provider): void
 
@@ -53,8 +60,8 @@ export class InjectedWallet extends Connector {
         const accounts = await this.getAccounts()
         if (!accounts.length) throw new Error('No accounts returned')
 
-        // Get chain ID from the wallet
-        const chainId = (await this.provider.request({ method: 'eth_chainId' })) as string
+        // Get chain ID from the wallet (retry on empty array from some providers during init)
+        const chainId = await this.getChainIdWithRetry()
         const receivedChainId = parseChainId(chainId)
         const desiredChainId =
           typeof desiredChainIdOrChainParameters === 'number' ? undefined : desiredChainIdOrChainParameters?.chainId
@@ -63,7 +70,13 @@ export class InjectedWallet extends Connector {
         if (!desiredChainId || receivedChainId === desiredChainId) {
           this.onConnect?.(this.provider)
 
-          return this.actions.update({ chainId: receivedChainId, accounts })
+          this.actions.update({ chainId: receivedChainId, accounts })
+
+          // Sync chainId from RPC after connection to ensure provider network is in sync
+          // This is important when we used metadata fallback - the provider might become ready later
+          this.syncChainIdAfterConnection()
+
+          return
         }
 
         const desiredChainIdHex = `0x${desiredChainId.toString(16)}`
@@ -118,8 +131,13 @@ export class InjectedWallet extends Connector {
       // chains; they should be requested serially, with accounts first, so that the chainId can settle.
       const accounts = await this.getAccounts()
       if (!accounts.length) throw new Error('No accounts returned')
-      const chainId = (await this.provider.request({ method: 'eth_chainId' })) as string
-      this.actions.update({ chainId: parseChainId(chainId), accounts })
+      // Get chain ID from the wallet (retry on empty array from some providers during init)
+      const chainId = await this.getChainIdWithRetry()
+      const receivedChainId = parseChainId(chainId)
+      this.actions.update({ chainId: receivedChainId, accounts })
+
+      // Sync chainId from RPC after connection to ensure provider network is in sync
+      this.syncChainIdAfterConnection()
     } catch (error) {
       console.debug('Could not connect eagerly', error)
       // we should be able to use `cancelActivation` here, but on mobile, metamask emits a 'connect'
@@ -143,7 +161,10 @@ export class InjectedWallet extends Connector {
         if (!data || !doesProviderMatches()) return
 
         const { chainId } = data
-        this.actions.update({ chainId: parseChainId(chainId) })
+        const parsedChainId = parseChainId(chainId)
+        // Recreate ethers provider on connect to avoid "underlying network changed" errors
+        this.setCustomProvider(parsedChainId)
+        this.actions.update({ chainId: parsedChainId })
       })
 
       const onDisconnect = (error: ProviderRpcError): void => {
@@ -163,7 +184,10 @@ export class InjectedWallet extends Connector {
       provider.on('chainChanged', (chainId: string): void => {
         if (!doesProviderMatches()) return
 
-        this.actions.update({ chainId: parseChainId(chainId) })
+        const parsedChainId = parseChainId(chainId)
+        // Recreate ethers provider on connect to avoid "underlying network changed" errors
+        this.setCustomProvider(parsedChainId)
+        this.actions.update({ chainId: parsedChainId })
       })
 
       provider.on('accountsChanged', (accounts: string[]): void => {
@@ -195,12 +219,19 @@ export class InjectedWallet extends Connector {
       this.provider.removeAllListeners('accountsChanged')
     }
 
+    // Clear sync interval if active
+    if (this.syncIntervalId) {
+      clearInterval(this.syncIntervalId)
+      this.syncIntervalId = undefined
+    }
+
     this.provider = undefined
+    this.usedMetadataFallback = false
+    this.customProvider = undefined
     this.onDisconnect?.()
     this.actions.resetState()
   }
 
-  // Mod: Added custom method
   // Method to target a specific provider on window.ethereum or window.ethereum.providers if it exists
   private detectProvider(): EIP1193Provider | void {
     if (this.provider) return this.provider
@@ -215,7 +246,6 @@ export class InjectedWallet extends Connector {
     return this.provider
   }
 
-  // Mod: Added custom method
   // Some wallets such as Tally will inject custom providers array on window.ethereum
   // This array will contain all injected providers and we can select the one we want based on keywords passed to constructor
   // For example to select tally we would search for isTally or isTallyWallet property keys
@@ -229,7 +259,6 @@ export class InjectedWallet extends Connector {
     return providers.find((provider: any) => this.searchKeywords.some((keyword) => provider[keyword]))
   }
 
-  // Mod: Added custom method
   // Here we check for specific provider directly on window.ethereum
   // TODO: Add proper return type annotation
   // TODO: Replace any with proper type definitions
@@ -243,7 +272,6 @@ export class InjectedWallet extends Connector {
     return provider ? ethereum : null
   }
 
-  // Mod: Added custom method
   // Try 2 different RPC methods to get accounts first with eth_requestAccounts and if it fails, try eth_accounts
   // TODO: Add proper return type annotation
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -270,14 +298,175 @@ export class InjectedWallet extends Connector {
       return provider.request({ method: 'eth_accounts' }) as Promise<string[]>
     }
   }
-}
 
-function parseChainId(chainId: string | number): number {
-  if (typeof chainId === 'number') return chainId
+  // Get chainId with retry logic for providers that may return empty array during initialization.
+  private async getChainIdWithRetry(maxRetries = 5): Promise<string | number> {
+    if (this.chainIdRequest) return this.chainIdRequest
 
-  if (!chainId.startsWith('0x')) {
-    return Number(chainId)
+    const { provider } = this
+
+    if (!provider) {
+      throw new Error('No provider')
+    }
+
+    const run = async (): Promise<{ chainId: string | number; usedMetadata: boolean }> => {
+      let lastError: unknown
+
+      for (let attempt = 0; attempt < maxRetries; attempt++) {
+        let chainId: unknown
+
+        try {
+          chainId = await provider.request({ method: 'eth_chainId' })
+        } catch (error) {
+          console.debug('eth_chainId failed, checking metadata (will retry if unavailable)', error)
+          lastError = error
+          // When RPC throws an error, check metadata first; only retry if nothing usable is found
+          const metaChainId = readMetaChainId(provider)
+          if (metaChainId !== null) {
+            const parsed = parseChainId(metaChainId)
+            this.setCustomProvider(parsed)
+            return { chainId: metaChainId, usedMetadata: true }
+          }
+        }
+
+        // If we get a valid chainId from RPC, return it immediately (prioritize fresh response)
+        if (typeof chainId === 'string' || typeof chainId === 'number') {
+          // RPC succeeded; set custom provider so getNetwork() doesn't rely on further eth_chainId calls
+          const parsed = parseChainId(chainId)
+          this.setCustomProvider(parsed)
+          return { chainId, usedMetadata: false }
+        }
+
+        // Empty array means provider is initializing - check metadata immediately (retrying won't help).
+        // Note: This is the only case where we use cached metadata. Required for Brave wallet which
+        // returns empty arrays during initialization but has the correct chainId in provider metadata.
+        if (Array.isArray(chainId) && chainId.length === 0) {
+          const metaChainId = readMetaChainId(provider)
+          if (metaChainId !== null) {
+            const parsed = parseChainId(metaChainId)
+            this.setCustomProvider(parsed)
+            return { chainId: metaChainId, usedMetadata: true }
+          }
+        }
+
+        if (chainId !== undefined && !Array.isArray(chainId)) {
+          lastError = new Error(
+            `Invalid chainId: expected string or number, got ${typeof chainId}. Value: ${JSON.stringify(chainId)}`,
+          )
+        }
+
+        if (attempt < maxRetries - 1) {
+          await new Promise((resolve) => setTimeout(resolve, 500 * (attempt + 1)))
+        }
+      }
+
+      // After all retries failed, fall back to provider metadata as last resort
+      const metaChainId = readMetaChainId(provider)
+      if (metaChainId !== null) {
+        const parsed = parseChainId(metaChainId)
+        this.setCustomProvider(parsed)
+        return { chainId: metaChainId, usedMetadata: true }
+      }
+
+      if (lastError instanceof Error) {
+        throw lastError
+      }
+
+      throw new Error(`Failed to get chainId after ${maxRetries} attempts. Provider did not return a usable chainId.`)
+    }
+
+    this.chainIdRequest = run()
+      .then(({ chainId, usedMetadata }) => {
+        // Track if we used metadata fallback
+        this.usedMetadataFallback = usedMetadata
+        return chainId
+      })
+      .finally(() => {
+        this.chainIdRequest = undefined
+      })
+
+    return this.chainIdRequest
   }
 
-  return Number.parseInt(chainId, 16)
+  // Sync chainId from RPC after connection when metadata fallback was used
+  // Keeps retrying until RPC succeeds to ensure provider.getNetwork() works correctly
+  private syncChainIdAfterConnection(): void {
+    if (!this.provider || !this.usedMetadataFallback) return
+
+    // Clear any existing sync interval
+    if (this.syncIntervalId) {
+      clearInterval(this.syncIntervalId)
+    }
+
+    let attempt = 0
+    const maxSyncAttempts = 10 // Retry for up to ~30 seconds
+    const syncDelay = 3000 // 3 seconds between attempts
+
+    const trySync = async (): Promise<void> => {
+      if (!this.provider || attempt >= maxSyncAttempts) {
+        if (this.syncIntervalId) {
+          clearInterval(this.syncIntervalId)
+          this.syncIntervalId = undefined
+        }
+        return
+      }
+
+      attempt++
+
+      try {
+        const rpcChainId = await this.provider.request({ method: 'eth_chainId' })
+        if (typeof rpcChainId === 'string' || typeof rpcChainId === 'number') {
+          const parsedRpcChainId = parseChainId(rpcChainId)
+          // Recreate custom provider with the real chainId to ensure getNetwork works
+          this.setCustomProvider(parsedRpcChainId)
+          // Trigger state update so hooks pick up the new provider
+          this.actions.update({ chainId: parsedRpcChainId })
+          // RPC succeeded, clear metadata flag and stop syncing
+          this.usedMetadataFallback = false
+          if (this.syncIntervalId) {
+            clearInterval(this.syncIntervalId)
+            this.syncIntervalId = undefined
+          }
+          console.debug('Post-connection chainId sync succeeded, RPC chainId:', parsedRpcChainId)
+        }
+      } catch (error) {
+        // RPC still failing, will retry on next interval
+        if (attempt < maxSyncAttempts) {
+          console.debug(`Post-connection chainId sync attempt ${attempt} failed, will retry`, error)
+        } else {
+          console.debug('Post-connection chainId sync exhausted all attempts, keeping metadata chainId', error)
+        }
+      }
+    }
+
+    // Start syncing after initial delay, then retry periodically
+    setTimeout(() => {
+      trySync()
+      this.syncIntervalId = setInterval(trySync, syncDelay)
+    }, 1000)
+  }
+
+  private setCustomProvider(chainId: number): void {
+    if (!this.provider) return
+    this.customProvider = new Web3Provider(this.provider, chainId)
+  }
+}
+
+// Some injected providers stash the chainId in non-standard fields; check common spots as a last resort fallback.
+function readMetaChainId(provider: EIP1193Provider): string | number | null {
+  const candidates = [
+    (provider as { chainId?: unknown }).chainId,
+    (provider as { networkVersion?: unknown }).networkVersion,
+    (provider as { provider?: { chainId?: unknown } }).provider?.chainId,
+    (provider as { _state?: { chainId?: unknown; network?: { chainId?: unknown } } })._state?.chainId,
+    (provider as { _state?: { chainId?: unknown; network?: { chainId?: unknown } } })._state?.network?.chainId,
+    (provider as { session?: { chainId?: unknown } }).session?.chainId,
+  ]
+
+  for (const candidate of candidates) {
+    if (candidate === undefined) continue
+    if (typeof candidate === 'string' || typeof candidate === 'number') return candidate
+  }
+
+  return null
 }

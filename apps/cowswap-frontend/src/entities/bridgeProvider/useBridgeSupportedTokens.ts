@@ -46,7 +46,7 @@ export function useBridgeSupportedTokens(
 
           // Fallback to token list logo if bridge doesn't provide one
           const listToken = tokensByAddress[token.address.toLowerCase()]
-          const logoUrl = token.logoUrl || listToken?.logoURI
+          const logoUrl = listToken?.logoURI || token.logoUrl
 
           acc.push(
             TokenWithLogo.fromToken(
