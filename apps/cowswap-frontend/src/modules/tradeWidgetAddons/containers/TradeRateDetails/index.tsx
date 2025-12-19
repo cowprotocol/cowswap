@@ -33,6 +33,7 @@ interface TradeRateDetailsProps {
   feeWrapper?: (feeElement: ReactNode, isOpen: boolean) => ReactNode
 }
 
+// eslint-disable-next-line complexity, max-lines-per-function
 export function TradeRateDetails({
   rateInfoParams,
   deadline,
@@ -122,7 +123,7 @@ export function TradeRateDetails({
       >
         {accordionContent || defaultExpandedContent}
       </TradeTotalCostsDetails>
-      
+
       {/* Show slippage outside accordion when prominent and accordion is closed (to avoid duplication) */}
       {shouldShowSlippageProminent && !isFeeDetailsOpen && (
         <div style={{ padding: '0 6px', marginTop: '-5px' }}>{slippageRow}</div>
