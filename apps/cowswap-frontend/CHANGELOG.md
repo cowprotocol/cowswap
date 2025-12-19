@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.125.8](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.125.7...cowswap-v1.125.8) (2025-12-19)
+
+
+### Bug Fixes
+
+* add user context on launch darkly initialization ([#6726](https://github.com/cowprotocol/cowswap/issues/6726)) ([fa02aa4](https://github.com/cowprotocol/cowswap/commit/fa02aa4cf7f951464049cb4f3a92544de457e760))
+
 ## [1.125.7](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.125.6...cowswap-v1.125.7) (2025-12-18)
 
 
