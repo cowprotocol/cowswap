@@ -9,6 +9,7 @@ import IMG_COWSWAP_SWAPS from '@cowprotocol/assets/images/image-cowswap-swaps.sv
 import IMG_COWSWAP_TWAP from '@cowprotocol/assets/images/image-cowswap-twap.svg'
 import IMG_COWSWAP_UX from '@cowprotocol/assets/images/image-cowswap-ux.svg'
 import { Color, UI } from '@cowprotocol/ui'
+
 import { getAvailableChainsText } from '@cowprotocol/common-const'
 import { CowFiCategory } from 'src/common/analytics/types'
 
