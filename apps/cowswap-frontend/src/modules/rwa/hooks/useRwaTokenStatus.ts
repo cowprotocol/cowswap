@@ -67,11 +67,11 @@ export function useRwaTokenStatus({ inputCurrency, outputCurrency }: UseRwaToken
 
   const consentKey: RwaConsentKey = useMemo(() => {
     if (!rwaTokenInfo || !account) {
-      return { wallet: '', tosVersion: '' }
+      return { wallet: '', ipfsHash: '' }
     }
     return {
       wallet: account,
-      tosVersion: rwaTokenInfo.tosHash,
+      ipfsHash: rwaTokenInfo.tosHash,
     }
   }, [rwaTokenInfo, account])
 
