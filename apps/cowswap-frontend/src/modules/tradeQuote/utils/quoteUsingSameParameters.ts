@@ -36,7 +36,7 @@ export function quoteUsingSameParameters(
       bridgeTradeParams.validFor === nextParams.validFor,
       bridgeTradeParams.receiver === nextParams.receiver,
       // Use currentParams.slippageBps since bridgeTradeParams doesn't preserve slippageBps when auto-slippage is enabled
-      compareSlippage(currentParams.slippageBps, nextParams.slippageBps),
+      compareSlippage(currentParams.slippageBps, nextParams.swapSlippageBps),
       currentParams.sellToken.toLowerCase() === nextParams.sellTokenAddress.toLowerCase(),
       bridgeTradeParams.sellTokenChainId === nextParams.sellTokenChainId,
       bridgeTradeParams.buyTokenAddress.toLowerCase() === nextParams.buyTokenAddress.toLowerCase(),
@@ -59,7 +59,7 @@ export function quoteUsingSameParameters(
      * Auto-slippage should not trigger quote refetching
      * See how slippageBps is defined in `useQuoteParams()`
      */
-    compareSlippage(currentParams.slippageBps, nextParams.slippageBps),
+    compareSlippage(currentParams.slippageBps, nextParams.swapSlippageBps),
     currentParams.sellToken.toLowerCase() === nextParams.sellTokenAddress.toLowerCase(),
     currentParams.buyToken.toLowerCase() === nextParams.buyTokenAddress.toLowerCase(),
   ]

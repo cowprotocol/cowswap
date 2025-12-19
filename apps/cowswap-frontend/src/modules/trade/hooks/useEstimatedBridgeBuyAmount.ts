@@ -48,7 +48,6 @@ export function useEstimatedBridgeBuyAmount(): BridgeEstimatedAmounts | null {
     const minToReceiveAmount = expectedToReceiveAmount.subtract(feeAmount)
 
     return {
-      sellAmount: bridgeSellAmount,
       expectedToReceiveAmount,
       feeAmount,
       minToReceiveAmount,
