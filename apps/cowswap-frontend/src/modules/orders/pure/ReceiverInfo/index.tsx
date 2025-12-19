@@ -1,4 +1,4 @@
-import { isAddress, shortenAddress } from '@cowprotocol/common-utils'
+import { areAddressesEqual, isAddress, shortenAddress } from '@cowprotocol/common-utils'
 
 import { Trans } from '@lingui/react/macro'
 import { Nullish } from 'types'
@@ -17,7 +17,7 @@ export function ReceiverInfo({ receiver, owner }: ReceiverInfoProps) {
 
   return (
     <>
-      {toAddress && receiver && receiver !== owner && (
+      {toAddress && receiver && !areAddressesEqual(receiver, owner) && (
         <div>
           <Trans>Receiver</Trans>: <ExplorerLink id={receiver} label={toAddress} type="address" />
         </div>
