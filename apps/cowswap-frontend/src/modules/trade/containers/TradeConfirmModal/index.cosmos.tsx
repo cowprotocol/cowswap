@@ -30,6 +30,8 @@ const confirmationState: TradeConfirmationProps = {
   outputCurrencyInfo: outputCurrencyInfoMock,
   priceImpact: priceImpactMock,
   isConfirmDisabled: false,
+  isSmartContractWallet: false,
+  appData: null,
   recipient: null,
   async onConfirm() {
     console.log('onConfirm')

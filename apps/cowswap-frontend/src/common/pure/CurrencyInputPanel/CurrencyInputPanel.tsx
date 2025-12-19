@@ -127,12 +127,18 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps): ReactNode {
         return
       }
 
-      setTypedValue(typedValue)
+      // For tokens with 0 decimals (not in USD mode), strip any decimal portion
+      let sanitizedTypedValue = typedValue
+      if (!isUsdValuesMode && currency?.decimals === 0 && typedValue.includes('.')) {
+        sanitizedTypedValue = typedValue.split('.')[0]
+      }
+
+      setTypedValue(sanitizedTypedValue)
       // Avoid converting from USD if currencyValue is already provided
-      const value = currencyValue || convertUsdToTokenValue(typedValue, isUsdValuesMode)
+      const value = currencyValue || convertUsdToTokenValue(sanitizedTypedValue, isUsdValuesMode)
       onUserInput(field, value)
     },
-    [onUserInput, field, convertUsdToTokenValue, isUsdValuesMode],
+    [onUserInput, field, convertUsdToTokenValue, isUsdValuesMode, currency?.decimals],
   )
 
   const handleMaxInput = useCallback(() => {
