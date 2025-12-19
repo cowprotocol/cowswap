@@ -1,16 +1,13 @@
 import { useMemo } from 'react'
 
-import { useWalletInfo } from '@cowprotocol/wallet'
-
 import { useBridgeSupportedNetwork } from 'entities/bridgeProvider'
 
-import { useDerivedTradeState } from 'modules/trade'
 import { useEstimatedBridgeBuyAmount } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
-import { BRIDGE_QUOTE_ACCOUNT } from 'modules/tradeQuote'
 import { useUsdAmount } from 'modules/usdAmount'
 
 import { useBridgeQuoteAmounts } from './useBridgeQuoteAmounts'
+import { useBridgeQuoteRecipient } from './useBridgeQuoteRecipient'
 
 import { QuoteBridgeContext } from '../types'
 
@@ -30,15 +27,13 @@ export function useQuoteBridgeContext(): QuoteBridgeContext | null {
   const { value: buyAmountUsd } = useUsdAmount(buyAmount)
   const { value: bridgeMinDepositAmountUsd } = useUsdAmount(quoteAmounts?.bridgeMinReceiveAmount)
   const { value: expectedToReceiveUsd } = useUsdAmount(expectedToReceiveAmount)
+  const { value: bridgeMinReceiveAmountUsd } = useUsdAmount(quoteAmounts?.bridgeMinReceiveAmount)
 
   const targetChainId = quoteAmounts?.bridgeMinReceiveAmount.currency.chainId
   const destChainData = useBridgeSupportedNetwork(targetChainId)
 
-  const { account } = useWalletInfo()
-  const tradeState = useDerivedTradeState()
-
   const expectedFillTimeSeconds = bridgeQuote?.expectedFillTimeSeconds
-  const recipient = tradeState?.recipient || account || BRIDGE_QUOTE_ACCOUNT
+  const recipient = useBridgeQuoteRecipient()
 
   return useMemo(() => {
     if (!quoteAmounts?.swapExpectedReceive || !recipient || !buyAmount) return null
@@ -55,6 +50,7 @@ export function useQuoteBridgeContext(): QuoteBridgeContext | null {
       bridgeReceiverOverride: bridgeQuote?.bridgeReceiverOverride || null,
       bridgeMinDepositAmount: quoteAmounts.swapMinReceiveAmount,
       bridgeMinReceiveAmount: quoteAmounts.bridgeMinReceiveAmount,
+      bridgeMinReceiveAmountUsd,
       bridgeMinDepositAmountUsd,
       buyAmountUsd,
       expectedToReceive: expectedToReceiveAmount,
@@ -71,5 +67,6 @@ export function useQuoteBridgeContext(): QuoteBridgeContext | null {
     bridgeQuote?.bridgeReceiverOverride,
     expectedToReceiveAmount,
     expectedToReceiveUsd,
+    bridgeMinReceiveAmountUsd,
   ])
 }
