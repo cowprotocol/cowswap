@@ -1344,6 +1344,10 @@ msgstr "COW vesting from locked GNO"
 msgid "Update fallback handler"
 msgstr "Update fallback handler"
 
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+msgid "This token is not available in your region"
+msgstr "This token is not available in your region"
+
 #: apps/cowswap-frontend/src/pages/error/AnySwapAffectedUsers/index.tsx
 msgid "Please read more in this"
 msgstr "Please read more in this"
@@ -3399,6 +3403,10 @@ msgstr "BlockNumber hooks must be wrapped in a"
 #: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/swapTradeButtonsMap.tsx
 msgid "Wrap <0/> and Swap"
 msgstr "Wrap <0/> and Swap"
+
+#: apps/cowswap-frontend/src/modules/rwa/pure/RwaConsentModal/index.tsx
+msgid "View full consent terms ↗"
+msgstr "View full consent terms ↗"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/BigPartTimeWarning.tsx
 msgid "A maximum of <0>{time}</0> between parts is required. Increase the number of parts or decrease the total duration."

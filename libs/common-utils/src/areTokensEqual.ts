@@ -3,7 +3,9 @@ interface TokenLike {
   address: string
 }
 
-function getTokenId(chainId: number, address: string): string {
+export type TokenId = `${number}:${string}`
+
+export function getTokenId(chainId: number, address: string): TokenId {
   return `${chainId}:${address.toLowerCase()}`
 }
 

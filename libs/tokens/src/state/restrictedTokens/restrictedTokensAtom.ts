@@ -1,12 +1,10 @@
 import { atom } from 'jotai'
 
+import { getTokenId, TokenId } from '@cowprotocol/common-utils'
 import { TokenInfo } from '@cowprotocol/types'
 
-export type TokenId = `${number}:${string}`
-
-export function getTokenId(chainId: number, address: string): TokenId {
-  return `${chainId}:${address.toLowerCase()}`
-}
+export { getTokenId }
+export type { TokenId }
 
 export interface RestrictedTokenListState {
   tokensMap: Record<TokenId, TokenInfo>
