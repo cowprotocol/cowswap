@@ -57,7 +57,6 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     getBridgeIntermediateTokenAddress(tradeQuote.bridgeQuote),
   )
 
-  // Check RWA geo restrictions
   const { status: rwaStatus } = useRwaTokenStatus({
     inputCurrency,
     outputCurrency,

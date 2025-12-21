@@ -1,7 +1,7 @@
 import { atom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 
-import { RwaConsentKey, RwaConsentRecord } from '../types/rwaConsent'
+import { buildRwaConsentKey, RwaConsentKey, RwaConsentRecord } from '../types/rwaConsent'
 
 type RwaConsentCache = Record<string, string>
 
@@ -33,10 +33,6 @@ export const removeRwaConsentAtom = atom(null, (get, set, params: RwaConsentKey)
     return newCache
   })
 })
-
-export function buildRwaConsentKey({ wallet, ipfsHash }: RwaConsentKey): string {
-  return `${wallet.toLowerCase()}-${ipfsHash}`
-}
 
 export function getConsentFromCache(cache: RwaConsentCache, key: RwaConsentKey): RwaConsentRecord | undefined {
   const cacheKey = buildRwaConsentKey(key)
