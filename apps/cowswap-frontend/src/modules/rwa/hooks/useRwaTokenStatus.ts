@@ -65,9 +65,9 @@ export function useRwaTokenStatus({ inputCurrency, outputCurrency }: UseRwaToken
     return convertToRwaTokenInfo(restrictedTokenInfo, matchedToken)
   }, [restrictedTokenInfo, inputToken, outputToken])
 
-  const consentKey: RwaConsentKey = useMemo(() => {
+  const consentKey = useMemo((): RwaConsentKey | null => {
     if (!rwaTokenInfo || !account) {
-      return { wallet: '', ipfsHash: '' }
+      return null
     }
     return {
       wallet: account,
