@@ -17,7 +17,7 @@ import {
 } from './state/multiInjectedProvidersAtom'
 import { ConnectionType, GnosisSafeInfo, WalletDetails, WalletInfo } from './types'
 
-import { METAMASK_RDNS, RABBY_RDNS, WATCH_ASSET_SUPPORED_WALLETS } from '../constants'
+import { BRAVE_WALLET_RDNS, METAMASK_RDNS, RABBY_RDNS, WATCH_ASSET_SUPPORED_WALLETS } from '../constants'
 import { useConnectionType } from '../web3-react/hooks/useConnectionType'
 import { useIsSafeApp, useIsSafeViaWc } from '../web3-react/hooks/useWalletMetadata'
 
@@ -103,6 +103,15 @@ export function useIsRabbyWallet(): boolean {
   if (!info || connectionType !== ConnectionType.INJECTED) return false
 
   return RABBY_RDNS === info.info.rdns
+}
+
+export function useIsBraveWallet(): boolean {
+  const connectionType = useConnectionType()
+  const info = useSelectedEip6963ProviderInfo()
+
+  if (!info || connectionType !== ConnectionType.INJECTED) return false
+
+  return BRAVE_WALLET_RDNS === info.info.rdns
 }
 
 export function useIsMetamaskBrowserExtensionWallet(): boolean {
