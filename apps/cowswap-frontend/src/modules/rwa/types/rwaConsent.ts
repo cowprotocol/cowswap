@@ -24,9 +24,9 @@ export function buildRwaConsentKey({ wallet, ipfsHash }: RwaConsentKey): RwaCons
   return `${wallet.toLowerCase()}-${ipfsHash}`
 }
 
-export function buildUserConsent(termsIpfsHash: string): UserConsent {
+export function buildUserConsent(termsIpfsHash: string, acceptedAt: number): UserConsent {
   return {
     terms: termsIpfsHash,
-    acceptedDate: new Date().toISOString(),
+    acceptedDate: new Date(acceptedAt).toISOString(),
   }
 }
