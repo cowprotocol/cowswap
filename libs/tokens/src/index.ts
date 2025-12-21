@@ -71,4 +71,5 @@ export { fetchTokenList } from './services/fetchTokenList'
 export { DEFAULT_TOKENS_LISTS } from './const/tokensLists'
 export { useIsAnyOfTokensOndo } from './hooks/lists/useIsAnyOfTokensOndo'
 
-export { useRestrictedToken, useAnyRestrictedToken } from './hooks/tokens/useRestrictedToken'
+export { useRestrictedToken, useAnyRestrictedToken, findRestrictedToken } from './hooks/tokens/useRestrictedToken'
+export { restrictedTokensAtom } from './state/restrictedTokens/restrictedTokensAtom'

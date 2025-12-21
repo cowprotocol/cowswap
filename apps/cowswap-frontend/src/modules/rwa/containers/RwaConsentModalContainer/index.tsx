@@ -1,5 +1,6 @@
 import { ReactNode, useCallback, useMemo } from 'react'
 
+import { useAddUserToken } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { useRwaConsentModalState } from 'modules/rwa/hooks/useRwaConsentModalState'
@@ -12,6 +13,7 @@ export function RwaConsentModalContainer(): ReactNode {
   const { account } = useWalletInfo()
   const { isModalOpen, closeModal, context } = useRwaConsentModalState()
   const tradeConfirmActions = useTradeConfirmActions()
+  const importTokenCallback = useAddUserToken()
 
   const consentKey: RwaConsentKey | null = useMemo(() => {
     if (!context || !account) {
@@ -36,8 +38,14 @@ export function RwaConsentModalContainer(): ReactNode {
 
     confirmConsent()
     closeModal()
-    tradeConfirmActions.onOpen()
-  }, [account, context, consentKey, confirmConsent, closeModal, tradeConfirmActions])
+
+    if (context.pendingImportTokens?.length) {
+      importTokenCallback(context.pendingImportTokens)
+      context.onImportSuccess?.()
+    } else {
+      tradeConfirmActions.onOpen()
+    }
+  }, [account, context, consentKey, confirmConsent, closeModal, importTokenCallback, tradeConfirmActions])
 
   if (!isModalOpen || !context) {
     return null

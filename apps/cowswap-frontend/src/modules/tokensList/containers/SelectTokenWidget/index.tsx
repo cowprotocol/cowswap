@@ -29,6 +29,7 @@ import { getDefaultTokenListCategories } from './getDefaultTokenListCategories'
 
 import { useChainsToSelect } from '../../hooks/useChainsToSelect'
 import { useCloseTokenSelectWidget } from '../../hooks/useCloseTokenSelectWidget'
+import { useImportTokenWithConsent } from '../../hooks/useImportTokenWithConsent'
 import { useOnSelectChain } from '../../hooks/useOnSelectChain'
 import { useOnTokenListAddingError } from '../../hooks/useOnTokenListAddingError'
 import { useSelectTokenWidgetState } from '../../hooks/useSelectTokenWidgetState'
@@ -117,6 +118,7 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
   const isInjectedWidgetMode = isInjectedWidget()
 
   const closeTokenSelectWidget = useCloseTokenSelectWidget()
+  const { importTokenWithConsent } = useImportTokenWithConsent()
 
   const openPoolPage = useCallback(
     (selectedPoolAddress: string) => {
@@ -140,11 +142,33 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
     closeTokenSelectWidget()
   }, [closeTokenSelectWidget])
 
-  const importTokenAndClose = (tokens: TokenWithLogo[]): void => {
-    importTokenCallback(tokens)
-    onSelectToken?.(tokens[0])
-    onDismiss()
-  }
+  const selectAndClose = useCallback(
+    (token: TokenWithLogo): void => {
+      onSelectToken?.(token)
+      onDismiss()
+    },
+    [onSelectToken, onDismiss],
+  )
+
+  const doImportTokenAndClose = useCallback(
+    (tokens: TokenWithLogo[]): void => {
+      importTokenCallback(tokens)
+      if (tokens[0]) {
+        selectAndClose(tokens[0])
+      }
+    },
+    [importTokenCallback, selectAndClose],
+  )
+
+  const importTokenAndClose = useCallback(
+    (tokens: TokenWithLogo[]): void => {
+      importTokenWithConsent(tokens, {
+        onImport: doImportTokenAndClose,
+        onSelectAndClose: selectAndClose,
+      })
+    },
+    [importTokenWithConsent, doImportTokenAndClose, selectAndClose],
+  )
 
   const importListAndBack = (list: ListState): void => {
     try {
