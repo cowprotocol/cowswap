@@ -11,8 +11,8 @@ export interface UserConsentsMetadata {
 export function useRwaConsentForAppData(): UserConsentsMetadata | undefined {
   const derivedState = useDerivedTradeState()
 
-  const inputCurrency = derivedState?.inputCurrency ?? undefined
-  const outputCurrency = derivedState?.outputCurrency ?? undefined
+  const inputCurrency = derivedState?.inputCurrency
+  const outputCurrency = derivedState?.outputCurrency
 
   const { status, rwaTokenInfo } = useRwaTokenStatus({ inputCurrency, outputCurrency })
 
