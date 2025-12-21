@@ -1,11 +1,15 @@
-import { useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
 import { TokenInfo } from '@cowprotocol/types'
 
+import useSWR from 'swr'
+
 import {
   getTokenId,
   RestrictedTokenListState,
+  restrictedTokensAtom,
+  restrictedTokensLastUpdateAtom,
   setRestrictedTokensAtom,
   TokenId,
 } from '../../state/restrictedTokens/restrictedTokensAtom'
@@ -13,6 +17,7 @@ import {
 const FETCH_TIMEOUT_MS = 10_000
 const MAX_RETRIES = 1
 const RETRY_DELAY_MS = 1_000
+const UPDATE_INTERVAL_MS = 60 * 60 * 1000 // 1 hour
 
 // Hardcoded IPFS hash of the consent terms - shared across all restricted token issuers
 const TERMS_OF_SERVICE_HASH = 'bafkreidcn4bhj44nnethx6clfspkapahshqyq44adz674y7je5wyfiazsq'
@@ -141,50 +146,66 @@ async function fetchTokenList(url: string, retries = MAX_RETRIES): Promise<Token
   throw lastError ?? new Error(`Failed to fetch token list from ${url} after ${retries} attempts`)
 }
 
+function getIsTimeToUpdate(lastUpdateTime: number): boolean {
+  if (!lastUpdateTime) return true
+  return Date.now() - lastUpdateTime > UPDATE_INTERVAL_MS
+}
+
+async function loadRestrictedTokensData(): Promise<RestrictedTokenListState> {
+  const restrictedLists = await fetchRestrictedListsMetadata()
+
+  const tokensMap: Record<TokenId, TokenInfo> = {}
+  const countriesPerToken: Record<TokenId, string[]> = {}
+  const tosHashPerToken: Record<TokenId, string> = {}
+
+  await Promise.all(
+    restrictedLists.map(async (list) => {
+      try {
+        const tokens = await fetchTokenList(list.tokenListUrl)
+
+        for (const token of tokens) {
+          const tokenId = getTokenId(token.chainId, token.address)
+          tokensMap[tokenId] = token
+          countriesPerToken[tokenId] = list.restrictedCountries
+          tosHashPerToken[tokenId] = TERMS_OF_SERVICE_HASH
+        }
+      } catch (error) {
+        console.error(`Failed to fetch token list for ${list.name}:`, error)
+      }
+    }),
+  )
+
+  return {
+    tokensMap,
+    countriesPerToken,
+    tosHashPerToken,
+    isLoaded: true,
+  }
+}
+
 export function RestrictedTokensListUpdater(): null {
   const setRestrictedTokens = useSetAtom(setRestrictedTokensAtom)
+  const cachedState = useAtomValue(restrictedTokensAtom)
+  const lastUpdateTime = useAtomValue(restrictedTokensLastUpdateAtom)
+  const setLastUpdateTime = useSetAtom(restrictedTokensLastUpdateAtom)
+
+  const hasCachedData = cachedState?.isLoaded && Object.keys(cachedState?.tokensMap || {}).length > 0
+
+  const { data } = useSWR(
+    ['RestrictedTokensListUpdater', lastUpdateTime, hasCachedData],
+    () => {
+      if (hasCachedData && !getIsTimeToUpdate(lastUpdateTime)) return null
+      return loadRestrictedTokensData()
+    },
+    { revalidateOnFocus: false, refreshInterval: UPDATE_INTERVAL_MS },
+  )
 
   useEffect(() => {
-    async function loadRestrictedTokens(): Promise<void> {
-      try {
-        const restrictedLists = await fetchRestrictedListsMetadata()
+    if (!data) return
 
-        const tokensMap: Record<TokenId, TokenInfo> = {}
-        const countriesPerToken: Record<TokenId, string[]> = {}
-        const tosHashPerToken: Record<TokenId, string> = {}
-
-        await Promise.all(
-          restrictedLists.map(async (list) => {
-            try {
-              const tokens = await fetchTokenList(list.tokenListUrl)
-
-              for (const token of tokens) {
-                const tokenId = getTokenId(token.chainId, token.address)
-                tokensMap[tokenId] = token
-                countriesPerToken[tokenId] = list.restrictedCountries
-                tosHashPerToken[tokenId] = TERMS_OF_SERVICE_HASH
-              }
-            } catch (error) {
-              console.error(`Failed to fetch token list for ${list.name}:`, error)
-            }
-          }),
-        )
-
-        const listState: RestrictedTokenListState = {
-          tokensMap,
-          countriesPerToken,
-          tosHashPerToken,
-          isLoaded: true,
-        }
-
-        setRestrictedTokens(listState)
-      } catch (error) {
-        console.error('Error loading restricted tokens:', error)
-      }
-    }
-
-    loadRestrictedTokens()
-  }, [setRestrictedTokens])
+    setRestrictedTokens(data)
+    setLastUpdateTime(Date.now())
+  }, [data, setRestrictedTokens, setLastUpdateTime])
 
   return null
 }
