@@ -10,6 +10,10 @@ import {
   TokenId,
 } from '../../state/restrictedTokens/restrictedTokensAtom'
 
+const FETCH_TIMEOUT_MS = 10_000
+const MAX_RETRIES = 1
+const RETRY_DELAY_MS = 1_000
+
 // Hardcoded IPFS hash of the consent terms - shared across all restricted token issuers
 const TERMS_OF_SERVICE_HASH = 'bafkreidcn4bhj44nnethx6clfspkapahshqyq44adz674y7je5wyfiazsq'
 
@@ -84,13 +88,57 @@ async function fetchRestrictedListsMetadata(): Promise<RestrictedListMetadata[]>
   ]
 }
 
-async function fetchTokenList(url: string): Promise<TokenInfo[]> {
-  const response = await fetch(url)
-  if (!response.ok) {
-    throw new Error(`Failed to fetch token list from ${url}: ${response.statusText}`)
+async function fetchWithTimeout(url: string, timeoutMs: number): Promise<Response> {
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs)
+
+  try {
+    const response = await fetch(url, { signal: controller.signal })
+    return response
+  } finally {
+    clearTimeout(timeoutId)
   }
-  const data: TokenListResponse = await response.json()
-  return data.tokens
+}
+
+async function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+async function fetchTokenList(url: string, retries = MAX_RETRIES): Promise<TokenInfo[]> {
+  let lastError: Error | undefined
+
+  for (let attempt = 0; attempt < retries; attempt++) {
+    try {
+      const response = await fetchWithTimeout(url, FETCH_TIMEOUT_MS)
+
+      if (!response.ok) {
+        throw new Error(`Failed to fetch token list from ${url}: ${response.statusText}`)
+      }
+
+      const data: TokenListResponse = await response.json()
+
+      // Validate response structure
+      if (!data.tokens || !Array.isArray(data.tokens)) {
+        throw new Error(`Invalid token list response from ${url}: tokens is not an array`)
+      }
+
+      return data.tokens
+    } catch (error) {
+      lastError = error instanceof Error ? error : new Error(String(error))
+
+      // Don't retry on validation errors
+      if (lastError.message.includes('tokens is not an array')) {
+        throw lastError
+      }
+
+      // Wait before retrying (except on last attempt)
+      if (attempt < retries - 1) {
+        await delay(RETRY_DELAY_MS * (attempt + 1)) // Exponential backoff
+      }
+    }
+  }
+
+  throw lastError ?? new Error(`Failed to fetch token list from ${url} after ${retries} attempts`)
 }
 
 export function RestrictedTokensListUpdater(): null {

@@ -20,7 +20,6 @@ export * from './types'
 export type { TokensByAddress, TokensBySymbol } from './state/tokens/allTokensAtom'
 export type { ListSearchResponse } from './hooks/lists/useSearchList'
 export type { TokenSearchResponse } from './hooks/tokens/useSearchToken'
-export { getTokenId } from './state/restrictedTokens/restrictedTokensAtom'
 export type { RestrictedTokenListState, TokenId } from './state/restrictedTokens/restrictedTokensAtom'
 export type { RestrictedTokenInfo } from './hooks/tokens/useRestrictedToken'
 
@@ -58,6 +57,7 @@ export { useSearchNonExistentToken } from './hooks/tokens/useSearchNonExistentTo
 export { useAllLpTokens } from './hooks/tokens/useAllLpTokens'
 
 // Utils
+export { getTokenId } from './state/restrictedTokens/restrictedTokensAtom'
 export { getTokenListViewLink } from './utils/getTokenListViewLink'
 export { getTokenLogoUrls } from './utils/getTokenLogoUrls'
 export { fetchTokenFromBlockchain } from './utils/fetchTokenFromBlockchain'
