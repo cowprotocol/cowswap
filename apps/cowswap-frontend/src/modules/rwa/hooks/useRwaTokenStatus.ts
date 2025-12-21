@@ -6,7 +6,7 @@ import { Nullish } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Currency, Token } from '@uniswap/sdk-core'
 
-import { useGeoCountry } from './useGeoCountry'
+import { useGeoStatus } from './useGeoStatus'
 import { useRwaConsentStatus } from './useRwaConsentStatus'
 
 import { RwaConsentKey } from '../types/rwaConsent'
@@ -16,9 +16,9 @@ export enum RwaTokenStatus {
   Allowed = 'Allowed',
   /** User's country is in the blocked list - cannot trade */
   Restricted = 'Restricted',
-  /** Country unknown and consent not yet given - show consent modal */
+  /** Country unknown/loading and consent not yet given - show consent modal */
   RequiredConsent = 'RequiredConsent',
-  /** Country unknown but consent already given - can proceed */
+  /** Country unknown/loading but consent already given - can proceed */
   ConsentIsSigned = 'ConsentIsSigned',
 }
 
@@ -48,7 +48,7 @@ function convertToRwaTokenInfo(restrictedInfo: RestrictedTokenInfo, originalToke
 
 export function useRwaTokenStatus({ inputCurrency, outputCurrency }: UseRwaTokenStatusParams): RwaTokenStatusResult {
   const { account } = useWalletInfo()
-  const geoCountry = useGeoCountry()
+  const geoStatus = useGeoStatus()
 
   const inputToken = inputCurrency?.isToken ? inputCurrency : undefined
   const outputToken = outputCurrency?.isToken ? outputCurrency : undefined
@@ -84,20 +84,22 @@ export function useRwaTokenStatus({ inputCurrency, outputCurrency }: UseRwaToken
 
     // Geo API response is PRIMARY - overrides any previous consent
     // If we can determine the country, use it regardless of consent status
-    if (geoCountry !== null) {
-      if (rwaTokenInfo.blockedCountries.has(geoCountry)) {
+    // Note: while loading, country is null so we fall through to consent check
+    if (geoStatus.country !== null) {
+      const country = geoStatus.country.toUpperCase()
+      if (rwaTokenInfo.blockedCountries.has(country)) {
         return RwaTokenStatus.Restricted
       }
       return RwaTokenStatus.Allowed
     }
 
-    // Country unknown - fall back to consent check
+    // Country unknown (loading, failed, or unavailable) - fall back to consent check
     if (consentStatus === 'valid') {
       return RwaTokenStatus.ConsentIsSigned
     }
 
     return RwaTokenStatus.RequiredConsent
-  }, [rwaTokenInfo, geoCountry, consentStatus])
+  }, [rwaTokenInfo, geoStatus.country, consentStatus])
 
   return {
     status,
