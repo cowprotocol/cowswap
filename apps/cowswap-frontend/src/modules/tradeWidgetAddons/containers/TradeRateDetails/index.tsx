@@ -1,6 +1,6 @@
 import { useMemo, useState, useCallback, ReactNode } from 'react'
 
-import { CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useBridgeQuoteAmounts } from 'modules/bridge'
 import {
@@ -48,19 +48,10 @@ export function TradeRateDetails({
   const shouldShowSlippageProminent = useShouldShowSlippageProminent()
   const receiveAmountInfo = useGetReceiveAmountInfo()
   const swapReceiveAmountInfo = useGetSwapReceiveAmountInfo()
-  const derivedTradeState = useDerivedTradeState()
-  const tradeQuote = useTradeQuote()
   const shouldPayGas = useShouldPayGas()
   const bridgeQuoteAmounts = useBridgeQuoteAmounts()
 
-  const inputCurrency = derivedTradeState?.inputCurrency
-
-  const costsExceedFeeRaw = tradeQuote.error instanceof QuoteApiError ? tradeQuote?.error?.data?.fee_amount : undefined
-
-  const networkFeeAmount = useMemo(() => {
-    if (!costsExceedFeeRaw || !inputCurrency) return null
-    return CurrencyAmount.fromRawAmount(inputCurrency, costsExceedFeeRaw)
-  }, [costsExceedFeeRaw, inputCurrency])
+  const networkFeeAmount = useNetworkFeeAmount()
 
   const networkFeeAmountUsd = useUsdAmount(networkFeeAmount).value
 
@@ -130,4 +121,18 @@ export function TradeRateDetails({
       )}
     </>
   )
+}
+
+function useNetworkFeeAmount(): CurrencyAmount<Currency> | null {
+  const derivedTradeState = useDerivedTradeState()
+  const tradeQuote = useTradeQuote()
+
+  const inputCurrency = derivedTradeState?.inputCurrency
+
+  const costsExceedFeeRaw = tradeQuote.error instanceof QuoteApiError ? tradeQuote?.error?.data?.fee_amount : undefined
+
+  return useMemo(() => {
+    if (!costsExceedFeeRaw || !inputCurrency) return null
+    return CurrencyAmount.fromRawAmount(inputCurrency, costsExceedFeeRaw)
+  }, [costsExceedFeeRaw, inputCurrency])
 }

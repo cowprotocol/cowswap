@@ -4,7 +4,7 @@ import { t } from '@lingui/core/macro'
 
 import { TradeFees, TradeTotalCostsDetails } from 'modules/trade'
 import { Box } from 'modules/trade/containers/TradeTotalCostsDetails/styled'
-import { useTradeQuote } from 'modules/tradeQuote'
+import { useTradeQuote, useTradeQuoteProtocolFee } from 'modules/tradeQuote'
 import { useUsdAmount } from 'modules/usdAmount'
 import { useVolumeFee, useVolumeFeeTooltip } from 'modules/volumeFee'
 
@@ -27,9 +27,8 @@ export function TradeRateDetails({ rateInfoParams, alwaysExpanded = false }: Tra
   const partnerFeeUsd = useUsdAmount(partnerFeeAmount).value
   const protocolFeeUsd = useUsdAmount(protocolFeeAmount).value
 
-  const { quote, isLoading } = useTradeQuote()
-  const quoteResponse = quote?.quoteResults.quoteResponse
-  const protocolFeeBps = quoteResponse?.protocolFeeBps ? Number(quoteResponse.protocolFeeBps) : undefined
+  const { isLoading } = useTradeQuote()
+  const protocolFeeBps = useTradeQuoteProtocolFee()
 
   const toggleAccordion = useCallback(() => {
     if (alwaysExpanded) return

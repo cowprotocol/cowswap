@@ -52,7 +52,7 @@ const ConfirmCheckbox = styled.label`
 `
 
 const NetworkLogoStyled = styled(NetworkLogo)`
-  margin-left: 6px;
+  margin: 0 6px;
   top: 3px;
   position: relative;
 `
@@ -80,8 +80,10 @@ export function SmartContractReceiverWarning({
         <div>
           <Trans>Recipient</Trans>
           <NetworkLogoStyled chainId={chainId} size={16} />
-          <ChainLink address={recipient ?? account} chainId={chainId} />
-          <span>is on {chainName} network.</span>
+          <ChainLink address={recipient ?? account} chainId={chainId} />{' '}
+          <span>
+            <Trans>is on {chainName} network</Trans>.
+          </span>
         </div>
         <div>
           <Trans>Confirm this is the correct address and that it exists on this chain.</Trans>
