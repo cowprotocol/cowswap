@@ -35,7 +35,7 @@ export function useAddTokenImportCallback(): (tokenToImport: TokenWithLogo) => v
 
         if (blockedCountries.has(countryUpper)) {
           // User is from blocked country - don't allow import
-          // TODO: Show a notification/toast about why import is blocked
+          // TODO: resolve this case
           return
         }
 
