@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { UI } from '@cowprotocol/ui'
 import { InlineBanner } from '@cowprotocol/ui'
 
@@ -40,9 +42,7 @@ const AcceptButton = styled.button`
   }
 `
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function PriceUpdatedBanner({ onClick }: { onClick(): void }) {
+export function PriceUpdatedBanner({ onClick }: { onClick(): void }): ReactNode {
   return (
     <StyledBanner>
       <Wrapper>

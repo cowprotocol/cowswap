@@ -68,7 +68,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
   const isLimitOrderTrade = tradeTypeInfo?.tradeType === TradeType.LIMIT_ORDER
   const shouldLockForAlternativeOrder = isAlternativeOrderModalVisible && isLimitOrderTrade
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
-  const { isLimitOrdersUpgradeBannerEnabled, isBridgingEnabled } = useFeatureFlags()
+  const { isLimitOrdersUpgradeBannerEnabled } = useFeatureFlags()
   const isCurrentTradeBridging = useIsCurrentTradeBridging()
   const { darkMode } = useTheme()
 
@@ -85,7 +85,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
     hideTradeWarnings,
     enableSmartSlippage,
     displayTokenName = false,
-    displayChainName = isBridgingEnabled && isCurrentTradeBridging,
+    displayChainName = isCurrentTradeBridging,
     isMarketOrderWidget = false,
     isSellingEthSupported = false,
     isPriceStatic = false,
@@ -268,7 +268,13 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
                     {...currencyInputCommonProps}
                   />
                 </div>
-                {withRecipient && <SetRecipient recipient={recipient || ''} onChangeRecipient={onChangeRecipient} />}
+                {withRecipient && (
+                  <SetRecipient
+                    recipient={recipient || ''}
+                    onChangeRecipient={onChangeRecipient}
+                    targetChainId={buyToken?.chainId as SupportedChainId}
+                  />
+                )}
 
                 {isWrapOrUnwrap ? (
                   sellToken ? (

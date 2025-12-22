@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.59.3](https://github.com/cowprotocol/cowswap/compare/explorer-v2.59.2...explorer-v2.59.3) (2025-12-19)
+
+
+### Bug Fixes
+
+* add user context on launch darkly initialization ([#6726](https://github.com/cowprotocol/cowswap/issues/6726)) ([fa02aa4](https://github.com/cowprotocol/cowswap/commit/fa02aa4cf7f951464049cb4f3a92544de457e760))
+
 ## [2.59.2](https://github.com/cowprotocol/cowswap/compare/explorer-v2.59.1...explorer-v2.59.2) (2025-12-16)
 
 

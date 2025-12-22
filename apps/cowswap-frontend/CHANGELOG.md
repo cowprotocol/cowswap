@@ -1,5 +1,34 @@
 # Changelog
 
+## [1.126.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.125.8...cowswap-v1.126.0) (2025-12-22)
+
+
+### Features
+
+* **widget:** option to disable bridging ([#6730](https://github.com/cowprotocol/cowswap/issues/6730)) ([7fc3949](https://github.com/cowprotocol/cowswap/commit/7fc3949f5d656709e3f812499870313cc3b41b9f))
+
+## [1.125.8](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.125.7...cowswap-v1.125.8) (2025-12-19)
+
+
+### Bug Fixes
+
+* add user context on launch darkly initialization ([#6726](https://github.com/cowprotocol/cowswap/issues/6726)) ([fa02aa4](https://github.com/cowprotocol/cowswap/commit/fa02aa4cf7f951464049cb4f3a92544de457e760))
+
+## [1.125.7](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.125.6...cowswap-v1.125.7) (2025-12-18)
+
+
+### Bug Fixes
+
+* bump bridging-sdk to fix bungee across contract ([#6709](https://github.com/cowprotocol/cowswap/issues/6709)) ([7b5ebbc](https://github.com/cowprotocol/cowswap/commit/7b5ebbc5c231b27670d80221fd3608db5e718eb8))
+* change token image priority: token lists over bridge provider ([#6682](https://github.com/cowprotocol/cowswap/issues/6682)) ([3f48461](https://github.com/cowprotocol/cowswap/commit/3f48461c724ae18659d093b518d3608d8f8a4f79))
+
+## [1.125.6](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.125.5...cowswap-v1.125.6) (2025-12-16)
+
+
+### Bug Fixes
+
+* **bridge:** resolve recipient for bridge quote ([#6703](https://github.com/cowprotocol/cowswap/issues/6703)) ([d1caee6](https://github.com/cowprotocol/cowswap/commit/d1caee6e74b45ab14b57e163027848cdf1919e14))
+
 ## [1.125.5](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.125.4...cowswap-v1.125.5) (2025-12-16)
 
 

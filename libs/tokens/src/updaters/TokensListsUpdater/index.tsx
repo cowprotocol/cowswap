@@ -23,7 +23,7 @@ const LAST_UPDATE_TIME_DEFAULT = 0
 
 const { atom: lastUpdateTimeAtom, updateAtom: updateLastUpdateTimeAtom } = atomWithPartialUpdate(
   atomWithStorage<PersistentStateByChain<number>>(
-    'tokens:lastUpdateTimeAtom:v5',
+    'tokens:lastUpdateTimeAtom:v6',
     mapSupportedNetworks(LAST_UPDATE_TIME_DEFAULT),
     getJotaiMergerStorage(),
     {

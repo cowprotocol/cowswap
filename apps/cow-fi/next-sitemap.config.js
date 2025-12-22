@@ -3,20 +3,12 @@ require('dotenv').config({ path: path.resolve(__dirname, '.env') })
 
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
-  siteUrl: process.env.NEXT_PUBLIC_SITE_URL,
-  generateRobotsTxt: true,
+  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'https://cow.fi',
+  generateRobotsTxt: false, // Disable since we're using robots.ts file instead
   sitemapSize: 5000,
   outDir: path.join(__dirname, 'public'),
   sourceDir: path.join(__dirname, '.next'),
   exclude: ['/api/*'],
-  robotsTxtOptions: {
-    policies: [
-      {
-        userAgent: '*',
-        allow: '/',
-      },
-    ],
-  },
   transform: async (config, url) => {
     // Handle /learn/* pages with lastmod from CMS
     if (url.startsWith('/learn/')) {

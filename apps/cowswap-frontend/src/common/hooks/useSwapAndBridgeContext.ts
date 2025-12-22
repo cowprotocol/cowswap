@@ -200,6 +200,7 @@ export function useSwapAndBridgeContext(
       buyAmount: swapAndBridgeOverview.targetAmounts.buyAmount,
       buyAmountUsd: null,
       bridgeMinReceiveAmount,
+      bridgeMinReceiveAmountUsd: null,
       bridgeMinDepositAmount: null,
       bridgeMinDepositAmountUsd: null,
       expectedToReceive: null,
