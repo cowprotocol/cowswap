@@ -13,6 +13,10 @@
     {
       "priority": 3,
       "source": "https://curvefi.github.io/curve-assets/ethereum.json"
+    },
+    {
+      "priority": 4,
+      "source": "https://raw.githubusercontent.com/ondoprotocol/cowswap-global-markets-token-list/refs/heads/main/tokenlist.json"
     }
   ],
   "100": [
