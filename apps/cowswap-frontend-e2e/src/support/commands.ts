@@ -8,9 +8,7 @@
 // https://on.cypress.io/custom-commands
 // ***********************************************
 
-// eslint-disable-next-line @typescript-eslint/no-namespace
 declare namespace Cypress {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface Chainable<Subject> {
     /**
      * Select token output in the swap page
@@ -100,7 +98,7 @@ function _clickOnToken(inputOrOutput: string) {
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function _selectTokenFromSelector(tokenAddress: string, inputOrOutput: string) {
-  cy.get(`#tokens-list button[data-address="${tokenAddress.toLowerCase()}"]`)
+  cy.get(`#tokens-list div[data-address="${tokenAddress.toLowerCase()}"]`)
     .scrollIntoView()
     .should('be.visible')
     .click({ force: true })
