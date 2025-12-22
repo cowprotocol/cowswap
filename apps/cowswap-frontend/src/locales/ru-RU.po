@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-12-19 17:29\n"
+"PO-Revision-Date: 2025-12-22 11:14\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -582,8 +582,8 @@ msgid "Receive (before fees)"
 msgstr "Получать (перед сборами)"
 
 #: apps/cowswap-frontend/src/common/pure/ChainPrefixWarning/index.tsx
-msgid "The recipient address you inputted had the chain prefix <0>{chainPrefixWarning}</0>, which is not the expected for the network you are in."
-msgstr "Введенный вами адрес получателя имеет префикс цепочки <0>{chainPrefixWarning}</0>, что не является ожидаемым для сети, в которой вы находитесь."
+#~ msgid "The recipient address you inputted had the chain prefix <0>{chainPrefixWarning}</0>, which is not the expected for the network you are in."
+#~ msgstr "The recipient address you inputted had the chain prefix <0>{chainPrefixWarning}</0>, which is not the expected for the network you are in."
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/InitialStep.tsx
 msgid "On CoW Swap, orders placed at the same time are"
@@ -609,7 +609,7 @@ msgstr "Продолжайте только если доверяете этом
 
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/BenefitComponents.tsx
 msgid "I received surplus on"
-msgstr "Я получил(а) экстра "
+msgstr "Я получил(а) экстра"
 
 #: apps/cowswap-frontend/src/modules/application/containers/App/CowSpeechBubble.tsx
 msgid "View jobs"
@@ -877,6 +877,10 @@ msgstr "Делегат (v)COW"
 msgid "On CoW Swap, you can set limit orders for balances you don't have yet."
 msgstr "В CoW Swap, вы можете установить лимит ордеров на остатки, которые у вас еще нет."
 
+#: apps/cowswap-frontend/src/common/pure/ChainPrefixWarning/index.tsx
+msgid "The recipient address you inputted had the chain prefix <0>{chainPrefixWarning}</0>, which is not the expected for the output token's network."
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/DeadlineSelector/deadlines.ts
 msgid "1 Day"
 msgstr "1 день"
@@ -985,6 +989,10 @@ msgstr "Общий баланс vCOW"
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Unsupported token"
 msgstr "Неподдерживаемый токен"
+
+#: apps/cowswap-frontend/src/modules/swap/pure/SmartContractReceiverWarning/index.tsx
+msgid "is on {chainName} network"
+msgstr ""
 
 #: apps/cowswap-frontend/src/common/pure/PermitModal/index.tsx
 #: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTableRow.tsx
@@ -1472,7 +1480,7 @@ msgstr "Цена обновлена"
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/ProtocolFeeInfoBanner/index.tsx
 msgid "From {PROTOCOL_FEE_START_DATETIME_UTC}, and pursuant to <0>CIP-74</0>, a 2 bps (0.02%) protocol fee will apply to all executed orders, including any limit and TWAP orders executed after this time, even if they were created earlier."
-msgstr "Начиная с {PROTOCOL_FEE_START_DATETIME_UTC}, в соответствии с <0>CIP-74</0>, комиссия протокола в размере 2 б.п. (0,02%) будет применена ко всем исполненным ордерам, включая лимитные и TWAP ордера, даже если они были созданы до указанной даты."
+msgstr "Начиная с {PROTOCOL_FEE_START_DATETIME_UTC}, в соответствии с <0>CIP-74</0>, комиссия протокола в размере 2 б.п. (0.02%) будет применена ко всем исполненным ордерам, включая лимитные и TWAP ордеры, даже если они были созданы до указанной даты. "
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/AddCustomHookForm/index.tsx
 msgid "Enter a hook dapp URL"
@@ -4992,8 +5000,8 @@ msgid "You receive at least"
 msgstr "Вы получаете по крайней мере"
 
 #: apps/cowswap-frontend/src/common/pure/ChainPrefixWarning/index.tsx
-msgid "You are connected to"
-msgstr "Вы подключены к"
+#~ msgid "You are connected to"
+#~ msgstr "You are connected to"
 
 #: apps/cowswap-frontend/src/common/containers/OrderHooksDetails/HookItem/index.tsx
 msgid "Unknown hook dapp"
