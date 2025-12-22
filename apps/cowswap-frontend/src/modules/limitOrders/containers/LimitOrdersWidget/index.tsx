@@ -4,8 +4,8 @@ import React, { ReactElement, useCallback, useEffect, useMemo } from 'react'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { isSellOrder } from '@cowprotocol/common-utils'
 
-import { msg, t } from '@lingui/core/macro'
-import { Trans, useLingui } from '@lingui/react/macro'
+import { t } from '@lingui/core/macro'
+import { useLingui } from '@lingui/react/macro'
 import { useLocation } from 'react-router'
 
 import { Field } from 'legacy/state/types'
@@ -21,12 +21,13 @@ import {
   useTradeConfirmState,
   useTradePriceImpact,
 } from 'modules/trade'
-import { BulletListItem, UnlockWidgetScreen } from 'modules/trade/pure/UnlockWidgetScreen'
+import { UnlockWidgetScreen } from 'modules/trade/pure/UnlockWidgetScreen'
 import { useSetTradeQuoteParams, useTradeQuote } from 'modules/tradeQuote'
 
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
 
+import { LIMIT_BULLET_LIST_CONTENT, UNLOCK_SCREEN } from './constants'
 import { LimitOrdersProps, limitOrdersPropsChecker } from './limitOrdersPropsChecker'
 import * as styledEl from './styled'
 
@@ -114,29 +115,6 @@ export function LimitOrdersWidget(): ReactElement {
   }
 
   return <LimitOrders {...props} />
-}
-
-export const LIMIT_BULLET_LIST_CONTENT: BulletListItem[] = [
-  { content: msg`Set any limit price and time horizon` },
-  { content: msg`FREE order placement and cancellation` },
-  { content: msg`Place multiple orders using the same balance` },
-  { content: msg`Receive surplus of your order` },
-  { content: msg`Protection from MEV by default` },
-  {
-    content: (
-      <span>
-        <Trans>Place orders for higher than available balance!</Trans>
-      </span>
-    ),
-  },
-]
-
-const UNLOCK_SCREEN = {
-  title: msg`Want to try out limit orders?`,
-  subtitle: msg`Get started!`,
-  orderType: msg`partially fillable`,
-  buttonText: msg`Get started with limit orders`,
-  buttonLink: 'https://cow.fi/learn/cow-swap-improves-the-limit-order-experience-with-partially-fillable-limit-orders',
 }
 
 // TODO: Break down this large function into smaller functions

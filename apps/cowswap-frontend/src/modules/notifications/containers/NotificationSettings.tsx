@@ -9,7 +9,7 @@ import styled from 'styled-components/macro'
 
 import { Toggle } from 'legacy/components/Toggle'
 
-import { ConnectTelegram, useConnectTelegram } from './ConnectTelegram'
+import { ConnectTelegram, useConnectTelegram } from './ConnectTelegram.tsx'
 
 const DISABLED_TOGGLE_TOOLTIP_MESSAGE = 'This toggle is on by default. Toggling on/off will be supported in the future.'
 
@@ -42,7 +42,7 @@ const SettingsRow = styled.div`
   &.disabled {
     opacity: 0.7;
   }
-  
+
   &.disabled .toggle-wrapper {
     pointer-events: none;
   }
@@ -98,7 +98,7 @@ export function NotificationSettings({ children }: NotificationSettingsProps): R
           <SettingsRow className="disabled">
             <RowBetween>
               <span>Order fills</span>
-              <HoverTooltip 
+              <HoverTooltip
                 content={<DisabledToggleTooltip>{DISABLED_TOGGLE_TOOLTIP_MESSAGE}</DisabledToggleTooltip>}
                 placement="bottom"
                 wrapInContainer={false}
@@ -112,7 +112,7 @@ export function NotificationSettings({ children }: NotificationSettingsProps): R
           <SettingsRow className="disabled">
             <RowBetween>
               <span>Order expired</span>
-              <HoverTooltip 
+              <HoverTooltip
                 content={<DisabledToggleTooltip>{DISABLED_TOGGLE_TOOLTIP_MESSAGE}</DisabledToggleTooltip>}
                 placement="bottom"
                 wrapInContainer={false}

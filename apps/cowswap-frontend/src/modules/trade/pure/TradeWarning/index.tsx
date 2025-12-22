@@ -1,5 +1,3 @@
-import { ReactNode } from 'react'
-
 import { UI } from '@cowprotocol/ui'
 import { InfoTooltip } from '@cowprotocol/ui'
 
@@ -7,22 +5,9 @@ import { t } from '@lingui/core/macro'
 import { AlertTriangle } from 'react-feather'
 import styled from 'styled-components/macro'
 
-export enum TradeWarningType {
-  LOW = 'LOW',
-  MEDIUM = 'MEDIUM',
-  HIGH = 'HIGH',
-}
+import { TradeWarningProps, TradeWarningType } from './types'
 
-export interface TradeWarningProps {
-  text: ReactNode
-  tooltipContent: ReactNode
-  acceptLabel?: ReactNode
-  isAccepted?: boolean
-  type?: TradeWarningType
-  withoutAccepting?: boolean
-  className?: string
-  acceptCallback?: (isAccepted: boolean) => void
-}
+export * from './types'
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type

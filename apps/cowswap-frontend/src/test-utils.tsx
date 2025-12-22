@@ -4,7 +4,7 @@ import { createStore } from 'jotai/vanilla'
 import { ReactElement, ReactNode, useMemo } from 'react'
 
 import { Web3Provider } from '@cowprotocol/wallet'
-import { initializeConnector, Web3ReactHooks, Web3ReactProvider } from '@web3-react/core'
+import { Web3ReactHooks, Web3ReactProvider } from '@web3-react/core'
 import { Connector } from '@web3-react/types'
 
 import { i18n } from '@lingui/core'
@@ -17,8 +17,6 @@ import { getCowswapTheme } from 'theme'
 
 import { cowSwapStore } from 'legacy/state'
 import { useIsDarkMode } from 'legacy/state/user/hooks'
-
-import { LanguageProvider } from './i18n'
 
 type JotaiStore = ReturnType<typeof createStore>
 
@@ -55,22 +53,10 @@ const customRender = (ui: ReactElement) => render(ui, { wrapper: WithProviders }
 
 export * from '@testing-library/react'
 export { customRender as render }
+export * from './test-utils/mocks'
 
-class MockedConnector extends Connector {
-  activate(): Promise<void> {
-    return Promise.resolve()
-  }
-
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  getActions() {
-    return this.actions
-  }
-}
-
-export const [mockedConnector, mockedConnectorHooks] = initializeConnector<MockedConnector>(
-  (actions) => new MockedConnector(actions),
-)
+import { LanguageProvider } from './i18n'
+import { mockedConnector, mockedConnectorHooks } from './test-utils/mocks'
 
 export function WithMockedWeb3({ children, location }: { children?: ReactNode; location?: Location }): ReactNode {
   const connectors: [Connector, Web3ReactHooks][] = [[mockedConnector, mockedConnectorHooks]]

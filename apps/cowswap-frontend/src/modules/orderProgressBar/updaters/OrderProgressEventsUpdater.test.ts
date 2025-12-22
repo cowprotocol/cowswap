@@ -1,6 +1,6 @@
 import type { OrderFillability } from 'modules/ordersTable'
 
-import { computeUnfillableOrderIds, getNewlyFillableOrderIds } from './OrderProgressEventsUpdater'
+import { computeUnfillableOrderIds, getNewlyFillableOrderIds } from './orderFillabilityUtils'
 
 type TestOrder = {
   id: string
