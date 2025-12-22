@@ -41,7 +41,7 @@ if (window.ethereum) {
   window.ethereum.autoRefreshOnNetworkChange = false
 }
 
-function Main(): ReactNode {
+export function Main(): ReactNode {
   return (
     <StrictMode>
       <SvgCacheProvider>
@@ -74,7 +74,7 @@ function Main(): ReactNode {
   )
 }
 
-function Web3ProviderInstance({ children }: { children: ReactNode }): ReactNode {
+export function Web3ProviderInstance({ children }: { children: ReactNode }): ReactNode {
   const selectedWallet = useAppSelector((state) => state.user.selectedWallet)
   const { standaloneMode } = useInjectedWidgetParams()
 
@@ -85,7 +85,7 @@ function Web3ProviderInstance({ children }: { children: ReactNode }): ReactNode 
   )
 }
 
-function Toasts(): ReactNode {
+export function Toasts(): ReactNode {
   const { disableToastMessages = false } = useInjectedWidgetParams()
 
   return <SnackbarsWidget hidden={disableToastMessages} anchorElementId={APP_HEADER_ELEMENT_ID} />

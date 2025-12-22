@@ -33,7 +33,6 @@ interface TradeRateDetailsProps {
   feeWrapper?: (feeElement: ReactNode, isOpen: boolean) => ReactNode
 }
 
-// eslint-disable-next-line complexity, max-lines-per-function
 export function TradeRateDetails({
   rateInfoParams,
   deadline,
