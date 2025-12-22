@@ -113,11 +113,11 @@ yarn run cosmos
 
 ## Integration test
 
-> ⚠️ To run the tests. Make sure you add the required environment varianbles to
-> your `.env.local` file with:
+> ⚠️ To run the tests. Make sure you add the required environment variables to
+> your root `.env.local` file with:
 >
-> - `INTEGRATION_TEST_PRIVATE_KEY=<your-private-key>`: Private key
-> - `INTEGRATION_TESTS_INFURA_KEY=<your-infura-key>`: Infura key
+> - `CYPRESS_INTEGRATION_TEST_PRIVATE_KEY=<your-private-key>`: Private key
+> - `CYPRESS_INTEGRATION_TESTS_INFURA_KEY=<your-infura-key>`: Infura key
 
 To launch it with our development server (so you have live-reloading):
 
