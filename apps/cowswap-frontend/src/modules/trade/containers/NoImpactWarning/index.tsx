@@ -1,4 +1,4 @@
-import { atom, useAtom, useAtomValue } from 'jotai'
+import { useAtom } from 'jotai'
 import { useEffect } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
@@ -10,7 +10,7 @@ import { TradeWarning, TradeWarningType } from 'modules/trade/pure/TradeWarning'
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { useTradeQuote } from 'modules/tradeQuote'
 
-const noImpactWarningAcceptedAtom = atom(false)
+import { noImpactWarningAcceptedAtom } from './useIsNoImpactWarningAccepted'
 
 const NoImpactWarningMessage = (
   <div>
@@ -25,12 +25,6 @@ const NoImpactWarningMessage = (
     </small>
   </div>
 )
-
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useIsNoImpactWarningAccepted() {
-  return useAtomValue(noImpactWarningAcceptedAtom)
-}
 
 export interface NoImpactWarningProps {
   withoutAccepting?: boolean
