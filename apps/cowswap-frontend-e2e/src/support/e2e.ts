@@ -18,7 +18,6 @@ import './commands'
 import { injected } from './ethereum'
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Cypress {
     interface ApplicationWindow {
       ethereum: typeof injected
@@ -46,8 +45,30 @@ Cypress.Commands.overwrite(
   },
 )
 
+// serviceWorker breaks safary-sdk and window.load event, so we disable it
+Cypress.on('window:before:load', (win) => {
+  if (win.navigator?.serviceWorker) {
+    Object.defineProperty(win.navigator, 'serviceWorker', {
+      value: undefined,
+      writable: false,
+    })
+  }
+})
+
+const skippedUrls = [
+  // analytics
+  /ads-twitter.com/,
+  /doubleclick.net/,
+  /clarity.ms/,
+
+  // other
+  // /hypelab.com/,
+  // /apiarydata.net/,
+  // /launchdarkly.com/,
+]
+
 beforeEach(() => {
-  cy.on('window:load', (win) => {
+  cy.on('window:before:load', (win) => {
     win.localStorage.clear()
     win.ethereum = injected
   })
@@ -55,7 +76,13 @@ beforeEach(() => {
   // Infura security policies are based on Origin headers.
   // These are stripped by cypress because chromeWebSecurity === false; this adds them back in.
   cy.intercept(/infura.io/, (res) => {
-    res.headers['origin'] = 'http://localhost:3000'
+    res.headers['origin'] = Cypress.config('baseUrl')!
     res.continue()
+  })
+
+  skippedUrls.forEach((url) => {
+    cy.intercept(url, (res) => {
+      res.reply({ statusCode: 404 })
+    })
   })
 })
