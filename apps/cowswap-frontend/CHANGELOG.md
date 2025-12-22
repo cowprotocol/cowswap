@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.126.0](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.125.8...cowswap-v1.126.0) (2025-12-22)
+
+
+### Features
+
+* **widget:** option to disable bridging ([#6730](https://github.com/cowprotocol/cowswap/issues/6730)) ([7fc3949](https://github.com/cowprotocol/cowswap/commit/7fc3949f5d656709e3f812499870313cc3b41b9f))
+
 ## [1.125.8](https://github.com/cowprotocol/cowswap/compare/cowswap-v1.125.7...cowswap-v1.125.8) (2025-12-19)
 
 
