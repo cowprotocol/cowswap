@@ -13,6 +13,7 @@ import { Nullish } from 'types'
 import * as styledEl from './styled'
 
 import { useDeferredVisibility } from '../../hooks/useDeferredVisibility'
+import { TokenSelectionHandler } from '../../types'
 import { TokenInfo } from '../TokenInfo'
 import { TokenTags } from '../TokenTags'
 
@@ -28,7 +29,7 @@ export interface TokenListItemProps {
   balance: BigNumber | undefined
   usdAmount?: CurrencyAmount<Currency> | null
 
-  onSelectToken?(token: TokenWithLogo): void
+  onSelectToken?: TokenSelectionHandler
 
   isWalletConnected: boolean
   isUnsupported?: boolean
