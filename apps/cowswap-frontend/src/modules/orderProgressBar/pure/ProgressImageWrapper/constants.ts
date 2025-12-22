@@ -1,6 +1,6 @@
 import { UI } from '@cowprotocol/ui'
 
-import { OrderProgressBarProps } from '../types'
+import { OrderProgressBarProps } from '../../types'
 
 type StepName = OrderProgressBarProps['stepName']
 type BgColorMap = Record<NonNullable<StepName>, string | undefined>

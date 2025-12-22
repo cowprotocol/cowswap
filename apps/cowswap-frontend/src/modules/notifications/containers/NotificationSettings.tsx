@@ -9,7 +9,7 @@ import styled from 'styled-components/macro'
 
 import { Toggle } from 'legacy/components/Toggle'
 
-import { ConnectTelegram, useConnectTelegram } from './ConnectTelegram.tsx'
+import { ConnectTelegram, useConnectTelegram } from './ConnectTelegram'
 
 const DISABLED_TOGGLE_TOOLTIP_MESSAGE = 'This toggle is on by default. Toggling on/off will be supported in the future.'
 

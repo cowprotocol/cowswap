@@ -1,6 +1,10 @@
 import { ReactNode } from 'react'
 
-import { PROCESS_IMAGE_WRAPPER_BG_COLOR, PROCESS_IMAGE_WRAPPER_PADDING, PROCESS_IMAGE_WRAPPER_GAP } from './constants'
+import {
+  PROCESS_IMAGE_WRAPPER_BG_COLOR,
+  PROCESS_IMAGE_WRAPPER_PADDING,
+  PROCESS_IMAGE_WRAPPER_GAP,
+} from './ProgressImageWrapper/constants'
 
 import { ProgressImageWrapper as ProgressImageWrapperEl } from '../sharedStyled'
 import { OrderProgressBarProps } from '../types'

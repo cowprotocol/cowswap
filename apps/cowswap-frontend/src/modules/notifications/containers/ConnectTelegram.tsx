@@ -2,7 +2,7 @@ import type { ReactElement } from 'react'
 
 import styled from 'styled-components/macro'
 
-import { useConnectTelegram, ConnectTelegramController } from './useConnectTelegram'
+import { useConnectTelegram, ConnectTelegramController } from './ConnectTelegram/useConnectTelegram'
 
 import { TelegramConnectionStatus } from '../pure/TelegramConnectionStatus'
 

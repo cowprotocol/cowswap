@@ -1,14 +1,12 @@
-import { createContext } from 'react'
+import { createContext, Context } from 'react'
 
-const MISSING_PROVIDER = Symbol()
+export const MISSING_PROVIDER = Symbol('MISSING_PROVIDER')
 
-type BlockNumberContextType =
+export type BlockNumberContextType =
   | {
       value?: number
     }
   | typeof MISSING_PROVIDER
 
-export const BlockNumberContext = createContext<BlockNumberContextType>(MISSING_PROVIDER)
-
-// Attach the symbol to the context for external use
-BlockNumberContext.MISSING_PROVIDER = MISSING_PROVIDER
+export const BlockNumberContext: Context<BlockNumberContextType> =
+  createContext<BlockNumberContextType>(MISSING_PROVIDER)
