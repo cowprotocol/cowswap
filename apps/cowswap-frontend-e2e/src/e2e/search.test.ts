@@ -1,6 +1,4 @@
-function unlockCrossChainSwap(): void {
-  cy.get('#unlock-cross-chain-swap-btn').should('be.visible').click()
-}
+import { unlockCrossChainSwap } from '../support/swap'
 
 function openTokenSelector(): void {
   cy.get('.open-currency-select-button').first({ timeout: 20_000 }).should('be.enabled').click()
