@@ -84,7 +84,7 @@ export function TradeButtons({
       if (rwaStatus === RwaTokenStatus.RequiredConsent && rwaTokenInfo) {
         openRwaConsentModal({
           consentHash: rwaTokenInfo.consentHash,
-          token: rwaTokenInfo.token as TokenWithLogo,
+          token: TokenWithLogo.fromToken(rwaTokenInfo.token),
         })
         return
       }
