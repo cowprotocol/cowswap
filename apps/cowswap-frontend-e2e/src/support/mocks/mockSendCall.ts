@@ -114,7 +114,8 @@ function handleNativeBalanceCall(ethereum: typeof injected, owner: string, retur
 
   return async (...args) => {
     const { method, params, returnResult } = parseSendArgs(send, ...args)
-    if (method === 'eth_getBalance' && params?.[0]?.to?.toLowerCase() === owner.toLowerCase()) {
+
+    if (method === 'eth_getBalance' && params?.[0]?.toLowerCase() === owner.toLowerCase()) {
       return returnResult(returnData)
     }
 

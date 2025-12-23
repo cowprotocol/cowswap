@@ -48,10 +48,8 @@ Cypress.Commands.overwrite(
 // serviceWorker breaks safary-sdk and window.load event, so we disable it
 Cypress.on('window:before:load', (win) => {
   if (win.navigator?.serviceWorker) {
-    Object.defineProperty(win.navigator, 'serviceWorker', {
-      value: undefined,
-      writable: false,
-    })
+    // @ts-expect-error
+    delete win.navigator.__proto__.serviceWorker
   }
 })
 
