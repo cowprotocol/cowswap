@@ -46,7 +46,6 @@ interface TradeButtonsProps {
   setShowAddIntermediateTokenModal: (show: boolean) => void
 }
 
-// todo -fix
 // eslint-disable-next-line max-lines-per-function
 export function TradeButtons({
   isTradeContextReady,
