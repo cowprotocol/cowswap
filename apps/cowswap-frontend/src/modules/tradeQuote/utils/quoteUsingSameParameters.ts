@@ -35,7 +35,8 @@ export function quoteUsingSameParameters(
       currentParams.amount === nextParams.amount.toString(),
       bridgeTradeParams.validFor === nextParams.validFor,
       bridgeTradeParams.receiver === nextParams.receiver,
-      nextParams.slippageBps ? bridgeTradeParams.slippageBps === nextParams.slippageBps : true,
+      // Use currentParams.slippageBps since bridgeTradeParams doesn't preserve slippageBps when auto-slippage is enabled
+      compareSlippage(currentParams.slippageBps, nextParams.swapSlippageBps),
       currentParams.sellToken.toLowerCase() === nextParams.sellTokenAddress.toLowerCase(),
       bridgeTradeParams.sellTokenChainId === nextParams.sellTokenChainId,
       bridgeTradeParams.buyTokenAddress.toLowerCase() === nextParams.buyTokenAddress.toLowerCase(),
@@ -58,12 +59,20 @@ export function quoteUsingSameParameters(
      * Auto-slippage should not trigger quote refetching
      * See how slippageBps is defined in `useQuoteParams()`
      */
-    nextParams.slippageBps ? currentParams.slippageBps === nextParams.slippageBps : true,
+    compareSlippage(currentParams.slippageBps, nextParams.swapSlippageBps),
     currentParams.sellToken.toLowerCase() === nextParams.sellTokenAddress.toLowerCase(),
     currentParams.buyToken.toLowerCase() === nextParams.buyTokenAddress.toLowerCase(),
   ]
 
   return cases.every(Boolean)
+}
+
+/**
+ * Compares slippage values only if they are set in both current and next params
+ *
+ */
+function compareSlippage(currentSlippage: number | undefined, nextSlippage: number | undefined): boolean {
+  return !nextSlippage || !currentSlippage || currentSlippage === nextSlippage
 }
 
 /**

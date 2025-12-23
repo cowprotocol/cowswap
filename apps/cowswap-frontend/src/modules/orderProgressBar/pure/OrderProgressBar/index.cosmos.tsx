@@ -66,6 +66,7 @@ const swapAndBridgeContextMock: SwapAndBridgeContext = {
     buyAmount: CurrencyAmount.fromRawAmount(USDC_BASE, '28700000'),
     buyAmountUsd: CurrencyAmount.fromRawAmount(USDC_BASE, '28700004'),
     bridgeMinReceiveAmount: null,
+    bridgeMinReceiveAmountUsd: null,
     bridgeMinDepositAmount: null,
     bridgeMinDepositAmountUsd: null,
     expectedToReceive: null,

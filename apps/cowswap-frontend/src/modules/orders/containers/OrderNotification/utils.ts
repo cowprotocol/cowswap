@@ -69,9 +69,9 @@ export function mapBridgingResultToOrderInfo(payload: OnBridgingSuccessPayload, 
     owner: payload.order.owner,
     kind: OrderKind.SELL,
     receiver: payload.bridgingParams.recipient,
-    inputAmount: payload.bridgingParams.inputAmount,
+    inputAmount: BigInt(orderData.quoteAmounts.swapSellAmount.quotient.toString()),
     outputAmount: payload.bridgingParams.outputAmount ?? 0n,
-    inputToken: orderData.quoteAmounts.swapMinReceiveAmount.currency as TokenInfo,
+    inputToken: orderData.quoteAmounts.swapSellAmount.currency as TokenInfo,
     outputToken: orderData.quoteAmounts.bridgeMinReceiveAmount.currency as TokenInfo,
   }
 }
