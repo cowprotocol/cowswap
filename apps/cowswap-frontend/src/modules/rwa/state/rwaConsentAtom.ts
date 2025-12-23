@@ -19,11 +19,6 @@ export const storeRwaConsentAtom = atom(null, (get, set, params: RwaConsentKey) 
   set(rwaConsentCacheAtom, (cache) => ({ ...cache, [key]: JSON.stringify(dataToCache) }))
 })
 
-export const getRwaConsentAtom = atom(null, (get, _set, params: RwaConsentKey): RwaConsentRecord | undefined => {
-  const cache = get(rwaConsentCacheAtom)
-  return getConsentFromCache(cache, params)
-})
-
 export const removeRwaConsentAtom = atom(null, (get, set, params: RwaConsentKey) => {
   const key = buildRwaConsentKey(params)
 
