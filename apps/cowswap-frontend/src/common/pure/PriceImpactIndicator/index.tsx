@@ -33,6 +33,7 @@ function warningSeverity(priceImpact: Percent | undefined): WarningSeverity {
 }
 
 export interface PriceImpactIndicatorProps {
+  isBridging?: boolean
   priceImpactParams?: PriceImpact
 }
 
