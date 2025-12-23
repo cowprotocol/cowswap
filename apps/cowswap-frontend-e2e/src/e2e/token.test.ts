@@ -1,8 +1,8 @@
 describe('Tokens', () => {
   beforeEach(() => {
     // takes long time, skip
-    cy.intercept(/safe.global\/tx-service/, (res) => {
-      res.reply({ statusCode: 404 })
+    cy.intercept(/safe.global\/tx-service/, (req) => {
+      req.reply({ statusCode: 404 })
     })
   })
 
