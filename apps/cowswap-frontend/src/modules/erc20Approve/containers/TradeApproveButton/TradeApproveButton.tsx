@@ -78,6 +78,7 @@ export function TradeApproveButton(props: TradeApproveButtonProps): ReactNode {
       buttonSize={buttonSize}
       onClick={approveWithPreventedDoubleExecution}
       altDisabledStyle={isPending}
+      id="apptove-trade-button"
     >
       <styledEl.ButtonLabelWrapper buttonSize={buttonSize}>
         {label}{' '}
