@@ -1,5 +1,3 @@
-import { unlockCrossChainSwap } from '../support/swap'
-
 function openTokenSelector(): void {
   cy.get('.open-currency-select-button').first({ timeout: 20_000 }).should('be.enabled').click()
 }
@@ -15,7 +13,7 @@ describe('Search', () => {
   })
 
   it('should be able to find a token by its name', () => {
-    unlockCrossChainSwap()
+    cy.unlockCrossChainSwap()
     openTokenSelector()
     cy.get('#token-search-input').type('COW')
     cy.get('#currency-list').contains('COW')
@@ -23,7 +21,7 @@ describe('Search', () => {
   })
 
   it('should be able to find a token by its address', () => {
-    unlockCrossChainSwap()
+    cy.unlockCrossChainSwap()
     openTokenSelector()
     cy.get('#token-search-input').type('0x0625aFB445C3B6B7B929342a04A22599fd5dBB59')
     cy.get('#currency-list').contains('COW')
@@ -31,7 +29,7 @@ describe('Search', () => {
   })
 
   it('should be able to find a token by its address with case errors at the beginning', () => {
-    unlockCrossChainSwap()
+    cy.unlockCrossChainSwap()
     openTokenSelector()
     cy.get('#token-search-input').type('0x0625aFB445C3B6B7B929342a04A22599fd5dBB59')
     cy.get('#currency-list').contains('COW')
@@ -39,7 +37,7 @@ describe('Search', () => {
   })
 
   it('should be able to find a token by its address with case errors in the address', () => {
-    unlockCrossChainSwap()
+    cy.unlockCrossChainSwap()
     openTokenSelector()
     cy.get('#token-search-input').type('0x0625aFB445C3B6B7B929342a04A22599fd5dBB59')
     cy.get('#currency-list').contains('COW')
@@ -47,7 +45,7 @@ describe('Search', () => {
   })
 
   it('should be able to find a token by its address without 0x at the start', () => {
-    unlockCrossChainSwap()
+    cy.unlockCrossChainSwap()
     openTokenSelector()
     cy.get('#token-search-input').type('0625aFB445C3B6B7B929342a04A22599fd5dBB59')
     cy.get('#currency-list').contains('COW')
@@ -55,7 +53,7 @@ describe('Search', () => {
   })
 
   it('should be able to find a token by its address when there is a trailing or leading space', () => {
-    unlockCrossChainSwap()
+    cy.unlockCrossChainSwap()
     openTokenSelector()
     cy.get('#token-search-input').type(' 0x0625aFB445C3B6B7B929342a04A22599fd5dBB59 ')
     cy.get('#currency-list').contains('COW')
@@ -63,7 +61,7 @@ describe('Search', () => {
   })
 
   it('should be able to find a token by its name when there is a trailing or leading space', () => {
-    unlockCrossChainSwap()
+    cy.unlockCrossChainSwap()
     openTokenSelector()
     cy.get('#token-search-input').type(' COW ')
     cy.get('#currency-list').contains('COW')
@@ -71,7 +69,7 @@ describe('Search', () => {
   })
 
   it('should not show import when token is in our lists', () => {
-    unlockCrossChainSwap()
+    cy.unlockCrossChainSwap()
     openTokenSelector()
     cy.get('#token-search-input').type('0x0625aFB445C3B6B7B929342a04A22599fd5dBB59')
     cy.get('#currency-list').contains('COW')
@@ -79,7 +77,7 @@ describe('Search', () => {
   })
 
   it('should show import when token is unknown to us', () => {
-    unlockCrossChainSwap()
+    cy.unlockCrossChainSwap()
     openTokenSelector()
     cy.get('#token-search-input').type('0x779877A7B0D9E8603169DdbD7836e478b4624789')
     cy.get('#currency-import').contains('LINK')

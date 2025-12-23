@@ -8,7 +8,6 @@ import {
   handleTokenBalance,
   mockSendCall,
 } from '../support/mocks/mockSendCall'
-import { unlockCrossChainSwap } from '../support/swap'
 
 const CHAIN_ID = 11155111
 const USDC = '0xbe72E441BF55620febc26715db68d3494213D8Cb'
@@ -48,7 +47,7 @@ describe('Swap (custom)', () => {
         ])
       },
     })
-    unlockCrossChainSwap()
+    cy.unlockCrossChainSwap()
 
     // input amounts
     cy.get('#input-currency-input .token-amount-input').should('be.visible')
@@ -70,7 +69,7 @@ describe('Swap (custom)', () => {
         ])
       },
     })
-    unlockCrossChainSwap()
+    cy.unlockCrossChainSwap()
 
     cy.get('#input-currency-input .token-amount-input').should('be.visible')
     cy.get('#input-currency-input .token-amount-input').type('0.5', { force: true, delay: 200 })
@@ -93,7 +92,7 @@ describe('Swap (custom)', () => {
         ])
       },
     })
-    unlockCrossChainSwap()
+    cy.unlockCrossChainSwap()
 
     cy.get('#input-currency-input .token-amount-input').should('be.visible')
     cy.get('#input-currency-input .token-amount-input').type('0.5', { force: true, delay: 400 })
@@ -111,31 +110,31 @@ describe('Swap (custom)', () => {
 
     it('should accept sellAmount url param', () => {
       cy.visit(`/#/${CHAIN_ID}/swap/${SELL_TOKEN}/${BUY_TOKEN}?sellAmount=0.5`)
-      unlockCrossChainSwap()
+      cy.unlockCrossChainSwap()
       cy.get('#input-currency-input .token-amount-input').should('have.value', '0.5')
     })
 
     it('should not accept sellAmount url param when there is no sell token', () => {
       cy.visit(`/#/${CHAIN_ID}/swap/_/${BUY_TOKEN}?sellAmount=0.5`)
-      unlockCrossChainSwap()
+      cy.unlockCrossChainSwap()
       cy.get('#input-currency-input .token-amount-input').should('not.have.value')
     })
 
     it('should accept buyAmount url param', () => {
       cy.visit(`/#/${CHAIN_ID}/swap/${SELL_TOKEN}/${BUY_TOKEN}?buyAmount=0.5&orderKind=buy`)
-      unlockCrossChainSwap()
+      cy.unlockCrossChainSwap()
       cy.get('#output-currency-input .token-amount-input').should('have.value', '0.5')
     })
 
     it('should not accept buyAmount url param when there is no buy token', () => {
       cy.visit(`/#/${CHAIN_ID}/swap/${SELL_TOKEN}/_?buyAmount=0.5`)
-      unlockCrossChainSwap()
+      cy.unlockCrossChainSwap()
       cy.get('#output-currency-input .token-amount-input').should('not.have.value')
     })
 
     it('sellAmount should take precedence over buyAmount', () => {
       cy.visit(`/#/${CHAIN_ID}/swap/${SELL_TOKEN}/${BUY_TOKEN}?sellAmount=0.5&buyAmount=0.6`)
-      unlockCrossChainSwap()
+      cy.unlockCrossChainSwap()
       cy.get('#input-currency-input .token-amount-input').should('have.value', '0.5')
       cy.get('#output-currency-input .token-amount-input').should('not.have.value')
     })

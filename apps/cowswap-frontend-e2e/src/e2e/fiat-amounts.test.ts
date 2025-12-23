@@ -1,5 +1,3 @@
-import { unlockCrossChainSwap } from '../support/swap'
-
 function getInputFiatAmount(): Cypress.Chainable {
   return cy.get('#input-currency-input .fiat-amount').invoke('text')
 }
@@ -18,7 +16,7 @@ describe('Fiat amounts', () => {
   })
 
   it('Should change fiat amount after changing currency amount', () => {
-    unlockCrossChainSwap()
+    cy.unlockCrossChainSwap()
     getInputToken().type('1')
 
     // Get fiat amount for 1 WETH
