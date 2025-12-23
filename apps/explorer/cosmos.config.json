@@ -23,7 +23,7 @@
         "react-cosmos-plugin-vite"
     ],
     "vite": {
-        "configPath": "./vite.config.ts",
+        "configPath": "./vite.config.mts",
         "mainScriptUrl": "src/main.tsx"
     },
     "dom": {

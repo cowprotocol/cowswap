@@ -1,9 +1,9 @@
 {
-  "apps/cowswap-frontend": "1.125.8",
+  "apps/cowswap-frontend": "1.126.0",
   "apps/explorer": "2.59.3",
   "libs/permit-utils": "1.0.1",
-  "libs/widget-lib": "0.21.1",
-  "libs/widget-react": "0.14.2",
+  "libs/widget-lib": "0.22.0",
+  "libs/widget-react": "0.14.3",
   "apps/widget-configurator": "1.17.1",
   "libs/analytics": "1.14.0",
   "libs/assets": "1.17.1",

@@ -1009,6 +1009,10 @@ msgstr "Total vCOW balance"
 msgid "Unsupported token"
 msgstr "Unsupported token"
 
+#: apps/cowswap-frontend/src/modules/swap/pure/SmartContractReceiverWarning/index.tsx
+msgid "is on {chainName} network"
+msgstr "is on {chainName} network"
+
 #: apps/cowswap-frontend/src/common/pure/PermitModal/index.tsx
 #: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTableRow.tsx
 #: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTableRow.tsx
