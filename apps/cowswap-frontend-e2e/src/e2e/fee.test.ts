@@ -2,8 +2,6 @@ import { GetQuoteResponse } from '@cowprotocol/cow-sdk'
 
 import { parseUnits } from 'ethers/lib/utils'
 
-import { unlockCrossChainSwap } from '../support/swap'
-
 const COW = '0x0625aFB445C3B6B7B929342a04A22599fd5dBB59'
 const USDC = '0xbe72E441BF55620febc26715db68d3494213D8Cb'
 const FOUR_HOURS = 3600 * 4 * 1000
@@ -97,7 +95,7 @@ describe('Fee: Complex fetch and persist fee', () => {
     // GIVEN: user visits app, selects 0.1 WETH as sell, COW as buy
     // and goes AFK
     cy.visit('/#/11155111/swap')
-    unlockCrossChainSwap()
+    cy.unlockCrossChainSwap()
     cy.swapSelectInput(USDC)
     cy.wait(1000)
     cy.swapSelectOutput(COW)
@@ -144,7 +142,7 @@ describe('Fee: simple checks it exists', () => {
     // GIVEN: A user loads the swap page
     // WHEN: Select COW token as output and sells 0.1 WETH
     cy.visit('/#/11155111/swap')
-    unlockCrossChainSwap()
+    cy.unlockCrossChainSwap()
     cy.swapSelectInput(DEFAULT_SELL_TOKEN)
     cy.wait(1000)
     cy.swapSelectOutput(COW)

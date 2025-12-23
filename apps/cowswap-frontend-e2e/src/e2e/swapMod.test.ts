@@ -1,5 +1,4 @@
 import { handleNativeBalance, mockSendCall } from '../support/mocks/mockSendCall'
-import { unlockCrossChainSwap } from '../support/swap'
 
 const COW = '0x0625aFB445C3B6B7B929342a04A22599fd5dBB59'
 const ETH = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
@@ -12,7 +11,7 @@ it('should be true', () => {
 describe('Swap (mod)', () => {
   it('starts with empty token selected', () => {
     cy.visit('/#/11155111/swap')
-    unlockCrossChainSwap()
+    cy.unlockCrossChainSwap()
     cy.get('#input-currency-input .token-amount-input').should('not.have.value')
     cy.get('#input-currency-input .token-symbol-container').should('contain.text', 'Select a token')
     cy.get('#output-currency-input .token-amount-input').should('not.have.value')
@@ -21,7 +20,7 @@ describe('Swap (mod)', () => {
 
   it('can enter an amount into input', () => {
     cy.visit('/#/11155111/swap')
-    unlockCrossChainSwap()
+    cy.unlockCrossChainSwap()
     cy.get('#input-currency-input .token-amount-input')
       .type('{selectall}{backspace}{selectall}{backspace}')
       .type('0.001')
@@ -30,7 +29,7 @@ describe('Swap (mod)', () => {
 
   it('zero swap amount', () => {
     cy.visit('/#/11155111/swap')
-    unlockCrossChainSwap()
+    cy.unlockCrossChainSwap()
     cy.get('#input-currency-input .token-amount-input')
       .type('{selectall}{backspace}{selectall}{backspace}')
       .type('0.0')
@@ -39,7 +38,7 @@ describe('Swap (mod)', () => {
 
   it('invalid swap amount', () => {
     cy.visit('/#/11155111/swap')
-    unlockCrossChainSwap()
+    cy.unlockCrossChainSwap()
     cy.get('#input-currency-input .token-amount-input')
       .type('{selectall}{backspace}{selectall}{backspace}')
       .type('\\')
@@ -48,7 +47,7 @@ describe('Swap (mod)', () => {
 
   it('can enter an amount into output', () => {
     cy.visit('/#/11155111/swap')
-    unlockCrossChainSwap()
+    cy.unlockCrossChainSwap()
     // first clear/reset the INPUT currency input field
     // as it is auto prefilled with "1"
     cy.get('#input-currency-input .token-amount-input')
@@ -63,7 +62,7 @@ describe('Swap (mod)', () => {
 
   it('zero output amount', () => {
     cy.visit('/#/11155111/swap')
-    unlockCrossChainSwap()
+    cy.unlockCrossChainSwap()
     // first clear/reset the INPUT currency input field
     // as it is auto prefilled with "1"
     cy.get('#input-currency-input .token-amount-input')
@@ -88,7 +87,7 @@ describe('Swap (mod)', () => {
         ])
       },
     })
-    unlockCrossChainSwap()
+    cy.unlockCrossChainSwap()
     cy.swapEnterInputAmount(ETH, '0.5', true)
     cy.swapSelectOutput(COW)
     cy.get('#output-currency-input .token-amount-input').should('not.equal', '')
@@ -98,14 +97,14 @@ describe('Swap (mod)', () => {
 
   it('add a recipient does not exist unless in expert mode', () => {
     cy.visit('/#/11155111/swap')
-    unlockCrossChainSwap()
+    cy.unlockCrossChainSwap()
     cy.get('#add-recipient-button').should('not.exist')
   })
 
   describe('recipient', () => {
     beforeEach(() => {
       cy.visit('/#/11155111/swap')
-      unlockCrossChainSwap()
+      cy.unlockCrossChainSwap()
       cy.get('#open-settings-dialog-button').click()
       cy.get('#toggle-recipient-mode-button').click()
     })

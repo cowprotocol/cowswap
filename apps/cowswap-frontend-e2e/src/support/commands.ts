@@ -67,6 +67,13 @@ declare namespace Cypress {
     pickToken(symbol: string, role: 'input' | 'output'): Chainable<Subject>
 
     /**
+     * Click unlock-cross-chain-swap-btn
+     *
+     * @example cy.unlockCrossChainSwap()
+     */
+    unlockCrossChainSwap(): Chainable<Subject>
+
+    /**
      * Set a stubbing intercept on route specified
      *
      * @example cy.stubResponse({ url: '/api/v1/someEndpoint/', alias: 'endpoint', body: { foo: 'foo' } })
@@ -175,6 +182,10 @@ function enterOutputAmount(tokenAddress: string, amount: number | string, select
   cy.get('#input-currency-input .token-amount-output').type(amount.toString(), { force: true, delay: 400 })
 }
 
+function unlockCrossChainSwap(): Cypress.Chainable {
+  return cy.get('#unlock-cross-chain-swap-btn').should('be.visible').click()
+}
+
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function stubResponse({
@@ -200,4 +211,5 @@ Cypress.Commands.add('swapSelectOutput', selectOutput)
 Cypress.Commands.add('swapEnterInputAmount', enterInputAmount)
 Cypress.Commands.add('swapEnterOutputAmount', enterOutputAmount)
 Cypress.Commands.add('pickToken', pickToken)
+Cypress.Commands.add('unlockCrossChainSwap', unlockCrossChainSwap)
 Cypress.Commands.add('stubResponse', stubResponse)
