@@ -13,7 +13,7 @@ export const storeRwaConsentAtom = atom(null, (get, set, params: RwaConsentKey) 
   const key = buildRwaConsentKey(params)
 
   const dataToCache: RwaConsentRecord = {
-    acceptedAt: Date.now(),
+    acceptedAt: new Date().toISOString(),
   }
 
   set(rwaConsentCacheAtom, (cache) => ({ ...cache, [key]: JSON.stringify(dataToCache) }))

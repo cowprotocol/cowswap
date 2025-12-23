@@ -4,7 +4,8 @@ export interface UserConsent {
 }
 
 export interface RwaConsentRecord {
-  acceptedAt: number
+  /** ISO 8601 date string when consent was accepted */
+  acceptedAt: string
 }
 
 export interface RwaConsentKey {
@@ -24,9 +25,9 @@ export function buildRwaConsentKey({ wallet, ipfsHash }: RwaConsentKey): RwaCons
   return `${wallet.toLowerCase()}-${ipfsHash}`
 }
 
-export function buildUserConsent(termsIpfsHash: string, acceptedAt: number): UserConsent {
+export function buildUserConsent(termsIpfsHash: string, acceptedAt: string): UserConsent {
   return {
     terms: termsIpfsHash,
-    acceptedDate: new Date(acceptedAt).toISOString(),
+    acceptedDate: acceptedAt,
   }
 }
