@@ -29,9 +29,10 @@ function shouldSkipInput(priceImpactWithoutFee: Percent): boolean {
   )
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useConfirmPriceImpactWithoutFee() {
+export function useConfirmPriceImpactWithoutFee(): {
+  confirmPriceImpactWithoutFee: (priceImpactWithoutFee: Percent | undefined) => Promise<boolean>
+  isConfirmed: boolean
+} {
   const [isConfirmed, setIsConfirmed] = useState(false)
   const onEnable = useCallback(() => setIsConfirmed(true), [])
   const triggerConfirmation = useConfirmationRequest({ onEnable })
