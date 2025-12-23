@@ -151,6 +151,10 @@
       "priority": 3,
       "enabledByDefault": true,
       "source": "https://files.cow.fi/token-lists/Uniswap.56.json"
+    },
+    {
+      "priority": 4,
+      "source": "https://raw.githubusercontent.com/ondoprotocol/cowswap-global-markets-token-list/refs/heads/main/tokenlist.json"
     }
   ],
   "232": [
