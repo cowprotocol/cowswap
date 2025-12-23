@@ -21,13 +21,14 @@ interface FiatValueProps {
   fiatValue?: Nullish<CurrencyAmount<Currency>>
   priceImpactParams?: PriceImpact
   className?: string
+  isBridging?: boolean
 }
 
-export function FiatValue({ fiatValue, priceImpactParams, className }: FiatValueProps): ReactNode {
+export function FiatValue({ fiatValue, priceImpactParams, className, isBridging }: FiatValueProps): ReactNode {
   return (
     <FiatValueWrapper className={className} hasValue$={!!fiatValue}>
       {fiatValue ? <FiatAmount amount={fiatValue} /> : ''}
-      <PriceImpactIndicator priceImpactParams={priceImpactParams} />
+      <PriceImpactIndicator priceImpactParams={priceImpactParams} isBridging={isBridging} />
     </FiatValueWrapper>
   )
 }
