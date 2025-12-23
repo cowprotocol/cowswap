@@ -1,15 +1,14 @@
 import { useCallback, useMemo, useState } from 'react'
 
-import { ALLOWED_PRICE_IMPACT_HIGH, PRICE_IMPACT_WITHOUT_FEE_CONFIRM_MIN } from '@cowprotocol/common-const'
 import { Percent } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
 
 import { useConfirmationRequest } from 'common/hooks/useConfirmationRequest'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function getDescription(priceImpactWithoutFee: Percent) {
+import { ALLOWED_PRICE_IMPACT_HIGH, PRICE_IMPACT_WITHOUT_FEE_CONFIRM_MIN } from '../constants/priceImpact'
+
+function getDescription(priceImpactWithoutFee: Percent): string | undefined {
   const pct = priceImpactWithoutFee.toFixed(0)
 
   if (!priceImpactWithoutFee.lessThan(PRICE_IMPACT_WITHOUT_FEE_CONFIRM_MIN)) {
@@ -23,9 +22,7 @@ function getDescription(priceImpactWithoutFee: Percent) {
   return undefined
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function shouldSkipInput(priceImpactWithoutFee: Percent) {
+function shouldSkipInput(priceImpactWithoutFee: Percent): boolean {
   return (
     priceImpactWithoutFee.lessThan(PRICE_IMPACT_WITHOUT_FEE_CONFIRM_MIN) &&
     !priceImpactWithoutFee.lessThan(ALLOWED_PRICE_IMPACT_HIGH)
