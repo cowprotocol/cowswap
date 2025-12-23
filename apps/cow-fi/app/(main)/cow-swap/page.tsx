@@ -1,5 +1,6 @@
 'use client'
 
+import type { ReactNode } from 'react'
 import { useEffect, useRef } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
@@ -10,10 +11,13 @@ import IMG_ICON_UNICORN from '@cowprotocol/assets/images/icon-unicorn.svg'
 import IMG_COWSWAP_HERO from '@cowprotocol/assets/images/image-cowswap-hero.svg'
 import { Color, ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 
+import { CowFiCategory } from 'src/common/analytics/types'
+
 import FAQ from '@/components/FAQ'
 import LazyLoadTweet from '@/components/LazyLoadTweet'
 import LazySVG from '@/components/LazySVG'
 import { Link, LinkType } from '@/components/Link'
+import { COW_SWAP_CTA } from '@/const/cta'
 import { ADVANCED_ORDER_TYPES, BETTER_UX, COW_IS_DIFFERENT, FAQ_DATA, TWEETS } from '@/data/cow-swap/const'
 import {
   ContainerCard,
@@ -38,9 +42,8 @@ import {
   TopicList,
   TopicTitle,
 } from '@/styles/styled'
-import { CowFiCategory } from 'src/common/analytics/types'
 
-export default function Page() {
+export default function Page(): ReactNode {
   const analytics = useCowAnalytics()
   const tweetSectionRef = useRef<HTMLDivElement>(null)
 
@@ -82,18 +85,18 @@ export default function Page() {
           <Link
             bgColor={`var(${UI.COLOR_BLUE_900_PRIMARY})`}
             color={`var(${UI.COLOR_BLUE_300_PRIMARY})`}
-            href="https://swap.cow.fi/"
+            href={COW_SWAP_CTA.href}
             external
             linkType={LinkType.HeroButton}
-            utmContent="cow-swap-launch-app-button"
+            utmContent={COW_SWAP_CTA.utmContent}
             onClick={() =>
               analytics.sendEvent({
                 category: CowFiCategory.COWSWAP,
-                action: 'click-launch-app',
+                action: COW_SWAP_CTA.action,
               })
             }
           >
-            Launch app
+            {COW_SWAP_CTA.text}
           </Link>
         </HeroContent>
         <HeroImage width={470} height={470} color={`var(${UI.COLOR_BLUE_900_PRIMARY})`} marginMobile="24px auto 56px">
@@ -416,18 +419,18 @@ export default function Page() {
             <Link
               bgColor={`var(${UI.COLOR_BLUE_300_PRIMARY})`}
               color={`var(${UI.COLOR_BLUE_900_PRIMARY})`}
-              href="https://swap.cow.fi/"
+              href={COW_SWAP_CTA.href}
               external
               linkType={LinkType.SectionTitleButton}
-              utmContent="cow-swap-launch-app-button"
+              utmContent={COW_SWAP_CTA.utmContent}
               onClick={() =>
                 analytics.sendEvent({
                   category: CowFiCategory.COWSWAP,
-                  action: 'click-launch-app',
+                  action: COW_SWAP_CTA.action,
                 })
               }
             >
-              Launch app
+              {COW_SWAP_CTA.text}
             </Link>
           </SectionTitleWrapper>
         </ContainerCardSection>

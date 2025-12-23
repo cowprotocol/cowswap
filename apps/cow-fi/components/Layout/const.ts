@@ -3,6 +3,8 @@ import { MenuItem, ProductVariant, Color, UI } from '@cowprotocol/ui'
 
 import { CowFiCategory } from 'src/common/analytics/types'
 
+import { COW_SWAP_CTA } from '@/const/cta'
+
 const analytics = initGtm()
 
 export const PAGE_MAX_WIDTH = 1760
@@ -106,8 +108,8 @@ export const NAV_ADDITIONAL_BUTTONS = [
     color: Color.cowamm_green,
   },
   {
-    label: 'Trade on CoW Swap',
-    href: 'https://swap.cow.fi/#/1/swap/USDC/COW',
+    label: COW_SWAP_CTA.text,
+    href: COW_SWAP_CTA.deeplinkHref,
     utmContent: 'menubar-nav-button-trade-on-cow-swap',
     onClick: () =>
       analytics.sendEvent({
