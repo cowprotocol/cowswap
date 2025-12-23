@@ -84,7 +84,7 @@ export function RestrictedTokensListUpdater(): null {
 
         const tokensMap: Record<TokenId, TokenInfo> = {}
         const countriesPerToken: Record<TokenId, string[]> = {}
-        const tosHashPerToken: Record<TokenId, string> = {}
+        const consentHashPerToken: Record<TokenId, string> = {}
 
         await Promise.all(
           restrictedLists.map(async (list) => {
@@ -95,7 +95,7 @@ export function RestrictedTokensListUpdater(): null {
                 const tokenId = getTokenId(token.chainId, token.address)
                 tokensMap[tokenId] = token
                 countriesPerToken[tokenId] = list.restrictedCountries
-                tosHashPerToken[tokenId] = TERMS_OF_SERVICE_HASH
+                consentHashPerToken[tokenId] = TERMS_OF_SERVICE_HASH
               }
             } catch (error) {
               console.error(`Failed to fetch token list for ${list.name}:`, error)
@@ -106,7 +106,7 @@ export function RestrictedTokensListUpdater(): null {
         const listState: RestrictedTokenListState = {
           tokensMap,
           countriesPerToken,
-          tosHashPerToken,
+          consentHashPerToken,
           isLoaded: true,
         }
 

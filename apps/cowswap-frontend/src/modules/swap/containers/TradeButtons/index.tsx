@@ -83,7 +83,7 @@ export function TradeButtons({
       // Show consent modal if country unknown and consent not given
       if (rwaStatus === RwaTokenStatus.RequiredConsent && rwaTokenInfo) {
         openRwaConsentModal({
-          tosHash: rwaTokenInfo.tosHash,
+          consentHash: rwaTokenInfo.consentHash,
           token: rwaTokenInfo.token as TokenWithLogo,
         })
         return

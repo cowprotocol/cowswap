@@ -12,16 +12,16 @@ export interface RwaConsentModalProps {
   onDismiss(): void
   onConfirm(): void
   token?: TokenWithLogo
-  tosHash: string
+  consentHash: string
 }
 
 const IPFS_GATEWAY = 'https://ipfs.io/ipfs'
 
 export function RwaConsentModal(props: RwaConsentModalProps): ReactNode {
-  const { onDismiss, onConfirm, token, tosHash } = props
+  const { onDismiss, onConfirm, token, consentHash } = props
 
   const displaySymbol = token?.symbol || 'this token'
-  const consentUrl = `${IPFS_GATEWAY}/${tosHash}`
+  const consentUrl = `${IPFS_GATEWAY}/${consentHash}`
 
   return (
     <styledEl.Wrapper>

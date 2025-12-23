@@ -9,14 +9,14 @@ export type { TokenId }
 export interface RestrictedTokenListState {
   tokensMap: Record<TokenId, TokenInfo>
   countriesPerToken: Record<TokenId, string[]>
-  tosHashPerToken: Record<TokenId, string>
+  consentHashPerToken: Record<TokenId, string>
   isLoaded: boolean
 }
 
 const initialState: RestrictedTokenListState = {
   tokensMap: {},
   countriesPerToken: {},
-  tosHashPerToken: {},
+  consentHashPerToken: {},
   isLoaded: false,
 }
 

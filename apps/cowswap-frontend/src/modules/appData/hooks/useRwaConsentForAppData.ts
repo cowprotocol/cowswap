@@ -26,7 +26,7 @@ export function useRwaConsentForAppData(): UserConsentsMetadata | undefined {
     }
     return {
       wallet: account,
-      ipfsHash: rwaTokenInfo.tosHash,
+      ipfsHash: rwaTokenInfo.consentHash,
     }
   }, [rwaTokenInfo, account])
 
@@ -38,7 +38,7 @@ export function useRwaConsentForAppData(): UserConsentsMetadata | undefined {
     }
 
     return {
-      userConsents: [buildUserConsent(rwaTokenInfo.tosHash, consentRecord.acceptedAt)],
+      userConsents: [buildUserConsent(rwaTokenInfo.consentHash, consentRecord.acceptedAt)],
     }
   }, [status, rwaTokenInfo, consentRecord])
 }

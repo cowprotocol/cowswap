@@ -13,7 +13,7 @@ import {
 export interface RestrictedTokenInfo {
   token: TokenInfo
   restrictedCountries: string[]
-  tosHash: string
+  consentHash: string
 }
 
 function findRestrictedToken(
@@ -30,7 +30,7 @@ function findRestrictedToken(
   return {
     token: foundToken,
     restrictedCountries: restrictedList.countriesPerToken[tokenId] ?? [],
-    tosHash: restrictedList.tosHashPerToken[tokenId] ?? '',
+    consentHash: restrictedList.consentHashPerToken[tokenId] ?? '',
   }
 }
 

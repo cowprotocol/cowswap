@@ -25,7 +25,7 @@ export enum RwaTokenStatus {
 export interface RwaTokenInfo {
   token: Token
   blockedCountries: Set<string>
-  tosHash: string
+  consentHash: string
 }
 
 export interface RwaTokenStatusResult {
@@ -42,7 +42,7 @@ function convertToRwaTokenInfo(restrictedInfo: RestrictedTokenInfo, originalToke
   return {
     token: originalToken,
     blockedCountries: new Set(restrictedInfo.restrictedCountries),
-    tosHash: restrictedInfo.tosHash,
+    consentHash: restrictedInfo.consentHash,
   }
 }
 
@@ -71,7 +71,7 @@ export function useRwaTokenStatus({ inputCurrency, outputCurrency }: UseRwaToken
     }
     return {
       wallet: account,
-      ipfsHash: rwaTokenInfo.tosHash,
+      ipfsHash: rwaTokenInfo.consentHash,
     }
   }, [rwaTokenInfo, account])
 

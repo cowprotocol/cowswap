@@ -19,7 +19,7 @@ export function RwaConsentModalContainer(): ReactNode {
     }
     return {
       wallet: account,
-      ipfsHash: context.tosHash,
+      ipfsHash: context.consentHash,
     }
   }, [context, account])
 
@@ -43,5 +43,12 @@ export function RwaConsentModalContainer(): ReactNode {
     return null
   }
 
-  return <RwaConsentModal onDismiss={onDismiss} onConfirm={onConfirm} token={context.token} tosHash={context.tosHash} />
+  return (
+    <RwaConsentModal
+      onDismiss={onDismiss}
+      onConfirm={onConfirm}
+      token={context.token}
+      consentHash={context.consentHash}
+    />
+  )
 }
