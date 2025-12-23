@@ -1,3 +1,6 @@
+import { handleNativeBalance, mockSendCall } from '../support/mocks/mockSendCall'
+import { unlockCrossChainSwap } from '../support/swap'
+
 const COW = '0x0625aFB445C3B6B7B929342a04A22599fd5dBB59'
 const ETH = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee'
 
@@ -6,22 +9,19 @@ it('should be true', () => {
   expect(true).to.be.true
 })
 
-// TODO: disable this test because it's not working - needs to be fixed
-// TODO: Break down this large function into smaller functions
- 
-describe.skip('Swap (mod)', () => {
-  beforeEach(() => {
+describe('Swap (mod)', () => {
+  it('starts with empty token selected', () => {
     cy.visit('/#/11155111/swap')
-  })
-
-  it('starts with wrapped native selected', () => {
+    unlockCrossChainSwap()
     cy.get('#input-currency-input .token-amount-input').should('not.have.value')
-    cy.get('#input-currency-input .token-symbol-container').should('contain.text', 'WETH')
+    cy.get('#input-currency-input .token-symbol-container').should('contain.text', 'Select a token')
     cy.get('#output-currency-input .token-amount-input').should('not.have.value')
-    cy.get('#output-currency-input .token-symbol-container').should('contain.text', 'USDC')
+    cy.get('#output-currency-input .token-symbol-container').should('contain.text', 'Select a token')
   })
 
   it('can enter an amount into input', () => {
+    cy.visit('/#/11155111/swap')
+    unlockCrossChainSwap()
     cy.get('#input-currency-input .token-amount-input')
       .type('{selectall}{backspace}{selectall}{backspace}')
       .type('0.001')
@@ -29,6 +29,8 @@ describe.skip('Swap (mod)', () => {
   })
 
   it('zero swap amount', () => {
+    cy.visit('/#/11155111/swap')
+    unlockCrossChainSwap()
     cy.get('#input-currency-input .token-amount-input')
       .type('{selectall}{backspace}{selectall}{backspace}')
       .type('0.0')
@@ -36,6 +38,8 @@ describe.skip('Swap (mod)', () => {
   })
 
   it('invalid swap amount', () => {
+    cy.visit('/#/11155111/swap')
+    unlockCrossChainSwap()
     cy.get('#input-currency-input .token-amount-input')
       .type('{selectall}{backspace}{selectall}{backspace}')
       .type('\\')
@@ -43,6 +47,8 @@ describe.skip('Swap (mod)', () => {
   })
 
   it('can enter an amount into output', () => {
+    cy.visit('/#/11155111/swap')
+    unlockCrossChainSwap()
     // first clear/reset the INPUT currency input field
     // as it is auto prefilled with "1"
     cy.get('#input-currency-input .token-amount-input')
@@ -56,6 +62,8 @@ describe.skip('Swap (mod)', () => {
   })
 
   it('zero output amount', () => {
+    cy.visit('/#/11155111/swap')
+    unlockCrossChainSwap()
     // first clear/reset the INPUT currency input field
     // as it is auto prefilled with "1"
     cy.get('#input-currency-input .token-amount-input')
@@ -69,19 +77,35 @@ describe.skip('Swap (mod)', () => {
   })
 
   it('can find COW and swap Native for COW', () => {
+    cy.visit('/#/11155111/swap', {
+      onBeforeLoad: async (win) => {
+        mockSendCall(win.ethereum, [
+          handleNativeBalance(
+            win.ethereum,
+            await win.ethereum.signer.getAddress(),
+            50n * 10n ** 18n, // 18 decimals
+          ),
+        ])
+      },
+    })
+    unlockCrossChainSwap()
     cy.swapEnterInputAmount(ETH, '0.5', true)
     cy.swapSelectOutput(COW)
     cy.get('#output-currency-input .token-amount-input').should('not.equal', '')
-    cy.get('#swap-button > button').should('contain.text', 'Swap').click({ timeout: 10000 })
+    cy.get('#do-trade-button').should('contain.text', 'Swap').click({ timeout: 10000 })
     cy.get('#trade-confirmation > button').should('contain', 'Confirm Swap')
   })
 
   it('add a recipient does not exist unless in expert mode', () => {
+    cy.visit('/#/11155111/swap')
+    unlockCrossChainSwap()
     cy.get('#add-recipient-button').should('not.exist')
   })
 
   describe('recipient', () => {
     beforeEach(() => {
+      cy.visit('/#/11155111/swap')
+      unlockCrossChainSwap()
       cy.get('#open-settings-dialog-button').click()
       cy.get('#toggle-recipient-mode-button').click()
     })
