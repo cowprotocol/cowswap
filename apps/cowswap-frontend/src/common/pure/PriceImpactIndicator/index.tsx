@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { formatPercent } from '@cowprotocol/common-utils'
 import { Loader, HoverTooltip } from '@cowprotocol/ui'
 import { Percent } from '@uniswap/sdk-core'
@@ -33,9 +35,7 @@ const PriceImpactWrapper = styled.span<{ priceImpact$: Percent }>`
   color: ${({ theme, priceImpact$ }) => getPriceImpactColor(theme, priceImpact$)};
 `
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function PriceImpactIndicator(props: PriceImpactIndicatorProps) {
+export function PriceImpactIndicator(props: PriceImpactIndicatorProps): ReactNode {
   const { priceImpact, loading: priceImpactLoading } = props.priceImpactParams || {}
 
   return (
