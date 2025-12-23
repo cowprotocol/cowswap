@@ -17,15 +17,13 @@ const FiatValueWrapper = styled.div<{ hasValue$: boolean }>`
   transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out;
 `
 
-export function FiatValue({
-  fiatValue,
-  priceImpactParams,
-  className,
-}: {
+interface FiatValueProps {
   fiatValue?: Nullish<CurrencyAmount<Currency>>
   priceImpactParams?: PriceImpact
   className?: string
-}): ReactNode {
+}
+
+export function FiatValue({ fiatValue, priceImpactParams, className }: FiatValueProps): ReactNode {
   return (
     <FiatValueWrapper className={className} hasValue$={!!fiatValue}>
       {fiatValue ? <FiatAmount amount={fiatValue} /> : ''}
