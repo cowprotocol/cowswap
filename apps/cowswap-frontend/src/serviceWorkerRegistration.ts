@@ -105,7 +105,7 @@ export function register(config?: Config): void {
   }
 
   window.addEventListener('load', () => {
-    if (!('serviceworker' in navigator)) {
+    if (!('serviceWorker' in navigator)) {
       return
     }
 
