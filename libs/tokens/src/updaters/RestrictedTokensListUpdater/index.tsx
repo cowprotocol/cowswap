@@ -15,7 +15,7 @@ const FETCH_TIMEOUT_MS = 10_000
 const MAX_RETRIES = 1
 const RETRY_DELAY_MS = 1_000
 
-// Hardcoded IPFS hash of the consent terms - shared across all restricted token issuers
+// IPFS hash of the current consent terms - shared across all restricted token issuers
 const TERMS_OF_SERVICE_HASH = 'bafkreidcn4bhj44nnethx6clfspkapahshqyq44adz674y7je5wyfiazsq'
 
 interface TokenListResponse {
@@ -51,7 +51,6 @@ async function fetchTokenList(url: string, retries = MAX_RETRIES): Promise<Token
 
       const data: TokenListResponse = await response.json()
 
-      // Validate response structure
       if (!data.tokens || !Array.isArray(data.tokens)) {
         throw new Error(`Invalid token list response from ${url}: tokens is not an array`)
       }
@@ -67,7 +66,7 @@ async function fetchTokenList(url: string, retries = MAX_RETRIES): Promise<Token
 
       // Wait before retrying (except on last attempt)
       if (attempt < retries - 1) {
-        await delay(RETRY_DELAY_MS * (attempt + 1)) // Exponential backoff
+        await delay(RETRY_DELAY_MS * (attempt + 1))
       }
     }
   }
