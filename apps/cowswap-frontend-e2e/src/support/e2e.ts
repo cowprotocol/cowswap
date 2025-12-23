@@ -59,6 +59,7 @@ const skippedUrls = [
   // analytics
   /ads-twitter.com/,
   /doubleclick.net/,
+  /google-analytics.com/,
   /clarity.ms/,
 
   // other
@@ -68,11 +69,6 @@ const skippedUrls = [
 ]
 
 beforeEach(() => {
-  cy.on('window:before:load', (win) => {
-    win.localStorage.clear()
-    win.ethereum = injected
-  })
-
   // Infura security policies are based on Origin headers.
   // These are stripped by cypress because chromeWebSecurity === false; this adds them back in.
   cy.intercept(/infura.io/, (res) => {
@@ -84,5 +80,10 @@ beforeEach(() => {
     cy.intercept(url, (res) => {
       res.reply({ statusCode: 404 })
     })
+  })
+
+  cy.on('window:before:load', (win) => {
+    win.localStorage.clear()
+    win.ethereum = injected
   })
 })
