@@ -1,6 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
+import { getRestrictedTokenLists } from '@cowprotocol/core'
 import { TokenInfo } from '@cowprotocol/types'
 
 import {
@@ -17,75 +18,8 @@ const RETRY_DELAY_MS = 1_000
 // Hardcoded IPFS hash of the consent terms - shared across all restricted token issuers
 const TERMS_OF_SERVICE_HASH = 'bafkreidcn4bhj44nnethx6clfspkapahshqyq44adz674y7je5wyfiazsq'
 
-interface RestrictedListMetadata {
-  name: string
-  tokenListUrl: string
-  restrictedCountries: string[]
-}
-
 interface TokenListResponse {
   tokens: TokenInfo[]
-}
-
-// TODO: Replace with actual endpoint
-async function fetchRestrictedListsMetadata(): Promise<RestrictedListMetadata[]> {
-  // Mocked response - will be replaced with actual fetch
-  return [
-    {
-      name: 'Ondo Finance',
-      tokenListUrl:
-        'https://raw.githubusercontent.com/ondoprotocol/cowswap-global-markets-token-list/refs/heads/main/tokenlist.json',
-      restrictedCountries: [
-        'AF',
-        'DZ',
-        'BY',
-        'CA',
-        'CN',
-        'CU',
-        'KP',
-        'ER',
-        'IR',
-        'LY',
-        'MM',
-        'MA',
-        'NP',
-        'RU',
-        'SO',
-        'SS',
-        'SD',
-        'SY',
-        'US',
-        'VE',
-        'AT',
-        'BE',
-        'BG',
-        'HR',
-        'CY',
-        'CZ',
-        'DK',
-        'EE',
-        'FI',
-        'FR',
-        'DE',
-        'GR',
-        'HU',
-        'IE',
-        'IT',
-        'LV',
-        'LT',
-        'LU',
-        'MT',
-        'NL',
-        'PL',
-        'PT',
-        'RO',
-        'SK',
-        'SI',
-        'ES',
-        'SE',
-      ],
-    },
-  ]
 }
 
 async function fetchWithTimeout(url: string, timeoutMs: number): Promise<Response> {
@@ -147,7 +81,7 @@ export function RestrictedTokensListUpdater(): null {
   useEffect(() => {
     async function loadRestrictedTokens(): Promise<void> {
       try {
-        const restrictedLists = await fetchRestrictedListsMetadata()
+        const restrictedLists = await getRestrictedTokenLists()
 
         const tokensMap: Record<TokenId, TokenInfo> = {}
         const countriesPerToken: Record<TokenId, string[]> = {}
