@@ -30,7 +30,7 @@ export default defineConfig({
     supportFile: 'src/support/index.ts',
     video: false,
     screenshotOnRunFailure: false,
-    defaultCommandTimeout: 15_000,
-    pageLoadTimeout: 30_000, // default: 60s
+    defaultCommandTimeout: 5_000,
+    pageLoadTimeout: 15_000,
   },
 })
