@@ -6,53 +6,50 @@ import { t } from '@lingui/core/macro'
 
 import { useConfirmationRequest } from 'common/hooks/useConfirmationRequest'
 
-import { ALLOWED_PRICE_IMPACT_HIGH, PRICE_IMPACT_WITHOUT_FEE_CONFIRM_MIN } from '../constants/priceImpact'
+import { BRIDGE_PRICE_IMPACT_THRESHOLD, PRICE_IMPACT_THRESHOLD } from '../constants/priceImpact'
 
-function getDescription(priceImpactWithoutFee: Percent): string | undefined {
-  const pct = priceImpactWithoutFee.toFixed(0)
-
-  if (!priceImpactWithoutFee.lessThan(PRICE_IMPACT_WITHOUT_FEE_CONFIRM_MIN)) {
-    return t`This swap has a price impact of at least ${pct}%.`
-  }
-
-  if (!priceImpactWithoutFee.lessThan(ALLOWED_PRICE_IMPACT_HIGH)) {
-    return t`This swap has a price impact of at least ${pct}%.`
-  }
-
-  return undefined
-}
-
-function shouldSkipInput(priceImpactWithoutFee: Percent): boolean {
-  return (
-    priceImpactWithoutFee.lessThan(PRICE_IMPACT_WITHOUT_FEE_CONFIRM_MIN) &&
-    !priceImpactWithoutFee.lessThan(ALLOWED_PRICE_IMPACT_HIGH)
-  )
-}
-
-export function useConfirmPriceImpactWithoutFee(): {
+interface ConfirmPriceImpactContext {
   confirmPriceImpactWithoutFee: (priceImpactWithoutFee: Percent | undefined) => Promise<boolean>
   isConfirmed: boolean
-} {
+}
+
+export function useConfirmPriceImpactWithoutFee(isBridge: boolean): ConfirmPriceImpactContext {
   const [isConfirmed, setIsConfirmed] = useState(false)
   const onEnable = useCallback(() => setIsConfirmed(true), [])
   const triggerConfirmation = useConfirmationRequest({ onEnable })
 
   const confirmPriceImpactWithoutFee = useCallback(
-    async (priceImpactWithoutFee: Percent | undefined) => {
-      if (
-        !!priceImpactWithoutFee &&
-        (!priceImpactWithoutFee.lessThan(PRICE_IMPACT_WITHOUT_FEE_CONFIRM_MIN) ||
-          !priceImpactWithoutFee.lessThan(ALLOWED_PRICE_IMPACT_HIGH))
-      ) {
+    async (priceImpact: Percent | undefined) => {
+      const { high: highThreshold, critical: criticalThreshold } = isBridge
+        ? BRIDGE_PRICE_IMPACT_THRESHOLD
+        : PRICE_IMPACT_THRESHOLD
+
+      if (!!priceImpact && (!priceImpact.lessThan(criticalThreshold) || !priceImpact.lessThan(highThreshold))) {
         setIsConfirmed(false)
         try {
+          const shouldSkipInput = priceImpact.lessThan(criticalThreshold) && !priceImpact.lessThan(highThreshold)
+
+          const description = (() => {
+            const pct = priceImpact.toFixed(0)
+
+            if (!priceImpact.lessThan(criticalThreshold)) {
+              return t`This swap has a price impact of at least ${pct}%.`
+            }
+
+            if (!priceImpact.lessThan(highThreshold)) {
+              return t`This swap has a price impact of at least ${pct}%.`
+            }
+
+            return undefined
+          })()
+
           const result = await triggerConfirmation({
             confirmWord: t`confirm`,
             title: t`Confirm Price Impact`,
             action: t`continue with this swap`,
             callToAction: t`Confirm Swap`,
-            description: getDescription(priceImpactWithoutFee),
-            skipInput: shouldSkipInput(priceImpactWithoutFee),
+            description,
+            skipInput: shouldSkipInput,
           })
           setIsConfirmed(result)
           return result
@@ -65,7 +62,7 @@ export function useConfirmPriceImpactWithoutFee(): {
         return true
       }
     },
-    [triggerConfirmation],
+    [triggerConfirmation, isBridge],
   )
 
   return useMemo(

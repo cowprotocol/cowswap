@@ -5680,6 +5680,10 @@ msgstr "Modified recipient address to"
 #~ msgid "Something failed. Please try again later."
 #~ msgstr "Something failed. Please try again later."
 
+#: apps/cowswap-frontend/src/common/pure/PriceImpactIndicator/index.tsx
+msgid "Price impact due to liquidity levels and expected swap costs"
+msgstr "Price impact due to liquidity levels and expected swap costs"
+
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/HookSearchInput/index.tsx
 msgid "Search hooks..."
 msgstr "Search hooks..."
