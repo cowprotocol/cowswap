@@ -55,6 +55,7 @@ export { useSearchList } from './hooks/lists/useSearchList'
 export { useSearchToken } from './hooks/tokens/useSearchToken'
 export { useSearchNonExistentToken } from './hooks/tokens/useSearchNonExistentToken'
 export { useAllLpTokens } from './hooks/tokens/useAllLpTokens'
+export { useRestrictedToken, useAnyRestrictedToken } from './hooks/tokens/useRestrictedToken'
 
 // Utils
 export { getTokenId } from './state/restrictedTokens/restrictedTokensAtom'
@@ -70,5 +71,3 @@ export { fetchTokenList } from './services/fetchTokenList'
 // Consts
 export { DEFAULT_TOKENS_LISTS } from './const/tokensLists'
 export { useIsAnyOfTokensOndo } from './hooks/lists/useIsAnyOfTokensOndo'
-
-export { useRestrictedToken, useAnyRestrictedToken } from './hooks/tokens/useRestrictedToken'
