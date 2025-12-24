@@ -2,6 +2,7 @@ import React, { ReactNode } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { useIsSafeWallet } from '@cowprotocol/wallet'
 
 import { useLingui } from '@lingui/react/macro'
 
@@ -65,6 +66,7 @@ export function TradeButtons({
   const isCurrentTradeBridging = useIsCurrentTradeBridging()
   const shouldCheckBridgingRecipient = useShouldCheckBridgingRecipient()
   const smartContractRecipientConfirmed = useSmartContractRecipientConfirmed()
+  const isSafeWallet = useIsSafeWallet()
 
   const { t } = useLingui()
 
@@ -84,6 +86,8 @@ export function TradeButtons({
     hasEnoughWrappedBalanceForSwap,
     onCurrencySelection,
     confirmText,
+    isSafeWallet,
+    isCurrentTradeBridging,
   })
 
   const shouldShowAddIntermediateToken =
