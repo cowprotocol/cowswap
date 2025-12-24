@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.60.0](https://github.com/cowprotocol/cowswap/compare/explorer-v2.59.3...explorer-v2.60.0) (2025-12-24)
+
+
+### Features
+
+* add offset & limit params to getTrades ([#6567](https://github.com/cowprotocol/cowswap/issues/6567)) ([57d738d](https://github.com/cowprotocol/cowswap/commit/57d738de29b466d9c29b61cb3fd82936f760a336))
+
 ## [2.59.3](https://github.com/cowprotocol/cowswap/compare/explorer-v2.59.2...explorer-v2.59.3) (2025-12-19)
 
 
