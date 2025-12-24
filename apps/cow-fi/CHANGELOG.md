@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.30.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.29.0...cow-fi-v1.30.0) (2025-12-24)
+
+
+### Features
+
+* disable develop.cow.fi SEO indexing ([#6614](https://github.com/cowprotocol/cowswap/issues/6614)) ([6ce7c57](https://github.com/cowprotocol/cowswap/commit/6ce7c57534e275b57be97a425cd7e7692c2fa07d))
+
 ## [1.29.0](https://github.com/cowprotocol/cowswap/compare/cow-fi-v1.28.1...cow-fi-v1.29.0) (2025-12-16)
 
 

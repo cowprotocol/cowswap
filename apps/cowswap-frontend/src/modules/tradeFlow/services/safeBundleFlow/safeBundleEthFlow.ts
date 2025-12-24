@@ -182,7 +182,7 @@ export async function safeBundleEthFlow(
       kind,
       receiver: recipientAddressOrName,
       inputAmount,
-      outputAmount,
+      outputAmount: bridgeQuoteAmounts?.bridgeMinReceiveAmount || outputAmount,
       owner: account,
       uiOrderType: UiOrderType.SWAP,
       isEthFlow: true,
