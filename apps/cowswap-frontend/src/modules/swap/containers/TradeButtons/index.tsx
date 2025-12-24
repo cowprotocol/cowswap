@@ -6,8 +6,7 @@ import { useIsSafeWallet } from '@cowprotocol/wallet'
 
 import { useLingui } from '@lingui/react/macro'
 
-import { useRwaConsentModalState } from 'modules/rwa/hooks/useRwaConsentModalState'
-import { RwaTokenStatus, useRwaTokenStatus } from 'modules/rwa/hooks/useRwaTokenStatus'
+import { useRwaConsentModalState, RwaTokenStatus, useRwaTokenStatus } from 'modules/rwa'
 import { AddIntermediateToken } from 'modules/tokensList'
 import {
   useIsCurrentTradeBridging,

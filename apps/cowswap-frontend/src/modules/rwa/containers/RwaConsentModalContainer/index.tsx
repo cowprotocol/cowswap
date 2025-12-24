@@ -2,11 +2,12 @@ import { ReactNode, useCallback, useMemo } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { useRwaConsentModalState } from 'modules/rwa/hooks/useRwaConsentModalState'
-import { useRwaConsentStatus } from 'modules/rwa/hooks/useRwaConsentStatus'
-import { RwaConsentModal } from 'modules/rwa/pure/RwaConsentModal'
-import { RwaConsentKey } from 'modules/rwa/types/rwaConsent'
 import { useTradeConfirmActions } from 'modules/trade'
+
+import { useRwaConsentModalState } from '../../hooks/useRwaConsentModalState'
+import { useRwaConsentStatus } from '../../hooks/useRwaConsentStatus'
+import { RwaConsentModal } from '../../pure/RwaConsentModal'
+import { RwaConsentKey } from '../../types/rwaConsent'
 
 export function RwaConsentModalContainer(): ReactNode {
   const { account } = useWalletInfo()

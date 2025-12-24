@@ -3,9 +3,14 @@ import { useMemo } from 'react'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { useRwaConsentStatus } from 'modules/rwa/hooks/useRwaConsentStatus'
-import { RwaTokenStatus, useRwaTokenStatus } from 'modules/rwa/hooks/useRwaTokenStatus'
-import { buildUserConsent, RwaConsentKey, UserConsent } from 'modules/rwa/types/rwaConsent'
+import {
+  useRwaConsentStatus,
+  RwaTokenStatus,
+  useRwaTokenStatus,
+  buildUserConsent,
+  RwaConsentKey,
+  UserConsent,
+} from 'modules/rwa'
 import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
 
 export interface UserConsentsMetadata {
