@@ -21,7 +21,3 @@ const initialState: RestrictedTokenListState = {
 }
 
 export const restrictedTokensAtom = atom<RestrictedTokenListState>(initialState)
-
-export const setRestrictedTokensAtom = atom(null, (_get, set, listState: RestrictedTokenListState) => {
-  set(restrictedTokensAtom, listState)
-})

@@ -7,7 +7,7 @@ import { TokenInfo } from '@cowprotocol/types'
 import {
   getTokenId,
   RestrictedTokenListState,
-  setRestrictedTokensAtom,
+  restrictedTokensAtom,
   TokenId,
 } from '../../state/restrictedTokens/restrictedTokensAtom'
 
@@ -79,7 +79,7 @@ async function fetchTokenList(url: string, retries = MAX_RETRIES): Promise<Token
 }
 
 export function RestrictedTokensListUpdater({ isRwaGeoblockEnabled }: RestrictedTokensListUpdaterProps): null {
-  const setRestrictedTokens = useSetAtom(setRestrictedTokensAtom)
+  const setRestrictedTokens = useSetAtom(restrictedTokensAtom)
 
   useEffect(() => {
     // Don't load restricted tokens if RWA geoblock feature is disabled
