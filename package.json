@@ -83,7 +83,7 @@
     "@cowprotocol/cms": "^0.11.0",
     "@cowprotocol/cow-runner-game": "^0.2.9",
     "@cowprotocol/cow-sdk": "^7.2.7",
-    "@cowprotocol/sdk-bridging": "^1.1.0",
+    "@cowprotocol/sdk-bridging": "^1.1.1",
     "@cowprotocol/sdk-composable": "^0.1.23",
     "@cowprotocol/sdk-cow-shed": "^0.2.9",
     "@cowprotocol/sdk-ethers-v5-adapter": "^0.3.0",
