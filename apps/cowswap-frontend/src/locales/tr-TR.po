@@ -8,7 +8,7 @@ msgstr ""
 "Language: tr\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-12-22 11:14\n"
+"PO-Revision-Date: 2025-12-24 11:38\n"
 "Last-Translator: \n"
 "Language-Team: Turkish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -2543,6 +2543,11 @@ msgstr ""
 msgid "Amount must be at least trade amount"
 msgstr ""
 
+#: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/swapTradeButtonsMap.tsx
+#: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/swapTradeButtonsMap.tsx
+msgid "Wrap <0/> and Swap and Bridge"
+msgstr ""
+
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Add liquidity to a Uniswap v2 pool after the swap"
 #~ msgstr "Add liquidity to a Uniswap v2 pool after the swap"
@@ -3339,6 +3344,7 @@ msgstr ""
 msgid "BlockNumber hooks must be wrapped in a"
 msgstr ""
 
+#: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/swapTradeButtonsMap.tsx
 #: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/swapTradeButtonsMap.tsx
 msgid "Wrap <0/> and Swap"
 msgstr ""
