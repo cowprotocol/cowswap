@@ -48,11 +48,10 @@ export function useAnyRestrictedToken(
   inputToken: Token | undefined,
   outputToken: Token | undefined,
 ): RestrictedTokenInfo | undefined {
-  const restrictedList = useAtomValue(restrictedTokensAtom)
+  const inputTokenInfo = useRestrictedToken(inputToken)
+  const outputTokenInfo = useRestrictedToken(outputToken)
 
   return useMemo(() => {
-    if (!restrictedList.isLoaded) return undefined
-
-    return findRestrictedToken(inputToken, restrictedList) ?? findRestrictedToken(outputToken, restrictedList)
-  }, [inputToken, outputToken, restrictedList])
+    return inputTokenInfo ?? outputTokenInfo
+  }, [inputTokenInfo, outputTokenInfo])
 }
