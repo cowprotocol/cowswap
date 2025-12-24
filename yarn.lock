@@ -1774,10 +1774,10 @@
   resolved "https://registry.yarnpkg.com/@cowprotocol/cow-runner-game/-/cow-runner-game-0.2.9.tgz#3f94b3f370bd114f77db8b1d238cba3ef4e9d644"
   integrity sha512-rX7HnoV+HYEEkBaqVUsAkGGo0oBrExi+d6Io+8nQZYwZk+IYLmS9jdcIObsLviM2h4YX8+iin6NuKl35AaiHmg==
 
-"@cowprotocol/cow-sdk@^7.2.7":
-  version "7.2.7"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-7.2.7.tgz#61707e4d42537ee22a709cbba04134fa229cf720"
-  integrity sha512-V751IRp4Ki6oyMFcEUctHM+0pa4PPsZQVkYAf7tWLVpPV+S3+kzxFBfg2PF6OsCqKEqiGHQWhz8zw5JUFyJewQ==
+"@cowprotocol/cow-sdk@^7.2.8":
+  version "7.2.8"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/cow-sdk/-/cow-sdk-7.2.8.tgz#adaa74959e399f61278bcb46df1fdc160287b1bb"
+  integrity sha512-ph5dN7K8km93jntJtwNjpiAPyt2PgxlYhxOLgva3UH9YP5A9ZXbw4y1UTHo5Ge+F2i7kovYAO+J9zhqUITmiJA==
   dependencies:
     "@cowprotocol/sdk-app-data" "4.4.0"
     "@cowprotocol/sdk-common" "0.4.0"
@@ -1785,7 +1785,7 @@
     "@cowprotocol/sdk-contracts-ts" "1.0.0"
     "@cowprotocol/sdk-order-book" "0.5.0"
     "@cowprotocol/sdk-order-signing" "0.1.23"
-    "@cowprotocol/sdk-trading" "0.7.3"
+    "@cowprotocol/sdk-trading" "0.7.4"
 
 "@cowprotocol/sdk-app-data@4.4.0":
   version "4.4.0"
@@ -1799,10 +1799,10 @@
     json-stringify-deterministic "^1.0.8"
     multiformats "^9.6.4"
 
-"@cowprotocol/sdk-bridging@^1.1.1":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/sdk-bridging/-/sdk-bridging-1.1.1.tgz#00703dfcead70743d6d62b2b3aea19170ec5745b"
-  integrity sha512-QCHxYe6rDr23aj06FGDDUR2SRgIqQysdzh1RWXJqSpg3wO2p5tmCbRJowHtrcu9w6FbFEetn4w0oddJciBtraA==
+"@cowprotocol/sdk-bridging@^1.1.2":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/sdk-bridging/-/sdk-bridging-1.1.2.tgz#082e625ae0c7f5ec9fb86ba1dd8f528e4bd356f0"
+  integrity sha512-E6hxhm/Y/Tyw75Td7oJaJk51pcNguew/A7uEuiSdBcgCNK7j+TbiAdOIF9Szkqs7WRcJ+rs4gBZqmCfsHQoHdQ==
   dependencies:
     "@cowprotocol/sdk-app-data" "4.4.0"
     "@cowprotocol/sdk-common" "0.4.0"
@@ -1810,7 +1810,7 @@
     "@cowprotocol/sdk-contracts-ts" "1.0.0"
     "@cowprotocol/sdk-cow-shed" "0.2.9"
     "@cowprotocol/sdk-order-book" "0.5.0"
-    "@cowprotocol/sdk-trading" "0.7.3"
+    "@cowprotocol/sdk-trading" "0.7.4"
     "@cowprotocol/sdk-weiroll" "0.1.11"
     "@defuse-protocol/one-click-sdk-typescript" "0.1.1-0.2"
     json-stable-stringify "^1.3.0"
@@ -1895,10 +1895,10 @@
     graphql "^16.11.0"
     graphql-request "^4.3.0"
 
-"@cowprotocol/sdk-trading@0.7.3":
-  version "0.7.3"
-  resolved "https://registry.yarnpkg.com/@cowprotocol/sdk-trading/-/sdk-trading-0.7.3.tgz#0f5bc5e4645ff99d733f7954117835e2efcde0f5"
-  integrity sha512-7AKNTTvHzPtfcDIa4N6SWCaCnozmki5k2ixYdYoBssc8cmIjYNOYArd8tKLjTRBClXRhu/f9OCQhSjkUiAtWuQ==
+"@cowprotocol/sdk-trading@0.7.4":
+  version "0.7.4"
+  resolved "https://registry.yarnpkg.com/@cowprotocol/sdk-trading/-/sdk-trading-0.7.4.tgz#f7d79e5ff1dcd2a0058fd2faf771234a57dd3022"
+  integrity sha512-JilcXNmZyvrQHmiUnsDhNJGPXjq5TP2d+PG8GDolD0e3xaWkm83wuQgcZl19uKc63tAL6MLOfS7eGedVN2mJRQ==
   dependencies:
     "@cowprotocol/sdk-app-data" "4.4.0"
     "@cowprotocol/sdk-common" "0.4.0"
