@@ -66,7 +66,7 @@ const TOOLTIPS_MSG: Record<string, MessageDescriptor> = {
   EXECUTES_AT: msg`Network costs (incl. gas) are covered by filling your order when the market price is better than your limit price.`,
   FILLED_TWAP: msg`How much of the order has been filled.`,
   SURPLUS: msg`The amount of extra tokens you get on top of your limit price.`,
-  NETWORK_COSTS: msg`CoW Protocol covers the costs by executing your order at a slightly better price than your limit price.`,
+  NETWORK_COSTS: msg`CoW Protocol covers the fees and costs by executing your order at a slightly better price than your limit price.`,
   CREATED: msg`Your order was created on this date & time. It will remain open until it expires or is filled.`,
   RECEIVER: msg`The account address which will/did receive the bought amount.`,
   EXPIRY: msg`If your order has not been filled by this date & time, it will expire. Don't worry - expirations and order placement are free on CoW Swap!`,
@@ -258,7 +258,7 @@ export function ReceiptModal({
             {(!twapOrder || isTwapPartOrder) && (
               <>
                 <styledEl.Field>
-                  <FieldLabel label={t`Network costs`} tooltip={i18n._(TOOLTIPS_MSG.NETWORK_COSTS)} />
+                  <FieldLabel label={t`Network fees and costs`} tooltip={i18n._(TOOLTIPS_MSG.NETWORK_COSTS)} />
                   <FeeField order={order} />
                 </styledEl.Field>
               </>
