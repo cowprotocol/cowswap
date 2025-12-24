@@ -49,6 +49,15 @@ export const swapTradeButtonsMap: Record<SwapFormState, SwapTradeButton> = {
       </div>
     </ButtonError>
   ),
+  [SwapFormState.WrapAndSwapAndBridge]: (props: SwapTradeButtonsContext, isDisabled: boolean) => (
+    <ButtonError buttonSize={ButtonSize.BIG} onClick={props.openSwapConfirm} disabled={isDisabled}>
+      <div>
+        <Trans>
+          Wrap <TokenSymbol token={props.inputCurrency} length={6} /> and Swap and Bridge
+        </Trans>
+      </div>
+    </ButtonError>
+  ),
   [SwapFormState.RegularEthFlowSwap]: (props: SwapTradeButtonsContext, isDisabled: boolean) => (
     <Wrapper>
       <ButtonError buttonSize={ButtonSize.BIG} onClick={props.openSwapConfirm} disabled={isDisabled}>
