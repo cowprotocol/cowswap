@@ -30,7 +30,6 @@ const baseOrder: Order = {
   id: '0x123456789abcdef',
   owner: '0x1234567890123456789012345678901234567890',
   receiver: '0x1234567890123456789012345678901234567890',
-  summary: '',
   class: OrderClass.MARKET,
   status: OrderStatus.PENDING,
   creationTime: '2024-01-01T00:00:00Z',
