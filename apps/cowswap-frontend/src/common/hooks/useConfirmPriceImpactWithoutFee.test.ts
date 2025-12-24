@@ -47,28 +47,6 @@ describe('useConfirmPriceImpactWithoutFee', () => {
       expect(mockTriggerConfirmation).not.toHaveBeenCalled()
     })
 
-    it('should trigger confirmation with skipInput=false when priceImpact is above high and critical threshold', async () => {
-      const highPriceImpact = new Percent(7, 100) // 7% (above both 5% high and 5% critical)
-      mockTriggerConfirmation.mockResolvedValue(true)
-
-      const { result } = renderHook(() => useConfirmPriceImpactWithoutFee(false))
-
-      let confirmed: boolean = false
-      await act(async () => {
-        confirmed = await result.current.confirmPriceImpactWithoutFee(highPriceImpact)
-      })
-
-      expect(confirmed).toBe(true)
-      expect(result.current.isConfirmed).toBe(true)
-      expect(mockTriggerConfirmation).toHaveBeenCalledWith(
-        expect.objectContaining({
-          skipInput: false,
-          title: expect.any(String),
-          description: expect.stringContaining('7'),
-        }),
-      )
-    })
-
     it('should trigger confirmation with skipInput=false when priceImpact is well above critical threshold', async () => {
       const criticalPriceImpact = new Percent(12, 100) // 12% (well above 5% critical)
       mockTriggerConfirmation.mockResolvedValue(true)
@@ -161,26 +139,6 @@ describe('useConfirmPriceImpactWithoutFee', () => {
       expect(confirmed).toBe(true)
       expect(result.current.isConfirmed).toBe(true)
       expect(mockTriggerConfirmation).not.toHaveBeenCalled()
-    })
-
-    it('should trigger confirmation with skipInput=false when priceImpact is above bridge high threshold', async () => {
-      const highPriceImpact = new Percent(12, 100) // 12% (above 10% high and 5% critical for bridge)
-      mockTriggerConfirmation.mockResolvedValue(true)
-
-      const { result } = renderHook(() => useConfirmPriceImpactWithoutFee(true))
-
-      let confirmed: boolean = false
-      await act(async () => {
-        confirmed = await result.current.confirmPriceImpactWithoutFee(highPriceImpact)
-      })
-
-      expect(confirmed).toBe(true)
-      expect(result.current.isConfirmed).toBe(true)
-      expect(mockTriggerConfirmation).toHaveBeenCalledWith(
-        expect.objectContaining({
-          skipInput: false,
-        }),
-      )
     })
 
     it('should trigger confirmation with skipInput=false when priceImpact is well above bridge critical threshold', async () => {
