@@ -10,6 +10,7 @@ export { TokensListsTagsUpdater } from './updaters/TokensListsTagsUpdater'
 export { UnsupportedTokensUpdater } from './updaters/UnsupportedTokensUpdater'
 export { WidgetTokensListsUpdater } from './updaters/WidgetTokensListsUpdater'
 export { RestrictedTokensListUpdater } from './updaters/RestrictedTokensListUpdater'
+export type { RestrictedTokensListUpdaterProps } from './updaters/RestrictedTokensListUpdater'
 
 // Pure components
 export { TokenLogo, TokenLogoWrapper } from './pure/TokenLogo'

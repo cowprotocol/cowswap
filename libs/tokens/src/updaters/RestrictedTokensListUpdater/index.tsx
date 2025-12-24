@@ -18,6 +18,10 @@ const RETRY_DELAY_MS = 1_000
 // IPFS hash of the current consent terms - shared across all restricted token issuers
 const TERMS_OF_SERVICE_HASH = 'bafkreidcn4bhj44nnethx6clfspkapahshqyq44adz674y7je5wyfiazsq'
 
+export interface RestrictedTokensListUpdaterProps {
+  isRwaGeoblockEnabled: boolean | undefined
+}
+
 interface TokenListResponse {
   tokens: TokenInfo[]
 }
@@ -74,10 +78,15 @@ async function fetchTokenList(url: string, retries = MAX_RETRIES): Promise<Token
   throw lastError ?? new Error(`Failed to fetch token list from ${url} after ${retries} attempts`)
 }
 
-export function RestrictedTokensListUpdater(): null {
+export function RestrictedTokensListUpdater({ isRwaGeoblockEnabled }: RestrictedTokensListUpdaterProps): null {
   const setRestrictedTokens = useSetAtom(setRestrictedTokensAtom)
 
   useEffect(() => {
+    // Don't load restricted tokens if RWA geoblock feature is disabled
+    if (!isRwaGeoblockEnabled) {
+      return
+    }
+
     async function loadRestrictedTokens(): Promise<void> {
       try {
         const restrictedLists = await getRestrictedTokenLists()
@@ -117,7 +126,7 @@ export function RestrictedTokensListUpdater(): null {
     }
 
     loadRestrictedTokens()
-  }, [setRestrictedTokens])
+  }, [setRestrictedTokens, isRwaGeoblockEnabled])
 
   return null
 }

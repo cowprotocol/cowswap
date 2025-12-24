@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { areTokensEqual } from '@cowprotocol/common-utils'
 import { useAnyRestrictedToken, RestrictedTokenInfo } from '@cowprotocol/tokens'
 import { Nullish } from '@cowprotocol/types'
@@ -47,6 +48,7 @@ function convertToRwaTokenInfo(restrictedInfo: RestrictedTokenInfo, originalToke
 }
 
 export function useRwaTokenStatus({ inputCurrency, outputCurrency }: UseRwaTokenStatusParams): RwaTokenStatusResult {
+  const { isRwaGeoblockEnabled } = useFeatureFlags()
   const { account } = useWalletInfo()
   const geoStatus = useGeoStatus()
 
@@ -78,6 +80,11 @@ export function useRwaTokenStatus({ inputCurrency, outputCurrency }: UseRwaToken
   const { consentStatus } = useRwaConsentStatus(consentKey)
 
   const status = useMemo((): RwaTokenStatus => {
+    // If RWA geoblock feature is disabled, always allow trading
+    if (!isRwaGeoblockEnabled) {
+      return RwaTokenStatus.Allowed
+    }
+
     if (!rwaTokenInfo) {
       return RwaTokenStatus.Allowed
     }
@@ -99,7 +106,7 @@ export function useRwaTokenStatus({ inputCurrency, outputCurrency }: UseRwaToken
     }
 
     return RwaTokenStatus.RequiredConsent
-  }, [rwaTokenInfo, geoStatus.country, consentStatus])
+  }, [isRwaGeoblockEnabled, rwaTokenInfo, geoStatus.country, consentStatus])
 
   return {
     status,
