@@ -13,12 +13,6 @@ export interface RwaConsentKey {
   ipfsHash: string
 }
 
-export type ConsentKey = `rwaConsent:${string}:${string}`
-
-export function getRwaConsentStorageKey({ wallet, ipfsHash }: RwaConsentKey): ConsentKey {
-  return `rwaConsent:${wallet}:${ipfsHash}`
-}
-
 export type RwaConsentCacheKey = `${string}-${string}`
 
 export function buildRwaConsentKey({ wallet, ipfsHash }: RwaConsentKey): RwaConsentCacheKey {
