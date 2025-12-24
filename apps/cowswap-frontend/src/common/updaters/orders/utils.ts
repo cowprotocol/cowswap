@@ -6,10 +6,11 @@ import {
   shortenAddress,
 } from '@cowprotocol/common-utils'
 import { EnrichedOrder, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
+import { CrossChainOrder } from '@cowprotocol/sdk-bridging'
+import { BridgeOrderData } from '@cowprotocol/types'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
-import JSBI from 'jsbi'
 
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 import { classifyOrder, OrderTransitionStatus } from 'legacy/state/orders/utils'
@@ -18,13 +19,17 @@ import { getOrder } from 'api/cowProtocol'
 import { getIsComposableCowChildOrder } from 'utils/orderUtils/getIsComposableCowChildOrder'
 import { getUiOrderType, getUiOrderTypeTitles, UiOrderTypeParams } from 'utils/orderUtils/getUiOrderType'
 
-export function computeOrderSummary({
-  orderFromStore,
-  orderFromApi,
-}: {
+import { TradeAmounts } from '../../types'
+
+type UltimateOrderData = {
   orderFromStore: Order
   orderFromApi: EnrichedOrder | null
-}): string | undefined {
+  bridgeOrderFromStore?: BridgeOrderData
+  bridgeOrderFromApi?: CrossChainOrder
+}
+
+export function computeOrderSummary(ultimateOrder: UltimateOrderData): string | undefined {
+  const { orderFromStore, orderFromApi } = ultimateOrder
   const genericOrder = orderFromApi ?? orderFromStore
 
   const owner = genericOrder?.owner
@@ -34,51 +39,72 @@ export function computeOrderSummary({
 
   const recipientSuffix = receiver && !areAddressesEqual(receiver, owner) ? t`to` + ` ${shortenAddress(receiver)}` : ''
 
-  const { inputToken, outputToken } = orderFromStore
-  const executedBuyAmount = orderFromStore.apiAdditionalInfo?.executedBuyAmount
-  const executedSellAmount = orderFromStore.apiAdditionalInfo?.executedSellAmount
-
-  const summaryAmounts = getOrderSummaryAmounts(
-    genericOrder,
-    inputToken,
-    outputToken,
-    executedBuyAmount,
-    executedSellAmount,
-  )
+  const summaryAmounts = getOrderSummary(genericOrder, getOrderTradeAmounts(ultimateOrder))
 
   // ${Swap} ${10 DAI at least 10 USDC} ${to 0x000..aaa}
   return `${orderTitle} ${summaryAmounts} ${recipientSuffix}`.trim()
 }
 
-function stringToCurrency(amount: string, currency: Currency): CurrencyAmount<Currency> {
-  return CurrencyAmount.fromRawAmount(currency, JSBI.BigInt(amount))
-}
+function getOrderTradeAmounts({
+  orderFromStore,
+  orderFromApi,
+  bridgeOrderFromStore,
+  bridgeOrderFromApi,
+}: UltimateOrderData): TradeAmounts {
+  const genericOrder = orderFromApi ?? orderFromStore
+  const { status } = genericOrder
 
-function getOrderSummaryAmounts(
-  genericOrder: EnrichedOrder | Order,
-  inputToken: Token,
-  outputToken: Token,
-  executedBuyAmount: string | undefined,
-  executedSellAmount: string | undefined,
-): string {
-  const { status, kind } = genericOrder
+  const { inputToken, outputToken } = orderFromStore
+  const executedBuyAmount = orderFromStore.apiAdditionalInfo?.executedBuyAmount
+  const executedSellAmount = orderFromStore.apiAdditionalInfo?.executedSellAmount
+  const isFulfilled = status === OrderStatus.FULFILLED && executedBuyAmount && executedSellAmount
+
+  // Bridge order
+  if (bridgeOrderFromStore) {
+    // Executed order
+    if (bridgeOrderFromApi?.bridgingParams.outputAmount) {
+      return {
+        inputAmount: bridgeOrderFromStore.quoteAmounts.swapSellAmount,
+        outputAmount: CurrencyAmount.fromRawAmount(
+          bridgeOrderFromStore.quoteAmounts.bridgeMinReceiveAmount.currency,
+          bridgeOrderFromApi.bridgingParams.outputAmount.toString(),
+        ),
+      }
+    }
+
+    return {
+      inputAmount: bridgeOrderFromStore.quoteAmounts.swapSellAmount,
+      outputAmount: bridgeOrderFromStore.quoteAmounts.bridgeMinReceiveAmount,
+    }
+  }
+
+  // Executed swap order
+  if (isFulfilled) {
+    return {
+      inputAmount: stringToCurrency(executedSellAmount, inputToken),
+      outputAmount: stringToCurrency(executedBuyAmount, outputToken),
+    }
+  }
 
   const sellAmount = genericOrder.sellAmount
   const feeAmount = genericOrder.feeAmount
   const buyAmount = genericOrder.buyAmount
-  const isFulfilled = status === OrderStatus.FULFILLED && executedBuyAmount && executedSellAmount
+
+  // Any other swap orders
+  return {
+    inputAmount: stringToCurrency(sellAmount, inputToken).add(stringToCurrency(feeAmount, inputToken)),
+    outputAmount: stringToCurrency(buyAmount, outputToken),
+  }
+}
+
+function getOrderSummary(genericOrder: EnrichedOrder | Order, { inputAmount, outputAmount }: TradeAmounts): string {
+  const { status, kind } = genericOrder
+
+  const isFulfilled = status === OrderStatus.FULFILLED
 
   if (isFulfilled) {
-    // don't show amounts in atoms
-    const inputAmount = stringToCurrency(executedSellAmount, inputToken)
-    const outputAmount = stringToCurrency(executedBuyAmount, outputToken)
-
     return `${stringifyAmount(inputAmount)} ` + t`for` + ` ${stringifyAmount(outputAmount)}`
   } else {
-    // sellAmount doesn't include the fee, so we add it back to not show a different value when the order is traded
-    const inputAmount = stringToCurrency(sellAmount, inputToken).add(stringToCurrency(feeAmount, inputToken))
-    const outputAmount = stringToCurrency(buyAmount, outputToken)
-
     const isSell = isSellOrder(kind)
 
     const inputPrefix = !isSell ? t`at most` + ` ` : ''
@@ -88,6 +114,10 @@ function getOrderSummaryAmounts(
       `${inputPrefix}${stringifyAmount(inputAmount)} ` + t`for` + ` ${outputPrefix}${stringifyAmount(outputAmount)}`
     )
   }
+}
+
+function stringToCurrency(amount: string, currency: Currency): CurrencyAmount<Currency> {
+  return CurrencyAmount.fromRawAmount(currency, amount)
 }
 
 function stringifyAmount(amount: CurrencyAmount<Currency>): string {
