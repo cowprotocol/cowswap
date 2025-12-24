@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
-import type { CrossChainOrder } from '@cowprotocol/sdk-bridging'
+import type { BridgeProviderType, CrossChainOrder } from '@cowprotocol/sdk-bridging'
 import { Command } from '@cowprotocol/types'
 import { TruncatedText } from '@cowprotocol/ui/pure/TruncatedText'
 
@@ -15,6 +15,7 @@ import { TableState } from 'explorer/components/TokensTableWidget/useTable'
 import { TAB_QUERY_PARAM_KEY } from 'explorer/const'
 import { useQuery, useUpdateQueryString } from 'hooks/useQuery'
 import { useLocation } from 'react-router'
+import { knownBridgeProviders } from 'sdk/cowSdk'
 import { useNetworkId } from 'state/network'
 import { SWRResponse } from 'swr'
 import { Errors } from 'types'
@@ -81,6 +82,9 @@ const tabItems = (
   const showFills = order?.partiallyFillable && !order.txHash && hasMultipleTrades
 
   const { data: crossChainOrder, isLoading: crossChainOrderLoading } = crossChainOrderResponse
+  const bridgeProviderType: BridgeProviderType | undefined =
+    crossChainOrder?.provider.type ||
+    knownBridgeProviders.find((provider) => provider.info.dappId === order?.bridgeProviderId)?.type
 
   const noTokens = Boolean(!isOrderLoading && order && !areTokensLoaded)
 
@@ -91,7 +95,7 @@ const tabItems = (
         order={order}
         showFillsButton={showFills}
         areTradesLoading={areTradesLoading}
-        bridgeProviderType={crossChainOrder?.provider.type}
+        bridgeProviderType={bridgeProviderType}
       >
         <VerboseDetails
           order={order}
