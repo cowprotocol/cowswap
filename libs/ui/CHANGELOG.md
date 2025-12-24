@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.31.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.30.1...ui-v1.31.0) (2025-12-24)
+
+
+### Features
+
+* **bridge:** enable Near bridge provider for smart-contract wallets ([#6618](https://github.com/cowprotocol/cowswap/issues/6618)) ([0da32ab](https://github.com/cowprotocol/cowswap/commit/0da32abcd12183396870055f3cf92bc7b53002a3))
+
 ## [1.30.1](https://github.com/cowprotocol/cowswap/compare/ui-v1.30.0...ui-v1.30.1) (2025-12-15)
 
 
