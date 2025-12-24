@@ -64,9 +64,7 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
       }
 
       // When dismissing the modal, close it and also reset context
-      // TODO: Add proper return type annotation
-      // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-      const onDismiss = () => {
+      const onDismiss = (): void => {
         closeModal()
         resetContext()
       }
