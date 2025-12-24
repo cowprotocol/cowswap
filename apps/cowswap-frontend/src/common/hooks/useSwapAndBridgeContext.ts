@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-imports */ // TODO: Don't use 'modules' import
 import { useMemo } from 'react'
 
 import { getChainInfo, TokenWithLogo } from '@cowprotocol/common-const'
@@ -199,6 +200,7 @@ export function useSwapAndBridgeContext(
       buyAmount: swapAndBridgeOverview.targetAmounts.buyAmount,
       buyAmountUsd: null,
       bridgeMinReceiveAmount,
+      bridgeMinReceiveAmountUsd: null,
       bridgeMinDepositAmount: null,
       bridgeMinDepositAmountUsd: null,
       expectedToReceive: null,

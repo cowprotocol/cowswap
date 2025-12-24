@@ -1,5 +1,3 @@
-
-
 import { ACCOUNT_PROXY_LABEL_EXPLORER } from '@cowprotocol/common-const'
 
 import { AccountProxyLink } from '../shared/AccountProxyLink'
@@ -14,7 +12,8 @@ export const DetailsTableTooltips = {
       amount of the Swap before the bridge is initiated.
     </span>
   ),
-  toBridgeReceiver: 'This bridge provider uses special receiver address to bridge funds. This address is deterministic for a quote and has been verified by CoW Swap.',
+  toBridgeReceiver:
+    'This bridge provider uses special receiver address to bridge funds. This address is deterministic for a quote and has been verified by CoW Swap.',
   hash: 'The onchain settlement transaction for this order. Can be viewed on Etherscan.',
   appData:
     'The AppData hash for this order. It can denote encoded metadata with info on the app, environment and more, although not all interfaces follow the same pattern. Show more will try to decode that information.',

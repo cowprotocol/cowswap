@@ -6,7 +6,6 @@ import { ListState, TokenListsByChainState } from '../../types'
 const OLD_STORAGE_KEY = 'allTokenListsInfoAtom:v6'
 const NEW_STORAGE_KEY = 'allTokenListsInfoAtom:v7'
 
-
 const GITHUB_RAW_PREFIXES = [
   'https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/',
   'https://raw.githubusercontent.com/cowprotocol/token-lists/refs/heads/main/src/public/',
@@ -48,10 +47,10 @@ export async function migrateTokenListsFromGithubCdn(): Promise<void> {
       const newChainState: { [source: string]: ListState | 'deleted' } = {}
 
       for (const [source, listState] of Object.entries(chainState)) {
-        const isGithubTokenListUrl = GITHUB_RAW_PREFIXES.some((prefix) => source.startsWith(prefix));
-          if (!isGithubTokenListUrl) {
-            newChainState[source] = listState;
-          }
+        const isGithubTokenListUrl = GITHUB_RAW_PREFIXES.some((prefix) => source.startsWith(prefix))
+        if (!isGithubTokenListUrl) {
+          newChainState[source] = listState
+        }
       }
 
       v7Data[chainId] = newChainState

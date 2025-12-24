@@ -1,22 +1,14 @@
 import { useMemo } from 'react'
 
-import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useTryFindToken } from '@cowprotocol/tokens'
-import { Currency, CurrencyAmount, Price } from '@uniswap/sdk-core'
+import { CurrencyAmount, Price } from '@uniswap/sdk-core'
 
 import { useTradeQuote } from 'modules/tradeQuote'
 
+import { BridgeEstimatedAmounts } from 'common/types/bridge'
 import { getBridgeIntermediateTokenAddress } from 'common/utils/getBridgeIntermediateTokenAddress'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
-
-export interface BridgeEstimatedAmounts {
-  sellAmount: CurrencyAmount<Currency>
-  expectedToReceiveAmount: CurrencyAmount<Currency>
-  feeAmount: CurrencyAmount<Currency>
-  minToReceiveAmount: CurrencyAmount<Currency>
-  intermediateCurrency: TokenWithLogo
-}
 
 export function useEstimatedBridgeBuyAmount(): BridgeEstimatedAmounts | null {
   const { outputCurrency } = useDerivedTradeState() ?? {}
@@ -26,7 +18,7 @@ export function useEstimatedBridgeBuyAmount(): BridgeEstimatedAmounts | null {
 
   const intermediateCurrency = useTryFindToken(getBridgeIntermediateTokenAddress(bridgeQuote))?.token ?? undefined
 
-  const swapBuyAmountRaw = quoteResults?.amountsAndCosts.beforeAllFees.buyAmount
+  const swapBuyAmountRaw = quoteResults?.amountsAndCosts.afterPartnerFees.buyAmount
   const bridgeSellAmountRaw = bridgeQuote?.amountsAndCosts.beforeFee.sellAmount
   const bridgeBuyAmountRaw = bridgeQuote?.amountsAndCosts.beforeFee.buyAmount
   const feeAmountRaw = bridgeQuote?.amountsAndCosts.costs.bridgingFee.amountInSellCurrency
@@ -51,11 +43,11 @@ export function useEstimatedBridgeBuyAmount(): BridgeEstimatedAmounts | null {
     })
 
     const expectedToReceiveAmount = bridgePrice.quote(swapBuyAmount)
+
     const feeAmount = CurrencyAmount.fromRawAmount(expectedToReceiveAmount.currency, feeAmountRaw.toString())
     const minToReceiveAmount = expectedToReceiveAmount.subtract(feeAmount)
 
     return {
-      sellAmount: bridgeSellAmount,
       expectedToReceiveAmount,
       feeAmount,
       minToReceiveAmount,

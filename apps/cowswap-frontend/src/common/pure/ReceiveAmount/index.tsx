@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-imports */ // TODO: Don't use 'modules' import
 import { ReactNode } from 'react'
 
 import { TokenAmount } from '@cowprotocol/ui'

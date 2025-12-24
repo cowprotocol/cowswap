@@ -48,6 +48,8 @@ import {
   RightAligned,
   RootNavItem,
   StyledDropdownContentItem,
+  HideMobile,
+  isMobileQuery,
 } from './styled'
 
 import { Media } from '../../consts'
@@ -933,7 +935,7 @@ export const MenuBar = (props: MenuBarProps) => {
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleSettingsToggle = () => setIsSettingsOpen((prev) => !prev)
 
-  const isMobile = useMediaQuery(Media.upToLarge(false))
+  const isMobile = useMediaQuery(isMobileQuery(false))
   const isMedium = useMediaQuery(Media.upToMedium(false))
 
   useOnClickOutside([menuRef], () => setIsDaoOpen(false))
@@ -1006,20 +1008,22 @@ export const MenuBar = (props: MenuBarProps) => {
         />
 
         {!isMobile && (
-          <NavItems ref={navItemsRef}>
-            {navItems.map((item, index) => (
-              <NavItem
-                key={index}
-                item={item}
-                LinkComponent={LinkComponent}
-                mobileMode={isMobile}
-                openDropdown={openDropdown}
-                closeDropdown={() => setOpenDropdown(null)}
-                setOpenDropdown={setOpenDropdown}
-                rootDomain={rootDomain}
-              />
-            ))}
-          </NavItems>
+          <HideMobile>
+            <NavItems ref={navItemsRef}>
+              {navItems.map((item, index) => (
+                <NavItem
+                  key={index}
+                  item={item}
+                  LinkComponent={LinkComponent}
+                  mobileMode={isMobile}
+                  openDropdown={openDropdown}
+                  closeDropdown={() => setOpenDropdown(null)}
+                  setOpenDropdown={setOpenDropdown}
+                  rootDomain={rootDomain}
+                />
+              ))}
+            </NavItems>
+          </HideMobile>
         )}
 
         <RightAligned mobileMode={isMedium} flexFlowMobile="row wrap">

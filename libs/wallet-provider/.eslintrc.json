@@ -1,5 +1,5 @@
 {
-  "extends": ["../../.eslintrc.json"],
+  "extends": ["../../eslint.config.js"],
   "ignorePatterns": ["!**/*"],
   "overrides": [
     {

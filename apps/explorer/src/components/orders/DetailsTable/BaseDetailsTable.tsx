@@ -85,7 +85,6 @@ export function BaseDetailsTable({
       : DetailsTableTooltips.toBridgeProxy
     : DetailsTableTooltips.to
 
-
   return (
     <SimpleTable
       columnViewMobile

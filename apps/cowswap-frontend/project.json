@@ -35,7 +35,8 @@
       "executor": "@nx/vite:dev-server",
       "defaultConfiguration": "development",
       "options": {
-        "buildTarget": "cowswap-frontend:build"
+        "buildTarget": "cowswap-frontend:build",
+        "host": true
       },
       "configurations": {
         "dev": {

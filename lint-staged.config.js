@@ -1,9 +1,9 @@
 module.exports = {
-  '*.{ts,tsx,js,jsx}': files => {
-    const list = files.map(f => `"${f}"`).join(' ');
+  '*.{ts,tsx,js,jsx,mts}': (files) => {
+    const list = files.map((f) => `"${f}"`).join(' ')
     return [
-      `eslint --fix --max-warnings=0 ${list}`,
-      `git add ${list}`
-    ];
-  }
-};
+      `eslint --fix --concurrency auto ${list}`,
+      // `git add ${list}`, // lint-staged automatically adds files
+    ]
+  },
+}

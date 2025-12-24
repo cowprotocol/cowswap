@@ -24,7 +24,15 @@ export function useBridgeSupportedTokens(
 
   return useSWR(
     isBridgingEnabled
-      ? [params, params?.sellChainId, params?.buyChainId, params?.sellTokenAddress, key, tokenListSize, 'useBridgeSupportedTokens']
+      ? [
+          params,
+          params?.sellChainId,
+          params?.buyChainId,
+          params?.sellTokenAddress,
+          key,
+          tokenListSize,
+          'useBridgeSupportedTokens',
+        ]
       : null,
     async ([params]) => {
       if (typeof params === 'undefined') return null

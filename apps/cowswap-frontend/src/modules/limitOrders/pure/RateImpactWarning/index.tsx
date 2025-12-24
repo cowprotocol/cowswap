@@ -84,7 +84,7 @@ export function RateImpactWarning({
         </div>
         <div>
           <Trans>
-            Your limit price is {absoluteRateImpact}% lower than current market price. You could be selling your
+            Your limit price is {absoluteRateImpact}% lower than current market price. You could be selling your{' '}
             <TokenSymbol token={inputCurrency} /> at a loss (although CoW Swap will always try to give you the best
             price regardless).
           </Trans>

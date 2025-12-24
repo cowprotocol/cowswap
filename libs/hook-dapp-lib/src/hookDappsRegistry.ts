@@ -162,8 +162,7 @@ export const hookDappsRegistry = {
     description: `Bungee is a liquidity marketplace that lets you swap into any token on any chain in a fully abstracted manner. Trade any token with the best quotes and a gasless UX!`,
     version: '0.0.1',
     website: 'https://www.bungee.exchange',
-    image:
-      'https://files.cow.fi/cow-sdk/bridging/providers/bungee/bungee-logo.png',
+    image: 'https://files.cow.fi/cow-sdk/bridging/providers/bungee/bungee-logo.png',
     conditions: {
       walletCompatibility: ['EOA'],
     },
@@ -175,8 +174,7 @@ export const hookDappsRegistry = {
     description: `Across is the fastest, cheapest and most secure cross-chain bridge for Ethereum, Arbitrum, Optimism, Polygon and other Layer 1 and Layer 2 networks. Transfer tokens with Across.`,
     version: '0.0.1',
     website: 'https://across.to',
-    image:
-      'https://files.cow.fi/cow-sdk/bridging/providers/across/across-logo.png',
+    image: 'https://files.cow.fi/cow-sdk/bridging/providers/across/across-logo.png',
     conditions: {
       walletCompatibility: ['EOA'],
     },
@@ -188,7 +186,7 @@ export const hookDappsRegistry = {
     description: `The swap adapter contracts integrate Aave Flash Loans and CoW Swap to facilitate advanced actions like swapping collateral assets when there are borrow positions. Learn more at https://aave.com/docs/developers/smart-contracts/swap-features.`,
     version: '0.0.1',
     website: 'https://aave.com',
-    image: 'https://app.aave.com/icons/tokens/aave.svg',
+    image: 'https://files.cow.fi/token-lists/images/1/0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9/logo.png',
   },
   'cow-sdk://flashloans/aave/v3/debt-swap': {
     name: `Aave Debt Swap`,
@@ -197,7 +195,7 @@ export const hookDappsRegistry = {
     description: `The swap adapter contracts integrate Aave Flash Loans and CoW Swap to facilitate advanced actions like swapping debt assets. Learn more at https://aave.com/docs/developers/smart-contracts/swap-features.`,
     version: '0.0.1',
     website: 'https://aave.com',
-    image: 'https://app.aave.com/icons/tokens/aave.svg',
+    image: 'https://files.cow.fi/token-lists/images/1/0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9/logo.png',
   },
   'cow-sdk://flashloans/aave/v3/repay-with-collateral': {
     name: `Aave Repay`,
@@ -206,6 +204,6 @@ export const hookDappsRegistry = {
     description: `The swap adapter contracts integrate Aave Flash Loans and CoW Swap to facilitate advanced actions like repaying borrow positions using collateral. Learn more at https://aave.com/docs/developers/smart-contracts/swap-features.`,
     version: '0.0.1',
     website: 'https://aave.com',
-    image: 'https://app.aave.com/icons/tokens/aave.svg',
+    image: 'https://files.cow.fi/token-lists/images/1/0x7fc66500c84a76ad7e9c93437bfc5ac33e2ddae9/logo.png',
   },
 }

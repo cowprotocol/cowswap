@@ -5,7 +5,7 @@ import { TokenAmount } from '@cowprotocol/ui'
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 
-import { BridgeEstimatedAmounts } from 'modules/trade'
+import { BridgeEstimatedAmounts } from 'common/types/bridge'
 
 import { FeeItem } from '../ReceiveAmountInfo/FeeItem'
 import * as styledEl from '../ReceiveAmountInfo/styled'

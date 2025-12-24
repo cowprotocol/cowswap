@@ -1,8 +1,8 @@
 import { useEffect } from 'react'
 
-import { useSetIsBridgingEnabled } from '@cowprotocol/common-hooks'
-import { AccountType } from '@cowprotocol/types'
-import { useAccountType, useWalletInfo } from '@cowprotocol/wallet'
+import { useFeatureFlags, useSetIsBridgingEnabled } from '@cowprotocol/common-hooks'
+import { isInjectedWidget } from '@cowprotocol/common-utils'
+import { useIsSafeApp } from '@cowprotocol/wallet'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 import { useTradeTypeInfo } from 'modules/trade'
@@ -10,16 +10,17 @@ import { useTradeTypeInfo } from 'modules/trade'
 import { Routes } from 'common/constants/routes'
 
 export function BridgingEnabledUpdater(): null {
-  const { account } = useWalletInfo()
   const tradeTypeInfo = useTradeTypeInfo()
-  const accountType = useAccountType()
   const setIsBridgingEnabled = useSetIsBridgingEnabled()
+  const { isBridgingInSafeWidgetEnabled } = useFeatureFlags()
+  const isSafeApp = useIsSafeApp()
   const { disableCrossChainSwap = false } = useInjectedWidgetParams()
 
-  const isSwapRoute = tradeTypeInfo?.route === Routes.SWAP
+  const isSwapPage = tradeTypeInfo?.route === Routes.SWAP
+  const widgetInSafeApp = isSafeApp && isInjectedWidget()
+  const shouldEnableInWidgetSafe = isBridgingInSafeWidgetEnabled ? true : !widgetInSafeApp
 
-  const isWalletCompatible = Boolean(account ? accountType !== AccountType.SMART_CONTRACT : true)
-  const shouldEnableBridging = isWalletCompatible && isSwapRoute && !disableCrossChainSwap
+  const shouldEnableBridging = isSwapPage && !disableCrossChainSwap && shouldEnableInWidgetSafe
 
   useEffect(() => {
     setIsBridgingEnabled(shouldEnableBridging)
