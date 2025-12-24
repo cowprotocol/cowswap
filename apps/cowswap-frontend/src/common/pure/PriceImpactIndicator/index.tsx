@@ -49,7 +49,7 @@ export function PriceImpactIndicator({ priceImpactParams, isBridging = false }: 
             wrapInContainer
             content={
               isBridging
-                ? t`Price impact due to liquidity levels and expected swap costs`
+                ? t`Price impact due to current liquidity levels and estimated swap fees and costs`
                 : t`Price impact due to current liquidity levels`
             }
           >
