@@ -3982,8 +3982,8 @@ msgstr "The winner of the competition is now executing your order on-chain."
 
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmountInfo/NetworkFeeItem.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
-msgid "Network costs"
-msgstr "Network costs"
+msgid "Network fees and costs"
+msgstr "Network fees and costs"
 
 #: apps/cowswap-frontend/src/common/containers/OrderHooksDetails/index.tsx
 msgid "PRE"
@@ -4370,8 +4370,8 @@ msgid "more"
 msgstr "more"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
-msgid "CoW Protocol covers the costs by executing your order at a slightly better price than your limit price."
-msgstr "CoW Protocol covers the costs by executing your order at a slightly better price than your limit price."
+msgid "CoW Protocol covers the fees and costs by executing your order at a slightly better price than your limit price."
+msgstr "CoW Protocol covers the fees and costs by executing your order at a slightly better price than your limit price."
 
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/HookSearchInput/index.tsx
 msgid "Clear search input"
