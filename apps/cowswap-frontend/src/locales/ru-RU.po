@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-12-24 11:38\n"
+"PO-Revision-Date: 2025-12-24 14:29\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -3973,8 +3973,8 @@ msgstr "Победитель конкурса в настоящее время �
 
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmountInfo/NetworkFeeItem.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
-msgid "Network costs"
-msgstr "Сетевые расходы"
+msgid "Network fees and costs"
+msgstr "Комиссии и сборы"
 
 #: apps/cowswap-frontend/src/common/containers/OrderHooksDetails/index.tsx
 msgid "PRE"
@@ -4361,8 +4361,8 @@ msgid "more"
 msgstr "больше"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
-msgid "CoW Protocol covers the costs by executing your order at a slightly better price than your limit price."
-msgstr "Протокол CoW покрывает расходы, выполняя ваш ордер по несколько более высокой цене, чем лимитная цена."
+msgid "CoW Protocol covers the fees and costs by executing your order at a slightly better price than your limit price."
+msgstr "Протокол CoW покрывает комиссии и сборы, выполняя ваш ордер по несколько более высокой цене, чем лимитная цена."
 
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/HookSearchInput/index.tsx
 msgid "Clear search input"
