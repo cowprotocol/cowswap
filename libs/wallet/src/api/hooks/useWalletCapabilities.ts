@@ -45,7 +45,7 @@ export function useWalletCapabilities(): SWRResponse<WalletCapabilities | undefi
     shouldCheckCapabilities(isWalletConnect, widgetProviderMetaInfo) && provider && account && chainId
       ? [provider, account, chainId]
       : null,
-    ([provider, account, chainId]) => {
+    ([provider, account, _chainId]) => {
       return new Promise((resolve) => {
         const timeout = setTimeout(() => {
           resolve(undefined)
@@ -61,9 +61,7 @@ export function useWalletCapabilities(): SWRResponse<WalletCapabilities | undefi
               return
             }
 
-            const chainIdHex = '0x' + (+chainId).toString(16)
-
-            resolve(result[chainIdHex])
+            resolve(result[Object.keys(result)[0]])
           })
           .catch(() => {
             clearInterval(timeout)
