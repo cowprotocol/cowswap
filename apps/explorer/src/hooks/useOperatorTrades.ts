@@ -12,6 +12,7 @@ type Result = {
   trades: Trade[]
   error?: UiError
   isLoading: boolean
+  hasNextPage: boolean
 }
 
 type TradesTimestamps = { [txHash: string]: number }
@@ -47,11 +48,12 @@ async function fetchTradesTimestamps(rawTrades: RawTrade[]): Promise<TradesTimes
  */
 // TODO: Break down this large function into smaller functions
 
-export function useOrderTrades(order: Order | null): Result {
+export function useOrderTrades(order: Order | null, offset = 0, limit = 10): Result {
   const [error, setError] = useState<UiError>()
   const [trades, setTrades] = useState<Trade[]>([])
   const [rawTrades, setRawTrades] = useState<RawTrade[] | null>(null)
   const [tradesTimestamps, setTradesTimestamps] = useState<TradesTimestamps>({})
+  const [hasNextPage, setHasNextPage] = useState(false)
 
   // Here we assume that we are already in the right network
   // contrary to useOrder hook, where it searches all networks for a given orderId
@@ -64,7 +66,7 @@ export function useOrderTrades(order: Order | null): Result {
       const { uid: orderId } = order
 
       try {
-        const trades = await getTrades({ networkId: _networkId, orderId })
+        const trades = await getTrades({ networkId: _networkId, orderId, offset, limit: limit + 1 })
 
         if (controller.signal.aborted) return
 
@@ -78,7 +80,7 @@ export function useOrderTrades(order: Order | null): Result {
         setError({ message: msg, type: 'error' })
       }
     },
-    [order],
+    [order, offset, limit],
   )
 
   // Fetch blocks timestamps for trades
@@ -113,8 +115,12 @@ export function useOrderTrades(order: Order | null): Result {
       }
       return 0
     })
-    setTrades(trades)
-  }, [order, rawTrades, tradesTimestamps])
+
+    const hasNext = trades.length > limit
+    setHasNextPage(hasNext)
+
+    setTrades(hasNext ? trades.slice(0, limit) : trades)
+  }, [order, rawTrades, tradesTimestamps, limit])
 
   const executedSellAmount = order?.executedSellAmount.toString()
   const executedBuyAmount = order?.executedBuyAmount.toString()
@@ -135,5 +141,5 @@ export function useOrderTrades(order: Order | null): Result {
 
   const isLoading = rawTrades === null
 
-  return useMemo(() => ({ trades, error, isLoading }), [trades, error, isLoading])
+  return useMemo(() => ({ trades, error, isLoading, hasNextPage }), [trades, error, isLoading, hasNextPage])
 }

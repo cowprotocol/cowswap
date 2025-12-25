@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.17.1](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.17.0...widget-configurator-v1.17.1) (2025-12-19)
+
+
+### Bug Fixes
+
+* add user context on launch darkly initialization ([#6726](https://github.com/cowprotocol/cowswap/issues/6726)) ([fa02aa4](https://github.com/cowprotocol/cowswap/commit/fa02aa4cf7f951464049cb4f3a92544de457e760))
+
 ## [1.17.0](https://github.com/cowprotocol/cowswap/compare/widget-configurator-v1.16.1...widget-configurator-v1.17.0) (2025-12-16)
 
 

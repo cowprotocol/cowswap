@@ -4,7 +4,7 @@ import { useTokenByAddress } from '@cowprotocol/tokens'
 import { Nullish } from '@cowprotocol/types'
 import { Currency } from '@uniswap/sdk-core'
 
-import { useTradeQuote } from 'modules/tradeQuote'
+import { useTradeQuote, useTradeQuoteProtocolFee } from 'modules/tradeQuote'
 import { useVolumeFee } from 'modules/volumeFee'
 
 import { useDerivedTradeState } from './useDerivedTradeState'
@@ -33,7 +33,7 @@ export function useSwapReceiveAmountInfoParams(): ReceiveAmountInfoParams | null
 
   const quoteResponse = tradeQuote?.quote?.quoteResults.quoteResponse
   const orderParams = quoteResponse?.quote
-  const protocolFeeBps = quoteResponse?.protocolFeeBps ? Number(quoteResponse.protocolFeeBps) : undefined
+  const protocolFeeBps = useTradeQuoteProtocolFee()
 
   const { inputCurrency, outputCurrency } = useQuoteCurrencies()
 

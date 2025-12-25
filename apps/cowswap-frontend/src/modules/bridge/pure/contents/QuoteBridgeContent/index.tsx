@@ -100,14 +100,14 @@ export function QuoteBridgeContent(props: QuoteBridgeContentProps): ReactNode {
 function MinReceive({
   isQuoteDisplay = false,
   isFinished = false,
-  quoteContext: { buyAmount, buyAmountUsd, bridgeMinReceiveAmount },
+  quoteContext: { buyAmount, buyAmountUsd, bridgeMinReceiveAmount, bridgeMinReceiveAmountUsd },
 }: QuoteBridgeContentProps): ReactNode {
   const MIN_RECEIVE_TITLE = t`Min. to receive`
 
   const minReceiveAmountEl = (
     <TokenAmountDisplay
       displaySymbol
-      usdValue={bridgeMinReceiveAmount ? null : buyAmountUsd}
+      usdValue={bridgeMinReceiveAmount ? bridgeMinReceiveAmountUsd : buyAmountUsd}
       currencyAmount={bridgeMinReceiveAmount || buyAmount}
     />
   )

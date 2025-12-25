@@ -1,6 +1,8 @@
 import { useAtom } from 'jotai'
 
+import { USDC_BASE, USDT_BASE } from '@cowprotocol/common-const'
 import { useIsTxBundlingSupported } from '@cowprotocol/wallet'
+import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { act, renderHook, waitFor } from '@testing-library/react'
 
@@ -59,9 +61,13 @@ const mockUseNeedsApproval = useNeedsApproval as jest.MockedFunction<typeof useN
 const mockIsBundlingSupported = useIsTxBundlingSupported as jest.MockedFunction<typeof useIsTxBundlingSupported>
 const mockUseIsSafeApprovalBundle = useIsSafeApprovalBundle as jest.MockedFunction<typeof useIsSafeApprovalBundle>
 
-// TODO: Replace any with proper type definitions
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const tradeContextMock = { postOrderParams: { partiallyFillable: true } } as any as TradeFlowContext
+const tradeContextMock = {
+  postOrderParams: {
+    partiallyFillable: true,
+    inputAmount: CurrencyAmount.fromRawAmount(USDC_BASE, '1'),
+    outputAmount: CurrencyAmount.fromRawAmount(USDT_BASE, '1'),
+  },
+} as never as TradeFlowContext
 const priceImpactMock: PriceImpact = {
   priceImpact: undefined,
   loading: false,

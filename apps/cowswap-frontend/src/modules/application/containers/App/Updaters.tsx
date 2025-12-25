@@ -2,7 +2,12 @@ import { ReactNode } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { MultiCallUpdater } from '@cowprotocol/multicall'
-import { TokensListsTagsUpdater, TokensListsUpdater, UnsupportedTokensUpdater } from '@cowprotocol/tokens'
+import {
+  RestrictedTokensListUpdater,
+  TokensListsTagsUpdater,
+  TokensListsUpdater,
+  UnsupportedTokensUpdater,
+} from '@cowprotocol/tokens'
 import { HwAccountIndexUpdater, useWalletInfo, WalletUpdater } from '@cowprotocol/wallet'
 
 import { CowSdkUpdater } from 'cowSdk'
@@ -15,7 +20,7 @@ import { TradingSdkUpdater } from 'tradingSdk/TradingSdkUpdater'
 
 import { UploadToIpfsUpdater } from 'modules/appData/updater/UploadToIpfsUpdater'
 import { CommonPriorityBalancesAndAllowancesUpdater } from 'modules/balancesAndAllowances'
-import { PendingBridgeOrdersUpdater } from 'modules/bridge'
+import { PendingBridgeOrdersUpdater, BridgingEnabledUpdater } from 'modules/bridge'
 import { BalancesCombinedUpdater } from 'modules/combinedBalances/updater/BalancesCombinedUpdater'
 import { InFlightOrderFinalizeUpdater } from 'modules/ethFlow'
 import { CowEventsUpdater, InjectedWidgetUpdater, useInjectedWidgetParams } from 'modules/injectedWidget'
@@ -33,7 +38,6 @@ import { LpTokensWithBalancesUpdater, PoolsInfoUpdater, VampireAttackUpdater } f
 
 import { TotalSurplusUpdater } from 'common/state/totalSurplusState'
 import { AnnouncementsUpdater } from 'common/updaters/AnnouncementsUpdater'
-import { BridgingEnabledUpdater } from 'common/updaters/BridgingEnabledUpdater'
 import { ConnectionStatusUpdater } from 'common/updaters/ConnectionStatusUpdater'
 import { FeatureFlagsUpdater } from 'common/updaters/FeatureFlagsUpdater'
 import { GasUpdater } from 'common/updaters/GasUpdater'
@@ -57,7 +61,7 @@ import { FaviconAnimationUpdater } from './FaviconAnimationUpdater'
 export function Updaters(): ReactNode {
   const { account } = useWalletInfo()
   const { standaloneMode } = useInjectedWidgetParams()
-  const { isGeoBlockEnabled, isYieldEnabled } = useFeatureFlags()
+  const { isGeoBlockEnabled, isYieldEnabled, isRwaGeoblockEnabled } = useFeatureFlags()
   const tradeTypeInfo = useTradeTypeInfo()
   const isYieldWidget = tradeTypeInfo?.tradeType === TradeType.YIELD
   const { chainId: sourceChainId, source: sourceChainSource } = useSourceChainId()
@@ -110,6 +114,7 @@ export function Updaters(): ReactNode {
         isYieldEnabled={isYieldEnabled}
         bridgeNetworkInfo={bridgeNetworkInfo?.data}
       />
+      <RestrictedTokensListUpdater isRwaGeoblockEnabled={!!isRwaGeoblockEnabled} />
       <TokensListsTagsUpdater />
 
       <WidgetTokensUpdater />

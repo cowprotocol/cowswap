@@ -4044,8 +4044,9 @@ msgid "The winner of the competition is now executing your order on-chain."
 msgstr "Победитель конкурса в настоящее время выполняет Ваш заказ по цепочке."
 
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmountInfo/NetworkFeeItem.tsx
-msgid "Network costs"
-msgstr "Комиссии сети"
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
+msgid "Network fees and costs"
+msgstr "Комиссии и сборы"
 
 #: apps/cowswap-frontend/src/common/containers/OrderHooksDetails/index.tsx
 msgid "PRE"
@@ -4435,6 +4436,10 @@ msgstr "Подтвердить действие"
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "more"
 msgstr "больше"
+
+#: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
+msgid "CoW Protocol covers the fees and costs by executing your order at a slightly better price than your limit price."
+msgstr "Протокол CoW покрывает комиссии и сборы, выполняя ваш ордер по несколько более высокой цене, чем лимитная цена."
 
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/HookSearchInput/index.tsx
 msgid "Clear search input"

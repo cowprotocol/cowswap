@@ -1,10 +1,12 @@
-import React, { ReactNode } from 'react'
+import React, { ReactNode, useCallback } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { useIsSafeWallet } from '@cowprotocol/wallet'
 
 import { useLingui } from '@lingui/react/macro'
 
+import { useRwaConsentModalState, RwaTokenStatus, useRwaTokenStatus } from 'modules/rwa'
 import { AddIntermediateToken } from 'modules/tokensList'
 import {
   useIsCurrentTradeBridging,
@@ -44,6 +46,7 @@ interface TradeButtonsProps {
   setShowAddIntermediateTokenModal: (show: boolean) => void
 }
 
+// eslint-disable-next-line max-lines-per-function
 export function TradeButtons({
   isTradeContextReady,
   openNativeWrapModal,
@@ -52,7 +55,8 @@ export function TradeButtons({
   intermediateBuyToken,
   setShowAddIntermediateTokenModal,
 }: TradeButtonsProps): ReactNode {
-  const { inputCurrency } = useSwapDerivedState()
+  const { inputCurrency, outputCurrency } = useSwapDerivedState()
+  const { openModal: openRwaConsentModal } = useRwaConsentModalState()
 
   const primaryFormValidation = useGetTradeFormValidation()
   const isPrimaryValidationPassed = useIsTradeFormValidationPassed()
@@ -65,10 +69,31 @@ export function TradeButtons({
   const isCurrentTradeBridging = useIsCurrentTradeBridging()
   const shouldCheckBridgingRecipient = useShouldCheckBridgingRecipient()
   const smartContractRecipientConfirmed = useSmartContractRecipientConfirmed()
+  const isSafeWallet = useIsSafeWallet()
 
   const { t } = useLingui()
 
-  const confirmTrade = tradeConfirmActions.onOpen
+  // Check RWA token status for consent modal
+  const { status: rwaStatus, rwaTokenInfo } = useRwaTokenStatus({
+    inputCurrency,
+    outputCurrency,
+  })
+
+  const confirmTrade = useCallback(
+    (forcePriceConfirmation?: boolean) => {
+      // Show consent modal if country unknown and consent not given
+      if (rwaStatus === RwaTokenStatus.RequiredConsent && rwaTokenInfo) {
+        openRwaConsentModal({
+          consentHash: rwaTokenInfo.consentHash,
+          token: TokenWithLogo.fromToken(rwaTokenInfo.token),
+        })
+        return
+      }
+
+      tradeConfirmActions.onOpen(forcePriceConfirmation)
+    },
+    [rwaStatus, rwaTokenInfo, openRwaConsentModal, tradeConfirmActions],
+  )
 
   const confirmText = isCurrentTradeBridging ? t`Swap and Bridge` : t`Swap`
 
@@ -84,6 +109,8 @@ export function TradeButtons({
     hasEnoughWrappedBalanceForSwap,
     onCurrencySelection,
     confirmText,
+    isSafeWallet,
+    isCurrentTradeBridging,
   })
 
   const shouldShowAddIntermediateToken =
