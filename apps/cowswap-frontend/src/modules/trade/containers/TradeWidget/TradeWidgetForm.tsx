@@ -158,6 +158,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
     tokenSelectorDisabled: shouldLockForAlternativeOrder,
     displayTokenName,
     displayChainName,
+    isBridging: isCurrentTradeBridging,
   }
 
   const openSellTokenSelect = useCallback(

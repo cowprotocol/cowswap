@@ -19,6 +19,7 @@ import { TradeFlowAnalyticsContext, useTradeFlowAnalytics } from 'modules/trade/
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
+import { getAreBridgeCurrencies } from 'common/utils/getAreBridgeCurrencies'
 
 import { useExtensibleFallbackContext } from './useExtensibleFallbackContext'
 import { useTwapOrder } from './useTwapOrder'
@@ -72,7 +73,8 @@ export function useCreateTwapOrder() {
   const uploadAppData = useUploadAppData()
 
   const { priceImpact } = useTradePriceImpact()
-  const { confirmPriceImpactWithoutFee } = useConfirmPriceImpactWithoutFee()
+  const isBridge = getAreBridgeCurrencies(inputCurrencyAmount?.currency, outputCurrencyAmount?.currency)
+  const { confirmPriceImpactWithoutFee } = useConfirmPriceImpactWithoutFee(isBridge)
 
   const analytics = useCowAnalytics()
   const tradeFlowAnalytics = useTradeFlowAnalytics()
