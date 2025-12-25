@@ -1,15 +1,10 @@
-import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
 import { getRestrictedTokenLists } from '@cowprotocol/core'
 import { TokenInfo } from '@cowprotocol/types'
 
-import {
-  getTokenId,
-  RestrictedTokenListState,
-  restrictedTokensAtom,
-  TokenId,
-} from '../../state/restrictedTokens/restrictedTokensAtom'
+import { useRestrictedTokensCache } from '../../hooks/useRestrictedTokensCache'
+import { getTokenId, RestrictedTokenListState, TokenId } from '../../state/restrictedTokens/restrictedTokensAtom'
 
 const FETCH_TIMEOUT_MS = 10_000
 const MAX_RETRIES = 1
@@ -79,11 +74,15 @@ async function fetchTokenList(url: string, retries = MAX_RETRIES): Promise<Token
 }
 
 export function RestrictedTokensListUpdater({ isRwaGeoblockEnabled }: RestrictedTokensListUpdaterProps): null {
-  const setRestrictedTokens = useSetAtom(restrictedTokensAtom)
+  const { shouldFetch, saveToCache } = useRestrictedTokensCache()
 
   useEffect(() => {
-    // Don't load restricted tokens if RWA geoblock feature is disabled
     if (!isRwaGeoblockEnabled) {
+      return
+    }
+
+    // Skip if cache is still valid AND we have data
+    if (!shouldFetch) {
       return
     }
 
@@ -119,14 +118,14 @@ export function RestrictedTokensListUpdater({ isRwaGeoblockEnabled }: Restricted
           isLoaded: true,
         }
 
-        setRestrictedTokens(listState)
+        saveToCache(listState)
       } catch (error) {
         console.error('Error loading restricted tokens:', error)
       }
     }
 
     loadRestrictedTokens()
-  }, [setRestrictedTokens, isRwaGeoblockEnabled])
+  }, [isRwaGeoblockEnabled, shouldFetch, saveToCache])
 
   return null
 }
