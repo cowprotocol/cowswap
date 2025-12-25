@@ -39,7 +39,6 @@ export const CREATING_STATES = [OrderStatus.PRESIGNATURE_PENDING, OrderStatus.CR
 export interface BaseOrder extends OrderCreation {
   id: UID // Unique identifier for the order: 56 bytes encoded as hex without 0x
   owner: string // Address, without '0x' prefix
-  summary: string // Description of the order, for dapp use only, readable by user
   class: OrderClass // Flag to distinguish order class
 
   // Status
@@ -58,7 +57,7 @@ export interface BaseOrder extends OrderCreation {
   cancellationHash?: string // Filled when a hard cancellation is triggered. Be it ethflow or regular order
 
   // Additional information from the order available in the API
-  apiAdditionalInfo?: OrderInfoApi
+  apiAdditionalInfo?: EnrichedOrder
   // De-normalizing it as this is known at order placement time as `appData`,
   // but when returned from the api is replaced with the `appDataHash`
   fullAppData?: EnrichedOrder['fullAppData']
