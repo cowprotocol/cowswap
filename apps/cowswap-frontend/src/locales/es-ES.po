@@ -8,7 +8,7 @@ msgstr ""
 "Language: es\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-12-24 14:29\n"
+"PO-Revision-Date: 2025-12-25 12:19\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
@@ -1297,6 +1297,10 @@ msgstr ""
 #: apps/cowswap-frontend/src/modules/accountProxy/containers/AccountProxyRecoverPage/index.tsx
 msgid "1/2 Confirm funds recovering"
 msgstr "1/2 Confirmar recuperación de fondos"
+
+#: apps/cowswap-frontend/src/common/pure/PriceImpactIndicator/index.tsx
+msgid "Price impact due to current liquidity levels and estimated swap fees and costs"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/fortune/containers/FortuneWidget/index.tsx
 #: apps/cowswap-frontend/src/modules/fortune/containers/FortuneWidget/index.tsx
@@ -5676,6 +5680,10 @@ msgstr "Dirección del destinatario modificada a"
 #: apps/cowswap-frontend/src/api/cowProtocol/errors/OperatorError.ts
 #~ msgid "Something failed. Please try again later."
 #~ msgstr "Something failed. Please try again later."
+
+#: apps/cowswap-frontend/src/common/pure/PriceImpactIndicator/index.tsx
+#~ msgid "Price impact due to liquidity levels and expected swap costs"
+#~ msgstr "Price impact due to liquidity levels and expected swap costs"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/HookSearchInput/index.tsx
 msgid "Search hooks..."
