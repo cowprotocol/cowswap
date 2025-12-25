@@ -1,8 +1,7 @@
-import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { findRestrictedToken, restrictedTokensAtom, RestrictedTokenInfo } from '@cowprotocol/tokens'
+import { RestrictedTokenInfo, useRestrictedToken } from '@cowprotocol/tokens'
 
 import { t } from '@lingui/core/macro'
 
@@ -20,33 +19,24 @@ export interface RestrictedTokenImportResult {
   blockReason: string | null
 }
 
+const NOT_RESTRICTED_RESULT: RestrictedTokenImportResult = {
+  status: RestrictedTokenImportStatus.NotRestricted,
+  restrictedInfo: null,
+  isImportDisabled: false,
+  blockReason: null,
+}
+
 export function useRestrictedTokenImportStatus(token: TokenWithLogo | undefined): RestrictedTokenImportResult {
   const geoStatus = useGeoStatus()
-  const restrictedList = useAtomValue(restrictedTokensAtom)
+  const restrictedInfo = useRestrictedToken(token)
 
   return useMemo(() => {
-    // if geo or restricted list is loading, allow import (will be checked at trade time)
-    if (!token || !restrictedList.isLoaded || geoStatus.isLoading) {
-      return {
-        status: RestrictedTokenImportStatus.NotRestricted,
-        restrictedInfo: null,
-        isImportDisabled: false,
-        blockReason: null,
-      }
+    // if geo is loading or token is not restricted, allow import
+    if (geoStatus.isLoading || !restrictedInfo) {
+      return NOT_RESTRICTED_RESULT
     }
 
-    const restrictedInfo = findRestrictedToken(token, restrictedList)
-
-    if (!restrictedInfo) {
-      return {
-        status: RestrictedTokenImportStatus.NotRestricted,
-        restrictedInfo: null,
-        isImportDisabled: false,
-        blockReason: null,
-      }
-    }
-
-    // Only block import if country is known and blocked
+    // only block import if country is known and blocked
     if (geoStatus.country) {
       const countryUpper = geoStatus.country.toUpperCase()
       const blockedCountries = new Set(restrictedInfo.restrictedCountries)
@@ -61,11 +51,6 @@ export function useRestrictedTokenImportStatus(token: TokenWithLogo | undefined)
       }
     }
 
-    return {
-      status: RestrictedTokenImportStatus.NotRestricted,
-      restrictedInfo: null,
-      isImportDisabled: false,
-      blockReason: null,
-    }
-  }, [token, restrictedList, geoStatus])
+    return NOT_RESTRICTED_RESULT
+  }, [geoStatus, restrictedInfo])
 }
