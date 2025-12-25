@@ -81,7 +81,6 @@ export function RestrictedTokensListUpdater({ isRwaGeoblockEnabled }: Restricted
       return
     }
 
-    // Skip if cache is still valid AND we have data
     if (!shouldFetch) {
       return
     }
