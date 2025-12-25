@@ -4,6 +4,8 @@ import { useMemo } from 'react'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { findRestrictedToken, restrictedTokensAtom, RestrictedTokenInfo } from '@cowprotocol/tokens'
 
+import { t } from '@lingui/core/macro'
+
 import { useGeoStatus } from 'modules/rwa'
 
 export enum RestrictedTokenImportStatus {
@@ -54,7 +56,7 @@ export function useRestrictedTokenImportStatus(token: TokenWithLogo | undefined)
           status: RestrictedTokenImportStatus.Blocked,
           restrictedInfo,
           isImportDisabled: true,
-          blockReason: 'This token is not available in your region.',
+          blockReason: t`This token is not available in your region.`,
         }
       }
     }
