@@ -42,7 +42,7 @@ const SettingsRow = styled.div`
   &.disabled {
     opacity: 0.7;
   }
-  
+
   &.disabled .toggle-wrapper {
     pointer-events: none;
   }
@@ -98,7 +98,7 @@ export function NotificationSettings({ children }: NotificationSettingsProps): R
           <SettingsRow className="disabled">
             <RowBetween>
               <span>Order fills</span>
-              <HoverTooltip 
+              <HoverTooltip
                 content={<DisabledToggleTooltip>{DISABLED_TOGGLE_TOOLTIP_MESSAGE}</DisabledToggleTooltip>}
                 placement="bottom"
                 wrapInContainer={false}
@@ -112,7 +112,7 @@ export function NotificationSettings({ children }: NotificationSettingsProps): R
           <SettingsRow className="disabled">
             <RowBetween>
               <span>Order expired</span>
-              <HoverTooltip 
+              <HoverTooltip
                 content={<DisabledToggleTooltip>{DISABLED_TOGGLE_TOOLTIP_MESSAGE}</DisabledToggleTooltip>}
                 placement="bottom"
                 wrapInContainer={false}

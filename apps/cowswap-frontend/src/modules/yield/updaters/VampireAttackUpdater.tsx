@@ -9,7 +9,7 @@ import { useLpTokensWithBalances, usePoolsInfo } from 'modules/yield/shared'
 import { POOLS_AVERAGE_DATA_MOCK } from 'modules/yield/updaters/PoolsInfoUpdater/mockPoolInfo'
 
 import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
-import { areLpBalancesLoadedAtom } from 'common/updaters/LpBalancesAndAllowancesUpdater'
+import { areLpBalancesLoadedAtom } from 'common/updaters/lpBalancesState'
 
 import { vampireAttackAtom } from '../state/vampireAttackAtom'
 import { TokenWithAlternative, TokenWithSuperiorAlternative } from '../types'
@@ -29,7 +29,7 @@ export function VampireAttackUpdater(): null {
 
     const result = Object.keys(lpTokensWithBalances).reduce(
       // TODO: Reduce function complexity by extracting logic
-       
+
       (acc, tokenAddress) => {
         const { token: lpToken, balance: tokenBalance } = lpTokensWithBalances[tokenAddress]
         const alternative = cowAmmLpTokens.find((cowAmmLpToken) => {

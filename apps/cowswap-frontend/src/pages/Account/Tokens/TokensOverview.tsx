@@ -47,9 +47,12 @@ import {
   StyledChevronDown,
   TokenSearchInput,
 } from './styled'
+import { PageViewKeys } from './types'
 
 import Delegate from '../Delegate'
 import { CardsLoader } from '../styled'
+
+export { PageViewKeys }
 
 const TokensLoader = styled(CardsLoader)`
   min-height: 500px;
@@ -57,11 +60,6 @@ const TokensLoader = styled(CardsLoader)`
 
 type TokenBalancesMap = ReturnType<typeof useTokensBalances>['values']
 type WalletProvider = ReturnType<typeof useWalletProvider>
-
-export enum PageViewKeys {
-  ALL_TOKENS = 'ALL_TOKENS',
-  FAVORITE_TOKENS = 'FAVORITE_TOKENS',
-}
 
 const PageView = {
   [PageViewKeys.ALL_TOKENS]: {

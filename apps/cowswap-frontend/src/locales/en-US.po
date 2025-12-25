@@ -271,7 +271,7 @@ msgstr "Start boooosting your yield!"
 msgid "replaced"
 msgstr "replaced"
 
-#: apps/cowswap-frontend/src/modules/bridge/pure/StopStatus/index.tsx
+#: apps/cowswap-frontend/src/modules/bridge/pure/StopStatus/constants.tsx
 msgid "Bridge via"
 msgstr "Bridge via"
 
@@ -291,7 +291,7 @@ msgstr "EOA wallets"
 msgid "Unwrapping {amountStr} {wrapped} to {native}"
 msgstr "Unwrapping {amountStr} {wrapped} to {native}"
 
-#: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/index.tsx
+#: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/constants.tsx
 msgid "Set any limit price and time horizon"
 msgstr "Set any limit price and time horizon"
 
@@ -453,7 +453,7 @@ msgstr "The sell amount per part of your TWAP order should be at least <0>$<1/><
 msgid "Surplus"
 msgstr "Surplus"
 
-#: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/index.tsx
+#: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/constants.tsx
 msgid "Place multiple orders using the same balance"
 msgstr "Place multiple orders using the same balance"
 
@@ -1011,7 +1011,7 @@ msgstr "failed"
 msgid "Airdrop token chain ({tokenToClaimChainId}) and airdrop contract chain ({airdropChainId}) should match"
 msgstr "Airdrop token chain ({tokenToClaimChainId}) and airdrop contract chain ({airdropChainId}) should match"
 
-#: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/index.tsx
+#: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/constants.tsx
 msgid "Protection from MEV by default"
 msgstr "Protection from MEV by default"
 
@@ -1128,7 +1128,7 @@ msgstr "Insufficient {symbol} balance"
 msgid "This hook is not compatible with your wallet"
 msgstr "This hook is not compatible with your wallet"
 
-#: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/index.tsx
+#: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/constants.tsx
 msgid "Get started with limit orders"
 msgstr "Get started with limit orders"
 
@@ -1204,7 +1204,7 @@ msgstr "Share this win!"
 msgid "Create Order"
 msgstr "Create Order"
 
-#: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/index.tsx
+#: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/constants.tsx
 msgid "Want to try out limit orders?"
 msgstr "Want to try out limit orders?"
 
@@ -1416,7 +1416,7 @@ msgstr "This order will either be filled completely or not filled."
 msgid "On-chain cancellations require a regular on-chain transaction and cost gas."
 msgstr "On-chain cancellations require a regular on-chain transaction and cost gas."
 
-#: apps/cowswap-frontend/src/modules/bridge/pure/StopStatus/index.tsx
+#: apps/cowswap-frontend/src/modules/bridge/pure/StopStatus/constants.tsx
 msgid "Swap failed"
 msgstr "Swap failed"
 
@@ -1946,7 +1946,7 @@ msgstr "Local device time is not accurate, CoW Swap most likely will not work co
 msgid "Limit price (incl. fees)"
 msgstr "Limit price (incl. fees)"
 
-#: apps/cowswap-frontend/src/modules/bridge/pure/StopStatus/index.tsx
+#: apps/cowswap-frontend/src/modules/bridge/pure/StopStatus/constants.tsx
 msgid "Bridging via"
 msgstr "Bridging via"
 
@@ -2506,7 +2506,7 @@ msgstr "Select a pool"
 msgid "Token not permittable"
 msgstr "Token not permittable"
 
-#: apps/cowswap-frontend/src/modules/bridge/pure/StopStatus/index.tsx
+#: apps/cowswap-frontend/src/modules/bridge/pure/StopStatus/constants.tsx
 msgid "Swapped on"
 msgstr "Swapped on"
 
@@ -2630,7 +2630,7 @@ msgstr "<0>Enable trade alerts</0> for fills and expiries"
 msgid "Advanced Order Settings"
 msgstr "Advanced Order Settings"
 
-#: apps/cowswap-frontend/src/modules/bridge/pure/StopStatus/index.tsx
+#: apps/cowswap-frontend/src/modules/bridge/pure/StopStatus/constants.tsx
 msgid "Swap refunded"
 msgstr "Swap refunded"
 
@@ -3169,7 +3169,7 @@ msgstr "Order submitted"
 msgid "Quote is updating..."
 msgstr "Quote is updating..."
 
-#: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/index.tsx
+#: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/constants.tsx
 msgid "Get started!"
 msgstr "Get started!"
 
@@ -3358,8 +3358,8 @@ msgid "When you swap (sell) <0/>, solvers handle the transaction by purchasing t
 msgstr "When you swap (sell) <0/>, solvers handle the transaction by purchasing the required tokens, depositing them into the pool, and issuing LP tokens to you in return — all in a gas-less operation."
 
 #: apps/cowswap-frontend/src/common/hooks/useBlockNumber.tsx
-msgid "BlockNumber hooks must be wrapped in a"
-msgstr "BlockNumber hooks must be wrapped in a"
+#~ msgid "BlockNumber hooks must be wrapped in a"
+#~ msgstr "BlockNumber hooks must be wrapped in a"
 
 #: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/swapTradeButtonsMap.tsx
 #: apps/cowswap-frontend/src/modules/swap/containers/TradeButtons/swapTradeButtonsMap.tsx
@@ -3685,7 +3685,7 @@ msgstr "Target"
 #~ msgid "View on {explorerTitle}"
 #~ msgstr "View on {explorerTitle}"
 
-#: apps/cowswap-frontend/src/modules/bridge/pure/StopStatus/index.tsx
+#: apps/cowswap-frontend/src/modules/bridge/pure/StopStatus/constants.tsx
 msgid "Bridge failed on"
 msgstr "Bridge failed on"
 
@@ -3744,7 +3744,7 @@ msgstr "vCOW token"
 msgid "High slippage amount selected"
 msgstr "High slippage amount selected"
 
-#: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/index.tsx
+#: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/constants.tsx
 msgid "Place orders for higher than available balance!"
 msgstr "Place orders for higher than available balance!"
 
@@ -3933,7 +3933,7 @@ msgstr "Minutes"
 msgid "User rejected approval transaction"
 msgstr "User rejected approval transaction"
 
-#: apps/cowswap-frontend/src/modules/bridge/pure/StopStatus/index.tsx
+#: apps/cowswap-frontend/src/modules/bridge/pure/StopStatus/constants.tsx
 msgid "Swap on"
 msgstr "Swap on"
 
@@ -4435,7 +4435,7 @@ msgstr "Sell amount too small to bridge"
 msgid "1 Year (max)"
 msgstr "1 Year (max)"
 
-#: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/index.tsx
+#: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/constants.tsx
 msgid "partially fillable"
 msgstr "partially fillable"
 
@@ -4526,7 +4526,7 @@ msgid "Slippage adjusted to {slippageBpsPercentage}% to ensure quick execution"
 msgstr "Slippage adjusted to {slippageBpsPercentage}% to ensure quick execution"
 
 #: apps/cowswap-frontend/src/modules/advancedOrders/containers/AdvancedOrdersWidget/index.tsx
-#: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/index.tsx
+#: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/constants.tsx
 msgid "Receive surplus of your order"
 msgstr "Receive surplus of your order"
 
@@ -4583,7 +4583,7 @@ msgstr "Submit"
 msgid "Account Overview"
 msgstr "Account Overview"
 
-#: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/index.tsx
+#: apps/cowswap-frontend/src/modules/limitOrders/containers/LimitOrdersWidget/constants.tsx
 msgid "FREE order placement and cancellation"
 msgstr "FREE order placement and cancellation"
 
@@ -4894,7 +4894,7 @@ msgstr "AFTER"
 msgid "<0/><1/>Consider waiting for lower network costs.<2/><3/>You may still move forward with this swap but a high percentage of it will be consumed by network costs."
 msgstr "<0/><1/>Consider waiting for lower network costs.<2/><3/>You may still move forward with this swap but a high percentage of it will be consumed by network costs."
 
-#: apps/cowswap-frontend/src/modules/bridge/pure/StopStatus/index.tsx
+#: apps/cowswap-frontend/src/modules/bridge/pure/StopStatus/constants.tsx
 msgid "Swapping on"
 msgstr "Swapping on"
 
@@ -4998,7 +4998,7 @@ msgstr "Part of a {twapOrderN}-part TWAP order split"
 msgid "Claim COW <0/>"
 msgstr "Claim COW <0/>"
 
-#: apps/cowswap-frontend/src/modules/bridge/pure/StopStatus/index.tsx
+#: apps/cowswap-frontend/src/modules/bridge/pure/StopStatus/constants.tsx
 msgid "Bridged via"
 msgstr "Bridged via"
 

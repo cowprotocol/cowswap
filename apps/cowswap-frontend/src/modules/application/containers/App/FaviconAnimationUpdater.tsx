@@ -6,8 +6,6 @@ import { ordersProgressBarStateAtom } from 'modules/orderProgressBar/state/atoms
 
 import { getCurrentFrameSet, subscribeToPreferredThemeChanges } from 'common/favicon'
 
-export { shouldAnimateInProgress } from 'modules/application/utils/faviconAnimation/logic'
-
 export function FaviconAnimationUpdater(): null {
   const ordersProgressState = useAtomValue(ordersProgressBarStateAtom)
   const controllerRef = useRef<FaviconAnimationController | null>(null)

@@ -7,6 +7,7 @@ import { i18n } from '@lingui/core'
 import { Trans } from '@lingui/react/macro'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
+import { DATE_FORMAT_OPTION } from 'common/constants/dateFormats'
 
 import {
   ListWrapper,
@@ -55,10 +56,6 @@ function EmptyNotifications({ hasSubscription, onToggleSettings }: EmptyNotifica
       )}
     </NoNotifications>
   )
-}
-
-const DATE_FORMAT_OPTION: Intl.DateTimeFormatOptions = {
-  dateStyle: 'long',
 }
 
 interface NotificationsListProps {

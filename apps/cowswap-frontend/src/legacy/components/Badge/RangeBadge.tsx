@@ -4,7 +4,8 @@ import { Trans } from '@lingui/react/macro'
 import { AlertCircle } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import Badge, { BadgeVariant } from 'legacy/components/Badge'
+import Badge from 'legacy/components/Badge'
+import { BadgeVariant } from 'legacy/components/Badge/types'
 
 const BadgeWrapper = styled.div`
   font-size: 14px;

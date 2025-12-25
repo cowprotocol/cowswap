@@ -27,6 +27,7 @@ import { updateSelectedWallet } from 'legacy/state/user/reducer'
 
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
+import { DATE_FORMAT_OPTION } from 'common/constants/dateFormats'
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { UnsupportedNetworksText } from 'common/pure/UnsupportedNetworksText'
 
@@ -59,10 +60,6 @@ import { CreationDateText } from '../Transaction/styled'
 const CowShedInfoStyled = styled(CowShedInfo)`
   margin-top: 10px;
 `
-
-export const DATE_FORMAT_OPTION: Intl.DateTimeFormatOptions = {
-  dateStyle: 'long',
-}
 
 export interface AccountDetailsProps {
   pendingTransactions: string[]

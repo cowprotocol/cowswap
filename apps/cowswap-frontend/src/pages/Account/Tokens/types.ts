@@ -1,0 +1,4 @@
+export enum PageViewKeys {
+  ALL_TOKENS = 'ALL_TOKENS',
+  FAVORITE_TOKENS = 'FAVORITE_TOKENS',
+}
