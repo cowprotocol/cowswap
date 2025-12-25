@@ -34,6 +34,7 @@ import { isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { useEnhancedActivityDerivedState } from 'common/hooks/useEnhancedActivityDerivedState'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { useSwapAndBridgeContext } from 'common/hooks/useSwapAndBridgeContext'
+import { useUltimateOrder } from 'common/hooks/useUltimateOrder'
 import { CurrencyLogoPair } from 'common/pure/CurrencyLogoPair'
 import { CustomRecipientWarningBanner } from 'common/pure/CustomRecipientWarningBanner'
 import { IconSpinner } from 'common/pure/IconSpinner'
@@ -244,6 +245,7 @@ export function ActivityDetails(props: {
   const { isPartialApproveEnabled } = useFeatureFlags()
   const [isPartialApproveEnabledBySettings] = useSwapPartialApprovalToggleState(isPartialApproveEnabled)
   const getShowCancellationModal = useCancelOrder()
+  const ultimateOrder = useUltimateOrder(chainId, order?.id)
 
   const isSwap = order && getUiOrderType(order) === UiOrderType.SWAP
 
@@ -590,7 +592,7 @@ export function ActivityDetails(props: {
             // Transaction
             (activityDerivedState.summary ??
             // Order
-            (order ? computeOrderSummary({ orderFromStore: order, orderFromApi: order.apiAdditionalInfo }) : null) ??
+            (ultimateOrder ? computeOrderSummary(ultimateOrder) : null) ??
             id)
           )}
 

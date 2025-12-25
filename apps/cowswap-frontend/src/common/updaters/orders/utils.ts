@@ -6,8 +6,6 @@ import {
   shortenAddress,
 } from '@cowprotocol/common-utils'
 import { EnrichedOrder, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
-import { CrossChainOrder } from '@cowprotocol/sdk-bridging'
-import { BridgeOrderData, Nullish } from '@cowprotocol/types'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
@@ -19,17 +17,12 @@ import { getOrder } from 'api/cowProtocol'
 import { getIsComposableCowChildOrder } from 'utils/orderUtils/getIsComposableCowChildOrder'
 import { getUiOrderType, getUiOrderTypeTitles, UiOrderTypeParams } from 'utils/orderUtils/getUiOrderType'
 
+import { UltimateOrderData } from '../../hooks/useUltimateOrder'
 import { TradeAmounts } from '../../types'
 
-type UltimateOrderData = {
-  orderFromStore: Order
-  orderFromApi: Nullish<EnrichedOrder>
-  bridgeOrderFromStore?: BridgeOrderData
-  bridgeOrderFromApi?: CrossChainOrder
-}
-
 export function computeOrderSummary(ultimateOrder: UltimateOrderData): string | undefined {
-  const { orderFromStore, orderFromApi } = ultimateOrder
+  const { orderFromStore } = ultimateOrder
+  const orderFromApi = orderFromStore.apiAdditionalInfo
   const genericOrder = orderFromApi ?? orderFromStore
 
   const owner = genericOrder?.owner
@@ -47,11 +40,10 @@ export function computeOrderSummary(ultimateOrder: UltimateOrderData): string | 
 
 function getOrderTradeAmounts({
   orderFromStore,
-  orderFromApi,
   bridgeOrderFromStore,
   bridgeOrderFromApi,
 }: UltimateOrderData): TradeAmounts {
-  const genericOrder = orderFromApi ?? orderFromStore
+  const genericOrder = orderFromStore.apiAdditionalInfo ?? orderFromStore
   const { status } = genericOrder
 
   const { inputToken, outputToken } = orderFromStore

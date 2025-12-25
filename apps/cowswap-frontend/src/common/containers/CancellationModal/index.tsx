@@ -3,11 +3,10 @@ import { ReactNode, useMemo } from 'react'
 
 import { Command } from '@cowprotocol/types'
 
-import { useOrder } from 'legacy/state/orders/hooks'
-
 import { cancellationModalContextAtom } from 'common/hooks/useCancelOrder/state'
 import { CancellationModal as Pure } from 'common/pure/CancellationModal'
 
+import { useUltimateOrder } from '../../hooks/useUltimateOrder'
 import { computeOrderSummary } from '../../updaters/orders/utils'
 
 export type CancellationModalProps = {
@@ -19,11 +18,12 @@ export function CancellationModal(props: CancellationModalProps): ReactNode {
   const { isOpen, onDismiss } = props
 
   const context = useAtomValue(cancellationModalContextAtom)
-  const order = useOrder({ id: context.orderId || undefined, chainId: context.chainId || undefined })
+  const ultimateOrder = useUltimateOrder(context.chainId || undefined, context.orderId || undefined)
+
   const orderSummary = useMemo(() => {
-    if (!order) return undefined
-    return computeOrderSummary({ orderFromStore: order, orderFromApi: order.apiAdditionalInfo })
-  }, [order])
+    if (!ultimateOrder) return undefined
+    return computeOrderSummary(ultimateOrder)
+  }, [ultimateOrder])
 
   return <Pure isOpen={isOpen} onDismiss={onDismiss} context={context} orderSummary={orderSummary} />
 }
