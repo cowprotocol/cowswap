@@ -11,8 +11,8 @@ import { useOrder } from 'legacy/state/orders/hooks'
 
 export interface UltimateOrderData {
   orderFromStore: Order
-  bridgeOrderFromStore: Nullish<BridgeOrderData>
-  bridgeOrderFromApi: Nullish<CrossChainOrder>
+  bridgeOrderFromStore?: Nullish<BridgeOrderData>
+  bridgeOrderFromApi?: Nullish<CrossChainOrder>
 }
 
 export function useUltimateOrder(

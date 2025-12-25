@@ -63,6 +63,7 @@ describe('computeOrderSummary', () => {
         ...baseOrder,
         status: OrderStatus.FULFILLED,
         apiAdditionalInfo: {
+          status: OrderStatus.FULFILLED,
           executedBuyAmount: '990000', // 0.99 USDC
           executedSellAmount: '1000000000000000000', // 1 DAI
         } as never,
@@ -70,7 +71,7 @@ describe('computeOrderSummary', () => {
 
       mockedGetUiOrderType.mockReturnValue(UiOrderType.SWAP)
 
-      const summary = computeOrderSummary({ orderFromStore: order, orderFromApi: null })
+      const summary = computeOrderSummary({ orderFromStore: order })
 
       expect(summary).toBe('Swap 1 DAI for 0.99 USDC')
     })
@@ -81,6 +82,7 @@ describe('computeOrderSummary', () => {
         kind: OrderKind.BUY,
         status: OrderStatus.FULFILLED,
         apiAdditionalInfo: {
+          status: OrderStatus.FULFILLED,
           executedBuyAmount: '1000000', // 1 USDC
           executedSellAmount: '1010000000000000000', // 1.01 DAI
         } as never,
@@ -88,7 +90,7 @@ describe('computeOrderSummary', () => {
 
       mockedGetUiOrderType.mockReturnValue(UiOrderType.SWAP)
 
-      const summary = computeOrderSummary({ orderFromStore: order, orderFromApi: null })
+      const summary = computeOrderSummary({ orderFromStore: order })
 
       expect(summary).toBe('Swap 1.01 DAI for 1 USDC')
     })
@@ -104,7 +106,7 @@ describe('computeOrderSummary', () => {
 
       mockedGetUiOrderType.mockReturnValue(UiOrderType.SWAP)
 
-      const summary = computeOrderSummary({ orderFromStore: order, orderFromApi: null })
+      const summary = computeOrderSummary({ orderFromStore: order })
 
       expect(summary).toBe('Swap 1.01 DAI for at least 1 USDC')
     })
@@ -121,7 +123,7 @@ describe('computeOrderSummary', () => {
 
       mockedGetUiOrderType.mockReturnValue(UiOrderType.LIMIT)
 
-      const summary = computeOrderSummary({ orderFromStore: order, orderFromApi: null })
+      const summary = computeOrderSummary({ orderFromStore: order })
 
       // 2 DAI + 0.05 fee
       expect(summary).toBe('Limit order 2.05 DAI for at least 2 USDC')
@@ -138,7 +140,7 @@ describe('computeOrderSummary', () => {
 
       mockedGetUiOrderType.mockReturnValue(UiOrderType.SWAP)
 
-      const summary = computeOrderSummary({ orderFromStore: order, orderFromApi: null })
+      const summary = computeOrderSummary({ orderFromStore: order })
 
       expect(summary).toBe('Swap at most 1.01 DAI for 1 USDC')
     })
@@ -155,7 +157,7 @@ describe('computeOrderSummary', () => {
 
       mockedGetUiOrderType.mockReturnValue(UiOrderType.SWAP)
 
-      const summary = computeOrderSummary({ orderFromStore: order, orderFromApi: null })
+      const summary = computeOrderSummary({ orderFromStore: order })
 
       expect(summary).toBe('Swap 1.01 DAI for at least 1 USDC to 0xABcd...abCD')
     })
@@ -170,7 +172,7 @@ describe('computeOrderSummary', () => {
 
       mockedGetUiOrderType.mockReturnValue(UiOrderType.SWAP)
 
-      const summary = computeOrderSummary({ orderFromStore: order, orderFromApi: null })
+      const summary = computeOrderSummary({ orderFromStore: order })
 
       expect(summary).toBe('Swap 1.01 DAI for at least 1 USDC')
     })
@@ -181,26 +183,25 @@ describe('computeOrderSummary', () => {
       const orderFromStore: Order = {
         ...baseOrder,
         status: OrderStatus.PENDING,
+        apiAdditionalInfo: {
+          ...baseOrder,
+          uid: '0x123456789abcdef',
+          owner: '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd',
+          receiver: '0x9999999999999999999999999999999999999999',
+          creationDate: '2024-01-01T00:00:00Z',
+          invalidated: false,
+          status: SdkOrderStatus.OPEN,
+          totalFee: '',
+          executedSellAmount: '',
+          executedSellAmountBeforeFees: '',
+          executedBuyAmount: '',
+          executedFeeAmount: '',
+        } as EnrichedOrder,
       }
-
-      const orderFromApi: EnrichedOrder = {
-        ...baseOrder,
-        uid: '0x123456789abcdef',
-        owner: '0xabcdefabcdefabcdefabcdefabcdefabcdefabcd',
-        receiver: '0x9999999999999999999999999999999999999999',
-        creationDate: '2024-01-01T00:00:00Z',
-        invalidated: false,
-        status: SdkOrderStatus.OPEN,
-        totalFee: '',
-        executedSellAmount: '',
-        executedSellAmountBeforeFees: '',
-        executedBuyAmount: '',
-        executedFeeAmount: '',
-      } as EnrichedOrder
 
       mockedGetUiOrderType.mockReturnValue(UiOrderType.SWAP)
 
-      const summary = computeOrderSummary({ orderFromStore, orderFromApi })
+      const summary = computeOrderSummary({ orderFromStore })
 
       // Should use receiver from orderFromApi
       expect(summary).toBe('Swap 1.01 DAI for at least 1 USDC to 0x9999...9999')
@@ -216,7 +217,7 @@ describe('computeOrderSummary', () => {
 
       mockedGetUiOrderType.mockReturnValue(UiOrderType.LIMIT)
 
-      const summary = computeOrderSummary({ orderFromStore, orderFromApi: null })
+      const summary = computeOrderSummary({ orderFromStore })
 
       expect(summary).toBe('Limit order 1.01 DAI for at least 1 USDC to 0xABcd...abCD')
     })
@@ -231,7 +232,7 @@ describe('computeOrderSummary', () => {
 
       mockedGetUiOrderType.mockReturnValue(UiOrderType.TWAP)
 
-      const summary = computeOrderSummary({ orderFromStore: order, orderFromApi: null })
+      const summary = computeOrderSummary({ orderFromStore: order })
 
       expect(summary).toBe('TWAP order 1.01 DAI for at least 1 USDC')
     })
