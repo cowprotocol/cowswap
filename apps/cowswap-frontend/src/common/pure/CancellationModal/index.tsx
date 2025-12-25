@@ -18,21 +18,13 @@ export type CancellationModalProps = {
   isOpen: boolean
   onDismiss: Command
   context: CancellationModalContext
+  orderSummary: string | undefined
 }
 
 export function CancellationModal(props: CancellationModalProps): ReactElement | null {
-  const { isOpen, onDismiss, context } = props
-  const {
-    chainId,
-    orderId,
-    summary,
-    error,
-    defaultType,
-    isPendingSignature,
-    triggerCancellation,
-    txCost,
-    nativeCurrency,
-  } = context
+  const { isOpen, onDismiss, context, orderSummary } = props
+  const { chainId, orderId, error, defaultType, isPendingSignature, triggerCancellation, txCost, nativeCurrency } =
+    context
 
   const shortId = shortenOrderId(orderId || '')
 
@@ -54,8 +46,7 @@ export function CancellationModal(props: CancellationModalProps): ReactElement |
             <Trans>
               Cancelling order with id {shortId}:
               <br />
-              {/*TODO: ORDER_SUMMARY_ENTRY*/}
-              <em>{summary}</em>
+              <em>{orderSummary}</em>
             </Trans>
           }
           description={t`Canceling your order`}
@@ -67,7 +58,7 @@ export function CancellationModal(props: CancellationModalProps): ReactElement |
         <RequestCancellationModal
           onDismiss={onDismiss}
           triggerCancellation={triggerCancellation}
-          summary={summary ?? ''}
+          summary={orderSummary}
           shortId={shortId}
           defaultType={defaultType}
           txCost={txCost}
@@ -83,7 +74,7 @@ export function CancellationModal(props: CancellationModalProps): ReactElement |
     defaultType,
     onDismiss,
     isPendingSignature,
-    summary,
+    orderSummary,
     shortId,
     txCost,
     nativeCurrency,
