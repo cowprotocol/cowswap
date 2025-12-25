@@ -15,11 +15,6 @@ export interface ConfirmTradeWithRwaCheckResult {
 }
 
 export interface UseConfirmTradeWithRwaCheckParams {
-  /**
-   * Optional callback that's called when the trade confirmation is actually opened
-   * (not when the consent modal is shown).
-   * Use this for analytics or other side effects that should only happen on actual confirmation.
-   */
   onConfirmOpen?: () => void
 }
 
