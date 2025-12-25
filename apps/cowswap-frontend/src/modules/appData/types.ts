@@ -1,5 +1,4 @@
-import { cowAppDataLatestScheme, LatestAppDataDocVersion } from '@cowprotocol/cow-sdk'
-import { CowEnv, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { cowAppDataLatestScheme, CowEnv, LatestAppDataDocVersion, SupportedChainId } from '@cowprotocol/cow-sdk'
 
 export type AppDataInfo = {
   doc: LatestAppDataDocVersion

@@ -53,9 +53,7 @@ export async function getTxOrders(params: GetTxOrdersParams): Promise<RawOrder[]
  *
  * Both filters cannot be used at the same time
  */
-export async function getTrades(
-  params: GetTradesParams
-): Promise<RawTrade[]> {
+export async function getTrades(params: GetTradesParams): Promise<RawTrade[]> {
   const { networkId, owner, orderId: orderUid, offset, limit } = params
   console.log(`[getTrades] Fetching trades on network ${networkId} with filters`, { owner, orderUid, offset, limit })
 
