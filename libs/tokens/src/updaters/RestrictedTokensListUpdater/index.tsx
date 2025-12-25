@@ -1,10 +1,16 @@
+import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
 import { getRestrictedTokenLists } from '@cowprotocol/core'
 import { TokenInfo } from '@cowprotocol/types'
 
 import { useRestrictedTokensCache } from '../../hooks/useRestrictedTokensCache'
-import { getTokenId, RestrictedTokenListState, TokenId } from '../../state/restrictedTokens/restrictedTokensAtom'
+import {
+  getTokenId,
+  restrictedListsAtom,
+  RestrictedTokenListState,
+  TokenId,
+} from '../../state/restrictedTokens/restrictedTokensAtom'
 
 const FETCH_TIMEOUT_MS = 10_000
 const MAX_RETRIES = 1
@@ -75,6 +81,7 @@ async function fetchTokenList(url: string, retries = MAX_RETRIES): Promise<Token
 
 export function RestrictedTokensListUpdater({ isRwaGeoblockEnabled }: RestrictedTokensListUpdaterProps): null {
   const { shouldFetch, saveToCache } = useRestrictedTokensCache()
+  const setRestrictedLists = useSetAtom(restrictedListsAtom)
 
   useEffect(() => {
     if (!isRwaGeoblockEnabled) {
@@ -92,9 +99,12 @@ export function RestrictedTokensListUpdater({ isRwaGeoblockEnabled }: Restricted
         const tokensMap: Record<TokenId, TokenInfo> = {}
         const countriesPerToken: Record<TokenId, string[]> = {}
         const consentHashPerToken: Record<TokenId, string> = {}
+        const blockedCountriesPerList: Record<string, string[]> = {}
 
         await Promise.all(
           restrictedLists.map(async (list) => {
+            blockedCountriesPerList[list.tokenListUrl] = list.restrictedCountries
+
             try {
               const tokens = await fetchTokenList(list.tokenListUrl)
 
@@ -117,6 +127,11 @@ export function RestrictedTokensListUpdater({ isRwaGeoblockEnabled }: Restricted
           isLoaded: true,
         }
 
+        setRestrictedLists({
+          blockedCountriesPerList,
+          isLoaded: true,
+        })
+
         saveToCache(listState)
       } catch (error) {
         console.error('Error loading restricted tokens:', error)
@@ -124,7 +139,7 @@ export function RestrictedTokensListUpdater({ isRwaGeoblockEnabled }: Restricted
     }
 
     loadRestrictedTokens()
-  }, [isRwaGeoblockEnabled, shouldFetch, saveToCache])
+  }, [isRwaGeoblockEnabled, shouldFetch, saveToCache, setRestrictedLists])
 
   return null
 }

@@ -1,10 +1,19 @@
 import { useMemo } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { ListSearchResponse, ListState, useListsEnabledState, useRemoveList, useToggleList } from '@cowprotocol/tokens'
+import {
+  ListSearchResponse,
+  ListState,
+  useFilterBlockedLists,
+  useListsEnabledState,
+  useRemoveList,
+  useToggleList,
+} from '@cowprotocol/tokens'
 import { Loader } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
+
+import { useGeoCountry } from 'modules/rwa'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
@@ -31,6 +40,9 @@ export interface ManageListsProps {
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function ManageLists(props: ManageListsProps) {
   const { lists, listSearchResponse, isListUrlValid } = props
+
+  const country = useGeoCountry()
+  const filteredLists = useFilterBlockedLists(lists, country)
 
   const activeTokenListsIds = useListsEnabledState()
   const addListImport = useAddListImport()
@@ -85,7 +97,7 @@ export function ManageLists(props: ManageListsProps) {
         </styledEl.ImportListsContainer>
       )}
       <styledEl.ListsContainer id="tokens-lists-table">
-        {lists
+        {filteredLists
           .sort((a, b) => (a.priority || 0) - (b.priority || 0))
           .map((list) => (
             <ListItem
