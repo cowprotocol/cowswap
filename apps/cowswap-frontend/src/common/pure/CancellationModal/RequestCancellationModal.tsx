@@ -125,6 +125,7 @@ export function RequestCancellationModal(props: RequestCancellationModalProps): 
               Are you sure you want to cancel order <strong>{shortId}</strong>?
             </Trans>
           </p>
+          {/*TODO: ORDER_SUMMARY_ENTRY*/}
           <CancellationSummary>{summary}</CancellationSummary>
           <p>
             <Trans>This is an</Trans>{' '}

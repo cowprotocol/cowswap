@@ -56,6 +56,7 @@ export function CancellationModal(props: CancellationModalProps): ReactElement |
             <Trans>
               Cancelling order with id {shortId}:
               <br />
+              {/*TODO: ORDER_SUMMARY_ENTRY*/}
               <em>{summary}</em>
             </Trans>
           }

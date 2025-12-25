@@ -587,6 +587,7 @@ export function ActivityDetails(props: {
               )}
             </>
           ) : (
+            // TODO: ORDER_SUMMARY_ENTRY
             (summary ?? id)
           )}
 
