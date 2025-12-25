@@ -8,7 +8,7 @@ import { tradingSdk } from 'tradingSdk/tradingSdk'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
-import { getOrderSubmitSummary, mapUnsignedOrderToOrder, wrapErrorInOperatorError } from 'legacy/utils/trade'
+import { mapUnsignedOrderToOrder, wrapErrorInOperatorError } from 'legacy/utils/trade'
 
 import { LOW_RATE_THRESHOLD_PERCENT } from 'modules/limitOrders/const/trade'
 import { PriceImpactDeclineError, TradeFlowContext } from 'modules/limitOrders/services/types'
@@ -133,7 +133,6 @@ export async function tradeFlow(
       additionalParams: {
         ...postOrderParams,
         orderId,
-        summary: getOrderSubmitSummary(postOrderParams),
         signingScheme,
         signature,
       },

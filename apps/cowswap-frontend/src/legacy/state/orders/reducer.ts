@@ -380,22 +380,7 @@ export default createReducer(initialState, (builder) =>
           // EthFlow orders validTo is different
           orderObject.order.validTo = getValidTo(ethflowData?.userValidTo, orderObject.order)
 
-          orderObject.order.apiAdditionalInfo = {
-            creationDate: order.creationDate,
-            executedBuyAmount: order.executedBuyAmount,
-            executedSellAmount: order.executedSellAmount,
-            executedSellAmountBeforeFees: order.executedSellAmountBeforeFees,
-            executedFeeAmount: order.executedFeeAmount,
-            executedFee: order.executedFee,
-            executedFeeToken: order.executedFeeToken,
-            totalFee: order.totalFee,
-            invalidated: order.invalidated,
-            ethflowData: order.ethflowData,
-            onchainOrderData: order.onchainOrderData,
-            class: order.class,
-            fullAppData: order.fullAppData,
-            signingScheme: order.signingScheme,
-          }
+          orderObject.order.apiAdditionalInfo = order
 
           addOrderToState(state, chainId, uid, 'fulfilled', orderObject.order, isSafeWallet)
         }

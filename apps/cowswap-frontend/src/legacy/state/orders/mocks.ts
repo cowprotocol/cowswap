@@ -41,16 +41,11 @@ export const generateOrder = ({ owner, sellToken, buyToken }: GenerateOrderParam
 
   const kind = orderN % 2 ? OrderKind.BUY : OrderKind.SELL
 
-  const summary = `Order ${kind.toUpperCase()} ${(sellAmount / 10 ** sellToken.decimals).toFixed(2)} ${
-    sellToken.symbol
-  } for ${(buyAmount / 10 ** buyToken.decimals).toFixed(2)} ${buyToken.symbol}`
-
   return {
     id: generateOrderId(orderN), // Unique identifier for the order: 56 bytes encoded as hex without 0x
     owner: owner.replace('0x', ''),
     status: OrderStatus.PENDING,
     creationTime: new Date().toISOString(),
-    summary, // for dapp use only, readable by user
     inputToken: sellToken,
     outputToken: buyToken,
     sellToken: sellToken.address?.replace('0x', ''), // address, without '0x' prefix

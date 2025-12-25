@@ -1,5 +1,6 @@
 import { formatSymbol, formatTokenAmount, isSellOrder, shortenAddress } from '@cowprotocol/common-utils'
 import { EnrichedOrder, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { Nullish } from '@cowprotocol/types'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
@@ -26,7 +27,7 @@ export function computeOrderSummary({
   orderFromApi,
 }: {
   orderFromStore?: Order
-  orderFromApi: EnrichedOrder | null
+  orderFromApi: Nullish<EnrichedOrder>
 }) {
   if (!orderFromStore && !orderFromApi) return undefined
 

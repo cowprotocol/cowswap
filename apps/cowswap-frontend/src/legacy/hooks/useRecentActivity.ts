@@ -119,9 +119,6 @@ type UseActivityDescriptionParams = {
   ids: string[]
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line complexity
 export function createActivityDescriptor(
   tx?: EnhancedTransactionDetails,
   order?: Order,
@@ -129,96 +126,90 @@ export function createActivityDescriptor(
 ): ActivityDescriptors | null {
   if (!tx && !order) return null
 
-  let activity: EnhancedTransactionDetails | Order, type: ActivityType
-
-  let id: string,
-    isPending: boolean,
-    isPresignaturePending: boolean,
-    isConfirmed: boolean,
-    isCancelling: boolean,
-    isCancelled: boolean,
-    isCreating: boolean,
-    isFailed: boolean,
-    date: Date
-
-  if (!tx && order) {
-    // We're dealing with an ORDER
-    // setup variables accordingly...
-    id = order.id
-
-    isPresignaturePending = order.status === OrderStatus.PRESIGNATURE_PENDING // Smart contract orders only
-    isCreating = order.status === OrderStatus.CREATING // EthFlow orders only
-    isPending = order.status === OrderStatus.PENDING // All orders
-    isConfirmed = !isPending && order.status === OrderStatus.FULFILLED
-    // `order.isCancelling` is not enough to tell if the order should be shown as cancelling in the UI.
-    // We can only do so if the order is in a "pending" state.
-    // `isPending` is used for all orders when they are "OPEN".
-    // `isCreating` is only used for EthFlow orders from the moment the tx is sent until it's received from the API.
-    // After it's created in the backend the status changes to "OPEN", which ends up here as PENDING
-    // Thus, we add both here to tell if the order is being cancelled
-    isCancelling = (order.isCancelling || false) && (isPending || isCreating)
-    isCancelled = !isConfirmed && order.status === OrderStatus.CANCELLED
-    isFailed = order.status === OrderStatus.FAILED
-
-    activity = order
-    type = ActivityType.ORDER
-
-    date = new Date(order.creationTime)
-  } else if (tx) {
-    // We're dealing with a TRANSACTION
-    // setup variables accordingly...
-    id = tx.hash
-
-    const isReceiptConfirmed =
-      !!tx.receipt && (tx.receipt.status === TxReceiptStatus.CONFIRMED || typeof tx.receipt.status === 'undefined')
-    const isCancelTx = tx?.replacementType === 'cancel'
-    isPending = !tx.receipt
-    isPresignaturePending = false
-    isConfirmed = !isPending && isReceiptConfirmed
-    isCancelling = isCancelTx && isPending
-    isCancelled = isCancelTx && !isPending && isReceiptConfirmed
-    isCreating = false
-    isFailed = !!tx.errorMessage
-
-    activity = tx
-    type = ActivityType.TX
-
-    date = new Date(tx.addedTime)
-  } else {
-    // Shouldn't happen but TS is bugging me
-    return null
+  if (order) {
+    return {
+      id: order.id,
+      activity: order,
+      status: getOrderActivityStatus(order),
+      type: ActivityType.ORDER,
+      date: new Date(order.creationTime),
+      fillability: orderFillability,
+    }
   }
 
-  let status
-
-  if (isCancelling) {
-    status = ActivityStatus.CANCELLING
-  } else if (isFailed) {
-    status = ActivityStatus.FAILED
-  } else if (isPending) {
-    status = ActivityStatus.PENDING
-  } else if (isPresignaturePending) {
-    status = ActivityStatus.PRESIGNATURE_PENDING
-  } else if (isCancelled) {
-    status = ActivityStatus.CANCELLED
-  } else if (isConfirmed) {
-    status = ActivityStatus.CONFIRMED
-  } else if (isCreating) {
-    status = ActivityStatus.CREATING
-  } else {
-    status = ActivityStatus.EXPIRED
+  if (tx) {
+    return {
+      id: tx.hash,
+      activity: tx,
+      summary: tx.summary,
+      status: getTxActivityStatus(tx),
+      type: ActivityType.TX,
+      date: new Date(tx.addedTime),
+      fillability: orderFillability,
+    }
   }
-  const summary = activity.summary
 
-  return {
-    id,
-    activity,
-    summary,
-    status,
-    type,
-    date,
-    fillability: orderFillability,
-  }
+  return null
+}
+
+function getOrderActivityStatus(order: Order): ActivityStatus {
+  const isPresignaturePending = order.status === OrderStatus.PRESIGNATURE_PENDING // Smart contract orders only
+  const isCreating = order.status === OrderStatus.CREATING // EthFlow orders only
+  const isPending = order.status === OrderStatus.PENDING // All orders
+  const isConfirmed = !isPending && order.status === OrderStatus.FULFILLED
+  // `order.isCancelling` is not enough to tell if the order should be shown as cancelling in the UI.
+  // We can only do so if the order is in a "pending" state.
+  // `isPending` is used for all orders when they are "OPEN".
+  // `isCreating` is only used for EthFlow orders from the moment the tx is sent until it's received from the API.
+  // After it's created in the backend the status changes to "OPEN", which ends up here as PENDING
+  // Thus, we add both here to tell if the order is being cancelled
+  const isCancelling = getIsOrderCancelling(order)
+  const isCancelled = !isConfirmed && order.status === OrderStatus.CANCELLED
+  const isFailed = order.status === OrderStatus.FAILED
+
+  if (isCancelling) return ActivityStatus.CANCELLING
+  if (isFailed) return ActivityStatus.FAILED
+  if (isPending) return ActivityStatus.PENDING
+  if (isPresignaturePending) return ActivityStatus.PRESIGNATURE_PENDING
+  if (isCancelled) return ActivityStatus.CANCELLED
+  if (isConfirmed) return ActivityStatus.CONFIRMED
+  if (isCreating) return ActivityStatus.CREATING
+
+  return ActivityStatus.EXPIRED
+}
+
+/**
+ * `order.isCancelling` is not enough to tell if the order should be shown as cancelling in the UI.
+ * We can only do so if the order is in a "pending" state.
+ * `isPending` is used for all orders when they are "OPEN".
+ * `isCreating` is only used for EthFlow orders from the moment the tx is sent until it's received from the API.
+ * After it's created in the backend the status changes to "OPEN", which ends up here as PENDING
+ * Thus, we add both here to tell if the order is being cancelled
+ */
+function getIsOrderCancelling(order: Order): boolean {
+  return (order.isCancelling || false) && [OrderStatus.CREATING, OrderStatus.PENDING].includes(order.status)
+}
+
+function getTxActivityStatus(tx: EnhancedTransactionDetails): ActivityStatus {
+  const isReceiptConfirmed = getIsReceiptConfirmed(tx)
+  const isCancelTx = tx.replacementType === 'cancel'
+  const isPending = !tx.receipt
+  const isConfirmed = !isPending && isReceiptConfirmed
+  const isCancelling = isCancelTx && isPending
+  const isCancelled = isCancelTx && !isPending && isReceiptConfirmed
+  const isFailed = !!tx.errorMessage
+
+  if (isCancelling) return ActivityStatus.CANCELLING
+  if (isFailed) return ActivityStatus.FAILED
+  if (isPending) return ActivityStatus.PENDING
+  if (isCancelled) return ActivityStatus.CANCELLED
+  if (isConfirmed) return ActivityStatus.CONFIRMED
+
+  return ActivityStatus.EXPIRED
+}
+
+function getIsReceiptConfirmed(tx: EnhancedTransactionDetails): boolean {
+  return tx.receipt?.status === TxReceiptStatus.CONFIRMED || typeof tx.receipt?.status === 'undefined'
 }
 
 export function useMultipleActivityDescriptors({ chainId, ids }: UseActivityDescriptionParams): ActivityDescriptors[] {
