@@ -2,20 +2,20 @@ import { ReactElement, useCallback, useState } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { Command } from '@cowprotocol/types'
-import { ButtonPrimary, TokenAmount, UI } from '@cowprotocol/ui'
+import { ButtonPrimary, TokenAmount } from '@cowprotocol/ui'
 import type { BigNumber } from '@ethersproject/bignumber'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import { ArrowLeft, ArrowRight } from 'react-feather'
-import styled from 'styled-components/macro'
 import { LinkStyledButton } from 'theme'
 
-import NotificationBanner from 'legacy/components/NotificationBanner'
 import { LegacyConfirmationModalContent } from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationModalContent'
 
 import { CancellationType } from 'common/hooks/useCancelOrder/state'
+
+import { CancellationSummary, OrderTypeDetails, StyledNotificationBanner, TypeButton, Wrapper } from './styled'
 
 export type RequestCancellationModalProps = {
   summary?: string
@@ -26,64 +26,6 @@ export type RequestCancellationModalProps = {
   txCost: BigNumber | null
   nativeCurrency: TokenWithLogo
 }
-
-const Wrapper = styled.div`
-  display: flex;
-  flex-flow: column wrap;
-  margin: 0 auto;
-  width: 100%;
-`
-
-const TypeButton = styled.button<{ isOnChain$: boolean }>`
-  display: inline-flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 5px;
-  background: ${({ isOnChain$ }) => (isOnChain$ ? `var(${UI.COLOR_INFO_BG})` : `var(${UI.COLOR_PAPER_DARKER})`)};
-  color: ${({ isOnChain$ }) => (isOnChain$ ? `var(${UI.COLOR_INFO_TEXT})` : 'inherit')};
-  padding: 4px 8px;
-  border-radius: 4px;
-  outline: none;
-  border: 0;
-  margin: 0 3px;
-  font-size: inherit;
-  cursor: pointer;
-
-  :hover {
-    outline: 1px solid
-      ${({ isOnChain$ }) => (isOnChain$ ? `var(${UI.COLOR_INFO_TEXT})` : `var(${UI.COLOR_TEXT_OPACITY_25})`)};
-  }
-`
-
-const StyledNotificationBanner = styled(NotificationBanner)`
-  margin-top: 15px;
-  margin-bottom: 0;
-  box-sizing: border-box;
-`
-
-const CancellationSummary = styled.span`
-  padding: 12px;
-  margin: 0;
-  border-radius: 6px;
-  background: var(${UI.COLOR_PAPER_DARKER});
-  line-height: 1.6;
-`
-
-const OrderTypeDetails = styled.div`
-  margin: 0 0 15px 5px;
-  padding-left: 10px;
-  border-left: 3px solid var(${UI.COLOR_TEXT_OPACITY_25});
-
-  > p {
-    margin: 0 0 10px 0;
-  }
-
-  > p:last-child {
-    margin-bottom: 0;
-  }
-`
-
-// TODO: Break down this large function into smaller functions
 
 export function RequestCancellationModal(props: RequestCancellationModalProps): ReactElement {
   const { onDismiss, triggerCancellation, summary, shortId, defaultType, txCost, nativeCurrency } = props

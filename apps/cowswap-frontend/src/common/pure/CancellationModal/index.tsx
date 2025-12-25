@@ -20,8 +20,6 @@ export type CancellationModalProps = {
   context: CancellationModalContext
 }
 
-// TODO: Break down this large function into smaller functions
-
 export function CancellationModal(props: CancellationModalProps): ReactElement | null {
   const { isOpen, onDismiss, context } = props
   const {
