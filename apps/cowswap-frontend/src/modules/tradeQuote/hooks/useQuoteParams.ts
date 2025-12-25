@@ -19,7 +19,6 @@ import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetwo
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
 import { useQuoteParamsRecipient } from './useQuoteParamsRecipient'
-import { useTradeQuote } from './useTradeQuote'
 
 import { BRIDGE_QUOTE_ACCOUNT, getBridgeQuoteSigner } from '../utils/getBridgeQuoteSigner'
 
@@ -42,15 +41,14 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
   const state = useDerivedTradeState()
   const volumeFee = useVolumeFee()
   const tradeSlippage = useTradeSlippageValueAndType()
-  const { isLoading: isQuoteLoading } = useTradeQuote()
 
   // Slippage value for quote params:
   // - User slippage: always include (re-quotes when user changes it)
-  // - Smart slippage: only include after quote loads to prevent re-fetch loop and this will only re-fetch when user switches to auto-slippage mode
+  // - Smart slippage: always include (re-quotes when user changes amount, etc.)
   const slippageBps =
     tradeSlippage.type === 'user'
       ? tradeSlippage.value
-      : tradeSlippage.type === 'smart' && !isQuoteLoading
+      : tradeSlippage.type === 'smart'
         ? tradeSlippage.value
         : undefined
 
