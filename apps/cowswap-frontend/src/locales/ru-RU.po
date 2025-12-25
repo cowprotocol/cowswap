@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-12-25 10:59\n"
+"PO-Revision-Date: 2025-12-25 12:19\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -879,7 +879,7 @@ msgstr "В CoW Swap, вы можете установить лимит орде�
 
 #: apps/cowswap-frontend/src/common/pure/ChainPrefixWarning/index.tsx
 msgid "The recipient address you inputted had the chain prefix <0>{chainPrefixWarning}</0>, which is not the expected for the output token's network."
-msgstr "Префикс <0>{chainPrefixWarning}</0>, адреса получателя, который вы ввели, отличается префикса сети токена к получению. "
+msgstr "Введённый вами адрес получателя содержит префикс цепочки <0>{chainPrefixWarning}</0>, который не соответствует сети токена вывода."
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/DeadlineSelector/deadlines.ts
 msgid "1 Day"
@@ -913,7 +913,7 @@ msgstr "Возможно, у вас есть другие вещи, но не Ai
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/LpTokenPage/index.tsx
 msgid "APR"
-msgstr "ГПС"
+msgstr "Годовая доходность (APR)"
 
 #: apps/cowswap-frontend/src/common/pure/NetworksList/index.tsx
 msgid "CoW Protocol Explorer"
@@ -992,7 +992,7 @@ msgstr "Неподдерживаемый токен"
 
 #: apps/cowswap-frontend/src/modules/swap/pure/SmartContractReceiverWarning/index.tsx
 msgid "is on {chainName} network"
-msgstr "в  {chainName} сети"
+msgstr "в сети {chainName} "
 
 #: apps/cowswap-frontend/src/common/pure/PermitModal/index.tsx
 #: apps/cowswap-frontend/src/legacy/components/Tokens/TokensTableRow.tsx
@@ -1297,6 +1297,10 @@ msgstr "ПОСТ"
 #: apps/cowswap-frontend/src/modules/accountProxy/containers/AccountProxyRecoverPage/index.tsx
 msgid "1/2 Confirm funds recovering"
 msgstr "1/2 Подтверждение возврата средств"
+
+#: apps/cowswap-frontend/src/common/pure/PriceImpactIndicator/index.tsx
+msgid "Price impact due to current liquidity levels and estimated swap fees and costs"
+msgstr ""
 
 #: apps/cowswap-frontend/src/modules/fortune/containers/FortuneWidget/index.tsx
 #: apps/cowswap-frontend/src/modules/fortune/containers/FortuneWidget/index.tsx
@@ -5676,6 +5680,10 @@ msgstr "Изменен адрес получателя на"
 #: apps/cowswap-frontend/src/api/cowProtocol/errors/OperatorError.ts
 #~ msgid "Something failed. Please try again later."
 #~ msgstr "Something failed. Please try again later."
+
+#: apps/cowswap-frontend/src/common/pure/PriceImpactIndicator/index.tsx
+#~ msgid "Price impact due to liquidity levels and expected swap costs"
+#~ msgstr "Price impact due to liquidity levels and expected swap costs"
 
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/HookSearchInput/index.tsx
 msgid "Search hooks..."
