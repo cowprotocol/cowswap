@@ -34,6 +34,7 @@ import { isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { useEnhancedActivityDerivedState } from 'common/hooks/useEnhancedActivityDerivedState'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { useSwapAndBridgeContext } from 'common/hooks/useSwapAndBridgeContext'
+import { useUltimateOrder } from 'common/hooks/useUltimateOrder'
 import { CurrencyLogoPair } from 'common/pure/CurrencyLogoPair'
 import { CustomRecipientWarningBanner } from 'common/pure/CustomRecipientWarningBanner'
 import { IconSpinner } from 'common/pure/IconSpinner'
@@ -244,13 +245,14 @@ export function ActivityDetails(props: {
   const { isPartialApproveEnabled } = useFeatureFlags()
   const [isPartialApproveEnabledBySettings] = useSwapPartialApprovalToggleState(isPartialApproveEnabled)
   const getShowCancellationModal = useCancelOrder()
+  const ultimateOrder = useUltimateOrder(chainId, order?.id)
 
   const isSwap = order && getUiOrderType(order) === UiOrderType.SWAP
 
   const { disableProgressBar } = useInjectedWidgetParams()
 
   const skipBridgingDisplay = isExpired || isCancelled || isFailed || isCancelling
-  const isBridgeOrder = getIsBridgeOrder(order) && !skipBridgingDisplay
+  const isBridgeOrder = getIsBridgeOrder(order)
 
   // Enhanced activity derived state that incorporates bridge status for bridge orders
   const enhancedActivityDerivedState = useEnhancedActivityDerivedState(activityDerivedState, chainId)
@@ -449,7 +451,7 @@ export function ActivityDetails(props: {
           {/* Order Currency Logo */}
           {inputToken && outputToken && (
             <ActivityVisual>
-              {isBridgeOrder && order ? (
+              {isBridgeOrder && !skipBridgingDisplay && order ? (
                 (() => {
                   const isLocalOrderCached = order.inputToken.chainId !== order.outputToken.chainId
                   const hasConfirmedBridgeData = swapAndBridgeContext?.statusResult
@@ -489,7 +491,7 @@ export function ActivityDetails(props: {
           <b>{activityName}</b>
           {isOrder ? (
             <>
-              {order && isBridgeOrder ? (
+              {order && !skipBridgingDisplay && isBridgeOrder ? (
                 <BridgeActivitySummary
                   isCustomRecipientWarning={!!isCustomRecipientWarningBannerVisible}
                   order={order}
@@ -590,7 +592,7 @@ export function ActivityDetails(props: {
             // Transaction
             (activityDerivedState.summary ??
             // Order
-            (order ? computeOrderSummary({ orderFromStore: order, orderFromApi: order.apiAdditionalInfo }) : null) ??
+            (ultimateOrder ? computeOrderSummary(ultimateOrder) : null) ??
             id)
           )}
 
