@@ -15,9 +15,6 @@ import { getExplorerOrderLink } from './explorer'
  */
 const BLOCK_EXPLORER_URL_OVERRIDE = process.env.REACT_APP_BLOCK_EXPLORER_URL
 
-// Debug logging for block explorer URL override
-console.log('[legacyAddressUtils] BLOCK_EXPLORER_URL_OVERRIDE:', BLOCK_EXPLORER_URL_OVERRIDE)
-
 // returns the checksummed address if the address is valid, otherwise returns false
 export function isAddress(value: string | undefined | null): string | false {
   try {
