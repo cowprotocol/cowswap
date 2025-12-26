@@ -34,7 +34,6 @@ import { isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { useEnhancedActivityDerivedState } from 'common/hooks/useEnhancedActivityDerivedState'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { useSwapAndBridgeContext } from 'common/hooks/useSwapAndBridgeContext'
-import { useUltimateOrder } from 'common/hooks/useUltimateOrder'
 import { CurrencyLogoPair } from 'common/pure/CurrencyLogoPair'
 import { CustomRecipientWarningBanner } from 'common/pure/CustomRecipientWarningBanner'
 import { IconSpinner } from 'common/pure/IconSpinner'
@@ -46,7 +45,6 @@ import {
   useIsReceiverWalletBannerHidden,
 } from 'common/state/receiverWalletBannerVisibility'
 import { ActivityDerivedState, ActivityStatus } from 'common/types/activity'
-import { computeOrderSummary } from 'common/updaters/orders/utils'
 import { getIsBridgeOrder } from 'common/utils/getIsBridgeOrder'
 import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
@@ -245,7 +243,6 @@ export function ActivityDetails(props: {
   const { isPartialApproveEnabled } = useFeatureFlags()
   const [isPartialApproveEnabledBySettings] = useSwapPartialApprovalToggleState(isPartialApproveEnabled)
   const getShowCancellationModal = useCancelOrder()
-  const ultimateOrder = useUltimateOrder(chainId, order?.id)
 
   const isSwap = order && getUiOrderType(order) === UiOrderType.SWAP
 
@@ -490,6 +487,7 @@ export function ActivityDetails(props: {
         <SummaryInner>
           <b>{activityName}</b>
           {isOrder ? (
+            // Order
             <>
               {order && !skipBridgingDisplay && isBridgeOrder ? (
                 <BridgeActivitySummary
@@ -590,10 +588,7 @@ export function ActivityDetails(props: {
             </>
           ) : (
             // Transaction
-            (activityDerivedState.summary ??
-            // Order
-            (ultimateOrder ? computeOrderSummary(ultimateOrder) : null) ??
-            id)
+            (activityDerivedState.summary ?? id)
           )}
 
           {activityLinkUrl && enhancedTransaction?.replacementType !== 'replaced' && (
