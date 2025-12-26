@@ -7,12 +7,11 @@ import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import { useBridgeOrderData } from 'entities/bridgeOrders'
 
+import type { OrderSummaryTemplateProps } from 'common/pure/OrderSummary/summaryTemplates'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
 
 import { OrderNotification } from '../OrderNotification'
 import { mapBridgingResultToOrderInfo } from '../OrderNotification/utils'
-
-import type { OrderSummaryTemplateProps } from '../../pure/OrderSummary/summaryTemplates'
 
 function summaryTemplate({
   inputAmount,

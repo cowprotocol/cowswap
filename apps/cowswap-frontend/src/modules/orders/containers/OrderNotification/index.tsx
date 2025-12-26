@@ -11,6 +11,9 @@ import { useBridgeSupportedNetwork } from 'entities/bridgeProvider'
 
 import { useOrder } from 'legacy/state/orders/hooks'
 
+import { OrderSummary } from 'common/pure/OrderSummary'
+import { SellForAtLeastTemplate } from 'common/pure/OrderSummary/summaryTemplates'
+
 import {
   getToastMessageCallback,
   isEnrichedOrder,
@@ -19,8 +22,6 @@ import {
   OrderInfo,
 } from './utils'
 
-import { OrderSummary } from '../../pure/OrderSummary'
-import { SellForAtLeastTemplate } from '../../pure/OrderSummary/summaryTemplates'
 import { ReceiverInfo } from '../../pure/ReceiverInfo'
 import { TransactionContentWithLink } from '../TransactionContentWithLink'
 
@@ -103,14 +104,14 @@ export function OrderNotification(props: BaseOrderNotificationProps): ReactNode 
         (order.inputToken && order.outputToken ? (
           <OrderSummary
             actionTitle={actionTitle}
-            buyAmount={order.outputAmount.toString()}
             customTemplate={props.customTemplate}
-            dstChainData={dstChainData}
-            inputToken={order.inputToken as TokenInfo}
             kind={order.kind}
+            inputToken={order.inputToken as TokenInfo}
             outputToken={order.outputToken as TokenInfo}
             sellAmount={order.inputAmount.toString()}
+            buyAmount={order.outputAmount.toString()}
             srcChainData={srcChainData}
+            dstChainData={dstChainData}
           />
         ) : null)}
       {!hideReceiver && <ReceiverInfo receiver={receiver ?? order.receiver} owner={order.owner} />}

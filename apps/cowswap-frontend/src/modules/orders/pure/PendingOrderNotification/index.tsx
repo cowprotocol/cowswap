@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { ReactNode, useCallback } from 'react'
 
 import { isCowOrder } from '@cowprotocol/common-utils'
 import { OnPostedOrderPayload } from '@cowprotocol/events'
@@ -8,10 +8,10 @@ import { Trans } from '@lingui/react/macro'
 import { EnhancedTransactionLink } from 'legacy/components/EnhancedTransactionLink'
 import { HashType } from 'legacy/state/enhancedTransactions/reducer'
 
+import { OrderSummary } from 'common/pure/OrderSummary'
 import { getUiOrderTypeTitles } from 'utils/orderUtils/getUiOrderType'
 
 import { OrderLinkWrapper } from '../commonStyled'
-import { OrderSummary } from '../OrderSummary'
 import { ReceiverInfo } from '../ReceiverInfo'
 
 export interface PendingOrderNotificationProps {
@@ -20,10 +20,7 @@ export interface PendingOrderNotificationProps {
   onToastMessage(message: string): void
 }
 
-// TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function PendingOrderNotification(props: PendingOrderNotificationProps) {
+export function PendingOrderNotification(props: PendingOrderNotificationProps): ReactNode {
   const { payload, isSafeWallet, onToastMessage } = props
 
   const {
