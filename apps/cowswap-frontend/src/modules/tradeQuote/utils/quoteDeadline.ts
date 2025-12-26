@@ -26,7 +26,7 @@ export function isQuoteExpired(state: TradeQuoteState): boolean | undefined {
   }
 
   const quoteExpirationTime = new Date(expiration).getTime()
-  const maxExpirationTime = new Date(state.localQuoteTimestamp * 1000).getTime() + MAX_EXPIRATION_TIME
+  const maxExpirationTime = new Date(state.localQuoteTimestamp).getTime() + MAX_EXPIRATION_TIME
   const expirationTime = Math.min(quoteExpirationTime, maxExpirationTime)
 
   const now = Date.now()
@@ -51,7 +51,7 @@ export function getQuoteTimeOffset(state: TradeQuoteState): number | undefined {
 
   if (!validFor || !quoteValidTo || !localQuoteTimestamp) return undefined
 
-  const expectedValidTo = localQuoteTimestamp + validFor
+  const expectedValidTo = Math.ceil(localQuoteTimestamp / 1000) + validFor
 
   return expectedValidTo - quoteValidTo
 }

@@ -18,6 +18,8 @@ export interface TradeQuoteState {
   hasParamsChanged: boolean
   isLoading: boolean
   localQuoteTimestamp: number | null
+  // cached slippageBps from quote response
+  suggestedSlippageBps: number | null
 }
 
 export const DEFAULT_TRADE_QUOTE_STATE: TradeQuoteState = {
@@ -29,6 +31,7 @@ export const DEFAULT_TRADE_QUOTE_STATE: TradeQuoteState = {
   hasParamsChanged: false,
   isLoading: false,
   localQuoteTimestamp: null,
+  suggestedSlippageBps: null,
 }
 
 export const tradeQuotesAtom = atom<Record<SellTokenAddress, TradeQuoteState | undefined>>({})
@@ -36,16 +39,19 @@ export const tradeQuotesAtom = atom<Record<SellTokenAddress, TradeQuoteState | u
 export const updateTradeQuoteAtom = atom(
   null,
   (get, set, _sellTokenAddress: SellTokenAddress, nextState: Partial<TradeQuoteState>) => {
+    // eslint-disable-next-line complexity
     set(tradeQuotesAtom, () => {
       const sellTokenAddress = _sellTokenAddress.toLowerCase()
       const prevState = get(tradeQuotesAtom)
       const prevQuote = prevState[sellTokenAddress] || DEFAULT_TRADE_QUOTE_STATE
 
+      const fastPriceQuality = nextState.fetchParams?.priceQuality === PriceQuality.FAST
+
       // Don't update state if Fast quote finished after Optimal quote
       if (
         prevQuote.fetchParams?.fetchStartTimestamp === nextState.fetchParams?.fetchStartTimestamp &&
         nextState.quote &&
-        nextState.fetchParams?.priceQuality === PriceQuality.FAST
+        fastPriceQuality
       ) {
         return { ...prevState }
       }
@@ -54,7 +60,11 @@ export const updateTradeQuoteAtom = atom(
         ...prevQuote,
         ...nextState,
         quote: typeof nextState.quote === 'undefined' ? prevQuote.quote : nextState.quote,
-        localQuoteTimestamp: nextState.quote ? Math.ceil(Date.now() / 1000) : null,
+        localQuoteTimestamp: nextState.quote ? Date.now() : null,
+        suggestedSlippageBps:
+          typeof nextState.suggestedSlippageBps === 'undefined'
+            ? prevQuote.suggestedSlippageBps // preserve cached value
+            : nextState.suggestedSlippageBps,
       }
 
       return {
