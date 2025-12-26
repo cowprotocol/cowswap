@@ -44,3 +44,16 @@ export const ListLink = styled.a`
 export const ExternalSourceAlertStyled = styled(ExternalSourceAlert)`
   margin: 0 20px 20px 20px;
 `
+
+export const BlockedWarning = styled.div`
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  background: var(${UI.COLOR_DANGER_BG});
+  color: var(${UI.COLOR_DANGER_TEXT});
+  border-radius: 10px;
+  font-size: 14px;
+  padding: 16px 20px;
+  margin: 0 20px 20px 20px;
+`

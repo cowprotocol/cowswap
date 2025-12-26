@@ -1,10 +1,20 @@
 import { useMemo } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { ListSearchResponse, ListState, useListsEnabledState, useRemoveList, useToggleList } from '@cowprotocol/tokens'
+import {
+  ListSearchResponse,
+  ListState,
+  useFilterBlockedLists,
+  useIsListBlocked,
+  useListsEnabledState,
+  useRemoveList,
+  useToggleList,
+} from '@cowprotocol/tokens'
 import { Loader } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
+
+import { useGeoCountry } from 'modules/rwa'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
@@ -32,6 +42,9 @@ export interface ManageListsProps {
 export function ManageLists(props: ManageListsProps) {
   const { lists, listSearchResponse, isListUrlValid } = props
 
+  const country = useGeoCountry()
+  const filteredLists = useFilterBlockedLists(lists, country)
+
   const activeTokenListsIds = useListsEnabledState()
   const addListImport = useAddListImport()
   const cowAnalytics = useCowAnalytics()
@@ -53,6 +66,8 @@ export function ManageLists(props: ManageListsProps) {
   })
 
   const { source, listToImport, loading } = useListSearchResponse(listSearchResponse)
+  const { isBlocked: isListToImportBlocked } = useIsListBlocked(listToImport?.source, country)
+  console.log('[ManageLists] isBlocked:', isListToImportBlocked)
 
   return (
     <styledEl.Wrapper>
@@ -71,6 +86,7 @@ export function ManageLists(props: ManageListsProps) {
           <ImportTokenListItem
             source={source}
             list={listToImport}
+            isBlocked={isListToImportBlocked}
             data-click-event={toCowSwapGtmEvent({
               category: CowSwapAnalyticsCategory.LIST,
               action: 'Import List',
@@ -85,7 +101,7 @@ export function ManageLists(props: ManageListsProps) {
         </styledEl.ImportListsContainer>
       )}
       <styledEl.ListsContainer id="tokens-lists-table">
-        {lists
+        {filteredLists
           .sort((a, b) => (a.priority || 0) - (b.priority || 0))
           .map((list) => (
             <ListItem

@@ -16,7 +16,7 @@ export interface RestrictedTokenInfo {
   consentHash: string
 }
 
-function findRestrictedToken(
+export function findRestrictedToken(
   token: Token | undefined,
   restrictedList: RestrictedTokenListState,
 ): RestrictedTokenInfo | undefined {

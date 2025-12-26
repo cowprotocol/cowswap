@@ -42,3 +42,19 @@ export const restrictedTokensLastUpdateAtom = atomWithStorage<number>(
   getJotaiMergerStorage(),
   { unstable_getOnInit: true },
 )
+
+/**
+ * maps token list source URLs to their blocked countries
+ * used to hide entire token lists for users in blocked countries
+ */
+export interface RestrictedListsState {
+  blockedCountriesPerList: Record<string, string[]>
+  isLoaded: boolean
+}
+
+const initialRestrictedListsState: RestrictedListsState = {
+  blockedCountriesPerList: {},
+  isLoaded: false,
+}
+
+export const restrictedListsAtom = atom<RestrictedListsState>(initialRestrictedListsState)
