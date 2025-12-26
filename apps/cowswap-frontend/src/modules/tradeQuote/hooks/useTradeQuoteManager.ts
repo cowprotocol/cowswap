@@ -73,7 +73,13 @@ export function useTradeQuoteManager(sellTokenAddress: SellTokenAddress | undefi
               update(sellTokenAddress, {
                 quote,
                 bridgeQuote,
-                ...(isOptimalQuote ? { isLoading: false } : null),
+                ...(isOptimalQuote
+                  ? {
+                      isLoading: false,
+                      // sdk returns default suggestedSlippageBps value for PriceQuality.FAST
+                      suggestedSlippageBps: quote.quoteResults.suggestedSlippageBps,
+                    }
+                  : null),
                 error: null,
                 hasParamsChanged: false,
                 fetchParams,

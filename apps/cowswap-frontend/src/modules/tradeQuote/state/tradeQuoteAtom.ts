@@ -56,16 +56,15 @@ export const updateTradeQuoteAtom = atom(
         return { ...prevState }
       }
 
-      const quote = typeof nextState.quote === 'undefined' ? prevQuote.quote : nextState.quote
-
       const update: TradeQuoteState = {
         ...prevQuote,
         ...nextState,
-        quote,
+        quote: typeof nextState.quote === 'undefined' ? prevQuote.quote : nextState.quote,
         localQuoteTimestamp: nextState.quote ? Date.now() : null,
-        // sdk return default suggestedSlippageBps value for PriceQuality.FAST, should ignore it
         suggestedSlippageBps:
-          quote && !fastPriceQuality ? quote.quoteResults.suggestedSlippageBps : prevQuote.suggestedSlippageBps,
+          typeof nextState.suggestedSlippageBps === 'undefined'
+            ? prevQuote.suggestedSlippageBps // preserve cached value
+            : nextState.suggestedSlippageBps,
       }
 
       return {
