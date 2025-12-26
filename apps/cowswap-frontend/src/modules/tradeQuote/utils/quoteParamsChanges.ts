@@ -9,12 +9,16 @@ export function checkOnlySlippageBpsChanged(
   prevQuoteParams: QuoteBridgeRequest | undefined,
   tradeQuote: TradeQuoteState,
 ): boolean {
+  const slippageChanged =
+    quoteParams?.swapSlippageBps !== prevQuoteParams?.swapSlippageBps ||
+    quoteParams?.bridgeSlippageBps !== prevQuoteParams?.bridgeSlippageBps
+
   const onlySlippageBpsChanged =
     !tradeQuote.isLoading &&
-    quoteParams?.slippageBps !== prevQuoteParams?.slippageBps &&
+    slippageChanged &&
     deepEqual(
-      { ...quoteParams, slippageBps: undefined, signer: undefined },
-      { ...prevQuoteParams, slippageBps: undefined, signer: undefined },
+      { ...quoteParams, swapSlippageBps: undefined, bridgeSlippageBps: undefined, signer: undefined },
+      { ...prevQuoteParams, swapSlippageBps: undefined, bridgeSlippageBps: undefined, signer: undefined },
     )
 
   return onlySlippageBpsChanged
