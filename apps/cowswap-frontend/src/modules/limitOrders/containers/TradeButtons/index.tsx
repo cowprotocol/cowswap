@@ -4,7 +4,7 @@ import { MessageDescriptor } from '@lingui/core'
 import { useLingui } from '@lingui/react/macro'
 
 import { useLimitOrdersWarningsAccepted } from 'modules/limitOrders/hooks/useLimitOrdersWarningsAccepted'
-import { useTradeConfirmActions } from 'modules/trade'
+import { useConfirmTradeWithRwaCheck } from 'modules/trade'
 import {
   TradeFormBlankButton,
   TradeFormButtons,
@@ -34,9 +34,8 @@ export function TradeButtons({ isTradeContextReady }: TradeButtonsProps) {
   const localFormValidation = useLimitOrdersFormState()
   const primaryFormValidation = useGetTradeFormValidation()
   const warningsAccepted = useLimitOrdersWarningsAccepted(false)
-  const tradeConfirmActions = useTradeConfirmActions()
 
-  const confirmTrade = tradeConfirmActions.onOpen
+  const { confirmTrade } = useConfirmTradeWithRwaCheck()
 
   const tradeFormButtonContext = useTradeFormButtonContext(CONFIRM_TEXT, confirmTrade)
 
