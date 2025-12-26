@@ -5,6 +5,7 @@ import {
   ListSearchResponse,
   ListState,
   useFilterBlockedLists,
+  useIsListBlocked,
   useListsEnabledState,
   useRemoveList,
   useToggleList,
@@ -65,6 +66,8 @@ export function ManageLists(props: ManageListsProps) {
   })
 
   const { source, listToImport, loading } = useListSearchResponse(listSearchResponse)
+  const { isBlocked: isListToImportBlocked } = useIsListBlocked(listToImport?.source, country)
+  console.log('[ManageLists] isBlocked:', isListToImportBlocked)
 
   return (
     <styledEl.Wrapper>
@@ -83,6 +86,7 @@ export function ManageLists(props: ManageListsProps) {
           <ImportTokenListItem
             source={source}
             list={listToImport}
+            isBlocked={isListToImportBlocked}
             data-click-event={toCowSwapGtmEvent({
               category: CowSwapAnalyticsCategory.LIST,
               action: 'Import List',

@@ -1,9 +1,10 @@
-import { useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
 import { getRestrictedTokenLists } from '@cowprotocol/core'
 import { TokenInfo } from '@cowprotocol/types'
 
+import { normalizeListSource } from '../../hooks/lists/useIsListBlocked'
 import { useRestrictedTokensCache } from '../../hooks/useRestrictedTokensCache'
 import {
   getTokenId,
@@ -80,8 +81,12 @@ async function fetchTokenList(url: string, retries = MAX_RETRIES): Promise<Token
 }
 
 export function RestrictedTokensListUpdater({ isRwaGeoblockEnabled }: RestrictedTokensListUpdaterProps): null {
-  const { shouldFetch, saveToCache } = useRestrictedTokensCache()
+  const { shouldFetch: shouldFetchTokens, saveToCache } = useRestrictedTokensCache()
   const setRestrictedLists = useSetAtom(restrictedListsAtom)
+  const restrictedLists = useAtomValue(restrictedListsAtom)
+
+  // Also fetch if lists atom isn't loaded (it's not cached, only tokens are)
+  const shouldFetch = shouldFetchTokens || !restrictedLists.isLoaded
 
   useEffect(() => {
     if (!isRwaGeoblockEnabled) {
@@ -103,7 +108,7 @@ export function RestrictedTokensListUpdater({ isRwaGeoblockEnabled }: Restricted
 
         await Promise.all(
           restrictedLists.map(async (list) => {
-            blockedCountriesPerList[list.tokenListUrl] = list.restrictedCountries
+            blockedCountriesPerList[normalizeListSource(list.tokenListUrl)] = list.restrictedCountries
 
             try {
               const tokens = await fetchTokenList(list.tokenListUrl)

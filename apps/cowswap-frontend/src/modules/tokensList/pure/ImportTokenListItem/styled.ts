@@ -1,3 +1,5 @@
+import { UI } from '@cowprotocol/ui'
+
 import styled from 'styled-components/macro'
 
 export const Wrapper = styled.div`
@@ -13,4 +15,13 @@ export const LoadedInfo = styled.div`
   flex-direction: row;
   gap: 10px;
   align-items: center;
+`
+
+export const BlockedInfo = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: center;
+  color: var(${UI.COLOR_DANGER_TEXT});
+  font-size: 13px;
 `

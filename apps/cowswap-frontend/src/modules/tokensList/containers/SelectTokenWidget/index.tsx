@@ -9,6 +9,7 @@ import {
   useAddList,
   useAddUserToken,
   useAllListsList,
+  useIsListBlocked,
   useTokenListsTags,
   useUnsupportedTokens,
   useUserAddedTokens,
@@ -21,6 +22,7 @@ import { Field } from 'legacy/state/types'
 
 import { useTokensBalancesCombined } from 'modules/combinedBalances'
 import { usePermitCompatibleTokens } from 'modules/permit'
+import { useGeoCountry } from 'modules/rwa'
 import { useLpTokensWithBalances } from 'modules/yield/shared'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
@@ -120,6 +122,14 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
   const closeTokenSelectWidget = useCloseTokenSelectWidget()
 
   const { isImportDisabled, blockReason } = useRestrictedTokenImportStatus(tokenToImport)
+  const country = useGeoCountry()
+  const { isBlocked: isListToImportBlocked } = useIsListBlocked(listToImport?.source, country)
+
+  console.log('[SelectTokenWidget] list import check:', {
+    listToImportSource: listToImport?.source,
+    country,
+    isListToImportBlocked,
+  })
 
   const openPoolPage = useCallback(
     (selectedPoolAddress: string) => {
@@ -193,6 +203,7 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
           return (
             <ImportListModal
               list={listToImport}
+              isBlocked={isListToImportBlocked}
               onDismiss={onDismiss}
               onBack={resetTokenImport}
               onImport={importListAndBack}

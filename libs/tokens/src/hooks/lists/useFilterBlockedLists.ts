@@ -1,6 +1,8 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
+import { normalizeListSource } from './useIsListBlocked'
+
 import { restrictedListsAtom } from '../../state/restrictedTokens/restrictedTokensAtom'
 import { ListState } from '../../types'
 
@@ -18,7 +20,7 @@ export function useFilterBlockedLists(lists: ListState[], country: string | null
     const countryUpper = country.toUpperCase()
 
     return lists.filter((list) => {
-      const blockedCountries = restrictedLists.blockedCountriesPerList[list.source]
+      const blockedCountries = restrictedLists.blockedCountriesPerList[normalizeListSource(list.source)]
 
       if (!blockedCountries) {
         return true
