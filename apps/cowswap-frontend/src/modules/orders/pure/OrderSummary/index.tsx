@@ -7,44 +7,46 @@ import { TokenInfo } from '@cowprotocol/types'
 import { TokenAmount } from '@cowprotocol/ui'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
+import { TradeAmounts } from 'common/types'
+
 import { BuyForAtMostTemplate, SellForAtLeastTemplate } from './summaryTemplates'
 
-interface OrderSummaryProps {
-  actionTitle?: string
+interface TokensAndAmounts {
   inputToken: TokenInfo
   outputToken: TokenInfo
   sellAmount: string
   buyAmount: string
+}
+
+type OrderSummaryProps = {
+  actionTitle?: string
   kind: OrderKind
   srcChainData?: ChainInfo
   dstChainData?: ChainInfo
   children?: ReactElement | string
   customTemplate?: typeof SellForAtLeastTemplate
-}
+} & (TradeAmounts | TokensAndAmounts)
 
 export function OrderSummary(props: OrderSummaryProps): ReactNode {
-  const {
-    kind,
-    sellAmount,
-    buyAmount,
-    outputToken,
-    inputToken,
-    children,
-    customTemplate,
-    actionTitle,
-    srcChainData,
-    dstChainData,
-  } = props
+  const { kind, children, customTemplate, actionTitle, srcChainData, dstChainData } = props
   const isSell = isSellOrder(kind)
   const isBridgeOrder = srcChainData && dstChainData && srcChainData.id !== dstChainData.id
 
   const inputAmount = useMemo(() => {
-    return CurrencyAmount.fromRawAmount(TokenWithLogo.fromToken(inputToken), sellAmount)
-  }, [inputToken, sellAmount])
+    if ('inputAmount' in props) {
+      return props.inputAmount
+    }
+
+    return CurrencyAmount.fromRawAmount(TokenWithLogo.fromToken(props.inputToken), props.sellAmount)
+  }, [props])
 
   const outputAmount = useMemo(() => {
-    return CurrencyAmount.fromRawAmount(TokenWithLogo.fromToken(outputToken), buyAmount)
-  }, [buyAmount, outputToken])
+    if ('outputAmount' in props) {
+      return props.inputAmount
+    }
+
+    return CurrencyAmount.fromRawAmount(TokenWithLogo.fromToken(props.outputToken), props.buyAmount)
+  }, [props])
 
   const inputAmountElement = <TokenAmount amount={inputAmount} tokenSymbol={inputAmount?.currency} />
   const outputAmountElement = <TokenAmount amount={outputAmount} tokenSymbol={outputAmount?.currency} />

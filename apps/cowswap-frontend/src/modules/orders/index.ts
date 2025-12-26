@@ -17,3 +17,5 @@ export { emitExpiredOrderEvent } from './utils/emitExpiredOrderEvent'
 export { emitFulfilledOrderEvent } from './utils/emitFulfilledOrderEvent'
 export { emitPostedOrderEvent } from './utils/emitPostedOrderEvent'
 export { emitPresignedOrderEvent } from './utils/emitPresignedOrderEvent'
+
+export { OrderSummary } from './pure/OrderSummary'
