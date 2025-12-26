@@ -9,6 +9,15 @@ import { t } from '@lingui/core/macro'
 
 import { getExplorerOrderLink } from './explorer'
 
+/**
+ * Environment variable to override the block explorer URL.
+ * Useful for local development with tools like Otterscan.
+ */
+const BLOCK_EXPLORER_URL_OVERRIDE = process.env.REACT_APP_BLOCK_EXPLORER_URL
+
+// Debug logging for block explorer URL override
+console.log('[legacyAddressUtils] BLOCK_EXPLORER_URL_OVERRIDE:', BLOCK_EXPLORER_URL_OVERRIDE)
+
 // returns the checksummed address if the address is valid, otherwise returns false
 export function isAddress(value: string | undefined | null): string | false {
   try {
@@ -69,7 +78,8 @@ export type BlockExplorerLinkType =
 
 // eslint-disable-next-line complexity
 function getEtherscanUrl(chainId: SupportedChainId, data: string, type: BlockExplorerLinkType, base?: string): string {
-  const basePath = base || CHAIN_INFO[chainId]?.explorer
+  // Allow override via environment variable for local development (e.g., Otterscan)
+  const basePath = BLOCK_EXPLORER_URL_OVERRIDE || base || CHAIN_INFO[chainId]?.explorer
 
   if (!basePath) return ''
 
