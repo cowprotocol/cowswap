@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-12-26 11:54\n"
+"PO-Revision-Date: 2025-12-26 13:15\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -4045,7 +4045,7 @@ msgstr "Победитель конкурса в настоящее время �
 
 #: apps/cowswap-frontend/src/common/pure/ReceiveAmountInfo/NetworkFeeItem.tsx
 msgid "Network costs"
-msgstr "Комиссии сети"
+msgstr "Сетевые расходы"
 
 #: apps/cowswap-frontend/src/common/containers/OrderHooksDetails/index.tsx
 msgid "PRE"
@@ -5303,7 +5303,7 @@ msgstr "Подробнее о <0>{orderType} заказах ↗️</0>"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
 msgid "Network fees and costs"
-msgstr "Комиссии и сборы"
+msgstr "Сетевые расходы"
 
 #: apps/cowswap-frontend/src/common/pure/NetworksList/index.tsx
 msgid "NEW"
