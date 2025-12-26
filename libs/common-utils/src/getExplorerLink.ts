@@ -20,6 +20,9 @@ export enum ExplorerDataType {
  */
 const BLOCK_EXPLORER_URL_OVERRIDE = process.env.REACT_APP_BLOCK_EXPLORER_URL
 
+// Debug logging for block explorer URL override
+console.log('[getExplorerLink] BLOCK_EXPLORER_URL_OVERRIDE:', BLOCK_EXPLORER_URL_OVERRIDE)
+
 /**
  * Return the explorer link for the given data and data type
  * @param chainId the ID of the chain for which to return the data
@@ -35,6 +38,16 @@ export function getExplorerLink(
 ): string {
   // Allow override via environment variable for local development (e.g., Otterscan)
   const prefix = BLOCK_EXPLORER_URL_OVERRIDE || CHAIN_INFO[chainId as SupportedChainId]?.explorer || defaultPrefix
+
+  // Debug logging for each call
+  console.log('[getExplorerLink] called with:', {
+    chainId,
+    type,
+    override: BLOCK_EXPLORER_URL_OVERRIDE,
+    chainExplorer: CHAIN_INFO[chainId as SupportedChainId]?.explorer,
+    defaultPrefix,
+    selectedPrefix: prefix,
+  })
 
   switch (type) {
     case ExplorerDataType.TRANSACTION:
