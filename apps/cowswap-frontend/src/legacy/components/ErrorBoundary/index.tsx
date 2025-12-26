@@ -59,6 +59,9 @@ const HeaderWrapper = styled.div`
 `
 
 async function updateServiceWorker(): Promise<ServiceWorkerRegistration> {
+  if (!('serviceWorker' in navigator)) {
+    throw new Error('Service Worker is not available')
+  }
   const ready = await navigator.serviceWorker.ready
   // the return type of update is incorrectly typed as Promise<void>. See
   // https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerRegistration/update
@@ -97,15 +100,11 @@ class ErrorBoundaryComponent extends React.Component<ErrorBoundaryProps, ErrorBo
     return { error }
   }
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+  componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
     this.props.onError?.(error, errorInfo)
   }
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  render() {
+  render(): React.ReactNode {
     return (
       <Sentry.ErrorBoundary
         showDialog={false}
@@ -145,14 +144,10 @@ class ErrorBoundaryComponent extends React.Component<ErrorBoundaryProps, ErrorBo
 }
 
 // HOC to inject analytics into error boundary
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export default function ErrorBoundary(props: PropsWithChildren) {
+export default function ErrorBoundary(props: PropsWithChildren): React.ReactNode {
   const cowAnalytics = useCowAnalytics()
 
-  // TODO: Add proper return type annotation
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  const handleError = (error: Error, errorInfo: ErrorInfo) => {
+  const handleError = (error: Error, errorInfo: ErrorInfo): void => {
     cowAnalytics.sendError(error, errorInfo.toString())
   }
 

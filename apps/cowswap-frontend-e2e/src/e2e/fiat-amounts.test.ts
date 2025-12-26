@@ -1,12 +1,8 @@
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function getInputFiatAmount() {
+function getInputFiatAmount(): Cypress.Chainable {
   return cy.get('#input-currency-input .fiat-amount').invoke('text')
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function getInputToken() {
+function getInputToken(): Cypress.Chainable {
   return cy.get('#input-currency-input .token-amount-input').should('be.enabled')
 }
 
@@ -19,8 +15,8 @@ describe('Fiat amounts', () => {
     cy.visit('/#/11155111/swap/WETH/COW')
   })
 
-  // TODO: disable this test because it's not working - needs to be fixed
-  it.skip('Should change fiat amount after changing currency amount', () => {
+  it('Should change fiat amount after changing currency amount', () => {
+    cy.unlockCrossChainSwap()
     getInputToken().type('1')
 
     // Get fiat amount for 1 WETH
