@@ -103,14 +103,14 @@ export function OrderNotification(props: BaseOrderNotificationProps): ReactNode 
         (order.inputToken && order.outputToken ? (
           <OrderSummary
             actionTitle={actionTitle}
-            buyAmount={order.outputAmount.toString()}
             customTemplate={props.customTemplate}
-            dstChainData={dstChainData}
-            inputToken={order.inputToken as TokenInfo}
             kind={order.kind}
+            inputToken={order.inputToken as TokenInfo}
             outputToken={order.outputToken as TokenInfo}
             sellAmount={order.inputAmount.toString()}
+            buyAmount={order.outputAmount.toString()}
             srcChainData={srcChainData}
+            dstChainData={dstChainData}
           />
         ) : null)}
       {!hideReceiver && <ReceiverInfo receiver={receiver ?? order.receiver} owner={order.owner} />}

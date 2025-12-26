@@ -1,13 +1,15 @@
 import { useAtomValue } from 'jotai'
-import { ReactNode, useMemo } from 'react'
+import React, { ReactNode, useMemo } from 'react'
 
 import { Command } from '@cowprotocol/types'
+
+import { OrderSummary } from 'modules/orders'
 
 import { cancellationModalContextAtom } from 'common/hooks/useCancelOrder/state'
 import { CancellationModal as Pure } from 'common/pure/CancellationModal'
 
 import { useUltimateOrder } from '../../hooks/useUltimateOrder'
-import { computeOrderSummary } from '../../updaters/orders/utils'
+import { getUltimateOrderTradeAmounts } from '../../updaters/orders/utils'
 
 export type CancellationModalProps = {
   isOpen: boolean
@@ -22,7 +24,12 @@ export function CancellationModal(props: CancellationModalProps): ReactNode {
 
   const orderSummary = useMemo(() => {
     if (!ultimateOrder) return undefined
-    return computeOrderSummary(ultimateOrder)
+
+    const { inputAmount, outputAmount } = getUltimateOrderTradeAmounts(ultimateOrder)
+
+    return (
+      <OrderSummary inputAmount={inputAmount} outputAmount={outputAmount} kind={ultimateOrder.orderFromStore.kind} />
+    )
   }, [ultimateOrder])
 
   return <Pure isOpen={isOpen} onDismiss={onDismiss} context={context} orderSummary={orderSummary} />
