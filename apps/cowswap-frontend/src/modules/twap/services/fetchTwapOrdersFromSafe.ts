@@ -3,7 +3,7 @@ import { delay, isTruthy } from '@cowprotocol/common-utils'
 import { SAFE_TRANSACTION_SERVICE_URL } from '@cowprotocol/core'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import type { AllTransactionsListResponse } from '@safe-global/api-kit'
-import type { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
+import type { SafeMultisigTransactionResponse } from '@safe-global/types-kit'
 
 import ms from 'ms.macro'
 

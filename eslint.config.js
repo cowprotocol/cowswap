@@ -128,6 +128,11 @@ module.exports = [
               message: 'Please import from @cowprotocol/permit-utils.',
               allowTypeImports: true,
             },
+            {
+              name: '@safe-global/api-kit',
+              message: 'Please import from @cowprotocol/core.',
+              allowTypeImports: true,
+            },
           ],
 
           patterns: [
@@ -146,6 +151,10 @@ module.exports = [
         {
           selector: 'ImportExpression[source.value="@1inch/permit-signed-approvals-utils"]',
           message: 'Please import dynamically from @cowprotocol/permit-utils',
+        },
+        {
+          selector: 'ImportExpression[source.value="@safe-global/api-kit"]',
+          message: 'Please import dynamically from @cowprotocol/core',
         },
       ],
       'no-unused-vars': 'off',

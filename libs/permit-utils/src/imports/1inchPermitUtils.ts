@@ -1,5 +1,5 @@
 /**
- * @1inch/permit-signed-approvals-utils has a lot of extra deps and increases bundle size, we should import in dynamically.
+ * @1inch/permit-signed-approvals-utils has a lot of extra variables and increases bundle size, we should import in dynamically.
  *
  * It uses esm, but dymaic import breaks tree shaking, so we re-export here only used variables.
  *

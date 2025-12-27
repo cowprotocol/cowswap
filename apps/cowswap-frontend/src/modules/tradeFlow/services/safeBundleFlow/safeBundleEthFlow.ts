@@ -2,7 +2,7 @@ import { Erc20 } from '@cowprotocol/abis'
 import { WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { SigningScheme, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
-import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
+import type { MetaTransactionData } from '@safe-global/types-kit'
 import { Percent } from '@uniswap/sdk-core'
 
 import { tradingSdk } from 'tradingSdk/tradingSdk'

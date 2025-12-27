@@ -1,5 +1,5 @@
 /**
- * @1inch/permit-signed-approvals-utils has a lot of extra deps and increases bundle size.
+ * @1inch/permit-signed-approvals-utils has a lot of extra variables and increases bundle size.
  *
  * At the same time it's repo is archived.
  *

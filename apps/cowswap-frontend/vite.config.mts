@@ -154,7 +154,7 @@ export default defineConfig(({ mode }) => {
             return 'static/[name]-[hash][extname]' // Everything else with hash
           },
           manualChunks(id) {
-            if (id.includes('@safe-global') || id.includes('viem')) return '@safe-global'
+            if (id.includes('@safe-global/safe-apps-sdk')) return '@safe-global-safe-apps-sdk' // used by some deps
             if (id.includes('@sentry')) return '@sentry'
             if (id.includes('@uniswap')) return '@uniswap'
             if (id.includes('crypto-es/lib')) return 'crypto-es'

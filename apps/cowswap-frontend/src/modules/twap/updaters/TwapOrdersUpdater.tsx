@@ -107,7 +107,7 @@ export function TwapOrdersUpdater(props: {
         .filter((data) => {
           const { nonce, isExecuted } = data.safeData.safeTxParams
 
-          return !isExecuted && nonce < safeNonce
+          return !isExecuted && BigInt(nonce) < BigInt(safeNonce)
         })
         .map((item) => item.id)
     })()
