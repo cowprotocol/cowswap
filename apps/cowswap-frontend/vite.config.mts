@@ -154,7 +154,6 @@ export default defineConfig(({ mode }) => {
             return 'static/[name]-[hash][extname]' // Everything else with hash
           },
           manualChunks(id) {
-            if (id.includes('@1inch')) return '@1inch'
             if (id.includes('@safe-global') || id.includes('viem')) return '@safe-global'
             if (id.includes('@sentry')) return '@sentry'
             if (id.includes('@uniswap')) return '@uniswap'

@@ -1,14 +1,10 @@
 import { Erc20__factory } from '@cowprotocol/abis'
 import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { oneInchPermitUtilsConsts } from '@cowprotocol/permit-utils'
 import { Interface } from '@ethersproject/abi'
 import { BigNumber as EthersBigNumber } from '@ethersproject/bignumber'
 import { MaxUint256 } from '@ethersproject/constants'
 
-import {
-  DAI_EIP_2612_PERMIT_ABI,
-  DAI_PERMIT_SELECTOR,
-  EIP_2612_PERMIT_SELECTOR,
-} from '@1inch/permit-signed-approvals-utils'
 import BigNumber from 'bignumber.js'
 import JSBI from 'jsbi'
 
@@ -17,7 +13,7 @@ import { ParsedOrder } from './parseOrder'
 
 const erc20Interface = Erc20__factory.createInterface()
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const daiInterface = new Interface(DAI_EIP_2612_PERMIT_ABI as any)
+const daiInterface = new Interface(oneInchPermitUtilsConsts.DAI_EIP_2612_PERMIT_ABI as any)
 
 // eslint-disable-next-line max-lines-per-function
 describe('getOrderPermitAmount', () => {
@@ -85,7 +81,7 @@ describe('getOrderPermitAmount', () => {
       '0x0000000000000000000000000000000000000000000000000000000000000000', // s
     ])
     // Replace standard permit selector (first 10 chars: 0x + 4 bytes) with EIP_2612_PERMIT_SELECTOR
-    return EIP_2612_PERMIT_SELECTOR + permitData.slice(10)
+    return oneInchPermitUtilsConsts.EIP_2612_PERMIT_SELECTOR + permitData.slice(10)
   }
 
   function createDaiPermitCallData(
@@ -106,7 +102,7 @@ describe('getOrderPermitAmount', () => {
       '0x0000000000000000000000000000000000000000000000000000000000000000', // s
     ])
     // Replace standard permit selector (first 10 chars: 0x + 4 bytes) with DAI_PERMIT_SELECTOR
-    return DAI_PERMIT_SELECTOR + permitData.slice(10)
+    return oneInchPermitUtilsConsts.DAI_PERMIT_SELECTOR + permitData.slice(10)
   }
 
   describe('when order has no fullAppData', () => {
@@ -260,7 +256,7 @@ describe('getOrderPermitAmount', () => {
     })
 
     it('should continue to next hook when decoding fails', () => {
-      const invalidCallData = EIP_2612_PERMIT_SELECTOR + 'invalid'
+      const invalidCallData = oneInchPermitUtilsConsts.EIP_2612_PERMIT_SELECTOR + 'invalid'
       const validCallData = createEip2612PermitCallData(ownerAddress, spenderAddress, permitValue, futureDeadline)
       const order = {
         ...baseOrder,
@@ -386,7 +382,7 @@ describe('getOrderPermitAmount', () => {
     })
 
     it('should continue to next hook when decoding fails', () => {
-      const invalidCallData = DAI_PERMIT_SELECTOR + 'invalid'
+      const invalidCallData = oneInchPermitUtilsConsts.DAI_PERMIT_SELECTOR + 'invalid'
       const validCallData = createDaiPermitCallData(ownerAddress, spenderAddress, 0, futureDeadline, true)
       const order = {
         ...baseOrder,
