@@ -18,7 +18,7 @@ import { robotsPlugin } from '../../tools/vite-plugins/robotsPlugin'
 
 // eslint-disable-next-line no-restricted-imports
 import type { TemplateType } from 'rollup-plugin-visualizer/dist/plugin/template-types'
-import type { Plugin } from 'vite'
+import type { PluginOption } from 'vite'
 
 const allNodeDeps = Object.keys(stdLibBrowser).map((key) => key.replace('node:', '')) as ModuleNameWithoutNodePrefix[]
 
@@ -32,7 +32,7 @@ const analyzeBundleTemplate: TemplateType = (process.env.ANALYZE_BUNDLE_TEMPLATE
 export default defineConfig(({ mode }) => {
   const isProduction = mode === 'production'
 
-  const plugins = [
+  const plugins: PluginOption[] = [
     nodePolyfills({
       exclude: allNodeDeps.filter((dep) => !nodeDepsToInclude.includes(dep)),
       globals: {
@@ -78,7 +78,7 @@ export default defineConfig(({ mode }) => {
         gzipSize: true,
         brotliSize: true,
         filename: 'analyse.html', // will be saved in project's root
-      }) as Plugin,
+      }) as PluginOption,
     )
   }
 
