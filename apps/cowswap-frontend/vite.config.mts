@@ -135,6 +135,9 @@ export default defineConfig(({ mode }) => {
       alias: {
         'node-fetch': 'isomorphic-fetch',
       },
+      dedupe: [
+        'bn.js', // 240kb -> 16kb (gzip) // v5 is compatible with v4
+      ],
     },
 
     build: {
@@ -158,6 +161,7 @@ export default defineConfig(({ mode }) => {
             if (id.includes('crypto-es/lib')) return 'crypto-es'
             if (id.includes('web3/dist')) return 'web3' // was used by @1inch
             if (id.includes('lottie-react')) return 'lottie-react'
+            if (id.includes('bn.js')) return 'bn'
           },
         },
       },
