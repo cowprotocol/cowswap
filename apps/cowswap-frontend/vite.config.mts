@@ -77,7 +77,8 @@ export default defineConfig(({ mode }) => {
         open: true,
         gzipSize: true,
         brotliSize: true,
-        filename: 'analyse.html', // will be saved in project's root
+        emitFile: true,
+        filename: 'analyse.html', // will be saved in build/cowswap/analyse.html
       }) as PluginOption,
     )
   }
