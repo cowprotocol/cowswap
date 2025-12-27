@@ -42,7 +42,7 @@ export async function createSafeApiKitInstance(chainId: number): Promise<SafeApi
     return null
   }
 
-  const SafeApiKit = await import('../imports/safeApiKit').then((r) => r.default)
+  const SafeApiKit = await import('@safe-global/api-kit').then((r) => r.default)
 
   return new SafeApiKit({ txServiceUrl: url, chainId: BigInt(chainId) })
 }

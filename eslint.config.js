@@ -130,7 +130,7 @@ module.exports = [
             },
             {
               name: '@safe-global/api-kit',
-              message: 'Please import from @cowprotocol/core.',
+              message: 'Please use dynamic import.',
               allowTypeImports: true,
             },
           ],
@@ -151,10 +151,6 @@ module.exports = [
         {
           selector: 'ImportExpression[source.value="@1inch/permit-signed-approvals-utils"]',
           message: 'Please import dynamically from @cowprotocol/permit-utils',
-        },
-        {
-          selector: 'ImportExpression[source.value="@safe-global/api-kit"]',
-          message: 'Please import dynamically from @cowprotocol/core',
         },
       ],
       'no-unused-vars': 'off',
