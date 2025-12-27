@@ -1,10 +1,9 @@
-import { ReactNode, memo } from 'react'
+import { ReactNode, memo, lazy, Suspense } from 'react'
 
 import { CowSwapSafeAppLink } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans, useLingui } from '@lingui/react/macro'
-import Lottie from 'lottie-react'
 
 import * as styledEl from './OrdersTableContainer.styled'
 
@@ -12,6 +11,8 @@ import { OrderTabId } from '../../const/tabs'
 import { useNoOrdersAnimation } from '../../hooks/useNoOrdersAnimation'
 import { useOrdersTableState } from '../../hooks/useOrdersTableState'
 import { TabOrderTypes } from '../../types'
+
+const Lottie = lazy(() => import('lottie-react'))
 
 interface NoOrdersDescriptionProps {
   currentTab: OrderTabId
@@ -103,7 +104,10 @@ export function NoOrdersContent({
           <img src={emptyOrdersImage} alt={t`There are no orders`} />
         ) : animationData ? (
           <styledEl.NoOrdersLottieFrame aria-label={t`Animated cow reacts to empty order list`}>
-            <Lottie animationData={animationData} loop autoplay />
+            // TODO: what fallback should be used here?
+            <Suspense fallback={null}>
+              <Lottie animationData={animationData} loop autoplay />
+            </Suspense>
           </styledEl.NoOrdersLottieFrame>
         ) : (
           <styledEl.NoOrdersLottieFrame aria-hidden="true" />

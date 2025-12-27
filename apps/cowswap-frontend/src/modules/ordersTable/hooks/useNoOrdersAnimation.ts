@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { loadSurprisedCowAnimation } from '@cowprotocol/assets/lazy-loaders'
 
-import type { LottieComponentProps } from 'lottie-react'
+import { LottieComponentProps } from 'lottie-react'
 
 interface UseNoOrdersAnimationParams {
   emptyOrdersImage?: string | null

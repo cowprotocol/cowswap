@@ -93,7 +93,7 @@ module.exports = [
         'error',
         {
           enforceBuildableLibDependency: true,
-          allow: ['../../tools/**'],
+          allow: ['../../tools/**', '@cowprotocol/assets/**'],
           depConstraints: [
             {
               sourceTag: '*',
@@ -238,6 +238,16 @@ module.exports = [
               name: 'react-router',
               importNames: ['useNavigate'],
               message: "Please import useNavigate from our own common package instead: 'common/hooks/useNavigate'",
+            },
+            {
+              name: 'lottie-react',
+              message: 'Please use dynamic import.',
+              allowTypeImports: true,
+            },
+            {
+              name: 'framer-motion',
+              message: 'Please use dynamic import.',
+              allowTypeImports: true,
             },
           ],
 

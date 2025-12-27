@@ -16,7 +16,7 @@ import * as path from 'path'
 import { getReactProcessEnv } from '../../tools/getReactProcessEnv'
 import { robotsPlugin } from '../../tools/vite-plugins/robotsPlugin'
 
-// eslint-disable-next-line no-restricted-imports
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import type { TemplateType } from 'rollup-plugin-visualizer/dist/plugin/template-types'
 import type { PluginOption } from 'vite'
 
@@ -159,7 +159,6 @@ export default defineConfig(({ mode }) => {
             if (id.includes('@uniswap')) return '@uniswap'
             if (id.includes('crypto-es/lib')) return 'crypto-es'
             if (id.includes('web3/dist')) return 'web3' // was used by @1inch
-            if (id.includes('lottie-react')) return 'lottie-react'
             if (id.includes('bn.js')) return 'bn'
             if (id.includes('@ethersproject')) return '@ethersproject'
           },
