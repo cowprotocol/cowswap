@@ -161,6 +161,7 @@ export default defineConfig(({ mode }) => {
             if (id.includes('web3/dist')) return 'web3' // was used by @1inch
             if (id.includes('lottie-react')) return 'lottie-react'
             if (id.includes('bn.js')) return 'bn'
+            if (id.includes('@ethersproject')) return '@ethersproject'
           },
         },
       },
