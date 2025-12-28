@@ -50,10 +50,15 @@ export function Provider({ locale, onActivate, children }: ProviderProps): React
   // This renders the translation _keys_, not the translation _messages_, which is only acceptable while loading the DEFAULT_LOCALE,
   // as [there are no "default" messages](https://github.com/lingui/js-lingui/issues/388#issuecomment-497779030).
   // See https://github.com/lingui/js-lingui/issues/1194#issuecomment-1068488619.
+  // TODO: i18n.locale is '', not undefined
   if (i18n.locale === undefined && locale === DEFAULT_LOCALE) {
     i18n.load(DEFAULT_LOCALE, {})
     i18n.activate(DEFAULT_LOCALE)
   }
 
+  /**
+   * TODO: if i18n is not activated (i18n.locale === ''), then I18nProvider renders null on initial render
+   * we should detect locale and load messages BEFORE initial render
+   */
   return <I18nProvider i18n={i18n}>{children}</I18nProvider>
 }
