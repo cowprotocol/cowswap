@@ -36,7 +36,7 @@ const Lottie = React.lazy(() => import('lottie-react'))
 function TransactionStatus({ isDarkMode }: { isDarkMode: boolean }): ReactNode {
   return (
     <styledEl.TransactionStatus margin={'0 auto 24px'}>
-      // TODO: what fallback should be used here?
+      {/* TODO: what fallback should be used here? */}
       <React.Suspense fallback={null}>
         <Lottie
           animationData={isDarkMode ? LOTTIE_GREEN_CHECKMARK_DARK : LOTTIE_GREEN_CHECKMARK}

@@ -50,7 +50,7 @@ export function UnfillableTopSection(): ReactNode {
 
 export function DelayedSolvedSubmissionFailedTopSection(): ReactNode {
   const { data: STEP_LOTTIE_NEXTBATCH } = useSWR(
-    ['progressbar-step-executing'],
+    ['progressbar-step-nextbatch'],
     () => import('@cowprotocol/assets/lottie/progressbar-step-nextbatch.json'),
   )
 

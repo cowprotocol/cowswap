@@ -62,7 +62,7 @@ export function FullSizeLottie({ animationData, loop = true, autoplay = true }: 
 
   return (
     <LottieWrapper ref={lottieRef}>
-      // TODO: what fallback should be used here?
+      {/* TODO: what fallback should be used here? */}
       <Suspense fallback={null}>
         <Lottie
           animationData={animationData}

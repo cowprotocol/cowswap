@@ -104,7 +104,7 @@ export function NoOrdersContent({
           <img src={emptyOrdersImage} alt={t`There are no orders`} />
         ) : animationData ? (
           <styledEl.NoOrdersLottieFrame aria-label={t`Animated cow reacts to empty order list`}>
-            // TODO: what fallback should be used here?
+            {/* TODO: what fallback should be used here? */}
             <Suspense fallback={null}>
               <Lottie animationData={animationData} loop autoplay />
             </Suspense>
