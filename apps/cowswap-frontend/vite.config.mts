@@ -133,6 +133,13 @@ export default defineConfig(({ mode }) => {
       host: 'localhost',
     },
 
+    optimizeDeps: {
+      esbuildOptions: {
+        // force esm usage for misconfigured deps' package.json (e.g. @safe-global/safe-apps-sdk)
+        mainFields: ['exports', 'module', 'main'],
+      },
+    },
+
     resolve: {
       alias: {
         'node-fetch': 'isomorphic-fetch',
@@ -140,6 +147,8 @@ export default defineConfig(({ mode }) => {
       dedupe: [
         'bn.js', // 240kb -> 16kb (gzip) // v5 is compatible with v4
       ],
+      // force esm usage for misconfigured deps' "exports" field (e.g. @use-gesture/core)
+      conditions: ['module', 'import', 'browser', 'default'],
     },
 
     build: {
