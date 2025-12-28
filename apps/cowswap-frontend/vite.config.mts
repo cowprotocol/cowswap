@@ -13,6 +13,7 @@ import viteTsConfigPaths from 'vite-tsconfig-paths'
 
 import * as path from 'path'
 
+import { formatChunkFileName } from '../../tools/formatChunkFileName'
 import { getReactProcessEnv } from '../../tools/getReactProcessEnv'
 import { robotsPlugin } from '../../tools/vite-plugins/robotsPlugin'
 
@@ -153,6 +154,19 @@ export default defineConfig(({ mode }) => {
               return 'static/[name][extname]' // Fonts without hash
             }
             return 'static/[name]-[hash][extname]' // Everything else with hash
+          },
+          // add distinguishable prefixes to chunk names
+          chunkFileNames(chunk) {
+            const chunkFileName = formatChunkFileName(chunk, {
+              '/src/pages/': 'static/page-[name]-[hash].js',
+              '/web3-react/connectors/': 'static/connectors-[name]-[hash].js',
+              '/node_modules/lottie-react/': 'static/lottie-react-[name]-[hash].js',
+              '/node_modules/@walletconnect/': 'static/@walletconnect-[name]-[hash].js',
+              '/node_modules/@safe-global/': 'static/@safe-global-[name]-[hash].js',
+              '/node_modules/framer-motion/': 'static/framer-motion-[name]-[hash].js',
+            })
+            if (chunkFileName) return chunkFileName
+            return 'static/[name]-[hash].js'
           },
           manualChunks(id) {
             if (id.includes('@safe-global/safe-apps-sdk')) return '@safe-global-safe-apps-sdk' // used by some deps
