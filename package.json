@@ -335,6 +335,7 @@
     "prettier": "^3.3.3",
     "react-cosmos": "^7.0.0",
     "react-cosmos-plugin-vite": "^7.0.0",
+    "rollup-plugin-bundle-stats": "^4.21.7",
     "rollup-plugin-visualizer": "^6.0.4",
     "ts-jest": "^29.1.1",
     "ts-mockito": "^2.6.1",
