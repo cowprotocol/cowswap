@@ -12,6 +12,7 @@ import * as styledEl from './styled'
 export interface ImportListModalProps {
   list: ListState
   isBlocked?: boolean
+  blockReason?: string
 
   onImport(list: ListState): void
 
@@ -21,7 +22,8 @@ export interface ImportListModalProps {
 }
 
 export function ImportListModal(props: ImportListModalProps): ReactNode {
-  const { list, onBack, onDismiss, onImport, isBlocked } = props
+  const { list, onBack, onDismiss, onImport, isBlocked, blockReason } = props
+  const defaultBlockReason = t`This token list is not available in your region.`
 
   const [isAccepted, setIsAccepted] = useState(false)
 
@@ -46,7 +48,7 @@ export function ImportListModal(props: ImportListModalProps): ReactNode {
       {isBlocked ? (
         <styledEl.BlockedWarning>
           <AlertCircle size={18} />
-          <Trans>This token list is not available in your region.</Trans>
+          {blockReason || defaultBlockReason}
         </styledEl.BlockedWarning>
       ) : (
         <>

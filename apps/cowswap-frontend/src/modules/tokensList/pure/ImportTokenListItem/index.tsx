@@ -12,18 +12,19 @@ export interface ImportTokenListItemProps {
   list: ListState
   source: 'existing' | 'external'
   isBlocked?: boolean
+  blockReason?: string
   importList(list: ListState): void
 }
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function ImportTokenListItem(props: ImportTokenListItemProps) {
-  const { list, source, importList, isBlocked } = props
+  const { list, source, importList, isBlocked, blockReason } = props
 
   return (
     <styledEl.Wrapper>
       <TokenListDetails list={list.list}></TokenListDetails>
-      {source === 'existing' ? (
+      {source === 'existing' && !isBlocked ? (
         <styledEl.LoadedInfo>
           <CheckCircle size={16} strokeWidth={2} />
           <span>
@@ -33,9 +34,7 @@ export function ImportTokenListItem(props: ImportTokenListItemProps) {
       ) : isBlocked ? (
         <styledEl.BlockedInfo>
           <AlertCircle size={16} strokeWidth={2} />
-          <span>
-            <Trans>Not available in your region</Trans>
-          </span>
+          <span>{blockReason || <Trans>Not available in your region</Trans>}</span>
         </styledEl.BlockedInfo>
       ) : (
         <div>

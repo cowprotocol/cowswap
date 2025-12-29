@@ -3,9 +3,11 @@ import { atom } from 'jotai'
 import { NATIVE_CURRENCIES, TokenWithLogo } from '@cowprotocol/common-const'
 import { TokenInfo } from '@cowprotocol/types'
 
+import { blockedListSourcesAtom } from './blockedListSourcesAtom'
 import { favoriteTokensAtom } from './favoriteTokensAtom'
 import { userAddedTokensAtom } from './userAddedTokensAtom'
 
+import { normalizeListSource } from '../../hooks/lists/useIsListBlocked'
 import { TokensBySymbolState, TokensMap } from '../../types'
 import { lowerCaseTokensMap } from '../../utils/lowerCaseTokensMap'
 import { parseTokenInfo } from '../../utils/parseTokenInfo'
@@ -30,6 +32,7 @@ const tokensStateAtom = atom(async (get) => {
   const { chainId } = get(environmentAtom)
   const listsStatesList = await get(listsStatesListAtom)
   const listsEnabledState = await get(listsEnabledStateAtom)
+  const blockedListSources = get(blockedListSourcesAtom)
 
   return {
     listsCount: listsStatesList.length,
@@ -39,34 +42,40 @@ const tokensStateAtom = atom(async (get) => {
     tokensState: [...listsStatesList]
       .sort((a, b) => (a.priority ?? Number.MAX_SAFE_INTEGER) - (b.priority ?? Number.MAX_SAFE_INTEGER))
       .reduce<TokensState>(
-      (acc, list) => {
-        const isListEnabled = listsEnabledState[list.source]
-        const lpTokenProvider = list.lpTokenProvider
-        list.list.tokens.forEach((token) => {
-          const tokenInfo = parseTokenInfo(chainId, token)
-          const tokenAddressKey = tokenInfo?.address.toLowerCase()
-
-          if (!tokenInfo || !tokenAddressKey) return
-
-          if (lpTokenProvider) {
-            tokenInfo.lpTokenProvider = lpTokenProvider
+        (acc, list) => {
+          // Skip processing tokens from blocked lists (geo-blocked or consent required)
+          const normalizedSource = normalizeListSource(list.source)
+          if (blockedListSources.has(normalizedSource)) {
+            return acc
           }
 
-          if (isListEnabled) {
-            if (!acc.activeTokens[tokenAddressKey]) {
-              acc.activeTokens[tokenAddressKey] = tokenInfo
-            }
-          } else {
-            if (!acc.inactiveTokens[tokenAddressKey]) {
-              acc.inactiveTokens[tokenAddressKey] = tokenInfo
-            }
-          }
-        })
+          const isListEnabled = listsEnabledState[list.source]
+          const lpTokenProvider = list.lpTokenProvider
+          list.list.tokens.forEach((token) => {
+            const tokenInfo = parseTokenInfo(chainId, token)
+            const tokenAddressKey = tokenInfo?.address.toLowerCase()
 
-        return acc
-      },
-      { activeTokens: {}, inactiveTokens: {} },
-    ),
+            if (!tokenInfo || !tokenAddressKey) return
+
+            if (lpTokenProvider) {
+              tokenInfo.lpTokenProvider = lpTokenProvider
+            }
+
+            if (isListEnabled) {
+              if (!acc.activeTokens[tokenAddressKey]) {
+                acc.activeTokens[tokenAddressKey] = tokenInfo
+              }
+            } else {
+              if (!acc.inactiveTokens[tokenAddressKey]) {
+                acc.inactiveTokens[tokenAddressKey] = tokenInfo
+              }
+            }
+          })
+
+          return acc
+        },
+        { activeTokens: {}, inactiveTokens: {} },
+      ),
   }
 })
 

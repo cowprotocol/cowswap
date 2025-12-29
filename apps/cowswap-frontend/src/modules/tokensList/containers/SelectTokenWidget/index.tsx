@@ -31,6 +31,7 @@ import { getDefaultTokenListCategories } from './getDefaultTokenListCategories'
 
 import { useChainsToSelect } from '../../hooks/useChainsToSelect'
 import { useCloseTokenSelectWidget } from '../../hooks/useCloseTokenSelectWidget'
+import { useIsListRequiresConsent } from '../../hooks/useIsListRequiresConsent'
 import { useOnSelectChain } from '../../hooks/useOnSelectChain'
 import { useOnTokenListAddingError } from '../../hooks/useOnTokenListAddingError'
 import { useRestrictedTokenImportStatus } from '../../hooks/useRestrictedTokenImportStatus'
@@ -124,12 +125,10 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
   const { isImportDisabled, blockReason } = useRestrictedTokenImportStatus(tokenToImport)
   const country = useGeoCountry()
   const { isBlocked: isListToImportBlocked } = useIsListBlocked(listToImport?.source, country)
+  const { requiresConsent: listRequiresConsent } = useIsListRequiresConsent(listToImport?.source)
 
-  console.log('[SelectTokenWidget] list import check:', {
-    listToImportSource: listToImport?.source,
-    country,
-    isListToImportBlocked,
-  })
+  // block the list if country is blocked or if consent is required (unknown country, no consent)
+  const isListBlocked = isListToImportBlocked || listRequiresConsent
 
   const openPoolPage = useCallback(
     (selectedPoolAddress: string) => {
@@ -200,10 +199,15 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
         }
 
         if (listToImport && !standalone) {
+          const listBlockReason = listRequiresConsent
+            ? 'This list requires consent before importing. Please connect your wallet.'
+            : undefined
+
           return (
             <ImportListModal
               list={listToImport}
-              isBlocked={isListToImportBlocked}
+              isBlocked={isListBlocked}
+              blockReason={listBlockReason}
               onDismiss={onDismiss}
               onBack={resetTokenImport}
               onImport={importListAndBack}

@@ -44,16 +44,18 @@ export const restrictedTokensLastUpdateAtom = atomWithStorage<number>(
 )
 
 /**
- * maps token list source URLs to their blocked countries
+ * maps token list source url to their blocked countries and consent hashes
  * used to hide entire token lists for users in blocked countries
  */
 export interface RestrictedListsState {
   blockedCountriesPerList: Record<string, string[]>
+  consentHashPerList: Record<string, string>
   isLoaded: boolean
 }
 
 const initialRestrictedListsState: RestrictedListsState = {
   blockedCountriesPerList: {},
+  consentHashPerList: {},
   isLoaded: false,
 }
 

@@ -18,7 +18,7 @@ const MAX_RETRIES = 1
 const RETRY_DELAY_MS = 1_000
 
 // IPFS hash of the current consent terms - shared across all restricted token issuers
-const TERMS_OF_SERVICE_HASH = 'bafkreidcn4bhj44nnethx6clfspkapahshqyq44adz674y7je5wyfiazsq'
+export const RWA_CONSENT_HASH = 'bafkreidcn4bhj44nnethx6clfspkapahshqyq44adz674y7je5wyfiazsq'
 
 export interface RestrictedTokensListUpdaterProps {
   isRwaGeoblockEnabled: boolean | undefined
@@ -105,10 +105,13 @@ export function RestrictedTokensListUpdater({ isRwaGeoblockEnabled }: Restricted
         const countriesPerToken: Record<TokenId, string[]> = {}
         const consentHashPerToken: Record<TokenId, string> = {}
         const blockedCountriesPerList: Record<string, string[]> = {}
+        const consentHashPerList: Record<string, string> = {}
 
         await Promise.all(
           restrictedLists.map(async (list) => {
-            blockedCountriesPerList[normalizeListSource(list.tokenListUrl)] = list.restrictedCountries
+            const normalizedUrl = normalizeListSource(list.tokenListUrl)
+            blockedCountriesPerList[normalizedUrl] = list.restrictedCountries
+            consentHashPerList[normalizedUrl] = RWA_CONSENT_HASH
 
             try {
               const tokens = await fetchTokenList(list.tokenListUrl)
@@ -117,7 +120,7 @@ export function RestrictedTokensListUpdater({ isRwaGeoblockEnabled }: Restricted
                 const tokenId = getTokenId(token.chainId, token.address)
                 tokensMap[tokenId] = token
                 countriesPerToken[tokenId] = list.restrictedCountries
-                consentHashPerToken[tokenId] = TERMS_OF_SERVICE_HASH
+                consentHashPerToken[tokenId] = RWA_CONSENT_HASH
               }
             } catch (error) {
               console.error(`Failed to fetch token list for ${list.name}:`, error)
@@ -134,6 +137,7 @@ export function RestrictedTokensListUpdater({ isRwaGeoblockEnabled }: Restricted
 
         setRestrictedLists({
           blockedCountriesPerList,
+          consentHashPerList,
           isLoaded: true,
         })
 

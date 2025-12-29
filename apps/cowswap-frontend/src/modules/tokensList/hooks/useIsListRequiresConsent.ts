@@ -1,0 +1,71 @@
+import { useAtomValue } from 'jotai'
+import { useMemo } from 'react'
+
+import { normalizeListSource, restrictedListsAtom } from '@cowprotocol/tokens'
+import { useWalletInfo } from '@cowprotocol/wallet'
+
+import { getConsentFromCache, rwaConsentCacheAtom, RwaConsentKey, useGeoStatus } from 'modules/rwa'
+
+export interface ListConsentResult {
+  /** True if list is restricted and country is unknown and no consent given */
+  requiresConsent: boolean
+  /** The consent hash for this list (if restricted) */
+  consentHash: string | null
+  /** True if we're still loading geo/restricted data */
+  isLoading: boolean
+}
+
+/**
+ * Checks if a list requires consent before it can be shown/imported.
+ * This is true when:
+ * 1. The list is in the restricted lists
+ * 2. The user's country is unknown
+ * 3. The user has not given consent yet
+ */
+export function useIsListRequiresConsent(listSource: string | undefined): ListConsentResult {
+  const { account } = useWalletInfo()
+  const geoStatus = useGeoStatus()
+  const restrictedLists = useAtomValue(restrictedListsAtom)
+  const consentCache = useAtomValue(rwaConsentCacheAtom)
+
+  return useMemo(() => {
+    // If no source, no consent required
+    if (!listSource) {
+      return { requiresConsent: false, consentHash: null, isLoading: false }
+    }
+
+    // If still loading, return loading state
+    if (!restrictedLists.isLoaded || geoStatus.isLoading) {
+      return { requiresConsent: false, consentHash: null, isLoading: true }
+    }
+
+    const normalizedSource = normalizeListSource(listSource)
+    const consentHash = restrictedLists.consentHashPerList[normalizedSource]
+
+    // If list is not restricted, no consent required
+    if (!consentHash) {
+      return { requiresConsent: false, consentHash: null, isLoading: false }
+    }
+
+    // If country is known, no consent check needed (blocked check happens elsewhere)
+    if (geoStatus.country) {
+      return { requiresConsent: false, consentHash, isLoading: false }
+    }
+
+    // Country is unknown - check if consent is given
+    if (!account) {
+      // No wallet connected - consent required
+      return { requiresConsent: true, consentHash, isLoading: false }
+    }
+
+    const consentKey: RwaConsentKey = { wallet: account, ipfsHash: consentHash }
+    const existingConsent = getConsentFromCache(consentCache, consentKey)
+
+    // Consent required if not already given
+    return {
+      requiresConsent: !existingConsent?.acceptedAt,
+      consentHash,
+      isLoading: false,
+    }
+  }, [listSource, restrictedLists, geoStatus, account, consentCache])
+}
