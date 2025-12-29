@@ -16,7 +16,9 @@ import { WIDGET_EVENT_EMITTER } from 'widgetEventEmitter'
 
 import { useOnlyPendingOrders } from 'legacy/state/orders/hooks'
 
-import { usePendingOrdersFillability, type OrderFillability } from 'modules/ordersTable'
+import { usePendingOrdersFillability } from 'modules/ordersTable'
+
+import { computeUnfillableOrderIds, getNewlyFillableOrderIds } from './utils'
 
 import { OrderProgressBarStepName } from '../constants'
 import {
@@ -24,53 +26,6 @@ import {
   updateOrderProgressBarCountdown,
   updateOrderProgressBarStepName,
 } from '../state/atoms'
-
-type OrderLike = {
-  id: string
-  isUnfillable?: boolean
-}
-
-function computeUnfillableOrderIds(
-  marketOrders: OrderLike[],
-  pendingOrdersFillability: Record<string, OrderFillability | undefined>,
-): string[] {
-  // `isUnfillable` is toggled on the client (see UnfillableOrdersUpdater and OrdersTableList) after comparing quotes and allowances.
-  const priceDerived = marketOrders.filter((order) => order.isUnfillable).map((order) => order.id)
-
-  const fillabilityDerived = Object.entries(pendingOrdersFillability).reduce<string[]>(
-    (acc, [orderId, fillability]) => {
-      if (!fillability) {
-        return acc
-      }
-
-      const lacksBalance = fillability.hasEnoughBalance === false
-      const lacksAllowance = fillability.hasEnoughAllowance === false && !fillability.hasPermit
-
-      if (lacksBalance || lacksAllowance) {
-        acc.push(orderId)
-      }
-
-      return acc
-    },
-    [],
-  )
-
-  // An order can be flagged by both mechanisms; the Set keeps the list unique.
-  return Array.from(new Set([...priceDerived, ...fillabilityDerived]))
-}
-
-function getNewlyFillableOrderIds(previous: Iterable<string>, current: Iterable<string>): string[] {
-  const currentSet = new Set(current)
-  const newlyFillable: string[] = []
-
-  for (const orderId of previous) {
-    if (!currentSet.has(orderId)) {
-      newlyFillable.push(orderId)
-    }
-  }
-
-  return newlyFillable
-}
 
 function useUnfillableOrderIds(): string[] {
   const { chainId, account } = useWalletInfo()
