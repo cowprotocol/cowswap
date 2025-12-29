@@ -45,7 +45,7 @@ export function useWalletCapabilities(): SWRResponse<WalletCapabilities | undefi
     shouldCheckCapabilities(isWalletConnect, widgetProviderMetaInfo) && provider && account && chainId
       ? [provider, account, chainId]
       : null,
-    ([provider, account, _chainId]) => {
+    ([provider, account, chainId]) => {
       return new Promise((resolve) => {
         const timeout = setTimeout(() => {
           resolve(undefined)
@@ -60,8 +60,10 @@ export function useWalletCapabilities(): SWRResponse<WalletCapabilities | undefi
               resolve(undefined)
               return
             }
+            const chainIdHex = '0x' + (+chainId).toString(16)
 
-            resolve(result[Object.keys(result)[0]])
+            // fallback for Safe wallets https://github.com/safe-global/safe-wallet-monorepo/issues/6906
+            resolve(result[chainIdHex] || result[Object.keys(result)[0]])
           })
           .catch(() => {
             clearInterval(timeout)
