@@ -1,10 +1,10 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 
 import { t } from '@lingui/core/macro'
 
-import { useTradeConfirmActions } from 'modules/trade'
+import { useConfirmTradeWithRwaCheck } from 'modules/trade'
 import { TradeFormButtons, TradeFormValidation, useTradeFormButtonContext } from 'modules/tradeFormValidation'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
@@ -27,25 +27,20 @@ export function ActionButtons({
   primaryFormValidation,
   fallbackHandlerIsNotSet,
 }: ActionButtonsProps) {
-  const tradeConfirmActions = useTradeConfirmActions()
   const { walletIsNotConnected } = useTwapWarningsContext()
   const cowAnalytics = useCowAnalytics()
 
-  const twapConversionAnalytics = useCallback(
-    (status: string, fallbackHandlerIsNotSet: boolean) => {
-      cowAnalytics.sendEvent({
-        category: CowSwapAnalyticsCategory.TWAP,
-        action: 'Conversion',
-        label: `${status}|${fallbackHandlerIsNotSet ? 'no-handler' : 'handler-set'}`,
-      })
-    },
-    [cowAnalytics],
-  )
+  // Analytics callback that fires only when trade confirmation is actually opened
+  const onConfirmOpen = useCallback(() => {
+    cowAnalytics.sendEvent({
+      category: CowSwapAnalyticsCategory.TWAP,
+      action: 'Conversion',
+      label: `initiated|${fallbackHandlerIsNotSet ? 'no-handler' : 'handler-set'}`,
+    })
+  }, [cowAnalytics, fallbackHandlerIsNotSet])
 
-  const confirmTrade = useCallback(() => {
-    tradeConfirmActions.onOpen()
-    twapConversionAnalytics('initiated', fallbackHandlerIsNotSet)
-  }, [tradeConfirmActions, twapConversionAnalytics, fallbackHandlerIsNotSet])
+  const hookParams = useMemo(() => ({ onConfirmOpen }), [onConfirmOpen])
+  const { confirmTrade } = useConfirmTradeWithRwaCheck(hookParams)
 
   const areWarningsAccepted = useAreWarningsAccepted()
 
