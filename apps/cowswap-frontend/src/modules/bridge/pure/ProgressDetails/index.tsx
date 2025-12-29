@@ -10,7 +10,7 @@ import { CollapsibleBridgeRoute } from '../CollapsibleBridgeRoute'
 import { BridgingProgressContent } from '../contents/BridgingProgressContent'
 import { PreparingBridgingContent } from '../contents/BridgingProgressContent/PreparingBridgingContent'
 import { SwapResultContent } from '../contents/SwapResultContent'
-import { BridgeStatusIcons, BridgeStatusTitlePrefixes, SwapStatusIcons, SwapStatusTitlePrefixes } from '../StopStatus'
+import { bridgeStatusIcons, bridgeStatusTitlePrefixes, swapStatusIcons, swapStatusTitlePrefixes } from '../StopStatus'
 
 interface QuoteDetailsProps {
   className?: string
@@ -37,10 +37,10 @@ function SwapStep({ context }: SwapStepProps): ReactNode {
       isCollapsible
       defaultExpanded
       status={swapStatus}
-      statusIcon={SwapStatusIcons[swapStatus]}
+      statusIcon={swapStatusIcons[swapStatus]}
       protocolIconShowOnly="first"
       protocolIconSize={21}
-      titlePrefix={i18n._(SwapStatusTitlePrefixes[swapStatus])}
+      titlePrefix={i18n._(swapStatusTitlePrefixes[swapStatus])}
       protocolName={COW_PROTOCOL_NAME}
       bridgeProvider={bridgeProvider}
       chainName={sourceChainName}
@@ -62,9 +62,9 @@ function BridgeStep({ context, bridgeStatus }: BridgeStepProps): ReactNode {
       isCollapsible
       defaultExpanded
       status={bridgeStatus}
-      statusIcon={BridgeStatusIcons[bridgeStatus]}
+      statusIcon={bridgeStatusIcons[bridgeStatus]}
       protocolIconShowOnly="second"
-      titlePrefix={i18n._(BridgeStatusTitlePrefixes[bridgeStatus])}
+      titlePrefix={i18n._(bridgeStatusTitlePrefixes[bridgeStatus])}
       protocolName={bridgeProvider.name}
       bridgeProvider={bridgeProvider}
       chainName={targetChainName}

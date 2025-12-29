@@ -30,7 +30,7 @@ type OrderLike = {
   isUnfillable?: boolean
 }
 
-export function computeUnfillableOrderIds(
+function computeUnfillableOrderIds(
   marketOrders: OrderLike[],
   pendingOrdersFillability: Record<string, OrderFillability | undefined>,
 ): string[] {
@@ -59,7 +59,7 @@ export function computeUnfillableOrderIds(
   return Array.from(new Set([...priceDerived, ...fillabilityDerived]))
 }
 
-export function getNewlyFillableOrderIds(previous: Iterable<string>, current: Iterable<string>): string[] {
+function getNewlyFillableOrderIds(previous: Iterable<string>, current: Iterable<string>): string[] {
   const currentSet = new Set(current)
   const newlyFillable: string[] = []
 

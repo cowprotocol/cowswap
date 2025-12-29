@@ -6,7 +6,8 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { Trans } from '@lingui/react/macro'
 
 import { useTradePriceImpact } from 'modules/trade'
-import { TradeWarning, TradeWarningType } from 'modules/trade/pure/TradeWarning'
+import { TradeWarning } from 'modules/trade/pure/TradeWarning'
+import { TradeWarningType } from 'modules/trade/pure/TradeWarning/constants'
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { useTradeQuote } from 'modules/tradeQuote'
 

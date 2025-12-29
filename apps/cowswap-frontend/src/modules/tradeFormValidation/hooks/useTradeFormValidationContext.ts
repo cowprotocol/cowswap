@@ -7,7 +7,7 @@ import { useGnosisSafeInfo, useIsTxBundlingSupported, useWalletDetails, useWalle
 
 import { useHasHookBridgeProvidersEnabled } from 'entities/bridgeProvider'
 
-import { useCurrentAccountProxy } from 'modules/accountProxy'
+import { useCurrentAccountProxy } from 'modules/accountProxy/hooks/useCurrentAccountProxy'
 import { useApproveState, useGetAmountToSignApprove, useIsApprovalOrPermitRequired } from 'modules/erc20Approve'
 import { RwaTokenStatus, useRwaTokenStatus } from 'modules/rwa'
 import { TradeType, useDerivedTradeState, useIsWrapOrUnwrap } from 'modules/trade'

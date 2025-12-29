@@ -60,7 +60,7 @@ const CowShedInfoStyled = styled(CowShedInfo)`
   margin-top: 10px;
 `
 
-export const DATE_FORMAT_OPTION: Intl.DateTimeFormatOptions = {
+const DATE_FORMAT_OPTION: Intl.DateTimeFormatOptions = {
   dateStyle: 'long',
 }
 
