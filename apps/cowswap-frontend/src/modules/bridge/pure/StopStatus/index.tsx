@@ -33,7 +33,7 @@ const StyledStatusCloseIcon = styled(SVG)`
 const CloseIcon = <StyledStatusCloseIcon src={CLOSE_ICON_X} />
 
 // Base set of icons for status states, used by both swap and bridge
-export const CommonStatusIcons: Record<SwapAndBridgeStatus, ReactNode> = {
+export const commonStatusIcons: Record<SwapAndBridgeStatus, ReactNode> = {
   [SwapAndBridgeStatus.DONE]: <StyledStatusCheckmarkIcon src={CheckmarkIcon} />,
   [SwapAndBridgeStatus.PENDING]: <StyledSpinnerIcon src={SpinnerIcon} />,
   [SwapAndBridgeStatus.FAILED]: CloseIcon,
@@ -42,17 +42,17 @@ export const CommonStatusIcons: Record<SwapAndBridgeStatus, ReactNode> = {
 }
 
 // Swap has custom icons for different states
-export const SwapStatusIcons: Record<SwapAndBridgeStatus, ReactNode> = {
-  ...CommonStatusIcons,
+export const swapStatusIcons: Record<SwapAndBridgeStatus, ReactNode> = {
+  ...commonStatusIcons,
   [SwapAndBridgeStatus.FAILED]: <SVG src={RefundIcon} />,
   [SwapAndBridgeStatus.REFUND_COMPLETE]: <StyledRefundCompleteIcon src={RefundIcon} />,
 }
 
 // Bridge uses the common icons without modification
-export const BridgeStatusIcons = CommonStatusIcons
+export const bridgeStatusIcons = commonStatusIcons
 
 // Title text used for different swap states
-export const SwapStatusTitlePrefixes: Record<SwapAndBridgeStatus, MessageDescriptor> = {
+export const swapStatusTitlePrefixes: Record<SwapAndBridgeStatus, MessageDescriptor> = {
   [SwapAndBridgeStatus.DONE]: msg`Swapped on`,
   [SwapAndBridgeStatus.PENDING]: msg`Swapping on`,
   [SwapAndBridgeStatus.FAILED]: msg`Swap failed`,
@@ -64,7 +64,7 @@ export const SwapStatusTitlePrefixes: Record<SwapAndBridgeStatus, MessageDescrip
 export const bridgeFailedTitle: MessageDescriptor = msg`Bridge failed on`
 
 // Title text used for different bridge states
-export const BridgeStatusTitlePrefixes: Record<SwapAndBridgeStatus, MessageDescriptor> = {
+export const bridgeStatusTitlePrefixes: Record<SwapAndBridgeStatus, MessageDescriptor> = {
   [SwapAndBridgeStatus.DONE]: msg`Bridged via`,
   [SwapAndBridgeStatus.PENDING]: msg`Bridging via`,
   [SwapAndBridgeStatus.FAILED]: bridgeFailedTitle,

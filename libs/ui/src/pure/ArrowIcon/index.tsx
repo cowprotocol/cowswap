@@ -7,7 +7,7 @@ import styled from 'styled-components/macro'
 
 import { UI } from '../../enum'
 
-export enum ArrowDirection {
+enum ArrowDirection {
   Right = 'right',
   Down = 'down',
   Left = 'left',

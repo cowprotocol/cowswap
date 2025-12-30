@@ -21,8 +21,7 @@ import { ActivityDerivedState } from 'common/types/activity'
 import { isOrderCancellable } from 'common/utils/isOrderCancellable'
 
 import { CancelTxLink, ProgressLink, StatusLabel, StatusLabelBelow, StatusLabelWrapper } from './styled'
-
-import { determinePillColour } from './index'
+import { determinePillColour } from './utils'
 
 function _getStateLabel(activityDerivedState: ActivityDerivedState): string {
   const activityStatusText: Record<ActivityState, string> = {

@@ -10,7 +10,7 @@ const Wrapper = styled.div`
   background: var(${UI.COLOR_PAPER});
 `
 
-const fixtures = {
+const Fixtures = {
   default: () => (
     <Wrapper>
       <TransactionErrorContent modalMode message={'User rejected transaction'} onDismiss={console.log} />
@@ -18,4 +18,4 @@ const fixtures = {
   ),
 }
 
-export default fixtures
+export default Fixtures

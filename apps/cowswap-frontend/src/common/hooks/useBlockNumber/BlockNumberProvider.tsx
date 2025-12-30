@@ -1,34 +1,9 @@
-import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { useIsWindowVisible } from '@cowprotocol/common-hooks'
 import { useWalletChainId, useWalletProvider } from '@cowprotocol/wallet-provider'
 
-import { useLingui } from '@lingui/react/macro'
-
-const MISSING_PROVIDER = Symbol()
-const BlockNumberContext = createContext<
-  | {
-      value?: number
-    }
-  | typeof MISSING_PROVIDER
->(MISSING_PROVIDER)
-
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function useBlockNumberContext() {
-  const blockNumber = useContext(BlockNumberContext)
-  const { t } = useLingui()
-
-  if (blockNumber === MISSING_PROVIDER) {
-    throw new Error(t`BlockNumber hooks must be wrapped in a` + ` <BlockNumberProvider>`)
-  }
-  return blockNumber
-}
-
-/** Requires that BlockUpdater be installed in the DOM tree. */
-export function useBlockNumber(): number | undefined {
-  return useBlockNumberContext().value
-}
+import { BlockNumberContext } from './context'
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
