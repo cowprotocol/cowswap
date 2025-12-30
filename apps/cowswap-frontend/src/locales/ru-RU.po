@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-12-29 13:37\n"
+"PO-Revision-Date: 2025-12-30 09:56\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -220,7 +220,7 @@ msgstr "является вспомогательным контрактом, к
 msgid "To"
 msgstr "Покупка"
 
-#: apps/cowswap-frontend/src/common/pure/CancellationModal/RequestCancellationModal.tsx
+#: apps/cowswap-frontend/src/common/pure/CancellationModal/ModalTopContent.tsx
 msgid "Are you sure you want to cancel order <0>{shortId}</0>?"
 msgstr "Вы уверены, что хотите отменить заказ <0>{shortId}</0>?"
 
@@ -779,6 +779,10 @@ msgstr "Контекст безопасного потока не готов"
 msgid "No RPC provider available for chain ID: {chainId}"
 msgstr "Нет доступного RPC-провайдера для идентификатора цепочки: {chainId}"
 
+#: apps/cowswap-frontend/src/common/pure/CancellationModal/index.tsx
+msgid "Cancelling order with id {shortId}:<0/><1>{orderSummary}</1>"
+msgstr ""
+
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "Sell per part"
 msgstr "Продать за часть"
@@ -858,8 +862,8 @@ msgid "icon"
 msgstr "иконка"
 
 #: apps/cowswap-frontend/src/common/pure/CancellationModal/index.tsx
-msgid "Cancelling order with id {shortId}:<0/><1>{summary}</1>"
-msgstr "Отмена ордера с id {shortId}:<0/><1>{summary}</1>"
+#~ msgid "Cancelling order with id {shortId}:<0/><1>{summary}</1>"
+#~ msgstr "Cancelling order with id {shortId}:<0/><1>{summary}</1>"
 
 #: apps/cowswap-frontend/src/modules/wallet/containers/AccountSelectorModal/index.tsx
 msgid "Select {walletName} Account"
@@ -1441,7 +1445,7 @@ msgstr "Рейтинг по выбору аукциона"
 msgid "This order will either be filled completely or not filled."
 msgstr "Этот ордер будет исполнен либо полностью, либо не будет выполнен."
 
-#: apps/cowswap-frontend/src/common/pure/CancellationModal/RequestCancellationModal.tsx
+#: apps/cowswap-frontend/src/common/pure/CancellationModal/ModalTopContent.tsx
 msgid "On-chain cancellations require a regular on-chain transaction and cost gas."
 msgstr "Отмена через цепь требует регулярных операций по цепочке и затрат на газ."
 
@@ -1649,7 +1653,7 @@ msgstr "Ограничить приказы, но <0>s-moo-ther</0> как ни�
 msgid "vCOW contract not present"
 msgstr "Отсутствует договор vCOW"
 
-#: apps/cowswap-frontend/src/common/pure/CancellationModal/RequestCancellationModal.tsx
+#: apps/cowswap-frontend/src/common/pure/CancellationModal/ModalTopContent.tsx
 msgid "Unknown"
 msgstr "Неизвестен"
 
@@ -1759,7 +1763,7 @@ msgstr "Получить по крайней мере"
 msgid "CoW Swap trades are protected from MEV, so your slippage can't be exploited!"
 msgstr "CoW Swap сделки защищены от MEV, поэтому ваше проскальзывание не может быть использовано!"
 
-#: apps/cowswap-frontend/src/common/pure/CancellationModal/RequestCancellationModal.tsx
+#: apps/cowswap-frontend/src/common/pure/CancellationModal/ModalTopContent.tsx
 msgid "This is an"
 msgstr "Это"
 
@@ -2339,7 +2343,7 @@ msgstr "открытые"
 msgid "Filled on"
 msgstr "Заполнено"
 
-#: apps/cowswap-frontend/src/common/pure/CancellationModal/RequestCancellationModal.tsx
+#: apps/cowswap-frontend/src/common/pure/CancellationModal/ModalTopContent.tsx
 msgid "less"
 msgstr "меньше"
 
@@ -2376,7 +2380,7 @@ msgstr "Размещение ордеров с средней ценой по в
 msgid "Proxy Accounts"
 msgstr "Аккаунты прокси"
 
-#: apps/cowswap-frontend/src/common/pure/CancellationModal/RequestCancellationModal.tsx
+#: apps/cowswap-frontend/src/common/pure/CancellationModal/ModalTopContent.tsx
 msgid "Tx cost:"
 msgstr "Tx стоимость:"
 
@@ -2635,7 +2639,7 @@ msgstr "Описание"
 msgid "The estimated amount you'll receive after bridge costs."
 msgstr "Оценочная сумма к получению за вычетом комиссии моста."
 
-#: apps/cowswap-frontend/src/common/pure/CancellationModal/RequestCancellationModal.tsx
+#: apps/cowswap-frontend/src/common/pure/CancellationModal/ModalTopContent.tsx
 msgid "on-chain"
 msgstr "в цепи"
 
@@ -3148,7 +3152,7 @@ msgstr "Подтверждение токена"
 msgid "We are unable to calculate the price impact for this order.<0/><1/>You may still move forward but <2>please review carefully that the receive amounts are what you expect.</2>"
 msgstr "Мы не можем рассчитать влияние цены на этот ордер. <0/><1/>Вы все еще можете двигаться вперед, но <2>внимательно проверьте, что Вы ожидаете получить суммы.</2>"
 
-#: apps/cowswap-frontend/src/common/pure/CancellationModal/RequestCancellationModal.tsx
+#: apps/cowswap-frontend/src/common/pure/CancellationModal/ModalTopContent.tsx
 msgid "Off-chain cancellations require a signature and are free."
 msgstr "Отмена вне цепи требует подписи и бесплатно."
 
@@ -3201,7 +3205,7 @@ msgstr "Исходная транзакция"
 msgid "Cow Balance"
 msgstr "Баланс коровы"
 
-#: apps/cowswap-frontend/src/common/pure/CancellationModal/RequestCancellationModal.tsx
+#: apps/cowswap-frontend/src/common/pure/CancellationModal/ModalTopContent.tsx
 msgid "Keep in mind a solver might already have included the order in a solution even if this cancellation is successful."
 msgstr "Имейте в виду, что решение уже включало заказ в решение, даже если это отмена выполнена успешно."
 
@@ -3896,7 +3900,7 @@ msgstr "подписи"
 msgid "Use the Swap tab for trades that don't involve an LP token."
 msgstr "Используйте вкладку Swap для сделок, которые не включают токен LP."
 
-#: apps/cowswap-frontend/src/common/pure/CancellationModal/RequestCancellationModal.tsx
+#: apps/cowswap-frontend/src/common/pure/CancellationModal/ModalTopContent.tsx
 msgid "off-chain"
 msgstr "вне цепи"
 
@@ -4233,7 +4237,7 @@ msgstr "заказ"
 
 #: apps/cowswap-frontend/src/common/containers/MultipleOrdersCancellationModal/index.tsx
 #: apps/cowswap-frontend/src/common/pure/CancellationModal/index.tsx
-#: apps/cowswap-frontend/src/common/pure/CancellationModal/RequestCancellationModal.tsx
+#: apps/cowswap-frontend/src/common/pure/CancellationModal/ModalTopContent.tsx
 msgid "cancellation"
 msgstr "отмена"
 
@@ -4430,7 +4434,7 @@ msgstr "Вернуться к выбору кошелька"
 msgid "Confirm Action"
 msgstr "Подтвердить действие"
 
-#: apps/cowswap-frontend/src/common/pure/CancellationModal/RequestCancellationModal.tsx
+#: apps/cowswap-frontend/src/common/pure/CancellationModal/ModalTopContent.tsx
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "more"
 msgstr "больше"
