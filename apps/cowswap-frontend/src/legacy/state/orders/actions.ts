@@ -92,32 +92,6 @@ export interface BaseOrder extends OrderCreation {
 }
 
 /**
- * Additional order information coming from the API
- * When you fetch orders by orderId, the API provides some additional information not available at creation time.
- * This type models the fields that are present in this endpoint and not in the creation time order.
- *
- * Note it uses OrderMetaData, which is the return type of the endpoint that gets an order by orderId
- */
-export type OrderInfoApi = Pick<
-  EnrichedOrder,
-  | 'creationDate'
-  | 'availableBalance'
-  | 'executedBuyAmount'
-  | 'executedSellAmount'
-  | 'executedSellAmountBeforeFees'
-  | 'executedFeeAmount'
-  | 'executedFee'
-  | 'executedFeeToken'
-  | 'totalFee'
-  | 'invalidated'
-  | 'ethflowData'
-  | 'onchainOrderData'
-  | 'class'
-  | 'fullAppData'
-  | 'signingScheme'
->
-
-/**
  * Order as used by the Dapp
  */
 export interface Order extends BaseOrder {

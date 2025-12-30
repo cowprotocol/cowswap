@@ -8,6 +8,7 @@ import { toKeccak256 } from 'common/utils/toKeccak256'
 import { filterHooks, HooksFilter } from './appDataFilter'
 import { removePermitHookFromHooks, typedAppDataHooksToAppDataHooks } from './typedHooks'
 
+import { UserConsentsMetadata } from '../hooks/useRwaConsentForAppData'
 import {
   AppDataHooks,
   AppDataInfo,
@@ -31,6 +32,7 @@ export type BuildAppDataParams = {
   widget?: AppDataWidget
   partnerFee?: AppDataPartnerFee
   replacedOrderUid?: string
+  userConsent?: UserConsentsMetadata
 }
 
 async function generateAppDataFromDoc(
@@ -54,6 +56,7 @@ export async function buildAppData({
   widget,
   partnerFee,
   replacedOrderUid,
+  userConsent,
 }: BuildAppDataParams): Promise<AppDataInfo> {
   const referrerParams =
     referrerAccount && chainId === SupportedChainId.MAINNET ? { address: referrerAccount } : undefined
@@ -77,6 +80,7 @@ export async function buildAppData({
       widget,
       partnerFee,
       ...{ replacedOrder },
+      ...(userConsent ? userConsent : {}),
     },
   })
 

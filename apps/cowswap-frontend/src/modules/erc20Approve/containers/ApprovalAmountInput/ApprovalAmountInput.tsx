@@ -17,6 +17,8 @@ import * as styledEl from './styled'
 
 import { useCustomApproveAmountInputState, useUpdateOrResetCustomApproveAmountInputState } from '../../state'
 
+const noop = (): void => {}
+
 type ApprovalAmountInputProps = {
   tokenWithLogo: TokenWithLogo | null
   // amount that was set by the user or by default (by default, it is equivalent to amountToSwap)
@@ -91,9 +93,9 @@ export function ApprovalAmountInput({
         allowsOffchainSigning={false}
         currencyInfo={currencyInfo}
         isInvalid={customAmountValueState.isInvalid}
-        onCurrencySelection={() => {}}
+        onCurrencySelection={noop}
         onUserInput={onUserInput}
-        openTokenSelectWidget={() => {}}
+        openTokenSelectWidget={noop}
         tokenSelectorDisabled
       />
     </styledEl.EditWrapper>

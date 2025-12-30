@@ -1,0 +1,56 @@
+import { useMemo } from 'react'
+
+import { useFeatureFlags } from '@cowprotocol/common-hooks'
+import { useWalletInfo } from '@cowprotocol/wallet'
+
+import {
+  useRwaConsentStatus,
+  RwaTokenStatus,
+  useRwaTokenStatus,
+  buildUserConsent,
+  RwaConsentKey,
+  UserConsent,
+} from 'modules/rwa'
+import { useDerivedTradeState } from 'modules/trade/hooks/useDerivedTradeState'
+
+export interface UserConsentsMetadata {
+  userConsents: UserConsent[]
+}
+
+export function useRwaConsentForAppData(): UserConsentsMetadata | undefined {
+  const { isRwaGeoblockEnabled } = useFeatureFlags()
+  const { account } = useWalletInfo()
+  const derivedState = useDerivedTradeState()
+
+  const inputCurrency = derivedState?.inputCurrency
+  const outputCurrency = derivedState?.outputCurrency
+
+  const { status, rwaTokenInfo } = useRwaTokenStatus({ inputCurrency, outputCurrency })
+
+  const consentKey: RwaConsentKey | null = useMemo(() => {
+    if (!rwaTokenInfo || !account) {
+      return null
+    }
+    return {
+      wallet: account,
+      ipfsHash: rwaTokenInfo.consentHash,
+    }
+  }, [rwaTokenInfo, account])
+
+  const { consentRecord } = useRwaConsentStatus(consentKey)
+
+  return useMemo(() => {
+    // Skip consent metadata if RWA geoblock feature is disabled
+    if (!isRwaGeoblockEnabled) {
+      return undefined
+    }
+
+    if (status !== RwaTokenStatus.ConsentIsSigned || !rwaTokenInfo || !consentRecord?.acceptedAt) {
+      return undefined
+    }
+
+    return {
+      userConsents: [buildUserConsent(rwaTokenInfo.consentHash, consentRecord.acceptedAt)],
+    }
+  }, [isRwaGeoblockEnabled, status, rwaTokenInfo, consentRecord])
+}
