@@ -21,7 +21,13 @@ export const BlockedInfo = styled.div`
   display: flex;
   flex-direction: row;
   gap: 8px;
-  align-items: center;
+  align-items: flex-start;
   color: var(${UI.COLOR_DANGER_TEXT});
   font-size: 13px;
+
+  > svg {
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+  }
 `
