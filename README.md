@@ -122,15 +122,18 @@ yarn run cosmos
 To launch it with our development server (so you have live-reloading):
 
 ```bash
+# Terminal 1
 yarn start
+# Terminal 2
 yarn e2e
 ```
 
-If we want to use the Cypress UI:
+If we want to use the Cypress UI, with the production build:
 
 ```bash
-yarn build
-yarn serve
+# Terminal 1
+npx nx run cowswap-frontend:serve-static --port 3000
+# Terminal 2
 yarn e2e:open
 ```
 
