@@ -1,10 +1,12 @@
 import { useAtom, useAtomValue } from 'jotai'
-import { useLayoutEffect, useRef } from 'react'
+import { useEffect, useLayoutEffect, useRef } from 'react'
 
-import { useIsOnline, useIsWindowVisible, usePrevious } from '@cowprotocol/common-hooks'
+import { useIsOnline, useIsWindowVisible, usePrevious, useSyncedRef } from '@cowprotocol/common-hooks'
 import { getCurrencyAddress } from '@cowprotocol/common-utils'
 
 import ms from 'ms.macro'
+
+import { useIsSmartSlippageApplied } from 'modules/tradeSlippage/hooks/useIsSmartSlippageApplied'
 
 import { usePollQuoteCallback } from './usePollQuoteCallback'
 import { useQuoteParams } from './useQuoteParams'
@@ -17,10 +19,13 @@ import { tradeQuoteCounterAtom } from '../state/tradeQuoteCounterAtom'
 import { tradeQuoteInputAtom } from '../state/tradeQuoteInputAtom'
 import { TradeQuotePollingParameters } from '../types'
 import { isQuoteExpired } from '../utils/quoteDeadline'
+import { checkOnlySlippageBpsChanged } from '../utils/quoteParamsChanges'
 
 const ONE_SEC = 1000
 const QUOTE_VALIDATION_INTERVAL = ms`2s`
+const QUOTE_SLIPPAGE_CHANGE_THROTTLE_INTERVAL = ms`1.5s`
 
+// eslint-disable-next-line max-lines-per-function
 export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParameters): null {
   const { isConfirmOpen, isQuoteUpdatePossible } = quotePollingParams
 
@@ -50,6 +55,13 @@ export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParame
   // eslint-disable-next-line react-hooks/refs
   pollQuoteRef.current = pollQuote
 
+  const prevQuoteParamsRef = useRef(quoteParams)
+  useEffect(() => {
+    prevQuoteParamsRef.current = quoteParams
+  }, [quoteParams])
+
+  const isSmartSlippageApplied = useSyncedRef(useIsSmartSlippageApplied())
+
   /**
    * Reset quote when window is not visible or sell amount has been cleared
    */
@@ -75,10 +87,29 @@ export function useTradeQuotePolling(quotePollingParams: TradeQuotePollingParame
      */
     if (isConfirmOpen) return
 
+    if (isSmartSlippageApplied.current) {
+      const onlySlippageBpsChanged = checkOnlySlippageBpsChanged(
+        quoteParams,
+        prevQuoteParamsRef.current,
+        tradeQuoteRef.current,
+      )
+
+      if (onlySlippageBpsChanged) {
+        const quoteTimestampDiff = tradeQuoteRef.current.localQuoteTimestamp
+          ? Date.now() - tradeQuoteRef.current.localQuoteTimestamp
+          : undefined
+        // in "smart" slippage mode slippageBps updates on every fetch /quote response
+        // so we should throttle duplicated additional requests caused by following slippageBps updates to prevent re-fetch loop (#6675)
+        if (typeof quoteTimestampDiff === 'number' && quoteTimestampDiff < QUOTE_SLIPPAGE_CHANGE_THROTTLE_INTERVAL) {
+          return
+        }
+      }
+    }
+
     if (pollQuoteRef.current(true)) {
       resetQuoteCounter()
     }
-  }, [isConfirmOpen, isQuoteUpdatePossible, quoteParams, resetQuoteCounter])
+  }, [isConfirmOpen, isQuoteUpdatePossible, isSmartSlippageApplied, quoteParams, resetQuoteCounter])
 
   /**
    * Update quote once a QUOTE_POLLING_INTERVAL

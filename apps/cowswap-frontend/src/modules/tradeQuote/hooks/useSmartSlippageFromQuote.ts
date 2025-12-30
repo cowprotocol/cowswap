@@ -11,7 +11,8 @@ export const useSmartSlippageFromQuote = (): number | null => {
   const slippageBottomCap = isEthFlow ? MINIMUM_ETH_FLOW_SLIPPAGE_BPS : 0
   const slippageTopCap = MAX_SLIPPAGE_BPS
 
-  const slippage = tradeQuote?.quote?.quoteResults.suggestedSlippageBps ?? null
+  // get slippageBps from previous cached result, otherwise quote.quoteResults.suggestedSlippageBps usage causes re-fetch quote loop problem (#6675)
+  const slippage = tradeQuote?.suggestedSlippageBps || null
 
   if (typeof slippage === 'number') {
     if (slippage < slippageBottomCap) return null

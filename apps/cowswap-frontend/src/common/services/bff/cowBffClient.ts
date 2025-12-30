@@ -53,7 +53,10 @@ export class CoWBFFClient {
       }
 
       log(`Retrieved slippage tolerance from API: ${data.slippageBps} BPS`)
-      return { slippageBps: data.slippageBps }
+      return {
+        slippageBps: data.slippageBps,
+        // slippageBps: data.slippageBps + Math.floor(Math.random() * 25), // uncomment to test smart slippage re-fetch quote loop problem (fixed) (#6675)
+      }
     } catch (error) {
       log(`Failed to fetch slippage tolerance from API: ${error instanceof Error ? error.message : 'Unknown error'}`)
       return EMPTY_SLIPPAGE_RESPONSE
