@@ -10,11 +10,10 @@ import { useOrder } from 'legacy/state/orders/hooks'
 
 import { useGetExecutedBridgeSummary } from 'common/hooks/useGetExecutedBridgeSummary'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
+import { OrderSummary } from 'common/pure/OrderSummary'
+import { OrderSummaryTemplateProps } from 'common/pure/OrderSummary/summaryTemplates'
 
 import * as styledEl from './styled'
-
-import { OrderSummary } from '../../pure/OrderSummary'
-import { OrderSummaryTemplateProps } from '../../pure/OrderSummary/summaryTemplates'
 
 function FulfilledSummaryTemplate({ inputAmount, outputAmount }: OrderSummaryTemplateProps): ReactNode {
   return (

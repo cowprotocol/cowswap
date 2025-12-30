@@ -1,12 +1,14 @@
-import { NATIVE_CURRENCIES, TokenWithLogo } from '@cowprotocol/common-const'
-import { currencyAmountToTokenAmount } from '@cowprotocol/common-utils'
-import { OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { getIsNativeToken } from '@cowprotocol/common-utils'
+import { NATIVE_CURRENCY_ADDRESS, OrderKind, SupportedChainId } from '@cowprotocol/cow-sdk'
 import { CowWidgetEvents, OnPostedOrderPayload } from '@cowprotocol/events'
-import { UiOrderType } from '@cowprotocol/types'
-import { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
+import { TokenInfo, UiOrderType } from '@cowprotocol/types'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
 import { WIDGET_EVENT_EMITTER } from 'widgetEventEmitter'
+
+import { OrderStatusEvents } from '../events/events'
+import { ORDER_STATUS_EVENT_EMITTER } from '../events/orderStatusEventEmitter'
 
 interface PendingOrderNotificationParams {
   chainId: SupportedChainId
@@ -22,25 +24,7 @@ interface PendingOrderNotificationParams {
 }
 
 export function emitPostedOrderEvent(params: PendingOrderNotificationParams): void {
-  const {
-    chainId,
-    id,
-    receiver,
-    owner,
-    uiOrderType,
-    orderCreationHash,
-    inputAmount: _inputAmount,
-    outputAmount: _outputAmount,
-    isEthFlow,
-  } = params
-
-  const inputAmount = currencyAmountToTokenAmountIfNeeded(_inputAmount)
-  const outputAmount = currencyAmountToTokenAmountIfNeeded(_outputAmount)
-  const inputToken = inputAmount.currency
-  const outputToken = outputAmount.currency
-
-  const nativeCurrency = NATIVE_CURRENCIES[chainId]
-  const displayInputCurrency = isEthFlow ? nativeCurrency : inputToken
+  const { chainId, id, receiver, owner, uiOrderType, orderCreationHash, inputAmount, outputAmount, isEthFlow } = params
 
   const postedOrderPayload: OnPostedOrderPayload = {
     orderUid: id,
@@ -51,29 +35,27 @@ export function emitPostedOrderEvent(params: PendingOrderNotificationParams): vo
     orderType: uiOrderType,
     inputAmount: BigInt(inputAmount.quotient.toString()),
     outputAmount: BigInt(outputAmount.quotient.toString()),
-    inputToken: {
-      ...inputToken,
-      symbol: displayInputCurrency.symbol || '',
-      name: displayInputCurrency.name || '',
-    },
-    outputToken: {
-      ...outputToken,
-      symbol: outputToken.symbol || '',
-      name: outputToken.name || '',
-    },
+    inputToken: currencyToTokenInfo(inputAmount.currency),
+    outputToken: currencyToTokenInfo(outputAmount.currency),
     receiver: receiver || undefined,
     isEthFlow,
   }
 
   WIDGET_EVENT_EMITTER.emit(CowWidgetEvents.ON_POSTED_ORDER, postedOrderPayload)
+  ORDER_STATUS_EVENT_EMITTER.emit(OrderStatusEvents.ON_POSTED_ORDER, {
+    inputAmount,
+    outputAmount,
+    orderDetails: postedOrderPayload,
+  })
 }
 
-/**
- * currencyAmountToTokenAmount converts native token to wrapped
- * but here we don't want to convert wrapped token to native
- */
-function currencyAmountToTokenAmountIfNeeded(amount: CurrencyAmount<Currency>): CurrencyAmount<Token> {
-  return amount.currency instanceof TokenWithLogo
-    ? (amount as CurrencyAmount<TokenWithLogo>)
-    : currencyAmountToTokenAmount(amount)
+function currencyToTokenInfo(currency: Currency): TokenInfo {
+  return (
+    getIsNativeToken(currency)
+      ? {
+          ...currency,
+          address: NATIVE_CURRENCY_ADDRESS,
+        }
+      : currency
+  ) as TokenInfo
 }
