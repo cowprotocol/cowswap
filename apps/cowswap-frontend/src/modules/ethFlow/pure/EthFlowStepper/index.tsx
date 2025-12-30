@@ -2,19 +2,13 @@ import { Media, UI } from '@cowprotocol/ui'
 
 import styled, { css } from 'styled-components/macro'
 
+import { SmartOrderStatus } from './constants'
 import { StatusIconState } from './StatusIcon'
 import { Progress1 } from './steps/Progress1'
 import { Progress2 } from './steps/Progress2'
 import { Step1 } from './steps/Step1'
 import { Step2 } from './steps/Step2'
 import { Step3 } from './steps/Step3'
-
-export enum SmartOrderStatus {
-  CREATING = 'CREATING',
-  CREATION_MINED = 'CREATED',
-  INDEXED = 'INDEXED',
-  FILLED = 'FILLED',
-}
 
 export type TxState = {
   /**

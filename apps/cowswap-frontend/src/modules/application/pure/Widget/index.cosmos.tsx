@@ -10,7 +10,7 @@ function Custom({ children, className }: AppBodyProps) {
   )
 }
 
-const fixtures = {
+const Fixtures = {
   smallContent: <Custom>This is a small content</Custom>,
   tallContent: (
     <Custom>
@@ -19,4 +19,4 @@ const fixtures = {
   ),
 }
 
-export default fixtures
+export default Fixtures

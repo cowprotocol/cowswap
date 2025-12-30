@@ -8,7 +8,7 @@ import { t } from '@lingui/core/macro'
 import { SigningSteps } from 'entities/trade'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
-import { getOrderSubmitSummary, mapUnsignedOrderToOrder, wrapErrorInOperatorError } from 'legacy/utils/trade'
+import { mapUnsignedOrderToOrder, wrapErrorInOperatorError } from 'legacy/utils/trade'
 
 import { removePermitHookFromAppData } from 'modules/appData'
 import { emitPostedOrderEvent } from 'modules/orders'
@@ -140,7 +140,6 @@ export async function ethFlow({
       additionalParams: {
         ...orderParams,
         orderId,
-        summary: getOrderSubmitSummary(orderParams),
         signingScheme,
         signature,
         // For ETH-flow we always set order class to 'market' since we don't support ETH-flow in Limit orders
