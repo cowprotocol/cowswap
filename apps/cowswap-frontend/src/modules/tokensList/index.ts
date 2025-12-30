@@ -1,4 +1,5 @@
 export { SelectTokenWidget } from './containers/SelectTokenWidget'
+export { BlockedListSourcesUpdater } from './updaters/BlockedListSourcesUpdater'
 
 export { ImportTokenModal } from './pure/ImportTokenModal'
 export { AddIntermediateToken } from './pure/AddIntermediateToken'

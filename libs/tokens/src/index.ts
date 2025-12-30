@@ -56,7 +56,9 @@ export { useSearchList } from './hooks/lists/useSearchList'
 export { useSearchToken } from './hooks/tokens/useSearchToken'
 export { useSearchNonExistentToken } from './hooks/tokens/useSearchNonExistentToken'
 export { useAllLpTokens } from './hooks/tokens/useAllLpTokens'
-export { useRestrictedToken, useAnyRestrictedToken } from './hooks/tokens/useRestrictedToken'
+export { useRestrictedToken, useAnyRestrictedToken, findRestrictedToken } from './hooks/tokens/useRestrictedToken'
+export { restrictedTokensAtom, restrictedListsAtom } from './state/restrictedTokens/restrictedTokensAtom'
+export { blockedListSourcesAtom } from './state/tokens/blockedListSourcesAtom'
 
 // Utils
 export { getTokenId } from './state/restrictedTokens/restrictedTokensAtom'
@@ -71,4 +73,11 @@ export { fetchTokenList } from './services/fetchTokenList'
 
 // Consts
 export { DEFAULT_TOKENS_LISTS } from './const/tokensLists'
+export { RWA_CONSENT_HASH } from './updaters/RestrictedTokensListUpdater'
 export { useIsAnyOfTokensOndo } from './hooks/lists/useIsAnyOfTokensOndo'
+export { useFilterBlockedLists } from './hooks/lists/useFilterBlockedLists'
+export { useIsListBlocked, getSourceAsKey, getCountryAsKey } from './hooks/lists/useIsListBlocked'
+export { useRestrictedListInfo } from './hooks/lists/useRestrictedListInfo'
+
+// Types
+export type { RestrictedListInfo } from './hooks/lists/useRestrictedListInfo'

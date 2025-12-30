@@ -9,18 +9,21 @@ import {
   useAddList,
   useAddUserToken,
   useAllListsList,
+  useIsListBlocked,
   useTokenListsTags,
   useUnsupportedTokens,
   useUserAddedTokens,
 } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { t } from '@lingui/core/macro'
 import styled from 'styled-components/macro'
 
 import { Field } from 'legacy/state/types'
 
 import { useTokensBalancesCombined } from 'modules/combinedBalances'
 import { usePermitCompatibleTokens } from 'modules/permit'
+import { useGeoCountry } from 'modules/rwa'
 import { useLpTokensWithBalances } from 'modules/yield/shared'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
@@ -29,8 +32,10 @@ import { getDefaultTokenListCategories } from './getDefaultTokenListCategories'
 
 import { useChainsToSelect } from '../../hooks/useChainsToSelect'
 import { useCloseTokenSelectWidget } from '../../hooks/useCloseTokenSelectWidget'
+import { useIsListRequiresConsent } from '../../hooks/useIsListRequiresConsent'
 import { useOnSelectChain } from '../../hooks/useOnSelectChain'
 import { useOnTokenListAddingError } from '../../hooks/useOnTokenListAddingError'
+import { useRestrictedTokenImportStatus } from '../../hooks/useRestrictedTokenImportStatus'
 import { useSelectTokenWidgetState } from '../../hooks/useSelectTokenWidgetState'
 import { useTokensToSelect } from '../../hooks/useTokensToSelect'
 import { useUpdateSelectTokenWidgetState } from '../../hooks/useUpdateSelectTokenWidgetState'
@@ -118,6 +123,15 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
 
   const closeTokenSelectWidget = useCloseTokenSelectWidget()
 
+  const { isImportDisabled, blockReason } = useRestrictedTokenImportStatus(tokenToImport)
+  const country = useGeoCountry()
+  const { isBlocked } = useIsListBlocked(listToImport?.source, country)
+  const { requiresConsent } = useIsListRequiresConsent(listToImport?.source)
+
+  // without wallet: only block if country is restricted, otherwise list is always visible
+  // with wallet: block if country is restricted or if consent is required (unknown country)
+  const isListBlocked = isBlocked || (!!account && requiresConsent)
+
   const openPoolPage = useCallback(
     (selectedPoolAddress: string) => {
       updateSelectTokenWidget({ selectedPoolAddress })
@@ -140,11 +154,23 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
     closeTokenSelectWidget()
   }, [closeTokenSelectWidget])
 
-  const importTokenAndClose = (tokens: TokenWithLogo[]): void => {
-    importTokenCallback(tokens)
-    onSelectToken?.(tokens[0])
-    onDismiss()
-  }
+  const selectAndClose = useCallback(
+    (token: TokenWithLogo): void => {
+      onSelectToken?.(token)
+      onDismiss()
+    },
+    [onSelectToken, onDismiss],
+  )
+
+  const importTokenAndClose = useCallback(
+    (tokens: TokenWithLogo[]): void => {
+      importTokenCallback(tokens)
+      if (tokens[0]) {
+        selectAndClose(tokens[0])
+      }
+    },
+    [importTokenCallback, selectAndClose],
+  )
 
   const importListAndBack = (list: ListState): void => {
     try {
@@ -168,14 +194,22 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
               onDismiss={onDismiss}
               onBack={resetTokenImport}
               onImport={importTokenAndClose}
+              isImportDisabled={isImportDisabled}
+              blockReason={blockReason}
             />
           )
         }
 
         if (listToImport && !standalone) {
+          // only show consent message when wallet is connected and consent is required
+          const listBlockReason =
+            account && requiresConsent ? t`This list requires consent before importing.` : undefined
+
           return (
             <ImportListModal
               list={listToImport}
+              isBlocked={isListBlocked}
+              blockReason={listBlockReason}
               onDismiss={onDismiss}
               onBack={resetTokenImport}
               onImport={importListAndBack}
