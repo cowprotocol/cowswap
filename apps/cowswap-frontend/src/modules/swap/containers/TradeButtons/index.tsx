@@ -8,9 +8,9 @@ import { useLingui } from '@lingui/react/macro'
 
 import { AddIntermediateToken } from 'modules/tokensList'
 import {
+  useConfirmTradeWithRwaCheck,
   useIsCurrentTradeBridging,
   useIsNoImpactWarningAccepted,
-  useTradeConfirmActions,
   useWrappedToken,
 } from 'modules/trade'
 import {
@@ -57,7 +57,6 @@ export function TradeButtons({
 
   const primaryFormValidation = useGetTradeFormValidation()
   const isPrimaryValidationPassed = useIsTradeFormValidationPassed()
-  const tradeConfirmActions = useTradeConfirmActions()
   const { feeWarningAccepted } = useHighFeeWarning()
   const isNoImpactWarningAccepted = useIsNoImpactWarningAccepted()
   const localFormValidation = useSwapFormState()
@@ -70,7 +69,7 @@ export function TradeButtons({
 
   const { t } = useLingui()
 
-  const confirmTrade = tradeConfirmActions.onOpen
+  const { confirmTrade } = useConfirmTradeWithRwaCheck()
 
   const confirmText = isCurrentTradeBridging ? t`Swap and Bridge` : t`Swap`
 

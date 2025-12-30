@@ -28,3 +28,11 @@ export type Announcement = {
 }
 
 export type Announcements = Announcement[]
+
+export type RestrictedTokenList = {
+  name: string
+  tokenListUrl: string
+  restrictedCountries: string[]
+}
+
+export type RestrictedTokenLists = RestrictedTokenList[]

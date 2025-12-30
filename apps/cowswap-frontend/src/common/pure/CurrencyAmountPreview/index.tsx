@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 import { TokenLogo } from '@cowprotocol/tokens'
 import { TokenAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
@@ -24,13 +26,12 @@ export interface CurrencyPreviewInfo {
 export interface CurrencyPreviewProps extends Partial<BuiltItProps> {
   id: string
   currencyInfo: CurrencyPreviewInfo
+  isBridging?: boolean
   priceImpactParams?: PriceImpact
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function CurrencyAmountPreview(props: CurrencyPreviewProps) {
-  const { id, currencyInfo, className, priceImpactParams } = props
+export function CurrencyAmountPreview(props: CurrencyPreviewProps): ReactNode {
+  const { id, currencyInfo, className, priceImpactParams, isBridging } = props
   const { fiatAmount, amount } = currencyInfo
   const topLabel = currencyInfo.label
   const currency = amount?.currency
@@ -45,7 +46,7 @@ export function CurrencyAmountPreview(props: CurrencyPreviewProps) {
       </div>
       <styledEl.Amount>
         <TokenAmount className="token-amount-input" amount={amount} tokenSymbol={currency} />
-        <FiatValue fiatValue={fiatAmount} priceImpactParams={priceImpactParams} />
+        <FiatValue fiatValue={fiatAmount} priceImpactParams={priceImpactParams} isBridging={isBridging} />
       </styledEl.Amount>
     </styledEl.Container>
   )
