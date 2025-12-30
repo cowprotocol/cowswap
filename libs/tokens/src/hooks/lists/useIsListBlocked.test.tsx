@@ -4,7 +4,7 @@ import { ReactNode } from 'react'
 
 import { renderHook } from '@testing-library/react'
 
-import { normalizeListSource, useIsListBlocked } from './useIsListBlocked'
+import { getSourceAsKey, useIsListBlocked } from './useIsListBlocked'
 
 import { restrictedListsAtom, RestrictedListsState } from '../../state/restrictedTokens/restrictedTokensAtom'
 
@@ -13,25 +13,25 @@ const MOCK_ONDO_LIST_URL =
 
 const MOCK_RESTRICTED_LISTS_STATE: RestrictedListsState = {
   blockedCountriesPerList: {
-    [normalizeListSource(MOCK_ONDO_LIST_URL)]: ['US', 'CN'],
+    [getSourceAsKey(MOCK_ONDO_LIST_URL)]: ['US', 'CN'],
   },
   consentHashPerList: {
-    [normalizeListSource(MOCK_ONDO_LIST_URL)]: 'bafkreidcn4bhj44nnethx6clfspkapahshqyq44adz674y7je5wyfiazsq',
+    [getSourceAsKey(MOCK_ONDO_LIST_URL)]: 'bafkreidcn4bhj44nnethx6clfspkapahshqyq44adz674y7je5wyfiazsq',
   },
   isLoaded: true,
 }
 
-describe('normalizeListSource', () => {
+describe('getSourceAsKey', () => {
   it('converts to lowercase', () => {
-    expect(normalizeListSource('HTTPS://EXAMPLE.COM/list.json')).toBe('https://example.com/list.json')
+    expect(getSourceAsKey('HTTPS://EXAMPLE.COM/list.json')).toBe('https://example.com/list.json')
   })
 
   it('trims whitespace', () => {
-    expect(normalizeListSource('  https://example.com/list.json  ')).toBe('https://example.com/list.json')
+    expect(getSourceAsKey('  https://example.com/list.json  ')).toBe('https://example.com/list.json')
   })
 
   it('handles mixed case and whitespace', () => {
-    expect(normalizeListSource('  HTTPS://Example.COM/List.JSON  ')).toBe('https://example.com/list.json')
+    expect(getSourceAsKey('  HTTPS://Example.COM/List.JSON  ')).toBe('https://example.com/list.json')
   })
 })
 
@@ -64,7 +64,7 @@ describe('useIsListBlocked', () => {
     })
 
     expect(result.current.isBlocked).toBe(false)
-    expect(result.current.isLoading).toBe(true) // isLoaded check comes after listSource check
+    expect(result.current.isLoading).toBe(false) // returns early when listSource is undefined
   })
 
   it('returns isBlocked: false when country is null', () => {

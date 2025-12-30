@@ -4,7 +4,7 @@ import { ReactNode } from 'react'
 
 import { renderHook } from '@testing-library/react'
 
-import { normalizeListSource } from './useIsListBlocked'
+import { getSourceAsKey } from './useIsListBlocked'
 import { useRestrictedListInfo } from './useRestrictedListInfo'
 
 import { restrictedListsAtom, RestrictedListsState } from '../../state/restrictedTokens/restrictedTokensAtom'
@@ -15,10 +15,10 @@ const MOCK_CONSENT_HASH = 'bafkreidcn4bhj44nnethx6clfspkapahshqyq44adz674y7je5wy
 
 const MOCK_RESTRICTED_LISTS_STATE: RestrictedListsState = {
   blockedCountriesPerList: {
-    [normalizeListSource(MOCK_ONDO_LIST_URL)]: ['US', 'CN'],
+    [getSourceAsKey(MOCK_ONDO_LIST_URL)]: ['US', 'CN'],
   },
   consentHashPerList: {
-    [normalizeListSource(MOCK_ONDO_LIST_URL)]: MOCK_CONSENT_HASH,
+    [getSourceAsKey(MOCK_ONDO_LIST_URL)]: MOCK_CONSENT_HASH,
   },
   isLoaded: true,
 }
@@ -67,7 +67,7 @@ describe('useRestrictedListInfo', () => {
     })
 
     expect(result.current).not.toBeNull()
-    expect(result.current?.source).toBe(normalizeListSource(MOCK_ONDO_LIST_URL))
+    expect(result.current?.source).toBe(getSourceAsKey(MOCK_ONDO_LIST_URL))
     expect(result.current?.blockedCountries).toEqual(['US', 'CN'])
     expect(result.current?.consentHash).toBe(MOCK_CONSENT_HASH)
   })
@@ -87,7 +87,7 @@ describe('useRestrictedListInfo', () => {
     const incompleteState: RestrictedListsState = {
       blockedCountriesPerList: {},
       consentHashPerList: {
-        [normalizeListSource(MOCK_ONDO_LIST_URL)]: MOCK_CONSENT_HASH,
+        [getSourceAsKey(MOCK_ONDO_LIST_URL)]: MOCK_CONSENT_HASH,
       },
       isLoaded: true,
     }
@@ -102,7 +102,7 @@ describe('useRestrictedListInfo', () => {
   it('returns null when consentHash is missing', () => {
     const incompleteState: RestrictedListsState = {
       blockedCountriesPerList: {
-        [normalizeListSource(MOCK_ONDO_LIST_URL)]: ['US'],
+        [getSourceAsKey(MOCK_ONDO_LIST_URL)]: ['US'],
       },
       consentHashPerList: {},
       isLoaded: true,

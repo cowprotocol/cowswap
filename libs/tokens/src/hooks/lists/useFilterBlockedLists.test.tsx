@@ -5,7 +5,7 @@ import { ReactNode } from 'react'
 import { renderHook } from '@testing-library/react'
 
 import { useFilterBlockedLists } from './useFilterBlockedLists'
-import { normalizeListSource } from './useIsListBlocked'
+import { getSourceAsKey } from './useIsListBlocked'
 
 import { restrictedListsAtom, RestrictedListsState } from '../../state/restrictedTokens/restrictedTokensAtom'
 import { ListState } from '../../types'
@@ -31,10 +31,10 @@ const MOCK_COWSWAP_LIST = createMockListState(MOCK_COWSWAP_LIST_URL, 'CowSwap Li
 
 const MOCK_RESTRICTED_LISTS_STATE: RestrictedListsState = {
   blockedCountriesPerList: {
-    [normalizeListSource(MOCK_ONDO_LIST_URL)]: ['US', 'CN'],
+    [getSourceAsKey(MOCK_ONDO_LIST_URL)]: ['US', 'CN'],
   },
   consentHashPerList: {
-    [normalizeListSource(MOCK_ONDO_LIST_URL)]: 'test-consent-hash',
+    [getSourceAsKey(MOCK_ONDO_LIST_URL)]: 'test-consent-hash',
   },
   isLoaded: true,
 }
@@ -103,8 +103,8 @@ describe('useFilterBlockedLists', () => {
   it('returns empty array when all lists are blocked', () => {
     const allBlockedState: RestrictedListsState = {
       blockedCountriesPerList: {
-        [normalizeListSource(MOCK_ONDO_LIST_URL)]: ['US'],
-        [normalizeListSource(MOCK_COWSWAP_LIST_URL)]: ['US'],
+        [getSourceAsKey(MOCK_ONDO_LIST_URL)]: ['US'],
+        [getSourceAsKey(MOCK_COWSWAP_LIST_URL)]: ['US'],
       },
       consentHashPerList: {},
       isLoaded: true,
