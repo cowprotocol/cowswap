@@ -6,9 +6,9 @@ import { blockedListSourcesAtom, getCountryAsKey, restrictedListsAtom } from '@c
 import { useGeoStatus } from 'modules/rwa'
 
 /**
- * Updates the blockedListSourcesAtom based on geo-blocking only:
- * - Only blocks lists when country is KNOWN and the list is blocked for that country
- * - Does NOT block when country is unknown (consent check happens at trade/import time)
+ * update the blockedListSourcesAtom based on geo-blocking only:
+ * - only blocks lists when country is known and the list is blocked for that country
+ * - does not block when country is unknown (consent check happens at trade/import time)
  */
 export function BlockedListSourcesUpdater(): null {
   const geoStatus = useGeoStatus()
@@ -22,8 +22,8 @@ export function BlockedListSourcesUpdater(): null {
 
     const blockedSources = new Set<string>()
 
-    // Only block when country is known and list is blocked for that country
-    // When country is unknown, tokens should be visible (consent check happens at trade time)
+    // only block when country is known and list is blocked for that country
+    // when country is unknown, tokens should be visible (consent check happens at trade time)
     if (geoStatus.country) {
       const countryKey = getCountryAsKey(geoStatus.country)
 

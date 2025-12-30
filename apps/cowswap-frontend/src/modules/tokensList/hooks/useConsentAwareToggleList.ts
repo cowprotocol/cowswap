@@ -15,10 +15,7 @@ import {
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 
-/**
- * Hook that wraps toggle list functionality with consent checking.
- * When trying to enable a restricted list without consent, opens the consent modal.
- */
+// wrap toggle list functionality with consent checking
 export function useConsentAwareToggleList(): (list: ListState, enabled: boolean) => void {
   const { account } = useWalletInfo()
   const geoStatus = useGeoStatus()
@@ -39,12 +36,11 @@ export function useConsentAwareToggleList(): (list: ListState, enabled: boolean)
     (list: ListState, enabled: boolean) => {
       // only check consent when trying to enable (not disable)
       if (enabled) {
-        // already enabled, just toggle off
         baseToggleList(list, enabled)
         return
       }
 
-      // Trying to enable - check if consent is required
+      // trying to enable - check if consent is required
       if (!geoStatus.country && restrictedLists.isLoaded) {
         const sourceKey = getSourceAsKey(list.source)
         const consentHash = restrictedLists.consentHashPerList[sourceKey]
@@ -56,12 +52,12 @@ export function useConsentAwareToggleList(): (list: ListState, enabled: boolean)
             return
           }
 
-          // Wallet connected - check if consent exists
+          // wallet connected - check if consent exists
           const consentKey: RwaConsentKey = { wallet: account, ipfsHash: consentHash }
           const existingConsent = getConsentFromCache(consentCache, consentKey)
 
           if (!existingConsent?.acceptedAt) {
-            // Wallet connected but no consent - open modal
+            // wallet connected but no consent - open modal
             openRwaConsentModal({
               consentHash,
               onImportSuccess: () => {

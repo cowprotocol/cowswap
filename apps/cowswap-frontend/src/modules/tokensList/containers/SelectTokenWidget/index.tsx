@@ -125,12 +125,12 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
 
   const { isImportDisabled, blockReason } = useRestrictedTokenImportStatus(tokenToImport)
   const country = useGeoCountry()
-  const { isBlocked: isListToImportBlocked } = useIsListBlocked(listToImport?.source, country)
-  const { requiresConsent: listRequiresConsent } = useIsListRequiresConsent(listToImport?.source)
+  const { isBlocked } = useIsListBlocked(listToImport?.source, country)
+  const { requiresConsent } = useIsListRequiresConsent(listToImport?.source)
 
   // without wallet: only block if country is restricted, otherwise list is always visible
-  // with wallet: block if country is restricted OR if consent is required (unknown country)
-  const isListBlocked = isListToImportBlocked || (!!account && listRequiresConsent)
+  // with wallet: block if country is restricted or if consent is required (unknown country)
+  const isListBlocked = isBlocked || (!!account && requiresConsent)
 
   const openPoolPage = useCallback(
     (selectedPoolAddress: string) => {
@@ -203,7 +203,7 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
         if (listToImport && !standalone) {
           // only show consent message when wallet is connected and consent is required
           const listBlockReason =
-            account && listRequiresConsent ? t`This list requires consent before importing.` : undefined
+            account && requiresConsent ? t`This list requires consent before importing.` : undefined
 
           return (
             <ImportListModal

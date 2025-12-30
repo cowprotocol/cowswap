@@ -1,3 +1,5 @@
+import { ReactElement } from 'react'
+
 import { ListState } from '@cowprotocol/tokens'
 
 import { Trans } from '@lingui/react/macro'
@@ -16,9 +18,7 @@ export interface ImportTokenListItemProps {
   importList(list: ListState): void
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function ImportTokenListItem(props: ImportTokenListItemProps) {
+export function ImportTokenListItem(props: ImportTokenListItemProps): ReactElement {
   const { list, source, importList, isBlocked, blockReason } = props
 
   return (

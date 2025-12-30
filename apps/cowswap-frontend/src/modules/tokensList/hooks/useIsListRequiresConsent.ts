@@ -7,21 +7,12 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { getConsentFromCache, rwaConsentCacheAtom, RwaConsentKey, useGeoStatus } from 'modules/rwa'
 
 export interface ListConsentResult {
-  /** True if list is restricted and country is unknown and no consent given */
-  requiresConsent: boolean
-  /** The consent hash for this list (if restricted) */
+  requiresConsent: Boolean
   consentHash: string | null
-  /** True if we're still loading geo/restricted data */
   isLoading: boolean
 }
 
-/**
- * Checks if a list requires consent before it can be shown/imported.
- * This is true when:
- * 1. The list is in the restricted lists
- * 2. The user's country is unknown
- * 3. The user has not given consent yet
- */
+// check if a list requires consent before it can be shown/imported
 export function useIsListRequiresConsent(listSource: string | undefined): ListConsentResult {
   const { account } = useWalletInfo()
   const geoStatus = useGeoStatus()
