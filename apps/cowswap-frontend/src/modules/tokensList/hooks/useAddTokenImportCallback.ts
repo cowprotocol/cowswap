@@ -43,16 +43,21 @@ export function useAddTokenImportCallback(): (tokenToImport: TokenWithLogo) => v
         return
       }
 
-      // country unknown- need consent before import
-      if (account) {
-        const consentKey: RwaConsentKey = { wallet: account, ipfsHash: restrictedInfo.consentHash }
-        const existingConsent = getConsentFromCache(consentCache, consentKey)
-        if (existingConsent?.acceptedAt) {
-          updateSelectTokenWidget({ tokenToImport })
-          return
-        }
+      // country unknown - if no wallet allow import
+      if (!account) {
+        updateSelectTokenWidget({ tokenToImport })
+        return
       }
 
+      // wallet connected - check if consent already given
+      const consentKey: RwaConsentKey = { wallet: account, ipfsHash: restrictedInfo.consentHash }
+      const existingConsent = getConsentFromCache(consentCache, consentKey)
+      if (existingConsent?.acceptedAt) {
+        updateSelectTokenWidget({ tokenToImport })
+        return
+      }
+
+      // wallet connected but no consent - open modal
       openRwaConsentModal({
         consentHash: restrictedInfo.consentHash,
         token: tokenToImport,

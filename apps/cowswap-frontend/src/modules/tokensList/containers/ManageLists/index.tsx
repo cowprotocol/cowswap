@@ -21,7 +21,6 @@ import * as styledEl from './styled'
 
 import { useAddListImport } from '../../hooks/useAddListImport'
 import { useConsentAwareToggleList } from '../../hooks/useConsentAwareToggleList'
-import { useIsListRequiresConsent } from '../../hooks/useIsListRequiresConsent'
 import { ImportTokenListItem } from '../../pure/ImportTokenListItem'
 import { ListItem } from '../../pure/ListItem'
 
@@ -42,8 +41,8 @@ export function ManageLists(props: ManageListsProps): ReactNode {
 
   const country = useGeoCountry()
 
-  // Only filter by country (blocked), NOT by consent requirement
-  // Lists requiring consent should be visible so users can give consent
+  // only filter by country (blocked), NOT by consent requirement
+  // lists requiring consent should be visible so users can give consent
   const filteredLists = useFilterBlockedLists(lists, country)
 
   const activeTokenListsIds = useListsEnabledState()
@@ -60,11 +59,7 @@ export function ManageLists(props: ManageListsProps): ReactNode {
   })
 
   const { source, listToImport, loading } = useListSearchResponse(listSearchResponse)
-  const { isBlocked: isListToImportBlocked } = useIsListBlocked(listToImport?.source, country)
-  const { requiresConsent } = useIsListRequiresConsent(listToImport?.source)
-
-  // Block the list if country is blocked OR if consent is required (unknown country, no consent)
-  const isBlocked = isListToImportBlocked || requiresConsent
+  const { isBlocked } = useIsListBlocked(listToImport?.source, country)
 
   return (
     <styledEl.Wrapper>
@@ -84,7 +79,6 @@ export function ManageLists(props: ManageListsProps): ReactNode {
             source={source}
             list={listToImport}
             isBlocked={isBlocked}
-            blockReason={requiresConsent ? 'Consent required. Connect wallet to proceed.' : undefined}
             data-click-event={toCowSwapGtmEvent({
               category: CowSwapAnalyticsCategory.LIST,
               action: 'Import List',

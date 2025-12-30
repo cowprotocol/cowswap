@@ -45,16 +45,21 @@ export function useAddListImport(): (listToImport: ListState) => void {
         return
       }
 
-      // Country unknown - need consent before import
-      if (account) {
-        const consentKey: RwaConsentKey = { wallet: account, ipfsHash: consentHash }
-        const existingConsent = getConsentFromCache(consentCache, consentKey)
-        if (existingConsent?.acceptedAt) {
-          updateSelectTokenWidget({ listToImport })
-          return
-        }
+      // Country unknown - if no wallet, allow import (consent check deferred to trade time)
+      if (!account) {
+        updateSelectTokenWidget({ listToImport })
+        return
       }
 
+      // Wallet connected - check if consent already given
+      const consentKey: RwaConsentKey = { wallet: account, ipfsHash: consentHash }
+      const existingConsent = getConsentFromCache(consentCache, consentKey)
+      if (existingConsent?.acceptedAt) {
+        updateSelectTokenWidget({ listToImport })
+        return
+      }
+
+      // Wallet connected but no consent - open modal
       openRwaConsentModal({
         consentHash,
         onImportSuccess: () => {

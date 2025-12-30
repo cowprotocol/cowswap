@@ -50,16 +50,18 @@ export function useConsentAwareToggleList(): (list: ListState, enabled: boolean)
         const consentHash = restrictedLists.consentHashPerList[sourceKey]
 
         if (consentHash) {
-          // list is restricted - check if consent exists
-          let hasConsent = false
-          if (account) {
-            const consentKey: RwaConsentKey = { wallet: account, ipfsHash: consentHash }
-            const existingConsent = getConsentFromCache(consentCache, consentKey)
-            hasConsent = !!existingConsent?.acceptedAt
+          // list is restricted - if no wallet, allow toggle (consent check deferred to trade time)
+          if (!account) {
+            baseToggleList(list, enabled)
+            return
           }
 
-          if (!hasConsent) {
-            // need consent - open modal
+          // Wallet connected - check if consent exists
+          const consentKey: RwaConsentKey = { wallet: account, ipfsHash: consentHash }
+          const existingConsent = getConsentFromCache(consentCache, consentKey)
+
+          if (!existingConsent?.acceptedAt) {
+            // Wallet connected but no consent - open modal
             openRwaConsentModal({
               consentHash,
               onImportSuccess: () => {

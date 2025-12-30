@@ -53,9 +53,9 @@ export function useIsListRequiresConsent(listSource: string | undefined): ListCo
     }
 
     // Country is unknown - check if consent is given
+    // If no wallet connected, don't block - the consent modal will handle wallet connection
     if (!account) {
-      // No wallet connected - consent required
-      return { requiresConsent: true, consentHash, isLoading: false }
+      return { requiresConsent: false, consentHash, isLoading: false }
     }
 
     const consentKey: RwaConsentKey = { wallet: account, ipfsHash: consentHash }
