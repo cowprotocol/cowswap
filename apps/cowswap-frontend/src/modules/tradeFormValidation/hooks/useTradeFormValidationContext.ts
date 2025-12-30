@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 
+import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
 import { useIsOnline } from '@cowprotocol/common-hooks'
 import { useENSAddress } from '@cowprotocol/ens'
 import { useIsTradeUnsupported, useTryFindToken } from '@cowprotocol/tokens'
@@ -21,12 +22,14 @@ import { useTokenCustomTradeError } from './useTokenCustomTradeError'
 
 import { TradeFormValidationCommonContext } from '../types'
 
+// eslint-disable-next-line max-lines-per-function
 export function useTradeFormValidationContext(): TradeFormValidationCommonContext | null {
   const { account } = useWalletInfo()
   const derivedTradeState = useDerivedTradeState()
   const tradeQuote = useTradeQuote()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const isOnline = useIsOnline()
+  const { isLoading: isBalancesLoading } = useTokensBalances()
 
   const { inputCurrency, outputCurrency, recipient, tradeType } = derivedTradeState || {}
   const customTokenError = useTokenCustomTradeError(inputCurrency, outputCurrency, tradeQuote.error)
@@ -86,6 +89,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
       isProxySetupValid,
       customTokenError,
       isRestrictedForCountry,
+      isBalancesLoading,
     }
   }, [
     account,
@@ -102,6 +106,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     isRestrictedForCountry,
     isSafeReadonlyUser,
     isSupportedWallet,
+    isBalancesLoading,
     isSwapUnsupported,
     isWrapUnwrap,
     isProxySetupValid,
