@@ -37,9 +37,9 @@ export function useConsentAwareToggleList(): (list: ListState, enabled: boolean)
 
   return useCallback(
     (list: ListState, enabled: boolean) => {
-      // Only check consent when trying to enable (not disable)
+      // only check consent when trying to enable (not disable)
       if (enabled) {
-        // Already enabled, just toggle off
+        // already enabled, just toggle off
         baseToggleList(list, enabled)
         return
       }
@@ -50,7 +50,7 @@ export function useConsentAwareToggleList(): (list: ListState, enabled: boolean)
         const consentHash = restrictedLists.consentHashPerList[normalizedSource]
 
         if (consentHash) {
-          // List is restricted - check if consent exists
+          // list is restricted - check if consent exists
           let hasConsent = false
           if (account) {
             const consentKey: RwaConsentKey = { wallet: account, ipfsHash: consentHash }
@@ -59,11 +59,11 @@ export function useConsentAwareToggleList(): (list: ListState, enabled: boolean)
           }
 
           if (!hasConsent) {
-            // Need consent - open modal
+            // need consent - open modal
             openRwaConsentModal({
               consentHash,
               onImportSuccess: () => {
-                // After consent, toggle the list on
+                // after consent, toggle the list on
                 baseToggleList(list, enabled)
               },
             })
@@ -72,7 +72,7 @@ export function useConsentAwareToggleList(): (list: ListState, enabled: boolean)
         }
       }
 
-      // No consent required or consent already given
+      // no consent required or consent already given
       baseToggleList(list, enabled)
     },
     [baseToggleList, geoStatus.country, restrictedLists, account, consentCache, openRwaConsentModal],

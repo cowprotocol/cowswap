@@ -16,6 +16,7 @@ import {
 } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { t } from '@lingui/core/macro'
 import styled from 'styled-components/macro'
 
 import { Field } from 'legacy/state/types'
@@ -127,8 +128,9 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
   const { isBlocked: isListToImportBlocked } = useIsListBlocked(listToImport?.source, country)
   const { requiresConsent: listRequiresConsent } = useIsListRequiresConsent(listToImport?.source)
 
-  // block the list if country is blocked or if consent is required (unknown country, no consent)
-  const isListBlocked = isListToImportBlocked || listRequiresConsent
+  // without wallet: only block if country is restricted, otherwise list is always visible
+  // with wallet: block if country is restricted OR if consent is required (unknown country)
+  const isListBlocked = isListToImportBlocked || (!!account && listRequiresConsent)
 
   const openPoolPage = useCallback(
     (selectedPoolAddress: string) => {
@@ -199,9 +201,9 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
         }
 
         if (listToImport && !standalone) {
-          const listBlockReason = listRequiresConsent
-            ? 'This list requires consent before importing. Please connect your wallet.'
-            : undefined
+          // only show consent message when wallet is connected and consent is required
+          const listBlockReason =
+            account && listRequiresConsent ? t`This list requires consent before importing.` : undefined
 
           return (
             <ImportListModal
