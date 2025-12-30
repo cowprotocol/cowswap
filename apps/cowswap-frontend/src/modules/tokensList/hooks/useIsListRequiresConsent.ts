@@ -7,7 +7,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 import { getConsentFromCache, rwaConsentCacheAtom, RwaConsentKey, useGeoStatus } from 'modules/rwa'
 
 export interface ListConsentResult {
-  requiresConsent: Boolean
+  requiresConsent: boolean
   consentHash: string | null
   isLoading: boolean
 }
