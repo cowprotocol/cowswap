@@ -36,6 +36,7 @@ export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
   areCurrenciesLoading: boolean
   bothCurrenciesSet: boolean
   isChainIdUnsupported: boolean
+  isBridging?: boolean
   disabled?: boolean
   inputDisabled?: boolean
   tokenSelectorDisabled?: boolean
@@ -76,6 +77,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps): ReactNode {
     bothCurrenciesSet,
     showSetMax = false,
     maxBalance,
+    isBridging = false,
     inputDisabled = false,
     tokenSelectorDisabled = false,
     displayTokenName = false,
@@ -193,7 +195,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps): ReactNode {
       {balance && !disabled && (
         <styledEl.BalanceText>
           {isUsdValuesMode ? (
-            <FiatValue fiatValue={balanceUsdAmount} />
+            <FiatValue fiatValue={balanceUsdAmount} isBridging={isBridging} />
           ) : (
             <TokenAmount amount={balance} defaultValue="0" tokenSymbol={currency} />
           )}
@@ -276,7 +278,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps): ReactNode {
           <div>
             {amount && !isUsdValuesMode && (
               <styledEl.FiatAmountText>
-                <FiatValue priceImpactParams={priceImpactParams} fiatValue={fiatAmount} />
+                <FiatValue priceImpactParams={priceImpactParams} fiatValue={fiatAmount} isBridging={isBridging} />
               </styledEl.FiatAmountText>
             )}
           </div>

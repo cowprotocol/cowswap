@@ -82,7 +82,7 @@
     "@coinbase/wallet-sdk": "^3.3.0",
     "@cowprotocol/cms": "^0.11.0",
     "@cowprotocol/cow-runner-game": "^0.2.9",
-    "@cowprotocol/cow-sdk": "^7.2.8",
+    "@cowprotocol/cow-sdk": "^7.2.9",
     "@cowprotocol/sdk-bridging": "^1.1.2",
     "@cowprotocol/sdk-composable": "^0.1.23",
     "@cowprotocol/sdk-cow-shed": "^0.2.9",

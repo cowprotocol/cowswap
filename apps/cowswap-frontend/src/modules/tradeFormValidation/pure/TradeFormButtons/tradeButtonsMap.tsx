@@ -338,4 +338,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   [TradeFormValidation.ProxyAccountUnknown]: {
     text: <ProxyAccountUnknown />,
   },
+  [TradeFormValidation.RestrictedForCountry]: {
+    text: <Trans>This token is not available in your region</Trans>,
+  },
 }
