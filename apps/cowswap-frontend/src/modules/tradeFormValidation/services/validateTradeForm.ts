@@ -27,6 +27,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     isProxySetupValid,
     customTokenError,
     isRestrictedForCountry,
+    isBalancesLoading,
   } = context
 
   const {
@@ -142,7 +143,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     }
   }
 
-  if (!canPlaceOrderWithoutBalance) {
+  if (!canPlaceOrderWithoutBalance && !isBalancesLoading) {
     if (!inputCurrencyBalance) {
       validations.push(TradeFormValidation.BalancesNotLoaded)
     }

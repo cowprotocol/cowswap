@@ -72,6 +72,7 @@ export interface TradeFormValidationCommonContext {
   isProxySetupValid: boolean | null | undefined
   customTokenError?: string
   isRestrictedForCountry: boolean
+  isBalancesLoading: boolean
 }
 
 export interface TradeFormValidationContext extends TradeFormValidationCommonContext {}
