@@ -76,7 +76,7 @@ export { DEFAULT_TOKENS_LISTS } from './const/tokensLists'
 export { RWA_CONSENT_HASH } from './updaters/RestrictedTokensListUpdater'
 export { useIsAnyOfTokensOndo } from './hooks/lists/useIsAnyOfTokensOndo'
 export { useFilterBlockedLists } from './hooks/lists/useFilterBlockedLists'
-export { useIsListBlocked, normalizeListSource } from './hooks/lists/useIsListBlocked'
+export { useIsListBlocked, getSourceAsKey, getCountryAsKey } from './hooks/lists/useIsListBlocked'
 export { useRestrictedListInfo } from './hooks/lists/useRestrictedListInfo'
 
 // Types

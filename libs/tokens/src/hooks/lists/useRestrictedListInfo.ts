@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
-import { normalizeListSource } from './useIsListBlocked'
+import { getSourceAsKey } from './useIsListBlocked'
 
 import { restrictedListsAtom } from '../../state/restrictedTokens/restrictedTokensAtom'
 
@@ -19,16 +19,16 @@ export function useRestrictedListInfo(listSource: string | undefined): Restricte
       return null
     }
 
-    const normalizedSource = normalizeListSource(listSource)
-    const blockedCountries = restrictedLists.blockedCountriesPerList[normalizedSource]
-    const consentHash = restrictedLists.consentHashPerList[normalizedSource]
+    const sourceKey = getSourceAsKey(listSource)
+    const blockedCountries = restrictedLists.blockedCountriesPerList[sourceKey]
+    const consentHash = restrictedLists.consentHashPerList[sourceKey]
 
     if (!blockedCountries || !consentHash) {
       return null
     }
 
     return {
-      source: normalizedSource,
+      source: sourceKey,
       blockedCountries,
       consentHash,
     }

@@ -7,7 +7,7 @@ import { blockedListSourcesAtom } from './blockedListSourcesAtom'
 import { favoriteTokensAtom } from './favoriteTokensAtom'
 import { userAddedTokensAtom } from './userAddedTokensAtom'
 
-import { normalizeListSource } from '../../hooks/lists/useIsListBlocked'
+import { getSourceAsKey } from '../../hooks/lists/useIsListBlocked'
 import { TokensBySymbolState, TokensMap } from '../../types'
 import { lowerCaseTokensMap } from '../../utils/lowerCaseTokensMap'
 import { parseTokenInfo } from '../../utils/parseTokenInfo'
@@ -44,8 +44,8 @@ const tokensStateAtom = atom(async (get) => {
       .reduce<TokensState>(
         (acc, list) => {
           // Skip processing tokens from blocked lists (geo-blocked or consent required)
-          const normalizedSource = normalizeListSource(list.source)
-          if (blockedListSources.has(normalizedSource)) {
+          const sourceKey = getSourceAsKey(list.source)
+          if (blockedListSources.has(sourceKey)) {
             return acc
           }
 

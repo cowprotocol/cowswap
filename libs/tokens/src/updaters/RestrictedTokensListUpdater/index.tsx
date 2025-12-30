@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 import { getRestrictedTokenLists } from '@cowprotocol/core'
 import { TokenInfo } from '@cowprotocol/types'
 
-import { normalizeListSource } from '../../hooks/lists/useIsListBlocked'
+import { getSourceAsKey } from '../../hooks/lists/useIsListBlocked'
 import { useRestrictedTokensCache } from '../../hooks/useRestrictedTokensCache'
 import {
   getTokenId,
@@ -109,9 +109,9 @@ export function RestrictedTokensListUpdater({ isRwaGeoblockEnabled }: Restricted
 
         await Promise.all(
           restrictedLists.map(async (list) => {
-            const normalizedUrl = normalizeListSource(list.tokenListUrl)
-            blockedCountriesPerList[normalizedUrl] = list.restrictedCountries
-            consentHashPerList[normalizedUrl] = RWA_CONSENT_HASH
+            const urlKey = getSourceAsKey(list.tokenListUrl)
+            blockedCountriesPerList[urlKey] = list.restrictedCountries
+            consentHashPerList[urlKey] = RWA_CONSENT_HASH
 
             try {
               const tokens = await fetchTokenList(list.tokenListUrl)

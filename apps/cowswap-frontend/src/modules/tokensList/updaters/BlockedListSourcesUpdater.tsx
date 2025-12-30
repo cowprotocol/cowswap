@@ -1,7 +1,7 @@
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
-import { blockedListSourcesAtom, restrictedListsAtom } from '@cowprotocol/tokens'
+import { blockedListSourcesAtom, getCountryAsKey, restrictedListsAtom } from '@cowprotocol/tokens'
 
 import { useGeoStatus } from 'modules/rwa'
 
@@ -25,11 +25,11 @@ export function BlockedListSourcesUpdater(): null {
     // Only block when country is known and list is blocked for that country
     // When country is unknown, tokens should be visible (consent check happens at trade time)
     if (geoStatus.country) {
-      const countryUpper = geoStatus.country.toUpperCase()
+      const countryKey = getCountryAsKey(geoStatus.country)
 
-      for (const [normalizedSource, blockedCountries] of Object.entries(restrictedLists.blockedCountriesPerList)) {
-        if (blockedCountries.includes(countryUpper)) {
-          blockedSources.add(normalizedSource)
+      for (const [sourceKey, blockedCountries] of Object.entries(restrictedLists.blockedCountriesPerList)) {
+        if (blockedCountries.includes(countryKey)) {
+          blockedSources.add(sourceKey)
         }
       }
     }

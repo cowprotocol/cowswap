@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { RestrictedTokenInfo, useRestrictedToken } from '@cowprotocol/tokens'
+import { getCountryAsKey, RestrictedTokenInfo, useRestrictedToken } from '@cowprotocol/tokens'
 
 import { t } from '@lingui/core/macro'
 
@@ -38,10 +38,10 @@ export function useRestrictedTokenImportStatus(token: TokenWithLogo | undefined)
 
     // only block import if country is known and blocked
     if (geoStatus.country) {
-      const countryUpper = geoStatus.country.toUpperCase()
+      const countryKey = getCountryAsKey(geoStatus.country)
       const blockedCountries = new Set(restrictedInfo.restrictedCountries)
 
-      if (blockedCountries.has(countryUpper)) {
+      if (blockedCountries.has(countryKey)) {
         return {
           status: RestrictedTokenImportStatus.Blocked,
           restrictedInfo,

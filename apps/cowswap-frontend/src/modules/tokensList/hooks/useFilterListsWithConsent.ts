@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
-import { ListState, normalizeListSource, restrictedListsAtom, useFilterBlockedLists } from '@cowprotocol/tokens'
+import { getSourceAsKey, ListState, restrictedListsAtom, useFilterBlockedLists } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { getConsentFromCache, rwaConsentCacheAtom, RwaConsentKey, useGeoStatus } from 'modules/rwa'
@@ -37,8 +37,8 @@ export function useFilterListsWithConsent(lists: ListState[]): ListState[] {
     }
 
     return countryFilteredLists.filter((list) => {
-      const normalizedSource = normalizeListSource(list.source)
-      const consentHash = restrictedLists.consentHashPerList[normalizedSource]
+      const sourceKey = getSourceAsKey(list.source)
+      const consentHash = restrictedLists.consentHashPerList[sourceKey]
 
       if (!consentHash) {
         return true

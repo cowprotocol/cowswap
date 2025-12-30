@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai'
 import { useMemo } from 'react'
 
-import { normalizeListSource, restrictedListsAtom } from '@cowprotocol/tokens'
+import { getSourceAsKey, restrictedListsAtom } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { getConsentFromCache, rwaConsentCacheAtom, RwaConsentKey, useGeoStatus } from 'modules/rwa'
@@ -39,8 +39,8 @@ export function useIsListRequiresConsent(listSource: string | undefined): ListCo
       return { requiresConsent: false, consentHash: null, isLoading: true }
     }
 
-    const normalizedSource = normalizeListSource(listSource)
-    const consentHash = restrictedLists.consentHashPerList[normalizedSource]
+    const sourceKey = getSourceAsKey(listSource)
+    const consentHash = restrictedLists.consentHashPerList[sourceKey]
 
     // If list is not restricted, no consent required
     if (!consentHash) {

@@ -3,8 +3,12 @@ import { useMemo } from 'react'
 
 import { restrictedListsAtom } from '../../state/restrictedTokens/restrictedTokensAtom'
 
-export function normalizeListSource(source: string): string {
+export function getSourceAsKey(source: string): string {
   return source.toLowerCase().trim()
+}
+
+export function getCountryAsKey(country: string): string {
+  return country.toUpperCase()
 }
 
 export interface ListBlockedResult {
@@ -27,14 +31,13 @@ export function useIsListBlocked(listSource: string | undefined, country: string
       return { isBlocked: false, isLoading: false }
     }
 
-    const blockedCountries = restrictedLists.blockedCountriesPerList[normalizeListSource(listSource)]
+    const blockedCountries = restrictedLists.blockedCountriesPerList[getSourceAsKey(listSource)]
 
     if (!blockedCountries) {
       return { isBlocked: false, isLoading: false }
     }
 
-    const countryUpper = country.toUpperCase()
-    const isBlocked = blockedCountries.includes(countryUpper)
+    const isBlocked = blockedCountries.includes(getCountryAsKey(country))
     return { isBlocked, isLoading: false }
   }, [listSource, country, restrictedLists])
 }

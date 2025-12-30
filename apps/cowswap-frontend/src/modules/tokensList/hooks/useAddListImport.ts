@@ -1,7 +1,7 @@
 import { useAtomValue } from 'jotai'
 import { useCallback } from 'react'
 
-import { ListState, restrictedListsAtom, normalizeListSource } from '@cowprotocol/tokens'
+import { getSourceAsKey, ListState, restrictedListsAtom } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import {
@@ -30,8 +30,8 @@ export function useAddListImport(): (listToImport: ListState) => void {
         return
       }
 
-      const normalizedSource = normalizeListSource(listToImport.source)
-      const consentHash = restrictedLists.consentHashPerList[normalizedSource]
+      const sourceKey = getSourceAsKey(listToImport.source)
+      const consentHash = restrictedLists.consentHashPerList[sourceKey]
 
       // If list is not in restricted lists, proceed normally
       if (!consentHash) {

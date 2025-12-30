@@ -2,7 +2,7 @@ import { useAtomValue } from 'jotai'
 import { useCallback } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import { ListState, normalizeListSource, restrictedListsAtom, useToggleList } from '@cowprotocol/tokens'
+import { getSourceAsKey, ListState, restrictedListsAtom, useToggleList } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import {
@@ -46,8 +46,8 @@ export function useConsentAwareToggleList(): (list: ListState, enabled: boolean)
 
       // Trying to enable - check if consent is required
       if (!geoStatus.country && restrictedLists.isLoaded) {
-        const normalizedSource = normalizeListSource(list.source)
-        const consentHash = restrictedLists.consentHashPerList[normalizedSource]
+        const sourceKey = getSourceAsKey(list.source)
+        const consentHash = restrictedLists.consentHashPerList[sourceKey]
 
         if (consentHash) {
           // list is restricted - check if consent exists
