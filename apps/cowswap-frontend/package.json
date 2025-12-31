@@ -5,6 +5,10 @@
   "main": "index.js",
   "author": "",
   "license": "ISC",
+  "packageManager": "pnpm@10.27.0",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "patch-package": "npx patch-package",
     "cosmos:clear": "rm -rf ./public/cosmos",
