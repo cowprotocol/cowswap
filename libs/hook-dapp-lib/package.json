@@ -25,7 +25,7 @@
     "hook-dapp-lib"
   ],
   "dependencies": {
-    "@cowprotocol/iframe-transport": "^1.0.0"
+    "@cowprotocol/iframe-transport": "workspace:*"
   },
   "types": "./src/index.ts",
   "publishConfig": {

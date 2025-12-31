@@ -30,7 +30,7 @@
     "@cowprotocol/events": "workspace:*",
     "@cowprotocol/iframe-transport": "workspace:*",
     "@cowprotocol/types": "workspace:*",
-    "@cowprotocol/widget-lib": "^0.22.1",
+    "@cowprotocol/widget-lib": "workspace:*",
     "react": "19.1.2"
   },
   "types": "./src/index.ts",
