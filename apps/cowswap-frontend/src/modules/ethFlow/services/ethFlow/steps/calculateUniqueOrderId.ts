@@ -1,8 +1,8 @@
-import { CoWSwapEthFlow } from '@cowprotocol/abis'
 import { WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { MAX_VALID_TO_EPOCH } from '@cowprotocol/common-utils'
 import type { ContractsOrder as Order } from '@cowprotocol/cow-sdk'
 import { OrderSigningUtils } from '@cowprotocol/cow-sdk'
+import { CoWSwapEthFlow } from '@cowprotocol/cowswap-abis'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'

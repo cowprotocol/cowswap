@@ -8,9 +8,9 @@
   "scripts": {
     "patch-package": "npx patch-package",
     "cosmos:clear": "rm -rf ./public/cosmos",
-    "cosmos:run": "yarn run _cosmos:run",
+    "cosmos:run": "pnpm run _cosmos:run",
     "build:cosmos": "npx cross-env NODE_ENV=development npx cosmos-export",
-    "_cosmos:run": "yarn cosmos:clear && npx cosmos"
+    "_cosmos:run": "pnpm run cosmos:clear && npx cosmos"
   },
   "browser": {
     "crypto": false
@@ -27,7 +27,31 @@
       "last 1 safari version"
     ]
   },
-  "dependencies": {},
+  "dependencies": {
+    "@cowprotocol/cowswap-abis": "workspace:*",
+    "@cowprotocol/ui": "workspace:*",
+    "@cowprotocol/ui-utils": "workspace:*",
+    "@cowprotocol/widget-lib": "workspace:*",
+    "@cowprotocol/widget-react": "workspace:*",
+    "@cowprotocol/snackbars": "workspace:*",
+    "@cowprotocol/tokens": "workspace:*",
+    "@cowprotocol/wallet": "workspace:*",
+    "@cowprotocol/wallet-provider": "workspace:*",
+    "@cowprotocol/assets": "workspace:*",
+    "@cowprotocol/common-const": "workspace:*",
+    "@cowprotocol/common-utils": "workspace:*",
+    "@cowprotocol/events": "workspace:*",
+    "@cowprotocol/iframe-transport": "workspace:*",
+    "@cowprotocol/hook-dapp-lib": "workspace:*",
+    "@cowprotocol/types": "workspace:*",
+    "@cowprotocol/common-hooks": "workspace:*",
+    "@cowprotocol/ens": "workspace:*",
+    "@cowprotocol/core": "workspace:*",
+    "@cowprotocol/analytics": "workspace:*",
+    "@cowprotocol/permit-utils": "workspace:*",
+    "@cowprotocol/multicall": "workspace:*",
+    "@cowprotocol/balances-and-allowances": "workspace:*"
+  },
   "devDependencies": {},
   "nx": {}
 }

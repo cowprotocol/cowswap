@@ -1,5 +1,5 @@
-import { Erc20__factory } from '@cowprotocol/abis'
 import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Erc20__factory } from '@cowprotocol/cowswap-abis'
 import { Interface } from '@ethersproject/abi'
 import { BigNumber as EthersBigNumber } from '@ethersproject/bignumber'
 import { MaxUint256 } from '@ethersproject/constants'
