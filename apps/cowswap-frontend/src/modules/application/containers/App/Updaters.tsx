@@ -31,6 +31,7 @@ import {
   ProgressBarExecutingOrdersUpdater,
 } from 'modules/orderProgressBar'
 import { OrdersNotificationsUpdater } from 'modules/orders'
+import { GeoDataUpdater } from 'modules/rwa'
 import { BlockedListSourcesUpdater, useSourceChainId } from 'modules/tokensList'
 import { TradeType, useTradeTypeInfo } from 'modules/trade'
 import { UsdPricesUpdater } from 'modules/usdAmount'
@@ -116,6 +117,7 @@ export function Updaters(): ReactNode {
       />
       <RestrictedTokensListUpdater isRwaGeoblockEnabled={!!isRwaGeoblockEnabled} />
       <BlockedListSourcesUpdater />
+      <GeoDataUpdater />
       <TokensListsTagsUpdater />
 
       <WidgetTokensUpdater />
