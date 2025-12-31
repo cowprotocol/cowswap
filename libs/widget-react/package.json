@@ -26,7 +26,12 @@
     "react"
   ],
   "dependencies": {
-    "@cowprotocol/widget-lib": "^0.22.1"
+    "@cowprotocol/cow-sdk": "^7.2.9",
+    "@cowprotocol/events": "workspace:*",
+    "@cowprotocol/iframe-transport": "workspace:*",
+    "@cowprotocol/types": "workspace:*",
+    "@cowprotocol/widget-lib": "^0.22.1",
+    "react": "19.1.2"
   },
   "types": "./src/index.ts",
   "publishConfig": {

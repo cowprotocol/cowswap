@@ -3,8 +3,11 @@
   "version": "1.0.1",
   "type": "module",
   "dependencies": {
-    "ethers": "^5.7.2",
     "@1inch/permit-signed-approvals-utils": "^1.4.10",
+    "@cowprotocol/cow-sdk": "^7.2.9",
+    "@cowprotocol/hook-dapp-lib": "workspace:*",
+    "ethers": "^5.7.2",
+    "ms.macro": "^2.0.0",
     "tslib": "^2.6.1"
   },
   "module": "./index.js",

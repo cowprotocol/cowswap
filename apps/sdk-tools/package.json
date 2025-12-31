@@ -21,6 +21,11 @@
       "last 1 safari version"
     ]
   },
-  "dependencies": {},
+  "dependencies": {
+    "@cowprotocol/cow-sdk": "^7.2.9",
+    "react": "19.1.2",
+    "react-dom": "19.1.2",
+    "styled-components": "5.3.11"
+  },
   "devDependencies": {}
 }

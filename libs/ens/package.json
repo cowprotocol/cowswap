@@ -22,5 +22,13 @@
         "require": "./index.js"
       }
     }
+  },
+  "dependencies": {
+    "@cowprotocol/common-const": "workspace:*",
+    "@cowprotocol/common-utils": "workspace:*",
+    "@cowprotocol/cow-sdk": "^7.2.9",
+    "@cowprotocol/wallet-provider": "workspace:*",
+    "react": "19.1.2",
+    "swr": "^2.3.3"
   }
 }

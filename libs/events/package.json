@@ -25,6 +25,8 @@
     "dex"
   ],
   "dependencies": {
+    "@cowprotocol/cow-sdk": "^7.2.9",
+    "@cowprotocol/sdk-bridging": "^1.1.2",
     "@cowprotocol/types": "^2.1.1"
   },
   "types": "./src/index.ts",

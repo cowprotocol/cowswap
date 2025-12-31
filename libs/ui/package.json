@@ -22,5 +22,34 @@
         "require": "./index.js"
       }
     }
+  },
+  "dependencies": {
+    "@cowprotocol/analytics": "workspace:*",
+    "@cowprotocol/assets": "workspace:*",
+    "@cowprotocol/common-const": "workspace:*",
+    "@cowprotocol/common-hooks": "workspace:*",
+    "@cowprotocol/common-utils": "workspace:*",
+    "@cowprotocol/core": "workspace:*",
+    "@cowprotocol/cow-sdk": "^7.2.9",
+    "@cowprotocol/types": "workspace:*",
+    "@cowprotocol/ui-utils": "workspace:*",
+    "@lingui/core": "^5.4.1",
+    "@lingui/react": "^5.4.1",
+    "@popperjs/core": "^2.4.4",
+    "@reach/menu-button": "^0.18.0",
+    "@reach/portal": "^0.18.0",
+    "@uniswap/sdk-core": "^3.0.1",
+    "color2k": "^2.0.2",
+    "jotai": "2.2.0",
+    "next": "15.2.8",
+    "polished": "^4.0.5",
+    "react": "19.1.2",
+    "react-confetti": "^6.1.0",
+    "react-country-flag": "^3.1.0",
+    "react-feather": "^2.0.10",
+    "react-inlinesvg": "^4.1.5",
+    "react-popper": "^2.2.3",
+    "rebass": "^4.0.7",
+    "styled-components": "5.3.11"
   }
 }

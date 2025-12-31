@@ -23,7 +23,10 @@
     "cowswap",
     "dex"
   ],
-  "dependencies": {},
+  "dependencies": {
+    "@cowprotocol/types": "workspace:*",
+    "eventemitter3": "^4.0.0"
+  },
   "types": "./src/index.ts",
   "publishConfig": {
     "main": "./index.js",

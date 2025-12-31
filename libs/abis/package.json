@@ -22,5 +22,8 @@
         "require": "./index.js"
       }
     }
+  },
+  "dependencies": {
+    "ethers": "5.7.2"
   }
 }

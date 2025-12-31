@@ -22,5 +22,26 @@
         "require": "./index.js"
       }
     }
+  },
+  "dependencies": {
+    "@cowprotocol/common-const": "workspace:*",
+    "@cowprotocol/common-hooks": "workspace:*",
+    "@cowprotocol/common-utils": "workspace:*",
+    "@cowprotocol/core": "workspace:*",
+    "@cowprotocol/cow-sdk": "^7.2.9",
+    "@cowprotocol/multicall": "workspace:*",
+    "@cowprotocol/tokens": "workspace:*",
+    "@cowprotocol/types": "workspace:*",
+    "@cowprotocol/wallet": "workspace:*",
+    "@cowprotocol/wallet-provider": "workspace:*",
+    "@uniswap/sdk-core": "^3.0.1",
+    "jotai": "2.2.0",
+    "ms.macro": "^2.0.0",
+    "react": "19.1.2",
+    "swr": "^2.3.3"
+  },
+  "devDependencies": {
+    "@testing-library/react": "16.3.0",
+    "jest-fetch-mock": "^3.0.3"
   }
 }

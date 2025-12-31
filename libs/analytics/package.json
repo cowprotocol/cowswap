@@ -22,5 +22,14 @@
         "require": "./index.js"
       }
     }
+  },
+  "dependencies": {
+    "@cowprotocol/common-hooks": "workspace:*",
+    "@cowprotocol/common-utils": "workspace:*",
+    "@cowprotocol/cow-sdk": "^7.2.9",
+    "@cowprotocol/events": "workspace:*",
+    "react": "19.1.2",
+    "react-router": "7.5.2",
+    "web-vitals": "^2.1.4"
   }
 }
