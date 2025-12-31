@@ -112,6 +112,11 @@ function calculateDerivedHDKeyInfos(
 function addressOfHDKey(hdKey: HDNode): string {
   const shouldSanitizePublicKey = true
   const derivedPublicKey = hdKey.publicKey
+
+  if (!derivedPublicKey) {
+    throw new Error('DerivedPublic key is missing')
+  }
+
   const ethereumAddressUnprefixed = publicToAddress(derivedPublicKey, shouldSanitizePublicKey).toString('hex')
 
   return '0x' + ethereumAddressUnprefixed.toLowerCase()
