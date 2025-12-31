@@ -1,4 +1,3 @@
-/* eslint-disable */
 export default {
   displayName: 'balances-and-allowances',
   preset: '../../jest.preset.js',

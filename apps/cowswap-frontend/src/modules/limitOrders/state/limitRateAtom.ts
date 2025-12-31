@@ -37,5 +37,5 @@ export const initLimitRateState = () => ({
 })
 
 export const { atom: limitRateAtom, updateAtom: updateLimitRateAtom } = atomWithPartialUpdate(
-  atom<LimitRateState>(initLimitRateState())
+  atom<LimitRateState>(initLimitRateState()),
 )

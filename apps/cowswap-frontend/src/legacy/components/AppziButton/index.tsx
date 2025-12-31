@@ -1,11 +1,11 @@
 import { useCallback } from 'react'
 
-import FeedbackIcon from '@cowprotocol/assets/cow-swap/feedback.svg'
 import { Media } from '@cowprotocol/ui'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
 import { isAppziEnabled, openFeedbackAppzi } from 'appzi'
+import FeedbackIcon from 'assets/cow-swap/feedback.svg'
 import { transparentize } from 'color2k'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'

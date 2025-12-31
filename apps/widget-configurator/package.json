@@ -23,7 +23,6 @@
   },
   "dependencies": {
     "@cowprotocol/analytics": "workspace:*",
-    "@cowprotocol/assets": "workspace:*",
     "@cowprotocol/common-const": "workspace:*",
     "@cowprotocol/common-hooks": "workspace:*",
     "@cowprotocol/cow-sdk": "^7.2.9",

@@ -1,9 +1,9 @@
-import EXPERIMENT_ICON from '@cowprotocol/assets/cow-swap/experiment.svg'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { BadgeTypes } from '@cowprotocol/ui'
 
 import { MessageDescriptor } from '@lingui/core'
 import { msg } from '@lingui/core/macro'
+import EXPERIMENT_ICON from 'assets/cow-swap/experiment.svg'
 
 export const TRADE_WIDGET_PREFIX = isInjectedWidget() ? '/widget' : ''
 

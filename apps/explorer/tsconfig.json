@@ -19,7 +19,6 @@
       "@cowprotocol/ui-utils": ["../../../libs/ui-utils/src/index.ts"],
       "@cowprotocol/abis": ["../../../libs/abis/src/index.ts"],
       "@cowprotocol/analytics": ["../../../libs/analytics/src/index.ts"],
-      "@cowprotocol/assets/*": ["../../../libs/assets/src/*"],
       "@cowprotocol/types": ["../../../libs/types/src/index.ts"],
       "@cowprotocol/hook-dapp-lib": ["../../../libs/hook-dapp-lib/src/index.ts"],
       "@cowprotocol/iframe-transport": ["../../../libs/iframe-transport/src/index.ts"],

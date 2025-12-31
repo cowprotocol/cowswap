@@ -1,9 +1,9 @@
 import { ReactNode } from 'react'
 
-import RefundIcon from '@cowprotocol/assets/cow-swap/icon-refund.svg'
 import { RECEIVED_LABEL } from '@cowprotocol/common-const'
 
 import { Trans, useLingui } from '@lingui/react/macro'
+import RefundIcon from 'assets/cow-swap/icon-refund.svg'
 
 import { ConfirmDetailsItem, ReceiveAmountTitle } from 'modules/trade'
 

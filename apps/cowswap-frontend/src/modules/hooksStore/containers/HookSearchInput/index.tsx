@@ -1,7 +1,7 @@
-import IMG_CLOSE_ICON from '@cowprotocol/assets/cow-swap/x.svg'
 import { SearchInput } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
+import IMG_CLOSE_ICON from 'assets/cow-swap/x.svg'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 

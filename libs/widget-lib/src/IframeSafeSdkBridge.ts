@@ -1,7 +1,10 @@
 export class IframeSafeSdkBridge {
   forwardSdkMessage: (event: MessageEvent<unknown>) => void
 
-  constructor(private appWindow: Window, private iframeWidow: Window) {
+  constructor(
+    private appWindow: Window,
+    private iframeWidow: Window,
+  ) {
     this.forwardSdkMessage = (event: MessageEvent<unknown>) => {
       if (!isSafeMessage(event.data)) {
         return

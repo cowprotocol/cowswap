@@ -1,6 +1,5 @@
 import { ReactNode, useCallback, useMemo } from 'react'
 
-import EtherscanImage from '@cowprotocol/assets/cow-swap/etherscan-icon.svg'
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { useTheme } from '@cowprotocol/common-hooks'
 import { getBlockExplorerUrl, getIsNativeToken, isFractionFalsy } from '@cowprotocol/common-utils'
@@ -13,6 +12,7 @@ import { CurrencyAmount, MaxUint256, Token } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
+import EtherscanImage from 'assets/cow-swap/etherscan-icon.svg'
 import SVG from 'react-inlinesvg'
 import { Link } from 'react-router'
 
@@ -115,10 +115,10 @@ export const TokensTableRow = ({
     // TODO: make a separate hook out of this and add GA
     try {
       openApproveModal(tokenData?.symbol)
-      
+
       const symbol = tokenData?.symbol || t`token`
       await approveCallback(amountToApprove, t`Approve ${symbol}`)
-      
+
       // TODO: Replace any with proper type definitions
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {

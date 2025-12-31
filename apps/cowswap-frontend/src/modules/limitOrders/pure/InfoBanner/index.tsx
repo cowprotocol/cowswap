@@ -1,7 +1,7 @@
-import AlertIcon from '@cowprotocol/assets/cow-swap/alert-circle.svg'
 import { ClosableBanner } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
+import AlertIcon from 'assets/cow-swap/alert-circle.svg'
 import SVG from 'react-inlinesvg'
 import { Link as ReactRouterLink } from 'react-router'
 

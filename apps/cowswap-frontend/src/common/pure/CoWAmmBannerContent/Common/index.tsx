@@ -1,8 +1,8 @@
 import { ReactNode } from 'react'
 
-import ICON_STAR from '@cowprotocol/assets/cow-swap/star-shine.svg'
 import { UI } from '@cowprotocol/ui'
 
+import ICON_STAR from 'assets/cow-swap/star-shine.svg'
 import SVG from 'react-inlinesvg'
 
 import { useAutoFitText } from '../../../hooks/useAutoFitText'

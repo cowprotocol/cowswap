@@ -1,6 +1,5 @@
-import ShieldImage from '@cowprotocol/assets/cow-swap/protection.svg'
-
 import { Trans, useLingui } from '@lingui/react/macro'
+import ShieldImage from 'assets/cow-swap/protection.svg'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 

@@ -1,11 +1,10 @@
 import React, { ReactNode, useState } from 'react'
 
-import CarretIcon from '@cowprotocol/assets/cow-swap/carret-down.svg'
-
 import SVG from 'react-inlinesvg'
 
 import { ClickableWrapper, StyledCollapsibleBanner, StyledToggleArrow, ToggleIconContainer } from './styled'
 
+import CarretIcon from '../../assets/cow-swap/carret-down.svg'
 import { CollapsibleInlineBannerProps } from '../InlineBanner/shared/types'
 
 export function CollapsibleInlineBanner({
@@ -20,7 +19,7 @@ export function CollapsibleInlineBanner({
 
   const toggle = (): void => {
     if (!isCollapsible) return
-    setIsExpanded(state => {
+    setIsExpanded((state) => {
       onToggle?.(!state)
       return !state
     })

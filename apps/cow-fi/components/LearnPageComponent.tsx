@@ -1,10 +1,13 @@
 'use client'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
 import { Font, Media, UI } from '@cowprotocol/ui'
 
+import { CowFiCategory } from 'src/common/analytics/types'
 import styled from 'styled-components/macro'
+
+import { useLazyLoadImages } from '../hooks/useLazyLoadImages'
+import IMG_ICON_BULB_COW from '../src/assets/images/icon-bulb-cow.svg'
 
 import { ArrowButton } from '@/components/ArrowButton'
 import { CategoryLinks } from '@/components/CategoryLinks'
@@ -34,9 +37,6 @@ import {
   TopicList,
   TopicTitle,
 } from '@/styles/styled'
-import { CowFiCategory } from 'src/common/analytics/types'
-
-import { useLazyLoadImages } from '../hooks/useLazyLoadImages'
 
 const PODCASTS = [
   {

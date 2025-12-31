@@ -1,14 +1,17 @@
 'use client'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
-import IMG_ICON_CROWN_COW from '@cowprotocol/assets/images/icon-crown-cow.svg'
-import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
-import IMG_COWAMM_HERO from '@cowprotocol/assets/images/image-cowamm-hero.svg'
-import IMG_COWAMM_PASSIVE from '@cowprotocol/assets/images/image-cowamm-passive.svg'
-import IMG_COWAMM_RAISING from '@cowprotocol/assets/images/image-cowamm-raising.svg'
-import IMG_COWAMM_REKT from '@cowprotocol/assets/images/image-cowamm-rekt.svg'
 import { Color, ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
+
+import { CowFiCategory } from 'src/common/analytics/types'
+
+import IMG_ICON_BULB_COW from '../../../src/assets/images/icon-bulb-cow.svg'
+import IMG_ICON_CROWN_COW from '../../../src/assets/images/icon-crown-cow.svg'
+import IMG_ICON_FAQ from '../../../src/assets/images/icon-faq.svg'
+import IMG_COWAMM_HERO from '../../../src/assets/images/image-cowamm-hero.svg'
+import IMG_COWAMM_PASSIVE from '../../../src/assets/images/image-cowamm-passive.svg'
+import IMG_COWAMM_RAISING from '../../../src/assets/images/image-cowamm-raising.svg'
+import IMG_COWAMM_REKT from '../../../src/assets/images/image-cowamm-rekt.svg'
 
 import FAQ from '@/components/FAQ'
 import LazySVG from '@/components/LazySVG'
@@ -37,7 +40,6 @@ import {
   TopicList,
   TopicTitle,
 } from '@/styles/styled'
-import { CowFiCategory } from 'src/common/analytics/types'
 
 export default function Page() {
   const analytics = useCowAnalytics()

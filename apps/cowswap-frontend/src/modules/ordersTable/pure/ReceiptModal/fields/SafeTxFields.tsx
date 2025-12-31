@@ -1,7 +1,7 @@
-import safeLogo from '@cowprotocol/assets/cow-swap/safe-logo.svg'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { t } from '@lingui/core/macro'
+import safeLogo from 'assets/cow-swap/safe-logo.svg'
 import styled from 'styled-components/macro'
 
 import { SafeWalletLink } from 'common/pure/SafeWalletLink'

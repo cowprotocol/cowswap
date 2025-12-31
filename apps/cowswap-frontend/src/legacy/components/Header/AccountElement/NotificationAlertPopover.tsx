@@ -1,11 +1,11 @@
 import { ReactNode, RefObject, useEffect, useRef } from 'react'
 
-import ICON_BELL_ALERT from '@cowprotocol/assets/images/icon-bell-alert.svg?url'
 import { Command } from '@cowprotocol/types'
 import { ButtonPrimary, Media, PopoverMobileMode, Tooltip, UI } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
+import ICON_BELL_ALERT from 'assets/images/icon-bell-alert.svg?url'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 

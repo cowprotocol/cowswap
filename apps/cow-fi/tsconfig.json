@@ -15,7 +15,6 @@
       "@cowprotocol/types": ["../../libs/types/src/index.ts"],
       "@cowprotocol/ui": ["../../libs/ui/src/index.ts"],
       "@cowprotocol/ui-utils": ["../../libs/ui-utils/src/index.ts"],
-      "@cowprotocol/assets/*": ["../../libs/assets/src/*"],
       "@cowprotocol/core": ["../../libs/core/src/index.ts"],
       "@cowprotocol/analytics": ["../../libs/analytics/src/index.ts"],
       "@cowprotocol/common-utils": ["../../libs/common-utils/src/index.ts"],

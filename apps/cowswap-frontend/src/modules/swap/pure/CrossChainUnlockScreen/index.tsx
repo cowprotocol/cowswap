@@ -1,10 +1,10 @@
 import { ReactNode } from 'react'
 
-import CROSS_CHAIN_ICONS from '@cowprotocol/assets/cross-chain-icons.svg'
 import { Command } from '@cowprotocol/types'
 import { ButtonPrimary } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
+import CROSS_CHAIN_ICONS from 'assets/cross-chain-icons.svg'
 import SVG from 'react-inlinesvg'
 import { useTheme } from 'styled-components'
 
@@ -21,7 +21,9 @@ export function CrossChainUnlockScreen({ handleUnlock }: CrossChainUnlockScreenP
     <>
       <styledEl.Container darkMode={darkMode}>
         <styledEl.Content>
-          <styledEl.Title><Trans>Cross-chain swaps are here</Trans></styledEl.Title>
+          <styledEl.Title>
+            <Trans>Cross-chain swaps are here</Trans>
+          </styledEl.Title>
           <styledEl.Subtitle>
             <Trans>
               Mooove between <br /> any chain, hassle-free

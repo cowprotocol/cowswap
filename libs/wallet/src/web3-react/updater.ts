@@ -69,7 +69,7 @@ function useWalletDetails(account?: string, standaloneMode?: boolean): WalletDet
 }
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+
 function useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
   const { provider } = useWeb3React()
   const { account, chainId } = walletInfo
@@ -77,7 +77,7 @@ function useSafeInfo(walletInfo: WalletInfo): GnosisSafeInfo | undefined {
   const safeAppsSdk = useSafeAppsSdk()
 
   // TODO: Break down this large function into smaller functions
-  // eslint-disable-next-line max-lines-per-function
+
   useEffect(() => {
     // TODO: Add proper return type annotation
     // eslint-disable-next-line @typescript-eslint/explicit-function-return-type

@@ -1,5 +1,4 @@
-import IMAGE_ICON_SETTINGS_ALT from '@cowprotocol/assets/images/icon-settings-alt.svg'
-
+import IMAGE_ICON_SETTINGS_ALT from 'assets/images/icon-settings-alt.svg'
 import SVG from 'react-inlinesvg'
 
 import { SettingsButtonIcon } from './styled'

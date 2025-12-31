@@ -1,13 +1,13 @@
 import { ReactNode, useMemo } from 'react'
 
-import Checkmark from '@cowprotocol/assets/cow-swap/checkmark.svg'
-import Exclamation from '@cowprotocol/assets/cow-swap/exclamation.svg'
-import Finish from '@cowprotocol/assets/cow-swap/finish.svg'
-import Refund from '@cowprotocol/assets/cow-swap/refund.svg'
 import { UI } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
+import Checkmark from 'assets/cow-swap/checkmark.svg'
+import Exclamation from 'assets/cow-swap/exclamation.svg'
+import Finish from 'assets/cow-swap/finish.svg'
+import Refund from 'assets/cow-swap/refund.svg'
 import styled from 'styled-components/macro'
 
 import { SmartOrderStatus } from '../constants'

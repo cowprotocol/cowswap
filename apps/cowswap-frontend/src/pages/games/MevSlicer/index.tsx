@@ -1,9 +1,9 @@
-import ninjaCowImg from '@cowprotocol/assets/cow-swap/ninja-cow.png'
 import { PAGE_TITLES } from '@cowprotocol/common-const'
 import { ButtonPrimary } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans, useLingui } from '@lingui/react/macro'
+import ninjaCowImg from 'assets/cow-swap/ninja-cow.png'
 import styled from 'styled-components/macro'
 
 import { PageTitle } from 'modules/application/containers/PageTitle'

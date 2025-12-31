@@ -6,7 +6,7 @@ import {
   generatePermitHook,
   getPermitUtilsInstance,
   isSupportedPermitInfo,
-  PermitHookData
+  PermitHookData,
 } from '@cowprotocol/permit-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'

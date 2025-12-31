@@ -1,12 +1,12 @@
-import ICON_CHECK_ICON from '@cowprotocol/assets/cow-swap/check-singular.svg'
-import ICON_GRID from '@cowprotocol/assets/cow-swap/grid.svg'
-import TenderlyLogo from '@cowprotocol/assets/cow-swap/tenderly-logo.svg'
-import ICON_X from '@cowprotocol/assets/cow-swap/x.svg'
 import { CowHookDetails } from '@cowprotocol/hook-dapp-lib'
 import { InfoTooltip } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans, useLingui } from '@lingui/react/macro'
+import ICON_CHECK_ICON from 'assets/cow-swap/check-singular.svg'
+import ICON_GRID from 'assets/cow-swap/grid.svg'
+import TenderlyLogo from 'assets/cow-swap/tenderly-logo.svg'
+import ICON_X from 'assets/cow-swap/x.svg'
 import { Edit2, Trash2, ExternalLink as ExternalLinkIcon, RefreshCw } from 'react-feather'
 import SVG from 'react-inlinesvg'
 

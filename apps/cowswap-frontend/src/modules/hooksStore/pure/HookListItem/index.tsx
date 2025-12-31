@@ -1,11 +1,11 @@
 import { ReactNode } from 'react'
 
-import ICON_INFO from '@cowprotocol/assets/cow-swap/info.svg'
 import { HookDappWalletCompatibility } from '@cowprotocol/hook-dapp-lib'
 import { Command } from '@cowprotocol/types'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
+import ICON_INFO from 'assets/cow-swap/info.svg'
 import SVG from 'react-inlinesvg'
 
 import * as styled from './styled'

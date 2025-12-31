@@ -25,11 +25,7 @@ export function BannerIcon({
   if (hideIcon) return null
 
   if (customIcon) {
-    return typeof customIcon === 'string' ? (
-      <SVG src={customIcon} width={iconSize} height={iconSize} />
-    ) : (
-      customIcon
-    )
+    return typeof customIcon === 'string' ? <SVG src={customIcon} width={iconSize} height={iconSize} /> : customIcon
   }
 
   if (colorEnums.icon) {

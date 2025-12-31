@@ -1,16 +1,16 @@
 import { ReactNode } from 'react'
 
-import OrderCancelledImage from '@cowprotocol/assets/cow-swap/order-cancelled.svg'
-import OrderCheckImage from '@cowprotocol/assets/cow-swap/order-check.svg'
-import OrderExpiredImage from '@cowprotocol/assets/cow-swap/order-expired.svg'
-import OrderOpenImage from '@cowprotocol/assets/cow-swap/order-open.svg'
-import PresignaturePendingImage from '@cowprotocol/assets/cow-swap/order-presignature-pending.svg'
 import { ExplorerDataType, getExplorerLink } from '@cowprotocol/common-utils'
 import { getSafeWebUrl } from '@cowprotocol/core'
 import { Command } from '@cowprotocol/types'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
+import OrderCancelledImage from 'assets/cow-swap/order-cancelled.svg'
+import OrderCheckImage from 'assets/cow-swap/order-check.svg'
+import OrderExpiredImage from 'assets/cow-swap/order-expired.svg'
+import OrderOpenImage from 'assets/cow-swap/order-open.svg'
+import PresignaturePendingImage from 'assets/cow-swap/order-presignature-pending.svg'
 import { Info } from 'react-feather'
 import SVG from 'react-inlinesvg'
 

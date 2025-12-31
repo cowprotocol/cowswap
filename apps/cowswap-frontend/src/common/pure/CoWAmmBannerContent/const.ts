@@ -1,8 +1,9 @@
-import ICON_CURVE from '@cowprotocol/assets/cow-swap/icon-curve.svg'
-import ICON_PANCAKESWAP from '@cowprotocol/assets/cow-swap/icon-pancakeswap.svg'
-import ICON_SUSHISWAP from '@cowprotocol/assets/cow-swap/icon-sushi.svg'
-import ICON_UNISWAP from '@cowprotocol/assets/cow-swap/icon-uni.svg'
 import { LpTokenProvider } from '@cowprotocol/types'
+
+import ICON_CURVE from 'assets/cow-swap/icon-curve.svg'
+import ICON_PANCAKESWAP from 'assets/cow-swap/icon-pancakeswap.svg'
+import ICON_SUSHISWAP from 'assets/cow-swap/icon-sushi.svg'
+import ICON_UNISWAP from 'assets/cow-swap/icon-uni.svg'
 
 export const LP_PROVIDER_NAMES: Record<LpTokenProvider, string> = {
   [LpTokenProvider.UNIV2]: 'UNI-V2',

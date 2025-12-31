@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react'
 
-import iconCompleted from '@cowprotocol/assets/cow-swap/check.svg'
 import { UI } from '@cowprotocol/ui'
 
 import { MessageDescriptor } from '@lingui/core'
 import { msg } from '@lingui/core/macro'
 import { Trans, useLingui } from '@lingui/react/macro'
+import iconCompleted from 'assets/cow-swap/check.svg'
 import SVG from 'react-inlinesvg'
 
 import { useIsDarkMode } from 'legacy/state/user/hooks'

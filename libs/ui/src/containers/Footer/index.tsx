@@ -1,12 +1,6 @@
 import { ReactNode, useRef, useState } from 'react'
 
 import { Category, toGtmEvent } from '@cowprotocol/analytics'
-import IMG_ICON_ARROW_RIGHT_CIRCULAR from '@cowprotocol/assets/images/arrow-right-circular.svg'
-import IMG_ICON_SOCIAL_DISCORD from '@cowprotocol/assets/images/icon-social-discord.svg'
-import IMG_ICON_SOCIAL_FORUM from '@cowprotocol/assets/images/icon-social-forum.svg'
-import IMG_ICON_SOCIAL_GITHUB from '@cowprotocol/assets/images/icon-social-github.svg'
-import IMG_ICON_SOCIAL_SNAPSHOT from '@cowprotocol/assets/images/icon-social-snapshot.svg'
-import IMG_ICON_SOCIAL_X from '@cowprotocol/assets/images/icon-social-x.svg'
 import { useTheme } from '@cowprotocol/common-hooks'
 
 import SVG from 'react-inlinesvg'
@@ -32,6 +26,12 @@ import {
   ToggleFooterButton,
 } from './styled'
 
+import IMG_ICON_ARROW_RIGHT_CIRCULAR from '../../assets/images/arrow-right-circular.svg'
+import IMG_ICON_SOCIAL_DISCORD from '../../assets/images/icon-social-discord.svg'
+import IMG_ICON_SOCIAL_FORUM from '../../assets/images/icon-social-forum.svg'
+import IMG_ICON_SOCIAL_GITHUB from '../../assets/images/icon-social-github.svg'
+import IMG_ICON_SOCIAL_SNAPSHOT from '../../assets/images/icon-social-snapshot.svg'
+import IMG_ICON_SOCIAL_X from '../../assets/images/icon-social-x.svg'
 import { UI } from '../../enum'
 import { MenuItem } from '../../pure/MenuBar'
 import { ProductLogo, ProductVariant } from '../../pure/ProductLogo'

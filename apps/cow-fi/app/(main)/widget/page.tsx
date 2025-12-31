@@ -1,10 +1,13 @@
 'use client'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import IMG_ICON_GHOST from '@cowprotocol/assets/images/icon-ghost.svg'
-import IMG_ICON_OWL from '@cowprotocol/assets/images/icon-owl.svg'
 import { Font, ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 import { CowSwapWidget, CowSwapWidgetParams } from '@cowprotocol/widget-react'
+
+import { CowFiCategory } from 'src/common/analytics/types'
+
+import IMG_ICON_GHOST from '../../../src/assets/images/icon-ghost.svg'
+import IMG_ICON_OWL from '../../../src/assets/images/icon-owl.svg'
 
 import LazySVG from '@/components/LazySVG'
 import { Link, LinkType } from '@/components/Link'
@@ -31,7 +34,6 @@ import {
   WidgetContainer,
   HeroButtonWrapper,
 } from '@/styles/styled'
-import { CowFiCategory } from 'src/common/analytics/types'
 
 const FEATURE_ITEMS = [
   'Live styling configurator',

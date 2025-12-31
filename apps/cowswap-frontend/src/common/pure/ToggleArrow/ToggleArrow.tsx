@@ -1,8 +1,7 @@
 import React from 'react'
 
-import CarretIcon from '@cowprotocol/assets/cow-swap/carret-down.svg'
-
 import { t } from '@lingui/core/macro'
+import CarretIcon from 'assets/cow-swap/carret-down.svg'
 import SVG from 'react-inlinesvg'
 
 import { StyledToggleArrow } from './styled'

@@ -1,6 +1,5 @@
 import { ReactNode } from 'react'
 
-import savingsIcon from '@cowprotocol/assets/cow-swap/savings.svg'
 import { MINIMUM_ETH_FLOW_SLIPPAGE, PERCENTAGE_PRECISION } from '@cowprotocol/common-const'
 import { Command } from '@cowprotocol/types'
 import { ButtonPrimary } from '@cowprotocol/ui'
@@ -8,6 +7,7 @@ import { Currency, Token } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
+import savingsIcon from 'assets/cow-swap/savings.svg'
 import { ChevronDown, ChevronUp } from 'react-feather'
 import SVG from 'react-inlinesvg'
 

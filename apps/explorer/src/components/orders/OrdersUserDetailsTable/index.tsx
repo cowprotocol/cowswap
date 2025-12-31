@@ -119,7 +119,7 @@ const HiddenOrdersLegend = styled.div`
 
 // TODO: Break down this large function into smaller functions
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, complexity
+
 const RowOrder: React.FC<RowProps> = ({ order, isPriceInverted, showCanceledAndExpired, showPreSigning }) => {
   const { creationDate, buyToken, buyAmount, sellToken, sellAmount, kind, partiallyFilled, uid, filledPercentage } =
     order

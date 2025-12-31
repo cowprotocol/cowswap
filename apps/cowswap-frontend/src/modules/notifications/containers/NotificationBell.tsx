@@ -1,9 +1,9 @@
 import React from 'react'
 
-import ICON_NOTIFICATION from '@cowprotocol/assets/images/notification.svg'
 import { Command } from '@cowprotocol/types'
 import { UI } from '@cowprotocol/ui'
 
+import ICON_NOTIFICATION from 'assets/images/notification.svg'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 

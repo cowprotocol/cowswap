@@ -45,13 +45,13 @@ export function useTransactionAdder(): TransactionAdder {
             chainId,
             ...addTransactionParams,
             nonce,
-          })
+          }),
         )
       } catch (e) {
         console.error('Cannot add a transaction', e)
       }
     },
-    [dispatch, chainId, account, isSafeWallet, provider]
+    [dispatch, chainId, account, isSafeWallet, provider],
   )
 }
 

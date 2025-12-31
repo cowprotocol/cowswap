@@ -1,4 +1,3 @@
-import CowImage from '@cowprotocol/assets/cow-swap/cow_token.svg'
 import { RPC_URLS } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { initializeConnector } from '@web3-react/core'
@@ -10,6 +9,7 @@ import { default as CoinbaseImage } from '../../api/assets/coinbase.svg'
 import { ConnectWalletOption } from '../../api/pure/ConnectWalletOption'
 import { ConnectionType } from '../../api/types'
 import { getConnectionName } from '../../api/utils/connection'
+import CowImage from '../../assets/cow-swap/cow_token.svg'
 import { useIsActiveConnection } from '../hooks/useIsActiveConnection'
 import { ConnectionOptionProps, Web3ReactConnection } from '../types'
 

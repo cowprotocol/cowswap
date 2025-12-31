@@ -1,11 +1,11 @@
 import React, { ReactNode } from 'react'
 
-import alertCircle from '@cowprotocol/assets/cow-swap/alert-circle.svg'
 import { Command } from '@cowprotocol/types'
 import { ButtonSecondary, TokenSymbol, UI } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
+import alertCircle from 'assets/cow-swap/alert-circle.svg'
 import SVG from 'react-inlinesvg'
 
 import * as styledEl from './styled'

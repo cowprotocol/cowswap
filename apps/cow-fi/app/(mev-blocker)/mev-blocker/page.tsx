@@ -2,18 +2,21 @@
 
 import '@rainbow-me/rainbowkit/styles.css'
 
-import IMAGE_ICON_MEVBLOCKER_CHATBALLOON from '@cowprotocol/assets/images/icon-mevblocker-chatballoon.svg'
-import IMAGE_ICON_MEVBLOCKER_PROTECT from '@cowprotocol/assets/images/icon-mevblocker-protect.svg'
-import IMAGE_ICON_MEVBLOCKER_PROTECT2 from '@cowprotocol/assets/images/icon-mevblocker-protect2.svg'
-import IMAGE_ICON_MEVBLOCKER_TRUST from '@cowprotocol/assets/images/icon-mevblocker-trust.svg'
-import IMAGE_ICON_QUESTIONBALLOON from '@cowprotocol/assets/images/icon-question-balloon.svg'
-import IMAGE_SANDWICH_GUY from '@cowprotocol/assets/images/image-sandwich-guy.svg'
 import { Color, ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 
 import { RainbowKitProvider, getDefaultWallets } from '@rainbow-me/rainbowkit'
 import Script from 'next/script'
+import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
 import { WagmiConfig, createConfig, configureChains, mainnet } from 'wagmi'
 import { publicProvider } from 'wagmi/providers/public'
+
+import useWebShare from '../../../hooks/useWebShare'
+import IMAGE_ICON_MEVBLOCKER_CHATBALLOON from '../../../src/assets/images/icon-mevblocker-chatballoon.svg'
+import IMAGE_ICON_MEVBLOCKER_PROTECT from '../../../src/assets/images/icon-mevblocker-protect.svg'
+import IMAGE_ICON_MEVBLOCKER_PROTECT2 from '../../../src/assets/images/icon-mevblocker-protect2.svg'
+import IMAGE_ICON_MEVBLOCKER_TRUST from '../../../src/assets/images/icon-mevblocker-trust.svg'
+import IMAGE_ICON_QUESTIONBALLOON from '../../../src/assets/images/icon-question-balloon.svg'
+import IMAGE_SANDWICH_GUY from '../../../src/assets/images/image-sandwich-guy.svg'
 
 import { AddRpcButton } from '@/components/AddRpcButton'
 import FAQ from '@/components/FAQ'
@@ -48,9 +51,6 @@ import {
   ColorTableContainer,
   TopicTable,
 } from '@/styles/styled'
-import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
-
-import useWebShare from '../../../hooks/useWebShare'
 
 const isClient = typeof window === 'object'
 

@@ -1,7 +1,5 @@
 import { useState, useRef } from 'react'
 
-import ICON_ARROW_DOWN from '@cowprotocol/assets/images/carret-down.svg'
-import ICON_X from '@cowprotocol/assets/images/x.svg'
 import { CODE_LINK } from '@cowprotocol/common-const'
 import { useOnClickOutside } from '@cowprotocol/common-hooks'
 import { getEtherscanLink } from '@cowprotocol/common-utils'
@@ -14,6 +12,8 @@ import {
 import { UI, ExternalLink, Media } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import ICON_ARROW_DOWN from 'assets/images/carret-down.svg'
+import ICON_X from 'assets/images/x.svg'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 

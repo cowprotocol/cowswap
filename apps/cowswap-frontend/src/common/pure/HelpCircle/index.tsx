@@ -1,6 +1,6 @@
-import { questionIcon } from '@cowprotocol/assets/cow-swap/question'
 import { UI } from '@cowprotocol/ui'
 
+import { questionIcon } from 'assets/cow-swap/question'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 

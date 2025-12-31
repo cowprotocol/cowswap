@@ -1,7 +1,6 @@
 import React from 'react'
 
-import LOTTIE_RED_CROSS from '@cowprotocol/assets/lottie/red-cross.json'
-
+import LOTTIE_RED_CROSS from 'assets/lottie/red-cross.json'
 import Lottie from 'lottie-react'
 
 import * as styledEl from './styled'

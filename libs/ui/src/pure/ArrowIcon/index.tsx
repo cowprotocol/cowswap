@@ -1,10 +1,9 @@
 import { ReactNode } from 'react'
 
-import DropDown from '@cowprotocol/assets/images/dropdown.svg'
-
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
+import DropDown from '../../assets/images/dropdown.svg'
 import { UI } from '../../enum'
 
 enum ArrowDirection {

@@ -1,12 +1,12 @@
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
-import ICON_HOOK from '@cowprotocol/assets/cow-swap/hook.svg'
 import { HookDappWalletCompatibility } from '@cowprotocol/hook-dapp-lib'
 import { Command } from '@cowprotocol/types'
 import { BannerOrientation, DismissableInlineBanner } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
+import ICON_HOOK from 'assets/cow-swap/hook.svg'
 
 import { NewModal } from 'common/pure/NewModal'
 

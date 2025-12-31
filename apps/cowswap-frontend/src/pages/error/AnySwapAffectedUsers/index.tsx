@@ -1,9 +1,9 @@
-import cow404IMG from '@cowprotocol/assets/cow-swap/cow-404.png'
 import { ButtonPrimary, Media } from '@cowprotocol/ui'
 import { ExternalLink as ExternalLinkTheme } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
+import cow404IMG from 'assets/cow-swap/cow-404.png'
 import styled from 'styled-components/macro'
 
 import { Page, Title, Content, GdocsListStyle } from 'modules/application/pure/Page'

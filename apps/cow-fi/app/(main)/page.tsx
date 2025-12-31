@@ -1,11 +1,14 @@
 'use client'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
-import IMG_ICON_GOVERNANCE from '@cowprotocol/assets/images/icon-governance.svg'
-import IMG_ICON_GRANTS_CARTON from '@cowprotocol/assets/images/icon-grants-carton.svg'
-import VIDEO_HERO_HOME from '@cowprotocol/assets/video/cow-dao-hero-animation.mp4'
 import { Font, UI } from '@cowprotocol/ui'
+
+import { CowFiCategory } from 'src/common/analytics/types'
+
+import IMG_ICON_BULB_COW from '../../src/assets/images/icon-bulb-cow.svg'
+import IMG_ICON_GOVERNANCE from '../../src/assets/images/icon-governance.svg'
+import IMG_ICON_GRANTS_CARTON from '../../src/assets/images/icon-grants-carton.svg'
+import VIDEO_HERO_HOME from '../../src/assets/video/cow-dao-hero-animation.mp4'
 
 import LazySVG from '@/components/LazySVG'
 import { Link, LinkType } from '@/components/Link'
@@ -27,7 +30,6 @@ import {
   TopicList,
   TopicTitle,
 } from '@/styles/styled'
-import { CowFiCategory } from 'src/common/analytics/types'
 
 export default function Page() {
   const cowAnalytics = useCowAnalytics()

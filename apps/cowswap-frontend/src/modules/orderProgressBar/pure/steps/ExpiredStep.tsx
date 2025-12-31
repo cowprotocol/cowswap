@@ -1,8 +1,8 @@
-import PROGRESS_BAR_BAD_NEWS from '@cowprotocol/assets/cow-swap/progressbar-bad-news.svg'
-import PROGRESS_BAR_GOOD_NEWS from '@cowprotocol/assets/cow-swap/progressbar-good-news.svg'
 import { Command } from '@cowprotocol/types'
 
 import { Trans } from '@lingui/react/macro'
+import PROGRESS_BAR_BAD_NEWS from 'assets/cow-swap/progressbar-bad-news.svg'
+import PROGRESS_BAR_GOOD_NEWS from 'assets/cow-swap/progressbar-good-news.svg'
 import SVG from 'react-inlinesvg'
 
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'

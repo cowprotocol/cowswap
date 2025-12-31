@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import carretDown from '@cowprotocol/assets/cow-swap/carret-down.svg'
 import { Command } from '@cowprotocol/types'
 
 import { t } from '@lingui/core/macro'
+import carretDown from 'assets/cow-swap/carret-down.svg'
 import BigNumberJs from 'bignumber.js'
 import SVG from 'react-inlinesvg'
 

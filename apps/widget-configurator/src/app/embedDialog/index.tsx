@@ -1,10 +1,6 @@
 import React, { ReactNode, SyntheticEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import HTMLIcon from '@cowprotocol/assets/cow-swap/html.svg'
-import JSIcon from '@cowprotocol/assets/cow-swap/js.svg'
-import ReactIcon from '@cowprotocol/assets/cow-swap/react.svg'
-import TSIcon from '@cowprotocol/assets/cow-swap/ts.svg'
 import { Command } from '@cowprotocol/types'
 import { CowSwapWidgetProps } from '@cowprotocol/widget-react'
 
@@ -28,6 +24,10 @@ import { jsExample } from './utils/jsExample'
 import { reactTsExample } from './utils/reactTsExample'
 import { tsExample } from './utils/tsExample'
 
+import HTMLIcon from '../../assets/cow-swap/html.svg'
+import JSIcon from '../../assets/cow-swap/js.svg'
+import ReactIcon from '../../assets/cow-swap/react.svg'
+import TSIcon from '../../assets/cow-swap/ts.svg'
 import { AnalyticsCategory } from '../../common/analytics/types'
 import { ColorPalette } from '../configurator/types'
 

@@ -1,12 +1,12 @@
 import { isValidElement } from 'react'
 
-import iconCompleted from '@cowprotocol/assets/cow-swap/check.svg'
 import { Command } from '@cowprotocol/types'
 import { ButtonPrimary } from '@cowprotocol/ui'
 import { ExternalLink } from '@cowprotocol/ui'
 
 import { MessageDescriptor } from '@lingui/core'
 import { Trans, useLingui } from '@lingui/react/macro'
+import iconCompleted from 'assets/cow-swap/check.svg'
 import SVG from 'react-inlinesvg'
 
 import * as styledEl from './styled'

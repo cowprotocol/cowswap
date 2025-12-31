@@ -1,12 +1,12 @@
-import PROGRESSBAR_COW_SURPLUS_1 from '@cowprotocol/assets/cow-swap/progressbar-finished-image-1.svg'
-import PROGRESSBAR_COW_SURPLUS_2 from '@cowprotocol/assets/cow-swap/progressbar-finished-image-2.svg'
-import PROGRESSBAR_COW_SURPLUS_3 from '@cowprotocol/assets/cow-swap/progressbar-finished-image-3.svg'
-import PROGRESSBAR_COW_SURPLUS_4 from '@cowprotocol/assets/cow-swap/progressbar-finished-image-4.svg'
 import { getAvailableChainsText } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
 import { MessageDescriptor } from '@lingui/core'
 import { msg } from '@lingui/core/macro'
+import PROGRESSBAR_COW_SURPLUS_1 from 'assets/cow-swap/progressbar-finished-image-1.svg'
+import PROGRESSBAR_COW_SURPLUS_2 from 'assets/cow-swap/progressbar-finished-image-2.svg'
+import PROGRESSBAR_COW_SURPLUS_3 from 'assets/cow-swap/progressbar-finished-image-3.svg'
+import PROGRESSBAR_COW_SURPLUS_4 from 'assets/cow-swap/progressbar-finished-image-4.svg'
 
 /**
  * Frontend-defined step name enum.
