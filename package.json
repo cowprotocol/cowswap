@@ -42,7 +42,6 @@
     "lint-staged": "lint-staged --verbose -c lint-staged.config.js",
     "prebuild:cowswap": "node tools/scripts/prebuild.js",
     "prepare": "husky",
-    "postinstall": "npx patch-package",
     "analyze-build": "cross-env ANALYZE_BUNDLE=true ANALYZE_BUNDLE_TEMPLATE=sunburst pnpm run build",
     "install:sdk-preview": "node tools/scripts/install-sdk-preview.js && pnpm install",
     "install:ci": "pnpm run install:sdk-preview"
