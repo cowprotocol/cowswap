@@ -485,6 +485,9 @@ importers:
       '@cowprotocol/widget-react':
         specifier: workspace:*
         version: link:../../libs/widget-react
+      '@ethersproject/providers':
+        specifier: 5.8.0
+        version: 5.8.0(bufferutil@4.0.8)(utf-8-validate@5.0.10)
       '@lingui/core':
         specifier: ^5.4.1
         version: 5.5.1(@lingui/babel-plugin-lingui-macro@5.5.1(babel-plugin-macros@3.1.0))(babel-plugin-macros@3.1.0)

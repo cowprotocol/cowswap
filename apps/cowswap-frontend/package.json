@@ -58,6 +58,7 @@
     "@cowprotocol/wallet-provider": "workspace:*",
     "@cowprotocol/widget-lib": "workspace:*",
     "@cowprotocol/widget-react": "workspace:*",
+    "@ethersproject/providers": "5.8.0",
     "@lingui/core": "^5.4.1",
     "@lingui/macro": "^5.4.1",
     "@lingui/react": "^5.4.1",
