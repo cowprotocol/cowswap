@@ -2,6 +2,7 @@ import { useSetAtom } from 'jotai'
 import { useEffect } from 'react'
 
 import { usePrevious } from '@cowprotocol/common-hooks'
+import { areAddressesEqual } from '@cowprotocol/common-utils'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { refetchGeoDataAtom } from '../state/geoDataAtom'
@@ -13,7 +14,7 @@ export function GeoDataUpdater(): null {
 
   useEffect(() => {
     // only refetch when wallet actually changes (not on initial render)
-    if (prevAccount !== account) {
+    if (!areAddressesEqual(prevAccount, account)) {
       refetchGeoData()
     }
   }, [account, prevAccount, refetchGeoData])
