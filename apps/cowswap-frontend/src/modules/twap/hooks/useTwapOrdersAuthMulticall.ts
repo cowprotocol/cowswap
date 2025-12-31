@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import { ComposableCoW } from '@cowprotocol/abis'
+import { ComposableCoW } from '@cowprotocol/cowswap-abis'
 import { useSingleContractMultipleData } from '@cowprotocol/multicall'
 
 import ms from 'ms.macro'
