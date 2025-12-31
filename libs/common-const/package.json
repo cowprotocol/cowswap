@@ -30,5 +30,8 @@
     "@uniswap/sdk-core": "^3.0.1",
     "jsbi": "^3.1.4",
     "ms.macro": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/ms.macro": "^2.0.0"
   }
 }

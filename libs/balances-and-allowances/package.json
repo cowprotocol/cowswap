@@ -43,6 +43,7 @@
   },
   "devDependencies": {
     "@testing-library/react": "16.3.0",
+    "@types/ms.macro": "^2.0.0",
     "jest-fetch-mock": "^3.0.3"
   }
 }

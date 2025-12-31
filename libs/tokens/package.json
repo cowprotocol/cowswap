@@ -44,5 +44,8 @@
     "react-feather": "^2.0.10",
     "styled-components": "5.3.11",
     "swr": "^2.3.3"
+  },
+  "devDependencies": {
+    "@types/ms.macro": "^2.0.0"
   }
 }
