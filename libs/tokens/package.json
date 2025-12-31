@@ -24,6 +24,7 @@
     }
   },
   "dependencies": {
+    "@cowprotocol/cowswap-abis": "workspace:*",
     "@cowprotocol/common-const": "workspace:*",
     "@cowprotocol/common-hooks": "workspace:*",
     "@cowprotocol/common-utils": "workspace:*",
