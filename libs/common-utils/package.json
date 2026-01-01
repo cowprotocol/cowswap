@@ -30,6 +30,7 @@
     "@lingui/core": "^5.4.1",
     "@lingui/macro": "^5.4.1",
     "@lingui/react": "^5.4.1",
+    "@sentry/browser": "7.80.0",
     "@sentry/react": "^7.80.0",
     "@uniswap/sdk-core": "^3.0.1",
     "cids": "^1.0.0",

@@ -24,16 +24,17 @@
     }
   },
   "dependencies": {
-    "@cowprotocol/cowswap-abis": "workspace:*",
     "@cowprotocol/common-const": "workspace:*",
     "@cowprotocol/common-hooks": "workspace:*",
     "@cowprotocol/common-utils": "workspace:*",
     "@cowprotocol/core": "workspace:*",
     "@cowprotocol/cow-sdk": "^7.2.9",
+    "@cowprotocol/cowswap-abis": "workspace:*",
     "@cowprotocol/types": "workspace:*",
     "@cowprotocol/ui": "workspace:*",
     "@cowprotocol/wallet-provider": "workspace:*",
     "@lingui/core": "^5.4.1",
+    "@sentry/browser": "7.80.0",
     "@uniswap/sdk-core": "^3.0.1",
     "@uniswap/token-lists": "^1.0.0-beta.30",
     "ajv": "^6.12.6",
