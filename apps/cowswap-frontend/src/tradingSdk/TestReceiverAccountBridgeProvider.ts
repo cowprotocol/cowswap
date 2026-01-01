@@ -21,8 +21,7 @@ export class TestReceiverAccountBridgeProvider implements ReceiverAccountBridgeP
   type = 'ReceiverAccountBridgeProvider' as const
   info: BridgeProviderInfo = {
     name: 'Receiver Bridge',
-    logoUrl:
-      `${COW_CDN}/cow-sdk/bridging/providers/mock/mock-logo.webp`,
+    logoUrl: `${COW_CDN}/cow-sdk/bridging/providers/mock/mock-logo.webp`,
     dappId: 'test-receiver-bridge',
     website: 'https://github.com/cowprotocol/cowswap',
     type: 'ReceiverAccountBridgeProvider',

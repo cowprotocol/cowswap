@@ -19,7 +19,7 @@ const PROVIDER_URL = NETWORK_URL || `https://${CHAIN_NAME}.infura.io/v3/${INTEGR
 
 assert(
   PROVIDER_URL,
-  `PROVIDER_URL is empty, NETWORK_URL=${NETWORK_URL}, INTEGRATION_TESTS_INFURA_KEY=${INTEGRATION_TESTS_INFURA_KEY}`
+  `PROVIDER_URL is empty, NETWORK_URL=${NETWORK_URL}, INTEGRATION_TESTS_INFURA_KEY=${INTEGRATION_TESTS_INFURA_KEY}`,
 )
 
 // address of the above key
@@ -43,7 +43,7 @@ class CustomizedBridge extends Eip1193Bridge {
   // TODO: Add proper return type annotation
   // TODO: Reduce function complexity by extracting logic
   // TODO: Replace any with proper type definitions
-  // eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity, @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, complexity, @typescript-eslint/no-explicit-any
   async send(...args: any[]) {
     console.debug('send called', ...args)
     const isCallbackForm = typeof args[0] === 'object' && typeof args[1] === 'function'

@@ -1,10 +1,10 @@
 import { useSetAtom } from 'jotai'
 
-import Close from '@cowprotocol/assets/images/x.svg?react'
 import { Media, UI } from '@cowprotocol/ui'
 import { useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/react/macro'
+import Close from 'assets/images/x.svg?react'
 import { transparentize } from 'color2k'
 import styled from 'styled-components/macro'
 

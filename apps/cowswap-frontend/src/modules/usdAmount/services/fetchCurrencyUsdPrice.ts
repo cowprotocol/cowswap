@@ -93,8 +93,8 @@ function handleErrorFactory(
   rateLimitTimestamp: null | number,
   unknownCurrenciesMap: UnknownCurrenciesMap,
   fetchPriceFallback: (currency: Token) => Promise<Fraction | null>,
-// TODO: Replace any with proper type definitions
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // TODO: Replace any with proper type definitions
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
 ): ((reason: any) => Fraction | PromiseLike<Fraction | null> | null) | null | undefined {
   return (error) => {
     if (error instanceof RateLimitError) {

@@ -24,7 +24,7 @@ export function groupNotificationsByDate(notifications: NotificationModel[]): No
       return {
         date: new Date(timestamp),
         notifications: mapByTimestamp[timestamp].sort(
-          (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
         ),
       }
     })

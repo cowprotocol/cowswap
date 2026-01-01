@@ -49,5 +49,5 @@ export const imagesAnimationDelay = (n: number, animationDelay: number) =>
       img:nth-of-type(${i + 1}) {
         animation-delay: ${animationDelay * n - i * animationDelay}s;
       }
-    `
+    `,
   )

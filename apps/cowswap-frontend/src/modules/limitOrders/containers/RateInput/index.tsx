@@ -1,9 +1,6 @@
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import LockedIcon from '@cowprotocol/assets/images/icon-locked.svg'
-import UnlockedIcon from '@cowprotocol/assets/images/icon-unlocked.svg'
-import UsdIcon from '@cowprotocol/assets/images/icon-USD.svg'
 import { formatInputAmount, getAddress, isFractionFalsy, tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { FiatAmount, HelpTooltip, HoverTooltip, TokenSymbol } from '@cowprotocol/ui'
@@ -11,6 +8,9 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
+import LockedIcon from 'assets/images/icon-locked.svg'
+import UnlockedIcon from 'assets/images/icon-unlocked.svg'
+import UsdIcon from 'assets/images/icon-USD.svg'
 import SVG from 'react-inlinesvg'
 
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'

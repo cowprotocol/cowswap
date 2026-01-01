@@ -1,5 +1,5 @@
-import { Erc20, ERC_20_INTERFACE } from '@cowprotocol/abis'
 import { TokenWithLogo } from '@cowprotocol/common-const'
+import { Erc20, ERC_20_INTERFACE } from '@cowprotocol/cowswap-abis'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { BigNumber } from '@ethersproject/bignumber'
 import { Contract } from '@ethersproject/contracts'
@@ -8,7 +8,7 @@ import useSWR, { SWRResponse } from 'swr'
 
 export function useTokenBalanceForAccount(
   token: TokenWithLogo | undefined,
-  account: string | undefined
+  account: string | undefined,
 ): SWRResponse<BigNumber | undefined> {
   const provider = useWalletProvider()
 

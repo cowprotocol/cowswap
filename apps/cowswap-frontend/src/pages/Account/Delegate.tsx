@@ -1,9 +1,9 @@
-import CowImage from '@cowprotocol/assets/cow-swap/cow_token.svg'
-import DelegateCowIcon from '@cowprotocol/assets/cow-swap/delegate-cow.svg'
 import { ClosableBanner, ButtonPrimary } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
+import CowImage from 'assets/cow-swap/cow_token.svg'
+import DelegateCowIcon from 'assets/cow-swap/delegate-cow.svg'
 import SVG from 'react-inlinesvg'
 
 import { BANNER_IDS } from 'common/constants/banners'

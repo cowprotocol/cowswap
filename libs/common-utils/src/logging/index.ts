@@ -15,7 +15,7 @@ export function constructSentryError(
   // TODO: Replace any with proper type definitions
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   response: any,
-  { message, name, optionalTags = {} }: SentryErrorOptions
+  { message, name, optionalTags = {} }: SentryErrorOptions,
 ) {
   const constructedError = Object.assign(new Error(), baseError, {
     message,

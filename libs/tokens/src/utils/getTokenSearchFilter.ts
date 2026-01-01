@@ -8,7 +8,7 @@ const alwaysTrue = () => true
 
 /** Creates a filter function that filters tokens that do not match the query. */
 export function getTokenSearchFilter<T extends Token | TokenInfo>(
-  query: string
+  query: string,
 ): (token: T | NativeCurrency) => boolean {
   const searchingAddress = isAddress(query)
 

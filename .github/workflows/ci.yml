@@ -37,10 +37,10 @@ jobs:
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: yarn
+          cache: pnpm
 
       - name: Install dependencies
-        run: yarn install:ci --frozen-lockfile
+        run: pnpm run install:ci --frozen-lockfile
 
       - name: Cache generated files
         id: cache-generated-files
@@ -49,7 +49,7 @@ jobs:
           path: |
             src/state/data
             src/locales
-          key: ${{ runner.os }}-generatedFiles-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-generatedFiles-${{ hashFiles('**/pnpm-lock.yaml') }}
 
   test:
     name: Test
@@ -66,10 +66,10 @@ jobs:
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: yarn
+          cache: pnpm
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Load generated files
         id: cache-generated-files
@@ -78,10 +78,10 @@ jobs:
           path: |
             src/state/data
             src/locales
-          key: ${{ runner.os }}-generatedFiles-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-generatedFiles-${{ hashFiles('**/pnpm-lock.yaml') }}
 
       - name: Unit Test
-        run: yarn test
+        run: pnpm run test
 
       # - name: Coveralls
       #   uses: coverallsapp/github-action@v1.1.2
@@ -103,10 +103,10 @@ jobs:
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: yarn
+          cache: pnpm
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Load generated files
         id: cache-generated-files
@@ -115,10 +115,10 @@ jobs:
           path: |
             src/state/data
             src/locales
-          key: ${{ runner.os }}-generatedFiles-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-generatedFiles-${{ hashFiles('**/pnpm-lock.yaml') }}
 
       - name: Run eslint
-        run: yarn lint
+        run: pnpm run lint
 
   build:
     name: Build
@@ -135,10 +135,10 @@ jobs:
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: yarn
+          cache: pnpm
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Load generated files
         id: cache-generated-files
@@ -147,10 +147,10 @@ jobs:
           path: |
             src/state/data
             src/locales
-          key: ${{ runner.os }}-generatedFiles-${{ hashFiles('**/yarn.lock') }}
+          key: ${{ runner.os }}-generatedFiles-${{ hashFiles('**/pnpm-lock.yaml') }}
 
       - name: Build
-        run: yarn build
+        run: pnpm run build
 
   integration-tests:
     name: Cypress
@@ -168,7 +168,7 @@ jobs:
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: yarn
+          cache: pnpm
 
       # Install deps only
       - name: Cypress install dependencies
@@ -187,7 +187,7 @@ jobs:
         run: npx cypress install
 
       - name: Start server in the background
-        run: yarn start &
+        run: pnpm run start &
 
       # Actually run tests, building repo
       - name: Cypress run

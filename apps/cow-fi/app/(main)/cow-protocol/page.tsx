@@ -1,22 +1,25 @@
 'use client'
 
-import IMG_ICON_BUILD_WITH_COW from '@cowprotocol/assets/images/icon-build-with-cow.svg'
-import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
-import IMG_COW_LENS from '@cowprotocol/assets/images/icon-cow-lens.svg'
-import IMG_ICON_CROWN_COW from '@cowprotocol/assets/images/icon-crown-cow.svg'
-import IMG_ICON_FAQ from '@cowprotocol/assets/images/icon-faq.svg'
-import IMG_ICON_GHOST from '@cowprotocol/assets/images/icon-ghost.svg'
-import IMG_LOGO_CURVE from '@cowprotocol/assets/images/icon-logo-curve.svg'
-import IMG_LOGO_LIDO from '@cowprotocol/assets/images/icon-logo-lido.svg'
-import IMG_LOGO_SAFE from '@cowprotocol/assets/images/icon-logo-safe.svg'
-import IMG_ICON_OWL from '@cowprotocol/assets/images/icon-owl.svg'
-import IMG_ICON_SECURE from '@cowprotocol/assets/images/icon-secure.svg'
-import IMG_BATCHAUCTIONS from '@cowprotocol/assets/images/image-batchauctions.svg'
-import IMG_COW_BITS from '@cowprotocol/assets/images/image-cow-bits.svg'
-import IMG_INTENTS from '@cowprotocol/assets/images/image-intents.svg'
-import IMG_LEADING from '@cowprotocol/assets/images/image-leading.svg'
-import IMG_SOLVERS from '@cowprotocol/assets/images/image-solvers.svg'
 import { Color, ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
+
+import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
+
+import IMG_ICON_BUILD_WITH_COW from '../../../src/assets/images/icon-build-with-cow.svg'
+import IMG_ICON_BULB_COW from '../../../src/assets/images/icon-bulb-cow.svg'
+import IMG_COW_LENS from '../../../src/assets/images/icon-cow-lens.svg'
+import IMG_ICON_CROWN_COW from '../../../src/assets/images/icon-crown-cow.svg'
+import IMG_ICON_FAQ from '../../../src/assets/images/icon-faq.svg'
+import IMG_ICON_GHOST from '../../../src/assets/images/icon-ghost.svg'
+import IMG_LOGO_CURVE from '../../../src/assets/images/icon-logo-curve.svg'
+import IMG_LOGO_LIDO from '../../../src/assets/images/icon-logo-lido.svg'
+import IMG_LOGO_SAFE from '../../../src/assets/images/icon-logo-safe.svg'
+import IMG_ICON_OWL from '../../../src/assets/images/icon-owl.svg'
+import IMG_ICON_SECURE from '../../../src/assets/images/icon-secure.svg'
+import IMG_BATCHAUCTIONS from '../../../src/assets/images/image-batchauctions.svg'
+import IMG_COW_BITS from '../../../src/assets/images/image-cow-bits.svg'
+import IMG_INTENTS from '../../../src/assets/images/image-intents.svg'
+import IMG_LEADING from '../../../src/assets/images/image-leading.svg'
+import IMG_SOLVERS from '../../../src/assets/images/image-solvers.svg'
 
 import FAQ from '@/components/FAQ'
 import LazySVG from '@/components/LazySVG'
@@ -54,7 +57,6 @@ import {
   TopicList,
   TopicTitle,
 } from '@/styles/styled'
-import { CowFiCategory, toCowFiGtmEvent } from 'src/common/analytics/types'
 
 export default function Page() {
   const faqData = useFaqData()

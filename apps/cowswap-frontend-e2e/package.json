@@ -4,5 +4,14 @@
   "description": "CoW Swap e2e tests",
   "main": "index.js",
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@cowprotocol/cow-sdk": "^7.2.9",
+    "@ethersproject/experimental": "^5.8.0",
+    "ethers": "5.7.2"
+  },
+  "devDependencies": {
+    "@nx/cypress": "21.6.4",
+    "cypress": "^15.4.0"
+  }
 }

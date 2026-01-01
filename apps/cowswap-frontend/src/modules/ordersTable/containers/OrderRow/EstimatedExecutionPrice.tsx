@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react'
 
-import AlertTriangle from '@cowprotocol/assets/cow-swap/alert.svg'
-import allowanceIcon from '@cowprotocol/assets/images/icon-allowance.svg'
 import { ZERO_FRACTION } from '@cowprotocol/common-const'
 import { Command } from '@cowprotocol/types'
 import {
@@ -17,6 +15,8 @@ import { Currency, CurrencyAmount, Fraction, Percent, Price } from '@uniswap/sdk
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
+import AlertTriangle from 'assets/cow-swap/alert.svg'
+import allowanceIcon from 'assets/images/icon-allowance.svg'
 import { darken } from 'color2k'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'

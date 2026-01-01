@@ -28,7 +28,7 @@ export function getDefaultAdvancedOrdersState(chainId: SupportedChainId | null):
 export const advancedOrdersAtom = atomWithStorage<AdvancedOrdersRawState>(
   'advanced-orders-atom:v1',
   getDefaultAdvancedOrdersState(null),
-  getJotaiIsolatedStorage()
+  getJotaiIsolatedStorage(),
 )
 
 export const updateAdvancedOrdersAtom = atom(null, (get, set, nextState: Partial<AdvancedOrdersRawState>) => {

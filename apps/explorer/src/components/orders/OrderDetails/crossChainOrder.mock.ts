@@ -8,8 +8,7 @@ export const crossChainOrderMock = {
     cowShedSdk: { options: {}, hooksCache: {} },
     info: {
       name: 'Bungee',
-      logoUrl:
-        `${COW_CDN}/cow-sdk/bridging/providers/bungee/bungee-logo.png`,
+      logoUrl: `${COW_CDN}/cow-sdk/bridging/providers/bungee/bungee-logo.png`,
       dappId: 'cow-sdk://bridging/providers/bungee',
       website: 'https://www.bungee.exchange',
     },

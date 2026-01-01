@@ -5,7 +5,6 @@ import { Category, getArticles, getCategories } from '../../../services/cms'
 import { LearnPageComponent } from '@/components/LearnPageComponent'
 import { FEATURED_ARTICLES_PAGE_SIZE } from '@/const/pagination'
 
-
 // Next.js requires revalidate to be a literal number for static analysis
 // 12 hours (43200 seconds) - balanced between freshness and cache efficiency
 export const revalidate = 43200

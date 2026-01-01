@@ -1,6 +1,6 @@
-import TokenListLogo from '@cowprotocol/assets/svg/tokenlist.svg'
 import { HelpTooltip } from '@cowprotocol/ui'
 
+import TokenListLogo from 'assets/svg/tokenlist.svg'
 import styled from 'styled-components/macro'
 
 const Wrapper = styled.div`

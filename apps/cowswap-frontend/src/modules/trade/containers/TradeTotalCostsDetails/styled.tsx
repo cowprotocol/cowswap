@@ -2,7 +2,6 @@ import { UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-
 export const Box = styled.div<{ noMargin: boolean }>`
   display: flex;
   flex-flow: column wrap;
@@ -42,4 +41,3 @@ export const Row = styled.div`
     }
   }
 `
-

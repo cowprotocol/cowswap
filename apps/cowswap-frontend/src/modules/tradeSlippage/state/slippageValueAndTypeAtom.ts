@@ -8,9 +8,7 @@ import { walletInfoAtom } from '@cowprotocol/wallet'
 import { injectedWidgetParamsAtom } from 'modules/injectedWidget/state/injectedWidgetParamsAtom'
 import { isEoaEthFlowAtom, tradeTypeAtom, TradeTypeToWidgetTradeTypeMap } from 'modules/trade'
 
-import {
-  resolveSlippageConfig
-} from '../utils/slippage'
+import { resolveSlippageConfig } from '../utils/slippage'
 
 type SlippageBpsPerNetwork = PersistentStateByChain<number>
 

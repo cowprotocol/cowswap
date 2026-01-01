@@ -88,7 +88,7 @@ const _buildInternalNetworkUrl = (networkId: number, ownerAddress: string): stri
 }
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+
 export const EmptyOrdersMessage = ({
   isLoading,
   networkId,
@@ -149,7 +149,7 @@ export const EmptyOrdersMessage = ({
 export const useSearchInAnotherNetwork = (
   networkId: BlockchainNetwork,
   ownerAddress: string,
-  orders: Order[] | undefined
+  orders: Order[] | undefined,
 ): ResultSearchInAnotherNetwork => {
   const [ordersInNetworks, setOrdersInNetworks] = useState<OrdersInNetwork[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -174,16 +174,16 @@ export const useSearchInAnotherNetwork = (
               // Msg for when there are no orders on any network and a request has failed
               setError('An error has occurred while requesting the data.')
               console.error(`Failed to fetch order in ${Network[network]}`, e)
-            })
+            }),
         )
 
       const networksHaveOrders = (await Promise.allSettled(promises)).filter(
-        (e) => e.status === 'fulfilled' && e.value?.network
+        (e) => e.status === 'fulfilled' && e.value?.network,
       )
       setOrdersInNetworks(networksHaveOrders.map((e) => (e.status === 'fulfilled' ? e.value : e.reason)))
       setIsLoading(false)
     },
-    [ownerAddress, availableChains]
+    [ownerAddress, availableChains],
   )
 
   useEffect(() => {
@@ -194,6 +194,6 @@ export const useSearchInAnotherNetwork = (
 
   return useMemo(
     () => ({ isLoading, ordersInNetworks, setLoadingState: setIsLoading, errorMsg: error }),
-    [isLoading, ordersInNetworks, setIsLoading, error]
+    [isLoading, ordersInNetworks, setIsLoading, error],
   )
 }

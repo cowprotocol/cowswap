@@ -11,8 +11,8 @@ import { useTradeNavigate } from '../useTradeNavigate'
 
 const alertMessage = (
   doubledSymbol: string,
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  // TODO: Add proper return type annotation
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 ) => t`There is more than one token in the list of tokens with the symbol: ${doubledSymbol}.
 Please select the token you need from the UI or use the address of the token instead of the symbol`
 

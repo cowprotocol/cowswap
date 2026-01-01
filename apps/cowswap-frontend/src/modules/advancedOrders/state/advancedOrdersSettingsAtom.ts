@@ -14,7 +14,7 @@ export const defaultAdvancedOrdersSettings: AdvancedOrdersSettingsState = {
 export const advancedOrdersSettingsAtom = atomWithStorage<AdvancedOrdersSettingsState>(
   'advanced-orders-settings-atom:v0',
   defaultAdvancedOrdersSettings,
-  getJotaiIsolatedStorage()
+  getJotaiIsolatedStorage(),
 )
 
 export const updateAdvancedOrdersSettingsAtom = atom(
@@ -25,5 +25,5 @@ export const updateAdvancedOrdersSettingsAtom = atom(
 
       return { ...prevState, ...nextState }
     })
-  }
+  },
 )

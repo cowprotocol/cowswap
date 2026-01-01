@@ -1,8 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
-import ArrowIcon from '@cowprotocol/assets/cow-swap/arrow.svg'
-import cowImage from '@cowprotocol/assets/cow-swap/cow_token.svg'
 import {
   LOCKED_GNO_VESTING_START_DATE,
   MERKLE_DROP_CONTRACT_ADDRESSES,
@@ -23,6 +21,8 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
+import ArrowIcon from 'assets/cow-swap/arrow.svg'
+import cowImage from 'assets/cow-swap/cow_token.svg'
 import SVG from 'react-inlinesvg'
 
 import CopyHelper from 'legacy/components/Copy'

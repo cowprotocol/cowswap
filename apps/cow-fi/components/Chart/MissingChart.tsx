@@ -1,7 +1,9 @@
 import { ReactNode } from 'react'
-import styled from 'styled-components/macro'
-import { TrendingUp } from 'react-feather'
+
 import { Color } from '@cowprotocol/ui'
+
+import { TrendingUp } from 'react-feather'
+import styled from 'styled-components/macro'
 
 const StyledMissingChart = styled.svg`
   text {

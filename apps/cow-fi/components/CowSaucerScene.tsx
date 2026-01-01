@@ -2,17 +2,14 @@
 
 import { ReactNode } from 'react'
 
-import BG_IMAGE_MED from '@cowprotocol/assets/images/404/cowfi/bg-med.svg'
-import BG_IMAGE_SMALL from '@cowprotocol/assets/images/404/cowfi/bg-small.svg'
-import BG_IMAGE from '@cowprotocol/assets/images/404/cowfi/bg.svg'
-import COW_IMAGE from '@cowprotocol/assets/images/404/cowfi/cow.svg'
-import {
-  CowSaucerScene as BaseCowSaucerScene,
-  COWFI_SAUCER_PALETTE_LIGHT,
-  Media,
-} from '@cowprotocol/ui'
+import { CowSaucerScene as BaseCowSaucerScene, COWFI_SAUCER_PALETTE_LIGHT, Media } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
+
+import BG_IMAGE_MED from '../src/assets/images/404/cowfi/bg-med.svg'
+import BG_IMAGE_SMALL from '../src/assets/images/404/cowfi/bg-small.svg'
+import BG_IMAGE from '../src/assets/images/404/cowfi/bg.svg'
+import COW_IMAGE from '../src/assets/images/404/cowfi/cow.svg'
 
 const FOOTER_OVERLAP = '0rem'
 

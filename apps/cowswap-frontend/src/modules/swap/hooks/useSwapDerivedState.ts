@@ -7,7 +7,12 @@ import { useTradeSlippage } from 'modules/tradeSlippage'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 
-import { DEFAULT_SWAP_DERIVED_STATE, SwapDerivedState, swapDerivedStateAtom, swapRawStateAtom } from '../state/swapRawStateAtom'
+import {
+  DEFAULT_SWAP_DERIVED_STATE,
+  SwapDerivedState,
+  swapDerivedStateAtom,
+  swapRawStateAtom,
+} from '../state/swapRawStateAtom'
 
 export function useSwapDerivedState(): SwapDerivedState {
   return useAtomValue(swapDerivedStateAtom)

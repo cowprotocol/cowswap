@@ -1,11 +1,13 @@
-import { CONFIG } from '@/const/meta'
+import { redirect } from 'next/navigation'
+
 import { getTokenDetails, getTokensIds } from '../../../../services/tokens'
 
-import { TokenPageComponent } from '@/components/TokenPageComponent'
-import { getPageMetadata } from '@/util/getPageMetadata'
-import type { Metadata } from 'next'
-import { redirect } from 'next/navigation'
 import type { TokenDetails } from '../../../../types'
+import type { Metadata } from 'next'
+
+import { TokenPageComponent } from '@/components/TokenPageComponent'
+import { CONFIG } from '@/const/meta'
+import { getPageMetadata } from '@/util/getPageMetadata'
 
 type Props = {
   params: Promise<{ tokenId: string }>

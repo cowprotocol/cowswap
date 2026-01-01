@@ -1,6 +1,6 @@
-import { ComposableCoW, GPv2Settlement } from '@cowprotocol/abis'
 import { USDC_LENS, WRAPPED_NATIVE_CURRENCIES } from '@cowprotocol/common-const'
 import { isZkSyncChain, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { ComposableCoW, GPv2Settlement } from '@cowprotocol/cowswap-abis'
 import { ContractsOrder } from '@cowprotocol/sdk-contracts-ts'
 import { BigNumber } from '@ethersproject/bignumber'
 import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types'

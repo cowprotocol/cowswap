@@ -10,6 +10,6 @@ export function useENSResolver(node: string | undefined): SWRResponse<string> {
   return useSWR(
     node && registrarContract ? ['useENSResolver', node, registrarContract] : null,
     async ([_, _node, contract]) => contract.callStatic.resolver(_node),
-    SWR_NO_REFRESH_OPTIONS
+    SWR_NO_REFRESH_OPTIONS,
   )
 }

@@ -13,7 +13,7 @@ export async function signTypedDataHandler(
   message: Record<string, any>,
   primaryType: string,
   trezorConnect: TrezorConnect,
-  _transformTypedData: typeof transformTypedData
+  _transformTypedData: typeof transformTypedData,
 ): Promise<string> {
   const eip712Data = {
     domain,

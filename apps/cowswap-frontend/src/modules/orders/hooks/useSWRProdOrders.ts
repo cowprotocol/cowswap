@@ -28,7 +28,7 @@ export function useSWRProdOrders(): EnrichedOrder[] {
 
       return getOrders(requestParams, { chainId, env: 'prod' })
     },
-    { refreshInterval: ORDER_BOOK_API_UPDATE_INTERVAL }
+    { refreshInterval: ORDER_BOOK_API_UPDATE_INTERVAL },
   )
 
   return useMemo(() => {

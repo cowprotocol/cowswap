@@ -24,6 +24,6 @@ export function usePreGeneratedPermitInfoForToken(token: Nullish<{ address: stri
       permitInfo,
       isLoading,
     }),
-    [permitInfo, isLoading]
+    [permitInfo, isLoading],
   )
 }

@@ -1,8 +1,5 @@
 import React, { ReactNode, useCallback, useMemo, useState } from 'react'
 
-import ICON_SOCIAL_X from '@cowprotocol/assets/images/icon-social-x.svg'
-import LOTTIE_GREEN_CHECKMARK_DARK from '@cowprotocol/assets/lottie/green-checkmark-dark.json'
-import LOTTIE_GREEN_CHECKMARK from '@cowprotocol/assets/lottie/green-checkmark.json'
 import { RECEIVED_LABEL } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink, getRandomInt, isSellOrder, shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -12,6 +9,9 @@ import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { i18n } from '@lingui/core'
 import { Trans, useLingui } from '@lingui/react/macro'
+import ICON_SOCIAL_X from 'assets/images/icon-social-x.svg'
+import LOTTIE_GREEN_CHECKMARK_DARK from 'assets/lottie/green-checkmark-dark.json'
+import LOTTIE_GREEN_CHECKMARK from 'assets/lottie/green-checkmark.json'
 import Lottie from 'lottie-react'
 import { PiCaretDown, PiCaretUp, PiTrophyFill } from 'react-icons/pi'
 import SVG from 'react-inlinesvg'

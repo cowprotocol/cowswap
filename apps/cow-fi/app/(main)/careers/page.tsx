@@ -1,6 +1,6 @@
-import { CareersPageContent } from '@/components/CareersPageContent'
-
 import { getJobs } from '../../../services/ashByHq'
+
+import { CareersPageContent } from '@/components/CareersPageContent'
 
 export default async function Page() {
   const jobsData = (await getJobs()) || {}

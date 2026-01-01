@@ -29,32 +29,7 @@
     "isolatedModules": true,
     "downlevelIteration": true,
     "allowSyntheticDefaultImports": true,
-    "baseUrl": ".",
-    "paths": {
-      "@cowprotocol/abis": ["libs/abis/src/index.ts"],
-      "@cowprotocol/analytics": ["libs/analytics/src/index.ts"],
-      "@cowprotocol/assets/*": ["libs/assets/src/*"],
-      "@cowprotocol/balances-and-allowances": ["libs/balances-and-allowances/src/index.ts"],
-      "@cowprotocol/common-const": ["libs/common-const/src/index.ts"],
-      "@cowprotocol/common-hooks": ["libs/common-hooks/src/index.ts"],
-      "@cowprotocol/common-utils": ["libs/common-utils/src/index.ts"],
-      "@cowprotocol/core": ["libs/core/src/index.ts"],
-      "@cowprotocol/ens": ["libs/ens/src/index.ts"],
-      "@cowprotocol/events": ["libs/events/src/index.ts"],
-      "@cowprotocol/hook-dapp-lib": ["libs/hook-dapp-lib/src/index.ts"],
-      "@cowprotocol/iframe-transport": ["libs/iframe-transport/src/index.ts"],
-      "@cowprotocol/multicall": ["libs/multicall/src/index.ts"],
-      "@cowprotocol/permit-utils": ["libs/permit-utils/src/index.ts"],
-      "@cowprotocol/snackbars": ["libs/snackbars/src/index.ts"],
-      "@cowprotocol/tokens": ["libs/tokens/src/index.ts"],
-      "@cowprotocol/types": ["libs/types/src/index.ts"],
-      "@cowprotocol/ui": ["libs/ui/src/index.ts"],
-      "@cowprotocol/ui-utils": ["libs/ui-utils/src/index.ts"],
-      "@cowprotocol/wallet": ["libs/wallet/src/index.ts"],
-      "@cowprotocol/wallet-provider": ["libs/wallet-provider/src/index.ts"],
-      "@cowprotocol/widget-lib": ["libs/widget-lib/src/index.ts"],
-      "@cowprotocol/widget-react": ["libs/widget-react/src/index.ts"]
-    }
+    "baseUrl": "."
   },
   "exclude": ["node_modules", "tmp"]
 }

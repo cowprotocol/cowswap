@@ -1,7 +1,7 @@
 import { retry, RetryableError } from './retry'
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+
 describe('retry', () => {
   function makeFn<T>(fails: number, result: T, retryable = true): () => Promise<T> {
     return async () => {
@@ -15,7 +15,7 @@ describe('retry', () => {
 
   it('fails for non-retryable error', async () => {
     await expect(retry(makeFn(1, 'abc', false), { n: 3, maxWait: 0, minWait: 0 }).promise).rejects.toThrow(
-      'bad failure'
+      'bad failure',
     )
   })
 
@@ -60,8 +60,8 @@ describe('retry', () => {
       promises.push(
         checkMinTime(
           () => expect(retry(makeFn(4, 'abc'), { n: 3, maxWait: 100, minWait: 50 }).promise).rejects.toThrow('failure'),
-          150
-        )
+          150,
+        ),
       )
     }
     await Promise.all(promises)

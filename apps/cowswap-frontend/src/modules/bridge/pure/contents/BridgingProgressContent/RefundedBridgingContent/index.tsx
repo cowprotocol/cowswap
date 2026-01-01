@@ -1,6 +1,5 @@
 import { ReactNode } from 'react'
 
-import CheckmarkIcon from '@cowprotocol/assets/cow-swap/checkmark.svg'
 import { RECEIVED_LABEL } from '@cowprotocol/common-const'
 import { ExplorerDataType, getExplorerLink, shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -8,6 +7,7 @@ import { NetworkLogo } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Trans, useLingui } from '@lingui/react/macro'
+import CheckmarkIcon from 'assets/cow-swap/checkmark.svg'
 
 import { ConfirmDetailsItem, ReceiveAmountTitle } from 'modules/trade'
 

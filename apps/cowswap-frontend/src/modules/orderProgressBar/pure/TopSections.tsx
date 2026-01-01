@@ -1,15 +1,15 @@
 import { ReactNode } from 'react'
 
-import STEP_IMAGE_CANCELLED from '@cowprotocol/assets/cow-swap/progressbar-step-cancelled.svg'
-import STEP_IMAGE_EXPIRED from '@cowprotocol/assets/cow-swap/progressbar-step-expired.svg'
-import STEP_IMAGE_SOLVING from '@cowprotocol/assets/cow-swap/progressbar-step-solving.svg'
-import STEP_IMAGE_UNFILLABLE from '@cowprotocol/assets/cow-swap/progressbar-step-unfillable.svg'
-import STEP_LOTTIE_EXECUTING from '@cowprotocol/assets/lottie/progressbar-step-executing.json'
-import STEP_LOTTIE_NEXTBATCH from '@cowprotocol/assets/lottie/progressbar-step-nextbatch.json'
-import LOTTIE_TIME_EXPIRED_DARK from '@cowprotocol/assets/lottie/time-expired-dark.json'
 import { ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
+import STEP_IMAGE_CANCELLED from 'assets/cow-swap/progressbar-step-cancelled.svg'
+import STEP_IMAGE_EXPIRED from 'assets/cow-swap/progressbar-step-expired.svg'
+import STEP_IMAGE_SOLVING from 'assets/cow-swap/progressbar-step-solving.svg'
+import STEP_IMAGE_UNFILLABLE from 'assets/cow-swap/progressbar-step-unfillable.svg'
+import STEP_LOTTIE_EXECUTING from 'assets/lottie/progressbar-step-executing.json'
+import STEP_LOTTIE_NEXTBATCH from 'assets/lottie/progressbar-step-nextbatch.json'
+import LOTTIE_TIME_EXPIRED_DARK from 'assets/lottie/time-expired-dark.json'
 import SVG from 'react-inlinesvg'
 
 import { NoSurplus, ShowSurplus } from './BenefitComponents'

@@ -1,5 +1,5 @@
-import { Erc20__factory } from '@cowprotocol/abis'
 import { COW_PROTOCOL_VAULT_RELAYER_ADDRESS, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Erc20__factory } from '@cowprotocol/cowswap-abis'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 import { BigNumber as EthersBigNumber } from '@ethersproject/bignumber'
@@ -13,8 +13,6 @@ import { Order } from 'legacy/state/orders/actions'
 
 import { usePermitInfo } from 'modules/permit'
 import { TradeType } from 'modules/trade'
-
-
 
 import { isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { getOrderPermitIfExists } from 'common/utils/doesOrderHavePermit'

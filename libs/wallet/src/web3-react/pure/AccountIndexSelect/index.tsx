@@ -4,7 +4,6 @@ import { shortenAddress } from '@cowprotocol/common-utils'
 import { ButtonPrimary, Loader, SelectDropdown, TokenAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-
 import * as styledEl from './styled'
 
 export interface AccountIndexSelectProps {
@@ -17,7 +16,7 @@ export interface AccountIndexSelectProps {
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function AccountIndexSelect(props: AccountIndexSelectProps) {
   const { currentIndex, accountsList, balances, onAccountIndexChange, loadMoreAccounts } = props
   const selectRef = useRef<HTMLSelectElement>(null)

@@ -109,13 +109,13 @@ const CustomA = ({ children, href, ...props }: AnchorHTMLAttributes<HTMLAnchorEl
   // Determine if link is external based on href
   const isExternal = href?.startsWith('http') || href?.startsWith('mailto:')
   const isAnchor = href?.startsWith('#')
-  
+
   // Apply appropriate attributes based on link type
   const linkProps = isExternal
     ? { target: '_blank', rel: 'noopener noreferrer' }
     : isAnchor
-    ? {} // No special attributes for anchor links
-    : { rel: 'noopener' } // Internal links get noopener but no target
+      ? {} // No special attributes for anchor links
+      : { rel: 'noopener' } // Internal links get noopener but no target
 
   return (
     <a {...props} href={href} {...linkProps}>

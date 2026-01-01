@@ -21,12 +21,15 @@ export default function useTransactionErrorModal() {
         <TransactionErrorContent modalMode onDismiss={onDismiss} message={message || ''} />
       </CowModal>
     ),
-    [closeModal, showTransactionErrorModal]
+    [closeModal, showTransactionErrorModal],
   )
 
-  return useMemo(() => ({
-    openModal,
-    closeModal,
-    TransactionErrorModal,
-  }), [openModal, closeModal, TransactionErrorModal])
+  return useMemo(
+    () => ({
+      openModal,
+      closeModal,
+      TransactionErrorModal,
+    }),
+    [openModal, closeModal, TransactionErrorModal],
+  )
 }

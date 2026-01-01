@@ -13,6 +13,6 @@ export function useIsUnsupportedToken(): (address: NullishAddress) => boolean {
 
       return !!state
     },
-    [unsupportedTokens]
+    [unsupportedTokens],
   )
 }

@@ -1,4 +1,4 @@
-import type { Multicall3 } from '@cowprotocol/abis'
+import type { Multicall3 } from '@cowprotocol/cowswap-abis'
 import type { JsonRpcProvider } from '@ethersproject/providers'
 
 import { DEFAULT_BATCH_SIZE } from './const'

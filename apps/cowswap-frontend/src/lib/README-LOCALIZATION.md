@@ -29,7 +29,7 @@ Documentation: [https://lingui.dev/](https://lingui.dev/introduction)
 * Build an updated language source file `en-US.po` with:
 
 ```
-yarn run i18n
+pnpm run i18n
 ```
 
 * Push your changes to the branch connected to your Crowdin project.

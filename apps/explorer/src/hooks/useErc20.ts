@@ -45,9 +45,9 @@ export type UseMultipleErc20Params = { addresses: string[]; networkId?: Network 
  * Returns `error` with the error messages, if any.
  */
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+
 export function useMultipleErc20(
-  params: UseMultipleErc20Params
+  params: UseMultipleErc20Params,
 ): Return<Record<string, UiError>, Record<string, SingleErc20State>> {
   const { addresses, networkId } = params
 
@@ -67,7 +67,7 @@ export function useMultipleErc20(
         }
         return acc
       }, {}),
-    [addresses, tokenListTokens]
+    [addresses, tokenListTokens],
   )
 
   // If native token is in the list of tokens to be fetched, memoize it here
@@ -85,7 +85,7 @@ export function useMultipleErc20(
         }
         return undefined
       }, undefined) || {},
-    [addresses, networkId]
+    [addresses, networkId],
   )
 
   // check what on globalState has not been fetched yet
@@ -100,9 +100,9 @@ export function useMultipleErc20(
               // Do not try to fetch the ones in a token list
               !fromTokenList[address] &&
               // Do not try to fetch native
-              !isNativeToken(address)
+              !isNativeToken(address),
           ),
-    [addresses, erc20s, fromTokenList, isTokenListLoading]
+    [addresses, erc20s, fromTokenList, isTokenListLoading],
   )
   // flow control
   const running = useRef({ networkId, isRunning: false })
@@ -122,7 +122,7 @@ export function useMultipleErc20(
         address,
         networkId,
         setError: (error) => setErrors((curr) => ({ ...curr, [address]: error })),
-      })
+      }),
     )
 
     const fetched = await Promise.all(promises)
@@ -147,6 +147,6 @@ export function useMultipleErc20(
       error: errors,
       value: { ...erc20s, ...fromTokenList, ...nativeState },
     }),
-    [isTokenListLoading, isLoading, errors, erc20s, fromTokenList, nativeState]
+    [isTokenListLoading, isLoading, errors, erc20s, fromTokenList, nativeState],
   )
 }

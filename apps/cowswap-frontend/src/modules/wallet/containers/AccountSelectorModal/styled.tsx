@@ -1,6 +1,6 @@
-import Close from '@cowprotocol/assets/images/x.svg?react'
 import { UI } from '@cowprotocol/ui'
 
+import Close from 'assets/images/x.svg?react'
 import styled from 'styled-components/macro'
 
 export const CloseIcon = styled((props) => <Close {...props} />)`

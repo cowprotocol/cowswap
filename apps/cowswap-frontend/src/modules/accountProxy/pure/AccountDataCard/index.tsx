@@ -22,7 +22,6 @@ interface AccountDataCardProps {
   minHeight?: number | string
 }
 
-
 export function AccountDataCard({
   account,
   chainId,
@@ -47,12 +46,7 @@ export function AccountDataCard({
       showWatermark={showWatermark}
       ariaLabel={`Account ${safeShortenAddress(account)} overview`}
     >
-      <DefaultAccountContent
-        account={account}
-        chainId={chainId}
-        totalUsdAmount={totalUsdAmount}
-        loading={loading}
-      />
+      <DefaultAccountContent account={account} chainId={chainId} totalUsdAmount={totalUsdAmount} loading={loading} />
     </BaseAccountCard>
   )
 }

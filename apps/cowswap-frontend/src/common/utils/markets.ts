@@ -12,7 +12,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
  */
 export function getCanonicalMarketKey(
   tokenAddressA: string,
-  tokenAddressB: string
+  tokenAddressB: string,
 ): { marketKey: string; marketInverted: boolean } {
   const tokenAddressALower = tokenAddressA.toLocaleLowerCase()
   const tokenAddressBLower = tokenAddressB.toLocaleLowerCase()
@@ -39,7 +39,7 @@ export function getCanonicalMarketKey(
 export function getCanonicalMarketChainKey(
   chainId: SupportedChainId,
   tokenAddressA: string,
-  tokenAddressB: string
+  tokenAddressB: string,
 ): { marketKey: string; marketInverted: boolean } {
   const { marketKey, marketInverted } = getCanonicalMarketKey(tokenAddressA, tokenAddressB)
 

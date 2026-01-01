@@ -1,8 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import ArrowIcon from '@cowprotocol/assets/cow-swap/arrow.svg'
-import CowImage from '@cowprotocol/assets/cow-swap/cow_token.svg'
-import vCOWImage from '@cowprotocol/assets/images/vCOW.svg'
 import { useCurrencyAmountBalance } from '@cowprotocol/balances-and-allowances'
 import { COW_TOKEN_TO_CHAIN, COW_CONTRACT_ADDRESS, V_COW } from '@cowprotocol/common-const'
 import { WRAPPED_NATIVE_CURRENCIES as WETH } from '@cowprotocol/common-const'
@@ -15,6 +12,9 @@ import { CurrencyAmount } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
+import ArrowIcon from 'assets/cow-swap/arrow.svg'
+import CowImage from 'assets/cow-swap/cow_token.svg'
+import vCOWImage from 'assets/images/vCOW.svg'
 import SVG from 'react-inlinesvg'
 import { Link } from 'react-router'
 

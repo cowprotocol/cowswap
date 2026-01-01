@@ -1,10 +1,10 @@
 import { ReactNode } from 'react'
 
-import IMAGE_CARET_DOWN from '@cowprotocol/assets/cow-swap/carret-down.svg'
 import { InfoTooltip, RowFixed } from '@cowprotocol/ui'
 
 import { Trans, useLingui } from '@lingui/react/macro'
 import { Menu } from '@reach/menu-button'
+import IMAGE_CARET_DOWN from 'assets/cow-swap/carret-down.svg'
 
 import { DetailsRow } from 'modules/limitOrders/pure/LimitOrdersDetails/styled'
 import { PartiallyFillableOverrideDispatcherType } from 'modules/limitOrders/state/partiallyFillableOverride'

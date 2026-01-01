@@ -1,7 +1,6 @@
 import { getAddress } from '@ethersproject/address'
 import type { JsonRpcProvider } from '@ethersproject/providers'
 
-
 import { getContract } from './getContract'
 
 import Erc20Abi from '../abi/erc20.json'

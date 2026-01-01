@@ -42,7 +42,9 @@ export const ArrowsWrapper = styled.div`
     overflow: hidden;
     cursor: pointer;
     opacity: 0.5;
-    transition: opacity var(${UI.ANIMATION_DURATION}) ease-in-out, color var(${UI.ANIMATION_DURATION}) ease-in-out;
+    transition:
+      opacity var(${UI.ANIMATION_DURATION}) ease-in-out,
+      color var(${UI.ANIMATION_DURATION}) ease-in-out;
     display: flex;
     align-items: center;
     justify-content: center;

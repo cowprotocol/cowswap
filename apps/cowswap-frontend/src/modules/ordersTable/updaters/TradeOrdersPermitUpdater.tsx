@@ -15,4 +15,3 @@ export function TradeOrdersPermitUpdater(): ReactNode {
 
   return <OrdersPermitUpdater orders={orders} tradeType={TradeType.SWAP} />
 }
-

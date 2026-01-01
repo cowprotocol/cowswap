@@ -4,9 +4,8 @@ import { useCowAnalytics } from '@cowprotocol/analytics'
 import { Media, UI } from '@cowprotocol/ui'
 
 import Link from 'next/link'
-import styled from 'styled-components/macro'
-
 import { CowFiCategory } from 'src/common/analytics/types'
+import styled from 'styled-components/macro'
 
 interface CategoryItem {
   name: string

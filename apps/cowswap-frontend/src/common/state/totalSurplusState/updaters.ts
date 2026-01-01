@@ -26,7 +26,7 @@ export function TotalSurplusUpdater(): null {
 
       return CurrencyAmount.fromRawAmount(nativeCurrency, surplusData.totalSurplus)
     },
-    [nativeCurrency]
+    [nativeCurrency],
   )
 
   const {
@@ -37,7 +37,7 @@ export function TotalSurplusUpdater(): null {
   } = useSWR<CurrencyAmount<Currency> | null>(
     // Don't load if required params are missing: https://swr.vercel.app/docs/conditional-fetching
     chainId && account ? ['getSurplusData', chainId, account] : null,
-    fetcher
+    fetcher,
   )
 
   useEffect(() => {

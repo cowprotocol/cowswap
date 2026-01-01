@@ -1,7 +1,8 @@
 import { ReactNode } from 'react'
 
-import ReceiptIcon from '@cowprotocol/assets/cow-swap/icon-receipt.svg'
 import { ExternalLink } from '@cowprotocol/ui'
+
+import ReceiptIcon from 'assets/cow-swap/icon-receipt.svg'
 
 import { ConfirmDetailsItem } from 'modules/trade'
 

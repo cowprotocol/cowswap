@@ -56,9 +56,7 @@ export function SwapRateDetails({ rateInfoParams, deadline }: SwapRateDetailsPro
         swapContext &&
         bridgeContext && (
           <>
-            <QuoteDetails bridgeProvider={providerDetails}
-                          swapContext={swapContext}
-                          bridgeContext={bridgeContext}/>
+            <QuoteDetails bridgeProvider={providerDetails} swapContext={swapContext} bridgeContext={bridgeContext} />
           </>
         )
       }

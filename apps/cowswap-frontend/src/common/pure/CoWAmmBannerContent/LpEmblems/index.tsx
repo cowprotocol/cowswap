@@ -1,12 +1,12 @@
 import React from 'react'
 
-import ICON_ARROW from '@cowprotocol/assets/cow-swap/arrow.svg'
 import { USDC } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { TokenLogo } from '@cowprotocol/tokens'
 import { LpTokenProvider } from '@cowprotocol/types'
 import { ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 
+import ICON_ARROW from 'assets/cow-swap/arrow.svg'
 import SVG from 'react-inlinesvg'
 
 import { LP_PROVIDER_ICONS } from '../const'

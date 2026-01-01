@@ -1,4 +1,4 @@
-import { Erc20 } from '@cowprotocol/abis'
+import { Erc20 } from '@cowprotocol/cowswap-abis'
 import { PopulatedTransaction } from '@ethersproject/contracts'
 
 import { estimateApprove } from 'modules/erc20Approve'

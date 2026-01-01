@@ -1,9 +1,9 @@
 import { ReactNode } from 'react'
 
-import ICON_ARROW from '@cowprotocol/assets/images/arrow-left.svg'
-import ICON_BELL_ALERT from '@cowprotocol/assets/images/icon-bell-alert.svg'
 import { Media, UI } from '@cowprotocol/ui'
 
+import ICON_ARROW from 'assets/images/arrow-left.svg'
+import ICON_BELL_ALERT from 'assets/images/icon-bell-alert.svg'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 

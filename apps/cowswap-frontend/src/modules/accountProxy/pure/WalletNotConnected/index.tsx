@@ -1,10 +1,10 @@
 import { ReactNode } from 'react'
 
-import ICON_WALLET from '@cowprotocol/assets/cow-swap/wallet-plus.svg'
 import { ButtonPrimary, ButtonSize } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
+import ICON_WALLET from 'assets/cow-swap/wallet-plus.svg'
 import SVG from 'react-inlinesvg'
 
 import { Wrapper, Container, WalletIcon } from './styled'
