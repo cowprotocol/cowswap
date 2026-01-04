@@ -91,6 +91,7 @@ export function CommonPriorityBalancesAndAllowancesUpdater(): ReactNode {
         chainId={sourceChainId}
         isBffSwitchedOn={isBffSwitchedOn}
         isBffEnabled={isBffEnabled}
+        isSseEnabled={true}
         excludedTokens={priorityTokenAddresses}
         invalidateCacheTrigger={invalidateCacheTrigger}
       />
