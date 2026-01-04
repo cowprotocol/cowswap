@@ -1,8 +1,8 @@
 diff --git a/node_modules/@1inch/permit-signed-approvals-utils/eip-2612-permit.utils.js b/node_modules/@1inch/permit-signed-approvals-utils/eip-2612-permit.utils.js
-index 3e41e2e..e2a7fee 100644
+index 4d17a44..13f0f65 100644
 --- a/node_modules/@1inch/permit-signed-approvals-utils/eip-2612-permit.utils.js
 +++ b/node_modules/@1inch/permit-signed-approvals-utils/eip-2612-permit.utils.js
-@@ -161,7 +161,7 @@ class Eip2612PermitUtils {
+@@ -172,7 +172,7 @@ export class Eip2612PermitUtils {
              .catch(() => this.getTokenNonceByMethod(tokenAddress, walletAddress, nonceMethodNameIndex + 1))
              .then((res) => {
              if (res === '0x' || Number.isNaN(Number(res))) {
