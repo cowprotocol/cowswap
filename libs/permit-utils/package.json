@@ -4,7 +4,7 @@
   "type": "module",
   "dependencies": {
     "ethers": "^5.7.2",
-    "@1inch/permit-signed-approvals-utils": "^1.4.10",
+    "@1inch/permit-signed-approvals-utils": "^1.5.1",
     "tslib": "^2.6.1"
   },
   "module": "./index.js",
