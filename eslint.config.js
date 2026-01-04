@@ -103,7 +103,7 @@ module.exports = [
         'error',
         {
           enforceBuildableLibDependency: true,
-          allow: ['../../tools/**'],
+          allow: ['../../tools/**', '@cowprotocol/assets/**'],
           depConstraints: [
             {
               sourceTag: '*',
@@ -121,7 +121,7 @@ module.exports = [
       'jsx-a11y/accessible-emoji': 'off',
       'no-async-promise-executor': 'off',
       'no-constant-condition': 'off',
-      'no-restricted-imports': [
+      '@typescript-eslint/no-restricted-imports': [
         'error',
         {
           paths: [
@@ -132,6 +132,16 @@ module.exports = [
             {
               name: 'styled-components',
               message: 'Please import from styled-components/macro.',
+            },
+            {
+              name: '@1inch/permit-signed-approvals-utils',
+              message: 'Please import from @cowprotocol/permit-utils.',
+              allowTypeImports: true,
+            },
+            {
+              name: '@safe-global/api-kit',
+              message: 'Please use dynamic import.',
+              allowTypeImports: true,
             },
           ],
 
@@ -144,6 +154,13 @@ module.exports = [
               group: ['!styled-components/macro'],
             },
           ],
+        },
+      ],
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: 'ImportExpression[source.value="@1inch/permit-signed-approvals-utils"]',
+          message: 'Please import dynamically from @cowprotocol/permit-utils',
         },
       ],
       'no-unused-vars': 'off',
@@ -219,7 +236,7 @@ module.exports = [
   {
     files: ['apps/cowswap-frontend/**/*.{ts,tsx,js,jsx}'],
     rules: {
-      'no-restricted-imports': [
+      '@typescript-eslint/no-restricted-imports': [
         'error',
         {
           paths: [
@@ -227,6 +244,16 @@ module.exports = [
               name: 'react-router',
               importNames: ['useNavigate'],
               message: "Please import useNavigate from our own common package instead: 'common/hooks/useNavigate'",
+            },
+            {
+              name: 'lottie-react',
+              message: 'Please use dynamic import.',
+              allowTypeImports: true,
+            },
+            {
+              name: 'framer-motion',
+              message: 'Please use dynamic import.',
+              allowTypeImports: true,
             },
           ],
 
@@ -250,7 +277,7 @@ module.exports = [
   {
     files: ['apps/cowswap-frontend/src/common/**/*.{ts,tsx,js,jsx}'],
     rules: {
-      'no-restricted-imports': [
+      '@typescript-eslint/no-restricted-imports': [
         'error',
         {
           paths: [
@@ -308,7 +335,7 @@ module.exports = [
       'react-hooks/exhaustive-deps': 'warn',
       'react-hooks/purity': 'warn',
       '@next/next/no-img-element': 'warn',
-      'no-restricted-imports': 'warn',
+      '@typescript-eslint/no-restricted-imports': 'warn',
     },
   },
   ...compat.config({ extends: ['plugin:@nx/typescript'] }).map((config) => ({

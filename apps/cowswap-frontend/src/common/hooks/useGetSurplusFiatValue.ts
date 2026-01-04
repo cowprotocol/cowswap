@@ -1,4 +1,4 @@
-/* eslint-disable no-restricted-imports */ // TODO: Don't use 'modules' import
+/* eslint-disable @typescript-eslint/no-restricted-imports */ // TODO: Don't use 'modules' import
 import { useMemo } from 'react'
 
 import { MIN_FIAT_SURPLUS_VALUE, MIN_FIAT_SURPLUS_VALUE_MODAL, MIN_SURPLUS_UNITS } from '@cowprotocol/common-const'

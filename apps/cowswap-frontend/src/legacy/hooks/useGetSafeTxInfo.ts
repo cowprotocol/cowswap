@@ -3,10 +3,8 @@ import { useCallback } from 'react'
 import { retry, RetryOptions } from '@cowprotocol/common-utils'
 import { getSafeTransaction } from '@cowprotocol/core'
 import { useWalletInfo } from '@cowprotocol/wallet'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
-import type { SafeMultisigTransactionResponse } from '@safe-global/safe-core-sdk-types'
+import type { SafeMultisigTransactionResponse } from '@safe-global/types-kit'
 
-import { t } from '@lingui/core/macro'
 import { RetryResult } from 'types'
 
 const DEFAULT_RETRY_OPTIONS: RetryOptions = { n: 3, minWait: 1000, maxWait: 3000 }
@@ -14,20 +12,15 @@ const DEFAULT_RETRY_OPTIONS: RetryOptions = { n: 3, minWait: 1000, maxWait: 3000
 export type GetSafeTxInfo = (hash: string) => RetryResult<SafeMultisigTransactionResponse>
 
 export function useGetSafeTxInfo(): GetSafeTxInfo {
-  const provider = useWalletProvider()
   const { chainId } = useWalletInfo()
 
   const getSafeInfo = useCallback<GetSafeTxInfo>(
     (hash) => {
       return retry(() => {
-        if (!provider) {
-          throw new Error(t`There is no provider to get Gnosis safe info`)
-        }
-
-        return getSafeTransaction(chainId, hash, provider)
+        return getSafeTransaction(chainId, hash)
       }, DEFAULT_RETRY_OPTIONS)
     },
-    [chainId, provider],
+    [chainId],
   )
 
   return getSafeInfo

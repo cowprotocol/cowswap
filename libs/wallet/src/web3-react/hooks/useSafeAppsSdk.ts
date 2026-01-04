@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import SafeAppsSDK from '@safe-global/safe-apps-sdk'
+import type SafeAppsSDK from '@safe-global/safe-apps-sdk'
 import { useWeb3React } from '@web3-react/core'
 import { GnosisSafe } from '@web3-react/gnosis-safe'
 

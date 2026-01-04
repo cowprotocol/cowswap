@@ -1,13 +1,13 @@
-import React from 'react'
+import React, { Suspense, lazy } from 'react'
 
 import LOTTIE_RED_CROSS from '@cowprotocol/assets/lottie/red-cross.json'
-
-import Lottie from 'lottie-react'
 
 import * as styledEl from './styled'
 
 import { StepStatus } from '../constants'
 import { Description } from '../sharedStyled'
+
+const Lottie = lazy(() => import('lottie-react'))
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -39,12 +39,15 @@ export function StepComponent({
         $isCancelling={isCancelling}
       >
         {status === StepStatus.CANCELLING ? (
-          <Lottie
-            animationData={LOTTIE_RED_CROSS}
-            loop={true}
-            autoplay={true}
-            style={{ width: '24px', height: '24px' }}
-          />
+          // TODO: what fallback should be used here?
+          <Suspense fallback={null}>
+            <Lottie
+              animationData={LOTTIE_RED_CROSS}
+              loop={true}
+              autoplay={true}
+              style={{ width: '24px', height: '24px' }}
+            />
+          </Suspense>
         ) : (
           <>
             {index + 1}

@@ -1,4 +1,4 @@
-/* eslint-disable no-restricted-imports */ // TODO: Don't use 'modules' import
+/* eslint-disable @typescript-eslint/no-restricted-imports */ // TODO: Don't use 'modules' import
 import { useEffect } from 'react'
 
 import { useIsWindowVisible } from '@cowprotocol/common-hooks'

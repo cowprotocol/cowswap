@@ -1,4 +1,4 @@
-/* eslint-disable no-restricted-imports */ // TODO: Don't use 'modules' import
+/* eslint-disable @typescript-eslint/no-restricted-imports */ // TODO: Don't use 'modules' import
 import { ReactElement, useEffect, useMemo, useState } from 'react'
 
 import { cowAppDataLatestScheme } from '@cowprotocol/cow-sdk'

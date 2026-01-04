@@ -5,7 +5,6 @@ import { GenericOrder } from 'common/types'
 
 import { extractPermitData } from './extractPermitData'
 
-
 export async function checkPermitNonceAndAmount(
   account: string,
   chainId: number,
@@ -15,7 +14,7 @@ export async function checkPermitNonceAndAmount(
   permitInfo: PermitInfo,
 ): Promise<boolean | undefined> {
   try {
-    const eip2612Utils = getPermitUtilsInstance(chainId, provider, account)
+    const eip2612Utils = await getPermitUtilsInstance(chainId, provider, account)
     const sellTokenAddress = order.inputToken.address
 
     const { permitNonce, permitAmount, permitType } = extractPermitData(permitCallData)
