@@ -2,23 +2,22 @@ import { ReactNode } from 'react'
 
 import { ChainPanel } from '../../../pure/ChainPanel'
 import { MobileChainSelector } from '../../../pure/SelectTokenModal/MobileChainSelector'
+import { useChainState } from '../hooks'
 import { MobileChainPanelPortal } from '../MobileChainPanelPortal'
-import { useChainContext, useLayoutContext } from '../SelectTokenWidgetContext'
 
 /**
  * SelectTokenWidget.ChainSelector - Handles mobile chain selection.
- * Reads its data from ChainContext and LayoutContext.
+ * Uses useChainState hook that combines atoms + context.
  */
 export function ChainSelector(): ReactNode {
-  const chain = useChainContext()
-  const { isCompactLayout } = useLayoutContext()
+  const chain = useChainState()
 
   if (!chain.isEnabled) {
     return null
   }
 
   // Only show mobile chain selector on compact layout
-  if (!isCompactLayout || !chain.mobileChainsState) {
+  if (!chain.isCompactLayout || !chain.mobileChainsState) {
     return null
   }
 
@@ -50,9 +49,9 @@ export function ChainSelector(): ReactNode {
  * Rendered outside the modal container.
  */
 export function DesktopChainPanel(): ReactNode {
-  const chain = useChainContext()
+  const chain = useChainState()
 
-  if (!chain.isEnabled || !chain.isChainPanelVisible || !chain.chainsToSelect) {
+  if (!chain.isEnabled || !chain.isVisible || !chain.chainsToSelect) {
     return null
   }
 

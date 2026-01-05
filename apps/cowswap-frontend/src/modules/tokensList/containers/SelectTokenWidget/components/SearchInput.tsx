@@ -5,14 +5,14 @@ import { SearchInput as SearchInputUI } from '@cowprotocol/ui'
 import { t } from '@lingui/core/macro'
 
 import * as styledEl from '../../../pure/SelectTokenModal/styled'
-import { useSearchContext } from '../SelectTokenWidgetContext'
+import { useSearchState } from '../hooks'
 
 /**
  * SelectTokenWidget.SearchInput - Token search input.
- * Reads its data from SearchContext.
+ * Uses useSearchState hook that reads from atom + context.
  */
 export function SearchInput(): ReactNode {
-  const { value, onChange, onPressEnter } = useSearchContext()
+  const { value, onChange, onPressEnter } = useSearchState()
 
   return (
     <styledEl.SearchRow>

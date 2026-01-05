@@ -7,14 +7,14 @@ import { t } from '@lingui/core/macro'
 import { SettingsIcon } from 'modules/trade/pure/Settings'
 
 import * as styledEl from '../../../pure/SelectTokenModal/styled'
-import { useHeaderContext } from '../SelectTokenWidgetContext'
+import { useHeaderState } from '../hooks'
 
 /**
  * SelectTokenWidget.Header - Title bar with back button, title, and manage button.
- * Reads its data from HeaderContext.
+ * Uses useHeaderState hook that combines config + callbacks.
  */
 export function Header(): ReactNode {
-  const { title, showManageButton, onDismiss, onOpenManageWidget } = useHeaderContext()
+  const { title, showManageButton, onDismiss, onOpenManageWidget } = useHeaderState()
 
   return (
     <styledEl.TitleBar>

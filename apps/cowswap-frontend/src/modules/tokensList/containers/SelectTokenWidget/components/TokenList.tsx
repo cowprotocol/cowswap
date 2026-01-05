@@ -5,11 +5,11 @@ import { Trans } from '@lingui/react/macro'
 import * as styledEl from '../../../pure/SelectTokenModal/styled'
 import { TokensContent } from '../../../pure/TokensContent'
 import { LpTokenListsWidget } from '../../LpTokenListsWidget'
-import { useTokenListContext, useSearchContext } from '../SelectTokenWidgetContext'
+import { useTokenListState } from '../hooks'
 
 /**
  * SelectTokenWidget.TokenList - The main token list with favorites, recents, and all tokens.
- * Reads its data from TokenListContext.
+ * Uses useTokenListState hook that combines atoms + context.
  */
 export function TokenList(): ReactNode {
   const {
@@ -18,10 +18,10 @@ export function TokenList(): ReactNode {
     disableErc20,
     isRouteAvailable,
     account,
+    searchInput,
     onSelectToken,
     openPoolPage,
-  } = useTokenListContext()
-  const { value: searchInput } = useSearchContext()
+  } = useTokenListState()
 
   if (displayLpTokenLists) {
     return (

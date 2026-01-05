@@ -1,4 +1,4 @@
-import { MouseEvent, ReactNode, useEffect, useState } from 'react'
+import { MouseEvent, ReactNode, useEffect } from 'react'
 
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
@@ -15,32 +15,26 @@ import {
   BlockingView,
   useHasBlockingView,
 } from './components'
+import { WidgetCallbacksProvider, WidgetConfigProvider } from './context'
 import { useSelectTokenWidgetController, type SelectTokenWidgetProps } from './controller'
-import { SelectTokenWidgetProvider } from './SelectTokenWidgetContext'
+import { useWidgetSetup } from './hooks'
 import { InnerWrapper, ModalContainer, WidgetCard, WidgetOverlay, Wrapper } from './styled'
-import { useWidgetContext } from './useWidgetContext'
 
 import { useCloseTokenSelectWidget } from '../../hooks/useCloseTokenSelectWidget'
 import * as styledEl from '../../pure/SelectTokenModal/styled'
 
-// ============================================================================
-// Main Component
-// ============================================================================
-
 export function SelectTokenWidget(props: SelectTokenWidgetProps): ReactNode {
   const { shouldRender, hasChainPanel, viewProps } = useSelectTokenWidgetController(props)
   const isCompactLayout = useMediaQuery(Media.upToMedium(false))
-  const [isMobileChainPanelOpen, setIsMobileChainPanelOpen] = useState(false)
   const isChainPanelVisible = hasChainPanel && !isCompactLayout
   const closeTokenSelectWidget = useCloseTokenSelectWidget()
 
-  // Build context from controller props
-  const contextValue = useWidgetContext({
+  // Setup atoms and get provider values
+  const { callbacks, config } = useWidgetSetup({
     viewProps,
     isChainPanelVisible,
     isCompactLayout,
-    isMobileChainPanelOpen,
-    setIsMobileChainPanelOpen,
+    isChainPanelEnabled: hasChainPanel,
   })
 
   // Cleanup: reset widget state on unmount
@@ -49,16 +43,6 @@ export function SelectTokenWidget(props: SelectTokenWidgetProps): ReactNode {
       closeTokenSelectWidget({ overrideForceLock: true })
     }
   }, [closeTokenSelectWidget])
-
-  useEffect(() => {
-    if (!shouldRender) {
-      return
-    }
-
-    if (isChainPanelVisible) {
-      setIsMobileChainPanelOpen(false)
-    }
-  }, [isChainPanelVisible, shouldRender])
 
   useEffect(() => {
     if (!shouldRender) {
@@ -83,13 +67,15 @@ export function SelectTokenWidget(props: SelectTokenWidgetProps): ReactNode {
   }
 
   const widgetContent = (
-    <SelectTokenWidgetProvider value={contextValue}>
-      <Wrapper>
-        <InnerWrapper $hasSidebar={isChainPanelVisible} $isMobileOverlay={isCompactLayout}>
-          <SelectTokenWidgetContent />
-        </InnerWrapper>
-      </Wrapper>
-    </SelectTokenWidgetProvider>
+    <WidgetCallbacksProvider value={callbacks}>
+      <WidgetConfigProvider value={config}>
+        <Wrapper>
+          <InnerWrapper $hasSidebar={isChainPanelVisible} $isMobileOverlay={isCompactLayout}>
+            <SelectTokenWidgetContent />
+          </InnerWrapper>
+        </Wrapper>
+      </WidgetConfigProvider>
+    </WidgetCallbacksProvider>
   )
 
   const overlay = (
@@ -107,11 +93,6 @@ export function SelectTokenWidget(props: SelectTokenWidgetProps): ReactNode {
   return createPortal(overlay, document.body)
 }
 
-// ============================================================================
-// Compound Component: Main Content
-// Uses context - no props needed
-// ============================================================================
-
 function SelectTokenWidgetContent(): ReactNode {
   const hasBlockingView = useHasBlockingView()
 
@@ -124,7 +105,7 @@ function SelectTokenWidgetContent(): ReactNode {
     )
   }
 
-  // Normal token selection view using compound components
+  // Normal token selection view
   return (
     <>
       <ModalContainer>
@@ -144,10 +125,6 @@ function SelectTokenWidgetContent(): ReactNode {
   )
 }
 
-// ============================================================================
-// Compound Component: Modal Shell
-// ============================================================================
-
 interface ModalProps {
   children: ReactNode
 }
@@ -155,10 +132,6 @@ interface ModalProps {
 function Modal({ children }: ModalProps): ReactNode {
   return <styledEl.Wrapper>{children}</styledEl.Wrapper>
 }
-
-// ============================================================================
-// Static Properties - Compound Component Pattern
-// ============================================================================
 
 SelectTokenWidget.Modal = Modal
 SelectTokenWidget.Header = Header
