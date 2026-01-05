@@ -1,7 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState, useTransition } from 'react'
 
-import IMG_ICON_SEARCH from '@cowprotocol/assets/images/icon-search.svg'
-import IMG_ICON_X from '@cowprotocol/assets/images/x.svg'
 import { useDebounce, useMediaQuery, useOnClickOutside } from '@cowprotocol/common-hooks'
 import { Media } from '@cowprotocol/ui'
 
@@ -28,6 +26,8 @@ import {
 
 import { searchArticlesAction } from '../../app/actions'
 import { useKeyboardNavigation } from '../../hooks/useKeyboardNavigation'
+import IMG_ICON_SEARCH from '../../src/assets/images/icon-search.svg'
+import IMG_ICON_X from '../../src/assets/images/x.svg'
 
 import { highlightQuery } from '@/util/textHighlighting'
 

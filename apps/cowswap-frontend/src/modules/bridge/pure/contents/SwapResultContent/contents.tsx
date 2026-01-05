@@ -1,10 +1,10 @@
 import { ReactNode } from 'react'
 
-import PlusIcon from '@cowprotocol/assets/cow-swap/plus.svg'
 import type { Currency, CurrencyAmount, Token } from '@uniswap/sdk-core'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
+import PlusIcon from 'assets/cow-swap/plus.svg'
 import styled from 'styled-components/macro'
 
 import { AMM_LOGOS } from 'legacy/components/AMMsLogo'

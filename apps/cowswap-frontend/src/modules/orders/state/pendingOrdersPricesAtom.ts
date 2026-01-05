@@ -22,5 +22,5 @@ export const updatePendingOrderPricesAtom = atom(
 
       return { ...prevState, [orderId]: data }
     })
-  }
+  },
 )

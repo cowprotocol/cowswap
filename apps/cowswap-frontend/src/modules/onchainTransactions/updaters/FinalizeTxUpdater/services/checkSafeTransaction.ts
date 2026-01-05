@@ -34,7 +34,7 @@ export function checkSafeTransaction(transaction: EnhancedTransactionDetails, pa
         // Get the ethereum tx receipt
         console.log(
           '[FinalizeTxUpdater] Safe transaction is executed, but we have not fetched the receipt yet. Tx: ',
-          transactionHash
+          transactionHash,
         )
         // Get the transaction receipt
         const { promise: receiptPromise } = getReceipt(transactionHash)

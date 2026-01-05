@@ -17,6 +17,6 @@ export function useENSContentHash(ensName?: string | null): { loading: boolean; 
       contenthash: contenthash ?? null,
       loading: hashLoading,
     }),
-    [hashLoading, contenthash]
+    [hashLoading, contenthash],
   )
 }

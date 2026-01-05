@@ -24,6 +24,6 @@ export function useENS(nameOrAddress?: string | null): {
       address: validated ? validated : lookup.address,
       name: reverseLookup.ENSName ? reverseLookup.ENSName : !validated && lookup.address ? nameOrAddress || null : null,
     }),
-    [lookup.address, lookup.loading, nameOrAddress, reverseLookup.ENSName, reverseLookup.loading, validated]
+    [lookup.address, lookup.loading, nameOrAddress, reverseLookup.ENSName, reverseLookup.loading, validated],
   )
 }

@@ -1,11 +1,10 @@
 import { ReactNode } from 'react'
 
-import Checkmark from '@cowprotocol/assets/cow-swap/checkmark.svg'
-import Exclamation from '@cowprotocol/assets/cow-swap/exclamation.svg'
-import Send from '@cowprotocol/assets/cow-swap/send.svg'
-import X from '@cowprotocol/assets/cow-swap/x.svg'
-
 import { t } from '@lingui/core/macro'
+import Checkmark from 'assets/cow-swap/checkmark.svg'
+import Exclamation from 'assets/cow-swap/exclamation.svg'
+import Send from 'assets/cow-swap/send.svg'
+import X from 'assets/cow-swap/x.svg'
 
 import { SmartOrderStatus } from '../constants'
 import { EthFlowStepperProps } from '../index'

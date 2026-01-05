@@ -30,7 +30,7 @@ function shouldIgnoreErrorBasedOnExtra(error: SentryErrorEvent): boolean {
       'code' in serialized &&
       serialized.code &&
       typeof serialized.code === 'number' &&
-      EXTRA_ERROR_CODES_TO_IGNORE.has(serialized.code)
+      EXTRA_ERROR_CODES_TO_IGNORE.has(serialized.code),
   )
 }
 

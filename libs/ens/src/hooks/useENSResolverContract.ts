@@ -1,6 +1,6 @@
-import { EnsPublicResolver, EnsPublicResolverAbi } from '@cowprotocol/abis'
 import { SWR_NO_REFRESH_OPTIONS } from '@cowprotocol/common-const'
 import { getContract } from '@cowprotocol/common-utils'
+import { EnsPublicResolver, EnsPublicResolverAbi } from '@cowprotocol/cowswap-abis'
 import { useWalletChainId, useWalletProvider } from '@cowprotocol/wallet-provider'
 
 import useSWR from 'swr'
@@ -14,7 +14,7 @@ export function useENSResolverContract(address: string | undefined): EnsPublicRe
     ([, _provider, , _address]) => {
       return getContract(_address, EnsPublicResolverAbi, _provider) as EnsPublicResolver
     },
-    SWR_NO_REFRESH_OPTIONS
+    SWR_NO_REFRESH_OPTIONS,
   )
 
   return data

@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
 
-import IMG_ICON_MINUS from '@cowprotocol/assets/images/icon-minus.svg'
-import IMG_ICON_PLUS from '@cowprotocol/assets/images/icon-plus.svg'
 import { Font, Media, UI } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
+
+import IMG_ICON_MINUS from '../src/assets/images/icon-minus.svg'
+import IMG_ICON_PLUS from '../src/assets/images/icon-plus.svg'
 
 const Wrapper = styled.div`
   --titleSize: 26px;

@@ -1,7 +1,8 @@
 import { useCallback } from 'react'
 
-import { useConnect } from './useConnect'
 import { WalletClient } from 'viem'
+
+import { useConnect } from './useConnect'
 
 const CONFIG = {
   rpc: {

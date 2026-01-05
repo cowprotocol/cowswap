@@ -1,13 +1,13 @@
 import { useAtom } from 'jotai'
 import { ReactElement, ReactNode, RefObject, useCallback, useEffect, useRef } from 'react'
 
-import EXPERIMENT_ICON from '@cowprotocol/assets/cow-swap/experiment.svg'
 import { isInjectedWidget } from '@cowprotocol/common-utils'
 import { StatefulValue } from '@cowprotocol/types'
 import { HelpTooltip, RowBetween, RowFixed } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
 import { Menu, useMenuButtonContext } from '@reach/menu-button'
+import EXPERIMENT_ICON from 'assets/cow-swap/experiment.svg'
 import SVG from 'react-inlinesvg'
 import { Text } from 'rebass'
 import { ThemedText } from 'theme'

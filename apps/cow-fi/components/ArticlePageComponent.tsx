@@ -7,7 +7,12 @@ import { CmsImage, Media, UI } from '@cowprotocol/ui'
 
 import ReactMarkdown from 'react-markdown'
 import rehypeRaw from 'rehype-raw'
+import { CowFiCategory } from 'src/common/analytics/types'
 import styled from 'styled-components/macro'
+
+import { useLazyLoadImages } from '../hooks/useLazyLoadImages'
+import useWebShare from '../hooks/useWebShare'
+import { Article, SharedRichTextComponent } from '../services/cms'
 
 import { CategoryLinks } from '@/components/CategoryLinks'
 import { Link, LinkType } from '@/components/Link'
@@ -33,11 +38,6 @@ import {
 } from '@/styles/styled'
 import { formatDate } from '@/util/formatDate'
 import { stripHtmlTags } from '@/util/stripHTMLTags'
-import { CowFiCategory } from 'src/common/analytics/types'
-
-import { useLazyLoadImages } from '../hooks/useLazyLoadImages'
-import useWebShare from '../hooks/useWebShare'
-import { Article, SharedRichTextComponent } from '../services/cms'
 
 interface ArticlePageProps {
   article: Article

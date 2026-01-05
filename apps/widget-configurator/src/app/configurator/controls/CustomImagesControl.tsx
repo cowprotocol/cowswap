@@ -19,7 +19,7 @@ export function CustomImagesControl({ state }: CustomImagesControlProps) {
     (e: ChangeEvent<HTMLInputElement>) => {
       setCustomImages((prevState) => ({ ...prevState, emptyOrders: e.target.value || '' }))
     },
-    [setCustomImages]
+    [setCustomImages],
   )
 
   return (

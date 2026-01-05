@@ -18,6 +18,6 @@ export function useMultipleOrdersCancellation() {
       setOrdersToCancel(orders)
       openModal()
     },
-    [openModal, setOrdersToCancel]
+    [openModal, setOrdersToCancel],
   )
 }

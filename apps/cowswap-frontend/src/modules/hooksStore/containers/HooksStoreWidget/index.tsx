@@ -1,11 +1,11 @@
 import { ReactNode, useCallback, useEffect, useState } from 'react'
 
-import ICON_HOOK from '@cowprotocol/assets/cow-swap/hook.svg'
 import { HookDappWalletCompatibility } from '@cowprotocol/hook-dapp-lib'
 import { BannerOrientation, DismissableInlineBanner } from '@cowprotocol/ui'
 import { useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
 
 import { Trans } from '@lingui/react/macro'
+import ICON_HOOK from 'assets/cow-swap/hook.svg'
 
 import { SwapWidget } from 'modules/swap'
 import { useIsSellNative, useIsWrapOrUnwrap } from 'modules/trade'

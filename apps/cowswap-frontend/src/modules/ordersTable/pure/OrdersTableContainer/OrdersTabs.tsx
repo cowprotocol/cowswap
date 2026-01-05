@@ -1,11 +1,11 @@
 import { ReactNode, ChangeEvent } from 'react'
 
-import alertCircle from '@cowprotocol/assets/cow-swap/alert-circle.svg'
-import orderPresignaturePending from '@cowprotocol/assets/cow-swap/order-presignature-pending.svg'
 import { Media, UI } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { useLingui } from '@lingui/react/macro'
+import alertCircle from 'assets/cow-swap/alert-circle.svg'
+import orderPresignaturePending from 'assets/cow-swap/order-presignature-pending.svg'
 import SVG from 'react-inlinesvg'
 import { Link } from 'react-router'
 import styled from 'styled-components/macro'

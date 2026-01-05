@@ -1,6 +1,5 @@
 import React, { ReactNode, useCallback, useMemo } from 'react'
 
-import ICON_ORDERS from '@cowprotocol/assets/svg/orders.svg'
 import { useFeatureFlags, useTheme, useMediaQuery } from '@cowprotocol/common-hooks'
 import { isInjectedWidget, maxAmountSpend } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -9,6 +8,7 @@ import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/w
 import { Currency } from '@uniswap/sdk-core'
 
 import { Trans, useLingui } from '@lingui/react/macro'
+import ICON_ORDERS from 'assets/svg/orders.svg'
 import SVG from 'react-inlinesvg'
 import { Nullish } from 'types'
 

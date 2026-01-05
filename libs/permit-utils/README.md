@@ -5,7 +5,7 @@ Collection of utils for handling token permits.
 ## Installation
 
 ```bash
-yarn add @cowprotocol/permit-utils
+npm install @cowprotocol/permit-utils
 ```
 
 ## Usage

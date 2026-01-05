@@ -3,13 +3,13 @@ module.exports = {
   pseudoLocale: 'pseudo',
   sourceLocale: 'en',
   fallbackLocales: {
-    default: 'en'
+    default: 'en',
   },
   catalogs: [
     {
       path: 'translations/locales/{locale}/messages',
-      include: ['./pages', 'components']
-    }
+      include: ['./pages', 'components'],
+    },
   ],
-  format: 'po'
+  format: 'po',
 }

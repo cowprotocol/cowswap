@@ -14,7 +14,6 @@ import { Network } from 'types'
 
 import { BlockExplorerLink, Props } from '.'
 
-
 const networkIds = Object.values(Network).filter(Number.isInteger)
 
 export default {

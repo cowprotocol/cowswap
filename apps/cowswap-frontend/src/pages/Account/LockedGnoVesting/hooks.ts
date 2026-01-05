@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import { MerkleDrop, MerkleDropAbi, TokenDistro, TokenDistroAbi } from '@cowprotocol/abis'
 import {
   COW_TOKEN_TO_CHAIN,
   LOCKED_GNO_VESTING_DURATION,
@@ -9,6 +8,7 @@ import {
   TOKEN_DISTRO_CONTRACT_ADDRESSES,
 } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { MerkleDrop, MerkleDropAbi, TokenDistro, TokenDistroAbi } from '@cowprotocol/cowswap-abis'
 import { Command } from '@cowprotocol/types'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { ContractTransaction } from '@ethersproject/contracts'

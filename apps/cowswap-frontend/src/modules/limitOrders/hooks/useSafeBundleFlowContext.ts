@@ -7,7 +7,6 @@ import { SafeBundleFlowContext, TradeFlowContext } from 'modules/limitOrders/ser
 
 import { useTokenContract } from 'common/hooks/useContract'
 
-
 export function useSafeBundleFlowContext(tradeContext: TradeFlowContext | null): SafeBundleFlowContext | null {
   const sellToken = tradeContext?.postOrderParams.sellToken
   const { contract: erc20Contract } = useTokenContract(sellToken?.address)

@@ -9,7 +9,6 @@ import { GetTxOrdersParams } from 'api/operator/types'
 
 import { RAW_ORDER } from '../data'
 
-
 const networkIdSearchListRemaining = [Network.MAINNET, Network.SEPOLIA]
 
 describe('tryGetOrderOnAllNetworks', () => {

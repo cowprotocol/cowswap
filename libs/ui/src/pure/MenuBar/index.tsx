@@ -10,12 +10,6 @@ import React, {
   useState,
 } from 'react'
 
-import IMG_ICON_ARROW_RIGHT from '@cowprotocol/assets/images/arrow-right.svg'
-import IMG_ICON_CARRET_DOWN from '@cowprotocol/assets/images/carret-down.svg'
-import IMG_ICON_MENU_DOTS from '@cowprotocol/assets/images/menu-grid-dots.svg'
-import IMG_ICON_MENU_HAMBURGER from '@cowprotocol/assets/images/menu-hamburger.svg'
-import IMG_ICON_SETTINGS_GLOBAL from '@cowprotocol/assets/images/settings-global.svg'
-import IMG_ICON_X from '@cowprotocol/assets/images/x.svg'
 import { LOCALE_DISPLAY_NAMES } from '@cowprotocol/common-const'
 import { useMediaQuery, useOnClickOutside } from '@cowprotocol/common-hooks'
 import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
@@ -52,6 +46,12 @@ import {
   isMobileQuery,
 } from './styled'
 
+import IMG_ICON_ARROW_RIGHT from '../../assets/images/arrow-right.svg'
+import IMG_ICON_CARRET_DOWN from '../../assets/images/carret-down.svg'
+import IMG_ICON_MENU_DOTS from '../../assets/images/menu-grid-dots.svg'
+import IMG_ICON_MENU_HAMBURGER from '../../assets/images/menu-hamburger.svg'
+import IMG_ICON_SETTINGS_GLOBAL from '../../assets/images/settings-global.svg'
+import IMG_ICON_X from '../../assets/images/x.svg'
 import { Media } from '../../consts'
 import { UI } from '../../enum'
 import { BadgeType } from '../../types'

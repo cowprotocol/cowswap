@@ -7,10 +7,6 @@ React component that creates a CoW Swap widget. It is based on [https://npmjs.co
 Install dependency
 
 ```bash
-yarn add @cowprotocol/widget-react
-```
-
-```bash
 npm install @cowprotocol/widget-react
 ```
 

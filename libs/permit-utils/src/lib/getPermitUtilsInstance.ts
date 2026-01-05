@@ -17,7 +17,7 @@ const PROVIDER_UTILS_CACHE = new Map<string, Eip2612PermitUtils>()
 export function getPermitUtilsInstance(
   chainId: number,
   provider: JsonRpcProvider,
-  account?: string | undefined
+  account?: string | undefined,
 ): Eip2612PermitUtils {
   const chainCache = CHAIN_UTILS_CACHE.get(chainId)
 
@@ -41,7 +41,7 @@ export function getPermitUtilsInstance(
   } else {
     console.log(
       `[getPermitUtilsInstance] Set cached provider utils for chain ${chainId}-${account}`,
-      eip2612PermitUtils
+      eip2612PermitUtils,
     )
     PROVIDER_UTILS_CACHE.set(providerCacheKey, eip2612PermitUtils)
   }

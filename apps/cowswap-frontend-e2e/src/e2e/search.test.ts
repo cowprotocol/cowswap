@@ -11,7 +11,7 @@ it('should be true', () => {
 
 // TODO: disable this test because it's not working - needs to be fixed
 // TODO: Break down this large function into smaller functions
- 
+
 describe.skip('Search', () => {
   beforeEach(() => {
     cy.visit('/#/11155111/swap/')

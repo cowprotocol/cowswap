@@ -66,6 +66,6 @@ export function useTable(options: TableOptions): TableStateAndSetters {
       setPageOffset(newOffset)
     }
 
-    return ({ state, setPageSize, handleNextPage, handlePreviousPage }) as TableStateAndSetters
+    return { state, setPageSize, handleNextPage, handlePreviousPage } as TableStateAndSetters
   }, [state, setState])
 }

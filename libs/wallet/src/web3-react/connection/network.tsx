@@ -9,7 +9,7 @@ import { Web3ReactConnection } from '../types'
 const defaultChainId = getCurrentChainIdFromUrl()
 
 const [web3Network, web3NetworkHooks] = initializeConnector<Network>(
-  (actions) => new Network({ actions, urlMap: RPC_URLS, defaultChainId })
+  (actions) => new Network({ actions, urlMap: RPC_URLS, defaultChainId }),
 )
 export const networkConnection: Web3ReactConnection = {
   connector: web3Network,

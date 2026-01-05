@@ -28,7 +28,9 @@ const pageButtonStyles = css<{ $active?: boolean }>`
   width: 34px;
   margin: 0 5px;
   cursor: pointer;
-  transition: background var(${UI.ANIMATION_DURATION}) ease-in-out, color var(${UI.ANIMATION_DURATION}) ease-in-out;
+  transition:
+    background var(${UI.ANIMATION_DURATION}) ease-in-out,
+    color var(${UI.ANIMATION_DURATION}) ease-in-out;
   text-decoration: none;
 
   &:hover {

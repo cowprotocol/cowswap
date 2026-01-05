@@ -4,7 +4,12 @@ import { getCurrentChainIdFromUrl, isInjectedWidget } from '@cowprotocol/common-
 import { jotaiStore } from '@cowprotocol/core'
 import { Connector } from '@web3-react/types'
 
-import { useSelectedEip6963ProviderInfo, useSetEip6963Provider, useBeginEagerConnect, useEndEagerConnect } from '../../../api/hooks'
+import {
+  useSelectedEip6963ProviderInfo,
+  useSetEip6963Provider,
+  useBeginEagerConnect,
+  useEndEagerConnect,
+} from '../../../api/hooks'
 import { selectedEip6963ProviderRdnsAtom } from '../../../api/state/multiInjectedProvidersAtom'
 import { ConnectionType } from '../../../api/types'
 import { getIsInjectedMobileBrowser } from '../../../api/utils/connection'
@@ -24,13 +29,12 @@ async function connect(connector: Connector) {
     } else {
       await connector.activate(chainId)
     }
-  // TODO: Replace any with proper type definitions
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // TODO: Replace any with proper type definitions
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     console.debug(`web3-react eager connection error: ${error}`)
   }
 }
-
 
 export function useEagerlyConnect(selectedWallet: ConnectionType | undefined, standaloneMode?: boolean): void {
   const [tryConnectEip6963Provider, setTryConnectEip6963Provider] = useState(false)

@@ -17,6 +17,6 @@ export function useENSAddress(ensName?: string | null): { loading: boolean; addr
       address: addr ?? null,
       loading: addrLoading,
     }),
-    [addr, addrLoading]
+    [addr, addrLoading],
   )
 }

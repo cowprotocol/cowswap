@@ -1,15 +1,19 @@
 'use client'
 
-import { apolloClient } from '../services/uniswap-price/apollo-client'
-import { WithLDProvider } from '@/components/WithLDProvider'
-import { ThemeProvider } from '../theme'
-import { CowAnalyticsProvider, initGtm } from '@cowprotocol/analytics'
-import { ApolloProvider } from '@apollo/client'
-import GlobalStyles from '@/styles/global.styles'
 import { Suspense, useState } from 'react'
-import { ServerStyleSheet, StyleSheetManager } from 'styled-components/macro'
+
+import { CowAnalyticsProvider, initGtm } from '@cowprotocol/analytics'
+
+import { ApolloProvider } from '@apollo/client'
 import { useServerInsertedHTML } from 'next/navigation'
 import CacheProvider from 'react-inlinesvg/provider'
+import { ServerStyleSheet, StyleSheetManager } from 'styled-components/macro'
+
+import { apolloClient } from '../services/uniswap-price/apollo-client'
+import { ThemeProvider } from '../theme'
+
+import { WithLDProvider } from '@/components/WithLDProvider'
+import GlobalStyles from '@/styles/global.styles'
 
 const cowAnalytics = initGtm()
 

@@ -13,4 +13,3 @@ type LimitOrdersPermitUpdaterProps = {
 export function LimitOrdersPermitUpdater({ orders }: LimitOrdersPermitUpdaterProps): ReactNode {
   return <OrdersPermitUpdater orders={orders} tradeType={TradeType.LIMIT_ORDER} />
 }
-

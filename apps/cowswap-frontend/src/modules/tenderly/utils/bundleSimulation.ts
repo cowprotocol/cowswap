@@ -1,6 +1,6 @@
-import { Erc20Abi } from '@cowprotocol/abis'
 import { BFF_BASE_URL } from '@cowprotocol/common-const'
 import { COW_PROTOCOL_SETTLEMENT_CONTRACT_ADDRESS, SupportedChainId } from '@cowprotocol/cow-sdk'
+import { Erc20Abi } from '@cowprotocol/cowswap-abis'
 import { CowHookDetails } from '@cowprotocol/hook-dapp-lib'
 
 import { Interface } from 'ethers/lib/utils'

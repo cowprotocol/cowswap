@@ -3,7 +3,7 @@ import { wait } from './wait'
 export async function pollUntil<T>(
   fn: () => Promise<T | null>,
   fnCondition: (result: T | null) => boolean,
-  ms: number
+  ms: number,
 ): Promise<T | null> {
   let result = await fn()
 

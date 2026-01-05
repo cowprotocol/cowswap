@@ -1,12 +1,12 @@
-import CheckSingular from '@cowprotocol/assets/cow-swap/check-singular.svg'
-import SurplusCow from '@cowprotocol/assets/cow-swap/surplus-cow.svg'
-import twitterImage from '@cowprotocol/assets/cow-swap/twitter.svg'
 import { isSellOrder } from '@cowprotocol/common-utils'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { ExternalLink, FiatAmount, SymbolElement, TokenAmount, UI } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
+import CheckSingular from 'assets/cow-swap/check-singular.svg'
+import SurplusCow from 'assets/cow-swap/surplus-cow.svg'
+import twitterImage from 'assets/cow-swap/twitter.svg'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 

@@ -38,7 +38,7 @@ export function usePermitCompatibleTokens(): PermitCompatibleTokens {
       const addressLowerCased = address.toLowerCase()
 
       permitCompatibleTokens[addressLowerCased] = isSupportedPermitInfo(
-        preGeneratedPermitInfoRef.current[addressLowerCased]
+        preGeneratedPermitInfoRef.current[addressLowerCased],
       )
     }
 

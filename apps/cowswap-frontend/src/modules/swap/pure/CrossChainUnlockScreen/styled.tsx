@@ -1,6 +1,6 @@
-import CROSS_CHAIN_BG from '@cowprotocol/assets/cross-chain-unlock-bg.svg'
 import { Media, UI } from '@cowprotocol/ui'
 
+import CROSS_CHAIN_BG from 'assets/cross-chain-unlock-bg.svg'
 import styled from 'styled-components/macro'
 
 export const Container = styled.div<{ darkMode: boolean }>`

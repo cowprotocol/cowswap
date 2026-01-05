@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 
-import type { Multicall3 } from '@cowprotocol/abis'
+import type { Multicall3 } from '@cowprotocol/cowswap-abis'
 import { Result } from '@ethersproject/abi'
 import type { BaseContract } from '@ethersproject/contracts'
 import type { Web3Provider } from '@ethersproject/providers'

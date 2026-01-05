@@ -1,6 +1,6 @@
-import CowProtocolIcon from '@cowprotocol/assets/cow-swap/cow_token.svg'
 import { Media } from '@cowprotocol/ui'
 
+import CowProtocolIcon from 'assets/cow-swap/cow_token.svg'
 import styled from 'styled-components/macro'
 
 export const Icon = styled.span<Props>`

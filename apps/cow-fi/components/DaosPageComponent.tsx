@@ -1,16 +1,19 @@
 'use client'
 import { useCowAnalytics } from '@cowprotocol/analytics'
+
 import 'swiper/css'
 import 'swiper/css/pagination'
 import 'swiper/css/navigation'
-import IMG_ICON_BULB_COW from '@cowprotocol/assets/images/icon-bulb-cow.svg'
-import IMG_ICON_CROWN_COW from '@cowprotocol/assets/images/icon-crown-cow.svg'
-import IMG_ICON_GHOST from '@cowprotocol/assets/images/icon-ghost.svg'
-import IMG_ICON_OWL from '@cowprotocol/assets/images/icon-owl.svg'
 import { Color, ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 
+import { CowFiCategory } from 'src/common/analytics/types'
 import { Autoplay, Navigation, Pagination } from 'swiper/modules'
 import { Swiper, SwiperSlide } from 'swiper/react'
+
+import IMG_ICON_BULB_COW from '../src/assets/images/icon-bulb-cow.svg'
+import IMG_ICON_CROWN_COW from '../src/assets/images/icon-crown-cow.svg'
+import IMG_ICON_GHOST from '../src/assets/images/icon-ghost.svg'
+import IMG_ICON_OWL from '../src/assets/images/icon-owl.svg'
 
 import LazySVG from '@/components/LazySVG'
 import { Link, LinkType } from '@/components/Link'
@@ -39,7 +42,6 @@ import {
   TopicTitle,
   TrustedBy,
 } from '@/styles/styled'
-import { CowFiCategory } from 'src/common/analytics/types'
 
 export function DaosPageComponent() {
   const analytics = useCowAnalytics()

@@ -1,9 +1,9 @@
 import { ReactNode } from 'react'
 
-import EqualIcon from '@cowprotocol/assets/cow-swap/equal.svg'
 import { UI } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
+import EqualIcon from 'assets/cow-swap/equal.svg'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 

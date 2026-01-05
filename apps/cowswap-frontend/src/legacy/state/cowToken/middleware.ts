@@ -24,7 +24,7 @@ export const cowTokenMiddleware: Middleware<Record<string, unknown>, AppState> =
 
       console.debug(
         `[stat:swapVCow:middleware] Convert vCOW to COW transaction finalized with status ${status}`,
-        transaction.hash
+        transaction.hash,
       )
 
       if (status === 1 && transaction.replacementType !== 'cancel') {

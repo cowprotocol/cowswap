@@ -1,12 +1,12 @@
 import { ReactNode } from 'react'
 
-import orderPresignaturePendingIcon from '@cowprotocol/assets/cow-swap/order-presignature-pending.svg'
 import { ZERO_FRACTION } from '@cowprotocol/common-const'
 import { Command, UiOrderType } from '@cowprotocol/types'
 import { HoverTooltip, TokenAmount, percentIsAlmostHundred } from '@cowprotocol/ui'
 import { Currency, Price } from '@uniswap/sdk-core'
 
 import { Trans, useLingui } from '@lingui/react/macro'
+import orderPresignaturePendingIcon from 'assets/cow-swap/order-presignature-pending.svg'
 import { Check, Clock, X, Zap } from 'react-feather'
 import SVG from 'react-inlinesvg'
 import { Nullish } from 'types'

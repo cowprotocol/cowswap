@@ -57,11 +57,9 @@ export class PermitProviderConnector implements ProviderConnector {
       const copy: Record<string, unknown> = {}
 
       Object.keys(decodedValues).forEach((key) => {
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         const value = decodedValues[key]
         if (BigNumber.isBigNumber(value)) {
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
           // @ts-ignore
           copy[key] = value.toHexString()
         } else {

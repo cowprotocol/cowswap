@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
 
-import { Erc20Abi, Erc20Interface } from '@cowprotocol/abis'
 import { SWR_NO_REFRESH_OPTIONS, WRAPPED_NATIVE_CURRENCIES as WETH } from '@cowprotocol/common-const'
 import { SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
+import { Erc20Abi, Erc20Interface } from '@cowprotocol/cowswap-abis'
 import { useMultipleContractSingleData } from '@cowprotocol/multicall'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { Interface } from '@ethersproject/abi'

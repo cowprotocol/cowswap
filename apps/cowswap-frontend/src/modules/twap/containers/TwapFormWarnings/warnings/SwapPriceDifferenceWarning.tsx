@@ -50,7 +50,9 @@ export function SwapPriceDifferenceWarning({
   return isTwapBetter ? (
     +percent.toSignificant(2) > SWAP_PRICE_DIFFERENCE_LIMIT ? (
       <InlineBanner bannerType={StatusColorVariant.Savings}>
-        <strong><Trans>Maximizing Your Gains!</Trans></strong>
+        <strong>
+          <Trans>Maximizing Your Gains!</Trans>
+        </strong>
         <p>
           <Trans>
             You could gain an extra{' '}

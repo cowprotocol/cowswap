@@ -1,12 +1,13 @@
 import { ReactNode } from 'react'
 
-import cowDarkIMG from '@cowprotocol/assets/images/404/swap/dark/cow.svg'
-import cowLightIMG from '@cowprotocol/assets/images/404/swap/light/cow.svg'
 import {
   CowSaucerScene as BaseCowSaucerScene,
   SWAP_SAUCER_PALETTE_DARK,
   SWAP_SAUCER_PALETTE_LIGHT,
 } from '@cowprotocol/ui'
+
+import cowDarkIMG from 'assets/images/404/swap/dark/cow.svg'
+import cowLightIMG from 'assets/images/404/swap/light/cow.svg'
 
 interface CowSaucerSceneProps {
   darkMode: boolean

@@ -23,6 +23,6 @@ export function useOffChainCancelOrder() {
 
       return sendOrderCancellation({ chainId, orderId: order.id, signer, account, cancelPendingOrder })
     },
-    [account, cancelPendingOrder, chainId, provider]
+    [account, cancelPendingOrder, chainId, provider],
   )
 }

@@ -1,12 +1,12 @@
 import React from 'react'
 
-import CowError from '@cowprotocol/assets/cow-swap/CowError.png'
 import { CODE_LINK, DISCORD_LINK } from '@cowprotocol/common-const'
 import { userAgent } from '@cowprotocol/common-utils'
 import { AutoRow, MEDIA_WIDTHS, ExternalLink, UI, Media } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
+import CowError from 'assets/cow-swap/CowError.png'
 import styled from 'styled-components/macro'
 import { ThemedText } from 'theme'
 

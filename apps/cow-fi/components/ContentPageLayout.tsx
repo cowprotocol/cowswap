@@ -82,10 +82,8 @@ export function ContentPageLayout({ title, children }: ContentPageLayoutProps): 
           <ArticleMainTitle margin={'0 0 62px'} fontSize={52}>
             {title}
           </ArticleMainTitle>
-          
-          <BodyContent>
-            {children}
-          </BodyContent>
+
+          <BodyContent>{children}</BodyContent>
         </ArticleContent>
       </ContainerCard>
     </Wrapper>

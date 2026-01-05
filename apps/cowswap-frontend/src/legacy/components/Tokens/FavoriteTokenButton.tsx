@@ -30,12 +30,12 @@ export default function FavoriteTokenButton({ tokenData }: FavoriteTokenButtonPa
       event.preventDefault()
       toggleFavoriteToken(tokenData)
     },
-    [toggleFavoriteToken, tokenData]
+    [toggleFavoriteToken, tokenData],
   )
 
   const isFavoriteToken = useMemo(
     () => favoriteTokens.some((t: Token) => t.address === tokenData.address),
-    [favoriteTokens, tokenData]
+    [favoriteTokens, tokenData],
   )
 
   return (

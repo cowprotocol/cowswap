@@ -18,7 +18,6 @@ import './commands'
 import { injected } from './ethereum'
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace Cypress {
     interface ApplicationWindow {
       ethereum: typeof injected

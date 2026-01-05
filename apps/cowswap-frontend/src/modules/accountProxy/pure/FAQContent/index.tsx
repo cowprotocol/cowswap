@@ -1,12 +1,12 @@
 import { useState, ReactNode, FC } from 'react'
 
-import IMG_ICON_MINUS from '@cowprotocol/assets/images/icon-minus.svg'
-import IMG_ICON_PLUS from '@cowprotocol/assets/images/icon-plus.svg'
 import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
 import { ExternalLink } from '@cowprotocol/ui'
 
 import { msg } from '@lingui/core/macro'
 import { Trans, useLingui } from '@lingui/react/macro'
+import IMG_ICON_MINUS from 'assets/images/icon-minus.svg'
+import IMG_ICON_PLUS from 'assets/images/icon-plus.svg'
 import SVG from 'react-inlinesvg'
 import { Link } from 'react-router'
 

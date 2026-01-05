@@ -4,11 +4,11 @@ import './polyfills'
 import { ReactNode, StrictMode, useCallback, useContext } from 'react'
 
 import { CowAnalyticsProvider, initGtm } from '@cowprotocol/analytics'
-import IMAGE_MOON from '@cowprotocol/assets/cow-swap/moon.svg'
-import IMAGE_SUN from '@cowprotocol/assets/cow-swap/sun.svg'
 import { injectedWalletConnection, WalletUpdater } from '@cowprotocol/wallet'
 import { Web3ReactProvider } from '@web3-react/core'
 
+import IMAGE_MOON from 'assets/cow-swap/moon.svg'
+import IMAGE_SUN from 'assets/cow-swap/sun.svg'
 import { LanguageProvider } from 'i18n'
 import SVG from 'react-inlinesvg'
 import { Provider } from 'react-redux'

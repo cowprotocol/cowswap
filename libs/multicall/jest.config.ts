@@ -1,4 +1,3 @@
-/* eslint-disable */
 export default {
   displayName: 'multicall',
   preset: '../../jest.preset.js',

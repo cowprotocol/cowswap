@@ -1,4 +1,4 @@
-import { ComposableCoW, ComposableCoWAbi } from '@cowprotocol/abis'
+import { ComposableCoW, ComposableCoWAbi } from '@cowprotocol/cowswap-abis'
 
 import { useContract, UseContractResult } from 'common/hooks/useContract'
 

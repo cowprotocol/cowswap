@@ -9,7 +9,7 @@ export async function checkIsCallDataAValidPermit(
   tokenAddress: string,
   _tokenName: string | undefined,
   callData: string,
-  { version, type, name }: PermitInfo
+  { version, type, name }: PermitInfo,
 ): Promise<boolean | undefined> {
   // TODO: take name only from PermitInfo
   const tokenName = name || _tokenName
@@ -56,7 +56,7 @@ export async function checkIsCallDataAValidPermit(
   } catch (e) {
     console.debug(
       `[checkHasValidPendingPermit] Failed to check permit validity for owner ${owner} with callData ${callData}`,
-      e
+      e,
     )
     return false
   }

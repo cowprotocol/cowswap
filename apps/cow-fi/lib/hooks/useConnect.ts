@@ -1,9 +1,11 @@
-import { useAccount, useConnect as useConnectWagmi } from 'wagmi'
 import { useCallback, useEffect, useState } from 'react'
+
+import { useCowAnalytics } from '@cowprotocol/analytics'
+
 import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { ConnectResult, PublicClient } from '@wagmi/core'
-import { useCowAnalytics } from '@cowprotocol/analytics'
 import { CowFiCategory } from 'src/common/analytics/types'
+import { useAccount, useConnect as useConnectWagmi } from 'wagmi'
 
 export function useConnect() {
   const { isConnected } = useAccount()

@@ -4,7 +4,7 @@ import { CurrencyAmount, Percent, Token } from '@uniswap/sdk-core'
 import { calculateSlippageAmount } from './calculateSlippageAmount'
 
 // TODO: Break down this large function into smaller functions
-// eslint-disable-next-line max-lines-per-function
+
 describe('#calculateSlippageAmount', () => {
   it('bounds are correct', () => {
     const tokenAmount = CurrencyAmount.fromRawAmount(new Token(1, AddressZero, 0), '100')

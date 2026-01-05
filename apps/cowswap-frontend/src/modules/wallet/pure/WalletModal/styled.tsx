@@ -1,7 +1,7 @@
-import Close from '@cowprotocol/assets/images/x.svg?react'
 import { ExternalLink, Media, UI } from '@cowprotocol/ui'
 
 import { Trans } from '@lingui/react/macro'
+import Close from 'assets/images/x.svg?react'
 import styled from 'styled-components/macro'
 
 export const TermsWrapper = styled.div`

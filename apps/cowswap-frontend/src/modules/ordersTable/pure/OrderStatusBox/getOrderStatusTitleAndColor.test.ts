@@ -9,7 +9,7 @@ import { ParsedOrder } from 'utils/orderUtils/parseOrder'
 import { getOrderStatusTitleAndColor } from './getOrderStatusTitleAndColor'
 
 // TODO: Break down this large function into smaller functions
- 
+
 describe('getOrderStatusTitleAndColor()', () => {
   let orderMock: ParsedOrder
 

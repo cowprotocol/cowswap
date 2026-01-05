@@ -1,9 +1,9 @@
 import { ReactNode } from 'react'
 
-import orderPresignaturePending from '@cowprotocol/assets/cow-swap/order-presignature-pending.svg'
 import { Command } from '@cowprotocol/types'
 
 import { t } from '@lingui/core/macro'
+import orderPresignaturePending from 'assets/cow-swap/order-presignature-pending.svg'
 import SVG from 'react-inlinesvg'
 import styled, { css, keyframes } from 'styled-components/macro'
 

@@ -29,7 +29,11 @@ interface DerivedHDKeyInfo {
 class DerivedHDKeyInfoIterator {
   private index = 0
 
-  constructor(private parentDerivedKeyInfo: DerivedHDKeyInfo, private offset = 0, private limit = 100) {}
+  constructor(
+    private parentDerivedKeyInfo: DerivedHDKeyInfo,
+    private offset = 0,
+    private limit = 100,
+  ) {}
   // TODO: Add proper return type annotation
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   next() {
@@ -93,7 +97,7 @@ async function initialDerivedKeyInfoAsync(trezorConnect: TrezorConnect): Promise
 function calculateDerivedHDKeyInfos(
   parentDerivedKeyInfo: DerivedHDKeyInfo,
   offset: number,
-  limit: number
+  limit: number,
 ): DerivedHDKeyInfo[] {
   const derivedKeys: DerivedHDKeyInfo[] = []
   const derivedKeyIterator = new DerivedHDKeyInfoIterator(parentDerivedKeyInfo, offset, limit)
@@ -108,6 +112,11 @@ function calculateDerivedHDKeyInfos(
 function addressOfHDKey(hdKey: HDNode): string {
   const shouldSanitizePublicKey = true
   const derivedPublicKey = hdKey.publicKey
+
+  if (!derivedPublicKey) {
+    throw new Error('DerivedPublic key is missing')
+  }
+
   const ethereumAddressUnprefixed = publicToAddress(derivedPublicKey, shouldSanitizePublicKey).toString('hex')
 
   return '0x' + ethereumAddressUnprefixed.toLowerCase()

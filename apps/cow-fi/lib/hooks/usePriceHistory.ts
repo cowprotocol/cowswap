@@ -1,5 +1,6 @@
-import { PricePoint } from '@/components/Chart'
 import { useMemo } from 'react'
+
+import { PricePoint } from '@/components/Chart'
 
 export function isPricePoint(p: PricePoint | null): p is PricePoint {
   return p !== null

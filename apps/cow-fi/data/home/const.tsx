@@ -1,14 +1,16 @@
 import { initGtm } from '@cowprotocol/analytics'
-import IMG_BITS from '@cowprotocol/assets/images/image-bits.svg'
-import IMG_COINS from '@cowprotocol/assets/images/image-coins.svg'
-import IMG_DISCORD from '@cowprotocol/assets/images/image-discord.svg'
-import IMG_FORUM from '@cowprotocol/assets/images/image-forum.svg'
-import IMG_GREEN_WAVES from '@cowprotocol/assets/images/image-green-waves.svg'
-import IMG_SNAPSHOT from '@cowprotocol/assets/images/image-snapshot.svg'
-import IMG_TUBE from '@cowprotocol/assets/images/image-tube.svg'
 import { Color, ProductVariant, UI } from '@cowprotocol/ui'
 
 import SVG from 'react-inlinesvg'
+import { CowFiCategory } from 'src/common/analytics/types'
+
+import IMG_BITS from '../../src/assets/images/image-bits.svg'
+import IMG_COINS from '../../src/assets/images/image-coins.svg'
+import IMG_DISCORD from '../../src/assets/images/image-discord.svg'
+import IMG_FORUM from '../../src/assets/images/image-forum.svg'
+import IMG_GREEN_WAVES from '../../src/assets/images/image-green-waves.svg'
+import IMG_SNAPSHOT from '../../src/assets/images/image-snapshot.svg'
+import IMG_TUBE from '../../src/assets/images/image-tube.svg'
 
 import { Link, LinkType } from '@/components/Link'
 import {
@@ -23,7 +25,6 @@ import {
   TopicList,
   TopicTitle,
 } from '@/styles/styled'
-import { CowFiCategory } from 'src/common/analytics/types'
 
 const analytics = initGtm()
 
