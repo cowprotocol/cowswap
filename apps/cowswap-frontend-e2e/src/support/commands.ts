@@ -107,10 +107,10 @@ function _clickOnToken(inputOrOutput: string) {
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function _selectTokenFromSelector(tokenAddress: string, inputOrOutput: string) {
   const tokenSelector = `#tokens-list div[data-address="${tokenAddress.toLowerCase()}"]`
+  const searchSelector = '#token-search-input'
 
-  cy.get(tokenSelector, { timeout: 20_000 }).scrollIntoView()
-  cy.get(tokenSelector).should('be.visible')
-  cy.get(tokenSelector).click({ force: true })
+  cy.get(searchSelector, { timeout: 20_000 }).should('be.visible').clear().type(tokenAddress)
+  cy.get(tokenSelector, { timeout: 20_000 }).should('be.visible').click({ force: true })
 
   cy.get(`#${inputOrOutput}-currency-input .token-amount-input`).should('be.visible')
 }
