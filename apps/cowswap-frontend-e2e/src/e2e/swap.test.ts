@@ -100,8 +100,8 @@ describe('Swap (custom)', () => {
     cy.get('#output-currency-input .token-amount-input').should('not.equal', '')
     acceptFeesExceedWarning()
     cy.wait(1000)
-    cy.get('#classic-eth-flow-banner').should('contain', 'Wrap your ETH and use the classic WETH experience').click()
-    cy.get('#wrap-native').should('contain', 'Wrap my ETH and swap').click()
+    cy.get('#classic-eth-flow-banner').should('contain', 'Switch to the classic WETH experience and benefit!').click()
+    cy.get('#switch-to-wrapped').should('contain', 'Switch to WETH').click()
   })
 
   describe('url params', () => {
