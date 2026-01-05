@@ -108,7 +108,8 @@ function _clickOnToken(inputOrOutput: string) {
 function _selectTokenFromSelector(tokenAddress: string, inputOrOutput: string) {
   const tokenSelector = `#tokens-list div[data-address="${tokenAddress.toLowerCase()}"]`
 
-  cy.get(tokenSelector, { timeout: 20_000 }).scrollIntoView().should('be.visible')
+  cy.get(tokenSelector, { timeout: 20_000 }).scrollIntoView()
+  cy.get(tokenSelector).should('be.visible')
   cy.get(tokenSelector).click({ force: true })
 
   cy.get(`#${inputOrOutput}-currency-input .token-amount-input`).should('be.visible')
