@@ -102,7 +102,10 @@ describe('Swap (custom)', () => {
     cy.get('#output-currency-input .token-amount-input').should('not.equal', '')
     acceptFeesExceedWarning()
     cy.wait(1000)
-    cy.get('#classic-eth-flow-banner').should('contain', 'Switch to the classic WETH experience and benefit!').click()
+    cy.get('#classic-eth-flow-banner')
+      .should('contain', 'Switch to the classic')
+      .and('contain', 'experience and benefit!')
+      .click()
     cy.get('#switch-to-wrapped').should('contain', 'Switch to WETH').click()
   })
 
