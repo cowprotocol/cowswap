@@ -219,7 +219,7 @@ msgstr "is a helper contract that improves the user experience within CoW Swap f
 msgid "To"
 msgstr "To"
 
-#: apps/cowswap-frontend/src/common/pure/CancellationModal/RequestCancellationModal.tsx
+#: apps/cowswap-frontend/src/common/pure/CancellationModal/ModalTopContent.tsx
 msgid "Are you sure you want to cancel order <0>{shortId}</0>?"
 msgstr "Are you sure you want to cancel order <0>{shortId}</0>?"
 
@@ -236,8 +236,8 @@ msgid "Your TWAP order won't execute and is protected if the market price dips m
 msgstr "Your TWAP order won't execute and is protected if the market price dips more than your set price protection."
 
 #: apps/cowswap-frontend/src/modules/rwa/pure/RwaConsentModal/index.tsx
-msgid "If you fall into any of these categories, select Cancel."
-msgstr "If you fall into any of these categories, select Cancel."
+#~ msgid "If you fall into any of these categories, select Cancel."
+#~ msgstr "If you fall into any of these categories, select Cancel."
 
 #: apps/cowswap-frontend/src/api/cowProtocol/errors/OperatorError.ts
 msgid "The order cannot be {statusText}. Your account is deny-listed."
@@ -542,8 +542,8 @@ msgid "(modified)"
 msgstr "(modified)"
 
 #: apps/cowswap-frontend/src/modules/rwa/pure/RwaConsentModal/index.tsx
-msgid "A resident of any jurisdiction where trading securities or cryptographic tokens is regulated or prohibited by applicable laws."
-msgstr "A resident of any jurisdiction where trading securities or cryptographic tokens is regulated or prohibited by applicable laws."
+#~ msgid "A resident of any jurisdiction where trading securities or cryptographic tokens is regulated or prohibited by applicable laws."
+#~ msgstr "A resident of any jurisdiction where trading securities or cryptographic tokens is regulated or prohibited by applicable laws."
 
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/DeadlineSelector/deadlines.ts
 #: apps/cowswap-frontend/src/modules/twap/const.ts
@@ -583,8 +583,8 @@ msgid "When selling {aNativeCurrency}, the minimum slippage tolerance is set to 
 msgstr "When selling {aNativeCurrency}, the minimum slippage tolerance is set to {minimumETHFlowSlippage}% or higher to ensure a high likelihood of order matching, even in volatile market conditions."
 
 #: apps/cowswap-frontend/src/modules/rwa/pure/RwaConsentModal/index.tsx
-msgid "A U.S. Person or resident of the United States."
-msgstr "A U.S. Person or resident of the United States."
+#~ msgid "A U.S. Person or resident of the United States."
+#~ msgstr "A U.S. Person or resident of the United States."
 
 #: apps/cowswap-frontend/src/modules/account/pure/ConnectedAccountBlocked/index.tsx
 msgid "If you believe this is an error, please send an email including your address to "
@@ -782,6 +782,10 @@ msgstr "Safe bundle flow context is not ready"
 msgid "No RPC provider available for chain ID: {chainId}"
 msgstr "No RPC provider available for chain ID: {chainId}"
 
+#: apps/cowswap-frontend/src/common/pure/CancellationModal/index.tsx
+msgid "Cancelling order with id {shortId}:<0/><1>{orderSummary}</1>"
+msgstr "Cancelling order with id {shortId}:<0/><1>{orderSummary}</1>"
+
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "Sell per part"
 msgstr "Sell per part"
@@ -861,8 +865,8 @@ msgid "icon"
 msgstr "icon"
 
 #: apps/cowswap-frontend/src/common/pure/CancellationModal/index.tsx
-msgid "Cancelling order with id {shortId}:<0/><1>{summary}</1>"
-msgstr "Cancelling order with id {shortId}:<0/><1>{summary}</1>"
+#~ msgid "Cancelling order with id {shortId}:<0/><1>{summary}</1>"
+#~ msgstr "Cancelling order with id {shortId}:<0/><1>{summary}</1>"
 
 #: apps/cowswap-frontend/src/modules/wallet/containers/AccountSelectorModal/index.tsx
 msgid "Select {walletName} Account"
@@ -1053,8 +1057,8 @@ msgid "Orders history"
 msgstr "Orders history"
 
 #: apps/cowswap-frontend/src/modules/rwa/pure/RwaConsentModal/index.tsx
-msgid "We could not reliably determine your location (e.g., due to VPN or privacy settings). Access to {displaySymbol} is strictly limited to specific regions."
-msgstr "We could not reliably determine your location (e.g., due to VPN or privacy settings). Access to {displaySymbol} is strictly limited to specific regions."
+#~ msgid "We could not reliably determine your location (e.g., due to VPN or privacy settings). Access to {displaySymbol} is strictly limited to specific regions."
+#~ msgstr "We could not reliably determine your location (e.g., due to VPN or privacy settings). Access to {displaySymbol} is strictly limited to specific regions."
 
 #: apps/cowswap-frontend/src/modules/erc20Approve/pure/ApprovalTooltip/index.tsx
 msgid "You must give the CoW Protocol smart contracts permission to use your <0/>."
@@ -1365,8 +1369,8 @@ msgid "Please read more in this"
 msgstr "Please read more in this"
 
 #: apps/cowswap-frontend/src/modules/rwa/pure/RwaConsentModal/index.tsx
-msgid "Additional confirmation required for this token"
-msgstr "Additional confirmation required for this token"
+#~ msgid "Additional confirmation required for this token"
+#~ msgstr "Additional confirmation required for this token"
 
 #: libs/hook-dapp-lib/src/hookDappsRegistry.ts
 #~ msgid "Bungee"
@@ -1444,7 +1448,7 @@ msgstr "Solver auction rankings"
 msgid "This order will either be filled completely or not filled."
 msgstr "This order will either be filled completely or not filled."
 
-#: apps/cowswap-frontend/src/common/pure/CancellationModal/RequestCancellationModal.tsx
+#: apps/cowswap-frontend/src/common/pure/CancellationModal/ModalTopContent.tsx
 msgid "On-chain cancellations require a regular on-chain transaction and cost gas."
 msgstr "On-chain cancellations require a regular on-chain transaction and cost gas."
 
@@ -1530,8 +1534,8 @@ msgid "Enter a hook dapp URL"
 msgstr "Enter a hook dapp URL"
 
 #: apps/cowswap-frontend/src/modules/rwa/pure/RwaConsentModal/index.tsx
-msgid "By clicking Confirm, you expressly represent and warrant that you are NOT:"
-msgstr "By clicking Confirm, you expressly represent and warrant that you are NOT:"
+#~ msgid "By clicking Confirm, you expressly represent and warrant that you are NOT:"
+#~ msgstr "By clicking Confirm, you expressly represent and warrant that you are NOT:"
 
 #: apps/cowswap-frontend/src/modules/ordersTable/pure/ReceiptModal/index.tsx
 #: apps/cowswap-frontend/src/modules/trade/pure/TotalFeeRow/index.tsx
@@ -1656,7 +1660,7 @@ msgstr "Limit orders, but <0>s-moooo-ther</0> than ever"
 msgid "vCOW contract not present"
 msgstr "vCOW contract not present"
 
-#: apps/cowswap-frontend/src/common/pure/CancellationModal/RequestCancellationModal.tsx
+#: apps/cowswap-frontend/src/common/pure/CancellationModal/ModalTopContent.tsx
 msgid "Unknown"
 msgstr "Unknown"
 
@@ -1766,7 +1770,7 @@ msgstr "Receive at least"
 msgid "CoW Swap trades are protected from MEV, so your slippage can't be exploited!"
 msgstr "CoW Swap trades are protected from MEV, so your slippage can't be exploited!"
 
-#: apps/cowswap-frontend/src/common/pure/CancellationModal/RequestCancellationModal.tsx
+#: apps/cowswap-frontend/src/common/pure/CancellationModal/ModalTopContent.tsx
 msgid "This is an"
 msgstr "This is an"
 
@@ -1891,8 +1895,8 @@ msgid "Failed to cancel order selling {sellTokenSymbol}"
 msgstr "Failed to cancel order selling {sellTokenSymbol}"
 
 #: apps/cowswap-frontend/src/modules/rwa/pure/RwaConsentModal/index.tsx
-msgid "You are solely responsible for complying with your local laws."
-msgstr "You are solely responsible for complying with your local laws."
+#~ msgid "You are solely responsible for complying with your local laws."
+#~ msgstr "You are solely responsible for complying with your local laws."
 
 #: apps/cowswap-frontend/src/modules/swap/containers/SwapConfirmModal/useLabelsAndTooltips.tsx
 #: apps/cowswap-frontend/src/modules/trade/containers/TradeBasicConfirmDetails/index.tsx
@@ -2007,8 +2011,8 @@ msgid "Creating..."
 msgstr "Creating..."
 
 #: apps/cowswap-frontend/src/modules/rwa/pure/RwaConsentModal/index.tsx
-msgid "A resident of any country subject to international sanctions (e.g., OFAC, UN lists)."
-msgstr "A resident of any country subject to international sanctions (e.g., OFAC, UN lists)."
+#~ msgid "A resident of any country subject to international sanctions (e.g., OFAC, UN lists)."
+#~ msgstr "A resident of any country subject to international sanctions (e.g., OFAC, UN lists)."
 
 #: apps/cowswap-frontend/src/modules/hooksStore/pure/HookDappDetails/index.tsx
 msgid "{typeLabel} hooks are externally hosted code which needs to be independently verified by the user."
@@ -2346,7 +2350,7 @@ msgstr "open"
 msgid "Filled on"
 msgstr "Filled on"
 
-#: apps/cowswap-frontend/src/common/pure/CancellationModal/RequestCancellationModal.tsx
+#: apps/cowswap-frontend/src/common/pure/CancellationModal/ModalTopContent.tsx
 msgid "less"
 msgstr "less"
 
@@ -2383,7 +2387,7 @@ msgstr "Place orders with a time-weighted average price"
 msgid "Proxy Accounts"
 msgstr "Proxy Accounts"
 
-#: apps/cowswap-frontend/src/common/pure/CancellationModal/RequestCancellationModal.tsx
+#: apps/cowswap-frontend/src/common/pure/CancellationModal/ModalTopContent.tsx
 msgid "Tx cost:"
 msgstr "Tx cost:"
 
@@ -2642,7 +2646,7 @@ msgstr "Description"
 msgid "The estimated amount you'll receive after bridge costs."
 msgstr "The estimated amount you'll receive after bridge costs."
 
-#: apps/cowswap-frontend/src/common/pure/CancellationModal/RequestCancellationModal.tsx
+#: apps/cowswap-frontend/src/common/pure/CancellationModal/ModalTopContent.tsx
 msgid "on-chain"
 msgstr "on-chain"
 
@@ -2995,7 +2999,7 @@ msgstr "Interface Settings"
 msgid "Enter a price"
 msgstr "Enter a price"
 
-#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/common.tsx
 msgid "Couldn't verify {accountProxyLabel}, please try later"
 msgstr "Couldn't verify {accountProxyLabel}, please try later"
 
@@ -3155,7 +3159,7 @@ msgstr "Approving token"
 msgid "We are unable to calculate the price impact for this order.<0/><1/>You may still move forward but <2>please review carefully that the receive amounts are what you expect.</2>"
 msgstr "We are unable to calculate the price impact for this order.<0/><1/>You may still move forward but <2>please review carefully that the receive amounts are what you expect.</2>"
 
-#: apps/cowswap-frontend/src/common/pure/CancellationModal/RequestCancellationModal.tsx
+#: apps/cowswap-frontend/src/common/pure/CancellationModal/ModalTopContent.tsx
 msgid "Off-chain cancellations require a signature and are free."
 msgstr "Off-chain cancellations require a signature and are free."
 
@@ -3208,7 +3212,7 @@ msgstr "Source transaction"
 msgid "Cow Balance"
 msgstr "Cow Balance"
 
-#: apps/cowswap-frontend/src/common/pure/CancellationModal/RequestCancellationModal.tsx
+#: apps/cowswap-frontend/src/common/pure/CancellationModal/ModalTopContent.tsx
 msgid "Keep in mind a solver might already have included the order in a solution even if this cancellation is successful."
 msgstr "Keep in mind a solver might already have included the order in a solution even if this cancellation is successful."
 
@@ -3413,7 +3417,7 @@ msgstr "View account"
 msgid "When you swap (sell) <0/>, solvers handle the transaction by purchasing the required tokens, depositing them into the pool, and issuing LP tokens to you in return — all in a gas-less operation."
 msgstr "When you swap (sell) <0/>, solvers handle the transaction by purchasing the required tokens, depositing them into the pool, and issuing LP tokens to you in return — all in a gas-less operation."
 
-#: apps/cowswap-frontend/src/common/hooks/useBlockNumber.tsx
+#: apps/cowswap-frontend/src/common/hooks/useBlockNumber/useBlockNumber.ts
 msgid "BlockNumber hooks must be wrapped in a"
 msgstr "BlockNumber hooks must be wrapped in a"
 
@@ -3423,8 +3427,8 @@ msgid "Wrap <0/> and Swap"
 msgstr "Wrap <0/> and Swap"
 
 #: apps/cowswap-frontend/src/modules/rwa/pure/RwaConsentModal/index.tsx
-msgid "View full consent terms ↗"
-msgstr "View full consent terms ↗"
+#~ msgid "View full consent terms ↗"
+#~ msgstr "View full consent terms ↗"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWarnings/warnings/BigPartTimeWarning.tsx
 msgid "A maximum of <0>{time}</0> between parts is required. Increase the number of parts or decrease the total duration."
@@ -3613,8 +3617,8 @@ msgid "Approving <0>{currencySymbolOrContext}</0> for trading"
 msgstr "Approving <0>{currencySymbolOrContext}</0> for trading"
 
 #: apps/cowswap-frontend/src/modules/rwa/pure/RwaConsentModal/index.tsx
-msgid "A resident of the EU or EEA."
-msgstr "A resident of the EU or EEA."
+#~ msgid "A resident of the EU or EEA."
+#~ msgstr "A resident of the EU or EEA."
 
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Couldn't load balances"
@@ -3905,7 +3909,7 @@ msgstr "signatures are"
 msgid "Use the Swap tab for trades that don't involve an LP token."
 msgstr "Use the Swap tab for trades that don't involve an LP token."
 
-#: apps/cowswap-frontend/src/common/pure/CancellationModal/RequestCancellationModal.tsx
+#: apps/cowswap-frontend/src/common/pure/CancellationModal/ModalTopContent.tsx
 msgid "off-chain"
 msgstr "off-chain"
 
@@ -4185,7 +4189,6 @@ msgstr "Governance"
 #: apps/cowswap-frontend/src/modules/limitOrders/pure/DeadlineSelector/index.tsx
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/index.tsx
 #: apps/cowswap-frontend/src/modules/ordersTable/containers/MultipleCancellationMenu/index.tsx
-#: apps/cowswap-frontend/src/modules/rwa/pure/RwaConsentModal/index.tsx
 #: apps/cowswap-frontend/src/modules/twap/pure/CustomDeadlineSelector/index.tsx
 msgid "Cancel"
 msgstr "Cancel"
@@ -4243,7 +4246,7 @@ msgstr "order"
 
 #: apps/cowswap-frontend/src/common/containers/MultipleOrdersCancellationModal/index.tsx
 #: apps/cowswap-frontend/src/common/pure/CancellationModal/index.tsx
-#: apps/cowswap-frontend/src/common/pure/CancellationModal/RequestCancellationModal.tsx
+#: apps/cowswap-frontend/src/common/pure/CancellationModal/ModalTopContent.tsx
 msgid "cancellation"
 msgstr "cancellation"
 
@@ -4440,7 +4443,7 @@ msgstr "Back to wallet selection"
 msgid "Confirm Action"
 msgstr "Confirm Action"
 
-#: apps/cowswap-frontend/src/common/pure/CancellationModal/RequestCancellationModal.tsx
+#: apps/cowswap-frontend/src/common/pure/CancellationModal/ModalTopContent.tsx
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/FinishedStep.tsx
 msgid "more"
 msgstr "more"
@@ -5962,8 +5965,8 @@ msgid "User rejected signing COW claim transaction"
 msgstr "User rejected signing COW claim transaction"
 
 #: apps/cowswap-frontend/src/modules/rwa/pure/RwaConsentModal/index.tsx
-msgid "I Confirm"
-msgstr "I Confirm"
+#~ msgid "I Confirm"
+#~ msgstr "I Confirm"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/StatusDetails.tsx
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/TransactionSubmittedContent/index.tsx
@@ -6007,7 +6010,7 @@ msgstr "Longer limit orders - place orders for up to a year."
 msgid "User rejected signing the cancellation"
 msgstr "User rejected signing the cancellation"
 
-#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/common.tsx
 msgid "Loading {accountProxyLabel}"
 msgstr "Loading {accountProxyLabel}"
 

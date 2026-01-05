@@ -44,12 +44,5 @@ export function RwaConsentModalContainer(): ReactNode {
     return null
   }
 
-  return (
-    <RwaConsentModal
-      onDismiss={onDismiss}
-      onConfirm={onConfirm}
-      token={context.token}
-      consentHash={context.consentHash}
-    />
-  )
+  return <RwaConsentModal onDismiss={onDismiss} onConfirm={onConfirm} token={context.token} />
 }

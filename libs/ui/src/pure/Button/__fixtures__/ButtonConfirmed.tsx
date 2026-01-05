@@ -1,9 +1,9 @@
 // ButtonConfirmed.fixture.jsx
 import { ButtonConfirmed } from '../index'
 
-const fixtures = {
+const Fixtures = {
   confirmed: <ButtonConfirmed confirmed={true}>Confirmed</ButtonConfirmed>,
   notConfirmed: <ButtonConfirmed confirmed={false}>Not Confirmed</ButtonConfirmed>,
 }
 
-export default fixtures
+export default Fixtures

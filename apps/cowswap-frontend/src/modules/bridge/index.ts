@@ -2,10 +2,10 @@ export * from './hooks'
 export * from './types'
 
 export {
-  SwapStatusIcons,
-  BridgeStatusIcons,
-  SwapStatusTitlePrefixes,
-  BridgeStatusTitlePrefixes,
+  swapStatusIcons as SwapStatusIcons,
+  bridgeStatusIcons as BridgeStatusIcons,
+  swapStatusTitlePrefixes as SwapStatusTitlePrefixes,
+  bridgeStatusTitlePrefixes as BridgeStatusTitlePrefixes,
 } from './pure/StopStatus'
 
 export { PendingBridgeOrdersUpdater } from './updaters/PendingBridgeOrdersUpdater'

@@ -9,6 +9,7 @@ const pluginLingui = require('eslint-plugin-lingui')
 const prettier = require('eslint-plugin-prettier')
 const react = require('eslint-plugin-react')
 const reactHooks = require('eslint-plugin-react-hooks')
+const reactRefresh = require('eslint-plugin-react-refresh')
 const unusedImports = require('eslint-plugin-unused-imports')
 
 const compat = new FlatCompat({
@@ -76,6 +77,15 @@ module.exports = [
 
       // Prevent unnecessary re-renders
       'react/jsx-no-bind': ['error', { allowArrowFunctions: true }],
+    },
+  },
+  {
+    files: ['**/*.{jsx,tsx}'],
+    plugins: {
+      'react-refresh': reactRefresh,
+    },
+    rules: {
+      'react-refresh/only-export-components': 'warn',
     },
   },
 

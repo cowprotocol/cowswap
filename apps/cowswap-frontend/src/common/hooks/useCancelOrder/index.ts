@@ -12,7 +12,6 @@ import { useGasPrices } from 'legacy/state/gas/hooks'
 import { Order, OrderStatus } from 'legacy/state/orders/actions'
 
 import { useGetOnChainCancellation } from 'common/hooks/useCancelOrder/useGetOnChainCancellation'
-import { computeOrderSummary } from 'common/updaters/orders/utils'
 import { isOrderCancellable } from 'common/utils/isOrderCancellable'
 import useNativeCurrency from 'lib/hooks/useNativeCurrency'
 
@@ -34,8 +33,6 @@ export type UseCancelOrderReturn = Command | null
  * It checks whether the order is eligible for cancellation and set's up which type of cancellation can be used (on or off-chain)
  * In case the order is not eligible, it returns null. This should be used to control whether a cancel button should be displayed
  */
-// TODO: Break down this large function into smaller functions
- 
 export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
   const { chainId } = useWalletInfo()
   const { allowsOffchainSigning } = useWalletDetails()
@@ -67,9 +64,7 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
       }
 
       // When dismissing the modal, close it and also reset context
-      // TODO: Add proper return type annotation
-      // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-      const onDismiss = () => {
+      const onDismiss = (): void => {
         closeModal()
         resetContext()
       }
@@ -84,9 +79,7 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
           await cancelFn(order)
           onDismiss()
           // When done, dismiss the modal
-        // TODO: Replace any with proper type definitions
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } catch (e: any) {
+        } catch (e) {
           onDismiss()
           if (!isPendingSignature) return
 
@@ -98,15 +91,10 @@ export function useCancelOrder(): (order: Order) => UseCancelOrderReturn {
 
       // The callback returned that triggers the modal
       return () => {
-        const summary = computeOrderSummary({
-          orderFromStore: order,
-          orderFromApi: null,
-        })
         // Updates the cancellation context with details pertaining the order
         setContext({
           orderId: order.id,
           chainId,
-          summary,
           defaultType: isOffChainCancellable ? 'offChain' : 'onChain',
           onDismiss,
           triggerCancellation,
