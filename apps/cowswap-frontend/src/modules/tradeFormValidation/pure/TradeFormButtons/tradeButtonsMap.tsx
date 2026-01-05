@@ -2,7 +2,7 @@ import { ReactElement, ReactNode } from 'react'
 
 import { getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
 import { BridgeProviderQuoteError, BridgeQuoteErrors } from '@cowprotocol/sdk-bridging'
-import { HelpTooltip, InfoTooltip, TokenSymbol } from '@cowprotocol/ui'
+import { CenteredDots, HelpTooltip, InfoTooltip, TokenSymbol } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
@@ -253,6 +253,14 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   },
   [TradeFormValidation.QuoteLoading]: {
     text: <TradeLoadingButton />,
+  },
+  [TradeFormValidation.BalancesLoading]: {
+    text: (
+      <>
+        <Trans>Fetching balances</Trans>
+        <CenteredDots smaller />
+      </>
+    ),
   },
   [TradeFormValidation.BalancesNotLoaded]: {
     text: <Trans>Couldn't load balances</Trans>,

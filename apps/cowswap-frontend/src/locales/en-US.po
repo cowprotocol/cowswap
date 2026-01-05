@@ -5626,6 +5626,10 @@ msgstr "Order cannot be filled due to insufficient balance on the current accoun
 msgid "required"
 msgstr "required"
 
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+msgid "Fetching balances"
+msgstr "Fetching balances"
+
 #: apps/cowswap-frontend/src/modules/wallet/pure/Web3StatusInner/index.tsx
 msgid "Wallet"
 msgstr "Wallet"

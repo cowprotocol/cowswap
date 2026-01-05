@@ -30,6 +30,7 @@ export enum TradeFormValidation {
   QuoteExpired,
 
   // Balances
+  BalancesLoading,
   BalancesNotLoaded,
   BalanceInsufficient,
 

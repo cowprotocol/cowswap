@@ -143,13 +143,17 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     }
   }
 
-  if (!canPlaceOrderWithoutBalance && !isBalancesLoading) {
-    if (!inputCurrencyBalance) {
-      validations.push(TradeFormValidation.BalancesNotLoaded)
-    }
+  if (!canPlaceOrderWithoutBalance) {
+    if (isBalancesLoading) {
+      validations.push(TradeFormValidation.BalancesLoading)
+    } else {
+      if (!inputCurrencyBalance) {
+        validations.push(TradeFormValidation.BalancesNotLoaded)
+      }
 
-    if (inputCurrencyBalance && inputCurrencyAmount && inputCurrencyBalance.lessThan(inputCurrencyAmount)) {
-      validations.push(TradeFormValidation.BalanceInsufficient)
+      if (inputCurrencyBalance && inputCurrencyAmount && inputCurrencyBalance.lessThan(inputCurrencyAmount)) {
+        validations.push(TradeFormValidation.BalanceInsufficient)
+      }
     }
   }
 
