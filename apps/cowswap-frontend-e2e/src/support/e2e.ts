@@ -55,6 +55,12 @@ Cypress.on('window:before:load', (win) => {
   }
 })
 
+Cypress.on('uncaught:exception', (err) => {
+  if (err.message.includes('ResizeObserver loop completed with undelivered notifications')) {
+    return false
+  }
+})
+
 const skippedUrls = [
   // analytics
   /ads-twitter.com/,
@@ -83,13 +89,6 @@ const cachedUrls = [
 ]
 
 beforeEach(() => {
-  // Infura security policies are based on Origin headers.
-  // These are stripped by cypress because chromeWebSecurity === false; this adds them back in.
-  cy.intercept(/infura.io/, (req) => {
-    req.headers['origin'] = Cypress.config('baseUrl')!
-    req.continue()
-  })
-
   skippedUrls.forEach((url) => {
     cy.intercept(url, (req) => {
       req.reply({ statusCode: 404 })

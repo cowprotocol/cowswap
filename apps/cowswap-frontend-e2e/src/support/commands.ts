@@ -97,18 +97,19 @@ declare namespace Cypress {
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function _clickOnToken(inputOrOutput: string) {
-  cy.get(`#${inputOrOutput}-currency-input .open-currency-select-button`, { timeout: 20_000 })
-    .should('not.be.disabled')
-    .click()
+  const buttonSelector = `#${inputOrOutput}-currency-input .open-currency-select-button`
+
+  cy.get(buttonSelector, { timeout: 20_000 }).should('not.be.disabled')
+  cy.get(buttonSelector).click()
 }
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function _selectTokenFromSelector(tokenAddress: string, inputOrOutput: string) {
-  cy.get(`#tokens-list div[data-address="${tokenAddress.toLowerCase()}"]`)
-    .scrollIntoView()
-    .should('be.visible')
-    .click({ force: true })
+  const tokenSelector = `#tokens-list div[data-address="${tokenAddress.toLowerCase()}"]`
+
+  cy.get(tokenSelector, { timeout: 20_000 }).scrollIntoView().should('be.visible')
+  cy.get(tokenSelector).click({ force: true })
 
   cy.get(`#${inputOrOutput}-currency-input .token-amount-input`).should('be.visible')
 }
