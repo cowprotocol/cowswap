@@ -274,8 +274,8 @@ msgstr "replaced"
 msgid "Bridge via"
 msgstr "Bridge via"
 
+#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/hooks/useWidgetSetup.ts
 #: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/tokenDataHooks.ts
-#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/useWidgetContext.ts
 #: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/index.tsx
 msgid "Select token"
 msgstr "Select token"
@@ -981,6 +981,7 @@ msgid "Min received (incl. costs)"
 msgstr "Min received (incl. costs)"
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/components/SearchInput.tsx
+#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/v2/slots/Search.tsx
 #: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/SelectTokenModalShell.tsx
 msgid "Search name or paste address..."
 msgstr "Search name or paste address..."
@@ -2300,7 +2301,8 @@ msgstr "Dismiss hiring message"
 msgid "dialog content"
 msgstr "dialog content"
 
-#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/useWidgetContext.ts
+#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/hooks/useWidgetSetup.ts
+#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/hooks/useWidgetSetup.ts
 #: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/index.tsx
 msgid "Cross chain swap"
 msgstr "Cross chain swap"
@@ -5388,6 +5390,7 @@ msgid "Attention"
 msgstr "Attention"
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/components/TokenList.tsx
+#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/v2/slots/TokenList.tsx
 #: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/SelectTokenModalContent.tsx
 msgid "This route is not yet supported."
 msgstr "This route is not yet supported."
