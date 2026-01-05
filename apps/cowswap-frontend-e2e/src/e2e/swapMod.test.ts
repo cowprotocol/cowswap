@@ -79,10 +79,11 @@ describe('Swap (mod)', () => {
   it('can find COW and swap Native for COW', () => {
     cy.visit('/#/11155111/swap', {
       onBeforeLoad: async (win) => {
+        const address = await win.ethereum.signer.getAddress()
         mockSendCall(win.ethereum, [
           handleNativeBalance(
             win.ethereum,
-            await win.ethereum.signer.getAddress(),
+            address,
             50n * 10n ** 18n, // 18 decimals
           ),
         ])
