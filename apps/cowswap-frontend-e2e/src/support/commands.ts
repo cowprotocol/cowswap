@@ -106,7 +106,7 @@ function _clickOnToken(inputOrOutput: string) {
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 function _selectTokenFromSelector(tokenAddress: string, inputOrOutput: string) {
-  const tokenSelector = `#tokens-list div[data-address="${tokenAddress.toLowerCase()}"]`
+  const tokenSelector = `#token-search-results div[data-address="${tokenAddress.toLowerCase()}"]`
   const searchSelector = '#token-search-input'
 
   cy.get(searchSelector, { timeout: 20_000 }).should('be.visible').clear().type(tokenAddress)
