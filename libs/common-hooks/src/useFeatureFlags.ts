@@ -2,7 +2,8 @@ import { useFlags } from 'launchdarkly-react-client-sdk'
 
 export interface FeatureFlags {
   isPartialApproveEnabled: boolean
-  [key: string]: unknown
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  [key: string]: any
 }
 
 const defaults: Partial<FeatureFlags> = {
