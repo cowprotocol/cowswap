@@ -31,7 +31,10 @@ async function createSession(
   tokensListsUrls: string[],
   customTokens?: string[],
 ): Promise<void> {
-  const response = await fetch(`${BALANCES_SSE_URL}/${chainId}/sessions/${account}`, {
+  const url = `${BALANCES_SSE_URL}/${chainId}/sessions/${account}`
+  console.debug('[SSE] Creating session:', url)
+
+  const response = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ tokensListsUrls, customTokens }),
@@ -40,6 +43,7 @@ async function createSession(
   if (!response.ok) {
     throw new Error(`Session creation failed: ${response.status}`)
   }
+  console.debug('[SSE] Session created successfully')
 }
 
 interface EventHandlers {
@@ -52,9 +56,13 @@ interface EventHandlers {
 
 function setupEventSource(url: string, handlers: EventHandlers): EventSource {
   const { onAllBalances, onBalanceUpdate, onError, onOpen, onClose } = handlers
+  console.debug('[SSE] Connecting to:', url)
   const es = new EventSource(url)
 
-  es.onopen = onOpen
+  es.onopen = (): void => {
+    console.debug('[SSE] Connection opened')
+    onOpen()
+  }
 
   es.addEventListener('all_balances', (e: MessageEvent): void => {
     try {
@@ -83,8 +91,12 @@ function setupEventSource(url: string, handlers: EventHandlers): EventSource {
     }
   })
 
-  es.onerror = (): void => {
-    if (es.readyState === EventSource.CLOSED) onClose()
+  es.onerror = (event): void => {
+    console.debug('[SSE] Error event, readyState:', es.readyState, event)
+    if (es.readyState === EventSource.CLOSED) {
+      console.debug('[SSE] Connection closed')
+      onClose()
+    }
   }
 
   return es
@@ -105,7 +117,7 @@ export function useSseBalances(params: UseSseBalancesParams): SseBalancesState {
   const [state, setState] = useState<SseBalancesState>(INITIAL_STATE)
   const esRef = useRef<EventSource | null>(null)
   const attemptsRef = useRef(0)
-  const timeoutRef = useRef<ReturnType<typeof setTimeout>>()
+  const timeoutRef = useRef<ReturnType<typeof setTimeout>>(undefined)
 
   const cleanup = useCallback((): void => {
     esRef.current?.close()
@@ -115,6 +127,11 @@ export function useSseBalances(params: UseSseBalancesParams): SseBalancesState {
 
   useEffect(() => {
     if (!enabled || !account || tokensListsUrls.length === 0) {
+      console.debug('[SSE] Skipping connection:', {
+        enabled,
+        account: !!account,
+        tokensListsUrls: tokensListsUrls.length,
+      })
       cleanup()
       setState(INITIAL_STATE)
       return cleanup
@@ -131,6 +148,7 @@ export function useSseBalances(params: UseSseBalancesParams): SseBalancesState {
         await createSession(chainId, account, tokensListsUrls, customTokens)
       } catch (e) {
         const error = e instanceof Error ? e : new Error('Session failed')
+        console.debug('[SSE] Session creation failed:', error.message)
         setState({ ...INITIAL_STATE, error })
         onError?.(error)
         return
