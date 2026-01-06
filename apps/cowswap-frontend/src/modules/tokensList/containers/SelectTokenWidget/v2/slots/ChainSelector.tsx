@@ -1,20 +1,52 @@
 /**
  * ChainSelector Slot - Mobile chain selection chip and panel
- *
- * This slot bridges to the existing ChainSelector component and its hooks.
- * For desktop, use NetworkPanel (rendered outside the modal container).
  */
 import { ReactNode } from 'react'
 
-import {
-  ChainSelector as LegacyChainSelector,
-  DesktopChainPanel as LegacyDesktopPanel,
-} from '../../components/ChainSelector'
+import { ChainPanel } from '../../../../pure/ChainPanel'
+import { MobileChainSelector } from '../../../../pure/SelectTokenModal/MobileChainSelector'
+import { MobileChainPanelPortal } from '../../MobileChainPanelPortal'
+import { useChainState } from '../store'
 
 export function ChainSelector(): ReactNode {
-  return <LegacyChainSelector />
+  const chain = useChainState()
+
+  if (!chain.isEnabled) {
+    return null
+  }
+
+  // Only show mobile chain selector on compact layout
+  if (!chain.isCompactLayout || !chain.mobileChainsState) {
+    return null
+  }
+
+  return (
+    <>
+      <MobileChainSelector
+        chainsState={chain.mobileChainsState}
+        label={chain.title}
+        onSelectChain={chain.onSelectChain}
+        onOpenPanel={chain.onOpenMobileChainPanel}
+      />
+
+      {chain.isMobileChainPanelOpen && chain.chainsToSelect && (
+        <MobileChainPanelPortal
+          chainsPanelTitle={chain.title}
+          chainsToSelect={chain.chainsToSelect}
+          onSelectChain={chain.onSelectChain}
+          onClose={chain.onCloseMobileChainPanel}
+        />
+      )}
+    </>
+  )
 }
 
 export function DesktopChainPanel(): ReactNode {
-  return <LegacyDesktopPanel />
+  const chain = useChainState()
+
+  if (!chain.isEnabled || !chain.isVisible || !chain.chainsToSelect) {
+    return null
+  }
+
+  return <ChainPanel title={chain.title} chainsState={chain.chainsToSelect} onSelectChain={chain.onSelectChain} />
 }

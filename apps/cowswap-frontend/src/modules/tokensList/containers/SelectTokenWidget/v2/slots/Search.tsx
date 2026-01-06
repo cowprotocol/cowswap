@@ -1,32 +1,41 @@
 /**
  * Search Slot - Token search input
+ *
+ * Uses the tokenListViewAtom for search state (shared with TokensContent)
  */
-import { ReactNode } from 'react'
+import { useAtomValue } from 'jotai'
+import { ReactNode, useCallback } from 'react'
 
 import { SearchInput as SearchInputUI } from '@cowprotocol/ui'
 
 import { t } from '@lingui/core/macro'
 
+import { useUpdateTokenListViewState } from '../../../../hooks/useUpdateTokenListViewState'
 import * as styledEl from '../../../../pure/SelectTokenModal/styled'
-import { useSearch } from '../store'
+import { tokenListViewAtom } from '../../../../state/tokenListViewAtom'
+import { useSearchState } from '../store'
 
-export interface SearchProps {
-  placeholder?: string
-  onPressEnter?: () => void
-}
+export function Search(): ReactNode {
+  const { searchInput } = useAtomValue(tokenListViewAtom)
+  const updateTokenListView = useUpdateTokenListViewState()
+  const { onPressEnter } = useSearchState()
 
-export function Search({ placeholder, onPressEnter }: SearchProps): ReactNode {
-  const [query, setQuery] = useSearch()
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      updateTokenListView({ searchInput: e.target.value.trim() })
+    },
+    [updateTokenListView],
+  )
 
   return (
     <styledEl.SearchRow>
       <styledEl.SearchInputWrapper>
         <SearchInputUI
           id="token-search-input"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          value={searchInput}
+          onChange={handleChange}
           onKeyDown={(e) => e.key === 'Enter' && onPressEnter?.()}
-          placeholder={placeholder ?? t`Search name or paste address...`}
+          placeholder={t`Search name or paste address...`}
         />
       </styledEl.SearchInputWrapper>
     </styledEl.SearchRow>

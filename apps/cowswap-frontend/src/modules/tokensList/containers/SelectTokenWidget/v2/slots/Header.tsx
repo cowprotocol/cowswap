@@ -1,20 +1,17 @@
 /**
- * Header Slot - Title bar with back button and optional actions
+ * Header Slot - Title bar with back button and manage button
  */
 import { ReactNode } from 'react'
 
-import { BackButton } from '@cowprotocol/ui'
+import { BackButton, ButtonSecondary } from '@cowprotocol/ui'
+
+import { Trans } from '@lingui/react/macro'
 
 import * as styledEl from '../../../../pure/SelectTokenModal/styled'
-import { useOnDismiss } from '../store'
+import { useHeaderState } from '../store'
 
-export interface HeaderProps {
-  title?: string
-  actions?: ReactNode
-}
-
-export function Header({ title = 'Select token', actions }: HeaderProps): ReactNode {
-  const onDismiss = useOnDismiss()
+export function Header(): ReactNode {
+  const { title, showManageButton, onDismiss, onOpenManageWidget } = useHeaderState()
 
   return (
     <styledEl.TitleBar>
@@ -22,7 +19,13 @@ export function Header({ title = 'Select token', actions }: HeaderProps): ReactN
         <BackButton onClick={onDismiss} />
         <styledEl.ModalTitle>{title}</styledEl.ModalTitle>
       </styledEl.TitleGroup>
-      {actions && <styledEl.TitleActions>{actions}</styledEl.TitleActions>}
+      {showManageButton && (
+        <styledEl.TitleActions>
+          <ButtonSecondary minHeight={36} onClick={onOpenManageWidget}>
+            <Trans>Manage</Trans>
+          </ButtonSecondary>
+        </styledEl.TitleActions>
+      )}
     </styledEl.TitleBar>
   )
 }

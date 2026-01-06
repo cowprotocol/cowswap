@@ -1,48 +1,130 @@
 /**
  * LegacyAdapter - Bridges V2 SelectTokenWidget with the existing controller
- *
- * This adapter wraps V2 and connects it to the existing:
- * - useSelectTokenWidgetController (data source)
- * - useWidgetSetup (atom hydration)
- * - Existing blocking views, chain panel, etc.
- *
- * Usage:
- *   <SelectTokenWidgetV2 displayLpTokenLists>
- *     <SelectTokenWidgetV2.Header />
- *     <SelectTokenWidgetV2.Search />
- *     <SelectTokenWidgetV2.TokenList />
- *   </SelectTokenWidgetV2>
  */
-import { MouseEvent, ReactNode, useEffect } from 'react'
+import { useAtomValue, useSetAtom } from 'jotai'
+import { MouseEvent, ReactNode, useCallback, useEffect, useMemo } from 'react'
 
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
 import { Media } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
 import { createPortal } from 'react-dom'
 
-import { SelectTokenWidget, SelectTokenWidgetProps as V2Props } from './SelectTokenWidget'
 import { BlockingView } from './slots/BlockingView'
 import { ChainSelector, DesktopChainPanel } from './slots/ChainSelector'
 import { Header } from './slots/Header'
 import { NetworkPanel } from './slots/NetworkPanel'
 import { Search } from './slots/Search'
 import { TokenList } from './slots/TokenList'
+import { TokenSelectorProvider, TokenSelectorStore } from './store'
 
 import { useCloseTokenSelectWidget } from '../../../hooks/useCloseTokenSelectWidget'
-import { WidgetCallbacksProvider, WidgetConfigProvider } from '../context'
+import { DEFAULT_MODAL_UI_STATE, selectTokenModalUIAtom, updateSelectTokenModalUIAtom } from '../atoms'
 import { SelectTokenWidgetProps, useSelectTokenWidgetController } from '../controller'
-import { useWidgetSetup } from '../hooks'
 import { InnerWrapper, ModalContainer, WidgetCard, WidgetOverlay, Wrapper } from '../styled'
 
 export interface SelectTokenWidgetV2Props extends SelectTokenWidgetProps {
   children: ReactNode
 }
 
-/**
- * V2 Widget that uses the existing controller for data but allows
- * custom composition of slots via children.
- */
+function useWidgetEffects(
+  shouldRender: boolean,
+  isChainPanelVisible: boolean,
+  isManageWidgetOpen: boolean,
+  closeTokenSelectWidget: ReturnType<typeof useCloseTokenSelectWidget>,
+  updateModalUI: ReturnType<typeof useSetAtom<typeof updateSelectTokenModalUIAtom>>,
+): void {
+  useEffect(() => {
+    if (isChainPanelVisible) {
+      updateModalUI({ isMobileChainPanelOpen: false })
+    }
+  }, [updateModalUI, isChainPanelVisible])
+
+  useEffect(() => {
+    updateModalUI({ isManageWidgetOpen })
+  }, [updateModalUI, isManageWidgetOpen])
+
+  useEffect(() => {
+    return () => updateModalUI(DEFAULT_MODAL_UI_STATE)
+  }, [updateModalUI])
+
+  useEffect(() => {
+    return () => {
+      closeTokenSelectWidget({ overrideForceLock: true })
+    }
+  }, [closeTokenSelectWidget])
+
+  useEffect(() => {
+    if (!shouldRender) {
+      removeBodyClass('noScroll')
+      return undefined
+    }
+    addBodyClass('noScroll')
+    return () => removeBodyClass('noScroll')
+  }, [shouldRender])
+}
+
+function useBuildStore(
+  viewProps: ReturnType<typeof useSelectTokenWidgetController>['viewProps'],
+  isCompactLayout: boolean,
+  isChainPanelVisible: boolean,
+  hasChainPanel: boolean,
+  modalUIState: { isMobileChainPanelOpen: boolean; isManageWidgetOpen: boolean },
+  onOpenMobileChainPanel: () => void,
+  onCloseMobileChainPanel: () => void,
+): TokenSelectorStore {
+  const { selectTokenModalProps } = viewProps
+
+  return useMemo<TokenSelectorStore>(
+    () => ({
+      title: selectTokenModalProps.modalTitle ?? t`Select token`,
+      showManageButton: !viewProps.standalone,
+      chainsPanelTitle: viewProps.chainsPanelTitle ?? t`Cross chain swap`,
+      chainsToSelect: viewProps.chainsToSelect,
+      displayLpTokenLists: selectTokenModalProps.displayLpTokenLists ?? false,
+      tokenListCategoryState: selectTokenModalProps.tokenListCategoryState,
+      disableErc20: selectTokenModalProps.disableErc20 ?? false,
+      isRouteAvailable: selectTokenModalProps.isRouteAvailable,
+      account: selectTokenModalProps.account,
+      standalone: viewProps.standalone ?? false,
+      tokenToImport: viewProps.tokenToImport,
+      listToImport: viewProps.listToImport,
+      selectedPoolAddress: viewProps.selectedPoolAddress,
+      allTokenLists: viewProps.allTokenLists,
+      userAddedTokens: viewProps.userAddedTokens,
+      isCompactLayout,
+      isChainPanelVisible,
+      isChainPanelEnabled: hasChainPanel,
+      isMobileChainPanelOpen: modalUIState.isMobileChainPanelOpen,
+      isManageWidgetOpen: modalUIState.isManageWidgetOpen,
+      onDismiss: viewProps.onDismiss,
+      onOpenManageWidget: selectTokenModalProps.onOpenManageWidget,
+      onInputPressEnter: selectTokenModalProps.onInputPressEnter,
+      onSelectChain: viewProps.onSelectChain,
+      onSelectToken: viewProps.onSelectToken,
+      openPoolPage: selectTokenModalProps.openPoolPage,
+      onBackFromImport: viewProps.onBackFromImport,
+      onImportTokens: viewProps.onImportTokens,
+      onImportList: viewProps.onImportList,
+      onCloseManageWidget: viewProps.onCloseManageWidget,
+      onClosePoolPage: viewProps.onClosePoolPage,
+      onOpenMobileChainPanel,
+      onCloseMobileChainPanel,
+    }),
+    [
+      viewProps,
+      selectTokenModalProps,
+      isCompactLayout,
+      isChainPanelVisible,
+      hasChainPanel,
+      modalUIState,
+      onOpenMobileChainPanel,
+      onCloseMobileChainPanel,
+    ],
+  )
+}
+
 export function SelectTokenWidgetV2({
   displayLpTokenLists,
   standalone,
@@ -56,80 +138,57 @@ export function SelectTokenWidgetV2({
   const isChainPanelVisible = hasChainPanel && !isCompactLayout
   const closeTokenSelectWidget = useCloseTokenSelectWidget()
 
-  // Setup atoms and get provider values
-  const { callbacks, config } = useWidgetSetup({
-    viewProps,
+  const updateModalUI = useSetAtom(updateSelectTokenModalUIAtom)
+  const modalUIState = useAtomValue(selectTokenModalUIAtom)
+
+  const onOpenMobileChainPanel = useCallback(() => updateModalUI({ isMobileChainPanelOpen: true }), [updateModalUI])
+  const onCloseMobileChainPanel = useCallback(() => updateModalUI({ isMobileChainPanelOpen: false }), [updateModalUI])
+
+  useWidgetEffects(
+    shouldRender,
     isChainPanelVisible,
+    viewProps.isManageWidgetOpen,
+    closeTokenSelectWidget,
+    updateModalUI,
+  )
+
+  const store = useBuildStore(
+    viewProps,
     isCompactLayout,
-    isChainPanelEnabled: hasChainPanel,
-  })
+    isChainPanelVisible,
+    hasChainPanel,
+    modalUIState,
+    onOpenMobileChainPanel,
+    onCloseMobileChainPanel,
+  )
 
-  // Cleanup: reset widget state on unmount
-  useEffect(() => {
-    return () => {
-      closeTokenSelectWidget({ overrideForceLock: true })
-    }
-  }, [closeTokenSelectWidget])
-
-  useEffect(() => {
-    if (!shouldRender) {
-      removeBodyClass('noScroll')
-      return undefined
-    }
-
-    addBodyClass('noScroll')
-    return () => removeBodyClass('noScroll')
-  }, [shouldRender])
-
-  if (!shouldRender) {
-    return null
-  }
+  if (!shouldRender) return null
 
   const handleOverlayClick = (event: MouseEvent<HTMLDivElement>): void => {
-    if (event.target !== event.currentTarget) {
-      return
-    }
-    viewProps.onDismiss()
+    if (event.target === event.currentTarget) viewProps.onDismiss()
   }
 
-  // Bridge to V2: Convert controller data to V2 props
-  const v2Props: Omit<V2Props, 'children'> = {
-    onSelect: viewProps.onSelectToken,
-    onDismiss: viewProps.onDismiss,
-    chains: viewProps.chainsToSelect,
-    onSelectChain: viewProps.onSelectChain,
-  }
-
-  const widgetContent = (
-    <WidgetCallbacksProvider value={callbacks}>
-      <WidgetConfigProvider value={config}>
-        <SelectTokenWidget {...v2Props}>
-          <Wrapper>
-            <InnerWrapper $hasSidebar={isChainPanelVisible} $isMobileOverlay={isCompactLayout}>
-              <ModalContainer>{children}</ModalContainer>
-            </InnerWrapper>
-          </Wrapper>
-        </SelectTokenWidget>
-      </WidgetConfigProvider>
-    </WidgetCallbacksProvider>
+  const content = (
+    <TokenSelectorProvider value={store}>
+      <Wrapper>
+        <InnerWrapper $hasSidebar={isChainPanelVisible} $isMobileOverlay={isCompactLayout}>
+          <ModalContainer>{children}</ModalContainer>
+        </InnerWrapper>
+      </Wrapper>
+    </TokenSelectorProvider>
   )
 
   const overlay = (
     <WidgetOverlay onClick={handleOverlayClick}>
       <WidgetCard $isCompactLayout={isCompactLayout} $hasChainPanel={hasChainPanel}>
-        {widgetContent}
+        {content}
       </WidgetCard>
     </WidgetOverlay>
   )
 
-  if (typeof document === 'undefined') {
-    return overlay
-  }
-
-  return createPortal(overlay, document.body)
+  return typeof document === 'undefined' ? overlay : createPortal(overlay, document.body)
 }
 
-// Attach slots
 SelectTokenWidgetV2.Header = Header
 SelectTokenWidgetV2.Search = Search
 SelectTokenWidgetV2.TokenList = TokenList

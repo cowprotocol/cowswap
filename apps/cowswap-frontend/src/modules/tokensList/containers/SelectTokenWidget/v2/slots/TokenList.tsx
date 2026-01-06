@@ -1,9 +1,7 @@
 /**
  * TokenList Slot - Displays list of tokens
  *
- * This is a simple wrapper that renders children (typically TokensContent).
- * The actual token data comes from the tokenListViewAtom which is hydrated
- * by the parent widget.
+ * Uses TokensContent which reads from tokenListViewAtom
  */
 import { ReactNode } from 'react'
 
@@ -11,13 +9,11 @@ import { Trans } from '@lingui/react/macro'
 
 import * as styledEl from '../../../../pure/SelectTokenModal/styled'
 import { TokensContent } from '../../../../pure/TokensContent'
+import { useTokenListState } from '../store'
 
-export interface TokenListProps {
-  isRouteAvailable?: boolean
-  children?: ReactNode
-}
+export function TokenList(): ReactNode {
+  const { isRouteAvailable } = useTokenListState()
 
-export function TokenList({ isRouteAvailable, children }: TokenListProps): ReactNode {
   if (isRouteAvailable === false) {
     return (
       <styledEl.RouteNotAvailable>
@@ -26,6 +22,5 @@ export function TokenList({ isRouteAvailable, children }: TokenListProps): React
     )
   }
 
-  // If children provided, render them; otherwise render default TokensContent
-  return <>{children ?? <TokensContent />}</>
+  return <TokensContent />
 }
