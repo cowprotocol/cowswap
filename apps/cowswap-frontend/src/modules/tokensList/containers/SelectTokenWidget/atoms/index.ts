@@ -21,25 +21,3 @@ export const DEFAULT_MODAL_UI_STATE: SelectTokenModalUIState = {
 export const { atom: selectTokenModalUIAtom, updateAtom: updateSelectTokenModalUIAtom } = atomWithPartialUpdate(
   atom<SelectTokenModalUIState>(DEFAULT_MODAL_UI_STATE),
 )
-
-export interface LayoutState {
-  isCompactLayout: boolean
-  hasChainPanel: boolean
-}
-
-export const layoutStateAtom = atom<LayoutState>({
-  isCompactLayout: false,
-  hasChainPanel: false,
-})
-
-export interface ChainPanelState {
-  isEnabled: boolean
-  isVisible: boolean
-  title: string
-}
-
-export const chainPanelStateAtom = atom<ChainPanelState>({
-  isEnabled: false,
-  isVisible: false,
-  title: '',
-})
