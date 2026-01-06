@@ -96,20 +96,6 @@ describe('usePendingApprovalModal', () => {
     expect(resultWithoutModalMode.current.Modal).toBeDefined()
   })
 
-  it('should pass isPendingInProgress to ConfirmationPendingContent', () => {
-    const { result: resultWithPending } = renderHook(() => usePendingApprovalModal({ isPendingInProgress: true }), {
-      wrapper: LinguiWrapper,
-    })
-
-    expect(resultWithPending.current.Modal).toBeDefined()
-
-    const { result: resultWithoutPending } = renderHook(() => usePendingApprovalModal({ isPendingInProgress: false }), {
-      wrapper: LinguiWrapper,
-    })
-
-    expect(resultWithoutPending.current.Modal).toBeDefined()
-  })
-
   it('should handle onDismiss callback', () => {
     const mockOnDismiss = jest.fn()
 

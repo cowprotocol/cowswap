@@ -214,7 +214,6 @@ describe('useGetAmountToSignApprove', () => {
     it('should return max amount when any condition for partial approval is not met', () => {
       const scenarios = [
         {
-          isPartialApproveEnabled: true,
           isPartialApprovalSelectedByUser: false,
           isPartialApprovalEnabledInSettings: true,
         },
