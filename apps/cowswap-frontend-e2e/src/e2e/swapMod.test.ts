@@ -92,7 +92,7 @@ describe('Swap (mod)', () => {
     cy.unlockCrossChainSwap()
     cy.swapEnterInputAmount(ETH, '0.5', true)
     cy.swapSelectOutput(COW)
-    cy.get('#output-currency-input .token-amount-input').should('not.be.empty')
+    cy.get('#output-currency-input .token-amount-input').should('not.equal', '')
     cy.get('#do-trade-button').should('contain.text', 'Swap').click({ timeout: SMALL_TIMEOUT })
     cy.get('#trade-confirmation > button').should('contain', 'Confirm Swap')
   })
