@@ -1,6 +1,5 @@
 /**
  * BlockingView Slot - Full-screen modals that take over the widget
- * (import token, import list, manage lists, LP page)
  */
 import { ReactNode } from 'react'
 
@@ -8,12 +7,11 @@ import { ImportListModal } from '../../../../pure/ImportListModal'
 import { ImportTokenModal } from '../../../../pure/ImportTokenModal'
 import { LpTokenPage } from '../../../LpTokenPage'
 import { ManageListsAndTokens } from '../../../ManageListsAndTokens'
-import { useBlockingViewState } from '../store'
+import { useBlockingViewStore } from '../store'
 
 export function BlockingView(): ReactNode {
-  const state = useBlockingViewState()
+  const state = useBlockingViewStore()
 
-  // Import token modal
   if (state.tokenToImport && !state.standalone) {
     return (
       <ImportTokenModal
@@ -25,7 +23,6 @@ export function BlockingView(): ReactNode {
     )
   }
 
-  // Import list modal
   if (state.listToImport && !state.standalone) {
     return (
       <ImportListModal
@@ -37,7 +34,6 @@ export function BlockingView(): ReactNode {
     )
   }
 
-  // Manage lists and tokens
   if (state.isManageWidgetOpen && !state.standalone) {
     return (
       <ManageListsAndTokens
@@ -49,7 +45,6 @@ export function BlockingView(): ReactNode {
     )
   }
 
-  // LP token page
   if (state.selectedPoolAddress) {
     return (
       <LpTokenPage

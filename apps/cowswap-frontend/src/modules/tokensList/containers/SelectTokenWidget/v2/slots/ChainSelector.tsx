@@ -6,24 +6,20 @@ import { ReactNode } from 'react'
 import { ChainPanel } from '../../../../pure/ChainPanel'
 import { MobileChainSelector } from '../../../../pure/SelectTokenModal/MobileChainSelector'
 import { MobileChainPanelPortal } from '../../MobileChainPanelPortal'
-import { useChainState } from '../store'
+import { useChainStore, useMobileChainsState } from '../store'
 
 export function ChainSelector(): ReactNode {
-  const chain = useChainState()
+  const chain = useChainStore()
+  const mobileChainsState = useMobileChainsState()
 
-  if (!chain.isEnabled) {
-    return null
-  }
-
-  // Only show mobile chain selector on compact layout
-  if (!chain.isCompactLayout || !chain.mobileChainsState) {
+  if (!chain.isEnabled || !chain.isCompactLayout || !mobileChainsState) {
     return null
   }
 
   return (
     <>
       <MobileChainSelector
-        chainsState={chain.mobileChainsState}
+        chainsState={mobileChainsState}
         label={chain.title}
         onSelectChain={chain.onSelectChain}
         onOpenPanel={chain.onOpenMobileChainPanel}
@@ -42,7 +38,7 @@ export function ChainSelector(): ReactNode {
 }
 
 export function DesktopChainPanel(): ReactNode {
-  const chain = useChainState()
+  const chain = useChainStore()
 
   if (!chain.isEnabled || !chain.isVisible || !chain.chainsToSelect) {
     return null

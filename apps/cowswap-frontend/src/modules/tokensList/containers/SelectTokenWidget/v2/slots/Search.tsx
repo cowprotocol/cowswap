@@ -1,7 +1,5 @@
 /**
  * Search Slot - Token search input
- *
- * Uses the tokenListViewAtom for search state (shared with TokensContent)
  */
 import { useAtomValue } from 'jotai'
 import { ReactNode, useCallback } from 'react'
@@ -13,12 +11,12 @@ import { t } from '@lingui/core/macro'
 import { useUpdateTokenListViewState } from '../../../../hooks/useUpdateTokenListViewState'
 import * as styledEl from '../../../../pure/SelectTokenModal/styled'
 import { tokenListViewAtom } from '../../../../state/tokenListViewAtom'
-import { useSearchState } from '../store'
+import { useSearchStore } from '../store'
 
 export function Search(): ReactNode {
   const { searchInput } = useAtomValue(tokenListViewAtom)
   const updateTokenListView = useUpdateTokenListViewState()
-  const { onPressEnter } = useSearchState()
+  const { onPressEnter } = useSearchStore()
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {

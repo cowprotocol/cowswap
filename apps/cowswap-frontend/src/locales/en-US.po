@@ -274,8 +274,8 @@ msgstr "replaced"
 msgid "Bridge via"
 msgstr "Bridge via"
 
-#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/hooks/useWidgetSetup.ts
 #: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/tokenDataHooks.ts
+#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/v2/LegacyAdapter.tsx
 #: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/index.tsx
 msgid "Select token"
 msgstr "Select token"
@@ -860,8 +860,6 @@ msgstr "To network"
 msgid "icon"
 msgstr "icon"
 
-#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/components/Header.tsx
-#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/components/Header.tsx
 #: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/helpers.tsx
 #: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/helpers.tsx
 msgid "Manage token lists"
@@ -980,7 +978,6 @@ msgstr "Actions"
 msgid "Min received (incl. costs)"
 msgstr "Min received (incl. costs)"
 
-#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/components/SearchInput.tsx
 #: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/v2/slots/Search.tsx
 #: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/SelectTokenModalShell.tsx
 msgid "Search name or paste address..."
@@ -2301,8 +2298,7 @@ msgstr "Dismiss hiring message"
 msgid "dialog content"
 msgstr "dialog content"
 
-#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/hooks/useWidgetSetup.ts
-#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/hooks/useWidgetSetup.ts
+#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/v2/LegacyAdapter.tsx
 #: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/index.tsx
 msgid "Cross chain swap"
 msgstr "Cross chain swap"
@@ -5389,7 +5385,6 @@ msgstr "Error loading the claimable amount"
 msgid "Attention"
 msgstr "Attention"
 
-#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/components/TokenList.tsx
 #: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/v2/slots/TokenList.tsx
 #: apps/cowswap-frontend/src/modules/tokensList/pure/SelectTokenModal/SelectTokenModalContent.tsx
 msgid "This route is not yet supported."
@@ -5982,6 +5977,7 @@ msgid "Loading {accountProxyLabel}"
 msgstr "Loading {accountProxyLabel}"
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/ManageListsAndTokens/index.tsx
+#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/v2/slots/Header.tsx
 msgid "Manage"
 msgstr "Manage"
 

@@ -4,14 +4,14 @@
 import { ReactNode } from 'react'
 
 import { ChainPanel } from '../../../../pure/ChainPanel'
-import { useChainState } from '../store'
+import { useChainStore } from '../store'
 
 export interface NetworkPanelProps {
   title?: string
 }
 
 export function NetworkPanel({ title }: NetworkPanelProps): ReactNode {
-  const chain = useChainState()
+  const chain = useChainStore()
 
   if (!chain.chainsToSelect) {
     return null

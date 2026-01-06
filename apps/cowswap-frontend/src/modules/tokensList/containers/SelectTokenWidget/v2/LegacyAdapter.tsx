@@ -17,15 +17,118 @@ import { Header } from './slots/Header'
 import { NetworkPanel } from './slots/NetworkPanel'
 import { Search } from './slots/Search'
 import { TokenList } from './slots/TokenList'
-import { TokenSelectorProvider, TokenSelectorStore } from './store'
+import {
+  BlockingViewProvider,
+  BlockingViewStore,
+  ChainProvider,
+  ChainStore,
+  HeaderProvider,
+  HeaderStore,
+  SearchProvider,
+  SearchStore,
+  TokenListProvider,
+  TokenListStore,
+} from './store'
 
 import { useCloseTokenSelectWidget } from '../../../hooks/useCloseTokenSelectWidget'
 import { DEFAULT_MODAL_UI_STATE, selectTokenModalUIAtom, updateSelectTokenModalUIAtom } from '../atoms'
 import { SelectTokenWidgetProps, useSelectTokenWidgetController } from '../controller'
+import { SelectTokenWidgetViewProps } from '../controllerProps'
 import { InnerWrapper, ModalContainer, WidgetCard, WidgetOverlay, Wrapper } from '../styled'
 
 export interface SelectTokenWidgetV2Props extends SelectTokenWidgetProps {
   children: ReactNode
+}
+
+type ViewProps = SelectTokenWidgetViewProps
+
+function useHeaderStore(viewProps: ViewProps): HeaderStore {
+  return useMemo(
+    () => ({
+      title: viewProps.selectTokenModalProps.modalTitle ?? t`Select token`,
+      showManageButton: !viewProps.standalone,
+      onDismiss: viewProps.onDismiss,
+      onOpenManageWidget: viewProps.selectTokenModalProps.onOpenManageWidget,
+    }),
+    [
+      viewProps.selectTokenModalProps.modalTitle,
+      viewProps.selectTokenModalProps.onOpenManageWidget,
+      viewProps.standalone,
+      viewProps.onDismiss,
+    ],
+  )
+}
+
+function useSearchStoreValue(viewProps: ViewProps): SearchStore {
+  return useMemo(
+    () => ({ onPressEnter: viewProps.selectTokenModalProps.onInputPressEnter }),
+    [viewProps.selectTokenModalProps.onInputPressEnter],
+  )
+}
+
+interface ChainStoreParams {
+  viewProps: ViewProps
+  hasChainPanel: boolean
+  isChainPanelVisible: boolean
+  isCompactLayout: boolean
+  isMobileChainPanelOpen: boolean
+  onOpenMobileChainPanel: () => void
+  onCloseMobileChainPanel: () => void
+}
+
+function useChainStoreValue(params: ChainStoreParams): ChainStore {
+  return useMemo(
+    () => ({
+      isEnabled: params.hasChainPanel,
+      isVisible: params.isChainPanelVisible,
+      title: params.viewProps.chainsPanelTitle ?? t`Cross chain swap`,
+      chainsToSelect: params.viewProps.chainsToSelect,
+      isMobileChainPanelOpen: params.isMobileChainPanelOpen,
+      isCompactLayout: params.isCompactLayout,
+      onSelectChain: params.viewProps.onSelectChain,
+      onOpenMobileChainPanel: params.onOpenMobileChainPanel,
+      onCloseMobileChainPanel: params.onCloseMobileChainPanel,
+    }),
+    [params],
+  )
+}
+
+function useTokenListStoreValue(viewProps: ViewProps): TokenListStore {
+  const p = viewProps.selectTokenModalProps
+  return useMemo(
+    () => ({
+      displayLpTokenLists: p.displayLpTokenLists ?? false,
+      tokenListCategoryState: p.tokenListCategoryState,
+      disableErc20: p.disableErc20 ?? false,
+      isRouteAvailable: p.isRouteAvailable,
+      account: p.account,
+      onSelectToken: viewProps.onSelectToken,
+      openPoolPage: p.openPoolPage,
+    }),
+    [p, viewProps.onSelectToken],
+  )
+}
+
+function useBlockingViewStoreValue(viewProps: ViewProps, isManageWidgetOpen: boolean): BlockingViewStore {
+  return useMemo(
+    () => ({
+      standalone: viewProps.standalone ?? false,
+      tokenToImport: viewProps.tokenToImport,
+      listToImport: viewProps.listToImport,
+      isManageWidgetOpen,
+      selectedPoolAddress: viewProps.selectedPoolAddress,
+      allTokenLists: viewProps.allTokenLists,
+      userAddedTokens: viewProps.userAddedTokens,
+      onDismiss: viewProps.onDismiss,
+      onBackFromImport: viewProps.onBackFromImport,
+      onImportTokens: viewProps.onImportTokens,
+      onImportList: viewProps.onImportList,
+      onCloseManageWidget: viewProps.onCloseManageWidget,
+      onClosePoolPage: viewProps.onClosePoolPage,
+      onSelectToken: viewProps.onSelectToken,
+    }),
+    [viewProps, isManageWidgetOpen],
+  )
 }
 
 function useWidgetEffects(
@@ -36,93 +139,24 @@ function useWidgetEffects(
   updateModalUI: ReturnType<typeof useSetAtom<typeof updateSelectTokenModalUIAtom>>,
 ): void {
   useEffect(() => {
-    if (isChainPanelVisible) {
-      updateModalUI({ isMobileChainPanelOpen: false })
-    }
+    if (isChainPanelVisible) updateModalUI({ isMobileChainPanelOpen: false })
   }, [updateModalUI, isChainPanelVisible])
 
   useEffect(() => {
     updateModalUI({ isManageWidgetOpen })
   }, [updateModalUI, isManageWidgetOpen])
 
-  useEffect(() => {
-    return () => updateModalUI(DEFAULT_MODAL_UI_STATE)
-  }, [updateModalUI])
-
-  useEffect(() => {
-    return () => {
-      closeTokenSelectWidget({ overrideForceLock: true })
-    }
-  }, [closeTokenSelectWidget])
+  useEffect(() => () => updateModalUI(DEFAULT_MODAL_UI_STATE), [updateModalUI])
+  useEffect(() => () => closeTokenSelectWidget({ overrideForceLock: true }), [closeTokenSelectWidget])
 
   useEffect(() => {
     if (!shouldRender) {
       removeBodyClass('noScroll')
-      return undefined
+      return
     }
     addBodyClass('noScroll')
     return () => removeBodyClass('noScroll')
   }, [shouldRender])
-}
-
-function useBuildStore(
-  viewProps: ReturnType<typeof useSelectTokenWidgetController>['viewProps'],
-  isCompactLayout: boolean,
-  isChainPanelVisible: boolean,
-  hasChainPanel: boolean,
-  modalUIState: { isMobileChainPanelOpen: boolean; isManageWidgetOpen: boolean },
-  onOpenMobileChainPanel: () => void,
-  onCloseMobileChainPanel: () => void,
-): TokenSelectorStore {
-  const { selectTokenModalProps } = viewProps
-
-  return useMemo<TokenSelectorStore>(
-    () => ({
-      title: selectTokenModalProps.modalTitle ?? t`Select token`,
-      showManageButton: !viewProps.standalone,
-      chainsPanelTitle: viewProps.chainsPanelTitle ?? t`Cross chain swap`,
-      chainsToSelect: viewProps.chainsToSelect,
-      displayLpTokenLists: selectTokenModalProps.displayLpTokenLists ?? false,
-      tokenListCategoryState: selectTokenModalProps.tokenListCategoryState,
-      disableErc20: selectTokenModalProps.disableErc20 ?? false,
-      isRouteAvailable: selectTokenModalProps.isRouteAvailable,
-      account: selectTokenModalProps.account,
-      standalone: viewProps.standalone ?? false,
-      tokenToImport: viewProps.tokenToImport,
-      listToImport: viewProps.listToImport,
-      selectedPoolAddress: viewProps.selectedPoolAddress,
-      allTokenLists: viewProps.allTokenLists,
-      userAddedTokens: viewProps.userAddedTokens,
-      isCompactLayout,
-      isChainPanelVisible,
-      isChainPanelEnabled: hasChainPanel,
-      isMobileChainPanelOpen: modalUIState.isMobileChainPanelOpen,
-      isManageWidgetOpen: modalUIState.isManageWidgetOpen,
-      onDismiss: viewProps.onDismiss,
-      onOpenManageWidget: selectTokenModalProps.onOpenManageWidget,
-      onInputPressEnter: selectTokenModalProps.onInputPressEnter,
-      onSelectChain: viewProps.onSelectChain,
-      onSelectToken: viewProps.onSelectToken,
-      openPoolPage: selectTokenModalProps.openPoolPage,
-      onBackFromImport: viewProps.onBackFromImport,
-      onImportTokens: viewProps.onImportTokens,
-      onImportList: viewProps.onImportList,
-      onCloseManageWidget: viewProps.onCloseManageWidget,
-      onClosePoolPage: viewProps.onClosePoolPage,
-      onOpenMobileChainPanel,
-      onCloseMobileChainPanel,
-    }),
-    [
-      viewProps,
-      selectTokenModalProps,
-      isCompactLayout,
-      isChainPanelVisible,
-      hasChainPanel,
-      modalUIState,
-      onOpenMobileChainPanel,
-      onCloseMobileChainPanel,
-    ],
-  )
 }
 
 export function SelectTokenWidgetV2({
@@ -130,10 +164,7 @@ export function SelectTokenWidgetV2({
   standalone,
   children,
 }: SelectTokenWidgetV2Props): ReactNode {
-  const { shouldRender, hasChainPanel, viewProps } = useSelectTokenWidgetController({
-    displayLpTokenLists,
-    standalone,
-  })
+  const { shouldRender, hasChainPanel, viewProps } = useSelectTokenWidgetController({ displayLpTokenLists, standalone })
   const isCompactLayout = useMediaQuery(Media.upToMedium(false))
   const isChainPanelVisible = hasChainPanel && !isCompactLayout
   const closeTokenSelectWidget = useCloseTokenSelectWidget()
@@ -152,15 +183,19 @@ export function SelectTokenWidgetV2({
     updateModalUI,
   )
 
-  const store = useBuildStore(
+  const header = useHeaderStore(viewProps)
+  const search = useSearchStoreValue(viewProps)
+  const chain = useChainStoreValue({
     viewProps,
-    isCompactLayout,
-    isChainPanelVisible,
     hasChainPanel,
-    modalUIState,
+    isChainPanelVisible,
+    isCompactLayout,
+    isMobileChainPanelOpen: modalUIState.isMobileChainPanelOpen,
     onOpenMobileChainPanel,
     onCloseMobileChainPanel,
-  )
+  })
+  const tokenList = useTokenListStoreValue(viewProps)
+  const blockingView = useBlockingViewStoreValue(viewProps, modalUIState.isManageWidgetOpen)
 
   if (!shouldRender) return null
 
@@ -169,13 +204,21 @@ export function SelectTokenWidgetV2({
   }
 
   const content = (
-    <TokenSelectorProvider value={store}>
-      <Wrapper>
-        <InnerWrapper $hasSidebar={isChainPanelVisible} $isMobileOverlay={isCompactLayout}>
-          <ModalContainer>{children}</ModalContainer>
-        </InnerWrapper>
-      </Wrapper>
-    </TokenSelectorProvider>
+    <HeaderProvider value={header}>
+      <SearchProvider value={search}>
+        <ChainProvider value={chain}>
+          <TokenListProvider value={tokenList}>
+            <BlockingViewProvider value={blockingView}>
+              <Wrapper>
+                <InnerWrapper $hasSidebar={isChainPanelVisible} $isMobileOverlay={isCompactLayout}>
+                  <ModalContainer>{children}</ModalContainer>
+                </InnerWrapper>
+              </Wrapper>
+            </BlockingViewProvider>
+          </TokenListProvider>
+        </ChainProvider>
+      </SearchProvider>
+    </HeaderProvider>
   )
 
   const overlay = (

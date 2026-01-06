@@ -1,7 +1,5 @@
 /**
  * TokenList Slot - Displays list of tokens
- *
- * Uses TokensContent which reads from tokenListViewAtom
  */
 import { ReactNode } from 'react'
 
@@ -9,10 +7,10 @@ import { Trans } from '@lingui/react/macro'
 
 import * as styledEl from '../../../../pure/SelectTokenModal/styled'
 import { TokensContent } from '../../../../pure/TokensContent'
-import { useTokenListState } from '../store'
+import { useTokenListStore } from '../store'
 
 export function TokenList(): ReactNode {
-  const { isRouteAvailable } = useTokenListState()
+  const { isRouteAvailable } = useTokenListStore()
 
   if (isRouteAvailable === false) {
     return (

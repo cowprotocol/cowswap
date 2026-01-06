@@ -8,10 +8,10 @@ import { BackButton, ButtonSecondary } from '@cowprotocol/ui'
 import { Trans } from '@lingui/react/macro'
 
 import * as styledEl from '../../../../pure/SelectTokenModal/styled'
-import { useHeaderState } from '../store'
+import { useHeaderStore } from '../store'
 
 export function Header(): ReactNode {
-  const { title, showManageButton, onDismiss, onOpenManageWidget } = useHeaderState()
+  const { title, showManageButton, onDismiss, onOpenManageWidget } = useHeaderStore()
 
   return (
     <styledEl.TitleBar>
