@@ -1,15 +1,10 @@
 /**
  * SelectTokenWidget Controller
  *
- * Minimal controller - just handles widget visibility and atom hydration.
- * Domain-specific logic is handled by focused hooks in each slot.
+ * Minimal controller - just handles widget visibility.
+ * Token data is fetched directly by components via useTokenListData hook.
  */
-import { useWalletInfo } from '@cowprotocol/wallet'
-
-import { useHydrateTokenListViewAtom } from './controllerAtomHydration'
 import { useWidgetOpenState } from './hooks'
-import { useTokenDataSources } from './tokenDataHooks'
-import { useRecentTokenSection, useTokenSelectionHandler } from './tokenSelectionHooks'
 
 export interface SelectTokenWidgetProps {
   displayLpTokenLists?: boolean
@@ -24,37 +19,12 @@ export function useSelectTokenWidgetController({
   displayLpTokenLists,
   standalone,
 }: SelectTokenWidgetProps): SelectTokenWidgetController {
-  const { isOpen, widgetState } = useWidgetOpenState()
-  const { account, chainId: walletChainId } = useWalletInfo()
-  const tokenData = useTokenDataSources()
+  const { isOpen } = useWidgetOpenState()
 
-  // Token selection handler
-  const handleSelectToken = useTokenSelectionHandler(widgetState.onSelectToken, widgetState)
-
-  // Recent tokens
-  const activeChainId = widgetState.selectedTargetChainId ?? walletChainId
-  const { recentTokens, handleTokenListItemClick, clearRecentTokens } = useRecentTokenSection(
-    tokenData.allTokens,
-    tokenData.favoriteTokens,
-    activeChainId,
-  )
-
-  // Favorite tokens (empty in standalone mode)
-  const favoriteTokens = standalone ? [] : tokenData.favoriteTokens
-
-  // Hydrate token list atom (only when open)
-  useHydrateTokenListViewAtom({
-    shouldRender: isOpen,
-    tokenData,
-    widgetState,
-    favoriteTokens,
-    recentTokens,
-    onClearRecentTokens: clearRecentTokens,
-    onTokenListItemClick: handleTokenListItemClick,
-    handleSelectToken,
-    account,
-    displayLpTokenLists: displayLpTokenLists ?? false,
-  })
+  // Note: displayLpTokenLists and standalone are now passed via context
+  // to components that need them, rather than hydrating an atom
+  void displayLpTokenLists
+  void standalone
 
   return { isOpen }
 }

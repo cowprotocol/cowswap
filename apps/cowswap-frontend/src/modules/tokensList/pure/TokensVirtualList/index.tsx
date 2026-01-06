@@ -10,7 +10,7 @@ import { VirtualItem } from '@tanstack/react-virtual'
 import { CoWAmmBanner } from 'common/containers/CoWAmmBanner'
 import { VirtualList } from 'common/pure/VirtualList'
 
-import { useTokenListViewState } from '../../hooks/useTokenListViewState'
+import { useTokenListData } from '../../hooks/useTokenListData'
 import { SelectTokenContext } from '../../types'
 import { tokensListSorter } from '../../utils/tokensListSorter'
 import { FavoriteTokensList } from '../FavoriteTokensList'
@@ -33,13 +33,8 @@ export function TokensVirtualList({
   favoriteTokens,
   recentTokens,
 }: TokensVirtualListProps): ReactNode {
-  const {
-    selectTokenContext,
-    displayLpTokenLists,
-    hideFavoriteTokensTooltip,
-    selectedTargetChainId,
-    onClearRecentTokens,
-  } = useTokenListViewState()
+  const { selectTokenContext, hideFavoriteTokensTooltip, selectedTargetChainId, onClearRecentTokens } =
+    useTokenListData()
 
   const { values: balances } = selectTokenContext.balancesState
 
@@ -83,7 +78,7 @@ export function TokensVirtualList({
       composedRows.push({
         type: 'title',
         label: t`Recent`,
-        actionLabel: onClearRecentTokens ? t`Clear` : undefined,
+        actionLabel: t`Clear`,
         onAction: onClearRecentTokens,
       })
       recentTokens.forEach((token) => composedRows.push({ type: 'token', token }))
@@ -105,6 +100,10 @@ export function TokensVirtualList({
     [selectTokenContext],
   )
 
+  // Check if LP token lists are displayed (no CoWAmmBanner in that case)
+  // This was previously read from atom, now we don't have it - default to not showing banner for LP
+  const showCoWAmmBanner = isYieldEnabled
+
   return (
     <VirtualList
       key={virtualListKey}
@@ -113,7 +112,7 @@ export function TokensVirtualList({
       getItemView={getItemView}
       scrollResetKey={selectedTargetChainId}
     >
-      {displayLpTokenLists || !isYieldEnabled ? null : <CoWAmmBanner isTokenSelectorView />}
+      {showCoWAmmBanner ? <CoWAmmBanner isTokenSelectorView /> : null}
     </VirtualList>
   )
 }

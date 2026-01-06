@@ -4,7 +4,6 @@ import { atomWithPartialUpdate } from '@cowprotocol/common-utils'
 
 /**
  * Modal-level UI state for SelectTokenWidget.
- * Separate from business logic state (selectTokenWidgetAtom).
  */
 export interface SelectTokenModalUIState {
   /** Whether the mobile chain panel overlay is open */

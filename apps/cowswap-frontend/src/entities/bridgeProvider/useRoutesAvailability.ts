@@ -56,7 +56,7 @@ export function useRoutesAvailability(
     if (!isBridgingEnabled || !sourceChainId || chainsToCheck.length === 0) {
       return null
     }
-    return [sourceChainId, chainsToCheck.sort().join(','), providersKey, 'useRoutesAvailability']
+    return [sourceChainId, chainsToCheck.sort((a, b) => a - b).join(','), providersKey, 'useRoutesAvailability']
   }, [isBridgingEnabled, sourceChainId, chainsToCheck, providersKey])
 
   const { data, isLoading } = useSWR<RouteCheckResult[]>(
