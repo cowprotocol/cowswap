@@ -1,48 +1,84 @@
 /**
  * ChainSelector Slot - Mobile chain selection chip and panel
+ *
+ * Manages mobile panel visibility internally.
+ * Only needs chains data and onSelectChain callback from parent.
  */
-import { ReactNode } from 'react'
+import { ReactNode, useState, useCallback } from 'react'
+
+import { useMediaQuery } from '@cowprotocol/common-hooks'
+import { ChainInfo } from '@cowprotocol/cow-sdk'
+import { Media } from '@cowprotocol/ui'
 
 import { ChainPanel } from '../../../../pure/ChainPanel'
 import { MobileChainSelector } from '../../../../pure/SelectTokenModal/MobileChainSelector'
+import { ChainsToSelectState } from '../../../../types'
 import { MobileChainPanelPortal } from '../../MobileChainPanelPortal'
-import { useChainStore, useMobileChainsState } from '../store'
 
-export function ChainSelector(): ReactNode {
-  const chain = useChainStore()
-  const mobileChainsState = useMobileChainsState()
+export interface ChainSelectorProps {
+  chains?: ChainsToSelectState
+  title?: string
+  onSelectChain: (chain: ChainInfo) => void
+}
 
-  if (!chain.isEnabled || !chain.isCompactLayout || !mobileChainsState) {
+export function ChainSelector({ chains, title = 'Select network', onSelectChain }: ChainSelectorProps): ReactNode {
+  const [isMobilePanelOpen, setMobilePanelOpen] = useState(false)
+  const isCompactLayout = useMediaQuery(Media.upToMedium(false))
+
+  const openPanel = useCallback(() => setMobilePanelOpen(true), [])
+  const closePanel = useCallback(() => setMobilePanelOpen(false), [])
+
+  const handleSelectChain = useCallback(
+    (chain: ChainInfo) => {
+      onSelectChain(chain)
+      closePanel()
+    },
+    [onSelectChain, closePanel],
+  )
+
+  // Only show on mobile/compact layout
+  if (!isCompactLayout || !chains) {
     return null
   }
 
   return (
     <>
       <MobileChainSelector
-        chainsState={mobileChainsState}
-        label={chain.title}
-        onSelectChain={chain.onSelectChain}
-        onOpenPanel={chain.onOpenMobileChainPanel}
+        chainsState={chains}
+        label={title}
+        onSelectChain={handleSelectChain}
+        onOpenPanel={openPanel}
       />
 
-      {chain.isMobileChainPanelOpen && chain.chainsToSelect && (
+      {isMobilePanelOpen && (
         <MobileChainPanelPortal
-          chainsPanelTitle={chain.title}
-          chainsToSelect={chain.chainsToSelect}
-          onSelectChain={chain.onSelectChain}
-          onClose={chain.onCloseMobileChainPanel}
+          chainsPanelTitle={title}
+          chainsToSelect={chains}
+          onSelectChain={handleSelectChain}
+          onClose={closePanel}
         />
       )}
     </>
   )
 }
 
-export function DesktopChainPanel(): ReactNode {
-  const chain = useChainStore()
+export interface DesktopChainPanelProps {
+  chains?: ChainsToSelectState
+  title?: string
+  onSelectChain: (chain: ChainInfo) => void
+}
 
-  if (!chain.isEnabled || !chain.isVisible || !chain.chainsToSelect) {
+export function DesktopChainPanel({
+  chains,
+  title = 'Select network',
+  onSelectChain,
+}: DesktopChainPanelProps): ReactNode {
+  const isCompactLayout = useMediaQuery(Media.upToMedium(false))
+
+  // Only show on desktop (not compact layout)
+  if (isCompactLayout || !chains) {
     return null
   }
 
-  return <ChainPanel title={chain.title} chainsState={chain.chainsToSelect} onSelectChain={chain.onSelectChain} />
+  return <ChainPanel title={title} chainsState={chains} onSelectChain={onSelectChain} />
 }

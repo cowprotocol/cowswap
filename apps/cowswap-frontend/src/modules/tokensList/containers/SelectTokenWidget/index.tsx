@@ -1,8 +1,6 @@
 import { ReactNode } from 'react'
 
-import { SelectTokenWidgetV2 } from './v2'
-import { BlockingView, ChainSelector, DesktopChainPanel, Header, Search, TokenList } from './v2/slots'
-import { useHasBlockingView } from './v2/store'
+import { SelectTokenWidgetV2, useHasBlockingView } from './v2'
 
 import * as styledEl from '../../pure/SelectTokenModal/styled'
 
@@ -12,7 +10,7 @@ import type { SelectTokenWidgetProps } from './controller'
  * SelectTokenWidget - Token selector modal
  *
  * Uses V2 architecture with slot-based composition.
- * All slots read from the V2 store (TokenSelectorProvider).
+ * Slots get their props from a context, reducing prop drilling.
  */
 export function SelectTokenWidget(props: SelectTokenWidgetProps): ReactNode {
   return (
@@ -26,39 +24,25 @@ function SelectTokenWidgetContent(): ReactNode {
   const hasBlockingView = useHasBlockingView()
 
   if (hasBlockingView) {
-    return <BlockingView />
+    return <SelectTokenWidgetV2.BlockingView />
   }
 
   return (
     <>
-      <SelectTokenWidget.Modal>
-        <Header />
-        <Search />
-        <ChainSelector />
+      <styledEl.Wrapper>
+        <SelectTokenWidgetV2.Header />
+        <SelectTokenWidgetV2.Search />
+        <SelectTokenWidgetV2.ChainSelector />
         <styledEl.Body>
           <styledEl.TokenColumn>
-            <TokenList />
+            <SelectTokenWidgetV2.TokenList />
           </styledEl.TokenColumn>
         </styledEl.Body>
-      </SelectTokenWidget.Modal>
-      <DesktopChainPanel />
+      </styledEl.Wrapper>
+      <SelectTokenWidgetV2.DesktopChainPanel />
     </>
   )
 }
 
-interface ModalProps {
-  children: ReactNode
-}
-
-function Modal({ children }: ModalProps): ReactNode {
-  return <styledEl.Wrapper>{children}</styledEl.Wrapper>
-}
-
-// Compound component API (for external use)
-SelectTokenWidget.Modal = Modal
-SelectTokenWidget.Header = Header
-SelectTokenWidget.Search = Search
-SelectTokenWidget.ChainSelector = ChainSelector
-SelectTokenWidget.DesktopChainPanel = DesktopChainPanel
-SelectTokenWidget.TokenList = TokenList
-SelectTokenWidget.BlockingView = BlockingView
+// Re-export V2 components for external use
+export { SelectTokenWidgetV2 }

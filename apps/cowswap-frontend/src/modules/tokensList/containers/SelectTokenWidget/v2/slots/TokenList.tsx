@@ -1,5 +1,7 @@
 /**
- * TokenList Slot - Displays list of tokens
+ * TokenList Slot - Displays the token list content
+ *
+ * Uses TokensContent which manages its own token data via atoms.
  */
 import { ReactNode } from 'react'
 
@@ -7,12 +9,13 @@ import { Trans } from '@lingui/react/macro'
 
 import * as styledEl from '../../../../pure/SelectTokenModal/styled'
 import { TokensContent } from '../../../../pure/TokensContent'
-import { useTokenListStore } from '../store'
 
-export function TokenList(): ReactNode {
-  const { isRouteAvailable } = useTokenListStore()
+export interface TokenListProps {
+  isRouteAvailable?: boolean
+}
 
-  if (isRouteAvailable === false) {
+export function TokenList({ isRouteAvailable = true }: TokenListProps): ReactNode {
+  if (!isRouteAvailable) {
     return (
       <styledEl.RouteNotAvailable>
         <Trans>This route is not yet supported.</Trans>

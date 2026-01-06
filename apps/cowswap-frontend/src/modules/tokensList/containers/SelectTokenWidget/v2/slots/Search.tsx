@@ -1,5 +1,8 @@
 /**
  * Search Slot - Token search input
+ *
+ * Manages search state internally via tokenListViewAtom (shared with TokensContent).
+ * Only needs onPressEnter callback from parent.
  */
 import { useAtomValue } from 'jotai'
 import { ReactNode, useCallback } from 'react'
@@ -11,18 +14,28 @@ import { t } from '@lingui/core/macro'
 import { useUpdateTokenListViewState } from '../../../../hooks/useUpdateTokenListViewState'
 import * as styledEl from '../../../../pure/SelectTokenModal/styled'
 import { tokenListViewAtom } from '../../../../state/tokenListViewAtom'
-import { useSearchStore } from '../store'
 
-export function Search(): ReactNode {
+export interface SearchProps {
+  onPressEnter?: () => void
+  placeholder?: string
+}
+
+export function Search({ onPressEnter, placeholder }: SearchProps): ReactNode {
   const { searchInput } = useAtomValue(tokenListViewAtom)
   const updateTokenListView = useUpdateTokenListViewState()
-  const { onPressEnter } = useSearchStore()
 
   const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       updateTokenListView({ searchInput: e.target.value.trim() })
     },
     [updateTokenListView],
+  )
+
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === 'Enter') onPressEnter?.()
+    },
+    [onPressEnter],
   )
 
   return (
@@ -32,8 +45,8 @@ export function Search(): ReactNode {
           id="token-search-input"
           value={searchInput}
           onChange={handleChange}
-          onKeyDown={(e) => e.key === 'Enter' && onPressEnter?.()}
-          placeholder={t`Search name or paste address...`}
+          onKeyDown={handleKeyDown}
+          placeholder={placeholder ?? t`Search name or paste address...`}
         />
       </styledEl.SearchInputWrapper>
     </styledEl.SearchRow>

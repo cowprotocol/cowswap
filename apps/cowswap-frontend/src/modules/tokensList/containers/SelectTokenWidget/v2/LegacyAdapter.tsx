@@ -1,8 +1,10 @@
 /**
  * LegacyAdapter - Bridges V2 SelectTokenWidget with the existing controller
+ *
+ * Converts controller state into props for slot components.
  */
 import { useAtomValue, useSetAtom } from 'jotai'
-import { MouseEvent, ReactNode, useCallback, useEffect, useMemo } from 'react'
+import React, { MouseEvent, ReactNode, createContext, useContext, useEffect, useMemo } from 'react'
 
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
@@ -11,24 +13,12 @@ import { Media } from '@cowprotocol/ui'
 import { t } from '@lingui/core/macro'
 import { createPortal } from 'react-dom'
 
-import { BlockingView } from './slots/BlockingView'
-import { ChainSelector, DesktopChainPanel } from './slots/ChainSelector'
-import { Header } from './slots/Header'
+import { BlockingView, BlockingViewProps } from './slots/BlockingView'
+import { ChainSelector, ChainSelectorProps, DesktopChainPanel, DesktopChainPanelProps } from './slots/ChainSelector'
+import { Header, HeaderProps } from './slots/Header'
 import { NetworkPanel } from './slots/NetworkPanel'
-import { Search } from './slots/Search'
-import { TokenList } from './slots/TokenList'
-import {
-  BlockingViewProvider,
-  BlockingViewStore,
-  ChainProvider,
-  ChainStore,
-  HeaderProvider,
-  HeaderStore,
-  SearchProvider,
-  SearchStore,
-  TokenListProvider,
-  TokenListStore,
-} from './store'
+import { Search, SearchProps } from './slots/Search'
+import { TokenList, TokenListProps } from './slots/TokenList'
 
 import { useCloseTokenSelectWidget } from '../../../hooks/useCloseTokenSelectWidget'
 import { DEFAULT_MODAL_UI_STATE, selectTokenModalUIAtom, updateSelectTokenModalUIAtom } from '../atoms'
@@ -42,77 +32,73 @@ export interface SelectTokenWidgetV2Props extends SelectTokenWidgetProps {
 
 type ViewProps = SelectTokenWidgetViewProps
 
-function useHeaderStore(viewProps: ViewProps): HeaderStore {
-  return useMemo(
-    () => ({
-      title: viewProps.selectTokenModalProps.modalTitle ?? t`Select token`,
-      showManageButton: !viewProps.standalone,
-      onDismiss: viewProps.onDismiss,
-      onOpenManageWidget: viewProps.selectTokenModalProps.onOpenManageWidget,
-    }),
-    [
-      viewProps.selectTokenModalProps.modalTitle,
-      viewProps.selectTokenModalProps.onOpenManageWidget,
-      viewProps.standalone,
-      viewProps.onDismiss,
-    ],
-  )
+interface SlotProps {
+  header: HeaderProps
+  search: SearchProps
+  chainSelector: ChainSelectorProps
+  desktopChainPanel: DesktopChainPanelProps
+  tokenList: TokenListProps
+  blockingView: BlockingViewProps
+  hasBlockingView: boolean
 }
 
-function useSearchStoreValue(viewProps: ViewProps): SearchStore {
-  return useMemo(
-    () => ({ onPressEnter: viewProps.selectTokenModalProps.onInputPressEnter }),
-    [viewProps.selectTokenModalProps.onInputPressEnter],
-  )
+const SlotPropsContext = createContext<SlotProps | null>(null)
+
+function useSlotProps(): SlotProps {
+  const ctx = useContext(SlotPropsContext)
+  if (!ctx) throw new Error('useSlotProps must be used within SelectTokenWidgetV2')
+  return ctx
 }
 
-interface ChainStoreParams {
-  viewProps: ViewProps
-  hasChainPanel: boolean
-  isChainPanelVisible: boolean
-  isCompactLayout: boolean
-  isMobileChainPanelOpen: boolean
-  onOpenMobileChainPanel: () => void
-  onCloseMobileChainPanel: () => void
-}
-
-function useChainStoreValue(params: ChainStoreParams): ChainStore {
-  return useMemo(
-    () => ({
-      isEnabled: params.hasChainPanel,
-      isVisible: params.isChainPanelVisible,
-      title: params.viewProps.chainsPanelTitle ?? t`Cross chain swap`,
-      chainsToSelect: params.viewProps.chainsToSelect,
-      isMobileChainPanelOpen: params.isMobileChainPanelOpen,
-      isCompactLayout: params.isCompactLayout,
-      onSelectChain: params.viewProps.onSelectChain,
-      onOpenMobileChainPanel: params.onOpenMobileChainPanel,
-      onCloseMobileChainPanel: params.onCloseMobileChainPanel,
-    }),
-    [params],
-  )
-}
-
-function useTokenListStoreValue(viewProps: ViewProps): TokenListStore {
+function useHeaderProps(viewProps: ViewProps): HeaderProps {
   const p = viewProps.selectTokenModalProps
   return useMemo(
     () => ({
-      displayLpTokenLists: p.displayLpTokenLists ?? false,
-      tokenListCategoryState: p.tokenListCategoryState,
-      disableErc20: p.disableErc20 ?? false,
-      isRouteAvailable: p.isRouteAvailable,
-      account: p.account,
-      onSelectToken: viewProps.onSelectToken,
-      openPoolPage: p.openPoolPage,
+      title: p.modalTitle ?? t`Select token`,
+      showManageButton: !viewProps.standalone,
+      onDismiss: viewProps.onDismiss,
+      onOpenManageWidget: p.onOpenManageWidget,
     }),
-    [p, viewProps.onSelectToken],
+    [p.modalTitle, p.onOpenManageWidget, viewProps.standalone, viewProps.onDismiss],
   )
 }
 
-function useBlockingViewStoreValue(viewProps: ViewProps, isManageWidgetOpen: boolean): BlockingViewStore {
+function useSearchProps(viewProps: ViewProps): SearchProps {
+  const p = viewProps.selectTokenModalProps
+  return useMemo(() => ({ onPressEnter: p.onInputPressEnter }), [p.onInputPressEnter])
+}
+
+function useChainSelectorProps(viewProps: ViewProps, hasChainPanel: boolean): ChainSelectorProps {
   return useMemo(
     () => ({
-      standalone: viewProps.standalone ?? false,
+      chains: hasChainPanel ? viewProps.chainsToSelect : undefined,
+      title: viewProps.chainsPanelTitle ?? t`Cross chain swap`,
+      onSelectChain: viewProps.onSelectChain ?? (() => {}),
+    }),
+    [hasChainPanel, viewProps.chainsToSelect, viewProps.chainsPanelTitle, viewProps.onSelectChain],
+  )
+}
+
+function useDesktopChainPanelProps(viewProps: ViewProps, isVisible: boolean): DesktopChainPanelProps {
+  return useMemo(
+    () => ({
+      chains: isVisible ? viewProps.chainsToSelect : undefined,
+      title: viewProps.chainsPanelTitle ?? t`Cross chain swap`,
+      onSelectChain: viewProps.onSelectChain ?? (() => {}),
+    }),
+    [isVisible, viewProps.chainsToSelect, viewProps.chainsPanelTitle, viewProps.onSelectChain],
+  )
+}
+
+function useTokenListProps(viewProps: ViewProps): TokenListProps {
+  const p = viewProps.selectTokenModalProps
+  return useMemo(() => ({ isRouteAvailable: p.isRouteAvailable }), [p.isRouteAvailable])
+}
+
+function useBlockingViewProps(viewProps: ViewProps, isManageWidgetOpen: boolean): BlockingViewProps {
+  return useMemo(
+    () => ({
+      standalone: viewProps.standalone,
       tokenToImport: viewProps.tokenToImport,
       listToImport: viewProps.listToImport,
       isManageWidgetOpen,
@@ -127,7 +113,31 @@ function useBlockingViewStoreValue(viewProps: ViewProps, isManageWidgetOpen: boo
       onClosePoolPage: viewProps.onClosePoolPage,
       onSelectToken: viewProps.onSelectToken,
     }),
-    [viewProps, isManageWidgetOpen],
+    [
+      viewProps.standalone,
+      viewProps.tokenToImport,
+      viewProps.listToImport,
+      isManageWidgetOpen,
+      viewProps.selectedPoolAddress,
+      viewProps.allTokenLists,
+      viewProps.userAddedTokens,
+      viewProps.onDismiss,
+      viewProps.onBackFromImport,
+      viewProps.onImportTokens,
+      viewProps.onImportList,
+      viewProps.onCloseManageWidget,
+      viewProps.onClosePoolPage,
+      viewProps.onSelectToken,
+    ],
+  )
+}
+
+function useHasBlockingViewValue(viewProps: ViewProps, isManageWidgetOpen: boolean): boolean {
+  return Boolean(
+    (viewProps.tokenToImport && !viewProps.standalone) ||
+      (viewProps.listToImport && !viewProps.standalone) ||
+      (isManageWidgetOpen && !viewProps.standalone) ||
+      viewProps.selectedPoolAddress,
   )
 }
 
@@ -172,9 +182,6 @@ export function SelectTokenWidgetV2({
   const updateModalUI = useSetAtom(updateSelectTokenModalUIAtom)
   const modalUIState = useAtomValue(selectTokenModalUIAtom)
 
-  const onOpenMobileChainPanel = useCallback(() => updateModalUI({ isMobileChainPanelOpen: true }), [updateModalUI])
-  const onCloseMobileChainPanel = useCallback(() => updateModalUI({ isMobileChainPanelOpen: false }), [updateModalUI])
-
   useWidgetEffects(
     shouldRender,
     isChainPanelVisible,
@@ -183,19 +190,19 @@ export function SelectTokenWidgetV2({
     updateModalUI,
   )
 
-  const header = useHeaderStore(viewProps)
-  const search = useSearchStoreValue(viewProps)
-  const chain = useChainStoreValue({
-    viewProps,
-    hasChainPanel,
-    isChainPanelVisible,
-    isCompactLayout,
-    isMobileChainPanelOpen: modalUIState.isMobileChainPanelOpen,
-    onOpenMobileChainPanel,
-    onCloseMobileChainPanel,
-  })
-  const tokenList = useTokenListStoreValue(viewProps)
-  const blockingView = useBlockingViewStoreValue(viewProps, modalUIState.isManageWidgetOpen)
+  // Build slot props
+  const header = useHeaderProps(viewProps)
+  const search = useSearchProps(viewProps)
+  const chainSelector = useChainSelectorProps(viewProps, hasChainPanel)
+  const desktopChainPanel = useDesktopChainPanelProps(viewProps, isChainPanelVisible)
+  const tokenList = useTokenListProps(viewProps)
+  const blockingView = useBlockingViewProps(viewProps, modalUIState.isManageWidgetOpen)
+  const hasBlockingView = useHasBlockingViewValue(viewProps, modalUIState.isManageWidgetOpen)
+
+  const slotProps = useMemo<SlotProps>(
+    () => ({ header, search, chainSelector, desktopChainPanel, tokenList, blockingView, hasBlockingView }),
+    [header, search, chainSelector, desktopChainPanel, tokenList, blockingView, hasBlockingView],
+  )
 
   if (!shouldRender) return null
 
@@ -204,21 +211,13 @@ export function SelectTokenWidgetV2({
   }
 
   const content = (
-    <HeaderProvider value={header}>
-      <SearchProvider value={search}>
-        <ChainProvider value={chain}>
-          <TokenListProvider value={tokenList}>
-            <BlockingViewProvider value={blockingView}>
-              <Wrapper>
-                <InnerWrapper $hasSidebar={isChainPanelVisible} $isMobileOverlay={isCompactLayout}>
-                  <ModalContainer>{children}</ModalContainer>
-                </InnerWrapper>
-              </Wrapper>
-            </BlockingViewProvider>
-          </TokenListProvider>
-        </ChainProvider>
-      </SearchProvider>
-    </HeaderProvider>
+    <SlotPropsContext.Provider value={slotProps}>
+      <Wrapper>
+        <InnerWrapper $hasSidebar={isChainPanelVisible} $isMobileOverlay={isCompactLayout}>
+          <ModalContainer>{children}</ModalContainer>
+        </InnerWrapper>
+      </Wrapper>
+    </SlotPropsContext.Provider>
   )
 
   const overlay = (
@@ -232,10 +231,51 @@ export function SelectTokenWidgetV2({
   return typeof document === 'undefined' ? overlay : createPortal(overlay, document.body)
 }
 
-SelectTokenWidgetV2.Header = Header
-SelectTokenWidgetV2.Search = Search
-SelectTokenWidgetV2.TokenList = TokenList
+// Connected slot components that read props from context
+function ConnectedHeader(): ReactNode {
+  const { header } = useSlotProps()
+  return <Header {...header} />
+}
+
+function ConnectedSearch(): ReactNode {
+  const { search } = useSlotProps()
+  return <Search {...search} />
+}
+
+function ConnectedChainSelector(): ReactNode {
+  const { chainSelector } = useSlotProps()
+  return <ChainSelector {...chainSelector} />
+}
+
+function ConnectedDesktopChainPanel(): ReactNode {
+  const { desktopChainPanel } = useSlotProps()
+  return <DesktopChainPanel {...desktopChainPanel} />
+}
+
+function ConnectedTokenList(): ReactNode {
+  const { tokenList } = useSlotProps()
+  return <TokenList {...tokenList} />
+}
+
+function ConnectedBlockingView(): ReactNode {
+  const { blockingView } = useSlotProps()
+  return <BlockingView {...blockingView} />
+}
+
+// Hook to check if blocking view should be shown
+export function useHasBlockingView(): boolean {
+  const { hasBlockingView } = useSlotProps()
+  return hasBlockingView
+}
+
+// Attach connected slots for easy use
+SelectTokenWidgetV2.Header = ConnectedHeader
+SelectTokenWidgetV2.Search = ConnectedSearch
+SelectTokenWidgetV2.TokenList = ConnectedTokenList
 SelectTokenWidgetV2.NetworkPanel = NetworkPanel
-SelectTokenWidgetV2.ChainSelector = ChainSelector
-SelectTokenWidgetV2.DesktopChainPanel = DesktopChainPanel
-SelectTokenWidgetV2.BlockingView = BlockingView
+SelectTokenWidgetV2.ChainSelector = ConnectedChainSelector
+SelectTokenWidgetV2.DesktopChainPanel = ConnectedDesktopChainPanel
+SelectTokenWidgetV2.BlockingView = ConnectedBlockingView
+
+// Export raw slot components for direct use with props
+export { Header, Search, ChainSelector, DesktopChainPanel, TokenList, BlockingView }

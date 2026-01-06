@@ -1,57 +1,82 @@
 /**
  * BlockingView Slot - Full-screen modals that take over the widget
+ *
+ * All blocking views receive their data via props.
  */
 import { ReactNode } from 'react'
+
+import { TokenWithLogo } from '@cowprotocol/common-const'
+import { ListState } from '@cowprotocol/tokens'
 
 import { ImportListModal } from '../../../../pure/ImportListModal'
 import { ImportTokenModal } from '../../../../pure/ImportTokenModal'
 import { LpTokenPage } from '../../../LpTokenPage'
 import { ManageListsAndTokens } from '../../../ManageListsAndTokens'
-import { useBlockingViewStore } from '../store'
 
-export function BlockingView(): ReactNode {
-  const state = useBlockingViewStore()
+export interface BlockingViewProps {
+  standalone?: boolean
+  tokenToImport?: TokenWithLogo
+  listToImport?: ListState
+  isManageWidgetOpen?: boolean
+  selectedPoolAddress?: string
+  allTokenLists?: ListState[]
+  userAddedTokens?: TokenWithLogo[]
+  onDismiss: () => void
+  onBackFromImport?: () => void
+  onImportTokens?: (tokens: TokenWithLogo[]) => void
+  onImportList?: (list: ListState) => void
+  onCloseManageWidget?: () => void
+  onClosePoolPage?: () => void
+  onSelectToken?: (token: TokenWithLogo) => void
+}
 
-  if (state.tokenToImport && !state.standalone) {
+// eslint-disable-next-line complexity
+export function BlockingView({
+  standalone = false,
+  tokenToImport,
+  listToImport,
+  isManageWidgetOpen,
+  selectedPoolAddress,
+  allTokenLists = [],
+  userAddedTokens = [],
+  onDismiss,
+  onBackFromImport,
+  onImportTokens,
+  onImportList,
+  onCloseManageWidget,
+  onClosePoolPage,
+  onSelectToken,
+}: BlockingViewProps): ReactNode {
+  const handleBack = onBackFromImport ?? onDismiss
+
+  if (tokenToImport && !standalone && onImportTokens) {
     return (
-      <ImportTokenModal
-        tokens={[state.tokenToImport]}
-        onDismiss={state.onDismiss}
-        onBack={state.onBackFromImport}
-        onImport={state.onImportTokens}
-      />
+      <ImportTokenModal tokens={[tokenToImport]} onDismiss={onDismiss} onBack={handleBack} onImport={onImportTokens} />
     )
   }
 
-  if (state.listToImport && !state.standalone) {
-    return (
-      <ImportListModal
-        list={state.listToImport}
-        onDismiss={state.onDismiss}
-        onBack={state.onBackFromImport}
-        onImport={state.onImportList}
-      />
-    )
+  if (listToImport && !standalone && onImportList) {
+    return <ImportListModal list={listToImport} onDismiss={onDismiss} onBack={handleBack} onImport={onImportList} />
   }
 
-  if (state.isManageWidgetOpen && !state.standalone) {
+  if (isManageWidgetOpen && !standalone && onCloseManageWidget) {
     return (
       <ManageListsAndTokens
-        lists={state.allTokenLists}
-        customTokens={state.userAddedTokens}
-        onDismiss={state.onDismiss}
-        onBack={state.onCloseManageWidget}
+        lists={allTokenLists}
+        customTokens={userAddedTokens}
+        onDismiss={onDismiss}
+        onBack={onCloseManageWidget}
       />
     )
   }
 
-  if (state.selectedPoolAddress) {
+  if (selectedPoolAddress && onSelectToken && onClosePoolPage) {
     return (
       <LpTokenPage
-        poolAddress={state.selectedPoolAddress}
-        onDismiss={state.onDismiss}
-        onBack={state.onClosePoolPage}
-        onSelectToken={state.onSelectToken}
+        poolAddress={selectedPoolAddress}
+        onDismiss={onDismiss}
+        onBack={onClosePoolPage}
+        onSelectToken={onSelectToken}
       />
     )
   }
