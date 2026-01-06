@@ -1,8 +1,9 @@
-// Main V2 widget
-export { SelectTokenWidgetV2, useHasBlockingView } from './LegacyAdapter'
+// Main internal modal component
+export { SelectTokenModal, useHasBlockingView } from './SelectTokenModal'
+export type { SelectTokenModalProps } from './SelectTokenModal'
 
-// Pure slot components (use with props directly)
-export { Header, Search, ChainSelector, DesktopChainPanel, TokenList, BlockingView } from './LegacyAdapter'
+// Slot components (use with props directly)
+export { Header, Search, ChainSelector, DesktopChainPanel, TokenList, BlockingView } from './SelectTokenModal'
 
 // Slot prop types
 export type { HeaderProps } from './slots/Header'

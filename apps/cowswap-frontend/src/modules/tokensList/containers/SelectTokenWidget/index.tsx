@@ -1,6 +1,6 @@
 import { ReactNode } from 'react'
 
-import { SelectTokenWidgetV2, useHasBlockingView } from './v2'
+import { SelectTokenModal, useHasBlockingView } from './internal'
 
 import * as styledEl from '../../pure/SelectTokenModal/styled'
 
@@ -9,14 +9,14 @@ import type { SelectTokenWidgetProps } from './controller'
 /**
  * SelectTokenWidget - Token selector modal
  *
- * Uses V2 architecture with slot-based composition.
+ * Uses slot-based composition architecture.
  * Slots get their props from a context, reducing prop drilling.
  */
 export function SelectTokenWidget(props: SelectTokenWidgetProps): ReactNode {
   return (
-    <SelectTokenWidgetV2 {...props}>
+    <SelectTokenModal {...props}>
       <SelectTokenWidgetContent />
-    </SelectTokenWidgetV2>
+    </SelectTokenModal>
   )
 }
 
@@ -24,25 +24,25 @@ function SelectTokenWidgetContent(): ReactNode {
   const hasBlockingView = useHasBlockingView()
 
   if (hasBlockingView) {
-    return <SelectTokenWidgetV2.BlockingView />
+    return <SelectTokenModal.BlockingView />
   }
 
   return (
     <>
       <styledEl.Wrapper>
-        <SelectTokenWidgetV2.Header />
-        <SelectTokenWidgetV2.Search />
-        <SelectTokenWidgetV2.ChainSelector />
+        <SelectTokenModal.Header />
+        <SelectTokenModal.Search />
+        <SelectTokenModal.ChainSelector />
         <styledEl.Body>
           <styledEl.TokenColumn>
-            <SelectTokenWidgetV2.TokenList />
+            <SelectTokenModal.TokenList />
           </styledEl.TokenColumn>
         </styledEl.Body>
       </styledEl.Wrapper>
-      <SelectTokenWidgetV2.DesktopChainPanel />
+      <SelectTokenModal.DesktopChainPanel />
     </>
   )
 }
 
-// Re-export V2 components for external use
-export { SelectTokenWidgetV2 }
+// Re-export internal components for external use
+export { SelectTokenModal }

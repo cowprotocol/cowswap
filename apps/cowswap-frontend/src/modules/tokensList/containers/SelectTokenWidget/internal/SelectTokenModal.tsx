@@ -1,5 +1,5 @@
 /**
- * LegacyAdapter - Bridges V2 SelectTokenWidget with the existing controller
+ * SelectTokenModal - Internal token selector modal with slot-based composition
  *
  * Converts controller state into props for slot components.
  */
@@ -26,7 +26,7 @@ import { SelectTokenWidgetProps, useSelectTokenWidgetController } from '../contr
 import { SelectTokenWidgetViewProps } from '../controllerProps'
 import { InnerWrapper, ModalContainer, WidgetCard, WidgetOverlay, Wrapper } from '../styled'
 
-export interface SelectTokenWidgetV2Props extends SelectTokenWidgetProps {
+export interface SelectTokenModalProps extends SelectTokenWidgetProps {
   children: ReactNode
 }
 
@@ -46,7 +46,7 @@ const SlotPropsContext = createContext<SlotProps | null>(null)
 
 function useSlotProps(): SlotProps {
   const ctx = useContext(SlotPropsContext)
-  if (!ctx) throw new Error('useSlotProps must be used within SelectTokenWidgetV2')
+  if (!ctx) throw new Error('useSlotProps must be used within SelectTokenModal')
   return ctx
 }
 
@@ -169,11 +169,7 @@ function useWidgetEffects(
   }, [shouldRender])
 }
 
-export function SelectTokenWidgetV2({
-  displayLpTokenLists,
-  standalone,
-  children,
-}: SelectTokenWidgetV2Props): ReactNode {
+export function SelectTokenModal({ displayLpTokenLists, standalone, children }: SelectTokenModalProps): ReactNode {
   const { shouldRender, hasChainPanel, viewProps } = useSelectTokenWidgetController({ displayLpTokenLists, standalone })
   const isCompactLayout = useMediaQuery(Media.upToMedium(false))
   const isChainPanelVisible = hasChainPanel && !isCompactLayout
@@ -268,14 +264,13 @@ export function useHasBlockingView(): boolean {
   return hasBlockingView
 }
 
-// Attach connected slots for easy use
-SelectTokenWidgetV2.Header = ConnectedHeader
-SelectTokenWidgetV2.Search = ConnectedSearch
-SelectTokenWidgetV2.TokenList = ConnectedTokenList
-SelectTokenWidgetV2.NetworkPanel = NetworkPanel
-SelectTokenWidgetV2.ChainSelector = ConnectedChainSelector
-SelectTokenWidgetV2.DesktopChainPanel = ConnectedDesktopChainPanel
-SelectTokenWidgetV2.BlockingView = ConnectedBlockingView
+SelectTokenModal.Header = ConnectedHeader
+SelectTokenModal.Search = ConnectedSearch
+SelectTokenModal.TokenList = ConnectedTokenList
+SelectTokenModal.NetworkPanel = NetworkPanel
+SelectTokenModal.ChainSelector = ConnectedChainSelector
+SelectTokenModal.DesktopChainPanel = ConnectedDesktopChainPanel
+SelectTokenModal.BlockingView = ConnectedBlockingView
 
 // Export raw slot components for direct use with props
 export { Header, Search, ChainSelector, DesktopChainPanel, TokenList, BlockingView }
