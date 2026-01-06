@@ -1,20 +1,31 @@
-import { ReactNode } from 'react'
+import { useSetAtom } from 'jotai'
+import { ReactNode, useEffect } from 'react'
 
 import { SelectTokenModal, useHasBlockingView } from './internal'
 
 import * as styledEl from '../../pure/SelectTokenModal/styled'
+import { updateSelectTokenWidgetAtom } from '../../state/selectTokenWidgetAtom'
 
-import type { SelectTokenWidgetProps } from './controller'
+export interface SelectTokenWidgetProps {
+  displayLpTokenLists?: boolean
+  standalone?: boolean
+}
 
 /**
  * SelectTokenWidget - Token selector modal
  *
- * Uses slot-based composition architecture.
- * Slots get their props from a context, reducing prop drilling.
+ * Uses slot-based composition. Slots read from widget state atom directly.
  */
-export function SelectTokenWidget(props: SelectTokenWidgetProps): ReactNode {
+export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTokenWidgetProps): ReactNode {
+  const updateWidgetState = useSetAtom(updateSelectTokenWidgetAtom)
+
+  // Sync config props to atom
+  useEffect(() => {
+    updateWidgetState({ displayLpTokenLists, standalone })
+  }, [displayLpTokenLists, standalone, updateWidgetState])
+
   return (
-    <SelectTokenModal {...props}>
+    <SelectTokenModal>
       <SelectTokenWidgetContent />
     </SelectTokenModal>
   )

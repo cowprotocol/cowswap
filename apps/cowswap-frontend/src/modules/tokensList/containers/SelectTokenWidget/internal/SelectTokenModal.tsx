@@ -1,10 +1,11 @@
 /**
  * SelectTokenModal - Internal token selector modal
  *
- * Each slot uses its own domain hook - no prop drilling through controller.
+ * Each slot uses its own domain hook that reads from widget state atom.
+ * No context, no prop drilling.
  */
 import { useSetAtom } from 'jotai'
-import React, { MouseEvent, ReactNode, useEffect } from 'react'
+import { MouseEvent, ReactNode, useEffect } from 'react'
 
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
@@ -22,19 +23,13 @@ import { TokenList } from './slots/TokenList'
 import { useCloseTokenSelectWidget } from '../../../hooks/useCloseTokenSelectWidget'
 import { useSelectTokenWidgetState } from '../../../hooks/useSelectTokenWidgetState'
 import { DEFAULT_MODAL_UI_STATE, updateSelectTokenModalUIAtom } from '../atoms'
-import { SelectTokenWidgetProps, useSelectTokenWidgetController } from '../controller'
+import { useWidgetOpenState } from '../hooks'
 import { useBlockingViewState, useChainPanelState, useHeaderState, useSearchState, useTokenListState } from '../hooks'
 import { InnerWrapper, ModalContainer, WidgetCard, WidgetOverlay, Wrapper } from '../styled'
 import { useDismissHandler, useManageWidgetVisibility } from '../widgetUIState'
 
-export interface SelectTokenModalProps extends SelectTokenWidgetProps {
+export interface SelectTokenModalProps {
   children: ReactNode
-}
-// Context for standalone prop (needed by child hooks)
-const StandaloneContext = React.createContext<boolean>(false)
-
-export function useStandalone(): boolean {
-  return React.useContext(StandaloneContext)
 }
 
 function useWidgetEffects(isOpen: boolean): void {
@@ -54,8 +49,8 @@ function useWidgetEffects(isOpen: boolean): void {
   }, [isOpen])
 }
 
-export function SelectTokenModal({ displayLpTokenLists, standalone, children }: SelectTokenModalProps): ReactNode {
-  const { isOpen } = useSelectTokenWidgetController({ displayLpTokenLists, standalone })
+export function SelectTokenModal({ children }: SelectTokenModalProps): ReactNode {
+  const { isOpen } = useWidgetOpenState()
   const isCompactLayout = useMediaQuery(Media.upToMedium(false))
   const widgetState = useSelectTokenWidgetState()
   const { closeManageWidget } = useManageWidgetVisibility()
@@ -75,13 +70,11 @@ export function SelectTokenModal({ displayLpTokenLists, standalone, children }: 
   }
 
   const content = (
-    <StandaloneContext.Provider value={standalone ?? false}>
-      <Wrapper>
-        <InnerWrapper $hasSidebar={isChainPanelVisible} $isMobileOverlay={isCompactLayout}>
-          <ModalContainer>{children}</ModalContainer>
-        </InnerWrapper>
-      </Wrapper>
-    </StandaloneContext.Provider>
+    <Wrapper>
+      <InnerWrapper $hasSidebar={isChainPanelVisible} $isMobileOverlay={isCompactLayout}>
+        <ModalContainer>{children}</ModalContainer>
+      </InnerWrapper>
+    </Wrapper>
   )
 
   const overlay = (
@@ -95,13 +88,12 @@ export function SelectTokenModal({ displayLpTokenLists, standalone, children }: 
   return typeof document === 'undefined' ? overlay : createPortal(overlay, document.body)
 }
 
-// Connected slots that use domain hooks
+// Connected slots - each reads what it needs from hooks/atoms directly
 function ConnectedHeader(): ReactNode {
-  const standalone = useStandalone()
   const { closeManageWidget } = useManageWidgetVisibility()
   const closeTokenSelectWidget = useCloseTokenSelectWidget()
   const onDismiss = useDismissHandler(closeManageWidget, closeTokenSelectWidget)
-  const { title, showManageButton, onOpenManageWidget } = useHeaderState(standalone)
+  const { title, showManageButton, onOpenManageWidget } = useHeaderState()
 
   return (
     <Header
@@ -143,15 +135,13 @@ function ConnectedTokenList(): ReactNode {
 }
 
 function ConnectedBlockingView(): ReactNode {
-  const standalone = useStandalone()
-  const state = useBlockingViewState(standalone)
+  const state = useBlockingViewState()
   return <BlockingView {...state} />
 }
 
 // Hook to check if blocking view should be shown
 export function useHasBlockingView(): boolean {
-  const standalone = useStandalone()
-  const { hasBlockingView } = useBlockingViewState(standalone)
+  const { hasBlockingView } = useBlockingViewState()
   return hasBlockingView
 }
 

@@ -32,7 +32,7 @@ export interface BlockingViewState {
   onSelectToken: (token: TokenWithLogo) => void
 }
 
-export function useBlockingViewState(standalone?: boolean): BlockingViewState {
+export function useBlockingViewState(): BlockingViewState {
   const widgetState = useSelectTokenWidgetState()
   const manageWidget = useManageWidgetVisibility()
   const closeTokenSelectWidget = useCloseTokenSelectWidget()
@@ -55,7 +55,7 @@ export function useBlockingViewState(standalone?: boolean): BlockingViewState {
     tokenData.favoriteTokens,
   )
 
-  const isStandalone = standalone ?? false
+  const isStandalone = widgetState.standalone ?? false
   const hasBlockingView = Boolean(
     (widgetState.tokenToImport && !isStandalone) ||
       (widgetState.listToImport && !isStandalone) ||

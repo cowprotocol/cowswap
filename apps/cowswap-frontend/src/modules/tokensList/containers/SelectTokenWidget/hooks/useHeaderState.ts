@@ -17,9 +17,10 @@ export interface HeaderState {
   onOpenManageWidget: () => void
 }
 
-export function useHeaderState(standalone?: boolean): HeaderState {
+export function useHeaderState(): HeaderState {
   const widgetState = useSelectTokenWidgetState()
   const { openManageWidget } = useManageWidgetVisibility()
+  const { standalone } = widgetState
   const { count: lpTokensWithBalancesCount } = useLpTokensWithBalances()
   const resolvedField = widgetState.field ?? Field.INPUT
 

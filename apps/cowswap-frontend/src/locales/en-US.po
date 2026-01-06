@@ -1442,7 +1442,6 @@ msgstr "Help Center"
 #~ msgid "Bungee is a liquidity marketplace that lets you swap into any token on any chain in a fully abstracted manner. Trade any token with the best quotes and a gasless UX!"
 #~ msgstr "Bungee is a liquidity marketplace that lets you swap into any token on any chain in a fully abstracted manner. Trade any token with the best quotes and a gasless UX!"
 
-#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/internal/slots/RecentTokens.tsx
 #: apps/cowswap-frontend/src/modules/tokensList/pure/TokensVirtualList/index.tsx
 msgid "Recent"
 msgstr "Recent"
@@ -2179,8 +2178,8 @@ msgid "Native"
 msgstr "Native"
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/internal/slots/AllTokens.tsx
-msgid "Loading tokens..."
-msgstr "Loading tokens..."
+#~ msgid "Loading tokens..."
+#~ msgstr "Loading tokens..."
 
 #: apps/cowswap-frontend/src/common/pure/CoWAmmBannerContent/GlobalContent/index.tsx
 msgid "Pool analytics"
@@ -3653,8 +3652,8 @@ msgid "With hooks you can add specific actions <0>before</0> and <1>after</1> yo
 msgstr "With hooks you can add specific actions <0>before</0> and <1>after</1> your swap."
 
 #: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/internal/slots/FavoriteTokens.tsx
-msgid "Favorites"
-msgstr "Favorites"
+#~ msgid "Favorites"
+#~ msgstr "Favorites"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 msgid "No signatures yet"
@@ -4999,7 +4998,6 @@ msgstr "View"
 msgid "Execution price"
 msgstr "Execution price"
 
-#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/internal/slots/AllTokens.tsx
 #: apps/cowswap-frontend/src/modules/tokensList/pure/TokenSearchContent/index.tsx
 msgid "No tokens found"
 msgstr "No tokens found"
@@ -6161,7 +6159,6 @@ msgstr "Simulate"
 msgid "Start time"
 msgstr "Start time"
 
-#: apps/cowswap-frontend/src/modules/tokensList/containers/SelectTokenWidget/internal/slots/RecentTokens.tsx
 #: apps/cowswap-frontend/src/modules/tokensList/pure/TokensVirtualList/index.tsx
 msgid "Clear"
 msgstr "Clear"

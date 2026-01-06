@@ -1,17 +1,18 @@
 import { MouseEvent, ReactNode } from 'react'
 
+import { ChainInfo } from '@cowprotocol/cow-sdk'
+
 import { createPortal } from 'react-dom'
 
 import { MobileChainPanelCard, MobileChainPanelOverlay } from './styled'
 
 import { ChainPanel } from '../../pure/ChainPanel'
-
-import type { SelectTokenWidgetViewProps } from './controllerProps'
+import { ChainsToSelectState } from '../../types'
 
 interface MobileChainPanelPortalProps {
   chainsPanelTitle: string
-  chainsToSelect: SelectTokenWidgetViewProps['chainsToSelect']
-  onSelectChain: SelectTokenWidgetViewProps['onSelectChain']
+  chainsToSelect: ChainsToSelectState | undefined
+  onSelectChain: (chain: ChainInfo) => void
   onClose(): void
 }
 

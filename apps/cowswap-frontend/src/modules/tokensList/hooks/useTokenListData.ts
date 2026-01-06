@@ -38,15 +38,11 @@ export interface TokenListData {
   selectTokenContext: SelectTokenContext
 }
 
-interface UseTokenListDataOptions {
-  standalone?: boolean
-}
-
-export function useTokenListData(options: UseTokenListDataOptions = {}): TokenListData {
-  const { standalone = false } = options
+export function useTokenListData(): TokenListData {
   const { account, chainId: walletChainId } = useWalletInfo()
   const widgetState = useSelectTokenWidgetState()
   const tokenData = useTokenDataSources()
+  const standalone = widgetState.standalone ?? false
 
   // Token selection handler (wraps widgetState.onSelectToken with network switching logic)
   const handleSelectToken = useTokenSelectionHandler(widgetState.onSelectToken, widgetState)

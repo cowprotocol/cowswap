@@ -140,4 +140,3 @@ export function useTokenSelectionHandler(
 export function hasAvailableChains(chainsToSelect: ChainsToSelectState | undefined): boolean {
   return Boolean(chainsToSelect)
 }
-

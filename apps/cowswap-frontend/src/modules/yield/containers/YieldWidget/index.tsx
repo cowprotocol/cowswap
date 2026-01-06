@@ -183,7 +183,7 @@ export function YieldWidget() {
     ) : !account ? (
       <CoWAmmInlineBanner token={undefined} apyDiff={undefined} />
     ) : null,
-    selectTokenWidget: <SelectTokenWidget displayLpTokenLists />,
+    selectTokenWidget: <SelectTokenWidget />,
     settingsWidget: <SettingsTab recipientToggleState={recipientToggleState} deadlineState={deadlineState} />,
     bottomContent: useCallback(
       (tradeWarnings: ReactNode | null) => {

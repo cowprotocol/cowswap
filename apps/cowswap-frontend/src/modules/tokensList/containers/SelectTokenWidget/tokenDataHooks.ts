@@ -125,4 +125,3 @@ function resolveModalTitle(field: Field, tradeType: TradeType | undefined): stri
 
   return t`Select token`
 }
-

@@ -25,6 +25,9 @@ interface SelectTokenWidgetState {
   selectedTargetChainId?: number
   tradeType?: TradeType
   forceOpen?: boolean
+  // UI config
+  standalone?: boolean
+  displayLpTokenLists?: boolean
 }
 
 export const DEFAULT_SELECT_TOKEN_WIDGET_STATE: SelectTokenWidgetState = {
@@ -38,6 +41,8 @@ export const DEFAULT_SELECT_TOKEN_WIDGET_STATE: SelectTokenWidgetState = {
   selectedTargetChainId: undefined,
   tradeType: undefined,
   forceOpen: false,
+  standalone: false,
+  displayLpTokenLists: false,
 }
 
 export const { atom: selectTokenWidgetAtom, updateAtom: updateSelectTokenWidgetAtom } = atomWithPartialUpdate(

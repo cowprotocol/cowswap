@@ -108,7 +108,7 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
       validFor: DEFAULT_QUOTE_TTL,
       ...(volumeFee ? { partnerFee: volumeFee } : undefined),
       partiallyFillable,
-      slippageBps,
+      swapSlippageBps: slippageBps,
     }
 
     return { quoteParams, inputCurrency, appData: appData?.doc }
