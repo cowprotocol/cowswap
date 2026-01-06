@@ -1,4 +1,7 @@
-import { useCallback, useState } from 'react'
+import { useAtomValue, useSetAtom } from 'jotai'
+import { useCallback } from 'react'
+
+import { selectTokenModalUIAtom, updateSelectTokenModalUIAtom } from './atoms'
 
 import type { useUpdateSelectTokenWidgetState } from '../../hooks/useUpdateSelectTokenWidgetState'
 
@@ -16,10 +19,11 @@ interface PoolPageHandlers {
 }
 
 export function useManageWidgetVisibility(): ManageWidgetVisibility {
-  const [isManageWidgetOpen, setIsManageWidgetOpen] = useState(false)
+  const { isManageWidgetOpen } = useAtomValue(selectTokenModalUIAtom)
+  const updateModalUI = useSetAtom(updateSelectTokenModalUIAtom)
 
-  const openManageWidget = useCallback(() => setIsManageWidgetOpen(true), [])
-  const closeManageWidget = useCallback(() => setIsManageWidgetOpen(false), [])
+  const openManageWidget = useCallback(() => updateModalUI({ isManageWidgetOpen: true }), [updateModalUI])
+  const closeManageWidget = useCallback(() => updateModalUI({ isManageWidgetOpen: false }), [updateModalUI])
 
   return { isManageWidgetOpen, openManageWidget, closeManageWidget }
 }
@@ -48,4 +52,3 @@ export function usePoolPageHandlers(updateSelectTokenWidget: UpdateSelectTokenWi
 
   return { openPoolPage, closePoolPage }
 }
-

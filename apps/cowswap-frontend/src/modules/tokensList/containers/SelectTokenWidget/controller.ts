@@ -1,24 +1,15 @@
-import { useEffect, useRef } from 'react'
-
-import { useIsBridgingEnabled } from '@cowprotocol/common-hooks'
+/**
+ * SelectTokenWidget Controller
+ *
+ * Minimal controller - just handles widget visibility and atom hydration.
+ * Domain-specific logic is handled by focused hooks in each slot.
+ */
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { Field } from 'legacy/state/types'
-
-import { useLpTokensWithBalances } from 'modules/yield/shared'
-
-import { SelectTokenWidgetViewProps } from './controllerProps'
-import { useSelectTokenWidgetViewState } from './controllerViewState'
-import { useTokenAdminActions, useTokenDataSources, useWidgetMetadata } from './tokenDataHooks'
-import { useManageWidgetVisibility } from './widgetUIState'
-
-import { useChainsToSelect } from '../../hooks/useChainsToSelect'
-import { useCloseTokenSelectWidget } from '../../hooks/useCloseTokenSelectWidget'
-import { useOnSelectChain } from '../../hooks/useOnSelectChain'
-import { useOnTokenListAddingError } from '../../hooks/useOnTokenListAddingError'
-import { useResetTokenListViewState } from '../../hooks/useResetTokenListViewState'
-import { useSelectTokenWidgetState } from '../../hooks/useSelectTokenWidgetState'
-import { useUpdateSelectTokenWidgetState } from '../../hooks/useUpdateSelectTokenWidgetState'
+import { useHydrateTokenListViewAtom } from './controllerAtomHydration'
+import { useWidgetOpenState } from './hooks'
+import { useTokenDataSources } from './tokenDataHooks'
+import { useRecentTokenSection, useTokenSelectionHandler } from './tokenSelectionHooks'
 
 export interface SelectTokenWidgetProps {
   displayLpTokenLists?: boolean
@@ -26,73 +17,44 @@ export interface SelectTokenWidgetProps {
 }
 
 export interface SelectTokenWidgetController {
-  shouldRender: boolean
-  hasChainPanel: boolean
-  viewProps: SelectTokenWidgetViewProps
+  isOpen: boolean
 }
 
 export function useSelectTokenWidgetController({
   displayLpTokenLists,
   standalone,
 }: SelectTokenWidgetProps): SelectTokenWidgetController {
-  const widgetState = useSelectTokenWidgetState()
-  const { count: lpTokensWithBalancesCount } = useLpTokensWithBalances()
-  const resolvedField = widgetState.field ?? Field.INPUT
-  const chainsToSelect = useChainsToSelect()
-  const onSelectChain = useOnSelectChain()
-  const isBridgeFeatureEnabled = useIsBridgingEnabled()
-  const manageWidget = useManageWidgetVisibility()
-  const updateSelectTokenWidget = useUpdateSelectTokenWidgetState()
+  const { isOpen, widgetState } = useWidgetOpenState()
   const { account, chainId: walletChainId } = useWalletInfo()
-  const closeTokenSelectWidget = useCloseTokenSelectWidget()
   const tokenData = useTokenDataSources()
-  const onTokenListAddingError = useOnTokenListAddingError()
-  const tokenAdminActions = useTokenAdminActions()
-  const widgetMetadata = useWidgetMetadata(
-    resolvedField,
-    widgetState.tradeType,
-    displayLpTokenLists,
-    widgetState.oppositeToken,
-    lpTokensWithBalancesCount,
+
+  // Token selection handler
+  const handleSelectToken = useTokenSelectionHandler(widgetState.onSelectToken, widgetState)
+
+  // Recent tokens
+  const activeChainId = widgetState.selectedTargetChainId ?? walletChainId
+  const { recentTokens, handleTokenListItemClick, clearRecentTokens } = useRecentTokenSection(
+    tokenData.allTokens,
+    tokenData.favoriteTokens,
+    activeChainId,
   )
 
-  const { isChainPanelEnabled, viewProps } = useSelectTokenWidgetViewState({
-    displayLpTokenLists,
-    standalone,
-    widgetState,
-    chainsToSelect,
-    onSelectChain,
-    manageWidget,
-    updateSelectTokenWidget,
-    account,
-    closeTokenSelectWidget,
+  // Favorite tokens (empty in standalone mode)
+  const favoriteTokens = standalone ? [] : tokenData.favoriteTokens
+
+  // Hydrate token list atom (only when open)
+  useHydrateTokenListViewAtom({
+    shouldRender: isOpen,
     tokenData,
-    onTokenListAddingError,
-    tokenAdminActions,
-    widgetMetadata,
-    walletChainId,
-    isBridgeFeatureEnabled,
+    widgetState,
+    favoriteTokens,
+    recentTokens,
+    onClearRecentTokens: clearRecentTokens,
+    onTokenListItemClick: handleTokenListItemClick,
+    handleSelectToken,
+    account,
+    displayLpTokenLists: displayLpTokenLists ?? false,
   })
 
-  const shouldRender = Boolean(widgetState.onSelectToken && (widgetState.open || widgetState.forceOpen))
-
-  // Reset atom when modal closes (shouldRender becomes false)
-  const resetTokenListView = useResetTokenListViewState()
-  const prevShouldRenderRef = useRef(shouldRender)
-
-  useEffect(() => {
-    // Only reset when transitioning from true to false
-    if (prevShouldRenderRef.current && !shouldRender) {
-      resetTokenListView()
-    }
-    prevShouldRenderRef.current = shouldRender
-  }, [shouldRender, resetTokenListView])
-
-  return {
-    shouldRender,
-    hasChainPanel: isChainPanelEnabled,
-    viewProps,
-  }
+  return { isOpen }
 }
-
-export type { SelectTokenWidgetViewProps } from './controllerProps'

@@ -1,224 +1,92 @@
 /**
- * SelectTokenModal - Internal token selector modal with slot-based composition
+ * SelectTokenModal - Internal token selector modal
  *
- * Converts controller state into props for slot components.
+ * Each slot uses its own domain hook - no prop drilling through controller.
  */
-import { useAtomValue, useSetAtom } from 'jotai'
-import React, { MouseEvent, ReactNode, createContext, useContext, useEffect, useMemo } from 'react'
+import { useSetAtom } from 'jotai'
+import React, { MouseEvent, ReactNode, useEffect } from 'react'
 
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { addBodyClass, removeBodyClass } from '@cowprotocol/common-utils'
 import { Media } from '@cowprotocol/ui'
 
-import { t } from '@lingui/core/macro'
 import { createPortal } from 'react-dom'
 
-import { BlockingView, BlockingViewProps } from './slots/BlockingView'
-import { ChainSelector, ChainSelectorProps, DesktopChainPanel, DesktopChainPanelProps } from './slots/ChainSelector'
-import { Header, HeaderProps } from './slots/Header'
+import { BlockingView } from './slots/BlockingView'
+import { ChainSelector, DesktopChainPanel } from './slots/ChainSelector'
+import { Header } from './slots/Header'
 import { NetworkPanel } from './slots/NetworkPanel'
-import { Search, SearchProps } from './slots/Search'
-import { TokenList, TokenListProps } from './slots/TokenList'
+import { Search } from './slots/Search'
+import { TokenList } from './slots/TokenList'
 
 import { useCloseTokenSelectWidget } from '../../../hooks/useCloseTokenSelectWidget'
-import { DEFAULT_MODAL_UI_STATE, selectTokenModalUIAtom, updateSelectTokenModalUIAtom } from '../atoms'
+import { useSelectTokenWidgetState } from '../../../hooks/useSelectTokenWidgetState'
+import { DEFAULT_MODAL_UI_STATE, updateSelectTokenModalUIAtom } from '../atoms'
 import { SelectTokenWidgetProps, useSelectTokenWidgetController } from '../controller'
-import { SelectTokenWidgetViewProps } from '../controllerProps'
+import { useBlockingViewState, useChainPanelState, useHeaderState, useSearchState, useTokenListState } from '../hooks'
 import { InnerWrapper, ModalContainer, WidgetCard, WidgetOverlay, Wrapper } from '../styled'
+import { useDismissHandler, useManageWidgetVisibility } from '../widgetUIState'
 
 export interface SelectTokenModalProps extends SelectTokenWidgetProps {
   children: ReactNode
 }
+// Context for standalone prop (needed by child hooks)
+const StandaloneContext = React.createContext<boolean>(false)
 
-type ViewProps = SelectTokenWidgetViewProps
-
-interface SlotProps {
-  header: HeaderProps
-  search: SearchProps
-  chainSelector: ChainSelectorProps
-  desktopChainPanel: DesktopChainPanelProps
-  tokenList: TokenListProps
-  blockingView: BlockingViewProps
-  hasBlockingView: boolean
+export function useStandalone(): boolean {
+  return React.useContext(StandaloneContext)
 }
 
-const SlotPropsContext = createContext<SlotProps | null>(null)
-
-function useSlotProps(): SlotProps {
-  const ctx = useContext(SlotPropsContext)
-  if (!ctx) throw new Error('useSlotProps must be used within SelectTokenModal')
-  return ctx
-}
-
-function useHeaderProps(viewProps: ViewProps): HeaderProps {
-  const p = viewProps.selectTokenModalProps
-  return useMemo(
-    () => ({
-      title: p.modalTitle ?? t`Select token`,
-      showManageButton: !viewProps.standalone,
-      onDismiss: viewProps.onDismiss,
-      onOpenManageWidget: p.onOpenManageWidget,
-    }),
-    [p.modalTitle, p.onOpenManageWidget, viewProps.standalone, viewProps.onDismiss],
-  )
-}
-
-function useSearchProps(viewProps: ViewProps): SearchProps {
-  const p = viewProps.selectTokenModalProps
-  return useMemo(() => ({ onPressEnter: p.onInputPressEnter }), [p.onInputPressEnter])
-}
-
-function useChainSelectorProps(viewProps: ViewProps, hasChainPanel: boolean): ChainSelectorProps {
-  return useMemo(
-    () => ({
-      chains: hasChainPanel ? viewProps.chainsToSelect : undefined,
-      title: viewProps.chainsPanelTitle ?? t`Cross chain swap`,
-      onSelectChain: viewProps.onSelectChain ?? (() => {}),
-    }),
-    [hasChainPanel, viewProps.chainsToSelect, viewProps.chainsPanelTitle, viewProps.onSelectChain],
-  )
-}
-
-function useDesktopChainPanelProps(viewProps: ViewProps, isVisible: boolean): DesktopChainPanelProps {
-  return useMemo(
-    () => ({
-      chains: isVisible ? viewProps.chainsToSelect : undefined,
-      title: viewProps.chainsPanelTitle ?? t`Cross chain swap`,
-      onSelectChain: viewProps.onSelectChain ?? (() => {}),
-    }),
-    [isVisible, viewProps.chainsToSelect, viewProps.chainsPanelTitle, viewProps.onSelectChain],
-  )
-}
-
-function useTokenListProps(viewProps: ViewProps): TokenListProps {
-  const p = viewProps.selectTokenModalProps
-  return useMemo(() => ({ isRouteAvailable: p.isRouteAvailable }), [p.isRouteAvailable])
-}
-
-function useBlockingViewProps(viewProps: ViewProps, isManageWidgetOpen: boolean): BlockingViewProps {
-  return useMemo(
-    () => ({
-      standalone: viewProps.standalone,
-      tokenToImport: viewProps.tokenToImport,
-      listToImport: viewProps.listToImport,
-      isManageWidgetOpen,
-      selectedPoolAddress: viewProps.selectedPoolAddress,
-      allTokenLists: viewProps.allTokenLists,
-      userAddedTokens: viewProps.userAddedTokens,
-      onDismiss: viewProps.onDismiss,
-      onBackFromImport: viewProps.onBackFromImport,
-      onImportTokens: viewProps.onImportTokens,
-      onImportList: viewProps.onImportList,
-      onCloseManageWidget: viewProps.onCloseManageWidget,
-      onClosePoolPage: viewProps.onClosePoolPage,
-      onSelectToken: viewProps.onSelectToken,
-    }),
-    [
-      viewProps.standalone,
-      viewProps.tokenToImport,
-      viewProps.listToImport,
-      isManageWidgetOpen,
-      viewProps.selectedPoolAddress,
-      viewProps.allTokenLists,
-      viewProps.userAddedTokens,
-      viewProps.onDismiss,
-      viewProps.onBackFromImport,
-      viewProps.onImportTokens,
-      viewProps.onImportList,
-      viewProps.onCloseManageWidget,
-      viewProps.onClosePoolPage,
-      viewProps.onSelectToken,
-    ],
-  )
-}
-
-function useHasBlockingViewValue(viewProps: ViewProps, isManageWidgetOpen: boolean): boolean {
-  return Boolean(
-    (viewProps.tokenToImport && !viewProps.standalone) ||
-      (viewProps.listToImport && !viewProps.standalone) ||
-      (isManageWidgetOpen && !viewProps.standalone) ||
-      viewProps.selectedPoolAddress,
-  )
-}
-
-function useWidgetEffects(
-  shouldRender: boolean,
-  isChainPanelVisible: boolean,
-  isManageWidgetOpen: boolean,
-  closeTokenSelectWidget: ReturnType<typeof useCloseTokenSelectWidget>,
-  updateModalUI: ReturnType<typeof useSetAtom<typeof updateSelectTokenModalUIAtom>>,
-): void {
-  useEffect(() => {
-    if (isChainPanelVisible) updateModalUI({ isMobileChainPanelOpen: false })
-  }, [updateModalUI, isChainPanelVisible])
-
-  useEffect(() => {
-    updateModalUI({ isManageWidgetOpen })
-  }, [updateModalUI, isManageWidgetOpen])
+function useWidgetEffects(isOpen: boolean): void {
+  const closeTokenSelectWidget = useCloseTokenSelectWidget()
+  const updateModalUI = useSetAtom(updateSelectTokenModalUIAtom)
 
   useEffect(() => () => updateModalUI(DEFAULT_MODAL_UI_STATE), [updateModalUI])
   useEffect(() => () => closeTokenSelectWidget({ overrideForceLock: true }), [closeTokenSelectWidget])
 
   useEffect(() => {
-    if (!shouldRender) {
+    if (!isOpen) {
       removeBodyClass('noScroll')
       return
     }
     addBodyClass('noScroll')
     return () => removeBodyClass('noScroll')
-  }, [shouldRender])
+  }, [isOpen])
 }
 
 export function SelectTokenModal({ displayLpTokenLists, standalone, children }: SelectTokenModalProps): ReactNode {
-  const { shouldRender, hasChainPanel, viewProps } = useSelectTokenWidgetController({ displayLpTokenLists, standalone })
+  const { isOpen } = useSelectTokenWidgetController({ displayLpTokenLists, standalone })
   const isCompactLayout = useMediaQuery(Media.upToMedium(false))
-  const isChainPanelVisible = hasChainPanel && !isCompactLayout
+  const widgetState = useSelectTokenWidgetState()
+  const { closeManageWidget } = useManageWidgetVisibility()
   const closeTokenSelectWidget = useCloseTokenSelectWidget()
+  const onDismiss = useDismissHandler(closeManageWidget, closeTokenSelectWidget)
 
-  const updateModalUI = useSetAtom(updateSelectTokenModalUIAtom)
-  const modalUIState = useAtomValue(selectTokenModalUIAtom)
+  // Chain panel state
+  const chainPanel = useChainPanelState(widgetState.tradeType)
+  const isChainPanelVisible = chainPanel.isEnabled && !isCompactLayout
 
-  useWidgetEffects(
-    shouldRender,
-    isChainPanelVisible,
-    viewProps.isManageWidgetOpen,
-    closeTokenSelectWidget,
-    updateModalUI,
-  )
+  useWidgetEffects(isOpen)
 
-  // Build slot props
-  const header = useHeaderProps(viewProps)
-  const search = useSearchProps(viewProps)
-  const chainSelector = useChainSelectorProps(viewProps, hasChainPanel)
-  const desktopChainPanel = useDesktopChainPanelProps(viewProps, isChainPanelVisible)
-  const tokenList = useTokenListProps(viewProps)
-  const blockingView = useBlockingViewProps(viewProps, modalUIState.isManageWidgetOpen)
-  const hasBlockingView = useHasBlockingViewValue(viewProps, modalUIState.isManageWidgetOpen)
-
-  const slotProps = useMemo<SlotProps>(
-    () => ({ header, search, chainSelector, desktopChainPanel, tokenList, blockingView, hasBlockingView }),
-    [header, search, chainSelector, desktopChainPanel, tokenList, blockingView, hasBlockingView],
-  )
-
-  if (!shouldRender) return null
+  if (!isOpen) return null
 
   const handleOverlayClick = (event: MouseEvent<HTMLDivElement>): void => {
-    if (event.target === event.currentTarget) viewProps.onDismiss()
+    if (event.target === event.currentTarget) onDismiss()
   }
 
   const content = (
-    <SlotPropsContext.Provider value={slotProps}>
+    <StandaloneContext.Provider value={standalone ?? false}>
       <Wrapper>
         <InnerWrapper $hasSidebar={isChainPanelVisible} $isMobileOverlay={isCompactLayout}>
           <ModalContainer>{children}</ModalContainer>
         </InnerWrapper>
       </Wrapper>
-    </SlotPropsContext.Provider>
+    </StandaloneContext.Provider>
   )
 
   const overlay = (
     <WidgetOverlay onClick={handleOverlayClick}>
-      <WidgetCard $isCompactLayout={isCompactLayout} $hasChainPanel={hasChainPanel}>
+      <WidgetCard $isCompactLayout={isCompactLayout} $hasChainPanel={chainPanel.isEnabled}>
         {content}
       </WidgetCard>
     </WidgetOverlay>
@@ -227,43 +95,67 @@ export function SelectTokenModal({ displayLpTokenLists, standalone, children }: 
   return typeof document === 'undefined' ? overlay : createPortal(overlay, document.body)
 }
 
-// Connected slot components that read props from context
+// Connected slots that use domain hooks
 function ConnectedHeader(): ReactNode {
-  const { header } = useSlotProps()
-  return <Header {...header} />
+  const standalone = useStandalone()
+  const { closeManageWidget } = useManageWidgetVisibility()
+  const closeTokenSelectWidget = useCloseTokenSelectWidget()
+  const onDismiss = useDismissHandler(closeManageWidget, closeTokenSelectWidget)
+  const { title, showManageButton, onOpenManageWidget } = useHeaderState(standalone)
+
+  return (
+    <Header
+      title={title}
+      showManageButton={showManageButton}
+      onDismiss={onDismiss}
+      onOpenManageWidget={onOpenManageWidget}
+    />
+  )
 }
 
 function ConnectedSearch(): ReactNode {
-  const { search } = useSlotProps()
-  return <Search {...search} />
+  const { onPressEnter } = useSearchState()
+  return <Search onPressEnter={onPressEnter} />
 }
 
 function ConnectedChainSelector(): ReactNode {
-  const { chainSelector } = useSlotProps()
-  return <ChainSelector {...chainSelector} />
+  const widgetState = useSelectTokenWidgetState()
+  const chainPanel = useChainPanelState(widgetState.tradeType)
+
+  if (!chainPanel.isEnabled) return null
+
+  return <ChainSelector chains={chainPanel.chainsToSelect} onSelectChain={chainPanel.onSelectChain} />
 }
 
 function ConnectedDesktopChainPanel(): ReactNode {
-  const { desktopChainPanel } = useSlotProps()
-  return <DesktopChainPanel {...desktopChainPanel} />
+  const widgetState = useSelectTokenWidgetState()
+  const chainPanel = useChainPanelState(widgetState.tradeType)
+  const isCompactLayout = useMediaQuery(Media.upToMedium(false))
+
+  if (!chainPanel.isEnabled || isCompactLayout) return null
+
+  return <DesktopChainPanel chains={chainPanel.chainsToSelect} onSelectChain={chainPanel.onSelectChain} />
 }
 
 function ConnectedTokenList(): ReactNode {
-  const { tokenList } = useSlotProps()
-  return <TokenList {...tokenList} />
+  const { isRouteAvailable } = useTokenListState()
+  return <TokenList isRouteAvailable={isRouteAvailable} />
 }
 
 function ConnectedBlockingView(): ReactNode {
-  const { blockingView } = useSlotProps()
-  return <BlockingView {...blockingView} />
+  const standalone = useStandalone()
+  const state = useBlockingViewState(standalone)
+  return <BlockingView {...state} />
 }
 
 // Hook to check if blocking view should be shown
 export function useHasBlockingView(): boolean {
-  const { hasBlockingView } = useSlotProps()
+  const standalone = useStandalone()
+  const { hasBlockingView } = useBlockingViewState(standalone)
   return hasBlockingView
 }
 
+// Attach slots
 SelectTokenModal.Header = ConnectedHeader
 SelectTokenModal.Search = ConnectedSearch
 SelectTokenModal.TokenList = ConnectedTokenList
@@ -272,5 +164,5 @@ SelectTokenModal.ChainSelector = ConnectedChainSelector
 SelectTokenModal.DesktopChainPanel = ConnectedDesktopChainPanel
 SelectTokenModal.BlockingView = ConnectedBlockingView
 
-// Export raw slot components for direct use with props
+// Export raw slot components
 export { Header, Search, ChainSelector, DesktopChainPanel, TokenList, BlockingView }
