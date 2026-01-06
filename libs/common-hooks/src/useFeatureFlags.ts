@@ -1,7 +1,15 @@
 import { useFlags } from 'launchdarkly-react-client-sdk'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useFeatureFlags() {
-  return useFlags()
+export interface FeatureFlags {
+  isPartialApproveEnabled: boolean
+  [key: string]: unknown
+}
+
+const defaults: Partial<FeatureFlags> = {
+  isPartialApproveEnabled: true,
+}
+
+export function useFeatureFlags(): FeatureFlags {
+  const flags = useFlags<FeatureFlags>()
+  return { ...defaults, ...flags }
 }
