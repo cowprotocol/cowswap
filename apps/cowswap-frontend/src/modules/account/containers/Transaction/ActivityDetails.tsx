@@ -1,7 +1,6 @@
 import { ReactElement, ReactNode, useMemo } from 'react'
 
 import { COW_TOKEN_TO_CHAIN, V_COW, V_COW_CONTRACT_ADDRESS } from '@cowprotocol/common-const'
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { areAddressesEqual, ExplorerDataType, getExplorerLink, shortenAddress } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENS } from '@cowprotocol/ens'
@@ -14,7 +13,7 @@ import { CurrencyAmount, Token } from '@uniswap/sdk-core'
 import { i18n } from '@lingui/core'
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
-import { useBridgeOrderData, BRIDGING_FINAL_STATUSES } from 'entities/bridgeOrders'
+import { BRIDGING_FINAL_STATUSES, useBridgeOrderData } from 'entities/bridgeOrders'
 import { useAddOrderToSurplusQueue } from 'entities/surplusModal'
 
 import { ActivityState, getActivityState } from 'legacy/hooks/useActivityDerivedState'
@@ -24,8 +23,7 @@ import { useToggleAccountModal } from 'modules/account'
 import { BridgeActivitySummary } from 'modules/bridge'
 import { EthFlowStepper } from 'modules/ethFlow'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
-import { useGetPendingOrdersPermitValidityState } from 'modules/ordersTable'
-import { OrderFillability } from 'modules/ordersTable'
+import { OrderFillability, useGetPendingOrdersPermitValidityState } from 'modules/ordersTable'
 import { useSwapPartialApprovalToggleState } from 'modules/swap/hooks/useSwapSettings'
 import { ConfirmDetailsItem } from 'modules/trade'
 
@@ -35,6 +33,7 @@ import { isPending } from 'common/hooks/useCategorizeRecentActivity'
 import { useEnhancedActivityDerivedState } from 'common/hooks/useEnhancedActivityDerivedState'
 import { useGetSurplusData } from 'common/hooks/useGetSurplusFiatValue'
 import { useSwapAndBridgeContext } from 'common/hooks/useSwapAndBridgeContext'
+import { useUltimateOrder } from 'common/hooks/useUltimateOrder'
 import { CurrencyLogoPair } from 'common/pure/CurrencyLogoPair'
 import { CustomRecipientWarningBanner } from 'common/pure/CustomRecipientWarningBanner'
 import { IconSpinner } from 'common/pure/IconSpinner'
@@ -46,6 +45,7 @@ import {
   useIsReceiverWalletBannerHidden,
 } from 'common/state/receiverWalletBannerVisibility'
 import { ActivityDerivedState, ActivityStatus } from 'common/types/activity'
+import { computeOrderSummary } from 'common/updaters/orders/utils'
 import { getIsBridgeOrder } from 'common/utils/getIsBridgeOrder'
 import { getIsCustomRecipient } from 'utils/orderUtils/getIsCustomRecipient'
 import { getUiOrderType } from 'utils/orderUtils/getUiOrderType'
@@ -234,23 +234,23 @@ export function ActivityDetails(props: {
   fillability?: OrderFillability
 }): ReactNode | null {
   const { activityDerivedState, chainId, activityLinkUrl, disableMouseActions, creationTime, fillability } = props
-  const { id, isOrder, summary, order, enhancedTransaction, isExpired, isCancelled, isFailed, isCancelling } =
+  const { id, isOrder, order, enhancedTransaction, isExpired, isCancelled, isFailed, isCancelling } =
     activityDerivedState
   const tokenAddress =
     enhancedTransaction?.approval?.tokenAddress ||
     (enhancedTransaction?.claim && V_COW_CONTRACT_ADDRESS[chainId as SupportedChainId])
   const singleToken = useTokenBySymbolOrAddress(tokenAddress) || null
 
-  const { isPartialApproveEnabled } = useFeatureFlags()
-  const [isPartialApproveEnabledBySettings] = useSwapPartialApprovalToggleState(isPartialApproveEnabled)
+  const [isPartialApproveEnabledBySettings] = useSwapPartialApprovalToggleState()
   const getShowCancellationModal = useCancelOrder()
+  const ultimateOrder = useUltimateOrder(chainId, order?.id)
 
   const isSwap = order && getUiOrderType(order) === UiOrderType.SWAP
 
   const { disableProgressBar } = useInjectedWidgetParams()
 
   const skipBridgingDisplay = isExpired || isCancelled || isFailed || isCancelling
-  const isBridgeOrder = getIsBridgeOrder(order) && !skipBridgingDisplay
+  const isBridgeOrder = getIsBridgeOrder(order)
 
   // Enhanced activity derived state that incorporates bridge status for bridge orders
   const enhancedActivityDerivedState = useEnhancedActivityDerivedState(activityDerivedState, chainId)
@@ -420,10 +420,9 @@ export function ActivityDetails(props: {
     </>
   )
 
-  const showWarning =
-    isPartialApproveEnabled && fillability
-      ? (!fillability.hasEnoughAllowance && !hasValidPermit) || !fillability.hasEnoughBalance
-      : false
+  const showWarning = fillability
+    ? (!fillability.hasEnoughAllowance && !hasValidPermit) || !fillability.hasEnoughBalance
+    : false
 
   return (
     <>
@@ -449,7 +448,7 @@ export function ActivityDetails(props: {
           {/* Order Currency Logo */}
           {inputToken && outputToken && (
             <ActivityVisual>
-              {isBridgeOrder && order ? (
+              {isBridgeOrder && !skipBridgingDisplay && order ? (
                 (() => {
                   const isLocalOrderCached = order.inputToken.chainId !== order.outputToken.chainId
                   const hasConfirmedBridgeData = swapAndBridgeContext?.statusResult
@@ -489,7 +488,7 @@ export function ActivityDetails(props: {
           <b>{activityName}</b>
           {isOrder ? (
             <>
-              {order && isBridgeOrder ? (
+              {order && !skipBridgingDisplay && isBridgeOrder ? (
                 <BridgeActivitySummary
                   isCustomRecipientWarning={!!isCustomRecipientWarningBannerVisible}
                   order={order}
@@ -577,7 +576,6 @@ export function ActivityDetails(props: {
                       <OrderFillabilityWarning
                         fillability={fillability}
                         inputAmount={orderSummary.inputAmount}
-                        enablePartialApprove={isPartialApproveEnabled}
                         enablePartialApproveBySettings={!!isPartialApproveEnabledBySettings}
                         orderId={order?.id}
                       />
@@ -587,7 +585,11 @@ export function ActivityDetails(props: {
               )}
             </>
           ) : (
-            (summary ?? id)
+            // Transaction
+            (activityDerivedState.summary ??
+            // Order
+            (ultimateOrder ? computeOrderSummary(ultimateOrder) : null) ??
+            id)
           )}
 
           {activityLinkUrl && enhancedTransaction?.replacementType !== 'replaced' && (

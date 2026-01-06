@@ -38,8 +38,7 @@ const receiveAmountInfo = inputCurrencyInfoMock.receiveAmountInfo!
 const account = '0xfb3c7eb936cAA12B5A884d612393969A557d4307'
 const swapAndBridgeContextMock: SwapAndBridgeContext = {
   bridgeProvider: {
-    logoUrl:
-      `${COW_CDN}/cow-sdk/bridging/providers/across/across-logo.png`,
+    logoUrl: `${COW_CDN}/cow-sdk/bridging/providers/across/across-logo.png`,
     name: 'Across',
     dappId: 'cow-sdk://bridging/providers/across',
     website: 'https://across.to',
@@ -67,8 +66,11 @@ const swapAndBridgeContextMock: SwapAndBridgeContext = {
     buyAmount: CurrencyAmount.fromRawAmount(USDC_BASE, '28700000'),
     buyAmountUsd: CurrencyAmount.fromRawAmount(USDC_BASE, '28700004'),
     bridgeMinReceiveAmount: null,
+    bridgeMinReceiveAmountUsd: null,
     bridgeMinDepositAmount: null,
     bridgeMinDepositAmountUsd: null,
+    expectedToReceive: null,
+    expectedToReceiveUsd: null,
   },
   bridgingProgressContext: {
     account,

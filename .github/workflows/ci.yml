@@ -1,6 +1,11 @@
 name: CI
 
 on:
+  # main and develop branches
+  push:
+    branches:
+      - main
+      - develop
   # build on PR creation/updates
   pull_request:
     types: [opened, synchronize]
@@ -115,6 +120,38 @@ jobs:
       - name: Run eslint
         run: yarn lint
 
+  build:
+    name: Build
+    needs: setup
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Set up node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Load generated files
+        id: cache-generated-files
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: |
+            src/state/data
+            src/locales
+          key: ${{ runner.os }}-generatedFiles-${{ hashFiles('**/yarn.lock') }}
+
+      - name: Build
+        run: yarn build
+
   integration-tests:
     name: Cypress
     runs-on: ubuntu-latest
@@ -178,3 +215,20 @@ jobs:
 #      - name: Setup tmate session
 #        uses: mxschmitt/action-tmate@v3
 #        if: ${{ failure() }}
+
+  notify-failure:
+    name: Notify Slack on Failure
+    needs: [setup, build, test, lint]
+    runs-on: ubuntu-latest
+    if: failure() && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+
+    steps:
+      - name: Notify Failure
+        run: |
+          curl -X POST -H "Content-type: application/json" --data "{\"text\": \"❌ CI failed on $REF_NAME. Check the build at $SERVER_URL/$REPOSITORY/actions/runs/$RUN_ID\"}" "$SLACK_WEBHOOK_URL"
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          REF_NAME: ${{ github.ref_name }}
+          SERVER_URL: ${{ github.server_url }}
+          REPOSITORY: ${{ github.repository }}
+          RUN_ID: ${{ github.run_id }}

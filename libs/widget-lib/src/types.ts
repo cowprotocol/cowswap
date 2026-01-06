@@ -177,7 +177,7 @@ export interface SlippageConfig {
   defaultValue?: number
 }
 
-export type FlexibleSlippageConfig = FlexibleConfig<SlippageConfig>;
+export type FlexibleSlippageConfig = FlexibleConfig<SlippageConfig>
 
 export interface CowSwapWidgetParams {
   /**
@@ -258,6 +258,11 @@ export interface CowSwapWidgetParams {
    */
   partnerFee?: PartnerFee
 
+  /**
+   * Disables cross-chain swaps (bridging)
+   * Defaults to false.
+   */
+  disableCrossChainSwap?: boolean
   /**
    * Disables showing the confirmation modal you get after posting an order.
    * Defaults to false.

@@ -26,6 +26,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     isAccountProxyLoading,
     isProxySetupValid,
     customTokenError,
+    isRestrictedForCountry,
   } = context
 
   const {
@@ -61,6 +62,10 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
 
   if (customTokenError) {
     validations.push(TradeFormValidation.CustomTokenError)
+  }
+
+  if (isRestrictedForCountry) {
+    validations.push(TradeFormValidation.RestrictedForCountry)
   }
 
   if (!isWrapUnwrap && tradeQuote.error) {

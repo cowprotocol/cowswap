@@ -11,6 +11,8 @@ import { Field } from 'legacy/state/types'
 
 import { TradeType } from 'modules/trade/types'
 
+import { useShouldHideNetworkSelector } from 'common/hooks/useShouldHideNetworkSelector'
+
 import { useSelectTokenWidgetState } from './useSelectTokenWidgetState'
 
 import { ChainsToSelectState } from '../types'
@@ -33,6 +35,7 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
   const isBridgingEnabled = useIsBridgingEnabled() // Reads from Jotai atom
   const availableChains = useAvailableChains()
   const isAdvancedTradeType = tradeType === TradeType.LIMIT_ORDER || tradeType === TradeType.ADVANCED_ORDERS
+  const shouldHideNetworkSelector = useShouldHideNetworkSelector()
 
   const supportedChains = useMemo(() => {
     return availableChains.reduce((acc, id) => {
@@ -57,7 +60,11 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
     if (!chainInfo) return undefined
 
     if (field === Field.INPUT) {
-      return createInputChainsState(selectedTargetChainId, supportedChains)
+      return {
+        defaultChainId: selectedTargetChainId,
+        chains: shouldHideNetworkSelector ? [] : sortChainsByDisplayOrder(supportedChains),
+        isLoading: false,
+      }
     }
 
     // BUY token selection - include disabled chains info
@@ -80,6 +87,7 @@ export function useChainsToSelect(): ChainsToSelectState | undefined {
     isBridgingEnabled,
     isAdvancedTradeType,
     routesAvailability,
+    shouldHideNetworkSelector,
   ])
 }
 

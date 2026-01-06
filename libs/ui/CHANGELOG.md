@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.31.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.30.1...ui-v1.31.0) (2025-12-24)
+
+
+### Features
+
+* **bridge:** enable Near bridge provider for smart-contract wallets ([#6618](https://github.com/cowprotocol/cowswap/issues/6618)) ([0da32ab](https://github.com/cowprotocol/cowswap/commit/0da32abcd12183396870055f3cf92bc7b53002a3))
+
+## [1.30.1](https://github.com/cowprotocol/cowswap/compare/ui-v1.30.0...ui-v1.30.1) (2025-12-15)
+
+
+### Bug Fixes
+
+* menu theme logo ([#6672](https://github.com/cowprotocol/cowswap/issues/6672)) ([8eab3c9](https://github.com/cowprotocol/cowswap/commit/8eab3c994f0caf3ad62b51b8136f1202b42fdcf6))
+* theme logo and Christmas background assets ([c2cd43a](https://github.com/cowprotocol/cowswap/commit/c2cd43a1e71062636dd5d18f246d7a41dc79388b))
+
 ## [1.30.0](https://github.com/cowprotocol/cowswap/compare/ui-v1.29.0...ui-v1.30.0) (2025-11-24)
 
 

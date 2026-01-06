@@ -8,7 +8,7 @@ import { SwapAndBridgeContext, SwapAndBridgeStatus } from '../../types'
 import { BridgeDetailsContainer } from '../BridgeDetailsContainer'
 import { BridgingProgressContent } from '../contents/BridgingProgressContent'
 import { PreparingBridgingContent } from '../contents/BridgingProgressContent/PreparingBridgingContent'
-import { BridgeStatusIcons, BridgeStatusTitlePrefixes } from '../StopStatus'
+import { bridgeStatusIcons, bridgeStatusTitlePrefixes } from '../StopStatus'
 
 interface BridgeStepRowProps {
   context: SwapAndBridgeContext
@@ -37,12 +37,12 @@ export function BridgeStepRow({ context }: BridgeStepRowProps): ReactNode {
           isCollapsible
           defaultExpanded={false}
           status={bridgeStatus}
-          statusIcon={BridgeStatusIcons[bridgeStatus]}
+          statusIcon={bridgeStatusIcons[bridgeStatus]}
           protocolIconShowOnly="second"
           protocolIconSize={21}
           circleSize={21}
           titlePrefix=""
-          protocolName={`${i18n._(BridgeStatusTitlePrefixes[bridgeStatus])} ${bridgeProvider.name}`}
+          protocolName={`${i18n._(bridgeStatusTitlePrefixes[bridgeStatus])} ${bridgeProvider.name}`}
           bridgeProvider={bridgeProvider}
           chainName={targetChainName}
           sellAmount={targetAmounts?.sellAmount}

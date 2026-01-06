@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.1](https://github.com/cowprotocol/cowswap/compare/types-v2.1.0...types-v2.1.1) (2025-12-16)
+
+
+### Bug Fixes
+
+* **bridge:** fix displayed bridge quote amounts ([#6670](https://github.com/cowprotocol/cowswap/issues/6670)) ([623e0e5](https://github.com/cowprotocol/cowswap/commit/623e0e5b09c33132debdfd06493c357c0af8aa80))
+
 ## [2.1.0](https://github.com/cowprotocol/cowswap/compare/types-v2.0.1...types-v2.1.0) (2025-11-24)
 
 

@@ -1,19 +1,20 @@
 import { useSetAtom } from 'jotai'
-import { useMemo } from 'react'
+import { useLayoutEffect } from 'react'
 
 import { useFeatureFlags } from '@cowprotocol/common-hooks'
 
-import { featureFlagsAtom } from '../state/featureFlagsState'
+import { featureFlagsAtom, featureFlagsHydratedAtom } from '../state/featureFlagsState'
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function FeatureFlagsUpdater() {
+export function FeatureFlagsUpdater(): null {
   const setFeatureFlags = useSetAtom(featureFlagsAtom)
+  const setFeatureFlagsHydrated = useSetAtom(featureFlagsHydratedAtom)
   const flags = useFeatureFlags()
 
-  useMemo(() => {
+  // Hydrate flags before first paint to avoid default theme flash
+  useLayoutEffect(() => {
     setFeatureFlags(flags)
-  }, [setFeatureFlags, flags])
+    setFeatureFlagsHydrated(true)
+  }, [setFeatureFlags, setFeatureFlagsHydrated, flags])
 
   return null
 }
