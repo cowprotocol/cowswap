@@ -18,11 +18,6 @@ interface ConfirmationPendingContentProps {
   isPendingInProgress?: boolean
 }
 
-const mockUseFeatureFlags = jest.fn()
-jest.mock('@cowprotocol/common-hooks', () => ({
-  useFeatureFlags: () => mockUseFeatureFlags(),
-}))
-
 const mockCloseModal = jest.fn()
 const mockModalState = {
   isModalOpen: false,
@@ -57,9 +52,6 @@ describe('usePendingApprovalModal', () => {
       if (!amount) return false
       return amount.quotient.toString() === MAX_APPROVE_AMOUNT.toString()
     })
-
-    // Default feature flag value
-    mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: true })
   })
 
   it('should return Modal and state', () => {
@@ -158,49 +150,12 @@ describe('usePendingApprovalModal', () => {
     expect(result.current.Modal).toBeDefined()
   })
 
-  describe('feature flag interaction', () => {
-    it('should show pending state when isPartialApproveEnabled is true and isPendingInProgress is true', () => {
-      mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: true })
-
-      const { result } = renderHook(() => usePendingApprovalModal({ isPendingInProgress: true }), {
-        wrapper: LinguiWrapper,
-      })
-
-      const confirmationPendingContent = (result.current.Modal as ReactElement<ConfirmationPendingContentProps>).props
-      expect(confirmationPendingContent.isPendingInProgress).toBe(true)
+  it('should pass isPendingInProgress to ConfirmationPendingContent', () => {
+    const { result } = renderHook(() => usePendingApprovalModal({ isPendingInProgress: true }), {
+      wrapper: LinguiWrapper,
     })
 
-    it('should not show pending state when isPartialApproveEnabled is false and isPendingInProgress is true', () => {
-      mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: false })
-
-      const { result } = renderHook(() => usePendingApprovalModal({ isPendingInProgress: true }), {
-        wrapper: LinguiWrapper,
-      })
-
-      const confirmationPendingContent = (result.current.Modal as ReactElement<ConfirmationPendingContentProps>).props
-      expect(confirmationPendingContent.isPendingInProgress).toBe(false)
-    })
-
-    it('should not show pending state when isPartialApproveEnabled is true and isPendingInProgress is false', () => {
-      mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: true })
-
-      const { result } = renderHook(() => usePendingApprovalModal({ isPendingInProgress: false }), {
-        wrapper: LinguiWrapper,
-      })
-
-      const confirmationPendingContent = (result.current.Modal as ReactElement<ConfirmationPendingContentProps>).props
-      expect(confirmationPendingContent.isPendingInProgress).toBe(false)
-    })
-
-    it('should not show pending state when isPartialApproveEnabled is false and isPendingInProgress is false', () => {
-      mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: false })
-
-      const { result } = renderHook(() => usePendingApprovalModal({ isPendingInProgress: false }), {
-        wrapper: LinguiWrapper,
-      })
-
-      const confirmationPendingContent = (result.current.Modal as ReactElement<ConfirmationPendingContentProps>).props
-      expect(confirmationPendingContent.isPendingInProgress).toBe(false)
-    })
+    const confirmationPendingContent = (result.current.Modal as ReactElement<ConfirmationPendingContentProps>).props
+    expect(confirmationPendingContent.isPendingInProgress).toBe(true)
   })
 })

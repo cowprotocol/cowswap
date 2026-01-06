@@ -1,4 +1,3 @@
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { OrderKind } from '@cowprotocol/cow-sdk'
 import { PermitType } from '@cowprotocol/permit-utils'
 import { CurrencyAmount, Ether, Token } from '@uniswap/sdk-core'
@@ -14,10 +13,6 @@ import { useGetAmountToSignApprove } from './useGetAmountToSignApprove'
 import { ApproveRequiredReason, useIsApprovalOrPermitRequired } from './useIsApprovalOrPermitRequired'
 
 import { ApprovalState } from '../types'
-
-jest.mock('@cowprotocol/common-hooks', () => ({
-  useFeatureFlags: jest.fn(),
-}))
 
 jest.mock('modules/permit', () => ({
   usePermitInfo: jest.fn(),
@@ -41,7 +36,6 @@ jest.mock('./useGetAmountToSignApprove', () => ({
   useGetAmountToSignApprove: jest.fn(),
 }))
 
-const mockUseFeatureFlags = useFeatureFlags as jest.MockedFunction<typeof useFeatureFlags>
 const mockUsePermitInfo = usePermitInfo as jest.MockedFunction<typeof usePermitInfo>
 const mockUseDerivedTradeState = useDerivedTradeState as jest.MockedFunction<typeof useDerivedTradeState>
 const mockUseApproveState = useApproveState as jest.MockedFunction<typeof useApproveState>
@@ -76,7 +70,6 @@ describe('useIsApprovalOrPermitRequired', () => {
     jest.clearAllMocks()
 
     mockUseGetAmountToSignApprove.mockReturnValue(mockAmountToApprove)
-    mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: true })
     mockUseDerivedTradeState.mockReturnValue(mockTradeState)
     mockUseApproveState.mockReturnValue({ state: ApprovalState.APPROVED, currentAllowance: BigInt(0) })
     mockUsePermitInfo.mockReturnValue({ type: 'unsupported' })
@@ -158,18 +151,6 @@ describe('useIsApprovalOrPermitRequired', () => {
           tradeType: TradeType.YIELD,
         }),
       )
-
-      const { result } = renderHook(() =>
-        useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: null }),
-      )
-
-      expect(result.current.reason).toBe(ApproveRequiredReason.NotRequired)
-    })
-  })
-
-  describe('when partial approve is disabled', () => {
-    it('should return NotRequired when isPartialApproveEnabled is false', () => {
-      mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: false })
 
       const { result } = renderHook(() =>
         useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: null }),
@@ -765,8 +746,7 @@ describe('useIsApprovalOrPermitRequired', () => {
   })
 
   describe('complex scenarios', () => {
-    it('should handle SWAP trade type with partial approve enabled and eip-2612 permit', () => {
-      mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: true })
+    it('should handle SWAP trade type with eip-2612 permit', () => {
       mockUsePermitInfo.mockReturnValue({ type: 'eip-2612' })
 
       const { result } = renderHook(() =>
@@ -776,25 +756,7 @@ describe('useIsApprovalOrPermitRequired', () => {
       expect(result.current.reason).toBe(ApproveRequiredReason.Eip2612PermitRequired)
     })
 
-    it('should handle SWAP trade type with partial approve disabled', () => {
-      mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: false })
-      mockUseDerivedTradeState.mockReturnValue(
-        createMockTradeState({
-          inputCurrency: mockToken,
-          tradeType: TradeType.SWAP,
-        }),
-      )
-      mockUsePermitInfo.mockReturnValue({ type: 'eip-2612' })
-
-      const { result } = renderHook(() =>
-        useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForContext: null }),
-      )
-
-      expect(result.current.reason).toBe(ApproveRequiredReason.NotRequired)
-    })
-
-    it('should handle non-SWAP trade type with partial approve enabled', () => {
-      mockUseFeatureFlags.mockReturnValue({ isPartialApproveEnabled: true })
+    it('should handle non-SWAP trade type', () => {
       mockUseDerivedTradeState.mockReturnValue(
         createMockTradeState({
           inputCurrency: mockToken,
