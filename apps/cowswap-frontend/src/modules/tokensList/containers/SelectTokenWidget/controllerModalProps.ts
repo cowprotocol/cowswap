@@ -1,11 +1,7 @@
 import { buildSelectTokenModalPropsInput, SelectTokenWidgetViewProps } from './controllerProps'
-import {
-  useManageWidgetVisibility,
-  usePoolPageHandlers,
-  useTokenDataSources,
-  useTokenSelectionHandler,
-  useWidgetMetadata,
-} from './controllerState'
+import { useTokenDataSources, useWidgetMetadata } from './tokenDataHooks'
+import { useTokenSelectionHandler } from './tokenSelectionHooks'
+import { useManageWidgetVisibility, usePoolPageHandlers } from './widgetUIState'
 
 import { useChainsToSelect } from '../../hooks/useChainsToSelect'
 import { useOnSelectChain } from '../../hooks/useOnSelectChain'

@@ -8,13 +8,9 @@ import { Field } from 'legacy/state/types'
 import { useLpTokensWithBalances } from 'modules/yield/shared'
 
 import { SelectTokenWidgetViewProps } from './controllerProps'
-import {
-  useManageWidgetVisibility,
-  useTokenAdminActions,
-  useTokenDataSources,
-  useWidgetMetadata,
-} from './controllerState'
 import { useSelectTokenWidgetViewState } from './controllerViewState'
+import { useTokenAdminActions, useTokenDataSources, useWidgetMetadata } from './tokenDataHooks'
+import { useManageWidgetVisibility } from './widgetUIState'
 
 import { useChainsToSelect } from '../../hooks/useChainsToSelect'
 import { useCloseTokenSelectWidget } from '../../hooks/useCloseTokenSelectWidget'

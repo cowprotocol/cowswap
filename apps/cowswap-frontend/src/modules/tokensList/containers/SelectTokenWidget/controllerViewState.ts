@@ -4,13 +4,9 @@ import { useHydrateTokenListViewAtom } from './controllerAtomHydration'
 import { useWidgetViewDependencies } from './controllerDependencies'
 import { getSelectTokenWidgetViewPropsArgs, useWidgetModalProps } from './controllerModalProps'
 import { SelectTokenWidgetViewProps } from './controllerProps'
-import {
-  hasAvailableChains,
-  useManageWidgetVisibility,
-  useTokenAdminActions,
-  useTokenDataSources,
-  useWidgetMetadata,
-} from './controllerState'
+import { useTokenAdminActions, useTokenDataSources, useWidgetMetadata } from './tokenDataHooks'
+import { hasAvailableChains } from './tokenSelectionHooks'
+import { useManageWidgetVisibility } from './widgetUIState'
 
 import { useChainsToSelect } from '../../hooks/useChainsToSelect'
 import { useCloseTokenSelectWidget } from '../../hooks/useCloseTokenSelectWidget'

@@ -1,13 +1,6 @@
-import {
-  useDismissHandler,
-  useImportFlowCallbacks,
-  useManageWidgetVisibility,
-  usePoolPageHandlers,
-  useRecentTokenSection,
-  useTokenAdminActions,
-  useTokenDataSources,
-  useTokenSelectionHandler,
-} from './controllerState'
+import { useTokenAdminActions, useTokenDataSources } from './tokenDataHooks'
+import { useImportFlowCallbacks, useRecentTokenSection, useTokenSelectionHandler } from './tokenSelectionHooks'
+import { useDismissHandler, useManageWidgetVisibility, usePoolPageHandlers } from './widgetUIState'
 
 import { useCloseTokenSelectWidget } from '../../hooks/useCloseTokenSelectWidget'
 import { useOnTokenListAddingError } from '../../hooks/useOnTokenListAddingError'

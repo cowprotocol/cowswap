@@ -4,7 +4,7 @@ import { ListState } from '@cowprotocol/tokens'
 
 import { ChainsToSelectState, TokenSelectionHandler } from '../../types'
 
-import type { TokenListCategoryState } from './controllerState'
+import type { TokenListCategoryState } from './tokenDataHooks'
 import type { SelectTokenModalProps } from '../../pure/SelectTokenModal'
 
 export interface SelectTokenWidgetViewProps {
