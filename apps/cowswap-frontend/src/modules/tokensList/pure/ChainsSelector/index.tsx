@@ -4,13 +4,14 @@ import { useMediaQuery, useTheme } from '@cowprotocol/common-hooks'
 import { ChainInfo } from '@cowprotocol/cow-sdk'
 import { HoverTooltip, Media } from '@cowprotocol/ui'
 
+import { Trans } from '@lingui/react/macro'
 import { Menu, MenuButton, MenuItem } from '@reach/menu-button'
 import { Check, ChevronDown, ChevronUp } from 'react-feather'
 
 import * as styledEl from './styled'
 
 // Number of skeleton shimmers to show during loading state
-const LOADING_ITEMS_COUNT = 9
+const LOADING_ITEMS_COUNT = 10
 
 const LoadingShimmerElements = (
   <styledEl.Wrapper>
@@ -75,9 +76,13 @@ export function ChainsSelector({
                     loading="lazy"
                   />
                 ) : isOpen ? (
-                  <span>Less</span>
+                  <span>
+                    <Trans>Less</Trans>
+                  </span>
                 ) : (
-                  <span>More</span>
+                  <span>
+                    <Trans>More</Trans>
+                  </span>
                 )}
                 {isOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
               </MenuButton>

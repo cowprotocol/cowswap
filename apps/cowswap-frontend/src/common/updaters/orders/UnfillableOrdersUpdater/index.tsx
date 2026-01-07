@@ -19,8 +19,6 @@ interface UnfillableOrdersUpdaterProps {
 export function UnfillableOrdersUpdater({ orders }: UnfillableOrdersUpdaterProps): ReactNode {
   const { chainId } = useWalletInfo()
 
-  console.debug(`[UnfillableOrderUpdater] orders to update: ${orders.length}`, orders)
-
   return (
     <>
       {orders.map((order) => {

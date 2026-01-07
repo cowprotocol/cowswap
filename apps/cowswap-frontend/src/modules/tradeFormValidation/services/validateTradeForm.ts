@@ -26,6 +26,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     isAccountProxyLoading,
     isProxySetupValid,
     customTokenError,
+    isRestrictedForCountry,
   } = context
 
   const {
@@ -61,6 +62,10 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
 
   if (customTokenError) {
     validations.push(TradeFormValidation.CustomTokenError)
+  }
+
+  if (isRestrictedForCountry) {
+    validations.push(TradeFormValidation.RestrictedForCountry)
   }
 
   if (!isWrapUnwrap && tradeQuote.error) {
@@ -151,7 +156,7 @@ export function validateTradeForm(context: TradeFormValidationContext): TradeFor
     validations.push(TradeFormValidation.WrapUnwrapFlow)
   }
 
-  if (isApproveRequired !== ApproveRequiredReason.NotRequired) {
+  if (![ApproveRequiredReason.Unsupported, ApproveRequiredReason.NotRequired].includes(isApproveRequired)) {
     if (isApproveRequired === ApproveRequiredReason.BundleApproveRequired) {
       validations.push(TradeFormValidation.ApproveAndSwapInBundle)
     }

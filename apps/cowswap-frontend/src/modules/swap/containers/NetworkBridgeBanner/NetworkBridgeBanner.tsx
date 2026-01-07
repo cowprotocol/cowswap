@@ -6,7 +6,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { AutoRow, ExternalLink, Media, UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 import { ArrowUpRight } from 'react-feather'
 import styled from 'styled-components/macro'
 
@@ -51,9 +51,13 @@ const RootWrapper = styled.div`
   }
 `
 
+// TODO: remove once network is supported for cross-chain swaps
 const SHOULD_SHOW_ALERT = {
   [SupportedChainId.GNOSIS_CHAIN]: true,
   [SupportedChainId.LENS]: true,
+  [SupportedChainId.BNB]: true,
+  [SupportedChainId.LINEA]: true,
+  [SupportedChainId.PLASMA]: true,
 }
 
 type NetworkAlertChains = keyof typeof SHOULD_SHOW_ALERT

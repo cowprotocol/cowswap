@@ -4,6 +4,8 @@ import { fetchWithTimeout } from '@cowprotocol/common-utils'
 import { HookDappType, HookDappWalletCompatibility } from '@cowprotocol/hook-dapp-lib'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { useLingui } from '@lingui/react/macro'
+
 import { HookDappIframe } from '../../../types/hooks'
 import { validateHookDappUrl } from '../../../utils/urlValidation'
 import { validateHookDappManifest } from '../../../validateHookDappManifest'
@@ -45,7 +47,7 @@ export function ExternalDappLoader({
   isPreHook,
 }: ExternalDappLoaderProps) {
   const { chainId } = useWalletInfo()
-
+  const { i18n, t } = useLingui()
   const setError = useCallback(
     (message: string | React.ReactNode) => {
       setManifestError(message)
@@ -58,7 +60,7 @@ export function ExternalDappLoader({
   const fetchManifest = useCallback(
     // TODO: Break down this large function into smaller functions
     // TODO: Reduce function complexity by extracting logic
-    // eslint-disable-next-line max-lines-per-function, complexity
+
     async (url: string) => {
       if (!url) return
 
@@ -76,17 +78,18 @@ export function ExternalDappLoader({
 
         const response = await fetchWithTimeout(manifestUrl, {
           timeout: TIMEOUT,
-          timeoutMessage: ERROR_MESSAGES.TIMEOUT,
+          timeoutMessage: i18n._(ERROR_MESSAGES.TIMEOUT),
         })
         if (!response.ok) {
-          setError(`Failed to fetch manifest from ${manifestUrl}. Please verify the URL and try again.`)
+          setError(t`Failed to fetch manifest from ${manifestUrl}. Please verify the URL and try again.`)
           return
         }
 
         const contentType = response.headers.get('content-type')
         if (!contentType || !contentType.includes('application/json')) {
+          const errorContentType = contentType || 'unknown'
           setError(
-            `Invalid content type: Expected JSON but received ${contentType || 'unknown'}. Make sure the URL points to a valid manifest file.`,
+            t`Invalid content type: Expected JSON but received ${errorContentType}. Make sure the URL points to a valid manifest file.`,
           )
           return
         }
@@ -94,7 +97,7 @@ export function ExternalDappLoader({
         const data = await response.json()
 
         if (!data.cow_hook_dapp) {
-          setError(`Invalid manifest format at ${manifestUrl}: missing cow_hook_dapp property`)
+          setError(t`Invalid manifest format at ${manifestUrl}: missing cow_hook_dapp property`)
           return
         }
 
@@ -123,17 +126,17 @@ export function ExternalDappLoader({
         if (isJsonParseError(error)) {
           setError(ERROR_MESSAGES.INVALID_MANIFEST_HTML)
         } else if (isTimeoutError(error)) {
-          setError(ERROR_MESSAGES.TIMEOUT)
+          setError(i18n._(ERROR_MESSAGES.TIMEOUT))
         } else if (isConnectionError(error)) {
-          setError(ERROR_MESSAGES.CONNECTION_ERROR)
+          setError(i18n._(ERROR_MESSAGES.CONNECTION_ERROR))
         } else {
-          setError(error instanceof Error ? error.message : ERROR_MESSAGES.GENERIC_MANIFEST_ERROR)
+          setError(error instanceof Error ? error.message : i18n._(ERROR_MESSAGES.GENERIC_MANIFEST_ERROR))
         }
       } finally {
         setLoading(false)
       }
     },
-    [input, walletType, chainId, isPreHook, setDappInfo, setLoading, setManifestError, setError],
+    [setLoading, i18n, chainId, isPreHook, walletType, setError, t, setManifestError, setDappInfo, input],
   )
 
   useEffect(() => {

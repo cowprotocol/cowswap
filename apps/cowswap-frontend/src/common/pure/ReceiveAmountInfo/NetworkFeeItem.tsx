@@ -3,7 +3,7 @@ import React, { ReactNode } from 'react'
 import { TokenAmount } from '@cowprotocol/ui'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 
 import * as styledEl from './styled'
 

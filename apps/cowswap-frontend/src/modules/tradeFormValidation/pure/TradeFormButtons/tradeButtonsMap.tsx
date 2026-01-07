@@ -1,11 +1,11 @@
 import { ReactElement, ReactNode } from 'react'
 
-import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
 import { getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
 import { BridgeProviderQuoteError, BridgeQuoteErrors } from '@cowprotocol/sdk-bridging'
-import { CenteredDots, HelpTooltip, TokenSymbol } from '@cowprotocol/ui'
+import { HelpTooltip, InfoTooltip, TokenSymbol } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/macro'
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
 import { TradeApproveButton } from 'modules/erc20Approve'
@@ -13,6 +13,8 @@ import { CompatibilityIssuesWarning } from 'modules/trade'
 
 import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
 import { TradeLoadingButton } from 'common/pure/TradeLoadingButton'
+
+import { ProxyAccountLoading, ProxyAccountUnknown } from './common'
 
 import { TradeFormButtonContext, TradeFormValidation } from '../../types'
 import { TradeFormBlankButton } from '../TradeFormBlankButton'
@@ -26,42 +28,42 @@ interface ButtonCallback {
   (context: TradeFormButtonContext, isDisabled?: boolean): ReactElement | null
 }
 
+function getDefaultQuoteError(): string {
+  return t`Error loading price. Try again later.`
+}
+
+function getQuoteErrorTexts(): Record<QuoteApiErrorCodes, string> {
+  return {
+    [QuoteApiErrorCodes.UNHANDLED_ERROR]: getDefaultQuoteError(),
+    [QuoteApiErrorCodes.TransferEthToContract]: t`Buying native currency with smart contract wallets is not currently supported`,
+    [QuoteApiErrorCodes.UnsupportedToken]: t`Unsupported token`,
+    [QuoteApiErrorCodes.InsufficientLiquidity]: t`Insufficient liquidity for this trade.`,
+    [QuoteApiErrorCodes.FeeExceedsFrom]: t`Sell amount is too small`,
+    [QuoteApiErrorCodes.ZeroPrice]: t`Invalid price. Try increasing input/output amount.`,
+    [QuoteApiErrorCodes.SameBuyAndSellToken]: t`Tokens must be different`,
+  }
+}
+
+function getBridgeQuoteErrorTexts(): Record<BridgeQuoteErrors, string> {
+  const DEFAULT_QUOTE_ERROR = getDefaultQuoteError()
+
+  return {
+    [BridgeQuoteErrors.API_ERROR]: DEFAULT_QUOTE_ERROR,
+    [BridgeQuoteErrors.INVALID_BRIDGE]: DEFAULT_QUOTE_ERROR,
+    [BridgeQuoteErrors.TX_BUILD_ERROR]: DEFAULT_QUOTE_ERROR,
+    [BridgeQuoteErrors.QUOTE_ERROR]: DEFAULT_QUOTE_ERROR,
+    [BridgeQuoteErrors.INVALID_API_JSON_RESPONSE]: DEFAULT_QUOTE_ERROR,
+    [BridgeQuoteErrors.NO_INTERMEDIATE_TOKENS]: t`No routes found`,
+    [BridgeQuoteErrors.NO_ROUTES]: t`No routes found`,
+    [BridgeQuoteErrors.ONLY_SELL_ORDER_SUPPORTED]: t`Only "sell" orders are supported`,
+    [BridgeQuoteErrors.QUOTE_DOES_NOT_MATCH_DEPOSIT_ADDRESS]: t`Bridging deposit address is not verified! Please contact CoW Swap support!`,
+    [BridgeQuoteErrors.SELL_AMOUNT_TOO_SMALL]: t`Sell amount too small to bridge`,
+  }
+}
+
 const CompatibilityIssuesWarningWrapper = styled.div`
   margin-top: -10px;
 `
-
-const DEFAULT_QUOTE_ERROR = 'Error loading price. Try again later.'
-
-const quoteErrorTexts: Record<QuoteApiErrorCodes, string> = {
-  [QuoteApiErrorCodes.UNHANDLED_ERROR]: DEFAULT_QUOTE_ERROR,
-  [QuoteApiErrorCodes.TransferEthToContract]:
-    'Buying native currency with smart contract wallets is not currently supported',
-  [QuoteApiErrorCodes.UnsupportedToken]: 'Unsupported token',
-  [QuoteApiErrorCodes.InsufficientLiquidity]: 'Insufficient liquidity for this trade.',
-  [QuoteApiErrorCodes.FeeExceedsFrom]: 'Sell amount is too small',
-  [QuoteApiErrorCodes.ZeroPrice]: 'Invalid price. Try increasing input/output amount.',
-  [QuoteApiErrorCodes.SameBuyAndSellToken]: 'Tokens must be different',
-}
-
-const quoteErrorTextsForBridges: Partial<Record<QuoteApiErrorCodes, string>> = {
-  [QuoteApiErrorCodes.SameBuyAndSellToken]: 'Not yet supported',
-}
-
-const bridgeQuoteErrorTexts: Record<BridgeQuoteErrors, string> = {
-  [BridgeQuoteErrors.API_ERROR]: DEFAULT_QUOTE_ERROR,
-  [BridgeQuoteErrors.INVALID_BRIDGE]: DEFAULT_QUOTE_ERROR,
-  [BridgeQuoteErrors.TX_BUILD_ERROR]: DEFAULT_QUOTE_ERROR,
-  [BridgeQuoteErrors.QUOTE_ERROR]: DEFAULT_QUOTE_ERROR,
-  [BridgeQuoteErrors.INVALID_API_JSON_RESPONSE]: DEFAULT_QUOTE_ERROR,
-  [BridgeQuoteErrors.NO_INTERMEDIATE_TOKENS]: 'No routes found',
-  [BridgeQuoteErrors.NO_ROUTES]: 'No routes found',
-  [BridgeQuoteErrors.ONLY_SELL_ORDER_SUPPORTED]: 'Only "sell" orders are supported',
-}
-
-const errorTooltipContentForBridges: Partial<Record<QuoteApiErrorCodes, string>> = {
-  [QuoteApiErrorCodes.SameBuyAndSellToken]:
-    'Bridging without swapping is not yet supported. Let us know if you want this feature!',
-}
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -91,27 +93,25 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
 
     return (
       <TradeFormBlankButton onClick={() => context.wrapNativeFlow()}>
-        <Trans>{isNativeIn ? 'Wrap' : 'Unwrap'}</Trans>
+        {isNativeIn ? t`Wrap` : t`Unwrap`}
       </TradeFormBlankButton>
     )
   },
   [TradeFormValidation.CustomTokenError]: ({ customTokenError }) => {
     return (
       <TradeFormBlankButton disabled={true}>
-        <span>
-          <Trans>{customTokenError}</Trans>
-        </span>
+        <span>{customTokenError}</span>
       </TradeFormBlankButton>
     )
   },
   [TradeFormValidation.CurrencyNotSet]: {
-    text: 'Select a token',
+    text: <Trans>Select a token</Trans>,
   },
   [TradeFormValidation.InputAmountNotSet]: {
-    text: 'Enter an amount',
+    text: <Trans>Enter an amount</Trans>,
   },
   [TradeFormValidation.BrowserOffline]: {
-    text: 'Error loading price. You are currently offline.',
+    text: <Trans>Error loading price. You are currently offline.</Trans>,
   },
   [TradeFormValidation.RecipientInvalid]: ({ derivedState: { inputCurrency, outputCurrency, recipient } }) => {
     const isBridging = inputCurrency && outputCurrency && inputCurrency.chainId !== outputCurrency.chainId
@@ -121,7 +121,10 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
         <>
           <Trans>Enter a valid recipient</Trans>
           {isBridging && recipient && (
-            <HelpTooltip placement="top" text="ENS recipient not supported for Swap and Bridge. Use address instead." />
+            <HelpTooltip
+              placement="top"
+              text={t`ENS recipient not supported for Swap and Bridge. Use address instead.`}
+            />
           )}
         </>
       </TradeFormBlankButton>
@@ -131,6 +134,20 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     return unsupportedTokenButton(context)
   },
   [TradeFormValidation.QuoteErrors]: (context) => {
+    const DEFAULT_QUOTE_ERROR = t`Error loading price. Try again later.`
+
+    const quoteErrorTexts = getQuoteErrorTexts()
+
+    const quoteErrorTextsForBridges: Partial<Record<QuoteApiErrorCodes, string>> = {
+      [QuoteApiErrorCodes.SameBuyAndSellToken]: t`Not yet supported`,
+    }
+
+    const bridgeQuoteErrorTexts = getBridgeQuoteErrorTexts()
+
+    const errorTooltipContentForBridges: Partial<Record<QuoteApiErrorCodes, string>> = {
+      [QuoteApiErrorCodes.SameBuyAndSellToken]: t`Bridging without swapping is not yet supported. Let us know if you want this feature!`,
+    }
+
     const { quote } = context
 
     if (quote.error instanceof QuoteApiError) {
@@ -141,15 +158,35 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
       }
 
       const isBridge = quote.isBridgeQuote
-      const errorText =
-        (isBridge && quoteErrorTextsForBridges[errorType]) || quoteErrorTexts[errorType] || DEFAULT_QUOTE_ERROR
+      const errorText = (() => {
+        const quoteErrorText = quoteErrorTexts[errorType]
+        const bridgeQuoteErrorText = quoteErrorTextsForBridges[errorType]
+
+        if (isBridge && bridgeQuoteErrorText) {
+          // Do not display "Not yet supported" when sell and intermediate tokens are the same
+          // Because user doesn't see intermediate token
+          if (errorType === QuoteApiErrorCodes.SameBuyAndSellToken) {
+            const areSwapAssetsDifferent =
+              context.derivedState.inputCurrency?.symbol?.toLowerCase() !==
+              context.derivedState.outputCurrency?.symbol?.toLowerCase()
+
+            if (areSwapAssetsDifferent) {
+              return bridgeQuoteErrorTexts[BridgeQuoteErrors.NO_ROUTES]
+            }
+          }
+
+          return bridgeQuoteErrorText
+        }
+
+        return quoteErrorText || DEFAULT_QUOTE_ERROR
+      })()
 
       const errorTooltipText = isBridge && errorTooltipContentForBridges[errorType]
 
       return (
         <TradeFormBlankButton disabled={true}>
           <>
-            <Trans>{errorText}</Trans>
+            {errorText}
             {errorTooltipText && <HelpTooltip text={errorTooltipText} />}
           </>
         </TradeFormBlankButton>
@@ -163,7 +200,10 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
       return (
         <TradeFormBlankButton disabled={true}>
           <>
-            <Trans>{errorText}</Trans>
+            {errorText}
+            {errorMessage === BridgeQuoteErrors.NO_INTERMEDIATE_TOKENS && (
+              <InfoTooltip content={t`No intermediate tokens found for the route`} />
+            )}
           </>
         </TradeFormBlankButton>
       )
@@ -175,7 +215,9 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
       </TradeFormBlankButton>
     )
   },
-  [TradeFormValidation.QuoteExpired]: { text: 'Quote expired. Refreshing...' },
+  [TradeFormValidation.QuoteExpired]: {
+    text: <Trans>Quote expired. Refreshing...</Trans>,
+  },
   [TradeFormValidation.WalletNotConnected]: (context) => {
     return (
       <TradeFormBlankButton onClick={context.connectWallet} disabled={context.widgetStandaloneMode === false}>
@@ -184,21 +226,25 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     )
   },
   [TradeFormValidation.WalletNotSupported]: {
-    text: 'Wallet Unsupported',
+    text: <Trans>Wallet Unsupported</Trans>,
   },
   [TradeFormValidation.NetworkNotSupported]: {
-    text: 'Unsupported Network',
+    text: <Trans>Unsupported Network</Trans>,
   },
   [TradeFormValidation.SafeReadonlyUser]: {
     text: (
       <>
-        <span>Connect signer</span>{' '}
+        <span>
+          <Trans>Connect signer</Trans>
+        </span>{' '}
         <HelpTooltip
           text={
             <div>
-              Your Safe is not connected with a signer.
-              <br />
-              To place an order, you must connect using a signer of this Safe.
+              <Trans>
+                Your Safe is not connected with a signer.
+                <br />
+                To place an order, you must connect using a signer of this Safe.
+              </Trans>
             </div>
           }
         />
@@ -209,7 +255,7 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
     text: <TradeLoadingButton />,
   },
   [TradeFormValidation.BalancesNotLoaded]: {
-    text: "Couldn't load balances",
+    text: <Trans>Couldn't load balances</Trans>,
   },
   [TradeFormValidation.BalanceInsufficient]: (context) => {
     const inputCurrency = context.derivedState.inputCurrency
@@ -225,12 +271,13 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   [TradeFormValidation.ApproveAndSwapInBundle]: (context, isDisabled = false) => {
     const inputCurrency = context.derivedState.inputCurrency
     const tokenToApprove = inputCurrency && getWrappedToken(inputCurrency)
+    const contextDefaultText = context.defaultText
 
     return (
       <TradeFormBlankButton disabled={isDisabled} onClick={context.confirmTrade}>
         <span>
           <Trans>
-            Approve {<TokenSymbol token={tokenToApprove} length={6} />} and {context.defaultText}
+            Approve {<TokenSymbol token={tokenToApprove} length={6} />} and {contextDefaultText}
           </Trans>
         </span>
       </TradeFormBlankButton>
@@ -246,37 +293,35 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
         amountToApprove={amountToApprove}
         enablePartialApprove={enablePartialApprove}
         onApproveConfirm={context.confirmTrade}
+        minAmountToSignForSwap={context.minAmountToSignForSwap}
       >
-        <TradeFormBlankButton disabled={!enablePartialApprove}>
-          <Trans>{defaultText}</Trans>
-        </TradeFormBlankButton>
+        <TradeFormBlankButton disabled={!enablePartialApprove}>{defaultText}</TradeFormBlankButton>
       </TradeApproveButton>
     )
   },
   [TradeFormValidation.SellNativeToken]: (context) => {
     const inputCurrency = context.derivedState.inputCurrency
     const isNativeIn = !!inputCurrency && getIsNativeToken(inputCurrency)
+    const symbol = inputCurrency?.symbol
 
     if (!isNativeIn) return null
 
     return (
       <TradeFormBlankButton disabled>
-        <Trans>Selling {inputCurrency.symbol} is not supported</Trans>
+        <Trans>Selling {symbol} is not supported</Trans>
       </TradeFormBlankButton>
     )
   },
   [TradeFormValidation.ImportingIntermediateToken]: {
-    text: 'Import intermediate token',
+    text: <Trans>Import intermediate token</Trans>,
   },
   [TradeFormValidation.ProxyAccountLoading]: {
-    text: (
-      <>
-        <span>Loading {ACCOUNT_PROXY_LABEL}</span>
-        <CenteredDots smaller />
-      </>
-    ),
+    text: <ProxyAccountLoading />,
   },
   [TradeFormValidation.ProxyAccountUnknown]: {
-    text: `Couldn't verify ${ACCOUNT_PROXY_LABEL}, please try later`,
+    text: <ProxyAccountUnknown />,
+  },
+  [TradeFormValidation.RestrictedForCountry]: {
+    text: <Trans>This token is not available in your region</Trans>,
   },
 }

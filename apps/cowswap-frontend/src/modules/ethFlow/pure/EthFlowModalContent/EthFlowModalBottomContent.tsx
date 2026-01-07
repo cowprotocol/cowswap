@@ -1,10 +1,6 @@
 import { ReactNode, useCallback, useMemo, useState } from 'react'
 
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { currencyAmountToTokenAmount } from '@cowprotocol/common-utils'
-
-import { Trans } from '@lingui/macro'
-
 
 import { SimpleAccountDetails } from 'modules/account/containers/SimpleAccountDetails'
 import { PartialApproveContainer } from 'modules/erc20Approve'
@@ -79,11 +75,9 @@ export function EthFlowModalBottomContent(params: BottomContentParams): ReactNod
     return hashes
   }, [approveTxHash, wrapTxHash])
 
-  const { isPartialApproveEnabled } = useFeatureFlags()
-  const [isPartialApproveEnabledBySettings] = useSwapPartialApprovalToggleState(isPartialApproveEnabled)
+  const [isPartialApproveEnabledBySettings] = useSwapPartialApprovalToggleState()
 
-  const showPartialApprovalFunctionality =
-    isPartialApproveEnabled && isApproveNeeded && !wrapInProgress && isPartialApproveEnabledBySettings
+  const showPartialApprovalFunctionality = isApproveNeeded && !wrapInProgress && isPartialApproveEnabledBySettings
   const amountToApprove = wrappingPreview.amount ? currencyAmountToTokenAmount(wrappingPreview.amount) : null
 
   return (
@@ -94,13 +88,13 @@ export function EthFlowModalBottomContent(params: BottomContentParams): ReactNod
         <StyledPartialApprove>
           <PartialApproveContainer amountToApprove={amountToApprove}>
             <TradeFormBlankButton onClick={onClick} loading={isActionInProgress || showLoader}>
-              <Trans>{buttonText}</Trans>
+              {buttonText}
             </TradeFormBlankButton>
           </PartialApproveContainer>
         </StyledPartialApprove>
       ) : (
         <TradeFormBlankButton onClick={onClick} loading={isActionInProgress || showLoader}>
-          <Trans>{buttonText}</Trans>
+          {buttonText}
         </TradeFormBlankButton>
       )}
     </>

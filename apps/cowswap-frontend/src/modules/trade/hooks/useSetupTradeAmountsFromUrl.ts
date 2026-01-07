@@ -113,7 +113,7 @@ export function useSetupTradeAmountsFromUrl({ onAmountsUpdate, onlySell }: Setup
 
     if (hasUpdates) {
       // Clean params only when an update was applied or currencies are loaded
-      if (inputCurrency || outputCurrency) {
+      if (inputCurrency || outputCurrency || orderKind) {
         setTimeout(cleanParams)
       }
 

@@ -344,7 +344,7 @@
                         <div data-drawio-colors="color: rgb(0, 0, 0); " style="box-sizing: border-box; font-size: 0px; text-align: center;">
                             <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.2; pointer-events: none; font-weight: bold; white-space: normal; overflow-wrap: normal;">
                                 <font color="#000000">
-                                    @cowprotocol/app-data
+                                    @cowprotocol/sdk-app-data
                                     <br/>
                                     <span style="font-weight: 400;">
                                         metadata API
@@ -356,7 +356,7 @@
                     </div>
                 </foreignObject>
                 <text x="685" y="104" fill="rgb(0, 0, 0)" font-family="Helvetica" font-size="12px" text-anchor="middle" font-weight="bold">
-                    @cowprotocol/app-data...
+                    @cowprotocol/sdk-app-data...
                 </text>
             </switch>
         </g>

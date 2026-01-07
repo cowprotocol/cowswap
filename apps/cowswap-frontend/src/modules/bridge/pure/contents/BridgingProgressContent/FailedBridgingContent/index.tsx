@@ -3,28 +3,36 @@ import { ReactNode } from 'react'
 import RefundIcon from '@cowprotocol/assets/cow-swap/icon-refund.svg'
 import { RECEIVED_LABEL } from '@cowprotocol/common-const'
 
+import { Trans, useLingui } from '@lingui/react/macro'
+
 import { ConfirmDetailsItem, ReceiveAmountTitle } from 'modules/trade'
 
 import { AnimatedEllipsis, DangerText, InfoTextBold, InfoTextSpan } from '../../../../styles'
 import { StyledAnimatedTimelineRefundIcon } from '../../styled'
 
 export function FailedBridgingContent(): ReactNode {
+  const { i18n } = useLingui()
+
   return (
     <>
-      <ConfirmDetailsItem label={RECEIVED_LABEL} withTimelineDot>
-        <DangerText>Bridging failed</DangerText>
+      <ConfirmDetailsItem label={i18n._(RECEIVED_LABEL)} withTimelineDot>
+        <DangerText>
+          <Trans>Bridging failed</Trans>
+        </DangerText>
       </ConfirmDetailsItem>
       <ConfirmDetailsItem
         label={
           <ReceiveAmountTitle icon={<StyledAnimatedTimelineRefundIcon src={RefundIcon} />}>
             <InfoTextSpan>
-              <b>Refunding</b>
+              <b>
+                <Trans>Refunding</Trans>
+              </b>
             </InfoTextSpan>
           </ReceiveAmountTitle>
         }
       >
         <InfoTextBold>
-          Refund started
+          <Trans>Refund started</Trans>
           <AnimatedEllipsis isVisible />
         </InfoTextBold>
       </ConfirmDetailsItem>

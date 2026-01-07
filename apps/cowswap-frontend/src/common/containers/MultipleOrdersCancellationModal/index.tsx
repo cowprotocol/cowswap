@@ -6,6 +6,9 @@ import { Command } from '@cowprotocol/types'
 import { ButtonPrimary } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
+
 import { LegacyConfirmationModalContent } from 'legacy/components/TransactionConfirmationModal/LegacyConfirmationModalContent'
 import { useRequestOrderCancellation } from 'legacy/state/orders/hooks'
 
@@ -68,7 +71,7 @@ export function MultipleOrdersCancellationModal(props: Props): ReactNode {
 
   if (cancellationError) {
     const errorMessage = isRejectRequestProviderError(cancellationError)
-      ? 'User rejected signing the cancellation'
+      ? t`User rejected signing the cancellation`
       : getIsOrderBookTypedError(cancellationError)
         ? cancellationError.body.description || cancellationError.body.errorType
         : (getProviderErrorMessage(cancellationError) ?? String(cancellationError))
@@ -86,9 +89,9 @@ export function MultipleOrdersCancellationModal(props: Props): ReactNode {
         <ConfirmationPendingContent
           modalMode
           onDismiss={onDismiss}
-          title={<>Cancelling {ordersCount} orders</>}
-          description="Canceling your order"
-          operationLabel="cancellation"
+          title={t`Cancelling ${ordersCount} orders`}
+          description={t`Canceling your order`}
+          operationLabel={t`cancellation`}
         />
       </Modal>
     )
@@ -97,22 +100,22 @@ export function MultipleOrdersCancellationModal(props: Props): ReactNode {
   return (
     <Modal isOpen={isOpen} onDismiss={onDismiss}>
       <LegacyConfirmationModalContent
-        title={`Cancel multiple orders: ${ordersCount}`}
+        title={t`Cancel multiple orders: ${ordersCount}`}
         onDismiss={onDismiss}
-        // TODO: Extract nested component outside render function
-        // eslint-disable-next-line react/no-unstable-nested-components
-        topContent={() => (
+        topContent={
           <div>
-            <p>Are you sure you want to cancel {ordersCount} orders?</p>
+            <p>
+              <Trans>Are you sure you want to cancel {ordersCount} orders?</Trans>
+            </p>
           </div>
-        )}
-        // TODO: Extract nested component outside render function
-        // eslint-disable-next-line react/no-unstable-nested-components
-        bottomContent={() => (
+        }
+        bottomContent={
           <div>
-            <ButtonPrimary onClick={signAndSendCancellation}>Request cancellations</ButtonPrimary>
+            <ButtonPrimary onClick={signAndSendCancellation}>
+              <Trans>Request cancellations</Trans>
+            </ButtonPrimary>
           </div>
-        )}
+        }
       />
     </Modal>
   )

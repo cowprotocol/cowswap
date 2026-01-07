@@ -1,6 +1,5 @@
 import { SigningScheme } from '@cowprotocol/cow-sdk'
 import { UiOrderType } from '@cowprotocol/types'
-import { MaxUint256 } from '@ethersproject/constants'
 import type { MetaTransactionData } from '@safe-global/safe-core-sdk-types'
 import { Percent } from '@uniswap/sdk-core'
 
@@ -8,7 +7,7 @@ import { tradingSdk } from 'tradingSdk/tradingSdk'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
-import { getOrderSubmitSummary, mapUnsignedOrderToOrder, wrapErrorInOperatorError } from 'legacy/utils/trade'
+import { mapUnsignedOrderToOrder, wrapErrorInOperatorError } from 'legacy/utils/trade'
 
 import { removePermitHookFromAppData } from 'modules/appData'
 import { buildApproveTx } from 'modules/operations/bundle/buildApproveTx'
@@ -34,8 +33,16 @@ export async function safeBundleApprovalFlow(
   confirmPriceImpactWithoutFee: (priceImpact: Percent) => Promise<boolean>,
   analytics: TradeFlowAnalytics,
 ): Promise<void | boolean> {
-  const { context, callbacks, orderParams, swapFlowAnalyticsContext, tradeConfirmActions, typedHooks, tradeQuote } =
-    tradeContext
+  const {
+    context,
+    callbacks,
+    orderParams,
+    swapFlowAnalyticsContext,
+    tradeConfirmActions,
+    typedHooks,
+    tradeQuote,
+    bridgeQuoteAmounts,
+  } = tradeContext
 
   logTradeFlow(LOG_PREFIX, 'STEP 1: confirm price impact')
 
@@ -43,7 +50,7 @@ export async function safeBundleApprovalFlow(
     return false
   }
 
-  const { spender, sendBatchTransactions, erc20Contract, isPartialApproveEnabled } = safeBundleContext
+  const { spender, sendBatchTransactions, erc20Contract, amountToApprove } = safeBundleContext
 
   const { chainId } = context
   const { account, isSafeWallet, recipientAddressOrName, inputAmount, outputAmount, kind } = orderParams
@@ -52,8 +59,6 @@ export async function safeBundleApprovalFlow(
   analytics.approveAndPresign(swapFlowAnalyticsContext)
   tradeConfirmActions.onSign(tradeAmounts)
 
-  const amountToApprove = isPartialApproveEnabled ? BigInt(inputAmount.quotient.toString()) : MaxUint256.toBigInt()
-
   try {
     // For now, bundling ALWAYS includes 2 steps: approve and presign.
     // In the feature users will be able to sort/add steps as they see fit
@@ -61,7 +66,7 @@ export async function safeBundleApprovalFlow(
     const approveTx = await buildApproveTx({
       erc20Contract,
       spender,
-      amountToApprove,
+      amountToApprove: BigInt(amountToApprove.quotient.toString()),
     })
 
     orderParams.appData = await removePermitHookFromAppData(orderParams.appData, typedHooks)
@@ -92,11 +97,19 @@ export async function safeBundleApprovalFlow(
       additionalParams: {
         ...orderParams,
         orderId,
-        summary: getOrderSubmitSummary(orderParams),
         signature,
         signingScheme,
       },
     })
+
+    if (bridgeQuoteAmounts) {
+      tradeContext.callbacks.addBridgeOrder({
+        orderUid: orderId,
+        quoteAmounts: bridgeQuoteAmounts,
+        creationTimestamp: Date.now(),
+        recipient: orderParams.recipient,
+      })
+    }
 
     addPendingOrderStep(
       {
@@ -149,7 +162,7 @@ export async function safeBundleApprovalFlow(
       kind,
       receiver: recipientAddressOrName,
       inputAmount,
-      outputAmount,
+      outputAmount: bridgeQuoteAmounts?.bridgeMinReceiveAmount || outputAmount,
       owner: account,
       uiOrderType: UiOrderType.SWAP,
     })

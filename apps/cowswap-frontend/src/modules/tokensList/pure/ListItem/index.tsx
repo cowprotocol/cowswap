@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { getTokenListViewLink, ListState } from '@cowprotocol/tokens'
@@ -9,6 +9,7 @@ import {
   ContextMenuItemText,
 } from '@cowprotocol/ui'
 
+import { Trans, useLingui } from '@lingui/react/macro'
 import { Settings, Trash2 } from 'react-feather'
 
 import { Toggle } from 'legacy/components/Toggle'
@@ -30,6 +31,12 @@ export function ListItem(props: TokenListItemProps): ReactNode {
   const { list, removeList, toggleList, enabled } = props
   const [isActive, setIsActive] = useState(enabled)
   const cowAnalytics = useCowAnalytics()
+  const { t } = useLingui()
+
+  // this is to keep isActive in sync with enabled, we use isActive for immediate UI feedback
+  useEffect(() => {
+    setIsActive(enabled)
+  }, [enabled])
 
   const toggle = (): void => {
     toggleList(list, enabled)
@@ -60,7 +67,7 @@ export function ListItem(props: TokenListItemProps): ReactNode {
               </ContextMenuItemText>
               <ContextMenuExternalLink
                 href={getTokenListViewLink(list.source)}
-                label="View List"
+                label={t`View List`}
                 data-click-event={toCowSwapGtmEvent({
                   category: CowSwapAnalyticsCategory.LIST,
                   action: 'View List',
@@ -77,7 +84,9 @@ export function ListItem(props: TokenListItemProps): ReactNode {
                 })}
               >
                 <Trash2 size={16} />
-                <span>Remove list</span>
+                <span>
+                  <Trans>Remove list</Trans>
+                </span>
               </ContextMenuItemButton>
             </>
           }

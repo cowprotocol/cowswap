@@ -5,6 +5,8 @@ import RefundIcon from '@cowprotocol/assets/cow-swap/icon-refund.svg'
 import SpinnerIcon from '@cowprotocol/assets/cow-swap/spinner.svg'
 import CLOSE_ICON_X from '@cowprotocol/assets/cow-swap/x.svg'
 
+import { MessageDescriptor } from '@lingui/core'
+import { msg } from '@lingui/core/macro'
 import SVG from 'react-inlinesvg'
 import styled from 'styled-components/macro'
 
@@ -31,7 +33,7 @@ const StyledStatusCloseIcon = styled(SVG)`
 const CloseIcon = <StyledStatusCloseIcon src={CLOSE_ICON_X} />
 
 // Base set of icons for status states, used by both swap and bridge
-export const CommonStatusIcons: Record<SwapAndBridgeStatus, ReactNode> = {
+export const commonStatusIcons: Record<SwapAndBridgeStatus, ReactNode> = {
   [SwapAndBridgeStatus.DONE]: <StyledStatusCheckmarkIcon src={CheckmarkIcon} />,
   [SwapAndBridgeStatus.PENDING]: <StyledSpinnerIcon src={SpinnerIcon} />,
   [SwapAndBridgeStatus.FAILED]: CloseIcon,
@@ -40,32 +42,32 @@ export const CommonStatusIcons: Record<SwapAndBridgeStatus, ReactNode> = {
 }
 
 // Swap has custom icons for different states
-export const SwapStatusIcons: Record<SwapAndBridgeStatus, ReactNode> = {
-  ...CommonStatusIcons,
+export const swapStatusIcons: Record<SwapAndBridgeStatus, ReactNode> = {
+  ...commonStatusIcons,
   [SwapAndBridgeStatus.FAILED]: <SVG src={RefundIcon} />,
   [SwapAndBridgeStatus.REFUND_COMPLETE]: <StyledRefundCompleteIcon src={RefundIcon} />,
 }
 
 // Bridge uses the common icons without modification
-export const BridgeStatusIcons = CommonStatusIcons
+export const bridgeStatusIcons = commonStatusIcons
 
 // Title text used for different swap states
-export const SwapStatusTitlePrefixes: Record<SwapAndBridgeStatus, string> = {
-  [SwapAndBridgeStatus.DONE]: 'Swapped on',
-  [SwapAndBridgeStatus.PENDING]: 'Swapping on',
-  [SwapAndBridgeStatus.FAILED]: 'Swap failed',
-  [SwapAndBridgeStatus.REFUND_COMPLETE]: 'Swap refunded',
-  [SwapAndBridgeStatus.DEFAULT]: 'Swap on',
+export const swapStatusTitlePrefixes: Record<SwapAndBridgeStatus, MessageDescriptor> = {
+  [SwapAndBridgeStatus.DONE]: msg`Swapped on`,
+  [SwapAndBridgeStatus.PENDING]: msg`Swapping on`,
+  [SwapAndBridgeStatus.FAILED]: msg`Swap failed`,
+  [SwapAndBridgeStatus.REFUND_COMPLETE]: msg`Swap refunded`,
+  [SwapAndBridgeStatus.DEFAULT]: msg`Swap on`,
 }
 
 // Reusable text for different states
-export const bridgeFailedTitle = 'Bridge failed on'
+export const bridgeFailedTitle: MessageDescriptor = msg`Bridge failed on`
 
 // Title text used for different bridge states
-export const BridgeStatusTitlePrefixes: Record<SwapAndBridgeStatus, string> = {
-  [SwapAndBridgeStatus.DONE]: 'Bridged via',
-  [SwapAndBridgeStatus.PENDING]: 'Bridging via',
+export const bridgeStatusTitlePrefixes: Record<SwapAndBridgeStatus, MessageDescriptor> = {
+  [SwapAndBridgeStatus.DONE]: msg`Bridged via`,
+  [SwapAndBridgeStatus.PENDING]: msg`Bridging via`,
   [SwapAndBridgeStatus.FAILED]: bridgeFailedTitle,
   [SwapAndBridgeStatus.REFUND_COMPLETE]: bridgeFailedTitle,
-  [SwapAndBridgeStatus.DEFAULT]: 'Bridge via',
+  [SwapAndBridgeStatus.DEFAULT]: msg`Bridge via`,
 }

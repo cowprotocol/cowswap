@@ -11,7 +11,6 @@ export type CancellationType = 'offChain' | 'onChain'
 export type CancellationModalContext = {
   chainId: number | null
   orderId: string | null
-  summary: string | undefined | null
   error: string | null
   txCost: BigNumber | null
   nativeCurrency: TokenWithLogo
@@ -24,7 +23,6 @@ export type CancellationModalContext = {
 const defaultCancellationModalContext: CancellationModalContext = {
   chainId: null,
   orderId: null,
-  summary: null,
   error: null,
   txCost: null,
   nativeCurrency: MAINNET_NATIVE_CURRENCY,
@@ -44,5 +42,5 @@ export const updateCancellationModalContextAtom = atom(
 
       return { ...prevState, ...nextState }
     })
-  }
+  },
 )

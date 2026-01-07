@@ -1,24 +1,19 @@
-import { ReactNode, useMemo } from 'react'
+import { ReactNode, useCallback, useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { doesTokenMatchSymbolOrAddress } from '@cowprotocol/common-utils'
-import { TokenSearchResponse } from '@cowprotocol/tokens'
 import { Loader } from '@cowprotocol/ui'
 
+import { Trans } from '@lingui/react/macro'
+import { VirtualItem } from '@tanstack/react-virtual'
+
+import { VirtualList } from 'common/pure/VirtualList'
+
+import { TokenSearchRowRenderer } from './TokenSearchRowRenderer'
+import { TokenSearchContentProps, TokenSearchRow } from './types'
+import { useSearchRows } from './useSearchRows'
+
 import * as styledEl from '../../containers/TokenSearchResults/styled'
-import { SelectTokenContext } from '../../types'
-import { ImportTokenItem } from '../ImportTokenItem'
-import { TokenListItemContainer } from '../TokenListItemContainer'
-import { TokenSourceTitle } from '../TokenSourceTitle'
-
-const SEARCH_RESULTS_LIMIT = 100
-
-interface TokenSearchContentProps {
-  searchInput: string
-  searchResults: TokenSearchResponse
-  selectTokenContext: SelectTokenContext
-  importToken: (tokenToImport: TokenWithLogo) => void
-}
 
 export function TokenSearchContent({
   searchInput,
@@ -30,10 +25,10 @@ export function TokenSearchContent({
 
   const searchCount = [
     activeListsResult.length,
-    inactiveListsResult.length,
-    blockchainResult.length,
-    externalApiResult.length,
-  ].reduce<number>((acc, cur) => acc + (cur ?? 0), 0)
+    inactiveListsResult?.length ?? 0,
+    blockchainResult?.length ?? 0,
+    externalApiResult?.length ?? 0,
+  ].reduce<number>((acc, cur) => acc + cur, 0)
 
   const isTokenNotFound = isLoading ? false : searchCount === 0
 
@@ -43,8 +38,6 @@ export function TokenSearchContent({
 
     for (const t of activeListsResult) {
       if (doesTokenMatchSymbolOrAddress(t, searchInput)) {
-        // There should ever be only 1 token with a given address
-        // There can be multiple with the same symbol
         matched.push(t)
       } else {
         remaining.push(t)
@@ -54,6 +47,26 @@ export function TokenSearchContent({
     return [matched, remaining]
   }, [activeListsResult, searchInput])
 
+  const rows = useSearchRows({
+    isLoading,
+    matchedTokens,
+    activeList,
+    blockchainResult,
+    inactiveListsResult,
+    externalApiResult,
+  })
+
+  const getItemView = useCallback(
+    (items: TokenSearchRow[], virtualItem: VirtualItem) => (
+      <TokenSearchRowRenderer
+        row={items[virtualItem.index]}
+        selectTokenContext={selectTokenContext}
+        importToken={importToken}
+      />
+    ),
+    [importToken, selectTokenContext],
+  )
+
   if (isLoading)
     return (
       <styledEl.LoaderWrapper>
@@ -61,51 +74,12 @@ export function TokenSearchContent({
       </styledEl.LoaderWrapper>
     )
 
-  if (isTokenNotFound) return <styledEl.TokenNotFound>No tokens found</styledEl.TokenNotFound>
+  if (isTokenNotFound)
+    return (
+      <styledEl.TokenNotFound>
+        <Trans>No tokens found</Trans>
+      </styledEl.TokenNotFound>
+    )
 
-  return (
-    <>
-      {/*Matched tokens first, followed by tokens from active lists*/}
-      {matchedTokens.concat(activeList).map((token) => {
-        return <TokenListItemContainer key={token.address} token={token} context={selectTokenContext} />
-      })}
-
-      {/*Tokens from blockchain*/}
-      {blockchainResult?.length ? (
-        <styledEl.ImportTokenWrapper id="currency-import">
-          {blockchainResult.slice(0, SEARCH_RESULTS_LIMIT).map((token) => {
-            return <ImportTokenItem key={token.address} token={token} importToken={importToken} />
-          })}
-        </styledEl.ImportTokenWrapper>
-      ) : null}
-
-      {/*Tokens from inactive lists*/}
-      {inactiveListsResult?.length ? (
-        <div>
-          <TokenSourceTitle tooltip="Tokens from inactive lists. Import specific tokens below or click Manage to activate more lists.">
-            Expanded results from inactive Token Lists
-          </TokenSourceTitle>
-          <div>
-            {inactiveListsResult.slice(0, SEARCH_RESULTS_LIMIT).map((token) => {
-              return <ImportTokenItem key={token.address} token={token} importToken={importToken} shadowed />
-            })}
-          </div>
-        </div>
-      ) : null}
-
-      {/*Tokens from external sources*/}
-      {externalApiResult?.length ? (
-        <div>
-          <TokenSourceTitle tooltip="Tokens from external sources.">
-            Additional Results from External Sources
-          </TokenSourceTitle>
-          <div>
-            {externalApiResult.map((token) => {
-              return <ImportTokenItem key={token.address} token={token} importToken={importToken} shadowed />
-            })}
-          </div>
-        </div>
-      ) : null}
-    </>
-  )
+  return <VirtualList id="token-search-results" items={rows} getItemView={getItemView} scrollResetKey={searchInput} />
 }

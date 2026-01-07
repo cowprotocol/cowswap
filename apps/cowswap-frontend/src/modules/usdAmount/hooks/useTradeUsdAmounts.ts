@@ -1,12 +1,10 @@
 import { useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { isFractionFalsy } from '@cowprotocol/common-utils'
+import { getCurrencyAddress, getIsWrapOrUnwrap, isFractionFalsy } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { Nullish } from 'types'
-
-import { useIsWrapOrUnwrap } from 'modules/trade/hooks/useIsWrapOrUnwrap'
 
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
 
@@ -30,9 +28,17 @@ export function useTradeUsdAmounts(
   outputAmount: Nullish<CurrencyAmount<Currency>>,
   inputCurrency?: Nullish<TokenWithLogo>,
   outputCurrency?: Nullish<TokenWithLogo>,
-  dontWaitBothAmounts?: boolean
+  dontWaitBothAmounts?: boolean,
 ): TradeUSDAmounts {
-  const isWrapOrUnwrap = useIsWrapOrUnwrap()
+  const isWrapOrUnwrap = Boolean(
+    inputAmount &&
+      outputAmount &&
+      getIsWrapOrUnwrap(
+        inputAmount.currency.chainId,
+        getCurrencyAddress(inputAmount.currency),
+        getCurrencyAddress(outputAmount.currency),
+      ),
+  )
   const areAmountsReady = !isFractionFalsy(inputAmount) && !isFractionFalsy(outputAmount)
   const isTradeReady = !isWrapOrUnwrap && (dontWaitBothAmounts || areAmountsReady)
 
@@ -52,6 +58,6 @@ export function useTradeUsdAmounts(
 
   return useMemo(
     () => ({ inputAmount: usdInputAmount, outputAmount: usdOutputAmount }),
-    [usdInputAmount, usdOutputAmount]
+    [usdInputAmount, usdOutputAmount],
   )
 }

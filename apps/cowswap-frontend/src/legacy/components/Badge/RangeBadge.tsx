@@ -1,11 +1,12 @@
-
 import { HoverTooltip } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 import { AlertCircle } from 'react-feather'
 import styled from 'styled-components/macro'
 
-import Badge, { BadgeVariant } from 'legacy/components/Badge'
+import { BadgeVariant } from './constants'
+
+import Badge from './index'
 
 const BadgeWrapper = styled.div`
   font-size: 14px;
@@ -28,7 +29,7 @@ const ActiveDot = styled.span`
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default function RangeBadge({
   removed,
   inRange,
@@ -49,7 +50,8 @@ export default function RangeBadge({
           </Badge>
         </HoverTooltip>
       ) : inRange ? (
-        <HoverTooltip wrapInContainer 
+        <HoverTooltip
+          wrapInContainer
           content={
             <Trans>
               The price of this pool is within your selected range. Your position is currently earning fees.
@@ -64,7 +66,8 @@ export default function RangeBadge({
           </Badge>
         </HoverTooltip>
       ) : (
-        <HoverTooltip wrapInContainer 
+        <HoverTooltip
+          wrapInContainer
           content={
             <Trans>
               The price of this pool is outside of your selected range. Your position is not currently earning fees.

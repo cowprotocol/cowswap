@@ -4,9 +4,10 @@ import { useConnectionType, useWalletDetails, useWalletInfo } from '@cowprotocol
 
 import { useToggleWalletModal } from 'legacy/state/application/hooks'
 
+import { TradeOrdersPermitUpdater } from 'modules/ordersTable'
+
 import { usePendingActivitiesCount } from 'common/hooks/usePendingActivitiesCount'
 
-import { PendingOrdersPermitUpdater } from './PendingOrdersPermitUpdater/PendingOrdersPermitUpdater'
 
 import { useShowUnfillableOrderAlert } from '../../hooks/useShowUnfillableOrderAlert'
 import { Web3StatusInner } from '../../pure/Web3StatusInner'
@@ -30,7 +31,7 @@ export function Web3Status({ className, onClick }: Web3StatusProps): ReactNode {
 
   return (
     <Wrapper className={className} onClick={onClick}>
-      {account && <PendingOrdersPermitUpdater />}
+      {account && <TradeOrdersPermitUpdater />}
       <Web3StatusInner
         showUnfillableOrdersAlert={showUnfillableOrdersAlert}
         pendingCount={pendingCount}

@@ -108,7 +108,7 @@ export function AppContainer({ children }: AppContainerProps): ReactNode {
 
           <OrdersPanel />
 
-          <AppMenu>{networkAndAccountControls}</AppMenu>
+          <AppMenu customTheme={customTheme}>{networkAndAccountControls}</AppMenu>
 
           {isYieldEnabled && <CoWAmmBanner />}
 

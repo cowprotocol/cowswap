@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-imports */ // TODO: Don't use 'modules' import
 import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 
@@ -7,7 +8,7 @@ import { Command, UiOrderType } from '@cowprotocol/types'
 import { GnosisSafeInfo, useGnosisSafeInfo, useWalletInfo } from '@cowprotocol/wallet'
 
 import { isOrderInPendingTooLong, triggerAppziSurvey } from 'appzi'
-import { useBridgeOrdersSerializedMap } from 'entities/bridgeOrders'
+import { useGetSerializedBridgeOrder } from 'entities/bridgeOrders'
 import { useAddOrderToSurplusQueue } from 'entities/surplusModal'
 import { useDispatch } from 'react-redux'
 
@@ -165,6 +166,7 @@ interface UpdateOrdersParams {
   chainId: ChainId
   account: string
   isSafeWallet: boolean
+  getSerializedBridgeOrder: ReturnType<typeof useGetSerializedBridgeOrder>
   orders: Order[]
   // Actions
   addOrUpdateOrders: AddOrUpdateOrdersCallback
@@ -185,7 +187,9 @@ interface UpdateOrdersParams {
 interface HandlePresignedParams {
   presigned: EnrichedOrder[]
   orders: Order[]
+  getSerializedBridgeOrder: ReturnType<typeof useGetSerializedBridgeOrder>
   chainId: ChainId
+  account: string
   isSafeWallet: boolean
   presignOrders: PresignOrdersCallback
 }
@@ -193,7 +197,9 @@ interface HandlePresignedParams {
 function handlePresignedOrders({
   presigned,
   orders,
+  getSerializedBridgeOrder,
   chainId,
+  account,
   isSafeWallet,
   presignOrders,
 }: HandlePresignedParams): void {
@@ -223,7 +229,9 @@ function handlePresignedOrders({
   })
 
   newlyPreSignedOrders.forEach((order) => {
-    emitPresignedOrderEvent({ chainId, order })
+    const bridgeOrder = getSerializedBridgeOrder(chainId, order.uid, account)
+
+    emitPresignedOrderEvent({ chainId, order, bridgeOrder })
   })
 }
 
@@ -233,6 +241,7 @@ async function _updateOrders({
   account,
   chainId,
   orders,
+  getSerializedBridgeOrder,
   isSafeWallet,
   // Actions
   addOrUpdateOrders,
@@ -280,7 +289,7 @@ async function _updateOrders({
     { fulfilled: [], expired: [], cancelled: [], unknown: [], presigned: [], pending: [], presignaturePending: [] },
   )
 
-  handlePresignedOrders({ presigned, orders, chainId, isSafeWallet, presignOrders })
+  handlePresignedOrders({ presigned, orders, getSerializedBridgeOrder, chainId, account, isSafeWallet, presignOrders })
 
   if (expired.length > 0) {
     expireOrdersBatch({
@@ -449,7 +458,13 @@ export function PendingOrdersUpdater(): null {
   const updatePresignGnosisSafeTx = useUpdatePresignGnosisSafeTx()
   const allTransactions = useAllTransactions()
   const getSafeTxInfo = useGetSafeTxInfo()
-  const bridgeOrdersMap = useBridgeOrdersSerializedMap()
+  const getSerializedBridgeOrder = useGetSerializedBridgeOrder()
+  const getSerializedBridgeOrderRef = useRef(getSerializedBridgeOrder)
+
+  useEffect(() => {
+    getSerializedBridgeOrderRef.current = getSerializedBridgeOrder
+  }, [getSerializedBridgeOrder])
+
   const markPollComplete = useCallback(
     (targetChainId: ChainId) => {
       if (!chainId || targetChainId !== chainId) {
@@ -472,8 +487,7 @@ export function PendingOrdersUpdater(): null {
       _fulfillOrdersBatch(fulfillOrdersBatchParams)
 
       fulfillOrdersBatchParams.orders.forEach((order) => {
-        const bridgeOrders = bridgeOrdersMap[chainId]?.[account.toLowerCase()]
-        const bridgeOrder = bridgeOrders?.find((i) => i.orderUid === order.uid)
+        const bridgeOrder = getSerializedBridgeOrderRef.current(chainId, order.uid)
 
         emitFulfilledOrderEvent(chainId, order, bridgeOrder)
       })
@@ -481,7 +495,7 @@ export function PendingOrdersUpdater(): null {
       // Remove orders from the cancelling queue (marked by checkbox in the orders table)
       removeOrdersToCancel(fulfillOrdersBatchParams.orders.map(({ uid }) => uid))
     },
-    [chainId, account, _fulfillOrdersBatch, removeOrdersToCancel, bridgeOrdersMap],
+    [chainId, account, _fulfillOrdersBatch, removeOrdersToCancel],
   )
 
   const updateOrders = useCallback(
@@ -500,6 +514,7 @@ export function PendingOrdersUpdater(): null {
           account,
           chainId,
           isSafeWallet,
+          getSerializedBridgeOrder: getSerializedBridgeOrderRef.current,
           orders: pendingRef.current.filter((order) => getUiOrderType(order) === uiOrderType),
           addOrUpdateOrders,
           fulfillOrdersBatch,

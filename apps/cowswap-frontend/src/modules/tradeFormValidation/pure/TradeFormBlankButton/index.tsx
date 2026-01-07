@@ -1,12 +1,11 @@
 import { ReactElement, useEffect, useRef, useState } from 'react'
 
-import { CenteredDots, LongLoadText, UI } from '@cowprotocol/ui'
+import { useMediaQuery } from '@cowprotocol/common-hooks'
+import { CenteredDots, LongLoadText, UI, Media } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 import ms from 'ms.macro'
 import styled from 'styled-components/macro'
-
-import { upToMedium, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 
 const JUST_CLICKED_TIMEOUT = ms`1s`
 const LONG_TEXT_LENGTH = 20
@@ -59,7 +58,7 @@ export interface TradeFormPrimaryButtonProps {
 
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function TradeFormBlankButton({
   onClick,
   children,
@@ -71,7 +70,7 @@ export function TradeFormBlankButton({
   const ref = useRef<HTMLButtonElement>(null)
   const [hasLongText, setHasLongText] = useState(false)
   const [justClicked, setJustClicked] = useState(false)
-  const isUpToMedium = useMediaQuery(upToMedium)
+  const isUpToMedium = useMediaQuery(Media.upToMedium(false))
 
   const showLoader = justClicked || loading
 
@@ -117,10 +116,13 @@ export function TradeFormBlankButton({
     >
       {showLoader ? (
         <>
-          <LongLoadText>Confirm with your wallet </LongLoadText> <CenteredDots smaller />
+          <LongLoadText>
+            <Trans>Confirm with your wallet</Trans>
+          </LongLoadText>{' '}
+          <CenteredDots smaller />
         </>
       ) : (
-        <Trans>{children}</Trans>
+        <>{children}</>
       )}
     </ActionButton>
   )

@@ -6,10 +6,9 @@ import { useOnClickOutside } from '@cowprotocol/common-hooks'
 import { useMediaQuery } from '@cowprotocol/common-hooks'
 import { UI } from '@cowprotocol/ui'
 import { Media } from '@cowprotocol/ui'
-import { useIsRabbyWallet, useIsSmartContractWallet, useWalletInfo, useIsSafeViaWc } from '@cowprotocol/wallet'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
+import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 import { darken, transparentize } from 'color2k'
 import { AlertTriangle, ChevronDown } from 'react-feather'
 import styled from 'styled-components/macro'
@@ -20,6 +19,7 @@ import { useIsDarkMode } from 'legacy/state/user/hooks'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
+import { useShouldHideNetworkSelector } from 'common/hooks/useShouldHideNetworkSelector'
 import { NetworksList } from 'common/pure/NetworksList'
 
 const FlyoutHeader = styled.div`
@@ -155,21 +155,19 @@ const NetworkAlertLabel = styled.div`
 `
 
 export function NetworkSelector(): ReactNode {
-  const provider = useWalletProvider()
   const { chainId } = useWalletInfo()
   const node = useRef<HTMLDivElement>(null)
   const nodeMobile = useRef<HTMLDivElement>(null)
+  const nodeSelector = useRef<HTMLDivElement>(null)
   const isOpen = useModalIsOpen(ApplicationModal.NETWORK_SELECTOR)
   const toggleModal = useToggleModal(ApplicationModal.NETWORK_SELECTOR)
 
-  const isSafeViaWc = useIsSafeViaWc()
-  const isSmartContractWallet = useIsSmartContractWallet()
-  const isRabbyWallet = useIsRabbyWallet()
   const isChainIdUnsupported = useIsProviderNetworkUnsupported()
   const info = getChainInfo(chainId)
   const isUpToMedium = useMediaQuery(Media.upToMedium(false))
+  const shouldHideNetworkSelector = useShouldHideNetworkSelector()
 
-  useOnClickOutside(isUpToMedium ? [nodeMobile] : [node], () => {
+  useOnClickOutside(isUpToMedium ? [nodeMobile, nodeSelector] : [node], () => {
     if (isOpen) {
       toggleModal()
     }
@@ -181,13 +179,13 @@ export function NetworkSelector(): ReactNode {
 
   const availableChains = useAvailableChains()
 
-  if (!provider || (isSmartContractWallet && !isRabbyWallet && !isSafeViaWc)) {
+  if (shouldHideNetworkSelector) {
     return null
   }
 
   return (
     <SelectorWrapper ref={node} onClick={toggleModal}>
-      <SelectorControls isChainIdUnsupported={isChainIdUnsupported}>
+      <SelectorControls ref={nodeSelector} isChainIdUnsupported={isChainIdUnsupported}>
         {!isChainIdUnsupported ? (
           <>
             <SelectorLogo src={logoUrl} />
@@ -198,7 +196,7 @@ export function NetworkSelector(): ReactNode {
           <>
             <NetworkIcon />
             <NetworkAlertLabel>
-              <span>Switch</span> Network
+              <Trans>Switch Network</Trans>
             </NetworkAlertLabel>
             <StyledChevronDown />
           </>

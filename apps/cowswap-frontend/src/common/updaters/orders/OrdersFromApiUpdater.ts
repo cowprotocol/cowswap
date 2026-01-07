@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-imports */ // TODO: Don't use 'modules' import
 import { useSetAtom } from 'jotai'
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 
@@ -15,8 +16,6 @@ import { apiOrdersAtom } from 'modules/orders/state/apiOrdersAtom'
 
 import { useOrdersFromOrderBook } from 'api/cowProtocol/hooks'
 import { getTokenFromMapping } from 'utils/orderUtils/getTokenFromMapping'
-
-import { computeOrderSummary } from './utils'
 
 // TODO: update this for ethflow states
 const statusMapping: Record<OrderTransitionStatus, OrderStatus | undefined> = {
@@ -78,7 +77,6 @@ function _transformOrderBookOrderToStoreOrder(
     outputToken,
     id,
     creationTime,
-    summary: '',
     status,
     receiver: receiver || '',
     fullAppData: order.fullAppData,
@@ -92,10 +90,6 @@ function _transformOrderBookOrderToStoreOrder(
     buyTokenBalance: order.buyTokenBalance,
     sellTokenBalance: order.sellTokenBalance,
   }
-
-  // The function to compute the summary needs the Order instance to exist already
-  // That's why it's not used before and an empty string is set instead
-  storeOrder.summary = computeOrderSummary({ orderFromStore: storeOrder, orderFromApi: order }) || ''
 
   // EthFlow adjustments
   // It can happen that EthFlow cancellation is identified in the app before the API is aware

@@ -1,10 +1,13 @@
 import { SWR_NO_REFRESH_OPTIONS, TokenWithLogo } from '@cowprotocol/common-const'
 import { useIsBridgingEnabled } from '@cowprotocol/common-hooks'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { BuyTokensParams } from '@cowprotocol/sdk-bridging'
+import { useTokensByAddressMapForChain } from '@cowprotocol/tokens'
 
 import useSWR, { SWRResponse } from 'swr'
+import { bridgingSdk } from 'tradingSdk/bridgingSdk'
 
-import { useBridgeProviders } from './useBridgeProviders'
+import { useBridgeProvidersIds } from './useBridgeProvidersIds'
 
 export type BridgeSupportedToken = { tokens: TokenWithLogo[]; isRouteAvailable: boolean }
 
@@ -12,9 +15,12 @@ export function useBridgeSupportedTokens(
   params: BuyTokensParams | undefined,
 ): SWRResponse<BridgeSupportedToken | null> {
   const isBridgingEnabled = useIsBridgingEnabled()
+  const providerIds = useBridgeProvidersIds()
+  const key = providerIds.join('|')
 
-  const bridgeProviders = useBridgeProviders()
-  const providerIds = bridgeProviders.map((i) => i.info.dappId).join('|')
+  // Get token map from token lists for the destination chain to fallback for missing logos
+  const tokensByAddress = useTokensByAddressMapForChain(params?.buyChainId as SupportedChainId | undefined)
+  const tokenListSize = Object.keys(tokensByAddress).length
 
   return useSWR(
     isBridgingEnabled
@@ -23,52 +29,45 @@ export function useBridgeSupportedTokens(
           params?.sellChainId,
           params?.buyChainId,
           params?.sellTokenAddress,
-          providerIds,
+          key,
+          tokenListSize,
           'useBridgeSupportedTokens',
         ]
       : null,
     async ([params]) => {
       if (typeof params === 'undefined') return null
 
-      const results = await Promise.allSettled(
-        bridgeProviders.map((provider) => {
-          return provider.getBuyTokens(params)
-        }),
-      )
-
-      const state = results.reduce<{ tokens: Record<string, TokenWithLogo>; isRouteAvailable: boolean }>(
-        (acc, val) => {
-          if (val.status === 'fulfilled') {
-            const { tokens, isRouteAvailable } = val.value
-
-            if (isRouteAvailable) {
-              tokens.forEach((token) => {
-                const address = token.address.toLowerCase()
-
-                if (!acc.tokens[address]) {
-                  acc.tokens[address] = TokenWithLogo.fromToken(
-                    {
-                      ...token,
-                      name: token.name || '',
-                      symbol: token.symbol || '',
-                    },
-                    token.logoUrl,
-                  )
-                }
-              })
-
-              acc.isRouteAvailable = isBridgingEnabled ? isRouteAvailable : true
-            }
+      return bridgingSdk.getBuyTokens(params).then((result) => {
+        const tokens = result.tokens.reduce<TokenWithLogo[]>((acc, token) => {
+          if (!token || token.chainId === undefined || !token.address) {
+            console.warn('[bridgeTokens] Ignoring malformed token', token)
+            return acc
           }
 
+          // Fallback to token list logo if bridge doesn't provide one
+          const listToken = tokensByAddress[token.address.toLowerCase()]
+          const logoUrl = listToken?.logoURI || token.logoUrl
+
+          acc.push(
+            TokenWithLogo.fromToken(
+              {
+                ...token,
+                name: token.name || '',
+                symbol: token.symbol || '',
+              },
+              logoUrl,
+            ),
+          )
+
           return acc
-        },
-        { isRouteAvailable: false, tokens: {} },
-      )
-      return {
-        isRouteAvailable: state.isRouteAvailable,
-        tokens: Object.values(state.tokens),
-      }
+        }, [])
+        const isRouteAvailable = tokens.length > 0 ? result.isRouteAvailable : false
+
+        return {
+          isRouteAvailable,
+          tokens,
+        }
+      })
     },
     SWR_NO_REFRESH_OPTIONS,
   )

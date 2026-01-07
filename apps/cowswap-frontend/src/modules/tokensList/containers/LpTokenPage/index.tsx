@@ -5,6 +5,8 @@ import { ExplorerDataType, getExplorerLink, shortenAddress } from '@cowprotocol/
 import { TokenLogo, useTokensByAddressMap } from '@cowprotocol/tokens'
 import { ExternalLink, ModalHeader, TokenSymbol } from '@cowprotocol/ui'
 
+import { Trans } from '@lingui/react/macro'
+
 import { usePoolsInfo } from 'modules/yield/shared'
 
 import {
@@ -32,6 +34,7 @@ interface LpTokenPageProps {
   onSelectToken(token: TokenWithLogo): void
 }
 
+// eslint-disable-next-line max-lines-per-function
 export function LpTokenPage({ poolAddress, onBack, onDismiss, onSelectToken }: LpTokenPageProps): ReactNode {
   const poolsInfo = usePoolsInfo()
   const tokensByAddress = useTokensByAddressMap()
@@ -62,44 +65,56 @@ export function LpTokenPage({ poolAddress, onBack, onDismiss, onSelectToken }: L
                 onSelectToken(token)
               }}
             >
-              Select
+              <Trans>Select</Trans>
             </SelectButton>
           </div>
         </TokenWrapper>
       )}
       <InfoTable>
         <InfoRow>
-          <div>Symbol</div>
+          <div>
+            <Trans>Symbol</Trans>
+          </div>
           <div>
             <TokenSymbol token={token} />
           </div>
         </InfoRow>
         <InfoRow>
-          <div>Fee tier</div>
+          <div>
+            <Trans>Fee tier</Trans>
+          </div>
           <div>
             <span>{renderValue(info?.feeTier, (t) => `${t}%`, '-')}</span>
           </div>
         </InfoRow>
         <InfoRow>
-          <div>Volume (24h)</div>
+          <div>
+            <Trans>Volume (24h)</Trans>
+          </div>
           <div>
             <span>{renderValue(info?.volume24h, (t) => `$${t}`, '-')}</span>
           </div>
         </InfoRow>
         <InfoRow>
-          <div>APR</div>
+          <div>
+            <Trans>APR</Trans>
+          </div>
           <div>
             <span>{renderValue(info?.apy, (t) => `${t}%`, '-')}</span>
           </div>
         </InfoRow>
         <InfoRow>
-          <div>TVL</div>
+          <div>
+            <Trans>TVL</Trans>
+          </div>
           <div>
             <span>{renderValue(info?.tvl, (t) => `$${t}`, '-')}</span>
           </div>
         </InfoRow>
         <InfoRow>
-          <div>Pool address</div>
+          <div>
+            <Trans>Pool address</Trans>
+          </div>
           <div>
             {token && (
               <ExternalLink href={getExplorerLink(token.chainId, token.address, ExplorerDataType.ADDRESS)}>

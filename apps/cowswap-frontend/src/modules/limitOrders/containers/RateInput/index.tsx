@@ -9,6 +9,8 @@ import { TokenLogo } from '@cowprotocol/tokens'
 import { FiatAmount, HelpTooltip, HoverTooltip, TokenSymbol } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 
 import { useLimitOrdersDerivedState } from 'modules/limitOrders/hooks/useLimitOrdersDerivedState'
@@ -228,7 +230,7 @@ export function RateInput() {
             rateImpact={rateImpact}
             toggleIcon={
               <HoverTooltip
-                content="When locked, the limit price stays fixed when changing the amounts. When unlocked, the limit price will update based on the amount changes."
+                content={t`When locked, the limit price stays fixed when changing the amounts. When unlocked, the limit price will update based on the amount changes.`}
                 wrapInContainer
                 placement="top-start"
               >
@@ -241,7 +243,9 @@ export function RateInput() {
           />
           {areBothCurrencies && (isLoadingMarketRate || marketRateDisplay) && (
             <styledEl.MarketRateWrapper>
-              <i>Market:</i>{' '}
+              <i>
+                <Trans>Market:</Trans>
+              </i>{' '}
               <styledEl.MarketPriceButton disabled={isDisabledMPrice} onClick={handleSetMarketPrice}>
                 {isLoadingMarketRate ? <styledEl.RateLoader size="14px" /> : marketRateDisplay}
               </styledEl.MarketPriceButton>
@@ -293,8 +297,10 @@ export function RateInput() {
           )}
         </b>
         <span>
-          {partialFillsEnabled ? 'Est. partial fill price' : 'Estimated fill price'}
-          <HelpTooltip text="Network costs (incl. gas) are covered by filling your order when the market price is better than your limit price." />
+          {partialFillsEnabled ? <Trans>Est. partial fill price</Trans> : <Trans>Estimated fill price</Trans>}
+          <HelpTooltip
+            text={t`Network costs (incl. gas) are covered by filling your order when the market price is better than your limit price.`}
+          />
         </span>
       </styledEl.EstimatedRate>
     </>

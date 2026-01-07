@@ -6,9 +6,12 @@ import Finish from '@cowprotocol/assets/cow-swap/finish.svg'
 import Refund from '@cowprotocol/assets/cow-swap/refund.svg'
 import { UI } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
-import { EthFlowStepperProps, SmartOrderStatus } from '../index'
+import { SmartOrderStatus } from '../constants'
+import { EthFlowStepperProps } from '../index'
 import { ExplorerLinkStyled, Step, StepProps } from '../Step'
 
 const RefundMessage = styled.span`
@@ -54,49 +57,49 @@ export function Step3({
   } = useMemo<StepProps>(() => {
     if (orderIsNotCreated) {
       return {
-        label: `Receive ${tokenLabel}`,
+        label: t`Receive ${tokenLabel}`,
         state: 'not-started',
         icon: Exclamation,
       }
     }
     if (expiredBeforeCreate) {
       return {
-        label: `Receive ${tokenLabel}`,
+        label: t`Receive ${tokenLabel}`,
         state: 'pending',
         icon: Finish,
       }
     }
     if (isIndexing) {
       return {
-        label: `Receive ${tokenLabel}`,
+        label: t`Receive ${tokenLabel}`,
         state: 'not-started',
         icon: Finish,
       }
     }
     if (isFilled) {
       return {
-        label: `Received ${tokenLabel}`,
+        label: t`Received ${tokenLabel}`,
         state: 'success',
         icon: Checkmark,
       }
     }
     if (isRefunded) {
       return {
-        label: `${nativeTokenSymbol} Refunded`,
+        label: t`${nativeTokenSymbol} Refunded`,
         state: 'success',
         icon: Refund,
       }
     }
     if (isIndexed) {
       return {
-        label: `Receive ${tokenLabel}`,
+        label: t`Receive ${tokenLabel}`,
         state: 'pending',
         icon: Finish,
       }
     }
 
     return {
-      label: `Receive ${tokenLabel}`,
+      label: t`Receive ${tokenLabel}`,
       state: 'not-started',
       icon: Finish,
     }
@@ -120,7 +123,7 @@ export function Step3({
     refundLink = (
       <ExplorerLinkStyled
         type="transaction"
-        label={isCanceling ? `Initiating ${nativeTokenSymbol} Refund...` : 'View transaction'}
+        label={isCanceling ? t`Initiating ${nativeTokenSymbol} Refund...` : t`View transaction`}
         id={cancellationHash}
       />
     )
@@ -128,7 +131,7 @@ export function Step3({
     refundLink = (
       <ExplorerLinkStyled
         type="transaction"
-        label={isRefunding ? `Receiving ${nativeTokenSymbol} Refund...` : 'View transaction'}
+        label={isRefunding ? t`Receiving ${nativeTokenSymbol} Refund...` : t`View transaction`}
         id={refundHash}
       />
     )
@@ -139,14 +142,24 @@ export function Step3({
     <Step state={stepState} icon={icon} label={label} crossOut={crossOut}>
       <>
         {!orderIsNotCreated && isExpired && !(isSuccess || isOrderRejected) && (
-          <ExpiredMessage>Order has expired</ExpiredMessage>
+          <ExpiredMessage>
+            <Trans>Order has expired</Trans>
+          </ExpiredMessage>
         )}
         {!orderIsNotCreated &&
           !isRefunded &&
           wontReceiveToken &&
           !(refundHash || cancellationHash) &&
-          cancellationFailed === undefined && <RefundMessage>Initiating {nativeTokenSymbol} Refund...</RefundMessage>}
-        {orderIsNotCreated && <RefundMessage>{nativeTokenSymbol} Refunded</RefundMessage>}
+          cancellationFailed === undefined && (
+            <RefundMessage>
+              <Trans>Initiating {nativeTokenSymbol} Refund...</Trans>
+            </RefundMessage>
+          )}
+        {orderIsNotCreated && (
+          <RefundMessage>
+            <Trans>{nativeTokenSymbol} Refunded</Trans>
+          </RefundMessage>
+        )}
         {refundLink}
       </>
     </Step>

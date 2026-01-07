@@ -1,6 +1,5 @@
 import { useMemo } from 'react'
 
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { getIsNativeToken } from '@cowprotocol/common-utils'
 import { PermitType } from '@cowprotocol/permit-utils'
 import { Nullish } from '@cowprotocol/types'
@@ -15,6 +14,7 @@ import { useGetAmountToSignApprove } from './useGetAmountToSignApprove'
 import { ApprovalState } from '../types'
 
 export enum ApproveRequiredReason {
+  Unsupported, // f.e. eth flow without bundling or for limit orders
   NotRequired,
   Required,
   Eip2612PermitRequired,
@@ -33,13 +33,16 @@ export function useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForC
   currentAllowance: Nullish<bigint>
 } {
   const amountToApprove = useGetAmountToSignApprove()
-  const { isPartialApproveEnabled } = useFeatureFlags()
   const { state: approvalState, currentAllowance } = useApproveState(amountToApprove)
   const { inputCurrency, tradeType } = useDerivedTradeState() || {}
   const { type } = usePermitInfo(inputCurrency, tradeType) || {}
 
   const reason = (() => {
-    if (!checkIsAmountAndCurrencyRequireApprove(amountToApprove)) {
+    if (!isApproveSupportedByFlowOrWallet(inputCurrency, tradeType, !!isBundlingSupportedOrEnabledForContext)) {
+      return ApproveRequiredReason.Unsupported
+    }
+
+    if (!isErc20TokenAmountApproveRequired(amountToApprove)) {
       return ApproveRequiredReason.NotRequired
     }
 
@@ -53,7 +56,7 @@ export function useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForC
 
     if (isBundlingSupportedOrEnabledForContext) return ApproveRequiredReason.BundleApproveRequired
 
-    if (!isNewApproveFlowEnabled(tradeType, isPartialApproveEnabled)) {
+    if (!isNewApproveFlowEnabled(tradeType)) {
       return ApproveRequiredReason.NotRequired
     }
 
@@ -63,11 +66,20 @@ export function useIsApprovalOrPermitRequired({ isBundlingSupportedOrEnabledForC
   return useMemo(() => ({ reason, currentAllowance }), [reason, currentAllowance])
 }
 
-function checkIsAmountAndCurrencyRequireApprove(amountToApprove: CurrencyAmount<Currency> | null): boolean {
+function isApproveSupportedByFlowOrWallet(
+  inputCurrency: Nullish<Currency>,
+  tradeType: Nullish<TradeType>,
+  isBundlingSupportedOrEnabledForContext: boolean,
+): boolean {
+  const isNativeFlow = !!inputCurrency && getIsNativeToken(inputCurrency)
+  if (!isNativeFlow) return true
+
+  const isSwap = tradeType === TradeType.SWAP
+  return isSwap ? isBundlingSupportedOrEnabledForContext : false
+}
+
+function isErc20TokenAmountApproveRequired(amountToApprove: CurrencyAmount<Currency> | null): boolean {
   if (!amountToApprove) return false
-
-  if (getIsNativeToken(amountToApprove.currency)) return false
-
   return !amountToApprove.equalTo('0')
 }
 
@@ -75,8 +87,8 @@ function isApprovalRequired(approvalState: ApprovalState): boolean {
   return approvalState === ApprovalState.NOT_APPROVED || approvalState === ApprovalState.PENDING
 }
 
-function isNewApproveFlowEnabled(tradeType?: Nullish<TradeType>, isPartialApproveEnabled?: boolean): boolean {
-  return tradeType === TradeType.SWAP && isPartialApproveEnabled === true
+function isNewApproveFlowEnabled(tradeType?: Nullish<TradeType>): boolean {
+  return tradeType === TradeType.SWAP
 }
 
 function getPermitRequirements(type?: PermitType): ApproveRequiredReason {

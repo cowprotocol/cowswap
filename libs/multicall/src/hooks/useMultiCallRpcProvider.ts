@@ -3,32 +3,34 @@ import { useMemo } from 'react'
 
 import { getRpcProvider } from '@cowprotocol/common-const'
 import { Nullish } from '@cowprotocol/types'
-import { useWalletProvider } from '@cowprotocol/wallet-provider'
+import { useIsBraveWallet } from '@cowprotocol/wallet'
+import { useWalletChainId, useWalletProvider } from '@cowprotocol/wallet-provider'
 import { JsonRpcProvider } from '@ethersproject/providers'
-
-import { useAsyncMemo } from 'use-async-memo'
 
 import { multiCallContextAtom } from '../state/multiCallContextAtom'
 
 export function useMultiCallRpcProvider(): Nullish<JsonRpcProvider> {
   const provider = useWalletProvider()
+  const walletChainId = useWalletChainId()
   const context = useAtomValue(multiCallContextAtom)
+  const isBraveWallet = useIsBraveWallet()
 
   const contextChainId = context?.chainId
 
-  const walletChainId = useAsyncMemo(async () => {
-    if (!provider) return undefined
-
-    return +(await provider.getNetwork()).chainId
-  }, [provider])
-
   return useMemo(() => {
-    // Use RPC node provider instead of wallet provider only when there is a custom chainId in the context
-    // AND the context chainId differs from wallet chainId
+    // We need to use our RPC node provider instead of wallet provider
+    // when we need to make calls on other chains (e.g. balances)
+    // if that is the case contextChainId is going to be defined and different from walletChainId
+    // but just to be sure let's keep this existing comparison
     if (contextChainId && contextChainId !== walletChainId) {
       return getRpcProvider(contextChainId)
     }
 
+    // Brave Wallet has issues with RPC calls, so we use our own RPC provider
+    if (isBraveWallet && walletChainId) {
+      return getRpcProvider(walletChainId)
+    }
+
     return provider
-  }, [contextChainId, walletChainId, provider])
+  }, [contextChainId, walletChainId, provider, isBraveWallet])
 }

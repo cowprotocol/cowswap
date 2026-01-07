@@ -1,6 +1,7 @@
 /// <reference types="vitest" />
 import { CONTRACTS_PKG_VERSION as CONTRACT_VERSION } from '@cowprotocol/sdk-contracts-ts'
 
+import { lingui } from '@lingui/vite-plugin'
 import react from '@vitejs/plugin-react-swc'
 import { defineConfig, searchForWorkspaceRoot } from 'vite'
 import macrosPlugin from 'vite-plugin-babel-macros'
@@ -62,11 +63,16 @@ export default defineConfig(({ mode }) => {
         },
         protocolImports: true,
       }),
-      react({}),
+      react({
+        plugins: [['@lingui/swc-plugin', {}]],
+      }),
       viteTsConfigPaths({
         root: '../../',
       }),
       macrosPlugin(),
+      lingui({
+        cwd: 'apps/cowswap-frontend',
+      }),
       dynamicImport({
         filter(id) {
           if (id.includes('/node_modules/@cowprotocol')) {

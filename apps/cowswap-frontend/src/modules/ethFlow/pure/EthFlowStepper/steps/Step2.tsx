@@ -5,7 +5,10 @@ import Exclamation from '@cowprotocol/assets/cow-swap/exclamation.svg'
 import Plus from '@cowprotocol/assets/cow-swap/plus.svg'
 import X from '@cowprotocol/assets/cow-swap/x.svg'
 
-import { EthFlowStepperProps, SmartOrderStatus } from '../index'
+import { t } from '@lingui/core/macro'
+
+import { SmartOrderStatus } from '../constants'
+import { EthFlowStepperProps } from '../index'
 import { ExplorerLinkStyled, Step, StepProps } from '../Step'
 
 type Step2Config = StepProps & { error?: string }
@@ -33,7 +36,7 @@ export function Step2({ order, cancellation, creation }: EthFlowStepperProps): R
     // Error states
     if (hasCreationError) {
       return {
-        label: 'Order Creation Failed',
+        label: t`Order Creation Failed`,
         error: rejectedReason,
         state: 'error',
         icon: X,
@@ -42,8 +45,8 @@ export function Step2({ order, cancellation, creation }: EthFlowStepperProps): R
 
     if (expiredBeforeCreate && !isFilled) {
       return {
-        label: 'Order Creation Failed',
-        error: 'Expired before creation',
+        label: t`Order Creation Failed`,
+        error: t`Expired before creation`,
         state: 'error',
         icon: X,
       }
@@ -51,7 +54,7 @@ export function Step2({ order, cancellation, creation }: EthFlowStepperProps): R
 
     if (isCreating) {
       return {
-        label: 'Create Order',
+        label: t`Create Order`,
         state: 'not-started',
         icon: Plus,
       }
@@ -59,7 +62,7 @@ export function Step2({ order, cancellation, creation }: EthFlowStepperProps): R
 
     if (isIndexing) {
       return {
-        label: 'Creating Order',
+        label: t`Creating Order`,
         state: 'pending',
         icon: Plus,
       }
@@ -67,14 +70,14 @@ export function Step2({ order, cancellation, creation }: EthFlowStepperProps): R
 
     if (isCancelled && !isFilled) {
       return {
-        label: 'Order Cancelled',
+        label: t`Order Cancelled`,
         state: 'cancelled',
         icon: Exclamation,
       }
     }
 
     return {
-      label: 'Order Created',
+      label: t`Order Created`,
       state: 'success',
       icon: Checkmark,
     }
@@ -82,7 +85,7 @@ export function Step2({ order, cancellation, creation }: EthFlowStepperProps): R
 
   return (
     <Step state={stepState} icon={icon} label={label} errorMessage={error}>
-      {isOrderCreated && <ExplorerLinkStyled type="transaction" label="View details" id={orderId} />}
+      {isOrderCreated && <ExplorerLinkStyled type="transaction" label={t`View details`} id={orderId} />}
     </Step>
   )
 }

@@ -2,21 +2,23 @@ import { Fragment, ReactNode } from 'react'
 
 import { CHAIN_INFO } from '@cowprotocol/common-const'
 import { styled } from '@cowprotocol/common-hooks'
-import { getEtherscanLink, getExplorerLabel, shortenAddress, getExplorerAddressLink } from '@cowprotocol/common-utils'
+import { getEtherscanLink, getExplorerAddressLink, getExplorerLabel, shortenAddress } from '@cowprotocol/common-utils'
 import { Command } from '@cowprotocol/types'
 import { ExternalLink } from '@cowprotocol/ui'
 import {
-  useWalletInfo,
-  useWalletDetails,
-  useIsWalletConnect,
-  getIsHardWareWallet,
-  useDisconnectWallet,
-  useConnectionType,
-  getIsInjectedMobileBrowser,
   ConnectionType,
+  getIsHardWareWallet,
+  getIsInjectedMobileBrowser,
+  useConnectionType,
+  useDisconnectWallet,
+  useIsWalletConnect,
+  useWalletDetails,
+  useWalletInfo,
 } from '@cowprotocol/wallet'
 
-import { Trans } from '@lingui/macro'
+import { i18n } from '@lingui/core'
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 
 import Copy from 'legacy/components/Copy'
 import { groupActivitiesByDay, useMultipleActivityDescriptors } from 'legacy/hooks/useRecentActivity'
@@ -26,7 +28,7 @@ import { updateSelectedWallet } from 'legacy/state/user/reducer'
 import { useInjectedWidgetParams } from 'modules/injectedWidget'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
-import { useUnsupportedNetworksText } from 'common/hooks/useUnsupportedNetworksText'
+import { UnsupportedNetworksText } from 'common/pure/UnsupportedNetworksText'
 
 import { AccountIcon } from './AccountIcon'
 import { ActivitiesList } from './ActivitiesList'
@@ -43,8 +45,8 @@ import {
   WalletActions,
   WalletName,
   WalletNameAddress,
-  WalletSelector,
   WalletSecondaryActions,
+  WalletSelector,
   WalletWrapper,
   Wrapper,
 } from './styled'
@@ -58,7 +60,7 @@ const CowShedInfoStyled = styled(CowShedInfo)`
   margin-top: 10px;
 `
 
-export const DATE_FORMAT_OPTION: Intl.DateTimeFormatOptions = {
+const DATE_FORMAT_OPTION: Intl.DateTimeFormatOptions = {
   dateStyle: 'long',
 }
 
@@ -102,12 +104,10 @@ export function AccountDetails({
   const isWalletConnect = useIsWalletConnect()
   const isInjectedMobileBrowser = getIsInjectedMobileBrowser()
 
-  const unsupportedNetworksText = useUnsupportedNetworksText()
-
   // In case the wallet is connected via WalletConnect and has wallet name set, add the suffix to be clear
   // This to avoid confusion for instance when using Metamask mobile
   // When name is not set, it defaults to WalletConnect already
-  const walletConnectSuffix = isWalletConnect && walletDetails?.walletName ? ' (via WalletConnect)' : ''
+  const walletConnectSuffix = isWalletConnect && walletDetails?.walletName ? ` ` + t`(via WalletConnect)` : ''
 
   const handleDisconnectClick = (): void => {
     disconnectWallet()
@@ -177,7 +177,9 @@ export function AccountDetails({
       </InfoCard>
 
       {isChainIdUnsupported ? (
-        <UnsupportedWalletBox>{unsupportedNetworksText}</UnsupportedWalletBox>
+        <UnsupportedWalletBox>
+          <UnsupportedNetworksText />
+        </UnsupportedWalletBox>
       ) : (
         <>
           <SurplusCard />
@@ -187,26 +189,36 @@ export function AccountDetails({
               <span>
                 {' '}
                 <h5>
-                  Recent Activity <span>{`(${activityTotalCount})`}</span>
+                  <Trans>Recent Activity</Trans> <span>{`(${activityTotalCount})`}</span>
                 </h5>
-                {explorerOrdersLink && <ExternalLink href={explorerOrdersLink}>View all orders ↗</ExternalLink>}
+                {explorerOrdersLink && (
+                  <ExternalLink href={explorerOrdersLink}>
+                    <Trans>View all orders</Trans> ↗
+                  </ExternalLink>
+                )}
               </span>
 
               <div>
                 {activitiesGroupedByDate.map(({ date, activities }) => (
                   <Fragment key={date.getTime()}>
                     {/* TODO: style me! */}
-                    <CreationDateText>{date.toLocaleString(undefined, DATE_FORMAT_OPTION)}</CreationDateText>
+                    <CreationDateText>{date.toLocaleString(i18n.locale, DATE_FORMAT_OPTION)}</CreationDateText>
                     <ActivitiesList activities={activities} />
                   </Fragment>
                 ))}
-                {explorerOrdersLink && <ExternalLink href={explorerOrdersLink}>View all orders ↗</ExternalLink>}
+                {explorerOrdersLink && (
+                  <ExternalLink href={explorerOrdersLink}>
+                    <Trans>View all orders</Trans> ↗
+                  </ExternalLink>
+                )}
               </div>
             </LowerSection>
           ) : (
             <LowerSection>
               <NoActivityMessage>
-                <span>Your activity will appear here...</span>
+                <span>
+                  <Trans>Your activity will appear here...</Trans>
+                </span>
               </NoActivityMessage>
             </LowerSection>
           )}

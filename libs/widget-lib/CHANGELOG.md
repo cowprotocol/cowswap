@@ -1,5 +1,44 @@
 # Changelog
 
+## [0.22.1](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.22.0...widget-lib-v0.22.1) (2025-12-24)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/events bumped from ^2.0.2 to ^2.1.0
+
+## [0.22.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.21.1...widget-lib-v0.22.0) (2025-12-22)
+
+
+### Features
+
+* **widget:** option to disable bridging ([#6730](https://github.com/cowprotocol/cowswap/issues/6730)) ([7fc3949](https://github.com/cowprotocol/cowswap/commit/7fc3949f5d656709e3f812499870313cc3b41b9f))
+
+## [0.21.1](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.21.0...widget-lib-v0.21.1) (2025-12-16)
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/events bumped from ^2.0.1 to ^2.0.2
+
+## [0.21.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.20.0...widget-lib-v0.21.0) (2025-11-24)
+
+
+### Features
+
+* **internationalization:** add internationalization to CoW Swap ([#6198](https://github.com/cowprotocol/cowswap/issues/6198)) ([bec1e54](https://github.com/cowprotocol/cowswap/commit/bec1e54643d9b20a8b6517eae188993e364fed90))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @cowprotocol/events bumped from ^1.6.1 to ^2.0.1
+
 ## [0.20.0](https://github.com/cowprotocol/cowswap/compare/widget-lib-v0.19.2...widget-lib-v0.20.0) (2025-07-10)
 
 

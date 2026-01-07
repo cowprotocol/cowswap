@@ -6,11 +6,12 @@ import {
   isPrefixedAddress,
   parsePrefixedAddress,
 } from '@cowprotocol/common-utils'
+import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { useENS } from '@cowprotocol/ens'
 import { ExternalLink, RowBetween, UI } from '@cowprotocol/ui'
 import { useWalletInfo } from '@cowprotocol/wallet'
 
-import { t, Trans } from '@lingui/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
 import { AutoColumn } from 'legacy/components/Column'
@@ -87,7 +88,7 @@ const Input = styled.input<{ error?: boolean }>`
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
 // TODO: Reduce function complexity by extracting logic
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity
+// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function AddressInputPanel({
   id,
   className = 'recipient-address-input',
@@ -95,6 +96,7 @@ export function AddressInputPanel({
   placeholder,
   value,
   onChange,
+  targetChainId,
 }: {
   id?: string
   className?: string
@@ -102,8 +104,12 @@ export function AddressInputPanel({
   placeholder?: string
   value: string
   onChange: (value: string) => void
+  targetChainId?: SupportedChainId
 }) {
-  const { chainId } = useWalletInfo()
+  const { t } = useLingui()
+  const { chainId: walletChainId } = useWalletInfo()
+  // Use targetChainId if provided (for cross-chain), otherwise fall back to wallet's chain
+  const chainId = targetChainId ?? walletChainId
   const chainInfo = getChainInfo(chainId)
   const addressPrefix = chainInfo?.addressPrefix
   const { address, loading, name } = useENS(value)
@@ -133,12 +139,12 @@ export function AddressInputPanel({
     [onChange, addressPrefix],
   )
 
-  // clear warning if chainId changes and we are now on the right network
+  //clear warning if target chainId changes and we are now on the right network
   useEffect(() => {
     if (chainPrefixWarning && chainPrefixWarning === addressPrefix) {
       setChainPrefixWarning('')
     }
-  }, [chainId, chainPrefixWarning, addressPrefix])
+  }, [chainPrefixWarning, addressPrefix])
 
   const error = Boolean(value.length > 0 && !loading && !address)
 

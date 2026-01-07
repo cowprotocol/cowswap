@@ -1,5 +1,7 @@
 import React, { ReactNode } from 'react'
 
+import { Trans } from '@lingui/react/macro'
+
 import { CowSwapAnalyticsCategory, toCowSwapGtmEvent } from 'common/analytics/types'
 
 import * as styledEl from './styled'
@@ -25,7 +27,7 @@ export function InitialStep({ children, isBridgingTrade }: InitialStepProps) {
         currentStep={0}
         extraContent={
           <Description>
-            On CoW Swap, orders placed at the same time are{' '}
+            <Trans>On CoW Swap, orders placed at the same time are</Trans>{' '}
             <styledEl.Link
               href="https://cow.fi/learn/understanding-batch-auctions"
               target="_blank"
@@ -35,9 +37,9 @@ export function InitialStep({ children, isBridgingTrade }: InitialStepProps) {
                 label: 'Initial',
               })}
             >
-              batched together
+              <Trans>batched together</Trans>
             </styledEl.Link>{' '}
-            to save on costs!
+            <Trans>to save on costs!</Trans>
           </Description>
         }
       />

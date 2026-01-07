@@ -6,9 +6,14 @@ import type { TokenInfo } from './common'
 export interface BridgeQuoteAmounts<Amount = CurrencyAmount<Currency>> {
   swapSellAmount: Amount
   swapBuyAmount: Amount
+  swapExpectedReceive: Amount | null
   swapMinReceiveAmount: Amount // that should be moved on bridge (before sending to user)
   bridgeMinReceiveAmount: Amount // that should be moved to user
   bridgeFee: Amount
+  bridgeFeeAmounts?: {
+    amountInIntermediateCurrency: Amount
+    amountInDestinationCurrency: Amount
+  }
 }
 
 export interface BridgeOrderData<T = BridgeQuoteAmounts> {

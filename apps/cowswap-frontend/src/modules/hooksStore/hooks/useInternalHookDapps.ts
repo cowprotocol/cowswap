@@ -4,6 +4,7 @@ import { useWalletInfo } from '@cowprotocol/wallet'
 
 import { ALL_HOOK_DAPPS } from '../hookRegistry'
 import { HookDapp } from '../types/hooks'
+import { isHookDappIframe } from '../utils'
 
 export function useInternalHookDapps(isPreHook: boolean): HookDapp[] {
   const { chainId } = useWalletInfo()
@@ -14,6 +15,10 @@ export function useInternalHookDapps(isPreHook: boolean): HookDapp[] {
     return ALL_HOOK_DAPPS.filter((dapp) => {
       const position = dapp?.conditions?.position
       const supportedNetworks = dapp?.conditions?.supportedNetworks
+
+      const instance = isHookDappIframe(dapp) ? dapp.url : dapp.component
+
+      if (!instance) return false
 
       if (supportedNetworks && !supportedNetworks.includes(chainId)) return false
 

@@ -6,6 +6,11 @@ import { Command } from '@cowprotocol/types'
 import { BannerOrientation, ExternalLink, Icon, IconType, InlineBanner, StatusColorVariant, UI } from '@cowprotocol/ui'
 import { CurrencyAmount, Fraction, Token } from '@uniswap/sdk-core'
 
+import { MessageDescriptor } from '@lingui/core'
+import { msg, t } from '@lingui/core/macro'
+import { Trans as TransReact } from '@lingui/react'
+import { useLingui } from '@lingui/react/macro'
+import { Trans } from '@lingui/react/macro'
 import { CloseIcon } from 'theme'
 
 import { OrderStatus } from 'legacy/state/orders/actions'
@@ -55,38 +60,42 @@ interface ReceiptProps {
   alternativeOrderModalContext: AlternativeOrderModalContext
 }
 
-const FILLED_COMMON_TOOLTIP = 'How much of the order has been filled.'
+const TOOLTIPS_MSG: Record<string, MessageDescriptor> = {
+  LIMIT_PRICE: msg`You will receive this price or better for your tokens.`,
+  EXECUTION_PRICE: msg`An order's actual execution price will vary based on the market price and network fees and costs.`,
+  EXECUTES_AT: msg`Network costs (incl. gas) are covered by filling your order when the market price is better than your limit price.`,
+  FILLED_TWAP: msg`How much of the order has been filled.`,
+  SURPLUS: msg`The amount of extra tokens you get on top of your limit price.`,
+  NETWORK_COSTS: msg`CoW Protocol covers the fees and costs by executing your order at a slightly better price than your limit price.`,
+  CREATED: msg`Your order was created on this date & time. It will remain open until it expires or is filled.`,
+  RECEIVER: msg`The account address which will/did receive the bought amount.`,
+  EXPIRY: msg`If your order has not been filled by this date & time, it will expire. Don't worry - expirations and order placement are free on CoW Swap!`,
+  TOTAL_FEE: msg`This fee helps pay for maintenance & improvements to the trade experience`,
+}
 
-const tooltips: { [key: string]: string | ReactElement } = {
-  LIMIT_PRICE: 'You will receive this price or better for your tokens.',
-  EXECUTION_PRICE: 'An order’s actual execution price will vary based on the market price and network costs.',
-  EXECUTES_AT:
-    'Network costs (incl. gas) are covered by filling your order when the market price is better than your limit price.',
-  FILLED_TWAP: FILLED_COMMON_TOOLTIP,
+const TOOLTIPS_JSX: Record<string, ReactElement> = {
   FILLED: (
     <span>
-      {FILLED_COMMON_TOOLTIP}
+      <TransReact id={TOOLTIPS_MSG.FILLED_TWAP.id} />
       <br />
-      Market orders are always <i>Fill or kill</i>, while limit orders are by default <i>Partially fillable</i>, but can
-      also be changed to <i>Fill or kill</i> through your order settings.
+      <Trans>
+        Market orders are always <i>Fill or kill</i>, while limit orders are by default <i>Partially fillable</i>, but
+        can also be changed to <i>Fill or kill</i> through your order settings.
+      </Trans>
     </span>
   ),
-  SURPLUS: 'The amount of extra tokens you get on top of your limit price.',
-  NETWORK_COSTS:
-    'CoW Protocol covers the costs by executing your order at a slightly better price than your limit price.',
-  CREATED: 'Your order was created on this date & time. It will remain open until it expires or is filled.',
-  RECEIVER: 'The account address which will/did receive the bought amount.',
-  EXPIRY:
-    "If your order has not been filled by this date & time, it will expire. Don't worry - expirations and order placement are free on CoW Swap!",
-  TOTAL_FEE: 'This fee helps pay for maintenance & improvements to the trade experience',
   ORDER_TYPE: (
     <span>
-      Orders on CoW Swap can either be market orders (which fill at the market price within the slippage tolerance you
-      set) or limit orders (which fill at a price you specify).
+      <Trans>
+        Orders on CoW Swap can either be market orders (which fill at the market price within the slippage tolerance you
+        set) or limit orders (which fill at a price you specify).
+      </Trans>
       <br />
       <br />
-      Market orders are always <i>Fill or kill</i>, while limit orders are by default <i>Partially fillable</i>, but can
-      also be changed to <i>Fill or kill</i> through your order settings.
+      <Trans>
+        Market orders are always <i>Fill or kill</i>, while limit orders are by default <i>Partially fillable</i>, but
+        can also be changed to <i>Fill or kill</i> through your order settings.
+      </Trans>
     </span>
   ),
 }
@@ -112,6 +121,7 @@ export function ReceiptModal({
   receiverEnsName,
   alternativeOrderModalContext,
 }: ReceiptProps) {
+  const { i18n } = useLingui()
   // Check if Custom Recipient Warning Banner should be visible
   const isCustomRecipientWarningBannerVisible = !useIsReceiverWalletBannerHidden(order.id)
   const hideCustomRecipientWarning = useHideReceiverWalletBanner()
@@ -127,21 +137,25 @@ export function ReceiptModal({
 
   const isSell = isSellOrder(order.kind)
 
-  const inputLabel = isSell ? 'You sell' : 'You sell at most'
-  const outputLabel = isSell ? 'You receive at least' : 'You receive exactly'
+  const inputLabel = isSell ? t`You sell` : t`You sell at most`
+  const outputLabel = isSell ? t`You receive at least` : t`You receive exactly`
   const safeTxParams = twapOrder?.safeTxParams
 
   const volumeFeeBps = getOrderVolumeFee(order.fullAppData)
+  const twapOrderN = twapOrder?.order.n
 
   return (
     <CowModal onDismiss={onDismiss} isOpen={isOpen}>
       <styledEl.Wrapper>
         <styledEl.Header>
           <div>
-            <styledEl.Title>Order Receipt</styledEl.Title>
+            <styledEl.Title>
+              <Trans>Order Receipt</Trans>
+            </styledEl.Title>
             {alternativeOrderModalContext && (
               <styledEl.LightButton onClick={alternativeOrderModalContext.showAlternativeOrderModal}>
-                {alternativeOrderModalContext.isEdit ? 'Edit' : 'Recreate'} this order
+                {alternativeOrderModalContext?.isEdit ? <Trans>Edit</Trans> : <Trans>Recreate</Trans>}{' '}
+                <Trans>this order</Trans>
               </styledEl.LightButton>
             )}
           </div>
@@ -152,9 +166,11 @@ export function ReceiptModal({
           <styledEl.InfoBannerWrapper>
             <InlineBanner bannerType={StatusColorVariant.Info}>
               <p>
-                {isTwapPartOrder
-                  ? `Part of a ${twapOrder.order.n}-part TWAP order split`
-                  : `TWAP order split into ${twapOrder.order.n} parts`}
+                {isTwapPartOrder ? (
+                  <Trans>Part of a {twapOrderN}-part TWAP order split</Trans>
+                ) : (
+                  <Trans>TWAP order split into {twapOrderN} parts</Trans>
+                )}
               </p>
             </InlineBanner>
           </styledEl.InfoBannerWrapper>
@@ -175,16 +191,16 @@ export function ReceiptModal({
             )}
 
             <styledEl.Field>
-              <FieldLabel label="Status" />
+              <FieldLabel label={t`Status`} />
               <StatusField order={order} />
             </styledEl.Field>
 
             {order.receiver && (
               <styledEl.Field>
-                <FieldLabel label="Recipient" tooltip={tooltips.RECEIVER} />
+                <FieldLabel label={t`Recipient`} tooltip={i18n._(TOOLTIPS_MSG.RECEIVER)} />
                 <div>
                   {showCustomRecipientBanner && (
-                    <Icon image={IconType.ALERT} color={UI.COLOR_ALERT} description="Alert" />
+                    <Icon image={IconType.ALERT} color={UI.COLOR_ALERT} description={t`Alert`} />
                   )}
                   <ExternalLink href={getExplorerLink(chainId, order.receiver, ExplorerDataType.ADDRESS)}>
                     {receiverEnsName || shortenAddress(order.receiver)} ↗
@@ -194,7 +210,7 @@ export function ReceiptModal({
             )}
 
             <styledEl.Field>
-              <FieldLabel label="Limit price (incl.costs)" tooltip={tooltips.LIMIT_PRICE} />
+              <FieldLabel label={t`Limit price (incl. fees)`} tooltip={i18n._(TOOLTIPS_MSG.LIMIT_PRICE)} />
               <PriceField order={order} price={limitPrice} />
             </styledEl.Field>
 
@@ -202,14 +218,14 @@ export function ReceiptModal({
               <styledEl.Field>
                 {estimatedExecutionPrice && order.status === OrderStatus.PENDING ? (
                   <>
-                    <FieldLabel label="Executes at" tooltip={tooltips.EXECUTES_AT} />
+                    <FieldLabel label={t`Executes at`} tooltip={i18n._(TOOLTIPS_MSG.EXECUTES_AT)} />
                     <PriceField order={order} price={estimatedExecutionPrice} />
                   </>
                 ) : (
                   <>
                     <FieldLabel
-                      label={order.partiallyFillable ? 'Avg. execution price' : 'Execution price'}
-                      tooltip={tooltips.EXECUTION_PRICE}
+                      label={order.partiallyFillable ? t`Avg. execution price` : t`Execution price`}
+                      tooltip={i18n._(TOOLTIPS_MSG.EXECUTION_PRICE)}
                     />{' '}
                     <PriceField order={order} price={executionPrice} />
                   </>
@@ -219,18 +235,21 @@ export function ReceiptModal({
 
             {volumeFeeBps && (
               <styledEl.Field>
-                <FieldLabel label="Total fee" tooltip={tooltips.TOTAL_FEE} />
+                <FieldLabel label={t`Total fee`} tooltip={i18n._(TOOLTIPS_MSG.TOTAL_FEE)} />
                 <span>{(volumeFeeBps / 100).toFixed(2)}%</span>
               </styledEl.Field>
             )}
 
             <styledEl.Field>
-              <FieldLabel label="Filled" tooltip={twapOrder ? tooltips.FILLED_TWAP : tooltips.FILLED} />
+              <FieldLabel
+                label={t`Filled`}
+                tooltip={twapOrder ? i18n._(TOOLTIPS_MSG.FILLED_TWAP) : TOOLTIPS_JSX.FILLED}
+              />
               <FilledField order={order} />
             </styledEl.Field>
 
             <styledEl.Field>
-              <FieldLabel label="Order surplus" tooltip={tooltips.SURPLUS} />
+              <FieldLabel label={t`Order surplus`} tooltip={i18n._(TOOLTIPS_MSG.SURPLUS)} />
               <SurplusField order={order} />
             </styledEl.Field>
 
@@ -239,24 +258,24 @@ export function ReceiptModal({
             {(!twapOrder || isTwapPartOrder) && (
               <>
                 <styledEl.Field>
-                  <FieldLabel label="Network costs" tooltip={tooltips.NETWORK_COSTS} />
+                  <FieldLabel label={t`Network fees and costs`} tooltip={i18n._(TOOLTIPS_MSG.NETWORK_COSTS)} />
                   <FeeField order={order} />
                 </styledEl.Field>
               </>
             )}
 
             <styledEl.Field>
-              <FieldLabel label="Created" tooltip={tooltips.CREATED} />
+              <FieldLabel label={t`Created`} tooltip={i18n._(TOOLTIPS_MSG.CREATED)} />
               <DateField date={order.creationTime} />
             </styledEl.Field>
 
             <styledEl.Field>
-              <FieldLabel label="Expiry" tooltip={tooltips.EXPIRY} />
+              <FieldLabel label={t`Expiry`} tooltip={i18n._(TOOLTIPS_MSG.EXPIRY)} />
               <DateField date={order.expirationTime} />
             </styledEl.Field>
 
             <styledEl.Field>
-              <FieldLabel label="Order type" tooltip={tooltips.ORDER_TYPE} />
+              <FieldLabel label={t`Order type`} tooltip={TOOLTIPS_JSX.ORDER_TYPE} />
               <OrderTypeField order={order} />
             </styledEl.Field>
 
@@ -265,7 +284,13 @@ export function ReceiptModal({
               <styledEl.Field>
                 {order.executionData.activityId && (
                   <>
-                    <FieldLabel label={order.executionData.activityTitle} />
+                    <FieldLabel
+                      label={
+                        typeof order.executionData.activityTitle === 'string'
+                          ? order.executionData.activityTitle
+                          : i18n._(order.executionData.activityTitle)
+                      }
+                    />
                     <IdField id={order.executionData.activityId} chainId={chainId} />
                   </>
                 )}

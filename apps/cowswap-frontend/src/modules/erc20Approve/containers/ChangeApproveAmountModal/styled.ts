@@ -1,4 +1,4 @@
-import { ButtonPrimary, UI } from '@cowprotocol/ui'
+import { ButtonPrimary, Media, UI } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
@@ -7,20 +7,26 @@ export const Wrapper = styled.div`
   width: 100%;
   overflow: auto;
   background: var(${UI.COLOR_PAPER});
-  border-radius: 20px;
+  border-radius: 21px;
 `
 
 export const SwapInfo = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  gap: 21px;
   align-items: center;
-  margin: 48px 0 19px 0;
+  margin: 24px 0;
+  font-size: 13px;
 `
 
 export const SetTitle = styled.div`
   font-size: 23px;
-  margin: 16px 0;
+  text-align: center;
+
+  ${Media.upToSmall()} {
+    font-size: 18px;
+  }
 `
 
 export const Title = styled.div`
@@ -30,6 +36,6 @@ export const Title = styled.div`
 `
 
 export const BtnWrapper = styled.div`
-  margin: 15px;
+  margin: 0 10px 10px;
 `
 export const ActionButton = styled(ButtonPrimary)``

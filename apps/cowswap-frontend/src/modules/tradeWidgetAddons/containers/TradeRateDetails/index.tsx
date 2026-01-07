@@ -1,6 +1,6 @@
 import { useMemo, useState, useCallback, ReactNode } from 'react'
 
-import { CurrencyAmount } from '@uniswap/sdk-core'
+import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
 import { useBridgeQuoteAmounts } from 'modules/bridge'
 import {
@@ -10,10 +10,11 @@ import {
   useDerivedTradeState,
   NetworkCostsRow,
   useShouldPayGas,
-  useReceiveAmountInfo,
+  useGetReceiveAmountInfo,
+  useGetSwapReceiveAmountInfo,
 } from 'modules/trade'
 import { useTradeQuote } from 'modules/tradeQuote'
-import { useIsSlippageModified, useTradeSlippage } from 'modules/tradeSlippage'
+import { useIsSlippageModified, useShouldShowSlippageProminent, useTradeSlippage } from 'modules/tradeSlippage'
 import { useUsdAmount } from 'modules/usdAmount'
 
 import { QuoteApiError } from 'api/cowProtocol/errors/QuoteError'
@@ -44,21 +45,13 @@ export function TradeRateDetails({
 
   const slippage = useTradeSlippage()
   const isSlippageModified = useIsSlippageModified()
-  // todo replace by useGetReceiveAmountInfo when we decide what to show as bridge total fee
-  const receiveAmountInfo = useReceiveAmountInfo()
-  const derivedTradeState = useDerivedTradeState()
-  const tradeQuote = useTradeQuote()
+  const shouldShowSlippageProminent = useShouldShowSlippageProminent()
+  const receiveAmountInfo = useGetReceiveAmountInfo()
+  const swapReceiveAmountInfo = useGetSwapReceiveAmountInfo()
   const shouldPayGas = useShouldPayGas()
   const bridgeQuoteAmounts = useBridgeQuoteAmounts()
 
-  const inputCurrency = derivedTradeState?.inputCurrency
-
-  const costsExceedFeeRaw = tradeQuote.error instanceof QuoteApiError ? tradeQuote?.error?.data?.fee_amount : undefined
-
-  const networkFeeAmount = useMemo(() => {
-    if (!costsExceedFeeRaw || !inputCurrency) return null
-    return CurrencyAmount.fromRawAmount(inputCurrency, costsExceedFeeRaw)
-  }, [costsExceedFeeRaw, inputCurrency])
+  const networkFeeAmount = useNetworkFeeAmount()
 
   const networkFeeAmountUsd = useUsdAmount(networkFeeAmount).value
 
@@ -66,7 +59,7 @@ export function TradeRateDetails({
     setFeeDetailsOpen((prev) => !prev)
   }, [])
 
-  if (!receiveAmountInfo) {
+  if (!receiveAmountInfo || !swapReceiveAmountInfo) {
     if (!networkFeeAmount) return null
 
     return (
@@ -81,7 +74,19 @@ export function TradeRateDetails({
     )
   }
 
-  const totalCosts = getTotalCosts(receiveAmountInfo, bridgeQuoteAmounts?.bridgeFee)
+  const totalCosts = getTotalCosts(
+    swapReceiveAmountInfo,
+    bridgeQuoteAmounts?.bridgeFeeAmounts?.amountInIntermediateCurrency,
+  )
+
+  // Slippage row component - can be shown outside or inside accordion
+  const slippageRow = slippage ? (
+    <RowSlippage
+      isTradePriceUpdating={isTradePriceUpdating}
+      allowedSlippage={slippage}
+      isSlippageModified={isSlippageModified}
+    />
+  ) : null
 
   // Default expanded content if accordionContent prop is not supplied
   const defaultExpandedContent = (
@@ -90,28 +95,45 @@ export function TradeRateDetails({
         receiveAmountInfo={receiveAmountInfo}
         networkCostsSuffix={shouldPayGas ? <NetworkCostsSuffix /> : null}
         networkCostsTooltipSuffix={<NetworkCostsTooltipSuffix />}
+        showTotalRow
       />
-      {slippage && (
-        <RowSlippage
-          isTradePriceUpdating={isTradePriceUpdating}
-          allowedSlippage={slippage}
-          isSlippageModified={isSlippageModified}
-        />
-      )}
+      {/* Always show slippage inside accordion */}
+      {slippageRow}
       <RowRewards />
       <RowDeadline deadline={deadline} />
     </>
   )
 
   return (
-    <TradeTotalCostsDetails
-      totalCosts={totalCosts}
-      rateInfoParams={rateInfoParams}
-      isFeeDetailsOpen={isFeeDetailsOpen}
-      toggleAccordion={toggleAccordion}
-      feeWrapper={feeWrapper}
-    >
-      {accordionContent || defaultExpandedContent}
-    </TradeTotalCostsDetails>
+    <>
+      <TradeTotalCostsDetails
+        totalCosts={totalCosts}
+        rateInfoParams={rateInfoParams}
+        isFeeDetailsOpen={isFeeDetailsOpen}
+        toggleAccordion={toggleAccordion}
+        feeWrapper={feeWrapper}
+      >
+        {accordionContent || defaultExpandedContent}
+      </TradeTotalCostsDetails>
+
+      {/* Show slippage outside accordion when prominent and accordion is closed (to avoid duplication) */}
+      {shouldShowSlippageProminent && !isFeeDetailsOpen && (
+        <div style={{ padding: '0 6px', marginTop: '-5px' }}>{slippageRow}</div>
+      )}
+    </>
   )
+}
+
+function useNetworkFeeAmount(): CurrencyAmount<Currency> | null {
+  const derivedTradeState = useDerivedTradeState()
+  const tradeQuote = useTradeQuote()
+
+  const inputCurrency = derivedTradeState?.inputCurrency
+
+  const costsExceedFeeRaw = tradeQuote.error instanceof QuoteApiError ? tradeQuote?.error?.data?.fee_amount : undefined
+
+  return useMemo(() => {
+    if (!costsExceedFeeRaw || !inputCurrency) return null
+    return CurrencyAmount.fromRawAmount(inputCurrency, costsExceedFeeRaw)
+  }, [costsExceedFeeRaw, inputCurrency])
 }

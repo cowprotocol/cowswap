@@ -11,7 +11,7 @@ import { tradingSdk } from 'tradingSdk/tradingSdk'
 
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 import { partialOrderUpdate } from 'legacy/state/orders/utils'
-import { getOrderSubmitSummary, mapUnsignedOrderToOrder, wrapErrorInOperatorError } from 'legacy/utils/trade'
+import { mapUnsignedOrderToOrder, wrapErrorInOperatorError } from 'legacy/utils/trade'
 
 import { emitPostedOrderEvent } from 'modules/orders'
 import { callDataContainsPermitSigner, handlePermit } from 'modules/permit'
@@ -41,6 +41,7 @@ export async function swapFlow(
     tradeConfirmActions,
     callbacks: { getCachedPermit, addBridgeOrder, setSigningStep },
     tradeQuote,
+    tradeQuoteState,
     bridgeQuoteAmounts,
   } = input
 
@@ -105,7 +106,13 @@ export async function swapFlow(
 
     const signingStepManager: SigningStepManager = {
       beforeBridgingSign() {
-        setSigningStep(shouldSignPermit ? '2/3' : '1/2', SigningSteps.BridgingSigning)
+        const isReceiverAccountBridgeProvider =
+          tradeQuoteState.bridgeQuote?.providerInfo.type === 'ReceiverAccountBridgeProvider'
+
+        setSigningStep(
+          shouldSignPermit ? '2/3' : '1/2',
+          isReceiverAccountBridgeProvider ? SigningSteps.PreparingDepositAddress : SigningSteps.BridgingSigning,
+        )
       },
       afterBridgingSign() {
         bridgingSignTimestamp = Date.now()
@@ -183,7 +190,6 @@ export async function swapFlow(
       additionalParams: {
         ...orderParams,
         orderId,
-        summary: getOrderSubmitSummary(orderParams),
         signingScheme,
         signature,
       },

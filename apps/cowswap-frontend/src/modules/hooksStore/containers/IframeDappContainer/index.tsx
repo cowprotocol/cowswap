@@ -5,6 +5,7 @@ import { EthereumProvider, IframeRpcProviderBridge } from '@cowprotocol/iframe-t
 import { ProductLogo, ProductVariant, UI } from '@cowprotocol/ui'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
 
+import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
 import { HookDappContext as HookDappContextType, HookDappIframe } from '../../types/hooks'
@@ -137,7 +138,9 @@ export function IframeDappContainer({ dapp, context }: IframeDappContainerProps)
       {isLoading && (
         <LoadingWrapper>
           <StyledProductLogo variant={ProductVariant.CowSwap} logoIconOnly height={56} />
-          <LoadingText>Loading hook...</LoadingText>
+          <LoadingText>
+            <Trans>Loading hook...</Trans>
+          </LoadingText>
         </LoadingWrapper>
       )}
       <Iframe

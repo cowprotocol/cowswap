@@ -1,32 +1,31 @@
-import { atom, useAtom, useAtomValue } from 'jotai'
+import { useAtom } from 'jotai'
 import { useEffect } from 'react'
 
 import { useWalletInfo } from '@cowprotocol/wallet'
 
+import { Trans } from '@lingui/react/macro'
+
 import { useTradePriceImpact } from 'modules/trade'
-import { TradeWarning, TradeWarningType } from 'modules/trade/pure/TradeWarning'
+import { TradeWarning } from 'modules/trade/pure/TradeWarning'
+import { TradeWarningType } from 'modules/trade/pure/TradeWarning/constants'
 import { TradeFormValidation, useGetTradeFormValidation } from 'modules/tradeFormValidation'
 import { useTradeQuote } from 'modules/tradeQuote'
 
-const noImpactWarningAcceptedAtom = atom(false)
+import { noImpactWarningAcceptedAtom } from './useIsNoImpactWarningAccepted'
 
 const NoImpactWarningMessage = (
   <div>
     <small>
-      We are unable to calculate the price impact for this order.
-      <br />
-      <br />
-      You may still move forward but{' '}
-      <strong>please review carefully that the receive amounts are what you expect.</strong>
+      <Trans>
+        We are unable to calculate the price impact for this order.
+        <br />
+        <br />
+        You may still move forward but{' '}
+        <strong>please review carefully that the receive amounts are what you expect.</strong>
+      </Trans>
     </small>
   </div>
 )
-
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function useIsNoImpactWarningAccepted() {
-  return useAtomValue(noImpactWarningAcceptedAtom)
-}
 
 export interface NoImpactWarningProps {
   withoutAccepting?: boolean
@@ -71,7 +70,9 @@ export function NoImpactWarning(props: NoImpactWarningProps) {
       acceptCallback={acceptCallback}
       text={
         <span>
-          Price impact <strong>unknown</strong> - trade carefully
+          <Trans>
+            Price impact <strong>unknown</strong> - trade carefully
+          </Trans>
         </span>
       }
     />

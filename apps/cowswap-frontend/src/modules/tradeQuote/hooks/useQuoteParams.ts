@@ -1,6 +1,6 @@
 import { DEFAULT_APP_CODE } from '@cowprotocol/common-const'
 import { useDebounce } from '@cowprotocol/common-hooks'
-import { getCurrencyAddress, isAddress } from '@cowprotocol/common-utils'
+import { getCurrencyAddress } from '@cowprotocol/common-utils'
 import { QuoteBridgeRequest } from '@cowprotocol/sdk-bridging'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { useWalletProvider } from '@cowprotocol/wallet-provider'
@@ -17,6 +17,9 @@ import { useVolumeFee } from 'modules/volumeFee'
 
 import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetworkUnsupported'
 import { useSafeMemo } from 'common/hooks/useSafeMemo'
+
+import { useQuoteParamsRecipient } from './useQuoteParamsRecipient'
+import { useTradeQuote } from './useTradeQuote'
 
 import { BRIDGE_QUOTE_ACCOUNT, getBridgeQuoteSigner } from '../utils/getBridgeQuoteSigner'
 
@@ -39,11 +42,21 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
   const state = useDerivedTradeState()
   const volumeFee = useVolumeFee()
   const tradeSlippage = useTradeSlippageValueAndType()
-  const slippageBps = tradeSlippage.type === 'user' ? tradeSlippage.value : undefined
+  const { isLoading: isQuoteLoading } = useTradeQuote()
 
-  const { inputCurrency, outputCurrency, orderKind, recipientAddress } = state || {}
+  // Slippage value for quote params:
+  // - User slippage: always include (re-quotes when user changes it)
+  // - Smart slippage: only include after quote loads to prevent re-fetch loop and this will only re-fetch when user switches to auto-slippage mode
+  const slippageBps =
+    tradeSlippage.type === 'user'
+      ? tradeSlippage.value
+      : tradeSlippage.type === 'smart' && !isQuoteLoading
+        ? tradeSlippage.value
+        : undefined
 
-  const receiver = recipientAddress && isAddress(recipientAddress) ? recipientAddress : account
+  const { inputCurrency, outputCurrency, orderKind } = state || {}
+
+  const receiver = useQuoteParamsRecipient()
 
   // eslint-disable-next-line complexity
   const params = useSafeMemo(() => {
@@ -95,7 +108,7 @@ export function useQuoteParams(amount: Nullish<string>, partiallyFillable = fals
       validFor: DEFAULT_QUOTE_TTL,
       ...(volumeFee ? { partnerFee: volumeFee } : undefined),
       partiallyFillable,
-      slippageBps,
+      swapSlippageBps: slippageBps,
     }
 
     return { quoteParams, inputCurrency, appData: appData?.doc }

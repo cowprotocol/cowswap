@@ -1,5 +1,49 @@
 # Changelog
 
+## [1.25.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.24.0...common-utils-v1.25.0) (2025-12-24)
+
+
+### Features
+
+* **bridge:** enable Near bridge provider for smart-contract wallets ([#6618](https://github.com/cowprotocol/cowswap/issues/6618)) ([0da32ab](https://github.com/cowprotocol/cowswap/commit/0da32abcd12183396870055f3cf92bc7b53002a3))
+
+## [1.24.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.23.0...common-utils-v1.24.0) (2025-11-24)
+
+
+### Features
+
+* **bridge:** add Near provider and provider feature-flags ([#6466](https://github.com/cowprotocol/cowswap/issues/6466)) ([c91b17f](https://github.com/cowprotocol/cowswap/commit/c91b17f9c24fef516eee904e51268264b6adff25))
+* **i18n:** finish internationalization setup ([#6526](https://github.com/cowprotocol/cowswap/issues/6526)) ([7b596e4](https://github.com/cowprotocol/cowswap/commit/7b596e49b132179152c6b8c5436dc5dd199f7aa8))
+* **internationalization:** add internationalization to CoW Swap ([#6198](https://github.com/cowprotocol/cowswap/issues/6198)) ([bec1e54](https://github.com/cowprotocol/cowswap/commit/bec1e54643d9b20a8b6517eae188993e364fed90))
+
+## [1.23.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.22.2...common-utils-v1.23.0) (2025-11-10)
+
+
+### Features
+
+* **new-chains:** add q4 chains ([#6404](https://github.com/cowprotocol/cowswap/issues/6404)) ([ba4edb0](https://github.com/cowprotocol/cowswap/commit/ba4edb0fdc7b4c700dfeae9023da330d74a9faea))
+
+## [1.22.2](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.22.1...common-utils-v1.22.2) (2025-10-29)
+
+
+### Bug Fixes
+
+* **widget:** revert "fix(widget): consider widget when inside an iframe ([#6447](https://github.com/cowprotocol/cowswap/issues/6447))" ([#6452](https://github.com/cowprotocol/cowswap/issues/6452)) ([aaaec55](https://github.com/cowprotocol/cowswap/commit/aaaec5527cbef9a3a11f6d7a79d9b5b03e5c5f6f))
+
+## [1.22.1](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.22.0...common-utils-v1.22.1) (2025-10-28)
+
+
+### Bug Fixes
+
+* **widget:** consider widget when inside an iframe ([#6447](https://github.com/cowprotocol/cowswap/issues/6447)) ([9817a4e](https://github.com/cowprotocol/cowswap/commit/9817a4e4d4d648d09366d8a33e9a8874a62f6473))
+
+## [1.22.0](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.21.1...common-utils-v1.22.0) (2025-10-23)
+
+
+### Features
+
+* **approve:** adjust partial approves for buy orders ([#6376](https://github.com/cowprotocol/cowswap/issues/6376)) ([5646eae](https://github.com/cowprotocol/cowswap/commit/5646eae9b913c870e105ee44ee18e7abfb9c06a6))
+
 ## [1.21.1](https://github.com/cowprotocol/cowswap/compare/common-utils-v1.21.0...common-utils-v1.21.1) (2025-09-16)
 
 

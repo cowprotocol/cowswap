@@ -1,4 +1,4 @@
-import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
+import { ACCOUNT_PROXY_LABEL_EXPLORER } from '@cowprotocol/common-const'
 
 import { AccountProxyLink } from '../shared/AccountProxyLink'
 
@@ -13,9 +13,10 @@ export const BridgeDetailsTooltips = {
   provider: 'The bridging solution provider.',
   accountFromProxy: (
     <span>
-      The <AccountProxyLink>{ACCOUNT_PROXY_LABEL}</AccountProxyLink> address which will/did receive bought amount of the
-      Swap before the bridge is initiated.
+      The <AccountProxyLink>{ACCOUNT_PROXY_LABEL_EXPLORER}</AccountProxyLink> address which will/did receive bought
+      amount of the Swap before the bridge is initiated.
     </span>
   ),
+  accountOrderSigner: 'The account address which signed the order.',
   receiverAddress: 'The account address to which the tokens are bridged on the destination chain.',
 }

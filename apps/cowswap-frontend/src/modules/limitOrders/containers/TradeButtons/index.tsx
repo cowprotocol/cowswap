@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { isValidElement } from 'react'
 
-import { Trans } from '@lingui/macro'
+import { MessageDescriptor } from '@lingui/core'
+import { useLingui } from '@lingui/react/macro'
 
 import { useLimitOrdersWarningsAccepted } from 'modules/limitOrders/hooks/useLimitOrdersWarningsAccepted'
-import { useTradeConfirmActions } from 'modules/trade'
+import { useConfirmTradeWithRwaCheck } from 'modules/trade'
 import {
   TradeFormBlankButton,
   TradeFormButtons,
@@ -15,8 +16,6 @@ import { TradeFormValidation } from 'modules/tradeFormValidation/types'
 import { limitOrdersTradeButtonsMap } from './limitOrdersTradeButtonsMap'
 
 import { useLimitOrdersFormState } from '../../hooks/useLimitOrdersFormState'
-
-const CONFIRM_TEXT = 'Review limit order'
 
 const PRIMARY_VALIDATION_OVERRIDEN_BY_LOCAL_VALIDATION: TradeFormValidation[] = [
   TradeFormValidation.ApproveAndSwapInBundle,
@@ -30,12 +29,13 @@ interface TradeButtonsProps {
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function TradeButtons({ isTradeContextReady }: TradeButtonsProps) {
+  const { i18n, t } = useLingui()
+  const CONFIRM_TEXT = t`Review limit order`
   const localFormValidation = useLimitOrdersFormState()
   const primaryFormValidation = useGetTradeFormValidation()
   const warningsAccepted = useLimitOrdersWarningsAccepted(false)
-  const tradeConfirmActions = useTradeConfirmActions()
 
-  const confirmTrade = tradeConfirmActions.onOpen
+  const { confirmTrade } = useConfirmTradeWithRwaCheck()
 
   const tradeFormButtonContext = useTradeFormButtonContext(CONFIRM_TEXT, confirmTrade)
 
@@ -55,7 +55,7 @@ export function TradeButtons({ isTradeContextReady }: TradeButtonsProps) {
       buttonFactory()
     ) : (
       <TradeFormBlankButton id={buttonFactory.id} disabled={true}>
-        <Trans>{buttonFactory.text}</Trans>
+        {isValidElement(buttonFactory.text) ? buttonFactory.text : i18n._(buttonFactory.text as MessageDescriptor)}
       </TradeFormBlankButton>
     )
   }

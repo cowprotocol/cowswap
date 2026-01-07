@@ -1,8 +1,10 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 
-import { useTradeConfirmActions } from 'modules/trade'
+import { t } from '@lingui/core/macro'
+
+import { useConfirmTradeWithRwaCheck } from 'modules/trade'
 import { TradeFormButtons, TradeFormValidation, useTradeFormButtonContext } from 'modules/tradeFormValidation'
 
 import { CowSwapAnalyticsCategory } from 'common/analytics/types'
@@ -25,25 +27,20 @@ export function ActionButtons({
   primaryFormValidation,
   fallbackHandlerIsNotSet,
 }: ActionButtonsProps) {
-  const tradeConfirmActions = useTradeConfirmActions()
   const { walletIsNotConnected } = useTwapWarningsContext()
   const cowAnalytics = useCowAnalytics()
 
-  const twapConversionAnalytics = useCallback(
-    (status: string, fallbackHandlerIsNotSet: boolean) => {
-      cowAnalytics.sendEvent({
-        category: CowSwapAnalyticsCategory.TWAP,
-        action: 'Conversion',
-        label: `${status}|${fallbackHandlerIsNotSet ? 'no-handler' : 'handler-set'}`,
-      })
-    },
-    [cowAnalytics],
-  )
+  // Analytics callback that fires only when trade confirmation is actually opened
+  const onConfirmOpen = useCallback(() => {
+    cowAnalytics.sendEvent({
+      category: CowSwapAnalyticsCategory.TWAP,
+      action: 'Conversion',
+      label: `initiated|${fallbackHandlerIsNotSet ? 'no-handler' : 'handler-set'}`,
+    })
+  }, [cowAnalytics, fallbackHandlerIsNotSet])
 
-  const confirmTrade = useCallback(() => {
-    tradeConfirmActions.onOpen()
-    twapConversionAnalytics('initiated', fallbackHandlerIsNotSet)
-  }, [tradeConfirmActions, twapConversionAnalytics, fallbackHandlerIsNotSet])
+  const hookParams = useMemo(() => ({ onConfirmOpen }), [onConfirmOpen])
+  const { confirmTrade } = useConfirmTradeWithRwaCheck(hookParams)
 
   const areWarningsAccepted = useAreWarningsAccepted()
 
@@ -51,21 +48,22 @@ export function ActionButtons({
     confirmTrade,
   }
 
-  const tradeFormButtonContext = useTradeFormButtonContext('TWAP order', confirmTrade)
+  const tradeFormButtonContext = useTradeFormButtonContext(t`TWAP order`, confirmTrade)
 
   if (!tradeFormButtonContext) return null
 
   // Show local form validation errors only when wallet is connected
-  if (localFormValidation && !walletIsNotConnected) {
-    return <PrimaryActionButton state={localFormValidation} context={primaryActionContext} />
-  }
+  const buttons =
+    localFormValidation && !walletIsNotConnected ? (
+      <PrimaryActionButton state={localFormValidation} context={primaryActionContext} />
+    ) : (
+      <TradeFormButtons
+        confirmText={t`Review TWAP order`}
+        validation={primaryFormValidation}
+        context={tradeFormButtonContext}
+        isDisabled={!areWarningsAccepted}
+      />
+    )
 
-  return (
-    <TradeFormButtons
-      confirmText="Review TWAP order"
-      validation={primaryFormValidation}
-      context={tradeFormButtonContext}
-      isDisabled={!areWarningsAccepted}
-    />
-  )
+  return buttons
 }

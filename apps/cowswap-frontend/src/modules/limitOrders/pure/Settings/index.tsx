@@ -3,9 +3,11 @@ import { useCallback, useState } from 'react'
 import { UI } from '@cowprotocol/ui'
 import { HelpTooltip } from '@cowprotocol/ui'
 
+import { t } from '@lingui/core/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
 
-import { ORDERS_TABLE_SETTINGS } from 'modules/trade/const/common'
+import { getOrdersTableSettings } from 'modules/trade/const/common'
 import { SettingsBox, SettingsContainer, SettingsTitle } from 'modules/trade/pure/Settings'
 
 import { useLimitOrderSettingsAnalytics } from '../../hooks/useLimitOrderSettingsAnalytics'
@@ -105,16 +107,12 @@ export interface SettingsProps {
   onStateChanged: (state: LimitOrdersSettingsState) => void
 }
 
-const POSITION_LABELS = {
-  top: 'Top',
-  between: 'Between currencies',
-  bottom: 'Bottom',
-}
-
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
 // eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
 export function Settings({ state, onStateChanged }: SettingsProps) {
+  const { i18n } = useLingui()
+  const { LEFT_ALIGNED } = getOrdersTableSettings()
   const analytics = useLimitOrderSettingsAnalytics()
   const [isOpen, setIsOpen] = useState(false)
   const {
@@ -174,22 +172,30 @@ export function Settings({ state, onStateChanged }: SettingsProps) {
     e.stopPropagation()
   }
 
+  const POSITION_LABELS = {
+    top: t`Top`,
+    between: t`Between currencies`,
+    bottom: t`Bottom`,
+  }
+
   return (
     <div onClick={handleContainerClick}>
       <SettingsContainer>
-        <SettingsTitle>Limit Order Settings</SettingsTitle>
+        <SettingsTitle>
+          <Trans>Limit Order Settings</Trans>
+        </SettingsTitle>
 
         <SettingsBox
-          title="Custom Recipient"
-          tooltip="Allows you to choose a destination address for the swap other than the connected one."
+          title={t`Custom Recipient`}
+          tooltip={t`Allows you to choose a destination address for the swap other than the connected one.`}
           value={showRecipient}
           toggle={handleRecipientToggle}
         />
 
         <SettingsBox
-          title="Enable Partial Executions"
+          title={t`Enable Partial Executions`}
           tooltip={
-            <>
+            <Trans>
               Allow you to chose whether your limit orders will be <i>Partially fillable</i> or <i>Fill or kill</i>.
               <br />
               <br />
@@ -197,37 +203,37 @@ export function Settings({ state, onStateChanged }: SettingsProps) {
               <br />
               <i>Partially fillable</i> orders may be filled partially if there isn't enough liquidity to fill the full
               amount.
-            </>
+            </Trans>
           }
           value={partialFillsEnabled}
           toggle={handlePartialFillsToggle}
         />
 
         <SettingsBox
-          title="Lock Limit Price"
-          tooltip="When enabled, the limit price stays fixed when changing the BUY amount. When disabled, the limit price will update based on the BUY amount changes."
+          title={t`Lock Limit Price`}
+          tooltip={t`When enabled, the limit price stays fixed when changing the BUY amount. When disabled, the limit price will update based on the BUY amount changes.`}
           value={limitPriceLocked}
           toggle={handleLimitPriceLockedToggle}
         />
 
         {/* TODO: Temporarily disabled - Global USD Mode feature and isUsdValuesMode
         <SettingsBox
-          title="Global USD Mode"
-          tooltip="When enabled, all prices will be displayed in USD by default."
+          title={t`Global USD Mode`}
+          tooltip={t`When enabled, all prices will be displayed in USD by default.`}
           value={isUsdValuesMode}
           toggle={handleUsdValuesModeToggle}
         /> */}
 
         <SettingsBox
-          title={ORDERS_TABLE_SETTINGS.LEFT_ALIGNED.title}
-          tooltip={ORDERS_TABLE_SETTINGS.LEFT_ALIGNED.tooltip}
+          title={i18n._(LEFT_ALIGNED.title)}
+          tooltip={i18n._(LEFT_ALIGNED.tooltip)}
           value={ordersTableOnLeft}
           toggle={handleOrdersTablePositionToggle}
         />
 
         <SettingsRow>
           <SettingsLabel>
-            Limit Price Position <HelpTooltip text="Choose where to display the limit price input." />
+            <Trans>Limit Price Position</Trans> <HelpTooltip text={t`Choose where to display the limit price input.`} />
           </SettingsLabel>
           <DropdownContainer>
             <DropdownButton onClick={toggleDropdown}>{POSITION_LABELS[limitPricePosition]}</DropdownButton>

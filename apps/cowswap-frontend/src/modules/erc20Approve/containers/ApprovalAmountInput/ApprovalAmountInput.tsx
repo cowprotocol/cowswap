@@ -4,6 +4,8 @@ import { TokenWithLogo } from '@cowprotocol/common-const'
 import { tryParseCurrencyAmount } from '@cowprotocol/common-utils'
 import { Currency, CurrencyAmount } from '@uniswap/sdk-core'
 
+import { Trans, useLingui } from '@lingui/react/macro'
+
 import { Field } from 'legacy/state/types'
 
 import { useUsdAmount } from 'modules/usdAmount'
@@ -15,19 +17,29 @@ import * as styledEl from './styled'
 
 import { useCustomApproveAmountInputState, useUpdateOrResetCustomApproveAmountInputState } from '../../state'
 
+const noop = (): void => {}
+
 type ApprovalAmountInputProps = {
   tokenWithLogo: TokenWithLogo | null
-  initialAmount: CurrencyAmount<Currency> | null | undefined
+  // amount that was set by the user or by default (by default, it is equivalent to amountToSwap)
+  initialApproveAmount: CurrencyAmount<Currency> | null | undefined
+  // amount that needed to be swapped
+  amountToSwap: CurrencyAmount<Currency> | null | undefined
   onReset: () => void
 }
 
-export function ApprovalAmountInput({ initialAmount, tokenWithLogo, onReset }: ApprovalAmountInputProps): ReactNode {
+export function ApprovalAmountInput({
+  initialApproveAmount,
+  tokenWithLogo,
+  onReset,
+  amountToSwap,
+}: ApprovalAmountInputProps): ReactNode {
   const [updateCustomApproveAmountInput] = useUpdateOrResetCustomApproveAmountInputState()
   const customAmountValueState = useCustomApproveAmountInputState()
 
   const customAmountValue = useMemo(
-    () => customAmountValueState.amount ?? initialAmount,
-    [customAmountValueState, initialAmount],
+    () => customAmountValueState.amount ?? initialApproveAmount ?? amountToSwap,
+    [customAmountValueState, initialApproveAmount, amountToSwap],
   )
 
   const usdAmount = useUsdAmount(customAmountValue)
@@ -55,19 +67,21 @@ export function ApprovalAmountInput({ initialAmount, tokenWithLogo, onReset }: A
       if (!value) {
         updateCustomApproveAmountInput({ amount: null, isChanged: true, isInvalid: true })
       } else {
-        const isInvalid = initialAmount ? value.lessThan(initialAmount) : false
+        const isInvalid = amountToSwap ? value.lessThan(amountToSwap) : false
         updateCustomApproveAmountInput({ amount: value, isChanged: true, isInvalid })
       }
     },
-    [updateCustomApproveAmountInput, tokenWithLogo, initialAmount],
+    [updateCustomApproveAmountInput, tokenWithLogo, amountToSwap],
   )
 
-  const resetLabel = customAmountValueState.isInvalid ? 'Set to trade' : 'Reset'
+  const { t } = useLingui()
+
+  const resetLabel = customAmountValueState.isInvalid ? t`Set to trade` : t`Reset`
 
   return (
     <styledEl.EditWrapper>
       <styledEl.InputHeader>
-        Approval amount: <styledEl.ResetBtn onClick={onReset}>{resetLabel}</styledEl.ResetBtn>
+        <Trans>Approval amount</Trans> <styledEl.ResetBtn onClick={onReset}>{resetLabel}</styledEl.ResetBtn>
       </styledEl.InputHeader>
       <CurrencyInputPanel
         className={'custom-input-panel'}
@@ -79,9 +93,9 @@ export function ApprovalAmountInput({ initialAmount, tokenWithLogo, onReset }: A
         allowsOffchainSigning={false}
         currencyInfo={currencyInfo}
         isInvalid={customAmountValueState.isInvalid}
-        onCurrencySelection={() => {}}
+        onCurrencySelection={noop}
         onUserInput={onUserInput}
-        openTokenSelectWidget={() => {}}
+        openTokenSelectWidget={noop}
         tokenSelectorDisabled
       />
     </styledEl.EditWrapper>

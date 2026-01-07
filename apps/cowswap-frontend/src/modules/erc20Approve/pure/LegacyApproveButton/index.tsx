@@ -5,11 +5,12 @@ import { Command } from '@cowprotocol/types'
 import { AutoRow, ButtonConfirmed, ButtonSize, HoverTooltip, Loader, TokenSymbol } from '@cowprotocol/ui'
 import { Currency } from '@uniswap/sdk-core'
 
-import { Trans } from '@lingui/macro'
+import { Trans } from '@lingui/react/macro'
 import { CheckCircle, HelpCircle } from 'react-feather'
 import styled, { ThemeContext } from 'styled-components/macro'
 
 import { ApprovalState } from '../../types'
+import { ApprovalTooltip } from '../ApprovalTooltip'
 
 const ApproveButtonContentWrapper = styled.span`
   padding: 0 3px;
@@ -49,6 +50,8 @@ export function LegacyApproveButton(props: ApproveButtonProps): ReactNode {
         </>
       )
     } else {
+      if (!currency) return null
+
       return (
         <>
           {/* we need to shorten this string on mobile */}
@@ -57,15 +60,7 @@ export function LegacyApproveButton(props: ApproveButtonProps): ReactNode {
               Allow CoW Swap to use your <TokenSymbol token={currency} />
             </Trans>
           </ApproveButtonContentWrapper>
-          <HoverTooltip
-            wrapInContainer
-            content={
-              <Trans>
-                You must give the CoW Protocol smart contracts permission to use your <TokenSymbol token={currency} />.
-                If you approve the default amount, you will only have to do this once per token.
-              </Trans>
-            }
-          >
+          <HoverTooltip wrapInContainer content={<ApprovalTooltip currency={currency} isLegacyApproval={true} />}>
             {isPending ? <Loader stroke={theme.text1} /> : <HelpCircle size="24" />}
           </HoverTooltip>
         </>

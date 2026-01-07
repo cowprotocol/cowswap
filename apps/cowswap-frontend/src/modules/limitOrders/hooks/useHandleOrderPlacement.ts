@@ -4,6 +4,8 @@ import { useCallback } from 'react'
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { getAddress } from '@cowprotocol/common-utils'
 
+import { useLingui } from '@lingui/react/macro'
+
 import { PriceImpact } from 'legacy/hooks/usePriceImpact'
 
 import { useUpdateLimitOrdersRawState } from 'modules/limitOrders/hooks/useLimitOrdersRawState'
@@ -24,6 +26,7 @@ import { CowSwapAnalyticsCategory } from 'common/analytics/types'
 import { useConfirmPriceImpactWithoutFee } from 'common/hooks/useConfirmPriceImpactWithoutFee'
 import { useIsSafeApprovalBundle } from 'common/hooks/useIsSafeApprovalBundle'
 import { TradeAmounts } from 'common/types'
+import { getAreBridgeCurrencies } from 'common/utils/getAreBridgeCurrencies'
 import { getSwapErrorMessage } from 'common/utils/getSwapErrorMessage'
 
 function useAlternativeModalAnalytics(): (wasPlaced: boolean) => void {
@@ -49,7 +52,11 @@ export function useHandleOrderPlacement(
   settingsState: LimitOrdersSettingsState,
   tradeConfirmActions: TradeConfirmActions,
 ): () => Promise<void> {
-  const { confirmPriceImpactWithoutFee } = useConfirmPriceImpactWithoutFee()
+  const isBridge = getAreBridgeCurrencies(
+    tradeContext.postOrderParams.inputAmount.currency,
+    tradeContext.postOrderParams.outputAmount.currency,
+  )
+  const { confirmPriceImpactWithoutFee } = useConfirmPriceImpactWithoutFee(isBridge)
   const updateLimitOrdersState = useUpdateLimitOrdersRawState()
   const hideAlternativeOrderModal = useHideAlternativeOrderModal()
   const { isEdit: isAlternativeOrderEdit } = useAlternativeOrder() || {}
@@ -61,6 +68,7 @@ export function useHandleOrderPlacement(
   const isSafeBundle = useIsSafeApprovalBundle(tradeContext?.postOrderParams.inputAmount)
   const alternativeModalAnalytics = useAlternativeModalAnalytics()
   const analytics = useTradeFlowAnalytics()
+  const { t } = useLingui()
 
   const beforePermit = useCallback(async () => {
     if (!tradeContext) return
@@ -85,10 +93,11 @@ export function useHandleOrderPlacement(
   }, [tradeContext, tradeConfirmActions])
 
   const tradeFn = useCallback(async () => {
-    const partiallyFillableState = partiallyFillableOverride ? { partiallyFillable: partiallyFillableOverride } : null
+    const partiallyFillableState =
+      typeof partiallyFillableOverride === 'boolean' ? { partiallyFillable: partiallyFillableOverride } : null
 
     if (isSafeBundle) {
-      if (!safeBundleFlowContext) throw new Error('safeBundleFlowContext is not set!')
+      if (!safeBundleFlowContext) throw new Error(t`safeBundleFlowContext is not set!`)
 
       return safeBundleFlow(
         {
@@ -122,16 +131,17 @@ export function useHandleOrderPlacement(
       beforeTrade,
     )
   }, [
-    beforePermit,
-    beforeTrade,
-    confirmPriceImpactWithoutFee,
     isSafeBundle,
+    tradeContext,
     partiallyFillableOverride,
     priceImpact,
-    safeBundleFlowContext,
     settingsState,
-    tradeContext,
     analytics,
+    confirmPriceImpactWithoutFee,
+    beforePermit,
+    beforeTrade,
+    safeBundleFlowContext,
+    t,
   ])
 
   return useCallback(() => {

@@ -1,6 +1,6 @@
 {
   "name": "@cowprotocol/types",
-  "version": "2.0.1",
+  "version": "2.1.1",
   "type": "commonjs",
   "description": "CoW Swap events",
   "main": "index.js",

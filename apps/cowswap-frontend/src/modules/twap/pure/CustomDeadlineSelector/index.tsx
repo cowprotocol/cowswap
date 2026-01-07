@@ -4,7 +4,8 @@ import { useCowAnalytics } from '@cowprotocol/analytics'
 import { Command } from '@cowprotocol/types'
 import { ButtonPrimary } from '@cowprotocol/ui'
 
-import { Trans } from '@lingui/macro'
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
 
 import { TradeNumberInput } from 'modules/trade/pure/TradeNumberInput'
 
@@ -23,7 +24,7 @@ interface CustomDeadlineSelectorProps {
 }
 // TODO: Break down this large function into smaller functions
 // TODO: Add proper return type annotation
-// eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function CustomDeadlineSelector(props: CustomDeadlineSelectorProps) {
   const { isOpen, onDismiss, customDeadline, selectCustomDeadline } = props
   const { hours = 0, minutes = 0 } = customDeadline
@@ -79,7 +80,7 @@ export function CustomDeadlineSelector(props: CustomDeadlineSelectorProps) {
 
         <styledEl.ModalContent>
           <TradeNumberInput
-            label="Hours"
+            label={t`Hours`}
             onUserInput={onHoursChange}
             value={hoursValue}
             showUpDownArrows
@@ -87,7 +88,7 @@ export function CustomDeadlineSelector(props: CustomDeadlineSelectorProps) {
             max={null}
           />
           <TradeNumberInput
-            label="Minutes"
+            label={t`Minutes`}
             onUserInput={onMinutesChange}
             value={minutesValue}
             showUpDownArrows

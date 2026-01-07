@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-imports */ // TODO: Don't use 'modules' import
 import { useMemo } from 'react'
 
 import { getChainInfo, TokenWithLogo } from '@cowprotocol/common-const'
@@ -7,6 +8,7 @@ import { useTokensByAddressMap } from '@cowprotocol/tokens'
 import { useWalletInfo } from '@cowprotocol/wallet'
 import { CurrencyAmount } from '@uniswap/sdk-core'
 
+import { t } from '@lingui/core/macro'
 import { useBridgeOrderData, useCrossChainOrder } from 'entities/bridgeOrders'
 import { useBridgeSupportedNetwork } from 'entities/bridgeProvider'
 import { bridgingSdk } from 'tradingSdk/bridgingSdk'
@@ -28,8 +30,6 @@ import { useBridgeOrderOutputToken } from './useBridgeOrderOutputToken'
 import { useSwapAndBridgeOverview } from './useSwapAndBridgeOverview'
 import { useSwapResultsContext } from './useSwapResultsContext'
 
-import { calculateTargetAmountsBeforeBridging } from '../utils/calculateTargetAmountsBeforeBridging'
-
 const bridgeStatusMap: Record<BridgeStatus, SwapAndBridgeStatus> = {
   [BridgeStatus.IN_PROGRESS]: SwapAndBridgeStatus.PENDING,
   [BridgeStatus.EXECUTED]: SwapAndBridgeStatus.DONE,
@@ -42,6 +42,7 @@ export interface SwapAndBridgeContexts {
   swapAndBridgeContext: SwapAndBridgeContext | undefined
   swapResultContext: SwapResultContext | undefined
   swapAndBridgeOverview: SwapAndBridgeOverview | undefined
+  intermediateToken: TokenWithLogo | undefined
   isLoading: boolean
 }
 
@@ -74,8 +75,8 @@ export function useSwapAndBridgeContext(
       chainId: order.inputToken.chainId, // Intermediate token is on same chain as input
       address: order.buyToken,
       decimals: order.outputToken.decimals, // Use output token decimals as approximation
-      symbol: 'Loading...', // Placeholder until tokens are loaded
-      name: 'Loading...', // Placeholder until tokens are loaded
+      symbol: t`Loading...`, // Placeholder until tokens are loaded
+      name: t`Loading...`, // Placeholder until tokens are loaded
     })
   }, [order, tokensByAddress])
 
@@ -124,16 +125,18 @@ export function useSwapAndBridgeContext(
 
     if (crossChainOrder && bridgeReceiveAmount) {
       return {
-        sellAmount: CurrencyAmount.fromRawAmount(
-          intermediateToken,
-          crossChainOrder.bridgingParams.inputAmount.toString(),
-        ),
+        sellAmount:
+          receivedAmount ??
+          CurrencyAmount.fromRawAmount(intermediateToken, crossChainOrder.bridgingParams.inputAmount.toString()),
         buyAmount: bridgeReceiveAmount,
       }
     }
 
     if (bridgeQuoteAmounts && !bridgeOutputAmount) {
-      return calculateTargetAmountsBeforeBridging(bridgeQuoteAmounts, receivedAmount)
+      return {
+        sellAmount: receivedAmount ?? bridgeQuoteAmounts.swapMinReceiveAmount,
+        buyAmount: bridgeQuoteAmounts.bridgeMinReceiveAmount,
+      }
     }
 
     return undefined
@@ -197,8 +200,11 @@ export function useSwapAndBridgeContext(
       buyAmount: swapAndBridgeOverview.targetAmounts.buyAmount,
       buyAmountUsd: null,
       bridgeMinReceiveAmount,
+      bridgeMinReceiveAmountUsd: null,
       bridgeMinDepositAmount: null,
       bridgeMinDepositAmountUsd: null,
+      expectedToReceive: null,
+      expectedToReceiveUsd: null,
     }
 
     return {
@@ -228,7 +234,7 @@ export function useSwapAndBridgeContext(
   const isLoading = isCrossChainOrderLoading
 
   return useMemo(
-    () => ({ swapAndBridgeContext, swapResultContext, swapAndBridgeOverview, isLoading }),
-    [swapAndBridgeContext, swapResultContext, swapAndBridgeOverview, isLoading],
+    () => ({ swapAndBridgeContext, swapResultContext, swapAndBridgeOverview, intermediateToken, isLoading }),
+    [swapAndBridgeContext, swapResultContext, swapAndBridgeOverview, intermediateToken, isLoading],
   )
 }

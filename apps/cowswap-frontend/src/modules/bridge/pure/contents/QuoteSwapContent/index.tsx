@@ -4,6 +4,9 @@ import { isTruthy } from '@cowprotocol/common-utils'
 import { InfoTooltip, PercentDisplay } from '@cowprotocol/ui'
 import { Percent } from '@uniswap/sdk-core'
 
+import { t } from '@lingui/core/macro'
+import { Trans } from '@lingui/react/macro'
+
 import { ProxyRecipient } from 'modules/accountProxy'
 import { ReceiveAmountTitle, TradeFeesAndCosts, ConfirmDetailsItem } from 'modules/trade'
 import { BRIDGE_QUOTE_ACCOUNT } from 'modules/tradeQuote'
@@ -25,7 +28,7 @@ interface ContentItem {
 }
 
 function createExpectedReceiveContent(
-  buyAmount: QuoteSwapContext['buyAmount'],
+  expectedReceive: QuoteSwapContext['expectedReceive'],
   expectedReceiveUsdValue: QuoteSwapContext['expectedReceiveUsdValue'],
   slippagePercentDisplay: Percent,
 ): ContentItem {
@@ -33,11 +36,11 @@ function createExpectedReceiveContent(
     withTimelineDot: true,
     label: (
       <>
-        Expected to receive{' '}
+        {t`Expected to receive`}{' '}
         <InfoTooltip
           content={
             <>
-              The estimated amount you'll receive after estimated network costs and the max slippage setting (
+              {t`The estimated amount you'll receive after estimated network costs and the max slippage setting`} (
               <PercentDisplay percent={slippagePercentDisplay.toFixed(2)} />
               ).
             </>
@@ -46,7 +49,7 @@ function createExpectedReceiveContent(
         />
       </>
     ),
-    content: <TokenAmountDisplay displaySymbol currencyAmount={buyAmount} usdValue={expectedReceiveUsdValue} />,
+    content: <TokenAmountDisplay displaySymbol currencyAmount={expectedReceive} usdValue={expectedReceiveUsdValue} />,
   }
 }
 
@@ -55,7 +58,7 @@ function createSlippageContent(
   hideRecommendedSlippage: boolean,
   isSlippageModified: boolean,
 ): ContentItem {
-  const slippageLabel = <>Max. swap slippage </>
+  const slippageLabel = <>{t`Max. swap slippage`} </>
   const slippagePercentDisplay = (
     <RowSlippage
       slippageLabel={slippageLabel}
@@ -81,7 +84,7 @@ function createRecipientContent(
     withTimelineDot: true,
     label: (
       <>
-        Recipient <InfoTooltip content="The address that will receive the tokens." size={14} />
+        {t`Recipient`} <InfoTooltip content={t`The address that will receive the tokens.`} size={14} />
       </>
     ),
     content: <ProxyRecipient recipient={recipient} bridgeReceiverOverride={bridgeReceiverOverride} chainId={chainId} />,
@@ -95,7 +98,9 @@ function createMinReceiveContent(
   return {
     label: (
       <ReceiveAmountTitle>
-        <b>Min. to receive</b>
+        <b>
+          <Trans>Min. to receive</Trans>
+        </b>
       </ReceiveAmountTitle>
     ),
     content: (
@@ -117,7 +122,7 @@ export function QuoteSwapContent({ context, hideRecommendedSlippage }: QuoteDeta
   const {
     receiveAmountInfo,
     sellAmount,
-    buyAmount,
+    expectedReceive,
     slippage,
     recipient,
     bridgeReceiverOverride,
@@ -129,7 +134,7 @@ export function QuoteSwapContent({ context, hideRecommendedSlippage }: QuoteDeta
   const isBridgeQuoteRecipient = recipient === BRIDGE_QUOTE_ACCOUNT
   const isRowRewardsVisible = useIsRowRewardsVisible()
   const contents = [
-    createExpectedReceiveContent(buyAmount, expectedReceiveUsdValue, slippage),
+    createExpectedReceiveContent(expectedReceive, expectedReceiveUsdValue, slippage),
     createSlippageContent(slippage, !!hideRecommendedSlippage, isSlippageModified),
     !isBridgeQuoteRecipient && createRecipientContent(recipient, bridgeReceiverOverride, sellAmount.currency.chainId),
     !isBridgeQuoteRecipient && isRowRewardsVisible && createRewardsContent(),

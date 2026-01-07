@@ -1,24 +1,28 @@
 import { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
-import { getIsNativeToken, isInjectedWidget, isSellOrder } from '@cowprotocol/common-utils'
+import { isInjectedWidget, isSellOrder } from '@cowprotocol/common-utils'
+import { useTryFindToken } from '@cowprotocol/tokens'
 import { useIsEagerConnectInProgress, useIsSmartContractWallet, useWalletInfo } from '@cowprotocol/wallet'
+
+import { t } from '@lingui/core/macro'
 
 import { Field } from 'legacy/state/types'
 import { useHooksEnabledManager } from 'legacy/state/user/hooks'
 
-import { useTryFindIntermediateToken } from 'modules/bridge'
 import { TradeApproveWithAffectedOrderList } from 'modules/erc20Approve'
 import { EthFlowModal, EthFlowProps } from 'modules/ethFlow'
+import { SELL_ETH_RESET_STATE } from 'modules/swap/consts'
 import { AddIntermediateTokenModal } from 'modules/tokensList'
 import {
   TradeWidget,
   TradeWidgetSlots,
   useGetReceiveAmountInfo,
+  useIsEoaEthFlow,
   useTradePriceImpact,
   useWrapNativeFlow,
 } from 'modules/trade'
 import { useHandleSwap } from 'modules/tradeFlow'
+import { useIsTradeFormValidationPassed } from 'modules/tradeFormValidation'
 import { useTradeQuote } from 'modules/tradeQuote'
 import { SettingsTab } from 'modules/tradeWidgetAddons'
 
@@ -26,6 +30,7 @@ import { useIsProviderNetworkUnsupported } from 'common/hooks/useIsProviderNetwo
 import { useRateInfoParams } from 'common/hooks/useRateInfoParams'
 import { useSafeMemoObject } from 'common/hooks/useSafeMemo'
 import { CurrencyInfo } from 'common/pure/CurrencyInputPanel/types'
+import { getBridgeIntermediateTokenAddress } from 'common/utils/getBridgeIntermediateTokenAddress'
 
 import { Container } from './styled'
 
@@ -52,7 +57,6 @@ export interface SwapWidgetProps {
 }
 
 // TODO: Break down this large function into smaller functions
-// TODO: Add proper return type annotation
 // eslint-disable-next-line max-lines-per-function,complexity
 export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps): ReactNode {
   const { showRecipient } = useSwapSettings()
@@ -63,7 +67,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps): Reac
   const priceImpact = useTradePriceImpact()
   const widgetActions = useSwapWidgetActions()
   const receiveAmountInfo = useGetReceiveAmountInfo()
-  const { intermediateBuyToken, toBeImported } = useTryFindIntermediateToken({ bridgeQuote })
+  const { token: intermediateBuyToken, toBeImported } = useTryFindToken(getBridgeIntermediateTokenAddress(bridgeQuote))
   const [showNativeWrapModal, setOpenNativeWrapModal] = useState(false)
   const [showAddIntermediateTokenModal, setShowAddIntermediateTokenModal] = useState(false)
 
@@ -87,18 +91,26 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps): Reac
     orderKind,
     isUnlocked,
   } = useSwapDerivedState()
-  const doTrade = useHandleSwap(useSafeMemoObject({ deadline: deadlineState[0] }), widgetActions)
+  const doTrade = useHandleSwap({ deadline: deadlineState[0] }, widgetActions)
   const hasEnoughWrappedBalanceForSwap = useHasEnoughWrappedBalanceForSwap()
   const isSmartContractWallet = useIsSmartContractWallet()
   const { account } = useWalletInfo()
   const isEagerConnectInProgress = useIsEagerConnectInProgress()
   const [isHydrated, setIsHydrated] = useState(false)
   const handleUnlock = useCallback(() => updateSwapState({ isUnlocked: true }), [updateSwapState])
+  const isPrimaryValidationPassed = useIsTradeFormValidationPassed()
+  const isEoaEthFlow = useIsEoaEthFlow()
 
   useEffect(() => {
     // Hydration guard: defer lock-screen until persisted state (isUnlocked) loads to prevent initial flash.
     setIsHydrated(true)
   }, [])
+
+  useEffect(() => {
+    if (isEoaEthFlow && !isSellOrder(orderKind)) {
+      updateSwapState(SELL_ETH_RESET_STATE)
+    }
+  }, [isEoaEthFlow, orderKind, updateSwapState])
 
   const isSellTrade = isSellOrder(orderKind)
 
@@ -129,18 +141,19 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps): Reac
     fiatAmount: outputCurrencyFiatAmount,
     receiveAmountInfo: isSellTrade ? receiveAmountInfo : null,
   }
+
   const inputCurrencyPreviewInfo = {
     amount: inputCurrencyInfo.amount,
     fiatAmount: inputCurrencyInfo.fiatAmount,
     balance: inputCurrencyInfo.balance,
-    label: isSellTrade ? 'Sell amount' : 'Expected sell amount',
+    label: isSellTrade ? t`Sell amount` : t`Expected sell amount`,
   }
 
   const outputCurrencyPreviewInfo = {
     amount: outputCurrencyInfo.amount,
     fiatAmount: outputCurrencyInfo.fiatAmount,
     balance: outputCurrencyInfo.balance,
-    label: isSellTrade ? 'Receive (before fees)' : 'Buy exactly',
+    label: isSellTrade ? t`Receive (before fees)` : t`Buy exactly`,
   }
 
   const rateInfoParams = useRateInfoParams(inputCurrencyInfo.amount, outputCurrencyInfo.amount)
@@ -158,10 +171,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps): Reac
     setShowAddIntermediateTokenModal(false)
   }, [])
 
-  const { isPartialApproveEnabled } = useFeatureFlags()
-  const enablePartialApprovalState = useSwapPartialApprovalToggleState(isPartialApproveEnabled)
-
-  const enablePartialApproval = enablePartialApprovalState[0] && inputCurrency && !getIsNativeToken(inputCurrency)
+  const enablePartialApprovalState = useSwapPartialApprovalToggleState()
 
   const isConnected = Boolean(account)
   const isNetworkUnsupported = useIsProviderNetworkUnsupported()
@@ -190,8 +200,8 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps): Reac
         return (
           <>
             {bottomContent}
-            {enablePartialApproval ? <TradeApproveWithAffectedOrderList /> : null}
             <SwapRateDetails rateInfoParams={rateInfoParams} deadline={deadlineState[0]} />
+            {isPrimaryValidationPassed && <TradeApproveWithAffectedOrderList />}
             <Warnings buyingFiatAmount={buyingFiatAmount} />
             {tradeWarnings}
             <TradeButtons
@@ -215,7 +225,7 @@ export function SwapWidget({ topContent, bottomContent }: SwapWidgetProps): Reac
         hasEnoughWrappedBalanceForSwap,
         toBeImported,
         intermediateBuyToken,
-        enablePartialApproval,
+        isPrimaryValidationPassed,
       ],
     ),
   }

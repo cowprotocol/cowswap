@@ -1,5 +1,38 @@
 # Changelog
 
+## [1.14.2](https://github.com/cowprotocol/cowswap/compare/hook-dapp-lib-v1.14.1...hook-dapp-lib-v1.14.2) (2025-12-24)
+
+
+### Bug Fixes
+
+* use aave token logo from cow cdn for aave img ([#6655](https://github.com/cowprotocol/cowswap/issues/6655)) ([b1acbfd](https://github.com/cowprotocol/cowswap/commit/b1acbfdf021fe53265b44c985baa5bf806571e7c))
+
+## [1.14.1](https://github.com/cowprotocol/cowswap/compare/hook-dapp-lib-v1.14.0...hook-dapp-lib-v1.14.1) (2025-12-09)
+
+
+### Bug Fixes
+
+* avoid using i18n in hookDappsRegistry ([#6633](https://github.com/cowprotocol/cowswap/issues/6633)) ([9cfeae0](https://github.com/cowprotocol/cowswap/commit/9cfeae0c107a632e78176c004aa3614fad12f68b))
+
+## [1.14.0](https://github.com/cowprotocol/cowswap/compare/hook-dapp-lib-v1.13.0...hook-dapp-lib-v1.14.0) (2025-11-24)
+
+
+### Features
+
+* **internationalization:** add internationalization to CoW Swap ([#6198](https://github.com/cowprotocol/cowswap/issues/6198)) ([bec1e54](https://github.com/cowprotocol/cowswap/commit/bec1e54643d9b20a8b6517eae188993e364fed90))
+
+## [1.13.0](https://github.com/cowprotocol/cowswap/compare/hook-dapp-lib-v1.12.0...hook-dapp-lib-v1.13.0) (2025-11-05)
+
+
+### Features
+
+* **hook-dapps:** register aave flash-loans hooks ([#6470](https://github.com/cowprotocol/cowswap/issues/6470)) ([a033304](https://github.com/cowprotocol/cowswap/commit/a033304a8a6376ccb28319e998c13a7916eebcd5))
+
+
+### Bug Fixes
+
+* update permit hook description ([#6412](https://github.com/cowprotocol/cowswap/issues/6412)) ([0342200](https://github.com/cowprotocol/cowswap/commit/03422007648aede61f75ac8b66b450e2a01bbe8a))
+
 ## [1.12.0](https://github.com/cowprotocol/cowswap/compare/hook-dapp-lib-v1.11.0...hook-dapp-lib-v1.12.0) (2025-10-02)
 
 

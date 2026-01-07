@@ -55,8 +55,6 @@ export function BridgingStep({ context, surplusData }: BridgingInProgressStepPro
           stepName={statusesMap[context.bridgingStatus]}
           sellToken={context.overview.sourceAmounts.sellAmount.currency}
           buyToken={context.overview.targetCurrency}
-          sourceChainId={context.bridgingProgressContext?.sourceChainId}
-          destinationChainId={context.bridgingProgressContext?.destinationChainId}
         />
         <ProgressDetailsStyled context={context} />
       </Wrapper>

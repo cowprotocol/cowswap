@@ -2,6 +2,7 @@ import React from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
+import { BridgeProviderType } from '@cowprotocol/sdk-bridging'
 import { Icon, UI } from '@cowprotocol/ui'
 import { TruncatedText } from '@cowprotocol/ui/pure/TruncatedText'
 
@@ -32,6 +33,7 @@ export interface BaseDetailsTableProps {
   order: Order
   showFillsButton: boolean | undefined
   areTradesLoading: boolean
+  bridgeProviderType?: BridgeProviderType
   children?: React.ReactNode
 }
 
@@ -44,6 +46,7 @@ export function BaseDetailsTable({
   order,
   showFillsButton,
   areTradesLoading,
+  bridgeProviderType,
   children,
 }: BaseDetailsTableProps): React.ReactNode | null {
   const cowAnalytics = useCowAnalytics()
@@ -76,6 +79,11 @@ export function BaseDetailsTable({
   }
   const isSigning = status === 'signing'
   const isBridging = !!order?.bridgeProviderId
+  const toTooltip = isBridging
+    ? bridgeProviderType === 'ReceiverAccountBridgeProvider'
+      ? DetailsTableTooltips.toBridgeReceiver
+      : DetailsTableTooltips.toBridgeProxy
+    : DetailsTableTooltips.to
 
   return (
     <SimpleTable
@@ -132,11 +140,7 @@ export function BaseDetailsTable({
           <tr>
             <td>
               <span>
-                <HelpTooltip
-                  placement="bottom"
-                  tooltip={isBridging ? DetailsTableTooltips.toBridge : DetailsTableTooltips.to}
-                />{' '}
-                To
+                <HelpTooltip placement="bottom" tooltip={toTooltip} /> To
               </span>
             </td>
             <td>
@@ -155,10 +159,8 @@ export function BaseDetailsTable({
           </tr>
           {(!partiallyFillable || txHash) && areTradesLoading ? (
             <Spinner />
-          ) : txHash ? (
-            <TxHashItem chainId={chainId} txHash={txHash} onCopy={onCopy} isLoading={areTradesLoading} />
           ) : (
-            '-'
+            <TxHashItem chainId={chainId} txHash={txHash} onCopy={onCopy} isLoading={areTradesLoading} />
           )}
           <tr>
             <td>

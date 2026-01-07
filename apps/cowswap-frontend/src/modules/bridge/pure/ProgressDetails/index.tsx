@@ -1,5 +1,7 @@
 import { ReactNode } from 'react'
 
+import { useLingui } from '@lingui/react/macro'
+
 import { COW_PROTOCOL_NAME } from '../../constants'
 import { DividerHorizontal } from '../../styles'
 import { SwapAndBridgeStatus, SwapAndBridgeContext } from '../../types'
@@ -8,7 +10,7 @@ import { CollapsibleBridgeRoute } from '../CollapsibleBridgeRoute'
 import { BridgingProgressContent } from '../contents/BridgingProgressContent'
 import { PreparingBridgingContent } from '../contents/BridgingProgressContent/PreparingBridgingContent'
 import { SwapResultContent } from '../contents/SwapResultContent'
-import { BridgeStatusIcons, BridgeStatusTitlePrefixes, SwapStatusIcons, SwapStatusTitlePrefixes } from '../StopStatus'
+import { bridgeStatusIcons, bridgeStatusTitlePrefixes, swapStatusIcons, swapStatusTitlePrefixes } from '../StopStatus'
 
 interface QuoteDetailsProps {
   className?: string
@@ -25,6 +27,7 @@ interface BridgeStepProps {
 }
 
 function SwapStep({ context }: SwapStepProps): ReactNode {
+  const { i18n } = useLingui()
   const { bridgeProvider, overview, swapResultContext } = context
   const { sourceAmounts, sourceChainName } = overview
   const swapStatus = SwapAndBridgeStatus.DONE
@@ -34,10 +37,10 @@ function SwapStep({ context }: SwapStepProps): ReactNode {
       isCollapsible
       defaultExpanded
       status={swapStatus}
-      statusIcon={SwapStatusIcons[swapStatus]}
+      statusIcon={swapStatusIcons[swapStatus]}
       protocolIconShowOnly="first"
       protocolIconSize={21}
-      titlePrefix={SwapStatusTitlePrefixes[swapStatus]}
+      titlePrefix={i18n._(swapStatusTitlePrefixes[swapStatus])}
       protocolName={COW_PROTOCOL_NAME}
       bridgeProvider={bridgeProvider}
       chainName={sourceChainName}
@@ -52,15 +55,16 @@ function SwapStep({ context }: SwapStepProps): ReactNode {
 function BridgeStep({ context, bridgeStatus }: BridgeStepProps): ReactNode {
   const { bridgeProvider, overview, quoteBridgeContext, bridgingProgressContext, statusResult, explorerUrl } = context
   const { targetAmounts, targetChainName } = overview
+  const { i18n } = useLingui()
 
   return (
     <BridgeDetailsContainer
       isCollapsible
       defaultExpanded
       status={bridgeStatus}
-      statusIcon={BridgeStatusIcons[bridgeStatus]}
+      statusIcon={bridgeStatusIcons[bridgeStatus]}
       protocolIconShowOnly="second"
-      titlePrefix={BridgeStatusTitlePrefixes[bridgeStatus]}
+      titlePrefix={i18n._(bridgeStatusTitlePrefixes[bridgeStatus])}
       protocolName={bridgeProvider.name}
       bridgeProvider={bridgeProvider}
       chainName={targetChainName}

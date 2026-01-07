@@ -3,7 +3,6 @@ import { HelpTooltip } from '@cowprotocol/ui'
 
 import styled from 'styled-components/macro'
 
-
 const Wrapper = styled.div`
   display: flex;
   justify-content: space-between;
@@ -25,13 +24,14 @@ const Title = styled.h4`
 
 export interface TokenSourceTitleProps {
   children: string
-  tooltip: string
+  tooltip?: string
 }
 
 // TODO: Add proper return type annotation
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function TokenSourceTitle(props: TokenSourceTitleProps) {
   const { children, tooltip } = props
+  const tooltipText = tooltip?.trim()
 
   return (
     <Wrapper>
@@ -39,9 +39,11 @@ export function TokenSourceTitle(props: TokenSourceTitleProps) {
         <img src={TokenListLogo} alt="" />
         {children}
       </Title>
-      <div>
-        <HelpTooltip text={tooltip} />
-      </div>
+      {tooltipText ? (
+        <div>
+          <HelpTooltip text={tooltipText} />
+        </div>
+      ) : null}
     </Wrapper>
   )
 }

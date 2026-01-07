@@ -1,19 +1,18 @@
 import React, { ReactNode, useCallback, useMemo } from 'react'
 
 import ICON_ORDERS from '@cowprotocol/assets/svg/orders.svg'
-import { useFeatureFlags, useTheme } from '@cowprotocol/common-hooks'
+import { useFeatureFlags, useTheme, useMediaQuery } from '@cowprotocol/common-hooks'
 import { isInjectedWidget, maxAmountSpend } from '@cowprotocol/common-utils'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 import { ButtonOutlined, Media, MY_ORDERS_ID, SWAP_HEADER_OFFSET } from '@cowprotocol/ui'
 import { useIsSafeWallet, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 import { Currency } from '@uniswap/sdk-core'
 
-import { t } from '@lingui/macro'
+import { Trans, useLingui } from '@lingui/react/macro'
 import SVG from 'react-inlinesvg'
 import { Nullish } from 'types'
 
 import { AccountElement } from 'legacy/components/Header/AccountElement'
-import { upToLarge, useMediaQuery } from 'legacy/hooks/useMediaQuery'
 import { Field } from 'legacy/state/types'
 
 import { useToggleAccountModal } from 'modules/account'
@@ -69,7 +68,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
   const isLimitOrderTrade = tradeTypeInfo?.tradeType === TradeType.LIMIT_ORDER
   const shouldLockForAlternativeOrder = isAlternativeOrderModalVisible && isLimitOrderTrade
   const isWrapOrUnwrap = useIsWrapOrUnwrap()
-  const { isLimitOrdersUpgradeBannerEnabled, isBridgingEnabled } = useFeatureFlags()
+  const { isLimitOrdersUpgradeBannerEnabled } = useFeatureFlags()
   const isCurrentTradeBridging = useIsCurrentTradeBridging()
   const { darkMode } = useTheme()
 
@@ -86,7 +85,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
     hideTradeWarnings,
     enableSmartSlippage,
     displayTokenName = false,
-    displayChainName = isBridgingEnabled && isCurrentTradeBridging,
+    displayChainName = isCurrentTradeBridging,
     isMarketOrderWidget = false,
     isSellingEthSupported = false,
     isPriceStatic = false,
@@ -135,7 +134,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
   // Disable too frequent tokens switching
   const throttledOnSwitchTokens = useThrottleFn(onSwitchTokens, 500)
 
-  const isUpToLarge = useMediaQuery(upToLarge)
+  const isUpToLarge = useMediaQuery(Media.upToLarge(false))
 
   const isConnectedMarketOrderWidget = !!account && isMarketOrderWidget
 
@@ -159,6 +158,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
     tokenSelectorDisabled: shouldLockForAlternativeOrder,
     displayTokenName,
     displayChainName,
+    isBridging: isCurrentTradeBridging,
   }
 
   const openSellTokenSelect = useCallback(
@@ -187,6 +187,8 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
 
   const isOutputTokenUnsupported = !!buyToken && !(buyToken.chainId in SupportedChainId)
 
+  const { t } = useLingui()
+
   return (
     <>
       <styledEl.ContainerBox>
@@ -196,7 +198,9 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
 
           {shouldShowMyOrdersButton && (
             <ButtonOutlined margin={'0 16px 0 auto'} onClick={handleMyOrdersClick}>
-              My orders <SVG src={ICON_ORDERS} />
+              <Trans>
+                My orders <SVG src={ICON_ORDERS} />
+              </Trans>
             </ButtonOutlined>
           )}
 
@@ -253,7 +257,7 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
                     }
                     inputTooltip={
                       isSellingEthSupported && isEoaEthFlow
-                        ? t`You cannot edit this field when selling ${inputCurrencyInfo?.currency?.symbol}`
+                        ? t`You cannot edit this field when selling` + ` ${inputCurrencyInfo?.currency?.symbol}`
                         : undefined
                     }
                     currencyInfo={outputCurrencyInfo}
@@ -265,7 +269,13 @@ export function TradeWidgetForm(props: TradeWidgetProps): ReactNode {
                     {...currencyInputCommonProps}
                   />
                 </div>
-                {withRecipient && <SetRecipient recipient={recipient || ''} onChangeRecipient={onChangeRecipient} />}
+                {withRecipient && (
+                  <SetRecipient
+                    recipient={recipient || ''}
+                    onChangeRecipient={onChangeRecipient}
+                    targetChainId={buyToken?.chainId as SupportedChainId}
+                  />
+                )}
 
                 {isWrapOrUnwrap ? (
                   sellToken ? (
