@@ -1,6 +1,3 @@
-/**
- * useLpTokenViewState - State for LpTokenPage
- */
 import { TokenWithLogo } from '@cowprotocol/common-const'
 
 import { useCloseTokenSelectWidget } from '../../../hooks/useCloseTokenSelectWidget'

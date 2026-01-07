@@ -53,7 +53,7 @@ function useWidgetEffects(isOpen: boolean): void {
 }
 
 export function SelectTokenModal({ children }: SelectTokenModalProps): ReactNode {
-  const { isOpen } = useWidgetOpenState()
+  const isOpen = useWidgetOpenState()
   const isCompactLayout = useMediaQuery(Media.upToMedium(false))
   const widgetState = useSelectTokenWidgetState()
   const { closeManageWidget } = useManageWidgetVisibility()

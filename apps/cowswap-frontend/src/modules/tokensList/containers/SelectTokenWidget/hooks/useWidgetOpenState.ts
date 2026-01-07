@@ -1,17 +1,12 @@
 /**
- * useWidgetOpenState - Manages widget visibility and reset on close
+ * useWidgetOpenState - Returns widget visibility and resets on close
  */
 import { useEffect, useRef } from 'react'
 
 import { useResetTokenListViewState } from '../../../hooks/useResetTokenListViewState'
 import { useSelectTokenWidgetState } from '../../../hooks/useSelectTokenWidgetState'
 
-export interface WidgetOpenState {
-  isOpen: boolean
-  widgetState: ReturnType<typeof useSelectTokenWidgetState>
-}
-
-export function useWidgetOpenState(): WidgetOpenState {
+export function useWidgetOpenState(): boolean {
   const widgetState = useSelectTokenWidgetState()
   const isOpen = Boolean(widgetState.onSelectToken && (widgetState.open || widgetState.forceOpen))
 
@@ -26,5 +21,5 @@ export function useWidgetOpenState(): WidgetOpenState {
     prevIsOpenRef.current = isOpen
   }, [isOpen, resetTokenListView])
 
-  return { isOpen, widgetState }
+  return isOpen
 }

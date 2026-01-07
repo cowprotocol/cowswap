@@ -12,7 +12,7 @@ import { Field } from 'legacy/state/types'
 
 import { TradeType } from 'modules/trade/types'
 
-interface SelectTokenWidgetState {
+export interface SelectTokenWidgetState {
   open: boolean
   field?: Field
   oppositeToken?: TokenWithLogo | LpToken | Currency

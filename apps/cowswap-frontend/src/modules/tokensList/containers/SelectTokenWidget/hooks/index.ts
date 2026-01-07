@@ -1,4 +1,4 @@
-export { useWidgetOpenState, type WidgetOpenState } from './useWidgetOpenState'
+export { useWidgetOpenState } from './useWidgetOpenState'
 export { useChainPanelState, type ChainPanelState } from './useChainPanelState'
 export { useHeaderState, type HeaderState } from './useHeaderState'
 export { useSearchState, type SearchState } from './useSearchState'
