@@ -1,16 +1,9 @@
 /**
- * useSearchState - Search slot state
+ * useSearchState - Returns onPressEnter callback for search input
  */
 import { useSelectTokenWidgetState } from '../../../hooks/useSelectTokenWidgetState'
 
-export interface SearchState {
-  onPressEnter?: () => void
-}
-
-export function useSearchState(): SearchState {
+export function useSearchState(): (() => void) | undefined {
   const widgetState = useSelectTokenWidgetState()
-
-  return {
-    onPressEnter: widgetState.onInputPressEnter,
-  }
+  return widgetState.onInputPressEnter
 }

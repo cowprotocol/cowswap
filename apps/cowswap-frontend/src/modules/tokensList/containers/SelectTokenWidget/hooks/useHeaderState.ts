@@ -5,10 +5,8 @@ import { t } from '@lingui/core/macro'
 
 import { Field } from 'legacy/state/types'
 
-import { useLpTokensWithBalances } from 'modules/yield/shared'
-
 import { useSelectTokenWidgetState } from '../../../hooks/useSelectTokenWidgetState'
-import { useWidgetMetadata } from '../tokenDataHooks'
+import { resolveModalTitle } from '../tokenDataHooks'
 import { useManageWidgetVisibility } from '../widgetUIState'
 
 export interface HeaderState {
@@ -21,19 +19,12 @@ export function useHeaderState(): HeaderState {
   const widgetState = useSelectTokenWidgetState()
   const { openManageWidget } = useManageWidgetVisibility()
   const { standalone } = widgetState
-  const { count: lpTokensWithBalancesCount } = useLpTokensWithBalances()
   const resolvedField = widgetState.field ?? Field.INPUT
 
-  const { modalTitle } = useWidgetMetadata(
-    resolvedField,
-    widgetState.tradeType,
-    false,
-    widgetState.oppositeToken,
-    lpTokensWithBalancesCount,
-  )
+  const title = resolveModalTitle(resolvedField, widgetState.tradeType) ?? t`Select token`
 
   return {
-    title: modalTitle ?? t`Select token`,
+    title,
     showManageButton: !standalone,
     onOpenManageWidget: openManageWidget,
   }

@@ -1,16 +1,9 @@
 /**
- * useTokenListState - Token list slot state
+ * useTokenListState - Returns isRouteAvailable for token list
  */
 import { useTokenDataSources } from '../tokenDataHooks'
 
-export interface TokenListState {
-  isRouteAvailable: boolean | undefined
-}
-
-export function useTokenListState(): TokenListState {
+export function useTokenListState(): boolean | undefined {
   const { isRouteAvailable } = useTokenDataSources()
-
-  return {
-    isRouteAvailable,
-  }
+  return isRouteAvailable
 }

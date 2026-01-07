@@ -109,7 +109,7 @@ function ConnectedHeader(): ReactNode {
 }
 
 function ConnectedSearch(): ReactNode {
-  const { onPressEnter } = useSearchState()
+  const onPressEnter = useSearchState()
   return <Search onPressEnter={onPressEnter} />
 }
 
@@ -133,7 +133,7 @@ function ConnectedDesktopChainPanel(): ReactNode {
 }
 
 function ConnectedTokenList(): ReactNode {
-  const { isRouteAvailable } = useTokenListState()
+  const isRouteAvailable = useTokenListState()
   return <TokenList isRouteAvailable={isRouteAvailable} />
 }
 

@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState } from 'react'
+import { Dispatch, SetStateAction, useMemo, useState } from 'react'
 
 import { useCowAnalytics } from '@cowprotocol/analytics'
 import { TokenWithLogo } from '@cowprotocol/common-const'
@@ -79,19 +79,34 @@ export function useTokenDataSources(): TokenDataSources {
   const permitCompatibleTokens = usePermitCompatibleTokens()
   const tokenListTags = useTokenListsTags()
 
-  return {
-    allTokens: tokensState.tokens,
-    favoriteTokens: tokensState.favoriteTokens,
-    areTokensLoading: tokensState.isLoading,
-    areTokensFromBridge: tokensState.areTokensFromBridge,
-    isRouteAvailable: tokensState.isRouteAvailable,
-    userAddedTokens,
-    allTokenLists,
-    balancesState,
-    unsupportedTokens,
-    permitCompatibleTokens,
-    tokenListTags,
-  }
+  return useMemo(
+    () => ({
+      allTokens: tokensState.tokens,
+      favoriteTokens: tokensState.favoriteTokens,
+      areTokensLoading: tokensState.isLoading,
+      areTokensFromBridge: tokensState.areTokensFromBridge,
+      isRouteAvailable: tokensState.isRouteAvailable,
+      userAddedTokens,
+      allTokenLists,
+      balancesState,
+      unsupportedTokens,
+      permitCompatibleTokens,
+      tokenListTags,
+    }),
+    [
+      tokensState.tokens,
+      tokensState.favoriteTokens,
+      tokensState.isLoading,
+      tokensState.areTokensFromBridge,
+      tokensState.isRouteAvailable,
+      userAddedTokens,
+      allTokenLists,
+      balancesState,
+      unsupportedTokens,
+      permitCompatibleTokens,
+      tokenListTags,
+    ],
+  )
 }
 
 export function useWidgetMetadata(
@@ -112,7 +127,7 @@ export function useWidgetMetadata(
   return { disableErc20, tokenListCategoryState, modalTitle, chainsPanelTitle }
 }
 
-function resolveModalTitle(field: Field, tradeType: TradeType | undefined): string {
+export function resolveModalTitle(field: Field, tradeType: TradeType | undefined): string {
   const isSwapTrade = !tradeType || tradeType === TradeType.SWAP
 
   if (field === Field.INPUT) {

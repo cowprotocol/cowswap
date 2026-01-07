@@ -14,7 +14,7 @@ import { useOnSelectNetwork } from 'common/hooks/useOnSelectNetwork'
 
 import { persistRecentTokenSelection, useRecentTokens } from '../../hooks/useRecentTokens'
 import { useSelectTokenWidgetState } from '../../hooks/useSelectTokenWidgetState'
-import { ChainsToSelectState, TokenSelectionHandler } from '../../types'
+import { TokenSelectionHandler } from '../../types'
 
 import type { useUpdateSelectTokenWidgetState } from '../../hooks/useUpdateSelectTokenWidgetState'
 
@@ -135,8 +135,4 @@ export function useTokenSelectionHandler(
       onSelectNetwork,
     ],
   )
-}
-
-export function hasAvailableChains(chainsToSelect: ChainsToSelectState | undefined): boolean {
-  return Boolean(chainsToSelect)
 }

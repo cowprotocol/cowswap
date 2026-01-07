@@ -1,6 +1,8 @@
 /**
  * useChainPanelState - Chain panel visibility and handlers
  */
+import { useMemo } from 'react'
+
 import { useIsBridgingEnabled } from '@cowprotocol/common-hooks'
 import { ChainInfo } from '@cowprotocol/cow-sdk'
 
@@ -9,7 +11,6 @@ import { TradeType } from 'modules/trade/types'
 import { useChainsToSelect } from '../../../hooks/useChainsToSelect'
 import { useOnSelectChain } from '../../../hooks/useOnSelectChain'
 import { ChainsToSelectState } from '../../../types'
-import { hasAvailableChains } from '../tokenSelectionHooks'
 
 // TODO: Re-enable once Yield should support cross-network selection in the modal
 const ENABLE_YIELD_CHAIN_PANEL = false
@@ -26,11 +27,14 @@ export function useChainPanelState(tradeType: TradeType | undefined): ChainPanel
   const isBridgeFeatureEnabled = useIsBridgingEnabled()
 
   const shouldDisableForYield = tradeType === TradeType.YIELD && !ENABLE_YIELD_CHAIN_PANEL
-  const isEnabled = isBridgeFeatureEnabled && hasAvailableChains(chainsToSelect) && !shouldDisableForYield
+  const isEnabled = isBridgeFeatureEnabled && Boolean(chainsToSelect) && !shouldDisableForYield
 
-  return {
-    isEnabled,
-    chainsToSelect,
-    onSelectChain,
-  }
+  return useMemo(
+    () => ({
+      isEnabled,
+      chainsToSelect,
+      onSelectChain,
+    }),
+    [isEnabled, chainsToSelect, onSelectChain],
+  )
 }

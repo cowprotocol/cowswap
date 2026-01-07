@@ -1,8 +1,8 @@
 export { useWidgetOpenState } from './useWidgetOpenState'
 export { useChainPanelState, type ChainPanelState } from './useChainPanelState'
 export { useHeaderState, type HeaderState } from './useHeaderState'
-export { useSearchState, type SearchState } from './useSearchState'
-export { useTokenListState, type TokenListState } from './useTokenListState'
+export { useSearchState } from './useSearchState'
+export { useTokenListState } from './useTokenListState'
 
 export { useActiveBlockingView, type BlockingViewType } from './useActiveBlockingView'
 export { useImportTokenViewState, type ImportTokenViewState } from './useImportTokenViewState'
