@@ -5,7 +5,7 @@ import { SupportedChainId } from '@cowprotocol/cow-sdk'
  * - 'ui': user clicked through our surfaces (header CTA, rewards hub, etc.)
  * - 'deeplink': modal auto-opened from a `?ref=` query
  */
-export type ReferralModalSource = 'ui' | 'deeplink'
+export type ReferralModalSource = 'ui' | 'deeplink' | 'rewards'
 
 /**
  * Categorises referral verification failures so UI copy can react:
