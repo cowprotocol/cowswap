@@ -678,6 +678,10 @@ msgstr "CoW AMM only"
 msgid "Scheduled"
 msgstr "Scheduled"
 
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/pure/Row/RowRewards/index.tsx
+msgid "Rewards"
+msgstr "Rewards"
+
 #: apps/cowswap-frontend/src/modules/erc20Approve/containers/TradeApproveButton/TradeApproveButton.tsx
 msgid "Approve and Swap"
 msgstr "Approve and Swap"
@@ -2773,6 +2777,10 @@ msgstr "{prefix}-hooks allow you to automatically execute any action {position} 
 #~ msgid "Safe"
 #~ msgstr "Safe"
 
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/pure/Row/RowRewards/index.tsx
+msgid "Add a referral code to earn rewards."
+msgstr "Add a referral code to earn rewards."
+
 #: apps/cowswap-frontend/src/modules/orderProgressBar/pure/steps/ExpiredStep.tsx
 msgid "Your order expired. This could be due to gas spikes, volatile prices, or problems with the network."
 msgstr "Your order expired. This could be due to gas spikes, volatile prices, or problems with the network."
@@ -2850,6 +2858,10 @@ msgstr "Trade alerts enabled"
 #: apps/cowswap-frontend/src/common/utils/tradeSettingsTooltips.tsx
 #~ msgid "Your swap expires and will not execute if it is pending for longer than the selected duration.<0/><1/>{INPUT_OUTPUT_EXPLANATION}"
 #~ msgstr "Your swap expires and will not execute if it is pending for longer than the selected duration.<0/><1/>{INPUT_OUTPUT_EXPLANATION}"
+
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/pure/Row/RowRewards/index.tsx
+msgid "Add code"
+msgstr "Add code"
 
 #: apps/cowswap-frontend/src/common/pure/NetworkCostsSuffix/index.tsx
 #: apps/cowswap-frontend/src/modules/trade/pure/RowFeeContent/index.tsx
@@ -5728,6 +5740,10 @@ msgstr "Reload page"
 #: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
 msgid "Enter a valid recipient"
 msgstr "Enter a valid recipient"
+
+#: apps/cowswap-frontend/src/modules/tradeWidgetAddons/containers/RowRewards/index.tsx
+msgid "Earn more by adding a referral code."
+msgstr "Earn more by adding a referral code."
 
 #: apps/cowswap-frontend/src/modules/onchainTransactions/updaters/FinalizeTxUpdater/services/finalizeEthFlowTx.ts
 msgid "Failed to place order selling {nativeCurrencySymbol}"
