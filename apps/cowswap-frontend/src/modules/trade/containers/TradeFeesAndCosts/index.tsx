@@ -14,10 +14,17 @@ interface TradeFeesAndCostsProps {
   networkCostsSuffix?: ReactNode
   networkCostsTooltipSuffix?: ReactNode
   withTimelineDot?: boolean
+  showTotalRow?: boolean
 }
 
 export function TradeFeesAndCosts(props: TradeFeesAndCostsProps): ReactNode {
-  const { receiveAmountInfo, networkCostsSuffix, networkCostsTooltipSuffix, withTimelineDot = true } = props
+  const {
+    receiveAmountInfo,
+    networkCostsSuffix,
+    networkCostsTooltipSuffix,
+    withTimelineDot = true,
+    showTotalRow = false,
+  } = props
 
   const networkFeeAmount = receiveAmountInfo && getOrderTypeReceiveAmounts(receiveAmountInfo).networkFeeAmount
   const partnerFee = receiveAmountInfo && receiveAmountInfo.costs.partnerFee
@@ -51,6 +58,7 @@ export function TradeFeesAndCosts(props: TradeFeesAndCostsProps): ReactNode {
         volumeFeeTooltip={volumeFeeTooltip}
         withTimelineDot={withTimelineDot}
         isLast={!hasNetworkCosts}
+        showTotalRow={showTotalRow}
       />
 
       {hasNetworkCosts && networkFeeAmount && (

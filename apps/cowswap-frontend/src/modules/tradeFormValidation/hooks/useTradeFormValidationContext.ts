@@ -5,8 +5,11 @@ import { useENSAddress } from '@cowprotocol/ens'
 import { useIsTradeUnsupported, useTryFindToken } from '@cowprotocol/tokens'
 import { useGnosisSafeInfo, useIsTxBundlingSupported, useWalletDetails, useWalletInfo } from '@cowprotocol/wallet'
 
-import { useCurrentAccountProxy } from 'modules/accountProxy'
+import { useHasHookBridgeProvidersEnabled } from 'entities/bridgeProvider'
+
+import { useCurrentAccountProxy } from 'modules/accountProxy/hooks/useCurrentAccountProxy'
 import { useApproveState, useGetAmountToSignApprove, useIsApprovalOrPermitRequired } from 'modules/erc20Approve'
+import { RwaTokenStatus, useRwaTokenStatus } from 'modules/rwa'
 import { TradeType, useDerivedTradeState, useIsWrapOrUnwrap } from 'modules/trade'
 import { TradeQuoteState, useTradeQuote } from 'modules/tradeQuote'
 
@@ -37,7 +40,10 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const isWrapUnwrap = useIsWrapOrUnwrap()
   const { isSupportedWallet } = useWalletDetails()
   const gnosisSafeInfo = useGnosisSafeInfo()
+  const hasHookBridgeProvidersEnabled = useHasHookBridgeProvidersEnabled()
   const { isLoading, data: proxyAccount } = useCurrentAccountProxy()
+  const isAccountProxyLoading = hasHookBridgeProvidersEnabled ? isLoading : false
+  const isProxySetupValid = hasHookBridgeProvidersEnabled ? !!proxyAccount?.isProxySetupValid : true
 
   const isSafeReadonlyUser = gnosisSafeInfo?.isReadOnly === true
 
@@ -51,36 +57,58 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     getBridgeIntermediateTokenAddress(tradeQuote.bridgeQuote),
   )
 
-  const commonContext = {
-    account,
-    isWrapUnwrap,
-    isBundlingSupported: !!isBundlingSupported,
-    isSupportedWallet,
-    isSwapUnsupported,
-    isSafeReadonlyUser,
-    recipientEnsAddress,
-    approvalState,
-    tradeQuote,
-    isApproveRequired,
-    isInsufficientBalanceOrderAllowed,
-    isProviderNetworkUnsupported,
-    isOnline,
-    derivedTradeState,
-    intermediateTokenToBeImported: !!intermediateBuyToken && toBeImported,
-    isAccountProxyLoading: isLoading,
-    isProxySetupValid: proxyAccount?.isProxySetupValid,
-    customTokenError,
-  }
+  const { status: rwaStatus } = useRwaTokenStatus({
+    inputCurrency,
+    outputCurrency,
+  })
+  const isRestrictedForCountry = rwaStatus === RwaTokenStatus.Restricted
 
   return useMemo(() => {
     if (!derivedTradeState) return null
 
     return {
-      ...commonContext,
+      account,
+      isWrapUnwrap,
+      isBundlingSupported: !!isBundlingSupported,
+      isSupportedWallet,
+      isSwapUnsupported,
+      isSafeReadonlyUser,
+      recipientEnsAddress,
+      approvalState,
+      tradeQuote,
+      isApproveRequired,
+      isInsufficientBalanceOrderAllowed,
+      isProviderNetworkUnsupported,
+      isOnline,
       derivedTradeState,
+      intermediateTokenToBeImported: !!intermediateBuyToken && toBeImported,
+      isAccountProxyLoading,
+      isProxySetupValid,
+      customTokenError,
+      isRestrictedForCountry,
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [...Object.values(commonContext), derivedTradeState])
+  }, [
+    account,
+    approvalState,
+    customTokenError,
+    derivedTradeState,
+    intermediateBuyToken,
+    isAccountProxyLoading,
+    isApproveRequired,
+    isBundlingSupported,
+    isInsufficientBalanceOrderAllowed,
+    isOnline,
+    isProviderNetworkUnsupported,
+    isRestrictedForCountry,
+    isSafeReadonlyUser,
+    isSupportedWallet,
+    isSwapUnsupported,
+    isWrapUnwrap,
+    isProxySetupValid,
+    recipientEnsAddress,
+    toBeImported,
+    tradeQuote,
+  ])
 }
 
 function isUnsupportedTokenInQuote(state: TradeQuoteState): boolean {

@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { getChainInfo } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
 
-import { useCurrentAccountProxy } from 'modules/accountProxy'
+import { useCurrentAccountProxy } from 'modules/accountProxy/hooks/useCurrentAccountProxy'
 import { useGetSwapReceiveAmountInfo } from 'modules/trade'
 import { BRIDGE_QUOTE_ACCOUNT, useTradeQuote } from 'modules/tradeQuote'
 import { useIsSlippageModified, useTradeSlippage } from 'modules/tradeSlippage'
@@ -18,7 +18,7 @@ export function useQuoteSwapContext(): QuoteSwapContext | null {
 
   const quoteAmounts = useBridgeQuoteAmounts()
   const { value: swapMinReceiveAmountUsd } = useUsdAmount(quoteAmounts?.swapMinReceiveAmount)
-  const { value: swapExpectedReceiveUsd } = useUsdAmount(quoteAmounts?.swapBuyAmount)
+  const { value: swapExpectedReceiveUsd } = useUsdAmount(quoteAmounts?.swapExpectedReceive)
 
   const slippage = useTradeSlippage()
   const { bridgeQuote } = useTradeQuote()
@@ -46,6 +46,7 @@ export function useQuoteSwapContext(): QuoteSwapContext | null {
       isSlippageModified,
       recipient,
       bridgeReceiverOverride,
+      expectedReceive: quoteAmounts.swapExpectedReceive,
       minReceiveAmount: quoteAmounts.swapMinReceiveAmount,
       minReceiveUsdValue: swapMinReceiveAmountUsd,
       expectedReceiveUsdValue: swapExpectedReceiveUsd,

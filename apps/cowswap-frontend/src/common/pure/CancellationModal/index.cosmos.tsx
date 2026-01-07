@@ -10,7 +10,6 @@ import { CancellationModal, CancellationModalProps } from '.'
 const context: CancellationModalContext = {
   chainId: 1,
   orderId: '0x111',
-  summary: 'SWAP 1 BLA for 5 BLI',
   error: null,
   isPendingSignature: false,
   onDismiss: null,
@@ -28,6 +27,7 @@ const defaultProps: CancellationModalProps = {
     console.log(`closed the modal!!!`)
   },
   context,
+  orderSummary: 'SWAP 1 BLA for 5 BLI',
 }
 
 // TODO: Add proper return type annotation

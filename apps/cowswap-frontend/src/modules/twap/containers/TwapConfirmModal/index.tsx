@@ -6,7 +6,13 @@ import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 
 import { useAdvancedOrdersDerivedState } from 'modules/advancedOrders'
-import { TradeConfirmation, TradeConfirmModal, useTradeConfirmActions, useTradePriceImpact } from 'modules/trade'
+import {
+  TradeConfirmation,
+  TradeConfirmModal,
+  useCommonTradeConfirmContext,
+  useTradeConfirmActions,
+  useTradePriceImpact,
+} from 'modules/trade'
 import { TradeBasicConfirmDetails } from 'modules/trade/containers/TradeBasicConfirmDetails'
 import { DividerHorizontal } from 'modules/trade/pure/Row/styled'
 import { RowRewards, useIsRowRewardsVisible } from 'modules/tradeWidgetAddons'
@@ -70,7 +76,8 @@ const getConfirmModalConfig = (): {
 export function TwapConfirmModal() {
   const confirmModalConfig = getConfirmModalConfig()
   const { account } = useWalletInfo()
-  const { ensName, allowsOffchainSigning } = useWalletDetails()
+  const { allowsOffchainSigning } = useWalletDetails()
+  const commonTradeConfirmContext = useCommonTradeConfirmContext()
   const {
     inputCurrencyAmount,
     inputCurrencyFiatAmount,
@@ -119,9 +126,8 @@ export function TwapConfirmModal() {
   return (
     <TradeConfirmModal title={CONFIRM_TITLE}>
       <TradeConfirmation
+        {...commonTradeConfirmContext}
         title={CONFIRM_TITLE}
-        account={account}
-        ensName={ensName}
         inputCurrencyInfo={inputCurrencyInfo}
         outputCurrencyInfo={outputCurrencyInfo}
         onConfirm={() => createTwapOrder(fallbackHandlerIsNotSet)}

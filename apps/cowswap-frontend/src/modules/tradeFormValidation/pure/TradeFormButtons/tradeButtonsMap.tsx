@@ -1,11 +1,9 @@
 import { ReactElement, ReactNode } from 'react'
 
-import { ACCOUNT_PROXY_LABEL } from '@cowprotocol/common-const'
 import { getIsNativeToken, getWrappedToken } from '@cowprotocol/common-utils'
 import { BridgeProviderQuoteError, BridgeQuoteErrors } from '@cowprotocol/sdk-bridging'
-import { CenteredDots, HelpTooltip, InfoTooltip, TokenSymbol } from '@cowprotocol/ui'
+import { HelpTooltip, InfoTooltip, TokenSymbol } from '@cowprotocol/ui'
 
-import { i18n } from '@lingui/core'
 import { t } from '@lingui/core/macro'
 import { Trans } from '@lingui/react/macro'
 import styled from 'styled-components/macro'
@@ -15,6 +13,8 @@ import { CompatibilityIssuesWarning } from 'modules/trade'
 
 import { QuoteApiError, QuoteApiErrorCodes } from 'api/cowProtocol/errors/QuoteError'
 import { TradeLoadingButton } from 'common/pure/TradeLoadingButton'
+
+import { ProxyAccountLoading, ProxyAccountUnknown } from './common'
 
 import { TradeFormButtonContext, TradeFormValidation } from '../../types'
 import { TradeFormBlankButton } from '../TradeFormBlankButton'
@@ -57,6 +57,7 @@ function getBridgeQuoteErrorTexts(): Record<BridgeQuoteErrors, string> {
     [BridgeQuoteErrors.NO_ROUTES]: t`No routes found`,
     [BridgeQuoteErrors.ONLY_SELL_ORDER_SUPPORTED]: t`Only "sell" orders are supported`,
     [BridgeQuoteErrors.QUOTE_DOES_NOT_MATCH_DEPOSIT_ADDRESS]: t`Bridging deposit address is not verified! Please contact CoW Swap support!`,
+    [BridgeQuoteErrors.SELL_AMOUNT_TOO_SMALL]: t`Sell amount too small to bridge`,
   }
 }
 
@@ -84,23 +85,6 @@ const unsupportedTokenButton = (context: TradeFormButtonContext) => {
       </CompatibilityIssuesWarningWrapper>
     </>
   ) : null
-}
-
-const ProxyAccountLoading = (): ReactNode => {
-  const accountProxyLabel = i18n._(ACCOUNT_PROXY_LABEL)
-  return (
-    <>
-      <span>
-        <Trans>Loading {accountProxyLabel}</Trans>
-      </span>
-      <CenteredDots smaller />
-    </>
-  )
-}
-
-const ProxyAccountUnknown = (): ReactNode => {
-  const accountProxyLabel = i18n._(ACCOUNT_PROXY_LABEL)
-  return <Trans>Couldn't verify {accountProxyLabel}, please try later</Trans>
 }
 
 export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | ButtonCallback> = {
@@ -336,5 +320,8 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
   },
   [TradeFormValidation.ProxyAccountUnknown]: {
     text: <ProxyAccountUnknown />,
+  },
+  [TradeFormValidation.RestrictedForCountry]: {
+    text: <Trans>This token is not available in your region</Trans>,
   },
 }

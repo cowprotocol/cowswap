@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-imports */ // TODO: Don't use 'modules' import
 import React, { ReactNode, useCallback, useEffect, useMemo, useState } from 'react'
 
 import { NATIVE_CURRENCIES } from '@cowprotocol/common-const'
@@ -35,6 +36,7 @@ export interface CurrencyInputPanelProps extends Partial<BuiltItProps> {
   areCurrenciesLoading: boolean
   bothCurrenciesSet: boolean
   isChainIdUnsupported: boolean
+  isBridging?: boolean
   disabled?: boolean
   inputDisabled?: boolean
   tokenSelectorDisabled?: boolean
@@ -75,6 +77,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps): ReactNode {
     bothCurrenciesSet,
     showSetMax = false,
     maxBalance,
+    isBridging = false,
     inputDisabled = false,
     tokenSelectorDisabled = false,
     displayTokenName = false,
@@ -126,12 +129,18 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps): ReactNode {
         return
       }
 
-      setTypedValue(typedValue)
+      // For tokens with 0 decimals (not in USD mode), strip any decimal portion
+      let sanitizedTypedValue = typedValue
+      if (!isUsdValuesMode && currency?.decimals === 0 && typedValue.includes('.')) {
+        sanitizedTypedValue = typedValue.split('.')[0]
+      }
+
+      setTypedValue(sanitizedTypedValue)
       // Avoid converting from USD if currencyValue is already provided
-      const value = currencyValue || convertUsdToTokenValue(typedValue, isUsdValuesMode)
+      const value = currencyValue || convertUsdToTokenValue(sanitizedTypedValue, isUsdValuesMode)
       onUserInput(field, value)
     },
-    [onUserInput, field, convertUsdToTokenValue, isUsdValuesMode],
+    [onUserInput, field, convertUsdToTokenValue, isUsdValuesMode, currency?.decimals],
   )
 
   const handleMaxInput = useCallback(() => {
@@ -186,7 +195,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps): ReactNode {
       {balance && !disabled && (
         <styledEl.BalanceText>
           {isUsdValuesMode ? (
-            <FiatValue fiatValue={balanceUsdAmount} />
+            <FiatValue fiatValue={balanceUsdAmount} isBridging={isBridging} />
           ) : (
             <TokenAmount amount={balance} defaultValue="0" tokenSymbol={currency} />
           )}
@@ -269,7 +278,7 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps): ReactNode {
           <div>
             {amount && !isUsdValuesMode && (
               <styledEl.FiatAmountText>
-                <FiatValue priceImpactParams={priceImpactParams} fiatValue={fiatAmount} />
+                <FiatValue priceImpactParams={priceImpactParams} fiatValue={fiatAmount} isBridging={isBridging} />
               </styledEl.FiatAmountText>
             )}
           </div>
@@ -280,7 +289,6 @@ export function CurrencyInputPanel(props: CurrencyInputPanelProps): ReactNode {
       {receiveAmountInfo && currency && (
         <ReceiveAmount
           allowsOffchainSigning={allowsOffchainSigning}
-          currency={currency}
           receiveAmountInfo={receiveAmountInfo}
           subsidyAndBalance={subsidyAndBalance}
         />

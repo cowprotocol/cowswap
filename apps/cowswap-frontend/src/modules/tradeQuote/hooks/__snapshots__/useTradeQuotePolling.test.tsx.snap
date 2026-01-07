@@ -15,7 +15,7 @@ exports[`useTradeQuotePolling() When wallet is NOT connected Then the "receiver"
   "sellTokenAddress": "0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14",
   "sellTokenChainId": 11155111,
   "sellTokenDecimals": 18,
-  "slippageBps": undefined,
+  "swapSlippageBps": undefined,
   "validFor": 1800,
 }
 `;
@@ -37,11 +37,12 @@ exports[`useTradeQuotePolling() When wallet is connected Then should put account
     "sellTokenChainId": 11155111,
     "sellTokenDecimals": 18,
     "signer": {},
-    "slippageBps": undefined,
+    "swapSlippageBps": undefined,
     "validFor": 1800,
   },
   {
     "appData": undefined,
+    "getCorrelatedTokens": [Function],
     "getSlippageSuggestion": undefined,
     "quoteRequest": {
       "priceQuality": "optimal",

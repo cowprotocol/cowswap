@@ -1,10 +1,11 @@
+/* eslint-disable no-restricted-imports */ // TODO: Don't use 'modules' import
 import { useCallback, useEffect, useRef } from 'react'
 
 import { CANCELLED_ORDERS_PENDING_TIME } from '@cowprotocol/common-const'
 import { EnrichedOrder, SupportedChainId as ChainId } from '@cowprotocol/cow-sdk'
 import { useIsSafeWallet, useWalletInfo } from '@cowprotocol/wallet'
 
-import { useBridgeOrdersSerializedMap } from 'entities/bridgeOrders'
+import { useGetSerializedBridgeOrder } from 'entities/bridgeOrders'
 import { useAddOrderToSurplusQueue } from 'entities/surplusModal'
 
 import { MARKET_OPERATOR_API_POLL_INTERVAL } from 'legacy/state/orders/consts'
@@ -47,7 +48,7 @@ export function CancelledOrdersUpdater(): null {
 
   const cancelled = useCancelledOrders({ chainId })
   const addOrderToSurplusQueue = useAddOrderToSurplusQueue()
-  const bridgeOrdersMap = useBridgeOrdersSerializedMap()
+  const getSerializedBridgeOrder = useGetSerializedBridgeOrder()
 
   // Ref, so we don't rerun useEffect
   const cancelledRef = useRef(cancelled)
@@ -120,8 +121,7 @@ export function CancelledOrdersUpdater(): null {
               addOrderToSurplusQueue(order.uid)
             }
 
-            const bridgeOrders = bridgeOrdersMap[chainId]?.[lowerCaseAccount]
-            const bridgeOrder = bridgeOrders?.find((i) => i.orderUid === order.uid)
+            const bridgeOrder = getSerializedBridgeOrder(chainId, order.uid)
             emitFulfilledOrderEvent(chainId, order, bridgeOrder)
           })
         }
@@ -129,7 +129,7 @@ export function CancelledOrdersUpdater(): null {
         isUpdating.current = false
       }
     },
-    [addOrderToSurplusQueue, fulfillOrdersBatch, bridgeOrdersMap],
+    [addOrderToSurplusQueue, fulfillOrdersBatch, getSerializedBridgeOrder],
   )
 
   useEffect(() => {

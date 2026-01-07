@@ -1,8 +1,6 @@
-import { Address, UID } from '@cowprotocol/cow-sdk'
-
 import { orderBookSDK } from 'cowSdk'
 
-import { GetOrderParams, GetTxOrdersParams, RawOrder, RawTrade, WithNetworkId } from './types'
+import { GetOrderParams, GetTxOrdersParams, RawOrder, RawTrade, GetTradesParams } from './types'
 
 export { getAccountOrders } from './accountOrderUtils'
 
@@ -55,21 +53,18 @@ export async function getTxOrders(params: GetTxOrdersParams): Promise<RawOrder[]
  *
  * Both filters cannot be used at the same time
  */
-export async function getTrades(
-  params: {
-    owner?: Address
-    orderId?: UID
-  } & WithNetworkId
-): Promise<RawTrade[]> {
-  const { networkId, owner, orderId: orderUid } = params
-  console.log(`[getTrades] Fetching trades on network ${networkId} with filters`, { owner, orderUid })
+export async function getTrades(params: GetTradesParams): Promise<RawTrade[]> {
+  const { networkId, owner, orderId: orderUid, offset, limit } = params
+  console.log(`[getTrades] Fetching trades on network ${networkId} with filters`, { owner, orderUid, offset, limit })
 
-  const tradesPromise = orderBookSDK.getTrades({ owner, orderUid }, { chainId: networkId }).catch((error) => {
-    console.error('[getTrades] Error getting PROD trades', params, error)
-    return []
-  })
+  const tradesPromise = orderBookSDK
+    .getTrades({ owner, orderUid, offset, limit }, { chainId: networkId })
+    .catch((error) => {
+      console.error('[getTrades] Error getting PROD trades', params, error)
+      return []
+    })
   const tradesPromiseBarn = orderBookSDK
-    .getTrades({ owner, orderUid }, { chainId: networkId, env: 'staging' })
+    .getTrades({ owner, orderUid, offset, limit }, { chainId: networkId, env: 'staging' })
     .catch((error) => {
       console.error('[getTrades] Error getting BARN trades', params, error)
       return []

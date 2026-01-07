@@ -1,12 +1,16 @@
 import { migrateNetworkMismatchUserAddedTokens } from './state/migrations/migrateNetworkMismatchUserAddedTokens'
+import { migrateTokenListsFromGithubCdn } from './state/migrations/migrateTokenListsFromGithubCdn'
 
 migrateNetworkMismatchUserAddedTokens()
+migrateTokenListsFromGithubCdn()
 
 // Updaters
 export { TokensListsUpdater } from './updaters/TokensListsUpdater'
 export { TokensListsTagsUpdater } from './updaters/TokensListsTagsUpdater'
 export { UnsupportedTokensUpdater } from './updaters/UnsupportedTokensUpdater'
 export { WidgetTokensListsUpdater } from './updaters/WidgetTokensListsUpdater'
+export { RestrictedTokensListUpdater } from './updaters/RestrictedTokensListUpdater'
+export type { RestrictedTokensListUpdaterProps } from './updaters/RestrictedTokensListUpdater'
 
 // Pure components
 export { TokenLogo, TokenLogoWrapper } from './pure/TokenLogo'
@@ -17,6 +21,8 @@ export * from './types'
 export type { TokensByAddress, TokensBySymbol } from './state/tokens/allTokensAtom'
 export type { ListSearchResponse } from './hooks/lists/useSearchList'
 export type { TokenSearchResponse } from './hooks/tokens/useSearchToken'
+export type { RestrictedTokenListState, TokenId } from './state/restrictedTokens/restrictedTokensAtom'
+export type { RestrictedTokenInfo } from './hooks/tokens/useRestrictedToken'
 
 // Hooks
 export { useAllListsList } from './hooks/lists/useAllListsList'
@@ -41,6 +47,7 @@ export { useAreUnsupportedTokens } from './hooks/tokens/unsupported/useAreUnsupp
 export { useResetFavoriteTokens } from './hooks/tokens/favorite/useResetFavoriteTokens'
 export { useToggleFavoriteToken } from './hooks/tokens/favorite/useToggleFavoriteToken'
 export { useTokensByAddressMap } from './hooks/tokens/useTokensByAddressMap'
+export { useTokensByAddressMapForChain } from './hooks/tokens/useTokensByAddressMapForChain'
 export { useTokenBySymbolOrAddress } from './hooks/tokens/useTokenBySymbolOrAddress'
 export { useTokenByAddress } from './hooks/tokens/useTokenByAddress'
 export { useTryFindToken } from './hooks/tokens/useTryFindToken'
@@ -49,8 +56,10 @@ export { useSearchList } from './hooks/lists/useSearchList'
 export { useSearchToken } from './hooks/tokens/useSearchToken'
 export { useSearchNonExistentToken } from './hooks/tokens/useSearchNonExistentToken'
 export { useAllLpTokens } from './hooks/tokens/useAllLpTokens'
+export { useRestrictedToken, useAnyRestrictedToken } from './hooks/tokens/useRestrictedToken'
 
 // Utils
+export { getTokenId } from './state/restrictedTokens/restrictedTokensAtom'
 export { getTokenListViewLink } from './utils/getTokenListViewLink'
 export { getTokenLogoUrls } from './utils/getTokenLogoUrls'
 export { fetchTokenFromBlockchain } from './utils/fetchTokenFromBlockchain'
