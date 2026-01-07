@@ -11,10 +11,8 @@ import { CommonListContainer } from '../../pure/commonElements'
 import { TokenSearchContent } from '../../pure/TokenSearchContent'
 
 export function TokenSearchResults(): ReactNode {
-  // UI state from atom
   const { searchInput } = useTokenListViewState()
 
-  // Token data from hooks
   const { selectTokenContext, areTokensFromBridge, allTokens } = useTokenListData()
 
   const { onSelectToken, onTokenListItemClick } = selectTokenContext

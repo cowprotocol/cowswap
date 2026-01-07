@@ -13,9 +13,12 @@ import { Media } from '@cowprotocol/ui'
 
 import { createPortal } from 'react-dom'
 
-import { BlockingView } from './slots/BlockingView'
 import { ChainSelector, DesktopChainPanel } from './slots/ChainSelector'
 import { Header } from './slots/Header'
+import { ImportListView } from './slots/ImportListView'
+import { ImportTokenView } from './slots/ImportTokenView'
+import { LpTokenView } from './slots/LpTokenView'
+import { ManageView } from './slots/ManageView'
 import { NetworkPanel } from './slots/NetworkPanel'
 import { Search } from './slots/Search'
 import { TokenList } from './slots/TokenList'
@@ -23,8 +26,8 @@ import { TokenList } from './slots/TokenList'
 import { useCloseTokenSelectWidget } from '../../../hooks/useCloseTokenSelectWidget'
 import { useSelectTokenWidgetState } from '../../../hooks/useSelectTokenWidgetState'
 import { DEFAULT_MODAL_UI_STATE, updateSelectTokenModalUIAtom } from '../atoms'
-import { useWidgetOpenState } from '../hooks'
-import { useBlockingViewState, useChainPanelState, useHeaderState, useSearchState, useTokenListState } from '../hooks'
+import { useActiveBlockingView, useWidgetOpenState } from '../hooks'
+import { useChainPanelState, useHeaderState, useSearchState, useTokenListState } from '../hooks'
 import { InnerWrapper, ModalContainer, WidgetCard, WidgetOverlay, Wrapper } from '../styled'
 import { useDismissHandler, useManageWidgetVisibility } from '../widgetUIState'
 
@@ -134,16 +137,8 @@ function ConnectedTokenList(): ReactNode {
   return <TokenList isRouteAvailable={isRouteAvailable} />
 }
 
-function ConnectedBlockingView(): ReactNode {
-  const state = useBlockingViewState()
-  return <BlockingView {...state} />
-}
-
-// Hook to check if blocking view should be shown
-export function useHasBlockingView(): boolean {
-  const { hasBlockingView } = useBlockingViewState()
-  return hasBlockingView
-}
+// Hook to check which blocking view is active
+export { useActiveBlockingView }
 
 // Attach slots
 SelectTokenModal.Header = ConnectedHeader
@@ -152,7 +147,13 @@ SelectTokenModal.TokenList = ConnectedTokenList
 SelectTokenModal.NetworkPanel = NetworkPanel
 SelectTokenModal.ChainSelector = ConnectedChainSelector
 SelectTokenModal.DesktopChainPanel = ConnectedDesktopChainPanel
-SelectTokenModal.BlockingView = ConnectedBlockingView
+
+// Blocking view slots (each with its own focused hook)
+SelectTokenModal.ImportTokenView = ImportTokenView
+SelectTokenModal.ImportListView = ImportListView
+SelectTokenModal.ManageView = ManageView
+SelectTokenModal.LpTokenView = LpTokenView
 
 // Export raw slot components
-export { Header, Search, ChainSelector, DesktopChainPanel, TokenList, BlockingView }
+export { Header, Search, ChainSelector, DesktopChainPanel, TokenList }
+export { ImportTokenView, ImportListView, ManageView, LpTokenView }

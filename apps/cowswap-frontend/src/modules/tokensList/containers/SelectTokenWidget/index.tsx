@@ -1,7 +1,7 @@
 import { useSetAtom } from 'jotai'
 import { ReactNode, useEffect } from 'react'
 
-import { SelectTokenModal, useHasBlockingView } from './internal'
+import { SelectTokenModal, useActiveBlockingView } from './internal'
 
 import * as styledEl from '../../pure/SelectTokenModal/styled'
 import { updateSelectTokenWidgetAtom } from '../../state/selectTokenWidgetAtom'
@@ -32,12 +32,15 @@ export function SelectTokenWidget({ displayLpTokenLists, standalone }: SelectTok
 }
 
 function SelectTokenWidgetContent(): ReactNode {
-  const hasBlockingView = useHasBlockingView()
+  const activeView = useActiveBlockingView()
 
-  if (hasBlockingView) {
-    return <SelectTokenModal.BlockingView />
-  }
+  // Blocking views
+  if (activeView === 'importToken') return <SelectTokenModal.ImportTokenView />
+  if (activeView === 'importList') return <SelectTokenModal.ImportListView />
+  if (activeView === 'manage') return <SelectTokenModal.ManageView />
+  if (activeView === 'lpToken') return <SelectTokenModal.LpTokenView />
 
+  // Default token list view
   return (
     <>
       <styledEl.Wrapper>
