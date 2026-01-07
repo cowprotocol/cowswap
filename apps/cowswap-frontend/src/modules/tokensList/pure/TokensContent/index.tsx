@@ -14,7 +14,7 @@ export function TokensContent(): ReactNode {
   const { searchInput } = useTokenListViewState()
 
   // Token data directly from source hooks
-  const { favoriteTokens, recentTokens, areTokensLoading, allTokens } = useTokenListData()
+  const { favoriteTokens, recentTokens, areTokensLoading, allTokens, onClearRecentTokens } = useTokenListData()
 
   const shouldShowFavoritesInline = !areTokensLoading && !searchInput && favoriteTokens.length > 0
   const shouldShowRecentsInline = !areTokensLoading && !searchInput && recentTokens.length > 0
@@ -64,6 +64,7 @@ export function TokensContent(): ReactNode {
       tokensToDisplay={tokensWithoutPinned}
       favoriteTokens={favoriteTokensInline}
       recentTokens={recentTokensInline}
+      onClearRecentTokens={onClearRecentTokens}
     />
   )
 }

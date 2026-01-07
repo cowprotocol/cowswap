@@ -96,15 +96,11 @@ export function useRecentTokens({
 
   const addRecentToken = useCallback(
     (token: TokenWithLogo) => {
-      if (favoriteKeys.has(getTokenUniqueKey(token))) {
-        return
-      }
+      if (favoriteKeys.has(getTokenUniqueKey(token))) return
 
       setStoredTokensByChain((prev) => {
         const next = buildNextStoredTokens(prev, token, maxItems)
-
         persistStoredTokens(next)
-
         return next
       })
     },
@@ -112,25 +108,20 @@ export function useRecentTokens({
   )
 
   const clearRecentTokens = useCallback(() => {
-    if (!activeChainId) {
-      return
-    }
+    if (!activeChainId) return
 
     setStoredTokensByChain((prev) => {
-      const chainEntries = prev[activeChainId]
-
-      if (!chainEntries?.length) {
-        return prev
-      }
-
+      if (!prev[activeChainId]?.length) return prev
       const next: StoredRecentTokensByChain = { ...prev, [activeChainId]: [] }
       persistStoredTokens(next)
-
       return next
     })
   }, [activeChainId])
 
-  return { recentTokens, addRecentToken, clearRecentTokens }
+  return useMemo(
+    () => ({ recentTokens, addRecentToken, clearRecentTokens }),
+    [recentTokens, addRecentToken, clearRecentTokens],
+  )
 }
 
 export { persistRecentTokenSelectionInternal as persistRecentTokenSelection }

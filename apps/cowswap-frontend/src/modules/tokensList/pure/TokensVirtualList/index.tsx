@@ -21,6 +21,7 @@ export interface TokensVirtualListProps {
   tokensToDisplay: TokenWithLogo[] // Pre-filtered by parent
   favoriteTokens?: TokenWithLogo[]
   recentTokens?: TokenWithLogo[]
+  onClearRecentTokens: () => void
 }
 
 type TokensVirtualRow =
@@ -32,9 +33,9 @@ export function TokensVirtualList({
   tokensToDisplay,
   favoriteTokens,
   recentTokens,
+  onClearRecentTokens,
 }: TokensVirtualListProps): ReactNode {
-  const { selectTokenContext, hideFavoriteTokensTooltip, selectedTargetChainId, onClearRecentTokens } =
-    useTokenListData()
+  const { selectTokenContext, hideFavoriteTokensTooltip, selectedTargetChainId } = useTokenListData()
 
   const { values: balances } = selectTokenContext.balancesState
 

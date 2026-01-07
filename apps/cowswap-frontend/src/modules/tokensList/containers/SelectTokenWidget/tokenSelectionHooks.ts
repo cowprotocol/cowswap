@@ -1,4 +1,4 @@
-import { useCallback } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
 import { SupportedChainId } from '@cowprotocol/cow-sdk'
@@ -94,7 +94,10 @@ export function useRecentTokenSection(
     [addRecentToken],
   )
 
-  return { recentTokens, handleTokenListItemClick, clearRecentTokens }
+  return useMemo(
+    () => ({ recentTokens, handleTokenListItemClick, clearRecentTokens }),
+    [recentTokens, handleTokenListItemClick, clearRecentTokens],
+  )
 }
 
 export function useTokenSelectionHandler(
