@@ -11,15 +11,15 @@ const CHAIN_NAME = 'sepolia'
 const INTEGRATION_TEST_PRIVATE_KEY = Cypress.env('INTEGRATION_TEST_PRIVATE_KEY')
 assert(INTEGRATION_TEST_PRIVATE_KEY, 'INTEGRATION_TEST_PRIVATE_KEY env missing')
 
-const INTEGRATION_TESTS_INFURA_KEY = Cypress.env('INTEGRATION_TESTS_INFURA_KEY')
+const INTEGRATION_TESTS_ALCHEMY_KEY = Cypress.env('INTEGRATION_TESTS_ALCHEMY_KEY')
 
 const NETWORK_URL = Cypress.env('REACT_APP_NETWORK_URL_' + CHAIN_ID)
 
-const PROVIDER_URL = NETWORK_URL || `https://${CHAIN_NAME}.infura.io/v3/${INTEGRATION_TESTS_INFURA_KEY}`
+const PROVIDER_URL = NETWORK_URL || `https://eth-${CHAIN_NAME}.g.alchemy.com/v2/${INTEGRATION_TESTS_ALCHEMY_KEY}`
 
 assert(
   PROVIDER_URL,
-  `PROVIDER_URL is empty, NETWORK_URL=${NETWORK_URL}, INTEGRATION_TESTS_INFURA_KEY=${INTEGRATION_TESTS_INFURA_KEY}`
+  `PROVIDER_URL is empty, NETWORK_URL=${NETWORK_URL}, INTEGRATION_TESTS_ALCHEMY_KEY=${INTEGRATION_TESTS_ALCHEMY_KEY}`,
 )
 
 // address of the above key
@@ -43,7 +43,7 @@ class CustomizedBridge extends Eip1193Bridge {
   // TODO: Add proper return type annotation
   // TODO: Reduce function complexity by extracting logic
   // TODO: Replace any with proper type definitions
-  // eslint-disable-next-line max-lines-per-function, @typescript-eslint/explicit-function-return-type, complexity, @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, complexity, @typescript-eslint/no-explicit-any
   async send(...args: any[]) {
     console.debug('send called', ...args)
     const isCallbackForm = typeof args[0] === 'object' && typeof args[1] === 'function'
