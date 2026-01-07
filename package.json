@@ -201,7 +201,7 @@
     "polished": "^4.0.5",
     "polyfill-object.fromentries": "^1.0.1",
     "popper-max-size-modifier": "^0.2.0",
-    "qs": "^6.12.1",
+    "qs": "^6.14.1",
     "quick-lru": "^7.0.0",
     "react": "19.1.2",
     "react-appzi": "^1.0.4",
