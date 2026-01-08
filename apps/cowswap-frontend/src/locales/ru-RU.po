@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2025-12-30 09:56\n"
+"PO-Revision-Date: 2026-01-08 15:18\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -2992,7 +2992,7 @@ msgstr "Настройки интерфейса"
 msgid "Enter a price"
 msgstr "Введите цену"
 
-#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/common.tsx
 msgid "Couldn't verify {accountProxyLabel}, please try later"
 msgstr "Не удалось проверить {accountProxyLabel}, повторите попытку позже"
 
@@ -3408,7 +3408,7 @@ msgstr "Посмотреть аккаунт"
 msgid "When you swap (sell) <0/>, solvers handle the transaction by purchasing the required tokens, depositing them into the pool, and issuing LP tokens to you in return — all in a gas-less operation."
 msgstr "Когда вы подкачиваете (продавать) <0/>, решатели обрабатывают транзакцию, покупая необходимые токены, Внесение их в бассейн и выдача токенов LP в обмен — все это в безгазовую операцию."
 
-#: apps/cowswap-frontend/src/common/hooks/useBlockNumber.tsx
+#: apps/cowswap-frontend/src/common/hooks/useBlockNumber/useBlockNumber.ts
 msgid "BlockNumber hooks must be wrapped in a"
 msgstr "BlockNumber хуки должны быть завернуты в"
 
@@ -6001,7 +6001,7 @@ msgstr "Более длинные лимитные ордера - размеща
 msgid "User rejected signing the cancellation"
 msgstr "Пользователь отклонил отмену"
 
-#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/tradeButtonsMap.tsx
+#: apps/cowswap-frontend/src/modules/tradeFormValidation/pure/TradeFormButtons/common.tsx
 msgid "Loading {accountProxyLabel}"
 msgstr "Загрузка {accountProxyLabel}"
 
