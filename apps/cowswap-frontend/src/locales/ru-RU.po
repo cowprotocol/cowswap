@@ -8,7 +8,7 @@ msgstr ""
 "Language: ru\n"
 "Project-Id-Version: cow-swap\n"
 "Report-Msgid-Bugs-To: \n"
-"PO-Revision-Date: 2026-01-08 15:18\n"
+"PO-Revision-Date: 2026-01-08 17:49\n"
 "Last-Translator: \n"
 "Language-Team: Russian\n"
 "Plural-Forms: nplurals=4; plural=((n%10==1 && n%100!=11) ? 0 : ((n%10 >= 2 && n%10 <=4 && (n%100 < 12 || n%100 > 14)) ? 1 : ((n%10 == 0 || (n%10 >= 5 && n%10 <=9)) || (n%100 >= 11 && n%100 <= 14)) ? 2 : 3));\n"
@@ -781,7 +781,7 @@ msgstr "Нет доступного RPC-провайдера для иденти
 
 #: apps/cowswap-frontend/src/common/pure/CancellationModal/index.tsx
 msgid "Cancelling order with id {shortId}:<0/><1>{orderSummary}</1>"
-msgstr ""
+msgstr "Отмена ордера {shortId}:<0/><1>{orderSummary}</1>"
 
 #: apps/cowswap-frontend/src/modules/twap/containers/TwapFormWidget/tooltips.tsx
 msgid "Sell per part"
@@ -1324,7 +1324,7 @@ msgstr "1/2 Подтверждение возврата средств"
 
 #: apps/cowswap-frontend/src/common/pure/PriceImpactIndicator/index.tsx
 msgid "Price impact due to current liquidity levels and estimated swap fees and costs"
-msgstr ""
+msgstr "Влияние на цену из-за текущих уровней ликвидности и расчетных комиссий за обмен и затрат"
 
 #: apps/cowswap-frontend/src/modules/fortune/containers/FortuneWidget/index.tsx
 #: apps/cowswap-frontend/src/modules/fortune/containers/FortuneWidget/index.tsx
