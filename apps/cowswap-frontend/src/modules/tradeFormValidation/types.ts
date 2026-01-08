@@ -74,6 +74,7 @@ export interface TradeFormValidationCommonContext {
   customTokenError?: string
   isRestrictedForCountry: boolean
   isBalancesLoading: boolean
+  balancesError: string | null
 }
 
 export interface TradeFormValidationContext extends TradeFormValidationCommonContext {}
@@ -88,6 +89,7 @@ export interface TradeFormButtonContext {
   enablePartialApprove?: boolean
   customTokenError?: string
   minAmountToSignForSwap?: CurrencyAmount<Currency>
+  balancesError: string | null
 
   confirmTrade(): void
 

@@ -262,8 +262,15 @@ export const tradeButtonsMap: Record<TradeFormValidation, ButtonErrorConfig | Bu
       </>
     ),
   },
-  [TradeFormValidation.BalancesNotLoaded]: {
-    text: <Trans>Couldn't load balances</Trans>,
+  [TradeFormValidation.BalancesNotLoaded]: (context) => {
+    return (
+      <TradeFormBlankButton disabled={true}>
+        <>
+          <Trans>Couldn't load balances</Trans>
+          {context.balancesError ? <HelpTooltip text={<div>{context.balancesError}</div>} /> : null}
+        </>
+      </TradeFormBlankButton>
+    )
   },
   [TradeFormValidation.BalanceInsufficient]: (context) => {
     const inputCurrency = context.derivedState.inputCurrency

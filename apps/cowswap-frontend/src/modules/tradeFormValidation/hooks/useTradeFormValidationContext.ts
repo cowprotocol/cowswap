@@ -1,6 +1,5 @@
 import { useMemo } from 'react'
 
-import { useTokensBalances } from '@cowprotocol/balances-and-allowances'
 import { useIsOnline } from '@cowprotocol/common-hooks'
 import { useENSAddress } from '@cowprotocol/ens'
 import { useIsTradeUnsupported, useTryFindToken } from '@cowprotocol/tokens'
@@ -9,6 +8,7 @@ import { useGnosisSafeInfo, useIsTxBundlingSupported, useWalletDetails, useWalle
 import { useHasHookBridgeProvidersEnabled } from 'entities/bridgeProvider'
 
 import { useCurrentAccountProxy } from 'modules/accountProxy/hooks/useCurrentAccountProxy'
+import { useTokensBalancesCombined } from 'modules/combinedBalances'
 import { useApproveState, useGetAmountToSignApprove, useIsApprovalOrPermitRequired } from 'modules/erc20Approve'
 import { RwaTokenStatus, useRwaTokenStatus } from 'modules/rwa'
 import { TradeType, useDerivedTradeState, useIsWrapOrUnwrap } from 'modules/trade'
@@ -29,7 +29,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
   const tradeQuote = useTradeQuote()
   const isProviderNetworkUnsupported = useIsProviderNetworkUnsupported()
   const isOnline = useIsOnline()
-  const { isLoading: isBalancesLoading } = useTokensBalances()
+  const { isLoading: isBalancesLoading, hasFirstLoad, error: balancesError } = useTokensBalancesCombined()
 
   const { inputCurrency, outputCurrency, recipient, tradeType } = derivedTradeState || {}
   const customTokenError = useTokenCustomTradeError(inputCurrency, outputCurrency, tradeQuote.error)
@@ -89,9 +89,11 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
       isProxySetupValid,
       customTokenError,
       isRestrictedForCountry,
-      isBalancesLoading,
+      isBalancesLoading: !hasFirstLoad || isBalancesLoading,
+      balancesError,
     }
   }, [
+    hasFirstLoad,
     account,
     approvalState,
     customTokenError,
@@ -113,6 +115,7 @@ export function useTradeFormValidationContext(): TradeFormValidationCommonContex
     recipientEnsAddress,
     toBeImported,
     tradeQuote,
+    balancesError,
   ])
 }
 
