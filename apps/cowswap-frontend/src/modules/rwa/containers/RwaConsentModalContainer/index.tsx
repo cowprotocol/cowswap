@@ -24,7 +24,8 @@ export function RwaConsentModalContainer(): ReactNode {
 
   const onDismiss = useCallback(() => {
     closeModal()
-  }, [closeModal])
+    context?.onDismiss?.()
+  }, [closeModal, context])
 
   const onConfirm = useCallback(() => {
     if (!account || !context || !consentKey) {

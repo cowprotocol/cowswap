@@ -138,6 +138,10 @@ export function TradeWidgetModals({
           importTokenCallback(tokensToImport)
           closeAutoImportModal()
         },
+        onDismiss: () => {
+          // If consent is rejected, close the auto-import modal too
+          closeAutoImportModal()
+        },
       })
     }
   }, [

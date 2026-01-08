@@ -8,6 +8,7 @@ export interface RwaConsentModalContext {
   token?: TokenWithLogo
   pendingImportTokens?: TokenWithLogo[]
   onImportSuccess?: () => void
+  onDismiss?: () => void
 }
 
 export interface RwaConsentModalState {
