@@ -1,153 +1,120 @@
-import React, { ReactNode, useMemo, useState } from 'react'
-
-import { BalancesState } from '@cowprotocol/balances-and-allowances'
-import { TokenWithLogo } from '@cowprotocol/common-const'
-import { ChainInfo } from '@cowprotocol/cow-sdk'
-import { TokenListCategory, TokenListTags, UnsupportedTokensState } from '@cowprotocol/tokens'
-import { SearchInput } from '@cowprotocol/ui'
-import { Currency } from '@uniswap/sdk-core'
+import { ReactNode, useLayoutEffect, useMemo } from 'react'
 
 import { t } from '@lingui/core/macro'
-import { X } from 'react-feather'
-import { Nullish } from 'types'
 
-import { PermitCompatibleTokens } from 'modules/permit'
+import { getMobileChainSelectorConfig, useTokenSearchInput } from './helpers'
+import { SelectTokenModalShell } from './SelectTokenModalShell'
+import { TokenColumnContent } from './TokenColumnContent'
 
-import { SelectTokenModalContent } from './SelectTokenModalContent'
-import * as styledEl from './styled'
-
-import { LpTokenListsWidget } from '../../containers/LpTokenListsWidget'
-import { ChainsToSelectState, SelectTokenContext } from '../../types'
-import { ChainsSelector } from '../ChainsSelector'
-import { IconButton } from '../commonElements'
+import { useUpdateTokenListViewState } from '../../hooks/useUpdateTokenListViewState'
+import { ChainPanel } from '../ChainPanel'
 import { TokensContent } from '../TokensContent'
 
-export interface SelectTokenModalProps<T = TokenListCategory[] | null> {
-  allTokens: TokenWithLogo[]
-  favoriteTokens: TokenWithLogo[]
-  balancesState: BalancesState
-  unsupportedTokens: UnsupportedTokensState
-  selectedToken?: Nullish<Currency>
-  permitCompatibleTokens: PermitCompatibleTokens
-  hideFavoriteTokensTooltip?: boolean
-  displayLpTokenLists?: boolean
-  disableErc20?: boolean
-  account: string | undefined
-  chainsToSelect: ChainsToSelectState | undefined
-  tokenListCategoryState: [T, (category: T) => void]
-  defaultInputValue?: string
-  areTokensLoading: boolean
-  tokenListTags: TokenListTags
-  standalone?: boolean
-  areTokensFromBridge: boolean
-  isRouteAvailable: boolean | undefined
+import type { SelectTokenModalProps } from './types'
 
-  onSelectToken(token: TokenWithLogo): void
-  openPoolPage(poolAddress: string): void
-  onInputPressEnter?(): void
-  onOpenManageWidget(): void
-  onDismiss(): void
-  onSelectChain(chain: ChainInfo): void
-}
+export type { SelectTokenModalProps }
 
-function useSelectTokenContext(props: SelectTokenModalProps): SelectTokenContext {
-  const {
-    selectedToken,
-    balancesState,
-    unsupportedTokens,
-    permitCompatibleTokens,
-    onSelectToken,
-    account,
-    tokenListTags,
-  } = props
-
-  return useMemo(
-    () => ({
-      balancesState,
-      selectedToken,
-      onSelectToken,
-      unsupportedTokens,
-      permitCompatibleTokens,
-      tokenListTags,
-      isWalletConnected: !!account,
-    }),
-    [balancesState, selectedToken, onSelectToken, unsupportedTokens, permitCompatibleTokens, tokenListTags, account],
-  )
-}
-
+/**
+ * SelectTokenModal - Token selection modal component.
+ *
+ * Data flow:
+ * - Controller hydrates tokenListViewAtom with token data, context, and callbacks
+ * - This modal receives only UI/callback props
+ * - Children (TokensContent, TokensVirtualList, etc.) read from atom
+ * - searchInput is local state, synced to atom for children to read
+ */
 export function SelectTokenModal(props: SelectTokenModalProps): ReactNode {
   const {
+    // Layout
+    standalone,
+    hasChainPanel = false,
+    isFullScreenMobile,
+    modalTitle,
+    chainsPanelTitle,
     defaultInputValue = '',
-    onSelectToken,
-    onDismiss,
-    onInputPressEnter,
-    account,
-    displayLpTokenLists,
-    openPoolPage,
-    tokenListCategoryState,
-    disableErc20,
+    // Chain panel
     chainsToSelect,
     onSelectChain,
-    areTokensFromBridge,
+    mobileChainsState,
+    mobileChainsLabel,
+    onOpenMobileChainPanel,
+    // Widget config
+    tokenListCategoryState,
+    disableErc20,
     isRouteAvailable,
+    account,
+    displayLpTokenLists,
+    // Callbacks
+    onSelectToken,
+    openPoolPage,
+    onInputPressEnter,
+    onOpenManageWidget,
+    onDismiss,
   } = props
-  const [inputValue, setInputValue] = useState<string>(defaultInputValue)
 
-  const selectTokenContext = useSelectTokenContext(props)
+  // Local search state - synced to atom for children to read
+  const [inputValue, setInputValue, trimmedInputValue] = useTokenSearchInput(defaultInputValue)
 
-  const trimmedInputValue = inputValue.trim()
+  // Sync ONLY searchInput to atom (controller handles all other hydration)
+  const updateTokenListView = useUpdateTokenListViewState()
+  useLayoutEffect(() => {
+    updateTokenListView({ searchInput: trimmedInputValue })
+  }, [trimmedInputValue, updateTokenListView])
 
-  const allListsContent = (
-    <TokensContent
-      {...props}
-      selectTokenContext={selectTokenContext}
-      searchInput={trimmedInputValue}
-      areTokensFromBridge={areTokensFromBridge}
-    />
+  // Resolve layout state
+  const showChainPanel = hasChainPanel
+  const resolvedModalTitle = modalTitle ?? t`Select token`
+  const legacyChainsState =
+    !showChainPanel && chainsToSelect && (chainsToSelect.chains?.length ?? 0) > 0 ? chainsToSelect : undefined
+  const resolvedChainPanelTitle = chainsPanelTitle ?? t`Cross chain swap`
+
+  // Build chain panel component
+  const chainPanel = useMemo(
+    () =>
+      showChainPanel && chainsToSelect ? (
+        <ChainPanel title={resolvedChainPanelTitle} chainsState={chainsToSelect} onSelectChain={onSelectChain} />
+      ) : null,
+    [chainsToSelect, onSelectChain, resolvedChainPanelTitle, showChainPanel],
   )
 
+  // Build mobile chain selector config
+  const mobileChainSelector = getMobileChainSelectorConfig({
+    showChainPanel,
+    mobileChainsState,
+    mobileChainsLabel,
+    onSelectChain,
+    onOpenMobileChainPanel,
+  })
+  const chainsForTokenColumn = mobileChainSelector ? undefined : legacyChainsState
+
   return (
-    <styledEl.Wrapper>
-      <styledEl.Header>
-        <SearchInput
-          id="token-search-input"
-          value={inputValue}
-          onKeyDown={(e) => e.key === 'Enter' && onInputPressEnter?.()}
-          onChange={(e) => setInputValue(e.target.value)}
-          placeholder={t`Search name or paste address...`}
-        />
-        <IconButton onClick={onDismiss}>
-          <X size={18} />
-        </IconButton>
-      </styledEl.Header>
-      {displayLpTokenLists ? (
-        <LpTokenListsWidget
-          account={account}
-          search={inputValue}
-          onSelectToken={onSelectToken}
-          openPoolPage={openPoolPage}
-          disableErc20={disableErc20}
-          tokenListCategoryState={tokenListCategoryState}
-        >
-          {allListsContent}
-        </LpTokenListsWidget>
-      ) : (
-        <>
-          {!!chainsToSelect?.chains?.length && (
-            <>
-              <styledEl.ChainsSelectorWrapper>
-                <ChainsSelector
-                  isLoading={chainsToSelect.isLoading || false}
-                  chains={chainsToSelect.chains}
-                  defaultChainId={chainsToSelect.defaultChainId}
-                  onSelectChain={onSelectChain}
-                />
-              </styledEl.ChainsSelectorWrapper>
-            </>
-          )}
-          <SelectTokenModalContent isRouteAvailable={isRouteAvailable}>{allListsContent}</SelectTokenModalContent>
-        </>
-      )}
-    </styledEl.Wrapper>
+    <SelectTokenModalShell
+      hasChainPanel={showChainPanel}
+      isFullScreenMobile={isFullScreenMobile}
+      title={resolvedModalTitle}
+      showManageButton={!standalone}
+      onDismiss={onDismiss}
+      onOpenManageWidget={onOpenManageWidget}
+      searchValue={inputValue}
+      onSearchChange={setInputValue}
+      onSearchEnter={onInputPressEnter}
+      sideContent={chainPanel}
+      mobileChainSelector={mobileChainSelector}
+    >
+      <TokenColumnContent
+        displayLpTokenLists={displayLpTokenLists}
+        account={account}
+        inputValue={inputValue}
+        onSelectToken={onSelectToken}
+        openPoolPage={openPoolPage}
+        disableErc20={disableErc20}
+        tokenListCategoryState={tokenListCategoryState}
+        isRouteAvailable={isRouteAvailable}
+        chainsToSelect={chainsForTokenColumn}
+        onSelectChain={onSelectChain}
+      >
+        <TokensContent />
+      </TokenColumnContent>
+    </SelectTokenModalShell>
   )
 }

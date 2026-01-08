@@ -1,29 +1,21 @@
 import { ReactNode, useCallback, useEffect, useMemo } from 'react'
 
-import { TokenWithLogo } from '@cowprotocol/common-const'
 import { doesTokenMatchSymbolOrAddress } from '@cowprotocol/common-utils'
 import { getTokenSearchFilter, TokenSearchResponse, useSearchToken } from '@cowprotocol/tokens'
 
 import { useAddTokenImportCallback } from '../../hooks/useAddTokenImportCallback'
+import { useTokenListData } from '../../hooks/useTokenListData'
+import { useTokenListViewState } from '../../hooks/useTokenListViewState'
 import { useUpdateSelectTokenWidgetState } from '../../hooks/useUpdateSelectTokenWidgetState'
 import { CommonListContainer } from '../../pure/commonElements'
 import { TokenSearchContent } from '../../pure/TokenSearchContent'
-import { SelectTokenContext } from '../../types'
 
-export interface TokenSearchResultsProps {
-  searchInput: string
-  selectTokenContext: SelectTokenContext
-  areTokensFromBridge: boolean
-  allTokens: TokenWithLogo[]
-}
+export function TokenSearchResults(): ReactNode {
+  const { searchInput } = useTokenListViewState()
 
-export function TokenSearchResults({
-  searchInput,
-  selectTokenContext,
-  areTokensFromBridge,
-  allTokens,
-}: TokenSearchResultsProps): ReactNode {
-  const { onSelectToken } = selectTokenContext
+  const { selectTokenContext, areTokensFromBridge, allTokens } = useTokenListData()
+
+  const { onSelectToken, onTokenListItemClick } = selectTokenContext
 
   // Do not make search when tokens are from bridge
   const defaultSearchResults = useSearchToken(areTokensFromBridge ? null : searchInput)
@@ -56,9 +48,14 @@ export function TokenSearchResults({
     if (!searchInput || !activeListsResult) return
 
     if (activeListsResult.length === 1 || matchedTokens.length === 1) {
-      onSelectToken(matchedTokens[0] || activeListsResult[0])
+      const tokenToSelect = matchedTokens[0] || activeListsResult[0]
+
+      if (tokenToSelect) {
+        onTokenListItemClick?.(tokenToSelect)
+        onSelectToken(tokenToSelect)
+      }
     }
-  }, [searchInput, activeListsResult, matchedTokens, onSelectToken])
+  }, [searchInput, activeListsResult, matchedTokens, onSelectToken, onTokenListItemClick])
 
   useEffect(() => {
     updateSelectTokenWidget({

@@ -13,6 +13,8 @@ import { Nullish } from 'types'
 import * as styledEl from './styled'
 
 import { useDeferredVisibility } from '../../hooks/useDeferredVisibility'
+import { TokenSelectionHandler } from '../../types'
+import { getTokenUniqueKey } from '../../utils/tokenKey'
 import { TokenInfo } from '../TokenInfo'
 import { TokenTags } from '../TokenTags'
 
@@ -28,7 +30,7 @@ export interface TokenListItemProps {
   balance: BigNumber | undefined
   usdAmount?: CurrencyAmount<Currency> | null
 
-  onSelectToken?(token: TokenWithLogo): void
+  onSelectToken?: TokenSelectionHandler
 
   isWalletConnected: boolean
   isUnsupported?: boolean
@@ -59,7 +61,7 @@ export function TokenListItem(props: TokenListItemProps): ReactNode {
     className,
   } = props
 
-  const tokenKey = `${token.chainId}:${token.address.toLowerCase()}`
+  const tokenKey = getTokenUniqueKey(token)
   // Defer heavyweight UI (tooltips, formatted numbers) until the row is about to enter the viewport.
   const { ref: visibilityRef, isVisible: hasIntersected } = useDeferredVisibility<HTMLDivElement>({
     resetKey: tokenKey,

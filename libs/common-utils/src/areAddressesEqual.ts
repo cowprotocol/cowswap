@@ -1,7 +1,10 @@
 import { Nullish } from '@cowprotocol/types'
 
-export function areAddressesEqual(a: Nullish<string>, b: Nullish<string>): boolean {
-  if ((a && !b) || (!a && b)) return false
+import { getTokenAddressKey } from './tokens'
 
-  return a?.toLowerCase() === b?.toLowerCase()
+export function areAddressesEqual(a: Nullish<string>, b: Nullish<string>): boolean {
+  if (!a && !b) return true
+  if (!a || !b) return false
+
+  return getTokenAddressKey(a) === getTokenAddressKey(b)
 }
