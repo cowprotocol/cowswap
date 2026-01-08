@@ -15,7 +15,7 @@ const isLocalhost = Boolean(
     // [::1] is the IPv6 localhost address.
     window.location.hostname === '[::1]' ||
     // 127.0.0.0/8 are considered localhost for IPv4.
-    window.location.hostname.match(/^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/)
+    window.location.hostname.match(/^127(?:\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)){3}$/),
 )
 
 type Config = {
@@ -23,9 +23,7 @@ type Config = {
   onUpdate?: (registration: ServiceWorkerRegistration) => void
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function registerValidSW(swUrl: string, config?: Config) {
+function registerValidSW(swUrl: string, config?: Config): void {
   navigator.serviceWorker
     .register(swUrl)
     .then((registration) => {
@@ -42,7 +40,7 @@ function registerValidSW(swUrl: string, config?: Config) {
               // content until all client tabs are closed.
               console.log(
                 'New content is available and will be used when all ' +
-                  'tabs for this page are closed. See https://cra.link/PWA.'
+                  'tabs for this page are closed. See https://cra.link/PWA.',
               )
 
               // Execute callback
@@ -69,9 +67,7 @@ function registerValidSW(swUrl: string, config?: Config) {
     })
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function checkValidServiceWorker(swUrl: string, config?: Config) {
+function checkValidServiceWorker(swUrl: string, config?: Config): void {
   // Check if the service worker can be found. If it can't reload the page.
   fetch(swUrl, {
     headers: { 'Service-Worker': 'script' },
@@ -96,9 +92,7 @@ function checkValidServiceWorker(swUrl: string, config?: Config) {
     })
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function register(config?: Config) {
+export function register(config?: Config): void {
   if (!('serviceWorker' in navigator)) return
 
   // The URL constructor is available in all browsers that support SW.
@@ -111,6 +105,10 @@ export function register(config?: Config) {
   }
 
   window.addEventListener('load', () => {
+    if (!('serviceWorker' in navigator)) {
+      return
+    }
+
     const swUrl = `${window.location.origin}/service-worker.js`
 
     if (isLocalhost) {
@@ -121,7 +119,7 @@ export function register(config?: Config) {
       // service worker/PWA documentation.
       navigator.serviceWorker.ready.then(() => {
         console.log(
-          'This web app is being served cache-first by a service worker. To learn more, visit https://cra.link/PWA'
+          'This web app is being served cache-first by a service worker. To learn more, visit https://cra.link/PWA',
         )
       })
     } else {
@@ -131,9 +129,7 @@ export function register(config?: Config) {
   })
 }
 
-// TODO: Add proper return type annotation
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export function unregister() {
+export function unregister(): void {
   if (!('serviceWorker' in navigator)) {
     return
   }

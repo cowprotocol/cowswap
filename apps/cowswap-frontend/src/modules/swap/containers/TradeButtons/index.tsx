@@ -1,7 +1,6 @@
 import React, { ReactNode } from 'react'
 
 import { TokenWithLogo } from '@cowprotocol/common-const'
-import { useFeatureFlags } from '@cowprotocol/common-hooks'
 import { useIsSafeWallet } from '@cowprotocol/wallet'
 
 import { useLingui } from '@lingui/react/macro'
@@ -73,9 +72,8 @@ export function TradeButtons({
 
   const confirmText = isCurrentTradeBridging ? t`Swap and Bridge` : t`Swap`
 
-  const { isPartialApproveEnabled } = useFeatureFlags()
   // enable partial approve only for swap
-  const tradeFormButtonContext = useTradeFormButtonContext(confirmText, confirmTrade, !!isPartialApproveEnabled)
+  const tradeFormButtonContext = useTradeFormButtonContext(confirmText, confirmTrade, true)
 
   const context = useSafeMemoObject({
     wrappedToken,
