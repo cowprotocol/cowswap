@@ -34,13 +34,14 @@ export function useConsentAwareToggleList(): (list: ListState, enabled: boolean)
 
   return useCallback(
     (list: ListState, enabled: boolean) => {
-      // only check consent when trying to enable (not disable)
-      if (enabled) {
+      // always allow disabling a list without consent
+      if (!enabled) {
         baseToggleList(list, enabled)
         return
       }
 
       // trying to enable - check if consent is required
+      // only require consent when country is unknown (blocked countries are handled by hiding the list)
       if (!geoStatus.country && restrictedLists.isLoaded) {
         const sourceKey = getSourceAsKey(list.source)
         const consentHash = restrictedLists.consentHashPerList[sourceKey]
