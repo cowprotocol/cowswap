@@ -3598,11 +3598,12 @@ msgstr "CoW Protocol covers the fees and costs by executing your order at a slig
 
 #: apps/cowswap-frontend/src/modules/hooksStore/containers/HooksStoreWidget/index.tsx
 msgid "With hooks you can add specific actions <0>before</0> and <1>after</1> your swap."
-msgstr "With hooks you can add specific actions <0>before</0> and <1>after</1> your swap."
+msgstr "With hooks you can add specific actions <0>before</0> and <1>after</1> your swap.<<<<<<< Updated upstream"
 
 #: apps/cowswap-frontend/src/modules/tokensList/hooks/useRestrictedTokenImportStatus.ts
+#: apps/cowswap-frontend/src/modules/tokensList/hooks/useRestrictedTokensImportStatus.ts
 msgid "This token is not available in your region."
-msgstr "This token is not available in your region."
+msgstr "This token is not available in your region.>>>>>>> Stashed changes>>>>>>> Stashed changes"
 
 #: apps/cowswap-frontend/src/modules/account/containers/Transaction/ActivityDetails.tsx
 msgid "No signatures yet"

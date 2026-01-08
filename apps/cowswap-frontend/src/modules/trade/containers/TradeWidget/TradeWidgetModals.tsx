@@ -20,6 +20,7 @@ import {
   useSelectTokenWidgetState,
   useTokenListAddingError,
   useUpdateSelectTokenWidgetState,
+  useRestrictedTokensImportStatus,
 } from 'modules/tokensList'
 import { useZeroApproveModalState, ZeroApprovalModal } from 'modules/zeroApproval'
 
@@ -67,6 +68,9 @@ export function TradeWidgetModals({
     tokensToImport,
     modalState: { isModalOpen: isAutoImportModalOpen, closeModal: closeAutoImportModal },
   } = useAutoImportTokensState(rawState?.inputCurrencyId, rawState?.outputCurrencyId)
+  const { isImportDisabled, blockReason, requiresConsent, restrictedTokenInfo, tokenNeedingConsent } =
+    useRestrictedTokensImportStatus(tokensToImport)
+  const { openModal: openRwaConsentModal } = useRwaConsentModalState()
 
   const { onDismiss: closeTradeConfirm } = useTradeConfirmActions()
   const updateSelectTokenWidgetState = useUpdateSelectTokenWidgetState()
@@ -119,6 +123,34 @@ export function TradeWidgetModals({
     resetAllScreens(isOutputTokenSelectorRef.current)
   }, [chainId, resetAllScreens])
 
+  /**
+   * If auto-import modal is open and consent is required,
+   * open the RWA consent modal instead
+   */
+  useEffect(() => {
+    if (isAutoImportModalOpen && requiresConsent && restrictedTokenInfo && tokenNeedingConsent) {
+      openRwaConsentModal({
+        consentHash: restrictedTokenInfo.consentHash,
+        token: tokenNeedingConsent,
+        pendingImportTokens: tokensToImport,
+        onImportSuccess: () => {
+          // After consent, import the tokens
+          importTokenCallback(tokensToImport)
+          closeAutoImportModal()
+        },
+      })
+    }
+  }, [
+    isAutoImportModalOpen,
+    requiresConsent,
+    restrictedTokenInfo,
+    tokenNeedingConsent,
+    tokensToImport,
+    openRwaConsentModal,
+    importTokenCallback,
+    closeAutoImportModal,
+  ])
+
   if (genericModal) {
     return genericModal
   }
@@ -139,8 +171,18 @@ export function TradeWidgetModals({
     return selectTokenWidget
   }
 
-  if (isAutoImportModalOpen) {
-    return <ImportTokenModal tokens={tokensToImport} onDismiss={closeAutoImportModal} onImport={importTokenCallback} />
+  // Show import modal only if consent is not required
+  // (if consent is required, the useEffect above will open the consent modal)
+  if (isAutoImportModalOpen && !requiresConsent) {
+    return (
+      <ImportTokenModal
+        tokens={tokensToImport}
+        onDismiss={closeAutoImportModal}
+        onImport={importTokenCallback}
+        isImportDisabled={isImportDisabled}
+        blockReason={blockReason}
+      />
+    )
   }
 
   if (isWrapNativeOpen) {
